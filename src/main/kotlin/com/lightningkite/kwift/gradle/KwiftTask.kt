@@ -3,8 +3,11 @@ package com.lightningkite.kwift.gradle
 import com.lightningkite.kwift.kwiftTask
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
+import java.io.File
 
 open class KwiftTask() : DefaultTask() {
+    var inputDirectory: File = File("src")
+    var outputDirectory: File = File("build/swift")
 
     init {
         group = "build"
@@ -13,8 +16,8 @@ open class KwiftTask() : DefaultTask() {
     @TaskAction
     fun writeReflectiveFiles() {
         kwiftTask(
-            directory = project.file("src"),
-            outputDirectory = project.file("build/swift")
+            directory = inputDirectory,
+            outputDirectory = outputDirectory
         )
     }
 
