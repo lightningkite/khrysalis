@@ -56,7 +56,7 @@ gradlePlugin {
     plugins {
         myPlugin {
             id = "com.lightningkite.kwift"
-            implementationClass = "com.lightningkite.mirror.gradle.KwiftPlugin"
+            implementationClass = "com.lightningkite.kwift.gradle.KwiftPlugin"
         }
     }
 }

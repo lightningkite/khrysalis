@@ -40,7 +40,7 @@ open class InterfaceListener(val parser: KotlinParser) : KotlinParserBaseListene
             packageName = currentPackage,
             name = ctx.simpleIdentifier().text,
             implements = ctx.delegationSpecifiers()?.delegationSpecifier()?.flatMap {
-                val id = it.userType().text.substringBefore('<')
+                val id = it.userType()?.text?.substringBefore('<') ?: return@flatMap listOf<String>()
                 if (id.firstOrNull()?.isLowerCase() == true) {
                     //qualified
                     listOf(id)
@@ -54,10 +54,10 @@ open class InterfaceListener(val parser: KotlinParser) : KotlinParserBaseListene
                     }.plus(id)
                 }
             } ?: listOf(),
-            methods = ctx.classBody().classMemberDeclaration()
-                .mapNotNull { it.functionDeclaration()?.identifier()?.text },
-            properties = ctx.classBody().classMemberDeclaration()
-                .mapNotNull { it.propertyDeclaration()?.variableDeclaration()?.simpleIdentifier()?.text }
+            methods = ctx.classBody()?.classMemberDeclaration()
+                ?.mapNotNull { it.functionDeclaration()?.identifier()?.text } ?: listOf(),
+            properties = ctx.classBody()?.classMemberDeclaration()
+                ?.mapNotNull { it.propertyDeclaration()?.variableDeclaration()?.simpleIdentifier()?.text } ?: listOf()
         ))
     }
 }

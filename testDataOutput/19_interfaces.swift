@@ -1,10 +1,9 @@
 // Simple Interface
+//package com.lightningkite.interfaceTest
+
+//import com.lightningkite.others.*
 
 public interface MyInterface {
-
-  init() {
-
-  }
   func bar() -> String
   var x: Int = 0
   /*fun foo(): Int {

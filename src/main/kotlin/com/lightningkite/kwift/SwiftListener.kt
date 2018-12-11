@@ -100,7 +100,7 @@ class SwiftListener(
                     text = "[" + text(KotlinParser.RULE_typeArguments)
                         ?.removePrefix("<")
                         ?.removeSuffix(">")
-                        ?.replace(",", ":") + "]"
+                        ?.replace(",", ":")
                             + "]()"
                 )
             }
@@ -119,7 +119,7 @@ class SwiftListener(
                     text = "[" + text(KotlinParser.RULE_typeArguments)
                         ?.removePrefix("<")
                         ?.removeSuffix(">")
-                        ?.replace(",", ":") + "]"
+                        ?.replace(",", ":")
                             + "]()"
                 )
             }
@@ -243,6 +243,16 @@ class SwiftListener(
 
     override fun enterPackageHeader(ctx: KotlinParser.PackageHeaderContext) {
         currentPackage = ctx.text.substringAfter("package ").removeSuffix(";")
+    }
+
+    override fun exitImportHeader(ctx: KotlinParser.ImportHeaderContext?) {
+        val default = default
+        overridden = default.copy(text = "//${default.text}")
+    }
+
+    override fun exitPackageHeader(ctx: KotlinParser.PackageHeaderContext?) {
+        val default = default
+        overridden = default.copy(text = "//${default.text}")
     }
 
     override fun exitWhenExpression(ctx: KotlinParser.WhenExpressionContext) {
@@ -375,7 +385,7 @@ class SwiftListener(
                 -KotlinParser.COLON -> it.copy(text = "->", spacingBefore = " ")
                 KotlinParser.RULE_modifierList -> {
                     val functionName = text(KotlinParser.RULE_identifier)
-                    val implementsStackSet = implementsStack.lastOrNull()?.toSet() ?: setOf()
+                    val implementsStackSet = currentClass?.implements?.toSet() ?: setOf()
                     val fromInterfaces = interfaces
                         .filter { functionName in it.methods }
                         .filter { it.name in implementsStackSet }
@@ -434,10 +444,22 @@ class SwiftListener(
     }
 
 
-    val implementsStack = ArrayList<List<String>>()
+    class ClassInformation{
+        var implements: List<String> = listOf()
+        val initializers = ArrayList<Section>()
+        val classParameters = ArrayList<ClassParameterData>()
+        var superConstructorCall:Section? = null
+        var body: List<Section> = listOf()
+    }
+    val classStack = ArrayList<ClassInformation>()
+    val currentClass get() = classStack.lastOrNull()
+
+
     override fun enterClassDeclaration(ctx: KotlinParser.ClassDeclarationContext) {
-        implementsStack.add(ctx.delegationSpecifiers()?.delegationSpecifier()?.flatMap {
-            val id = it.userType()?.text?.substringBefore('<') ?: return@flatMap listOf<String>()
+        classStack.add(ClassInformation())
+        currentClass?.implements = (ctx.delegationSpecifiers()?.delegationSpecifier()?.flatMap {
+            val userType = it.userType() ?: it.constructorInvocation()?.userType() ?: return@flatMap listOf<String>()
+            val id = userType.text.substringBefore('<')
             if (id.firstOrNull()?.isLowerCase() == true) {
                 //qualified
                 listOf(id)
@@ -480,10 +502,10 @@ class SwiftListener(
                 }
             }
 
-        val splitIndex = body.indexOfFirst {
+        val splitIndex = currentClass!!.body.indexOfFirst {
             (it.rule == KotlinParser.RULE_classMemberDeclaration && it.text.length > 2) || it.rule == -KotlinParser.RCURL
         }
-        val startMemberSpacing = body.getOrNull(splitIndex)?.let {
+        val startMemberSpacing = currentClass!!.body.getOrNull(splitIndex)?.let {
             if (it.rule == -KotlinParser.RCURL) it.spacingBefore + "    "
             else it.spacingBefore
         }?.let {
@@ -494,7 +516,7 @@ class SwiftListener(
         } ?: "\n    "
         val startMemberSpacingPlus = "$startMemberSpacing    "
 
-        val constructorVariableDeclarations = classParameters
+        val constructorVariableDeclarations = currentClass!!.classParameters
             .asSequence()
             .filter { it.savedAs != null }
             .map {
@@ -504,20 +526,20 @@ class SwiftListener(
                 )
             }
 
-        val swiftPrimaryConstructor = sequenceOf(
+        val swiftPrimaryConstructor = if(get(-KotlinParser.INTERFACE) != null) sequenceOf() else sequenceOf(
             Section(
                 text = "init${primaryConstructor?.text ?: "()"} {\n",
                 spacingBefore = startMemberSpacing
             )
         ) +
-                (if (superConstructorCall == null) sequenceOf<Section>() else sequenceOf<Section>(
+                (if (currentClass!!.superConstructorCall == null) sequenceOf<Section>() else sequenceOf<Section>(
                     Section(
                         text = "super.init",
                         spacingBefore = startMemberSpacingPlus
                     ),
-                    superConstructorCall!!
+                    currentClass!!.superConstructorCall!!
                 )) +
-                classParameters
+                currentClass!!.classParameters
                     .asSequence()
                     .filter { it.savedAs != null }
                     .map {
@@ -526,40 +548,79 @@ class SwiftListener(
                             spacingBefore = startMemberSpacingPlus
                         )
                     } +
-                initializers.asSequence().map { it.copy(it.text.substringAfter('{').substringBeforeLast('}')) } +
+                currentClass!!.initializers.asSequence().map { it.copy(it.text.substringAfter('{').substringBeforeLast('}')) } +
                 Section(
                     text = "}\n",
                     spacingBefore = startMemberSpacing
                 )
-        val bodyPreConstructor = if (body.isEmpty()) {
+        val bodyPreConstructor = if (currentClass!!.body.isEmpty()) {
             sequenceOf(Section("{"))
         } else {
-            body.asSequence().take(splitIndex)
+            currentClass!!.body.asSequence().take(splitIndex)
         }
-        val bodyPostConstructor = if (body.isEmpty()) {
+        val bodyPostConstructor = if (currentClass!!.body.isEmpty()) {
             sequenceOf(Section("}"))
         } else {
-            body.asSequence().drop(splitIndex)
+            currentClass!!.body.asSequence().drop(splitIndex)
         }
 
         overridden = (
                 sequenceOf(modifiers) + header + bodyPreConstructor + constructorVariableDeclarations + swiftPrimaryConstructor + bodyPostConstructor
                 ).joinClean()
 
-        body = listOf()
-        initializers.clear()
-        classParameters.clear()
-        implements.clear()
-        superConstructorCall = null
+        classStack.removeAt(classStack.lastIndex)
     }
 
-    var body: List<Section> = listOf()
+    override fun enterObjectDeclaration(ctx: KotlinParser.ObjectDeclarationContext?) {
+        classStack.add(ClassInformation())
+    }
+
+    override fun exitObjectDeclaration(ctx: KotlinParser.ObjectDeclarationContext) {
+
+        val modifiers = (get(KotlinParser.RULE_modifierList) ?: Section("public ")).let {
+            val text = it.text.let {
+                if (it.contains("private") || it.contains("public"))
+                    it
+                else
+                    "public " + it
+            }.replace("data ", "").replace(" data", "")
+            it.copy(text = text)
+        }
+
+        val header = layers.last().asSequence()
+            .filter {
+                when (it.rule) {
+                    KotlinParser.RULE_modifierList -> false
+                    KotlinParser.RULE_primaryConstructor -> false
+                    else -> true
+                }
+            }.map {
+                when(it.rule){
+                    -KotlinParser.OBJECT -> it.copy(text = "enum")
+                    else -> it
+                }
+            }
+
+        overridden = (
+                sequenceOf(modifiers) + header + currentClass!!.body.map {
+                    when {
+                        it.text.startsWith("func") -> it.copy(text = "static " + it.text)
+                        it.text.startsWith("var") -> it.copy(text = "static " + it.text)
+                        it.text.startsWith("let") -> it.copy(text = "static " + it.text)
+                        else -> it
+                    }
+                }
+                ).joinClean()
+
+        classStack.removeAt(classStack.lastIndex)
+    }
+
+
+
     override fun exitClassBody(ctx: KotlinParser.ClassBodyContext?) {
         overridden = Section("")
-        body = layers.last()
+        currentClass!!.body = layers.last()
     }
-
-    val classParameters = ArrayList<ClassParameterData>()
 
     data class ClassParameterData(val savedAs: String? = null, val name: String, val section: Section)
 
@@ -580,7 +641,7 @@ class SwiftListener(
         }.joinClean()
         overridden = section
 
-        classParameters.add(
+        currentClass!!.classParameters.add(
             ClassParameterData(
                 savedAs = savedAs,
                 name = text(KotlinParser.RULE_simpleIdentifier) ?: "[no name found]",
@@ -593,24 +654,14 @@ class SwiftListener(
         exitClassBody(null)
     }
 
-    var initializers = ArrayList<Section>() //blocks
     override fun exitAnonymousInitializer(ctx: KotlinParser.AnonymousInitializerContext?) {
         overridden = Section("")
-        get(KotlinParser.RULE_block)?.let { initializers.add(it) }
+        get(KotlinParser.RULE_block)?.let { currentClass!!.initializers.add(it) }
     }
 
-    var implements = ArrayList<String>()
-    override fun exitDelegationSpecifier(ctx: KotlinParser.DelegationSpecifierContext?) {
-        val sub = layers.last().first()
-        if (sub.rule != KotlinParser.RULE_constructorInvocation) {
-            implements.add(sub.text.substringBefore('<'))
-        }
-    }
-
-    var superConstructorCall: Section? = null
     override fun exitCallSuffixLambdaless(ctx: KotlinParser.CallSuffixLambdalessContext?) {
         overridden = get(KotlinParser.RULE_typeArguments)
-        superConstructorCall = get(KotlinParser.RULE_valueArguments)
+        currentClass!!.superConstructorCall = get(KotlinParser.RULE_valueArguments)
     }
 
     //Configuration

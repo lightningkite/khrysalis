@@ -1,4 +1,7 @@
 // Simple Interface
+package com.lightningkite.interfaceTest
+
+import com.lightningkite.others.*
 
 interface MyInterface {
   fun bar(): String
