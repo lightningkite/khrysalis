@@ -225,8 +225,9 @@ class SwiftListener(
         terminalRewrites[KotlinParser.MultiLineStrRef] = { "\\(" + it.removePrefix("$") + ")" }
         terminalRewrites[KotlinParser.NullLiteral] = { "nil" }
         terminalRewrites[KotlinParser.TRY] = { "do" }
-        terminalRewrites[KotlinParser.VAL] = { "let" }
+        terminalRewrites[KotlinParser.VAL] = { "var" }
         terminalRewrites[KotlinParser.THIS] = { "self" }
+        terminalRewrites[KotlinParser.INTERFACE] = { "protocol" }
     }
 
     var currentPackage = ""
@@ -444,19 +445,24 @@ class SwiftListener(
     }
 
 
-    class ClassInformation{
+    class ClassInformation {
         var implements: List<String> = listOf()
         val initializers = ArrayList<Section>()
         val classParameters = ArrayList<ClassParameterData>()
-        var superConstructorCall:Section? = null
+        var superConstructorCall: Section? = null
         var body: List<Section> = listOf()
+        var isInterface: Boolean = false
     }
+
     val classStack = ArrayList<ClassInformation>()
     val currentClass get() = classStack.lastOrNull()
 
 
     override fun enterClassDeclaration(ctx: KotlinParser.ClassDeclarationContext) {
         classStack.add(ClassInformation())
+        if (ctx.INTERFACE() != null) {
+            currentClass?.isInterface = true
+        }
         currentClass?.implements = (ctx.delegationSpecifiers()?.delegationSpecifier()?.flatMap {
             val userType = it.userType() ?: it.constructorInvocation()?.userType() ?: return@flatMap listOf<String>()
             val id = userType.text.substringBefore('<')
@@ -526,7 +532,7 @@ class SwiftListener(
                 )
             }
 
-        val swiftPrimaryConstructor = if(get(-KotlinParser.INTERFACE) != null) sequenceOf() else sequenceOf(
+        val swiftPrimaryConstructor = if (get(-KotlinParser.INTERFACE) != null) sequenceOf() else sequenceOf(
             Section(
                 text = "init${primaryConstructor?.text ?: "()"} {\n",
                 spacingBefore = startMemberSpacing
@@ -548,7 +554,13 @@ class SwiftListener(
                             spacingBefore = startMemberSpacingPlus
                         )
                     } +
-                currentClass!!.initializers.asSequence().map { it.copy(it.text.substringAfter('{').substringBeforeLast('}')) } +
+                currentClass!!.initializers.asSequence().map {
+                    it.copy(
+                        it.text.substringAfter('{').substringBeforeLast(
+                            '}'
+                        )
+                    )
+                } +
                 Section(
                     text = "}\n",
                     spacingBefore = startMemberSpacing
@@ -569,6 +581,73 @@ class SwiftListener(
                 ).joinClean()
 
         classStack.removeAt(classStack.lastIndex)
+    }
+
+    override fun exitPropertyDeclaration(ctx: KotlinParser.PropertyDeclarationContext) {
+//        if () {
+//            if () {
+//                val insertAt = current.text.indexOfLast { !it.isWhitespace() } + 1
+//                if (ctx.VAL() != null) {
+//                    current = current.copy(
+//                        text = current.text.substring(
+//                            0,
+//                            insertAt
+//                        ) + " { get }" + current.text.substring(insertAt)
+//                    )
+//                } else {
+//                    current = current.copy(
+//                        text = current.text.substring(
+//                            0,
+//                            insertAt
+//                        ) + " { get set }" + current.text.substring(insertAt)
+//                    )
+//                }
+//            }
+//        }
+        val additionalGetSetNeeded = ctx.parent is KotlinParser.ClassMemberDeclarationContext &&
+                currentClass?.isInterface == true
+                && ctx.getter() == null
+                && ctx.setter() == null
+
+        val preCalc = layers.last().indexOfFirst { it.rule == KotlinParser.RULE_getter || it.rule == KotlinParser.RULE_setter }
+
+        overridden = if(preCalc == -1){
+            if(additionalGetSetNeeded){
+                val default = default
+                val insertAt = default.text.indexOfLast { !it.isWhitespace() } + 1
+                val additionalText = if(ctx.VAL() != null) " { get }" else " { get set }"
+                default.copy(
+                    text = default.text.substring(
+                        0,
+                        insertAt
+                    ) + additionalText + default.text.substring(insertAt)
+                )
+            } else {
+                default
+            }
+        } else {
+            val samplePreWhitespace = (get(KotlinParser.RULE_getter) ?: get(KotlinParser.RULE_setter))?.spacingBefore
+            layers.last()
+                .take(preCalc)
+                .plus(Section("{"))
+                .plus(layers.last().drop(preCalc))
+                .plus(Section("$samplePreWhitespace}"))
+                .joinClean()
+        }
+    }
+
+    override fun exitGetter(ctx: KotlinParser.GetterContext) {
+        overridden = layers.last()
+            .mapNotNull {
+                when (it.rule) {
+                    -KotlinParser.LPAREN -> null
+                    -KotlinParser.RPAREN -> null
+                    -KotlinParser.ASSIGNMENT -> null
+                    KotlinParser.RULE_expression -> it.copy(text = "{ return ${it.text} }")
+                    else -> it
+                }
+            }
+            .joinClean()
     }
 
     override fun enterObjectDeclaration(ctx: KotlinParser.ObjectDeclarationContext?) {
@@ -595,7 +674,7 @@ class SwiftListener(
                     else -> true
                 }
             }.map {
-                when(it.rule){
+                when (it.rule) {
                     -KotlinParser.OBJECT -> it.copy(text = "enum")
                     else -> it
                 }
@@ -616,7 +695,6 @@ class SwiftListener(
     }
 
 
-
     override fun exitClassBody(ctx: KotlinParser.ClassBodyContext?) {
         overridden = Section("")
         currentClass!!.body = layers.last()
@@ -628,11 +706,7 @@ class SwiftListener(
         var savedAs: String? = null
         val section = layers.last().asSequence().filter {
             when {
-                it.rule == -KotlinParser.VAL -> {
-                    savedAs = "let"
-                    false
-                }
-                it.rule == -KotlinParser.VAR -> {
+                it.rule == -KotlinParser.VAL || it.rule == -KotlinParser.VAR -> {
                     savedAs = "var"
                     false
                 }
@@ -662,6 +736,32 @@ class SwiftListener(
     override fun exitCallSuffixLambdaless(ctx: KotlinParser.CallSuffixLambdalessContext?) {
         overridden = get(KotlinParser.RULE_typeArguments)
         currentClass!!.superConstructorCall = get(KotlinParser.RULE_valueArguments)
+    }
+
+    override fun exitLambdaParameters(ctx: KotlinParser.LambdaParametersContext?) {
+        overridden = default.copy(text = "(" + default.text + ")")
+    }
+
+    override fun exitLambdaParameter(ctx: KotlinParser.LambdaParameterContext) {
+        overridden = default.copy(text = ctx.variableDeclaration()?.simpleIdentifier()?.text ?: "BROKEN_PARAM")
+    }
+
+    override fun exitFunctionLiteral(ctx: KotlinParser.FunctionLiteralContext?) {
+        overridden = layers.last().map {
+            when (it.rule) {
+                -KotlinParser.ARROW -> it.copy(text = "in")
+                else -> it
+            }
+        }.joinClean()
+    }
+
+    override fun exitFunctionTypeParameters(ctx: KotlinParser.FunctionTypeParametersContext?) {
+        overridden = layers.last().map {
+            when (it.rule) {
+                KotlinParser.RULE_parameter -> it.copy(text = it.text.substringAfter(":").trim())
+                else -> it
+            }
+        }.joinClean()
     }
 
     //Configuration
@@ -694,6 +794,7 @@ class SwiftListener(
         basicTypeReplacement("Byte", "Int8")
         basicTypeReplacement("Short", "Int16")
         basicTypeReplacement("Long", "Int64")
+        basicTypeReplacement("Unit", "Void")
     }
 
     override fun enterEveryRule(ctx: ParserRuleContext) {

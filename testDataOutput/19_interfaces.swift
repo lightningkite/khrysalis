@@ -3,12 +3,11 @@
 
 //import com.lightningkite.others.*
 
-public interface MyInterface {
+public protocol MyInterface {
   func bar() -> String
-  var x: Int = 0
-  /*fun foo(): Int {
-    return 1
-  }*/
+  var x: Int { get set }
+  var y: String { get }
+  var z: Float{ get { return 0f } }
 }
 
 public class Implementation : MyInterface {
@@ -41,7 +40,7 @@ public class Child: Parent(), MyInterface {
 
       super.init()
   }
-  let five = 5
+  var five = 5
   func six() -> String {
     return "6"
   }
@@ -83,12 +82,12 @@ public class NonAbstractChild: AbstractChild(), MyInterface {
 
 func main(args: [String]) {
   // Simple Interface
-  let obj = Implementation()
+  var obj = Implementation()
   print(obj.foo())
   print(obj.bar())
 
   // Interface + Inheritance
-  let child = Child()
+  var child = Child()
   print(child.foo())
   print(child.bar())
   print(child.three())
@@ -97,7 +96,7 @@ func main(args: [String]) {
   print(child.six())
 
   // Abstract Interface + Inheritance
-  let naChild = NonAbstractChild()
+  var naChild = NonAbstractChild()
   print(naChild.foo())
   print(naChild.bar())
   print(naChild.three())
