@@ -7,10 +7,11 @@ public protocol MyInterface {
   func bar() -> String
   var x: Int { get set }
   var y: String { get }
-  var z: Float{ get { return 0f } }
+  var z: Float { get { return 0f }
+ }
 }
 
-public class Implementation : MyInterface {
+final public class Implementation : MyInterface {
 
   init() {
 
@@ -31,10 +32,15 @@ public open class Parent {
     return 3
   }
 
-  var four = 4
+  var four = 4 {
+    didSet(value){
+      
+      print(value)
+    }
+    }
 }
 
-public class Child: Parent(), MyInterface {
+final public class Child: Parent(), MyInterface {
 
   init() {
 
@@ -69,7 +75,7 @@ public abstract class AbstractChild: Parent() {
     }
 }
 
-public class NonAbstractChild: AbstractChild(), MyInterface {
+final public class NonAbstractChild: AbstractChild(), MyInterface {
 
   init() {
 

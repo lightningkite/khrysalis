@@ -13,6 +13,13 @@ class SwiftListener(
 
     val handleFunctionReplacement = HashMap<String, SwiftListener.() -> Unit>()
 
+    val swiftStart = Regex("/\\* *Swift *Only")
+    val swiftEnd = Regex("End *Swift *Only *\\*/")
+
+    override fun String.whitespaceReplacements(): String = this
+        .replace(swiftEnd, "/* End Swift Only */")
+        .replace(swiftStart, "/* Swift Only */")
+
     init {
         handleFunctionReplacement["listOf"] = {
             val valueArguments = text(KotlinParser.RULE_valueArguments)
@@ -179,18 +186,18 @@ class SwiftListener(
         }
         handleTypeReplacement["List"] = {
             overridden =
-                    default.copy(text = "[" + text(KotlinParser.RULE_typeArguments)?.removePrefix("<")?.removeSuffix(">") + "]()")
+                    default.copy(text = "[" + text(KotlinParser.RULE_typeArguments)?.removePrefix("<")?.removeSuffix(">") + "]")
         }
         handleTypeReplacement["ArrayList"] = {
             overridden =
-                    default.copy(text = "[" + text(KotlinParser.RULE_typeArguments)?.removePrefix("<")?.removeSuffix(">") + "]()")
+                    default.copy(text = "[" + text(KotlinParser.RULE_typeArguments)?.removePrefix("<")?.removeSuffix(">") + "]")
         }
         handleTypeReplacement["Map"] = {
             overridden = default.copy(
                 text = "[" + text(KotlinParser.RULE_typeArguments)?.removePrefix("<")?.removeSuffix(">")?.replace(
                     ",",
                     ":"
-                ) + "]()"
+                ) + "]"
             )
         }
         handleTypeReplacement["HashMap"] = {
@@ -198,7 +205,7 @@ class SwiftListener(
                 text = "[" + text(KotlinParser.RULE_typeArguments)?.removePrefix("<")?.removeSuffix(">")?.replace(
                     ",",
                     ":"
-                ) + "]()"
+                ) + "]"
             )
         }
         handleTypeReplacement["LinkedHashMap"] = {
@@ -206,7 +213,7 @@ class SwiftListener(
                 text = "[" + text(KotlinParser.RULE_typeArguments)?.removePrefix("<")?.removeSuffix(">")?.replace(
                     ",",
                     ":"
-                ) + "]()"
+                ) + "]"
             )
         }
         handleTypeReplacement["LinkedHashMap"] = {
@@ -214,7 +221,7 @@ class SwiftListener(
                 text = "[" + text(KotlinParser.RULE_typeArguments)?.removePrefix("<")?.removeSuffix(">")?.replace(
                     ",",
                     ":"
-                ) + "]()"
+                ) + "]"
             )
         }
     }
@@ -481,10 +488,16 @@ class SwiftListener(
         } ?: listOf())
     }
 
-    override fun exitClassDeclaration(ctx: KotlinParser.ClassDeclarationContext?) {
+    override fun exitClassDeclaration(ctx: KotlinParser.ClassDeclarationContext) {
+        val isSerializable = text(KotlinParser.RULE_delegationSpecifiers)?.contains("Serializable") ?: false
 
         val modifiers = (get(KotlinParser.RULE_modifierList) ?: Section("public ")).let {
             val text = it.text.let {
+                if (it.contains("open") || it.contains("abstract") || (currentClass?.isInterface != false))
+                    it
+                else
+                    "final " + it
+            }.let {
                 if (it.contains("private") || it.contains("public"))
                     it
                 else
@@ -522,9 +535,13 @@ class SwiftListener(
         } ?: "\n    "
         val startMemberSpacingPlus = "$startMemberSpacing    "
 
-        val constructorVariableDeclarations = currentClass!!.classParameters
+        val fields = currentClass!!.classParameters
             .asSequence()
             .filter { it.savedAs != null }
+            .toList()
+
+        val constructorVariableDeclarations = fields
+            .asSequence()
             .map {
                 Section(
                     text = it.savedAs!! + " " + it.section.text.substringBefore("=") + "\n",
@@ -534,7 +551,7 @@ class SwiftListener(
 
         val swiftPrimaryConstructor = if (get(-KotlinParser.INTERFACE) != null) sequenceOf() else sequenceOf(
             Section(
-                text = "init${primaryConstructor?.text ?: "()"} {\n",
+                text = "init${primaryConstructor?.text?.replace("\n", " ") ?: "()"} {\n",
                 spacingBefore = startMemberSpacing
             )
         ) +
@@ -565,6 +582,92 @@ class SwiftListener(
                     text = "}\n",
                     spacingBefore = startMemberSpacing
                 )
+
+
+        val additionalThings = ArrayList<Section>()
+
+        if (isSerializable) {
+            val name = text(KotlinParser.RULE_simpleIdentifier)
+            val mapConstructor = ArrayList<Section>()
+            mapConstructor.add(
+                Section(
+                    text = "public static func fromData(data: Any?) -> $name {\n",
+                    spacingBefore = startMemberSpacing
+                )
+            )
+            mapConstructor.add(
+                Section(
+                    text = "let map = data as! [String: Any?]",
+                    spacingBefore = startMemberSpacingPlus
+                )
+            )
+            mapConstructor.add(
+                Section(
+                    text = "return $name(",
+                    spacingBefore = startMemberSpacingPlus
+                )
+            )
+            fields.forEachIndexed { index, field ->
+                val comma = if (index == fields.lastIndex) "" else ","
+                mapConstructor.add(
+                    Section(
+                        text = "${field.name}: ${field.type}.fromData(data: map[\"${field.name}\"] as Any?)$comma",
+                        spacingBefore = startMemberSpacingPlus + "    "
+                    )
+                )
+            }
+            mapConstructor.add(
+                Section(
+                    text = ")",
+                    spacingBefore = startMemberSpacingPlus
+                )
+            )
+            mapConstructor.add(
+                Section(
+                    text = "}",
+                    spacingBefore = startMemberSpacing
+                )
+            )
+            additionalThings.add(mapConstructor.joinClean())
+
+            val mapWriter = ArrayList<Section>()
+            mapWriter.add(
+                Section(
+                    text = "public func toData() -> Any? {\n",
+                    spacingBefore = startMemberSpacing
+                )
+            )
+            mapWriter.add(
+                Section(
+                    text = "return [",
+                    spacingBefore = startMemberSpacingPlus
+                )
+            )
+            fields.forEachIndexed { index, field ->
+                val comma = if (index == fields.lastIndex) "" else ","
+                mapWriter.add(
+                    Section(
+                        text = "\"${field.name}\": ${field.name}.toData()$comma",
+                        spacingBefore = startMemberSpacingPlus + "    "
+                    )
+                )
+            }
+            mapWriter.add(
+                Section(
+                    text = "]",
+                    spacingBefore = startMemberSpacingPlus
+                )
+            )
+            mapWriter.add(
+                Section(
+                    text = "}\n",
+                    spacingBefore = startMemberSpacing
+                )
+            )
+            additionalThings.add(mapWriter.joinClean())
+        }
+
+
         val bodyPreConstructor = if (currentClass!!.body.isEmpty()) {
             sequenceOf(Section("{"))
         } else {
@@ -577,77 +680,10 @@ class SwiftListener(
         }
 
         overridden = (
-                sequenceOf(modifiers) + header + bodyPreConstructor + constructorVariableDeclarations + swiftPrimaryConstructor + bodyPostConstructor
+                sequenceOf(modifiers) + header + bodyPreConstructor + constructorVariableDeclarations + swiftPrimaryConstructor + additionalThings + bodyPostConstructor
                 ).joinClean()
 
         classStack.removeAt(classStack.lastIndex)
-    }
-
-    override fun exitPropertyDeclaration(ctx: KotlinParser.PropertyDeclarationContext) {
-//        if () {
-//            if () {
-//                val insertAt = current.text.indexOfLast { !it.isWhitespace() } + 1
-//                if (ctx.VAL() != null) {
-//                    current = current.copy(
-//                        text = current.text.substring(
-//                            0,
-//                            insertAt
-//                        ) + " { get }" + current.text.substring(insertAt)
-//                    )
-//                } else {
-//                    current = current.copy(
-//                        text = current.text.substring(
-//                            0,
-//                            insertAt
-//                        ) + " { get set }" + current.text.substring(insertAt)
-//                    )
-//                }
-//            }
-//        }
-        val additionalGetSetNeeded = ctx.parent is KotlinParser.ClassMemberDeclarationContext &&
-                currentClass?.isInterface == true
-                && ctx.getter() == null
-                && ctx.setter() == null
-
-        val preCalc = layers.last().indexOfFirst { it.rule == KotlinParser.RULE_getter || it.rule == KotlinParser.RULE_setter }
-
-        overridden = if(preCalc == -1){
-            if(additionalGetSetNeeded){
-                val default = default
-                val insertAt = default.text.indexOfLast { !it.isWhitespace() } + 1
-                val additionalText = if(ctx.VAL() != null) " { get }" else " { get set }"
-                default.copy(
-                    text = default.text.substring(
-                        0,
-                        insertAt
-                    ) + additionalText + default.text.substring(insertAt)
-                )
-            } else {
-                default
-            }
-        } else {
-            val samplePreWhitespace = (get(KotlinParser.RULE_getter) ?: get(KotlinParser.RULE_setter))?.spacingBefore
-            layers.last()
-                .take(preCalc)
-                .plus(Section("{"))
-                .plus(layers.last().drop(preCalc))
-                .plus(Section("$samplePreWhitespace}"))
-                .joinClean()
-        }
-    }
-
-    override fun exitGetter(ctx: KotlinParser.GetterContext) {
-        overridden = layers.last()
-            .mapNotNull {
-                when (it.rule) {
-                    -KotlinParser.LPAREN -> null
-                    -KotlinParser.RPAREN -> null
-                    -KotlinParser.ASSIGNMENT -> null
-                    KotlinParser.RULE_expression -> it.copy(text = "{ return ${it.text} }")
-                    else -> it
-                }
-            }
-            .joinClean()
     }
 
     override fun enterObjectDeclaration(ctx: KotlinParser.ObjectDeclarationContext?) {
@@ -700,17 +736,31 @@ class SwiftListener(
         currentClass!!.body = layers.last()
     }
 
-    data class ClassParameterData(val savedAs: String? = null, val name: String, val section: Section)
+    data class ClassParameterData(val savedAs: String? = null, val name: String, val section: Section, val type: String)
 
     override fun exitClassParameter(ctx: KotlinParser.ClassParameterContext?) {
+        var escaping = false
         var savedAs: String? = null
-        val section = layers.last().asSequence().filter {
-            when {
-                it.rule == -KotlinParser.VAL || it.rule == -KotlinParser.VAR -> {
+        var typeText = "MISSED_TYPE"
+        val section = layers.last().asSequence().mapNotNull {
+            when (it.rule) {
+                -KotlinParser.VAL, -KotlinParser.VAR -> {
                     savedAs = "var"
-                    false
+                    null
                 }
-                else -> true
+                KotlinParser.RULE_modifierList -> {
+                    escaping = it.text.contains("@escaping")
+                    it.copy(text = it.text.replace("@escaping", "").trim())
+                }
+                KotlinParser.RULE_type -> {
+                    typeText = it.text
+                    if (escaping) {
+                        it.copy(text = "@escaping " + it.text)
+                    } else {
+                        it
+                    }
+                }
+                else -> it
             }
         }.joinClean()
         overridden = section
@@ -719,7 +769,8 @@ class SwiftListener(
             ClassParameterData(
                 savedAs = savedAs,
                 name = text(KotlinParser.RULE_simpleIdentifier) ?: "[no name found]",
-                section = section
+                section = section.copy(text = section.text.replace("@escaping", "").trim()),
+                type = typeText
             )
         )
     }
@@ -755,6 +806,79 @@ class SwiftListener(
         }.joinClean()
     }
 
+    var propertyIsBacked = false
+    override fun enterPropertyDeclaration(ctx: KotlinParser.PropertyDeclarationContext) {
+        propertyIsBacked = ctx.ASSIGNMENT() != null
+    }
+
+    override fun exitPropertyDeclaration(ctx: KotlinParser.PropertyDeclarationContext) {
+        val additionalGetSetNeeded = ctx.parent is KotlinParser.ClassMemberDeclarationContext &&
+                currentClass?.isInterface == true
+                && ctx.getter() == null
+                && ctx.setter() == null
+
+        val firstCalculationIndex =
+            layers.last().indexOfFirst { it.rule == KotlinParser.RULE_getter || it.rule == KotlinParser.RULE_setter }
+        val preCalculationTextIndex = if (firstCalculationIndex == -1) -1 else
+            layers.last().subList(0, firstCalculationIndex).indexOfLast { !it.text.isBlank() } + 1
+
+        overridden = if (firstCalculationIndex == -1) {
+            if (additionalGetSetNeeded) {
+                val default = default
+                val insertAt = default.text.indexOfLast { !it.isWhitespace() } + 1
+                val additionalText = if (ctx.VAL() != null) " { get }" else " { get set }"
+                default.copy(
+                    text = default.text.substring(
+                        0,
+                        insertAt
+                    ) + additionalText + default.text.substring(insertAt)
+                )
+            } else {
+                default
+            }
+        } else {
+            val samplePreWhitespace =
+                (get(KotlinParser.RULE_getter) ?: get(KotlinParser.RULE_setter))?.spacingBefore ?: "\n    "
+            layers.last()
+                .asSequence()
+                .take(preCalculationTextIndex)
+                .plus(Section("{", spacingBefore = " "))
+                .plus(layers.last().drop(preCalculationTextIndex))
+                .plus(Section("}", spacingBefore = "\n" + samplePreWhitespace))
+                .joinClean()
+        }
+    }
+
+    override fun exitGetter(ctx: KotlinParser.GetterContext) {
+        overridden = layers.last()
+            .mapNotNull {
+                when (it.rule) {
+                    -KotlinParser.GETTER -> if (propertyIsBacked) it.copy(text = "didGet") else it
+                    -KotlinParser.LPAREN -> null
+                    -KotlinParser.RPAREN -> null
+                    -KotlinParser.ASSIGNMENT -> null
+                    KotlinParser.RULE_expression -> it.copy(text = "{ return ${it.text} }")
+                    else -> it
+                }
+            }
+            .joinClean()
+    }
+
+    override fun exitSetter(ctx: KotlinParser.SetterContext) {
+        val propName = ctx.simpleIdentifier()?.text ?: ctx.parameter()?.simpleIdentifier()?.text
+        overridden = layers.last()
+            .map {
+                when (it.rule) {
+                    -KotlinParser.SETTER -> if (propertyIsBacked) it.copy(text = "didSet") else it
+                    KotlinParser.RULE_functionBody -> it.copy(
+                        text = it.text.replace(Regex("field += +$propName"), "")
+                    )
+                    else -> it
+                }
+            }
+            .joinClean()
+    }
+
     override fun exitFunctionTypeParameters(ctx: KotlinParser.FunctionTypeParametersContext?) {
         overridden = layers.last().map {
             when (it.rule) {
@@ -786,6 +910,30 @@ class SwiftListener(
                 }
             }.joinClean()
         }
+    }
+
+    override fun exitCallableReference(ctx: KotlinParser.CallableReferenceContext) {
+        overridden = Section(text = "type(of: " + ctx.userType().text + ".self)", spacingBefore = default.spacingBefore)
+    }
+
+    override fun exitFunctionValueParameter(ctx: KotlinParser.FunctionValueParameterContext) {
+        var escaping = false
+        overridden = layers.last().map {
+            when (it.rule) {
+                KotlinParser.RULE_modifierList -> {
+                    escaping = it.text.contains("@escaping")
+                    it.copy(text = it.text.replace("@escaping", "").trim())
+                }
+                KotlinParser.RULE_parameter -> {
+                    if (escaping) {
+                        it.copy(text = it.text.substringBefore(':') + ": @escaping" + it.text.substringAfter(':'))
+                    } else {
+                        it
+                    }
+                }
+                else -> it
+            }
+        }.joinClean()
     }
 
     init {

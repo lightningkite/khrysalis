@@ -24,6 +24,10 @@ open class Parent {
   }
 
   var four = 4
+    set(value){
+      field = value
+      println(value)
+    }
 }
 
 class Child: Parent(), MyInterface {

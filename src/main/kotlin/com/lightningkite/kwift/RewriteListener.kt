@@ -34,13 +34,20 @@ open class RewriteListener(val tokenStream: CommonTokenStream, val parser: Kotli
         layers.add(ArrayList())
     }
 
+    open fun String.whitespaceReplacements(): String {
+        return this
+    }
+
+    var generateCommentTokens = false
+
     override fun visitTerminal(node: TerminalNode) {
+
         layers.last().add(
             Section(
                 rule = -node.symbol.type,
                 text = terminalRewrites[node.symbol.type]?.invoke(node.text) ?: node.text,
                 spacingBefore = tokenStream.getHiddenTokensToLeft(node.symbol.tokenIndex)
-                    ?.joinToString("") { it.text } ?: ""
+                    ?.joinToString("") { it.text }?.whitespaceReplacements() ?: ""
             )
         )
         lastPosition = node.symbol.tokenIndex

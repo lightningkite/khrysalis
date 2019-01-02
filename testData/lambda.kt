@@ -12,3 +12,10 @@ fun lambdaTest() {
 fun takesLambda(lambda: (integer: Int, someValue: String) -> Unit) {
 
 }
+
+fun takesEscapingLambda(@escaping lambda: (integer: Int, someValue: String) -> Unit) {
+
+}
+
+class ConstructorHasEscaping(@escaping val lambda: (integer: Int, someValue: String) -> Unit) {
+}

@@ -1,6 +1,7 @@
 package com.lightningkite.kwift
 
 import org.antlr.v4.runtime.ANTLRFileStream
+import org.antlr.v4.runtime.ANTLRInputStream
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.tree.ParseTreeWalker
 import org.jetbrains.kotlin.KotlinLexer
@@ -18,7 +19,7 @@ fun kwiftTask(directory: File, outputDirectory: File) {
         .filter { it.extension == "kt" }
         .forEach { file ->
             println("File: $file")
-            val lexer = KotlinLexer(ANTLRFileStream(file.toString()))
+            val lexer = KotlinLexer(ANTLRInputStream(file.readText().ignoreKotlinOnly()))
             val tokenStream = CommonTokenStream(lexer)
             val parser = KotlinParser(tokenStream)
 
@@ -34,7 +35,7 @@ fun kwiftTask(directory: File, outputDirectory: File) {
         .filter { it.extension == "kt" }
         .forEach { file ->
             println("File: $file")
-            val lexer = KotlinLexer(ANTLRFileStream(file.toString()))
+            val lexer = KotlinLexer(ANTLRInputStream(file.readText().ignoreKotlinOnly()))
             val tokenStream = CommonTokenStream(lexer)
             val parser = KotlinParser(tokenStream)
 
