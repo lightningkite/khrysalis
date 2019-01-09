@@ -611,7 +611,7 @@ class SwiftListener(
                 val comma = if (index == fields.lastIndex) "" else ","
                 mapConstructor.add(
                     Section(
-                        text = "${field.name}: ${field.type}.fromData(data: map[\"${field.name}\"] as Any?)$comma",
+                        text = "${field.name}: ${field.type}.fromData(data: map[\"${field.name.snakeCase()}\"] as Any?)$comma",
                         spacingBefore = startMemberSpacingPlus + "    "
                     )
                 )
@@ -647,7 +647,7 @@ class SwiftListener(
                 val comma = if (index == fields.lastIndex) "" else ","
                 mapWriter.add(
                     Section(
-                        text = "\"${field.name}\": ${field.name}.toData()$comma",
+                        text = "\"${field.name.snakeCase()}\": ${field.name}.toData()$comma",
                         spacingBefore = startMemberSpacingPlus + "    "
                     )
                 )
@@ -959,4 +959,6 @@ class SwiftListener(
         super.exitEveryRule(ctx)
 //        println("Exiting ${ctx.ruleIndex}, text: (${ctx.text})")
     }
+
+    private fun String.snakeCase(): String = this.replace(Regex("[A-Z]+")){ "_" + it.value.toLowerCase() }.trim('_')
 }

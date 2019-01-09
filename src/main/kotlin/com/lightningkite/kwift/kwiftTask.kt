@@ -48,6 +48,7 @@ fun kwiftTask(directory: File, outputDirectory: File) {
                     .removeSuffix("kt")
                     .plus("swift")
             )
+            output.parentFile.mkdirs()
             output.writeText(listener.layers.last().last().toOutputString())
         }
 
