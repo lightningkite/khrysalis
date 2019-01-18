@@ -448,11 +448,11 @@ parenthesizedExpression
 
 literalConstant
     : BooleanLiteral
+    | RealLiteral
     | IntegerLiteral
     | HexLiteral
     | BinLiteral
     | CharacterLiteral
-    | RealLiteral
     | NullLiteral
     | LongLiteral
     ;

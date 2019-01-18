@@ -1,31 +1,26 @@
-enumenumenumclassclassclassMyEnumMyEnumMyEnum{{{
+import Foundation
+//package test
 
+public enum MyEnum {
+  case VALUE1, VALUE2, VALUE3
 
-VALUE1VALUE1VALUE1,,,VALUE2VALUE2VALUE2,,,VALUE3VALUE3VALUE3
+    init() {
 
+    }
+}
 
-}}}
+public enum AnotherEnum {
+  case VAL1, // A comment
+  VAL2, // Also a comment
+  VAL3 // Another comment
 
+    init() {
 
+    }
+}
 
+public enum SingleLine { case VALUE1, VALUE2
+     init() {
 
-
-enumenumenumclassclassclassAnotherEnumAnotherEnumAnotherEnum{{{
-
-
-VAL1VAL1VAL1,,,// A comment
-
-
-VAL2VAL2VAL2,,,// Also a comment
-
-
-VAL3VAL3VAL3// Another comment
-
-
-}}}
-
-
-
-
-
-enumenumenumclassclassclassSingleLineSingleLineSingleLine{{{VALUE1VALUE1VALUE1,,,VALUE2VALUE2VALUE2}}}<EOF>
+     }
+ }

@@ -396,9 +396,9 @@ class SwiftListener(
                     val implementsStackSet = currentClass?.implements?.toSet() ?: setOf()
                     val fromInterfaces = interfaces
                         .filter { functionName in it.methods }
-                        .filter { it.name in implementsStackSet }
+                        .filter { it.qualifiedName in implementsStackSet }
                     if (fromInterfaces.isNotEmpty()) {
-                        it.copy(text = it.text.replace("override", "").replace("  ", " "))
+                        it.copy(text = it.text.replace("override", "public"))
                     } else it
                 }
                 else -> it
@@ -465,6 +465,8 @@ class SwiftListener(
     val currentClass get() = classStack.lastOrNull()
 
 
+
+
     override fun enterClassDeclaration(ctx: KotlinParser.ClassDeclarationContext) {
         classStack.add(ClassInformation())
         if (ctx.INTERFACE() != null) {
@@ -493,7 +495,7 @@ class SwiftListener(
 
         val modifiers = (get(KotlinParser.RULE_modifierList) ?: Section("public ")).let {
             val text = it.text.let {
-                if (it.contains("open") || it.contains("abstract") || (currentClass?.isInterface != false))
+                if (it.contains("open") || it.contains("enum") || it.contains("abstract") || (currentClass?.isInterface != false))
                     it
                 else
                     "final " + it
@@ -513,11 +515,12 @@ class SwiftListener(
                     .indexOfFirst { it.rule == KotlinParser.RULE_classBody || it.rule == KotlinParser.RULE_enumClassBody }
                     .let { if (it == -1) layers.last().size else it }
             )
-            .filter {
+            .mapNotNull {
                 when (it.rule) {
-                    KotlinParser.RULE_modifierList -> false
-                    KotlinParser.RULE_primaryConstructor -> false
-                    else -> true
+                    KotlinParser.RULE_modifierList -> null
+                    KotlinParser.RULE_primaryConstructor -> null
+                    -KotlinParser.CLASS -> if(ctx.enumClassBody() != null) null else it
+                    else -> it
                 }
             }
 
@@ -822,19 +825,15 @@ class SwiftListener(
         val preCalculationTextIndex = if (firstCalculationIndex == -1) -1 else
             layers.last().subList(0, firstCalculationIndex).indexOfLast { !it.text.isBlank() } + 1
 
-        overridden = if (firstCalculationIndex == -1) {
+        val preJoin:Sequence<Section> = if (firstCalculationIndex == -1) {
             if (additionalGetSetNeeded) {
-                val default = default
-                val insertAt = default.text.indexOfLast { !it.isWhitespace() } + 1
-                val additionalText = if (ctx.VAL() != null) " { get }" else " { get set }"
-                default.copy(
-                    text = default.text.substring(
-                        0,
-                        insertAt
-                    ) + additionalText + default.text.substring(insertAt)
-                )
+                layers.last().asSequence()
+                    .plus(Section(
+                        text = if (ctx.VAL() != null) " { get }" else " { get set }",
+                        spacingBefore = " "
+                    ))
             } else {
-                default
+                layers.last().asSequence()
             }
         } else {
             val samplePreWhitespace =
@@ -845,8 +844,23 @@ class SwiftListener(
                 .plus(Section("{", spacingBefore = " "))
                 .plus(layers.last().drop(preCalculationTextIndex))
                 .plus(Section("}", spacingBefore = "\n" + samplePreWhitespace))
-                .joinClean()
         }
+
+        overridden = preJoin.map {
+            when(it.rule){
+                KotlinParser.RULE_modifierList -> {
+                    val functionName = text(KotlinParser.RULE_variableDeclaration)?.substringBefore(':')?.trim()
+                    val implementsStackSet = currentClass?.implements?.toSet() ?: setOf()
+                    val fromInterfaces = interfaces
+                        .filter { functionName in it.properties }
+                        .filter { it.qualifiedName in implementsStackSet }
+                    if (fromInterfaces.isNotEmpty()) {
+                        it.copy(text = it.text.replace("override", "public"))
+                    } else it
+                }
+                else -> it
+            }
+        }.joinClean()
     }
 
     override fun exitGetter(ctx: KotlinParser.GetterContext) {
@@ -934,6 +948,11 @@ class SwiftListener(
                 else -> it
             }
         }.joinClean()
+    }
+
+    override fun exitEnumEntries(ctx: KotlinParser.EnumEntriesContext?) {
+        val default = default
+        overridden = default.copy(text = "case " + default.text)
     }
 
     init {

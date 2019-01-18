@@ -184,8 +184,8 @@ FloatLiteral
     ;
 
 DoubleLiteral
-    : ( (DecDigitNoZero DecDigit*)? '.'
-      | (DecDigitNoZero (DecDigit | '_')* DecDigit)? '.')
+    : ( (DecDigit DecDigit*)? '.'
+      | (DecDigit (DecDigit | '_')* DecDigit)? '.')
      ( DecDigit+
       | DecDigit (DecDigit | '_')+ DecDigit
       | DecDigit+ [eE] ('+' | '-')? DecDigit+

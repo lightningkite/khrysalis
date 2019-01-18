@@ -15,7 +15,9 @@ open class InterfaceListener(val parser: KotlinParser) : KotlinParserBaseListene
         val methods: List<String>,
         val properties: List<String>,
         val implements: List<String>
-    )
+    ){
+        val qualifiedName get() = packageName + "." + name
+    }
 
     val interfaces = ArrayList<InterfaceData>()
     var currentPackage = ""
@@ -31,7 +33,7 @@ open class InterfaceListener(val parser: KotlinParser) : KotlinParserBaseListene
     }
 
     override fun enterPackageHeader(ctx: KotlinParser.PackageHeaderContext) {
-        currentPackage = ctx.text.substringAfter("package ").removeSuffix(";")
+        currentPackage = ctx.identifier().text
     }
 
     override fun enterClassDeclaration(ctx: KotlinParser.ClassDeclarationContext) {

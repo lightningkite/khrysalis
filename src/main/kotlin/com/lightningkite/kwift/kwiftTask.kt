@@ -12,6 +12,9 @@ import java.util.jar.JarFile
 
 
 fun kwiftTask(directory: File, outputDirectory: File) {
+    if(outputDirectory.exists()) {
+        outputDirectory.deleteRecursively()
+    }
     outputDirectory.mkdirs()
     val interfaces = ArrayList<InterfaceListener.InterfaceData>()
 
@@ -49,7 +52,7 @@ fun kwiftTask(directory: File, outputDirectory: File) {
                     .plus("swift")
             )
             output.parentFile.mkdirs()
-            output.writeText(listener.layers.last().last().toOutputString())
+            output.writeText("import Foundation\n" + listener.layers.last().last().toOutputString())
         }
 
 }
