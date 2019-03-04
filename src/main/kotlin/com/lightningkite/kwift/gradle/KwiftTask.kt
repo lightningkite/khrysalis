@@ -2,13 +2,11 @@ package com.lightningkite.kwift.gradle
 
 import com.lightningkite.kwift.kwiftTask
 import org.gradle.api.DefaultTask
-import org.gradle.api.Project
 import org.gradle.api.tasks.TaskAction
 import java.io.File
 
 open class KwiftTask : DefaultTask() {
-    var inputDirectory: File? = null
-    var outputDirectory: File? = null
+    var directoryPairs: List<Pair<File, File>>? = null
 
     init {
         group = "build"
@@ -17,14 +15,17 @@ open class KwiftTask : DefaultTask() {
     @TaskAction
     fun writeReflectiveFiles() {
 
-        val inputDirectory: File = inputDirectory ?: project.extensions.findByName("kwift")?.let{ it as? KwiftPluginExtension }?.inputDirectory ?: File("src")
-        val outputDirectory: File = outputDirectory ?: project.extensions.findByName("kwift")?.let{ it as? KwiftPluginExtension }?.outputDirectory ?: File("build/swift")
+        val pairs = directoryPairs ?: project.extensions.findByName("kwift")
+            ?.let{ it as? KwiftPluginExtension }
+            ?.directoryPairs
+            ?.map { project.file(it[0]) to project.file(it[1]) }
 
-        println("Kwift - input: $inputDirectory, output: $outputDirectory")
-        kwiftTask(
-            directory = inputDirectory,
-            outputDirectory = outputDirectory
-        )
+        if(pairs != null){
+            println("Kwift - pairs: $pairs")
+            kwiftTask(pairs)
+        } else {
+            println("Kwift - No pairs of directories found, skipping")
+        }
     }
 
 }

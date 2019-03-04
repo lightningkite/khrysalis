@@ -11,48 +11,54 @@ import java.io.File
 import java.util.jar.JarFile
 
 
-fun kwiftTask(directory: File, outputDirectory: File) {
-    if(outputDirectory.exists()) {
-        outputDirectory.deleteRecursively()
+fun kwiftTask(pairs: List<Pair<File, File>>) {
+    for ((_, outputDirectory) in pairs) {
+        if (outputDirectory.exists()) {
+            outputDirectory.deleteRecursively()
+        }
+        outputDirectory.mkdirs()
     }
-    outputDirectory.mkdirs()
     val interfaces = ArrayList<InterfaceListener.InterfaceData>()
 
-    directory.walkTopDown()
-        .filter { it.extension == "kt" }
-        .forEach { file ->
-            println("File: $file")
-            val lexer = KotlinLexer(ANTLRInputStream(file.readText().ignoreKotlinOnly()))
-            val tokenStream = CommonTokenStream(lexer)
-            val parser = KotlinParser(tokenStream)
+    pairs.forEach {
+        it.first.walkTopDown()
+            .filter { it.extension == "kt" }
+            .forEach { file ->
+                println("File: $file")
+                val lexer = KotlinLexer(ANTLRInputStream(file.readText().ignoreKotlinOnly()))
+                val tokenStream = CommonTokenStream(lexer)
+                val parser = KotlinParser(tokenStream)
 
-            val listener = InterfaceListener(parser)
-            ParseTreeWalker.DEFAULT.walk(listener, parser.kotlinFile())
+                val listener = InterfaceListener(parser)
+                ParseTreeWalker.DEFAULT.walk(listener, parser.kotlinFile())
 
-            interfaces += listener.interfaces
-        }
+                interfaces += listener.interfaces
+            }
+    }
 
     println("Interfaces: ${interfaces.joinToString("\n")}")
 
-    directory.walkTopDown()
-        .filter { it.extension == "kt" }
-        .forEach { file ->
-            println("File: $file")
-            val lexer = KotlinLexer(ANTLRInputStream(file.readText().ignoreKotlinOnly()))
-            val tokenStream = CommonTokenStream(lexer)
-            val parser = KotlinParser(tokenStream)
+    pairs.forEach { (directory, outputDirectory) ->
+        directory.walkTopDown()
+            .filter { it.extension == "kt" }
+            .forEach { file ->
+                println("File: $file")
+                val lexer = KotlinLexer(ANTLRInputStream(file.readText().ignoreKotlinOnly()))
+                val tokenStream = CommonTokenStream(lexer)
+                val parser = KotlinParser(tokenStream)
 
-            val listener = SwiftListener(tokenStream, parser, interfaces)
-            ParseTreeWalker.DEFAULT.walk(listener, parser.kotlinFile())
+                val listener = SwiftListener(tokenStream, parser, interfaces)
+                ParseTreeWalker.DEFAULT.walk(listener, parser.kotlinFile())
 
-            val output = File(
-                outputDirectory.resolve(file.relativeTo(directory))
-                    .toString()
-                    .removeSuffix("kt")
-                    .plus("swift")
-            )
-            output.parentFile.mkdirs()
-            output.writeText("import Foundation\n" + listener.layers.last().last().toOutputString())
-        }
+                val output = File(
+                    outputDirectory.resolve(file.relativeTo(directory))
+                        .toString()
+                        .removeSuffix("kt")
+                        .plus("swift")
+                )
+                output.parentFile.mkdirs()
+                output.writeText("import Foundation\n" + listener.layers.last().last().toOutputString())
+            }
 
+    }
 }

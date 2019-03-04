@@ -955,6 +955,19 @@ class SwiftListener(
         overridden = default.copy(text = "case " + default.text)
     }
 
+    override fun exitDotQualifiedExpression(ctx: KotlinParser.DotQualifiedExpressionContext) {
+        val default = default
+        val text = default.text.trim()
+        if(text.startsWith("R.string.")){
+            overridden = Section(
+                text = "\"" + text.removePrefix("R.string.") + "\"",
+                spacingBefore = default.spacingBefore
+            )
+        }
+    }
+
+
+
     init {
         basicFunctionReplacement("println", "print")
         basicTypeReplacement("Boolean", "Bool")
