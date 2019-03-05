@@ -12,7 +12,8 @@ import java.util.jar.JarFile
 
 
 fun kwiftTask(pairs: List<Pair<File, File>>) {
-    for ((_, outputDirectory) in pairs) {
+    for ((inputDirectory, outputDirectory) in pairs) {
+        println("Input directory $inputDirectory exists: ${inputDirectory.exists()}")
         if (outputDirectory.exists()) {
             outputDirectory.deleteRecursively()
         }
@@ -57,7 +58,7 @@ fun kwiftTask(pairs: List<Pair<File, File>>) {
                         .plus("swift")
                 )
                 output.parentFile.mkdirs()
-                output.writeText("import Foundation\n" + listener.layers.last().last().toOutputString())
+                output.writeText("import Foundation\n" + listener.layers.last().last().toOutputString().retabSwift())
             }
 
     }

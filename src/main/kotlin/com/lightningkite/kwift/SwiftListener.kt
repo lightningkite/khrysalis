@@ -39,6 +39,11 @@ class SwiftListener(
                 )
             }
         }
+        handleFunctionReplacement["isEmpty"] = {
+            overridden = default.copy(
+                text = text(KotlinParser.RULE_assignableExpression)!!
+            )
+        }
         handleFunctionReplacement["arrayOf"] = {
             val valueArguments = text(KotlinParser.RULE_valueArguments)
             if (valueArguments != null && valueArguments.length > 2) {
@@ -133,15 +138,15 @@ class SwiftListener(
         }
         handleFunctionReplacement["Array"] = {
             overridden =
-                    default.copy(text = "[" + text(KotlinParser.RULE_typeArguments)?.removePrefix("<")?.removeSuffix(">") + "]()")
+                default.copy(text = "[" + text(KotlinParser.RULE_typeArguments)?.removePrefix("<")?.removeSuffix(">") + "]()")
         }
         handleFunctionReplacement["List"] = {
             overridden =
-                    default.copy(text = "[" + text(KotlinParser.RULE_typeArguments)?.removePrefix("<")?.removeSuffix(">") + "]()")
+                default.copy(text = "[" + text(KotlinParser.RULE_typeArguments)?.removePrefix("<")?.removeSuffix(">") + "]()")
         }
         handleFunctionReplacement["ArrayList"] = {
             overridden =
-                    default.copy(text = "[" + text(KotlinParser.RULE_typeArguments)?.removePrefix("<")?.removeSuffix(">") + "]()")
+                default.copy(text = "[" + text(KotlinParser.RULE_typeArguments)?.removePrefix("<")?.removeSuffix(">") + "]()")
         }
         handleFunctionReplacement["Map"] = {
             overridden = default.copy(
@@ -182,15 +187,15 @@ class SwiftListener(
     init {
         handleTypeReplacement["Array"] = {
             overridden =
-                    default.copy(text = "[" + text(KotlinParser.RULE_typeArguments)?.removePrefix("<")?.removeSuffix(">") + "]")
+                default.copy(text = "[" + text(KotlinParser.RULE_typeArguments)?.removePrefix("<")?.removeSuffix(">") + "]")
         }
         handleTypeReplacement["List"] = {
             overridden =
-                    default.copy(text = "[" + text(KotlinParser.RULE_typeArguments)?.removePrefix("<")?.removeSuffix(">") + "]")
+                default.copy(text = "[" + text(KotlinParser.RULE_typeArguments)?.removePrefix("<")?.removeSuffix(">") + "]")
         }
         handleTypeReplacement["ArrayList"] = {
             overridden =
-                    default.copy(text = "[" + text(KotlinParser.RULE_typeArguments)?.removePrefix("<")?.removeSuffix(">") + "]")
+                default.copy(text = "[" + text(KotlinParser.RULE_typeArguments)?.removePrefix("<")?.removeSuffix(">") + "]")
         }
         handleTypeReplacement["Map"] = {
             overridden = default.copy(
@@ -250,7 +255,7 @@ class SwiftListener(
     }
 
     override fun enterPackageHeader(ctx: KotlinParser.PackageHeaderContext) {
-        currentPackage = ctx.text.substringAfter("package ").removeSuffix(";")
+        currentPackage = ctx.text.removePrefix("package").removeSuffix(";").trim()
     }
 
     override fun exitImportHeader(ctx: KotlinParser.ImportHeaderContext?) {
@@ -287,9 +292,9 @@ class SwiftListener(
             .joinClean()
             .copy(spacingBefore = "")
         if (condition.text.contains("else")) {
-            overridden = default.copy(text = "default: ${body.toOutputString()}\n")
+            overridden = default.copy(text = "default: ${body.toOutputString()}")
         } else {
-            overridden = default.copy(text = "case ${condition.toOutputString()}: ${body.toOutputString()}\n")
+            overridden = default.copy(text = "case ${condition.toOutputString()}: ${body.toOutputString()}")
         }
     }
 
@@ -387,7 +392,7 @@ class SwiftListener(
     }
 
     override fun exitFunctionDeclaration(ctx: KotlinParser.FunctionDeclarationContext) {
-        overridden = layers.last().asSequence().map {
+        val mainSeq = layers.last().asSequence().map {
             when (it.rule) {
                 -KotlinParser.FUN -> it.copy(text = "func")
                 -KotlinParser.COLON -> it.copy(text = "->", spacingBefore = " ")
@@ -403,7 +408,37 @@ class SwiftListener(
                 }
                 else -> it
             }
-        }.joinClean()
+        }
+        val fvps = ctx.functionValueParameters().functionValueParameter()
+        if (fvps.isEmpty() || (fvps.size == 1 && fvps.first().parameter().type().functionType() != null)) {
+            overridden = mainSeq.joinClean()
+        } else {
+            val secondarySeq = mainSeq.map {
+                when (it.rule) {
+                    KotlinParser.RULE_functionValueParameters -> {
+                        lastFunctionValueParameters!!.map {
+                            if(it.rule == KotlinParser.RULE_functionValueParameter) {
+                                it.copy(text = "_ " + it.text)
+                            } else {
+                                it
+                            }
+                        }.joinClean()
+                    }
+                    KotlinParser.RULE_functionBody -> {
+                        it.copy(text = "{ ${ctx.identifier().text}(${ctx.functionValueParameters().functionValueParameter().joinToString {
+                            "${it.parameter().simpleIdentifier().text}: ${it.parameter().simpleIdentifier().text}"
+                        }}) }")
+                    }
+                    else -> it
+                }
+            }
+            overridden = (mainSeq + Section("", spacingBefore = "\n") + secondarySeq).joinClean()
+        }
+    }
+
+    var lastFunctionValueParameters: List<Section>? = null
+    override fun exitFunctionValueParameters(ctx: KotlinParser.FunctionValueParametersContext?) {
+        lastFunctionValueParameters = this.layers.last()
     }
 
     override fun exitSimpleUserType(ctx: KotlinParser.SimpleUserTypeContext?) {
@@ -452,7 +487,7 @@ class SwiftListener(
     }
 
 
-    class ClassInformation {
+    class ClassInformation(var name: String = "") {
         var implements: List<String> = listOf()
         val initializers = ArrayList<Section>()
         val classParameters = ArrayList<ClassParameterData>()
@@ -465,10 +500,8 @@ class SwiftListener(
     val currentClass get() = classStack.lastOrNull()
 
 
-
-
     override fun enterClassDeclaration(ctx: KotlinParser.ClassDeclarationContext) {
-        classStack.add(ClassInformation())
+        classStack.add(ClassInformation(ctx.simpleIdentifier().text))
         if (ctx.INTERFACE() != null) {
             currentClass?.isInterface = true
         }
@@ -485,7 +518,7 @@ class SwiftListener(
                     it.endsWith('*')
                 }.map {
                     it.removeSuffix("*").plus(id)
-                }.plus(id)
+                }.plus(currentPackage + "." + id)
             }
         } ?: listOf())
     }
@@ -519,7 +552,7 @@ class SwiftListener(
                 when (it.rule) {
                     KotlinParser.RULE_modifierList -> null
                     KotlinParser.RULE_primaryConstructor -> null
-                    -KotlinParser.CLASS -> if(ctx.enumClassBody() != null) null else it
+                    -KotlinParser.CLASS -> if (ctx.enumClassBody() != null) null else it
                     else -> it
                 }
             }
@@ -527,16 +560,6 @@ class SwiftListener(
         val splitIndex = currentClass!!.body.indexOfFirst {
             (it.rule == KotlinParser.RULE_classMemberDeclaration && it.text.length > 2) || it.rule == -KotlinParser.RCURL
         }
-        val startMemberSpacing = currentClass!!.body.getOrNull(splitIndex)?.let {
-            if (it.rule == -KotlinParser.RCURL) it.spacingBefore + "    "
-            else it.spacingBefore
-        }?.let {
-            if (it.contains('\n'))
-                it
-            else
-                "\n" + it
-        } ?: "\n    "
-        val startMemberSpacingPlus = "$startMemberSpacing    "
 
         val fields = currentClass!!.classParameters
             .asSequence()
@@ -547,21 +570,21 @@ class SwiftListener(
             .asSequence()
             .map {
                 Section(
-                    text = it.savedAs!! + " " + it.section.text.substringBefore("=") + "\n",
-                    spacingBefore = startMemberSpacing
+                    text = it.savedAs!! + " " + it.section.text.substringBefore("="),
+                    spacingBefore = "\n"
                 )
             }
 
         val swiftPrimaryConstructor = if (get(-KotlinParser.INTERFACE) != null) sequenceOf() else sequenceOf(
             Section(
-                text = "init${primaryConstructor?.text?.replace("\n", " ") ?: "()"} {\n",
-                spacingBefore = startMemberSpacing
+                text = "init${primaryConstructor?.text?.replace("\n", " ") ?: "()"} {",
+                spacingBefore = "\n\n"
             )
         ) +
                 (if (currentClass!!.superConstructorCall == null) sequenceOf<Section>() else sequenceOf<Section>(
                     Section(
                         text = "super.init",
-                        spacingBefore = startMemberSpacingPlus
+                        spacingBefore = "\n"
                     ),
                     currentClass!!.superConstructorCall!!
                 )) +
@@ -571,7 +594,7 @@ class SwiftListener(
                     .map {
                         Section(
                             text = "self." + it.name + " = " + it.name,
-                            spacingBefore = startMemberSpacingPlus
+                            spacingBefore = "\n"
                         )
                     } +
                 currentClass!!.initializers.asSequence().map {
@@ -582,8 +605,8 @@ class SwiftListener(
                     )
                 } +
                 Section(
-                    text = "}\n",
-                    spacingBefore = startMemberSpacing
+                    text = "}",
+                    spacingBefore = "\n"
                 )
 
 
@@ -594,20 +617,20 @@ class SwiftListener(
             val mapConstructor = ArrayList<Section>()
             mapConstructor.add(
                 Section(
-                    text = "public static func fromData(data: Any?) -> $name {\n",
-                    spacingBefore = startMemberSpacing
+                    text = "public static func fromData(data: Any?) -> $name {",
+                    spacingBefore = "\n\n"
                 )
             )
             mapConstructor.add(
                 Section(
                     text = "let map = data as! [String: Any?]",
-                    spacingBefore = startMemberSpacingPlus
+                    spacingBefore = "\n"
                 )
             )
             mapConstructor.add(
                 Section(
                     text = "return $name(",
-                    spacingBefore = startMemberSpacingPlus
+                    spacingBefore = "\n"
                 )
             )
             fields.forEachIndexed { index, field ->
@@ -615,20 +638,20 @@ class SwiftListener(
                 mapConstructor.add(
                     Section(
                         text = "${field.name}: ${field.type}.fromData(data: map[\"${field.name.snakeCase()}\"] as Any?)$comma",
-                        spacingBefore = startMemberSpacingPlus + "    "
+                        spacingBefore = "\n"
                     )
                 )
             }
             mapConstructor.add(
                 Section(
                     text = ")",
-                    spacingBefore = startMemberSpacingPlus
+                    spacingBefore = "\n"
                 )
             )
             mapConstructor.add(
                 Section(
                     text = "}",
-                    spacingBefore = startMemberSpacing
+                    spacingBefore = "\n"
                 )
             )
             additionalThings.add(mapConstructor.joinClean())
@@ -636,14 +659,14 @@ class SwiftListener(
             val mapWriter = ArrayList<Section>()
             mapWriter.add(
                 Section(
-                    text = "public func toData() -> Any? {\n",
-                    spacingBefore = startMemberSpacing
+                    text = "public func toData() -> Any? {",
+                    spacingBefore = "\n\n"
                 )
             )
             mapWriter.add(
                 Section(
                     text = "return [",
-                    spacingBefore = startMemberSpacingPlus
+                    spacingBefore = "\n"
                 )
             )
             fields.forEachIndexed { index, field ->
@@ -651,20 +674,20 @@ class SwiftListener(
                 mapWriter.add(
                     Section(
                         text = "\"${field.name.snakeCase()}\": ${field.name}.toData()$comma",
-                        spacingBefore = startMemberSpacingPlus + "    "
+                        spacingBefore = "\n"
                     )
                 )
             }
             mapWriter.add(
                 Section(
                     text = "]",
-                    spacingBefore = startMemberSpacingPlus
+                    spacingBefore = "\n"
                 )
             )
             mapWriter.add(
                 Section(
                     text = "}\n",
-                    spacingBefore = startMemberSpacing
+                    spacingBefore = "\n"
                 )
             )
             additionalThings.add(mapWriter.joinClean())
@@ -677,9 +700,9 @@ class SwiftListener(
             currentClass!!.body.asSequence().take(splitIndex)
         }
         val bodyPostConstructor = if (currentClass!!.body.isEmpty()) {
-            sequenceOf(Section("}"))
+            sequenceOf(Section("}", spacingBefore = "\n"))
         } else {
-            currentClass!!.body.asSequence().drop(splitIndex)
+            currentClass!!.body.asSequence().drop(splitIndex).also { it.firstOrNull()?.spacingBefore = "\n\n" }
         }
 
         overridden = (
@@ -689,8 +712,28 @@ class SwiftListener(
         classStack.removeAt(classStack.lastIndex)
     }
 
-    override fun enterObjectDeclaration(ctx: KotlinParser.ObjectDeclarationContext?) {
-        classStack.add(ClassInformation())
+    override fun enterCompanionObject(ctx: KotlinParser.CompanionObjectContext?) {
+        classStack.add(ClassInformation(currentClass!!.name))
+    }
+
+    override fun exitCompanionObject(ctx: KotlinParser.CompanionObjectContext?) {
+        overridden = (
+                currentClass!!.body.mapNotNull {
+                    when {
+                        it.text.startsWith("func") -> it.copy(text = "static " + it.text)
+                        it.text.startsWith("var") -> it.copy(text = "static " + it.text)
+                        it.text.startsWith("let") -> it.copy(text = "static " + it.text)
+                        it.rule == -KotlinParser.LCURL -> null
+                        it.rule == -KotlinParser.RCURL -> null
+                        else -> it
+                    }
+                }
+                ).joinClean()
+        classStack.removeAt(classStack.lastIndex)
+    }
+
+    override fun enterObjectDeclaration(ctx: KotlinParser.ObjectDeclarationContext) {
+        classStack.add(ClassInformation(ctx.simpleIdentifier().text))
     }
 
     override fun exitObjectDeclaration(ctx: KotlinParser.ObjectDeclarationContext) {
@@ -825,29 +868,30 @@ class SwiftListener(
         val preCalculationTextIndex = if (firstCalculationIndex == -1) -1 else
             layers.last().subList(0, firstCalculationIndex).indexOfLast { !it.text.isBlank() } + 1
 
-        val preJoin:Sequence<Section> = if (firstCalculationIndex == -1) {
+        val preJoin: Sequence<Section> = if (firstCalculationIndex == -1) {
             if (additionalGetSetNeeded) {
                 layers.last().asSequence()
-                    .plus(Section(
-                        text = if (ctx.VAL() != null) " { get }" else " { get set }",
-                        spacingBefore = " "
-                    ))
+                    .filter { it.rule != KotlinParser.RULE_semi }
+                    .plus(
+                        Section(
+                            text = if (ctx.VAL() != null) " { get }\n" else " { get set }\n",
+                            spacingBefore = " "
+                        )
+                    )
             } else {
                 layers.last().asSequence()
             }
         } else {
-            val samplePreWhitespace =
-                (get(KotlinParser.RULE_getter) ?: get(KotlinParser.RULE_setter))?.spacingBefore ?: "\n    "
             layers.last()
                 .asSequence()
                 .take(preCalculationTextIndex)
-                .plus(Section("{", spacingBefore = " "))
+                .plus(Section("{\n", spacingBefore = " "))
                 .plus(layers.last().drop(preCalculationTextIndex))
-                .plus(Section("}", spacingBefore = "\n" + samplePreWhitespace))
+                .plus(Section("}\n", spacingBefore = "\n"))
         }
 
         overridden = preJoin.map {
-            when(it.rule){
+            when (it.rule) {
                 KotlinParser.RULE_modifierList -> {
                     val functionName = text(KotlinParser.RULE_variableDeclaration)?.substringBefore(':')?.trim()
                     val implementsStackSet = currentClass?.implements?.toSet() ?: setOf()
@@ -932,17 +976,31 @@ class SwiftListener(
 
     override fun exitFunctionValueParameter(ctx: KotlinParser.FunctionValueParameterContext) {
         var escaping = false
+        var variadic = false
         overridden = layers.last().map {
             when (it.rule) {
                 KotlinParser.RULE_modifierList -> {
-                    escaping = it.text.contains("@escaping")
-                    it.copy(text = it.text.replace("@escaping", "").trim())
+                    var current = it
+
+                    variadic = current.text.contains("vararg")
+                    current = current.copy(text = it.text.replace("vararg", "").trim())
+
+                    escaping = current.text.contains("@escaping")
+                    current = current.copy(text = current.text.replace("@escaping", "").trim())
+
+                    current
                 }
                 KotlinParser.RULE_parameter -> {
-                    if (escaping) {
+                    (if (escaping) {
                         it.copy(text = it.text.substringBefore(':') + ": @escaping" + it.text.substringAfter(':'))
                     } else {
                         it
+                    }).let {
+                        if (variadic) {
+                            it.copy(text = it.text + "...")
+                        } else {
+                            it
+                        }
                     }
                 }
                 else -> it
@@ -958,7 +1016,7 @@ class SwiftListener(
     override fun exitDotQualifiedExpression(ctx: KotlinParser.DotQualifiedExpressionContext) {
         val default = default
         val text = default.text.trim()
-        if(text.startsWith("R.string.")){
+        if (text.startsWith("R.string.")) {
             overridden = Section(
                 text = "\"" + text.removePrefix("R.string.") + "\"",
                 spacingBefore = default.spacingBefore
@@ -966,6 +1024,10 @@ class SwiftListener(
         }
     }
 
+    override fun exitSimpleIdentifier(ctx: KotlinParser.SimpleIdentifierContext?) {
+        val default = default
+        overridden = if (default.text == "this") default.copy(text = "self") else default
+    }
 
 
     init {
@@ -992,5 +1054,5 @@ class SwiftListener(
 //        println("Exiting ${ctx.ruleIndex}, text: (${ctx.text})")
     }
 
-    private fun String.snakeCase(): String = this.replace(Regex("[A-Z]+")){ "_" + it.value.toLowerCase() }.trim('_')
+    private fun String.snakeCase(): String = this.replace(Regex("[A-Z]+")) { "_" + it.value.toLowerCase() }.trim('_')
 }

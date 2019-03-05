@@ -5,55 +5,68 @@ import Foundation
 //import com.lightningkite.others.*
 
 public protocol MyInterface {
+
+
     func bar() -> String
-    var x: Int
-  { get set }    var y: String
-  { get }    var z: Float { get { return 0f }
- }
+    var x: Int { get set }
+    var y: String { get }
+    var z: Float {
+        get { return 0f }
+    }
+
 }
 
 final public class Implementation : MyInterface {
 
-    init() {
 
+    init() {
     }
+
     public func bar() -> String {
         return "2-Implementation"
     }
 
     public var x: Int {
+
         get { return 2 }
         set(value) {}
-        }
-    public var y: String { get { return "Hello World!" }
- }
+    }
+
+    public var y: String {
+        get { return "Hello World!" }
+    }
+
 }
 
 // Interface + Inheritance
 
 public open class Parent {
 
-    init() {
 
+    init() {
     }
+
     func three() -> Int {
         return 3
     }
 
     var four = 4 {
+
         didSet(value) {
-            
+
             print(value)
         }
-        }
+    }
+
 }
 
 final public class Child : Parent(), MyInterface {
 
-    init() {
 
+    init() {
         super.init()
     }
+
     var five = 5
     func six() -> String {
         return "6"
@@ -68,9 +81,10 @@ final public class Child : Parent(), MyInterface {
 
 public abstract class AbstractParent {
 
-    init() {
 
+    init() {
     }
+
     abstract func three() -> Int
 
     var four = 4
@@ -78,18 +92,20 @@ public abstract class AbstractParent {
 
 public abstract class AbstractChild : Parent() {
 
-    init() {
 
+    init() {
         super.init()
     }
+
 }
 
 final public class NonAbstractChild : AbstractChild(), MyInterface {
 
-    init() {
 
+    init() {
         super.init()
     }
+
     public func bar() -> String {
         return "2-NonAbstractChild"
     }
@@ -117,3 +133,4 @@ func main(args: [String]) {
     print(naChild.three())
     print(naChild.four)
 }
+func main(_ args: [String]) { main(args: args) }

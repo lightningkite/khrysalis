@@ -7,3 +7,11 @@ object TestObject {
 
     val testConstant = ""
 }
+
+class TestClass {
+    companion object {
+        fun testFun(){
+
+        }
+    }
+}

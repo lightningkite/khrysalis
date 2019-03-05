@@ -1,3 +1,5 @@
+package test
+
 enum class MyEnum {
   VALUE1, VALUE2, VALUE3
 }
