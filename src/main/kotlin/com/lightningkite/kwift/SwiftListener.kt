@@ -180,6 +180,9 @@ class SwiftListener(
                 ) + "]()"
             )
         }
+        handleFunctionReplacement["weakLambda"] = {
+            overridden = get(KotlinParser.RULE_annotatedLambda)
+        }
     }
 
     val handleTypeReplacement = HashMap<String, SwiftListener.() -> Unit>()
@@ -384,14 +387,29 @@ class SwiftListener(
         }.joinClean()
     }
 
+    val callIsWeakLambdaStack = BooleanArray(256) { false }
+    var callIsWeakLambdaStackIndex = -1
+    var callIsWeakCurrent: Boolean
+        get() = callIsWeakLambdaStack[callIsWeakLambdaStackIndex]
+        set(value) {
+            callIsWeakLambdaStack[callIsWeakLambdaStackIndex] = value
+        }
+
+    override fun enterCallExpression(ctx: KotlinParser.CallExpressionContext) {
+        callIsWeakLambdaStackIndex++
+        callIsWeakCurrent = ctx.assignableExpression().text.trim() == "weakLambda"
+    }
+
     override fun exitCallExpression(ctx: KotlinParser.CallExpressionContext?) {
         val functionCallName = text(KotlinParser.RULE_assignableExpression)?.trim()?.substringAfterLast('.')
         val alternateCallName = text(KotlinParser.RULE_assignableExpression)?.trim()
         handleFunctionReplacement[functionCallName]?.invoke(this)
             ?: handleFunctionReplacement[alternateCallName]?.invoke(this)
+        callIsWeakLambdaStackIndex--
     }
 
     override fun exitFunctionDeclaration(ctx: KotlinParser.FunctionDeclarationContext) {
+        var defaultOrder = -1f
         val mainSeq = layers.last().asSequence().map {
             when (it.rule) {
                 -KotlinParser.FUN -> it.copy(text = "func")
@@ -408,16 +426,28 @@ class SwiftListener(
                 }
                 else -> it
             }
-        }
+        }.toMutableList()
+
+        //Reorder generics
+        mainSeq
+            .indexOfFirst { it.rule == KotlinParser.RULE_typeParameters }
+            .let {
+                if (it == -1) return@let
+                val typeParams = mainSeq.removeAt(it).copy(spacingBefore = "")
+                val identifierPos = mainSeq.indexOfFirst { it.rule == KotlinParser.RULE_identifier }
+                mainSeq.add(identifierPos + 1, typeParams)
+            }
+
         val fvps = ctx.functionValueParameters().functionValueParameter()
-        if (fvps.isEmpty() || (fvps.size == 1 && fvps.first().parameter().type().functionType() != null)) {
+        val thereIsVarargParam = fvps.any { it.modifierList()?.modifier()?.any { it.parameterModifier()?.VARARG() != null } ?: false }
+        if (fvps.isEmpty() || (fvps.size == 1 && fvps.first().parameter().type().functionType() != null) || thereIsVarargParam) {
             overridden = mainSeq.joinClean()
         } else {
             val secondarySeq = mainSeq.map {
                 when (it.rule) {
                     KotlinParser.RULE_functionValueParameters -> {
                         lastFunctionValueParameters!!.map {
-                            if(it.rule == KotlinParser.RULE_functionValueParameter) {
+                            if (it.rule == KotlinParser.RULE_functionValueParameter) {
                                 it.copy(text = "_ " + it.text)
                             } else {
                                 it
@@ -425,7 +455,14 @@ class SwiftListener(
                         }.joinClean()
                     }
                     KotlinParser.RULE_functionBody -> {
-                        it.copy(text = "{ ${ctx.identifier().text}(${ctx.functionValueParameters().functionValueParameter().joinToString {
+                        val returnTypeIsUnit = when (ctx.type().firstOrNull()?.text) {
+                            null -> true
+                            "Unit" -> true
+                            "Empty" -> true
+                            "Nothing" -> true
+                            else -> false
+                        }
+                        it.copy(text = "{ ${if (returnTypeIsUnit) "" else "return "}${ctx.identifier().text}(${ctx.functionValueParameters().functionValueParameter().joinToString {
                             "${it.parameter().simpleIdentifier().text}: ${it.parameter().simpleIdentifier().text}"
                         }}) }")
                     }
@@ -570,25 +607,29 @@ class SwiftListener(
             .asSequence()
             .map {
                 Section(
-                    text = it.savedAs!! + " " + it.section.text.substringBefore("="),
+                    text = it.savedAs!! + " " + it.section.text.replace("@escaping", "").trim().substringBefore("="),
                     spacingBefore = "\n"
                 )
             }
 
-        val swiftPrimaryConstructor = if (get(-KotlinParser.INTERFACE) != null) sequenceOf() else sequenceOf(
-            Section(
-                text = "init${primaryConstructor?.text?.replace("\n", " ") ?: "()"} {",
-                spacingBefore = "\n\n"
-            )
-        ) +
-                (if (currentClass!!.superConstructorCall == null) sequenceOf<Section>() else sequenceOf<Section>(
+        val swiftPrimaryConstructor =
+            if (get(-KotlinParser.INTERFACE) != null || text(KotlinParser.RULE_modifierList)?.contains("enum") == true) sequenceOf() else ArrayList<Section>().apply {
+                add(
                     Section(
-                        text = "super.init",
-                        spacingBefore = "\n"
-                    ),
-                    currentClass!!.superConstructorCall!!
-                )) +
-                currentClass!!.classParameters
+                        text = "init${primaryConstructor?.text?.replace("\n", " ") ?: "()"} {",
+                        spacingBefore = "\n\n"
+                    )
+                )
+                if (currentClass!!.superConstructorCall != null) addAll(
+                    sequenceOf<Section>(
+                        Section(
+                            text = "super.init",
+                            spacingBefore = "\n"
+                        ),
+                        currentClass!!.superConstructorCall!!
+                    )
+                )
+                addAll(currentClass!!.classParameters
                     .asSequence()
                     .filter { it.savedAs != null }
                     .map {
@@ -596,18 +637,35 @@ class SwiftListener(
                             text = "self." + it.name + " = " + it.name,
                             spacingBefore = "\n"
                         )
-                    } +
-                currentClass!!.initializers.asSequence().map {
+                    })
+                addAll(currentClass!!.initializers.asSequence().map {
                     it.copy(
                         it.text.substringAfter('{').substringBeforeLast(
                             '}'
                         )
                     )
-                } +
-                Section(
-                    text = "}",
-                    spacingBefore = "\n"
+                })
+                add(
+                    Section(
+                        text = "}",
+                        spacingBefore = "\n"
+                    )
                 )
+                if(currentClass!!.classParameters.isNotEmpty()) {
+                    add(
+                        Section(
+                            text = run {
+                                val parametersWithUnderscores =
+                                    currentClass!!.classParameters.joinToString(",\n", "\n", "\n") { "_ ${it.section.text}" }
+                                val parametersWithNames =
+                                    currentClass!!.classParameters.joinToString(",\n", "\n", "\n") { "${it.name}: ${it.name}" }
+                                "convenience init($parametersWithUnderscores){ \nself.init($parametersWithNames) \n}"
+                            },
+                            spacingBefore = "\n"
+                        )
+                    )
+                }
+            }.asSequence()
 
 
         val additionalThings = ArrayList<Section>()
@@ -815,7 +873,7 @@ class SwiftListener(
             ClassParameterData(
                 savedAs = savedAs,
                 name = text(KotlinParser.RULE_simpleIdentifier) ?: "[no name found]",
-                section = section.copy(text = section.text.replace("@escaping", "").trim()),
+                section = section,
                 type = typeText
             )
         )
@@ -846,7 +904,17 @@ class SwiftListener(
     override fun exitFunctionLiteral(ctx: KotlinParser.FunctionLiteralContext?) {
         overridden = layers.last().map {
             when (it.rule) {
+                -KotlinParser.LCURL -> {
+                    if (callIsWeakCurrent) {
+                        it.copy(text = "{ [weak self]")
+                    } else it
+                }
                 -KotlinParser.ARROW -> it.copy(text = "in")
+                KotlinParser.RULE_statements -> {
+                    if (callIsWeakCurrent) {
+                        it.copy(text = "if let self = self {\n${it.text}\n}\n")
+                    } else it
+                }
                 else -> it
             }
         }.joinClean()
@@ -937,6 +1005,15 @@ class SwiftListener(
             .joinClean()
     }
 
+    override fun exitFunctionBody(ctx: KotlinParser.FunctionBodyContext) {
+        if (ctx.ASSIGNMENT() != null) {
+            val start = Section("{ return ", " ")
+            val exp = this.get(KotlinParser.RULE_expression)!!
+            val end = Section("}", " ")
+            overridden = listOf(start, exp, end).joinClean()
+        }
+    }
+
     override fun exitFunctionTypeParameters(ctx: KotlinParser.FunctionTypeParametersContext?) {
         overridden = layers.last().map {
             when (it.rule) {
@@ -997,7 +1074,7 @@ class SwiftListener(
                         it
                     }).let {
                         if (variadic) {
-                            it.copy(text = it.text + "...")
+                            it.copy(text = "_ " + it.text + "...")
                         } else {
                             it
                         }

@@ -33,7 +33,7 @@ open class InterfaceListener(val parser: KotlinParser) : KotlinParserBaseListene
     }
 
     override fun enterPackageHeader(ctx: KotlinParser.PackageHeaderContext) {
-        currentPackage = ctx.identifier().text
+        currentPackage = ctx.identifier()?.text ?: ""
     }
 
     override fun enterClassDeclaration(ctx: KotlinParser.ClassDeclarationContext) {
