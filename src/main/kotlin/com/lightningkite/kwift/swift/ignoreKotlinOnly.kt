@@ -1,4 +1,4 @@
-package com.lightningkite.kwift
+package com.lightningkite.kwift.swift
 
 val startKotlin = Regex("/// *Kotlin *Only", RegexOption.IGNORE_CASE)
 val endKotlin = Regex("/// *End *Kotlin *Only", RegexOption.IGNORE_CASE)

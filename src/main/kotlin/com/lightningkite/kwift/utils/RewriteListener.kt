@@ -1,8 +1,7 @@
-package com.lightningkite.kwift
+package com.lightningkite.kwift.utils
 
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.ParserRuleContext
-import org.antlr.v4.runtime.misc.Interval
 import org.antlr.v4.runtime.tree.TerminalNode
 import org.jetbrains.kotlin.KotlinParser
 import org.jetbrains.kotlin.KotlinParserBaseListener
@@ -73,7 +72,7 @@ fun Sequence<RewriteListener.Section>.joinClean(): RewriteListener.Section {
         text = buildString {
             var first = true
             this@joinClean.forEach {
-                if(first){
+                if (first) {
                     first = false
                     append(it.text)
                 } else {

@@ -1,4 +1,4 @@
-package com.lightningkite.kwift
+package com.lightningkite.kwift.swift
 
 fun String.retabSwift(): String {
     val tabs = HashSet<Int>()

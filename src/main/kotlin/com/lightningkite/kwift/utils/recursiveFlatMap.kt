@@ -1,4 +1,4 @@
-package com.lightningkite.kwift
+package com.lightningkite.kwift.utils
 
 /**
  * Creates a recursive sequence, breadth first.

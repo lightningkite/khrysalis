@@ -1,22 +1,20 @@
-package com.lightningkite.kwift
+package com.lightningkite.kwift.interfaces
 
-import org.antlr.v4.runtime.CommonTokenStream
-import org.antlr.v4.runtime.ParserRuleContext
-import org.antlr.v4.runtime.misc.Interval
-import org.antlr.v4.runtime.tree.TerminalNode
+import com.fasterxml.jackson.annotation.JsonIgnore
+import com.fasterxml.jackson.annotation.JsonProperty
 import org.jetbrains.kotlin.KotlinParser
 import org.jetbrains.kotlin.KotlinParserBaseListener
 
 open class InterfaceListener(val parser: KotlinParser) : KotlinParserBaseListener() {
 
     data class InterfaceData(
-        val packageName: String,
-        val name: String,
-        val methods: List<String>,
-        val properties: List<String>,
-        val implements: List<String>
+        @JsonProperty("packageName") val packageName: String = "",
+        val name: String = "",
+        val methods: List<String> = listOf(),
+        val properties: List<String> = listOf(),
+        val implements: List<String> = listOf()
     ){
-        val qualifiedName get() = packageName + "." + name
+        @get:JsonIgnore val qualifiedName get() = packageName + "." + name
     }
 
     val interfaces = ArrayList<InterfaceData>()

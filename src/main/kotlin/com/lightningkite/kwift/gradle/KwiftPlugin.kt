@@ -1,13 +1,7 @@
 package com.lightningkite.kwift.gradle
 
-import com.lightningkite.kwift.javaify
-import com.lightningkite.kwift.javaifyWithDots
 import org.gradle.api.Plugin
 import org.gradle.api.Project
-import org.gradle.api.tasks.InputDirectory
-import org.gradle.api.tasks.InputFile
-import org.gradle.api.tasks.OutputDirectory
-import java.io.File
 
 
 open class KwiftPlugin : Plugin<Project> {

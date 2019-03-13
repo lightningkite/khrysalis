@@ -1,7 +1,10 @@
 package com.lightningkite.kwift
 
+import com.lightningkite.kwift.swift.kwiftTask
 import java.io.File
 
+
+const val VERSION: Int = 2
 
 fun main(vararg args: String) {
     println("Groan...")

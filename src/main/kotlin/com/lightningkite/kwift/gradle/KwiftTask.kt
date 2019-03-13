@@ -1,6 +1,6 @@
 package com.lightningkite.kwift.gradle
 
-import com.lightningkite.kwift.kwiftTask
+import com.lightningkite.kwift.swift.kwiftTask
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import java.io.File

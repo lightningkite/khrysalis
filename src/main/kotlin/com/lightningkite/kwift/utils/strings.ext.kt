@@ -1,4 +1,4 @@
-package com.lightningkite.kwift
+package com.lightningkite.kwift.utils
 
 
 fun String.javaify(): String = this

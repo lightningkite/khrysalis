@@ -1,5 +1,9 @@
-package com.lightningkite.kwift
+package com.lightningkite.kwift.swift
 
+import com.lightningkite.kwift.interfaces.InterfaceListener
+import com.lightningkite.kwift.utils.RewriteListener
+import com.lightningkite.kwift.utils.getMany
+import com.lightningkite.kwift.utils.joinClean
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.ParserRuleContext
 import org.antlr.v4.runtime.tree.TerminalNode
@@ -8,7 +12,7 @@ import org.jetbrains.kotlin.KotlinParser
 class SwiftListener(
     tokenStream: CommonTokenStream,
     parser: KotlinParser,
-    val interfaces: List<InterfaceListener.InterfaceData>
+    val interfaces: Map<String, InterfaceListener.InterfaceData>
 ) : RewriteListener(tokenStream, parser) {
 
     val handleFunctionReplacement = HashMap<String, SwiftListener.() -> Unit>()
@@ -418,8 +422,9 @@ class SwiftListener(
                     val functionName = text(KotlinParser.RULE_identifier)
                     val implementsStackSet = currentClass?.implements?.toSet() ?: setOf()
                     val fromInterfaces = interfaces
+                        .getMany(implementsStackSet)
                         .filter { functionName in it.methods }
-                        .filter { it.qualifiedName in implementsStackSet }
+                        .toList()
                     if (fromInterfaces.isNotEmpty()) {
                         it.copy(text = it.text.replace("override", "public"))
                     } else it
@@ -872,7 +877,7 @@ class SwiftListener(
         currentClass!!.classParameters.add(
             ClassParameterData(
                 savedAs = savedAs,
-                name = text(KotlinParser.RULE_simpleIdentifier) ?: "[no name found]",
+                name = text(KotlinParser.RULE_simpleIdentifier) ?: "[no path found]",
                 section = section,
                 type = typeText
             )
@@ -926,6 +931,12 @@ class SwiftListener(
     }
 
     override fun exitPropertyDeclaration(ctx: KotlinParser.PropertyDeclarationContext) {
+        if(ctx.BY() != null && ctx.expression()?.text?.startsWith("weak") == true) {
+            val default = default
+            overridden = default.copy(text = "weak var ${text(KotlinParser.RULE_variableDeclaration)} = ${text(KotlinParser.RULE_expression)!!.removePrefix("weak(").removeSuffix(")")}")
+            return
+        }
+
         val additionalGetSetNeeded = ctx.parent is KotlinParser.ClassMemberDeclarationContext &&
                 currentClass?.isInterface == true
                 && ctx.getter() == null
@@ -961,11 +972,12 @@ class SwiftListener(
         overridden = preJoin.map {
             when (it.rule) {
                 KotlinParser.RULE_modifierList -> {
-                    val functionName = text(KotlinParser.RULE_variableDeclaration)?.substringBefore(':')?.trim()
+                    val propertyName = text(KotlinParser.RULE_variableDeclaration)?.substringBefore(':')?.trim()
                     val implementsStackSet = currentClass?.implements?.toSet() ?: setOf()
                     val fromInterfaces = interfaces
-                        .filter { functionName in it.properties }
-                        .filter { it.qualifiedName in implementsStackSet }
+                        .getMany(implementsStackSet)
+                        .filter { propertyName in it.properties }
+                        .toList()
                     if (fromInterfaces.isNotEmpty()) {
                         it.copy(text = it.text.replace("override", "public"))
                     } else it
