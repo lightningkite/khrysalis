@@ -2,6 +2,7 @@ package com.lightningkite.kwift.interfaces
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.lightningkite.kwift.INTERFACE_SCAN_VERSION
 import com.lightningkite.kwift.VERSION
 import com.lightningkite.kwift.swift.ignoreKotlinOnly
 import com.lightningkite.kwift.utils.Versioned
@@ -18,7 +19,7 @@ fun getInterfaces(pairs: List<Pair<File, File>>): Map<String, InterfaceListener.
     val cacheFile = File("./build/kwift-interfaces-cache.json")
     val existingCache: Map<String, FileCache> = if (cacheFile.exists()) {
         val versioned = jacksonObjectMapper().readValue<Versioned<Map<String, FileCache>>>(cacheFile)
-        if (versioned.version == VERSION) versioned.value else mapOf()
+        if (versioned.version == INTERFACE_SCAN_VERSION) versioned.value else mapOf()
     } else
         mapOf()
     val newCache = HashMap<String, FileCache>()
@@ -58,7 +59,7 @@ fun getInterfaces(pairs: List<Pair<File, File>>): Map<String, InterfaceListener.
         cacheFile.parentFile.mkdirs()
         cacheFile.createNewFile()
     }
-    cacheFile.writeText(jacksonObjectMapper().writeValueAsString(Versioned(VERSION, newCache)))
+    cacheFile.writeText(jacksonObjectMapper().writeValueAsString(Versioned(INTERFACE_SCAN_VERSION, newCache)))
 
     return interfaces
 

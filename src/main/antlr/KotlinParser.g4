@@ -357,8 +357,8 @@ prefixUnaryExpression
     ;
 
 postfixUnaryExpression
-    : assignableExpression
-    | callExpression
+    : callExpression
+    | assignableExpression
     | labeledExpression
     | dotQualifiedExpression
     | assignableExpression postfixUnaryOperator*
@@ -367,7 +367,8 @@ postfixUnaryExpression
     ;
 
 callExpression
-    : assignableExpression typeArguments? valueArguments? annotatedLambda*
+    : assignableExpression typeArguments? valueArguments
+    | assignableExpression typeArguments? valueArguments? annotatedLambda
     ;
 
 labeledExpression
@@ -430,7 +431,6 @@ primaryExpression
     : parenthesizedExpression
     | literalConstant
     | stringLiteral
-    | simpleIdentifier
     | functionLiteral
     | objectLiteral
     | collectionLiteral
@@ -440,6 +440,7 @@ primaryExpression
     | tryExpression
     | loopExpression
     | jumpExpression
+    | simpleIdentifier
     ;
 
 parenthesizedExpression

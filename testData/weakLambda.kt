@@ -8,5 +8,6 @@ fun test(){
 
     val lambda2 = weakLambda { value: Int, second: String? ->
         println(value)
+        return@weakLambda 2
     }
 }

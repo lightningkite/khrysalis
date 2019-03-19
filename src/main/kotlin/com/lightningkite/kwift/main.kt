@@ -4,7 +4,8 @@ import com.lightningkite.kwift.swift.kwiftTask
 import java.io.File
 
 
-const val VERSION: Int = 2
+const val INTERFACE_SCAN_VERSION: Int = 2
+const val VERSION: Int = 3
 
 fun main(vararg args: String) {
     println("Groan...")

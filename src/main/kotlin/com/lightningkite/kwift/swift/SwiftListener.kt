@@ -247,6 +247,8 @@ class SwiftListener(
         terminalRewrites[KotlinParser.VAL] = { "var" }
         terminalRewrites[KotlinParser.THIS] = { "self" }
         terminalRewrites[KotlinParser.INTERFACE] = { "protocol" }
+        terminalRewrites[KotlinParser.AS] = { "as!" }
+        terminalRewrites[KotlinParser.RETURN_AT] = { "return" }
     }
 
     var currentPackage = ""
@@ -328,37 +330,126 @@ class SwiftListener(
 
     override fun exitMultiLineStringExpression(ctx: KotlinParser.MultiLineStringExpressionContext?) = handleStringExpr()
 
-    val subPattern = "([a-zA-Z0-9]+ *!= *nil|[a-zA-Z0-9]+ +is +[a-zA-Z0-9.]+)"
-    val ifLetPattern = Regex("$subPattern *(&& $subPattern)*")
-    override fun exitIfExpression(ctx: KotlinParser.IfExpressionContext) {
-        val ifLetMatch = text(KotlinParser.RULE_expression)?.trim()
-            ?.let { ifLetPattern.matchEntire(it) }
+//    val subPattern = "(\\w+ *!= *null|\\w+ +is +\\w+)"
+//    val ifLetPattern = Regex("$subPattern *(&& *$subPattern)*")
 
-        if (ifLetMatch != null) {
-            val variables =
-                text(KotlinParser.RULE_expression)!!.split("&&").map { it.split("!=").flatMap { it.split(" is ") } }
-            val endPart = layers.last().asSequence()
-                .drop(layers.last().indexOfFirst { it.rule == -KotlinParser.RPAREN } + 1)
-            val startPart = Section(
-                text = "if " + variables.joinToString {
-                    val name = it.getOrElse(0) { "" }.trim()
-                    val compare = it.getOrElse(1) { "" }.trim()
-                    if (compare == "nil")
-                        "let $name = $name"
-                    else
-                        "let $name = $name as? $compare"
-                },
-                spacingBefore = layers.last().first().spacingBefore
-            )
-            overridden = sequenceOf(startPart).plus(endPart).joinClean()
-        } else {
-            overridden = layers.last().asSequence().map {
+    val directIfs = ArrayList<Int>()
+    override fun enterIfExpression(ctx: KotlinParser.IfExpressionContext) {
+        directIfs.add(ctx.expression().start.startIndex)
+        println("ENTER IF AT ${ctx.expression().start.startIndex}")
+    }
+
+    override fun exitIfExpression(ctx: KotlinParser.IfExpressionContext) {
+        println("EXIT IF AT ${ctx.expression().start.startIndex}")
+        directIfs.removeAt(directIfs.lastIndex)
+
+        overridden = layers.last().asSequence().map {
+            when (it.rule) {
+                -KotlinParser.LPAREN -> it.copy(text = " ")
+                -KotlinParser.RPAREN -> it.copy(text = "")
+                else -> it
+            }
+        }.joinClean()
+    }
+
+    override fun exitInfixOperation(ctx: KotlinParser.InfixOperationContext) {
+        val default = default
+        println(
+            "CHECK is AT ${ctx.start.startIndex} AGAINST ${directIfs.lastOrNull()}, TEXT = ${default.text} MATCHES? ${default.text.matches(
+                Regex("\\w+ *is *.*")
+            )} AND ${ctx.isOperator != null}"
+        )
+        overridden = if (
+            ctx.isOperator != null &&
+            ctx.start.startIndex in directIfs &&
+            default.text.matches(Regex("\\w+ *is *.*"))
+        ) {
+            println("PASS, FIXING")
+            layers.last().asSequence().map {
                 when (it.rule) {
-                    -KotlinParser.LPAREN -> it.copy(text = " ")
-                    -KotlinParser.RPAREN -> it.copy(text = "")
+                    KotlinParser.RULE_infixFunctionCall -> it.copy(text = "let " + it.text + " = " + it.text)
+                    KotlinParser.RULE_isOperator -> it.copy(text = "as?")
                     else -> it
                 }
             }.joinClean()
+        } else {
+            default
+        }
+    }
+
+    override fun exitInfixFunctionCall(ctx: KotlinParser.InfixFunctionCallContext) {
+        val default = default
+        println(
+            "CHECK is AT ${ctx.start.startIndex} AGAINST ${directIfs.lastOrNull()}, TEXT = ${default.text} MATCHES? ${default.text.matches(
+                Regex("\\w+ *is *.*")
+            )} AND ${ctx.simpleIdentifier().joinToString { it.text }}"
+        )
+        overridden = if (
+            ctx.simpleIdentifier().firstOrNull()?.text == "is" &&
+            ctx.start.startIndex in directIfs &&
+            default.text.matches(Regex("\\w+ *is *.*"))
+        ) {
+            println("PASS, FIXING")
+            var once = false
+            layers.last().asSequence().map {
+                when (it.rule) {
+                    KotlinParser.RULE_rangeExpression -> {
+                        if (once) it
+                        else {
+                            once = true
+                            it.copy(text = "let " + it.text + " = " + it.text)
+                        }
+                    }
+                    KotlinParser.RULE_simpleIdentifier -> it.copy(text = "as?")
+                    else -> it
+                }
+            }.joinClean()
+        } else {
+            default
+        }
+    }
+
+    override fun exitEquality(ctx: KotlinParser.EqualityContext) {
+        val default = default
+        overridden = if (
+            ctx.start.startIndex in directIfs &&
+            default.text.matches(Regex("\\w+ *!= *nil"))
+        ) {
+            println("PASS, FIXING")
+            get(KotlinParser.RULE_comparison)!!.let {
+                it.copy(text = "let " + it.text + " = " + it.text)
+            }
+        } else {
+            default
+        }
+    }
+
+    val conjunctionElementsAdded = ArrayList<Int>()
+    override fun enterConjunction(ctx: KotlinParser.ConjunctionContext) {
+        if (ctx.start.startIndex in directIfs) {
+            val contexts = ctx.equality()
+            for (c in contexts) {
+                directIfs.add(c.start.startIndex)
+            }
+            conjunctionElementsAdded.add(contexts.size)
+        }
+    }
+
+    override fun exitConjunction(ctx: KotlinParser.ConjunctionContext) {
+        overridden = if (ctx.start.startIndex in directIfs) {
+            val removed = conjunctionElementsAdded.removeAt(conjunctionElementsAdded.lastIndex)
+            repeat(removed) {
+                directIfs.removeAt(directIfs.lastIndex)
+            }
+
+            layers.last().asSequence().map {
+                when (it.rule) {
+                    -KotlinParser.CONJ -> it.copy(text = ",", spacingBefore = "")
+                    else -> it
+                }
+            }.joinClean()
+        } else {
+            default
         }
     }
 
@@ -444,7 +535,8 @@ class SwiftListener(
             }
 
         val fvps = ctx.functionValueParameters().functionValueParameter()
-        val thereIsVarargParam = fvps.any { it.modifierList()?.modifier()?.any { it.parameterModifier()?.VARARG() != null } ?: false }
+        val thereIsVarargParam =
+            fvps.any { it.modifierList()?.modifier()?.any { it.parameterModifier()?.VARARG() != null } ?: false }
         if (fvps.isEmpty() || (fvps.size == 1 && fvps.first().parameter().type().functionType() != null) || thereIsVarargParam) {
             overridden = mainSeq.joinClean()
         } else {
@@ -656,14 +748,22 @@ class SwiftListener(
                         spacingBefore = "\n"
                     )
                 )
-                if(currentClass!!.classParameters.isNotEmpty()) {
+                if (currentClass!!.classParameters.isNotEmpty()) {
                     add(
                         Section(
                             text = run {
                                 val parametersWithUnderscores =
-                                    currentClass!!.classParameters.joinToString(",\n", "\n", "\n") { "_ ${it.section.text}" }
+                                    currentClass!!.classParameters.joinToString(
+                                        ",\n",
+                                        "\n",
+                                        "\n"
+                                    ) { "_ ${it.section.text}" }
                                 val parametersWithNames =
-                                    currentClass!!.classParameters.joinToString(",\n", "\n", "\n") { "${it.name}: ${it.name}" }
+                                    currentClass!!.classParameters.joinToString(
+                                        ",\n",
+                                        "\n",
+                                        "\n"
+                                    ) { "${it.name}: ${it.name}" }
                                 "convenience init($parametersWithUnderscores){ \nself.init($parametersWithNames) \n}"
                             },
                             spacingBefore = "\n"
@@ -902,10 +1002,6 @@ class SwiftListener(
         overridden = default.copy(text = "(" + default.text + ")")
     }
 
-    override fun exitLambdaParameter(ctx: KotlinParser.LambdaParameterContext) {
-        overridden = default.copy(text = ctx.variableDeclaration()?.simpleIdentifier()?.text ?: "BROKEN_PARAM")
-    }
-
     override fun exitFunctionLiteral(ctx: KotlinParser.FunctionLiteralContext?) {
         overridden = layers.last().map {
             when (it.rule) {
@@ -931,9 +1027,13 @@ class SwiftListener(
     }
 
     override fun exitPropertyDeclaration(ctx: KotlinParser.PropertyDeclarationContext) {
-        if(ctx.BY() != null && ctx.expression()?.text?.startsWith("weak") == true) {
+        if (ctx.BY() != null && ctx.expression()?.text?.startsWith("weak") == true) {
             val default = default
-            overridden = default.copy(text = "weak var ${text(KotlinParser.RULE_variableDeclaration)} = ${text(KotlinParser.RULE_expression)!!.removePrefix("weak(").removeSuffix(")")}")
+            overridden = default.copy(
+                text = "weak var ${text(KotlinParser.RULE_variableDeclaration)} = ${text(KotlinParser.RULE_expression)!!.removePrefix(
+                    "weak("
+                ).removeSuffix(")")}"
+            )
             return
         }
 
