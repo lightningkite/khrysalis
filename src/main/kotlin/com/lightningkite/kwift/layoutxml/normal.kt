@@ -7,7 +7,7 @@ fun ViewType.Companion.setupNormalViewTypes() {
 
     register("View", "UIView") { node ->
         node.attributes["android:id"]?.let { raw ->
-            val name = "boundView" + raw.removePrefix("@+id/").camelCase().capitalize()
+            val name = "boundView" + raw.removePrefix("@+id/").removePrefix("@id/").camelCase().capitalize()
             appendln("self.$name = view")
             bindings[name] = ViewType.registry[node.name]?.iosName ?: "UIView"
         }
@@ -43,7 +43,7 @@ fun ViewType.Companion.setupNormalViewTypes() {
 
 
     register("RadioGroup", "UIView", "LinearLayout"){}
-    register("RadioButton", "UIButton", "ImageButton"){}
+    register("RadioButton", "UIButton", "Button"){}
     register("ImageButton", "UIButton", "Button"){ node -> }
 
 
@@ -317,65 +317,62 @@ fun ViewType.Companion.setupNormalViewTypes() {
     }
 
     register("FrameLayout", "UIView", "View") { node ->
-        append("view.flex")
-        append(".padding(")
         val defaultPadding = node.attributeAsDimension("android:padding") ?: 0
-        append((node.attributeAsDimension("android:paddingTop") ?: defaultPadding).toString())
-        append(", ")
-        append((node.attributeAsDimension("android:paddingLeft") ?: defaultPadding).toString())
-        append(", ")
-        append((node.attributeAsDimension("android:paddingBottom") ?: defaultPadding).toString())
-        append(", ")
-        append((node.attributeAsDimension("android:paddingRight") ?: defaultPadding).toString())
-        appendln(").define{ (flex) in ")
+        val paddingTop = (node.attributeAsDimension("android:paddingTop") ?: defaultPadding).toString()
+        val paddingLeft = (node.attributeAsDimension("android:paddingLeft") ?: defaultPadding).toString()
+        val paddingBottom = (node.attributeAsDimension("android:paddingBottom") ?: defaultPadding).toString()
+        val paddingRight = (node.attributeAsDimension("android:paddingRight") ?: defaultPadding).toString()
 
         for (child in node.children) {
-            append("flex.addItem(")
+            appendln("view.addSubview({")
+            append("let sub = ")
             ViewType.write(this, child)
-            append(").position(.absolute).margin(")
-            val defaultMargin = child.attributeAsDimension("android:layout_margin") ?: 0
-            append((child.attributeAsDimension("android:layout_marginTop") ?: defaultMargin).toString())
-            append(", ")
-            append((child.attributeAsDimension("android:layout_marginLeft") ?: defaultMargin).toString())
-            append(", ")
-            append((child.attributeAsDimension("android:layout_marginBottom") ?: defaultMargin).toString())
-            append(", ")
-            append((child.attributeAsDimension("android:layout_marginRight") ?: defaultMargin).toString())
-            append(")")
+            appendln()
 
-            child.attributeAsDimension("android:layout_width")?.let { s ->
-                append(".width($s)")
+            val defaultMargin = node.attributeAsDimension("android:layout_margin") ?: 0
+            val marginTop = (node.attributeAsDimension("android:layout_marginTop") ?: defaultMargin).toString()
+            val marginLeft = (node.attributeAsDimension("android:layout_marginLeft") ?: defaultMargin).toString()
+            val marginBottom = (node.attributeAsDimension("android:layout_marginBottom") ?: defaultMargin).toString()
+            val marginRight = (node.attributeAsDimension("android:layout_marginRight") ?: defaultMargin).toString()
+
+            appendln("onLayoutSubviews.addWeak(sub) { (sub: UIView, _: Void) in")
+            append("sub.pin")
+            when(child.attributes["android:layout_width"]) {
+                "wrap_content", null -> append(".width(sub.intrinsicContentSize.width)")
+                "match_parent" -> append(".width(100%)")
+                else -> child.attributeAsDimension("android:layout_width")?.let { s ->
+                    append(".width($s)")
+                } ?: append(".width(sub.intrinsicContentSize.width)")
             }
-            child.attributeAsDimension("android:layout_height")?.let { s ->
-                append(".height($s)")
-            }
-            child.attributes["android:layout_width"]?.let {
-                if(it == "match_parent")
-                    append(".width(100%)")
-            }
-            child.attributes["android:layout_height"]?.let {
-                if(it == "match_parent")
-                    append(".height(100%)")
+            when(child.attributes["android:layout_height"]) {
+                "wrap_content", null -> append(".height(sub.intrinsicContentSize.height)")
+                "match_parent" -> append(".height(100%)")
+                else -> child.attributeAsDimension("android:layout_height")?.let { s ->
+                    append(".height($s)")
+                } ?: append(".height(sub.intrinsicContentSize.height)")
             }
             child.attributes["android:layout_gravity"]?.let {
                 for(part in it.split('|')) {
                     when(part){
-                        "left" -> append(".left(0)")
-                        "right" -> append(".right(0)")
-                        "start" -> append(".start(0)")
-                        "end" -> append(".end(0)")
-                        "center_horizontal" -> append(".start(0).end(0)")
-                        "top" -> append(".top(0)")
-                        "bottom" -> append(".bottom(0)")
-                        "center_vertical" -> append(".top(0).bottom(0)")
-                        "center" -> append(".top(0).bottom(0).start(0).end(0)")
+                        "left" -> append(".left($marginLeft + $paddingLeft)")
+                        "right" -> append(".right($marginRight + $paddingRight)")
+                        "start" -> append(".start($marginLeft + $paddingLeft)")
+                        "end" -> append(".end($marginRight + $paddingRight)")
+                        "center_horizontal" -> append(".hCenter()")
+                        "top" -> append(".top($marginTop + $paddingTop)")
+                        "bottom" -> append(".bottom($marginBottom + $paddingBottom)")
+                        "center_vertical" -> append(".vCenter()")
+                        "center" -> append(".center()")
                     }
                 }
             }
             appendln()
-        }
+            appendln("}")
 
-        appendln("}")
+            appendln("return sub")
+
+            appendln("}())")
+        }
     }
 }
 

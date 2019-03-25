@@ -51,7 +51,7 @@ data class ViewType(
 
     fun writeConfiguration(appendable: Appendable, node: XmlNode) {
         extendsAndroidName?.let {
-            registry[it]!!.myConfiguration(appendable, node)
+            registry[it]!!.writeConfiguration(appendable, node)
         }
         myConfiguration.invoke(appendable, node)
     }

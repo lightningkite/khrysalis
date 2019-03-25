@@ -1,6 +1,7 @@
 package com.lightningkite.kwift.layoutxml
 
 import com.lightningkite.kwift.swift.retabSwift
+import com.lightningkite.kwift.utils.camelCase
 import java.io.File
 
 fun xmlTask(
@@ -30,7 +31,7 @@ fun xmlTask(
             println(item)
             val output = item.translateLayoutXml(styles).retabSwift()
             println(output)
-            File(outputFolder, "layout/" + item.nameWithoutExtension + ".swift").also{
+            File(outputFolder, "layout/" + item.nameWithoutExtension.camelCase().capitalize() + "Xml.swift").also{
                 it.parentFile.mkdirs()
             }.writeText(output)
         }
