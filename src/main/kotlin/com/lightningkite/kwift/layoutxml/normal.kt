@@ -266,7 +266,7 @@ fun ViewType.Companion.setupNormalViewTypes() {
                     ".end" -> ".right"
                     else -> ".center"
                 }
-                appendln("view.titleLabel?.textAlignment = $fixed")
+                appendln("view.contentHorizontalAlignment = $fixed")
             }
 
 

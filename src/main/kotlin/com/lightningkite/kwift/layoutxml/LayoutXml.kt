@@ -40,9 +40,7 @@ fun File.translateLayoutXml(styles: Styles): String {
 
             init() {
                 super.init(frame: .zero)
-                let root = $appendable
-                self.root = root
-                addSubview(root)
+                root = $appendable
             }
 
             required init?(coder aDecoder: NSCoder) {
