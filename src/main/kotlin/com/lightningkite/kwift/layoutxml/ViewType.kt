@@ -10,6 +10,7 @@ data class ViewType(
 
         val bindings = HashMap<String, String>()
 
+        val skipTypes = HashSet<String>()
         val registry = HashMap<String, ViewType>()
         val default = ViewType(
             "UnknownView",
@@ -41,7 +42,13 @@ data class ViewType(
             for(att in node.attributes){
                 println("    ${att.key} = ${att.value}")
             }
-            (registry[node.name] ?: default).write(appendable, node)
+            if(node.name in skipTypes){
+                for(child in node.children){
+                    write(appendable, child)
+                }
+            } else {
+                (registry[node.name] ?: default).write(appendable, node)
+            }
         }
 
         init {

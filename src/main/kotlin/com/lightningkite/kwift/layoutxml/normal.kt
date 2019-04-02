@@ -42,9 +42,10 @@ fun ViewType.Companion.setupNormalViewTypes() {
     }
 
 
-    register("RadioGroup", "UIView", "LinearLayout"){}
-    register("RadioButton", "UIButton", "Button"){}
-    register("ImageButton", "UIButton", "Button"){ node -> }
+    register("android.support.v7.widget.RecyclerView", "UITableView", "View"){}
+    register("Space", "UIView", "View"){}
+    skipTypes += "android.support.v4.widget.SwipeRefreshLayout"
+    skipTypes += "SwipeRefreshLayout"
 
 
     register("ImageView", "UIImageView", "View") { node ->
@@ -59,6 +60,16 @@ fun ViewType.Companion.setupNormalViewTypes() {
                 else -> ".scaleAspectFit"
             }}"
         )
+//        val defaultPadding = node.attributeAsDimension("android:padding") ?: 0
+//        append("view.contentEdgeInsets = UIEdgeInsets(top: ")
+//        append((node.attributeAsDimension("android:paddingTop") ?: defaultPadding).toString())
+//        append(", left:")
+//        append((node.attributeAsDimension("android:paddingLeft") ?: defaultPadding).toString())
+//        append(", bottom:")
+//        append((node.attributeAsDimension("android:paddingBottom") ?: defaultPadding).toString())
+//        append(", right:")
+//        append((node.attributeAsDimension("android:paddingRight") ?: defaultPadding).toString())
+//        appendln(")")
     }
 
 
@@ -70,16 +81,52 @@ fun ViewType.Companion.setupNormalViewTypes() {
 
 
     register("ScrollView", "UIScrollView", "View") { node ->
-        appendln("view.flex.direction(.column).alignContent(.center).addItem(")
+//        val child = node.children.first()
+//
+//        appendln("view.addSubview({")
+//        append("let sub = ")
+//        ViewType.write(this, child)
+//        appendln()
+//
+//        val defaultMargin = node.attributeAsDimension("android:layout_margin") ?: 0
+//        val marginTop = (node.attributeAsDimension("android:layout_marginTop") ?: defaultMargin).toString()
+//        val marginLeft = (node.attributeAsDimension("android:layout_marginLeft") ?: defaultMargin).toString()
+//        val marginBottom = (node.attributeAsDimension("android:layout_marginBottom") ?: defaultMargin).toString()
+//        val marginRight = (node.attributeAsDimension("android:layout_marginRight") ?: defaultMargin).toString()
+//
+//        appendln("onLayoutSubviews.addWeak(sub) { (sub: UIView, _: Void) in")
+//        append("sub.pin.width(100%).top(0)")
+//        if(child.attributes.containsKey("android:fillViewport")){
+//            append(".minHeight(100%)")
+//        }
+//        appendln()
+//        appendln("view.contentSize = sub.frame.size")
+//        appendln("}")
+//
+//        appendln("return sub")
+//
+//        appendln("}())")
+        appendln("view.flex.direction(.column).alignContent(.center).addItem({")
+        append("let sub = ")
         ViewType.write(this, node.children.first())
+        appendln()
+        appendln("self.onLayoutSubviews.addWeak(view, sub){ view, sub, _ in")
+        appendln("    view.contentSize.height = sub.flex.intrinsicSize.height")
+        appendln("}")
+        appendln("return sub")
+        appendln("}()")
+
         if (node.attributes["android:fillViewport"] == "true") {
-            appendln(").grow(1)")
+            appendln(").shrink(0).grow(1)")
         } else {
-            appendln(")")
+            appendln(").shrink(0)")
         }
     }
 
 
+    register("com.lightningkite.kwift.android.MultilineEditText", "UITextView", "EditText") { node ->
+
+    }
     register("EditText", "UITextField", "View") { node ->
         node.attributeAsString("android:hint")?.let { text ->
             appendln("view.placeholder = $text")
@@ -188,6 +235,13 @@ fun ViewType.Companion.setupNormalViewTypes() {
     }
 
 
+    register("CheckBox", "LabeledSwitch", "View"){
+        handleCommonText(it, "view.labelView")
+    }
+    register("Spinner", "Dropdown", "View"){}
+    register("RadioGroup", "UIView", "LinearLayout"){}
+    register("RadioButton", "UIButton", "Button"){}
+    register("ImageButton", "UIButton", "Button"){ node -> }
     register("Button", "UIButton", "View") { node ->
         node.attributeAsString("android:text")?.let { text ->
             appendln("view.setTitle($text, for: .normal)")
@@ -216,6 +270,27 @@ fun ViewType.Companion.setupNormalViewTypes() {
             }
 
 
+        node.attributeAsImage("android:drawableLeft")?.let { text ->
+            appendln("view.setImage($text, for: .normal)")
+        }
+        node.attributeAsImage("android:drawableTop")?.let { text ->
+            appendln("view.setImage($text, for: .normal)")
+            appendln("onLayoutSubviews.addWeak(view) { (view: UIButton, _: Void) in")
+            appendln("    view.setTitlePosition(.bottom)")
+            appendln("}")
+        }
+        node.attributeAsImage("android:drawableRight")?.let { text ->
+            appendln("view.setImage($text, for: .normal)")
+            appendln("onLayoutSubviews.addWeak(view) { (view: UIButton, _: Void) in")
+            appendln("    view.setTitlePosition(.left)")
+            appendln("}")
+        }
+        node.attributeAsImage("android:drawableBottom")?.let { text ->
+            appendln("view.setImage($text, for: .normal)")
+            appendln("onLayoutSubviews.addWeak(view) { (view: UIButton, _: Void) in")
+            appendln("    view.setTitlePosition(.top)")
+            appendln("}")
+        }
         node.attributeAsImage("android:src")?.let { text ->
             appendln("view.setImage($text, for: .normal)")
         }
@@ -227,6 +302,17 @@ fun ViewType.Companion.setupNormalViewTypes() {
                 else -> ".scaleAspectFit"
             }}"
         )
+
+        val defaultPadding = node.attributeAsDimension("android:padding") ?: 0
+        append("view.contentEdgeInsets = UIEdgeInsets(top: ")
+        append((node.attributeAsDimension("android:paddingTop") ?: defaultPadding).toString())
+        append(", left:")
+        append((node.attributeAsDimension("android:paddingLeft") ?: defaultPadding).toString())
+        append(", bottom:")
+        append((node.attributeAsDimension("android:paddingBottom") ?: defaultPadding).toString())
+        append(", right:")
+        append((node.attributeAsDimension("android:paddingRight") ?: defaultPadding).toString())
+        appendln(")")
     }
 
 
@@ -376,15 +462,15 @@ fun ViewType.Companion.setupNormalViewTypes() {
     }
 }
 
-private fun Appendable.handleCommonText(node: XmlNode) {
+private fun Appendable.handleCommonText(node: XmlNode, viewHandle: String = "view") {
     node.attributeAsString("android:text")?.let { text ->
-        appendln("view.text = $text")
+        appendln("$viewHandle.text = $text")
     }
     val size = node.attributeAsDimension("android:textSize") ?: "12"
     val fontStyles = node.attributes["android:textStyle"]?.split('|') ?: listOf()
-    appendln("view.font = UIFont.get(size: $size, style: [${fontStyles.joinToString { "\"$it\"" }}])")
+    appendln("$viewHandle.font = UIFont.get(size: $size, style: [${fontStyles.joinToString { "\"$it\"" }}])")
     node.attributeAsColor("android:textColor")?.let {
-        appendln("view.textColor = $it")
+        appendln("$viewHandle.textColor = $it")
     }
     node.attributes["android:gravity"]?.let {
         it.split('|')
@@ -398,7 +484,7 @@ private fun Appendable.handleCommonText(node: XmlNode) {
                     ".end" -> ".right"
                     else -> ".left"
                 }
-                appendln("view.textAlignment = $fixed")
+                appendln("$viewHandle.textAlignment = $fixed")
             }
     }
 }

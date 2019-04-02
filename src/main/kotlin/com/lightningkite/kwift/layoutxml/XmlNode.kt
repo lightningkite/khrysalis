@@ -3,9 +3,10 @@ package com.lightningkite.kwift.layoutxml
 import com.lightningkite.kwift.utils.camelCase
 import org.w3c.dom.Node
 import java.io.File
+import java.lang.Exception
 import javax.xml.parsers.DocumentBuilderFactory
 
-class XmlNode(val element: Node, val styles: Styles) {
+class XmlNode(val element: Node, val styles: Styles, val directory: File) {
     val name get() = element.nodeName
     val attributes: Map<String, String> by lazy {
         if (!element.hasAttributes()) return@lazy mapOf<String, String>()
@@ -33,7 +34,24 @@ class XmlNode(val element: Node, val styles: Styles) {
             (0 until att.length).asSequence()
                 .map { att.item(it) }
                 .filter { it.nodeType == Node.ELEMENT_NODE }
-                .map { XmlNode(it, styles) }
+                .map {
+                    if(it.nodeName == "include"){
+                        try {
+                            val filename = it.attributes
+                                ?.getNamedItem("layout")
+                                ?.nodeValue
+                                ?.removePrefix("@layout/")
+                                ?.plus(".xml")
+                                ?: return@map XmlNode(it, styles, directory)
+                            read(File(directory, filename), styles)
+                        } catch(e:Exception){
+                            e.printStackTrace()
+                            XmlNode(it, styles, directory)
+                        }
+                    } else {
+                        XmlNode(it, styles, directory)
+                    }
+                }
                 .toList()
         }
     }
@@ -42,7 +60,7 @@ class XmlNode(val element: Node, val styles: Styles) {
     companion object {
         fun read(file: File, styles: Styles): XmlNode {
             val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file)
-            return XmlNode(document.documentElement, styles)
+            return XmlNode(document.documentElement, styles, file.parentFile)
         }
     }
 }

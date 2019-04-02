@@ -28,7 +28,8 @@ fun Map<String, String>.writeXMLStrings(): String {
         appendln("public enum ResourcesStrings {")
         for((key, value) in this@writeXMLStrings.entries){
             val fixedString = value
-                .replace("\\", "'")
+                .replace("\\'", "'")
+                .replace("\\$", "$")
                 .replace(Regex("\n *"), " ")
             appendln("    static let ${key.camelCase()} = NSLocalizedString(\"$fixedString\", comment: \"$key\")")
         }
