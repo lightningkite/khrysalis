@@ -5,12 +5,15 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.lightningkite.kwift.VERSION
 import com.lightningkite.kwift.interfaces.getInterfaces
 import com.lightningkite.kwift.utils.Versioned
-import org.antlr.v4.runtime.ANTLRInputStream
-import org.antlr.v4.runtime.CommonTokenStream
+import org.antlr.v4.runtime.*
+import org.antlr.v4.runtime.atn.ATNConfigSet
+import org.antlr.v4.runtime.dfa.DFA
 import org.antlr.v4.runtime.tree.ParseTreeWalker
 import org.jetbrains.kotlin.KotlinLexer
 import org.jetbrains.kotlin.KotlinParser
 import java.io.File
+import java.util.*
+import kotlin.collections.HashMap
 
 
 fun kwiftTask(pairs: List<Pair<File, File>>) {
@@ -50,6 +53,49 @@ fun kwiftTask(pairs: List<Pair<File, File>>) {
                     val tokenStream = CommonTokenStream(lexer)
                     val parser = KotlinParser(tokenStream)
 
+                    var errorOccurred = false
+                    parser.addErrorListener(object : ANTLRErrorListener {
+                        override fun reportAttemptingFullContext(
+                            p0: Parser?,
+                            p1: DFA?,
+                            p2: Int,
+                            p3: Int,
+                            p4: BitSet?,
+                            p5: ATNConfigSet?
+                        ) {}
+
+                        override fun syntaxError(
+                            p0: Recognizer<*, *>?,
+                            p1: Any?,
+                            p2: Int,
+                            p3: Int,
+                            p4: String?,
+                            p5: RecognitionException?
+                        ) {
+                            errorOccurred = true
+                        }
+
+                        override fun reportAmbiguity(
+                            p0: Parser?,
+                            p1: DFA?,
+                            p2: Int,
+                            p3: Int,
+                            p4: Boolean,
+                            p5: BitSet?,
+                            p6: ATNConfigSet?
+                        ) {}
+
+                        override fun reportContextSensitivity(
+                            p0: Parser?,
+                            p1: DFA?,
+                            p2: Int,
+                            p3: Int,
+                            p4: Int,
+                            p5: ATNConfigSet?
+                        ) {}
+
+                    })
+
                     val listener = SwiftListener(tokenStream, parser, interfaces)
                     ParseTreeWalker.DEFAULT.walk(listener, parser.kotlinFile())
                     val outputText = "import Foundation\n" + listener.layers.last().last().toOutputString().retabSwift()
@@ -58,7 +104,7 @@ fun kwiftTask(pairs: List<Pair<File, File>>) {
 
                     FileConversionInfo(
                         path = file.path,
-                        inputHash = inputHash,
+                        inputHash = if(errorOccurred) 0 else inputHash,
                         outputHash = outputText.hashCode(),
                         outputPath = output.path
                     )

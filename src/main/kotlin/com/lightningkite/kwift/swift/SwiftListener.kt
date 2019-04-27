@@ -249,6 +249,8 @@ class SwiftListener(
         terminalRewrites[KotlinParser.INTERFACE] = { "protocol" }
         terminalRewrites[KotlinParser.AS] = { "as!" }
         terminalRewrites[KotlinParser.RETURN_AT] = { "return" }
+        terminalRewrites[KotlinParser.EXCL_EXCL] = { "!" }
+        terminalRewrites[KotlinParser.ELVIS] = { "??" }
     }
 
     var currentPackage = ""
@@ -292,18 +294,25 @@ class SwiftListener(
 
     override fun exitWhenEntry(ctx: KotlinParser.WhenEntryContext) {
         val body = get(KotlinParser.RULE_controlStructureBody)?.let {
-            it.copy(
-                text = it.text.trim().removePrefix("{").removeSuffix("}")
-            )
+            val trimmed = it.text.trim()
+            if(trimmed.startsWith("{")){
+                it.copy(
+                    text = it.text.trim().removePrefix("{").removeSuffix("}")
+                )
+            } else {
+                it.copy(
+                    text = it.text.trim()
+                )
+            }
         } ?: Section("")
         val condition = layers.last().asSequence()
             .take(layers.last().indexOfFirst { it.rule == -KotlinParser.ARROW })
             .joinClean()
             .copy(spacingBefore = "")
         if (condition.text.contains("else")) {
-            overridden = default.copy(text = "default: ${body.toOutputString()}")
+            overridden = default.copy(text = "default:\n${body.toOutputString()}\n")
         } else {
-            overridden = default.copy(text = "case ${condition.toOutputString()}: ${body.toOutputString()}")
+            overridden = default.copy(text = "case ${condition.toOutputString()}:\n${body.toOutputString()}\n")
         }
     }
 
@@ -336,11 +345,9 @@ class SwiftListener(
     val directIfs = ArrayList<Int>()
     override fun enterIfExpression(ctx: KotlinParser.IfExpressionContext) {
         directIfs.add(ctx.expression().start.startIndex)
-        println("ENTER IF AT ${ctx.expression().start.startIndex}")
     }
 
     override fun exitIfExpression(ctx: KotlinParser.IfExpressionContext) {
-        println("EXIT IF AT ${ctx.expression().start.startIndex}")
         directIfs.removeAt(directIfs.lastIndex)
 
         overridden = layers.last().asSequence().map {
@@ -354,17 +361,11 @@ class SwiftListener(
 
     override fun exitInfixOperation(ctx: KotlinParser.InfixOperationContext) {
         val default = default
-        println(
-            "CHECK is AT ${ctx.start.startIndex} AGAINST ${directIfs.lastOrNull()}, TEXT = ${default.text} MATCHES? ${default.text.matches(
-                Regex("\\w+ *is *.*")
-            )} AND ${ctx.isOperator != null}"
-        )
         overridden = if (
             ctx.isOperator != null &&
             ctx.start.startIndex in directIfs &&
             default.text.matches(Regex("\\w+ *is *.*"))
         ) {
-            println("PASS, FIXING")
             layers.last().asSequence().map {
                 when (it.rule) {
                     KotlinParser.RULE_infixFunctionCall -> it.copy(text = "let " + it.text + " = " + it.text)
@@ -379,17 +380,11 @@ class SwiftListener(
 
     override fun exitInfixFunctionCall(ctx: KotlinParser.InfixFunctionCallContext) {
         val default = default
-        println(
-            "CHECK is AT ${ctx.start.startIndex} AGAINST ${directIfs.lastOrNull()}, TEXT = ${default.text} MATCHES? ${default.text.matches(
-                Regex("\\w+ *is *.*")
-            )} AND ${ctx.simpleIdentifier().joinToString { it.text }}"
-        )
         overridden = if (
             ctx.simpleIdentifier().firstOrNull()?.text == "is" &&
             ctx.start.startIndex in directIfs &&
             default.text.matches(Regex("\\w+ *is *.*"))
         ) {
-            println("PASS, FIXING")
             var once = false
             layers.last().asSequence().map {
                 when (it.rule) {
@@ -415,7 +410,6 @@ class SwiftListener(
             ctx.start.startIndex in directIfs &&
             default.text.matches(Regex("\\w+ *!= *nil"))
         ) {
-            println("PASS, FIXING")
             get(KotlinParser.RULE_comparison)!!.let {
                 it.copy(text = "let " + it.text + " = " + it.text)
             }
@@ -485,7 +479,10 @@ class SwiftListener(
     val callIsWeakLambdaStack = BooleanArray(256) { false }
     var callIsWeakLambdaStackIndex = -1
     var callIsWeakCurrent: Boolean
-        get() = callIsWeakLambdaStack[callIsWeakLambdaStackIndex]
+        get() {
+            if(callIsWeakLambdaStackIndex < 0) return false
+            return callIsWeakLambdaStack[callIsWeakLambdaStackIndex]
+        }
         set(value) {
             callIsWeakLambdaStack[callIsWeakLambdaStackIndex] = value
         }
@@ -504,10 +501,15 @@ class SwiftListener(
     }
 
     override fun exitFunctionDeclaration(ctx: KotlinParser.FunctionDeclarationContext) {
-        var defaultOrder = -1f
         val mainSeq = layers.last().asSequence().map {
             when (it.rule) {
-                -KotlinParser.FUN -> it.copy(text = "func")
+                -KotlinParser.FUN -> {
+                    if(currentClass?.isObject == true && ctx.parent.ruleIndex == KotlinParser.RULE_classMemberDeclaration){
+                        it.copy(text = "static func")
+                    } else {
+                        it.copy(text = "func")
+                    }
+                }
                 -KotlinParser.COLON -> it.copy(text = "->", spacingBefore = " ")
                 KotlinParser.RULE_modifierList -> {
                     val functionName = text(KotlinParser.RULE_identifier)
@@ -559,7 +561,7 @@ class SwiftListener(
                             "Nothing" -> true
                             else -> false
                         }
-                        it.copy(text = "{ ${if (returnTypeIsUnit) "" else "return "}${ctx.identifier().text}(${ctx.functionValueParameters().functionValueParameter().joinToString {
+                        it.copy(text = "{ ${if (returnTypeIsUnit) "" else "return "}${ctx.identifier().text.let{ if(currentClass?.isObject == true) "${currentClass!!.name}.$it" else it }}(${ctx.functionValueParameters().functionValueParameter().joinToString {
                             "${it.parameter().simpleIdentifier().text}: ${it.parameter().simpleIdentifier().text}"
                         }}) }")
                     }
@@ -628,6 +630,7 @@ class SwiftListener(
         var superConstructorCall: Section? = null
         var body: List<Section> = listOf()
         var isInterface: Boolean = false
+        var isObject = false
     }
 
     val classStack = ArrayList<ClassInformation>()
@@ -658,8 +661,8 @@ class SwiftListener(
     }
 
     override fun exitClassDeclaration(ctx: KotlinParser.ClassDeclarationContext) {
-        val isSerializable = text(KotlinParser.RULE_delegationSpecifiers)?.contains("Serializable") ?: false
-
+        val isSerializable = text(KotlinParser.RULE_delegationSpecifiers)?.contains("Serializable") ?: false && currentClass?.isInterface == false
+        val isDataClass = text(KotlinParser.RULE_modifierList)?.contains("data") == true
         val modifiers = (get(KotlinParser.RULE_modifierList) ?: Section("public ")).let {
             val text = it.text.let {
                 if (it.contains("open") || it.contains("enum") || it.contains("abstract") || (currentClass?.isInterface != false))
@@ -704,7 +707,7 @@ class SwiftListener(
             .asSequence()
             .map {
                 Section(
-                    text = it.savedAs!! + " " + it.section.text.replace("@escaping", "").trim().substringBefore("="),
+                    text = "public " + it.savedAs!! + " " + it.section.text.replace("@escaping", "").trim().substringBefore("="),
                     spacingBefore = "\n"
                 )
             }
@@ -857,6 +860,38 @@ class SwiftListener(
         }
 
 
+        if (isDataClass) {
+            additionalThings.add(
+                Section(
+                text = buildString {
+                    appendln("public func copy(")
+                    var firstDone = false
+                    for(x in fields){
+                        if(firstDone){
+                            append(',')
+                            appendln()
+                        }
+                        append(x.run{"$name: $type? = nil"})
+                        firstDone = true
+                    }
+                    appendln("\n) -> ${currentClass!!.name} {")
+                    appendln("return ${currentClass!!.name}(")
+                    firstDone = false
+                    for(x in fields){
+                        if(firstDone){
+                            append(',')
+                            appendln()
+                        }
+                        append(x.run{"$name: $name ?? self.$name"})
+                        firstDone = true
+                    }
+                    appendln("\n)")
+                    appendln("}")
+                },
+                spacingBefore = "\n\n"
+            ))
+        }
+
         val bodyPreConstructor = if (currentClass!!.body.isEmpty()) {
             sequenceOf(Section("{"))
         } else {
@@ -876,16 +911,13 @@ class SwiftListener(
     }
 
     override fun enterCompanionObject(ctx: KotlinParser.CompanionObjectContext?) {
-        classStack.add(ClassInformation(currentClass!!.name))
+        classStack.add(ClassInformation(currentClass!!.name).apply{ isObject = true })
     }
 
     override fun exitCompanionObject(ctx: KotlinParser.CompanionObjectContext?) {
         overridden = (
                 currentClass!!.body.mapNotNull {
                     when {
-                        it.text.startsWith("func") -> it.copy(text = "static " + it.text)
-                        it.text.startsWith("var") -> it.copy(text = "static " + it.text)
-                        it.text.startsWith("let") -> it.copy(text = "static " + it.text)
                         it.rule == -KotlinParser.LCURL -> null
                         it.rule == -KotlinParser.RCURL -> null
                         else -> it
@@ -896,7 +928,7 @@ class SwiftListener(
     }
 
     override fun enterObjectDeclaration(ctx: KotlinParser.ObjectDeclarationContext) {
-        classStack.add(ClassInformation(ctx.simpleIdentifier().text))
+        classStack.add(ClassInformation(ctx.simpleIdentifier().text).apply { isObject = true })
     }
 
     override fun exitObjectDeclaration(ctx: KotlinParser.ObjectDeclarationContext) {
@@ -926,15 +958,8 @@ class SwiftListener(
             }
 
         overridden = (
-                sequenceOf(modifiers) + header + currentClass!!.body.map {
-                    when {
-                        it.text.startsWith("func") -> it.copy(text = "static " + it.text)
-                        it.text.startsWith("var") -> it.copy(text = "static " + it.text)
-                        it.text.startsWith("let") -> it.copy(text = "static " + it.text)
-                        else -> it
-                    }
-                }
-                ).joinClean()
+                sequenceOf(modifiers) + header + currentClass!!.body
+        ).joinClean()
 
         classStack.removeAt(classStack.lastIndex)
     }
@@ -959,7 +984,7 @@ class SwiftListener(
                 }
                 KotlinParser.RULE_modifierList -> {
                     escaping = it.text.contains("@escaping")
-                    it.copy(text = it.text.replace("@escaping", "").trim())
+                    it.copy(text = it.text.replace("@escaping", "").replace("override", "").trim())
                 }
                 KotlinParser.RULE_type -> {
                     typeText = it.text
@@ -1085,6 +1110,11 @@ class SwiftListener(
                 else -> it
             }
         }.joinClean()
+
+
+        if(currentClass?.isObject == true && ctx.parent.ruleIndex == KotlinParser.RULE_classMemberDeclaration){
+            overridden = overridden!!.copy(text = "static " + overridden!!.text)
+        }
     }
 
     override fun exitGetter(ctx: KotlinParser.GetterContext) {

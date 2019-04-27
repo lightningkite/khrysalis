@@ -398,6 +398,7 @@ fun ViewType.Companion.setupNormalViewTypes() {
                     append(".alignSelf($align)")
                 } ?: append(".alignSelf($defaultAlign)")
             appendln()
+            appendln()
         }
         appendln("}")
     }
@@ -458,6 +459,7 @@ fun ViewType.Companion.setupNormalViewTypes() {
             appendln("return sub")
 
             appendln("}())")
+            appendln()
         }
     }
 }

@@ -1,16 +1,40 @@
 package com.lightningkite.kwift
 
 import com.lightningkite.kwift.layoutxml.xmlTask
+import com.lightningkite.kwift.swift.ignoreKotlinOnly
 import com.lightningkite.kwift.swift.kwiftTask
+import org.antlr.v4.runtime.ANTLRInputStream
+import org.antlr.v4.runtime.CommonTokenStream
+import org.jetbrains.kotlin.KotlinLexer
+import org.jetbrains.kotlin.KotlinParser
 import java.io.File
 
 
 const val INTERFACE_SCAN_VERSION: Int = 2
-const val VERSION: Int = 3
+const val VERSION: Int = 4
 
 fun main(vararg args: String) {
-//    testKwift()
-    testXml()
+    testKwift()
+//    testXml()
+//    testReader()
+}
+
+private fun testReader(){
+    val text = """
+        ({
+            state++
+            ++state
+        })
+    """.trimIndent()
+    val lexer = KotlinLexer(ANTLRInputStream(text))
+    val tokenStream = CommonTokenStream(lexer)
+    tokenStream.fill()
+    println("Tokens: ")
+    tokenStream.tokens.forEach {
+        if(it.type == -1) return@forEach
+        val typeName = KotlinLexer.VOCABULARY.getSymbolicName(it.type)
+        println("${typeName}: ${it.text}")
+    }
 }
 
 private fun testXml(){
