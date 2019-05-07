@@ -50,7 +50,12 @@ fun ViewType.Companion.setupNormalViewTypes() {
 
     register("ImageView", "UIImageView", "View") { node ->
         node.attributeAsImage("android:src")?.let { text ->
-            appendln("view.image = $text")
+            val defaultPadding = node.attributeAsDimension("android:padding") ?: 0
+            val paddingTop = (node.attributeAsDimension("android:paddingTop") ?: defaultPadding)
+            val paddingLeft = (node.attributeAsDimension("android:paddingLeft") ?: defaultPadding)
+            val paddingBottom = (node.attributeAsDimension("android:paddingBottom") ?: defaultPadding)
+            val paddingRight = (node.attributeAsDimension("android:paddingRight") ?: defaultPadding)
+            appendln("view.image = $text?.withInset(insets: UIEdgeInsets(top: $paddingTop, left: $paddingLeft, bottom: $paddingBottom, right: $paddingRight))")
         }
         appendln(
             "view.contentMode = ${when (node.attributes["android:scaleType"]) {
@@ -70,6 +75,13 @@ fun ViewType.Companion.setupNormalViewTypes() {
 //        append(", right:")
 //        append((node.attributeAsDimension("android:paddingRight") ?: defaultPadding).toString())
 //        appendln(")")
+    }
+    register("de.hdodenhof.circleimageview.CircleImageView", "UIImageView", "ImageView") { node ->
+
+        appendln("self.onLayoutSubviews.addWeak(view){ view, _ in")
+        appendln("    view.layer.cornerRadius = view.frame.size.width / 2;")
+        appendln("}")
+        appendln("view.clipsToBounds = true")
     }
 
 
@@ -128,6 +140,19 @@ fun ViewType.Companion.setupNormalViewTypes() {
 
     }
     register("EditText", "UITextField", "View") { node ->
+        val defaultPadding = node.attributeAsDimension("android:padding") ?: 0
+        val paddingTop = (node.attributeAsDimension("android:paddingTop") ?: defaultPadding)
+        val paddingLeft = (node.attributeAsDimension("android:paddingLeft") ?: defaultPadding)
+        val paddingBottom = (node.attributeAsDimension("android:paddingBottom") ?: defaultPadding)
+        val paddingRight = (node.attributeAsDimension("android:paddingRight") ?: defaultPadding)
+
+        if(paddingLeft != 0){
+            appendln("view.setLeftPaddingPoints($paddingLeft)")
+        }
+        if(paddingRight != 0){
+            appendln("view.setRightPaddingPoints($paddingRight)")
+        }
+
         node.attributeAsString("android:hint")?.let { text ->
             appendln("view.placeholder = $text")
         }
@@ -231,6 +256,9 @@ fun ViewType.Companion.setupNormalViewTypes() {
                 }
             }
         }
+        if(node.attributes["android:background"] == null){
+            appendln("ResourcesBackground.apply(self, view, \"edit_text_background\")")
+        }
         handleCommonText(node)
     }
 
@@ -250,10 +278,6 @@ fun ViewType.Companion.setupNormalViewTypes() {
             appendln("view.setTitleColor($it, for: .normal)")
         }
         val size = node.attributeAsDimension("android:textSize") ?: "12"
-        val fontStyles = node.attributes["android:textStyle"]?.split('|') ?: listOf()
-        appendln("view.titleLabel?.font = UIFont.get(size: $size, style: [${fontStyles.joinToString { "\"$it\"" }}])")
-        val lines = node.attributeAsInt("android:maxLines")
-        appendln("view.titleLabel?.numberOfLines = ${lines ?: 0}")
         node.attributes["android:gravity"]
             ?.split('|')
             ?.asSequence()
@@ -313,6 +337,8 @@ fun ViewType.Companion.setupNormalViewTypes() {
         append(", right:")
         append((node.attributeAsDimension("android:paddingRight") ?: defaultPadding).toString())
         appendln(")")
+
+        handleCommonText(node, "view.titleLabel?")
     }
 
 
@@ -468,6 +494,8 @@ private fun Appendable.handleCommonText(node: XmlNode, viewHandle: String = "vie
     node.attributeAsString("android:text")?.let { text ->
         appendln("$viewHandle.text = $text")
     }
+    val lines = node.attributeAsInt("android:maxLines")
+    appendln("$viewHandle.numberOfLines = ${lines ?: 0}")
     val size = node.attributeAsDimension("android:textSize") ?: "12"
     val fontStyles = node.attributes["android:textStyle"]?.split('|') ?: listOf()
     appendln("$viewHandle.font = UIFont.get(size: $size, style: [${fontStyles.joinToString { "\"$it\"" }}])")

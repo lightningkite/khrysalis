@@ -11,3 +11,8 @@ enum class AnotherEnum {
 }
 
 enum class SingleLine { VALUE1, VALUE2 }
+
+enum class ConformingEnum: Serializable {
+  VAL1,
+  VAL2
+}
