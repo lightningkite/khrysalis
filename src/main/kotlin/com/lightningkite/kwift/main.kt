@@ -21,9 +21,8 @@ fun main(vararg args: String) {
 
 private fun testReader(){
     val text = """
-        ({
-            state++
-            ++state
+        inLambda({
+            var menteeSession = session as MenteeSession
         })
     """.trimIndent()
     val lexer = KotlinLexer(ANTLRInputStream(text))

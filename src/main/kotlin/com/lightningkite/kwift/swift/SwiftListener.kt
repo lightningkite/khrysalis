@@ -248,6 +248,7 @@ class SwiftListener(
         terminalRewrites[KotlinParser.THIS] = { "self" }
         terminalRewrites[KotlinParser.INTERFACE] = { "protocol" }
         terminalRewrites[KotlinParser.AS] = { "as!" }
+        terminalRewrites[KotlinParser.AS_SAFE] = { "as?" }
         terminalRewrites[KotlinParser.RETURN_AT] = { "return" }
         terminalRewrites[KotlinParser.EXCL_EXCL] = { "!" }
         terminalRewrites[KotlinParser.ELVIS] = { "??" }
@@ -276,7 +277,7 @@ class SwiftListener(
 
     override fun exitPackageHeader(ctx: KotlinParser.PackageHeaderContext?) {
         val default = default
-        overridden = default.copy(text = "//${default.text}")
+        overridden = default.copy(text = "//${default.text}\n")
     }
 
     override fun exitWhenExpression(ctx: KotlinParser.WhenExpressionContext) {
@@ -976,6 +977,22 @@ class SwiftListener(
 
     override fun enterObjectDeclaration(ctx: KotlinParser.ObjectDeclarationContext) {
         classStack.add(ClassInformation(ctx.simpleIdentifier().text).apply { isObject = true })
+        currentClass?.implements = (ctx.delegationSpecifiers()?.delegationSpecifier()?.flatMap {
+            val userType = it.userType() ?: it.constructorInvocation()?.userType() ?: return@flatMap listOf<String>()
+            val id = userType.text.substringBefore('<')
+            if (id.firstOrNull()?.isLowerCase() == true) {
+                //qualified
+                listOf(id)
+            } else {
+                imports.find {
+                    it.endsWith(id)
+                }?.let { listOf(it) } ?: imports.filter {
+                    it.endsWith('*')
+                }.map {
+                    it.removeSuffix("*").plus(id)
+                }.plus(currentPackage + "." + id)
+            }
+        } ?: listOf())
     }
 
     override fun exitObjectDeclaration(ctx: KotlinParser.ObjectDeclarationContext) {

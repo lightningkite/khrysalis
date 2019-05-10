@@ -1,6 +1,7 @@
 package com.lightningkite.kwift.layoutxml
 
 import com.lightningkite.kwift.utils.camelCase
+import com.lightningkite.kwift.utils.forEachBetween
 
 fun ViewType.Companion.setupNormalViewTypes() {
 
@@ -39,6 +40,13 @@ fun ViewType.Companion.setupNormalViewTypes() {
                 }
             }
         }
+        node.attributeAsDimension("android:elevation")?.let {
+            appendln("view.layer.masksToBounds = false")
+            appendln("view.layer.shadowColor = UIColor.black.cgColor")
+            appendln("view.layer.shadowOffset = CGSize(width: 0, height: $it)")
+            appendln("view.layer.shadowRadius = $it")
+            appendln("view.layer.shadowOpacity = 0.24")
+        }
     }
 
 
@@ -65,16 +73,6 @@ fun ViewType.Companion.setupNormalViewTypes() {
                 else -> ".scaleAspectFit"
             }}"
         )
-//        val defaultPadding = node.attributeAsDimension("android:padding") ?: 0
-//        append("view.contentEdgeInsets = UIEdgeInsets(top: ")
-//        append((node.attributeAsDimension("android:paddingTop") ?: defaultPadding).toString())
-//        append(", left:")
-//        append((node.attributeAsDimension("android:paddingLeft") ?: defaultPadding).toString())
-//        append(", bottom:")
-//        append((node.attributeAsDimension("android:paddingBottom") ?: defaultPadding).toString())
-//        append(", right:")
-//        append((node.attributeAsDimension("android:paddingRight") ?: defaultPadding).toString())
-//        appendln(")")
     }
     register("de.hdodenhof.circleimageview.CircleImageView", "UIImageView", "ImageView") { node ->
 
@@ -118,9 +116,10 @@ fun ViewType.Companion.setupNormalViewTypes() {
 //        appendln("return sub")
 //
 //        appendln("}())")
+        val child = node.children.first()
         appendln("view.flex.direction(.column).alignContent(.center).addItem({")
         append("let sub = ")
-        ViewType.write(this, node.children.first())
+        ViewType.write(this, child)
         appendln()
         appendln("self.onLayoutSubviews.addWeak(view, sub){ view, sub, _ in")
         appendln("    view.contentSize.height = sub.flex.intrinsicSize.height")
@@ -129,10 +128,23 @@ fun ViewType.Companion.setupNormalViewTypes() {
         appendln("}()")
 
         if (node.attributes["android:fillViewport"] == "true") {
-            appendln(").shrink(0).grow(1)")
+            append(").shrink(0).grow(1)")
         } else {
-            appendln(").shrink(0)")
+            append(").shrink(0)")
         }
+        child.attributeAsDimension("android:layout_width")?.let { s ->
+            append(".width($s)")
+        }
+        child.attributeAsDimension("android:layout_height")?.let { s ->
+            append(".height($s)")
+        }
+        child.attributeAsDimension("android:minWidth")?.let { s ->
+            append(".minWidth($s)")
+        }
+        child.attributeAsDimension("android:minHeight")?.let { s ->
+            append(".minHeight($s)")
+        }
+        appendln()
     }
 
 
@@ -353,6 +365,10 @@ fun ViewType.Companion.setupNormalViewTypes() {
         val alignWords = if (isHorizontal) verticalGravityWords else horizontalGravityWords
         val justifyWords = if (isHorizontal) horizontalGravityWords else verticalGravityWords
 
+        val dividerStart = node.attributes["android:showDividers"]?.contains("beginning") ?: false
+        val dividerMiddle = node.attributes["android:showDividers"]?.contains("middle") ?: false
+        val dividerEnd = node.attributes["android:showDividers"]?.contains("end") ?: false
+
         append("view.flex.direction(")
         append(if (isHorizontal) ".row" else ".column")
         append(").padding(")
@@ -381,51 +397,68 @@ fun ViewType.Companion.setupNormalViewTypes() {
             ?: ".start"
         )
         appendln(").define{ (flex) in ")
-        for (child in node.children) {
-            append("flex.addItem(")
-            ViewType.write(this, child)
-            append(").margin(")
-            val defaultMargin = child.attributeAsDimension("android:layout_margin") ?: 0
-            append((child.attributeAsDimension("android:layout_marginTop") ?: defaultMargin).toString())
-            append(", ")
-            append((child.attributeAsDimension("android:layout_marginLeft") ?: defaultMargin).toString())
-            append(", ")
-            append((child.attributeAsDimension("android:layout_marginBottom") ?: defaultMargin).toString())
-            append(", ")
-            append((child.attributeAsDimension("android:layout_marginRight") ?: defaultMargin).toString())
-            append(")")
-            child.attributeAsDimension("android:layout_weight")?.let { weight ->
-                append(".grow($weight).shrink($weight)")
-            }
-            child.attributeAsDimension("android:layout_width")?.let { s ->
-                append(".width($s)")
-            }
-            child.attributeAsDimension("android:layout_height")?.let { s ->
-                append(".height($s)")
-            }
-            child.attributeAsDimension("android:minWidth")?.let { s ->
-                append(".minWidth($s)")
-            }
-            child.attributeAsDimension("android:minHeight")?.let { s ->
-                append(".minHeight($s)")
-            }
-            child.attributes[alignDimension]?.let {
-                if(it == "match_parent"){
-                    append(".alignSelf(.stretch)")
-                } else {
-                    null
-                }
-            } ?: child.attributes["android:layout_gravity"]
-                ?.split('|')
-                ?.asSequence()
-                ?.mapNotNull { alignWords[it] }
-                ?.firstOrNull()
-                ?.let { align ->
-                    append(".alignSelf($align)")
-                } ?: append(".alignSelf($defaultAlign)")
-            appendln()
-            appendln()
+
+        val dividerText = node.attributes["tools:iosDivider"] ?: "flex.addItem().height(1).backgroundColor(.gray)"
+
+        if(dividerStart){
+            appendln(dividerText)
         }
+        node.children.forEachBetween(
+            forItem = { child ->
+                append("flex.addItem(")
+                ViewType.write(this, child)
+                append(").margin(")
+                val defaultMargin = child.attributeAsDimension("android:layout_margin") ?: 0
+                append((child.attributeAsDimension("android:layout_marginTop") ?: defaultMargin).toString())
+                append(", ")
+                append((child.attributeAsDimension("android:layout_marginLeft") ?: defaultMargin).toString())
+                append(", ")
+                append((child.attributeAsDimension("android:layout_marginBottom") ?: defaultMargin).toString())
+                append(", ")
+                append((child.attributeAsDimension("android:layout_marginRight") ?: defaultMargin).toString())
+                append(")")
+                child.attributeAsDimension("android:layout_weight")?.let { weight ->
+                    append(".grow($weight).shrink($weight)")
+                }
+                child.attributeAsDimension("android:layout_width")?.let { s ->
+                    append(".width($s)")
+                }
+                child.attributeAsDimension("android:layout_height")?.let { s ->
+                    append(".height($s)")
+                }
+                child.attributeAsDimension("android:minWidth")?.let { s ->
+                    append(".minWidth($s)")
+                }
+                child.attributeAsDimension("android:minHeight")?.let { s ->
+                    append(".minHeight($s)")
+                }
+                child.attributes[alignDimension]?.let {
+                    if(it == "match_parent"){
+                        append(".alignSelf(.stretch)")
+                    } else {
+                        null
+                    }
+                } ?: child.attributes["android:layout_gravity"]
+                    ?.split('|')
+                    ?.asSequence()
+                    ?.mapNotNull { alignWords[it] }
+                    ?.firstOrNull()
+                    ?.let { align ->
+                        append(".alignSelf($align)")
+                    } ?: append(".alignSelf($defaultAlign)")
+                appendln()
+                appendln()
+            },
+            between = {
+                if(dividerMiddle){
+                    appendln(dividerText)
+                }
+            }
+        )
+        if(dividerEnd){
+            appendln(dividerText)
+        }
+
         appendln("}")
     }
 
