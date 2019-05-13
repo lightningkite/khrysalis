@@ -12,11 +12,15 @@ data class ViewType(
 
         val skipTypes = HashSet<String>()
         val registry = HashMap<String, ViewType>()
-        val default = ViewType(
-            "UnknownView",
-            "UIView",
-            "View"
-        ) { appendln("//Unrecognized type ${it.name}") }
+        fun default(node: XmlNode): ViewType {
+            val newViewType = ViewType(
+                node.name,
+                "CustomView" + node.name.substringAfterLast('.'),
+                "View"
+            ) { }
+            register(newViewType)
+            return newViewType
+        }
 
         fun register(type: ViewType) {
             registry[type.androidName] = type
@@ -47,7 +51,7 @@ data class ViewType(
                     write(appendable, child)
                 }
             } else {
-                (registry[node.name] ?: default).write(appendable, node)
+                (registry[node.name] ?: default(node)).write(appendable, node)
             }
         }
 
