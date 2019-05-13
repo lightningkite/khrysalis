@@ -50,6 +50,7 @@ fun ViewType.Companion.setupNormalViewTypes() {
     }
 
 
+    register("com.lightningkite.kwift.actuals.DateButton", "DateButton", "Button"){}
     register("android.support.v7.widget.RecyclerView", "UITableView", "View"){}
     register("Space", "UIView", "View"){}
     skipTypes += "android.support.v4.widget.SwipeRefreshLayout"
@@ -121,9 +122,13 @@ fun ViewType.Companion.setupNormalViewTypes() {
         append("let sub = ")
         ViewType.write(this, child)
         appendln()
+        appendln("let dg = ScrollSavingDelegate()")
+        appendln("view.delegate = dg")
         appendln("self.onLayoutSubviews.addWeak(view, sub){ view, sub, _ in")
-        appendln("    view.contentSize.height = sub.flex.intrinsicSize.height")
+        appendln("    view.contentSize = sub.frame.size")
+        appendln("    view.contentOffset = dg.lastNonzeroOffset")
         appendln("}")
+        appendln("")
         appendln("return sub")
         appendln("}()")
 

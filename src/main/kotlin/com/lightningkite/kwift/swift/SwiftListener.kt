@@ -369,7 +369,7 @@ class SwiftListener(
         ) {
             layers.last().asSequence().map {
                 when (it.rule) {
-                    KotlinParser.RULE_infixFunctionCall -> it.copy(text = "let " + it.text + " = " + it.text)
+                    KotlinParser.RULE_elvisExpression -> it.copy(text = "let " + it.text + " = " + it.text)
                     KotlinParser.RULE_isOperator -> it.copy(text = "as?")
                     else -> it
                 }
