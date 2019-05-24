@@ -2,6 +2,7 @@ import Foundation
 // Simple Interface
 //package com.lightningkite.interfaceTest
 
+
 //import com.lightningkite.others.*
 
 public protocol MyInterface {

@@ -11,7 +11,7 @@ import java.io.File
 
 
 const val INTERFACE_SCAN_VERSION: Int = 2
-const val VERSION: Int = 4
+const val VERSION: Int = 9
 
 fun main(vararg args: String) {
     testKwift()

@@ -43,11 +43,11 @@ class SwiftListener(
                 )
             }
         }
-        handleFunctionReplacement["isEmpty"] = {
-            overridden = default.copy(
-                text = text(KotlinParser.RULE_assignableExpression)!!
-            )
-        }
+//        handleFunctionReplacement["isEmpty"] = {
+//            overridden = default.copy(
+//                text = text(KotlinParser.RULE_assignableExpression)!!
+//            )
+//        }
         handleFunctionReplacement["arrayOf"] = {
             val valueArguments = text(KotlinParser.RULE_valueArguments)
             if (valueArguments != null && valueArguments.length > 2) {
@@ -669,7 +669,7 @@ class SwiftListener(
 
     override fun exitClassDeclaration(ctx: KotlinParser.ClassDeclarationContext) {
         val isSerializable =
-            text(KotlinParser.RULE_delegationSpecifiers)?.contains("Serializable") ?: false && currentClass?.isInterface == false
+            text(KotlinParser.RULE_delegationSpecifiers)?.contains("Codable") ?: false && currentClass?.isInterface == false
         val isDataClass = text(KotlinParser.RULE_modifierList)?.contains("data") == true
         val isEnum = ctx.enumClassBody() != null
         val modifiers = (get(KotlinParser.RULE_modifierList) ?: Section("public ")).let {
@@ -813,95 +813,29 @@ class SwiftListener(
         val additionalThings = ArrayList<Section>()
 
         if (isSerializable) {
-            if(isEnum){
+            if(!isEnum){
                 val name = text(KotlinParser.RULE_simpleIdentifier)
                 additionalThings.add(Section(buildString {
-                    appendln("public static func fromData(data: Any?) -> $name {")
-                    appendln("return $name(rawValue: data as! String)!")
-                    appendln("}")
-                    appendln("public func toData() -> Any? {")
-                    appendln("return self.rawValue")
-                    appendln("}")
-                }))
-            } else {
-                val name = text(KotlinParser.RULE_simpleIdentifier)
-                val mapConstructor = ArrayList<Section>()
-                mapConstructor.add(
-                    Section(
-                        text = "public static func fromData(data: Any?) -> $name {",
-                        spacingBefore = "\n\n"
-                    )
-                )
-                mapConstructor.add(
-                    Section(
-                        text = "let map = data as! [String: Any?]",
-                        spacingBefore = "\n"
-                    )
-                )
-                mapConstructor.add(
-                    Section(
-                        text = "return $name(",
-                        spacingBefore = "\n"
-                    )
-                )
-                fields.forEachIndexed { index, field ->
-                    val comma = if (index == fields.lastIndex) "" else ","
-                    mapConstructor.add(
-                        Section(
-                            text = "${field.name}: ${field.type}.fromData(data: map[\"${field.name.snakeCase()}\"] as Any?)$comma",
-                            spacingBefore = "\n"
-                        )
-                    )
-                }
-                mapConstructor.add(
-                    Section(
-                        text = ")",
-                        spacingBefore = "\n"
-                    )
-                )
-                mapConstructor.add(
-                    Section(
-                        text = "}",
-                        spacingBefore = "\n"
-                    )
-                )
-                additionalThings.add(mapConstructor.joinClean())
 
-                val mapWriter = ArrayList<Section>()
-                mapWriter.add(
-                    Section(
-                        text = "public func toData() -> Any? {",
-                        spacingBefore = "\n\n"
-                    )
-                )
-                mapWriter.add(
-                    Section(
-                        text = "return [",
-                        spacingBefore = "\n"
-                    )
-                )
-                fields.forEachIndexed { index, field ->
-                    val comma = if (index == fields.lastIndex) "" else ","
-                    mapWriter.add(
-                        Section(
-                            text = "\"${field.name.snakeCase()}\": ${field.name}.toData()$comma",
-                            spacingBefore = "\n"
-                        )
-                    )
-                }
-                mapWriter.add(
-                    Section(
-                        text = "]",
-                        spacingBefore = "\n"
-                    )
-                )
-                mapWriter.add(
-                    Section(
-                        text = "}\n",
-                        spacingBefore = "\n"
-                    )
-                )
-                additionalThings.add(mapWriter.joinClean())
+                    appendln()
+                    appendln("enum CodingKeys: String, CodingKey {")
+                    for(field in fields){
+                        appendln("case ${field.name} = \"${field.name.snakeCase()}\"")
+                    }
+                    appendln("}")
+                    appendln()
+                    appendln("public init(from decoder: Decoder) throws {")
+                    appendln("let values = try decoder.container(keyedBy: CodingKeys.self)")
+                    fields.forEachIndexed { index, field ->
+                        if(field.default != null){
+                            appendln("${field.name} = try values.decodeIfPresent(${field.type}.self, forKey: .${field.name}) ?? ${field.default}")
+                        } else {
+                            appendln("${field.name} = try values.decode(${field.type}.self, forKey: .${field.name})")
+                        }
+                    }
+                    appendln("}")
+                    appendln()
+                }))
             }
 
         }
@@ -1034,7 +968,7 @@ class SwiftListener(
         currentClass!!.body = layers.last()
     }
 
-    data class ClassParameterData(val savedAs: String? = null, val name: String, val section: Section, val type: String)
+    data class ClassParameterData(val savedAs: String? = null, val name: String, val section: Section, val type: String, val default: String?)
 
     override fun exitClassParameter(ctx: KotlinParser.ClassParameterContext?) {
         var escaping = false
@@ -1068,7 +1002,8 @@ class SwiftListener(
                 savedAs = savedAs,
                 name = text(KotlinParser.RULE_simpleIdentifier) ?: "[no path found]",
                 section = section,
-                type = typeText
+                type = typeText,
+                default = get(KotlinParser.RULE_expression)?.text
             )
         )
     }
