@@ -6,12 +6,22 @@ import java.io.File
 
 fun xmlTask(
     resourcesFolder: File,
+    baseFolderForLocalizations: File,
     outputFolder: File
 ) {
     val styles = File(resourcesFolder, "values/styles.xml").readXMLStyles()
 
-    File(resourcesFolder, "values/strings.xml").readXMLStrings().writeXMLStrings().let {
-        File(outputFolder, "strings.swift").writeText(it)
+    val stringBase = File(resourcesFolder, "values/strings.xml").readXMLStrings()
+    val stringLocales = resourcesFolder.listFiles()
+        .filter { it.name.startsWith("values-") }
+        .filter { File(it, "strings.xml").exists() }
+        .associate { it.name.substringAfter('-') to File(it, "strings.xml").readXMLStrings() }
+    stringBase.let {
+        File(outputFolder, "strings.swift").writeText(it.writeXMLStrings())
+    }
+    stringLocales.entries.forEach {
+        File(File(baseFolderForLocalizations, "${it.key}.lproj"), "Localizable.strings")
+            .writeText(it.value.writeXMLStringsTranslation(stringBase, it.key))
     }
 
     File(resourcesFolder, "values/dimen.xml").readXMLDimen().writeXMLDimen().let {

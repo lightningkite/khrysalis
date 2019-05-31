@@ -6,8 +6,9 @@ import java.io.File
 open class KwiftXmlPluginExtension(project: Project) {
     var resourcesDirectory: File? = null
     var outputDirectory: File? = null
+    var baseFolderForLocalizations: File? = null
 
     override fun toString(): String {
-        return "KwiftXmlPluginExtension($resourcesDirectory, $outputDirectory)"
+        return "KwiftXmlPluginExtension($resourcesDirectory, $baseFolderForLocalizations, $outputDirectory)"
     }
 }

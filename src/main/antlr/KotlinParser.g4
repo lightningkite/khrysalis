@@ -129,7 +129,7 @@ enumEntries
     ;
 
 enumEntry
-    : simpleIdentifier (NL* valueArguments)? (NL* classBody)? (NL* COMMA)?
+    : modifierList? simpleIdentifier (NL* valueArguments)? (NL* classBody)? (NL* COMMA)?
     ;
 
 functionDeclaration

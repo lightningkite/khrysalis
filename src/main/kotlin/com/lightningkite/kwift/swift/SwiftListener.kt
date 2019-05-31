@@ -2,6 +2,7 @@ package com.lightningkite.kwift.swift
 
 import com.lightningkite.kwift.interfaces.InterfaceListener
 import com.lightningkite.kwift.utils.RewriteListener
+import com.lightningkite.kwift.utils.camelCase
 import com.lightningkite.kwift.utils.getMany
 import com.lightningkite.kwift.utils.joinClean
 import org.antlr.v4.runtime.CommonTokenStream
@@ -827,10 +828,18 @@ class SwiftListener(
                     appendln("public init(from decoder: Decoder) throws {")
                     appendln("let values = try decoder.container(keyedBy: CodingKeys.self)")
                     fields.forEachIndexed { index, field ->
-                        if(field.default != null){
-                            appendln("${field.name} = try values.decodeIfPresent(${field.type}.self, forKey: .${field.name}) ?? ${field.default}")
+                        if(field.type == "Double") {
+                            if(field.default != null){
+                                appendln("${field.name} = try values.decodeDoubleIfPresent(forKey: .${field.name}) ?? ${field.default}")
+                            } else {
+                                appendln("${field.name} = try values.decodeDouble(forKey: .${field.name})")
+                            }
                         } else {
-                            appendln("${field.name} = try values.decode(${field.type}.self, forKey: .${field.name})")
+                            if(field.default != null){
+                                appendln("${field.name} = try values.decodeIfPresent(${field.type}.self, forKey: .${field.name}) ?? ${field.default}")
+                            } else {
+                                appendln("${field.name} = try values.decode(${field.type}.self, forKey: .${field.name})")
+                            }
                         }
                     }
                     appendln("}")
@@ -1276,7 +1285,7 @@ class SwiftListener(
         val text = default.text.trim()
         if (text.startsWith("R.string.")) {
             overridden = Section(
-                text = "\"" + text.removePrefix("R.string.") + "\"",
+                text = "ResourcesStrings." + text.removePrefix("R.string.").camelCase(),
                 spacingBefore = default.spacingBefore
             )
         }

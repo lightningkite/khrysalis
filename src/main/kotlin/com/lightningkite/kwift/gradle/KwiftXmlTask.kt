@@ -8,6 +8,7 @@ import java.io.File
 
 open class KwiftXmlTask : DefaultTask() {
     var resourcesDirectory: File? = null
+    var baseFolderForLocalizations: File? = null
     var outputDirectory: File? = null
 
     init {
@@ -20,7 +21,13 @@ open class KwiftXmlTask : DefaultTask() {
             ?.let { it as KwiftXmlPluginExtension }?.resourcesDirectory ?: return
         val outputDirectory = outputDirectory ?: project.extensions.findByName("kwiftXml")
             ?.let { it as KwiftXmlPluginExtension }?.outputDirectory ?: return
-        xmlTask(resourcesFolder = resourcesDirectory, outputFolder = outputDirectory)
+        val baseFolderForLocalizations = baseFolderForLocalizations ?: project.extensions.findByName("kwiftXml")
+            ?.let { it as KwiftXmlPluginExtension }?.baseFolderForLocalizations ?: return
+        xmlTask(
+            resourcesFolder = resourcesDirectory,
+            baseFolderForLocalizations = baseFolderForLocalizations,
+            outputFolder = outputDirectory
+        )
     }
 
 }

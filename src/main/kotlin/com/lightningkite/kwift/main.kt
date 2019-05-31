@@ -11,7 +11,7 @@ import java.io.File
 
 
 const val INTERFACE_SCAN_VERSION: Int = 2
-const val VERSION: Int = 9
+const val VERSION: Int = 10
 
 fun main(vararg args: String) {
     testKwift()
@@ -38,9 +38,10 @@ private fun testReader(){
 
 private fun testXml(){
     val resources = File("/Users/josephivie/StudioProjects/lifting-generations-android/app/src/main/res")
+    val localbase = File("/Users/josephivie/StudioProjects/lifting-generations-android/app/../../lifting-generations-ios/Lifting Generations")
     val outputDir = File("/Users/josephivie/StudioProjects/lifting-generations-android/app/../../lifting-generations-ios/Lifting Generations/ios/xml")
     outputDir.mkdirs()
-    xmlTask(resources, outputDir)
+    xmlTask(resources, localbase, outputDir)
 }
 
 private fun testKwift() {
