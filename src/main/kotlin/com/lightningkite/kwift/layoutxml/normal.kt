@@ -254,11 +254,13 @@ fun ViewType.Companion.setupNormalViewTypes() {
                     }
                     "numberPassword" -> {
                         appendln("view.keyboardType = .numberPad")
+                        appendln("view.addDismissButton()")
                         appendln("view.textContentType = .password")
                         appendln("view.isSecureTextEntry = true")
                     }
                     "phone" -> {
                         appendln("view.keyboardType = .phonePad")
+                        appendln("view.addDismissButton()")
                         appendln("view.textContentType = .telephoneNumber")
                     }
                     "datetime" -> {
