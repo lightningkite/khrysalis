@@ -845,6 +845,12 @@ class SwiftListener(
                     appendln("}")
                     appendln()
                 }))
+            } else {
+                additionalThings.add(Section(buildString {
+                    appendln("public init(from decoder: Decoder) throws {")
+                    appendln("    self = try ${currentClass!!.name}(rawValue: decoder.singleValueContainer().decode(RawValue.self)) ?? .${ctx.enumClassBody()?.enumEntries()?.enumEntry()?.firstOrNull()?.simpleIdentifier()?.text}")
+                    appendln("}")
+                }))
             }
 
         }

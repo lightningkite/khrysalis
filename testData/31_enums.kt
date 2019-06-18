@@ -12,7 +12,8 @@ enum class AnotherEnum {
 
 enum class SingleLine { VALUE1, VALUE2 }
 
-enum class ConformingEnum: Serializable {
+enum class ConformingEnum: Codable {
   VAL1,
   VAL2
 }
+
