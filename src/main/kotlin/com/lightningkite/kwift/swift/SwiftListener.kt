@@ -719,6 +719,22 @@ class SwiftListener(
                     it
                 }
             }
+            .let {
+                if (isDataClass) {
+                    it.toMutableList().apply {
+                        val indexOfColon = this.indexOfFirst { it.rule == -KotlinParser.COLON }
+                        if (indexOfColon == -1) {
+                            val rcurlIndex = this.indexOfFirst { it.rule == KotlinParser.RULE_classBody }
+                                .takeUnless { it == -1 } ?: this.size
+                            add(rcurlIndex, Section(": Equatable, Hashable"))
+                        } else {
+                            add(indexOfColon + 1, Section(" Equatable, Hashable, "))
+                        }
+                    }.asSequence()
+                } else {
+                    it
+                }
+            }
 
         val splitIndex = currentClass!!.body.indexOfFirst {
             (it.rule == KotlinParser.RULE_classMemberDeclaration && it.text.length > 2) || it.rule == -KotlinParser.RCURL
@@ -857,6 +873,46 @@ class SwiftListener(
 
 
         if (isDataClass) {
+            additionalThings.add(
+                Section(
+                    text = buildString {
+                        appendln("public static func == (lhs: ${currentClass!!.name}, rhs: ${currentClass!!.name}) -> Bool {")
+                        appendln("return ")
+                        var firstDone = false
+                        for (x in fields) {
+                            if (firstDone) {
+                                append(" && ")
+                                appendln()
+                            }
+                            append(x.run { "lhs.$name == rhs.$name" })
+                            firstDone = true
+                        }
+                        appendln()
+                        appendln("}")
+                    },
+                    spacingBefore = "\n\n"
+                )
+            )
+            additionalThings.add(
+                Section(
+                    text = buildString {
+                        appendln("public var hashValue: Int {")
+                        appendln("return ")
+                        var firstDone = false
+                        for (x in fields) {
+                            if (firstDone) {
+                                append(" ^ ")
+                                appendln()
+                            }
+                            append(x.run { "$name.hashValue" })
+                            firstDone = true
+                        }
+                        appendln()
+                        appendln("}")
+                    },
+                    spacingBefore = "\n\n"
+                )
+            )
             additionalThings.add(
                 Section(
                     text = buildString {

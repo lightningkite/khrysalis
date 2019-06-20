@@ -92,33 +92,44 @@ fun ViewType.Companion.setupNormalViewTypes() {
 
 
     register("ScrollView", "UIScrollView", "View") { node ->
-//        val child = node.children.first()
-//
-//        appendln("view.addSubview({")
-//        append("let sub = ")
-//        ViewType.write(this, child)
-//        appendln()
-//
-//        val defaultMargin = node.attributeAsDimension("android:layout_margin") ?: 0
-//        val marginTop = (node.attributeAsDimension("android:layout_marginTop") ?: defaultMargin).toString()
-//        val marginLeft = (node.attributeAsDimension("android:layout_marginLeft") ?: defaultMargin).toString()
-//        val marginBottom = (node.attributeAsDimension("android:layout_marginBottom") ?: defaultMargin).toString()
-//        val marginRight = (node.attributeAsDimension("android:layout_marginRight") ?: defaultMargin).toString()
-//
-//        appendln("onLayoutSubviews.addWeak(sub) { (sub: UIView, _: Void) in")
-//        append("sub.pin.width(100%).top(0)")
-//        if(child.attributes.containsKey("android:fillViewport")){
-//            append(".minHeight(100%)")
-//        }
-//        appendln()
-//        appendln("view.contentSize = sub.frame.size")
-//        appendln("}")
-//
-//        appendln("return sub")
-//
-//        appendln("}())")
         val child = node.children.first()
         appendln("view.flex.direction(.column).alignContent(.center).addItem({")
+        append("let sub = ")
+        ViewType.write(this, child)
+        appendln()
+        appendln("let dg = ScrollSavingDelegate()")
+        appendln("view.delegate = dg")
+        appendln("self.onLayoutSubviews.addWeak(view, sub){ view, sub, _ in")
+        appendln("    view.contentSize = sub.frame.size")
+        appendln("    view.contentOffset = dg.lastNonzeroOffset")
+        appendln("}")
+        appendln("")
+        appendln("return sub")
+        appendln("}()")
+
+        if (node.attributes["android:fillViewport"] == "true") {
+            append(").shrink(0).grow(1)")
+        } else {
+            append(").shrink(0)")
+        }
+        child.attributeAsDimension("android:layout_width")?.let { s ->
+            append(".width($s)")
+        }
+        child.attributeAsDimension("android:layout_height")?.let { s ->
+            append(".height($s)")
+        }
+        child.attributeAsDimension("android:minWidth")?.let { s ->
+            append(".minWidth($s)")
+        }
+        child.attributeAsDimension("android:minHeight")?.let { s ->
+            append(".minHeight($s)")
+        }
+        appendln()
+    }
+
+    register("HorizontalScrollView", "UIScrollView", "View") { node ->
+        val child = node.children.first()
+        appendln("view.flex.direction(.row).alignContent(.center).addItem({")
         append("let sub = ")
         ViewType.write(this, child)
         appendln()
