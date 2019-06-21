@@ -85,8 +85,6 @@ fun ViewType.Companion.setupNormalViewTypes() {
 
 
     register("TextView", "UILabel", "View") { node ->
-        val lines = node.attributeAsInt("android:maxLines")
-        appendln("view.numberOfLines = ${lines ?: 0}")
         handleCommonText(node)
     }
 
@@ -133,13 +131,8 @@ fun ViewType.Companion.setupNormalViewTypes() {
         append("let sub = ")
         ViewType.write(this, child)
         appendln()
-        appendln("let dg = ScrollSavingDelegate()")
-        appendln("view.delegate = dg")
-        appendln("self.onLayoutSubviews.addWeak(view, sub){ view, sub, _ in")
-        appendln("    view.contentSize = sub.frame.size")
-        appendln("    view.contentOffset = dg.lastNonzeroOffset")
-        appendln("}")
-        appendln("")
+        appendln("view.flexFix(sub, self)")
+        appendln()
         appendln("return sub")
         appendln("}()")
 
@@ -544,6 +537,9 @@ fun ViewType.Companion.setupNormalViewTypes() {
 private fun Appendable.handleCommonText(node: XmlNode, viewHandle: String = "view") {
     node.attributeAsString("android:text")?.let { text ->
         appendln("$viewHandle.text = $text")
+    }
+    node.attributeAsFloat("android:lineSpacingMultiplier")?.let { lineSpacingMultiplier ->
+        appendln("$viewHandle.lineSpacingMultiplier = $lineSpacingMultiplier")
     }
     val lines = node.attributeAsInt("android:maxLines")
     appendln("$viewHandle.numberOfLines = ${lines ?: 0}")

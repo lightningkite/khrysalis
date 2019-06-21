@@ -86,6 +86,12 @@ fun XmlNode.attributeAsDimension(key: String): String? {
         else -> raw.filter { it.isDigit() }.toIntOrNull()?.toString()
     }
 }
+fun XmlNode.attributeAsFloat(key: String): String? {
+    val raw = attributes[key] ?: return null
+    return when {
+        else -> raw.filter { it.isDigit() || it == '.' }.toDoubleOrNull()?.toString()
+    }
+}
 
 fun XmlNode.attributeAsImage(key: String): String? {
     val raw = attributes[key] ?: return null
