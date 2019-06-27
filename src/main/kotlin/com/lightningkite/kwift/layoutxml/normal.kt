@@ -486,11 +486,11 @@ fun ViewType.Companion.setupNormalViewTypes() {
             ViewType.write(this, child)
             appendln()
 
-            val defaultMargin = node.attributeAsDimension("android:layout_margin") ?: 0
-            val marginTop = (node.attributeAsDimension("android:layout_marginTop") ?: defaultMargin).toString()
-            val marginLeft = (node.attributeAsDimension("android:layout_marginLeft") ?: defaultMargin).toString()
-            val marginBottom = (node.attributeAsDimension("android:layout_marginBottom") ?: defaultMargin).toString()
-            val marginRight = (node.attributeAsDimension("android:layout_marginRight") ?: defaultMargin).toString()
+            val defaultMargin = child.attributeAsDimension("android:layout_margin") ?: 0
+            val marginTop = (child.attributeAsDimension("android:layout_marginTop") ?: defaultMargin).toString()
+            val marginLeft = (child.attributeAsDimension("android:layout_marginLeft") ?: defaultMargin).toString()
+            val marginBottom = (child.attributeAsDimension("android:layout_marginBottom") ?: defaultMargin).toString()
+            val marginRight = (child.attributeAsDimension("android:layout_marginRight") ?: defaultMargin).toString()
 
             appendln("onLayoutSubviews.addWeak(sub) { (sub: UIView, _: Void) in")
             append("sub.pin")

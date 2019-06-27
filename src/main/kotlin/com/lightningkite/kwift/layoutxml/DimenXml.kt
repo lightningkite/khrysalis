@@ -28,7 +28,11 @@ fun Map<String, String>.writeXMLDimen(): String {
         appendln("")
         appendln("public enum ResourcesDimensions {")
         for((key, value) in this@writeXMLDimen.entries){
-            appendln("    static let ${key.camelCase()}: CGFloat = $value")
+            if(key.contains("programmatic", true)){
+                appendln("    static var ${key.camelCase()}: CGFloat = $value")
+            } else {
+                appendln("    static let ${key.camelCase()}: CGFloat = $value")
+            }
         }
         appendln("}")
     }

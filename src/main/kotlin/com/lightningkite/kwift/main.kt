@@ -14,8 +14,8 @@ const val INTERFACE_SCAN_VERSION: Int = 2
 const val VERSION: Int = 10
 
 fun main(vararg args: String) {
-    testKwift()
-//    testXml()
+//    testKwift()
+    testXml()
 //    testReader()
 }
 

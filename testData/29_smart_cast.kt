@@ -5,7 +5,7 @@ fun main(args: Array<String>) {
   var y: Int = 2
   val z: Int? = null
 
-  if (x != null) {
+  if (x != null && normalExpression == true) {
     y += x
   } else {
     println("FAIL: x should not be null")

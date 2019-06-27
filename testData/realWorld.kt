@@ -1,40 +1,59 @@
-///Kotlin Only
-@file:Suppress("ConvertToStringTemplate", "RemoveExplicitTypeArguments")
-///End Kotlin Only
+package org.liftinggenerations.shared.views
 
-package org.liftinggenerations.shared.api
-
-import com.lightningkite.kwift.actuals.*
+import com.lightningkite.kwift.actuals.Preferences
+import com.lightningkite.kwift.actuals.SecurePreferences
+import com.lightningkite.kwift.shared.ViewDataStack
 import org.liftinggenerations.shared.models.*
-import org.liftinggenerations.shared.models.Currency
-import java.util.*
 
+val isMentorKey = "org.liftinggenerations.isMentor"
 
-//Fix
-class APIOnline(val baseUrl: String = "https://liftinggenerationsstaging.lightningkite.com/api") : APIInterface {
-
-    override fun registerMentee(inviteToken: Token, mentee: Mentee, password: String, @escaping onResult: (Int, MenteeSession?, String?) -> Unit) {
-        val menteeSession = session as MenteeSession
-        inLambda({
-
-            val menteeSession = session as MenteeSession
-        })
-        HttpClient.call(
-            url = baseUrl + "/mentee",
-            method = HttpClient.POST,
-            headers = inviteToken.headers(),
-            body = APIMentee.fromNormal(mentee, password),
-            onResult = { code, result: Empty?, error ->
-                if (error != null) {
-                    onResult(code, null, error)
-                } else if (result != null) {
-                    this.login(mentee.email, password) { code, session, password ->
-                        val menteeSession = session as MenteeSession
-                        onResult(code, menteeSession, password)
-                    }
-                }
-            }
-        )
+fun sessionStart(stack: ViewDataStack, session: Session) {
+    if (session is MenteeSession) {
+        stack.reset(viewData = SessionViewData(session = session, parentStack = stack))
+    } else if (session is MentorSession) {
+        stack.reset(viewData = MentorSessionViewData(session = session, parentStack = stack))
     }
+}
 
+fun setSession(session: Session?) {
+    Preferences.clear()
+    if (session is MentorSession) {
+        SecurePreferences.set(isMentorKey, true)
+        SecurePreferences.set(Mentor.key, session.mentor)
+        val auth = session.authorization
+        if(auth is Token){
+            SecurePreferences.set(Token.key, auth)
+        }
+    } else if (session is MenteeSession) {
+        SecurePreferences.set(isMentorKey, false)
+        SecurePreferences.set(Mentee.key, session.mentee)
+        SecurePreferences.set(Mentor.key, session.myMentor)
+        val auth = session.authorization
+        if(auth is Token){
+            SecurePreferences.set(Token.key, auth)
+        }
+    } else if (session == null) {
+        SecurePreferences.remove(isMentorKey)
+        SecurePreferences.remove(Mentor.key)
+        SecurePreferences.remove(Mentee.key)
+        SecurePreferences.remove(Token.key)
+    }
+}
+
+fun getSession(): Session? {
+    val isMentor: Boolean? = SecurePreferences.get(isMentorKey) ?: false
+    val loadedToken: Token? = SecurePreferences.get(Token.key)
+    val loadedMentor: Mentor? = SecurePreferences.get(Mentor.key)
+    val loadedMentee: Mentee? = SecurePreferences.get(Mentee.key)
+    if (loadedToken != null) {
+        if (loadedMentor != null && isMentor == true) {
+            return MentorSession(loadedToken, loadedMentor)
+        } else if (loadedMentee != null) {
+            return MenteeSession(loadedToken, loadedMentee, loadedMentor ?: Mentor())
+        } else {
+            return null
+        }
+    } else {
+        return null
+    }
 }
