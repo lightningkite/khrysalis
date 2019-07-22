@@ -24,7 +24,7 @@ fun xmlTask(
             .writeText(it.value.writeXMLStringsTranslation(stringBase, it.key))
     }
 
-    File(resourcesFolder, "values/dimens.xml").readXMLDimen().writeXMLDimen().let {
+    File(resourcesFolder, "values/dimens.xml").takeIf { it.exists() }?.readXMLDimen()?.writeXMLDimen()?.let {
         File(outputFolder, "dimen.swift").writeText(it)
     }
 
