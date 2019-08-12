@@ -1,5 +1,6 @@
 package com.lightningkite.kwift.layoutxml
 
+import com.lightningkite.kwift.log
 import com.lightningkite.kwift.swift.retabSwift
 import com.lightningkite.kwift.utils.camelCase
 import java.io.File
@@ -10,9 +11,9 @@ typealias Styles = Map<String, Map<String, String>>
 fun File.translateLayoutXml(styles: Styles): String {
 
     for((styleKey, styleValue) in styles){
-        println("STYLE ${styleKey}")
+        log("STYLE ${styleKey}")
         for((k, v) in styleValue){
-            println("    $k = $v")
+            log("    $k = $v")
         }
     }
 
@@ -34,17 +35,12 @@ fun File.translateLayoutXml(styles: Styles): String {
         import FlexLayout
         import PinLayout
 
-        class ${name}Xml: XmlView {
+        class ${name}Xml {
 
             $vars
 
-            init() {
-                super.init(frame: .zero)
-                root = $appendable
-            }
-
-            required init?(coder aDecoder: NSCoder) {
-                super.init(coder: aDecoder)
+            func setup(_ dependency: ViewDependency) -> UIView {
+                return $appendable
             }
         }
     """.trimIndent().retabSwift()

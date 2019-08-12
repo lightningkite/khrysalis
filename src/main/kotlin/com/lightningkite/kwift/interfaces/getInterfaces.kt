@@ -4,6 +4,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.lightningkite.kwift.INTERFACE_SCAN_VERSION
 import com.lightningkite.kwift.VERSION
+import com.lightningkite.kwift.log
 import com.lightningkite.kwift.swift.ignoreKotlinOnly
 import com.lightningkite.kwift.utils.Versioned
 import org.antlr.v4.runtime.ANTLRInputStream
@@ -13,7 +14,7 @@ import org.jetbrains.kotlin.KotlinLexer
 import org.jetbrains.kotlin.KotlinParser
 import java.io.File
 
-fun getInterfaces(pairs: List<Pair<File, File>>): Map<String, InterfaceListener.InterfaceData> {
+fun getInterfaces(sources: Sequence<File>): Map<String, InterfaceListener.InterfaceData> {
     val interfaces = HashMap<String, InterfaceListener.InterfaceData>()
 
     val cacheFile = File("./build/kwift-interfaces-cache.json")
@@ -24,35 +25,32 @@ fun getInterfaces(pairs: List<Pair<File, File>>): Map<String, InterfaceListener.
         mapOf()
     val newCache = HashMap<String, FileCache>()
 
-    pairs.forEach {
-        it.first.walkTopDown()
-            .filter { it.extension == "kt" }
-            .forEach { file ->
-                println("File: $file")
-                val text = file.readText()
-                val hash = text.hashCode()
-                val existing = existingCache[file.path]
-                val cache = if (existing != null && existing.hash == hash) {
-                    existing
-                } else {
-                    val lexer = KotlinLexer(ANTLRInputStream(text.ignoreKotlinOnly()))
-                    val tokenStream = CommonTokenStream(lexer)
-                    val parser = KotlinParser(tokenStream)
+    sources.forEach { file ->
+        log("File: $file")
+        val text = file.readText()
+        val hash = text.hashCode()
+        val existing = existingCache[file.path]
+        val cache = if (existing != null && existing.hash == hash) {
+            existing
+        } else {
+            val lexer = KotlinLexer(ANTLRInputStream(text.ignoreKotlinOnly()))
+            val tokenStream = CommonTokenStream(lexer)
+            val parser = KotlinParser(tokenStream)
 
-                    val listener = InterfaceListener(parser)
-                    ParseTreeWalker.DEFAULT.walk(listener, parser.kotlinFile())
-                    FileCache(
-                        path = file.path,
-                        hash = hash,
-                        data = listener.interfaces
-                    )
-                }
-                newCache[cache.path] = cache
+            val listener = InterfaceListener(parser)
+            ParseTreeWalker.DEFAULT.walk(listener, parser.kotlinFile())
+            FileCache(
+                path = file.path,
+                hash = hash,
+                data = listener.interfaces
+            )
+        }
+        newCache[cache.path] = cache
 
-                for (i in cache.data) {
-                    interfaces[i.qualifiedName] = i
-                }
-            }
+        for (i in cache.data) {
+            interfaces[i.qualifiedName] = i
+        }
+
     }
 
     if (!cacheFile.exists()) {

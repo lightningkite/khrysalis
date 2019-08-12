@@ -77,8 +77,10 @@ fun ViewType.Companion.setupNormalViewTypes() {
     }
     register("de.hdodenhof.circleimageview.CircleImageView", "UIImageView", "ImageView") { node ->
 
-        appendln("self.onLayoutSubviews.addWeak(view){ view, _ in")
+        appendln("view.addOnLayoutSubviews { [weak view] in")
+        appendln("if let view = view {")
         appendln("    view.layer.cornerRadius = view.frame.size.width / 2;")
+        appendln("}")
         appendln("}")
         appendln("view.clipsToBounds = true")
     }
@@ -97,9 +99,11 @@ fun ViewType.Companion.setupNormalViewTypes() {
         appendln()
         appendln("let dg = ScrollSavingDelegate()")
         appendln("view.delegate = dg")
-        appendln("self.onLayoutSubviews.addWeak(view, sub){ view, sub, _ in")
+        appendln("view.addOnLayoutSubviews { [weak view, weak sub] in")
+        appendln("if let view = view, let sub = sub {")
         appendln("    view.contentSize = sub.frame.size")
         appendln("    view.contentOffset = dg.lastNonzeroOffset")
+        appendln("}")
         appendln("}")
         appendln("")
         appendln("return sub")
@@ -157,7 +161,7 @@ fun ViewType.Companion.setupNormalViewTypes() {
     }
 
 
-    register("com.lightningkite.kwift.android.MultilineEditText", "UITextView", "EditText") { node ->
+    register("com.lightningkite.kwiftview.actual.MultilineEditText", "UITextView", "EditText") { node ->
 
     }
     register("EditText", "UITextField", "View") { node ->
@@ -322,20 +326,20 @@ fun ViewType.Companion.setupNormalViewTypes() {
         }
         node.attributeAsImage("android:drawableTop")?.let { text ->
             appendln("view.setImage($text, for: .normal)")
-            appendln("onLayoutSubviews.addWeak(view) { (view: UIButton, _: Void) in")
-            appendln("    view.setTitlePosition(.bottom)")
+            appendln("onLayoutSubviews.addOnLayoutSubviews { [weak view] in")
+            appendln("    view?.setTitlePosition(.bottom)")
             appendln("}")
         }
         node.attributeAsImage("android:drawableRight")?.let { text ->
             appendln("view.setImage($text, for: .normal)")
-            appendln("onLayoutSubviews.addWeak(view) { (view: UIButton, _: Void) in")
-            appendln("    view.setTitlePosition(.left)")
+            appendln("onLayoutSubviews.addOnLayoutSubviews { [weak view] in")
+            appendln("    view?.setTitlePosition(.left)")
             appendln("}")
         }
         node.attributeAsImage("android:drawableBottom")?.let { text ->
             appendln("view.setImage($text, for: .normal)")
-            appendln("onLayoutSubviews.addWeak(view) { (view: UIButton, _: Void) in")
-            appendln("    view.setTitlePosition(.top)")
+            appendln("onLayoutSubviews.addOnLayoutSubviews { [weak view] in")
+            appendln("    view?.setTitlePosition(.top)")
             appendln("}")
         }
         node.attributeAsImage("android:src")?.let { text ->
@@ -473,7 +477,7 @@ fun ViewType.Companion.setupNormalViewTypes() {
         appendln("}")
     }
 
-    register("FrameLayout", "UIView", "View") { node ->
+    register("FrameLayout", "ProgrammaticLayout", "View") { node ->
         val defaultPadding = node.attributeAsDimension("android:padding") ?: 0
         val paddingTop = (node.attributeAsDimension("android:paddingTop") ?: defaultPadding).toString()
         val paddingLeft = (node.attributeAsDimension("android:paddingLeft") ?: defaultPadding).toString()
@@ -492,7 +496,8 @@ fun ViewType.Companion.setupNormalViewTypes() {
             val marginBottom = (child.attributeAsDimension("android:layout_marginBottom") ?: defaultMargin).toString()
             val marginRight = (child.attributeAsDimension("android:layout_marginRight") ?: defaultMargin).toString()
 
-            appendln("onLayoutSubviews.addWeak(sub) { (sub: UIView, _: Void) in")
+            appendln("view.addOnLayoutSubviews { [weak view, weak sub] in")
+            appendln("if let view = view, let sub = sub {")
             append("sub.pin")
             when(child.attributes["android:layout_width"]) {
                 "wrap_content", null -> append(".width(sub.intrinsicContentSize.width)")
@@ -524,6 +529,7 @@ fun ViewType.Companion.setupNormalViewTypes() {
                 }
             }
             appendln()
+            appendln("}")
             appendln("}")
 
             appendln("return sub")

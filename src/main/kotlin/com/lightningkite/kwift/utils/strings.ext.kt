@@ -1,6 +1,7 @@
 package com.lightningkite.kwift.utils
 
 
+fun String.snakeCase(): String = this.replace(Regex("[A-Z]+")) { "_" + it.value.toLowerCase() }.trim('_')
 fun String.javaify(): String = this
         .replace(Regex("\\.([a-zA-Z])")) {
             it.groupValues[1].toUpperCase()

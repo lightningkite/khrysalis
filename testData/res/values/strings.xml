@@ -1,0 +1,7 @@
+<resources>
+    <string name="empty" translatable="false"/>
+    <string name="app_name">Kwift Template</string>
+    <string name="back">Back</string>
+    <string name="ok">OK</string>
+    <string name="cancel">Cancel</string>
+</resources>

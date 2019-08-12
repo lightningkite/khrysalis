@@ -1,5 +1,7 @@
 package com.lightningkite.kwift.layoutxml
 
+import com.lightningkite.kwift.log
+
 data class ViewType(
     val androidName: String,
     val iosName: String,
@@ -42,9 +44,9 @@ data class ViewType(
         }
 
         fun write(appendable: Appendable, node: XmlNode) {
-            println("Writing ${node.name}")
+            log("Writing ${node.name}")
             for(att in node.attributes){
-                println("    ${att.key} = ${att.value}")
+                log("    ${att.key} = ${att.value}")
             }
             if(node.name in skipTypes){
                 for(child in node.children){

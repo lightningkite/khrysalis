@@ -1,10 +1,7 @@
 package com.lightningkite.kwift.swift
 
 import com.lightningkite.kwift.interfaces.InterfaceListener
-import com.lightningkite.kwift.utils.RewriteListener
-import com.lightningkite.kwift.utils.camelCase
-import com.lightningkite.kwift.utils.getMany
-import com.lightningkite.kwift.utils.joinClean
+import com.lightningkite.kwift.utils.*
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.ParserRuleContext
 import org.antlr.v4.runtime.tree.TerminalNode
@@ -503,7 +500,8 @@ class SwiftListener(
     }
 
     override fun exitFunctionDeclaration(ctx: KotlinParser.FunctionDeclarationContext) {
-        val mainSeq = layers.last().asSequence().map {
+        var extensionType: String? = null
+        val mainSeq = layers.last().asSequence().mapNotNull {
             when (it.rule) {
                 -KotlinParser.FUN -> {
                     if (currentClass?.isObject == true && ctx.parent.ruleIndex == KotlinParser.RULE_classMemberDeclaration) {
@@ -511,6 +509,13 @@ class SwiftListener(
                     } else {
                         it.copy(text = "func")
                     }
+                }
+                -KotlinParser.DOT -> {
+                    null
+                }
+                KotlinParser.RULE_type -> {
+                    extensionType = it.text
+                    null
                 }
                 -KotlinParser.COLON -> it.copy(text = "->", spacingBefore = " ")
                 KotlinParser.RULE_modifierList -> {
@@ -1350,6 +1355,11 @@ class SwiftListener(
                 text = "ResourcesStrings." + text.removePrefix("R.string.").camelCase(),
                 spacingBefore = default.spacingBefore
             )
+        } else if (text.startsWith("R.drawable.")) {
+            overridden = Section(
+                text = "ResourcesDrawables." + text.removePrefix("R.string.").camelCase(),
+                spacingBefore = default.spacingBefore
+            )
         }
     }
 
@@ -1383,5 +1393,4 @@ class SwiftListener(
 //        println("Exiting ${ctx.ruleIndex}, text: (${ctx.text})")
     }
 
-    private fun String.snakeCase(): String = this.replace(Regex("[A-Z]+")) { "_" + it.value.toLowerCase() }.trim('_')
 }

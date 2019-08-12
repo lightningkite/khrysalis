@@ -50,7 +50,6 @@ class Child : Parent(), MyInterface {
 
 abstract class AbstractParent {
     abstract fun three(): Int
-
     var four = 4
 }
 
@@ -61,6 +60,8 @@ class NonAbstractChild : AbstractChild(), MyInterface {
     override fun bar(): String {
         return "2-NonAbstractChild"
     }
+
+    override fun three(): Int = 3
 }
 
 fun main(args: Array<String>) {
