@@ -7,9 +7,14 @@ import org.jetbrains.kotlin.KotlinParser
 
 fun SwiftAltListener.registerClass() {
 
+    fun KotlinParser.ClassDeclarationContext.constructorVars() =
+        primaryConstructor()?.classParameters()?.classParameter()
+            ?.asSequence()
+            ?.filter { it.VAL() != null || it.VAR() != null } ?: sequenceOf()
+
     fun TabWriter.handleEnumClass(item: KotlinParser.ClassDeclarationContext) {
         line {
-            append(item.modifierList().visibilityString())
+            append(item.modifiers().visibilityString())
             append(" enum ${item.simpleIdentifier().text}: String, CaseIterable, Codable {")
         }
         tab {
@@ -18,18 +23,17 @@ fun SwiftAltListener.registerClass() {
             }
             line("public init(from decoder: Decoder) throws {")
             tab {
-                line("self = try ${item.simpleIdentifier().text}(rawValue: decoder.singleValueContainer().decode(RawValue.self)) ?? .${item.enumClassBody().enumEntries().enumEntry(0).simpleIdentifier().text}")
+                line(
+                    "self = try ${item.simpleIdentifier().text}(rawValue: decoder.singleValueContainer().decode(RawValue.self)) ?? .${item.enumClassBody().enumEntries().enumEntry(
+                        0
+                    ).simpleIdentifier().text}"
+                )
             }
             line("}")
 
-            item.enumClassBody().classMemberDeclaration().forEach {
+            item.enumClassBody().classMemberDeclarations().classMemberDeclaration().forEach {
                 startLine()
-                it.classDeclaration()?.let { write(it) }
-                it.functionDeclaration()?.let { write(it) }
-                it.objectDeclaration()?.let { write(it) }
-                it.companionObject()?.let { write(it) }
-                it.propertyDeclaration()?.let { write(it) }
-                it.secondaryConstructor()?.let { throw UnsupportedOperationException("No secondary constructors yet.") }
+                write(it)
             }
         }
         line("}")
@@ -37,142 +41,30 @@ fun SwiftAltListener.registerClass() {
 
     fun TabWriter.handleNormalClass(item: KotlinParser.ClassDeclarationContext) {
         line {
-            append(item.modifierList().visibilityString())
+            append(item.modifiers().visibilityString())
             append(" class ${item.simpleIdentifier().text}")
             item.typeParameters()?.let {
-                append(it.text)
+                write(it)
             }
             item.delegationSpecifiers()?.let { dg ->
                 append(": ")
-                dg.delegationSpecifier().forEachBetween(
-                    forItem = {
-                        it.constructorInvocation()?.let {
-                            append(it.userType().toSwift())
+                dg.annotatedDelegationSpecifier()
+                    .asSequence()
+                    .mapNotNull { it.delegationSpecifier() }
+                    .forEachBetween(
+                        forItem = {
+                            it.constructorInvocation()?.let {
+                                write(it.userType())
+                            }
+                            it.userType()?.let { write(it) }
+                            it.explicitDelegation()?.let {
+                                throw IllegalArgumentException("Explicit delegation ('by') not supported")
+                            }
+                        },
+                        between = {
+                            append(", ")
                         }
-                        it.userType()?.let { append(it.toSwift()) }
-                        it.explicitDelegation()?.let {
-                            throw IllegalArgumentException("Explicit delegation ('by') not supported")
-                        }
-                    },
-                    between = {
-                        append(", ")
-                    }
-                )
-            }
-            append(" {")
-        }
-        tab {
-            line()
-
-            item.primaryConstructor()?.classParameters()?.classParameter()
-                ?.filter { it.VAL() != null || it.VAR() != null }
-                ?.forEach {
-                    line("public var ${it.simpleIdentifier().text}: ${it.type().toSwift()}")
-                }
-
-            line()
-
-            line {
-                append("init(")
-                item.primaryConstructor()?.classParameters()?.classParameter()?.forEachBetween(
-                    forItem = {
-                        append(it.simpleIdentifier().text)
-                        append(": ")
-                        append(it.type().toSwift())
-                        it.expression()?.let {
-                            append(" = ")
-                            write(it)
-                        }
-                    },
-                    between = {
-                        append(", ")
-                    }
-                )
-                append(") {")
-            }
-            tab {
-
-                item.primaryConstructor()?.classParameters()?.classParameter()
-                    ?.filter { it.VAL() != null || it.VAR() != null }
-                    ?.forEach {
-                        line("self.${it.simpleIdentifier().text} = ${it.simpleIdentifier().text}")
-                    }
-
-                item.classBody()?.let{
-                    it.classMemberDeclaration().asSequence()
-                        .mapNotNull { it.anonymousInitializer() }
-                        .flatMap { it.block().statement().asSequence() }
-                        .forEach {
-                            startLine()
-                            write(it)
-                        }
-                }
-            }
-            line("}")
-
-            line()
-
-            item.classBody()?.let { write(it) }
-        }
-        line("}")
-    }
-
-    fun TabWriter.handleInterfaceClass(item: KotlinParser.ClassDeclarationContext) {
-        line {
-            append(item.modifierList().visibilityString())
-            append(" protocol ${item.simpleIdentifier().text}")
-            item.typeParameters()?.let {
-                append(it.text)
-            }
-            item.delegationSpecifiers()?.let { dg ->
-                append(": ")
-                dg.delegationSpecifier().forEachBetween(
-                    forItem = {
-                        it.constructorInvocation()?.let {
-                            append(it.userType().toSwift())
-                        }
-                        it.userType()?.let { append(it.toSwift()) }
-                        it.explicitDelegation()?.let {
-                            throw IllegalArgumentException("Explicit delegation ('by') not supported")
-                        }
-                    },
-                    between = {
-                        append(", ")
-                    }
-                )
-            }
-            append(" {")
-        }
-        tab {
-            item.classBody()?.let { write(it) }
-        }
-        line("}")
-    }
-
-    fun KotlinParser.ClassDeclarationContext.constructorVars() =
-        primaryConstructor()?.classParameters()?.classParameter()
-            ?.asSequence()
-            ?.filter { it.VAL() != null || it.VAR() != null } ?: sequenceOf()
-
-    fun TabWriter.handleDataClass(item: KotlinParser.ClassDeclarationContext) {
-        line {
-            append(item.modifierList().visibilityString())
-            append(" class ${item.simpleIdentifier().text}")
-            item.typeParameters()?.let {
-                append(it.text)
-            }
-            item.delegationSpecifiers()?.let { dg ->
-                append(": Equatable, Hashable")
-                dg.delegationSpecifier().forEach {
-                    append(", ")
-                    it.constructorInvocation()?.let {
-                        append(it.userType().toSwift())
-                    }
-                    it.userType()?.let { append(it.toSwift()) }
-                    it.explicitDelegation()?.let {
-                        throw IllegalArgumentException("Explicit delegation ('by') not supported")
-                    }
-                }
+                    )
             }
             append(" {")
         }
@@ -180,7 +72,12 @@ fun SwiftAltListener.registerClass() {
             line()
 
             item.constructorVars().forEach {
-                line("public var ${it.simpleIdentifier().text}: ${it.type().toSwift()}")
+                line {
+                    append("public var ")
+                    append(it.simpleIdentifier().text)
+                    append(": ")
+                    write(it.type())
+                }
             }
 
             line()
@@ -191,7 +88,7 @@ fun SwiftAltListener.registerClass() {
                     forItem = {
                         append(it.simpleIdentifier().text)
                         append(": ")
-                        append(it.type().toSwift())
+                        write(it.type())
                         it.expression()?.let {
                             append(" = ")
                             write(it)
@@ -209,10 +106,127 @@ fun SwiftAltListener.registerClass() {
                     line("self.${it.simpleIdentifier().text} = ${it.simpleIdentifier().text}")
                 }
 
-                item.classBody()?.let{
-                    it.classMemberDeclaration().asSequence()
+                item.classBody()?.let {
+                    it.classMemberDeclarations().classMemberDeclaration().asSequence()
                         .mapNotNull { it.anonymousInitializer() }
-                        .flatMap { it.block().statement().asSequence() }
+                        .flatMap { it.block()?.statements()?.statement()?.asSequence() ?: sequenceOf() }
+                        .forEach {
+                            startLine()
+                            write(it)
+                        }
+                }
+            }
+            line("}")
+
+            line()
+
+            item.classBody()?.let { write(it) }
+        }
+        line("}")
+    }
+
+    fun TabWriter.handleInterfaceClass(item: KotlinParser.ClassDeclarationContext) {
+        line {
+            append(item.modifiers().visibilityString())
+            append(" protocol ${item.simpleIdentifier().text}")
+            item.typeParameters()?.let {
+                write(it)
+            }
+            item.delegationSpecifiers()?.let { dg ->
+                append(": ")
+                dg.annotatedDelegationSpecifier()
+                    .asSequence()
+                    .mapNotNull { it.delegationSpecifier() }
+                    .forEachBetween(
+                        forItem = {
+                            it.constructorInvocation()?.let {
+                                write(it.userType())
+                            }
+                            it.userType()?.let { write(it) }
+                            it.explicitDelegation()?.let {
+                                throw IllegalArgumentException("Explicit delegation ('by') not supported")
+                            }
+                        },
+                        between = {
+                            append(", ")
+                        }
+                    )
+            }
+            append(" {")
+        }
+        tab {
+            item.classBody()?.let { write(it) }
+        }
+        line("}")
+    }
+
+    fun TabWriter.handleDataClass(item: KotlinParser.ClassDeclarationContext) {
+        line {
+            append(item.modifiers().visibilityString())
+            append(" class ${item.simpleIdentifier().text}")
+            item.typeParameters()?.let {
+                write(it)
+            }
+            item.delegationSpecifiers()?.let { dg ->
+                append(": Equatable, Hashable")
+                dg.annotatedDelegationSpecifier()
+                    .asSequence()
+                    .mapNotNull { it.delegationSpecifier() }
+                    .forEach {
+                        append(", ")
+                        it.constructorInvocation()?.let {
+                            write(it.userType())
+                        }
+                        it.userType()?.let { write(it) }
+                        it.explicitDelegation()?.let {
+                            throw IllegalArgumentException("Explicit delegation ('by') not supported")
+                        }
+                    }
+            }
+            append(" {")
+        }
+        tab {
+            line()
+
+            item.constructorVars().forEach {
+                line {
+                    append("public var ")
+                    append(it.simpleIdentifier().text)
+                    append(": ")
+                    write(it.type())
+                }
+            }
+
+            line()
+
+            line {
+                append("init(")
+                item.primaryConstructor()?.classParameters()?.classParameter()?.forEachBetween(
+                    forItem = {
+                        append(it.simpleIdentifier().text)
+                        append(": ")
+                        write(it.type())
+                        it.expression()?.let {
+                            append(" = ")
+                            write(it)
+                        }
+                    },
+                    between = {
+                        append(", ")
+                    }
+                )
+                append(") {")
+            }
+            tab {
+
+                item.constructorVars().forEach {
+                    line("self.${it.simpleIdentifier().text} = ${it.simpleIdentifier().text}")
+                }
+
+                item.classBody()?.let {
+                    it.classMemberDeclarations().classMemberDeclaration().asSequence()
+                        .mapNotNull { it.anonymousInitializer() }
+                        .flatMap { it.block().statements()?.statement()?.asSequence() ?: sequenceOf() }
                         .forEach {
                             startLine()
                             write(it)
@@ -253,13 +267,13 @@ fun SwiftAltListener.registerClass() {
             tab {
                 val lastIndex = item.constructorVars().count() - 1
                 item.constructorVars().forEachIndexed { index, it ->
-                    line{
-                        append(it.type().toSwift())
+                    line {
+                        write(it.type())
                         append(": (")
-                        append(it.type().toSwift())
+                        write(it.type())
                         append(")?")
                         append(" = nil")
-                        if(index != lastIndex){
+                        if (index != lastIndex) {
                             append(",")
                         }
                     }
@@ -271,13 +285,13 @@ fun SwiftAltListener.registerClass() {
                 tab {
                     val lastIndex = item.constructorVars().count() - 1
                     item.constructorVars().forEachIndexed { index, it ->
-                        line{
+                        line {
                             append(it.simpleIdentifier().text)
                             append(": ")
                             append(it.simpleIdentifier().text)
                             append(" ?? self.")
                             append(it.simpleIdentifier().text)
-                            if(index != lastIndex){
+                            if (index != lastIndex) {
                                 append(",")
                             }
                         }
@@ -293,12 +307,44 @@ fun SwiftAltListener.registerClass() {
     }
 
     fun TabWriter.handleCodableBody(item: KotlinParser.ClassDeclarationContext) {
-        if(item.delegationSpecifiers().delegationSpecifier().any { it.userType().text == "Codable" }) {
+        if (item.delegationSpecifiers().annotatedDelegationSpecifier().any { it.delegationSpecifier().userType().text == "Codable" }) {
             line("public init(from decoder: Decoder) throws {")
             tab {
                 line("let values = try decoder.container(keyedBy: CodingKeys.self)")
                 item.constructorVars().forEach {
-                    line("${it.simpleIdentifier().text} = try values.decodeIfPresent(${it.type().toSwift()}.self, forKey: .${it.simpleIdentifier().text}) ?? \"\"")
+                    line {
+                        if (it.type().text == "Double") {
+                            it.expression()?.let { default ->
+                                append(it.simpleIdentifier().text)
+                                append(" = try values.decodeIfDoublePresent(forKey: .")
+                                append(it.simpleIdentifier().text)
+                                append(") ?? ")
+                                write(default)
+                            } ?: run {
+                                append(it.simpleIdentifier().text)
+                                append(" = try values.decodeIfDouble(forKey: .")
+                                append(it.simpleIdentifier().text)
+                                append(")")
+                            }
+                        } else {
+                            it.expression()?.let { default ->
+                                append(it.simpleIdentifier().text)
+                                append(" = try values.decodeIfPresent(")
+                                write(it.type())
+                                append(".self, forKey: .")
+                                append(it.simpleIdentifier().text)
+                                append(") ?? ")
+                                write(default)
+                            } ?: run {
+                                append(it.simpleIdentifier().text)
+                                append(" = try values.decode(")
+                                write(it.type())
+                                append(".self, forKey: .")
+                                append(it.simpleIdentifier().text)
+                                append(")")
+                            }
+                        }
+                    }
                 }
             }
             line("}")
@@ -316,21 +362,20 @@ fun SwiftAltListener.registerClass() {
     handle<KotlinParser.ClassDeclarationContext> { item ->
         when {
             item.INTERFACE() != null -> this.handleInterfaceClass(item)
-            item.modifierList()?.modifier()?.any { it.classModifier()?.ENUM() != null } == true -> this.handleEnumClass(item)
-            item.modifierList()?.modifier()?.any { it.classModifier()?.DATA() != null } == true -> this.handleDataClass(item)
+            item.modifiers()?.modifier()?.any { it.classModifier()?.ENUM() != null } == true -> this.handleEnumClass(
+                item
+            )
+            item.modifiers()?.modifier()?.any { it.classModifier()?.DATA() != null } == true -> this.handleDataClass(
+                item
+            )
             else -> this.handleNormalClass(item)
         }
     }
 
     handle<KotlinParser.ClassBodyContext> { item ->
-        item.classMemberDeclaration().forEach {
+        item.classMemberDeclarations().classMemberDeclaration().forEach {
             startLine()
-            it.classDeclaration()?.let { write(it) }
-            it.functionDeclaration()?.let { write(it) }
-            it.objectDeclaration()?.let { write(it) }
-            it.companionObject()?.let { write(it) }
-            it.propertyDeclaration()?.let { write(it) }
-            it.secondaryConstructor()?.let { throw UnsupportedOperationException("No secondary constructors yet.") }
+            write(it)
         }
     }
 }

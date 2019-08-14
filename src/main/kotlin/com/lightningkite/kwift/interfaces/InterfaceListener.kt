@@ -39,7 +39,7 @@ open class InterfaceListener(val parser: KotlinParser) : KotlinParserBaseListene
         interfaces.add(InterfaceData(
             packageName = currentPackage,
             name = ctx.simpleIdentifier().text,
-            implements = ctx.delegationSpecifiers()?.delegationSpecifier()?.flatMap {
+            implements = ctx.delegationSpecifiers()?.annotatedDelegationSpecifier()?.map { it.delegationSpecifier() }?.flatMap {
                 val id = it.userType()?.text?.substringBefore('<') ?: return@flatMap listOf<String>()
                 if (id.firstOrNull()?.isLowerCase() == true) {
                     //qualified
@@ -54,10 +54,10 @@ open class InterfaceListener(val parser: KotlinParser) : KotlinParserBaseListene
                     }.plus(id)
                 }
             } ?: listOf(),
-            methods = ctx.classBody()?.classMemberDeclaration()
-                ?.mapNotNull { it.functionDeclaration()?.identifier()?.text } ?: listOf(),
-            properties = ctx.classBody()?.classMemberDeclaration()
-                ?.mapNotNull { it.propertyDeclaration()?.variableDeclaration()?.simpleIdentifier()?.text } ?: listOf()
+            methods = ctx.classBody()?.classMemberDeclarations()?.classMemberDeclaration()
+                ?.mapNotNull { it.declaration()?.functionDeclaration()?.simpleIdentifier()?.text } ?: listOf(),
+            properties = ctx.classBody()?.classMemberDeclarations()?.classMemberDeclaration()
+                ?.mapNotNull { it.declaration()?.propertyDeclaration()?.variableDeclaration()?.simpleIdentifier()?.text } ?: listOf()
         ))
     }
 }

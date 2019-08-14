@@ -1,12 +1,10 @@
 /**
+ * Kotlin lexical grammar in ANTLR4 notation (Unicode classes)
+ *
  * Taken from http://www.antlr3.org/grammar/1345144569663/AntlrUnicode.txt
  */
 
 lexer grammar UnicodeClasses;
-
-@header {
-   package org.jetbrains.kotlin;
-}
 
 UNICODE_CLASS_LL:
 	'\u0061'..'\u007A' |

@@ -19,6 +19,11 @@ fun KotlinParser.FunctionDeclarationContext.returnType(): KotlinParser.TypeConte
 }
 
 fun SwiftAltListener.registerFunction() {
+    handle<KotlinParser.ParameterContext> { item ->
+        direct.append(item.simpleIdentifier().text)
+        direct.append(": ")
+        write(item.type())
+    }
     fun TabWriter.handleFunctionBodyAfterOpeningBrace(item: KotlinParser.FunctionBodyContext) {
         tab {
             item.expression()?.let {
@@ -27,7 +32,7 @@ fun SwiftAltListener.registerFunction() {
                     write(it)
                 }
             }
-            item.block()?.let {
+            item.block()?.statements()?.let {
                 it.statement().forEach {
                     startLine()
                     write(it)
@@ -39,34 +44,37 @@ fun SwiftAltListener.registerFunction() {
 
     fun TabWriter.handleNormalFunction(item: KotlinParser.FunctionDeclarationContext) {
 
-        val myName = item.identifier().text
-        val owningClass = item.parentIfType<KotlinParser.ClassMemberDeclarationContext>()
+        val myName = item.simpleIdentifier().text
+        val owningClass = item.parentIfType<KotlinParser.DeclarationContext>()
+            ?.parentIfType<KotlinParser.ClassMemberDeclarationContext>()
+            ?.parentIfType<KotlinParser.ClassMemberDeclarationsContext>()
             ?.parentIfType<KotlinParser.ClassBodyContext>()
             ?.parentIfType<KotlinParser.ClassDeclarationContext>()
-        val originalUsesOverride = item.modifierList()?.modifier()?.any{ it.memberModifier()?.OVERRIDE() != null } ?: false
+        val isTopLevel = item.parentIfType<KotlinParser.DeclarationContext>()
+            ?.parentIfType<KotlinParser.TopLevelObjectContext>() != null
+        val originalUsesOverride =
+            item.modifiers()?.modifier()?.any { it.memberModifier()?.OVERRIDE() != null } ?: false
         val needsOverrideKeyword = originalUsesOverride && owningClass?.implements()
             ?.any { myName in it.methods } != true
 
-        line {
-            if(needsOverrideKeyword) append("override ")
-            if(owningClass != null){
-                append(item.modifierList().visibilityString())
+        fun Appendable.writeFunctionHeader(addUnderscore: Boolean){
+            if (needsOverrideKeyword) append("override ")
+            if (owningClass != null || isTopLevel) {
+                append(item.modifiers().visibilityString())
                 append(" ")
             }
             append("func ")
-            append(item.identifier().text)
-            item.typeParameters()?.let {
-                append(it.typeParameter().joinToString(", ", "<", ">") {
-                    val typeConstraint = it.type()?.let { ": ${it.toSwift()}" } ?: ""
-                    it.simpleIdentifier().text + typeConstraint
-                })
-            }
+            append(item.simpleIdentifier().text)
+            item.typeParameters()?.let { write(it) }
             append("(")
             item.functionValueParameters().functionValueParameter().forEachBetween(
                 forItem = {
+                    if(addUnderscore){
+                        append("_ ")
+                    }
                     append(it.parameter().simpleIdentifier().text)
                     append(": ")
-                    append(it.parameter().type().toSwift())
+                    write(it.parameter().type())
                     it.expression()?.let {
                         append(" = ")
                         write(it)
@@ -75,8 +83,19 @@ fun SwiftAltListener.registerFunction() {
                 between = { append(", ") }
             )
             append(") -> ")
-            append(item.returnType()?.toSwift() ?: "Unit")
-            if(item.functionBody() != null) append(" {")
+
+            item.returnType()?.let {
+                write(it)
+            } ?: run {
+                append("Void")
+            }
+        }
+
+        line {
+            writeFunctionHeader(false)
+            if (item.functionBody() != null) {
+                append(" {")
+            }
         }
 
         item.functionBody()?.let { handleFunctionBodyAfterOpeningBrace(it) }
@@ -87,39 +106,14 @@ fun SwiftAltListener.registerFunction() {
         }
         if (needsAlternateWriting) {
             line {
-                append(item.modifierList().visibilityString())
-                if(needsOverrideKeyword) append(" override")
-                append(" func ")
-                append(item.identifier().text)
-                item.typeParameters()?.let {
-                    append(it.typeParameter().joinToString(", ", "<", ">") {
-                        val typeConstraint = it.type()?.let { ": ${it.toSwift()}" } ?: ""
-                        it.simpleIdentifier().text + typeConstraint
-                    })
-                }
-                append("(")
-                item.functionValueParameters().functionValueParameter().forEachBetween(
-                    forItem = {
-                        append("_ ")
-                        append(it.parameter().simpleIdentifier().text)
-                        append(": ")
-                        append(it.parameter().type().toSwift())
-                        it.expression()?.let {
-                            append(" = ")
-                            write(it)
-                        }
-                    },
-                    between = { append(", ") }
-                )
-                append(") -> ")
-                append(item.returnType()?.toSwift() ?: "Unit")
+                writeFunctionHeader(true)
                 if (item.functionBody() != null) {
                     append(" {")
                 }
             }
             tab {
                 line {
-                    append("return ${item.identifier().text}(")
+                    append("return ${item.simpleIdentifier().text}(")
                     item.functionValueParameters().functionValueParameter().forEachBetween(
                         forItem = {
                             append(it.parameter().simpleIdentifier().text)
@@ -143,21 +137,18 @@ fun SwiftAltListener.registerFunction() {
         if (item.receiver() != null) this.handleExtensionFunction(item)
         else this.handleNormalFunction(item)
     }
-    handle<KotlinParser.CallExpressionContext> {
-        val repl = functionReplacements[it.assignableExpression().text]
-        if (repl != null) {
-            direct.append(repl)
+    handle<KotlinParser.PostfixUnaryExpressionContext> { item ->
+        if (item.postfixUnarySuffix()?.oneOnly()?.callSuffix() != null) {
+            val repl = functionReplacements[item.primaryExpression().text]
+            if (repl != null) {
+                direct.append(repl)
+            } else {
+                write(item.primaryExpression())
+            }
+            item.postfixUnarySuffix().forEach { write(it) }
         } else {
-            write(it.assignableExpression())
-        }
-        it.typeArguments()?.let {
-            write(it)
-        }
-        it.valueArguments()?.let {
-            write(it)
-        }
-        it.annotatedLambda()?.let {
-            write(it)
+            write(item.primaryExpression())
+            item.postfixUnarySuffix().forEach { write(it) }
         }
     }
     handle<KotlinParser.FunctionValueParametersContext> {
@@ -181,5 +172,19 @@ fun SwiftAltListener.registerFunction() {
             direct.append(it.text + ": ")
         }
         write(it.expression())
+    }
+    handle<KotlinParser.TypeParametersContext> {
+        direct.append("<")
+        it.typeParameter().forEachBetween(
+            forItem = {
+                direct.append(it.simpleIdentifier().text)
+                it.type()?.let {
+                    direct.append(": ")
+                    write(it)
+                }
+            },
+            between = { direct.append(", ") }
+        )
+        direct.append(">")
     }
 }

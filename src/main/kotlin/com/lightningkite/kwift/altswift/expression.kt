@@ -9,11 +9,14 @@ fun SwiftAltListener.registerExpression() {
             item.AS_SAFE() != null -> direct.append("as?")
         }
     }
-    handle<KotlinParser.DotQualifiedExpressionContext> { item ->
-        write(item.assignableExpression())
-        item.memberAccessOperator()?.forEachIndexed { index, it ->
-            direct.append('.')
-            write(item.postfixUnaryExpression(index))
-        }
+    handle<KotlinParser.AssignableSuffixContext> { item ->
+        defaultWrite(item, "")
+    }
+    handle<KotlinParser.NavigationSuffixContext> { item ->
+        defaultWrite(item, "")
+    }
+    handle<KotlinParser.PrimaryExpressionContext> { item ->
+        if(item.simpleIdentifier()?.text == "Unit") direct.append("()")
+        else defaultWrite(item)
     }
 }

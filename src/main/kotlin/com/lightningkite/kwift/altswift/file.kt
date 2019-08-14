@@ -15,11 +15,4 @@ fun SwiftAltListener.registerFile(){
             write(obj)
         }
     }
-
-    handle<KotlinParser.TopLevelObjectContext> { item ->
-        item.classDeclaration()?.let{ write(it) }
-        item.functionDeclaration()?.let{ write(it) }
-        item.objectDeclaration()?.let{ write(it) }
-        item.propertyDeclaration()?.let{ write(it) }
-    }
 }

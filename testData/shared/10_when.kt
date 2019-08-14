@@ -23,4 +23,16 @@ fun cases(x: Int) {
         0, 1 -> print("x == 0 or x == 1")
         else -> print("otherwise")
     }
+
+    when {
+        x > 2 -> print("Bigger than 2")
+        x < 2 -> print("Less than 2")
+        x == 2 -> print("Is 2")
+    }
+
+    var y: Any = x
+    when(y) {
+        is Int -> println(y + 2)
+        else -> println(y)
+    }
 }

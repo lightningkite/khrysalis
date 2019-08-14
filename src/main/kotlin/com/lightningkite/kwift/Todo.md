@@ -1,6 +1,6 @@
 # Still Needed
 
-- Lambda support, including weak
+- Lambda support, including weak (?)
 - Variable 'by weak'
 - Smart casts
 - ?.let { newName ->

@@ -19,4 +19,11 @@ fun SwiftAltListener.registerLiterals() {
         }
         direct.append('"')
     }
+    handle<KotlinParser.ElvisContext> { item ->
+        direct.append("??")
+    }
+    handle<KotlinParser.PostfixUnaryOperatorContext> { item ->
+        if(item.excl() != null) direct.append("!")
+        else defaultWrite(item)
+    }
 }

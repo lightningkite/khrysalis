@@ -13,7 +13,9 @@ class SwiftAltListener {
 
     fun KotlinParser.ClassDeclarationContext.implements(): Sequence<InterfaceListener.InterfaceData>{
         val currentFile = currentFile ?: return sequenceOf()
-        return this.delegationSpecifiers()?.delegationSpecifier()?.asSequence()
+        return this.delegationSpecifiers()?.annotatedDelegationSpecifier()
+            ?.asSequence()
+            ?.map { it.delegationSpecifier() }
             ?.mapNotNull { it.userType()?.text }
             ?.flatMap {
                 if(it.firstOrNull()?.isUpperCase() == true){
@@ -28,25 +30,6 @@ class SwiftAltListener {
                 }
             }
             ?.mapNotNull { interfaces[it] }
-            ?: sequenceOf()
-    }
-
-    fun KotlinParser.ClassDeclarationContext.implementsPossibleNames(): Sequence<String>{
-        val currentFile = currentFile ?: return sequenceOf()
-        return this.delegationSpecifiers()?.delegationSpecifier()?.asSequence()
-            ?.mapNotNull { it.userType()?.text }
-            ?.flatMap {
-                if(it.firstOrNull()?.isUpperCase() == true){
-                    currentFile.importList().importHeader().asSequence()
-                        .filter { it.MULT() != null }
-                        .map { import ->
-                            import.identifier().text + "." + it
-                        }
-                        .plus(currentFile.packageHeader().identifier().text + "." + it)
-                } else {
-                    sequenceOf(it)
-                }
-            }
             ?: sequenceOf()
     }
 
@@ -69,6 +52,9 @@ class SwiftAltListener {
         registerVariable()
         registerExpression()
         registerLiterals()
+        registerLambda()
+        registerControl()
+        registerType()
 
         tokenOptions[KotlinParser.EOF] = { direct.append("") }
         tokenOptions[KotlinParser.LineStrRef] = { direct.append("\\(" + it.text.removePrefix("$") + ")") }
@@ -81,13 +67,12 @@ class SwiftAltListener {
         tokenOptions[KotlinParser.AS] = { direct.append("as!") }
         tokenOptions[KotlinParser.AS_SAFE] = { direct.append("as?") }
         tokenOptions[KotlinParser.RETURN_AT] = { direct.append("return") }
-        tokenOptions[KotlinParser.EXCL_EXCL] = { direct.append("!") }
-        tokenOptions[KotlinParser.ELVIS] = { direct.append("??") }
 
         typeReplacements["Map"] = "Dictionary"
         typeReplacements["List"] = "Array"
         typeReplacements["HashMap"] = "Dictionary"
         typeReplacements["ArrayList"] = "Array"
+        typeReplacements["Unit"] = "Void"
 
         functionReplacements["println"] = "print"
     }
@@ -96,46 +81,48 @@ class SwiftAltListener {
         tokenOptions[node.symbol.type]?.invoke(this, node) ?: this.direct.append(node.text)
     }
     fun TabWriter.write(item: ParserRuleContext){
-        options[item::class.java]?.invoke(this, item) ?: run {
-            item.children?.forEachBetween(
-                forItem = { child ->
-                    when(child){
-                        is ParserRuleContext -> write(child)
-                        is TerminalNode -> write(child)
-                    }
-                },
-                between = {
-                    direct.append(' ')
+        options[item::class.java]?.invoke(this, item) ?: defaultWrite(item)
+    }
+    fun TabWriter.defaultWrite(item: ParserRuleContext, between: String = " "){
+        item.children?.forEachBetween(
+            forItem = { child ->
+                when(child){
+                    is ParserRuleContext -> write(child)
+                    is TerminalNode -> write(child)
                 }
-            )
-        }
+            },
+            between = {
+                direct.append(between)
+            }
+        )
     }
-    fun KotlinParser.TypeContext.toSwift(): String {
-        this.functionType()?.let{ return it.toSwift() }
-        this.nullableType()?.let{ return it.toSwift() }
-        this.parenthesizedType()?.let{ return "(" + it.type().toSwift() + ")" }
-        this.typeReference()?.let{ return it.toSwift() }
-        throw IllegalStateException()
-    }
-    fun KotlinParser.SimpleUserTypeContext.toSwift(): String {
-        val name = typeReplacements[this.simpleIdentifier().text] ?: this.simpleIdentifier().text
-        return name + (this.typeArguments()?.typeProjection()?.joinToString(", ", "<", ">") { it.type().toSwift() } ?: "")
-    }
-    fun KotlinParser.UserTypeContext.toSwift(): String = this.simpleUserType().joinToString(".") { it.toSwift() }
-    fun KotlinParser.FunctionTypeContext.toSwift(): String {
-        if(this.functionTypeReceiver() != null){
-            throw UnsupportedOperationException("Receiver lambdas are not available in Swift.")
-        }
-        return this.functionTypeParameters().parameter().joinToString(", ", "(", ")") { it.type().toSwift() } + " -> " + this.type().toSwift()
-    }
-    fun KotlinParser.TypeReferenceContext.toSwift(): String {
-        this.typeReference()?.let { return it.toSwift() + "?" }
-        this.userType()?.let { return it.toSwift() }
-        throw IllegalStateException()
-    }
-    fun KotlinParser.NullableTypeContext.toSwift(): String {
-        this.typeReference()?.let { return it.toSwift() + "?" }
-        this.parenthesizedType()?.let { return "(" + it.type().toSwift() + ")?" }
-        throw IllegalStateException()
-    }
+//    fun KotlinParser.TypeContext.toSwift(): String {
+//        val modifiers = this.typeModifiers().typeModifier().wr
+//        this.functionType()?.let{ return it.toSwift() }∂
+//        this.nullableType()?.let{ return it.toSwift() }
+//        this.parenthesizedType()?.let{ return "(" + it.type().toSwift() + ")" }
+//        this.typeReference()?.let{ return it.toSwift() }
+//        throw IllegalStateException()
+//    }
+//    fun KotlinParser.SimpleUserTypeContext.toSwift(): String {
+//        val name = typeReplacements[this.simpleIdentifier().text] ?: this.simpleIdentifier().text
+//        return name + (this.typeArguments()?.typeProjection()?.joinToString(", ", "<", ">") { it.type().toSwift() } ?: "")
+//    }
+//    fun KotlinParser.UserTypeContext.toSwift(): String = this.simpleUserType().joinToString(".") { it.toSwift() }
+//    fun KotlinParser.FunctionTypeContext.toSwift(): String {
+//        if(this.receiverType() != null){
+//            throw UnsupportedOperationException("Receiver lambdas are not available in Swift.")
+//        }
+//        return this.functionTypeParameters().parameter().joinToString(", ", "(", ")") { it.type().toSwift() } + " -> " + this.type().toSwift()
+//    }
+//    fun KotlinParser.TypeReferenceContext.toSwift(): String {
+//        this.DYNAMIC()?.let { return "Any" }
+//        this.userType()?.let { return it.toSwift() }
+//        throw IllegalStateException()
+//    }
+//    fun KotlinParser.NullableTypeContext.toSwift(): String {
+//        this.typeReference()?.let { return it.toSwift() + "?" }
+//        this.parenthesizedType()?.let { return "(" + it.type().toSwift() + ")?" }
+//        throw IllegalStateException()
+//    }
 }

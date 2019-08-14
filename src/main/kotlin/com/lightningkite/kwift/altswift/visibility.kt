@@ -2,7 +2,7 @@ package com.lightningkite.kwift.altswift
 
 import org.jetbrains.kotlin.KotlinParser
 
-fun KotlinParser.ModifierListContext?.visibilityString(): String {
+fun KotlinParser.ModifiersContext?.visibilityString(): String {
     val v = this?.modifier()?.asSequence()?.mapNotNull { it.visibilityModifier() }?.firstOrNull()
     return when {
         v == null -> "public"
