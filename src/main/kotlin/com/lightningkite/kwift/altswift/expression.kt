@@ -1,5 +1,6 @@
 package com.lightningkite.kwift.altswift
 
+import org.antlr.v4.runtime.ParserRuleContext
 import org.jetbrains.kotlin.KotlinParser
 
 fun SwiftAltListener.registerExpression() {
@@ -17,6 +18,7 @@ fun SwiftAltListener.registerExpression() {
     }
     handle<KotlinParser.PrimaryExpressionContext> { item ->
         if(item.simpleIdentifier()?.text == "Unit") direct.append("()")
+        if(item.simpleIdentifier()?.text == "this") direct.append("self")
         else defaultWrite(item)
     }
 }

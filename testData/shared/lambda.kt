@@ -13,9 +13,17 @@ fun takesLambda(lambda: (integer: Int, someValue: String) -> Unit) {
 
 }
 
-fun takesEscapingLambda(lambda: (@escaping (integer: Int, someValue: String) -> Unit)) {
+fun takesEscapingLambda(lambda: @escaping (integer: Int, someValue: String) -> Unit) {
 
 }
 
-class ConstructorHasEscaping(val lambda: (@escaping (integer: Int, someValue: String) -> Unit)) {
+fun takesEscapingLambda2(lambda: (@escaping (integer: Int, someValue: String) -> Unit)) {
+
+}
+
+class ConstructorHasEscaping(val lambda: @escaping (integer: Int, someValue: String) -> Unit) {
+}
+
+
+class ConstructorHasEscaping2(val lambda: (@escaping (integer: Int, someValue: String) -> Unit)) {
 }

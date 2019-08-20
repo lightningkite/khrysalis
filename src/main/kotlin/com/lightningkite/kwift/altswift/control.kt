@@ -4,26 +4,6 @@ import com.lightningkite.kwift.swift.TabWriter
 import com.lightningkite.kwift.utils.forEachBetween
 import org.jetbrains.kotlin.KotlinParser
 
-fun <E> List<E>.oneOnly(): E? = if (this.size == 1) first() else null
-fun KotlinParser.PrimaryExpressionContext.usedAsStatement() =
-    parentOfType<KotlinParser.AssignableExpressionContext>()
-        ?.parentOfType<KotlinParser.PostfixUnaryExpressionContext>()
-        ?.parentOfType<KotlinParser.PrefixUnaryExpressionContext>()
-        ?.parentOfType<KotlinParser.AsExpressionContext>()
-        ?.parentOfType<KotlinParser.MultiplicativeExpressionContext>()
-        ?.parentOfType<KotlinParser.AdditiveExpressionContext>()
-        ?.parentOfType<KotlinParser.RangeExpressionContext>()
-        ?.parentOfType<KotlinParser.InfixFunctionCallContext>()
-        ?.parentOfType<KotlinParser.ElvisExpressionContext>()
-        ?.parentOfType<KotlinParser.InfixOperationContext>()
-        ?.parentOfType<KotlinParser.ComparisonContext>()
-        ?.parentOfType<KotlinParser.EqualityContext>()
-        ?.parentOfType<KotlinParser.ConjunctionContext>()
-        ?.parentOfType<KotlinParser.DisjunctionContext>()
-        ?.parentOfType<KotlinParser.AssignmentContext>()
-        ?.parentOfType<KotlinParser.ExpressionContext>()
-        ?.parentOfType<KotlinParser.StatementContext>() != null
-
 fun SwiftAltListener.registerControl() {
     fun TabWriter.writeInsideIf(expression: KotlinParser.EqualityContext) {
         if (expression.equalityOperator()?.oneOnly()?.EXCL_EQ() != null
@@ -112,10 +92,21 @@ fun SwiftAltListener.registerControl() {
             }
         }
     }
+    handle<KotlinParser.ForStatementContext> {
+        line {
+            append("for ")
+            write(it.variableDeclaration()!!.simpleIdentifier())
+            append(" in ")
+            write(it.expression())
+            append(" {")
+        }
+        tab {
+            write(it.controlStructureBody())
+        }
+        line("}")
+    }
     handle<KotlinParser.WhenExpressionContext> { item ->
-        val usedAsStatement = item
-            .parentOfType<KotlinParser.PrimaryExpressionContext>()
-            ?.usedAsStatement() ?: false
+        val usedAsStatement = item.usedAsStatement()
 
         item.whenSubject()?.expression()?.let { on ->
             direct.append("switch ")

@@ -10,6 +10,7 @@ import org.jetbrains.kotlin.KotlinParser
 class SwiftAltListener {
     var interfaces: Map<String, InterfaceListener.InterfaceData> = mapOf()
     var currentFile: KotlinParser.KotlinFileContext? = null
+    var filterEscapingAnnotation: KotlinParser.TypeContext? = null
 
     fun KotlinParser.ClassDeclarationContext.implements(): Sequence<InterfaceListener.InterfaceData>{
         val currentFile = currentFile ?: return sequenceOf()
@@ -35,7 +36,13 @@ class SwiftAltListener {
 
     val options = HashMap<Class<*>, TabWriter.(ParserRuleContext)->Unit>()
     val tokenOptions = HashMap<Int, TabWriter.(TerminalNode)->Unit>()
-    val functionReplacements = HashMap<String, String>()
+    val functionReplacements = HashMap<String, TabWriter.(KotlinParser.PostfixUnaryExpressionContext)->Unit>()
+    fun simpleFunctionReplacement(kotlinFunctionName: String, swiftFunctionName: String) {
+        functionReplacements[kotlinFunctionName] = {
+            direct.append(swiftFunctionName)
+            it.postfixUnarySuffix().forEach { write(it) }
+        }
+    }
     val typeReplacements = HashMap<String, String>()
 
     inline fun <reified T: ParserRuleContext> handle(noinline action: TabWriter.(T)->Unit){
@@ -74,10 +81,56 @@ class SwiftAltListener {
         typeReplacements["ArrayList"] = "Array"
         typeReplacements["Unit"] = "Void"
 
-        functionReplacements["println"] = "print"
+        simpleFunctionReplacement("println", "print")
+        functionReplacements["run"] = {
+            direct.append("{ () in ")
+            it.postfixUnarySuffix()[0]!!.callSuffix()!!.annotatedLambda()!!.lambdaLiteral()!!.statements()!!.statement().forEach {
+                startLine()
+                write(it)
+            }
+            startLine()
+            direct.append("}()")
+        }
+
+        functionReplacements["listOf"] = {
+            direct.append("[")
+            it.postfixUnarySuffix()[0]!!.callSuffix()!!.valueArguments()!!.valueArgument()!!.forEachBetween(
+                forItem = { write(it) },
+                between = { direct.append(", ") }
+            )
+            direct.append("]")
+        }
+        functionReplacements["arrayListOf"] = functionReplacements["listOf"]!!
+        functionReplacements["mutableListOf"] = functionReplacements["listOf"]!!
+
+        functionReplacements["mapOf"] = {
+            direct.append("[")
+            it.postfixUnarySuffix()[0]!!.callSuffix()!!.valueArguments()!!.valueArgument()!!.forEachBetween(
+                forItem = {
+                    //it is a 'x to y' expression
+                    val toCall = it.expression()
+                        .disjunction()!!
+                        .conjunction(0)!!
+                        .equality(0)!!
+                        .comparison(0)!!
+                        .infixOperation(0)!!
+                        .elvisExpression(0)!!
+                        .infixFunctionCall(0)!!
+                    assert(toCall.simpleIdentifier(0)!!.text == "to")
+                    write(toCall.rangeExpression(0)!!)
+                    direct.append(": ")
+                    write(toCall.rangeExpression(1)!!)
+                },
+                between = { direct.append(", ") }
+            )
+            direct.append("]")
+        }
+        functionReplacements["hashMapOf"] = functionReplacements["mapOf"]!!
+        functionReplacements["mutableMapOf"] = functionReplacements["mapOf"]!!
     }
 
     fun TabWriter.write(node: TerminalNode){
+//        println("Appending node '${node.text}' of type ${KotlinParser.VOCABULARY.getDisplayName(node.symbol.type)}")
         tokenOptions[node.symbol.type]?.invoke(this, node) ?: this.direct.append(node.text)
     }
     fun TabWriter.write(item: ParserRuleContext){

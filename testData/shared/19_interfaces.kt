@@ -28,6 +28,11 @@ open class Parent {
         return 3
     }
 
+    var x: Int
+        get() = 2
+        set(value) {}
+    val y: String get() = "Hello World!"
+
     var four = 4
         set(value) {
             field = value
@@ -46,24 +51,6 @@ class Child : Parent(), MyInterface {
     }
 }
 
-// Abstract Interface + Inheritance
-
-abstract class AbstractParent {
-    abstract fun three(): Int
-    var four = 4
-}
-
-abstract class AbstractChild : Parent() {
-}
-
-class NonAbstractChild : AbstractChild(), MyInterface {
-    override fun bar(): String {
-        return "2-NonAbstractChild"
-    }
-
-    override fun three(): Int = 3
-}
-
 fun main(args: Array<String>) {
     // Simple Interface
     val obj = Implementation()
@@ -78,11 +65,4 @@ fun main(args: Array<String>) {
     println(child.four)
     println(child.five)
     println(child.six())
-
-    // Abstract Interface + Inheritance
-    val naChild = NonAbstractChild()
-    println(naChild.foo())
-    println(naChild.bar())
-    println(naChild.three())
-    println(naChild.four)
 }

@@ -12,7 +12,7 @@ fun SwiftAltListener.registerLiterals() {
                 is KotlinParser.LineStringContentContext -> direct.append(it.text)
                 is KotlinParser.LineStringExpressionContext -> {
                     direct.append("\\(")
-                    write(it)
+                    write(it.expression())
                     direct.append (")")
                 }
             }
@@ -25,5 +25,11 @@ fun SwiftAltListener.registerLiterals() {
     handle<KotlinParser.PostfixUnaryOperatorContext> { item ->
         if(item.excl() != null) direct.append("!")
         else defaultWrite(item)
+    }
+    tokenOptions[KotlinParser.RealLiteral] = {
+        direct.append(it.text.removeSuffix("f").removeSuffix("F"))
+    }
+    tokenOptions[KotlinParser.LongLiteral] = {
+        direct.append(it.text.removeSuffix("l").removeSuffix("L"))
     }
 }

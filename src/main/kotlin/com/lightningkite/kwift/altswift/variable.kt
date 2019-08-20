@@ -18,6 +18,8 @@ fun SwiftAltListener.registerVariable() {
             item.modifiers()?.modifier()?.any { it.memberModifier()?.OVERRIDE() != null } ?: false
         val needsOverrideKeyword = originalUsesOverride && owningClass?.implements()
             ?.any { myName in it.properties } != true
+        val isTopLevel = item.parentIfType<KotlinParser.DeclarationContext>()
+            ?.parentIfType<KotlinParser.TopLevelObjectContext>() != null
 
         var initialSetExpression = item.expression()
         var useWeak = false
@@ -45,7 +47,7 @@ fun SwiftAltListener.registerVariable() {
             if (needsOverrideKeyword) {
                 append("override ")
             }
-            if (owningClass != null) {
+            if (owningClass != null || isTopLevel) {
                 append(item.modifiers().visibilityString())
                 append(" ")
             }
@@ -62,21 +64,19 @@ fun SwiftAltListener.registerVariable() {
                 append(" = ")
                 write(it)
             }
-            if (owningClass?.INTERFACE() != null) {
-                if (item.VAL() != null) {
-                    append(" { get }")
-                } else {
-                    append(" { get set }")
+        }
+        item.getter()?.let { getter ->
+            direct.append(" {")
+            tab {
+                line("get {")
+                handleFunctionBodyAfterOpeningBrace(this, getter.functionBody())
+
+                item.setter()?.let { setter ->
+                    line("set(value) {")
+                    handleFunctionBodyAfterOpeningBrace(this, setter.functionBody())
                 }
             }
+            line("}")
         }
     }
-}
-
-inline fun <reified T> RuleContext.parentIfType() = (parent as? T)
-
-inline fun <reified T> RuleContext.parentOfType() = parentOfType(T::class.java)
-tailrec fun <T> RuleContext.parentOfType(type: Class<T>): T? {
-    if (parent == null) return null
-    else return parent.parentOfType(type)
 }
