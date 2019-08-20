@@ -1,7 +1,7 @@
 package com.lightningkite.kwift.gradle
 
-import com.lightningkite.kwift.altswift.convertKotlinToSwift2
 import com.lightningkite.kwift.log
+import com.lightningkite.kwift.swift.convertKotlinToSwift
 import org.gradle.api.DefaultTask
 import org.gradle.api.tasks.TaskAction
 import java.io.File
@@ -24,7 +24,7 @@ open class KwiftTask : DefaultTask() {
         if(pairs != null){
             log("Kwift - pairs: $pairs")
             for(pair in pairs){
-                convertKotlinToSwift2(pair.first, pair.second)
+                convertKotlinToSwift(pair.first, pair.second)
             }
         } else {
             log("Kwift - No pairs of directories found, skipping")

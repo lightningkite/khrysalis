@@ -1,4 +1,4 @@
-package com.lightningkite.kwift.altswift
+package com.lightningkite.kwift.swift
 
 import com.lightningkite.kwift.swift.TabWriter
 import com.lightningkite.kwift.utils.forEachBetween
@@ -177,28 +177,6 @@ fun SwiftAltListener.registerFunction() {
     handle<KotlinParser.FunctionDeclarationContext> { item ->
         if (item.receiverType() != null) this.handleExtensionFunction(item)
         else handleNormalFunction(this, item)
-    }
-    handle<KotlinParser.PostfixUnaryExpressionContext> { item ->
-        val lastCallSuffix = item.postfixUnarySuffix()?.lastOrNull()?.callSuffix()
-        if (lastCallSuffix != null) {
-            val primaryExpressionText = item.primaryExpression().text.trim()
-            println("Primary expression text: ${primaryExpressionText}")
-            val secondToLastSuffix = item.postfixUnarySuffix().let { it.getOrNull(it.lastIndex - 1) }
-            if (secondToLastSuffix != null &&
-                secondToLastSuffix.navigationSuffix()?.memberAccessOperator()?.safeNav() != null &&
-                secondToLastSuffix.navigationSuffix()?.simpleIdentifier()?.text == "let"
-            ) {
-                handleLet(this, item, secondToLastSuffix)
-                return@handle
-            }
-            val repl = functionReplacements[primaryExpressionText]
-            if (repl != null) {
-                repl.invoke(this, item)
-                return@handle
-            }
-        }
-        write(item.primaryExpression())
-        item.postfixUnarySuffix().forEach { write(it) }
     }
     handle<KotlinParser.FunctionValueParametersContext> {
         direct.append("(")

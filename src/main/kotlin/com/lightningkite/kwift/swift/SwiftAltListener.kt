@@ -1,4 +1,4 @@
-package com.lightningkite.kwift.altswift
+package com.lightningkite.kwift.swift
 
 import com.lightningkite.kwift.interfaces.InterfaceListener
 import com.lightningkite.kwift.swift.TabWriter

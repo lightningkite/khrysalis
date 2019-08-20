@@ -5,7 +5,6 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.lightningkite.kwift.INTERFACE_SCAN_VERSION
 import com.lightningkite.kwift.VERSION
 import com.lightningkite.kwift.log
-import com.lightningkite.kwift.swift.ignoreKotlinOnly
 import com.lightningkite.kwift.utils.Versioned
 import org.antlr.v4.runtime.ANTLRInputStream
 import org.antlr.v4.runtime.CommonTokenStream
@@ -33,7 +32,7 @@ fun getInterfaces(sources: Sequence<File>): Map<String, InterfaceListener.Interf
         val cache = if (existing != null && existing.hash == hash) {
             existing
         } else {
-            val lexer = KotlinLexer(ANTLRInputStream(text.ignoreKotlinOnly()))
+            val lexer = KotlinLexer(ANTLRInputStream(text))
             val tokenStream = CommonTokenStream(lexer)
             val parser = KotlinParser(tokenStream)
 

@@ -1,4 +1,4 @@
-package com.lightningkite.kwift.altswift
+package com.lightningkite.kwift.swift
 
 import com.lightningkite.kwift.utils.forEachBetween
 import org.antlr.v4.runtime.ParserRuleContext
@@ -47,4 +47,5 @@ fun SwiftAltListener.registerType() {
         direct.append('@')
         write(item.unescapedAnnotation())
     }
+    handle<KotlinParser.NullableTypeContext> { defaultWrite(it, "") }
 }

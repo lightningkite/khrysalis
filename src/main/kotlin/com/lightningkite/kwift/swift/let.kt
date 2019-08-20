@@ -1,4 +1,4 @@
-package com.lightningkite.kwift.altswift
+package com.lightningkite.kwift.swift
 
 import com.lightningkite.kwift.swift.TabWriter
 import com.lightningkite.kwift.utils.forEachBetween
@@ -31,7 +31,7 @@ fun SwiftAltListener.handleLet(
     if (contextIsStatement) {
         line {
             append("if let ")
-            append(lambda.lambdaParameters().lambdaParameter(0).variableDeclaration().simpleIdentifier().text)
+            append(lambda.lambdaParameters()?.lambdaParameter(0)?.variableDeclaration()?.simpleIdentifier()?.text ?: "it")
             append(" = ")
             writeOn()
             append(" {")
@@ -48,7 +48,7 @@ fun SwiftAltListener.handleLet(
         tab {
             line {
                 append("if let ")
-                append(lambda.lambdaParameters().lambdaParameter(0).variableDeclaration().simpleIdentifier().text)
+                append(lambda.lambdaParameters()?.lambdaParameter(0)?.variableDeclaration()?.simpleIdentifier()?.text ?: "it")
                 append(" = ")
                 writeOn()
                 append(" {")

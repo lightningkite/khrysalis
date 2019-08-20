@@ -1,4 +1,4 @@
-package com.lightningkite.kwift.altswift
+package com.lightningkite.kwift.swift
 
 import com.lightningkite.kwift.swift.TabWriter
 import com.lightningkite.kwift.utils.forEachBetween
@@ -13,6 +13,45 @@ fun SwiftAltListener.registerClass() {
         primaryConstructor()?.classParameters()?.classParameter()
             ?.asSequence()
             ?.filter { it.VAL() != null || it.VAR() != null } ?: sequenceOf()
+
+    fun TabWriter.writeConvenienceInit(item: KotlinParser.ClassDeclarationContext) {
+        line {
+            append("convenience public init(")
+            item.primaryConstructor()?.classParameters()?.classParameter()?.forEachBetween(
+                forItem = {
+                    append("_ ")
+                    append(it.simpleIdentifier().text)
+                    append(": ")
+                    write(it.type())
+                    it.expression()?.let {
+                        append(" = ")
+                        write(it)
+                    }
+                },
+                between = {
+                    append(", ")
+                }
+            )
+            append(") {")
+        }
+        tab {
+            line {
+                append("self.init(")
+                item.primaryConstructor()?.classParameters()?.classParameter()?.forEachBetween(
+                    forItem = {
+                        append(it.simpleIdentifier().text)
+                        append(": ")
+                        append(it.simpleIdentifier().text)
+                    },
+                    between = {
+                        append(", ")
+                    }
+                )
+                append(")")
+            }
+        }
+        line("}")
+    }
 
     fun TabWriter.handleEnumClass(item: KotlinParser.ClassDeclarationContext) {
         line {
@@ -135,6 +174,8 @@ fun SwiftAltListener.registerClass() {
                 }
             }
             line("}")
+
+            writeConvenienceInit(item)
 
             line()
 
@@ -282,8 +323,8 @@ fun SwiftAltListener.registerClass() {
             item.typeParameters()?.let {
                 write(it)
             }
+            append(": Equatable, Hashable")
             item.delegationSpecifiers()?.let { dg ->
-                append(": Equatable, Hashable")
                 dg.annotatedDelegationSpecifier()
                     .asSequence()
                     .mapNotNull { it.delegationSpecifier() }
@@ -350,31 +391,34 @@ fun SwiftAltListener.registerClass() {
             }
             line("}")
 
+            writeConvenienceInit(item)
+
             line()
 
             line("public static func == (lhs: ${item.simpleIdentifier().text}, rhs: ${item.simpleIdentifier().text}) -> Bool {")
             tab {
-                line("return ")
-                tab {
-                    item.constructorVars().forEach {
-                        line("lhs.${it.simpleIdentifier().text} == rhs.${it.simpleIdentifier().text}")
+                line {
+                    append("return ")
+                    tab {
+                        item.constructorVars().forEachBetween(
+                            forItem = {
+                                direct.append("lhs.${it.simpleIdentifier().text} == rhs.${it.simpleIdentifier().text}")
+                            },
+                            between = {
+                                direct.append(" &&")
+                                startLine()
+                            }
+                        )
                     }
                 }
             }
             line("}")
 
-            line("public var hashValue: Int {")
+            line("public func hash(into hasher: inout Hasher) {")
             tab {
-                line("return " + buildString {
-                    item.constructorVars().forEachBetween(
-                        forItem = {
-                            append(it.simpleIdentifier().text + ".hashValue")
-                        },
-                        between = {
-                            append(" ^ ")
-                        }
-                    )
-                })
+                item.constructorVars().forEach {
+                    line("hasher.combine(${it.simpleIdentifier().text})")
+                }
             }
             line("}")
 
@@ -383,7 +427,7 @@ fun SwiftAltListener.registerClass() {
                 val lastIndex = item.constructorVars().count() - 1
                 item.constructorVars().forEachIndexed { index, it ->
                     line {
-                        write(it.type())
+                        write(it.simpleIdentifier())
                         append(": (")
                         write(it.type())
                         append(")?")

@@ -18,7 +18,7 @@ fun main(args: Array<String>) {
     if (x != null) println("x: ${x}") else println("X is null")
 
     //Let Style A
-    x?.let { it ->
+    x?.let {
         println("X: ${it}")
     }
 
