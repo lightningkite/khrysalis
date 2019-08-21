@@ -42,7 +42,6 @@ fun convertAndroidResourcesToSwift(
         .forEach { item ->
             log(item.toString())
             val output = item.translateLayoutXml(styles).retabSwift()
-            log(output)
             File(outputFolder, "layout/" + item.nameWithoutExtension.camelCase().capitalize() + "Xml.swift").also{
                 it.parentFile.mkdirs()
             }.apply{ parentFile.mkdirs() }.writeText(output)

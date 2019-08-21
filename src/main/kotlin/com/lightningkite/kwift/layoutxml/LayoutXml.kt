@@ -10,13 +10,6 @@ typealias Styles = Map<String, Map<String, String>>
 
 fun File.translateLayoutXml(styles: Styles): String {
 
-    for((styleKey, styleValue) in styles){
-        log("STYLE ${styleKey}")
-        for((k, v) in styleValue){
-            log("    $k = $v")
-        }
-    }
-
     val node = XmlNode.read(this, styles)
     val name = this.nameWithoutExtension.camelCase().capitalize()
     val appendable = StringBuilder()

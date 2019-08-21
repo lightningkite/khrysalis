@@ -7,6 +7,9 @@ import org.antlr.v4.runtime.RuleContext
 import org.jetbrains.kotlin.KotlinParser
 
 fun SwiftAltListener.registerLambda() {
+    handle<KotlinParser.AnnotatedLambdaContext> {
+        write(it.lambdaLiteral())
+    }
     handle<KotlinParser.LambdaLiteralContext> { item ->
         direct.append("{ (")
         item.lambdaParameters()?.lambdaParameter()?.forEachBetween(
@@ -24,6 +27,7 @@ fun SwiftAltListener.registerLambda() {
                 write(it)
             }
         }
-        line("}")
+        startLine()
+        direct.append("}")
     }
 }

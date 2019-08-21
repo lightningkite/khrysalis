@@ -6,6 +6,24 @@ import com.lightningkite.kwift.utils.snakeCase
 import org.jetbrains.kotlin.KotlinParser
 import java.lang.IllegalStateException
 import java.lang.UnsupportedOperationException
+import java.util.*
+import kotlin.collections.ArrayList
+
+private val KotlinParserClassDeclarationContextAdditionalInits =
+    HashMap<KotlinParser.ClassDeclarationContext, MutableList<SwiftAltListener.(TabWriter) -> Unit>>()
+val KotlinParser.ClassDeclarationContext.additionalInits: MutableList<SwiftAltListener.(TabWriter) -> Unit>
+    get() = KotlinParserClassDeclarationContextAdditionalInits.getOrPut(this) { ArrayList() }
+
+fun KotlinParser.ClassDeclarationContext.clearAdditionalInits() =
+    KotlinParserClassDeclarationContextAdditionalInits.remove(this)
+
+private val KotlinParserClassDeclarationContextAdditionalDeclarations =
+    HashMap<KotlinParser.ClassDeclarationContext, MutableList<SwiftAltListener.(TabWriter) -> Unit>>()
+val KotlinParser.ClassDeclarationContext.additionalDeclarations: MutableList<SwiftAltListener.(TabWriter) -> Unit>
+    get() = KotlinParserClassDeclarationContextAdditionalDeclarations.getOrPut(this) { ArrayList() }
+
+fun KotlinParser.ClassDeclarationContext.clearAdditionalDeclarations() =
+    KotlinParserClassDeclarationContextAdditionalDeclarations.remove(this)
 
 fun SwiftAltListener.registerClass() {
 
@@ -15,6 +33,7 @@ fun SwiftAltListener.registerClass() {
             ?.filter { it.VAL() != null || it.VAR() != null } ?: sequenceOf()
 
     fun TabWriter.writeConvenienceInit(item: KotlinParser.ClassDeclarationContext) {
+        if (item.primaryConstructor()?.classParameters()?.classParameter()?.size ?: 0 == 0) return
         line {
             append("convenience public init(")
             item.primaryConstructor()?.classParameters()?.classParameter()?.forEachBetween(
@@ -122,17 +141,32 @@ fun SwiftAltListener.registerClass() {
                     append(it.simpleIdentifier().text)
                     append(": ")
                     val type = it.type()
-                    filterEscapingAnnotation = type
+                    filterEscapingAnnotation = true
                     write(type)
-                    filterEscapingAnnotation = null
+                    filterEscapingAnnotation = false
                 }
             }
 
             line()
 
+            item.classBody()?.let { write(it) }
+
+            line()
+
             line {
-                if(superclassInitCall != null) {
-                    append("override ")
+                if (superclassInitCall != null) {
+                    val superclassArgs =
+                        superclassInitCall.valueArguments()?.valueArgument()?.map { it.simpleIdentifier().text }
+                            ?: listOf()
+                    val myArgs = item.primaryConstructor()?.classParameters()?.classParameter()?.map {
+                        it.simpleIdentifier().text
+                    } ?: listOf()
+                    println("Super should have override?")
+                    println(superclassArgs?.joinToString())
+                    println(myArgs?.joinToString())
+                    if (superclassArgs == myArgs) {
+                        append("override ")
+                    }
                 }
                 append("public init(")
                 item.primaryConstructor()?.classParameters()?.classParameter()?.forEachBetween(
@@ -152,15 +186,19 @@ fun SwiftAltListener.registerClass() {
                 append(") {")
             }
             tab {
-                if(superclassInitCall != null){
+
+                item.constructorVars().forEach {
+                    line("self.${it.simpleIdentifier().text} = ${it.simpleIdentifier().text}")
+                }
+
+                item.additionalInits.forEach { it.invoke(this@registerClass, this) }
+                item.clearAdditionalInits()
+
+                if (superclassInitCall != null) {
                     line {
                         append("super.init")
                         write(superclassInitCall.valueArguments())
                     }
-                }
-
-                item.constructorVars().forEach {
-                    line("self.${it.simpleIdentifier().text} = ${it.simpleIdentifier().text}")
                 }
 
                 item.classBody()?.let {
@@ -177,9 +215,8 @@ fun SwiftAltListener.registerClass() {
 
             writeConvenienceInit(item)
 
-            line()
-
-            item.classBody()?.let { write(it) }
+            item.additionalDeclarations.forEach { it.invoke(this@registerClass, this@handleNormalClass) }
+            item.clearAdditionalDeclarations()
         }
         line("}")
     }
@@ -215,7 +252,7 @@ fun SwiftAltListener.registerClass() {
     }
 
     fun TabWriter.handleInterfaceClass(item: KotlinParser.ClassDeclarationContext) {
-        var defaultsContent = ArrayList<TabWriter.()->Unit>()
+        var defaultsContent = ArrayList<TabWriter.() -> Unit>()
         line {
             append(item.modifiers().visibilityString())
             append(" protocol ${item.simpleIdentifier().text}")
@@ -251,8 +288,10 @@ fun SwiftAltListener.registerClass() {
                         handleCompanionObject(it)
                     }
                     it.declaration()?.let {
-                        it.classDeclaration()?.let { throw UnsupportedOperationException("Classes within protocols not allowed in Swift") }
-                        it.objectDeclaration()?.let { throw UnsupportedOperationException("Classes within protocols not allowed in Swift") }
+                        it.classDeclaration()
+                            ?.let { throw UnsupportedOperationException("Classes within protocols not allowed in Swift") }
+                        it.objectDeclaration()
+                            ?.let { throw UnsupportedOperationException("Classes within protocols not allowed in Swift") }
                         it.typeAlias()?.let {
                             startLine()
                             write(it)
@@ -260,7 +299,7 @@ fun SwiftAltListener.registerClass() {
                         it.functionDeclaration()?.let {
                             startLine()
                             handleNormalFunction(this, it, excludeBody = true)
-                            if(it.functionBody() != null){
+                            if (it.functionBody() != null) {
                                 defaultsContent.add {
                                     handleNormalFunction(this, it)
                                 }
@@ -268,7 +307,7 @@ fun SwiftAltListener.registerClass() {
                         }
                         it.propertyDeclaration()?.let {
                             startLine()
-                            if(it.VAL() != null){
+                            if (it.VAL() != null) {
                                 line {
                                     append("var ")
                                     append(it.variableDeclaration().simpleIdentifier().text)
@@ -285,7 +324,7 @@ fun SwiftAltListener.registerClass() {
                                     append(" { get set }")
                                 }
                             }
-                            if(it.getter() != null){
+                            if (it.getter() != null) {
                                 defaultsContent.add {
                                     write(it)
                                 }
@@ -298,7 +337,7 @@ fun SwiftAltListener.registerClass() {
             }
         }
         line("}")
-        if(defaultsContent.isNotEmpty()){
+        if (defaultsContent.isNotEmpty()) {
             line()
             line {
                 append(item.modifiers().visibilityString())
@@ -307,7 +346,7 @@ fun SwiftAltListener.registerClass() {
                 append(" {")
             }
             tab {
-                for(w in defaultsContent){
+                for (w in defaultsContent) {
                     startLine()
                     w()
                 }
@@ -352,48 +391,6 @@ fun SwiftAltListener.registerClass() {
                     write(it.type())
                 }
             }
-
-            line()
-
-            line {
-                append("public init(")
-                item.primaryConstructor()?.classParameters()?.classParameter()?.forEachBetween(
-                    forItem = {
-                        append(it.simpleIdentifier().text)
-                        append(": ")
-                        write(it.type())
-                        it.expression()?.let {
-                            append(" = ")
-                            write(it)
-                        }
-                    },
-                    between = {
-                        append(", ")
-                    }
-                )
-                append(") {")
-            }
-            tab {
-
-                item.constructorVars().forEach {
-                    line("self.${it.simpleIdentifier().text} = ${it.simpleIdentifier().text}")
-                }
-
-                item.classBody()?.let {
-                    it.classMemberDeclarations().classMemberDeclaration().asSequence()
-                        .mapNotNull { it.anonymousInitializer() }
-                        .flatMap { it.block().statements()?.statement()?.asSequence() ?: sequenceOf() }
-                        .forEach {
-                            startLine()
-                            write(it)
-                        }
-                }
-            }
-            line("}")
-
-            writeConvenienceInit(item)
-
-            line()
 
             line("public static func == (lhs: ${item.simpleIdentifier().text}, rhs: ${item.simpleIdentifier().text}) -> Bool {")
             tab {
@@ -461,6 +458,54 @@ fun SwiftAltListener.registerClass() {
             line("}")
 
             item.classBody()?.let { write(it) }
+
+            line()
+
+            line {
+                append("public init(")
+                item.primaryConstructor()?.classParameters()?.classParameter()?.forEachBetween(
+                    forItem = {
+                        append(it.simpleIdentifier().text)
+                        append(": ")
+                        write(it.type())
+                        it.expression()?.let {
+                            append(" = ")
+                            write(it)
+                        }
+                    },
+                    between = {
+                        append(", ")
+                    }
+                )
+                append(") {")
+            }
+            tab {
+
+                item.constructorVars().forEach {
+                    line("self.${it.simpleIdentifier().text} = ${it.simpleIdentifier().text}")
+                }
+
+                item.classBody()?.let {
+                    it.classMemberDeclarations().classMemberDeclaration().asSequence()
+                        .mapNotNull { it.anonymousInitializer() }
+                        .flatMap { it.block().statements()?.statement()?.asSequence() ?: sequenceOf() }
+                        .forEach {
+                            startLine()
+                            write(it)
+                        }
+                }
+
+                item.additionalInits.forEach { it.invoke(this@registerClass, this) }
+                item.clearAdditionalInits()
+            }
+            line("}")
+
+            writeConvenienceInit(item)
+
+            item.additionalDeclarations.forEach { it.invoke(this@registerClass, this@handleDataClass) }
+            item.clearAdditionalDeclarations()
+
+            line()
         }
         line("}")
     }
@@ -537,6 +582,7 @@ fun SwiftAltListener.registerClass() {
 
     handle<KotlinParser.ClassBodyContext> { item ->
         item.classMemberDeclarations().classMemberDeclaration().forEach {
+            it.anonymousInitializer()?.run { return@forEach }
             it.companionObject()?.classBody()?.let {
                 handleCompanionObject(it)
             } ?: run {

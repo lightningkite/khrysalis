@@ -44,10 +44,6 @@ data class ViewType(
         }
 
         fun write(appendable: Appendable, node: XmlNode) {
-            log("Writing ${node.name}")
-            for(att in node.attributes){
-                log("    ${att.key} = ${att.value}")
-            }
             if(node.name in skipTypes){
                 for(child in node.children){
                     write(appendable, child)

@@ -13,6 +13,7 @@ fun SwiftAltListener.registerVariable() {
             ?.parentIfType<KotlinParser.ClassMemberDeclarationsContext>()
             ?.parentIfType<KotlinParser.ClassBodyContext>()
             ?.parentIfType<KotlinParser.ClassDeclarationContext>()
+
         val myName = item.variableDeclaration().simpleIdentifier().text
         val originalUsesOverride =
             item.modifiers()?.modifier()?.any { it.memberModifier()?.OVERRIDE() != null } ?: false
@@ -20,6 +21,8 @@ fun SwiftAltListener.registerVariable() {
             ?.any { myName in it.properties } != true
         val isTopLevel = item.parentIfType<KotlinParser.DeclarationContext>()
             ?.parentIfType<KotlinParser.TopLevelObjectContext>() != null
+
+        val isAbstract = item.modifiers()?.modifier()?.any { it.inheritanceModifier()?.ABSTRACT() != null } == true
 
         var initialSetExpression = item.expression()
         var useWeak = false
@@ -37,10 +40,26 @@ fun SwiftAltListener.registerVariable() {
                 ?.asExpression()?.oneOnly()
                 ?.prefixUnaryExpression()
                 ?.postfixUnaryExpression()
-            if(x?.primaryExpression()?.text == "weak"){
-                initialSetExpression = x.postfixUnarySuffix()?.oneOnly()?.callSuffix()?.valueArguments()?.valueArgument(0)?.expression()
+            if (x?.primaryExpression()?.text == "weak") {
+                initialSetExpression =
+                    x.postfixUnarySuffix()?.oneOnly()?.callSuffix()?.valueArguments()?.valueArgument(0)?.expression()
                 useWeak = true
             }
+        }
+
+        if (owningClass != null && needsOverrideKeyword && initialSetExpression != null) {
+            owningClass.additionalDeclarations.add { writer ->
+                with(writer) {
+                    line {
+                        append("private var _$myName")
+                        item.variableDeclaration().type()?.let {
+                            append(": ")
+                            write(it)
+                        }
+                    }
+                }
+            }
+            startLine()
         }
 
         with(direct) {
@@ -55,28 +74,66 @@ fun SwiftAltListener.registerVariable() {
                 append("weak ")
             }
             append("var ")
-            append(item.variableDeclaration().simpleIdentifier().text)
+            append(myName)
             item.variableDeclaration().type()?.let {
                 append(": ")
                 write(it)
             }
             initialSetExpression?.let {
-                append(" = ")
-                write(it)
-            }
-        }
-        item.getter()?.let { getter ->
-            direct.append(" {")
-            tab {
-                line("get {")
-                handleFunctionBodyAfterOpeningBrace(this, getter.functionBody())
-
-                item.setter()?.let { setter ->
-                    line("set(value) {")
-                    handleFunctionBodyAfterOpeningBrace(this, setter.functionBody())
+                if (owningClass != null) {
+                    if (needsOverrideKeyword) {
+                        append(" { get { return _$myName } set(value) { _$myName = value } }")
+                        owningClass.additionalInits.add { writer ->
+                            with(writer) {
+                                line {
+                                    append("self._")
+                                    append(myName)
+                                    append(" = ")
+                                    write(it)
+                                }
+                            }
+                        }
+                    } else {
+                        owningClass.additionalInits.add { writer ->
+                            with(writer) {
+                                line {
+                                    append("self.")
+                                    append(myName)
+                                    append(" = ")
+                                    write(it)
+                                }
+                            }
+                        }
+                    }
+                } else {
+                    append(" = ")
+                    write(it)
                 }
             }
-            line("}")
+        }
+
+        if (isAbstract) {
+            with(direct) {
+                if (item.VAL() != null) {
+                    append(" { get { fatalError() } }")
+                } else {
+                    append(" { get { fatalError() } set(value) { fatalError()  } }")
+                }
+            }
+        } else {
+            item.getter()?.let { getter ->
+                direct.append(" {")
+                tab {
+                    line("get {")
+                    handleFunctionBodyAfterOpeningBrace(this, getter.functionBody())
+
+                    item.setter()?.let { setter ->
+                        line("set(value) {")
+                        handleFunctionBodyAfterOpeningBrace(this, setter.functionBody())
+                    }
+                }
+                line("}")
+            }
         }
     }
 }

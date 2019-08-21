@@ -10,7 +10,7 @@ import org.jetbrains.kotlin.KotlinParser
 class SwiftAltListener {
     var interfaces: Map<String, InterfaceListener.InterfaceData> = mapOf()
     var currentFile: KotlinParser.KotlinFileContext? = null
-    var filterEscapingAnnotation: KotlinParser.TypeContext? = null
+    var filterEscapingAnnotation: Boolean = false
 
     fun KotlinParser.ClassDeclarationContext.implements(): Sequence<InterfaceListener.InterfaceData>{
         val currentFile = currentFile ?: return sequenceOf()
@@ -74,14 +74,22 @@ class SwiftAltListener {
         tokenOptions[KotlinParser.AS] = { direct.append("as!") }
         tokenOptions[KotlinParser.AS_SAFE] = { direct.append("as?") }
         tokenOptions[KotlinParser.RETURN_AT] = { direct.append("return") }
+        tokenOptions[KotlinParser.RANGE] = { direct.append("...") }
 
         typeReplacements["Map"] = "Dictionary"
         typeReplacements["List"] = "Array"
         typeReplacements["HashMap"] = "Dictionary"
         typeReplacements["ArrayList"] = "Array"
+        typeReplacements["Boolean"] = "Bool"
         typeReplacements["Unit"] = "Void"
+        typeReplacements["Byte"] = "Int8"
+        typeReplacements["Short"] = "Int16"
+        typeReplacements["Int"] = "Int32"
+        typeReplacements["Long"] = "Int64"
 
         simpleFunctionReplacement("println", "print")
+        simpleFunctionReplacement("ArrayList", "Array")
+        simpleFunctionReplacement("HashMap", "Dictionary")
         functionReplacements["run"] = {
             direct.append("{ () in ")
             it.postfixUnarySuffix()[0]!!.callSuffix()!!.annotatedLambda()!!.lambdaLiteral()!!.statements()!!.statement().forEach {
@@ -94,7 +102,7 @@ class SwiftAltListener {
 
         functionReplacements["listOf"] = {
             direct.append("[")
-            it.postfixUnarySuffix()[0]!!.callSuffix()!!.valueArguments()!!.valueArgument()!!.forEachBetween(
+            it.postfixUnarySuffix()[0]!!.callSuffix()!!.valueArguments()?.valueArgument()?.forEachBetween(
                 forItem = { write(it) },
                 between = { direct.append(", ") }
             )
@@ -105,7 +113,7 @@ class SwiftAltListener {
 
         functionReplacements["mapOf"] = {
             direct.append("[")
-            it.postfixUnarySuffix()[0]!!.callSuffix()!!.valueArguments()!!.valueArgument()!!.forEachBetween(
+            it.postfixUnarySuffix()[0]!!.callSuffix()?.valueArguments()?.valueArgument()?.takeUnless { it.isEmpty() }?.forEachBetween(
                 forItem = {
                     //it is a 'x to y' expression
                     val toCall = it.expression()
@@ -122,7 +130,9 @@ class SwiftAltListener {
                     write(toCall.rangeExpression(1)!!)
                 },
                 between = { direct.append(", ") }
-            )
+            ) ?: run {
+                direct.append(":")
+            }
             direct.append("]")
         }
         functionReplacements["hashMapOf"] = functionReplacements["mapOf"]!!

@@ -19,7 +19,7 @@ fun ViewType.Companion.setupNormalViewTypes() {
                     appendln("if let image = UIImage(named: \"$drawableName\") {")
                     appendln("view.backgroundColor = UIColor(patternImage: image)")
                     appendln("} else {")
-                    appendln("ResourcesBackground.apply(self, view, \"$drawableName\")")
+                    appendln("ResourcesBackground.apply(view, \"$drawableName\")")
                     appendln("}")
                 }
                 raw.startsWith("@mipmap/") -> {
@@ -135,7 +135,7 @@ fun ViewType.Companion.setupNormalViewTypes() {
         append("let sub = ")
         ViewType.write(this, child)
         appendln()
-        appendln("view.flexFix(sub, self)")
+        appendln("view.flexFix(sub)")
         appendln()
         appendln("return sub")
         appendln("}()")
@@ -284,7 +284,7 @@ fun ViewType.Companion.setupNormalViewTypes() {
             }
         }
         if(node.attributes["android:background"] == null){
-            appendln("ResourcesBackground.apply(self, view, \"edit_text_background\")")
+            appendln("ResourcesBackground.apply(view, \"edit_text_background\")")
         }
         handleCommonText(node)
     }
@@ -477,7 +477,7 @@ fun ViewType.Companion.setupNormalViewTypes() {
         appendln("}")
     }
 
-    register("FrameLayout", "ProgrammaticLayout", "View") { node ->
+    register("FrameLayout", "UIView", "View") { node ->
         val defaultPadding = node.attributeAsDimension("android:padding") ?: 0
         val paddingTop = (node.attributeAsDimension("android:paddingTop") ?: defaultPadding).toString()
         val paddingLeft = (node.attributeAsDimension("android:paddingLeft") ?: defaultPadding).toString()

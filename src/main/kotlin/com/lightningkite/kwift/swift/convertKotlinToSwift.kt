@@ -22,7 +22,7 @@ import kotlin.collections.HashMap
 fun convertKotlinToSwift(
     baseKotlin: File,
     baseSwift: File,
-    setup: SwiftAltListener.()->Unit = {}
+    setup: SwiftAltListener.() -> Unit = {}
 ) {
 
     val toConvert = baseKotlin.walkTopDown()
@@ -43,77 +43,78 @@ fun convertKotlinToSwift(
     val newCache = HashMap<String, FileConversionInfo>()
 
     toConvert.forEach { file ->
-            val output = File(
-                baseSwift.resolve(file.relativeTo(baseKotlin))
-                    .toString()
-                    .removeSuffix("kt")
-                    .plus("swift")
-            )
-            output.parentFile.mkdirs()
+        val output = File(
+            baseSwift.resolve(file.relativeTo(baseKotlin))
+                .toString()
+                .removeSuffix("kt")
+                .plus("swift")
+        )
+        output.parentFile.mkdirs()
 
-            println("File: $file")
+        println("$file -> $output")
 
-            val text = file.readText()
-            val inputHash = text.hashCode()
-            val outputHash = if (output.exists()) output.readText().hashCode() else 0
-            val existing = existingCache[file.path]
-            val cache =
-                if (existing != null && existing.inputHash == inputHash && existing.outputHash == outputHash) {
-                    existing
-                } else {
-                    val lexer = KotlinLexer(ANTLRInputStream(text))
-                    val tokenStream = CommonTokenStream(lexer)
-                    val parser = KotlinParser(tokenStream)
+        val text = file.readText()
+        val inputHash = text.hashCode()
+        val outputHash = if (output.exists()) output.readText().hashCode() else 0
+        val existing = existingCache[file.path]
+        val cache =
+            if (existing != null && existing.inputHash == inputHash && existing.outputHash == outputHash) {
+                existing
+            } else {
+                val lexer = KotlinLexer(ANTLRInputStream(text))
+                val tokenStream = CommonTokenStream(lexer)
+                val parser = KotlinParser(tokenStream)
 
-                    var errorOccurred = false
-                    parser.addErrorListener(object : ANTLRErrorListener {
-                        override fun reportAttemptingFullContext(
-                            p0: Parser?,
-                            p1: DFA?,
-                            p2: Int,
-                            p3: Int,
-                            p4: BitSet?,
-                            p5: ATNConfigSet?
-                        ) {
-                        }
+                var errorOccurred = false
+                parser.addErrorListener(object : ANTLRErrorListener {
+                    override fun reportAttemptingFullContext(
+                        p0: Parser?,
+                        p1: DFA?,
+                        p2: Int,
+                        p3: Int,
+                        p4: BitSet?,
+                        p5: ATNConfigSet?
+                    ) {
+                    }
 
-                        override fun syntaxError(
-                            p0: Recognizer<*, *>?,
-                            p1: Any?,
-                            p2: Int,
-                            p3: Int,
-                            p4: String?,
-                            p5: RecognitionException?
-                        ) {
-                            errorOccurred = true
-                        }
+                    override fun syntaxError(
+                        p0: Recognizer<*, *>?,
+                        p1: Any?,
+                        p2: Int,
+                        p3: Int,
+                        p4: String?,
+                        p5: RecognitionException?
+                    ) {
+                        errorOccurred = true
+                    }
 
-                        override fun reportAmbiguity(
-                            p0: Parser?,
-                            p1: DFA?,
-                            p2: Int,
-                            p3: Int,
-                            p4: Boolean,
-                            p5: BitSet?,
-                            p6: ATNConfigSet?
-                        ) {
-                        }
+                    override fun reportAmbiguity(
+                        p0: Parser?,
+                        p1: DFA?,
+                        p2: Int,
+                        p3: Int,
+                        p4: Boolean,
+                        p5: BitSet?,
+                        p6: ATNConfigSet?
+                    ) {
+                    }
 
-                        override fun reportContextSensitivity(
-                            p0: Parser?,
-                            p1: DFA?,
-                            p2: Int,
-                            p3: Int,
-                            p4: Int,
-                            p5: ATNConfigSet?
-                        ) {
-                        }
+                    override fun reportContextSensitivity(
+                        p0: Parser?,
+                        p1: DFA?,
+                        p2: Int,
+                        p3: Int,
+                        p4: Int,
+                        p5: ATNConfigSet?
+                    ) {
+                    }
 
-                    })
+                })
 
+                try {
                     val outputText = buildString {
                         val tabs = TabWriter(this)
-                        with(swift){
+                        with(swift) {
                             val kfile = parser.kotlinFile()
                             swift.currentFile = kfile
                             tabs.write(kfile)
@@ -127,9 +128,16 @@ fun convertKotlinToSwift(
                         outputHash = outputText.hashCode(),
                         outputPath = output.path
                     )
+                } catch (e: Exception) {
+                    System.err.println("Failed to convert file $file")
+                    e.printStackTrace(System.err)
+                    null
                 }
+            }
+        if (cache != null) {
             newCache[cache.path] = cache
         }
+    }
 
     if (!cacheFile.exists()) {
         cacheFile.parentFile.mkdirs()

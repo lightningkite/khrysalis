@@ -49,6 +49,10 @@ fun SwiftAltListener.handleNormalFunction(
 
     fun Appendable.writeFunctionHeader(addUnderscore: Boolean) {
         if (needsOverrideKeyword) append("override ")
+        item.modifiers()?.annotation()?.forEachBetween(
+            forItem = { write(it) },
+            between = { direct.append(' ') }
+        )
         if (owningClass != null && owningClass.INTERFACE() == null || isTopLevel) {
             append(item.modifiers().visibilityString())
             append(" ")
@@ -83,14 +87,18 @@ fun SwiftAltListener.handleNormalFunction(
         }
     }
 
+    val isAbstract = item.modifiers()?.modifier()?.any { it.inheritanceModifier()?.ABSTRACT() != null } == true
     line {
         writeFunctionHeader(false)
-        if (!excludeBody && item.functionBody() != null) {
+
+        if(isAbstract) {
+            append(" { fatalError() }")
+        } else if (!excludeBody && item.functionBody() != null) {
             append(" {")
         }
     }
 
-    if (!excludeBody) {
+    if (!isAbstract && !excludeBody) {
         item.functionBody()?.let { handleFunctionBodyAfterOpeningBrace(this, it) }
     }
 
@@ -100,11 +108,14 @@ fun SwiftAltListener.handleNormalFunction(
     if (needsAlternateWriting) {
         line {
             writeFunctionHeader(true)
-            if (!excludeBody && item.functionBody() != null) {
+
+            if(isAbstract) {
+                append(" { fatalError() }")
+            } else if (!excludeBody && item.functionBody() != null) {
                 append(" {")
             }
         }
-        if (!excludeBody) {
+        if (!isAbstract && !excludeBody) {
             tab {
                 line {
                     append("return ${item.simpleIdentifier().text}(")

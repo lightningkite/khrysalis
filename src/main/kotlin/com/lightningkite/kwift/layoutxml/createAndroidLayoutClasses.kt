@@ -19,7 +19,6 @@ fun createAndroidLayoutClasses(
         .forEach { item ->
             log(item.toString())
             val output = item.translateLayoutXmlAndroid(styles, packageName, applicationPackage)
-            log(output)
             File(outputFolder, item.nameWithoutExtension.camelCase().capitalize() + "Xml.kt").also{
                 it.parentFile.mkdirs()
             }.writeText(output)
@@ -33,13 +32,6 @@ data class AndroidIdHook(
 )
 
 fun File.translateLayoutXmlAndroid(styles: Styles, packageName: String, applicationPackage: String): String {
-
-    for((styleKey, styleValue) in styles){
-        log("STYLE ${styleKey}")
-        for((k, v) in styleValue){
-            log("    $k = $v")
-        }
-    }
 
     val node = XmlNode.read(this, styles)
     val fileName = this.nameWithoutExtension.camelCase().capitalize()

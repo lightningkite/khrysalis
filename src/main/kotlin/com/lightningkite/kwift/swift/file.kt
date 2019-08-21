@@ -12,6 +12,7 @@ fun SwiftAltListener.registerFile(){
         line("")
         line("")
         for (obj in item.topLevelObject()){
+            startLine()
             write(obj)
         }
     }

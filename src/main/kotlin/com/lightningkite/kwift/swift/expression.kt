@@ -1,5 +1,6 @@
 package com.lightningkite.kwift.swift
 
+import com.lightningkite.kwift.utils.forEachBetween
 import org.antlr.v4.runtime.ParserRuleContext
 import org.jetbrains.kotlin.KotlinParser
 
@@ -17,9 +18,11 @@ fun SwiftAltListener.registerExpression() {
         defaultWrite(item, "")
     }
     handle<KotlinParser.PrimaryExpressionContext> { item ->
-        if(item.simpleIdentifier()?.text == "Unit") direct.append("()")
-        if(item.simpleIdentifier()?.text == "this") direct.append("self")
-        else defaultWrite(item)
+        when(item.simpleIdentifier()?.text) {
+            "Unit" -> direct.append("()")
+            "this" -> direct.append("self")
+            else -> defaultWrite(item)
+        }
     }
     handle<KotlinParser.SafeNavContext> { defaultWrite(it, "") }
     handle<KotlinParser.PostfixUnaryExpressionContext> { item ->
@@ -54,4 +57,13 @@ fun SwiftAltListener.registerExpression() {
             }
         }
     }
+    handle<KotlinParser.TypeArgumentsContext> {
+        direct.append('<')
+        it.typeProjection().forEachBetween(
+            forItem = { write(it) },
+            between = { direct.append(", ") }
+        )
+        direct.append('>')
+    }
+    handle<KotlinParser.LabelContext> {  }
 }
