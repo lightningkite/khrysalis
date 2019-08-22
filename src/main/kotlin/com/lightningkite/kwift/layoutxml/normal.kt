@@ -8,7 +8,7 @@ fun ViewType.Companion.setupNormalViewTypes() {
 
     register("View", "UIView") { node ->
         node.attributes["android:id"]?.let { raw ->
-            val name = "boundView" + raw.removePrefix("@+id/").removePrefix("@id/").camelCase().capitalize()
+            val name = raw.removePrefix("@+id/").removePrefix("@id/").camelCase()
             appendln("self.$name = view")
             bindings[name] = ViewType.registry[node.name]?.iosName ?: "UIView"
         }
@@ -161,7 +161,7 @@ fun ViewType.Companion.setupNormalViewTypes() {
     }
 
 
-    register("com.lightningkite.kwiftview.actual.MultilineEditText", "UITextView", "EditText") { node ->
+    register("com.lightningkite.kwift.views.actual.MultilineEditText", "UITextView", "EditText") { node ->
 
     }
     register("EditText", "UITextField", "View") { node ->
@@ -291,6 +291,9 @@ fun ViewType.Companion.setupNormalViewTypes() {
 
 
     register("CheckBox", "LabeledSwitch", "View"){
+        handleCommonText(it, "view.labelView")
+    }
+    register("Switch", "LabeledSwitch", "View"){
         handleCommonText(it, "view.labelView")
     }
     register("Spinner", "Dropdown", "View"){}

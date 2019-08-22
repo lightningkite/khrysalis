@@ -40,7 +40,7 @@ fun File.translateLayoutXmlAndroid(styles: Styles, packageName: String, applicat
     fun addBindings(node: XmlNode){
         node.attributes["android:id"]?.let { raw ->
             bindings.add(AndroidIdHook(
-                name = "boundView" + raw.removePrefix("@+id/").removePrefix("@id/").camelCase().capitalize(),
+                name = raw.removePrefix("@+id/").removePrefix("@id/").camelCase(),
                 type = node.name,
                 resourceId = raw.removePrefix("@+id/").removePrefix("@id/")
             ))
