@@ -72,6 +72,59 @@ fun SwiftAltListener.registerClass() {
         line("}")
     }
 
+    fun TabWriter.handleCodableBody(item: KotlinParser.ClassDeclarationContext) {
+        if (item.delegationSpecifiers()?.annotatedDelegationSpecifier()?.any { it.delegationSpecifier()?.userType()?.text == "Codable" } == true) {
+            line("public init(from decoder: Decoder) throws {")
+            tab {
+                line("let values = try decoder.container(keyedBy: CodingKeys.self)")
+                item.constructorVars().forEach {
+                    line {
+                        if (it.type().text == "Double") {
+                            it.expression()?.let { default ->
+                                append(it.simpleIdentifier().text)
+                                append(" = try values.decodeIfDoublePresent(forKey: .")
+                                append(it.simpleIdentifier().text)
+                                append(") ?? ")
+                                write(default)
+                            } ?: run {
+                                append(it.simpleIdentifier().text)
+                                append(" = try values.decodeIfDouble(forKey: .")
+                                append(it.simpleIdentifier().text)
+                                append(")")
+                            }
+                        } else {
+                            it.expression()?.let { default ->
+                                append(it.simpleIdentifier().text)
+                                append(" = try values.decodeIfPresent(")
+                                write(it.type())
+                                append(".self, forKey: .")
+                                append(it.simpleIdentifier().text)
+                                append(") ?? ")
+                                write(default)
+                            } ?: run {
+                                append(it.simpleIdentifier().text)
+                                append(" = try values.decode(")
+                                write(it.type())
+                                append(".self, forKey: .")
+                                append(it.simpleIdentifier().text)
+                                append(")")
+                            }
+                        }
+                    }
+                }
+            }
+            line("}")
+            line()
+            line("enum CodingKeys: String, CodingKey {")
+            tab {
+                item.constructorVars().forEach {
+                    line("case ${it.simpleIdentifier().text} = \"${it.simpleIdentifier().text.snakeCase()}}\"")
+                }
+            }
+            line("}")
+        }
+    }
+
     fun TabWriter.handleEnumClass(item: KotlinParser.ClassDeclarationContext) {
         line {
             append(item.modifiers().visibilityString())
@@ -214,6 +267,7 @@ fun SwiftAltListener.registerClass() {
             line("}")
 
             writeConvenienceInit(item)
+            handleCodableBody(item)
 
             item.additionalDeclarations.forEach { it.invoke(this@registerClass, this@handleNormalClass) }
             item.clearAdditionalDeclarations()
@@ -257,7 +311,7 @@ fun SwiftAltListener.registerClass() {
             append(item.modifiers().visibilityString())
             append(" protocol ${item.simpleIdentifier().text}")
             item.typeParameters()?.let {
-                write(it)
+                throw IllegalArgumentException("Cannot use interfaces with type parameters; not available in Swift protocols.")
             }
             item.delegationSpecifiers()?.let { dg ->
                 append(": ")
@@ -502,65 +556,14 @@ fun SwiftAltListener.registerClass() {
 
             writeConvenienceInit(item)
 
+            handleCodableBody(item)
+
             item.additionalDeclarations.forEach { it.invoke(this@registerClass, this@handleDataClass) }
             item.clearAdditionalDeclarations()
 
             line()
         }
         line("}")
-    }
-
-    fun TabWriter.handleCodableBody(item: KotlinParser.ClassDeclarationContext) {
-        if (item.delegationSpecifiers().annotatedDelegationSpecifier().any { it.delegationSpecifier().userType().text == "Codable" }) {
-            line("public init(from decoder: Decoder) throws {")
-            tab {
-                line("let values = try decoder.container(keyedBy: CodingKeys.self)")
-                item.constructorVars().forEach {
-                    line {
-                        if (it.type().text == "Double") {
-                            it.expression()?.let { default ->
-                                append(it.simpleIdentifier().text)
-                                append(" = try values.decodeIfDoublePresent(forKey: .")
-                                append(it.simpleIdentifier().text)
-                                append(") ?? ")
-                                write(default)
-                            } ?: run {
-                                append(it.simpleIdentifier().text)
-                                append(" = try values.decodeIfDouble(forKey: .")
-                                append(it.simpleIdentifier().text)
-                                append(")")
-                            }
-                        } else {
-                            it.expression()?.let { default ->
-                                append(it.simpleIdentifier().text)
-                                append(" = try values.decodeIfPresent(")
-                                write(it.type())
-                                append(".self, forKey: .")
-                                append(it.simpleIdentifier().text)
-                                append(") ?? ")
-                                write(default)
-                            } ?: run {
-                                append(it.simpleIdentifier().text)
-                                append(" = try values.decode(")
-                                write(it.type())
-                                append(".self, forKey: .")
-                                append(it.simpleIdentifier().text)
-                                append(")")
-                            }
-                        }
-                    }
-                }
-            }
-            line("}")
-            line()
-            line("enum CodingKeys: String, CodingKey {")
-            tab {
-                item.constructorVars().forEach {
-                    line("case ${it.simpleIdentifier().text} = \"${it.simpleIdentifier().text.snakeCase()}}\"")
-                }
-            }
-            line("}")
-        }
     }
 
     handle<KotlinParser.ClassDeclarationContext> { item ->

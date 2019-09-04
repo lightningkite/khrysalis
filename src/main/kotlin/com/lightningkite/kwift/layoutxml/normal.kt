@@ -50,9 +50,9 @@ fun ViewType.Companion.setupNormalViewTypes() {
     }
 
 
-    register("com.lightningkite.kwift.actuals.DateButton", "DateButton", "Button"){}
-    register("android.support.v7.widget.RecyclerView", "UITableView", "View"){}
-    register("Space", "UIView", "View"){}
+    register("com.lightningkite.kwift.android.DateButton", "DateButton", "Button") {}
+    register("android.support.v7.widget.RecyclerView", "UITableView", "View") {}
+    register("Space", "UIView", "View") {}
     skipTypes += "android.support.v4.widget.SwipeRefreshLayout"
     skipTypes += "SwipeRefreshLayout"
 
@@ -161,8 +161,66 @@ fun ViewType.Companion.setupNormalViewTypes() {
     }
 
 
-    register("com.lightningkite.kwift.views.actual.MultilineEditText", "UITextView", "EditText") { node ->
+    register("com.lightningkite.kwift.views.android.MultilineEditText", "UITextView", "EditText") { node ->
+        //Purposefully empty
+    }
+    register("com.rd.PageIndicatorView", "UIPageControl", "View") { node ->
+        node.attributeAsColor("app:piv_selectedColor")?.let {
+            appendln("view.currentPageIndicatorTintColor = $it")
+        }
+        node.attributeAsColor("app:piv_unselectedColor")?.let {
+            appendln("view.pageIndicatorTintColor = $it")
+        }
+    }
+    register("android.support.v4.view.ViewPager", "UIScrollView", "View") { node ->
+        appendln("view.isPagingEnabled = true")
+    }
+    register("android.support.design.widget.TabLayout", "UISegmentedControl", "View") { node ->
+        appendln("view.tintColor = .clear")
+        appendln("view.backgroundColor = .clear")
 
+        node.attributes["app:tabMode"]?.let {
+            when (it) {
+                "scrollable" -> appendln("view.apportionsSegmentWidthsByContent = true")
+                "fixed" -> appendln("view.apportionsSegmentWidthsByContent = false")
+                else -> appendln("view.apportionsSegmentWidthsByContent = false")
+            }
+        }
+        node.attributes["app:tabGravity"]?.let {
+            when (it) {
+                "center" -> appendln("view.apportionsSegmentWidthsByContent = true")
+                "fill" -> appendln("view.apportionsSegmentWidthsByContent = false")
+                else -> appendln("view.apportionsSegmentWidthsByContent = false")
+            }
+        }
+        node.attributeAsColor("app:tabBackground")?.let {
+        }
+        node.attributeAsColor("app:tabRippleColor")?.let {
+        }
+        (node.attributeAsColor("app:tabTextColor") ?: "UIColor.black").let {
+            appendln("""view.setTitleTextAttributes(
+                [NSAttributedString.Key.foregroundColor: $it], 
+                for: .normal
+                )""")
+        }
+        (node.attributeAsColor("app:tabTextColor") ?: "ResourcesColors.colorPrimary").let {
+            appendln("""view.setTitleTextAttributes(
+                [NSAttributedString.Key.foregroundColor: $it], 
+                for: .selected
+                )""")
+        }
+        (node.attributeAsColor("app:tabTextColor") ?: "ResourcesColors.colorPrimary").let {
+            appendln("view.addIndicator(color: $it)")
+        }
+    }
+    register("SeekBar", "UISlider", "View") { node ->
+        node.attributeAsColor("progressTint")?.let {
+            appendln("view.minimumTrackTintColor = $it")
+            appendln("view.maximumTrackTintColor = $it")
+        }
+        node.attributeAsColor("thumbTint")?.let {
+            appendln("view.thumbTintColor = $it")
+        }
     }
     register("EditText", "UITextField", "View") { node ->
         val defaultPadding = node.attributeAsDimension("android:padding") ?: 0
@@ -171,10 +229,10 @@ fun ViewType.Companion.setupNormalViewTypes() {
         val paddingBottom = (node.attributeAsDimension("android:paddingBottom") ?: defaultPadding)
         val paddingRight = (node.attributeAsDimension("android:paddingRight") ?: defaultPadding)
 
-        if(paddingLeft != 0){
+        if (paddingLeft != 0) {
             appendln("view.setLeftPaddingPoints($paddingLeft)")
         }
-        if(paddingRight != 0){
+        if (paddingRight != 0) {
             appendln("view.setRightPaddingPoints($paddingRight)")
         }
 
@@ -283,23 +341,23 @@ fun ViewType.Companion.setupNormalViewTypes() {
                 }
             }
         }
-        if(node.attributes["android:background"] == null){
+        if (node.attributes["android:background"] == null) {
             appendln("ResourcesBackground.apply(view, \"edit_text_background\")")
         }
         handleCommonText(node)
     }
 
 
-    register("CheckBox", "LabeledSwitch", "View"){
+    register("CheckBox", "LabeledCheckbox", "View") {
         handleCommonText(it, "view.labelView")
     }
-    register("Switch", "LabeledSwitch", "View"){
+    register("Switch", "LabeledSwitch", "View") {
         handleCommonText(it, "view.labelView")
     }
-    register("Spinner", "Dropdown", "View"){}
-    register("RadioGroup", "UIView", "LinearLayout"){}
-    register("RadioButton", "UIButton", "Button"){}
-    register("ImageButton", "UIButton", "Button"){ node -> }
+    register("Spinner", "Dropdown", "View") {}
+    register("RadioGroup", "UIView", "LinearLayout") {}
+    register("RadioButton", "UIButton", "Button") {}
+    register("ImageButton", "UIButton", "Button") { node -> }
     register("Button", "UIButton", "View") { node ->
         node.attributeAsString("android:text")?.let { text ->
             appendln("view.setTitle($text, for: .normal)")
@@ -307,7 +365,7 @@ fun ViewType.Companion.setupNormalViewTypes() {
         node.attributeAsColor("android:textColor")?.let {
             appendln("view.setTitleColor($it, for: .normal)")
         }
-        val size = node.attributeAsDimension("android:textSize") ?: "12"
+
         node.attributes["android:gravity"]
             ?.split('|')
             ?.asSequence()
@@ -329,19 +387,19 @@ fun ViewType.Companion.setupNormalViewTypes() {
         }
         node.attributeAsImage("android:drawableTop")?.let { text ->
             appendln("view.setImage($text, for: .normal)")
-            appendln("onLayoutSubviews.addOnLayoutSubviews { [weak view] in")
+            appendln("view.addOnLayoutSubviews { [weak view] in")
             appendln("    view?.setTitlePosition(.bottom)")
             appendln("}")
         }
         node.attributeAsImage("android:drawableRight")?.let { text ->
             appendln("view.setImage($text, for: .normal)")
-            appendln("onLayoutSubviews.addOnLayoutSubviews { [weak view] in")
+            appendln("view.addOnLayoutSubviews { [weak view] in")
             appendln("    view?.setTitlePosition(.left)")
             appendln("}")
         }
         node.attributeAsImage("android:drawableBottom")?.let { text ->
             appendln("view.setImage($text, for: .normal)")
-            appendln("onLayoutSubviews.addOnLayoutSubviews { [weak view] in")
+            appendln("view.addOnLayoutSubviews { [weak view] in")
             appendln("    view?.setTitlePosition(.top)")
             appendln("}")
         }
@@ -379,7 +437,7 @@ fun ViewType.Companion.setupNormalViewTypes() {
             "vertical" -> false
             else -> true
         }
-        val alignDimension = if(isHorizontal) "android:layout_height" else "android:layout_width"
+        val alignDimension = if (isHorizontal) "android:layout_height" else "android:layout_width"
         val alignWords = if (isHorizontal) verticalGravityWords else horizontalGravityWords
         val justifyWords = if (isHorizontal) horizontalGravityWords else verticalGravityWords
 
@@ -418,7 +476,7 @@ fun ViewType.Companion.setupNormalViewTypes() {
 
         val dividerText = node.attributes["tools:iosDivider"] ?: "flex.addItem().height(1).backgroundColor(.gray)"
 
-        if(dividerStart){
+        if (dividerStart) {
             appendln(dividerText)
         }
         node.children.forEachBetween(
@@ -451,7 +509,7 @@ fun ViewType.Companion.setupNormalViewTypes() {
                     append(".minHeight($s)")
                 }
                 child.attributes[alignDimension]?.let {
-                    if(it == "match_parent"){
+                    if (it == "match_parent") {
                         append(".alignSelf(.stretch)")
                     } else {
                         null
@@ -468,12 +526,12 @@ fun ViewType.Companion.setupNormalViewTypes() {
                 appendln()
             },
             between = {
-                if(dividerMiddle){
+                if (dividerMiddle) {
                     appendln(dividerText)
                 }
             }
         )
-        if(dividerEnd){
+        if (dividerEnd) {
             appendln(dividerText)
         }
 
@@ -502,14 +560,14 @@ fun ViewType.Companion.setupNormalViewTypes() {
             appendln("view.addOnLayoutSubviews { [weak view, weak sub] in")
             appendln("if let view = view, let sub = sub {")
             append("sub.pin")
-            when(child.attributes["android:layout_width"]) {
+            when (child.attributes["android:layout_width"]) {
                 "wrap_content", null -> append(".width(sub.intrinsicContentSize.width)")
                 "match_parent" -> append(".width(100%)")
                 else -> child.attributeAsDimension("android:layout_width")?.let { s ->
                     append(".width($s)")
                 } ?: append(".width(sub.intrinsicContentSize.width)")
             }
-            when(child.attributes["android:layout_height"]) {
+            when (child.attributes["android:layout_height"]) {
                 "wrap_content", null -> append(".height(sub.intrinsicContentSize.height)")
                 "match_parent" -> append(".height(100%)")
                 else -> child.attributeAsDimension("android:layout_height")?.let { s ->
@@ -517,8 +575,8 @@ fun ViewType.Companion.setupNormalViewTypes() {
                 } ?: append(".height(sub.intrinsicContentSize.height)")
             }
             child.attributes["android:layout_gravity"]?.let {
-                for(part in it.split('|')) {
-                    when(part){
+                for (part in it.split('|')) {
+                    when (part) {
                         "left" -> append(".left($marginLeft + $paddingLeft)")
                         "right" -> append(".right($marginRight + $paddingRight)")
                         "start" -> append(".start($marginLeft + $paddingLeft)")

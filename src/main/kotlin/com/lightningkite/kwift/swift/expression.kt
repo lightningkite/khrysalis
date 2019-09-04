@@ -46,14 +46,18 @@ fun SwiftAltListener.registerExpression() {
 
         val safeMemberAccessorCount = item.postfixUnarySuffix().count { it.navigationSuffix()?.memberAccessOperator()?.safeNav() != null }
 
-        repeat(safeMemberAccessorCount) {
+        repeat(safeMemberAccessorCount-1) {
             direct.append('(')
         }
         write(item.primaryExpression())
+        var handledCount = 0
         item.postfixUnarySuffix().forEach {
             write(it)
             if(it.navigationSuffix()?.memberAccessOperator()?.safeNav() != null){
-                direct.append(')')
+                handledCount++
+                if(handledCount < safeMemberAccessorCount) {
+                    direct.append(')')
+                }
             }
         }
     }

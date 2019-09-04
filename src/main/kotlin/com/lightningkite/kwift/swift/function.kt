@@ -198,6 +198,10 @@ fun SwiftAltListener.registerFunction() {
         direct.append(")")
     }
     handle<KotlinParser.ValueArgumentsContext> {
+        val sampleHasNoLabel = it.valueArgument().firstOrNull()?.MULT() == null
+        if(it.valueArgument().any { (it.MULT() == null) != sampleHasNoLabel }) {
+            println("WARNING: Function call at line ${it.start.line} has some arguments with keys and some without.  This is not supported by the standard function definition converter.")
+        }
         direct.append("(")
         it.valueArgument().forEachBetween(
             forItem = { write(it) },
