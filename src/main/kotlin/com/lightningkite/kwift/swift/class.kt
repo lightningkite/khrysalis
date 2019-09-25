@@ -74,7 +74,7 @@ fun SwiftAltListener.registerClass() {
 
     fun TabWriter.handleCodableBody(item: KotlinParser.ClassDeclarationContext) {
         if (item.delegationSpecifiers()?.annotatedDelegationSpecifier()?.any { it.delegationSpecifier()?.userType()?.text == "Codable" } == true) {
-            line("public init(from decoder: Decoder) throws {")
+            line("required public init(from decoder: Decoder) throws {")
             tab {
                 line("let values = try decoder.container(keyedBy: CodingKeys.self)")
                 item.constructorVars().forEach {
@@ -412,7 +412,7 @@ fun SwiftAltListener.registerClass() {
     fun TabWriter.handleDataClass(item: KotlinParser.ClassDeclarationContext) {
         line {
             append(item.modifiers().visibilityString())
-            append(" class ${item.simpleIdentifier().text}")
+            append(" final class ${item.simpleIdentifier().text}")
             item.typeParameters()?.let {
                 write(it)
             }

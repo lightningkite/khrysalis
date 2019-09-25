@@ -15,6 +15,9 @@ fun SwiftAltListener.registerType() {
             write(item.type())
         }
     }
+    handle<KotlinParser.UserTypeContext> { item ->
+        defaultWrite(item, "")
+    }
     handle<KotlinParser.SimpleUserTypeContext> { item ->
         val name = typeReplacements[item.simpleIdentifier().text] ?: item.simpleIdentifier().text
         direct.append(name)
@@ -48,6 +51,9 @@ fun SwiftAltListener.registerType() {
             if (filterEscapingAnnotation) {
                 return@handle
             }
+        }
+        if (item.unescapedAnnotation().text.startsWith("swift")) {
+            return@handle
         }
         direct.append('@')
         write(item.unescapedAnnotation())

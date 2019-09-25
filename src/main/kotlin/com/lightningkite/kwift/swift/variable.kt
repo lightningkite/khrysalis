@@ -97,10 +97,16 @@ fun SwiftAltListener.registerVariable() {
                         owningClass.additionalInits.add { writer ->
                             with(writer) {
                                 line {
-                                    append("self.")
+                                    append("let ")
                                     append(myName)
                                     append(" = ")
                                     write(it)
+                                }
+                                line {
+                                    append("self.")
+                                    append(myName)
+                                    append(" = ")
+                                    append(myName)
                                 }
                             }
                         }

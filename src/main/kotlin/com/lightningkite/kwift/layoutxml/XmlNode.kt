@@ -6,7 +6,12 @@ import java.io.File
 import java.lang.Exception
 import javax.xml.parsers.DocumentBuilderFactory
 
-class XmlNode(val element: Node, val styles: Styles, val directory: File) {
+class XmlNode(
+    val element: Node,
+    val styles: Styles,
+    val directory: File,
+    val additionalAttributes: Map<String, String> = mapOf()
+) {
     val name get() = element.nodeName
     val attributes: Map<String, String> by lazy {
         if (!element.hasAttributes()) return@lazy mapOf<String, String>()
@@ -27,7 +32,7 @@ class XmlNode(val element: Node, val styles: Styles, val directory: File) {
         element.attributes.let { att ->
             (0 until att.length).associateTo(map) { att.item(it).let { it.nodeName to it.nodeValue } }
         }
-        map
+        additionalAttributes + map
     }
     val children by lazy {
         element.childNodes.let { att ->
@@ -43,7 +48,8 @@ class XmlNode(val element: Node, val styles: Styles, val directory: File) {
                                 ?.removePrefix("@layout/")
                                 ?.plus(".xml")
                                 ?: return@map XmlNode(it, styles, directory)
-                            read(File(directory, filename), styles)
+                            val node = read(File(directory, filename), styles)
+                            XmlNode(it, styles, directory, node.attributes)
                         } catch(e:Exception){
                             e.printStackTrace()
                             XmlNode(it, styles, directory)

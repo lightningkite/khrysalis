@@ -5,6 +5,37 @@ import com.lightningkite.kwift.utils.forEachBetween
 import org.jetbrains.kotlin.KotlinParser
 
 fun SwiftAltListener.registerControl() {
+    fun TabWriter.writeBlock(item: KotlinParser.ControlStructureBodyContext) {
+        item.block()?.statements()?.statement()?.forEach {
+            startLine()
+            write(it)
+        }
+        item.statement()?.let {
+            startLine()
+            write(it)
+        }
+    }
+    fun TabWriter.writeBlockReturns(item: KotlinParser.ControlStructureBodyContext) {
+        item.block()?.statements()?.statement()?.let {
+            if(it.size > 1){
+                for(item in it.subList(0, it.size - 1)){
+                    startLine()
+                    write(item)
+                }
+            }
+            startLine()
+            write(it.last())
+        }
+        item.statement()?.let {
+            startLine()
+            direct.append("return ")
+            write(it)
+        }
+    }
+    fun TabWriter.writeBlock(item: KotlinParser.ControlStructureBodyContext, returns: Boolean) {
+        if(returns) writeBlockReturns(item)
+        else writeBlock(item)
+    }
     fun TabWriter.writeInsideIf(expression: KotlinParser.EqualityContext) {
         if (expression.equalityOperator()?.oneOnly()?.EXCL_EQ() != null
             && expression.comparison(0)?.text?.all { it.isLetterOrDigit() } == true
@@ -25,13 +56,17 @@ fun SwiftAltListener.registerControl() {
                 direct.append(" = ")
                 direct.append(isExpr.elvisExpression(0)!!.text!!)
                 direct.append(" as ")
-                direct.append(isExpr.elvisExpression(1)!!.text!!)
+                direct.append(isExpr.type(0)!!.text!!)
             } else {
                 write(expression)
             }
         }
     }
     handle<KotlinParser.IfExpressionContext> { item ->
+        val isStatement = item.usedAsStatement()
+        if(!isStatement){
+            direct.append("{")
+        }
         var current = item
         while (true) {
             direct.append("if ")
@@ -48,7 +83,7 @@ fun SwiftAltListener.registerControl() {
             direct.append(" {")
             tab {
                 current.controlStructureBody(0)?.let {
-                    write(it)
+                    writeBlock(it, !isStatement)
                 }
             }
             startLine()
@@ -80,7 +115,7 @@ fun SwiftAltListener.registerControl() {
                     direct.append("{")
                     tab {
                         current.controlStructureBody(1)?.let {
-                            write(it)
+                            writeBlock(it, !isStatement)
                         }
                     }
                     startLine()
@@ -90,6 +125,9 @@ fun SwiftAltListener.registerControl() {
             } else {
                 break
             }
+        }
+        if(!isStatement){
+            direct.append("}()")
         }
     }
     handle<KotlinParser.ForStatementContext> {

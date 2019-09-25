@@ -1,10 +1,28 @@
 package com.test
 
+interface SomeInterface {}
+
 fun Int.extensionPlusOne(): Int {
     return this + 1
 }
 
 fun <Element> List<Element>.estimateWork(): Int {
+    return this.size
+}
+
+fun List<@swiftExactly("OVERRIDE") SomeInterface>.estimateWork2(): Int {
+    return this.size
+}
+
+fun List<@swiftDescendsFrom("OVERRIDE") SomeInterface>.estimateWork3(): Int {
+    return this.size
+}
+
+fun <S: @swiftExactly("OVERRIDE") SomeInterface> List<S>.estimateWork4(): Int {
+    return this.size
+}
+
+fun <S: @swiftDescendsFrom("OVERRIDE") SomeInterface> List<S>.estimateWork5(): Int {
     return this.size
 }
 

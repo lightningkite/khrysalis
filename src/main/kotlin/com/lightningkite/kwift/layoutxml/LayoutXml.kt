@@ -8,14 +8,18 @@ import java.lang.StringBuilder
 
 typealias Styles = Map<String, Map<String, String>>
 
-fun File.translateLayoutXml(styles: Styles): String {
+fun File.translateLayoutXml(styles: Styles, converter: LayoutConverter = LayoutConverter.normal): String {
 
-    val node = XmlNode.read(this, styles)
-    val name = this.nameWithoutExtension.camelCase().capitalize()
     val appendable = StringBuilder()
-    ViewType.bindings.clear()
-    ViewType.write(appendable, node)
-    val vars = ViewType.bindings.entries.joinToString("\n") {
+    val conversion = OngoingLayoutConversion(
+        appendable = appendable,
+        resourcesDirectory = this.parentFile,
+        styles = styles,
+        converter = converter
+    )
+    conversion.write(XmlNode.read(this, styles))
+    val name = this.nameWithoutExtension.camelCase().capitalize()
+    val vars = conversion.bindings.entries.joinToString("\n") {
         "weak var ${it.key}: ${it.value}!"
     }
     return """
@@ -35,6 +39,7 @@ fun File.translateLayoutXml(styles: Styles): String {
             func setup(_ dependency: ViewDependency) -> UIView {
                 return $appendable
             }
+            
         }
     """.trimIndent().retabSwift()
 }

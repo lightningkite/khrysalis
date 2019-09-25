@@ -9,7 +9,7 @@ fun SwiftAltListener.registerLiterals() {
         direct.append('"')
         item.children.forEach {
             when (it) {
-                is KotlinParser.LineStringContentContext -> direct.append(it.text)
+                is KotlinParser.LineStringContentContext -> direct.append(it.text.replace("\\$", "$"))
                 is KotlinParser.LineStringExpressionContext -> {
                     direct.append("\\(")
                     write(it.expression())
