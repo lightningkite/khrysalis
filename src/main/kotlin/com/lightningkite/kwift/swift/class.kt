@@ -25,12 +25,18 @@ val KotlinParser.ClassDeclarationContext.additionalDeclarations: MutableList<Swi
 fun KotlinParser.ClassDeclarationContext.clearAdditionalDeclarations() =
     KotlinParserClassDeclarationContextAdditionalDeclarations.remove(this)
 
+fun KotlinParser.ClassDeclarationContext.constructorVars() =
+    primaryConstructor()?.classParameters()?.classParameter()
+        ?.asSequence()
+        ?.filter { it.VAL() != null || it.VAR() != null } ?: sequenceOf()
+
+fun KotlinParser.ClassDeclarationContext.constructorParameterNames() =
+    primaryConstructor()?.classParameters()?.classParameter()
+        ?.asSequence()
+        ?.map { it.simpleIdentifier().text } ?: sequenceOf()
+
 fun SwiftAltListener.registerClass() {
 
-    fun KotlinParser.ClassDeclarationContext.constructorVars() =
-        primaryConstructor()?.classParameters()?.classParameter()
-            ?.asSequence()
-            ?.filter { it.VAL() != null || it.VAR() != null } ?: sequenceOf()
 
     fun TabWriter.writeConvenienceInit(item: KotlinParser.ClassDeclarationContext) {
         if (item.primaryConstructor()?.classParameters()?.classParameter()?.size ?: 0 == 0) return
@@ -214,9 +220,6 @@ fun SwiftAltListener.registerClass() {
                     val myArgs = item.primaryConstructor()?.classParameters()?.classParameter()?.map {
                         it.simpleIdentifier().text
                     } ?: listOf()
-                    println("Super should have override?")
-                    println(superclassArgs?.joinToString())
-                    println(myArgs?.joinToString())
                     if (superclassArgs == myArgs) {
                         append("override ")
                     }

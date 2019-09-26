@@ -171,7 +171,6 @@ fun KotlinParser.ReceiverTypeContext.typeParamName(
 ): String {
     val receiverWithoutParameters = getUserType().simpleUserType()?.joinToString(".") { it.simpleIdentifier()!!.text }
         ?: ""
-    println("Type: ${type.text}")
     return annotations?.let {
         println("Modifiers: ${it.joinToString { it.text }}")
         it.get("swiftExactly")?.firstOrNull()?.trim('"') ?: it.get("swiftDescendsFrom")?.firstOrNull()?.trim('"')

@@ -1,9 +1,15 @@
-package com.lightningkite.kwift.layoutxml
+package com.lightningkite.kwift.layout
 
+import com.lightningkite.kwift.utils.XmlNode
 import com.lightningkite.kwift.log
-import com.lightningkite.kwift.swift.retabSwift
 import com.lightningkite.kwift.utils.camelCase
 import java.io.File
+
+fun createAndroidLayoutClasses(androidFolder: File, applicationPackage: String) = createAndroidLayoutClasses(
+    resourcesFolder = androidFolder.resolve("src/main/res"),
+    applicationPackage = applicationPackage,
+    outputFolder = androidFolder.resolve("src/main/java/${applicationPackage.replace('.', '/')}/layouts")
+)
 
 fun createAndroidLayoutClasses(
     resourcesFolder: File,
@@ -37,7 +43,7 @@ private data class AndroidSubLayout(
     val layoutXmlClass: String
 )
 
-fun File.translateLayoutXmlAndroid(styles: Styles, packageName: String, applicationPackage: String): String {
+private fun File.translateLayoutXmlAndroid(styles: Styles, packageName: String, applicationPackage: String): String {
 
     val node = XmlNode.read(this, styles)
     val fileName = this.nameWithoutExtension.camelCase().capitalize()

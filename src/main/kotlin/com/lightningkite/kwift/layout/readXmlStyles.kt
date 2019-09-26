@@ -1,7 +1,6 @@
-package com.lightningkite.kwift.layoutxml
+package com.lightningkite.kwift.layout
 
-import com.lightningkite.kwift.utils.camelCase
-import net.jodah.xsylum.Xsylum
+import com.lightningkite.kwift.utils.XmlNode
 import java.io.File
 
 private data class IntermediateStyle(val parent: String? = null, val parts: Map<String, String> = mapOf())

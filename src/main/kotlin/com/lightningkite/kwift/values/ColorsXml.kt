@@ -1,5 +1,7 @@
-package com.lightningkite.kwift.layoutxml
+package com.lightningkite.kwift.values
 
+import com.lightningkite.kwift.utils.XmlNode
+import com.lightningkite.kwift.utils.hashColorToUIColor
 import com.lightningkite.kwift.utils.camelCase
 import java.io.File
 

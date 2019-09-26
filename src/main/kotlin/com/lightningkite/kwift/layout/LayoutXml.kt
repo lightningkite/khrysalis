@@ -1,6 +1,6 @@
-package com.lightningkite.kwift.layoutxml
+package com.lightningkite.kwift.layout
 
-import com.lightningkite.kwift.log
+import com.lightningkite.kwift.utils.XmlNode
 import com.lightningkite.kwift.swift.retabSwift
 import com.lightningkite.kwift.utils.camelCase
 import java.io.File

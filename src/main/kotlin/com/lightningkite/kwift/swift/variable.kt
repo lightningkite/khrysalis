@@ -96,17 +96,30 @@ fun SwiftAltListener.registerVariable() {
                     } else {
                         owningClass.additionalInits.add { writer ->
                             with(writer) {
-                                line {
-                                    append("let ")
-                                    append(myName)
-                                    append(" = ")
-                                    write(it)
-                                }
-                                line {
-                                    append("self.")
-                                    append(myName)
-                                    append(" = ")
-                                    append(myName)
+                                if(myName in owningClass.constructorParameterNames()){
+                                    line {
+                                        append("self.")
+                                        append(myName)
+                                        append(" = ")
+                                        write(it)
+                                    }
+                                } else {
+                                    line {
+                                        append("let ")
+                                        append(myName)
+                                        item.variableDeclaration().type()?.let {
+                                            append(": ")
+                                            write(it)
+                                        }
+                                        append(" = ")
+                                        write(it)
+                                    }
+                                    line {
+                                        append("self.")
+                                        append(myName)
+                                        append(" = ")
+                                        append(myName)
+                                    }
                                 }
                             }
                         }

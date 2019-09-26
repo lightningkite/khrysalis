@@ -1,4 +1,6 @@
-package com.lightningkite.kwift.layoutxml
+package com.lightningkite.kwift.layout
+
+import com.lightningkite.kwift.utils.XmlNode
 
 data class ViewType(
     val androidName: String,

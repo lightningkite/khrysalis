@@ -1,7 +1,6 @@
-package com.lightningkite.kwift.layoutxml
+package com.lightningkite.kwift.layout
 
-import com.lightningkite.kwift.utils.camelCase
-import com.lightningkite.kwift.utils.forEachBetween
+import com.lightningkite.kwift.utils.*
 
 val LayoutConverter.Companion.normal get() = LayoutConverter(
     viewTypes = ViewType.mapOf(
@@ -18,7 +17,7 @@ val LayoutConverter.Companion.normal get() = LayoutConverter(
                         appendln("if let image = UIImage(named: \"$drawableName\") {")
                         appendln("view.backgroundColor = UIColor(patternImage: image)")
                         appendln("} else {")
-                        appendln("ResourcesBackground.apply(view, \"$drawableName\")")
+                        appendln("//ResourcesBackground.apply(view, \"$drawableName\")")
                         appendln("}")
                     }
                     raw.startsWith("@mipmap/") -> {
@@ -441,7 +440,7 @@ val LayoutConverter.Companion.normal get() = LayoutConverter(
                 }
             }
             if (node.attributes["android:background"] == null) {
-                appendln("ResourcesBackground.apply(view, \"edit_text_background\")")
+                appendln("//ResourcesBackground.apply(view, \"edit_text_background\")")
             }
             handleCommonText(node)
         },

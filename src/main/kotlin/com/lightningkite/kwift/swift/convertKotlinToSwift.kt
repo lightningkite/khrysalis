@@ -18,10 +18,22 @@ import java.io.File
 import java.util.*
 import kotlin.collections.HashMap
 
-
 fun convertKotlinToSwift(
+    androidFolder: File,
+    iosFolder: File,
+    clean: Boolean = false,
+    setup: SwiftAltListener.() -> Unit = {}
+) = convertKotlinToSwiftByFolder(
+    androidFolder.resolve("src/main/java"),
+    iosFolder,
+    clean,
+    setup
+)
+
+fun convertKotlinToSwiftByFolder(
     baseKotlin: File,
     baseSwift: File,
+    clean: Boolean = false,
     setup: SwiftAltListener.() -> Unit = {}
 ) {
 
@@ -58,7 +70,7 @@ fun convertKotlinToSwift(
         val outputHash = if (output.exists()) output.readText().hashCode() else 0
         val existing = existingCache[file.path]
         val cache =
-            if (existing != null && existing.inputHash == inputHash && existing.outputHash == outputHash) {
+            if (!clean && existing != null && existing.inputHash == inputHash && existing.outputHash == outputHash) {
                 existing
             } else {
                 val lexer = KotlinLexer(ANTLRInputStream(text))

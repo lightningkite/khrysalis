@@ -1,30 +1,30 @@
 package com.lightningkite.kwift
 
-import com.lightningkite.kwift.layoutxml.convertAndroidResourcesToSwift
-import com.lightningkite.kwift.layoutxml.createAndroidLayoutClasses
+import com.lightningkite.kwift.layout.convertLayoutsToSwift
+import com.lightningkite.kwift.layout.createAndroidLayoutClasses
 import com.lightningkite.kwift.swift.convertKotlinToSwift
-import org.antlr.v4.runtime.ANTLRInputStream
-import org.antlr.v4.runtime.CommonTokenStream
-import org.jetbrains.kotlin.KotlinLexer
 import java.io.File
 
 
 const val INTERFACE_SCAN_VERSION: Int = 2
-const val VERSION: Int = 10
+const val VERSION: Int = 12
 
 fun main(vararg args: String) {
-    convertKotlinToSwift(
-        File("/Users/josephivie/IdeaProjects/kwift/testData"),
-        File("/Users/josephivie/IdeaProjects/kwift/testDataOutput2")
-    )
-    createAndroidLayoutClasses(
-        resourcesFolder = File("/Users/josephivie/IdeaProjects/kwift/testData/res"),
-        applicationPackage = "com.lightningkite.kwifttest",
-        outputFolder = File("/Users/josephivie/IdeaProjects/kwift/testDataOutput/res")
-    )
-    convertAndroidResourcesToSwift(
-        resourcesFolder = File("/Users/josephivie/IdeaProjects/kwift/testData/res"),
-        baseFolderForLocalizations = File("/Users/josephivie/IdeaProjects/kwift/testDataOutput/ios/locales"),
-        outputFolder = File("/Users/josephivie/IdeaProjects/kwift/testDataOutput/ios")
+//    convertKotlinToSwift(
+//        androidFolder = File("/Users/josephivie/StudioProjects/kwift-template/android/app"),
+//        iosFolder = File("/Users/josephivie/StudioProjects/kwift-template/ios/Kwift Template"),
+//        clean = true
+//    )
+//    createAndroidLayoutClasses(
+//        androidFolder = File("/Users/josephivie/StudioProjects/kwift-template/android/app"),
+//        applicationPackage = "com.lightningkite.kwifttest"
+//    )
+//    convertLayoutsToSwift(
+//        androidFolder = File("/Users/josephivie/StudioProjects/kwift-template/android/app"),
+//        iosFolder = File("/Users/josephivie/StudioProjects/kwift-template/ios/Kwift Template")
+//    )
+    convertResourcesToIos(
+        androidFolder = File("/Users/josephivie/StudioProjects/kwift-template/android/app"),
+        iosFolder = File("/Users/josephivie/StudioProjects/kwift-template/ios/Kwift Template")
     )
 }

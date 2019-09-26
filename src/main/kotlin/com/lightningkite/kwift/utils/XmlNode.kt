@@ -1,6 +1,6 @@
-package com.lightningkite.kwift.layoutxml
+package com.lightningkite.kwift.utils
 
-import com.lightningkite.kwift.utils.camelCase
+import com.lightningkite.kwift.layout.Styles
 import org.w3c.dom.Node
 import java.io.File
 import java.lang.Exception
@@ -48,7 +48,8 @@ class XmlNode(
                                 ?.removePrefix("@layout/")
                                 ?.plus(".xml")
                                 ?: return@map XmlNode(it, styles, directory)
-                            val node = read(File(directory, filename), styles)
+                            val node =
+                                read(File(directory, filename), styles)
                             XmlNode(it, styles, directory, node.attributes)
                         } catch(e:Exception){
                             e.printStackTrace()
@@ -90,6 +91,13 @@ fun XmlNode.attributeAsDimension(key: String): String? {
     return when {
         raw.startsWith("@dimen/") -> "ResourcesDimensions.${raw.removePrefix("@dimen/").camelCase()}"
         else -> raw.filter { it.isDigit() }.toIntOrNull()?.toString()
+    }
+}
+fun XmlNode.attributeAsLayer(key: String): String? {
+    val raw = attributes[key] ?: return null
+    return when {
+        raw.startsWith("@drawable/") -> "${raw.removePrefix("@dimen/").camelCase()}()"
+        else -> null
     }
 }
 fun XmlNode.attributeAsFloat(key: String): String? {

@@ -1,4 +1,4 @@
-package com.lightningkite.kwift.layoutxml
+package com.lightningkite.kwift.utils
 
 
 
