@@ -93,24 +93,32 @@ fun XmlNode.attributeAsDimension(key: String): String? {
         else -> raw.filter { it.isDigit() }.toIntOrNull()?.toString()
     }
 }
-fun XmlNode.attributeAsLayer(key: String): String? {
+fun XmlNode.attributeAsLayer(key: String, forView: String = "nil"): String? {
     val raw = attributes[key] ?: return null
     return when {
-        raw.startsWith("@drawable/") -> "${raw.removePrefix("@dimen/").camelCase()}()"
+        raw.startsWith("@drawable/") -> "ResourcesDrawables.${raw.removePrefix("@drawable/").camelCase()}(view: $forView)"
         else -> null
     }
 }
-fun XmlNode.attributeAsFloat(key: String): String? {
+fun XmlNode.attributeAsBoolean(key: String): Boolean? {
+    val raw = attributes[key] ?: return null
+    return when(raw.toLowerCase()) {
+        "true" -> true
+        "false" -> false
+        else -> null
+    }
+}
+fun XmlNode.attributeAsDouble(key: String): Double? {
     val raw = attributes[key] ?: return null
     return when {
-        else -> raw.filter { it.isDigit() || it == '.' }.toDoubleOrNull()?.toString()
+        else -> raw.filter { it.isDigit() || it == '.' }.toDoubleOrNull()
     }
 }
 
 fun XmlNode.attributeAsImage(key: String): String? {
     val raw = attributes[key] ?: return null
     return when {
-        raw.startsWith("@drawable/") -> "UIImage(named: \"${raw.removePrefix("@drawable/")}\")"
+        raw.startsWith("@drawable/") -> "UIImage(named: \"${raw.removePrefix("@drawable/")}\") ?? ${attributeAsLayer(key, "view")}.toImage()"
         raw.startsWith("@mipmap/") -> "UIImage(named: \"${raw.removePrefix("@mipmap/")}\")"
         else -> null
     }

@@ -1,12 +1,16 @@
 package com.lightningkite.kwift.drawables
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.lightningkite.kwift.utils.XmlNode
+import com.lightningkite.kwift.utils.camelCase
 import java.io.File
+import java.lang.Appendable
 
 
 fun convertPngs(
     resourcesFolder: File,
-    assetsFolder: File
+    assetsFolder: File,
+    swiftFolder: File
 ) {
     val pngNames = (resourcesFolder.listFiles() ?: arrayOf())
         .asSequence()
@@ -28,7 +32,7 @@ fun convertPngs(
         val two = matching.find { it.parent.contains("drawable-hdpi") }
         val three = matching.find { it.parent.contains("drawable-xhdpi") }
 
-        if(one == null && two == null && three == null) return@forEach
+        if (one == null && two == null && three == null) return@forEach
 
         val iosFolder = assetsFolder.resolve(pngName + ".imageset").apply { mkdirs() }
         jacksonObjectMapper().writeValue(
@@ -36,7 +40,7 @@ fun convertPngs(
             mapOf(
                 "info" to mapOf("version" to 1, "author" to "xcode"),
                 "images" to listOf(one, two, three).mapIndexed { index, file ->
-                    if(file == null) return@mapIndexed null
+                    if (file == null) return@mapIndexed null
                     mapOf("idiom" to "universal", "filename" to file.name, "scale" to "${index + 1}x")
                 }.filterNotNull()
             )
@@ -44,5 +48,23 @@ fun convertPngs(
         listOf(one, two, three).filterNotNull().forEach {
             it.copyTo(iosFolder.resolve(it.name), overwrite = true)
         }
+    }
+
+    try {
+        swiftFolder.resolve("drawable").also { it.mkdirs() }.resolve("PNGs.swift").bufferedWriter().use { writer ->
+            writer.appendln("//Automatically created by Kwift")
+            writer.appendln("import UIKit")
+            writer.appendln("")
+            writer.appendln("extension ResourcesDrawables {")
+            writer.appendln("")
+            pngNames.forEach { pngName ->
+                val typeName = pngName.camelCase()
+                writer.appendln("static func $typeName(view: UIView? = nil) -> CAImageLayer { return CAImageLayer(UIImage(named: \"$pngName\")) }")
+            }
+            writer.appendln("")
+            writer.appendln("}")
+        }
+    } catch (e: Exception) {
+        e.printStackTrace()
     }
 }

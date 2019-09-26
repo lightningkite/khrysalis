@@ -9,6 +9,18 @@ fun convertDrawablesToIos(
     iosResourcesSwiftFolder: File,
     iosAssetsFolder: File
 ) {
-    convertPngs(androidResourcesFolder, iosAssetsFolder)
+    iosResourcesSwiftFolder.resolve("drawable").let {
+        it.listFiles()?.forEach { it.delete() }
+        it.mkdirs()
+    }
+    val main = iosResourcesSwiftFolder.resolve("drawable").also { it.mkdirs() }.resolve("ResourcesDrawables.swift")
+    println("Writing $main")
+    main.writeText("""
+        //Automatically created by Kwift
+        //Extended by other files.
+        import UIKit
+        enum ResourcesDrawables {}
+    """.trimIndent())
+    convertPngs(androidResourcesFolder, iosAssetsFolder, iosResourcesSwiftFolder)
     convertDrawableXmls(androidResourcesFolder, iosResourcesSwiftFolder)
 }

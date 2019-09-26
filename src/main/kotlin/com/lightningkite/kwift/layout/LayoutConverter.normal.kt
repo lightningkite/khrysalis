@@ -13,12 +13,9 @@ val LayoutConverter.Companion.normal get() = LayoutConverter(
             node.attributes["android:background"]?.let { raw ->
                 when {
                     raw.startsWith("@drawable/") -> {
-                        val drawableName = raw.removePrefix("@drawable/")
-                        appendln("if let image = UIImage(named: \"$drawableName\") {")
-                        appendln("view.backgroundColor = UIColor(patternImage: image)")
-                        appendln("} else {")
-                        appendln("//ResourcesBackground.apply(view, \"$drawableName\")")
-                        appendln("}")
+                        node.attributeAsLayer("android:background", "view")!!.let {
+                            appendln("view.backgroundLayer = $it")
+                        }
                     }
                     raw.startsWith("@mipmap/") -> {
                         val drawableName = raw.removePrefix("@mipmap/")
@@ -439,9 +436,6 @@ val LayoutConverter.Companion.normal get() = LayoutConverter(
                     }
                 }
             }
-            if (node.attributes["android:background"] == null) {
-                appendln("//ResourcesBackground.apply(view, \"edit_text_background\")")
-            }
             handleCommonText(node)
         },
 
@@ -708,7 +702,7 @@ private fun Appendable.handleCommonText(node: XmlNode, viewHandle: String = "vie
     node.attributeAsString("android:text")?.let { text ->
         appendln("$viewHandle.text = $text")
     }
-    node.attributeAsFloat("android:lineSpacingMultiplier")?.let { lineSpacingMultiplier ->
+    node.attributeAsDouble("android:lineSpacingMultiplier")?.let { lineSpacingMultiplier ->
         appendln("$viewHandle.lineSpacingMultiplier = $lineSpacingMultiplier")
     }
     val lines = node.attributeAsInt("android:maxLines")

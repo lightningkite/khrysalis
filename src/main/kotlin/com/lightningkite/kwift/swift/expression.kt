@@ -37,6 +37,7 @@ fun SwiftAltListener.registerExpression() {
                 when(typeSuffix){
                     "string" -> direct.append("ResourcesStrings.$fixedSuffix")
                     "color" -> direct.append("ResourcesColors.$fixedSuffix")
+                    "drawable" -> direct.append("ResourcesDrawables.$fixedSuffix")
                     else -> throw IllegalArgumentException("Unrecognized suffix $typeSuffix $resourceSuffix ($fixedSuffix)")
                 }
                 suffixes.drop(2).forEach {
