@@ -6,6 +6,7 @@ data class ViewType(
     val androidName: String,
     val iosName: String,
     val extendsAndroidName: String? = null,
+    val iosConstructor: String = "$iosName(frame: .zero)",
     val myConfiguration: OngoingLayoutConversion.(XmlNode) -> Unit = {}
 ) {
     companion object {
@@ -60,7 +61,7 @@ data class ViewType(
 
     fun write(appendable: OngoingLayoutConversion, node: XmlNode) {
         appendable.appendln("{ () -> $iosName in ")
-        appendable.appendln("let view = $iosName(frame: .zero)")
+        appendable.appendln("let view = $iosConstructor")
         writeConfiguration(appendable, node)
         appendable.appendln("return view")
         appendable.appendln("}()")

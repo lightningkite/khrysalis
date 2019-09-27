@@ -94,6 +94,7 @@ val LayoutConverter.Companion.normal get() = LayoutConverter(
         },
 
 
+        ViewType("androidx.core.widget.NestedScrollView", "UIScrollView", "ScrollView") { node ->},
         ViewType("ScrollView", "UIScrollView", "View") { node ->
             val child = node.children.first()
             appendln("view.flex.direction(.column).alignContent(.center).addItem({")
@@ -175,7 +176,11 @@ val LayoutConverter.Companion.normal get() = LayoutConverter(
                 appendln("view.pageIndicatorTintColor = $it")
             }
         },
-        ViewType("androidx.viewpager.widget.ViewPager", "UICollectionView", "View") { node ->
+        ViewType("androidx.viewpager.widget.ViewPager", "UICollectionView", "View", iosConstructor = "UICollectionView(frame: .zero, collectionViewLayout: ViewPagerLayout())") { node ->
+
+            appendln("view.canCancelContentTouches = false")
+            appendln("view.showsHorizontalScrollIndicator = false")
+            appendln("view.backgroundColor = .clear")
         },
         ViewType("com.google.android.material.tabs.TabLayout", "UISegmentedControl", "View") { node ->
             appendln("view.tintColor = .clear")
