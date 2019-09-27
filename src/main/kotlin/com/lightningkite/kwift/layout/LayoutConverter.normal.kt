@@ -53,7 +53,9 @@ val LayoutConverter.Companion.normal get() = LayoutConverter(
         },
 
 
-        ViewType("com.lightningkite.kwift.android.DateButton", "DateButton", "Button") {},
+        ViewType("com.lightningkite.kwift.views.android.TimeButton", "TimeButton", "Button") {},
+        ViewType("com.lightningkite.kwift.views.android.DateButton", "DateButton", "Button") {},
+        ViewType("com.lightningkite.kwift.views.android.PreviewVariedFlipper", "PreviewVariedFlipper", "FrameLayout") {},
         ViewType("androidx.recyclerview.widget.RecyclerView", "UITableView", "View") {},
         ViewType("Space", "UIView", "View") {},
 
@@ -173,8 +175,7 @@ val LayoutConverter.Companion.normal get() = LayoutConverter(
                 appendln("view.pageIndicatorTintColor = $it")
             }
         },
-        ViewType("androidx.viewpager.widget.ViewPager", "UIScrollView", "View") { node ->
-            appendln("view.isPagingEnabled = true")
+        ViewType("androidx.viewpager.widget.ViewPager", "UICollectionView", "View") { node ->
         },
         ViewType("com.google.android.material.tabs.TabLayout", "UISegmentedControl", "View") { node ->
             appendln("view.tintColor = .clear")
@@ -259,13 +260,13 @@ val LayoutConverter.Companion.normal get() = LayoutConverter(
                 }
             }
         },
-        ViewType("com.google.andorid.gms.maps.MapView", "MKMapView", "View") { node ->
+        ViewType("com.google.android.gms.maps.MapView", "MKMapView", "View") { node ->
 
         },
-        ViewType("com.alamkanak.weekview.WeekView", "UIWeekView", "View") { node ->
+        ViewType("com.lightningkite.kwift.views.android.WeekView", "UIWeekView", "View") { node ->
             //TODO
         },
-        ViewType("com.lightningkite.kwift.views.android.SelectDayView", "SelectDayView", "View") { node ->
+        ViewType("com.lightningkite.kwift.views.android.CalendarView", "CalendarView", "View") { node ->
 
             node.attributeAsColor("app:selectedForegroundColor")?.let {
                 appendln("view.selectedColorSet.foreground = $it")
@@ -313,7 +314,14 @@ val LayoutConverter.Companion.normal get() = LayoutConverter(
         ViewType(
             "com.lightningkite.kwift.views.android.SelectDateRangeView",
             "SelectDateRangeView",
-            "com.lightningkite.kwift.views.android.SelectDayView"
+            "com.lightningkite.kwift.views.android.CalendarView"
+        ) { node ->
+
+        },
+        ViewType(
+            "com.lightningkite.kwift.views.android.SelectDayView",
+            "SelectDayView",
+            "com.lightningkite.kwift.views.android.CalendarView"
         ) { node ->
 
         },
@@ -443,6 +451,10 @@ val LayoutConverter.Companion.normal get() = LayoutConverter(
         ViewType("CheckBox", "LabeledCheckbox", "View") {
             handleCommonText(it, "view.labelView")
         },
+        ViewType("RadioButton", "LabeledRadioButton", "View") {
+            handleCommonText(it, "view.labelView")
+        },
+        ViewType("ToggleButton", "ToggleButton", "Button") {},
         ViewType("Switch", "LabeledSwitch", "View") {
             handleCommonText(it, "view.labelView")
         },

@@ -119,7 +119,7 @@ fun convertVectorDrawable(name: String, node: XmlNode, out: Appendable) {
                                 previousC2Y = control2Y
                                 referenceX = destX
                                 referenceY = destY
-                                appendln("        path.addQuadCurve(to: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}), control1: CGPoint(x: ${control1X.scaleX()}, y: ${control1Y.scaleY()}), control2: CGPoint(x: ${control2X.scaleX()}, y: ${control2Y.scaleY()}))")
+                                appendln("        path.addCurve(to: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}), control1: CGPoint(x: ${control1X.scaleX()}, y: ${control1Y.scaleY()}), control2: CGPoint(x: ${control2X.scaleX()}, y: ${control2Y.scaleY()}))")
                             }
                             's' -> {
                                 val control2X = arguments.unshift() + offsetX()
@@ -130,7 +130,7 @@ fun convertVectorDrawable(name: String, node: XmlNode, out: Appendable) {
                                 val c1y = referenceY - (referenceY - previousC2Y)
                                 referenceX = destX
                                 referenceY = destY
-                                appendln("        path.addQuadCurve(to: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}), control1: CGPoint(x: ${c1x.scaleX()}, y: ${c1y.scaleY()}), control2: CGPoint(x: ${control2X.scaleX()}, y: ${control2Y.scaleY()}))")
+                                appendln("        path.addCurve(to: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}), control1: CGPoint(x: ${c1x.scaleX()}, y: ${c1y.scaleY()}), control2: CGPoint(x: ${control2X.scaleX()}, y: ${control2Y.scaleY()}))")
                             }
                             'a' -> {
                                 appendln("        //TODO - support arcs")

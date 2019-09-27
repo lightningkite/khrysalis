@@ -63,13 +63,9 @@ fun Map<String, String>.writeXMLColors(): String {
         appendln("public enum ResourcesColors {")
         appendln("    static let transparent = UIColor.clear")
         appendln("    static let black = UIColor.black")
-        appendln("    static let darkerGray = UIColor.darkGray")
-        appendln("    static let darkGray = UIColor.darkGray")
-        appendln("    static let gray = UIColor.gray")
-        appendln("    static let lightGray = UIColor.lightGray")
-        appendln("    static let lighterGray = UIColor.lightGray")
         appendln("    static let white = UIColor.white")
         for((key, value) in this@writeXMLColors.entries){
+            if(key == "transparent" || key == "black" || key == "white") continue
             appendln("    static let ${key.camelCase()} = $value")
         }
         appendln("}")
