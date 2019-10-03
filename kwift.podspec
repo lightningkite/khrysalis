@@ -11,6 +11,8 @@ Pod::Spec.new do |s|
   s.source = { :git => "https://github.com/lightningkite/kwift.git", :tag => "#{s.version}" }
   s.source_files =  "ios/kwift/**/*.swift" # path to your classes. You can drag them into their own folder.
 
+  s.pod_target_xcconfig = { "DEFINES_MODULE" => "YES" }
+
   s.requires_arc = true
   s.swift_version = '5.0'
   s.xcconfig = { 'SWIFT_VERSION' => '5.0' }
@@ -19,7 +21,7 @@ Pod::Spec.new do |s|
   s.dependency "KeychainAccess"
   s.dependency "PinLayout"
   s.dependency "FlexLayout"
-  s.dependency "UITextView+Placeholder", :modular_headers => true
+  s.dependency "UITextView+Placeholder"
   s.dependency "Fabric"
   s.dependency "Crashlytics"
   s.dependency "Cosmos", "~> 19.0"

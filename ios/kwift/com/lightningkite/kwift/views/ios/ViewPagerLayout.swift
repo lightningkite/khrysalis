@@ -19,7 +19,11 @@ class ViewPagerLayout: UICollectionViewFlowLayout {
         
         self.scrollDirection = .horizontal
         self.sectionInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: 0.0, right: 0.0)
-        self.sectionInsetReference = .fromSafeArea
+        if #available(iOS 11.0, *) {
+            self.sectionInsetReference = .fromSafeArea
+        } else {
+            // Fallback on earlier versions
+        }
     }
     
     func measure(){
