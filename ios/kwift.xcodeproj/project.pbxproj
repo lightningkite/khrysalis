@@ -7,7 +7,7 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
-		54CB5B25E4BB1E803292559A /* libPods-kwift.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 63A80265E53D7E8A26AF57CF /* libPods-kwift.a */; };
+		54CB5B25E4BB1E803292559A /* libPods-Kwift.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 63A80265E53D7E8A26AF57CF /* libPods-Kwift.a */; };
 		5E42978F233EC420002AAB7A /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42972E233EC420002AAB7A /* Date.swift */; };
 		5E429790233EC420002AAB7A /* delay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42972F233EC420002AAB7A /* delay.swift */; };
 		5E429791233EC420002AAB7A /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429730233EC420002AAB7A /* Preferences.swift */; };
@@ -97,9 +97,9 @@
 		5E4297E5233EC420002AAB7A /* ViewPagerLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42978C233EC420002AAB7A /* ViewPagerLayout.swift */; };
 		5E4297E6233EC420002AAB7A /* UIButton.position.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42978D233EC420002AAB7A /* UIButton.position.swift */; };
 		5E4297E7233EC420002AAB7A /* extensionProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42978E233EC420002AAB7A /* extensionProperty.swift */; };
-		5EAABEA1233EC33F007E7CED /* kwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5EAABE97233EC33F007E7CED /* kwift.framework */; };
+		5EAABEA1233EC33F007E7CED /* Kwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5EAABE97233EC33F007E7CED /* Kwift.framework */; };
 		5EAABEA6233EC33F007E7CED /* kwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAABEA5233EC33F007E7CED /* kwiftTests.swift */; };
-		5EAABEA8233EC33F007E7CED /* kwift.h in Headers */ = {isa = PBXBuildFile; fileRef = 5EAABE9A233EC33F007E7CED /* kwift.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		5EAABEA8233EC33F007E7CED /* Kwift.h in Headers */ = {isa = PBXBuildFile; fileRef = 5EAABE9A233EC33F007E7CED /* Kwift.h */; settings = {ATTRIBUTES = (Public, ); }; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -108,7 +108,7 @@
 			containerPortal = 5EAABE8E233EC33F007E7CED /* Project object */;
 			proxyType = 1;
 			remoteGlobalIDString = 5EAABE96233EC33F007E7CED;
-			remoteInfo = kwift;
+			remoteInfo = Kwift;
 		};
 /* End PBXContainerItemProxy section */
 
@@ -202,15 +202,15 @@
 		5E42978C233EC420002AAB7A /* ViewPagerLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewPagerLayout.swift; sourceTree = "<group>"; };
 		5E42978D233EC420002AAB7A /* UIButton.position.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIButton.position.swift; sourceTree = "<group>"; };
 		5E42978E233EC420002AAB7A /* extensionProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = extensionProperty.swift; sourceTree = "<group>"; };
-		5EAABE97233EC33F007E7CED /* kwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = kwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
-		5EAABE9A233EC33F007E7CED /* kwift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = kwift.h; sourceTree = "<group>"; };
+		5EAABE97233EC33F007E7CED /* Kwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Kwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5EAABE9A233EC33F007E7CED /* Kwift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Kwift.h; sourceTree = "<group>"; };
 		5EAABE9B233EC33F007E7CED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5EAABEA0233EC33F007E7CED /* kwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = kwiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5EAABEA5233EC33F007E7CED /* kwiftTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = kwiftTests.swift; sourceTree = "<group>"; };
 		5EAABEA7233EC33F007E7CED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
-		63A80265E53D7E8A26AF57CF /* libPods-kwift.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-kwift.a"; sourceTree = BUILT_PRODUCTS_DIR; };
-		6648265A81A02AE0AA915524 /* Pods-kwift.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-kwift.debug.xcconfig"; path = "Pods/Target Support Files/Pods-kwift/Pods-kwift.debug.xcconfig"; sourceTree = "<group>"; };
-		F994D26061C995DD96617E1D /* Pods-kwift.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-kwift.release.xcconfig"; path = "Pods/Target Support Files/Pods-kwift/Pods-kwift.release.xcconfig"; sourceTree = "<group>"; };
+		63A80265E53D7E8A26AF57CF /* libPods-Kwift.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Kwift.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6648265A81A02AE0AA915524 /* Pods-Kwift.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kwift.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Kwift/Pods-Kwift.debug.xcconfig"; sourceTree = "<group>"; };
+		F994D26061C995DD96617E1D /* Pods-Kwift.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kwift.release.xcconfig"; path = "Pods/Target Support Files/Pods-Kwift/Pods-Kwift.release.xcconfig"; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -218,7 +218,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				54CB5B25E4BB1E803292559A /* libPods-kwift.a in Frameworks */,
+				54CB5B25E4BB1E803292559A /* libPods-Kwift.a in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -226,7 +226,7 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5EAABEA1233EC33F007E7CED /* kwift.framework in Frameworks */,
+				5EAABEA1233EC33F007E7CED /* Kwift.framework in Frameworks */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -244,12 +244,12 @@
 		5E42972B233EC420002AAB7A /* lightningkite */ = {
 			isa = PBXGroup;
 			children = (
-				5E42972C233EC420002AAB7A /* kwift */,
+				5E42972C233EC420002AAB7A /* Kwift */,
 			);
 			path = lightningkite;
 			sourceTree = "<group>";
 		};
-		5E42972C233EC420002AAB7A /* kwift */ = {
+		5E42972C233EC420002AAB7A /* Kwift */ = {
 			isa = PBXGroup;
 			children = (
 				5E42972D233EC420002AAB7A /* actuals */,
@@ -257,7 +257,7 @@
 				5E429760233EC420002AAB7A /* shared */,
 				5E429762233EC420002AAB7A /* views */,
 			);
-			path = kwift;
+			path = Kwift;
 			sourceTree = "<group>";
 		};
 		5E42972D233EC420002AAB7A /* actuals */ = {
@@ -420,7 +420,7 @@
 		5EAABE8D233EC33F007E7CED = {
 			isa = PBXGroup;
 			children = (
-				5EAABE99233EC33F007E7CED /* kwift */,
+				5EAABE99233EC33F007E7CED /* Kwift */,
 				5EAABEA4233EC33F007E7CED /* kwiftTests */,
 				5EAABE98233EC33F007E7CED /* Products */,
 				B89CF92DA2A94AB749442A85 /* Pods */,
@@ -431,20 +431,20 @@
 		5EAABE98233EC33F007E7CED /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				5EAABE97233EC33F007E7CED /* kwift.framework */,
+				5EAABE97233EC33F007E7CED /* Kwift.framework */,
 				5EAABEA0233EC33F007E7CED /* kwiftTests.xctest */,
 			);
 			name = Products;
 			sourceTree = "<group>";
 		};
-		5EAABE99233EC33F007E7CED /* kwift */ = {
+		5EAABE99233EC33F007E7CED /* Kwift */ = {
 			isa = PBXGroup;
 			children = (
 				5E42972A233EC420002AAB7A /* com */,
-				5EAABE9A233EC33F007E7CED /* kwift.h */,
+				5EAABE9A233EC33F007E7CED /* Kwift.h */,
 				5EAABE9B233EC33F007E7CED /* Info.plist */,
 			);
-			path = kwift;
+			path = Kwift;
 			sourceTree = "<group>";
 		};
 		5EAABEA4233EC33F007E7CED /* kwiftTests */ = {
@@ -459,7 +459,7 @@
 		9CC50EE0F088256C2D7E7929 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
-				63A80265E53D7E8A26AF57CF /* libPods-kwift.a */,
+				63A80265E53D7E8A26AF57CF /* libPods-Kwift.a */,
 			);
 			name = Frameworks;
 			sourceTree = "<group>";
@@ -467,8 +467,8 @@
 		B89CF92DA2A94AB749442A85 /* Pods */ = {
 			isa = PBXGroup;
 			children = (
-				6648265A81A02AE0AA915524 /* Pods-kwift.debug.xcconfig */,
-				F994D26061C995DD96617E1D /* Pods-kwift.release.xcconfig */,
+				6648265A81A02AE0AA915524 /* Pods-Kwift.debug.xcconfig */,
+				F994D26061C995DD96617E1D /* Pods-Kwift.release.xcconfig */,
 			);
 			name = Pods;
 			sourceTree = "<group>";
@@ -480,16 +480,16 @@
 			isa = PBXHeadersBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
-				5EAABEA8233EC33F007E7CED /* kwift.h in Headers */,
+				5EAABEA8233EC33F007E7CED /* Kwift.h in Headers */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
 /* End PBXHeadersBuildPhase section */
 
 /* Begin PBXNativeTarget section */
-		5EAABE96233EC33F007E7CED /* kwift */ = {
+		5EAABE96233EC33F007E7CED /* Kwift */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 5EAABEAB233EC33F007E7CED /* Build configuration list for PBXNativeTarget "kwift" */;
+			buildConfigurationList = 5EAABEAB233EC33F007E7CED /* Build configuration list for PBXNativeTarget "Kwift" */;
 			buildPhases = (
 				1B0ADB3260955DC9782D40D5 /* [CP] Check Pods Manifest.lock */,
 				5EAABE92233EC33F007E7CED /* Headers */,
@@ -502,9 +502,9 @@
 			);
 			dependencies = (
 			);
-			name = kwift;
-			productName = kwift;
-			productReference = 5EAABE97233EC33F007E7CED /* kwift.framework */;
+			name = Kwift;
+			productName = Kwift;
+			productReference = 5EAABE97233EC33F007E7CED /* Kwift.framework */;
 			productType = "com.apple.product-type.framework";
 		};
 		5EAABE9F233EC33F007E7CED /* kwiftTests */ = {
@@ -543,7 +543,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 5EAABE91233EC33F007E7CED /* Build configuration list for PBXProject "kwift" */;
+			buildConfigurationList = 5EAABE91233EC33F007E7CED /* Build configuration list for PBXProject "Kwift" */;
 			compatibilityVersion = "Xcode 9.3";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -556,7 +556,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				5EAABE96233EC33F007E7CED /* kwift */,
+				5EAABE96233EC33F007E7CED /* Kwift */,
 				5EAABE9F233EC33F007E7CED /* kwiftTests */,
 			);
 		};
@@ -595,7 +595,7 @@
 			outputFileListPaths = (
 			);
 			outputPaths = (
-				"$(DERIVED_FILE_DIR)/Pods-kwift-checkManifestLockResult.txt",
+				"$(DERIVED_FILE_DIR)/Pods-Kwift-checkManifestLockResult.txt",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
@@ -610,7 +610,7 @@
 			inputFileListPaths = (
 			);
 			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-kwift/Pods-kwift-resources.sh",
+				"${SRCROOT}/Pods/Target Support Files/Pods-Kwift/Pods-Kwift-resources.sh",
 				"${PODS_ROOT}/QVRWeekView/QVRWeekView/Classes/Xibs/EventView.xib",
 				"${PODS_ROOT}/QVRWeekView/QVRWeekView/Classes/Xibs/HourSideBarView.xib",
 				"${PODS_ROOT}/QVRWeekView/QVRWeekView/Classes/Xibs/WeekView.xib",
@@ -625,7 +625,7 @@
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-kwift/Pods-kwift-resources.sh\"\n";
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Kwift/Pods-Kwift-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
@@ -740,7 +740,7 @@
 /* Begin PBXTargetDependency section */
 		5EAABEA3233EC33F007E7CED /* PBXTargetDependency */ = {
 			isa = PBXTargetDependency;
-			target = 5EAABE96233EC33F007E7CED /* kwift */;
+			target = 5EAABE96233EC33F007E7CED /* Kwift */;
 			targetProxy = 5EAABEA2233EC33F007E7CED /* PBXContainerItemProxy */;
 		};
 /* End PBXTargetDependency section */
@@ -868,7 +868,7 @@
 		};
 		5EAABEAC233EC33F007E7CED /* Debug */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = 6648265A81A02AE0AA915524 /* Pods-kwift.debug.xcconfig */;
+			baseConfigurationReference = 6648265A81A02AE0AA915524 /* Pods-Kwift.debug.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
@@ -876,14 +876,14 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = kwift/Info.plist;
+				INFOPLIST_FILE = Kwift/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.lightningkite.kwift;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lightningkite.Kwift;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -893,7 +893,7 @@
 		};
 		5EAABEAD233EC33F007E7CED /* Release */ = {
 			isa = XCBuildConfiguration;
-			baseConfigurationReference = F994D26061C995DD96617E1D /* Pods-kwift.release.xcconfig */;
+			baseConfigurationReference = F994D26061C995DD96617E1D /* Pods-Kwift.release.xcconfig */;
 			buildSettings = {
 				CODE_SIGN_STYLE = Automatic;
 				DEFINES_MODULE = YES;
@@ -901,14 +901,14 @@
 				DYLIB_COMPATIBILITY_VERSION = 1;
 				DYLIB_CURRENT_VERSION = 1;
 				DYLIB_INSTALL_NAME_BASE = "@rpath";
-				INFOPLIST_FILE = kwift/Info.plist;
+				INFOPLIST_FILE = Kwift/Info.plist;
 				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
 				LD_RUNPATH_SEARCH_PATHS = (
 					"$(inherited)",
 					"@executable_path/Frameworks",
 					"@loader_path/Frameworks",
 				);
-				PRODUCT_BUNDLE_IDENTIFIER = com.lightningkite.kwift;
+				PRODUCT_BUNDLE_IDENTIFIER = com.lightningkite.Kwift;
 				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
 				SKIP_INSTALL = YES;
 				SWIFT_VERSION = 5.0;
@@ -957,7 +957,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		5EAABE91233EC33F007E7CED /* Build configuration list for PBXProject "kwift" */ = {
+		5EAABE91233EC33F007E7CED /* Build configuration list for PBXProject "Kwift" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5EAABEA9233EC33F007E7CED /* Debug */,
@@ -966,7 +966,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		5EAABEAB233EC33F007E7CED /* Build configuration list for PBXNativeTarget "kwift" */ = {
+		5EAABEAB233EC33F007E7CED /* Build configuration list for PBXNativeTarget "Kwift" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				5EAABEAC233EC33F007E7CED /* Debug */,
