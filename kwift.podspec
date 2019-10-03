@@ -23,5 +23,5 @@ Pod::Spec.new do |s|
   s.dependency "Fabric"
   s.dependency "Crashlytics"
   s.dependency "Cosmos", "~> 19.0"
-  s.dependency "QVRWeekView", :git => "https://github.com/lightningkite/iOS-Week-View.git"
+  s.dependency "QVRWeekView"
 end
