@@ -1,0 +1,990 @@
+// !$*UTF8*$!
+{
+	archiveVersion = 1;
+	classes = {
+	};
+	objectVersion = 50;
+	objects = {
+
+/* Begin PBXBuildFile section */
+		54CB5B25E4BB1E803292559A /* libPods-kwift.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 63A80265E53D7E8A26AF57CF /* libPods-kwift.a */; };
+		5E42978F233EC420002AAB7A /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42972E233EC420002AAB7A /* Date.swift */; };
+		5E429790233EC420002AAB7A /* delay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42972F233EC420002AAB7A /* delay.swift */; };
+		5E429791233EC420002AAB7A /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429730233EC420002AAB7A /* Preferences.swift */; };
+		5E429792233EC420002AAB7A /* StringReference.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429731233EC420002AAB7A /* StringReference.swift */; };
+		5E429793233EC420002AAB7A /* SecurePreferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429732233EC420002AAB7A /* SecurePreferences.swift */; };
+		5E429794233EC420002AAB7A /* unit.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429733233EC420002AAB7A /* unit.swift */; };
+		5E429795233EC420002AAB7A /* Kotlin.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429734233EC420002AAB7A /* Kotlin.swift */; };
+		5E429796233EC420002AAB7A /* OptionalProtocol.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429735233EC420002AAB7A /* OptionalProtocol.swift */; };
+		5E429797233EC420002AAB7A /* HttpClient.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429736233EC420002AAB7A /* HttpClient.swift */; };
+		5E429798233EC420002AAB7A /* Codable.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429737233EC420002AAB7A /* Codable.swift */; };
+		5E429799233EC420002AAB7A /* String.extensions.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429738233EC420002AAB7A /* String.extensions.swift */; };
+		5E42979A233EC420002AAB7A /* ImageData.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429739233EC420002AAB7A /* ImageData.swift */; };
+		5E42979B233EC420002AAB7A /* KotlinNumbers.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42973A233EC420002AAB7A /* KotlinNumbers.swift */; };
+		5E42979C233EC420002AAB7A /* UIRatingBar+binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42973D233EC420002AAB7A /* UIRatingBar+binding.swift */; };
+		5E42979D233EC420002AAB7A /* UITextField+binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42973E233EC420002AAB7A /* UITextField+binding.swift */; };
+		5E42979E233EC420002AAB7A /* SelectDateRangeView+binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42973F233EC420002AAB7A /* SelectDateRangeView+binding.swift */; };
+		5E42979F233EC420002AAB7A /* UIView+binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429740233EC420002AAB7A /* UIView+binding.swift */; };
+		5E4297A0233EC420002AAB7A /* UIImageView+binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429741233EC420002AAB7A /* UIImageView+binding.swift */; };
+		5E4297A1233EC420002AAB7A /* Dropdown+binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429742233EC420002AAB7A /* Dropdown+binding.swift */; };
+		5E4297A2233EC420002AAB7A /* UISegmentedControl+bind.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429743233EC420002AAB7A /* UISegmentedControl+bind.swift */; };
+		5E4297A3233EC420002AAB7A /* UIWeekView+ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429744233EC420002AAB7A /* UIWeekView+ext.swift */; };
+		5E4297A4233EC420002AAB7A /* ClosureSleeve.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429745233EC420002AAB7A /* ClosureSleeve.swift */; };
+		5E4297A5233EC420002AAB7A /* UITextView+binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429746233EC420002AAB7A /* UITextView+binding.swift */; };
+		5E4297A6233EC420002AAB7A /* UICollectionView+binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429747233EC420002AAB7A /* UICollectionView+binding.swift */; };
+		5E4297A7233EC420002AAB7A /* UIScrollView+binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429748233EC420002AAB7A /* UIScrollView+binding.swift */; };
+		5E4297A8233EC420002AAB7A /* UISwitch+binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429749233EC420002AAB7A /* UISwitch+binding.swift */; };
+		5E4297A9233EC420002AAB7A /* UIButton+binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42974A233EC420002AAB7A /* UIButton+binding.swift */; };
+		5E4297AA233EC420002AAB7A /* UILabel+binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42974B233EC420002AAB7A /* UILabel+binding.swift */; };
+		5E4297AB233EC420002AAB7A /* UIPageControl+binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42974C233EC420002AAB7A /* UIPageControl+binding.swift */; };
+		5E4297AC233EC420002AAB7A /* UISlider+binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42974D233EC420002AAB7A /* UISlider+binding.swift */; };
+		5E4297AD233EC420002AAB7A /* SelectDayView+binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42974E233EC420002AAB7A /* SelectDayView+binding.swift */; };
+		5E4297AE233EC420002AAB7A /* DateButton+binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42974F233EC420002AAB7A /* DateButton+binding.swift */; };
+		5E4297AF233EC420002AAB7A /* UITableView+binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429750233EC420002AAB7A /* UITableView+binding.swift */; };
+		5E4297B0233EC420002AAB7A /* TransformedObservableProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429752233EC420002AAB7A /* TransformedObservableProperty.swift */; };
+		5E4297B1233EC420002AAB7A /* ObservableProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429753233EC420002AAB7A /* ObservableProperty.swift */; };
+		5E4297B2233EC420002AAB7A /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429754233EC420002AAB7A /* Event.swift */; };
+		5E4297B3233EC420002AAB7A /* Event.ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429755233EC420002AAB7A /* Event.ext.swift */; };
+		5E4297B4233EC420002AAB7A /* MutableObservableProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429756233EC420002AAB7A /* MutableObservableProperty.swift */; };
+		5E4297B5233EC420002AAB7A /* TransformedEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429757233EC420002AAB7A /* TransformedEvent.swift */; };
+		5E4297B6233EC420002AAB7A /* StandardObservableProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429758233EC420002AAB7A /* StandardObservableProperty.swift */; };
+		5E4297B7233EC420002AAB7A /* ObservableStack.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429759233EC420002AAB7A /* ObservableStack.swift */; };
+		5E4297B8233EC420002AAB7A /* Close.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42975A233EC420002AAB7A /* Close.swift */; };
+		5E4297B9233EC420002AAB7A /* TransformedMutableObservableProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42975B233EC420002AAB7A /* TransformedMutableObservableProperty.swift */; };
+		5E4297BA233EC420002AAB7A /* NeverEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42975C233EC420002AAB7A /* NeverEvent.swift */; };
+		5E4297BB233EC420002AAB7A /* StandardEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42975D233EC420002AAB7A /* StandardEvent.swift */; };
+		5E4297BC233EC420002AAB7A /* ObservableProperty.ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42975E233EC420002AAB7A /* ObservableProperty.ext.swift */; };
+		5E4297BD233EC420002AAB7A /* ConstantObservableProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42975F233EC420002AAB7A /* ConstantObservableProperty.swift */; };
+		5E4297BE233EC420002AAB7A /* captureWeak.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429761233EC420002AAB7A /* captureWeak.swift */; };
+		5E4297BF233EC420002AAB7A /* Dropdown.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429764233EC420002AAB7A /* Dropdown.swift */; };
+		5E4297C0233EC420002AAB7A /* PreviewVariedFlipper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429765233EC420002AAB7A /* PreviewVariedFlipper.swift */; };
+		5E4297C1233EC420002AAB7A /* CompoundButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429766233EC420002AAB7A /* CompoundButton.swift */; };
+		5E4297C2233EC420002AAB7A /* SelectDateRangeView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429767233EC420002AAB7A /* SelectDateRangeView.swift */; };
+		5E4297C3233EC420002AAB7A /* general.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429768233EC420002AAB7A /* general.swift */; };
+		5E4297C4233EC420002AAB7A /* ScrollSavingDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429769233EC420002AAB7A /* ScrollSavingDelegate.swift */; };
+		5E4297C5233EC420002AAB7A /* LabeledCheckbox.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42976A233EC420002AAB7A /* LabeledCheckbox.swift */; };
+		5E4297C6233EC420002AAB7A /* QuickMonthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42976B233EC420002AAB7A /* QuickMonthView.swift */; };
+		5E4297C7233EC420002AAB7A /* alias.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42976C233EC420002AAB7A /* alias.swift */; };
+		5E4297C8233EC420002AAB7A /* AbstractCalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42976D233EC420002AAB7A /* AbstractCalendarView.swift */; };
+		5E4297C9233EC420002AAB7A /* SelectDayMonthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42976E233EC420002AAB7A /* SelectDayMonthView.swift */; };
+		5E4297CA233EC420002AAB7A /* SelectDateRangeMonthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42976F233EC420002AAB7A /* SelectDateRangeMonthView.swift */; };
+		5E4297CB233EC420002AAB7A /* SelectDayView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429770233EC420002AAB7A /* SelectDayView.swift */; };
+		5E4297CC233EC420002AAB7A /* ToggleButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429771233EC420002AAB7A /* ToggleButton.swift */; };
+		5E4297CD233EC420002AAB7A /* DateButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429772233EC420002AAB7A /* DateButton.swift */; };
+		5E4297CE233EC420002AAB7A /* LabeledRadioButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429773233EC420002AAB7A /* LabeledRadioButton.swift */; };
+		5E4297CF233EC420002AAB7A /* LabeledSwitch.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429774233EC420002AAB7A /* LabeledSwitch.swift */; };
+		5E4297D0233EC420002AAB7A /* TimeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429775233EC420002AAB7A /* TimeButton.swift */; };
+		5E4297D1233EC420002AAB7A /* DatePickerButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429776233EC420002AAB7A /* DatePickerButton.swift */; };
+		5E4297D2233EC420002AAB7A /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429777233EC420002AAB7A /* CalendarView.swift */; };
+		5E4297D3233EC420002AAB7A /* UIButtonWithInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429778233EC420002AAB7A /* UIButtonWithInput.swift */; };
+		5E4297D4233EC420002AAB7A /* Strings.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42977A233EC420002AAB7A /* Strings.swift */; };
+		5E4297D5233EC420002AAB7A /* ViewGenerator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42977B233EC420002AAB7A /* ViewGenerator.swift */; };
+		5E4297D6233EC420002AAB7A /* showDialog.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42977C233EC420002AAB7A /* showDialog.swift */; };
+		5E4297D7233EC420002AAB7A /* Form.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42977D233EC420002AAB7A /* Form.swift */; };
+		5E4297D8233EC420002AAB7A /* UILabel+lineSpacingMultiplier.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42977F233EC420002AAB7A /* UILabel+lineSpacingMultiplier.swift */; };
+		5E4297D9233EC420002AAB7A /* UIView.focus.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429780233EC420002AAB7A /* UIView.focus.swift */; };
+		5E4297DA233EC420002AAB7A /* CAStateLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429781233EC420002AAB7A /* CAStateLayer.swift */; };
+		5E4297DB233EC420002AAB7A /* UIScrollView+flexFix.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429782233EC420002AAB7A /* UIScrollView+flexFix.swift */; };
+		5E4297DC233EC420002AAB7A /* UITextView.placeholder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429783233EC420002AAB7A /* UITextView.placeholder.swift */; };
+		5E4297DD233EC420002AAB7A /* UIColor.ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429784233EC420002AAB7A /* UIColor.ext.swift */; };
+		5E4297DE233EC420002AAB7A /* Flex+root.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429785233EC420002AAB7A /* Flex+root.swift */; };
+		5E4297DF233EC420002AAB7A /* UIFont.get.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429786233EC420002AAB7A /* UIFont.get.swift */; };
+		5E4297E0233EC420002AAB7A /* UISegmentedControl+addIndicator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429787233EC420002AAB7A /* UISegmentedControl+addIndicator.swift */; };
+		5E4297E1233EC420002AAB7A /* UIView+backgroundLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429788233EC420002AAB7A /* UIView+backgroundLayer.swift */; };
+		5E4297E2233EC420002AAB7A /* UITextField.ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429789233EC420002AAB7A /* UITextField.ext.swift */; };
+		5E4297E3233EC420002AAB7A /* onLayoutSubviewsSwizzle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42978A233EC420002AAB7A /* onLayoutSubviewsSwizzle.swift */; };
+		5E4297E4233EC420002AAB7A /* UIImageView.ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42978B233EC420002AAB7A /* UIImageView.ext.swift */; };
+		5E4297E5233EC420002AAB7A /* ViewPagerLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42978C233EC420002AAB7A /* ViewPagerLayout.swift */; };
+		5E4297E6233EC420002AAB7A /* UIButton.position.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42978D233EC420002AAB7A /* UIButton.position.swift */; };
+		5E4297E7233EC420002AAB7A /* extensionProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42978E233EC420002AAB7A /* extensionProperty.swift */; };
+		5EAABEA1233EC33F007E7CED /* kwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5EAABE97233EC33F007E7CED /* kwift.framework */; };
+		5EAABEA6233EC33F007E7CED /* kwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAABEA5233EC33F007E7CED /* kwiftTests.swift */; };
+		5EAABEA8233EC33F007E7CED /* kwift.h in Headers */ = {isa = PBXBuildFile; fileRef = 5EAABE9A233EC33F007E7CED /* kwift.h */; settings = {ATTRIBUTES = (Public, ); }; };
+/* End PBXBuildFile section */
+
+/* Begin PBXContainerItemProxy section */
+		5EAABEA2233EC33F007E7CED /* PBXContainerItemProxy */ = {
+			isa = PBXContainerItemProxy;
+			containerPortal = 5EAABE8E233EC33F007E7CED /* Project object */;
+			proxyType = 1;
+			remoteGlobalIDString = 5EAABE96233EC33F007E7CED;
+			remoteInfo = kwift;
+		};
+/* End PBXContainerItemProxy section */
+
+/* Begin PBXFileReference section */
+		5E42972E233EC420002AAB7A /* Date.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
+		5E42972F233EC420002AAB7A /* delay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = delay.swift; sourceTree = "<group>"; };
+		5E429730233EC420002AAB7A /* Preferences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
+		5E429731233EC420002AAB7A /* StringReference.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StringReference.swift; sourceTree = "<group>"; };
+		5E429732233EC420002AAB7A /* SecurePreferences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SecurePreferences.swift; sourceTree = "<group>"; };
+		5E429733233EC420002AAB7A /* unit.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = unit.swift; sourceTree = "<group>"; };
+		5E429734233EC420002AAB7A /* Kotlin.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Kotlin.swift; sourceTree = "<group>"; };
+		5E429735233EC420002AAB7A /* OptionalProtocol.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = OptionalProtocol.swift; sourceTree = "<group>"; };
+		5E429736233EC420002AAB7A /* HttpClient.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = HttpClient.swift; sourceTree = "<group>"; };
+		5E429737233EC420002AAB7A /* Codable.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Codable.swift; sourceTree = "<group>"; };
+		5E429738233EC420002AAB7A /* String.extensions.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = String.extensions.swift; sourceTree = "<group>"; };
+		5E429739233EC420002AAB7A /* ImageData.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ImageData.swift; sourceTree = "<group>"; };
+		5E42973A233EC420002AAB7A /* KotlinNumbers.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = KotlinNumbers.swift; sourceTree = "<group>"; };
+		5E42973D233EC420002AAB7A /* UIRatingBar+binding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIRatingBar+binding.swift"; sourceTree = "<group>"; };
+		5E42973E233EC420002AAB7A /* UITextField+binding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UITextField+binding.swift"; sourceTree = "<group>"; };
+		5E42973F233EC420002AAB7A /* SelectDateRangeView+binding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SelectDateRangeView+binding.swift"; sourceTree = "<group>"; };
+		5E429740233EC420002AAB7A /* UIView+binding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+binding.swift"; sourceTree = "<group>"; };
+		5E429741233EC420002AAB7A /* UIImageView+binding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImageView+binding.swift"; sourceTree = "<group>"; };
+		5E429742233EC420002AAB7A /* Dropdown+binding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Dropdown+binding.swift"; sourceTree = "<group>"; };
+		5E429743233EC420002AAB7A /* UISegmentedControl+bind.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UISegmentedControl+bind.swift"; sourceTree = "<group>"; };
+		5E429744233EC420002AAB7A /* UIWeekView+ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIWeekView+ext.swift"; sourceTree = "<group>"; };
+		5E429745233EC420002AAB7A /* ClosureSleeve.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClosureSleeve.swift; sourceTree = "<group>"; };
+		5E429746233EC420002AAB7A /* UITextView+binding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UITextView+binding.swift"; sourceTree = "<group>"; };
+		5E429747233EC420002AAB7A /* UICollectionView+binding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UICollectionView+binding.swift"; sourceTree = "<group>"; };
+		5E429748233EC420002AAB7A /* UIScrollView+binding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIScrollView+binding.swift"; sourceTree = "<group>"; };
+		5E429749233EC420002AAB7A /* UISwitch+binding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UISwitch+binding.swift"; sourceTree = "<group>"; };
+		5E42974A233EC420002AAB7A /* UIButton+binding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIButton+binding.swift"; sourceTree = "<group>"; };
+		5E42974B233EC420002AAB7A /* UILabel+binding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UILabel+binding.swift"; sourceTree = "<group>"; };
+		5E42974C233EC420002AAB7A /* UIPageControl+binding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIPageControl+binding.swift"; sourceTree = "<group>"; };
+		5E42974D233EC420002AAB7A /* UISlider+binding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UISlider+binding.swift"; sourceTree = "<group>"; };
+		5E42974E233EC420002AAB7A /* SelectDayView+binding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "SelectDayView+binding.swift"; sourceTree = "<group>"; };
+		5E42974F233EC420002AAB7A /* DateButton+binding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "DateButton+binding.swift"; sourceTree = "<group>"; };
+		5E429750233EC420002AAB7A /* UITableView+binding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UITableView+binding.swift"; sourceTree = "<group>"; };
+		5E429752233EC420002AAB7A /* TransformedObservableProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransformedObservableProperty.swift; sourceTree = "<group>"; };
+		5E429753233EC420002AAB7A /* ObservableProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObservableProperty.swift; sourceTree = "<group>"; };
+		5E429754233EC420002AAB7A /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
+		5E429755233EC420002AAB7A /* Event.ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.ext.swift; sourceTree = "<group>"; };
+		5E429756233EC420002AAB7A /* MutableObservableProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MutableObservableProperty.swift; sourceTree = "<group>"; };
+		5E429757233EC420002AAB7A /* TransformedEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransformedEvent.swift; sourceTree = "<group>"; };
+		5E429758233EC420002AAB7A /* StandardObservableProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandardObservableProperty.swift; sourceTree = "<group>"; };
+		5E429759233EC420002AAB7A /* ObservableStack.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObservableStack.swift; sourceTree = "<group>"; };
+		5E42975A233EC420002AAB7A /* Close.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Close.swift; sourceTree = "<group>"; };
+		5E42975B233EC420002AAB7A /* TransformedMutableObservableProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransformedMutableObservableProperty.swift; sourceTree = "<group>"; };
+		5E42975C233EC420002AAB7A /* NeverEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = NeverEvent.swift; sourceTree = "<group>"; };
+		5E42975D233EC420002AAB7A /* StandardEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandardEvent.swift; sourceTree = "<group>"; };
+		5E42975E233EC420002AAB7A /* ObservableProperty.ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObservableProperty.ext.swift; sourceTree = "<group>"; };
+		5E42975F233EC420002AAB7A /* ConstantObservableProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ConstantObservableProperty.swift; sourceTree = "<group>"; };
+		5E429761233EC420002AAB7A /* captureWeak.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = captureWeak.swift; sourceTree = "<group>"; };
+		5E429764233EC420002AAB7A /* Dropdown.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Dropdown.swift; sourceTree = "<group>"; };
+		5E429765233EC420002AAB7A /* PreviewVariedFlipper.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = PreviewVariedFlipper.swift; sourceTree = "<group>"; };
+		5E429766233EC420002AAB7A /* CompoundButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CompoundButton.swift; sourceTree = "<group>"; };
+		5E429767233EC420002AAB7A /* SelectDateRangeView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectDateRangeView.swift; sourceTree = "<group>"; };
+		5E429768233EC420002AAB7A /* general.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = general.swift; sourceTree = "<group>"; };
+		5E429769233EC420002AAB7A /* ScrollSavingDelegate.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ScrollSavingDelegate.swift; sourceTree = "<group>"; };
+		5E42976A233EC420002AAB7A /* LabeledCheckbox.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabeledCheckbox.swift; sourceTree = "<group>"; };
+		5E42976B233EC420002AAB7A /* QuickMonthView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = QuickMonthView.swift; sourceTree = "<group>"; };
+		5E42976C233EC420002AAB7A /* alias.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = alias.swift; sourceTree = "<group>"; };
+		5E42976D233EC420002AAB7A /* AbstractCalendarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = AbstractCalendarView.swift; sourceTree = "<group>"; };
+		5E42976E233EC420002AAB7A /* SelectDayMonthView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectDayMonthView.swift; sourceTree = "<group>"; };
+		5E42976F233EC420002AAB7A /* SelectDateRangeMonthView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectDateRangeMonthView.swift; sourceTree = "<group>"; };
+		5E429770233EC420002AAB7A /* SelectDayView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SelectDayView.swift; sourceTree = "<group>"; };
+		5E429771233EC420002AAB7A /* ToggleButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ToggleButton.swift; sourceTree = "<group>"; };
+		5E429772233EC420002AAB7A /* DateButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DateButton.swift; sourceTree = "<group>"; };
+		5E429773233EC420002AAB7A /* LabeledRadioButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabeledRadioButton.swift; sourceTree = "<group>"; };
+		5E429774233EC420002AAB7A /* LabeledSwitch.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = LabeledSwitch.swift; sourceTree = "<group>"; };
+		5E429775233EC420002AAB7A /* TimeButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeButton.swift; sourceTree = "<group>"; };
+		5E429776233EC420002AAB7A /* DatePickerButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatePickerButton.swift; sourceTree = "<group>"; };
+		5E429777233EC420002AAB7A /* CalendarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
+		5E429778233EC420002AAB7A /* UIButtonWithInput.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIButtonWithInput.swift; sourceTree = "<group>"; };
+		5E42977A233EC420002AAB7A /* Strings.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Strings.swift; sourceTree = "<group>"; };
+		5E42977B233EC420002AAB7A /* ViewGenerator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewGenerator.swift; sourceTree = "<group>"; };
+		5E42977C233EC420002AAB7A /* showDialog.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = showDialog.swift; sourceTree = "<group>"; };
+		5E42977D233EC420002AAB7A /* Form.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Form.swift; sourceTree = "<group>"; };
+		5E42977F233EC420002AAB7A /* UILabel+lineSpacingMultiplier.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UILabel+lineSpacingMultiplier.swift"; sourceTree = "<group>"; };
+		5E429780233EC420002AAB7A /* UIView.focus.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIView.focus.swift; sourceTree = "<group>"; };
+		5E429781233EC420002AAB7A /* CAStateLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CAStateLayer.swift; sourceTree = "<group>"; };
+		5E429782233EC420002AAB7A /* UIScrollView+flexFix.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIScrollView+flexFix.swift"; sourceTree = "<group>"; };
+		5E429783233EC420002AAB7A /* UITextView.placeholder.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UITextView.placeholder.swift; sourceTree = "<group>"; };
+		5E429784233EC420002AAB7A /* UIColor.ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIColor.ext.swift; sourceTree = "<group>"; };
+		5E429785233EC420002AAB7A /* Flex+root.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "Flex+root.swift"; sourceTree = "<group>"; };
+		5E429786233EC420002AAB7A /* UIFont.get.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIFont.get.swift; sourceTree = "<group>"; };
+		5E429787233EC420002AAB7A /* UISegmentedControl+addIndicator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UISegmentedControl+addIndicator.swift"; sourceTree = "<group>"; };
+		5E429788233EC420002AAB7A /* UIView+backgroundLayer.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+backgroundLayer.swift"; sourceTree = "<group>"; };
+		5E429789233EC420002AAB7A /* UITextField.ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UITextField.ext.swift; sourceTree = "<group>"; };
+		5E42978A233EC420002AAB7A /* onLayoutSubviewsSwizzle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = onLayoutSubviewsSwizzle.swift; sourceTree = "<group>"; };
+		5E42978B233EC420002AAB7A /* UIImageView.ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIImageView.ext.swift; sourceTree = "<group>"; };
+		5E42978C233EC420002AAB7A /* ViewPagerLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewPagerLayout.swift; sourceTree = "<group>"; };
+		5E42978D233EC420002AAB7A /* UIButton.position.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIButton.position.swift; sourceTree = "<group>"; };
+		5E42978E233EC420002AAB7A /* extensionProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = extensionProperty.swift; sourceTree = "<group>"; };
+		5EAABE97233EC33F007E7CED /* kwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = kwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
+		5EAABE9A233EC33F007E7CED /* kwift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = kwift.h; sourceTree = "<group>"; };
+		5EAABE9B233EC33F007E7CED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5EAABEA0233EC33F007E7CED /* kwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = kwiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
+		5EAABEA5233EC33F007E7CED /* kwiftTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = kwiftTests.swift; sourceTree = "<group>"; };
+		5EAABEA7233EC33F007E7CED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		63A80265E53D7E8A26AF57CF /* libPods-kwift.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-kwift.a"; sourceTree = BUILT_PRODUCTS_DIR; };
+		6648265A81A02AE0AA915524 /* Pods-kwift.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-kwift.debug.xcconfig"; path = "Pods/Target Support Files/Pods-kwift/Pods-kwift.debug.xcconfig"; sourceTree = "<group>"; };
+		F994D26061C995DD96617E1D /* Pods-kwift.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-kwift.release.xcconfig"; path = "Pods/Target Support Files/Pods-kwift/Pods-kwift.release.xcconfig"; sourceTree = "<group>"; };
+/* End PBXFileReference section */
+
+/* Begin PBXFrameworksBuildPhase section */
+		5EAABE94233EC33F007E7CED /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				54CB5B25E4BB1E803292559A /* libPods-kwift.a in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5EAABE9D233EC33F007E7CED /* Frameworks */ = {
+			isa = PBXFrameworksBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5EAABEA1233EC33F007E7CED /* kwift.framework in Frameworks */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXFrameworksBuildPhase section */
+
+/* Begin PBXGroup section */
+		5E42972A233EC420002AAB7A /* com */ = {
+			isa = PBXGroup;
+			children = (
+				5E42972B233EC420002AAB7A /* lightningkite */,
+			);
+			path = com;
+			sourceTree = "<group>";
+		};
+		5E42972B233EC420002AAB7A /* lightningkite */ = {
+			isa = PBXGroup;
+			children = (
+				5E42972C233EC420002AAB7A /* kwift */,
+			);
+			path = lightningkite;
+			sourceTree = "<group>";
+		};
+		5E42972C233EC420002AAB7A /* kwift */ = {
+			isa = PBXGroup;
+			children = (
+				5E42972D233EC420002AAB7A /* actuals */,
+				5E42973B233EC420002AAB7A /* observables */,
+				5E429760233EC420002AAB7A /* shared */,
+				5E429762233EC420002AAB7A /* views */,
+			);
+			path = kwift;
+			sourceTree = "<group>";
+		};
+		5E42972D233EC420002AAB7A /* actuals */ = {
+			isa = PBXGroup;
+			children = (
+				5E42972E233EC420002AAB7A /* Date.swift */,
+				5E42972F233EC420002AAB7A /* delay.swift */,
+				5E429730233EC420002AAB7A /* Preferences.swift */,
+				5E429731233EC420002AAB7A /* StringReference.swift */,
+				5E429732233EC420002AAB7A /* SecurePreferences.swift */,
+				5E429733233EC420002AAB7A /* unit.swift */,
+				5E429734233EC420002AAB7A /* Kotlin.swift */,
+				5E429735233EC420002AAB7A /* OptionalProtocol.swift */,
+				5E429736233EC420002AAB7A /* HttpClient.swift */,
+				5E429737233EC420002AAB7A /* Codable.swift */,
+				5E429738233EC420002AAB7A /* String.extensions.swift */,
+				5E429739233EC420002AAB7A /* ImageData.swift */,
+				5E42973A233EC420002AAB7A /* KotlinNumbers.swift */,
+			);
+			path = actuals;
+			sourceTree = "<group>";
+		};
+		5E42973B233EC420002AAB7A /* observables */ = {
+			isa = PBXGroup;
+			children = (
+				5E42973C233EC420002AAB7A /* actuals */,
+				5E429751233EC420002AAB7A /* shared */,
+			);
+			path = observables;
+			sourceTree = "<group>";
+		};
+		5E42973C233EC420002AAB7A /* actuals */ = {
+			isa = PBXGroup;
+			children = (
+				5E42973D233EC420002AAB7A /* UIRatingBar+binding.swift */,
+				5E42973E233EC420002AAB7A /* UITextField+binding.swift */,
+				5E42973F233EC420002AAB7A /* SelectDateRangeView+binding.swift */,
+				5E429740233EC420002AAB7A /* UIView+binding.swift */,
+				5E429741233EC420002AAB7A /* UIImageView+binding.swift */,
+				5E429742233EC420002AAB7A /* Dropdown+binding.swift */,
+				5E429743233EC420002AAB7A /* UISegmentedControl+bind.swift */,
+				5E429744233EC420002AAB7A /* UIWeekView+ext.swift */,
+				5E429745233EC420002AAB7A /* ClosureSleeve.swift */,
+				5E429746233EC420002AAB7A /* UITextView+binding.swift */,
+				5E429747233EC420002AAB7A /* UICollectionView+binding.swift */,
+				5E429748233EC420002AAB7A /* UIScrollView+binding.swift */,
+				5E429749233EC420002AAB7A /* UISwitch+binding.swift */,
+				5E42974A233EC420002AAB7A /* UIButton+binding.swift */,
+				5E42974B233EC420002AAB7A /* UILabel+binding.swift */,
+				5E42974C233EC420002AAB7A /* UIPageControl+binding.swift */,
+				5E42974D233EC420002AAB7A /* UISlider+binding.swift */,
+				5E42974E233EC420002AAB7A /* SelectDayView+binding.swift */,
+				5E42974F233EC420002AAB7A /* DateButton+binding.swift */,
+				5E429750233EC420002AAB7A /* UITableView+binding.swift */,
+			);
+			path = actuals;
+			sourceTree = "<group>";
+		};
+		5E429751233EC420002AAB7A /* shared */ = {
+			isa = PBXGroup;
+			children = (
+				5E429752233EC420002AAB7A /* TransformedObservableProperty.swift */,
+				5E429753233EC420002AAB7A /* ObservableProperty.swift */,
+				5E429754233EC420002AAB7A /* Event.swift */,
+				5E429755233EC420002AAB7A /* Event.ext.swift */,
+				5E429756233EC420002AAB7A /* MutableObservableProperty.swift */,
+				5E429757233EC420002AAB7A /* TransformedEvent.swift */,
+				5E429758233EC420002AAB7A /* StandardObservableProperty.swift */,
+				5E429759233EC420002AAB7A /* ObservableStack.swift */,
+				5E42975A233EC420002AAB7A /* Close.swift */,
+				5E42975B233EC420002AAB7A /* TransformedMutableObservableProperty.swift */,
+				5E42975C233EC420002AAB7A /* NeverEvent.swift */,
+				5E42975D233EC420002AAB7A /* StandardEvent.swift */,
+				5E42975E233EC420002AAB7A /* ObservableProperty.ext.swift */,
+				5E42975F233EC420002AAB7A /* ConstantObservableProperty.swift */,
+			);
+			path = shared;
+			sourceTree = "<group>";
+		};
+		5E429760233EC420002AAB7A /* shared */ = {
+			isa = PBXGroup;
+			children = (
+				5E429761233EC420002AAB7A /* captureWeak.swift */,
+			);
+			path = shared;
+			sourceTree = "<group>";
+		};
+		5E429762233EC420002AAB7A /* views */ = {
+			isa = PBXGroup;
+			children = (
+				5E429763233EC420002AAB7A /* actuals */,
+				5E429779233EC420002AAB7A /* shared */,
+				5E42977E233EC420002AAB7A /* ios */,
+			);
+			path = views;
+			sourceTree = "<group>";
+		};
+		5E429763233EC420002AAB7A /* actuals */ = {
+			isa = PBXGroup;
+			children = (
+				5E429764233EC420002AAB7A /* Dropdown.swift */,
+				5E429765233EC420002AAB7A /* PreviewVariedFlipper.swift */,
+				5E429766233EC420002AAB7A /* CompoundButton.swift */,
+				5E429767233EC420002AAB7A /* SelectDateRangeView.swift */,
+				5E429768233EC420002AAB7A /* general.swift */,
+				5E429769233EC420002AAB7A /* ScrollSavingDelegate.swift */,
+				5E42976A233EC420002AAB7A /* LabeledCheckbox.swift */,
+				5E42976B233EC420002AAB7A /* QuickMonthView.swift */,
+				5E42976C233EC420002AAB7A /* alias.swift */,
+				5E42976D233EC420002AAB7A /* AbstractCalendarView.swift */,
+				5E42976E233EC420002AAB7A /* SelectDayMonthView.swift */,
+				5E42976F233EC420002AAB7A /* SelectDateRangeMonthView.swift */,
+				5E429770233EC420002AAB7A /* SelectDayView.swift */,
+				5E429771233EC420002AAB7A /* ToggleButton.swift */,
+				5E429772233EC420002AAB7A /* DateButton.swift */,
+				5E429773233EC420002AAB7A /* LabeledRadioButton.swift */,
+				5E429774233EC420002AAB7A /* LabeledSwitch.swift */,
+				5E429775233EC420002AAB7A /* TimeButton.swift */,
+				5E429776233EC420002AAB7A /* DatePickerButton.swift */,
+				5E429777233EC420002AAB7A /* CalendarView.swift */,
+				5E429778233EC420002AAB7A /* UIButtonWithInput.swift */,
+			);
+			path = actuals;
+			sourceTree = "<group>";
+		};
+		5E429779233EC420002AAB7A /* shared */ = {
+			isa = PBXGroup;
+			children = (
+				5E42977A233EC420002AAB7A /* Strings.swift */,
+				5E42977B233EC420002AAB7A /* ViewGenerator.swift */,
+				5E42977C233EC420002AAB7A /* showDialog.swift */,
+				5E42977D233EC420002AAB7A /* Form.swift */,
+			);
+			path = shared;
+			sourceTree = "<group>";
+		};
+		5E42977E233EC420002AAB7A /* ios */ = {
+			isa = PBXGroup;
+			children = (
+				5E42977F233EC420002AAB7A /* UILabel+lineSpacingMultiplier.swift */,
+				5E429780233EC420002AAB7A /* UIView.focus.swift */,
+				5E429781233EC420002AAB7A /* CAStateLayer.swift */,
+				5E429782233EC420002AAB7A /* UIScrollView+flexFix.swift */,
+				5E429783233EC420002AAB7A /* UITextView.placeholder.swift */,
+				5E429784233EC420002AAB7A /* UIColor.ext.swift */,
+				5E429785233EC420002AAB7A /* Flex+root.swift */,
+				5E429786233EC420002AAB7A /* UIFont.get.swift */,
+				5E429787233EC420002AAB7A /* UISegmentedControl+addIndicator.swift */,
+				5E429788233EC420002AAB7A /* UIView+backgroundLayer.swift */,
+				5E429789233EC420002AAB7A /* UITextField.ext.swift */,
+				5E42978A233EC420002AAB7A /* onLayoutSubviewsSwizzle.swift */,
+				5E42978B233EC420002AAB7A /* UIImageView.ext.swift */,
+				5E42978C233EC420002AAB7A /* ViewPagerLayout.swift */,
+				5E42978D233EC420002AAB7A /* UIButton.position.swift */,
+				5E42978E233EC420002AAB7A /* extensionProperty.swift */,
+			);
+			path = ios;
+			sourceTree = "<group>";
+		};
+		5EAABE8D233EC33F007E7CED = {
+			isa = PBXGroup;
+			children = (
+				5EAABE99233EC33F007E7CED /* kwift */,
+				5EAABEA4233EC33F007E7CED /* kwiftTests */,
+				5EAABE98233EC33F007E7CED /* Products */,
+				B89CF92DA2A94AB749442A85 /* Pods */,
+				9CC50EE0F088256C2D7E7929 /* Frameworks */,
+			);
+			sourceTree = "<group>";
+		};
+		5EAABE98233EC33F007E7CED /* Products */ = {
+			isa = PBXGroup;
+			children = (
+				5EAABE97233EC33F007E7CED /* kwift.framework */,
+				5EAABEA0233EC33F007E7CED /* kwiftTests.xctest */,
+			);
+			name = Products;
+			sourceTree = "<group>";
+		};
+		5EAABE99233EC33F007E7CED /* kwift */ = {
+			isa = PBXGroup;
+			children = (
+				5E42972A233EC420002AAB7A /* com */,
+				5EAABE9A233EC33F007E7CED /* kwift.h */,
+				5EAABE9B233EC33F007E7CED /* Info.plist */,
+			);
+			path = kwift;
+			sourceTree = "<group>";
+		};
+		5EAABEA4233EC33F007E7CED /* kwiftTests */ = {
+			isa = PBXGroup;
+			children = (
+				5EAABEA5233EC33F007E7CED /* kwiftTests.swift */,
+				5EAABEA7233EC33F007E7CED /* Info.plist */,
+			);
+			path = kwiftTests;
+			sourceTree = "<group>";
+		};
+		9CC50EE0F088256C2D7E7929 /* Frameworks */ = {
+			isa = PBXGroup;
+			children = (
+				63A80265E53D7E8A26AF57CF /* libPods-kwift.a */,
+			);
+			name = Frameworks;
+			sourceTree = "<group>";
+		};
+		B89CF92DA2A94AB749442A85 /* Pods */ = {
+			isa = PBXGroup;
+			children = (
+				6648265A81A02AE0AA915524 /* Pods-kwift.debug.xcconfig */,
+				F994D26061C995DD96617E1D /* Pods-kwift.release.xcconfig */,
+			);
+			name = Pods;
+			sourceTree = "<group>";
+		};
+/* End PBXGroup section */
+
+/* Begin PBXHeadersBuildPhase section */
+		5EAABE92233EC33F007E7CED /* Headers */ = {
+			isa = PBXHeadersBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5EAABEA8233EC33F007E7CED /* kwift.h in Headers */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXHeadersBuildPhase section */
+
+/* Begin PBXNativeTarget section */
+		5EAABE96233EC33F007E7CED /* kwift */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5EAABEAB233EC33F007E7CED /* Build configuration list for PBXNativeTarget "kwift" */;
+			buildPhases = (
+				1B0ADB3260955DC9782D40D5 /* [CP] Check Pods Manifest.lock */,
+				5EAABE92233EC33F007E7CED /* Headers */,
+				5EAABE93233EC33F007E7CED /* Sources */,
+				5EAABE94233EC33F007E7CED /* Frameworks */,
+				5EAABE95233EC33F007E7CED /* Resources */,
+				68EC6D393796E2692668F64F /* [CP] Copy Pods Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+			);
+			name = kwift;
+			productName = kwift;
+			productReference = 5EAABE97233EC33F007E7CED /* kwift.framework */;
+			productType = "com.apple.product-type.framework";
+		};
+		5EAABE9F233EC33F007E7CED /* kwiftTests */ = {
+			isa = PBXNativeTarget;
+			buildConfigurationList = 5EAABEAE233EC33F007E7CED /* Build configuration list for PBXNativeTarget "kwiftTests" */;
+			buildPhases = (
+				5EAABE9C233EC33F007E7CED /* Sources */,
+				5EAABE9D233EC33F007E7CED /* Frameworks */,
+				5EAABE9E233EC33F007E7CED /* Resources */,
+			);
+			buildRules = (
+			);
+			dependencies = (
+				5EAABEA3233EC33F007E7CED /* PBXTargetDependency */,
+			);
+			name = kwiftTests;
+			productName = kwiftTests;
+			productReference = 5EAABEA0233EC33F007E7CED /* kwiftTests.xctest */;
+			productType = "com.apple.product-type.bundle.unit-test";
+		};
+/* End PBXNativeTarget section */
+
+/* Begin PBXProject section */
+		5EAABE8E233EC33F007E7CED /* Project object */ = {
+			isa = PBXProject;
+			attributes = {
+				LastSwiftUpdateCheck = 1100;
+				LastUpgradeCheck = 1100;
+				ORGANIZATIONNAME = "Lightning Kite";
+				TargetAttributes = {
+					5EAABE96233EC33F007E7CED = {
+						CreatedOnToolsVersion = 11.0;
+					};
+					5EAABE9F233EC33F007E7CED = {
+						CreatedOnToolsVersion = 11.0;
+					};
+				};
+			};
+			buildConfigurationList = 5EAABE91233EC33F007E7CED /* Build configuration list for PBXProject "kwift" */;
+			compatibilityVersion = "Xcode 9.3";
+			developmentRegion = en;
+			hasScannedForEncodings = 0;
+			knownRegions = (
+				en,
+				Base,
+			);
+			mainGroup = 5EAABE8D233EC33F007E7CED;
+			productRefGroup = 5EAABE98233EC33F007E7CED /* Products */;
+			projectDirPath = "";
+			projectRoot = "";
+			targets = (
+				5EAABE96233EC33F007E7CED /* kwift */,
+				5EAABE9F233EC33F007E7CED /* kwiftTests */,
+			);
+		};
+/* End PBXProject section */
+
+/* Begin PBXResourcesBuildPhase section */
+		5EAABE95233EC33F007E7CED /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5EAABE9E233EC33F007E7CED /* Resources */ = {
+			isa = PBXResourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXResourcesBuildPhase section */
+
+/* Begin PBXShellScriptBuildPhase section */
+		1B0ADB3260955DC9782D40D5 /* [CP] Check Pods Manifest.lock */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${PODS_PODFILE_DIR_PATH}/Podfile.lock",
+				"${PODS_ROOT}/Manifest.lock",
+			);
+			name = "[CP] Check Pods Manifest.lock";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"$(DERIVED_FILE_DIR)/Pods-kwift-checkManifestLockResult.txt",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "diff \"${PODS_PODFILE_DIR_PATH}/Podfile.lock\" \"${PODS_ROOT}/Manifest.lock\" > /dev/null\nif [ $? != 0 ] ; then\n    # print error to STDERR\n    echo \"error: The sandbox is not in sync with the Podfile.lock. Run 'pod install' or update your CocoaPods installation.\" >&2\n    exit 1\nfi\n# This output is used by Xcode 'outputs' to avoid re-running this script phase.\necho \"SUCCESS\" > \"${SCRIPT_OUTPUT_FILE_0}\"\n";
+			showEnvVarsInLog = 0;
+		};
+		68EC6D393796E2692668F64F /* [CP] Copy Pods Resources */ = {
+			isa = PBXShellScriptBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+			);
+			inputFileListPaths = (
+			);
+			inputPaths = (
+				"${SRCROOT}/Pods/Target Support Files/Pods-kwift/Pods-kwift-resources.sh",
+				"${PODS_ROOT}/QVRWeekView/QVRWeekView/Classes/Xibs/EventView.xib",
+				"${PODS_ROOT}/QVRWeekView/QVRWeekView/Classes/Xibs/HourSideBarView.xib",
+				"${PODS_ROOT}/QVRWeekView/QVRWeekView/Classes/Xibs/WeekView.xib",
+			);
+			name = "[CP] Copy Pods Resources";
+			outputFileListPaths = (
+			);
+			outputPaths = (
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EventView.nib",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/HourSideBarView.nib",
+				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/WeekView.nib",
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+			shellPath = /bin/sh;
+			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-kwift/Pods-kwift-resources.sh\"\n";
+			showEnvVarsInLog = 0;
+		};
+/* End PBXShellScriptBuildPhase section */
+
+/* Begin PBXSourcesBuildPhase section */
+		5EAABE93233EC33F007E7CED /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5E4297A9233EC420002AAB7A /* UIButton+binding.swift in Sources */,
+				5E4297C3233EC420002AAB7A /* general.swift in Sources */,
+				5E42978F233EC420002AAB7A /* Date.swift in Sources */,
+				5E42979B233EC420002AAB7A /* KotlinNumbers.swift in Sources */,
+				5E4297D6233EC420002AAB7A /* showDialog.swift in Sources */,
+				5E4297D0233EC420002AAB7A /* TimeButton.swift in Sources */,
+				5E429796233EC420002AAB7A /* OptionalProtocol.swift in Sources */,
+				5E4297AF233EC420002AAB7A /* UITableView+binding.swift in Sources */,
+				5E429795233EC420002AAB7A /* Kotlin.swift in Sources */,
+				5E4297CE233EC420002AAB7A /* LabeledRadioButton.swift in Sources */,
+				5E4297A6233EC420002AAB7A /* UICollectionView+binding.swift in Sources */,
+				5E4297CD233EC420002AAB7A /* DateButton.swift in Sources */,
+				5E4297D7233EC420002AAB7A /* Form.swift in Sources */,
+				5E4297A8233EC420002AAB7A /* UISwitch+binding.swift in Sources */,
+				5E4297CF233EC420002AAB7A /* LabeledSwitch.swift in Sources */,
+				5E4297D1233EC420002AAB7A /* DatePickerButton.swift in Sources */,
+				5E429793233EC420002AAB7A /* SecurePreferences.swift in Sources */,
+				5E4297E5233EC420002AAB7A /* ViewPagerLayout.swift in Sources */,
+				5E4297E4233EC420002AAB7A /* UIImageView.ext.swift in Sources */,
+				5E4297DB233EC420002AAB7A /* UIScrollView+flexFix.swift in Sources */,
+				5E4297C8233EC420002AAB7A /* AbstractCalendarView.swift in Sources */,
+				5E4297B5233EC420002AAB7A /* TransformedEvent.swift in Sources */,
+				5E4297B8233EC420002AAB7A /* Close.swift in Sources */,
+				5E4297E6233EC420002AAB7A /* UIButton.position.swift in Sources */,
+				5E429797233EC420002AAB7A /* HttpClient.swift in Sources */,
+				5E4297E2233EC420002AAB7A /* UITextField.ext.swift in Sources */,
+				5E4297DC233EC420002AAB7A /* UITextView.placeholder.swift in Sources */,
+				5E4297DF233EC420002AAB7A /* UIFont.get.swift in Sources */,
+				5E4297C6233EC420002AAB7A /* QuickMonthView.swift in Sources */,
+				5E4297C1233EC420002AAB7A /* CompoundButton.swift in Sources */,
+				5E4297D3233EC420002AAB7A /* UIButtonWithInput.swift in Sources */,
+				5E429799233EC420002AAB7A /* String.extensions.swift in Sources */,
+				5E4297E0233EC420002AAB7A /* UISegmentedControl+addIndicator.swift in Sources */,
+				5E4297C9233EC420002AAB7A /* SelectDayMonthView.swift in Sources */,
+				5E4297AC233EC420002AAB7A /* UISlider+binding.swift in Sources */,
+				5E4297A4233EC420002AAB7A /* ClosureSleeve.swift in Sources */,
+				5E4297A3233EC420002AAB7A /* UIWeekView+ext.swift in Sources */,
+				5E4297BC233EC420002AAB7A /* ObservableProperty.ext.swift in Sources */,
+				5E4297C2233EC420002AAB7A /* SelectDateRangeView.swift in Sources */,
+				5E4297A5233EC420002AAB7A /* UITextView+binding.swift in Sources */,
+				5E4297D5233EC420002AAB7A /* ViewGenerator.swift in Sources */,
+				5E429790233EC420002AAB7A /* delay.swift in Sources */,
+				5E4297A0233EC420002AAB7A /* UIImageView+binding.swift in Sources */,
+				5E4297C0233EC420002AAB7A /* PreviewVariedFlipper.swift in Sources */,
+				5E42979F233EC420002AAB7A /* UIView+binding.swift in Sources */,
+				5E4297A7233EC420002AAB7A /* UIScrollView+binding.swift in Sources */,
+				5E42979E233EC420002AAB7A /* SelectDateRangeView+binding.swift in Sources */,
+				5E4297AE233EC420002AAB7A /* DateButton+binding.swift in Sources */,
+				5E4297BE233EC420002AAB7A /* captureWeak.swift in Sources */,
+				5E4297D9233EC420002AAB7A /* UIView.focus.swift in Sources */,
+				5E4297A2233EC420002AAB7A /* UISegmentedControl+bind.swift in Sources */,
+				5E4297CA233EC420002AAB7A /* SelectDateRangeMonthView.swift in Sources */,
+				5E4297BD233EC420002AAB7A /* ConstantObservableProperty.swift in Sources */,
+				5E4297AD233EC420002AAB7A /* SelectDayView+binding.swift in Sources */,
+				5E42979C233EC420002AAB7A /* UIRatingBar+binding.swift in Sources */,
+				5E4297B9233EC420002AAB7A /* TransformedMutableObservableProperty.swift in Sources */,
+				5E4297AA233EC420002AAB7A /* UILabel+binding.swift in Sources */,
+				5E4297B3233EC420002AAB7A /* Event.ext.swift in Sources */,
+				5E4297DD233EC420002AAB7A /* UIColor.ext.swift in Sources */,
+				5E4297E3233EC420002AAB7A /* onLayoutSubviewsSwizzle.swift in Sources */,
+				5E4297D8233EC420002AAB7A /* UILabel+lineSpacingMultiplier.swift in Sources */,
+				5E429792233EC420002AAB7A /* StringReference.swift in Sources */,
+				5E4297E7233EC420002AAB7A /* extensionProperty.swift in Sources */,
+				5E4297CC233EC420002AAB7A /* ToggleButton.swift in Sources */,
+				5E4297E1233EC420002AAB7A /* UIView+backgroundLayer.swift in Sources */,
+				5E4297C4233EC420002AAB7A /* ScrollSavingDelegate.swift in Sources */,
+				5E4297CB233EC420002AAB7A /* SelectDayView.swift in Sources */,
+				5E4297DA233EC420002AAB7A /* CAStateLayer.swift in Sources */,
+				5E4297B6233EC420002AAB7A /* StandardObservableProperty.swift in Sources */,
+				5E4297B7233EC420002AAB7A /* ObservableStack.swift in Sources */,
+				5E429791233EC420002AAB7A /* Preferences.swift in Sources */,
+				5E42979D233EC420002AAB7A /* UITextField+binding.swift in Sources */,
+				5E4297C7233EC420002AAB7A /* alias.swift in Sources */,
+				5E4297D2233EC420002AAB7A /* CalendarView.swift in Sources */,
+				5E4297B2233EC420002AAB7A /* Event.swift in Sources */,
+				5E4297B4233EC420002AAB7A /* MutableObservableProperty.swift in Sources */,
+				5E4297BB233EC420002AAB7A /* StandardEvent.swift in Sources */,
+				5E4297C5233EC420002AAB7A /* LabeledCheckbox.swift in Sources */,
+				5E4297AB233EC420002AAB7A /* UIPageControl+binding.swift in Sources */,
+				5E4297BF233EC420002AAB7A /* Dropdown.swift in Sources */,
+				5E4297D4233EC420002AAB7A /* Strings.swift in Sources */,
+				5E4297DE233EC420002AAB7A /* Flex+root.swift in Sources */,
+				5E4297B0233EC420002AAB7A /* TransformedObservableProperty.swift in Sources */,
+				5E429798233EC420002AAB7A /* Codable.swift in Sources */,
+				5E4297A1233EC420002AAB7A /* Dropdown+binding.swift in Sources */,
+				5E429794233EC420002AAB7A /* unit.swift in Sources */,
+				5E4297BA233EC420002AAB7A /* NeverEvent.swift in Sources */,
+				5E42979A233EC420002AAB7A /* ImageData.swift in Sources */,
+				5E4297B1233EC420002AAB7A /* ObservableProperty.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+		5EAABE9C233EC33F007E7CED /* Sources */ = {
+			isa = PBXSourcesBuildPhase;
+			buildActionMask = 2147483647;
+			files = (
+				5EAABEA6233EC33F007E7CED /* kwiftTests.swift in Sources */,
+			);
+			runOnlyForDeploymentPostprocessing = 0;
+		};
+/* End PBXSourcesBuildPhase section */
+
+/* Begin PBXTargetDependency section */
+		5EAABEA3233EC33F007E7CED /* PBXTargetDependency */ = {
+			isa = PBXTargetDependency;
+			target = 5EAABE96233EC33F007E7CED /* kwift */;
+			targetProxy = 5EAABEA2233EC33F007E7CED /* PBXContainerItemProxy */;
+		};
+/* End PBXTargetDependency section */
+
+/* Begin XCBuildConfiguration section */
+		5EAABEA9233EC33F007E7CED /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = dwarf;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				ENABLE_TESTABILITY = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_DYNAMIC_NO_PIC = NO;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_OPTIMIZATION_LEVEL = 0;
+				GCC_PREPROCESSOR_DEFINITIONS = (
+					"DEBUG=1",
+					"$(inherited)",
+				);
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = INCLUDE_SOURCE;
+				MTL_FAST_MATH = YES;
+				ONLY_ACTIVE_ARCH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_ACTIVE_COMPILATION_CONDITIONS = DEBUG;
+				SWIFT_OPTIMIZATION_LEVEL = "-Onone";
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Debug;
+		};
+		5EAABEAA233EC33F007E7CED /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_SEARCH_USER_PATHS = NO;
+				CLANG_ANALYZER_NONNULL = YES;
+				CLANG_ANALYZER_NUMBER_OBJECT_CONVERSION = YES_AGGRESSIVE;
+				CLANG_CXX_LANGUAGE_STANDARD = "gnu++14";
+				CLANG_CXX_LIBRARY = "libc++";
+				CLANG_ENABLE_MODULES = YES;
+				CLANG_ENABLE_OBJC_ARC = YES;
+				CLANG_ENABLE_OBJC_WEAK = YES;
+				CLANG_WARN_BLOCK_CAPTURE_AUTORELEASING = YES;
+				CLANG_WARN_BOOL_CONVERSION = YES;
+				CLANG_WARN_COMMA = YES;
+				CLANG_WARN_CONSTANT_CONVERSION = YES;
+				CLANG_WARN_DEPRECATED_OBJC_IMPLEMENTATIONS = YES;
+				CLANG_WARN_DIRECT_OBJC_ISA_USAGE = YES_ERROR;
+				CLANG_WARN_DOCUMENTATION_COMMENTS = YES;
+				CLANG_WARN_EMPTY_BODY = YES;
+				CLANG_WARN_ENUM_CONVERSION = YES;
+				CLANG_WARN_INFINITE_RECURSION = YES;
+				CLANG_WARN_INT_CONVERSION = YES;
+				CLANG_WARN_NON_LITERAL_NULL_CONVERSION = YES;
+				CLANG_WARN_OBJC_IMPLICIT_RETAIN_SELF = YES;
+				CLANG_WARN_OBJC_LITERAL_CONVERSION = YES;
+				CLANG_WARN_OBJC_ROOT_CLASS = YES_ERROR;
+				CLANG_WARN_RANGE_LOOP_ANALYSIS = YES;
+				CLANG_WARN_STRICT_PROTOTYPES = YES;
+				CLANG_WARN_SUSPICIOUS_MOVE = YES;
+				CLANG_WARN_UNGUARDED_AVAILABILITY = YES_AGGRESSIVE;
+				CLANG_WARN_UNREACHABLE_CODE = YES;
+				CLANG_WARN__DUPLICATE_METHOD_MATCH = YES;
+				COPY_PHASE_STRIP = NO;
+				CURRENT_PROJECT_VERSION = 1;
+				DEBUG_INFORMATION_FORMAT = "dwarf-with-dsym";
+				ENABLE_NS_ASSERTIONS = NO;
+				ENABLE_STRICT_OBJC_MSGSEND = YES;
+				GCC_C_LANGUAGE_STANDARD = gnu11;
+				GCC_NO_COMMON_BLOCKS = YES;
+				GCC_WARN_64_TO_32_BIT_CONVERSION = YES;
+				GCC_WARN_ABOUT_RETURN_TYPE = YES_ERROR;
+				GCC_WARN_UNDECLARED_SELECTOR = YES;
+				GCC_WARN_UNINITIALIZED_AUTOS = YES_AGGRESSIVE;
+				GCC_WARN_UNUSED_FUNCTION = YES;
+				GCC_WARN_UNUSED_VARIABLE = YES;
+				IPHONEOS_DEPLOYMENT_TARGET = 13.0;
+				MTL_ENABLE_DEBUG_INFO = NO;
+				MTL_FAST_MATH = YES;
+				SDKROOT = iphoneos;
+				SWIFT_COMPILATION_MODE = wholemodule;
+				SWIFT_OPTIMIZATION_LEVEL = "-O";
+				VALIDATE_PRODUCT = YES;
+				VERSIONING_SYSTEM = "apple-generic";
+				VERSION_INFO_PREFIX = "";
+			};
+			name = Release;
+		};
+		5EAABEAC233EC33F007E7CED /* Debug */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = 6648265A81A02AE0AA915524 /* Pods-kwift.debug.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = EF4N5K3F2Q;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = kwift/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.lightningkite.kwift;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		5EAABEAD233EC33F007E7CED /* Release */ = {
+			isa = XCBuildConfiguration;
+			baseConfigurationReference = F994D26061C995DD96617E1D /* Pods-kwift.release.xcconfig */;
+			buildSettings = {
+				CODE_SIGN_STYLE = Automatic;
+				DEFINES_MODULE = YES;
+				DEVELOPMENT_TEAM = EF4N5K3F2Q;
+				DYLIB_COMPATIBILITY_VERSION = 1;
+				DYLIB_CURRENT_VERSION = 1;
+				DYLIB_INSTALL_NAME_BASE = "@rpath";
+				INFOPLIST_FILE = kwift/Info.plist;
+				INSTALL_PATH = "$(LOCAL_LIBRARY_DIR)/Frameworks";
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.lightningkite.kwift;
+				PRODUCT_NAME = "$(TARGET_NAME:c99extidentifier)";
+				SKIP_INSTALL = YES;
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+		5EAABEAF233EC33F007E7CED /* Debug */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = EF4N5K3F2Q;
+				INFOPLIST_FILE = kwiftTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.lightningkite.kwiftTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Debug;
+		};
+		5EAABEB0233EC33F007E7CED /* Release */ = {
+			isa = XCBuildConfiguration;
+			buildSettings = {
+				ALWAYS_EMBED_SWIFT_STANDARD_LIBRARIES = YES;
+				CODE_SIGN_STYLE = Automatic;
+				DEVELOPMENT_TEAM = EF4N5K3F2Q;
+				INFOPLIST_FILE = kwiftTests/Info.plist;
+				LD_RUNPATH_SEARCH_PATHS = (
+					"$(inherited)",
+					"@executable_path/Frameworks",
+					"@loader_path/Frameworks",
+				);
+				PRODUCT_BUNDLE_IDENTIFIER = com.lightningkite.kwiftTests;
+				PRODUCT_NAME = "$(TARGET_NAME)";
+				SWIFT_VERSION = 5.0;
+				TARGETED_DEVICE_FAMILY = "1,2";
+			};
+			name = Release;
+		};
+/* End XCBuildConfiguration section */
+
+/* Begin XCConfigurationList section */
+		5EAABE91233EC33F007E7CED /* Build configuration list for PBXProject "kwift" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5EAABEA9233EC33F007E7CED /* Debug */,
+				5EAABEAA233EC33F007E7CED /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5EAABEAB233EC33F007E7CED /* Build configuration list for PBXNativeTarget "kwift" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5EAABEAC233EC33F007E7CED /* Debug */,
+				5EAABEAD233EC33F007E7CED /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+		5EAABEAE233EC33F007E7CED /* Build configuration list for PBXNativeTarget "kwiftTests" */ = {
+			isa = XCConfigurationList;
+			buildConfigurations = (
+				5EAABEAF233EC33F007E7CED /* Debug */,
+				5EAABEB0233EC33F007E7CED /* Release */,
+			);
+			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
+		};
+/* End XCConfigurationList section */
+	};
+	rootObject = 5EAABE8E233EC33F007E7CED /* Project object */;
+}

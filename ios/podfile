@@ -1,0 +1,14 @@
+platform :ios, '9.0'
+
+target 'kwift' do
+    pod 'Alamofire'
+    pod 'AlamofireImage'
+    pod 'KeychainAccess'
+    pod 'PinLayout'
+    pod 'FlexLayout'
+    pod 'UITextView+Placeholder'
+    pod 'Fabric'
+    pod 'Crashlytics'
+    pod 'Cosmos', '~> 19.0'
+    pod 'QVRWeekView', :git => 'https://github.com/lightningkite/iOS-Week-View.git'
+end
