@@ -601,7 +601,7 @@ val LayoutConverter.Companion.normal get() = LayoutConverter(
                     append(", ")
                     append((child.attributeAsDimension("android:layout_marginRight") ?: defaultMargin).toString())
                     append(")")
-                    child.attributeAsDimension("android:layout_weight")?.let { weight ->
+                    child.attributeAsDouble("android:layout_weight")?.let { weight ->
                         append(".grow($weight).shrink($weight)")
                     }
                     child.attributeAsDimension("android:layout_width")?.let { s ->

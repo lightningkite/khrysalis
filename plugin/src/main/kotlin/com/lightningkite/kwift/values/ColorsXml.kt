@@ -1,6 +1,7 @@
 package com.lightningkite.kwift.values
 
 import com.lightningkite.kwift.utils.XmlNode
+import com.lightningkite.kwift.utils.attributeAsColor
 import com.lightningkite.kwift.utils.hashColorToUIColor
 import com.lightningkite.kwift.utils.camelCase
 import java.io.File
@@ -12,7 +13,21 @@ fun File.readXMLColors(): Map<String, String> {
         .asSequence()
         .filter { it.name == "color" }
         .associate {
-            (it.attributes["name"] ?: "noname") to it.element.textContent.hashColorToUIColor()
+            val raw = it.element.textContent
+            (it.attributes["name"] ?: "noname") to when{
+                raw.startsWith("@color/") -> {
+                    val colorName = raw.removePrefix("@color/")
+                    "ResourcesColors.${colorName.camelCase()}"
+                }
+                raw.startsWith("@android:color/") -> {
+                    val colorName = raw.removePrefix("@android:color/")
+                    "ResourcesColors.${colorName.camelCase()}"
+                }
+                raw.startsWith("#") -> {
+                    raw.hashColorToUIColor()
+                }
+                else -> "UIColor.black"
+            }
         }
 }
 

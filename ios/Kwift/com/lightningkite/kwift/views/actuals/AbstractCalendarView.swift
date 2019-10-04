@@ -12,17 +12,17 @@ import FlexLayout
 
 
 open class AbstractCalendarView : UIView {
-    var headerColorSet = QuickMonthView.ColorSet(foreground: UIColor.black, background: UIColor.white)
-    var labelColorSet = QuickMonthView.ColorSet(foreground: UIColor.black, background: UIColor.white)
-    var defaultColorSet = QuickMonthView.ColorSet(foreground: UIColor.black, background: UIColor.white)
-    var selectedColorSet = QuickMonthView.ColorSet(foreground: UIColor.white, background: UIColor.red)
-    var headerFont: CGFloat = 16
-    var labelFont: CGFloat = 12
-    var dayFont: CGFloat = 16
-    var internalPadding: CGFloat = 8
-    var dayCellMargin: CGFloat = 8
-    var leftText: String = "‹"
-    var rightText: String = "›"
+    public var headerColorSet = QuickMonthView.ColorSet(foreground: UIColor.black, background: UIColor.white)
+    public var labelColorSet = QuickMonthView.ColorSet(foreground: UIColor.black, background: UIColor.white)
+    public var defaultColorSet = QuickMonthView.ColorSet(foreground: UIColor.black, background: UIColor.white)
+    public var selectedColorSet = QuickMonthView.ColorSet(foreground: UIColor.white, background: UIColor.red)
+    public var headerFont: CGFloat = 16
+    public var labelFont: CGFloat = 12
+    public var dayFont: CGFloat = 16
+    public var internalPadding: CGFloat = 8
+    public var dayCellMargin: CGFloat = 8
+    public var leftText: String = "‹"
+    public var rightText: String = "›"
 
     public func styleMonth(quickMonthView: QuickMonthView) {
         quickMonthView.labelColorSet = self.labelColorSet

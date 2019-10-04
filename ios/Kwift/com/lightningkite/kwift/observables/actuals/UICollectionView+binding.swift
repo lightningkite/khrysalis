@@ -66,9 +66,6 @@ public extension UICollectionView {
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
             self.scrollToItem(at: IndexPath(row: Int(index.value), section: 0), at: .centeredHorizontally, animated: false)
         })
-        self.addOnLayoutSubviews { [weak self] in
-            (self?.collectionViewLayout as? ViewPagerLayout)?.measure()
-        }
         self.whenScrolled { [weak index] newIndex in
             suppress = true
             index?.value = newIndex

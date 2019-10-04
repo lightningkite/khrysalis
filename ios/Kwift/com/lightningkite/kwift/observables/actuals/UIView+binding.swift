@@ -52,12 +52,48 @@ public extension UIView {
         case pop
         case fade
     }
+    struct AnimationGoal {
+        let startedAt: Date
+        let alpha: CGFloat
+        let scaledFrame: CGRect
+        var frame: CGRect?
+        var completion: (UIView)->Void = { _ in }
+    }
     func bindStack(_ dependency: ViewDependency, _ stack: ObservableStack<ViewGenerator>) {
         return bindStack(dependency: dependency, stack: stack)
     }
     func bindStack(dependency: ViewDependency, stack: ObservableStack<ViewGenerator>) {
         var current: UIView? = nil
         var lastCount = 0
+        var animateDestinationExtension = ExtensionProperty<UIView, AnimationGoal>()
+        func updateAnimations(){
+            for view in subviews {
+                guard var goal = animateDestinationExtension.get(view) else { continue }
+                let toFrame = CGRect(
+                    x: goal.scaledFrame.origin.x * self.bounds.width,
+                    y: goal.scaledFrame.origin.y * self.bounds.height,
+                    width: goal.scaledFrame.size.width * self.bounds.width,
+                    height: goal.scaledFrame.size.height * self.bounds.height
+                )
+                guard goal.frame != toFrame else { continue }
+                goal.frame = toFrame
+                animateDestinationExtension.set(view, goal)
+                UIView.animate(
+                    withDuration: 0.25,
+                    animations: {
+                        view.alpha = goal.alpha
+                        view.frame = toFrame
+                    },
+                    completion: { done in
+                        view.flex.layout(mode: .fitContainer)
+                        goal.completion(view)
+                    }
+                )
+            }
+        }
+        self.addOnLayoutSubviews {
+            updateAnimations()
+        }
         stack.addAndRunWeak(self) { this, value in
             var animation = Animation.fade
             if value.count > lastCount {
@@ -68,53 +104,72 @@ public extension UIView {
             lastCount = value.count
 
             if let old = current {
-                old.flex.left(0).top(0).right(0).bottom(0)
-                old.flex.layout(mode: .fitContainer)
-                UIView.animate(
-                    withDuration: 0.25,
-                    animations: {
-                        switch animation {
-                        case .fade:
-                            old.alpha = 0
-                        case .pop:
-                            old.flex.left(100%).right(-100%)
-                        case .push:
-                            old.flex.left(-100%).right(100%)
-                        }
-                        old.flex.layout(mode: .fitContainer)
-                    },
-                    completion: { done in
-                        old.removeFromSuperview()
-                    }
-                )
+                let goal: AnimationGoal
+                switch animation {
+                case .fade:
+                    goal = AnimationGoal(
+                        startedAt: Date(),
+                        alpha: 0.0,
+                        scaledFrame: CGRect(x: 0, y: 0, width: 1, height: 1),
+                        frame: nil,
+                        completion: { view in view.removeFromSuperview() }
+                    )
+                case .pop:
+                    goal = AnimationGoal(
+                        startedAt: Date(),
+                        alpha: 1.0,
+                        scaledFrame: CGRect(x: 1, y: 0, width: 1, height: 1),
+                        frame: nil,
+                        completion: { view in view.removeFromSuperview() }
+                    )
+                case .push:
+                    goal = AnimationGoal(
+                        startedAt: Date(),
+                        alpha: 1.0,
+                        scaledFrame: CGRect(x: -1, y: 0, width: 1, height: 1),
+                        frame: nil,
+                        completion: { view in view.removeFromSuperview() }
+                    )
+                }
+                animateDestinationExtension.set(old, goal)
+                updateAnimations()
             }
             if let newData = value.last {
                 let new = newData.generate(dependency: dependency)
-                this.flex.addItem(new).position(.absolute).left(0%).right(0%).top(0%).bottom(0%)
-                var startX: CGFloat = 0
                 switch animation {
                 case .fade:
-                    new.alpha = 0
+                    new.frame = CGRect(
+                        x: 0,
+                        y: 0,
+                        width: self.bounds.width,
+                        height: self.bounds.height
+                    )
+                    new.alpha = 0.0
                 case .pop:
-                    new.flex.left(-100%).right(100%)
-                    startX = -this.bounds.size.width
+                    new.frame = CGRect(
+                        x: -self.bounds.width,
+                        y: 0,
+                        width: self.bounds.width,
+                        height: self.bounds.height
+                    )
                 case .push:
-                    new.flex.left(100%).right(-100%)
-                    startX = this.bounds.size.width
+                    new.frame = CGRect(
+                        x: self.bounds.width,
+                        y: 0,
+                        width: self.bounds.width,
+                        height: self.bounds.height
+                    )
                 }
-                new.frame.size = this.bounds.size
-                new.frame.origin.x = startX
                 new.flex.layout(mode: .fitContainer)
-                UIView.animate(
-                    withDuration: 0.25,
-                    animations: {
-                        new.flex.left(0%).right(0%)
-                        new.alpha = 1
-                        new.frame.size = this.bounds.size
-                        new.frame.origin.x = 0
-                        new.flex.layout(mode: .fitContainer)
-                    }
-                )
+                self.addSubview(new)
+                animateDestinationExtension.set(new, AnimationGoal(
+                    startedAt: Date(),
+                    alpha: 1.0,
+                    scaledFrame: CGRect(x: 0, y: 0, width: 1, height: 1),
+                    frame: nil,
+                    completion: { _ in }
+                ))
+                updateAnimations()
                 current = new
             }
         }

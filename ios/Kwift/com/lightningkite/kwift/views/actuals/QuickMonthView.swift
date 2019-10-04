@@ -13,14 +13,14 @@ import CoreGraphics
 
 open class QuickMonthView: UIView {
     public struct ColorSet {
-        var foreground: UIColor
-        var background: UIColor
+        public var foreground: UIColor
+        public var background: UIColor
     }
 
     private var _firstDay: Date = Date()
-    var firstDay: Date { return _firstDay }
+    public var firstDay: Date { return _firstDay }
     private var _month: Date = Date()
-    var month: Date {
+    public var month: Date {
         set(value) {
             _month = value.dayOfMonth(1).hourOfDay(0).minuteOfHour(0).secondOfMinute(0)
             _firstDay = _month.dayOfWeek(1)
@@ -32,13 +32,13 @@ open class QuickMonthView: UIView {
         }
     }
 
-    var labelColorSet = ColorSet(foreground: UIColor.black, background: UIColor.white)
-    var defaultColorSet = ColorSet(foreground: UIColor.black, background: UIColor.white)
-    var selectedColorSet = ColorSet(foreground: UIColor.white, background: UIColor.red)
-    var labelFont: CGFloat = 12
-    var dayFont: CGFloat = 16
-    var internalPadding: CGFloat = 8
-    var dayCellMargin: CGFloat = 8
+    public var labelColorSet = ColorSet(foreground: UIColor.black, background: UIColor.white)
+    public var defaultColorSet = ColorSet(foreground: UIColor.black, background: UIColor.white)
+    public var selectedColorSet = ColorSet(foreground: UIColor.white, background: UIColor.red)
+    public var labelFont: CGFloat = 12
+    public var dayFont: CGFloat = 16
+    public var internalPadding: CGFloat = 8
+    public var dayCellMargin: CGFloat = 8
 
     public override init(frame: CGRect) {
         super.init(frame: frame)

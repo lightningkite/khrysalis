@@ -10,6 +10,10 @@ fun convertLayoutsToSwift(
     iosFolder: File
 ) {
     val styles = androidFolder.resolve("src/main/res/values/styles.xml").readXMLStyles()
+    iosFolder.resolve("swiftResources/layouts").apply {
+        deleteRecursively()
+        mkdirs()
+    }
 
     androidFolder.resolve("src/main/res/layout").walkTopDown()
         .filter { it.extension == "xml" }

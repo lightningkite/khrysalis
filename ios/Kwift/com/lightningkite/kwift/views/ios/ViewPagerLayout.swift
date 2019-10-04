@@ -11,12 +11,6 @@ import UIKit
 
 public class ViewPagerLayout: UICollectionViewFlowLayout {
     override public func prepare() {
-        guard let collectionView = collectionView else { return }
-        collectionView.addOnLayoutSubviews {
-            self.itemSize = CGSize(width: collectionView.bounds.width, height: collectionView.bounds.height)
-        }
-        self.itemSize = CGSize(width: collectionView.bounds.width, height: collectionView.bounds.height)
-
         self.scrollDirection = .horizontal
         self.sectionInset = UIEdgeInsets(top: 0.0, left: 0.0, bottom: 0.0, right: 0.0)
         if #available(iOS 11.0, *) {
@@ -24,14 +18,21 @@ public class ViewPagerLayout: UICollectionViewFlowLayout {
         } else {
             // Fallback on earlier versions
         }
-    }
-
-    public func measure(){
+        
         guard let collectionView = collectionView else { return }
-
-        self.itemSize = CGSize(width: collectionView.bounds.width, height: collectionView.bounds.height)
+        collectionView.addOnLayoutSubviews { [weak self] in
+            guard let self = self, let collectionView = self.collectionView else { return }
+            let newSize = CGSize(
+                width: collectionView.bounds.width,
+                height: collectionView.bounds.height
+            )
+            if newSize != self.itemSize {
+                self.itemSize = newSize
+                print("Item Size: \(self.itemSize) VS Self Size: \(collectionView.bounds.size) VS Insets \(self.sectionInset) / \(collectionView.contentInset)")
+            }
+        }
     }
-
+    
     override public func targetContentOffset(forProposedContentOffset proposedContentOffset: CGPoint, withScrollingVelocity velocity: CGPoint) -> CGPoint {
 
         guard let collectionView = self.collectionView else {
