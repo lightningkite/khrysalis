@@ -10,9 +10,9 @@ import Foundation
 import UIKit
 
 
-class CalendarView : AbstractCalendarView {
+public class CalendarView : AbstractCalendarView {
     override var ignoreDragOnDay: Bool { return false }
-    override func makeChildView() -> QuickMonthView {
+    override public func makeChildView() -> QuickMonthView {
         return QuickMonthView(frame: .zero)
     }
 }

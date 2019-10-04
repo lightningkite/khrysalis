@@ -10,21 +10,21 @@ import Foundation
 import UIKit
 
 
-extension UITextView {
-    
+public extension UITextView {
+
     class LambdaDelegate: NSObject, UITextViewDelegate {
         let action: (String) -> Void
-        
+
         init(action: @escaping (String) -> Void) {
             self.action = action
             super.init()
         }
-        
-        func textViewDidChange(_ textView: UITextView) {
+
+        public func textViewDidChange(_ textView: UITextView) {
             action(textView.text)
         }
     }
-    
+
     func bindEditable(observable: MutableObservableProperty<String>) {
         observable.addAndRunWeak(referenceA: self) { (this, value) in
             if this.text != value {
@@ -41,7 +41,7 @@ extension UITextView {
         retain(as: "kwift_dg", item: delegate)
         self.delegate = delegate
     }
-    
+
     func bind(observable: ObservableProperty<String>) {
         isEditable = false
         observable.addAndRunWeak(referenceA: self) { (this, value) in
@@ -52,7 +52,7 @@ extension UITextView {
             this.relayoutFlexClimbToXml()
         }
     }
-    
+
     func bind(observableReference: ObservableProperty<StringReference?>) {
         isEditable = false
         observableReference.addAndRunWeak(referenceA: self) { (this, value) in

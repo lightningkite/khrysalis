@@ -1,9 +1,11 @@
 package com.lightningkite.kwift.observables.shared
 
 import com.lightningkite.kwift.actuals.AnyObject
+import com.lightningkite.kwift.actuals.discardableResult
 import com.lightningkite.kwift.actuals.escaping
 import com.lightningkite.kwift.actuals.weak
 
+@discardableResult
 fun <T, A : AnyObject> Event<T>.addWeak(
     referenceA: A,
     listener: @escaping() (A, T) -> Unit
@@ -20,7 +22,7 @@ fun <T, A : AnyObject> Event<T>.addWeak(
     }
 }
 
-fun <T, A : AnyObject, B : AnyObject> Event<T>.addWeak(
+@discardableResult fun <T, A : AnyObject, B : AnyObject> Event<T>.addWeak(
     referenceA: A,
     referenceB: B,
     listener: @escaping() (A, B, T) -> Unit
@@ -39,7 +41,7 @@ fun <T, A : AnyObject, B : AnyObject> Event<T>.addWeak(
     }
 }
 
-fun <T, A : AnyObject, B : AnyObject, C : AnyObject> Event<T>.addWeak(
+@discardableResult fun <T, A : AnyObject, B : AnyObject, C : AnyObject> Event<T>.addWeak(
     referenceA: A,
     referenceB: B,
     referenceC: C,
@@ -62,7 +64,7 @@ fun <T, A : AnyObject, B : AnyObject, C : AnyObject> Event<T>.addWeak(
 }
 
 
-fun <T, A : AnyObject> Event<T>.addAndRunWeak(
+@discardableResult fun <T, A : AnyObject> Event<T>.addAndRunWeak(
     referenceA: A,
     value: T,
     listener: @escaping() (A, T) -> Unit
@@ -71,7 +73,7 @@ fun <T, A : AnyObject> Event<T>.addAndRunWeak(
     return addWeak(referenceA, listener)
 }
 
-fun <T, A : AnyObject, B : AnyObject> Event<T>.addAndRunWeak(
+@discardableResult fun <T, A : AnyObject, B : AnyObject> Event<T>.addAndRunWeak(
     referenceA: A,
     referenceB: B,
     value: T,
@@ -81,7 +83,7 @@ fun <T, A : AnyObject, B : AnyObject> Event<T>.addAndRunWeak(
     return addWeak(referenceA, referenceB, listener)
 }
 
-fun <T, A : AnyObject, B : AnyObject, C : AnyObject> Event<T>.addAndRunWeak(
+@discardableResult fun <T, A : AnyObject, B : AnyObject, C : AnyObject> Event<T>.addAndRunWeak(
     referenceA: A,
     referenceB: B,
     referenceC: C,

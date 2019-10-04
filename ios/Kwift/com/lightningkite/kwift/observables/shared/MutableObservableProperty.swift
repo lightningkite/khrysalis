@@ -5,10 +5,10 @@ import Foundation
 
 
 
-public class MutableObservableProperty<T>: ObservableProperty<T> {
+open class MutableObservableProperty<T>: ObservableProperty<T> {
     
     
-    override public var value: T { get { fatalError() } set(value) { fatalError()  } }
+    override open var value: T { get { fatalError() } set(value) { fatalError()  } }
     
     override public init() {
         super.init()

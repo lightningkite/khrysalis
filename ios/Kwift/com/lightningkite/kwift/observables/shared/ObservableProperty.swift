@@ -5,11 +5,11 @@ import Foundation
 
 
 
-public class ObservableProperty<T> {
+open class ObservableProperty<T> {
     
     
-    public var value: T { get { fatalError() } }
-    public var onChange: Event<T> { get { fatalError() } }
+    open var value: T { get { fatalError() } }
+    open var onChange: Event<T> { get { fatalError() } }
     
     public init() {
     }

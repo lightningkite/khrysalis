@@ -25,8 +25,8 @@ extension UIView {
 }
 
 extension UISegmentedControl {
-    
-    func getSegment(index: Int) -> UIView? {
+
+    public func getSegment(index: Int) -> UIView? {
         let title = self.titleForSegment(at: index)
         for s in subviews {
             if (s.find { ($0 as? UILabel)?.text == title }) != nil {
@@ -35,17 +35,16 @@ extension UISegmentedControl {
         }
         return nil
     }
-    func addIndicator(color: UIColor, size: CGFloat = 4){
+    public func addIndicator(color: UIColor, size: CGFloat = 4){
         let buttonBar = UIView()
         // This needs to be false since we are using auto layout constraints
         buttonBar.translatesAutoresizingMaskIntoConstraints = false
         buttonBar.backgroundColor = color
         addSubview(buttonBar)
-        
+
         let getNewBounds: ()->CGRect = { [weak self, weak buttonBar] in
             guard
                 let self = self,
-                let buttonBar = buttonBar,
                 self.numberOfSegments > 0, self.selectedSegmentIndex >= 0,
                 self.selectedSegmentIndex < self.numberOfSegments,
                 let segment = self.getSegment(index: self.selectedSegmentIndex)
@@ -59,13 +58,13 @@ extension UISegmentedControl {
             print("New bounds \(newBounds)")
             return newBounds
         }
-        
+
         buttonBar.frame = getNewBounds()
-        
+
         var midAnimation = false
-        
+
         self.addOnLayoutSubviews { [weak self, weak buttonBar] in
-            guard let self = self, let buttonBar = buttonBar else { return }
+            guard let buttonBar = buttonBar else { return }
             let newBounds = getNewBounds()
             if newBounds != buttonBar.frame {
                 midAnimation = true
@@ -76,9 +75,9 @@ extension UISegmentedControl {
                 })
             }
         }
-        
+
         self.addAction(for: .valueChanged, action: { [weak self, weak buttonBar] in
-            guard let self = self, let buttonBar = buttonBar else { return }
+            guard let buttonBar = buttonBar else { return }
             let newBounds = getNewBounds()
             if newBounds != buttonBar.frame {
                 midAnimation = true

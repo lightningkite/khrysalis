@@ -10,13 +10,13 @@ import UIKit
 import FlexLayout
 
 
-class LabeledCheckbox : UIView, CompoundButton {
-    
-    let checkViewContainer: UIView = UIView(frame: .zero)
-    let checkView: UILabel = UILabel(frame: .zero)
-    let labelView: UILabel = UILabel(frame: .zero)
-    var onCheckChanged: (Bool) -> Void = { _ in }
-    var isOn: Bool = false {
+public class LabeledCheckbox : UIView, CompoundButton {
+
+    public let checkViewContainer: UIView = UIView(frame: .zero)
+    public let checkView: UILabel = UILabel(frame: .zero)
+    public let labelView: UILabel = UILabel(frame: .zero)
+    public var onCheckChanged: (Bool) -> Void = { _ in }
+    public var isOn: Bool = false {
         didSet {
             if isOn {
                 UIView.animate(withDuration: 0.25, animations: { [checkView] in
@@ -30,8 +30,8 @@ class LabeledCheckbox : UIView, CompoundButton {
             onCheckChanged(isOn)
         }
     }
-    
-    override init(frame: CGRect) {
+
+    override public init(frame: CGRect) {
         super.init(frame: frame)
         labelView.numberOfLines = 0
         flex.direction(.row).alignContent(.center)
@@ -45,15 +45,15 @@ class LabeledCheckbox : UIView, CompoundButton {
             .width(24)
             .height(24)
         flex.addItem(labelView).grow(1)
-        
+
         checkView.text = "✓"
         checkView.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
         checkView.textAlignment = .center
-        
+
         checkViewContainer.layer.borderWidth = 1
         checkViewContainer.layer.borderColor = checkView.textColor.cgColor
         checkViewContainer.layer.cornerRadius = 2
-        
+
         let tapRecognizer = UITapGestureRecognizer().addAction { [weak self] in
             if let self = self {
                 self.isOn = !self.isOn
@@ -61,10 +61,10 @@ class LabeledCheckbox : UIView, CompoundButton {
         }
         self.addGestureRecognizer(tapRecognizer)
     }
-    
-    
-    
-    required init?(coder aDecoder: NSCoder) {
+
+
+
+    required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
 }

@@ -1,9 +1,11 @@
 package com.lightningkite.kwift.observables.shared
 
 import com.lightningkite.kwift.actuals.AnyObject
+import com.lightningkite.kwift.actuals.discardableResult
 import com.lightningkite.kwift.actuals.escaping
 
 
+@discardableResult
 fun <A : AnyObject, T> ObservableProperty<T>.addAndRunWeak(
     referenceA: A,
     listener: @escaping() (A, T) -> Unit
@@ -13,6 +15,7 @@ fun <A : AnyObject, T> ObservableProperty<T>.addAndRunWeak(
     listener = listener
 )
 
+@discardableResult
 fun <A : AnyObject, B : AnyObject, T> ObservableProperty<T>.addAndRunWeak(
     referenceA: A,
     referenceB: B,
@@ -24,6 +27,7 @@ fun <A : AnyObject, B : AnyObject, T> ObservableProperty<T>.addAndRunWeak(
     listener = listener
 )
 
+@discardableResult
 fun <A : AnyObject, B : AnyObject, C : AnyObject, T> ObservableProperty<T>.addAndRunWeak(
     referenceA: A,
     referenceB: B,

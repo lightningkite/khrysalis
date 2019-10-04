@@ -5,11 +5,11 @@ import Foundation
 
 
 
-public class Event<T> {
+open class Event<T> {
     
     
     
-    public func add(listener: @escaping (T) -> Bool) -> Close { fatalError() }
+    open func add(listener: @escaping (T) -> Bool) -> Close { fatalError() }
     
     public init() {
     }

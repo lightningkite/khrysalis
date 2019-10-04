@@ -10,9 +10,8 @@ import Foundation
 import UIKit
 
 
-extension UIButton {
+public extension UIButton {
     func bindBackButton<T>(stack: ObservableStack<T>) {
-        self.titleLabel?.font
         stack.onChange.addAndRunWeak(self, stack.stack) { this, value in
             this.isHidden = value.count <= 1
         }
@@ -20,7 +19,7 @@ extension UIButton {
             stack.pop()
         }
     }
-    
+
     func bindAction(action: @escaping (@escaping ()->Void)->Void) {
         addAction {
             let startText = self.title(for: .normal)
@@ -30,7 +29,7 @@ extension UIButton {
             activityIndicatorView.center.x = self.frame.size.width/2
             activityIndicatorView.center.y = self.frame.size.height/2
             self.addSubview(activityIndicatorView)
-            
+
             weak var weakAIV = activityIndicatorView
             action {
                 self.setTitle(startText, for: .normal)

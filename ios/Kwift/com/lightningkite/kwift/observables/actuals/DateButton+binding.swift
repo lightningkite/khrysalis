@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-extension DateButton {
+public extension DateButton {
     func bind(_ observable: MutableObservableProperty<Date>) {
         return bind(observable: observable)
     }

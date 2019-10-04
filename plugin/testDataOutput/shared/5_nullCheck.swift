@@ -1,22 +1,42 @@
+//Package: multiplier
+//Converted using Kwift2
+
 import Foundation
-/**
-* A reference must be explicitly marked as nullable to be able hold a null.
-* See http://kotlinlang.org/docs/reference/null-safety.html#null-safety
-*/
-//package multiplier
 
 
-func main(args: [String]) {
-    var x: Int? = nil
-    
-    //With Braces
+
+public func main(args: Array<String>) -> Void {
+    var x: Int32?  = nil
+    if let x = x {
+        print("x: \(x)")
+    } else {
+        print("X is null")
+    }
     if let x = x {
         print("x: \(x)")
     } else {
         print("X is null")
     }
     
-    //Without braces
-    if let x = x print("x: \(x)") else println("X is null")
+    if let it = x {
+        print("X: \(it)")
+    }
+    var xWithOne = { () in 
+        if let it = x {
+            return it + 1
+        }
+        return nil
+    }() ?? 0
+    { () in 
+        if let it = x {
+            return print("X: \(it)")
+        }
+        return nil
+    }() ?? { () in 
+    print("X is null")
+    }()
 }
-func main(_ args: [String]) { main(args: args) }
+public func main(_ args: Array<String>) -> Void {
+    return main(args: args)
+}
+ 

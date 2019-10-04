@@ -9,12 +9,12 @@
 import Foundation
 import UIKit
 
-protocol CALayerToImage {
+public protocol CALayerToImage {
     func toImage() -> UIImage?
 }
 
 extension CALayer : CALayerToImage {
-    func addOnStateChange(_ view: UIView?, action: @escaping (UIControl.State) -> Void) {
+    public func addOnStateChange(_ view: UIView?, action: @escaping (UIControl.State) -> Void) {
         if let view = view as? UIControl {
             let _ = view.addOnStateChange(retainer: self, id: 0, action: { [weak view] state in
                 action(state)
@@ -28,7 +28,7 @@ extension CALayer : CALayerToImage {
         }
     }
     private static let matchingExtension = ExtensionProperty<CALayer, Close>()
-    func matchSize(_ view: UIView?) {
+    public func matchSize(_ view: UIView?) {
         if let previous = CALayer.matchingExtension.get(self) {
             previous.close()
         }
@@ -41,8 +41,8 @@ extension CALayer : CALayerToImage {
             CALayer.matchingExtension.set(self, nil)
         }
     }
-    
-    @objc func toImage() -> UIImage? {
+
+    @objc public func toImage() -> UIImage? {
         if CFGetTypeID(self.contents as CFTypeRef) == CGImage.typeID {
             return UIImage(cgImage: self.contents as! CGImage)
         } else {
@@ -60,16 +60,16 @@ extension CALayer : CALayerToImage {
     }
 }
 
-class CAImageLayer: CALayer {
-    var image: UIImage? = nil {
+public class CAImageLayer: CALayer {
+    public var image: UIImage? = nil {
         didSet {
             self.contents = image?.cgImage
         }
     }
-    @objc override func toImage() -> UIImage? {
+    @objc override public func toImage() -> UIImage? {
         return image
     }
-    convenience init(_ image: UIImage?) {
+    public convenience init(_ image: UIImage?) {
         self.init()
         self.image = image
     }

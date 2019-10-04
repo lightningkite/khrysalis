@@ -1,9 +1,13 @@
+//Package: com.test
+//Converted using Kwift2
+
 import Foundation
-//package com.test
 
 
-func testWeakRef(){
-    var x: Int = 0
-    weak var weakX: Int? = x
+
+public func testWeakRef() -> Void {
+    var x: Int32 = 0
+    weak var weakX: Int32?  = x
     print(weakX)
 }
+ 

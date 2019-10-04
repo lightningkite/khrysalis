@@ -23,8 +23,8 @@ open class AbstractCalendarView : UIView {
     var dayCellMargin: CGFloat = 8
     var leftText: String = "‹"
     var rightText: String = "›"
-    
-    func styleMonth(quickMonthView: QuickMonthView) {
+
+    public func styleMonth(quickMonthView: QuickMonthView) {
         quickMonthView.labelColorSet = self.labelColorSet
         quickMonthView.defaultColorSet = self.defaultColorSet
         quickMonthView.selectedColorSet = self.selectedColorSet
@@ -33,35 +33,35 @@ open class AbstractCalendarView : UIView {
         quickMonthView.internalPadding = self.internalPadding
         quickMonthView.dayCellMargin = self.dayCellMargin
     }
-    
+
     let currentPage = StandardObservableProperty(Int32(0))
     var ignoreDragOnDay: Bool { return true }
-    
-    func makeChildView() -> QuickMonthView {
+
+    public func makeChildView() -> QuickMonthView {
         fatalError("makeChildView not overridden!")
     }
-    
+
     static private let centerIndex: Int32 = 400 * 12
-    static func monthFromPosition(_ index: Int32) -> Date {
+    static public func monthFromPosition(_ index: Int32) -> Date {
         var components = DateComponents(calendar: Calendar.current, year: 1970, month: 1, day: 1, hour: 0, minute: 0, second: 0, nanosecond: 0)
         let date = Calendar.current.date(from: components)!
         return Calendar.current.date(byAdding: .month, value: Int(index - centerIndex), to: date, wrappingComponents: false)!
     }
-    static func positionFromMonth(_ date: Date) -> Int32 {
+    static public func positionFromMonth(_ date: Date) -> Int32 {
         return centerIndex + (date.yearAd - 1970) * 12 + date.monthOfYear - 1
     }
-    
-    
-    func refresh(){
+
+
+    public func refresh(){
         collectionView?.reloadData()
     }
-    
+
     override open func didMoveToSuperview() {
         setup()
     }
-    
+
     weak var collectionView: UICollectionView?
-    func setup() {
+    public func setup() {
         if currentPage.value == 0 {
             currentPage.value = AbstractCalendarView.positionFromMonth(Date())
         }
@@ -101,7 +101,7 @@ open class AbstractCalendarView : UIView {
                     return sub
                 }())
             }
-            
+
             flex.addItem({ () -> UICollectionView in
                 let sub = UICollectionView(frame: .zero, collectionViewLayout: ViewPagerLayout())
                 self.collectionView = sub

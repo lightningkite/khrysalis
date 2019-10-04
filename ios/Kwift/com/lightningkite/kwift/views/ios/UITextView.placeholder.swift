@@ -9,7 +9,7 @@
 import UIKit
 
 
-extension UITextView {
+public extension UITextView {
     var placeholder: String {
         get {
             return text

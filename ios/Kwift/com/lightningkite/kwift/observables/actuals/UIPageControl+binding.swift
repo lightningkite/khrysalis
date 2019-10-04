@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-extension UIPageControl {
+public extension UIPageControl {
     func bind(_ count: Int32, _ selected: MutableObservableProperty<Int32>) {
         bind(count: count, selected: selected)
     }

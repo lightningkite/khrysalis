@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 
-class SelectDayMonthView : QuickMonthView {
+public class SelectDayMonthView : QuickMonthView {
     var selected: MutableObservableProperty<Date?> = StandardObservableProperty(nil) {
         didSet {
             startup2()
@@ -21,14 +21,14 @@ class SelectDayMonthView : QuickMonthView {
         super.init(frame: frame)
         startup2()
     }
-    
+
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         startup2()
     }
-    
+
     var closers: Array<Close> = []
-    func startup2() {
+    public func startup2() {
         for close in closers {
             close.close()
         }
@@ -36,8 +36,8 @@ class SelectDayMonthView : QuickMonthView {
             this.setNeedsDisplay()
         })
     }
-    
-    override func drawDayCell(_ ctx: CGContext, _ rect: CGRect, _ day: Date) {
+
+    override public func drawDayCell(_ ctx: CGContext, _ rect: CGRect, _ day: Date) {
         if let s = selected.value, day.sameDay(s) {
             drawDayCellBackground(ctx: ctx, rectangle: rect, day: day, colorSet: self.selectedColorSet)
             drawDayCellText(ctx: ctx, rectangle: rect, day: day, colorSet: self.selectedColorSet)
@@ -46,16 +46,16 @@ class SelectDayMonthView : QuickMonthView {
             drawDayCellText(ctx: ctx, rectangle: rect, day: day, colorSet: self.defaultColorSet)
         }
     }
-    
+
     var downOn: Date? = nil
-    override func onTouchDown(date: Date) -> Bool {
+    override public func onTouchDown(date: Date) -> Bool {
         downOn = date
         return true
     }
-    override func onTouchMove(date: Date) -> Bool {
+    override public func onTouchMove(date: Date) -> Bool {
         return downOn == date
     }
-    override func onTouchUp(date: Date) -> Bool {
+    override public func onTouchUp(date: Date) -> Bool {
         if downOn == date {
             selected.value = date
         }

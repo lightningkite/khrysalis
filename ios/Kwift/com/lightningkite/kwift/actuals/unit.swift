@@ -8,6 +8,6 @@
 
 import Foundation
 
-func unit() -> Void {
+public func unit() -> Void {
     return ()
 }

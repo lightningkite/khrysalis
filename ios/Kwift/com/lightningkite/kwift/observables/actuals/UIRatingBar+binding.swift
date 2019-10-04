@@ -8,15 +8,15 @@
 
 import Foundation
 
-extension UIRatingBar {
+public extension UIRatingBar {
     func bind(_ stars: Int32, _ observable: MutableObservableProperty<Int32>) {
         bind(stars: stars, observable: observable)
     }
     func bind(stars: Int32, observable: MutableObservableProperty<Int32>) {
         self.settings.totalStars = Int(stars)
-        
+
         self.settings.fillMode = .full
-        
+
         var suppress = false
         observable.addAndRunWeak(self) { (self, value) in
             guard !suppress else { return }
@@ -31,27 +31,27 @@ extension UIRatingBar {
             suppress = false
         }
     }
-    
+
     func bind(_ stars: Int32, _ observable: ObservableProperty<Int32>) {
         bind(stars: stars, observable: observable)
     }
     func bind(stars: Int32, observable: ObservableProperty<Int32>) {
         self.settings.totalStars = Int(stars)
         self.settings.fillMode = .full
-        
+
         observable.addAndRunWeak(self) { (self, value) in
             self.rating = Double(value)
         }
     }
-    
-    
+
+
     func bindFloat(_ stars: Int32, _ observable: MutableObservableProperty<Float>) {
         bindFloat(stars: stars, observable: observable)
     }
     func bindFloat(stars: Int32, observable: MutableObservableProperty<Float>) {
         self.settings.totalStars = Int(stars)
         self.settings.fillMode = .precise
-        
+
         var suppress = false
         observable.addAndRunWeak(self) { (self, value) in
             guard !suppress else { return }
@@ -66,17 +66,17 @@ extension UIRatingBar {
             suppress = false
         }
     }
-    
+
     func bindFloat(_ stars: Int32, _ observable: ObservableProperty<Float>) {
         bindFloat(stars: stars, observable: observable)
     }
     func bindFloat(stars: Int32, observable: ObservableProperty<Float>) {
         self.settings.totalStars = Int(stars)
         self.settings.fillMode = .precise
-        
+
         observable.addAndRunWeak(self) { (self, value) in
             self.rating = Double(value)
         }
     }
-    
+
 }

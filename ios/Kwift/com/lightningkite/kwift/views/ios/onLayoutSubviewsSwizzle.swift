@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 extension UIView {
-    
+
     private static var extOngoing = ExtensionProperty<UIView, Bool>()
     private static var ext = ExtensionProperty<UIView, StandardEvent<UIView>>()
     var onLayoutSubviewsOngoing: Bool {
@@ -37,16 +37,16 @@ extension UIView {
             UIView.ext.set(self, value)
         }
     }
-    
-    func addOnLayoutSubviews(action:@escaping ()->Void) {
+
+    public func addOnLayoutSubviews(action:@escaping ()->Void) {
         let _ = onLayoutSubviews.add(listener: { [weak self] view in
             action()
             return false
         })
     }
-    
-    
-    
+
+
+
     private static let theSwizzler: Void = {
         let instance = UIView(frame: .zero)
         let aClass: AnyClass! = object_getClass(instance)

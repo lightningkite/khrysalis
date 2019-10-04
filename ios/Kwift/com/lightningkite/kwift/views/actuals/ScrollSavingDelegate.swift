@@ -10,9 +10,9 @@ import Foundation
 import UIKit
 
 
-class ScrollSavingDelegate : NSObject, UIScrollViewDelegate {
-    var lastNonzeroOffset: CGPoint = CGPoint.zero
-    func scrollViewDidScroll(_ scrollView: UIScrollView) {
+public class ScrollSavingDelegate : NSObject, UIScrollViewDelegate {
+    public var lastNonzeroOffset: CGPoint = CGPoint.zero
+    public func scrollViewDidScroll(_ scrollView: UIScrollView) {
         if scrollView.contentOffset != CGPoint.zero {
             print("Set offset to \(scrollView.contentOffset)")
             lastNonzeroOffset = scrollView.contentOffset

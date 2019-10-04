@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-extension UISegmentedControl {
+public extension UISegmentedControl {
     func bind(_ tabs: Array<String>, _ selected: MutableObservableProperty<Int32>) {
         bind(tabs: tabs, selected: selected)
     }

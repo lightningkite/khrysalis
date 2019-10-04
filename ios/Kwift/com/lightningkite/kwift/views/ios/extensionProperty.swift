@@ -8,19 +8,19 @@
 
 import Foundation
 
-class ExtensionProperty<On: AnyObject, T> {
-    
-    class Box<T> {
+public class ExtensionProperty<On: AnyObject, T> {
+
+    public class Box<T> {
         var value: T
         init(value: T){
             self.value = value
         }
     }
     private var table = NSMapTable<On, Box<T>>(keyOptions: .weakMemory, valueOptions: .strongMemory)
-    func get(_ from: On) -> T? {
+    public func get(_ from: On) -> T? {
         return table.object(forKey: from)?.value
     }
-    func modify(_ from: On, defaultValue:T? = nil, modifier: (Box<T>)->Void) {
+    public func modify(_ from: On, defaultValue:T? = nil, modifier: (Box<T>)->Void) {
         if let box = table.object(forKey: from) {
             modifier(box)
         } else if let defaultValue = defaultValue {
@@ -29,7 +29,7 @@ class ExtensionProperty<On: AnyObject, T> {
             table.setObject(box, forKey: from)
         }
     }
-    func set(_ from: On, _ value: T?) {
+    public func set(_ from: On, _ value: T?) {
         if let value = value {
             let box = Box(value: value)
             table.setObject(box, forKey: from)

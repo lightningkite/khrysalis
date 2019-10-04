@@ -9,8 +9,8 @@
 import Foundation
 import UIKit
 
-extension UIScrollView {
-    
+public extension UIScrollView {
+
 //    func bind<T>(
 //        _ items: Array<T>,
 //        _ showIndex: MutableObservableProperty<Int32> = StandardObservableProperty(0),

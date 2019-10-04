@@ -11,27 +11,27 @@ import UIKit
 
 class ClosureSleeve {
     let closure: () -> ()
-    
+
     init(attachTo: NSObject, id: String = "[\(arc4random())]", closure: @escaping () -> ()) {
         self.closure = closure
         attachTo.retain(as: id, item: self)
     }
-    
+
     init(closure: @escaping () -> ()) {
         self.closure = closure
     }
-    
-    @objc func invoke() {
+
+    @objc public func invoke() {
         closure()
     }
 }
 
-extension UIControl {
+public extension UIControl {
     func addAction(for controlEvents: UIControl.Event = .primaryActionTriggered, id: String = "[\(arc4random())]", action: @escaping () -> ()) {
         let sleeve = ClosureSleeve(attachTo: self, id: id, closure: action)
         addTarget(sleeve, action: #selector(ClosureSleeve.invoke), for: controlEvents)
     }
-    
+
     func addOnStateChange(retainer: NSObject, id:UInt32 = arc4random(), action: @escaping (UIControl.State)->Void) -> UInt32 {
         retainer.retain(as: "onStateChange-isHighlighted-\(id)", item: observe(\.isHighlighted, options: [.old, .new]) { (provider, changes) in
             action(provider.state)
@@ -60,7 +60,7 @@ extension UIControl {
     }
 }
 
-extension UIGestureRecognizer {
+public extension UIGestureRecognizer {
     func addAction(action: @escaping () -> ()) -> Self {
         let sleeve = ClosureSleeve(attachTo: self, closure: action)
         addTarget(sleeve, action: #selector(ClosureSleeve.invoke))
@@ -68,7 +68,7 @@ extension UIGestureRecognizer {
     }
 }
 
-extension UIBarButtonItem {
+public extension UIBarButtonItem {
     convenience init(title: String?, style: UIBarButtonItem.Style, action: @escaping () -> ()) {
         let sleeve = ClosureSleeve(closure: action)
         self.init(title: title, style: style, target: sleeve, action: #selector(ClosureSleeve.invoke))
@@ -76,14 +76,14 @@ extension UIBarButtonItem {
     }
 }
 
-extension NSObject {
+public extension NSObject {
     private static var anything = ExtensionProperty<NSObject, Dictionary<String, Any>>()
     var extensions: Dictionary<String, Any>? {
         get {
             return NSObject.anything.get(self)
         }
     }
-    
+
     func retain<T>(as string: String = "[\(arc4random())]", item: T) {
         NSObject.anything.modify(self, defaultValue: [:]) { box in
             box.value[string] = item

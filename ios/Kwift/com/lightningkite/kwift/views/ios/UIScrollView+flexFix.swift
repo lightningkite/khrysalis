@@ -11,7 +11,7 @@ import UIKit
 
 
 extension UIScrollView {
-    func flexFix(_ sub: UIView){
+    public func flexFix(_ sub: UIView){
         let dg = ScrollSavingDelegate()
         delegate = dg
         self.addOnLayoutSubviews { [weak self, weak sub] in

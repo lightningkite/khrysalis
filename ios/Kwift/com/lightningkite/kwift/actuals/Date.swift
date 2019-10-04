@@ -8,15 +8,15 @@
 
 import Foundation
 
-extension Date {
+public extension Date {
     var time: Int64 {
         return Int64((self.timeIntervalSince1970 * 1000.0).rounded())
     }
-    
+
     init(_ milliseconds:Int64) {
         self = Date(timeIntervalSince1970: TimeInterval(milliseconds) / 1000)
     }
-    
+
     func before(_ other: Date) -> Bool {
         return self.time < other.time
     }
@@ -30,7 +30,7 @@ extension Date {
     var hourOfDay: Int32 { return Int32(Calendar.current.component(.hour, from: self)) }
     var minuteOfHour: Int32 { return Int32(Calendar.current.component(.minute, from: self)) }
     var secondOfMinute: Int32 { return Int32(Calendar.current.component(.second, from: self)) }
-    
+
     func sameDay(_ other: Date) -> Bool {
         return self.yearAd == other.yearAd && self.monthOfYear == other.monthOfYear && self.dayOfMonth == other.dayOfMonth
     }
@@ -40,7 +40,7 @@ extension Date {
     func sameYear(_ other: Date) -> Bool {
         return self.yearAd == other.yearAd
     }
-    
+
     func dayOfWeek(_ value: Int32) -> Date {
         var components = Calendar.current.dateComponents([.year, .weekOfYear, .hour, .minute, .second, .nanosecond], from: self)
         components.weekday = Int(value)
@@ -78,7 +78,7 @@ extension Date {
     }
 }
 
-extension Int32 {
+public extension Int32 {
     func milliseconds() -> TimeInterval { return TimeInterval(self) / 1000 }
     func seconds() -> TimeInterval { return TimeInterval(self) }
     func minutes() -> TimeInterval { return TimeInterval(self * 60) }
@@ -86,7 +86,7 @@ extension Int32 {
     func days() -> TimeInterval { return TimeInterval(self * 60 * 60 * 24) }
 }
 
-extension Int {
+public extension Int {
     func milliseconds() -> TimeInterval { return TimeInterval(self) / 1000 }
     func seconds() -> TimeInterval { return TimeInterval(self) }
     func minutes() -> TimeInterval { return TimeInterval(self * 60) }
@@ -94,7 +94,7 @@ extension Int {
     func days() -> TimeInterval { return TimeInterval(self * 60 * 60 * 24) }
 }
 
-extension TimeInterval {
+public extension TimeInterval {
     var milliseconds: Int64 {
         return Int64(self * 1000)
     }

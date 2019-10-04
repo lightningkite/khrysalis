@@ -54,6 +54,7 @@ fun convertPngs(
         swiftFolder.resolve("drawable").also { it.mkdirs() }.resolve("PNGs.swift").bufferedWriter().use { writer ->
             writer.appendln("//Automatically created by Kwift")
             writer.appendln("import UIKit")
+            writer.appendln("import Kwift")
             writer.appendln("")
             writer.appendln("extension ResourcesDrawables {")
             writer.appendln("")

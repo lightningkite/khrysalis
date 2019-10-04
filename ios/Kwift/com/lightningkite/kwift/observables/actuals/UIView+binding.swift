@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import FlexLayout
 
-extension UIView {
+public extension UIView {
     func bindVisible(_ observable: ObservableProperty<Bool>) {
         return bindVisible(observable: observable)
     }
@@ -19,7 +19,7 @@ extension UIView {
             this.isHidden = !value
         }
     }
-    
+
     func bindExists(_ observable: ObservableProperty<Bool>) {
         return bindExists(observable: observable)
     }
@@ -33,10 +33,10 @@ extension UIView {
             this.relayoutFlexClimbToXml()
         }
     }
-    
+
     func relayoutFlexClimbToXml() {
         self.flex.markDirty()
-        
+
         func sub(view: UIView){
             if let parent = view.superview, !(parent is UIWindow) {
                 sub(view: parent)
@@ -46,7 +46,7 @@ extension UIView {
         }
         sub(view: self)
     }
-    
+
     enum Animation {
         case push
         case pop
@@ -66,7 +66,7 @@ extension UIView {
                 animation = .pop
             }
             lastCount = value.count
-            
+
             if let old = current {
                 old.flex.left(0).top(0).right(0).bottom(0)
                 old.flex.layout(mode: .fitContainer)

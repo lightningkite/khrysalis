@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-extension UIColor {
+public extension UIColor {
     convenience init(red: Int, green: Int, blue: Int, alpha: Int = 0xFF) {
         self.init(
             red: CGFloat(red) / 255.0,

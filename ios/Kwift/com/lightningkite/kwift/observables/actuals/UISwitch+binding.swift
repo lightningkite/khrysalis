@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-extension CompoundButton {
+public extension CompoundButton {
     func bind(_ observable: MutableObservableProperty<Bool>){
         return bind(observable: observable)
     }

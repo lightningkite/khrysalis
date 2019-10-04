@@ -2,6 +2,7 @@ package com.lightningkite.kwift.swift
 
 import com.lightningkite.kwift.utils.forEachBetween
 import org.antlr.v4.runtime.ParserRuleContext
+import org.antlr.v4.runtime.tree.TerminalNode
 import org.jetbrains.kotlin.KotlinParser
 
 fun SwiftAltListener.registerType() {
@@ -46,6 +47,16 @@ fun SwiftAltListener.registerType() {
     }
     handle<KotlinParser.ParenthesizedTypeContext> { item -> defaultWrite(item, "") }
     handle<KotlinParser.ParenthesizedUserTypeContext> { item -> defaultWrite(item, "") }
+    handle<KotlinParser.AnnotationContext> { item ->
+        item.children?.filter { it is ParserRuleContext }?.forEachBetween(
+            forItem = { child ->
+                when(child){
+                    is ParserRuleContext -> write(child)
+                }
+            },
+            between = { direct.append(" ") }
+        )
+    }
     handle<KotlinParser.SingleAnnotationContext> { item ->
         if (item.unescapedAnnotation().text.startsWith("escaping")) {
             if (filterEscapingAnnotation) {

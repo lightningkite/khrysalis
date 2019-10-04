@@ -10,8 +10,8 @@ import Foundation
 import UIKit
 
 
-class TimeButton : DateButton {
-    override func commonInit() {
+public class TimeButton : DateButton {
+    override public func commonInit() {
         super.commonInit()
         mode = .time
         let format = DateFormatter()

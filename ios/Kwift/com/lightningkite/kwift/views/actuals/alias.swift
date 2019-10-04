@@ -10,11 +10,11 @@ import Foundation
 import Cosmos
 import QVRWeekView
 
-typealias UIRatingBar = CosmosView
-typealias UIWeekView = WeekView
-typealias WeekViewEvent = EventData
+public typealias UIRatingBar = CosmosView
+public typealias UIWeekView = WeekView
+public typealias WeekViewEvent = EventData
 
-extension WeekViewEvent {
+public extension WeekViewEvent {
     convenience init(id: Int64, title: String, start: Date, end: Date, colorRes: UIColor) {
         self.init(id: Int(id), title: title, startDate: start, endDate: end, color: colorRes)
     }

@@ -12,13 +12,13 @@ import AlamofireImage
 
 public enum HttpClient {
     
-    static let GET: String = "GET"
-    static let POST: String = "POST"
-    static let PUT: String = "PUT"
-    static let PATCH: String = "PATCH"
-    static let DELETE: String = "DELETE"
+    public static let GET: String = "GET"
+    public static let POST: String = "POST"
+    public static let PUT: String = "PUT"
+    public static let PATCH: String = "PATCH"
+    public static let DELETE: String = "DELETE"
     
-    static func call<T: Codable>(
+    public static func call<T: Codable>(
         url: String,
         method: String,
         headers: [String: String] = [:],
@@ -74,7 +74,7 @@ public enum HttpClient {
         }
     }
     
-    static func callWithoutResult(
+    public static func callWithoutResult(
         url: String,
         method: String,
         headers: [String: String] = [:],
@@ -121,7 +121,7 @@ public enum HttpClient {
         }
     }
     
-    static func uploadImage<T: Codable>(
+    public static func uploadImage<T: Codable>(
         url: String,
         method: String,
         headers: [String: String],
@@ -184,7 +184,7 @@ public enum HttpClient {
         }
     }
     
-    static func uploadImageWithoutResult(
+    public static func uploadImageWithoutResult(
         url: String,
         method: String,
         headers: [String: String],

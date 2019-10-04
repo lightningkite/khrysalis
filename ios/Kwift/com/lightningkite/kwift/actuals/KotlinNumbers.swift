@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension Int8 {
+public extension Int8 {
     func toByte() -> Int8 { return Int8(self) }
     func toShort() -> Int16 { return Int16(self) }
     func toInt() -> Int32 { return Int32(self) }
@@ -17,7 +17,7 @@ extension Int8 {
     func toDouble() -> Double { return Double(self) }
     func toString() -> String { return String(describing: self) }
 }
-extension Int16 {
+public extension Int16 {
     func toByte() -> Int8 { return Int8(self) }
     func toShort() -> Int16 { return Int16(self) }
     func toInt() -> Int32 { return Int32(self) }
@@ -26,7 +26,7 @@ extension Int16 {
     func toDouble() -> Double { return Double(self) }
     func toString() -> String { return String(describing: self) }
 }
-extension Int32 {
+public extension Int32 {
     func toByte() -> Int8 { return Int8(self) }
     func toShort() -> Int16 { return Int16(self) }
     func toInt() -> Int32 { return Int32(self) }
@@ -35,7 +35,7 @@ extension Int32 {
     func toDouble() -> Double { return Double(self) }
     func toString() -> String { return String(describing: self) }
 }
-extension Int64 {
+public extension Int64 {
     func toByte() -> Int8 { return Int8(self) }
     func toShort() -> Int16 { return Int16(self) }
     func toInt() -> Int32 { return Int32(self) }
@@ -44,7 +44,7 @@ extension Int64 {
     func toDouble() -> Double { return Double(self) }
     func toString() -> String { return String(describing: self) }
 }
-extension Float {
+public extension Float {
     func toByte() -> Int8 { return Int8(self) }
     func toShort() -> Int16 { return Int16(self) }
     func toInt() -> Int32 { return Int32(self) }
@@ -53,7 +53,7 @@ extension Float {
     func toDouble() -> Double { return Double(self) }
     func toString() -> String { return String(describing: self) }
 }
-extension Double {
+public extension Double {
     func toByte() -> Int8 { return Int8(self) }
     func toShort() -> Int16 { return Int16(self) }
     func toInt() -> Int32 { return Int32(self) }
@@ -62,7 +62,7 @@ extension Double {
     func toDouble() -> Double { return Double(self) }
     func toString() -> String { return String(describing: self) }
 }
-extension String {
+public extension String {
     func toByte() -> Int8 { return Int8(self)! }
     func toByteOrNull() -> Int8? { return Int8(self) }
     func toShort() -> Int16 { return Int16(self)! }

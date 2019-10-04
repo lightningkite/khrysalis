@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension Formatter {
+public extension Formatter {
     static let iso8601: DateFormatter = {
         let formatter = DateFormatter()
         formatter.calendar = Calendar(identifier: .iso8601)
@@ -27,7 +27,7 @@ extension Formatter {
     }()
 }
 
-var encoder: JSONEncoder = {
+public var encoder: JSONEncoder = {
     let e = JSONEncoder()
     e.dateEncodingStrategy = JSONEncoder.DateEncodingStrategy.custom { (date, encoder) in
         var container = encoder.singleValueContainer()
@@ -35,7 +35,7 @@ var encoder: JSONEncoder = {
     }
     return e
 }()
-var decoder: JSONDecoder = {
+public var decoder: JSONDecoder = {
     let d = JSONDecoder()
     d.dateDecodingStrategy = JSONDecoder.DateDecodingStrategy.custom { (decoder) in
         let container = try decoder.singleValueContainer()
@@ -47,7 +47,7 @@ var decoder: JSONDecoder = {
     return d
 }()
 
-extension Encodable {
+public extension Encodable {
     func toJsonData(coder: JSONEncoder = encoder) throws -> Data {
         if let result = try? coder.encode(self) {
             return result
@@ -66,7 +66,7 @@ extension Encodable {
     }
 }
 
-extension Decodable {
+public extension Decodable {
     static func fromJsonData(_ data: Data, coder: JSONDecoder = decoder) throws -> Self {
         if let result = try? coder.decode(Self.self, from: data) {
             return result
@@ -85,9 +85,9 @@ extension Decodable {
     }
 }
 
-extension KeyedDecodingContainer {
+public extension KeyedDecodingContainer {
     
-    public func decodeDoubleIfPresent(forKey key: KeyedDecodingContainer<K>.Key) throws -> Double? {
+    func decodeDoubleIfPresent(forKey key: KeyedDecodingContainer<K>.Key) throws -> Double? {
         if let result = try? decodeIfPresent(Double.self, forKey: key) {
             return result
         } else if let stringOrNil = try? decodeIfPresent(String.self, forKey: key) {
@@ -96,7 +96,7 @@ extension KeyedDecodingContainer {
             return nil
         }
     }
-    public func decodeDouble(forKey key: KeyedDecodingContainer<K>.Key) throws -> Double {
+    func decodeDouble(forKey key: KeyedDecodingContainer<K>.Key) throws -> Double {
         if let result = try? decode(Double.self, forKey: key) {
             return result
         }
@@ -105,8 +105,8 @@ extension KeyedDecodingContainer {
     }
 }
 
-extension String {
-    public func fromJsonStringUntyped() -> Any? {
+public extension String {
+    func fromJsonStringUntyped() -> Any? {
         return try? JSONSerialization.jsonObject(with: self.data(using: .utf8)!, options: .allowFragments)
     }
 }

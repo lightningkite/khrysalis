@@ -50,10 +50,10 @@ fun SwiftAltListener.handleNormalFunction(
 
     fun Appendable.writeFunctionHeader(addUnderscore: Boolean) {
         if (needsOverrideKeyword) append("override ")
-        item.modifiers()?.annotation()?.forEachBetween(
-            forItem = { write(it) },
-            between = { direct.append(' ') }
-        )
+        item.modifiers()?.annotation()?.forEach {
+            write(it)
+            append(' ')
+        }
         if (owningClass != null && owningClass.INTERFACE() == null || isTopLevel) {
             append(item.modifiers().visibilityString())
             append(" ")

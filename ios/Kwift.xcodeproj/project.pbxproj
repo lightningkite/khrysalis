@@ -44,7 +44,6 @@
 		5E4297B0233EC420002AAB7A /* TransformedObservableProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429752233EC420002AAB7A /* TransformedObservableProperty.swift */; };
 		5E4297B1233EC420002AAB7A /* ObservableProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429753233EC420002AAB7A /* ObservableProperty.swift */; };
 		5E4297B2233EC420002AAB7A /* Event.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429754233EC420002AAB7A /* Event.swift */; };
-		5E4297B3233EC420002AAB7A /* Event.ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429755233EC420002AAB7A /* Event.ext.swift */; };
 		5E4297B4233EC420002AAB7A /* MutableObservableProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429756233EC420002AAB7A /* MutableObservableProperty.swift */; };
 		5E4297B5233EC420002AAB7A /* TransformedEvent.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429757233EC420002AAB7A /* TransformedEvent.swift */; };
 		5E4297B6233EC420002AAB7A /* StandardObservableProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429758233EC420002AAB7A /* StandardObservableProperty.swift */; };
@@ -97,6 +96,7 @@
 		5E4297E5233EC420002AAB7A /* ViewPagerLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42978C233EC420002AAB7A /* ViewPagerLayout.swift */; };
 		5E4297E6233EC420002AAB7A /* UIButton.position.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42978D233EC420002AAB7A /* UIButton.position.swift */; };
 		5E4297E7233EC420002AAB7A /* extensionProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42978E233EC420002AAB7A /* extensionProperty.swift */; };
+		5E5F673C2347D7BF0090384F /* Event.ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E5F673B2347D7BF0090384F /* Event.ext.swift */; };
 		5EAABEA1233EC33F007E7CED /* Kwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5EAABE97233EC33F007E7CED /* Kwift.framework */; };
 		5EAABEA6233EC33F007E7CED /* kwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAABEA5233EC33F007E7CED /* kwiftTests.swift */; };
 		5EAABEA8233EC33F007E7CED /* Kwift.h in Headers */ = {isa = PBXBuildFile; fileRef = 5EAABE9A233EC33F007E7CED /* Kwift.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -149,7 +149,6 @@
 		5E429752233EC420002AAB7A /* TransformedObservableProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransformedObservableProperty.swift; sourceTree = "<group>"; };
 		5E429753233EC420002AAB7A /* ObservableProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ObservableProperty.swift; sourceTree = "<group>"; };
 		5E429754233EC420002AAB7A /* Event.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.swift; sourceTree = "<group>"; };
-		5E429755233EC420002AAB7A /* Event.ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Event.ext.swift; sourceTree = "<group>"; };
 		5E429756233EC420002AAB7A /* MutableObservableProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = MutableObservableProperty.swift; sourceTree = "<group>"; };
 		5E429757233EC420002AAB7A /* TransformedEvent.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TransformedEvent.swift; sourceTree = "<group>"; };
 		5E429758233EC420002AAB7A /* StandardObservableProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = StandardObservableProperty.swift; sourceTree = "<group>"; };
@@ -202,6 +201,7 @@
 		5E42978C233EC420002AAB7A /* ViewPagerLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewPagerLayout.swift; sourceTree = "<group>"; };
 		5E42978D233EC420002AAB7A /* UIButton.position.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIButton.position.swift; sourceTree = "<group>"; };
 		5E42978E233EC420002AAB7A /* extensionProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = extensionProperty.swift; sourceTree = "<group>"; };
+		5E5F673B2347D7BF0090384F /* Event.ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Event.ext.swift; path = Kwift/com/lightningkite/kwift/observables/shared/Event.ext.swift; sourceTree = SOURCE_ROOT; };
 		5EAABE97233EC33F007E7CED /* Kwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Kwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5EAABE9A233EC33F007E7CED /* Kwift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Kwift.h; sourceTree = "<group>"; };
 		5EAABE9B233EC33F007E7CED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -319,20 +319,20 @@
 		5E429751233EC420002AAB7A /* shared */ = {
 			isa = PBXGroup;
 			children = (
-				5E429752233EC420002AAB7A /* TransformedObservableProperty.swift */,
-				5E429753233EC420002AAB7A /* ObservableProperty.swift */,
-				5E429754233EC420002AAB7A /* Event.swift */,
-				5E429755233EC420002AAB7A /* Event.ext.swift */,
-				5E429756233EC420002AAB7A /* MutableObservableProperty.swift */,
-				5E429757233EC420002AAB7A /* TransformedEvent.swift */,
-				5E429758233EC420002AAB7A /* StandardObservableProperty.swift */,
-				5E429759233EC420002AAB7A /* ObservableStack.swift */,
 				5E42975A233EC420002AAB7A /* Close.swift */,
-				5E42975B233EC420002AAB7A /* TransformedMutableObservableProperty.swift */,
-				5E42975C233EC420002AAB7A /* NeverEvent.swift */,
-				5E42975D233EC420002AAB7A /* StandardEvent.swift */,
-				5E42975E233EC420002AAB7A /* ObservableProperty.ext.swift */,
 				5E42975F233EC420002AAB7A /* ConstantObservableProperty.swift */,
+				5E5F673B2347D7BF0090384F /* Event.ext.swift */,
+				5E429754233EC420002AAB7A /* Event.swift */,
+				5E429756233EC420002AAB7A /* MutableObservableProperty.swift */,
+				5E42975C233EC420002AAB7A /* NeverEvent.swift */,
+				5E42975E233EC420002AAB7A /* ObservableProperty.ext.swift */,
+				5E429753233EC420002AAB7A /* ObservableProperty.swift */,
+				5E429759233EC420002AAB7A /* ObservableStack.swift */,
+				5E42975D233EC420002AAB7A /* StandardEvent.swift */,
+				5E429758233EC420002AAB7A /* StandardObservableProperty.swift */,
+				5E429757233EC420002AAB7A /* TransformedEvent.swift */,
+				5E42975B233EC420002AAB7A /* TransformedMutableObservableProperty.swift */,
+				5E429752233EC420002AAB7A /* TransformedObservableProperty.swift */,
 			);
 			path = shared;
 			sourceTree = "<group>";
@@ -687,12 +687,12 @@
 				5E4297D9233EC420002AAB7A /* UIView.focus.swift in Sources */,
 				5E4297A2233EC420002AAB7A /* UISegmentedControl+bind.swift in Sources */,
 				5E4297CA233EC420002AAB7A /* SelectDateRangeMonthView.swift in Sources */,
+				5E5F673C2347D7BF0090384F /* Event.ext.swift in Sources */,
 				5E4297BD233EC420002AAB7A /* ConstantObservableProperty.swift in Sources */,
 				5E4297AD233EC420002AAB7A /* SelectDayView+binding.swift in Sources */,
 				5E42979C233EC420002AAB7A /* UIRatingBar+binding.swift in Sources */,
 				5E4297B9233EC420002AAB7A /* TransformedMutableObservableProperty.swift in Sources */,
 				5E4297AA233EC420002AAB7A /* UILabel+binding.swift in Sources */,
-				5E4297B3233EC420002AAB7A /* Event.ext.swift in Sources */,
 				5E4297DD233EC420002AAB7A /* UIColor.ext.swift in Sources */,
 				5E4297E3233EC420002AAB7A /* onLayoutSubviewsSwizzle.swift in Sources */,
 				5E4297D8233EC420002AAB7A /* UILabel+lineSpacingMultiplier.swift in Sources */,

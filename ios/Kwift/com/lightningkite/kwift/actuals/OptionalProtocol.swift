@@ -8,11 +8,11 @@
 
 import Foundation
 
-protocol OptionalProtocol {
+public protocol OptionalProtocol {
     var finalValue: Any { get }
 }
 extension Optional: OptionalProtocol {
-    var finalValue: Any {
+    public var finalValue: Any {
         get {
             switch(self){
             case Optional.none:

@@ -12,7 +12,7 @@ import KeychainAccess
 
 public enum SecurePreferences {
     
-    static var keychain = Keychain(accessGroup: (Bundle.main.bundleIdentifier ?? "com.lightningkite.kwift.unknownApp") + ".securePreferences")
+    public static var keychain = Keychain(accessGroup: (Bundle.main.bundleIdentifier ?? "com.lightningkite.kwift.unknownApp") + ".securePreferences")
     
     public static func setKeychainAccessGroup(_ name: String) {
         print("Access name is now " + name)

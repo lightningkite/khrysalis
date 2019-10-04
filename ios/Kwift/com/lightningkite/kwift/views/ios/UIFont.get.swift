@@ -11,17 +11,17 @@ import UIKit
 
 
 extension UIFont {
-    
-    static func list() {
+
+    static public func list() {
         for family in UIFont.familyNames.sorted() {
             let names = UIFont.fontNames(forFamilyName: family)
             print("Family: \(family) Font names: \(names)")
         }
     }
-    
+
     static var customFont: String?
-    
-    static func get(size: CGFloat, style: Array<String>) -> UIFont {
+
+    static public func get(size: CGFloat, style: Array<String>) -> UIFont {
         if style.contains("bold") {
             if style.contains("italic") {
                 if let customFont = customFont {

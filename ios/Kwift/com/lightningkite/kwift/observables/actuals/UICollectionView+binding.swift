@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 
-extension UICollectionView {
+public extension UICollectionView {
     func bind<T>(
         _ items: Array<T>,
         _ showIndex: MutableObservableProperty<Int32> = StandardObservableProperty(0),
@@ -32,7 +32,7 @@ extension UICollectionView {
         )
         bindIndex(showIndex)
     }
-    
+
     func bindRefresh(_ loading: ObservableProperty<Bool>, _ onRefresh: @escaping () -> Void) {
         return bindRefresh(loading: loading, onRefresh: onRefresh)
     }
@@ -52,11 +52,11 @@ extension UICollectionView {
             }
         }
     }
-    
+
     var currentIndex: Int? {
         return self.indexPathForItem(at: CGPoint(x: self.contentOffset.x + self.bounds.size.width / 2, y: self.contentOffset.y + self.bounds.size.height / 2))?.row
     }
-    
+
     func bindIndex(_ index: MutableObservableProperty<Int32>){
         var suppress = false
         index.addAndRunWeak(self) { this, value in
@@ -75,19 +75,19 @@ extension UICollectionView {
             suppress = false
         }
     }
-    
+
     func whenScrolledToEnd(action: @escaping ()->Void) {
         if let delegate = delegate as? HasAtEnd {
             delegate.setAtEnd(action: action)
         }
     }
-    
+
     func whenScrolled(action: @escaping (_ index: Int32)->Void) {
         if var delegate = delegate as? HasAtPosition {
             delegate.atPosition = action
         }
     }
-    
+
     func bind<T>(
         data: ObservableProperty<[T]>,
         defaultValue: T,
@@ -99,7 +99,7 @@ extension UICollectionView {
         dataSource = boundDataSource
         delegate = boundDataSource
         retain(as: "boundDataSource", item: boundDataSource)
-        
+
         var previouslyEmpty = data.value.isEmpty
         data.addAndRunWeak(self) { this, value in
             let emptyNow = data.value.isEmpty
@@ -119,7 +119,7 @@ extension UICollectionView {
             previouslyEmpty = emptyNow
         }
     }
-    
+
     func bind(
         count: Int32,
         spacing: CGFloat = 0,
@@ -136,16 +136,16 @@ extension UICollectionView {
 class CustomUICollectionViewCell: UICollectionViewCell {
     var obs: Any?
     var spacing: CGFloat = 0
-    
+
     override init(frame: CGRect) {
         super.init(frame: frame)
     }
-    
+
     required init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
-    
-    override func layoutSubviews() {
+
+    override public func layoutSubviews() {
         super.layoutSubviews()
         contentView.frame = self.bounds.insetBy(dx: spacing, dy: spacing)
         for child in contentView.subviews {
@@ -160,13 +160,13 @@ protocol HasAtPosition {
 }
 
 class CollectionBoundDataSource<T>: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, HasAtEnd, HasAtPosition {
-    
+
     var source: ObservableProperty<[T]>
     let makeView: (ObservableProperty<T>) -> UIView
     let defaultValue: T
     var atEnd: () -> Void = {}
     let spacing: CGFloat
-    
+
     init(source: ObservableProperty<[T]>, defaultValue: T, spacing: CGFloat, makeView: @escaping (ObservableProperty<T>) -> UIView) {
         self.source = source
         self.spacing = spacing
@@ -174,17 +174,17 @@ class CollectionBoundDataSource<T>: NSObject, UICollectionViewDataSource, UIColl
         self.defaultValue = defaultValue
         super.init()
     }
-    
+
     func setAtEnd(action: @escaping () -> Void) {
         self.atEnd = action
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         let value = self.source.value
         let count = value.count
         return count
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if indexPath.row >= (source.value.count) - 1 {
             atEnd()
@@ -203,7 +203,7 @@ class CollectionBoundDataSource<T>: NSObject, UICollectionViewDataSource, UIColl
         }
         return cell
     }
-    
+
     var atPosition: (Int32) -> Void = { _ in }
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         let collectionView = scrollView as! UICollectionView
@@ -211,12 +211,12 @@ class CollectionBoundDataSource<T>: NSObject, UICollectionViewDataSource, UIColl
             atPosition(Int32(x))
         }
     }
-    
+
 }
 
 
 class CollectionSimpleDataSource: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, HasAtEnd, HasAtPosition {
-    
+
     var atPosition: (Int32) -> Void = { _ in }
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         let collectionView = scrollView as! UICollectionView
@@ -224,27 +224,27 @@ class CollectionSimpleDataSource: NSObject, UICollectionViewDataSource, UICollec
             atPosition(Int32(x))
         }
     }
-    
+
     var count: Int32
     let makeView: (Int32) -> UIView
     var atEnd: () -> Void = {}
     let spacing: CGFloat
-    
+
     init(count: Int32, spacing: CGFloat, makeView: @escaping (Int32) -> UIView) {
         self.count = count
         self.spacing = spacing
         self.makeView = makeView
         super.init()
     }
-    
+
     func setAtEnd(action: @escaping () -> Void) {
         self.atEnd = action
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
         return Int(count)
     }
-    
+
     func collectionView(_ collectionView: UICollectionView, cellForItemAt indexPath: IndexPath) -> UICollectionViewCell {
         if indexPath.row >= count - 1 {
             atEnd()
@@ -257,5 +257,5 @@ class CollectionSimpleDataSource: NSObject, UICollectionViewDataSource, UICollec
         cell.setNeedsLayout()
         return cell
     }
-    
+
 }

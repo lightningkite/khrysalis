@@ -9,7 +9,7 @@
 import Foundation
 import UIKit
 
-extension UIView {
+public extension UIView {
     private static let extensionBackgroundLayer = ExtensionProperty<UIView, CALayer>()
     var backgroundLayer: CALayer? {
         set(value){

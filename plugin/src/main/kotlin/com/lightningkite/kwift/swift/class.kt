@@ -224,7 +224,10 @@ fun SwiftAltListener.registerClass() {
                         append("override ")
                     }
                 }
-                append("public init(")
+                append(item.modifiers().visibilityString().let {
+                    if(it == "open") "public" else it
+                })
+                append(" init(")
                 item.primaryConstructor()?.classParameters()?.classParameter()?.forEachBetween(
                     forItem = {
                         append(it.simpleIdentifier().text)

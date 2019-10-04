@@ -10,11 +10,11 @@ import UIKit
 
 
 extension UIImage {
-    func withInsets(insetDimen: CGFloat) -> UIImage {
+    public func withInsets(insetDimen: CGFloat) -> UIImage {
         return withInset(insets: UIEdgeInsets(top: insetDimen, left: insetDimen, bottom: insetDimen, right: insetDimen))
     }
-    
-    func withInset(insets: UIEdgeInsets) -> UIImage {
+
+    public func withInset(insets: UIEdgeInsets) -> UIImage {
         UIGraphicsBeginImageContextWithOptions(
             CGSize(width: self.size.width + insets.left + insets.right,
                    height: self.size.height + insets.top + insets.bottom), false, self.scale)
@@ -24,5 +24,5 @@ extension UIImage {
         UIGraphicsEndImageContext()
         return imageWithInsets!
     }
-    
+
 }

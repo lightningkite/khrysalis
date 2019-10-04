@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 
-extension UISlider {
+public extension UISlider {
     func bind(_ start: Int32, _ endInclusive: Int32, _ observable: MutableObservableProperty<Int32>) {
         bind(start: start, endInclusive: endInclusive, observable: observable)
     }

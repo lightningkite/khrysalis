@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 
-extension UILabel {
+public extension UILabel {
     func bindString(_ observable: ObservableProperty<String>) {
         return bindString(observable: observable)
     }
@@ -22,7 +22,7 @@ extension UILabel {
             this.relayoutFlexClimbToXml()
         }
     }
-    
+
     func bindText<T>(_ observable: ObservableProperty<T>, _ transform: @escaping (T) -> String) {
         return bindText(observable: observable, transform: transform)
     }
@@ -35,7 +35,7 @@ extension UILabel {
             this.relayoutFlexClimbToXml()
         }
     }
-    
+
     func bindStringRes(_ observableReference: ObservableProperty<StringReference?>) {
         return bindStringRes(observableReference: observableReference)
     }

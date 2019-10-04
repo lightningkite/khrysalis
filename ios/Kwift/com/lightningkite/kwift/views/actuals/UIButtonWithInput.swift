@@ -10,17 +10,17 @@ import Foundation
 import UIKit
 
 
-class UIButtonWithInput: UIButton {
+public class UIButtonWithInput: UIButton {
     private var underlyingInputAccessoryView: UIView? = nil
     private var underlyingCanBecomeFirstResponder: Bool = true
-    
-    override var inputAccessoryView: UIView? {
+
+    override public var inputAccessoryView: UIView? {
         get { return underlyingInputAccessoryView }
         set(value) {
             underlyingInputAccessoryView = value
         }
     }
-    override var canBecomeFirstResponder: Bool {
+    override public var canBecomeFirstResponder: Bool {
         get { return underlyingCanBecomeFirstResponder }
         set(value) {
             underlyingCanBecomeFirstResponder = value

@@ -9,6 +9,9 @@ fun SwiftAltListener.registerFile(){
         line("//Converted using Kwift2")
         line("")
         line("import Foundation")
+        for(import in this@registerFile.imports){
+            line("import $import")
+        }
         line("")
         line("")
         for (obj in item.topLevelObject()){

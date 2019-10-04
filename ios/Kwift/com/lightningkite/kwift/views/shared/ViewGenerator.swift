@@ -5,13 +5,13 @@ import Foundation
 
 
 
-public class ViewGenerator {
+open class ViewGenerator {
     
     
-    public var title: String { get { fatalError() } }
+    open var title: String { get { fatalError() } }
     
-    public func generate(dependency: ViewDependency) -> View { fatalError() }
-    public func generate(_ dependency: ViewDependency) -> View { fatalError() }
+    open func generate(dependency: ViewDependency) -> View { fatalError() }
+    open func generate(_ dependency: ViewDependency) -> View { fatalError() }
     
     public init() {
     }

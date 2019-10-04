@@ -11,6 +11,7 @@ class SwiftAltListener {
     var interfaces: Map<String, InterfaceListener.InterfaceData> = mapOf()
     var currentFile: KotlinParser.KotlinFileContext? = null
     var filterEscapingAnnotation: Boolean = false
+    var imports = listOf<String>()
 
     fun KotlinParser.ClassDeclarationContext.implements(): Sequence<InterfaceListener.InterfaceData>{
         val currentFile = currentFile ?: return sequenceOf()

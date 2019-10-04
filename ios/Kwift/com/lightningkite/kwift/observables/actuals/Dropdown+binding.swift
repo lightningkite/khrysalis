@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 
-extension Dropdown {
+public extension Dropdown {
     func bind<T: Equatable>(
         options: ObservableProperty<[T]>,
         selected: MutableObservableProperty<T>,
@@ -20,7 +20,7 @@ extension Dropdown {
         self.dataSource = boundDataSource
         self.delegate = boundDataSource
         retain(as: "boundDataSource", item: boundDataSource)
-        
+
         options.addAndRunWeak(self) { this, value in
             this.pickerView.reloadAllComponents()
         }
@@ -39,25 +39,25 @@ class PickerBoundDataSource<T, VIEW: UIView>: NSObject, UIPickerViewDataSource, 
     weak var data: ObservableProperty<[T]>?
     weak var selected: MutableObservableProperty<T>?
     let makeView: (ObservableProperty<T>) -> UIView
-    
+
     private var ext = ExtensionProperty<UIView, MutableObservableProperty<T>>()
-    
+
     init(data: ObservableProperty<[T]>, selected: MutableObservableProperty<T>, makeView: @escaping (ObservableProperty<T>) -> UIView) {
         self.data = data
         self.selected = selected
         self.makeView = makeView
         super.init()
     }
-    
+
     func numberOfComponents(in pickerView: UIPickerView) -> Int {
         return 1
     }
-    
+
     func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
         let options = data?.value
         return options?.count ?? 0
     }
-    
+
     func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
         guard let selected = selected else { return UIView(frame: .zero) }
         let v = view ?? {
@@ -71,11 +71,11 @@ class PickerBoundDataSource<T, VIEW: UIView>: NSObject, UIPickerViewDataSource, 
         }
         return v
     }
-    
+
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
         if let selected = selected, let data = data {
             selected.value = data.value[row]
         }
     }
-    
+
 }

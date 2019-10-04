@@ -63,20 +63,20 @@ dependencies {
     androidTestImplementation("com.android.support.test.espresso:espresso-core:3.0.2")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version")
     implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version")
-    implementation("androidx.appcompat:appcompat:1.1.0")
-    implementation("com.google.android.material:material:1.0.0")
-    implementation("com.android.support.constraint:constraint-layout:1.1.3")
-    implementation("androidx.recyclerview:recyclerview:1.0.0")
-    implementation("com.fasterxml.jackson.core:jackson-core:2.9.9")
-    implementation("com.fasterxml.jackson.core:jackson-annotations:2.9.7")
-    implementation("com.fasterxml.jackson.core:jackson-databind:2.9.9")
-    implementation("com.squareup.okhttp3:okhttp:3.12.0")
-    implementation("de.hdodenhof:circleimageview:2.2.0")
-    implementation("br.com.simplepass:loading-button-android:1.14.0")
-    implementation("com.squareup.picasso:picasso:2.71828")
-    implementation("com.romandanylyk:pageindicatorview:1.0.3")
-    implementation("com.theartofdev.edmodo:android-image-cropper:2.7.0")
-    implementation("com.github.marcoscgdev:Android-Week-View:1.2.7")
+    api("androidx.appcompat:appcompat:1.1.0")
+    api("com.google.android.material:material:1.0.0")
+    api("com.android.support.constraint:constraint-layout:1.1.3")
+    api("androidx.recyclerview:recyclerview:1.0.0")
+    api("com.fasterxml.jackson.core:jackson-core:2.9.9")
+    api("com.fasterxml.jackson.core:jackson-annotations:2.9.7")
+    api("com.fasterxml.jackson.core:jackson-databind:2.9.9")
+    api("com.squareup.okhttp3:okhttp:3.12.0")
+    api("de.hdodenhof:circleimageview:2.2.0")
+    api("br.com.simplepass:loading-button-android:1.14.0")
+    api("com.squareup.picasso:picasso:2.71828")
+    api("com.romandanylyk:pageindicatorview:1.0.3")
+    api("com.theartofdev.edmodo:android-image-cropper:2.7.0")
+    api("com.github.marcoscgdev:Android-Week-View:1.2.7")
 }
 
 tasks.create("sourceJar", Jar::class) {
@@ -98,13 +98,13 @@ publishing {
 
 KwiftSettings.verbose = true
 
-val androidBase = File(".")
-val iosBase = File("../ios/kwift")
+val androidBase = project.projectDir
+val iosBase = project.projectDir.resolve("../ios/Kwift")
 
 tasks.create("kwiftConvertKotlinToSwift") {
     this.group = "build"
     doLast {
-        println("Started")
+        println("Started on $androidBase")
         convertKotlinToSwift(
                 androidFolder = androidBase,
                 iosFolder = iosBase,

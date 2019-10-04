@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 
-func delay(milliseconds: Int64, action: @escaping ()->Void) {
+public func delay(milliseconds: Int64, action: @escaping ()->Void) {
     if milliseconds == 0 {
         action()
     } else {
@@ -18,6 +18,6 @@ func delay(milliseconds: Int64, action: @escaping ()->Void) {
     }
 }
 
-func delay(_ milliseconds: Int64, action: @escaping ()->Void) {
+public func delay(_ milliseconds: Int64, action: @escaping ()->Void) {
     delay(milliseconds: milliseconds, action: action)
 }

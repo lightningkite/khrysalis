@@ -9,13 +9,13 @@
 import Foundation
 import UIKit
 
-class PreviewVariedFlipper: UIView {
-    
+public class PreviewVariedFlipper: UIView {
+
     var current = Int(arc4random())
-    
-    override func layoutSubviews() {
+
+    override public func layoutSubviews() {
         super.layoutSubviews()
-        
+
         for child in subviews {
             child.isHidden = true
         }

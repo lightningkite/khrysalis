@@ -25,6 +25,7 @@ fun Map<String, String>.writeXMLDimen(): String {
         appendln("")
         appendln("import Foundation")
         appendln("import UIKit")
+        appendln("import Kwift")
         appendln("")
         appendln("")
         appendln("public enum ResourcesDimensions {")

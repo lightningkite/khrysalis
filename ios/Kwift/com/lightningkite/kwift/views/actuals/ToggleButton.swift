@@ -10,9 +10,9 @@ import Foundation
 import UIKit
 
 
-class ToggleButton: UIButton, CompoundButton {
-    var onCheckChanged: (Bool) -> Void = { _ in }
-    var isOn: Bool = false {
+public class ToggleButton: UIButton, CompoundButton {
+    public var onCheckChanged: (Bool) -> Void = { _ in }
+    public var isOn: Bool = false {
         didSet {
             self.isSelected = isOn
             onCheckChanged(isOn)

@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 import QVRWeekView
 
-extension UIWeekView {
+public extension UIWeekView {
     func bind(
         _ data: ObservableProperty<(Date, Date) -> Array<WeekViewEvent>>,
         _ onEventClick: @escaping (WeekViewEvent) -> Void,
@@ -29,7 +29,7 @@ extension UIWeekView {
         }
         self.delegate = delegate
         self.retain(as: "delegate", item: delegate)
-        
+
         self.zoomOffsetPreservation = .reset
         self.eventStyleCallback = { (layer, data) in
 //            layer.borderWidth = 2.0
@@ -42,13 +42,13 @@ extension UIWeekView {
         self.showToday()
         self.notifyDataSetChanged()
     }
-    
+
     class BindDelegate: WeekViewDelegate {
-        
+
         let data: (Date, Date) -> Array<WeekViewEvent>
         let onEventClick: (WeekViewEvent) -> Void
         let onEmptyClick: (Date) -> Void
-        
+
         init(
             data: @escaping (Date, Date) -> Array<WeekViewEvent>,
             onEventClick: @escaping (WeekViewEvent) -> Void,
@@ -58,17 +58,17 @@ extension UIWeekView {
             self.onEventClick = onEventClick
             self.onEmptyClick = onEmptyClick
         }
-        
-        func didLongPressDayView(in weekView: WeekView, atDate date: Date) {
+
+        public func didLongPressDayView(in weekView: WeekView, atDate date: Date) {
             onEmptyClick(date)
             weekView.notifyDataSetChanged()
         }
-        
-        func didTapEvent(in weekView: WeekView, withId eventId: String) {
+
+        public func didTapEvent(in weekView: WeekView, withId eventId: String) {
             onEventClick(weekView.allVisibleEvents.find { $0.id == eventId }!)
         }
-        
-        func eventLoadRequest(in weekView: WeekView, between startDate: Date, and endDate: Date) {
+
+        public func eventLoadRequest(in weekView: WeekView, between startDate: Date, and endDate: Date) {
             print("--- Loading from \(startDate) to \(endDate)")
             weekView.loadEvents(withData: data(startDate, endDate))
         }

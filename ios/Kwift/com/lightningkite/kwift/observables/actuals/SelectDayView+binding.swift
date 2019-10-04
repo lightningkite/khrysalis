@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 
-extension SelectDayView {
+public extension SelectDayView {
     func bind(_ day: MutableObservableProperty<Date?>) {
         return bind(day: day)
     }

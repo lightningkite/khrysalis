@@ -8,12 +8,12 @@
 
 import Foundation
 
-func TODO(_ message: String = ""){
+public func TODO(_ message: String = ""){
     //Throw execption
     fatalError(message)
 }
 
-extension Sequence {
+public extension Sequence {
     func mapNotNull<OUT>(transform: (Element)->OUT?) -> Array<OUT> {
         var newArray = Array<OUT>()
         for element in self {
@@ -25,7 +25,7 @@ extension Sequence {
     }
 }
 
-extension Array {
+public extension Array {
     func isEmpty() -> Bool {
         return self.isEmpty
     }
@@ -69,7 +69,7 @@ extension Array {
     }
 }
 
-extension Array where Element: Equatable {
+public extension Array where Element: Equatable {
     mutating func remove(_ element: Element) {
         let index = self.firstIndex(where: { sub in
             sub == element
@@ -90,7 +90,7 @@ extension Array where Element: Equatable {
     }
 }
 
-extension Array {
+public extension Array {
     func find(_ predicate: (Element) -> Bool) -> Element? {
         return first(where: predicate)
     }
@@ -114,14 +114,14 @@ extension Array {
     }
 }
 
-extension Array where Element == String {
+public extension Array where Element == String {
     func joinToString(_ between: String = ", ") -> String {
         return self.joined(separator: between)
     }
     
 }
 
-extension Dictionary {
+public extension Dictionary {
     var size: Int32 { return Int32(self.count) }
     mutating func put(_ key: Key, _ value: Value) {
         self[key] = value
@@ -139,7 +139,7 @@ extension Dictionary {
     }
 }
 
-extension Set {
+public extension Set {
     var size: Int32 { return Int32(self.count) }
     mutating func add(_ element: Element) {
         self.insert(element)
@@ -157,7 +157,7 @@ extension Set {
     }
 }
 
-extension String {
+public extension String {
     var length: Int32 { return Int32(count) }
     
     func substring(_ startIndex: Int32, _ endIndex: Int32? = nil) -> String {
@@ -240,7 +240,7 @@ extension String {
 }
 
 
-extension StringProtocol {
+public extension StringProtocol {
     func indexOf(_ string: Self, _ startIndex: Int32 = 0, _ ignoreCase: Bool = true) -> Int32 {
         var options: String.CompareOptions = .literal
         if ignoreCase {
@@ -256,9 +256,9 @@ extension StringProtocol {
 }
 
 
-protocol _StringType { }
+public protocol _StringType { }
 extension String: _StringType { }
-extension Array where Element: _StringType {
+public extension Array where Element: _StringType {
     func joinToString(_ separator: String = "") -> String {
         var retval = ""
         var first = true
@@ -275,50 +275,50 @@ extension Array where Element: _StringType {
     }
 }
 
-extension CustomStringConvertible {
+public extension CustomStringConvertible {
     func toString() -> String {
         return String(describing: self)
     }
 }
 
-extension NSObject {
+public extension NSObject {
     func toString() -> String {
         return String(describing: self)
     }
 }
 
-extension FixedWidthInteger {
+public extension FixedWidthInteger {
     func toString() -> String {
         return String(describing: self)
     }
 }
 
-extension String {
+public extension String {
     func toString() -> String {
         return String(describing: self)
     }
 }
 
-class System {
-    static func currentTimeMillis() -> Int64 {
+public class System {
+    public static func currentTimeMillis() -> Int64 {
         return (Int64) (NSDate().timeIntervalSince1970 * 1000.0)
     }
 }
 
-enum KotlinStyleError : Error {
+public enum KotlinStyleError : Error {
     case Exception(message: String)
     case IllegalStateException(message: String)
     case IllegalArgumentException(message: String)
 }
 
-func Exception(_ message: String) -> KotlinStyleError {
+public func Exception(_ message: String) -> KotlinStyleError {
     return KotlinStyleError.Exception(message: message)
 }
 
-func IllegalStateException(_ message: String) -> KotlinStyleError {
+public func IllegalStateException(_ message: String) -> KotlinStyleError {
     return KotlinStyleError.IllegalStateException(message: message)
 }
 
-func IllegalArgumentException(_ message: String) -> KotlinStyleError {
+public func IllegalArgumentException(_ message: String) -> KotlinStyleError {
     return KotlinStyleError.IllegalArgumentException(message: message)
 }

@@ -12,7 +12,7 @@ import Alamofire
 import AlamofireImage
 
 
-extension UIImageView {
+public extension UIImageView {
     func af_setImageProgress(
         withURL url: URL,
         placeholderImage: UIImage? = nil,
@@ -41,7 +41,7 @@ extension UIImageView {
         }
         )
     }
-    
+
     func loadUrl(_ imageUrl: String?) {
         return loadUrl(imageUrl: imageUrl)
     }
@@ -50,7 +50,7 @@ extension UIImageView {
             af_setImageProgress(withURL: url, placeholderImage: nil, imageTransition: .noTransition, runImageTransitionIfCached: false, completion: nil)
         }
     }
-    
+
     func loadUrl(_ imageUrl: ObservableProperty<String?>) {
         loadUrl(imageUrl: imageUrl)
     }
@@ -59,7 +59,7 @@ extension UIImageView {
             self.loadUrl(it)
         }
     }
-    
+
     func loadUrlNotNull(_ imageUrl: ObservableProperty<String>) {
         loadUrlNotNull(imageUrl: imageUrl)
     }

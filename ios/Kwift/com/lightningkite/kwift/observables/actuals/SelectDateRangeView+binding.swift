@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 
-extension SelectDateRangeView {
+public extension SelectDateRangeView {
     func bind(_ start: MutableObservableProperty<Date?>, _ endInclusive: MutableObservableProperty<Date?>) {
         return bind(start: start, endInclusive: endInclusive)
     }

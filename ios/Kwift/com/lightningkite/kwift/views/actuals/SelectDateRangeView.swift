@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 
-class SelectDateRangeView : AbstractCalendarView {
+public class SelectDateRangeView : AbstractCalendarView {
     var start: MutableObservableProperty<Date?> = StandardObservableProperty(nil) {
         didSet {
             self.refresh()
@@ -22,7 +22,7 @@ class SelectDateRangeView : AbstractCalendarView {
         }
     }
     override var ignoreDragOnDay: Bool { return false }
-    override func makeChildView() -> QuickMonthView {
+    override public func makeChildView() -> QuickMonthView {
         let v = SelectDateRangeMonthView(frame: .zero)
         v.start = start
         v.endInclusive = endInclusive

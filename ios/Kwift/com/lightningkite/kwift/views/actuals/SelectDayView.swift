@@ -10,14 +10,14 @@ import Foundation
 import UIKit
 
 
-class SelectDayView : AbstractCalendarView {
+public class SelectDayView : AbstractCalendarView {
     var selected: MutableObservableProperty<Date?> = StandardObservableProperty(nil) {
         didSet {
             self.refresh()
         }
     }
     override var ignoreDragOnDay: Bool { return true }
-    override func makeChildView() -> QuickMonthView {
+    override public func makeChildView() -> QuickMonthView {
         let v = SelectDayMonthView(frame: .zero)
         v.selected = selected
         return v

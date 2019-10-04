@@ -10,8 +10,8 @@ import Foundation
 import UIKit
 
 
-extension UITextField {
-    
+public extension UITextField {
+
     func bindString(_ observable: MutableObservableProperty<String>) { bindString(observable: observable) }
     func bindString(observable: MutableObservableProperty<String>) {
         delegate = DoneDelegate.shared
@@ -28,7 +28,7 @@ extension UITextField {
             }
         }
     }
-    
+
     func bindDouble(_ observable: MutableObservableProperty<Double>) { bindDouble(observable: observable) }
     func bindDouble(observable: MutableObservableProperty<Double>) {
         delegate = DoneDelegate.shared
@@ -49,7 +49,7 @@ extension UITextField {
             }
         }
     }
-    
+
     func bindInteger(_ observable: MutableObservableProperty<Int>) { bindInteger(observable: observable) }
     func bindInteger(observable: MutableObservableProperty<Int>) {
         delegate = DoneDelegate.shared

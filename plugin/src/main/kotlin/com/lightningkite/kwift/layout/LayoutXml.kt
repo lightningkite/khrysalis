@@ -31,6 +31,7 @@ fun File.translateLayoutXml(styles: Styles, converter: LayoutConverter = LayoutC
         import UIKit
         import FlexLayout
         import PinLayout
+        import Kwift
 
         class ${name}Xml {
 

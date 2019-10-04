@@ -8,7 +8,7 @@
 
 import Foundation
 
-extension String {
+public extension String {
     
     fileprivate static let humanifyRegex: NSRegularExpression = { ()->NSRegularExpression in
         do {
@@ -18,7 +18,7 @@ extension String {
             fatalError(String(describing: error))
         }
     }()
-    func humanify() -> String {
+    public func humanify() -> String {
         if self.isEmpty { return "" }
         let step1 = self.replace("_", " ").replace(".", " - ")
         return String.humanifyRegex.stringByReplacingMatches(
@@ -39,10 +39,10 @@ extension String {
         }
     }()
     
-    func formatList(arguments: Array<Any>) -> String {
+    public func formatList(arguments: Array<Any>) -> String {
         return formatList(arguments)
     }
-    func formatList(_ arguments: Array<Any>) -> String {
+    public func formatList(_ arguments: Array<Any>) -> String {
         let fixedArgs: Array<CVarArg> = arguments.filter { $0 is CVarArg }.map { $0 as! CVarArg }
         let fixedTemplate = String.fixTemplateRegex.stringByReplacingMatches(in: self, options: [], range: NSMakeRange(0, self.count), withTemplate: "%$1@")
         return String(format: fixedTemplate, arguments: fixedArgs)

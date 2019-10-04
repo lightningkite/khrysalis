@@ -9,13 +9,13 @@
 import Foundation
 import UIKit
 
-protocol CompoundButton: AnyObject {
+public protocol CompoundButton: AnyObject {
     var onCheckChanged: (Bool) -> Void { get set }
     var isOn: Bool { get set }
 }
 
 extension UISwitch : CompoundButton {
-    var onCheckChanged: (Bool) -> Void {
+    public var onCheckChanged: (Bool) -> Void {
         get{
             return { _ in }
         }

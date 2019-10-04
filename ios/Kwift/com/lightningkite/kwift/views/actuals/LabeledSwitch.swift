@@ -10,20 +10,20 @@ import UIKit
 import FlexLayout
 
 
-class LabeledSwitch : UIView {
-    
-    let switchView: UISwitch = UISwitch(frame: CGRect.zero)
-    let labelView: UILabel = UILabel(frame: CGRect.zero)
-    
-    override init(frame: CGRect) {
+public class LabeledSwitch : UIView {
+
+    public let switchView: UISwitch = UISwitch(frame: CGRect.zero)
+    public let labelView: UILabel = UILabel(frame: CGRect.zero)
+
+    override public init(frame: CGRect) {
         super.init(frame: frame)
         labelView.numberOfLines = 0
         flex.direction(.row).alignContent(.center)
         flex.addItem(labelView).grow(1).marginRight(8)
         flex.addItem(switchView)
     }
-    
-    required init?(coder aDecoder: NSCoder) {
+
+    required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
     }
 }

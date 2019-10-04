@@ -1,37 +1,62 @@
+//Package: com.test
+//Converted using Kwift2
+
 import Foundation
-//package com.test
 
 
-func lambdaTest() {
-    takesLambda(lambda : { (integer, someValue) in
+
+public func lambdaTest() -> Void {
+    takesLambda(lambda: { (integer, someValue) in 
         print("Hello!")
     })
-    takesLambda { (integer, someValue) in
+    takesLambda{ (integer, someValue) in 
         print("Hello!")
     }
 }
+ 
+ 
 
-func takesLambda(lambda: (Int, String) -> Void) {
-    
+public func takesLambda(lambda: (integer: Int32, someValue: String) -> Void) -> Void {
 }
+ 
+ 
 
-func takesEscapingLambda( lambda: @escaping (Int, String) -> Void) {
-    
+public func takesEscapingLambda(lambda: @escaping (integer: Int32, someValue: String) -> Void) -> Void {
 }
+ 
+ 
 
-final public class ConstructorHasEscaping {
+public func takesEscapingLambda2(lambda: (@escaping (integer: Int32, someValue: String) -> Void)) -> Void {
+}
+ 
+ 
+
+public class ConstructorHasEscaping {
     
-    public var lambda: (Int, String) -> Void
+    public var lambda:  (integer: Int32, someValue: String) -> Void
     
-    init( lambda: @escaping (Int, String) -> Void) {
+    
+    open init(lambda: @escaping (integer: Int32, someValue: String) -> Void) {
         self.lambda = lambda
     }
-    convenience init(
-        _ lambda: @escaping (Int, String) -> Void
-    ){ 
-        self.init(
-            lambda: lambda
-        ) 
+    convenience public init(_ lambda: @escaping (integer: Int32, someValue: String) -> Void) {
+        self.init(lambda: lambda)
     }
-    
 }
+ 
+ 
+ 
+
+public class ConstructorHasEscaping2 {
+    
+    public var lambda: ( (integer: Int32, someValue: String) -> Void)
+    
+    
+    open init(lambda: (@escaping (integer: Int32, someValue: String) -> Void)) {
+        self.lambda = lambda
+    }
+    convenience public init(_ lambda: (@escaping (integer: Int32, someValue: String) -> Void)) {
+        self.init(lambda: lambda)
+    }
+}
+ 
