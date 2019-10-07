@@ -1,6 +1,7 @@
 package com.lightningkite.kwift.layout
 
 import com.lightningkite.kwift.utils.*
+import kotlin.math.PI
 
 val LayoutConverter.Companion.normal get() = LayoutConverter(
     viewTypes = ViewType.mapOf(
@@ -50,6 +51,9 @@ val LayoutConverter.Companion.normal get() = LayoutConverter(
             val paddingRight = (node.attributeAsDimension("android:paddingRight") ?: defaultPadding)
             appendln("view.layoutMargins = UIEdgeInsets(top: $paddingTop, left: $paddingLeft, bottom: $paddingBottom, right: $paddingRight)")
 
+            node.attributeAsDouble("android:rotation")?.let {
+                appendln("view.transform = CGAffineTransform(rotationAngle: ${it * PI / 180.0})")
+            }
         },
 
 
@@ -77,6 +81,9 @@ val LayoutConverter.Companion.normal get() = LayoutConverter(
                     else -> ".scaleAspectFit"
                 }}"
             )
+//            node.attributeAsDouble("android:rotation")?.let{
+//                "view.transform = CGAffineTransform(rotationAngle: ${it * PI / 180.0}"
+//            }
         },
         ViewType("de.hdodenhof.circleimageview.CircleImageView", "UIImageView", "ImageView") { node ->
 
