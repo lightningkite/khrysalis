@@ -5,7 +5,6 @@ import com.lightningkite.kwift.swift.TabWriter
 import com.lightningkite.kwift.utils.XmlNode
 import com.lightningkite.kwift.utils.attributeAsString
 import com.lightningkite.kwift.utils.camelCase
-import com.lightningkite.kwift.utils.forEachBetween
 import java.io.File
 
 private val warning = "Any changes made to this file will be overridden unless this comment is removed. "
@@ -90,6 +89,7 @@ internal fun createPrototypeVG(
                     line("val parentXml = xml")
                     line("val view = xml.setup(dependency)")
                     line("val s by weak(this)")
+                    line("val self = this")
                     line("")
 
                     fun handleNode(node: XmlNode) {
@@ -154,7 +154,7 @@ internal fun createPrototypeVG(
                                 val makeView = makeView(otherViewNode, stackName)
                                 line("xml.$view.onClick(captureWeak(this){ self -> self.$stackName.swap($makeView) })")
                             }
-                            node.attributes[ViewNode.attributeRoot]?.let {
+                            node.attributes[ViewNode.attributeReset]?.let {
                                 val otherViewNode =
                                     viewNodeMap[it.removePrefix("@layout/").camelCase().capitalize()] ?: return@let
                                 val stackName = node.attributes[ViewNode.attributeOnStack] ?: "stack"
@@ -165,14 +165,13 @@ internal fun createPrototypeVG(
                                 val stackName = node.attributes[ViewNode.attributeOnStack] ?: "stack"
                                 line("xml.$view.onClick(captureWeak(this){ self -> self.$stackName.pop() })")
                             }
-                            node.attributes[ViewNode.attributeStackId]?.let {
-                                val stackName = node.attributes[ViewNode.attributeOnStack] ?: return@let
+                            node.attributes[ViewNode.attributeStackId]?.let { stackName ->
                                 node.attributes[ViewNode.attributeStackDefault]?.let stackDefault@{
                                     val otherViewNode =
                                         viewNodeMap[it.removePrefix("@layout/").camelCase().capitalize()]
                                             ?: return@stackDefault
                                     val makeView = makeView(otherViewNode, stackName)
-                                    line("self.$stackName.root($makeView) })")
+                                    line("self.$stackName.reset($makeView)")
                                 }
                                 line("xml.$view.bindStack(dependency, ${stackName})")
                             }
