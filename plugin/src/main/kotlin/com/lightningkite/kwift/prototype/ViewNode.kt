@@ -51,11 +51,20 @@ class ViewNode(
         } - provides.size
     }
 
-    fun belongsToStacks(map: Map<String, ViewNode>): Set<String?> {
+//    fun belongsToStacks(map: Map<String, ViewNode>): Set<String> {
+//        return map.values.asSequence()
+//            .flatMap { node ->
+//                node.operations.asSequence()
+//                    .filter { it.viewName == name }
+//                    .flatMap { it.stack?.let { sequenceOf(it) } ?: node.belongsToStacks(map).asSequence() }
+//            }
+//            .toSet()
+//    }
+    fun belongsToStacks(map: Map<String, ViewNode>): Set<String> {
         return map.values.asSequence()
             .flatMap { it.operations.asSequence() }
             .filter { it.viewName == name }
-            .map { it.stack }
+            .mapNotNull { it.stack }
             .toSet()
     }
 

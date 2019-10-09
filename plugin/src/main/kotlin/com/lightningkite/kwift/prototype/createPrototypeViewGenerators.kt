@@ -35,13 +35,10 @@ internal fun createPrototypeViewGenerators(
         nodes[fileName] = node
     }
 
-    for ((key, value) in nodes) {
-        println("$key connects to ${value.instantiates.joinToString()}")
-    }
-
     //Emit graph
     groupedGraph(outputFolder, nodes)
     sortedGraph(outputFolder, nodes)
+    partialGraphs(outputFolder, nodes)
 
 
     fun File.createPrototypeVG(into: Appendable) {
