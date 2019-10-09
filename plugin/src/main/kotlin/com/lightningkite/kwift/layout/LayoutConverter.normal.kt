@@ -90,6 +90,7 @@ val LayoutConverter.Companion.normal get() = LayoutConverter(
             appendln("view.addOnLayoutSubviews { [weak view] in")
             appendln("if let view = view {")
             appendln("    view.layer.cornerRadius = view.frame.size.width / 2;")
+            appendln("    view.contentMode = .scaleAspectFill")
             appendln("}")
             appendln("}")
             appendln("view.clipsToBounds = true")
@@ -674,17 +675,23 @@ val LayoutConverter.Companion.normal get() = LayoutConverter(
 
                 appendln("view.addOnLayoutSubviews { [weak view, weak sub] in")
                 appendln("if let view = view, let sub = sub {")
+                if (child.attributes["android:layout_width"] == "wrap_content") {
+                    appendln("sub.flex.layout(mode: .adjustWidth)")
+                }
+                if (child.attributes["android:layout_height"] == "wrap_content") {
+                    appendln("sub.flex.layout(mode: .adjustHeight)")
+                }
                 append("sub.pin")
                 when (child.attributes["android:layout_width"]) {
                     "wrap_content", null -> append(".width(sub.intrinsicContentSize.width)")
-                    "match_parent" -> append(".width(100%)")
+                    "match_parent" -> append(".left($marginLeft + $paddingLeft).right($marginRight + $paddingRight)")
                     else -> child.attributeAsDimension("android:layout_width")?.let { s ->
                         append(".width($s)")
                     } ?: append(".width(sub.intrinsicContentSize.width)")
                 }
                 when (child.attributes["android:layout_height"]) {
                     "wrap_content", null -> append(".height(sub.intrinsicContentSize.height)")
-                    "match_parent" -> append(".height(100%)")
+                    "match_parent" -> append(".top($marginTop + $paddingTop).bottom($marginBottom + $paddingBottom)")
                     else -> child.attributeAsDimension("android:layout_height")?.let { s ->
                         append(".height($s)")
                     } ?: append(".height(sub.intrinsicContentSize.height)")
