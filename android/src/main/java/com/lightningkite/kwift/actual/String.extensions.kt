@@ -1,4 +1,4 @@
-package com.lightningkite.kwift.actuals
+package com.lightningkite.kwift.actual
 
 fun String.humanify(): String {
     if(this.isEmpty()) return ""

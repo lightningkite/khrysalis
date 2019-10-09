@@ -1,8 +1,17 @@
 package com.lightningkite.kwift.observables.shared
 
-import com.lightningkite.kwift.actuals.AnyObject
+import com.lightningkite.kwift.actual.AnyObject
 
 class ObservableStack<T : AnyObject> : ObservableProperty<List<T>>() {
+
+    companion object {
+        fun <T: AnyObject> withFirst(value: T): ObservableStack<T> {
+            val result = ObservableStack<T>()
+            result.reset(value)
+            return result
+        }
+    }
+
     override val onChange: StandardEvent<List<T>> = StandardEvent<List<T>>()
     override val value: List<T>
         get() {
@@ -12,6 +21,12 @@ class ObservableStack<T : AnyObject> : ObservableProperty<List<T>>() {
     val stack: ArrayList<T> = ArrayList<T>()
 
     fun push(t: T) {
+        stack.add(t)
+        onChange.invokeAll(value = stack)
+    }
+
+    fun swap(t: T) {
+        stack.removeAt(stack.lastIndex)
         stack.add(t)
         onChange.invokeAll(value = stack)
     }

@@ -8,6 +8,10 @@
 import UIKit
 import FlexLayout
 
+func View(_ dependency: ViewDependency) -> UIView {
+    return UIView(frame: .zero)
+}
+
 public extension UIView {
     @objc func onClick(_ action: @escaping ()->Void) {
         self.addGestureRecognizer(UITapGestureRecognizer().addAction { [weak self] in

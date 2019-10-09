@@ -1,4 +1,4 @@
-package com.lightningkite.kwift.actuals
+package com.lightningkite.kwift.actual
 
 import android.annotation.SuppressLint
 import android.content.Context

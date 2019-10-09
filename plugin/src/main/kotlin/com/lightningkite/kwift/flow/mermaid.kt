@@ -1,4 +1,4 @@
-package com.lightningkite.kwift.prototype
+package com.lightningkite.kwift.flow
 
 import java.io.BufferedWriter
 import java.io.File
@@ -191,12 +191,14 @@ internal fun mermaidEmitLink(
         is ViewStackOp.Pop -> "--"
         is ViewStackOp.Push -> "--"
         is ViewStackOp.Swap -> "-."
+        is ViewStackOp.Root -> "-."
         is ViewStackOp.Embed -> "=="
     }
     val arrowCharsSingle = when (operation) {
         is ViewStackOp.Pop -> "--"
         is ViewStackOp.Push -> "--"
         is ViewStackOp.Swap -> "-.-"
+        is ViewStackOp.Root -> "-.-"
         is ViewStackOp.Embed -> "=="
     }
     if (passed.isEmpty())

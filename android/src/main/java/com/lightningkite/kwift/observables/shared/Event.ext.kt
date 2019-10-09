@@ -1,9 +1,9 @@
 package com.lightningkite.kwift.observables.shared
 
-import com.lightningkite.kwift.actuals.AnyObject
-import com.lightningkite.kwift.actuals.discardableResult
-import com.lightningkite.kwift.actuals.escaping
-import com.lightningkite.kwift.actuals.weak
+import com.lightningkite.kwift.actual.AnyObject
+import com.lightningkite.kwift.actual.discardableResult
+import com.lightningkite.kwift.actual.escaping
+import com.lightningkite.kwift.actual.weak
 
 @discardableResult
 fun <T, A : AnyObject> Event<T>.addWeak(

@@ -1,6 +1,6 @@
 package com.lightningkite.kwift.observables.shared
 
-import com.lightningkite.kwift.actuals.escaping
+import com.lightningkite.kwift.actual.escaping
 
 class TransformedEvent<A, B>(
     val basedOn: Event<A>,

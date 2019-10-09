@@ -1,4 +1,4 @@
-package com.lightningkite.kwift.prototype
+package com.lightningkite.kwift.flow
 
 import com.lightningkite.kwift.layout.readXMLStyles
 import com.lightningkite.kwift.log
@@ -18,6 +18,7 @@ sealed class ViewStackOp {
     }
 
     data class Push(override val stack: String?, override val viewName: String) : ViewStackOp()
+    data class Root(override val stack: String?, override val viewName: String) : ViewStackOp()
     data class Swap(override val stack: String?, override val viewName: String) : ViewStackOp()
     data class Embed(override val stack: String, override val viewName: String) : ViewStackOp()
 }

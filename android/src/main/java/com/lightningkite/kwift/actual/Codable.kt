@@ -1,4 +1,4 @@
-package com.lightningkite.kwift.actuals
+package com.lightningkite.kwift.actual
 
 interface Codable
 

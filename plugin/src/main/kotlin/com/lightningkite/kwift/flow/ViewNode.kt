@@ -1,4 +1,4 @@
-package com.lightningkite.kwift.prototype
+package com.lightningkite.kwift.flow
 
 import com.lightningkite.kwift.utils.XmlNode
 import com.lightningkite.kwift.utils.camelCase
@@ -12,6 +12,11 @@ class ViewNode(
     val instantiates: Set<String> get() = operations.mapNotNull { it.viewName }.toSet()
 
     companion object {
+        val stack = ViewVar(
+            "stack",
+            "ObservableStack[ViewGenerator]"
+        )
+
         //stackOperation, stackId, stackTarget
         val stackTargetRegex = Regex("""tools:goTo *= *"@layout/([a-z_A-Z0-9]+)" *""")
         val stackTarget2Regex = Regex("""tools:swap *= *"@layout/([a-z_A-Z0-9]+)" *""")
@@ -28,6 +33,7 @@ class ViewNode(
         const val attributePush = "tools:goTo"
         const val attributeSwap = "tools:swap"
         const val attributePop = "tools:pop"
+        const val attributeRoot = "tools:root"
         const val attributeOnStack = "tools:onStack"
         const val attributeStackDefault = "tools:stackDefault"
         const val attributeStackId = "tools:stackId"
@@ -41,7 +47,7 @@ class ViewNode(
         if (name in seen) return setOf()
         return requires + (instantiates.flatMap {
             map[it]?.totalRequires(map, seen + name) ?: setOf()
-        }.toSet() - provides)
+        }.toSet()) - provides
     }
 
     fun estimateDepth(map: Map<String, ViewNode>, seen: Set<String> = setOf()): Int {
@@ -99,6 +105,21 @@ class ViewNode(
                 )
             ) }
         }
+        node.attributes[attributeRoot]?.let {
+            val onStack = node.attributes[attributeOnStack]
+            operations.add(
+                ViewStackOp.Root(
+                    stack = onStack,
+                    viewName = it.removePrefix("@layout/").camelCase().capitalize()
+                )
+            )
+            onStack?.let { requires.add(
+                ViewVar(
+                    onStack,
+                    "ObservableStack[ViewGenerator]"
+                )
+            ) }
+        }
         node.attributes[attributePop]?.let {
             val onStack = node.attributes[attributeOnStack]
             operations.add(ViewStackOp.Pop(stack = onStack))
@@ -115,7 +136,14 @@ class ViewNode(
             }
         }
         node.attributes[attributeRequires]?.let {
-            requires.add(ViewVar(it, "ObservableStack[ViewGenerator]"))
+            it.split(';').forEach {
+                requires.add(ViewVar(it.substringBefore(':').trim(), it.substringAfter(':').trim()))
+            }
+        }
+        node.attributes[attributeProvides]?.let {
+            it.split(';').forEach {
+                provides.add(ViewVar(it.substringBefore(':').trim(), it.substringAfter(':').trim()))
+            }
         }
         node.children.forEach { gather(it) }
     }

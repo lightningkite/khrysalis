@@ -1,4 +1,4 @@
-package com.lightningkite.kwift.prototype
+package com.lightningkite.kwift.flow
 
 import org.junit.Assert.*
 import org.junit.Test

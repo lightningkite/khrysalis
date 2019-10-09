@@ -1,7 +1,7 @@
 package com.lightningkite.kwift.views.shared
 
-import com.lightningkite.kwift.actuals.Equatable
-import com.lightningkite.kwift.actuals.escaping
+import com.lightningkite.kwift.actual.Equatable
+import com.lightningkite.kwift.actual.escaping
 import com.lightningkite.kwift.observables.shared.StandardObservableProperty
 import com.lightningkite.kwift.views.actual.StringResource
 

@@ -1,4 +1,4 @@
-package com.lightningkite.kwift.actuals
+package com.lightningkite.kwift.actual
 
 import java.lang.ref.WeakReference
 import kotlin.reflect.KProperty
@@ -9,6 +9,9 @@ typealias Equatable = Any
 
 @Target(AnnotationTarget.TYPE)
 annotation class escaping
+
+@Target(AnnotationTarget.PROPERTY)
+annotation class unowned
 
 @Target(AnnotationTarget.TYPE)
 annotation class swiftExactly(val parameterName: String = "default")
