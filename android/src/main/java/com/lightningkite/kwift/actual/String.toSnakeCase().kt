@@ -1,4 +1,4 @@
-package com.lightningkite.kwift.actuals
+package com.lightningkite.kwift.actual
 
 fun String.toSnakeCase(): String {
     val builder = StringBuilder(this.length * 3 / 2)

@@ -1,8 +1,8 @@
 package com.lightningkite.kwift.shared
 
-import com.lightningkite.kwift.actuals.AnyObject
-import com.lightningkite.kwift.actuals.escaping
-import com.lightningkite.kwift.actuals.weak
+import com.lightningkite.kwift.actual.AnyObject
+import com.lightningkite.kwift.actual.escaping
+import com.lightningkite.kwift.actual.weak
 
 
 fun <Z : AnyObject> captureWeak(capture: Z, lambda: @escaping() (Z) -> Unit): () -> Unit {

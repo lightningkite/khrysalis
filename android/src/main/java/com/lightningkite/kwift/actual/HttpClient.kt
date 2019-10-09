@@ -1,4 +1,4 @@
-package com.lightningkite.kwift.actuals
+package com.lightningkite.kwift.actual
 
 import android.annotation.SuppressLint
 import android.content.Context
@@ -24,6 +24,29 @@ object HttpClient {
 
     lateinit var appContext: Context
 
+    var immediateMode = false
+    inline fun runResult(crossinline action: ()->Unit) {
+        if(immediateMode){
+            action()
+        } else {
+            Handler(Looper.getMainLooper()).post {
+                action()
+            }
+        }
+    }
+    inline fun Call.go(callback: Callback){
+        if(immediateMode) {
+            try {
+                val result = execute()
+                callback.onResponse(this, result)
+            } catch(e:IOException){
+                callback.onFailure(this, e)
+            }
+        } else {
+            enqueue(callback)
+        }
+    }
+
     const val GET = "GET"
     const val POST = "POST"
     const val PUT = "PUT"
@@ -43,6 +66,7 @@ object HttpClient {
         .disable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES)
         .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
         .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
+        .disable(MapperFeature.AUTO_DETECT_IS_GETTERS)
         .enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE)
         .setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE)
         .setDateFormat(StdDateFormat().withLenient(true))
@@ -66,10 +90,10 @@ object HttpClient {
             .addHeader("Accept-Language", Locale.getDefault().language)
             .build()
 
-        client.newCall(request).enqueue(object : Callback {
+        client.newCall(request).go(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 Log.e("HttpClient", "Failure: ${e.message}")
-                Handler(Looper.getMainLooper()).post {
+                runResult {
                     onResult.invoke(0, null, e.message ?: "")
                 }
             }
@@ -77,7 +101,7 @@ object HttpClient {
             override fun onResponse(call: Call, response: Response) {
                 val raw = response.body()!!.string()
                 Log.i("HttpClient", "Response ${response.code()}: $raw")
-                Handler(Looper.getMainLooper()).post {
+                runResult {
                     val code = response.code()
                     if (code / 100 == 2) {
                         try {
@@ -125,9 +149,9 @@ object HttpClient {
             .headers(Headers.of(headers))
             .build()
 
-        client.newCall(request).enqueue(object : Callback {
+        client.newCall(request).go(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                Handler(Looper.getMainLooper()).post {
+                runResult {
                     onResult.invoke(0, null, e.message ?: "")
                 }
             }
@@ -135,7 +159,7 @@ object HttpClient {
             override fun onResponse(call: Call, response: Response) {
                 val raw = response.body()!!.string()
                 Log.i("HttpClient", "Response ${response.code()}: $raw")
-                Handler(Looper.getMainLooper()).post {
+                runResult {
                     val code = response.code()
                     if (code / 100 == 2) {
                         try {
@@ -173,10 +197,10 @@ object HttpClient {
             .addHeader("Accept-Language", Locale.getDefault().language)
             .build()
 
-        client.newCall(request).enqueue(object : Callback {
+        client.newCall(request).go(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
                 Log.e("HttpClient", "Failure: ${e.message}")
-                Handler(Looper.getMainLooper()).post {
+                runResult {
                     onResult.invoke(0, e.message ?: "")
                 }
             }
@@ -184,7 +208,7 @@ object HttpClient {
             override fun onResponse(call: Call, response: Response) {
                 val raw = response.body()!!.string()
                 Log.i("HttpClient", "Response ${response.code()}: $raw")
-                Handler(Looper.getMainLooper()).post {
+                runResult {
                     val code = response.code()
                     if (code / 100 == 2) {
                         onResult.invoke(response.code(), null)
@@ -225,9 +249,9 @@ object HttpClient {
             .headers(Headers.of(headers))
             .build()
 
-        client.newCall(request).enqueue(object : Callback {
+        client.newCall(request).go(object : Callback {
             override fun onFailure(call: Call, e: IOException) {
-                Handler(Looper.getMainLooper()).post {
+                runResult {
                     onResult.invoke(0, e.message ?: "")
                 }
             }
@@ -235,7 +259,7 @@ object HttpClient {
             override fun onResponse(call: Call, response: Response) {
                 val raw = response.body()!!.string()
                 Log.i("HttpClient", "Response ${response.code()}: $raw")
-                Handler(Looper.getMainLooper()).post {
+                runResult {
                     val code = response.code()
                     if (code / 100 == 2) {
                         onResult.invoke(response.code(), null)

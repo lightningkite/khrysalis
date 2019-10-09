@@ -1,10 +1,10 @@
-package com.lightningkite.kwift.actuals
+package com.lightningkite.kwift.actual
 
 import android.content.SharedPreferences
 
-object Preferences {
+object SecurePreferences {
 
-    lateinit var sharedPreferences: SharedPreferences
+    val sharedPreferences: SharedPreferences get() = Preferences.sharedPreferences
 
     inline fun <reified T> set(key: String, value: T) {
         sharedPreferences.edit().putString(key, value.toJsonString()).apply()
@@ -15,7 +15,9 @@ object Preferences {
     }
 
     inline fun <reified T> get(key: String): T? {
-        return sharedPreferences.getString(key, null)?.fromJsonString()
+        val raw = sharedPreferences.getString(key, null)
+        val result = raw?.fromJsonString<T>()
+        return result
     }
 
     fun clear() {

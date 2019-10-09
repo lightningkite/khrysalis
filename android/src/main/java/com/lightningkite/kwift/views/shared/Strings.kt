@@ -1,8 +1,8 @@
 package com.lightningkite.kwift.views.shared
 
-import com.lightningkite.kwift.actuals.escaping
-import com.lightningkite.kwift.actuals.formatList
-import com.lightningkite.kwift.actuals.swiftExactly
+import com.lightningkite.kwift.actual.escaping
+import com.lightningkite.kwift.actual.formatList
+import com.lightningkite.kwift.actual.swiftExactly
 import com.lightningkite.kwift.views.actual.StringResource
 import com.lightningkite.kwift.views.actual.ViewDependency
 import com.lightningkite.kwift.views.actual.getString
