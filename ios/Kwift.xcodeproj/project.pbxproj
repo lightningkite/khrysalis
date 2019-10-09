@@ -97,6 +97,8 @@
 		5E4297E6233EC420002AAB7A /* UIButton.position.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42978D233EC420002AAB7A /* UIButton.position.swift */; };
 		5E4297E7233EC420002AAB7A /* extensionProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42978E233EC420002AAB7A /* extensionProperty.swift */; };
 		5E5F673C2347D7BF0090384F /* Event.ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E5F673B2347D7BF0090384F /* Event.ext.swift */; };
+		5E5F6DB6234C03E80090384F /* UIView+ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E5F6DB4234C03E80090384F /* UIView+ext.swift */; };
+		5E5F6DB7234C03E80090384F /* UIButton+ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E5F6DB5234C03E80090384F /* UIButton+ext.swift */; };
 		5EAABEA1233EC33F007E7CED /* Kwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5EAABE97233EC33F007E7CED /* Kwift.framework */; };
 		5EAABEA6233EC33F007E7CED /* kwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAABEA5233EC33F007E7CED /* kwiftTests.swift */; };
 		5EAABEA8233EC33F007E7CED /* Kwift.h in Headers */ = {isa = PBXBuildFile; fileRef = 5EAABE9A233EC33F007E7CED /* Kwift.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -202,6 +204,8 @@
 		5E42978D233EC420002AAB7A /* UIButton.position.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIButton.position.swift; sourceTree = "<group>"; };
 		5E42978E233EC420002AAB7A /* extensionProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = extensionProperty.swift; sourceTree = "<group>"; };
 		5E5F673B2347D7BF0090384F /* Event.ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Event.ext.swift; path = Kwift/com/lightningkite/kwift/observables/shared/Event.ext.swift; sourceTree = SOURCE_ROOT; };
+		5E5F6DB4234C03E80090384F /* UIView+ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIView+ext.swift"; path = "Kwift/com/lightningkite/kwift/views/actuals/UIView+ext.swift"; sourceTree = SOURCE_ROOT; };
+		5E5F6DB5234C03E80090384F /* UIButton+ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIButton+ext.swift"; path = "Kwift/com/lightningkite/kwift/views/actuals/UIButton+ext.swift"; sourceTree = SOURCE_ROOT; };
 		5EAABE97233EC33F007E7CED /* Kwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Kwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5EAABE9A233EC33F007E7CED /* Kwift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Kwift.h; sourceTree = "<group>"; };
 		5EAABE9B233EC33F007E7CED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -358,27 +362,29 @@
 		5E429763233EC420002AAB7A /* actuals */ = {
 			isa = PBXGroup;
 			children = (
-				5E429764233EC420002AAB7A /* Dropdown.swift */,
-				5E429765233EC420002AAB7A /* PreviewVariedFlipper.swift */,
-				5E429766233EC420002AAB7A /* CompoundButton.swift */,
-				5E429767233EC420002AAB7A /* SelectDateRangeView.swift */,
-				5E429768233EC420002AAB7A /* general.swift */,
-				5E429769233EC420002AAB7A /* ScrollSavingDelegate.swift */,
-				5E42976A233EC420002AAB7A /* LabeledCheckbox.swift */,
-				5E42976B233EC420002AAB7A /* QuickMonthView.swift */,
-				5E42976C233EC420002AAB7A /* alias.swift */,
 				5E42976D233EC420002AAB7A /* AbstractCalendarView.swift */,
-				5E42976E233EC420002AAB7A /* SelectDayMonthView.swift */,
-				5E42976F233EC420002AAB7A /* SelectDateRangeMonthView.swift */,
-				5E429770233EC420002AAB7A /* SelectDayView.swift */,
-				5E429771233EC420002AAB7A /* ToggleButton.swift */,
+				5E42976C233EC420002AAB7A /* alias.swift */,
+				5E429777233EC420002AAB7A /* CalendarView.swift */,
+				5E429766233EC420002AAB7A /* CompoundButton.swift */,
 				5E429772233EC420002AAB7A /* DateButton.swift */,
+				5E429776233EC420002AAB7A /* DatePickerButton.swift */,
+				5E429764233EC420002AAB7A /* Dropdown.swift */,
+				5E429768233EC420002AAB7A /* general.swift */,
+				5E42976A233EC420002AAB7A /* LabeledCheckbox.swift */,
 				5E429773233EC420002AAB7A /* LabeledRadioButton.swift */,
 				5E429774233EC420002AAB7A /* LabeledSwitch.swift */,
+				5E429765233EC420002AAB7A /* PreviewVariedFlipper.swift */,
+				5E42976B233EC420002AAB7A /* QuickMonthView.swift */,
+				5E429769233EC420002AAB7A /* ScrollSavingDelegate.swift */,
+				5E42976F233EC420002AAB7A /* SelectDateRangeMonthView.swift */,
+				5E429767233EC420002AAB7A /* SelectDateRangeView.swift */,
+				5E42976E233EC420002AAB7A /* SelectDayMonthView.swift */,
+				5E429770233EC420002AAB7A /* SelectDayView.swift */,
 				5E429775233EC420002AAB7A /* TimeButton.swift */,
-				5E429776233EC420002AAB7A /* DatePickerButton.swift */,
-				5E429777233EC420002AAB7A /* CalendarView.swift */,
+				5E429771233EC420002AAB7A /* ToggleButton.swift */,
+				5E5F6DB5234C03E80090384F /* UIButton+ext.swift */,
 				5E429778233EC420002AAB7A /* UIButtonWithInput.swift */,
+				5E5F6DB4234C03E80090384F /* UIView+ext.swift */,
 			);
 			path = actuals;
 			sourceTree = "<group>";
@@ -651,6 +657,7 @@
 				5E4297A8233EC420002AAB7A /* UISwitch+binding.swift in Sources */,
 				5E4297CF233EC420002AAB7A /* LabeledSwitch.swift in Sources */,
 				5E4297D1233EC420002AAB7A /* DatePickerButton.swift in Sources */,
+				5E5F6DB7234C03E80090384F /* UIButton+ext.swift in Sources */,
 				5E429793233EC420002AAB7A /* SecurePreferences.swift in Sources */,
 				5E4297E5233EC420002AAB7A /* ViewPagerLayout.swift in Sources */,
 				5E4297E4233EC420002AAB7A /* UIImageView.ext.swift in Sources */,
@@ -659,6 +666,7 @@
 				5E4297B5233EC420002AAB7A /* TransformedEvent.swift in Sources */,
 				5E4297B8233EC420002AAB7A /* Close.swift in Sources */,
 				5E4297E6233EC420002AAB7A /* UIButton.position.swift in Sources */,
+				5E5F6DB6234C03E80090384F /* UIView+ext.swift in Sources */,
 				5E429797233EC420002AAB7A /* HttpClient.swift in Sources */,
 				5E4297E2233EC420002AAB7A /* UITextField.ext.swift in Sources */,
 				5E4297DC233EC420002AAB7A /* UITextView.placeholder.swift in Sources */,

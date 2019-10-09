@@ -16,19 +16,3 @@ public class ViewDependency {
         return reference
     }
 }
-
-extension UIButton {
-    @objc override public func onClick(_ action: @escaping ()->Void) {
-        self.addAction {
-            action()
-        }
-    }
-}
-
-extension UIView {
-    @objc public func onClick(_ action: @escaping ()->Void) {
-        self.addGestureRecognizer(UITapGestureRecognizer().addAction { [weak self] in
-            action()
-        })
-    }
-}

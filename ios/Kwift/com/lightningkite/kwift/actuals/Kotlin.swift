@@ -90,11 +90,11 @@ public extension Array where Element: Equatable {
     }
 }
 
-public extension Array {
+public extension Collection {
     func find(_ predicate: (Element) -> Bool) -> Element? {
         return first(where: predicate)
     }
-    static func +(first: Array<Element>, second: Element) -> Array<Element> {
+    static func +(first: Self, second: Element) -> Array<Element> {
         return first + [second]
     }
     func sortedBy<T: Comparable>(get: (Element) -> T) -> Array<Element> {
@@ -103,14 +103,17 @@ public extension Array {
     func sortedByDescending<T: Comparable>(get: (Element) -> T) -> Array<Element> {
         return self.sorted(by: { get($0) > get($1) })
     }
-    subscript(index: Int32) -> Element {
-        return self[Int(index)]
-    }
     func joinToString(_ separator: String, _ conversion: (Element)->String) -> String {
         return self.map(conversion).joined(separator: separator)
     }
     func joinToString(separator: String = ", ", _ conversion: (Element)->String) -> String {
         return self.map(conversion).joined(separator: separator)
+    }
+}
+
+public extension Array {
+    subscript(index: Int32) -> Element {
+        return self[Int(index)]
     }
 }
 
@@ -136,6 +139,15 @@ public extension Dictionary {
     }
     mutating func clear() {
         self.removeAll()
+    }
+    struct Entry<Key, Value> {
+        let key: Key
+        let value: Value
+    }
+    func filter(_ predicate: (Entry<Key, Value>) -> Bool) -> Dictionary<Key, Value> {
+        return self.filter { (key, value) -> Bool in
+            predicate(Entry(key: key, value: value))
+        }
     }
 }
 
