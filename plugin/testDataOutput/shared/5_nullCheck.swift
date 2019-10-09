@@ -17,26 +17,24 @@ public func main(args: Array<String>) -> Void {
     } else {
         print("X is null")
     }
-    
+
     if let it = x {
         print("X: \(it)")
     }
-    var xWithOne = { () in 
+    var xWithOne = { () in
         if let it = x {
             return it + 1
         }
         return nil
     }() ?? 0
-    { () in 
-        if let it = x {
-            return print("X: \(it)")
-        }
-        return nil
-    }() ?? { () in 
-    print("X is null")
-    }()
+
+    if let it = x {
+        print("X: \(it)")
+    } else {
+        print("X is null")
+    }
 }
 public func main(_ args: Array<String>) -> Void {
     return main(args: args)
 }
- 
+

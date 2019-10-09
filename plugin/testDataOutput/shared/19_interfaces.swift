@@ -46,7 +46,7 @@ public class Implementation: MyInterface {
         }
     }
     
-    open init() {
+    public init() {
     }
 }
  
@@ -75,7 +75,7 @@ open class Parent {
     }
     public var four
     
-    open init() {
+    public init() {
         let four = 4
         self.four = four
     }
@@ -96,7 +96,7 @@ public class Child: Parent, MyInterface {
         return "2-Child"
     }
     
-    override open init() {
+    override public init() {
         let five = 5
         self.five = five
         super.init()

@@ -36,7 +36,7 @@ public class ConstructorHasEscaping {
     public var lambda:  (integer: Int32, someValue: String) -> Void
     
     
-    open init(lambda: @escaping (integer: Int32, someValue: String) -> Void) {
+    public init(lambda: @escaping (integer: Int32, someValue: String) -> Void) {
         self.lambda = lambda
     }
     convenience public init(_ lambda: @escaping (integer: Int32, someValue: String) -> Void) {
@@ -52,7 +52,7 @@ public class ConstructorHasEscaping2 {
     public var lambda: ( (integer: Int32, someValue: String) -> Void)
     
     
-    open init(lambda: (@escaping (integer: Int32, someValue: String) -> Void)) {
+    public init(lambda: (@escaping (integer: Int32, someValue: String) -> Void)) {
         self.lambda = lambda
     }
     convenience public init(_ lambda: (@escaping (integer: Int32, someValue: String) -> Void)) {
