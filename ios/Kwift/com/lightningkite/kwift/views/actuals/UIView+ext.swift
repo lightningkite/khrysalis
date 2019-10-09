@@ -8,7 +8,7 @@
 import UIKit
 import FlexLayout
 
-func View(_ dependency: ViewDependency) -> UIView {
+func EmptyView(_ dependency: ViewDependency) -> UIView {
     return UIView(frame: .zero)
 }
 

@@ -63,6 +63,7 @@ class SwiftAltListener {
         registerLambda()
         registerControl()
         registerType()
+        registerStatement()
 
         tokenOptions[KotlinParser.EOF] = { direct.append("") }
         tokenOptions[KotlinParser.LineStrRef] = { direct.append("\\(" + it.text.removePrefix("$") + ")") }

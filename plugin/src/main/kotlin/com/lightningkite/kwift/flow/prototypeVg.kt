@@ -1,5 +1,7 @@
 package com.lightningkite.kwift.flow
 
+import com.lightningkite.kwift.layout.Styles
+import com.lightningkite.kwift.swift.TabWriter
 import com.lightningkite.kwift.utils.XmlNode
 import com.lightningkite.kwift.utils.attributeAsString
 import com.lightningkite.kwift.utils.camelCase
@@ -9,6 +11,7 @@ import java.io.File
 private val warning = "Any changes made to this file will be overridden unless this comment is removed. "
 
 internal fun createPrototypeVG(
+    styles: Styles,
     viewName: String,
     xml: File,
     target: File,
@@ -35,150 +38,185 @@ internal fun createPrototypeVG(
     }
 
     target.bufferedWriter().use { into ->
-        with(into) {
-            appendln("""//""")
-            appendln("""// ${viewName}VG.swift""")
-            appendln("""// Created by Kwift Prototype Generator""")
-            appendln("""// $warning""")
-            appendln("""//""")
-            appendln("""package $packageName""")
-            appendln("""""")
-            appendln("""import android.widget.*""")
-            appendln("""import android.view.*""")
-            appendln("""import com.lightningkite.kwift.actual.*""")
-            appendln("""import com.lightningkite.kwift.shared.*""")
-            appendln("""import com.lightningkite.kwift.views.actual.*""")
-            appendln("""import com.lightningkite.kwift.views.shared.*""")
-            appendln("""import com.lightningkite.kwift.observables.actual.*""")
-            appendln("""import com.lightningkite.kwift.observables.shared.*""")
-            appendln("""import $applicationPackage.R""")
-            appendln("""import $applicationPackage.layouts.*""")
-            appendln("""""")
-            appendln("class ${viewName}VG(")
-            (listOf(ViewNode.stack) + viewNode.totalRequires(viewNodeMap)).forEachBetween(
-                forItem = {
+        with(TabWriter(into)) {
+            line("//")
+            line("// ${viewName}VG.swift")
+            line("// Created by Kwift Prototype Generator")
+            line("// $warning")
+            line("//")
+            line("package $packageName")
+            line("")
+            line("import android.widget.*")
+            line("import android.view.*")
+            line("import com.lightningkite.kwift.actual.*")
+            line("import com.lightningkite.kwift.shared.*")
+            line("import com.lightningkite.kwift.views.actual.*")
+            line("import com.lightningkite.kwift.views.shared.*")
+            line("import com.lightningkite.kwift.observables.actual.*")
+            line("import com.lightningkite.kwift.observables.shared.*")
+            line("import $applicationPackage.R")
+            line("import $applicationPackage.layouts.*")
+            line("")
+            line("""@Suppress("NAME_SHADOWING")""")
+            line("class ${viewName}VG(")
+            tab {
+                val things = (listOf(ViewNode.stack) + viewNode.totalRequires(viewNodeMap))
+                things.forEachIndexed { index, it ->
                     if (it.type.contains("VG") || it.type.contains("ViewGenerator")) {
-                        append("    @unowned val $it")
+                        line("@unowned val $it" + (if (index == things.lastIndex) "" else ","))
                     } else {
-                        append("    val $it")
+                        line("val $it" + (if (index == things.lastIndex) "" else ","))
                     }
-                },
-                between = {
-                    appendln(",")
                 }
-            )
-            appendln()
-            appendln(") : ViewGenerator() {")
-            appendln("""    """)
-            viewNode.provides.forEach {
-                appendln(
-                    """    val ${it.name}: ${it.kotlinType} = ${ViewVar.construct(
-                        viewNode,
-                        viewNodeMap,
-                        it.kotlinType
-                    )}"""
-                )
             }
-            appendln("""    """)
-            appendln("""    override val title: String get() = "${viewName}"""")
-            appendln("""    """)
-            appendln("""    override fun generate(dependency: ViewDependency): View {""")
-            appendln("""        val xml = ${viewName}Xml()""")
-            appendln("""        val view = xml.setup(dependency)""")
-            appendln("""        """)
+            line(") : ViewGenerator() {")
+            tab {
+                line()
+                viewNode.provides.forEach {
+                    line(
+                        """val ${it.name}: ${it.kotlinType} = ${ViewVar.construct(
+                            viewNode,
+                            viewNodeMap,
+                            it.kotlinType
+                        )}"""
+                    )
+                }
+                line("")
+                line("""override val title: String get() = "${viewName}"""")
+                line("")
+                line("""override fun generate(dependency: ViewDependency): View {""")
+                tab {
+                    line("val xml = ${viewName}Xml()")
+                    line("val parentXml = xml")
+                    line("val view = xml.setup(dependency)")
+                    line("val s by weak(this)")
+                    line("")
 
-            @Suppress("ConvertToStringTemplate")
-            fun handleNode(node: XmlNode) {
+                    fun handleNode(node: XmlNode) {
 
-                val view = node.attributes["android:id"]?.removePrefix("@+id/")?.camelCase()
-                if (view != null) {
-                    node.attributeAsString("tools:text")?.let {
-                        appendln("        xml.$view.text = $it")
-                    }
-                    node.attributeAsString("tools:visibility")?.let {
-                        when (it) {
-                            "gone" -> appendln("        xml.$view.visibility = View.GONE")
-                            "invisible" -> appendln("        xml.$view.visibility = View.INVISIBLE")
-                            "visible" -> appendln("        xml.$view.visibility = View.VISIBLE")
-                            else -> {
+                        val view = node.attributes["android:id"]?.removePrefix("@+id/")?.camelCase()?.let {
+                            if(node.name == "include") it + "._root"
+                            else it
+                        }
+                        if (view != null) {
+                            node.attributes["tools:text"]?.let {
+                                if(it.startsWith("@string")) {
+                                    line("""xml.$view.textResource = R.string.${it.removePrefix("@string/")}""")
+                                } else {
+                                    line("""xml.$view.textString = "$it"""")
+                                }
+                            }
+                            node.attributeAsString("tools:visibility")?.let {
+                                when (it) {
+                                    "gone" -> line("xml.$view.visibility = View.GONE")
+                                    "invisible" -> line("xml.$view.visibility = View.INVISIBLE")
+                                    "visible" -> line("xml.$view.visibility = View.VISIBLE")
+                                    else -> {
+                                    }
+                                }
+                            }
+                            node.attributes["tools:listitem"]?.let {
+                                val xmlName = it.removePrefix("@layout/").camelCase().capitalize().plus("Xml")
+                                line("run {")
+                                tab {
+                                    line("xml.$view.bind(")
+                                    tab {
+                                        line("data = ConstantObservableProperty(listOf(1, 2, 3, 4)),")
+                                        line("defaultValue = 1,")
+                                        line("makeView = { obs ->")
+                                        tab {
+                                            line("val self = s ")
+                                            line("val xml = $xmlName() ")
+                                            line("val view = xml.setup(dependency)")
+                                            line("if(self != null) {")
+                                            val file = xml.parentFile.resolve(it.removePrefix("@layout/").plus(".xml"))
+                                            handleNode(XmlNode.read(file, styles))
+                                            line("}")
+                                            line("return@bind view")
+                                        }
+                                        line("}")
+                                    }
+                                    line(")")
+                                }
+                                line("}")
+                            }
+                            node.attributes[ViewNode.attributePush]?.let {
+                                val otherViewNode =
+                                    viewNodeMap[it.removePrefix("@layout/").camelCase().capitalize()] ?: return@let
+                                val stackName = node.attributes[ViewNode.attributeOnStack] ?: "stack"
+                                val makeView = makeView(otherViewNode, stackName)
+                                line("xml.$view.onClick(captureWeak(this){ self -> self.$stackName.push($makeView) })")
+                            }
+                            node.attributes[ViewNode.attributeSwap]?.let {
+                                val otherViewNode =
+                                    viewNodeMap[it.removePrefix("@layout/").camelCase().capitalize()] ?: return@let
+                                val stackName = node.attributes[ViewNode.attributeOnStack] ?: "stack"
+                                val makeView = makeView(otherViewNode, stackName)
+                                line("xml.$view.onClick(captureWeak(this){ self -> self.$stackName.swap($makeView) })")
+                            }
+                            node.attributes[ViewNode.attributeRoot]?.let {
+                                val otherViewNode =
+                                    viewNodeMap[it.removePrefix("@layout/").camelCase().capitalize()] ?: return@let
+                                val stackName = node.attributes[ViewNode.attributeOnStack] ?: "stack"
+                                val makeView = makeView(otherViewNode, stackName)
+                                line("xml.$view.onClick(captureWeak(this){ self -> self.$stackName.root($makeView) })")
+                            }
+                            node.attributes[ViewNode.attributePop]?.let {
+                                val stackName = node.attributes[ViewNode.attributeOnStack] ?: "stack"
+                                line("xml.$view.onClick(captureWeak(this){ self -> self.$stackName.pop() })")
+                            }
+                            node.attributes[ViewNode.attributeStackId]?.let {
+                                val stackName = node.attributes[ViewNode.attributeOnStack] ?: return@let
+                                node.attributes[ViewNode.attributeStackDefault]?.let stackDefault@{
+                                    val otherViewNode =
+                                        viewNodeMap[it.removePrefix("@layout/").camelCase().capitalize()]
+                                            ?: return@stackDefault
+                                    val makeView = makeView(otherViewNode, stackName)
+                                    line("self.$stackName.root($makeView) })")
+                                }
+                                line("xml.$view.bindStack(dependency, ${stackName})")
+                            }
+                        } else {
+                            if (node.attributes.keys.any { it.startsWith("tools:") }) {
+                                println("WARNING: ${xml.name}: Element type ${node.name} has tools but no id")
                             }
                         }
-                    }
-                    node.attributes["tools:listitem"]?.let {
-                        val otherViewNode = viewNodeMap[it.removePrefix("@layout/").camelCase().capitalize()]
-                            ?: return@let
-                        val makeView = makeView(otherViewNode, null)
-                        appendln("        val self by weak(this)")
-                        appendln("        xml.$view.bind(")
-                        appendln("            data = ConstantObservableProperty(listOf(1, 2, 3, 4)),")
-                        appendln("            defaultValue = 1,")
-                        appendln("            makeView = { obs ->")
-                        appendln("                if(")
-                        appendln("                val sub = $makeView")
-                        appendln("                return@captureWeak sub.generate(dependency)")
-                        appendln("            }")
-                        appendln("        )")
-                    }
-                    node.attributes[ViewNode.attributePush]?.let {
-                        val otherViewNode =
-                            viewNodeMap[it.removePrefix("@layout/").camelCase().capitalize()] ?: return@let
-                        val stackName = node.attributes[ViewNode.attributeOnStack] ?: "stack"
-                        val makeView = makeView(otherViewNode, stackName)
-                        appendln("        xml.$view.onClick(captureWeak(this){ self -> self.$stackName.push($makeView) })")
-                    }
-                    node.attributes[ViewNode.attributeSwap]?.let {
-                        val otherViewNode =
-                            viewNodeMap[it.removePrefix("@layout/").camelCase().capitalize()] ?: return@let
-                        val stackName = node.attributes[ViewNode.attributeOnStack] ?: "stack"
-                        val makeView = makeView(otherViewNode, stackName)
-                        appendln("        xml.$view.onClick(captureWeak(this){ self -> self.$stackName.swap($makeView) })")
-                    }
-                    node.attributes[ViewNode.attributeRoot]?.let {
-                        val otherViewNode =
-                            viewNodeMap[it.removePrefix("@layout/").camelCase().capitalize()] ?: return@let
-                        val stackName = node.attributes[ViewNode.attributeOnStack] ?: "stack"
-                        val makeView = makeView(otherViewNode, stackName)
-                        appendln("        xml.$view.onClick(captureWeak(this){ self -> self.$stackName.root($makeView) })")
-                    }
-                    node.attributes[ViewNode.attributePop]?.let {
-                        val stackName = node.attributes[ViewNode.attributeOnStack] ?: "stack"
-                        appendln("        xml.$view.onClick(captureWeak(this){ self -> self.$stackName.pop() })")
-                    }
-                    node.attributes[ViewNode.attributeStackId]?.let {
-                        val stackName = node.attributes[ViewNode.attributeOnStack] ?: return@let
-                        node.attributes[ViewNode.attributeStackDefault]?.let stackDefault@{
-                            val otherViewNode =
-                                viewNodeMap[it.removePrefix("@layout/").camelCase().capitalize()]
-                                    ?: return@stackDefault
-                            val makeView = makeView(otherViewNode, stackName)
-                            appendln("        self.$stackName.root($makeView) })")
-                        }
-                        appendln("        xml.$view.bindStack(dependency, ${stackName})")
-                    }
-                } else {
-                    if (node.attributes.keys.any { it.startsWith("tools:") }) {
-                        println("WARNING: ${xml.name}: Element type ${node.name} has tools but no id")
-                    }
-                }
 
-                node.children.forEach {
-                    handleNode(it)
+                        if (node.name == "include") {
+                            val id = node.attributes["android:id"]?.removePrefix("@+id/")?.camelCase()
+                            if (id != null) {
+                                node.attributes["layout"]?.let {
+                                    line("run {")
+                                    tab {
+                                        line("val xml = parentXml.$id")
+                                        line("val parentXml = xml")
+                                        val file = xml.parentFile.resolve(it.removePrefix("@layout/").plus(".xml"))
+                                        handleNode(XmlNode.read(file, styles))
+                                    }
+                                    line("}")
+                                }
+                            }
+                        }
+                        node.children.forEach {
+                            handleNode(it)
+                        }
+                    }
+                    handleNode(node)
+                    line("")
+                    line("//region View Setup")
+                    line("")
+                    line("//endregion View Setup")
+                    line("")
+                    line("return view")
                 }
+                line("}")
+                line("")
+                line("//region View Functions")
+                line("")
+                line("//endregion View Functions")
+                line("")
             }
-            handleNode(node)
-            appendln("""        """)
-            appendln("""        //region View Setup""")
-            appendln("""        """)
-            appendln("""        //endregion View Setup""")
-            appendln("""        """)
-            appendln("""        return view""")
-            appendln("""    }""")
-            appendln("""    """)
-            appendln("""    //region View Functions""")
-            appendln("""    """)
-            appendln("""    //endregion View Functions""")
-            appendln("""    """)
-            appendln("""}""")
+            line("}")
         }
     }
 }

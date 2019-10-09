@@ -30,13 +30,14 @@ internal fun createPrototypeViewGenerators(
     val nodes = HashMap<String, ViewNode>()
     val files = File(resourcesFolder, "layout").walkTopDown()
         .filter { it.extension == "xml" }
+        .filter { !it.name.contains("component") }
 
     //Gather graph information
     files.forEach { item ->
         log(item.toString())
         val fileName = item.nameWithoutExtension.camelCase().capitalize()
         val node = ViewNode(fileName)
-        node.gather(XmlNode.read(item, styles))
+        node.gather(XmlNode.read(item, styles), item, styles)
         nodes[fileName] = node
     }
 
@@ -51,6 +52,7 @@ internal fun createPrototypeViewGenerators(
         val fileName = item.nameWithoutExtension.camelCase().capitalize()
         val node = nodes[fileName] ?: return@forEach
         createPrototypeVG(
+            styles = styles,
             viewName = fileName,
             xml = item,
             target = outputFolder.resolve(fileName + "VG.kt"),

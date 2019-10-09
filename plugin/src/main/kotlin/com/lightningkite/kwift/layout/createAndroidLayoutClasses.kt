@@ -96,12 +96,14 @@ private fun File.translateLayoutXmlAndroid(styles: Styles, packageName: String, 
     |
     |    ${bindings.joinToString("\n|    ") { it.run { "lateinit var $name: $type" } }}
     |    ${sublayouts.joinToString("\n|    ") { it.run { "lateinit var $name: $layoutXmlClass" } }}
+    |    lateinit var _root: View
     |
     |    fun setup(dependency: ViewDependency): View {
     |        val view = LayoutInflater.from(dependency.context).inflate(R.layout.$nameWithoutExtension, null, false)
     |        return setup(view)
     |    }
     |    fun setup(view: View): View {
+    |        _root = view
     |        ${bindings.joinToString("\n|        ") { it.run { "$name = view.findViewById<$type>(R.id.$resourceId)" } }}
     |        ${sublayouts.joinToString("\n|        ") { it.run { "$name = $layoutXmlClass().apply{ setup(view.findViewById<View>(R.id.$resourceId)) }" } }}
     |        return view

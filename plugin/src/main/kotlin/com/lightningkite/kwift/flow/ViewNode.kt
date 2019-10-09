@@ -1,7 +1,9 @@
 package com.lightningkite.kwift.flow
 
+import com.lightningkite.kwift.layout.Styles
 import com.lightningkite.kwift.utils.XmlNode
 import com.lightningkite.kwift.utils.camelCase
+import java.io.File
 
 class ViewNode(
     val name: String
@@ -74,7 +76,7 @@ class ViewNode(
             .toSet()
     }
 
-    fun gather(node: XmlNode) {
+    fun gather(node: XmlNode, xml: File, styles: Styles) {
         node.attributes[attributePush]?.let {
             val onStack = node.attributes[attributeOnStack]
             operations.add(
@@ -145,6 +147,12 @@ class ViewNode(
                 provides.add(ViewVar(it.substringBefore(':').trim(), it.substringAfter(':').trim()))
             }
         }
-        node.children.forEach { gather(it) }
+        if(node.name == "include") {
+            node.attributes["layout"]?.let {
+                val file = xml.parentFile.resolve(it.removePrefix("@layout/").plus(".xml"))
+                gather(XmlNode.read(file, styles), xml, styles)
+            }
+        }
+        node.children.forEach { gather(it, xml, styles) }
     }
 }

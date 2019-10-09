@@ -36,9 +36,12 @@ fun File.translateLayoutXml(styles: Styles, converter: LayoutConverter = LayoutC
         class ${name}Xml {
 
             $vars
+            weak var _root: UIView
 
             func setup(_ dependency: ViewDependency) -> UIView {
-                return $appendable
+                let result = $appendable
+                _root = result
+                return result
             }
             
         }
