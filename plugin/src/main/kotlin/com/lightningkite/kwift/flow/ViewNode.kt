@@ -153,6 +153,10 @@ class ViewNode(
                 gather(XmlNode.read(file, styles), xml, styles)
             }
         }
+        node.attributes["tools:listitem"]?.let {
+            val file = xml.parentFile.resolve(it.removePrefix("@layout/").plus(".xml"))
+            gather(XmlNode.read(file, styles), xml, styles)
+        }
         node.children.forEach { gather(it, xml, styles) }
     }
 }
