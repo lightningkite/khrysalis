@@ -35,7 +35,7 @@ class ViewNode(
         const val attributePush = "tools:goTo"
         const val attributeSwap = "tools:swap"
         const val attributePop = "tools:pop"
-        const val attributeRoot = "tools:root"
+        const val attributeReset = "tools:reset"
         const val attributeOnStack = "tools:onStack"
         const val attributeStackDefault = "tools:stackDefault"
         const val attributeStackId = "tools:stackId"
@@ -107,7 +107,7 @@ class ViewNode(
                 )
             ) }
         }
-        node.attributes[attributeRoot]?.let {
+        node.attributes[attributeReset]?.let {
             val onStack = node.attributes[attributeOnStack]
             operations.add(
                 ViewStackOp.Root(
