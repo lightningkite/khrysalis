@@ -187,6 +187,7 @@ internal fun mermaidEmitLink(
         ?.takeUnless { it.isEmpty() }
         ?: ""
     val arrowChars = when (operation) {
+        is ViewStackOp.Dismiss -> "--"
         is ViewStackOp.Pop -> "--"
         is ViewStackOp.Push -> "--"
         is ViewStackOp.Swap -> "-."
@@ -194,6 +195,7 @@ internal fun mermaidEmitLink(
         is ViewStackOp.Embed -> "=="
     }
     val arrowCharsSingle = when (operation) {
+        is ViewStackOp.Dismiss -> "--"
         is ViewStackOp.Pop -> "--"
         is ViewStackOp.Push -> "--"
         is ViewStackOp.Swap -> "-.-"

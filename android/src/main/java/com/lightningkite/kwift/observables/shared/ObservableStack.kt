@@ -40,6 +40,15 @@ class ObservableStack<T : AnyObject> : ObservableProperty<List<T>>() {
         return true
     }
 
+    fun dismiss(): Boolean {
+        if (stack.isEmpty()) {
+            return false
+        }
+        stack.removeAt(stack.lastIndex)
+        onChange.invokeAll(value = stack)
+        return true
+    }
+
     fun popTo(t: T) {
         var found = false
         for (i in 0..stack.lastIndex) {

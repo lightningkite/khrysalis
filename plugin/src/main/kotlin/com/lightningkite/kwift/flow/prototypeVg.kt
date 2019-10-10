@@ -87,6 +87,26 @@ internal fun createPrototypeVG(
                         line("})")
                     }
                 }
+                node.attributes[ViewNode.attributeDismiss]?.let {
+                    val stackNames = node.attributes[ViewNode.attributeOnStack]?.split(';') ?: listOf("stack")
+                    if (stackNames.size == 1) {
+                        line("$view.onClick(captureWeak(this){ self -> self.${stackNames.first()}.dismiss() })")
+                    } else {
+                        line("$view.onClick(captureWeak(this){ self -> ")
+                        tab {
+                            startLine()
+                            stackNames.forEachBetween(
+                                forItem = {
+                                    direct.append("if(self.$it.dismiss()) {}")
+                                },
+                                between = {
+                                    direct.append(" else ")
+                                }
+                            )
+                        }
+                        line("})")
+                    }
+                }
             }
 
             line("//")

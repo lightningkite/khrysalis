@@ -16,6 +16,10 @@ sealed class ViewStackOp {
         override val viewName: String?
             get() = null
     }
+    data class Dismiss(override val stack: String?) : ViewStackOp() {
+        override val viewName: String?
+            get() = null
+    }
 
     data class Push(override val stack: String?, override val viewName: String) : ViewStackOp()
     data class Reset(override val stack: String?, override val viewName: String) : ViewStackOp()

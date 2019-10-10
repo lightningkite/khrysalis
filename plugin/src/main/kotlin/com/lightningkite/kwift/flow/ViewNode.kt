@@ -35,6 +35,7 @@ class ViewNode(
         const val attributePush = "tools:goTo"
         const val attributeSwap = "tools:swap"
         const val attributePop = "tools:pop"
+        const val attributeDismiss = "tools:dismiss"
         const val attributeReset = "tools:reset"
         const val attributeOnStack = "tools:onStack"
         const val attributeStackDefault = "tools:stackDefault"
@@ -125,6 +126,11 @@ class ViewNode(
         node.attributes[attributePop]?.let {
             (node.attributes[attributeOnStack]?.split(';')?.map { it.takeUnless { it == "stack" } } ?: listOf()).forEach {
                 operations.add(ViewStackOp.Pop(stack = it))
+            }
+        }
+        node.attributes[attributeDismiss]?.let {
+            (node.attributes[attributeOnStack]?.split(';')?.map { it.takeUnless { it == "stack" } } ?: listOf()).forEach {
+                operations.add(ViewStackOp.Dismiss(stack = it))
             }
         }
         node.attributes[attributeStackId]?.let { stackId ->
