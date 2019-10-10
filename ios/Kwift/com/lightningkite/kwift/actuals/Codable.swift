@@ -48,20 +48,20 @@ public var decoder: JSONDecoder = {
 }()
 
 public extension Encodable {
-    func toJsonData(coder: JSONEncoder = encoder) throws -> Data {
+    func toJsonData(coder: JSONEncoder = encoder) -> Data {
         if let result = try? coder.encode(self) {
             return result
         }
-        let result = try coder.encode([self])
-        let string = String(data: result, encoding: .utf8)!
+        let result = try? coder.encode([self])
+        let string = String(data: result!, encoding: .utf8)!
         return string.substring(1, string.length - 1).data(using: .utf8)!
     }
-    func toJsonString(coder: JSONEncoder = encoder) throws -> String {
+    func toJsonString(coder: JSONEncoder = encoder) -> String {
         let data = try toJsonData(coder: coder)
         if let stringRep = String(data: data, encoding: .utf8) {
             return stringRep
         } else {
-            throw Exception("Couldn't turn the data into a UTF8 String.")
+            return ""
         }
     }
 }

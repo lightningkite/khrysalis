@@ -8,6 +8,5 @@ import org.jetbrains.kotlin.KotlinParser
 fun SwiftAltListener.registerStatement() {
     handle<KotlinParser.StatementContext> { item ->
         item.letIfElses()?.let { handleLet(this, it) } ?: defaultWrite(item)
-
     }
 }

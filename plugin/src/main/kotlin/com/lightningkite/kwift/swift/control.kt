@@ -133,7 +133,16 @@ fun SwiftAltListener.registerControl() {
     handle<KotlinParser.ForStatementContext> {
         line {
             append("for ")
-            write(it.variableDeclaration()!!.simpleIdentifier())
+            it.variableDeclaration()?.simpleIdentifier()?.let {
+                write(it)
+            } ?: it.multiVariableDeclaration()?.variableDeclaration()?.let {
+                append("(")
+                it.forEachBetween(
+                    forItem = { write(it.simpleIdentifier()) },
+                    between = { append(", ") }
+                )
+                append(")")
+            }
             append(" in ")
             write(it.expression())
             append(" {")

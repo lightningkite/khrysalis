@@ -23,8 +23,9 @@ fun SwiftAltListener.registerLiterals() {
         direct.append("??")
     }
     handle<KotlinParser.PostfixUnaryOperatorContext> { item ->
-        if(item.excl() != null) direct.append("!")
-        else defaultWrite(item)
+        item.excl()?.let { direct.append("!") } ?:
+            item.INCR()?.let { direct.append(" += 1")} ?:
+            item.DECR()?.let { direct.append(" -= 1")}
     }
     tokenOptions[KotlinParser.RealLiteral] = {
         direct.append(it.text.removeSuffix("f").removeSuffix("F"))

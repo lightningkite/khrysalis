@@ -104,6 +104,7 @@
 		5EAABEA8233EC33F007E7CED /* Kwift.h in Headers */ = {isa = PBXBuildFile; fileRef = 5EAABE9A233EC33F007E7CED /* Kwift.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5ED0DC36234FAB9400C36B7D /* UIImageView+ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED0DC34234FAB9400C36B7D /* UIImageView+ext.swift */; };
 		5ED0DC37234FAB9400C36B7D /* UILabel+ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED0DC35234FAB9400C36B7D /* UILabel+ext.swift */; };
+		5ED0E40F234FE75100C36B7D /* StringBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED0E40E234FE75100C36B7D /* StringBuilder.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -216,6 +217,7 @@
 		5EAABEA7233EC33F007E7CED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5ED0DC34234FAB9400C36B7D /* UIImageView+ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIImageView+ext.swift"; path = "Kwift/com/lightningkite/kwift/views/actuals/UIImageView+ext.swift"; sourceTree = SOURCE_ROOT; };
 		5ED0DC35234FAB9400C36B7D /* UILabel+ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UILabel+ext.swift"; path = "Kwift/com/lightningkite/kwift/views/actuals/UILabel+ext.swift"; sourceTree = SOURCE_ROOT; };
+		5ED0E40E234FE75100C36B7D /* StringBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StringBuilder.swift; path = Kwift/com/lightningkite/kwift/actuals/StringBuilder.swift; sourceTree = SOURCE_ROOT; };
 		63A80265E53D7E8A26AF57CF /* libPods-Kwift.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Kwift.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6648265A81A02AE0AA915524 /* Pods-Kwift.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kwift.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Kwift/Pods-Kwift.debug.xcconfig"; sourceTree = "<group>"; };
 		F994D26061C995DD96617E1D /* Pods-Kwift.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kwift.release.xcconfig"; path = "Pods/Target Support Files/Pods-Kwift/Pods-Kwift.release.xcconfig"; sourceTree = "<group>"; };
@@ -280,6 +282,7 @@
 				5E429734233EC420002AAB7A /* Kotlin.swift */,
 				5E429735233EC420002AAB7A /* OptionalProtocol.swift */,
 				5E429736233EC420002AAB7A /* HttpClient.swift */,
+				5ED0E40E234FE75100C36B7D /* StringBuilder.swift */,
 				5E429737233EC420002AAB7A /* Codable.swift */,
 				5E429738233EC420002AAB7A /* String.extensions.swift */,
 				5E429739233EC420002AAB7A /* ImageData.swift */,
@@ -737,6 +740,7 @@
 				5E429798233EC420002AAB7A /* Codable.swift in Sources */,
 				5E4297A1233EC420002AAB7A /* Dropdown+binding.swift in Sources */,
 				5E429794233EC420002AAB7A /* unit.swift in Sources */,
+				5ED0E40F234FE75100C36B7D /* StringBuilder.swift in Sources */,
 				5E4297BA233EC420002AAB7A /* NeverEvent.swift in Sources */,
 				5E42979A233EC420002AAB7A /* ImageData.swift in Sources */,
 				5E4297B1233EC420002AAB7A /* ObservableProperty.swift in Sources */,
