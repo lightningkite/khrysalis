@@ -13,7 +13,6 @@ fun SwiftAltListener.registerLambda() {
             ?.parentIfType<KotlinParser.PrimaryExpressionContext>()
             ?.parentIfType<KotlinParser.PostfixUnaryExpressionContext>()
             ?.parentIfType<KotlinParser.PrefixUnaryExpressionContext>()
-            ?.also { println("X: " + it.text) }
             ?.unaryPrefix()
             ?.mapNotNull { it.annotation()?.singleAnnotation()?.unescapedAnnotation()?.text }
             ?: literal
