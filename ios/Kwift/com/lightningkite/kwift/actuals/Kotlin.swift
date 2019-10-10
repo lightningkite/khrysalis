@@ -124,6 +124,10 @@ public extension Array where Element == String {
     
 }
 
+public extension Dictionary: Equatable where Value == Any? {
+    
+}
+
 public extension Dictionary {
     var size: Int32 { return Int32(self.count) }
     mutating func put(_ key: Key, _ value: Value) {

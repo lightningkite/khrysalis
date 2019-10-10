@@ -93,6 +93,8 @@ class SwiftAltListener {
         simpleFunctionReplacement("ArrayList", "Array")
         simpleFunctionReplacement("HashMap", "Dictionary")
         functionReplacements["run"] = {
+            if(it.usedAsStatement())
+                direct.append("let _ = ")
             direct.append("{ () in ")
             it.postfixUnarySuffix()[0]!!.callSuffix()!!.annotatedLambda()!!.lambdaLiteral()!!.statements()!!.statement().forEach {
                 startLine()

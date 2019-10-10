@@ -13,7 +13,7 @@ fun createPrototypeViewGenerators(androidFolder: File, applicationPackage: Strin
         resourcesFolder = androidFolder.resolve("src/main/res"),
         applicationPackage = applicationPackage,
         docsOutputFolder = androidFolder.resolve("docs/flow"),
-        outputFolder = androidFolder.resolve("src/main/java/${applicationPackage.replace('.', '/')}/shared/vg/proto")
+        outputFolder = androidFolder.resolve("src/main/java/${applicationPackage.replace('.', '/')}/shared/vg")
     )
 
 internal fun createPrototypeViewGenerators(
@@ -63,5 +63,13 @@ internal fun createPrototypeViewGenerators(
         )
     }
 
-
+    //Clean up old stuff
+    (outputFolder.listFiles() ?: arrayOf())
+        .filter { it.name.endsWith("VG.kt") }
+        .filter { it.name.removeSuffix("VG.kt") !in nodes.keys }
+        .filter { it.useLines { it.any { it.contains(warning, true) } } }
+        .forEach {
+            println("Cleaning out $it...")
+            it.delete()
+        }
 }

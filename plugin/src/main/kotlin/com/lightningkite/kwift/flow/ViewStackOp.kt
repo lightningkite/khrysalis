@@ -18,7 +18,7 @@ sealed class ViewStackOp {
     }
 
     data class Push(override val stack: String?, override val viewName: String) : ViewStackOp()
-    data class Root(override val stack: String?, override val viewName: String) : ViewStackOp()
+    data class Reset(override val stack: String?, override val viewName: String) : ViewStackOp()
     data class Swap(override val stack: String?, override val viewName: String) : ViewStackOp()
     data class Embed(override val stack: String, override val viewName: String) : ViewStackOp()
 }

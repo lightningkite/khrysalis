@@ -13,6 +13,14 @@ annotation class escaping
 @Target(AnnotationTarget.PROPERTY)
 annotation class unowned
 
+@Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.SOURCE)
+annotation class unownedSelf
+
+@Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.SOURCE)
+annotation class weakSelf
+
 @Target(AnnotationTarget.TYPE)
 annotation class swiftExactly(val parameterName: String = "default")
 

@@ -19,9 +19,6 @@ fun File.translateLayoutXml(styles: Styles, converter: LayoutConverter = LayoutC
     )
     conversion.write(XmlNode.read(this, styles))
     val name = this.nameWithoutExtension.camelCase().capitalize()
-    val vars = conversion.bindings.entries.joinToString("\n") {
-        "weak var ${it.key}: ${it.value}!"
-    }
     return """
         //
         // ${name}Xml.swift
@@ -35,15 +32,38 @@ fun File.translateLayoutXml(styles: Styles, converter: LayoutConverter = LayoutC
 
         class ${name}Xml {
 
-            $vars
-            weak var _root: UIView
+            ${conversion.bindings.entries.joinToString("\n") {
+                "unowned var ${it.key}: ${it.value}!"
+            }}
+            unowned var xmlRoot: UIView!
 
             func setup(_ dependency: ViewDependency) -> UIView {
                 let result = $appendable
-                _root = result
+                xmlRoot = result
                 return result
             }
             
         }
     """.trimIndent().retabSwift()
 }
+
+/*
+        class ${name}Xml {
+
+            ${conversion.bindings.entries.joinToString("\n") {
+                "unowned var ${it.key}_raw: ${it.value}?"
+            }}
+            ${conversion.bindings.entries.joinToString("\n") {
+                "var ${it.key}: ${it.value} { return ${it.key}_raw! }"
+            }}
+
+            unowned var xmlRoot_raw: UIView?
+            var xmlRoot: UIView { return xmlRoot_raw! }
+
+            func setup(_ dependency: ViewDependency) -> UIView {
+                let result = $appendable
+                xmlRoot_raw = result
+                return result
+            }
+
+        }*/

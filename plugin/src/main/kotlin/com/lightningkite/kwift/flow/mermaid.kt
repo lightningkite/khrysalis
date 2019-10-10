@@ -2,7 +2,6 @@ package com.lightningkite.kwift.flow
 
 import java.io.BufferedWriter
 import java.io.File
-import java.lang.IllegalArgumentException
 
 
 internal fun groupedGraph(
@@ -191,14 +190,14 @@ internal fun mermaidEmitLink(
         is ViewStackOp.Pop -> "--"
         is ViewStackOp.Push -> "--"
         is ViewStackOp.Swap -> "-."
-        is ViewStackOp.Root -> "-."
+        is ViewStackOp.Reset -> "-."
         is ViewStackOp.Embed -> "=="
     }
     val arrowCharsSingle = when (operation) {
         is ViewStackOp.Pop -> "--"
         is ViewStackOp.Push -> "--"
         is ViewStackOp.Swap -> "-.-"
-        is ViewStackOp.Root -> "-.-"
+        is ViewStackOp.Reset -> "-.-"
         is ViewStackOp.Embed -> "=="
     }
     if (passed.isEmpty())

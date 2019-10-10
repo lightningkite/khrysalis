@@ -110,7 +110,7 @@ class ViewNode(
         node.attributes[attributeReset]?.let {
             val onStack = node.attributes[attributeOnStack]
             operations.add(
-                ViewStackOp.Root(
+                ViewStackOp.Reset(
                     stack = onStack,
                     viewName = it.removePrefix("@layout/").camelCase().capitalize()
                 )
@@ -123,8 +123,9 @@ class ViewNode(
             ) }
         }
         node.attributes[attributePop]?.let {
-            val onStack = node.attributes[attributeOnStack]
-            operations.add(ViewStackOp.Pop(stack = onStack))
+            (node.attributes[attributeOnStack]?.split(';')?.map { it.takeUnless { it == "stack" } } ?: listOf()).forEach {
+                operations.add(ViewStackOp.Pop(stack = it))
+            }
         }
         node.attributes[attributeStackId]?.let { stackId ->
             provides.add(ViewVar(stackId, "ObservableStack[ViewGenerator]"))

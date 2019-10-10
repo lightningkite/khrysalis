@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 
-extension UILabel {
+public extension UILabel {
     var textResource: String {
         get {
             return text ?? ""
@@ -28,7 +28,7 @@ extension UILabel {
     }
 }
 
-extension UITextView {
+public extension UITextView {
     var textResource: String {
         get {
             return text ?? ""
@@ -47,7 +47,7 @@ extension UITextView {
     }
 }
 
-extension UITextField {
+public extension UITextField {
     var textResource: String {
         get {
             return text ?? ""
@@ -62,6 +62,25 @@ extension UITextField {
         }
         set(value) {
             text = value
+        }
+    }
+}
+
+public extension UIButton {
+    var textResource: String {
+        get {
+            return title(for: .normal) ?? ""
+        }
+        set(value) {
+            setTitle(value, for: .normal)
+        }
+    }
+    var textString: String {
+        get {
+            return title(for: .normal) ?? ""
+        }
+        set(value) {
+            setTitle(value, for: .normal)
         }
     }
 }

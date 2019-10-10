@@ -50,7 +50,7 @@ fun SwiftAltListener.registerType() {
     handle<KotlinParser.AnnotationContext> { item ->
         item.children?.filter { it is ParserRuleContext }?.forEachBetween(
             forItem = { child ->
-                when(child){
+                when (child) {
                     is ParserRuleContext -> write(child)
                 }
             },
@@ -58,13 +58,13 @@ fun SwiftAltListener.registerType() {
         )
     }
     handle<KotlinParser.SingleAnnotationContext> { item ->
-        if (item.unescapedAnnotation().text.startsWith("escaping")) {
-            if (filterEscapingAnnotation) {
-                return@handle
-            }
-        }
-        if (item.unescapedAnnotation().text.startsWith("swift")) {
-            return@handle
+        val unescapedText = item.unescapedAnnotation().text
+        when {
+            unescapedText.startsWith("escaping") && filterEscapingAnnotation -> return@handle
+            unescapedText.startsWith("swift") -> return@handle
+            unescapedText.startsWith("unowned") -> return@handle
+            unescapedText.startsWith("unownedSelf") -> return@handle
+            unescapedText.startsWith("weakSelf") -> return@handle
         }
         direct.append('@')
         write(item.unescapedAnnotation())

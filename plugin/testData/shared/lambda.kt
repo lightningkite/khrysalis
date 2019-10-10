@@ -7,6 +7,9 @@ fun lambdaTest() {
     takesLambda { integer, someValue ->
         println("Hello!")
     }
+    takesLambda(label@ @unownedSelf { integer, someValue ->
+        println("Hello!")
+    })
 }
 
 fun takesLambda(lambda: (integer: Int, someValue: String) -> Unit) {
