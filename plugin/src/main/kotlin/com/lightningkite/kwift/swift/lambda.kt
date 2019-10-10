@@ -8,9 +8,6 @@ import org.jetbrains.kotlin.KotlinParser
 
 fun SwiftAltListener.registerLambda() {
     handle<KotlinParser.LambdaLiteralContext> { literal ->
-        generateSequence<RuleContext>(literal) { it.parent }.take(8).let {
-            println("Rule Stack: ${it.joinToString { it::class.java.simpleName }}")
-        }
         val annotations = literal
             .parentIfType<KotlinParser.FunctionLiteralContext>()
             ?.parentIfType<KotlinParser.PrimaryExpressionContext>()
@@ -21,12 +18,10 @@ fun SwiftAltListener.registerLambda() {
             ?.mapNotNull { it.annotation()?.singleAnnotation()?.unescapedAnnotation()?.text }
             ?: literal
                 .parentIfType<KotlinParser.AnnotatedLambdaContext>()
-                ?.also { println("X: " + it.text) }
                 ?.annotation()?.mapNotNull { it.singleAnnotation()?.unescapedAnnotation()?.text }
             ?: listOf()
 
         direct.append("{ ")
-        println("Lambda annotations: $annotations")
         if (annotations.any {it.startsWith("weakSelf") }) {
             direct.append("[weak self] ")
         }
