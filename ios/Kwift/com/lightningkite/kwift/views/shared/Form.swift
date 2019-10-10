@@ -75,8 +75,8 @@ public class Form {
     
     
     //Start Companion
-    static var xIsRequired: ViewString = ViewStringRaw("%1$s is required.")
-    static var xMustMatchY: ViewString = ViewStringRaw("%1$s must match %2$s.")
+    static public var xIsRequired: ViewString = ViewStringRaw("%1$s is required.")
+    static public var xMustMatchY: ViewString = ViewStringRaw("%1$s must match %2$s.")
     //End Companion
     
     public var fields: Array<UntypedFormField>

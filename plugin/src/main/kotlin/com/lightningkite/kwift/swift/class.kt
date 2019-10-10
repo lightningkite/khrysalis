@@ -304,7 +304,6 @@ fun SwiftAltListener.registerClass() {
         line("//Start Companion")
         item.classMemberDeclarations().classMemberDeclaration().forEach {
             startLine()
-            direct.append("static ")
             write(it)
         }
         line("//End Companion")

@@ -8,6 +8,19 @@ import Foundation
 public class ObservableStack<T: AnyObject>: ObservableProperty<Array<T>> {
     
     
+    
+    //Start Companion
+    
+    static public func withFirst<T: AnyObject>(value: T) -> ObservableStack<T> {
+        var result = ObservableStack<T>()
+        result.reset(value)
+        return result
+    }
+    static public func withFirst<T: AnyObject>(_ value: T) -> ObservableStack<T> {
+        return withFirst(value: value)
+    }
+    //End Companion
+    
     override public var onChange: StandardEvent<Array<T>> { get { return _onChange } set(value) { _onChange = value } }
     override public var value: Array<T> {
         get {
@@ -24,8 +37,26 @@ public class ObservableStack<T: AnyObject>: ObservableProperty<Array<T>> {
         return push(t: t)
     }
     
+    public func swap(t: T) -> Void {
+        stack.removeAt(stack.lastIndex)
+        stack.add(t)
+        onChange.invokeAll(value: stack)
+    }
+    public func swap(_ t: T) -> Void {
+        return swap(t: t)
+    }
+    
     public func pop() -> Bool {
         if stack.size <= 1 {
+            return false
+        }
+        stack.removeAt(stack.lastIndex)
+        onChange.invokeAll(value: stack)
+        return true
+    }
+    
+    public func dismiss() -> Bool {
+        if stack.isEmpty() {
             return false
         }
         stack.removeAt(stack.lastIndex)

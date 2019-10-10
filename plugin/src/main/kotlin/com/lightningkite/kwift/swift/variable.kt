@@ -13,6 +13,11 @@ fun SwiftAltListener.registerVariable() {
             ?.parentIfType<KotlinParser.ClassMemberDeclarationsContext>()
             ?.parentIfType<KotlinParser.ClassBodyContext>()
             ?.parentIfType<KotlinParser.ClassDeclarationContext>()
+        val owningCompanion = item.parentIfType<KotlinParser.DeclarationContext>()
+            ?.parentIfType<KotlinParser.ClassMemberDeclarationContext>()
+            ?.parentIfType<KotlinParser.ClassMemberDeclarationsContext>()
+            ?.parentIfType<KotlinParser.ClassBodyContext>()
+            ?.parentIfType<KotlinParser.CompanionObjectContext>()
 
         val myName = item.variableDeclaration().simpleIdentifier().text
         val originalUsesOverride =
@@ -51,6 +56,9 @@ fun SwiftAltListener.registerVariable() {
             owningClass.additionalDeclarations.add { writer ->
                 with(writer) {
                     line {
+                        if (owningCompanion != null) {
+                            append("static ")
+                        }
                         append("private var _$myName")
                         item.variableDeclaration().type()?.let {
                             append(": ")
@@ -67,6 +75,10 @@ fun SwiftAltListener.registerVariable() {
                 append("override ")
             }
             if (owningClass != null || isTopLevel) {
+                append(item.modifiers().visibilityString())
+                append(" ")
+            } else if (owningCompanion != null) {
+                append("static ")
                 append(item.modifiers().visibilityString())
                 append(" ")
             }
@@ -96,7 +108,7 @@ fun SwiftAltListener.registerVariable() {
                     } else {
                         owningClass.additionalInits.add { writer ->
                             with(writer) {
-                                if(myName in owningClass.constructorParameterNames()){
+                                if (myName in owningClass.constructorParameterNames()) {
                                     line {
                                         append("self.")
                                         append(myName)
