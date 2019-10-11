@@ -477,7 +477,11 @@ val LayoutConverter.Companion.normal get() = LayoutConverter(
         ViewType("ImageButton", "UIButton", "Button") { node -> },
         ViewType("Button", "UIButton", "View") { node ->
             node.attributeAsString("android:text")?.let { text ->
-                appendln("view.setTitle($text, for: .normal)")
+                if(node.attributeAsBoolean("android:textAllCaps") == true) {
+                    appendln("view.setTitle($text.toUpperCase(), for: .normal)")
+                } else {
+                    appendln("view.setTitle($text, for: .normal)")
+                }
             }
             node.attributeAsColor("android:textColor")?.let {
                 appendln("view.setTitleColor($it, for: .normal)")
@@ -597,17 +601,22 @@ val LayoutConverter.Companion.normal get() = LayoutConverter(
             }
             node.children.forEachBetween(
                 forItem = { child ->
+                    val defaultMargin = child.attributeAsDimension("android:layout_margin") ?: 0
+                    val marginTop = (child.attributeAsDimension("android:layout_marginTop") ?: defaultMargin).toString()
+                    val marginLeft = (child.attributeAsDimension("android:layout_marginLeft") ?: child.attributeAsDimension("android:layout_marginStart") ?: defaultMargin).toString()
+                    val marginBottom = (child.attributeAsDimension("android:layout_marginBottom") ?: defaultMargin).toString()
+                    val marginRight = (child.attributeAsDimension("android:layout_marginRight") ?: child.attributeAsDimension("android:layout_marginEnd") ?: defaultMargin).toString()
+
                     append("flex.addItem(")
                     write(child)
                     append(").margin(")
-                    val defaultMargin = child.attributeAsDimension("android:layout_margin") ?: 0
-                    append((child.attributeAsDimension("android:layout_marginTop") ?: defaultMargin).toString())
+                    append(marginTop)
                     append(", ")
-                    append((child.attributeAsDimension("android:layout_marginLeft") ?: defaultMargin).toString())
+                    append(marginLeft)
                     append(", ")
-                    append((child.attributeAsDimension("android:layout_marginBottom") ?: defaultMargin).toString())
+                    append(marginBottom)
                     append(", ")
-                    append((child.attributeAsDimension("android:layout_marginRight") ?: defaultMargin).toString())
+                    append(marginRight)
                     append(")")
                     child.attributeAsDouble("android:layout_weight")?.let { weight ->
                         append(".grow($weight).shrink($weight)")
@@ -669,9 +678,9 @@ val LayoutConverter.Companion.normal get() = LayoutConverter(
 
                 val defaultMargin = child.attributeAsDimension("android:layout_margin") ?: 0
                 val marginTop = (child.attributeAsDimension("android:layout_marginTop") ?: defaultMargin).toString()
-                val marginLeft = (child.attributeAsDimension("android:layout_marginLeft") ?: defaultMargin).toString()
+                val marginLeft = (child.attributeAsDimension("android:layout_marginLeft") ?: child.attributeAsDimension("android:layout_marginStart") ?: defaultMargin).toString()
                 val marginBottom = (child.attributeAsDimension("android:layout_marginBottom") ?: defaultMargin).toString()
-                val marginRight = (child.attributeAsDimension("android:layout_marginRight") ?: defaultMargin).toString()
+                val marginRight = (child.attributeAsDimension("android:layout_marginRight") ?: child.attributeAsDimension("android:layout_marginEnd") ?: defaultMargin).toString()
 
                 appendln("view.addOnLayoutSubviews { [weak view, weak sub] in")
                 appendln("if let view = view, let sub = sub {")
@@ -703,13 +712,19 @@ val LayoutConverter.Companion.normal get() = LayoutConverter(
                             "right" -> append(".right($marginRight + $paddingRight)")
                             "start" -> append(".start($marginLeft + $paddingLeft)")
                             "end" -> append(".end($marginRight + $paddingRight)")
-                            "center_horizontal" -> append(".hCenter()")
+                            "center_horizontal" -> append(".hCenter((-$marginLeft + $marginRight) / 2)")
                             "top" -> append(".top($marginTop + $paddingTop)")
                             "bottom" -> append(".bottom($marginBottom + $paddingBottom)")
-                            "center_vertical" -> append(".vCenter()")
-                            "center" -> append(".center()")
+                            "center_vertical" -> append(".vCenter((-$marginTop + $marginBottom) / 2)")
+                            "center" -> {
+                                append(".hCenter($marginLeft - $marginRight)")
+                                append(".vCenter($marginTop - $marginBottom)")
+                            }
                         }
                     }
+                } ?: run {
+                    append(".start($marginLeft + $paddingLeft)")
+                    append(".top($marginTop + $paddingTop)")
                 }
                 appendln()
                 appendln("}")
@@ -731,7 +746,11 @@ val LayoutConverter.Companion.normal get() = LayoutConverter(
 
 private fun Appendable.handleCommonText(node: XmlNode, viewHandle: String = "view") {
     node.attributeAsString("android:text")?.let { text ->
-        appendln("$viewHandle.text = $text")
+        if(node.attributeAsBoolean("android:textAllCaps") == true) {
+            appendln("$viewHandle.text = $text.toUpperCase()")
+        } else {
+            appendln("$viewHandle.text = $text")
+        }
     }
     node.attributeAsDouble("android:lineSpacingMultiplier")?.let { lineSpacingMultiplier ->
         appendln("$viewHandle.lineSpacingMultiplier = $lineSpacingMultiplier")

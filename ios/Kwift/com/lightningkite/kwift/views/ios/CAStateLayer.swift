@@ -72,5 +72,6 @@ public class CAImageLayer: CALayer {
     public convenience init(_ image: UIImage?) {
         self.init()
         self.image = image
+        self.contents = image?.cgImage
     }
 }

@@ -16,12 +16,19 @@ public extension UIView {
             let previous = UIView.extensionBackgroundLayer.get(self)
             previous?.removeFromSuperlayer()
             if let value = value {
+                value.matchSize(self)
                 self.layer.insertSublayer(value, at: 0)
             }
             UIView.extensionBackgroundLayer.set(self, value)
         }
         get {
             return UIView.extensionBackgroundLayer.get(self)
+        }
+    }
+    private static func printLayerInfo(layer: CALayer, indent: String = "") {
+        print(indent + layer.debugDescription)
+        for sub in layer.sublayers ?? [] {
+            printLayerInfo(layer: sub, indent: indent + " ")
         }
     }
 }

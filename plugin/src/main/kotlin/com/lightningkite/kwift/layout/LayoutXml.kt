@@ -34,7 +34,7 @@ fun File.translateLayoutXml(styles: Styles, converter: LayoutConverter = LayoutC
 
             ${conversion.bindings.entries.joinToString("\n") {
         if(it.value.endsWith("!")) {
-            "var ${it.key}: ${it.value.removeSuffix("!")}"
+            "var ${it.key}: ${it.value}"
         } else {
             "unowned var ${it.key}: ${it.value}!"
         }
