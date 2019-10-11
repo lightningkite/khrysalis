@@ -26,7 +26,14 @@ fun FrameLayout.bindStack(dependency: ViewDependency, obs: ObservableStack<ViewG
             val oldView = currentView
             val oldStackSize = currentStackSize
 
-            val newView = obs.stack.lastOrNull()?.generate(dependency) ?: View(context)
+            removeAllViews()
+            var newView = obs.stack.lastOrNull()?.generate(dependency)
+            if (newView == null) {
+                newView = View(context)
+                visibility = View.GONE
+            } else {
+                visibility = View.VISIBLE
+            }
             addView(
                 newView, FrameLayout.LayoutParams(
                     ViewGroup.LayoutParams.MATCH_PARENT,
@@ -35,18 +42,27 @@ fun FrameLayout.bindStack(dependency: ViewDependency, obs: ObservableStack<ViewG
             )
             val newStackSize = datas.size
 
-            if (oldStackSize > newStackSize) {
-                oldView.animate().translationX(width.toFloat())
-                newView.translationX = -width.toFloat()
-                newView.animate().translationX(0f)
-            } else if (oldStackSize < newStackSize) {
-                oldView.animate().translationX(-width.toFloat())
-                newView.translationX = width.toFloat()
-                newView.animate().translationX(0f)
-            } else {
-                oldView.animate().alpha(0f)
-                newView.alpha = 0f
-                newView.animate().alpha(1f)
+            when {
+                oldStackSize == 0 -> {
+                    oldView.animate().alpha(0f)
+                    newView.alpha = 0f
+                    newView.animate().alpha(1f)
+                }
+                oldStackSize > newStackSize -> {
+                    oldView.animate().translationX(width.toFloat())
+                    newView.translationX = -width.toFloat()
+                    newView.animate().translationX(0f)
+                }
+                oldStackSize < newStackSize -> {
+                    oldView.animate().translationX(-width.toFloat())
+                    newView.translationX = width.toFloat()
+                    newView.animate().translationX(0f)
+                }
+                else -> {
+                    oldView.animate().alpha(0f)
+                    newView.alpha = 0f
+                    newView.animate().alpha(1f)
+                }
             }
             oldView.animate().withEndAction { removeView(oldView) }
 
