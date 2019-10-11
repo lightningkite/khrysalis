@@ -39,4 +39,36 @@ public extension UITextField {
         toolbar.setItems([ spaceButton, doneButton], animated: false)
         inputAccessoryView = toolbar
     }
+
+    func underlineLayer(boldColor: UIColor, hintColor: UIColor? = nil) -> CALayer {
+        let view = self
+        let layer = CALayer()
+        let bold = CALayer()
+        bold.backgroundColor = boldColor.cgColor
+        let light = CALayer()
+        light.backgroundColor = (hintColor ?? boldColor).cgColor
+        
+        layer.addOnStateChange(view) { [unowned layer] state in
+            layer.sublayers?.forEach { $0.removeFromSuperlayer() }
+            if state.contains(.focused) {
+                layer.addSublayer(bold)
+            } else {
+                layer.addSublayer(light)
+            }
+        }
+        
+        view.onLayoutSubviews.addAndRunWeak(layer, view) { [unowned bold, unowned light] layer, view in
+            layer.frame = view.bounds
+            bold.frame.origin.x = 0
+            bold.frame.origin.y = layer.bounds.height - 2
+            bold.bounds.size.width = layer.bounds.width
+            bold.bounds.size.height = 2
+            light.frame.origin.x = 0
+            light.frame.origin.y = layer.bounds.height - 1
+            light.bounds.size.width = layer.bounds.width
+            light.bounds.size.height = 1
+        }
+        
+        return layer
+    }
 }

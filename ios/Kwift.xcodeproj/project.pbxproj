@@ -369,8 +369,6 @@
 		5E429763233EC420002AAB7A /* actuals */ = {
 			isa = PBXGroup;
 			children = (
-				5ED0DC34234FAB9400C36B7D /* UIImageView+ext.swift */,
-				5ED0DC35234FAB9400C36B7D /* UILabel+ext.swift */,
 				5E42976D233EC420002AAB7A /* AbstractCalendarView.swift */,
 				5E42976C233EC420002AAB7A /* alias.swift */,
 				5E429777233EC420002AAB7A /* CalendarView.swift */,
@@ -393,6 +391,8 @@
 				5E429771233EC420002AAB7A /* ToggleButton.swift */,
 				5E5F6DB5234C03E80090384F /* UIButton+ext.swift */,
 				5E429778233EC420002AAB7A /* UIButtonWithInput.swift */,
+				5ED0DC34234FAB9400C36B7D /* UIImageView+ext.swift */,
+				5ED0DC35234FAB9400C36B7D /* UILabel+ext.swift */,
 				5E5F6DB4234C03E80090384F /* UIView+ext.swift */,
 			);
 			path = actuals;

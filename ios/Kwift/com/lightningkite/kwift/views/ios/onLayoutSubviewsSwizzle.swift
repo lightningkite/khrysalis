@@ -39,6 +39,7 @@ extension UIView {
     }
 
     public func addOnLayoutSubviews(action:@escaping ()->Void) {
+        action()
         let _ = onLayoutSubviews.add(listener: { [weak self] view in
             action()
             return false

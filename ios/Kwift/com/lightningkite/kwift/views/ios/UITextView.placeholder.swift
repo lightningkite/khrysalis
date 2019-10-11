@@ -28,4 +28,17 @@ public extension UITextView {
         get { return 0 }
         set(value) { }
     }
+    
+    func addDismissButton(){
+        var toolbar = UIToolbar()
+        toolbar.barStyle = UIBarStyle.default
+        toolbar.isTranslucent = true
+        toolbar.sizeToFit()
+        let doneButton = UIBarButtonItem(title: "Done", style: UIBarButtonItem.Style.plain) { [weak self] in
+            self?.resignFirstResponder()
+        }
+        let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil)
+        toolbar.setItems([ spaceButton, doneButton], animated: false)
+        inputAccessoryView = toolbar
+    }
 }

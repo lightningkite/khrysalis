@@ -53,3 +53,9 @@ extension UIFont {
         }
     }
 }
+
+public extension String {
+    func attributedWithColor(_ color: UIColor) -> NSAttributedString {
+        return NSAttributedString(string: self, attributes: [NSAttributedString.Key.foregroundColor: color])
+    }
+}
