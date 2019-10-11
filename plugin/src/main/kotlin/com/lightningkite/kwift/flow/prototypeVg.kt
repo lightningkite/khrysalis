@@ -27,7 +27,7 @@ internal fun createPrototypeVG(
     val node = XmlNode.read(xml, mapOf())
 
     fun makeView(otherViewNode: ViewNode, forStack: String?): String {
-        return (listOf(ViewNode.stack) + otherViewNode.totalRequires(viewNodeMap)).joinToString(
+        return (otherViewNode.totalRequires(viewNodeMap)).joinToString(
             ", ",
             "${otherViewNode.name}VG(",
             ")"
@@ -109,6 +109,8 @@ internal fun createPrototypeVG(
                 }
             }
 
+            var inits = ArrayList<()->Unit>()
+
             line("//")
             line("// ${viewName}VG.swift")
             line("// Created by Kwift Prototype Generator")
@@ -130,7 +132,7 @@ internal fun createPrototypeVG(
             line("""@Suppress("NAME_SHADOWING")""")
             line("class ${viewName}VG(")
             tab {
-                val things = (listOf(ViewNode.stack) + viewNode.totalRequires(viewNodeMap))
+                val things = (viewNode.totalRequires(viewNodeMap).toList())
                 things.forEachIndexed { index, it ->
                     if (it.type.contains("VG") || it.type.contains("ViewGenerator")) {
                         line("@unowned val $it" + (if (index == things.lastIndex) "" else ","))
@@ -214,7 +216,9 @@ internal fun createPrototypeVG(
                                         viewNodeMap[it.removePrefix("@layout/").camelCase().capitalize()]
                                             ?: return@stackDefault
                                     val makeView = makeView(otherViewNode, stackName)
-                                    line("this.$stackName.reset($makeView)")
+                                    inits.add {
+                                        line("this.$stackName.reset($makeView)")
+                                    }
                                 }
                                 line("$view.bindStack(dependency, ${stackName})")
                             }
@@ -246,6 +250,16 @@ internal fun createPrototypeVG(
                     line("return view")
                 }
                 line("}")
+                line("")
+                line("//region Init")
+                line("")
+                line("init {")
+                tab {
+                    inits.forEach { it() }
+                }
+                line("}")
+                line("")
+                line("//endregion Init")
                 line("")
                 line("//region View Functions")
                 line("")

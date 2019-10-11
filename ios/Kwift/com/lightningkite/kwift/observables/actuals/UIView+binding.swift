@@ -96,7 +96,9 @@ public extension UIView {
         }
         stack.addAndRunWeak(self) { this, value in
             var animation = Animation.fade
-            if value.count > lastCount {
+            if lastCount == 0 {
+                animation = .fade
+            } else if value.count > lastCount {
                 animation = .push
             } else if value.count < lastCount {
                 animation = .pop
@@ -135,6 +137,10 @@ public extension UIView {
                 updateAnimations()
             }
             if let newData = value.last {
+                if this.isHidden {
+                    this.isHidden = false
+                    this.relayoutFlexClimbToXml()
+                }
                 let new = newData.generate(dependency: dependency)
                 switch animation {
                 case .fade:
@@ -173,6 +179,8 @@ public extension UIView {
                 current = new
             } else {
                 current = nil
+                this.bounds.size = CGSize(width: 1, height: 1)
+                this.isHidden = true
             }
         }
     }

@@ -19,7 +19,7 @@ data class OngoingLayoutConversion(
             appendln("let subxml = $className()")
             appendln("let view = subxml.setup(dependency)")
             if(id != null){
-                bindings[id] = className
+                bindings[id] = className + "!"
                 appendln("self.${id} = subxml")
             }
             appendln("return view")

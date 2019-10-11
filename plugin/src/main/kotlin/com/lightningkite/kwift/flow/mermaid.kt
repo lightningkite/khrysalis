@@ -26,13 +26,13 @@ internal fun groupedGraph(
 
         out.appendln("graph LR;")
         groupedNodes.forEach {
-            if (!it.key.isBlank()) {
+            if (!it.key.isBlank() && it.key != "stack") {
                 out.appendln("subgraph ${it.key};")
             }
             it.value.forEach {
                 out.appendln("${nodeId[it.key]}[${it.key}];")
             }
-            if (!it.key.isBlank()) {
+            if (!it.key.isBlank() && it.key != "stack") {
                 out.appendln("end;")
             }
         }
@@ -97,7 +97,7 @@ internal fun partialGraphs(
         .mapValues { it.value.sortedBy { it.value.estimateDepth(nodes) } }
     for ((group, values) in groupedNodes) {
         println("Making partialGraph for $group")
-        if (group.isEmpty()) continue
+        if (group.isEmpty() || group == "stack") continue
         outputFolder.resolve("flow-partial-$group.mermaid").bufferedWriter().use { out ->
             val internalNodes = values.map { it.value }.toSet()
             val internalNodeNames = internalNodes.map { it.name }.toSet()

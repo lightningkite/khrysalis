@@ -1,5 +1,6 @@
 package com.lightningkite.kwift.flow
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.lightningkite.kwift.layout.readXMLStyles
 import com.lightningkite.kwift.log
 import com.lightningkite.kwift.utils.XmlNode
@@ -40,6 +41,10 @@ internal fun createPrototypeViewGenerators(
         node.gather(XmlNode.read(item, styles), item, styles)
         nodes[fileName] = node
     }
+
+    //Emit info
+    ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(docsOutputFolder.resolve("view-nodes.json"), nodes)
+
 
     //Emit graph
     groupedGraph(docsOutputFolder, nodes)

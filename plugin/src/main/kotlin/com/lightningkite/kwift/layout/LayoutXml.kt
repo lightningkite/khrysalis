@@ -33,7 +33,11 @@ fun File.translateLayoutXml(styles: Styles, converter: LayoutConverter = LayoutC
         class ${name}Xml {
 
             ${conversion.bindings.entries.joinToString("\n") {
-                "unowned var ${it.key}: ${it.value}!"
+        if(it.value.endsWith("!")) {
+            "var ${it.key}: ${it.value.removeSuffix("!")}"
+        } else {
+            "unowned var ${it.key}: ${it.value}!"
+        }
             }}
             unowned var xmlRoot: UIView!
 

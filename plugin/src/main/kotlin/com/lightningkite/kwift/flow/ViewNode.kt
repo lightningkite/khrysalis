@@ -50,7 +50,7 @@ class ViewNode(
         if (name in seen) return setOf()
         return requires + (instantiates.flatMap {
             map[it]?.totalRequires(map, seen + name) ?: setOf()
-        }.toSet()) - provides
+        }.filter { it.name != "stack" }.toSet()) - provides
     }
 
     fun estimateDepth(map: Map<String, ViewNode>, seen: Set<String> = setOf()): Int {
@@ -60,7 +60,7 @@ class ViewNode(
         } - provides.size
     }
 
-//    fun belongsToStacks(map: Map<String, ViewNode>): Set<String> {
+    //    fun belongsToStacks(map: Map<String, ViewNode>): Set<String> {
 //        return map.values.asSequence()
 //            .flatMap { node ->
 //                node.operations.asSequence()
@@ -79,58 +79,70 @@ class ViewNode(
 
     fun gather(node: XmlNode, xml: File, styles: Styles) {
         node.attributes[attributePush]?.let {
-            val onStack = node.attributes[attributeOnStack]
+            val onStack = node.attributes[attributeOnStack] ?: "stack"
             operations.add(
                 ViewStackOp.Push(
                     stack = onStack,
                     viewName = it.removePrefix("@layout/").camelCase().capitalize()
                 )
             )
-            onStack?.let { requires.add(
+            requires.add(
                 ViewVar(
                     onStack,
                     "ObservableStack[ViewGenerator]"
                 )
-            ) }
+            )
         }
         node.attributes[attributeSwap]?.let {
-            val onStack = node.attributes[attributeOnStack]
+            val onStack = node.attributes[attributeOnStack] ?: "stack"
             operations.add(
                 ViewStackOp.Swap(
                     stack = onStack,
                     viewName = it.removePrefix("@layout/").camelCase().capitalize()
                 )
             )
-            onStack?.let { requires.add(
+            requires.add(
                 ViewVar(
                     onStack,
                     "ObservableStack[ViewGenerator]"
                 )
-            ) }
+            )
         }
         node.attributes[attributeReset]?.let {
-            val onStack = node.attributes[attributeOnStack]
+            val onStack = node.attributes[attributeOnStack] ?: "stack"
             operations.add(
                 ViewStackOp.Reset(
                     stack = onStack,
                     viewName = it.removePrefix("@layout/").camelCase().capitalize()
                 )
             )
-            onStack?.let { requires.add(
+            requires.add(
                 ViewVar(
                     onStack,
                     "ObservableStack[ViewGenerator]"
                 )
-            ) }
+            )
         }
         node.attributes[attributePop]?.let {
-            (node.attributes[attributeOnStack]?.split(';')?.map { it.takeUnless { it == "stack" } } ?: listOf()).forEach {
+            (node.attributes[attributeOnStack]?.split(';') ?: listOf("stack")).forEach {
                 operations.add(ViewStackOp.Pop(stack = it))
+                requires.add(
+                    ViewVar(
+                        it,
+                        "ObservableStack[ViewGenerator]"
+                    )
+                )
             }
         }
         node.attributes[attributeDismiss]?.let {
-            (node.attributes[attributeOnStack]?.split(';')?.map { it.takeUnless { it == "stack" } } ?: listOf()).forEach {
+            (node.attributes[attributeOnStack]?.split(';') ?: listOf("stack")).forEach {
                 operations.add(ViewStackOp.Dismiss(stack = it))
+                requires.add(
+                    ViewVar(
+                        it,
+                        "ObservableStack[ViewGenerator]"
+                    )
+                )
             }
         }
         node.attributes[attributeStackId]?.let { stackId ->
@@ -154,7 +166,7 @@ class ViewNode(
                 provides.add(ViewVar(it.substringBefore(':').trim(), it.substringAfter(':').trim()))
             }
         }
-        if(node.name == "include") {
+        if (node.name == "include") {
             node.attributes["layout"]?.let {
                 val file = xml.parentFile.resolve(it.removePrefix("@layout/").plus(".xml"))
                 gather(XmlNode.read(file, styles), xml, styles)
