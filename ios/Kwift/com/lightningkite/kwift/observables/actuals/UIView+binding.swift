@@ -171,6 +171,8 @@ public extension UIView {
                 ))
                 updateAnimations()
                 current = new
+            } else {
+                current = nil
             }
         }
     }
