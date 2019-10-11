@@ -1,12 +1,13 @@
 package com.lightningkite.kwift.actual
 
 interface Codable
+typealias IsCodable = Any
 
-fun Any?.toJsonString(): String {
+fun IsCodable?.toJsonString(): String {
     return HttpClient.mapper.writeValueAsString(this)
 }
 
-inline fun <reified T> String.fromJsonString(): T? {
+inline fun <reified T: IsCodable> String.fromJsonString(): T? {
     return try {
         HttpClient.mapper.readValue(this, T::class.java)
     } catch (e: Exception) {
@@ -15,7 +16,7 @@ inline fun <reified T> String.fromJsonString(): T? {
     }
 }
 
-fun String.fromJsonStringUntyped(): Any? {
+fun String.fromJsonStringUntyped(): IsCodable? {
     return try {
         HttpClient.mapper.readValue(this, Any::class.java)
     } catch (e: Exception) {

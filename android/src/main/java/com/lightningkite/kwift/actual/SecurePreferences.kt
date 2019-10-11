@@ -14,7 +14,7 @@ object SecurePreferences {
         sharedPreferences.edit().remove(key).apply()
     }
 
-    inline fun <reified T> get(key: String): T? {
+    inline fun <reified T: IsCodable> get(key: String): T? {
         val raw = sharedPreferences.getString(key, null)
         val result = raw?.fromJsonString<T>()
         return result

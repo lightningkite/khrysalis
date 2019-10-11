@@ -26,7 +26,6 @@ fun FrameLayout.bindStack(dependency: ViewDependency, obs: ObservableStack<ViewG
             val oldView = currentView
             val oldStackSize = currentStackSize
 
-            removeAllViews()
             var newView = obs.stack.lastOrNull()?.generate(dependency)
             if (newView == null) {
                 newView = View(context)
@@ -43,11 +42,6 @@ fun FrameLayout.bindStack(dependency: ViewDependency, obs: ObservableStack<ViewG
             val newStackSize = datas.size
 
             when {
-                oldStackSize == 0 -> {
-                    oldView.animate().alpha(0f)
-                    newView.alpha = 0f
-                    newView.animate().alpha(1f)
-                }
                 oldStackSize > newStackSize -> {
                     oldView.animate().translationX(width.toFloat())
                     newView.translationX = -width.toFloat()

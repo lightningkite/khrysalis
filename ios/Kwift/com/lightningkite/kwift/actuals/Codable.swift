@@ -8,6 +8,8 @@
 
 import Foundation
 
+public typealias IsCodable = Codable
+
 public extension Formatter {
     static let iso8601: DateFormatter = {
         let formatter = DateFormatter()

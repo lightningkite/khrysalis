@@ -14,7 +14,7 @@ object Preferences {
         sharedPreferences.edit().remove(key).apply()
     }
 
-    inline fun <reified T> get(key: String): T? {
+    inline fun <reified T: IsCodable> get(key: String): T? {
         return sharedPreferences.getString(key, null)?.fromJsonString()
     }
 
