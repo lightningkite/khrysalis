@@ -102,9 +102,12 @@
 		5EAABEA1233EC33F007E7CED /* Kwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5EAABE97233EC33F007E7CED /* Kwift.framework */; };
 		5EAABEA6233EC33F007E7CED /* kwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAABEA5233EC33F007E7CED /* kwiftTests.swift */; };
 		5EAABEA8233EC33F007E7CED /* Kwift.h in Headers */ = {isa = PBXBuildFile; fileRef = 5EAABE9A233EC33F007E7CED /* Kwift.h */; settings = {ATTRIBUTES = (Public, ); }; };
+		5EBC42A12354FA640088CDAC /* LinearLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBC42A02354FA640088CDAC /* LinearLayout.swift */; };
+		5EBC42A32354FABA0088CDAC /* FrameLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBC42A22354FABA0088CDAC /* FrameLayout.swift */; };
 		5ED0DC36234FAB9400C36B7D /* UIImageView+ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED0DC34234FAB9400C36B7D /* UIImageView+ext.swift */; };
 		5ED0DC37234FAB9400C36B7D /* UILabel+ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED0DC35234FAB9400C36B7D /* UILabel+ext.swift */; };
 		5ED0E40F234FE75100C36B7D /* StringBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED0E40E234FE75100C36B7D /* StringBuilder.swift */; };
+		5ED0E7B12352879A00C36B7D /* geometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED0E7B02352879A00C36B7D /* geometry.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -215,9 +218,12 @@
 		5EAABEA0233EC33F007E7CED /* KwiftTests.xctest */ = {isa = PBXFileReference; explicitFileType = wrapper.cfbundle; includeInIndex = 0; path = KwiftTests.xctest; sourceTree = BUILT_PRODUCTS_DIR; };
 		5EAABEA5233EC33F007E7CED /* kwiftTests.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = kwiftTests.swift; sourceTree = "<group>"; };
 		5EAABEA7233EC33F007E7CED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
+		5EBC42A02354FA640088CDAC /* LinearLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LinearLayout.swift; path = Kwift/com/lightningkite/kwift/views/ios/LinearLayout.swift; sourceTree = SOURCE_ROOT; };
+		5EBC42A22354FABA0088CDAC /* FrameLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FrameLayout.swift; path = Kwift/com/lightningkite/kwift/views/ios/FrameLayout.swift; sourceTree = SOURCE_ROOT; };
 		5ED0DC34234FAB9400C36B7D /* UIImageView+ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIImageView+ext.swift"; path = "Kwift/com/lightningkite/kwift/views/actuals/UIImageView+ext.swift"; sourceTree = SOURCE_ROOT; };
 		5ED0DC35234FAB9400C36B7D /* UILabel+ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UILabel+ext.swift"; path = "Kwift/com/lightningkite/kwift/views/actuals/UILabel+ext.swift"; sourceTree = SOURCE_ROOT; };
 		5ED0E40E234FE75100C36B7D /* StringBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StringBuilder.swift; path = Kwift/com/lightningkite/kwift/actuals/StringBuilder.swift; sourceTree = SOURCE_ROOT; };
+		5ED0E7B02352879A00C36B7D /* geometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = geometry.swift; path = Kwift/com/lightningkite/kwift/views/ios/geometry.swift; sourceTree = SOURCE_ROOT; };
 		63A80265E53D7E8A26AF57CF /* libPods-Kwift.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Kwift.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6648265A81A02AE0AA915524 /* Pods-Kwift.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kwift.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Kwift/Pods-Kwift.debug.xcconfig"; sourceTree = "<group>"; };
 		F994D26061C995DD96617E1D /* Pods-Kwift.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kwift.release.xcconfig"; path = "Pods/Target Support Files/Pods-Kwift/Pods-Kwift.release.xcconfig"; sourceTree = "<group>"; };
@@ -428,6 +434,9 @@
 				5E42978C233EC420002AAB7A /* ViewPagerLayout.swift */,
 				5E42978D233EC420002AAB7A /* UIButton.position.swift */,
 				5E42978E233EC420002AAB7A /* extensionProperty.swift */,
+				5ED0E7B02352879A00C36B7D /* geometry.swift */,
+				5EBC42A22354FABA0088CDAC /* FrameLayout.swift */,
+				5EBC42A02354FA640088CDAC /* LinearLayout.swift */,
 			);
 			path = ios;
 			sourceTree = "<group>";
@@ -688,6 +697,7 @@
 				5E4297E0233EC420002AAB7A /* UISegmentedControl+addIndicator.swift in Sources */,
 				5E4297C9233EC420002AAB7A /* SelectDayMonthView.swift in Sources */,
 				5E4297AC233EC420002AAB7A /* UISlider+binding.swift in Sources */,
+				5EBC42A12354FA640088CDAC /* LinearLayout.swift in Sources */,
 				5E4297A4233EC420002AAB7A /* ClosureSleeve.swift in Sources */,
 				5E4297A3233EC420002AAB7A /* UIWeekView+ext.swift in Sources */,
 				5E4297BC233EC420002AAB7A /* ObservableProperty.ext.swift in Sources */,
@@ -703,7 +713,9 @@
 				5E42979E233EC420002AAB7A /* SelectDateRangeView+binding.swift in Sources */,
 				5E4297AE233EC420002AAB7A /* DateButton+binding.swift in Sources */,
 				5E4297BE233EC420002AAB7A /* captureWeak.swift in Sources */,
+				5ED0E7B12352879A00C36B7D /* geometry.swift in Sources */,
 				5E4297D9233EC420002AAB7A /* UIView.focus.swift in Sources */,
+				5EBC42A32354FABA0088CDAC /* FrameLayout.swift in Sources */,
 				5E4297A2233EC420002AAB7A /* UISegmentedControl+bind.swift in Sources */,
 				5E4297CA233EC420002AAB7A /* SelectDateRangeMonthView.swift in Sources */,
 				5E5F673C2347D7BF0090384F /* Event.ext.swift in Sources */,

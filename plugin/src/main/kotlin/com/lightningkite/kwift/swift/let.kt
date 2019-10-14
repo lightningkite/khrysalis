@@ -72,6 +72,23 @@ fun KotlinParser.StatementContext.letIfElses(): IfLets? {
         ?.elvisExpression()?.oneOnly()
         ?: return null
 
+    //First expression must have a `?.let` or we return null
+    if(elvisExp.infixFunctionCall(0)
+        ?.rangeExpression()?.oneOnly()
+        ?.additiveExpression()?.oneOnly()
+        ?.multiplicativeExpression()?.oneOnly()
+        ?.asExpression()?.oneOnly()
+        ?.prefixUnaryExpression()
+        ?.postfixUnaryExpression()
+        ?.postfixUnarySuffix()
+        ?.let { it.getOrNull(it.lastIndex - 1) }
+        ?.let { secondToLastSuffix ->
+            secondToLastSuffix.navigationSuffix()?.memberAccessOperator()?.safeNav() != null &&
+                    secondToLastSuffix.navigationSuffix()?.simpleIdentifier()?.text == "let"
+        } != true){
+        return null
+    }
+
     val results = elvisExp.infixFunctionCall().map {
         val postfix = it.rangeExpression().oneOnly()
             ?.additiveExpression()?.oneOnly()
