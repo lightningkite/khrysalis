@@ -10,7 +10,7 @@ import UIKit
 import FlexLayout
 
 
-public class LabeledRadioButton : UIView, CompoundButton {
+public class LabeledRadioButton : LinearLayout, CompoundButton {
 
     public let checkViewContainer: UIView = UIView(frame: .zero)
     public let checkView: UILabel = UILabel(frame: .zero)
@@ -34,25 +34,32 @@ public class LabeledRadioButton : UIView, CompoundButton {
     override public init(frame: CGRect) {
         super.init(frame: frame)
         labelView.numberOfLines = 0
-        flex.direction(.row).alignContent(.center)
-        flex.addItem(checkViewContainer)
-            .marginRight(8)
-            .width(24)
-            .height(24)
-            .direction(.row)
-            .alignContent(.center)
-            .addItem(checkView)
-            .width(24)
-            .height(24)
-        flex.addItem(labelView).grow(1)
+        
+        addSubview(checkViewContainer, LinearLayout.LayoutParams(
+            size: CGSize(width: 24, height: 24),
+            margin: UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8),
+            gravity: .center,
+            weight: 0
+        ))
+        checkViewContainer.addSubview(checkView)
+        checkViewContainer.addOnLayoutSubviews { [weak checkView, weak checkViewContainer] in
+            guard let checkView = checkView, let checkViewContainer = checkViewContainer else { return }
+            checkView.frame = checkViewContainer.bounds
+        }
+        addSubview(labelView, LinearLayout.LayoutParams(
+            size: .zero,
+            margin: UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 8),
+            gravity: .center,
+            weight: 1
+        ))
 
-        checkView.text = "✓"
+        checkView.text = "⬤"
         checkView.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
         checkView.textAlignment = .center
 
         checkViewContainer.layer.borderWidth = 1
         checkViewContainer.layer.borderColor = checkView.textColor.cgColor
-        checkViewContainer.layer.cornerRadius = 2
+        checkViewContainer.layer.cornerRadius = 12
 
         let tapRecognizer = UITapGestureRecognizer().addAction { [weak self] in
             if let self = self {

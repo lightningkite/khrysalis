@@ -17,7 +17,9 @@ fun File.translateLayoutXml(styles: Styles, converter: LayoutConverter = LayoutC
         styles = styles,
         converter = converter
     )
-    conversion.write(XmlNode.read(this, styles))
+    val root = XmlNode.read(this, styles)
+    conversion.writeSetup(root)
+
     val name = this.nameWithoutExtension.camelCase().capitalize()
     return """
         //
@@ -42,32 +44,12 @@ fun File.translateLayoutXml(styles: Styles, converter: LayoutConverter = LayoutC
             unowned var xmlRoot: UIView!
 
             func setup(_ dependency: ViewDependency) -> UIView {
-                let result = $appendable
-                xmlRoot = result
-                return result
+                let view = ${conversion.construct(root)}
+                $appendable
+                xmlRoot = view
+                return view
             }
             
         }
     """.trimIndent().retabSwift()
 }
-
-/*
-        class ${name}Xml {
-
-            ${conversion.bindings.entries.joinToString("\n") {
-                "unowned var ${it.key}_raw: ${it.value}?"
-            }}
-            ${conversion.bindings.entries.joinToString("\n") {
-                "var ${it.key}: ${it.value} { return ${it.key}_raw! }"
-            }}
-
-            unowned var xmlRoot_raw: UIView?
-            var xmlRoot: UIView { return xmlRoot_raw! }
-
-            func setup(_ dependency: ViewDependency) -> UIView {
-                let result = $appendable
-                xmlRoot_raw = result
-                return result
-            }
-
-        }*/

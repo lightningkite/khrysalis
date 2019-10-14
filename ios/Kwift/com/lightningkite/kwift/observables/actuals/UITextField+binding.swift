@@ -19,7 +19,7 @@ public extension UITextField {
             if this.text != value {
                 this.text = value
             }
-            this.flex.markDirty()
+            this.setNeedsLayout()
         }
         weak var observableWeak = observable
         addAction(for: UITextField.Event.editingChanged) { [weak self] in
@@ -39,7 +39,7 @@ public extension UITextField {
             let currentValue = Double(this.text ?? "")
             if currentValue != nil, currentValue != value {
                 this.text = value.toString()
-                this.flex.markDirty()
+                this.setNeedsLayout()
             }
         }
         weak var observableWeak = observable
@@ -60,7 +60,7 @@ public extension UITextField {
             let currentValue = Int(this.text ?? "")
             if currentValue != nil, currentValue != value {
                 this.text = value.toString()
-                this.flex.markDirty()
+                this.setNeedsLayout()
             }
         }
         weak var observableWeak = observable

@@ -30,7 +30,7 @@ public extension UITextView {
             if this.text != value {
                 this.text = value
             }
-            this.flex.markDirty()
+            this.setNeedsLayout()
         }
         weak var observableWeak = observable
         let delegate = LambdaDelegate { text in
@@ -48,8 +48,7 @@ public extension UITextView {
             if this.text != value {
                 this.text = value
             }
-            this.flex.markDirty()
-            this.relayoutFlexClimbToXml()
+            this.setNeedsLayout()
         }
     }
 
@@ -64,8 +63,7 @@ public extension UITextView {
             } else {
                 this.text = nil
             }
-            this.flex.markDirty()
-            this.relayoutFlexClimbToXml()
+            this.setNeedsLayout()
         }
     }
 }

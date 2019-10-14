@@ -19,7 +19,7 @@ public extension UILabel {
             if this.text != value {
                 this.text = value
             }
-            this.relayoutFlexClimbToXml()
+            this.setNeedsLayout()
         }
     }
 
@@ -32,7 +32,7 @@ public extension UILabel {
             if this.text != textValue {
                 this.text = textValue
             }
-            this.relayoutFlexClimbToXml()
+            this.setNeedsLayout()
         }
     }
 
@@ -49,7 +49,7 @@ public extension UILabel {
             } else {
                 this.text = nil
             }
-            this.relayoutFlexClimbToXml()
+            this.setNeedsLayout()
         }
     }
 }

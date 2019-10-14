@@ -35,7 +35,6 @@ public class DatePickerButton : UIControl {
         sharedInit()
     }
     private func sharedInit() {
-        flex.alignItems(.stretch).alignContent(.stretch)
 
         self.isUserInteractionEnabled = true
         let doneButton = UIBarButtonItem(title: "Done", style: UIBarButtonItem.Style.plain, target: self, action: #selector(doneClick))
@@ -69,8 +68,8 @@ public class DatePickerButton : UIControl {
             currentView?.removeFromSuperview()
             currentView = nil
             if let newView = value {
-                flex.addItem(newView).marginHorizontal(8)
                 currentView = newView
+                addSubview(newView)
             }
         }
     }

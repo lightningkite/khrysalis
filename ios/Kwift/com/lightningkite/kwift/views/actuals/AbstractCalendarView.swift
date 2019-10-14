@@ -11,7 +11,7 @@ import UIKit
 import FlexLayout
 
 
-open class AbstractCalendarView : UIView {
+open class AbstractCalendarView : LinearLayout {
     public var headerColorSet = QuickMonthView.ColorSet(foreground: UIColor.black, background: UIColor.white)
     public var labelColorSet = QuickMonthView.ColorSet(foreground: UIColor.black, background: UIColor.white)
     public var defaultColorSet = QuickMonthView.ColorSet(foreground: UIColor.black, background: UIColor.white)
@@ -67,60 +67,52 @@ open class AbstractCalendarView : UIView {
         }
         self.subviews.forEach { $0.removeFromSuperview() }
         self.backgroundColor = headerColorSet.background
-        flex.direction(.column).alignItems(.stretch).define { flex in
-            flex.addItem().direction(.row).alignItems(.center).define { flex in
-                flex.addItem({ () -> UIButton in
-                    let sub = UIButton(frame: .zero)
-                    sub.setTitleColor(headerColorSet.foreground, for: .normal)
-                    sub.setTitle(leftText, for: .normal)
-                    sub.titleLabel?.font = UIFont.get(size: headerFont, style: [])
-                    sub.addAction { [weak self] in
-                        self?.currentPage.value -= 1
-                    }
-                    return sub
-                }())
-                flex.addItem({ () -> UILabel in
-                    let sub = UILabel(frame: .zero)
-                    sub.textColor = headerColorSet.foreground
-                    sub.font = UIFont.get(size: headerFont, style: [])
-                    sub.textAlignment = .center
-                    currentPage.addAndRunWeak(sub) { sub, value in
-                        let month = AbstractCalendarView.monthFromPosition(value)
-                        sub.text = Calendar.current.monthSymbols[Int(month.monthOfYear - 1)] + " " + month.yearAd.toString()
-                    }
-                    return sub
-                }()).grow(1)
-                flex.addItem({ () -> UIButton in
-                    let sub = UIButton(frame: .zero)
-                    sub.setTitleColor(headerColorSet.foreground, for: .normal)
-                    sub.setTitle(rightText, for: .normal)
-                    sub.titleLabel?.font = UIFont.get(size: headerFont, style: [])
-                    sub.addAction { [weak self] in
-                        self?.currentPage.value += 1
-                    }
-                    return sub
-                }())
-            }
-
-            flex.addItem({ () -> UICollectionView in
-                let sub = UICollectionView(frame: .zero, collectionViewLayout: ViewPagerLayout())
-                self.collectionView = sub
-                sub.canCancelContentTouches = false
-                sub.showsHorizontalScrollIndicator = false
-                sub.backgroundColor = defaultColorSet.background
-                sub.bind(count: Int32(AbstractCalendarView.centerIndex * 2)) { [weak self] index in
-                    guard let self = self else {
-                        return UIView(frame: .zero)
-                    }
-                    let month = AbstractCalendarView.monthFromPosition(index)
-                    let view = self.makeChildView()
-                    self.styleMonth(quickMonthView: view)
-                    view.month = month
-                    return view
+        
+        orientation = .y
+        
+        addSubview(LinearLayout()) { view in
+            view.orientation = .x
+            view.addSubview(UIButton()) { view in
+                view.setTitleColor(headerColorSet.foreground, for: .normal)
+                view.setTitle(leftText, for: .normal)
+                view.titleLabel?.font = UIFont.get(size: headerFont, style: [])
+                view.addAction { [weak self] in
+                    self?.currentPage.value -= 1
                 }
-                sub.bindIndex(self.currentPage)
-                return sub
-            }()).grow(1)
+            }
+            view.addSubview(UILabel()) { view in
+                view.textColor = headerColorSet.foreground
+                view.font = UIFont.get(size: headerFont, style: [])
+                view.textAlignment = .center
+                currentPage.addAndRunWeak(view) { view, value in
+                    let month = AbstractCalendarView.monthFromPosition(value)
+                    view.text = Calendar.current.monthSymbols[Int(month.monthOfYear - 1)] + " " + month.yearAd.toString()
+                }
+            }
+            view.addSubview(UIButton()) { view in
+                view.setTitleColor(headerColorSet.foreground, for: .normal)
+                view.setTitle(rightText, for: .normal)
+                view.titleLabel?.font = UIFont.get(size: headerFont, style: [])
+                view.addAction { [weak self] in
+                    self?.currentPage.value += 1
+                }
+            }
+        }
+        addSubview(UICollectionView(frame: .zero, collectionViewLayout: ViewPagerLayout()), gravity: .fill, weight: 1) { view in
+            view.canCancelContentTouches = false
+            view.showsHorizontalScrollIndicator = false
+            view.backgroundColor = defaultColorSet.background
+            view.bind(count: Int32(AbstractCalendarView.centerIndex * 2)) { [weak self] index in
+                guard let self = self else {
+                    return UIView(frame: .zero)
+                }
+                let month = AbstractCalendarView.monthFromPosition(index)
+                let view = self.makeChildView()
+                self.styleMonth(quickMonthView: view)
+                view.month = month
+                return view
+            }
+            view.bindIndex(self.currentPage)
         }
     }
 }

@@ -35,13 +35,10 @@ public extension UIView {
             switch value {
             case .gone:
                 self.isHidden = true
-                self.flex.display(.none)
-            case .visible:
-                self.isHidden = false
-                self.flex.display(.flex)
             case .invisible:
                 self.isHidden = true
-                self.flex.display(.flex)
+            case .visible:
+                self.isHidden = false
             }
         }
     }

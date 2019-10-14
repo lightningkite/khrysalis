@@ -6,10 +6,11 @@ import android.widget.FrameLayout
 import com.lightningkite.kwift.observables.shared.ObservableStack
 import com.lightningkite.kwift.observables.shared.addAndRunWeak
 import com.lightningkite.kwift.views.actual.ViewDependency
+import com.lightningkite.kwift.views.android.SwapView
 import com.lightningkite.kwift.views.shared.ViewGenerator
 
 
-fun FrameLayout.bindStack(dependency: ViewDependency, obs: ObservableStack<ViewGenerator>) {
+fun SwapView.bindStack(dependency: ViewDependency, obs: ObservableStack<ViewGenerator>) {
     var currentData = obs.stack.lastOrNull()
     var currentStackSize = obs.stack.size
     var currentView = currentData?.generate(dependency) ?: View(context)

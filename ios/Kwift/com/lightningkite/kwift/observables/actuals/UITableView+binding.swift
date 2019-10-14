@@ -72,27 +72,30 @@ class CustomUITableViewCell: UITableViewCell {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
-        contentView.flex
-            .direction(.column)
-            .alignItems(.stretch)
-            .alignContent(.stretch)
-            .padding(spacing)
     }
 
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-
+    
+    override func sizeThatFits(_ size: CGSize) -> CGSize {
+        layoutIfNeeded()
+        var size = CGSize.zero
+        for child in contentView.subviews {
+            let childSize = child.sizeThatFits(size)
+            size.width = max(size.width, childSize.width)
+            size.height = max(size.height, childSize.height)
+        }
+        return size
+    }
+    
     override public func layoutSubviews() {
         super.layoutSubviews()
-        contentView.flex.layout(mode: .adjustHeight)
-    }
-
-
-    override public func sizeThatFits(_ size: CGSize) -> CGSize {
-        contentView.pin.width(size.width)
-        contentView.flex.layout(mode: .adjustHeight)
-        return contentView.frame.size
+        contentView.frame = self.bounds.insetBy(dx: spacing, dy: spacing)
+        for child in contentView.subviews {
+            child.frame = contentView.bounds
+            child.layoutSubviews()
+        }
     }
 }
 
@@ -133,15 +136,6 @@ class BoundDataSource<T, VIEW: UIView>: NSObject, UITableViewDataSource, UITable
         }
     }
 
-    //    func tableView(_ tableView: UITableView, estimatedHeightForRowAt indexPath: IndexPath) -> CGFloat {
-    //        if let s = source?.value {
-    //            updateCell(stubView, s[indexPath.row])
-    //            return stubView.flex.sizeThatFits(size: CGSize(width: tableView.frame.width, height: 100000)).height
-    //        } else {
-    //            return 50
-    //        }
-    //    }
-
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let s = source.value
         var cell: CustomUITableViewCell = tableView.dequeueReusableCell(withIdentifier: "main-cell") as! CustomUITableViewCell
@@ -151,7 +145,7 @@ class BoundDataSource<T, VIEW: UIView>: NSObject, UITableViewDataSource, UITable
             var obs = StandardObservableProperty(defaultValue)
             cell.obs = obs
             let new = makeView(obs)
-            cell.contentView.flex.addItem(new)
+            cell.contentView.addSubview(new)
         }
         if let obs = cell.obs as? StandardObservableProperty<T> {
             obs.value = s[indexPath.row]

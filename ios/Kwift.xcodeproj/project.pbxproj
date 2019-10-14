@@ -32,7 +32,6 @@
 		5E4297A4233EC420002AAB7A /* ClosureSleeve.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429745233EC420002AAB7A /* ClosureSleeve.swift */; };
 		5E4297A5233EC420002AAB7A /* UITextView+binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429746233EC420002AAB7A /* UITextView+binding.swift */; };
 		5E4297A6233EC420002AAB7A /* UICollectionView+binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429747233EC420002AAB7A /* UICollectionView+binding.swift */; };
-		5E4297A7233EC420002AAB7A /* UIScrollView+binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429748233EC420002AAB7A /* UIScrollView+binding.swift */; };
 		5E4297A8233EC420002AAB7A /* UISwitch+binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429749233EC420002AAB7A /* UISwitch+binding.swift */; };
 		5E4297A9233EC420002AAB7A /* UIButton+binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42974A233EC420002AAB7A /* UIButton+binding.swift */; };
 		5E4297AA233EC420002AAB7A /* UILabel+binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42974B233EC420002AAB7A /* UILabel+binding.swift */; };
@@ -104,6 +103,9 @@
 		5EAABEA8233EC33F007E7CED /* Kwift.h in Headers */ = {isa = PBXBuildFile; fileRef = 5EAABE9A233EC33F007E7CED /* Kwift.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		5EBC42A12354FA640088CDAC /* LinearLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBC42A02354FA640088CDAC /* LinearLayout.swift */; };
 		5EBC42A32354FABA0088CDAC /* FrameLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBC42A22354FABA0088CDAC /* FrameLayout.swift */; };
+		5EBC42A5235513280088CDAC /* layoutConvenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBC42A4235513280088CDAC /* layoutConvenience.swift */; };
+		5EBC42A72355179F0088CDAC /* UIView+includeInLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBC42A62355179F0088CDAC /* UIView+includeInLayout.swift */; };
+		5EBC42A923553BF80088CDAC /* UIView+swap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBC42A823553BF80088CDAC /* UIView+swap.swift */; };
 		5ED0DC36234FAB9400C36B7D /* UIImageView+ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED0DC34234FAB9400C36B7D /* UIImageView+ext.swift */; };
 		5ED0DC37234FAB9400C36B7D /* UILabel+ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED0DC35234FAB9400C36B7D /* UILabel+ext.swift */; };
 		5ED0E40F234FE75100C36B7D /* StringBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED0E40E234FE75100C36B7D /* StringBuilder.swift */; };
@@ -145,7 +147,6 @@
 		5E429745233EC420002AAB7A /* ClosureSleeve.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ClosureSleeve.swift; sourceTree = "<group>"; };
 		5E429746233EC420002AAB7A /* UITextView+binding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UITextView+binding.swift"; sourceTree = "<group>"; };
 		5E429747233EC420002AAB7A /* UICollectionView+binding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UICollectionView+binding.swift"; sourceTree = "<group>"; };
-		5E429748233EC420002AAB7A /* UIScrollView+binding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIScrollView+binding.swift"; sourceTree = "<group>"; };
 		5E429749233EC420002AAB7A /* UISwitch+binding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UISwitch+binding.swift"; sourceTree = "<group>"; };
 		5E42974A233EC420002AAB7A /* UIButton+binding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIButton+binding.swift"; sourceTree = "<group>"; };
 		5E42974B233EC420002AAB7A /* UILabel+binding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UILabel+binding.swift"; sourceTree = "<group>"; };
@@ -220,6 +221,9 @@
 		5EAABEA7233EC33F007E7CED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
 		5EBC42A02354FA640088CDAC /* LinearLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = LinearLayout.swift; path = Kwift/com/lightningkite/kwift/views/ios/LinearLayout.swift; sourceTree = SOURCE_ROOT; };
 		5EBC42A22354FABA0088CDAC /* FrameLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FrameLayout.swift; path = Kwift/com/lightningkite/kwift/views/ios/FrameLayout.swift; sourceTree = SOURCE_ROOT; };
+		5EBC42A4235513280088CDAC /* layoutConvenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = layoutConvenience.swift; path = Kwift/com/lightningkite/kwift/views/ios/layoutConvenience.swift; sourceTree = SOURCE_ROOT; };
+		5EBC42A62355179F0088CDAC /* UIView+includeInLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "UIView+includeInLayout.swift"; path = "Kwift/com/lightningkite/kwift/views/ios/UIView+includeInLayout.swift"; sourceTree = SOURCE_ROOT; };
+		5EBC42A823553BF80088CDAC /* UIView+swap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "UIView+swap.swift"; path = "Kwift/com/lightningkite/kwift/observables/actuals/UIView+swap.swift"; sourceTree = SOURCE_ROOT; };
 		5ED0DC34234FAB9400C36B7D /* UIImageView+ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIImageView+ext.swift"; path = "Kwift/com/lightningkite/kwift/views/actuals/UIImageView+ext.swift"; sourceTree = SOURCE_ROOT; };
 		5ED0DC35234FAB9400C36B7D /* UILabel+ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UILabel+ext.swift"; path = "Kwift/com/lightningkite/kwift/views/actuals/UILabel+ext.swift"; sourceTree = SOURCE_ROOT; };
 		5ED0E40E234FE75100C36B7D /* StringBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StringBuilder.swift; path = Kwift/com/lightningkite/kwift/actuals/StringBuilder.swift; sourceTree = SOURCE_ROOT; };
@@ -320,11 +324,11 @@
 				5E429745233EC420002AAB7A /* ClosureSleeve.swift */,
 				5E429746233EC420002AAB7A /* UITextView+binding.swift */,
 				5E429747233EC420002AAB7A /* UICollectionView+binding.swift */,
-				5E429748233EC420002AAB7A /* UIScrollView+binding.swift */,
 				5E429749233EC420002AAB7A /* UISwitch+binding.swift */,
 				5E42974A233EC420002AAB7A /* UIButton+binding.swift */,
 				5E42974B233EC420002AAB7A /* UILabel+binding.swift */,
 				5E42974C233EC420002AAB7A /* UIPageControl+binding.swift */,
+				5EBC42A823553BF80088CDAC /* UIView+swap.swift */,
 				5E42974D233EC420002AAB7A /* UISlider+binding.swift */,
 				5E42974E233EC420002AAB7A /* SelectDayView+binding.swift */,
 				5E42974F233EC420002AAB7A /* DateButton+binding.swift */,
@@ -435,7 +439,9 @@
 				5E42978D233EC420002AAB7A /* UIButton.position.swift */,
 				5E42978E233EC420002AAB7A /* extensionProperty.swift */,
 				5ED0E7B02352879A00C36B7D /* geometry.swift */,
+				5EBC42A4235513280088CDAC /* layoutConvenience.swift */,
 				5EBC42A22354FABA0088CDAC /* FrameLayout.swift */,
+				5EBC42A62355179F0088CDAC /* UIView+includeInLayout.swift */,
 				5EBC42A02354FA640088CDAC /* LinearLayout.swift */,
 			);
 			path = ios;
@@ -682,6 +688,7 @@
 				5ED0DC36234FAB9400C36B7D /* UIImageView+ext.swift in Sources */,
 				5E4297DB233EC420002AAB7A /* UIScrollView+flexFix.swift in Sources */,
 				5E4297C8233EC420002AAB7A /* AbstractCalendarView.swift in Sources */,
+				5EBC42A5235513280088CDAC /* layoutConvenience.swift in Sources */,
 				5E4297B5233EC420002AAB7A /* TransformedEvent.swift in Sources */,
 				5E4297B8233EC420002AAB7A /* Close.swift in Sources */,
 				5E4297E6233EC420002AAB7A /* UIButton.position.swift in Sources */,
@@ -709,7 +716,6 @@
 				5ED0DC37234FAB9400C36B7D /* UILabel+ext.swift in Sources */,
 				5E4297C0233EC420002AAB7A /* PreviewVariedFlipper.swift in Sources */,
 				5E42979F233EC420002AAB7A /* UIView+binding.swift in Sources */,
-				5E4297A7233EC420002AAB7A /* UIScrollView+binding.swift in Sources */,
 				5E42979E233EC420002AAB7A /* SelectDateRangeView+binding.swift in Sources */,
 				5E4297AE233EC420002AAB7A /* DateButton+binding.swift in Sources */,
 				5E4297BE233EC420002AAB7A /* captureWeak.swift in Sources */,
@@ -738,6 +744,7 @@
 				5E4297B7233EC420002AAB7A /* ObservableStack.swift in Sources */,
 				5E429791233EC420002AAB7A /* Preferences.swift in Sources */,
 				5E42979D233EC420002AAB7A /* UITextField+binding.swift in Sources */,
+				5EBC42A923553BF80088CDAC /* UIView+swap.swift in Sources */,
 				5E4297C7233EC420002AAB7A /* alias.swift in Sources */,
 				5E4297D2233EC420002AAB7A /* CalendarView.swift in Sources */,
 				5E4297B2233EC420002AAB7A /* Event.swift in Sources */,
@@ -751,6 +758,7 @@
 				5E4297B0233EC420002AAB7A /* TransformedObservableProperty.swift in Sources */,
 				5E429798233EC420002AAB7A /* Codable.swift in Sources */,
 				5E4297A1233EC420002AAB7A /* Dropdown+binding.swift in Sources */,
+				5EBC42A72355179F0088CDAC /* UIView+includeInLayout.swift in Sources */,
 				5E429794233EC420002AAB7A /* unit.swift in Sources */,
 				5ED0E40F234FE75100C36B7D /* StringBuilder.swift in Sources */,
 				5E4297BA233EC420002AAB7A /* NeverEvent.swift in Sources */,

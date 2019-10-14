@@ -147,7 +147,7 @@ class CustomUICollectionViewCell: UICollectionViewCell {
         contentView.frame = self.bounds.insetBy(dx: spacing, dy: spacing)
         for child in contentView.subviews {
             child.frame = contentView.bounds
-            child.flex.layout(mode: .fitContainer)
+            child.layoutSubviews()
         }
     }
 }
@@ -193,7 +193,7 @@ class CollectionBoundDataSource<T>: NSObject, UICollectionViewDataSource, UIColl
             let obs = StandardObservableProperty(defaultValue)
             cell.obs = obs
             let new = makeView(obs)
-            cell.contentView.flex.addItem(new)
+            cell.contentView.addSubview(new)
         }
         if let obs = cell.obs as? StandardObservableProperty<T> {
             obs.value = s[indexPath.row]
@@ -250,7 +250,7 @@ class CollectionSimpleDataSource: NSObject, UICollectionViewDataSource, UICollec
         cell.spacing = self.spacing
         cell.contentView.subviews.forEach { $0.removeFromSuperview() }
         let new = makeView(Int32(indexPath.row))
-        cell.contentView.flex.addItem(new).grow(1).shrink(1).alignSelf(.center)
+        cell.contentView.addSubview(new)
         cell.setNeedsLayout()
         return cell
     }

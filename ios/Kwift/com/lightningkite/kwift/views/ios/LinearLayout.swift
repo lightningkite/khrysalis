@@ -9,20 +9,25 @@
 import UIKit
 
 
-public class LinearLayout: UIView {
+open class LinearLayout: UIView {
+    
+    public var padding: UIEdgeInsets = .zero
     
     public struct LayoutParams {
+        public let minimumSize: CGSize
         public let size: CGSize
         public let margin: UIEdgeInsets
         public let gravity: AlignPair
         public let weight: CGFloat
         
         public init(
-            size: CGSize,
-            margin: UIEdgeInsets,
-            gravity: AlignPair,
-            weight: CGFloat
+            minimumSize: CGSize = .zero,
+            size: CGSize = .zero,
+            margin: UIEdgeInsets = .zero,
+            gravity: AlignPair = .center,
+            weight: CGFloat = 0
         ) {
+            self.minimumSize = minimumSize
             self.size = size
             self.margin = margin
             self.gravity = gravity
@@ -35,6 +40,17 @@ public class LinearLayout: UIView {
     public func addSubview(_ view: UIView, _ params: LayoutParams) {
         addSubview(view)
         subviewsWithParams[view] = params
+    }
+    public func addSubview(
+        _ view: UIView,
+        minimumSize: CGSize = .zero,
+        size: CGSize = .zero,
+        margin: UIEdgeInsets = .zero,
+        gravity: AlignPair = .center,
+        weight: CGFloat = 0
+    ) {
+        addSubview(view)
+        subviewsWithParams[view] = LayoutParams(minimumSize: minimumSize, size: size, margin: margin, gravity: gravity, weight: weight)
     }
     
     public override func willRemoveSubview(_ subview: UIView) {
@@ -65,15 +81,23 @@ public class LinearLayout: UIView {
     private func measure(_ size: CGSize, includingWeighted: Bool = false) -> CGSize {
         var result = CGSize.zero
         
+        result[orientation] += padding.start(orientation)
+        
         for subview in subviews {
-            guard let params = subviewsWithParams[subview] else { continue }
+            guard subview.includeInLayout, let params = subviewsWithParams[subview] else { continue }
             let viewMeasured = subview.sizeThatFits(makeSize(
                 primary: size[orientation] - result[orientation] - params.margin.start(orientation) - params.margin.end(orientation),
                 secondary: size[orientation.other]
             ))
             let viewSize = CGSize(
-                width: params.size.width == 0 ? viewMeasured.width : params.size.width,
-                height: params.size.height == 0 ? viewMeasured.height : params.size.height
+                width: max(
+                    params.minimumSize.width,
+                    params.size.width == 0 ? viewMeasured.width : params.size.width
+                ),
+                height: max(
+                    params.minimumSize.height,
+                    params.size.height == 0 ? viewMeasured.height : params.size.height
+                )
             )
             measurements[subview] = viewSize
             result[orientation] += params.margin.start(orientation)
@@ -82,8 +106,15 @@ public class LinearLayout: UIView {
             }
             result[orientation] += params.margin.end(orientation)
             
-            result[orientation.other] = max(result[orientation.other], viewSize[orientation.other] + params.margin.start(orientation.other) + params.margin.end(orientation.other))
+            result[orientation.other] = max(
+                result[orientation.other],
+                viewSize[orientation.other] +
+                    params.margin.total(orientation.other) +
+                    padding.total(orientation.other)
+            )
         }
+        
+        result[orientation] += padding.end(orientation)
         
         return result
     }
@@ -97,8 +128,9 @@ public class LinearLayout: UIView {
         let weightSum = subviewsWithParams.values.reduce(0) { (acc, params) in acc + params.weight }
         let remainingPrimarySize = size[orientation] - requiredSize[orientation]
         
+        position += padding.start(orientation)
         for subview in subviews {
-            guard let params = subviewsWithParams[subview] else { continue }
+            guard subview.includeInLayout, let params = subviewsWithParams[subview] else { continue }
             position += params.margin.start(orientation)
             let viewSize = measurements[subview]!
             
@@ -114,17 +146,17 @@ public class LinearLayout: UIView {
             let gravityComponent: Align = params.gravity[orientation.other]
             switch gravityComponent {
             case .start:
-                shift = params.margin.start(orientation.other)
+                shift = params.margin.start(orientation.other) + padding.start(orientation)
                 secondarySize = viewSize[orientation.other]
             case .center:
                 shift = (size[orientation.other] - viewSize[orientation.other]) / 2 - params.margin.start(orientation.other) + params.margin.end(orientation.other)
                 secondarySize = viewSize[orientation.other]
             case .end:
-                shift = size[orientation.other] - viewSize[orientation.other] - params.margin.end(orientation.other)
+                shift = size[orientation.other] - viewSize[orientation.other] - params.margin.end(orientation.other) - padding.end(orientation)
                 secondarySize = viewSize[orientation.other]
             case .fill:
-                shift = params.margin.start(orientation.other)
-                secondarySize = size[orientation.other] - params.margin.total(orientation.other)
+                shift = params.margin.start(orientation.other) + padding.start(orientation)
+                secondarySize = size[orientation.other] - params.margin.total(orientation.other) - padding.total(orientation)
             }
             
             subview.frame = CGRect(
@@ -136,5 +168,6 @@ public class LinearLayout: UIView {
             position += primarySize
             position += params.margin.end(orientation)
         }
+        position += padding.end(orientation)
     }
 }

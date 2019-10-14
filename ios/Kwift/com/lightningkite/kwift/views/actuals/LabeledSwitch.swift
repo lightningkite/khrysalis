@@ -10,7 +10,7 @@ import UIKit
 import FlexLayout
 
 
-public class LabeledSwitch : UIView {
+public class LabeledSwitch : LinearLayout {
 
     public let switchView: UISwitch = UISwitch(frame: CGRect.zero)
     public let labelView: UILabel = UILabel(frame: CGRect.zero)
@@ -18,9 +18,18 @@ public class LabeledSwitch : UIView {
     override public init(frame: CGRect) {
         super.init(frame: frame)
         labelView.numberOfLines = 0
-        flex.direction(.row).alignContent(.center)
-        flex.addItem(labelView).grow(1).marginRight(8)
-        flex.addItem(switchView)
+        self.addSubview(labelView, LinearLayout.LayoutParams(
+            size: .zero,
+            margin: UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8),
+            gravity: .center,
+            weight: 0
+        ))
+        self.addSubview(switchView, LinearLayout.LayoutParams(
+            size: .zero,
+            margin: UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 8),
+            gravity: .center,
+            weight: 1
+        ))
     }
 
     required public init?(coder aDecoder: NSCoder) {

@@ -29,9 +29,14 @@ data class OngoingLayoutConversion(
                 write(child)
             }
         } else {
-            (converter.viewTypes[node.name] ?: ViewType.default(node)).write(this, node)
+            (converter.viewTypes[node.name] ?: ViewType.default(node)).writeConfiguration(this, node)
         }
     }
+    fun construct(node: XmlNode): String = (converter.viewTypes[node.name] ?: ViewType.default(node)).iosConstructor
+    fun writeSetup(node: XmlNode) {
+        (converter.viewTypes[node.name] ?: ViewType.default(node)).writeConfiguration(this, node)
+    }
+
     /*
     fun write(node: XmlNode) {
         if (node.name == "include") {
