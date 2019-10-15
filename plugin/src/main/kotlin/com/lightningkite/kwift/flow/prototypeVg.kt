@@ -8,7 +8,7 @@ import com.lightningkite.kwift.utils.camelCase
 import com.lightningkite.kwift.utils.forEachBetween
 import java.io.File
 
-internal val warning = "Any changes made to this file will be overridden unless this comment is removed."
+internal val oldWarning = "Any changes made to this file will be overridden unless this comment is removed."
 
 internal fun createPrototypeVG(
     styles: Styles,
@@ -20,10 +20,46 @@ internal fun createPrototypeVG(
     packageName: String,
     applicationPackage: String
 ) {
-    if (target.exists() && target.useLines { it.none { it.contains(warning) } }) {
-        println("Skipping $viewName")
-        return
+    if (target.exists() && target.useLines { it.any { it.contains(oldWarning) } }) {
+        //full override
+        target.writeText(generateFile(xml, viewNodeMap, viewName, packageName, applicationPackage, viewNode, styles))
+    } else if (target.exists() && target.useLines { it.any { it.contains(CodeSection.overwriteMarker) } }) {
+        //partial override
+        val generated = CodeSection.read(
+            generateFile(
+                xml,
+                viewNodeMap,
+                viewName,
+                packageName,
+                applicationPackage,
+                viewNode,
+                styles
+            ).lines()
+        )
+        val existing = CodeSection.read(target.readLines())
+        target.writeText(buildString {
+            with(TabWriter(this)) {
+                existing.mergeOverride(generated).forEach {
+                    it.writeWhole(this)
+                }
+            }
+        })
+    } else if (!target.exists()) {
+        //new file
+        target.writeText(generateFile(xml, viewNodeMap, viewName, packageName, applicationPackage, viewNode, styles))
     }
+
+}
+
+private fun generateFile(
+    xml: File,
+    viewNodeMap: Map<String, ViewNode>,
+    viewName: String,
+    packageName: String,
+    applicationPackage: String,
+    viewNode: ViewNode,
+    styles: Styles
+): String {
     val node = XmlNode.read(xml, mapOf())
 
     fun makeView(otherViewNode: ViewNode, forStack: String?): String {
@@ -37,236 +73,241 @@ internal fun createPrototypeVG(
         }
     }
 
-    target.bufferedWriter().use { into ->
-        with(TabWriter(into)) {
-            fun handleNodeClick(
-                node: XmlNode,
-                view: String?
-            ) {
-                node.attributes["tools:print"]?.let {
-                    println(it)
-                }
-                node.attributes[ViewNode.attributePush]?.let {
-                    val otherViewNode =
-                        viewNodeMap[it.removePrefix("@layout/").camelCase().capitalize()] ?: return@let
-                    val stackName = node.attributes[ViewNode.attributeOnStack] ?: "stack"
-                    val makeView = makeView(otherViewNode, stackName)
-                    line("$view.onClick(captureWeak(this){ self -> self.$stackName.push($makeView) })")
-                }
-                node.attributes[ViewNode.attributeSwap]?.let {
-                    val otherViewNode =
-                        viewNodeMap[it.removePrefix("@layout/").camelCase().capitalize()] ?: return@let
-                    val stackName = node.attributes[ViewNode.attributeOnStack] ?: "stack"
-                    val makeView = makeView(otherViewNode, stackName)
-                    line("$view.onClick(captureWeak(this){ self -> self.$stackName.swap($makeView) })")
-                }
-                node.attributes[ViewNode.attributeReset]?.let {
-                    val otherViewNode =
-                        viewNodeMap[it.removePrefix("@layout/").camelCase().capitalize()] ?: return@let
-                    val stackName = node.attributes[ViewNode.attributeOnStack] ?: "stack"
-                    val makeView = makeView(otherViewNode, stackName)
-                    line("$view.onClick(captureWeak(this){ self -> self.$stackName.reset($makeView) })")
-                }
-                node.attributes[ViewNode.attributePop]?.let {
-                    val stackNames = node.attributes[ViewNode.attributeOnStack]?.split(';') ?: listOf("stack")
-                    if (stackNames.size == 1) {
-                        line("$view.onClick(captureWeak(this){ self -> self.${stackNames.first()}.pop() })")
-                    } else {
-                        line("$view.onClick(captureWeak(this){ self -> ")
-                        tab {
-                            startLine()
-                            stackNames.forEachBetween(
-                                forItem = {
-                                    direct.append("if(self.$it.pop()) {}")
-                                },
-                                between = {
-                                    direct.append(" else ")
-                                }
-                            )
-                        }
-                        line("})")
+    val into = StringBuilder()
+
+    with(TabWriter(into)) {
+        fun handleNodeClick(
+            node: XmlNode,
+            view: String?
+        ) {
+            node.attributes["tools:print"]?.let {
+                println(it)
+            }
+            node.attributes[ViewNode.attributePush]?.let {
+                val otherViewNode =
+                    viewNodeMap[it.removePrefix("@layout/").camelCase().capitalize()] ?: return@let
+                val stackName = node.attributes[ViewNode.attributeOnStack] ?: "stack"
+                val makeView = makeView(otherViewNode, stackName)
+                line("$view.onClick(captureWeak(this){ self -> self.$stackName.push($makeView) })")
+            }
+            node.attributes[ViewNode.attributeSwap]?.let {
+                val otherViewNode =
+                    viewNodeMap[it.removePrefix("@layout/").camelCase().capitalize()] ?: return@let
+                val stackName = node.attributes[ViewNode.attributeOnStack] ?: "stack"
+                val makeView = makeView(otherViewNode, stackName)
+                line("$view.onClick(captureWeak(this){ self -> self.$stackName.swap($makeView) })")
+            }
+            node.attributes[ViewNode.attributeReset]?.let {
+                val otherViewNode =
+                    viewNodeMap[it.removePrefix("@layout/").camelCase().capitalize()] ?: return@let
+                val stackName = node.attributes[ViewNode.attributeOnStack] ?: "stack"
+                val makeView = makeView(otherViewNode, stackName)
+                line("$view.onClick(captureWeak(this){ self -> self.$stackName.reset($makeView) })")
+            }
+            node.attributes[ViewNode.attributePop]?.let {
+                val stackNames = node.attributes[ViewNode.attributeOnStack]?.split(';') ?: listOf("stack")
+                if (stackNames.size == 1) {
+                    line("$view.onClick(captureWeak(this){ self -> self.${stackNames.first()}.pop() })")
+                } else {
+                    line("$view.onClick(captureWeak(this){ self -> ")
+                    tab {
+                        startLine()
+                        stackNames.forEachBetween(
+                            forItem = {
+                                direct.append("if(self.$it.pop()) {}")
+                            },
+                            between = {
+                                direct.append(" else ")
+                            }
+                        )
                     }
-                }
-                node.attributes[ViewNode.attributeDismiss]?.let {
-                    val stackNames = node.attributes[ViewNode.attributeOnStack]?.split(';') ?: listOf("stack")
-                    if (stackNames.size == 1) {
-                        line("$view.onClick(captureWeak(this){ self -> self.${stackNames.first()}.dismiss() })")
-                    } else {
-                        line("$view.onClick(captureWeak(this){ self -> ")
-                        tab {
-                            startLine()
-                            stackNames.forEachBetween(
-                                forItem = {
-                                    direct.append("if(self.$it.dismiss()) {}")
-                                },
-                                between = {
-                                    direct.append(" else ")
-                                }
-                            )
-                        }
-                        line("})")
-                    }
+                    line("})")
                 }
             }
-
-            var inits = ArrayList<()->Unit>()
-
-            line("//")
-            line("// ${viewName}VG.swift")
-            line("// Created by Kwift Prototype Generator")
-            line("// $warning")
-            line("//")
-            line("package $packageName")
-            line("")
-            line("import android.widget.*")
-            line("import android.view.*")
-            line("import com.lightningkite.kwift.actual.*")
-            line("import com.lightningkite.kwift.shared.*")
-            line("import com.lightningkite.kwift.views.actual.*")
-            line("import com.lightningkite.kwift.views.shared.*")
-            line("import com.lightningkite.kwift.observables.actual.*")
-            line("import com.lightningkite.kwift.observables.shared.*")
-            line("import $applicationPackage.R")
-            line("import $applicationPackage.layouts.*")
-            line("")
-            line("""@Suppress("NAME_SHADOWING")""")
-            line("class ${viewName}VG(")
-            tab {
-                val things = (viewNode.totalRequires(viewNodeMap).toList())
-                things.forEachIndexed { index, it ->
-                    if (it.type.contains("VG") || it.type.contains("ViewGenerator")) {
-                        line("@unowned val $it" + (if (index == things.lastIndex) "" else ","))
-                    } else {
-                        line("val $it" + (if (index == things.lastIndex) "" else ","))
+            node.attributes[ViewNode.attributeDismiss]?.let {
+                val stackNames = node.attributes[ViewNode.attributeOnStack]?.split(';') ?: listOf("stack")
+                if (stackNames.size == 1) {
+                    line("$view.onClick(captureWeak(this){ self -> self.${stackNames.first()}.dismiss() })")
+                } else {
+                    line("$view.onClick(captureWeak(this){ self -> ")
+                    tab {
+                        startLine()
+                        stackNames.forEachBetween(
+                            forItem = {
+                                direct.append("if(self.$it.dismiss()) {}")
+                            },
+                            between = {
+                                direct.append(" else ")
+                            }
+                        )
                     }
+                    line("})")
                 }
             }
-            line(") : ViewGenerator() {")
-            tab {
-                line()
-                viewNode.provides.forEach {
-                    line(
-                        """val ${it.name}: ${it.kotlinType} = ${ViewVar.construct(
-                            viewNode,
-                            viewNodeMap,
-                            it.kotlinType
-                        )}"""
-                    )
+        }
+
+        var inits = ArrayList<() -> Unit>()
+
+        line("//")
+        line("// ${viewName}VG.swift")
+        line("// Created by Kwift Prototype Generator")
+        line("// Sections of this file can be replaces if the marker, '${CodeSection.overwriteMarker}', is left in place.")
+        line("//")
+        line("package $packageName")
+        line("")
+        line("import android.widget.*")
+        line("import android.view.*")
+        line("import com.lightningkite.kwift.actual.*")
+        line("import com.lightningkite.kwift.shared.*")
+        line("import com.lightningkite.kwift.views.actual.*")
+        line("import com.lightningkite.kwift.views.shared.*")
+        line("import com.lightningkite.kwift.observables.actual.*")
+        line("import com.lightningkite.kwift.observables.shared.*")
+        line("import $applicationPackage.R")
+        line("import $applicationPackage.layouts.*")
+        line("")
+        line("${CodeSection.sectionMarker} Name ${CodeSection.overwriteMarker}")
+        line("""@Suppress("NAME_SHADOWING")""")
+        line("class ${viewName}VG(")
+        tab {
+            line("${CodeSection.sectionMarker} Dependencies ${CodeSection.overwriteMarker}")
+            val things = (viewNode.totalRequires(viewNodeMap).toList())
+            things.forEachIndexed { index, it ->
+                if (it.type.contains("VG") || it.type.contains("ViewGenerator")) {
+                    line("@unowned val $it" + (if (index == things.lastIndex) "" else ","))
+                } else {
+                    line("val $it" + (if (index == things.lastIndex) "" else ","))
                 }
-                line("")
-                line("""override val title: String get() = "${viewName}"""")
-                line("")
-                line("""override fun generate(dependency: ViewDependency): View {""")
-                tab {
-                    line("val xml = ${viewName}Xml()")
-                    line("val view = xml.setup(dependency)")
-                    line("")
+            }
+            line("${CodeSection.sectionMarker} Extends ${CodeSection.overwriteMarker}")
+        }
+        line(") : ViewGenerator() {")
+        tab {
+            line()
+            viewNode.provides.forEach {
+                line("${CodeSection.sectionMarker} Provides ${it.name} ${CodeSection.overwriteMarker}")
+                line(
+                    """val ${it.name}: ${it.kotlinType} = ${ViewVar.construct(
+                        viewNode,
+                        viewNodeMap,
+                        it.kotlinType
+                    )}"""
+                )
+            }
+            line("")
+            line("${CodeSection.sectionMarker} Title ${CodeSection.overwriteMarker}")
+            line("""override val title: String get() = "${viewName}"""")
+            line("")
+            line("${CodeSection.sectionMarker} Generate Start ${CodeSection.overwriteMarker}")
+            line("""override fun generate(dependency: ViewDependency): View {""")
+            tab {
+                line("val xml = ${viewName}Xml()")
+                line("val view = xml.setup(dependency)")
 
-                    fun handleNode(node: XmlNode, prefix: String) {
+                fun handleNode(node: XmlNode, prefix: String) {
 
-                        val view = node.attributes["android:id"]?.removePrefix("@+id/")?.camelCase()?.let {
-                            if (node.name == "include") it + ".xmlRoot"
-                            else it
-                        }?.let { prefix + it }
-                        if (view != null) {
-                            node.attributes["tools:text"]?.let {
-                                if (it.startsWith("@string")) {
-                                    line("""$view.textResource = R.string.${it.removePrefix("@string/")}""")
-                                } else {
-                                    line("""$view.textString = "$it"""")
+                    val view = node.attributes["android:id"]?.removePrefix("@+id/")?.camelCase()?.let {
+                        if (node.name == "include") it + ".xmlRoot"
+                        else it
+                    }?.let { prefix + it }
+                    if (view != null) {
+                        line()
+                        line("${CodeSection.sectionMarker} Set Up ${view} ${CodeSection.overwriteMarker}")
+                        node.attributes["tools:text"]?.let {
+                            if (it.startsWith("@string")) {
+                                line("""$view.bindStringRes(ConstantObservableProperty(R.string.${it.removePrefix("@string/")}))""")
+                            } else {
+                                line("""$view.bindString(ConstantObservableProperty("$it"))""")
+                            }
+                        }
+                        node.attributes["tools:src"]?.let {
+                            if (it.startsWith("@drawable")) {
+                                line("""$view.setImageResource(R.drawable.${it.removePrefix("@drawable/")})""")
+                            }
+                        }
+                        node.attributeAsString("tools:visibility")?.let {
+                            when (it) {
+                                "gone" -> line("$view.visibility = View.GONE")
+                                "invisible" -> line("$view.visibility = View.INVISIBLE")
+                                "visible" -> line("$view.visibility = View.VISIBLE")
+                                else -> {
                                 }
                             }
-                            node.attributes["tools:src"]?.let {
-                                if (it.startsWith("@drawable")) {
-                                    line("""$view.setImageResource(R.drawable.${it.removePrefix("@drawable/")})""")
-                                }
-                            }
-                            node.attributeAsString("tools:visibility")?.let {
-                                when (it) {
-                                    "gone" -> line("$view.visibility = View.GONE")
-                                    "invisible" -> line("$view.visibility = View.INVISIBLE")
-                                    "visible" -> line("$view.visibility = View.VISIBLE")
-                                    else -> {
-                                    }
-                                }
-                            }
-                            node.attributes["tools:listitem"]?.let {
-                                val xmlName = it.removePrefix("@layout/").camelCase().capitalize().plus("Xml")
-                                line("$view.bind(")
+                        }
+                        node.attributes["tools:listitem"]?.let {
+                            val xmlName = it.removePrefix("@layout/").camelCase().capitalize().plus("Xml")
+                            line("$view.bind(")
+                            tab {
+                                line("data = ConstantObservableProperty(listOf(1, 2, 3, 4)),")
+                                line("defaultValue = 1,")
+                                line("makeView = label@ { obs ->")
                                 tab {
-                                    line("data = ConstantObservableProperty(listOf(1, 2, 3, 4)),")
-                                    line("defaultValue = 1,")
-                                    line("makeView = label@ { obs ->")
-                                    tab {
-                                        line("val cellXml = $xmlName() ")
-                                        line("val cellView = cellXml.setup(dependency)")
-                                        val file = xml.parentFile.resolve(it.removePrefix("@layout/").plus(".xml"))
-                                        handleNode(XmlNode.read(file, styles), "cellXml.")
-                                        handleNodeClick(node, "cellXml.xmlRoot")
-                                        line("return@label cellView")
-                                    }
-                                    line("}")
-                                }
-                                line(")")
-                            }
-                            handleNodeClick(node, view)
-                            node.attributes[ViewNode.attributeStackId]?.let { stackName ->
-                                node.attributes[ViewNode.attributeStackDefault]?.let stackDefault@{
-                                    val otherViewNode =
-                                        viewNodeMap[it.removePrefix("@layout/").camelCase().capitalize()]
-                                            ?: return@stackDefault
-                                    val makeView = makeView(otherViewNode, stackName)
-                                    inits.add {
-                                        line("this.$stackName.reset($makeView)")
-                                    }
-                                }
-                                line("$view.bindStack(dependency, ${stackName})")
-                            }
-                        } else {
-                            if (node.attributes.keys.any { it.startsWith("tools:") }) {
-                                println("WARNING: ${xml.name}: Element type ${node.name} has tools but no id")
-                            }
-                        }
-
-                        if (node.name == "include") {
-                            val id = node.attributes["android:id"]?.removePrefix("@+id/")?.camelCase()
-                            if (id != null) {
-                                node.attributes["layout"]?.let {
+                                    line("${CodeSection.sectionMarker} Make Subview For ${view} ${CodeSection.overwriteMarker}")
+                                    line("val cellXml = $xmlName() ")
+                                    line("val cellView = cellXml.setup(dependency)")
                                     val file = xml.parentFile.resolve(it.removePrefix("@layout/").plus(".xml"))
-                                    handleNode(XmlNode.read(file, styles), "$prefix$id.")
+                                    handleNode(XmlNode.read(file, styles), "cellXml.")
+                                    handleNodeClick(node, "cellXml.xmlRoot")
+                                    line("return@label cellView")
+                                    line("${CodeSection.sectionMarker} End Make Subview For ${view} ${CodeSection.overwriteMarker}")
+                                }
+                                line("}")
+                            }
+                            line(")")
+                        }
+                        handleNodeClick(node, view)
+                        node.attributes[ViewNode.attributeStackId]?.let { stackName ->
+                            node.attributes[ViewNode.attributeStackDefault]?.let stackDefault@{
+                                val otherViewNode =
+                                    viewNodeMap[it.removePrefix("@layout/").camelCase().capitalize()]
+                                        ?: return@stackDefault
+                                val makeView = makeView(otherViewNode, stackName)
+                                inits.add {
+                                    line("${CodeSection.sectionMarker} Set Initial View for ${stackName} ${CodeSection.overwriteMarker}")
+                                    line("this.$stackName.reset($makeView)")
                                 }
                             }
+                            line("$view.bindStack(dependency, ${stackName})")
                         }
-                        node.children.forEach {
-                            handleNode(it, prefix)
+                    } else {
+                        if (node.attributes.keys.any { it.startsWith("tools:") }) {
+                            println("WARNING: ${xml.name}: Element type ${node.name} has tools but no id")
                         }
                     }
-                    handleNode(node, "xml.")
-                    line("")
-                    line("//region View Setup")
-                    line("")
-                    line("//endregion View Setup")
-                    line("")
-                    line("return view")
+
+                    if (node.name == "include") {
+                        val id = node.attributes["android:id"]?.removePrefix("@+id/")?.camelCase()
+                        if (id != null) {
+                            node.attributes["layout"]?.let {
+                                val file = xml.parentFile.resolve(it.removePrefix("@layout/").plus(".xml"))
+                                handleNode(XmlNode.read(file, styles), "$prefix$id.")
+                            }
+                        }
+                    }
+                    node.children.forEach {
+                        handleNode(it, prefix)
+                    }
                 }
-                line("}")
+                handleNode(node, "xml.")
                 line("")
-                line("//region Init")
+                line("${CodeSection.sectionMarker} Generate End ${CodeSection.overwriteMarker}")
                 line("")
-                line("init {")
-                tab {
-                    inits.forEach { it() }
-                }
-                line("}")
-                line("")
-                line("//endregion Init")
-                line("")
-                line("//region View Functions")
-                line("")
-                line("//endregion View Functions")
-                line("")
+                line("return view")
             }
             line("}")
+            line("")
+            line("${CodeSection.sectionMarker} Init ${CodeSection.overwriteMarker}")
+            line("")
+            line("init {")
+            tab {
+                inits.forEach { it() }
+            }
+            line("${CodeSection.sectionMarker} Init End ${CodeSection.overwriteMarker}")
+            line("}")
+            line("")
+            line("${CodeSection.sectionMarker} Body End ${CodeSection.overwriteMarker}")
         }
+        line("}")
     }
+    return into.toString()
 }

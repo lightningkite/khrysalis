@@ -4,7 +4,6 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.lightningkite.kwift.layout.readXMLStyles
 import com.lightningkite.kwift.log
 import com.lightningkite.kwift.utils.XmlNode
-import com.lightningkite.kwift.utils.attributeAsString
 import com.lightningkite.kwift.utils.camelCase
 import java.io.File
 
@@ -72,7 +71,7 @@ internal fun createPrototypeViewGenerators(
     (outputFolder.listFiles() ?: arrayOf())
         .filter { it.name.endsWith("VG.kt") }
         .filter { it.name.removeSuffix("VG.kt") !in nodes.keys }
-        .filter { it.useLines { it.any { it.contains(warning, true) } } }
+        .filter { it.useLines { it.any { it.contains(oldWarning, true) } } }
         .forEach {
             println("Cleaning out $it...")
             it.delete()
