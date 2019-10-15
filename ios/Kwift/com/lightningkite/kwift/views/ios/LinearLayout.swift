@@ -146,17 +146,17 @@ open class LinearLayout: UIView {
             let gravityComponent: Align = params.gravity[orientation.other]
             switch gravityComponent {
             case .start:
-                shift = params.margin.start(orientation.other) + padding.start(orientation)
+                shift = params.margin.start(orientation.other) + padding.start(orientation.other)
                 secondarySize = viewSize[orientation.other]
             case .center:
                 shift = (size[orientation.other] - viewSize[orientation.other]) / 2 - params.margin.start(orientation.other) + params.margin.end(orientation.other)
                 secondarySize = viewSize[orientation.other]
             case .end:
-                shift = size[orientation.other] - viewSize[orientation.other] - params.margin.end(orientation.other) - padding.end(orientation)
+                shift = size[orientation.other] - viewSize[orientation.other] - params.margin.end(orientation.other) - padding.end(orientation.other)
                 secondarySize = viewSize[orientation.other]
             case .fill:
-                shift = params.margin.start(orientation.other) + padding.start(orientation)
-                secondarySize = size[orientation.other] - params.margin.total(orientation.other) - padding.total(orientation)
+                shift = params.margin.start(orientation.other) + padding.start(orientation.other)
+                secondarySize = size[orientation.other] - params.margin.total(orientation.other) - padding.total(orientation.other)
             }
             
             subview.frame = CGRect(

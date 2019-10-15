@@ -18,38 +18,42 @@ fun File.translateLayoutXml(styles: Styles, converter: LayoutConverter = LayoutC
         converter = converter
     )
     val root = XmlNode.read(this, styles)
-    conversion.writeSetup(root)
 
     val name = this.nameWithoutExtension.camelCase().capitalize()
-    return """
-        //
-        // ${name}Xml.swift
-        // Created by Kwift XML
-        //
 
-        import UIKit
-        import FlexLayout
-        import PinLayout
-        import Kwift
+    with(appendable) {
+        appendln("//")
+        appendln("// ${name}Xml.swift")
+        appendln("// Created by Kwift XML")
+        appendln("//")
+        appendln("")
+        appendln("import UIKit")
+        appendln("import FlexLayout")
+        appendln("import PinLayout")
+        appendln("import Kwift")
+        appendln("")
+        appendln("class ${name}Xml {")
+        appendln("")
+        appendln("    unowned var xmlRoot: UIView!")
 
-        class ${name}Xml {
-
-            ${conversion.bindings.entries.joinToString("\n") {
-        if(it.value.endsWith("!")) {
-            "var ${it.key}: ${it.value}"
-        } else {
-            "unowned var ${it.key}: ${it.value}!"
+        appendln("    func setup(_ dependency: ViewDependency) -> UIView {")
+        append("        let view = ")
+        conversion.construct(root)
+        appendln()
+        conversion.writeSetup(root)
+        appendln("        xmlRoot = view")
+        appendln("        return view")
+        appendln("    }")
+        appendln("    ")
+        conversion.sublayouts.entries.forEach {
+            appendln("let ${it.key}: ${it.value} = ${it.value}()")
         }
-            }}
-            unowned var xmlRoot: UIView!
-
-            func setup(_ dependency: ViewDependency) -> UIView {
-                let view = ${conversion.construct(root)}
-                $appendable
-                xmlRoot = view
-                return view
-            }
-            
+        conversion.bindings.entries.forEach {
+            appendln("unowned var ${it.key}: ${it.value}!")
         }
-    """.trimIndent().retabSwift()
+        appendln("    ")
+        appendln("}")
+    }
+
+    return appendable.toString()
 }

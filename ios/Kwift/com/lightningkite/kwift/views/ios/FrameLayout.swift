@@ -96,7 +96,7 @@ open class FrameLayout: UIView {
                 subview.frame.origin.x = params.margin.left + padding.left
                 subview.frame.size.width = viewSize.width
             case .center:
-                subview.frame.origin.x = (size.width - viewSize.width) / 2 - params.margin.left + params.margin.right
+                subview.frame.origin.x = (size.width - viewSize.width) / 2 + params.margin.left - params.margin.right
                 subview.frame.size.width = viewSize.width
             case .end:
                 subview.frame.origin.x = size.width - viewSize.width - params.margin.right - padding.right
@@ -110,7 +110,7 @@ open class FrameLayout: UIView {
                 subview.frame.origin.y = params.margin.top + padding.top
                 subview.frame.size.height = viewSize.height
             case .center:
-                subview.frame.origin.y = (size.height - viewSize.height) / 2 - params.margin.top + params.margin.bottom
+                subview.frame.origin.y = (size.height - viewSize.height) / 2 + params.margin.top - params.margin.bottom
                 subview.frame.size.height = viewSize.height
             case .end:
                 subview.frame.origin.y = size.height - viewSize.height - params.margin.bottom - padding.bottom

@@ -10,7 +10,7 @@ val LayoutConverter.Companion.layoutViews
             ViewType("ScrollView", "UIScrollView", "View") { node ->
                 val child = node.children.first()
                 append("view.addVerticalSubview(")
-                append(construct(child))
+                construct(child)
                 appendln(") { view in ")
                 writeSetup(child)
                 appendln("}")
@@ -19,7 +19,7 @@ val LayoutConverter.Companion.layoutViews
             ViewType("HorizontalScrollView", "UIScrollView", "View") { node ->
                 val child = node.children.first()
                 append("view.addHorizontalSubview(")
-                append(construct(child))
+                construct(child)
                 appendln(") { view in ")
                 writeSetup(child)
                 appendln("}")
@@ -56,10 +56,10 @@ val LayoutConverter.Companion.layoutViews
 
                 val dividerText = if (isHorizontal)
                     node.attributes["tools:iosDivider"]
-                        ?: "addSubview(UIView(), size: CGSize(width: 1, height: 1), gravity: AlignPair(horizontal: .center, vertical: .fill)) { div in div.backgroundColor = .gray }"
+                        ?: "view.addSubview(UIView(), size: CGSize(width: 1, height: 1), gravity: AlignPair(horizontal: .center, vertical: .fill)) { div in div.backgroundColor = .gray }"
                 else
                     node.attributes["tools:iosDivider"]
-                        ?: "addSubview(UIView(), size: CGSize(width: 1, height: 1), gravity: AlignPair(horizontal: .fill, vertical: .center)) { div in div.backgroundColor = .gray }"
+                        ?: "view.addSubview(UIView(), size: CGSize(width: 1, height: 1), gravity: AlignPair(horizontal: .fill, vertical: .center)) { div in div.backgroundColor = .gray }"
 
                 appendln()
 
@@ -70,7 +70,7 @@ val LayoutConverter.Companion.layoutViews
                     forItem = { child ->
                         appendln("view.addSubview(")
 
-                        append(construct(child))
+                        construct(child)
                         appendln(",")
 
                         append("minimumSize: CGSize(width: ")
@@ -155,7 +155,7 @@ val LayoutConverter.Companion.layoutViews
                 node.children.forEach { child ->
                     appendln("view.addSubview(")
 
-                    append(construct(child))
+                    construct(child)
                     appendln(",")
 
                     append("minimumSize: CGSize(width: ")

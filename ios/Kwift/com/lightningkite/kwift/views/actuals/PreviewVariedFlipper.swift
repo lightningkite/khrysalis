@@ -9,16 +9,22 @@
 import Foundation
 import UIKit
 
-public class PreviewVariedFlipper: UIView {
+public class PreviewVariedFlipper: FrameLayout {
 
     var current = Int(arc4random())
-
-    override public func layoutSubviews() {
-        super.layoutSubviews()
-
-        for child in subviews {
-            child.isHidden = true
-        }
-        subviews[current % (subviews.count)].isHidden = false
+    
+    override public func didAddSubview(_ subview: UIView) {
+        super.didAddSubview(subview)
+        setup()
     }
+    
+    func setup(){
+        if subviews.isNotEmpty() {
+            for child in subviews {
+                child.includeInLayout = false
+            }
+            subviews[current % (subviews.count)].includeInLayout = true
+        }
+    }
+    
 }
