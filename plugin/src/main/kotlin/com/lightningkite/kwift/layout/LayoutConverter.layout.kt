@@ -53,6 +53,7 @@ val LayoutConverter.Companion.layoutViews
                 )
 
                 val defaultGravity = node.attributes["android:gravity"]
+                appendln("view.gravity = ${align(null, null, defaultGravity)}")
 
                 val dividerText = if (isHorizontal)
                     node.attributes["tools:iosDivider"]

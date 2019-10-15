@@ -12,6 +12,7 @@ import UIKit
 open class LinearLayout: UIView {
     
     public var padding: UIEdgeInsets = .zero
+    public var gravity: AlignPair = .topLeft
     
     public struct LayoutParams {
         public let minimumSize: CGSize
@@ -127,6 +128,18 @@ open class LinearLayout: UIView {
         let requiredSize = measure(size, includingWeighted: false)
         let weightSum = subviewsWithParams.values.reduce(0) { (acc, params) in acc + params.weight }
         let remainingPrimarySize = size[orientation] - requiredSize[orientation]
+        if weightSum == 0 {
+            switch gravity[orientation] {
+            case .start:
+                position = 0
+            case .center:
+                position = remainingPrimarySize / 2
+            case .end:
+                position = remainingPrimarySize
+            case .fill:
+                position = remainingPrimarySize / 2
+            }
+        }
         
         position += padding.start(orientation)
         for subview in subviews {

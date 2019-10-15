@@ -196,7 +196,7 @@ internal fun createPrototypeVG(
                                 tab {
                                     line("data = ConstantObservableProperty(listOf(1, 2, 3, 4)),")
                                     line("defaultValue = 1,")
-                                    line("makeView = label@ @unownedSelf { obs ->")
+                                    line("makeView = label@ { obs ->")
                                     tab {
                                         line("val cellXml = $xmlName() ")
                                         line("val cellView = cellXml.setup(dependency)")
