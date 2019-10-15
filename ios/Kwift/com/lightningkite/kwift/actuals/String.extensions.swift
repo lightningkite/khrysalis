@@ -39,12 +39,15 @@ public extension String {
         }
     }()
     
-    public func formatList(arguments: Array<Any>) -> String {
+    func formatList(arguments: Array<Any>) -> String {
         return formatList(arguments)
     }
-    public func formatList(_ arguments: Array<Any>) -> String {
+    func formatList(_ arguments: Array<Any>) -> String {
         let fixedArgs: Array<CVarArg> = arguments.filter { $0 is CVarArg }.map { $0 as! CVarArg }
         let fixedTemplate = String.fixTemplateRegex.stringByReplacingMatches(in: self, options: [], range: NSMakeRange(0, self.count), withTemplate: "%$1@")
         return String(format: fixedTemplate, arguments: fixedArgs)
+    }
+    func format(_ arguments: Any...) -> String {
+        return formatList(arguments)
     }
 }

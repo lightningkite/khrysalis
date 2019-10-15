@@ -124,7 +124,7 @@ fun SwiftAltListener.registerClass() {
             line("enum CodingKeys: String, CodingKey {")
             tab {
                 item.constructorVars().forEach {
-                    line("case ${it.simpleIdentifier().text} = \"${it.simpleIdentifier().text.snakeCase()}}\"")
+                    line("case ${it.simpleIdentifier().text} = \"${it.simpleIdentifier().text}\"")
                 }
             }
             line("}")

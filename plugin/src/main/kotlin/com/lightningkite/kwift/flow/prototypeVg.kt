@@ -63,7 +63,7 @@ private fun generateFile(
     val node = XmlNode.read(xml, mapOf())
 
     fun makeView(otherViewNode: ViewNode, forStack: String?): String {
-        return (otherViewNode.totalRequires(viewNodeMap)).joinToString(
+        return (otherViewNode.totalRequires(viewNodeMap).sortedBy { it.name }).joinToString(
             ", ",
             "${otherViewNode.name}VG(",
             ")"
@@ -173,7 +173,7 @@ private fun generateFile(
         line("class ${viewName}VG(")
         tab {
             line("${CodeSection.sectionMarker} Dependencies ${CodeSection.overwriteMarker}")
-            val things = (viewNode.totalRequires(viewNodeMap).toList())
+            val things = (viewNode.totalRequires(viewNodeMap).sortedBy { it.name })
             things.forEachIndexed { index, it ->
                 if (it.type.contains("VG") || it.type.contains("ViewGenerator")) {
                     line("@unowned val $it" + (if (index == things.lastIndex) "" else ","))
@@ -186,7 +186,7 @@ private fun generateFile(
         line(") : ViewGenerator() {")
         tab {
             line()
-            viewNode.provides.forEach {
+            viewNode.provides.sortedBy { it.name }.forEach {
                 line("${CodeSection.sectionMarker} Provides ${it.name} ${CodeSection.overwriteMarker}")
                 line(
                     """val ${it.name}: ${it.kotlinType} = ${ViewVar.construct(

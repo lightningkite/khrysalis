@@ -92,5 +92,6 @@ fun List<CodeSection>.mergeOverride(other: List<CodeSection>): List<CodeSection>
             }
         }
     }
+    output.removeAll { it.overwrite && it.name !in otherMap.keys }
     return output
 }

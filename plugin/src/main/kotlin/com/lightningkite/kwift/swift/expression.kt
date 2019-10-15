@@ -18,6 +18,9 @@ fun SwiftAltListener.registerExpression() {
     handle<KotlinParser.NavigationSuffixContext> { item ->
         defaultWrite(item, "")
     }
+    handle<KotlinParser.PrefixUnaryExpressionContext> { item ->
+        defaultWrite(item, "")
+    }
     handle<KotlinParser.PrimaryExpressionContext> { item ->
         when(item.simpleIdentifier()?.text) {
             "Unit" -> direct.append("()")
