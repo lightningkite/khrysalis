@@ -38,4 +38,32 @@ public extension UIButton {
             }
         }
     }
+    
+    func bindString(_ observable: ObservableProperty<String>) {
+        return bindString(observable: observable)
+    }
+    func bindString(observable: ObservableProperty<String>) {
+        observable.addAndRunWeak(referenceA: self) { (this, value) in
+            if this.title(for: .normal) != value {
+                this.setTitle(value, for: .normal)
+            }
+            this.setNeedsLayout()
+        }
+    }
+
+    func bindStringRes(_ observableReference: ObservableProperty<StringReference?>) {
+        return bindStringRes(observableReference: observableReference)
+    }
+    func bindStringRes(observableReference: ObservableProperty<StringReference?>) {
+        observableReference.addAndRunWeak(referenceA: self) { (this, value) in
+            if let value = value {
+                if this.title(for: .normal) != value {
+                    this.setTitle(value, for: .normal)
+                }
+            } else {
+                this.setTitle("", for: .normal)
+            }
+            this.setNeedsLayout()
+        }
+    }
 }

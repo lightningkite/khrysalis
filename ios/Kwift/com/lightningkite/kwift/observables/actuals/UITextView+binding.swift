@@ -25,7 +25,7 @@ public extension UITextView {
         }
     }
 
-    func bindEditable(observable: MutableObservableProperty<String>) {
+    func bindString(observable: MutableObservableProperty<String>) {
         observable.addAndRunWeak(referenceA: self) { (this, value) in
             if this.text != value {
                 this.text = value
@@ -41,9 +41,11 @@ public extension UITextView {
         retain(as: "kwift_dg", item: delegate)
         self.delegate = delegate
     }
-
-    func bind(observable: ObservableProperty<String>) {
-        isEditable = false
+    
+    func bindString(_ observable: ObservableProperty<String>) {
+        return bindString(observable: observable)
+    }
+    func bindString(observable: ObservableProperty<String>) {
         observable.addAndRunWeak(referenceA: self) { (this, value) in
             if this.text != value {
                 this.text = value
@@ -52,8 +54,10 @@ public extension UITextView {
         }
     }
 
-    func bind(observableReference: ObservableProperty<StringReference?>) {
-        isEditable = false
+    func bindStringRes(_ observableReference: ObservableProperty<StringReference?>) {
+        return bindStringRes(observableReference: observableReference)
+    }
+    func bindStringRes(observableReference: ObservableProperty<StringReference?>) {
         observableReference.addAndRunWeak(referenceA: self) { (this, value) in
             if let value = value {
                 let localValue = NSLocalizedString(value, comment: "")

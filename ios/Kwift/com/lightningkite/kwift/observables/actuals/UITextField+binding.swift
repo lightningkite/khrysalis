@@ -11,6 +11,34 @@ import UIKit
 
 
 public extension UITextField {
+    func bindString(_ observable: ObservableProperty<String>) {
+        return bindString(observable: observable)
+    }
+    func bindString(observable: ObservableProperty<String>) {
+        observable.addAndRunWeak(referenceA: self) { (this, value) in
+            if this.text != value {
+                this.text = value
+            }
+            this.setNeedsLayout()
+        }
+    }
+
+    func bindStringRes(_ observableReference: ObservableProperty<StringReference?>) {
+        return bindStringRes(observableReference: observableReference)
+    }
+    func bindStringRes(observableReference: ObservableProperty<StringReference?>) {
+        observableReference.addAndRunWeak(referenceA: self) { (this, value) in
+            if let value = value {
+                let localValue = NSLocalizedString(value, comment: "")
+                if this.text != localValue {
+                    this.text = localValue
+                }
+            } else {
+                this.text = nil
+            }
+            this.setNeedsLayout()
+        }
+    }
 
     func bindString(_ observable: MutableObservableProperty<String>) { bindString(observable: observable) }
     func bindString(observable: MutableObservableProperty<String>) {

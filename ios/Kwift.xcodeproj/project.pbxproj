@@ -8,6 +8,7 @@
 
 /* Begin PBXBuildFile section */
 		54CB5B25E4BB1E803292559A /* libPods-Kwift.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 63A80265E53D7E8A26AF57CF /* libPods-Kwift.a */; };
+		5E0CE0EB2356633400145B82 /* UIView+swap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0CE0EA2356633400145B82 /* UIView+swap.swift */; };
 		5E42978F233EC420002AAB7A /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42972E233EC420002AAB7A /* Date.swift */; };
 		5E429790233EC420002AAB7A /* delay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42972F233EC420002AAB7A /* delay.swift */; };
 		5E429791233EC420002AAB7A /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429730233EC420002AAB7A /* Preferences.swift */; };
@@ -105,7 +106,6 @@
 		5EBC42A32354FABA0088CDAC /* FrameLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBC42A22354FABA0088CDAC /* FrameLayout.swift */; };
 		5EBC42A5235513280088CDAC /* layoutConvenience.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBC42A4235513280088CDAC /* layoutConvenience.swift */; };
 		5EBC42A72355179F0088CDAC /* UIView+includeInLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBC42A62355179F0088CDAC /* UIView+includeInLayout.swift */; };
-		5EBC42A923553BF80088CDAC /* UIView+swap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EBC42A823553BF80088CDAC /* UIView+swap.swift */; };
 		5ED0DC36234FAB9400C36B7D /* UIImageView+ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED0DC34234FAB9400C36B7D /* UIImageView+ext.swift */; };
 		5ED0DC37234FAB9400C36B7D /* UILabel+ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED0DC35234FAB9400C36B7D /* UILabel+ext.swift */; };
 		5ED0E40F234FE75100C36B7D /* StringBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED0E40E234FE75100C36B7D /* StringBuilder.swift */; };
@@ -123,6 +123,7 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5E0CE0EA2356633400145B82 /* UIView+swap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "UIView+swap.swift"; path = "Kwift/com/lightningkite/kwift/observables/actuals/UIView+swap.swift"; sourceTree = SOURCE_ROOT; };
 		5E42972E233EC420002AAB7A /* Date.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
 		5E42972F233EC420002AAB7A /* delay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = delay.swift; sourceTree = "<group>"; };
 		5E429730233EC420002AAB7A /* Preferences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
@@ -223,7 +224,6 @@
 		5EBC42A22354FABA0088CDAC /* FrameLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = FrameLayout.swift; path = Kwift/com/lightningkite/kwift/views/ios/FrameLayout.swift; sourceTree = SOURCE_ROOT; };
 		5EBC42A4235513280088CDAC /* layoutConvenience.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = layoutConvenience.swift; path = Kwift/com/lightningkite/kwift/views/ios/layoutConvenience.swift; sourceTree = SOURCE_ROOT; };
 		5EBC42A62355179F0088CDAC /* UIView+includeInLayout.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "UIView+includeInLayout.swift"; path = "Kwift/com/lightningkite/kwift/views/ios/UIView+includeInLayout.swift"; sourceTree = SOURCE_ROOT; };
-		5EBC42A823553BF80088CDAC /* UIView+swap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "UIView+swap.swift"; path = "Kwift/com/lightningkite/kwift/observables/actuals/UIView+swap.swift"; sourceTree = SOURCE_ROOT; };
 		5ED0DC34234FAB9400C36B7D /* UIImageView+ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIImageView+ext.swift"; path = "Kwift/com/lightningkite/kwift/views/actuals/UIImageView+ext.swift"; sourceTree = SOURCE_ROOT; };
 		5ED0DC35234FAB9400C36B7D /* UILabel+ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UILabel+ext.swift"; path = "Kwift/com/lightningkite/kwift/views/actuals/UILabel+ext.swift"; sourceTree = SOURCE_ROOT; };
 		5ED0E40E234FE75100C36B7D /* StringBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StringBuilder.swift; path = Kwift/com/lightningkite/kwift/actuals/StringBuilder.swift; sourceTree = SOURCE_ROOT; };
@@ -313,26 +313,26 @@
 		5E42973C233EC420002AAB7A /* actuals */ = {
 			isa = PBXGroup;
 			children = (
-				5E42973D233EC420002AAB7A /* UIRatingBar+binding.swift */,
-				5E42973E233EC420002AAB7A /* UITextField+binding.swift */,
-				5E42973F233EC420002AAB7A /* SelectDateRangeView+binding.swift */,
-				5E429740233EC420002AAB7A /* UIView+binding.swift */,
-				5E429741233EC420002AAB7A /* UIImageView+binding.swift */,
-				5E429742233EC420002AAB7A /* Dropdown+binding.swift */,
-				5E429743233EC420002AAB7A /* UISegmentedControl+bind.swift */,
-				5E429744233EC420002AAB7A /* UIWeekView+ext.swift */,
 				5E429745233EC420002AAB7A /* ClosureSleeve.swift */,
-				5E429746233EC420002AAB7A /* UITextView+binding.swift */,
-				5E429747233EC420002AAB7A /* UICollectionView+binding.swift */,
-				5E429749233EC420002AAB7A /* UISwitch+binding.swift */,
+				5E42974F233EC420002AAB7A /* DateButton+binding.swift */,
+				5E429742233EC420002AAB7A /* Dropdown+binding.swift */,
+				5E42973F233EC420002AAB7A /* SelectDateRangeView+binding.swift */,
+				5E42974E233EC420002AAB7A /* SelectDayView+binding.swift */,
 				5E42974A233EC420002AAB7A /* UIButton+binding.swift */,
+				5E429747233EC420002AAB7A /* UICollectionView+binding.swift */,
+				5E429741233EC420002AAB7A /* UIImageView+binding.swift */,
 				5E42974B233EC420002AAB7A /* UILabel+binding.swift */,
 				5E42974C233EC420002AAB7A /* UIPageControl+binding.swift */,
-				5EBC42A823553BF80088CDAC /* UIView+swap.swift */,
+				5E42973D233EC420002AAB7A /* UIRatingBar+binding.swift */,
+				5E429743233EC420002AAB7A /* UISegmentedControl+bind.swift */,
 				5E42974D233EC420002AAB7A /* UISlider+binding.swift */,
-				5E42974E233EC420002AAB7A /* SelectDayView+binding.swift */,
-				5E42974F233EC420002AAB7A /* DateButton+binding.swift */,
+				5E429749233EC420002AAB7A /* UISwitch+binding.swift */,
 				5E429750233EC420002AAB7A /* UITableView+binding.swift */,
+				5E42973E233EC420002AAB7A /* UITextField+binding.swift */,
+				5E429746233EC420002AAB7A /* UITextView+binding.swift */,
+				5E429740233EC420002AAB7A /* UIView+binding.swift */,
+				5E429744233EC420002AAB7A /* UIWeekView+ext.swift */,
+				5E0CE0EA2356633400145B82 /* UIView+swap.swift */,
 			);
 			path = actuals;
 			sourceTree = "<group>";
@@ -422,27 +422,27 @@
 		5E42977E233EC420002AAB7A /* ios */ = {
 			isa = PBXGroup;
 			children = (
-				5E42977F233EC420002AAB7A /* UILabel+lineSpacingMultiplier.swift */,
-				5E429780233EC420002AAB7A /* UIView.focus.swift */,
 				5E429781233EC420002AAB7A /* CAStateLayer.swift */,
-				5E429782233EC420002AAB7A /* UIScrollView+flexFix.swift */,
-				5E429783233EC420002AAB7A /* UITextView.placeholder.swift */,
-				5E429784233EC420002AAB7A /* UIColor.ext.swift */,
-				5E429785233EC420002AAB7A /* Flex+root.swift */,
-				5E429786233EC420002AAB7A /* UIFont.get.swift */,
-				5E429787233EC420002AAB7A /* UISegmentedControl+addIndicator.swift */,
-				5E429788233EC420002AAB7A /* UIView+backgroundLayer.swift */,
-				5E429789233EC420002AAB7A /* UITextField.ext.swift */,
-				5E42978A233EC420002AAB7A /* onLayoutSubviewsSwizzle.swift */,
-				5E42978B233EC420002AAB7A /* UIImageView.ext.swift */,
-				5E42978C233EC420002AAB7A /* ViewPagerLayout.swift */,
-				5E42978D233EC420002AAB7A /* UIButton.position.swift */,
 				5E42978E233EC420002AAB7A /* extensionProperty.swift */,
+				5E429785233EC420002AAB7A /* Flex+root.swift */,
+				5EBC42A22354FABA0088CDAC /* FrameLayout.swift */,
 				5ED0E7B02352879A00C36B7D /* geometry.swift */,
 				5EBC42A4235513280088CDAC /* layoutConvenience.swift */,
-				5EBC42A22354FABA0088CDAC /* FrameLayout.swift */,
-				5EBC42A62355179F0088CDAC /* UIView+includeInLayout.swift */,
 				5EBC42A02354FA640088CDAC /* LinearLayout.swift */,
+				5E42978A233EC420002AAB7A /* onLayoutSubviewsSwizzle.swift */,
+				5E42978D233EC420002AAB7A /* UIButton.position.swift */,
+				5E429784233EC420002AAB7A /* UIColor.ext.swift */,
+				5E429786233EC420002AAB7A /* UIFont.get.swift */,
+				5E42978B233EC420002AAB7A /* UIImageView.ext.swift */,
+				5E42977F233EC420002AAB7A /* UILabel+lineSpacingMultiplier.swift */,
+				5E429782233EC420002AAB7A /* UIScrollView+flexFix.swift */,
+				5E429787233EC420002AAB7A /* UISegmentedControl+addIndicator.swift */,
+				5E429789233EC420002AAB7A /* UITextField.ext.swift */,
+				5E429783233EC420002AAB7A /* UITextView.placeholder.swift */,
+				5E429780233EC420002AAB7A /* UIView.focus.swift */,
+				5E429788233EC420002AAB7A /* UIView+backgroundLayer.swift */,
+				5EBC42A62355179F0088CDAC /* UIView+includeInLayout.swift */,
+				5E42978C233EC420002AAB7A /* ViewPagerLayout.swift */,
 			);
 			path = ios;
 			sourceTree = "<group>";
@@ -744,7 +744,6 @@
 				5E4297B7233EC420002AAB7A /* ObservableStack.swift in Sources */,
 				5E429791233EC420002AAB7A /* Preferences.swift in Sources */,
 				5E42979D233EC420002AAB7A /* UITextField+binding.swift in Sources */,
-				5EBC42A923553BF80088CDAC /* UIView+swap.swift in Sources */,
 				5E4297C7233EC420002AAB7A /* alias.swift in Sources */,
 				5E4297D2233EC420002AAB7A /* CalendarView.swift in Sources */,
 				5E4297B2233EC420002AAB7A /* Event.swift in Sources */,
@@ -761,6 +760,7 @@
 				5EBC42A72355179F0088CDAC /* UIView+includeInLayout.swift in Sources */,
 				5E429794233EC420002AAB7A /* unit.swift in Sources */,
 				5ED0E40F234FE75100C36B7D /* StringBuilder.swift in Sources */,
+				5E0CE0EB2356633400145B82 /* UIView+swap.swift in Sources */,
 				5E4297BA233EC420002AAB7A /* NeverEvent.swift in Sources */,
 				5E42979A233EC420002AAB7A /* ImageData.swift in Sources */,
 				5E4297B1233EC420002AAB7A /* ObservableProperty.swift in Sources */,
