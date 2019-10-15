@@ -155,6 +155,8 @@ private fun generateFile(
         line("//")
         line("package $packageName")
         line("")
+        line("${CodeSection.sectionMarker} Imports")
+        line("")
         line("import android.widget.*")
         line("import android.view.*")
         line("import com.lightningkite.kwift.actual.*")
@@ -296,16 +298,16 @@ private fun generateFile(
             }
             line("}")
             line("")
-            line("${CodeSection.sectionMarker} Init ${CodeSection.overwriteMarker}")
+            line("${CodeSection.sectionMarker} Init")
             line("")
             line("init {")
             tab {
                 inits.forEach { it() }
             }
-            line("${CodeSection.sectionMarker} Init End ${CodeSection.overwriteMarker}")
+            line("${CodeSection.sectionMarker} Init End")
             line("}")
             line("")
-            line("${CodeSection.sectionMarker} Body End ${CodeSection.overwriteMarker}")
+            line("${CodeSection.sectionMarker} Body End")
         }
         line("}")
     }

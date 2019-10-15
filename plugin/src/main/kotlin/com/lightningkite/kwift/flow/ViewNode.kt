@@ -19,19 +19,6 @@ class ViewNode(
             "ObservableStack[ViewGenerator]"
         )
 
-        //stackOperation, stackId, stackTarget
-        val stackTargetRegex = Regex("""tools:goTo *= *"@layout/([a-z_A-Z0-9]+)" *""")
-        val stackTarget2Regex = Regex("""tools:swap *= *"@layout/([a-z_A-Z0-9]+)" *""")
-        val stackPopRegex = Regex("""tools:pop *= """)
-        val stackIdRegex = Regex("""tools:onStack *= *"([a-z_A-Z0-9]+)" *""")
-
-        //bindStack, stackDefault
-        val stackDefaultRegex = Regex("""tools:stackDefault *= *"@layout/([a-z_A-Z0-9]+)" *""")
-        val bindStackRegex = Regex("""tools:stackId *= *"([a-z_A-Z0-9]+)" *""")
-
-        val requiresRegex = Regex("""tools:requires *= *"([a-z_A-Z0-9]+): *([a-z_A-Z0-9]+)" *""")
-        val providesRegex = Regex("""tools:provides *= *"([a-z_A-Z0-9]+): *([a-z_A-Z0-9]+)" *""")
-
         const val attributePush = "tools:goTo"
         const val attributeSwap = "tools:swap"
         const val attributePop = "tools:pop"
@@ -42,8 +29,6 @@ class ViewNode(
         const val attributeStackId = "tools:stackId"
         const val attributeRequires = "tools:requires"
         const val attributeProvides = "tools:provides"
-
-        const val defaultStack = "owningStack"
     }
 
     fun totalRequires(map: Map<String, ViewNode>, seen: Set<String> = setOf()): Set<ViewVar> {
