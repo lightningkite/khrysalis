@@ -45,13 +45,6 @@ val LayoutConverter.Companion.displayViews
                     appendln("view.layer.shadowOpacity = 0.24")
                 }
 
-                val defaultPadding = node.attributeAsDimension("android:padding") ?: 0
-                val paddingTop = (node.attributeAsDimension("android:paddingTop") ?: defaultPadding)
-                val paddingLeft = (node.attributeAsDimension("android:paddingLeft") ?: defaultPadding)
-                val paddingBottom = (node.attributeAsDimension("android:paddingBottom") ?: defaultPadding)
-                val paddingRight = (node.attributeAsDimension("android:paddingRight") ?: defaultPadding)
-                appendln("view.layoutMargins = UIEdgeInsets(top: $paddingTop, left: $paddingLeft, bottom: $paddingBottom, right: $paddingRight)")
-
                 node.attributeAsDouble("android:rotation")?.let {
                     appendln("view.transform = CGAffineTransform(rotationAngle: ${it * PI / 180.0})")
                 }
@@ -59,12 +52,7 @@ val LayoutConverter.Companion.displayViews
             ViewType("Space", "UIView", "View") {},
             ViewType("ImageView", "UIImageView", "View") { node ->
                 node.attributeAsImage("android:src")?.let { text ->
-                    val defaultPadding = node.attributeAsDimension("android:padding") ?: 0
-                    val paddingTop = (node.attributeAsDimension("android:paddingTop") ?: defaultPadding)
-                    val paddingLeft = (node.attributeAsDimension("android:paddingLeft") ?: defaultPadding)
-                    val paddingBottom = (node.attributeAsDimension("android:paddingBottom") ?: defaultPadding)
-                    val paddingRight = (node.attributeAsDimension("android:paddingRight") ?: defaultPadding)
-                    appendln("view.image = $text?.withInset(insets: UIEdgeInsets(top: $paddingTop, left: $paddingLeft, bottom: $paddingBottom, right: $paddingRight))")
+                    appendln("view.image = $text")
                 }
                 appendln(
                     "view.contentMode = ${when (node.attributes["android:scaleType"]) {

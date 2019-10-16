@@ -61,7 +61,7 @@ val LayoutConverter.Companion.buttonViews
             ViewType("Spinner", "Dropdown", "View") {},
             ViewType("RadioGroup", "UIView", "LinearLayout") {},
             ViewType("ImageButton", "UIButton", "Button") { node -> },
-            ViewType("Button", "UIButton", "View") { node ->
+            ViewType("Button", "UIButton", "View", handlesPadding = true) { node ->
                 node.attributeAsString("android:text")?.let { text ->
                     if (node.attributeAsBoolean("android:textAllCaps") == true) {
                         appendln("view.setTitle($text.toUpperCase(), for: .normal)")

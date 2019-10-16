@@ -6,6 +6,7 @@ data class ViewType(
     val androidName: String,
     val iosName: String,
     val extendsAndroidName: String? = null,
+    val handlesPadding: Boolean = false,
     val iosConstructor: String = "$iosName(frame: .zero)",
     val myConfiguration: OngoingLayoutConversion.(XmlNode) -> Unit = {}
 ) {

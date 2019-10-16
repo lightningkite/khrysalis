@@ -14,9 +14,12 @@ func EmptyView(_ dependency: ViewDependency) -> UIView {
 
 public extension UIView {
     @objc func onClick(_ action: @escaping ()->Void) {
-        self.addGestureRecognizer(UITapGestureRecognizer().addAction { [weak self] in
+        self.isUserInteractionEnabled = true
+        let recognizer = UITapGestureRecognizer().addAction { [weak self] in
             action()
-        })
+        }
+        retain(as: "onClickRecognizer", item: recognizer)
+        self.addGestureRecognizer(recognizer)
     }
     
     enum Visibility { case gone, invisible, visible }
