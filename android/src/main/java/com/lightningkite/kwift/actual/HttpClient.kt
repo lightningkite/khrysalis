@@ -7,9 +7,12 @@ import android.os.Handler
 import android.os.Looper
 import android.util.Log
 import com.fasterxml.jackson.core.JsonGenerator
+import com.fasterxml.jackson.core.JsonParser
+import com.fasterxml.jackson.core.JsonToken
 import com.fasterxml.jackson.core.Version
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.databind.*
+import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.ser.std.StdSerializer
 import com.fasterxml.jackson.databind.util.StdDateFormat
@@ -25,8 +28,8 @@ object HttpClient {
     lateinit var appContext: Context
 
     var immediateMode = false
-    inline fun runResult(crossinline action: ()->Unit) {
-        if(immediateMode){
+    inline fun runResult(crossinline action: () -> Unit) {
+        if (immediateMode) {
             action()
         } else {
             Handler(Looper.getMainLooper()).post {
@@ -34,12 +37,13 @@ object HttpClient {
             }
         }
     }
-    inline fun Call.go(callback: Callback){
-        if(immediateMode) {
+
+    inline fun Call.go(callback: Callback) {
+        if (immediateMode) {
             try {
                 val result = execute()
                 callback.onResponse(this, result)
-            } catch(e:IOException){
+            } catch (e: IOException) {
                 callback.onFailure(this, e)
             }
         } else {
@@ -56,13 +60,55 @@ object HttpClient {
     val client = OkHttpClient.Builder().build()
     val mapper = ObjectMapper()
         .registerModule(KotlinModule())
-        .registerModule(SimpleModule("EnumFix", Version.unknownVersion(), listOf(
-            object : StdSerializer<Enum<*>>(Enum::class.java) {
-                override fun serialize(value: Enum<*>?, gen: JsonGenerator, provider: SerializerProvider?) {
-                    gen.writeString(value?.name?.toLowerCase() ?: "")
+        .registerModule(SimpleModule(
+            "EnumFix",
+            Version.unknownVersion(),
+            mapOf(
+                TimeAlone::class.java to object : StdDeserializer<TimeAlone>(
+                    TimeAlone::class.java){
+                    override fun deserialize(p: JsonParser, ctxt: DeserializationContext): TimeAlone? {
+                        if(p.currentToken == JsonToken.VALUE_NULL) return null
+                        return TimeAlone.iso(p.text)
+                    }
+                },
+                DateAlone::class.java to object : StdDeserializer<DateAlone>(
+                    DateAlone::class.java){
+                    override fun deserialize(p: JsonParser, ctxt: DeserializationContext): DateAlone? {
+                        if(p.currentToken == JsonToken.VALUE_NULL) return null
+                        return DateAlone.iso(p.text)
+                    }
                 }
-            }
-        )))
+            ),
+            listOf(
+                object : StdSerializer<Enum<*>>(Enum::class.java) {
+                    override fun serialize(value: Enum<*>?, gen: JsonGenerator, provider: SerializerProvider?) {
+                        if (value == null) {
+                            gen.writeNull()
+                        } else {
+                            gen.writeString(value.name.toLowerCase())
+                        }
+                    }
+                },
+                object : StdSerializer<TimeAlone>(TimeAlone::class.java) {
+                    override fun serialize(value: TimeAlone?, gen: JsonGenerator, provider: SerializerProvider?) {
+                        if (value == null) {
+                            gen.writeNull()
+                        } else {
+                            gen.writeString(value.iso())
+                        }
+                    }
+                },
+                object : StdSerializer<DateAlone>(DateAlone::class.java) {
+                    override fun serialize(value: DateAlone?, gen: JsonGenerator, provider: SerializerProvider?) {
+                        if (value == null) {
+                            gen.writeNull()
+                        } else {
+                            gen.writeString(value.iso())
+                        }
+                    }
+                }
+            )
+        ))
         .disable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES)
         .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
         .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)

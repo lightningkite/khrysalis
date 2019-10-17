@@ -12,7 +12,7 @@ public func lambdaTest() -> Void {
     takesLambda{ (integer, someValue) in 
         print("Hello!")
     }
-    takesLambda(  { [unowned self] (integer, someValue) in 
+    takesLambda({ [unowned self] (integer, someValue) in 
         print("Hello!")
     })
 }

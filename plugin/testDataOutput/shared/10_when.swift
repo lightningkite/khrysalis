@@ -19,20 +19,16 @@ public func main(_ args: Array<String>) -> Void {
 
 public func cases(x: Int32) -> Void {
     switch x {
-    case 1:
-        print("x == 1")
-    case 2:
-        print("x == 2")
+    case 1: print("x == 1")
+    case 2: print("x == 2")
     default:
         print("x is neither 1 nor 2")
         print("x might be something more")
     }
     switch x {
     case 0, 
-    case 1:
-        print("x == 0 or x == 1")
-    default:
-        print("otherwise")
+    case 1: print("x == 0 or x == 1")
+    default: print("otherwise")
     }
     if x > 2 {
         print("Bigger than 2")
@@ -43,10 +39,8 @@ public func cases(x: Int32) -> Void {
     }
     var y: Any = x
     switch y {
-    case let y as Int32:
-        print(y + 2)
-    default:
-        print(y)
+    case let y as Int32: print(y + 2)
+    default: print(y)
     }
 }
 public func cases(_ x: Int32) -> Void {

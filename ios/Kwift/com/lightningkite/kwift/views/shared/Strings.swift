@@ -66,9 +66,7 @@ public class ViewStringTemplate: ViewString {
     public func get(dependency: ViewDependency) -> String {
         var templateResolved = template.get(dependency)
         var fixedArguments = arguments.map{ (it) in 
-            if let _ = ( it as? ViewString )?.get(dependency){} else {
-                it
-            }
+            ( it as? ViewString )?.get(dependency) ?? it
         }
         return templateResolved.formatList(fixedArguments)
     }

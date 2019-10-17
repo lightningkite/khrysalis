@@ -249,14 +249,44 @@ public extension String {
         }
     }
     
+    func substringBeforeLast(_ string: String, _ defaultTo: String? = nil) -> String {
+        let index = self.lastIndexOf(string)
+        if index != -1 {
+            return substring(index)
+        } else {
+            return defaultTo ?? self
+        }
+    }
+    
+    func substringAfterLast(_ string: String, _ defaultTo: String? = nil) -> String {
+        let index = self.lastIndexOf(string)
+        if index != -1 {
+            return substring(index + string.length)
+        } else {
+            return defaultTo ?? self
+        }
+    }
+    
 }
 
 
 public extension StringProtocol {
     func indexOf(_ string: Self, _ startIndex: Int32 = 0, _ ignoreCase: Bool = true) -> Int32 {
-        var options: String.CompareOptions = .literal
+        var options: String.CompareOptions = [.literal]
         if ignoreCase {
-            options = .caseInsensitive
+            options = [.literal, .caseInsensitive]
+        }
+        if let index = range(of: string, options: options)?.lowerBound {
+            return Int32(distance(from: self.startIndex, to: index))
+        } else {
+            return -1
+        }
+    }
+    
+    func lastIndexOf(_ string: Self, _ startIndex: Int32 = 0, _ ignoreCase: Bool = true) -> Int32 {
+        var options: String.CompareOptions = [.literal, .backwards]
+        if ignoreCase {
+            options = [.literal, .caseInsensitive, .backwards]
         }
         if let index = range(of: string, options: options)?.lowerBound {
             return Int32(distance(from: self.startIndex, to: index))

@@ -10,6 +10,7 @@
 		54CB5B25E4BB1E803292559A /* libPods-Kwift.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 63A80265E53D7E8A26AF57CF /* libPods-Kwift.a */; };
 		5E0CE0EB2356633400145B82 /* UIView+swap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0CE0EA2356633400145B82 /* UIView+swap.swift */; };
 		5E0CE0F02357AC7800145B82 /* UIButtonWithLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0CE0EF2357AC7800145B82 /* UIButtonWithLayer.swift */; };
+		5E0CE1082357FDA300145B82 /* DateTimeAlone.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0CE1072357FDA300145B82 /* DateTimeAlone.swift */; };
 		5E42978F233EC420002AAB7A /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42972E233EC420002AAB7A /* Date.swift */; };
 		5E429790233EC420002AAB7A /* delay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42972F233EC420002AAB7A /* delay.swift */; };
 		5E429791233EC420002AAB7A /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429730233EC420002AAB7A /* Preferences.swift */; };
@@ -95,7 +96,6 @@
 		5E4297E3233EC420002AAB7A /* onLayoutSubviewsSwizzle.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42978A233EC420002AAB7A /* onLayoutSubviewsSwizzle.swift */; };
 		5E4297E4233EC420002AAB7A /* UIImageView.ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42978B233EC420002AAB7A /* UIImageView.ext.swift */; };
 		5E4297E5233EC420002AAB7A /* ViewPagerLayout.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42978C233EC420002AAB7A /* ViewPagerLayout.swift */; };
-		5E4297E6233EC420002AAB7A /* UIButton.position.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42978D233EC420002AAB7A /* UIButton.position.swift */; };
 		5E4297E7233EC420002AAB7A /* extensionProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42978E233EC420002AAB7A /* extensionProperty.swift */; };
 		5E5F673C2347D7BF0090384F /* Event.ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E5F673B2347D7BF0090384F /* Event.ext.swift */; };
 		5E5F6DB6234C03E80090384F /* UIView+ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E5F6DB4234C03E80090384F /* UIView+ext.swift */; };
@@ -126,6 +126,7 @@
 /* Begin PBXFileReference section */
 		5E0CE0EA2356633400145B82 /* UIView+swap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "UIView+swap.swift"; path = "Kwift/com/lightningkite/kwift/observables/actuals/UIView+swap.swift"; sourceTree = SOURCE_ROOT; };
 		5E0CE0EF2357AC7800145B82 /* UIButtonWithLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIButtonWithLayer.swift; path = Kwift/com/lightningkite/kwift/views/actuals/UIButtonWithLayer.swift; sourceTree = SOURCE_ROOT; };
+		5E0CE1072357FDA300145B82 /* DateTimeAlone.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DateTimeAlone.swift; path = Kwift/com/lightningkite/Kwift/actuals/DateTimeAlone.swift; sourceTree = SOURCE_ROOT; };
 		5E42972E233EC420002AAB7A /* Date.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
 		5E42972F233EC420002AAB7A /* delay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = delay.swift; sourceTree = "<group>"; };
 		5E429730233EC420002AAB7A /* Preferences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
@@ -211,7 +212,6 @@
 		5E42978A233EC420002AAB7A /* onLayoutSubviewsSwizzle.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = onLayoutSubviewsSwizzle.swift; sourceTree = "<group>"; };
 		5E42978B233EC420002AAB7A /* UIImageView.ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIImageView.ext.swift; sourceTree = "<group>"; };
 		5E42978C233EC420002AAB7A /* ViewPagerLayout.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = ViewPagerLayout.swift; sourceTree = "<group>"; };
-		5E42978D233EC420002AAB7A /* UIButton.position.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIButton.position.swift; sourceTree = "<group>"; };
 		5E42978E233EC420002AAB7A /* extensionProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = extensionProperty.swift; sourceTree = "<group>"; };
 		5E5F673B2347D7BF0090384F /* Event.ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Event.ext.swift; path = Kwift/com/lightningkite/kwift/observables/shared/Event.ext.swift; sourceTree = SOURCE_ROOT; };
 		5E5F6DB4234C03E80090384F /* UIView+ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIView+ext.swift"; path = "Kwift/com/lightningkite/kwift/views/actuals/UIView+ext.swift"; sourceTree = SOURCE_ROOT; };
@@ -286,6 +286,7 @@
 			isa = PBXGroup;
 			children = (
 				5E42972E233EC420002AAB7A /* Date.swift */,
+				5E0CE1072357FDA300145B82 /* DateTimeAlone.swift */,
 				5E42972F233EC420002AAB7A /* delay.swift */,
 				5E429730233EC420002AAB7A /* Preferences.swift */,
 				5E429731233EC420002AAB7A /* StringReference.swift */,
@@ -433,7 +434,6 @@
 				5EBC42A4235513280088CDAC /* layoutConvenience.swift */,
 				5EBC42A02354FA640088CDAC /* LinearLayout.swift */,
 				5E42978A233EC420002AAB7A /* onLayoutSubviewsSwizzle.swift */,
-				5E42978D233EC420002AAB7A /* UIButton.position.swift */,
 				5E429784233EC420002AAB7A /* UIColor.ext.swift */,
 				5E429786233EC420002AAB7A /* UIFont.get.swift */,
 				5E42978B233EC420002AAB7A /* UIImageView.ext.swift */,
@@ -695,7 +695,6 @@
 				5EBC42A5235513280088CDAC /* layoutConvenience.swift in Sources */,
 				5E4297B5233EC420002AAB7A /* TransformedEvent.swift in Sources */,
 				5E4297B8233EC420002AAB7A /* Close.swift in Sources */,
-				5E4297E6233EC420002AAB7A /* UIButton.position.swift in Sources */,
 				5E5F6DB6234C03E80090384F /* UIView+ext.swift in Sources */,
 				5E429797233EC420002AAB7A /* HttpClient.swift in Sources */,
 				5E4297E2233EC420002AAB7A /* UITextField.ext.swift in Sources */,
@@ -741,6 +740,7 @@
 				5E4297E7233EC420002AAB7A /* extensionProperty.swift in Sources */,
 				5E4297CC233EC420002AAB7A /* ToggleButton.swift in Sources */,
 				5E4297E1233EC420002AAB7A /* UIView+backgroundLayer.swift in Sources */,
+				5E0CE1082357FDA300145B82 /* DateTimeAlone.swift in Sources */,
 				5E4297C4233EC420002AAB7A /* ScrollSavingDelegate.swift in Sources */,
 				5E4297CB233EC420002AAB7A /* SelectDayView.swift in Sources */,
 				5E4297DA233EC420002AAB7A /* CAStateLayer.swift in Sources */,

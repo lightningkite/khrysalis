@@ -6,6 +6,9 @@ import com.lightningkite.kwift.views.actual.StringResource
 import com.lightningkite.kwift.views.actual.ViewDependency
 import com.lightningkite.kwift.views.actual.getString
 
+data class ManyThings(val x: Int, val y: Int, val z: Int){
+    fun stringy() = "$x$y$z"
+}
 
 interface ViewString {
     fun get(dependency: ViewDependency): String

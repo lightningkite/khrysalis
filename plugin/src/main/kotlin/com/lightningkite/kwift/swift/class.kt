@@ -150,7 +150,7 @@ fun SwiftAltListener.registerClass() {
             }
             line("}")
 
-            item.enumClassBody().classMemberDeclarations().classMemberDeclaration().forEach {
+            item.enumClassBody()?.classMemberDeclarations()?.classMemberDeclaration()?.forEach {
                 startLine()
                 write(it)
             }
