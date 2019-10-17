@@ -8,7 +8,6 @@
 
 import Foundation
 import UIKit
-import FlexLayout
 
 public extension UIView {
     func bindVisible(_ observable: ObservableProperty<Bool>) {

@@ -16,7 +16,8 @@ public protocol CALayerToImage {
 extension CALayer : CALayerToImage {
     public func addOnStateChange(_ view: UIView?, action: @escaping (UIControl.State) -> Void) {
         if let view = view as? UIControl {
-            let _ = view.addOnStateChange(retainer: self, id: 0, action: { [weak view] state in
+            let _ = view.addOnStateChange(retainer: self, id: 0, action: { [weak self, weak view] state in
+                guard let self = self else { return }
                 action(state)
                 view?.setNeedsDisplay()
             })
@@ -59,8 +60,7 @@ extension CALayer : CALayerToImage {
             baseSize = self.bounds.size
             CALayer.baseSize.set(self, self.bounds.size)
         }
-        
-        CALayer.onResize.get(self)?.invokeAll(bounds)
+
         if scaleOverResize {
             self.frame = bounds
             self.setAffineTransform(CGAffineTransform(
@@ -70,6 +70,7 @@ extension CALayer : CALayerToImage {
         } else {
             self.frame = bounds
         }
+        CALayer.onResize.get(self)?.invokeAll(self.bounds)
     }
     
     private static let matchingExtension = ExtensionProperty<CALayer, Close>()

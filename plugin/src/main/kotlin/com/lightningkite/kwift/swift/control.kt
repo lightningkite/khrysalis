@@ -204,7 +204,11 @@ fun SwiftAltListener.registerControl() {
                         }
                         c.typeTest()?.let { t ->
                             startLine()
-                            direct.append("case let ${on.text} as ")
+                            if(on.text.isNotBlank() && on.text.all { it.isJavaIdentifierPart() }) {
+                                direct.append("case let ${on.text} as ")
+                            } else {
+                                direct.append("case is ")
+                            }
                             write(t.type())
                             direct.append(":")
                             writeCaseStatements(it.controlStructureBody())

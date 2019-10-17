@@ -35,4 +35,9 @@ fun cases(x: Int) {
         is Int -> println(y + 2)
         else -> println(y)
     }
+
+    when(21 + 3) {
+        is Int -> println(4)
+        else -> println(4)
+    }
 }

@@ -27,8 +27,6 @@ fun File.translateLayoutXml(styles: Styles, converter: LayoutConverter = LayoutC
         appendln("//")
         appendln("")
         appendln("import UIKit")
-        appendln("import FlexLayout")
-        appendln("import PinLayout")
         appendln("import Kwift")
         appendln("")
         appendln("class ${name}Xml {")

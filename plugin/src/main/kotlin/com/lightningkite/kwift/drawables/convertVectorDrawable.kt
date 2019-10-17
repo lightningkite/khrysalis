@@ -28,7 +28,7 @@ fun convertVectorDrawable(name: String, node: XmlNode, out: Appendable) {
     fun Double.scaleY(): Double = this * scaleY
 
     with(out) {
-        appendln("static func $name(view: UIView? = nil) -> CALayer {")
+        appendln("static func $name(_ view: UIView? = nil) -> CALayer {")
         appendln("    let layer = CALayer()")
         node.children.filter { it.name == "path" }.forEach { subnode ->
             appendln("    layer.addSublayer({")

@@ -12,6 +12,9 @@ fun SwiftAltListener.registerExpression() {
             item.AS_SAFE() != null -> direct.append("as?")
         }
     }
+    handle<KotlinParser.DirectlyAssignableExpressionContext> { item ->
+        defaultWrite(item, "")
+    }
     handle<KotlinParser.AssignableSuffixContext> { item ->
         defaultWrite(item, "")
     }

@@ -6,9 +6,7 @@ PODS:
   - Crashlytics (3.13.4):
     - Fabric (~> 1.10.2)
   - Fabric (1.10.2)
-  - FlexLayout (1.3.16)
   - KeychainAccess (3.2.0)
-  - PinLayout (1.8.9)
   - QVRWeekView (0.13.3)
   - "UITextView+Placeholder (1.3.1)"
 
@@ -18,22 +16,18 @@ DEPENDENCIES:
   - Cosmos (~> 19.0)
   - Crashlytics
   - Fabric
-  - FlexLayout
   - KeychainAccess
-  - PinLayout
   - QVRWeekView (from `https://github.com/lightningkite/iOS-Week-View.git`)
   - "UITextView+Placeholder"
 
 SPEC REPOS:
-  https://github.com/cocoapods/specs.git:
+  https://github.com/CocoaPods/Specs.git:
     - Alamofire
     - AlamofireImage
     - Cosmos
     - Crashlytics
     - Fabric
-    - FlexLayout
     - KeychainAccess
-    - PinLayout
     - "UITextView+Placeholder"
 
 EXTERNAL SOURCES:
@@ -51,12 +45,10 @@ SPEC CHECKSUMS:
   Cosmos: a6fb17284281fa12cf4c85c2efecd440a215ec44
   Crashlytics: 2dfd686bcb918dc10ee0e76f7f853fe42c7bd552
   Fabric: 706c8b8098fff96c33c0db69cbf81f9c551d0d74
-  FlexLayout: 2c9f7724c5218eb2f23c734dc4343141815a1681
   KeychainAccess: 3b1bf8a77eb4c6ea1ce9404c292e48f948954c6b
-  PinLayout: f7237c104696f409470947fee3ac82e239cac367
   QVRWeekView: 3439d87341135afb524b83dfdde366ddad5c6157
   "UITextView+Placeholder": f23df8592290d8d06078072ae1a663e11ee07ff4
 
-PODFILE CHECKSUM: b27cd04ca2f3884cdf262a1aff82380df2f91c05
+PODFILE CHECKSUM: c4cbc7aa5a690a5aeba43283ee86445246e4b92a
 
-COCOAPODS: 1.5.3
+COCOAPODS: 1.8.1

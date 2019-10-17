@@ -60,7 +60,7 @@ fun convertPngs(
             writer.appendln("")
             pngNames.forEach { pngName ->
                 val typeName = pngName.camelCase()
-                writer.appendln("static func $typeName(view: UIView? = nil) -> CAImageLayer { return CAImageLayer(UIImage(named: \"$pngName\")) }")
+                writer.appendln("static func $typeName(_ view: UIView? = nil) -> CAImageLayer { return CAImageLayer(UIImage(named: \"$pngName\")) }")
             }
             writer.appendln("")
             writer.appendln("}")

@@ -10,7 +10,7 @@ import java.lang.Appendable
 fun convertShapeDrawable(name: String, node: XmlNode, out: Appendable) {
     val className = if (node.children.any { it.name == "gradient" }) "CAGradientLayer" else "CALayer"
     with(out) {
-        appendln("static func $name(view: UIView? = nil) -> $className {")
+        appendln("static func $name(_ view: UIView? = nil) -> $className {")
         appendln("    let layer = $className()")
         node.children.find { it.name == "stroke" }?.let {
             appendln("    layer.borderWidth = ${it.attributeAsDimension("android:width") ?: "0"}")

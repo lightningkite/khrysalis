@@ -10,7 +10,7 @@ fun SwiftAltListener.registerLiterals() {
         item.children.forEach {
             when (it) {
                 is KotlinParser.LineStringContentContext -> {
-                    if(it.text.startsWith("$")){
+                    if(it.text.startsWith("$") && it.text.length > 1){
                         direct.append("\\(")
                         direct.append(it.text.removePrefix("$"))
                         direct.append(")")

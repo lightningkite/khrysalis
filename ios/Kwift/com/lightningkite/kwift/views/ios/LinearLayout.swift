@@ -41,6 +41,7 @@ open class LinearLayout: UIView {
     public func addView(_ view: UIView, _ params: LayoutParams) {
         addSubview(view)
         subviewsWithParams[view] = params
+        setNeedsLayout()
     }
     
     public func removeAllViews() {
@@ -50,6 +51,7 @@ open class LinearLayout: UIView {
     public func addSubview(_ view: UIView, _ params: LayoutParams) {
         addSubview(view)
         subviewsWithParams[view] = params
+        setNeedsLayout()
     }
     public func addSubview(
         _ view: UIView,
@@ -61,10 +63,12 @@ open class LinearLayout: UIView {
     ) {
         addSubview(view)
         subviewsWithParams[view] = LayoutParams(minimumSize: minimumSize, size: size, margin: margin, gravity: gravity, weight: weight)
+        setNeedsLayout()
     }
     
     public override func willRemoveSubview(_ subview: UIView) {
         subviewsWithParams.removeValue(forKey: subview)
+        setNeedsLayout()
     }
     
     

@@ -4,8 +4,6 @@ target 'Kwift' do
     pod 'Alamofire'
     pod 'AlamofireImage'
     pod 'KeychainAccess'
-    pod 'PinLayout'
-    pod 'FlexLayout'
     pod 'UITextView+Placeholder', :modular_headers => true
     pod 'Fabric'
     pod 'Crashlytics'

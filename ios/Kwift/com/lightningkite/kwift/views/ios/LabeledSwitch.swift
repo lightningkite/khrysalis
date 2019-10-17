@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import FlexLayout
 
 
 public class LabeledSwitch : LinearLayout {

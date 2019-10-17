@@ -11,7 +11,7 @@ import UIKit
 
 
 public extension UIView {
-    var background: Drawable? {
+    var backgroundDrawable: Drawable? {
         set(value){
             if let value = value {
                 backgroundLayer = value(self)

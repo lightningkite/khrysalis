@@ -6,7 +6,7 @@ import java.lang.Appendable
 
 fun convertBitmapDrawable(name: String, node: XmlNode, out: Appendable) {
     with(out) {
-        appendln("static func $name(view: UIView? = nil) -> CALayer {")
+        appendln("static func $name(_ view: UIView? = nil) -> CALayer {")
         appendln("    let layer = CALayer()")
         appendln("    layer.backgroundColor = ${node.attributeAsColor("android:tint")}.cgColor")
         appendln("    let mask = ${node.attributeAsLayer("android:src", "view")}")

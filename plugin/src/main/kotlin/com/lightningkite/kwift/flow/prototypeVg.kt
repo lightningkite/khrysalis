@@ -230,7 +230,7 @@ private fun generateFile(
                             if (it.startsWith("@string")) {
                                 line("""$view.bindStringRes(ConstantObservableProperty(R.string.${it.removePrefix("@string/")}))""")
                             } else {
-                                line("""$view.bindString(ConstantObservableProperty("$it"))""")
+                                line("""$view.bindString(ConstantObservableProperty("${it.replace("$", "\\$")}"))""")
                             }
                         }
                         node.attributes["tools:src"]?.let {

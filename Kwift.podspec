@@ -19,8 +19,6 @@ Pod::Spec.new do |s|
   s.dependency "Alamofire"
   s.dependency "AlamofireImage"
   s.dependency "KeychainAccess"
-  s.dependency "PinLayout"
-  s.dependency "FlexLayout"
   s.dependency "UITextView+Placeholder"
   s.dependency "Fabric"
   s.dependency "Crashlytics"

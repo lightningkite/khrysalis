@@ -16,7 +16,7 @@ val LayoutConverter.Companion.displayViews
                     when {
                         raw.startsWith("@drawable/") -> {
                             node.attributeAsLayer("android:background", "view")!!.let {
-                                appendln("view.background = $it")
+                                appendln("view.backgroundLayer = $it")
                             }
                         }
                         raw.startsWith("@mipmap/") -> {

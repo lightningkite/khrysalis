@@ -80,6 +80,13 @@ fun XmlNode.attributeAsString(key: String): String? {
         else -> "\"$raw\""
     }
 }
+fun XmlNode.attributeAsStringKotlin(key: String): String? {
+    val raw = attributes[key] ?: return null
+    return when {
+        raw.startsWith("@string/") -> "ResourcesStrings.${raw.removePrefix("@string/").camelCase()}"
+        else -> "\"${raw.replace("$", "\\$")}\""
+    }
+}
 
 fun XmlNode.attributeAsInt(key: String): String? {
     val raw = attributes[key] ?: return null
@@ -93,13 +100,14 @@ fun XmlNode.attributeAsDimension(key: String): String? {
         else -> raw.filter { it.isDigit() || it == '.' || it == '-' }.toIntOrNull()?.toString()
     }
 }
-fun XmlNode.attributeAsLayer(key: String, forView: String = "nil"): String? {
+fun XmlNode.attributeAsDrawable(key: String): String? {
     val raw = attributes[key] ?: return null
     return when {
-        raw.startsWith("@drawable/") -> "ResourcesDrawables.${raw.removePrefix("@drawable/").camelCase()}(view: $forView)"
+        raw.startsWith("@drawable/") -> "ResourcesDrawables.${raw.removePrefix("@drawable/").camelCase()}"
         else -> null
     }
 }
+fun XmlNode.attributeAsLayer(key: String, forView: String = "nil"): String? = attributeAsDrawable(key)?.plus("($forView)")
 fun XmlNode.attributeAsBoolean(key: String): Boolean? {
     val raw = attributes[key] ?: return null
     return when(raw.toLowerCase()) {

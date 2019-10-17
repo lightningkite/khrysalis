@@ -80,6 +80,8 @@ class SwiftAltListener {
 
         typeReplacements["Map"] = "Dictionary"
         typeReplacements["List"] = "Array"
+        typeReplacements["MutableMap"] = "Dictionary"
+        typeReplacements["MutableList"] = "Array"
         typeReplacements["HashMap"] = "Dictionary"
         typeReplacements["ArrayList"] = "Array"
         typeReplacements["Boolean"] = "Bool"

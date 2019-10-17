@@ -42,6 +42,10 @@ public func cases(x: Int32) -> Void {
     case let y as Int32: print(y + 2)
     default: print(y)
     }
+    switch 21 + 3 {
+    case is Int32: print(4)
+    default: print(4)
+    }
 }
 public func cases(_ x: Int32) -> Void {
     return cases(x: x)

@@ -10,7 +10,7 @@ fun convertLayerListDrawable(name: String, node: XmlNode, out: Appendable) {
     with(out) {
         val after = ArrayList<()->Unit>()
 
-        appendln("static func $name(view: UIView? = nil) -> CALayer {")
+        appendln("static func $name(_ view: UIView? = nil) -> CALayer {")
         appendln("    let layer = CALayer()")
         for (subnode in node.children) {
             appendln("    layer.addSublayer({")
@@ -24,7 +24,7 @@ fun convertLayerListDrawable(name: String, node: XmlNode, out: Appendable) {
                     convertDrawableXml(subname, subnode.children.first(), out)
                 }
                 appendln(
-                    "        let sublayer = $subname(view: view)"
+                    "        let sublayer = $subname(view)"
                 )
             }
             subnode.attributeAsDimension("android:width")?.let {

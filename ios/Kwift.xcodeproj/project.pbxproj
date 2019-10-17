@@ -659,24 +659,15 @@
 			files = (
 			);
 			inputFileListPaths = (
-			);
-			inputPaths = (
-				"${SRCROOT}/Pods/Target Support Files/Pods-Kwift/Pods-Kwift-resources.sh",
-				"${PODS_ROOT}/QVRWeekView/QVRWeekView/Classes/Xibs/EventView.xib",
-				"${PODS_ROOT}/QVRWeekView/QVRWeekView/Classes/Xibs/HourSideBarView.xib",
-				"${PODS_ROOT}/QVRWeekView/QVRWeekView/Classes/Xibs/WeekView.xib",
+				"${PODS_ROOT}/Target Support Files/Pods-Kwift/Pods-Kwift-resources-${CONFIGURATION}-input-files.xcfilelist",
 			);
 			name = "[CP] Copy Pods Resources";
 			outputFileListPaths = (
-			);
-			outputPaths = (
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/EventView.nib",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/HourSideBarView.nib",
-				"${TARGET_BUILD_DIR}/${UNLOCALIZED_RESOURCES_FOLDER_PATH}/WeekView.nib",
+				"${PODS_ROOT}/Target Support Files/Pods-Kwift/Pods-Kwift-resources-${CONFIGURATION}-output-files.xcfilelist",
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 			shellPath = /bin/sh;
-			shellScript = "\"${SRCROOT}/Pods/Target Support Files/Pods-Kwift/Pods-Kwift-resources.sh\"\n";
+			shellScript = "\"${PODS_ROOT}/Target Support Files/Pods-Kwift/Pods-Kwift-resources.sh\"\n";
 			showEnvVarsInLog = 0;
 		};
 /* End PBXShellScriptBuildPhase section */
