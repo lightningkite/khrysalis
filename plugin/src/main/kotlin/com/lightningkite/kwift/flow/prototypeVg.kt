@@ -98,48 +98,48 @@ private fun generateFile(
                     viewNodeMap[it.removePrefix("@layout/").camelCase().capitalize()] ?: return@let
                 val stackName = node.attributes[ViewNode.attributeOnStack] ?: "stack"
                 val makeView = makeView(otherViewNode, stackName)
-                line("$view.onClick(captureWeak(this){ self -> self.$stackName.push($makeView) })")
+                line("$view.onClick { this.$stackName.push($makeView) }")
             }
             node.attributes[ViewNode.attributeSwap]?.let {
                 val otherViewNode =
                     viewNodeMap[it.removePrefix("@layout/").camelCase().capitalize()] ?: return@let
                 val stackName = node.attributes[ViewNode.attributeOnStack] ?: "stack"
                 val makeView = makeView(otherViewNode, stackName)
-                line("$view.onClick(captureWeak(this){ self -> self.$stackName.swap($makeView) })")
+                line("$view.onClick { this.$stackName.swap($makeView) }")
             }
             node.attributes[ViewNode.attributeReset]?.let {
                 val otherViewNode =
                     viewNodeMap[it.removePrefix("@layout/").camelCase().capitalize()] ?: return@let
                 val stackName = node.attributes[ViewNode.attributeOnStack] ?: "stack"
                 val makeView = makeView(otherViewNode, stackName)
-                line("$view.onClick(captureWeak(this){ self -> self.$stackName.reset($makeView) })")
+                line("$view.onClick { this.$stackName.reset($makeView) }")
             }
             node.attributes[ViewNode.attributePop]?.let {
                 val stackNames = node.attributes[ViewNode.attributeOnStack]?.split(';') ?: listOf("stack")
                 if (stackNames.size == 1) {
-                    line("$view.onClick(captureWeak(this){ self -> self.${stackNames.first()}.pop() })")
+                    line("$view.onClick { this.${stackNames.first()}.pop() }")
                 } else {
-                    line("$view.onClick(captureWeak(this){ self -> ")
+                    line("$view.onClick { ")
                     tab {
                         startLine()
                         stackNames.forEachBetween(
                             forItem = {
-                                direct.append("if(self.$it.pop()) {}")
+                                direct.append("if(this.$it.pop()) {}")
                             },
                             between = {
                                 direct.append(" else ")
                             }
                         )
                     }
-                    line("})")
+                    line("}")
                 }
             }
             node.attributes[ViewNode.attributeDismiss]?.let {
                 val stackNames = node.attributes[ViewNode.attributeOnStack]?.split(';') ?: listOf("stack")
                 if (stackNames.size == 1) {
-                    line("$view.onClick(captureWeak(this){ self -> self.${stackNames.first()}.dismiss() })")
+                    line("$view.onClick { this.${stackNames.first()}.dismiss() }")
                 } else {
-                    line("$view.onClick(captureWeak(this){ self -> ")
+                    line("$view.onClick { ")
                     tab {
                         startLine()
                         stackNames.forEachBetween(
@@ -151,7 +151,7 @@ private fun generateFile(
                             }
                         )
                     }
-                    line("})")
+                    line("}")
                 }
             }
         }

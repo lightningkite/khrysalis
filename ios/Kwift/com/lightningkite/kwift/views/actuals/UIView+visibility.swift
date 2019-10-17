@@ -1,26 +1,14 @@
 //
-//  UIView+ext.swift
-//  Alamofire
+//  UIView+visibility.swift
+//  Kwift
 //
-//  Created by Joseph Ivie on 10/7/19.
+//  Created by Joseph Ivie on 10/16/19.
+//  Copyright © 2019 Lightning Kite. All rights reserved.
 //
 
 import UIKit
-import FlexLayout
-
-func EmptyView(_ dependency: ViewDependency) -> UIView {
-    return UIView(frame: .zero)
-}
 
 public extension UIView {
-    @objc func onClick(_ action: @escaping ()->Void) {
-        self.isUserInteractionEnabled = true
-        let recognizer = UITapGestureRecognizer().addAction { [weak self] in
-            action()
-        }
-        retain(as: "onClickRecognizer", item: recognizer)
-        self.addGestureRecognizer(recognizer)
-    }
     
     enum Visibility { case gone, invisible, visible }
     static let GONE = Visibility.gone

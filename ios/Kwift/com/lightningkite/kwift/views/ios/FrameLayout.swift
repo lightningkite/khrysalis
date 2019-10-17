@@ -34,6 +34,15 @@ open class FrameLayout: UIView {
     internal var subviewsWithParams: Dictionary<UIView, LayoutParams> = Dictionary()
     internal var measurements: Dictionary<UIView, CGSize> = Dictionary()
     
+    public func addView(_ view: UIView, _ params: LayoutParams) {
+        addSubview(view)
+        subviewsWithParams[view] = params
+    }
+    
+    public func removeAllViews() {
+        self.subviews.forEach { $0.removeFromSuperview() }
+    }
+    
     public func addSubview(_ view: UIView, _ params: LayoutParams) {
         addSubview(view)
         subviewsWithParams[view] = params

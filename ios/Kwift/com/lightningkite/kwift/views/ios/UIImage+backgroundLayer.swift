@@ -1,13 +1,14 @@
 //
-//  UIView+backgroundLayer.swift
-//  Kwift Template
+//  UIImage+background.swift
+//  Kwift
 //
-//  Created by Joseph Ivie on 9/26/19.
-//  Copyright © 2019 Joseph Ivie. All rights reserved.
+//  Created by Joseph Ivie on 10/17/19.
+//  Copyright © 2019 Lightning Kite. All rights reserved.
 //
 
 import Foundation
 import UIKit
+
 
 public extension UIView {
     private static let extensionBackgroundLayer = ExtensionProperty<UIView, CALayer>()

@@ -33,7 +33,7 @@ val LayoutConverter.Companion.textInputViews
                 if (node.attributes["android:background"] == null) {
                     val boldColor = node.attributeAsColor("android:textColor") ?: "UIColor.white"
                     val hintColor = node.attributeAsColor("android:textColorHint") ?: "nil"
-                    appendln("view.backgroundLayer = view.underlineLayer(boldColor: $boldColor, hintColor: $hintColor)")
+                    appendln("view.background = view.underlineLayer(boldColor: $boldColor, hintColor: $hintColor)")
                 }
                 node.attributes["android:inputType"]?.let { type ->
                     appendln("view.autocapitalizationType = .none")
