@@ -70,17 +70,17 @@ private fun generateFile(
             .sortedBy { it.name }
             .filter {
                 val included = it in totalProvides || it.name == "stack"
-                if(!included && it.default == null) throw IllegalArgumentException("Cannot provide arg ${it.name} for ${otherViewNode.name} in ${viewNode.name}")
+                if (!included && it.default == null) throw IllegalArgumentException("Cannot provide arg ${it.name} for ${otherViewNode.name} in ${viewNode.name}")
                 included
             }
             .joinToString(
-            ", ",
-            "${otherViewNode.name}VG(",
-            ")"
-        ) { arg ->
-            val myName = if (arg.name == "stack") "this.$forStack" else "this." + arg.name
-            arg.name + " = " + myName
-        }
+                ", ",
+                "${otherViewNode.name}VG(",
+                ")"
+            ) { arg ->
+                val myName = if (arg.name == "stack") "this.$forStack" else "this." + arg.name
+                arg.name + " = " + myName
+            }
     }
 
     val into = StringBuilder()
@@ -187,6 +187,8 @@ private fun generateFile(
             things.forEachIndexed { index, it ->
                 if (it.type.contains("VG") || it.type.contains("ViewGenerator")) {
                     line("@unowned val $it" + (if (index == things.lastIndex) "" else ","))
+                } else if (it.type.contains("->")) {
+                    line("val ${it.name}: @escaping() ${it.kotlinType}" + (if (index == things.lastIndex) "" else ","))
                 } else {
                     line("val $it" + (if (index == things.lastIndex) "" else ","))
                 }
@@ -259,8 +261,8 @@ private fun generateFile(
                                     val file = xml.parentFile.resolve(it.removePrefix("@layout/").plus(".xml"))
                                     handleNode(XmlNode.read(file, styles), "cellXml.")
                                     handleNodeClick(node, "cellXml.xmlRoot")
-                                    line("return@label cellView")
                                     line("${CodeSection.sectionMarker} End Make Subview For ${view} ${CodeSection.overwriteMarker}")
+                                    line("return@label cellView")
                                 }
                                 line("}")
                             }
