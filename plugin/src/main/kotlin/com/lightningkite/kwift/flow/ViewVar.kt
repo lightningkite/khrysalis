@@ -1,8 +1,11 @@
 package com.lightningkite.kwift.flow
 
-class ViewVar(val name: String, val type: String) {
+class ViewVar(val name: String, val type: String, val default: String?) {
     val kotlinType: String get() = type.replace('[', '<').replace(']', '>')
-    override fun toString(): String = "$name: $kotlinType"
+    override fun toString(): String = "$name: $kotlinType" + (if(default != null) " = $default" else "")
+    fun construct(viewNode: ViewNode, viewNodeMap: Map<String, ViewNode>): String {
+        return default ?: constructors[type]?.invoke(viewNode, viewNodeMap) ?: "$type()"
+    }
 
     companion object {
         val constructors = HashMap<String, (viewNode: ViewNode, viewNodeMap: Map<String, ViewNode>)->String>()
@@ -14,9 +17,6 @@ class ViewVar(val name: String, val type: String) {
             constructors["Float"] = { node, nodeMap -> "0f" }
             constructors["Double"] = { node, nodeMap -> "0.0" }
             constructors["Boolean"] = { node, nodeMap -> "false" }
-        }
-        fun construct(viewNode: ViewNode, viewNodeMap: Map<String, ViewNode>, type: String): String {
-            return constructors[type]?.invoke(viewNode, viewNodeMap) ?: "$type()"
         }
     }
 

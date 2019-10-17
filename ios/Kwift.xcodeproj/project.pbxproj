@@ -9,6 +9,7 @@
 /* Begin PBXBuildFile section */
 		54CB5B25E4BB1E803292559A /* libPods-Kwift.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 63A80265E53D7E8A26AF57CF /* libPods-Kwift.a */; };
 		5E0CE0EB2356633400145B82 /* UIView+swap.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0CE0EA2356633400145B82 /* UIView+swap.swift */; };
+		5E0CE0F02357AC7800145B82 /* UIButtonWithLayer.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E0CE0EF2357AC7800145B82 /* UIButtonWithLayer.swift */; };
 		5E42978F233EC420002AAB7A /* Date.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42972E233EC420002AAB7A /* Date.swift */; };
 		5E429790233EC420002AAB7A /* delay.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42972F233EC420002AAB7A /* delay.swift */; };
 		5E429791233EC420002AAB7A /* Preferences.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E429730233EC420002AAB7A /* Preferences.swift */; };
@@ -124,6 +125,7 @@
 
 /* Begin PBXFileReference section */
 		5E0CE0EA2356633400145B82 /* UIView+swap.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "UIView+swap.swift"; path = "Kwift/com/lightningkite/kwift/observables/actuals/UIView+swap.swift"; sourceTree = SOURCE_ROOT; };
+		5E0CE0EF2357AC7800145B82 /* UIButtonWithLayer.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = UIButtonWithLayer.swift; path = Kwift/com/lightningkite/kwift/views/actuals/UIButtonWithLayer.swift; sourceTree = SOURCE_ROOT; };
 		5E42972E233EC420002AAB7A /* Date.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Date.swift; sourceTree = "<group>"; };
 		5E42972F233EC420002AAB7A /* delay.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = delay.swift; sourceTree = "<group>"; };
 		5E429730233EC420002AAB7A /* Preferences.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Preferences.swift; sourceTree = "<group>"; };
@@ -403,6 +405,7 @@
 				5E429778233EC420002AAB7A /* UIButtonWithInput.swift */,
 				5ED0DC34234FAB9400C36B7D /* UIImageView+ext.swift */,
 				5ED0DC35234FAB9400C36B7D /* UILabel+ext.swift */,
+				5E0CE0EF2357AC7800145B82 /* UIButtonWithLayer.swift */,
 				5E5F6DB4234C03E80090384F /* UIView+ext.swift */,
 			);
 			path = actuals;
@@ -674,6 +677,7 @@
 				5E429796233EC420002AAB7A /* OptionalProtocol.swift in Sources */,
 				5E4297AF233EC420002AAB7A /* UITableView+binding.swift in Sources */,
 				5E429795233EC420002AAB7A /* Kotlin.swift in Sources */,
+				5E0CE0F02357AC7800145B82 /* UIButtonWithLayer.swift in Sources */,
 				5E4297CE233EC420002AAB7A /* LabeledRadioButton.swift in Sources */,
 				5E4297A6233EC420002AAB7A /* UICollectionView+binding.swift in Sources */,
 				5E4297CD233EC420002AAB7A /* DateButton.swift in Sources */,

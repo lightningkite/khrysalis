@@ -1,7 +1,6 @@
 package com.lightningkite.kwift.layout
 
 import com.lightningkite.kwift.utils.*
-import kotlin.math.PI
 
 val LayoutConverter.Companion.dateViews
     get() = LayoutConverter(

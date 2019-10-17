@@ -1,27 +1,26 @@
 package com.lightningkite.kwift.layout
 
 import com.lightningkite.kwift.utils.*
-import kotlin.math.PI
 
 val LayoutConverter.Companion.buttonViews
     get() = LayoutConverter(
         viewTypes = ViewType.mapOf(
 
             ViewType("SeekBar", "UISlider", "View") { node ->
-                node.attributeAsColor("progressTint")?.let {
+                node.setToColorGivenControl(key = "android:progressTint"){
                     appendln("view.minimumTrackTintColor = $it")
                     appendln("view.maximumTrackTintColor = $it")
                 }
-                node.attributeAsColor("thumbTint")?.let {
+                node.setToColorGivenControl(key = "android:thumbTint"){
                     appendln("view.thumbTintColor = $it")
                 }
             },
             ViewType("com.lightningkite.kwift.views.android.ColorRatingBar", "UIRatingBar", "RatingBar") { node ->
-                node.attributeAsColor("app:empty_color")?.let {
+                node.setToColorGivenControl(key = "app:empty_color"){
                     appendln("view.settings.emptyColor = $it")
                     appendln("view.settings.emptyBorderColor = $it")
                 }
-                node.attributeAsColor("app:progress_color")?.let {
+                node.setToColorGivenControl(key = "app:progress_color"){
                     appendln("view.settings.filledColor = $it")
                     appendln("view.settings.filledBorderColor = $it")
                 }
@@ -56,20 +55,20 @@ val LayoutConverter.Companion.buttonViews
             },
             ViewType("ToggleButton", "ToggleButton", "Button") {},
             ViewType("Switch", "LabeledSwitch", "View") {
-                handleCommonText(it, "view.labelView")
+                handleCommonText(it, "view.labelView", controlView = "view.control")
             },
             ViewType("Spinner", "Dropdown", "View") {},
             ViewType("RadioGroup", "UIView", "LinearLayout") {},
-            ViewType("ImageButton", "UIButton", "Button") { node -> },
-            ViewType("Button", "UIButton", "View", handlesPadding = true) { node ->
+            ViewType("ImageButton", "UIButtonWithLayer", "Button") { node -> },
+            ViewType("Button", "UIButtonWithLayer", "View", handlesPadding = true) { node ->
                 node.attributeAsString("android:text")?.let { text ->
-                    if (node.attributeAsBoolean("android:textAllCaps") == true) {
-                        appendln("view.setTitle($text.toUpperCase(), for: .normal)")
-                    } else {
+                    if (node.attributeAsBoolean("android:textAllCaps") == false) {
                         appendln("view.setTitle($text, for: .normal)")
+                    } else {
+                        appendln("view.setTitle($text.toUpperCase(), for: .normal)")
                     }
                 }
-                node.attributeAsColor("android:textColor")?.let {
+                node.setToColorGivenControl("android:textColor"){
                     appendln("view.setTitleColor($it, for: .normal)")
                 }
 
@@ -89,29 +88,31 @@ val LayoutConverter.Companion.buttonViews
                     }
 
 
-                node.attributeAsImage("android:drawableLeft")?.let { text ->
-                    appendln("view.setImage($text, for: .normal)")
+                node.attributes["android:gravity"]?.let { text ->
+                    appendln("view.textGravity = ${align(null, null, text, "center")}")
                 }
-                node.attributeAsImage("android:drawableTop")?.let { text ->
-                    appendln("view.setImage($text, for: .normal)")
-                    appendln("view.addOnLayoutSubviews { [weak view] in")
-                    appendln("    view?.setTitlePosition(.bottom)")
-                    appendln("}")
+                node.attributeAsDimension("android:drawablePadding")?.let { text ->
+                    appendln("view.iconPadding = $text")
                 }
-                node.attributeAsImage("android:drawableRight")?.let { text ->
-                    appendln("view.setImage($text, for: .normal)")
-                    appendln("view.addOnLayoutSubviews { [weak view] in")
-                    appendln("    view?.setTitlePosition(.left)")
-                    appendln("}")
+                node.attributeAsLayer("android:drawableLeft", "view")?.let { text ->
+                    appendln("view.iconPosition = .left")
+                    appendln("view.iconLayer = $text")
                 }
-                node.attributeAsImage("android:drawableBottom")?.let { text ->
-                    appendln("view.setImage($text, for: .normal)")
-                    appendln("view.addOnLayoutSubviews { [weak view] in")
-                    appendln("    view?.setTitlePosition(.top)")
-                    appendln("}")
+                node.attributeAsLayer("android:drawableTop", "view")?.let { text ->
+                    appendln("view.iconPosition = .top")
+                    appendln("view.iconLayer = $text")
                 }
-                node.attributeAsImage("android:src")?.let { text ->
-                    appendln("view.setImage($text, for: .normal)")
+                node.attributeAsLayer("android:drawableRight", "view")?.let { text ->
+                    appendln("view.iconPosition = .right")
+                    appendln("view.iconLayer = $text")
+                }
+                node.attributeAsLayer("android:drawableBottom", "view")?.let { text ->
+                    appendln("view.iconPosition = .bottom")
+                    appendln("view.iconLayer = $text")
+                }
+                node.attributeAsLayer("android:src", "view")?.let { text ->
+                    appendln("view.iconPosition = .top")
+                    appendln("view.iconLayer = $text")
                 }
                 appendln(
                     "view.contentMode = ${when (node.attributes["android:scaleType"]) {
@@ -133,7 +134,7 @@ val LayoutConverter.Companion.buttonViews
                 append((node.attributeAsDimension("android:paddingRight") ?: defaultPadding).toString())
                 appendln(")")
 
-                handleCommonText(node, "view.titleLabel?")
+                handleCommonText(node, "view.titleLabel?", controlView = "view")
             }
         )
     )

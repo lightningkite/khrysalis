@@ -85,7 +85,7 @@ val LayoutConverter.Companion.displayViews
     )
 
 
-internal fun Appendable.handleCommonText(node: XmlNode, viewHandle: String = "view") {
+internal fun OngoingLayoutConversion.handleCommonText(node: XmlNode, viewHandle: String = "view", controlView: String? = null) {
     node.attributeAsString("android:text")?.let { text ->
         if (node.attributeAsBoolean("android:textAllCaps") == true) {
             appendln("$viewHandle.text = $text.toUpperCase()")
@@ -101,8 +101,15 @@ internal fun Appendable.handleCommonText(node: XmlNode, viewHandle: String = "vi
     val size = node.attributeAsDimension("android:textSize") ?: "12"
     val fontStyles = node.attributes["android:textStyle"]?.split('|') ?: listOf()
     appendln("$viewHandle.font = UIFont.get(size: $size, style: [${fontStyles.joinToString { "\"$it\"" }}])")
-    node.attributeAsColor("android:textColor")?.let {
-        appendln("$viewHandle.textColor = $it")
+
+    if(controlView!= null) {
+        node.setToColorGivenControl("android:textColor") {
+            appendln("$viewHandle.textColor = $it")
+        }
+    } else {
+        node.attributeAsColor("android:textColor")?.let {
+            appendln("$viewHandle.textColor = $it")
+        }
     }
     node.attributes["android:gravity"]?.let {
         it.split('|')

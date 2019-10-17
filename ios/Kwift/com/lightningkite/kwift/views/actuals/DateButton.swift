@@ -10,7 +10,7 @@ import Foundation
 import UIKit
 
 
-public class DateButton : UIButton {
+public class DateButton : UIButtonWithLayer {
 
     var mode: UIDatePicker.Mode {
         get {

@@ -11,7 +11,10 @@ import FlexLayout
 
 
 public class LabeledSwitch : LinearLayout {
-
+    
+    public var control: UIControl {
+        return switchView
+    }
     public let switchView: UISwitch = UISwitch(frame: CGRect.zero)
     public let labelView: UILabel = UILabel(frame: CGRect.zero)
 

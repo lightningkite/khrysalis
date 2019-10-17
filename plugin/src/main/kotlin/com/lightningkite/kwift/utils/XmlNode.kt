@@ -90,7 +90,7 @@ fun XmlNode.attributeAsDimension(key: String): String? {
     val raw = attributes[key] ?: return null
     return when {
         raw.startsWith("@dimen/") -> "ResourcesDimensions.${raw.removePrefix("@dimen/").camelCase()}"
-        else -> raw.filter { it.isDigit() }.toIntOrNull()?.toString()
+        else -> raw.filter { it.isDigit() || it == '.' || it == '-' }.toIntOrNull()?.toString()
     }
 }
 fun XmlNode.attributeAsLayer(key: String, forView: String = "nil"): String? {

@@ -16,7 +16,8 @@ class ViewNode(
     companion object {
         val stack = ViewVar(
             "stack",
-            "ObservableStack[ViewGenerator]"
+            "ObservableStack[ViewGenerator]",
+            null
         )
 
         const val attributePush = "tools:goTo"
@@ -33,9 +34,9 @@ class ViewNode(
 
     fun totalRequires(map: Map<String, ViewNode>, seen: Set<String> = setOf()): Set<ViewVar> {
         if (name in seen) return setOf()
-        return requires + (instantiates.flatMap {
-            map[it]?.totalRequires(map, seen + name) ?: setOf()
-        }.filter { it.name != "stack" }.toSet()) - provides
+        return (requires + (instantiates.flatMap {
+            map[it]?.totalRequires(map, seen + name)?.filter { it.default == null }?.toSet() ?: setOf()
+        }.filter { it.name != "stack" }.toSet()) - provides)
     }
 
     fun estimateDepth(map: Map<String, ViewNode>, seen: Set<String> = setOf()): Int {
@@ -73,8 +74,9 @@ class ViewNode(
             )
             requires.add(
                 ViewVar(
-                    onStack,
-                    "ObservableStack[ViewGenerator]"
+                    name = onStack,
+                    type = "ObservableStack[ViewGenerator]",
+                    default = null
                 )
             )
         }
@@ -88,8 +90,9 @@ class ViewNode(
             )
             requires.add(
                 ViewVar(
-                    onStack,
-                    "ObservableStack[ViewGenerator]"
+                    name = onStack,
+                    type = "ObservableStack[ViewGenerator]",
+                    default = null
                 )
             )
         }
@@ -103,8 +106,9 @@ class ViewNode(
             )
             requires.add(
                 ViewVar(
-                    onStack,
-                    "ObservableStack[ViewGenerator]"
+                    name = onStack,
+                    type = "ObservableStack[ViewGenerator]",
+                    default = null
                 )
             )
         }
@@ -113,8 +117,9 @@ class ViewNode(
                 operations.add(ViewStackOp.Pop(stack = it))
                 requires.add(
                     ViewVar(
-                        it,
-                        "ObservableStack[ViewGenerator]"
+                        name = it,
+                        type = "ObservableStack[ViewGenerator]",
+                        default = null
                     )
                 )
             }
@@ -124,14 +129,15 @@ class ViewNode(
                 operations.add(ViewStackOp.Dismiss(stack = it))
                 requires.add(
                     ViewVar(
-                        it,
-                        "ObservableStack[ViewGenerator]"
+                        name = it,
+                        type = "ObservableStack[ViewGenerator]",
+                        default = null
                     )
                 )
             }
         }
         node.attributes[attributeStackId]?.let { stackId ->
-            provides.add(ViewVar(stackId, "ObservableStack[ViewGenerator]"))
+            provides.add(ViewVar(stackId, "ObservableStack[ViewGenerator]", "ObservableStack()"))
             node.attributes[attributeStackDefault]?.let {
                 operations.add(
                     ViewStackOp.Embed(
@@ -143,12 +149,20 @@ class ViewNode(
         }
         node.attributes[attributeRequires]?.let {
             it.split(';').forEach {
-                requires.add(ViewVar(it.substringBefore(':').trim(), it.substringAfter(':').trim()))
+                requires.add(ViewVar(
+                    name = it.substringBefore(':').trim(),
+                    type = it.substringAfter(':').substringBefore('=').trim(),
+                    default = it.substringAfter('=', "").takeUnless { it.isEmpty() }?.trim()
+                ))
             }
         }
         node.attributes[attributeProvides]?.let {
             it.split(';').forEach {
-                provides.add(ViewVar(it.substringBefore(':').trim(), it.substringAfter(':').trim()))
+                provides.add(ViewVar(
+                    name = it.substringBefore(':').trim(),
+                    type = it.substringAfter(':').substringBefore('=').trim(),
+                    default = it.substringAfter('=', "").takeUnless { it.isEmpty() }?.trim()
+                ))
             }
         }
         if (node.name == "include") {

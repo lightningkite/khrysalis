@@ -15,10 +15,11 @@ fun SwiftAltListener.registerControl() {
             write(it)
         }
     }
+
     fun TabWriter.writeBlockReturns(item: KotlinParser.ControlStructureBodyContext) {
         item.block()?.statements()?.statement()?.let {
-            if(it.size > 1){
-                for(item in it.subList(0, it.size - 1)){
+            if (it.size > 1) {
+                for (item in it.subList(0, it.size - 1)) {
                     startLine()
                     write(item)
                 }
@@ -32,10 +33,12 @@ fun SwiftAltListener.registerControl() {
             write(it)
         }
     }
+
     fun TabWriter.writeBlock(item: KotlinParser.ControlStructureBodyContext, returns: Boolean) {
-        if(returns) writeBlockReturns(item)
+        if (returns) writeBlockReturns(item)
         else writeBlock(item)
     }
+
     fun TabWriter.writeInsideIf(expression: KotlinParser.EqualityContext) {
         if (expression.equalityOperator()?.oneOnly()?.EXCL_EQ() != null
             && expression.comparison(0)?.text?.all { it.isLetterOrDigit() } == true
@@ -64,7 +67,7 @@ fun SwiftAltListener.registerControl() {
     }
     handle<KotlinParser.IfExpressionContext> { item ->
         val isStatement = item.usedAsStatement()
-        if(!isStatement){
+        if (!isStatement) {
             direct.append("{")
         }
         var current = item
@@ -126,7 +129,7 @@ fun SwiftAltListener.registerControl() {
                 break
             }
         }
-        if(!isStatement){
+        if (!isStatement) {
             direct.append("}()")
         }
     }
@@ -155,17 +158,32 @@ fun SwiftAltListener.registerControl() {
     handle<KotlinParser.WhenExpressionContext> { item ->
         val usedAsStatement = item.usedAsStatement()
 
+        fun writeCaseStatements(controlStructureBodyContext: KotlinParser.ControlStructureBodyContext) {
+            controlStructureBodyContext.block()?.statements()?.statement()?.let {
+                if (it.isEmpty()) {
+                    direct.append(" break")
+                } else tab {
+                    it.forEach {
+                        startLine()
+                        write(it)
+                    }
+                }
+            }
+            controlStructureBodyContext.statement()?.let {
+                direct.append(" ")
+                write(it)
+            }
+        }
+
         item.whenSubject()?.expression()?.let { on ->
             direct.append("switch ")
             write(on)
             direct.append(" {")
             item.whenEntry().forEach {
                 if (it.ELSE() != null) {
-                    line("default:")
-                    tab {
-                        startLine()
-                        write(it.controlStructureBody())
-                    }
+                    startLine()
+                    direct.append("default:")
+                    writeCaseStatements(it.controlStructureBody())
                 } else {
                     val conditions = it.whenCondition()!!
                     if (conditions.size == 1) {
@@ -175,30 +193,21 @@ fun SwiftAltListener.registerControl() {
                             direct.append("case ")
                             write(expr)
                             direct.append(":")
-                            tab {
-                                startLine()
-                                write(it.controlStructureBody())
-                            }
+                            writeCaseStatements(it.controlStructureBody())
                         }
                         c.rangeTest()?.let { r ->
                             startLine()
                             direct.append("case ")
                             write(r.expression())
                             direct.append(":")
-                            tab {
-                                startLine()
-                                write(it.controlStructureBody())
-                            }
+                            writeCaseStatements(it.controlStructureBody())
                         }
                         c.typeTest()?.let { t ->
                             startLine()
                             direct.append("case let ${on.text} as ")
                             write(t.type())
                             direct.append(":")
-                            tab {
-                                startLine()
-                                write(it.controlStructureBody())
-                            }
+                            writeCaseStatements(it.controlStructureBody())
                         }
                     } else {
                         conditions.forEachBetween(
@@ -224,12 +233,13 @@ fun SwiftAltListener.registerControl() {
                             }
                         )
                         direct.append(":")
-                        tab {
-                            startLine()
-                            write(it.controlStructureBody())
-                        }
+                        writeCaseStatements(it.controlStructureBody())
                     }
                 }
+            }
+            if(item.whenEntry().none { it.ELSE() != null }) {
+                //Swift requires an else no matter what; create an empty one here
+                line("default: break")
             }
             startLine()
             direct.append("}")

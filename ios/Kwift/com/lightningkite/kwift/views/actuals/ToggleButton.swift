@@ -10,12 +10,28 @@ import Foundation
 import UIKit
 
 
-public class ToggleButton: UIButton, CompoundButton {
+public class ToggleButton: UIButtonWithLayer, CompoundButton {
     public var onCheckChanged: (Bool) -> Void = { _ in }
     public var isOn: Bool = false {
         didSet {
             self.isSelected = isOn
             onCheckChanged(isOn)
+        }
+    }
+    
+    override public init(frame: CGRect) {
+        super.init(frame: frame)
+        commonInit()
+    }
+    
+    override public required init?(coder: NSCoder) {
+        super.init(coder: coder)
+        commonInit()
+    }
+    
+    func commonInit(){
+        onClick { [unowned self] in
+            self.isOn = !self.isOn
         }
     }
 }

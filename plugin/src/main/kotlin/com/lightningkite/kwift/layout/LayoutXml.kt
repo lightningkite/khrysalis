@@ -1,7 +1,6 @@
 package com.lightningkite.kwift.layout
 
 import com.lightningkite.kwift.utils.XmlNode
-import com.lightningkite.kwift.swift.retabSwift
 import com.lightningkite.kwift.utils.camelCase
 import java.io.File
 import java.lang.StringBuilder
@@ -13,7 +12,7 @@ fun File.translateLayoutXml(styles: Styles, converter: LayoutConverter = LayoutC
     val appendable = StringBuilder()
     val conversion = OngoingLayoutConversion(
         appendable = appendable,
-        resourcesDirectory = this.parentFile,
+        layoutsDirectory = this.parentFile,
         styles = styles,
         converter = converter
     )

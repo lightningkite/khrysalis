@@ -11,7 +11,7 @@ import FlexLayout
 
 
 public class LabeledRadioButton : LinearLayout, CompoundButton {
-
+    
     public let checkViewContainer: UIView = UIView(frame: .zero)
     public let checkView: UILabel = UILabel(frame: .zero)
     public let labelView: UILabel = UILabel(frame: .zero)

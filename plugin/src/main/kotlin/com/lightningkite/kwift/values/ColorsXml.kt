@@ -1,20 +1,21 @@
 package com.lightningkite.kwift.values
 
-import com.lightningkite.kwift.utils.XmlNode
-import com.lightningkite.kwift.utils.attributeAsColor
-import com.lightningkite.kwift.utils.hashColorToUIColor
-import com.lightningkite.kwift.utils.camelCase
+import com.lightningkite.kwift.utils.*
 import java.io.File
+import java.lang.Appendable
 
 
-fun File.readXMLColors(): Map<String, String> {
-    return XmlNode.read(this, mapOf())
+fun File.translateXMLColors(out: Appendable) {
+    val ignored = setOf("white", "black", "transparent")
+    XmlNode.read(this, mapOf())
         .children
         .asSequence()
         .filter { it.name == "color" }
-        .associate {
+        .filter { it.attributes["name"] !in ignored }
+        .forEach {
             val raw = it.element.textContent
-            (it.attributes["name"] ?: "noname") to when{
+            val name = (it.attributes["name"] ?: "noname").camelCase()
+            val color = when{
                 raw.startsWith("@color/") -> {
                     val colorName = raw.removePrefix("@color/")
                     "ResourcesColors.${colorName.camelCase()}"
@@ -28,62 +29,43 @@ fun File.readXMLColors(): Map<String, String> {
                 }
                 else -> "UIColor.black"
             }
+            out.appendln("    static let $name: UIColor = $color")
         }
 }
 
-fun File.readXMLColorSet(colors: Map<String, String>): Map<String, String> {
-    return XmlNode.read(this, mapOf())
+fun File.translateXmlColorSet(out: Appendable) {
+    out.appendln("    static func ${nameWithoutExtension.camelCase()}(_ state: UIControl.State) -> UIColor {")
+    XmlNode.read(this, mapOf())
         .children
         .asSequence()
         .filter { it.name == "item" }
-        .associate {
-            val raw = it.attributes["android:color"]
-            val fixed = when {
-                raw == null -> null
-                raw.startsWith("#") -> raw.hashColorToUIColor()
-                raw.startsWith("@color/") -> colors[raw.removePrefix("@color/")]
-                raw.startsWith("@android:color/") -> colors[raw.removePrefix("@android:color/")]
-                else -> null
+        .forEach { subnode ->
+
+            val conditions = ArrayList<String>()
+            subnode.attributeAsBoolean("android:state_enabled")?.let {
+                conditions += (if(it) "!" else "") + "state.contains(.disabled)"
             }
-            val state = it.attributes.entries.find { it.value == "true" }?.key?.let {
-                when(it){
-                    "state_checked" -> ".selected"
-                    "state_selected" -> ".selected"
-                    "state_focused" -> ".focused"
-                    else -> null
-                }
-            } ?: it.attributes.entries.find { it.value == "false" }?.key?.let {
-                when(it){
-                    "state_enabled" -> ".disabled"
-                    else -> null
-                }
-            } ?: ".normal"
-//            (it.attributes["android:color"] ?: "noname") to it.element.textContent.hashColorToUIColor()
-            state to (fixed ?: "UIColor.black")
-        }
-}
+            subnode.attributeAsBoolean("android:state_pressed")?.let {
+                conditions += (if(it) "" else "!") + "state.contains(.highlighted)"
+            }
+            subnode.attributeAsBoolean("android:state_selected")?.let {
+                conditions += (if(it) "" else "!") + "state.contains(.selected)"
+            }
+            subnode.attributeAsBoolean("android:state_focused")?.let {
+                conditions += (if(it) "" else "!") + "state.contains(.focused)"
+            }
+            subnode.attributeAsBoolean("android:state_checked")?.let {
+                conditions += (if(it) "" else "!") + "state.contains(.selected)"
+            }
 
-
-fun Map<String, String>.writeXMLColors(): String {
-    return buildString {
-        appendln("//")
-        appendln("// ResourcesColors.swift")
-        appendln("// Created by Kwift")
-        appendln("//")
-        appendln("")
-        appendln("import Foundation")
-        appendln("import UIKit")
-        appendln("import Kwift")
-        appendln("")
-        appendln("")
-        appendln("public enum ResourcesColors {")
-        appendln("    static let transparent = UIColor.clear")
-        appendln("    static let black = UIColor.black")
-        appendln("    static let white = UIColor.white")
-        for((key, value) in this@writeXMLColors.entries){
-            if(key == "transparent" || key == "black" || key == "white") continue
-            appendln("    static let ${key.camelCase()} = $value")
+            if(conditions.isEmpty()) {
+                out.appendln("        return ${subnode.attributeAsColor("android:color")}")
+            } else {
+                out.appendln("        if ${conditions.joinToString(" && ")} {")
+                out.appendln("            return ${subnode.attributeAsColor("android:color")}")
+                out.appendln("        }")
+            }
         }
-        appendln("}")
-    }
+    out.appendln("        return UIColor.white")
+    out.appendln("    }")
 }

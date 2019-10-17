@@ -155,6 +155,7 @@ fun convertVectorDrawable(name: String, node: XmlNode, out: Appendable) {
         val width = node.attributeAsDimension("android:width") ?: 0
         val height = node.attributeAsDimension("android:height") ?: 0
         appendln("    layer.bounds.size = CGSize(width: ${width}, height: ${height})")
+        appendln("    layer.scaleOverResize = true")
         appendln("    return layer")
         appendln("}")
     }

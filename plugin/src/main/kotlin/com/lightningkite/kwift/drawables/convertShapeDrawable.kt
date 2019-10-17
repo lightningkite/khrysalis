@@ -34,7 +34,7 @@ fun convertShapeDrawable(name: String, node: XmlNode, out: Appendable) {
             val angle = it.attributeAsInt("android:angle") ?: 0
             appendln("    layer.transform = CATransform3DMakeRotation(CGFloat.pi * $angle / 180, 0, 0, 1)")
         }
-        appendln("    layer.matchSize(view)")
+        appendln("    layer.bounds.size = CGSize(width: 100, height: 100)")
         appendln("    return layer")
         appendln("}")
     }

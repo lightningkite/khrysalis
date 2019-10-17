@@ -30,12 +30,12 @@ fun convertSelectorDrawable(name: String, node: XmlNode, out: Appendable) {
             }
             subnode.attributeAsDimension("android:width")?.let {
                 appendln("        sublayer.frame.size.width = $it")
-                appendln("        sublayer.matchSize(nil)")
             }
             subnode.attributeAsDimension("android:height")?.let {
                 appendln("        sublayer.frame.size.height = $it")
-                appendln("        sublayer.matchSize(nil)")
             }
+            appendln("        layer.bounds.size = layer.bounds.size.expand(sublayer.bounds.size)")
+            appendln("        layer.onResize.addAndRunWeak(sublayer, layer.bounds) { (sublayer, bounds) in sublayer.frame = bounds }")
             appendln("        return sublayer")
             appendln("    }()")
         }
@@ -71,7 +71,6 @@ fun convertSelectorDrawable(name: String, node: XmlNode, out: Appendable) {
         }
         appendln("    }")
         appendln("    ")
-        appendln("    layer.matchSize(view)")
         appendln("    return layer")
         appendln("}")
         after.forEach { it.invoke() }

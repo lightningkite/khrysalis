@@ -7,6 +7,7 @@ import com.lightningkite.kwift.utils.attributeAsString
 import com.lightningkite.kwift.utils.camelCase
 import com.lightningkite.kwift.utils.forEachBetween
 import java.io.File
+import java.lang.IllegalArgumentException
 
 internal val oldWarning = "Any changes made to this file will be overridden unless this comment is removed."
 
@@ -63,13 +64,22 @@ private fun generateFile(
     val node = XmlNode.read(xml, mapOf())
 
     fun makeView(otherViewNode: ViewNode, forStack: String?): String {
-        return (otherViewNode.totalRequires(viewNodeMap).sortedBy { it.name }).joinToString(
+        val totalProvides = viewNode.totalRequires(viewNodeMap) + viewNode.provides
+        return otherViewNode
+            .totalRequires(viewNodeMap)
+            .sortedBy { it.name }
+            .filter {
+                val included = it in totalProvides || it.name == "stack"
+                if(!included && it.default == null) throw IllegalArgumentException("Cannot provide arg ${it.name} for ${otherViewNode.name} in ${viewNode.name}")
+                included
+            }
+            .joinToString(
             ", ",
             "${otherViewNode.name}VG(",
             ")"
-        ) {
-            val myName = if (it.name == "stack") forStack ?: it.name else it.name
-            it.name + " = this." + myName
+        ) { arg ->
+            val myName = if (arg.name == "stack") "this.$forStack" else "this." + arg.name
+            arg.name + " = " + myName
         }
     }
 
@@ -189,10 +199,9 @@ private fun generateFile(
             viewNode.provides.sortedBy { it.name }.forEach {
                 line("${CodeSection.sectionMarker} Provides ${it.name} ${CodeSection.overwriteMarker}")
                 line(
-                    """val ${it.name}: ${it.kotlinType} = ${ViewVar.construct(
+                    """val ${it.name}: ${it.kotlinType} = ${it.construct(
                         viewNode,
-                        viewNodeMap,
-                        it.kotlinType
+                        viewNodeMap
                     )}"""
                 )
             }

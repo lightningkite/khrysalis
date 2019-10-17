@@ -72,6 +72,10 @@ public extension AlignPair {
 }
 
 public extension CGSize {
+    func expand(_ rhs: CGSize) -> CGSize {
+        return CGSize(width: max(self.width, rhs.width), height: max(self.height, rhs.height))
+    }
+
     subscript(dimension: Dimension) -> CGFloat {
         get {
             switch dimension {

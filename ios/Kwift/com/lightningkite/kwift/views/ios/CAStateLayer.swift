@@ -27,6 +27,51 @@ extension CALayer : CALayerToImage {
             action(UIControl.State.normal)
         }
     }
+    
+    private static let scaleOverResize = ExtensionProperty<CALayer, Bool>()
+    public var scaleOverResize: Bool {
+        get {
+            return CALayer.scaleOverResize.get(self) ?? false
+        }
+        set(value) {
+            CALayer.scaleOverResize.set(self, value)
+        }
+    }
+    
+    private static let baseSize = ExtensionProperty<CALayer, CGSize>()
+    private static let onResize = ExtensionProperty<CALayer, StandardEvent<CGRect>>()
+    public var onResize: StandardEvent<CGRect> {
+        get {
+            if let existing = CALayer.onResize.get(self) {
+                return existing
+            } else {
+                let new = StandardEvent<CGRect>()
+                CALayer.onResize.set(self, new)
+                return new
+            }
+        }
+    }
+    public func resize(_ bounds: CGRect) {
+        var baseSize: CGSize = .zero
+        if let stored = CALayer.baseSize.get(self) {
+            baseSize = stored
+        } else {
+            baseSize = self.bounds.size
+            CALayer.baseSize.set(self, self.bounds.size)
+        }
+        
+        CALayer.onResize.get(self)?.invokeAll(bounds)
+        if scaleOverResize {
+            self.frame = bounds
+            self.setAffineTransform(CGAffineTransform(
+                scaleX: bounds.size.width / baseSize.width,
+                y: bounds.size.height / baseSize.height
+            ))
+        } else {
+            self.frame = bounds
+        }
+    }
+    
     private static let matchingExtension = ExtensionProperty<CALayer, Close>()
     public func matchSize(_ view: UIView?) {
         if let previous = CALayer.matchingExtension.get(self) {
@@ -34,7 +79,7 @@ extension CALayer : CALayerToImage {
         }
         if let view = view {
             let close = view.onLayoutSubviews.addAndRunWeak(self, view) { this, view in
-                this.frame = view.bounds
+                this.resize(view.bounds)
             }
             CALayer.matchingExtension.set(self, close)
         } else {
@@ -64,6 +109,7 @@ public class CAImageLayer: CALayer {
     public var image: UIImage? = nil {
         didSet {
             self.contents = image?.cgImage
+            self.bounds.size = image?.size ?? .zero
         }
     }
     @objc override public func toImage() -> UIImage? {
@@ -73,5 +119,6 @@ public class CAImageLayer: CALayer {
         self.init()
         self.image = image
         self.contents = image?.cgImage
+        self.bounds.size = image?.size ?? .zero
     }
 }

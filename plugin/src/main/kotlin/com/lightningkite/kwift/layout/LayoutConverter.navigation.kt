@@ -24,10 +24,10 @@ val LayoutConverter.Companion.navigationViews
                         else -> appendln("view.apportionsSegmentWidthsByContent = false")
                     }
                 }
-                node.attributeAsColor("app:tabBackground")?.let {
-                }
-                node.attributeAsColor("app:tabRippleColor")?.let {
-                }
+//                node.setToColor("app:tabBackground") {
+//                }
+//                node.setToColor("app:tabRippleColor") {
+//                }
                 (node.attributeAsColor("app:tabTextColor") ?: "UIColor.black").let {
                     appendln(
                         """view.setTitleTextAttributes(

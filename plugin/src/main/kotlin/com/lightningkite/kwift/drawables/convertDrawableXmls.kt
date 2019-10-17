@@ -57,6 +57,11 @@ fun convertDrawableXml(name: String, node: XmlNode, out: Appendable) {
             node,
             out
         )
+        "bitmap" -> convertBitmapDrawable(
+            name,
+            node,
+            out
+        )
     }
 }
 

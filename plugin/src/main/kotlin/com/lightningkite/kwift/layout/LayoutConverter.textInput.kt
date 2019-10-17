@@ -1,7 +1,6 @@
 package com.lightningkite.kwift.layout
 
 import com.lightningkite.kwift.utils.*
-import kotlin.math.PI
 
 val LayoutConverter.Companion.textInputViews
     get() = LayoutConverter(
@@ -138,7 +137,7 @@ val LayoutConverter.Companion.textInputViews
                         }
                     }
                 }
-                handleCommonText(node)
+                handleCommonText(node, controlView = "view")
             }
         )
     )

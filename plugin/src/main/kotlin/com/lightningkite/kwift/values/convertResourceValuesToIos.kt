@@ -25,10 +25,27 @@ fun convertResourceValuesToIos(
         File(iosResourcesSwiftFolder, "dimen.swift").apply{ parentFile.mkdirs() }.writeText(it)
     }
 
-    val colors = File(androidResourcesFolder, "values/colors.xml").readXMLColors()
-    val colorSets = File(androidResourcesFolder, "color").walkTopDown()
-        .filter { it.extension == "xml" }
-        .associate { it.nameWithoutExtension to it.readXMLColorSet(colors) }
-    val allColors = colors + colorSets.entries.associate { it.key to (it.value[".normal"] ?: "UIColor.black") }
-    File(iosResourcesSwiftFolder, "colors.swift").apply{ parentFile.mkdirs() }.writeText(allColors.writeXMLColors())
+    File(iosResourcesSwiftFolder, "colors.swift").bufferedWriter().use { out ->
+        out.appendln("//")
+        out.appendln("// ResourcesColors.swift")
+        out.appendln("// Created by Kwift")
+        out.appendln("//")
+        out.appendln("")
+        out.appendln("import Foundation")
+        out.appendln("import UIKit")
+        out.appendln("import Kwift")
+        out.appendln("")
+        out.appendln("")
+        out.appendln("public enum ResourcesColors {")
+        out.appendln("    static let transparent = UIColor.clear")
+        out.appendln("    static let black = UIColor.black")
+        out.appendln("    static let white = UIColor.white")
+
+        File(androidResourcesFolder, "values/colors.xml").translateXMLColors(out)
+        File(androidResourcesFolder, "color").walkTopDown()
+            .filter { it.extension == "xml" }
+            .forEach { it.translateXmlColorSet(out) }
+
+        out.appendln("}")
+    }
 }
