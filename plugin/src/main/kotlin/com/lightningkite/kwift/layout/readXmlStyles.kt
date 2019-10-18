@@ -15,7 +15,7 @@ fun File.readXMLStyles(): Map<String, Map<String, String>> {
             val map = it.children.associate {
                 (it.attributes["name"] ?: "noname") to it.element.textContent
             }
-            val parent = it.attributes["parent"]
+            val parent = it.attributes["parent"]?.removePrefix("@style/")
             name to IntermediateStyle(parent, map)
         }
         .let {
@@ -23,7 +23,11 @@ fun File.readXMLStyles(): Map<String, Map<String, String>> {
                 val complete = HashMap<String, String>()
                 var current: IntermediateStyle? = entry.value
                 while(current != null) {
-                    complete += current.parts
+                    for((key, value) in current.parts) {
+                        if(!complete.containsKey(key)) {
+                            complete[key] = value
+                        }
+                    }
                     current = current.parent?.let { p -> it[p] }
                 }
                 complete

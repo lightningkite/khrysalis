@@ -19,7 +19,7 @@ extension UIFont {
         }
     }
 
-    static var customFont: String?
+    public static var customFont: String?
 
     static public func get(size: CGFloat, style: Array<String>) -> UIFont {
         if style.contains("bold") {
@@ -36,20 +36,34 @@ extension UIFont {
                     return UIFont.boldSystemFont(ofSize: size)
                 }
             }
-        } else {
-            if style.contains("italic") {
-                if let customFont = customFont {
-                    return UIFont(name: "\(customFont)-Italic", size: size) ?? UIFont.italicSystemFont(ofSize: size)
-                } else {
-                    return UIFont.italicSystemFont(ofSize: size)
-                }
-            } else {
-                if let customFont = customFont {
-                    return UIFont(name: "\(customFont)-Regular", size: size) ?? UIFont.systemFont(ofSize: size)
-                } else {
-                    return UIFont.systemFont(ofSize: size)
-                }
-            }
+        } else if style.contains("light") {
+           if style.contains("italic") {
+               if let customFont = customFont {
+                   return UIFont(name: "\(customFont)-LightItalic", size: size) ?? UIFont.italicSystemFont(ofSize: size)
+               } else {
+                   return UIFont.italicSystemFont(ofSize: size)
+               }
+           } else {
+               if let customFont = customFont {
+                   return UIFont(name: "\(customFont)-Light", size: size) ?? UIFont.systemFont(ofSize: size)
+               } else {
+                   return UIFont.systemFont(ofSize: size)
+               }
+           }
+       } else {
+          if style.contains("italic") {
+              if let customFont = customFont {
+                  return UIFont(name: "\(customFont)-Italic", size: size) ?? UIFont.italicSystemFont(ofSize: size)
+              } else {
+                  return UIFont.italicSystemFont(ofSize: size)
+              }
+          } else {
+              if let customFont = customFont {
+                  return UIFont(name: "\(customFont)-Regular", size: size) ?? UIFont.systemFont(ofSize: size)
+              } else {
+                  return UIFont.systemFont(ofSize: size)
+              }
+          }
         }
     }
 }

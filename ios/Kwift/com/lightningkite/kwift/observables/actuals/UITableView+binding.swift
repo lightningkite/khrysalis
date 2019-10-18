@@ -49,6 +49,7 @@ public extension UITableView {
         delegate = boundDataSource
         retain(as: "boundDataSource", item: boundDataSource)
 
+        self.backgroundColor = UIColor.clear
         self.separatorStyle = .none
         self.rowHeight = UITableView.automaticDimension
 
@@ -70,6 +71,7 @@ class CustomUITableViewCell: UITableViewCell {
 
     override init(style: UITableViewCell.CellStyle, reuseIdentifier: String?) {
         super.init(style: style, reuseIdentifier: reuseIdentifier)
+        self.backgroundColor = UIColor.clear
     }
 
     required init?(coder aDecoder: NSCoder) {

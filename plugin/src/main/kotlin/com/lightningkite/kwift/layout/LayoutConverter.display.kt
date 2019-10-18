@@ -99,7 +99,12 @@ internal fun OngoingLayoutConversion.handleCommonText(node: XmlNode, viewHandle:
     val lines = node.attributeAsInt("android:maxLines")
     appendln("$viewHandle.numberOfLines = ${lines ?: 0}")
     val size = node.attributeAsDimension("android:textSize") ?: "12"
-    val fontStyles = node.attributes["android:textStyle"]?.split('|') ?: listOf()
+
+    val fontStylesFromFamily = listOfNotNull(
+        if(node.attributes["android:fontFamily"]?.contains("bold", true) == true) "bold" else null,
+        if(node.attributes["android:fontFamily"]?.contains("light", true) == true) "light" else null
+    )
+    val fontStyles = (node.attributes["android:textStyle"]?.split('|') ?: listOf()) + fontStylesFromFamily
     appendln("$viewHandle.font = UIFont.get(size: $size, style: [${fontStyles.joinToString { "\"$it\"" }}])")
 
     if(controlView!= null) {

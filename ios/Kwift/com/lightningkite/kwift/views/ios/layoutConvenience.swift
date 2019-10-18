@@ -28,7 +28,7 @@ public extension UIScrollView {
                 width: self.bounds.size.width,
                 height: fill ? max(measuredSize.height, self.bounds.size.height) : measuredSize.height
             )
-            self.contentSize = measuredSize
+            self.contentSize = CGSize(width: 0, height: measuredSize.height)
         }
     }
     func addHorizontalSubview<T: UIView>(_ view: T, fill: Bool = false, setup: (T)->Void) {
@@ -43,7 +43,7 @@ public extension UIScrollView {
                 width: fill ? max(measuredSize.width, self.bounds.size.width) : measuredSize.width,
                 height: self.bounds.size.height
             )
-            self.contentSize = measuredSize
+            self.contentSize = CGSize(width: measuredSize.width, height: 0)
         }
     }
 }
