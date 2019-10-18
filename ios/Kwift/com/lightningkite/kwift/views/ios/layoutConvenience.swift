@@ -21,13 +21,14 @@ public extension UIScrollView {
         self.addSubview(view)
         self.addOnLayoutSubviews { [weak self, weak view] in
             guard let self = self, let view = view else { return }
-            let measuredSize = view.sizeThatFits(self.bounds.size).height
+            let measuredSize = view.sizeThatFits(self.bounds.size)
             view.frame = CGRect(
                 x: 0,
                 y: 0,
                 width: self.bounds.size.width,
-                height: fill ? max(measuredSize, self.bounds.size.height) : measuredSize
+                height: fill ? max(measuredSize.height, self.bounds.size.height) : measuredSize.height
             )
+            self.contentSize = measuredSize
         }
     }
     func addHorizontalSubview<T: UIView>(_ view: T, fill: Bool = false, setup: (T)->Void) {
@@ -35,13 +36,14 @@ public extension UIScrollView {
         self.addSubview(view)
         self.addOnLayoutSubviews { [weak self, weak view] in
             guard let self = self, let view = view else { return }
-            let measuredSize = view.sizeThatFits(self.bounds.size).width
+            let measuredSize = view.sizeThatFits(self.bounds.size)
             view.frame = CGRect(
                 x: 0,
                 y: 0,
-                width: fill ? max(measuredSize, self.bounds.size.width) : measuredSize,
+                width: fill ? max(measuredSize.width, self.bounds.size.width) : measuredSize.width,
                 height: self.bounds.size.height
             )
+            self.contentSize = measuredSize
         }
     }
 }

@@ -71,6 +71,11 @@ open class LinearLayout: UIView {
         setNeedsLayout()
     }
     
+    override open func setNeedsLayout() {
+        super.setNeedsLayout()
+        superview?.setNeedsLayout()
+    }
+    
     
     internal var measurements: Dictionary<UIView, CGSize> = Dictionary()
     

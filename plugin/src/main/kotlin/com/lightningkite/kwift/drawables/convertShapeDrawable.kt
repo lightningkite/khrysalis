@@ -21,8 +21,26 @@ fun convertShapeDrawable(name: String, node: XmlNode, out: Appendable) {
                 "    layer.backgroundColor = ${it.attributeAsColor("android:color") ?: "UIColor.black"}.cgColor"
             )
         }
-        node.children.find { it.name == "corners" }?.let {
-            appendln("    layer.cornerRadius = ${it.attributeAsDimension("android:radius") ?: "0"}")
+        node.children.find { it.name == "corners" }?.let { corners ->
+            corners.attributeAsDimension("android:radius")?.let {
+                appendln("    layer.cornerRadius = $it")
+            } ?: run {
+                val radius = corners.attributeAsDimension("android:bottomLeftRadius")
+                    ?: corners.attributeAsDimension("android:topLeftRadius")
+                    ?: corners.attributeAsDimension("android:bottomRightRadius")
+                    ?: corners.attributeAsDimension("android:topRightRadius")
+                if(radius != null){
+                    appendln("    layer.cornerRadius = $radius")
+                    append("    layer.maskedCorners = [")
+                    append(mapOf(
+                        "android:bottomLeftRadius" to ".layerMinXMaxYCorner",
+                        "android:topLeftRadius" to ".layerMinXMinYCorner",
+                        "android:bottomRightRadius" to ".layerMaxXMaxYCorner",
+                        "android:topRightRadius" to ".layerMaxXMinYCorner"
+                    ).filterKeys { corners.attributes.containsKey(it) }.values.joinToString())
+                    appendln("]")
+                }
+            }
         }
         node.children.find { it.name == "gradient" }?.let {
             val colors = listOfNotNull(

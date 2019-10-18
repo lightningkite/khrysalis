@@ -6,6 +6,9 @@ class WriteAddedObservableProperty<A>(
     val basedOn: ObservableProperty<A>,
     val onWrite: @escaping() (A) -> Unit
 ) : MutableObservableProperty<A>() {
+    override fun update() {
+        onWrite(basedOn.value)
+    }
     override var value: A
         get() = basedOn.value
         set(value) {

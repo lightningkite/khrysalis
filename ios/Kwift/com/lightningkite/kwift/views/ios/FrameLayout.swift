@@ -85,6 +85,11 @@ open class FrameLayout: UIView {
         return output
     }
     
+    override open func setNeedsLayout() {
+        super.setNeedsLayout()
+        superview?.setNeedsLayout()
+    }
+    
     override public func layoutSubviews() {
         super.layoutSubviews()
         

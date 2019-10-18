@@ -8,4 +8,7 @@ class StandardObservableProperty<T>(var underlyingValue: T) : MutableObservableP
             underlyingValue = value
             onChange.invokeAll(value = value)
         }
+    override fun update() {
+        onChange.invokeAll(value = value)
+    }
 }

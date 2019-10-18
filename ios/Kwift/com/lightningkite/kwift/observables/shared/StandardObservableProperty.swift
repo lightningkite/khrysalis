@@ -20,6 +20,10 @@ public class StandardObservableProperty<T>: MutableObservableProperty<T> {
         }
     }
     
+    override public func update() -> Void {
+        onChange.invokeAll(value: value)
+    }
+    
     public init(underlyingValue: T) {
         self.underlyingValue = underlyingValue
         self._onChange = StandardEvent<T>()

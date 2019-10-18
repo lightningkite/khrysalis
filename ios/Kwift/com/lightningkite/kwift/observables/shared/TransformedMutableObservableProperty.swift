@@ -11,6 +11,10 @@ public class TransformedMutableObservableProperty<A, B>: MutableObservableProper
     public var read:  (A) -> B
     public var write:  (B) -> A
     
+    
+    override public func update() -> Void {
+        basedOn.update()
+    }
     override public var value: B {
         get {
             return read(basedOn.value)

@@ -7,6 +7,10 @@ class TransformedMutableObservableProperty<A, B>(
     val read: @escaping() (A) -> B,
     val write: @escaping() (B) -> A
 ) : MutableObservableProperty<B>() {
+    override fun update() {
+        basedOn.update()
+    }
+
     override var value: B
         get() {
             return read(basedOn.value)

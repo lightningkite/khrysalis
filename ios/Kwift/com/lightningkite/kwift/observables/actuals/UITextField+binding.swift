@@ -49,10 +49,9 @@ public extension UITextField {
             }
             this.superview?.setNeedsLayout()
         }
-        weak var observableWeak = observable
         addAction(for: UITextField.Event.editingChanged) { [weak self] in
-            if observableWeak?.value != self?.text {
-                observableWeak?.value = self?.text ?? ""
+            if observable.value != self?.text {
+                observable.value = self?.text ?? ""
             }
         }
     }
@@ -70,10 +69,9 @@ public extension UITextField {
                 this.superview?.setNeedsLayout()
             }
         }
-        weak var observableWeak = observable
         addAction(for: UITextField.Event.editingChanged) { [weak self] in
-            if let self = self, let currentValue = Double(self.text ?? ""), observableWeak?.value != currentValue {
-                observableWeak?.value = currentValue
+            if let self = self, let currentValue = Double(self.text ?? ""), observable.value != currentValue {
+                observable.value = currentValue
             }
         }
     }
@@ -91,10 +89,9 @@ public extension UITextField {
                 this.superview?.setNeedsLayout()
             }
         }
-        weak var observableWeak = observable
         addAction(for: UITextField.Event.editingChanged) { [weak self] in
-            if let self = self, let currentValue = Int(self.text ?? ""), observableWeak?.value != currentValue {
-                observableWeak?.value = currentValue
+            if let self = self, let currentValue = Int(self.text ?? ""), observable.value != currentValue {
+                observable.value = currentValue
             }
         }
     }

@@ -23,6 +23,15 @@ public extension Sequence {
         }
         return newArray
     }
+    func mapIndexed<OUT>(transform: (Int32, Element)->OUT) -> Array<OUT> {
+        var newArray = Array<OUT>()
+        var index: Int32 = 0
+        for element in self {
+            newArray.append(transform(index, element))
+            index += 1
+        }
+        return newArray
+    }
 }
 
 public extension Array {
@@ -66,6 +75,23 @@ public extension Array {
     }
     func lastOrNull() -> Element? {
         return last
+    }
+    func chunked(_ count: Int) -> Array<Array<Element>> {
+        var output = Array<Array<Element>>()
+        var chunkIndex = 0
+        while chunkIndex < size {
+            var subset = Array<Element>()
+            for inChunkIndex in 0..<count {
+                let index = chunkIndex + inChunkIndex
+                if index >= size {
+                    break
+                }
+                subset.add(self[index])
+            }
+            output.add(subset)
+            chunkIndex += count
+        }
+        return output
     }
 }
 
@@ -234,7 +260,7 @@ public extension String {
     func substringBefore(_ string: String, _ defaultTo: String? = nil) -> String {
         let index = self.indexOf(string)
         if index != -1 {
-            return substring(index)
+            return substring(0, index)
         } else {
             return defaultTo ?? self
         }
@@ -252,7 +278,7 @@ public extension String {
     func substringBeforeLast(_ string: String, _ defaultTo: String? = nil) -> String {
         let index = self.lastIndexOf(string)
         if index != -1 {
-            return substring(index)
+            return substring(0, index)
         } else {
             return defaultTo ?? self
         }
@@ -320,6 +346,46 @@ public extension Array where Element: _StringType {
 public extension CustomStringConvertible {
     func toString() -> String {
         return String(describing: self)
+    }
+}
+
+public extension Optional where Wrapped: CustomStringConvertible {
+    func toString() -> String {
+        if let thing = self {
+            return thing.toString()
+        } else {
+            return "null"
+        }
+    }
+}
+
+public extension Optional where Wrapped: NSObject {
+    func toString() -> String {
+        if let thing = self {
+            return thing.toString()
+        } else {
+            return "null"
+        }
+    }
+}
+
+public extension Optional where Wrapped: FixedWidthInteger {
+    func toString() -> String {
+        if let thing = self {
+            return thing.toString()
+        } else {
+            return "null"
+        }
+    }
+}
+
+public extension Optional where Wrapped == String {
+    func toString() -> String {
+        if let thing = self {
+            return thing.toString()
+        } else {
+            return "null"
+        }
     }
 }
 
