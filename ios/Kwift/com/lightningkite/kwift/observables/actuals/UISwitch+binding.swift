@@ -19,10 +19,9 @@ public extension CompoundButton {
                 this.isOn = value
             }
         }
-        weak var observableWeak = observable
         self.onCheckChanged = { [weak self] value in
-            if observableWeak?.value != self?.isOn {
-                observableWeak?.value = self?.isOn ?? false
+            if observable.value != self?.isOn {
+                observable.value = self?.isOn ?? false
             }
         }
     }
@@ -37,36 +36,30 @@ public extension CompoundButton {
                 this.isOn = shouldBeOn
             }
         }
-        weak var observableWeak = selected
         self.onCheckChanged = { [weak self] value in
-            if let observable = observableWeak {
-                if value && observable.value != myValue {
-                    observable.value = myValue
-                } else if !value && observable.value == myValue  {
-                    self?.isOn = true
-                }
+            if value && selected.value != myValue {
+                selected.value = myValue
+            } else if !value && selected.value == myValue  {
+                self?.isOn = true
             }
         }
     }
     
-    func bindSelectOrNull<T: Equatable>(_ myValue: T, _ selected: MutableObservableProperty<T?>){
-        return bindSelectOrNull(myValue: myValue, selected: selected)
+    func bindSelectNullable<T: Equatable>(_ myValue: T, _ selected: MutableObservableProperty<T?>){
+        return bindSelectNullable(myValue: myValue, selected: selected)
     }
-    func bindSelectOrNull<T: Equatable>(myValue: T, selected: MutableObservableProperty<T?>){
+    func bindSelectNullable<T: Equatable>(myValue: T, selected: MutableObservableProperty<T?>){
         selected.addAndRunWeak(referenceA: self) { (this, value) in
             let shouldBeOn = value == myValue
             if this.isOn != shouldBeOn {
                 this.isOn = shouldBeOn
             }
         }
-        weak var observableWeak = selected
         self.onCheckChanged = { [weak self] value in
-            if let observable = observableWeak {
-                if value && observable.value != myValue {
-                    observable.value = myValue
-                } else if !value && observable.value == myValue  {
-                    observable.value = nil
-                }
+            if value && selected.value != myValue {
+                selected.value = myValue
+            } else if !value && selected.value == myValue  {
+                selected.value = nil
             }
         }
     }
