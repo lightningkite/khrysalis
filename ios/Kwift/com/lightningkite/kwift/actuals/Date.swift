@@ -145,3 +145,11 @@ public extension TimeInterval {
         return Int64(self * 1000)
     }
 }
+
+public enum TimeNames {
+    private static var formatter = DateFormatter()
+    public static var monthNames = formatter.monthSymbols
+    public static var shortMonthNames = formatter.shortMonthSymbols
+    public static var weekdayNames = formatter.weekdaySymbols
+    public static var shortWeekdayNames = formatter.shortWeekdaySymbols
+}

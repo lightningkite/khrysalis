@@ -117,7 +117,7 @@ public class Form {
     
     public func checkField(field: UntypedFormField) -> ViewString?  {
         var result = field.validation(field)
-        field.error .value = result
+        field.error.value = result
         return result
     }
     public func checkField(_ field: UntypedFormField) -> ViewString?  {

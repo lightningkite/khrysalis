@@ -2,9 +2,9 @@ package com.lightningkite.kwift.flow
 
 class ViewVar(val name: String, val type: String, val default: String?) {
     val kotlinType: String get() = type.replace('[', '<').replace(']', '>')
-    override fun toString(): String = "$name: $kotlinType" + (if(default != null) " = $default" else "")
+    override fun toString(): String = "$name: $kotlinType" + (if(default != null) " = ${default.replace('[', '<').replace(']', '>')}" else "")
     fun construct(viewNode: ViewNode, viewNodeMap: Map<String, ViewNode>): String {
-        return default ?: constructors[type]?.invoke(viewNode, viewNodeMap) ?: "$type()"
+        return default?.replace('[', '<')?.replace(']', '>') ?: constructors[type]?.invoke(viewNode, viewNodeMap) ?: "$kotlinType()"
     }
 
     companion object {

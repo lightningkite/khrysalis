@@ -2,6 +2,7 @@ package com.lightningkite.kwift.actual
 
 import java.lang.IllegalStateException
 import java.text.DateFormat
+import java.text.DateFormatSymbols
 import java.util.*
 
 inline class TimeInterval(val milliseconds: Long) {
@@ -119,4 +120,12 @@ fun Date.format(dateStyle: ClockPartSize, timeStyle: ClockPartSize): String {
         DateFormat.getDateTimeInstance(rawDateStyle, rawTimeStyle)
     }
     return format.format(this)
+}
+
+object TimeNames {
+    private val symbols = DateFormatSymbols()
+    val shortMonthNames: List<String> = symbols.shortMonths.toList()
+    val monthNames: List<String> = symbols.months.toList()
+    val shortWeekdayNames: List<String> = symbols.shortWeekdays.toList()
+    val weekdayNames: List<String> = symbols.weekdays.toList()
 }

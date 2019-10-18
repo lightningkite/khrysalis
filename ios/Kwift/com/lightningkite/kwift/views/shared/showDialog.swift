@@ -25,7 +25,7 @@ public class DialogRequest {
  
 
 public func showDialog(request: DialogRequest) -> Void {
-    lastDialog .value = request
+    lastDialog.value = request
     showDialogEvent.invokeAll(request)
 }
 public func showDialog(_ request: DialogRequest) -> Void {

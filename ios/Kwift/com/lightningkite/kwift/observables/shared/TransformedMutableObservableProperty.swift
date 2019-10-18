@@ -16,7 +16,7 @@ public class TransformedMutableObservableProperty<A, B>: MutableObservableProper
             return read(basedOn.value)
         }
         set(value) {
-            basedOn .value = write(value)
+            basedOn.value = write(value)
         }
     }
     override public var onChange: Event<B> { get { return _onChange } set(value) { _onChange = value } }
