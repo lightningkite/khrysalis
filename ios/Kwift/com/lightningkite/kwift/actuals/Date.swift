@@ -84,6 +84,9 @@ public extension Date {
         return Calendar.current.date(from: components)!
     }
     
+    func format(_ dateStyle: ClockPartSize, _ timeStyle: ClockPartSize) -> String {
+        return format(dateStyle: dateStyle, timeStyle: timeStyle)
+    }
     func format(dateStyle: ClockPartSize, timeStyle: ClockPartSize) -> String {
         var rawDateStyle: DateFormatter.Style = .none
         switch dateStyle {
@@ -149,8 +152,8 @@ public extension TimeInterval {
 
 public enum TimeNames {
     private static var formatter = DateFormatter()
-    public static var monthNames = formatter.monthSymbols
-    public static var shortMonthNames = formatter.shortMonthSymbols
-    public static var weekdayNames = formatter.weekdaySymbols
-    public static var shortWeekdayNames = formatter.shortWeekdaySymbols
+    public static var monthNames = formatter.monthSymbols!
+    public static var shortMonthNames = formatter.shortMonthSymbols!
+    public static var weekdayNames = formatter.weekdaySymbols!
+    public static var shortWeekdayNames = formatter.shortWeekdaySymbols!
 }

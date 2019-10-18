@@ -86,6 +86,8 @@ open class FrameLayout: UIView {
     }
     
     override public func layoutSubviews() {
+        super.layoutSubviews()
+        
         let size = self.bounds.size
         for subview in subviews {
             guard subview.includeInLayout, let params = subviewsWithParams[subview] else { continue }
@@ -111,7 +113,7 @@ open class FrameLayout: UIView {
                 subview.frame.origin.x = size.width - viewSize.width - params.margin.right - padding.right
                 subview.frame.size.width = viewSize.width
             case .fill:
-                subview.frame.origin.x = params.margin.left
+                subview.frame.origin.x = params.margin.left + padding.left
                 subview.frame.size.width = size.width - params.margin.total(.x) - padding.total(.x)
             }
             switch params.gravity.vertical {
@@ -125,7 +127,7 @@ open class FrameLayout: UIView {
                 subview.frame.origin.y = size.height - viewSize.height - params.margin.bottom - padding.bottom
                 subview.frame.size.height = viewSize.height
             case .fill:
-                subview.frame.origin.y = params.margin.top
+                subview.frame.origin.y = params.margin.top + padding.top
                 subview.frame.size.height = size.height - params.margin.total(.y) - padding.total(.y)
             }
         }

@@ -26,6 +26,19 @@ public class StringBuilder {
         return self
     }
     
+    @discardableResult
+    public func append(_ thing: Any?) -> StringBuilder {
+        underlying.append(String(describing: thing))
+        return self
+    }
+    
+    @discardableResult
+    public func appendln(_ thing: Any?) -> StringBuilder {
+        underlying.append(String(describing: thing))
+        underlying.append("\n")
+        return self
+    }
+    
     public func toString() -> String {
         return underlying
     }

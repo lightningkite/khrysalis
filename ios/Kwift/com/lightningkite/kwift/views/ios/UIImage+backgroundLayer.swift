@@ -19,6 +19,7 @@ public extension UIView {
             if let value = value {
                 value.matchSize(self)
                 self.layer.insertSublayer(value, at: 0)
+//                self.layer.addSublayer(value)
             }
             UIView.extensionBackgroundLayer.set(self, value)
         }

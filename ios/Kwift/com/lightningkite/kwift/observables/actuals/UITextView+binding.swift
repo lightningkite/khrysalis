@@ -30,7 +30,7 @@ public extension UITextView {
             if this.text != value {
                 this.text = value
             }
-            this.setNeedsLayout()
+            this.superview?.setNeedsLayout()
         }
         weak var observableWeak = observable
         let delegate = LambdaDelegate { text in
@@ -50,7 +50,7 @@ public extension UITextView {
             if this.text != value {
                 this.text = value
             }
-            this.setNeedsLayout()
+            this.superview?.setNeedsLayout()
         }
     }
 
@@ -67,7 +67,7 @@ public extension UITextView {
             } else {
                 this.text = nil
             }
-            this.setNeedsLayout()
+            this.superview?.setNeedsLayout()
         }
     }
 }

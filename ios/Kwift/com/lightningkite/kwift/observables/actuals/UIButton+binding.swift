@@ -47,7 +47,7 @@ public extension UIButton {
             if this.title(for: .normal) != value {
                 this.setTitle(value, for: .normal)
             }
-            this.setNeedsLayout()
+            this.superview?.setNeedsLayout()
         }
     }
 
@@ -63,7 +63,7 @@ public extension UIButton {
             } else {
                 this.setTitle("", for: .normal)
             }
-            this.setNeedsLayout()
+            this.superview?.setNeedsLayout()
         }
     }
 }

@@ -58,93 +58,96 @@ public extension UIView {
             updateAnimations()
         }
         stack.addAndRunWeak(self) { this, value in
-            var animation = Animation.fade
-            if lastCount == 0 {
-                animation = .fade
-            } else if value.count > lastCount {
-                animation = .push
-            } else if value.count < lastCount {
-                animation = .pop
-            }
-            lastCount = value.count
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.01, execute: {
+                var animation = Animation.fade
+                if lastCount == 0 {
+                    animation = .fade
+                } else if value.count > lastCount {
+                    animation = .push
+                } else if value.count < lastCount {
+                    animation = .pop
+                }
+                lastCount = value.count
 
-            if let old = current {
-                let goal: AnimationGoal
-                switch animation {
-                case .fade:
-                    goal = AnimationGoal(
+                if let old = current {
+                    let goal: AnimationGoal
+                    switch animation {
+                    case .fade:
+                        goal = AnimationGoal(
+                            startedAt: Date(),
+                            alpha: 0.0,
+                            scaledFrame: CGRect(x: 0, y: 0, width: 1, height: 1),
+                            frame: nil,
+                            completion: { view in view.removeFromSuperview() }
+                        )
+                    case .pop:
+                        goal = AnimationGoal(
+                            startedAt: Date(),
+                            alpha: 1.0,
+                            scaledFrame: CGRect(x: 1, y: 0, width: 1, height: 1),
+                            frame: nil,
+                            completion: { view in view.removeFromSuperview() }
+                        )
+                    case .push:
+                        goal = AnimationGoal(
+                            startedAt: Date(),
+                            alpha: 1.0,
+                            scaledFrame: CGRect(x: -1, y: 0, width: 1, height: 1),
+                            frame: nil,
+                            completion: { view in view.removeFromSuperview() }
+                        )
+                    }
+                    animateDestinationExtension.set(old, goal)
+                    updateAnimations()
+                }
+                if let newData = value.last {
+                    if this.isHidden {
+                        this.isHidden = false
+                        this.setNeedsLayout()
+                    }
+                    let new = newData.generate(dependency: dependency)
+                    switch animation {
+                    case .fade:
+                        new.frame = CGRect(
+                            x: 0,
+                            y: 0,
+                            width: self.bounds.width,
+                            height: self.bounds.height
+                        )
+                        new.alpha = 0.0
+                    case .pop:
+                        new.frame = CGRect(
+                            x: -self.bounds.width,
+                            y: 0,
+                            width: self.bounds.width,
+                            height: self.bounds.height
+                        )
+                    case .push:
+                        new.frame = CGRect(
+                            x: self.bounds.width,
+                            y: 0,
+                            width: self.bounds.width,
+                            height: self.bounds.height
+                        )
+                    }
+                    new.setNeedsLayout()
+                    self.addSubview(new)
+                    animateDestinationExtension.set(new, AnimationGoal(
                         startedAt: Date(),
-                        alpha: 0.0,
+                        alpha: 1.0,
                         scaledFrame: CGRect(x: 0, y: 0, width: 1, height: 1),
                         frame: nil,
-                        completion: { view in view.removeFromSuperview() }
-                    )
-                case .pop:
-                    goal = AnimationGoal(
-                        startedAt: Date(),
-                        alpha: 1.0,
-                        scaledFrame: CGRect(x: 1, y: 0, width: 1, height: 1),
-                        frame: nil,
-                        completion: { view in view.removeFromSuperview() }
-                    )
-                case .push:
-                    goal = AnimationGoal(
-                        startedAt: Date(),
-                        alpha: 1.0,
-                        scaledFrame: CGRect(x: -1, y: 0, width: 1, height: 1),
-                        frame: nil,
-                        completion: { view in view.removeFromSuperview() }
-                    )
+                        completion: { _ in }
+                    ))
+                    updateAnimations()
+                    current = new
+                } else {
+                    current = nil
+                    this.bounds.size = CGSize(width: 1, height: 1)
+                    this.isHidden = true
                 }
-                animateDestinationExtension.set(old, goal)
-                updateAnimations()
-            }
-            if let newData = value.last {
-                if this.isHidden {
-                    this.isHidden = false
-                    this.setNeedsLayout()
-                }
-                let new = newData.generate(dependency: dependency)
-                switch animation {
-                case .fade:
-                    new.frame = CGRect(
-                        x: 0,
-                        y: 0,
-                        width: self.bounds.width,
-                        height: self.bounds.height
-                    )
-                    new.alpha = 0.0
-                case .pop:
-                    new.frame = CGRect(
-                        x: -self.bounds.width,
-                        y: 0,
-                        width: self.bounds.width,
-                        height: self.bounds.height
-                    )
-                case .push:
-                    new.frame = CGRect(
-                        x: self.bounds.width,
-                        y: 0,
-                        width: self.bounds.width,
-                        height: self.bounds.height
-                    )
-                }
-                new.setNeedsLayout()
-                self.addSubview(new)
-                animateDestinationExtension.set(new, AnimationGoal(
-                    startedAt: Date(),
-                    alpha: 1.0,
-                    scaledFrame: CGRect(x: 0, y: 0, width: 1, height: 1),
-                    frame: nil,
-                    completion: { _ in }
-                ))
-                updateAnimations()
-                current = new
-            } else {
-                current = nil
-                this.bounds.size = CGSize(width: 1, height: 1)
-                this.isHidden = true
-            }
+                
+            })
         }
     }
 }

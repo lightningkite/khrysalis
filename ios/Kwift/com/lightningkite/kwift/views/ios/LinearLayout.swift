@@ -136,6 +136,8 @@ open class LinearLayout: UIView {
         return measure(size, includingWeighted: true)
     }
     override public func layoutSubviews() {
+        super.layoutSubviews()
+        
         var position: CGFloat = 0
         let size = self.bounds.size
         let requiredSize = measure(size, includingWeighted: false)

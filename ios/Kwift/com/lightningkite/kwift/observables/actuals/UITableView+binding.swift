@@ -40,7 +40,7 @@ public extension UITableView {
     func bind<T>(
         data: ObservableProperty<[T]>,
         defaultValue: T,
-        spacing: CGFloat = 8,
+        spacing: CGFloat = 0,
         makeView: @escaping (ObservableProperty<T>) -> UIView
     ) {
         register(CustomUITableViewCell.self, forCellReuseIdentifier: "main-cell")
@@ -84,6 +84,8 @@ class CustomUITableViewCell: UITableViewCell {
             size.width = max(size.width, childSize.width)
             size.height = max(size.height, childSize.height)
         }
+        size.width += spacing * 2
+        size.height += spacing * 2
         return size
     }
     
