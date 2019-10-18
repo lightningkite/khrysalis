@@ -8,6 +8,7 @@
 
 import Foundation
 
+
 public extension Date {
     var time: Int64 {
         return Int64((self.timeIntervalSince1970 * 1000.0).rounded())

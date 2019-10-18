@@ -1,18 +1,12 @@
 package com.lightningkite.kwift.views.actual
 
-import android.content.res.ColorStateList
-import android.content.res.Resources
-import android.graphics.*
+import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.StateListDrawable
-import android.util.AttributeSet
-import com.lightningkite.kwift.observables.actual.loadUrl
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
-import org.xmlpull.v1.XmlPullParser
-import java.lang.Exception
 
 fun ViewDependency.downloadDrawable(
     url: String,
@@ -24,9 +18,8 @@ fun ViewDependency.downloadDrawable(
         .load(url)
         .let {
             if (width == null || height == null) it
-            else it.resize(width.coerceAtLeast(100), height.coerceAtLeast(100))
+            else it.resize(width.coerceAtLeast(100), height.coerceAtLeast(100)).centerCrop()
         }
-        .centerCrop()
         .into(object : Target {
             override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
 

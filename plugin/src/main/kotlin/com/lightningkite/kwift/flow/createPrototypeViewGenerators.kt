@@ -44,6 +44,11 @@ internal fun createPrototypeViewGenerators(
     //Emit info
     ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(docsOutputFolder.resolve("view-nodes.json"), nodes)
 
+    //Emit inaccessible nodes warning
+    val inaccessibleNodes = nodes.values.filter { node ->
+        nodes.values.asSequence().flatMap { it.operations.asSequence() }.none { it.viewName == node.name }
+    }
+    inaccessibleNodes.forEach { println("WARNING! Node ${it.name} is not accessible") }
 
     //Emit graph
     groupedGraph(docsOutputFolder, nodes)
