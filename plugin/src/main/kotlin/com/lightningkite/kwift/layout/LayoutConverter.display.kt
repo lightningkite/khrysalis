@@ -54,6 +54,7 @@ val LayoutConverter.Companion.displayViews
                 node.attributeAsImage("android:src")?.let { text ->
                     appendln("view.image = $text")
                 }
+                appendln("view.clipsToBounds = true")
                 appendln(
                     "view.contentMode = ${when (node.attributes["android:scaleType"]) {
                         "fitXY" -> ".scaleToFill"

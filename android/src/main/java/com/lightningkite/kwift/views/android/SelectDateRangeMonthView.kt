@@ -76,7 +76,12 @@ open class SelectDateRangeMonthView : QuickMonthView {
         }
     }
 
+    private var startedDraggingOn: Calendar? = null
+    private var everMoved = false
+
     override fun onTouchDown(calendar: Calendar): Boolean {
+        startedDraggingOn = calendar
+        everMoved = false
         //If on start/end - drag
         //If after, extend
         //If before, extend
@@ -111,6 +116,9 @@ open class SelectDateRangeMonthView : QuickMonthView {
 
     override fun onTouchMove(calendar: Calendar): Boolean {
 
+        if(!(calendar sameDay startedDraggingOn)){
+            everMoved = true
+        }
         val startValue = start.value
         val endInclusiveValue = endInclusive.value
         when {
@@ -137,6 +145,10 @@ open class SelectDateRangeMonthView : QuickMonthView {
 
     override fun onTouchUp(calendar: Calendar): Boolean {
         onTouchMove(calendar)
+        if(startedDraggingOn sameDay calendar && !everMoved){
+            start.value = calendar
+            endInclusive.value = calendar
+        }
         return true
     }
 

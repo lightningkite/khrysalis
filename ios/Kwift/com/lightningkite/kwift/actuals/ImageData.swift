@@ -10,3 +10,4 @@ import Foundation
 import UIKit
 
 public typealias ImageData = UIImage
+public typealias ImageReference = URL

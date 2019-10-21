@@ -63,6 +63,7 @@ extension CALayer : CALayerToImage {
 
         if scaleOverResize {
             self.frame = bounds
+            //TODO: Center this properly
             self.setAffineTransform(CGAffineTransform(
                 scaleX: bounds.size.width / baseSize.width,
                 y: bounds.size.height / baseSize.height

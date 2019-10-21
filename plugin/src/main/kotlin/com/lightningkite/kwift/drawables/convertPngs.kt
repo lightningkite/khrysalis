@@ -29,8 +29,8 @@ fun convertPngs(
             .filter { it.name == pngName + ".png" }
 
         val one = matching.find { it.parent.contains("drawable-ldpi") || it.parent.contains("drawable-mdpi") }
-        val two = matching.find { it.parent.contains("drawable-hdpi") }
-        val three = matching.find { it.parent.contains("drawable-xhdpi") }
+        val two = matching.find { it.parent.contains("drawable-hdpi") || it.parent.contains("drawable-xhdpi") }
+        val three = matching.find { it.parent.contains("drawable-xxhdpi") || it.parent.contains("drawable-xxxhdpi") }
 
         if (one == null && two == null && three == null) return@forEach
 

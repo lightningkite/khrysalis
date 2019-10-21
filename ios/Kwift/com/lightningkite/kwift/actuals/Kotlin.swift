@@ -32,6 +32,30 @@ public extension Sequence {
         }
         return newArray
     }
+    func any(predicate: (Element)->Bool) -> Bool {
+        for element in self {
+            if predicate(element) {
+                return true
+            }
+        }
+        return false
+    }
+    func all(predicate: (Element)->Bool) -> Bool {
+        for element in self {
+            if !predicate(element) {
+                return false
+            }
+        }
+        return true
+    }
+    func none(predicate: (Element)->Bool) -> Bool {
+        for element in self {
+            if predicate(element) {
+                return false
+            }
+        }
+        return true
+    }
 }
 
 public extension Array {
@@ -215,9 +239,14 @@ public extension String {
     func isEmpty() -> Bool {
         return isEmpty
     }
-    
     func isBlank() -> Bool {
         return isEmpty || self.allSatisfy { c in c == " " || c == "\n" }
+    }
+    func isNotEmpty() -> Bool {
+        return !isEmpty
+    }
+    func isNotBlank() -> Bool {
+        return !isEmpty && !self.allSatisfy { c in c == " " || c == "\n" }
     }
     
     func trimIndent() -> String {

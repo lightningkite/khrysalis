@@ -68,6 +68,13 @@ val LayoutConverter.Companion.dateViews
                 "com.lightningkite.kwift.views.android.CalendarView"
             ) { node ->
 
+            },
+            ViewType(
+                "com.lightningkite.kwift.views.android.SelectMultipleDatesView",
+                "SelectDayView",
+                "com.lightningkite.kwift.views.android.CalendarView"
+            ) { node ->
+
             }
         )
     )

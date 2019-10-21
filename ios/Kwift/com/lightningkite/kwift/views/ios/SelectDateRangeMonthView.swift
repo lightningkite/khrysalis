@@ -76,8 +76,14 @@ public class SelectDateRangeMonthView : QuickMonthView {
         }
     }
 
+    private var startedDraggingOn: Date = Date()
+    private var everMoved = false
     var draggingStart = true
+    
     override public func onTouchDown(date: Date) -> Bool {
+        startedDraggingOn = date
+        everMoved = false
+        
         guard let startValue = start.value, let endInclusiveValue = endInclusive.value else {
             start.value = date
             endInclusive.value = date
@@ -98,6 +104,9 @@ public class SelectDateRangeMonthView : QuickMonthView {
         return true
     }
     override public func onTouchMove(date: Date) -> Bool {
+        if !date.sameDay(startedDraggingOn) {
+            everMoved = true
+        }
         if let startValue = start.value, let endInclusiveValue = endInclusive.value {
             if draggingStart, date.after(endInclusiveValue) {
                 start.value = endInclusiveValue
@@ -117,7 +126,13 @@ public class SelectDateRangeMonthView : QuickMonthView {
         }
         return true
     }
+    
     override public func onTouchUp(date: Date) -> Bool {
-        return onTouchMove(date: date)
+        let result = onTouchMove(date: date)
+        if startedDraggingOn.sameDay(date) && !everMoved {
+            start.value = date
+            endInclusive.value = date
+        }
+        return result
     }
 }

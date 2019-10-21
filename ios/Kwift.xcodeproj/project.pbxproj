@@ -3,7 +3,7 @@
 	archiveVersion = 1;
 	classes = {
 	};
-	objectVersion = 50;
+	objectVersion = 51;
 	objects = {
 
 /* Begin PBXBuildFile section */
@@ -106,6 +106,12 @@
 		5E4297E7233EC420002AAB7A /* extensionProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E42978E233EC420002AAB7A /* extensionProperty.swift */; };
 		5E5F673C2347D7BF0090384F /* Event.ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E5F673B2347D7BF0090384F /* Event.ext.swift */; };
 		5E5F6DB6234C03E80090384F /* UIView+onClick.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E5F6DB4234C03E80090384F /* UIView+onClick.swift */; };
+		5E633B24235E44400081A849 /* SelectMultipleDatesMonthView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E633B23235E44400081A849 /* SelectMultipleDatesMonthView.swift */; };
+		5E633B26235E483A0081A849 /* SelectMultipleDatesView+binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E633B25235E483A0081A849 /* SelectMultipleDatesView+binding.swift */; };
+		5E633B28235E48810081A849 /* SelectMultipleDatesView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E633B27235E48810081A849 /* SelectMultipleDatesView.swift */; };
+		5E633B2A235E4C6A0081A849 /* KwiftViewController.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E633B29235E4C6A0081A849 /* KwiftViewController.swift */; };
+		5E633B2D235E4CE90081A849 /* UIViewController+keyboard.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E633B2C235E4CE90081A849 /* UIViewController+keyboard.swift */; };
+		5E633B2F235E55D40081A849 /* ViewDependency+image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E633B2E235E55D40081A849 /* ViewDependency+image.swift */; };
 		5EAABEA1233EC33F007E7CED /* Kwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5EAABE97233EC33F007E7CED /* Kwift.framework */; };
 		5EAABEA6233EC33F007E7CED /* kwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAABEA5233EC33F007E7CED /* kwiftTests.swift */; };
 		5EAABEA8233EC33F007E7CED /* Kwift.h in Headers */ = {isa = PBXBuildFile; fileRef = 5EAABE9A233EC33F007E7CED /* Kwift.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -228,6 +234,12 @@
 		5E42978E233EC420002AAB7A /* extensionProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = extensionProperty.swift; sourceTree = "<group>"; };
 		5E5F673B2347D7BF0090384F /* Event.ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = Event.ext.swift; path = Kwift/com/lightningkite/kwift/observables/shared/Event.ext.swift; sourceTree = SOURCE_ROOT; };
 		5E5F6DB4234C03E80090384F /* UIView+onClick.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "UIView+onClick.swift"; path = "Kwift/com/lightningkite/kwift/views/actuals/UIView+onClick.swift"; sourceTree = SOURCE_ROOT; };
+		5E633B23235E44400081A849 /* SelectMultipleDatesMonthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SelectMultipleDatesMonthView.swift; path = Kwift/com/lightningkite/kwift/views/ios/SelectMultipleDatesMonthView.swift; sourceTree = SOURCE_ROOT; };
+		5E633B25235E483A0081A849 /* SelectMultipleDatesView+binding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "SelectMultipleDatesView+binding.swift"; path = "Kwift/com/lightningkite/kwift/observables/actuals/SelectMultipleDatesView+binding.swift"; sourceTree = SOURCE_ROOT; };
+		5E633B27235E48810081A849 /* SelectMultipleDatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SelectMultipleDatesView.swift; path = Kwift/com/lightningkite/kwift/views/ios/SelectMultipleDatesView.swift; sourceTree = SOURCE_ROOT; };
+		5E633B29235E4C6A0081A849 /* KwiftViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = KwiftViewController.swift; path = Kwift/com/lightningkite/kwift/views/ios/KwiftViewController.swift; sourceTree = SOURCE_ROOT; };
+		5E633B2C235E4CE90081A849 /* UIViewController+keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "UIViewController+keyboard.swift"; path = "Kwift/com/lightningkite/kwift/views/ios/UIViewController+keyboard.swift"; sourceTree = SOURCE_ROOT; };
+		5E633B2E235E55D40081A849 /* ViewDependency+image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "ViewDependency+image.swift"; path = "Kwift/com/lightningkite/kwift/views/actuals/ViewDependency+image.swift"; sourceTree = SOURCE_ROOT; };
 		5EAABE97233EC33F007E7CED /* Kwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Kwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5EAABE9A233EC33F007E7CED /* Kwift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Kwift.h; sourceTree = "<group>"; };
 		5EAABE9B233EC33F007E7CED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -333,6 +345,7 @@
 				5E429742233EC420002AAB7A /* Dropdown+binding.swift */,
 				5E42973F233EC420002AAB7A /* SelectDateRangeView+binding.swift */,
 				5E42974E233EC420002AAB7A /* SelectDayView+binding.swift */,
+				5E633B25235E483A0081A849 /* SelectMultipleDatesView+binding.swift */,
 				5E42974A233EC420002AAB7A /* UIButton+binding.swift */,
 				5E429747233EC420002AAB7A /* UICollectionView+binding.swift */,
 				5E429741233EC420002AAB7A /* UIImageView+binding.swift */,
@@ -398,6 +411,7 @@
 				5E0CE10D235818E800145B82 /* EmptyView.swift */,
 				5E429768233EC420002AAB7A /* general.swift */,
 				5E0CE1092358175200145B82 /* LinearLayout+ext.swift */,
+				5E633B2E235E55D40081A849 /* ViewDependency+image.swift */,
 				5ED0DC35234FAB9400C36B7D /* TextView.ext.swift */,
 				5ED0DC34234FAB9400C36B7D /* UIImageView+ext.swift */,
 				5E5F6DB4234C03E80090384F /* UIView+onClick.swift */,
@@ -448,6 +462,8 @@
 				5E429767233EC420002AAB7A /* SelectDateRangeView.swift */,
 				5E42976E233EC420002AAB7A /* SelectDayMonthView.swift */,
 				5E429770233EC420002AAB7A /* SelectDayView.swift */,
+				5E633B27235E48810081A849 /* SelectMultipleDatesView.swift */,
+				5E633B23235E44400081A849 /* SelectMultipleDatesMonthView.swift */,
 				5E429775233EC420002AAB7A /* TimeButton.swift */,
 				5E429771233EC420002AAB7A /* ToggleButton.swift */,
 				5E429778233EC420002AAB7A /* UIButtonWithInput.swift */,
@@ -463,7 +479,9 @@
 				5E429780233EC420002AAB7A /* UIView.focus.swift */,
 				5EBC42A62355179F0088CDAC /* UIView+includeInLayout.swift */,
 				5E42978C233EC420002AAB7A /* ViewPagerLayout.swift */,
+				5E633B2C235E4CE90081A849 /* UIViewController+keyboard.swift */,
 				5E1375C62358DDAF007824E8 /* UIImage+backgroundLayer.swift */,
+				5E633B29235E4C6A0081A849 /* KwiftViewController.swift */,
 			);
 			path = ios;
 			sourceTree = "<group>";
@@ -693,6 +711,7 @@
 				5E1375C52358DD37007824E8 /* UIImage+background.swift in Sources */,
 				5E4297CD233EC420002AAB7A /* DateButton.swift in Sources */,
 				5E4297D7233EC420002AAB7A /* Form.swift in Sources */,
+				5E633B28235E48810081A849 /* SelectMultipleDatesView.swift in Sources */,
 				5E0CE1102358191700145B82 /* UIView+visibility.swift in Sources */,
 				5E4297A8233EC420002AAB7A /* UISwitch+binding.swift in Sources */,
 				5E4297CF233EC420002AAB7A /* LabeledSwitch.swift in Sources */,
@@ -711,9 +730,11 @@
 				5E429797233EC420002AAB7A /* HttpClient.swift in Sources */,
 				5E4297E2233EC420002AAB7A /* UITextField.ext.swift in Sources */,
 				5E0CE10A2358175200145B82 /* LinearLayout+ext.swift in Sources */,
+				5E633B24235E44400081A849 /* SelectMultipleDatesMonthView.swift in Sources */,
 				5E4297DC233EC420002AAB7A /* UITextView.placeholder.swift in Sources */,
 				5E4297DF233EC420002AAB7A /* UIFont.get.swift in Sources */,
 				5E4297C6233EC420002AAB7A /* QuickMonthView.swift in Sources */,
+				5E633B2D235E4CE90081A849 /* UIViewController+keyboard.swift in Sources */,
 				5E4297C1233EC420002AAB7A /* CompoundButton.swift in Sources */,
 				5E4297D3233EC420002AAB7A /* UIButtonWithInput.swift in Sources */,
 				5E429799233EC420002AAB7A /* String.extensions.swift in Sources */,
@@ -751,13 +772,16 @@
 				5E4297E3233EC420002AAB7A /* onLayoutSubviewsSwizzle.swift in Sources */,
 				5E4297D8233EC420002AAB7A /* UILabel+lineSpacingMultiplier.swift in Sources */,
 				5E429792233EC420002AAB7A /* StringReference.swift in Sources */,
+				5E633B2F235E55D40081A849 /* ViewDependency+image.swift in Sources */,
 				5E0CE10E235818E800145B82 /* EmptyView.swift in Sources */,
 				5E4297E7233EC420002AAB7A /* extensionProperty.swift in Sources */,
 				5E4297CC233EC420002AAB7A /* ToggleButton.swift in Sources */,
 				5E0CE1082357FDA300145B82 /* DateTimeAlone.swift in Sources */,
+				5E633B2A235E4C6A0081A849 /* KwiftViewController.swift in Sources */,
 				5E4297C4233EC420002AAB7A /* ScrollSavingDelegate.swift in Sources */,
 				5E4297CB233EC420002AAB7A /* SelectDayView.swift in Sources */,
 				5E4297DA233EC420002AAB7A /* CAStateLayer.swift in Sources */,
+				5E633B26235E483A0081A849 /* SelectMultipleDatesView+binding.swift in Sources */,
 				5E4297B6233EC420002AAB7A /* StandardObservableProperty.swift in Sources */,
 				5E4297B7233EC420002AAB7A /* ObservableStack.swift in Sources */,
 				5E429791233EC420002AAB7A /* Preferences.swift in Sources */,

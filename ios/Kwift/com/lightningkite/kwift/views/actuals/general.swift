@@ -10,8 +10,12 @@ import Foundation
 import UIKit
 
 public typealias View = UIView
+
 public class ViewDependency {
-    public init(){}
+    unowned let parentViewController: UIViewController
+    public init(_ parentViewController: UIViewController){
+        self.parentViewController = parentViewController
+    }
     public func getString(_ reference: StringReference) -> String {
         return reference
     }
