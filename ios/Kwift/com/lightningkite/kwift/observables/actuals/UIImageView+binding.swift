@@ -60,6 +60,18 @@ public extension UIImageView {
         }
     }
 
+    func loadImageData(_ imageData: ObservableProperty<ImageData?>){
+        imageData.addAndRunWeak(self) {(self, it) in
+            self.image = it
+        }
+    }
+
+    func loadImageData(imageData: ObservableProperty<ImageData?>){
+        imageData.addAndRunWeak(self) {(self, it) in
+            self.image = it
+        }
+    }
+
     func loadUrlNotNull(_ imageUrl: ObservableProperty<String>) {
         loadUrlNotNull(imageUrl: imageUrl)
     }

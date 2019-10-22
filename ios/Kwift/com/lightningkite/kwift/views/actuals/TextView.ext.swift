@@ -26,6 +26,14 @@ public extension UILabel {
             text = value
         }
     }
+
+    func setColor(color: ColorResource){
+        textColor = color
+    }
+
+    func setColor(_ color: ColorResource){
+        textColor = color
+    }
 }
 
 public extension UITextView {

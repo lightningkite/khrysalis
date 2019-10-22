@@ -1,6 +1,7 @@
 package com.lightningkite.kwift.observables.actual
 
 import android.widget.ImageView
+import com.lightningkite.kwift.actual.ImageData
 import com.lightningkite.kwift.observables.shared.ObservableProperty
 import com.lightningkite.kwift.observables.shared.addAndRunWeak
 import com.squareup.picasso.Picasso
@@ -27,6 +28,16 @@ fun ImageView.loadUrl(imageUrl: ObservableProperty<String?>) {
                     .resize(self.width.coerceAtLeast(100), self.height.coerceAtLeast(100))
                     .centerCrop()
                     .into(self)
+            }
+        }
+    }
+}
+
+fun ImageView.loadImageData(imageData: ObservableProperty<ImageData?>) {
+    post {
+        imageData.addAndRunWeak(this) { self, it ->
+            it?.let {
+                self.setImageBitmap(it)
             }
         }
     }

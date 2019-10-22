@@ -1,8 +1,7 @@
 package com.lightningkite.kwift.views.actual
 
-import android.graphics.drawable.Drawable
-import android.view.View
-import android.widget.*
+import android.widget.TextView
+import android.widget.ToggleButton
 
 var TextView.textResource: Int
     get() = 0
@@ -10,6 +9,10 @@ var TextView.textResource: Int
 var TextView.textString: String
     get() = text.toString()
     set(value) { setText(value) }
+
+fun TextView.setColor(color: ColorResource) {
+    setTextColor(resources.getColor(color))
+}
 
 
 var ToggleButton.textResource: Int
