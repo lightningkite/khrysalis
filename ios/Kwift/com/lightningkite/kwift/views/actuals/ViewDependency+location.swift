@@ -20,6 +20,7 @@ public extension ViewDependency {
         self.parentViewController.retain(as: retainId, item: manager)
         let sd = ScreamingDelegate(callback: { [weak manager] result in
             manager?.stopUpdatingLocation()
+            onResult(result)
             self.parentViewController.unretain(retainId)
         })
         manager.delegate = sd
