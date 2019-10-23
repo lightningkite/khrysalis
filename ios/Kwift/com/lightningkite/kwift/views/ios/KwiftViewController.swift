@@ -36,7 +36,7 @@ open class KwiftViewController: UIViewController, UINavigationControllerDelegate
     
     private var first = true
     public func refreshBackingColor() {
-        DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
+        DispatchQueue.main.asyncAfter(deadline: .now() + 0.01, execute: {
             if self.first {
                 self.first = false
                 self.view.layer.backgroundColor = self.getBackingColor(self.innerView) ?? UIColor.white.cgColor

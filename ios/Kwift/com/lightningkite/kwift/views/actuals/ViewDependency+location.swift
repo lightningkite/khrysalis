@@ -10,21 +10,39 @@ import CoreLocation
 
 
 public extension ViewDependency {
-    func requestLocation(_ accuracyBetterThanMeters: Double, _ onResult: @escaping (LocationResult)->Void) {
-        requestLocation(accuracyBetterThanMeters: accuracyBetterThanMeters, onResult: onResult)
+    func requestLocation(_ accuracyBetterThanMeters: Double, _ timeoutInSeconds: Double, _ onResult: @escaping (LocationResult?, String?)->Void) {
+        requestLocation(accuracyBetterThanMeters: accuracyBetterThanMeters, timeoutInSeconds: timeoutInSeconds, onResult: onResult)
     }
-    func requestLocation(accuracyBetterThanMeters: Double, onResult: @escaping (LocationResult)->Void) {
+    func requestLocation(accuracyBetterThanMeters: Double, timeoutInSeconds: Double, onResult: @escaping (LocationResult?, String?)->Void) {
+        let singleTime = SingleTime()
+        
         let manager = CLLocationManager()
         manager.requestWhenInUseAuthorization()
-        let retainId = "locationManager" + String(arc4random() % 10000)
-        self.parentViewController.retain(as: retainId, item: manager)
+        
         let sd = ScreamingDelegate(callback: { [weak manager] result in
             manager?.stopUpdatingLocation()
-            onResult(result)
-            self.parentViewController.unretain(retainId)
+            singleTime.once {
+                onResult(result, nil)
+            }
         })
         manager.delegate = sd
         manager.retain(as: "delegate", item: sd)
+        
+        DispatchQueue.main.asyncAfter(deadline: .now() + timeoutInSeconds) {
+            manager.stopUpdatingLocation()
+            singleTime.once {
+                onResult(nil, "Timeout")
+            }
+        }
+    }
+    
+    private class SingleTime {
+        public var happened: Bool = false
+        public func once(action: ()->Void) {
+            if happened { return }
+            happened = true
+            action()
+        }
     }
     
     private class ScreamingDelegate: NSObject, CLLocationManagerDelegate {
