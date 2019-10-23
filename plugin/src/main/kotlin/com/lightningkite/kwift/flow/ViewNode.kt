@@ -4,6 +4,7 @@ import com.lightningkite.kwift.layout.Styles
 import com.lightningkite.kwift.utils.XmlNode
 import com.lightningkite.kwift.utils.camelCase
 import java.io.File
+import kotlin.math.max
 
 class ViewNode(
     val name: String
@@ -12,6 +13,8 @@ class ViewNode(
     val requires: HashSet<ViewVar> = HashSet()
     val provides: HashSet<ViewVar> = HashSet()
     val instantiates: Set<String> get() = operations.mapNotNull { it.viewName }.toSet()
+
+    var depth: Int = -1
 
     companion object {
         val stack = ViewVar(
@@ -30,6 +33,34 @@ class ViewNode(
         const val attributeStackId = "tools:stackId"
         const val attributeRequires = "tools:requires"
         const val attributeProvides = "tools:provides"
+
+        //Breadth-first search
+        fun estimateDepth(map: Map<String, ViewNode>){
+            map.values.forEach { it.depth = -1 }
+            val root = map["Root"] ?: map["Main"] ?: map["Landing"] ?: map.values.firstOrNull() ?: return
+            root.depth = 0
+            var highestSeen = 0
+            val seen = mutableListOf<String>()
+            val stack = mutableListOf(root)
+            while(stack.isNotEmpty()){
+                val next = stack.removeAt(0)
+                highestSeen = max(highestSeen, next.depth)
+                for(item in next.instantiates){
+                    if(item in seen) continue
+                    seen.add(item)
+                    map[item]?.let {
+                        it.depth = next.depth + 1
+                        stack.add(it)
+                    }
+                }
+            }
+
+            map.values.forEach {
+                if(it.depth == -1) {
+                    it.depth = highestSeen
+                }
+            }
+        }
     }
 
     fun totalRequires(map: Map<String, ViewNode>, seen: Set<String> = setOf()): Set<ViewVar> {
@@ -39,22 +70,6 @@ class ViewNode(
         }.filter { it.name != "stack" }.toSet()) - provides)
     }
 
-    fun estimateDepth(map: Map<String, ViewNode>, seen: Set<String> = setOf()): Int {
-        if (name in seen) return 0
-        return requires.size + instantiates.sumBy {
-            map[it]?.estimateDepth(map, seen + name) ?: 0
-        } - provides.size
-    }
-
-    //    fun belongsToStacks(map: Map<String, ViewNode>): Set<String> {
-//        return map.values.asSequence()
-//            .flatMap { node ->
-//                node.operations.asSequence()
-//                    .filter { it.viewName == name }
-//                    .flatMap { it.stack?.let { sequenceOf(it) } ?: node.belongsToStacks(map).asSequence() }
-//            }
-//            .toSet()
-//    }
     fun belongsToStacks(map: Map<String, ViewNode>): Set<String> {
         return map.values.asSequence()
             .flatMap { it.operations.asSequence() }

@@ -9,7 +9,7 @@ internal fun groupedGraph(
     nodes: Map<String, ViewNode>
 ) {
     println("Making groupedGraph")
-    outputFolder.resolve("flow-grouped.mermaid").bufferedWriter().use { out ->
+    outputFolder.resolve("flow-grouped.mmd").bufferedWriter().use { out ->
         val groupedNodes = groupByBelonging(nodes)
         val nodeId: Map<String, String> = groupedNodes
             .flatMap { it.value }
@@ -52,14 +52,14 @@ private fun groupByBelonging(nodes: Map<String, ViewNode>): Map<String, List<Map
             if (belongsTo.size == 1) belongsTo.first()
             else ""
         }
-        .mapValues { it.value.sortedBy { it.value.estimateDepth(nodes) } }
+        .mapValues { it.value.sortedBy { it.value.depth } }
 }
 
 private fun multigroupByBelonging(nodes: Map<String, ViewNode>): Map<String, List<Map.Entry<String, ViewNode>>> {
     val stacks = nodes.values.asSequence().flatMap { it.operations.asSequence().mapNotNull { it.stack } }.toSet()
     return stacks.associate { stack ->
         stack to nodes.filter { stack in it.value.belongsToStacks(nodes) }
-    }.mapValues { it.value.entries.sortedBy { it.value.estimateDepth(nodes) } }
+    }.mapValues { it.value.entries.sortedBy { it.value.depth } }
 }
 
 internal fun sortedGraph(
@@ -67,9 +67,9 @@ internal fun sortedGraph(
     nodes: Map<String, ViewNode>
 ) {
     println("Making sortedGraph")
-    outputFolder.resolve("flow-sorted.mermaid").bufferedWriter().use { out ->
+    outputFolder.resolve("flow-sorted.mmd").bufferedWriter().use { out ->
         val groupedNodes = nodes.entries
-            .sortedBy { it.value.estimateDepth(nodes) }
+            .sortedBy { it.value.depth }
         val nodeId: Map<String, String> = groupedNodes
             .withIndex()
             .associate {
@@ -94,11 +94,11 @@ internal fun partialGraphs(
 ) {
     println("Making partialGraphs")
     val groupedNodes = multigroupByBelonging(nodes)
-        .mapValues { it.value.sortedBy { it.value.estimateDepth(nodes) } }
+        .mapValues { it.value.sortedBy { it.value.depth } }
     for ((group, values) in groupedNodes) {
         println("Making partialGraph for $group")
         if (group.isEmpty() || group == "stack") continue
-        outputFolder.resolve("flow-partial-$group.mermaid").bufferedWriter().use { out ->
+        outputFolder.resolve("flow-partial-$group.mmd").bufferedWriter().use { out ->
             val internalNodes = values.map { it.value }.toSet()
             val internalNodeNames = internalNodes.map { it.name }.toSet()
             val beforeNodes = (nodes.values.toSet() - internalNodes)

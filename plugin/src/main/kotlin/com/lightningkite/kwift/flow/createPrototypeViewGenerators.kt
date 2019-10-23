@@ -12,17 +12,14 @@ fun createPrototypeViewGenerators(androidFolder: File, applicationPackage: Strin
     createPrototypeViewGenerators(
         resourcesFolder = androidFolder.resolve("src/main/res"),
         applicationPackage = applicationPackage,
-        docsOutputFolder = androidFolder.resolve("docs/flow"),
         outputFolder = androidFolder.resolve("src/main/java/${applicationPackage.replace('.', '/')}/shared/vg")
     )
 
 internal fun createPrototypeViewGenerators(
     resourcesFolder: File,
     applicationPackage: String,
-    docsOutputFolder: File,
     outputFolder: File
 ) {
-    docsOutputFolder.mkdirs()
     outputFolder.mkdirs()
 
     val styles = File(resourcesFolder, "values/styles.xml").readXMLStyles()
@@ -41,19 +38,11 @@ internal fun createPrototypeViewGenerators(
         nodes[fileName] = node
     }
 
-    //Emit info
-    ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(docsOutputFolder.resolve("view-nodes.json"), nodes)
-
     //Emit inaccessible nodes warning
     val inaccessibleNodes = nodes.values.filter { node ->
         nodes.values.asSequence().flatMap { it.operations.asSequence() }.none { it.viewName == node.name }
     }
     inaccessibleNodes.forEach { println("WARNING! Node ${it.name} is not accessible") }
-
-    //Emit graph
-    groupedGraph(docsOutputFolder, nodes)
-    sortedGraph(docsOutputFolder, nodes)
-    partialGraphs(docsOutputFolder, nodes)
 
     //Emit views
     files.forEach { item ->
