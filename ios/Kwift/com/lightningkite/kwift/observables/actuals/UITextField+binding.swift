@@ -75,23 +75,23 @@ public extension UITextField {
             }
         }
     }
-
-    func bindInteger(_ observable: MutableObservableProperty<Int>) { bindInteger(observable: observable) }
-    func bindInteger(observable: MutableObservableProperty<Int>) {
+    
+    func bindInteger(_ observable: MutableObservableProperty<Int32>) { bindInteger(observable: observable) }
+    func bindInteger(observable: MutableObservableProperty<Int32>) {
         delegate = DoneDelegate.shared
         if observable.value != 0 {
             text = observable.value.toString()
         }
         observable.addAndRunWeak(referenceA: self) { (this, value) in
             let currentValue = Int(this.text ?? "")
-            if currentValue != nil, currentValue != value {
+            if currentValue != nil, currentValue != Int(value) {
                 this.text = value.toString()
                 this.superview?.setNeedsLayout()
             }
         }
         addAction(for: UITextField.Event.editingChanged) { [weak self] in
             if let self = self, let currentValue = Int(self.text ?? ""), observable.value != currentValue {
-                observable.value = currentValue
+                observable.value = Int32(currentValue)
             }
         }
     }
