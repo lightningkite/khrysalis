@@ -12,7 +12,7 @@ import UIKit
 public typealias View = UIView
 
 public class ViewDependency {
-    unowned let parentViewController: UIViewController
+    public unowned let parentViewController: UIViewController
     public init(_ parentViewController: UIViewController){
         self.parentViewController = parentViewController
     }

@@ -9,6 +9,8 @@
 import Foundation
 
 public class ExtensionProperty<On: AnyObject, T> {
+    
+    public init(){}
 
     public class Box<T> {
         var value: T

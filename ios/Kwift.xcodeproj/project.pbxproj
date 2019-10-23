@@ -123,6 +123,9 @@
 		5ED0DC37234FAB9400C36B7D /* TextView.ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED0DC35234FAB9400C36B7D /* TextView.ext.swift */; };
 		5ED0E40F234FE75100C36B7D /* StringBuilder.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED0E40E234FE75100C36B7D /* StringBuilder.swift */; };
 		5ED0E7B12352879A00C36B7D /* geometry.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED0E7B02352879A00C36B7D /* geometry.swift */; };
+		5EE73FE12360C7A900EB5B6E /* DateFormattingExtras.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EE73FDF2360C7A800EB5B6E /* DateFormattingExtras.swift */; };
+		5EE73FE22360C7A900EB5B6E /* LocationResult.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EE73FE02360C7A800EB5B6E /* LocationResult.swift */; };
+		5EE73FE42360CA5100EB5B6E /* ViewDependency+location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EE73FE32360CA5100EB5B6E /* ViewDependency+location.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -254,6 +257,9 @@
 		5ED0DC35234FAB9400C36B7D /* TextView.ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = TextView.ext.swift; path = Kwift/com/lightningkite/kwift/views/actuals/TextView.ext.swift; sourceTree = SOURCE_ROOT; };
 		5ED0E40E234FE75100C36B7D /* StringBuilder.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = StringBuilder.swift; path = Kwift/com/lightningkite/kwift/actuals/StringBuilder.swift; sourceTree = SOURCE_ROOT; };
 		5ED0E7B02352879A00C36B7D /* geometry.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = geometry.swift; path = Kwift/com/lightningkite/kwift/views/ios/geometry.swift; sourceTree = SOURCE_ROOT; };
+		5EE73FDF2360C7A800EB5B6E /* DateFormattingExtras.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = DateFormattingExtras.swift; path = Kwift/com/lightningkite/kwift/shared/DateFormattingExtras.swift; sourceTree = SOURCE_ROOT; };
+		5EE73FE02360C7A800EB5B6E /* LocationResult.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = LocationResult.swift; path = Kwift/com/lightningkite/kwift/shared/LocationResult.swift; sourceTree = SOURCE_ROOT; };
+		5EE73FE32360CA5100EB5B6E /* ViewDependency+location.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "ViewDependency+location.swift"; path = "Kwift/com/lightningkite/kwift/views/actuals/ViewDependency+location.swift"; sourceTree = SOURCE_ROOT; };
 		63A80265E53D7E8A26AF57CF /* libPods-Kwift.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Kwift.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6648265A81A02AE0AA915524 /* Pods-Kwift.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kwift.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Kwift/Pods-Kwift.debug.xcconfig"; sourceTree = "<group>"; };
 		F994D26061C995DD96617E1D /* Pods-Kwift.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kwift.release.xcconfig"; path = "Pods/Target Support Files/Pods-Kwift/Pods-Kwift.release.xcconfig"; sourceTree = "<group>"; };
@@ -389,6 +395,8 @@
 		5E429760233EC420002AAB7A /* shared */ = {
 			isa = PBXGroup;
 			children = (
+				5EE73FDF2360C7A800EB5B6E /* DateFormattingExtras.swift */,
+				5EE73FE02360C7A800EB5B6E /* LocationResult.swift */,
 				5E429761233EC420002AAB7A /* captureWeak.swift */,
 			);
 			path = shared;
@@ -407,6 +415,7 @@
 		5E429763233EC420002AAB7A /* actuals */ = {
 			isa = PBXGroup;
 			children = (
+				5EE73FE32360CA5100EB5B6E /* ViewDependency+location.swift */,
 				5E0CE10B2358187200145B82 /* Align.swift */,
 				5E0CE10D235818E800145B82 /* EmptyView.swift */,
 				5E429768233EC420002AAB7A /* general.swift */,
@@ -712,6 +721,7 @@
 				5E4297CD233EC420002AAB7A /* DateButton.swift in Sources */,
 				5E4297D7233EC420002AAB7A /* Form.swift in Sources */,
 				5E633B28235E48810081A849 /* SelectMultipleDatesView.swift in Sources */,
+				5EE73FE42360CA5100EB5B6E /* ViewDependency+location.swift in Sources */,
 				5E0CE1102358191700145B82 /* UIView+visibility.swift in Sources */,
 				5E4297A8233EC420002AAB7A /* UISwitch+binding.swift in Sources */,
 				5E4297CF233EC420002AAB7A /* LabeledSwitch.swift in Sources */,
@@ -731,6 +741,7 @@
 				5E4297E2233EC420002AAB7A /* UITextField.ext.swift in Sources */,
 				5E0CE10A2358175200145B82 /* LinearLayout+ext.swift in Sources */,
 				5E633B24235E44400081A849 /* SelectMultipleDatesMonthView.swift in Sources */,
+				5EE73FE12360C7A900EB5B6E /* DateFormattingExtras.swift in Sources */,
 				5E4297DC233EC420002AAB7A /* UITextView.placeholder.swift in Sources */,
 				5E4297DF233EC420002AAB7A /* UIFont.get.swift in Sources */,
 				5E4297C6233EC420002AAB7A /* QuickMonthView.swift in Sources */,
@@ -751,6 +762,7 @@
 				5E429790233EC420002AAB7A /* delay.swift in Sources */,
 				5E4297A0233EC420002AAB7A /* UIImageView+binding.swift in Sources */,
 				5ED0DC37234FAB9400C36B7D /* TextView.ext.swift in Sources */,
+				5EE73FE22360C7A900EB5B6E /* LocationResult.swift in Sources */,
 				5E4297C0233EC420002AAB7A /* PreviewVariedFlipper.swift in Sources */,
 				5E42979F233EC420002AAB7A /* UIView+binding.swift in Sources */,
 				5E42979E233EC420002AAB7A /* SelectDateRangeView+binding.swift in Sources */,
