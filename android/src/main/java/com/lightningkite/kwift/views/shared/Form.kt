@@ -72,6 +72,15 @@ class Form {
         }
     }
 
+    fun runOrDialog(action:()->Unit){
+        val errors = check()
+        if(errors.isNotEmpty()){
+            showDialog(errors.map { it -> it.string }.joinToViewString())
+        } else {
+            action()
+        }
+    }
+
     fun checkField(field: UntypedFormField): ViewString? {
         val result = field.validation(field)
         field.error.value = result
