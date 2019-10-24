@@ -37,7 +37,7 @@ class ViewNode(
         //Breadth-first search
         fun estimateDepth(map: Map<String, ViewNode>){
             map.values.forEach { it.depth = -1 }
-            val root = map["Root"] ?: map["Main"] ?: map["Landing"] ?: map.values.firstOrNull() ?: return
+            val root = root(map) ?: return
             root.depth = 0
             var highestSeen = 0
             val seen = mutableListOf<String>()
@@ -61,6 +61,37 @@ class ViewNode(
                 }
             }
         }
+
+        fun root(map: Map<String, ViewNode>) = map["Root"] ?: map["Main"] ?: map["Landing"] ?: map.values.firstOrNull()
+
+        fun assertNoLeaks(map: Map<String, ViewNode>) {
+            val root = root(map) ?: return
+            if(root.totalRequires(map).isEmpty()) return
+            val leakMessages = ArrayList<String>()
+            root.totalRequires(map).forEach { leakedVar ->
+                val requiredBy = map.values.filter { leakedVar in it.requires }
+                val climbing = requiredBy.map { listOf(it) }.toMutableList()
+                val seen = mutableSetOf<String>()
+                while(climbing.isNotEmpty()){
+                    val next = climbing.removeAt(0)
+                    for (it in next.last().createdBy(map)) {
+                        if(it in seen) continue
+                        val node = map[it] ?: continue
+                        if(leakedVar in node.provides) continue
+                        if(node == root) {
+                            val message = "Leak path for ${leakedVar}: ${next.joinToString(" <- ") { it.name }}"
+                            leakMessages += message
+                            println(message)
+                            break
+                        }
+                        climbing.add(next + node)
+                    }
+                }
+
+            }
+
+            throw Exception("Leak detected! ${leakMessages.joinToString("\n")}")
+        }
     }
 
     fun totalRequires(map: Map<String, ViewNode>, seen: Set<String> = setOf()): Set<ViewVar> {
@@ -75,6 +106,13 @@ class ViewNode(
             .flatMap { it.operations.asSequence() }
             .filter { it.viewName == name }
             .mapNotNull { it.stack }
+            .toSet()
+    }
+
+    fun createdBy(map: Map<String, ViewNode>): Set<String> {
+        return map.values.asSequence()
+            .filter { it.operations.asSequence().any { it.viewName == this.name } }
+            .mapNotNull { it.name }
             .toSet()
     }
 
