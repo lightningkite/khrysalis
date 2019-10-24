@@ -124,7 +124,20 @@ fun SwiftAltListener.registerClass() {
             line("enum CodingKeys: String, CodingKey {")
             tab {
                 item.constructorVars().forEach {
-                    line("case ${it.simpleIdentifier().text} = \"${it.simpleIdentifier().text}\"")
+                    val jsonName = it.modifiers()?.annotation()?.asSequence()?.mapNotNull {
+                        it.singleAnnotation()
+                            ?.unescapedAnnotation()
+                            ?.constructorInvocation()
+                            ?.takeIf { it.userType().text == "JsonProperty" }
+                            ?.valueArguments()
+                            ?.valueArgument()
+                            ?.firstOrNull()
+                            ?.expression()
+                            ?.text
+                            ?.removePrefix("\"")
+                            ?.removeSuffix("\"")
+                    }?.firstOrNull()
+                    line("case ${it.simpleIdentifier().text} = \"${jsonName ?: it.simpleIdentifier().text}\"")
                 }
             }
             line("}")
