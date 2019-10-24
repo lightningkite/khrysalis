@@ -115,6 +115,17 @@ public class Form {
         }
     }
     
+    public func runOrDialog(action: () -> Void) -> Void {
+        var errors = check()
+        if errors.isNotEmpty() {
+            showDialog(errors.map{ (it) in 
+                it.string
+            }.joinToViewString())
+        } else {
+            action()
+        }
+    }
+    
     public func checkField(field: UntypedFormField) -> ViewString?  {
         var result = field.validation(field)
         field.error.value = result

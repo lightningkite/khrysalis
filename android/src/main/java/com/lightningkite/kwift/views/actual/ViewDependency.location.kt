@@ -82,15 +82,16 @@ fun ViewDependency.requestLocation(
 }
 
 
-data class LocationCache(var location: LocationResult, var timeSinceCall: Date)
+data class LocationCache(var location: LocationResult, var timeSinceCall: Date, var accuracy: Double)
 
 var lastLocation: LocationCache? = null
 
 fun ViewDependency.requestLocationCached(
-    accuracyBetterThanMeters: Double,
+    accuracyBetterThanMeters: Double = 10.0,
+    timeoutInSeconds: Double = 100.0,
     onResult: (LocationResult?, String?) -> Unit
 ) {
-    if (lastLocation != null && lastLocation!!.timeSinceCall.time - java.util.Date().time < 350000) {
+    if (lastLocation != null && lastLocation!!.timeSinceCall.time - java.util.Date().time < 300000 && lastLocation!!.accuracy < accuracyBetterThanMeters) {
         onResult(
             lastLocation!!.location,
             null
@@ -98,8 +99,7 @@ fun ViewDependency.requestLocationCached(
     } else {
         requestLocation(accuracyBetterThanMeters) { result, string ->
             result?.let { it ->
-                lastLocation?.location = it
-                lastLocation?.timeSinceCall = Date()
+                lastLocation = LocationCache(it, Date(), accuracyBetterThanMeters)
             }
             onResult(result, string)
         }

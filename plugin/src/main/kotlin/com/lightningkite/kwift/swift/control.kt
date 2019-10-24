@@ -1,6 +1,5 @@
 package com.lightningkite.kwift.swift
 
-import com.lightningkite.kwift.swift.TabWriter
 import com.lightningkite.kwift.utils.forEachBetween
 import org.jetbrains.kotlin.KotlinParser
 
@@ -58,7 +57,7 @@ fun SwiftAltListener.registerControl() {
                 direct.append(isExpr.elvisExpression(0)!!.text!!)
                 direct.append(" = ")
                 direct.append(isExpr.elvisExpression(0)!!.text!!)
-                direct.append(" as ")
+                direct.append(" as? ")
                 direct.append(isExpr.type(0)!!.text!!)
             } else {
                 write(expression)
