@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import Photos
 
 
 public extension ViewDependency {
@@ -60,26 +61,62 @@ private class ImageDelegate : NSObject, UIImagePickerControllerDelegate, UINavig
     func prepareGallery(){
         imagePicker.delegate = self
         imagePicker.sourceType = .savedPhotosAlbum
-        imagePicker.allowsEditing = true
+        imagePicker.allowsEditing = false
     }
     
     func prepareCamera(){
         imagePicker.delegate = self
-        imagePicker.cameraCaptureMode = .photo
         imagePicker.sourceType = .camera
+        imagePicker.cameraCaptureMode = .photo
         imagePicker.cameraDevice = .front
-        imagePicker.allowsEditing = true
+        imagePicker.allowsEditing = false
     }
     
+//    @objc public func handleResult(image: UIImage, didFinishSavingWithError error: NSError?, contextInfo: UnsafeMutableRawPointer?) {
+//        if error == nil {
+//            imagePicker.dismiss(animated: true, completion: {
+//                image.file
+////                self.onImagePicked?(URL(fileURLWithPath: path, isDirectory: false))
+//                self.onImagePicked = nil
+//            })
+//        }
+//    }
+    
     public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
-        var maybeImage: URL? = nil
         if #available(iOS 11.0, *) {
-            maybeImage = info[.imageURL] as? URL
+            if let image = info[.imageURL] as? URL {
+                picker.dismiss(animated: true, completion: {
+                    self.onImagePicked?(image)
+                    self.onImagePicked = nil
+                })
+                return
+            }
         }
-        guard let image = maybeImage else { return }
-        picker.dismiss(animated: true, completion: {
-            self.onImagePicked?(image)
-            self.onImagePicked = nil
+        print("I am here")
+        let image = info[.originalImage] as! UIImage
+        print(image)
+        var localId: String = ""
+        PHPhotoLibrary.shared().performChanges({
+            print("I am there")
+            let r = PHAssetChangeRequest.creationRequestForAsset(from: image)
+            localId = r.placeholderForCreatedAsset!.localIdentifier
+        }, completionHandler: { (success, error) in
+            print("I am every freakin' where")
+            if !success {
+                print(error)
+            } else {
+                let assetResult = PHAsset.fetchAssets(withLocalIdentifiers: [localId], options: nil)
+                let asset = assetResult.firstObject!
+                PHImageManager.default().requestImageData(for: asset, options: nil) { (data, string, orientation, map) in
+                    print("FEAR ME")
+                    let fileUrl = map!["PHImageFileURLKey"] as! URL
+                    picker.dismiss(animated: true, completion: {
+                        self.onImagePicked?(fileUrl)
+                        self.onImagePicked = nil
+                    })
+                }
+            }
         })
+//        UIImageWriteToSavedPhotosAlbum(image, self, #selector(handleResult(image:didFinishSavingWithError:contextInfo:)), nil)
     }
 }
