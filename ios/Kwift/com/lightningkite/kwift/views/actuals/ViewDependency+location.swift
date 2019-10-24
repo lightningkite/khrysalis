@@ -9,8 +9,28 @@ import UIKit
 import CoreLocation
 
 
+class LocationCache{
+    var location: LocationResult
+    var timeSinceCall: Date
+    var accuracy: Double
+    
+    init(location: LocationResult, time: Date, accuracy: Double){
+        self.location = location
+        self.timeSinceCall = time
+        self.accuracy = accuracy
+    }
+    
+    init(_ location: LocationResult, _ time: Date, _ accuracy: Double){
+        self.location = location
+        self.timeSinceCall = time
+        self.accuracy = accuracy
+    }
+}
+
+var lastLocation: LocationCache? = nil
+
 public extension ViewDependency {
-    func requestLocation(_ accuracyBetterThanMeters: Double, _ timeoutInSeconds: Double, _ onResult: @escaping (LocationResult?, String?)->Void) {
+    func requestLocation(_ accuracyBetterThanMeters: Double = 10.0, _ timeoutInSeconds: Double = 100.0, _ onResult: @escaping (LocationResult?, String?)->Void) {
         requestLocation(accuracyBetterThanMeters: accuracyBetterThanMeters, timeoutInSeconds: timeoutInSeconds, onResult: onResult)
     }
     func requestLocation(accuracyBetterThanMeters: Double, timeoutInSeconds: Double, onResult: @escaping (LocationResult?, String?)->Void) {
@@ -32,6 +52,32 @@ public extension ViewDependency {
             manager.stopUpdatingLocation()
             singleTime.once {
                 onResult(nil, "Timeout")
+            }
+        }
+    }
+    
+    func requestLocationCached(_ accuracyBetterThanMeters: Double = 10.0, _ timeoutInSeconds: Double = 100.0, _ onResult: @escaping (LocationResult?, String?)->Void) {
+        requestLocationCached(accuracyBetterThanMeters: accuracyBetterThanMeters, timeoutInSeconds: timeoutInSeconds, onResult: onResult)
+    }
+    
+    func requestLocationCached(accuracyBetterThanMeters: Double = 10.0, timeoutInSeconds: Double = 100.0, onResult: @escaping (LocationResult?, String?)->Void) {
+        if let location = lastLocation{
+            if location.timeSinceCall.timeIntervalSinceNow.milliseconds > 300000 && location.accuracy < accuracyBetterThanMeters{
+                onResult(location.location, nil)
+            }else{
+                requestLocation(accuracyBetterThanMeters, timeoutInSeconds){(result, string) in
+                    if let result = result{
+                        lastLocation = LocationCache(result, Date(), accuracyBetterThanMeters)
+                    }
+                    onResult(result, string)
+                }
+            }
+        }else{
+            requestLocation(accuracyBetterThanMeters, timeoutInSeconds){(result, string) in
+                if let result = result{
+                    lastLocation = LocationCache(result, Date(), accuracyBetterThanMeters)
+                }
+                onResult(result, string)
             }
         }
     }
@@ -77,3 +123,4 @@ public extension ViewDependency {
         }
     }
 }
+
