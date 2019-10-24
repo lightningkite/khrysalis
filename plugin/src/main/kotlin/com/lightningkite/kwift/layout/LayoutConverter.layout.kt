@@ -112,6 +112,9 @@ val LayoutConverter.Companion.layoutViews
                 appendln()
             },
 
+            ViewType("ViewFlipper", "ViewFlipper", "FrameLayout", handlesPadding = true) { node ->
+
+            },
             ViewType("FrameLayout", "FrameLayout", "View", handlesPadding = true) { node ->
                 setPadding(node)
 
