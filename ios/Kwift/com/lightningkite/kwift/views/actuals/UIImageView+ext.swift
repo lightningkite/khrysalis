@@ -11,5 +11,6 @@ import UIKit
 public extension UIImageView {
     func setImageResource(_ drawableMaker: (UIView?)->CALayer) {
         self.image = drawableMaker(self).toImage()
+        self.superview?.setNeedsLayout()
     }
 }

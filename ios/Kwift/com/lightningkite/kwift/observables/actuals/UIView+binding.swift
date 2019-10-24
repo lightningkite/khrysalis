@@ -25,6 +25,7 @@ public extension UIView {
     func bindExists(observable: ObservableProperty<Bool>) {
         observable.addAndRunWeak(referenceA: self) { (this, value) in
             this.includeInLayout = value
+            this.isHidden = !value
         }
     }
 }
