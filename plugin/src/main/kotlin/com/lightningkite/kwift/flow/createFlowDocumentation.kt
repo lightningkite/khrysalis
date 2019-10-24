@@ -43,6 +43,9 @@ fun createFlowDocumentation(
     //Sort
     ViewNode.estimateDepth(nodes)
 
+    //Throw on leaks
+    ViewNode.assertNoLeaks(nodes)
+
     //Emit info
     ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(docsOutputFolder.resolve("view-nodes.json"), nodes)
 

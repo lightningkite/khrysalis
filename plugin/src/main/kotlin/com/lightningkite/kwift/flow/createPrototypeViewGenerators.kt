@@ -1,6 +1,5 @@
 package com.lightningkite.kwift.flow
 
-import com.fasterxml.jackson.databind.ObjectMapper
 import com.lightningkite.kwift.layout.readXMLStyles
 import com.lightningkite.kwift.log
 import com.lightningkite.kwift.utils.XmlNode
@@ -43,6 +42,9 @@ internal fun createPrototypeViewGenerators(
         nodes.values.asSequence().flatMap { it.operations.asSequence() }.none { it.viewName == node.name }
     }
     inaccessibleNodes.forEach { println("WARNING! Node ${it.name} is not accessible") }
+
+    //Throw on leaks
+    ViewNode.assertNoLeaks(nodes)
 
     //Emit views
     files.forEach { item ->
