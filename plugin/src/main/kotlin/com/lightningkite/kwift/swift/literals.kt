@@ -41,4 +41,7 @@ fun SwiftAltListener.registerLiterals() {
     tokenOptions[KotlinParser.LongLiteral] = {
         direct.append(it.text.removeSuffix("l").removeSuffix("L"))
     }
+    tokenOptions[KotlinParser.CharacterLiteral] = {
+        direct.append(it.text.trim('\'').let { "\"$it\"" })
+    }
 }

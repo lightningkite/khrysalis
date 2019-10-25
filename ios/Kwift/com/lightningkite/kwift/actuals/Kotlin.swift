@@ -249,6 +249,18 @@ public extension String {
         return !isEmpty && !self.allSatisfy { c in c == " " || c == "\n" }
     }
     
+    func trim() -> String {
+        return self.trimmingCharacters(in: .whitespaces)
+    }
+    
+    func trim(_ character: Character, _ characters: Character...) -> String {
+        var string: String = String(character)
+        for c in characters {
+            string += String(c)
+        }
+        return self.trimmingCharacters(in: CharacterSet(charactersIn: string))
+    }
+    
     func trimIndent() -> String {
         return self
     }
