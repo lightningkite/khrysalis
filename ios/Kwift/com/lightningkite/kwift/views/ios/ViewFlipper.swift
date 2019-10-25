@@ -19,6 +19,9 @@ open class ViewFlipper: FrameLayout {
             }
             let displayingView = subviews[displayedChild]
             if displayingView == previousSubview { return }
+            let previousSubview = self.previousSubview
+            self.previousSubview = displayingView
+            
             displayingView.isHidden = false
             self.setNeedsLayout()
             if let disappearingView = previousSubview {

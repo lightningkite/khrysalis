@@ -54,7 +54,7 @@ fun Project.convertKotlinToSwiftWithDependencies(
     )
 }
 
-fun Project.configureGradle(iosRelativeBase: String = "../../ios/Klyp") {
+fun Project.configureGradle(packageName: String, iosRelativeBase: String = "../../ios/Klyp") {
 
     KwiftSettings.verbose = true
     val androidBase = project.projectDir
@@ -63,7 +63,7 @@ fun Project.configureGradle(iosRelativeBase: String = "../../ios/Klyp") {
     tasks.create("kwiftConvertKotlinToSwiftClean") { task ->
         task.group = "build"
         task.doLast {
-            println("Started")
+
             convertKotlinToSwiftWithDependencies(
                 androidFolder = androidBase,
                 iosFolder = iosBase,
@@ -71,13 +71,13 @@ fun Project.configureGradle(iosRelativeBase: String = "../../ios/Klyp") {
             ) {
                 imports = listOf("Kwift")
             }
-            println("Finished")
+
         }
     }
     tasks.create("kwiftConvertKotlinToSwift") { task ->
         task.group = "build"
         task.doLast {
-            println("Started")
+
             convertKotlinToSwiftWithDependencies(
                 androidFolder = androidBase,
                 iosFolder = iosBase,
@@ -85,40 +85,40 @@ fun Project.configureGradle(iosRelativeBase: String = "../../ios/Klyp") {
             ) {
                 imports = listOf("Kwift")
             }
-            println("Finished")
+
         }
     }
     tasks.create("kwiftCreateAndroidLayoutClasses") { task ->
         task.group = "build"
         task.doLast {
-            println("Started")
+
             createAndroidLayoutClasses(
                 androidFolder = androidBase,
-                applicationPackage = "com.klypme"
+                applicationPackage = packageName
             )
-            println("Finished")
+
         }
     }
     tasks.create("kwiftConvertLayoutsToSwift") { task ->
         task.group = "build"
         task.doLast {
-            println("Started")
+
             convertLayoutsToSwift(
                 androidFolder = androidBase,
                 iosFolder = iosBase
             )
-            println("Finished")
+
         }
     }
     tasks.create("kwiftConvertResourcesToIos") { task ->
         task.group = "build"
         task.doLast {
-            println("Started")
+
             convertResourcesToIos(
                 androidFolder = androidBase,
                 iosFolder = iosBase
             )
-            println("Finished")
+
         }
     }
     tasks.create("kwiftIos") { task ->
@@ -132,23 +132,23 @@ fun Project.configureGradle(iosRelativeBase: String = "../../ios/Klyp") {
     tasks.create("kwiftPrototype") { task ->
         task.group = "build"
         task.doLast {
-            println("Started")
+
             createPrototypeViewGenerators(
                 androidFolder = androidBase,
-                applicationPackage = "com.klypme"
+                applicationPackage = packageName
             )
-            println("Finished")
+
         }
     }
 
     tasks.create("kwiftFlowDoc") { task ->
         task.group = "build"
         task.doLast {
-            println("Started")
+
             createFlowDocumentation(
                 androidFolder = androidBase
             )
-            println("Finished")
+
         }
     }
 

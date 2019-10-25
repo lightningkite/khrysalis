@@ -37,6 +37,7 @@ fun SwiftAltListener.registerClass() {
     fun TabWriter.writeConvenienceInit(item: KotlinParser.ClassDeclarationContext) {
         if (item.primaryConstructor()?.classParameters()?.classParameter()?.size ?: 0 == 0) return
         line {
+            var isFirst = true
             append("convenience public init(")
             item.primaryConstructor()?.classParameters()?.classParameter()?.forEachBetween(
                 forItem = {
@@ -44,10 +45,13 @@ fun SwiftAltListener.registerClass() {
                     append(it.simpleIdentifier().text)
                     append(": ")
                     write(it.type())
-                    it.expression()?.let {
-                        append(" = ")
-                        write(it)
+                    if(!isFirst) {
+                        it.expression()?.let {
+                            append(" = ")
+                            write(it)
+                        }
                     }
+                    isFirst = false
                 },
                 between = {
                     append(", ")
@@ -81,16 +85,30 @@ fun SwiftAltListener.registerClass() {
                 line("let values = try decoder.container(keyedBy: CodingKeys.self)")
                 item.constructorVars().forEach {
                     line {
-                        if (it.type().text == "Double") {
+                        val typeText = it.type().text.trim()
+                        if (typeText == "Double") {
                             it.expression()?.let { default ->
                                 append(it.simpleIdentifier().text)
-                                append(" = try values.decodeIfDoublePresent(forKey: .")
+                                append(" = try values.decodeDoubleIfPresent(forKey: .")
                                 append(it.simpleIdentifier().text)
                                 append(") ?? ")
                                 write(default)
                             } ?: run {
                                 append(it.simpleIdentifier().text)
-                                append(" = try values.decodeIfDouble(forKey: .")
+                                append(" = try values.decodeDouble(forKey: .")
+                                append(it.simpleIdentifier().text)
+                                append(")")
+                            }
+                        } else if (typeText == "Double?") {
+                            it.expression()?.let { default ->
+                                append(it.simpleIdentifier().text)
+                                append(" = try values.decodeDoubleIfPresent(forKey: .")
+                                append(it.simpleIdentifier().text)
+                                append(") ?? ")
+                                write(default)
+                            } ?: run {
+                                append(it.simpleIdentifier().text)
+                                append(" = try values.decodeDoubleIfPresent(forKey: .")
                                 append(it.simpleIdentifier().text)
                                 append(")")
                             }
@@ -319,7 +337,7 @@ fun SwiftAltListener.registerClass() {
                         append("override ")
                     }
                 }
-                append(item.modifiers().visibilityString().let {
+                append(item.primaryConstructor()?.modifiers().visibilityString().let {
                     if(it == "open") "public" else it
                 })
                 append(" init(")

@@ -35,6 +35,31 @@ open class KwiftViewController: UIViewController, UINavigationControllerDelegate
         let m = main.generate(ViewDependency(self))
         innerView = m
         self.view.addSubview(innerView)
+        
+        if let main = main as? EntryPoint, let stack = main.mainStack {
+            stack.addAndRunWeak(self) { (self, value) in
+                self.refreshBackingColor()
+            }
+        }
+        
+        showDialogEvent.addWeak(self){ (this, request) in
+            let dep = ViewDependency(self)
+            let message = request.string.get(dependency: dep)
+            let alert = UIAlertController(title: "", message: message, preferredStyle: .alert)
+            if let confirmation = request.confirmation {
+                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
+                    confirmation()
+                }))
+                alert.addAction(UIAlertAction(title: "Cancel", style: .default, handler: { (action) in
+                    
+                }))
+            } else {
+                alert.addAction(UIAlertAction(title: "OK", style: .default, handler: { (action) in
+                    
+                }))
+            }
+            this.present(alert, animated: true, completion: {})
+        }
     
         addKeyboardObservers()
         hideKeyboardWhenTappedAround()
