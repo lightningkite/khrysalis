@@ -40,7 +40,12 @@ fun SwiftAltListener.registerType() {
         item.children.asSequence()
             .filter { it is KotlinParser.TypeContext || it is KotlinParser.ParameterContext }
             .forEachBetween(
-                forItem = { write(it as ParserRuleContext) },
+                forItem = {
+                    if(it is KotlinParser.ParameterContext) {
+                        direct.append("_ ")
+                        write(it)
+                    } else write(it as ParserRuleContext)
+                },
                 between = { direct.append(", ") }
             )
         direct.append(')')

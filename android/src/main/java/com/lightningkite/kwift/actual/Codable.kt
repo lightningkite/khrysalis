@@ -2,6 +2,8 @@ package com.lightningkite.kwift.actual
 
 interface Codable
 typealias IsCodable = Any
+typealias JsonList = List<*>
+typealias JsonMap = Map<*, *>
 
 fun IsCodable?.toJsonString(): String {
     return HttpClient.mapper.writeValueAsString(this)

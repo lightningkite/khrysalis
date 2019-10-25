@@ -9,6 +9,8 @@
 import Foundation
 
 public typealias IsCodable = Codable
+public typealias JsonList = NSArray
+public typealias JsonMap = NSDictionary
 
 public extension Formatter {
     static let iso8601: DateFormatter = {
@@ -109,6 +111,21 @@ public extension KeyedDecodingContainer {
 
 public extension String {
     func fromJsonStringUntyped() -> Any? {
-        return try? JSONSerialization.jsonObject(with: self.data(using: .utf8)!, options: .allowFragments)
+        let obj = try? JSONSerialization.jsonObject(with: self.data(using: .utf8)!, options: .allowFragments)
+        return obj
+    }
+    func fromJsonString<T>() -> T? where T : Decodable {
+        if let data = self.data(using: .utf8) {
+            if let result = try? decoder.decode(T.self, from: data) {
+                return result
+            }
+            let dataString = String(data: data, encoding: .utf8)!
+            let fixedData = ("[" + dataString + "]").data(using: .utf8)!
+            if let result = try? decoder.decode(Array<T>.self, from: fixedData) {
+                return result[0]
+            }
+            return nil
+        }
+        return nil
     }
 }

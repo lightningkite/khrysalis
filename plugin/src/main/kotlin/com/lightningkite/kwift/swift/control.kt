@@ -219,23 +219,25 @@ fun SwiftAltListener.registerControl() {
                                     startLine()
                                     direct.append("case ")
                                     write(expr)
+                                    direct.append(":")
                                 }
                                 c.rangeTest()?.let { r ->
                                     startLine()
                                     direct.append("case ")
                                     write(r.expression())
+                                    direct.append(":")
                                 }
                                 c.typeTest()?.let {
                                     startLine()
                                     direct.append("case is ")
                                     write(it.type())
+                                    direct.append(":")
                                 }
                             },
                             between = {
-                                direct.append(", ")
+                                direct.append(" fallthrough")
                             }
                         )
-                        direct.append(":")
                         writeCaseStatements(it.controlStructureBody())
                     }
                 }

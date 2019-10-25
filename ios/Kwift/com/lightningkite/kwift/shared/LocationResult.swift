@@ -63,7 +63,7 @@ public class LocationResult: Equatable, Hashable {
         self.headingFromNorth = headingFromNorth
         self.speedMetersPerSecond = speedMetersPerSecond
     }
-    convenience public init(_ latitude: Double = 0.0, _ longitude: Double = 0.0, _ accuracyMeters: Double = 100.0, _ altitudeMeters: Double = 0.0, _ altitudeAccuracyMeters: Double = 100.0, _ headingFromNorth: Double = 0.0, _ speedMetersPerSecond: Double = 0.0) {
+    convenience public init(_ latitude: Double, _ longitude: Double = 0.0, _ accuracyMeters: Double = 100.0, _ altitudeMeters: Double = 0.0, _ altitudeAccuracyMeters: Double = 100.0, _ headingFromNorth: Double = 0.0, _ speedMetersPerSecond: Double = 0.0) {
         self.init(latitude: latitude, longitude: longitude, accuracyMeters: accuracyMeters, altitudeMeters: altitudeMeters, altitudeAccuracyMeters: altitudeAccuracyMeters, headingFromNorth: headingFromNorth, speedMetersPerSecond: speedMetersPerSecond)
     }
 }

@@ -219,8 +219,17 @@ public extension Set {
     }
 }
 
+public extension Character {
+    func isUpperCase() -> Bool { return isUppercase }
+    func isLowerCase() -> Bool { return isLowercase }
+}
+
 public extension String {
     var length: Int32 { return Int32(count) }
+    
+    subscript(i: Int32) -> Character {
+        return self[index(startIndex, offsetBy: Int(i))]
+    }
     
     func substring(_ startIndex: Int32, _ endIndex: Int32? = nil) -> String {
         let s = self.index(self.startIndex, offsetBy: Int(startIndex))

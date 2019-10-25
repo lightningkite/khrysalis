@@ -131,6 +131,8 @@
 		5EE740622362620A00EB5B6E /* AppDelegate+deepLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EE740612362620A00EB5B6E /* AppDelegate+deepLink.swift */; };
 		5EE740642362651700EB5B6E /* KwiftAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EE740632362651700EB5B6E /* KwiftAppDelegate.swift */; };
 		5EE740662362669A00EB5B6E /* EntryPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EE740652362669A00EB5B6E /* EntryPoint.swift */; };
+		5EE74844236386E300EB5B6E /* UIView.ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EE74843236386E300EB5B6E /* UIView.ext.swift */; };
+		5EE748462363870E00EB5B6E /* DjangoErrorTranslator.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EE748452363870E00EB5B6E /* DjangoErrorTranslator.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -270,6 +272,8 @@
 		5EE740612362620A00EB5B6E /* AppDelegate+deepLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "AppDelegate+deepLink.swift"; path = "Kwift/com/lightningkite/kwift/ios/AppDelegate+deepLink.swift"; sourceTree = SOURCE_ROOT; };
 		5EE740632362651700EB5B6E /* KwiftAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = KwiftAppDelegate.swift; path = Kwift/com/lightningkite/kwift/ios/KwiftAppDelegate.swift; sourceTree = SOURCE_ROOT; };
 		5EE740652362669A00EB5B6E /* EntryPoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EntryPoint.swift; sourceTree = "<group>"; };
+		5EE74843236386E300EB5B6E /* UIView.ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIView.ext.swift; sourceTree = "<group>"; };
+		5EE748452363870E00EB5B6E /* DjangoErrorTranslator.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DjangoErrorTranslator.swift; sourceTree = "<group>"; };
 		63A80265E53D7E8A26AF57CF /* libPods-Kwift.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Kwift.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6648265A81A02AE0AA915524 /* Pods-Kwift.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kwift.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Kwift/Pods-Kwift.debug.xcconfig"; sourceTree = "<group>"; };
 		F994D26061C995DD96617E1D /* Pods-Kwift.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kwift.release.xcconfig"; path = "Pods/Target Support Files/Pods-Kwift/Pods-Kwift.release.xcconfig"; sourceTree = "<group>"; };
@@ -427,6 +431,7 @@
 		5E429763233EC420002AAB7A /* actuals */ = {
 			isa = PBXGroup;
 			children = (
+				5EE74843236386E300EB5B6E /* UIView.ext.swift */,
 				5EE73FE32360CA5100EB5B6E /* ViewDependency+location.swift */,
 				5E0CE10B2358187200145B82 /* Align.swift */,
 				5E0CE10D235818E800145B82 /* EmptyView.swift */,
@@ -447,6 +452,7 @@
 		5E429779233EC420002AAB7A /* shared */ = {
 			isa = PBXGroup;
 			children = (
+				5EE748452363870E00EB5B6E /* DjangoErrorTranslator.swift */,
 				5EE740652362669A00EB5B6E /* EntryPoint.swift */,
 				5E42977A233EC420002AAB7A /* Strings.swift */,
 				5E42977B233EC420002AAB7A /* ViewGenerator.swift */,
@@ -754,6 +760,7 @@
 				5E4297E5233EC420002AAB7A /* ViewPagerLayout.swift in Sources */,
 				5E1375C92358DFBD007824E8 /* UIButton+compoundDrawable.swift in Sources */,
 				5E4297E4233EC420002AAB7A /* UIImageView.ext.swift in Sources */,
+				5EE74844236386E300EB5B6E /* UIView.ext.swift in Sources */,
 				5ED0DC36234FAB9400C36B7D /* UIImageView+ext.swift in Sources */,
 				5E4297DB233EC420002AAB7A /* UIScrollView+flexFix.swift in Sources */,
 				5E4297C8233EC420002AAB7A /* AbstractCalendarView.swift in Sources */,
@@ -801,6 +808,7 @@
 				5E4297CA233EC420002AAB7A /* SelectDateRangeMonthView.swift in Sources */,
 				5E5F673C2347D7BF0090384F /* Event.ext.swift in Sources */,
 				5E4297BD233EC420002AAB7A /* ConstantObservableProperty.swift in Sources */,
+				5EE748462363870E00EB5B6E /* DjangoErrorTranslator.swift in Sources */,
 				5E4297AD233EC420002AAB7A /* SelectDayView+binding.swift in Sources */,
 				5E0CE10C2358187200145B82 /* Align.swift in Sources */,
 				5E42979C233EC420002AAB7A /* UIRatingBar+binding.swift in Sources */,
