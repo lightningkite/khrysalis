@@ -12,8 +12,14 @@ import UIKit
 
 open class KwiftViewController: UIViewController, UINavigationControllerDelegate {
     
-    open var main: ViewGenerator {
-        fatalError("Not implemented")
+    open var main: ViewGenerator
+    public init(_ main: ViewGenerator){
+        self.main = main
+        super.init(nibName: nil, bundle: nil)
+    }
+    required public init?(coder: NSCoder) {
+        self.main = ViewGenerator.Default()
+        super.init(coder: coder)
     }
     
     weak var innerView: UIView!

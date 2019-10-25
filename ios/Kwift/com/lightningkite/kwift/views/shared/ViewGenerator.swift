@@ -13,6 +13,27 @@ open class ViewGenerator {
     open func generate(dependency: ViewDependency) -> View { fatalError() }
     open func generate(_ dependency: ViewDependency) -> View { fatalError() }
     
+    public class Default: ViewGenerator {
+        
+        
+        override public var title: String {
+            get {
+                return "Empty"
+            }
+        }
+        
+        override public func generate(dependency: ViewDependency) -> View {
+            return EmptyView(dependency)
+        }
+        override public func generate(_ dependency: ViewDependency) -> View {
+            return generate(dependency: dependency)
+        }
+        
+        override public init() {
+            super.init()
+        }
+    }
+    
     public init() {
     }
 }

@@ -3,7 +3,6 @@ package com.lightningkite.kwift.interfaces
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.lightningkite.kwift.INTERFACE_SCAN_VERSION
-import com.lightningkite.kwift.VERSION
 import com.lightningkite.kwift.log
 import com.lightningkite.kwift.utils.Versioned
 import org.antlr.v4.runtime.ANTLRInputStream
@@ -13,25 +12,24 @@ import org.jetbrains.kotlin.KotlinLexer
 import org.jetbrains.kotlin.KotlinParser
 import java.io.File
 
-fun getInterfaces(sources: Sequence<File>): Map<String, InterfaceListener.InterfaceData> {
+fun writeInterfacesFile(sources: Sequence<File>, out: File): Map<String, InterfaceListener.InterfaceData> {
     val interfaces = HashMap<String, InterfaceListener.InterfaceData>()
 
-    val cacheFile = File("./build/kwift-interfaces-cache.json")
-    val existingCache: Map<String, FileCache> = if (cacheFile.exists()) {
-        val versioned = jacksonObjectMapper().readValue<Versioned<Map<String, FileCache>>>(cacheFile)
+    val existingCache: Map<String, FileCache> = if (out.exists()) {
+        val versioned = jacksonObjectMapper().readValue<Versioned<Map<String, FileCache>>>(out)
         if (versioned.version == INTERFACE_SCAN_VERSION) versioned.value else mapOf()
     } else
         mapOf()
     val newCache = HashMap<String, FileCache>()
 
     sources.forEach { file ->
-        log("File: $file")
         val text = file.readText()
         val hash = text.hashCode()
         val existing = existingCache[file.path]
         val cache = if (existing != null && existing.hash == hash) {
             existing
         } else {
+            log("Reading interfaces from: $file")
             val lexer = KotlinLexer(ANTLRInputStream(text))
             val tokenStream = CommonTokenStream(lexer)
             val parser = KotlinParser(tokenStream)
@@ -52,11 +50,11 @@ fun getInterfaces(sources: Sequence<File>): Map<String, InterfaceListener.Interf
 
     }
 
-    if (!cacheFile.exists()) {
-        cacheFile.parentFile.mkdirs()
-        cacheFile.createNewFile()
+    if (!out.exists()) {
+        out.parentFile.mkdirs()
+        out.createNewFile()
     }
-    cacheFile.writeText(jacksonObjectMapper().writeValueAsString(Versioned(INTERFACE_SCAN_VERSION, newCache)))
+    out.writeText(jacksonObjectMapper().writeValueAsString(Versioned(INTERFACE_SCAN_VERSION, newCache)))
 
     return interfaces
 

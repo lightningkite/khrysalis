@@ -3,15 +3,12 @@ package com.lightningkite.kwift.swift
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.lightningkite.kwift.VERSION
-import com.lightningkite.kwift.interfaces.getInterfaces
+import com.lightningkite.kwift.interfaces.writeInterfacesFile
 import com.lightningkite.kwift.log
-import com.lightningkite.kwift.swift.FileConversionInfo
-import com.lightningkite.kwift.swift.TabWriter
 import com.lightningkite.kwift.utils.Versioned
 import org.antlr.v4.runtime.*
 import org.antlr.v4.runtime.atn.ATNConfigSet
 import org.antlr.v4.runtime.dfa.DFA
-import org.antlr.v4.runtime.tree.ParseTreeWalker
 import org.jetbrains.kotlin.KotlinLexer
 import org.jetbrains.kotlin.KotlinParser
 import java.io.File
@@ -24,13 +21,15 @@ fun convertKotlinToSwift(
     clean: Boolean = false,
     setup: SwiftAltListener.() -> Unit = {}
 ) = convertKotlinToSwiftByFolder(
-    androidFolder.resolve("src/main/java"),
-    iosFolder,
-    clean,
-    setup
+    interfacesOut = androidFolder.resolve("src/main/resources/META-INF/kwift-interfaces.json"),
+    baseKotlin = androidFolder.resolve("src/main/java"),
+    baseSwift = iosFolder,
+    clean = clean,
+    setup = setup
 )
 
 fun convertKotlinToSwiftByFolder(
+    interfacesOut: File,
     baseKotlin: File,
     baseSwift: File,
     clean: Boolean = false,
@@ -41,10 +40,13 @@ fun convertKotlinToSwiftByFolder(
         .filter { it.extension == "kt" }
         .filter { it.toRelativeString(baseKotlin).pathIsShared() }
 
-    val interfaces = getInterfaces(toConvert)
-    log("Interfaces: ${interfaces.values.joinToString("\n")}")
+    val interfaces = writeInterfacesFile(toConvert, interfacesOut)
     val swift = SwiftAltListener().apply(setup)
-    swift.interfaces = interfaces
+    swift.interfaces += interfaces
+    log("Interfaces: ")
+    for(i in swift.interfaces){
+        log(i.value.toString())
+    }
 
     val cacheFile = File("./build/kwift-cache-2.json")
     val existingCache = if (cacheFile.exists()) {
@@ -63,8 +65,6 @@ fun convertKotlinToSwiftByFolder(
         )
         output.parentFile.mkdirs()
 
-        println("$file -> $output")
-
         val text = file.readText()
         val inputHash = text.hashCode()
         val outputHash = if (output.exists()) output.readText().hashCode() else 0
@@ -73,6 +73,8 @@ fun convertKotlinToSwiftByFolder(
             if (!clean && existing != null && existing.inputHash == inputHash && existing.outputHash == outputHash) {
                 existing
             } else {
+                log("Converting ${file.absolutePath.substringBeforeLast('.').commonSuffixWith(output.absolutePath.substringBeforeLast('.'))}")
+
                 val lexer = KotlinLexer(ANTLRInputStream(text))
                 val tokenStream = CommonTokenStream(lexer)
                 val parser = KotlinParser(tokenStream)

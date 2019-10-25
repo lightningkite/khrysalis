@@ -12,6 +12,7 @@ const val VERSION: Int = 12
 
 fun main(vararg args: String) {
     convertKotlinToSwiftByFolder(
+        interfacesOut = File("./testDataOutput/interfaces.json"),
         baseKotlin = File("./testData"),
         baseSwift = File("./testDataOutput"),
         clean = true

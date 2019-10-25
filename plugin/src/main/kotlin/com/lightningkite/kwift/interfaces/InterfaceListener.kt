@@ -15,6 +15,9 @@ open class InterfaceListener(val parser: KotlinParser) : KotlinParserBaseListene
         val implements: List<String> = listOf()
     ){
         @get:JsonIgnore val qualifiedName get() = packageName + "." + name
+        override fun toString(): String {
+            return "$name: ${implements.joinToString()} { ${methods.joinToString(" ") { it + "()" }} ${properties.joinToString(" ")} }"
+        }
     }
 
     val interfaces = ArrayList<InterfaceData>()

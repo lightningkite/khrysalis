@@ -1,55 +1,72 @@
 package com.lightningkite.kwift.swift
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
+import com.lightningkite.kwift.interfaces.FileCache
 import com.lightningkite.kwift.interfaces.InterfaceListener
 import com.lightningkite.kwift.swift.TabWriter
+import com.lightningkite.kwift.utils.Versioned
 import com.lightningkite.kwift.utils.forEachBetween
 import org.antlr.v4.runtime.ParserRuleContext
 import org.antlr.v4.runtime.tree.TerminalNode
 import org.jetbrains.kotlin.KotlinParser
+import java.io.File
 
 class SwiftAltListener {
-    var interfaces: Map<String, InterfaceListener.InterfaceData> = mapOf()
+    val interfaces: HashMap<String, InterfaceListener.InterfaceData> = hashMapOf()
     var currentFile: KotlinParser.KotlinFileContext? = null
     var filterEscapingAnnotation: Boolean = false
     var imports = listOf<String>()
 
-    fun KotlinParser.ClassDeclarationContext.implements(): Sequence<InterfaceListener.InterfaceData>{
+    fun loadInterfaces(file: File) {
+        val new = jacksonObjectMapper().readValue<Versioned<Map<String, FileCache>>>(file)
+            .value.values.flatMap { it.data }.associate { it.qualifiedName to it }
+        interfaces += new
+    }
+
+    fun KotlinParser.ClassDeclarationContext.implements(): Sequence<InterfaceListener.InterfaceData> {
         val currentFile = currentFile ?: return sequenceOf()
         return this.delegationSpecifiers()?.annotatedDelegationSpecifier()
             ?.asSequence()
             ?.map { it.delegationSpecifier() }
             ?.mapNotNull { it.userType()?.text }
-            ?.flatMap {
-                if(it.firstOrNull()?.isUpperCase() == true){
+            ?.flatMap { name ->
+                if (name.firstOrNull()?.isUpperCase() == true) {
                     currentFile.importList().importHeader().asSequence()
-                        .filter { it.MULT() != null }
-                        .map { import ->
-                            import.identifier().text + "." + it
-                        }
-                        .plus(currentFile.packageHeader().identifier().text + "." + it)
+                        .mapNotNull { it.identifier()?.text }
+                        .find { it.endsWith(name) }
+                        ?.let { sequenceOf(it) }
+                        ?: currentFile.importList().importHeader().asSequence()
+                            .filter { it.MULT() != null }
+                            .map { import ->
+                                import.identifier().text + "." + name
+                            }
+                            .plus(currentFile.packageHeader().identifier().text + "." + name)
                 } else {
-                    sequenceOf(it)
+                    sequenceOf(name)
                 }
             }
             ?.mapNotNull { interfaces[it] }
             ?: sequenceOf()
     }
 
-    val options = HashMap<Class<*>, TabWriter.(ParserRuleContext)->Unit>()
-    val tokenOptions = HashMap<Int, TabWriter.(TerminalNode)->Unit>()
-    val functionReplacements = HashMap<String, TabWriter.(KotlinParser.PostfixUnaryExpressionContext)->Unit>()
+    val options = HashMap<Class<*>, TabWriter.(ParserRuleContext) -> Unit>()
+    val tokenOptions = HashMap<Int, TabWriter.(TerminalNode) -> Unit>()
+    val functionReplacements = HashMap<String, TabWriter.(KotlinParser.PostfixUnaryExpressionContext) -> Unit>()
     fun simpleFunctionReplacement(kotlinFunctionName: String, swiftFunctionName: String) {
         functionReplacements[kotlinFunctionName] = {
             direct.append(swiftFunctionName)
             it.postfixUnarySuffix().forEach { write(it) }
         }
     }
+
     val typeReplacements = HashMap<String, String>()
 
-    inline fun <reified T: ParserRuleContext> handle(noinline action: TabWriter.(T)->Unit){
+    inline fun <reified T : ParserRuleContext> handle(noinline action: TabWriter.(T) -> Unit) {
         options[T::class.java] = { action(it as T) }
     }
-    fun handle(rule: Int, action: TabWriter.(TerminalNode)->Unit){
+
+    fun handle(rule: Int, action: TabWriter.(TerminalNode) -> Unit) {
         tokenOptions[rule] = action
     }
 
@@ -95,13 +112,14 @@ class SwiftAltListener {
         simpleFunctionReplacement("ArrayList", "Array")
         simpleFunctionReplacement("HashMap", "Dictionary")
         functionReplacements["run"] = {
-            if(it.usedAsStatement())
+            if (it.usedAsStatement())
                 direct.append("let _ = ")
             direct.append("{ () in ")
-            it.postfixUnarySuffix()[0]!!.callSuffix()!!.annotatedLambda()!!.lambdaLiteral()!!.statements()!!.statement().forEach {
-                startLine()
-                write(it)
-            }
+            it.postfixUnarySuffix()[0]!!.callSuffix()!!.annotatedLambda()!!.lambdaLiteral()!!.statements()!!.statement()
+                .forEach {
+                    startLine()
+                    write(it)
+                }
             startLine()
             direct.append("}()")
         }
@@ -145,17 +163,19 @@ class SwiftAltListener {
         functionReplacements["mutableMapOf"] = functionReplacements["mapOf"]!!
     }
 
-    fun TabWriter.write(node: TerminalNode){
+    fun TabWriter.write(node: TerminalNode) {
 //        println("Appending node '${node.text}' of type ${KotlinParser.VOCABULARY.getDisplayName(node.symbol.type)}")
         tokenOptions[node.symbol.type]?.invoke(this, node) ?: this.direct.append(node.text)
     }
-    fun TabWriter.write(item: ParserRuleContext){
+
+    fun TabWriter.write(item: ParserRuleContext) {
         options[item::class.java]?.invoke(this, item) ?: defaultWrite(item)
     }
-    fun TabWriter.defaultWrite(item: ParserRuleContext, between: String = " "){
+
+    fun TabWriter.defaultWrite(item: ParserRuleContext, between: String = " ") {
         item.children?.forEachBetween(
             forItem = { child ->
-                when(child){
+                when (child) {
                     is ParserRuleContext -> write(child)
                     is TerminalNode -> write(child)
                 }

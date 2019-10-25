@@ -128,6 +128,9 @@
 		5EE73FE42360CA5100EB5B6E /* ViewDependency+location.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EE73FE32360CA5100EB5B6E /* ViewDependency+location.swift */; };
 		5EE7405D2362406F00EB5B6E /* ViewFlipper.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EE7405C2362406F00EB5B6E /* ViewFlipper.swift */; };
 		5EE7405F2362446B00EB5B6E /* ViewFlipper+binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EE7405E2362446B00EB5B6E /* ViewFlipper+binding.swift */; };
+		5EE740622362620A00EB5B6E /* AppDelegate+deepLink.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EE740612362620A00EB5B6E /* AppDelegate+deepLink.swift */; };
+		5EE740642362651700EB5B6E /* KwiftAppDelegate.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EE740632362651700EB5B6E /* KwiftAppDelegate.swift */; };
+		5EE740662362669A00EB5B6E /* EntryPoint.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EE740652362669A00EB5B6E /* EntryPoint.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXContainerItemProxy section */
@@ -242,7 +245,7 @@
 		5E633B23235E44400081A849 /* SelectMultipleDatesMonthView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SelectMultipleDatesMonthView.swift; path = Kwift/com/lightningkite/kwift/views/ios/SelectMultipleDatesMonthView.swift; sourceTree = SOURCE_ROOT; };
 		5E633B25235E483A0081A849 /* SelectMultipleDatesView+binding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "SelectMultipleDatesView+binding.swift"; path = "Kwift/com/lightningkite/kwift/observables/actuals/SelectMultipleDatesView+binding.swift"; sourceTree = SOURCE_ROOT; };
 		5E633B27235E48810081A849 /* SelectMultipleDatesView.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = SelectMultipleDatesView.swift; path = Kwift/com/lightningkite/kwift/views/ios/SelectMultipleDatesView.swift; sourceTree = SOURCE_ROOT; };
-		5E633B29235E4C6A0081A849 /* KwiftViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = KwiftViewController.swift; path = Kwift/com/lightningkite/kwift/views/ios/KwiftViewController.swift; sourceTree = SOURCE_ROOT; };
+		5E633B29235E4C6A0081A849 /* KwiftViewController.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = KwiftViewController.swift; path = Kwift/com/lightningkite/Kwift/ios/KwiftViewController.swift; sourceTree = SOURCE_ROOT; };
 		5E633B2C235E4CE90081A849 /* UIViewController+keyboard.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "UIViewController+keyboard.swift"; path = "Kwift/com/lightningkite/kwift/views/ios/UIViewController+keyboard.swift"; sourceTree = SOURCE_ROOT; };
 		5E633B2E235E55D40081A849 /* ViewDependency+image.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "ViewDependency+image.swift"; path = "Kwift/com/lightningkite/kwift/views/actuals/ViewDependency+image.swift"; sourceTree = SOURCE_ROOT; };
 		5EAABE97233EC33F007E7CED /* Kwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Kwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
@@ -264,6 +267,9 @@
 		5EE73FE32360CA5100EB5B6E /* ViewDependency+location.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; name = "ViewDependency+location.swift"; path = "Kwift/com/lightningkite/kwift/views/actuals/ViewDependency+location.swift"; sourceTree = SOURCE_ROOT; };
 		5EE7405C2362406F00EB5B6E /* ViewFlipper.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = ViewFlipper.swift; path = Kwift/com/lightningkite/kwift/views/ios/ViewFlipper.swift; sourceTree = SOURCE_ROOT; };
 		5EE7405E2362446B00EB5B6E /* ViewFlipper+binding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "ViewFlipper+binding.swift"; path = "Kwift/com/lightningkite/kwift/observables/actuals/ViewFlipper+binding.swift"; sourceTree = SOURCE_ROOT; };
+		5EE740612362620A00EB5B6E /* AppDelegate+deepLink.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = "AppDelegate+deepLink.swift"; path = "Kwift/com/lightningkite/kwift/ios/AppDelegate+deepLink.swift"; sourceTree = SOURCE_ROOT; };
+		5EE740632362651700EB5B6E /* KwiftAppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; name = KwiftAppDelegate.swift; path = Kwift/com/lightningkite/kwift/ios/KwiftAppDelegate.swift; sourceTree = SOURCE_ROOT; };
+		5EE740652362669A00EB5B6E /* EntryPoint.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = EntryPoint.swift; sourceTree = "<group>"; };
 		63A80265E53D7E8A26AF57CF /* libPods-Kwift.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-Kwift.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		6648265A81A02AE0AA915524 /* Pods-Kwift.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kwift.debug.xcconfig"; path = "Pods/Target Support Files/Pods-Kwift/Pods-Kwift.debug.xcconfig"; sourceTree = "<group>"; };
 		F994D26061C995DD96617E1D /* Pods-Kwift.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-Kwift.release.xcconfig"; path = "Pods/Target Support Files/Pods-Kwift/Pods-Kwift.release.xcconfig"; sourceTree = "<group>"; };
@@ -300,20 +306,21 @@
 		5E42972B233EC420002AAB7A /* lightningkite */ = {
 			isa = PBXGroup;
 			children = (
-				5E42972C233EC420002AAB7A /* Kwift */,
+				5E42972C233EC420002AAB7A /* kwift */,
 			);
 			path = lightningkite;
 			sourceTree = "<group>";
 		};
-		5E42972C233EC420002AAB7A /* Kwift */ = {
+		5E42972C233EC420002AAB7A /* kwift */ = {
 			isa = PBXGroup;
 			children = (
+				5EE740602362619800EB5B6E /* ios */,
 				5E42972D233EC420002AAB7A /* actuals */,
 				5E42973B233EC420002AAB7A /* observables */,
 				5E429760233EC420002AAB7A /* shared */,
 				5E429762233EC420002AAB7A /* views */,
 			);
-			path = Kwift;
+			path = kwift;
 			sourceTree = "<group>";
 		};
 		5E42972D233EC420002AAB7A /* actuals */ = {
@@ -440,6 +447,7 @@
 		5E429779233EC420002AAB7A /* shared */ = {
 			isa = PBXGroup;
 			children = (
+				5EE740652362669A00EB5B6E /* EntryPoint.swift */,
 				5E42977A233EC420002AAB7A /* Strings.swift */,
 				5E42977B233EC420002AAB7A /* ViewGenerator.swift */,
 				5E42977C233EC420002AAB7A /* showDialog.swift */,
@@ -495,7 +503,6 @@
 				5E42978C233EC420002AAB7A /* ViewPagerLayout.swift */,
 				5E633B2C235E4CE90081A849 /* UIViewController+keyboard.swift */,
 				5E1375C62358DDAF007824E8 /* UIImage+backgroundLayer.swift */,
-				5E633B29235E4C6A0081A849 /* KwiftViewController.swift */,
 				5EE7405C2362406F00EB5B6E /* ViewFlipper.swift */,
 			);
 			path = ios;
@@ -538,6 +545,16 @@
 				5EAABEA7233EC33F007E7CED /* Info.plist */,
 			);
 			path = KwiftTests;
+			sourceTree = "<group>";
+		};
+		5EE740602362619800EB5B6E /* ios */ = {
+			isa = PBXGroup;
+			children = (
+				5EE740612362620A00EB5B6E /* AppDelegate+deepLink.swift */,
+				5E633B29235E4C6A0081A849 /* KwiftViewController.swift */,
+				5EE740632362651700EB5B6E /* KwiftAppDelegate.swift */,
+			);
+			path = ios;
 			sourceTree = "<group>";
 		};
 		9CC50EE0F088256C2D7E7929 /* Frameworks */ = {
@@ -718,6 +735,7 @@
 				5E4297D0233EC420002AAB7A /* TimeButton.swift in Sources */,
 				5E429796233EC420002AAB7A /* OptionalProtocol.swift in Sources */,
 				5E4297AF233EC420002AAB7A /* UITableView+binding.swift in Sources */,
+				5EE740622362620A00EB5B6E /* AppDelegate+deepLink.swift in Sources */,
 				5E429795233EC420002AAB7A /* Kotlin.swift in Sources */,
 				5E0CE0F02357AC7800145B82 /* UIButtonWithLayer.swift in Sources */,
 				5E4297CE233EC420002AAB7A /* LabeledRadioButton.swift in Sources */,
@@ -740,6 +758,7 @@
 				5E4297DB233EC420002AAB7A /* UIScrollView+flexFix.swift in Sources */,
 				5E4297C8233EC420002AAB7A /* AbstractCalendarView.swift in Sources */,
 				5EBC42A5235513280088CDAC /* layoutConvenience.swift in Sources */,
+				5EE740662362669A00EB5B6E /* EntryPoint.swift in Sources */,
 				5E4297B5233EC420002AAB7A /* TransformedEvent.swift in Sources */,
 				5E4297B8233EC420002AAB7A /* Close.swift in Sources */,
 				5E5F6DB6234C03E80090384F /* UIView+onClick.swift in Sources */,
@@ -805,6 +824,7 @@
 				5E4297B7233EC420002AAB7A /* ObservableStack.swift in Sources */,
 				5E429791233EC420002AAB7A /* Preferences.swift in Sources */,
 				5E42979D233EC420002AAB7A /* UITextField+binding.swift in Sources */,
+				5EE740642362651700EB5B6E /* KwiftAppDelegate.swift in Sources */,
 				5E4297C7233EC420002AAB7A /* alias.swift in Sources */,
 				5EE7405F2362446B00EB5B6E /* ViewFlipper+binding.swift in Sources */,
 				5E4297D2233EC420002AAB7A /* CalendarView.swift in Sources */,

@@ -54,6 +54,9 @@ android {
 //            proguardFiles = getDefaultProguardFile("proguard-android.txt"), 'proguard-rules.pro'
 //        }
     }
+//    packagingOptions {
+//        this.
+//    }
 }
 
 val kotlin_version = "1.3.41"
@@ -82,6 +85,7 @@ dependencies {
 tasks.create("sourceJar", Jar::class) {
     classifier = "sources"
     from(android.sourceSets["main"].java.srcDirs)
+    from(project.projectDir.resolve("src/include"))
 }
 
 publishing {

@@ -5,7 +5,7 @@ import Foundation
 
 
 
-public final class LocationResult: Equatable, Hashable {
+public class LocationResult: Equatable, Hashable {
     
     public var latitude: Double
     public var longitude: Double
@@ -14,6 +14,7 @@ public final class LocationResult: Equatable, Hashable {
     public var altitudeAccuracyMeters: Double
     public var headingFromNorth: Double
     public var speedMetersPerSecond: Double
+    
     public static func == (lhs: LocationResult, rhs: LocationResult) -> Bool {
         return lhs.latitude == rhs.latitude &&
             lhs.longitude == rhs.longitude &&
@@ -52,6 +53,7 @@ public final class LocationResult: Equatable, Hashable {
         )
     }
     
+    
     public init(latitude: Double = 0.0, longitude: Double = 0.0, accuracyMeters: Double = 100.0, altitudeMeters: Double = 0.0, altitudeAccuracyMeters: Double = 100.0, headingFromNorth: Double = 0.0, speedMetersPerSecond: Double = 0.0) {
         self.latitude = latitude
         self.longitude = longitude
@@ -64,6 +66,5 @@ public final class LocationResult: Equatable, Hashable {
     convenience public init(_ latitude: Double = 0.0, _ longitude: Double = 0.0, _ accuracyMeters: Double = 100.0, _ altitudeMeters: Double = 0.0, _ altitudeAccuracyMeters: Double = 100.0, _ headingFromNorth: Double = 0.0, _ speedMetersPerSecond: Double = 0.0) {
         self.init(latitude: latitude, longitude: longitude, accuracyMeters: accuracyMeters, altitudeMeters: altitudeMeters, altitudeAccuracyMeters: altitudeAccuracyMeters, headingFromNorth: headingFromNorth, speedMetersPerSecond: speedMetersPerSecond)
     }
-    
 }
  
