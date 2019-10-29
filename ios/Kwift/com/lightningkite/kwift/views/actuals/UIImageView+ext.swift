@@ -13,4 +13,8 @@ public extension UIImageView {
         self.image = drawableMaker(self).toImage()
         self.superview?.setNeedsLayout()
     }
+    func setImageBitmap(_ bitmap: UIImage) {
+        self.image = bitmap
+        self.superview?.setNeedsLayout()
+    }
 }
