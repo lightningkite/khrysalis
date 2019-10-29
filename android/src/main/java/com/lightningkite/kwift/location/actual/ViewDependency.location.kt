@@ -1,4 +1,4 @@
-package com.lightningkite.kwift.views.actual
+package com.lightningkite.kwift.location.actual
 
 import android.Manifest
 import android.annotation.SuppressLint
@@ -10,7 +10,9 @@ import android.location.LocationManager
 import android.os.Bundle
 import android.os.Handler
 import android.os.Looper
-import com.lightningkite.kwift.shared.LocationResult
+import com.lightningkite.kwift.location.shared.GeoCoordinate
+import com.lightningkite.kwift.location.shared.LocationResult
+import com.lightningkite.kwift.views.actual.ViewDependency
 import java.util.*
 import java.util.concurrent.atomic.AtomicBoolean
 
@@ -27,8 +29,7 @@ fun ViewDependency.requestLocation(
             if (alreadyDone.compareAndSet(false, true))
                 onResult(
                     LocationResult(
-                        latitude = location.latitude,
-                        longitude = location.longitude,
+                        coordinate = GeoCoordinate(location.latitude, location.longitude),
                         accuracyMeters = location.accuracy.toDouble(),
                         altitudeMeters = location.altitude,
                         altitudeAccuracyMeters = 100.0,

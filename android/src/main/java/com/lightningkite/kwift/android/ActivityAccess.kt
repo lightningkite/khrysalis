@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
+import com.lightningkite.kwift.observables.shared.Event
 
 /**
  * An interface for accessing activities in a decentralized way, where multiple listeners can listen
@@ -17,13 +18,13 @@ interface ActivityAccess {
     val context: Context
     val savedInstanceState: Bundle?
 
-    val onResume: MutableCollection<() -> Unit>
-    val onPause: MutableCollection<() -> Unit>
-    val onSaveInstanceState: MutableCollection<(outState: Bundle) -> Unit>
-    val onLowMemory: MutableCollection<() -> Unit>
-    val onDestroy: MutableCollection<() -> Unit>
-    val onActivityResult: MutableCollection<(request: Int, result: Int, data: Intent?) -> Unit>
-    val onNewIntent: MutableCollection<(Intent) -> Unit>
+    val onResume: Event<Unit>
+    val onPause: Event<Unit>
+    val onSaveInstanceState: Event<Bundle>
+    val onLowMemory: Event<Unit>
+    val onDestroy: Event<Unit>
+    val onActivityResult: Event<Triple<Int, Int, Intent?>>
+    val onNewIntent: Event<Intent>
 
     /**
      * When the back button is pressed, the lambdas in the list are invoked in reverse order until

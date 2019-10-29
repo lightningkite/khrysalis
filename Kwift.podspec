@@ -7,7 +7,7 @@ Pod::Spec.new do |s|
 
   s.license = "Description of your licence, name or otherwise"
   s.author = { "Captain" => "joseph@lightningkite.com" }
-  s.platform = :ios, "9.0"
+  s.platform = :ios, "11.0"
   s.source = { :git => "https://github.com/lightningkite/kwift.git", :tag => "#{s.version}" }
   s.source_files =  "ios/Kwift/**/*.swift" # path to your classes. You can drag them into their own folder.
 

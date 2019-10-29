@@ -36,7 +36,16 @@ public extension UITableView {
             delegate.setAtEnd(action: action)
         }
     }
+    
 
+    func bind<T>(
+        _ data: ObservableProperty<[T]>,
+        _ defaultValue: T,
+        _ spacing: CGFloat = 0,
+        _ makeView: @escaping (ObservableProperty<T>) -> UIView
+    ) {
+        bind(data: data, defaultValue: defaultValue, spacing: spacing, makeView: makeView)
+    }
     func bind<T>(
         data: ObservableProperty<[T]>,
         defaultValue: T,

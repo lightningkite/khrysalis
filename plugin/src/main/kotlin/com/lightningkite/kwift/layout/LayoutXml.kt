@@ -26,8 +26,9 @@ fun File.translateLayoutXml(styles: Styles, converter: LayoutConverter = LayoutC
         appendln("// Created by Kwift XML")
         appendln("//")
         appendln("")
-        appendln("import UIKit")
-        appendln("import Kwift")
+        for(import in converter.imports) {
+            appendln("import $import")
+        }
         appendln("")
         appendln("class ${name}Xml {")
         appendln("")

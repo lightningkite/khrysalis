@@ -4,8 +4,10 @@ import com.lightningkite.kwift.KwiftSettings
 import com.lightningkite.kwift.convertResourcesToIos
 import com.lightningkite.kwift.flow.createFlowDocumentation
 import com.lightningkite.kwift.flow.createPrototypeViewGenerators
+import com.lightningkite.kwift.layout.LayoutConverter
 import com.lightningkite.kwift.layout.convertLayoutsToSwift
 import com.lightningkite.kwift.layout.createAndroidLayoutClasses
+import com.lightningkite.kwift.layout.normal
 import com.lightningkite.kwift.log
 import com.lightningkite.kwift.swift.SwiftAltListener
 import com.lightningkite.kwift.swift.convertKotlinToSwift
@@ -54,7 +56,12 @@ fun Project.convertKotlinToSwiftWithDependencies(
     )
 }
 
-fun Project.configureGradle(packageName: String, iosRelativeBase: String = "../../ios/Klyp") {
+fun Project.configureGradle(
+    packageName: String,
+    iosRelativeBase: String,
+    setupCodeConversion: SwiftAltListener.() -> Unit = {},
+    setupLayoutConversion: LayoutConverter = LayoutConverter.normal
+) {
 
     KwiftSettings.verbose = true
     val androidBase = project.projectDir
@@ -70,6 +77,7 @@ fun Project.configureGradle(packageName: String, iosRelativeBase: String = "../.
                 clean = true
             ) {
                 imports = listOf("Kwift")
+                setupCodeConversion()
             }
 
         }
@@ -84,6 +92,7 @@ fun Project.configureGradle(packageName: String, iosRelativeBase: String = "../.
                 clean = false
             ) {
                 imports = listOf("Kwift")
+                setupCodeConversion()
             }
 
         }
@@ -105,7 +114,8 @@ fun Project.configureGradle(packageName: String, iosRelativeBase: String = "../.
 
             convertLayoutsToSwift(
                 androidFolder = androidBase,
-                iosFolder = iosBase
+                iosFolder = iosBase,
+                converter = setupLayoutConversion
             )
 
         }

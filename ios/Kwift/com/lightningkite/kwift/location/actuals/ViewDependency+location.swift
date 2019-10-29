@@ -102,8 +102,10 @@ public extension ViewDependency {
             //GOTTEM
             if let didUpdateToLocation = locations.last {
                 callback(LocationResult(
-                    latitude: didUpdateToLocation.coordinate.latitude,
-                    longitude: didUpdateToLocation.coordinate.longitude,
+                    coordinate: GeoCoordinate(
+                        latitude: didUpdateToLocation.coordinate.latitude,
+                        longitude: didUpdateToLocation.coordinate.longitude
+                    ),
                     accuracyMeters: didUpdateToLocation.horizontalAccuracy,
                     altitudeMeters: didUpdateToLocation.altitude,
                     altitudeAccuracyMeters: didUpdateToLocation.verticalAccuracy,

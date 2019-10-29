@@ -48,9 +48,11 @@ open class ViewFlipper: FrameLayout {
     override open func didAddSubview(_ subview: UIView) {
         if subviews.size == 1 {
             subview.isHidden = false
+            subview.alpha = 1
             previousSubview = subview
         } else {
             subview.isHidden = true
+            subview.alpha = 0
         }
     }
 }

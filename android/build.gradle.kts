@@ -7,7 +7,7 @@ import com.lightningkite.kwift.layout.createAndroidLayoutClasses
 import com.lightningkite.kwift.swift.convertKotlinToSwift
 
 buildscript {
-    val kotlin_version = "1.3.41"
+    val kotlin_version = "1.3.50"
     repositories {
         google()
         jcenter()
@@ -32,7 +32,7 @@ plugins {
 }
 
 group = "com.lightningkite.kwift"
-version = "0.1.0"
+version = "0.1.1"
 
 repositories {
     maven("https://jitpack.io")
@@ -59,7 +59,7 @@ android {
 //    }
 }
 
-val kotlin_version = "1.3.41"
+val kotlin_version = "1.3.50"
 dependencies {
     testImplementation("junit:junit:4.12")
     androidTestImplementation("androidx.test:runner:1.2.0")
@@ -115,5 +115,19 @@ tasks.create("kwiftConvertKotlinToSwift") {
                 clean = true
         )
         println("Finished")
+    }
+}
+
+
+tasks.create("patchRetardModule") {
+    this.group = "build"
+    this.dependsOn("compileDebugKotlin")
+    doLast {
+        file("build/tmp/kotlin-classes/debug/META-INF").listFiles()?.forEach {
+            it.copyTo(File("src/main/resources/META-INF/${it.name}"), overwrite = true)
+        }
+        file("build/tmp/kotlin-classes/release/META-INF").listFiles()?.forEach {
+            it.copyTo(File("src/main/resources/META-INF/${it.name}"), overwrite = true)
+        }
     }
 }

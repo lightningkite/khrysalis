@@ -72,9 +72,6 @@ val LayoutConverter.Companion.navigationViews
                 appendln("view.canCancelContentTouches = false")
                 appendln("view.showsHorizontalScrollIndicator = false")
                 appendln("view.backgroundColor = .clear")
-            },
-            ViewType("com.google.android.gms.maps.MapView", "MKMapView", "View") { node ->
-
             }
         ),
         skipTypes = listOf(

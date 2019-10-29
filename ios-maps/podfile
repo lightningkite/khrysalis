@@ -1,0 +1,8 @@
+
+platform :ios, '11.0'
+use_modular_headers!
+
+target 'KwiftMaps' do
+    pod 'Kwift', :path => '~/StudioProjects/kwift/kwift.podspec'
+    pod 'QVRWeekView', :git => 'https://github.com/Quivr/iOS-Week-View.git'
+end
