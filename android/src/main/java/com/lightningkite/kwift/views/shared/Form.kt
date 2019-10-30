@@ -96,6 +96,22 @@ fun FormField<String>.required(): ViewString? {
     }
 }
 
+fun <T> FormField<T>.notNull(): ViewString? {
+    if (this.observable.value == null) {
+        return ViewStringTemplate(Form.xIsRequired, listOf(this.name))
+    } else {
+        return null
+    }
+}
+
+fun FormField<Boolean>.notFalse(): ViewString? {
+    if (!this.observable.value) {
+        return ViewStringTemplate(Form.xIsRequired, listOf(this.name))
+    } else {
+        return null
+    }
+}
+
 fun ViewString.unless(condition: Boolean): ViewString? {
     if (condition) {
         return null
