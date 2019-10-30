@@ -69,7 +69,7 @@ public class DateButton : UIButtonWithLayer {
         self.resignFirstResponder()
     }
 
-    var date: Date = Date() {
+    public var date: Date = Date() {
         didSet {
             picker.date = date
             updateText()

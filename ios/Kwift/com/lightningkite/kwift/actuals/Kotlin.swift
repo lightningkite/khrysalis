@@ -117,6 +117,13 @@ public extension Array {
         }
         return output
     }
+    
+    func forEachIndexed(_ action: (_ index:Int, Element) -> Void){
+        for index in 0..<self.count{
+            action(index, self[index])
+        }
+    }
+    
 }
 
 public extension Array where Element: Equatable {

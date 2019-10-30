@@ -112,10 +112,10 @@ public extension Date {
     }
 }
 
-func dateFrom(_ dateAlone: DateAlone, _ timeAlone: TimeAlone) -> Date {
+public func dateFrom(_ dateAlone: DateAlone, _ timeAlone: TimeAlone) -> Date {
     return dateFrom(dateAlone: dateAlone, timeAlone: timeAlone)
 }
-func dateFrom(dateAlone: DateAlone, timeAlone: TimeAlone) -> Date {
+public func dateFrom(dateAlone: DateAlone, timeAlone: TimeAlone) -> Date {
     let components = DateComponents(
         year: Int(dateAlone.year),
         month: Int(dateAlone.month),

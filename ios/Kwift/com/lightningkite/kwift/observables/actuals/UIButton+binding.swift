@@ -11,6 +11,25 @@ import UIKit
 
 
 public extension UIButton {
+
+    func bindActive(_ observable: ObservableProperty<Bool>, _ activeColorResource: ColorResource? = nil, _ inactiveColorResource: ColorResource? = nil) {
+        return bindActive(observable: observable, activeColorResource: activeColorResource, inactiveColorResource: inactiveColorResource)
+    }
+    func bindActive(observable: ObservableProperty<Bool>, activeColorResource: ColorResource? = nil, inactiveColorResource: ColorResource? = nil) {
+        observable.addAndRunWeak(referenceA: self) { (this, value) in
+            this.isUserInteractionEnabled = value
+            if value {
+                if let color = activeColorResource {
+                    this.backgroundColor = color
+                }
+            }else{
+                if let color = inactiveColorResource{
+                    this.backgroundColor = color
+                }
+            }
+        }
+    }
+
     func bindBackButton<T>(stack: ObservableStack<T>) {
         stack.onChange.addAndRunWeak(self, stack.stack) { this, value in
             this.isHidden = value.count <= 1

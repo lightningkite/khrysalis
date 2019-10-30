@@ -155,6 +155,30 @@ extension FormField where T == String {
  
  
 
+extension FormField {
+    public func notNull() -> ViewString?  {
+        if self.observable.value == nil {
+            return ViewStringTemplate(Form.xIsRequired, [self.name])
+        } else {
+            return nil
+        }
+    }
+}
+ 
+ 
+
+extension FormField where T == Bool {
+    public func notFalse() -> ViewString?  {
+        if !self.observable.value {
+            return ViewStringTemplate(Form.xIsRequired, [self.name])
+        } else {
+            return nil
+        }
+    }
+}
+ 
+ 
+
 extension ViewString {
     public func unless(condition: Bool) -> ViewString?  {
         if condition {
