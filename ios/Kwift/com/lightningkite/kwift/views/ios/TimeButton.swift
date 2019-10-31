@@ -12,14 +12,14 @@ import UIKit
 
 public class TimeButton : DateButton {
     
-    public var onDateEntered = StandardEvent<Date>()
-    
     override public func commonInit() {
         super.commonInit()
         mode = .time
         let format = DateFormatter()
         format.dateStyle = .none;
-        format.timeStyle = .medium;
+        format.timeStyle = .short;
         self.format = format
     }
+    
+    
 }

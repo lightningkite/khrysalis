@@ -1,6 +1,8 @@
 package com.lightningkite.kwift.layout
 
-import com.lightningkite.kwift.utils.*
+import com.lightningkite.kwift.utils.attributeAsColor
+import com.lightningkite.kwift.utils.attributeAsDimension
+import com.lightningkite.kwift.utils.attributeAsString
 
 val LayoutConverter.Companion.dateViews
     get() = LayoutConverter(
@@ -71,7 +73,7 @@ val LayoutConverter.Companion.dateViews
             },
             ViewType(
                 "com.lightningkite.kwift.views.android.SelectMultipleDatesView",
-                "SelectDayView",
+                "SelectMultipleDatesView",
                 "com.lightningkite.kwift.views.android.CalendarView"
             ) { node ->
 
