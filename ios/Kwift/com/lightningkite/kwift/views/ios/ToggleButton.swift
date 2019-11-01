@@ -11,11 +11,39 @@ import UIKit
 
 
 public class ToggleButton: UIButtonWithLayer, CompoundButton {
-    public var onCheckChanged: (Bool) -> Void = { _ in }
+    public var onCheckChanged: (Bool) -> Void = {_ in }
+    public var isChecked: Bool {
+        get{
+            self.isOn
+        }
+        set(value){
+            self.isOn = value
+        }
+    }
+    public var textOn: String = "On"{
+        didSet {
+            syncText()
+        }
+    }
+    public var textOff: String = "Off"{
+        didSet {
+            syncText()
+        }
+    }
+    
     public var isOn: Bool = false {
         didSet {
             self.isSelected = isOn
+            syncText()
             onCheckChanged(isOn)
+        }
+    }
+    
+    private func syncText(){
+        if isOn{
+            self.setTitle(textOn, for: UIControl.State.normal)
+        } else{
+            self.setTitle(textOff, for: UIControl.State.normal)
         }
     }
     
