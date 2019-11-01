@@ -79,14 +79,18 @@ public class SelectDateRangeMonthView : QuickMonthView {
     private var startedDraggingOn: Date = Date()
     private var everMoved = false
     var draggingStart = true
+    var nonModifyingSoFar = false
     
     override public func onTouchDown(date: Date) -> Bool {
         startedDraggingOn = date
         everMoved = false
+        nonModifyingSoFar = true
         
         guard let startValue = start.value, let endInclusiveValue = endInclusive.value else {
             start.value = date
             endInclusive.value = date
+            nonModifyingSoFar = false
+            draggingStart = true
             return true
         }
         if date.sameDay(startValue) {
@@ -96,10 +100,12 @@ public class SelectDateRangeMonthView : QuickMonthView {
         } else if date.after(endInclusiveValue), startValue.sameDay(endInclusiveValue) {
             endInclusive.value = date
             draggingStart = false
+            nonModifyingSoFar = false
         } else {
             start.value = date
             endInclusive.value = date
             draggingStart = false
+            nonModifyingSoFar = false
         }
         return true
     }
@@ -112,24 +118,32 @@ public class SelectDateRangeMonthView : QuickMonthView {
                 start.value = endInclusiveValue
                 endInclusive.value = date
                 draggingStart = false
+                nonModifyingSoFar = false
             } else if !draggingStart, date.before(startValue) {
                 endInclusive.value = startValue
                 start.value = date
                 draggingStart = true
+                nonModifyingSoFar = false
             }
         }
 
         if draggingStart {
-            start.value = date
+            if start.value != date {
+                nonModifyingSoFar = false
+                start.value = date
+            }
         } else {
-            endInclusive.value = date
+            if endInclusive.value != date {
+                nonModifyingSoFar = false
+                endInclusive.value = date
+            }
         }
         return true
     }
     
     override public func onTouchUp(date: Date) -> Bool {
         let result = onTouchMove(date: date)
-        if startedDraggingOn.sameDay(date) && !everMoved {
+        if startedDraggingOn.sameDay(date) && !everMoved && nonModifyingSoFar {
             start.value = date
             endInclusive.value = date
         }

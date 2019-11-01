@@ -91,7 +91,7 @@ open class SelectMultipleDatesMonthView : QuickMonthView {
                 dates.value = dates.value.plus(calendar)
             }
         } else {
-            dates.value = dates.value.filter { it sameDay calendar }.toSet()
+            dates.value = dates.value.filter { !(it sameDay calendar) }.toSet()
         }
         return true
     }

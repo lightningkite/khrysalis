@@ -76,7 +76,7 @@ public class SelectMultipleDatesMonthView : QuickMonthView {
                 dates.value = dates.value.union([date])
             }
         } else {
-            dates.value = dates.value.filter { it in it.sameDay(date) }
+            dates.value = dates.value.filter { it in !it.sameDay(date) }
         }
         return true
     }

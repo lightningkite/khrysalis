@@ -135,6 +135,17 @@ class SwiftAltListener {
         functionReplacements["arrayListOf"] = functionReplacements["listOf"]!!
         functionReplacements["mutableListOf"] = functionReplacements["listOf"]!!
 
+        functionReplacements["setOf"] = {
+            direct.append("[")
+            it.postfixUnarySuffix()[0]!!.callSuffix()!!.valueArguments()?.valueArgument()?.forEachBetween(
+                forItem = { write(it) },
+                between = { direct.append(", ") }
+            )
+            direct.append("]")
+        }
+        functionReplacements["hashSetOf"] = functionReplacements["setOf"]!!
+        functionReplacements["mutableSetOf"] = functionReplacements["setOf"]!!
+
         functionReplacements["mapOf"] = {
             direct.append("[")
             it.postfixUnarySuffix()[0]!!.callSuffix()?.valueArguments()?.valueArgument()?.takeUnless { it.isEmpty() }?.forEachBetween(

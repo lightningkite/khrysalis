@@ -78,10 +78,12 @@ open class SelectDateRangeMonthView : QuickMonthView {
 
     private var startedDraggingOn: Calendar? = null
     private var everMoved = false
+    private var nonModifyingSoFar = false
 
     override fun onTouchDown(calendar: Calendar): Boolean {
         startedDraggingOn = calendar
         everMoved = false
+        nonModifyingSoFar = true
         //If on start/end - drag
         //If after, extend
         //If before, extend
@@ -94,6 +96,7 @@ open class SelectDateRangeMonthView : QuickMonthView {
                 start.value = calendar
                 endInclusive.value = calendar
                 draggingStart = false
+                nonModifyingSoFar = false
             }
             calendar sameDay endInclusiveValue -> {
                 draggingStart = false
@@ -104,11 +107,13 @@ open class SelectDateRangeMonthView : QuickMonthView {
             calendar.after(endInclusiveValue) && startValue sameDay endInclusiveValue -> {
                 endInclusive.value = calendar
                 draggingStart = false
+                nonModifyingSoFar = false
             }
             else -> {
                 start.value = calendar
                 endInclusive.value = calendar
                 draggingStart = false
+                nonModifyingSoFar = false
             }
         }
         return true
@@ -127,25 +132,30 @@ open class SelectDateRangeMonthView : QuickMonthView {
             draggingStart && calendar.after(endInclusiveValue) -> {
                 start.value = endInclusive.value
                 endInclusive.value = calendar
+                nonModifyingSoFar = false
                 draggingStart = false
                 return true
             }
             !draggingStart && calendar.before(startValue) -> {
                 endInclusive.value = start.value
                 start.value = calendar
+                nonModifyingSoFar = false
                 draggingStart = true
                 return true
             }
         }
 
         val obs = if (draggingStart) start else endInclusive
+        if(obs.value != calendar){
+            nonModifyingSoFar = false
+        }
         obs.value = calendar
         return true
     }
 
     override fun onTouchUp(calendar: Calendar): Boolean {
         onTouchMove(calendar)
-        if(startedDraggingOn sameDay calendar && !everMoved){
+        if(startedDraggingOn sameDay calendar && !everMoved && nonModifyingSoFar){
             start.value = calendar
             endInclusive.value = calendar
         }
