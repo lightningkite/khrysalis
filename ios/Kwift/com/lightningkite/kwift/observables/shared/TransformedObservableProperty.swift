@@ -29,10 +29,17 @@ public class TransformedObservableProperty<A, B>: ObservableProperty<B> {
     private var _onChange: Event<B>
 }
  
+
+extension ObservableProperty {
+    @Deprecated public func transformed<B>(read: @escaping (T) -> B) -> ObservableProperty<B> {
+        return TransformedObservableProperty<T, B>(self, read)
+    }
+}
+ 
  
 
 extension ObservableProperty {
-    public func transformed<B>(read: @escaping (T) -> B) -> ObservableProperty<B> {
+    public func map<B>(read: @escaping (T) -> B) -> ObservableProperty<B> {
         return TransformedObservableProperty<T, B>(self, read)
     }
 }

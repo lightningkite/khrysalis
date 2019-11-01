@@ -41,11 +41,22 @@ public class TransformedMutableObservableProperty<A, B>: MutableObservableProper
  
 
 extension MutableObservableProperty {
-    public func transformed<B>(read: @escaping (T) -> B, write: @escaping (B) -> T) -> MutableObservableProperty<B> {
+    @Deprecated public func transformed<B>(read: @escaping (T) -> B, write: @escaping (B) -> T) -> MutableObservableProperty<B> {
         return TransformedMutableObservableProperty<T, B>(self, read, write)
     }
-    public func transformed<B>(_ read: @escaping (T) -> B, _ write: @escaping (B) -> T) -> MutableObservableProperty<B> {
+    @Deprecated public func transformed<B>(_ read: @escaping (T) -> B, _ write: @escaping (B) -> T) -> MutableObservableProperty<B> {
         return transformed(read: read, write: write)
+    }
+}
+ 
+ 
+
+extension MutableObservableProperty {
+    public func map<B>(read: @escaping (T) -> B, write: @escaping (B) -> T) -> MutableObservableProperty<B> {
+        return TransformedMutableObservableProperty<T, B>(self, read, write)
+    }
+    public func map<B>(_ read: @escaping (T) -> B, _ write: @escaping (B) -> T) -> MutableObservableProperty<B> {
+        return map(read: read, write: write)
     }
 }
  

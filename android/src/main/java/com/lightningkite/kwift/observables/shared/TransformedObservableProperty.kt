@@ -13,6 +13,15 @@ class TransformedObservableProperty<A, B>(
     override val onChange: Event<B> = basedOn.onChange.transformed(transformation = read)
 }
 
+@Deprecated("Use 'map' instead", ReplaceWith(
+    "this.map(read)",
+    "com.lightningkite.kwift.observables.shared.map"
+)
+)
 fun <T, B> ObservableProperty<T>.transformed(read: @escaping() (T) -> B): ObservableProperty<B> {
+    return TransformedObservableProperty<T, B>(this, read)
+}
+
+fun <T, B> ObservableProperty<T>.map(read: @escaping() (T) -> B): ObservableProperty<B> {
     return TransformedObservableProperty<T, B>(this, read)
 }

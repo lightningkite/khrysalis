@@ -13,13 +13,13 @@
       </configuration>
     </facet>
     <facet type="kotlin-language" name="Kotlin">
-      <configuration version="3" platform="JVM 1.6" allPlatforms="JVM [1.6]" useProjectSettings="false" pureKotlinSourceFolders="$MODULE_DIR$/src/test/kotlin;/Users/brady/StudioProjects/kwift/plugin/src/main/kotlin">
+      <configuration version="3" platform="JVM 1.6" allPlatforms="JVM [1.6]" useProjectSettings="false" pureKotlinSourceFolders="$MODULE_DIR$/src/test/kotlin;/Users/josephivie/StudioProjects/kwift/plugin/src/main/kotlin">
         <compilerSettings>
           <option name="additionalArguments" value="-Xallow-no-source-files" />
         </compilerSettings>
         <compilerArguments>
           <option name="destination" value="$MODULE_DIR$/build/classes/kotlin/main" />
-          <option name="classpath" value="$USER_HOME$/.gradle/caches/5.1/generated-gradle-jars/gradle-api-5.1.jar:/Users/brady/.gradle/wrapper/dists/gradle-5.1-bin/djumv4jisrix1ndp1lfpceh59/gradle-5.1/lib/groovy-all-1.0-2.5.4.jar:/Users/brady/.gradle/wrapper/dists/gradle-5.1-bin/djumv4jisrix1ndp1lfpceh59/gradle-5.1/lib/gradle-installation-beacon-5.1.jar:/Users/brady/.gradle/caches/modules-2/files-2.1/org.antlr/antlr4/4.5.3/f35db7e4b2446e4174ba6a73db7bd6b3e6bb5da1/antlr4-4.5.3.jar:/Users/brady/.gradle/caches/modules-2/files-2.1/me.eugeniomarletti.kotlin.metadata/kotlin-metadata/1.4.0/f90c95f5fc4db865dfb0499671a81e02e2080032/kotlin-metadata-1.4.0.jar:/Users/brady/.gradle/caches/modules-2/files-2.1/me.eugeniomarletti.kotlin.metadata/kotlin-compiler-lite/1.0.3-k-1.2.40/a16e967c276379eaf6e1fa03af77664f003db947/kotlin-compiler-lite-1.0.3-k-1.2.40.jar:/Users/brady/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.module/jackson-module-kotlin/2.9.10/8bfdd3be3341e4876e58cc4d77dfc089dc4bc8ca/jackson-module-kotlin-2.9.10.jar:/Users/brady/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-reflect/1.3.10/dd02865be0351707554b16a896b766b2396cdafa/kotlin-reflect-1.3.10.jar:/Users/brady/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.3.10/b178c1501609c6e4ee8be635513cb023a466457d/kotlin-stdlib-1.3.10.jar:/Users/brady/.gradle/caches/modules-2/files-2.1/org.antlr/antlr4-runtime/4.5/29e48af049f17dd89153b83a7ad5d01b3b4bcdda/antlr4-runtime-4.5.jar:/Users/brady/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-databind/2.9.10.1/cadb5d93d16151946468cd1a2e96f41bc7d4e198/jackson-databind-2.9.10.1.jar:/Users/brady/.gradle/caches/modules-2/files-2.1/net.jodah/xsylum/0.1.0/64f56e728729d78f709a1b33856eefcf433e984f/xsylum-0.1.0.jar:/Users/brady/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-common/1.3.10/1b19d99229dcedad7caf50534dce38fe82845269/kotlin-stdlib-common-1.3.10.jar:/Users/brady/.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar:/Users/brady/.gradle/caches/modules-2/files-2.1/org.abego.treelayout/org.abego.treelayout.core/1.0.1/e31e79cba7a5414cf18fa69f3f0a2cf9ee997b61/org.abego.treelayout.core-1.0.1.jar:/Users/brady/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.9.10/53ab2f0f92e87ea4874c8c6997335c211d81e636/jackson-annotations-2.9.10.jar:/Users/brady/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.9.10/66b715dec9dd8b0f39f3296e67e05913bf422d0c/jackson-core-2.9.10.jar" />
+          <option name="classpath" value="$USER_HOME$/.gradle/caches/5.1/generated-gradle-jars/gradle-api-5.1.jar:/Users/josephivie/.gradle/wrapper/dists/gradle-5.1-bin/djumv4jisrix1ndp1lfpceh59/gradle-5.1/lib/groovy-all-1.0-2.5.4.jar:/Users/josephivie/.gradle/wrapper/dists/gradle-5.1-bin/djumv4jisrix1ndp1lfpceh59/gradle-5.1/lib/gradle-installation-beacon-5.1.jar:/Users/josephivie/.gradle/caches/modules-2/files-2.1/org.antlr/antlr4/4.5.3/f35db7e4b2446e4174ba6a73db7bd6b3e6bb5da1/antlr4-4.5.3.jar:/Users/josephivie/.gradle/caches/modules-2/files-2.1/me.eugeniomarletti.kotlin.metadata/kotlin-metadata/1.4.0/f90c95f5fc4db865dfb0499671a81e02e2080032/kotlin-metadata-1.4.0.jar:/Users/josephivie/.gradle/caches/modules-2/files-2.1/me.eugeniomarletti.kotlin.metadata/kotlin-compiler-lite/1.0.3-k-1.2.40/a16e967c276379eaf6e1fa03af77664f003db947/kotlin-compiler-lite-1.0.3-k-1.2.40.jar:/Users/josephivie/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.module/jackson-module-kotlin/2.9.10/8bfdd3be3341e4876e58cc4d77dfc089dc4bc8ca/jackson-module-kotlin-2.9.10.jar:/Users/josephivie/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-reflect/1.3.10/dd02865be0351707554b16a896b766b2396cdafa/kotlin-reflect-1.3.10.jar:/Users/josephivie/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.3.10/b178c1501609c6e4ee8be635513cb023a466457d/kotlin-stdlib-1.3.10.jar:/Users/josephivie/.gradle/caches/modules-2/files-2.1/org.antlr/antlr4-runtime/4.5/29e48af049f17dd89153b83a7ad5d01b3b4bcdda/antlr4-runtime-4.5.jar:/Users/josephivie/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-databind/2.9.10.1/cadb5d93d16151946468cd1a2e96f41bc7d4e198/jackson-databind-2.9.10.1.jar:/Users/josephivie/.gradle/caches/modules-2/files-2.1/net.jodah/xsylum/0.1.0/64f56e728729d78f709a1b33856eefcf433e984f/xsylum-0.1.0.jar:/Users/josephivie/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-common/1.3.10/1b19d99229dcedad7caf50534dce38fe82845269/kotlin-stdlib-common-1.3.10.jar:/Users/josephivie/.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/13.0/919f0dfe192fb4e063e7dacadee7f8bb9a2672a9/annotations-13.0.jar:/Users/josephivie/.gradle/caches/modules-2/files-2.1/org.abego.treelayout/org.abego.treelayout.core/1.0.1/e31e79cba7a5414cf18fa69f3f0a2cf9ee997b61/org.abego.treelayout.core-1.0.1.jar:/Users/josephivie/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.9.10/53ab2f0f92e87ea4874c8c6997335c211d81e636/jackson-annotations-2.9.10.jar:/Users/josephivie/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.9.10/66b715dec9dd8b0f39f3296e67e05913bf422d0c/jackson-core-2.9.10.jar" />
           <option name="noStdlib" value="true" />
           <option name="noReflect" value="true" />
           <option name="moduleName" value="plugin" />
@@ -52,12 +52,12 @@
     <output-test url="file://$MODULE_DIR$/build/classes/java/test" />
     <exclude-output />
     <content url="file://$MODULE_DIR$">
+      <sourceFolder url="file://$MODULE_DIR$/build/generated-src/antlr/main" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/kotlin" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/build/generated-src/antlr/main" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/main/resources" type="java-resource" />
-      <sourceFolder url="file://$MODULE_DIR$/build/generated-src/antlr/test" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/build/generated-src/antlr/test" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/kotlin" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/resources" type="java-test-resource" />
       <excludeFolder url="file://$MODULE_DIR$/.gradle" />
@@ -84,5 +84,13 @@
     <orderEntry type="library" exported="" name="Gradle: gradle-installation-beacon-5.1" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="Gradle: junit-4.12" level="project" />
     <orderEntry type="library" exported="" scope="TEST" name="Gradle: hamcrest-core-1.3" level="project" />
+    <orderEntry type="library" exported="" name="plugin.plugin-0.1.0" level="project" />
+    <orderEntry type="library" exported="" name="plugin.plugin-0.1.0" level="project" />
+    <orderEntry type="library" exported="" name="plugin.plugin-0.1.0" level="project" />
+    <orderEntry type="library" exported="" name="plugin.plugin-0.1.0" level="project" />
+    <orderEntry type="library" exported="" name="plugin.plugin-0.1.0" level="project" />
+    <orderEntry type="library" exported="" name="plugin.plugin-0.1.0" level="project" />
+    <orderEntry type="library" exported="" name="plugin.plugin-0.1.0" level="project" />
+    <orderEntry type="library" exported="" name="plugin.plugin-0.1.0" level="project" />
   </component>
 </module>
