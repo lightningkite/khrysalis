@@ -75,7 +75,7 @@ public extension UITextField {
 }
 
 public extension UIButton {
-    var textResource: String {
+    @objc var textResource: String {
         get {
             return title(for: .normal) ?? ""
         }
@@ -83,7 +83,7 @@ public extension UIButton {
             setTitle(value, for: .normal)
         }
     }
-    var textString: String {
+    @objc var textString: String {
         get {
             return title(for: .normal) ?? ""
         }

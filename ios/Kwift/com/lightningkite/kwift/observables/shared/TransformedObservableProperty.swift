@@ -31,7 +31,7 @@ public class TransformedObservableProperty<A, B>: ObservableProperty<B> {
  
 
 extension ObservableProperty {
-    @Deprecated public func transformed<B>(read: @escaping (T) -> B) -> ObservableProperty<B> {
+    @available(*, deprecated) public func transformed<B>(read: @escaping (T) -> B) -> ObservableProperty<B> {
         return TransformedObservableProperty<T, B>(self, read)
     }
 }

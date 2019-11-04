@@ -20,11 +20,13 @@ public class ToggleButton: UIButtonWithLayer, CompoundButton {
             self.isOn = value
         }
     }
+    
     public var textOn: String = "On"{
         didSet {
             syncText()
         }
     }
+    
     public var textOff: String = "Off"{
         didSet {
             syncText()
@@ -60,6 +62,28 @@ public class ToggleButton: UIButtonWithLayer, CompoundButton {
     func commonInit(){
         onClick { [unowned self] in
             self.isOn = !self.isOn
+        }
+    }
+}
+
+public extension ToggleButton{
+    override var textResource: String {
+        get {
+            return title(for: .normal) ?? ""
+        }
+        set(value) {
+            self.textOn = value
+            self.textOff = value
+        }
+    }
+    
+    override var textString: String {
+        get{
+            return title(for: .normal) ?? ""
+        }
+        set(value){
+            self.textOn = value
+            self.textOff = value
         }
     }
 }
