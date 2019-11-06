@@ -56,9 +56,13 @@ android {
 //            proguardFiles = getDefaultProguardFile("proguard-android.txt"), 'proguard-rules.pro'
 //        }
     }
-//    packagingOptions {
-//        this.
-//    }
+
+    packagingOptions {
+        pickFirst("META-INF/android_release.kotlin_module")
+        pickFirst("META-INF/android_debug.kotlin_module")
+        pickFirst("META-INF/android-maps_release.kotlin_module")
+        pickFirst("META-INF/android-maps_debug.kotlin_module")
+    }
 }
 
 val kotlin_version = "1.3.50"
