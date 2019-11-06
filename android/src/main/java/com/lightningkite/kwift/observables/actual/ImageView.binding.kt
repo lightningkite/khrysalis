@@ -1,7 +1,9 @@
 package com.lightningkite.kwift.observables.actual
 
+import android.provider.MediaStore
 import android.widget.ImageView
 import com.lightningkite.kwift.actual.ImageData
+import com.lightningkite.kwift.actual.ImageReference
 import com.lightningkite.kwift.observables.shared.ObservableProperty
 import com.lightningkite.kwift.observables.shared.addAndRunWeak
 import com.squareup.picasso.Picasso
@@ -38,6 +40,16 @@ fun ImageView.loadImageData(imageData: ObservableProperty<ImageData?>) {
         imageData.addAndRunWeak(this) { self, it ->
             it?.let {
                 self.setImageBitmap(it)
+            }
+        }
+    }
+}
+
+fun ImageView.loadImageReference(imageReference: ObservableProperty<ImageReference?>) {
+    post {
+        imageReference.addAndRunWeak(this) { self, it ->
+            it?.let {
+                self.setImageBitmap(MediaStore.Images.Media.getBitmap(context.contentResolver, it))
             }
         }
     }

@@ -129,7 +129,12 @@ public enum HttpClient {
         image: ImageData,
         onResult: @escaping (Int32, T?, String?) -> Void
     ) {
-        let imgData = image.jpegData(compressionQuality: 0.1)!
+        var quality: CGFloat = 1.0
+        var imgData = image.jpegData(compressionQuality: quality)!
+        while imgData.count > maxSize {
+            quality -= 0.1
+            imgData = image.jpegData(compressionQuality: quality)!
+        }
         
         var httpMethod: HTTPMethod = .post
         if(method.caseInsensitiveCompare("post") == .orderedSame){
@@ -190,9 +195,15 @@ public enum HttpClient {
         headers: [String: String],
         fieldName: String,
         image: ImageData,
+        maxSize: Int64 = 10_000_000,
         onResult: @escaping (Int32, String?) -> Void
     ) {
-        let imgData = image.jpegData(compressionQuality: 0.1)!
+        var quality: CGFloat = 1.0
+        var imgData = image.jpegData(compressionQuality: quality)!
+        while imgData.count > maxSize {
+            quality -= 0.1
+            imgData = image.jpegData(compressionQuality: quality)!
+        }
         
         var httpMethod: HTTPMethod = .post
         if(method.caseInsensitiveCompare("post") == .orderedSame){

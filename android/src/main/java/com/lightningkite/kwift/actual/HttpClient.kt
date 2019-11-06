@@ -5,6 +5,7 @@ import android.content.Context
 import android.graphics.Bitmap
 import android.os.Handler
 import android.os.Looper
+import android.provider.MediaStore
 import android.util.Log
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.core.JsonParser
@@ -166,64 +167,6 @@ object HttpClient {
         })
     }
 
-    inline fun <reified T : Any> uploadImageWithoutResult(
-        url: String,
-        method: String,
-        headers: Map<String, String>,
-        fieldName: String,
-        image: ImageData,
-        crossinline onResult: @escaping() (code: Int, result: T?, error: String?) -> Unit
-    ) {
-        Log.i("HttpClient", "Sending $method request to $url with headers $headers and image")
-        val data = ByteArrayOutputStream().use {
-            image.compress(Bitmap.CompressFormat.JPEG, 90, it)
-            it.toByteArray()
-        }
-        val request = Request.Builder()
-            .url(url)
-            .method(
-                method,
-                MultipartBody.Builder()
-                    .setType(MultipartBody.FORM)
-                    .addFormDataPart(
-                        fieldName,
-                        "image.jpg",
-                        RequestBody.create(MediaType.parse("image/jpeg"), data)
-                    )
-                    .build()
-            )
-            .headers(Headers.of(headers))
-            .build()
-
-        client.newCall(request).go(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                runResult {
-                    onResult.invoke(0, null, e.message ?: "")
-                }
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                val raw = response.body()!!.string()
-                Log.i("HttpClient", "Response ${response.code()}: $raw")
-                runResult {
-                    val code = response.code()
-                    if (code / 100 == 2) {
-                        try {
-                            val read =
-                                mapper.readValue<T>(raw, object : TypeReference<T>() {})
-                            onResult.invoke(code, read, null)
-                        } catch (e: Exception) {
-                            Log.e("HttpClient", "Failure to parse: ${e.message}")
-                            onResult.invoke(code, null, e.message)
-                        }
-                    } else {
-                        onResult.invoke(code, null, raw ?: "")
-                    }
-                }
-            }
-        })
-    }
-
     inline fun callWithoutResult(
         url: String,
         method: String,
@@ -271,14 +214,84 @@ object HttpClient {
         method: String,
         headers: Map<String, String>,
         fieldName: String,
-        image: ImageData,
+        imageReference: ImageReference,
+        maxSize: Long = 10_000_000,
         crossinline onResult: @escaping() (code: Int, error: String?) -> Unit
     ) {
-        Log.i("HttpClient", "Sending $method request to $url with headers $headers and image")
-        val data = ByteArrayOutputStream().use {
-            image.compress(Bitmap.CompressFormat.JPEG, 90, it)
+        val image = MediaStore.Images.Media.getBitmap(appContext.contentResolver, imageReference)
+        var qualityToTry = 100
+        var data = ByteArrayOutputStream().use {
+            image.compress(Bitmap.CompressFormat.JPEG, qualityToTry, it)
             it.toByteArray()
         }
+        while(data.size > maxSize) {
+            qualityToTry -= 5
+            data = ByteArrayOutputStream().use {
+                image.compress(Bitmap.CompressFormat.JPEG, qualityToTry, it)
+                it.toByteArray()
+            }
+        }
+        Log.i("HttpClient", "Sending $method request to $url with headers $headers and image at quality level $qualityToTry")
+        val request = Request.Builder()
+            .url(url)
+            .method(
+                method,
+                MultipartBody.Builder()
+                    .setType(MultipartBody.FORM)
+                    .addFormDataPart(
+                        fieldName,
+                        "image.jpg",
+                        RequestBody.create(MediaType.parse("image/jpeg"), data)
+                    )
+                    .build()
+            )
+            .headers(Headers.of(headers))
+            .build()
+
+        client.newCall(request).go(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                runResult {
+                    onResult.invoke(0, e.message ?: "")
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                val raw = response.body()!!.string()
+                Log.i("HttpClient", "Response ${response.code()}: $raw")
+                runResult {
+                    val code = response.code()
+                    if (code / 100 == 2) {
+                        onResult.invoke(response.code(), null)
+                    } else {
+                        onResult.invoke(code, raw ?: "")
+                    }
+                }
+            }
+        })
+    }
+
+    inline fun uploadImageWithoutResult(
+        url: String,
+        method: String,
+        headers: Map<String, String>,
+        fieldName: String,
+        image: ImageData,
+        maxSize: Long = 10_000_000,
+        crossinline onResult: @escaping() (code: Int, error: String?) -> Unit
+    ) {
+        var qualityToTry = 100
+        var data = ByteArrayOutputStream().use {
+            image.compress(Bitmap.CompressFormat.JPEG, qualityToTry, it)
+            it.toByteArray()
+        }
+        while(data.size > maxSize) {
+            qualityToTry -= 5
+            data = ByteArrayOutputStream().use {
+                image.compress(Bitmap.CompressFormat.JPEG, qualityToTry, it)
+                it.toByteArray()
+            }
+        }
+        Log.i("HttpClient", "Sending $method request to $url with headers $headers and image at quality level $qualityToTry")
         val request = Request.Builder()
             .url(url)
             .method(
