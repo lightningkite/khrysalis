@@ -5,10 +5,11 @@ import Foundation
 
 
 
-public final class Thing: Equatable, Hashable {
+public class Thing: Equatable, Hashable {
     
     public var value: Int32
     public var sub: Thing? 
+    
     public static func == (lhs: Thing, rhs: Thing) -> Bool {
         return lhs.value == rhs.value &&
             lhs.sub == rhs.sub
@@ -27,16 +28,16 @@ public final class Thing: Equatable, Hashable {
         )
     }
     
+    
     public func test() -> Void
     
     public init(value: Int32 = 0, sub: Thing?  = nil) {
         self.value = value
         self.sub = sub
     }
-    convenience public init(_ value: Int32 = 0, _ sub: Thing?  = nil) {
+    convenience public init(_ value: Int32, _ sub: Thing?  = nil) {
         self.init(value: value, sub: sub)
     }
-    
 }
  
  

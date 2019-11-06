@@ -72,3 +72,20 @@ extension Array {
     }
 }
  
+ 
+
+public func includes<E>(collection: MutableObservableProperty<Set<E>>, element: E) -> MutableObservableProperty<Bool> {
+    return collection.map{ (it) in 
+        it.contains(element)
+    }.withWrite{ (it) in 
+        if it {
+            collection.value = collection.value - element
+        } else {
+            collection.value = collection.value + element
+        }
+    }
+}
+public func includes<E>(_ collection: MutableObservableProperty<Set<E>>, _ element: E) -> MutableObservableProperty<Bool> {
+    return includes(collection: collection, element: element)
+}
+ 

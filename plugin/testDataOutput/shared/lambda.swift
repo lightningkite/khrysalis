@@ -19,30 +19,30 @@ public func lambdaTest() -> Void {
  
  
 
-public func takesLambda(lambda: (integer: Int32, someValue: String) -> Void) -> Void {
+public func takesLambda(lambda: (_ integer: Int32, _ someValue: String) -> Void) -> Void {
 }
  
  
 
-public func takesEscapingLambda(lambda: @escaping (integer: Int32, someValue: String) -> Void) -> Void {
+public func takesEscapingLambda(lambda: @escaping (_ integer: Int32, _ someValue: String) -> Void) -> Void {
 }
  
  
 
-public func takesEscapingLambda2(lambda: (@escaping (integer: Int32, someValue: String) -> Void)) -> Void {
+public func takesEscapingLambda2(lambda: (@escaping (_ integer: Int32, _ someValue: String) -> Void)) -> Void {
 }
  
  
 
 public class ConstructorHasEscaping {
     
-    public var lambda:  (integer: Int32, someValue: String) -> Void
+    public var lambda:  (_ integer: Int32, _ someValue: String) -> Void
     
     
-    public init(lambda: @escaping (integer: Int32, someValue: String) -> Void) {
+    public init(lambda: @escaping (_ integer: Int32, _ someValue: String) -> Void) {
         self.lambda = lambda
     }
-    convenience public init(_ lambda: @escaping (integer: Int32, someValue: String) -> Void) {
+    convenience public init(_ lambda: @escaping (_ integer: Int32, _ someValue: String) -> Void) {
         self.init(lambda: lambda)
     }
 }
@@ -52,13 +52,13 @@ public class ConstructorHasEscaping {
 
 public class ConstructorHasEscaping2 {
     
-    public var lambda: ( (integer: Int32, someValue: String) -> Void)
+    public var lambda: ( (_ integer: Int32, _ someValue: String) -> Void)
     
     
-    public init(lambda: (@escaping (integer: Int32, someValue: String) -> Void)) {
+    public init(lambda: (@escaping (_ integer: Int32, _ someValue: String) -> Void)) {
         self.lambda = lambda
     }
-    convenience public init(_ lambda: (@escaping (integer: Int32, someValue: String) -> Void)) {
+    convenience public init(_ lambda: (@escaping (_ integer: Int32, _ someValue: String) -> Void)) {
         self.init(lambda: lambda)
     }
 }

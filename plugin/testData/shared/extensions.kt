@@ -33,3 +33,15 @@ fun <Element, A> List<Element>.estimateWork(method: A, how: (Element, A)->Int): 
     }
     return amount
 }
+
+fun <E> includes(collection: MutableObservableProperty<Set<E>>, element: E): MutableObservableProperty<Boolean> {
+    return collection.map { it ->
+        it.contains(element)
+    }.withWrite { it ->
+        if(it){
+            collection.value = collection.value - element
+        } else {
+            collection.value = collection.value + element
+        }
+    }
+}

@@ -5,11 +5,12 @@ import Foundation
 
 
 
-public final class ManyThings: Equatable, Hashable {
+public class ManyThings: Equatable, Hashable {
     
     public var x: Int32
     public var y: Int32
     public var z: Int32
+    
     public static func == (lhs: ManyThings, rhs: ManyThings) -> Bool {
         return lhs.x == rhs.x &&
             lhs.y == rhs.y &&
@@ -32,6 +33,7 @@ public final class ManyThings: Equatable, Hashable {
         )
     }
     
+    
     public func stringy() -> Void {
         return "\(x)\(y)\(z)"
     }
@@ -44,7 +46,6 @@ public final class ManyThings: Equatable, Hashable {
     convenience public init(_ x: Int32, _ y: Int32, _ z: Int32) {
         self.init(x: x, y: y, z: z)
     }
-    
 }
  
  

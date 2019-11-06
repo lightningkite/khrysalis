@@ -26,7 +26,7 @@ public func cases(x: Int32) -> Void {
         print("x might be something more")
     }
     switch x {
-    case 0, 
+    case 0: fallthrough
     case 1: print("x == 0 or x == 1")
     default: print("otherwise")
     }
