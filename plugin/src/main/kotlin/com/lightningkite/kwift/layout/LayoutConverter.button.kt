@@ -7,20 +7,20 @@ val LayoutConverter.Companion.buttonViews
         viewTypes = ViewType.mapOf(
 
             ViewType("SeekBar", "UISlider", "View") { node ->
-                node.setToColorGivenControl(key = "android:progressTint"){
+                node.setToColorGivenControl(key = "android:progressTint") {
                     appendln("view.minimumTrackTintColor = $it")
                     appendln("view.maximumTrackTintColor = $it")
                 }
-                node.setToColorGivenControl(key = "android:thumbTint"){
+                node.setToColorGivenControl(key = "android:thumbTint") {
                     appendln("view.thumbTintColor = $it")
                 }
             },
             ViewType("com.lightningkite.kwift.views.android.ColorRatingBar", "UIRatingBar", "RatingBar") { node ->
-                node.setToColorGivenControl(key = "app:empty_color"){
+                node.setToColorGivenControl(key = "app:empty_color") {
                     appendln("view.settings.emptyColor = $it")
                     appendln("view.settings.emptyBorderColor = $it")
                 }
-                node.setToColorGivenControl(key = "app:progress_color"){
+                node.setToColorGivenControl(key = "app:progress_color") {
                     appendln("view.settings.filledColor = $it")
                     appendln("view.settings.filledBorderColor = $it")
                 }
@@ -53,7 +53,24 @@ val LayoutConverter.Companion.buttonViews
             ViewType("RadioButton", "LabeledRadioButton", "View") {
                 handleCommonText(it, "view.labelView")
             },
-            ViewType("ToggleButton", "ToggleButton", "Button") {},
+            ViewType("ToggleButton", "ToggleButton", "Button") { node ->
+                node.attributeAsString("android:textOff")?.let { text ->
+                    if (node.attributeAsBoolean("android:textAllCaps") == true) {
+                        appendln("view.textOff = $text.toUpperCase()")
+                        appendln("view.setTitle($text.toUpperCase(), for: .normal)")
+                    } else {
+                        appendln("view.textOff = $text")
+                        appendln("view.setTitle($text, for: .normal)")
+                    }
+                }
+                node.attributeAsString("android:textOn")?.let { text ->
+                    if (node.attributeAsBoolean("android:textAllCaps") == true) {
+                        appendln("view.textOn = $text.toUpperCase()")
+                    } else {
+                        appendln("view.textOn = $text")
+                    }
+                }
+            },
             ViewType("Switch", "LabeledSwitch", "View") {
                 handleCommonText(it, "view.labelView", controlView = "view.control")
             },
@@ -68,7 +85,7 @@ val LayoutConverter.Companion.buttonViews
                         appendln("view.setTitle($text.toUpperCase(), for: .normal)")
                     }
                 }
-                node.setToColorGivenControl("android:textColor"){
+                node.setToColorGivenControl("android:textColor") {
                     appendln("view.setTitleColor($it, for: .normal)")
                 }
 

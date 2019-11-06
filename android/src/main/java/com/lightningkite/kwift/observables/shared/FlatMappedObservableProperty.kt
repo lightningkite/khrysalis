@@ -1,7 +1,6 @@
 package com.lightningkite.kwift.observables.shared
 
 import com.lightningkite.kwift.actual.escaping
-import java.io.Closeable
 
 class FlatMappedObservableProperty<A, B>(
     val basedOn: ObservableProperty<A>,
@@ -13,12 +12,12 @@ class FlatMappedObservableProperty<A, B>(
         get() = FMOPEvent(this)
 
     class FMOPEvent<A, B>(val fmop: FlatMappedObservableProperty<A, B>): Event<B>() {
-        override fun add(listener: (B) -> Boolean): Close {
-            var current: Close = fmop.transformation(fmop.basedOn.value).onChange.add(listener)
-            val closeA = fmop.basedOn.onChange.add {
+        override fun add(listener: @escaping() (B) -> Boolean): Close {
+            var current: Close = fmop.transformation(fmop.basedOn.value).onChange.add(listener = listener)
+            val closeA = this.fmop.basedOn.onChange.add { it ->
                 current.close()
-                val new = fmop.transformation(fmop.basedOn.value)
-                current = new.onChange.add(listener)
+                val new = this.fmop.transformation(this.fmop.basedOn.value)
+                current = new.onChange.add(listener = listener)
                 listener(new.value)
                 return@add false
             }
