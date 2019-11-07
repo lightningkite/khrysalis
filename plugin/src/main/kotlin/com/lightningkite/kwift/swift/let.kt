@@ -35,9 +35,9 @@ fun SwiftAltListener.handleLet(
                 lambda.lambdaParameters()?.lambdaParameter(0)?.variableDeclaration()?.simpleIdentifier()?.text
                     ?: "it"
             )
-            append(" = ")
+            append(" = (")
             writeOn()
-            append(" {")
+            append(") {")
         }
         tab {
             lambda.statements().statement().dropLast(1).forEach {
@@ -134,7 +134,7 @@ fun SwiftAltListener.handleLet(
                 line {
                     append("if let ")
                     append(cond.name)
-                    append(" = ")
+                    append(" = (")
                     cond.parts.forEachBetween(
                         forItem = { child ->
                             when (child) {
@@ -144,7 +144,7 @@ fun SwiftAltListener.handleLet(
                         },
                         between = {}
                     )
-                    append(" {")
+                    append(") {")
                 }
                 tab {
                     startLine()

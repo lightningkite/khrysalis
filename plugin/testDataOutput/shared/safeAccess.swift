@@ -29,7 +29,17 @@ public class Thing: Equatable, Hashable {
     }
     
     
-    public func test() -> Void
+    public func test() -> Void {
+        return ()
+    }
+    
+    public func getSub(action: () -> Void) -> Thing?  {
+        return sub
+    }
+    
+    public func getSub() -> Thing?  {
+        return sub
+    }
     
     public init(value: Int32 = 0, sub: Thing?  = nil) {
         self.value = value
@@ -47,5 +57,9 @@ public func main() -> Void {
     print((thing.sub?.sub)?.value)
     thing?.test()
     (thing?.sub)?.test()
+    (thing?.getSub{ () in 
+        print("Hello")
+    })?.test()
+    (thing?.getSub())?.test()
 }
  

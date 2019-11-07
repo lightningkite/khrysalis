@@ -13,6 +13,13 @@ public extension Date {
     var time: Int64 {
         return Int64((self.timeIntervalSince1970 * 1000.0).rounded())
     }
+    
+    func iso8601() -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy-MM-dd'T'HH:mm:ssZZZZZ"
+        return formatter.string(from: self)
+    }
 
     init(_ milliseconds:Int64) {
         self = Date(timeIntervalSince1970: TimeInterval(milliseconds) / 1000)

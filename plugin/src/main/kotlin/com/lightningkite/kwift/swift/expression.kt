@@ -78,14 +78,19 @@ fun SwiftAltListener.registerExpression() {
         }
         write(item.primaryExpression())
         var handledCount = 0
+        var first = true
         item.postfixUnarySuffix().forEach {
-            write(it)
             if(it.navigationSuffix()?.memberAccessOperator()?.safeNav() != null){
-                handledCount++
-                if(handledCount < safeMemberAccessorCount) {
-                    direct.append(')')
+                if(first){
+                    first = false
+                } else {
+                    handledCount++
+                    if(handledCount < safeMemberAccessorCount) {
+                        direct.append(')')
+                    }
                 }
             }
+            write(it)
         }
     }
     handle<KotlinParser.TypeArgumentsContext> {

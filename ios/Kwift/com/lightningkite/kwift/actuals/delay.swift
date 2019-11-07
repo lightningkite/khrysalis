@@ -21,3 +21,8 @@ public func delay(milliseconds: Int64, action: @escaping ()->Void) {
 public func delay(_ milliseconds: Int64, action: @escaping ()->Void) {
     delay(milliseconds: milliseconds, action: action)
 }
+
+
+public func post(action: @escaping ()->Void) {
+    DispatchQueue.main.asyncAfter(deadline: .now() + 0.01, execute: action)
+}

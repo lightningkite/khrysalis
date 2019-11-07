@@ -100,7 +100,8 @@ public extension Array {
     func lastOrNull() -> Element? {
         return last
     }
-    func chunked(_ count: Int) -> Array<Array<Element>> {
+    func chunked(_ count32: Int32) -> Array<Array<Element>> {
+        let count = Int(count32)
         var output = Array<Array<Element>>()
         var chunkIndex = 0
         while chunkIndex < size {
@@ -118,12 +119,22 @@ public extension Array {
         return output
     }
     
-    func forEachIndexed(_ action: (_ index:Int, Element) -> Void){
+    func forEachIndexed(_ action: (_ index:Int32, Element) -> Void){
         for index in 0..<self.count{
-            action(index, self[index])
+            action(Int32(index), self[index])
         }
     }
     
+    func plus(_ element: Element) -> Array<Element> {
+        var copy = self
+        copy.add(element)
+        return copy
+    }
+    func withoutIndex(_ index: Int32) -> Array<Element> {
+        var copy = self
+        copy.removeAt(index)
+        return copy
+    }
 }
 
 public extension Array where Element: Equatable {
@@ -143,6 +154,11 @@ public extension Array where Element: Equatable {
     static func -(first: Array<Element>, second: Element) -> Array<Element> {
         var copy = first
         copy.remove(second)
+        return copy
+    }
+    func minus(_ element: Element) -> Array<Element> {
+        var copy = self
+        copy.remove(element)
         return copy
     }
 }

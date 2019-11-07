@@ -4,7 +4,9 @@ data class Thing(
     val value: Int = 0,
     val sub: Thing? = null
 ) {
-    fun test()
+    fun test() = Unit
+    fun getSub(action: ()->Unit): Thing? = sub
+    fun getSub(): Thing? = sub
 }
 
 fun main(){
@@ -12,4 +14,6 @@ fun main(){
     println(thing.sub?.sub?.value)
     thing?.test()
     thing?.sub?.test()
+    thing?.getSub { println("Hello") }?.test()
+    thing?.getSub()?.test()
 }

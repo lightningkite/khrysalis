@@ -18,17 +18,17 @@ public func main(args: Array<String>) -> Void {
         print("X is null")
     }
     
-    if let it = x {
+    if let it = (x) {
         print("X: \(it)") 
     }
     var xWithOne = { () in 
-        if let it = x {
+        if let it = (x) {
             return it + 1
         }
         return nil
     }() ?? 0
     
-    if let it = x {
+    if let it = (x) {
         print("X: \(it)") 
     } else {
         print("X is null") 

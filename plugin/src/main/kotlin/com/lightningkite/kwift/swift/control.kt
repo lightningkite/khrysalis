@@ -135,7 +135,7 @@ fun SwiftAltListener.registerControl() {
     handle<KotlinParser.ForStatementContext> {
         line {
             append("for ")
-            it.variableDeclaration()?.simpleIdentifier()?.let {
+            it.variableDeclaration()?.let {
                 write(it)
             } ?: it.multiVariableDeclaration()?.variableDeclaration()?.let {
                 append("(")
@@ -251,13 +251,15 @@ fun SwiftAltListener.registerControl() {
         } ?: run {
             item.whenEntry().forEachBetween(
                 forItem = {
-                    direct.append("if ")
-                    it.whenCondition().forEachBetween(
-                        forItem = { cond ->
-                            write(cond.expression()!!)
-                        },
-                        between = { direct.append(" || ") }
-                    )
+                    if(it.ELSE() == null) {
+                        direct.append("if ")
+                        it.whenCondition().forEachBetween(
+                            forItem = { cond ->
+                                write(cond.expression()!!)
+                            },
+                            between = { direct.append(" || ") }
+                        )
+                    }
                     direct.append(" {")
                     tab {
                         startLine()
