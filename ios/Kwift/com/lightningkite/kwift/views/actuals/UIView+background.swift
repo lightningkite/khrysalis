@@ -27,4 +27,12 @@ public extension UIView {
             }
         }
     }
+    var backgroundResource: Drawable? {
+        set(value){
+            backgroundDrawable = value
+        }
+        get {
+            return backgroundDrawable
+        }
+    }
 }

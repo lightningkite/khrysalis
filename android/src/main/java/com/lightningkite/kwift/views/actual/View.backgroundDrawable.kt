@@ -11,3 +11,9 @@ var View.backgroundDrawable: Drawable?
     set(value) {
         this.background = value
     }
+
+var View.backgroundResource: Int
+    get() = 0
+    set(value) {
+        this.setBackgroundResource(value)
+    }
