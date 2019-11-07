@@ -127,6 +127,7 @@ public enum HttpClient {
         headers: [String: String],
         fieldName: String,
         image: ImageData,
+        maxSize: Int64 = 10_000_000,
         onResult: @escaping (Int32, T?, String?) -> Void
     ) {
         var quality: CGFloat = 1.0

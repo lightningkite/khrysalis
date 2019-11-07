@@ -194,6 +194,9 @@ public extension Dictionary {
     func isEmpty() -> Bool {
         return self.isEmpty
     }
+    func isNotEmpty() -> Bool {
+        return !self.isEmpty
+    }
     mutating func clear() {
         self.removeAll()
     }
@@ -221,8 +224,21 @@ public extension Set {
     func isEmpty() -> Bool {
         return self.isEmpty
     }
+    func isNotEmpty() -> Bool {
+        return !self.isEmpty
+    }
     mutating func clear() {
         self.removeAll()
+    }
+    func minus(_ element: Element) -> Set<Element> {
+        var copy = self
+        copy.remove(element)
+        return copy
+    }
+    func plus(_ element: Element) -> Set<Element> {
+        var copy = self
+        copy.add(element)
+        return copy
     }
 }
 

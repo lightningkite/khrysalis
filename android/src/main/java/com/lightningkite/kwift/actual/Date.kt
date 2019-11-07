@@ -3,6 +3,7 @@ package com.lightningkite.kwift.actual
 import java.lang.IllegalStateException
 import java.text.DateFormat
 import java.text.DateFormatSymbols
+import java.text.SimpleDateFormat
 import java.util.*
 
 inline class TimeInterval(val milliseconds: Long) {
@@ -121,6 +122,10 @@ fun Date.format(dateStyle: ClockPartSize, timeStyle: ClockPartSize): String {
     }
     return format.format(this)
 }
+
+fun Date.iso8601(): String = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(this)
+fun DateAlone.iso8601(): String = SimpleDateFormat("yyyy-MM-dd").format(dateFrom(this, Date().timeAlone))
+fun TimeAlone.iso8601(): String = SimpleDateFormat("HH:mm:ss").format(dateFrom(Date().dateAlone, this))
 
 object TimeNames {
     private val symbols = DateFormatSymbols()

@@ -44,9 +44,9 @@ fun <E> includes(collection: MutableObservableProperty<Set<E>>, element: E): Mut
         it.contains(element)
     }.withWrite { it ->
         if(it){
-            collection.value = collection.value - element
+            collection.value = collection.value.plus(element)
         } else {
-            collection.value = collection.value + element
+            collection.value = collection.value.minus(element)
         }
     }
 }

@@ -41,9 +41,9 @@ public func includes<E>(collection: MutableObservableProperty<Set<E>>, element: 
         it.contains(element)
     }.withWrite{ (it) in 
         if it {
-            collection.value = collection.value - element
+            collection.value = collection.value.minus(element)
         } else {
-            collection.value = collection.value + element
+            collection.value = collection.value.plus(element)
         }
     }
 }

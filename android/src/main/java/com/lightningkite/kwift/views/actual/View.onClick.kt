@@ -9,3 +9,7 @@ import android.widget.TextView
 fun View.onClick(action: () -> Unit) {
     setOnClickListener { action() }
 }
+
+fun View.onLongClick(action: () -> Unit) {
+    setOnLongClickListener { action(); true }
+}
