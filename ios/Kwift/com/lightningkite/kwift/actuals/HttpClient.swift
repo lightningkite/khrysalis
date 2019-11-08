@@ -190,6 +190,27 @@ public enum HttpClient {
         }
     }
     
+    public static func uploadImageReferenceWithoutResult(
+        url: String,
+        method: String,
+        headers: [String: String],
+        fieldName: String,
+        imageReference: ImageReference,
+        maxSize: Int64 = 10_000_000,
+        additionalFields: [String: String] = [:],
+        onResult: @escaping (Int32, String?) -> Void
+    ) {
+        URLSession.shared.dataTask(with: imageReference, completionHandler: { data, response, error in
+            DispatchQueue.main.async {
+                if let data = data {
+                    uploadImageWithoutResult(url: url, method: method, headers: headers, fieldName: fieldName, image: UIImage(data: data)!, onResult: onResult)
+                } else {
+                    onResult(0, "Failed to load image")
+                }
+            }
+        }).resume()
+    }
+    
     public static func uploadImageWithoutResult(
         url: String,
         method: String,
@@ -197,6 +218,7 @@ public enum HttpClient {
         fieldName: String,
         image: ImageData,
         maxSize: Int64 = 10_000_000,
+        additionalFields: [String: String] = [:],
         onResult: @escaping (Int32, String?) -> Void
     ) {
         var quality: CGFloat = 1.0
@@ -219,6 +241,9 @@ public enum HttpClient {
         
         Alamofire.upload(multipartFormData: { multipartFormData in
             multipartFormData.append(imgData, withName: fieldName, fileName: "file.jpg", mimeType: "image/jpg")
+            for (key, value) in additionalFields {
+                multipartFormData.append(value.data(using: .utf8)!, withName: key)
+            }
         }, to:url, method: httpMethod, headers: headers)
         { (result) in
             switch result {

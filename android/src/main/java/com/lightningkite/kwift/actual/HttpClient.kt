@@ -209,65 +209,26 @@ object HttpClient {
         })
     }
 
-    inline fun uploadImageWithoutResult(
+    inline fun uploadImageReferenceWithoutResult(
         url: String,
         method: String,
         headers: Map<String, String>,
         fieldName: String,
         imageReference: ImageReference,
         maxSize: Long = 10_000_000,
+        additionalFields: Map<String, String> = mapOf(),
         crossinline onResult: @escaping() (code: Int, error: String?) -> Unit
     ) {
-        val image = MediaStore.Images.Media.getBitmap(appContext.contentResolver, imageReference)
-        var qualityToTry = 100
-        var data = ByteArrayOutputStream().use {
-            image.compress(Bitmap.CompressFormat.JPEG, qualityToTry, it)
-            it.toByteArray()
-        }
-        while(data.size > maxSize) {
-            qualityToTry -= 5
-            data = ByteArrayOutputStream().use {
-                image.compress(Bitmap.CompressFormat.JPEG, qualityToTry, it)
-                it.toByteArray()
-            }
-        }
-        Log.i("HttpClient", "Sending $method request to $url with headers $headers and image at quality level $qualityToTry")
-        val request = Request.Builder()
-            .url(url)
-            .method(
-                method,
-                MultipartBody.Builder()
-                    .setType(MultipartBody.FORM)
-                    .addFormDataPart(
-                        fieldName,
-                        "image.jpg",
-                        RequestBody.create(MediaType.parse("image/jpeg"), data)
-                    )
-                    .build()
-            )
-            .headers(Headers.of(headers))
-            .build()
-
-        client.newCall(request).go(object : Callback {
-            override fun onFailure(call: Call, e: IOException) {
-                runResult {
-                    onResult.invoke(0, e.message ?: "")
-                }
-            }
-
-            override fun onResponse(call: Call, response: Response) {
-                val raw = response.body()!!.string()
-                Log.i("HttpClient", "Response ${response.code()}: $raw")
-                runResult {
-                    val code = response.code()
-                    if (code / 100 == 2) {
-                        onResult.invoke(response.code(), null)
-                    } else {
-                        onResult.invoke(code, raw ?: "")
-                    }
-                }
-            }
-        })
+        uploadImageWithoutResult(
+            url = url,
+            method = method,
+            headers = headers,
+            fieldName = fieldName,
+            image = MediaStore.Images.Media.getBitmap(appContext.contentResolver, imageReference),
+            maxSize = maxSize,
+            additionalFields = additionalFields,
+            onResult = onResult
+        )
     }
 
     inline fun uploadImageWithoutResult(
@@ -277,6 +238,7 @@ object HttpClient {
         fieldName: String,
         image: ImageData,
         maxSize: Long = 10_000_000,
+        additionalFields: Map<String, String> = mapOf(),
         crossinline onResult: @escaping() (code: Int, error: String?) -> Unit
     ) {
         var qualityToTry = 100
@@ -303,6 +265,13 @@ object HttpClient {
                         "image.jpg",
                         RequestBody.create(MediaType.parse("image/jpeg"), data)
                     )
+                    .let { it ->
+                        var result = it
+                        for((key, value) in additionalFields){
+                            result = result.addFormDataPart(key, value)
+                        }
+                        result
+                    }
                     .build()
             )
             .headers(Headers.of(headers))

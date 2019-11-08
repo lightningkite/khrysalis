@@ -70,10 +70,10 @@ open class KwiftViewController: UIViewController, UINavigationControllerDelegate
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01, execute: {
             if self.first {
                 self.first = false
-                self.view.layer.backgroundColor = self.getBackingColor(self.innerView) ?? UIColor.white.cgColor
+                self.view.layer.backgroundColor = self.getBackingColor(self.innerView) ?? self.defaultBackgroundColor.cgColor
             } else {
                 UIView.animate(withDuration: 0.25, animations: {
-                    self.view.layer.backgroundColor = self.getBackingColor(self.innerView) ?? UIColor.white.cgColor
+                    self.view.layer.backgroundColor = self.getBackingColor(self.innerView) ?? self.defaultBackgroundColor.cgColor
                 })
             }
         })
@@ -84,7 +84,7 @@ open class KwiftViewController: UIViewController, UINavigationControllerDelegate
                 return backing
             }
         }
-        if let backing = view.layer.backgroundColor {
+        if let backing = view.layer.backgroundColor, backing.alpha > 0.1 {
             return backing
         }
         return nil
