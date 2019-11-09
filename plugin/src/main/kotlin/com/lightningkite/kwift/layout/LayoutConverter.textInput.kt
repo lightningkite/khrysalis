@@ -107,12 +107,15 @@ val LayoutConverter.Companion.textInputViews
                             }
                             "number" -> {
                                 appendln("view.keyboardType = .numberPad")
+                                appendln("view.addDismissButton()")
                             }
                             "numberSigned" -> {
                                 appendln("view.keyboardType = .numbersAndPunctuation")
+                                appendln("view.addDismissButton()")
                             }
                             "numberDecimal" -> {
                                 appendln("view.keyboardType = .numbersAndPunctuation")
+                                appendln("view.addDismissButton()")
                             }
                             "numberPassword" -> {
                                 appendln("view.keyboardType = .numberPad")

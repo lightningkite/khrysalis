@@ -14,6 +14,7 @@ public extension DateButton {
         return bind(observable: observable)
     }
     func bind(observable: MutableObservableProperty<Date>) {
+        self.date = observable.value
         observable.addAndRunWeak(referenceA: self) { (this, value) in
             if this.date != value {
                 this.date = value

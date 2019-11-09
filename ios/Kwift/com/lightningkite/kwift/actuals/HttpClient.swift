@@ -203,7 +203,7 @@ public enum HttpClient {
         URLSession.shared.dataTask(with: imageReference, completionHandler: { data, response, error in
             DispatchQueue.main.async {
                 if let data = data {
-                    uploadImageWithoutResult(url: url, method: method, headers: headers, fieldName: fieldName, image: UIImage(data: data)!, onResult: onResult)
+                    uploadImageWithoutResult(url: url, method: method, headers: headers, fieldName: fieldName, image: UIImage(data: data)!, additionalFields: additionalFields, onResult: onResult)
                 } else {
                     onResult(0, "Failed to load image")
                 }
@@ -240,10 +240,10 @@ public enum HttpClient {
         }
         
         Alamofire.upload(multipartFormData: { multipartFormData in
-            multipartFormData.append(imgData, withName: fieldName, fileName: "file.jpg", mimeType: "image/jpg")
             for (key, value) in additionalFields {
                 multipartFormData.append(value.data(using: .utf8)!, withName: key)
             }
+            multipartFormData.append(imgData, withName: fieldName, fileName: "file.jpg", mimeType: "image/jpg")
         }, to:url, method: httpMethod, headers: headers)
         { (result) in
             switch result {

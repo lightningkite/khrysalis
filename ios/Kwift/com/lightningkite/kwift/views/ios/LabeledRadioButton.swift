@@ -12,20 +12,14 @@ import UIKit
 public class LabeledRadioButton : LinearLayout, CompoundButton {
     
     public let checkViewContainer: UIView = UIView(frame: .zero)
-    public let checkView: UILabel = UILabel(frame: .zero)
+    public let checkView: UIView = UIView(frame: .zero)
     public let labelView: UILabel = UILabel(frame: .zero)
     public var onCheckChanged: (Bool) -> Void = { _ in }
     public var isOn: Bool = false {
         didSet {
-            if isOn {
-                UIView.animate(withDuration: 0.25, animations: { [checkView] in
-                    checkView.transform = CGAffineTransform(scaleX: 1, y: 1)
-                })
-            } else {
-                UIView.animate(withDuration: 0.25, animations: { [checkView] in
-                    checkView.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
-                })
-            }
+            UIView.animate(withDuration: 0.25, animations: { [weak self] in
+                self?.resize()
+            })
             onCheckChanged(isOn)
         }
     }
@@ -41,9 +35,9 @@ public class LabeledRadioButton : LinearLayout, CompoundButton {
             weight: 0
         ))
         checkViewContainer.addSubview(checkView)
-        checkViewContainer.addOnLayoutSubviews { [weak checkView, weak checkViewContainer] in
-            guard let checkView = checkView, let checkViewContainer = checkViewContainer else { return }
-            checkView.frame = checkViewContainer.bounds
+        checkViewContainer.addOnLayoutSubviews { [weak self] in
+            guard let self = self else { return }
+            self.resize()
         }
         addSubview(labelView, LinearLayout.LayoutParams(
             size: .zero,
@@ -52,12 +46,7 @@ public class LabeledRadioButton : LinearLayout, CompoundButton {
             weight: 1
         ))
 
-        checkView.text = "⬤"
-        checkView.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
-        checkView.textAlignment = .center
-
         checkViewContainer.layer.borderWidth = 1
-        checkViewContainer.layer.borderColor = checkView.textColor.cgColor
         checkViewContainer.layer.cornerRadius = 12
 
         let tapRecognizer = UITapGestureRecognizer().addAction { [weak self] in
@@ -66,9 +55,24 @@ public class LabeledRadioButton : LinearLayout, CompoundButton {
             }
         }
         self.addGestureRecognizer(tapRecognizer)
+        
+        post {
+            self.checkView.layer.backgroundColor = self.labelView.textColor.cgColor
+            self.checkViewContainer.layer.borderColor = self.labelView.textColor.cgColor
+        }
     }
 
-
+    func resize(){
+        if isOn {
+            checkView.frame = checkViewContainer.bounds.insetBy(dx: 4, dy: 4)
+            checkView.layer.cornerRadius = checkView.frame.size.width / 2
+        } else {
+            let centerX = checkViewContainer.bounds.origin.x + checkViewContainer.bounds.size.width / 2
+            let centerY = checkViewContainer.bounds.origin.y + checkViewContainer.bounds.size.height / 2
+            checkView.frame = CGRect(x: centerX, y: centerY, width: 0, height: 0)
+            checkView.layer.cornerRadius = checkView.frame.size.width / 2
+        }
+    }
 
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)

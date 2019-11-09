@@ -131,6 +131,9 @@ class SwiftAltListener {
                 between = { direct.append(", ") }
             )
             direct.append("]")
+            it.postfixUnarySuffix().drop(1).forEach {
+                write(it)
+            }
         }
         functionReplacements["arrayListOf"] = functionReplacements["listOf"]!!
         functionReplacements["mutableListOf"] = functionReplacements["listOf"]!!
@@ -142,6 +145,9 @@ class SwiftAltListener {
                 between = { direct.append(", ") }
             )
             direct.append("]")
+            it.postfixUnarySuffix().drop(1).forEach {
+                write(it)
+            }
         }
         functionReplacements["hashSetOf"] = functionReplacements["setOf"]!!
         functionReplacements["mutableSetOf"] = functionReplacements["setOf"]!!
@@ -169,6 +175,9 @@ class SwiftAltListener {
                 direct.append(":")
             }
             direct.append("]")
+            it.postfixUnarySuffix().drop(1).forEach {
+                write(it)
+            }
         }
         functionReplacements["hashMapOf"] = functionReplacements["mapOf"]!!
         functionReplacements["mutableMapOf"] = functionReplacements["mapOf"]!!

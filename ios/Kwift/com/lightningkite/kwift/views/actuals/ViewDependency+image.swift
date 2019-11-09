@@ -92,23 +92,19 @@ private class ImageDelegate : NSObject, UIImagePickerControllerDelegate, UINavig
                 return
             }
         }
-        print("I am here")
         let image = info[.originalImage] as! UIImage
         print(image)
         var localId: String = ""
         PHPhotoLibrary.shared().performChanges({
-            print("I am there")
             let r = PHAssetChangeRequest.creationRequestForAsset(from: image)
             localId = r.placeholderForCreatedAsset!.localIdentifier
         }, completionHandler: { (success, error) in
-            print("I am every freakin' where")
             if !success {
                 print(error)
             } else {
                 let assetResult = PHAsset.fetchAssets(withLocalIdentifiers: [localId], options: nil)
                 let asset = assetResult.firstObject!
                 PHImageManager.default().requestImageData(for: asset, options: nil) { (data, string, orientation, map) in
-                    print("FEAR ME")
                     let fileUrl = map!["PHImageFileURLKey"] as! URL
                     picker.dismiss(animated: true, completion: {
                         self.onImagePicked?(fileUrl)

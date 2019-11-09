@@ -56,6 +56,48 @@ val LayoutConverter.Companion.dateViews
                 node.attributeAsString("app:rightText")?.let {
                     appendln("view.rightText = $it")
                 }
+                node.attributeAsColor("selectedForegroundColor")?.let {
+                    appendln("view.selectedColorSet.foreground = $it")
+                }
+                node.attributeAsColor("selectedBackgroundColor")?.let {
+                    appendln("view.selectedColorSet.background = $it")
+                }
+                node.attributeAsColor("defaultForegroundColor")?.let {
+                    appendln("view.defaultColorSet.foreground = $it")
+                }
+                node.attributeAsColor("defaultBackgroundColor")?.let {
+                    appendln("view.defaultColorSet.background = $it")
+                }
+                node.attributeAsColor("labelForegroundColor")?.let {
+                    appendln("view.labelColorSet.foreground = $it")
+                }
+                node.attributeAsColor("labelBackgroundColor")?.let {
+                    appendln("view.labelColorSet.background = $it")
+                }
+
+                node.attributeAsDimension("headerFont")?.let {
+                    appendln("view.headerFont = $it")
+                }
+                node.attributeAsDimension("labelFont")?.let {
+                    appendln("view.labelFont = $it")
+                }
+                node.attributeAsDimension("dayFont")?.let {
+                    appendln("view.dayFont = $it")
+                }
+
+                node.attributeAsDimension("internalPadding")?.let {
+                    appendln("view.internalPadding = $it")
+                }
+                node.attributeAsDimension("dayCellMargin")?.let {
+                    appendln("view.dayCellMargin = $it")
+                }
+
+                node.attributeAsString("leftText")?.let {
+                    appendln("view.leftText = $it")
+                }
+                node.attributeAsString("rightText")?.let {
+                    appendln("view.rightText = $it")
+                }
             },
             ViewType(
                 "com.lightningkite.kwift.views.android.SelectDateRangeView",
