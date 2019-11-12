@@ -3,19 +3,16 @@ package com.lightningkite.kwift.views.actual
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
-import android.net.Uri
-import android.os.Bundle
+import android.graphics.Bitmap
+import android.graphics.drawable.Drawable
 import android.provider.MediaStore
-import android.util.Log
 import androidx.core.content.FileProvider
 import com.lightningkite.kwift.actual.ImageData
 import com.lightningkite.kwift.actual.ImageReference
-import com.lightningkite.kwift.android.ActivityAccess
 import com.lightningkite.kwift.views.android.startIntent
-import com.theartofdev.edmodo.cropper.CropImage
-import com.theartofdev.edmodo.cropper.CropImageView
+import com.squareup.picasso.Picasso
+import com.squareup.picasso.Target
 import java.io.File
-import java.lang.Exception
 
 fun ViewDependency.requestImageGallery(
     callback: (ImageReference) -> Unit
@@ -57,6 +54,23 @@ fun ViewDependency.requestImageCamera(
             }
         }
     }
+}
+
+fun ViewDependency.loadImageUrl(url: String?, onResult: (ImageData?) -> Unit) {
+
+    Picasso.get().load(url).into(object : Target {
+        override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
+//            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        }
+
+        override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
+            onResult(null)
+        }
+
+        override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
+            onResult(bitmap)
+        }
+    })
 }
 
 fun ViewDependency.loadImage(imageReference: ImageReference, onResult: (ImageData?) -> Unit) {

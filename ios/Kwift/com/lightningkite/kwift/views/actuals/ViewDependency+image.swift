@@ -39,6 +39,19 @@ public extension ViewDependency {
             self.parentViewController.present(imageDelegate.imagePicker, animated: true, completion: nil)
         }
     }
+
+    func loadImageUrl(_ url: String?, onResult: @escaping (ImageData?) -> Void){
+        if let url = url{
+            let image = ImageReference(string: url)
+            if let image = image{
+                self.loadImage(image, onResult: onResult)
+            }else{
+                onResult(nil)
+            }
+        }else{
+            onResult(nil)
+        }
+    }
     
     func loadImage(_ imageReference: ImageReference, onResult: @escaping (ImageData?)->Void){
         URLSession.shared.dataTask(with: imageReference, completionHandler: { data, response, error in

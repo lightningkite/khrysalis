@@ -100,6 +100,13 @@ public extension Array {
     func lastOrNull() -> Element? {
         return last
     }
+    func getOrNull(_ index:Int32) -> Element?{
+        if index > self.count{
+            return nil
+        }else{
+            return self[index]
+        }
+    }
     func chunked(_ count32: Int32) -> Array<Array<Element>> {
         let count = Int(count32)
         var output = Array<Array<Element>>()
