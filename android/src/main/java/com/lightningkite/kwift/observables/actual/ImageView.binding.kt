@@ -52,6 +52,17 @@ fun ImageView.loadImageData(imageData: ObservableProperty<ImageData?>) {
     }
 }
 
+fun ImageView.loadImageData(image: ImageData?) {
+    post {
+        image?.let { image ->
+            this.setImageBitmap(image)
+        }
+        if (image == null) {
+            this.setImageDrawable(null)
+        }
+    }
+}
+
 fun ImageView.loadImageReference(imageReference: ObservableProperty<ImageReference?>) {
     post {
         imageReference.addAndRunWeak(this) { self, it ->
@@ -64,6 +75,18 @@ fun ImageView.loadImageReference(imageReference: ObservableProperty<ImageReferen
         }
     }
 }
+
+fun ImageView.loadImageReference(image: ImageReference?) {
+    post {
+        image?.let { image ->
+            this.setImageBitmap(MediaStore.Images.Media.getBitmap(context.contentResolver, image))
+        }
+        if (image == null) {
+            setImageDrawable(null)
+        }
+    }
+}
+
 
 fun ImageView.loadUrlNotNull(imageUrl: ObservableProperty<String>) {
     post {

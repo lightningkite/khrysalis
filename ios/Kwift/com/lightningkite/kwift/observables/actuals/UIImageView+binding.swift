@@ -66,9 +66,30 @@ public extension UIImageView {
         }
     }
 
+    func loadImageData(_ image: ImageData){
+        self.image = image
+    }
+
+    func loadImageData(image: ImageData){
+        self.image = image
+    }
+
     func loadImageData(imageData: ObservableProperty<ImageData?>){
         imageData.addAndRunWeak(self) {(self, it) in
             self.image = it
+        }
+    }
+    
+    func loadImageReference(imageReference: ImageReference?){
+        if let image = imageReference{
+            URLSession.shared.dataTask(with: image, completionHandler: { data, response, error in
+                DispatchQueue.main.async {
+                    if let data = data {
+                        let newImage = UIImage(data: data)
+                        self.image = newImage
+                    }
+                }
+            }).resume()
         }
     }
 
