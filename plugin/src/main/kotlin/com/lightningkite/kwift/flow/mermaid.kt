@@ -1,6 +1,5 @@
 package com.lightningkite.kwift.flow
 
-import java.io.BufferedWriter
 import java.io.File
 
 
@@ -10,56 +9,51 @@ internal fun groupedGraph(
 ) {
     println("Making groupedGraph")
     outputFolder.resolve("flow-grouped.mmd").bufferedWriter().use { out ->
-        val groupedNodes = groupByBelonging(nodes)
-        val nodeId: Map<String, String> = groupedNodes
-            .flatMap { it.value }
-            .withIndex()
-            .associate {
-                it.value.key to getShortIdentifier(it.index)
+        val groupedNodes = nodes
+            .entries
+            .groupBy {
+                val belongsTo = it.value.belongsToStacks(nodes)
+                if (belongsTo.size == 1) belongsTo.first()
+                else ""
             }
+            .mapValues { it.value.sortedBy { it.value.depth } }
+        val nodeIds = HashMap<String, Int>()
         groupedNodes
             .flatMap { it.value.map { it.value } }
-            .filter { nodeId[it.name] == null }
             .forEach {
                 println("Mismatch: $it")
             }
-
-        out.appendln("graph LR;")
-        groupedNodes.forEach {
-            if (!it.key.isBlank() && it.key != "stack") {
-                out.appendln("subgraph ${it.key};")
+        out.mermaid {
+            for ((group, nodes) in groupedNodes) {
+                if (!group.isBlank() && group != "stack") {
+                    subgraph(group) {
+                        for (it in nodes) {
+                            nodeIds[it.key] = node(it.key)
+                        }
+                    }
+                } else {
+                    for (it in nodes) {
+                        nodeIds[it.key] = node(it.key)
+                    }
+                }
             }
-            it.value.forEach {
-                out.appendln("${nodeId[it.key]}[${it.key}];")
-            }
-            if (!it.key.isBlank() && it.key != "stack") {
-                out.appendln("end;")
-            }
-        }
-        groupedNodes.flatMap { it.value }.forEach { entry ->
-            entry.value.operations.forEach { operation ->
-                mermaidEmitLink(out, nodes, nodeId, entry.value, operation)
+            for (entry in groupedNodes.flatMap { it.value }) {
+                for (operation in entry.value.operations) {
+                    link(
+                        from = nodeIds[entry.key] ?: continue,
+                        to = nodeIds[operation.viewName] ?: continue,
+                        shape = operation.linkShape(),
+                        content = nodes[operation.viewName]
+                            ?.totalRequires(nodes)
+                            ?.joinToString { it.name }
+                            ?.replace('[', '<')
+                            ?.replace(']', '>')
+                            ?.takeUnless { it.isEmpty() }
+                    )
+                }
             }
         }
     }
-}
-
-private fun groupByBelonging(nodes: Map<String, ViewNode>): Map<String, List<Map.Entry<String, ViewNode>>> {
-    return nodes
-        .entries
-        .groupBy {
-            val belongsTo = it.value.belongsToStacks(nodes)
-            if (belongsTo.size == 1) belongsTo.first()
-            else ""
-        }
-        .mapValues { it.value.sortedBy { it.value.depth } }
-}
-
-private fun multigroupByBelonging(nodes: Map<String, ViewNode>): Map<String, List<Map.Entry<String, ViewNode>>> {
-    val stacks = nodes.values.asSequence().flatMap { it.operations.asSequence().mapNotNull { it.stack } }.toSet()
-    return stacks.associate { stack ->
-        stack to nodes.filter { stack in it.value.belongsToStacks(nodes) }
-    }.mapValues { it.value.entries.sortedBy { it.value.depth } }
 }
 
 internal fun sortedGraph(
@@ -68,21 +62,74 @@ internal fun sortedGraph(
 ) {
     println("Making sortedGraph")
     outputFolder.resolve("flow-sorted.mmd").bufferedWriter().use { out ->
-        val groupedNodes = nodes.entries
-            .sortedBy { it.value.depth }
-        val nodeId: Map<String, String> = groupedNodes
-            .withIndex()
-            .associate {
-                it.value.key to getShortIdentifier(it.index)
+        out.mermaid {
+            usingType<ViewNode> {
+                val sortedNodes = nodes.values
+                    .sortedBy { it.depth }
+                sortedNodes.forEach {
+                    node(it, it.name)
+                }
+                sortedNodes.forEach {
+                    for (op in it.operations) {
+                        val target = op.viewName?.let { nodes[it] } ?: continue
+                        link(
+                            from = it,
+                            to = target,
+                            content = passingInfo(target, nodes),
+                            shape = op.linkShape()
+                        )
+                    }
+                }
             }
-
-        out.appendln("graph LR;")
-        groupedNodes.forEach {
-            out.appendln("${nodeId[it.key]}[${it.key}];")
         }
-        groupedNodes.forEach { entry ->
-            entry.value.operations.forEach { operation ->
-                mermaidEmitLink(out, nodes, nodeId, entry.value, operation)
+    }
+}
+
+internal fun sortedNoReversalsGraph(
+    outputFolder: File,
+    nodes: Map<String, ViewNode>
+) {
+    println("Making flow data")
+    outputFolder.resolve("flow-data.mmd").bufferedWriter().use { out ->
+        out.mermaid {
+            usingType<ViewNode> {
+                forward(
+                    root = ViewNode.root(nodes)!!,
+                    makeOriginalNode = { node(it.name) },
+                    makeBackNode = { node(it.name, shape = MermaidBuilder.NodeShape.Flag) },
+                    getLinks = {
+                        it.operations.asSequence().mapNotNull {
+                            val target = nodes[it.viewName ?: ""] ?: return@mapNotNull null
+                            MermaidBuilder.LinkInfo(
+                                toItem = target,
+                                content = passingInfo(target, nodes),
+                                shape = it.linkShape()
+                            )
+                        }
+                    }
+                )
+            }
+        }
+    }
+    println("Making flow data")
+    outputFolder.resolve("flow-stack.mmd").bufferedWriter().use { out ->
+        out.mermaid {
+            usingType<ViewNode> {
+                forward(
+                    root = ViewNode.root(nodes)!!,
+                    makeOriginalNode = { node(it.name) },
+                    makeBackNode = { node(it.name, shape = MermaidBuilder.NodeShape.Flag) },
+                    getLinks = {
+                        it.operations.asSequence().mapNotNull {
+                            val target = nodes[it.viewName ?: ""] ?: return@mapNotNull null
+                            MermaidBuilder.LinkInfo(
+                                toItem = target,
+                                content = it.stack?.takeUnless { it == "stack" },
+                                shape = it.linkShape()
+                            )
+                        }
+                    }
+                )
             }
         }
     }
@@ -93,7 +140,10 @@ internal fun partialGraphs(
     nodes: Map<String, ViewNode>
 ) {
     println("Making partialGraphs")
-    val groupedNodes = multigroupByBelonging(nodes)
+    val groupedNodes = nodes.values.asSequence().flatMap { it.operations.asSequence().mapNotNull { it.stack } }.toSet()
+        .associate { stack ->
+            stack to nodes.filter { stack in it.value.belongsToStacks(nodes) }
+        }.mapValues { it.value.entries.sortedBy { it.value.depth } }
         .mapValues { it.value.sortedBy { it.value.depth } }
     for ((group, values) in groupedNodes) {
         println("Making partialGraph for $group")
@@ -115,95 +165,67 @@ internal fun partialGraphs(
                 }.toSet() - internalNodes
             val subsetNodes = (beforeNodes + internalNodes + afterNodes)
             val subsetNodeNames = subsetNodes.map { it.name }.toSet()
-            val nodeId: Map<String, String> = subsetNodes
-                .withIndex()
-                .associate {
-                    it.value.name to getShortIdentifier(it.index)
-                }
-            subsetNodes
-                .filter { nodeId[it.name] == null }
-                .forEach {
-                    println("Mismatch: $it")
-                }
-
-            out.appendln("graph LR;")
-
-            beforeNodes.forEach {
-                out.appendln("${nodeId[it.name]}[${it.name}];")
-            }
-
-            out.appendln("subgraph $group;")
-            internalNodes.forEach {
-                out.appendln("${nodeId[it.name]}[${it.name}];")
-            }
-            out.appendln("end;")
-
-            afterNodes.forEach {
-                out.appendln("${nodeId[it.name]}[${it.name}];")
-            }
-
-            (beforeNodes).forEach { node ->
-                node.operations.forEach { operation ->
-                    if (operation.viewName in subsetNodeNames && operation.stack == group) {
-                        mermaidEmitLink(out, nodes, nodeId, node, operation)
+            out.mermaid {
+                usingType<ViewNode> {
+                    beforeNodes.forEach {
+                        node(it, it.name)
                     }
-                }
-            }
-            internalNodes.forEach { node ->
-                node.operations.forEach { operation ->
-                    mermaidEmitLink(out, nodes, nodeId, node, operation)
+                    subgraph(group) {
+                        internalNodes.forEach {
+                            node(it, it.name)
+                        }
+                    }
+                    afterNodes.forEach {
+                        node(it, it.name)
+                    }
+                    (beforeNodes).forEach { node ->
+                        for (operation in node.operations) {
+                            if (operation.viewName in subsetNodeNames && operation.stack == group) {
+                                val operationNode = nodes[operation.viewName ?: continue] ?: continue
+                                link(
+                                    from = node,
+                                    to = operationNode,
+                                    content = passingInfo(node, nodes),
+                                    shape = operation.linkShape()
+                                )
+                            }
+                        }
+                    }
+                    internalNodes.forEach { node ->
+                        for (operation in node.operations) {
+                            val operationNode = nodes[operation.viewName ?: continue] ?: continue
+                            link(
+                                from = node,
+                                to = operationNode,
+                                content = passingInfo(node, nodes),
+                                shape = operation.linkShape()
+                            )
+                        }
+                    }
                 }
             }
         }
     }
 }
 
-internal fun getShortIdentifier(index: Int): String {
-    return when (index) {
-        in Int.MIN_VALUE..-1 -> "UNK"
-        in 0..25 -> ('A' + index).toString()
-        in 26..675 -> ('A' + index / 26).toString() + ('A' + index % 26).toString()
-        else -> ('A' + index / 676).toString() + ('A' + index / 26 % 26).toString() + ('A' + index % 26).toString()
+private fun ViewStackOp.linkShape(): MermaidBuilder.LinkShape {
+    return when (this) {
+        is ViewStackOp.Dismiss -> MermaidBuilder.LinkShape.Line
+        is ViewStackOp.Pop -> MermaidBuilder.LinkShape.Line
+        is ViewStackOp.Push -> MermaidBuilder.LinkShape.Arrow
+        is ViewStackOp.Swap -> MermaidBuilder.LinkShape.DottedArrow
+        is ViewStackOp.Reset -> MermaidBuilder.LinkShape.DottedLine
+        is ViewStackOp.Embed -> MermaidBuilder.LinkShape.ThickArrow
     }
 }
 
-internal fun mermaidEmitLink(
-    out: BufferedWriter,
-    nodes: Map<String, ViewNode>,
-    nodeId: Map<String, String>,
-    node: ViewNode,
-    operation: ViewStackOp
-) {
-    val target = operation.viewName ?: return
-    val targetId = nodeId[target] ?: run {
-        println("No nodeId for $target")
-        return
-    }
-    val passed = nodes[target]
-        ?.totalRequires(nodes)
-        ?.joinToString { it.name }
-        ?.replace('[', '<')
-        ?.replace(']', '>')
-        ?.takeUnless { it.isEmpty() }
-        ?: ""
-    val arrowChars = when (operation) {
-        is ViewStackOp.Dismiss -> "--"
-        is ViewStackOp.Pop -> "--"
-        is ViewStackOp.Push -> "--"
-        is ViewStackOp.Swap -> "-."
-        is ViewStackOp.Reset -> "-."
-        is ViewStackOp.Embed -> "=="
-    }
-    val arrowCharsSingle = when (operation) {
-        is ViewStackOp.Dismiss -> "--"
-        is ViewStackOp.Pop -> "--"
-        is ViewStackOp.Push -> "--"
-        is ViewStackOp.Swap -> "-.-"
-        is ViewStackOp.Reset -> "-.-"
-        is ViewStackOp.Embed -> "=="
-    }
-    if (passed.isEmpty())
-        out.appendln("${nodeId[node.name]}${arrowCharsSingle}>${targetId};")
-    else
-        out.appendln("${nodeId[node.name]}${arrowChars} $passed ${arrowChars.reversed()}>${targetId};")
+private fun passingInfo(
+    target: ViewNode,
+    nodes: Map<String, ViewNode>
+): String? {
+    return target.totalRequires(nodes)
+        .joinToString { it.name }
+        .replace('[', '<')
+        .replace(']', '>')
+        .takeUnless { it.isEmpty() }
 }

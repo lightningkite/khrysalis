@@ -9,6 +9,18 @@ import kotlin.math.max
 class ViewNode(
     val name: String
 ) {
+    override fun equals(other: Any?): Boolean {
+        return other is ViewNode && this.name == other.name
+    }
+
+    override fun hashCode(): Int {
+        return name.hashCode()
+    }
+
+    override fun toString(): String {
+        return name
+    }
+
     val operations: HashSet<ViewStackOp> = HashSet()
     val requires: HashSet<ViewVar> = HashSet()
     val provides: HashSet<ViewVar> = HashSet()
@@ -76,6 +88,7 @@ class ViewNode(
                     val next = climbing.removeAt(0)
                     for (it in next.last().createdBy(map)) {
                         if(it in seen) continue
+                        seen.add(it)
                         val node = map[it] ?: continue
                         if(leakedVar in node.provides) continue
                         if(node == root) {

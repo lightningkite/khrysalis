@@ -58,6 +58,7 @@ fun createFlowDocumentation(
     //Emit graph
     groupedGraph(docsOutputFolder, nodes)
     sortedGraph(docsOutputFolder, nodes)
+    sortedNoReversalsGraph(docsOutputFolder, nodes)
     partialGraphs(docsOutputFolder, nodes)
 
     //Convert all mermaid diagrams
