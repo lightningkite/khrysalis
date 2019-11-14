@@ -56,6 +56,9 @@ public extension Sequence {
         }
         return true
     }
+    func groupBy<T>(predicate: (Element)->T) -> Dictionary<T, Array<Element>>{
+        return Dictionary(grouping: self, by: predicate)
+    }
 }
 
 public extension Array {
@@ -188,6 +191,12 @@ public extension Collection {
     }
     func joinToString(separator: String = ", ", _ conversion: (Element)->String) -> String {
         return self.map(conversion).joined(separator: separator)
+    }
+}
+
+public extension Collection where Element: Hashable {
+    func toSet() -> Set<Element> {
+        return Set(self)
     }
 }
 

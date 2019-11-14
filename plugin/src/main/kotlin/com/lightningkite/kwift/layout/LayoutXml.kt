@@ -30,11 +30,11 @@ fun File.translateLayoutXml(styles: Styles, converter: LayoutConverter = LayoutC
             appendln("import $import")
         }
         appendln("")
-        appendln("class ${name}Xml {")
+        appendln("public class ${name}Xml {")
         appendln("")
-        appendln("    unowned var xmlRoot: UIView!")
+        appendln("    public unowned var xmlRoot: UIView!")
 
-        appendln("    func setup(_ dependency: ViewDependency) -> UIView {")
+        appendln("    public func setup(_ dependency: ViewDependency) -> UIView {")
         append("        let view = ")
         conversion.construct(root)
         appendln()
@@ -44,10 +44,10 @@ fun File.translateLayoutXml(styles: Styles, converter: LayoutConverter = LayoutC
         appendln("    }")
         appendln("    ")
         conversion.sublayouts.entries.forEach {
-            appendln("let ${it.key}: ${it.value} = ${it.value}()")
+            appendln("public let ${it.key}: ${it.value} = ${it.value}()")
         }
         conversion.bindings.entries.forEach {
-            appendln("unowned var ${it.key}: ${it.value}!")
+            appendln("public unowned var ${it.key}: ${it.value}!")
         }
         appendln("    ")
         appendln("}")
