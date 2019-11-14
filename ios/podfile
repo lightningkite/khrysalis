@@ -8,5 +8,6 @@ target 'Kwift' do
     pod 'Fabric'
     pod 'Crashlytics'
     pod 'Cosmos', '~> 19.0'
+    pod 'SearchTextField'
     pod 'QVRWeekView', :git => 'https://github.com/lightningkite/iOS-Week-View.git'
 end

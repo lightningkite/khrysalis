@@ -9,6 +9,7 @@ val LayoutConverter.Companion.textInputViews
                 //Purposefully empty
                 appendln("view.addDismissButton()")
             },
+            ViewType("AutoCompleteTextView", "UIAutoCompleteTextField", "EditText", handlesPadding = true) { node ->},
             ViewType("EditText", "UITextField", "View", handlesPadding = true) { node ->
                 val defaultPadding = node.attributeAsDimension("android:padding") ?: 0
                 val paddingTop = (node.attributeAsDimension("android:paddingTop") ?: defaultPadding)

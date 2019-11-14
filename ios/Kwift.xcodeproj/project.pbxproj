@@ -8,6 +8,8 @@
 
 /* Begin PBXBuildFile section */
 		54CB5B25E4BB1E803292559A /* libPods-Kwift.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 63A80265E53D7E8A26AF57CF /* libPods-Kwift.a */; };
+		5E738806237DE594008DF8C9 /* UIAutoCompleteTextField+binding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E738805237DE594008DF8C9 /* UIAutoCompleteTextField+binding.swift */; };
+		5E738808237DE68F008DF8C9 /* UIView+background.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5E738807237DE68F008DF8C9 /* UIView+background.swift */; };
 		5EAABEA1233EC33F007E7CED /* Kwift.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5EAABE97233EC33F007E7CED /* Kwift.framework */; };
 		5EAABEA6233EC33F007E7CED /* kwiftTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAABEA5233EC33F007E7CED /* kwiftTests.swift */; };
 		5EAABEA8233EC33F007E7CED /* Kwift.h in Headers */ = {isa = PBXBuildFile; fileRef = 5EAABE9A233EC33F007E7CED /* Kwift.h */; settings = {ATTRIBUTES = (Public, ); }; };
@@ -84,7 +86,6 @@
 		5EE74A752367A46A00EB5B6E /* Align.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EE749F12367A46900EB5B6E /* Align.swift */; };
 		5EE74A762367A46A00EB5B6E /* general.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EE749F22367A46900EB5B6E /* general.swift */; };
 		5EE74A772367A46A00EB5B6E /* UIView+visibility.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EE749F32367A46900EB5B6E /* UIView+visibility.swift */; };
-		5EE74A782367A46A00EB5B6E /* UIImage+background.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EE749F42367A46900EB5B6E /* UIImage+background.swift */; };
 		5EE74A792367A46A00EB5B6E /* ViewDependency+image.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EE749F52367A46900EB5B6E /* ViewDependency+image.swift */; };
 		5EE74A7A2367A46A00EB5B6E /* TextView.ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EE749F62367A46900EB5B6E /* TextView.ext.swift */; };
 		5EE74A7B2367A46A00EB5B6E /* LinearLayout+ext.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EE749F72367A46900EB5B6E /* LinearLayout+ext.swift */; };
@@ -154,6 +155,8 @@
 /* End PBXContainerItemProxy section */
 
 /* Begin PBXFileReference section */
+		5E738805237DE594008DF8C9 /* UIAutoCompleteTextField+binding.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIAutoCompleteTextField+binding.swift"; sourceTree = "<group>"; };
+		5E738807237DE68F008DF8C9 /* UIView+background.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+background.swift"; sourceTree = "<group>"; };
 		5EAABE97233EC33F007E7CED /* Kwift.framework */ = {isa = PBXFileReference; explicitFileType = wrapper.framework; includeInIndex = 0; path = Kwift.framework; sourceTree = BUILT_PRODUCTS_DIR; };
 		5EAABE9A233EC33F007E7CED /* Kwift.h */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = Kwift.h; sourceTree = "<group>"; };
 		5EAABE9B233EC33F007E7CED /* Info.plist */ = {isa = PBXFileReference; lastKnownFileType = text.plist.xml; path = Info.plist; sourceTree = "<group>"; };
@@ -233,7 +236,6 @@
 		5EE749F12367A46900EB5B6E /* Align.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Align.swift; sourceTree = "<group>"; };
 		5EE749F22367A46900EB5B6E /* general.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = general.swift; sourceTree = "<group>"; };
 		5EE749F32367A46900EB5B6E /* UIView+visibility.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIView+visibility.swift"; sourceTree = "<group>"; };
-		5EE749F42367A46900EB5B6E /* UIImage+background.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "UIImage+background.swift"; sourceTree = "<group>"; };
 		5EE749F52367A46900EB5B6E /* ViewDependency+image.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "ViewDependency+image.swift"; sourceTree = "<group>"; };
 		5EE749F62367A46900EB5B6E /* TextView.ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TextView.ext.swift; sourceTree = "<group>"; };
 		5EE749F72367A46900EB5B6E /* LinearLayout+ext.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = "LinearLayout+ext.swift"; sourceTree = "<group>"; };
@@ -479,6 +481,7 @@
 				5EE749D02367A46900EB5B6E /* SelectDayView+binding.swift */,
 				5EE749D12367A46900EB5B6E /* DateButton+binding.swift */,
 				5EE749D22367A46900EB5B6E /* UITableView+binding.swift */,
+				5E738805237DE594008DF8C9 /* UIAutoCompleteTextField+binding.swift */,
 			);
 			path = actuals;
 			sourceTree = "<group>";
@@ -537,6 +540,7 @@
 		5EE749EB2367A46900EB5B6E /* actuals */ = {
 			isa = PBXGroup;
 			children = (
+				5E738807237DE68F008DF8C9 /* UIView+background.swift */,
 				5EE749EC2367A46900EB5B6E /* UIView+onClick.swift */,
 				5EE749ED2367A46900EB5B6E /* UIImageView+ext.swift */,
 				5EE749EF2367A46900EB5B6E /* UIView.ext.swift */,
@@ -544,7 +548,6 @@
 				5EE749F12367A46900EB5B6E /* Align.swift */,
 				5EE749F22367A46900EB5B6E /* general.swift */,
 				5EE749F32367A46900EB5B6E /* UIView+visibility.swift */,
-				5EE749F42367A46900EB5B6E /* UIImage+background.swift */,
 				5EE749F52367A46900EB5B6E /* ViewDependency+image.swift */,
 				5EE749F62367A46900EB5B6E /* TextView.ext.swift */,
 				5EE749F72367A46900EB5B6E /* LinearLayout+ext.swift */,
@@ -864,6 +867,7 @@
 				5EE74AAB2367A46A00EB5B6E /* TimeButton.swift in Sources */,
 				5EE74A6C2367A46A00EB5B6E /* DateFormattingExtras.swift in Sources */,
 				5EE74A662367A46A00EB5B6E /* TransformedMutableObservableProperty.swift in Sources */,
+				5E738808237DE68F008DF8C9 /* UIView+background.swift in Sources */,
 				5EE74A3E2367A46A00EB5B6E /* OptionalProtocol.swift in Sources */,
 				5EE74A482367A46A00EB5B6E /* SelectMultipleDatesView+binding.swift in Sources */,
 				5EE74A5F2367A46A00EB5B6E /* Event.ext.swift in Sources */,
@@ -877,6 +881,7 @@
 				5EE74A7F2367A46A00EB5B6E /* EntryPoint.swift in Sources */,
 				5EE74AAD2367A46A00EB5B6E /* SelectMultipleDatesMonthView.swift in Sources */,
 				5EE74A412367A46A00EB5B6E /* StringBuilder.swift in Sources */,
+				5E738806237DE594008DF8C9 /* UIAutoCompleteTextField+binding.swift in Sources */,
 				5EE74A892367A46A00EB5B6E /* CompoundButton.swift in Sources */,
 				5EE74A632367A46A00EB5B6E /* ObservableStack.swift in Sources */,
 				5EE74A832367A46A00EB5B6E /* Form.swift in Sources */,
@@ -892,7 +897,6 @@
 				5EE74A922367A46A00EB5B6E /* UIColor.ext.swift in Sources */,
 				5EE74A2F2367A46A00EB5B6E /* Geocoding.swift in Sources */,
 				5EE74A9F2367A46A00EB5B6E /* UITextField.ext.swift in Sources */,
-				5EE74A782367A46A00EB5B6E /* UIImage+background.swift in Sources */,
 				5EE74A952367A46A00EB5B6E /* UIViewController+keyboard.swift in Sources */,
 				5EE74A4C2367A46A00EB5B6E /* Dropdown+binding.swift in Sources */,
 				5EE74A862367A46A00EB5B6E /* Dropdown.swift in Sources */,

@@ -84,7 +84,17 @@ public class Dropdown : UIControl {
                 currentView = newView
                 addSubview(newView)
             }
+            setNeedsLayout()
         }
+    }
+    
+    override open func setNeedsLayout() {
+        super.setNeedsLayout()
+        superview?.setNeedsLayout()
+    }
+    
+    override public func sizeThatFits(_ size: CGSize) -> CGSize {
+        return currentView?.sizeThatFits(size) ?? CGSize.zero
     }
 
     override public func layoutSubviews() {

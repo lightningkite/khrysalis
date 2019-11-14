@@ -24,13 +24,13 @@ public class LabeledSwitch : LinearLayout {
             size: .zero,
             margin: UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8),
             gravity: .center,
-            weight: 0
+            weight: 1
         ))
         self.addSubview(switchView, LinearLayout.LayoutParams(
             size: .zero,
             margin: UIEdgeInsets(top: 8, left: 0, bottom: 8, right: 8),
             gravity: .center,
-            weight: 1
+            weight: 0
         ))
     }
 

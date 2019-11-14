@@ -9,10 +9,12 @@
 import Foundation
 import Cosmos
 import QVRWeekView
+import SearchTextField
 
 public typealias UIRatingBar = CosmosView
 public typealias UIWeekView = WeekView
 public typealias WeekViewEvent = EventData
+public typealias UIAutoCompleteTextField = SearchTextField
 
 public extension WeekViewEvent {
     convenience init(id: Int64, title: String, start: Date, end: Date, colorRes: UIColor) {

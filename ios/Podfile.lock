@@ -8,6 +8,7 @@ PODS:
   - Fabric (1.10.2)
   - KeychainAccess (3.2.0)
   - QVRWeekView (0.13.3)
+  - SearchTextField (1.2.4)
   - "UITextView+Placeholder (1.3.1)"
 
 DEPENDENCIES:
@@ -18,6 +19,7 @@ DEPENDENCIES:
   - Fabric
   - KeychainAccess
   - QVRWeekView (from `https://github.com/lightningkite/iOS-Week-View.git`)
+  - SearchTextField
   - "UITextView+Placeholder"
 
 SPEC REPOS:
@@ -29,6 +31,8 @@ SPEC REPOS:
     - Fabric
     - KeychainAccess
     - "UITextView+Placeholder"
+  trunk:
+    - SearchTextField
 
 EXTERNAL SOURCES:
   QVRWeekView:
@@ -47,8 +51,9 @@ SPEC CHECKSUMS:
   Fabric: 706c8b8098fff96c33c0db69cbf81f9c551d0d74
   KeychainAccess: 3b1bf8a77eb4c6ea1ce9404c292e48f948954c6b
   QVRWeekView: 3439d87341135afb524b83dfdde366ddad5c6157
+  SearchTextField: 40dc3cc57def5a211f263cac263622c163bbc25a
   "UITextView+Placeholder": f23df8592290d8d06078072ae1a663e11ee07ff4
 
-PODFILE CHECKSUM: c4cbc7aa5a690a5aeba43283ee86445246e4b92a
+PODFILE CHECKSUM: 9b9d031fd3a2ece994e1ade39f28104745d040fc
 
-COCOAPODS: 1.8.1
+COCOAPODS: 1.8.4
