@@ -12,3 +12,4 @@ import UIKit
 public typealias StringReference = StringResource
 public typealias StringResource = String
 public typealias ColorResource = UIColor
+public typealias DrawableResource = Drawable

@@ -11,6 +11,24 @@ import UIKit
 
 
 public extension UIButton {
+    
+    func bindActive(_ observable: ObservableProperty<Bool>, _ activeDrawableResource: DrawableResource? = nil, _ inactiveDrawableResource: DrawableResource? = nil) {
+        return bindActive(observable: observable, activeColorResource: activeColorResource, inactiveColorResource: inactiveColorResource)
+    }
+    func bindActive(observable: ObservableProperty<Bool>, activeDrawableResource: DrawableResource? = nil, inactiveDrawableResource: DrawableResource? = nil) {
+        observable.addAndRunWeak(referenceA: self) { (this, value) in
+            this.isUserInteractionEnabled = value
+            if value {
+                if let background = activeDrawableResource {
+                    this.backgroundDrawable = background
+                }
+            }else{
+                if let background = inactiveDrawableResource{
+                    this.backgroundDrawable = background
+                }
+            }
+        }
+    }
 
     func bindActive(_ observable: ObservableProperty<Bool>, _ activeColorResource: ColorResource? = nil, _ inactiveColorResource: ColorResource? = nil) {
         return bindActive(observable: observable, activeColorResource: activeColorResource, inactiveColorResource: inactiveColorResource)
