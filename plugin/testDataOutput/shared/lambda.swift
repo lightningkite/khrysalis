@@ -19,7 +19,12 @@ public func lambdaTest() -> Void {
  
  
 
-public func takesLambda(lambda: (_ integer: Int32, _ someValue: String) -> Void) -> Void {
+public func takesLambda(lambda: @escaping (_ integer: Int32, _ someValue: String) -> Void) -> Void {
+}
+ 
+ 
+
+public func takesPainfulLambda(lambda: @escaping (_ integer: Int32, _ someValue: @escaping (String) -> Void) -> Void) -> Void {
 }
  
  
@@ -52,13 +57,28 @@ public class ConstructorHasEscaping {
 
 public class ConstructorHasEscaping2 {
     
-    public var lambda: ( (_ integer: Int32, _ someValue: String) -> Void)
+    public var lambda: (@escaping (_ integer: Int32, _ someValue: String) -> Void)
     
     
     public init(lambda: (@escaping (_ integer: Int32, _ someValue: String) -> Void)) {
         self.lambda = lambda
     }
     convenience public init(_ lambda: (@escaping (_ integer: Int32, _ someValue: String) -> Void)) {
+        self.init(lambda: lambda)
+    }
+}
+ 
+ 
+
+public class HeavenHelpUsAll {
+    
+    public var lambda:  (_ integer: Int32, _ someValue: @escaping (Int32) -> Void) -> Void
+    
+    
+    public init(lambda: @escaping (_ integer: Int32, _ someValue: @escaping (Int32) -> Void) -> Void) {
+        self.lambda = lambda
+    }
+    convenience public init(_ lambda: @escaping (_ integer: Int32, _ someValue: @escaping (Int32) -> Void) -> Void) {
         self.init(lambda: lambda)
     }
 }

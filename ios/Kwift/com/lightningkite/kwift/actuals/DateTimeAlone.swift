@@ -7,6 +7,7 @@ import Foundation
 
 public final class DateAlone: Equatable, Hashable, Codable {
     
+    
     public init(from decoder: Decoder) throws {
         let string: String = try decoder.singleValueContainer().decode(String.self)
         year = string.substringBefore("-").toInt()
@@ -22,6 +23,14 @@ public final class DateAlone: Equatable, Hashable, Codable {
             lhs.month == rhs.month &&
             lhs.day == rhs.day
     }
+    
+    public func iso8601() -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "yyyy-MM-dd"
+        return formatter.string(from: dateFrom(self, Date().timeAlone))
+    }
+    
     public func hash(into hasher: inout Hasher) {
         hasher.combine(year)
         hasher.combine(month)
@@ -74,6 +83,13 @@ public final class TimeAlone: Equatable, Hashable, Codable {
         hour = string.substringBefore(":").toInt()
         minute = string.substringAfter(":").substringBefore(":").toInt()
         second = string.substringAfterLast(":").toInt()
+    }
+    
+    public func iso8601() -> String {
+        let formatter = DateFormatter()
+        formatter.locale = Locale(identifier: "en_US_POSIX")
+        formatter.dateFormat = "HH:mm:ssZZZZZ"
+        return formatter.string(from: dateFrom(Date().dateAlone, self))
     }
     
     public var hour: Int32

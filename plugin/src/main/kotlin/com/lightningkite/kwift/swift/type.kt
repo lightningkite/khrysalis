@@ -2,7 +2,6 @@ package com.lightningkite.kwift.swift
 
 import com.lightningkite.kwift.utils.forEachBetween
 import org.antlr.v4.runtime.ParserRuleContext
-import org.antlr.v4.runtime.tree.TerminalNode
 import org.jetbrains.kotlin.KotlinParser
 
 fun SwiftAltListener.registerType() {
@@ -69,7 +68,7 @@ fun SwiftAltListener.registerType() {
     handle<KotlinParser.SingleAnnotationContext> { item ->
         val unescapedText = item.unescapedAnnotation().text
         when {
-            unescapedText.startsWith("escaping") && filterEscapingAnnotation -> return@handle
+            unescapedText.startsWith("escaping") && (filterEscapingAnnotation && item.isOnTopLevelParameter()) -> return@handle
             unescapedText.startsWith("swift") -> return@handle
             unescapedText.startsWith("unowned") -> return@handle
             unescapedText.startsWith("unownedSelf") -> return@handle
@@ -88,4 +87,12 @@ fun SwiftAltListener.registerType() {
         }
     }
     handle<KotlinParser.NullableTypeContext> { defaultWrite(it, "") }
+}
+
+fun KotlinParser.SingleAnnotationContext.isOnTopLevelParameter(): Boolean {
+    val x = this.parentIfType<KotlinParser.AnnotationContext>()
+        ?.parentIfType<KotlinParser.TypeModifierContext>()
+        ?.parentIfType<KotlinParser.TypeModifiersContext>()
+        ?.parentIfType<KotlinParser.TypeContext>()
+    return x?.parentIfType<KotlinParser.ClassParameterContext>() != null
 }
