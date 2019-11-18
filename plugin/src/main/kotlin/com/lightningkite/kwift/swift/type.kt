@@ -21,6 +21,10 @@ fun SwiftAltListener.registerType() {
     }
     handle<KotlinParser.SimpleUserTypeContext> { item ->
         val name = typeReplacements[item.simpleIdentifier().text] ?: item.simpleIdentifier().text
+        if(name.endsWith("*")){
+            direct.append(name.removeSuffix("*"))
+            return@handle
+        }
         direct.append(name)
         item.typeArguments()?.let {
             direct.append("<")

@@ -107,6 +107,8 @@ class SwiftAltListener {
         typeReplacements["Short"] = "Int16"
         typeReplacements["Int"] = "Int32"
         typeReplacements["Long"] = "Int64"
+        typeReplacements["KClass"] = "Any.Type*"
+        typeReplacements["Class"] = "Any.Type*"
 
         simpleFunctionReplacement("println", "print")
         simpleFunctionReplacement("ArrayList", "Array")

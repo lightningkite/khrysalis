@@ -72,6 +72,14 @@ fun createFlowDocumentation(
         newChecksums[it.name] = sum
         if(checksums[it.name] != sum) {
             it.mermaidToSvg()
+            it.mermaidToPng()
+        } else {
+            if(!it.parentFile.resolve(it.nameWithoutExtension + ".svg").exists()){
+                it.mermaidToSvg()
+            }
+            if(!it.parentFile.resolve(it.nameWithoutExtension + ".png").exists()){
+                it.mermaidToPng()
+            }
         }
     }
     jacksonObjectMapper().writeValue(checksumFile, newChecksums)

@@ -76,6 +76,7 @@ open class Parent {
     public var four
     
     public init() {
+        //Other
         let four = 4
         self.four = four
     }
@@ -97,6 +98,7 @@ public class Child: Parent, MyInterface {
     }
     
     override public init() {
+        //Other
         let five = 5
         self.five = five
         super.init()

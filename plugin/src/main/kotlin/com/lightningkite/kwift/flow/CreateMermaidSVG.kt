@@ -14,3 +14,16 @@ fun File.mermaidToSvg(
         .waitFor()
     return if(result == 0) out else null
 }
+
+
+fun File.mermaidToPng(
+    out: File = this.parentFile.resolve(this.nameWithoutExtension + ".png")
+): File? {
+    println("Converting $name to PNG:")
+    val result = ProcessBuilder()
+        .command("mmdc", "-i", this.absolutePath, "-o", out.absolutePath, "--width", "1920", "--height", "1080")
+        .inheritIO()
+        .start()
+        .waitFor()
+    return if(result == 0) out else null
+}
