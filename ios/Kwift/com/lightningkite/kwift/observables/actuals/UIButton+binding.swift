@@ -13,7 +13,7 @@ import UIKit
 public extension UIButton {
     
     func bindActive(_ observable: ObservableProperty<Bool>, _ activeDrawableResource: DrawableResource? = nil, _ inactiveDrawableResource: DrawableResource? = nil) {
-        return bindActive(observable: observable, activeColorResource: activeColorResource, inactiveColorResource: inactiveColorResource)
+        return bindActive(observable: observable, activeDrawableResource: activeDrawableResource, inactiveDrawableResource: inactiveDrawableResource)
     }
     func bindActive(observable: ObservableProperty<Bool>, activeDrawableResource: DrawableResource? = nil, inactiveDrawableResource: DrawableResource? = nil) {
         observable.addAndRunWeak(referenceA: self) { (this, value) in

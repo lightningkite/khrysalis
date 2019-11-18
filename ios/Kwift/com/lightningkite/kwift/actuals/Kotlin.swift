@@ -13,6 +13,12 @@ public func TODO(_ message: String = ""){
     fatalError(message)
 }
 
+public extension Set{
+    func toList() -> Array<Element>{
+        return Array(self)
+    }
+}
+
 public extension Sequence {
     func mapNotNull<OUT>(transform: (Element)->OUT?) -> Array<OUT> {
         var newArray = Array<OUT>()

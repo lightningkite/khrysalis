@@ -9,6 +9,6 @@
 import UIKit
 
 
-func EmptyView(_ dependency: ViewDependency) -> UIView {
+public func EmptyView(_ dependency: ViewDependency) -> UIView {
     return UIView(frame: .zero)
 }

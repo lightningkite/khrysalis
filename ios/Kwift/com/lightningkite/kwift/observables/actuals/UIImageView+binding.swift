@@ -80,6 +80,10 @@ public extension UIImageView {
         }
     }
     
+    func loadImageReference(_ imageReference: ImageReference?){
+        loadImageReference(imageReference: imageReference)
+    }
+    
     func loadImageReference(imageReference: ImageReference?){
         if let image = imageReference{
             URLSession.shared.dataTask(with: image, completionHandler: { data, response, error in
