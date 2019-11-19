@@ -11,6 +11,10 @@ fun ViewDependency.geocode(
     coordinate: GeoCoordinate,
     onResult: (List<GeoAddress>) -> Unit
 ) {
+    if(coordinate.latitude == 0.0 && coordinate.longitude == 0.0){
+        onResult(listOf())
+        return
+    }
     Thread {
         val result = Geocoder(context)
             .getFromLocation(coordinate.latitude, coordinate.longitude, 1)
@@ -24,6 +28,10 @@ fun ViewDependency.geocode(
     address: String,
     onResult: (List<GeoAddress>) -> Unit
 ) {
+    if(address.isEmpty()){
+        onResult(listOf())
+        return
+    }
     Thread {
         val result = Geocoder(context)
             .getFromLocationName(address, 1)

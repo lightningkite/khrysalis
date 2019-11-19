@@ -45,3 +45,5 @@ class WeakPropertyDelegate<T>(initial: T) {
 }
 
 fun <T> weak(value: T) = WeakPropertyDelegate(value)
+
+fun <T: Any> nullOf(): T? = null

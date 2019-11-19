@@ -19,7 +19,11 @@ fun SwiftAltListener.registerExpression() {
         defaultWrite(item, "")
     }
     handle<KotlinParser.NavigationSuffixContext> { item ->
-        defaultWrite(item, "")
+        if(item.CLASS() != null){
+            direct.append(".self")
+        } else {
+            defaultWrite(item, "")
+        }
     }
     handle<KotlinParser.PrefixUnaryExpressionContext> { item ->
         defaultWrite(item, "")

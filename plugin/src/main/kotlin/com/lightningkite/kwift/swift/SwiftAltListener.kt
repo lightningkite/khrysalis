@@ -11,6 +11,7 @@ import org.antlr.v4.runtime.ParserRuleContext
 import org.antlr.v4.runtime.tree.TerminalNode
 import org.jetbrains.kotlin.KotlinParser
 import java.io.File
+import java.lang.IllegalStateException
 
 class SwiftAltListener {
     val interfaces: HashMap<String, InterfaceListener.InterfaceData> = hashMapOf()
@@ -126,27 +127,50 @@ class SwiftAltListener {
             direct.append("}()")
         }
 
+        functionReplacements["nullOf"] = {
+            val type = it.postfixUnarySuffix()[0]!!.callSuffix()!!.typeArguments()!!.typeProjection()!!.first().text
+            direct.append("Optional<$type>.none")
+        }
+
         functionReplacements["listOf"] = {
-            direct.append("[")
-            it.postfixUnarySuffix()[0]!!.callSuffix()!!.valueArguments()?.valueArgument()?.forEachBetween(
-                forItem = { write(it) },
-                between = { direct.append(", ") }
-            )
-            direct.append("]")
+            val callSuffix = it.postfixUnarySuffix()[0]!!.callSuffix()!!
+            callSuffix.valueArguments()?.valueArgument()?.takeUnless { it.isEmpty() }?.let { valueArgs ->
+                direct.append("[")
+                valueArgs.forEachBetween(
+                    forItem = { write(it) },
+                    between = { direct.append(", ") }
+                )
+                direct.append("]")
+            } ?: callSuffix.typeArguments()?.typeProjection()?.firstOrNull()?.let {
+                direct.append("Array<")
+                write(it.type())
+                direct.append(">()")
+            } ?: run {
+                throw IllegalStateException("No type or arguments for listOf")
+            }
             it.postfixUnarySuffix().drop(1).forEach {
-                write(it)
+                direct.append("[]")
             }
         }
         functionReplacements["arrayListOf"] = functionReplacements["listOf"]!!
         functionReplacements["mutableListOf"] = functionReplacements["listOf"]!!
 
         functionReplacements["setOf"] = {
-            direct.append("[")
-            it.postfixUnarySuffix()[0]!!.callSuffix()!!.valueArguments()?.valueArgument()?.forEachBetween(
-                forItem = { write(it) },
-                between = { direct.append(", ") }
-            )
-            direct.append("]")
+            val callSuffix = it.postfixUnarySuffix()[0]!!.callSuffix()!!
+            callSuffix.valueArguments()?.valueArgument()?.takeUnless { it.isEmpty() }?.let { valueArgs ->
+                direct.append("[")
+                valueArgs.forEachBetween(
+                    forItem = { write(it) },
+                    between = { direct.append(", ") }
+                )
+                direct.append("]")
+            } ?: callSuffix.typeArguments()?.typeProjection()?.firstOrNull()?.let {
+                direct.append("Set<")
+                write(it.type())
+                direct.append(">()")
+            } ?: run {
+                direct.append("[]")
+            }
             it.postfixUnarySuffix().drop(1).forEach {
                 write(it)
             }
@@ -155,28 +179,37 @@ class SwiftAltListener {
         functionReplacements["mutableSetOf"] = functionReplacements["setOf"]!!
 
         functionReplacements["mapOf"] = {
-            direct.append("[")
-            it.postfixUnarySuffix()[0]!!.callSuffix()?.valueArguments()?.valueArgument()?.takeUnless { it.isEmpty() }?.forEachBetween(
-                forItem = {
-                    //it is a 'x to y' expression
-                    val toCall = it.expression()
-                        .disjunction()!!
-                        .conjunction(0)!!
-                        .equality(0)!!
-                        .comparison(0)!!
-                        .infixOperation(0)!!
-                        .elvisExpression(0)!!
-                        .infixFunctionCall(0)!!
-                    assert(toCall.simpleIdentifier(0)!!.text == "to")
-                    write(toCall.rangeExpression(0)!!)
-                    direct.append(": ")
-                    write(toCall.rangeExpression(1)!!)
-                },
-                between = { direct.append(", ") }
-            ) ?: run {
-                direct.append(":")
+            val callSuffix = it.postfixUnarySuffix()[0]!!.callSuffix()!!
+            callSuffix.valueArguments()?.valueArgument()?.takeUnless { it.isEmpty() }?.let { valueArgs ->
+                direct.append("[")
+                valueArgs.forEachBetween(
+                    forItem = {
+                        //it is a 'x to y' expression
+                        val toCall = it.expression()
+                            .disjunction()!!
+                            .conjunction(0)!!
+                            .equality(0)!!
+                            .comparison(0)!!
+                            .infixOperation(0)!!
+                            .elvisExpression(0)!!
+                            .infixFunctionCall(0)!!
+                        assert(toCall.simpleIdentifier(0)!!.text == "to")
+                        write(toCall.rangeExpression(0)!!)
+                        direct.append(": ")
+                        write(toCall.rangeExpression(1)!!)
+                    },
+                    between = { direct.append(", ") }
+                )
+                direct.append("]")
+            } ?: callSuffix.typeArguments()?.typeProjection()?.let {
+                direct.append("Dictionary<")
+                write(it[0].type())
+                direct.append(", ")
+                write(it[0].type())
+                direct.append(">()")
+            } ?: run {
+                direct.append("[:]")
             }
-            direct.append("]")
             it.postfixUnarySuffix().drop(1).forEach {
                 write(it)
             }

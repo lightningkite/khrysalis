@@ -35,6 +35,7 @@ public extension UITableView {
         if let delegate = delegate as? HasAtEnd {
             delegate.setAtEnd(action: action)
         }
+        var x = Optional<Int>.none
     }
     
 
