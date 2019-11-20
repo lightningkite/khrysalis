@@ -110,7 +110,7 @@ public extension Array {
         return last
     }
     func getOrNull(_ index:Int32) -> Element?{
-        if index > self.count{
+        if index >= self.count{
             return nil
         }else{
             return self[index]

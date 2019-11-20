@@ -82,6 +82,15 @@ val LayoutConverter.Companion.displayViews
 
             ViewType("TextView", "UILabel", "View") { node ->
                 handleCommonText(node)
+            },
+
+            ViewType(
+                "com.lightningkite.kwift.views.android.SelectableText",
+                "SelectableText",
+                "TextField",
+                handlesPadding = true
+            ) { node ->
+                handleCommonText(node)
             }
         )
     )
