@@ -151,7 +151,9 @@ object HttpClient {
                 runResult {
                     val code = response.code()
                     if (code / 100 == 2) {
-                        try {
+                        if(T::class == String::class){
+                            onResult.invoke(code, raw as T, null)
+                        } else try {
                             val read =
                                 mapper.readValue<T>(raw, object : TypeReference<T>() {})
                             onResult.invoke(code, read, null)

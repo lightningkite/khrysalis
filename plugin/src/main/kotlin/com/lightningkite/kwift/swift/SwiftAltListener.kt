@@ -128,7 +128,12 @@ class SwiftAltListener {
         }
 
         functionReplacements["nullOf"] = {
-            val type = it.postfixUnarySuffix()[0]!!.callSuffix()!!.typeArguments()!!.typeProjection()!!.first().text
+            val type = it.postfixUnarySuffix()[0]!!.also { println("val type = it.postfixUnarySuffix()[0] - " + it.text) }
+                .let {
+                    it.typeArguments() ?: it.callSuffix()?.typeArguments()
+                }!!
+                .typeProjection()!!.also { println(".typeProjection() - " + it.joinToString { it.text }) }
+                .first().text
             direct.append("Optional<$type>.none")
         }
 
@@ -146,10 +151,10 @@ class SwiftAltListener {
                 write(it.type())
                 direct.append(">()")
             } ?: run {
-                throw IllegalStateException("No type or arguments for listOf")
+                direct.append("[]")
             }
             it.postfixUnarySuffix().drop(1).forEach {
-                direct.append("[]")
+                write(it)
             }
         }
         functionReplacements["arrayListOf"] = functionReplacements["listOf"]!!

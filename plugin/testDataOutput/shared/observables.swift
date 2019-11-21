@@ -124,10 +124,8 @@ public class StandardEvent<T>: Event<T> {
     }
     
     override public init() {
-        //Other
         let subscriptions: Array<Subscription<T>> = Array<Subscription<T>>()
         self.subscriptions = subscriptions
-        //Other
         let nextIndex: Int32 = 0
         self.nextIndex = nextIndex
         super.init()

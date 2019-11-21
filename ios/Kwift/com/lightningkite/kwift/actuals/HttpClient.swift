@@ -34,13 +34,17 @@ public enum HttpClient {
                     let dataString = String(data: data, encoding: .utf8) ?? ""
                     print("HttpClient: Response \(casted.statusCode): \(dataString)")
                     if casted.statusCode / 100 == 2 {
-                        do {
-                            let parsed = try T.fromJsonString(dataString)
-                            print("HttpClient: Parsed: \(parsed)")
-                            onResult(Int32(casted.statusCode), parsed, nil)
-                        } catch {
-                            print("HttpClient: Failed to parse due to: \(error.localizedDescription)")
-                            onResult(Int32(casted.statusCode), nil, error.localizedDescription)
+                        if T.self == String.self {
+                            onResult(Int32(casted.statusCode), dataString as? T, nil)
+                        } else {
+                            do {
+                                let parsed = try T.fromJsonString(dataString)
+                                print("HttpClient: Parsed: \(parsed)")
+                                onResult(Int32(casted.statusCode), parsed, nil)
+                            } catch {
+                                print("HttpClient: Failed to parse due to: \(error.localizedDescription)")
+                                onResult(Int32(casted.statusCode), nil, error.localizedDescription)
+                            }
                         }
                     } else {
                         onResult(Int32(casted.statusCode), nil, dataString)
@@ -165,12 +169,16 @@ public enum HttpClient {
                             let dataString = String(data: data, encoding: .utf8) ?? ""
                             print("HttpClient: Response \(casted.statusCode): \(dataString)")
                             if casted.statusCode / 100 == 2 {
-                                do {
-                                    let parsed = try T.fromJsonString(dataString)
-                                    onResult(Int32(casted.statusCode), parsed, nil)
-                                } catch {
-                                    print("HttpClient: Failed to parse due to: \(error.localizedDescription)")
-                                    onResult(Int32(casted.statusCode), nil, error.localizedDescription)
+                                if T.self == String.self {
+                                    onResult(Int32(casted.statusCode), dataString as? T, nil)
+                                } else {
+                                    do {
+                                        let parsed = try T.fromJsonString(dataString)
+                                        onResult(Int32(casted.statusCode), parsed, nil)
+                                    } catch {
+                                        print("HttpClient: Failed to parse due to: \(error.localizedDescription)")
+                                        onResult(Int32(casted.statusCode), nil, error.localizedDescription)
+                                    }
                                 }
                             } else {
                                 onResult(Int32(casted.statusCode), nil, dataString)
