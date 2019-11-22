@@ -80,7 +80,8 @@ class ViewNode(
             val root = root(map) ?: return
             if(root.totalRequires(map).isEmpty()) return
             val leakMessages = ArrayList<String>()
-            root.totalRequires(map).forEach { leakedVar ->
+            for (leakedVar in root.totalRequires(map)) {
+                if(leakedVar.default != null) continue
                 val requiredBy = map.values.filter { leakedVar in it.requires }
                 val climbing = requiredBy.map { listOf(it) }.toMutableList()
                 val seen = mutableSetOf<String>()
@@ -100,7 +101,6 @@ class ViewNode(
                         climbing.add(next + node)
                     }
                 }
-
             }
 
             throw Exception("Leak detected! ${leakMessages.joinToString("\n")}")
