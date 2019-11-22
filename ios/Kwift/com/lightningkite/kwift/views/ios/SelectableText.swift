@@ -7,7 +7,7 @@
 
 import UIKit
 
-class SelectableText: UILabel {
+public class SelectableText: UILabel {
 
     override public var canBecomeFirstResponder: Bool {
         get {
@@ -15,17 +15,17 @@ class SelectableText: UILabel {
         }
     }
 
-    override init(frame: CGRect) {
+    override public init(frame: CGRect) {
         super.init(frame: frame)
         sharedInit()
     }
 
-    required init?(coder aDecoder: NSCoder) {
+    required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)
         sharedInit()
     }
 
-    func sharedInit() {
+    public func sharedInit() {
         isUserInteractionEnabled = true
         addGestureRecognizer(UILongPressGestureRecognizer(
             target: self,
@@ -33,7 +33,7 @@ class SelectableText: UILabel {
         ))
     }
 
-    override func copy(_ sender: Any?) {
+    override public func copy(_ sender: Any?) {
         UIPasteboard.general.string = text
         UIMenuController.shared.setMenuVisible(false, animated: true)
     }
@@ -47,7 +47,7 @@ class SelectableText: UILabel {
         }
     }
 
-    override func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
+    override public func canPerformAction(_ action: Selector, withSender sender: Any?) -> Bool {
         return (action == #selector(copy(_:)))
     }
 }
