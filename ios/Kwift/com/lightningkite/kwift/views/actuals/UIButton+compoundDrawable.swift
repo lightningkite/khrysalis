@@ -27,4 +27,9 @@ public extension UIButtonWithLayer {
             }
         }
     }
+    
+    func setImageResource(_ image: @escaping DrawableResource ) {
+        self.compoundDrawable = image
+        self.superview?.setNeedsLayout()
+    }
 }
