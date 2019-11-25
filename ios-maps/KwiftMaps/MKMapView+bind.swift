@@ -12,10 +12,60 @@ import Kwift
 
 
 public extension MKMapView {
-    func bindSelect(dependency: ViewDependency, position: MutableObservableProperty<GeoCoordinate?>) {
-        bindSelect(dependency, position)
+
+    func bindView(
+        dependency: ViewDependency,
+        position: ObservableProperty<GeoCoordinate?>,
+        zoomLevel: Float = 15,
+        animate: Bool = true
+    ) {
+        bindView(dependency, position, zoomLevel, animate)
     }
-    func bindSelect(_ dependency: ViewDependency, _ position: MutableObservableProperty<GeoCoordinate?>) {
+    func bindView(
+        _ dependency: ViewDependency,
+        _ position: ObservableProperty<GeoCoordinate?>,
+        _ zoomLevel: Float = 15,
+        _ animate: Bool = true
+    ) {
+        var annotation: MKPointAnnotation? = nil
+        position.addAndRunWeak(self) { (self, value) in
+            if let value = value {
+                let point = annotation ?? {
+                    let new = MKPointAnnotation()
+                    new.coordinate = value.toIos()
+                    self.addAnnotation(new)
+                    return new
+                }()
+                let view = self.view(for: point)
+                view?.isDraggable = true
+                point.coordinate = value.toIos()
+                annotation = point
+                self.setCenter(value.toIos(), animated: true)
+                
+            } else {
+                if let point = annotation {
+                    self.removeAnnotation(point)
+                }
+                annotation = nil
+            }
+        }
+        self.retain(as: "delegate", item: delegate)
+    }
+    
+    func bindSelect(
+        dependency: ViewDependency,
+        position: MutableObservableProperty<GeoCoordinate?>,
+        zoomLevel: Float = 15,
+        animate: Bool = true
+    ) {
+        bindSelect(dependency, position, zoomLevel, animate)
+    }
+    func bindSelect(
+        _ dependency: ViewDependency,
+        _ position: MutableObservableProperty<GeoCoordinate?>,
+        _ zoomLevel: Float = 15,
+        _ animate: Bool = true
+    ) {
         let delegate = SelectDelegate(position)
         var annotation: MKPointAnnotation? = nil
         position.addAndRunWeak(self) { [unowned delegate] (self, value) in

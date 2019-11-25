@@ -120,19 +120,19 @@ tasks.create("kwiftConvertKotlinToSwift") {
 }
 
 
-//tasks.create("patchRetardModule") {
-//    this.group = "build"
-//    doLast {
-//        file("build/tmp/kotlin-classes/debug/META-INF").listFiles()?.forEach {
-//            it.copyTo(File("src/main/resources/META-INF/${it.name}"), overwrite = true)
-//        }
-//        file("build/tmp/kotlin-classes/release/META-INF").listFiles()?.forEach {
-//            it.copyTo(File("src/main/resources/META-INF/${it.name}"), overwrite = true)
-//        }
-//    }
-//}
-//project.afterEvaluate {
-//    tasks.getByName("compileDebugKotlin").finalizedBy("patchRetardModule")
-//    tasks.getByName("compileReleaseKotlin").finalizedBy("patchRetardModule")
-//    tasks.getByName("compileReleaseKotlin").dependsOn("compileDebugKotlin")
-//}
+tasks.create("patchRetardModule") {
+    this.group = "build"
+    doLast {
+        file("build/tmp/kotlin-classes/debug/META-INF").listFiles()?.forEach {
+            it.copyTo(File("src/main/resources/META-INF/${it.name}"), overwrite = true)
+        }
+        file("build/tmp/kotlin-classes/release/META-INF").listFiles()?.forEach {
+            it.copyTo(File("src/main/resources/META-INF/${it.name}"), overwrite = true)
+        }
+    }
+}
+project.afterEvaluate {
+    tasks.getByName("compileDebugKotlin").finalizedBy("patchRetardModule")
+    tasks.getByName("compileReleaseKotlin").finalizedBy("patchRetardModule")
+    tasks.getByName("compileReleaseKotlin").dependsOn("compileDebugKotlin")
+}

@@ -204,6 +204,9 @@ public extension Collection where Element: Hashable {
     func toSet() -> Set<Element> {
         return Set(self)
     }
+    func distinct() -> Array<Element> {
+        return toSet().toList()
+    }
 }
 
 public extension Array {

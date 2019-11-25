@@ -9,9 +9,16 @@ import UIKit
 
 public extension UIView {
     @objc func onClick(_ action: @escaping ()->Void) {
+        onClick(disabledMilliseconds: 500, action)
+    }
+    @objc func onClick(disabledMilliseconds: Int64, _ action: @escaping ()->Void) {
         self.isUserInteractionEnabled = true
-        let recognizer = UITapGestureRecognizer().addAction { [weak self] in
-            action()
+        var lastActivated = Date()
+        let recognizer = UITapGestureRecognizer().addAction {
+            if Date().timeIntervalSince(lastActivated) > Double(disabledMilliseconds)/1000.0 {
+                action()
+                lastActivated = Date()
+            }
         }
         retain(as: "onClickRecognizer", item: recognizer)
         self.addGestureRecognizer(recognizer)
@@ -37,8 +44,15 @@ public extension UIView {
 
 extension UIButton {
     @objc override public func onClick(_ action: @escaping ()->Void) {
+        onClick(disabledMilliseconds: 500, action)
+    }
+    @objc override public func onClick(disabledMilliseconds: Int64, _ action: @escaping ()->Void) {
+        var lastActivated = Date()
         self.addAction {
-            action()
+            if Date().timeIntervalSince(lastActivated) > Double(disabledMilliseconds)/1000.0 {
+                action()
+                lastActivated = Date()
+            }
         }
     }
 }

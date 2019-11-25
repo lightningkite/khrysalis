@@ -36,7 +36,12 @@ fun MapView.bind(dependency: ViewDependency) {
     }
 }
 
-fun MapView.bindView(dependency: ViewDependency, position: ObservableProperty<GeoCoordinate?>) {
+fun MapView.bindView(
+    dependency: ViewDependency,
+    position: ObservableProperty<GeoCoordinate?>,
+    zoomLevel: Float = 15f,
+    animate: Boolean = true
+) {
     bind(dependency)
     getMapAsync { map ->
         var marker: Marker? = null
@@ -46,7 +51,11 @@ fun MapView.bindView(dependency: ViewDependency, position: ObservableProperty<Ge
                 val newMarker = marker ?: map.addMarker(MarkerOptions().draggable(true).position(value.toMaps()))
                 newMarker.position = value.toMaps()
                 marker = newMarker
-                map.animateCamera(CameraUpdateFactory.newLatLngZoom(value.toMaps(), 15f))
+                if (animate) {
+                    map.animateCamera(CameraUpdateFactory.newLatLngZoom(value.toMaps(), zoomLevel))
+                } else {
+                    map.moveCamera(CameraUpdateFactory.newLatLngZoom(value.toMaps(), zoomLevel))
+                }
             } else {
                 marker?.remove()
                 marker = null
@@ -56,7 +65,12 @@ fun MapView.bindView(dependency: ViewDependency, position: ObservableProperty<Ge
 }
 
 
-fun MapView.bindSelect(dependency: ViewDependency, position: MutableObservableProperty<GeoCoordinate?>) {
+fun MapView.bindSelect(
+    dependency: ViewDependency,
+    position: MutableObservableProperty<GeoCoordinate?>,
+    zoomLevel: Float = 15f,
+    animate: Boolean = true
+) {
     bind(dependency)
     getMapAsync { map ->
         var suppress: Boolean = false
@@ -71,7 +85,11 @@ fun MapView.bindSelect(dependency: ViewDependency, position: MutableObservablePr
                     newMarker.position = value.toMaps()
                     marker = newMarker
                     if (!suppressAnimation) {
-                        map.animateCamera(CameraUpdateFactory.newLatLngZoom(value.toMaps(), 15f))
+                        if (animate) {
+                            map.animateCamera(CameraUpdateFactory.newLatLngZoom(value.toMaps(), zoomLevel))
+                        } else {
+                            map.moveCamera(CameraUpdateFactory.newLatLngZoom(value.toMaps(), zoomLevel))
+                        }
                     }
                 } else {
                     marker?.remove()

@@ -7,7 +7,17 @@ import android.widget.ImageView
 import android.widget.TextView
 
 fun View.onClick(action: () -> Unit) {
-    setOnClickListener { action() }
+    onClick(500, action)
+}
+
+fun View.onClick(disabledMilliseconds: Long, action: () -> Unit) {
+    var lastActivated = System.currentTimeMillis()
+    setOnClickListener {
+        if(System.currentTimeMillis() - lastActivated > disabledMilliseconds) {
+            action()
+            lastActivated = System.currentTimeMillis()
+        }
+    }
 }
 
 fun View.onLongClick(action: () -> Unit) {
