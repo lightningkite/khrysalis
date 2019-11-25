@@ -11,6 +11,7 @@ import com.lightningkite.kwift.location.shared.GeoCoordinate
 import com.lightningkite.kwift.maps.android.toKwift
 import com.lightningkite.kwift.maps.android.toMaps
 import com.lightningkite.kwift.observables.shared.MutableObservableProperty
+import com.lightningkite.kwift.observables.shared.ObservableProperty
 import com.lightningkite.kwift.observables.shared.addAndRunWeak
 import com.lightningkite.kwift.observables.shared.addWeak
 import com.lightningkite.kwift.views.actual.ViewDependency
@@ -35,6 +36,26 @@ fun MapView.bind(dependency: ViewDependency) {
     }
 }
 
+fun MapView.bindView(dependency: ViewDependency, position: ObservableProperty<GeoCoordinate?>) {
+    bind(dependency)
+    getMapAsync { map ->
+        var marker: Marker? = null
+        @Suppress("NAME_SHADOWING")
+        position.addAndRunWeak(this) { view, value ->
+            if (value != null) {
+                val newMarker = marker ?: map.addMarker(MarkerOptions().draggable(true).position(value.toMaps()))
+                newMarker.position = value.toMaps()
+                marker = newMarker
+                map.animateCamera(CameraUpdateFactory.newLatLngZoom(value.toMaps(), 15f))
+            } else {
+                marker?.remove()
+                marker = null
+            }
+        }
+    }
+}
+
+
 fun MapView.bindSelect(dependency: ViewDependency, position: MutableObservableProperty<GeoCoordinate?>) {
     bind(dependency)
     getMapAsync { map ->
@@ -49,7 +70,7 @@ fun MapView.bindSelect(dependency: ViewDependency, position: MutableObservablePr
                     val newMarker = marker ?: map.addMarker(MarkerOptions().draggable(true).position(value.toMaps()))
                     newMarker.position = value.toMaps()
                     marker = newMarker
-                    if(!suppressAnimation) {
+                    if (!suppressAnimation) {
                         map.animateCamera(CameraUpdateFactory.newLatLngZoom(value.toMaps(), 15f))
                     }
                 } else {
