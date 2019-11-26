@@ -4,14 +4,13 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.lightningkite.kwift.interfaces.FileCache
 import com.lightningkite.kwift.interfaces.InterfaceListener
-import com.lightningkite.kwift.swift.TabWriter
 import com.lightningkite.kwift.utils.Versioned
 import com.lightningkite.kwift.utils.forEachBetween
 import org.antlr.v4.runtime.ParserRuleContext
+import org.antlr.v4.runtime.tree.ParseTree
 import org.antlr.v4.runtime.tree.TerminalNode
 import org.jetbrains.kotlin.KotlinParser
 import java.io.File
-import java.lang.IllegalStateException
 
 class SwiftAltListener {
     val interfaces: HashMap<String, InterfaceListener.InterfaceData> = hashMapOf()
@@ -234,6 +233,20 @@ class SwiftAltListener {
 
     fun TabWriter.defaultWrite(item: ParserRuleContext, between: String = " ") {
         item.children?.forEachBetween(
+            forItem = { child ->
+                when (child) {
+                    is ParserRuleContext -> write(child)
+                    is TerminalNode -> write(child)
+                }
+            },
+            between = {
+                direct.append(between)
+            }
+        )
+    }
+
+    fun TabWriter.defaultWrite(item: ParserRuleContext, between: String = " ", filter: (ParseTree) -> Boolean) {
+        item.children?.filter(filter)?.forEachBetween(
             forItem = { child ->
                 when (child) {
                     is ParserRuleContext -> write(child)

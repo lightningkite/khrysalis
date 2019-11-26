@@ -3,6 +3,7 @@ package com.lightningkite.kwift.swift
 import com.lightningkite.kwift.utils.camelCase
 import com.lightningkite.kwift.utils.forEachBetween
 import org.antlr.v4.runtime.ParserRuleContext
+import org.antlr.v4.runtime.tree.TerminalNode
 import org.jetbrains.kotlin.KotlinParser
 
 fun SwiftAltListener.registerExpression() {
@@ -22,7 +23,16 @@ fun SwiftAltListener.registerExpression() {
         if(item.CLASS() != null){
             direct.append(".self")
         } else {
-            defaultWrite(item, "")
+            defaultWrite(item, "") { child ->
+                when (child) {
+                    is ParserRuleContext -> true
+                    is TerminalNode -> when (child.symbol.type) {
+                        KotlinParser.NL -> false
+                        else -> true
+                    }
+                    else -> true
+                }
+            }
         }
     }
     handle<KotlinParser.PrefixUnaryExpressionContext> { item ->

@@ -1,7 +1,6 @@
 package com.lightningkite.kwift.layout
 
-import com.lightningkite.kwift.utils.*
-import kotlin.math.PI
+import com.lightningkite.kwift.utils.attributeAsColor
 
 val LayoutConverter.Companion.navigationViews
     get() = LayoutConverter(
@@ -75,6 +74,7 @@ val LayoutConverter.Companion.navigationViews
             }
         ),
         skipTypes = listOf(
+            "androidx.swiperefreshlayout.widget.SwipeRefreshLayout",
             "android.support.v4.widget.SwipeRefreshLayout",
             "SwipeRefreshLayout"
         )

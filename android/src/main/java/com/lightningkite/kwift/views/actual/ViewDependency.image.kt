@@ -56,19 +56,21 @@ fun ViewDependency.requestImageCamera(
     }
 }
 
+private val strongRefs = HashSet<Any>()
 fun ViewDependency.loadImageUrl(url: String?, onResult: (ImageData?) -> Unit) {
-
     Picasso.get().load(url).into(object : Target {
-        override fun onPrepareLoad(placeHolderDrawable: Drawable?) {
-//            TODO("not implemented") //To change body of created functions use File | Settings | File Templates.
+        init {
+            strongRefs.add(this)
         }
 
+        override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
         override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
             onResult(null)
+            strongRefs.remove(this)
         }
-
         override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
             onResult(bitmap)
+            strongRefs.remove(this)
         }
     })
 }

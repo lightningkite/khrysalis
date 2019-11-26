@@ -1,7 +1,6 @@
 package com.lightningkite.kwift.layout
 
-import com.lightningkite.kwift.utils.*
-import kotlin.math.PI
+import com.lightningkite.kwift.utils.attributeAsBoolean
 
 val LayoutConverter.Companion.mapViews
     get() = LayoutConverter(
@@ -10,9 +9,9 @@ val LayoutConverter.Companion.mapViews
             ViewType("com.google.android.gms.maps.MapView", "MKMapView", "View") { node ->
                 node.attributeAsBoolean("app:liteMode")?.let {
                     if(it){
-                        appendln("view.zoomEnabled = false")
-                        appendln("view.scrollEnabled = false")
-                        appendln("view.userInteractionEnabled = false")
+                        appendln("view.isZoomEnabled = false")
+                        appendln("view.isScrollEnabled = false")
+                        appendln("view.isUserInteractionEnabled = false")
                     }
                 }
             }
