@@ -21,14 +21,14 @@ public extension UITextView {
         }
 
         public func textViewDidChange(_ textView: UITextView) {
-            action(textView.text)
+            action(textView.textString)
         }
     }
 
     func bindString(observable: MutableObservableProperty<String>) {
         observable.addAndRunWeak(referenceA: self) { (this, value) in
-            if this.text != value {
-                this.text = value
+            if this.textString != value {
+                this.textString = value
             }
             this.superview?.setNeedsLayout()
         }
@@ -47,8 +47,8 @@ public extension UITextView {
     }
     func bindString(observable: ObservableProperty<String>) {
         observable.addAndRunWeak(referenceA: self) { (this, value) in
-            if this.text != value {
-                this.text = value
+            if this.textString != value {
+                this.textString = value
             }
             this.superview?.setNeedsLayout()
         }
@@ -61,8 +61,8 @@ public extension UITextView {
         observableReference.addAndRunWeak(referenceA: self) { (this, value) in
             if let value = value {
                 let localValue = NSLocalizedString(value, comment: "")
-                if this.text != localValue {
-                    this.text = localValue
+                if this.textString != localValue {
+                    this.textString = localValue
                 }
             } else {
                 this.text = nil

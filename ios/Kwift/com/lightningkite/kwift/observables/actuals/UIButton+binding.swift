@@ -82,7 +82,7 @@ public extension UIButton {
     func bindString(observable: ObservableProperty<String>) {
         observable.addAndRunWeak(referenceA: self) { (this, value) in
             if this.title(for: .normal) != value {
-                this.setTitle(value, for: .normal)
+                this.textString = value
             }
             this.superview?.setNeedsLayout()
         }
@@ -95,10 +95,10 @@ public extension UIButton {
         observableReference.addAndRunWeak(referenceA: self) { (this, value) in
             if let value = value {
                 if this.title(for: .normal) != value {
-                    this.setTitle(value, for: .normal)
+                    this.textString = value
                 }
             } else {
-                this.setTitle("", for: .normal)
+                this.textString = ""
             }
             this.superview?.setNeedsLayout()
         }

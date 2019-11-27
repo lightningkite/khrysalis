@@ -45,7 +45,6 @@ val LayoutConverter.Companion.displayViews
                     appendln("view.layer.shadowRadius = $it")
                     appendln("view.layer.shadowOpacity = 0.24")
                 }
-
                 node.attributeAsDouble("android:rotation")?.let {
                     appendln("view.transform = CGAffineTransform(rotationAngle: ${it * PI / 180.0})")
                 }
@@ -97,18 +96,7 @@ val LayoutConverter.Companion.displayViews
 
 
 internal fun OngoingLayoutConversion.handleCommonText(node: XmlNode, viewHandle: String = "view", controlView: String? = null) {
-    node.attributeAsString("android:text")?.let { text ->
-        if (node.attributeAsBoolean("android:textAllCaps") == true) {
-            appendln("$viewHandle.text = $text.toUpperCase()")
-        } else {
-            appendln("$viewHandle.text = $text")
-        }
-    }
-    node.attributeAsDouble("android:lineSpacingMultiplier")?.let { lineSpacingMultiplier ->
-        appendln("$viewHandle.lineSpacingMultiplier = $lineSpacingMultiplier")
-    }
-    val lines = node.attributeAsInt("android:maxLines")
-    appendln("$viewHandle.numberOfLines = ${lines ?: 0}")
+
     val size = node.attributeAsDimension("android:textSize") ?: "12"
 
     val fontStylesFromFamily = listOfNotNull(
@@ -117,6 +105,21 @@ internal fun OngoingLayoutConversion.handleCommonText(node: XmlNode, viewHandle:
     )
     val fontStyles = (node.attributes["android:textStyle"]?.split('|') ?: listOf()) + fontStylesFromFamily
     appendln("$viewHandle.font = UIFont.get(size: $size, style: [${fontStyles.joinToString { "\"$it\"" }}])")
+
+    node.attributeAsDimension("android:letterSpacing")?.let {
+        appendln("$viewHandle.letterSpacing = $it")
+    }
+    node.attributeAsBoolean("android:textAllCaps")?.let {
+        appendln("$viewHandle.textAllCaps = $it")
+    }
+    node.attributeAsString("android:text")?.let { text ->
+        appendln("$viewHandle.textString = $text")
+    }
+    node.attributeAsDouble("android:lineSpacingMultiplier")?.let { lineSpacingMultiplier ->
+        appendln("$viewHandle.lineSpacingMultiplier = $lineSpacingMultiplier")
+    }
+    val lines = node.attributeAsInt("android:maxLines")
+    appendln("$viewHandle.numberOfLines = ${lines ?: 0}")
 
     if(controlView!= null) {
         node.setToColorGivenControl("android:textColor") {

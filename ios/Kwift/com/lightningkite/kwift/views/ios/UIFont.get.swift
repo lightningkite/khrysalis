@@ -15,56 +15,65 @@ extension UIFont {
     static public func list() {
         for family in UIFont.familyNames.sorted() {
             let names = UIFont.fontNames(forFamilyName: family)
-            print("Family: \(family) Font names: \(names)")
+            print("Family: '\(family)' Font names: \(names)")
+        }
+    }
+    
+    public enum WeightClass {
+        case Light, Regular, Bold
+    }
+    
+    public struct FontStyle: Hashable {
+        let weight: WeightClass
+        let italic: Bool
+        
+        public init(weight: WeightClass, italic: Bool){
+            self.weight = weight
+            self.italic = italic
+        }
+        
+        public init(_ weight: WeightClass, _ italic: Bool){
+            self.weight = weight
+            self.italic = italic
+        }
+    }
+    
+    static public var customFonts: Dictionary<FontStyle, String> = [:]
+    static public func customFont(weight: UIFont.WeightClass, italic: Bool, name: String){
+        customFonts[FontStyle(weight, italic)] = name
+    }
+    
+    static public func get(size: CGFloat, weight: UIFont.WeightClass, italic: Bool) -> UIFont {
+        if let fontName = customFonts[FontStyle(weight, italic)] {
+            return UIFont(name: fontName, size: size)!
+        } else {
+            switch(weight){
+            case .Light:
+                return UIFont.systemFont(ofSize: size)
+            case .Regular:
+                if italic {
+                    return UIFont.italicSystemFont(ofSize: size)
+                } else {
+                    return UIFont.systemFont(ofSize: size)
+                }
+            case .Bold:
+                return UIFont.boldSystemFont(ofSize: size)
+            @unknown default:
+                return UIFont.systemFont(ofSize: size)
+            }
         }
     }
 
-    public static var customFont: String?
-
     static public func get(size: CGFloat, style: Array<String>) -> UIFont {
+        var weightClass = WeightClass.Regular
         if style.contains("bold") {
-            if style.contains("italic") {
-                if let customFont = customFont {
-                    return UIFont(name: "\(customFont)-BoldItalic", size: size) ?? UIFont.boldSystemFont(ofSize: size)
-                } else {
-                    return UIFont.boldSystemFont(ofSize: size)
-                }
-            } else {
-                if let customFont = customFont {
-                    return UIFont(name: "\(customFont)-Bold", size: size) ?? UIFont.boldSystemFont(ofSize: size)
-                } else {
-                    return UIFont.boldSystemFont(ofSize: size)
-                }
-            }
-        } else if style.contains("light") {
-           if style.contains("italic") {
-               if let customFont = customFont {
-                   return UIFont(name: "\(customFont)-LightItalic", size: size) ?? UIFont.italicSystemFont(ofSize: size)
-               } else {
-                   return UIFont.italicSystemFont(ofSize: size)
-               }
-           } else {
-               if let customFont = customFont {
-                   return UIFont(name: "\(customFont)-Light", size: size) ?? UIFont.systemFont(ofSize: size)
-               } else {
-                   return UIFont.systemFont(ofSize: size)
-               }
-           }
-       } else {
-          if style.contains("italic") {
-              if let customFont = customFont {
-                  return UIFont(name: "\(customFont)-Italic", size: size) ?? UIFont.italicSystemFont(ofSize: size)
-              } else {
-                  return UIFont.italicSystemFont(ofSize: size)
-              }
-          } else {
-              if let customFont = customFont {
-                  return UIFont(name: "\(customFont)-Regular", size: size) ?? UIFont.systemFont(ofSize: size)
-              } else {
-                  return UIFont.systemFont(ofSize: size)
-              }
-          }
+            weightClass = .Bold
         }
+        if style.contains("light") {
+            weightClass = .Light
+        }
+        let italic = style.contains("italic")
+        return UIFont.get(size: size, weight: weightClass, italic: italic)
     }
 }
 

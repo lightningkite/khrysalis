@@ -78,12 +78,16 @@ val LayoutConverter.Companion.buttonViews
             ViewType("RadioGroup", "UIView", "LinearLayout") {},
             ViewType("ImageButton", "UIButtonWithLayer", "Button") { node -> },
             ViewType("Button", "UIButtonWithLayer", "View", handlesPadding = true) { node ->
+                handleCommonText(node, "view.titleLabel?", controlView = "view")
+
+                node.attributeAsDimension("android:letterSpacing")?.let {
+                    appendln("view.letterSpacing = $it")
+                }
+                node.attributeAsBoolean("android:textAllCaps")?.let {
+                    appendln("view.textAllCaps = $it")
+                }
                 node.attributeAsString("android:text")?.let { text ->
-                    if (node.attributeAsBoolean("android:textAllCaps") == false) {
-                        appendln("view.setTitle($text, for: .normal)")
-                    } else {
-                        appendln("view.setTitle($text.toUpperCase(), for: .normal)")
-                    }
+                    appendln("view.textString = $text")
                 }
                 node.setToColorGivenControl("android:textColor") {
                     appendln("view.setTitleColor($it, for: .normal)")
@@ -150,8 +154,6 @@ val LayoutConverter.Companion.buttonViews
                 append(", right:")
                 append((node.attributeAsDimension("android:paddingRight") ?: defaultPadding).toString())
                 appendln(")")
-
-                handleCommonText(node, "view.titleLabel?", controlView = "view")
             }
         )
     )

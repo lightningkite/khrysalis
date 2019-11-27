@@ -16,8 +16,8 @@ public extension UITextField {
     }
     func bindString(observable: ObservableProperty<String>) {
         observable.addAndRunWeak(referenceA: self) { (this, value) in
-            if this.text != value {
-                this.text = value
+            if this.textString != value {
+                this.textString = value
             }
             this.superview?.setNeedsLayout()
         }
@@ -30,8 +30,8 @@ public extension UITextField {
         observableReference.addAndRunWeak(referenceA: self) { (this, value) in
             if let value = value {
                 let localValue = NSLocalizedString(value, comment: "")
-                if this.text != localValue {
-                    this.text = localValue
+                if this.textString != localValue {
+                    this.textString = localValue
                 }
             } else {
                 this.text = nil
@@ -44,14 +44,14 @@ public extension UITextField {
     func bindString(observable: MutableObservableProperty<String>) {
         delegate = DoneDelegate.shared
         observable.addAndRunWeak(referenceA: self) { (this, value) in
-            if this.text != value {
-                this.text = value
+            if this.textString != value {
+                this.textString = value
             }
             this.superview?.setNeedsLayout()
         }
         addAction(for: UITextField.Event.editingChanged) { [weak self] in
-            if observable.value != self?.text {
-                observable.value = self?.text ?? ""
+            if observable.value != self?.textString {
+                observable.value = self?.textString ?? ""
             }
         }
     }
@@ -63,14 +63,14 @@ public extension UITextField {
             text = observable.value.toString()
         }
         observable.addAndRunWeak(referenceA: self) { (this, value) in
-            let currentValue = Double(this.text ?? "")
+            let currentValue = Double(this.textString)
             if currentValue != nil, currentValue != value {
-                this.text = value.toString()
+                this.textString = value.toString()
                 this.superview?.setNeedsLayout()
             }
         }
         addAction(for: UITextField.Event.editingChanged) { [weak self] in
-            if let self = self, let currentValue = Double(self.text ?? ""), observable.value != currentValue {
+            if let self = self, let currentValue = Double(self.textString), observable.value != currentValue {
                 observable.value = currentValue
             }
         }
@@ -83,14 +83,14 @@ public extension UITextField {
             text = observable.value.toString()
         }
         observable.addAndRunWeak(referenceA: self) { (this, value) in
-            let currentValue = Int(this.text ?? "")
+            let currentValue = Int(this.textString)
             if currentValue != nil, currentValue != Int(value) {
-                this.text = value.toString()
+                this.textString = value.toString()
                 this.superview?.setNeedsLayout()
             }
         }
         addAction(for: UITextField.Event.editingChanged) { [weak self] in
-            if let self = self, let currentValue = Int(self.text ?? ""), observable.value != currentValue {
+            if let self = self, let currentValue = Int(self.textString), observable.value != currentValue {
                 observable.value = Int32(currentValue)
             }
         }

@@ -11,7 +11,7 @@ fun File.readXMLDimen(): Map<String, String> {
         .asSequence()
         .filter { it.name == "dimen" }
         .associate {
-            (it.attributes["name"] ?: "noname") to it.element.textContent.filter { it.isDigit() }
+            (it.attributes["name"] ?: "noname") to it.element.textContent.filter { it.isDigit() || it == '.' || it == '-' }
         }
 }
 

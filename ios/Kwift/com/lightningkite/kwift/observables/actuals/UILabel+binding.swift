@@ -16,8 +16,8 @@ public extension UILabel {
     }
     func bindString(observable: ObservableProperty<String>) {
         observable.addAndRunWeak(referenceA: self) { (this, value) in
-            if this.text != value {
-                this.text = value
+            if this.textString != value {
+                this.textString = value
             }
             this.superview?.setNeedsLayout()
         }
@@ -29,8 +29,8 @@ public extension UILabel {
     func bindText<T>(observable: ObservableProperty<T>, transform: @escaping (T) -> String) {
         observable.addAndRunWeak(referenceA: self) { (this, value) in
             let textValue = transform(value)
-            if this.text != textValue {
-                this.text = textValue
+            if this.textString != textValue {
+                this.textString = textValue
             }
             this.superview?.setNeedsLayout()
         }
@@ -43,8 +43,8 @@ public extension UILabel {
         observableReference.addAndRunWeak(referenceA: self) { (this, value) in
             if let value = value {
                 let localValue = NSLocalizedString(value, comment: "")
-                if this.text != localValue {
-                    this.text = localValue
+                if this.textString != localValue {
+                    this.textString = localValue
                 }
             } else {
                 this.text = nil
