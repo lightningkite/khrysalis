@@ -63,7 +63,7 @@ private fun generateFile(
 ): String {
     val node = XmlNode.read(xml, mapOf())
 
-    fun makeView(otherViewNode: ViewNode, forStack: String?): String {
+    fun makeView(otherViewNode: ViewNode, forStack: String?, path: String?): String {
         val totalProvides = viewNode.totalRequires(viewNodeMap) + viewNode.provides
         return otherViewNode
             .totalRequires(viewNodeMap)
@@ -78,18 +78,40 @@ private fun generateFile(
                 "${otherViewNode.name}VG(",
                 ")"
             ) { arg ->
-                val myName = if (arg.name == "stack") "this.$forStack" else "this." + arg.name
+                val myName = when {
+                    arg.name == "stack" -> "this.$forStack"
+                    path != null && arg.onPath == path -> arg.name
+                    else -> "this." + arg.name
+                }
                 arg.name + " = " + myName
             }
     }
 
     val into = StringBuilder()
 
+    val inits = ArrayList<() -> Unit>()
+    val actions = ArrayList<() -> Unit>()
+
     with(TabWriter(into)) {
         fun handleNodeClick(
             node: XmlNode,
-            view: String?
+            view: String
         ) {
+            val actionName = (view.removePrefix("xml").replace(Regex("\\.[a-zA-Z]")) { result ->
+                result.value.drop(1).toUpperCase()
+            } + "Click").decapitalize()
+
+            fun makeAction(action: () -> Unit) {
+                line("$view.onClick { this.$actionName() }")
+                actions += {
+                    line("${CodeSection.sectionMarker} Action $actionName ${CodeSection.overwriteMarker}")
+                    line("fun $actionName() {")
+                    tab {
+                        action()
+                    }
+                    line("}")
+                }
+            }
             node.attributes["tools:print"]?.let {
                 println(it)
             }
@@ -97,30 +119,31 @@ private fun generateFile(
                 val otherViewNode =
                     viewNodeMap[it.removePrefix("@layout/").camelCase().capitalize()] ?: return@let
                 val stackName = node.attributes[ViewNode.attributeOnStack] ?: "stack"
-                val makeView = makeView(otherViewNode, stackName)
-                line("$view.onClick { this.$stackName.push($makeView) }")
-            }
-            node.attributes[ViewNode.attributeSwap]?.let {
+                makeAction {
+                    line("$stackName.push(${makeView(otherViewNode, stackName, view)})")
+                }
+            } ?: node.attributes[ViewNode.attributeSwap]?.let {
                 val otherViewNode =
                     viewNodeMap[it.removePrefix("@layout/").camelCase().capitalize()] ?: return@let
                 val stackName = node.attributes[ViewNode.attributeOnStack] ?: "stack"
-                val makeView = makeView(otherViewNode, stackName)
-                line("$view.onClick { this.$stackName.swap($makeView) }")
-            }
-            node.attributes[ViewNode.attributeReset]?.let {
+                makeAction {
+                    line("this.$stackName.swap(${makeView(otherViewNode, stackName, view)})")
+                }
+            } ?: node.attributes[ViewNode.attributeReset]?.let {
                 val otherViewNode =
                     viewNodeMap[it.removePrefix("@layout/").camelCase().capitalize()] ?: return@let
                 val stackName = node.attributes[ViewNode.attributeOnStack] ?: "stack"
-                val makeView = makeView(otherViewNode, stackName)
-                line("$view.onClick { this.$stackName.reset($makeView) }")
-            }
-            node.attributes[ViewNode.attributePop]?.let {
+                makeAction {
+                    line("this.$stackName.reset(${makeView(otherViewNode, stackName, view)})")
+                }
+            } ?: node.attributes[ViewNode.attributePop]?.let {
                 val stackNames = node.attributes[ViewNode.attributeOnStack]?.split(';') ?: listOf("stack")
                 if (stackNames.size == 1) {
-                    line("$view.onClick { this.${stackNames.first()}.pop() }")
+                    makeAction {
+                        line("this.${stackNames.first()}.pop()")
+                    }
                 } else {
-                    line("$view.onClick { ")
-                    tab {
+                    makeAction {
                         startLine()
                         stackNames.forEachBetween(
                             forItem = {
@@ -131,32 +154,34 @@ private fun generateFile(
                             }
                         )
                     }
-                    line("}")
                 }
-            }
-            node.attributes[ViewNode.attributeDismiss]?.let {
+            } ?: node.attributes[ViewNode.attributeDismiss]?.let {
                 val stackNames = node.attributes[ViewNode.attributeOnStack]?.split(';') ?: listOf("stack")
                 if (stackNames.size == 1) {
-                    line("$view.onClick { this.${stackNames.first()}.dismiss() }")
+                    makeAction {
+                        line("this.${stackNames.first()}.dismiss()")
+                    }
                 } else {
-                    line("$view.onClick { ")
-                    tab {
+                    makeAction {
                         startLine()
                         stackNames.forEachBetween(
                             forItem = {
-                                direct.append("if(self.$it.dismiss()) {}")
+                                direct.append("if(this.$it.dismiss()) {}")
                             },
                             between = {
                                 direct.append(" else ")
                             }
                         )
                     }
-                    line("}")
+                }
+            } ?: run {
+                when (node.name) {
+                    "Button", "ImageButton" -> {
+                        makeAction {}
+                    }
                 }
             }
         }
-
-        var inits = ArrayList<() -> Unit>()
 
         line("//")
         line("// ${viewName}VG.swift")
@@ -198,7 +223,7 @@ private fun generateFile(
         line(") : ViewGenerator() {")
         tab {
             line()
-            viewNode.provides.sortedBy { it.name }.forEach {
+            viewNode.provides.sortedBy { it.name }.filter{ it.onPath == null }.forEach {
                 line("${CodeSection.sectionMarker} Provides ${it.name} ${CodeSection.overwriteMarker}")
                 line(
                     """val ${it.name}: ${it.kotlinType} = ${it.construct(
@@ -274,7 +299,7 @@ private fun generateFile(
                                 val otherViewNode =
                                     viewNodeMap[it.removePrefix("@layout/").camelCase().capitalize()]
                                         ?: return@stackDefault
-                                val makeView = makeView(otherViewNode, stackName)
+                                val makeView = makeView(otherViewNode, stackName, null)
                                 inits.add {
                                     line("${CodeSection.sectionMarker} Set Initial View for ${stackName} ${CodeSection.overwriteMarker}")
                                     line("this.$stackName.reset($makeView)")
@@ -317,6 +342,10 @@ private fun generateFile(
             }
             line("${CodeSection.sectionMarker} Init End")
             line("}")
+            line("")
+            line("${CodeSection.sectionMarker} Actions")
+            line("")
+            actions.forEach { it() }
             line("")
             line("${CodeSection.sectionMarker} Body End")
         }

@@ -47,18 +47,18 @@ class ViewNode(
         const val attributeProvides = "tools:provides"
 
         //Breadth-first search
-        fun estimateDepth(map: Map<String, ViewNode>){
+        fun estimateDepth(map: Map<String, ViewNode>) {
             map.values.forEach { it.depth = -1 }
             val root = root(map) ?: return
             root.depth = 0
             var highestSeen = 0
             val seen = mutableListOf<String>()
             val stack = mutableListOf(root)
-            while(stack.isNotEmpty()){
+            while (stack.isNotEmpty()) {
                 val next = stack.removeAt(0)
                 highestSeen = max(highestSeen, next.depth)
-                for(item in next.instantiates){
-                    if(item in seen) continue
+                for (item in next.instantiates) {
+                    if (item in seen) continue
                     seen.add(item)
                     map[item]?.let {
                         it.depth = next.depth + 1
@@ -68,7 +68,7 @@ class ViewNode(
             }
 
             map.values.forEach {
-                if(it.depth == -1) {
+                if (it.depth == -1) {
                     it.depth = highestSeen
                 }
             }
@@ -78,21 +78,21 @@ class ViewNode(
 
         fun assertNoLeaks(map: Map<String, ViewNode>) {
             val root = root(map) ?: return
-            if(root.totalRequires(map).isEmpty()) return
+            if (root.totalRequires(map).isEmpty()) return
             val leakMessages = ArrayList<String>()
             for (leakedVar in root.totalRequires(map)) {
-                if(leakedVar.default != null) continue
+                if (leakedVar.default != null) continue
                 val requiredBy = map.values.filter { leakedVar in it.requires }
                 val climbing = requiredBy.map { listOf(it) }.toMutableList()
                 val seen = mutableSetOf<String>()
-                while(climbing.isNotEmpty()){
+                while (climbing.isNotEmpty()) {
                     val next = climbing.removeAt(0)
                     for (it in next.last().createdBy(map)) {
-                        if(it in seen) continue
+                        if (it in seen) continue
                         seen.add(it)
                         val node = map[it] ?: continue
-                        if(leakedVar in node.provides) continue
-                        if(node == root) {
+                        if (leakedVar in node.provides) continue
+                        if (node == root) {
                             val message = "Leak path for ${leakedVar}: ${next.joinToString(" <- ") { it.name }}"
                             leakMessages += message
                             println(message)
@@ -129,7 +129,12 @@ class ViewNode(
             .toSet()
     }
 
-    fun gather(node: XmlNode, xml: File, styles: Styles) {
+    fun gather(node: XmlNode, xml: File, styles: Styles, parentPath: String? = "xml") {
+        val path = parentPath?.let { parentPath ->
+            node.attributes["android:id"]?.removePrefix("@+id/")?.camelCase()?.let {
+                parentPath + "." + it
+            }
+        }
         node.attributes[attributePush]?.let {
             val onStack = node.attributes[attributeOnStack] ?: "stack"
             operations.add(
@@ -215,32 +220,38 @@ class ViewNode(
         }
         node.attributes[attributeRequires]?.let {
             it.split(';').forEach {
-                requires.add(ViewVar(
-                    name = it.substringBefore(':').trim(),
-                    type = it.substringAfter(':').substringBefore('=').trim(),
-                    default = it.substringAfter('=', "").takeUnless { it.isEmpty() }?.trim()
-                ))
+                requires.add(
+                    ViewVar(
+                        name = it.substringBefore(':').trim(),
+                        type = it.substringAfter(':').substringBefore('=').trim(),
+                        default = it.substringAfter('=', "").takeUnless { it.isEmpty() }?.trim(),
+                        onPath = path
+                    )
+                )
             }
         }
         node.attributes[attributeProvides]?.let {
             it.split(';').forEach {
-                provides.add(ViewVar(
-                    name = it.substringBefore(':').trim(),
-                    type = it.substringAfter(':').substringBefore('=').trim(),
-                    default = it.substringAfter('=', "").takeUnless { it.isEmpty() }?.trim()
-                ))
+                provides.add(
+                    ViewVar(
+                        name = it.substringBefore(':').trim(),
+                        type = it.substringAfter(':').substringBefore('=').trim(),
+                        default = it.substringAfter('=', "").takeUnless { it.isEmpty() }?.trim(),
+                        onPath = path
+                    )
+                )
             }
         }
         if (node.name == "include") {
             node.attributes["layout"]?.let {
                 val file = xml.parentFile.resolve(it.removePrefix("@layout/").plus(".xml"))
-                gather(XmlNode.read(file, styles), xml, styles)
+                gather(XmlNode.read(file, styles), xml, styles, path)
             }
         }
         node.attributes["tools:listitem"]?.let {
             val file = xml.parentFile.resolve(it.removePrefix("@layout/").plus(".xml"))
-            gather(XmlNode.read(file, styles), xml, styles)
+            gather(XmlNode.read(file, styles), xml, styles, parentPath)
         }
-        node.children.forEach { gather(it, xml, styles) }
+        node.children.forEach { gather(it, xml, styles, parentPath) }
     }
 }
