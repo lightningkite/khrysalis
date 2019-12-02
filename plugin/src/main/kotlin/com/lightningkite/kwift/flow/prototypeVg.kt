@@ -248,6 +248,9 @@ private fun generateFile(
                         if (node.name == "include") it + ".xmlRoot"
                         else it
                     }?.let { prefix + it }
+                    if(view?.contains("dummy", true) == true){
+                        return
+                    }
                     if (view != null) {
                         line()
                         line("${CodeSection.sectionMarker} Set Up ${view} ${CodeSection.overwriteMarker}")
