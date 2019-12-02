@@ -27,5 +27,39 @@ public extension DateButton {
             }
         }
     }
+    
+    func bindDateAlone(_ observable: MutableObservableProperty<DateAlone>) {
+        return bindDateAlone(observable: observable)
+    }
+    func bindDateAlone(observable: MutableObservableProperty<DateAlone>) {
+        observable.addAndRunWeak(referenceA: self) { (this, value) in
+            if this.date.dateAlone != value {
+                this.date = dateFrom(value, Date().timeAlone)
+            }
+        }
+        weak var observableWeak = observable
+        picker.addAction(for: .valueChanged) { [weak self] in
+            if let newValue = self?.date.dateAlone, observableWeak?.value != newValue {
+                observableWeak?.value = newValue
+            }
+        }
+    }
+    
+    func bindTimeAlone(_ observable: MutableObservableProperty<TimeAlone>) {
+        return bindTimeAlone(observable: observable)
+    }
+    func bindTimeAlone(observable: MutableObservableProperty<TimeAlone>) {
+        observable.addAndRunWeak(referenceA: self) { (this, value) in
+            if this.date.timeAlone != value {
+                this.date = dateFrom(Date().dateAlone, value)
+            }
+        }
+        weak var observableWeak = observable
+        picker.addAction(for: .valueChanged) { [weak self] in
+            if let newValue = self?.date.timeAlone, observableWeak?.value != newValue {
+                observableWeak?.value = newValue
+            }   
+        }
+    }
 }
 

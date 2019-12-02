@@ -198,6 +198,9 @@ public extension Collection {
     func joinToString(separator: String = ", ", _ conversion: (Element)->String) -> String {
         return self.map(conversion).joined(separator: separator)
     }
+    func toList() -> Array<Element> {
+        return Array(self)
+    }
 }
 
 public extension Collection where Element: Hashable {
@@ -212,6 +215,9 @@ public extension Collection where Element: Hashable {
 public extension Array {
     subscript(index: Int32) -> Element {
         return self[Int(index)]
+    }
+    func toList() -> Array<Element> {
+        return self
     }
 }
 
@@ -543,4 +549,17 @@ public func IllegalStateException(_ message: String) -> KotlinStyleError {
 
 public func IllegalArgumentException(_ message: String) -> KotlinStyleError {
     return KotlinStyleError.IllegalArgumentException(message: message)
+}
+
+public extension CaseIterable {
+    /// A collection of all values of this type.
+    static func values() -> Array<Self> {
+        return self.allCases.toList()
+    }
+}
+
+public extension RawRepresentable {
+    var name: String {
+        return "\(self)"
+    }
 }
