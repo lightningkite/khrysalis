@@ -35,7 +35,7 @@ val Date.dateAlone: DateAlone
     val cal = Calendar.getInstance().also { it.timeInMillis = time }
     return DateAlone(
         cal.get(Calendar.YEAR),
-        cal.get(Calendar.MONTH),
+        cal.get(Calendar.MONTH) + 1,
         cal.get(Calendar.DAY_OF_MONTH)
     )
 }
