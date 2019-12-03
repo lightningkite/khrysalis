@@ -1,8 +1,6 @@
 package com.lightningkite.kwift.views.shared
 
-import com.lightningkite.kwift.actual.escaping
-import com.lightningkite.kwift.actual.formatList
-import com.lightningkite.kwift.actual.swiftExactly
+import com.lightningkite.kwift.actual.*
 import com.lightningkite.kwift.views.actual.StringResource
 import com.lightningkite.kwift.views.actual.ViewDependency
 import com.lightningkite.kwift.views.actual.getString
@@ -12,15 +10,15 @@ interface ViewString {
     fun get(dependency: ViewDependency): String
 }
 
-data class ViewStringRaw(val string: String) : ViewString {
+class ViewStringRaw(val string: String) : ViewString {
     override fun get(dependency: ViewDependency): String = string
 }
 
-data class ViewStringResource(val resource: StringResource) : ViewString {
+class ViewStringResource(val resource: StringResource) : ViewString {
     override fun get(dependency: ViewDependency): String = dependency.getString(resource)
 }
 
-data class ViewStringTemplate(val template: ViewString, val arguments: List<Any>) : ViewString {
+class ViewStringTemplate(val template: ViewString, val arguments: List<Any>) : ViewString {
     override fun get(dependency: ViewDependency): String {
         val templateResolved = template.get(dependency)
         val fixedArguments = arguments.map { it -> (it as? ViewString)?.get(dependency) ?: it }
@@ -32,7 +30,7 @@ class ViewStringComplex(val getter: @escaping() (ViewDependency) -> String) : Vi
     override fun get(dependency: ViewDependency): String = getter(dependency)
 }
 
-data class ViewStringList(val parts: List<ViewString>, val separator: String = "\n"): ViewString {
+class ViewStringList(val parts: List<ViewString>, val separator: String = "\n"): ViewString {
     override fun get(dependency: ViewDependency): String {
         return parts.joinToString(separator) { it -> it.get(dependency) }
     }
@@ -54,7 +52,7 @@ fun ViewString.toDebugString(): String {
             if(it is ViewString)
                 return@joinToString it.toDebugString()
             else
-                return@joinToString it.toString()
+                return@joinToString "$it"
         } + ")"
         is ViewStringList -> return thing.parts.joinToString(thing.separator) { it -> it.toDebugString() }
         is ViewStringComplex -> return "<Complex string $thing>"

@@ -54,10 +54,7 @@ public class DateButton : UIButtonWithLayer {
     open func commonInit(){
         picker.datePickerMode = .date
         picker.addAction(for: .valueChanged, id: "0", action: { [weak picker, weak self] in
-            self?.updateText()
-            if let date = picker?.date {
-                self?.onDateEntered.invokeAll(date)
-            }
+            self?.date = picker?.date ?? Date()
         })
         self.isUserInteractionEnabled = true
         let doneButton = UIBarButtonItem(title: "Done", style: UIBarButtonItem.Style.plain, target: self, action: #selector(doneClick))
@@ -72,12 +69,12 @@ public class DateButton : UIButtonWithLayer {
     @objc public func doneClick() {
         self.resignFirstResponder()
         self.date = self.picker.date
-        self.updateText()
     }
 
     public var date: Date = Date() {
         didSet {
             picker.date = date
+            onDateEntered.invokeAll(self.date)
             updateText()
         }
     }

@@ -13,23 +13,9 @@ public protocol ViewString {
  
  
 
-public class ViewStringRaw: ViewString, Equatable, Hashable {
+public class ViewStringRaw: ViewString {
     
     public var string: String
-    
-    public static func == (lhs: ViewStringRaw, rhs: ViewStringRaw) -> Bool {
-        return lhs.string == rhs.string
-    }
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(string)
-    }
-    public func copy(
-        string: (String)? = nil
-    ) -> ViewStringRaw {
-        return ViewStringRaw(
-            string: string ?? self.string
-        )
-    }
     
     
     public func get(dependency: ViewDependency) -> String {
@@ -49,23 +35,9 @@ public class ViewStringRaw: ViewString, Equatable, Hashable {
  
  
 
-public class ViewStringResource: ViewString, Equatable, Hashable {
+public class ViewStringResource: ViewString {
     
     public var resource: StringResource
-    
-    public static func == (lhs: ViewStringResource, rhs: ViewStringResource) -> Bool {
-        return lhs.resource == rhs.resource
-    }
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(resource)
-    }
-    public func copy(
-        resource: (StringResource)? = nil
-    ) -> ViewStringResource {
-        return ViewStringResource(
-            resource: resource ?? self.resource
-        )
-    }
     
     
     public func get(dependency: ViewDependency) -> String {
@@ -85,28 +57,10 @@ public class ViewStringResource: ViewString, Equatable, Hashable {
  
  
 
-public class ViewStringTemplate: ViewString, Equatable, Hashable {
+public class ViewStringTemplate: ViewString {
     
     public var template: ViewString
     public var arguments: Array<Any>
-    
-    public static func == (lhs: ViewStringTemplate, rhs: ViewStringTemplate) -> Bool {
-        return lhs.template == rhs.template &&
-            lhs.arguments == rhs.arguments
-    }
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(template)
-        hasher.combine(arguments)
-    }
-    public func copy(
-        template: (ViewString)? = nil,
-        arguments: (Array<Any>)? = nil
-    ) -> ViewStringTemplate {
-        return ViewStringTemplate(
-            template: template ?? self.template,
-            arguments: arguments ?? self.arguments
-        )
-    }
     
     
     public func get(dependency: ViewDependency) -> String {
@@ -153,28 +107,10 @@ public class ViewStringComplex: ViewString {
  
  
 
-public class ViewStringList: ViewString, Equatable, Hashable {
+public class ViewStringList: ViewString {
     
     public var parts: Array<ViewString>
     public var separator: String
-    
-    public static func == (lhs: ViewStringList, rhs: ViewStringList) -> Bool {
-        return lhs.parts == rhs.parts &&
-            lhs.separator == rhs.separator
-    }
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(parts)
-        hasher.combine(separator)
-    }
-    public func copy(
-        parts: (Array<ViewString>)? = nil,
-        separator: (String)? = nil
-    ) -> ViewStringList {
-        return ViewStringList(
-            parts: parts ?? self.parts,
-            separator: separator ?? self.separator
-        )
-    }
     
     
     public func get(dependency: ViewDependency) -> String {
@@ -221,7 +157,7 @@ extension ViewString {
             if let it = it as? ViewString {
                 return it.toDebugString()
             } else {
-                return it.toString()
+                return "\(it)"
             }
         } + ")"
         case let thing as ViewStringList: return thing.parts.joinToString(thing.separator) { (it) in 

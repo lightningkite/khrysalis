@@ -21,9 +21,9 @@ public extension DateButton {
             }
         }
         weak var observableWeak = observable
-        picker.addAction(for: .valueChanged) { [weak self] in
-            if observableWeak?.value != self?.date {
-                observableWeak?.value = self?.date ?? Date()
+        self.onDateEntered.addWeak(self) { (self, value) in
+            if observableWeak?.value != value {
+                observableWeak?.value = value
             }
         }
     }
@@ -38,8 +38,9 @@ public extension DateButton {
             }
         }
         weak var observableWeak = observable
-        picker.addAction(for: .valueChanged) { [weak self] in
-            if let newValue = self?.date.dateAlone, observableWeak?.value != newValue {
+        self.onDateEntered.addWeak(self) { (self, value) in
+            let newValue = self.date.dateAlone
+            if observableWeak?.value != newValue {
                 observableWeak?.value = newValue
             }
         }
@@ -55,10 +56,11 @@ public extension DateButton {
             }
         }
         weak var observableWeak = observable
-        picker.addAction(for: .valueChanged) { [weak self] in
-            if let newValue = self?.date.timeAlone, observableWeak?.value != newValue {
+        self.onDateEntered.addWeak(self) { (self, value) in
+            let newValue = self.date.timeAlone
+            if observableWeak?.value != newValue {
                 observableWeak?.value = newValue
-            }   
+            }
         }
     }
 }
