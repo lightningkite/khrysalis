@@ -52,16 +52,6 @@ public final class DateAlone: Equatable, Hashable, Codable {
         return "\(year)-\(month)-\(day)"
     }
     
-    //Start Companion
-    
-    static public func iso(string: String) -> DateAlone {
-        return DateAlone(string.substringBefore("-").toInt(), string.substringAfter("-").substringBefore("-").toInt(), string.substringAfterLast("-").toInt())
-    }
-    static public func iso(_ string: String) -> DateAlone {
-        return iso(string: string)
-    }
-    //End Companion
-    
     
     public init(year: Int32, month: Int32, day: Int32) {
         self.year = year
@@ -116,20 +106,6 @@ public final class TimeAlone: Equatable, Hashable, Codable {
             second: second ?? self.second
         )
     }
-    
-    public func iso() -> String {
-        return "\(hour):\(minute):\(second)"
-    }
-    
-    //Start Companion
-    
-    static public func iso(string: String) -> TimeAlone {
-        return TimeAlone(string.substringBefore(":").toInt(), string.substringAfter(":").substringBefore(":").toInt(), string.substringAfterLast(":").toInt())
-    }
-    static public func iso(_ string: String) -> TimeAlone {
-        return iso(string: string)
-    }
-    //End Companion
     
     
     public init(hour: Int32, minute: Int32, second: Int32) {
