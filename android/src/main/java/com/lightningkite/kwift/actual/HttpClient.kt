@@ -95,7 +95,7 @@ object HttpClient {
                         if (value == null) {
                             gen.writeNull()
                         } else {
-                            gen.writeString(value.iso())
+                            gen.writeString(value.iso8601())
                         }
                     }
                 },
@@ -104,7 +104,7 @@ object HttpClient {
                         if (value == null) {
                             gen.writeNull()
                         } else {
-                            gen.writeString(value.iso())
+                            gen.writeString(value.iso8601())
                         }
                     }
                 }
