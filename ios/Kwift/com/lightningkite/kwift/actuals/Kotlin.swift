@@ -558,8 +558,13 @@ public extension CaseIterable {
     }
 }
 
-public extension RawRepresentable {
+public extension StringEnum {
     var name: String {
         return "\(self)"
     }
 }
+
+public protocol StringEnum {
+}
+
+public typealias SomeEnum = StringEnum

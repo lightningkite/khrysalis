@@ -161,7 +161,7 @@ fun SwiftAltListener.registerClass() {
     fun TabWriter.handleEnumClass(item: KotlinParser.ClassDeclarationContext) {
         line {
             append(item.modifiers().visibilityString())
-            append(" enum ${item.simpleIdentifier().text}: String, CaseIterable, Codable {")
+            append(" enum ${item.simpleIdentifier().text}: String, StringEnum, CaseIterable, Codable {")
         }
         tab {
             item.enumClassBody().enumEntries().enumEntry().forEach {
