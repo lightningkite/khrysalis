@@ -23,7 +23,7 @@ public extension ViewDependency {
         return new
     }
     
-    func requestImageGallery(onResult: @escaping (ImageReference) -> Void) {
+    func requestImageGallery(onResult: @escaping (Uri) -> Void) {
         if UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum){
             let imageDelegate = self.imageDelegate
             imageDelegate.onImagePicked = onResult
@@ -31,7 +31,7 @@ public extension ViewDependency {
             self.parentViewController.present(imageDelegate.imagePicker, animated: true, completion: nil)
         }
     }
-    func requestImageCamera(onResult: @escaping (ImageReference) -> Void) {
+    func requestImageCamera(onResult: @escaping (Uri) -> Void) {
         if UIImagePickerController.isSourceTypeAvailable(.camera){
             let imageDelegate = self.imageDelegate
             imageDelegate.onImagePicked = onResult
@@ -39,37 +39,12 @@ public extension ViewDependency {
             self.parentViewController.present(imageDelegate.imagePicker, animated: true, completion: nil)
         }
     }
-
-    func loadImageUrl(_ url: String?, onResult: @escaping (ImageData?) -> Void){
-        if let url = url{
-            let image = ImageReference(string: url)
-            if let image = image{
-                self.loadImage(image, onResult: onResult)
-            }else{
-                onResult(nil)
-            }
-        }else{
-            onResult(nil)
-        }
-    }
-    
-    func loadImage(_ imageReference: ImageReference, onResult: @escaping (ImageData?)->Void){
-        URLSession.shared.dataTask(with: imageReference, completionHandler: { data, response, error in
-            DispatchQueue.main.async {
-                if let data = data {
-                    onResult(UIImage(data: data))
-                } else {
-                    onResult(nil)
-                }
-            }
-        }).resume()
-    }
 }
 
 private class ImageDelegate : NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
     
     var imagePicker = UIImagePickerController()
-    var onImagePicked: ((ImageReference)->Void)? = nil
+    var onImagePicked: ((Uri)->Void)? = nil
     
     func prepareGallery(){
         imagePicker.delegate = self

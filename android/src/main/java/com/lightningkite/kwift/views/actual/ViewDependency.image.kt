@@ -4,18 +4,23 @@ import android.Manifest
 import android.app.Activity
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
 import android.graphics.drawable.Drawable
 import android.provider.MediaStore
 import androidx.core.content.FileProvider
-import com.lightningkite.kwift.actual.ImageData
-import com.lightningkite.kwift.actual.ImageReference
+import com.lightningkite.kwift.actual.HttpClient
+import com.lightningkite.kwift.actual.Uri
+import com.lightningkite.kwift.shared.Image
+import com.lightningkite.kwift.shared.ImageBitmap
+import com.lightningkite.kwift.shared.ImageRaw
+import com.lightningkite.kwift.shared.ImageReference
 import com.lightningkite.kwift.views.android.startIntent
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import java.io.File
 
 fun ViewDependency.requestImageGallery(
-    callback: (ImageReference) -> Unit
+    callback: (Uri) -> Unit
 ) {
     requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE) {
         if (it) {
@@ -39,7 +44,7 @@ fun ViewDependency.requestImageGallery(
 }
 
 fun ViewDependency.requestImageCamera(
-    callback: (ImageReference) -> Unit
+    callback: (Uri) -> Unit
 ) {
     val fileProviderAuthority = context.packageName + ".fileprovider"
     val file = File(context.cacheDir, "images").also { it.mkdirs() }
@@ -53,32 +58,5 @@ fun ViewDependency.requestImageCamera(
                 if (code == Activity.RESULT_OK) callback(result?.data ?: file)
             }
         }
-    }
-}
-
-private val strongRefs = HashSet<Any>()
-fun ViewDependency.loadImageUrl(url: String?, onResult: (ImageData?) -> Unit) {
-    Picasso.get().load(url).into(object : Target {
-        init {
-            strongRefs.add(this)
-        }
-
-        override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
-        override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
-            onResult(null)
-            strongRefs.remove(this)
-        }
-        override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
-            onResult(bitmap)
-            strongRefs.remove(this)
-        }
-    })
-}
-
-fun ViewDependency.loadImage(imageReference: ImageReference, onResult: (ImageData?) -> Unit) {
-    try {
-        onResult(MediaStore.Images.Media.getBitmap(context.contentResolver, imageReference))
-    } catch (e: Exception) {
-        onResult(null)
     }
 }
