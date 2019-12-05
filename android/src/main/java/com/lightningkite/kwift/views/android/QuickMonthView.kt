@@ -132,6 +132,8 @@ open class QuickMonthView : View {
                 Color.BLUE
             )
         )
+        labelFontSp = a.getDimension(R.styleable.QuickMonthView_labelSize, 0f).div(resources.displayMetrics.scaledDensity)
+        dayFontSp = a.getDimension(R.styleable.QuickMonthView_daySize, 0f).div(resources.displayMetrics.scaledDensity)
         labelColorSet = ColorSet(
             foreground = a.getColor(R.styleable.QuickMonthView_labelForegroundColor, Color.BLACK),
             background = a.getColor(R.styleable.QuickMonthView_labelBackgroundColor, Color.WHITE)

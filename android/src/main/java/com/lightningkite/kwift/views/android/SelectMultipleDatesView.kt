@@ -22,6 +22,6 @@ class SelectMultipleDatesView : AbstractQuickCalendarView {
     override fun makeChildView(): QuickMonthView {
         return SelectMultipleDatesMonthView(context, childAttributeSet).apply {
             this.dates = this@SelectMultipleDatesView.dates
-        }
+        }.also { style(it) }
     }
 }
