@@ -77,19 +77,19 @@ abstract class AbstractQuickCalendarView @JvmOverloads constructor(
         titleColor = a.getColor(R.styleable.AbstractQuickCalendarView_titleColor, Color.BLACK)
         showMonthHeader = a.getBoolean(R.styleable.AbstractQuickCalendarView_showMonthHeader, true)
         defaultColorSet = QuickMonthView.ColorSet(
-            foreground = a.getColor(R.styleable.AbstractQuickCalendarView_selectedForegroundColor, Color.BLACK),
-            background = a.getColor(R.styleable.AbstractQuickCalendarView_selectedBackgroundColor, Color.WHITE)
-        )
-        selectedColorSet = QuickMonthView.ColorSet(
-            foreground = a.getColor(R.styleable.AbstractQuickCalendarView_defaultForegroundColor, Color.WHITE),
+            foreground = a.getColor(R.styleable.AbstractQuickCalendarView_defaultForegroundColor, Color.BLACK),
             background = a.getColor(
                 R.styleable.AbstractQuickCalendarView_defaultBackgroundColor,
-                Color.BLUE
+                Color.WHITE
             )
         )
-        titleFontSp = a.getDimension(R.styleable.AbstractQuickCalendarView_titleSize, 0f).div(resources.displayMetrics.scaledDensity)
-        labelFontSp = a.getDimension(R.styleable.AbstractQuickCalendarView_labelSize, 0f).div(resources.displayMetrics.scaledDensity)
-        dayFontSp = a.getDimension(R.styleable.AbstractQuickCalendarView_daySize, 0f).div(resources.displayMetrics.scaledDensity)
+        selectedColorSet = QuickMonthView.ColorSet(
+            foreground = a.getColor(R.styleable.AbstractQuickCalendarView_selectedForegroundColor, Color.WHITE),
+            background = a.getColor(R.styleable.AbstractQuickCalendarView_selectedBackgroundColor, Color.BLUE)
+        )
+        titleFontSp = a.getDimension(R.styleable.AbstractQuickCalendarView_titleSize, 14 * resources.displayMetrics.scaledDensity).div(resources.displayMetrics.scaledDensity)
+        labelFontSp = a.getDimension(R.styleable.AbstractQuickCalendarView_labelSize, 14 * resources.displayMetrics.scaledDensity).div(resources.displayMetrics.scaledDensity)
+        dayFontSp = a.getDimension(R.styleable.AbstractQuickCalendarView_daySize, 14 * resources.displayMetrics.scaledDensity).div(resources.displayMetrics.scaledDensity)
         labelColorSet = QuickMonthView.ColorSet(
             foreground = a.getColor(R.styleable.AbstractQuickCalendarView_labelForegroundColor, Color.BLACK),
             background = a.getColor(R.styleable.AbstractQuickCalendarView_labelBackgroundColor, Color.WHITE)

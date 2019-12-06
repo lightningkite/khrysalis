@@ -15,6 +15,11 @@ public final class DateAlone: Equatable, Hashable, Codable {
         day = string.substringAfterLast("-").toInt()
     }
     
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(iso8601())
+    }
+    
     public var year: Int32
     public var month: Int32
     public var day: Int32
@@ -75,10 +80,15 @@ public final class TimeAlone: Equatable, Hashable, Codable {
         second = string.substringAfterLast(":").toInt()
     }
     
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.singleValueContainer()
+        try container.encode(iso8601())
+    }
+    
     public func iso8601() -> String {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
-        formatter.dateFormat = "HH:mm:ssZZZZZ"
+        formatter.dateFormat = "HH:mm:ss"
         return formatter.string(from: dateFrom(Date().dateAlone, self))
     }
     
