@@ -22,6 +22,8 @@ open class KwiftViewController: UIViewController, UINavigationControllerDelegate
         super.init(coder: coder)
     }
     
+    static public let refreshBackgroundColorEvent = StandardEvent<Void>()
+    
     weak var innerView: UIView!
     
     public var defaultBackgroundColor: UIColor = .white
@@ -38,6 +40,14 @@ open class KwiftViewController: UIViewController, UINavigationControllerDelegate
         
         if let main = main as? EntryPoint, let stack = main.mainStack {
             stack.addAndRunWeak(self) { (self, value) in
+                self.refreshBackingColor()
+            }
+        }
+        var lastOccurrance = Date()
+        KwiftViewController.refreshBackgroundColorEvent.addWeak(self) { (self, value) in
+            let now = Date()
+            if now.timeIntervalSince(lastOccurrance) > 1 {
+                lastOccurrance = now
                 self.refreshBackingColor()
             }
         }
@@ -84,7 +94,7 @@ open class KwiftViewController: UIViewController, UINavigationControllerDelegate
                 return backing
             }
         }
-        if let backing = view.layer.backgroundColor, backing.alpha != 0.0 {
+        if let backing = view.layer.guessBackingColor(), backing.alpha != 0.0 {
             return backing
         }
         return nil
