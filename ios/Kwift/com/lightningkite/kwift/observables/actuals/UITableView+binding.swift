@@ -35,9 +35,8 @@ public extension UITableView {
         if let delegate = delegate as? HasAtEnd {
             delegate.setAtEnd(action: action)
         }
-        var x = Optional<Int>.none
     }
-    
+
 
     func bind<T>(
         _ data: ObservableProperty<[T]>,
@@ -73,7 +72,7 @@ public extension UITableView {
             previouslyEmpty = emptyNow
         }
     }
-    
+
     func bindMulti(
         viewDependency: ViewDependency,
         data: ObservableProperty<Array<Any>>,
@@ -118,7 +117,7 @@ class CustomUITableViewCell: UITableViewCell {
     required init?(coder aDecoder: NSCoder) {
         fatalError("init(coder:) has not been implemented")
     }
-    
+
     override func sizeThatFits(_ size: CGSize) -> CGSize {
         layoutIfNeeded()
         var size = CGSize.zero
@@ -131,7 +130,7 @@ class CustomUITableViewCell: UITableViewCell {
         size.height += spacing * 2
         return size
     }
-    
+
     override public func layoutSubviews() {
         super.layoutSubviews()
         contentView.frame = self.bounds.insetBy(dx: spacing, dy: spacing)
@@ -229,7 +228,7 @@ class BoundMultiDataSource: NSObject, UITableViewDataSource, UITableViewDelegate
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let s = source.value
-        let typeIndex = self.handler.type(s[indexPath.row])
+        let typeIndex = self.handler.type(s)
         let cell: CustomUITableViewCell = tableView.dequeueReusableCell(withIdentifier: typeIndex.toString()) as! CustomUITableViewCell
         cell.spacing = self.spacing
         cell.selectionStyle = .none
