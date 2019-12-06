@@ -49,12 +49,12 @@ fun convertVectorDrawable(name: String, node: XmlNode, out: Appendable) {
                     appendln("        gradient.mask = mask")
                     gradientNode.attributeAsDouble("android:startX")?.let { x ->
                         gradientNode.attributeAsDouble("android:startY")?.let { y ->
-                            appendln("        gradient.startPoint = CGPoint(x: ${x/100.0}, y: ${y/100.0})")
+                            appendln("        gradient.startPoint = CGPoint(x: ${x/width}, y: ${y/height})")
                         }
                     }
                     gradientNode.attributeAsDouble("android:endX")?.let { x ->
                         gradientNode.attributeAsDouble("android:endY")?.let { y ->
-                            appendln("        gradient.endPoint = CGPoint(x: ${x/100.0}, y: ${y/100.0})")
+                            appendln("        gradient.endPoint = CGPoint(x: ${x/width}, y: ${y/height})")
                         }
                     }
                     val colors = gradientNode.children.filter { it.name == "item" }.mapNotNull {

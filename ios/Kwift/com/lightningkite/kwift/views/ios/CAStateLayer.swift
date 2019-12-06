@@ -156,3 +156,18 @@ public extension CALayer {
         return color.cgColor
     }
 }
+
+public extension CAGradientLayer {
+    func setGradientAngle(degrees: CGFloat){
+        let radius: CGFloat = 0.5
+        let radians = degrees * CGFloat.pi / 180
+        self.startPoint = CGPoint(
+            x: 0.5 - cos(radians) * radius,
+            y: 0.5 + sin(radians) * radius
+        )
+        self.endPoint = CGPoint(
+            x: 0.5 + cos(radians) * radius,
+            y: 0.5 - sin(radians) * radius
+        )
+    }
+}

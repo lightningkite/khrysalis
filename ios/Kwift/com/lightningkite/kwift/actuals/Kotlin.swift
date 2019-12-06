@@ -555,9 +555,9 @@ public class System {
 }
 
 public enum KotlinStyleError : Error {
-    case Exception(message: String)
-    case IllegalStateException(message: String)
-    case IllegalArgumentException(message: String)
+    case Exception(message: String = "")
+    case IllegalStateException(message: String = "")
+    case IllegalArgumentException(message: String = "")
 }
 
 public func Exception(_ message: String) -> KotlinStyleError {

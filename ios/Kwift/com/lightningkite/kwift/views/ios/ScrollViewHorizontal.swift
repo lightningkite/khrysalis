@@ -8,7 +8,7 @@
 import UIKit
 
 public class ScrollViewHorizontal: UIScrollView {
-    var fillViewport = false
+    public var fillViewport = false
     override public func sizeThatFits(_ size: CGSize) -> CGSize {
         let childSize = subviews.first?.sizeThatFits(size)
         return CGSize(width: 0, height: childSize?.height ?? 0)
@@ -27,7 +27,7 @@ public class ScrollViewHorizontal: UIScrollView {
 }
 
 public class ScrollViewVertical: UIScrollView {
-    var fillViewport = false
+    public var fillViewport = false
     override public func sizeThatFits(_ size: CGSize) -> CGSize {
         let childSize = subviews.first?.sizeThatFits(size)
         return CGSize(width: childSize?.width ?? 0, height: 0)
