@@ -45,6 +45,7 @@ public extension CompoundButton {
         }
     }
     
+    
     func bindSelectNullable<T: Equatable>(_ myValue: T, _ selected: MutableObservableProperty<T?>){
         return bindSelectNullable(myValue: myValue, selected: selected)
     }
@@ -60,6 +61,36 @@ public extension CompoundButton {
                 selected.value = myValue
             } else if !value && selected.value == myValue  {
                 selected.value = nil
+            }
+        }
+    }
+    
+    func bindSelectInvert<T: Equatable>(_ myValue: T, _ selected: MutableObservableProperty<T?>){
+        return bindSelectInvert(myValue: myValue, selected: selected)
+    }
+    func bindSelectInvert<T: Equatable>(myValue: T, selected: MutableObservableProperty<T?>){
+        var suppress:Bool = false
+        selected.addAndRunWeak(referenceA: self) { (this, value) in
+            if !suppress{	
+                suppress = true
+                let shouldBeOn = value == myValue || value == nil
+                if this.isOn != shouldBeOn {
+                    this.isOn = shouldBeOn
+                }
+                suppress = false
+            }
+        }
+        self.onCheckChanged = { [weak self] value in
+            if !suppress{
+                suppress = true
+                if !value && selected.value == myValue {
+                    selected.value = nil
+                    self?.isOn = true
+                } else if selected.value != myValue  {
+                    selected.value = myValue
+                    self?.isOn = true
+                }
+                suppress = false
             }
         }
     }
