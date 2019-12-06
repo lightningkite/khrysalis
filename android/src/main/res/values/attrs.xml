@@ -6,15 +6,41 @@
         <attr name="empty_color" format="color"/>
         <attr name="changeable" format="boolean"/>
     </declare-styleable>
+    <attr name="showMonthHeader" format="boolean"/>
+    <attr name="titleSize" format="dimension"/>
+    <attr name="labelSize" format="dimension"/>
+    <attr name="daySize" format="dimension"/>
+    <attr name="titleColor" format="color"/>
+    <attr name="selectedForegroundColor" format="color"/>
+    <attr name="selectedBackgroundColor" format="color"/>
+    <attr name="defaultForegroundColor" format="color"/>
+    <attr name="defaultBackgroundColor" format="color"/>
+    <attr name="labelForegroundColor" format="color"/>
+    <attr name="labelBackgroundColor" format="color"/>
     <declare-styleable name="QuickMonthView">
-        <attr name="selectedForegroundColor" format="color"/>
-        <attr name="selectedBackgroundColor" format="color"/>
-        <attr name="defaultForegroundColor" format="color"/>
-        <attr name="defaultBackgroundColor" format="color"/>
-        <attr name="labelForegroundColor" format="color"/>
-        <attr name="labelBackgroundColor" format="color"/>
+        <attr name="showMonthHeader"/>
+        <attr name="titleSize"/>
+        <attr name="labelSize"/>
+        <attr name="daySize"/>
+        <attr name="titleColor"/>
+        <attr name="selectedForegroundColor"/>
+        <attr name="selectedBackgroundColor"/>
+        <attr name="defaultForegroundColor"/>
+        <attr name="defaultBackgroundColor"/>
+        <attr name="labelForegroundColor"/>
+        <attr name="labelBackgroundColor"/>
     </declare-styleable>
     <declare-styleable name="AbstractQuickCalendarView">
-        <attr name="showMonthHeader" format="boolean"/>
+        <attr name="showMonthHeader"/>
+        <attr name="titleSize"/>
+        <attr name="labelSize"/>
+        <attr name="daySize"/>
+        <attr name="titleColor"/>
+        <attr name="selectedForegroundColor"/>
+        <attr name="selectedBackgroundColor"/>
+        <attr name="defaultForegroundColor"/>
+        <attr name="defaultBackgroundColor"/>
+        <attr name="labelForegroundColor"/>
+        <attr name="labelBackgroundColor"/>
     </declare-styleable>
 </resources>

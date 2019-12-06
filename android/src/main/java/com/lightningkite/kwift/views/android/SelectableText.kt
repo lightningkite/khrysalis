@@ -3,8 +3,9 @@ package com.lightningkite.kwift.views.android
 import android.content.Context
 import android.util.AttributeSet
 import android.widget.TextView
+import androidx.appcompat.widget.AppCompatTextView
 
-class SelectableText : TextView {
+class SelectableText : AppCompatTextView {
     constructor(context: Context) : super(context) {}
 
     constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {}

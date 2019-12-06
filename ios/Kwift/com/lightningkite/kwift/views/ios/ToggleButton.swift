@@ -43,9 +43,23 @@ public class ToggleButton: UIButtonWithLayer, CompoundButton {
     
     private func syncText(){
         if isOn{
-            self.setTitle(textOn, for: UIControl.State.normal)
+            var toSet = textOn
+            if textAllCaps {
+                toSet = toSet.toUpperCase()
+            }
+            setAttributedTitle(
+                NSAttributedString(string: toSet, attributes: [.kern: letterSpacing * (titleLabel?.font.pointSize ?? 12)]),
+                for: .normal
+            )
         } else{
-            self.setTitle(textOff, for: UIControl.State.normal)
+            var toSet = textOff
+            if textAllCaps {
+                toSet = toSet.toUpperCase()
+            }
+            setAttributedTitle(
+                NSAttributedString(string: toSet, attributes: [.kern: letterSpacing * (titleLabel?.font.pointSize ?? 12)]),
+                for: .normal
+            )
         }
     }
     

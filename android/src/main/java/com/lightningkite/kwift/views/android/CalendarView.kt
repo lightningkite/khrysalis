@@ -12,6 +12,6 @@ class CalendarView : AbstractQuickCalendarView {
         get() = false
 
     override fun makeChildView(): QuickMonthView {
-        return QuickMonthView(context, this.childAttributeSet)
+        return QuickMonthView(context, this.childAttributeSet).also { style(it) }
     }
 }

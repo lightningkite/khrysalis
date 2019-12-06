@@ -20,6 +20,7 @@ import com.lightningkite.kwift.views.shared.ViewGenerator
 import com.lightningkite.kwift.views.shared.showDialogEvent
 import java.util.*
 import com.lightningkite.kwift.R
+import com.lightningkite.kwift.observables.shared.Close
 
 /**
  * An activity that implements [ActivityAccess].
@@ -30,6 +31,7 @@ abstract class KwiftActivity : AccessibleActivity() {
 
     abstract val main: ViewGenerator
     lateinit var view: View
+    private var showDialogEventCloser:Close? = null
 
     open fun handleDeepLink(schema: String, host: String, path: String, params: Map<String, String>) {
         println("Got deep link: $schema://$host/$path?${params.entries.joinToString("&") { it.key + "=" + it.value }}")
@@ -45,7 +47,7 @@ abstract class KwiftActivity : AccessibleActivity() {
             }
         }
         view = main.generate(this)
-        showDialogEvent.addWeak(view) { view, request ->
+        showDialogEventCloser = showDialogEvent.addWeak(view) { view, request ->
             val builder = AlertDialog.Builder(this)
             builder.setMessage(request.string.get(this))
             request.confirmation?.let { conf ->
@@ -59,6 +61,11 @@ abstract class KwiftActivity : AccessibleActivity() {
                 .show()
         }
         setContentView(view)
+    }
+
+    override fun onDestroy() {
+        showDialogEventCloser?.close?.invoke()
+        super.onDestroy()
     }
 
     private fun handleDeepLink(uri: Uri) {
