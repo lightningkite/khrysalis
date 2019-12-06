@@ -1,7 +1,7 @@
 package com.lightningkite.kwift.layout
 
-import com.lightningkite.kwift.utils.XmlNode
 import com.lightningkite.kwift.log
+import com.lightningkite.kwift.utils.XmlNode
 import com.lightningkite.kwift.utils.camelCase
 import java.io.File
 
@@ -17,7 +17,8 @@ fun createAndroidLayoutClasses(
     outputFolder: File
 ) {
     val styles = File(resourcesFolder, "values/styles.xml").readXMLStyles()
-    val packageName = outputFolder.toString().substringAfter("src/main/").substringAfter('/').replace('/', '.')
+    val packageName =
+        outputFolder.absolutePath.replace('\\', '/').substringAfter("src/main/").substringAfter('/').replace('/', '.')
 
     outputFolder.deleteRecursively()
     File(resourcesFolder, "layout").walkTopDown()

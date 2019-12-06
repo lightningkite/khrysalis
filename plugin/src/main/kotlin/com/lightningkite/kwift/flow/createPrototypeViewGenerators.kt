@@ -22,7 +22,8 @@ internal fun createPrototypeViewGenerators(
     outputFolder.mkdirs()
 
     val styles = File(resourcesFolder, "values/styles.xml").readXMLStyles()
-    val packageName = outputFolder.toString().substringAfter("src/main/").substringAfter('/').replace('/', '.')
+    val packageName =
+        outputFolder.absolutePath.replace('\\', '/').substringAfter("src/main/").substringAfter('/').replace('/', '.')
     val nodes = HashMap<String, ViewNode>()
     val files = File(resourcesFolder, "layout").walkTopDown()
         .filter { it.extension == "xml" }
