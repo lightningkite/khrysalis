@@ -1,7 +1,9 @@
 package com.lightningkite.kwift.drawables
 
-import com.lightningkite.kwift.utils.*
-import java.lang.Appendable
+import com.lightningkite.kwift.utils.XmlNode
+import com.lightningkite.kwift.utils.attributeAsColor
+import com.lightningkite.kwift.utils.attributeAsDimension
+import com.lightningkite.kwift.utils.attributeAsDouble
 
 fun <E> MutableList<E>.unshift(): E {
     return removeAt(0)
@@ -26,8 +28,8 @@ fun convertVectorDrawable(name: String, node: XmlNode, out: Appendable) {
         ?: 10.0) / (node.attributeAsDouble("android:viewportWidth")?.toDouble() ?: 10.0)
     val scaleY = (node.attributeAsDimension("android:height")?.toDouble()
         ?: 10.0) / (node.attributeAsDouble("android:viewportHeight")?.toDouble() ?: 10.0)
-    val width = node.attributeAsDimension("android:width") ?: 0
-    val height = node.attributeAsDimension("android:height") ?: 0
+    val width = node.attributeAsDouble("android:width") ?: 0.0
+    val height = node.attributeAsDouble("android:height") ?: 0.0
 
     with(out) {
         appendln("static func $name(_ view: UIView? = nil) -> CALayer {")
