@@ -1,6 +1,5 @@
 package com.lightningkite.kwift.actual
 
-import java.lang.IllegalStateException
 import java.text.DateFormat
 import java.text.DateFormatSymbols
 import java.text.SimpleDateFormat
@@ -86,7 +85,7 @@ fun Date.secondOfMinute(value: Int) =
 fun dateFrom(dateAlone: DateAlone, timeAlone: TimeAlone): Date {
     return Calendar.getInstance().also {
         it.set(Calendar.YEAR, dateAlone.year)
-        it.set(Calendar.MONTH, dateAlone.month)
+        it.set(Calendar.MONTH, dateAlone.month - 1)
         it.set(Calendar.DAY_OF_MONTH, dateAlone.day)
         it.set(Calendar.HOUR_OF_DAY, timeAlone.hour)
         it.set(Calendar.MINUTE, timeAlone.minute)

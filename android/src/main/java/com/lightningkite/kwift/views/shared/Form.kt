@@ -2,6 +2,7 @@ package com.lightningkite.kwift.views.shared
 
 import com.lightningkite.kwift.actual.Equatable
 import com.lightningkite.kwift.actual.escaping
+import com.lightningkite.kwift.observables.shared.MutableObservableProperty
 import com.lightningkite.kwift.observables.shared.StandardObservableProperty
 import com.lightningkite.kwift.views.actual.StringResource
 
@@ -20,7 +21,7 @@ interface UntypedFormField {
 
 class FormField<T>(
     override val name: ViewString,
-    val observable: StandardObservableProperty<T>,
+    val observable: MutableObservableProperty<T>,
     override val validation: @escaping() (UntypedFormField) -> ViewString?
 ) : UntypedFormField {
     override val error: StandardObservableProperty<ViewString?> = StandardObservableProperty(null)
@@ -60,6 +61,28 @@ class Form {
         defaultValue: T,
         validation: @escaping() (FormField<T>) -> ViewString?
     ): FormField<T> = field(ViewStringResource(name), defaultValue, validation)
+
+    fun <T> fieldFromProperty(
+        name: ViewString,
+        property: MutableObservableProperty<T>,
+        validation: @escaping() (FormField<T>) -> ViewString?
+    ): FormField<T> {
+        val field = FormField(
+            name = name,
+            observable = property,
+            validation = { untypedField ->
+                validation(untypedField as FormField<T>)
+            }
+        )
+        fields.add(field)
+        return field
+    }
+
+    fun <T> fieldFromProperty(
+        name: StringResource,
+        property: MutableObservableProperty<T>,
+        validation: @escaping() (FormField<T>) -> ViewString?
+    ): FormField<T> = fieldFromProperty(ViewStringResource(name), property, validation)
 
     fun check(): List<FormValidationError> {
         return fields.mapNotNull { it ->
