@@ -35,7 +35,9 @@ public final class DateAlone: Equatable, Hashable, Codable {
         formatter.dateFormat = "yyyy-MM-dd"
         return formatter.string(from: dateFrom(self, Date().timeAlone))
     }
-    
+
+    var func dayOfWeek: Int32 { return dateFrom(self, TimeAlone(12,0,0)).dayOfWeek }
+
     public func hash(into hasher: inout Hasher) {
         hasher.combine(year)
         hasher.combine(month)

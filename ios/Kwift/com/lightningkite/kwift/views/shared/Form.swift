@@ -38,7 +38,7 @@ public protocol UntypedFormField {
 public class FormField<T>: UntypedFormField {
     
     public var name: ViewString
-    public var observable: StandardObservableProperty<T>
+    public var observable: MutableObservableProperty<T>
     public var validation:  (UntypedFormField) -> ViewString?
 
     
@@ -54,7 +54,7 @@ public class FormField<T>: UntypedFormField {
         }
     }
     
-    public init(name: ViewString, observable: StandardObservableProperty<T>, validation: @escaping (UntypedFormField) -> ViewString?
+    public init(name: ViewString, observable: MutableObservableProperty<T>, validation: @escaping (UntypedFormField) -> ViewString?
 ) {
         self.name = name
         self.observable = observable
@@ -62,7 +62,7 @@ public class FormField<T>: UntypedFormField {
         let error: StandardObservableProperty<ViewString?> = StandardObservableProperty(nil)
         self.error = error
     }
-    convenience public init(_ name: ViewString, _ observable: StandardObservableProperty<T>, _ validation: @escaping (UntypedFormField) -> ViewString?
+    convenience public init(_ name: ViewString, _ observable: MutableObservableProperty<T>, _ validation: @escaping (UntypedFormField) -> ViewString?
 ) {
         self.init(name: name, observable: observable, validation: validation)
     }
@@ -102,6 +102,28 @@ public class Form {
     public func field<T>(_ name: StringResource, _ defaultValue: T, _ validation: @escaping (FormField<T>) -> ViewString?
 ) -> FormField<T> {
         return field(name: name, defaultValue: defaultValue, validation: validation)
+    }
+    
+    public func fieldFromProperty<T>(name: ViewString, property: MutableObservableProperty<T>, validation: @escaping (FormField<T>) -> ViewString?
+) -> FormField<T> {
+        var field = FormField(name: name, observable: property, validation: { (untypedField) in 
+            validation(untypedField as! FormField<T>)
+        })
+        fields.add(field)
+        return field
+    }
+    public func fieldFromProperty<T>(_ name: ViewString, _ property: MutableObservableProperty<T>, _ validation: @escaping (FormField<T>) -> ViewString?
+) -> FormField<T> {
+        return fieldFromProperty(name: name, property: property, validation: validation)
+    }
+    
+    public func fieldFromProperty<T>(name: StringResource, property: MutableObservableProperty<T>, validation: @escaping (FormField<T>) -> ViewString?
+) -> FormField<T> {
+        return fieldFromProperty(ViewStringResource(name), property, validation)
+    }
+    public func fieldFromProperty<T>(_ name: StringResource, _ property: MutableObservableProperty<T>, _ validation: @escaping (FormField<T>) -> ViewString?
+) -> FormField<T> {
+        return fieldFromProperty(name: name, property: property, validation: validation)
     }
     
     public func check() -> Array<FormValidationError> {
