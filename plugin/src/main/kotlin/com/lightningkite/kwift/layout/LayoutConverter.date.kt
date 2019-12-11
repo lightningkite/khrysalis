@@ -14,6 +14,9 @@ val LayoutConverter.Companion.dateViews
             },
             ViewType("com.lightningkite.kwift.views.android.CalendarView", "CalendarView", "View") { node ->
 
+                node.attributeAsColor("app:titleColor")?.let {
+                    appendln("view.headerColorSet.foreground = $it")
+                }
                 node.attributeAsColor("app:selectedForegroundColor")?.let {
                     appendln("view.selectedColorSet.foreground = $it")
                 }
@@ -43,6 +46,16 @@ val LayoutConverter.Companion.dateViews
                     appendln("view.dayFont = $it")
                 }
 
+                node.attributeAsDimension("app:titleSize")?.let {
+                    appendln("view.headerFont = UIFont.get(size: $it, style: [])")
+                }
+                node.attributeAsDimension("app:labelSize")?.let {
+                    appendln("view.labelFont = UIFont.get(size: $it, style: [])")
+                }
+                node.attributeAsDimension("app:daySize")?.let {
+                    appendln("view.dayFont = UIFont.get(size: $it, style: [])")
+                }
+
                 node.attributeAsDimension("app:internalPadding")?.let {
                     appendln("view.internalPadding = $it")
                 }
@@ -55,6 +68,11 @@ val LayoutConverter.Companion.dateViews
                 }
                 node.attributeAsString("app:rightText")?.let {
                     appendln("view.rightText = $it")
+                }
+
+
+                node.attributeAsColor("titleColor")?.let {
+                    appendln("view.headerColorSet.foreground = $it")
                 }
                 node.attributeAsColor("selectedForegroundColor")?.let {
                     appendln("view.selectedColorSet.foreground = $it")
@@ -85,6 +103,16 @@ val LayoutConverter.Companion.dateViews
                     appendln("view.dayFont = $it")
                 }
 
+                node.attributeAsDimension("titleSize")?.let {
+                    appendln("view.headerFont = UIFont.get(size: $it, style: [])")
+                }
+                node.attributeAsDimension("labelSize")?.let {
+                    appendln("view.labelFont = UIFont.get(size: $it, style: [])")
+                }
+                node.attributeAsDimension("daySize")?.let {
+                    appendln("view.dayFont = UIFont.get(size: $it, style: [])")
+                }
+
                 node.attributeAsDimension("internalPadding")?.let {
                     appendln("view.internalPadding = $it")
                 }
@@ -98,6 +126,8 @@ val LayoutConverter.Companion.dateViews
                 node.attributeAsString("rightText")?.let {
                     appendln("view.rightText = $it")
                 }
+
+
             },
             ViewType(
                 "com.lightningkite.kwift.views.android.SelectDateRangeView",

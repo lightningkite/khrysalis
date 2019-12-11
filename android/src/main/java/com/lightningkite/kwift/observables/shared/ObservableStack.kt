@@ -61,6 +61,18 @@ class ObservableStack<T : AnyObject> : ObservableProperty<List<T>>() {
         onChange.invokeAll(value = stack)
     }
 
+    fun popTo(predicate: (T) -> Boolean) {
+        var found = false
+        for (i in 0..stack.lastIndex) {
+            if (found) {
+                stack.removeAt(stack.lastIndex)
+            } else if (predicate(stack[i])) {
+                found = true
+            }
+        }
+        onChange.invokeAll(value = stack)
+    }
+
     fun root() {
         popTo(t = stack.first())
     }

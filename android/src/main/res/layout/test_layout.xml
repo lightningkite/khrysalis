@@ -1,0 +1,44 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              android:orientation="vertical"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent">
+
+    <!--    <com.lightningkite.kwift.views.android.SelectDayView-->
+    <!--            android:id="@+id/select"-->
+    <!--            android:layout_width="match_parent"-->
+    <!--            android:layout_height="0dp"-->
+    <!--            android:layout_weight="1"-->
+    <!--            android:gravity="center"-->
+    <!--            android:textColor="@color/black"-->
+    <!--            android:textSize="20sp"-->
+    <!--    />-->
+
+    <com.lightningkite.kwift.views.android.SelectDateRangeView
+            android:id="@+id/range"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+    />
+
+    <com.lightningkite.kwift.views.android.SelectMultipleDatesView
+            android:id="@+id/multi"
+            android:layout_width="match_parent"
+            android:layout_height="0dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:textColor="#000"
+            android:textSize="18sp"
+            xmlns:app="http://schemas.android.com/apk/res-auto"
+            app:labelSize="12sp"
+            app:daySize="12sp"
+            app:titleSize="12sp"
+            app:titleColor="#00F"
+            app:labelBackgroundColor="#0F0"
+            app:labelForegroundColor="#000"
+            app:defaultForegroundColor="#000"
+            app:defaultBackgroundColor="#AAA"
+    />
+
+</LinearLayout>

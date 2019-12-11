@@ -28,6 +28,6 @@ class SelectDateRangeView : AbstractQuickCalendarView {
         return SelectDateRangeMonthView(context, childAttributeSet).apply {
             this.start = this@SelectDateRangeView.start
             this.endInclusive = this@SelectDateRangeView.endInclusive
-        }
+        }.also { style(it) }
     }
 }

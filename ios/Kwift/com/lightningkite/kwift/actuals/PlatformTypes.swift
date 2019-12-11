@@ -9,5 +9,6 @@
 import Foundation
 import UIKit
 
-public typealias ImageData = UIImage
-public typealias ImageReference = URL
+public typealias Bitmap = UIImage
+public typealias Uri = URL
+public typealias ByteArray = NSData

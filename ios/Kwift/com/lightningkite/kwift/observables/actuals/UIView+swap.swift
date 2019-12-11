@@ -46,6 +46,7 @@ public extension UIView {
                     animations: {
                         view.alpha = goal.alpha
                         view.frame = toFrame
+                        KwiftViewController.refreshBackgroundColorEvent.invokeAll(())
                     },
                     completion: { done in
                         view.setNeedsLayout()

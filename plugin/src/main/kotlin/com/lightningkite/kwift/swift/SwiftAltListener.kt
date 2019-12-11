@@ -136,6 +136,15 @@ class SwiftAltListener {
             direct.append("Optional<$type>.none")
         }
 
+        functionReplacements["Pair"] = {
+            val valArgs = it.postfixUnarySuffix(0).callSuffix().valueArguments().valueArgument()
+            direct.append('(')
+            write(valArgs[0])
+            direct.append(", ")
+            write(valArgs[1])
+            direct.append(')')
+        }
+
         functionReplacements["listOf"] = {
             val callSuffix = it.postfixUnarySuffix()[0]!!.callSuffix()!!
             callSuffix.valueArguments()?.valueArgument()?.takeUnless { it.isEmpty() }?.let { valueArgs ->

@@ -62,8 +62,18 @@ public extension Sequence {
         }
         return true
     }
-    func groupBy<T>(predicate: (Element)->T) -> Dictionary<T, Array<Element>>{
-        return Dictionary(grouping: self, by: predicate)
+    func groupBy<T, V>(keySelector: (Element)->T, valueTransform: (Array<Element>) -> V) -> Dictionary<T, V>{
+        return Dictionary(grouping: self, by: keySelector).mapValues(valueTransform)
+    }
+    func groupBy<T>(_ keySelector: (Element)->T) -> Dictionary<T, Array<Element>>{
+        return Dictionary(grouping: self, by: keySelector)
+    }
+    func groupBy<T, V>(_ keySelector: (Element)->T, _ valueTransform: (Array<Element>) -> V) -> Dictionary<T, V>{
+        return Dictionary(grouping: self, by: keySelector).mapValues(valueTransform)
+    }
+    
+    func associate<K: Hashable, V>(_ transform: (Element)->(K, V)) -> Dictionary<K, V> {
+        Dictionary(self.map(transform), uniquingKeysWith: { (a, b) in b })
     }
 }
 
@@ -255,6 +265,17 @@ public extension Dictionary {
         return self.filter { (key, value) -> Bool in
             predicate(Entry(key: key, value: value))
         }
+    }
+    func mapKeys<K: Hashable>(_ keySelector: (Key)->K) -> Dictionary<K, Value>{
+        return self.associate { (entry) in
+            (keySelector(entry.key), entry.value)
+        }
+    }
+    func mapValuesToValues<V>(_ mapper: (Value)->V) -> Dictionary<Key, V> {
+        return self.mapValues(mapper)
+    }
+    var entries: Self {
+        return self
     }
 }
 
@@ -534,9 +555,9 @@ public class System {
 }
 
 public enum KotlinStyleError : Error {
-    case Exception(message: String)
-    case IllegalStateException(message: String)
-    case IllegalArgumentException(message: String)
+    case Exception(message: String = "")
+    case IllegalStateException(message: String = "")
+    case IllegalArgumentException(message: String = "")
 }
 
 public func Exception(_ message: String) -> KotlinStyleError {
@@ -555,6 +576,9 @@ public extension CaseIterable {
     /// A collection of all values of this type.
     static func values() -> Array<Self> {
         return self.allCases.toList()
+    }
+    static func valueOf(_ string: String) -> Self {
+        return values().find { "\($0)" == string }!
     }
 }
 

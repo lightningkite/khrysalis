@@ -48,3 +48,7 @@ class WeakPropertyDelegate<T>(initial: T) {
 fun <T> weak(value: T) = WeakPropertyDelegate(value)
 
 fun <T: Any> nullOf(): T? = null
+
+fun <K, V, V2> Map<K, V>.mapValuesToValues(mapper: (V)->V2): Map<K, V2> {
+    return this.mapValues { mapper(it.value) }
+}

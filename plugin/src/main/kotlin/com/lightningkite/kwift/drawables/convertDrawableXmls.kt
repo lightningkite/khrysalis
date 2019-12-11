@@ -10,8 +10,12 @@ fun convertDrawableXmls(
     resourcesFolder: File,
     swiftFolder: File
 ) {
-    resourcesFolder.resolve("drawable").walkTopDown()
-        .filter { it.extension == "xml" }
+    resourcesFolder.listFiles()!!
+        .asSequence()
+        .filter { it.name.startsWith("drawable") && it.isDirectory }
+        .sortedByDescending { it.name.substringAfter('-').filter { it.isDigit() }.takeUnless { it.isEmpty() }?.toInt() ?: 0 }
+        .flatMap { it.walkTopDown().filter { it.extension == "xml" } }
+        .distinctBy { it.name }
         .map { it to XmlNode.read(it, mapOf()) }
         .forEach { (file, it) ->
             val name = file.nameWithoutExtension.camelCase()

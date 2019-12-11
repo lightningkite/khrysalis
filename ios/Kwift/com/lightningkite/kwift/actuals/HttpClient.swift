@@ -130,93 +130,76 @@ public enum HttpClient {
         method: String,
         headers: [String: String],
         fieldName: String,
-        image: ImageData,
+        image: Image,
         maxSize: Int64 = 10_000_000,
         onResult: @escaping (Int32, T?, String?) -> Void
     ) {
-        var quality: CGFloat = 1.0
-        var imgData = image.jpegData(compressionQuality: quality)!
-        while imgData.count > maxSize {
-            quality -= 0.1
-            imgData = image.jpegData(compressionQuality: quality)!
-        }
-        
-        var httpMethod: HTTPMethod = .post
-        if(method.caseInsensitiveCompare("post") == .orderedSame){
-            httpMethod = .post
-        }
-        if(method.caseInsensitiveCompare("put") == .orderedSame){
-            httpMethod = .put
-        }
-        if(method.caseInsensitiveCompare("patch") == .orderedSame){
-            httpMethod = .patch
-        }
-        
-        Alamofire.upload(multipartFormData: { multipartFormData in
-            multipartFormData.append(imgData, withName: fieldName, fileName: "file.jpg", mimeType: "image/jpg")
-        }, to:url, method: httpMethod, headers: headers)
-        { (result) in
-            switch result {
-            case .success(let upload, _, _):
+        loadImage(image) { image in
+            if let image = image {
+                var quality: CGFloat = 1.0
+                var imgData = image.jpegData(compressionQuality: quality)!
+                while imgData.count > maxSize {
+                    quality -= 0.1
+                    imgData = image.jpegData(compressionQuality: quality)!
+                }
                 
-                upload.uploadProgress(closure: { (progress) in
-                    print("Upload Progress: \(progress.fractionCompleted)")
-                })
+                var httpMethod: HTTPMethod = .post
+                if(method.caseInsensitiveCompare("post") == .orderedSame){
+                    httpMethod = .post
+                }
+                if(method.caseInsensitiveCompare("put") == .orderedSame){
+                    httpMethod = .put
+                }
+                if(method.caseInsensitiveCompare("patch") == .orderedSame){
+                    httpMethod = .patch
+                }
                 
-                upload.responseJSON { response in
-                    DispatchQueue.main.async {
-                        if let casted = response.response, let data = response.data {
-                            let dataString = String(data: data, encoding: .utf8) ?? ""
-                            print("HttpClient: Response \(casted.statusCode): \(dataString)")
-                            if casted.statusCode / 100 == 2 {
-                                if T.self == String.self {
-                                    onResult(Int32(casted.statusCode), dataString as? T, nil)
-                                } else {
-                                    do {
-                                        let parsed = try T.fromJsonString(dataString)
-                                        onResult(Int32(casted.statusCode), parsed, nil)
-                                    } catch {
-                                        print("HttpClient: Failed to parse due to: \(error.localizedDescription)")
-                                        onResult(Int32(casted.statusCode), nil, error.localizedDescription)
+                Alamofire.upload(multipartFormData: { multipartFormData in
+                    multipartFormData.append(imgData, withName: fieldName, fileName: "file.jpg", mimeType: "image/jpg")
+                }, to:url, method: httpMethod, headers: headers)
+                { (result) in
+                    switch result {
+                    case .success(let upload, _, _):
+                        
+                        upload.uploadProgress(closure: { (progress) in
+                            print("Upload Progress: \(progress.fractionCompleted)")
+                        })
+                        
+                        upload.responseJSON { response in
+                            DispatchQueue.main.async {
+                                if let casted = response.response, let data = response.data {
+                                    let dataString = String(data: data, encoding: .utf8) ?? ""
+                                    print("HttpClient: Response \(casted.statusCode): \(dataString)")
+                                    if casted.statusCode / 100 == 2 {
+                                        if T.self == String.self {
+                                            onResult(Int32(casted.statusCode), dataString as? T, nil)
+                                        } else {
+                                            do {
+                                                let parsed = try T.fromJsonString(dataString)
+                                                onResult(Int32(casted.statusCode), parsed, nil)
+                                            } catch {
+                                                print("HttpClient: Failed to parse due to: \(error.localizedDescription)")
+                                                onResult(Int32(casted.statusCode), nil, error.localizedDescription)
+                                            }
+                                        }
+                                    } else {
+                                        onResult(Int32(casted.statusCode), nil, dataString)
                                     }
+                                } else {
+                                    onResult(0, nil, "Failed")
                                 }
-                            } else {
-                                onResult(Int32(casted.statusCode), nil, dataString)
                             }
-                        } else {
-                            onResult(0, nil, "Failed")
+                        }
+                        
+                    case .failure(let encodingError):
+                        DispatchQueue.main.async {
+                            print(encodingError)
+                            onResult(400, nil, encodingError.localizedDescription)
                         }
                     }
                 }
-                
-            case .failure(let encodingError):
-                DispatchQueue.main.async {
-                    print(encodingError)
-                    onResult(400, nil, encodingError.localizedDescription)
-                }
             }
         }
-    }
-    
-    public static func uploadImageReferenceWithoutResult(
-        url: String,
-        method: String,
-        headers: [String: String],
-        fieldName: String,
-        imageReference: ImageReference,
-        maxSize: Int64 = 10_000_000,
-        additionalFields: [String: String] = [:],
-        onResult: @escaping (Int32, String?) -> Void
-    ) {
-        URLSession.shared.dataTask(with: imageReference, completionHandler: { data, response, error in
-            DispatchQueue.main.async {
-                if let data = data {
-                    uploadImageWithoutResult(url: url, method: method, headers: headers, fieldName: fieldName, image: UIImage(data: data)!, additionalFields: additionalFields, onResult: onResult)
-                } else {
-                    onResult(0, "Failed to load image")
-                }
-            }
-        }).resume()
     }
     
     public static func uploadImageWithoutResult(
@@ -224,63 +207,67 @@ public enum HttpClient {
         method: String,
         headers: [String: String],
         fieldName: String,
-        image: ImageData,
+        image: Image,
         maxSize: Int64 = 10_000_000,
         additionalFields: [String: String] = [:],
         onResult: @escaping (Int32, String?) -> Void
     ) {
-        var quality: CGFloat = 1.0
-        var imgData = image.jpegData(compressionQuality: quality)!
-        while imgData.count > maxSize {
-            quality -= 0.1
-            imgData = image.jpegData(compressionQuality: quality)!
-        }
-        
-        var httpMethod: HTTPMethod = .post
-        if(method.caseInsensitiveCompare("post") == .orderedSame){
-            httpMethod = .post
-        }
-        if(method.caseInsensitiveCompare("put") == .orderedSame){
-            httpMethod = .put
-        }
-        if(method.caseInsensitiveCompare("patch") == .orderedSame){
-            httpMethod = .patch
-        }
-        
-        Alamofire.upload(multipartFormData: { multipartFormData in
-            for (key, value) in additionalFields {
-                multipartFormData.append(value.data(using: .utf8)!, withName: key)
-            }
-            multipartFormData.append(imgData, withName: fieldName, fileName: "file.jpg", mimeType: "image/jpg")
-        }, to:url, method: httpMethod, headers: headers)
-        { (result) in
-            switch result {
-            case .success(let upload, _, _):
-                
-                upload.uploadProgress(closure: { (progress) in
-                    print("Upload Progress: \(progress.fractionCompleted)")
-                })
-                
-                upload.responseJSON { response in
-                    DispatchQueue.main.async {
-                        if let casted = response.response, let data = response.data {
-                            let dataString = String(data: data, encoding: .utf8) ?? ""
-                            print("HttpClient: Response \(casted.statusCode): \(dataString)")
-                            if casted.statusCode / 100 == 2 {
-                                onResult(Int32(casted.statusCode), nil)
-                            } else {
-                                onResult(Int32(casted.statusCode), dataString)
-                            }
-                        } else {
-                            onResult(0, "Failed")
-                        }
-                    }
+        loadImage(image) { image in
+            if let image = image {
+                var quality: CGFloat = 1.0
+                var imgData = image.jpegData(compressionQuality: quality)!
+                while imgData.count > maxSize {
+                    quality -= 0.1
+                    imgData = image.jpegData(compressionQuality: quality)!
                 }
                 
-            case .failure(let encodingError):
-                DispatchQueue.main.async {
-                    print(encodingError)
-                    onResult(400, encodingError.localizedDescription)
+                var httpMethod: HTTPMethod = .post
+                if(method.caseInsensitiveCompare("post") == .orderedSame){
+                    httpMethod = .post
+                }
+                if(method.caseInsensitiveCompare("put") == .orderedSame){
+                    httpMethod = .put
+                }
+                if(method.caseInsensitiveCompare("patch") == .orderedSame){
+                    httpMethod = .patch
+                }
+                
+                Alamofire.upload(multipartFormData: { multipartFormData in
+                    for (key, value) in additionalFields {
+                        multipartFormData.append(value.data(using: .utf8)!, withName: key)
+                    }
+                    multipartFormData.append(imgData, withName: fieldName, fileName: "file.jpg", mimeType: "image/jpg")
+                }, to:url, method: httpMethod, headers: headers)
+                { (result) in
+                    switch result {
+                    case .success(let upload, _, _):
+                        
+                        upload.uploadProgress(closure: { (progress) in
+                            print("Upload Progress: \(progress.fractionCompleted)")
+                        })
+                        
+                        upload.responseJSON { response in
+                            DispatchQueue.main.async {
+                                if let casted = response.response, let data = response.data {
+                                    let dataString = String(data: data, encoding: .utf8) ?? ""
+                                    print("HttpClient: Response \(casted.statusCode): \(dataString)")
+                                    if casted.statusCode / 100 == 2 {
+                                        onResult(Int32(casted.statusCode), nil)
+                                    } else {
+                                        onResult(Int32(casted.statusCode), dataString)
+                                    }
+                                } else {
+                                    onResult(0, "Failed")
+                                }
+                            }
+                        }
+                        
+                    case .failure(let encodingError):
+                        DispatchQueue.main.async {
+                            print(encodingError)
+                            onResult(400, encodingError.localizedDescription)
+                        }
+                    }
                 }
             }
         }

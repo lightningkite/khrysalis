@@ -23,6 +23,6 @@ class SelectDayView : AbstractQuickCalendarView {
     override fun makeChildView(): QuickMonthView {
         return SelectDayMonthView(context, childAttributeSet).apply {
             this.selected = this@SelectDayView.selected
-        }
+        }.also { style(it) }
     }
 }

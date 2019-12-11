@@ -124,3 +124,50 @@ public class CAImageLayer: CALayer {
         self.bounds.size = image?.size ?? .zero
     }
 }
+
+public extension CALayer {
+    @objc func guessBackingColor() -> CGColor? {
+        let color = colorOfPoint(point: CGPoint(x: bounds.midX, y: bounds.minY))
+        if color.alpha >= 0.1 {
+            return color
+        }
+        return nil
+    }
+    private func colorOfPoint(point:CGPoint) -> CGColor {
+
+        var pixel: [CUnsignedChar] = [0, 0, 0, 0]
+
+        let colorSpace = CGColorSpaceCreateDeviceRGB()
+        let bitmapInfo = CGBitmapInfo(rawValue: CGImageAlphaInfo.premultipliedLast.rawValue)
+
+        let context = CGContext(data: &pixel, width: 1, height: 1, bitsPerComponent: 8, bytesPerRow: 4, space: colorSpace, bitmapInfo: bitmapInfo.rawValue)
+
+        context!.translateBy(x: -point.x, y: -point.y)
+
+        self.render(in: context!)
+
+        let red: CGFloat   = CGFloat(pixel[0]) / 255.0
+        let green: CGFloat = CGFloat(pixel[1]) / 255.0
+        let blue: CGFloat  = CGFloat(pixel[2]) / 255.0
+        let alpha: CGFloat = CGFloat(pixel[3]) / 255.0
+
+        let color = UIColor(red:red, green: green, blue:blue, alpha:alpha)
+
+        return color.cgColor
+    }
+}
+
+public extension CAGradientLayer {
+    func setGradientAngle(degrees: CGFloat){
+        let radius: CGFloat = 0.5
+        let radians = degrees * CGFloat.pi / 180
+        self.startPoint = CGPoint(
+            x: 0.5 - cos(radians) * radius,
+            y: 0.5 + sin(radians) * radius
+        )
+        self.endPoint = CGPoint(
+            x: 0.5 + cos(radians) * radius,
+            y: 0.5 - sin(radians) * radius
+        )
+    }
+}

@@ -121,18 +121,20 @@ open class QuickMonthView : View {
         measure(context)
         month = Calendar.getInstance()
         val a = context.theme.obtainStyledAttributes(attrs, R.styleable.QuickMonthView, defStyleAttr, 0)
-        defaultColorSet = ColorSet(
-            foreground = a.getColor(R.styleable.QuickMonthView_selectedForegroundColor, Color.BLACK),
-            background = a.getColor(R.styleable.QuickMonthView_selectedBackgroundColor, Color.WHITE)
-        )
-        selectedColorSet = ColorSet(
-            foreground = a.getColor(R.styleable.QuickMonthView_defaultForegroundColor, Color.WHITE),
+        defaultColorSet = QuickMonthView.ColorSet(
+            foreground = a.getColor(R.styleable.QuickMonthView_defaultForegroundColor, Color.BLACK),
             background = a.getColor(
                 R.styleable.QuickMonthView_defaultBackgroundColor,
-                Color.BLUE
+                Color.WHITE
             )
         )
-        labelColorSet = ColorSet(
+        selectedColorSet = QuickMonthView.ColorSet(
+            foreground = a.getColor(R.styleable.QuickMonthView_selectedForegroundColor, Color.WHITE),
+            background = a.getColor(R.styleable.QuickMonthView_selectedBackgroundColor, Color.BLUE)
+        )
+        labelFontSp = a.getDimension(R.styleable.QuickMonthView_labelSize, 14 * resources.displayMetrics.scaledDensity).div(resources.displayMetrics.scaledDensity)
+        dayFontSp = a.getDimension(R.styleable.QuickMonthView_daySize, 14 * resources.displayMetrics.scaledDensity).div(resources.displayMetrics.scaledDensity)
+        labelColorSet = QuickMonthView.ColorSet(
             foreground = a.getColor(R.styleable.QuickMonthView_labelForegroundColor, Color.BLACK),
             background = a.getColor(R.styleable.QuickMonthView_labelBackgroundColor, Color.WHITE)
         )

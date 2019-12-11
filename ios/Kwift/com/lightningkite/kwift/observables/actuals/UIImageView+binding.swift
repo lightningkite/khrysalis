@@ -42,71 +42,24 @@ public extension UIImageView {
         )
     }
 
-    func loadUrl(_ imageUrl: String?) {
-        return loadUrl(imageUrl: imageUrl)
-    }
-    func loadUrl(imageUrl: String?) {
-        if let imageUrl = imageUrl, let url = URL(string: imageUrl) {
-            af_setImageProgress(withURL: url, placeholderImage: nil, imageTransition: .noTransition, runImageTransitionIfCached: false, completion: nil)
+    func loadImage(_ image: Image?) {
+        switch(image){
+        case let image as ImageReference:
+            af_setImageProgress(withURL: URL(string: image.uri.absoluteString)!, placeholderImage: nil, imageTransition: .noTransition, runImageTransitionIfCached: false, completion: nil)
+        case let image as ImageBitmap:
+            self.image = image.bitmap
+        case let image as ImageRaw:
+            break
+        case let image as ImageRemoteUrl:
+            af_setImageProgress(withURL: URL(string: image.url)!, placeholderImage: nil, imageTransition: .noTransition, runImageTransitionIfCached: false, completion: nil)
+        default:
+            break
         }
     }
 
-    func loadUrl(_ imageUrl: ObservableProperty<String?>) {
-        loadUrl(imageUrl: imageUrl)
-    }
-    func loadUrl(imageUrl: ObservableProperty<String?>) {
-        imageUrl.addAndRunWeak(self) { (self, it) in
-            self.loadUrl(it)
-        }
-    }
-
-    func loadImageData(_ imageData: ObservableProperty<ImageData?>){
-        imageData.addAndRunWeak(self) {(self, it) in
-            self.image = it
-        }
-    }
-
-    func loadImageData(_ image: ImageData){
-        self.image = image
-    }
-
-    func loadImageData(image: ImageData){
-        self.image = image
-    }
-
-    func loadImageData(imageData: ObservableProperty<ImageData?>){
-        imageData.addAndRunWeak(self) {(self, it) in
-            self.image = it
-        }
-    }
-    
-    func loadImageReference(_ imageReference: ImageReference?){
-        loadImageReference(imageReference: imageReference)
-    }
-    
-    func loadImageReference(imageReference: ImageReference?){
-        if let image = imageReference{
-            URLSession.shared.dataTask(with: image, completionHandler: { data, response, error in
-                DispatchQueue.main.async {
-                    if let data = data {
-                        let newImage = UIImage(data: data)
-                        self.image = newImage
-                    }
-                }
-            }).resume()
-        }
-    }
-
-    func loadUrlNotNull(_ imageUrl: ObservableProperty<String>) {
-        loadUrlNotNull(imageUrl: imageUrl)
-    }
-    func loadUrlNotNull(imageUrl: ObservableProperty<String>) {
-        imageUrl.addAndRunWeak(self) { (self, it) in
-            if it.isBlank() {
-                self.loadUrl(nil)
-            } else {
-                self.loadUrl(it)
-            }
+    func bindImage(_ image: ObservableProperty<Image?>){
+        image.addAndRunWeak(self) {(self, it) in
+            self.loadImage(it)
         }
     }
 }

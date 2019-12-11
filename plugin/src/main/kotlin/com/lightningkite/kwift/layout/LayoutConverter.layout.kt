@@ -7,23 +7,25 @@ val LayoutConverter.Companion.layoutViews
         viewTypes = ViewType.mapOf(
             ViewType("com.lightningkite.kwift.views.android.SwapView", "UIView", "View") { node -> },
             ViewType("androidx.core.widget.NestedScrollView", "UIScrollView", "ScrollView") { node -> },
-            ViewType("ScrollView", "UIScrollView", "View") { node ->
+            ViewType("ScrollView", "ScrollViewVertical", "View") { node ->
+                node.attributeAsBoolean("android:fillViewport")?.let {
+                    appendln("view.fillViewport = $it")
+                }
                 val child = node.children.first()
-                append("view.addVerticalSubview(")
+                append("view.addSubview(")
                 construct(child)
-                append(", fill: ")
-                append((node.attributeAsBoolean("android:fillViewport") ?: false).toString())
                 appendln(") { view in ")
                 writeSetup(child)
                 appendln("}")
             },
 
-            ViewType("HorizontalScrollView", "UIScrollView", "View") { node ->
+            ViewType("HorizontalScrollView", "ScrollViewHorizontal", "View") { node ->
+                node.attributeAsBoolean("android:fillViewport")?.let {
+                    appendln("view.fillViewport = $it")
+                }
                 val child = node.children.first()
-                append("view.addHorizontalSubview(")
+                append("view.addSubview(")
                 construct(child)
-                append(", fill: ")
-                append((node.attributeAsBoolean("android:fillViewport") ?: false).toString())
                 appendln(") { view in ")
                 writeSetup(child)
                 appendln("}")

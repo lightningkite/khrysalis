@@ -50,7 +50,7 @@ fun convertShapeDrawable(name: String, node: XmlNode, out: Appendable) {
             )
             appendln("    layer.colors = " + colors.joinToString(", ", "[", "]") { "$it.cgColor" })
             val angle = it.attributeAsInt("android:angle") ?: 0
-            appendln("    layer.transform = CATransform3DMakeRotation(CGFloat.pi * $angle / 180, 0, 0, 1)")
+            appendln("    layer.setGradientAngle(degrees: $angle)")
         }
         appendln("    layer.bounds.size = CGSize(width: 100, height: 100)")
         appendln("    return layer")
