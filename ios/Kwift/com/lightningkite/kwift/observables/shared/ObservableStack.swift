@@ -80,6 +80,19 @@ public class ObservableStack<T: AnyObject>: ObservableProperty<Array<T>> {
         return popTo(t: t)
     }
     
+    public func popTo(predicate: (T) -> Bool) -> Void {
+        var found = false
+        
+        for i in 0 ... stack.lastIndex {
+            if found {
+                stack.removeAt(stack.lastIndex)
+            } else if predicate(stack[ i ]) {
+                found = true
+            }
+        }
+        onChange.invokeAll(value: stack)
+    }
+    
     public func root() -> Void {
         popTo(t: stack.first())
     }

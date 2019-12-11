@@ -42,5 +42,6 @@ public class ScrollViewVertical: UIScrollView {
             height: fillViewport ? max(measuredSize.height, self.bounds.size.height) : measuredSize.height
         )
         self.contentSize = CGSize(width: 0, height: measuredSize.height)
+        print(measuredSize)
     }
 }
