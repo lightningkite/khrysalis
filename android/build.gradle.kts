@@ -67,6 +67,7 @@ dependencies {
     androidTestImplementation("com.android.support.test.espresso:espresso-core:3.0.2")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version")
     implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version")
+    implementation("com.wdullaer:materialdatetimepicker:4.2.3")
     api("androidx.appcompat:appcompat:1.1.0")
     api("com.google.android.material:material:1.0.0")
     api("com.android.support.constraint:constraint-layout:1.1.3")

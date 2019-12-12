@@ -123,6 +123,7 @@ fun Date.format(dateStyle: ClockPartSize, timeStyle: ClockPartSize): String {
 }
 
 fun Date.iso8601(): String = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(this)
+val DateAlone.dayOfWeek: Int get() { return dateFrom(this, TimeAlone(12,0,0)).dayOfWeek }
 fun DateAlone.iso8601(): String = SimpleDateFormat("yyyy-MM-dd").format(dateFrom(this, Date().timeAlone))
 fun TimeAlone.iso8601(): String = SimpleDateFormat("HH:mm:ss").format(dateFrom(Date().dateAlone, this))
 
