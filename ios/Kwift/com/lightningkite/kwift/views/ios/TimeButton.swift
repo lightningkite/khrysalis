@@ -11,6 +11,9 @@ import UIKit
 
 
 public class TimeButton : DateButton {
+
+    var minuteInterval: Int = 1
+    var hourInterval: Int = 1
     
     override public func commonInit() {
         super.commonInit()

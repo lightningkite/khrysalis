@@ -1,10 +1,11 @@
 package com.lightningkite.kwift.views.android
 
-import android.app.TimePickerDialog
 import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatButton
+import androidx.fragment.app.FragmentActivity
 import com.lightningkite.kwift.observables.shared.StandardEvent
+import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import java.text.DateFormat
 import java.util.*
 
@@ -12,6 +13,8 @@ class TimeButton(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
     AppCompatButton(context, attrs, defStyleAttr) {
     constructor(context: Context) : this(context, null, 0)
     constructor(context: Context, attrs: AttributeSet?) : this(context, attrs, 0)
+
+    var minuteInterval: Int = 1
 
     var format = DateFormat.getTimeInstance(DateFormat.SHORT)
 
@@ -25,7 +28,7 @@ class TimeButton(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
 
     init {
         setOnClickListener {
-            context.timeSelectorDialog(date) {
+            context.timeSelectorDialog(date, minuteInterval) {
                 date = it
                 onDateEntered.invokeAll(it)
             }
@@ -33,18 +36,21 @@ class TimeButton(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
     }
 }
 
-fun Context.timeSelectorDialog(start: Date, onResult: (Date) -> Unit) {
+fun Context.timeSelectorDialog(start: Date, minuteInterval: Int = 1, onResult: (Date) -> Unit) {
     val cal = Calendar.getInstance()
     cal.time = start
-    IntervalTimePickerDialog(
-        this,
-        cal.get(Calendar.HOUR_OF_DAY),
-        cal.get(Calendar.MINUTE),
-        false,
-        TimePickerDialog.OnTimeSetListener { view, hour, minute ->
+    (this as FragmentActivity)
+    TimePickerDialog.newInstance(
+        { view, hour, minute, second ->
             cal.set(Calendar.HOUR_OF_DAY, hour)
             cal.set(Calendar.MINUTE, minute)
             onResult(cal.time)
-        }
-    ).show()
+        },
+        cal.get(Calendar.HOUR_OF_DAY),
+        cal.get(Calendar.MINUTE),
+        false
+    ).apply {
+        setTimeInterval(1, minuteInterval)
+        show(this@timeSelectorDialog.supportFragmentManager, "Select Time")
+    }
 }
