@@ -161,6 +161,13 @@ public extension Array {
         copy.removeAt(index)
         return copy
     }
+    func  sumByDouble(selector: (Element) -> Double)-> Double{
+        var sum:Double = 0.0
+        for item in self{
+            sum += selector(item)
+        }
+        return sum
+    }
 }
 
 public extension Array where Element: Equatable {
