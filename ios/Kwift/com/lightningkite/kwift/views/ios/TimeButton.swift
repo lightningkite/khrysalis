@@ -12,12 +12,21 @@ import UIKit
 
 public class TimeButton : DateButton {
 
-    var minuteInterval: Int = 1
-    var hourInterval: Int = 1
+    private var internalMinuteInterval: Int = 1
+    public var minuteInterval: Int{
+        get{
+            return internalMinuteInterval
+        }
+        set(value){
+            internalMinuteInterval = value
+            picker.minuteInterval = value
+        }
+    }
     
     override public func commonInit() {
         super.commonInit()
         mode = .time
+        picker.minuteInterval = minuteInterval
         let format = DateFormatter()
         format.dateStyle = .none;
         format.timeStyle = .short;
