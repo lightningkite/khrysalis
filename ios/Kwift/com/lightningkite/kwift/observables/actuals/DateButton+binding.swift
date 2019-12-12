@@ -45,11 +45,15 @@ public extension DateButton {
             }
         }
     }
+}
+
+public extension TimeButton {
     
-    func bindTimeAlone(_ observable: MutableObservableProperty<TimeAlone>) {
-        return bindTimeAlone(observable: observable)
+    func bindTimeAlone(_ observable: MutableObservableProperty<TimeAlone>, _ minuteInterval: Int = 1) {
+        return bindTimeAlone(observable: observable, minuteInterval: minuteInterval)
     }
-    func bindTimeAlone(observable: MutableObservableProperty<TimeAlone>) {
+    func bindTimeAlone(observable: MutableObservableProperty<TimeAlone>, minuteInterval: Int = 1) {
+        self.minuteInterval = minuteInterval
         observable.addAndRunWeak(referenceA: self) { (this, value) in
             if this.date.timeAlone != value {
                 this.date = dateFrom(Date().dateAlone, value)
@@ -63,5 +67,25 @@ public extension DateButton {
             }
         }
     }
+    
+    
+    func bind(_ observable: MutableObservableProperty<Date>, _ minuteInterval: Int = 1) {
+        return bind(observable: observable, minuteInterval: minuteInterval)
+    }
+    func bind(observable: MutableObservableProperty<Date>, minuteInterval: Int = 1) {
+        self.minuteInterval = minuteInterval
+        self.date = observable.value
+        observable.addAndRunWeak(referenceA: self) { (this, value) in
+            if this.date != value {
+                this.date = value
+            }
+        }
+        weak var observableWeak = observable
+        self.onDateEntered.addWeak(self) { (self, value) in
+            if observableWeak?.value != value {
+                observableWeak?.value = value
+            }
+        }
+    }
+    
 }
-
