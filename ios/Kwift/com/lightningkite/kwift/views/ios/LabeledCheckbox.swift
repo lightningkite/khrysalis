@@ -29,6 +29,25 @@ public class LabeledCheckbox : LinearLayout, CompoundButton {
             onCheckChanged(isOn)
         }
     }
+    
+    public var verticalAlign: Align {
+        get {
+            if let p = params(for: labelView) {
+                return p.gravity.vertical
+            }
+            return .center
+        }
+        set(value) {
+            if var p = params(for: labelView) {
+                p.gravity = AlignPair(p.gravity.horizontal, value)
+                params(for: labelView, setTo: p)
+            }
+            if var p = params(for: checkViewContainer) {
+                p.gravity = AlignPair(p.gravity.horizontal, value)
+                params(for: checkViewContainer, setTo: p)
+            }
+        }
+    }
 
     override public init(frame: CGRect) {
         super.init(frame: frame)

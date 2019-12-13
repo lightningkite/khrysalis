@@ -127,7 +127,7 @@ public class CAImageLayer: CALayer {
 
 public extension CALayer {
     @objc func guessBackingColor() -> CGColor? {
-        let color = colorOfPoint(point: CGPoint(x: bounds.midX, y: bounds.minY))
+        let color = colorOfPoint(point: CGPoint(x: bounds.minX, y: bounds.minY))
         if color.alpha >= 0.9 {
             return color
         }

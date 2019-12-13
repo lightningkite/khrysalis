@@ -119,7 +119,7 @@ abstract class AbstractQuickCalendarView @JvmOverloads constructor(
                 setTextColor(titleColor)
                 val cal = Calendar.getInstance()
                 currentPage.addAndRunWeak(this) { self, value ->
-                    self.text = SimpleDateFormat("MMM yyyy").format(monthFromPosition(value, cal).time)
+                    self.text = SimpleDateFormat("MMMM yyyy").format(monthFromPosition(value, cal).time)
                 }
             }.let { addView(it, LayoutParams(WRAP_CONTENT, WRAP_CONTENT)) }
 

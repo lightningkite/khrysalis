@@ -47,13 +47,37 @@ val LayoutConverter.Companion.buttonViews
                     }
                 }
             },
-            ViewType("CheckBox", "LabeledCheckbox", "View") {
-                handleCommonText(it, "view.labelView")
+            ViewType("CheckBox", "LabeledCheckbox", "View")  { node ->
+                node.attributes["android:gravity"]?.split('|')?.forEach {
+                    when(it){
+                        "top" -> appendln("view.verticalAlign = .start")
+                        "bottom" -> appendln("view.verticalAlign = .end")
+                        "center", "center_vertical" -> appendln("view.verticalAlign = .center")
+                    }
+                }
+                handleCommonText(node, "view.labelView")
             },
-            ViewType("RadioButton", "LabeledRadioButton", "View") {
-                handleCommonText(it, "view.labelView")
+            ViewType("RadioButton", "LabeledRadioButton", "View") { node ->
+                node.attributes["android:gravity"]?.split('|')?.forEach {
+                    when(it){
+                        "top" -> appendln("view.verticalAlign = .start")
+                        "bottom" -> appendln("view.verticalAlign = .end")
+                        "center", "center_vertical" -> appendln("view.verticalAlign = .center")
+                    }
+                }
+                handleCommonText(node, "view.labelView")
             },
-            ViewType("ToggleButton", "ToggleButton", "Button") { node ->
+            ViewType("Switch", "LabeledSwitch", "View") { node ->
+                node.attributes["android:gravity"]?.split('|')?.forEach {
+                    when(it){
+                        "top" -> appendln("view.verticalAlign = .start")
+                        "bottom" -> appendln("view.verticalAlign = .end")
+                        "center", "center_vertical" -> appendln("view.verticalAlign = .center")
+                    }
+                }
+                handleCommonText(node, "view.labelView", controlView = "view.control")
+            },
+            ViewType("ToggleButton", "ToggleButton", "Button", handlesPadding = true) { node ->
                 node.attributeAsString("android:textOff")?.let { text ->
                     if (node.attributeAsBoolean("android:textAllCaps") == true) {
                         appendln("view.textOff = $text.toUpperCase()")
@@ -71,12 +95,20 @@ val LayoutConverter.Companion.buttonViews
                     }
                 }
             },
-            ViewType("Switch", "LabeledSwitch", "View") {
-                handleCommonText(it, "view.labelView", controlView = "view.control")
+            ViewType("Spinner", "Dropdown", "View", handlesPadding = true) { node ->
+                val defaultPadding = node.attributeAsDimension("android:padding") ?: 0
+                append("view.contentEdgeInsets = UIEdgeInsets(top: ")
+                append((node.attributeAsDimension("android:paddingTop") ?: defaultPadding).toString())
+                append(", left:")
+                append((node.attributeAsDimension("android:paddingLeft") ?: defaultPadding).toString())
+                append(", bottom:")
+                append((node.attributeAsDimension("android:paddingBottom") ?: defaultPadding).toString())
+                append(", right:")
+                append((node.attributeAsDimension("android:paddingRight") ?: defaultPadding).toString())
+                appendln(")")
             },
-            ViewType("Spinner", "Dropdown", "View") {},
             ViewType("RadioGroup", "UIView", "LinearLayout") {},
-            ViewType("ImageButton", "UIButtonWithLayer", "Button") { node -> },
+            ViewType("ImageButton", "UIButtonWithLayer", "Button", handlesPadding = true) { node -> },
             ViewType("Button", "UIButtonWithLayer", "View", handlesPadding = true) { node ->
                 handleCommonText(node, "view.titleLabel?", controlView = "view")
 

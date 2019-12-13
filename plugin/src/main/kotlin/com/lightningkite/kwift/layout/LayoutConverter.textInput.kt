@@ -5,7 +5,7 @@ import com.lightningkite.kwift.utils.*
 val LayoutConverter.Companion.textInputViews
     get() = LayoutConverter(
         viewTypes = ViewType.mapOf(
-            ViewType("com.lightningkite.kwift.views.android.MultilineEditText", "UITextView", "EditText") { node ->
+            ViewType("com.lightningkite.kwift.views.android.MultilineEditText", "UITextView", "EditText", handlesPadding = true) { node ->
                 //Purposefully empty
                 appendln("view.addDismissButton()")
             },

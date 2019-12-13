@@ -13,6 +13,9 @@ import AlamofireImage
 
 
 public extension UIImageView {
+    static var loadingProgressTintColor: UIColor?
+    static var loadingTrackTintColor: UIColor?
+    
     func af_setImageProgress(
         withURL url: URL,
         placeholderImage: UIImage? = nil,
@@ -21,6 +24,8 @@ public extension UIImageView {
         completion: ((DataResponse<UIImage>) -> Void)? = nil
         ) {
         let activityIndicatorView = UIProgressView(progressViewStyle: UIProgressView.Style.default)
+        activityIndicatorView.progressTintColor = UIImageView.loadingProgressTintColor
+        activityIndicatorView.trackTintColor = UIImageView.loadingTrackTintColor
         activityIndicatorView.setProgress(0, animated: true)
         activityIndicatorView.center.x = self.frame.size.width / 2
         activityIndicatorView.center.y = self.frame.size.height / 2

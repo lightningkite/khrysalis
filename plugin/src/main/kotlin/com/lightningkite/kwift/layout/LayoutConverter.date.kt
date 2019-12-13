@@ -7,8 +7,8 @@ import com.lightningkite.kwift.utils.attributeAsString
 val LayoutConverter.Companion.dateViews
     get() = LayoutConverter(
         viewTypes = ViewType.mapOf(
-            ViewType("com.lightningkite.kwift.views.android.TimeButton", "TimeButton", "Button") {},
-            ViewType("com.lightningkite.kwift.views.android.DateButton", "DateButton", "Button") {},
+            ViewType("com.lightningkite.kwift.views.android.TimeButton", "TimeButton", "Button", handlesPadding = true) {},
+            ViewType("com.lightningkite.kwift.views.android.DateButton", "DateButton", "Button", handlesPadding = true) {},
             ViewType("com.lightningkite.kwift.views.android.WeekView", "UIWeekView", "View") { node ->
                 //TODO
             },
@@ -47,13 +47,13 @@ val LayoutConverter.Companion.dateViews
                 }
 
                 node.attributeAsDimension("app:titleSize")?.let {
-                    appendln("view.headerFont = UIFont.get(size: $it, style: [])")
+                    appendln("view.headerFont = $it")
                 }
                 node.attributeAsDimension("app:labelSize")?.let {
-                    appendln("view.labelFont = UIFont.get(size: $it, style: [])")
+                    appendln("view.labelFont = $it")
                 }
                 node.attributeAsDimension("app:daySize")?.let {
-                    appendln("view.dayFont = UIFont.get(size: $it, style: [])")
+                    appendln("view.dayFont = $it")
                 }
 
                 node.attributeAsDimension("app:internalPadding")?.let {
@@ -104,13 +104,13 @@ val LayoutConverter.Companion.dateViews
                 }
 
                 node.attributeAsDimension("titleSize")?.let {
-                    appendln("view.headerFont = UIFont.get(size: $it, style: [])")
+                    appendln("view.headerFont = $it")
                 }
                 node.attributeAsDimension("labelSize")?.let {
-                    appendln("view.labelFont = UIFont.get(size: $it, style: [])")
+                    appendln("view.labelFont = $it")
                 }
                 node.attributeAsDimension("daySize")?.let {
-                    appendln("view.dayFont = UIFont.get(size: $it, style: [])")
+                    appendln("view.dayFont = $it")
                 }
 
                 node.attributeAsDimension("internalPadding")?.let {

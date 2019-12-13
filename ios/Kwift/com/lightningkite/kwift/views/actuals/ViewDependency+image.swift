@@ -24,6 +24,42 @@ public extension ViewDependency {
     }
     
     func requestImageGallery(onResult: @escaping (Uri) -> Void) {
+        if PHPhotoLibrary.authorizationStatus() == .authorized {
+            self.requestImageGalleryRaw(onResult: onResult)
+        } else {
+            PHPhotoLibrary.requestAuthorization {_ in
+                self.requestImageGalleryRaw(onResult: onResult)
+            }
+        }
+    }
+    func requestImageCamera(onResult: @escaping (Uri) -> Void) {
+        if AVCaptureDevice.authorizationStatus(for: .video) == .authorized {
+            AVCaptureDevice.requestAccess(for: .video) { granted in
+                if granted {
+                    if PHPhotoLibrary.authorizationStatus() == .authorized {
+                        self.requestImageCameraRaw(onResult: onResult)
+                    } else {
+                        PHPhotoLibrary.requestAuthorization {_ in
+                            self.requestImageCameraRaw(onResult: onResult)
+                        }
+                    }
+                }
+            }
+        } else {
+            AVCaptureDevice.requestAccess(for: .video) { granted in
+                if granted {
+                    if PHPhotoLibrary.authorizationStatus() == .authorized {
+                        self.requestImageCameraRaw(onResult: onResult)
+                    } else {
+                        PHPhotoLibrary.requestAuthorization {_ in
+                            self.requestImageCameraRaw(onResult: onResult)
+                        }
+                    }
+                }
+            }
+        }
+    }
+    private func requestImageGalleryRaw(onResult: @escaping (Uri) -> Void) {
         if UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum){
             let imageDelegate = self.imageDelegate
             imageDelegate.onImagePicked = onResult
@@ -31,7 +67,7 @@ public extension ViewDependency {
             self.parentViewController.present(imageDelegate.imagePicker, animated: true, completion: nil)
         }
     }
-    func requestImageCamera(onResult: @escaping (Uri) -> Void) {
+    private func requestImageCameraRaw(onResult: @escaping (Uri) -> Void) {
         if UIImagePickerController.isSourceTypeAvailable(.camera){
             let imageDelegate = self.imageDelegate
             imageDelegate.onImagePicked = onResult
@@ -73,10 +109,12 @@ private class ImageDelegate : NSObject, UIImagePickerControllerDelegate, UINavig
     public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if #available(iOS 11.0, *) {
             if let image = info[.imageURL] as? URL {
-                picker.dismiss(animated: true, completion: {
-                    self.onImagePicked?(image)
-                    self.onImagePicked = nil
-                })
+                DispatchQueue.main.async {
+                    picker.dismiss(animated: true, completion: {
+                        self.onImagePicked?(image)
+                        self.onImagePicked = nil
+                    })
+                }
                 return
             }
         }
@@ -89,15 +127,22 @@ private class ImageDelegate : NSObject, UIImagePickerControllerDelegate, UINavig
         }, completionHandler: { (success, error) in
             if !success {
                 print(error)
+                DispatchQueue.main.async {
+                    picker.dismiss(animated: true, completion: {
+                        self.onImagePicked = nil
+                    })
+                }
             } else {
                 let assetResult = PHAsset.fetchAssets(withLocalIdentifiers: [localId], options: nil)
                 let asset = assetResult.firstObject!
                 PHImageManager.default().requestImageData(for: asset, options: nil) { (data, string, orientation, map) in
                     let fileUrl = map!["PHImageFileURLKey"] as! URL
-                    picker.dismiss(animated: true, completion: {
-                        self.onImagePicked?(fileUrl)
-                        self.onImagePicked = nil
-                    })
+                    DispatchQueue.main.async {
+                        picker.dismiss(animated: true, completion: {
+                            self.onImagePicked?(fileUrl)
+                            self.onImagePicked = nil
+                        })
+                    }
                 }
             }
         })
