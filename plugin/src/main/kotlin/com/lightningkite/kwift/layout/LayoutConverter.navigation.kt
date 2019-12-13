@@ -1,6 +1,7 @@
 package com.lightningkite.kwift.layout
 
 import com.lightningkite.kwift.utils.attributeAsColor
+import com.lightningkite.kwift.utils.attributeAsDimension
 
 val LayoutConverter.Companion.navigationViews
     get() = LayoutConverter(
@@ -53,6 +54,25 @@ val LayoutConverter.Companion.navigationViews
                 "FrameLayout"
             ) {},
             ViewType("androidx.recyclerview.widget.RecyclerView", "UITableView", "View") {},
+            ViewType("com.lightningkite.kwift.views.android.VerticalRecyclerView", "UITableView", "androidx.recyclerview.widget.RecyclerView") { node ->
+                val pos = (node.attributes.get("app:dividerPositions")?.split('|') ?: node.attributes.get("dividerPositions")?.split('|')) ?: listOf()
+                when{
+                    pos.contains("start") -> appendln("//Separator position 'start' not supported yet")
+                    pos.contains("between") -> appendln("view.separatorStyle = .singleLine")
+                    pos.contains("end") -> appendln("//Separator position 'end' not supported yet")
+                    else -> appendln("view.separatorStyle = .none")
+                }
+
+                (node.attributeAsColor("app:dividerColor") ?: node.attributeAsColor("dividerColor"))?.let {
+                    appendln("view.separatorColor = $it")
+                }
+                (node.attributeAsDimension("app:dividerSize") ?: node.attributeAsDimension("dividerSize"))?.let {
+                    appendln("//It is not possible to have a different divider size currently, though requested.")
+                }
+                (node.attributeAsDimension("app:dividerHorizontalPadding") ?: node.attributeAsDimension("dividerHorizontalPadding") ?: "0")?.let {
+                    appendln("view.separatorInset = UIEdgeInsets(top: 0, left: $it, bottom: 0, right: $it)")
+                }
+            },
             ViewType("com.rd.PageIndicatorView", "UIPageControl", "View") { node ->
                 node.attributeAsColor("app:piv_selectedColor")?.let {
                     appendln("view.currentPageIndicatorTintColor = $it")

@@ -58,8 +58,6 @@ public extension UITableView {
         delegate = boundDataSource
         retain(as: "boundDataSource", item: boundDataSource)
 
-        self.backgroundColor = UIColor.clear
-        self.separatorStyle = .none
         self.rowHeight = UITableView.automaticDimension
 
         var previouslyEmpty = data.value.isEmpty
@@ -89,8 +87,6 @@ public extension UITableView {
         delegate = boundDataSource
         retain(as: "boundDataSource", item: boundDataSource)
 
-        self.backgroundColor = UIColor.clear
-        self.separatorStyle = .none
         self.rowHeight = UITableView.automaticDimension
 
         var previouslyEmpty = data.value.isEmpty
