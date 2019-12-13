@@ -40,6 +40,7 @@ class ViewNode(
         const val attributePop = "tools:pop"
         const val attributeDismiss = "tools:dismiss"
         const val attributeReset = "tools:reset"
+        const val attributePopTo = "tools:popTo"
         const val attributeOnStack = "tools:onStack"
         const val attributeStackDefault = "tools:stackDefault"
         const val attributeStackId = "tools:stackId"
@@ -173,6 +174,22 @@ class ViewNode(
                 ViewStackOp.Reset(
                     stack = onStack,
                     viewName = it.removePrefix("@layout/").camelCase().capitalize()
+                )
+            )
+            requires.add(
+                ViewVar(
+                    name = onStack,
+                    type = "ObservableStack[ViewGenerator]",
+                    default = null
+                )
+            )
+        }
+        node.attributes[attributePopTo]?.let {
+            val onStack = node.attributes[attributeOnStack] ?: "stack"
+            operations.add(
+                ViewStackOp.PopTo(
+                    stack = onStack,
+                    viewType = it.removePrefix("@layout/").camelCase().capitalize()
                 )
             )
             requires.add(

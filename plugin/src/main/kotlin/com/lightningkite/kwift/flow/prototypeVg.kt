@@ -129,6 +129,12 @@ private fun generateFile(
                 makeAction {
                     line("this.$stackName.swap(${makeView(otherViewNode, stackName, view)})")
                 }
+            } ?: node.attributes[ViewNode.attributePopTo]?.let {
+                val otherViewNode = it.removePrefix("@layout/").camelCase().capitalize()
+                val stackName = node.attributes[ViewNode.attributeOnStack] ?: "stack"
+                makeAction {
+                    line("this.$stackName.popTo { it -> it is ${otherViewNode}VG }")
+                }
             } ?: node.attributes[ViewNode.attributeReset]?.let {
                 val otherViewNode =
                     viewNodeMap[it.removePrefix("@layout/").camelCase().capitalize()] ?: return@let

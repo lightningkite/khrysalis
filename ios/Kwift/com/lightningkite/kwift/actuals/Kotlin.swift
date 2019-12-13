@@ -83,6 +83,14 @@ public extension Sequence {
         }
         return value
     }
+    
+    func sumByLong(_ get: (Element)->Int64) -> Int64 {
+        var value: Int64 = 0
+        for item in self {
+            value += get(item)
+        }
+        return value
+    }
 }
 
 public extension Array {

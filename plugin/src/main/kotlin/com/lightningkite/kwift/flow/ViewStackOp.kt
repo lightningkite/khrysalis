@@ -27,6 +27,11 @@ sealed class ViewStackOp {
     data class Push(override val stack: String?, override val viewName: String) : ViewStackOp(){
         override val priority: Int = 1
     }
+    data class PopTo(override val stack: String?, val viewType: String) : ViewStackOp(){
+        override val priority: Int = 1
+        override val viewName: String?
+            get() = null
+    }
     data class Reset(override val stack: String?, override val viewName: String) : ViewStackOp(){
         override val priority: Int = 1
     }

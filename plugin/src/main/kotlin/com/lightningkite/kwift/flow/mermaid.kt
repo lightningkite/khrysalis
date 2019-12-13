@@ -216,6 +216,7 @@ private fun ViewStackOp.linkShape(): MermaidBuilder.LinkShape {
         is ViewStackOp.Swap -> MermaidBuilder.LinkShape.DottedArrow
         is ViewStackOp.Reset -> MermaidBuilder.LinkShape.DottedLine
         is ViewStackOp.Embed -> MermaidBuilder.LinkShape.ThickArrow
+        is ViewStackOp.PopTo -> MermaidBuilder.LinkShape.DottedArrow
     }
 }
 
