@@ -18,7 +18,8 @@ fun DateButton.bind(date: MutableObservableProperty<Date>) {
     }
 }
 
-fun TimeButton.bind(date: MutableObservableProperty<Date>) {
+fun TimeButton.bind(date: MutableObservableProperty<Date>, minuteInterval: Int = 1) {
+    this.minuteInterval = minuteInterval
     date.addAndRunWeak(this) { self, it ->
         self.date = it
     }
@@ -36,7 +37,8 @@ fun DateButton.bindDateAlone(date: MutableObservableProperty<DateAlone>) {
     }
 }
 
-fun TimeButton.bindTimeAlone(date: MutableObservableProperty<TimeAlone>) {
+fun TimeButton.bindTimeAlone(date: MutableObservableProperty<TimeAlone>, minuteInterval: Int = 1) {
+    this.minuteInterval = minuteInterval
     date.addAndRunWeak(this) { self, it ->
         self.date = dateFrom(Date().dateAlone, it)
     }
