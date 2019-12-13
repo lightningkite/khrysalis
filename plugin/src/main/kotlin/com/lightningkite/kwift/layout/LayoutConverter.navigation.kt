@@ -69,7 +69,7 @@ val LayoutConverter.Companion.navigationViews
                 (node.attributeAsDimension("app:dividerSize") ?: node.attributeAsDimension("dividerSize"))?.let {
                     appendln("//It is not possible to have a different divider size currently, though requested.")
                 }
-                (node.attributeAsDimension("app:dividerHorizontalPadding") ?: node.attributeAsDimension("dividerHorizontalPadding") ?: "0")?.let {
+                (node.attributeAsDimension("app:dividerHorizontalPadding") ?: node.attributeAsDimension("dividerHorizontalPadding") ?: "0").let {
                     appendln("view.separatorInset = UIEdgeInsets(top: 0, left: $it, bottom: 0, right: $it)")
                 }
             },
