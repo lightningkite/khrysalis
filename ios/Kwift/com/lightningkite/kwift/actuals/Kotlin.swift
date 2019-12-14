@@ -168,6 +168,13 @@ public extension Array {
         }
         return sum
     }
+    func  sumByLong(selector: (Element) -> Int64)-> Int64{
+        var sum:Int64 = 0
+        for item in self{
+            sum += selector(item)
+        }
+        return sum
+    }
 }
 
 public extension Array where Element: Equatable {
