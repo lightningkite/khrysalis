@@ -49,12 +49,12 @@ open class UIButtonWithLayer: UIButton {
         let isVertical = iconPosition == .top || iconPosition == .bottom
         if let iconLayer = iconLayer {
             if isHorizontal {
-                result.width += iconLayer.frame.size.width
+                result.width += iconLayer.frame.size.width + iconPadding
             } else {
                 result.width = max(result.width, iconLayer.frame.size.width)
             }
             if isVertical {
-                result.height += iconLayer.frame.size.height
+                result.height += iconLayer.frame.size.height + iconPadding
             } else {
                 result.height = max(result.height, iconLayer.frame.size.height)
             }

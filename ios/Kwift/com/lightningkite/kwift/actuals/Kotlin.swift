@@ -75,6 +75,22 @@ public extension Sequence {
     func associate<K: Hashable, V>(_ transform: (Element)->(K, V)) -> Dictionary<K, V> {
         Dictionary(self.map(transform), uniquingKeysWith: { (a, b) in b })
     }
+    
+    func sumByDouble(_ get: (Element)->Double) -> Double {
+        var value: Double = 0
+        for item in self {
+            value += get(item)
+        }
+        return value
+    }
+    
+    func sumByLong(_ get: (Element)->Int64) -> Int64 {
+        var value: Int64 = 0
+        for item in self {
+            value += get(item)
+        }
+        return value
+    }
 }
 
 public extension Array {

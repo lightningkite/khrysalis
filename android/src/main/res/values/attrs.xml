@@ -43,4 +43,15 @@
         <attr name="labelForegroundColor"/>
         <attr name="labelBackgroundColor"/>
     </declare-styleable>
+    <attr name="dividerPositions">
+        <flag name="start" value="0x01"/>
+        <flag name="between" value="0x02"/>
+        <flag name="end" value="0x04"/>
+    </attr>
+    <declare-styleable name="VerticalRecyclerView">
+        <attr name="dividerPositions"/>
+        <attr name="dividerColor" format="color"/>
+        <attr name="dividerSize" format="dimension"/>
+        <attr name="dividerHorizontalPadding" format="dimension"/>
+    </declare-styleable>
 </resources>

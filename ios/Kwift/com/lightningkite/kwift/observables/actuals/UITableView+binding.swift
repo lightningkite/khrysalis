@@ -58,8 +58,6 @@ public extension UITableView {
         delegate = boundDataSource
         retain(as: "boundDataSource", item: boundDataSource)
 
-        self.backgroundColor = UIColor.clear
-        self.separatorStyle = .none
         self.rowHeight = UITableView.automaticDimension
 
         var previouslyEmpty = data.value.isEmpty
@@ -89,8 +87,6 @@ public extension UITableView {
         delegate = boundDataSource
         retain(as: "boundDataSource", item: boundDataSource)
 
-        self.backgroundColor = UIColor.clear
-        self.separatorStyle = .none
         self.rowHeight = UITableView.automaticDimension
 
         var previouslyEmpty = data.value.isEmpty
@@ -120,15 +116,15 @@ class CustomUITableViewCell: UITableViewCell {
 
     override func sizeThatFits(_ size: CGSize) -> CGSize {
         layoutIfNeeded()
-        var size = CGSize.zero
+        var outSize = CGSize.zero
         for child in contentView.subviews {
             let childSize = child.sizeThatFits(size)
-            size.width = max(size.width, childSize.width)
-            size.height = max(size.height, childSize.height)
+            outSize.width = max(outSize.width, childSize.width)
+            outSize.height = max(outSize.height, childSize.height)
         }
-        size.width += spacing * 2
-        size.height += spacing * 2
-        return size
+        outSize.width += spacing * 2
+        outSize.height += spacing * 2
+        return outSize
     }
 
     override public func layoutSubviews() {
@@ -228,7 +224,7 @@ class BoundMultiDataSource: NSObject, UITableViewDataSource, UITableViewDelegate
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let s = source.value
-        let typeIndex = self.handler.type(s)
+        let typeIndex = self.handler.type(s[indexPath.row])
         let cell: CustomUITableViewCell = tableView.dequeueReusableCell(withIdentifier: typeIndex.toString()) as! CustomUITableViewCell
         cell.spacing = self.spacing
         cell.selectionStyle = .none

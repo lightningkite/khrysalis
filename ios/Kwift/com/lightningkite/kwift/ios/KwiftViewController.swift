@@ -24,6 +24,7 @@ open class KwiftViewController: UIViewController, UINavigationControllerDelegate
     
     static public let refreshBackgroundColorEvent = StandardEvent<Void>()
     
+    weak var backgroundLayerBottom: UIView!
     weak var innerView: UIView!
     
     public var defaultBackgroundColor: UIColor = .white
@@ -33,6 +34,11 @@ open class KwiftViewController: UIViewController, UINavigationControllerDelegate
         
         self.view = UIView(frame: .zero)
         self.view.backgroundColor = defaultBackgroundColor
+        
+        let bottom = UIView(frame: .zero)
+        bottom.backgroundColor = defaultBackgroundColor
+        self.view.addSubview(bottom)
+        backgroundLayerBottom = bottom
         
         let m = main.generate(ViewDependency(self))
         innerView = m
@@ -81,9 +87,11 @@ open class KwiftViewController: UIViewController, UINavigationControllerDelegate
             if self.first {
                 self.first = false
                 self.view.layer.backgroundColor = self.getBackingColor(self.innerView) ?? self.defaultBackgroundColor.cgColor
+                self.view.layer.backgroundColor = self.getBackingColorBottom(self.innerView, currentY: 0, height: self.view.bounds.size.height) ?? self.defaultBackgroundColor.cgColor
             } else {
                 UIView.animate(withDuration: 0.25, animations: {
                     self.view.layer.backgroundColor = self.getBackingColor(self.innerView) ?? self.defaultBackgroundColor.cgColor
+                    self.view.layer.backgroundColor = self.getBackingColorBottom(self.innerView, currentY: 0, height: self.view.bounds.size.height) ?? self.defaultBackgroundColor.cgColor
                 })
             }
         })
@@ -99,13 +107,45 @@ open class KwiftViewController: UIViewController, UINavigationControllerDelegate
         }
         return nil
     }
+    private func getBackingColorBottom(_ view: UIView, currentY: CGFloat, height: CGFloat) -> CGColor? {
+        for child in view.subviews.reversed() {
+            if let backing = getBackingColorBottom(
+                    child,
+                    currentY: currentY + child.frame.origin.y,
+                    height: height
+                ),
+                !child.isHidden,
+                child.includeInLayout,
+                child.frame.origin.y + child.frame.size.height >= height {
+                return backing
+            }
+        }
+        if let backing = view.layer.guessBackingColor(), backing.alpha != 0.0 {
+            return backing
+        }
+        return nil
+    }
     
     override open func viewWillLayoutSubviews() {
         layout()
     }
     
     open func layout(){
-        guard let innerView = innerView, let selfView = self.view else { return }
+        guard
+            let innerView = innerView,
+            let backgroundLayerBottom = backgroundLayerBottom,
+            let selfView = self.view
+            else { return }
+        backgroundLayerBottom.frame = CGRect(
+            origin: CGPoint(
+                x: selfView.bounds.origin.x,
+                y: selfView.bounds.origin.y + selfView.bounds.size.height/2
+            ),
+            size: CGSize(
+                width: selfView.bounds.size.width,
+                height: selfView.bounds.size.height/2
+            )
+        )
         innerView.frame.origin.y = UIApplication.shared.statusBarFrame.height
         innerView.frame.size.width = self.view.frame.size.width
         if #available(iOS 11.0, *) {
@@ -179,7 +219,7 @@ open class KwiftViewController: UIViewController, UINavigationControllerDelegate
             let window = view.window,
             let responder = view.firstResponder,
             let userInfo = notification.userInfo,
-            let keyboardFrameValue = userInfo[UIResponder.keyboardFrameBeginUserInfoKey] as? NSValue,
+            let keyboardFrameValue = userInfo[UIResponder.keyboardFrameEndUserInfoKey] as? NSValue,
             let keyboardAnimationDuration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? NSNumber
         {
             let keyboardHeight = keyboardFrameValue.cgRectValue.height

@@ -33,6 +33,25 @@ public class LabeledSwitch : LinearLayout {
             weight: 0
         ))
     }
+    
+    public var verticalAlign: Align {
+        get {
+            if let p = params(for: labelView) {
+                return p.gravity.vertical
+            }
+            return .center
+        }
+        set(value) {
+            if var p = params(for: labelView) {
+                p.gravity = AlignPair(p.gravity.horizontal, value)
+                params(for: labelView, setTo: p)
+            }
+            if var p = params(for: switchView) {
+                p.gravity = AlignPair(p.gravity.horizontal, value)
+                params(for: switchView, setTo: p)
+            }
+        }
+    }
 
     required public init?(coder aDecoder: NSCoder) {
         super.init(coder: aDecoder)

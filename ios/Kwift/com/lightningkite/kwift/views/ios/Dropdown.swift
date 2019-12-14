@@ -21,6 +21,11 @@ public class Dropdown : UIControl {
         return toolBar
     }()
     private weak var currentView: UIView?
+    public var contentEdgeInsets: UIEdgeInsets = .zero {
+        didSet {
+            setNeedsLayout()
+        }
+    }
 
     override public init(frame: CGRect) {
         super.init(frame: frame)
@@ -99,7 +104,7 @@ public class Dropdown : UIControl {
 
     override public func layoutSubviews() {
         super.layoutSubviews()
-        currentView?.frame.size = self.frame.size
+        currentView?.frame = self.bounds.inset(by: contentEdgeInsets)
     }
 
     @objc public func launchPicker() {

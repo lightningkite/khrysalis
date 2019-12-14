@@ -13,6 +13,9 @@ import AlamofireImage
 
 
 public extension UIImageView {
+    static var loadingProgressTintColor: UIColor?
+    static var loadingTrackTintColor: UIColor?
+    
     func af_setImageProgress(
         withURL url: URL,
         placeholderImage: UIImage? = nil,
@@ -21,6 +24,8 @@ public extension UIImageView {
         completion: ((DataResponse<UIImage>) -> Void)? = nil
         ) {
         let activityIndicatorView = UIProgressView(progressViewStyle: UIProgressView.Style.default)
+        activityIndicatorView.progressTintColor = UIImageView.loadingProgressTintColor
+        activityIndicatorView.trackTintColor = UIImageView.loadingTrackTintColor
         activityIndicatorView.setProgress(0, animated: true)
         activityIndicatorView.center.x = self.frame.size.width / 2
         activityIndicatorView.center.y = self.frame.size.height / 2
@@ -45,13 +50,17 @@ public extension UIImageView {
     func loadImage(_ image: Image?) {
         switch(image){
         case let image as ImageReference:
-            af_setImageProgress(withURL: URL(string: image.uri.absoluteString)!, placeholderImage: nil, imageTransition: .noTransition, runImageTransitionIfCached: false, completion: nil)
+            if let url = URL(string: image.uri.absoluteString) {
+                af_setImageProgress(withURL: url, placeholderImage: nil, imageTransition: .noTransition, runImageTransitionIfCached: false, completion: nil)
+            }
         case let image as ImageBitmap:
             self.image = image.bitmap
         case let image as ImageRaw:
             break
         case let image as ImageRemoteUrl:
-            af_setImageProgress(withURL: URL(string: image.url)!, placeholderImage: nil, imageTransition: .noTransition, runImageTransitionIfCached: false, completion: nil)
+            if let url = URL(string: image.url) {
+                af_setImageProgress(withURL: url, placeholderImage: nil, imageTransition: .noTransition, runImageTransitionIfCached: false, completion: nil)
+            }
         default:
             break
         }

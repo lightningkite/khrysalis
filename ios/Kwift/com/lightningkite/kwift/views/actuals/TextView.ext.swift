@@ -67,7 +67,7 @@ public extension UILabel {
 public extension UITextView {
     var letterSpacing: CGFloat {
         get{
-            return viewLetterSpacing.get(self) ?? 0
+            return viewLetterSpacing.get(self) ?? defaultLetterSpacing
         }
         set(value){
             viewLetterSpacing.set(self, value)
@@ -110,7 +110,7 @@ public extension UITextView {
 public extension UITextField {
     var letterSpacing: CGFloat {
         get{
-            return viewLetterSpacing.get(self) ?? 0
+            return viewLetterSpacing.get(self) ?? defaultLetterSpacing
         }
         set(value){
             viewLetterSpacing.set(self, value)
@@ -153,7 +153,7 @@ public extension UITextField {
 public extension UIButton {
     var letterSpacing: CGFloat {
         get{
-            return viewLetterSpacing.get(self) ?? 0
+            return viewLetterSpacing.get(self) ?? defaultLetterSpacing
         }
         set(value){
             viewLetterSpacing.set(self, value)
