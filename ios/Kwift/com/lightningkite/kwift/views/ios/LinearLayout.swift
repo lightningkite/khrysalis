@@ -18,6 +18,7 @@ open class LinearLayout: UIView {
         public var minimumSize: CGSize
         public var size: CGSize
         public var margin: UIEdgeInsets
+        public var padding: UIEdgeInsets
         public var gravity: AlignPair
         public var weight: CGFloat
         
@@ -25,14 +26,25 @@ open class LinearLayout: UIView {
             minimumSize: CGSize = .zero,
             size: CGSize = .zero,
             margin: UIEdgeInsets = .zero,
+            padding: UIEdgeInsets = .zero,
             gravity: AlignPair = .center,
             weight: CGFloat = 0
         ) {
             self.minimumSize = minimumSize
             self.size = size
             self.margin = margin
+            self.padding = padding
             self.gravity = gravity
             self.weight = weight
+        }
+        
+        public var combined: UIEdgeInsets {
+            return UIEdgeInsets(
+                top: margin.top + padding.top,
+                left: margin.left + padding.left,
+                bottom: margin.bottom + padding.bottom,
+                right: margin.right + padding.right
+            )
         }
     }
     
@@ -67,11 +79,12 @@ open class LinearLayout: UIView {
         minimumSize: CGSize = .zero,
         size: CGSize = .zero,
         margin: UIEdgeInsets = .zero,
+        padding: UIEdgeInsets = .zero,
         gravity: AlignPair = .center,
         weight: CGFloat = 0
     ) {
         addSubview(view)
-        let params = LayoutParams(minimumSize: minimumSize, size: size, margin: margin, gravity: gravity, weight: weight)
+        let params = LayoutParams(minimumSize: minimumSize, size: size, margin: margin, padding:padding, gravity: gravity, weight: weight)
         subviewsWithParams.add((view, params))
         setNeedsLayout()
     }
@@ -117,8 +130,9 @@ open class LinearLayout: UIView {
         
         for (subview, params) in subviewsWithParams {
             guard subview.includeInLayout else { continue }
+            let combined = params.combined
             let viewMeasured = subview.sizeThatFits(makeSize(
-                primary: size[orientation] - result[orientation] - params.margin.start(orientation) - params.margin.end(orientation),
+                primary: size[orientation] - result[orientation] - combined.start(orientation) - combined.end(orientation),
                 secondary: size[orientation.other]
             ))
             let viewSize = CGSize(
@@ -132,16 +146,16 @@ open class LinearLayout: UIView {
                 )
             )
             measurements[subview] = viewSize
-            result[orientation] += params.margin.start(orientation)
+            result[orientation] += combined.start(orientation)
             if includingWeighted || params.weight == 0 {
                 result[orientation] += viewSize[orientation]
             }
-            result[orientation] += params.margin.end(orientation)
+            result[orientation] += combined.end(orientation)
             
             result[orientation.other] = max(
                 result[orientation.other],
                 viewSize[orientation.other] +
-                    params.margin.total(orientation.other) +
+                    combined.total(orientation.other) +
                     padding.total(orientation.other)
             )
         }
@@ -177,7 +191,8 @@ open class LinearLayout: UIView {
         position += padding.start(orientation)
         for (subview, params) in subviewsWithParams {
             guard subview.includeInLayout else { continue }
-            position += params.margin.start(orientation)
+            let combined = params.combined
+            position += combined.start(orientation)
             let viewSize = measurements[subview]!
             
             let primarySize: CGFloat
@@ -192,17 +207,17 @@ open class LinearLayout: UIView {
             let gravityComponent: Align = params.gravity[orientation.other]
             switch gravityComponent {
             case .start:
-                shift = params.margin.start(orientation.other) + padding.start(orientation.other)
+                shift = combined.start(orientation.other) + padding.start(orientation.other)
                 secondarySize = viewSize[orientation.other]
             case .center:
-                shift = (size[orientation.other] - viewSize[orientation.other]) / 2 - params.margin.start(orientation.other) + params.margin.end(orientation.other)
+                shift = (size[orientation.other] - viewSize[orientation.other]) / 2 - combined.start(orientation.other) + combined.end(orientation.other)
                 secondarySize = viewSize[orientation.other]
             case .end:
-                shift = size[orientation.other] - viewSize[orientation.other] - params.margin.end(orientation.other) - padding.end(orientation.other)
+                shift = size[orientation.other] - viewSize[orientation.other] - combined.end(orientation.other) - padding.end(orientation.other)
                 secondarySize = viewSize[orientation.other]
             case .fill:
-                shift = params.margin.start(orientation.other) + padding.start(orientation.other)
-                secondarySize = size[orientation.other] - params.margin.total(orientation.other) - padding.total(orientation.other)
+                shift = combined.start(orientation.other) + padding.start(orientation.other)
+                secondarySize = size[orientation.other] - combined.total(orientation.other) - padding.total(orientation.other)
             }
             
             subview.frame = CGRect(
@@ -210,13 +225,13 @@ open class LinearLayout: UIView {
                 size: makeSize(primary: primarySize, secondary: secondarySize)
             )
             childBounds[subview] = CGRect(
-                origin: makePoint(primary: position - params.margin.start(orientation), secondary: 0),
-                size: makeSize(primary: primarySize + params.margin.start(orientation) + params.margin.end(orientation), secondary: size[orientation.other])
+                origin: makePoint(primary: position - params.padding.start(orientation), secondary: params.padding.start(orientation.other)),
+                size: makeSize(primary: primarySize + params.padding.total(orientation), secondary: size[orientation.other] - params.padding.total(orientation.other))
             )
             subview.layoutSubviews()
             
             position += primarySize
-            position += params.margin.end(orientation)
+            position += combined.end(orientation)
         }
         position += padding.end(orientation)
     }
@@ -239,7 +254,7 @@ open class LinearLayout: UIView {
         }
         return nil
     }
-    var debugDraw = false
+    var debugDraw = LayoutSettings.debugDraw
     override open func draw(_ rect: CGRect) {
         super.draw(rect)
         if debugDraw {

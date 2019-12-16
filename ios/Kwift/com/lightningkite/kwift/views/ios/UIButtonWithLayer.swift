@@ -47,19 +47,26 @@ open class UIButtonWithLayer: UIButton {
         var result = CGSize.zero
         let isHorizontal = iconPosition == .left || iconPosition == .right
         let isVertical = iconPosition == .top || iconPosition == .bottom
+        let hasTitle = self.titleLabel?.text?.isNotBlank() == true
         if let iconLayer = iconLayer {
             if isHorizontal {
-                result.width += iconLayer.frame.size.width + iconPadding
+                result.width += iconLayer.frame.size.width
+                if hasTitle {
+                    result.width += iconPadding
+                }
             } else {
                 result.width = max(result.width, iconLayer.frame.size.width)
             }
             if isVertical {
-                result.height += iconLayer.frame.size.height + iconPadding
+                result.height += iconLayer.frame.size.height
+                if hasTitle {
+                    result.height += iconPadding
+                }
             } else {
                 result.height = max(result.height, iconLayer.frame.size.height)
             }
         }
-        if let labelSize = titleLabel?.sizeThatFits(size) {
+        if let title = self.titleLabel?.text, title.isNotBlank(), let labelSize = titleLabel?.sizeThatFits(size) {
             if isHorizontal {
                 result.width += labelSize.width
             } else {
@@ -124,7 +131,7 @@ open class UIButtonWithLayer: UIButton {
                 placeableRect.size.height -= iconLayer.bounds.size.height + iconPadding
             }
         }
-        if let titleLabel = titleLabel {
+        if let title = self.titleLabel?.text, title.isNotBlank(), let titleLabel = titleLabel {
             var destination = CGRect.zero
             destination.size = titleLabel.bounds.size
             switch textGravity.horizontal {

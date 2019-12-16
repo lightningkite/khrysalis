@@ -16,18 +16,30 @@ open class FrameLayout: UIView {
         public var minimumSize: CGSize
         public var size: CGSize
         public var margin: UIEdgeInsets
+        public var padding: UIEdgeInsets
         public var gravity: AlignPair
         
         public init(
             minimumSize: CGSize = .zero,
             size: CGSize = .zero,
             margin: UIEdgeInsets = .zero,
+            padding: UIEdgeInsets = .zero,
             gravity: AlignPair = .center
         ) {
             self.minimumSize = minimumSize
             self.size = size
             self.margin = margin
+            self.padding = padding
             self.gravity = gravity
+        }
+        
+        public var combined: UIEdgeInsets {
+            return UIEdgeInsets(
+                top: margin.top + padding.top,
+                left: margin.left + padding.left,
+                bottom: margin.bottom + padding.bottom,
+                right: margin.right + padding.right
+            )
         }
     }
     
@@ -61,10 +73,11 @@ open class FrameLayout: UIView {
         minimumSize: CGSize = .zero,
         size: CGSize = .zero,
         margin: UIEdgeInsets = .zero,
+        padding: UIEdgeInsets = .zero,
         gravity: AlignPair = .center
     ) {
         addSubview(view)
-        subviewsWithParams[view] = LayoutParams(minimumSize: minimumSize, size: size, margin: margin, gravity: gravity)
+        subviewsWithParams[view] = LayoutParams(minimumSize: minimumSize, size: size, margin: margin, padding: padding, gravity: gravity)
     }
     
     public override func willRemoveSubview(_ subview: UIView) {
@@ -77,6 +90,7 @@ open class FrameLayout: UIView {
         var output = CGSize.zero
         for subview in subviews {
             guard subview.includeInLayout, let params = subviewsWithParams[subview] else { continue }
+            let combined = params.combined
             let viewMeasured = subview.sizeThatFits(size)
             let viewSize = CGSize(
                 width: max(
@@ -89,8 +103,8 @@ open class FrameLayout: UIView {
                 )
             )
             measurements[subview] = viewSize
-            output.width = max(output.width, viewSize.width + padding.total(.x) + params.margin.total(.x))
-            output.height = max(output.height, viewSize.height + padding.total(.y) + params.margin.total(.y))
+            output.width = max(output.width, viewSize.width + padding.total(.x) + combined.total(.x))
+            output.height = max(output.height, viewSize.height + padding.total(.y) + combined.total(.y))
         }
         return output
     }
@@ -118,50 +132,33 @@ open class FrameLayout: UIView {
                 )
             )
             var clickBounds = CGRect.zero
-            switch params.gravity.horizontal {
-            case .start:
-                subview.frame.origin.x = params.margin.left + padding.left
-                subview.frame.size.width = viewSize.width
-                clickBounds.origin.x = 0
-                clickBounds.size.width = viewSize.width + params.margin.left + params.margin.right + padding.left
-            case .center:
-                subview.frame.origin.x = (size.width - viewSize.width) / 2 + params.margin.left - params.margin.right
-                subview.frame.size.width = viewSize.width
-                clickBounds.origin.x = (size.width - viewSize.width) / 2 - params.margin.left
-                clickBounds.size.width = viewSize.width + params.margin.left + params.margin.right
-            case .end:
-                subview.frame.origin.x = size.width - viewSize.width - params.margin.right - padding.right
-                subview.frame.size.width = viewSize.width
-                clickBounds.origin.x = size.width - viewSize.width - params.margin.left - params.margin.right - padding.right
-                clickBounds.size.width = viewSize.width + params.margin.left + params.margin.right + padding.right
-            case .fill:
-                subview.frame.origin.x = params.margin.left + padding.left
-                subview.frame.size.width = size.width - params.margin.total(.x) - padding.total(.x)
-                clickBounds.origin.x = 0
-                clickBounds.size.width = size.width
+            let combined = params.combined
+            func handleDimension(dimen: Dimension) {
+                switch params.gravity[dimen] {
+                    case .start:
+                        subview.frame.origin[dimen] = combined.start(dimen) + padding.start(dimen)
+                        subview.frame.size[dimen] = viewSize[dimen]
+                        clickBounds.origin[dimen] = subview.frame.origin[dimen] - params.padding.start(dimen)
+                        clickBounds.size[dimen] = subview.frame.size[dimen] + params.padding.total(dimen)
+                    case .center:
+                        subview.frame.origin[dimen] = (size[dimen] - viewSize[dimen]) / 2 + combined.start(dimen) - combined.end(dimen)
+                        subview.frame.size[dimen] = viewSize[dimen]
+                        clickBounds.origin[dimen] = subview.frame.origin[dimen] - params.padding.start(dimen)
+                        clickBounds.size[dimen] = subview.frame.size[dimen] + params.padding.total(dimen)
+                    case .end:
+                        subview.frame.origin[dimen] = size[dimen] - viewSize[dimen] - combined.end(dimen) - padding.end(dimen)
+                        subview.frame.size[dimen] = viewSize[dimen]
+                        clickBounds.origin[dimen] = subview.frame.origin[dimen] - params.padding.start(dimen)
+                        clickBounds.size[dimen] = subview.frame.size[dimen] + params.padding.total(dimen)
+                    case .fill:
+                        subview.frame.origin[dimen] = combined.start(dimen) + padding.start(dimen)
+                        subview.frame.size[dimen] = size[dimen] - combined.total(.y) - padding.total(.y)
+                        clickBounds.origin[dimen] = params.margin.start(dimen) + padding.start(dimen)
+                        clickBounds.size[dimen] = size[dimen] - params.margin.start(dimen) + padding.start(dimen)
+                }
             }
-            switch params.gravity.vertical {
-            case .start:
-                subview.frame.origin.y = params.margin.top + padding.top
-                subview.frame.size.height = viewSize.height
-                clickBounds.origin.y = 0
-                clickBounds.size.height = viewSize.height + params.margin.top + params.margin.bottom + padding.top
-            case .center:
-                subview.frame.origin.y = (size.height - viewSize.height) / 2 + params.margin.top - params.margin.bottom
-                subview.frame.size.height = viewSize.height
-                clickBounds.origin.y = (size.height - viewSize.height) / 2 - params.margin.top
-                clickBounds.size.height = viewSize.height + params.margin.top + params.margin.bottom
-            case .end:
-                subview.frame.origin.y = size.height - viewSize.height - params.margin.bottom - padding.bottom
-                subview.frame.size.height = viewSize.height
-                clickBounds.origin.y = size.height - viewSize.height - params.margin.top - params.margin.bottom - padding.bottom
-                clickBounds.size.height = viewSize.height + params.margin.top + params.margin.bottom + padding.bottom
-            case .fill:
-                subview.frame.origin.y = params.margin.top + padding.top
-                subview.frame.size.height = size.height - params.margin.total(.y) - padding.total(.y)
-                clickBounds.origin.y = 0
-                clickBounds.size.height = size.height
-            }
+            handleDimension(dimen: .x)
+            handleDimension(dimen: .y)
             childBounds[subview] = clickBounds
         }
     }
@@ -184,7 +181,7 @@ open class FrameLayout: UIView {
         }
         return nil
     }
-    var debugDraw = false
+    var debugDraw = LayoutSettings.debugDraw
     override open func draw(_ rect: CGRect) {
         super.draw(rect)
         if debugDraw {

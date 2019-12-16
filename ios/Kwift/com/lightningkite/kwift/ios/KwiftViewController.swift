@@ -87,11 +87,11 @@ open class KwiftViewController: UIViewController, UINavigationControllerDelegate
             if self.first {
                 self.first = false
                 self.view.layer.backgroundColor = self.getBackingColor(self.innerView) ?? self.defaultBackgroundColor.cgColor
-                self.view.layer.backgroundColor = self.getBackingColorBottom(self.innerView, currentY: 0, height: self.view.bounds.size.height) ?? self.defaultBackgroundColor.cgColor
+                self.backgroundLayerBottom.layer.backgroundColor = self.getBackingColorBottom(self.innerView, currentY: 0, height: self.innerView.bounds.size.height-1) ?? self.defaultBackgroundColor.cgColor
             } else {
                 UIView.animate(withDuration: 0.25, animations: {
                     self.view.layer.backgroundColor = self.getBackingColor(self.innerView) ?? self.defaultBackgroundColor.cgColor
-                    self.view.layer.backgroundColor = self.getBackingColorBottom(self.innerView, currentY: 0, height: self.view.bounds.size.height) ?? self.defaultBackgroundColor.cgColor
+                    self.backgroundLayerBottom.layer.backgroundColor = self.getBackingColorBottom(self.innerView, currentY: 0, height: self.innerView.bounds.size.height-1) ?? self.defaultBackgroundColor.cgColor
                 })
             }
         })
@@ -109,14 +109,14 @@ open class KwiftViewController: UIViewController, UINavigationControllerDelegate
     }
     private func getBackingColorBottom(_ view: UIView, currentY: CGFloat, height: CGFloat) -> CGColor? {
         for child in view.subviews.reversed() {
-            if let backing = getBackingColorBottom(
+            if !child.isHidden,
+                child.includeInLayout,
+                child.frame.origin.y + child.frame.size.height >= height,
+                let backing = getBackingColorBottom(
                     child,
                     currentY: currentY + child.frame.origin.y,
                     height: height
-                ),
-                !child.isHidden,
-                child.includeInLayout,
-                child.frame.origin.y + child.frame.size.height >= height {
+                ) {
                 return backing
             }
         }

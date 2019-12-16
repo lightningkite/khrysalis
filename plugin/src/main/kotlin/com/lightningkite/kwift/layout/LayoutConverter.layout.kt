@@ -83,6 +83,11 @@ val LayoutConverter.Companion.layoutViews
                         )
                         appendln(",")
 
+                        append(
+                            "padding: ${padding(child)}"
+                        )
+                        appendln(",")
+
                         append("gravity: ")
                         append(
                             align(
@@ -142,6 +147,11 @@ val LayoutConverter.Companion.layoutViews
 
                     append(
                         "margin: ${margins(child)}"
+                    )
+                    appendln(",")
+
+                    append(
+                        "padding: ${padding(child)}"
                     )
                     appendln(",")
 
@@ -212,28 +222,34 @@ fun uiEdgeInsets(
 
 fun OngoingLayoutConversion.margins(child: XmlNode): String {
     val defaultMargin = child.attributeAsDimension("android:layout_margin") ?: 0
-    var top = (child.attributeAsDimension("android:layout_marginTop")
-            ?: defaultMargin).toString()
-    var left = (child.attributeAsDimension("android:layout_marginLeft")
-            ?: child.attributeAsDimension("android:layout_marginStart")
-            ?: defaultMargin).toString()
-    var bottom = (child.attributeAsDimension("android:layout_marginBottom")
-            ?: defaultMargin).toString()
-    var right = (child.attributeAsDimension("android:layout_marginRight")
-            ?: child.attributeAsDimension("android:layout_marginEnd")
-            ?: defaultMargin).toString()
+    val top = (child.attributeAsDimension("android:layout_marginTop")
+        ?: defaultMargin).toString()
+    val left = (child.attributeAsDimension("android:layout_marginLeft")
+        ?: child.attributeAsDimension("android:layout_marginStart")
+        ?: defaultMargin).toString()
+    val bottom = (child.attributeAsDimension("android:layout_marginBottom")
+        ?: defaultMargin).toString()
+    val right = (child.attributeAsDimension("android:layout_marginRight")
+        ?: child.attributeAsDimension("android:layout_marginEnd")
+        ?: defaultMargin).toString()
+    return uiEdgeInsets(top, left, bottom, right)
+}
+
+fun OngoingLayoutConversion.padding(child: XmlNode): String {
     if(this.converter.viewTypes[child.name]?.handlesPadding != true) {
         val defaultPadding = child.attributeAsDimension("android:padding") ?: 0
-        top += " + " + (child.attributeAsDimension("android:paddingTop")
+        val top = (child.attributeAsDimension("android:paddingTop")
             ?: defaultPadding).toString()
-        left += " + " + (child.attributeAsDimension("android:paddingLeft")
+        val left = (child.attributeAsDimension("android:paddingLeft")
             ?: child.attributeAsDimension("android:paddingStart")
             ?: defaultPadding).toString()
-        bottom += " + " + (child.attributeAsDimension("android:paddingBottom")
+        val bottom = (child.attributeAsDimension("android:paddingBottom")
             ?: defaultPadding).toString()
-        right += " + " + (child.attributeAsDimension("android:paddingRight")
+        val right = (child.attributeAsDimension("android:paddingRight")
             ?: child.attributeAsDimension("android:paddingEnd")
             ?: defaultPadding).toString()
+        return uiEdgeInsets(top, left, bottom, right)
+    } else {
+        return "UIEdgeInsets.zero"
     }
-    return uiEdgeInsets(top, left, bottom, right)
 }

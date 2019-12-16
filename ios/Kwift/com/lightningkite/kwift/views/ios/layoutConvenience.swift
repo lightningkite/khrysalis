@@ -8,6 +8,10 @@
 
 import UIKit
 
+public enum LayoutSettings {
+    static let debugDraw = false
+}
+
 public extension UIView {
     func addSubview<T: UIView>(_ view: T, setup: (T)->Void) {
         setup(view)
@@ -54,12 +58,13 @@ public extension LinearLayout {
         minimumSize: CGSize = .zero,
         size: CGSize = .zero,
         margin: UIEdgeInsets = .zero,
+        padding: UIEdgeInsets = .zero,
         gravity: AlignPair = .center,
         weight: CGFloat = 0,
         setup: (T)->Void
     ) {
         setup(view)
-        self.addSubview(view, minimumSize: minimumSize, size: size, margin: margin, gravity: gravity, weight: weight)
+        self.addSubview(view, minimumSize: minimumSize, size: size, margin: margin, padding: padding, gravity: gravity, weight: weight)
     }
 }
 
@@ -70,10 +75,11 @@ public extension FrameLayout {
         minimumSize: CGSize = .zero,
         size: CGSize = .zero,
         margin: UIEdgeInsets = .zero,
+        padding: UIEdgeInsets = .zero,
         gravity: AlignPair = .center,
         setup: (T)->Void
     ) {
         setup(view)
-        self.addSubview(view, minimumSize: minimumSize, size: size, margin: margin, gravity: gravity)
+        self.addSubview(view, minimumSize: minimumSize, size: size, margin: margin, padding: padding, gravity: gravity)
     }
 }
