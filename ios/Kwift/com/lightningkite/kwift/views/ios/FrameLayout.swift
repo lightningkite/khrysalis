@@ -152,9 +152,9 @@ open class FrameLayout: UIView {
                         clickBounds.size[dimen] = subview.frame.size[dimen] + params.padding.total(dimen)
                     case .fill:
                         subview.frame.origin[dimen] = combined.start(dimen) + padding.start(dimen)
-                        subview.frame.size[dimen] = size[dimen] - combined.total(.y) - padding.total(.y)
+                        subview.frame.size[dimen] = size[dimen] - combined.total(dimen) - padding.total(dimen)
                         clickBounds.origin[dimen] = params.margin.start(dimen) + padding.start(dimen)
-                        clickBounds.size[dimen] = size[dimen] - params.margin.start(dimen) + padding.start(dimen)
+                        clickBounds.size[dimen] = size[dimen] - params.margin.total(dimen) + padding.total(dimen)
                 }
             }
             handleDimension(dimen: .x)
