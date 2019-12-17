@@ -128,7 +128,41 @@ public final class TimeAlone: Equatable, Hashable, Codable {
     convenience public init(_ hour: Int32, _ minute: Int32, _ second: Int32) {
         self.init(hour: hour, minute: minute, second: second)
     }
-    
+
+    static func -(left: TimeAlone, right: TimeAlone) -> TimeAlone{
+        let result = left.hour * 60 * 60 + left.minute * 60 + left.second + right.hour * 60 * 60 + right.minute * 60 + right.second
+        if result < 0{
+            return TimeAlone(0,0,0)
+        }else{
+            TimeAlone(result / 60 / 60, result / 60 % 60, result % 60)
+        }
+    }
+
+    static func +(left: TimeAlone, right: TimeAlone) -> TimeAlone{
+        let result = (left.hour * 60 * 60 + left.minute * 60 + left.second) + (right.hour * 60 * 60 + right.minute * 60 + right.second)
+        return TimeAlone(result / 60 / 60,  result / 60 % 60, result % 60)
+    }
+
+    static func >(left: TimeAlone, right: TimeAlone) -> Bool{
+        return (left.hour * 60 * 60 + left.minute * 60 + left.second) > (right.hour * 60 * 60 + right.minute * 60 + right.second)
+    }
+
+    static func <(left: TimeAlone, right: TimeAlone) -> Bool{
+        return (left.hour * 60 * 60 + left.minute * 60 + left.second) < (right.hour * 60 * 60 + right.minute * 60 + right.second)
+    }
+
+    static func <=(left: TimeAlone, right: TimeAlone) -> Bool{
+        return (left.hour * 60 * 60 + left.minute * 60 + left.second) <= (right.hour * 60 * 60 + right.minute * 60 + right.second)
+    }
+
+    static func >=(left: TimeAlone, right: TimeAlone) -> Bool{
+        return (left.hour * 60 * 60 + left.minute * 60 + left.second) >= (right.hour * 60 * 60 + right.minute * 60 + right.second)
+    }
+
+    static func ==(left: TimeAlone, right: TimeAlone) -> Bool{
+        return (left.hour * 60 * 60 + left.minute * 60 + left.second) == (right.hour * 60 * 60 + right.minute * 60 + right.second)
+    }
+
 }
  
  
