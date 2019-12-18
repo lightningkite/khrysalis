@@ -3,10 +3,8 @@ package com.lightningkite.kwift.actual
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Bitmap
-import android.graphics.BitmapFactory
 import android.os.Handler
 import android.os.Looper
-import android.provider.MediaStore
 import android.util.Log
 import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.core.JsonParser
@@ -19,7 +17,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.ser.std.StdSerializer
 import com.fasterxml.jackson.databind.util.StdDateFormat
 import com.fasterxml.jackson.module.kotlin.KotlinModule
-import com.lightningkite.kwift.shared.*
+import com.lightningkite.kwift.shared.Image
 import okhttp3.*
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -276,11 +274,99 @@ object HttpClient {
                     val raw = response.body()!!.string()
                     Log.i("HttpClient", "Response ${response.code()}: $raw")
                     runResult {
+
                         val code = response.code()
                         if (code / 100 == 2) {
                             onResult.invoke(response.code(), null)
                         } else {
                             onResult.invoke(code, raw ?: "")
+                        }
+                    }
+                }
+            })
+        }
+    }
+
+
+    inline fun <reified T : Any> uploadImage(
+        url: String,
+        method: String,
+        headers: Map<String, String>,
+        fieldName: String,
+        image: Image,
+        maxSize: Long = 10_000_000,
+        additionalFields: Map<String, String> = mapOf(),
+        crossinline onResult: @escaping() (code: Int, result: T?, error: String?) -> Unit
+    ) {
+        loadImage(image) { rawImage ->
+            if (rawImage == null) {
+                onResult(0, null, "Failed to read image.")
+                return@loadImage
+            }
+            var qualityToTry = 100
+            var data = ByteArrayOutputStream().use {
+                rawImage.compress(Bitmap.CompressFormat.JPEG, qualityToTry, it)
+                it.toByteArray()
+            }
+            while (data.size > maxSize) {
+                qualityToTry -= 5
+                data = ByteArrayOutputStream().use {
+                    rawImage.compress(Bitmap.CompressFormat.JPEG, qualityToTry, it)
+                    it.toByteArray()
+                }
+            }
+            Log.i(
+                "HttpClient",
+                "Sending $method request to $url with headers $headers and image at quality level $qualityToTry"
+            )
+            val request = Request.Builder()
+                .url(url)
+                .method(
+                    method,
+                    MultipartBody.Builder()
+                        .setType(MultipartBody.FORM)
+                        .addFormDataPart(
+                            fieldName,
+                            "image.jpg",
+                            RequestBody.create(MediaType.parse("image/jpeg"), data)
+                        )
+                        .let { it ->
+                            var result = it
+                            for ((key, value) in additionalFields) {
+                                result = result.addFormDataPart(key, value)
+                            }
+                            result
+                        }
+                        .build()
+                )
+                .headers(Headers.of(headers))
+                .build()
+
+            client.newCall(request).go(object : Callback {
+                override fun onFailure(call: Call, e: IOException) {
+                    runResult {
+                        onResult.invoke(0, null, e.message ?: "")
+                    }
+                }
+
+                override fun onResponse(call: Call, response: Response) {
+                    val raw = response.body()!!.string()
+                    Log.i("HttpClient", "Response ${response.code()}: $raw")
+                    runResult {
+                        val code = response.code()
+                        if (code / 100 == 2) {
+                            if (T::class == String::class) {
+                                onResult.invoke(code, raw as T, null)
+                            } else try {
+                                val read =
+                                    mapper.readValue<T>(raw, object : TypeReference<T>() {})
+                                onResult.invoke(code, read, null)
+                            } catch (e: Exception) {
+                                Log.e("HttpClient", "Failure to parse: ${e.message}")
+                                onResult.invoke(code, null, e.message)
+                            }
+                        } else {
+                            onResult.invoke(code, null, raw ?: "")
                         }
                     }
                 }
