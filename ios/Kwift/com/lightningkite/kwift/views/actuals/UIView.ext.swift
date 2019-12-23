@@ -16,5 +16,13 @@ public extension UIView {
 
     func setBackgroundColorResource(color:ColorResource){
             backgroundColor = color
-        }
+    }
+    
+    func postInvalidate() {
+        setNeedsDisplay()
+    }
+    
+    func invalidate(){
+        setNeedsDisplay()
+    }
 }

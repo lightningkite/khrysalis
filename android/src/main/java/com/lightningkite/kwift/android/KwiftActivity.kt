@@ -90,7 +90,10 @@ abstract class KwiftActivity : AccessibleActivity() {
         if(toClose != null){
             toClose.performClick()
         } else {
-            if ((main as? EntryPoint)?.onBackPressed() != true) super.onBackPressed()
+            val main = main
+            if (main !is EntryPoint || !main.onBackPressed() && main.mainStack?.pop() != true){
+                super.onBackPressed()
+            }
         }
     }
 

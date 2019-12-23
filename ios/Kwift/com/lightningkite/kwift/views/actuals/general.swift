@@ -19,4 +19,7 @@ public class ViewDependency {
     public func getString(_ reference: StringReference) -> String {
         return reference
     }
+    public func getColor(_ reference: ColorResource) -> UIColor {
+        return reference
+    }
 }

@@ -1,0 +1,212 @@
+//
+//  Canvas.swift
+//  Alamofire
+//
+//  Created by Joseph Ivie on 12/19/19.
+//
+
+import CoreGraphics
+
+public typealias Canvas = CGContext
+public typealias Path = CGMutablePath
+
+public struct Paint {
+    public var flags: Int32 = 0
+    public var color: UIColor = .black
+    public var strokeWidth: Float = 1
+    public var style: Style = .FILL
+    public var textSize: Float = 12
+    public var shader: ((CGContext)->Void)? = nil
+//    public var typeface: UIFont
+    
+    public enum Style { case FILL, STROKE, FILL_AND_STROKE }
+    
+    var attributes: Dictionary<NSAttributedString.Key, Any> {
+        return [:]
+    }
+    public func measureText(_ text: String) -> Float {
+        return Float(NSString(string: text).size(withAttributes: attributes).width)
+    }
+    
+    public init(){
+        
+    }
+}
+
+public enum Shader {
+    public enum TileMode {
+        case CLAMP, REPEAT, MIRROR
+    }
+}
+
+public func LinearGradient(_ x0: Float, _ y0: Float, _ x1: Float, _ y1: Float, _ colors: Array<UIColor>, _ positions: Array<Float>, _ tile: Shader.TileMode) -> (CGContext)->Void {
+    return { context in
+        context.drawLinearGradient(
+            CGGradient(
+                colorsSpace: CGColorSpaceCreateDeviceRGB(),
+                colors: colors.map { $0.cgColor } as CFArray,
+                locations: positions.map { CGFloat($0) }
+            )!,
+            start: CGPoint(x: CGFloat(x0), y: CGFloat(y0)),
+            end: CGPoint(x: CGFloat(x1), y: CGFloat(y1)),
+            options: []
+        )
+    }
+}
+
+public extension Canvas {
+    func completePath(_ path: CGPath, _ paint: Paint) {
+        if let shader = paint.shader {
+            UIBezierPath(cgPath: path).addClip()
+            shader(self)
+            resetClip()
+        } else {
+            setLineWidth(CGFloat(paint.strokeWidth))
+            self.addPath(path)
+            switch paint.style {
+            case .FILL:
+                setFillColor(paint.color.cgColor)
+                fillPath()
+            case .FILL_AND_STROKE:
+                setFillColor(paint.color.cgColor)
+                setStrokeColor(paint.color.cgColor)
+                fillPath()
+                strokePath()
+            case .STROKE:
+                setStrokeColor(paint.color.cgColor)
+                strokePath()
+            }
+        }
+    }
+    
+    func drawCircle(_ cx: Float, _ cy: Float, _ radius: Float, _ paint: Paint) {
+        let path = Path()
+        path.addArc(center: CGPoint(x: CGFloat(cx), y: CGFloat(cy)), radius: CGFloat(radius), startAngle: 0, endAngle: CGFloat.pi * 2, clockwise: true)
+        path.closeSubpath()
+        self.completePath(path, paint)
+    }
+    
+    func drawRect(_ left: Float, _ top: Float, _ right: Float, _ bottom: Float, _ paint: Paint) {
+        self.completePath(
+            CGPath(
+                rect: CGRect(
+                    x: CGFloat(left),
+                    y: CGFloat(top),
+                    width: CGFloat(right-left),
+                    height: CGFloat(bottom-top)
+                ),
+                transform: nil
+            ),
+            paint
+        )
+    }
+    
+    func drawOval(_ left: Float, _ top: Float, _ right: Float, _ bottom: Float, _ paint: Paint) {
+        self.completePath(
+            CGPath(
+                ellipseIn: CGRect(
+                    x: CGFloat(left),
+                    y: CGFloat(top),
+                    width: CGFloat(right-left),
+                    height: CGFloat(bottom-top)
+                ),
+                transform: nil
+            ),
+            paint
+        )
+    }
+    
+    func drawRoundRect(_ left: Float, _ top: Float, _ right: Float, _ bottom: Float, _ rx: Float, _ ry: Float, _ paint: Paint) {
+        
+        self.completePath(
+            CGPath(
+                roundedRect: CGRect(x: CGFloat(left), y: CGFloat(top), width: CGFloat(right-left), height: CGFloat(bottom-top)),
+                cornerWidth: CGFloat(rx),
+                cornerHeight: CGFloat(ry),
+                transform: nil
+            ),
+            paint
+        )
+    }
+    
+//    func drawColor(_ color: UIColor) {
+//        self.clear(<#T##rect: CGRect##CGRect#>)
+//    }
+    
+    func drawPath(_ path: Path, _ paint: Paint) {
+        self.completePath(path, paint)
+    }
+    
+    func drawTextCentered(_ text: String, _ centerX: Float, _ centerY: Float, _ paint: Paint) {
+        let sizeTaken = text.size(withAttributes: paint.attributes)
+        text.draw(at: CGPoint(x: CGFloat(centerX) - sizeTaken.width / 2, y: CGFloat(centerY) - sizeTaken.height / 2), withAttributes: paint.attributes)
+    }
+    
+    func drawBitmap(_ bitmap: UIImage, _ left: Float, _ top: Float) {
+        if let cg = bitmap.cgImage {
+            self.draw(cg, in: CGRect(x: CGFloat(left), y: CGFloat(top), width: CGFloat(cg.width), height: CGFloat(cg.height)))
+        }
+    }
+    
+    func drawBitmap(_ bitmap: UIImage, _ left: Float, _ top: Float, _ right: Float, _ bottom: Float) {
+        if let cg = bitmap.cgImage {
+            self.draw(cg, in: CGRect(x: CGFloat(left), y: CGFloat(top), width: CGFloat(right-left), height: CGFloat(bottom-top)))
+        }
+    }
+    
+    func save(){
+        self.saveGState()
+    }
+    
+    func restore(){
+        self.restoreGState()
+    }
+    
+    func translate(_ dx: Float, _ dy: Float) {
+        self.translateBy(x: CGFloat(dx), y: CGFloat(dy))
+    }
+    
+    func scale(_ scaleX: Float, _ scaleY: Float) {
+        self.scaleBy(x: CGFloat(scaleX), y: CGFloat(scaleY))
+    }
+    
+    func rotate(_ degrees: Float) {
+        self.rotate(by: CGFloat(degrees) * CGFloat.pi / 180)
+    }
+}
+
+public extension Path {
+    func moveTo(_ x: Float, _ y: Float) {
+        self.move(to: CGPoint(x: CGFloat(x), y: CGFloat(y)))
+    }
+    func lineTo(_ x: Float, _ y: Float) {
+        self.addLine(to: CGPoint(x: CGFloat(x), y: CGFloat(y)))
+    }
+    func quadTo(_ cx: Float, _ cy: Float, _ dx: Float, _ dy: Float) {
+        self.addQuadCurve(to: CGPoint(x: CGFloat(dx), y: CGFloat(dy)), control: CGPoint(x: CGFloat(cx), y: CGFloat(cy)))
+    }
+    func cubicTo(_ c1x: Float, _ c1y: Float, _ c2x: Float, _ c2y: Float, _ dx: Float, _ dy: Float) {
+        self.addCurve(to: CGPoint(x: CGFloat(dx), y: CGFloat(dy)), control1: CGPoint(x: CGFloat(c1x), y: CGFloat(c1y)), control2: CGPoint(x: CGFloat(c2x), y: CGFloat(c2y)))
+    }
+    func close(){
+        self.closeSubpath()
+    }
+}
+
+public extension Int32 {
+    func asColor() -> UIColor {
+        return UIColor(argb: Int(self))
+    }
+}
+
+public extension Int64 {
+    func asColor() -> UIColor {
+        return UIColor(argb: Int(self))
+    }
+}
+
+public extension Int {
+    func asColor() -> UIColor {
+        return UIColor(argb: Int(self))
+    }
+}

@@ -82,6 +82,8 @@ val LayoutConverter.Companion.displayViews
             ViewType("TextView", "UILabel", "View") { node ->
                 handleCommonText(node)
             },
+            ViewType("com.lightningkite.kwift.views.actual.CustomView", "CustomView", "View") { node ->
+            },
 
             ViewType(
                 "com.lightningkite.kwift.views.android.SelectableText",

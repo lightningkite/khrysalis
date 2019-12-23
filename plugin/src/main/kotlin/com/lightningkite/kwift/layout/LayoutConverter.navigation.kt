@@ -53,7 +53,9 @@ val LayoutConverter.Companion.navigationViews
                 "PreviewVariedFlipper",
                 "FrameLayout"
             ) {},
-            ViewType("androidx.recyclerview.widget.RecyclerView", "UITableView", "View") {},
+            ViewType("androidx.recyclerview.widget.RecyclerView", "UITableView", "View") {
+                appendln("view.separatorStyle = .none")
+            },
             ViewType("com.lightningkite.kwift.views.android.VerticalRecyclerView", "UITableView", "androidx.recyclerview.widget.RecyclerView") { node ->
                 val pos = (node.attributes.get("app:dividerPositions")?.split('|') ?: node.attributes.get("dividerPositions")?.split('|')) ?: listOf()
                 when{

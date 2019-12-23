@@ -10,6 +10,8 @@ import android.view.MotionEvent
 import android.view.View
 import androidx.core.content.ContextCompat
 import com.lightningkite.kwift.R
+import com.lightningkite.kwift.views.actual.colorAlpha
+import com.lightningkite.kwift.views.actual.drawTextCentered
 import java.text.DateFormat
 import java.text.DateFormatSymbols
 import java.time.DayOfWeek
