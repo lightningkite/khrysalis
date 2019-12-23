@@ -127,6 +127,16 @@ val DateAlone.dayOfWeek: Int
     get() {
         return dateFrom(this, TimeAlone(12, 0, 0)).dayOfWeek
     }
+val DateAlone.dayOfWeekName: String get() = when(this.dayOfWeek){
+    1 -> TimeNames.weekdayNames[1]
+    2 -> TimeNames.weekdayNames[2]
+    3 -> TimeNames.weekdayNames[3]
+    4 -> TimeNames.weekdayNames[4]
+    5 -> TimeNames.weekdayNames[5]
+    6 -> TimeNames.weekdayNames[6]
+    7 -> TimeNames.weekdayNames[7]
+    else -> ""
+}
 
 fun DateAlone.iso8601(): String = SimpleDateFormat("yyyy-MM-dd").format(dateFrom(this, Date().timeAlone))
 
