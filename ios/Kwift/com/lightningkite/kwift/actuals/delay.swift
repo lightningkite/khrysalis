@@ -26,3 +26,18 @@ public func delay(_ milliseconds: Int64, action: @escaping ()->Void) {
 public func post(action: @escaping ()->Void) {
     DispatchQueue.main.asyncAfter(deadline: .now() + 0.01, execute: action)
 }
+
+public let animationFrame: StandardEvent<Float> = {
+    let temp = StandardEvent<Float>()
+    frame()
+    return temp
+}()
+
+private func frame(){
+    let start = Date()
+    delay(15){
+        let end = Date()
+        animationFrame.invokeAll(Float(end.timeIntervalSince(start)))
+        frame()
+    }
+}

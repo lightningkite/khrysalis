@@ -46,6 +46,11 @@ fun SwiftAltListener.handleNormalFunction(
         ?.parentIfType<KotlinParser.ClassMemberDeclarationsContext>()
         ?.parentIfType<KotlinParser.ClassBodyContext>()
         ?.parentIfType<KotlinParser.CompanionObjectContext>()
+    val owningObject = item.parentIfType<KotlinParser.DeclarationContext>()
+        ?.parentIfType<KotlinParser.ClassMemberDeclarationContext>()
+        ?.parentIfType<KotlinParser.ClassMemberDeclarationsContext>()
+        ?.parentIfType<KotlinParser.ClassBodyContext>()
+        ?.parentIfType<KotlinParser.ObjectDeclarationContext>()
     val isTopLevel = item.parentIfType<KotlinParser.DeclarationContext>()
         ?.parentIfType<KotlinParser.TopLevelObjectContext>() != null
     val originalUsesOverride =
@@ -62,7 +67,7 @@ fun SwiftAltListener.handleNormalFunction(
         if (owningClass != null && owningClass.INTERFACE() == null || isTopLevel) {
             append(item.modifiers().visibilityString())
             append(" ")
-        } else if(owningCompanion != null) {
+        } else if(owningCompanion != null || owningObject != null) {
             append("static ")
             append(item.modifiers().visibilityString())
             append(" ")

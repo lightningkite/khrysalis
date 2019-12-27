@@ -404,7 +404,6 @@ fun SwiftAltListener.registerClass() {
             item.classBody()?.let {
                 it.classMemberDeclarations().classMemberDeclaration().forEach {
                     startLine()
-                    direct.append("static ")
                     write(it)
                 }
             }

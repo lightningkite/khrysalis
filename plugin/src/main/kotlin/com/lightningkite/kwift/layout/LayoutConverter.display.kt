@@ -83,6 +83,17 @@ val LayoutConverter.Companion.displayViews
                 handleCommonText(node)
             },
             ViewType("com.lightningkite.kwift.views.actual.CustomView", "CustomView", "View") { node ->
+
+                node.attributes["android:id"]?.let { raw ->
+                    val id = raw.removePrefix("@+id/").removePrefix("@id/").camelCase()
+                    (node.attributes["app:delegateClass"] ?: node.attributes["delegateClass"])?.let { raw ->
+                        val name = raw.removePrefix("@+id/").removePrefix("@id/").camelCase().substringAfterLast('.')
+                        appendln("let dg = $name()")
+                        appendln("view.delegate = dg")
+                        appendln("self.${id}Delegate = dg")
+                        delegateBindings[id] = name
+                    }
+                }
             },
 
             ViewType(

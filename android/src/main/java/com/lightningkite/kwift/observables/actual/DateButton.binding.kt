@@ -4,6 +4,8 @@ import com.lightningkite.kwift.actual.*
 import com.lightningkite.kwift.observables.shared.MutableObservableProperty
 import com.lightningkite.kwift.observables.shared.addAndRunWeak
 import com.lightningkite.kwift.observables.shared.addWeak
+import com.lightningkite.kwift.shared.DateAlone
+import com.lightningkite.kwift.shared.TimeAlone
 import com.lightningkite.kwift.views.android.DateButton
 import com.lightningkite.kwift.views.android.TimeButton
 import java.util.*

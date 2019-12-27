@@ -36,7 +36,13 @@ fun SwiftAltListener.registerLiterals() {
             item.DECR()?.let { direct.append(" -= 1")}
     }
     tokenOptions[KotlinParser.RealLiteral] = {
-        direct.append(it.text.removeSuffix("f").removeSuffix("F"))
+        if(it.text.endsWith('f', true)){
+            direct.append("Float(")
+            direct.append(it.text.removeSuffix("f").removeSuffix("F"))
+            direct.append(")")
+        } else {
+            direct.append(it.text)
+        }
     }
     tokenOptions[KotlinParser.LongLiteral] = {
         direct.append(it.text.removeSuffix("l").removeSuffix("L"))

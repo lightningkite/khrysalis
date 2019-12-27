@@ -5,44 +5,62 @@ import Foundation
 
 
 
-public protocol CustomViewDelegate {
+open class CustomViewDelegate {
     
-    func generateAccessibilityView() -> View?
     
-    func draw(canvas: Canvas, width: Float, height: Float) -> Void
-    func draw(_ canvas: Canvas, _ width: Float, _ height: Float) -> Void
+    public weak var customView: CustomView? 
     
-    func onTouchDown(id: Int32, x: Float, y: Float, width: Float, height: Float) -> Bool
-    func onTouchDown(_ id: Int32, _ x: Float, _ y: Float, _ width: Float, _ height: Float) -> Bool
+    open func generateAccessibilityView() -> View? { fatalError() }
     
-    func onTouchMove(id: Int32, x: Float, y: Float, width: Float, height: Float) -> Bool
-    func onTouchMove(_ id: Int32, _ x: Float, _ y: Float, _ width: Float, _ height: Float) -> Bool
+    open func draw(canvas: Canvas, width: Float, height: Float, displayMetrics: DisplayMetrics) -> Void { fatalError() }
+    open func draw(_ canvas: Canvas, _ width: Float, _ height: Float, _ displayMetrics: DisplayMetrics) -> Void { fatalError() }
     
-    func onTouchUp(id: Int32, x: Float, y: Float, width: Float, height: Float) -> Bool
-    func onTouchUp(_ id: Int32, _ x: Float, _ y: Float, _ width: Float, _ height: Float) -> Bool
-}
-
-public extension CustomViewDelegate {
-    
-    func onTouchDown(id: Int32, x: Float, y: Float, width: Float, height: Float) -> Bool {
+    open func onTouchDown(id: Int32, x: Float, y: Float, width: Float, height: Float) -> Bool {
         return false
     }
-    func onTouchDown(_ id: Int32, _ x: Float, _ y: Float, _ width: Float, _ height: Float) -> Bool {
+    open func onTouchDown(_ id: Int32, _ x: Float, _ y: Float, _ width: Float, _ height: Float) -> Bool {
         return onTouchDown(id: id, x: x, y: y, width: width, height: height)
     }
     
-    func onTouchMove(id: Int32, x: Float, y: Float, width: Float, height: Float) -> Bool {
+    open func onTouchMove(id: Int32, x: Float, y: Float, width: Float, height: Float) -> Bool {
         return false
     }
-    func onTouchMove(_ id: Int32, _ x: Float, _ y: Float, _ width: Float, _ height: Float) -> Bool {
+    open func onTouchMove(_ id: Int32, _ x: Float, _ y: Float, _ width: Float, _ height: Float) -> Bool {
         return onTouchMove(id: id, x: x, y: y, width: width, height: height)
     }
     
-    func onTouchUp(id: Int32, x: Float, y: Float, width: Float, height: Float) -> Bool {
+    open func onTouchUp(id: Int32, x: Float, y: Float, width: Float, height: Float) -> Bool {
         return false
     }
-    func onTouchUp(_ id: Int32, _ x: Float, _ y: Float, _ width: Float, _ height: Float) -> Bool {
+    open func onTouchUp(_ id: Int32, _ x: Float, _ y: Float, _ width: Float, _ height: Float) -> Bool {
         return onTouchUp(id: id, x: x, y: y, width: width, height: height)
+    }
+    
+    open func sizeThatFitsWidth(width: Float, height: Float) -> Float {
+        return width
+    }
+    open func sizeThatFitsWidth(_ width: Float, _ height: Float) -> Float {
+        return sizeThatFitsWidth(width: width, height: height)
+    }
+    
+    open func sizeThatFitsHeight(width: Float, height: Float) -> Float {
+        return height
+    }
+    open func sizeThatFitsHeight(_ width: Float, _ height: Float) -> Float {
+        return sizeThatFitsHeight(width: width, height: height)
+    }
+    
+    public func invalidate() -> Void {
+        customView?.invalidate()
+    }
+    
+    public func postInvalidate() -> Void {
+        customView?.postInvalidate()
+    }
+    
+    public init() {
+        let customView: CustomView?  = nil
+        self.customView = customView
     }
 }
  

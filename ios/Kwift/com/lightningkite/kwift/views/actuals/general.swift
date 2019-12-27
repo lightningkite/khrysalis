@@ -22,4 +22,19 @@ public class ViewDependency {
     public func getColor(_ reference: ColorResource) -> UIColor {
         return reference
     }
+    public var displayMetrics: DisplayMetrics {
+        return DisplayMetrics(
+            density: Float(UIScreen.main.scale),
+            scaledDensity: Float(UIScreen.main.scale),
+            widthPixels: Int32(UIScreen.main.bounds.width * UIScreen.main.scale),
+            heightPixels: Int32(UIScreen.main.bounds.height * UIScreen.main.scale)
+        )
+    }
+}
+
+public struct DisplayMetrics {
+    public let density: Float
+    public let scaledDensity: Float
+    public let widthPixels: Int32
+    public let heightPixels: Int32
 }

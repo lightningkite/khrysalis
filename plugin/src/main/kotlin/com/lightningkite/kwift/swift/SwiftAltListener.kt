@@ -11,6 +11,7 @@ import org.antlr.v4.runtime.tree.ParseTree
 import org.antlr.v4.runtime.tree.TerminalNode
 import org.jetbrains.kotlin.KotlinParser
 import java.io.File
+import java.lang.IllegalStateException
 
 class SwiftAltListener {
     val interfaces: HashMap<String, InterfaceListener.InterfaceData> = hashMapOf()
@@ -126,18 +127,24 @@ class SwiftAltListener {
             direct.append("}()")
         }
 
+        fun KotlinParser.PostfixUnaryExpressionContext.typeArgsAndParams(): Pair<List<KotlinParser.TypeContext>?, KotlinParser.CallSuffixContext> {
+            return postfixUnarySuffix(0)?.typeArguments()?.let {
+                it.typeProjection().map { it.type()!! } to postfixUnarySuffix(1).callSuffix()
+            } ?: postfixUnarySuffix(0)?.callSuffix()?.let {
+                it.typeArguments()?.typeProjection()?.map { it.type()!! } to it
+            } ?: throw IllegalStateException("No necessary information found for translating collection")
+        }
+
         functionReplacements["nullOf"] = {
-            val type = it.postfixUnarySuffix()[0]!!.also { println("val type = it.postfixUnarySuffix()[0] - " + it.text) }
-                .let {
-                    it.typeArguments() ?: it.callSuffix()?.typeArguments()
-                }!!
-                .typeProjection()!!.also { println(".typeProjection() - " + it.joinToString { it.text }) }
-                .first().text
-            direct.append("Optional<$type>.none")
+            val (typeArgs, params) = it.typeArgsAndParams()
+            direct.append("Optional<")
+            write(typeArgs!![0])
+            direct.append(">.none")
         }
 
         functionReplacements["Pair"] = {
-            val valArgs = it.postfixUnarySuffix(0).callSuffix().valueArguments().valueArgument()
+            val (typeArgs, params) = it.typeArgsAndParams()
+            val valArgs = params.valueArguments().valueArgument()
             direct.append('(')
             write(valArgs[0])
             direct.append(", ")
@@ -146,18 +153,18 @@ class SwiftAltListener {
         }
 
         functionReplacements["listOf"] = {
-            val callSuffix = it.postfixUnarySuffix()[0]!!.callSuffix()!!
-            callSuffix.valueArguments()?.valueArgument()?.takeUnless { it.isEmpty() }?.let { valueArgs ->
+            val (typeArgs, params) = it.typeArgsAndParams()
+            params.valueArguments()?.valueArgument()?.takeUnless { it.isEmpty() }?.let { valueArgs ->
                 direct.append("[")
                 valueArgs.forEachBetween(
                     forItem = { write(it) },
                     between = { direct.append(", ") }
                 )
                 direct.append("]")
-            } ?: callSuffix.typeArguments()?.typeProjection()?.firstOrNull()?.let {
+            } ?: typeArgs?.let {
                 direct.append("Array<")
-                write(it.type())
-                direct.append(">()")
+                write(it[0])
+                direct.append(">")
             } ?: run {
                 direct.append("[]")
             }
@@ -167,20 +174,28 @@ class SwiftAltListener {
         }
         functionReplacements["arrayListOf"] = functionReplacements["listOf"]!!
         functionReplacements["mutableListOf"] = functionReplacements["listOf"]!!
+        functionReplacements["arrayOf"] = functionReplacements["listOf"]!!
+        functionReplacements["byteArrayOf"] = functionReplacements["listOf"]!!
+        functionReplacements["shortArrayOf"] = functionReplacements["listOf"]!!
+        functionReplacements["intArrayOf"] = functionReplacements["listOf"]!!
+        functionReplacements["longArrayOf"] = functionReplacements["listOf"]!!
+        functionReplacements["doubleArrayOf"] = functionReplacements["listOf"]!!
+        functionReplacements["floatArrayOf"] = functionReplacements["listOf"]!!
+        functionReplacements["booleanArrayOf"] = functionReplacements["listOf"]!!
 
         functionReplacements["setOf"] = {
-            val callSuffix = it.postfixUnarySuffix()[0]!!.callSuffix()!!
-            callSuffix.valueArguments()?.valueArgument()?.takeUnless { it.isEmpty() }?.let { valueArgs ->
+            val (typeArgs, params) = it.typeArgsAndParams()
+            params.valueArguments()?.valueArgument()?.takeUnless { it.isEmpty() }?.let { valueArgs ->
                 direct.append("[")
                 valueArgs.forEachBetween(
                     forItem = { write(it) },
                     between = { direct.append(", ") }
                 )
                 direct.append("]")
-            } ?: callSuffix.typeArguments()?.typeProjection()?.firstOrNull()?.let {
+            } ?: typeArgs?.let {
                 direct.append("Set<")
-                write(it.type())
-                direct.append(">()")
+                write(it[0])
+                direct.append(">")
             } ?: run {
                 direct.append("[]")
             }
@@ -192,8 +207,8 @@ class SwiftAltListener {
         functionReplacements["mutableSetOf"] = functionReplacements["setOf"]!!
 
         functionReplacements["mapOf"] = {
-            val callSuffix = it.postfixUnarySuffix()[0]!!.callSuffix()!!
-            callSuffix.valueArguments()?.valueArgument()?.takeUnless { it.isEmpty() }?.let { valueArgs ->
+            val (typeArgs, params) = it.typeArgsAndParams()
+            params.valueArguments()?.valueArgument()?.takeUnless { it.isEmpty() }?.let { valueArgs ->
                 direct.append("[")
                 valueArgs.forEachBetween(
                     forItem = {
@@ -214,12 +229,12 @@ class SwiftAltListener {
                     between = { direct.append(", ") }
                 )
                 direct.append("]")
-            } ?: callSuffix.typeArguments()?.typeProjection()?.let {
+            } ?: typeArgs?.let {
                 direct.append("Dictionary<")
-                write(it[0].type())
+                write(it[0])
                 direct.append(", ")
-                write(it[0].type())
-                direct.append(">()")
+                write(it[1])
+                direct.append(">")
             } ?: run {
                 direct.append("[:]")
             }

@@ -11,6 +11,7 @@ data class OngoingLayoutConversion(
     val styles: Styles,
     val converter: LayoutConverter = LayoutConverter.normal,
     val bindings: HashMap<String, String> = HashMap(),
+    val delegateBindings: HashMap<String, String> = HashMap(),
     val sublayouts: HashMap<String, String> = HashMap()
 ) : Appendable by appendable {
 

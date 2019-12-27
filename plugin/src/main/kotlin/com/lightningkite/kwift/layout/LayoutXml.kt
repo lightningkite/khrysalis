@@ -46,6 +46,9 @@ fun File.translateLayoutXml(styles: Styles, converter: LayoutConverter = LayoutC
         conversion.sublayouts.entries.forEach {
             appendln("public let ${it.key}: ${it.value} = ${it.value}()")
         }
+        conversion.delegateBindings.entries.forEach {
+            appendln("public unowned var ${it.key}Delegate: ${it.value}!")
+        }
         conversion.bindings.entries.forEach {
             appendln("public unowned var ${it.key}: ${it.value}!")
         }

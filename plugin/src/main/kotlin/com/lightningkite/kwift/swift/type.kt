@@ -74,6 +74,7 @@ fun SwiftAltListener.registerType() {
             unescapedText.startsWith("unownedSelf") -> return@handle
             unescapedText.startsWith("weakSelf") -> return@handle
             unescapedText.startsWith("Deprecated") -> return@handle
+            unescapedText.startsWith("Suppress") -> return@handle
         }
         direct.append('@')
         write(item.unescapedAnnotation())

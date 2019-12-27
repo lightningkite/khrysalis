@@ -18,6 +18,11 @@ fun SwiftAltListener.registerVariable() {
             ?.parentIfType<KotlinParser.ClassMemberDeclarationsContext>()
             ?.parentIfType<KotlinParser.ClassBodyContext>()
             ?.parentIfType<KotlinParser.CompanionObjectContext>()
+        val owningObject = item.parentIfType<KotlinParser.DeclarationContext>()
+            ?.parentIfType<KotlinParser.ClassMemberDeclarationContext>()
+            ?.parentIfType<KotlinParser.ClassMemberDeclarationsContext>()
+            ?.parentIfType<KotlinParser.ClassBodyContext>()
+            ?.parentIfType<KotlinParser.ObjectDeclarationContext>()
 
         val myName = item.variableDeclaration().simpleIdentifier().text
         val originalUsesOverride =
@@ -77,7 +82,7 @@ fun SwiftAltListener.registerVariable() {
             if (owningClass != null || isTopLevel) {
                 append(item.modifiers().visibilityString())
                 append(" ")
-            } else if (owningCompanion != null) {
+            } else if (owningCompanion != null || owningObject != null) {
                 append("static ")
                 append(item.modifiers().visibilityString())
                 append(" ")

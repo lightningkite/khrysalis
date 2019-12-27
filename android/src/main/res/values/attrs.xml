@@ -54,4 +54,8 @@
         <attr name="dividerSize" format="dimension"/>
         <attr name="dividerHorizontalPadding" format="dimension"/>
     </declare-styleable>
+    <attr name="delegateClass"/>
+    <declare-styleable name="CustomView">
+        <attr name="delegateClass"/>
+    </declare-styleable>
 </resources>

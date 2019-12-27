@@ -18,6 +18,8 @@ import com.fasterxml.jackson.databind.ser.std.StdSerializer
 import com.fasterxml.jackson.databind.util.StdDateFormat
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.lightningkite.kwift.shared.Image
+import com.lightningkite.kwift.shared.TimeAlone
+import com.lightningkite.kwift.shared.DateAlone
 import okhttp3.*
 import java.io.ByteArrayOutputStream
 import java.io.IOException

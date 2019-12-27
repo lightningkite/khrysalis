@@ -28,4 +28,8 @@ public extension UIColor {
             alpha: (argb >> 24) & 0xFF
         )
     }
+    
+    func colorAlpha(_ amount: Int32) -> UIColor {
+        return withAlphaComponent(CGFloat(amount)/255)
+    }
 }

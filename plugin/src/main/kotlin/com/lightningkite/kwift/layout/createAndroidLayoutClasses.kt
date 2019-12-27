@@ -38,6 +38,12 @@ private data class AndroidIdHook(
     val resourceId: String
 )
 
+private data class AndroidDelegateHook(
+    val name: String,
+    val type: String,
+    val resourceId: String
+)
+
 private data class AndroidSubLayout(
     val name: String,
     val resourceId: String,
@@ -49,6 +55,7 @@ private fun File.translateLayoutXmlAndroid(styles: Styles, packageName: String, 
     val node = XmlNode.read(this, styles)
     val fileName = this.nameWithoutExtension.camelCase().capitalize()
     val bindings = ArrayList<AndroidIdHook>()
+    val delegateBindings = ArrayList<AndroidDelegateHook>()
     val sublayouts = ArrayList<AndroidSubLayout>()
 
     fun addBindings(node: XmlNode) {
@@ -72,6 +79,15 @@ private fun File.translateLayoutXmlAndroid(styles: Styles, packageName: String, 
                         resourceId = raw.removePrefix("@+id/").removePrefix("@id/")
                     )
                 )
+                (node.attributes["app:delegateClass"] ?: node.attributes["delegateClass"])?.let {
+                    delegateBindings.add(
+                        AndroidDelegateHook(
+                            name = raw.removePrefix("@+id/").removePrefix("@id/").camelCase(),
+                            type = it,
+                            resourceId = raw.removePrefix("@+id/").removePrefix("@id/")
+                        )
+                    )
+                }
             }
         }
         node.children.forEach {
@@ -96,6 +112,7 @@ private fun File.translateLayoutXmlAndroid(styles: Styles, packageName: String, 
     |class ${fileName}Xml {
     |
     |    ${bindings.joinToString("\n|    ") { it.run { "lateinit var $name: $type" } }}
+    |    ${delegateBindings.joinToString("\n|    ") { it.run { "lateinit var ${name}Delegate: $type" } }}
     |    ${sublayouts.joinToString("\n|    ") { it.run { "lateinit var $name: $layoutXmlClass" } }}
     |    lateinit var xmlRoot: View
     |
@@ -106,6 +123,7 @@ private fun File.translateLayoutXmlAndroid(styles: Styles, packageName: String, 
     |    fun setup(view: View): View {
     |        xmlRoot = view
     |        ${bindings.joinToString("\n|        ") { it.run { "$name = view.findViewById<$type>(R.id.$resourceId)" } }}
+    |        ${delegateBindings.joinToString("\n|        ") { it.run { "${name}Delegate = view.findViewById<CustomView>(R.id.$resourceId).delegate as $type" } }}
     |        ${sublayouts.joinToString("\n|        ") { it.run { "$name = $layoutXmlClass().apply{ setup(view.findViewById<View>(R.id.$resourceId)) }" } }}
     |        return view
     |    }

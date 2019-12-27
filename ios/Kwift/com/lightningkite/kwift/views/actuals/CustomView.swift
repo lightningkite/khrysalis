@@ -10,24 +10,36 @@ import UIKit
 
 public class CustomView: FrameLayout {
     
-    public var delegate: CustomViewDelegate?
-    public weak var accessibilityView: UIView?
-    
-    public func setup(){
-        self.isUserInteractionEnabled = true
-        self.isMultipleTouchEnabled = true
-        if UIAccessibility.isVoiceOverRunning {
-            if let accessibilityView = delegate?.generateAccessibilityView() {
-                addSubview(accessibilityView, gravity: .fillFill)
-                self.accessibilityView = accessibilityView
+    public var delegate: CustomViewDelegate? {
+        willSet {
+            delegate?.customView = nil
+        }
+        didSet {
+            delegate?.customView = self
+            self.isUserInteractionEnabled = true
+            self.isMultipleTouchEnabled = true
+            if UIAccessibility.isVoiceOverRunning {
+                if let accessibilityView = delegate?.generateAccessibilityView() {
+                    addSubview(accessibilityView, gravity: .fillFill)
+                    self.accessibilityView = accessibilityView
+                }
             }
         }
     }
     
+    public weak var accessibilityView: UIView?
+    let scaleInformation = DisplayMetrics(
+        density: Float(UIScreen.main.scale),
+        scaledDensity: Float(UIScreen.main.scale),
+        widthPixels: Int32(UIScreen.main.bounds.width * UIScreen.main.scale),
+        heightPixels: Int32(UIScreen.main.bounds.height * UIScreen.main.scale)
+    )
+    
     override public func draw(_ rect: CGRect) {
         guard let ctx = UIGraphicsGetCurrentContext() else { return }
-        ctx.clear(rect)
-        delegate?.draw(ctx, Float(rect.size.width), Float(rect.size.height))
+//        ctx.clear(rect)
+        ctx.scale(1/scaleInformation.density, 1/scaleInformation.density)
+        delegate?.draw(ctx, Float(rect.size.width) * scaleInformation.density, Float(rect.size.height) * scaleInformation.density, scaleInformation)
     }
     
     private var touchIds = Dictionary<UITouch, Int32>()
@@ -47,6 +59,17 @@ public class CustomView: FrameLayout {
         super.touchesEnded(touches, with: event)
     }
     
+    override public func sizeThatFits(_ size: CGSize) -> CGSize {
+        if let delegate = delegate {
+            return CGSize(
+                width: CGFloat(delegate.sizeThatFitsWidth(Float(size.width), Float(size.height))),
+                height: CGFloat(delegate.sizeThatFitsHeight(Float(size.width), Float(size.height)))
+            )
+        } else {
+            return super.sizeThatFits(size)
+        }
+    }
+    
     private func handleTouches(_ touches: Set<UITouch>){
         for touch in touches {
             let loc = touch.location(in: self)
@@ -55,14 +78,32 @@ public class CustomView: FrameLayout {
                 let id = currentTouchId
                 currentTouchId += 1
                 touchIds[touch] = id
-                let _ = delegate?.onTouchDown(id, Float(loc.x), Float(loc.y), Float(frame.size.width), Float(frame.size.height))
+                let _ = delegate?.onTouchDown(
+                    id,
+                    Float(loc.x) * scaleInformation.density,
+                    Float(loc.y) * scaleInformation.density,
+                    Float(frame.size.width) * scaleInformation.density,
+                    Float(frame.size.height) * scaleInformation.density
+                )
             case .moved:
                 if let id = touchIds[touch] {
-                    let _ = delegate?.onTouchMove(id, Float(loc.x), Float(loc.y), Float(frame.size.width), Float(frame.size.height))
+                    let _ = delegate?.onTouchMove(
+                        id,
+                        Float(loc.x) * scaleInformation.density,
+                        Float(loc.y) * scaleInformation.density,
+                        Float(frame.size.width) * scaleInformation.density,
+                        Float(frame.size.height) * scaleInformation.density
+                    )
                 }
             case .ended:
                 if let id = touchIds[touch] {
-                    let _ = delegate?.onTouchUp(id, Float(loc.x), Float(loc.y), Float(frame.size.width), Float(frame.size.height))
+                    let _ = delegate?.onTouchUp(
+                        id,
+                        Float(loc.x) * scaleInformation.density,
+                        Float(loc.y) * scaleInformation.density,
+                        Float(frame.size.width) * scaleInformation.density,
+                        Float(frame.size.height) * scaleInformation.density
+                    )
                 }
                 touchIds.removeValue(forKey: touch)
             default:

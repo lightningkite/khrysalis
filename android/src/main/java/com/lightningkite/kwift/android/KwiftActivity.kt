@@ -1,5 +1,6 @@
 package com.lightningkite.kwift.android
 
+import android.animation.ValueAnimator
 import android.annotation.TargetApi
 import android.app.Activity
 import android.app.AlertDialog
@@ -20,6 +21,7 @@ import com.lightningkite.kwift.views.shared.ViewGenerator
 import com.lightningkite.kwift.views.shared.showDialogEvent
 import java.util.*
 import com.lightningkite.kwift.R
+import com.lightningkite.kwift.actual.animationFrame
 import com.lightningkite.kwift.observables.shared.Close
 
 /**
@@ -32,6 +34,7 @@ abstract class KwiftActivity : AccessibleActivity() {
     abstract val main: ViewGenerator
     lateinit var view: View
     private var showDialogEventCloser:Close? = null
+    private var animator: ValueAnimator? = null
 
     open fun handleDeepLink(schema: String, host: String, path: String, params: Map<String, String>) {
         println("Got deep link: $schema://$host/$path?${params.entries.joinToString("&") { it.key + "=" + it.value }}")
@@ -66,6 +69,30 @@ abstract class KwiftActivity : AccessibleActivity() {
     override fun onDestroy() {
         showDialogEventCloser?.close?.invoke()
         super.onDestroy()
+    }
+
+    override fun onResume() {
+        super.onResume()
+
+        animator = ValueAnimator().apply {
+            setIntValues(0, 100)
+            duration = 10000L
+            repeatCount = ValueAnimator.INFINITE
+            repeatMode = ValueAnimator.RESTART
+            var last = System.currentTimeMillis()
+            addUpdateListener {
+                val now = System.currentTimeMillis()
+                animationFrame.invokeAll((now - last) / 1000f)
+                last = now
+            }
+            start()
+        }
+    }
+
+    override fun onPause() {
+        super.onPause()
+        animator?.pause()
+        animator = null
     }
 
     private fun handleDeepLink(uri: Uri) {

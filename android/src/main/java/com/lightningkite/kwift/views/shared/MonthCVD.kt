@@ -1,0 +1,311 @@
+package com.lightningkite.kwift.views.shared
+
+import android.graphics.Canvas
+import android.graphics.Paint
+import android.graphics.RectF
+import android.util.DisplayMetrics
+import android.view.View
+import com.lightningkite.kwift.actual.*
+import com.lightningkite.kwift.observables.shared.addWeak
+import com.lightningkite.kwift.shared.DateAlone
+import com.lightningkite.kwift.shared.floorDiv
+import com.lightningkite.kwift.shared.floorMod
+import com.lightningkite.kwift.views.actual.asColor
+import com.lightningkite.kwift.views.actual.colorAlpha
+import com.lightningkite.kwift.views.actual.drawTextCentered
+import java.util.*
+import kotlin.math.max
+
+/**Renders a swipeable calendar.**/
+open class MonthCVD : CustomViewDelegate() {
+    override fun generateAccessibilityView(): View? = null
+
+    private var _currentMonth: DateAlone = Date().dateAlone.setDayOfMonth(1)
+    var currentMonth: DateAlone
+        get() = _currentMonth
+        set(value) {
+            _currentMonth = value.copy(day = 1)
+            customView?.invalidate()
+        }
+
+    var labelFontSp: Float = 12f
+    var dayFontSp: Float = 16f
+    var internalPaddingDp: Float = 8f
+    var dayCellMarginDp: Float = 8f
+    private var internalPadding: Float = 0f
+    private var dayLabelHeight: Float = 0f
+    private var dayCellHeight: Float = 0f
+    private var dayCellWidth: Float = 0f
+    private var dayCellMargin: Float = 0f
+
+    private var _currentOffset: Float = 0f //ratio of widths
+    var currentOffset: Float //ratio of widths
+        get() {
+            return _currentOffset
+        }
+        set(value) {
+            _currentOffset = value
+            customView?.postInvalidate()
+        }
+    private var dragStartX: Float = 0f
+    private var lastOffset: Float = 0f
+    private var lastOffsetTime: Long = 0L
+    private val DRAGGING_NONE: Int = -1
+    private var draggingId: Int = DRAGGING_NONE
+
+    fun animateNextMonth() {
+        currentMonth.setAddMonthOfYear(1)
+        currentOffset = 1f
+    }
+
+    fun animatePreviousMonth() {
+        currentMonth.setAddMonthOfYear(-1)
+        currentOffset = -1f
+    }
+
+    val labelPaint: Paint = Paint()
+    val dayPaint: Paint = Paint()
+
+    init {
+        this.labelPaint.isAntiAlias = true
+        this.labelPaint.style = Paint.Style.FILL
+        this.labelPaint.color = 0xFF808080.asColor()
+        this.dayPaint.isAntiAlias = true
+        this.dayPaint.style = Paint.Style.FILL
+        this.dayPaint.color = 0xFF202020.asColor()
+        animationFrame.addWeak(this) { self, timePassed ->
+            if (this.draggingId == DRAGGING_NONE && this.currentOffset != 0f) {
+                var newOffset = this.currentOffset * max(0f, (1f - 8f * timePassed))
+                val min = 0.001f
+                when {
+                    newOffset > min -> newOffset -= min
+                    newOffset < -min -> newOffset += min
+                    else -> newOffset = 0f
+                }
+                this.currentOffset = newOffset
+            }
+        }
+    }
+
+    private val calcMonth: DateAlone = DateAlone(1, 1, 1)
+    fun dayAtPixel(x: Float, y: Float, existing: DateAlone? = null): DateAlone? {
+        if (y < dayLabelHeight) return null
+        val columnRaw = (x / dayCellWidth - dayCellWidth * currentOffset * 7).toInt()
+        val column = columnRaw.floorMod(7)
+        val monthOffset = columnRaw.floorDiv(7)
+        val row = ((y - dayLabelHeight) / dayCellHeight).toInt()
+        if (row < 0 || row > 5) return null
+        if (column < 0 || column > 6) return null
+        return dayAt(
+            calcMonth.set(currentMonth).setAddMonthOfYear(monthOffset),
+            row,
+            column,
+            existing ?: DateAlone(0, 0, 0)
+        )
+    }
+
+    fun dayAt(month: DateAlone, row: Int, column: Int, existing: DateAlone = DateAlone(0, 0, 0)): DateAlone {
+        return existing
+            .set(month)
+            .setDayOfMonth(1)
+            .setDayOfWeek(1)
+            .setAddDayOfMonth(row * 7 + column)
+    }
+
+    fun measure(width: Float, height: Float, displayMetrics: DisplayMetrics) {
+        internalPadding = displayMetrics.density * internalPaddingDp
+        dayCellMargin = displayMetrics.density * dayCellMarginDp
+        labelPaint.textSize = labelFontSp * displayMetrics.scaledDensity
+        dayPaint.textSize = dayFontSp * displayMetrics.scaledDensity
+        dayLabelHeight = labelPaint.textSize * 1.5f + internalPadding * 2
+        dayCellWidth = width / 7f
+        dayCellHeight = (height - dayLabelHeight) / 6f
+    }
+
+    private val calcMonthB: DateAlone = DateAlone(0, 0, 0)
+    override fun draw(canvas: Canvas, width: Float, height: Float, displayMetrics: DisplayMetrics) {
+        measure(width, height, displayMetrics)
+        println("Drawing!")
+        if (currentOffset > 0f) {
+            //draw past month and current month
+            drawMonth(
+                canvas,
+                (currentOffset - 1f) * width,
+                calcMonthB.set(currentMonth).setAddMonthOfYear(-1),
+                displayMetrics
+            )
+            drawMonth(canvas, currentOffset * width, currentMonth, displayMetrics)
+        } else if (currentOffset < 0f) {
+            //draw future month and current month
+            drawMonth(
+                canvas,
+                (currentOffset + 1f) * width,
+                calcMonthB.set(currentMonth).setAddMonthOfYear(1),
+                displayMetrics
+            )
+            drawMonth(canvas, currentOffset * width, currentMonth, displayMetrics)
+        } else {
+            //Nice, it's exactly zero.  We can just draw one.
+            drawMonth(canvas, currentOffset * width, currentMonth, displayMetrics)
+        }
+    }
+
+    private var drawDate: DateAlone = DateAlone(1, 1, 1)
+    private val rectForReuse: RectF = RectF()
+    private val rectForReuseB: RectF = RectF()
+    open fun drawMonth(canvas: Canvas, xOffset: Float, month: DateAlone, displayMetrics: DisplayMetrics) {
+        for (day in 1.toInt()..7.toInt()) {
+            val col = day - 1
+            rectForReuse.set(
+                xOffset + col.toFloat() * dayCellWidth - 0.01f,
+                -0.01f,
+                xOffset + (col.toFloat() + 1) * dayCellWidth + 0.01f,
+                dayLabelHeight + 0.01f
+            )
+            rectForReuseB.set(rectForReuse)
+            rectForReuse.inset(internalPadding, internalPadding)
+            drawLabel(canvas, day, displayMetrics, rectForReuse, rectForReuseB)
+        }
+        for (row in 0.toInt()..5.toInt()) {
+            for (col in 0.toInt()..6.toInt()) {
+                val day = dayAt(month, row, col, drawDate)
+                rectForReuse.set(
+                    xOffset + col.toFloat() * dayCellWidth - 0.01f,
+                    dayLabelHeight + row.toFloat() * dayCellHeight - 0.01f,
+                    xOffset + (col.toFloat() + 1) * dayCellWidth + 0.01f,
+                    dayLabelHeight + (row.toFloat() + 1) * dayCellHeight + 0.01f
+                )
+                rectForReuseB.set(rectForReuse)
+                rectForReuse.inset(dayCellMargin, dayCellMargin)
+                drawDay(canvas, month, day, displayMetrics, rectForReuse, rectForReuseB)
+            }
+        }
+    }
+
+    open fun drawLabel(canvas: Canvas, dayOfWeek: Int, displayMetrics: DisplayMetrics, outer: RectF, inner: RectF) {
+        CalendarDrawing.label(canvas, dayOfWeek, inner, labelPaint)
+    }
+
+    open fun drawDay(
+        canvas: Canvas,
+        showingMonth: DateAlone,
+        day: DateAlone,
+        displayMetrics: DisplayMetrics,
+        outer: RectF,
+        inner: RectF
+    ) {
+        if (day.month == showingMonth.month && day.year == showingMonth.year) {
+            CalendarDrawing.day(canvas, day, outer, dayPaint)
+        } else {
+            CalendarDrawing.dayFaded(canvas, day, outer, dayPaint)
+        }
+    }
+
+    override fun onTouchDown(id: Int, x: Float, y: Float, width: Float, height: Float): Boolean {
+        val day = dayAtPixel(x, y)
+        day?.let {
+            if (onTouchDown(it)) {
+                return true
+            }
+        }
+        dragStartX = x / width
+        draggingId = id
+        lastOffsetTime = System.currentTimeMillis()
+        return true
+    }
+
+    open fun onTouchDown(day: DateAlone): Boolean = false
+    override fun onTouchMove(id: Int, x: Float, y: Float, width: Float, height: Float): Boolean {
+        if (draggingId == id) {
+            lastOffset = currentOffset
+            lastOffsetTime = System.currentTimeMillis()
+            currentOffset = (x / width) - dragStartX
+        } else {
+            dayAtPixel(x, y)?.let {
+                return onTouchMove(it)
+            }
+        }
+        return true
+    }
+
+    open fun onTouchMove(day: DateAlone): Boolean = false
+    override fun onTouchUp(id: Int, x: Float, y: Float, width: Float, height: Float): Boolean {
+        if (draggingId == id) {
+            val weighted =
+                currentOffset + (currentOffset - lastOffset) * 200f / (System.currentTimeMillis() - lastOffsetTime).toFloat()
+            if (weighted > 0.5f) {
+                //shift right one
+                currentMonth.setAddMonthOfYear(-1)
+                currentOffset -= 1
+            } else if (weighted < -0.5f) {
+                //shift left one
+                currentMonth.setAddMonthOfYear(1)
+                currentOffset += 1
+            }
+            draggingId = DRAGGING_NONE
+        } else {
+            dayAtPixel(x, y)?.let {
+                return onTouchUp(it)
+            }
+        }
+        return true
+    }
+
+    open fun onTouchUp(day: DateAlone): Boolean = false
+
+    override fun sizeThatFitsWidth(width: Float, height: Float): Float {
+        return dayLabelHeight * 28f
+    }
+
+    override fun sizeThatFitsHeight(width: Float, height: Float): Float {
+        return width * 6f / 7f + dayLabelHeight
+    }
+}
+
+object CalendarDrawing {
+    fun day(canvas: Canvas, date: DateAlone, inner: RectF, paint: Paint) {
+        canvas.drawTextCentered(
+            date.day.toString(),
+            inner.centerX(),
+            inner.centerY(),
+            paint
+        )
+    }
+
+    fun dayFaded(canvas: Canvas, date: DateAlone, inner: RectF, paint: Paint) {
+        val originalColor = paint.color
+        @Suppress("CanBeVal") var myPaint = paint
+        myPaint.color = paint.color.colorAlpha(64)
+        canvas.drawTextCentered(
+            date.day.toString(),
+            inner.centerX(),
+            inner.centerY(),
+            myPaint
+        )
+        myPaint.color = originalColor
+    }
+
+    fun label(canvas: Canvas, dayOfWeek: Int, inner: RectF, paint: Paint) {
+        val text = TimeNames.shortWeekdayName(dayOfWeek)
+        canvas.drawTextCentered(text, inner.centerX(), inner.centerY(), paint)
+    }
+
+    fun dayBackground(canvas: Canvas, inner: RectF, paint: Paint) {
+        canvas.drawOval(inner, paint)
+    }
+
+    fun dayBackgroundStart(canvas: Canvas, inner: RectF, outer: RectF, paint: Paint) {
+        canvas.drawOval(inner, paint)
+        canvas.drawRect(outer.centerX(), inner.top, outer.right, inner.bottom, paint)
+    }
+
+    fun dayBackgroundMid(canvas: Canvas, inner: RectF, outer: RectF, paint: Paint) {
+        canvas.drawRect(outer.left, inner.top, outer.right, inner.bottom, paint)
+    }
+
+    fun dayBackgroundEnd(canvas: Canvas, inner: RectF, outer: RectF, paint: Paint) {
+        canvas.drawOval(inner, paint)
+        canvas.drawRect(outer.left, inner.top, outer.centerX(), inner.bottom, paint)
+    }
+}
+

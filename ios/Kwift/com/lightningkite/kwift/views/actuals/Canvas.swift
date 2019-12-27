@@ -9,6 +9,71 @@ import CoreGraphics
 
 public typealias Canvas = CGContext
 public typealias Path = CGMutablePath
+public typealias RectF = CGRect
+public typealias PointF = CGPoint
+
+public extension RectF {
+    init(){
+        self = .zero
+    }
+    var right: Float {
+        get {
+            return Float(origin.x + size.width)
+        }
+        set(value){
+            size.width = CGFloat(value) - origin.x
+        }
+    }
+    var bottom: Float {
+        get {
+            return Float(origin.y + size.height)
+        }
+        set(value){
+            size.height = CGFloat(value) - origin.y
+        }
+    }
+    var left: Float {
+        get {
+            return Float(origin.x)
+        }
+        set(value){
+            let cg = CGFloat(value)
+            size.width -= cg - origin.x
+            origin.x = cg
+        }
+    }
+    var top: Float {
+        get {
+            return Float(origin.y)
+        }
+        set(value){
+            let cg = CGFloat(value)
+            size.height -= cg - origin.y
+            origin.y = cg
+        }
+    }
+    mutating func set(_ left: Float, _ top: Float, _ right: Float, _ bottom: Float) {
+        origin.x = CGFloat(left)
+        origin.y = CGFloat(top)
+        size.width = CGFloat(right - left)
+        size.height = CGFloat(bottom - top)
+    }
+    mutating func set(_ rect: RectF) {
+        origin.x = rect.origin.x
+        origin.y = rect.origin.y
+        size.width = rect.size.width
+        size.height = rect.size.height
+    }
+    func centerX() -> Float {
+        return Float(midX)
+    }
+    func centerY() -> Float {
+        return Float(midY)
+    }
+    mutating func inset(_ dx: Float, _ dy: Float) {
+        self = self.insetBy(dx: CGFloat(dx), dy: CGFloat(dy))
+    }
+}
 
 public struct Paint {
     public var flags: Int32 = 0
@@ -17,12 +82,16 @@ public struct Paint {
     public var style: Style = .FILL
     public var textSize: Float = 12
     public var shader: ((CGContext)->Void)? = nil
+    public var isAntiAlias: Bool = false
 //    public var typeface: UIFont
     
     public enum Style { case FILL, STROKE, FILL_AND_STROKE }
     
     var attributes: Dictionary<NSAttributedString.Key, Any> {
-        return [:]
+        return [
+            .font: UIFont.get(size: CGFloat(textSize), style: []),
+            .foregroundColor: color
+        ]
     }
     public func measureText(_ text: String) -> Float {
         return Float(NSString(string: text).size(withAttributes: attributes).width)
@@ -129,8 +198,40 @@ public extension Canvas {
         )
     }
     
+    func drawRect(_ rect: RectF, _ paint: Paint) {
+        self.completePath(
+            CGPath(
+                rect: rect,
+                transform: nil
+            ),
+            paint
+        )
+    }
+    
+    func drawOval(_ rect: RectF, _ paint: Paint) {
+        self.completePath(
+            CGPath(
+                ellipseIn: rect,
+                transform: nil
+            ),
+            paint
+        )
+    }
+    
+    func drawRoundRect(_ rect: RectF, _ rx: Float, _ ry: Float, _ paint: Paint) {
+        self.completePath(
+            CGPath(
+                roundedRect: rect,
+                cornerWidth: CGFloat(rx),
+                cornerHeight: CGFloat(ry),
+                transform: nil
+            ),
+            paint
+        )
+    }
+    
 //    func drawColor(_ color: UIColor) {
-//        self.clear(<#T##rect: CGRect##CGRect#>)
+//        self.clear()
 //    }
     
     func drawPath(_ path: Path, _ paint: Paint) {
