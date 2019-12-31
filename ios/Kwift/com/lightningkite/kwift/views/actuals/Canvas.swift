@@ -70,6 +70,12 @@ public extension RectF {
     func centerY() -> Float {
         return Float(midY)
     }
+    func width() -> Float {
+        return Float(size.width)
+    }
+    func height() -> Float {
+        return Float(size.height)
+    }
     mutating func inset(_ dx: Float, _ dy: Float) {
         self = self.insetBy(dx: CGFloat(dx), dy: CGFloat(dy))
     }
@@ -83,18 +89,23 @@ public struct Paint {
     public var textSize: Float = 12
     public var shader: ((CGContext)->Void)? = nil
     public var isAntiAlias: Bool = false
+    public var isFakeBoldText: Bool = false
 //    public var typeface: UIFont
     
     public enum Style { case FILL, STROKE, FILL_AND_STROKE }
     
     var attributes: Dictionary<NSAttributedString.Key, Any> {
         return [
-            .font: UIFont.get(size: CGFloat(textSize), style: []),
+            .font: UIFont.get(size: CGFloat(textSize), style: isFakeBoldText ? ["bold"] : []),
             .foregroundColor: color
         ]
     }
     public func measureText(_ text: String) -> Float {
         return Float(NSString(string: text).size(withAttributes: attributes).width)
+    }
+    public var textHeight: Float {
+        let font = UIFont.get(size: CGFloat(textSize), style: [])
+        return Float(font.descender + font.ascender)
     }
     
     public init(){
@@ -146,6 +157,18 @@ public extension Canvas {
                 strokePath()
             }
         }
+    }
+    
+    func clipRect(_ left: Float, _ top: Float, _ right: Float, _ bottom: Float){
+        clip(to: CGRect(
+            x: CGFloat(left),
+            y: CGFloat(top),
+            width: CGFloat(right-left),
+            height: CGFloat(bottom-top)
+        ))
+    }
+    func clipRect(_ rect: RectF){
+        clip(to: rect)
     }
     
     func drawCircle(_ cx: Float, _ cy: Float, _ radius: Float, _ paint: Paint) {
@@ -241,6 +264,32 @@ public extension Canvas {
     func drawTextCentered(_ text: String, _ centerX: Float, _ centerY: Float, _ paint: Paint) {
         let sizeTaken = text.size(withAttributes: paint.attributes)
         text.draw(at: CGPoint(x: CGFloat(centerX) - sizeTaken.width / 2, y: CGFloat(centerY) - sizeTaken.height / 2), withAttributes: paint.attributes)
+    }
+    
+    func drawText(_ text: String, _ x: Float, _ y: Float, _ gravity: AlignPair, _ paint: Paint) {
+        let sizeTaken = text.size(withAttributes: paint.attributes)
+        var dx = CGFloat(x)
+        var dy = CGFloat(y)
+        switch gravity.horizontal {
+        case .start:
+            break
+        case .fill, .center:
+            dx = dx - sizeTaken.width / 2
+        case .end:
+            dx = dx - sizeTaken.width
+        }
+        switch gravity.vertical {
+        case .start:
+            break
+        case .fill, .center:
+            dy = dy - sizeTaken.height / 2
+        case .end:
+            dy = dy - sizeTaken.height
+        }
+        text.draw(at: CGPoint(x: dx, y: dy), withAttributes: paint.attributes)
+    }
+    func drawText(text: String, x: Float, y: Float, gravity: AlignPair, paint: Paint) {
+        drawText(text, x, y, gravity, paint)
     }
     
     func drawBitmap(_ bitmap: UIImage, _ left: Float, _ top: Float) {

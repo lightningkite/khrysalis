@@ -199,6 +199,15 @@ public extension DateAlone {
     func setAddDayOfMonth(_ value: Int32) -> DateAlone { return set(dateFrom(self, TimeAlone.noon).addDayOfMonth(value)) }
     func setAddMonthOfYear(_ value: Int32) -> DateAlone { return set(dateFrom(self, TimeAlone.noon).addMonthOfYear(value)) }
     func setAddYearAd(_ value: Int32) -> DateAlone { return set(dateFrom(self, TimeAlone.noon).addYearAd(value)) }
+    
+    func dayOfWeek(_ value: Int32) -> DateAlone { return dateFrom(self, TimeAlone.noon).dayOfWeek(value).dateAlone }
+    func dayOfMonth(_ value: Int32) -> DateAlone { return dateFrom(self, TimeAlone.noon).dayOfMonth(value).dateAlone }
+    func monthOfYear(_ value: Int32) -> DateAlone { return dateFrom(self, TimeAlone.noon).monthOfYear(value).dateAlone }
+    func yearAd(_ value: Int32) -> DateAlone { return dateFrom(self, TimeAlone.noon).yearAd(value).dateAlone }
+    func addDayOfWeek(_ value: Int32) -> DateAlone { return dateFrom(self, TimeAlone.noon).addDayOfWeek(value).dateAlone }
+    func addDayOfMonth(_ value: Int32) -> DateAlone { return dateFrom(self, TimeAlone.noon).addDayOfMonth(value).dateAlone }
+    func addMonthOfYear(_ value: Int32) -> DateAlone { return dateFrom(self, TimeAlone.noon).addMonthOfYear(value).dateAlone }
+    func addYearAd(_ value: Int32) -> DateAlone { return dateFrom(self, TimeAlone.noon).addYearAd(value).dateAlone }
 }
 
 public extension TimeAlone {

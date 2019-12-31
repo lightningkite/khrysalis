@@ -307,6 +307,15 @@ fun DateAlone.setAddYearAd(value: Int): DateAlone =
     apply { useDate { date -> date.set(this); date.setAddYearAd(value); set(date) } }
 
 
+fun DateAlone.dayOfMonth(value: Int): DateAlone = useDate { date -> date.set(this); date.setDayOfMonth(value); date.dateAlone }
+fun DateAlone.monthOfYear(value: Int): DateAlone = useDate { date -> date.set(this); date.setMonthOfYear(value); date.dateAlone }
+fun DateAlone.yearAd(value: Int): DateAlone = useDate { date -> date.set(this); date.setYearAd(value); date.dateAlone }
+fun DateAlone.dayOfWeek(value: Int): DateAlone = useDate { date -> date.set(this); date.setDayOfWeek(value); date.dateAlone }
+fun DateAlone.addDayOfWeek(value: Int): DateAlone = useDate { date -> date.set(this); date.setAddDayOfWeek(value); date.dateAlone }
+fun DateAlone.addDayOfMonth(value: Int): DateAlone = useDate { date -> date.set(this); date.setAddDayOfMonth(value); date.dateAlone }
+fun DateAlone.addMonthOfYear(value: Int): DateAlone = useDate { date -> date.set(this); date.setAddMonthOfYear(value); date.dateAlone }
+fun DateAlone.addYearAd(value: Int): DateAlone = useDate { date -> date.set(this); date.setAddYearAd(value); date.dateAlone }
+
 fun dateFrom(dateAlone: DateAlone, timeAlone: TimeAlone, existing: Date = Date()): Date {
     return useCalendar {
         it.set(Calendar.YEAR, dateAlone.year)

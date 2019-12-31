@@ -12,14 +12,13 @@ open class MonthCVD: CustomViewDelegate {
     override public func generateAccessibilityView() -> View?  {
         return nil
     }
-    private var _currentMonth: DateAlone
+    public var currentMonthObs: MutableObservableProperty<DateAlone>
     public var currentMonth: DateAlone {
         get {
-            return _currentMonth
+            return currentMonthObs.value
         }
         set(value) {
-            _currentMonth = value.copy(day: 1)
-            customView?.invalidate()
+            currentMonthObs.value = value
         }
     }
     public var labelFontSp: Float
@@ -103,6 +102,7 @@ open class MonthCVD: CustomViewDelegate {
     
     override public func draw(canvas: Canvas, width: Float, height: Float, displayMetrics: DisplayMetrics) -> Void {
         measure(width, height, displayMetrics)
+        print("Drawing!")
         if currentOffset > Float(0) {
             drawMonth(canvas, ( currentOffset - Float(1) ) * width, calcMonthB.set(currentMonth).setAddMonthOfYear(-1), displayMetrics)
             drawMonth(canvas, currentOffset * width, currentMonth, displayMetrics)
@@ -137,7 +137,7 @@ open class MonthCVD: CustomViewDelegate {
                 rectForReuse.set(xOffset + col.toFloat() * dayCellWidth - Float(0.01), dayLabelHeight + row.toFloat() * dayCellHeight - Float(0.01), xOffset + ( col.toFloat() + 1 ) * dayCellWidth + Float(0.01), dayLabelHeight + ( row.toFloat() + 1 ) * dayCellHeight + Float(0.01))
                 rectForReuseB.set(rectForReuse)
                 rectForReuse.inset(dayCellMargin, dayCellMargin)
-                drawDay(canvas, month, day, displayMetrics, rectForReuse, rectForReuseB)
+                drawDay(canvas: canvas, showingMonth: month, day: day, displayMetrics: displayMetrics, outer: rectForReuseB, inner: rectForReuse)
             }
         }
     }
@@ -157,8 +157,6 @@ open class MonthCVD: CustomViewDelegate {
             CalendarDrawing.day(canvas, day, outer, dayPaint)
         } else {
             CalendarDrawing.dayFaded(canvas, day, outer, dayPaint)
-            print("Draw faded: \(showingMonth.month) vs \(day.month)")
-            print("Draw faded: \(showingMonth.year) vs \(day.year)")
         }
     }
     open func drawDay(_ canvas: Canvas, _ showingMonth: DateAlone, _ day: DateAlone, _ displayMetrics: DisplayMetrics, _ outer: RectF, _ inner: RectF) -> Void {
@@ -258,8 +256,8 @@ open class MonthCVD: CustomViewDelegate {
     }
     
     override public init() {
-        let _currentMonth: DateAlone = Date().dateAlone.setDayOfMonth(1)
-        self._currentMonth = _currentMonth
+        let currentMonthObs: MutableObservableProperty<DateAlone> = StandardObservableProperty(Date().dateAlone.setDayOfMonth(1))
+        self.currentMonthObs = currentMonthObs
         let labelFontSp: Float = Float(12)
         self.labelFontSp = labelFontSp
         let dayFontSp: Float = Float(16)
@@ -305,6 +303,9 @@ open class MonthCVD: CustomViewDelegate {
         let rectForReuseB: RectF = RectF()
         self.rectForReuseB = rectForReuseB
         super.init()
+        self.currentMonthObs.addAndRunWeak(self) { (self, value) in 
+            self.postInvalidate()
+        }
         self.labelPaint.isAntiAlias = true
         self.labelPaint.style = Paint.Style.FILL
         self.labelPaint.color = 0xFF808080.asColor()

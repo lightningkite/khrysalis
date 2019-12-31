@@ -37,3 +37,11 @@ fun WeekView.bind(
     this.setOnEventClickListener { event, eventRect -> onEventClick(event) }
     this.setEmptyViewClickListener { onEmptyClick(it.time) }
 }
+
+fun WeekView.bind(
+    data: (start: Date, end: Date) -> List<WeekViewEvent>,
+    onEventClick: (WeekViewEvent) -> Unit,
+    onEmptyClick: (Date) -> Unit
+) {
+
+}

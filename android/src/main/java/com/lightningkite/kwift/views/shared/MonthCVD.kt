@@ -6,7 +6,7 @@ import android.graphics.RectF
 import android.util.DisplayMetrics
 import android.view.View
 import com.lightningkite.kwift.actual.*
-import com.lightningkite.kwift.observables.shared.addWeak
+import com.lightningkite.kwift.observables.shared.*
 import com.lightningkite.kwift.shared.DateAlone
 import com.lightningkite.kwift.shared.floorDiv
 import com.lightningkite.kwift.shared.floorMod
@@ -14,19 +14,24 @@ import com.lightningkite.kwift.views.actual.asColor
 import com.lightningkite.kwift.views.actual.colorAlpha
 import com.lightningkite.kwift.views.actual.drawTextCentered
 import java.util.*
+import kotlin.math.absoluteValue
 import kotlin.math.max
 
 /**Renders a swipeable calendar.**/
 open class MonthCVD : CustomViewDelegate() {
     override fun generateAccessibilityView(): View? = null
 
-    private var _currentMonth: DateAlone = Date().dateAlone.setDayOfMonth(1)
+    val currentMonthObs: MutableObservableProperty<DateAlone> =
+        StandardObservableProperty(Date().dateAlone.setDayOfMonth(1))
     var currentMonth: DateAlone
-        get() = _currentMonth
+        get() = currentMonthObs.value
         set(value) {
-            _currentMonth = value.copy(day = 1)
-            customView?.invalidate()
+            currentMonthObs.value = value
         }
+
+    init {
+        this.currentMonthObs.addAndRunWeak(this) { self, value -> self.postInvalidate() }
+    }
 
     var labelFontSp: Float = 12f
     var dayFontSp: Float = 16f
@@ -125,7 +130,6 @@ open class MonthCVD : CustomViewDelegate() {
     private val calcMonthB: DateAlone = DateAlone(0, 0, 0)
     override fun draw(canvas: Canvas, width: Float, height: Float, displayMetrics: DisplayMetrics) {
         measure(width, height, displayMetrics)
-        println("Drawing!")
         if (currentOffset > 0f) {
             //draw past month and current month
             drawMonth(
@@ -177,7 +181,14 @@ open class MonthCVD : CustomViewDelegate() {
                 )
                 rectForReuseB.set(rectForReuse)
                 rectForReuse.inset(dayCellMargin, dayCellMargin)
-                drawDay(canvas, month, day, displayMetrics, rectForReuse, rectForReuseB)
+                drawDay(
+                    canvas = canvas,
+                    showingMonth = month,
+                    day = day,
+                    displayMetrics = displayMetrics,
+                    outer = rectForReuseB,
+                    inner = rectForReuse
+                )
             }
         }
     }
@@ -201,6 +212,10 @@ open class MonthCVD : CustomViewDelegate() {
         }
     }
 
+    var isTap: Boolean = false
+    var dragStartY: Float = 0f
+    open fun onTap(day: DateAlone) {}
+
     override fun onTouchDown(id: Int, x: Float, y: Float, width: Float, height: Float): Boolean {
         val day = dayAtPixel(x, y)
         day?.let {
@@ -209,8 +224,10 @@ open class MonthCVD : CustomViewDelegate() {
             }
         }
         dragStartX = x / width
+        dragStartY = y / height
         draggingId = id
         lastOffsetTime = System.currentTimeMillis()
+        isTap = true
         return true
     }
 
@@ -220,6 +237,9 @@ open class MonthCVD : CustomViewDelegate() {
             lastOffset = currentOffset
             lastOffsetTime = System.currentTimeMillis()
             currentOffset = (x / width) - dragStartX
+            if ((x / width - dragStartX).absoluteValue > 0.05f || (y / height - dragStartY).absoluteValue > 0.05f) {
+                isTap = false
+            }
         } else {
             dayAtPixel(x, y)?.let {
                 return onTouchMove(it)
@@ -231,16 +251,22 @@ open class MonthCVD : CustomViewDelegate() {
     open fun onTouchMove(day: DateAlone): Boolean = false
     override fun onTouchUp(id: Int, x: Float, y: Float, width: Float, height: Float): Boolean {
         if (draggingId == id) {
-            val weighted =
-                currentOffset + (currentOffset - lastOffset) * 200f / (System.currentTimeMillis() - lastOffsetTime).toFloat()
-            if (weighted > 0.5f) {
-                //shift right one
-                currentMonth.setAddMonthOfYear(-1)
-                currentOffset -= 1
-            } else if (weighted < -0.5f) {
-                //shift left one
-                currentMonth.setAddMonthOfYear(1)
-                currentOffset += 1
+            if (isTap) {
+                dayAtPixel(x, y)?.let {
+                    onTap(it)
+                }
+            } else {
+                val weighted =
+                    currentOffset + (currentOffset - lastOffset) * 200f / (System.currentTimeMillis() - lastOffsetTime).toFloat()
+                if (weighted > 0.5f) {
+                    //shift right one
+                    currentMonth.setAddMonthOfYear(-1)
+                    currentOffset -= 1
+                } else if (weighted < -0.5f) {
+                    //shift left one
+                    currentMonth.setAddMonthOfYear(1)
+                    currentOffset += 1
+                }
             }
             draggingId = DRAGGING_NONE
         } else {
