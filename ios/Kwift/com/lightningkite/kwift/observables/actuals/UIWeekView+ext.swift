@@ -48,6 +48,7 @@ public extension UIWeekView {
         let data: (Date, Date) -> Array<WeekViewEvent>
         let onEventClick: (WeekViewEvent) -> Void
         let onEmptyClick: (Date) -> Void
+        var onActiveDayChanged: (Date) -> Void = { _ in }
 
         init(
             data: @escaping (Date, Date) -> Array<WeekViewEvent>,
@@ -71,6 +72,42 @@ public extension UIWeekView {
         public func eventLoadRequest(in weekView: WeekView, between startDate: Date, and endDate: Date) {
             print("--- Loading from \(startDate) to \(endDate)")
             weekView.loadEvents(withData: data(startDate, endDate))
+        }
+        
+        public func activeDayChanged(in weekView: WeekView, to date: Date) {
+            onActiveDayChanged(date)
+        }
+    }
+    
+    static private var firstVisibleDayObservableExt = ExtensionProperty<UIWeekView, ReferenceObservableProperty<DateAlone>>()
+    
+    var firstVisibleDayObservable: MutableObservableProperty<DateAlone> {
+        if let existing = UIWeekView.firstVisibleDayObservableExt.get(self) {
+            return existing
+        } else {
+            let event = StandardEvent<DateAlone>()
+            if let dg = self.delegate as? BindDelegate {
+                dg.onActiveDayChanged = { value in
+                    event.invokeAll(value.dateAlone)
+                }
+            }
+            let new = ReferenceObservableProperty(
+                get: { [weak self] in self?.visibleDayDateRange.lowerBound.dateObj.dateAlone ?? DateAlone.now() },
+                set: { [weak self] (value: DateAlone) in self?.showDay(withDate: dateFrom(value, TimeAlone.noon)) },
+                onChange: event
+            )
+            UIWeekView.firstVisibleDayObservableExt.set(self, new)
+            return new
+        }
+    }
+    
+    var visibleDays: Int32 {
+        get {
+            return Int32(self.visibleDaysInPortraitMode)
+        }
+        set(value){
+            self.visibleDaysInPortraitMode = Int(value)
+            self.visibleDaysInLandscapeMode = Int(value)
         }
     }
 }

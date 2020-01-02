@@ -364,8 +364,8 @@ fun TimeAlone.iso8601(): String = SimpleDateFormat("HH:mm:ss").format(dateFrom(D
 
 object TimeNames {
     private val symbols = DateFormatSymbols()
-    val shortMonthNames: List<String> = symbols.shortMonths.toList().dropLast(1)
-    val monthNames: List<String> = symbols.months.toList().dropLast(1)
+    val shortMonthNames: List<String> = symbols.shortMonths.toList()
+    val monthNames: List<String> = symbols.months.toList()
     val shortWeekdayNames: List<String> = symbols.shortWeekdays.toList().drop(1)
     val weekdayNames: List<String> = symbols.weekdays.toList().drop(1)
     fun shortMonthName(oneIndexedPosition: Int): String = shortMonthNames[oneIndexedPosition - 1]

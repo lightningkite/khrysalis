@@ -47,12 +47,14 @@ open class MonthCVD: CustomViewDelegate {
     private var draggingId: Int32
     
     public func animateNextMonth() -> Void {
-        currentMonth.setAddMonthOfYear(1)
+        currentMonthObs.value.setAddMonthOfYear(1)
+        currentMonthObs.update()
         currentOffset = Float(1)
     }
     
     public func animatePreviousMonth() -> Void {
-        currentMonth.setAddMonthOfYear(-1)
+        currentMonthObs.value.setAddMonthOfYear(-1)
+        currentMonthObs.update()
         currentOffset = -Float(1)
     }
     public var labelPaint: Paint
@@ -102,7 +104,6 @@ open class MonthCVD: CustomViewDelegate {
     
     override public func draw(canvas: Canvas, width: Float, height: Float, displayMetrics: DisplayMetrics) -> Void {
         measure(width, height, displayMetrics)
-        print("Drawing!")
         if currentOffset > Float(0) {
             drawMonth(canvas, ( currentOffset - Float(1) ) * width, calcMonthB.set(currentMonth).setAddMonthOfYear(-1), displayMetrics)
             drawMonth(canvas, currentOffset * width, currentMonth, displayMetrics)
@@ -162,6 +163,14 @@ open class MonthCVD: CustomViewDelegate {
     open func drawDay(_ canvas: Canvas, _ showingMonth: DateAlone, _ day: DateAlone, _ displayMetrics: DisplayMetrics, _ outer: RectF, _ inner: RectF) -> Void {
         return drawDay(canvas: canvas, showingMonth: showingMonth, day: day, displayMetrics: displayMetrics, outer: outer, inner: inner)
     }
+    public var isTap: Bool
+    public var dragStartY: Float
+    
+    open func onTap(day: DateAlone) -> Void {
+    }
+    open func onTap(_ day: DateAlone) -> Void {
+        return onTap(day: day)
+    }
     
     override public func onTouchDown(id: Int32, x: Float, y: Float, width: Float, height: Float) -> Bool {
         var day = dayAtPixel(x, y)
@@ -172,8 +181,10 @@ open class MonthCVD: CustomViewDelegate {
             } 
         }
         dragStartX = x / width
+        dragStartY = y / height
         draggingId = id
         lastOffsetTime = System.currentTimeMillis()
+        isTap = true
         return true
     }
     override public func onTouchDown(_ id: Int32, _ x: Float, _ y: Float, _ width: Float, _ height: Float) -> Bool {
@@ -192,6 +203,9 @@ open class MonthCVD: CustomViewDelegate {
             lastOffset = currentOffset
             lastOffsetTime = System.currentTimeMillis()
             currentOffset = ( x / width ) - dragStartX
+            if ( x / width - dragStartX ).absoluteValue > Float(0.05) || ( y / height - dragStartY ).absoluteValue > Float(0.05) {
+                isTap = false
+            }
         } else {
             
             if let it = (dayAtPixel(x, y)) {
@@ -213,13 +227,22 @@ open class MonthCVD: CustomViewDelegate {
     
     override public func onTouchUp(id: Int32, x: Float, y: Float, width: Float, height: Float) -> Bool {
         if draggingId == id {
-            var weighted = currentOffset + ( currentOffset - lastOffset ) * Float(200) / ( System.currentTimeMillis() - lastOffsetTime ).toFloat()
-            if weighted > Float(0.5) {
-                currentMonth.setAddMonthOfYear(-1)
-                currentOffset -= 1
-            } else if weighted < -Float(0.5) {
-                currentMonth.setAddMonthOfYear(1)
-                currentOffset += 1
+            if isTap {
+                
+                if let it = (dayAtPixel(x, y)) {
+                    onTap(it) 
+                }
+            } else {
+                var weighted = currentOffset + ( currentOffset - lastOffset ) * Float(200) / ( System.currentTimeMillis() - lastOffsetTime ).toFloat()
+                if weighted > Float(0.5) {
+                    currentMonthObs.value.setAddMonthOfYear(-1)
+                    currentMonthObs.update()
+                    currentOffset -= 1
+                } else if weighted < -Float(0.5) {
+                    currentMonthObs.value.setAddMonthOfYear(1)
+                    currentMonthObs.update()
+                    currentOffset += 1
+                }
             }
             draggingId = DRAGGING_NONE
         } else {
@@ -302,6 +325,10 @@ open class MonthCVD: CustomViewDelegate {
         self.rectForReuse = rectForReuse
         let rectForReuseB: RectF = RectF()
         self.rectForReuseB = rectForReuseB
+        let isTap: Bool = false
+        self.isTap = isTap
+        let dragStartY: Float = Float(0)
+        self.dragStartY = dragStartY
         super.init()
         self.currentMonthObs.addAndRunWeak(self) { (self, value) in 
             self.postInvalidate()

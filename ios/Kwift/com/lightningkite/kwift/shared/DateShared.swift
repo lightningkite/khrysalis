@@ -48,8 +48,20 @@ public class DateAlone: Equatable, Hashable {
     static public func iso(_ string: String) -> DateAlone {
         return iso(string: string)
     }
+    
+    static public func fromMonthInEra(monthInEra: Int32) -> DateAlone {
+        return DateAlone(year: ( monthInEra - 1 ) / 12, month: ( monthInEra - 1 ) % 12 + 1, day: 1)
+    }
+    static public func fromMonthInEra(_ monthInEra: Int32) -> DateAlone {
+        return fromMonthInEra(monthInEra: monthInEra)
+    }
     //End Companion
     
+    public var monthInEra: Int32 {
+        get {
+            return self.year * 12 + self.month
+        }
+    }
     public var comparable: Int32 {
         get {
             return self.year * 12 * 31 + self.month * 31 + self.day

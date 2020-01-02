@@ -171,19 +171,84 @@ public extension Array {
         copy.removeAt(index)
         return copy
     }
-    func  sumByDouble(selector: (Element) -> Double)-> Double{
+    func sumByDouble(selector: (Element) -> Double)-> Double{
         var sum:Double = 0.0
         for item in self{
             sum += selector(item)
         }
         return sum
     }
-    func  sumByLong(selector: (Element) -> Int64)-> Int64{
+    func sumByLong(selector: (Element) -> Int64)-> Int64{
         var sum:Int64 = 0
         for item in self{
             sum += selector(item)
         }
         return sum
+    }
+    
+    mutating func binaryInsertionBy<K: Comparable>(
+        item: Element,
+        selector: (Element)->K?
+    ) {
+        add(binarySearchBy(key: selector(item), selector: selector), item)
+    }
+    mutating func binaryInsertionBy<K: Comparable>(
+        _ item: Element,
+        _ selector: (Element)->K?
+    ) {
+        binaryInsertionBy(item: item, selector: selector)
+    }
+    
+    func binarySearchBy<K: Comparable>(
+        _ key: K?,
+        _ selector: (Element)->K?
+    ) -> Int32 {
+        binarySearchBy(key: key, selector: selector)
+    }
+    func binarySearchBy<K: Comparable>(
+        key: K?,
+        selector: (Element)->K?
+    ) -> Int32 {
+        let a = key
+        return binarySearchBy(
+            comparison: { item in
+                guard let a = a else { return .orderedAscending }
+                guard let b = selector(item) else { return .orderedDescending }
+                return a.compare(to: b)
+            }
+        )
+    }
+    
+    func binarySearchBy(
+        comparison: (Element)->ComparisonResult
+    ) -> Int32{
+        var low = 0
+        var high = count - 1
+        while low <= high {
+            let mid = (low + high) >> 1
+            let cmp = comparison(self[mid])
+            switch cmp {
+            case .orderedAscending:
+                low = mid + 1
+            case .orderedSame:
+                return Int32(mid)
+            case .orderedDescending:
+                high = mid - 1
+            }
+        }
+        return Int32(-(low + 1))
+    }
+}
+
+fileprivate extension Comparable {
+    func compare(to other: Self) -> ComparisonResult {
+        if self < other {
+            return .orderedAscending
+        } else if self > other {
+            return .orderedDescending
+        } else {
+            return .orderedSame
+        }
     }
 }
 

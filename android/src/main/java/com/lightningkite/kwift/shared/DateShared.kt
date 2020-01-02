@@ -14,7 +14,15 @@ data class DateAlone(var year: Int, var month: Int, var day: Int) {
             string.substringAfter("-").substringBefore("-").toInt(),
             string.substringAfterLast("-").toInt()
         )
+        fun fromMonthInEra(monthInEra: Int): DateAlone {
+            return DateAlone(
+                year = (monthInEra-1) / 12,
+                month = (monthInEra-1) % 12 + 1,
+                day = 1
+            )
+        }
     }
+    val monthInEra: Int get() = this.year * 12 + this.month
     val comparable: Int get() = this.year * 12 * 31 + this.month * 31 + this.day
     val dayOfWeek: Int get() = dateFrom(this, TimeAlone.noon).dayOfWeek
     fun set(other: DateAlone): DateAlone {

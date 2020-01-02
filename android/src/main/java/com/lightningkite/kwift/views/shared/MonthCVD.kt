@@ -59,12 +59,14 @@ open class MonthCVD : CustomViewDelegate() {
     private var draggingId: Int = DRAGGING_NONE
 
     fun animateNextMonth() {
-        currentMonth.setAddMonthOfYear(1)
+        currentMonthObs.value.setAddMonthOfYear(1)
+        currentMonthObs.update()
         currentOffset = 1f
     }
 
     fun animatePreviousMonth() {
-        currentMonth.setAddMonthOfYear(-1)
+        currentMonthObs.value.setAddMonthOfYear(-1)
+        currentMonthObs.update()
         currentOffset = -1f
     }
 
@@ -260,11 +262,13 @@ open class MonthCVD : CustomViewDelegate() {
                     currentOffset + (currentOffset - lastOffset) * 200f / (System.currentTimeMillis() - lastOffsetTime).toFloat()
                 if (weighted > 0.5f) {
                     //shift right one
-                    currentMonth.setAddMonthOfYear(-1)
+                    currentMonthObs.value.setAddMonthOfYear(-1)
+                    currentMonthObs.update()
                     currentOffset -= 1
                 } else if (weighted < -0.5f) {
                     //shift left one
-                    currentMonth.setAddMonthOfYear(1)
+                    currentMonthObs.value.setAddMonthOfYear(1)
+                    currentMonthObs.update()
                     currentOffset += 1
                 }
             }
