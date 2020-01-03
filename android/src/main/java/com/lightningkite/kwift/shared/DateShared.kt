@@ -3,6 +3,7 @@ package com.lightningkite.kwift.shared
 import com.lightningkite.kwift.actual.*
 
 import java.util.*
+import kotlin.math.roundToInt
 
 data class DateAlone(var year: Int, var month: Int, var day: Int) {
     companion object {
@@ -49,7 +50,20 @@ data class TimeAlone(var hour: Int, var minute: Int, var second: Int) {
     }
 
     val comparable: Int get() = this.hour * 60 * 60 + this.minute * 60 + this.second
-    val secondsInDay: Int get() = this.hour * 60 * 60 + this.minute * 60 + this.second
+    var secondsInDay: Int
+        get() = this.hour * 60 * 60 + this.minute * 60 + this.second
+        set(value) {
+            this.hour = value / 60 / 60
+            this.minute = value / 60 % 60
+            this.second = value % 60
+        }
+    var hoursInDay: Float
+        get() = this.hour.toFloat() + this.minute.toFloat() / 60f + this.second.toFloat() / 3600f + 0.5f/3600f
+        set(value) {
+            this.hour = value.toInt()
+            this.minute = (value * 60f).toInt() % 60
+            this.second = (value * 3600f).toInt() % 60
+        }
 
     fun normalize() {
         hour = (hour + minute.floorDiv(60)).floorMod(24)

@@ -94,4 +94,15 @@ class TimeAloneTest {
         assertEquals(0, result.minute)
         assertEquals(0, result.hour)
     }
+
+    @Test fun hoursTest(){
+        for(second in 0..24*60*60){
+            val time = TimeAlone(0,0,0)
+            time.secondsInDay = second
+            val before = time.comparable
+            time.hoursInDay = time.hoursInDay
+            val after = time.comparable
+            assertEquals(before, after)
+        }
+    }
 }
