@@ -38,6 +38,9 @@ val LayoutConverter.Companion.displayViews
                         }
                     }
                 }
+                node.attributeAsDouble("android:alpha")?.let {
+                    appendln("view.alpha = $it")
+                }
                 node.attributeAsDimension("android:elevation")?.let {
                     appendln("view.layer.masksToBounds = false")
                     appendln("view.layer.shadowColor = UIColor.black.cgColor")
