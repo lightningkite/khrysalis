@@ -45,7 +45,7 @@ fun SwiftAltListener.registerClass() {
                     append(it.simpleIdentifier().text)
                     append(": ")
                     write(it.type())
-                    if(!isFirst) {
+                    if (!isFirst) {
                         it.expression()?.let {
                             append(" = ")
                             write(it)
@@ -155,6 +155,31 @@ fun SwiftAltListener.registerClass() {
                 }
             }
             line("}")
+            line()
+            line("public func encode(to encoder: Encoder) throws {")
+            tab {
+                line("var container = encoder.container(keyedBy: CodingKeys.self)")
+                item.constructorVars().forEach {
+                    line {
+                        val typeText = it.type().text.trim()
+                        if(typeText.endsWith("?")){
+                            append("try container.encodeIfPresent(self.")
+                            append(it.simpleIdentifier().text)
+                            append(", forKey: .")
+                            append(it.simpleIdentifier().text)
+                            append(")")
+                        } else {
+                            append("try container.encode(self.")
+                            append(it.simpleIdentifier().text)
+                            append(", forKey: .")
+                            append(it.simpleIdentifier().text)
+                            append(")")
+                        }
+                    }
+                }
+            }
+            line("}")
+            line()
         }
     }
 
@@ -338,7 +363,7 @@ fun SwiftAltListener.registerClass() {
                     }
                 }
                 append(item.primaryConstructor()?.modifiers().visibilityString().let {
-                    if(it == "open") "public" else it
+                    if (it == "open") "public" else it
                 })
                 append(" init(")
                 item.primaryConstructor()?.classParameters()?.classParameter()?.forEachBetween(

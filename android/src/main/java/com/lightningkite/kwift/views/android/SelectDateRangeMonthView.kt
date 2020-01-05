@@ -4,10 +4,10 @@ import android.content.Context
 import android.graphics.Canvas
 import android.graphics.RectF
 import android.util.AttributeSet
-import com.lightningkite.kwift.observables.shared.Close
-import com.lightningkite.kwift.observables.shared.MutableObservableProperty
-import com.lightningkite.kwift.observables.shared.StandardObservableProperty
-import com.lightningkite.kwift.observables.shared.addWeak
+import com.lightningkite.kwift.observables.Close
+import com.lightningkite.kwift.observables.MutableObservableProperty
+import com.lightningkite.kwift.observables.StandardObservableProperty
+import com.lightningkite.kwift.observables.addWeak
 import java.util.*
 
 open class SelectDateRangeMonthView : QuickMonthView {

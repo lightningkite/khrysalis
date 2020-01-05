@@ -2,8 +2,8 @@ package com.lightningkite.kwift.views.android
 
 import android.content.Context
 import android.util.AttributeSet
-import com.lightningkite.kwift.observables.shared.MutableObservableProperty
-import com.lightningkite.kwift.observables.shared.StandardObservableProperty
+import com.lightningkite.kwift.observables.MutableObservableProperty
+import com.lightningkite.kwift.observables.StandardObservableProperty
 import java.util.*
 
 class SelectDayView : AbstractQuickCalendarView {

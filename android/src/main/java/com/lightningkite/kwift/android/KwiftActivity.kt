@@ -15,14 +15,14 @@ import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
-import com.lightningkite.kwift.observables.shared.addWeak
-import com.lightningkite.kwift.views.shared.EntryPoint
-import com.lightningkite.kwift.views.shared.ViewGenerator
-import com.lightningkite.kwift.views.shared.showDialogEvent
+import com.lightningkite.kwift.observables.addWeak
+import com.lightningkite.kwift.views.EntryPoint
+import com.lightningkite.kwift.views.ViewGenerator
+import com.lightningkite.kwift.views.showDialogEvent
 import java.util.*
 import com.lightningkite.kwift.R
-import com.lightningkite.kwift.actual.animationFrame
-import com.lightningkite.kwift.observables.shared.Close
+import com.lightningkite.kwift.animationFrame
+import com.lightningkite.kwift.observables.Close
 
 /**
  * An activity that implements [ActivityAccess].

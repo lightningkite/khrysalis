@@ -18,8 +18,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.lightningkite.kwift.R
-import com.lightningkite.kwift.observables.shared.StandardObservableProperty
-import com.lightningkite.kwift.observables.shared.addAndRunWeak
+import com.lightningkite.kwift.observables.StandardObservableProperty
+import com.lightningkite.kwift.observables.addAndRunWeak
 import java.text.SimpleDateFormat
 import java.util.*
 

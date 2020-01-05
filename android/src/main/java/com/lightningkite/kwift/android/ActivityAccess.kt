@@ -4,7 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import com.lightningkite.kwift.observables.shared.Event
+import com.lightningkite.kwift.observables.Event
 
 /**
  * An interface for accessing activities in a decentralized way, where multiple listeners can listen

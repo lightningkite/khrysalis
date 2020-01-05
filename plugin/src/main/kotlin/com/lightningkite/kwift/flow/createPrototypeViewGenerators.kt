@@ -11,7 +11,7 @@ fun createPrototypeViewGenerators(androidFolder: File, applicationPackage: Strin
     createPrototypeViewGenerators(
         resourcesFolder = androidFolder.resolve("src/main/res"),
         applicationPackage = applicationPackage,
-        outputFolder = androidFolder.resolve("src/main/java/${applicationPackage.replace('.', '/')}/shared/vg")
+        outputFolder = androidFolder.resolve("src/main/java/${applicationPackage.replace('.', '/')}/vg")
     )
 
 internal fun createPrototypeViewGenerators(

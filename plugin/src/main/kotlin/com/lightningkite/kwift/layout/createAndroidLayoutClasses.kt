@@ -105,8 +105,7 @@ private fun File.translateLayoutXmlAndroid(styles: Styles, packageName: String, 
     |
     |import android.widget.*
     |import android.view.*
-    |import com.lightningkite.kwift.views.actual.*
-    |import com.lightningkite.kwift.views.shared.*
+    |import com.lightningkite.kwift.views.*
     |import $applicationPackage.R
     |
     |class ${fileName}Xml {

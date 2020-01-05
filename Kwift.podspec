@@ -23,6 +23,5 @@ Pod::Spec.new do |s|
   s.dependency "Fabric"
   s.dependency "Crashlytics"
   s.dependency "Cosmos", "~> 19.0"
-  s.dependency "QVRWeekView"
   s.dependency "SearchTextField"
 end

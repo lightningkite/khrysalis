@@ -5,7 +5,7 @@ import android.content.Context
 import android.util.AttributeSet
 import android.widget.Button
 import androidx.appcompat.widget.AppCompatButton
-import com.lightningkite.kwift.observables.shared.StandardEvent
+import com.lightningkite.kwift.observables.StandardEvent
 import java.text.DateFormat
 import java.util.*
 

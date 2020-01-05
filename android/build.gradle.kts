@@ -107,7 +107,7 @@ KwiftSettings.verbose = true
 val androidBase = project.projectDir
 val iosBase = project.projectDir.resolve("../ios/Kwift")
 
-tasks.create("kwiftConvertKotlinToSwift") {
+tasks.create("kwiftConvertKotlinToSwiftClean") {
     this.group = "build"
     doLast {
         println("Started on $androidBase")
@@ -115,6 +115,19 @@ tasks.create("kwiftConvertKotlinToSwift") {
                 androidFolder = androidBase,
                 iosFolder = iosBase,
                 clean = true
+        )
+        println("Finished")
+    }
+}
+
+tasks.create("kwiftConvertKotlinToSwift") {
+    this.group = "build"
+    doLast {
+        println("Started on $androidBase")
+        convertKotlinToSwift(
+                androidFolder = androidBase,
+                iosFolder = iosBase,
+                clean = false
         )
         println("Finished")
     }

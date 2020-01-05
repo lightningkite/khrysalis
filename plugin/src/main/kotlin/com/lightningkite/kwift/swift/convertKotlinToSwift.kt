@@ -5,6 +5,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.lightningkite.kwift.VERSION
 import com.lightningkite.kwift.interfaces.writeInterfacesFile
 import com.lightningkite.kwift.log
+import com.lightningkite.kwift.swift.actuals.stubs
 import com.lightningkite.kwift.utils.Versioned
 import org.antlr.v4.runtime.*
 import org.antlr.v4.runtime.atn.ATNConfigSet
@@ -38,7 +39,7 @@ fun convertKotlinToSwiftByFolder(
 
     val toConvert = baseKotlin.walkTopDown()
         .filter { it.extension == "kt" }
-        .filter { it.toRelativeString(baseKotlin).pathIsShared() }
+        .filter { it.name.contains(".shared") }
 
     val interfaces = writeInterfacesFile(toConvert, interfacesOut)
     val swift = SwiftAltListener().apply(setup)
@@ -153,6 +154,49 @@ fun convertKotlinToSwiftByFolder(
         }
     }
 
+    //Handle actuals
+    baseKotlin.walkTopDown()
+        .filter { it.extension == "kt" }
+        .filter { it.name.contains(".actual") }
+        .forEach { file ->
+            val output = File(
+                baseSwift.resolve(file.relativeTo(baseKotlin))
+                    .toString()
+                    .removeSuffix("kt")
+                    .plus("swift")
+            )
+            output.parentFile.mkdirs()
+
+            val text = file.readText()
+            val inputHash = text.hashCode()
+            val outputHash = if (output.exists()) output.readText().hashCode() else 0
+            val existing = existingCache[file.path]
+            val cache =
+                if (!clean && existing != null && existing.inputHash == inputHash && existing.outputHash == outputHash) {
+                    existing
+                } else {
+                    log("Stubbing ${file.absolutePath.substringBeforeLast('.').commonSuffixWith(output.absolutePath.substringBeforeLast('.'))}")
+
+                    try {
+                        file.stubs(swift, output)
+
+                        FileConversionInfo(
+                            path = file.path,
+                            inputHash = inputHash,
+                            outputHash = output.readText().hashCode(),
+                            outputPath = output.path
+                        )
+                    } catch (e: Exception) {
+                        System.err.println("Failed to convert file $file")
+                        e.printStackTrace(System.err)
+                        null
+                    }
+                }
+            if (cache != null) {
+                newCache[cache.path] = cache
+            }
+        }
+
     if (!cacheFile.exists()) {
         cacheFile.parentFile.mkdirs()
         cacheFile.createNewFile()
@@ -163,11 +207,7 @@ fun convertKotlinToSwiftByFolder(
     val writtenFiles = newCache.values.asSequence().map { it.outputPath }.toSet()
     baseSwift.walkTopDown()
         .filter { it.extension == "swift" }
-        .filter { it.toRelativeString(baseKotlin).pathIsShared() }
+        .filter { it.name.contains(".shared") }
         .filter { it.path !in writtenFiles }
         .forEach { it.delete() }
-}
-
-private fun String.pathIsShared(): Boolean {
-    return contains("shared") && !contains("actual")
 }

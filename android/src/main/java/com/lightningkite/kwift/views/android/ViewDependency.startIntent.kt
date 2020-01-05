@@ -2,7 +2,7 @@ package com.lightningkite.kwift.views.android
 
 import android.content.Intent
 import android.os.Bundle
-import com.lightningkite.kwift.views.actual.ViewDependency
+import com.lightningkite.kwift.views.ViewDependency
 
 
 /**

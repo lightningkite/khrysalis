@@ -4,7 +4,7 @@ import android.content.Context
 import android.util.AttributeSet
 import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.FragmentActivity
-import com.lightningkite.kwift.observables.shared.StandardEvent
+import com.lightningkite.kwift.observables.StandardEvent
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
 import java.text.DateFormat
 import java.util.*

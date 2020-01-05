@@ -29,7 +29,9 @@ fun SwiftAltListener.registerType() {
             direct.append("<")
             it.typeProjection().forEachBetween(
                 forItem = {
-                    write(it.type())
+                    it.type()?.let { write(it) } ?: run {
+                        direct.append("*")
+                    }
                 },
                 between = {
                     direct.append(", ")

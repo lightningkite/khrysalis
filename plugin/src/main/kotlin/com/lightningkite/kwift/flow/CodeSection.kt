@@ -1,6 +1,7 @@
 package com.lightningkite.kwift.flow
 
 import com.lightningkite.kwift.swift.TabWriter
+import java.io.StringWriter
 
 data class CodeSection(
     val name: String,
@@ -12,11 +13,11 @@ data class CodeSection(
         const val overwriteMarker = "(overwritten on flow generation)"
         const val sectionMarker = "//---"
 
-        fun read(lines: List<String>): List<CodeSection> {
+        fun read(lines: Iterable<String>): List<CodeSection> {
             val sections = ArrayList<CodeSection>()
 
             var currentSectionName: String = "!file"
-            var currentSectionOverwrite: Boolean = true
+            var currentSectionOverwrite: Boolean = false
             var currentStartLineSpaces: Int = 0
             var currentWrites = ArrayList<TabWriter.() -> Unit>()
             var currentSpaces = 0
@@ -53,6 +54,17 @@ data class CodeSection(
 
             return sections
         }
+
+        fun merge(old: String, new: String): String {
+            val oldSections = read(old.lines())
+            val newSections = read(new.lines())
+            val stringWriter = StringBuilder()
+            val tabWriter = TabWriter(stringWriter)
+            oldSections.mergeOverride(newSections).forEach {
+                it.writeWhole(tabWriter)
+            }
+            return stringWriter.toString()
+        }
     }
 
     fun writeWhole(tabWriter: TabWriter) {
@@ -63,6 +75,9 @@ data class CodeSection(
         write(tabWriter)
     }
 }
+
+fun TabWriter.section(key: String) = line("${CodeSection.sectionMarker} $key ${CodeSection.overwriteMarker}")
+fun TabWriter.sectionPermanent(key: String) = line("${CodeSection.sectionMarker} $key")
 
 fun List<CodeSection>.mergeOverride(other: List<CodeSection>): List<CodeSection> {
     val output = this.toMutableList()
