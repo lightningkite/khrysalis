@@ -8,6 +8,7 @@ class Paint(){
     var flags: Int
     var color: ColorValue
     var strokeWidth: Float
+    var alpha: Float
     var style: Style
     var textSize: Float
     var shader: ShaderValue
@@ -22,5 +23,4 @@ class Paint(){
 }
  */
 
-typealias ShaderValue = Shader
 val Paint.textHeight: Float get() = fontMetrics.let { it.descent - it.ascent }

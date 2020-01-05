@@ -100,7 +100,9 @@ class SwiftAltListener {
         typeReplacements["List"] = "Array"
         typeReplacements["MutableMap"] = "Dictionary"
         typeReplacements["MutableList"] = "Array"
+        typeReplacements["MutableSet"] = "Set"
         typeReplacements["HashMap"] = "Dictionary"
+        typeReplacements["HashSet"] = "Set"
         typeReplacements["ArrayList"] = "Array"
         typeReplacements["Boolean"] = "Bool"
         typeReplacements["Unit"] = "Void"
@@ -114,6 +116,7 @@ class SwiftAltListener {
         simpleFunctionReplacement("println", "print")
         simpleFunctionReplacement("ArrayList", "Array")
         simpleFunctionReplacement("HashMap", "Dictionary")
+        simpleFunctionReplacement("HashSet", "Set")
         functionReplacements["run"] = {
             if (it.usedAsStatement())
                 direct.append("let _ = ")

@@ -23,7 +23,7 @@ data class ViewType(
         fun default(node: XmlNode): ViewType {
             val newViewType = ViewType(
                 node.name,
-                "CustomView" + node.name.substringAfterLast('.'),
+                node.name.substringAfterLast('.'),
                 "View"
             ) { }
             return newViewType

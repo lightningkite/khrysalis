@@ -33,7 +33,7 @@ inline fun <T, K : Comparable<K>> MutableList<T>.binaryInsertBy(
 
 inline fun <T, K : Comparable<K>> List<T>.binaryFind(
     key: K,
-    crossinline selectokr: (T) -> K?
+    crossinline selector: (T) -> K?
 ): T? {
     val index = binarySearchBy(key, selector = selector)
     if(index >= 0){

@@ -38,9 +38,15 @@ fun SwiftAltListener.registerLiterals() {
     tokenOptions[KotlinParser.RealLiteral] = {
         if(it.text.endsWith('f', true)){
             direct.append("Float(")
+            if(it.text.startsWith('.')){
+                direct.append('0')
+            }
             direct.append(it.text.removeSuffix("f").removeSuffix("F"))
             direct.append(")")
         } else {
+            if(it.text.startsWith('.')){
+                direct.append('0')
+            }
             direct.append(it.text)
         }
     }

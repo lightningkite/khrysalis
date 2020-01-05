@@ -16,6 +16,7 @@ fun Canvas.drawOval(left: Float, top: Float, right: Float, bottom: Float, paint:
 fun Canvas.drawOval(rect: RectF, paint: Paint)
 fun Canvas.drawRoundRect(left: Float, top: Float, right: Float, bottom: Float, rx: Float, ry: Float, paint: Paint)
 fun Canvas.drawRoundRect(rect: RectF, rx: Float, ry: Float, paint: Paint)
+fun Canvas.drawLine(x1: Float, y1: Float, x2: Float, y2: Float, paint: Paint)
 fun Canvas.drawPath(path: Path, paint: Paint)
 fun Canvas.save()
 fun Canvas.restore()

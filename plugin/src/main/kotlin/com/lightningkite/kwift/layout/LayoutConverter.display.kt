@@ -11,7 +11,7 @@ val LayoutConverter.Companion.displayViews
                     val name = raw.removePrefix("@+id/").removePrefix("@id/").camelCase()
                     appendln("self.$name = view")
                     bindings[name] =
-                        converter.viewTypes[node.name]?.iosName ?: ("CustomView" + node.name.substringAfterLast('.'))
+                        converter.viewTypes[node.name]?.iosName ?: (node.name.substringAfterLast('.'))
                 }
                 node.attributes["android:background"]?.let { raw ->
                     when {

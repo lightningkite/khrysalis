@@ -285,4 +285,16 @@ fun SwiftAltListener.registerControl() {
             write(it)
         }
     }
+    handle<KotlinParser.WhileStatementContext> { item ->
+        line {
+            append("while ")
+            write(item.expression())
+            append(" {")
+        }
+        tab {
+            startLine()
+            write(item.controlStructureBody())
+        }
+        line("}")
+    }
 }
