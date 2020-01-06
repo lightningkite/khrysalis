@@ -1,5 +1,6 @@
 //Stub file made with Kwift 2 (by Lightning Kite)
 import Foundation
+import UIKit
 
 
 //--- EditText.bindString(MutableObservableProperty<String>)
@@ -105,6 +106,7 @@ public extension UITextField {
         return bindDouble(observable)
     }
 }
+
 
 
 

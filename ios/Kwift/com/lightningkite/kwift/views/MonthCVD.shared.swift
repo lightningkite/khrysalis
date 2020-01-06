@@ -102,16 +102,16 @@ open class MonthCVD: CustomViewDelegate {
     }
     private var calcMonthB: DateAlone
     
-    override open func draw(canvas: Canvas, width: Float, height: Float, displayMetrics: DisplayMetrics) -> Void {
+    override public func draw(canvas: Canvas, width: Float, height: Float, displayMetrics: DisplayMetrics) -> Void {
         measure(width, height, displayMetrics)
         if currentOffset > Float(0) {
-            drawMonth(canvas, ( currentOffset - Float(1) ) * width, calcMonthB.set(currentMonth).setAddMonthOfYear(-1), displayMetrics)
-            drawMonth(canvas, currentOffset * width, currentMonth, displayMetrics)
+            drawMonth(canvas, ( currentOffset - Float(1) ) * width, width, calcMonthB.set(currentMonth).setAddMonthOfYear(-1), displayMetrics)
+            drawMonth(canvas, currentOffset * width, width, currentMonth, displayMetrics)
         } else if currentOffset < Float(0) {
-            drawMonth(canvas, ( currentOffset + Float(1) ) * width, calcMonthB.set(currentMonth).setAddMonthOfYear(1), displayMetrics)
-            drawMonth(canvas, currentOffset * width, currentMonth, displayMetrics)
+            drawMonth(canvas, ( currentOffset + Float(1) ) * width, width, calcMonthB.set(currentMonth).setAddMonthOfYear(1), displayMetrics)
+            drawMonth(canvas, currentOffset * width, width, currentMonth, displayMetrics)
         } else {
-            drawMonth(canvas, currentOffset * width, currentMonth, displayMetrics)
+            drawMonth(canvas, currentOffset * width, width, currentMonth, displayMetrics)
         }
     }
     override public func draw(_ canvas: Canvas, _ width: Float, _ height: Float, _ displayMetrics: DisplayMetrics) -> Void {
@@ -121,7 +121,7 @@ open class MonthCVD: CustomViewDelegate {
     private var rectForReuse: RectF
     private var rectForReuseB: RectF
     
-    open func drawMonth(canvas: Canvas, xOffset: Float, month: DateAlone, displayMetrics: DisplayMetrics) -> Void {
+    open func drawMonth(canvas: Canvas, xOffset: Float, width: Float, month: DateAlone, displayMetrics: DisplayMetrics) -> Void {
         
         for day in 1.toInt() ... 7.toInt() {
             var col = day - 1
@@ -136,14 +136,20 @@ open class MonthCVD: CustomViewDelegate {
             for col in 0.toInt() ... 6.toInt() {
                 var day = dayAt(month, row, col, drawDate)
                 rectForReuse.set(xOffset + col.toFloat() * dayCellWidth - Float(0.01), dayLabelHeight + row.toFloat() * dayCellHeight - Float(0.01), xOffset + ( col.toFloat() + 1 ) * dayCellWidth + Float(0.01), dayLabelHeight + ( row.toFloat() + 1 ) * dayCellHeight + Float(0.01))
+                if rectForReuse.left > width {
+                    continue
+                }
+                if rectForReuse.right < 0 {
+                    continue
+                }
                 rectForReuseB.set(rectForReuse)
                 rectForReuse.inset(dayCellMargin, dayCellMargin)
                 drawDay(canvas: canvas, showingMonth: month, day: day, displayMetrics: displayMetrics, outer: rectForReuseB, inner: rectForReuse)
             }
         }
     }
-    open func drawMonth(_ canvas: Canvas, _ xOffset: Float, _ month: DateAlone, _ displayMetrics: DisplayMetrics) -> Void {
-        return drawMonth(canvas: canvas, xOffset: xOffset, month: month, displayMetrics: displayMetrics)
+    open func drawMonth(_ canvas: Canvas, _ xOffset: Float, _ width: Float, _ month: DateAlone, _ displayMetrics: DisplayMetrics) -> Void {
+        return drawMonth(canvas: canvas, xOffset: xOffset, width: width, month: month, displayMetrics: displayMetrics)
     }
     
     open func drawLabel(canvas: Canvas, dayOfWeek: Int32, displayMetrics: DisplayMetrics, outer: RectF, inner: RectF) -> Void {

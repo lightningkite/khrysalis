@@ -1,5 +1,7 @@
 //Stub file made with Kwift 2 (by Lightning Kite)
 import Foundation
+import CoreGraphics
+import UIKit
 
 
 //--- LinearGradient(Float, Float, Float, Float, List<Int>, List<Float>, Shader.TileMode)
@@ -17,6 +19,7 @@ public func LinearGradient(_ x0: Float, _ y0: Float, _ x1: Float, _ y1: Float, _
         )
     }
 }
+
 
 
 

@@ -1,5 +1,6 @@
 //Stub file made with Kwift 2 (by Lightning Kite)
 import Foundation
+import UIKit
 
 
 //--- TextView.textResource
@@ -195,6 +196,7 @@ public extension UIButton {
         }
     }
 }
+
 
 
 

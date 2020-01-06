@@ -44,6 +44,11 @@ public class GeoAddress {
         return mark?.country
     }
 
+    //--- GeoAddress.postalCode
+    public var postalCode: String? {
+        return mark?.postalCode
+    }
+
     //--- GeoAddress.coordinate
     public var coordinate: GeoCoordinate? {
         return self.mark?.location?.coordinate.toKwift()
@@ -72,6 +77,7 @@ public class GeoAddress {
         return result.trim()
     }
 }
+
 
 
 

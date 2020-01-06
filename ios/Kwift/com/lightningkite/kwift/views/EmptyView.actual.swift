@@ -1,5 +1,6 @@
 //Stub file made with Kwift 2 (by Lightning Kite)
 import Foundation
+import UIKit
 
 
 //--- EmptyView(ViewDependency)
@@ -9,6 +10,7 @@ public func EmptyView(_ dependency: ViewDependency) -> View {
 public func EmptyView(dependency: ViewDependency) -> View {
     return EmptyView(dependency)
 }
+
 
 
 

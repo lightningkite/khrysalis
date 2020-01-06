@@ -1,5 +1,7 @@
 //Stub file made with Kwift 2 (by Lightning Kite)
 import Foundation
+import UIKit
+import CoreGraphics
 
 
 //--- Paint.{
@@ -75,4 +77,5 @@ public class Paint {
     
     //--- Paint.}
 }
+
 

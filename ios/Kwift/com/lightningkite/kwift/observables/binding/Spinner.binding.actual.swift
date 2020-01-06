@@ -1,5 +1,6 @@
 //Stub file made with Kwift 2 (by Lightning Kite)
 import Foundation
+import UIKit
 
 
 //--- Spinner.bind(ObservableProperty<List<T>>, MutableObservableProperty<T>, (ObservableProperty<T>)->View)
@@ -70,6 +71,7 @@ class PickerBoundDataSource<T, VIEW: UIView>: NSObject, UIPickerViewDataSource, 
     }
 
 }
+
 
 
 

@@ -1,5 +1,6 @@
 //Stub file made with Kwift 2 (by Lightning Kite)
 import Foundation
+import UIKit
 
 
 //--- Button.bindActive(ObservableProperty<Boolean>, ColorResource? , ColorResource? )
@@ -43,4 +44,5 @@ public extension UIButton {
         return bindActive(observable, activeBackground, inactiveBackground)
     }
 }
+
 

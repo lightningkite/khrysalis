@@ -1,5 +1,6 @@
 //Stub file made with Kwift 2 (by Lightning Kite)
 import Foundation
+import UIKit
 
 
 //--- ColorValue
@@ -49,6 +50,7 @@ public extension ColorValue {
         return withAlphaComponent(CGFloat(amount)/255)
     }
 }
+
 
 
 

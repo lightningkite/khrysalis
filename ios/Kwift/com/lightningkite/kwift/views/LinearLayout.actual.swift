@@ -1,5 +1,6 @@
 //Stub file made with Kwift 2 (by Lightning Kite)
 import Foundation
+import UIKit
 
 
 //--- LinearLayout.params(Int, Int, Int, Int, Int, Int, AlignPair, Float)
@@ -39,6 +40,7 @@ public extension LinearLayout {
         return params(sizeX, sizeY, marginStart, marginEnd, marginTop, marginBottom, gravity, weight)
     }
 }
+
 
 
 

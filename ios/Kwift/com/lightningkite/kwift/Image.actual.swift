@@ -1,5 +1,6 @@
 //Stub file made with Kwift 2 (by Lightning Kite)
 import Foundation
+import UIKit
 
 
 //--- Bitmap
@@ -62,6 +63,7 @@ public func loadImage(_ url: String, _ onResult: @escaping (Bitmap?) -> Void) ->
 public func loadImage(url: String, onResult: @escaping (Bitmap?) -> Void) -> Void {
     return loadImage(url, onResult)
 }
+
 
 
 

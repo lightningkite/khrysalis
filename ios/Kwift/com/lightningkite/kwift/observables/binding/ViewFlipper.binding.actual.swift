@@ -1,5 +1,6 @@
 //Stub file made with Kwift 2 (by Lightning Kite)
 import Foundation
+import UIKit
 
 
 //--- ViewFlipper.bindLoading(MutableObservableProperty<Boolean>)
@@ -18,6 +19,7 @@ public extension ViewFlipper {
         return bindLoading(loading)
     }
 }
+
 
 
 

@@ -142,22 +142,23 @@ open class MonthCVD : CustomViewDelegate() {
             drawMonth(
                 canvas,
                 (currentOffset - 1f) * width,
+                width,
                 calcMonthB.set(currentMonth).setAddMonthOfYear(-1),
                 displayMetrics
             )
-            drawMonth(canvas, currentOffset * width, currentMonth, displayMetrics)
+            drawMonth(canvas, currentOffset * width, width, currentMonth, displayMetrics)
         } else if (currentOffset < 0f) {
             //draw future month and current month
-            drawMonth(
-                canvas,
+            drawMonth(                canvas,
                 (currentOffset + 1f) * width,
+                width,
                 calcMonthB.set(currentMonth).setAddMonthOfYear(1),
                 displayMetrics
             )
-            drawMonth(canvas, currentOffset * width, currentMonth, displayMetrics)
+            drawMonth(canvas, currentOffset * width, width, currentMonth, displayMetrics)
         } else {
             //Nice, it's exactly zero.  We can just draw one.
-            drawMonth(canvas, currentOffset * width, currentMonth, displayMetrics)
+            drawMonth(canvas, currentOffset * width, width, currentMonth, displayMetrics)
         }
     }
 
@@ -165,7 +166,7 @@ open class MonthCVD : CustomViewDelegate() {
         DateAlone(1, 1, 1)
     private val rectForReuse: RectF = RectF()
     private val rectForReuseB: RectF = RectF()
-    open fun drawMonth(canvas: Canvas, xOffset: Float, month: DateAlone, displayMetrics: DisplayMetrics) {
+    open fun drawMonth(canvas: Canvas, xOffset: Float, width: Float, month: DateAlone, displayMetrics: DisplayMetrics) {
         for (day in 1.toInt()..7.toInt()) {
             val col = day - 1
             rectForReuse.set(
@@ -187,6 +188,8 @@ open class MonthCVD : CustomViewDelegate() {
                     xOffset + (col.toFloat() + 1) * dayCellWidth + 0.01f,
                     dayLabelHeight + (row.toFloat() + 1) * dayCellHeight + 0.01f
                 )
+                if(rectForReuse.left > width) { continue }
+                if(rectForReuse.right < 0) { continue }
                 rectForReuseB.set(rectForReuse)
                 rectForReuse.inset(dayCellMargin, dayCellMargin)
                 drawDay(

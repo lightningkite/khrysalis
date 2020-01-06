@@ -1,5 +1,6 @@
 //Stub file made with Kwift 2 (by Lightning Kite)
 import Foundation
+import UIKit
 
 
 //--- ViewPager.bind(List<T>, MutableObservableProperty<Int>, (T)->View)
@@ -241,6 +242,7 @@ class CollectionSimpleDataSource: NSObject, UICollectionViewDataSource, UICollec
     }
 
 }
+
 
 
 

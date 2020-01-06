@@ -1,5 +1,6 @@
 //Stub file made with Kwift 2 (by Lightning Kite)
 import Foundation
+import UIKit
 
 
 //--- SeekBar.bind(Int, Int, MutableObservableProperty<Int>)
@@ -25,6 +26,7 @@ public extension UISlider {
         return bind(start, endInclusive, observable)
     }
 }
+
 
 
 

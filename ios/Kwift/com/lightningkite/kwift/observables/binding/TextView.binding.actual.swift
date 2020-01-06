@@ -1,5 +1,6 @@
 //Stub file made with Kwift 2 (by Lightning Kite)
 import Foundation
+import UIKit
 
 
 //--- TextView.bindString(ObservableProperty<String>)
@@ -144,6 +145,7 @@ public extension UILabel {
         return bindText(observable, transform)
     }
 }
+
 
 
 

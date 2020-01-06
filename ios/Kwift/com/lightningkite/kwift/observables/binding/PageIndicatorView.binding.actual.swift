@@ -1,5 +1,6 @@
 //Stub file made with Kwift 2 (by Lightning Kite)
 import Foundation
+import UIKit
 
 
 //--- PageIndicatorView.bind(Int, MutableObservableProperty<Int>)
@@ -24,6 +25,7 @@ public extension UIPageControl {
         return bind(count, selected)
     }
 }
+
 
 
 

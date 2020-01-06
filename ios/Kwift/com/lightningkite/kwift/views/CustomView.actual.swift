@@ -1,5 +1,7 @@
 //Stub file made with Kwift 2 (by Lightning Kite)
 import Foundation
+import UIKit
+import CoreGraphics
 
 
 //--- CustomView.{
@@ -116,4 +118,5 @@ public class CustomView: FrameLayout {
     
     //--- CustomView.}
 }
+
 

@@ -1,5 +1,6 @@
 //Stub file made with Kwift 2 (by Lightning Kite)
 import Foundation
+import UIKit
 
 
 //--- View.bindVisible(ObservableProperty<Boolean>)
@@ -26,6 +27,7 @@ public extension UIView {
         return bindExists(observable)
     }
 }
+
 
 
 

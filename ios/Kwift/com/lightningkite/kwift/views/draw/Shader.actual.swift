@@ -6,6 +6,7 @@
 //
 
 import Foundation
+import CoreGraphics
 
 
 //--- ShaderValue
@@ -17,4 +18,5 @@ public enum Shader {
         case CLAMP, REPEAT, MIRROR
     }
 }
+
 

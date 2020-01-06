@@ -7,7 +7,7 @@
 //
 
 import XCTest
-@testable import kwift
+@testable import Kwift
 
 class kwiftTests: XCTestCase {
 
@@ -22,6 +22,7 @@ class kwiftTests: XCTestCase {
     func testExample() {
         // This is an example of a functional test case.
         // Use XCTAssert and related functions to verify your tests produce the correct results.
+        XCTAssertEqual(true, true)
     }
 
     func testPerformanceExample() {

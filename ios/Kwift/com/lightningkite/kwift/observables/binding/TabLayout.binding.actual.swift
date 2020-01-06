@@ -1,5 +1,6 @@
 //Stub file made with Kwift 2 (by Lightning Kite)
 import Foundation
+import UIKit
 
 
 //--- TabLayout.bind(List<String>, MutableObservableProperty<Int>)
@@ -19,6 +20,7 @@ public extension UISegmentedControl {
         return bind(tabs, selected)
     }
 }
+
 
 
 

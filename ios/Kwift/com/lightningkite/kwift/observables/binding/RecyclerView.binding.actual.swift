@@ -1,5 +1,6 @@
 //Stub file made with Kwift 2 (by Lightning Kite)
 import Foundation
+import UIKit
 
 
 //--- RecyclerView.whenScrolledToEnd(()->Unit)
@@ -331,6 +332,7 @@ class BoundMultiDataSource: NSObject, UITableViewDataSource, UITableViewDelegate
         return cell
     }
 }
+
 
 
 

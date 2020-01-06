@@ -1,5 +1,7 @@
 //Stub file made with Kwift 2 (by Lightning Kite)
 import Foundation
+import CoreGraphics
+import UIKit
 
 
 //--- Path
@@ -51,4 +53,5 @@ public extension Path {
         self.closeSubpath()
     }
 }
+
 

@@ -1,5 +1,5 @@
 //Stub file made with Kwift 2 (by Lightning Kite)
-import Foundation
+import UIKit
 
 
 //--- StringResource
@@ -10,6 +10,7 @@ public typealias ColorResource = UIColor
 
 //--- DrawableResource
 public typealias DrawableResource = Drawable
+
 
 
 
