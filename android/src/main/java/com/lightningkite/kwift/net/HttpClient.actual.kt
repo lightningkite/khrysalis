@@ -175,6 +175,7 @@ object HttpClient {
                             onResult.invoke(code, read, null)
                         } catch (e: Exception) {
                             Log.e("HttpClient", "Failure to parse: ${e.message}")
+                            e.printStackTrace()
                             onResult.invoke(code, null, e.message)
                         }
                     } else {

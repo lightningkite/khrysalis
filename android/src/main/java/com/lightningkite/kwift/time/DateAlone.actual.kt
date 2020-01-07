@@ -1,5 +1,6 @@
 package com.lightningkite.kwift.time
 
+import android.annotation.SuppressLint
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -120,9 +121,21 @@ fun DateAlone.addMonthOfYear(value: Int): DateAlone =
 fun DateAlone.addYearAd(value: Int): DateAlone =
     useDate { date -> date.set(this); date.setAddYearAd(value); date.dateAlone }
 
+@SuppressLint("SimpleDateFormat")
 fun DateAlone.iso8601(): String = SimpleDateFormat("yyyy-MM-dd").format(
     dateFrom(
         this,
         TimeAlone.noon
     )
 )
+
+@SuppressLint("SimpleDateFormat")
+fun DateAlone.formatYearless(clockPartSize: ClockPartSize): String {
+    return when(clockPartSize){
+        ClockPartSize.None -> ""
+        ClockPartSize.Short -> SimpleDateFormat("MMM d").format(dateFrom(this, TimeAlone.noon))
+        ClockPartSize.Medium -> SimpleDateFormat("MMMM d").format(dateFrom(this, TimeAlone.noon))
+        ClockPartSize.Long -> SimpleDateFormat("EEE MMM d").format(dateFrom(this, TimeAlone.noon))
+        ClockPartSize.Full -> SimpleDateFormat("EEEE MMMM d").format(dateFrom(this, TimeAlone.noon))
+    }
+}

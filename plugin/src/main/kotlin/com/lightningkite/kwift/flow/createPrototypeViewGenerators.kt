@@ -56,7 +56,7 @@ internal fun createPrototypeViewGenerators(
             styles = styles,
             viewName = fileName,
             xml = item,
-            target = outputFolder.resolve(fileName + "VG.kt"),
+            target = outputFolder.resolve(fileName + "VG.shared.kt"),
             viewNodeMap = nodes,
             viewNode = node,
             packageName = packageName,

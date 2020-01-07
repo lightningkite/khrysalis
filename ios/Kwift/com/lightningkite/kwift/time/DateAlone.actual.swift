@@ -15,23 +15,23 @@ import Foundation
 //--- DateAlone.dayOfWeek
 //--- DateAlone.}
 public class DateAlone: Equatable, Hashable, Codable {
-    
+
     required public init(from decoder: Decoder) throws {
         let string: String = try decoder.singleValueContainer().decode(String.self)
         year = string.substringBefore("-").toInt()
         month = string.substringAfter("-").substringBefore("-").toInt()
         day = string.substringAfterLast("-").toInt()
     }
-    
+
     public func encode(to encoder: Encoder) throws {
         var container = encoder.singleValueContainer()
         try container.encode(iso8601())
     }
-    
+
     public var year: Int32
     public var month: Int32
     public var day: Int32
-    
+
     public static func == (lhs: DateAlone, rhs: DateAlone) -> Bool {
         return lhs.year == rhs.year &&
             lhs.month == rhs.month &&
@@ -53,23 +53,23 @@ public class DateAlone: Equatable, Hashable, Codable {
             day: day ?? self.day
         )
     }
-    
-    
+
+
     //Start Companion
-    
+
     static public func now() -> DateAlone {
         return Date().dateAlone
     }
     static public var farPast = DateAlone(-99999, 1, 1)
     static public var farFuture = DateAlone(99999, 12, 31)
-    
+
     static public func iso(string: String) -> DateAlone {
         return DateAlone(string.substringBefore("-").toInt(), string.substringAfter("-").substringBefore("-").toInt(), string.substringAfterLast("-").toInt())
     }
     static public func iso(_ string: String) -> DateAlone {
         return iso(string: string)
     }
-    
+
     static public func fromMonthInEra(monthInEra: Int32) -> DateAlone {
         return DateAlone(year: ( monthInEra - 1 ) / 12, month: ( monthInEra - 1 ) % 12 + 1, day: 1)
     }
@@ -77,7 +77,7 @@ public class DateAlone: Equatable, Hashable, Codable {
         return fromMonthInEra(monthInEra: monthInEra)
     }
     //End Companion
-    
+
     public var monthInEra: Int32 {
         get {
             return self.year * 12 + self.month
@@ -102,7 +102,7 @@ public class DateAlone: Equatable, Hashable, Codable {
             ) % 7 + 1
         }
     }
-    
+
     public init(year: Int32, month: Int32, day: Int32) {
         self.year = year
         self.month = month
@@ -111,14 +111,14 @@ public class DateAlone: Equatable, Hashable, Codable {
     convenience public init(_ year: Int32, _ month: Int32, _ day: Int32) {
         self.init(year: year, month: month, day: day)
     }
-    
+
     func toString() -> String {
         return "\(year)-\(month)-\(day)"
     }
 }
 
 public extension DateAlone {
-    
+
     private static var monthDaysNormal: Array<Int32> = [31,28,31,30,31,30,31,31,30,31,30,31]
     private static var monthDaysLeap: Array<Int32> = [31,29,31,30,31,30,31,31,30,31,30,31]
     private static func isLeapYear(_ year: Int32) -> Bool {
@@ -165,7 +165,7 @@ public extension DateAlone {
         }
         self.day = newDays
     }
-    
+
     //--- DateAlone.iso8601()
     func iso8601() -> String {
         let formatter = DateFormatter()
@@ -242,6 +242,26 @@ public extension DateAlone {
         return copy().setAddYearAd(value)
     }
 
+    //--- DateAlone.formatYearless(ClockPartSize)
+    func formatYearless(_ partSize: ClockPartSize) -> String {
+        var template = "EEEEdMMM"
+        switch partSize {
+        case .Full:
+            template = "EEEEdMMMM"
+        case .Long:
+            template = "EEEEdMMM"
+        case .Medium:
+            template = "dMMMM"
+        case .Short:
+            template = "dMMM"
+        case .None:
+            return ""
+        }
+        let format = DateFormatter.dateFormat(fromTemplate: template, options: 0, locale: Locale.current)
+        let formatter = DateFormatter()
+        formatter.dateFormat = format
+        return formatter.string(from: dateFrom(self, TimeAlone.noon))
+    }
 }
 
 public extension DateAlone {
