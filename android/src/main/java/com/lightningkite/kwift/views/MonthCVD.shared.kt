@@ -123,7 +123,7 @@ open class MonthCVD : CustomViewDelegate() {
             .setAddDayOfMonth(row * 7 + column)
     }
 
-    fun measure(width: Float, height: Float, displayMetrics: DisplayMetrics) {
+    open fun measure(width: Float, height: Float, displayMetrics: DisplayMetrics) {
         internalPadding = displayMetrics.density * internalPaddingDp
         dayCellMargin = displayMetrics.density * dayCellMarginDp
         labelPaint.textSize = labelFontSp * displayMetrics.scaledDensity
@@ -216,11 +216,7 @@ open class MonthCVD : CustomViewDelegate() {
         outer: RectF,
         inner: RectF
     ) {
-        if (day.month == showingMonth.month && day.year == showingMonth.year) {
-            CalendarDrawing.day(canvas, day, outer, dayPaint)
-        } else {
-            CalendarDrawing.dayFaded(canvas, day, outer, dayPaint)
-        }
+        CalendarDrawing.day(canvas, showingMonth, day, outer, dayPaint)
     }
 
     var isTap: Boolean = false
@@ -302,26 +298,26 @@ open class MonthCVD : CustomViewDelegate() {
 }
 
 object CalendarDrawing {
-    fun day(canvas: Canvas, date: DateAlone, inner: RectF, paint: Paint) {
-        canvas.drawTextCentered(
-            date.day.toString(),
-            inner.centerX(),
-            inner.centerY(),
-            paint
-        )
-    }
-
-    fun dayFaded(canvas: Canvas, date: DateAlone, inner: RectF, paint: Paint) {
-        val originalColor = paint.color
-        @Suppress("CanBeVal") var myPaint = paint
-        myPaint.color = paint.color.colorAlpha(64)
-        canvas.drawTextCentered(
-            date.day.toString(),
-            inner.centerX(),
-            inner.centerY(),
-            myPaint
-        )
-        myPaint.color = originalColor
+    fun day(canvas: Canvas, month: DateAlone, date: DateAlone, inner: RectF, paint: Paint) {
+        if (date.month == month.month && date.year == month.year) {
+            canvas.drawTextCentered(
+                date.day.toString(),
+                inner.centerX(),
+                inner.centerY(),
+                paint
+            )
+        } else {
+            val originalColor = paint.color
+            @Suppress("CanBeVal") var myPaint = paint
+            myPaint.color = paint.color.colorAlpha(64)
+            canvas.drawTextCentered(
+                date.day.toString(),
+                inner.centerX(),
+                inner.centerY(),
+                myPaint
+            )
+            myPaint.color = originalColor
+        }
     }
 
     fun label(canvas: Canvas, dayOfWeek: Int, inner: RectF, paint: Paint) {
