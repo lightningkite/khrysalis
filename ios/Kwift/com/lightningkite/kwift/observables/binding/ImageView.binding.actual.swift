@@ -16,6 +16,7 @@ public extension UIImageView {
         runImageTransitionIfCached: Bool = false,
         completion: ((DataResponse<UIImage>) -> Void)? = nil
         ) {
+        self.image = nil
         let activityIndicatorView = UIProgressView(progressViewStyle: UIProgressView.Style.default)
         activityIndicatorView.progressTintColor = UIImageView.loadingProgressTintColor
         activityIndicatorView.trackTintColor = UIImageView.loadingTrackTintColor
@@ -34,6 +35,9 @@ public extension UIImageView {
             imageTransition: imageTransition,
             runImageTransitionIfCached: runImageTransitionIfCached,
             completion: { result in
+                if let error = result.error {
+                    print("ERROR LOADING IMAGE: \(error.localizedDescription)")
+                }
                 weakAIV?.removeFromSuperview()
                 completion?(result)
         }
@@ -74,6 +78,9 @@ public extension UIImageView {
         return bindImage(image)
     }
 }
+
+
+
 
 
 

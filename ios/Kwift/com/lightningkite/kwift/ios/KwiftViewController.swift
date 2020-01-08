@@ -28,6 +28,7 @@ open class KwiftViewController: UIViewController, UINavigationControllerDelegate
     weak var innerView: UIView!
     
     public var defaultBackgroundColor: UIColor = .white
+    public var forceDefaultBackgroundColor: Bool = false
     
     override open func viewDidLoad() {
         super.viewDidLoad()
@@ -44,17 +45,19 @@ open class KwiftViewController: UIViewController, UINavigationControllerDelegate
         innerView = m
         self.view.addSubview(innerView)
         
-        if let main = main as? EntryPoint, let stack = main.mainStack {
-            stack.addAndRunWeak(self) { (self, value) in
-                self.refreshBackingColor()
+        if !forceDefaultBackgroundColor {
+            if let main = main as? EntryPoint, let stack = main.mainStack {
+                stack.addAndRunWeak(self) { (self, value) in
+                    self.refreshBackingColor()
+                }
             }
-        }
-        var lastOccurrance = Date()
-        KwiftViewController.refreshBackgroundColorEvent.addWeak(self) { (self, value) in
-            let now = Date()
-            if now.timeIntervalSince(lastOccurrance) > 1 {
-                lastOccurrance = now
-                self.refreshBackingColor()
+            var lastOccurrance = Date()
+            KwiftViewController.refreshBackgroundColorEvent.addWeak(self) { (self, value) in
+                let now = Date()
+                if now.timeIntervalSince(lastOccurrance) > 1 {
+                    lastOccurrance = now
+                    self.refreshBackingColor()
+                }
             }
         }
         

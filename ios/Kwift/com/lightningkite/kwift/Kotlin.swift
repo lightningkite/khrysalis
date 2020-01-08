@@ -35,7 +35,7 @@ public extension Sequence {
         }
         return newArray
     }
-    func any(predicate: (Element)->Bool) -> Bool {
+    func any(_ predicate: (Element)->Bool) -> Bool {
         for element in self {
             if predicate(element) {
                 return true
@@ -43,7 +43,7 @@ public extension Sequence {
         }
         return false
     }
-    func all(predicate: (Element)->Bool) -> Bool {
+    func all(_ predicate: (Element)->Bool) -> Bool {
         for element in self {
             if !predicate(element) {
                 return false
@@ -51,7 +51,7 @@ public extension Sequence {
         }
         return true
     }
-    func none(predicate: (Element)->Bool) -> Bool {
+    func none(_ predicate: (Element)->Bool) -> Bool {
         for element in self {
             if predicate(element) {
                 return false
@@ -83,6 +83,14 @@ public extension Sequence {
     
     func sumByLong(_ get: (Element)->Int64) -> Int64 {
         var value: Int64 = 0
+        for item in self {
+            value += get(item)
+        }
+        return value
+    }
+    
+    func sumBy(_ get: (Element)->Int32) -> Int32 {
+        var value: Int32 = 0
         for item in self {
             value += get(item)
         }

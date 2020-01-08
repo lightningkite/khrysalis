@@ -39,10 +39,17 @@ fun SwiftAltListener.registerExpression() {
         defaultWrite(item, "")
     }
     handle<KotlinParser.PrimaryExpressionContext> { item ->
-        when(item.simpleIdentifier()?.text) {
+        when(val it = item.simpleIdentifier()?.text) {
             "Unit" -> direct.append("()")
             "this" -> direct.append("self")
-            else -> defaultWrite(item)
+            else -> {
+                typeReplacements[it]?.let {
+                    direct.append(it)
+                } ?: run {
+                    defaultWrite(item)
+                }
+
+            }
         }
     }
     handle<KotlinParser.SafeNavContext> { defaultWrite(it, "") }

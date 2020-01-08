@@ -17,6 +17,8 @@ public extension Int8 {
     func toDouble() -> Double { return Double(self) }
     func toString() -> String { return String(describing: self) }
     var absoluteValue: Int8 { return abs(self) }
+    static var MIN_VALUE: Self { return Self.min }
+    static var MAX_VALUE: Self { return Self.max }
 }
 public extension Int16 {
     func toByte() -> Int8 { return Int8(self) }
@@ -27,6 +29,8 @@ public extension Int16 {
     func toDouble() -> Double { return Double(self) }
     func toString() -> String { return String(describing: self) }
     var absoluteValue: Int16 { return abs(self) }
+    static var MIN_VALUE: Self { return Self.min }
+    static var MAX_VALUE: Self { return Self.max }
 }
 public extension Int32 {
     func toByte() -> Int8 { return Int8(self) }
@@ -37,6 +41,8 @@ public extension Int32 {
     func toDouble() -> Double { return Double(self) }
     func toString() -> String { return String(describing: self) }
     var absoluteValue: Int32 { return abs(self) }
+    static var MIN_VALUE: Self { return Self.min }
+    static var MAX_VALUE: Self { return Self.max }
 }
 public extension Int64 {
     func toByte() -> Int8 { return Int8(self) }
@@ -47,6 +53,8 @@ public extension Int64 {
     func toDouble() -> Double { return Double(self) }
     func toString() -> String { return String(describing: self) }
     var absoluteValue: Int64 { return abs(self) }
+    static var MIN_VALUE: Self { return Self.min }
+    static var MAX_VALUE: Self { return Self.max }
 }
 public extension Float {
     func toByte() -> Int8 { return Int8(self) }
@@ -57,6 +65,8 @@ public extension Float {
     func toDouble() -> Double { return Double(self) }
     func toString() -> String { return String(describing: self) }
     var absoluteValue: Float { return abs(self) }
+    static var MIN_VALUE: Self { return -Self.infinity }
+    static var MAX_VALUE: Self { return Self.infinity }
     func roundToInt() -> Int32 { return Int32(rounded()) }
     func roundToLong() -> Int64 { return Int64(rounded()) }
 }
@@ -69,6 +79,8 @@ public extension Double {
     func toDouble() -> Double { return Double(self) }
     func toString() -> String { return String(describing: self) }
     var absoluteValue: Double { return abs(self) }
+    static var MIN_VALUE: Self { return -Self.infinity }
+    static var MAX_VALUE: Self { return Self.infinity }
     func roundToInt() -> Int32 { return Int32(rounded()) }
     func roundToLong() -> Int64 { return Int64(rounded()) }
 }

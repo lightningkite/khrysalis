@@ -21,8 +21,8 @@ open class SelectDateMonthCVD : MonthCVD() {
         }
     }
 
-    val selectedDayPaint = Paint()
-    val selectedPaint = Paint()
+    val selectedDayPaint: Paint = Paint()
+    val selectedPaint: Paint = Paint()
 
     override fun drawDay(
         canvas: Canvas,

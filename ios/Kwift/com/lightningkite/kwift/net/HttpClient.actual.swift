@@ -154,7 +154,7 @@ public enum HttpClient {
                     for (key, value) in additionalFields {
                         multipartFormData.append(value.data(using: .utf8)!, withName: key)
                     }
-                    multipartFormData.append(imgData, withName: fieldName, fileName: "file.jpg", mimeType: "image/jpg")
+                    multipartFormData.append(imgData, withName: fieldName, fileName: "file.jpg", mimeType: "image/jpeg")
                 }, to:url, method: httpMethod, headers: headers)
                 { (result) in
                     switch result {
@@ -217,7 +217,7 @@ public enum HttpClient {
                 }
                 
                 Alamofire.upload(multipartFormData: { multipartFormData in
-                    multipartFormData.append(imgData, withName: fieldName, fileName: "file.jpg", mimeType: "image/jpg")
+                    multipartFormData.append(imgData, withName: fieldName, fileName: "file.jpg", mimeType: "image/jpeg")
                 }, to:url, method: httpMethod, headers: headers)
                 { (result) in
                     switch result {
@@ -269,5 +269,8 @@ public enum HttpClient {
     
     //--- HttpClient.}
 }
+
+
+
 
 

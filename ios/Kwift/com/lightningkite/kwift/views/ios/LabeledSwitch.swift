@@ -9,7 +9,19 @@
 import UIKit
 
 
-public class LabeledSwitch : LinearLayout {
+public class LabeledSwitch : LinearLayout, CompoundButton {
+    public var onCheckChanged: (Bool) -> Void {
+        get { return switchView.onCheckChanged }
+        set(value) {
+            switchView.onCheckChanged = value
+        }
+    }
+    public var isOn: Bool {
+        get { return switchView.isOn }
+        set(value) {
+            switchView.isOn = value
+        }
+    }
     
     public var control: UIControl {
         return switchView

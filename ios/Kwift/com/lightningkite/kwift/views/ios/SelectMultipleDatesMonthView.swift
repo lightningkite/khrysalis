@@ -38,7 +38,7 @@ public class SelectMultipleDatesMonthView : QuickMonthView {
     }
 
     override public func drawDayCell(_ ctx: CGContext, _ rect: CGRect, _ day: Date) {
-        if dates.value.any(predicate: { it in day.sameDay(it) }) {
+        if dates.value.any({ it in day.sameDay(it) }) {
             let leftCal = Calendar.current.date(byAdding: .day, value: -1, to: day)!
             let left = dates.value.any { it in leftCal.sameDay(it) }
             let rightCal = Calendar.current.date(byAdding: .day, value: 1, to: day)!
@@ -72,7 +72,7 @@ public class SelectMultipleDatesMonthView : QuickMonthView {
     }
     override public func onTouchMove(date: Date) -> Bool {
         if adding {
-            if dates.value.none(predicate: { it in date.sameDay(it) }) {
+            if dates.value.none({ it in date.sameDay(it) }) {
                 dates.value = dates.value.union([date])
             }
         } else {

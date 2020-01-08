@@ -241,7 +241,7 @@ fun SwiftAltListener.registerFunction() {
 
     fun TabWriter.handleExtensionFunction(item: KotlinParser.FunctionDeclarationContext) {
         val typeArgumentNames =
-            item.typeParameters()?.typeParameter()?.map { it.simpleIdentifier().text }?.toSet() ?: setOf()
+            item.typeParameters()?.typeParameter()?.map { it.simpleIdentifier().text.trim('?') }?.toSet() ?: setOf()
 
         fun findUsages(item: ParserRuleContext): Sequence<String> {
             return when (item) {
@@ -254,20 +254,20 @@ fun SwiftAltListener.registerFunction() {
             findUsages(item.receiverType()).distinct().filter { it in typeArgumentNames }.toSet()
         val otherTypeArguments = typeArgumentNames - typeArgumentsInReceiver
         val receiverWithoutParameters =
-            item.receiverType()?.getUserType()?.simpleUserType()?.joinToString(".") { it.simpleIdentifier()!!.text }
+            item.receiverType()?.getUserType()?.simpleUserType()?.joinToString(".") { it.simpleIdentifier()!!.text.trim('?') }
                 ?: ""
         val receiverDirectUsages =
             item.receiverType()?.getUserType()?.simpleUserType()?.lastOrNull()?.typeArguments()?.typeProjection()
-                ?.filter { it.type().text !in typeArgumentNames }
+                ?.filter { it.type().text.trim('?') !in typeArgumentNames }
 
         val whereConditions = ArrayList<() -> Unit>()
         item.typeParameters()?.typeParameter()
-            ?.filter { it.simpleIdentifier().text in typeArgumentsInReceiver }
+            ?.filter { it.simpleIdentifier().text.trim('?') in typeArgumentsInReceiver }
             ?.filter { it.type() != null }
             ?.takeUnless { it.isEmpty() }
             ?.map {
                 { ->
-                    direct.append(it.simpleIdentifier().text)
+                    direct.append(it.simpleIdentifier().text.trim('?'))
                     if (item.receiverType().typeParamFinal(it.type())) {
                         direct.append(" == ")
                     } else {

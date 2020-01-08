@@ -11,6 +11,9 @@ const val INTERFACE_SCAN_VERSION: Int = 2
 const val VERSION: Int = 12
 
 fun main(vararg args: String) {
+    println("Checking ${File("./testData").walkTopDown()
+        .filter { it.extension == "kt" }
+        .filter { it.name.contains(".shared") }.toList()}")
     convertKotlinToSwiftByFolder(
         interfacesOut = File("./testDataOutput/interfaces.json"),
         baseKotlin = File("./testData"),

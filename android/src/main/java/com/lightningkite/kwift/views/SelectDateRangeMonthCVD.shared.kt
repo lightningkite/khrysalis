@@ -13,7 +13,7 @@ import java.util.*
 open class SelectDateRangeMonthCVD : MonthCVD() {
     override fun generateAccessibilityView(): View? = null
 
-    var draggingStart = true
+    var draggingStart: Boolean = true
     var start: MutableObservableProperty<DateAlone?> = StandardObservableProperty(null)
     var endInclusive: MutableObservableProperty<DateAlone?> = StandardObservableProperty(null)
     init {
@@ -25,8 +25,8 @@ open class SelectDateRangeMonthCVD : MonthCVD() {
         }
     }
 
-    val selectedDayPaint = Paint()
-    val selectedPaint = Paint()
+    val selectedDayPaint: Paint = Paint()
+    val selectedPaint: Paint = Paint()
 
     override fun measure(width: Float, height: Float, displayMetrics: DisplayMetrics) {
         super.measure(width, height, displayMetrics)
@@ -101,7 +101,7 @@ open class SelectDateRangeMonthCVD : MonthCVD() {
             day == startValue -> {
                 draggingStart = true
             }
-            day.comparable > endInclusiveValue.comparable && startValue == endInclusiveValue -> {
+            day.comparable > endInclusiveValue!!.comparable && startValue == endInclusiveValue -> {
                 endInclusive.value = day
                 draggingStart = false
             }
@@ -120,13 +120,13 @@ open class SelectDateRangeMonthCVD : MonthCVD() {
         when {
             startValue == null || endInclusiveValue == null -> {
             }
-            draggingStart && day.comparable > endInclusiveValue.comparable -> {
+            draggingStart && day.comparable > endInclusiveValue!!.comparable -> {
                 start.value = endInclusive.value
                 endInclusive.value = day
                 draggingStart = false
                 return true
             }
-            !draggingStart && day.comparable < startValue.comparable -> {
+            !draggingStart && day.comparable < startValue!!.comparable -> {
                 endInclusive.value = start.value
                 start.value = day
                 draggingStart = true
@@ -134,7 +134,7 @@ open class SelectDateRangeMonthCVD : MonthCVD() {
             }
         }
 
-        val obs = if (draggingStart) start else endInclusive
+        val obs: MutableObservableProperty<DateAlone?> = if (draggingStart) start else endInclusive
         obs.value = day
         return true
     }

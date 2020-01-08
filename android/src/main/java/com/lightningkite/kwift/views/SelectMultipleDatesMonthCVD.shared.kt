@@ -19,9 +19,9 @@ import kotlin.math.max
 open class SelectMultipleDatesMonthCVD : MonthCVD() {
     override fun generateAccessibilityView(): View? = null
 
-    val dates = StandardObservableProperty<Set<DateAlone>>(setOf())
-    val selectedDayPaint = Paint()
-    val selectedPaint = Paint()
+    val dates: StandardObservableProperty<Set<DateAlone>> = StandardObservableProperty<Set<DateAlone>>(setOf())
+    val selectedDayPaint: Paint = Paint()
+    val selectedPaint: Paint = Paint()
 
     init {
         this.dates.onChange.addWeak(this) { self, value ->
@@ -77,7 +77,7 @@ open class SelectMultipleDatesMonthCVD : MonthCVD() {
         onTouchMove(day)
     }
 
-    var adding = false
+    var adding: Boolean = false
     override fun onTouchDown(day: DateAlone): Boolean {
         adding = dates.value.none { it -> day == it }
         onTouchMove(day)
@@ -86,10 +86,12 @@ open class SelectMultipleDatesMonthCVD : MonthCVD() {
 
     override fun onTouchMove(day: DateAlone): Boolean {
         if (adding) {
-            if (dates.value.none { it -> day == it }) {
+            if (dates.value.none({ it -> day == it })) {
                 dates.value = dates.value.plus(day)
             }
-        } else dates.value = dates.value.filter { it -> it != day }.toSet()
+        } else {
+            dates.value = dates.value.filter { it -> it != day }.toSet()
+        }
         return true
     }
 

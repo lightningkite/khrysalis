@@ -88,7 +88,7 @@ open class MonthCVD: CustomViewDelegate {
         return dayAt(month: month, row: row, column: column, existing: existing)
     }
     
-    public func measure(width: Float, height: Float, displayMetrics: DisplayMetrics) -> Void {
+    open func measure(width: Float, height: Float, displayMetrics: DisplayMetrics) -> Void {
         internalPadding = displayMetrics.density * internalPaddingDp
         dayCellMargin = displayMetrics.density * dayCellMarginDp
         labelPaint.textSize = labelFontSp * displayMetrics.scaledDensity
@@ -97,7 +97,7 @@ open class MonthCVD: CustomViewDelegate {
         dayCellWidth = width / Float(7)
         dayCellHeight = ( height - dayLabelHeight ) / Float(6)
     }
-    public func measure(_ width: Float, _ height: Float, _ displayMetrics: DisplayMetrics) -> Void {
+    open func measure(_ width: Float, _ height: Float, _ displayMetrics: DisplayMetrics) -> Void {
         return measure(width: width, height: height, displayMetrics: displayMetrics)
     }
     private var calcMonthB: DateAlone
@@ -160,11 +160,7 @@ open class MonthCVD: CustomViewDelegate {
     }
     
     open func drawDay(canvas: Canvas, showingMonth: DateAlone, day: DateAlone, displayMetrics: DisplayMetrics, outer: RectF, inner: RectF) -> Void {
-        if day.month == showingMonth.month, day.year == showingMonth.year {
-            CalendarDrawing.day(canvas, day, outer, dayPaint)
-        } else {
-            CalendarDrawing.dayFaded(canvas, day, outer, dayPaint)
-        }
+        CalendarDrawing.day(canvas, showingMonth, day, outer, dayPaint)
     }
     open func drawDay(_ canvas: Canvas, _ showingMonth: DateAlone, _ day: DateAlone, _ displayMetrics: DisplayMetrics, _ outer: RectF, _ inner: RectF) -> Void {
         return drawDay(canvas: canvas, showingMonth: showingMonth, day: day, displayMetrics: displayMetrics, outer: outer, inner: inner)
@@ -366,22 +362,19 @@ open class MonthCVD: CustomViewDelegate {
 
 public enum CalendarDrawing {
     
-    static public func day(canvas: Canvas, date: DateAlone, inner: RectF, paint: Paint) -> Void {
-        canvas.drawTextCentered(date.day.toString(), inner.centerX(), inner.centerY(), paint)
+    static public func day(canvas: Canvas, month: DateAlone, date: DateAlone, inner: RectF, paint: Paint) -> Void {
+        if date.month == month.month, date.year == month.year {
+            canvas.drawTextCentered(date.day.toString(), inner.centerX(), inner.centerY(), paint)
+        } else {
+            var originalColor = paint.color
+             var myPaint = paint
+            myPaint.color = paint.color.colorAlpha(64)
+            canvas.drawTextCentered(date.day.toString(), inner.centerX(), inner.centerY(), myPaint)
+            myPaint.color = originalColor
+        }
     }
-    static public func day(_ canvas: Canvas, _ date: DateAlone, _ inner: RectF, _ paint: Paint) -> Void {
-        return day(canvas: canvas, date: date, inner: inner, paint: paint)
-    }
-    
-    static public func dayFaded(canvas: Canvas, date: DateAlone, inner: RectF, paint: Paint) -> Void {
-        var originalColor = paint.color
-         var myPaint = paint
-        myPaint.color = paint.color.colorAlpha(64)
-        canvas.drawTextCentered(date.day.toString(), inner.centerX(), inner.centerY(), myPaint)
-        myPaint.color = originalColor
-    }
-    static public func dayFaded(_ canvas: Canvas, _ date: DateAlone, _ inner: RectF, _ paint: Paint) -> Void {
-        return dayFaded(canvas: canvas, date: date, inner: inner, paint: paint)
+    static public func day(_ canvas: Canvas, _ month: DateAlone, _ date: DateAlone, _ inner: RectF, _ paint: Paint) -> Void {
+        return day(canvas: canvas, month: month, date: date, inner: inner, paint: paint)
     }
     
     static public func label(canvas: Canvas, dayOfWeek: Int32, inner: RectF, paint: Paint) -> Void {
