@@ -101,7 +101,11 @@ class CustomView @JvmOverloads constructor(
                     }
                 }
             }
-            MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP, MotionEvent.ACTION_CANCEL -> {
+            MotionEvent.ACTION_CANCEL -> {
+                val pointerId = event.getPointerId(event.actionIndex)
+                val touch = touches.remove(pointerId)
+            }
+            MotionEvent.ACTION_UP, MotionEvent.ACTION_POINTER_UP -> {
                 val pointerId = event.getPointerId(event.actionIndex)
                 val touch = touches.remove(pointerId)
                 if (touch != null) {
