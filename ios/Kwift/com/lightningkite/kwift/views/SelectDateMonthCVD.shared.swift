@@ -29,7 +29,7 @@ open class SelectDateMonthCVD: MonthCVD {
     }
     
     override public func measure(width: Float, height: Float, displayMetrics: DisplayMetrics) -> Void {
-        super.measure(width, height, displayMetrics)
+        super.measure(width: width, height: height, displayMetrics: displayMetrics)
         selectedDayPaint.textSize = dayPaint.textSize
     }
     override public func measure(_ width: Float, _ height: Float, _ displayMetrics: DisplayMetrics) -> Void {

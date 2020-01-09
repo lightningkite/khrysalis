@@ -173,7 +173,7 @@ open class LinearLayout: UIView {
         var position: CGFloat = 0
         let size = self.bounds.size
         let requiredSize = measure(size, includingWeighted: false)
-        let weightSum = subviewsWithParams.reduce(0) { (acc, pair) in acc + pair.1.weight }
+        let weightSum = subviewsWithParams.filter { $0.0.includeInLayout }.reduce(0) { (acc, pair) in acc + pair.1.weight }
         let remainingPrimarySize = size[orientation] - requiredSize[orientation]
         if weightSum == 0 {
             switch gravity[orientation] {

@@ -137,26 +137,28 @@ public class ViewDependency {
     
     //--- ViewDependency.requestImageCamera((Uri)->Unit)
     public func requestImageCamera(onResult: @escaping (Uri) -> Void) {
-        if AVCaptureDevice.authorizationStatus(for: .video) == .authorized {
-            AVCaptureDevice.requestAccess(for: .video) { granted in
-                if granted {
-                    if PHPhotoLibrary.authorizationStatus() == .authorized {
-                        self.requestImageCameraRaw(onResult: onResult)
-                    } else {
-                        PHPhotoLibrary.requestAuthorization {_ in
+        DispatchQueue.main.async {
+            if AVCaptureDevice.authorizationStatus(for: .video) == .authorized {
+                AVCaptureDevice.requestAccess(for: .video) { granted in
+                    if granted {
+                        if PHPhotoLibrary.authorizationStatus() == .authorized {
                             self.requestImageCameraRaw(onResult: onResult)
+                        } else {
+                            PHPhotoLibrary.requestAuthorization {_ in
+                                self.requestImageCameraRaw(onResult: onResult)
+                            }
                         }
                     }
                 }
-            }
-        } else {
-            AVCaptureDevice.requestAccess(for: .video) { granted in
-                if granted {
-                    if PHPhotoLibrary.authorizationStatus() == .authorized {
-                        self.requestImageCameraRaw(onResult: onResult)
-                    } else {
-                        PHPhotoLibrary.requestAuthorization {_ in
+            } else {
+                AVCaptureDevice.requestAccess(for: .video) { granted in
+                    if granted {
+                        if PHPhotoLibrary.authorizationStatus() == .authorized {
                             self.requestImageCameraRaw(onResult: onResult)
+                        } else {
+                            PHPhotoLibrary.requestAuthorization {_ in
+                                self.requestImageCameraRaw(onResult: onResult)
+                            }
                         }
                     }
                 }
@@ -164,11 +166,13 @@ public class ViewDependency {
         }
     }
     private func requestImageCameraRaw(onResult: @escaping (Uri) -> Void) {
-        if UIImagePickerController.isSourceTypeAvailable(.camera){
-            let imageDelegate = self.imageDelegate
-            imageDelegate.onImagePicked = onResult
-            imageDelegate.prepareCamera()
-            self.parentViewController.present(imageDelegate.imagePicker, animated: true, completion: nil)
+        DispatchQueue.main.async {
+            if UIImagePickerController.isSourceTypeAvailable(.camera){
+                let imageDelegate = self.imageDelegate
+                imageDelegate.onImagePicked = onResult
+                imageDelegate.prepareCamera()
+                self.parentViewController.present(imageDelegate.imagePicker, animated: true, completion: nil)
+            }
         }
     }
 }
@@ -218,41 +222,75 @@ private class ImageDelegate : NSObject, UIImagePickerControllerDelegate, UINavig
         }
         let image = info[.originalImage] as! UIImage
         print(image)
-        var localId: String = ""
-        PHPhotoLibrary.shared().performChanges({
-            let r = PHAssetChangeRequest.creationRequestForAsset(from: image)
-            localId = r.placeholderForCreatedAsset!.localIdentifier
-        }, completionHandler: { (success, error) in
-            if !success {
-                print(error)
-                DispatchQueue.main.async {
-                    picker.dismiss(animated: true, completion: {
-                        self.onImagePicked = nil
-                    })
-                }
-            } else {
-                let assetResult = PHAsset.fetchAssets(withLocalIdentifiers: [localId], options: nil)
-                let asset = assetResult.firstObject!
-                PHImageManager.default().requestImageData(for: asset, options: nil) { (data, string, orientation, map) in
-                    let fileUrl = map!["PHImageFileURLKey"] as! URL
-                    DispatchQueue.main.async {
-                        picker.dismiss(animated: true, completion: {
-                            self.onImagePicked?(fileUrl)
-                            self.onImagePicked = nil
-                        })
-                    }
-                }
+        let tempDirectoryUrl = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("klypphotos")
+        guard let url2 = image.save(at: tempDirectoryUrl) else {
+            DispatchQueue.main.async {
+                picker.dismiss(animated: true, completion: {
+                    print("Failed to save image")
+                    self.onImagePicked = nil
+                })
             }
-        })
-//        UIImageWriteToSavedPhotosAlbum(image, self, #selector(handleResult(image:didFinishSavingWithError:contextInfo:)), nil)
+            return
+        }
+        print(url2)
+        DispatchQueue.main.async {
+            picker.dismiss(animated: true, completion: {
+                self.onImagePicked?(url2)
+                self.onImagePicked = nil
+            })
+        }
     }
 }
 
+// save
+extension UIImage {
 
+    func save(at directory: FileManager.SearchPathDirectory,
+              pathAndImageName: String,
+              createSubdirectoriesIfNeed: Bool = true,
+              compressionQuality: CGFloat = 1.0)  -> URL? {
+        do {
+        let documentsDirectory = try FileManager.default.url(for: directory, in: .userDomainMask,
+                                                             appropriateFor: nil,
+                                                             create: false)
+        return save(at: documentsDirectory.appendingPathComponent(pathAndImageName),
+                    createSubdirectoriesIfNeed: createSubdirectoriesIfNeed,
+                    compressionQuality: compressionQuality)
+        } catch {
+            print("-- Error: \(error)")
+            return nil
+        }
+    }
 
+    func save(at url: URL,
+              createSubdirectoriesIfNeed: Bool = true,
+              compressionQuality: CGFloat = 1.0)  -> URL? {
+        do {
+            if createSubdirectoriesIfNeed {
+                try FileManager.default.createDirectory(at: url.deletingLastPathComponent(),
+                                                        withIntermediateDirectories: true,
+                                                        attributes: nil)
+            }
+            guard let data = jpegData(compressionQuality: compressionQuality) else { return nil }
+            try data.write(to: url)
+            return url
+        } catch {
+            print("-- Error: \(error)")
+            return nil
+        }
+    }
+}
 
+// load from path
 
-
-
-
-
+extension UIImage {
+    convenience init?(fileURLWithPath url: URL, scale: CGFloat = 1.0) {
+        do {
+            let data = try Data(contentsOf: url)
+            self.init(data: data, scale: scale)
+        } catch {
+            print("-- Error: \(error)")
+            return nil
+        }
+    }
+}

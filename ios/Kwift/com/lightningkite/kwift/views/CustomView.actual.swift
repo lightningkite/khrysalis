@@ -41,7 +41,7 @@ public class CustomView: FrameLayout {
     
     override public func draw(_ rect: CGRect) {
         guard let ctx = UIGraphicsGetCurrentContext() else { return }
-        ctx.clear(rect)
+//        ctx.clear(rect)
         ctx.scale(1/scaleInformation.density, 1/scaleInformation.density)
         delegate?.draw(ctx, Float(rect.size.width) * scaleInformation.density, Float(rect.size.height) * scaleInformation.density, scaleInformation)
     }

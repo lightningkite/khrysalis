@@ -30,7 +30,7 @@ open class SelectMultipleDatesMonthCVD : MonthCVD() {
     }
 
     override fun measure(width: Float, height: Float, displayMetrics: DisplayMetrics) {
-        super.measure(width, height, displayMetrics)
+        super.measure(width = width, height = height, displayMetrics = displayMetrics)
         selectedDayPaint.textSize = dayPaint.textSize
     }
 

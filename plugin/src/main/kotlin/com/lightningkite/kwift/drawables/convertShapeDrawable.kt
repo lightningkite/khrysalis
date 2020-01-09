@@ -23,7 +23,7 @@ fun convertShapeDrawable(name: String, node: XmlNode, out: Appendable) {
         }
         node.children.find { it.name == "corners" }?.let { corners ->
             corners.attributeAsDimension("android:radius")?.let {
-                appendln("    layer.cornerRadius = $it")
+                appendln("    layer.maxCornerRadius = $it")
             } ?: run {
                 val radius = corners.attributeAsDimension("android:bottomLeftRadius")
                     ?: corners.attributeAsDimension("android:topLeftRadius")

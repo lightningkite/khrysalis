@@ -105,6 +105,17 @@ extension CALayer : CALayerToImage {
             return img
         }
     }
+    
+    public var maxCornerRadius: CGFloat {
+        get {
+            return cornerRadius
+        }
+        set(value) {
+            self.onResize.addAndRunWeak(self, self.bounds) { (self, bounds) in
+                self.cornerRadius = min(min(value, bounds.size.width/2), bounds.size.height/2)
+            }
+        }
+    }
 }
 
 public class CAImageLayer: CALayer {
