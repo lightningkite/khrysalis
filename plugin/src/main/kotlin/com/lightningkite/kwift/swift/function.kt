@@ -276,35 +276,33 @@ fun SwiftAltListener.registerFunction() {
                 }
                 val param = item.functionValueParameters().functionValueParameter(0)
                 if (owningClass != null) {
-                    owningClass.postClass.add {
-                        if (isBinary) {
-                            line {
-                                append("func $operator(self: ")
-                                append(owningClass.simpleIdentifier()?.text)
-                                append(", ")
-                                append(param.parameter().simpleIdentifier().text)
-                                append(": ")
-                                write(param.parameter().type())
-                                append(") -> ")
-                                write(item.type())
-                                append(" { return self.")
-                                append(item.simpleIdentifier().text)
-                                append("(")
-                                append(param.parameter().simpleIdentifier().text)
-                                append(": ")
-                                append(param.parameter().simpleIdentifier().text)
-                                append(") }")
-                            }
-                        } else {
-                            line {
-                                append("prefix func $operator(self: ")
-                                append(owningClass.simpleIdentifier()?.text)
-                                append(") -> ")
-                                write(item.type())
-                                append(" { return self.")
-                                append(item.simpleIdentifier().text)
-                                append("() }")
-                            }
+                    if (isBinary) {
+                        line {
+                            append("static func $operator(receiver: ")
+                            append(owningClass.simpleIdentifier()?.text)
+                            append(", ")
+                            append(param.parameter().simpleIdentifier().text)
+                            append(": ")
+                            write(param.parameter().type())
+                            append(") -> ")
+                            write(item.type())
+                            append(" { return receiver.")
+                            append(item.simpleIdentifier().text)
+                            append("(")
+                            append(param.parameter().simpleIdentifier().text)
+                            append(": ")
+                            append(param.parameter().simpleIdentifier().text)
+                            append(") }")
+                        }
+                    } else {
+                        line {
+                            append("static prefix func $operator(receiver: ")
+                            append(owningClass.simpleIdentifier()?.text)
+                            append(") -> ")
+                            write(item.type())
+                            append(" { return receiver.")
+                            append(item.simpleIdentifier().text)
+                            append("() }")
                         }
                     }
                 } else {
