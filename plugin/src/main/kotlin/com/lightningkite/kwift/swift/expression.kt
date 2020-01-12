@@ -2,6 +2,7 @@ package com.lightningkite.kwift.swift
 
 import com.lightningkite.kwift.utils.camelCase
 import com.lightningkite.kwift.utils.forEachBetween
+import com.lightningkite.kwift.utils.forEachBetweenIndexed
 import org.antlr.v4.runtime.ParserRuleContext
 import org.antlr.v4.runtime.tree.TerminalNode
 import org.jetbrains.kotlin.KotlinParser
@@ -33,6 +34,27 @@ fun SwiftAltListener.registerExpression() {
                     else -> true
                 }
             }
+        }
+    }
+    handle<KotlinParser.InfixFunctionCallContext> { item ->
+        var lastIndex = 0
+        item.rangeExpression()?.forEachBetweenIndexed(
+            forItem = { index, expression ->
+                lastIndex = index
+                write(item.rangeExpression(index))
+            },
+            between = {
+                if(lastIndex == 0){
+                    direct.append(".")
+                } else {
+                    direct.append(").")
+                }
+                write(item.simpleIdentifier(lastIndex))
+                direct.append('(')
+            }
+        )
+        if(item.rangeExpression().size > 1){
+            direct.append(")")
         }
     }
     handle<KotlinParser.PrefixUnaryExpressionContext> { item ->

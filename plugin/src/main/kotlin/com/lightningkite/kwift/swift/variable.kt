@@ -8,6 +8,13 @@ import org.jetbrains.kotlin.KotlinParser
 
 fun SwiftAltListener.registerVariable() {
     handle<KotlinParser.PropertyDeclarationContext> { item ->
+
+        item.receiverType()?.let {
+            startExtension(this, item.typeParameters(), it)
+            tabIn()
+            startLine()
+        }
+
         val owningClass = item.parentIfType<KotlinParser.DeclarationContext>()
             ?.parentIfType<KotlinParser.ClassMemberDeclarationContext>()
             ?.parentIfType<KotlinParser.ClassMemberDeclarationsContext>()
@@ -170,6 +177,11 @@ fun SwiftAltListener.registerVariable() {
                 }
                 line("}")
             }
+        }
+
+        item.receiverType()?.let {
+            tabOut()
+            line("}")
         }
     }
 }

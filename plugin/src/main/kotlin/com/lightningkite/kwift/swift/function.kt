@@ -240,83 +240,13 @@ fun SwiftAltListener.registerFunction() {
     }
 
     fun TabWriter.handleExtensionFunction(item: KotlinParser.FunctionDeclarationContext) {
-        val typeArgumentNames =
-            item.typeParameters()?.typeParameter()?.map { it.simpleIdentifier().text.trim('?') }?.toSet() ?: setOf()
-
-        fun findUsages(item: ParserRuleContext): Sequence<String> {
-            return when (item) {
-                is KotlinParser.SimpleIdentifierContext -> sequenceOf(item.text)
-                else -> item.children.asSequence().mapNotNull { it as? ParserRuleContext }.flatMap { findUsages(it).asSequence() }
-            }
-        }
-
-        val typeArgumentsInReceiver =
-            findUsages(item.receiverType()).distinct().filter { it in typeArgumentNames }.toSet()
-        val otherTypeArguments = typeArgumentNames - typeArgumentsInReceiver
-        val receiverWithoutParameters =
-            item.receiverType()?.getUserType()?.simpleUserType()?.joinToString(".") { it.simpleIdentifier()!!.text.trim('?') }
-                ?: ""
-        val receiverDirectUsages =
-            item.receiverType()?.getUserType()?.simpleUserType()?.lastOrNull()?.typeArguments()?.typeProjection()
-                ?.filter { it.type().text.trim('?') !in typeArgumentNames }
-
-        val whereConditions = ArrayList<() -> Unit>()
-        item.typeParameters()?.typeParameter()
-            ?.filter { it.simpleIdentifier().text.trim('?') in typeArgumentsInReceiver }
-            ?.filter { it.type() != null }
-            ?.takeUnless { it.isEmpty() }
-            ?.map {
-                { ->
-                    direct.append(it.simpleIdentifier().text.trim('?'))
-                    if (item.receiverType().typeParamFinal(it.type())) {
-                        direct.append(" == ")
-                    } else {
-                        direct.append(": ")
-                    }
-                    write(it.type())
-                    Unit
-                }
-            }
-            ?.let { whereConditions += it }
-        receiverDirectUsages?.forEachIndexed { index, it ->
-            whereConditions += {
-                direct.append(
-                    item.receiverType().typeParamName(
-                        type = it.type(),
-                        annotations = it.typeProjectionModifiers()?.typeProjectionModifier()?.mapNotNull { it.annotation() },
-                        totalCount = receiverDirectUsages.size,
-                        index = index
-                    )
-                )
-                if (item.receiverType().typeParamFinal(
-                        type = it.type(),
-                        annotations = it.typeProjectionModifiers()?.typeProjectionModifier()?.mapNotNull { it.annotation() }
-                    )
-                ) {
-                    direct.append(" == ")
-                } else {
-                    direct.append(": ")
-                }
-                write(it.type())
-            }
-        }
-
-        line {
-            append("extension ${receiverWithoutParameters.let { typeReplacements[it] ?: it }}")
-            if (whereConditions.isNotEmpty()) {
-                append(" where ")
-                whereConditions.forEachBetween(
-                    forItem = { it() },
-                    between = { append(", ") }
-                )
-            }
-            append(" {")
-        }
+        val otherTypeArguments = startExtension(this, item.typeParameters(), item.receiverType())
         tab {
             handleNormalFunction(
                 this,
                 item,
-                usingTypeParameters = item.typeParameters()?.typeParameter()?.filter { it.simpleIdentifier().text in otherTypeArguments }?.takeUnless { it.isEmpty() })
+                usingTypeParameters = item.typeParameters()?.typeParameter()?.filter { it.simpleIdentifier().text in otherTypeArguments }?.takeUnless { it.isEmpty() }
+            )
         }
         line("}")
     }
