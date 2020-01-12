@@ -1,14 +1,12 @@
-package com.test
+package com.lightningkite.spintennis.engine
 
-class NormalDeclaration(val x: Int, val y: String)
+import android.graphics.Canvas
+import kotlin.math.*
 
-val NormalDeclaration.z: Int get() = x
-fun NormalDeclaration.a(): String = y
 
-fun test(){
-    println(32 plus 32 minus 2 times 3)
-    println(Int.MIN_VALUE)
-    println(Int.MAX_VALUE)
-    call(Unit)
+data class Point(val x: Float, val y: Float) {
+    operator fun plus(other: Point): Point = Point(x + other.x, y + other.y)
 }
 
+operator fun Point.minus(other: Point): Point = Point(x - other.x, y - other.y)
+operator fun Point.unaryMinus(): Point = Point(-x, -y)

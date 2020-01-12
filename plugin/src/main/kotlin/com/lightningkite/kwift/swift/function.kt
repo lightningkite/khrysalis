@@ -67,7 +67,7 @@ fun SwiftAltListener.handleNormalFunction(
         if (owningClass != null && owningClass.INTERFACE() == null || isTopLevel) {
             append(item.modifiers().visibilityString())
             append(" ")
-        } else if(owningCompanion != null || owningObject != null) {
+        } else if (owningCompanion != null || owningObject != null) {
             append("static ")
             append(item.modifiers().visibilityString())
             append(" ")
@@ -252,6 +252,98 @@ fun SwiftAltListener.registerFunction() {
     }
 
     handle<KotlinParser.FunctionDeclarationContext> { item ->
+        //Handle operators
+        val owningClass = item.parentIfType<KotlinParser.DeclarationContext>()
+            ?.parentIfType<KotlinParser.ClassMemberDeclarationContext>()
+            ?.parentIfType<KotlinParser.ClassMemberDeclarationsContext>()
+            ?.parentIfType<KotlinParser.ClassBodyContext>()
+            ?.parentIfType<KotlinParser.ClassDeclarationContext>()
+        run {
+            if (item.modifiers()?.modifier()?.any { it.functionModifier()?.OPERATOR() != null } == true) {
+                val tabWriter = this
+                val (isBinary, operator) = when (item.simpleIdentifier()?.text) {
+                    "plus" -> true to "+"
+                    "minus" -> true to "-"
+                    "times" -> true to "*"
+                    "div" -> true to "/"
+                    "rem" -> true to "%"
+                    "unaryMinus" -> false to "-"
+                    "unaryPlus" -> false to "+"
+                    "not" -> false to "!"
+                    else -> {
+                        return@run
+                    }
+                }
+                val param = item.functionValueParameters().functionValueParameter(0)
+                if (owningClass != null) {
+                    owningClass.postClass.add {
+                        if (isBinary) {
+                            line {
+                                append("func $operator(self: ")
+                                append(owningClass.simpleIdentifier()?.text)
+                                append(", ")
+                                append(param.parameter().simpleIdentifier().text)
+                                append(": ")
+                                write(param.parameter().type())
+                                append(") -> ")
+                                write(item.type())
+                                append(" { return self.")
+                                append(item.simpleIdentifier().text)
+                                append("(")
+                                append(param.parameter().simpleIdentifier().text)
+                                append(": ")
+                                append(param.parameter().simpleIdentifier().text)
+                                append(") }")
+                            }
+                        } else {
+                            line {
+                                append("prefix func $operator(self: ")
+                                append(owningClass.simpleIdentifier()?.text)
+                                append(") -> ")
+                                write(item.type())
+                                append(" { return self.")
+                                append(item.simpleIdentifier().text)
+                                append("() }")
+                            }
+                        }
+                    }
+                } else {
+                    item.receiverType()?.let { receiver ->
+                        if (isBinary) {
+                            line {
+                                append("func $operator(self: ")
+                                write(receiver)
+                                append(", ")
+                                append(param.parameter().simpleIdentifier().text)
+                                append(": ")
+                                write(param.parameter().type())
+                                append(") -> ")
+                                write(item.type())
+                                append(" { return self.")
+                                append(item.simpleIdentifier().text)
+                                append("(")
+                                append(param.parameter().simpleIdentifier().text)
+                                append(": ")
+                                append(param.parameter().simpleIdentifier().text)
+                                append(") }")
+                            }
+                        } else {
+                            line {
+                                append("prefix func $operator(self: ")
+                                write(receiver)
+                                append(") -> ")
+                                write(item.type())
+                                append(" { return self.")
+                                append(item.simpleIdentifier().text)
+                                append("() }")
+                            }
+                        }
+                    }
+                }
+            }
+        }
+
+        //Normal
         if (item.receiverType() != null) this.handleExtensionFunction(item)
         else handleNormalFunction(this, item)
     }

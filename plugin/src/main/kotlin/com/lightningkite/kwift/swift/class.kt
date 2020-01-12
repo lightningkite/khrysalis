@@ -10,6 +10,11 @@ private val KotlinParserClassDeclarationContextAdditionalInits =
 val KotlinParser.ClassDeclarationContext.additionalInits: MutableList<SwiftAltListener.(TabWriter) -> Unit>
     get() = KotlinParserClassDeclarationContextAdditionalInits.getOrPut(this) { ArrayList() }
 
+private val KotlinParserClassDeclarationContextPostClass =
+    HashMap<KotlinParser.ClassDeclarationContext, MutableList<SwiftAltListener.(TabWriter) -> Unit>>()
+val KotlinParser.ClassDeclarationContext.postClass: MutableList<SwiftAltListener.(TabWriter) -> Unit>
+    get() = KotlinParserClassDeclarationContextPostClass.getOrPut(this) { ArrayList() }
+
 fun KotlinParser.ClassDeclarationContext.clearAdditionalInits() =
     KotlinParserClassDeclarationContextAdditionalInits.remove(this)
 
@@ -559,6 +564,7 @@ fun SwiftAltListener.registerClass() {
             )
             else -> this.handleNormalClass(item)
         }
+        item.postClass.forEach { it.invoke(this@registerClass, this@handle) }
     }
 
     handle<KotlinParser.ObjectDeclarationContext> { item ->
