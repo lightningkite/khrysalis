@@ -16,7 +16,7 @@ fun GeoAddress(): GeoAddress = GeoAddress(Locale.getDefault())
 
 val GeoAddress.street: String
     get() {
-        return (0..maxAddressLineIndex).joinToString(" ") { getAddressLine(it) }
+        return (0..maxAddressLineIndex).joinToString(" ") { getAddressLine(it) }.substringBefore(",")
     }
 
 fun GeoAddress.oneLine(withCountry: Boolean = false, withZip: Boolean = false): String = buildString {
