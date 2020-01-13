@@ -110,6 +110,7 @@ class SwiftAltListener {
         typeReplacements["Short"] = "Int16"
         typeReplacements["Int"] = "Int32"
         typeReplacements["Long"] = "Int64"
+        typeReplacements["Exception"] = "Error"
         typeReplacements["KClass"] = "Any.Type*"
         typeReplacements["Class"] = "Any.Type*"
 

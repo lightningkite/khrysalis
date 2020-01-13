@@ -98,3 +98,11 @@ public extension String {
     func toDouble() -> Double { return Double(self)! }
     func toDoubleOrNull() -> Double? { return Double(self) }
 }
+
+public func % (left:Float, right:Float) -> Float {
+    return left.truncatingRemainder(dividingBy: right)
+}
+
+public func % (left:Double, right:Double) -> Double {
+    return left.truncatingRemainder(dividingBy: right)
+}

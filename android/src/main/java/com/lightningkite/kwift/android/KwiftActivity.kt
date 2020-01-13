@@ -1,25 +1,16 @@
 package com.lightningkite.kwift.android
 
 import android.animation.ValueAnimator
-import android.annotation.TargetApi
-import android.app.Activity
 import android.app.AlertDialog
-import android.content.Context
 import android.content.Intent
-import android.content.pm.PackageManager
 import android.net.Uri
-import android.os.Build
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import androidx.appcompat.app.AppCompatActivity
-import androidx.core.app.ActivityCompat
-import androidx.core.content.ContextCompat
 import com.lightningkite.kwift.observables.addWeak
 import com.lightningkite.kwift.views.EntryPoint
 import com.lightningkite.kwift.views.ViewGenerator
 import com.lightningkite.kwift.views.showDialogEvent
-import java.util.*
 import com.lightningkite.kwift.R
 import com.lightningkite.kwift.animationFrame
 import com.lightningkite.kwift.observables.Close
@@ -67,7 +58,7 @@ abstract class KwiftActivity : AccessibleActivity() {
     }
 
     override fun onDestroy() {
-        showDialogEventCloser?.close?.invoke()
+        showDialogEventCloser?.closer?.invoke()
         super.onDestroy()
     }
 
