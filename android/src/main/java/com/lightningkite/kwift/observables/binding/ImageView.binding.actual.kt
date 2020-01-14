@@ -22,7 +22,7 @@ fun ImageView.loadImage(image: Image?) {
                 )
                 is ImageBitmap -> this.setImageBitmap(image.bitmap)
                 is ImageRemoteUrl -> {
-                    if (image.url.isNotBlank()) {
+                    if (image.url.isNotBlank() && this.width > 0 && this.height > 0) {
                         Picasso.get().load(image.url).resize(this.width * 2, this.height * 2).centerInside().into(this)
                     }
                 }
