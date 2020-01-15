@@ -24,7 +24,7 @@ interface BleDevice {
     fun subscribe(
         serviceId: UUID,
         characteristicId: UUID,
-        indicate: Boolean = false
+        indicate: Boolean
     ): Event<ByteArray>
     fun close()
 }

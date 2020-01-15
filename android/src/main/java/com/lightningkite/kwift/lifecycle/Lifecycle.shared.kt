@@ -1,5 +1,6 @@
 package com.lightningkite.kwift.lifecycle
 
+import com.lightningkite.kwift.AnyObject
 import com.lightningkite.kwift.escaping
 import com.lightningkite.kwift.observables.*
 import com.lightningkite.kwift.swiftExactly
@@ -8,7 +9,7 @@ import com.lightningkite.kwift.weak
 typealias Lifecycle = ObservableProperty<Boolean>
 
 infix fun ObservableProperty<@swiftExactly Boolean>.and(other: ObservableProperty<@swiftExactly Boolean>): Lifecycle = this.combine(other) { a, b -> a && b }
-fun <A: Any> ObservableProperty<@swiftExactly Boolean>.openCloseBinding(
+fun <A: AnyObject> ObservableProperty<@swiftExactly Boolean>.openCloseBinding(
     target: A,
     open: @escaping() (A)->Unit,
     close: @escaping() (A)->Unit
@@ -37,7 +38,7 @@ private class OnceObservableProperty(val basedOn: ObservableProperty<Boolean>): 
         get() = OnceEvent(basedOn.onChange)
 
     class OnceEvent(val basedOn: Event<Boolean>) : Event<Boolean>() {
-        override fun add(listener: (Boolean) -> Boolean): Close {
+        override fun add(listener: @escaping() (Boolean) -> Boolean): Close {
             return basedOn.add { it ->
                 val result = listener(it)
                 return@add result && !it
@@ -47,7 +48,7 @@ private class OnceObservableProperty(val basedOn: ObservableProperty<Boolean>): 
 
 }
 
-fun ObservableProperty<@swiftExactly Boolean>.closeWhenOff(closeable: Closeable) {
+fun <T> ObservableProperty<@swiftExactly Boolean>.closeWhenOff(closeable: T) where T: Closeable, T: AnyObject {
     val weakCloseable by weak(closeable)
     this.onChange.add { it ->
         weakCloseable?.let { closeable ->

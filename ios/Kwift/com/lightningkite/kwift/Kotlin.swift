@@ -8,7 +8,7 @@
 
 import Foundation
 
-public func TODO(_ message: String = ""){
+public func TODO(_ message: String = "") -> Never {
     //Throw execption
     fatalError(message)
 }
@@ -276,6 +276,9 @@ public extension Dictionary {
     var size: Int32 { return Int32(self.count) }
     mutating func put(_ key: Key, _ value: Value) {
         self[key] = value
+    }
+    mutating func remove(_ key: Key) {
+        self.removeValue(forKey: key)
     }
     mutating func putAll(_ other: Dictionary) {
         for (key, value) in other {

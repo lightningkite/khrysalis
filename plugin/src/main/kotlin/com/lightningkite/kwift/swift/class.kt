@@ -36,8 +36,16 @@ fun KotlinParser.ClassDeclarationContext.constructorParameterNames() =
         ?.asSequence()
         ?.map { it.simpleIdentifier().text } ?: sequenceOf()
 
+
 fun SwiftAltListener.registerClass() {
 
+    fun KotlinParser.ClassParameterContext.needsOverride(parent: KotlinParser.ClassDeclarationContext): Boolean {
+        val myName = this.simpleIdentifier().text
+        val originalUsesOverride =
+            this.modifiers()?.modifier()?.any { it.memberModifier()?.OVERRIDE() != null } ?: false
+        return originalUsesOverride && !parent.implements()
+            .any { myName in it.properties }
+    }
 
     fun TabWriter.writeConvenienceInit(item: KotlinParser.ClassDeclarationContext) {
         if (item.primaryConstructor()?.classParameters()?.classParameter()?.size ?: 0 == 0) return
@@ -167,7 +175,7 @@ fun SwiftAltListener.registerClass() {
                 item.constructorVars().forEach {
                     line {
                         val typeText = it.type().text.trim()
-                        if(typeText.endsWith("?")){
+                        if (typeText.endsWith("?")) {
                             append("try container.encodeIfPresent(self.")
                             append(it.simpleIdentifier().text)
                             append(", forKey: .")
@@ -269,14 +277,36 @@ fun SwiftAltListener.registerClass() {
             line()
 
             item.constructorVars().forEach {
-                line {
-                    append("public var ")
-                    append(it.simpleIdentifier().text)
-                    append(": ")
+                if (it.needsOverride(item)) {
                     val type = it.type()
-                    filterEscapingAnnotation = true
-                    write(type)
-                    filterEscapingAnnotation = false
+                    val name = it.simpleIdentifier().text
+                    line {
+                        append("public var _")
+                        append(name)
+                        append(": ")
+                        filterEscapingAnnotation = true
+                        write(type)
+                        filterEscapingAnnotation = false
+                    }
+                    line {
+                        append("override public var ")
+                        append(name)
+                        append(": ")
+                        filterEscapingAnnotation = true
+                        write(type)
+                        filterEscapingAnnotation = false
+                        append(" { get { return _$name } set(value) { _$name = value } }")
+                    }
+                } else {
+                    line {
+                        append("public var ")
+                        append(it.simpleIdentifier().text)
+                        append(": ")
+                        val type = it.type()
+                        filterEscapingAnnotation = true
+                        write(type)
+                        filterEscapingAnnotation = false
+                    }
                 }
             }
 
@@ -390,7 +420,11 @@ fun SwiftAltListener.registerClass() {
             tab {
 
                 item.constructorVars().forEach {
-                    line("self.${it.simpleIdentifier().text} = ${it.simpleIdentifier().text}")
+                    if (it.needsOverride(item)) {
+                        line("self._${it.simpleIdentifier().text} = ${it.simpleIdentifier().text}")
+                    } else {
+                        line("self.${it.simpleIdentifier().text} = ${it.simpleIdentifier().text}")
+                    }
                 }
 
                 item.additionalInits.forEach { it.invoke(this@registerClass, this) }

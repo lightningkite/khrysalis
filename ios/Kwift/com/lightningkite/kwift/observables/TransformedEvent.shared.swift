@@ -28,10 +28,17 @@ public class TransformedEvent<A, B>: Event<B> {
     }
 }
  
+
+extension Event {
+     public func transformed<B>(transformation: @escaping (T) -> B) -> Event<B> {
+        return TransformedEvent<T, B>(self, transformation)
+    }
+}
+ 
  
 
 extension Event {
-    public func transformed<B>(transformation: @escaping (T) -> B) -> Event<B> {
+    public func map<B>(transformation: @escaping (T) -> B) -> Event<B> {
         return TransformedEvent<T, B>(self, transformation)
     }
 }

@@ -25,18 +25,18 @@ fun <T> drfStart(value: T): DelayedResultFunction<T> = DelayedResultFunction { o
     return@DelayedResultFunction Close {}
 }
 
-fun <T, B> DelayedResultFunction<T>.then(next: (T) -> DelayedResultFunction<B>): DelayedResultFunction<B> {
+fun <T, B> DelayedResultFunction<T>.then(next: @escaping() (T) -> DelayedResultFunction<B>): DelayedResultFunction<B> {
     val first = this
-    return DelayedResultFunction { onResult ->
+    return DelayedResultFunction<B> { onResult ->
         var closed = false
         var secondCloseable: Closeable? = null
         var firstCloseable: Closeable? = null
         firstCloseable = first.invoke { input ->
             firstCloseable = null
             input.issue?.let {
-                onResult(Failable(issue = it))
+                onResult(Failable<B>(issue = it))
             } ?: run {
-                if(closed) onResult(Failable.failure("Closed"))
+                if(closed) onResult(Failable<B>(issue = "Closed"))
                 else {
                     secondCloseable = next(input.result as T).invoke(callback = onResult)
                 }
@@ -50,18 +50,14 @@ fun <T, B> DelayedResultFunction<T>.then(next: (T) -> DelayedResultFunction<B>):
     }
 }
 
-fun <T, B> DelayedResultFunction<T>.thenImmediate(next: (T) -> B): DelayedResultFunction<B> {
+fun <T, B> DelayedResultFunction<T>.thenImmediate(next: @escaping() (T) -> B): DelayedResultFunction<B> {
     val first = this
     return DelayedResultFunction<B> { onResult ->
         return@DelayedResultFunction first.invoke { input ->
             input.issue?.let {
                 onResult(Failable(issue = it))
             } ?: run {
-                try {
-                    onResult(Failable(result = next(input.result as T)))
-                } catch (e: Exception) {
-                    onResult(Failable(issue = e.message))
-                }
+                onResult(Failable(result = next(input.result as T)))
             }
         }
     }

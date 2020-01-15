@@ -27,13 +27,18 @@ public class FlatMappedObservableProperty<A, B>: ObservableProperty<B> {
         
         
         override public func add(listener: @escaping (B) -> Bool) -> Close {
+            var end = false
             var current: Close = fmop.transformation(fmop.basedOn.value).onChange.add(listener: listener)
             var closeA = self.fmop.basedOn.onChange.add{ (it) in 
                 current.close()
                 var new = self.fmop.transformation(self.fmop.basedOn.value)
-                current = new.onChange.add(listener: listener)
+                current = new.onChange.add{ (value) in 
+                    var result = listener(value)
+                    end = result
+                    return result
+                }
                 listener(new.value)
-                return false
+                return end
             }
             return Close{ () in 
                 current.close()
@@ -100,13 +105,18 @@ public class MutableFlatMappedObservableProperty<A, B>: MutableObservablePropert
         
         
         override public func add(listener: @escaping (B) -> Bool) -> Close {
+            var end = false
             var current: Close = fmop.transformation(fmop.basedOn.value).onChange.add(listener: listener)
             var closeA = self.fmop.basedOn.onChange.add{ (it) in 
                 current.close()
                 var new = self.fmop.transformation(self.fmop.basedOn.value)
-                current = new.onChange.add(listener: listener)
+                current = new.onChange.add{ (value) in 
+                    var result = listener(value)
+                    end = result
+                    return result
+                }
                 listener(new.value)
-                return false
+                return end
             }
             return Close{ () in 
                 current.close()

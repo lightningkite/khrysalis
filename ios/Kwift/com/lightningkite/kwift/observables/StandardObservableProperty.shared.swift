@@ -8,8 +8,9 @@ import Foundation
 public class StandardObservableProperty<T>: MutableObservableProperty<T> {
     
     public var underlyingValue: T
+    public var _onChange: InvokableEvent<T>
+    override public var onChange: InvokableEvent<T> { get { return _onChange } set(value) { _onChange = value } }
     
-    override public var onChange: StandardEvent<T> { get { return _onChange } set(value) { _onChange = value } }
     override public var value: T {
         get {
             return underlyingValue
@@ -24,14 +25,13 @@ public class StandardObservableProperty<T>: MutableObservableProperty<T> {
         onChange.invokeAll(value: value)
     }
     
-    public init(underlyingValue: T) {
+    public init(underlyingValue: T, onChange: InvokableEvent<T> = StandardEvent<T>()) {
         self.underlyingValue = underlyingValue
-        self._onChange = StandardEvent<T>()
+        self._onChange = onChange
         super.init()
     }
-    convenience public init(_ underlyingValue: T) {
-        self.init(underlyingValue: underlyingValue)
+    convenience public init(_ underlyingValue: T, _ onChange: InvokableEvent<T> = StandardEvent<T>()) {
+        self.init(underlyingValue: underlyingValue, onChange: onChange)
     }
-    private var _onChange: StandardEvent<T>
 }
  

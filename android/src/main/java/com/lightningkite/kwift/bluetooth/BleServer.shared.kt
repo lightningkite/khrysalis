@@ -5,24 +5,24 @@ import java.util.*
 
 //Client implementation
 
+data class BleCharacteristicProperties(
+    val broadcast: Boolean = false,
+    val read: Boolean = false,
+    val writeWithoutResponse: Boolean = false,
+    val write: Boolean = false,
+    val notify: Boolean = false,
+    val indicate: Boolean = false,
+    val authenticatedSignedWrites: Boolean = false,
+    val extendedProperties: Boolean = false,
+    val notifyEncryptionRequired: Boolean = false,
+    val indicateEncryptionRequired: Boolean = false,
+    val writeEncryptionRequired: Boolean = false
+)
+
 interface BleCharacteristicServer {
     val serviceUuid: UUID
     val uuid: UUID
-    val properties: Properties
-
-    data class Properties(
-        val broadcast: Boolean = false,
-        val read: Boolean = false,
-        val writeWithoutResponse: Boolean = false,
-        val write: Boolean = false,
-        val notify: Boolean = false,
-        val indicate: Boolean = false,
-        val authenticatedSignedWrites: Boolean = false,
-        val extendedProperties: Boolean = false,
-        val notifyEncryptionRequired: Boolean = false,
-        val indicateEncryptionRequired: Boolean = false,
-        val writeEncryptionRequired: Boolean = false
-    )
+    val properties: BleCharacteristicProperties
 
     fun onSubscribe(from: BleClient)
     fun onUnsubscribe(from: BleClient)
@@ -37,7 +37,7 @@ class PropertyBleCharacteristicServer(
     override val serviceUuid: UUID,
     override val uuid: UUID,
     value: ByteArray,
-    override val properties: BleCharacteristicServer.Properties = BleCharacteristicServer.Properties(read = true, write = true, notify = true)
+    override val properties: BleCharacteristicProperties = BleCharacteristicProperties(read = true, write = true, notify = true)
 ): MutableObservableProperty<ByteArray>(), BleCharacteristicServer {
 
     var underlyingValue: ByteArray = value
@@ -74,7 +74,7 @@ class PropertyBleCharacteristicServer(
         }
     }
 
-    val underlyingEvent = ForceMainThreadEvent<ByteArray>()
+    val underlyingEvent: ForceMainThreadEvent<ByteArray> = ForceMainThreadEvent()
     override val onChange: Event<ByteArray> get() = underlyingEvent
 }
 

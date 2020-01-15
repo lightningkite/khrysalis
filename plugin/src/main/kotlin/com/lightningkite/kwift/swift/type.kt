@@ -10,7 +10,7 @@ fun SwiftAltListener.registerType() {
             append(item.modifiers().visibilityString())
             append(" typealias ")
             append(item.simpleIdentifier().text)
-            item.typeParameters()?.let { writeTypeArguments(this@handle, it.typeParameter()) }
+            item.typeParameters()?.let { writeTypeArguments(this@handle, it.typeParameter(), null) }
             append(" = ")
             write(item.type())
         }

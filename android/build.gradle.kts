@@ -82,6 +82,7 @@ dependencies {
     api("com.romandanylyk:pageindicatorview:1.0.3")
     api("com.theartofdev.edmodo:android-image-cropper:2.7.0")
     api("com.github.marcoscgdev:Android-Week-View:1.2.7")
+    api("com.github.ReactiveX:RxKotlin:2.x-SNAPSHOT")
 }
 
 tasks.create("sourceJar", Jar::class) {

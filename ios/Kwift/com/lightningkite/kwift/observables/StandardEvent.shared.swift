@@ -5,7 +5,7 @@ import Foundation
 
 
 
-public class StandardEvent<T>: Event<T> {
+public class StandardEvent<T>: InvokableEvent<T> {
     
     
     public var subscriptions: Array<Subscription<T>>
@@ -42,12 +42,12 @@ public class StandardEvent<T>: Event<T> {
         })
     }
     
-    public func invokeAll(value: T) -> Void {
+    override public func invokeAll(value: T) -> Void {
         subscriptions.removeAll{ (it) in 
             it.listener(value)
         }
     }
-    public func invokeAll(_ value: T) -> Void {
+    override public func invokeAll(_ value: T) -> Void {
         return invokeAll(value: value)
     }
     

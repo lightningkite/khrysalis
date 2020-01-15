@@ -75,7 +75,7 @@ fun SwiftAltListener.handleNormalFunction(
         append("func ")
         append(item.simpleIdentifier().text)
         usingTypeParameters?.let {
-            writeTypeArguments(tabWriter, it)
+            writeTypeArguments(tabWriter, it, item.typeConstraints())
         }
         append("(")
         item.functionValueParameters().functionValueParameter().forEachBetweenIndexed(
@@ -152,14 +152,26 @@ fun SwiftAltListener.handleNormalFunction(
     }
 }
 
-fun SwiftAltListener.writeTypeArguments(writer: TabWriter, it: List<KotlinParser.TypeParameterContext>) = with(writer) {
+fun SwiftAltListener.writeTypeArguments(
+    writer: TabWriter,
+    it: List<KotlinParser.TypeParameterContext>,
+    whereClause: KotlinParser.TypeConstraintsContext?
+) = with(writer) {
     direct.append("<")
     it.forEachBetween(
         forItem = {
-            direct.append(it.simpleIdentifier().text)
+            val name = it.simpleIdentifier().text
+            direct.append(name)
             it.type()?.let {
                 direct.append(": ")
                 write(it)
+            }
+            whereClause?.typeConstraint()?.filter { it.simpleIdentifier().text == name }?.map { it.type() }?.let {
+                direct.append(": ")
+                it.forEachBetween(
+                    forItem = { write(it) },
+                    between = { direct.append(" & ") }
+                )
             }
         },
         between = { direct.append(", ") }
@@ -372,6 +384,6 @@ fun SwiftAltListener.registerFunction() {
         write(it.expression())
     }
     handle<KotlinParser.TypeParametersContext> {
-        writeTypeArguments(this, it.typeParameter())
+        writeTypeArguments(this, it.typeParameter(), null)
     }
 }
