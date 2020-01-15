@@ -1,16 +1,10 @@
 package com.lightningkite.kwift.observables
 
-import com.lightningkite.kwift.escaping
 import com.lightningkite.kwift.captureWeak
+import com.lightningkite.kwift.escaping
 
-abstract class EnablingEvent<T> : Event<T>() {
-
-    open fun enable(){}
-    open fun postEnable(){}
-    open fun preDisable(){}
-    open fun disable(){}
-
-    val subscriptions: ArrayList<Subscription<T>> = ArrayList()
+class OnceEvent<T> : InvokableEvent<T>() {
+    val subscriptions: ArrayList<Subscription<T>> = ArrayList<Subscription<T>>()
     var nextIndex: Int = 0
 
     class Subscription<T>(
@@ -19,10 +13,6 @@ abstract class EnablingEvent<T> : Event<T>() {
     )
 
     override fun add(listener: @escaping() (T) -> Boolean): Close {
-        if(subscriptions.isNotEmpty()){
-            enable()
-        }
-
         val thisIdentifier = nextIndex
         nextIndex += 1
 
@@ -34,21 +24,18 @@ abstract class EnablingEvent<T> : Event<T>() {
             identifier = thisIdentifier
         )
         subscriptions.add(element)
-        postEnable()
         return Close(captureWeak(this) { self ->
-            if(self.subscriptions.size == 1){
-                self.preDisable()
-            }
             self.subscriptions.removeAll { it -> it.identifier == thisIdentifier }
-            if(self.subscriptions.isEmpty()){
-                self.disable()
-            }
             return@captureWeak Unit
         })
     }
 
-    fun invokeAll(value: T) {
+    var hasBeenInvoked: Boolean = false
+    override fun invokeAll(value: T) {
+        if (hasBeenInvoked) return
         subscriptions.removeAll { it -> it.listener(value) }
+        hasBeenInvoked = true
     }
 
 }
+
