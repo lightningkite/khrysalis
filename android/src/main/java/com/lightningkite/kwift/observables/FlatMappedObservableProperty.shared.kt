@@ -13,13 +13,18 @@ class FlatMappedObservableProperty<A, B>(
 
     class FMOPEvent<A, B>(val fmop: FlatMappedObservableProperty<A, B>): Event<B>() {
         override fun add(listener: @escaping() (B) -> Boolean): Close {
+            var end = false
             var current: Close = fmop.transformation(fmop.basedOn.value).onChange.add(listener = listener)
             val closeA = this.fmop.basedOn.onChange.add { it ->
                 current.close()
                 val new = this.fmop.transformation(this.fmop.basedOn.value)
-                current = new.onChange.add(listener = listener)
+                current = new.onChange.add { value ->
+                    val result = listener(value)
+                    end = result
+                    return@add result
+                }
                 listener(new.value)
-                return@add false
+                return@add end
             }
             return Close {
                 current.close()
@@ -52,13 +57,18 @@ class MutableFlatMappedObservableProperty<A, B>(
 
     class FMOPEvent<A, B>(val fmop: MutableFlatMappedObservableProperty<A, B>): Event<B>() {
         override fun add(listener: @escaping() (B) -> Boolean): Close {
+            var end = false
             var current: Close = fmop.transformation(fmop.basedOn.value).onChange.add(listener = listener)
             val closeA = this.fmop.basedOn.onChange.add { it ->
                 current.close()
                 val new = this.fmop.transformation(this.fmop.basedOn.value)
-                current = new.onChange.add(listener = listener)
+                current = new.onChange.add { value ->
+                    val result = listener(value)
+                    end = result
+                    return@add result
+                }
                 listener(new.value)
-                return@add false
+                return@add end
             }
             return Close {
                 current.close()

@@ -13,6 +13,7 @@ import com.lightningkite.kwift.views.ViewGenerator
 import com.lightningkite.kwift.views.showDialogEvent
 import com.lightningkite.kwift.R
 import com.lightningkite.kwift.animationFrame
+import com.lightningkite.kwift.lifecycle.appInForeground
 import com.lightningkite.kwift.observables.Close
 
 /**
@@ -64,6 +65,7 @@ abstract class KwiftActivity : AccessibleActivity() {
 
     override fun onResume() {
         super.onResume()
+        appInForeground.value = true
 
         animator = ValueAnimator().apply {
             setIntValues(0, 100)
@@ -81,9 +83,10 @@ abstract class KwiftActivity : AccessibleActivity() {
     }
 
     override fun onPause() {
-        super.onPause()
+        appInForeground.value = false
         animator?.pause()
         animator = null
+        super.onPause()
     }
 
     private fun handleDeepLink(uri: Uri) {

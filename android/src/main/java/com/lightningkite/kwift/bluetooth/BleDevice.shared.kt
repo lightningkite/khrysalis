@@ -21,17 +21,10 @@ interface BleDevice {
     fun requestMtu(mtu: Int): DRF<Unit>
     fun read(serviceId: UUID, characteristicId: UUID): DRF<ByteArray>
     fun write(serviceId: UUID, characteristicId: UUID, value: ByteArray): DRF<Unit>
-    fun readDescriptor(serviceId: UUID, characteristicId: UUID, descriptorId: UUID): DRF<ByteArray>
-    fun writeDescriptor(
-        serviceId: UUID,
-        characteristicId: UUID,
-        descriptorId: UUID,
-        value: ByteArray
-    ): DRF<Unit>
     fun subscribe(
         serviceId: UUID,
         characteristicId: UUID,
-        notificationDescriptorId: UUID?
+        indicate: Boolean = false
     ): Event<ByteArray>
     fun close()
 }

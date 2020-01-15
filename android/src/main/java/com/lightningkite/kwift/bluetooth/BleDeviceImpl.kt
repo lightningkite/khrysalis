@@ -6,14 +6,11 @@ import android.content.Context
 import android.os.Build
 import com.lightningkite.kwift.Failable
 import com.lightningkite.kwift.async.DRF
-import com.lightningkite.kwift.observables.EnablingEvent
-import com.lightningkite.kwift.observables.Event
-import com.lightningkite.kwift.observables.ObservableProperty
-import com.lightningkite.kwift.observables.StandardObservableProperty
+import com.lightningkite.kwift.observables.*
 import com.lightningkite.kwift.post
 import java.util.*
 
-class BleDeviceImpl(val context: Context, val device: BluetoothDevice, val stayConnected: Boolean = false): BleDevice {
+class BleDeviceImpl(val context: Context, val device: BluetoothDevice, val stayConnected: Boolean = false) : BleDevice {
     private val privateConnected = StandardObservableProperty<Boolean>(false)
     override val connected: ObservableProperty<Boolean> get() = privateConnected
     private val privateRssi = StandardObservableProperty<Int>(-999)
@@ -89,7 +86,9 @@ class BleDeviceImpl(val context: Context, val device: BluetoothDevice, val stayC
                     )
                 )
             }
+            return@DRF Close {}
         })
+        return@DRF Close {}
     }
 
     override fun read(serviceId: UUID, characteristicId: UUID): DRF<ByteArray> = DRF { resultCallback ->
@@ -136,7 +135,9 @@ class BleDeviceImpl(val context: Context, val device: BluetoothDevice, val stayC
                     )
                 )
             }
+            return@DRF Close {}
         })
+        return@DRF Close {}
     }
 
     override fun write(serviceId: UUID, characteristicId: UUID, value: ByteArray): DRF<Unit> = DRF { resultCallback ->
@@ -184,61 +185,68 @@ class BleDeviceImpl(val context: Context, val device: BluetoothDevice, val stayC
                     )
                 )
             }
+            return@DRF Close {}
         })
+        return@DRF Close {}
     }
 
-    override fun readDescriptor(serviceId: UUID, characteristicId: UUID, descriptorId: UUID): DRF<ByteArray> =
-        DRF { resultCallback ->
-            queue.enqueue("readDescriptor $serviceId/$characteristicId/$descriptorId", DRF<ByteArray> { complete ->
-                gatt.getService(serviceId)
-                    ?.getCharacteristic(characteristicId)
-                    ?.getDescriptor(descriptorId)
-                    ?.let { actualDesc ->
-                        val listenerObject = object : (BluetoothGatt?, BluetoothGattDescriptor?, Int) -> Unit {
-                            init {
-                                androidListener.onDescriptorRead.add(this)
-                            }
+    fun readDescriptor(
+        serviceId: UUID,
+        characteristicId: UUID,
+        descriptorId: UUID
+    ): DRF<ByteArray> = DRF { resultCallback ->
+        queue.enqueue("readDescriptor $serviceId/$characteristicId/$descriptorId", DRF<ByteArray> { complete ->
+            gatt.getService(serviceId)
+                ?.getCharacteristic(characteristicId)
+                ?.getDescriptor(descriptorId)
+                ?.let { actualDesc ->
+                    val listenerObject = object : (BluetoothGatt?, BluetoothGattDescriptor?, Int) -> Unit {
+                        init {
+                            androidListener.onDescriptorRead.add(this)
+                        }
 
-                            override fun invoke(p1: BluetoothGatt?, p2: BluetoothGattDescriptor?, p3: Int) {
-                                if (p2 == null || p2.uuid != actualDesc.uuid) return
-                                post {
-                                    complete.invoke(Failable.success(p2.value))
-                                    resultCallback.invoke(Failable.success(p2.value))
-                                    androidListener.onDescriptorRead.remove(this)
-                                }
+                        override fun invoke(p1: BluetoothGatt?, p2: BluetoothGattDescriptor?, p3: Int) {
+                            if (p2 == null || p2.uuid != actualDesc.uuid) return
+                            post {
+                                complete.invoke(Failable.success(p2.value))
+                                resultCallback.invoke(Failable.success(p2.value))
+                                androidListener.onDescriptorRead.remove(this)
                             }
                         }
-                        if (!gatt.readDescriptor(actualDesc)) {
-                            androidListener.onDescriptorRead.remove(listenerObject)
-                            val exception = Exception("readDescriptor() failed.")
-                            complete.invoke(
-                                Failable.failure(
-                                    exception.message ?: "${exception::class.java.simpleName} occurred without message"
-                                )
+                    }
+                    if (!gatt.readDescriptor(actualDesc)) {
+                        androidListener.onDescriptorRead.remove(listenerObject)
+                        val exception = Exception("readDescriptor() failed.")
+                        complete.invoke(
+                            Failable.failure(
+                                exception.message ?: "${exception::class.java.simpleName} occurred without message"
                             )
-                            resultCallback.invoke(
-                                Failable.failure(
-                                    exception.message ?: "${exception::class.java.simpleName} occurred without message"
-                                )
+                        )
+                        resultCallback.invoke(
+                            Failable.failure(
+                                exception.message ?: "${exception::class.java.simpleName} occurred without message"
                             )
-                        }
-                    } ?: run {
-                    val exception = Exception("Descriptor $serviceId-$characteristicId-$descriptorId not found.")
-                    complete.invoke(
-                        Failable.failure(
-                            exception.message ?: "${exception::class.java.simpleName} occurred without message"
                         )
+                    }
+                } ?: run {
+                val exception = Exception("Descriptor $serviceId-$characteristicId-$descriptorId not found.")
+                complete.invoke(
+                    Failable.failure(
+                        exception.message ?: "${exception::class.java.simpleName} occurred without message"
                     )
-                    resultCallback.invoke(
-                        Failable.failure(
-                            exception.message ?: "${exception::class.java.simpleName} occurred without message"
-                        )
+                )
+                resultCallback.invoke(
+                    Failable.failure(
+                        exception.message ?: "${exception::class.java.simpleName} occurred without message"
                     )
-                }
-            })
-        }
+                )
+            }
+            return@DRF Close {}
+        })
+        return@DRF Close {}
+    }
 
-    override fun writeDescriptor(
+    fun writeDescriptor(
         serviceId: UUID,
         characteristicId: UUID,
         descriptorId: UUID,
@@ -292,7 +300,9 @@ class BleDeviceImpl(val context: Context, val device: BluetoothDevice, val stayC
                         )
                     )
                 }
+            return@DRF Close {}
         })
+        return@DRF Close {}
     }
 
     private class CharacteristicSubEvent(
@@ -300,7 +310,7 @@ class BleDeviceImpl(val context: Context, val device: BluetoothDevice, val stayC
         val serviceId: UUID,
         val characteristicId: UUID,
         val actualChar: BluetoothGattCharacteristic,
-        val notificationDescriptorId: UUID?
+        val notificationValue: ByteArray
     ) : EnablingEvent<ByteArray>() {
         val onCharChange = { gatt: BluetoothGatt?, char: BluetoothGattCharacteristic? ->
             char?.value?.let {
@@ -311,31 +321,29 @@ class BleDeviceImpl(val context: Context, val device: BluetoothDevice, val stayC
 
         override fun enable() {
             self.gatt.setCharacteristicNotification(actualChar, true)
-            if (notificationDescriptorId != null) {
-                self.writeDescriptor(
-                    serviceId,
-                    characteristicId,
-                    notificationDescriptorId,
-                    BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
-                ).invoke {
-                    println("Started listening to $characteristicId successfully.")
-                }
+            self.writeDescriptor(
+                serviceId,
+                characteristicId,
+                Ble.notificationDescriptorUuid,
+                notificationValue
+            ).invoke {
+                println("Started listening to $characteristicId successfully.")
             }
+
             self.androidListener.onCharacteristicChanged.add(this.onCharChange)
         }
 
         override fun disable() {
             self.gatt.setCharacteristicNotification(actualChar, false)
-            if (notificationDescriptorId != null) {
-                self.writeDescriptor(
-                    serviceId,
-                    characteristicId,
-                    notificationDescriptorId,
-                    BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE
-                ).invoke {
-                    println("Stopped listening to $characteristicId successfully.")
-                }
+            self.writeDescriptor(
+                serviceId,
+                characteristicId,
+                Ble.notificationDescriptorUuid,
+                BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE
+            ).invoke {
+                println("Stopped listening to $characteristicId successfully.")
             }
+
             self.androidListener.onCharacteristicChanged.remove(onCharChange)
         }
 
@@ -344,7 +352,7 @@ class BleDeviceImpl(val context: Context, val device: BluetoothDevice, val stayC
     override fun subscribe(
         serviceId: UUID,
         characteristicId: UUID,
-        notificationDescriptorId: UUID?
+        indicate: Boolean
     ): Event<ByteArray> {
         gatt.getService(serviceId)?.getCharacteristic(characteristicId)?.let { actualChar ->
             return CharacteristicSubEvent(
@@ -352,7 +360,7 @@ class BleDeviceImpl(val context: Context, val device: BluetoothDevice, val stayC
                 actualChar = actualChar,
                 serviceId = serviceId,
                 characteristicId = characteristicId,
-                notificationDescriptorId = notificationDescriptorId
+                notificationValue = if (indicate) BluetoothGattDescriptor.ENABLE_INDICATION_VALUE else BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE
             )
         } ?: run {
             throw IllegalArgumentException("No such characteristic: $serviceId/$characteristicId")

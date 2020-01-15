@@ -2,7 +2,9 @@ package com.lightningkite.kwift.bluetooth
 
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
+import android.bluetooth.BluetoothManager
 import android.bluetooth.le.*
+import android.content.Context
 import android.os.Build
 import android.os.ParcelUuid
 import android.util.Log
@@ -10,15 +12,21 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.lightningkite.kwift.Failable
 import com.lightningkite.kwift.PlatformSpecific
+import com.lightningkite.kwift.async.DRF
 import com.lightningkite.kwift.async.DelayedResultFunction
 import com.lightningkite.kwift.net.HttpClient
+import com.lightningkite.kwift.observables.Close
 import com.lightningkite.kwift.views.ViewDependency
 import com.lightningkite.kwift.views.android.startIntent
 import java.io.Closeable
+import java.util.*
 
 @SuppressLint("MissingPermission")
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
 object Ble {
+
+    val notificationDescriptorUuid: UUID = UUID.fromString("00002902-0000-1000-8000-00805f9b34fb")
+
     @PlatformSpecific
     fun activateBluetoothDialog(
         dependency: ViewDependency,
@@ -51,14 +59,68 @@ object Ble {
         }
     }
 
+    /**
+     * @param serviceUuids If default, advertises all services described by [characteristics].
+     */
     fun serve(
         viewDependency: ViewDependency,
-        services: List<BleServiceServer>
-    ): Closeable = TODO()
+        characteristics: List<BleCharacteristicServer>,
+        serviceUuids: List<UUID>? = null,
+        advertisingIntensity: Float = .5f
+    ): BleServer {
+        val impl =
+            BleServerImpl(characteristics.groupBy { it.serviceUuid }.mapValues { it.value.associate { it.uuid to it } })
+        val context = viewDependency.context
+        val manager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
+        val server = manager.openGattServer(context, impl)
+        impl.server = server
+        val advertiser = manager.adapter.bluetoothLeAdvertiser
+        val advertiserCallback = object : AdvertiseCallback() {
+            override fun onStartSuccess(settingsInEffect: AdvertiseSettings) {
+                println("Advertising successfully!")
+            }
+
+            override fun onStartFailure(errorCode: Int) {
+                Log.e("Ble.Actual", "Failed to begin advertising.  Code: $errorCode")
+            }
+        }
+        advertiser.startAdvertising(
+            AdvertiseSettings.Builder()
+                .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH)
+                .setTimeout(0)
+                .setConnectable(true)
+                .setAdvertiseMode(
+                    when (advertisingIntensity) {
+                        in 0f..0.33f -> AdvertiseSettings.ADVERTISE_MODE_LOW_POWER
+                        in 0.33f..0.66f -> AdvertiseSettings.ADVERTISE_MODE_BALANCED
+                        in 0.66f..1f -> AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY
+                        else -> AdvertiseSettings.ADVERTISE_MODE_LOW_POWER
+                    }
+                )
+                .build(),
+            AdvertiseData.Builder()
+                .apply {
+                    serviceUuids?.forEach {
+                        addServiceUuid(ParcelUuid(it))
+                    } ?: run {
+                        impl.characteristics.keys.forEach {
+                            addServiceUuid(ParcelUuid(it))
+                        }
+                    }
+                    //TODO: Service/manufacturing data?
+                }
+                .build(),
+            advertiserCallback
+        )
+        impl.advertiser = advertiser
+        impl.advertiserCallback = advertiserCallback
+        return impl
+    }
 
     fun scan(
         viewDependency: ViewDependency,
-        withServices: Collection<String>,
+        withServices: List<UUID> = listOf(),
+        intensity: Float = .5f,
         onDeviceFound: (info: BleDeviceInfo) -> Unit
     ): Closeable {
         return object : Closeable, ScanCallback() {
@@ -73,9 +135,14 @@ object Ble {
                         scanner = it.bluetoothLeScanner
                         it.bluetoothLeScanner.startScan(
                             withServices.map {
-                                ScanFilter.Builder().setServiceUuid(ParcelUuid.fromString(it)).build()
+                                ScanFilter.Builder().setServiceUuid(ParcelUuid(it)).build()
                             },
-                            ScanSettings.Builder().build(),
+                            ScanSettings.Builder().setCallbackType(ScanSettings.CALLBACK_TYPE_ALL_MATCHES).setScanMode(when (intensity) {
+                                in 0f..0.33f -> ScanSettings.SCAN_MODE_LOW_POWER
+                                in 0.33f..0.66f -> ScanSettings.SCAN_MODE_BALANCED
+                                in 0.66f..1f -> ScanSettings.SCAN_MODE_LOW_LATENCY
+                                else -> ScanSettings.SCAN_MODE_LOW_POWER
+                            }).build(),
                             this
                         )
                     }
@@ -86,7 +153,8 @@ object Ble {
                 onDeviceFound.invoke(
                     BleDeviceInfo(
                         result.device.address,
-                        result.device.name ?: ""
+                        result.device.name ?: "",
+                        result.rssi
                     )
                 )
             }
@@ -103,7 +171,7 @@ object Ble {
     }
 
     fun connect(viewDependency: ViewDependency, deviceId: String): DelayedResultFunction<BleDevice> =
-        DelayedResultFunction<BleDevice> { callback ->
+        DRF<BleDevice> { callback ->
             activateBluetoothDialog(
                 dependency = viewDependency,
                 onPermissionRejected = { callback(Failable.failure("Permission rejected.")) },
@@ -120,10 +188,11 @@ object Ble {
                     }
                 }
             )
+            return@DRF Close {}
         }
 
     fun stayConnected(viewDependency: ViewDependency, deviceId: String): DelayedResultFunction<BleDevice> =
-        DelayedResultFunction<BleDevice> { callback ->
+        DRF<BleDevice> { callback ->
             activateBluetoothDialog(
                 dependency = viewDependency,
                 onPermissionRejected = { callback(Failable.failure("Permission rejected.")) },
@@ -140,10 +209,11 @@ object Ble {
                     }
                 }
             )
+            return@DRF Close {}
         }
 
     fun connectBackground(deviceId: String): DelayedResultFunction<BleDevice> =
-        DelayedResultFunction<BleDevice> { callback ->
+        DRF<BleDevice> { callback ->
             val context = HttpClient.appContext
             val device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(deviceId)
             val bleDevice = BleDeviceImpl(context, device, false)
@@ -154,10 +224,11 @@ object Ble {
                 }
                 return@add false
             }
+            return@DRF Close {}
         }
 
     fun stayConnectedBackground(deviceId: String): DelayedResultFunction<BleDevice> =
-        DelayedResultFunction<BleDevice> { callback ->
+        DRF<BleDevice> { callback ->
             val context = HttpClient.appContext
             val device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(deviceId)
             val bleDevice = BleDeviceImpl(context, device, true)
@@ -168,5 +239,6 @@ object Ble {
                 }
                 return@add false
             }
+            return@DRF Close {}
         }
 }

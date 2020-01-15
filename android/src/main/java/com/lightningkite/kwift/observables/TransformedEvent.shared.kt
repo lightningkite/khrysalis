@@ -14,6 +14,15 @@ class TransformedEvent<A, B>(
     }
 }
 
+@Deprecated("Use 'map' instead", ReplaceWith(
+    "this.map(transformation)",
+    "com.lightningkite.kwift.observables.map"
+)
+)
 fun <T, B> Event<T>.transformed(transformation: @escaping() (T) -> B): Event<B> {
+    return TransformedEvent<T, B>(this, transformation)
+}
+
+fun <T, B> Event<T>.map(transformation: @escaping() (T) -> B): Event<B> {
     return TransformedEvent<T, B>(this, transformation)
 }

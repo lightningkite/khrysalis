@@ -1,7 +1,6 @@
 package com.lightningkite.kwift.observables
 
-class StandardObservableProperty<T>(var underlyingValue: T) : MutableObservableProperty<T>() {
-    override val onChange: StandardEvent<T> = StandardEvent<T>()
+class StandardObservableProperty<T>(var underlyingValue: T, override val onChange: InvokableEvent<T> = StandardEvent<T>()) : MutableObservableProperty<T>() {
     override var value: T
         get() = underlyingValue
         set(value) {

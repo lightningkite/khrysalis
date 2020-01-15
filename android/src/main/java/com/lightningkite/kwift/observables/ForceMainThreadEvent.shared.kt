@@ -2,8 +2,9 @@ package com.lightningkite.kwift.observables
 
 import com.lightningkite.kwift.escaping
 import com.lightningkite.kwift.captureWeak
+import com.lightningkite.kwift.post
 
-class StandardEvent<T> : InvokableEvent<T>() {
+class ForceMainThreadEvent<T> : InvokableEvent<T>() {
     val subscriptions: ArrayList<Subscription<T>> = ArrayList<Subscription<T>>()
     var nextIndex: Int = 0
 
@@ -23,15 +24,21 @@ class StandardEvent<T> : InvokableEvent<T>() {
             },
             identifier = thisIdentifier
         )
-        subscriptions.add(element)
+        post {
+            this.subscriptions.add(element)
+        }
         return Close(captureWeak(this) { self ->
-            self.subscriptions.removeAll { it -> it.identifier == thisIdentifier }
+            post {
+                self.subscriptions.removeAll { it -> it.identifier == thisIdentifier }
+            }
             return@captureWeak Unit
         })
     }
 
     override fun invokeAll(value: T) {
-        subscriptions.removeAll { it -> it.listener(value) }
+        post {
+            this.subscriptions.removeAll { it -> it.listener(value) }
+        }
     }
 
 }
