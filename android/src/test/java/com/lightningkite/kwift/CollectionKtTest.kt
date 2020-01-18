@@ -1,4 +1,4 @@
-package com.lightningkite.kwift.actual
+package com.lightningkite.kwift
 
 import org.junit.Test
 
@@ -20,7 +20,7 @@ class CollectionKtTest {
     }
 
     @Test
-    fun binaryInsertBy() {
+    fun binaryInsertByTest() {
         for (i in -4..204) {
             assert(orderedList.toMutableList().apply {
                 binaryInsertBy(i) { it }
@@ -29,14 +29,14 @@ class CollectionKtTest {
     }
 
     @Test
-    fun binaryFind() {
+    fun binaryFindTest() {
         for (i in -4..204) {
             assert(orderedList.find { it == i } == orderedList.binaryFind(i) { it })
         }
     }
 
     @Test
-    fun binaryForEach() {
+    fun binaryForEachTest() {
         for (i in -4..204) {
             for (j in i+1..204) {
                 assert(orderedList.filter { it in i..j } == ArrayList<Int>().apply {

@@ -6,6 +6,7 @@ import android.graphics.RectF
 import android.util.DisplayMetrics
 import android.view.View
 import com.lightningkite.kwift.observables.*
+import com.lightningkite.kwift.rx.addWeak
 import com.lightningkite.kwift.time.*
 import java.util.*
 

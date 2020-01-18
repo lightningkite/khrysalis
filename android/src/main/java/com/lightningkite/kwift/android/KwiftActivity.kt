@@ -7,7 +7,6 @@ import android.net.Uri
 import android.os.Bundle
 import android.view.View
 import android.view.ViewGroup
-import com.lightningkite.kwift.observables.addWeak
 import com.lightningkite.kwift.views.EntryPoint
 import com.lightningkite.kwift.views.ViewGenerator
 import com.lightningkite.kwift.views.showDialogEvent
@@ -15,6 +14,8 @@ import com.lightningkite.kwift.R
 import com.lightningkite.kwift.animationFrame
 import com.lightningkite.kwift.lifecycle.appInForeground
 import com.lightningkite.kwift.observables.Close
+import com.lightningkite.kwift.rx.addWeak
+import io.reactivex.disposables.Disposable
 
 /**
  * An activity that implements [ActivityAccess].
@@ -25,7 +26,7 @@ abstract class KwiftActivity : AccessibleActivity() {
 
     abstract val main: ViewGenerator
     lateinit var view: View
-    private var showDialogEventCloser:Close? = null
+    private var showDialogEventCloser:Disposable? = null
     private var animator: ValueAnimator? = null
 
     open fun handleDeepLink(schema: String, host: String, path: String, params: Map<String, String>) {
@@ -59,7 +60,7 @@ abstract class KwiftActivity : AccessibleActivity() {
     }
 
     override fun onDestroy() {
-        showDialogEventCloser?.closer?.invoke()
+        showDialogEventCloser?.dispose()
         super.onDestroy()
     }
 
@@ -75,7 +76,7 @@ abstract class KwiftActivity : AccessibleActivity() {
             var last = System.currentTimeMillis()
             addUpdateListener {
                 val now = System.currentTimeMillis()
-                animationFrame.invokeAll((now - last) / 1000f)
+                animationFrame.onNext((now - last) / 1000f)
                 last = now
             }
             start()

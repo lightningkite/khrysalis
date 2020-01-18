@@ -76,7 +76,7 @@ fun Project.configureGradle(
                 iosFolder = iosBase,
                 clean = true
             ) {
-                imports = listOf("Kwift")
+                imports = listOf("Kwift", "RxSwift", "RxRelay")
                 setupCodeConversion()
             }
 
@@ -91,7 +91,7 @@ fun Project.configureGradle(
                 iosFolder = iosBase,
                 clean = false
             ) {
-                imports = listOf("Kwift")
+                imports = listOf("Kwift", "RxSwift", "RxRelay")
                 setupCodeConversion()
             }
 

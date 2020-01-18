@@ -9,6 +9,7 @@ import com.lightningkite.kwift.*
 import com.lightningkite.kwift.observables.*
 import com.lightningkite.kwift.floorDiv
 import com.lightningkite.kwift.floorMod
+import com.lightningkite.kwift.rx.addWeak
 import com.lightningkite.kwift.time.*
 import com.lightningkite.kwift.views.draw.drawTextCentered
 import java.util.*

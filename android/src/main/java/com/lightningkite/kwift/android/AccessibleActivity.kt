@@ -12,6 +12,7 @@ import androidx.core.app.ActivityCompat
 import androidx.core.content.ContextCompat
 import com.lightningkite.kwift.observables.Event
 import com.lightningkite.kwift.observables.StandardEvent
+import io.reactivex.subjects.PublishSubject
 import java.util.*
 
 /**
@@ -28,13 +29,13 @@ abstract class AccessibleActivity : AppCompatActivity(), ActivityAccess {
 
     override var savedInstanceState: Bundle? = null
 
-    override val onResume = StandardEvent<Unit>()
-    override val onPause = StandardEvent<Unit>()
-    override val onSaveInstanceState = StandardEvent<Bundle>()
-    override val onLowMemory = StandardEvent<Unit>()
-    override val onDestroy = StandardEvent<Unit>()
-    override val onActivityResult = StandardEvent<Triple<Int, Int, Intent?>>()
-    override val onNewIntent = StandardEvent<Intent>()
+    override val onResume = PublishSubject.create<Unit>()
+    override val onPause = PublishSubject.create<Unit>()
+    override val onSaveInstanceState = PublishSubject.create<Bundle>()
+    override val onLowMemory = PublishSubject.create<Unit>()
+    override val onDestroy = PublishSubject.create<Unit>()
+    override val onActivityResult = PublishSubject.create<Triple<Int, Int, Intent?>>()
+    override val onNewIntent = PublishSubject.create<Intent>()
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -42,19 +43,19 @@ abstract class AccessibleActivity : AppCompatActivity(), ActivityAccess {
     }
     override fun onResume() {
         super.onResume()
-        onResume.invokeAll(Unit)
+        onResume.onNext(Unit)
     }
     override fun onPause() {
-        onPause.invokeAll(Unit)
+        onPause.onNext(Unit)
         super.onPause()
     }
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        onSaveInstanceState.invokeAll(outState)
+        onSaveInstanceState.onNext(outState)
     }
     override fun onLowMemory() {
         super.onLowMemory()
-        onLowMemory.invokeAll(Unit)
+        onLowMemory.onNext(Unit)
     }
 
     override val onBackPressed = ArrayList<() -> Boolean>()
@@ -64,11 +65,11 @@ abstract class AccessibleActivity : AppCompatActivity(), ActivityAccess {
         }
     }
     override fun onDestroy() {
-        onDestroy.invokeAll(Unit)
+        onDestroy.onNext(Unit)
         super.onDestroy()
     }
     override fun onNewIntent(intent: Intent) {
-        onNewIntent.invokeAll(intent)
+        onNewIntent.onNext(intent)
         super.onNewIntent(intent)
     }
 
@@ -85,7 +86,7 @@ abstract class AccessibleActivity : AppCompatActivity(), ActivityAccess {
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
-        onActivityResult.invokeAll(Triple(requestCode, resultCode, data))
+        onActivityResult.onNext(Triple(requestCode, resultCode, data))
         returns[requestCode]?.invoke(resultCode, data)
         returns.remove(requestCode)
     }

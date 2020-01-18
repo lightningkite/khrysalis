@@ -1,10 +1,10 @@
 package com.lightningkite.kwift.lifecycle
 
-import com.lightningkite.kwift.AnyObject
-import com.lightningkite.kwift.escaping
+import com.lightningkite.kwift.*
 import com.lightningkite.kwift.observables.*
-import com.lightningkite.kwift.swiftExactly
-import com.lightningkite.kwift.weak
+import com.lightningkite.kwift.rx.add
+import io.reactivex.Observable
+import io.reactivex.disposables.Disposable
 
 typealias Lifecycle = ObservableProperty<Boolean>
 
@@ -34,26 +34,17 @@ fun ObservableProperty<@swiftExactly Boolean>.once(): ObservableProperty<Boolean
 private class OnceObservableProperty(val basedOn: ObservableProperty<Boolean>): ObservableProperty<Boolean>() {
     override val value: Boolean
         get() = basedOn.value
-    override val onChange: Event<Boolean>
-        get() = OnceEvent(basedOn.onChange)
-
-    class OnceEvent(val basedOn: Event<Boolean>) : Event<Boolean>() {
-        override fun add(listener: @escaping() (Boolean) -> Boolean): Close {
-            return basedOn.add { it ->
-                val result = listener(it)
-                return@add result && !it
-            }
-        }
-    }
+    override val onChange: Observable<Optional<Boolean>>
+        get() = basedOn.onChange.take(1)
 
 }
 
-fun <T> ObservableProperty<@swiftExactly Boolean>.closeWhenOff(closeable: T) where T: Closeable, T: AnyObject {
+fun <T> ObservableProperty<@swiftExactly Boolean>.closeWhenOff(closeable: T) where T: Disposable, T: AnyObject {
     val weakCloseable by weak(closeable)
     this.onChange.add { it ->
         weakCloseable?.let { closeable ->
-            if(!it) {
-                closeable.close()
+            if(!(it.value as Boolean)) {
+                closeable.dispose()
                 return@add true
             }
             return@add false

@@ -567,6 +567,16 @@ public extension Optional where Wrapped == String {
     }
 }
 
+public extension Optional {
+    var value: Self { return self }
+    static func wrap(_ value: Self) -> Self {
+        return value
+    }
+    static func wrap(_ value: Wrapped) -> Wrapped {
+        return value
+    }
+}
+
 public extension NSObject {
     func toString() -> String {
         return String(describing: self)

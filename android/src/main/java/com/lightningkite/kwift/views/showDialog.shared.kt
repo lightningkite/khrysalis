@@ -2,9 +2,10 @@ package com.lightningkite.kwift.views
 
 import com.lightningkite.kwift.observables.StandardEvent
 import com.lightningkite.kwift.observables.StandardObservableProperty
+import io.reactivex.subjects.PublishSubject
 
 val lastDialog = StandardObservableProperty<DialogRequest?>(null)
-val showDialogEvent = StandardEvent<DialogRequest>()
+val showDialogEvent: PublishSubject<DialogRequest> = PublishSubject.create()
 
 class DialogRequest(
     val string: ViewString,
@@ -13,7 +14,7 @@ class DialogRequest(
 
 fun showDialog(request: DialogRequest) {
     lastDialog.value = request
-    showDialogEvent.invokeAll(request)
+    showDialogEvent.onNext(request)
 }
 
 fun showDialog(message: ViewString) {

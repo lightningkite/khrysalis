@@ -6,11 +6,10 @@ import android.content.Context
 import android.os.Build
 import com.lightningkite.kwift.Failable
 import com.lightningkite.kwift.async.DRF
-import com.lightningkite.kwift.observables.EnablingEvent
-import com.lightningkite.kwift.observables.Event
 import com.lightningkite.kwift.observables.ObservableProperty
 import com.lightningkite.kwift.observables.StandardObservableProperty
 import com.lightningkite.kwift.post
+import io.reactivex.Observable
 import java.util.*
 
 interface BleDevice {
@@ -25,6 +24,6 @@ interface BleDevice {
         serviceId: UUID,
         characteristicId: UUID,
         indicate: Boolean
-    ): Event<ByteArray>
+    ): Observable<ByteArray>
     fun close()
 }

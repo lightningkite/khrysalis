@@ -3,12 +3,13 @@ package com.lightningkite.kwift.async
 import com.lightningkite.kwift.Failable
 import com.lightningkite.kwift.escaping
 import com.lightningkite.kwift.observables.Close
+import io.reactivex.disposables.Disposable
 import java.io.Closeable
 
 typealias DRF<T> = DelayedResultFunction<T>
 
-inline class DelayedResultFunction<T>(val value: @escaping() (@escaping() (Failable<T>) -> Unit) -> Closeable) {
-    fun invoke(callback: @escaping() (Failable<T>) -> Unit): Closeable {
+inline class DelayedResultFunction<T>(val value: @escaping() (@escaping() (Failable<T>) -> Unit) -> Disposable) {
+    fun invoke(callback: @escaping() (Failable<T>) -> Unit): Disposable {
         return value(callback)
     }
 }
@@ -29,8 +30,8 @@ fun <T, B> DelayedResultFunction<T>.then(next: @escaping() (T) -> DelayedResultF
     val first = this
     return DelayedResultFunction<B> { onResult ->
         var closed = false
-        var secondCloseable: Closeable? = null
-        var firstCloseable: Closeable? = null
+        var secondCloseable: Disposable? = null
+        var firstCloseable: Disposable? = null
         firstCloseable = first.invoke { input ->
             firstCloseable = null
             input.issue?.let {
@@ -44,8 +45,8 @@ fun <T, B> DelayedResultFunction<T>.then(next: @escaping() (T) -> DelayedResultF
         }
         return@DelayedResultFunction Close {
             closed = true
-            firstCloseable?.close()
-            secondCloseable?.close()
+            firstCloseable?.dispose()
+            secondCloseable?.dispose()
         }
     }
 }

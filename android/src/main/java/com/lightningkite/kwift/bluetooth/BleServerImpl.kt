@@ -10,9 +10,9 @@ import android.bluetooth.le.BluetoothLeAdvertiser
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import com.lightningkite.kwift.observables.ForceMainThreadEvent
 import com.lightningkite.kwift.observables.ObservableProperty
 import com.lightningkite.kwift.observables.StandardObservableProperty
+import io.reactivex.subjects.PublishSubject
 import java.util.*
 
 class BleServerImpl(override val characteristics: Map<UUID, Map<UUID, BleCharacteristicServer>>) :
@@ -34,7 +34,7 @@ class BleServerImpl(override val characteristics: Map<UUID, Map<UUID, BleCharact
         }
     private val servicesToAdd = ArrayList<BluetoothGattService>()
 
-    override val clients: StandardObservableProperty<Map<String, BleClient>> = StandardObservableProperty(mapOf(), ForceMainThreadEvent())
+    override val clients: StandardObservableProperty<Map<String, BleClient>> = StandardObservableProperty(mapOf(), PublishSubject.create()/*TODO main thread only*/)
 
     fun clientFor(device: BluetoothDevice): BleClient {
         clients.value[device.address]?.let { return it }

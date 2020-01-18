@@ -18,7 +18,7 @@ import com.lightningkite.kwift.net.HttpClient
 import com.lightningkite.kwift.observables.Close
 import com.lightningkite.kwift.views.ViewDependency
 import com.lightningkite.kwift.views.android.startIntent
-import java.io.Closeable
+import io.reactivex.disposables.Disposable
 import java.util.*
 
 @SuppressLint("MissingPermission")
@@ -122,8 +122,8 @@ object Ble {
         withServices: List<UUID> = listOf(),
         intensity: Float = .5f,
         onDeviceFound: (info: BleDeviceInfo) -> Unit
-    ): Closeable {
-        return object : Closeable, ScanCallback() {
+    ): Disposable {
+        return object : Disposable, ScanCallback() {
 
             var scanner: BluetoothLeScanner? = null
 
@@ -163,82 +163,22 @@ object Ble {
                 Log.e("Ble", "Scan failed with code $errorCode.")
             }
 
-            override fun close() {
+            override fun isDisposed(): Boolean {
+                return scanner == null
+            }
+
+            override fun dispose() {
                 scanner?.stopScan(this)
                 scanner = null
             }
         }
     }
 
-    fun connect(viewDependency: ViewDependency, deviceId: String): DelayedResultFunction<BleDevice> =
-        DRF<BleDevice> { callback ->
-            activateBluetoothDialog(
-                dependency = viewDependency,
-                onPermissionRejected = { callback(Failable.failure("Permission rejected.")) },
-                onBluetooth = {
-                    val context = viewDependency.context.applicationContext
-                    val device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(deviceId)
-                    val bleDevice = BleDeviceImpl(context, device, false)
-                    bleDevice.connected.onChange.add { connected ->
-                        if (connected) {
-                            callback.invoke(Failable.success(bleDevice))
-                            return@add true
-                        }
-                        return@add false
-                    }
-                }
-            )
-            return@DRF Close {}
-        }
+    fun connect(viewDependency: ViewDependency, deviceId: String): DelayedResultFunction<BleDevice> = TODO()
 
-    fun stayConnected(viewDependency: ViewDependency, deviceId: String): DelayedResultFunction<BleDevice> =
-        DRF<BleDevice> { callback ->
-            activateBluetoothDialog(
-                dependency = viewDependency,
-                onPermissionRejected = { callback(Failable.failure("Permission rejected.")) },
-                onBluetooth = {
-                    val context = viewDependency.context.applicationContext
-                    val device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(deviceId)
-                    val bleDevice = BleDeviceImpl(context, device, true)
-                    bleDevice.connected.onChange.add { connected ->
-                        if (connected) {
-                            callback.invoke(Failable.success(bleDevice))
-                            return@add true
-                        }
-                        return@add false
-                    }
-                }
-            )
-            return@DRF Close {}
-        }
+    fun stayConnected(viewDependency: ViewDependency, deviceId: String): DelayedResultFunction<BleDevice> = TODO()
 
-    fun connectBackground(deviceId: String): DelayedResultFunction<BleDevice> =
-        DRF<BleDevice> { callback ->
-            val context = HttpClient.appContext
-            val device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(deviceId)
-            val bleDevice = BleDeviceImpl(context, device, false)
-            bleDevice.connected.onChange.add { connected ->
-                if (connected) {
-                    callback.invoke(Failable.success(bleDevice))
-                    return@add true
-                }
-                return@add false
-            }
-            return@DRF Close {}
-        }
+    fun connectBackground(deviceId: String): DelayedResultFunction<BleDevice> = TODO()
 
-    fun stayConnectedBackground(deviceId: String): DelayedResultFunction<BleDevice> =
-        DRF<BleDevice> { callback ->
-            val context = HttpClient.appContext
-            val device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(deviceId)
-            val bleDevice = BleDeviceImpl(context, device, true)
-            bleDevice.connected.onChange.add { connected ->
-                if (connected) {
-                    callback.invoke(Failable.success(bleDevice))
-                    return@add true
-                }
-                return@add false
-            }
-            return@DRF Close {}
-        }
+    fun stayConnectedBackground(deviceId: String): DelayedResultFunction<BleDevice> = TODO()
 }

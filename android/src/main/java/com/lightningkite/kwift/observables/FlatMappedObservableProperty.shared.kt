@@ -1,6 +1,8 @@
 package com.lightningkite.kwift.observables
 
+import com.lightningkite.kwift.Optional
 import com.lightningkite.kwift.escaping
+import io.reactivex.Observable
 
 class FlatMappedObservableProperty<A, B>(
     val basedOn: ObservableProperty<A>,
@@ -8,30 +10,9 @@ class FlatMappedObservableProperty<A, B>(
 ) : ObservableProperty<B>() {
     override val value: B
         get() = transformation(basedOn.value).value
-    override val onChange: Event<B>
-        get() = FMOPEvent(this)
-
-    class FMOPEvent<A, B>(val fmop: FlatMappedObservableProperty<A, B>): Event<B>() {
-        override fun add(listener: @escaping() (B) -> Boolean): Close {
-            var end = false
-            var current: Close = fmop.transformation(fmop.basedOn.value).onChange.add(listener = listener)
-            val closeA = this.fmop.basedOn.onChange.add { it ->
-                current.close()
-                val new = this.fmop.transformation(this.fmop.basedOn.value)
-                current = new.onChange.add { value ->
-                    val result = listener(value)
-                    end = result
-                    return@add result
-                }
-                listener(new.value)
-                return@add end
-            }
-            return Close {
-                current.close()
-                closeA.close()
-            }
-        }
-    }
+    @Suppress("UNCHECKED_CAST")
+    override val onChange: Observable<Optional<B>>
+        get() = basedOn.onChange.flatMap { it -> transformation(it.value as A).onChange }
 }
 
 fun <T, B> ObservableProperty<T>.flatMap(transformation: @escaping() (T) -> ObservableProperty<B>): FlatMappedObservableProperty<T, B> {
@@ -48,33 +29,19 @@ class MutableFlatMappedObservableProperty<A, B>(
         set(value) {
             transformation(basedOn.value).value = value
         }
-    override val onChange: Event<B>
-        get() = FMOPEvent(this)
+
+    var lastProperty: MutableObservableProperty<B>? = null
+
+    @Suppress("UNCHECKED_CAST")
+    override val onChange: Observable<Optional<B>>
+        get() = basedOn.onChange.flatMap { it ->
+            val prop = transformation(it.value as A)
+            this.lastProperty = prop
+            return@flatMap prop.onChange
+        }
 
     override fun update() {
-        transformation(basedOn.value).update()
-    }
-
-    class FMOPEvent<A, B>(val fmop: MutableFlatMappedObservableProperty<A, B>): Event<B>() {
-        override fun add(listener: @escaping() (B) -> Boolean): Close {
-            var end = false
-            var current: Close = fmop.transformation(fmop.basedOn.value).onChange.add(listener = listener)
-            val closeA = this.fmop.basedOn.onChange.add { it ->
-                current.close()
-                val new = this.fmop.transformation(this.fmop.basedOn.value)
-                current = new.onChange.add { value ->
-                    val result = listener(value)
-                    end = result
-                    return@add result
-                }
-                listener(new.value)
-                return@add end
-            }
-            return Close {
-                current.close()
-                closeA.close()
-            }
-        }
+        lastProperty?.update()
     }
 }
 

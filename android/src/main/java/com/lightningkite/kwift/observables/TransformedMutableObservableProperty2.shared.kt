@@ -1,6 +1,8 @@
 package com.lightningkite.kwift.observables
 
+import com.lightningkite.kwift.Optional
 import com.lightningkite.kwift.escaping
+import io.reactivex.Observable
 
 class TransformedMutableObservableProperty2<A, B>(
     val basedOn: MutableObservableProperty<A>,
@@ -18,7 +20,8 @@ class TransformedMutableObservableProperty2<A, B>(
         set(value) {
             basedOn.value = write(basedOn.value, value)
         }
-    override val onChange: Event<B> = basedOn.onChange.transformed(transformation = read)
+    @Suppress("UNCHECKED_CAST")
+    override val onChange: Observable<Optional<B>> = basedOn.onChange.map { it -> Optional.wrap(read(it.value as A)) }
 }
 
 fun <T, B> MutableObservableProperty<T>.mapWithExisting(

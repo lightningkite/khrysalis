@@ -1,6 +1,9 @@
 package com.lightningkite.kwift.bluetooth
 
+import com.lightningkite.kwift.Optional
 import com.lightningkite.kwift.observables.*
+import io.reactivex.Observable
+import io.reactivex.subjects.PublishSubject
 import java.util.*
 
 //Client implementation
@@ -68,14 +71,18 @@ class PropertyBleCharacteristicServer(
 
     override fun update() {
         val value = underlyingValue
-        underlyingEvent.invokeAll(value)
+        underlyingEvent.onNext(Optional.wrap(value))
         for(sub in subscribers) {
             indicate(sub.value, value)
         }
     }
 
-    val underlyingEvent: ForceMainThreadEvent<ByteArray> = ForceMainThreadEvent()
-    override val onChange: Event<ByteArray> get() = underlyingEvent
+//    val underlyingEvent: ForceMainThreadEvent<ByteArray> = ForceMainThreadEvent()
+//    override val onChange: Event<ByteArray> get() = underlyingEvent
+
+    val underlyingEvent: PublishSubject<Optional<ByteArray>> = PublishSubject.create()
+    override val onChange: Observable<Optional<ByteArray>>
+        get() = underlyingEvent
 }
 
 //My implementation

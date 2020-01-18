@@ -6,6 +6,7 @@ import androidx.appcompat.widget.AppCompatButton
 import androidx.fragment.app.FragmentActivity
 import com.lightningkite.kwift.observables.StandardEvent
 import com.wdullaer.materialdatetimepicker.time.TimePickerDialog
+import io.reactivex.subjects.PublishSubject
 import java.text.DateFormat
 import java.util.*
 
@@ -24,13 +25,13 @@ class TimeButton(context: Context, attrs: AttributeSet?, defStyleAttr: Int) :
             text = format.format(value)
         }
 
-    var onDateEntered = StandardEvent<Date>()
+    var onDateEntered = PublishSubject.create<Date>()
 
     init {
         setOnClickListener {
             context.timeSelectorDialog(date, minuteInterval) {
                 date = it
-                onDateEntered.invokeAll(it)
+                onDateEntered.onNext(it)
             }
         }
     }

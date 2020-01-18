@@ -6,6 +6,7 @@ import android.util.AttributeSet
 import android.widget.Button
 import androidx.appcompat.widget.AppCompatButton
 import com.lightningkite.kwift.observables.StandardEvent
+import io.reactivex.subjects.PublishSubject
 import java.text.DateFormat
 import java.util.*
 
@@ -21,13 +22,13 @@ class DateButton(context: Context, attrs: AttributeSet?, defStyleAttr: Int) : Ap
             text = format.format(value)
         }
 
-    var onDateEntered = StandardEvent<Date>()
+    var onDateEntered = PublishSubject.create<Date>()
 
     init {
         setOnClickListener {
             context.dateSelectorDialog(date) {
                 date = it
-                onDateEntered.invokeAll(it)
+                onDateEntered.onNext(it)
             }
         }
     }

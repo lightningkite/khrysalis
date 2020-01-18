@@ -1,4 +1,4 @@
-package com.lightningkite.kwift.actual
+package com.lightningkite.kwift.time
 
 import com.lightningkite.kwift.time.TimeAlone
 import junit.framework.Assert.assertEquals

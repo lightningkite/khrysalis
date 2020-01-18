@@ -7,7 +7,8 @@ import android.util.AttributeSet
 import com.lightningkite.kwift.observables.Close
 import com.lightningkite.kwift.observables.MutableObservableProperty
 import com.lightningkite.kwift.observables.StandardObservableProperty
-import com.lightningkite.kwift.observables.addWeak
+import com.lightningkite.kwift.rx.addWeak
+import io.reactivex.disposables.Disposable
 import java.util.*
 
 open class SelectMultipleDatesMonthView : QuickMonthView {
@@ -31,10 +32,10 @@ open class SelectMultipleDatesMonthView : QuickMonthView {
         init()
     }
 
-    val closers: ArrayList<Close> = ArrayList()
+    val closers: ArrayList<Disposable> = ArrayList()
     fun init() {
         for (close in closers) {
-            close.close()
+            close.dispose()
         }
         closers += dates.onChange.addWeak(this) { self, value ->
             self.invalidate()
