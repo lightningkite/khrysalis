@@ -3,12 +3,9 @@ package com.lightningkite.kwift.lifecycle
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.ViewCompat
-import com.lightningkite.kwift.Optional
+import com.lightningkite.kwift.Box
+import com.lightningkite.kwift.boxWrap
 import com.lightningkite.kwift.R
-import com.lightningkite.kwift.observables.Event
-import com.lightningkite.kwift.observables.ObservableProperty
-import com.lightningkite.kwift.observables.StandardEvent
-import com.lightningkite.kwift.observables.StandardObservableProperty
 import io.reactivex.Observable
 import io.reactivex.subjects.PublishSubject
 
@@ -21,8 +18,8 @@ private class ViewLifecycleListener(val view: View) : Lifecycle(), View.OnAttach
     override var value = ViewCompat.isAttachedToWindow(view)
         private set
 
-    val event: PublishSubject<Optional<Boolean>> = PublishSubject.create()
-    override val onChange: Observable<Optional<Boolean>>
+    val event: PublishSubject<Box<Boolean>> = PublishSubject.create()
+    override val onChange: Observable<Box<Boolean>>
         get() = event
 
     override fun onViewDetachedFromWindow(v: View?) {
@@ -31,7 +28,7 @@ private class ViewLifecycleListener(val view: View) : Lifecycle(), View.OnAttach
             return
         }
         value = false
-        event.onNext(Optional.wrap(value))
+        event.onNext(boxWrap(value))
     }
 
     override fun onViewAttachedToWindow(v: View?) {
@@ -40,7 +37,7 @@ private class ViewLifecycleListener(val view: View) : Lifecycle(), View.OnAttach
             return
         }
         value = true
-        event.onNext(Optional.wrap(value))
+        event.onNext(boxWrap(value))
     }
 }
 

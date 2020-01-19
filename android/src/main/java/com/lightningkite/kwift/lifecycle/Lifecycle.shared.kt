@@ -34,23 +34,18 @@ fun ObservableProperty<@swiftExactly Boolean>.once(): ObservableProperty<Boolean
 private class OnceObservableProperty(val basedOn: ObservableProperty<Boolean>): ObservableProperty<Boolean>() {
     override val value: Boolean
         get() = basedOn.value
-    override val onChange: Observable<Optional<Boolean>>
+    override val onChange: Observable<Box<Boolean>>
         get() = basedOn.onChange.take(1)
 
 }
 
-fun <T> ObservableProperty<@swiftExactly Boolean>.closeWhenOff(closeable: T) where T: Disposable, T: AnyObject {
-    val weakCloseable by weak(closeable)
+fun ObservableProperty<@swiftExactly Boolean>.closeWhenOff(closeable: Disposable) {
     this.onChange.add { it ->
-        weakCloseable?.let { closeable ->
-            if(!(it.value as Boolean)) {
-                closeable.dispose()
-                return@add true
-            }
-            return@add false
-        } ?: run {
+        if(!it.value) {
+            closeable.dispose()
             return@add true
         }
+        return@add false
     }
 }
 

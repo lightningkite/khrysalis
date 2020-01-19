@@ -2,10 +2,12 @@
 //Converted using Kwift2
 
 import Foundation
+import RxSwift
+import RxRelay
 
 
 public var lastDialog = StandardObservableProperty<DialogRequest?>(nil)
-public var showDialogEvent = StandardEvent<DialogRequest>()
+public var showDialogEvent: PublishSubject<DialogRequest> = PublishSubject.create()
 
 public class DialogRequest {
     
@@ -26,7 +28,7 @@ public class DialogRequest {
 
 public func showDialog(request: DialogRequest) -> Void {
     lastDialog.value = request
-    showDialogEvent.invokeAll(request)
+    showDialogEvent.onNext(request)
 }
 public func showDialog(_ request: DialogRequest) -> Void {
     return showDialog(request: request)

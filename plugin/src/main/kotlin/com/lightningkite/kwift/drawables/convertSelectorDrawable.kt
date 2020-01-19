@@ -35,7 +35,7 @@ fun convertSelectorDrawable(name: String, node: XmlNode, out: Appendable) {
                 appendln("        sublayer.frame.size.height = $it")
             }
             appendln("        layer.bounds.size = layer.bounds.size.expand(sublayer.bounds.size)")
-            appendln("        layer.onResize.addAndRunWeak(sublayer, layer.bounds) { (sublayer, bounds) in sublayer.frame = bounds }")
+            appendln("        layer.onResize.startWith(layer.bounds).addWeak(sublayer) { (sublayer, bounds) in sublayer.frame = bounds }")
             appendln("        return sublayer")
             appendln("    }()")
         }

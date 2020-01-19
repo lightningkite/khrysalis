@@ -35,6 +35,10 @@ annotation class swiftDescendsFrom(val parameterName: String = "default")
 @Target(AnnotationTarget.FUNCTION)
 annotation class discardableResult
 
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.EXPRESSION)
+@Retention(AnnotationRetention.SOURCE)
+annotation class swiftReturnType(val text: String)
+
 @Target(
     AnnotationTarget.CLASS,
     AnnotationTarget.ANNOTATION_CLASS,

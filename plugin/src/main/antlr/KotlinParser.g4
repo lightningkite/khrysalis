@@ -489,7 +489,7 @@ callSuffix
     ;
 
 annotatedLambda
-    : (annotation* | label?) NL* lambdaLiteral
+    : annotation* label? NL* lambdaLiteral
     ;
 
 typeArguments

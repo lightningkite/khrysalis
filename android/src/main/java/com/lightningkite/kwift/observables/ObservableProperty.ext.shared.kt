@@ -1,5 +1,3 @@
-@file:Suppress("UNCHECKED_CAST")
-
 package com.lightningkite.kwift.observables
 
 import com.lightningkite.kwift.*
@@ -7,9 +5,9 @@ import com.lightningkite.kwift.rx.addWeak
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 
-val <T> ObservableProperty<T>.observable: Observable<Optional<T>> get() = onChange.startWith(Optional.wrap(value))
-val <T> ObservableProperty<T>.observableNN: Observable<T> get() = onChange.startWith(Optional.wrap(value)).map { it -> it.valueNN }
-val <T> ObservableProperty<T>.onChangeNN: Observable<T> get() = onChange.map { it -> it.valueNN }
+val <T> ObservableProperty<T>.observable: Observable<Box<T>> get() = onChange.startWith(boxWrap(value))
+val <T> ObservableProperty<T>.observableNN: Observable<T> get() = onChange.startWith(boxWrap(value)).map { it -> it.value }
+val <T> ObservableProperty<T>.onChangeNN: Observable<T> get() = onChange.map { it -> it.value }
 
 @discardableResult
 @Deprecated("Use 'observable' directly instead", ReplaceWith("this.observable.addWeak(referenceA, listener)", "com.lightningkite.kwift.observables.observable"))
@@ -21,7 +19,7 @@ fun <A : AnyObject, T> ObservableProperty<T>.addAndRunWeak(
     listener = { a, value ->
         listener(
             a,
-            value.value as T
+            value.value
         )
     }
 )
@@ -39,7 +37,7 @@ fun <A : AnyObject, B : AnyObject, T> ObservableProperty<T>.addAndRunWeak(
         listener(
             a,
             b,
-            value.value as T
+            value.value
         )
     }
 )
@@ -60,7 +58,7 @@ fun <A : AnyObject, B : AnyObject, C : AnyObject, T> ObservableProperty<T>.addAn
             a,
             b,
             c,
-            value.value as T
+            value.value
         )
     }
 )

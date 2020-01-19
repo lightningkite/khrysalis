@@ -2,6 +2,8 @@
 //Converted using Kwift2
 
 import Foundation
+import RxSwift
+import RxRelay
 
 
 
@@ -9,9 +11,9 @@ public class ReferenceObservableProperty<T>: MutableObservableProperty<T> {
     
     public var get:  () -> T
     public var set:  (T) -> Void
-    public var event: Event<T>
+    public var event: Observable<Box<T>>
     
-    override public var onChange: Event<T> {
+    override public var onChange: Observable<Box<T>> {
         get {
             return event
         }
@@ -28,13 +30,13 @@ public class ReferenceObservableProperty<T>: MutableObservableProperty<T> {
     override public func update() -> Void {
     }
     
-    public init(get: @escaping () -> T, set: @escaping (T) -> Void, event: Event<T>) {
+    public init(get: @escaping () -> T, set: @escaping (T) -> Void, event: Observable<Box<T>>) {
         self.get = get
         self.set = set
         self.event = event
         super.init()
     }
-    convenience public init(_ get: @escaping () -> T, _ set: @escaping (T) -> Void, _ event: Event<T>) {
+    convenience public init(_ get: @escaping () -> T, _ set: @escaping (T) -> Void, _ event: Observable<Box<T>>) {
         self.init(get: get, set: set, event: event)
     }
 }

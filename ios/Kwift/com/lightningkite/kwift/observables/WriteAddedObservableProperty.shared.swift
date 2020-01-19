@@ -2,6 +2,8 @@
 //Converted using Kwift2
 
 import Foundation
+import RxSwift
+import RxRelay
 
 
 
@@ -10,10 +12,6 @@ public class WriteAddedObservableProperty<A>: MutableObservableProperty<A> {
     public var basedOn: ObservableProperty<A>
     public var onWrite:  (A) -> Void
     
-    
-    override public func update() -> Void {
-        onWrite(basedOn.value)
-    }
     override public var value: A {
         get {
             return basedOn.value
@@ -22,10 +20,13 @@ public class WriteAddedObservableProperty<A>: MutableObservableProperty<A> {
             onWrite(value)
         }
     }
-    override public var onChange: Event<A> {
+    override public var onChange: Observable<Box<A>> {
         get {
             return basedOn.onChange
         }
+    }
+    
+    override public func update() -> Void {
     }
     
     public init(basedOn: ObservableProperty<A>, onWrite: @escaping (A) -> Void) {

@@ -1,7 +1,8 @@
 package com.lightningkite.kwift.observables
 
-import com.lightningkite.kwift.Optional
+import com.lightningkite.kwift.Box
 import com.lightningkite.kwift.escaping
+import com.lightningkite.kwift.swiftReturnType
 import io.reactivex.Observable
 
 class FlatMappedObservableProperty<A, B>(
@@ -10,15 +11,13 @@ class FlatMappedObservableProperty<A, B>(
 ) : ObservableProperty<B>() {
     override val value: B
         get() = transformation(basedOn.value).value
-    @Suppress("UNCHECKED_CAST")
-    override val onChange: Observable<Optional<B>>
-        get() = basedOn.onChange.flatMap { it -> transformation(it.value as A).onChange }
+    override val onChange: Observable<Box<B>>
+        get() = basedOn.onChange.flatMap { it -> this.transformation(it.value).onChange }
 }
 
 fun <T, B> ObservableProperty<T>.flatMap(transformation: @escaping() (T) -> ObservableProperty<B>): FlatMappedObservableProperty<T, B> {
     return FlatMappedObservableProperty<T, B>(this, transformation)
 }
-
 
 class MutableFlatMappedObservableProperty<A, B>(
     val basedOn: ObservableProperty<A>,
@@ -32,12 +31,11 @@ class MutableFlatMappedObservableProperty<A, B>(
 
     var lastProperty: MutableObservableProperty<B>? = null
 
-    @Suppress("UNCHECKED_CAST")
-    override val onChange: Observable<Optional<B>>
-        get() = basedOn.onChange.flatMap { it ->
-            val prop = transformation(it.value as A)
+    override val onChange: Observable<Box<B>>
+        get() = basedOn.onChange.flatMap @swiftReturnType("Observable<Box<B>>") label@{ it: Box<A> ->
+            val prop = this.transformation(it.value)
             this.lastProperty = prop
-            return@flatMap prop.onChange
+            return@label prop.onChange
         }
 
     override fun update() {

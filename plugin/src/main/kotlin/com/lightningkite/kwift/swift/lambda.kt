@@ -14,17 +14,17 @@ fun SwiftAltListener.registerLambda() {
             ?.parentIfType<KotlinParser.PostfixUnaryExpressionContext>()
             ?.parentIfType<KotlinParser.PrefixUnaryExpressionContext>()
             ?.unaryPrefix()
-            ?.mapNotNull { it.annotation()?.singleAnnotation()?.unescapedAnnotation()?.text }
+            ?.mapNotNull { it.annotation()?.singleAnnotation()?.unescapedAnnotation() }
             ?: literal
                 .parentIfType<KotlinParser.AnnotatedLambdaContext>()
-                ?.annotation()?.mapNotNull { it.singleAnnotation()?.unescapedAnnotation()?.text }
+                ?.annotation()?.mapNotNull { it.singleAnnotation()?.unescapedAnnotation() }
             ?: listOf()
 
         direct.append("{ ")
-        if (annotations.any {it.startsWith("weakSelf") }) {
+        if (annotations.any {it.text.startsWith("weakSelf") }) {
             direct.append("[weak self] ")
         }
-        if (annotations.any {it.startsWith("unownedSelf") }) {
+        if (annotations.any {it.text.startsWith("unownedSelf") }) {
             direct.append("[unowned self] ")
         }
         direct.append("(")
@@ -36,7 +36,13 @@ fun SwiftAltListener.registerLambda() {
                 direct.append(", ")
             }
         )
-        direct.append(") in ")
+        direct.append(") ")
+        annotations.find { it.text.startsWith("swiftReturnType") }?.let {
+            direct.append("-> ")
+            direct.append(it.constructorInvocation()?.valueArguments()?.valueArgument(0)?.expression()?.text?.trim('"') ?: "???")
+            direct.append(" ")
+        }
+        direct.append("in ")
         tab {
             literal.statements().statement().forEach {
                 startLine()

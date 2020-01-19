@@ -1,5 +1,3 @@
-
-
 import com.lightningkite.kwift.KwiftSettings
 import com.lightningkite.kwift.convertResourcesToIos
 import com.lightningkite.kwift.layout.convertLayoutsToSwift
@@ -14,7 +12,7 @@ buildscript {
         mavenLocal()
     }
     dependencies {
-//        classpath("com.lightningkite:kwift:0.1.0")
+        //        classpath("com.lightningkite:kwift:0.1.0")
         classpath("com.lightningkite.kwift:plugin:0.1.0")
         classpath("com.android.tools.build:gradle:3.5.0")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
@@ -49,7 +47,7 @@ android {
         versionName = "1.0.5"
     }
     buildTypes {
-//        release {
+        //        release {
 //            minifyEnabled = false
 //            proguardFiles = getDefaultProguardFile("proguard-android.txt"), 'proguard-rules.pro'
 //        }
@@ -82,7 +80,8 @@ dependencies {
     api("com.romandanylyk:pageindicatorview:1.0.3")
     api("com.theartofdev.edmodo:android-image-cropper:2.7.0")
     api("com.github.marcoscgdev:Android-Week-View:1.2.7")
-    api("com.github.ReactiveX:RxKotlin:2.x-SNAPSHOT")
+    api("io.reactivex.rxjava2:rxkotlin:2.4.0")
+    api("io.reactivex.rxjava2:rxandroid:2.1.1")
 }
 
 tasks.create("sourceJar", Jar::class) {
@@ -93,7 +92,7 @@ tasks.create("sourceJar", Jar::class) {
 
 publishing {
     publications {
-        val mavenAar by creating(MavenPublication::class){
+        val mavenAar by creating(MavenPublication::class) {
             from(components["android"])
             artifact(tasks.getByName("sourceJar"))
             groupId = project.group.toString()
@@ -113,9 +112,12 @@ tasks.create("kwiftConvertKotlinToSwiftClean") {
     doLast {
         println("Started on $androidBase")
         convertKotlinToSwift(
-                androidFolder = androidBase,
-                iosFolder = iosBase,
-                clean = true
+            androidFolder = androidBase,
+            iosFolder = iosBase,
+            clean = true,
+            setup = {
+                this.imports = listOf("RxSwift", "RxRelay")
+            }
         )
         println("Finished")
     }
@@ -126,9 +128,12 @@ tasks.create("kwiftConvertKotlinToSwift") {
     doLast {
         println("Started on $androidBase")
         convertKotlinToSwift(
-                androidFolder = androidBase,
-                iosFolder = iosBase,
-                clean = false
+            androidFolder = androidBase,
+            iosFolder = iosBase,
+            clean = false,
+            setup = {
+                this.imports = listOf("RxSwift", "RxRelay")
+            }
         )
         println("Finished")
     }

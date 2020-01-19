@@ -1,6 +1,7 @@
 package com.lightningkite.kwift.observables
 
-import com.lightningkite.kwift.Optional
+import com.lightningkite.kwift.Box
+import com.lightningkite.kwift.boxWrap
 import com.lightningkite.kwift.escaping
 import io.reactivex.Observable
 
@@ -12,8 +13,7 @@ class TransformedObservableProperty<A, B>(
         get() {
             return read(basedOn.value)
         }
-    @Suppress("UNCHECKED_CAST")
-    override val onChange: Observable<Optional<B>> = basedOn.onChange.map { it -> Optional.wrap(read(it.value as A)) }
+    override val onChange: Observable<Box<B>> = basedOn.onChange.map { it -> boxWrap(read(it.value)) }
 }
 
 @Deprecated("Use 'map' instead", ReplaceWith(

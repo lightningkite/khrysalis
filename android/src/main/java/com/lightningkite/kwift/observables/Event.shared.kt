@@ -18,13 +18,3 @@ typealias InvokableEvent<Element> = Subject<Element>
 
 @Deprecated("Use RX directly instead", ReplaceWith("Subject<Element>", "io.reactivex.subjects.PublishSubject"))
 typealias StandardEvent<Element> = PublishSubject<Element>
-
-//@Deprecated("Use RX directly instead", ReplaceWith("Subject<Element>", "io.reactivex.subjects.PublishSubject"))
-//fun <Element> StandardEvent(): PublishSubject<Element> = PublishSubject.create<Element>()
-
-@Deprecated("Use RX directly instead", ReplaceWith("onNext(value)"))
-fun <Element> Observer<Element>.invokeAll(value: Element) = onNext(value)
-
-fun test(){
-    PublishSubject.create<Int>()
-}

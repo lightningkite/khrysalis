@@ -314,6 +314,11 @@ public extension Dictionary {
     var entries: Self {
         return self
     }
+    static func +(lhs: Dictionary<Key, Value>, rhs: (Key, Value)) -> Dictionary<Key, Value> {
+        var mine = lhs
+        mine[rhs.0] = rhs.1
+        return mine
+    }
 }
 
 public extension Set {
@@ -569,12 +574,10 @@ public extension Optional where Wrapped == String {
 
 public extension Optional {
     var value: Self { return self }
-    static func wrap(_ value: Self) -> Self {
-        return value
-    }
-    static func wrap(_ value: Wrapped) -> Wrapped {
-        return value
-    }
+    var valueNN: Wrapped { return self! }
+}
+func optionalWrap<T>(_ value: T) -> Optional<T> {
+    return Optional.some(value)
 }
 
 public extension NSObject {

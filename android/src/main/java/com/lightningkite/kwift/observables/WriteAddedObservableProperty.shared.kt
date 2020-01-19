@@ -1,9 +1,8 @@
 package com.lightningkite.kwift.observables
 
-import com.lightningkite.kwift.Optional
+import com.lightningkite.kwift.Box
 import com.lightningkite.kwift.escaping
 import io.reactivex.Observable
-import io.reactivex.subjects.Subject
 
 class WriteAddedObservableProperty<A>(
     val basedOn: ObservableProperty<A>,
@@ -14,7 +13,7 @@ class WriteAddedObservableProperty<A>(
         set(value) {
             onWrite(value)
         }
-    override val onChange: Observable<Optional<A>> get() = basedOn.onChange
+    override val onChange: Observable<Box<A>> get() = basedOn.onChange
     override fun update() {
         //Do nothing
     }

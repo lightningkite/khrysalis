@@ -2,6 +2,8 @@
 //Converted using Kwift2
 
 import Foundation
+import RxSwift
+import RxRelay
 
 
 
@@ -21,7 +23,7 @@ public class ObservableStack<T: AnyObject>: ObservableProperty<Array<T>> {
     }
     //End Companion
     
-    override public var onChange: StandardEvent<Array<T>> { get { return _onChange } set(value) { _onChange = value } }
+    override public var onChange: PublishSubject<Box<Array<T>>> { get { return _onChange } set(value) { _onChange = value } }
     override public var value: Array<T> {
         get {
             return stack
@@ -31,7 +33,7 @@ public class ObservableStack<T: AnyObject>: ObservableProperty<Array<T>> {
     
     public func push(t: T) -> Void {
         stack.add(t)
-        onChange.invokeAll(value: stack)
+        onChange.onNext(boxWrap(stack))
     }
     public func push(_ t: T) -> Void {
         return push(t: t)
@@ -40,7 +42,7 @@ public class ObservableStack<T: AnyObject>: ObservableProperty<Array<T>> {
     public func swap(t: T) -> Void {
         stack.removeAt(stack.lastIndex)
         stack.add(t)
-        onChange.invokeAll(value: stack)
+        onChange.onNext(boxWrap(stack))
     }
     public func swap(_ t: T) -> Void {
         return swap(t: t)
@@ -51,7 +53,7 @@ public class ObservableStack<T: AnyObject>: ObservableProperty<Array<T>> {
             return false
         }
         stack.removeAt(stack.lastIndex)
-        onChange.invokeAll(value: stack)
+        onChange.onNext(boxWrap(stack))
         return true
     }
     
@@ -60,7 +62,7 @@ public class ObservableStack<T: AnyObject>: ObservableProperty<Array<T>> {
             return false
         }
         stack.removeAt(stack.lastIndex)
-        onChange.invokeAll(value: stack)
+        onChange.onNext(boxWrap(stack))
         return true
     }
     
@@ -74,7 +76,7 @@ public class ObservableStack<T: AnyObject>: ObservableProperty<Array<T>> {
                 found = true
             }
         }
-        onChange.invokeAll(value: stack)
+        onChange.onNext(boxWrap(stack))
     }
     public func popTo(_ t: T) -> Void {
         return popTo(t: t)
@@ -90,7 +92,7 @@ public class ObservableStack<T: AnyObject>: ObservableProperty<Array<T>> {
                 found = true
             }
         }
-        onChange.invokeAll(value: stack)
+        onChange.onNext(boxWrap(stack))
     }
     
     public func root() -> Void {
@@ -100,18 +102,18 @@ public class ObservableStack<T: AnyObject>: ObservableProperty<Array<T>> {
     public func reset(t: T) -> Void {
         stack.clear()
         stack.add(t)
-        onChange.invokeAll(value: stack)
+        onChange.onNext(boxWrap(stack))
     }
     public func reset(_ t: T) -> Void {
         return reset(t: t)
     }
     
     override public init() {
-        self._onChange = StandardEvent<Array<T>>()
+        self._onChange = PublishSubject.create()
         let stack: Array<T> = Array<T>()
         self.stack = stack
         super.init()
     }
-    private var _onChange: StandardEvent<Array<T>>
+    private var _onChange: PublishSubject<Box<Array<T>>>
 }
  

@@ -1,7 +1,8 @@
 package com.lightningkite.kwift.observables
 
 import com.lightningkite.kwift.AnyObject
-import com.lightningkite.kwift.Optional
+import com.lightningkite.kwift.Box
+import com.lightningkite.kwift.boxWrap
 import io.reactivex.subjects.PublishSubject
 
 class ObservableStack<T : AnyObject> : ObservableProperty<List<T>>() {
@@ -14,7 +15,7 @@ class ObservableStack<T : AnyObject> : ObservableProperty<List<T>>() {
         }
     }
 
-    override val onChange: PublishSubject<Optional<List<T>>> = PublishSubject.create()
+    override val onChange: PublishSubject<Box<List<T>>> = PublishSubject.create()
     override val value: List<T>
         get() {
             return stack
@@ -24,13 +25,13 @@ class ObservableStack<T : AnyObject> : ObservableProperty<List<T>>() {
 
     fun push(t: T) {
         stack.add(t)
-        onChange.onNext(Optional.wrap(stack))
+        onChange.onNext(boxWrap(stack))
     }
 
     fun swap(t: T) {
         stack.removeAt(stack.lastIndex)
         stack.add(t)
-        onChange.onNext(Optional.wrap(stack))
+        onChange.onNext(boxWrap(stack))
     }
 
     fun pop(): Boolean {
@@ -38,7 +39,7 @@ class ObservableStack<T : AnyObject> : ObservableProperty<List<T>>() {
             return false
         }
         stack.removeAt(stack.lastIndex)
-        onChange.onNext(Optional.wrap(stack))
+        onChange.onNext(boxWrap(stack))
         return true
     }
 
@@ -47,7 +48,7 @@ class ObservableStack<T : AnyObject> : ObservableProperty<List<T>>() {
             return false
         }
         stack.removeAt(stack.lastIndex)
-        onChange.onNext(Optional.wrap(stack))
+        onChange.onNext(boxWrap(stack))
         return true
     }
 
@@ -60,7 +61,7 @@ class ObservableStack<T : AnyObject> : ObservableProperty<List<T>>() {
                 found = true
             }
         }
-        onChange.onNext(Optional.wrap(stack))
+        onChange.onNext(boxWrap(stack))
     }
 
     fun popTo(predicate: (T) -> Boolean) {
@@ -72,7 +73,7 @@ class ObservableStack<T : AnyObject> : ObservableProperty<List<T>>() {
                 found = true
             }
         }
-        onChange.onNext(Optional.wrap(stack))
+        onChange.onNext(boxWrap(stack))
     }
 
     fun root() {
@@ -82,6 +83,6 @@ class ObservableStack<T : AnyObject> : ObservableProperty<List<T>>() {
     fun reset(t: T) {
         stack.clear()
         stack.add(t)
-        onChange.onNext(Optional.wrap(stack))
+        onChange.onNext(boxWrap(stack))
     }
 }

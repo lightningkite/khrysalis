@@ -1,11 +1,10 @@
 package com.lightningkite.kwift.observables
 
-import com.lightningkite.kwift.Optional
+import com.lightningkite.kwift.Box
 import io.reactivex.Observable
-import java.util.*
 
 abstract class ObservableProperty<T> {
     abstract val value: T
-    abstract val onChange: Observable<Optional<T>>
+    abstract val onChange: Observable<Box<T>>
 }
 

@@ -2,6 +2,8 @@
 //Converted using Kwift2
 
 import Foundation
+import RxSwift
+import RxRelay
 
 
 
@@ -23,19 +25,21 @@ public class TransformedMutableObservableProperty<A, B>: MutableObservableProper
             basedOn.value = write(value)
         }
     }
-    override public var onChange: Event<B> { get { return _onChange } set(value) { _onChange = value } }
+    override public var onChange: Observable<Box<B>> { get { return _onChange } set(value) { _onChange = value } }
     
     public init(basedOn: MutableObservableProperty<A>, read: @escaping (A) -> B, write: @escaping (B) -> A) {
         self.basedOn = basedOn
         self.read = read
         self.write = write
-        self._onChange = basedOn.onChange.transformed(transformation: read)
+        self._onChange = basedOn.onChange.map{ (it) in 
+            boxWrap(read(it.value))
+        }
         super.init()
     }
     convenience public init(_ basedOn: MutableObservableProperty<A>, _ read: @escaping (A) -> B, _ write: @escaping (B) -> A) {
         self.init(basedOn: basedOn, read: read, write: write)
     }
-    private var _onChange: Event<B>
+    private var _onChange: Observable<Box<B>>
 }
  
  

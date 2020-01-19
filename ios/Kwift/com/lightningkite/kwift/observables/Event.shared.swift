@@ -2,16 +2,16 @@
 //Converted using Kwift2
 
 import Foundation
+import RxSwift
+import RxRelay
 
 
 
-open class Event<T> {
-    
-    
-    
-    open func add(listener: @escaping (T) -> Bool) -> Close { fatalError() }
-    
-    public init() {
-    }
-}
+public typealias Event<Element> = Observable<Element>
+ 
+
+public typealias InvokableEvent<Element> = Subject<Element>
+ 
+
+public typealias StandardEvent<Element> = PublishSubject<Element>
  

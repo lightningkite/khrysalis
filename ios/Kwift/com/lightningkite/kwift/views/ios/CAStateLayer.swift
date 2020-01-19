@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import RxSwift
 
 public protocol CALayerToImage {
     func toImage() -> UIImage?
@@ -74,13 +75,13 @@ extension CALayer : CALayerToImage {
         CALayer.onResize.get(self)?.invokeAll(self.bounds)
     }
     
-    private static let matchingExtension = ExtensionProperty<CALayer, Close>()
+    private static let matchingExtension = ExtensionProperty<CALayer, Disposable>()
     public func matchSize(_ view: UIView?) {
         if let previous = CALayer.matchingExtension.get(self) {
-            previous.close()
+            previous.dispose()
         }
         if let view = view {
-            let close = view.onLayoutSubviews.addAndRunWeak(self, view) { this, view in
+            let close = view.onLayoutSubviews.startWith(view).addWeak(self) { this, view in
                 this.resize(view.bounds)
             }
             CALayer.matchingExtension.set(self, close)
@@ -111,7 +112,7 @@ extension CALayer : CALayerToImage {
             return cornerRadius
         }
         set(value) {
-            self.onResize.addAndRunWeak(self, self.bounds) { (self, bounds) in
+            self.onResize.startWith(self.bounds).addWeak(self) { (self, bounds) in
                 self.cornerRadius = min(min(value, bounds.size.width/2), bounds.size.height/2)
             }
         }

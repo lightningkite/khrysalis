@@ -82,10 +82,10 @@ public class ViewDependency {
                     layer.addSublayer(normalLayer)
                 }
             }
-            layer.onResize.addAndRunWeak(checkedLayer, layer.bounds) { (checkedLayer, bounds) in
+            layer.onResize.startWith(layer.bounds).addWeak(checkedLayer) { (checkedLayer, bounds) in
                 checkedLayer.frame = bounds
             }
-            layer.onResize.addAndRunWeak(normalLayer, layer.bounds) { (normalLayer, bounds) in
+            layer.onResize.startWith(layer.bounds).addWeak(normalLayer) { (normalLayer, bounds) in
                 normalLayer.frame = bounds
             }
             
@@ -294,6 +294,10 @@ extension UIImage {
         }
     }
 }
+
+
+
+
 
 
 

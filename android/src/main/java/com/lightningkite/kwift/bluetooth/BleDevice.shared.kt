@@ -5,7 +5,6 @@ import android.bluetooth.*
 import android.content.Context
 import android.os.Build
 import com.lightningkite.kwift.Failable
-import com.lightningkite.kwift.async.DRF
 import com.lightningkite.kwift.observables.ObservableProperty
 import com.lightningkite.kwift.observables.StandardObservableProperty
 import com.lightningkite.kwift.post
@@ -17,9 +16,9 @@ interface BleDevice {
     val rssi: ObservableProperty<Int>
     val mtu: ObservableProperty<Int>
 
-    fun requestMtu(mtu: Int): DRF<Unit>
-    fun read(serviceId: UUID, characteristicId: UUID): DRF<ByteArray>
-    fun write(serviceId: UUID, characteristicId: UUID, value: ByteArray): DRF<Unit>
+    fun requestMtu(mtu: Int): Observable<Unit>
+    fun read(serviceId: UUID, characteristicId: UUID): Observable<ByteArray>
+    fun write(serviceId: UUID, characteristicId: UUID, value: ByteArray): Observable<Unit>
     fun subscribe(
         serviceId: UUID,
         characteristicId: UUID,

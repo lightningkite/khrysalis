@@ -12,12 +12,11 @@ import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
 import com.lightningkite.kwift.Failable
 import com.lightningkite.kwift.PlatformSpecific
-import com.lightningkite.kwift.async.DRF
-import com.lightningkite.kwift.async.DelayedResultFunction
 import com.lightningkite.kwift.net.HttpClient
 import com.lightningkite.kwift.observables.Close
 import com.lightningkite.kwift.views.ViewDependency
 import com.lightningkite.kwift.views.android.startIntent
+import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import java.util.*
 
@@ -174,11 +173,11 @@ object Ble {
         }
     }
 
-    fun connect(viewDependency: ViewDependency, deviceId: String): DelayedResultFunction<BleDevice> = TODO()
+    fun connect(viewDependency: ViewDependency, deviceId: String): Observable<BleDevice> = TODO()
 
-    fun stayConnected(viewDependency: ViewDependency, deviceId: String): DelayedResultFunction<BleDevice> = TODO()
+    fun stayConnected(viewDependency: ViewDependency, deviceId: String): Observable<BleDevice> = TODO()
 
-    fun connectBackground(deviceId: String): DelayedResultFunction<BleDevice> = TODO()
+    fun connectBackground(deviceId: String): Observable<BleDevice> = TODO()
 
-    fun stayConnectedBackground(deviceId: String): DelayedResultFunction<BleDevice> = TODO()
+    fun stayConnectedBackground(deviceId: String): Observable<BleDevice> = TODO()
 }

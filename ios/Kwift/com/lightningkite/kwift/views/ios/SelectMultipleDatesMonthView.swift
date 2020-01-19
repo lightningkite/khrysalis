@@ -8,6 +8,7 @@
 
 import Foundation
 import UIKit
+import RxSwift
 
 
 public class SelectMultipleDatesMonthView : QuickMonthView {
@@ -27,10 +28,10 @@ public class SelectMultipleDatesMonthView : QuickMonthView {
         startup2()
     }
 
-    var closers: Array<Close> = []
+    var closers: Array<Disposable> = []
     public func startup2() {
         for close in closers {
-            close.close()
+            close.dispose()
         }
         closers.append(dates.onChange.addWeak(self) { this, value in
             this.setNeedsDisplay()
