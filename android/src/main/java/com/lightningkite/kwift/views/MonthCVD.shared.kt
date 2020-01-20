@@ -15,6 +15,7 @@ import com.lightningkite.kwift.views.draw.drawTextCentered
 import java.util.*
 import kotlin.math.absoluteValue
 import kotlin.math.max
+import kotlin.math.min
 
 /**Renders a swipeable calendar.**/
 open class MonthCVD : CustomViewDelegate() {
@@ -27,6 +28,8 @@ open class MonthCVD : CustomViewDelegate() {
         set(value) {
             currentMonthObs.value = value
         }
+
+    var dragEnabled: Boolean = true
 
     init {
         this.currentMonthObs.addAndRunWeak(this) { self, value -> self.postInvalidate() }
@@ -95,6 +98,7 @@ open class MonthCVD : CustomViewDelegate() {
 
     private val calcMonth: DateAlone =
         DateAlone(1, 1, 1)
+
     fun dayAtPixel(x: Float, y: Float, existing: DateAlone? = null): DateAlone? {
         if (y < dayLabelHeight) return null
         val columnRaw = (x / dayCellWidth - dayCellWidth * currentOffset * 7).toInt()
@@ -111,11 +115,12 @@ open class MonthCVD : CustomViewDelegate() {
         )
     }
 
-    fun dayAt(month: DateAlone, row: Int, column: Int, existing: DateAlone = DateAlone(
-        0,
-        0,
-        0
-    )
+    fun dayAt(
+        month: DateAlone, row: Int, column: Int, existing: DateAlone = DateAlone(
+            0,
+            0,
+            0
+        )
     ): DateAlone {
         return existing
             .set(month)
@@ -136,6 +141,7 @@ open class MonthCVD : CustomViewDelegate() {
 
     private val calcMonthB: DateAlone =
         DateAlone(0, 0, 0)
+
     override fun draw(canvas: Canvas, width: Float, height: Float, displayMetrics: DisplayMetrics) {
         measure(width, height, displayMetrics)
         if (currentOffset > 0f) {
@@ -150,7 +156,8 @@ open class MonthCVD : CustomViewDelegate() {
             drawMonth(canvas, currentOffset * width, width, currentMonth, displayMetrics)
         } else if (currentOffset < 0f) {
             //draw future month and current month
-            drawMonth(                canvas,
+            drawMonth(
+                canvas,
                 (currentOffset + 1f) * width,
                 width,
                 calcMonthB.set(currentMonth).setAddMonthOfYear(1),
@@ -189,8 +196,12 @@ open class MonthCVD : CustomViewDelegate() {
                     xOffset + (col.toFloat() + 1) * dayCellWidth + 0.01f,
                     dayLabelHeight + (row.toFloat() + 1) * dayCellHeight + 0.01f
                 )
-                if(rectForReuse.left > width) { continue }
-                if(rectForReuse.right < 0) { continue }
+                if (rectForReuse.left > width) {
+                    continue
+                }
+                if (rectForReuse.right < 0) {
+                    continue
+                }
                 rectForReuseB.set(rectForReuse)
                 rectForReuse.inset(dayCellMargin, dayCellMargin)
                 drawDay(
@@ -231,11 +242,13 @@ open class MonthCVD : CustomViewDelegate() {
                 return true
             }
         }
-        dragStartX = x / width
-        dragStartY = y / height
-        draggingId = id
-        lastOffsetTime = System.currentTimeMillis()
-        isTap = true
+        if(dragEnabled) {
+            dragStartX = x / width
+            dragStartY = y / height
+            draggingId = id
+            lastOffsetTime = System.currentTimeMillis()
+            isTap = true
+        }
         return true
     }
 
@@ -327,11 +340,11 @@ object CalendarDrawing {
     }
 
     fun dayBackground(canvas: Canvas, inner: RectF, paint: Paint) {
-        canvas.drawOval(inner, paint)
+        canvas.drawCircle(inner.centerX(), inner.centerY(), min(inner.width() / 2f, inner.height() / 2f), paint)
     }
 
     fun dayBackgroundStart(canvas: Canvas, inner: RectF, outer: RectF, paint: Paint) {
-        canvas.drawOval(inner, paint)
+        canvas.drawCircle(inner.centerX(), inner.centerY(), min(inner.width() / 2f, inner.height() / 2f), paint)
         canvas.drawRect(outer.centerX(), inner.top, outer.right, inner.bottom, paint)
     }
 
@@ -340,7 +353,7 @@ object CalendarDrawing {
     }
 
     fun dayBackgroundEnd(canvas: Canvas, inner: RectF, outer: RectF, paint: Paint) {
-        canvas.drawOval(inner, paint)
+        canvas.drawCircle(inner.centerX(), inner.centerY(), min(inner.width() / 2f, inner.height() / 2f), paint)
         canvas.drawRect(outer.left, inner.top, outer.centerX(), inner.bottom, paint)
     }
 }

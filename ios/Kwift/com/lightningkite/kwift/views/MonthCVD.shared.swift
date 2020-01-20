@@ -23,6 +23,7 @@ open class MonthCVD: CustomViewDelegate {
             currentMonthObs.value = value
         }
     }
+    public var dragEnabled: Bool
     public var labelFontSp: Float
     public var dayFontSp: Float
     public var internalPaddingDp: Float
@@ -184,11 +185,13 @@ open class MonthCVD: CustomViewDelegate {
                 return true
             } 
         }
-        dragStartX = x / width
-        dragStartY = y / height
-        draggingId = id
-        lastOffsetTime = System.currentTimeMillis()
-        isTap = true
+        if dragEnabled {
+            dragStartX = x / width
+            dragStartY = y / height
+            draggingId = id
+            lastOffsetTime = System.currentTimeMillis()
+            isTap = true
+        }
         return true
     }
     override public func onTouchDown(_ id: Int32, _ x: Float, _ y: Float, _ width: Float, _ height: Float) -> Bool {
@@ -285,6 +288,8 @@ open class MonthCVD: CustomViewDelegate {
     override public init() {
         let currentMonthObs: MutableObservableProperty<DateAlone> = StandardObservableProperty(Date().dateAlone.setDayOfMonth(1))
         self.currentMonthObs = currentMonthObs
+        let dragEnabled: Bool = true
+        self.dragEnabled = dragEnabled
         let labelFontSp: Float = Float(12)
         self.labelFontSp = labelFontSp
         let dayFontSp: Float = Float(16)
@@ -388,14 +393,14 @@ public enum CalendarDrawing {
     }
     
     static public func dayBackground(canvas: Canvas, inner: RectF, paint: Paint) -> Void {
-        canvas.drawOval(inner, paint)
+        canvas.drawCircle(inner.centerX(), inner.centerY(), min(inner.width() / Float(2), inner.height() / Float(2)), paint)
     }
     static public func dayBackground(_ canvas: Canvas, _ inner: RectF, _ paint: Paint) -> Void {
         return dayBackground(canvas: canvas, inner: inner, paint: paint)
     }
     
     static public func dayBackgroundStart(canvas: Canvas, inner: RectF, outer: RectF, paint: Paint) -> Void {
-        canvas.drawOval(inner, paint)
+        canvas.drawCircle(inner.centerX(), inner.centerY(), min(inner.width() / Float(2), inner.height() / Float(2)), paint)
         canvas.drawRect(outer.centerX(), inner.top, outer.right, inner.bottom, paint)
     }
     static public func dayBackgroundStart(_ canvas: Canvas, _ inner: RectF, _ outer: RectF, _ paint: Paint) -> Void {
@@ -410,7 +415,7 @@ public enum CalendarDrawing {
     }
     
     static public func dayBackgroundEnd(canvas: Canvas, inner: RectF, outer: RectF, paint: Paint) -> Void {
-        canvas.drawOval(inner, paint)
+        canvas.drawCircle(inner.centerX(), inner.centerY(), min(inner.width() / Float(2), inner.height() / Float(2)), paint)
         canvas.drawRect(outer.left, inner.top, outer.centerX(), inner.bottom, paint)
     }
     static public func dayBackgroundEnd(_ canvas: Canvas, _ inner: RectF, _ outer: RectF, _ paint: Paint) -> Void {
