@@ -10,7 +10,6 @@ val <T> ObservableProperty<T>.observableNN: Observable<T> get() = onChange.start
 val <T> ObservableProperty<T>.onChangeNN: Observable<T> get() = onChange.map { it -> it.value }
 
 @discardableResult
-@Deprecated("Use 'observable' directly instead", ReplaceWith("this.observable.addWeak(referenceA, listener)", "com.lightningkite.kwift.observables.observable"))
 fun <A : AnyObject, T> ObservableProperty<T>.addAndRunWeak(
     referenceA: A,
     listener: @escaping() (A, T) -> Unit
@@ -25,7 +24,6 @@ fun <A : AnyObject, T> ObservableProperty<T>.addAndRunWeak(
 )
 
 @discardableResult
-@Deprecated("Use 'observable' directly instead", ReplaceWith("this.observable.addWeak(referenceA, referenceB, listener)", "com.lightningkite.kwift.observables.observable"))
 fun <A : AnyObject, B : AnyObject, T> ObservableProperty<T>.addAndRunWeak(
     referenceA: A,
     referenceB: B,
@@ -43,7 +41,6 @@ fun <A : AnyObject, B : AnyObject, T> ObservableProperty<T>.addAndRunWeak(
 )
 
 @discardableResult
-@Deprecated("Use 'observable' directly instead", ReplaceWith("this.observable.addWeak(referenceA, referenceB, referenceC, listener)", "com.lightningkite.kwift.observables.observable"))
 fun <A : AnyObject, B : AnyObject, C : AnyObject, T> ObservableProperty<T>.addAndRunWeak(
     referenceA: A,
     referenceB: B,
