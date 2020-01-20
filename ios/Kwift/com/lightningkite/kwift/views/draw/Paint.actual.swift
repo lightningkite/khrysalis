@@ -24,7 +24,7 @@ public class Paint {
     public var alpha: Int32 = 255
     
     //--- Paint.style
-    public var style: Style = .FILL
+    public var style: Style = .FILL_AND_STROKE
     
     //--- Paint.textSize
     public var textSize: Float = 12

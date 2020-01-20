@@ -9,7 +9,7 @@ import com.lightningkite.kwift.location.GeoCoordinate
 import com.lightningkite.kwift.observables.MutableObservableProperty
 import com.lightningkite.kwift.observables.ObservableProperty
 import com.lightningkite.kwift.observables.addAndRunWeak
-import com.lightningkite.kwift.observables.addWeak
+import com.lightningkite.kwift.rx.addWeak
 import com.lightningkite.kwift.views.ViewDependency
 
 fun MapView.bind(dependency: ViewDependency) {

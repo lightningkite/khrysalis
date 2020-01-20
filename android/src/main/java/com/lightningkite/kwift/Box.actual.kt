@@ -1,6 +1,6 @@
 package com.lightningkite.kwift
 
-inline class Box<out T> @Deprecated("Never, ever use this.  Use wrap instead.") constructor(val valueRaw: Any?) {
+/*inline*/ class Box<out T> @Deprecated("Never, ever use this.  Use wrap instead.") constructor(val valueRaw: Any?) {
     @Suppress("UNCHECKED_CAST")
     val value: T get() = if(valueRaw == NullRep) null as T else valueRaw as T
     companion object {

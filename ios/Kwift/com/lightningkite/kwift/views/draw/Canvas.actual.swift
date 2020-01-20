@@ -145,7 +145,7 @@ public extension Canvas {
 //--- Canvas.drawLine(Float, Float, Float, Float, Paint)
 public extension Canvas {
     func drawLine(_ x1: Float, _ y1: Float, _ x2: Float, _ y2: Float, _ paint: Paint) {
-        var path = Path()
+        let path = Path()
         path.moveTo(x1, y1)
         path.lineTo(x2, y2)
         self.completePath(
