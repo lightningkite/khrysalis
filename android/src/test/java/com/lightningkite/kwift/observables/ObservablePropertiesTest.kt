@@ -40,4 +40,25 @@ class ObservablePropertiesTest {
         sourceA.value = "walk"
         assertEquals("walker", read)
     }
+
+    @Test fun nullStuff(){
+        val sourceA = StandardObservableProperty<String?>(null)
+        val sourceB = StandardObservableProperty<String?>(null)
+        var read = ""
+        sourceA.combine(sourceB){ a, b -> a + b }.observableNN.addWeak(this) { self, value ->
+            println(value)
+            read = value
+        }
+        assertEquals("nullnull", read)
+        sourceA.value = "walk"
+        assertEquals("walknull", read)
+        sourceB.value = "ing"
+        assertEquals("walking", read)
+        sourceA.value = "jump"
+        assertEquals("jumping", read)
+        sourceB.value = "er"
+        assertEquals("jumper", read)
+        sourceA.value = "walk"
+        assertEquals("walker", read)
+    }
 }

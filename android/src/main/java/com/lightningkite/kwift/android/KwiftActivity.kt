@@ -38,9 +38,7 @@ abstract class KwiftActivity : AccessibleActivity() {
         super.onCreate(savedInstanceState)
 
         if (savedInstanceState == null) {
-            intent?.data?.let { uri ->
-                handleDeepLink(uri)
-            }
+            intent?.let { handleNewIntent(it) }
         }
         view = main.generate(this)
         showDialogEventCloser = showDialogEvent.addWeak(view) { view, request ->
@@ -90,7 +88,15 @@ abstract class KwiftActivity : AccessibleActivity() {
         super.onPause()
     }
 
-    private fun handleDeepLink(uri: Uri) {
+    protected open fun handleNewIntent(intent: Intent){
+        intent.data?.let { uri ->
+            handleDeepLink(uri)
+        }
+        intent.extras?.getString("deepLink")?.let{ Uri.parse(it) }?.let {
+            handleDeepLink(it)
+        }
+    }
+    protected fun handleDeepLink(uri: Uri) {
         handleDeepLink(
             uri.scheme ?: "",
             uri.host ?: "",
@@ -101,9 +107,7 @@ abstract class KwiftActivity : AccessibleActivity() {
         )
     }
     override fun onNewIntent(intent: Intent) {
-        intent.data?.let { uri ->
-            handleDeepLink(uri)
-        }
+        handleNewIntent(intent)
         super.onNewIntent(intent)
     }
 

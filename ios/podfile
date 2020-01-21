@@ -5,11 +5,8 @@ target 'Kwift' do
     pod 'AlamofireImage'
     pod 'KeychainAccess'
     pod 'UITextView+Placeholder', :modular_headers => true
-    pod 'Fabric'
-    pod 'Crashlytics'
     pod 'Cosmos', '~> 19.0'
     pod 'SearchTextField'
-    pod 'QVRWeekView', :git => 'https://github.com/lightningkite/iOS-Week-View.git'
 end
 
 target 'KwiftTests' do
@@ -17,9 +14,6 @@ target 'KwiftTests' do
     pod 'AlamofireImage'
     pod 'KeychainAccess'
     pod 'UITextView+Placeholder', :modular_headers => true
-    pod 'Fabric'
-    pod 'Crashlytics'
     pod 'Cosmos', '~> 19.0'
     pod 'SearchTextField'
-    pod 'QVRWeekView', :git => 'https://github.com/lightningkite/iOS-Week-View.git'
 end

@@ -1,8 +1,8 @@
 Pod::Spec.new do |s|
-  s.name = "KwiftMaps"
+  s.name = "KwiftFCM"
   s.version = "0.1.0"
-  s.summary = "Maps for Kwift"
-  s.description = "Shared code for maps using Kwift.  This is the iOS portion."
+  s.summary = "Firebase Cloud Messaging for Kwift"
+  s.description = "Shared code for notifications using Kwift.  This is the iOS portion."
   s.homepage = "https://github.com/lightningkite/kwift"
 
   s.license = "GPL"
