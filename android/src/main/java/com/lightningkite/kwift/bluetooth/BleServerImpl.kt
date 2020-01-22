@@ -227,7 +227,11 @@ class BleServerImpl(override val characteristics: Map<UUID, Map<UUID, BleCharact
             server?.addService(servicesToAdd.removeAt(0))
     }
 
-    override fun close() {
+    override fun isDisposed(): Boolean {
+        return server == null
+    }
+
+    override fun dispose() {
         Log.i("BleServerImpl", "Closing...")
         advertiser?.stopAdvertising(advertiserCallback)
         advertiser = null
