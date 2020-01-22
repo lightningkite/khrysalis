@@ -6,8 +6,6 @@
 //
 
 import UIKit
-import Fabric
-import Crashlytics
 
 open class KwiftAppDelegate: UIResponder, UIApplicationDelegate {
 
