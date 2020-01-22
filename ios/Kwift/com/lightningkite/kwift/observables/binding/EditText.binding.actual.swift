@@ -106,20 +106,3 @@ public extension UITextField {
         return bindDouble(observable)
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

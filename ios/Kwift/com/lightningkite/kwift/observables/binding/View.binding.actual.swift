@@ -27,19 +27,3 @@ public extension UIView {
         return bindExists(observable)
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

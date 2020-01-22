@@ -63,18 +63,3 @@ public extension String {
         return formatList(arguments)
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

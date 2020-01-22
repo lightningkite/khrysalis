@@ -42,19 +42,3 @@ public enum Preferences {
     
     //--- Preferences.}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

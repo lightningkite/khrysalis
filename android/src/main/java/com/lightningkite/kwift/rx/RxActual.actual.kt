@@ -21,6 +21,7 @@ class Observable<Element> {
     fun <Destination> map(conversion: (Element)->Destination): Observable<Destination>
     fun filter(predicate: (Element)->Boolean): Observable<Element>
     fun <Destination> flatMap(conversion: (Element)->Observable<Destination>): Observable<Destination>
+    fun <Destination> switchMap(conversion: (Element)->Observable<Destination>): Observable<Destination>
     fun subscribeOn(scheduler: Scheduler): Observable<Element>
     fun observeOn(scheduler: Scheduler): Observable<Element>
 

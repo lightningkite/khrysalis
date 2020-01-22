@@ -12,19 +12,3 @@ public extension SelectDateRangeView {
         return bind(start, endInclusive)
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

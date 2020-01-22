@@ -63,7 +63,7 @@ data class CodeSection(
             oldSections.mergeOverride(newSections).forEach {
                 it.writeWhole(tabWriter)
             }
-            return stringWriter.toString()
+            return stringWriter.toString().trimEnd('\n').plus('\n')
         }
     }
 

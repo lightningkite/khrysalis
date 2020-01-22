@@ -10,6 +10,3 @@ extension ObserverType {
         return invokeAll(value: value)
     }
 }
-
-
-

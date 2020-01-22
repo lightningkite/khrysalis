@@ -36,10 +36,3 @@ public class Close: Closeable {
     
     //--- Close.}
 }
-
-
-
-
-
-
-

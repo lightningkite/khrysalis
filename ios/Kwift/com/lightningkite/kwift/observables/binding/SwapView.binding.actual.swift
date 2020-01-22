@@ -29,19 +29,3 @@ public extension SwapView {
         return bindStack(dependency, obs)
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

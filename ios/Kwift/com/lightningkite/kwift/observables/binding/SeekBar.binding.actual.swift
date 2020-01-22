@@ -26,19 +26,3 @@ public extension UISlider {
         return bind(start, endInclusive, observable)
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

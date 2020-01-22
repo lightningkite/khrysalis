@@ -61,4 +61,25 @@ class ObservablePropertiesTest {
         sourceA.value = "walk"
         assertEquals("walker", read)
     }
+
+    @Test fun flatMap(){
+        val source = StandardObservableProperty<MutableObservableProperty<String>>(StandardObservableProperty("a"))
+        var read = ""
+        source.flatMap { it }.observableNN.addWeak(this) { self, value ->
+            println(value)
+            read = value
+        }
+        assertEquals("a", read)
+        source.value.value = "b"
+        assertEquals("b", read)
+        source.value.value = "c"
+        val old = source.value
+        assertEquals("c", read)
+        source.value = StandardObservableProperty("d")
+        assertEquals("d", read)
+        source.value.value = "e"
+        assertEquals("e", read)
+        old.value = "wrong"
+        assertEquals("e", read)
+    }
 }

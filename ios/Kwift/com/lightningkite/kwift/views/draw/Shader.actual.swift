@@ -18,15 +18,3 @@ public enum Shader {
         case CLAMP, REPEAT, MIRROR
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-

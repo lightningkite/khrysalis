@@ -34,19 +34,3 @@ public extension UIAutoCompleteTextField {
         return bind(options, toString, onItemSelected)
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -71,19 +71,3 @@ public extension UIRatingBar {
         return bindFloat(stars, observable)
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -40,17 +40,3 @@ public extension LinearLayout {
         return params(sizeX, sizeY, marginStart, marginEnd, marginTop, marginBottom, gravity, weight)
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

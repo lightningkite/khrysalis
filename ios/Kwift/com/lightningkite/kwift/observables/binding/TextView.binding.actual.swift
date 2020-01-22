@@ -145,19 +145,3 @@ public extension UILabel {
         return bindText(observable, transform)
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

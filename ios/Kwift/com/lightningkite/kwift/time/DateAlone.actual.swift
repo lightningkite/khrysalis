@@ -307,16 +307,3 @@ public extension DateAlone {
     func safeAddMonthOfYear(_ value: Int32) -> DateAlone { return dateFrom(self, TimeAlone.noon).addMonthOfYear(value).dateAlone }
     func safeAddYearAd(_ value: Int32) -> DateAlone { return dateFrom(self, TimeAlone.noon).addYearAd(value).dateAlone }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-

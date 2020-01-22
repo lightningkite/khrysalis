@@ -15,7 +15,7 @@ class CombineObservableProperty<T, A, B>(
         get() = combiner(observableA.value, observableB.value)
     override val onChange: Observable<Box<T>>
         get() = observableA.onChange.startWith(Box.wrap(observableA.value))
-            .combineLatest(observableB.onChange.startWith(Box.wrap(observableB.value))) { a: Box<A>, b: Box<B> -> boxWrap(combiner(a.value, b.value)) }
+            .combineLatest(observableB.onChange.startWith(Box.wrap(observableB.value))) { a: Box<A>, b: Box<B> -> boxWrap(this.combiner(a.value, b.value)) }
             .skip(1)
 
 }

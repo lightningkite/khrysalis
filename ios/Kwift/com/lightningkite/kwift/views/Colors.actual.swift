@@ -50,19 +50,3 @@ public extension ColorValue {
         return withAlphaComponent(CGFloat(amount)/255)
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

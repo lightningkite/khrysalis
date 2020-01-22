@@ -25,19 +25,3 @@ public extension UIPageControl {
         return bind(count, selected)
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

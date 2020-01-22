@@ -11,19 +11,3 @@ public extension SelectDayView {
         return bind(day)
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

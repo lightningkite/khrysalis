@@ -3,25 +3,9 @@ import Foundation
 
 
 //--- Platform.{
-public enum Platform {
+public enum Platform: StringEnum {
     case iOS, Android
-    static let current = Platform.iOS
-    
+    public static let current = Platform.iOS
+
     //--- Platform.}
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

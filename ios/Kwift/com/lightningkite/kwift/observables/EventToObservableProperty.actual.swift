@@ -11,10 +11,3 @@ extension Observable where Observable.Element: BoxProtocol {
         return asObservablePropertyNullable(defaultValue: defaultValue)
     }
 }
-
-
-
-
-
-
-

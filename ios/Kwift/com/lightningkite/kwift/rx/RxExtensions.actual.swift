@@ -2,12 +2,22 @@ import RxSwift
 import RxRelay
 
 //--- Observable<Element>.combineLatest(Observable<R>, (Element,R)->OUT)
-public extension Observable {
-    func combineLatest<Element, R, OUT>(_ observable: Observable<R>, _ function: (Element, R) -> OUT) -> Observable<OUT> {
-        TODO()
+extension ObservableType {
+    /**
+    Merges the specified observable sequences into one observable sequence by using the selector function whenever any of the observable sequences produces an element.
+    - seealso: [combineLatest operator on reactivex.io](http://reactivex.io/documentation/operators/combinelatest.html)
+    - parameter resultSelector: Function to invoke whenever any of the sources produces an element.
+    - returns: An observable sequence containing the result of combining elements of the sources using the specified result selector function.
+    */
+    public func combineLatest<O2: ObservableType, OUT>
+        (observable: O2, function: @escaping (Element, O2.Element) throws -> OUT)
+            -> Observable<OUT> {
+                return Observable<OUT>.combineLatest(self, observable, resultSelector: function)
     }
-    func combineLatest<Element, R, OUT>(observable: Observable<R>, function: (Element, R) -> OUT) -> Observable<OUT> {
-        return combineLatest(observable, function)
+    public func combineLatest<O2: ObservableType, OUT>
+        (_ observable: O2, _ function: @escaping (Element, O2.Element) throws -> OUT)
+            -> Observable<OUT> {
+                return Observable<OUT>.combineLatest(self, observable, resultSelector: function)
     }
 }
 
@@ -30,10 +40,3 @@ public extension Observable {
         }
     }
 }
-
-
-
-
-
-
-

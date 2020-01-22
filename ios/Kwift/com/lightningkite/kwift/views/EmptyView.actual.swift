@@ -10,18 +10,3 @@ public func EmptyView(_ dependency: ViewDependency) -> View {
 public func EmptyView(dependency: ViewDependency) -> View {
     return EmptyView(dependency)
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

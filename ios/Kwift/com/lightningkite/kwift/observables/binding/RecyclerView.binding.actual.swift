@@ -332,18 +332,3 @@ class BoundMultiDataSource: NSObject, UITableViewDataSource, UITableViewDelegate
         return cell
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

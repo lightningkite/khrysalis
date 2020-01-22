@@ -20,17 +20,3 @@ public extension UISegmentedControl {
         return bind(tabs, selected)
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

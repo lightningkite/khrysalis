@@ -6,12 +6,3 @@ public extension View {
         return StandardObservableProperty(false)
     }
 }
-
-
-
-
-
-
-
-
-

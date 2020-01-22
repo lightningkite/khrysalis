@@ -77,20 +77,3 @@ public class GeoAddress {
         return result.trim()
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

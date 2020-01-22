@@ -77,15 +77,3 @@ public class Paint {
     
     //--- Paint.}
 }
-
-
-
-
-
-
-
-
-
-
-
-

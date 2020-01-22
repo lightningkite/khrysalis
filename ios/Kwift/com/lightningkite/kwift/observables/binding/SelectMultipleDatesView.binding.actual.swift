@@ -11,20 +11,3 @@ public extension SelectMultipleDatesView {
         return bind(dates)
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -20,6 +20,7 @@ func testa() -> Void {
 //    Observable.create { (it: ObservableEmitter<Int>) in it.onNext(3); it.onComplete() }.subscribeBy { it in print(it) }.dispose()
 //    Observable.create { (it: ObservableEmitter<Int>) in it.onNext(3); it.onComplete() }.asObservableProperty(1)
 //    Single.just(32).fla
+//    Observable.just(1).switchMap { it in Observable.just(1 + 2) }
 }
 
 //--- Observer.onComplete
@@ -36,9 +37,16 @@ public extension Observable {
     //--- Observable.map((Element)->Destination)
     //--- Observable.filter((Element)->Boolean)
     //--- Observable.flatMap((Element)->Observable<Destination>)
-    func flatMapNR<Destination>(_ transform: @escaping (Element)->Observable<Destination>) -> Observable<Destination> {
+    func flatMapNR<Destination>(_ conversion: @escaping (Element)->Observable<Destination>) -> Observable<Destination> {
         return self.flatMap { (it: Element) -> Observable<Destination> in
-            transform(it)
+            conversion(it)
+        }
+    }
+    
+    //--- Observable.switchMap((Element)->Observable<Destination>)
+    func switchMap<Destination>(_ conversion: @escaping (Element) -> Observable<Destination>) -> Observable<Destination> {
+        return self.flatMapLatest { (it: Element) -> Observable<Destination> in
+            conversion(it)
         }
     }
     
@@ -188,10 +196,3 @@ public extension PublishSubject {
         return PublishSubject()
     }
 }
-
-
-
-
-
-
-

@@ -38,18 +38,3 @@ public extension Int {
     func hours() -> TimeInterval { return TimeInterval(self * 60 * 60) }
     func days() -> TimeInterval { return TimeInterval(self * 60 * 60 * 24) }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

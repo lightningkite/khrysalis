@@ -14,11 +14,3 @@ public extension Float {
     static let POSITIVE_INFINITY = infinity
     static let NEGATIVE_INFINITY = -infinity
 }
-
-
-
-
-
-
-
-

@@ -10,18 +10,3 @@ public typealias ColorResource = UIColor
 
 //--- DrawableResource
 public typealias DrawableResource = Drawable
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

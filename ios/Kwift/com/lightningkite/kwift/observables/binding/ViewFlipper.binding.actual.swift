@@ -19,19 +19,3 @@ public extension ViewFlipper {
         return bindLoading(loading)
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

@@ -87,19 +87,3 @@ public extension TimeButton {
         return bindTimeAlone(date, minuteInterval)
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

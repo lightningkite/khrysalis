@@ -44,15 +44,3 @@ public extension UIButton {
         return bindActive(observable, activeBackground, inactiveBackground)
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-

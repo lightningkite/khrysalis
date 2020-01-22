@@ -12,17 +12,3 @@ public extension GeoCoordinate {
         return distanceToMiles(other)
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-

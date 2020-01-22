@@ -63,21 +63,3 @@ public func loadImage(_ url: String, _ onResult: @escaping (Bitmap?) -> Void) ->
 public func loadImage(url: String, onResult: @escaping (Bitmap?) -> Void) -> Void {
     return loadImage(url, onResult)
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

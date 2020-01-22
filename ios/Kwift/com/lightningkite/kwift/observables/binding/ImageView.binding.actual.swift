@@ -78,20 +78,3 @@ public extension UIImageView {
         return bindImage(image)
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

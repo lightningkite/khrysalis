@@ -12,7 +12,7 @@ class FlatMappedObservableProperty<A, B>(
     override val value: B
         get() = transformation(basedOn.value).value
     override val onChange: Observable<Box<B>>
-        get() = basedOn.onChange.flatMap { it -> this.transformation(it.value).onChange }
+        get() = basedOn.observable.switchMap { it -> this.transformation(it.value).observable }.skip(1)
 }
 
 fun <T, B> ObservableProperty<T>.flatMap(transformation: @escaping() (T) -> ObservableProperty<B>): FlatMappedObservableProperty<T, B> {
@@ -32,11 +32,11 @@ class MutableFlatMappedObservableProperty<A, B>(
     var lastProperty: MutableObservableProperty<B>? = null
 
     override val onChange: Observable<Box<B>>
-        get() = basedOn.onChange.flatMap @swiftReturnType("Observable<Box<B>>") label@{ it: Box<A> ->
+        get() = basedOn.observable.switchMap @swiftReturnType("Observable<Box<B>>") label@{ it: Box<A> ->
             val prop = this.transformation(it.value)
             this.lastProperty = prop
-            return@label prop.onChange
-        }
+            return@label prop.observable
+        }.skip(1)
 
     override fun update() {
         lastProperty?.update()

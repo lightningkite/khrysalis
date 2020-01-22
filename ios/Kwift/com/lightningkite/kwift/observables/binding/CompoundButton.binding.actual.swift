@@ -97,19 +97,3 @@ public extension CompoundButton {
         return bind(observable)
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

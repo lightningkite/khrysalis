@@ -280,19 +280,3 @@ public func dateFrom(dateAlone: DateAlone, timeAlone: TimeAlone) -> Date {
     )
     return Calendar.current.date(from: components)!
 }
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-

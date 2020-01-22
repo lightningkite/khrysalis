@@ -53,15 +53,3 @@ public extension Path {
         self.closeSubpath()
     }
 }
-
-
-
-
-
-
-
-
-
-
-
-
