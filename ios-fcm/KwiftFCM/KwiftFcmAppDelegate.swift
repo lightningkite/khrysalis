@@ -8,13 +8,15 @@
 
 import Foundation
 import FirebaseMessaging
+import FirebaseCore
 import Kwift
 
 open class KwiftFcmAppDelegate: KwiftAppDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
     
     override open func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
-        UNUserNotificationCenter.current().delegate = self
+        FirebaseApp.configure()
         Messaging.messaging().delegate = self
+        UNUserNotificationCenter.current().delegate = self
         
         let _ = super.application(application, didFinishLaunchingWithOptions: launchOptions)
         

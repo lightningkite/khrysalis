@@ -7,6 +7,7 @@
 //
 
 import Foundation
+import FirebaseCore
 import FirebaseMessaging
 import Kwift
 
@@ -15,6 +16,9 @@ public enum Notifications {
     static public var notificationToken = StandardObservableProperty<String?>(nil)
     static public func configure(){
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge], completionHandler: { (success, error) in
+            if success {
+                Notifications.notificationToken.value = Messaging.messaging().fcmToken
+            }
         })
     }
 }

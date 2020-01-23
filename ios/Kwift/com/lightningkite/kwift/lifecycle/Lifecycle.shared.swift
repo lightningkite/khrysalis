@@ -82,12 +82,12 @@ private class OnceObservableProperty: ObservableProperty<Bool> {
 
 extension ObservableProperty where T == Bool {
     public func closeWhenOff(closeable: Disposable) -> Void {
-        self.onChange.add{ (it) in 
-            if !it.value {
+        var listener: Disposable?  = nil
+        listener = self.observableNN.subscribe{ (it) in 
+            if !it {
                 closeable.dispose()
-                return true
+                listener?.dispose()
             }
-            return false
         }
     }
     public func closeWhenOff(_ closeable: Disposable) -> Void {

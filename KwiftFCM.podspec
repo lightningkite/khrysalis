@@ -18,5 +18,6 @@ Pod::Spec.new do |s|
   s.xcconfig = { 'SWIFT_VERSION' => '5.0' }
   # Dependency on Kwift not representable at the moment
   s.dependency "Kwift"
+  s.dependency "Firebase/Analytics"
   s.dependency "Firebase/Messaging"
 end

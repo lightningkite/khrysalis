@@ -5,4 +5,5 @@ use_modular_headers!
 target 'KwiftFCM' do
     pod 'Kwift', :path => '~/StudioProjects/kwift/kwift.podspec'
     pod 'Firebase/Messaging'
+    pod 'Firebase/Analytics'
 end

@@ -7,6 +7,7 @@ import com.lightningkite.kwift.Box
 import com.lightningkite.kwift.boxWrap
 import com.lightningkite.kwift.R
 import io.reactivex.Observable
+import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 
 
@@ -62,3 +63,10 @@ val View.lifecycle: Lifecycle
         setTag(R.id.lifecycle, listener)
         return listener
     }
+
+
+
+fun <T: Disposable> T.untilOff(lifecycle: Lifecycle): T {
+    lifecycle.closeWhenOff(this)
+    return this
+}

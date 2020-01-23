@@ -40,12 +40,12 @@ private class OnceObservableProperty(val basedOn: ObservableProperty<Boolean>): 
 }
 
 fun ObservableProperty<@swiftExactly Boolean>.closeWhenOff(closeable: Disposable) {
-    this.onChange.add { it ->
-        if(!it.value) {
+    var listener: Disposable? = null
+    listener = this.observableNN.subscribe { it ->
+        if(!it) {
             closeable.dispose()
-            return@add true
+            listener?.dispose()
         }
-        return@add false
     }
 }
 
