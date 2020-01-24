@@ -4,6 +4,8 @@ import com.lightningkite.kwift.Box
 import com.lightningkite.kwift.boxWrap
 import com.lightningkite.kwift.observables.*
 import io.reactivex.Observable
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.disposables.Disposable
 import io.reactivex.subjects.PublishSubject
 import java.util.*
 
@@ -78,17 +80,14 @@ class PropertyBleCharacteristicServer(
         }
     }
 
-//    val underlyingEvent: ForceMainThreadEvent<ByteArray> = ForceMainThreadEvent()
-//    override val onChange: Event<ByteArray> get() = underlyingEvent
-
     val underlyingEvent: PublishSubject<Box<ByteArray>> = PublishSubject.create()
     override val onChange: Observable<Box<ByteArray>>
-        get() = underlyingEvent
+        get() = underlyingEvent.observeOn(AndroidSchedulers.mainThread())
 }
 
 //My implementation
 
-interface BleServer: Closeable {
+interface BleServer: Disposable {
     val clients: ObservableProperty<Map<String, BleClient>>
     val characteristics: Map<UUID, Map<UUID, BleCharacteristicServer>>
 }
@@ -101,28 +100,4 @@ interface BleClient {
     fun notify(service: UUID, characteristic: UUID, value: ByteArray)
     /** Requires a confirmation from the device. **/
     fun indicate(service: UUID, characteristic: UUID, value: ByteArray)
-}
-
-//Actual
-typealias RequestId = Int
-@Suppress("EnumEntryName")
-enum class BleResponseStatus(val value: Int) { //CBATTError.Code in iOS
-    success(0),
-    invalidHandle(1),
-    readNotPermitted(2),
-    writeNotPermitted(3),
-    invalidPdu(4),
-    insufficientAuthentication(5),
-    requestNotSupported(6),
-    invalidOffset(7),
-    insufficientAuthorization(8),
-    prepareQueueFull(9),
-    attributeNotFound(10),
-    attributeNotLong(11),
-    insufficientEncryptionKeySize(12),
-    invalidAttributeValueLength(13),
-    unlikelyError(14),
-    insufficientEncryption(15),
-    unsupportedGroupType(16),
-    insufficientResources(17)
 }
