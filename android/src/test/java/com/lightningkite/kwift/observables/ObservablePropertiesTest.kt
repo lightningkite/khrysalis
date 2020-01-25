@@ -1,6 +1,9 @@
 package com.lightningkite.kwift.observables
 
 import com.lightningkite.kwift.rx.addWeak
+import io.reactivex.Observable
+import io.reactivex.rxkotlin.subscribeBy
+import io.reactivex.subjects.PublishSubject
 import org.junit.Assert.*
 import org.junit.Test
 

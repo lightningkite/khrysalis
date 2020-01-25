@@ -1,0 +1,8 @@
+
+platform :ios, '11.0'
+use_modular_headers!
+
+target 'KwiftBluetooth' do
+    pod 'Kwift', :path => '~/StudioProjects/kwift/kwift.podspec'
+    pod 'RxBluetoothKit'
+end

@@ -1,5 +1,3 @@
-
-
 import com.lightningkite.kwift.KwiftSettings
 import com.lightningkite.kwift.convertResourcesToIos
 import com.lightningkite.kwift.layout.convertLayoutsToSwift
@@ -14,7 +12,7 @@ buildscript {
         mavenLocal()
     }
     dependencies {
-//        classpath("com.lightningkite:kwift:0.1.0")
+        //        classpath("com.lightningkite:kwift:0.1.0")
         classpath("com.lightningkite.kwift:plugin:0.1.0")
         classpath("com.android.tools.build:gradle:3.5.0")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
@@ -51,7 +49,7 @@ android {
         versionName = "1.0.5"
     }
     buildTypes {
-//        release {
+        //        release {
 //            minifyEnabled = false
 //            proguardFiles = getDefaultProguardFile("proguard-android.txt"), 'proguard-rules.pro'
 //        }
@@ -86,7 +84,7 @@ tasks.create("sourceJar", Jar::class) {
 
 publishing {
     publications {
-        val mavenAar by creating(MavenPublication::class){
+        val mavenAar by creating(MavenPublication::class) {
             from(components["android"])
             artifact(tasks.getByName("sourceJar"))
             groupId = project.group.toString()
@@ -99,16 +97,19 @@ publishing {
 KwiftSettings.verbose = true
 
 val androidBase = project.projectDir
-val iosBase = project.projectDir.resolve("../ios-maps/KwiftMaps")
+val iosBase = project.projectDir.resolve("../ios-bluetooth/KwiftBluetooth")
 
 tasks.create("kwiftConvertKotlinToSwift") {
     this.group = "build"
     doLast {
         println("Started on $androidBase")
         convertKotlinToSwift(
-                androidFolder = androidBase,
-                iosFolder = iosBase,
-                clean = true
+            androidFolder = androidBase,
+            iosFolder = iosBase,
+            clean = true,
+            setup = {
+                this.imports += listOf("Kwift")
+            }
         )
         println("Finished")
     }

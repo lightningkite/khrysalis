@@ -3,22 +3,23 @@ package com.lightningkite.kwift.bluetooth
 import android.annotation.SuppressLint
 import android.bluetooth.BluetoothAdapter
 import android.bluetooth.BluetoothManager
-import android.bluetooth.le.*
+import android.bluetooth.le.AdvertiseCallback
+import android.bluetooth.le.AdvertiseData
+import android.bluetooth.le.AdvertiseSettings
 import android.content.Context
 import android.os.Build
 import android.os.ParcelUuid
 import android.util.Log
 import androidx.annotation.RequiresApi
 import androidx.core.content.ContextCompat
-import com.lightningkite.kwift.Failable
 import com.lightningkite.kwift.PlatformSpecific
-import com.lightningkite.kwift.net.HttpClient
-import com.lightningkite.kwift.observables.Close
 import com.lightningkite.kwift.views.ViewDependency
 import com.lightningkite.kwift.views.android.startIntent
+import com.polidea.rxandroidble2.RxBleClient
+import com.polidea.rxandroidble2.scan.ScanFilter
+import com.polidea.rxandroidble2.scan.ScanSettings
 import io.reactivex.Observable
 import io.reactivex.ObservableEmitter
-import java.io.Closeable
 import java.util.*
 
 @RequiresApi(Build.VERSION_CODES.LOLLIPOP)
@@ -59,6 +60,21 @@ object Ble {
         }
     }
 
+    @PlatformSpecific
+    fun getBluetooth(dependency: ViewDependency): Observable<RxBleClient> {
+        return Observable.create { emitter: ObservableEmitter<RxBleClient> ->
+            activateBluetoothDialog(
+                dependency = dependency,
+                onPermissionRejected = {
+                    emitter.onComplete()
+                },
+                onBluetooth = {
+                    emitter.onNext(RxBleClient.create(dependency.context))
+                }
+            )
+        }
+    }
+
     /**
      * @param serviceUuids If default, advertises all services described by [characteristics].
      */
@@ -69,7 +85,7 @@ object Ble {
         advertisingIntensity: Float = .5f
     ): BleServer {
         val impl =
-            BleServerImpl(characteristics.groupBy { it.serviceUuid }.mapValues { it.value.associate { it.uuid to it } })
+            BleServerImpl(characteristics.groupBy { it.characteristic.serviceUuid }.mapValues { it.value.associateBy { it.characteristic.uuid } })
         val context = viewDependency.context
         val manager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         val server = manager.openGattServer(context, impl)
@@ -121,126 +137,47 @@ object Ble {
         viewDependency: ViewDependency,
         withServices: List<UUID> = listOf(),
         intensity: Float = .5f
-    ): Observable<BleDeviceInfo> {
-        TODO()
-//        Observable.create { emitter: ObservableEmitter<RxBleClient> }
+    ): Observable<BleScanResult> = getBluetooth(viewDependency)
+        .switchMap { it ->
+            it.scanBleDevices(
+                ScanSettings.Builder().let {
+                    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                        it.setCallbackType(ScanSettings.CALLBACK_TYPE_ALL_MATCHES)
+                    } else {
+                        it
+                    }
+                }.setScanMode(
+                    when (intensity) {
+                        in 0f..0.33f -> ScanSettings.SCAN_MODE_LOW_POWER
+                        in 0.33f..0.66f -> ScanSettings.SCAN_MODE_BALANCED
+                        in 0.66f..1f -> ScanSettings.SCAN_MODE_LOW_LATENCY
+                        else -> ScanSettings.SCAN_MODE_LOW_POWER
+                    }
+                ).build(),
+                *(withServices.map {
+                    ScanFilter.Builder().setServiceUuid(ParcelUuid(it)).build()
+                }.toTypedArray() as Array<ScanFilter>)
+            )
+        }
+        .map { it ->
+            BleScanResult(
+                info = BleDeviceInfo(
+                    id = it.bleDevice.macAddress,
+                    name = it.bleDevice.name
+                ),
+                rssi = it.rssi
+            )
+        }
 
-//        return object : Closeable, ScanCallback() {
-//
-//            var scanner: BluetoothLeScanner? = null
-//
-//            init {
-//                activateBluetoothDialog(
-//                    dependency = viewDependency,
-//                    onPermissionRejected = { },
-//                    onBluetooth = {
-//                        scanner = it.bluetoothLeScanner
-//                        it.bluetoothLeScanner.startScan(
-//                            withServices.map {
-//                                ScanFilter.Builder().setServiceUuid(ParcelUuid(it)).build()
-//                            },
-//                            ScanSettings.Builder().setCallbackType(ScanSettings.CALLBACK_TYPE_ALL_MATCHES).setScanMode(when (intensity) {
-//                                in 0f..0.33f -> ScanSettings.SCAN_MODE_LOW_POWER
-//                                in 0.33f..0.66f -> ScanSettings.SCAN_MODE_BALANCED
-//                                in 0.66f..1f -> ScanSettings.SCAN_MODE_LOW_LATENCY
-//                                else -> ScanSettings.SCAN_MODE_LOW_POWER
-//                            }).build(),
-//                            this
-//                        )
-//                    }
-//                )
-//            }
-//
-//            override fun onScanResult(callbackType: Int, result: ScanResult) {
-//                onDeviceFound.invoke(
-//                    BleDeviceInfo(
-//                        result.device.address,
-//                        result.device.name ?: "",
-//                        result.rssi
-//                    )
-//                )
-//            }
-//
-//            override fun onScanFailed(errorCode: Int) {
-//                Log.e("Ble", "Scan failed with code $errorCode.")
-//            }
-//
-//            override fun close() {
-//                scanner?.stopScan(this)
-//                scanner = null
-//            }
-//        }
+    fun connect(viewDependency: ViewDependency, deviceId: String): Observable<BleConnection> {
+        var device = BleDeviceInfo(deviceId, null)
+        return getBluetooth(viewDependency)
+            .flatMap {
+                val fullDevice = it.getBleDevice(deviceId)
+                device = BleDeviceInfo(fullDevice.macAddress, fullDevice.name)
+                fullDevice.establishConnection(false)
+            }
+            .flatMap { it.discoverServices().map { _ -> it }.toObservable() }
+            .map { BleConnectionImpl(it, device) }
     }
-
-//    fun connect(viewDependency: ViewDependency, deviceId: String): DelayedResultFunction<BleDevice> =
-//        DRF<BleDevice> { callback ->
-//            activateBluetoothDialog(
-//                dependency = viewDependency,
-//                onPermissionRejected = { callback(Failable.failure("Permission rejected.")) },
-//                onBluetooth = {
-//                    val context = viewDependency.context.applicationContext
-//                    val device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(deviceId)
-//                    val bleDevice = BleDeviceImpl(context, device, false)
-//                    bleDevice.connected.onChange.add { connected ->
-//                        if (connected) {
-//                            callback.invoke(Failable.success(bleDevice))
-//                            return@add true
-//                        }
-//                        return@add false
-//                    }
-//                }
-//            )
-//            return@DRF Close {}
-//        }
-//
-//    fun stayConnected(viewDependency: ViewDependency, deviceId: String): DelayedResultFunction<BleDevice> =
-//        DRF<BleDevice> { callback ->
-//            activateBluetoothDialog(
-//                dependency = viewDependency,
-//                onPermissionRejected = { callback(Failable.failure("Permission rejected.")) },
-//                onBluetooth = {
-//                    val context = viewDependency.context.applicationContext
-//                    val device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(deviceId)
-//                    val bleDevice = BleDeviceImpl(context, device, true)
-//                    bleDevice.connected.onChange.add { connected ->
-//                        if (connected) {
-//                            callback.invoke(Failable.success(bleDevice))
-//                            return@add true
-//                        }
-//                        return@add false
-//                    }
-//                }
-//            )
-//            return@DRF Close {}
-//        }
-//
-//    fun connectBackground(deviceId: String): DelayedResultFunction<BleDevice> =
-//        DRF<BleDevice> { callback ->
-//            val context = HttpClient.appContext
-//            val device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(deviceId)
-//            val bleDevice = BleDeviceImpl(context, device, false)
-//            bleDevice.connected.onChange.add { connected ->
-//                if (connected) {
-//                    callback.invoke(Failable.success(bleDevice))
-//                    return@add true
-//                }
-//                return@add false
-//            }
-//            return@DRF Close {}
-//        }
-//
-//    fun stayConnectedBackground(deviceId: String): DelayedResultFunction<BleDevice> =
-//        DRF<BleDevice> { callback ->
-//            val context = HttpClient.appContext
-//            val device = BluetoothAdapter.getDefaultAdapter().getRemoteDevice(deviceId)
-//            val bleDevice = BleDeviceImpl(context, device, true)
-//            bleDevice.connected.onChange.add { connected ->
-//                if (connected) {
-//                    callback.invoke(Failable.success(bleDevice))
-//                    return@add true
-//                }
-//                return@add false
-//            }
-//            return@DRF Close {}
-//        }
 }

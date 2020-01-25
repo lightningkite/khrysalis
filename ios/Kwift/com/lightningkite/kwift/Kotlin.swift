@@ -610,15 +610,15 @@ public enum KotlinStyleError : Error {
     case IllegalArgumentException(message: String = "")
 }
 
-public func Exception(_ message: String) -> KotlinStyleError {
+public func Exception(_ message: String = "") -> KotlinStyleError {
     return KotlinStyleError.Exception(message: message)
 }
 
-public func IllegalStateException(_ message: String) -> KotlinStyleError {
+public func IllegalStateException(_ message: String = "") -> KotlinStyleError {
     return KotlinStyleError.IllegalStateException(message: message)
 }
 
-public func IllegalArgumentException(_ message: String) -> KotlinStyleError {
+public func IllegalArgumentException(_ message: String = "") -> KotlinStyleError {
     return KotlinStyleError.IllegalArgumentException(message: message)
 }
 
