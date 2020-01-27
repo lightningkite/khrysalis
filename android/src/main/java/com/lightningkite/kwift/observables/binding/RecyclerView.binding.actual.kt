@@ -26,6 +26,12 @@ fun RecyclerView.whenScrolledToEnd(action: () -> Unit) {
     })
 }
 
+var RecyclerView.reverseDirection: Boolean
+    get() = (this.layoutManager as? LinearLayoutManager)?.reverseLayout ?: false
+    set(value){
+        (this.layoutManager as? LinearLayoutManager)?.reverseLayout = value
+    }
+
 fun <T> RecyclerView.bind(
     data: ObservableProperty<List<T>>,
     defaultValue: T,
@@ -140,6 +146,48 @@ fun RecyclerView.bindMulti(
         @Suppress("UNCHECKED_CAST")
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
             (holder.itemView.tag as? MutableObservableProperty<Any>)?.let {
+                it.value = data.value[position]
+            } ?: run {
+                println("Failed to find property to update")
+            }
+        }
+    }
+}
+
+fun <T> RecyclerView.bindMulti(
+    data: ObservableProperty<List<T>>,
+    defaultValue: T,
+    determineType: (T)->Int,
+    makeView: (Int, ObservableProperty<T>) -> View
+) {
+    layoutManager = LinearLayoutManager(context)
+    adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+        init {
+            println("Setting up adapter")
+            data.addAndRunWeak(this) { self, _ ->
+                self.notifyDataSetChanged()
+            }
+        }
+
+        override fun getItemViewType(position: Int): Int {
+            return determineType(data.value[position])
+        }
+
+        override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+            println("Creating view holder")
+            val event = StandardObservableProperty<T>(defaultValue)
+            val subview = makeView(viewType, event)
+            subview.tag = event
+            subview.layoutParams = RecyclerView.LayoutParams(MATCH_PARENT, WRAP_CONTENT)
+            return object : RecyclerView.ViewHolder(subview) {}
+        }
+
+        override fun getItemCount(): Int = data.value.size
+
+        @Suppress("UNCHECKED_CAST")
+        override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+            (holder.itemView.tag as? StandardObservableProperty<T>)?.let {
+                println("Updating value to ${data.value[position]}")
                 it.value = data.value[position]
             } ?: run {
                 println("Failed to find property to update")

@@ -143,7 +143,8 @@ protocol HasAtPosition {
 }
 
 class CollectionBoundDataSource<T>: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, HasAtEnd, HasAtPosition {
-
+    var reversedDirection: Bool = false
+    
     var source: ObservableProperty<[T]>
     let makeView: (ObservableProperty<T>) -> UIView
     let defaultValue: T
@@ -199,6 +200,7 @@ class CollectionBoundDataSource<T>: NSObject, UICollectionViewDataSource, UIColl
 
 
 class CollectionSimpleDataSource: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, HasAtEnd, HasAtPosition {
+    var reversedDirection: Bool = false
 
     var atPosition: (Int32) -> Void = { _ in }
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {

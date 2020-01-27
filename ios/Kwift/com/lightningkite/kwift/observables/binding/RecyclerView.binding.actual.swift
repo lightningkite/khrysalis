@@ -12,6 +12,29 @@ public extension UITableView {
     }
 }
 
+//--- RecyclerView.reverseDirection
+public extension UITableView {
+    var reverseDirection: Bool {
+        get {
+            if let delegate = delegate as? HasAtEnd {
+                return delegate.reversedDirection
+            }
+            return false
+        }
+        set(value) {
+            if var delegate = delegate as? HasAtEnd {
+                if value {
+                    transform = CGAffineTransform(rotationAngle: CGFloat.pi)
+                } else {
+                    transform = CGAffineTransform(rotationAngle: 0)
+                }
+                delegate.reversedDirection = value
+                self.reloadData()
+            }
+        }
+    }
+}
+
 //--- RecyclerView.bind(ObservableProperty<List<T>>, T, (ObservableProperty<T>)->View)
 public extension UITableView {
     func bind<T>(_ data: ObservableProperty<Array<T>>, _ defaultValue: T, _ makeView: @escaping (ObservableProperty<T>) -> View) -> Void {
@@ -170,6 +193,31 @@ public extension UITableView {
     }
 }
 
+//--- RecyclerView.bindMulti(ObservableProperty<List<T>>, T, (T)->Int, (Int,ObservableProperty<T>)->View)
+public extension UITableView {
+    func bindMulti<T>(_ data: ObservableProperty<Array<T>>, _ defaultValue: T, _ determineType: @escaping (T) -> Int32, _ makeView: @escaping (Int32, ObservableProperty<T>) -> View) -> Void {
+        let boundDataSource = BoundMultiDataSourceSameType(source: data, defaultValue: defaultValue, getType: determineType, makeView: makeView)
+        dataSource = boundDataSource
+        delegate = boundDataSource
+        retain(as: "boundDataSource", item: boundDataSource)
+
+        self.rowHeight = UITableView.automaticDimension
+
+        var previouslyEmpty = data.value.isEmpty
+        data.addAndRunWeak(self) { this, value in
+            let emptyNow = data.value.isEmpty
+            this.reloadData()
+            if previouslyEmpty && !emptyNow {
+                this.scrollToRow(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
+            }
+            previouslyEmpty = emptyNow
+        }
+    }
+    func bindMulti<T>(data: ObservableProperty<Array<T>>, defaultValue: T, determineType: @escaping (T) -> Int32, makeView: @escaping (Int32, ObservableProperty<T>) -> View) -> Void {
+        return bindMulti(data, defaultValue, determineType, makeView)
+    }
+}
+
 //--- RecyclerView.bindRefresh(ObservableProperty<Boolean>, ()->Unit)
 public extension UITableView {
     func bindRefresh(_ loading: ObservableProperty<Bool>, _ refresh: @escaping () -> Void) -> Void {
@@ -233,6 +281,7 @@ class CustomUITableViewCell: UITableViewCell {
 protocol HasAtEnd {
     var atEnd: () -> Void { get set }
     func setAtEnd(action: @escaping () -> Void)
+    var reversedDirection: Bool { get set }
 }
 
 class BoundDataSource<T, VIEW: UIView>: NSObject, UITableViewDataSource, UITableViewDelegate, HasAtEnd {
@@ -242,6 +291,8 @@ class BoundDataSource<T, VIEW: UIView>: NSObject, UITableViewDataSource, UITable
     let defaultValue: T
     var atEnd: () -> Void = {}
     let spacing: CGFloat
+    
+    var reversedDirection: Bool = false
 
     init(source: ObservableProperty<[T]>, defaultValue: T, makeView: @escaping (ObservableProperty<T>) -> UIView) {
         self.source = source
@@ -269,13 +320,82 @@ class BoundDataSource<T, VIEW: UIView>: NSObject, UITableViewDataSource, UITable
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let s = source.value
-        var cell: CustomUITableViewCell = tableView.dequeueReusableCell(withIdentifier: "main-cell") as! CustomUITableViewCell
+        let cell: CustomUITableViewCell = tableView.dequeueReusableCell(withIdentifier: "main-cell") as! CustomUITableViewCell
         cell.spacing = self.spacing
+        if reversedDirection {
+            cell.transform = CGAffineTransform(rotationAngle: CGFloat.pi)
+        } else {
+            cell.transform = CGAffineTransform(rotationAngle: 0)
+        }
         cell.selectionStyle = .none
         if cell.obs == nil {
-            var obs = StandardObservableProperty(defaultValue)
+            let obs = StandardObservableProperty(defaultValue)
             cell.obs = obs
             let new = makeView(obs)
+            cell.contentView.addSubview(new)
+        }
+        if let obs = cell.obs as? StandardObservableProperty<T> {
+            obs.value = s[indexPath.row]
+        }
+        return cell
+    }
+}
+
+class BoundMultiDataSourceSameType<T>: NSObject, UITableViewDataSource, UITableViewDelegate, HasAtEnd {
+
+    var source: ObservableProperty<[T]>
+    let getType: (T) -> Int32
+    let makeView: (Int32, ObservableProperty<T>) -> UIView
+    let defaultValue: T
+    var atEnd: () -> Void = {}
+    let spacing: CGFloat
+    var registered: Set<Int32> = []
+    
+    var reversedDirection: Bool = false
+
+    init(source: ObservableProperty<[T]>, defaultValue: T, getType: @escaping (T)->Int32, makeView: @escaping (Int32, ObservableProperty<T>) -> UIView) {
+        self.source = source
+        self.spacing = 0
+        self.makeView = makeView
+        self.defaultValue = defaultValue
+        self.getType = getType
+        super.init()
+    }
+
+    func setAtEnd(action: @escaping () -> Void) {
+        self.atEnd = action
+    }
+
+    func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
+        let value = self.source.value
+        let count = value.count
+        return count
+    }
+
+    func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
+        if indexPath.row >= (source.value.count) - 1 {
+            atEnd()
+        }
+    }
+
+    func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
+        let s = source.value
+        let typeIndex = getType(s[indexPath.row])
+        if registered.add(typeIndex) {
+            tableView.register(CustomUITableViewCell.self, forCellReuseIdentifier: typeIndex.toString())
+        }
+        let cell: CustomUITableViewCell = tableView.dequeueReusableCell(withIdentifier: typeIndex.toString()) as! CustomUITableViewCell
+        cell.spacing = self.spacing
+        if reversedDirection {
+            cell.transform = CGAffineTransform(rotationAngle: CGFloat.pi)
+        } else {
+            cell.transform = CGAffineTransform(rotationAngle: 0)
+        }
+        cell.selectionStyle = .none
+        if cell.obs == nil {
+            let obs = StandardObservableProperty(defaultValue)
+            cell.obs = obs
+            let new = makeView(typeIndex, obs)
             cell.contentView.addSubview(new)
         }
         if let obs = cell.obs as? StandardObservableProperty<T> {
@@ -291,6 +411,8 @@ class BoundMultiDataSource: NSObject, UITableViewDataSource, UITableViewDelegate
     let handler: RVTypeHandler
     var atEnd: () -> Void = {}
     let spacing: CGFloat
+    
+    var reversedDirection: Bool = false
 
     init(source: ObservableProperty<[Any]>, handler: RVTypeHandler) {
         self.source = source
@@ -320,6 +442,11 @@ class BoundMultiDataSource: NSObject, UITableViewDataSource, UITableViewDelegate
         let typeIndex = self.handler.type(s[indexPath.row])
         let cell: CustomUITableViewCell = tableView.dequeueReusableCell(withIdentifier: typeIndex.toString()) as! CustomUITableViewCell
         cell.spacing = self.spacing
+        if reversedDirection {
+            cell.transform = CGAffineTransform(rotationAngle: CGFloat.pi)
+        } else {
+            cell.transform = CGAffineTransform(rotationAngle: 0)
+        }
         cell.selectionStyle = .none
         if cell.obs == nil {
             let (view, obs) = handler.make(type: typeIndex)
@@ -331,4 +458,5 @@ class BoundMultiDataSource: NSObject, UITableViewDataSource, UITableViewDelegate
         }
         return cell
     }
+    
 }
