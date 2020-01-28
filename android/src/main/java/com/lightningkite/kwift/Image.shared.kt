@@ -2,11 +2,12 @@ package com.lightningkite.kwift
 
 import android.graphics.Bitmap
 import android.net.Uri
+import com.lightningkite.kwift.bytes.Data
 
 sealed class Image
 data class ImageReference(val uri: Uri): Image()
 data class ImageBitmap(val bitmap: Bitmap): Image()
-data class ImageRaw(val raw: ByteArray): Image()
+data class ImageRaw(val raw: Data): Image()
 data class ImageRemoteUrl(val url: String): Image()
 
 fun String.asImage(): Image = ImageRemoteUrl(this)

@@ -286,8 +286,8 @@ extension UIImage {
 extension UIImage {
     convenience init?(fileURLWithPath url: URL, scale: CGFloat = 1.0) {
         do {
-            let data = try Data(contentsOf: url)
-            self.init(data: data, scale: scale)
+            let data = try NSData(contentsOf: url)
+            self.init(data: data! as Data, scale: scale)
         } catch {
             print("-- Error: \(error)")
             return nil

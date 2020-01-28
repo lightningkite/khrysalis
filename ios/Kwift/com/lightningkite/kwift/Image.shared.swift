@@ -76,7 +76,7 @@ public class ImageBitmap: Image, Equatable, Hashable {
 
 public class ImageRaw: Image, Equatable, Hashable {
     
-    public var raw: ByteArray
+    public var raw: Data
     
     public static func == (lhs: ImageRaw, rhs: ImageRaw) -> Bool {
         return lhs.raw == rhs.raw
@@ -85,7 +85,7 @@ public class ImageRaw: Image, Equatable, Hashable {
         hasher.combine(raw)
     }
     public func copy(
-        raw: (ByteArray)? = nil
+        raw: (Data)? = nil
     ) -> ImageRaw {
         return ImageRaw(
             raw: raw ?? self.raw
@@ -93,11 +93,11 @@ public class ImageRaw: Image, Equatable, Hashable {
     }
     
     
-    public init(raw: ByteArray) {
+    public init(raw: Data) {
         self.raw = raw
         super.init()
     }
-    convenience public init(_ raw: ByteArray) {
+    convenience public init(_ raw: Data) {
         self.init(raw: raw)
     }
 }

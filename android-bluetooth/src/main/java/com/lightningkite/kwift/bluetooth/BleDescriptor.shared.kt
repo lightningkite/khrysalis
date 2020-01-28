@@ -5,5 +5,5 @@ import java.util.*
 data class BleDescriptor(
     val serviceUuid: UUID,
     val characteristicUuid: UUID,
-    val uuid: UUID
+    val descriptorUuid: UUID
 )

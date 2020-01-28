@@ -85,7 +85,7 @@ object Ble {
         advertisingIntensity: Float = .5f
     ): BleServer {
         val impl =
-            BleServerImpl(characteristics.groupBy { it.characteristic.serviceUuid }.mapValues { it.value.associateBy { it.characteristic.uuid } })
+            BleServerImpl(characteristics.groupBy { it.characteristic.serviceUuid }.mapValues { it.value.associateBy { it.characteristic.characteristicUuid } })
         val context = viewDependency.context
         val manager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         val server = manager.openGattServer(context, impl)

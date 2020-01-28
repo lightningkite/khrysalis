@@ -10,7 +10,7 @@ import android.bluetooth.le.BluetoothLeAdvertiser
 import android.os.Build
 import android.util.Log
 import androidx.annotation.RequiresApi
-import com.lightningkite.kwift.observables.ObservableProperty
+import com.lightningkite.kwift.bytes.Data
 import com.lightningkite.kwift.observables.StandardObservableProperty
 import io.reactivex.subjects.PublishSubject
 import java.util.*
@@ -52,7 +52,7 @@ class BleServerImpl(override val characteristics: Map<UUID, Map<UUID, BleCharact
         BluetoothGattService(it.key, BluetoothGattService.SERVICE_TYPE_PRIMARY).apply {
             for (item in it.value.values) {
                 addCharacteristic(BluetoothGattCharacteristic(
-                    item.uuid,
+                    item.characteristic.characteristicUuid,
                     run {
                         var total = 0
                         if (item.properties.broadcast)
@@ -135,7 +135,7 @@ class BleServerImpl(override val characteristics: Map<UUID, Map<UUID, BleCharact
         preparedWrite: Boolean,
         responseNeeded: Boolean,
         offset: Int,
-        value: ByteArray
+        value: Data
     ) {
         Log.i("BleServerImpl", "onCharacteristicWriteRequest(device = ${device.address}, characteristic = ${characteristic.uuid}, value = ${value.joinToString { it.toString(16) }})")
         val service = characteristics[characteristic.service.uuid] ?: run {
@@ -190,7 +190,7 @@ class BleServerImpl(override val characteristics: Map<UUID, Map<UUID, BleCharact
         preparedWrite: Boolean,
         responseNeeded: Boolean,
         offset: Int,
-        value: ByteArray
+        value: Data
     ) {
         Log.i("BleServerImpl", "onDescriptorWriteRequest(device = ${device.address}, descriptor = ${descriptor.characteristic.uuid}/${descriptor.uuid})")
         val service = characteristics[descriptor.characteristic.service.uuid] ?: run {
@@ -242,13 +242,13 @@ class BleServerImpl(override val characteristics: Map<UUID, Map<UUID, BleCharact
 }
 
 class BleClientImpl(val server: BleServerImpl, val device: BluetoothDevice) : BleClient {
-    override val info: BleDeviceInfo = BleDeviceInfo(device.address ?: "", device.name ?: "", Int.MIN_VALUE)
+    override val info: BleDeviceInfo = BleDeviceInfo(device.address ?: "", device.name ?: "")
     override var connected: Boolean = false
-    override fun respond(request: RequestId, data: ByteArray, status: BleResponseStatus) {
+    override fun respond(request: RequestId, data: Data, status: BleResponseStatus) {
         server.server?.sendResponse(device, request, status.value, 0, data)
     }
 
-    override fun notify(service: UUID, characteristic: UUID, value: ByteArray) {
+    override fun notify(service: UUID, characteristic: UUID, value: Data) {
         server.server?.notifyCharacteristicChanged(
             device,
             server.services[service]!!.getCharacteristic(characteristic).apply { this.value = value },
@@ -256,7 +256,7 @@ class BleClientImpl(val server: BleServerImpl, val device: BluetoothDevice) : Bl
         )
     }
 
-    override fun indicate(service: UUID, characteristic: UUID, value: ByteArray) {
+    override fun indicate(service: UUID, characteristic: UUID, value: Data) {
         server.server?.notifyCharacteristicChanged(
             device,
             server.services[service]!!.getCharacteristic(characteristic).apply { this.value = value },

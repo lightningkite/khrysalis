@@ -1,13 +1,6 @@
 package com.lightningkite.kwift.bluetooth
 
-import com.lightningkite.kwift.Box
-import com.lightningkite.kwift.boxWrap
-import com.lightningkite.kwift.observables.*
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
-import io.reactivex.disposables.Disposable
-import io.reactivex.subjects.PublishSubject
-import java.util.*
+import com.lightningkite.kwift.bytes.Data
 
 //Client implementation
 
@@ -32,8 +25,8 @@ interface BleCharacteristicServer {
     fun onSubscribe(from: BleClient)
     fun onUnsubscribe(from: BleClient)
     fun onRead(from: BleClient, request: RequestId)
-    fun onWrite(from: BleClient, request: RequestId, value: ByteArray)
+    fun onWrite(from: BleClient, request: RequestId, value: Data)
 
-    fun notify(client: BleClient, value: ByteArray) = client.notify(characteristic.serviceUuid, characteristic.uuid, value)
-    fun indicate(client: BleClient, value: ByteArray) = client.indicate(characteristic.serviceUuid, characteristic.uuid, value)
+    fun notify(client: BleClient, value: Data) = client.notify(characteristic.serviceUuid, characteristic.characteristicUuid, value)
+    fun indicate(client: BleClient, value: Data) = client.indicate(characteristic.serviceUuid, characteristic.characteristicUuid, value)
 }

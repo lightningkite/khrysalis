@@ -17,7 +17,7 @@ class SwiftAltListener {
     val interfaces: HashMap<String, InterfaceListener.InterfaceData> = hashMapOf()
     var currentFile: KotlinParser.KotlinFileContext? = null
     var filterEscapingAnnotation: Boolean = false
-    var imports = listOf<String>()
+    var imports = listOf<String>("RxSwift", "RxRelay")
 
     fun loadInterfaces(file: File) {
         val new = jacksonObjectMapper().readValue<Versioned<Map<String, FileCache>>>(file)
@@ -106,6 +106,7 @@ class SwiftAltListener {
         typeReplacements["ArrayList"] = "Array"
         typeReplacements["Boolean"] = "Bool"
         typeReplacements["Unit"] = "Void"
+        typeReplacements["Char"] = "Character"
         typeReplacements["Byte"] = "Int8"
         typeReplacements["Short"] = "Int16"
         typeReplacements["Int"] = "Int32"

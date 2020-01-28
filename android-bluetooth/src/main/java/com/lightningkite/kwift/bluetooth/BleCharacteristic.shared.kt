@@ -4,5 +4,5 @@ import java.util.*
 
 data class BleCharacteristic(
     val serviceUuid: UUID,
-    val uuid: UUID
+    val characteristicUuid: UUID
 )

@@ -1,12 +1,8 @@
 package com.lightningkite.kwift.bluetooth
 
-import com.lightningkite.kwift.Box
-import com.lightningkite.kwift.boxWrap
+import com.lightningkite.kwift.bytes.Data
 import com.lightningkite.kwift.observables.*
-import io.reactivex.Observable
-import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.disposables.Disposable
-import io.reactivex.subjects.PublishSubject
 import java.util.*
 
 //My implementation
@@ -19,9 +15,9 @@ interface BleServer: Disposable {
 interface BleClient {
     val info: BleDeviceInfo
     val connected: Boolean
-    fun respond(request: RequestId, data: ByteArray, status: BleResponseStatus)
+    fun respond(request: RequestId, data: Data, status: BleResponseStatus)
     /** Does not require a confirmation from the device. **/
-    fun notify(service: UUID, characteristic: UUID, value: ByteArray)
+    fun notify(service: UUID, characteristic: UUID, value: Data)
     /** Requires a confirmation from the device. **/
-    fun indicate(service: UUID, characteristic: UUID, value: ByteArray)
+    fun indicate(service: UUID, characteristic: UUID, value: Data)
 }

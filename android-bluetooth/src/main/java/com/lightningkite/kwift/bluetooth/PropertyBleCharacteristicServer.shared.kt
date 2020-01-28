@@ -1,6 +1,7 @@
 package com.lightningkite.kwift.bluetooth
 
 import com.lightningkite.kwift.Box
+import com.lightningkite.kwift.bytes.Data
 import com.lightningkite.kwift.boxWrap
 import com.lightningkite.kwift.observables.MutableObservableProperty
 import io.reactivex.Observable
@@ -10,14 +11,13 @@ import java.util.*
 
 
 class PropertyBleCharacteristicServer(
-    override val serviceUuid: UUID,
-    override val uuid: UUID,
-    value: ByteArray,
+    override val characteristic: BleCharacteristic,
+    value: Data,
     override val properties: BleCharacteristicProperties = BleCharacteristicProperties(read = true, write = true, notify = true)
-): MutableObservableProperty<ByteArray>(), BleCharacteristicServer {
+): MutableObservableProperty<Data>(), BleCharacteristicServer {
 
-    var underlyingValue: ByteArray = value
-    override var value: ByteArray
+    var underlyingValue: Data = value
+    override var value: Data
         get() = underlyingValue
         set(value) {
             underlyingValue = value
@@ -37,7 +37,7 @@ class PropertyBleCharacteristicServer(
         from.respond(request, value, BleResponseStatus.success)
     }
 
-    override fun onWrite(from: BleClient, request: RequestId, value: ByteArray) {
+    override fun onWrite(from: BleClient, request: RequestId, value: Data) {
         this.value = value
         from.respond(request, value, BleResponseStatus.success)
     }
@@ -50,7 +50,7 @@ class PropertyBleCharacteristicServer(
         }
     }
 
-    val underlyingEvent: PublishSubject<Box<ByteArray>> = PublishSubject.create()
-    override val onChange: Observable<Box<ByteArray>>
+    val underlyingEvent: PublishSubject<Box<Data>> = PublishSubject.create()
+    override val onChange: Observable<Box<Data>>
         get() = underlyingEvent.observeOn(AndroidSchedulers.mainThread())
 }
