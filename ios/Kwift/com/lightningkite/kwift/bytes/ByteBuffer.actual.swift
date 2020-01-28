@@ -7,6 +7,7 @@ public extension Data {
     }
 }
 
+
 //--- ByteBuffer.{
 public class ByteBuffer {
 
@@ -52,8 +53,97 @@ public class ByteBuffer {
     }
     
     //--- ByteBuffer.array()
-    public func array() -> Data {
+    public func array() -> [UInt8] {
+        return self.backingArray
+    }
+    
+    //--- ByteBuffer.data()
+    public func data() -> Data {
         return Data(self.backingArray)
+    }
+
+    //--- ByteBuffer.getUtf8()
+    func getUtf8() -> String {
+        let len = Int(getShort())
+        let result = String(bytes: self.backingArray[self.currentIndex..<(self.currentIndex + len)], encoding: .utf8)!
+        self.currentIndex += len
+        return result
+    }
+
+    //--- ByteBuffer.getUtf8(Int)
+    func getUtf8(_ index: Int32) -> String {
+        let startPosition = self.currentIndex
+        self.currentIndex = Int(index)
+        let result = getUtf8()
+        self.currentIndex = startPosition
+        return result
+    }
+    func getUtf8(index: Int32) -> String {
+        return getUtf8(index)
+    }
+
+    //--- ByteBuffer.putUtf8(String)
+    func putUtf8(_ string: String) -> ByteBuffer {
+        let _ = putShort(Int16(string.count))
+        self.append(contentsOf: Array(string.utf8))
+        return self
+    }
+    func putUtf8(string: String) -> ByteBuffer {
+        return putUtf8(string)
+    }
+
+    //--- ByteBuffer.putUtf8(Int, String)
+    func putUtf8(_ index: Int32, _ string: String) -> ByteBuffer {
+        let startPosition = self.currentLimit
+        self.currentLimit = Int(index)
+        let _ = putUtf8(string)
+        self.currentLimit = startPosition
+        return self
+    }
+    func putUtf8(index: Int32, string: String) -> ByteBuffer {
+        return putUtf8(index, string)
+    }
+
+    //--- ByteBuffer.getSetSizeUtf8(Int)
+    func getSetSizeUtf8(_ length: Int32) -> String {
+        let result = String(bytes: self.backingArray[self.currentIndex..<(self.currentIndex + Int(length))], encoding: .utf8)!
+        self.currentIndex += Int(length)
+        return result
+    }
+    func getSetSizeUtf8(length: Int32) -> String {
+        return getSetSizeUtf8(length)
+    }
+
+
+    //--- ByteBuffer.getSetSizeUtf8(Int, Int)
+    func getSetSizeUtf8(_ length: Int32, _ index: Int32) -> String {
+        let result = String(bytes: self.backingArray[Int(index)..<Int(index+length)], encoding: .utf8)!
+        return result
+    }
+    func getSetSizeUtf8(length: Int32, index: Int32) -> String {
+        return getSetSizeUtf8(length, index)
+    }
+
+
+    //--- ByteBuffer.putSetSizeUtf8(Int, String)
+    func putSetSizeUtf8(_ length: Int32, _ string: String) -> ByteBuffer {
+        let resized = string.prefix(Int(length)).padding(toLength: Int(length), withPad: "\0", startingAt: 0)
+        self.append(contentsOf: Array(resized.utf8))
+        return self
+    }
+    func putSetSizeUtf8(length: Int32, string: String) -> ByteBuffer {
+        return putSetSizeUtf8(length, string)
+    }
+
+
+    //--- ByteBuffer.putSetSizeUtf8(Int, Int, String)
+    func putSetSizeUtf8(_ length: Int32, _ index: Int32, _ string: String) -> ByteBuffer {
+        let resized = string.prefix(Int(length)).padding(toLength: Int(length), withPad: "\0", startingAt: 0)
+        self.overwrite(at: Int(index), array: Array(resized.utf8))
+        return self
+    }
+    func putSetSizeUtf8(length: Int32, index: Int32, string: String) -> ByteBuffer {
+        return putSetSizeUtf8(length, index, string)
     }
 
     //--- ByteBuffer.arrayOffset()
@@ -134,7 +224,13 @@ public class ByteBuffer {
 
     //--- ByteBuffer.put(Byte)
     public func put(_ b: Int8) -> ByteBuffer {
-        self.backingArray.append(UInt8(b))
+        if self.currentLimit < self.backingArray.count {
+            self.backingArray[self.currentLimit] = UInt8(b)
+            self.currentLimit += 1
+        } else {
+            self.backingArray.append(UInt8(b))
+            self.currentLimit += 1
+        }
         return self
     }
 
@@ -258,14 +354,12 @@ public class ByteBuffer {
 
     //--- ByteBuffer.Companion.allocate(Int)
     public static func allocate(_ capacity: Int32) -> ByteBuffer {
-        var backingArray = [UInt8]()
-        backingArray.reserveCapacity(Int(capacity))
-        return ByteBuffer(array: backingArray)
+        return ByteBuffer(array: [UInt8](repeating: 0, count: Int(capacity)))
     }
 
     //--- ByteBuffer.Companion.wrap(Data, Int, Int)
     public static func wrap(_ array: Data, _ offset: Int32, _ length: Int32) -> ByteBuffer {
-        var buffer = ByteBuffer(array: array)
+        let buffer = ByteBuffer(array: array)
         buffer.currentIndex = Int(offset)
         buffer.currentLimit = Int(offset + length)
         return buffer
@@ -273,7 +367,8 @@ public class ByteBuffer {
 
     //--- ByteBuffer.Companion.wrap(Data)
     public static func wrap(_ array: Data) -> ByteBuffer {
-        var buffer = ByteBuffer(array: array)
+        let buffer = ByteBuffer(array: array)
+        buffer.currentIndex = 0
         buffer.currentLimit = Int(array.count)
         return buffer
     }
@@ -311,13 +406,13 @@ public class ByteBuffer {
         return self
     }
     private func append(contentsOf: [UInt8]) {
-        let delta = (contentsOf.count + self.currentIndex) - self.backingArray.count
+        let delta = (contentsOf.count + self.currentLimit) - self.backingArray.count
         if delta > 0 {
             self.backingArray.append(contentsOf: [UInt8](repeating: 0, count: delta))
         }
-        let at = self.currentIndex
+        let at = self.currentLimit
         backingArray[at ..< (at+contentsOf.count)] = contentsOf[0..<contentsOf.count]
-        self.currentIndex += contentsOf.count
+        self.currentLimit += contentsOf.count
     }
     private func overwrite<T: FixedWidthInteger>(at: Int, value: T) -> Self {
         if currentEndianness == .LITTLE_ENDIAN {
