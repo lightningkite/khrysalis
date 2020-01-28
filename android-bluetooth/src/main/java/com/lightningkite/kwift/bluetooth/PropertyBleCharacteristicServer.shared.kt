@@ -33,6 +33,10 @@ class PropertyBleCharacteristicServer(
         subscribers.remove(from.info.id)
     }
 
+    override fun onDisconnect(from: BleClient) {
+        subscribers.remove(from.info.id)
+    }
+
     override fun onRead(from: BleClient, request: RequestId) {
         from.respond(request, value, BleResponseStatus.success)
     }

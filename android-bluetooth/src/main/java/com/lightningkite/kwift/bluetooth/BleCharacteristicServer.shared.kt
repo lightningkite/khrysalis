@@ -24,6 +24,7 @@ interface BleCharacteristicServer {
 
     fun onSubscribe(from: BleClient)
     fun onUnsubscribe(from: BleClient)
+    fun onDisconnect(from: BleClient)
     fun onRead(from: BleClient, request: RequestId)
     fun onWrite(from: BleClient, request: RequestId, value: Data)
 

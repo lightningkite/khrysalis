@@ -1,0 +1,58 @@
+PODS:
+  - Alamofire (4.9.1)
+  - AlamofireImage (3.6.0):
+    - Alamofire (~> 4.9)
+  - Cosmos (19.0.3)
+  - KeychainAccess (4.1.0)
+  - Kwift (0.1.0):
+    - Alamofire
+    - AlamofireImage
+    - Cosmos (~> 19.0)
+    - KeychainAccess
+    - RxRelay
+    - RxSwift
+    - SearchTextField
+    - "UITextView+Placeholder"
+  - RxBluetoothKit (5.3.0):
+    - RxSwift (~> 5.0)
+  - RxRelay (5.0.1):
+    - RxSwift (~> 5)
+  - RxSwift (5.0.1)
+  - SearchTextField (1.2.4)
+  - "UITextView+Placeholder (1.3.3)"
+
+DEPENDENCIES:
+  - Kwift (from `~/StudioProjects/kwift/kwift.podspec`)
+  - RxBluetoothKit
+
+SPEC REPOS:
+  trunk:
+    - Alamofire
+    - AlamofireImage
+    - Cosmos
+    - KeychainAccess
+    - RxBluetoothKit
+    - RxRelay
+    - RxSwift
+    - SearchTextField
+    - "UITextView+Placeholder"
+
+EXTERNAL SOURCES:
+  Kwift:
+    :path: "~/StudioProjects/kwift/kwift.podspec"
+
+SPEC CHECKSUMS:
+  Alamofire: 85e8a02c69d6020a0d734f6054870d7ecb75cf18
+  AlamofireImage: be9963c6582d68b39e89191f64c82a7d7bf40fdd
+  Cosmos: a6fb17284281fa12cf4c85c2efecd440a215ec44
+  KeychainAccess: 445e28864fe6d3458b41fa211bcdc39890e8bd5a
+  Kwift: 942bde9b3b3053e92b82629ed760f41396fb3666
+  RxBluetoothKit: 0e781978e8a0df70ac3c611dcf44800b76c69f8a
+  RxRelay: 89d54507f4fd4d969e6ec1d4bd7f3673640b4640
+  RxSwift: e2dc62b366a3adf6a0be44ba9f405efd4c94e0c4
+  SearchTextField: 40dc3cc57def5a211f263cac263622c163bbc25a
+  "UITextView+Placeholder": c407b27599ea23cca425946fee3cf1db5d547008
+
+PODFILE CHECKSUM: 05d2952e3ca9f512b6ec0a897351af59e4316616
+
+COCOAPODS: 1.8.4

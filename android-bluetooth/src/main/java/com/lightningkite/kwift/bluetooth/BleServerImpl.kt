@@ -6,16 +6,24 @@ package com.lightningkite.kwift.bluetooth
 import android.annotation.SuppressLint
 import android.bluetooth.*
 import android.bluetooth.le.AdvertiseCallback
+import android.bluetooth.le.AdvertiseData
+import android.bluetooth.le.AdvertiseSettings
 import android.bluetooth.le.BluetoothLeAdvertiser
 import android.os.Build
+import android.os.ParcelUuid
 import android.util.Log
 import androidx.annotation.RequiresApi
 import com.lightningkite.kwift.bytes.Data
 import com.lightningkite.kwift.observables.StandardObservableProperty
 import io.reactivex.subjects.PublishSubject
 import java.util.*
+import kotlin.collections.HashSet
 
-class BleServerImpl(override val characteristics: Map<UUID, Map<UUID, BleCharacteristicServer>>) :
+class BleServerImpl(
+    override val characteristics: Map<UUID, Map<UUID, BleCharacteristicServer>>,
+    val serviceUuids: List<UUID>? = null,
+    val advertisingIntensity: Float = .5f
+) :
     BluetoothGattServerCallback(), BleServer {
 
     var advertiserCallback: AdvertiseCallback? = null
@@ -34,7 +42,9 @@ class BleServerImpl(override val characteristics: Map<UUID, Map<UUID, BleCharact
         }
     private val servicesToAdd = ArrayList<BluetoothGattService>()
 
-    override val clients: StandardObservableProperty<Map<String, BleClient>> = StandardObservableProperty(mapOf(), PublishSubject.create()/*TODO main thread only*/)
+    val clients: StandardObservableProperty<Map<String, BleClient>> = StandardObservableProperty(mapOf(), PublishSubject.create()/*TODO main thread only*/)
+
+    private val subscriptionTracking = HashMap<BleClient, HashSet<BleCharacteristicServer>>()
 
     fun clientFor(device: BluetoothDevice): BleClient {
         clients.value[device.address]?.let { return it }
@@ -175,7 +185,11 @@ class BleServerImpl(override val characteristics: Map<UUID, Map<UUID, BleCharact
         Log.i("BleServerImpl", "onConnectionStateChange(device = ${device.address}, newState = ${newState})")
         when(newState){
             BluetoothProfile.STATE_CONNECTED -> clientFor(device)
-            BluetoothProfile.STATE_DISCONNECTED -> removeClientFor(device)
+            BluetoothProfile.STATE_DISCONNECTED -> {
+                val client = clientFor(device)
+                subscriptionTracking[client]?.forEach { it.onDisconnect(client) }
+                removeClientFor(device)
+            }
         }
     }
 
@@ -209,13 +223,19 @@ class BleServerImpl(override val characteristics: Map<UUID, Map<UUID, BleCharact
         }
         when(value.joinToString()){
             BluetoothGattDescriptor.ENABLE_INDICATION_VALUE.joinToString() -> {
-                characteristicServer.onSubscribe(clientFor(device))
+                val client = clientFor(device)
+                subscriptionTracking.getOrPut(client){HashSet()}.add(characteristicServer)
+                characteristicServer.onSubscribe(client)
             }
             BluetoothGattDescriptor.ENABLE_NOTIFICATION_VALUE.joinToString() -> {
-                characteristicServer.onSubscribe(clientFor(device))
+                val client = clientFor(device)
+                subscriptionTracking.getOrPut(client){HashSet()}.add(characteristicServer)
+                characteristicServer.onSubscribe(client)
             }
             BluetoothGattDescriptor.DISABLE_NOTIFICATION_VALUE.joinToString() -> {
-                characteristicServer.onUnsubscribe(clientFor(device))
+                val client = clientFor(device)
+                subscriptionTracking.getOrPut(client){HashSet()}.remove(characteristicServer)
+                characteristicServer.onUnsubscribe(client)
             }
         }
         server?.sendResponse(device, requestId, BleResponseStatus.success.value, 0, null)
@@ -227,6 +247,57 @@ class BleServerImpl(override val characteristics: Map<UUID, Map<UUID, BleCharact
             server?.addService(servicesToAdd.removeAt(0))
     }
 
+    override var advertising: Boolean = false
+        set(value) {
+            if(value && !field) startAdvertising()
+            else if(!value) stopAdvertising()
+
+            field = value
+        }
+    private fun startAdvertising() {
+        val advertiserCallback = object : AdvertiseCallback() {
+            override fun onStartSuccess(settingsInEffect: AdvertiseSettings) {
+                println("Advertising successfully!")
+            }
+
+            override fun onStartFailure(errorCode: Int) {
+                Log.e("Ble.Actual", "Failed to begin advertising.  Code: $errorCode")
+            }
+        }
+        advertiser?.startAdvertising(
+            AdvertiseSettings.Builder()
+                .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH)
+                .setTimeout(0)
+                .setConnectable(true)
+                .setAdvertiseMode(
+                    when (advertisingIntensity) {
+                        in 0f..0.33f -> AdvertiseSettings.ADVERTISE_MODE_LOW_POWER
+                        in 0.33f..0.66f -> AdvertiseSettings.ADVERTISE_MODE_BALANCED
+                        in 0.66f..1f -> AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY
+                        else -> AdvertiseSettings.ADVERTISE_MODE_LOW_POWER
+                    }
+                )
+                .build(),
+            AdvertiseData.Builder()
+                .apply {
+                    serviceUuids?.forEach {
+                        addServiceUuid(ParcelUuid(it))
+                    } ?: run {
+                        characteristics.keys.forEach {
+                            addServiceUuid(ParcelUuid(it))
+                        }
+                    }
+                    //TODO: Service/manufacturing data?
+                }
+                .build(),
+            advertiserCallback
+        )
+    }
+    private fun stopAdvertising() {
+        advertiser?.stopAdvertising(advertiserCallback)
+        advertiserCallback = null
+    }
+
     override fun isDisposed(): Boolean {
         return server == null
     }
@@ -234,7 +305,7 @@ class BleServerImpl(override val characteristics: Map<UUID, Map<UUID, BleCharact
     override fun dispose() {
         Log.i("BleServerImpl", "Closing...")
         advertiser?.stopAdvertising(advertiserCallback)
-        advertiser = null
+        advertiserCallback = null
         server?.close()
         server = null
     }

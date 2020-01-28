@@ -8,8 +8,8 @@ import java.util.*
 //My implementation
 
 interface BleServer: Disposable {
-    val clients: ObservableProperty<Map<String, BleClient>>
     val characteristics: Map<UUID, Map<UUID, BleCharacteristicServer>>
+    var advertising: Boolean
 }
 
 interface BleClient {

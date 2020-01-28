@@ -85,51 +85,16 @@ object Ble {
         advertisingIntensity: Float = .5f
     ): BleServer {
         val impl =
-            BleServerImpl(characteristics.groupBy { it.characteristic.serviceUuid }.mapValues { it.value.associateBy { it.characteristic.characteristicUuid } })
+            BleServerImpl(
+                characteristics = characteristics.groupBy { it.characteristic.serviceUuid }.mapValues { it.value.associateBy { it.characteristic.characteristicUuid } },
+                serviceUuids = serviceUuids,
+                advertisingIntensity = advertisingIntensity
+            )
         val context = viewDependency.context
         val manager = context.getSystemService(Context.BLUETOOTH_SERVICE) as BluetoothManager
         val server = manager.openGattServer(context, impl)
+        impl.advertiser = manager.adapter.bluetoothLeAdvertiser
         impl.server = server
-        val advertiser = manager.adapter.bluetoothLeAdvertiser
-        val advertiserCallback = object : AdvertiseCallback() {
-            override fun onStartSuccess(settingsInEffect: AdvertiseSettings) {
-                println("Advertising successfully!")
-            }
-
-            override fun onStartFailure(errorCode: Int) {
-                Log.e("Ble.Actual", "Failed to begin advertising.  Code: $errorCode")
-            }
-        }
-        advertiser.startAdvertising(
-            AdvertiseSettings.Builder()
-                .setTxPowerLevel(AdvertiseSettings.ADVERTISE_TX_POWER_HIGH)
-                .setTimeout(0)
-                .setConnectable(true)
-                .setAdvertiseMode(
-                    when (advertisingIntensity) {
-                        in 0f..0.33f -> AdvertiseSettings.ADVERTISE_MODE_LOW_POWER
-                        in 0.33f..0.66f -> AdvertiseSettings.ADVERTISE_MODE_BALANCED
-                        in 0.66f..1f -> AdvertiseSettings.ADVERTISE_MODE_LOW_LATENCY
-                        else -> AdvertiseSettings.ADVERTISE_MODE_LOW_POWER
-                    }
-                )
-                .build(),
-            AdvertiseData.Builder()
-                .apply {
-                    serviceUuids?.forEach {
-                        addServiceUuid(ParcelUuid(it))
-                    } ?: run {
-                        impl.characteristics.keys.forEach {
-                            addServiceUuid(ParcelUuid(it))
-                        }
-                    }
-                    //TODO: Service/manufacturing data?
-                }
-                .build(),
-            advertiserCallback
-        )
-        impl.advertiser = advertiser
-        impl.advertiserCallback = advertiserCallback
         return impl
     }
 

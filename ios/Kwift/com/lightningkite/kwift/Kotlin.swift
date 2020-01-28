@@ -274,6 +274,14 @@ public extension Array where Element == String {
 
 public extension Dictionary {
     var size: Int32 { return Int32(self.count) }
+    mutating func getOrPut(_ key: Key, _ generate: ()->Value) -> Value {
+        if let result = self[key] {
+            return result
+        }
+        let generated = generate()
+        self[key] = generated
+        return generated
+    }
     mutating func put(_ key: Key, _ value: Value) {
         self[key] = value
     }
