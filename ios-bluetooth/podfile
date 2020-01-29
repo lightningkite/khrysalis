@@ -2,7 +2,7 @@
 platform :ios, '11.0'
 use_modular_headers!
 
-target 'KwiftBluetooth' do
-    pod 'Kwift', :path => '~/StudioProjects/kwift/kwift.podspec'
+target 'KhrysalisBluetooth' do
+    pod 'Khrysalis', :path => '~/StudioProjects/khrysalis/khrysalis.podspec'
     pod 'RxBluetoothKit'
 end

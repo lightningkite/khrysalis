@@ -1,4 +1,4 @@
-package com.lightningkite.kwift.test
+package com.lightningkite.khrysalis.test
 
 data class TestDataClass(
     val a: Double = 0.0,

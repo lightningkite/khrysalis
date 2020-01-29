@@ -4,7 +4,7 @@
               android:layout_width="match_parent"
               android:layout_height="match_parent">
 
-    <!--    <com.lightningkite.kwift.views.android.SelectDayView-->
+    <!--    <com.lightningkite.khrysalis.views.android.SelectDayView-->
     <!--            android:id="@+id/select"-->
     <!--            android:layout_width="match_parent"-->
     <!--            android:layout_height="0dp"-->
@@ -14,7 +14,7 @@
     <!--            android:textSize="20sp"-->
     <!--    />-->
 
-    <com.lightningkite.kwift.views.android.SelectDateRangeView
+    <com.lightningkite.khrysalis.views.android.SelectDateRangeView
             android:id="@+id/range"
             android:layout_width="match_parent"
             android:layout_height="0dp"
@@ -22,7 +22,7 @@
             android:gravity="center"
     />
 
-    <com.lightningkite.kwift.views.android.SelectMultipleDatesView
+    <com.lightningkite.khrysalis.views.android.SelectMultipleDatesView
             android:id="@+id/multi"
             android:layout_width="match_parent"
             android:layout_height="0dp"

@@ -1,10 +1,10 @@
 package org.liftinggenerations.shared.views
 
-import com.lightningkite.kwift.actuals.weak
-import com.lightningkite.kwift.actuals.weakLambda
-import com.lightningkite.kwift.shared.ObservableProperty
-import com.lightningkite.kwift.shared.ViewData
-import com.lightningkite.kwift.shared.ViewDataStack
+import com.lightningkite.khrysalis.actuals.weak
+import com.lightningkite.khrysalis.actuals.weakLambda
+import com.lightningkite.khrysalis.shared.ObservableProperty
+import com.lightningkite.khrysalis.shared.ViewData
+import com.lightningkite.khrysalis.shared.ViewDataStack
 import org.liftinggenerations.shared.api.API
 import org.liftinggenerations.shared.models.*
 

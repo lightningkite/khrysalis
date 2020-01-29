@@ -1,10 +1,10 @@
-package com.lightningkite.kwift.views.shared
+package com.lightningkite.khrysalis.views.shared
 
-import com.lightningkite.kwift.actuals.escaping
-import com.lightningkite.kwift.actuals.formatList
-import com.lightningkite.kwift.views.actual.StringResource
-import com.lightningkite.kwift.views.actual.ViewDependency
-import com.lightningkite.kwift.views.actual.getString
+import com.lightningkite.khrysalis.actuals.escaping
+import com.lightningkite.khrysalis.actuals.formatList
+import com.lightningkite.khrysalis.views.actual.StringResource
+import com.lightningkite.khrysalis.views.actual.ViewDependency
+import com.lightningkite.khrysalis.views.actual.getString
 
 data class ManyThings(val x: Int, val y: Int, val z: Int){
     fun stringy() = "$x$y$z"

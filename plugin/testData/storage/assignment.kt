@@ -1,4 +1,4 @@
-package com.lightningkite.kwift.test
+package com.lightningkite.khrysalis.test
 
 fun testFun(){
     var x: Int = 0

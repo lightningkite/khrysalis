@@ -1,8 +1,8 @@
 package org.liftinggenerations.shared.views
 
-import com.lightningkite.kwift.actuals.Preferences
-import com.lightningkite.kwift.actuals.SecurePreferences
-import com.lightningkite.kwift.shared.ViewDataStack
+import com.lightningkite.khrysalis.actuals.Preferences
+import com.lightningkite.khrysalis.actuals.SecurePreferences
+import com.lightningkite.khrysalis.shared.ViewDataStack
 import org.liftinggenerations.shared.models.*
 
 val isMentorKey = "org.liftinggenerations.isMentor"

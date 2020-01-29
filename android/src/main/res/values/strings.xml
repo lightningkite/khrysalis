@@ -1,6 +1,6 @@
 <resources>
     <string name="empty" translatable="false"/>
-    <string name="app_name">Kwift Template</string>
+    <string name="app_name">Khrysalis Template</string>
     <string name="back">Back</string>
     <string name="ok">OK</string>
     <string name="cancel">Cancel</string>
@@ -9,7 +9,7 @@
     <string name="go_to_another_screen">Go to Another Screen</string>
     <string name="you_made_it_to_another_screen">You made it to another screen!</string>
     <string name="welcome">Welcome!</string>
-    <string name="welcome_message">This is the template for a Kwift project. This screen exists to help you figure out stuff about it.</string>
+    <string name="welcome_message">This is the template for a Khrysalis project. This screen exists to help you figure out stuff about it.</string>
     <string name="increment_the_number">Increment the Number</string>
     <string name="text_field">Text Field</string>
     <string name="select_demo">Select Demo</string>

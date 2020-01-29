@@ -1,6 +1,6 @@
 platform :ios, '9.0'
 
-target 'Kwift' do
+target 'Khrysalis' do
     pod 'Alamofire'
     pod 'AlamofireImage'
     pod 'KeychainAccess'
@@ -11,7 +11,7 @@ target 'Kwift' do
     pod 'RxRelay'
 end
 
-target 'KwiftTests' do
+target 'KhrysalisTests' do
     pod 'Alamofire'
     pod 'AlamofireImage'
     pod 'KeychainAccess'
