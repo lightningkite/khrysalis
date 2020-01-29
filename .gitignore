@@ -7,3 +7,5 @@ ios/kwift.xcworkspace
 **.iml
 **/.idea
 **/.gradle
+
+plugin/out
