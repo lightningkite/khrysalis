@@ -43,7 +43,7 @@ Because Khrysalis has a syntax transformer, you can share almost all Kotlin code
 - either uses **all** parameter names or **no** parameter names in function calls
 - only has function calls with their arguments in order
 
-The syntax transformation's limitations whittled away regularly in an effort to make programming easier.
+The syntax transformation's limitations are whittled away regularly in an effort to make programming easier.
 
 Some features that already have same-signature declarations built for them:
 
