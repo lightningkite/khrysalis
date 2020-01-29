@@ -1,19 +1,23 @@
 platform :ios, '9.0'
 
-target 'Kwift' do
+target 'Khrysalis' do
     pod 'Alamofire'
     pod 'AlamofireImage'
     pod 'KeychainAccess'
     pod 'UITextView+Placeholder', :modular_headers => true
     pod 'Cosmos', '~> 19.0'
     pod 'SearchTextField'
+    pod 'RxSwift'
+    pod 'RxRelay'
 end
 
-target 'KwiftTests' do
+target 'KhrysalisTests' do
     pod 'Alamofire'
     pod 'AlamofireImage'
     pod 'KeychainAccess'
     pod 'UITextView+Placeholder', :modular_headers => true
     pod 'Cosmos', '~> 19.0'
     pod 'SearchTextField'
+    pod 'RxSwift'
+    pod 'RxRelay'
 end

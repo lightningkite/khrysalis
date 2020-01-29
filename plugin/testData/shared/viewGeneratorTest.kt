@@ -1,7 +1,7 @@
-package com.lightningkite.kwift.views.shared
+package com.lightningkite.khrysalis.views.shared
 
 import android.view.View
-import com.lightningkite.kwift.views.actual.ViewDependency
+import com.lightningkite.khrysalis.views.actual.ViewDependency
 
 abstract class ViewGenerator {
     abstract val title: String

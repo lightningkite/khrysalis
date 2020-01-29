@@ -41,7 +41,7 @@ bintray {
     }
 }
 
-mainClassName = 'com.lightningkite.kwift.MainKt'
+mainClassName = 'com.lightningkite.khrysalis.MainKt'
 
 repositories {
     mavenLocal()
@@ -51,7 +51,7 @@ repositories {
 
 }
 
-group = "com.lightningkite.kwift"
+group = "com.lightningkite.khrysalis"
 version = '0.1.0'
 
 

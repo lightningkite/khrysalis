@@ -1,6 +1,6 @@
-package com.lightningkite.kwift.async
+package com.lightningkite.khrysalis.async
 
-import com.lightningkite.kwift.escaping
+import com.lightningkite.khrysalis.escaping
 
 typealias DRF<T> = DelayedResultFunction<T>
 inline class DelayedResultFunction<T>(val value: @escaping() (@escaping() (T) -> Unit) -> Unit) {

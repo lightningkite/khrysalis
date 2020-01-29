@@ -1,4 +1,4 @@
-rootProject.name = "kwift"
+rootProject.name = "khrysalis"
 
 include(":plugin")
 include(":android")

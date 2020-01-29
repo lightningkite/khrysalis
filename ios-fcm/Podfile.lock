@@ -3,11 +3,25 @@ PODS:
   - AlamofireImage (3.6.0):
     - Alamofire (~> 4.9)
   - Cosmos (19.0.3)
+  - Firebase/Analytics (6.14.0):
+    - Firebase/Core
+  - Firebase/Core (6.14.0):
+    - Firebase/CoreOnly
+    - FirebaseAnalytics (= 6.1.7)
   - Firebase/CoreOnly (6.14.0):
     - FirebaseCore (= 6.5.0)
   - Firebase/Messaging (6.14.0):
     - Firebase/CoreOnly
     - FirebaseMessaging (~> 4.1.10)
+  - FirebaseAnalytics (6.1.7):
+    - FirebaseCore (~> 6.5)
+    - FirebaseInstanceID (~> 4.2)
+    - GoogleAppMeasurement (= 6.1.7)
+    - GoogleUtilities/AppDelegateSwizzler (~> 6.0)
+    - GoogleUtilities/MethodSwizzler (~> 6.0)
+    - GoogleUtilities/Network (~> 6.0)
+    - "GoogleUtilities/NSData+zlib (~> 6.0)"
+    - nanopb (= 0.3.9011)
   - FirebaseAnalyticsInterop (1.5.0)
   - FirebaseCore (6.5.0):
     - FirebaseCoreDiagnostics (~> 1.0)
@@ -34,6 +48,12 @@ PODS:
     - GoogleUtilities/Reachability (~> 6.2)
     - GoogleUtilities/UserDefaults (~> 6.2)
     - Protobuf (>= 3.9.2, ~> 3.9)
+  - GoogleAppMeasurement (6.1.7):
+    - GoogleUtilities/AppDelegateSwizzler (~> 6.0)
+    - GoogleUtilities/MethodSwizzler (~> 6.0)
+    - GoogleUtilities/Network (~> 6.0)
+    - "GoogleUtilities/NSData+zlib (~> 6.0)"
+    - nanopb (= 0.3.9011)
   - GoogleDataTransport (3.3.0)
   - GoogleDataTransportCCTSupport (1.3.0):
     - GoogleDataTransport (~> 3.3)
@@ -45,6 +65,8 @@ PODS:
   - GoogleUtilities/Environment (6.5.0)
   - GoogleUtilities/Logger (6.5.0):
     - GoogleUtilities/Environment
+  - GoogleUtilities/MethodSwizzler (6.5.0):
+    - GoogleUtilities/Logger
   - GoogleUtilities/Network (6.5.0):
     - GoogleUtilities/Logger
     - "GoogleUtilities/NSData+zlib"
@@ -77,6 +99,7 @@ PODS:
   - "UITextView+Placeholder (1.3.3)"
 
 DEPENDENCIES:
+  - Firebase/Analytics
   - Firebase/Messaging
   - Kwift (from `~/StudioProjects/kwift/kwift.podspec`)
 
@@ -86,12 +109,14 @@ SPEC REPOS:
     - AlamofireImage
     - Cosmos
     - Firebase
+    - FirebaseAnalytics
     - FirebaseAnalyticsInterop
     - FirebaseCore
     - FirebaseCoreDiagnostics
     - FirebaseCoreDiagnosticsInterop
     - FirebaseInstanceID
     - FirebaseMessaging
+    - GoogleAppMeasurement
     - GoogleDataTransport
     - GoogleDataTransportCCTSupport
     - GoogleUtilities
@@ -112,12 +137,14 @@ SPEC CHECKSUMS:
   AlamofireImage: be9963c6582d68b39e89191f64c82a7d7bf40fdd
   Cosmos: a6fb17284281fa12cf4c85c2efecd440a215ec44
   Firebase: 0219bb4782eb1406f1b9b0628a2e625484ce910d
+  FirebaseAnalytics: f68b9f3f1241385129ae0a83b63627fc420c05e5
   FirebaseAnalyticsInterop: 3f86269c38ae41f47afeb43ebf32a001f58fcdae
   FirebaseCore: 632e05cc5e1199d9147122c16d92305eb04c34bd
   FirebaseCoreDiagnostics: 5e78803ab276bc5b50340e3c539c06c3de35c649
   FirebaseCoreDiagnosticsInterop: 296e2c5f5314500a850ad0b83e9e7c10b011a850
   FirebaseInstanceID: ce993a3c3670a8f5d47ce371ac5d143c560608c5
   FirebaseMessaging: 089b7a4991425783384acc8bcefcd78c0af913bd
+  GoogleAppMeasurement: db118eb61a97dd8c4f7014e368d3c335cbbcf80a
   GoogleDataTransport: 574a983e829327d7c18f2627f65d9e80164ea8a4
   GoogleDataTransportCCTSupport: cad3cd6cdbdbad6b5c2c9206ec413402755faaaa
   GoogleUtilities: f8de7ddf8c706f58e9b405d53e38bbdaa2731e5a
@@ -130,6 +157,6 @@ SPEC CHECKSUMS:
   SearchTextField: 40dc3cc57def5a211f263cac263622c163bbc25a
   "UITextView+Placeholder": c407b27599ea23cca425946fee3cf1db5d547008
 
-PODFILE CHECKSUM: fcdfde1f44f235430747d4a9657048238c0e358e
+PODFILE CHECKSUM: d8550ce638a749e8b1561d29d02465f836addf03
 
 COCOAPODS: 1.8.4

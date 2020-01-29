@@ -1,6 +1,6 @@
-package com.lightningkite.kwift.observables.shared
+package com.lightningkite.khrysalis.observables.shared
 
-import com.lightningkite.kwift.actuals.escaping
+import com.lightningkite.khrysalis.actuals.escaping
 
 fun <Z: AnyObject> captureWeak(capture: Z, lambda: @escaping() (Z) -> Unit): () -> Unit {
     val captured by weak(capture)

@@ -1,8 +1,8 @@
-import com.lightningkite.kwift.KwiftSettings
-import com.lightningkite.kwift.convertResourcesToIos
-import com.lightningkite.kwift.layout.convertLayoutsToSwift
-import com.lightningkite.kwift.layout.createAndroidLayoutClasses
-import com.lightningkite.kwift.swift.convertKotlinToSwift
+import com.lightningkite.khrysalis.KhrysalisSettings
+import com.lightningkite.khrysalis.convertResourcesToIos
+import com.lightningkite.khrysalis.layout.convertLayoutsToSwift
+import com.lightningkite.khrysalis.layout.createAndroidLayoutClasses
+import com.lightningkite.khrysalis.swift.convertKotlinToSwift
 
 buildscript {
     val kotlin_version = "1.3.50"
@@ -12,8 +12,8 @@ buildscript {
         mavenLocal()
     }
     dependencies {
-        //        classpath("com.lightningkite:kwift:0.1.0")
-        classpath("com.lightningkite.kwift:plugin:0.1.0")
+        //        classpath("com.lightningkite:khrysalis:0.1.0")
+        classpath("com.lightningkite.khrysalis:plugin:0.1.0")
         classpath("com.android.tools.build:gradle:3.5.0")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
 
@@ -29,7 +29,7 @@ plugins {
     id("digital.wup.android-maven-publish") version "3.6.2"
 }
 
-group = "com.lightningkite.kwift"
+group = "com.lightningkite.khrysalis"
 version = "0.1.1"
 
 repositories {
@@ -102,12 +102,12 @@ publishing {
     }
 }
 
-KwiftSettings.verbose = true
+KhrysalisSettings.verbose = true
 
 val androidBase = project.projectDir
-val iosBase = project.projectDir.resolve("../ios/Kwift")
+val iosBase = project.projectDir.resolve("../ios/Khrysalis")
 
-tasks.create("kwiftConvertKotlinToSwiftClean") {
+tasks.create("khrysalisConvertKotlinToSwiftClean") {
     this.group = "build"
     doLast {
         println("Started on $androidBase")
@@ -123,7 +123,7 @@ tasks.create("kwiftConvertKotlinToSwiftClean") {
     }
 }
 
-tasks.create("kwiftConvertKotlinToSwift") {
+tasks.create("khrysalisConvertKotlinToSwift") {
     this.group = "build"
     doLast {
         println("Started on $androidBase")

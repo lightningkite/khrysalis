@@ -1,5 +1,5 @@
-//Package: com.lightningkite.kwift.async
-//Converted using Kwift2
+//Package: com.lightningkite.khrysalis.async
+//Converted using Khrysalis2
 
 import Foundation
 

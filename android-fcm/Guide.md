@@ -12,7 +12,7 @@ Add the following to your manifest inside the `application` tag:
         android:name="com.google.firebase.messaging.default_notification_channel_id"
         android:value="@string/default_notification_channel_id" />
 <service
-        android:name="com.lightningkite.kwift.fcm.MyFirebaseMessagingService"
+        android:name="com.lightningkite.khrysalis.fcm.MyFirebaseMessagingService"
         android:exported="false">
     <intent-filter>
         <action android:name="com.google.firebase.MESSAGING_EVENT" />
@@ -28,7 +28,7 @@ apply {
 }
 
 dependencies {
-    implementation("com.lightningkite.kwift:android-fcm:0.1.1")
+    implementation("com.lightningkite.khrysalis:android-fcm:0.1.1")
 }
 ```
 
@@ -46,7 +46,7 @@ buildscript {
 
 Add the following to your main activity in some kinda init:
 ```kotlin
-import com.lightningkite.kwift.fcm.MyFirebaseMessagingService
+import com.lightningkite.khrysalis.fcm.MyFirebaseMessagingService
 
 init {
     MyFirebaseMessagingService.main = viewData
@@ -60,14 +60,14 @@ Drop the `google-services.json` file from the Firebase console into the root dir
 Add the following to your `podfile` and run `pod install`:
 
 ```
-pod 'KwiftFCM'
+pod 'KhrysalisFCM'
 ```
 
 Use a different app delegate base:
 
 ```swift
 @UIApplicationMain
-class AppDelegate: KwiftFcmAppDelegate {
+class AppDelegate: KhrysalisFcmAppDelegate {
     //...
 }
 ```
