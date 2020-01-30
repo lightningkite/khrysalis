@@ -32,3 +32,7 @@ The following tags can now be used to describe navigational behavior:
 The `ViewGenerator`s created by the prototyper will have section comments.  Each section will initially have `(overwritten on flow generation)` appended to it, which indicates that the contents of the section will be overwritten if the prototyper is run again.  Removing that message will leave the section as is, allowing you to customize behavior after generation.
 
 Sections are defined as starting at the comment like `//--- My Section` and ending at the next section comment.  Unrecognized sections without the overwrite instruction will be left alone.
+
+## Flow
+
+In addition to generating the backing code to demonstrate your layouts, the `khrysalisFlowDoc` task generates multiple diagrams showing how your user moves around the app.
