@@ -242,13 +242,12 @@ open class MonthCVD : CustomViewDelegate() {
                 return true
             }
         }
-        if(dragEnabled) {
-            dragStartX = x / width
-            dragStartY = y / height
-            draggingId = id
-            lastOffsetTime = System.currentTimeMillis()
-            isTap = true
-        }
+        dragStartX = x / width
+        dragStartY = y / height
+        draggingId = id
+        lastOffsetTime = System.currentTimeMillis()
+        isTap = true
+
         return true
     }
 
@@ -257,9 +256,11 @@ open class MonthCVD : CustomViewDelegate() {
         if (draggingId == id) {
             lastOffset = currentOffset
             lastOffsetTime = System.currentTimeMillis()
-            currentOffset = (x / width) - dragStartX
-            if ((x / width - dragStartX).absoluteValue > 0.05f || (y / height - dragStartY).absoluteValue > 0.05f) {
-                isTap = false
+            if(dragEnabled) {
+                currentOffset = (x / width) - dragStartX
+                if ((x / width - dragStartX).absoluteValue > 0.05f || (y / height - dragStartY).absoluteValue > 0.05f) {
+                    isTap = false
+                }
             }
         } else {
             dayAtPixel(x, y)?.let {
@@ -276,7 +277,7 @@ open class MonthCVD : CustomViewDelegate() {
                 dayAtPixel(x, y)?.let {
                     onTap(it)
                 }
-            } else {
+            } else if(dragEnabled) {
                 val weighted =
                     currentOffset + (currentOffset - lastOffset) * 200f / (System.currentTimeMillis() - lastOffsetTime).toFloat()
                 if (weighted > 0.5f) {
