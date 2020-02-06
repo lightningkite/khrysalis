@@ -499,8 +499,8 @@ fun SwiftAltListener.registerClass() {
                 dg.annotatedDelegationSpecifier()
                     .asSequence()
                     .mapNotNull { it.delegationSpecifier() }
-                    .forEachBetween(
-                        forItem = {
+                    .map {
+                        return@map {
                             it.constructorInvocation()?.let {
                                 write(it.userType())
                             }
@@ -508,11 +508,29 @@ fun SwiftAltListener.registerClass() {
                             it.explicitDelegation()?.let {
                                 throw IllegalArgumentException("Explicit delegation ('by') not supported")
                             }
+                        }
+                    }
+                    .let {
+                        if(item.modifiers()?.annotation()?.any { it.singleAnnotation()?.unescapedAnnotation()?.text?.startsWith("swiftMustBeClass") == true } == true){
+                            it + {
+                                append("class")
+                            }
+                        } else {
+                            it
+                        }
+                    }
+                    .forEachBetween(
+                        forItem = {
+                            it()
                         },
                         between = {
                             append(", ")
                         }
                     )
+            } ?: run {
+                if(item.modifiers()?.annotation()?.any { it.singleAnnotation()?.unescapedAnnotation()?.text?.startsWith("swiftMustBeClass") == true } == true){
+                    direct.append(": class")
+                }
             }
             append(" {")
         }

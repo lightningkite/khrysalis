@@ -12,29 +12,29 @@ import FirebaseCore
 import Khrysalis
 
 open class KhrysalisFcmAppDelegate: KhrysalisAppDelegate, UNUserNotificationCenterDelegate, MessagingDelegate {
-    
+
     override open func application(_ application: UIApplication, didFinishLaunchingWithOptions launchOptions: [UIApplication.LaunchOptionsKey: Any]?) -> Bool {
         FirebaseApp.configure()
         Messaging.messaging().delegate = self
         UNUserNotificationCenter.current().delegate = self
-        
+
         let _ = super.application(application, didFinishLaunchingWithOptions: launchOptions)
-        
+
         UIApplication.shared.registerForRemoteNotifications()
-        
+
         //Handle tapped notification from launch
         if let notification = launchOptions?[UIApplication.LaunchOptionsKey.remoteNotification] {
             onNotificationClick(userInfo: notification as! Dictionary<AnyHashable, Any>)
         }
-        
+
         return true
     }
-    
+
     // This method will be called when app received push notifications in foreground
     public func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void)
     {
-        var shouldShow = true
-        if let entryPoint = self.viewController as? EntryPoint {
+        var shouldShow = .UNHANDLED
+        if let entryPoint = self.viewController as? ForegroundNotificationHandler {
             let info = notification.request.content.userInfo
             shouldShow = entryPoint.handleNotificationInForeground(map: info
                 .filter { it in it.key is String && it.value is String }
@@ -42,13 +42,13 @@ open class KhrysalisFcmAppDelegate: KhrysalisAppDelegate, UNUserNotificationCent
                 .mapValues { it in it as! String }
             )
         }
-        if shouldShow {
-            completionHandler([.alert, .badge, .sound])
-        } else {
+        if shouldShow == .SUPPRESS_NOTIFICATION {
             completionHandler([])
+        } else {
+            completionHandler([.alert, .badge, .sound])
         }
     }
-    
+
     //This method will be called when a user taps on a notification and the app is running.
     public func userNotificationCenter(_ center: UNUserNotificationCenter,
                                     didReceive response: UNNotificationResponse,
@@ -57,7 +57,7 @@ open class KhrysalisFcmAppDelegate: KhrysalisAppDelegate, UNUserNotificationCent
         onNotificationClick(userInfo: userInfo)
         completionHandler()
     }
-    
+
     private func onNotificationClick(userInfo: [AnyHashable: Any]){
         if let urlString = userInfo["deepLink"] as? String,
             let url = URL(string: urlString),
@@ -77,7 +77,7 @@ open class KhrysalisFcmAppDelegate: KhrysalisAppDelegate, UNUserNotificationCent
             }
         }
     }
-    
+
     public func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
         Notifications.notificationToken.value = fcmToken
     }

@@ -15,6 +15,9 @@ typealias Uri = Uri
 @Target(AnnotationTarget.TYPE)
 annotation class escaping
 
+@Target(AnnotationTarget.CLASS)
+annotation class swiftMustBeClass
+
 @Target(AnnotationTarget.PROPERTY)
 annotation class unowned
 

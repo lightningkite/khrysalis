@@ -7,9 +7,19 @@ public extension UIRatingBar {
     func bind(_ stars: Int32, _ observable: MutableObservableProperty<Int32>) -> Void {
         self.settings.totalStars = Int(stars)
         self.settings.fillMode = .full
-
+        
+        var suppress = false
         observable.addAndRunWeak(self) { (self, value) in
+            guard !suppress else { return }
+            suppress = true
             self.rating = Double(value)
+            suppress = false
+        }
+        self.didTouchCosmos = { rating in
+            guard !suppress else { return }
+            suppress = true
+            observable.value = Int32(rating)
+            suppress = false
         }
     }
     func bind(stars: Int32, observable: MutableObservableProperty<Int32>) -> Void {

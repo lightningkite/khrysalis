@@ -1,1 +1,1 @@
-{"version":2,"value":{"./testData/shared/test.shared.kt":{"path":"./testData/shared/test.shared.kt","hash":1785824755,"data":[]}}}
+{"version":2,"value":{"./testData/shared/0_work.shared.kt":{"path":"./testData/shared/0_work.shared.kt","hash":1151897116,"data":[{"packageName":"com.test","name":"TestInterface","methods":["example"],"properties":[],"implements":[]}]},"./testData/shared/test.shared.kt":{"path":"./testData/shared/test.shared.kt","hash":386262629,"data":[]}}}

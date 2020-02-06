@@ -1,1 +1,1 @@
-{"version":2,"value":{}}
+{"version":2,"value":{"/Users/josephivie/StudioProjects/khrysalis/android-fcm/src/main/java/com/lightningkite/khrysalis/fcm/ForegroundNotificationHandler.shared.kt":{"path":"/Users/josephivie/StudioProjects/khrysalis/android-fcm/src/main/java/com/lightningkite/khrysalis/fcm/ForegroundNotificationHandler.shared.kt","hash":-1905322585,"data":[{"packageName":"com.lightningkite.khrysalis.fcm","name":"ForegroundNotificationHandler","methods":["handleNotificationInForeground"],"properties":[],"implements":[]}]}}}

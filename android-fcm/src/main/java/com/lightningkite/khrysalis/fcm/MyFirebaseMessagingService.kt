@@ -22,7 +22,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
     }
 
     override fun onMessageReceived(message: RemoteMessage) {
-        if ((main as? EntryPoint)?.handleNotificationInForeground(message.data) != false) {
+        if ((main as? ForegroundNotificationHandler)?.handleNotificationInForeground(message.data) != ForegroundNotificationHandlerResult.SUPPRESS_NOTIFICATION) {
             //show notification
             message.notification?.let { notification ->
                 val meta = packageManager.getApplicationInfo(packageName, PackageManager.GET_META_DATA).metaData

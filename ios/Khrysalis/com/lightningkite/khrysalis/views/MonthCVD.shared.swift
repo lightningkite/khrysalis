@@ -185,13 +185,11 @@ open class MonthCVD: CustomViewDelegate {
                 return true
             } 
         }
-        if dragEnabled {
-            dragStartX = x / width
-            dragStartY = y / height
-            draggingId = id
-            lastOffsetTime = System.currentTimeMillis()
-            isTap = true
-        }
+        dragStartX = x / width
+        dragStartY = y / height
+        draggingId = id
+        lastOffsetTime = System.currentTimeMillis()
+        isTap = true
         return true
     }
     override public func onTouchDown(_ id: Int32, _ x: Float, _ y: Float, _ width: Float, _ height: Float) -> Bool {
@@ -209,9 +207,11 @@ open class MonthCVD: CustomViewDelegate {
         if draggingId == id {
             lastOffset = currentOffset
             lastOffsetTime = System.currentTimeMillis()
-            currentOffset = ( x / width ) - dragStartX
-            if ( x / width - dragStartX ).absoluteValue > Float(0.05) || ( y / height - dragStartY ).absoluteValue > Float(0.05) {
-                isTap = false
+            if dragEnabled {
+                currentOffset = ( x / width ) - dragStartX
+                if ( x / width - dragStartX ).absoluteValue > Float(0.05) || ( y / height - dragStartY ).absoluteValue > Float(0.05) {
+                    isTap = false
+                }
             }
         } else {
             
@@ -239,7 +239,7 @@ open class MonthCVD: CustomViewDelegate {
                 if let it = (dayAtPixel(x, y)) {
                     onTap(it) 
                 }
-            } else {
+            } else if dragEnabled {
                 var weighted = currentOffset + ( currentOffset - lastOffset ) * Float(200) / ( System.currentTimeMillis() - lastOffsetTime ).toFloat()
                 if weighted > Float(0.5) {
                     currentMonthObs.value.setAddMonthOfYear(-1)
