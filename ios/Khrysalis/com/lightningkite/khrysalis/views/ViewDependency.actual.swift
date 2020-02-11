@@ -29,7 +29,25 @@ public class ViewDependency {
             heightPixels: Int32(UIScreen.main.bounds.height * UIScreen.main.scale)
         )
     }
-    
+
+    //--- ViewDependency.share(String, String)
+    func share(_ subject: String, _ message: String) -> Void {
+//         if let myWebsite = URL(string: "http://itunes.apple.com/app/idXXXXXXXXX") {//Enter link to your app here
+//                     let objectsToShare = [textToShare, myWebsite, image ?? #imageLiteral(resourceName: "app-logo")] as [Any]
+//                     let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
+//
+//                     //Excluded Activities
+//                     activityVC.excludedActivityTypes = [UIActivity.ActivityType.airDrop, UIActivity.ActivityType.addToReadingList]
+//                     //
+//
+//                     activityVC.popoverPresentationController?.sourceView = sender
+//                     self.present(activityVC, animated: true, completion: nil)
+//                 }    }
+    }
+    func share(subject: String, message: String) -> Void {
+        return share(subject, message)
+    }
+
     //--- ViewDependency.downloadDrawable(String, Int? , Int? , (Drawable?)->Unit)
     public func downloadDrawable(
         url: String,
@@ -56,7 +74,7 @@ public class ViewDependency {
             }
         }
     }
-    
+
     //--- ViewDependency.checkedDrawable(Drawable, Drawable)
     public func checkedDrawable(
         checked: @escaping Drawable,
@@ -70,10 +88,10 @@ public class ViewDependency {
     ) -> Drawable {
         return { view in
             let layer = CALayer()
-            
+
             let checkedLayer = checked(view)
             let normalLayer = normal(view)
-            
+
             layer.addOnStateChange(view) { [unowned layer] state in
                 layer.sublayers?.forEach { $0.removeFromSuperlayer() }
                 if state.contains(.selected) {
@@ -88,11 +106,11 @@ public class ViewDependency {
             layer.onResize.startWith(layer.bounds).addWeak(normalLayer) { (normalLayer, bounds) in
                 normalLayer.frame = bounds
             }
-            
+
             return layer
         }
     }
-    
+
     //--- ViewDependency.setSizeDrawable(Drawable, Int, Int)
     public func setSizeDrawable(drawable: @escaping Drawable, width: Int, height: Int) -> Drawable {
         return setSizeDrawable(drawable, width, height)
@@ -104,7 +122,7 @@ public class ViewDependency {
             return existing
         }
     }
-    
+
     //--- ViewDependency image helpers
     private static let delegateExtension = ExtensionProperty<ViewDependency, ImageDelegate>()
     private var imageDelegate: ImageDelegate {
@@ -134,7 +152,7 @@ public class ViewDependency {
             self.parentViewController.present(imageDelegate.imagePicker, animated: true, completion: nil)
         }
     }
-    
+
     //--- ViewDependency.requestImageCamera((Uri)->Unit)
     public func requestImageCamera(onResult: @escaping (Uri) -> Void) {
         DispatchQueue.main.async {
@@ -180,16 +198,16 @@ public class ViewDependency {
 //--- Image helpers
 
 private class ImageDelegate : NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
-    
+
     var imagePicker = UIImagePickerController()
     var onImagePicked: ((Uri)->Void)? = nil
-    
+
     func prepareGallery(){
         imagePicker.delegate = self
         imagePicker.sourceType = .savedPhotosAlbum
         imagePicker.allowsEditing = false
     }
-    
+
     func prepareCamera(){
         imagePicker.delegate = self
         imagePicker.sourceType = .camera
@@ -197,7 +215,7 @@ private class ImageDelegate : NSObject, UIImagePickerControllerDelegate, UINavig
         imagePicker.cameraDevice = .front
         imagePicker.allowsEditing = false
     }
-    
+
 //    @objc public func handleResult(image: UIImage, didFinishSavingWithError error: NSError?, contextInfo: UnsafeMutableRawPointer?) {
 //        if error == nil {
 //            imagePicker.dismiss(animated: true, completion: {
@@ -207,7 +225,7 @@ private class ImageDelegate : NSObject, UIImagePickerControllerDelegate, UINavig
 //            })
 //        }
 //    }
-    
+
     public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if #available(iOS 11.0, *) {
             if let image = info[.imageURL] as? URL {

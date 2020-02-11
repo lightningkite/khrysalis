@@ -1,24 +1,25 @@
 package com.lightningkite.khrysalis.views
 
 
+import android.Manifest
+import android.app.Activity
+import android.content.Intent
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.StateListDrawable
-import com.squareup.picasso.Picasso
-import com.squareup.picasso.Target
-
-import android.Manifest
-import android.app.Activity
-import android.content.Intent
 import android.provider.MediaStore
 import android.util.DisplayMetrics
+import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.FileProvider
 import com.lightningkite.khrysalis.Uri
 import com.lightningkite.khrysalis.android.ActivityAccess
 import com.lightningkite.khrysalis.views.android.startIntent
+import com.squareup.picasso.Picasso
+import com.squareup.picasso.Target
 import java.io.File
+
 
 typealias ViewDependency = ActivityAccess
 
@@ -26,6 +27,13 @@ fun ViewDependency.getString(resource: StringResource): String = context.getStri
 fun ViewDependency.getColor(resource: ColorResource): Int = context.resources.getColor(resource)
 val ViewDependency.displayMetrics: DisplayMetrics get() = context.resources.displayMetrics
 
+fun ViewDependency.share(subject: String, message: String){
+    val i = Intent(Intent.ACTION_SEND)
+    i.type = "text/plain"
+    i.putExtra(Intent.EXTRA_SUBJECT, subject)
+    i.putExtra(Intent.EXTRA_TEXT, message)
+    context.startActivity(Intent.createChooser(i, subject))
+}
 
 fun ViewDependency.requestImageGallery(
     callback: (Uri) -> Unit

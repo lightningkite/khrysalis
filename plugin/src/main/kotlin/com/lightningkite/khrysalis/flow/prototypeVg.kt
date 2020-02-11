@@ -238,7 +238,7 @@ private fun generateFile(
             }
             line("")
             line("${CodeSection.sectionMarker} Title ${CodeSection.overwriteMarker}")
-            line("""override val title: String get() = "${viewName}"""")
+            line("""override val title: String get() = "${viewName.replace(Regex("[A-Z]")) { " " + it.value }.trim()}"""")
             line("")
             line("${CodeSection.sectionMarker} Generate Start ${CodeSection.overwriteMarker}")
             line("""override fun generate(dependency: ViewDependency): View {""")
@@ -258,6 +258,9 @@ private fun generateFile(
                     if (view != null) {
                         line()
                         line("${CodeSection.sectionMarker} Set Up ${view} ${CodeSection.overwriteMarker}")
+                        if(node.name == "com.google.android.gms.maps.MapView"){
+                            line("$view.bind(dependency)")
+                        }
                         node.attributes["tools:text"]?.let {
                             if (it.startsWith("@string")) {
                                 line("""$view.bindStringRes(ConstantObservableProperty(R.string.${it.removePrefix("@string/")}))""")
@@ -281,18 +284,26 @@ private fun generateFile(
                         }
                         node.attributes["tools:listitem"]?.let {
                             val xmlName = it.removePrefix("@layout/").camelCase().capitalize().plus("Xml")
+                            val otherViewNode = viewNodeMap[it.removePrefix("@layout/").camelCase().capitalize()]
                             line("$view.bind(")
                             tab {
                                 line("data = ConstantObservableProperty(listOf(1, 2, 3, 4)),")
                                 line("defaultValue = 1,")
-                                line("makeView = label@ { obs ->")
+                                line("makeView = label@ { observable ->")
                                 tab {
                                     line("${CodeSection.sectionMarker} Make Subview For ${view} ${CodeSection.overwriteMarker}")
-                                    line("val cellXml = $xmlName() ")
-                                    line("val cellView = cellXml.setup(dependency)")
-                                    val file = xml.parentFile.resolve(it.removePrefix("@layout/").plus(".xml"))
-                                    handleNode(XmlNode.read(file, styles), "cellXml.")
-                                    handleNodeClick(node, "cellXml.xmlRoot")
+                                    // If sublayout has a VG, use that instead of looping down the layout.
+                                    if(otherViewNode != null){
+                                        line("val cellVg = ${makeView(otherViewNode, null, view)} ")
+                                        line("val cellView = cellVg.generate(dependency)")
+                                        handleNodeClick(node, "cellView")
+                                    } else {
+                                        line("val cellXml = $xmlName() ")
+                                        line("val cellView = cellXml.setup(dependency)")
+                                        val file = xml.parentFile.resolve(it.removePrefix("@layout/").plus(".xml"))
+                                        handleNode(XmlNode.read(file, styles), "cellXml.")
+                                        handleNodeClick(node, "cellXml.xmlRoot")
+                                    }
                                     line("${CodeSection.sectionMarker} End Make Subview For ${view} ${CodeSection.overwriteMarker}")
                                     line("return@label cellView")
                                 }
