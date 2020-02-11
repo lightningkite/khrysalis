@@ -132,8 +132,8 @@ open class LinearLayout: UIView {
             guard subview.includeInLayout else { continue }
             let combined = params.combined
             let viewMeasured = subview.sizeThatFits(makeSize(
-                primary: size[orientation] - result[orientation] - combined.start(orientation) - combined.end(orientation),
-                secondary: size[orientation.other]
+                primary: size[orientation] - result[orientation] - combined.total(orientation),
+                secondary: size[orientation.other] - combined.total(orientation.other)
             ))
             let viewSize = CGSize(
                 width: max(
