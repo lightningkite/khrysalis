@@ -33,7 +33,7 @@ open class KhrysalisFcmAppDelegate: KhrysalisAppDelegate, UNUserNotificationCent
     // This method will be called when app received push notifications in foreground
     public func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void)
     {
-        var shouldShow = .UNHANDLED
+        var shouldShow: ForegroundNotificationHandlerResult = .UNHANDLED
         if let entryPoint = self.viewController as? ForegroundNotificationHandler {
             let info = notification.request.content.userInfo
             shouldShow = entryPoint.handleNotificationInForeground(map: info

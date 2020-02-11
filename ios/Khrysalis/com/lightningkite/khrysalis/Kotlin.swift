@@ -123,8 +123,11 @@ public extension Array {
     mutating func clear() {
         self.removeAll()
     }
-    mutating func removeAt(_ index: Int32) {
-        remove(at: Int(index))
+    mutating func removeAt(_ index: Int32) -> Element {
+        return remove(at: Int(index))
+    }
+    mutating func removeAt(_ index: Index) -> Element {
+        return remove(at: index)
     }
     var lastIndex: Int32 { return Int32(self.count - 1) }
     

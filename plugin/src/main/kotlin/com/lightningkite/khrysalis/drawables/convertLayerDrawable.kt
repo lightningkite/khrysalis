@@ -34,7 +34,24 @@ fun convertLayerListDrawable(name: String, node: XmlNode, out: Appendable) {
                 appendln("        sublayer.frame.size.height = $it")
             }
             appendln("        layer.bounds.size = layer.bounds.size.expand(sublayer.bounds.size)")
-            appendln("        layer.onResize.startWith(layer.bounds).addWeak(sublayer) { (sublayer, bounds) in sublayer.frame = bounds }")
+            appendln("        layer.onResize.startWith(layer.bounds).addWeak(sublayer) { (sublayer, bounds) in ")
+            appendln("             var subBounds = bounds ")
+            subnode.attributeAsDimension("android:top")?.let {
+                appendln("             subBounds.origin.y += $it")
+                appendln("             subBounds.size.height -= $it")
+            }
+            subnode.attributeAsDimension("android:left")?.let {
+                appendln("             subBounds.origin.x += $it")
+                appendln("             subBounds.size.width -= $it")
+            }
+            subnode.attributeAsDimension("android:right")?.let {
+                appendln("             subBounds.size.width -= $it")
+            }
+            subnode.attributeAsDimension("android:botton")?.let {
+                appendln("             subBounds.size.height -= $it")
+            }
+            appendln("             sublayer.frame = subBounds ")
+            appendln("        }")
             appendln("        return sublayer")
             appendln("    }())")
         }

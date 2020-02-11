@@ -158,6 +158,7 @@ open class KhrysalisViewController: UIViewController, UINavigationControllerDele
         } else {
             innerView.frame.size.height = self.view.frame.size.height - innerView.frame.origin.y - keyboardHeight
         }
+        print("Layout all views into \(innerView.frame)")
         innerView.layoutSubviews()
     }
     

@@ -30,11 +30,8 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                     NotificationCompat.Builder(
                         this,
                         notification.channelId
-                            ?: resources.getString(
-                                meta.getInt(
-                                    "com.google.firebase.messaging.default_notification_channel_id",
-                                    0
-                                )
+                            ?: meta.getString(
+                                "com.google.firebase.messaging.default_notification_channel_id"
                             ) ?: "default"
                     )
                 meta.getInt("com.google.firebase.messaging.default_notification_icon", 0)

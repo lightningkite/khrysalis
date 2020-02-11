@@ -22,6 +22,39 @@ public extension View {
             }
         }
     }
+    
+    static let VISIBLE = ViewVisibility.VISIBLE
+    static let INVISIBLE = ViewVisibility.INVISIBLE
+    static let GONE = ViewVisibility.GONE
+    
+    var visibility: ViewVisibility {
+        get {
+            if !includeInLayout {
+                return .GONE
+            } else if isHidden {
+                return .INVISIBLE
+            } else {
+                return .VISIBLE
+            }
+        }
+        set(value){
+            switch value {
+            case .GONE:
+                includeInLayout = false
+                isHidden = false
+            case .VISIBLE:
+                includeInLayout = true
+                isHidden = false
+            case .INVISIBLE:
+                includeInLayout = true
+                isHidden = true
+            }
+        }
+    }
+}
+
+public enum ViewVisibility {
+    case VISIBLE, INVISIBLE, GONE
 }
 
 public extension UIView {
@@ -74,8 +107,11 @@ public extension UIView {
     }
     @objc func onLongClick(_ action: @escaping ()->Void) {
         self.isUserInteractionEnabled = true
-        let recognizer = UILongPressGestureRecognizer().addAction { [weak self] in
-            action()
+        let recognizer = UILongPressGestureRecognizer()
+        recognizer.addAction { [unowned recognizer, weak self] in
+            if recognizer.state == .ended {
+                action()
+            }
         }
         retain(as: "onLongClickRecognizer", item: recognizer)
         self.addGestureRecognizer(recognizer)

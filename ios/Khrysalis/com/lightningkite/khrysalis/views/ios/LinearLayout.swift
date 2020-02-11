@@ -65,6 +65,10 @@ open class LinearLayout: UIView {
         setNeedsLayout()
     }
     
+    public func removeView(_ view: UIView) {
+        view.removeFromSuperview()
+    }
+    
     public func removeAllViews() {
         self.subviews.forEach { $0.removeFromSuperview() }
     }

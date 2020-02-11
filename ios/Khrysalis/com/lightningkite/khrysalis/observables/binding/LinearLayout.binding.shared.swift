@@ -7,28 +7,10 @@ import RxRelay
 
 
 
-private class LinearLayoutBoundSubview<T>: Equatable, Hashable {
+private class LinearLayoutBoundSubview<T> {
     
     public var view: View
     public var property: StandardObservableProperty<T>
-    
-    public static func == (lhs: LinearLayoutBoundSubview, rhs: LinearLayoutBoundSubview) -> Bool {
-        return lhs.view == rhs.view &&
-            lhs.property == rhs.property
-    }
-    public func hash(into hasher: inout Hasher) {
-        hasher.combine(view)
-        hasher.combine(property)
-    }
-    public func copy(
-        view: (View)? = nil,
-        property: (StandardObservableProperty<T>)? = nil
-    ) -> LinearLayoutBoundSubview {
-        return LinearLayoutBoundSubview(
-            view: view ?? self.view,
-            property: property ?? self.property
-        )
-    }
     
     
     public init(view: View, property: StandardObservableProperty<T>) {
@@ -43,7 +25,7 @@ private class LinearLayoutBoundSubview<T>: Equatable, Hashable {
  
 
 extension LinearLayout {
-    public func bind<T>(data: ObservableProperty<Array<T>>, defaultValue: T, makeView: (ObservableProperty<T>) -> View) -> Void {
+    public func bind<T>(data: ObservableProperty<Array<T>>, defaultValue: T, makeView: @escaping (ObservableProperty<T>) -> View) -> Void {
         var existingViews = Array<LinearLayoutBoundSubview<T>>()
         data.addAndRunWeak(self) { (self, value) in 
             var excessViews = existingViews.size - value.size
@@ -68,7 +50,7 @@ extension LinearLayout {
             }
         }
     }
-    public func bind<T>(_ data: ObservableProperty<Array<T>>, _ defaultValue: T, _ makeView: (ObservableProperty<T>) -> View) -> Void {
+    public func bind<T>(_ data: ObservableProperty<Array<T>>, _ defaultValue: T, _ makeView: @escaping (ObservableProperty<T>) -> View) -> Void {
         return bind(data: data, defaultValue: defaultValue, makeView: makeView)
     }
 }

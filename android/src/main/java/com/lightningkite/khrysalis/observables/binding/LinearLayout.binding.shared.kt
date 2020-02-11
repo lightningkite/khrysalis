@@ -16,12 +16,12 @@ import com.lightningkite.khrysalis.views.geometry.AlignPair
 import com.lightningkite.khrysalis.views.params
 import kotlin.reflect.KClass
 
-private data class LinearLayoutBoundSubview<T>(val view: View, val property: StandardObservableProperty<T>)
+private class LinearLayoutBoundSubview<T>(val view: View, val property: StandardObservableProperty<T>)
 
 fun <T> LinearLayout.bind(
     data: ObservableProperty<List<T>>,
     defaultValue: T,
-    makeView: (ObservableProperty<T>) -> View
+    makeView: @escaping() (ObservableProperty<T>) -> View
 ) {
     val existingViews = ArrayList<LinearLayoutBoundSubview<T>>()
     data.addAndRunWeak(this) { self, value ->
