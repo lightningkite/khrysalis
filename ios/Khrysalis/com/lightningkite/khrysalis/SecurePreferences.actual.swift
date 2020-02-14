@@ -41,7 +41,9 @@ public enum SecurePreferences {
     
     //--- SecurePreferences.clear()
     public static func clear() -> Void {
-        TODO()
+        for key in keychain.allKeys() {
+            remove(key)
+        }
     }
     
     //--- SecurePreferences.}

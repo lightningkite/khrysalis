@@ -18,6 +18,9 @@ open class SelectDateRangeMonthCVD : MonthCVD() {
     var start: MutableObservableProperty<DateAlone?> = StandardObservableProperty(null)
     var endInclusive: MutableObservableProperty<DateAlone?> = StandardObservableProperty(null)
     init {
+        start.value?.let {
+            this.currentMonthObs.value = it.dayOfMonth(1)
+        }
         this.start.onChange.addWeak(this) { self, value ->
             self.invalidate()
         }

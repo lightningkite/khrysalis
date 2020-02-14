@@ -53,6 +53,10 @@ open class SelectDateMonthCVD: MonthCVD {
         let selectedPaint: Paint = Paint()
         self.selectedPaint = selectedPaint
         super.init()
+        
+        if let it = (selected.value) {
+            self.currentMonthObs.value = it.dayOfMonth(1) 
+        }
         self.selected.onChange.addWeak(self) { (self, value) in 
             self.invalidate()
         }

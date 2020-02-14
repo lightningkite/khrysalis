@@ -3,9 +3,9 @@ import Foundation
 import UIKit
 
 
-//--- ViewFlipper.bindLoading(MutableObservableProperty<Boolean>)
+//--- ViewFlipper.bindLoading(ObservableProperty<Boolean>)
 public extension ViewFlipper {
-    func bindLoading(_ loading: MutableObservableProperty<Bool>) -> Void {
+    func bindLoading(_ loading: ObservableProperty<Bool>) -> Void {
         if subviews.size == 1 {
             let new = UIActivityIndicatorView(frame: .zero)
             new.startAnimating()

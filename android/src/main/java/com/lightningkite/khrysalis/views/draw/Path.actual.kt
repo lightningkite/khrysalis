@@ -1,7 +1,7 @@
 package com.lightningkite.khrysalis.views.draw
 
 /* SHARED DECLARATIONS
-typealias Path = Path
+typealias new  = Path
 
 fun Path.moveTo(x: Float, y: Float)
 fun Path.lineTo(x: Float, y: Float)

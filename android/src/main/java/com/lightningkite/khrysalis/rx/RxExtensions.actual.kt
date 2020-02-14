@@ -22,3 +22,4 @@ fun <Element : Any, Destination: Any> Observable<Element>.mapNotNull(transform: 
     else
         Observable.just(result)
 }
+

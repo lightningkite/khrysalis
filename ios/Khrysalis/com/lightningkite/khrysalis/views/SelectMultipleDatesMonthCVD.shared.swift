@@ -112,6 +112,10 @@ open class SelectMultipleDatesMonthCVD: MonthCVD {
         let adding: Bool = false
         self.adding = adding
         super.init()
+        
+        if let it = (dates.value.firstOrNull()) {
+            self.currentMonthObs.value = it.dayOfMonth(1) 
+        }
         self.dates.onChange.addWeak(self) { (self, value) in 
             self.invalidate()
         }

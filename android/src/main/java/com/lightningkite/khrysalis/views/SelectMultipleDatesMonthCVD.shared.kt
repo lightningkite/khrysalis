@@ -25,6 +25,9 @@ open class SelectMultipleDatesMonthCVD : MonthCVD() {
     val selectedPaint: Paint = Paint()
 
     init {
+        dates.value.firstOrNull()?.let {
+            this.currentMonthObs.value = it.dayOfMonth(1)
+        }
         this.dates.onChange.addWeak(this) { self, value ->
             self.invalidate()
         }

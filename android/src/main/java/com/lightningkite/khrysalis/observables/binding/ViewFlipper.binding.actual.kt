@@ -12,7 +12,7 @@ import android.widget.ProgressBar
 import android.widget.ViewFlipper
 import com.lightningkite.khrysalis.observables.*
 
-fun ViewFlipper.bindLoading(loading: MutableObservableProperty<Boolean>) {
+fun ViewFlipper.bindLoading(loading: ObservableProperty<Boolean>) {
     if (this.inAnimation == null)
         this.inAnimation = AlphaAnimation(0f, 1f).apply {
             duration = 250

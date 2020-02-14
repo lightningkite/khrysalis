@@ -143,6 +143,10 @@ open class SelectDateRangeMonthCVD: MonthCVD {
         let startedDraggingOn: DateAlone?  = nil
         self.startedDraggingOn = startedDraggingOn
         super.init()
+        
+        if let it = (start.value) {
+            self.currentMonthObs.value = it.dayOfMonth(1) 
+        }
         self.start.onChange.addWeak(self) { (self, value) in 
             self.invalidate()
         }

@@ -17,6 +17,18 @@ public typealias Uri = URL
 public typealias ByteArray = NSData
 
 public extension Sequence {
+    func first() -> Element {
+        for item in self {
+            return item
+        }
+        fatalError("There is no first element, it's empty")
+    }
+    func firstOrNull() -> Element? {
+        for item in self {
+            return item
+        }
+        return nil
+    }
     func mapNotNull<OUT>(transform: (Element)->OUT?) -> Array<OUT> {
         var newArray = Array<OUT>()
         for element in self {
@@ -131,14 +143,8 @@ public extension Array {
     }
     var lastIndex: Int32 { return Int32(self.count - 1) }
     
-    func first() -> Element {
-        return first!
-    }
     func last() -> Element {
         return last!
-    }
-    func firstOrNull() -> Element? {
-        return first
     }
     func lastOrNull() -> Element? {
         return last
@@ -239,15 +245,27 @@ public extension Collection {
     func joinToString(separator: String = ", ", _ conversion: (Element)->String) -> String {
         return self.map(conversion).joined(separator: separator)
     }
-    func toList() -> Array<Element> {
+     func toList() -> Array<Element> {
+         return Array(self)
+     }
+     func toArray() -> Array<Element> {
+         return Array(self)
+     }
+     func toNativeArray() -> Array<Element> {
         return Array(self)
     }
-    func toArray() -> Array<Element> {
-        return Array(self)
+     func toMutableList() -> Array<Element> {
+         return Array(self)
+     }
+    func count(predicate: (Element)->Bool) -> Int32 {
+        var current: Int32 = 0
+        for item in self {
+            if predicate(item) {
+                current += 1
+            }
+        }
+        return current
     }
-    func toNativeArray() -> Array<Element> {
-       return Array(self)
-   }
 }
 
 public extension Collection where Element: Hashable {
