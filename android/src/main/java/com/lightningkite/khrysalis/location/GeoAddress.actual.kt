@@ -19,6 +19,21 @@ val GeoAddress.street: String
         return (0..maxAddressLineIndex).joinToString(" ") { getAddressLine(it) }.substringBefore(",")
     }
 
+val GeoAddress.oneLineShort: String
+    get() {
+        return buildString {
+            append((0..maxAddressLineIndex).joinToString(" ") { getAddressLine(it) }.substringBefore(","))
+            this@oneLineShort.locality?.let { it ->
+                append(", ")
+                append(it)
+            }
+            this@oneLineShort.adminArea?.let {
+                append(", ")
+                append(it)
+            }
+        }
+    }
+
 fun GeoAddress.oneLine(withCountry: Boolean = false, withZip: Boolean = false): String = buildString {
     for (line in 0..maxAddressLineIndex) {
         append(getAddressLine(line))
