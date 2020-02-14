@@ -5,9 +5,12 @@ import UIKit
 
 //--- ViewFlipper.bindLoading(ObservableProperty<Boolean>)
 public extension ViewFlipper {
-    func bindLoading(_ loading: ObservableProperty<Bool>) -> Void {
+    func bindLoading(_ loading: ObservableProperty<Bool>, _ color: ColorResource? = null) -> Void {
         if subviews.size == 1 {
             let new = UIActivityIndicatorView(frame: .zero)
+            if let color = color {
+                new.color = color
+            }
             new.startAnimating()
             addSubview(new, FrameLayout.LayoutParams(gravity: .center))
         }
@@ -15,7 +18,7 @@ public extension ViewFlipper {
             self.displayedChild = value ? 1 : 0
         }
     }
-    func bindLoading(loading: MutableObservableProperty<Bool>) -> Void {
+    func bindLoading(loading: MutableObservableProperty<Bool>, color: ColorResource? = null) -> Void {
         return bindLoading(loading)
     }
 }
