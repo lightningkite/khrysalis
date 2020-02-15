@@ -198,6 +198,14 @@ public extension Array {
         }
         return sum
     }
+    
+    func take(_ count: Int32) -> Array<Element> {
+        return Array(self[0..<Int(count)])
+    }
+    
+    func takeLast(_ count: Int32) -> Array<Element> {
+        return Array(self[Int(size - count)..<self.count])
+    }
 }
 
 public extension Array where Element: Equatable {
@@ -651,6 +659,12 @@ public func IllegalArgumentException(_ message: String = "") -> KotlinStyleError
     return KotlinStyleError.IllegalArgumentException(message: message)
 }
 
+public extension Error {
+    func printStackTrace(){
+        print(self.localizedDescription)
+    }
+}
+
 public extension CaseIterable {
     /// A collection of all values of this type.
     static func values() -> Array<Self> {
@@ -695,5 +709,15 @@ public extension Comparable {
         } else {
             return self
         }
+    }
+}
+
+public class WeakReference<T: AnyObject> {
+    weak var item: T?
+    public init(_ item: T) {
+        self.item = item
+    }
+    public func get() -> T? {
+        return item
     }
 }

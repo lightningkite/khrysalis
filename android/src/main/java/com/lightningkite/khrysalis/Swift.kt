@@ -74,3 +74,5 @@ fun <T: Any> nullOf(): T? = null
 fun <K, V, V2> Map<K, V>.mapValuesToValues(mapper: (V)->V2): Map<K, V2> {
     return this.mapValues { mapper(it.value) }
 }
+
+val Throwable.localizedDescription: String get() = this.localizedMessage ?: this::class.java.simpleName

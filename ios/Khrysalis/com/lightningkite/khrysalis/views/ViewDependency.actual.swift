@@ -7,7 +7,7 @@ import AVKit
 
 
 //--- ViewDependency
-public class ViewDependency {
+public class ViewDependency: NSObject {
     public unowned let parentViewController: UIViewController
     public init(_ parentViewController: UIViewController){
         self.parentViewController = parentViewController

@@ -4,6 +4,9 @@ import CoreGraphics
 import UIKit
 
 
+//--- new (overwritten on flow generation)
+public typealias new = Void
+
 //--- Path
 public typealias Path = CGMutablePath
 

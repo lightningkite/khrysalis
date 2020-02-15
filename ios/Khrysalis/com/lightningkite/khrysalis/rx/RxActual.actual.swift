@@ -191,11 +191,36 @@ public extension PrimitiveSequenceType where Trait == SingleTrait {
     }
     
     //--- Single.subscribeBy((Throwable)->Unit, (Element)->Unit)
-    func subscribeBy(_ onError: @escaping (Error) -> Void, _ onSuccess: @escaping (Element) -> Void) -> Disposable {
+    func subscribeBy(_ onError: ((Error) -> Void)? = nil, _ onSuccess: ((Element) -> Void)? = nil) -> Disposable {
         return self.subscribe(onSuccess: onSuccess, onError: onError)
     }
     func subscribeBy(onError: @escaping (Error) -> Void, onSuccess: @escaping (Element) -> Void) -> Disposable {
         return subscribeBy(onError, onSuccess)
+    }
+    
+    //--- Single.cache()
+    func cache() -> Single<Self.Element> {
+        return self.toObservable().share(replay: 1, scope: .forever).asSingle()
+    }
+    
+    //--- Single.doOnSubscribe(()->Unit)
+    func doOnSubscribe(_ action: @escaping () -> Void) -> Single<Element> {
+        return self.do(onSubscribe: action)
+    }
+    
+    //--- Single.doFinally(()->Unit)
+    func doFinally(_ action: @escaping () -> Void) -> Single<Element> {
+        return self.do(onSuccess: { _ in action() }, onError: { _ in action() })
+    }
+    
+    //--- Single.doOnSuccess((Element)->Unit)
+    func doOnSuccess(_ action: @escaping (Element) -> Void) -> Single<Element> {
+        return self.do(onSuccess: action)
+    }
+    
+    //--- Single.doOnError((Exception)->Unit)
+    func doOnError(_ action: @escaping (Swift.Error) -> Void) -> Single<Element> {
+        return self.do(onError: action)
     }
     
     //--- Single.Companion.{

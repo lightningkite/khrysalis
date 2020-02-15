@@ -62,6 +62,12 @@ class Single<Element> {
         onSuccess: (Element) -> Unit
     ): Disposable
 
+    fun cache(): Single<Element>
+    fun doOnSubscribe(action: ()->Unit): Single<Element>
+    fun doFinally(action: ()->Unit): Single<Element>
+    fun doOnSuccess(action: (Element)->Unit): Single<Element>
+    fun doOnError(action: (Exception)->Unit): Single<Element>
+
     companion object {
         fun create(action: (SingleEmitter<Element>)->Unit): Single<Element>
         fun just(arg: Element): Single<Element>

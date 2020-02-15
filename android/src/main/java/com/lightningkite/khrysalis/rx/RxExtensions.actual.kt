@@ -1,7 +1,11 @@
 package com.lightningkite.khrysalis.rx
 
 import com.lightningkite.khrysalis.Box
+import com.lightningkite.khrysalis.observables.MutableObservableProperty
+import com.lightningkite.khrysalis.observables.ObservableProperty
+import com.lightningkite.khrysalis.post
 import io.reactivex.Observable
+import io.reactivex.Single
 import io.reactivex.functions.BiFunction
 
 
@@ -23,3 +27,8 @@ fun <Element : Any, Destination: Any> Observable<Element>.mapNotNull(transform: 
         Observable.just(result)
 }
 
+fun <Element: Any> Single<Element>.working(observable: MutableObservableProperty<Boolean>): Single<Element> {
+    return this
+        .doOnSubscribe { it -> post { observable.value = true } }
+        .doFinally { post { observable.value = false } }
+}

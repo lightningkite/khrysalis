@@ -3,9 +3,9 @@ import Foundation
 import UIKit
 
 
-//--- ViewFlipper.bindLoading(ObservableProperty<Boolean>)
+//--- ViewFlipper.bindLoading(ObservableProperty<Boolean>, ColorResource? )
 public extension ViewFlipper {
-    func bindLoading(_ loading: ObservableProperty<Bool>, _ color: ColorResource? = null) -> Void {
+    func bindLoading(_ loading: ObservableProperty<Bool>, _ color: ColorResource? = nil) -> Void {
         if subviews.size == 1 {
             let new = UIActivityIndicatorView(frame: .zero)
             if let color = color {
@@ -18,7 +18,7 @@ public extension ViewFlipper {
             self.displayedChild = value ? 1 : 0
         }
     }
-    func bindLoading(loading: MutableObservableProperty<Bool>, color: ColorResource? = null) -> Void {
+    func bindLoading(loading: MutableObservableProperty<Bool>, color: ColorResource? = nil) -> Void {
         return bindLoading(loading)
     }
 }

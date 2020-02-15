@@ -40,3 +40,13 @@ public extension Observable {
         }
     }
 }
+
+//--- Single<Element>.working(MutableObservableProperty<Boolean>)
+public extension PrimitiveSequenceType where Trait == SingleTrait {
+    func working(_ observable: MutableObservableProperty<Bool>) -> Single<Element> {
+        return self.do(onSuccess: { _ in observable.value = false }, onError: { _ in observable.value = false }, onSubscribe: { observable.value = true })
+    }
+    func working(observable: MutableObservableProperty<Bool>) -> Single<Element> {
+        return working(observable)
+    }
+}

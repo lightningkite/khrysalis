@@ -44,6 +44,28 @@ extension ObservableProperty where T == Bool {
     }
 }
  
+
+extension ObservableProperty where T == Bool {
+    public func openCloseBinding(open: @escaping () -> Void, close: @escaping () -> Void) -> Void {
+        var lastValue = self.value
+        if self.value {
+            open()
+        }
+        var everlasting = self.observableNN.subscribeBy{ (value) in 
+            if lastValue, !value {
+                close()
+            }
+            if !lastValue, value {
+                open()
+            }
+            lastValue = value
+        }
+    }
+    public func openCloseBinding(_ open: @escaping () -> Void, _ close: @escaping () -> Void) -> Void {
+        return openCloseBinding(open: open, close: close)
+    }
+}
+ 
  
 
 extension ObservableProperty where T == Bool {

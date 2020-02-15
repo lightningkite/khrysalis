@@ -5,6 +5,7 @@ import com.lightningkite.khrysalis.observables.*
 import com.lightningkite.khrysalis.rx.add
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
+import io.reactivex.rxkotlin.subscribeBy
 
 typealias Lifecycle = ObservableProperty<Boolean>
 
@@ -24,6 +25,24 @@ fun <A: AnyObject> ObservableProperty<@swiftExactly Boolean>.openCloseBinding(
         }
         if(!lastValue && value){
             open(target)
+        }
+        lastValue = value
+    }
+}
+fun ObservableProperty<@swiftExactly Boolean>.openCloseBinding(
+    open: @escaping() ()->Unit,
+    close: @escaping() ()->Unit
+) {
+    var lastValue = this.value
+    if(this.value){
+        open()
+    }
+    val everlasting = this.observableNN.subscribeBy { value ->
+        if(lastValue && !value) {
+            close()
+        }
+        if(!lastValue && value){
+            open()
         }
         lastValue = value
     }
