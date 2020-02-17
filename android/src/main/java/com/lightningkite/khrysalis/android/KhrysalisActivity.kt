@@ -95,6 +95,9 @@ abstract class KhrysalisActivity : AccessibleActivity() {
         intent.extras?.getString("deepLink")?.let{ Uri.parse(it) }?.let {
             handleDeepLink(it)
         }
+        intent.extras?.getString("clickAction")?.let{ Uri.parse(it) }?.let {
+            handleDeepLink(it)
+        }
     }
     protected fun handleDeepLink(uri: Uri) {
         handleDeepLink(
