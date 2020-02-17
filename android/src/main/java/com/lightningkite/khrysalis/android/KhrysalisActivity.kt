@@ -30,7 +30,7 @@ abstract class KhrysalisActivity : AccessibleActivity() {
     private var animator: ValueAnimator? = null
 
     open fun handleDeepLink(schema: String, host: String, path: String, params: Map<String, String>) {
-        println("Got deep link: $schema://$host/$path?${params.entries.joinToString("&") { it.key + "=" + it.value }}")
+        println("Got deep link: $schema://$host$path?${params.entries.joinToString("&") { it.key + "=" + it.value }}")
         (main as? EntryPoint)?.handleDeepLink(schema, host, path, params)
     }
 
@@ -89,13 +89,11 @@ abstract class KhrysalisActivity : AccessibleActivity() {
     }
 
     protected open fun handleNewIntent(intent: Intent){
+        println("Got new intent with extras: ${intent.extras?.keySet()?.associate { key -> key to intent.extras?.get(key) }}")
         intent.data?.let { uri ->
             handleDeepLink(uri)
         }
         intent.extras?.getString("deepLink")?.let{ Uri.parse(it) }?.let {
-            handleDeepLink(it)
-        }
-        intent.extras?.getString("clickAction")?.let{ Uri.parse(it) }?.let {
             handleDeepLink(it)
         }
     }

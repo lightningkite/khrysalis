@@ -312,10 +312,13 @@ class BoundDataSource<T, VIEW: UIView>: NSObject, UITableViewDataSource, UITable
         return count
     }
 
+    private var showingLast = false
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if indexPath.row >= (source.value.count) - 1 {
+        let nowShowingLast = indexPath.row >= (source.value.count) - 1
+        if nowShowingLast && !showingLast {
             atEnd()
         }
+        showingLast = nowShowingLast
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -371,11 +374,14 @@ class BoundMultiDataSourceSameType<T>: NSObject, UITableViewDataSource, UITableV
         let count = value.count
         return count
     }
-
+    
+    private var showingLast = false
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if indexPath.row >= (source.value.count) - 1 {
+        let nowShowingLast = indexPath.row >= (source.value.count) - 1
+        if nowShowingLast && !showingLast {
             atEnd()
         }
+        showingLast = nowShowingLast
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
@@ -430,11 +436,14 @@ class BoundMultiDataSource: NSObject, UITableViewDataSource, UITableViewDelegate
         let count = value.count
         return count
     }
-
+    
+    private var showingLast = false
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
-        if indexPath.row >= (source.value.count) - 1 {
+        let nowShowingLast = indexPath.row >= (source.value.count) - 1
+        if nowShowingLast && !showingLast {
             atEnd()
         }
+        showingLast = nowShowingLast
     }
 
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
