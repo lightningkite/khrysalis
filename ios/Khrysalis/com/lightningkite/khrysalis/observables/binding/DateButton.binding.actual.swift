@@ -11,10 +11,9 @@ public extension DateButton {
                 this.date = value
             }
         }
-        weak var observableWeak = observable
         self.onDateEntered.addWeak(self) { (self, value) in
-            if observableWeak?.value != value {
-                observableWeak?.value = value
+            if observable.value != value {
+                observable.value = value
             }
         }
     }
@@ -33,10 +32,9 @@ public extension TimeButton {
                 this.date = value
             }
         }
-        weak var observableWeak = observable
         self.onDateEntered.addWeak(self) { (self, value) in
-            if observableWeak?.value != value {
-                observableWeak?.value = value
+            if observable.value != value {
+                observable.value = value
             }
         }
     }
@@ -53,11 +51,10 @@ public extension DateButton {
                 this.date = dateFrom(value, Date().timeAlone)
             }
         }
-        weak var observableWeak = observable
         self.onDateEntered.addWeak(self) { (self, value) in
             let newValue = self.date.dateAlone
-            if observableWeak?.value != newValue {
-                observableWeak?.value = newValue
+            if observable.value != newValue {
+                observable.value = newValue
             }
         }
     }
@@ -75,11 +72,10 @@ public extension TimeButton {
                 this.date = dateFrom(Date().dateAlone, value)
             }
         }
-        weak var observableWeak = observable
         self.onDateEntered.addWeak(self) { (self, value) in
             let newValue = self.date.timeAlone
-            if observableWeak?.value != newValue {
-                observableWeak?.value = newValue
+            if observable.value != newValue {
+                observable.value = newValue
             }
         }
     }
