@@ -61,6 +61,7 @@ class MyFirebaseMessagingService : FirebaseMessagingService() {
                     notification.sound?.let { Uri.parse(it) }?.let { builder.setSound(it) }
                     notification.vibrateTimings?.let { builder.setVibrate(it) }
                     notification.notificationPriority?.let { builder.setPriority(it) }
+                    builder.setAutoCancel(true)
                     NotificationManagerCompat.from(this).notify(notification.tag?.hashCode() ?: message.hashCode(), builder.build())
                 }
             }
