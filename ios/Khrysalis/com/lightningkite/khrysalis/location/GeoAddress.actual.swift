@@ -54,6 +54,17 @@ public class GeoAddress {
         return self.mark?.location?.coordinate.toKhrysalis()
     }
 
+    public var oneLineShort: String {
+        var result = self.street
+        if let x = self.mark?.locality, let y = self.mark?.administrativeArea {
+            result += " "
+            result += x
+            result += ", "
+            result += y
+        }
+        return result
+    }
+
     //--- GeoAddress.oneLine(Boolean, Boolean)
     public func oneLine(_ withCountry: Bool, _ withZip: Bool = false) -> String {
         return oneLine(withCountry: withCountry, withZip: withZip)
