@@ -86,52 +86,52 @@ open class UIButtonWithLayer: UIButton {
     override open func layoutSubviews() {
         super.layoutSubviews()
         var placeableRect = self.bounds.inset(by: self.contentEdgeInsets)
-        if let iconLayer = iconLayer {
-            switch iconPosition {
-            case .center:
-                iconLayer.resize(CGRect(
-                    x: placeableRect.origin.x + (placeableRect.size.width - iconLayer.bounds.size.width) / 2,
-                    y: placeableRect.origin.y + (placeableRect.size.height - iconLayer.bounds.size.height) / 2,
-                    width: iconLayer.bounds.size.width,
-                    height: iconLayer.bounds.size.height
-                ))
-            case .left:
-                iconLayer.resize(CGRect(
-                    x: placeableRect.origin.x,
-                    y: placeableRect.origin.y + (placeableRect.size.height - iconLayer.bounds.size.height) / 2,
-                    width: iconLayer.bounds.size.width,
-                    height: iconLayer.bounds.size.height
-                ))
-                placeableRect.origin.x += iconLayer.bounds.size.width + iconPadding
-                placeableRect.size.width -= iconLayer.bounds.size.width + iconPadding
-            case .right:
-                iconLayer.resize(CGRect(
-                    x: placeableRect.origin.x + (placeableRect.size.width - iconLayer.bounds.size.width),
-                    y: placeableRect.origin.y + (placeableRect.size.height - iconLayer.bounds.size.height) / 2,
-                    width: iconLayer.bounds.size.width,
-                    height: iconLayer.bounds.size.height
-                ))
-                placeableRect.size.width -= iconLayer.bounds.size.width + iconPadding
-            case .top:
-                iconLayer.resize(CGRect(
-                    x: placeableRect.origin.x + (placeableRect.size.width - iconLayer.bounds.size.width) / 2,
-                    y: placeableRect.origin.y,
-                    width: iconLayer.bounds.size.width,
-                    height: iconLayer.bounds.size.height
-                ))
-                placeableRect.origin.y += iconLayer.bounds.size.height + iconPadding
-                placeableRect.size.height -= iconLayer.bounds.size.height + iconPadding
-            case .bottom:
-                iconLayer.resize(CGRect(
-                    x: placeableRect.origin.x + (placeableRect.size.width - iconLayer.bounds.size.width) / 2,
-                    y: placeableRect.origin.y + (placeableRect.size.height - iconLayer.bounds.size.height),
-                    width: iconLayer.bounds.size.width,
-                    height: iconLayer.bounds.size.height
-                ))
-                placeableRect.size.height -= iconLayer.bounds.size.height + iconPadding
-            }
-        }
         if let title = self.titleLabel?.text, title.isNotBlank(), let titleLabel = titleLabel {
+            if let iconLayer = iconLayer {
+                switch iconPosition {
+                case .center:
+                    iconLayer.resize(CGRect(
+                        x: placeableRect.origin.x + (placeableRect.size.width - iconLayer.bounds.size.width) / 2,
+                        y: placeableRect.origin.y + (placeableRect.size.height - iconLayer.bounds.size.height) / 2,
+                        width: iconLayer.bounds.size.width,
+                        height: iconLayer.bounds.size.height
+                    ))
+                case .left:
+                    iconLayer.resize(CGRect(
+                        x: placeableRect.origin.x,
+                        y: placeableRect.origin.y + (placeableRect.size.height - iconLayer.bounds.size.height) / 2,
+                        width: iconLayer.bounds.size.width,
+                        height: iconLayer.bounds.size.height
+                    ))
+                    placeableRect.origin.x += iconLayer.bounds.size.width + iconPadding
+                    placeableRect.size.width -= iconLayer.bounds.size.width + iconPadding
+                case .right:
+                    iconLayer.resize(CGRect(
+                        x: placeableRect.origin.x + (placeableRect.size.width - iconLayer.bounds.size.width),
+                        y: placeableRect.origin.y + (placeableRect.size.height - iconLayer.bounds.size.height) / 2,
+                        width: iconLayer.bounds.size.width,
+                        height: iconLayer.bounds.size.height
+                    ))
+                    placeableRect.size.width -= iconLayer.bounds.size.width + iconPadding
+                case .top:
+                    iconLayer.resize(CGRect(
+                        x: placeableRect.origin.x + (placeableRect.size.width - iconLayer.bounds.size.width) / 2,
+                        y: placeableRect.origin.y,
+                        width: iconLayer.bounds.size.width,
+                        height: iconLayer.bounds.size.height
+                    ))
+                    placeableRect.origin.y += iconLayer.bounds.size.height + iconPadding
+                    placeableRect.size.height -= iconLayer.bounds.size.height + iconPadding
+                case .bottom:
+                    iconLayer.resize(CGRect(
+                        x: placeableRect.origin.x + (placeableRect.size.width - iconLayer.bounds.size.width) / 2,
+                        y: placeableRect.origin.y + (placeableRect.size.height - iconLayer.bounds.size.height),
+                        width: iconLayer.bounds.size.width,
+                        height: iconLayer.bounds.size.height
+                    ))
+                    placeableRect.size.height -= iconLayer.bounds.size.height + iconPadding
+                }
+            }
             var destination = CGRect.zero
             destination.size = titleLabel.bounds.size
             switch textGravity.horizontal {
@@ -155,6 +155,13 @@ open class UIButtonWithLayer: UIButton {
                 destination.origin.y = placeableRect.origin.y + (placeableRect.size.height - destination.size.height) / 2
             }
             titleLabel.frame = destination
+        } else if let iconLayer = iconLayer {
+            iconLayer.resize(CGRect(
+                x: placeableRect.origin.x + (placeableRect.size.width - iconLayer.bounds.size.width) / 2,
+                y: placeableRect.origin.y + (placeableRect.size.height - iconLayer.bounds.size.height) / 2,
+                width: iconLayer.bounds.size.width,
+                height: iconLayer.bounds.size.height
+            ))
         }
     }
 }

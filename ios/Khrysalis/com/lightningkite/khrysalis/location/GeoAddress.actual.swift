@@ -17,8 +17,11 @@ public class GeoAddress {
     }
 
     //--- GeoAddress.street
-    public var street: String {
-        return "\(mark?.subThoroughfare ?? "") \(mark?.thoroughfare ?? "")"
+    public var street: String? {
+        if let x = mark?.subThoroughfare, let y = mark?.thoroughfare {
+            return "\(x) \(y)"
+        }
+        return nil
     }
 
     //--- GeoAddress.adminArea
@@ -55,14 +58,7 @@ public class GeoAddress {
     }
 
     public var oneLineShort: String {
-        var result = self.street
-        if let x = self.mark?.locality, let y = self.mark?.administrativeArea {
-            result += " "
-            result += x
-            result += ", "
-            result += y
-        }
-        return result
+        return oneLine()
     }
 
     //--- GeoAddress.oneLine(Boolean, Boolean)
@@ -70,8 +66,8 @@ public class GeoAddress {
         return oneLine(withCountry: withCountry, withZip: withZip)
     }
     public func oneLine(withCountry: Bool = false, withZip: Bool = false) -> String {
-        var result = self.street
-        if let x = self.mark?.locality, let y = self.mark?.administrativeArea {
+        var result = self.street ?? ""
+        if let x: String = self.mark?.locality, let y: String = self.mark?.administrativeArea {
             result += " "
             result += x
             result += ", "

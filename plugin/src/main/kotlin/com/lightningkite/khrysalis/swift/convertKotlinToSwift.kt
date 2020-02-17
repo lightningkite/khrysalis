@@ -138,10 +138,10 @@ fun convertKotlinToSwiftByFolder(
                     output.writeText(outputText)
 
                     FileConversionInfo(
-                        path = file.path,
+                        path = file.relativeTo(baseKotlin).path,
                         inputHash = if (errorOccurred) 0 else inputHash,
                         outputHash = outputText.hashCode(),
-                        outputPath = output.path
+                        outputPath = output.relativeTo(baseSwift).path
                     )
                 } catch (e: Exception) {
                     System.err.println("Failed to convert file $file")
