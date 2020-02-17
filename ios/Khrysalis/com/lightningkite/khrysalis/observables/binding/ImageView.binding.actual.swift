@@ -16,32 +16,48 @@ public extension UIImageView {
         runImageTransitionIfCached: Bool = false,
         completion: ((DataResponse<UIImage>) -> Void)? = nil
         ) {
-        self.image = nil
-        let activityIndicatorView = UIProgressView(progressViewStyle: UIProgressView.Style.default)
-        activityIndicatorView.progressTintColor = UIImageView.loadingProgressTintColor
-        activityIndicatorView.trackTintColor = UIImageView.loadingTrackTintColor
-        activityIndicatorView.setProgress(0, animated: true)
-        activityIndicatorView.center.x = self.frame.size.width / 2
-        activityIndicatorView.center.y = self.frame.size.height / 2
-        self.addSubview(activityIndicatorView)
-        weak var weakAIV = activityIndicatorView
-        af_setImage(
-            withURL: url,
-            placeholderImage: placeholderImage,
-            progress: { progress -> Void in
-                weakAIV?.setProgress(Float(progress.fractionCompleted), animated: true)
-                return
-        },
-            imageTransition: imageTransition,
-            runImageTransitionIfCached: runImageTransitionIfCached,
-            completion: { result in
-                if let error = result.error {
-                    print("ERROR LOADING IMAGE: \(error.localizedDescription)")
-                }
-                weakAIV?.removeFromSuperview()
-                completion?(result)
+        post {
+            self.image = nil
+            let activityIndicatorView = UIProgressView(progressViewStyle: UIProgressView.Style.default)
+            activityIndicatorView.progressTintColor = UIImageView.loadingProgressTintColor
+            activityIndicatorView.trackTintColor = UIImageView.loadingTrackTintColor
+            activityIndicatorView.setProgress(0, animated: true)
+            activityIndicatorView.center.x = self.frame.size.width / 2
+            activityIndicatorView.center.y = self.frame.size.height / 2
+            self.addSubview(activityIndicatorView)
+            weak var weakAIV = activityIndicatorView
+            
+            var filter: ImageFilter? = nil
+            switch self.contentMode {
+            case .scaleToFill:
+                filter = ScaledToSizeFilter(size: self.frame.size)
+            case .scaleAspectFill:
+            filter = AspectScaledToFillSizeFilter(size: self.frame.size)
+            case .scaleAspectFit:
+            filter = AspectScaledToFitSizeFilter(size: self.frame.size)
+            default:
+                filter = nil
+            }
+            
+            self.af_setImage(
+                withURL: url,
+                placeholderImage: placeholderImage,
+                filter: filter,
+                progress: { progress -> Void in
+                    weakAIV?.setProgress(Float(progress.fractionCompleted), animated: true)
+                    return
+            },
+                imageTransition: imageTransition,
+                runImageTransitionIfCached: runImageTransitionIfCached,
+                completion: { result in
+                    if let error = result.error {
+                        print("ERROR LOADING IMAGE: \(error.localizedDescription)")
+                    }
+                    weakAIV?.removeFromSuperview()
+                    completion?(result)
+            }
+            )
         }
-        )
     }
     
     func loadImage(_ image: Image?) -> Void {

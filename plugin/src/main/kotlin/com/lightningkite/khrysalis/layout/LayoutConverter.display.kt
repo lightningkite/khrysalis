@@ -51,6 +51,9 @@ val LayoutConverter.Companion.displayViews
                 node.attributeAsDouble("android:rotation")?.let {
                     appendln("view.transform = CGAffineTransform(rotationAngle: ${it * PI / 180.0})")
                 }
+                node.attributes["android:visibility"]?.let {
+                    appendln("view.visibility = View.${it.toUpperCase()}")
+                }
             },
             ViewType("Space", "UIView", "View") {},
             ViewType("ImageView", "UIImageView", "View") { node ->

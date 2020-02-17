@@ -18,6 +18,14 @@ public extension UITextView {
             text = value
         }
     }
+    var attributedPlaceholder: NSAttributedString {
+        get {
+            return NSAttributedString(string: text)
+        }
+        set(value) {
+            text = value.string
+        }
+    }
     func setLeftPaddingPoints(_ amount:CGFloat){
         self.textContainerInset.left = amount
     }
@@ -40,5 +48,9 @@ public extension UITextView {
         let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil)
         toolbar.setItems([ spaceButton, doneButton], animated: false)
         inputAccessoryView = toolbar
+    }
+    var baselineAdjustment: UIBaselineAdjustment {
+        get { return .alignBaselines }
+        set(value){}
     }
 }
