@@ -55,7 +55,13 @@ public extension String {
         return formatList(arguments)
     }
     func formatList(_ arguments: Array<Any>) -> String {
-        let fixedArgs: Array<CVarArg> = arguments.filter { $0 is CVarArg }.map { $0 as! CVarArg }
+        let fixedArgs: Array<CVarArg> = arguments.map { it in
+            if let it = it as? CVarArg {
+                return it
+            } else {
+                return String(describing: it)
+            }
+        }
         let fixedTemplate = String.fixTemplateRegex.stringByReplacingMatches(in: self, options: [], range: NSMakeRange(0, self.count), withTemplate: "%$1@")
         return String(format: fixedTemplate, arguments: fixedArgs)
     }

@@ -45,7 +45,7 @@ fun convertKotlinToSwiftByFolder(
     val swift = SwiftAltListener().apply(setup)
     swift.interfaces += interfaces
     log("Interfaces: ")
-    for(i in swift.interfaces){
+    for (i in swift.interfaces) {
         log(i.value.toString())
     }
 
@@ -64,17 +64,21 @@ fun convertKotlinToSwiftByFolder(
                 .removeSuffix("kt")
                 .plus("swift")
         )
+        val relativeInput = file.relativeTo(baseKotlin).path
+        val relativeOutput = output.relativeTo(baseSwift).path
         output.parentFile.mkdirs()
 
         val text = file.readText()
         val inputHash = text.hashCode()
         val outputHash = if (output.exists()) output.readText().hashCode() else 0
-        val existing = existingCache[file.path]
+        val existing = existingCache[relativeInput]
         val cache =
             if (!clean && existing != null && existing.inputHash == inputHash && existing.outputHash == outputHash) {
                 existing
             } else {
-                log("Converting ${file.absolutePath.substringBeforeLast('.').commonSuffixWith(output.absolutePath.substringBeforeLast('.'))}")
+                log(
+                    "Converting ${relativeInput}"
+                )
 
                 val lexer = KotlinLexer(ANTLRInputStream(text))
                 val tokenStream = CommonTokenStream(lexer)
@@ -138,10 +142,10 @@ fun convertKotlinToSwiftByFolder(
                     output.writeText(outputText)
 
                     FileConversionInfo(
-                        path = file.relativeTo(baseKotlin).path,
+                        path = relativeInput,
                         inputHash = if (errorOccurred) 0 else inputHash,
                         outputHash = outputText.hashCode(),
-                        outputPath = output.relativeTo(baseSwift).path
+                        outputPath = relativeOutput
                     )
                 } catch (e: Exception) {
                     System.err.println("Failed to convert file $file")
@@ -165,26 +169,34 @@ fun convertKotlinToSwiftByFolder(
                     .removeSuffix("kt")
                     .plus("swift")
             )
+            val relativeInput = file.relativeTo(baseKotlin).path
+            val relativeOutput = output.relativeTo(baseSwift).path
             output.parentFile.mkdirs()
 
             val text = file.readText()
             val inputHash = text.hashCode()
             val outputHash = if (output.exists()) output.readText().hashCode() else 0
-            val existing = existingCache[file.path]
+            val existing = existingCache[relativeInput]
             val cache =
                 if (!clean && existing != null && existing.inputHash == inputHash && existing.outputHash == outputHash) {
                     existing
                 } else {
-                    log("Stubbing ${file.absolutePath.substringBeforeLast('.').commonSuffixWith(output.absolutePath.substringBeforeLast('.'))}")
+                    log(
+                        "Stubbing ${file.absolutePath.substringBeforeLast('.').commonSuffixWith(
+                            output.absolutePath.substringBeforeLast(
+                                '.'
+                            )
+                        )}"
+                    )
 
                     try {
                         file.stubs(swift, output)
 
                         FileConversionInfo(
-                            path = file.path,
+                            path = relativeInput,
                             inputHash = inputHash,
                             outputHash = output.readText().hashCode(),
-                            outputPath = output.path
+                            outputPath = relativeOutput
                         )
                     } catch (e: Exception) {
                         System.err.println("Failed to convert file $file")
@@ -208,6 +220,6 @@ fun convertKotlinToSwiftByFolder(
     baseSwift.walkTopDown()
         .filter { it.extension == "swift" }
         .filter { it.name.contains(".shared") }
-        .filter { it.path !in writtenFiles }
+        .filter { it.relativeTo(baseSwift).path !in writtenFiles }
         .forEach { it.delete() }
 }
