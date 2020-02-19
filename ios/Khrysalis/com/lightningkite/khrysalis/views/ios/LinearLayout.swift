@@ -135,10 +135,24 @@ open class LinearLayout: UIView {
         for (subview, params) in subviewsWithParams {
             guard subview.includeInLayout else { continue }
             let combined = params.combined
-            let viewMeasured = subview.sizeThatFits(makeSize(
+            if let subview = subview as? UILabel, subview.text == "Clients will not be able to schedule appointments during your break time." {
+                print("RIGHT HERE")
+            }
+            let subMaximumsA = makeSize(
                 primary: size[orientation] - result[orientation] - combined.total(orientation),
                 secondary: size[orientation.other] - combined.total(orientation.other)
-            ))
+            )
+            let subMaximums = CGSize(
+                width: max(
+                    params.minimumSize.width,
+                    params.size.width == 0 ? subMaximumsA.width : params.size.width
+                ),
+                height: max(
+                    params.minimumSize.height,
+                    params.size.height == 0 ? subMaximumsA.height : params.size.height
+                )
+            )
+            let viewMeasured = subview.sizeThatFits(subMaximums)
             let viewSize = CGSize(
                 width: max(
                     params.minimumSize.width,

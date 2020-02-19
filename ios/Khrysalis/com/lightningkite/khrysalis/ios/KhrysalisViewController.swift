@@ -79,8 +79,7 @@ open class KhrysalisViewController: UIViewController, UINavigationControllerDele
             }
             this.present(alert, animated: true, completion: {})
         }
-    
-        addKeyboardObservers()
+        
         hideKeyboardWhenTappedAround()
     }
     
@@ -154,7 +153,12 @@ open class KhrysalisViewController: UIViewController, UINavigationControllerDele
         if #available(iOS 11.0, *) {
             let window = UIApplication.shared.keyWindow
             let bottomPadding = window?.safeAreaInsets.bottom ?? 0
-            innerView.frame.size.height = self.view.frame.size.height - innerView.frame.origin.y - bottomPadding - keyboardHeight
+            let useBottomPadding = keyboardHeight == 0
+            if useBottomPadding {
+                innerView.frame.size.height = self.view.frame.size.height - innerView.frame.origin.y - bottomPadding - keyboardHeight
+            } else {
+                innerView.frame.size.height = self.view.frame.size.height - innerView.frame.origin.y - keyboardHeight
+            }
         } else {
             innerView.frame.size.height = self.view.frame.size.height - innerView.frame.origin.y - keyboardHeight
         }
@@ -162,6 +166,9 @@ open class KhrysalisViewController: UIViewController, UINavigationControllerDele
         innerView.layoutSubviews()
     }
     
+    override open func viewDidAppear(_ animated: Bool) {
+        addKeyboardObservers()
+    }
     override open func viewDidDisappear(_ animated: Bool) {
         super.viewDidDisappear(animated)
         removeKeyboardObservers()

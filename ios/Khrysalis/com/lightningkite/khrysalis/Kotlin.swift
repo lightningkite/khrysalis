@@ -387,6 +387,12 @@ public extension Set {
         copy.add(element)
         return copy
     }
+    static func +(lhs: Set<Element>, item: Element) -> Set<Element> {
+        return lhs.plus(item)
+    }
+    static func -(lhs: Set<Element>, item: Element) -> Set<Element> {
+        return lhs.minus(item)
+    }
 }
 
 public extension Character {

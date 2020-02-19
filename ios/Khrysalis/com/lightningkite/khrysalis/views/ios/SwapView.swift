@@ -69,8 +69,7 @@ open class SwapView: UIView {
     open func swap(to: UIView?, animation: Animation){
         if let old = current {
             let goal: AnimationGoal
-            switch animation {
-            case .fade:
+            if to == nil {
                 goal = AnimationGoal(
                     startedAt: Date(),
                     alpha: 0.0,
@@ -78,54 +77,78 @@ open class SwapView: UIView {
                     frame: nil,
                     completion: { view in view.removeFromSuperview() }
                 )
-            case .pop:
-                goal = AnimationGoal(
-                    startedAt: Date(),
-                    alpha: 1.0,
-                    scaledFrame: CGRect(x: 1, y: 0, width: 1, height: 1),
-                    frame: nil,
-                    completion: { view in view.removeFromSuperview() }
-                )
-            case .push:
-                goal = AnimationGoal(
-                    startedAt: Date(),
-                    alpha: 1.0,
-                    scaledFrame: CGRect(x: -1, y: 0, width: 1, height: 1),
-                    frame: nil,
-                    completion: { view in view.removeFromSuperview() }
-                )
+            } else {
+                switch animation {
+                case .fade:
+                    goal = AnimationGoal(
+                        startedAt: Date(),
+                        alpha: 0.0,
+                        scaledFrame: CGRect(x: 0, y: 0, width: 1, height: 1),
+                        frame: nil,
+                        completion: { view in view.removeFromSuperview() }
+                    )
+                case .pop:
+                    goal = AnimationGoal(
+                        startedAt: Date(),
+                        alpha: 1.0,
+                        scaledFrame: CGRect(x: 1, y: 0, width: 1, height: 1),
+                        frame: nil,
+                        completion: { view in view.removeFromSuperview() }
+                    )
+                case .push:
+                    goal = AnimationGoal(
+                        startedAt: Date(),
+                        alpha: 1.0,
+                        scaledFrame: CGRect(x: -1, y: 0, width: 1, height: 1),
+                        frame: nil,
+                        completion: { view in view.removeFromSuperview() }
+                    )
+                }
             }
             animateDestinationExtension.set(old, goal)
             updateAnimations()
         }
         if let new = to {
             if isHidden {
+                print("Am I in layout? \(includeInLayout)")
                 isHidden = false
                 setNeedsLayout()
-            }
-            switch animation {
-            case .fade:
+                UIView.animate(withDuration: 0.25, animations: {
+                    self.alpha = 1
+                }, completion: { _ in
+                    print("My bounds are now \(self.frame)")
+                })
                 new.frame = CGRect(
                     x: 0,
                     y: 0,
                     width: self.bounds.width,
                     height: self.bounds.height
                 )
-                new.alpha = 0.0
-            case .pop:
-                new.frame = CGRect(
-                    x: -self.bounds.width,
-                    y: 0,
-                    width: self.bounds.width,
-                    height: self.bounds.height
-                )
-            case .push:
-                new.frame = CGRect(
-                    x: self.bounds.width,
-                    y: 0,
-                    width: self.bounds.width,
-                    height: self.bounds.height
-                )
+            } else {
+                switch animation {
+                case .fade:
+                    new.frame = CGRect(
+                        x: 0,
+                        y: 0,
+                        width: self.bounds.width,
+                        height: self.bounds.height
+                    )
+                    new.alpha = 0.0
+                case .pop:
+                    new.frame = CGRect(
+                        x: -self.bounds.width,
+                        y: 0,
+                        width: self.bounds.width,
+                        height: self.bounds.height
+                    )
+                case .push:
+                    new.frame = CGRect(
+                        x: self.bounds.width,
+                        y: 0,
+                        width: self.bounds.width,
+                        height: self.bounds.height
+                    )
+                }
             }
             new.setNeedsLayout()
             new.layoutIfNeeded()
@@ -141,8 +164,13 @@ open class SwapView: UIView {
             current = new
         } else {
             current = nil
-//                    this.bounds.size = CGSize(width: 1, height: 1)
-            isHidden = true
+            print("Am I in layout? \(includeInLayout)")
+            UIView.animate(withDuration: 0.25, animations: {
+                self.alpha = 0
+            }, completion: { _ in
+                print("My bounds are now \(self.frame)")
+                self.isHidden = true
+            })
         }
     }
 }

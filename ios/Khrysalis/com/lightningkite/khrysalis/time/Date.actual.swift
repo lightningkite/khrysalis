@@ -17,7 +17,12 @@ public extension Date {
     
     //--- Date.time
     var time: Int64 {
-        return timeIntervalSince1970.milliseconds
+        get {
+            return timeIntervalSince1970.milliseconds
+        }
+        set(value) {
+            self = Date(value)
+        }
     }
 
     func before(_ other: Date) -> Bool {

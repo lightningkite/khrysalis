@@ -18,7 +18,7 @@ public extension UISlider {
         observable.addAndRunWeak(self) { (self, value) in
             guard !suppress else { return }
             suppress = true
-            self.value = Float(self.value)
+            self.setValue(Float(value), animated: false)
             suppress = false
         }
     }

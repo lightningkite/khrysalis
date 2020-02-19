@@ -49,6 +49,7 @@ public extension View {
                 includeInLayout = true
                 isHidden = true
             }
+            setNeedsLayout()
         }
     }
 }
