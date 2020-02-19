@@ -4,9 +4,6 @@ import CoreGraphics
 import UIKit
 
 
-//--- new (overwritten on flow generation)
-public typealias new = Void
-
 //--- Path
 public typealias Path = CGMutablePath
 
@@ -54,5 +51,94 @@ public extension Path {
 public extension Path {
     func close() -> Void {
         self.closeSubpath()
+    }
+}
+
+//--- Canvas.drawArc
+public extension Path {
+    private func sqr(_ value: CGFloat) -> CGFloat {
+        return value * value
+    }
+    private func svgAngle(_ ux: CGFloat, _ uy: CGFloat, _ vx: CGFloat, _ vy: CGFloat) -> CGFloat {
+        let dot = ux * vx + uy * vy
+        let len = sqrt(sqr(vx-ux) + sqr(vy-uy))
+        var angle = acos(max(-1, min(1, dot/len)))
+        if (ux*vy - uy*vx) < 0 {
+          angle = -angle
+        }
+        return angle
+    }
+    func arcTo(radius: CGSize, rotation: CGFloat, largeArcFlag: Bool, sweepFlag: Bool, end: CGPoint) {
+        arcTo(radius, rotation, largeArcFlag, sweepFlag, end)
+    }
+    func arcTo(_ radius: CGSize, _ rotation: CGFloat, _ largeArcFlag: Bool, _ sweepFlag: Bool, _ end: CGPoint) {
+        let start = self.currentPoint
+        var rx = radius.width
+        var ry = radius.height
+        var x_rot = rotation
+        let large = largeArcFlag
+        let sweep = sweepFlag
+        let ax = start.x
+        let ay = start.y
+        let bx = end.x
+        let by = end.y
+        
+        x_rot *= CGFloat.pi/180
+        
+        rx = abs(rx)
+        ry = abs(ry)
+
+        let dx2 = (ax - bx) / 2
+        let dy2 = (ay - by) / 2
+        let x1p =  cos(x_rot)*dx2 + sin(x_rot)*dy2
+        let y1p = -sin(x_rot)*dx2 + cos(x_rot)*dy2
+
+        var rxs = rx * rx
+        var rys = ry * ry
+        let x1ps = x1p * x1p
+        let y1ps = y1p * y1p
+        // check if the radius is too small `pq < 0`, when `dq > rxs * rys` (see below)
+        // cr is the ratio (dq : rxs * rys)
+        let cr = x1ps/rxs + y1ps/rys
+        var s: CGFloat = 1
+        if (cr > 1) {
+          //scale up rX,rY equally so cr == 1
+          s = sqrt(cr)
+          rx = s * rx
+          ry = s * ry
+          rxs = rx * rx
+          rys = ry * ry
+        }
+        let dq = (rxs * y1ps + rys * x1ps)
+        let pq = (rxs*rys - dq) / dq
+        var q = sqrt( max(0,pq) ) //use Max to account for float precision
+        if large == sweep {
+          q = -q
+        }
+        let cxp = q * rx * y1p / ry
+        let cyp = -q * ry * x1p / rx
+
+        //(F.6.5.3)
+        let cx = cos(x_rot)*cxp - sin(x_rot)*cyp + (ax + bx)/2
+        let cy = sin(x_rot)*cxp + cos(x_rot)*cyp + (ay + by)/2
+
+        //(F.6.5.5)
+        var theta = svgAngle( 1,0, (x1p-cxp) / rx, (y1p - cyp)/ry )
+        //(F.6.5.6)
+        var delta = svgAngle(
+          (x1p - cxp)/rx, (y1p - cyp)/ry,
+          (-x1p - cxp)/rx, (-y1p-cyp)/ry)
+        delta = delta.truncatingRemainder(dividingBy: CGFloat.pi * 2)
+        if (!sweep) {
+          delta -= 2 * CGFloat.pi
+        }
+
+        self.addRelativeArc(
+            center: CGPoint(x: cx, y: cy),
+            radius: max(rx, ry),
+            startAngle: theta,
+            delta: delta,
+            transform: CGAffineTransform(rotationAngle: x_rot)
+        )
     }
 }

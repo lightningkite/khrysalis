@@ -5,6 +5,7 @@ import java.lang.Appendable
 
 
 fun convertShapeDrawable(name: String, node: XmlNode, out: Appendable) {
+    println("Writing shape $name")
     when (node.attributes["android:shape"]) {
         "oval" -> {
             val width = 100.0

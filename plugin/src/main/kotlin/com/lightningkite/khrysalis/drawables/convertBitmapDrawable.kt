@@ -5,6 +5,7 @@ import java.lang.Appendable
 
 
 fun convertBitmapDrawable(name: String, node: XmlNode, out: Appendable) {
+    println("Writing bitmap $name")
     with(out) {
         appendln("static func $name(_ view: UIView? = nil) -> CALayer {")
         appendln("    let layer = CALayer()")

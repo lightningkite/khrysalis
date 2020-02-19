@@ -4,6 +4,7 @@ import com.lightningkite.khrysalis.utils.XmlNode
 import com.lightningkite.khrysalis.utils.attributeAsColor
 import com.lightningkite.khrysalis.utils.attributeAsDimension
 import com.lightningkite.khrysalis.utils.attributeAsDouble
+import java.lang.IllegalStateException
 
 fun <E> MutableList<E>.unshift(): E {
     return removeAt(0)
@@ -23,16 +24,19 @@ val pathLetters = charArrayOf(
 )
 val spaceOrComma = Regex("[ ,]+")
 fun convertVectorDrawable(name: String, node: XmlNode, out: Appendable) {
+    println("Writing vector $name")
 
-    val scaleX = (node.attributeAsDimension("android:width")?.toDouble()
-        ?: 10.0) / (node.attributeAsDouble("android:viewportWidth")?.toDouble() ?: 10.0)
-    val scaleY = (node.attributeAsDimension("android:height")?.toDouble()
-        ?: 10.0) / (node.attributeAsDouble("android:viewportHeight")?.toDouble() ?: 10.0)
+//    val scaleX = (node.attributeAsDimension("android:width")?.toDouble()
+//        ?: 10.0) / (node.attributeAsDouble("android:viewportWidth")?.toDouble() ?: 10.0)
+//    val scaleY = (node.attributeAsDimension("android:height")?.toDouble()
+//        ?: 10.0) / (node.attributeAsDouble("android:viewportHeight")?.toDouble() ?: 10.0)
     val width = node.attributeAsDouble("android:width") ?: 0.0
     val height = node.attributeAsDouble("android:height") ?: 0.0
 
     with(out) {
         appendln("static func $name(_ view: UIView? = nil) -> CALayer {")
+        appendln("    let scaleX: CGFloat = ${node.attributeAsDimension("android:width") ?: "10"} / ${node.attributeAsDimension("android:viewportWidth") ?: "10"}")
+        appendln("    let scaleY: CGFloat = ${node.attributeAsDimension("android:height") ?: "10"} / ${node.attributeAsDimension("android:viewportHeight") ?: "10"}")
         appendln("    let layer = CALayer()")
         node.children.filter { it.name == "path" }.forEach { subnode ->
             subnode.children
@@ -44,7 +48,7 @@ fun convertVectorDrawable(name: String, node: XmlNode, out: Appendable) {
                     appendln("        let mask = CAShapeLayer()")
                     subnode.attributes["android:pathData"]?.let { pathData ->
                         appendln("        let path = CGMutablePath()")
-                        pathDataToSwift(pathData, scaleX, scaleY)
+                        pathDataToSwift(pathData)
                         appendln("        mask.path = path")
                     }
                     appendln("        let gradient = CAGradientLayer()")
@@ -72,7 +76,7 @@ fun convertVectorDrawable(name: String, node: XmlNode, out: Appendable) {
                 appendln("        let sublayer = CAShapeLayer()")
                 subnode.attributes["android:pathData"]?.let { pathData ->
                     appendln("        let path = CGMutablePath()")
-                    pathDataToSwift(pathData, scaleX, scaleY)
+                    pathDataToSwift(pathData)
                     appendln("        sublayer.path = path")
                 }
                 subnode.attributeAsColor("android:fillColor")?.let {
@@ -93,9 +97,10 @@ fun convertVectorDrawable(name: String, node: XmlNode, out: Appendable) {
 
 }
 
-private fun Appendable.pathDataToSwift(pathData: String, scaleX: Double, scaleY: Double) {
-    fun Double.scaleX(): Double = this * scaleX
-    fun Double.scaleY(): Double = this * scaleY
+private fun Appendable.pathDataToSwift(pathData: String) {
+    println("Adding path data")
+    fun Double.scaleX(): String = "$this * scaleX"
+    fun Double.scaleY(): String = "$this * scaleY"
     var referenceX: Double = 0.0
     var referenceY: Double = 0.0
     var previousC2X: Double = 0.0
@@ -194,8 +199,16 @@ private fun Appendable.pathDataToSwift(pathData: String, scaleX: Double, scaleY:
                     appendln("        path.addCurve(to: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}), control1: CGPoint(x: ${c1x.scaleX()}, y: ${c1y.scaleY()}), control2: CGPoint(x: ${control2X.scaleX()}, y: ${control2Y.scaleY()}))")
                 }
                 'a' -> {
-                    appendln("        //TODO - support arcs")
+                    val radiusX = arguments.unshift()
+                    val radiusY = arguments.unshift()
+                    val xAxisRotation = arguments.unshift()
+                    val largeArcFlag = arguments.unshift()
+                    val sweepFlag = arguments.unshift()
+                    val destX = arguments.unshift() + offsetX()
+                    val destY = arguments.unshift() + offsetY()
+                    appendln("        path.arcTo(radius: CGSize(width: ${radiusX.scaleX()}, height: ${radiusY.scaleY()}), rotation: ${xAxisRotation}, largeArcFlag: ${largeArcFlag > 0.5}, sweepFlag: ${sweepFlag > 0.5}, end: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}))")
                 }
+                else -> throw IllegalStateException("Non-legal command ${instruction}")
             }
         }
 

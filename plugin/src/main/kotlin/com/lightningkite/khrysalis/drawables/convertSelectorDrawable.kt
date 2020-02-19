@@ -8,6 +8,7 @@ import java.lang.Appendable
 
 
 fun convertSelectorDrawable(name: String, node: XmlNode, out: Appendable) {
+    println("Writing selector $name")
     with(out) {
         val after = ArrayList<()->Unit>()
 

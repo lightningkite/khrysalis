@@ -16,6 +16,7 @@ fun convertDrawableXmls(
         .sortedByDescending { it.name.substringAfter('-').filter { it.isDigit() }.takeUnless { it.isEmpty() }?.toInt() ?: 0 }
         .flatMap { it.walkTopDown().filter { it.extension == "xml" } }
         .distinctBy { it.name }
+        .sortedBy { it.name }
         .map { it to XmlNode.read(it, mapOf()) }
         .forEach { (file, it) ->
             val name = file.nameWithoutExtension.camelCase()

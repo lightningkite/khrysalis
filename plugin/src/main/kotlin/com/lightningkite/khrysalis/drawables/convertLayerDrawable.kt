@@ -7,6 +7,7 @@ import java.lang.Appendable
 
 
 fun convertLayerListDrawable(name: String, node: XmlNode, out: Appendable) {
+    println("Writing layer-list $name")
     with(out) {
         val after = ArrayList<()->Unit>()
 
