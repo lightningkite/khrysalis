@@ -31,6 +31,7 @@ fun GeoAddress.oneLine(withCountry: Boolean = false, withZip: Boolean = false): 
         append(it)
     }
     this@oneLine.locality?.let {
+        append(' ')
         append(it)
     }
     this@oneLine.adminArea?.let {
