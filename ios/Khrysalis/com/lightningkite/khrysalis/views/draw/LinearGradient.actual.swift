@@ -5,6 +5,10 @@ import UIKit
 
 
 //--- LinearGradient(Float, Float, Float, Float, List<Int>, List<Float>, Shader.TileMode)
+public func LinearGradient(x0: Float, y0: Float, x1: Float, y1: Float, colors: Array<UIColor>, positions: Array<Float>, tile: Shader.TileMode) -> ShaderValue {
+    return LinearGradient(x0, y0, x1, y1, colors, positions, tile)
+}
+
 public func LinearGradient(_ x0: Float, _ y0: Float, _ x1: Float, _ y1: Float, _ colors: Array<UIColor>, _ positions: Array<Float>, _ tile: Shader.TileMode) -> ShaderValue {
     return { context in
         context.drawLinearGradient(

@@ -26,17 +26,13 @@ val spaceOrComma = Regex("[ ,]+")
 fun convertVectorDrawable(name: String, node: XmlNode, out: Appendable) {
     println("Writing vector $name")
 
-//    val scaleX = (node.attributeAsDimension("android:width")?.toDouble()
-//        ?: 10.0) / (node.attributeAsDouble("android:viewportWidth")?.toDouble() ?: 10.0)
-//    val scaleY = (node.attributeAsDimension("android:height")?.toDouble()
-//        ?: 10.0) / (node.attributeAsDouble("android:viewportHeight")?.toDouble() ?: 10.0)
     val width = node.attributeAsDouble("android:width") ?: 0.0
     val height = node.attributeAsDouble("android:height") ?: 0.0
 
     with(out) {
         appendln("static func $name(_ view: UIView? = nil) -> CALayer {")
-        appendln("    let scaleX: CGFloat = ${node.attributeAsDimension("android:width") ?: "10"} / ${node.attributeAsDimension("android:viewportWidth") ?: "10"}")
-        appendln("    let scaleY: CGFloat = ${node.attributeAsDimension("android:height") ?: "10"} / ${node.attributeAsDimension("android:viewportHeight") ?: "10"}")
+        appendln("    let scaleX: CGFloat = CGFloat(${node.attributeAsDimension("android:width") ?: "10"}) / ${node.attributeAsDouble("android:viewportWidth") ?: "10"}")
+        appendln("    let scaleY: CGFloat = CGFloat(${node.attributeAsDimension("android:height") ?: "10"}) / ${node.attributeAsDouble("android:viewportHeight") ?: "10"}")
         appendln("    let layer = CALayer()")
         node.children.filter { it.name == "path" }.forEach { subnode ->
             subnode.children
