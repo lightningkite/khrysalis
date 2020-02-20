@@ -34,14 +34,16 @@ fun convertShapeDrawable(name: String, node: XmlNode, out: Appendable) {
                     node.children.find { it.name == "stroke" }?.let {
                         appendln("    layer.borderWidth = ${it.attributeAsDimension("android:width") ?: "0"}")
                         appendln(
-                            "    layer.borderColor = ${it.attributeAsColor("android:color") ?: "UIColor.black"}.cgColor"
+                            "    layer.strokeColor = ${it.attributeAsColor("android:color") ?: "UIColor.black"}.cgColor"
                         )
                     }
                     node.children.find { it.name == "solid" }?.let {
                         appendln(
-                            "    layer.backgroundColor = ${it.attributeAsColor("android:color") ?: "UIColor.black"}.cgColor"
+                            "    layer.fillColor = ${it.attributeAsColor("android:color") ?: "UIColor.black"}.cgColor"
                         )
                     }
+                    appendln("    layer.bounds.size = CGSize(width: $width, height: $height)")
+                    appendln("    layer.scaleOverResize = true")
                     appendln("    return layer")
                     appendln("}")
                 }
