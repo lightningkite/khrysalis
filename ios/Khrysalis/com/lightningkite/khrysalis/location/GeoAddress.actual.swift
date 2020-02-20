@@ -24,6 +24,7 @@ public class GeoAddress {
         return nil
     }
 
+
     //--- GeoAddress.adminArea
     public var adminArea: String? {
         return mark?.administrativeArea
@@ -56,7 +57,8 @@ public class GeoAddress {
     public var coordinate: GeoCoordinate? {
         return self.mark?.location?.coordinate.toKhrysalis()
     }
-
+    
+    //--- GeoAddress.oneLineShort
     public var oneLineShort: String {
         return oneLine()
     }

@@ -31,7 +31,7 @@ public class ViewDependency: NSObject {
     }
 
     //--- ViewDependency.share(String, String)
-    func share(_ subject: String, _ message: String) -> Void {
+    public func share(_ subject: String, _ message: String) -> Void {
 //         if let myWebsite = URL(string: "http://itunes.apple.com/app/idXXXXXXXXX") {//Enter link to your app here
 //                     let objectsToShare = [textToShare, myWebsite, image ?? #imageLiteral(resourceName: "app-logo")] as [Any]
 //                     let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
@@ -44,8 +44,18 @@ public class ViewDependency: NSObject {
 //                     self.present(activityVC, animated: true, completion: nil)
 //                 }    }
     }
-    func share(subject: String, message: String) -> Void {
+    public func share(subject: String, message: String) -> Void {
         return share(subject, message)
+    }
+
+    //--- ViewDependency.openUrl(String)
+    public func openUrl(_ url: String) -> Void {
+        if let url = URL(string: url) {
+            UIApplication.shared.open(url)
+        }
+    }
+    public func openUrl(url: String) -> Void {
+        return openUrl(url)
     }
 
     //--- ViewDependency.downloadDrawable(String, Int? , Int? , (Drawable?)->Unit)

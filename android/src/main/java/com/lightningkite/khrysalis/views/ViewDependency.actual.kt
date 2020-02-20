@@ -35,6 +35,12 @@ fun ViewDependency.share(subject: String, message: String){
     context.startActivity(Intent.createChooser(i, subject))
 }
 
+fun ViewDependency.openUrl(url: String) {
+    startIntent(
+        intent = Intent(Intent.ACTION_VIEW).apply { data = Uri.parse(url) }
+    )
+}
+
 fun ViewDependency.requestImageGallery(
     callback: (Uri) -> Unit
 ) {

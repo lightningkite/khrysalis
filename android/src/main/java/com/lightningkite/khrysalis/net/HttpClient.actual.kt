@@ -165,9 +165,7 @@ object HttpClient {
                 runResult {
                     val code = response.code()
                     if (code / 100 == 2) {
-                        if (T::class == String::class) {
-                            onResult.invoke(code, raw as T, null)
-                        } else try {
+                        try {
                             val read =
                                 mapper.readValue<T>(
                                     raw,
@@ -178,6 +176,48 @@ object HttpClient {
                             e.printStackTrace()
                             onResult.invoke(code, null, e.message)
                         }
+                    } else {
+                        onResult.invoke(code, null, raw ?: "")
+                    }
+                }
+            }
+        })
+    }
+
+    inline fun callRaw(
+        url: String,
+        method: String,
+        headers: Map<String, String>,
+        body: Any? = null,
+        crossinline onResult: @escaping() (code: Int, result: String?, error: String?) -> Unit
+    ) {
+        Log.i("HttpClient", "Sending $method request to $url with headers $headers")
+        val request = Request.Builder()
+            .url(url)
+            .method(method, body?.let {
+                val sending = mapper.writeValueAsString(it)
+                Log.i("HttpClient", "with body $sending")
+                RequestBody.create(MediaType.parse("application/json"), sending)
+            })
+            .headers(Headers.of(headers))
+            .addHeader("Accept-Language", Locale.getDefault().language)
+            .build()
+
+        client.newCall(request).go(object : Callback {
+            override fun onFailure(call: Call, e: IOException) {
+                Log.e("HttpClient", "Failure: ${e.message}")
+                runResult {
+                    onResult.invoke(0, null, e.message ?: "")
+                }
+            }
+
+            override fun onResponse(call: Call, response: Response) {
+                val raw = response.body()!!.string()
+                Log.i("HttpClient", "Response ${response.code()}: $raw")
+                runResult {
+                    val code = response.code()
+                    if (code / 100 == 2) {
+                        onResult.invoke(code, raw, null)
                     } else {
                         onResult.invoke(code, null, raw ?: "")
                     }
@@ -374,9 +414,7 @@ object HttpClient {
                     runResult {
                         val code = response.code()
                         if (code / 100 == 2) {
-                            if (T::class == String::class) {
-                                onResult.invoke(code, raw as T, null)
-                            } else try {
+                            try {
                                 val read =
                                     mapper.readValue<T>(
                                         raw,
