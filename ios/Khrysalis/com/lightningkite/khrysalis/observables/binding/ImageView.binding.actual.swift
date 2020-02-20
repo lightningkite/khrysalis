@@ -28,15 +28,17 @@ public extension UIImageView {
             weak var weakAIV = activityIndicatorView
             
             var filter: ImageFilter? = nil
-            switch self.contentMode {
-            case .scaleToFill:
-                filter = ScaledToSizeFilter(size: self.frame.size)
-            case .scaleAspectFill:
-            filter = AspectScaledToFillSizeFilter(size: self.frame.size)
-            case .scaleAspectFit:
-            filter = AspectScaledToFitSizeFilter(size: self.frame.size)
-            default:
-                filter = nil
+            if self.frame.size.width != 0 && self.frame.size.height != 0 {
+                switch self.contentMode {
+                case .scaleToFill:
+                    filter = ScaledToSizeFilter(size: self.frame.size)
+                case .scaleAspectFill:
+                filter = AspectScaledToFillSizeFilter(size: self.frame.size)
+                case .scaleAspectFit:
+                filter = AspectScaledToFitSizeFilter(size: self.frame.size)
+                default:
+                    filter = nil
+                }
             }
             
             self.af_setImage(
