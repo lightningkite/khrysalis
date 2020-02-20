@@ -55,6 +55,8 @@ public extension UITableView {
             }
             previouslyEmpty = emptyNow
         }
+        
+        self.tableFooterView = UIView(frame: .zero)
     }
     func bind<T>(data: ObservableProperty<Array<T>>, defaultValue: T, makeView: @escaping (ObservableProperty<T>) -> View) -> Void {
         return bind(data, defaultValue, makeView)
@@ -187,6 +189,7 @@ public extension UITableView {
             }
             previouslyEmpty = emptyNow
         }
+        self.tableFooterView = UIView(frame: .zero)
     }
     func bindMulti(viewDependency: ViewDependency, data: ObservableProperty<Array<Any>>, typeHandlerSetup: (RVTypeHandler) -> Void) -> Void {
         return bindMulti(viewDependency, data, typeHandlerSetup)
@@ -212,6 +215,7 @@ public extension UITableView {
             }
             previouslyEmpty = emptyNow
         }
+        self.tableFooterView = UIView(frame: .zero)
     }
     func bindMulti<T>(data: ObservableProperty<Array<T>>, defaultValue: T, determineType: @escaping (T) -> Int32, makeView: @escaping (Int32, ObservableProperty<T>) -> View) -> Void {
         return bindMulti(data, defaultValue, determineType, makeView)

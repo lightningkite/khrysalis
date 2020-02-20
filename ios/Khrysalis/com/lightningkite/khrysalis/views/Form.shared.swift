@@ -49,6 +49,9 @@ public class FormField<T>: UntypedFormField {
         get {
             return observable.value
         }
+        set(value) {
+            observable.value = value
+        }
     }
     public var untypedObservable: Any {
         get {

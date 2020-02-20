@@ -25,7 +25,11 @@ class FormField<T>(
     override val validation: @escaping() (UntypedFormField) -> ViewString?
 ) : UntypedFormField {
     override val error: StandardObservableProperty<ViewString?> = StandardObservableProperty(null)
-    val value: T get() = observable.value
+    var value: T
+        get() = observable.value
+        set(value) {
+            observable.value = value
+        }
     override val untypedObservable: Any
         get() = observable
 }

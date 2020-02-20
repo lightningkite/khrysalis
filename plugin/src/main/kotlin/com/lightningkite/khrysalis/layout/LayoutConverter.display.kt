@@ -56,6 +56,14 @@ val LayoutConverter.Companion.displayViews
                 }
             },
             ViewType("Space", "UIView", "View") {},
+            ViewType("ProgressBar", "UIActivityIndicatorView", "View") { node ->
+                appendln("view.startAnimating()")
+                node.attributeAsColor("android:indeterminateTint")?.let {
+                    appendln("view.color = $it")
+                } ?: run {
+                    appendln("view.color = ResourcesColors.colorPrimary")
+                }
+            },
             ViewType("ImageView", "UIImageView", "View") { node ->
                 node.attributeAsImage("android:src")?.let { text ->
                     appendln("view.image = $text")

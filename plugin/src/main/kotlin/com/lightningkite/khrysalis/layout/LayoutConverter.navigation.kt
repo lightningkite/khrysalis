@@ -74,6 +74,9 @@ val LayoutConverter.Companion.navigationViews
                 (node.attributeAsDimension("app:dividerHorizontalPadding") ?: node.attributeAsDimension("dividerHorizontalPadding") ?: "0").let {
                     appendln("view.separatorInset = UIEdgeInsets(top: 0, left: $it, bottom: 0, right: $it)")
                 }
+                if(node.attributes["android:background"] == null){
+                    appendln("view.backgroundColor = UIColor.clear")
+                }
             },
             ViewType("com.rd.PageIndicatorView", "UIPageControl", "View") { node ->
                 node.attributeAsColor("app:piv_selectedColor")?.let {
