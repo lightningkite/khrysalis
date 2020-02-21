@@ -15,6 +15,7 @@ import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.FileProvider
 import com.lightningkite.khrysalis.Uri
 import com.lightningkite.khrysalis.android.ActivityAccess
+import com.lightningkite.khrysalis.location.GeoCoordinate
 import com.lightningkite.khrysalis.views.android.startIntent
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
@@ -38,6 +39,26 @@ fun ViewDependency.share(subject: String, message: String){
 fun ViewDependency.openUrl(url: String) {
     startIntent(
         intent = Intent(Intent.ACTION_VIEW).apply { data = Uri.parse(url) }
+    )
+}
+
+fun ViewDependency.openMap(coordinate: GeoCoordinate, label: String? = null, zoom: Float? = null) {
+    startIntent(
+        intent = Intent(Intent.ACTION_VIEW).apply {
+            if(label == null){
+                if(zoom == null){
+                    data = Uri.parse("geo:${coordinate.latitude},${coordinate.longitude}")
+                } else {
+                    data = Uri.parse("geo:${coordinate.latitude},${coordinate.longitude}?z=$zoom")
+                }
+            } else {
+                if(zoom == null){
+                    data = Uri.parse("geo:${coordinate.latitude},${coordinate.longitude}?q=${Uri.encode(label)}")
+                } else {
+                    data = Uri.parse("geo:${coordinate.latitude},${coordinate.longitude}?q=${Uri.encode(label)}&z=$zoom")
+                }
+            }
+        }
     )
 }
 

@@ -4,6 +4,7 @@ import Alamofire
 import AlamofireImage
 import Photos
 import AVKit
+import MapKit
 
 
 //--- ViewDependency
@@ -56,6 +57,16 @@ public class ViewDependency: NSObject {
     }
     public func openUrl(url: String) -> Void {
         return openUrl(url)
+    }
+
+    //--- ViewDependency.openMap(GeoCoordinate, String? , Float? )
+    public func openMap(_ coordinate: GeoCoordinate, _ label: String? = nil, _ zoom: Float? = nil) -> Void {
+        let mapItem = MKMapItem(placemark: MKPlacemark(coordinate: coordinate.toIos(), addressDictionary: nil))
+        mapItem.name = label
+        mapItem.openInMaps()
+    }
+    public func openMap(coordinate: GeoCoordinate, label: String? = nil, zoom: Float? = nil) -> Void {
+        return openMap(coordinate, label, zoom)
     }
 
     //--- ViewDependency.downloadDrawable(String, Int? , Int? , (Drawable?)->Unit)

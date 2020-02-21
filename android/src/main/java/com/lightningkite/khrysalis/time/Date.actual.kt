@@ -312,4 +312,4 @@ fun Date.format(dateStyle: ClockPartSize, timeStyle: ClockPartSize): String {
     return format.format(this)
 }
 
-fun Date.iso8601(): String = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").format(this)
+fun Date.iso8601(): String = SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss").apply { timeZone = TimeZone.getTimeZone("UTC") }.format(this)
