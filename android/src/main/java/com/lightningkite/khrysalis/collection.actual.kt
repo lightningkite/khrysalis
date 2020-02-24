@@ -30,6 +30,22 @@ inline fun <T, K : Comparable<K>> MutableList<T>.binaryInsertBy(
     }
 }
 
+inline fun <T, K : Comparable<K>> MutableList<T>.binaryInsertByDistinct(
+    item: T,
+    crossinline selector: (T) -> K?
+): Boolean {
+    val index = binarySearchBy(selector(item), selector = selector)
+    if (index < 0) {
+        add(
+            index = -index - 1,
+            element = item
+        )
+        return true
+    } else {
+        return false
+    }
+}
+
 
 inline fun <T, K : Comparable<K>> List<T>.binaryFind(
     key: K,
