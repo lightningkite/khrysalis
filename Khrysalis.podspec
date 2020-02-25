@@ -24,4 +24,5 @@ Pod::Spec.new do |s|
   s.dependency "SearchTextField"
   s.dependency "RxSwift"
   s.dependency "RxRelay"
+  s.dependency "OpalImagePicker"
 end

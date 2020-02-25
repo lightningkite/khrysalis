@@ -40,17 +40,22 @@ public extension Array {
         binaryInsertBy(item: item, selector: selector)
     }
 
-//--- MutableList<T>.binaryInsertByDistinct(T, (T)->K?) (overwritten on flow generation)
-public extension Array<T> {
-    func binaryInsertByDistinct<T, K>(_ item: T, _ selector: (T) -> K?
-) -> Bool {
-        TODO()
+    //--- MutableList<T>.binaryInsertByDistinct(T, (T)->K?)
+    mutating func binaryInsertByDistinct<K: Comparable>(_ item: Element, _ selector: (Element) -> K?) -> Bool {
+        let index = binarySearchBy(selector(item), selector)
+        if index < 0 {
+            add(
+                -index - 1,
+                item
+            )
+            return true
+        } else {
+            return false
+        }
     }
-    func binaryInsertByDistinct<T, K>(item: T, selector: (T) -> K?
-) -> Bool {
+    mutating func binaryInsertByDistinct<K: Comparable>(item: Element, selector: (Element) -> K?) -> Bool {
         return binaryInsertByDistinct(item, selector)
     }
-}
 
     //--- List<T>.binaryFind(K, (T)->K?)
     func binaryFind<K: Comparable>(_ key: K, _ selector: (Element) -> K?) -> Element?  {

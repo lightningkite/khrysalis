@@ -9,6 +9,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.StateListDrawable
+import android.provider.CalendarContract
 import android.provider.MediaStore
 import android.util.DisplayMetrics
 import androidx.core.content.ContextCompat.startActivity
@@ -20,6 +21,7 @@ import com.lightningkite.khrysalis.views.android.startIntent
 import com.squareup.picasso.Picasso
 import com.squareup.picasso.Target
 import java.io.File
+import java.util.*
 
 
 typealias ViewDependency = ActivityAccess
@@ -60,6 +62,45 @@ fun ViewDependency.openMap(coordinate: GeoCoordinate, label: String? = null, zoo
             }
         }
     )
+}
+
+fun ViewDependency.openEvent(title: String, description: String, location: String, start: Date, end: Date){
+    startIntent(
+        intent = Intent(Intent.ACTION_INSERT).apply {
+            data = CalendarContract.Events.CONTENT_URI
+            putExtra(CalendarContract.Events.TITLE, title)
+            putExtra(CalendarContract.Events.DESCRIPTION, description)
+            putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, start.time)
+            putExtra(CalendarContract.EXTRA_EVENT_END_TIME, end.time)
+            putExtra(CalendarContract.Events.EVENT_LOCATION, location)
+        }
+    )
+}
+
+fun ViewDependency.requestImagesGallery(
+    callback: (List<Uri>) -> Unit
+) {
+    requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE) { hasPermission ->
+        if (hasPermission) {
+            val getIntent = Intent(Intent.ACTION_GET_CONTENT)
+            getIntent.type = "image/*"
+            getIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+
+            val pickIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            pickIntent.type = "image/*"
+
+            val chooserIntent = Intent.createChooser(getIntent, "Select Image")
+            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(pickIntent))
+
+            this.startIntent(chooserIntent) { code, result ->
+                if (code == Activity.RESULT_OK) {
+                    result?.clipData?.let { clipData ->
+                        callback((0 until clipData.itemCount).map { index -> clipData.getItemAt(index).uri })
+                    } ?: result?.data?.let { callback(listOf(it) )}
+                }
+            }
+        }
+    }
 }
 
 fun ViewDependency.requestImageGallery(

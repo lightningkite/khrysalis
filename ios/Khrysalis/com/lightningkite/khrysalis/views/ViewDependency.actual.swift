@@ -5,6 +5,8 @@ import AlamofireImage
 import Photos
 import AVKit
 import MapKit
+import EventKitUI
+import OpalImagePicker
 
 
 //--- ViewDependency
@@ -67,6 +69,31 @@ public class ViewDependency: NSObject {
     }
     public func openMap(coordinate: GeoCoordinate, label: String? = nil, zoom: Float? = nil) -> Void {
         return openMap(coordinate, label, zoom)
+    }
+
+    //--- ViewDependency.openEvent(String, String, String, Date, Date)
+    public func openEvent(_ title: String, _ description: String, _ location: String, _ start: Date, _ end: Date) -> Void {
+        let store = EKEventStore()
+        store.requestAccess(to: .event) { (hasPermission, error) in
+            if hasPermission {
+                DispatchQueue.main.async {
+                    let addController = EKEventEditViewController()
+                    addController.eventStore = store
+                    addController.editViewDelegate = self
+                    let event = EKEvent(eventStore: store)
+                    event.title = title
+                    event.notes = description
+                    event.location = location
+                    event.startDate = start
+                    event.endDate = end
+                    addController.event = event
+                    self.parentViewController.present(addController, animated: true, completion: nil)
+                }
+            }
+        }
+    }
+    public func openEvent(title: String, description: String, location: String, start: Date, end: Date) -> Void {
+        return openEvent(title, description, location, start, end)
     }
 
     //--- ViewDependency.downloadDrawable(String, Int? , Int? , (Drawable?)->Unit)
@@ -161,7 +188,9 @@ public class ViewDependency: NSObject {
             self.requestImageGalleryRaw(onResult: onResult)
         } else {
             PHPhotoLibrary.requestAuthorization {_ in
-                self.requestImageGalleryRaw(onResult: onResult)
+                DispatchQueue.main.async {
+                    self.requestImageGalleryRaw(onResult: onResult)
+                }
             }
         }
     }
@@ -174,29 +203,74 @@ public class ViewDependency: NSObject {
         }
     }
 
+    //--- ViewDependency.requestImagesGallery((List<Uri>)->Unit)
+    public func requestImagesGallery(_ onResult: @escaping (Array<Uri>) -> Void) -> Void {
+        if PHPhotoLibrary.authorizationStatus() == .authorized {
+            self.requestImagesGalleryRaw(onResult: onResult)
+        } else {
+            PHPhotoLibrary.requestAuthorization {_ in
+                DispatchQueue.main.async {
+                    self.requestImagesGalleryRaw(onResult: onResult)
+                }
+            }
+        }
+    }
+    private func requestImagesGalleryRaw(onResult: @escaping (Array<Uri>) -> Void) {
+        let imagePicker = OpalImagePickerController()
+        self.parentViewController.presentOpalImagePickerController(imagePicker, animated: true,
+            select: { (assets) in
+                //Select Assets
+                var result: Array<Uri> = []
+                var remaining = assets.count
+                print("Assets remaining: \(remaining)")
+                for item in assets {
+                    getUrl(editedImage: nil, originalImage: nil, asset: item, onResult: { url in
+                        remaining -= 1
+                        print("Assets remaining: \(remaining)")
+                        if let url = url {
+                            result.add(url)
+                        } else {
+                            //... dunno how to handle error
+                        }
+                        if remaining == 0 {
+                            print("Finish")
+                            onResult(result)
+                            imagePicker.dismiss(animated: true, completion: nil)
+                        }
+                    })
+                }
+            }, cancel: {
+                //Cancel
+            })
+    }
+
     //--- ViewDependency.requestImageCamera((Uri)->Unit)
     public func requestImageCamera(onResult: @escaping (Uri) -> Void) {
         DispatchQueue.main.async {
             if AVCaptureDevice.authorizationStatus(for: .video) == .authorized {
                 AVCaptureDevice.requestAccess(for: .video) { granted in
-                    if granted {
-                        if PHPhotoLibrary.authorizationStatus() == .authorized {
-                            self.requestImageCameraRaw(onResult: onResult)
-                        } else {
-                            PHPhotoLibrary.requestAuthorization {_ in
+                    DispatchQueue.main.async {
+                        if granted {
+                            if PHPhotoLibrary.authorizationStatus() == .authorized {
                                 self.requestImageCameraRaw(onResult: onResult)
+                            } else {
+                                PHPhotoLibrary.requestAuthorization {_ in
+                                    self.requestImageCameraRaw(onResult: onResult)
+                                }
                             }
                         }
                     }
                 }
             } else {
                 AVCaptureDevice.requestAccess(for: .video) { granted in
-                    if granted {
-                        if PHPhotoLibrary.authorizationStatus() == .authorized {
-                            self.requestImageCameraRaw(onResult: onResult)
-                        } else {
-                            PHPhotoLibrary.requestAuthorization {_ in
+                    DispatchQueue.main.async {
+                        if granted {
+                            if PHPhotoLibrary.authorizationStatus() == .authorized {
                                 self.requestImageCameraRaw(onResult: onResult)
+                            } else {
+                                PHPhotoLibrary.requestAuthorization {_ in
+                                    self.requestImageCameraRaw(onResult: onResult)
+                                }
                             }
                         }
                     }
@@ -217,6 +291,14 @@ public class ViewDependency: NSObject {
 }
 
 //--- Image helpers
+
+extension ViewDependency: EKEventEditViewDelegate {
+    public func eventEditViewController(_ controller: EKEventEditViewController, didCompleteWith action: EKEventEditViewAction) {
+        self.parentViewController.dismiss(animated: true) {[weak self] in
+            
+        }
+    }
+}
 
 private class ImageDelegate : NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
@@ -250,6 +332,7 @@ private class ImageDelegate : NSObject, UIImagePickerControllerDelegate, UINavig
     public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if #available(iOS 11.0, *) {
             if let image = info[.imageURL] as? URL {
+                print("Image retrieved directly using .imageURL")
                 DispatchQueue.main.async {
                     picker.dismiss(animated: true, completion: {
                         self.onImagePicked?(image)
@@ -259,30 +342,68 @@ private class ImageDelegate : NSObject, UIImagePickerControllerDelegate, UINavig
                 return
             }
         }
-        let image = info[.originalImage] as! UIImage
-        print(image)
-        let tempDirectoryUrl = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("klypphotos")
-        guard let url2 = image.save(at: tempDirectoryUrl) else {
-            DispatchQueue.main.async {
-                picker.dismiss(animated: true, completion: {
-                    print("Failed to save image")
-                    self.onImagePicked = nil
-                })
+        
+        getUrl(editedImage: info[.editedImage] as? UIImage, originalImage: info[.originalImage] as? UIImage, asset: info[.phAsset] as? PHAsset, onResult: { url in
+            if let url = url {
+                DispatchQueue.main.async {
+                    picker.dismiss(animated: true, completion: {
+                        self.onImagePicked?(url)
+                        self.onImagePicked = nil
+                    })
+                }
             }
-            return
+        })
+    }
+}
+
+fileprivate func getUrl(editedImage: UIImage?, originalImage: UIImage?, asset: PHAsset?, onResult: @escaping (URL?)->Void) {
+    if let editedImage = editedImage {
+        if let url = editedImage.saveTemp() {
+            print("Image retrieved using save due to edit")
+            onResult(url)
+        } else {
+            print("Image retrieval failed")
+            onResult(nil)
         }
-        print(url2)
-        DispatchQueue.main.async {
-            picker.dismiss(animated: true, completion: {
-                self.onImagePicked?(url2)
-                self.onImagePicked = nil
-            })
+    } else if let asset = asset {
+        asset.getURL(completionHandler: { url in
+            if let url = url {
+                print("Image retrieved using asset")
+                onResult(url)
+            } else {
+                //That failed, let's just save the image
+                if let originalImage = originalImage, let url = originalImage.saveTemp() {
+                    print("Image retrieved using save as backup")
+                    onResult(url)
+                } else {
+                    print("Image retrieval failed")
+                    onResult(nil)
+                }
+            }
+        })
+    } else {
+        //That failed, let's just save the image
+        if let originalImage = originalImage, let url = originalImage.saveTemp() {
+            print("Image retrieved using save as backup")
+            onResult(url)
+        } else {
+            print("Image retrieval failed")
+            onResult(nil)
         }
     }
 }
 
 // save
 extension UIImage {
+    
+    func saveTemp() -> URL? {
+        let tempDirectoryUrl = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("temp-khrysalis-photos")
+        guard let url2 = self.save(at: tempDirectoryUrl) else {
+            return nil
+        }
+        print(url2)
+        return url2
+    }
 
     func save(at directory: FileManager.SearchPathDirectory,
               pathAndImageName: String,
@@ -330,6 +451,32 @@ extension UIImage {
         } catch {
             print("-- Error: \(error)")
             return nil
+        }
+    }
+}
+
+extension PHAsset {
+
+    func getURL(completionHandler : @escaping ((_ responseURL : URL?) -> Void)){
+        if self.mediaType == .image {
+            let options: PHContentEditingInputRequestOptions = PHContentEditingInputRequestOptions()
+            options.canHandleAdjustmentData = {(adjustmeta: PHAdjustmentData) -> Bool in
+                return true
+            }
+            self.requestContentEditingInput(with: options, completionHandler: {(contentEditingInput: PHContentEditingInput?, info: [AnyHashable : Any]) -> Void in
+                completionHandler(contentEditingInput!.fullSizeImageURL as URL?)
+            })
+        } else if self.mediaType == .video {
+            let options: PHVideoRequestOptions = PHVideoRequestOptions()
+            options.version = .original
+            PHImageManager.default().requestAVAsset(forVideo: self, options: options, resultHandler: {(asset: AVAsset?, audioMix: AVAudioMix?, info: [AnyHashable : Any]?) -> Void in
+                if let urlAsset = asset as? AVURLAsset {
+                    let localVideoUrl: URL = urlAsset.url as URL
+                    completionHandler(localVideoUrl)
+                } else {
+                    completionHandler(nil)
+                }
+            })
         }
     }
 }

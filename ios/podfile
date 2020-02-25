@@ -9,6 +9,7 @@ target 'Khrysalis' do
     pod 'SearchTextField'
     pod 'RxSwift'
     pod 'RxRelay'
+    pod 'OpalImagePicker'
 end
 
 target 'KhrysalisTests' do
@@ -20,4 +21,5 @@ target 'KhrysalisTests' do
     pod 'SearchTextField'
     pod 'RxSwift'
     pod 'RxRelay'
+    pod 'OpalImagePicker'
 end
