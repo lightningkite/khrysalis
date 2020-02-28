@@ -200,11 +200,11 @@ public extension Array {
     }
     
     func take(_ count: Int32) -> Array<Element> {
-        return Array(self[0..<Int(count)])
+        return Array(self[0..<Int(Swift.min(count, size))])
     }
     
     func takeLast(_ count: Int32) -> Array<Element> {
-        return Array(self[Int(size - count)..<self.count])
+        return Array(self[Int(size - Swift.min(count, size))..<self.count])
     }
 }
 

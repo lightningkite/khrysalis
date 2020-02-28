@@ -73,6 +73,11 @@ public extension Observable {
         }
     }
     
+    //--- Observable.drop(Int)
+    func drop(_ count: Int) -> Observable<Element> {
+        return self.skip(count)
+    }
+    
     //--- Observable.subscribeOn(Scheduler)
     //--- Observable.observeOn(Scheduler)
     

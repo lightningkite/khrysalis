@@ -63,9 +63,38 @@ public class ViewDependency: NSObject {
 
     //--- ViewDependency.openMap(GeoCoordinate, String? , Float? )
     public func openMap(_ coordinate: GeoCoordinate, _ label: String? = nil, _ zoom: Float? = nil) -> Void {
-        let mapItem = MKMapItem(placemark: MKPlacemark(coordinate: coordinate.toIos(), addressDictionary: nil))
-        mapItem.name = label
-        mapItem.openInMaps()
+        var options: Array<(String, ()->Void)> = [
+            ("Apple Maps", {
+                let mapItem = MKMapItem(placemark: MKPlacemark(coordinate: coordinate.toIos(), addressDictionary: nil))
+                mapItem.name = label
+                mapItem.openInMaps()
+            })
+        ]
+        if UIApplication.shared.canOpenURL(URL(string: "comgooglemaps://")!) {
+            options.add(("Google Maps", {
+                var url = "string: comgooglemaps://?center=\(coordinate.latitude),\(coordinate.longitude)"
+                if let zoom = zoom {
+                    url += "&zoom=\(zoom)"
+                }
+                if let label = label {
+                    url += "&q=\(label)"
+                }
+                UIApplication.shared.open(URL(string: url)!)
+            }))
+        }
+        //TODO: Could add more options
+        if options.count == 1 {
+            options[0].1()
+        } else {
+            let optionsView = UIAlertController(title: "Open in Maps", message: nil, preferredStyle: .actionSheet)
+            for option in options {
+                optionsView.addAction(UIAlertAction(title: option.0, style: .default, handler: { (action) in
+                    optionsView.dismiss(animated: true, completion: nil)
+                    option.1()
+                }))
+            }
+            self.parentViewController.present(optionsView, animated: true, completion: nil)
+        }
     }
     public func openMap(coordinate: GeoCoordinate, label: String? = nil, zoom: Float? = nil) -> Void {
         return openMap(coordinate, label, zoom)
