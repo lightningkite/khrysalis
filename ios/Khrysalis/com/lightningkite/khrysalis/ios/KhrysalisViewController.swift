@@ -29,6 +29,7 @@ open class KhrysalisViewController: UIViewController, UINavigationControllerDele
     
     public var defaultBackgroundColor: UIColor = .white
     public var forceDefaultBackgroundColor: Bool = false
+    public var drawOverSystemWindows: Bool = false
     
     override open func viewDidLoad() {
         super.viewDidLoad()
@@ -85,6 +86,7 @@ open class KhrysalisViewController: UIViewController, UINavigationControllerDele
     
     private var first = true
     public func refreshBackingColor() {
+        guard !forceDefaultBackgroundColor else { return }
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.01, execute: {
             if self.first {
                 self.first = false
@@ -148,19 +150,28 @@ open class KhrysalisViewController: UIViewController, UINavigationControllerDele
                 height: selfView.bounds.size.height/2
             )
         )
-        innerView.frame.origin.y = UIApplication.shared.statusBarFrame.height
-        innerView.frame.size.width = self.view.frame.size.width
+        var bottomPadding: CGFloat = 0
         if #available(iOS 11.0, *) {
             let window = UIApplication.shared.keyWindow
-            let bottomPadding = window?.safeAreaInsets.bottom ?? 0
-            let useBottomPadding = keyboardHeight == 0
-            if useBottomPadding {
-                innerView.frame.size.height = self.view.frame.size.height - innerView.frame.origin.y - bottomPadding - keyboardHeight
-            } else {
-                innerView.frame.size.height = self.view.frame.size.height - innerView.frame.origin.y - keyboardHeight
-            }
+            bottomPadding = window?.safeAreaInsets.bottom ?? 0
+        }
+        
+        var totalBottomPadding: CGFloat = 0
+        if keyboardHeight == 0 {
+            totalBottomPadding = bottomPadding
         } else {
-            innerView.frame.size.height = self.view.frame.size.height - innerView.frame.origin.y - keyboardHeight
+            totalBottomPadding = keyboardHeight
+        }
+        UIView.fullScreenSafeInsets = UIEdgeInsets(
+            top: UIApplication.shared.statusBarFrame.height,
+            left: 0,
+            bottom: totalBottomPadding,
+            right: 0
+        )
+        if drawOverSystemWindows {
+            innerView.frame = self.view.frame
+        } else {
+            innerView.frame = self.view.frame.inset(by: UIView.fullScreenSafeInsets)
         }
         innerView.layoutSubviews()
     }

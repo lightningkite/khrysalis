@@ -87,6 +87,25 @@ fun XmlNode.attributeAsStringKotlin(key: String): String? {
         else -> "\"${raw.replace("$", "\\$")}\""
     }
 }
+fun XmlNode.attributeAsGravityKotlin(key: String): Int? {
+    val raw = attributes[key] ?: return null
+    var gravity = 0
+    if(raw.contains("center"))
+        gravity = gravity or 0x00000011
+    if(raw.contains("center_horizontal"))
+        gravity = gravity or 0x00000001
+    if(raw.contains("left"))
+        gravity = gravity or 0x00000003
+    if(raw.contains("right"))
+        gravity = gravity or 0x00000005
+    if(raw.contains("center_vertical"))
+        gravity = gravity or 0x00000010
+    if(raw.contains("top"))
+        gravity = gravity or 0x00000030
+    if(raw.contains("bottom"))
+        gravity = gravity or 0x00000050
+    return gravity
+}
 
 fun XmlNode.attributeAsInt(key: String): String? {
     val raw = attributes[key] ?: return null

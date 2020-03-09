@@ -2,6 +2,8 @@ package com.lightningkite.khrysalis.layout
 
 import com.lightningkite.khrysalis.log
 import com.lightningkite.khrysalis.utils.XmlNode
+import com.lightningkite.khrysalis.utils.attributeAsGravityKotlin
+import com.lightningkite.khrysalis.utils.attributeAsStringKotlin
 import com.lightningkite.khrysalis.utils.camelCase
 import java.io.File
 
@@ -57,12 +59,13 @@ private fun File.translateLayoutXmlAndroid(styles: Styles, packageName: String, 
     val bindings = ArrayList<AndroidIdHook>()
     val delegateBindings = ArrayList<AndroidDelegateHook>()
     val sublayouts = ArrayList<AndroidSubLayout>()
+    val emitCurse = ArrayList<String>()
 
     fun addBindings(node: XmlNode) {
         node.attributes["android:id"]?.let { raw ->
             val id = raw.removePrefix("@+id/").removePrefix("@id/")
             val camelCasedId = id.camelCase()
-            if(node.name == "include"){
+            if (node.name == "include") {
                 val layout = node.attributes["layout"]!!.removePrefix("@layout/")
                 sublayouts.add(
                     AndroidSubLayout(
@@ -72,13 +75,17 @@ private fun File.translateLayoutXmlAndroid(styles: Styles, packageName: String, 
                     )
                 )
             } else {
+                val name = raw.removePrefix("@+id/").removePrefix("@id/").camelCase()
                 bindings.add(
                     AndroidIdHook(
-                        name = raw.removePrefix("@+id/").removePrefix("@id/").camelCase(),
+                        name = name,
                         type = node.name,
                         resourceId = raw.removePrefix("@+id/").removePrefix("@id/")
                     )
                 )
+                node.attributeAsGravityKotlin("tools:systemEdges")?.let {
+                    emitCurse.add("$name.safeInsets($it)")
+                }
                 (node.attributes["app:delegateClass"] ?: node.attributes["delegateClass"])?.let {
                     delegateBindings.add(
                         AndroidDelegateHook(
@@ -124,6 +131,7 @@ private fun File.translateLayoutXmlAndroid(styles: Styles, packageName: String, 
     |        ${bindings.joinToString("\n|        ") { it.run { "$name = view.findViewById<$type>(R.id.$resourceId)" } }}
     |        ${delegateBindings.joinToString("\n|        ") { it.run { "${name}Delegate = view.findViewById<CustomView>(R.id.$resourceId).delegate as $type" } }}
     |        ${sublayouts.joinToString("\n|        ") { it.run { "$name = $layoutXmlClass().apply{ setup(view.findViewById<View>(R.id.$resourceId)) }" } }}
+    |        ${emitCurse.joinToString("\n|        ")}
     |        return view
     |    }
     |}

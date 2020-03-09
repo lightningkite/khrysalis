@@ -209,6 +209,9 @@ open class LinearLayout: UIView {
         position += padding.start(orientation)
         for (subview, params) in subviewsWithParams {
             guard subview.includeInLayout else { continue }
+            if let subview = subview as? UILabel, subview.textString == "Select Demo" {
+                print("STAHP")
+            }
             let combined = params.combined
             position += combined.start(orientation)
             let viewSize = measurements[subview]!
@@ -228,7 +231,7 @@ open class LinearLayout: UIView {
                 shift = combined.start(orientation.other) + padding.start(orientation.other)
                 secondarySize = viewSize[orientation.other]
             case .center:
-                shift = (size[orientation.other] - viewSize[orientation.other]) / 2 - combined.start(orientation.other) + combined.end(orientation.other)
+                shift = (size[orientation.other] - viewSize[orientation.other] - padding.total(orientation.other)) / 2 - combined.start(orientation.other) + combined.end(orientation.other) + padding.start(orientation.other)
                 secondarySize = viewSize[orientation.other]
             case .end:
                 shift = size[orientation.other] - viewSize[orientation.other] - combined.end(orientation.other) - padding.end(orientation.other)

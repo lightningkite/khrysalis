@@ -54,6 +54,13 @@ val LayoutConverter.Companion.displayViews
                 node.attributes["android:visibility"]?.let {
                     appendln("view.visibility = View.${it.toUpperCase()}")
                 }
+                node.attributes["tools:systemEdges"]?.let {
+                    appendln("view.safeInsets(align: ${align(
+                        width = null,
+                        height = null,
+                        gravityStrings = *arrayOf(it)
+                    )})")
+                }
             },
             ViewType("Space", "UIView", "View") {},
             ViewType("ProgressBar", "UIActivityIndicatorView", "View") { node ->
