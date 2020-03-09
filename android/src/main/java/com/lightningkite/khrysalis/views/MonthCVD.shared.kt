@@ -61,15 +61,19 @@ open class MonthCVD : CustomViewDelegate() {
     private var draggingId: Int = DRAGGING_NONE
 
     fun animateNextMonth() {
-        currentMonthObs.value.setAddMonthOfYear(1)
-        currentMonthObs.update()
-        currentOffset = 1f
+        if (currentMonth.monthInEra < Date().dateAlone.monthInEra + 3) {
+            currentMonthObs.value.setAddMonthOfYear(1)
+            currentMonthObs.update()
+            currentOffset = 1f
+        }
     }
 
     fun animatePreviousMonth() {
-        currentMonthObs.value.setAddMonthOfYear(-1)
-        currentMonthObs.update()
-        currentOffset = -1f
+        if (currentMonth.monthInEra > Date().dateAlone.monthInEra) {
+            currentMonthObs.value.setAddMonthOfYear(-1)
+            currentMonthObs.update()
+            currentOffset = -1f
+        }
     }
 
     val labelPaint: Paint = Paint()
