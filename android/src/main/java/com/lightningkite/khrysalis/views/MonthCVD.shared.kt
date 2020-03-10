@@ -61,19 +61,15 @@ open class MonthCVD : CustomViewDelegate() {
     private var draggingId: Int = DRAGGING_NONE
 
     fun animateNextMonth() {
-        if (currentMonth.monthInEra < Date().dateAlone.monthInEra + 3) {
-            currentMonthObs.value.setAddMonthOfYear(1)
-            currentMonthObs.update()
-            currentOffset = 1f
-        }
+        currentMonthObs.value.setAddMonthOfYear(1)
+        currentMonthObs.update()
+        currentOffset = 1f
     }
 
     fun animatePreviousMonth() {
-        if (currentMonth.monthInEra > Date().dateAlone.monthInEra) {
-            currentMonthObs.value.setAddMonthOfYear(-1)
-            currentMonthObs.update()
-            currentOffset = -1f
-        }
+        currentMonthObs.value.setAddMonthOfYear(-1)
+        currentMonthObs.update()
+        currentOffset = -1f
     }
 
     val labelPaint: Paint = Paint()
@@ -260,7 +256,7 @@ open class MonthCVD : CustomViewDelegate() {
         if (draggingId == id) {
             lastOffset = currentOffset
             lastOffsetTime = System.currentTimeMillis()
-            if(dragEnabled) {
+            if (dragEnabled) {
                 currentOffset = (x / width) - dragStartX
                 if ((x / width - dragStartX).absoluteValue > 0.05f || (y / height - dragStartY).absoluteValue > 0.05f) {
                     isTap = false
@@ -281,7 +277,7 @@ open class MonthCVD : CustomViewDelegate() {
                 dayAtPixel(x, y)?.let {
                     onTap(it)
                 }
-            } else if(dragEnabled) {
+            } else if (dragEnabled) {
                 val weighted =
                     currentOffset + (currentOffset - lastOffset) * 200f / (System.currentTimeMillis() - lastOffsetTime).toFloat()
                 if (weighted > 0.5f) {
