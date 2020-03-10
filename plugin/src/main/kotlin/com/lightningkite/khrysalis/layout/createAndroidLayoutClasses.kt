@@ -86,6 +86,9 @@ private fun File.translateLayoutXmlAndroid(styles: Styles, packageName: String, 
                 node.attributeAsGravityKotlin("tools:systemEdges")?.let {
                     emitCurse.add("$name.safeInsets($it)")
                 }
+                node.attributeAsGravityKotlin("tools:systemEdgesSizing")?.let {
+                    emitCurse.add("$name.safeInsetsSizing($it)")
+                }
                 (node.attributes["app:delegateClass"] ?: node.attributes["delegateClass"])?.let {
                     delegateBindings.add(
                         AndroidDelegateHook(

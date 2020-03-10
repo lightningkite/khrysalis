@@ -77,6 +77,55 @@ public extension UIView {
             }
         }
     }
+    func safeInsetsSizing(align: AlignPair) {
+        var useTop = false
+        var useLeft = false
+        var useRight = false
+        var useBottom = false
+        switch align.vertical {
+        case .start:
+            useTop = true
+        case .center, .fill:
+            useTop = true
+            useBottom = true
+        case .end:
+            useBottom = true
+        }
+        switch align.horizontal {
+        case .start:
+            useLeft = true
+        case .center, .fill:
+            useLeft = true
+            useRight = true
+        case .end:
+            useRight = true
+        }
+        var myDefault: CGSize? = nil
+        self.addOnLayoutSubviews { [weak self] in
+            guard let self = self else { return }
+            let addedSize = CGSize(
+                width: (useLeft ? UIView.fullScreenSafeInsets.left : 0) + (useRight ? UIView.fullScreenSafeInsets.right : 0),
+                height: (useTop ? UIView.fullScreenSafeInsets.top : 0) + (useBottom ? UIView.fullScreenSafeInsets.bottom : 0)
+            )
+            if let superview = self.superview as? LinearLayout {
+                if var current = superview.params(for: self) {
+                    if myDefault == nil {
+                        myDefault = current.size
+                    }
+                    current.size = addIfNotZero(myDefault!, addedSize)
+                    superview.params(for: self, setTo: current)
+                }
+            } else if let superview = self.superview as? FrameLayout {
+                if var current = superview.params(for: self) {
+                    if myDefault == nil {
+                        myDefault = current.size
+                    }
+                    current.size = addIfNotZero(myDefault!, addedSize)
+                    superview.params(for: self, setTo: current)
+                }
+            }
+        }
+    }
 }
 
 private func +(lhs: UIEdgeInsets, rhs: UIEdgeInsets) -> UIEdgeInsets {
@@ -85,5 +134,13 @@ private func +(lhs: UIEdgeInsets, rhs: UIEdgeInsets) -> UIEdgeInsets {
         left: lhs.left + rhs.left,
         bottom: lhs.bottom + rhs.bottom,
         right: lhs.right + rhs.right
+    )
+}
+
+
+private func addIfNotZero(_ lhs: CGSize, _ rhs: CGSize) -> CGSize {
+    return CGSize(
+        width: lhs.width != 0 ? lhs.width + rhs.width : 0,
+        height: lhs.height != 0 ? lhs.height + rhs.height : 0
     )
 }

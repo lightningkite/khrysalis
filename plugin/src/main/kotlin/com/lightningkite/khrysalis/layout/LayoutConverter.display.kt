@@ -61,6 +61,13 @@ val LayoutConverter.Companion.displayViews
                         gravityStrings = *arrayOf(it)
                     )})")
                 }
+                node.attributes["tools:systemEdgesSizing"]?.let {
+                    appendln("view.safeInsetsSizing(align: ${align(
+                        width = null,
+                        height = null,
+                        gravityStrings = *arrayOf(it)
+                    )})")
+                }
             },
             ViewType("Space", "UIView", "View") {},
             ViewType("ProgressBar", "UIActivityIndicatorView", "View") { node ->

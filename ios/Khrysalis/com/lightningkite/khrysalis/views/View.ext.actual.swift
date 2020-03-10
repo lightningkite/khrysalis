@@ -41,7 +41,7 @@ public extension View {
             switch value {
             case .GONE:
                 includeInLayout = false
-                isHidden = false
+                isHidden = true
             case .VISIBLE:
                 includeInLayout = true
                 isHidden = false
