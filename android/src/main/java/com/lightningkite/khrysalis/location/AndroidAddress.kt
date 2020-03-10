@@ -1,20 +1,19 @@
 package com.lightningkite.khrysalis.location
 
 import android.location.Address
-import com.lightningkite.khrysalis.location.GeoCoordinate
-import java.util.*
 
-typealias GeoAddress = Address
+fun Address.toKhrysalis(): GeoAddress = GeoAddress(
+    coordinate = coordinate,
+    name = null,
+    street = street,
+    subLocality = subLocality,
+    locality = locality,
+    adminArea = adminArea,
+    countryName = countryName,
+    postalCode = postalCode
+)
 
-/* SHARED DECLARATIONS
-val GeoAddress.locality: String
-val GeoAddress.adminArea: String
-val GeoAddress.countryName: String
- */
-
-fun GeoAddress(): GeoAddress = GeoAddress(Locale.getDefault())
-
-val GeoAddress.street: String?
+val Address.street: String?
     get() {
         return subThoroughfare?.let { x ->
             thoroughfare?.let { y ->
@@ -23,10 +22,10 @@ val GeoAddress.street: String?
         }
     }
 
-val GeoAddress.oneLineShort: String
+val Address.oneLineShort: String
     get() = oneLine()
 
-fun GeoAddress.oneLine(withCountry: Boolean = false, withZip: Boolean = false): String = buildString {
+fun Address.oneLine(withCountry: Boolean = false, withZip: Boolean = false): String = buildString {
     street?.let {
         append(it)
     }
@@ -52,5 +51,5 @@ fun GeoAddress.oneLine(withCountry: Boolean = false, withZip: Boolean = false): 
     }
 }.trim()
 
-val GeoAddress.coordinate: GeoCoordinate? get() = if (hasLatitude()) GeoCoordinate(latitude, longitude) else null
+val Address.coordinate: GeoCoordinate? get() = if (hasLatitude()) GeoCoordinate(latitude, longitude) else null
 

@@ -50,15 +50,19 @@ open class MonthCVD: CustomViewDelegate {
     private var draggingId: Int32
     
     public func animateNextMonth() -> Void {
-        currentMonthObs.value.setAddMonthOfYear(1)
-        currentMonthObs.update()
-        currentOffset = Float(1)
+        if currentMonth.monthInEra < Date().dateAlone.monthInEra + 3 {
+            currentMonthObs.value.setAddMonthOfYear(1)
+            currentMonthObs.update()
+            currentOffset = Float(1)
+        }
     }
     
     public func animatePreviousMonth() -> Void {
-        currentMonthObs.value.setAddMonthOfYear(-1)
-        currentMonthObs.update()
-        currentOffset = -Float(1)
+        if currentMonth.monthInEra > Date().dateAlone.monthInEra {
+            currentMonthObs.value.setAddMonthOfYear(-1)
+            currentMonthObs.update()
+            currentOffset = -Float(1)
+        }
     }
     public var labelPaint: Paint
     public var dayPaint: Paint

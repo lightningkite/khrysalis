@@ -1,10 +1,7 @@
 package com.lightningkite.khrysalis.location
 
-import android.location.Address
 import android.location.Geocoder
-import com.lightningkite.khrysalis.delay
 import com.lightningkite.khrysalis.post
-import com.lightningkite.khrysalis.location.GeoCoordinate
 import com.lightningkite.khrysalis.views.ViewDependency
 
 fun ViewDependency.geocode(
@@ -19,7 +16,7 @@ fun ViewDependency.geocode(
         val result = Geocoder(context)
             .getFromLocation(coordinate.latitude, coordinate.longitude, 1)
         post {
-            onResult(result)
+            onResult(result.map { it -> it.toKhrysalis() })
         }
     }.start()
 }
@@ -36,7 +33,7 @@ fun ViewDependency.geocode(
         val result = Geocoder(context)
             .getFromLocationName(address, 1)
         post {
-            onResult(result)
+            onResult(result.map { it -> it.toKhrysalis() })
         }
     }.start()
 }
