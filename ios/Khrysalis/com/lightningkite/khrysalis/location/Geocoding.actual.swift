@@ -10,7 +10,7 @@ public extension ViewDependency {
     }
     func geocode(latLng: GeoCoordinate, onResult: @escaping (Array<GeoAddress>)->Void) {
         CLGeocoder().reverseGeocodeLocation(CLLocation(latitude: latLng.latitude, longitude: latLng.longitude)){ marks, error in
-            onResult(marks?.map { GeoAddress($0) } ?? [])
+            onResult(marks?.map { translate(mark: $0) } ?? [])
         }
     }
 
@@ -20,7 +20,22 @@ public extension ViewDependency {
     }
     func geocode(address: String, onResult: @escaping (Array<GeoAddress>)->Void) {
         CLGeocoder().geocodeAddressString(address){ marks, error in
-            onResult(marks?.map { GeoAddress($0) } ?? [])
+            onResult(marks?.map { translate(mark: $0) } ?? [])
         }
+    }
+}
+
+//--- translate
+private func translate(mark: CLPlacemark) -> GeoAddress {
+    return GeoAddress(mark.location?.coordinate.toKhrysalis(), mark.name, mark.street, mark.subLocality, mark.locality, mark.subAdministrativeArea, mark.administrativeArea, mark.country, mark.postalCode)
+}
+
+private extension CLPlacemark {
+    
+    var street: String? {
+        if let x = subThoroughfare, let y = thoroughfare {
+            return "\(x) \(y)"
+        }
+        return nil
     }
 }
