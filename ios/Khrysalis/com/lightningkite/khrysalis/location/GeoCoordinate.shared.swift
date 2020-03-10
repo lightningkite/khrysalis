@@ -7,7 +7,7 @@ import RxRelay
 
 
 
-public class GeoCoordinate: Equatable, Hashable {
+public class GeoCoordinate: Codable, Equatable, Hashable {
     
     public var latitude: Double
     public var longitude: Double
@@ -38,5 +38,22 @@ public class GeoCoordinate: Equatable, Hashable {
     convenience public init(_ latitude: Double, _ longitude: Double) {
         self.init(latitude: latitude, longitude: longitude)
     }
+    required public init(from decoder: Decoder) throws {
+        let values = try decoder.container(keyedBy: CodingKeys.self)
+        latitude = try values.decodeDouble(forKey: .latitude)
+        longitude = try values.decodeDouble(forKey: .longitude)
+    }
+    
+    enum CodingKeys: String, CodingKey {
+        case latitude = "latitude"
+        case longitude = "longitude"
+    }
+    
+    public func encode(to encoder: Encoder) throws {
+        var container = encoder.container(keyedBy: CodingKeys.self)
+        try container.encode(self.latitude, forKey: .latitude)
+        try container.encode(self.longitude, forKey: .longitude)
+    }
+    
 }
  
