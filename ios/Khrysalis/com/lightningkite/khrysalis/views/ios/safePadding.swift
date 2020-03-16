@@ -9,211 +9,130 @@ import Foundation
 import UIKit
 
 public extension UIView {
-    static var fullScreenSafeInsets: UIEdgeInsets = .zero
+    static let fullScreenSafeInsetsObs: StandardObservableProperty<UIEdgeInsets> = StandardObservableProperty(.zero)
     func safeInsets(align: AlignPair) {
-        var useTop = false
-        var useLeft = false
-        var useRight = false
-        var useBottom = false
-        switch align.vertical {
-        case .start:
-            useTop = true
-        case .center, .fill:
-            useTop = true
-            useBottom = true
-        case .end:
-            useBottom = true
-        }
-        switch align.horizontal {
-        case .start:
-            useLeft = true
-        case .center, .fill:
-            useLeft = true
-            useRight = true
-        case .end:
-            useRight = true
-        }
-        var myDefault: UIEdgeInsets? = nil
-        self.addOnLayoutSubviews { [weak self] in
-            guard let self = self else { return }
-            let addedInsets = UIEdgeInsets(
-                top: useTop ? UIView.fullScreenSafeInsets.top : 0,
-                left: useLeft ? UIView.fullScreenSafeInsets.left : 0,
-                bottom: useBottom ? UIView.fullScreenSafeInsets.bottom : 0,
-                right: useRight ? UIView.fullScreenSafeInsets.right : 0
-            )
-            switch self {
-            case let self as LinearLayout:
-                if myDefault == nil {
-                    myDefault = self.padding
+        post {
+            var useTop = false
+            var useLeft = false
+            var useRight = false
+            var useBottom = false
+            switch align.vertical {
+            case .start:
+                useTop = true
+            case .center, .fill:
+                useTop = true
+                useBottom = true
+            case .end:
+                useBottom = true
+            }
+            switch align.horizontal {
+            case .start:
+                useLeft = true
+            case .center, .fill:
+                useLeft = true
+                useRight = true
+            case .end:
+                useRight = true
+            }
+            var myDefault: UIEdgeInsets? = nil
+            UIView.fullScreenSafeInsetsObs.addAndRunWeak(self) { (self, fullScreenSafeInsets) in
+                print("Activate safe insets: \(fullScreenSafeInsets) useTop: \(useTop)")
+                let addedInsets = UIEdgeInsets(
+                    top: useTop ? fullScreenSafeInsets.top : 0,
+                    left: useLeft ? fullScreenSafeInsets.left : 0,
+                    bottom: useBottom ? fullScreenSafeInsets.bottom : 0,
+                    right: useRight ? fullScreenSafeInsets.right : 0
+                )
+                switch self {
+                case let self as LinearLayout:
+                    if myDefault == nil {
+                        myDefault = self.padding
+                    }
+                    self.padding = myDefault! + addedInsets
+                    print("Activate safe insets via self.padding (LL)")
+                case let self as FrameLayout:
+                    if myDefault == nil {
+                        myDefault = self.padding
+                    }
+                    self.padding = myDefault! + addedInsets
+                    print("Activate safe insets via self.padding (FL)")
+                default:
+                    if let superview = self.superview as? LinearLayout {
+                        if var current = superview.params(for: self) {
+                            if myDefault == nil {
+                                myDefault = current.padding
+                            }
+                            current.padding = myDefault! + addedInsets
+                            superview.params(for: self, setTo: current)
+                            print("Activate safe insets via superview.padding (LL)")
+                        }
+                    } else if let superview = self.superview as? FrameLayout {
+                        if var current = superview.params(for: self) {
+                            if myDefault == nil {
+                                myDefault = current.padding
+                            }
+                            current.padding = myDefault! + addedInsets
+                            superview.params(for: self, setTo: current)
+                            print("Activate safe insets via superview.padding (FL)")
+                        }
+                    }
                 }
-                self.padding = myDefault! + addedInsets
-                break
-            case let self as FrameLayout:
-                if myDefault == nil {
-                    myDefault = self.padding
-                }
-                self.padding = myDefault! + addedInsets
-                break
-            default:
+            }
+        }
+    }
+    func safeInsetsSizing(align: AlignPair) {
+        post {
+            var useTop = false
+            var useLeft = false
+            var useRight = false
+            var useBottom = false
+            switch align.vertical {
+            case .start:
+                useTop = true
+            case .center, .fill:
+                useTop = true
+                useBottom = true
+            case .end:
+                useBottom = true
+            }
+            switch align.horizontal {
+            case .start:
+                useLeft = true
+            case .center, .fill:
+                useLeft = true
+                useRight = true
+            case .end:
+                useRight = true
+            }
+            var myDefault: CGSize? = nil
+            UIView.fullScreenSafeInsetsObs.addAndRunWeak(self) { (self, fullScreenSafeInsets) in
+                let addedSize = CGSize(
+                    width: (useLeft ? fullScreenSafeInsets.left : 0) + (useRight ? fullScreenSafeInsets.right : 0),
+                    height: (useTop ? fullScreenSafeInsets.top : 0) + (useBottom ? fullScreenSafeInsets.bottom : 0)
+                )
                 if let superview = self.superview as? LinearLayout {
                     if var current = superview.params(for: self) {
                         if myDefault == nil {
-                            myDefault = current.padding
+                            myDefault = current.size
                         }
-                        current.padding = myDefault! + addedInsets
+                        current.size = addIfNotZero(myDefault!, addedSize)
                         superview.params(for: self, setTo: current)
                     }
                 } else if let superview = self.superview as? FrameLayout {
                     if var current = superview.params(for: self) {
                         if myDefault == nil {
-                            myDefault = current.padding
+                            myDefault = current.size
                         }
-                        current.padding = myDefault! + addedInsets
+                        current.size = addIfNotZero(myDefault!, addedSize)
                         superview.params(for: self, setTo: current)
                     }
-                }
-                break
-            }
-        }
-    }
-    func safeInsetsSizing(align: AlignPair) {
-        var useTop = false
-        var useLeft = false
-        var useRight = false
-        var useBottom = false
-        switch align.vertical {
-        case .start:
-            useTop = true
-        case .center, .fill:
-            useTop = true
-            useBottom = true
-        case .end:
-            useBottom = true
-        }
-        switch align.horizontal {
-        case .start:
-            useLeft = true
-        case .center, .fill:
-            useLeft = true
-            useRight = true
-        case .end:
-            useRight = true
-        }
-        var myDefault: CGSize? = nil
-        self.addOnLayoutSubviews { [weak self] in
-            guard let self = self else { return }
-            let addedSize = CGSize(
-                width: (useLeft ? UIView.fullScreenSafeInsets.left : 0) + (useRight ? UIView.fullScreenSafeInsets.right : 0),
-                height: (useTop ? UIView.fullScreenSafeInsets.top : 0) + (useBottom ? UIView.fullScreenSafeInsets.bottom : 0)
-            )
-            if let superview = self.superview as? LinearLayout {
-                if var current = superview.params(for: self) {
-                    if myDefault == nil {
-                        myDefault = current.size
-                    }
-                    current.size = addIfNotZero(myDefault!, addedSize)
-                    superview.params(for: self, setTo: current)
-                }
-            } else if let superview = self.superview as? FrameLayout {
-                if var current = superview.params(for: self) {
-                    if myDefault == nil {
-                        myDefault = current.size
-                    }
-                    current.size = addIfNotZero(myDefault!, addedSize)
-                    superview.params(for: self, setTo: current)
                 }
             }
         }
     }
     func safeInsetsBoth(align: AlignPair) {
-        var useTop = false
-        var useLeft = false
-        var useRight = false
-        var useBottom = false
-        switch align.vertical {
-        case .start:
-            useTop = true
-        case .center, .fill:
-            useTop = true
-            useBottom = true
-        case .end:
-            useBottom = true
-        }
-        switch align.horizontal {
-        case .start:
-            useLeft = true
-        case .center, .fill:
-            useLeft = true
-            useRight = true
-        case .end:
-            useRight = true
-        }
-        var myDefaultSize: CGSize? = nil
-        var myDefault: UIEdgeInsets? = nil
-        self.addOnLayoutSubviews { [weak self] in
-            guard let self = self else { return }
-            let addedInsets = UIEdgeInsets(
-                top: useTop ? UIView.fullScreenSafeInsets.top : 0,
-                left: useLeft ? UIView.fullScreenSafeInsets.left : 0,
-                bottom: useBottom ? UIView.fullScreenSafeInsets.bottom : 0,
-                right: useRight ? UIView.fullScreenSafeInsets.right : 0
-            )
-            switch self {
-            case let self as LinearLayout:
-                if myDefault == nil {
-                    myDefault = self.padding
-                }
-                self.padding = myDefault! + addedInsets
-                break
-            case let self as FrameLayout:
-                if myDefault == nil {
-                    myDefault = self.padding
-                }
-                self.padding = myDefault! + addedInsets
-                break
-            default:
-                if let superview = self.superview as? LinearLayout {
-                    if var current = superview.params(for: self) {
-                        if myDefault == nil {
-                            myDefault = current.padding
-                        }
-                        current.padding = myDefault! + addedInsets
-                        superview.params(for: self, setTo: current)
-                    }
-                } else if let superview = self.superview as? FrameLayout {
-                    if var current = superview.params(for: self) {
-                        if myDefault == nil {
-                            myDefault = current.padding
-                        }
-                        current.padding = myDefault! + addedInsets
-                        superview.params(for: self, setTo: current)
-                    }
-                }
-                break
-            }
-            let addedSize = CGSize(
-                width: (useLeft ? UIView.fullScreenSafeInsets.left : 0) + (useRight ? UIView.fullScreenSafeInsets.right : 0),
-                height: (useTop ? UIView.fullScreenSafeInsets.top : 0) + (useBottom ? UIView.fullScreenSafeInsets.bottom : 0)
-            )
-            if let superview = self.superview as? LinearLayout {
-                if var current = superview.params(for: self) {
-                    if myDefaultSize == nil {
-                        myDefaultSize = current.size
-                    }
-                    current.size = addIfNotZero(myDefaultSize!, addedSize)
-                    superview.params(for: self, setTo: current)
-                }
-            } else if let superview = self.superview as? FrameLayout {
-                if var current = superview.params(for: self) {
-                    if myDefaultSize == nil {
-                        myDefaultSize = current.size
-                    }
-                    current.size = addIfNotZero(myDefaultSize!, addedSize)
-                    superview.params(for: self, setTo: current)
-                }
-            }
-        }
+        safeInsetsSizing(align: align)
+        safeInsets(align: align)
     }
 }
 

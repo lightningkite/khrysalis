@@ -11,8 +11,16 @@ import UIKit
 
 open class LinearLayout: UIView {
     
-    public var padding: UIEdgeInsets = .zero
-    public var gravity: AlignPair = .topLeft
+    public var padding: UIEdgeInsets = .zero {
+        didSet {
+            self.setNeedsLayout()
+        }
+    }
+    public var gravity: AlignPair = .topLeft {
+        didSet {
+            self.setNeedsLayout()
+        }
+    }
     
     public struct LayoutParams {
         public var minimumSize: CGSize
@@ -56,6 +64,7 @@ open class LinearLayout: UIView {
     public func params(for view: UIView, setTo: LayoutParams) {
         if let index = (subviewsWithParams.firstIndex { entry in entry.0 === view }) {
             subviewsWithParams[index] = (view, setTo)
+            self.setNeedsLayout()
         }
     }
     
@@ -209,9 +218,6 @@ open class LinearLayout: UIView {
         position += padding.start(orientation)
         for (subview, params) in subviewsWithParams {
             guard subview.includeInLayout else { continue }
-            if let subview = subview as? UILabel, subview.textString == "Select Demo" {
-                print("STAHP")
-            }
             let combined = params.combined
             position += combined.start(orientation)
             let viewSize = measurements[subview]!

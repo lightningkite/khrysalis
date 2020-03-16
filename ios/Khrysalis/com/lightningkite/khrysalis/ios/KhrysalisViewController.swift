@@ -162,16 +162,19 @@ open class KhrysalisViewController: UIViewController, UINavigationControllerDele
         } else {
             totalBottomPadding = keyboardHeight
         }
-        UIView.fullScreenSafeInsets = UIEdgeInsets(
+        let newInsets = UIEdgeInsets(
             top: UIApplication.shared.statusBarFrame.height,
             left: 0,
             bottom: totalBottomPadding,
             right: 0
         )
+        if newInsets != UIView.fullScreenSafeInsetsObs.value {
+            UIView.fullScreenSafeInsetsObs.value = newInsets
+        }
         if drawOverSystemWindows {
             innerView.frame = self.view.frame
         } else {
-            innerView.frame = self.view.frame.inset(by: UIView.fullScreenSafeInsets)
+            innerView.frame = self.view.frame.inset(by: UIView.fullScreenSafeInsetsObs.value)
         }
         innerView.layoutSubviews()
     }

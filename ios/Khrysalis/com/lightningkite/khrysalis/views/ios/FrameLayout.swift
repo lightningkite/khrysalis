@@ -10,7 +10,11 @@ import UIKit
 
 
 open class FrameLayout: UIView {
-    public var padding: UIEdgeInsets = .zero
+    public var padding: UIEdgeInsets = .zero {
+        didSet {
+            self.setNeedsLayout()
+        }
+    }
     
     public struct LayoutParams {
         public var minimumSize: CGSize
@@ -52,6 +56,7 @@ open class FrameLayout: UIView {
     }
     public func params(for view: UIView, setTo: LayoutParams) {
         subviewsWithParams[view] = setTo
+        self.setNeedsLayout()
     }
     
     public func addView(_ view: UIView, _ params: LayoutParams) {
