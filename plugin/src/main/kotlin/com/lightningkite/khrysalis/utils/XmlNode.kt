@@ -88,7 +88,7 @@ fun XmlNode.attributeAsStringKotlin(key: String): String? {
     }
 }
 fun XmlNode.attributeAsGravityKotlin(key: String): Int? {
-    val raw = attributes[key] ?: return null
+    val raw = attributes[key]?.split('|') ?: return null
     var gravity = 0
     if(raw.contains("center"))
         gravity = gravity or 0x00000011
@@ -104,6 +104,39 @@ fun XmlNode.attributeAsGravityKotlin(key: String): Int? {
         gravity = gravity or 0x00000030
     if(raw.contains("bottom"))
         gravity = gravity or 0x00000050
+    return gravity
+}
+object SafePaddingFlags {
+    const val NONE: Int = 0
+    const val TOP: Int = 1
+    const val RIGHT: Int = 2
+    const val BOTTOM: Int = 4
+    const val LEFT: Int = 8
+    const val ALL: Int = 15
+}
+fun XmlNode.attributeAsEdgeFlagsKotlin(key: String): Int? {
+    val raw = attributes[key]?.split('|') ?: return null
+    var gravity = 0
+    if(raw.contains("center"))
+        gravity = gravity or SafePaddingFlags.ALL
+    if(raw.contains("all"))
+        gravity = gravity or SafePaddingFlags.ALL
+    if(raw.contains("center_horizontal"))
+        gravity = gravity or SafePaddingFlags.LEFT or SafePaddingFlags.RIGHT
+    if(raw.contains("horizontal"))
+        gravity = gravity or SafePaddingFlags.LEFT or SafePaddingFlags.RIGHT
+    if(raw.contains("left"))
+        gravity = gravity or SafePaddingFlags.LEFT
+    if(raw.contains("right"))
+        gravity = gravity or SafePaddingFlags.RIGHT
+    if(raw.contains("center_vertical"))
+        gravity = gravity or SafePaddingFlags.TOP or SafePaddingFlags.BOTTOM
+    if(raw.contains("vertical"))
+        gravity = gravity or SafePaddingFlags.TOP or SafePaddingFlags.BOTTOM
+    if(raw.contains("top"))
+        gravity = gravity or SafePaddingFlags.TOP
+    if(raw.contains("bottom"))
+        gravity = gravity or SafePaddingFlags.BOTTOM
     return gravity
 }
 

@@ -30,7 +30,13 @@ fun SwiftAltListener.registerLambda() {
         direct.append("(")
         literal.lambdaParameters()?.lambdaParameter()?.forEachBetween(
             forItem = {
-                direct.append(it.text)
+                it.variableDeclaration()?.let {
+                    direct.append(it.simpleIdentifier().text)
+                    it.type()?.let {
+                        direct.append(": ")
+                        write(it)
+                    }
+                } ?: throw IllegalArgumentException("Must use normal variable declarations, multivariable not allowed")
             },
             between = {
                 direct.append(", ")

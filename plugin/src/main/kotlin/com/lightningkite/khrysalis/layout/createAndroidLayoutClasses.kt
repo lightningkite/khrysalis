@@ -1,10 +1,7 @@
 package com.lightningkite.khrysalis.layout
 
 import com.lightningkite.khrysalis.log
-import com.lightningkite.khrysalis.utils.XmlNode
-import com.lightningkite.khrysalis.utils.attributeAsGravityKotlin
-import com.lightningkite.khrysalis.utils.attributeAsStringKotlin
-import com.lightningkite.khrysalis.utils.camelCase
+import com.lightningkite.khrysalis.utils.*
 import java.io.File
 
 fun createAndroidLayoutClasses(androidFolder: File, applicationPackage: String) = createAndroidLayoutClasses(
@@ -83,13 +80,13 @@ private fun File.translateLayoutXmlAndroid(styles: Styles, packageName: String, 
                         resourceId = raw.removePrefix("@+id/").removePrefix("@id/")
                     )
                 )
-                node.attributeAsGravityKotlin("tools:systemEdges")?.let {
+                node.attributeAsEdgeFlagsKotlin("tools:systemEdges")?.let {
                     emitCurse.add("$name.safeInsets($it)")
                 }
-                node.attributeAsGravityKotlin("tools:systemEdgesSizing")?.let {
+                node.attributeAsEdgeFlagsKotlin("tools:systemEdgesSizing")?.let {
                     emitCurse.add("$name.safeInsetsSizing($it)")
                 }
-                node.attributeAsGravityKotlin("tools:systemEdgesBoth")?.let {
+                node.attributeAsEdgeFlagsKotlin("tools:systemEdgesBoth")?.let {
                     emitCurse.add("$name.safeInsetsBoth($it)")
                 }
                 (node.attributes["app:delegateClass"] ?: node.attributes["delegateClass"])?.let {
