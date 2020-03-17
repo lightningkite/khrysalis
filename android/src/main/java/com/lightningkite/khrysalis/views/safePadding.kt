@@ -7,6 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.ViewCompat
 import androidx.core.view.WindowInsetsCompat
+import com.lightningkite.khrysalis.views.android.activity
 import java.util.*
 
 object SafePaddingFlags {
@@ -81,7 +82,7 @@ fun View.resetWindowInsets() {
         (this.parent as? ViewGroup)?.resetWindowInsets() ?: run {
             if(resetWindowInsetsPending.add(this)){
                 this.post {
-                    (context as? Activity)?.window?.decorView?.rootWindowInsets?.let { startInsets ->
+                    this.rootWindowInsets?.let { startInsets ->
                         dispatchApplyWindowInsets(startInsets)
                     }
                     resetWindowInsetsPending.remove(this)

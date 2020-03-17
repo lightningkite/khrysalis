@@ -1,21 +1,10 @@
 package com.lightningkite.khrysalis.views.android
 
 import android.content.Context
+import android.os.Build
 import android.util.AttributeSet
-import android.view.Gravity
-import android.view.MotionEvent
-import android.view.View
-import android.view.ViewGroup
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
-import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
-import android.widget.*
-import androidx.viewpager.widget.PagerAdapter
-import androidx.viewpager.widget.ViewPager
-import com.lightningkite.khrysalis.R
-import com.lightningkite.khrysalis.observables.StandardObservableProperty
-import com.lightningkite.khrysalis.observables.addAndRunWeak
-import java.text.SimpleDateFormat
-import java.util.*
+import android.view.WindowInsets
+import android.widget.FrameLayout
 
 class SwapView @JvmOverloads constructor(
     context: Context,
@@ -23,4 +12,21 @@ class SwapView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
+    var windowInsetsListenerCopy: OnApplyWindowInsetsListener? = null
+    override fun setOnApplyWindowInsetsListener(listener: OnApplyWindowInsetsListener?) {
+        this.windowInsetsListenerCopy = listener
+        super.setOnApplyWindowInsetsListener(listener)
+    }
+
+    override fun dispatchApplyWindowInsets(insets: WindowInsets): WindowInsets {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT_WATCH) {
+            val newInsets = this.windowInsetsListenerCopy?.onApplyWindowInsets(this, insets) ?: insets
+            val count = childCount
+            for (i in 0 until count) {
+                getChildAt(i).dispatchApplyWindowInsets(newInsets)
+            }
+            return newInsets
+        }
+        return insets
+    }
 }

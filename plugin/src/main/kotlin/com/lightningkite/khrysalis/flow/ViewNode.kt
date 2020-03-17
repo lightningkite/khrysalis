@@ -248,7 +248,7 @@ class ViewNode(
             }
         }
         node.attributes[attributeProvides]?.let {
-            it.split(';').forEach {
+            it.split(';').filter { it.isNotBlank() }.forEach {
                 provides.add(
                     ViewVar(
                         name = it.substringBefore(':').trim(),
