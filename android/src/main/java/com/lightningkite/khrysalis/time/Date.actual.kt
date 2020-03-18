@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.time
 
+import com.fasterxml.jackson.databind.util.StdDateFormat
 import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
@@ -281,6 +282,10 @@ fun dateFrom(dateAlone: DateAlone, timeAlone: TimeAlone, existing: Date = Date()
         existing.time = it.timeInMillis
         existing
     }
+}
+
+fun dateFromIso(iso8601: String): Date {
+    return StdDateFormat().withLenient(true).parse(iso8601) ?: throw IllegalStateException()
 }
 
 fun Date.format(dateStyle: ClockPartSize, timeStyle: ClockPartSize): String {

@@ -285,3 +285,11 @@ public func dateFrom(dateAlone: DateAlone, timeAlone: TimeAlone) -> Date {
     )
     return Calendar.current.date(from: components)!
 }
+
+//--- dateFromIso(String)
+public func dateFromIso(_ iso8601: String) -> Date {
+    ISO8601DateFormatter().date(from: iso8601)!
+}
+public func dateFromIso(iso8601: String) -> Date {
+    return dateFromIso(iso8601)
+}
