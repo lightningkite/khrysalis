@@ -416,6 +416,7 @@ public extension String {
         return substring(startIndex, self.length)
     }
     func contains(_ string: String) -> Bool {
+        if string.isEmpty { return true }
         return self.range(of: string) != nil
     }
     func replace(_ target: String, _ withString: String) -> String {
