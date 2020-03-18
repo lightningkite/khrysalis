@@ -5,6 +5,7 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.lightningkite.khrysalis.INTERFACE_SCAN_VERSION
 import com.lightningkite.khrysalis.log
 import com.lightningkite.khrysalis.utils.Versioned
+import com.lightningkite.khrysalis.utils.checksum
 import org.antlr.v4.runtime.ANTLRInputStream
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.tree.ParseTreeWalker
@@ -12,7 +13,7 @@ import org.jetbrains.kotlin.KotlinLexer
 import org.jetbrains.kotlin.KotlinParser
 import java.io.File
 
-fun writeInterfacesFile(sources: Sequence<File>, out: File): Map<String, InterfaceListener.InterfaceData> {
+fun writeInterfacesFile(sources: Sequence<File>, out: File, relativeTo: File): Map<String, InterfaceListener.InterfaceData> {
     val interfaces = HashMap<String, InterfaceListener.InterfaceData>()
 
     val existingCache: Map<String, FileCache> = if (out.exists()) {
@@ -23,24 +24,26 @@ fun writeInterfacesFile(sources: Sequence<File>, out: File): Map<String, Interfa
     val newCache = HashMap<String, FileCache>()
 
     sources.forEach { file ->
-        val text = file.readText()
-        val hash = text.hashCode()
-        val existing = existingCache[file.path]
+        val relativePath = file.toRelativeString(relativeTo)
+        val hash = file.checksum()
+        val existing = existingCache[relativePath]
         val cache = if (existing != null && existing.hash == hash) {
             existing
         } else {
-            log("Reading interfaces from: $file")
-            val lexer = KotlinLexer(ANTLRInputStream(text))
-            val tokenStream = CommonTokenStream(lexer)
-            val parser = KotlinParser(tokenStream)
+            file.inputStream().buffered().use { stream ->
+                log("Reading interfaces from: $file")
+                val lexer = KotlinLexer(ANTLRInputStream(stream))
+                val tokenStream = CommonTokenStream(lexer)
+                val parser = KotlinParser(tokenStream)
 
-            val listener = InterfaceListener(parser)
-            ParseTreeWalker.DEFAULT.walk(listener, parser.kotlinFile())
-            FileCache(
-                path = file.path,
-                hash = hash,
-                data = listener.interfaces
-            )
+                val listener = InterfaceListener(parser)
+                ParseTreeWalker.DEFAULT.walk(listener, parser.kotlinFile())
+                FileCache(
+                    path = relativePath,
+                    hash = hash,
+                    data = listener.interfaces
+                )
+            }
         }
         newCache[cache.path] = cache
 

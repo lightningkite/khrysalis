@@ -7,6 +7,7 @@ import com.lightningkite.khrysalis.interfaces.writeInterfacesFile
 import com.lightningkite.khrysalis.log
 import com.lightningkite.khrysalis.swift.actuals.stubs
 import com.lightningkite.khrysalis.utils.Versioned
+import com.lightningkite.khrysalis.utils.checksum
 import org.antlr.v4.runtime.*
 import org.antlr.v4.runtime.atn.ATNConfigSet
 import org.antlr.v4.runtime.dfa.DFA
@@ -41,7 +42,7 @@ fun convertKotlinToSwiftByFolder(
         .filter { it.extension == "kt" }
         .filter { it.name.contains(".shared") }
 
-    val interfaces = writeInterfacesFile(toConvert, interfacesOut)
+    val interfaces = writeInterfacesFile(toConvert, interfacesOut, baseKotlin)
     val swift = SwiftAltListener().apply(setup)
     swift.interfaces += interfaces
     log("Interfaces: ")
@@ -49,7 +50,7 @@ fun convertKotlinToSwiftByFolder(
         log(i.value.toString())
     }
 
-    val cacheFile = File("./build/khrysalis-cache-2.json")
+    val cacheFile = baseKotlin.resolve("khrysalis-cache-2.json")
     val existingCache = if (cacheFile.exists()) {
         val versioned = jacksonObjectMapper().readValue<Versioned<Map<String, FileConversionInfo>>>(cacheFile)
         if (versioned.version == VERSION) versioned.value else mapOf()
@@ -68,9 +69,8 @@ fun convertKotlinToSwiftByFolder(
         val relativeOutput = output.relativeTo(baseSwift).path
         output.parentFile.mkdirs()
 
-        val text = file.readText()
-        val inputHash = text.hashCode()
-        val outputHash = if (output.exists()) output.readText().hashCode() else 0
+        val inputHash = file.checksum()
+        val outputHash = if (output.exists()) output.checksum() else 0L
         val existing = existingCache[relativeInput]
         val cache =
             if (!clean && existing != null && existing.inputHash == inputHash && existing.outputHash == outputHash) {
@@ -80,77 +80,79 @@ fun convertKotlinToSwiftByFolder(
                     "Converting ${relativeInput}"
                 )
 
-                val lexer = KotlinLexer(ANTLRInputStream(text))
-                val tokenStream = CommonTokenStream(lexer)
-                val parser = KotlinParser(tokenStream)
+                file.inputStream().buffered().use { stream ->
+                    val lexer = KotlinLexer(ANTLRInputStream(stream))
+                    val tokenStream = CommonTokenStream(lexer)
+                    val parser = KotlinParser(tokenStream)
 
-                var errorOccurred = false
-                parser.addErrorListener(object : ANTLRErrorListener {
-                    override fun reportAttemptingFullContext(
-                        p0: Parser?,
-                        p1: DFA?,
-                        p2: Int,
-                        p3: Int,
-                        p4: BitSet?,
-                        p5: ATNConfigSet?
-                    ) {
-                    }
-
-                    override fun syntaxError(
-                        p0: Recognizer<*, *>?,
-                        p1: Any?,
-                        p2: Int,
-                        p3: Int,
-                        p4: String?,
-                        p5: RecognitionException?
-                    ) {
-                        errorOccurred = true
-                    }
-
-                    override fun reportAmbiguity(
-                        p0: Parser?,
-                        p1: DFA?,
-                        p2: Int,
-                        p3: Int,
-                        p4: Boolean,
-                        p5: BitSet?,
-                        p6: ATNConfigSet?
-                    ) {
-                    }
-
-                    override fun reportContextSensitivity(
-                        p0: Parser?,
-                        p1: DFA?,
-                        p2: Int,
-                        p3: Int,
-                        p4: Int,
-                        p5: ATNConfigSet?
-                    ) {
-                    }
-
-                })
-
-                try {
-                    val outputText = buildString {
-                        val tabs = TabWriter(this)
-                        with(swift) {
-                            val kfile = parser.kotlinFile()
-                            swift.currentFile = kfile
-                            tabs.write(kfile)
+                    var errorOccurred = false
+                    parser.addErrorListener(object : ANTLRErrorListener {
+                        override fun reportAttemptingFullContext(
+                            p0: Parser?,
+                            p1: DFA?,
+                            p2: Int,
+                            p3: Int,
+                            p4: BitSet?,
+                            p5: ATNConfigSet?
+                        ) {
                         }
-                    }
-                    output.writeText(outputText)
 
-                    FileConversionInfo(
-                        path = relativeInput,
-                        inputHash = if (errorOccurred) 0 else inputHash,
-                        outputHash = outputText.hashCode(),
-                        outputPath = relativeOutput
-                    )
-                } catch (e: Exception) {
-                    System.err.println("Failed to convert file $file")
-                    e.printStackTrace(System.err)
-                    null
+                        override fun syntaxError(
+                            p0: Recognizer<*, *>?,
+                            p1: Any?,
+                            p2: Int,
+                            p3: Int,
+                            p4: String?,
+                            p5: RecognitionException?
+                        ) {
+                            errorOccurred = true
+                        }
+
+                        override fun reportAmbiguity(
+                            p0: Parser?,
+                            p1: DFA?,
+                            p2: Int,
+                            p3: Int,
+                            p4: Boolean,
+                            p5: BitSet?,
+                            p6: ATNConfigSet?
+                        ) {
+                        }
+
+                        override fun reportContextSensitivity(
+                            p0: Parser?,
+                            p1: DFA?,
+                            p2: Int,
+                            p3: Int,
+                            p4: Int,
+                            p5: ATNConfigSet?
+                        ) {
+                        }
+
+                    })
+
+                    try {
+                        val outputText = buildString {
+                            val tabs = TabWriter(this)
+                            with(swift) {
+                                val kfile = parser.kotlinFile()
+                                swift.currentFile = kfile
+                                tabs.write(kfile)
+                            }
+                        }
+                        output.writeText(outputText)
+
+                        FileConversionInfo(
+                            path = relativeInput,
+                            inputHash = if (errorOccurred) "" else inputHash,
+                            outputHash = output.checksum(),
+                            outputPath = relativeOutput
+                        )
+                    } catch (e: Exception) {
+                        System.err.println("Failed to convert file $file")
+                        e.printStackTrace(System.err)
+                        null
+                    }
                 }
             }
         if (cache != null) {
@@ -173,9 +175,8 @@ fun convertKotlinToSwiftByFolder(
             val relativeOutput = output.relativeTo(baseSwift).path
             output.parentFile.mkdirs()
 
-            val text = file.readText()
-            val inputHash = text.hashCode()
-            val outputHash = if (output.exists()) output.readText().hashCode() else 0
+            val inputHash = file.checksum()
+            val outputHash = if (output.exists()) output.checksum() else 0
             val existing = existingCache[relativeInput]
             val cache =
                 if (!clean && existing != null && existing.inputHash == inputHash && existing.outputHash == outputHash) {
@@ -195,7 +196,7 @@ fun convertKotlinToSwiftByFolder(
                         FileConversionInfo(
                             path = relativeInput,
                             inputHash = inputHash,
-                            outputHash = output.readText().hashCode(),
+                            outputHash = output.checksum(),
                             outputPath = relativeOutput
                         )
                     } catch (e: Exception) {

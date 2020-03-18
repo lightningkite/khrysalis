@@ -36,7 +36,7 @@ fun SwiftAltListener.registerLambda() {
                         direct.append(": ")
                         write(it)
                     }
-                } ?: throw IllegalArgumentException("Must use normal variable declarations, multivariable not allowed")
+                }
             },
             between = {
                 direct.append(", ")

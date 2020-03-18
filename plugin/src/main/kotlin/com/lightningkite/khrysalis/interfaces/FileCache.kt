@@ -4,6 +4,6 @@ import com.lightningkite.khrysalis.interfaces.InterfaceListener
 
 data class FileCache(
     val path: String = "",
-    val hash: Int = 0,
+    val hash: String = "",
     val data: List<InterfaceListener.InterfaceData> = listOf()
 )

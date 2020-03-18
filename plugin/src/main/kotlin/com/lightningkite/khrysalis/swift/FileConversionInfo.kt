@@ -4,7 +4,7 @@ import com.fasterxml.jackson.annotation.JsonProperty
 
 data class FileConversionInfo(
     val path: String = "",
-    @JsonProperty("inputHash") val inputHash: Int = 0,
-    @JsonProperty("outputHash") val outputHash: Int = 0,
+    @JsonProperty("inputHash") val inputHash: String = "",
+    @JsonProperty("outputHash") val outputHash: String = "",
     @JsonProperty("outputPath") val outputPath: String = ""
 )

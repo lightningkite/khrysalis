@@ -587,7 +587,6 @@ lambdaParameters
 
 lambdaParameter
     : variableDeclaration
-    | multiVariableDeclaration (NL* COLON NL* type)?
     ;
 
 anonymousFunction

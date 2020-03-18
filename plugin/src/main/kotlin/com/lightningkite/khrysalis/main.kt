@@ -11,21 +11,28 @@ const val INTERFACE_SCAN_VERSION: Int = 2
 const val VERSION: Int = 12
 
 fun main(vararg args: String) {
+    KhrysalisSettings.verbose = true
 //    println("Checking ${File("./testData").walkTopDown()
 //        .filter { it.extension == "kt" }
 //        .filter { it.name.contains(".shared") }.toList()}")
-//    convertKotlinToSwiftByFolder(
-//        interfacesOut = File("./testDataOutput/interfaces.json"),
-//        baseKotlin = File("./testData"),
-//        baseSwift = File("./testDataOutput"),
-//        clean = true
-//    )
-    convertResourcesToIos(
-        androidResourcesFolder = File("./testData/res"),
-        baseFolderForLocalizations = File("./testDataOutput/localizations"),
-        iosAssetsFolder = File("./testDataOutput/assets"),
-        iosResourcesSwiftFolder = File("./testDataOutput/swiftResources")
+    convertKotlinToSwiftByFolder(
+        interfacesOut = File("./testDataOutput/interfaces.json"),
+        baseKotlin = File("./testData/shared").also {
+            it.listFiles()?.forEach {
+                if(it.extension == "kt" && !it.name.endsWith("shared.kt")) {
+                    it.renameTo(it.parentFile.resolve(it.name.replace(".kt", ".shared.kt")))
+                }
+            }
+        },
+        baseSwift = File("./testDataOutput/shared"),
+        clean = false
     )
+//    convertResourcesToIos(
+//        androidResourcesFolder = File("./testData/res"),
+//        baseFolderForLocalizations = File("./testDataOutput/localizations"),
+//        iosAssetsFolder = File("./testDataOutput/assets"),
+//        iosResourcesSwiftFolder = File("./testDataOutput/swiftResources")
+//    )
 //    convertKotlinToSwift(
 //        androidFolder = File("/Users/josephivie/StudioProjects/khrysalis-template/android/app"),
 //        iosFolder = File("/Users/josephivie/StudioProjects/khrysalis-template/ios/Khrysalis Template"),
