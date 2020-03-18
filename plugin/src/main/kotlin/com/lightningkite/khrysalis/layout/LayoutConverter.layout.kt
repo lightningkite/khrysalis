@@ -212,6 +212,9 @@ fun align(width: String?, height: String?, vararg gravityStrings: String?): Stri
     }.firstOrNull() ?: ".top"
     return translatedVert + translatedHorz
 }
+fun alignFill(width: String?, height: String?, vararg gravityStrings: String?): String {
+    return align(width, height, *gravityStrings).replace("center", "fill").replace("Center", "Fill")
+}
 
 fun uiEdgeInsets(
     top: String,
