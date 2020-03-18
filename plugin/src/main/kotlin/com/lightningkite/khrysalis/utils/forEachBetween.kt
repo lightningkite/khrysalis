@@ -1,5 +1,8 @@
 package com.lightningkite.khrysalis.utils
 
+import java.util.concurrent.*
+import kotlin.streams.asStream
+
 inline fun <T> Iterable<T>.forEachBetween(
     forItem: (T) -> Unit,
     between: () -> Unit
@@ -60,4 +63,13 @@ inline fun <T> Sequence<T>.forEachBetweenIndexed(
         }
         forItem(index, it)
     }
+}
+
+fun <T> Collection<T>.forEachMultithreaded(action: (T)->Unit) {
+    this.parallelStream().forEach(action)
+}
+
+fun <T> Sequence<T>.forEachMultithreaded(action: (T)->Unit) {
+//    this.asStream().parallel().forEach(action)
+    this.forEach(action)
 }

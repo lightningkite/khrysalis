@@ -25,7 +25,7 @@ fun main(vararg args: String) {
             }
         },
         baseSwift = File("./testDataOutput/shared"),
-        clean = false
+        clean = true
     )
 //    convertResourcesToIos(
 //        androidResourcesFolder = File("./testData/res"),

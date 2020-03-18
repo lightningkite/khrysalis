@@ -6,6 +6,7 @@ import com.lightningkite.khrysalis.INTERFACE_SCAN_VERSION
 import com.lightningkite.khrysalis.log
 import com.lightningkite.khrysalis.utils.Versioned
 import com.lightningkite.khrysalis.utils.checksum
+import com.lightningkite.khrysalis.utils.forEachMultithreaded
 import org.antlr.v4.runtime.ANTLRInputStream
 import org.antlr.v4.runtime.CommonTokenStream
 import org.antlr.v4.runtime.tree.ParseTreeWalker
@@ -23,7 +24,7 @@ fun writeInterfacesFile(sources: Sequence<File>, out: File, relativeTo: File): M
         mapOf()
     val newCache = HashMap<String, FileCache>()
 
-    sources.forEach { file ->
+    sources.forEachMultithreaded { file ->
         val relativePath = file.toRelativeString(relativeTo)
         val hash = file.checksum()
         val existing = existingCache[relativePath]

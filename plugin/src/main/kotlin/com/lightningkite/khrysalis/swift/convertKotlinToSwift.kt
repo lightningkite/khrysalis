@@ -8,6 +8,7 @@ import com.lightningkite.khrysalis.log
 import com.lightningkite.khrysalis.swift.actuals.stubs
 import com.lightningkite.khrysalis.utils.Versioned
 import com.lightningkite.khrysalis.utils.checksum
+import com.lightningkite.khrysalis.utils.forEachMultithreaded
 import org.antlr.v4.runtime.*
 import org.antlr.v4.runtime.atn.ATNConfigSet
 import org.antlr.v4.runtime.dfa.DFA
@@ -58,7 +59,7 @@ fun convertKotlinToSwiftByFolder(
         mapOf<String, FileConversionInfo>()
     val newCache = HashMap<String, FileConversionInfo>()
 
-    toConvert.forEach { file ->
+    toConvert.forEachMultithreaded { file ->
         val output = File(
             baseSwift.resolve(file.relativeTo(baseKotlin))
                 .toString()
@@ -164,7 +165,7 @@ fun convertKotlinToSwiftByFolder(
     baseKotlin.walkTopDown()
         .filter { it.extension == "kt" }
         .filter { it.name.contains(".actual") }
-        .forEach { file ->
+        .forEachMultithreaded { file ->
             val output = File(
                 baseSwift.resolve(file.relativeTo(baseKotlin))
                     .toString()
