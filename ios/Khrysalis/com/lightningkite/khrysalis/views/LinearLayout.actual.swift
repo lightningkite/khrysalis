@@ -24,7 +24,8 @@ public extension LinearLayout {
                 bottom: CGFloat(marginBottom),
                 right: CGFloat(marginEnd)
             ),
-            gravity: gravity
+            gravity: gravity,
+            weight: CGFloat(weight)
         )
     }
     func params(
