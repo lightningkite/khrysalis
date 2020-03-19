@@ -260,6 +260,9 @@ public enum HttpClient {
                 }
 
                 Alamofire.upload(multipartFormData: { multipartFormData in
+                    for (key, value) in additionalFields {
+                        multipartFormData.append(value.data(using: .utf8)!, withName: key)
+                    }
                     multipartFormData.append(imgData, withName: fieldName, fileName: "file.jpg", mimeType: "image/jpeg")
                 }, to:url, method: httpMethod, headers: headers)
                 { (result) in
