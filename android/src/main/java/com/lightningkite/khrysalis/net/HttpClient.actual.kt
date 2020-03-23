@@ -19,11 +19,14 @@ import com.fasterxml.jackson.databind.util.StdDateFormat
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.lightningkite.khrysalis.Image
 import com.lightningkite.khrysalis.PlatformSpecific
+import com.lightningkite.khrysalis.bytes.Data
 import com.lightningkite.khrysalis.escaping
 import com.lightningkite.khrysalis.loadImage
 import com.lightningkite.khrysalis.time.TimeAlone
 import com.lightningkite.khrysalis.time.DateAlone
 import com.lightningkite.khrysalis.time.iso8601
+import io.reactivex.Observable
+import io.reactivex.Single
 import okhttp3.*
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -131,6 +134,28 @@ object HttpClient {
         .enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE)
         .setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE)
         .setDateFormat(StdDateFormat().withLenient(true))
+
+    fun call(
+        url: String,
+        method: String,
+        headers: Map<String, String>,
+        body: HttpBody? = null
+    ): Single<HttpResponse> {
+        val request = Request.Builder()
+            .url(url)
+            .method(method, body)
+            .headers(Headers.of(headers))
+            .addHeader("Accept-Language", Locale.getDefault().language)
+            .build()
+        return Single.create<HttpResponse> { emitter ->
+            try {
+                val response = client.newCall(request).execute()
+                emitter.onSuccess(response)
+            } catch(e:Exception) {
+                emitter.onError(e)
+            }
+        }
+    }
 
     inline fun <reified T : Any> call(
         url: String,
