@@ -10,9 +10,9 @@ The following tags can now be used to describe navigational behavior:
     - Tapping this view takes the user to another screen, adding it to the stack.
 - `tools:swap="@layout/other_view"`
     - Tapping this view takes the user to another screen, replacing this one.
-- `tools:pop="@layout/other_view"`
+- `tools:pop="true"`
     - Tapping this view takes the user back one screen.
-- `tools:dismiss="@layout/other_view"`
+- `tools:dismiss="true"`
     - Tapping this view takes the user back one screen, but allows for empty stacks.  Useful for overlays.
 - `tools:reset="@layout/other_view"`
     - Tapping this view takes the user to another screen, emptying the whole stack. 
