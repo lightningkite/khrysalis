@@ -2,6 +2,7 @@ package com.lightningkite.khrysalis.drawables
 
 import com.lightningkite.khrysalis.utils.*
 import java.io.File
+import java.io.StringWriter
 import java.lang.Appendable
 import java.lang.Exception
 
@@ -23,7 +24,7 @@ fun convertDrawableXmls(
             val outputFile = swiftFolder.resolve("drawable").resolve(name + "Drawable.swift")
             println("$file -> $outputFile")
             try {
-                outputFile.bufferedWriter().use { writer ->
+                outputFile.writeTextIfDifferent(StringWriter().use { writer ->
                     writer.appendln("//Automatically created by Khrysalis")
                     writer.appendln("import UIKit")
                     writer.appendln("import Khrysalis")
@@ -33,7 +34,7 @@ fun convertDrawableXmls(
                     convertDrawableXml(name, it, writer)
                     writer.appendln("")
                     writer.appendln("}")
-                }
+                }.toString())
             } catch (e: Exception) {
                 e.printStackTrace()
             }

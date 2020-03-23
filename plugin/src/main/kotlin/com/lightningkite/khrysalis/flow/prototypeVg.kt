@@ -217,7 +217,7 @@ private fun generateFile(
                 if (it.type.contains("VG") || it.type.contains("ViewGenerator")) {
                     line("@unowned val $it" + (if (index == things.lastIndex) "" else ","))
                 } else if (it.type.contains("->")) {
-                    line("val ${it.name}: @escaping() ${it.kotlinType}" + (if (index == things.lastIndex) "" else ","))
+                    line("val ${it.name}: @escaping() ${it.kotlinType}" + (if(it.default != null) " = " + it.default else "") + (if (index == things.lastIndex) "" else ","))
                 } else {
                     line("val $it" + (if (index == things.lastIndex) "" else ","))
                 }

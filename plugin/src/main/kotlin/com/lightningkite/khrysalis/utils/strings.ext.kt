@@ -64,4 +64,4 @@ fun InputStream.checksum(): String {
 }
 
 fun String.checksum(): String = this.byteInputStream().use { it.checksum() }
-fun File.checksum(): String = this.inputStream().use { it.checksum() }
+fun File.checksum(): String = if(exists()) this.inputStream().use { it.checksum() } else ""

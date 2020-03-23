@@ -1,6 +1,8 @@
 package com.lightningkite.khrysalis.values
 
+import com.lightningkite.khrysalis.utils.writeTextIfDifferent
 import java.io.File
+import java.io.StringWriter
 
 fun convertResourceValuesToIos(
     androidResourcesFolder: File,
@@ -13,19 +15,19 @@ fun convertResourceValuesToIos(
         .filter { File(it, "strings.xml").exists() }
         .associate { it.name.substringAfter('-') to File(it, "strings.xml").readXMLStrings() }
     stringBase.let {
-        File(iosResourcesSwiftFolder, "strings.swift").apply{ parentFile.mkdirs() }.writeText(it.writeXMLStrings())
+        File(iosResourcesSwiftFolder, "strings.swift").apply{ parentFile.mkdirs() }.writeTextIfDifferent(it.writeXMLStrings())
     }
     stringLocales.entries.forEach {
         File(File(baseFolderForLocalizations, "${it.key}.lproj"), "Localizable.strings")
             .apply{ parentFile.mkdirs() }
-            .writeText(it.value.writeXMLStringsTranslation(stringBase, it.key))
+            .writeTextIfDifferent(it.value.writeXMLStringsTranslation(stringBase, it.key))
     }
 
     File(androidResourcesFolder, "values/dimens.xml").takeIf { it.exists() }?.readXMLDimen()?.writeXMLDimen()?.let {
-        File(iosResourcesSwiftFolder, "dimen.swift").apply{ parentFile.mkdirs() }.writeText(it)
+        File(iosResourcesSwiftFolder, "dimen.swift").apply{ parentFile.mkdirs() }.writeTextIfDifferent(it)
     }
 
-    File(iosResourcesSwiftFolder, "colors.swift").bufferedWriter().use { out ->
+    File(iosResourcesSwiftFolder, "colors.swift").writeTextIfDifferent(StringWriter().use { out ->
         out.appendln("//")
         out.appendln("// ResourcesColors.swift")
         out.appendln("// Created by Khrysalis")
@@ -47,5 +49,5 @@ fun convertResourceValuesToIos(
             .forEach { it.translateXmlColorSet(out) }
 
         out.appendln("}")
-    }
+    }.toString())
 }

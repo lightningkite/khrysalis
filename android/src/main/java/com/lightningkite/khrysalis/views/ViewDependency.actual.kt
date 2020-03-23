@@ -14,7 +14,7 @@ import android.provider.MediaStore
 import android.util.DisplayMetrics
 import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.FileProvider
-import com.lightningkite.khrysalis.Uri
+import com.lightningkite.khrysalis.*
 import com.lightningkite.khrysalis.android.ActivityAccess
 import com.lightningkite.khrysalis.location.GeoCoordinate
 import com.lightningkite.khrysalis.views.android.startIntent
@@ -30,12 +30,24 @@ fun ViewDependency.getString(resource: StringResource): String = context.getStri
 fun ViewDependency.getColor(resource: ColorResource): Int = context.resources.getColor(resource)
 val ViewDependency.displayMetrics: DisplayMetrics get() = context.resources.displayMetrics
 
-fun ViewDependency.share(subject: String, message: String){
+fun ViewDependency.share(shareTitle: String, message: String? = null, url: String? = null, image: Image? = null){
     val i = Intent(Intent.ACTION_SEND)
     i.type = "text/plain"
-    i.putExtra(Intent.EXTRA_SUBJECT, subject)
-    i.putExtra(Intent.EXTRA_TEXT, message)
-    context.startActivity(Intent.createChooser(i, subject))
+    listOfNotNull(message, url).joinToString("\n").takeUnless { it == null }?.let { i.putExtra(Intent.EXTRA_TEXT, it) }
+    if(image != null){
+        when(image){
+            is ImageReference -> {
+                i.setType("image/jpeg")
+                i.putExtra(Intent.EXTRA_STREAM, image.uri)
+            }
+            is ImageRemoteUrl -> {
+                i.setType("image/jpeg")
+                i.putExtra(Intent.EXTRA_STREAM, Uri.parse(image.url))
+            }
+
+        }
+    }
+    context.startActivity(Intent.createChooser(i, shareTitle))
 }
 
 fun ViewDependency.openUrl(url: String) {

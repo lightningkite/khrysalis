@@ -3,6 +3,7 @@ package com.lightningkite.khrysalis.layout
 import com.lightningkite.khrysalis.log
 import com.lightningkite.khrysalis.swift.retabSwift
 import com.lightningkite.khrysalis.utils.camelCase
+import com.lightningkite.khrysalis.utils.writeTextIfDifferent
 import java.io.File
 
 fun convertLayoutsToSwift(
@@ -24,6 +25,6 @@ fun convertLayoutsToSwift(
             val output = item.translateLayoutXml(styles, converter).retabSwift()
             iosFolder.resolve("swiftResources/layouts").resolve(item.nameWithoutExtension.camelCase().capitalize() + "Xml.swift").also{
                 it.parentFile.mkdirs()
-            }.writeText(output)
+            }.writeTextIfDifferent(output)
         }
 }

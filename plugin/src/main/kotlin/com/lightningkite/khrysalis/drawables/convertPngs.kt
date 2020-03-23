@@ -3,7 +3,10 @@ package com.lightningkite.khrysalis.drawables
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.lightningkite.khrysalis.utils.XmlNode
 import com.lightningkite.khrysalis.utils.camelCase
+import com.lightningkite.khrysalis.utils.checksum
+import com.lightningkite.khrysalis.utils.writeTextIfDifferent
 import java.io.File
+import java.io.StringWriter
 import java.lang.Appendable
 
 
@@ -46,12 +49,14 @@ fun convertPngs(
             )
         )
         listOf(one, two, three).filterNotNull().forEach {
-            it.copyTo(iosFolder.resolve(it.name), overwrite = true)
+            if(it.checksum() != iosFolder.resolve(it.name).checksum()) {
+                it.copyTo(iosFolder.resolve(it.name), overwrite = true)
+            }
         }
     }
 
     try {
-        swiftFolder.resolve("drawable").also { it.mkdirs() }.resolve("PNGs.swift").bufferedWriter().use { writer ->
+        val text = StringWriter().use { writer ->
             writer.appendln("//Automatically created by Khrysalis")
             writer.appendln("import UIKit")
             writer.appendln("import Khrysalis")
@@ -64,7 +69,9 @@ fun convertPngs(
             }
             writer.appendln("")
             writer.appendln("}")
-        }
+        }.toString()
+        swiftFolder.resolve("drawable").also { it.mkdirs() }.resolve("PNGs.swift").writeTextIfDifferent(text)
+
     } catch (e: Exception) {
         e.printStackTrace()
     }

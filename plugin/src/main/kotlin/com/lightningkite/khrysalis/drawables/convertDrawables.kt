@@ -15,7 +15,7 @@ fun convertDrawablesToIos(
     }
     val main = iosResourcesSwiftFolder.resolve("drawable").also { it.mkdirs() }.resolve("ResourcesDrawables.swift")
     println("Writing $main")
-    main.writeText("""
+    main.writeTextIfDifferent("""
         //Automatically created by Khrysalis
         //Extended by other files.
         import UIKit

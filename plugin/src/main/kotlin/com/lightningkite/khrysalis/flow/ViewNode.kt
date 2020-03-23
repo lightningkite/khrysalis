@@ -236,15 +236,15 @@ class ViewNode(
             }
         }
         node.attributes[attributeRequires]?.let {
-            it.split(';').forEach {
-                requires.add(
-                    ViewVar(
-                        name = it.substringBefore(':').trim(),
-                        type = it.substringAfter(':').substringBefore('=').trim(),
-                        default = it.substringAfter('=', "").takeUnless { it.isEmpty() }?.trim(),
-                        onPath = path
-                    )
+            it.split(';').filter { it.isNotBlank() }.forEach {
+                val newVar = ViewVar(
+                    name = it.substringBefore(':').trim(),
+                    type = it.substringAfter(':').substringBefore('=').trim(),
+                    default = it.substringAfter('=', "").takeUnless { it.isEmpty() }?.trim(),
+                    onPath = path
                 )
+                println("newVar: $newVar")
+                requires.add(newVar)
             }
         }
         node.attributes[attributeProvides]?.let {

@@ -33,22 +33,23 @@ public class ViewDependency: NSObject {
         )
     }
 
-    //--- ViewDependency.share(String, String)
-    public func share(_ subject: String, _ message: String) -> Void {
-//         if let myWebsite = URL(string: "http://itunes.apple.com/app/idXXXXXXXXX") {//Enter link to your app here
-//                     let objectsToShare = [textToShare, myWebsite, image ?? #imageLiteral(resourceName: "app-logo")] as [Any]
-//                     let activityVC = UIActivityViewController(activityItems: objectsToShare, applicationActivities: nil)
-//
-//                     //Excluded Activities
-//                     activityVC.excludedActivityTypes = [UIActivity.ActivityType.airDrop, UIActivity.ActivityType.addToReadingList]
-//                     //
-//
-//                     activityVC.popoverPresentationController?.sourceView = sender
-//                     self.present(activityVC, animated: true, completion: nil)
-//                 }    }
+    //--- ViewDependency.share(String, String? , String? , Image? )
+    public func share(_ shareTitle: String, _ message: String? = nil, _ url: String? = nil, _ image: Image? = nil) -> Void {
+        var items: Array<Any> = []
+        if let message = message {
+            items.add(message)
+        }
+        if let url = url, let fixed = URL(string: url) {
+            items.add(fixed)
+        }
+        if let image = image {
+            TODO()
+        }
+        let vc = UIActivityViewController(activityItems: items, applicationActivities: nil)
+        self.parentViewController.present(vc, animated: true, completion: nil)
     }
-    public func share(subject: String, message: String) -> Void {
-        return share(subject, message)
+    public func share(shareTitle: String, message: String? = nil, url: String? = nil, image: Image? = nil) -> Void {
+        return share(shareTitle, message, url, image)
     }
 
     //--- ViewDependency.openUrl(String)
