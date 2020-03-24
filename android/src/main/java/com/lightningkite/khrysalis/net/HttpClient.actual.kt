@@ -26,7 +26,10 @@ import com.lightningkite.khrysalis.time.TimeAlone
 import com.lightningkite.khrysalis.time.DateAlone
 import com.lightningkite.khrysalis.time.iso8601
 import io.reactivex.Observable
+import io.reactivex.Scheduler
 import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import okhttp3.*
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -38,31 +41,17 @@ object HttpClient {
     @PlatformSpecific
     lateinit var appContext: Context
 
-    var immediateMode = false
-
-    @PlatformSpecific
-    inline fun runResult(crossinline action: () -> Unit) {
-        if (immediateMode) {
-            action()
-        } else {
-            Handler(Looper.getMainLooper()).post {
-                action()
-            }
+    var ioScheduler: Scheduler? = Schedulers.io()
+    var responseScheduler: Scheduler? = AndroidSchedulers.mainThread()
+    private fun <T> Single<T>.threadCorrectly(): Single<T> {
+        var current = this
+        if(ioScheduler != null){
+            current = current.subscribeOn(ioScheduler)
         }
-    }
-
-    @PlatformSpecific
-    inline fun Call.go(callback: Callback) {
-        if (immediateMode) {
-            try {
-                val result = execute()
-                callback.onResponse(this, result)
-            } catch (e: IOException) {
-                callback.onFailure(this, e)
-            }
-        } else {
-            enqueue(callback)
+        if(responseScheduler != null){
+            current = current.observeOn(responseScheduler)
         }
+        return current
     }
 
     const val GET = "GET"
@@ -137,8 +126,8 @@ object HttpClient {
 
     fun call(
         url: String,
-        method: String,
-        headers: Map<String, String>,
+        method: String = HttpClient.GET,
+        headers: Map<String, String> = mapOf(),
         body: HttpBody? = null
     ): Single<HttpResponse> {
         val request = Request.Builder()
@@ -154,6 +143,46 @@ object HttpClient {
             } catch(e:Exception) {
                 emitter.onError(e)
             }
+        }.threadCorrectly()
+    }
+
+
+
+
+
+
+
+
+    //YONDER LIES OLD CODE
+    //Don't use these anymore.  Rx is better.
+
+
+
+
+    var immediateMode = false
+
+    @PlatformSpecific
+    inline fun runResult(crossinline action: () -> Unit) {
+        if (immediateMode) {
+            action()
+        } else {
+            Handler(Looper.getMainLooper()).post {
+                action()
+            }
+        }
+    }
+
+    @PlatformSpecific
+    inline fun Call.go(callback: Callback) {
+        if (immediateMode) {
+            try {
+                val result = execute()
+                callback.onResponse(this, result)
+            } catch (e: IOException) {
+                callback.onFailure(this, e)
+            }
+        } else {
+            enqueue(callback)
         }
     }
 

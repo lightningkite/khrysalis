@@ -1,0 +1,63 @@
+package com.lightningkite.khrysalis
+
+import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.net.Uri
+import android.provider.MediaStore
+import com.lightningkite.khrysalis.net.HttpClient
+import com.lightningkite.khrysalis.net.unsuccessfulAsError
+import io.reactivex.Single
+import okhttp3.Call
+import okhttp3.Callback
+import okhttp3.Request
+import okhttp3.Response
+import java.io.IOException
+import java.io.InputStream
+import kotlin.math.max
+import kotlin.math.min
+
+/* SHARED DECLARATIONS
+typealias Bitmap = Bitmap
+ */
+
+fun Image.load(): Single<Bitmap> {
+    return try {
+        when (this) {
+            is ImageRaw -> Single.just(BitmapFactory.decodeByteArray(this.raw, 0, this.raw.size))
+            is ImageReference -> load()
+            is ImageBitmap -> Single.just(this.bitmap)
+            is ImageRemoteUrl -> load()
+        }
+    } catch (e: Exception) {
+        Single.error(e)
+    }
+}
+
+fun ImageReference.load(maxDimension: Int = 2048): Single<Bitmap> {
+    try {
+        HttpClient.appContext.contentResolver.openInputStream(uri)?.use {
+            val sizeOpts = BitmapFactory.Options().apply { inJustDecodeBounds = true }
+            BitmapFactory.decodeStream(it, null, sizeOpts)
+            val finalOpts = BitmapFactory.Options().apply {
+                this.inSampleSize =
+                    max(sizeOpts.outWidth / maxDimension, sizeOpts.outHeight / maxDimension).coerceAtLeast(1)
+            }
+            return Single.just(BitmapFactory.decodeStream(it, null, finalOpts))
+        }
+            ?: return Single.error(IllegalStateException("Context from HttpClient is missing; please set up HttpClient before attempting this."))
+    } catch (e: Exception) {
+        return Single.error(e)
+    }
+}
+
+fun ImageRemoteUrl.load(): Single<Bitmap> {
+    return HttpClient.call(url, HttpClient.GET, mapOf())
+        .unsuccessfulAsError()
+        .map { response ->
+            response.body()?.use {
+                it.byteStream().use {
+                    BitmapFactory.decodeStream(it)
+                }
+            }
+        }
+}
