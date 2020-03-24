@@ -294,7 +294,7 @@ private fun generateFile(
                                     line("${CodeSection.sectionMarker} Make Subview For ${view} ${CodeSection.overwriteMarker}")
                                     // If sublayout has a VG, use that instead of looping down the layout.
                                     if(otherViewNode != null){
-                                        line("val cellVg = ${makeView(otherViewNode, null, view)} ")
+                                        line("val cellVg = ${makeView(otherViewNode, "stack", view)} ")
                                         line("val cellView = cellVg.generate(dependency)")
                                         handleNodeClick(node, "cellView")
                                     } else {

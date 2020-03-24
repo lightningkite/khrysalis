@@ -107,6 +107,13 @@ open class LinearLayout: UIView {
         measurements.removeValue(forKey: subview)
         childBounds.removeValue(forKey: subview)
         setNeedsLayout()
+        post {
+            subview.refreshLifecycle()
+        }
+    }
+    
+    public override func didAddSubview(_ subview: UIView) {
+        subview.refreshLifecycle()
     }
     
     override open func setNeedsLayout() {

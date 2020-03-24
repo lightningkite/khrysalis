@@ -170,7 +170,6 @@ open class KhrysalisViewController: UIViewController, UINavigationControllerDele
         )
         if newInsets != UIView.fullScreenSafeInsetsObs.value {
             UIView.fullScreenSafeInsetsObs.value = newInsets
-            print("---Dispatching safe insets update")
             innerView.updateSafeInsets(newInsets)
         }
         if drawOverSystemWindows {

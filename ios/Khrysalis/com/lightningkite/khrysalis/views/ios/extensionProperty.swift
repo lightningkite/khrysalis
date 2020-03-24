@@ -22,6 +22,13 @@ public class ExtensionProperty<On: AnyObject, T> {
     public func get(_ from: On) -> T? {
         return table.object(forKey: from)?.value
     }
+    public func getOrPut(_ from: On, _ generate: ()->T) -> T {
+        if let value = table.object(forKey: from)?.value { return value }
+        let generated = generate()
+        let box = Box(value: generated)
+        table.setObject(box, forKey: from)
+        return generated
+    }
     public func modify(_ from: On, defaultValue:T? = nil, modifier: (Box<T>)->Void) {
         if let box = table.object(forKey: from) {
             modifier(box)

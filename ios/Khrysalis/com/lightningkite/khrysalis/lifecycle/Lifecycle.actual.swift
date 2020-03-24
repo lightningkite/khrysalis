@@ -12,9 +12,7 @@ public extension View {
         }
         let prop = StandardObservableProperty(true)
         View.lifecycleExtension.set(self, prop)
-        objc_setAssociatedObject(self, &View.lifecycleAssociationKey, DeinitCallback {
-            prop.value = false
-        }, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        prop.value = window != nil
         return prop
     }
     
@@ -26,6 +24,21 @@ public extension View {
         deinit {
             self.callback()
         }
+    }
+    
+    func refreshLifecycle(){
+        if let prop = View.lifecycleExtension.get(self) {
+            if prop.value != (window != nil) {
+                prop.value = window != nil
+            }
+        }
+        for view in self.subviews {
+            view.refreshLifecycle()
+        }
+    }
+    
+    private func connected() -> Bool {
+        return self.window != nil || self.superview?.connected() ?? false
     }
 }
 
