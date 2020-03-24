@@ -35,14 +35,19 @@ fun Image.load(onResult: (Bitmap?) -> Unit) = loadImage(this, onResult)
 
 fun loadImage(uri: Uri, maxDimension: Int = 2048, onResult: (Bitmap?) -> Unit) {
     try {
+        val finalOpts = BitmapFactory.Options()
         HttpClient.appContext.contentResolver.openInputStream(uri)?.use {
             val sizeOpts = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-            BitmapFactory.decodeStream(it, null, sizeOpts)
-            val finalOpts = BitmapFactory.Options().apply {
-                this.inSampleSize = max(sizeOpts.outWidth / maxDimension, sizeOpts.outHeight / maxDimension).coerceAtLeast(1)
+            BitmapFactory.decodeStream(it, null, sizeOpts).apply {
+                finalOpts.inSampleSize = max(
+                    sizeOpts.outWidth.toDouble().div(maxDimension).let { Math.ceil(it) }.toInt(),
+                    sizeOpts.outHeight.toDouble().div(maxDimension).let { Math.ceil(it) }.toInt()
+                ).coerceAtLeast(1)
             }
-            onResult(BitmapFactory.decodeStream(it, null, finalOpts))
         } ?: onResult(null)
+        HttpClient.appContext.contentResolver.openInputStream(uri)?.use {
+            onResult(BitmapFactory.decodeStream(it, null, finalOpts))
+        }?: onResult(null)
     } catch (e: Exception) {
         e.printStackTrace()
         onResult(null)
