@@ -133,9 +133,7 @@ class SwiftAltListener {
         }
 
         fun KotlinParser.PostfixUnaryExpressionContext.typeArgsAndParams(): Pair<List<KotlinParser.TypeContext>?, KotlinParser.CallSuffixContext> {
-            return postfixUnarySuffix(0)?.typeArguments()?.let {
-                it.typeProjection().map { it.type()!! } to postfixUnarySuffix(1).callSuffix()
-            } ?: postfixUnarySuffix(0)?.callSuffix()?.let {
+            return postfixUnarySuffix(0)?.callSuffix()?.let {
                 it.typeArguments()?.typeProjection()?.map { it.type()!! } to it
             } ?: throw IllegalStateException("No necessary information found for translating collection")
         }

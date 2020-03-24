@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis
 
+import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightningkite.khrysalis.net.HttpClient
 
 interface Codable
@@ -13,7 +14,7 @@ fun IsCodable?.toJsonString(): String {
 
 inline fun <reified T: IsCodable> String.fromJsonString(): T? {
     return try {
-        HttpClient.mapper.readValue(this, T::class.java)
+        HttpClient.mapper.readValue(this, jacksonTypeRef<T>())
     } catch (e: Exception) {
         e.printStackTrace()
         null

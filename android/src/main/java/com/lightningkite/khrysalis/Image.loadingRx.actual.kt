@@ -16,10 +16,6 @@ import java.io.InputStream
 import kotlin.math.max
 import kotlin.math.min
 
-/* SHARED DECLARATIONS
-typealias Bitmap = Bitmap
- */
-
 fun Image.load(): Single<Bitmap> {
     return try {
         when (this) {
@@ -35,13 +31,18 @@ fun Image.load(): Single<Bitmap> {
 
 fun ImageReference.load(maxDimension: Int = 2048): Single<Bitmap> {
     try {
+        val finalOpts = BitmapFactory.Options()
         HttpClient.appContext.contentResolver.openInputStream(uri)?.use {
             val sizeOpts = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-            BitmapFactory.decodeStream(it, null, sizeOpts)
-            val finalOpts = BitmapFactory.Options().apply {
-                this.inSampleSize =
-                    max(sizeOpts.outWidth / maxDimension, sizeOpts.outHeight / maxDimension).coerceAtLeast(1)
+            BitmapFactory.decodeStream(it, null, sizeOpts).apply {
+                finalOpts.inSampleSize = max(
+                    sizeOpts.outWidth.toDouble().div(maxDimension).let { Math.ceil(it) }.toInt(),
+                    sizeOpts.outHeight.toDouble().div(maxDimension).let { Math.ceil(it) }.toInt()
+                ).coerceAtLeast(1)
             }
+        }
+            ?: return Single.error(IllegalStateException("Context from HttpClient is missing; please set up HttpClient before attempting this."))
+        HttpClient.appContext.contentResolver.openInputStream(uri)?.use {
             return Single.just(BitmapFactory.decodeStream(it, null, finalOpts))
         }
             ?: return Single.error(IllegalStateException("Context from HttpClient is missing; please set up HttpClient before attempting this."))

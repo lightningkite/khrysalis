@@ -10,11 +10,11 @@ public typealias Bitmap = UIImage
 public func loadImage(_ image: Image, _ onResult: @escaping (Bitmap?) -> Void) -> Void {
     switch(image){
     case let image as ImageReference:
-        loadImage(image.uri, onResult)
+        loadImage(uri: image.uri, onResult: onResult)
     case let image as ImageBitmap:
         onResult(image.bitmap)
     case let image as ImageRaw:
-        onResult(nil)
+        onResult(UIImage(data: image.raw))
     case let image as ImageRemoteUrl:
         loadImage(image.url, onResult)
     default:
@@ -32,8 +32,8 @@ public extension Image {
     }
 }
 
-//--- loadImage(Uri, (Bitmap?)->Unit)
-public func loadImage(_ uri: Uri, _ onResult: @escaping (Bitmap?) -> Void) -> Void {
+//--- loadImage(Uri, Int, (Bitmap?)->Unit)
+public func loadImage(_ uri: Uri, _ maxDimension: Int32 = 2048, _ onResult: @escaping (Bitmap?) -> Void) -> Void {
     URLSession.shared.dataTask(with: uri, completionHandler: { data, response, error in
         DispatchQueue.main.async {
             if let data = data {
@@ -44,8 +44,8 @@ public func loadImage(_ uri: Uri, _ onResult: @escaping (Bitmap?) -> Void) -> Vo
         }
     }).resume()
 }
-public func loadImage(uri: Uri, onResult: @escaping (Bitmap?) -> Void) -> Void {
-    return loadImage(uri, onResult)
+public func loadImage(uri: Uri, maxDimension: Int32 = 2048, onResult: @escaping (Bitmap?) -> Void) -> Void {
+    return loadImage(uri, maxDimension, onResult)
 }
 
 //--- loadImage(String, (Bitmap?)->Unit)

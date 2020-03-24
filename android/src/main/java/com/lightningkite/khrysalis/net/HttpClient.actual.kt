@@ -38,11 +38,18 @@ import java.util.*
 @SuppressLint("StaticFieldLeak")
 object HttpClient {
 
+    private var _appContext: Context? = null
     @PlatformSpecific
-    lateinit var appContext: Context
+    var appContext: Context
+        get() = _appContext!!
+        set(value){
+            _appContext = value
+            ioScheduler =  Schedulers.io()
+            responseScheduler =  AndroidSchedulers.mainThread()
+        }
 
-    var ioScheduler: Scheduler? = Schedulers.io()
-    var responseScheduler: Scheduler? = AndroidSchedulers.mainThread()
+    var ioScheduler: Scheduler? = null
+    var responseScheduler: Scheduler? = null
     private fun <T> Single<T>.threadCorrectly(): Single<T> {
         var current = this
         if(ioScheduler != null){
@@ -138,7 +145,9 @@ object HttpClient {
             .build()
         return Single.create<HttpResponse> { emitter ->
             try {
+                println("Sending $method request to $url with headers $headers")
                 val response = client.newCall(request).execute()
+                println("Response from $method request to $url with headers $headers: ${response.code()}")
                 emitter.onSuccess(response)
             } catch(e:Exception) {
                 emitter.onError(e)
@@ -186,6 +195,7 @@ object HttpClient {
         }
     }
 
+    @Deprecated("Use Rx Style instead")
     inline fun <reified T : Any> call(
         url: String,
         method: String,
@@ -193,12 +203,12 @@ object HttpClient {
         body: Any? = null,
         crossinline onResult: @escaping() (code: Int, result: T?, error: String?) -> Unit
     ) {
-        Log.i("HttpClient", "Sending $method request to $url with headers $headers")
+        println("Sending $method request to $url with headers $headers")
         val request = Request.Builder()
             .url(url)
             .method(method, body?.let {
                 val sending = mapper.writeValueAsString(it)
-                Log.i("HttpClient", "with body $sending")
+                println("with body $sending")
                 RequestBody.create(MediaType.parse("application/json"), sending)
             })
             .headers(Headers.of(headers))
@@ -215,7 +225,7 @@ object HttpClient {
 
             override fun onResponse(call: Call, response: Response) {
                 val raw = response.body()!!.string()
-                Log.i("HttpClient", "Response ${response.code()}: $raw")
+                println("Response ${response.code()}: $raw")
                 runResult {
                     val code = response.code()
                     if (code / 100 == 2) {
@@ -238,6 +248,7 @@ object HttpClient {
         })
     }
 
+    @Deprecated("Use Rx Style instead")
     inline fun callRaw(
         url: String,
         method: String,
@@ -245,12 +256,12 @@ object HttpClient {
         body: Any? = null,
         crossinline onResult: @escaping() (code: Int, result: String?, error: String?) -> Unit
     ) {
-        Log.i("HttpClient", "Sending $method request to $url with headers $headers")
+        println("Sending $method request to $url with headers $headers")
         val request = Request.Builder()
             .url(url)
             .method(method, body?.let {
                 val sending = mapper.writeValueAsString(it)
-                Log.i("HttpClient", "with body $sending")
+                println("with body $sending")
                 RequestBody.create(MediaType.parse("application/json"), sending)
             })
             .headers(Headers.of(headers))
@@ -267,7 +278,7 @@ object HttpClient {
 
             override fun onResponse(call: Call, response: Response) {
                 val raw = response.body()!!.string()
-                Log.i("HttpClient", "Response ${response.code()}: $raw")
+                println("Response ${response.code()}: $raw")
                 runResult {
                     val code = response.code()
                     if (code / 100 == 2) {
@@ -280,6 +291,7 @@ object HttpClient {
         })
     }
 
+    @Deprecated("Use Rx Style instead")
     inline fun callWithoutResult(
         url: String,
         method: String,
@@ -287,12 +299,12 @@ object HttpClient {
         body: Any? = null,
         crossinline onResult: @escaping() (code: Int, error: String?) -> Unit
     ) {
-        Log.i("HttpClient", "Sending $method request to $url with headers $headers")
+        println("Sending $method request to $url with headers $headers")
         val request = Request.Builder()
             .url(url)
             .method(method, body?.let {
                 val sending = mapper.writeValueAsString(it)
-                Log.i("HttpClient", "with body $sending")
+                println("with body $sending")
                 RequestBody.create(MediaType.parse("application/json"), sending)
             })
             .headers(Headers.of(headers))
@@ -309,7 +321,7 @@ object HttpClient {
 
             override fun onResponse(call: Call, response: Response) {
                 val raw = response.body()!!.string()
-                Log.i("HttpClient", "Response ${response.code()}: $raw")
+                println("Response ${response.code()}: $raw")
                 runResult {
                     val code = response.code()
                     if (code / 100 == 2) {
@@ -322,6 +334,7 @@ object HttpClient {
         })
     }
 
+    @Deprecated("Use Rx Style instead")
     inline fun uploadImageWithoutResult(
         url: String,
         method: String,
@@ -385,7 +398,7 @@ object HttpClient {
 
                 override fun onResponse(call: Call, response: Response) {
                     val raw = response.body()!!.string()
-                    Log.i("HttpClient", "Response ${response.code()}: $raw")
+                    println("Response ${response.code()}: $raw")
                     runResult {
 
                         val code = response.code()
@@ -401,6 +414,7 @@ object HttpClient {
     }
 
 
+    @Deprecated("Use Rx Style instead")
     inline fun <reified T : Any> uploadImage(
         url: String,
         method: String,
@@ -464,7 +478,7 @@ object HttpClient {
 
                 override fun onResponse(call: Call, response: Response) {
                     val raw = response.body()!!.string()
-                    Log.i("HttpClient", "Response ${response.code()}: $raw")
+                    println("Response ${response.code()}: $raw")
                     runResult {
                         val code = response.code()
                         if (code / 100 == 2) {
