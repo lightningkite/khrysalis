@@ -39,7 +39,10 @@ fun loadImage(uri: Uri, maxDimension: Int = 2048, onResult: (Bitmap?) -> Unit) {
             val sizeOpts = BitmapFactory.Options().apply { inJustDecodeBounds = true }
             BitmapFactory.decodeStream(it, null, sizeOpts)
             val finalOpts = BitmapFactory.Options().apply {
-                this.inSampleSize = max(sizeOpts.outWidth / maxDimension, sizeOpts.outHeight / maxDimension).coerceAtLeast(1)
+                this.inSampleSize = max(
+                    sizeOpts.outWidth.toDouble().div(maxDimension).let { Math.ceil(it) }.toInt(),
+                    sizeOpts.outHeight.toDouble().div(maxDimension).let { Math.ceil(it) }.toInt()
+                ).coerceAtLeast(1)
             }
             onResult(BitmapFactory.decodeStream(it, null, finalOpts))
         } ?: onResult(null)
