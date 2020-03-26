@@ -13,6 +13,20 @@ public enum HttpClient {
     
     //--- HttpClient.responseScheduler
     public static var responseScheduler: Scheduler? = AndroidSchedulers.mainThread()
+    //--- HttpClient.Single<T>.threadCorrectly() (overwritten on flow generation)
+    public extension Single<T> {
+        func threadCorrectly<T>() -> Single<T> {
+            TODO()
+        }
+    }
+    
+    //--- HttpClient.Observable<T>.threadCorrectly() (overwritten on flow generation)
+    public extension Observable<T> {
+        func threadCorrectly<T>() -> Observable<T> {
+            TODO()
+        }
+    }
+    
     //--- HttpClient.immediateMode
     public static var immediateMode: Bool = false
 

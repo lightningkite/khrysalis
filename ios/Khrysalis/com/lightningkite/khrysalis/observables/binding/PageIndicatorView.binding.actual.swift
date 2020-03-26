@@ -8,12 +8,12 @@ public extension UIPageControl {
     func bind(_ count: Int32, _ selected: MutableObservableProperty<Int32>) -> Void {
         self.numberOfPages = Int(count)
         var suppress = false
-        selected.addAndRunWeak(self) { this, value in
+        selected.subscribeBy { value in
             guard !suppress else { return }
             suppress = true
             this.currentPage = Int(value)
             suppress = false
-        }
+        }.until(self.removed)
         self.addAction(for: .valueChanged, action: {
             guard !suppress else { return }
             suppress = true

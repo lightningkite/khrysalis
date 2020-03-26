@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
 import com.lightningkite.khrysalis.escaping
 import com.lightningkite.khrysalis.observables.*
+import com.lightningkite.khrysalis.rx.removed
+import com.lightningkite.khrysalis.rx.until
 import com.lightningkite.khrysalis.views.EmptyView
 import com.lightningkite.khrysalis.views.ViewDependency
 import kotlin.reflect.KClass
@@ -41,9 +43,9 @@ fun <T> RecyclerView.bind(
     adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         init {
             println("Setting up adapter")
-            data.addAndRunWeak(this) { self, _ ->
-                self.notifyDataSetChanged()
-            }
+            data.subscribeBy { _ ->
+                this.notifyDataSetChanged()
+            }.until(this@bind.removed)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -128,9 +130,9 @@ fun RecyclerView.bindMulti(
     adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         init {
             println("Setting up adapter")
-            data.addAndRunWeak(this) { self, _ ->
-                self.notifyDataSetChanged()
-            }
+            data.subscribeBy { _ ->
+                this.notifyDataSetChanged()
+            }.until(this@bindMulti.removed)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
@@ -164,9 +166,9 @@ fun <T> RecyclerView.bindMulti(
     adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         init {
             println("Setting up adapter")
-            data.addAndRunWeak(this) { self, _ ->
-                self.notifyDataSetChanged()
-            }
+            data.subscribeBy { _ ->
+                this.notifyDataSetChanged()
+            }.until(this@bindMulti.removed)
         }
 
         override fun getItemViewType(position: Int): Int {
@@ -201,11 +203,11 @@ fun RecyclerView.bindRefresh(
     refresh: () -> Unit
 ) {
     (this.parent as? SwipeRefreshLayout)?.run {
-        loading.addAndRunWeak(this) { self, value ->
-            self.post {
-                self.isRefreshing = value
+        loading.subscribeBy { value ->
+            this.post {
+                this.isRefreshing = value
             }
-        }
+        }.until(this@bindRefresh.removed)
         setOnRefreshListener {
             refresh()
         }

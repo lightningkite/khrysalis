@@ -5,6 +5,8 @@ import android.view.ViewGroup
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
 import com.lightningkite.khrysalis.observables.*
+import com.lightningkite.khrysalis.rx.removed
+import com.lightningkite.khrysalis.rx.until
 
 fun <T> ViewPager.bind(
     items: List<T>,
@@ -29,9 +31,9 @@ fun <T> ViewPager.bind(
         }
     }
 
-    showIndex.addAndRunWeak(this){ self, value ->
-        self.currentItem = value
-    }
+    showIndex.subscribeBy{ value ->
+        this.currentItem = value
+    }.until(this.removed)
     this.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
         override fun onPageScrollStateChanged(p0: Int) {}
         override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {}

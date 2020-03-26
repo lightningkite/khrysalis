@@ -2,6 +2,8 @@ package com.lightningkite.khrysalis.observables.binding
 
 import com.google.android.material.tabs.TabLayout
 import com.lightningkite.khrysalis.observables.*
+import com.lightningkite.khrysalis.rx.removed
+import com.lightningkite.khrysalis.rx.until
 
 fun TabLayout.bind(
     tabs: List<String>,
@@ -10,9 +12,9 @@ fun TabLayout.bind(
     for(tab in tabs){
         addTab(newTab().setText(tab))
     }
-    selected.addAndRunWeak(this) { self, value ->
-        self.getTabAt(value)?.select()
-    }
+    selected.subscribeBy { value ->
+        this.getTabAt(value)?.select()
+    }.until(this.removed)
     this.addOnTabSelectedListener(object : TabLayout.BaseOnTabSelectedListener<TabLayout.Tab> {
         override fun onTabReselected(p0: TabLayout.Tab) {
             if(selected.value != p0.position)

@@ -9,7 +9,7 @@ public extension UIAutoCompleteTextField {
         if let textColor = textColor { theme.fontColor = textColor }
         
         var optionsMap = Dictionary<String, T>()
-        options.addAndRunWeak(self) { (self, value) in
+        options.subscribeBy { value in
             optionsMap = [:]
             for item in value {
                 let original = toString(item)
@@ -23,7 +23,7 @@ public extension UIAutoCompleteTextField {
             }
             let array = Array(optionsMap.keys)
             self.filterStrings(array)
-        }
+        }.until(self.removed)
         itemSelectionHandler = { (items, itemPosition) in
             if let item = optionsMap[items[itemPosition].title] {
                 onItemSelected(item)

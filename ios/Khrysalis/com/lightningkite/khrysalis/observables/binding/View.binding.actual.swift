@@ -6,9 +6,9 @@ import UIKit
 //--- View.bindVisible(ObservableProperty<Boolean>)
 public extension UIView {
     func bindVisible(_ observable: ObservableProperty<Bool>) -> Void {
-        observable.addAndRunWeak(referenceA: self) { (this, value) in
+        observable.subscribeBy { ( value) in
             this.isHidden = !value
-        }
+        }.until(self.removed)
     }
     func bindVisible(observable: ObservableProperty<Bool>) -> Void {
         return bindVisible(observable)
@@ -18,10 +18,10 @@ public extension UIView {
 //--- View.bindExists(ObservableProperty<Boolean>)
 public extension UIView {
     func bindExists(_ observable: ObservableProperty<Bool>) -> Void {
-        observable.addAndRunWeak(referenceA: self) { (this, value) in
+        observable.subscribeBy { ( value) in
             this.includeInLayout = value
             this.isHidden = !value
-        }
+        }.until(self.removed)
     }
     func bindExists(observable: ObservableProperty<Bool>) -> Void {
         return bindExists(observable)

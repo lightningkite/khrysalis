@@ -12,9 +12,9 @@ public extension UISegmentedControl {
         self.addAction(for: .valueChanged, action: { [weak self, weak selected] in
             selected?.value = Int32(self?.selectedSegmentIndex ?? 0)
         })
-        selected.addAndRunWeak(self) { this, value in
+        selected.subscribeBy { value in
             this.selectedSegmentIndex = Int(value)
-        }
+        }.until(self.removed)
     }
     func bind(tabs: Array<String>, selected: MutableObservableProperty<Int32>) -> Void {
         return bind(tabs, selected)

@@ -4,6 +4,8 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
 import com.lightningkite.khrysalis.observables.*
+import com.lightningkite.khrysalis.rx.removed
+import com.lightningkite.khrysalis.rx.until
 import com.lightningkite.khrysalis.views.ViewDependency
 import com.lightningkite.khrysalis.views.android.SwapView
 import com.lightningkite.khrysalis.views.ViewGenerator
@@ -19,7 +21,7 @@ fun SwapView.bindStack(dependency: ViewDependency, obs: ObservableStack<ViewGene
             ViewGroup.LayoutParams.MATCH_PARENT
         )
     )
-    obs.addAndRunWeak(this) { self, datas ->
+    obs.subscribeBy { datas ->
         post {
             if (currentData == datas.lastOrNull()) return@post
 
@@ -69,6 +71,6 @@ fun SwapView.bindStack(dependency: ViewDependency, obs: ObservableStack<ViewGene
             currentView = newView
             currentStackSize = newStackSize
         }
-    }
+    }.until(this.removed)
 
 }

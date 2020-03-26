@@ -54,6 +54,7 @@ private fun View.forThisAndAllChildrenRecursive(action: (View) -> Unit) {
 /**
  * Gets this view's lifecycle object for events to connect with.
  */
+@Deprecated("Just use RX disposal stuff")
 val View.lifecycle: Lifecycle
     get() {
         val old = getTag(R.id.lifecycle)
@@ -66,6 +67,7 @@ val View.lifecycle: Lifecycle
 
 
 
+@Deprecated("Just use RX disposal stuff")
 fun <T: Disposable> T.untilOff(lifecycle: Lifecycle): T {
     lifecycle.closeWhenOff(this)
     return this

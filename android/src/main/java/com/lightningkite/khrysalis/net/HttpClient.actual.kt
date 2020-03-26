@@ -50,7 +50,17 @@ object HttpClient {
 
     var ioScheduler: Scheduler? = null
     var responseScheduler: Scheduler? = null
-    private fun <T> Single<T>.threadCorrectly(): Single<T> {
+    fun <T> Single<T>.threadCorrectly(): Single<T> {
+        var current = this
+        if(ioScheduler != null){
+            current = current.subscribeOn(ioScheduler)
+        }
+        if(responseScheduler != null){
+            current = current.observeOn(responseScheduler)
+        }
+        return current
+    }
+    fun <T> Observable<T>.threadCorrectly(): Observable<T> {
         var current = this
         if(ioScheduler != null){
             current = current.subscribeOn(ioScheduler)

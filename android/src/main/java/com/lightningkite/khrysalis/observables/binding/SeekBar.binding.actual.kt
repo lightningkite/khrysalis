@@ -2,6 +2,8 @@ package com.lightningkite.khrysalis.observables.binding
 
 import android.widget.SeekBar
 import com.lightningkite.khrysalis.observables.*
+import com.lightningkite.khrysalis.rx.removed
+import com.lightningkite.khrysalis.rx.until
 
 fun SeekBar.bind(
     start: Int,
@@ -12,13 +14,13 @@ fun SeekBar.bind(
     this.incrementProgressBy(1)
 
     var suppress = false
-    observable.addAndRunWeak(this) { self, value ->
+    observable.subscribeBy { value ->
         if (!suppress) {
             suppress = true
-            self.progress = value + start
+            this.progress = value + start
             suppress = false
         }
-    }
+    }.until(this@bind.removed)
     this.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
         override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
             if (!suppress) {

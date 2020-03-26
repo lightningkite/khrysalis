@@ -4,14 +4,16 @@ import android.text.Editable
 import android.text.TextWatcher
 import android.widget.EditText
 import com.lightningkite.khrysalis.observables.*
+import com.lightningkite.khrysalis.rx.removed
+import com.lightningkite.khrysalis.rx.until
 
 
 fun EditText.bindString(observable: MutableObservableProperty<String>) {
-    observable.addAndRunWeak(this) { self, value ->
+    observable.subscribeBy { value ->
         if (observable.value != text.toString()) {
             this.setText(observable.value)
         }
-    }
+    }.until(this.removed)
     addTextChangedListener(object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {}
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -24,12 +26,12 @@ fun EditText.bindString(observable: MutableObservableProperty<String>) {
 }
 
 fun EditText.bindInteger(observable: MutableObservableProperty<Int>) {
-    observable.addAndRunWeak(this) { self, value ->
-        val currentValue = self.text.toString().toIntOrNull()
+    observable.subscribeBy { value ->
+        val currentValue = this.text.toString().toIntOrNull()
         if (currentValue != null && observable.value != currentValue) {
-            self.setText(observable.value.takeUnless { it == 0 }?.toString() ?: "")
+            this.setText(observable.value.takeUnless { it == 0 }?.toString() ?: "")
         }
-    }
+    }.until(this.removed)
     addTextChangedListener(object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {}
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
@@ -43,12 +45,12 @@ fun EditText.bindInteger(observable: MutableObservableProperty<Int>) {
 }
 
 fun EditText.bindDouble(observable: MutableObservableProperty<Double>) {
-    observable.addAndRunWeak(this) { self, value ->
-        val currentValue = self.text.toString().toDoubleOrNull()
+    observable.subscribeBy { value ->
+        val currentValue = this.text.toString().toDoubleOrNull()
         if (currentValue != null && observable.value != currentValue) {
-            self.setText(observable.value.takeUnless { it == 0.0 }?.toString() ?: "")
+            this.setText(observable.value.takeUnless { it == 0.0 }?.toString() ?: "")
         }
-    }
+    }.until(this.removed)
     addTextChangedListener(object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {}
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}

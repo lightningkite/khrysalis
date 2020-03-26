@@ -3,9 +3,10 @@ package com.lightningkite.khrysalis.observables.binding
 import android.graphics.drawable.Drawable
 import android.widget.Button
 import com.lightningkite.khrysalis.observables.ObservableProperty
-import com.lightningkite.khrysalis.observables.addAndRunWeak
 import com.lightningkite.khrysalis.views.ColorResource
 import com.lightningkite.khrysalis.observables.*
+import com.lightningkite.khrysalis.rx.removed
+import com.lightningkite.khrysalis.rx.until
 import com.lightningkite.khrysalis.views.backgroundDrawable
 
 
@@ -14,18 +15,18 @@ fun Button.bindActive(
     activeColorResource: ColorResource? = null,
     inactiveColorResource: ColorResource? = null
 ) {
-    observable.addAndRunWeak(this) { self, it ->
-        self.isEnabled = it
+    observable.subscribeBy { it ->
+        this.isEnabled = it
         if (it) {
             activeColorResource?.let { color ->
-                self.setBackgroundResource(color)
+                this.setBackgroundResource(color)
             }
         } else {
             inactiveColorResource?.let { color ->
-                self.setBackgroundResource(color)
+                this.setBackgroundResource(color)
             }
         }
-    }
+    }.until(this.removed)
 }
 
 fun Button.bindActive(
@@ -33,13 +34,13 @@ fun Button.bindActive(
     activeBackground: Drawable,
     inactiveBackground: Drawable
 ) {
-    observable.addAndRunWeak(this) { self, it ->
-        self.isEnabled = it
+    observable.subscribeBy { it ->
+        this.isEnabled = it
         if (it) {
-            self.backgroundDrawable = activeBackground
+            this.backgroundDrawable = activeBackground
         } else {
 
-            self.backgroundDrawable = inactiveBackground
+            this.backgroundDrawable = inactiveBackground
         }
-    }
+    }.until(this.removed)
 }

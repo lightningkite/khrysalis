@@ -8,6 +8,7 @@ import io.reactivex.disposables.Disposable
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.subscribeBy
 
+@Deprecated("Just use RX stuff")
 fun <Element: Any> Observable<Element>.add(listener: @escaping() (Element) -> Boolean): Disposable {
     var disposable: Disposable? = null
     val disp = this.subscribeBy(onNext = { item ->
@@ -19,6 +20,7 @@ fun <Element: Any> Observable<Element>.add(listener: @escaping() (Element) -> Bo
     return disp
 }
 
+@Deprecated("Just use RX disposal stuff")
 fun <A: AnyObject, Element: Any> Observable<Element>.addWeak(referenceA: A, listener: @escaping() (A, Element) -> Unit): Disposable {
     var disposable: Disposable? = null
     val weakA: A? by weak(referenceA)
@@ -34,6 +36,7 @@ fun <A: AnyObject, Element: Any> Observable<Element>.addWeak(referenceA: A, list
     return disp
 }
 
+@Deprecated("Just use RX disposal stuff")
 fun <A: AnyObject, B: AnyObject, Element: Any> Observable<Element>.addWeak(referenceA: A, referenceB: B, listener: @escaping() (A, B, Element) -> Unit): Disposable {
     var disposable: Disposable? = null
     val weakA: A? by weak(referenceA)
@@ -52,6 +55,7 @@ fun <A: AnyObject, B: AnyObject, Element: Any> Observable<Element>.addWeak(refer
 }
 
 
+@Deprecated("Just use RX disposal stuff")
 fun <A: AnyObject, B: AnyObject, C: AnyObject, Element: Any> Observable<Element>.addWeak(referenceA: A, referenceB: B, referenceC: C, listener: @escaping() (A, B, C, Element) -> Unit): Disposable {
     var disposable: Disposable? = null
     val weakA: A? by weak(referenceA)

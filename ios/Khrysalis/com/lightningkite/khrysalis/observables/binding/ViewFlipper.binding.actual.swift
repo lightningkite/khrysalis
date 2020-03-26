@@ -14,9 +14,9 @@ public extension ViewFlipper {
             new.startAnimating()
             addSubview(new, FrameLayout.LayoutParams(gravity: .center))
         }
-        loading.addAndRunWeak(self) { (self, value) in
+        loading.subscribeBy { (value) in
             self.displayedChild = value ? 1 : 0
-        }
+        }.until(self.removed)
     }
     func bindLoading(loading: MutableObservableProperty<Bool>, color: ColorResource? = nil) -> Void {
         return bindLoading(loading)

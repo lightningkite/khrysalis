@@ -11,16 +11,16 @@ public extension Dropdown {
         self.delegate = boundDataSource
         retain(as: "boundDataSource", item: boundDataSource)
 
-        options.addAndRunWeak(self) { this, value in
-            this.pickerView.reloadAllComponents()
-        }
+        options.subscribeBy { value in
+            self.pickerView.reloadAllComponents()
+        }.until(self.removed)
         self.selectedView = makeView(selected)
-        selected.addAndRunWeak(self) { this, value in
+        selected.subscribeBy { value in
             var index = Int(options.value.indexOf(value))
             if index != -1 {
                 this.pickerView.selectRow(index, inComponent: 0, animated: false)
             }
-        }
+        }.until(self.removed)
     }
     func bind<T: Equatable>(options: ObservableProperty<Array<T>>, selected: MutableObservableProperty<T>, makeView: @escaping (ObservableProperty<T>) -> View) -> Void {
         return bind(options, selected, makeView)

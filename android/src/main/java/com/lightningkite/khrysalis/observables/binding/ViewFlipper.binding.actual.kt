@@ -2,21 +2,17 @@
 
 package com.lightningkite.khrysalis.observables.binding
 
-import android.graphics.Color
 import android.graphics.LightingColorFilter
-import android.graphics.PorterDuff
 import android.view.Gravity
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.view.animation.AlphaAnimation
-import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
-import android.widget.CompoundButton
 import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.ViewFlipper
-import androidx.core.content.res.ResourcesCompat
 import com.lightningkite.khrysalis.observables.*
+import com.lightningkite.khrysalis.rx.removed
+import com.lightningkite.khrysalis.rx.until
 import com.lightningkite.khrysalis.views.ColorResource
 
 fun ViewFlipper.bindLoading(loading: ObservableProperty<Boolean>, color: ColorResource? = null) {
@@ -39,7 +35,7 @@ fun ViewFlipper.bindLoading(loading: ObservableProperty<Boolean>, color: ColorRe
         }
         addView(spinner, 1, FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT, Gravity.CENTER))
     }
-    loading.addAndRunWeak(this) { self, it ->
-        self.displayedChild = if (it) 1 else 0
-    }
+    loading.subscribeBy { it ->
+        this.displayedChild = if (it) 1 else 0
+    }.until(this.removed)
 }

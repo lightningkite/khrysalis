@@ -10,8 +10,10 @@ import com.lightningkite.khrysalis.observables.*
 import com.lightningkite.khrysalis.floorDiv
 import com.lightningkite.khrysalis.floorMod
 import com.lightningkite.khrysalis.rx.addWeak
+import com.lightningkite.khrysalis.rx.forever
 import com.lightningkite.khrysalis.time.*
 import com.lightningkite.khrysalis.views.draw.drawTextCentered
+import io.reactivex.rxkotlin.subscribeBy
 import java.util.*
 import kotlin.math.absoluteValue
 import kotlin.math.max
@@ -32,7 +34,10 @@ open class MonthCVD : CustomViewDelegate() {
     var dragEnabled: Boolean = true
 
     init {
-        this.currentMonthObs.addAndRunWeak(this) { self, value -> self.postInvalidate() }
+        this.currentMonthObs.subscribeBy @weakSelf { value ->
+            this.postInvalidate()
+        }.forever()
+
     }
 
     var labelFontSp: Float = 12f

@@ -25,4 +25,5 @@ Pod::Spec.new do |s|
   s.dependency "RxSwift"
   s.dependency "RxRelay"
   s.dependency "OpalImagePicker"
+  s.dependency "Starscream"
 end

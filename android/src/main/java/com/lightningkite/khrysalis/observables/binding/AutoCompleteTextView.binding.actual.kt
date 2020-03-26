@@ -5,6 +5,8 @@ import android.os.Build
 import android.view.View
 import android.view.ViewGroup
 import android.widget.*
+import com.lightningkite.khrysalis.rx.removed
+import com.lightningkite.khrysalis.rx.until
 
 
 fun <T> AutoCompleteTextView.bind(
@@ -43,9 +45,9 @@ fun <T> AutoCompleteTextView.bind(
         }
 
         init {
-            options.addAndRunWeak(this) { self, _ ->
+            options.subscribeBy { text ->
                 filter.filter(text.toString())
-            }
+            }.until(this@bind.removed)
         }
 
         @Suppress("UNCHECKED_CAST")

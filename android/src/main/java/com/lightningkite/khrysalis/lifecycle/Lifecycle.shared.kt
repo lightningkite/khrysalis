@@ -7,9 +7,12 @@ import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
 
+@Deprecated("Just use RX disposal stuff")
 typealias Lifecycle = ObservableProperty<Boolean>
 
+@Deprecated("Just use RX disposal stuff")
 infix fun ObservableProperty<@swiftExactly Boolean>.and(other: ObservableProperty<@swiftExactly Boolean>): Lifecycle = this.combine(other) { a, b -> a && b }
+@Deprecated("Just use RX disposal stuff")
 fun <A: AnyObject> ObservableProperty<@swiftExactly Boolean>.openCloseBinding(
     target: A,
     open: @escaping() (A)->Unit,
@@ -48,8 +51,10 @@ fun ObservableProperty<@swiftExactly Boolean>.openCloseBinding(
     }
 }
 
+@Deprecated("Just use RX disposal stuff")
 fun ObservableProperty<@swiftExactly Boolean>.once(): ObservableProperty<Boolean> = OnceObservableProperty(this)
 
+@Deprecated("Just use RX disposal stuff")
 private class OnceObservableProperty(val basedOn: ObservableProperty<Boolean>): ObservableProperty<Boolean>() {
     override val value: Boolean
         get() = basedOn.value
@@ -58,6 +63,7 @@ private class OnceObservableProperty(val basedOn: ObservableProperty<Boolean>): 
 
 }
 
+@Deprecated("Just use RX disposal stuff")
 fun ObservableProperty<@swiftExactly Boolean>.closeWhenOff(closeable: Disposable) {
     var listener: Disposable? = null
     listener = this.observableNN.subscribe { it ->
@@ -68,4 +74,5 @@ fun ObservableProperty<@swiftExactly Boolean>.closeWhenOff(closeable: Disposable
     }
 }
 
+@Deprecated("Just use RX disposal stuff")
 val appInForeground = StandardObservableProperty(false)

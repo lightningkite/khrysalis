@@ -7,6 +7,8 @@ import com.lightningkite.khrysalis.net.HttpClient
 import com.lightningkite.khrysalis.*
 import com.squareup.picasso.Picasso
 import com.lightningkite.khrysalis.observables.*
+import com.lightningkite.khrysalis.rx.removed
+import com.lightningkite.khrysalis.rx.until
 
 
 fun ImageView.loadImage(image: Image?) {
@@ -36,8 +38,8 @@ fun ImageView.loadImage(image: Image?) {
 
 fun ImageView.bindImage(image: ObservableProperty<Image?>) {
     post {
-        image.addAndRunWeak(this) { self, it ->
-            self.loadImage(it)
-        }
+        image.subscribeBy { it ->
+            this.loadImage(it)
+        }.until(this.removed)
     }
 }

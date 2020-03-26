@@ -30,13 +30,13 @@ public extension UICollectionView {
         } else {
             addSubview(control)
         }
-        loading.addAndRunWeak(referenceA: control) { (this, value) in
+        loading.subscribeBy { (value) in
             if value {
                 this.beginRefreshing()
             } else {
                 this.endRefreshing()
             }
-        }
+        }.until(control.removed)
     }
 
     var currentIndex: Int? {
@@ -45,10 +45,10 @@ public extension UICollectionView {
 
     func bindIndex(_ index: MutableObservableProperty<Int32>){
         var suppress = false
-        index.addAndRunWeak(self) { this, value in
+        index.subscribeBy { value in
             guard !suppress else { return }
             this.scrollToItem(at: IndexPath(row: Int(value), section: 0), at: .centeredHorizontally, animated: true)
-        }
+        }.until(self.removed)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
             self.scrollToItem(at: IndexPath(row: Int(index.value), section: 0), at: .centeredHorizontally, animated: false)
         })
@@ -84,7 +84,7 @@ public extension UICollectionView {
         retain(as: "boundDataSource", item: boundDataSource)
 
         var previouslyEmpty = data.value.isEmpty
-        data.addAndRunWeak(self) { this, value in
+        data.subscribeBy { value in
             let emptyNow = data.value.isEmpty
             this.reloadData()
             if previouslyEmpty && !emptyNow {
@@ -100,7 +100,7 @@ public extension UICollectionView {
                 this.scrollToItem(at: IndexPath(item: 0, section: 0), at: at, animated: true)
             }
             previouslyEmpty = emptyNow
-        }
+        }.until(self.removed)
     }
 
     func bind(
@@ -144,7 +144,7 @@ protocol HasAtPosition {
 
 class CollectionBoundDataSource<T>: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, HasAtEnd, HasAtPosition {
     var reversedDirection: Bool = false
-    
+
     var source: ObservableProperty<[T]>
     let makeView: (ObservableProperty<T>) -> UIView
     let defaultValue: T
