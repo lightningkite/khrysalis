@@ -14,7 +14,7 @@ public class ObservableStack<T: AnyObject>: ObservableProperty<Array<T>> {
     //Start Companion
     
     static public func withFirst<T: AnyObject>(value: T) -> ObservableStack<T> {
-        var result = ObservableStack(T.self)
+        var result = ObservableStack<T>()
         result.reset(value)
         return result
     }
@@ -110,7 +110,7 @@ public class ObservableStack<T: AnyObject>: ObservableProperty<Array<T>> {
     
     override public init() {
         self._onChange = PublishSubject.create()
-        let stack: Array<T> = Array(T.self)
+        let stack: Array<T> = Array<T>()
         self.stack = stack
         super.init()
     }

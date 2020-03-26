@@ -16,14 +16,14 @@ public class Failable<T> {
     //Start Companion
     
     static public func failure<T>(message: String) -> Failable<T> {
-        return Failable(T.self, issue: message)
+        return Failable<T>(issue: message)
     }
     static public func failure<T>(_ message: String) -> Failable<T> {
         return failure(message: message)
     }
     
     static public func success<T>(value: T) -> Failable<T> {
-        return Failable(T.self, result: value)
+        return Failable<T>(result: value)
     }
     static public func success<T>(_ value: T) -> Failable<T> {
         return success(value: value)

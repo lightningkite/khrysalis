@@ -40,6 +40,7 @@ extension ObservableProperty {
 
 extension ObservableProperty {
      public func subscribeBy(onError: @escaping (Throwable) -> Void = { (it) in 
+        it.printStackTrace()
     }, onComplete: @escaping () -> Void = { () in 
     }, onNext: @escaping (T) -> Void = { (it) in 
     }) -> Disposable {

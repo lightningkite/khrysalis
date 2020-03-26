@@ -370,20 +370,22 @@ fun SwiftAltListener.registerFunction() {
         direct.append(")")
     }
     handle<KotlinParser.CallSuffixContext> { ctx ->
-        val dontUseFoldedTypeArgs = ctx
-            .parentIfType<KotlinParser.PostfixUnarySuffixContext>()
-            ?.parentIfType<KotlinParser.PostfixUnaryExpressionContext>()
-            ?.takeIf { it.postfixUnarySuffix(0) == ctx }
-            ?.primaryExpression()
-            ?.text
-            ?.split('.')
-            ?.all { it.all { it.isJavaIdentifierPart() || it == '.' } } == true
         val argList = ArrayList<() -> Unit>()
-        if(dontUseFoldedTypeArgs){
-            ctx.typeArguments()?.let { write(it) }
-        } else {
-            ctx.typeArguments()?.let {
-                argList.addAll(it.typeProjection().map { it -> fun():Unit{ write(it); direct.append(".self") } })
+        ctx.typeArguments()?.let {
+            val dontUseFoldedTypeArgs = ctx
+                .parentIfType<KotlinParser.PostfixUnarySuffixContext>()
+                ?.parentIfType<KotlinParser.PostfixUnaryExpressionContext>()
+                ?.takeIf { it.postfixUnarySuffix(0).sourceInterval.a == ctx.sourceInterval.a }
+                ?.primaryExpression()
+                ?.text
+                ?.split('.')
+                ?.all {
+                    it.firstOrNull()?.isUpperCase() == true && it.all { it.isJavaIdentifierPart() || it == '.' }
+                } == true
+            if (dontUseFoldedTypeArgs) {
+                write(it)
+            } else {
+                argList.addAll(it.typeProjection().map { it -> fun(): Unit { write(it); direct.append(".self") } })
             }
         }
         ctx.valueArguments()?.let {
