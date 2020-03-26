@@ -304,7 +304,9 @@ class BleServerImpl(
 
     override fun dispose() {
         Log.i("BleServerImpl", "Closing...")
-        advertiser?.stopAdvertising(advertiserCallback)
+        if(advertiserCallback != null) {
+            advertiser?.stopAdvertising(advertiserCallback)
+        }
         advertiserCallback = null
         server?.close()
         server = null
