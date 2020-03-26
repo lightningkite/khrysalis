@@ -39,7 +39,7 @@ public class FlatMappedObservableProperty<A, B>: ObservableProperty<B> {
 
 extension ObservableProperty {
     public func flatMap<B>(transformation: @escaping (T) -> ObservableProperty<B>) -> FlatMappedObservableProperty<T, B> {
-        return FlatMappedObservableProperty<T, B>(self, transformation)
+        return FlatMappedObservableProperty(T.self, B.self, self, transformation)
     }
 }
  
@@ -89,7 +89,7 @@ public class MutableFlatMappedObservableProperty<A, B>: MutableObservablePropert
 
 extension ObservableProperty {
     public func flatMapMutable<B>(transformation: @escaping (T) -> MutableObservableProperty<B>) -> MutableFlatMappedObservableProperty<T, B> {
-        return MutableFlatMappedObservableProperty<T, B>(self, transformation)
+        return MutableFlatMappedObservableProperty(T.self, B.self, self, transformation)
     }
 }
  

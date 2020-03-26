@@ -41,3 +41,11 @@ class DisposableLambda(val lambda: @escaping() () -> Unit) : Disposable {
         }
     }
 }
+
+
+fun <Self: Disposable> Self.forever(): Self { return this }
+
+fun <Self: Disposable> Self.until(condition: DisposeCondition): Self {
+    condition.call(this)
+    return this
+}

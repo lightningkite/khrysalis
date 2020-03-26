@@ -46,7 +46,7 @@ public class TransformedMutableObservableProperty2<A, B>: MutableObservablePrope
 
 extension MutableObservableProperty {
     public func mapWithExisting<B>(read: @escaping (T) -> B, write: @escaping (T, B) -> T) -> MutableObservableProperty<B> {
-        return TransformedMutableObservableProperty2<T, B>(self, read, write)
+        return TransformedMutableObservableProperty2(T.self, B.self, self, read, write)
     }
     public func mapWithExisting<B>(_ read: @escaping (T) -> B, _ write: @escaping (T, B) -> T) -> MutableObservableProperty<B> {
         return mapWithExisting(read: read, write: write)

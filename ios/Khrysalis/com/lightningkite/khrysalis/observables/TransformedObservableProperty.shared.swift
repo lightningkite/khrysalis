@@ -36,7 +36,7 @@ public class TransformedObservableProperty<A, B>: ObservableProperty<B> {
 
 extension ObservableProperty {
      public func transformed<B>(read: @escaping (T) -> B) -> ObservableProperty<B> {
-        return TransformedObservableProperty<T, B>(self, read)
+        return TransformedObservableProperty(T.self, B.self, self, read)
     }
 }
  
@@ -44,7 +44,7 @@ extension ObservableProperty {
 
 extension ObservableProperty {
     public func map<B>(read: @escaping (T) -> B) -> ObservableProperty<B> {
-        return TransformedObservableProperty<T, B>(self, read)
+        return TransformedObservableProperty(T.self, B.self, self, read)
     }
 }
  

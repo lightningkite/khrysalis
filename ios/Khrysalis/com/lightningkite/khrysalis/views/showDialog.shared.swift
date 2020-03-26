@@ -6,7 +6,7 @@ import RxSwift
 import RxRelay
 
 
-public var lastDialog = StandardObservableProperty<DialogRequest?>(nil)
+public var lastDialog = StandardObservableProperty(DialogRequest?.self, nil)
 public var showDialogEvent: PublishSubject<DialogRequest> = PublishSubject.create()
 
 public class DialogRequest {

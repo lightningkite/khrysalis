@@ -43,7 +43,7 @@ public class WriteAddedObservableProperty<A>: MutableObservableProperty<A> {
 
 extension ObservableProperty {
     public func withWrite(onWrite: @escaping (T) -> Void) -> MutableObservableProperty<T> {
-        return WriteAddedObservableProperty<T>(self, onWrite)
+        return WriteAddedObservableProperty(T.self, self, onWrite)
     }
 }
  

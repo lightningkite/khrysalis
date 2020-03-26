@@ -4,11 +4,10 @@ import android.view.View
 import androidx.recyclerview.widget.RecyclerView
 import com.lightningkite.khrysalis.escaping
 import com.lightningkite.khrysalis.observables.Closeable
+import com.lightningkite.khrysalis.swiftDescendsFrom
 import io.reactivex.disposables.Disposable
 
 class DisposeCondition(val call: @escaping() (Disposable) -> Unit)
-
-fun Disposable.until(condition: DisposeCondition) = condition.call(this)
 
 infix fun DisposeCondition.and(other: DisposeCondition): DisposeCondition =
     andAllDisposeConditions(listOf(this, other))
@@ -25,5 +24,3 @@ fun andAllDisposeConditions(list: List<DisposeCondition>): DisposeCondition = Di
 
 infix fun DisposeCondition.or(other: DisposeCondition): DisposeCondition =
     DisposeCondition { it -> this.call(it); other.call(it) }
-
-fun Disposable.forever() {}

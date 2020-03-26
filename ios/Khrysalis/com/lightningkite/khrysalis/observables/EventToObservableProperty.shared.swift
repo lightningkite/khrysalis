@@ -35,7 +35,7 @@ public class EventToObservableProperty<T>: ObservableProperty<T> {
 
 extension Observable {
     public func asObservableProperty(defaultValue: Element) -> ObservableProperty<Element> {
-        return EventToObservableProperty<Element>(defaultValue, self.map{ (it) in 
+        return EventToObservableProperty(Element.self, defaultValue, self.map{ (it) in 
             boxWrap(it)
         })
     }
@@ -48,7 +48,7 @@ extension Observable {
 
 extension Observable {
     public func asObservablePropertyDefaultNull() -> ObservableProperty<Element?> {
-        return EventToObservableProperty<Element?>(nil, self.map{ (it) in 
+        return EventToObservableProperty(Element?.self, nil, self.map{ (it) in 
             boxWrap(it)
         })
     }
