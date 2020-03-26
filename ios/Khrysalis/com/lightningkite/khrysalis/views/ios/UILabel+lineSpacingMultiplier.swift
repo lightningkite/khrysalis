@@ -38,4 +38,13 @@ extension UILabel {
             self.attributedText = attributedString
         }
     }
+    
+    public var maxLines: Int64{
+        get{
+            return Int64(self.numberOfLines)
+        }
+        set(newLineCount){
+            self.numberOfLines = Int(newLineCount)
+        }
+    }
 }
