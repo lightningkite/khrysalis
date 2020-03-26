@@ -370,9 +370,21 @@ fun SwiftAltListener.registerFunction() {
         direct.append(")")
     }
     handle<KotlinParser.CallSuffixContext> { ctx ->
-        var argList = ArrayList<() -> Unit>()
-        ctx.typeArguments()?.let {
-            argList.addAll(it.typeProjection().map { it -> fun():Unit{ write(it); direct.append(".self") } })
+        val dontUseFoldedTypeArgs = ctx
+            .parentIfType<KotlinParser.PostfixUnarySuffixContext>()
+            ?.parentIfType<KotlinParser.PostfixUnaryExpressionContext>()
+            ?.takeIf { it.postfixUnarySuffix(0) == ctx }
+            ?.primaryExpression()
+            ?.text
+            ?.split('.')
+            ?.all { it.all { it.isJavaIdentifierPart() || it == '.' } } == true
+        val argList = ArrayList<() -> Unit>()
+        if(dontUseFoldedTypeArgs){
+            ctx.typeArguments()?.let { write(it) }
+        } else {
+            ctx.typeArguments()?.let {
+                argList.addAll(it.typeProjection().map { it -> fun():Unit{ write(it); direct.append(".self") } })
+            }
         }
         ctx.valueArguments()?.let {
             val sampleHasNoLabel = it.valueArgument().firstOrNull()?.MULT() == null

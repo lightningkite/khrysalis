@@ -340,7 +340,7 @@ open class MonthCVD: CustomViewDelegate {
         self.dragStartY = dragStartY
         super.init()
         self.currentMonthObs.subscribeBy { [weak self] (value) in 
-            self.postInvalidate()
+            self?.postInvalidate()
         }.forever()
         self.labelPaint.isAntiAlias = true
         self.labelPaint.style = Paint.Style.FILL

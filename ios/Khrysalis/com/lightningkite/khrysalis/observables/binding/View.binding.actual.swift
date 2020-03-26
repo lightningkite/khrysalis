@@ -7,7 +7,7 @@ import UIKit
 public extension UIView {
     func bindVisible(_ observable: ObservableProperty<Bool>) -> Void {
         observable.subscribeBy { ( value) in
-            this.isHidden = !value
+            self.isHidden = !value
         }.until(self.removed)
     }
     func bindVisible(observable: ObservableProperty<Bool>) -> Void {
@@ -19,8 +19,8 @@ public extension UIView {
 public extension UIView {
     func bindExists(_ observable: ObservableProperty<Bool>) -> Void {
         observable.subscribeBy { ( value) in
-            this.includeInLayout = value
-            this.isHidden = !value
+            self.includeInLayout = value
+            self.isHidden = !value
         }.until(self.removed)
     }
     func bindExists(observable: ObservableProperty<Bool>) -> Void {

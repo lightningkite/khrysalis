@@ -32,9 +32,9 @@ public extension UICollectionView {
         }
         loading.subscribeBy { (value) in
             if value {
-                this.beginRefreshing()
+                control.beginRefreshing()
             } else {
-                this.endRefreshing()
+                control.endRefreshing()
             }
         }.until(control.removed)
     }
@@ -47,7 +47,7 @@ public extension UICollectionView {
         var suppress = false
         index.subscribeBy { value in
             guard !suppress else { return }
-            this.scrollToItem(at: IndexPath(row: Int(value), section: 0), at: .centeredHorizontally, animated: true)
+            self.scrollToItem(at: IndexPath(row: Int(value), section: 0), at: .centeredHorizontally, animated: true)
         }.until(self.removed)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
             self.scrollToItem(at: IndexPath(row: Int(index.value), section: 0), at: .centeredHorizontally, animated: false)
@@ -86,10 +86,10 @@ public extension UICollectionView {
         var previouslyEmpty = data.value.isEmpty
         data.subscribeBy { value in
             let emptyNow = data.value.isEmpty
-            this.reloadData()
+            self.reloadData()
             if previouslyEmpty && !emptyNow {
                 var at = ScrollPosition.top
-                if let layout = this.collectionViewLayout as? UICollectionViewFlowLayout {
+                if let layout = self.collectionViewLayout as? UICollectionViewFlowLayout {
                     switch layout.scrollDirection {
                     case .vertical:
                         at = .top
@@ -97,7 +97,7 @@ public extension UICollectionView {
                         at = .left
                     }
                 }
-                this.scrollToItem(at: IndexPath(item: 0, section: 0), at: at, animated: true)
+                self.scrollToItem(at: IndexPath(item: 0, section: 0), at: at, animated: true)
             }
             previouslyEmpty = emptyNow
         }.until(self.removed)

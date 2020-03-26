@@ -35,7 +35,7 @@ open class MonthCVD : CustomViewDelegate() {
 
     init {
         this.currentMonthObs.subscribeBy @weakSelf { value ->
-            this.postInvalidate()
+            this?.postInvalidate()
         }.forever()
 
     }

@@ -101,7 +101,7 @@ open class SelectMultipleDatesMonthCVD: MonthCVD {
     }
     
     override public init() {
-        let dates: StandardObservableProperty<Set<DateAlone>> = StandardObservableProperty(Set<DateAlone>.self, [])
+        let dates: StandardObservableProperty<Set<DateAlone>> = StandardObservableProperty([])
         self.dates = dates
         let selectedDayPaint: Paint = Paint()
         self.selectedDayPaint = selectedDayPaint
@@ -117,7 +117,7 @@ open class SelectMultipleDatesMonthCVD: MonthCVD {
             self.currentMonthObs.value = it.dayOfMonth(1) 
         }
         self.dates.onChange.subscribeBy { [weak self] (value) in 
-            self.invalidate()
+            self?.invalidate()
         }.forever()
     }
 }

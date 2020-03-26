@@ -18,7 +18,7 @@ public extension Dropdown {
         selected.subscribeBy { value in
             var index = Int(options.value.indexOf(value))
             if index != -1 {
-                this.pickerView.selectRow(index, inComponent: 0, animated: false)
+                self.pickerView.selectRow(index, inComponent: 0, animated: false)
             }
         }.until(self.removed)
     }

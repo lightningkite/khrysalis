@@ -7,10 +7,10 @@ public extension CompoundButton {
     func bindSelect<T: Equatable>(_ myValue: T, _ selected: MutableObservableProperty<T>) -> Void {
         selected.subscribeBy { ( value) in
             let shouldBeOn = value == myValue
-            if this.isOn != shouldBeOn {
-                this.isOn = shouldBeOn
+            if self.isOn != shouldBeOn {
+                self.isOn = shouldBeOn
             }
-        }.until(self.removed)
+        }.until((self as! UIView).removed)
         self.onCheckChanged = { [weak self] value in
             if value && selected.value != myValue {
                 selected.value = myValue
@@ -29,10 +29,10 @@ public extension CompoundButton {
     func bindSelectNullable<T: Equatable>(_ myValue: T, _ selected: MutableObservableProperty<T?>) -> Void {
         selected.subscribeBy { ( value) in
             let shouldBeOn = value == myValue
-            if this.isOn != shouldBeOn {
-                this.isOn = shouldBeOn
+            if self.isOn != shouldBeOn {
+                self.isOn = shouldBeOn
             }
-        }.until(self.removed)
+        }.until((self as! UIView).removed)
         self.onCheckChanged = { [weak self] value in
             if value && selected.value != myValue {
                 selected.value = myValue
@@ -54,12 +54,12 @@ public extension CompoundButton {
             if !suppress{
                 suppress = true
                 let shouldBeOn = value == myValue || value == nil
-                if this.isOn != shouldBeOn {
-                    this.isOn = shouldBeOn
+                if self.isOn != shouldBeOn {
+                    self.isOn = shouldBeOn
                 }
                 suppress = false
             }
-        }.until(self.removed)
+        }.until((self as! UIView).removed)
         self.onCheckChanged = { [weak self] value in
             if !suppress{
                 suppress = true
@@ -83,10 +83,10 @@ public extension CompoundButton {
 public extension CompoundButton {
     func bind(_ observable: MutableObservableProperty<Bool>) -> Void {
         observable.subscribeBy { ( value) in
-            if this.isOn != value {
-                this.isOn = value
+            if self.isOn != value {
+                self.isOn = value
             }
-        }.until(self.removed)
+        }.until((self as! UIView).removed)
         self.onCheckChanged = { [weak self] value in
             if observable.value != self?.isOn {
                 observable.value = self?.isOn ?? false

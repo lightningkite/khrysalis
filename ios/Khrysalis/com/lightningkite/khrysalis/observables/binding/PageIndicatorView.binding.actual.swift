@@ -11,7 +11,7 @@ public extension UIPageControl {
         selected.subscribeBy { value in
             guard !suppress else { return }
             suppress = true
-            this.currentPage = Int(value)
+            self.currentPage = Int(value)
             suppress = false
         }.until(self.removed)
         self.addAction(for: .valueChanged, action: {

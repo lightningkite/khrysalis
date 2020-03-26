@@ -22,7 +22,7 @@ import kotlin.math.max
 open class SelectMultipleDatesMonthCVD : MonthCVD() {
     override fun generateAccessibilityView(): View? = null
 
-    val dates: StandardObservableProperty<Set<DateAlone>> = StandardObservableProperty<Set<DateAlone>>(setOf())
+    val dates: StandardObservableProperty<Set<DateAlone>> = StandardObservableProperty(setOf())
     val selectedDayPaint: Paint = Paint()
     val selectedPaint: Paint = Paint()
 
@@ -31,7 +31,7 @@ open class SelectMultipleDatesMonthCVD : MonthCVD() {
             this.currentMonthObs.value = it.dayOfMonth(1)
         }
         this.dates.onChange.subscribeBy @weakSelf { value ->
-            this.invalidate()
+            this?.invalidate()
         }.forever()
     }
 

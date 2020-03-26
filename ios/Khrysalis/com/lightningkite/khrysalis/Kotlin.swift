@@ -15,6 +15,7 @@ public func TODO(_ message: String = "") -> Never {
 
 public typealias Uri = URL
 public typealias ByteArray = NSData
+public typealias Throwable = Error
 
 public extension Sequence {
     func first() -> Element {

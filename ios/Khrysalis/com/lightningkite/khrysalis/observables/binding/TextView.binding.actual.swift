@@ -7,10 +7,10 @@ import UIKit
 public extension UILabel {
     func bindString(_ observable: ObservableProperty<String>) -> Void {
         observable.subscribeBy { ( value) in
-            if this.textString != value {
-                this.textString = value
+            if self.textString != value {
+                self.textString = value
             }
-            this.superview?.setNeedsLayout()
+            self.superview?.setNeedsLayout()
         }.until(self.removed)
     }
     func bindString(observable: ObservableProperty<String>) -> Void {
@@ -23,10 +23,10 @@ public extension UITextView {
     }
     func bindString(observable: ObservableProperty<String>) {
         observable.subscribeBy { ( value) in
-            if this.textString != value {
-                this.textString = value
+            if self.textString != value {
+                self.textString = value
             }
-            this.superview?.setNeedsLayout()
+            self.superview?.setNeedsLayout()
         }.until(self.removed)
     }
 }
@@ -36,10 +36,10 @@ public extension UITextField {
     }
     func bindString(observable: ObservableProperty<String>) {
         observable.subscribeBy { ( value) in
-            if this.textString != value {
-                this.textString = value
+            if self.textString != value {
+                self.textString = value
             }
-            this.superview?.setNeedsLayout()
+            self.superview?.setNeedsLayout()
         }.until(self.removed)
     }
 }
@@ -49,10 +49,10 @@ public extension UIButton {
     }
     func bindString(observable: ObservableProperty<String>) {
         observable.subscribeBy { ( value) in
-            if this.title(for: .normal) != value {
-                this.textString = value
+            if self.title(for: .normal) != value {
+                self.textString = value
             }
-            this.superview?.setNeedsLayout()
+            self.superview?.setNeedsLayout()
         }.until(self.removed)
     }
 }
@@ -63,13 +63,13 @@ public extension UILabel {
         observable.subscribeBy { ( value) in
             if let value = value {
                 let localValue = NSLocalizedString(value, comment: "")
-                if this.textString != localValue {
-                    this.textString = localValue
+                if self.textString != localValue {
+                    self.textString = localValue
                 }
             } else {
-                this.text = nil
+                self.text = nil
             }
-            this.superview?.setNeedsLayout()
+            self.superview?.setNeedsLayout()
         }.until(self.removed)
     }
     func bindStringRes(observable: ObservableProperty<StringResource?>) -> Void {
@@ -84,13 +84,13 @@ public extension UITextView {
         observableReference.subscribeBy { ( value) in
             if let value = value {
                 let localValue = NSLocalizedString(value, comment: "")
-                if this.textString != localValue {
-                    this.textString = localValue
+                if self.textString != localValue {
+                    self.textString = localValue
                 }
             } else {
-                this.text = nil
+                self.text = nil
             }
-            this.superview?.setNeedsLayout()
+            self.superview?.setNeedsLayout()
         }.until(self.removed)
     }
 }
@@ -102,13 +102,13 @@ public extension UITextField {
         observableReference.subscribeBy { ( value) in
             if let value = value {
                 let localValue = NSLocalizedString(value, comment: "")
-                if this.textString != localValue {
-                    this.textString = localValue
+                if self.textString != localValue {
+                    self.textString = localValue
                 }
             } else {
-                this.text = nil
+                self.text = nil
             }
-            this.superview?.setNeedsLayout()
+            self.superview?.setNeedsLayout()
         }.until(self.removed)
     }
 }
@@ -119,13 +119,13 @@ public extension UIButton {
     func bindStringRes(observableReference: ObservableProperty<StringResource?>) {
         observableReference.subscribeBy { ( value) in
             if let value = value {
-                if this.title(for: .normal) != value {
-                    this.textString = value
+                if self.title(for: .normal) != value {
+                    self.textString = value
                 }
             } else {
-                this.textString = ""
+                self.textString = ""
             }
-            this.superview?.setNeedsLayout()
+            self.superview?.setNeedsLayout()
         }.until(self.removed)
     }
 }
@@ -135,10 +135,10 @@ public extension UILabel {
     func bindText<T>(_ observable: ObservableProperty<T>, _ transform: @escaping (T) -> String) -> Void {
         observable.subscribeBy { ( value) in
             let textValue = transform(value)
-            if this.textString != textValue {
-                this.textString = textValue
+            if self.textString != textValue {
+                self.textString = textValue
             }
-            this.superview?.setNeedsLayout()
+            self.superview?.setNeedsLayout()
         }.until(self.removed)
     }
     func bindText<T>(observable: ObservableProperty<T>, transform: @escaping (T) -> String) -> Void {

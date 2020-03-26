@@ -13,7 +13,7 @@ public extension UISegmentedControl {
             selected?.value = Int32(self?.selectedSegmentIndex ?? 0)
         })
         selected.subscribeBy { value in
-            this.selectedSegmentIndex = Int(value)
+            self.selectedSegmentIndex = Int(value)
         }.until(self.removed)
     }
     func bind(tabs: Array<String>, selected: MutableObservableProperty<Int32>) -> Void {

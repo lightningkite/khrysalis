@@ -13,11 +13,10 @@ val <T> ObservableProperty<T>.observableNN: Observable<T> get() = onChange.start
 val <T> ObservableProperty<T>.onChangeNN: Observable<T> get() = onChange.map { it -> it.value }
 
 @CheckReturnValue
-@SchedulerSupport(SchedulerSupport.NONE)
 inline fun <T> ObservableProperty<T>.subscribeBy(
-    noinline onError: (Throwable) -> Unit = { it -> },
-    noinline onComplete: () -> Unit = {},
-    crossinline onNext: (T) -> Unit = { it -> }
+    noinline onError: @escaping() (Throwable) -> Unit = { it -> },
+    noinline onComplete: @escaping() () -> Unit = {},
+    crossinline onNext: @escaping() (T) -> Unit = { it -> }
 ): Disposable = this.observable.subscribeBy(
     onError = onError,
     onComplete = onComplete,

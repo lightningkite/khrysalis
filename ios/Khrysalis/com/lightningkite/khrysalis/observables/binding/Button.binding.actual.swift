@@ -7,14 +7,14 @@ import UIKit
 public extension UIButton {
     func bindActive(_ observable: ObservableProperty<Bool>, _ activeColorResource: ColorResource? = nil, _ inactiveColorResource: ColorResource? = nil) -> Void {
         observable.subscribeBy { ( value) in
-            this.isUserInteractionEnabled = value
+            self.isUserInteractionEnabled = value
             if value {
                 if let color = activeColorResource {
-                    this.backgroundColor = color
+                    self.backgroundColor = color
                 }
             }else{
                 if let color = inactiveColorResource{
-                    this.backgroundColor = color
+                    self.backgroundColor = color
                 }
             }
         }.until(self.removed)
@@ -32,11 +32,11 @@ public extension UIButton {
 public extension UIButton {
     func bindActive(_ observable: ObservableProperty<Bool>, _ activeBackground: @escaping Drawable, _ inactiveBackground: @escaping Drawable) -> Void {
         observable.subscribeBy { ( value) in
-            this.isUserInteractionEnabled = value
+            self.isUserInteractionEnabled = value
             if value {
-                this.backgroundDrawable = activeBackground
+                self.backgroundDrawable = activeBackground
             }else{
-                this.backgroundDrawable = inactiveBackground
+                self.backgroundDrawable = inactiveBackground
             }
         }.until(self.removed)
     }

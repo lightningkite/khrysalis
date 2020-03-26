@@ -49,9 +49,9 @@ public extension UITableView {
         var previouslyEmpty = data.value.isEmpty
         data.subscribeBy { value in
             let emptyNow = data.value.isEmpty
-            this.reloadData()
+            self.reloadData()
             if previouslyEmpty && !emptyNow {
-                this.scrollToRow(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
+                self.scrollToRow(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
             }
             previouslyEmpty = emptyNow
         }.until(self.removed)
@@ -183,9 +183,9 @@ public extension UITableView {
         var previouslyEmpty = data.value.isEmpty
         data.subscribeBy { value in
             let emptyNow = data.value.isEmpty
-            this.reloadData()
+            self.reloadData()
             if previouslyEmpty && !emptyNow {
-                this.scrollToRow(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
+                self.scrollToRow(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
             }
             previouslyEmpty = emptyNow
         }.until(self.removed)
@@ -209,9 +209,9 @@ public extension UITableView {
         var previouslyEmpty = data.value.isEmpty
         data.subscribeBy { value in
             let emptyNow = data.value.isEmpty
-            this.reloadData()
+            self.reloadData()
             if previouslyEmpty && !emptyNow {
-                this.scrollToRow(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
+                self.scrollToRow(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
             }
             previouslyEmpty = emptyNow
         }.until(self.removed)
@@ -234,9 +234,9 @@ public extension UITableView {
         }
         loading.subscribeBy { (value) in
             if value {
-                this.beginRefreshing()
+                control.beginRefreshing()
             } else {
-                this.endRefreshing()
+                control.endRefreshing()
             }
         }.until(control.removed)
     }

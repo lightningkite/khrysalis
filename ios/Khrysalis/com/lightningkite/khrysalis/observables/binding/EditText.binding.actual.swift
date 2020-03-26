@@ -8,10 +8,10 @@ public extension UITextField {
     func bindString(_ observable: MutableObservableProperty<String>) -> Void {
         delegate = DoneDelegate.shared
         observable.subscribeBy { ( value) in
-            if this.textString != value {
-                this.textString = value
+            if self.textString != value {
+                self.textString = value
             }
-            this.superview?.setNeedsLayout()
+            self.superview?.setNeedsLayout()
         }.until(self.removed)
         addAction(for: UITextField.Event.editingChanged) { [weak self] in
             if observable.value != self?.textString {
@@ -38,10 +38,10 @@ public extension UITextView {
     }
     func bindString(_ observable: MutableObservableProperty<String>) -> Void {
         observable.subscribeBy { ( value) in
-            if this.textString != value {
-                this.textString = value
+            if self.textString != value {
+                self.textString = value
             }
-            this.superview?.setNeedsLayout()
+            self.superview?.setNeedsLayout()
         }.until(self.removed)
         weak var observableWeak = observable
         let delegate = LambdaDelegate { text in
@@ -65,10 +65,10 @@ public extension UITextField {
             text = observable.value.toString()
         }
         observable.subscribeBy { ( value) in
-            let currentValue = Int(this.textString)
+            let currentValue = Int(self.textString)
             if currentValue != nil, currentValue != Int(value) {
-                this.textString = value.toString()
-                this.superview?.setNeedsLayout()
+                self.textString = value.toString()
+                self.superview?.setNeedsLayout()
             }
         }.until(self.removed)
         addAction(for: UITextField.Event.editingChanged) { [weak self] in
@@ -90,10 +90,10 @@ public extension UITextField {
             text = observable.value.toString()
         }
         observable.subscribeBy { ( value) in
-            let currentValue = Double(this.textString)
+            let currentValue = Double(self.textString)
             if currentValue != nil, currentValue != value {
-                this.textString = value.toString()
-                this.superview?.setNeedsLayout()
+                self.textString = value.toString()
+                self.superview?.setNeedsLayout()
             }
         }.until(self.removed)
         addAction(for: UITextField.Event.editingChanged) { [weak self] in
