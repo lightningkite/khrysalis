@@ -247,6 +247,7 @@ public class ViewDependency: NSObject {
     }
     private func requestImagesGalleryRaw(onResult: @escaping (Array<Uri>) -> Void) {
         let pickerController = DKImagePickerController()
+        pickerController.assetType = .allPhotos
         pickerController.didSelectAssets = { (assets: [DKAsset]) in
             print("didSelectAssets")
             print(assets)
