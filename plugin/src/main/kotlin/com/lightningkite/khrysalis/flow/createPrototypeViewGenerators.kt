@@ -48,29 +48,28 @@ internal fun createPrototypeViewGenerators(
     ViewNode.assertNoLeaks(nodes)
 
     //Emit views
+    val scannedDirectoryInfo = outputFolder.walkTopDown().filter { !it.isDirectory }.associate { it.name to it }
     files.forEach { item ->
         log(item.toString())
         val fileName = item.nameWithoutExtension.camelCase().capitalize()
         val node = nodes[fileName] ?: return@forEach
+        val targetFileName = fileName + "VG.shared.kt"
+        val targetFile = scannedDirectoryInfo[targetFileName] ?: outputFolder.resolve(targetFileName)
         createPrototypeVG(
             styles = styles,
             viewName = fileName,
             xml = item,
-            target = outputFolder.resolve(fileName + "VG.shared.kt"),
+            target = targetFile,
             viewNodeMap = nodes,
             viewNode = node,
-            packageName = packageName,
+            packageName = packageName + (targetFile.relativeTo(outputFolder)
+                .path
+                .split(File.separator)
+                .filter { it.firstOrNull()?.isLowerCase() == true }
+                .takeUnless { it.isEmpty() }
+                ?.joinToString(".", ".")
+                ?: ""),
             applicationPackage = applicationPackage
         )
     }
-
-    //Clean up old stuff
-    (outputFolder.listFiles() ?: arrayOf())
-        .filter { it.name.endsWith("VG.kt") }
-        .filter { it.name.removeSuffix("VG.kt") !in nodes.keys }
-        .filter { it.useLines { it.any { it.contains(oldWarning, true) } } }
-        .forEach {
-            println("Cleaning out $it...")
-            it.delete()
-        }
 }
