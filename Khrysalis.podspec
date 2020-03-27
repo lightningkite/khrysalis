@@ -24,6 +24,9 @@ Pod::Spec.new do |s|
   s.dependency "SearchTextField"
   s.dependency "RxSwift"
   s.dependency "RxRelay"
-  s.dependency "OpalImagePicker"
+  s.dependency "DKImagePickerController"
   s.dependency "Starscream"
+  s.dependency "DKImagePickerController/Core"
+  s.dependency "DKImagePickerController/ImageDataManager"
+  s.dependency "DKImagePickerController/Resource"
 end

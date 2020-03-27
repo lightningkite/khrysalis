@@ -6,7 +6,7 @@ import Photos
 import AVKit
 import MapKit
 import EventKitUI
-import OpalImagePicker
+import DKImagePickerController
 
 
 //--- ViewDependency
@@ -246,32 +246,57 @@ public class ViewDependency: NSObject {
         }
     }
     private func requestImagesGalleryRaw(onResult: @escaping (Array<Uri>) -> Void) {
-        let imagePicker = OpalImagePickerController()
-        self.parentViewController.presentOpalImagePickerController(imagePicker, animated: true,
-            select: { (assets) in
-                //Select Assets
-                var result: Array<Uri> = []
-                var remaining = assets.count
-                print("Assets remaining: \(remaining)")
-                for item in assets {
-                    getUrl(editedImage: nil, originalImage: nil, asset: item, onResult: { url in
-                        remaining -= 1
-                        print("Assets remaining: \(remaining)")
-                        if let url = url {
-                            result.add(url)
-                        } else {
-                            //... dunno how to handle error
-                        }
-                        if remaining == 0 {
-                            print("Finish")
-                            onResult(result)
-                            imagePicker.dismiss(animated: true, completion: nil)
-                        }
-                    })
-                }
-            }, cancel: {
-                //Cancel
-            })
+        let pickerController = DKImagePickerController()
+        pickerController.didSelectAssets = { (assets: [DKAsset]) in
+            print("didSelectAssets")
+            print(assets)
+            //Select Assets
+            var result: Array<Uri> = []
+            var remaining = assets.count
+            print("Assets remaining: \(remaining)")
+            for item in assets {
+                getUrl(editedImage: nil, originalImage: nil, asset: item.originalAsset, onResult: { url in
+                    remaining -= 1
+                    print("Assets remaining: \(remaining)")
+                    if let url = url {
+                        result.add(url)
+                    } else {
+                        //... dunno how to handle error
+                    }
+                    if remaining == 0 {
+                        print("Finish")
+                        onResult(result)
+                    }
+                })
+            }
+        }
+        self.parentViewController.present(pickerController, animated: true){}
+//        let imagePicker = OpalImagePickerController()
+//        self.parentViewController.presentOpalImagePickerController(imagePicker, animated: true,
+//            select: { (assets) in
+//                //Select Assets
+//                var result: Array<Uri> = []
+//                var remaining = assets.count
+//                print("Assets remaining: \(remaining)")
+//                for item in assets {
+//                    getUrl(editedImage: nil, originalImage: nil, asset: item, onResult: { url in
+//                        remaining -= 1
+//                        print("Assets remaining: \(remaining)")
+//                        if let url = url {
+//                            result.add(url)
+//                        } else {
+//                            //... dunno how to handle error
+//                        }
+//                        if remaining == 0 {
+//                            print("Finish")
+//                            onResult(result)
+//                            imagePicker.dismiss(animated: true, completion: nil)
+//                        }
+//                    })
+//                }
+//            }, cancel: {
+//                //Cancel
+//            })
     }
 
     //--- ViewDependency.requestImageCamera((Uri)->Unit)
@@ -337,7 +362,7 @@ private class ImageDelegate : NSObject, UIImagePickerControllerDelegate, UINavig
 
     func prepareGallery(){
         imagePicker.delegate = self
-        imagePicker.sourceType = .savedPhotosAlbum
+        imagePicker.sourceType = .photoLibrary
         imagePicker.allowsEditing = false
     }
 
