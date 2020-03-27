@@ -2,7 +2,7 @@ package com.lightningkite.khrysalis.views.draw
 
 import android.graphics.Shader
 
-fun LinearGradient(
+fun newLinearGradient(
     x0: Float,
     y0: Float,
     x1: Float,

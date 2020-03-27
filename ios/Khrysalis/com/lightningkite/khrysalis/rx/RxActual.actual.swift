@@ -71,6 +71,19 @@ public extension Observable {
     func subscribeBy(_ onNext: ((Element) -> Void)? = nil) -> Disposable {
         return subscribe(onNext: onNext, onError: nil, onCompleted: nil, onDisposed: nil)
     }
+    
+    //--- Observable.doOnComplete(()->Unit)
+    func doOnComplete(_ action: @escaping () throws -> Void) -> Observable<Element> {
+        return self.do(onCompleted: action)
+    }
+    //--- Observable.doOnError((Throwable)->Unit)
+    func doOnComplete(_ action: @escaping (Error) throws -> Void) -> Observable<Element> {
+        return self.do(onError: action)
+    }
+    //--- Observable.doOnNext((T)->Unit)
+    func doOnNext(_ action: @escaping (Element) throws -> Void) throws -> Observable<Element> {
+        return self.do(onNext: action)
+    }
 
     //--- Observable.Companion.{ (overwritten on flow generation)
     

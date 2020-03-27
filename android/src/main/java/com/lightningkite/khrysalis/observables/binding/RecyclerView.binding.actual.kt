@@ -11,7 +11,7 @@ import com.lightningkite.khrysalis.escaping
 import com.lightningkite.khrysalis.observables.*
 import com.lightningkite.khrysalis.rx.removed
 import com.lightningkite.khrysalis.rx.until
-import com.lightningkite.khrysalis.views.EmptyView
+import com.lightningkite.khrysalis.views.newEmptyView
 import com.lightningkite.khrysalis.views.ViewDependency
 import kotlin.reflect.KClass
 
@@ -42,14 +42,12 @@ fun <T> RecyclerView.bind(
     layoutManager = LinearLayoutManager(context)
     adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         init {
-            println("Setting up adapter")
             data.subscribeBy { _ ->
                 this.notifyDataSetChanged()
             }.until(this@bind.removed)
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-            println("Creating view holder")
             val event = StandardObservableProperty<T>(defaultValue)
             val subview = makeView(event)
             subview.tag = event
@@ -62,7 +60,6 @@ fun <T> RecyclerView.bind(
         @Suppress("UNCHECKED_CAST")
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
             (holder.itemView.tag as? StandardObservableProperty<T>)?.let {
-                println("Updating value to ${data.value[position]}")
                 it.value = data.value[position]
             } ?: run {
                 println("Failed to find property to update")
@@ -84,7 +81,7 @@ class RVTypeHandler(val viewDependency: ViewDependency) {
         type = Any::class,
         defaultValue = Unit,
         handler = { obs ->
-            EmptyView(viewDependency)
+            newEmptyView(viewDependency)
         }
     )
 
@@ -129,7 +126,6 @@ fun RecyclerView.bindMulti(
     layoutManager = LinearLayoutManager(context)
     adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         init {
-            println("Setting up adapter")
             data.subscribeBy { _ ->
                 this.notifyDataSetChanged()
             }.until(this@bindMulti.removed)
@@ -165,7 +161,6 @@ fun <T> RecyclerView.bindMulti(
     layoutManager = LinearLayoutManager(context)
     adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
         init {
-            println("Setting up adapter")
             data.subscribeBy { _ ->
                 this.notifyDataSetChanged()
             }.until(this@bindMulti.removed)
@@ -176,7 +171,6 @@ fun <T> RecyclerView.bindMulti(
         }
 
         override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-            println("Creating view holder")
             val event = StandardObservableProperty<T>(defaultValue)
             val subview = makeView(viewType, event)
             subview.tag = event
@@ -189,7 +183,6 @@ fun <T> RecyclerView.bindMulti(
         @Suppress("UNCHECKED_CAST")
         override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
             (holder.itemView.tag as? StandardObservableProperty<T>)?.let {
-                println("Updating value to ${data.value[position]}")
                 it.value = data.value[position]
             } ?: run {
                 println("Failed to find property to update")
