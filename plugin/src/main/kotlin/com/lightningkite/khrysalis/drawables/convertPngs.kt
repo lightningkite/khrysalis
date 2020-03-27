@@ -22,7 +22,8 @@ fun convertPngs(
         .filter { it.extension == "png" }
         .map { it.nameWithoutExtension }
         .distinct()
-        .toSet()
+        .toList()
+        .sortedBy { it }
 
     pngNames.forEach { pngName ->
         val matching = (resourcesFolder.listFiles() ?: arrayOf())
