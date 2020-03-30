@@ -77,7 +77,7 @@ public class RVTypeHandler {
         let handlers: Array<Handler> = Array<Handler>()
         self.handlers = handlers
         let defaultHandler: Handler = Handler(type: Any.self, defaultValue: (), handler: { (obs) in
-        EmptyView(viewDependency)
+        newEmptyView(viewDependency)
         })
         self.defaultHandler = defaultHandler
     }

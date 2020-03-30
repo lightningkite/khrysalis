@@ -25,7 +25,7 @@ open class ViewGenerator {
         }
         
         override public func generate(dependency: ViewDependency) -> View {
-            return EmptyView(dependency)
+            return newEmptyView(dependency)
         }
         override public func generate(_ dependency: ViewDependency) -> View {
             return generate(dependency: dependency)

@@ -53,13 +53,35 @@ public class ViewDependency: NSObject {
     }
 
     //--- ViewDependency.openUrl(String)
-    public func openUrl(_ url: String) -> Void {
+    public func openUrl(_ url: String) -> Bool {
         if let url = URL(string: url) {
-            UIApplication.shared.open(url)
+            if UIApplication.shared.canOpenURL(url) {
+                UIApplication.shared.open(url)
+                return true
+            } else {
+                return false
+            }
         }
+        return false
     }
-    public func openUrl(url: String) -> Void {
+    public func openUrl(url: String) -> Bool {
         return openUrl(url)
+    }
+
+    //--- ViewDependency.openAndroidAppOrStore(String)
+    public func openAndroidAppOrStore(_ packageName: String) {
+        openUrl("market://details?id=\(packageName)")
+    }
+    public func openAndroidAppOrStore(packageName: String) {
+        return openAndroidAppOrStore(packageName)
+    }
+    
+    //--- ViewDependency.openIosStore(String)
+    public func openIosStore(_ numberId: String) {
+        openUrl("https://apps.apple.com/us/app/taxbot/id\(numberId)")
+    }
+    public func openIosStore(numberId: String) {
+        return openIosStore(numberId)
     }
 
     //--- ViewDependency.openMap(GeoCoordinate, String? , Float? )

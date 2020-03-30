@@ -39,9 +39,9 @@ extension UILabel {
         }
     }
     
-    public var maxLines: Int64{
+    public var maxLines: Int32{
         get{
-            return Int64(self.numberOfLines)
+            return Int32(self.numberOfLines)
         }
         set(newLineCount){
             self.numberOfLines = Int(newLineCount)

@@ -3,10 +3,10 @@ import Foundation
 import UIKit
 
 
-//--- EmptyView(ViewDependency)
-public func EmptyView(_ dependency: ViewDependency) -> View {
+//--- newEmptyView(ViewDependency)
+public func newEmptyView(_ dependency: ViewDependency) -> View {
     return UIView(frame: .zero)
 }
-public func EmptyView(dependency: ViewDependency) -> View {
-    return EmptyView(dependency)
+public func newEmptyView(dependency: ViewDependency) -> View {
+    return newEmptyView(dependency)
 }
