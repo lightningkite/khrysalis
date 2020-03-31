@@ -2,17 +2,6 @@ package com.test
 
 fun main(){
     var number: Int = 0
-    while(number < 10){
-        number++
-    }
-    for(i in 0.toInt()..20.toInt()) {
-        number += i
-    }
-    if(number % 2 == 0){
-        number += 1
-    } else {
-        number -= 1
-    }
     var value = 43.toInt()
     when(value){
         1 -> number += 1

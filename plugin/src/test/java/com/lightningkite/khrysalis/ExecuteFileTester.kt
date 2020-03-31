@@ -1,7 +1,6 @@
 package com.lightningkite.khrysalis
 
 import com.lightningkite.khrysalis.utils.checksum
-import junit.framework.Assert.assertEquals
 import java.io.File
 
 object ExecuteFileTester {
@@ -12,7 +11,8 @@ object ExecuteFileTester {
     fun swift(sourceFile: File, directories: List<File> = listOf()): String {
         val sourceFileChecksum = sourceFile.checksum()
         val cacheFile =
-            outCacheDir.resolve(sourceFile.absolutePath.substringAfter("khrysalis").filter { it.isLetterOrDigit() } + ".out")
+            outCacheDir.resolve(
+                sourceFile.absolutePath.substringAfter("khrysalis").filter { it.isLetterOrDigit() } + ".out")
         if (cacheFile.exists() && cacheFile.useLines { it.first() == sourceFileChecksum }) {
             return cacheFile.readText().substringAfter('\n').trim()
         }
@@ -50,10 +50,11 @@ object ExecuteFileTester {
         return result
     }
 
-    fun kotlin(sourceFile: File, libraries: List<File> = listOf()): String {
+    fun kotlin(sourceFile: File, libraries: List<File> = listOf(), additionalSources: List<File> = listOf()): String {
         val sourceFileChecksum = sourceFile.checksum()
         val cacheFile =
-            outCacheDir.resolve(sourceFile.absolutePath.substringAfter("khrysalis").filter { it.isLetterOrDigit() } + ".out")
+            outCacheDir.resolve(
+                sourceFile.absolutePath.substringAfter("khrysalis").filter { it.isLetterOrDigit() } + ".out")
         if (cacheFile.exists() && cacheFile.useLines { it.first() == sourceFileChecksum }) {
             return cacheFile.readText().substringAfter('\n').trim()
         }
@@ -65,7 +66,12 @@ object ExecuteFileTester {
                 ?: ""
         copyFile.writeText("""@file:JvmName("MainKt")""" + "\n" + sourceFile.readText())
         if (0 == ProcessBuilder()
-                .command("kotlinc", copyFile.path, "-d", outFile.path)
+                .command(listOf("kotlinc", copyFile.path) + additionalSources.map { it.path } + listOf("-classpath") +
+                        (listOf(outFile) + libraries).joinToString(File.pathSeparator) { it.path } +
+                        listOf(
+                            "-d",
+                            outFile.path
+                        ))
                 .redirectErrorStream(true)
                 .redirectOutput(outputFile)
                 .start()
@@ -91,7 +97,8 @@ object ExecuteFileTester {
     fun typescript(sourceFile: File): String {
         val sourceFileChecksum = sourceFile.checksum()
         val cacheFile =
-            outCacheDir.resolve(sourceFile.absolutePath.substringAfter("khrysalis").filter { it.isLetterOrDigit() } + ".out")
+            outCacheDir.resolve(
+                sourceFile.absolutePath.substringAfter("khrysalis").filter { it.isLetterOrDigit() } + ".out")
         if (cacheFile.exists() && cacheFile.useLines { it.first() == sourceFileChecksum }) {
             return cacheFile.readText().substringAfter('\n').trim()
         }

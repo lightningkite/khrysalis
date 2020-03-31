@@ -1,4 +1,4 @@
-package com.lightningkite.khrysalis.interfaces
+package com.lightningkite.khrysalis.preparse
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
@@ -9,13 +9,13 @@ import com.lightningkite.khrysalis.utils.checksum
 import com.lightningkite.khrysalis.utils.forEachMultithreaded
 import org.antlr.v4.runtime.ANTLRInputStream
 import org.antlr.v4.runtime.CommonTokenStream
-import org.antlr.v4.runtime.tree.ParseTreeWalker
 import org.jetbrains.kotlin.KotlinLexer
 import org.jetbrains.kotlin.KotlinParser
 import java.io.File
 
-fun writeInterfacesFile(sources: Sequence<File>, out: File, relativeTo: File): Map<String, InterfaceListener.InterfaceData> {
-    val interfaces = HashMap<String, InterfaceListener.InterfaceData>()
+fun preparseKotlinFiles(sources: Sequence<File>, out: File, relativeTo: File): PreparseData {
+    val interfaces = HashMap<String, InterfaceData>()
+    val declarations = HashMap<String, String>()
 
     val existingCache: Map<String, FileCache> = if (out.exists()) {
         val versioned = jacksonObjectMapper().readValue<Versioned<Map<String, FileCache>>>(out)
@@ -37,20 +37,23 @@ fun writeInterfacesFile(sources: Sequence<File>, out: File, relativeTo: File): M
                 val tokenStream = CommonTokenStream(lexer)
                 val parser = KotlinParser(tokenStream)
 
-                val listener = InterfaceListener(parser)
-                ParseTreeWalker.DEFAULT.walk(listener, parser.kotlinFile())
+
+                val listener = PreparseListener()
+                listener.parse(relativePath.removeSuffix(".kt"), parser.kotlinFile())
                 FileCache(
                     path = relativePath,
                     hash = hash,
-                    data = listener.interfaces
+                    data = PreparseData(
+                        interfaces = listener.interfaces.associateBy { it.qualifiedName },
+                        declarations = listener.topLevelDeclarations
+                    )
                 )
             }
         }
         newCache[cache.path] = cache
 
-        for (i in cache.data) {
-            interfaces[i.qualifiedName] = i
-        }
+        interfaces.putAll(cache.data.interfaces)
+        declarations.putAll(cache.data.declarations)
 
     }
 
@@ -60,6 +63,9 @@ fun writeInterfacesFile(sources: Sequence<File>, out: File, relativeTo: File): M
     }
     out.writeText(jacksonObjectMapper().writeValueAsString(Versioned(INTERFACE_SCAN_VERSION, newCache)))
 
-    return interfaces
+    return PreparseData(
+        interfaces = interfaces,
+        declarations = declarations
+    )
 
 }

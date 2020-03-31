@@ -67,6 +67,16 @@ dependencies {
     api "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.+"
     api "net.jodah:xsylum:0.1.0"
     testImplementation("junit:junit:4.12")
+
+    def aetherVersion = "1.0.0.v20140518"
+    def mavenVersion = "3.1.0"
+    testApi "org.eclipse.aether:aether-api:$aetherVersion"
+    testApi "org.eclipse.aether:aether-impl:$aetherVersion"
+    testApi "org.eclipse.aether:aether-util:$aetherVersion"
+    testApi "org.eclipse.aether:aether-connector-basic:$aetherVersion"
+    testApi "org.eclipse.aether:aether-transport-file:$aetherVersion"
+    testApi "org.eclipse.aether:aether-transport-http:$aetherVersion"
+    testApi "org.apache.maven:maven-aether-provider:$mavenVersion"
 }
 
 generateGrammarSource {

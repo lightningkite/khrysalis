@@ -3,7 +3,7 @@ package com.lightningkite.khrysalis.swift
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.lightningkite.khrysalis.VERSION
-import com.lightningkite.khrysalis.interfaces.writeInterfacesFile
+import com.lightningkite.khrysalis.preparse.preparseKotlinFiles
 import com.lightningkite.khrysalis.log
 import com.lightningkite.khrysalis.swift.actuals.stubs
 import com.lightningkite.khrysalis.utils.Versioned
@@ -43,9 +43,13 @@ fun convertKotlinToSwiftByFolder(
         .filter { it.extension == "kt" }
         .filter { it.name.contains(".shared") }
 
-    val interfaces = writeInterfacesFile(toConvert, interfacesOut, baseKotlin)
+    val preparseData = preparseKotlinFiles(
+        toConvert,
+        interfacesOut,
+        baseKotlin
+    )
     val swift = SwiftAltListener().apply(setup)
-    swift.interfaces += interfaces
+    swift.interfaces.putAll(preparseData.interfaces)
     log("Interfaces: ")
     for (i in swift.interfaces) {
         log(i.value.toString())

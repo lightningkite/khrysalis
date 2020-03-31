@@ -1,55 +1,78 @@
-package com.lightningkite.khrysalis.swift
+package com.lightningkite.khrysalis.typescript
 
-import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
-import com.fasterxml.jackson.module.kotlin.readValue
-import com.lightningkite.khrysalis.preparse.FileCache
-import com.lightningkite.khrysalis.preparse.InterfaceData
-import com.lightningkite.khrysalis.utils.Versioned
+import com.lightningkite.khrysalis.preparse.PreparseData
+import com.lightningkite.khrysalis.swift.TabWriter
 import com.lightningkite.khrysalis.utils.forEachBetween
 import org.antlr.v4.runtime.ParserRuleContext
 import org.antlr.v4.runtime.tree.ParseTree
 import org.antlr.v4.runtime.tree.TerminalNode
 import org.jetbrains.kotlin.KotlinParser
-import java.io.File
 import java.lang.IllegalStateException
+import java.util.*
+import kotlin.collections.HashMap
 
-class SwiftAltListener {
-    val interfaces: HashMap<String, InterfaceData> = hashMapOf()
-    var currentFile: KotlinParser.KotlinFileContext? = null
-    var filterEscapingAnnotation: Boolean = false
-    var imports = listOf<String>("RxSwift", "RxRelay")
+class TypescriptAltListener {
 
-    fun loadInterfaces(file: File) {
-        val new = jacksonObjectMapper().readValue<Versioned<Map<String, FileCache>>>(file)
-            .value.values.flatMap { it.data }.associate { it.qualifiedName to it }
-        interfaces += new
-    }
+    var preparseData: PreparseData = PreparseData()
+        set(value){
+            field = value
+            identifiers.clear()
+            identifiers.putAll(value.declarations)
+        }
+    /*
 
-    fun KotlinParser.ClassDeclarationContext.implements(): Sequence<InterfaceData> {
-        val currentFile = currentFile ?: return sequenceOf()
-        return this.delegationSpecifiers()?.annotatedDelegationSpecifier()
-            ?.asSequence()
-            ?.map { it.delegationSpecifier() }
-            ?.mapNotNull { it.userType()?.text }
-            ?.flatMap { name ->
-                if (name.firstOrNull()?.isUpperCase() == true) {
-                    currentFile.importList().importHeader().asSequence()
-                        .mapNotNull { it.identifier()?.text }
-                        .find { it.endsWith(name) }
-                        ?.let { sequenceOf(it) }
-                        ?: currentFile.importList().importHeader().asSequence()
-                            .filter { it.MULT() != null }
-                            .map { import ->
-                                import.identifier().text + "." + name
-                            }
-                            .plus(currentFile.packageHeader().identifier().text + "." + name)
-                } else {
-                    sequenceOf(name)
-                }
-            }
-            ?.mapNotNull { interfaces[it] }
-            ?: sequenceOf()
-    }
+    UNSOLVED PROBLEMS
+
+    UNSOLVED BUT LESS WORRYING PROBLEMS
+
+    Circular import dependencies
+        - Check usage location for types; if so, just use `import type {} from "/asdf/asdf"`
+        - This might not be an issue, because unless the top level directly calls immediately, you're fine
+            - One hairy immediate call is extension, though.  That might cause problems.
+            - As long as superclasses NEVER refer to their children in a different file, you're good.
+    Operator overloading
+        - This is outright not possible.  This could be somewhat an issue.
+        - This is only used for date manipulation.
+    Equality/Hashability for data classes
+        - This might be passable.  Maybe even just disallow data classes.
+
+
+    SOLVED PROBLEMS
+
+    Extension Properties
+        - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty
+    Function overloading
+        - https://howtodoinjava.com/typescript/function-overloading/
+        - https://github.com/lightningkite/lovesac-web/blob/master/client/js/utils/geometry/Point.ts#L57
+    Extension function typing
+        - https://medium.com/my-coding-life/extension-method-in-typescript-66d801488589
+    Extension function overloading
+        - Are there any cases of this occurring?
+        - This could be done with chained overloading - call existing if arguments do not match, call super
+
+    */
+
+    /*
+
+    Handling imports for TypeScript
+
+    All classes are stored in independent files, located based on their package
+    All top-level declarations are stored in a single file called 'topLevel'.
+    The 'topLevel' file is special and uses marker separators for source files, like:
+    //--- String.extensions.shared.kt
+    In this sense, we have virtual files stored within.
+
+    Imports now work like this:
+    import x.y.z.Class -> import { Class } from "x/y/z/Class"
+    import x.y.z.topLevelFunction -> import { topLevelFunction } from "x/y/z/topLevel"
+
+    */
+
+    /**
+     * This is a map from a Kotlin fully-qualified name to TypeScript file location.
+     */
+    var identifiers = TreeMap<String, String>()
+    fun identifiersForPackage(packageName: String) = identifiers.tailMap(packageName).asSequence().takeWhile { it.key.startsWith(packageName) }.filter { it.key.substringBeforeLast('.') == packageName }
 
     val options = HashMap<Class<*>, TabWriter.(ParserRuleContext) -> Unit>()
     val tokenOptions = HashMap<Int, TabWriter.(TerminalNode) -> Unit>()
@@ -72,16 +95,16 @@ class SwiftAltListener {
     }
 
     init {
-        registerClass()
         registerFile()
-        registerFunction()
-        registerVariable()
-        registerExpression()
-        registerLiterals()
-        registerLambda()
-        registerControl()
-        registerType()
-        registerStatement()
+//        registerClass()
+//        registerFunction()
+//        registerVariable()
+//        registerExpression()
+//        registerLiterals()
+//        registerLambda()
+//        registerControl()
+//        registerType()
+//        registerStatement()
 
         tokenOptions[KotlinParser.EOF] = { direct.append("") }
         tokenOptions[KotlinParser.LineStrRef] = { direct.append("\\(" + it.text.removePrefix("$") + ")") }
@@ -96,33 +119,35 @@ class SwiftAltListener {
         tokenOptions[KotlinParser.RETURN_AT] = { direct.append("return") }
         tokenOptions[KotlinParser.RANGE] = { direct.append("...") }
 
-        typeReplacements["Map"] = "Dictionary"
+        typeReplacements["Map"] = "Record"
         typeReplacements["List"] = "Array"
-        typeReplacements["MutableMap"] = "Dictionary"
+        typeReplacements["MutableMap"] = "Record"
         typeReplacements["MutableList"] = "Array"
         typeReplacements["MutableSet"] = "Set"
-        typeReplacements["HashMap"] = "Dictionary"
+        typeReplacements["HashMap"] = "Record"
         typeReplacements["HashSet"] = "Set"
         typeReplacements["ArrayList"] = "Array"
-        typeReplacements["Boolean"] = "Bool"
-        typeReplacements["Unit"] = "Void"
-        typeReplacements["Char"] = "Character"
-        typeReplacements["Byte"] = "Int8"
-        typeReplacements["Short"] = "Int16"
-        typeReplacements["Int"] = "Int32"
-        typeReplacements["Long"] = "Int64"
-        typeReplacements["Exception"] = "Swift.Error"
-        typeReplacements["KClass"] = "Any.Type*"
-        typeReplacements["Class"] = "Any.Type*"
 
-        simpleFunctionReplacement("println", "print")
+        typeReplacements["Boolean"] = "boolean"
+        typeReplacements["Unit"] = "void"
+        typeReplacements["Char"] = "string"
+        typeReplacements["Byte"] = "number"
+        typeReplacements["Short"] = "number"
+        typeReplacements["Int"] = "number"
+        typeReplacements["Long"] = "number"
+        typeReplacements["String"] = "string"
+        typeReplacements["Any"] = "any"
+        typeReplacements["Exception"] = "Error"
+
+        //TODO: Typealias pair and triple
+
+        simpleFunctionReplacement("println", "console.log")
         simpleFunctionReplacement("ArrayList", "Array")
-        simpleFunctionReplacement("HashMap", "Dictionary")
+        simpleFunctionReplacement("HashMap", "Record")
         simpleFunctionReplacement("HashSet", "Set")
+
         functionReplacements["run"] = {
-            if (it.usedAsStatement())
-                direct.append("let _ = ")
-            direct.append("{ () in ")
+            direct.append("function(){")
             it.postfixUnarySuffix()[0]!!.callSuffix()!!.annotatedLambda()!!.lambdaLiteral()!!.statements()!!.statement()
                 .forEach {
                     startLine()
@@ -139,20 +164,17 @@ class SwiftAltListener {
         }
 
         functionReplacements["nullOf"] = {
-            val (typeArgs, params) = it.typeArgsAndParams()
-            direct.append("Optional<")
-            write(typeArgs!![0])
-            direct.append(">.none")
+            direct.append("null")
         }
 
         functionReplacements["Pair"] = {
             val (typeArgs, params) = it.typeArgsAndParams()
             val valArgs = params.valueArguments().valueArgument()
-            direct.append('(')
+            direct.append('[')
             write(valArgs[0])
             direct.append(", ")
             write(valArgs[1])
-            direct.append(')')
+            direct.append(']')
         }
 
         functionReplacements["listOf"] = {
@@ -167,7 +189,7 @@ class SwiftAltListener {
             } ?: typeArgs?.let {
                 direct.append("Array<")
                 write(it[0])
-                direct.append(">")
+                direct.append(">()")
             } ?: run {
                 direct.append("[]")
             }
@@ -186,33 +208,12 @@ class SwiftAltListener {
         functionReplacements["floatArrayOf"] = functionReplacements["listOf"]!!
         functionReplacements["booleanArrayOf"] = functionReplacements["listOf"]!!
 
-        functionReplacements["setOf"] = {
-            val (typeArgs, params) = it.typeArgsAndParams()
-            params.valueArguments()?.valueArgument()?.takeUnless { it.isEmpty() }?.let { valueArgs ->
-                direct.append("[")
-                valueArgs.forEachBetween(
-                    forItem = { write(it) },
-                    between = { direct.append(", ") }
-                )
-                direct.append("]")
-            } ?: typeArgs?.let {
-                direct.append("Set<")
-                write(it[0])
-                direct.append(">")
-            } ?: run {
-                direct.append("[]")
-            }
-            it.postfixUnarySuffix().drop(1).forEach {
-                write(it)
-            }
-        }
-        functionReplacements["hashSetOf"] = functionReplacements["setOf"]!!
-        functionReplacements["mutableSetOf"] = functionReplacements["setOf"]!!
+        //TODO: setOf
 
         functionReplacements["mapOf"] = {
             val (typeArgs, params) = it.typeArgsAndParams()
             params.valueArguments()?.valueArgument()?.takeUnless { it.isEmpty() }?.let { valueArgs ->
-                direct.append("[")
+                direct.append("{")
                 valueArgs.forEachBetween(
                     forItem = {
                         //it is a 'x to y' expression
@@ -231,15 +232,15 @@ class SwiftAltListener {
                     },
                     between = { direct.append(", ") }
                 )
-                direct.append("]")
+                direct.append("}")
             } ?: typeArgs?.let {
-                direct.append("Dictionary<")
+                direct.append("Record<")
                 write(it[0])
                 direct.append(", ")
                 write(it[1])
                 direct.append(">")
             } ?: run {
-                direct.append("[:]")
+                direct.append("{}")
             }
             it.postfixUnarySuffix().drop(1).forEach {
                 write(it)

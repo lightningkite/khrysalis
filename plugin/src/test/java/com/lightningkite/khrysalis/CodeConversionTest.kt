@@ -36,7 +36,7 @@ class CodeConversionTest {
             var expectedLast = ""
             kotlinFile.nameWithoutExtension to (mapOf(
                 "kotlin" to try {
-                    ExecuteFileTester.kotlin(kotlinFile)
+                    ExecuteFileTester.kotlin(kotlinFile, additionalSources = listOf(File("../android/src/main/java/com/lightningkite/khrysalis/Swift.kt")))
                         .also { expectedLast = it }
                 } catch (e: Exception) {
                     e.printStackTrace()
@@ -65,6 +65,7 @@ class CodeConversionTest {
                                 } else {
                                     System.out.print("F")
                                 }
+                                System.out.flush()
                             }
                     } catch (e: Exception) {
                         e.printStackTrace()

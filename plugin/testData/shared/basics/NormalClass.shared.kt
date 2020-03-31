@@ -1,6 +1,8 @@
 package com.test
 
-class Record(var x: Int, var y: String) {
+class Record {
+    var x: Int = 0
+    var y: String = ""
     init {
         println("Record created: $x, $y")
     }
@@ -10,7 +12,9 @@ class Record(var x: Int, var y: String) {
 }
 
 fun main(){
-    val record = Record(x = 3, y = "Hello")
+    val record = Record()
+    record.x = 3
+    record.y = "Hello"
     if(record.x == 3){
         record.y = "Set"
     }

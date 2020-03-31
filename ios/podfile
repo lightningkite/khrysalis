@@ -9,17 +9,16 @@ target 'Khrysalis' do
     pod 'SearchTextField'
     pod 'RxSwift'
     pod 'RxRelay'
-    pod 'OpalImagePicker'
+    pod 'Starscream'
+    pod 'DKImagePickerController/Core'
+    pod 'DKImagePickerController/ImageDataManager'
+    pod 'DKImagePickerController/Resource'
 end
 
 target 'KhrysalisTests' do
     pod 'Alamofire'
-    pod 'AlamofireImage'
     pod 'KeychainAccess'
-    pod 'UITextView+Placeholder', :modular_headers => true
-    pod 'Cosmos', '~> 19.0'
-    pod 'SearchTextField'
     pod 'RxSwift'
     pod 'RxRelay'
-    pod 'OpalImagePicker'
+    pod 'Starscream'
 end

@@ -7,7 +7,7 @@ import com.lightningkite.khrysalis.swift.convertKotlinToSwiftByFolder
 import java.io.File
 
 
-const val INTERFACE_SCAN_VERSION: Int = 2
+const val INTERFACE_SCAN_VERSION: Int = 3
 const val VERSION: Int = 12
 
 fun main(vararg args: String) {
