@@ -25,7 +25,7 @@ fun SeekBar.bind(
         override fun onProgressChanged(p0: SeekBar?, p1: Int, p2: Boolean) {
             if (!suppress) {
                 suppress = true
-                observable.value = p1
+                observable.value = p1 + start
                 suppress = false
             }
         }
