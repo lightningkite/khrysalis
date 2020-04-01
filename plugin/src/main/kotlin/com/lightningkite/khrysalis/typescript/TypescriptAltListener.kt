@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.typescript
 
+import com.lightningkite.khrysalis.preparse.InterfaceData
 import com.lightningkite.khrysalis.preparse.PreparseData
 import com.lightningkite.khrysalis.swift.TabWriter
 import com.lightningkite.khrysalis.utils.forEachBetween
@@ -13,12 +14,14 @@ import kotlin.collections.HashMap
 
 class TypescriptAltListener {
 
+    var currentFile: KotlinParser.KotlinFileContext? = null
     var preparseData: PreparseData = PreparseData()
-        set(value){
+        set(value) {
             field = value
             identifiers.clear()
             identifiers.putAll(value.declarations)
         }
+
     /*
 
     UNSOLVED PROBLEMS
@@ -72,7 +75,9 @@ class TypescriptAltListener {
      * This is a map from a Kotlin fully-qualified name to TypeScript file location.
      */
     var identifiers = TreeMap<String, String>()
-    fun identifiersForPackage(packageName: String) = identifiers.tailMap(packageName).asSequence().takeWhile { it.key.startsWith(packageName) }.filter { it.key.substringBeforeLast('.') == packageName }
+    fun identifiersForPackage(packageName: String) =
+        identifiers.tailMap(packageName).asSequence().takeWhile { it.key.startsWith(packageName) }
+            .filter { it.key.substringBeforeLast('.') == packageName }
 
     val options = HashMap<Class<*>, TabWriter.(ParserRuleContext) -> Unit>()
     val tokenOptions = HashMap<Int, TabWriter.(TerminalNode) -> Unit>()
@@ -82,6 +87,24 @@ class TypescriptAltListener {
             direct.append(swiftFunctionName)
             it.postfixUnarySuffix().forEach { write(it) }
         }
+    }
+
+    fun resolve(name: String): Sequence<InterfaceData> {
+        val currentFile = currentFile ?: return sequenceOf()
+        return if (name.firstOrNull()?.isUpperCase() == true) {
+            currentFile.importList().importHeader().asSequence()
+                .mapNotNull { it.identifier()?.text }
+                .find { it.endsWith(name) }
+                ?.let { sequenceOf(it) }
+                ?: currentFile.importList().importHeader().asSequence()
+                    .filter { it.MULT() != null }
+                    .map { import ->
+                        import.identifier().text + "." + name
+                    }
+                    .plus(currentFile.packageHeader().identifier().text + "." + name)
+        } else {
+            sequenceOf(name)
+        }.mapNotNull { preparseData.interfaces[it] }
     }
 
     val typeReplacements = HashMap<String, String>()
@@ -96,28 +119,30 @@ class TypescriptAltListener {
 
     init {
         registerFile()
+        registerFunction()
+        registerIdentifiers()
+        registerType()
 //        registerClass()
 //        registerFunction()
 //        registerVariable()
-//        registerExpression()
-//        registerLiterals()
+        registerExpression()
+        registerLiterals()
 //        registerLambda()
 //        registerControl()
-//        registerType()
 //        registerStatement()
 
+        tokenOptions[KotlinParser.QUOTE_CLOSE] = { direct.append("`") }
+        tokenOptions[KotlinParser.QUOTE_OPEN] = { direct.append("`") }
         tokenOptions[KotlinParser.EOF] = { direct.append("") }
-        tokenOptions[KotlinParser.LineStrRef] = { direct.append("\\(" + it.text.removePrefix("$") + ")") }
-        tokenOptions[KotlinParser.MultiLineStrRef] = { direct.append("\\(" + it.text.removePrefix("$") + ")") }
-        tokenOptions[KotlinParser.NullLiteral] = { direct.append("nil") }
         tokenOptions[KotlinParser.TRY] = { direct.append("do") }
-        tokenOptions[KotlinParser.VAL] = { direct.append("var") }
+        tokenOptions[KotlinParser.VAL] = { direct.append("const") }
+        tokenOptions[KotlinParser.VAR] = { direct.append("let") }
         tokenOptions[KotlinParser.THIS] = { direct.append("self") }
-        tokenOptions[KotlinParser.INTERFACE] = { direct.append("protocol") }
         tokenOptions[KotlinParser.AS] = { direct.append("as!") }
         tokenOptions[KotlinParser.AS_SAFE] = { direct.append("as?") }
         tokenOptions[KotlinParser.RETURN_AT] = { direct.append("return") }
         tokenOptions[KotlinParser.RANGE] = { direct.append("...") }
+        tokenOptions[KotlinParser.NL] = {  }
 
         typeReplacements["Map"] = "Record"
         typeReplacements["List"] = "Array"
@@ -135,6 +160,8 @@ class TypescriptAltListener {
         typeReplacements["Short"] = "number"
         typeReplacements["Int"] = "number"
         typeReplacements["Long"] = "number"
+        typeReplacements["Float"] = "number"
+        typeReplacements["Double"] = "number"
         typeReplacements["String"] = "string"
         typeReplacements["Any"] = "any"
         typeReplacements["Exception"] = "Error"

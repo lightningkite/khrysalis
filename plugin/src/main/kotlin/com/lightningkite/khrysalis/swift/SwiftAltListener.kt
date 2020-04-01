@@ -4,6 +4,8 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.lightningkite.khrysalis.preparse.FileCache
 import com.lightningkite.khrysalis.preparse.InterfaceData
+import com.lightningkite.khrysalis.preparse.merged
+import com.lightningkite.khrysalis.preparse.mergedInterfaces
 import com.lightningkite.khrysalis.utils.Versioned
 import com.lightningkite.khrysalis.utils.forEachBetween
 import org.antlr.v4.runtime.ParserRuleContext
@@ -20,9 +22,7 @@ class SwiftAltListener {
     var imports = listOf<String>("RxSwift", "RxRelay")
 
     fun loadInterfaces(file: File) {
-        val new = jacksonObjectMapper().readValue<Versioned<Map<String, FileCache>>>(file)
-            .value.values.flatMap { it.data }.associate { it.qualifiedName to it }
-        interfaces += new
+        interfaces += jacksonObjectMapper().readValue<Versioned<Map<String, FileCache>>>(file).value.values.asSequence().map { it.data }.mergedInterfaces()
     }
 
     fun KotlinParser.ClassDeclarationContext.implements(): Sequence<InterfaceData> {

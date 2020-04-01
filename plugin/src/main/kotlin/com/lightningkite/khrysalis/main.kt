@@ -1,9 +1,7 @@
 package com.lightningkite.khrysalis
 
-import com.lightningkite.khrysalis.layout.convertLayoutsToSwift
-import com.lightningkite.khrysalis.layout.createAndroidLayoutClasses
-import com.lightningkite.khrysalis.swift.convertKotlinToSwift
 import com.lightningkite.khrysalis.swift.convertKotlinToSwiftByFolder
+import com.lightningkite.khrysalis.typescript.convertKotlinToTypescriptByFolder
 import java.io.File
 
 
@@ -15,10 +13,16 @@ fun main(vararg args: String) {
 //    println("Checking ${File("./testData").walkTopDown()
 //        .filter { it.extension == "kt" }
 //        .filter { it.name.contains(".shared") }.toList()}")
-    convertKotlinToSwiftByFolder(
-        interfacesOut = File("./testDataOutput/interfaces.json"),
+//    convertKotlinToSwiftByFolder(
+//        interfacesOut = File("./testDataOutput/interfaces.json"),
+//        baseKotlin = File("./testData/shared"),
+//        baseSwift = File("./testDataOutput/shared"),
+//        clean = true
+//    )
+    convertKotlinToTypescriptByFolder(
+        interfacesOut = File("./testDataOutputTs/interfaces.json"),
         baseKotlin = File("./testData/shared"),
-        baseSwift = File("./testDataOutput/shared"),
+        baseTs = File("./testDataOutputTs/shared"),
         clean = true
     )
 //    convertResourcesToIos(

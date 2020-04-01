@@ -1,10 +1,23 @@
 package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.swift.parentIfType
+import com.lightningkite.khrysalis.swift.registerFile
 import com.lightningkite.khrysalis.utils.forEachBetween
 import org.jetbrains.kotlin.KotlinParser
 
 fun TypescriptAltListener.registerFile() {
+
+    this.handle<KotlinParser.PackageHeaderContext> {  }
+
+    handle<KotlinParser.KotlinFileContext> { item ->
+        line("//Package: ${item.packageHeader()?.identifier()?.text}")
+        line("//Converted using Khrysalis2")
+        line("")
+        for (obj in item.topLevelObject()){
+            startLine()
+            write(obj)
+        }
+    }
 
     this.handle<KotlinParser.ImportListContext> { ctx ->
         //all imports

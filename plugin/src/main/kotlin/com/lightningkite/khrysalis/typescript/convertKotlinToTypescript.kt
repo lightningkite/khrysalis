@@ -1,11 +1,13 @@
-package com.lightningkite.khrysalis.swift
+package com.lightningkite.khrysalis.typescript
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.lightningkite.khrysalis.VERSION
 import com.lightningkite.khrysalis.preparse.preparseKotlinFiles
 import com.lightningkite.khrysalis.log
-import com.lightningkite.khrysalis.swift.actuals.stubs
+import com.lightningkite.khrysalis.swift.FileConversionInfo
+import com.lightningkite.khrysalis.swift.TabWriter
+import com.lightningkite.khrysalis.typescript.actuals.typescriptStubs
 import com.lightningkite.khrysalis.utils.Versioned
 import com.lightningkite.khrysalis.utils.checksum
 import com.lightningkite.khrysalis.utils.forEachMultithreaded
@@ -18,25 +20,25 @@ import java.io.File
 import java.util.*
 import kotlin.collections.HashMap
 
-fun convertKotlinToSwift(
+fun convertKotlinToTypescript(
     androidFolder: File,
-    webFolder: File,
+    iosFolder: File,
     clean: Boolean = false,
-    setup: SwiftAltListener.() -> Unit = {}
-) = convertKotlinToSwiftByFolder(
+    setup: TypescriptAltListener.() -> Unit = {}
+) = convertKotlinToTypescriptByFolder(
     interfacesOut = androidFolder.resolve("src/main/resources/META-INF/khrysalis-interfaces.json"),
     baseKotlin = androidFolder.resolve("src/main/java"),
-    baseSwift = webFolder,
+    baseTs = iosFolder,
     clean = clean,
     setup = setup
 )
 
-fun convertKotlinToSwiftByFolder(
+fun convertKotlinToTypescriptByFolder(
     interfacesOut: File,
     baseKotlin: File,
-    baseSwift: File,
+    baseTs: File,
     clean: Boolean = false,
-    setup: SwiftAltListener.() -> Unit = {}
+    setup: TypescriptAltListener.() -> Unit = {}
 ) {
 
     val toConvert = baseKotlin.walkTopDown()
@@ -48,14 +50,10 @@ fun convertKotlinToSwiftByFolder(
         interfacesOut,
         baseKotlin
     )
-    val swift = SwiftAltListener().apply(setup)
-    swift.interfaces.putAll(preparseData.interfaces)
-    log("Interfaces: ")
-    for (i in swift.interfaces) {
-        log(i.value.toString())
-    }
+    val typescript = TypescriptAltListener().apply(setup)
+    typescript.preparseData = preparseData
 
-    val cacheFile = baseKotlin.resolve("khrysalis-cache-2.json")
+    val cacheFile = baseKotlin.resolve("khrysalis-ts-cache-2.json")
     val existingCache = if (cacheFile.exists()) {
         val versioned = jacksonObjectMapper().readValue<Versioned<Map<String, FileConversionInfo>>>(cacheFile)
         if (versioned.version == VERSION) versioned.value else mapOf()
@@ -65,13 +63,13 @@ fun convertKotlinToSwiftByFolder(
 
     toConvert.forEachMultithreaded { file ->
         val output = File(
-            baseSwift.resolve(file.relativeTo(baseKotlin))
+            baseTs.resolve(file.relativeTo(baseKotlin))
                 .toString()
                 .removeSuffix("kt")
-                .plus("swift")
+                .plus("ts")
         )
         val relativeInput = file.relativeTo(baseKotlin).path
-        val relativeOutput = output.relativeTo(baseSwift).path
+        val relativeOutput = output.relativeTo(baseTs).path
         output.parentFile.mkdirs()
 
         val inputHash = file.checksum()
@@ -139,9 +137,9 @@ fun convertKotlinToSwiftByFolder(
                     try {
                         val outputText = buildString {
                             val tabs = TabWriter(this)
-                            with(swift) {
+                            with(typescript) {
                                 val kfile = parser.kotlinFile()
-                                swift.currentFile = kfile
+                                typescript.currentFile = kfile
                                 tabs.write(kfile)
                             }
                         }
@@ -171,13 +169,13 @@ fun convertKotlinToSwiftByFolder(
         .filter { it.name.contains(".actual") }
         .forEachMultithreaded { file ->
             val output = File(
-                baseSwift.resolve(file.relativeTo(baseKotlin))
+                baseTs.resolve(file.relativeTo(baseKotlin))
                     .toString()
                     .removeSuffix("kt")
-                    .plus("swift")
+                    .plus("ts")
             )
             val relativeInput = file.relativeTo(baseKotlin).path
-            val relativeOutput = output.relativeTo(baseSwift).path
+            val relativeOutput = output.relativeTo(baseTs).path
             output.parentFile.mkdirs()
 
             val inputHash = file.checksum()
@@ -196,7 +194,7 @@ fun convertKotlinToSwiftByFolder(
                     )
 
                     try {
-                        file.stubs(swift, output)
+                        file.typescriptStubs(typescript, output)
 
                         FileConversionInfo(
                             path = relativeInput,
@@ -223,9 +221,9 @@ fun convertKotlinToSwiftByFolder(
 
     //Clean up old files
     val writtenFiles = newCache.values.asSequence().map { it.outputPath }.toSet()
-    baseSwift.walkTopDown()
-        .filter { it.extension == "swift" }
+    baseTs.walkTopDown()
+        .filter { it.extension == "ts" }
         .filter { it.name.contains(".shared") }
-        .filter { it.relativeTo(baseSwift).path !in writtenFiles }
+        .filter { it.relativeTo(baseTs).path !in writtenFiles }
         .forEach { it.delete() }
 }

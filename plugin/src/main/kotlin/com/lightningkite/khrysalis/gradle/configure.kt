@@ -22,7 +22,7 @@ fun Project.convertKotlinToSwiftWithDependencies(
 ) {
     convertKotlinToSwift(
         androidFolder = androidFolder,
-        iosFolder = iosFolder,
+        webFolder = iosFolder,
         clean = clean,
         setup = {
             configurations
