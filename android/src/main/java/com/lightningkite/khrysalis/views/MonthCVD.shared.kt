@@ -106,7 +106,10 @@ open class MonthCVD : CustomViewDelegate() {
 
     fun dayAtPixel(x: Float, y: Float, existing: DateAlone? = null): DateAlone? {
         if (y < dayLabelHeight) return null
-        val columnRaw = (x / dayCellWidth - dayCellWidth * currentOffset * 7).toInt()
+//        val columnRaw = (x / dayCellWidth - (dayCellWidth + currentOffset) * 7).toInt()
+        val columnRawBeforeDrag = x / dayCellWidth
+        val columnDrag = currentOffset * 7
+        val columnRaw = (columnDrag + columnRawBeforeDrag).toInt()
         val column = columnRaw.floorMod(7)
         val monthOffset = columnRaw.floorDiv(7)
         val row = ((y - dayLabelHeight) / dayCellHeight).toInt()
