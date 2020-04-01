@@ -101,13 +101,4 @@ fun TypescriptAltListener.registerFunction() {
         }
 
     }
-
-    handle<KotlinParser.StatementsContext> {
-        it.statement().forEach {
-            line {
-                write(it)
-                append(';')
-            }
-        }
-    }
 }

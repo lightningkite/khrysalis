@@ -169,4 +169,22 @@ fun TypescriptAltListener.registerExpression() {
             write(it)
         }
     }
+
+    handle<KotlinParser.RangeExpressionContext> {
+        val expressions = it.additiveExpression()
+        val parts = expressions.subList(1, expressions.size)
+        if(parts.isEmpty()){
+            write(expressions.first())
+        } else {
+            parts.forEach {
+                direct.append("makeRange(")
+            }
+            write(expressions.first())
+            parts.reversed().forEach {
+                direct.append(", ")
+                write(it)
+                direct.append(")")
+            }
+        }
+    }
 }

@@ -128,7 +128,7 @@ class TypescriptAltListener {
         registerExpression()
         registerLiterals()
 //        registerLambda()
-//        registerControl()
+        registerControl()
 //        registerStatement()
 
         tokenOptions[KotlinParser.EOF] = { direct.append("") }
@@ -137,7 +137,7 @@ class TypescriptAltListener {
         tokenOptions[KotlinParser.AS] = { direct.append("as!") }
         tokenOptions[KotlinParser.AS_SAFE] = { direct.append("as?") }
         tokenOptions[KotlinParser.RETURN_AT] = { direct.append("return") }
-        tokenOptions[KotlinParser.RANGE] = { direct.append("...") }
+        tokenOptions[KotlinParser.RANGE] = { direct.append("..") }
         tokenOptions[KotlinParser.NL] = {  }
 
         typeReplacements["Map"] = "Record"
