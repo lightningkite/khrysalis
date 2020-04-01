@@ -6,13 +6,14 @@ import com.lightningkite.khrysalis.swift.parentIfType
 import com.lightningkite.khrysalis.swift.writeTypeArguments
 import com.lightningkite.khrysalis.utils.camelCase
 import com.lightningkite.khrysalis.utils.forEachBetween
+import org.antlr.v4.runtime.ParserRuleContext
 import org.jetbrains.kotlin.KotlinParser
 
 fun TypescriptAltListener.registerFunction() {
 
     this.handle<KotlinParser.FunctionDeclarationContext> {
 
-        fun emitStandardFunction(it: KotlinParser.FunctionDeclarationContext, beforeStart: Appendable.()->Unit){
+        fun emitStandardFunction(it: KotlinParser.FunctionDeclarationContext, beforeStart: Appendable.() -> Unit) {
             line {
                 beforeStart()
                 write(it.simpleIdentifier())
@@ -48,6 +49,8 @@ fun TypescriptAltListener.registerFunction() {
                     append(": ")
                     write(it)
                     append(" ")
+                } ?: run {
+                    append(": void ")
                 }
                 it.functionBody()?.let {
                     append("{")
@@ -81,7 +84,7 @@ fun TypescriptAltListener.registerFunction() {
             isExtension -> {
             }
             isTopLevel -> {
-                emitStandardFunction(it){
+                emitStandardFunction(it) {
                     if (it.visibility().isExposed) {
                         append("export ")
                     }
@@ -91,49 +94,12 @@ fun TypescriptAltListener.registerFunction() {
             isMethod -> {
             }
             else -> {
-                emitStandardFunction(it){
+                emitStandardFunction(it) {
                     append("function ")
                 }
             }
         }
 
-    }
-
-    handle<KotlinParser.PostfixUnaryExpressionContext> { item ->
-
-        if(item.primaryExpression().text == "R"){
-            val suffixes = item.postfixUnarySuffix()
-            val typeSuffix = suffixes.getOrNull(0)?.text?.removePrefix(".")
-            val resourceSuffix = suffixes.getOrNull(1)?.text?.removePrefix(".")
-            if(typeSuffix != null && resourceSuffix != null) {
-                val fixedSuffix = resourceSuffix.camelCase()
-                when(typeSuffix){
-                    "string" -> direct.append("ResourcesStrings.$fixedSuffix")
-                    "color" -> direct.append("ResourcesColors.$fixedSuffix")
-                    "drawable" -> direct.append("ResourcesDrawables.$fixedSuffix")
-                    else -> throw IllegalArgumentException("Unrecognized suffix $typeSuffix $resourceSuffix ($fixedSuffix)")
-                }
-                suffixes.drop(2).forEach {
-                    write(it)
-                }
-            }
-            return@handle
-        }
-
-        val lastCallSuffix = item.postfixUnarySuffix()?.lastOrNull()?.callSuffix()
-        if (lastCallSuffix != null) {
-            val primaryExpressionText = item.primaryExpression().text.trim()
-            val repl = functionReplacements[primaryExpressionText]
-            if (repl != null) {
-                repl.invoke(this, item)
-                return@handle
-            }
-        }
-
-        write(item.primaryExpression())
-        item.postfixUnarySuffix().forEach {
-            write(it)
-        }
     }
 
     handle<KotlinParser.StatementsContext> {

@@ -1,11 +1,31 @@
 package com.lightningkite.khrysalis.typescript
 
+import com.lightningkite.khrysalis.swift.TabWriter
+import com.lightningkite.khrysalis.utils.camelCase
 import com.lightningkite.khrysalis.utils.forEachBetween
 import com.lightningkite.khrysalis.utils.forEachBetweenIndexed
+import org.antlr.v4.runtime.ParserRuleContext
+import org.antlr.v4.runtime.tree.TerminalNode
 import org.jetbrains.kotlin.KotlinParser
 
 fun TypescriptAltListener.registerExpression() {
 
+    handle<KotlinParser.NavigationSuffixContext> { item ->
+        if (item.CLASS() != null) {
+            direct.append(".self")
+        } else {
+            defaultWrite(item, "") { child ->
+                when (child) {
+                    is ParserRuleContext -> true
+                    is TerminalNode -> when (child.symbol.type) {
+                        KotlinParser.NL -> false
+                        else -> true
+                    }
+                    else -> true
+                }
+            }
+        }
+    }
     handle<KotlinParser.InfixFunctionCallContext> { item ->
         var lastIndex = 0
         item.rangeExpression()?.forEachBetweenIndexed(
@@ -56,7 +76,7 @@ fun TypescriptAltListener.registerExpression() {
             it.forEachIndexed { index, (op, type) ->
                 if (op.AS_SAFE() != null) {
                     val basicType = type.getBasicType()
-                    if(basicType.startsWith('*')) {
+                    if (basicType.startsWith('*')) {
                         direct.append("; if(typeof _item == \"${basicType.drop(1)}\") return _item; else return null })()")
                     } else {
                         resolve(basicType).firstOrNull()?.let {
@@ -76,31 +96,77 @@ fun TypescriptAltListener.registerExpression() {
             write(ctx.prefixUnaryExpression())
         }
     }
-}
 
-fun KotlinParser.TypeContext.getBasicType(): String {
-    this.functionType()?.let { throw IllegalArgumentException("Cannot do a safe cast to uncheckable function type.") }
-    this.nullableType()?.let { return it.typeReference()?.getBasicType() ?: it.parenthesizedType()?.getBasicType()!! }
-    this.typeReference()?.let { return it.getBasicType() }
-    this.parenthesizedType()?.let { return it.getBasicType() }
-    throw IllegalStateException()
-}
+    handle<KotlinParser.PostfixUnaryExpressionContext> { item ->
+        val primaryExpression = item.primaryExpression()
+        val postfixUnarySuffixes = item.postfixUnarySuffix()
 
-fun KotlinParser.TypeReferenceContext.getBasicType(): String {
-    return when (val raw = this.userType().text) {
-        "Boolean" -> "*boolean"
-        "Char",
-        "String" -> "*string"
-        "Byte",
-        "Short",
-        "Int",
-        "Float",
-        "Double",
-        "Long" -> "*number"
-        else -> raw
+        if (primaryExpression.text == "R") {
+            val suffixes = postfixUnarySuffixes
+            val typeSuffix = suffixes.getOrNull(0)?.text?.removePrefix(".")
+            val resourceSuffix = suffixes.getOrNull(1)?.text?.removePrefix(".")
+            if (typeSuffix != null && resourceSuffix != null) {
+                val fixedSuffix = resourceSuffix.camelCase()
+                when (typeSuffix) {
+                    "string" -> direct.append("ResourcesStrings.$fixedSuffix")
+                    "color" -> direct.append("ResourcesColors.$fixedSuffix")
+                    "drawable" -> direct.append("ResourcesDrawables.$fixedSuffix")
+                    else -> throw IllegalArgumentException("Unrecognized suffix $typeSuffix $resourceSuffix ($fixedSuffix)")
+                }
+                suffixes.drop(2).forEach {
+                    write(it)
+                }
+            }
+            return@handle
+        }
+
+        val lastCallSuffix = postfixUnarySuffixes?.lastOrNull()?.callSuffix()
+        if (lastCallSuffix != null) {
+            val primaryExpressionText = primaryExpression.text.trim()
+            val repl = functionReplacements[primaryExpressionText]
+            if (repl != null) {
+                repl.invoke(this, item)
+                return@handle
+            }
+        }
+
+        // something(Thing.Subthing().modified)
+        if (primaryExpression.text.first().isUpperCase()) {
+            run breaker@{
+                val items = (listOf<ParserRuleContext>(primaryExpression) + postfixUnarySuffixes)
+                items.forEachIndexed { index, sub ->
+                    (sub as? KotlinParser.PostfixUnarySuffixContext)?.callSuffix()?.let {
+                        if(index + 1 >= items.size){
+                            direct.append("new ")
+                            items.forEach {
+                                write(it)
+                            }
+                        } else {
+                            direct.append("(new ")
+                            items.subList(0, index + 1).forEach {
+                                write(it)
+                            }
+                            direct.append(")")
+                            items.subList(index + 1, items.size).forEach {
+                                write(it)
+                            }
+                        }
+                        return@handle
+                    }
+                    (sub as? KotlinParser.PostfixUnarySuffixContext)?.navigationSuffix()?.let {
+                        if (it.simpleIdentifier().text.first().isUpperCase()) {
+                            return@forEachIndexed
+                        }
+                    }
+                    (sub as? KotlinParser.PrimaryExpressionContext)?.let { return@forEachIndexed }
+                    return@breaker
+                }
+            }
+        }
+
+        write(primaryExpression)
+        postfixUnarySuffixes.forEach {
+            write(it)
+        }
     }
-}
-
-fun KotlinParser.ParenthesizedTypeContext.getBasicType(): String {
-    return this.type().getBasicType()
 }

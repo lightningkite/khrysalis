@@ -131,13 +131,9 @@ class TypescriptAltListener {
 //        registerControl()
 //        registerStatement()
 
-        tokenOptions[KotlinParser.QUOTE_CLOSE] = { direct.append("`") }
-        tokenOptions[KotlinParser.QUOTE_OPEN] = { direct.append("`") }
         tokenOptions[KotlinParser.EOF] = { direct.append("") }
-        tokenOptions[KotlinParser.TRY] = { direct.append("do") }
         tokenOptions[KotlinParser.VAL] = { direct.append("const") }
         tokenOptions[KotlinParser.VAR] = { direct.append("let") }
-        tokenOptions[KotlinParser.THIS] = { direct.append("self") }
         tokenOptions[KotlinParser.AS] = { direct.append("as!") }
         tokenOptions[KotlinParser.AS_SAFE] = { direct.append("as?") }
         tokenOptions[KotlinParser.RETURN_AT] = { direct.append("return") }
@@ -173,15 +169,21 @@ class TypescriptAltListener {
         simpleFunctionReplacement("HashMap", "Record")
         simpleFunctionReplacement("HashSet", "Set")
 
+        functionReplacements["assert"] = {
+            direct.append("if(!(")
+            write(it.postfixUnarySuffix()[0]!!.callSuffix()!!.valueArguments()!!.valueArgument(0)!!)
+            direct.append(")) throw Error(\"Assertion failed\")")
+        }
+
         functionReplacements["run"] = {
-            direct.append("function(){")
+            direct.append("(() => {")
             it.postfixUnarySuffix()[0]!!.callSuffix()!!.annotatedLambda()!!.lambdaLiteral()!!.statements()!!.statement()
                 .forEach {
                     startLine()
                     write(it)
                 }
             startLine()
-            direct.append("}()")
+            direct.append("})()")
         }
 
         fun KotlinParser.PostfixUnaryExpressionContext.typeArgsAndParams(): Pair<List<KotlinParser.TypeContext>?, KotlinParser.CallSuffixContext> {
@@ -313,33 +315,21 @@ class TypescriptAltListener {
             }
         )
     }
-//    fun KotlinParser.TypeContext.toSwift(): String {
-//        val modifiers = this.typeModifiers().typeModifier().wr
-//        this.functionType()?.let{ return it.toSwift() }∂
-//        this.nullableType()?.let{ return it.toSwift() }
-//        this.parenthesizedType()?.let{ return "(" + it.type().toSwift() + ")" }
-//        this.typeReference()?.let{ return it.toSwift() }
-//        throw IllegalStateException()
-//    }
-//    fun KotlinParser.SimpleUserTypeContext.toSwift(): String {
-//        val name = typeReplacements[this.simpleIdentifier().text] ?: this.simpleIdentifier().text
-//        return name + (this.typeArguments()?.typeProjection()?.joinToString(", ", "<", ">") { it.type().toSwift() } ?: "")
-//    }
-//    fun KotlinParser.UserTypeContext.toSwift(): String = this.simpleUserType().joinToString(".") { it.toSwift() }
-//    fun KotlinParser.FunctionTypeContext.toSwift(): String {
-//        if(this.receiverType() != null){
-//            throw UnsupportedOperationException("Receiver lambdas are not available in Swift.")
-//        }
-//        return this.functionTypeParameters().parameter().joinToString(", ", "(", ")") { it.type().toSwift() } + " -> " + this.type().toSwift()
-//    }
-//    fun KotlinParser.TypeReferenceContext.toSwift(): String {
-//        this.DYNAMIC()?.let { return "Any" }
-//        this.userType()?.let { return it.toSwift() }
-//        throw IllegalStateException()
-//    }
-//    fun KotlinParser.NullableTypeContext.toSwift(): String {
-//        this.typeReference()?.let { return it.toSwift() + "?" }
-//        this.parenthesizedType()?.let { return "(" + it.type().toSwift() + ")?" }
-//        throw IllegalStateException()
-//    }
+
+    fun KotlinParser.TypeReferenceContext.getBasicType(): String {
+        return when (val raw = buildString { TabWriter(this).write(this@getBasicType.userType()) }.substringBefore('<')) {
+            "boolean" -> "*boolean"
+            "string" -> "*string"
+            "number" -> "*number"
+            else -> raw
+        }
+    }
+
+    fun KotlinParser.TypeContext.getBasicType(): String {
+        this.functionType()?.let { throw IllegalArgumentException("Cannot do a safe cast to uncheckable function type.") }
+        this.nullableType()?.let { return it.typeReference()?.getBasicType() ?: it.parenthesizedType()?.type()?.getBasicType()!! }
+        this.typeReference()?.let { return it.getBasicType() }
+        this.parenthesizedType()?.let { return it.type().getBasicType() }
+        throw IllegalStateException()
+    }
 }

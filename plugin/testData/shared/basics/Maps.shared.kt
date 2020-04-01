@@ -26,4 +26,6 @@ fun main(){
     assert(mutableMap[0] == null)
     mutableMap.put(0, "x")
     assert(mutableMap[0] == "x")
+    mutableMap[0] = null
+    assert(mutableMap[0] == null)
 }
