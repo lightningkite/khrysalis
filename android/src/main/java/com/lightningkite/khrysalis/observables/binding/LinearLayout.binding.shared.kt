@@ -11,6 +11,26 @@ import com.lightningkite.khrysalis.views.params
 
 private class LinearLayoutBoundSubview<T>(val view: View, val property: StandardObservableProperty<T>)
 
+/**
+ *
+ * Binds all the subviews in the linear layout to the list of data in the observable.
+ * makeView is the lambda that will return the view linked to an individual item in the
+ * list.
+ *
+ * Example
+ * val data = StandardObservableProperty(listOf(1,2,3,4,5))
+ * layout.bind(
+ *  data = data,
+ *  defaultValue = 0,
+ *  makeView = { observable ->
+ *       val xml = ViewXml()
+ *       val view = xml.setup(dependency)
+ *       view.text.bindString(obs.map{it -> it.toString()})
+ *       return view
+ *       }
+ * )
+ */
+
 fun <T> LinearLayout.bind(
     data: ObservableProperty<List<T>>,
     defaultValue: T,

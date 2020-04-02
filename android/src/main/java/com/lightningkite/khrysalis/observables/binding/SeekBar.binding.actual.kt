@@ -5,6 +5,14 @@ import com.lightningkite.khrysalis.observables.*
 import com.lightningkite.khrysalis.rx.removed
 import com.lightningkite.khrysalis.rx.until
 
+/**
+ *
+ * Binds the value of the seek bar to the observable. You can also state what you want the
+ * low and high values the seek bar can have. Any change to the seek bar will set the observable
+ * as well any changes in the observable will manifest in the seek bar.
+ *
+ */
+
 fun SeekBar.bind(
     start: Int,
     endInclusive: Int,
