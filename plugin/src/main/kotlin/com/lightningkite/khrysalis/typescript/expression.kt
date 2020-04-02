@@ -98,6 +98,7 @@ fun TypescriptAltListener.registerExpression() {
     }
 
     handle<KotlinParser.PostfixUnaryExpressionContext> { item ->
+
         val primaryExpression = item.primaryExpression()
         val postfixUnarySuffixes = item.postfixUnarySuffix()
 
