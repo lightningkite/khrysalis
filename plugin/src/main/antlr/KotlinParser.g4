@@ -445,7 +445,6 @@ postfixUnaryExpression
 
 postfixUnarySuffix
     : postfixUnaryOperator
-    | typeArguments
     | callSuffix
     | indexingSuffix
     | navigationSuffix

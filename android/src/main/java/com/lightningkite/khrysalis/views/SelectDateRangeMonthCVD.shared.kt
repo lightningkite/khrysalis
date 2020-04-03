@@ -7,7 +7,10 @@ import android.util.DisplayMetrics
 import android.view.View
 import com.lightningkite.khrysalis.observables.*
 import com.lightningkite.khrysalis.rx.addWeak
+import com.lightningkite.khrysalis.rx.forever
 import com.lightningkite.khrysalis.time.*
+import com.lightningkite.khrysalis.weakSelf
+import io.reactivex.rxkotlin.subscribeBy
 import java.util.*
 
 /**Renders a swipeable calendar.**/
@@ -21,12 +24,12 @@ open class SelectDateRangeMonthCVD : MonthCVD() {
         start.value?.let {
             this.currentMonthObs.value = it.dayOfMonth(1)
         }
-        this.start.onChange.addWeak(this) { self, value ->
-            self.invalidate()
-        }
-        this.endInclusive.onChange.addWeak(this) { self, value ->
-            self.invalidate()
-        }
+        this.start.onChange.subscribeBy @weakSelf { value ->
+            this?.invalidate()
+        }.forever()
+        this.endInclusive.subscribeBy @weakSelf { value ->
+            this?.invalidate()
+        }.forever()
     }
 
     val selectedDayPaint: Paint = Paint()

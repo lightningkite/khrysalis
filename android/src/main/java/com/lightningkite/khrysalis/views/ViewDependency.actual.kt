@@ -4,6 +4,7 @@ package com.lightningkite.khrysalis.views
 import android.Manifest
 import android.app.Activity
 import android.content.Intent
+import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
@@ -12,9 +13,11 @@ import android.graphics.drawable.StateListDrawable
 import android.provider.CalendarContract
 import android.provider.MediaStore
 import android.util.DisplayMetrics
-import androidx.core.content.ContextCompat.startActivity
 import androidx.core.content.FileProvider
-import com.lightningkite.khrysalis.*
+import com.lightningkite.khrysalis.Image
+import com.lightningkite.khrysalis.ImageReference
+import com.lightningkite.khrysalis.ImageRemoteUrl
+import com.lightningkite.khrysalis.Uri
 import com.lightningkite.khrysalis.android.ActivityAccess
 import com.lightningkite.khrysalis.location.GeoCoordinate
 import com.lightningkite.khrysalis.views.android.startIntent
@@ -50,10 +53,33 @@ fun ViewDependency.share(shareTitle: String, message: String? = null, url: Strin
     context.startActivity(Intent.createChooser(i, shareTitle))
 }
 
-fun ViewDependency.openUrl(url: String) {
-    startIntent(
-        intent = Intent(Intent.ACTION_VIEW).apply { data = Uri.parse(url) }
+fun ViewDependency.openUrl(url: String): Boolean {
+    val mgr = context.packageManager
+    val intent = Intent(Intent.ACTION_VIEW).apply { data = Uri.parse(url) }
+    val list = mgr.queryIntentActivities(
+        intent,
+        PackageManager.MATCH_DEFAULT_ONLY
     )
+    return if(list.size > 0){
+        startIntent(intent = intent)
+        true
+    } else {
+        false
+    }
+}
+
+fun ViewDependency.openAndroidAppOrStore(packageName: String) {
+    val mgr = context.packageManager
+    val intent = mgr.getLaunchIntentForPackage(packageName)
+    if(intent != null){
+        startIntent(intent = intent)
+    } else {
+        openUrl("market://details?id=$packageName")
+    }
+}
+
+fun ViewDependency.openIosStore(numberId: String){
+    openUrl("https://apps.apple.com/us/app/taxbot/id$numberId")
 }
 
 fun ViewDependency.openMap(coordinate: GeoCoordinate, label: String? = null, zoom: Float? = null) {

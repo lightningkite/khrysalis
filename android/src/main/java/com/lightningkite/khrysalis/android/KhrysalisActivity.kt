@@ -13,9 +13,8 @@ import com.lightningkite.khrysalis.views.showDialogEvent
 import com.lightningkite.khrysalis.R
 import com.lightningkite.khrysalis.animationFrame
 import com.lightningkite.khrysalis.lifecycle.appInForeground
-import com.lightningkite.khrysalis.observables.Close
-import com.lightningkite.khrysalis.rx.addWeak
 import io.reactivex.disposables.Disposable
+import io.reactivex.rxkotlin.subscribeBy
 
 /**
  * An activity that implements [ActivityAccess].
@@ -41,7 +40,7 @@ abstract class KhrysalisActivity : AccessibleActivity() {
             intent?.let { handleNewIntent(it) }
         }
         view = main.generate(this)
-        showDialogEventCloser = showDialogEvent.addWeak(view) { view, request ->
+        showDialogEventCloser = showDialogEvent.subscribeBy { request ->
             val builder = AlertDialog.Builder(this)
             builder.setMessage(request.string.get(this))
             request.confirmation?.let { conf ->

@@ -339,16 +339,16 @@ open class MonthCVD: CustomViewDelegate {
         let dragStartY: Float = Float(0)
         self.dragStartY = dragStartY
         super.init()
-        self.currentMonthObs.addAndRunWeak(self) { (self, value) in 
-            self.postInvalidate()
-        }
+        self.currentMonthObs.subscribeBy { [weak self] (value) in 
+            self?.postInvalidate()
+        }.forever()
         self.labelPaint.isAntiAlias = true
         self.labelPaint.style = Paint.Style.FILL
         self.labelPaint.color = 0xFF808080.asColor()
         self.dayPaint.isAntiAlias = true
         self.dayPaint.style = Paint.Style.FILL
         self.dayPaint.color = 0xFF202020.asColor()
-        animationFrame.addWeak(self) { (self, timePassed) in 
+        animationFrame.addWeak(self){ (self, timePassed) in 
             if self.draggingId == DRAGGING_NONE, self.currentOffset != Float(0) {
                 var newOffset = self.currentOffset * max(Float(0), ( Float(1) - Float(8) * timePassed ))
                 var min = Float(0.001)

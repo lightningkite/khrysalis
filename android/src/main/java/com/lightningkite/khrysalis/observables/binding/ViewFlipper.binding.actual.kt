@@ -2,22 +2,27 @@
 
 package com.lightningkite.khrysalis.observables.binding
 
-import android.graphics.Color
 import android.graphics.LightingColorFilter
-import android.graphics.PorterDuff
 import android.view.Gravity
-import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import android.view.animation.AlphaAnimation
-import android.view.animation.Animation
 import android.view.animation.LinearInterpolator
-import android.widget.CompoundButton
 import android.widget.FrameLayout
 import android.widget.ProgressBar
 import android.widget.ViewFlipper
-import androidx.core.content.res.ResourcesCompat
 import com.lightningkite.khrysalis.observables.*
+import com.lightningkite.khrysalis.rx.removed
+import com.lightningkite.khrysalis.rx.until
 import com.lightningkite.khrysalis.views.ColorResource
+
+/**
+ *
+ * bindLoading will flip the view between any built in views, and the native android loading animation.
+ * If the value in loading is false it will display whatever view it normally holds.
+ * If the value in loading is true it will hide any views it holds and display the loading animation.
+ * Color will set the color of the loading animation to whatever resource is provided.
+ *
+ */
 
 fun ViewFlipper.bindLoading(loading: ObservableProperty<Boolean>, color: ColorResource? = null) {
     if (this.inAnimation == null)
@@ -39,7 +44,7 @@ fun ViewFlipper.bindLoading(loading: ObservableProperty<Boolean>, color: ColorRe
         }
         addView(spinner, 1, FrameLayout.LayoutParams(WRAP_CONTENT, WRAP_CONTENT, Gravity.CENTER))
     }
-    loading.addAndRunWeak(this) { self, it ->
-        self.displayedChild = if (it) 1 else 0
-    }
+    loading.subscribeBy { it ->
+        this.displayedChild = if (it) 1 else 0
+    }.until(this.removed)
 }

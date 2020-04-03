@@ -89,6 +89,13 @@ open class FrameLayout: UIView {
         subviewsWithParams.removeValue(forKey: subview)
         measurements.removeValue(forKey: subview)
         childBounds.removeValue(forKey: subview)
+        post {
+            subview.refreshLifecycle()
+        }
+    }
+    
+    public override func didAddSubview(_ subview: UIView) {
+        subview.refreshLifecycle()
     }
     
     override public func sizeThatFits(_ size: CGSize) -> CGSize {

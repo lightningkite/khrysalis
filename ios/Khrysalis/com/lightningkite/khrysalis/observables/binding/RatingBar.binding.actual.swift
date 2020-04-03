@@ -7,14 +7,14 @@ public extension UIRatingBar {
     func bind(_ stars: Int32, _ observable: MutableObservableProperty<Int32>) -> Void {
         self.settings.totalStars = Int(stars)
         self.settings.fillMode = .full
-        
+
         var suppress = false
-        observable.addAndRunWeak(self) { (self, value) in
+        observable.subscribeBy { (value) in
             guard !suppress else { return }
             suppress = true
             self.rating = Double(value)
             suppress = false
-        }
+        }.until(self.removed)
         self.didTouchCosmos = { rating in
             guard !suppress else { return }
             suppress = true
@@ -33,9 +33,9 @@ public extension UIRatingBar {
         self.settings.totalStars = Int(stars)
         self.settings.fillMode = .full
 
-        observable.addAndRunWeak(self) { (self, value) in
+        observable.subscribeBy { (value) in
             self.rating = Double(value)
-        }
+        }.until(self.removed)
     }
     func bind(stars: Int32, observable: ObservableProperty<Int32>) -> Void {
         return bind(stars, observable)
@@ -49,12 +49,12 @@ public extension UIRatingBar {
         self.settings.fillMode = .precise
 
         var suppress = false
-        observable.addAndRunWeak(self) { (self, value) in
+        observable.subscribeBy { (value) in
             guard !suppress else { return }
             suppress = true
             self.rating = Double(value)
             suppress = false
-        }
+        }.until(self.removed)
         self.didTouchCosmos = { rating in
             guard !suppress else { return }
             suppress = true
@@ -73,9 +73,9 @@ public extension UIRatingBar {
         self.settings.totalStars = Int(stars)
         self.settings.fillMode = .precise
 
-        observable.addAndRunWeak(self) { (self, value) in
+        observable.subscribeBy { (value) in
             self.rating = Double(value)
-        }
+        }.until(self.removed)
     }
     func bindFloat(stars: Int32, observable: ObservableProperty<Float>) -> Void {
         return bindFloat(stars, observable)

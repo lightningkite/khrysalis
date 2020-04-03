@@ -10,8 +10,10 @@ import com.lightningkite.khrysalis.observables.*
 import com.lightningkite.khrysalis.floorDiv
 import com.lightningkite.khrysalis.floorMod
 import com.lightningkite.khrysalis.rx.addWeak
+import com.lightningkite.khrysalis.rx.forever
 import com.lightningkite.khrysalis.time.*
 import com.lightningkite.khrysalis.views.draw.drawTextCentered
+import io.reactivex.rxkotlin.subscribeBy
 import java.util.*
 import kotlin.math.absoluteValue
 import kotlin.math.max
@@ -20,7 +22,7 @@ import kotlin.math.max
 open class SelectMultipleDatesMonthCVD : MonthCVD() {
     override fun generateAccessibilityView(): View? = null
 
-    val dates: StandardObservableProperty<Set<DateAlone>> = StandardObservableProperty<Set<DateAlone>>(setOf())
+    val dates: StandardObservableProperty<Set<DateAlone>> = StandardObservableProperty(setOf())
     val selectedDayPaint: Paint = Paint()
     val selectedPaint: Paint = Paint()
 
@@ -28,9 +30,9 @@ open class SelectMultipleDatesMonthCVD : MonthCVD() {
         dates.value.firstOrNull()?.let {
             this.currentMonthObs.value = it.dayOfMonth(1)
         }
-        this.dates.onChange.addWeak(this) { self, value ->
-            self.invalidate()
-        }
+        this.dates.onChange.subscribeBy @weakSelf { value ->
+            this?.invalidate()
+        }.forever()
     }
 
     override fun measure(width: Float, height: Float, displayMetrics: DisplayMetrics) {

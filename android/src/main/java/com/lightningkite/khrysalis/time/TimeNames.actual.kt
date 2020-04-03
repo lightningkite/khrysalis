@@ -2,6 +2,16 @@ package com.lightningkite.khrysalis.time
 
 import java.text.DateFormatSymbols
 
+/**
+ *
+ * Each function returns a list of strings of the names of weekdays, and months,
+ * or a single string for the specific weekday or month
+ *
+ * Example : ["Sunday", "Monday", "Tuesday", ...]
+ * Example : ["Sun", "Mon", "Tue", ...]
+ *
+ */
+
 object TimeNames {
     private val symbols = DateFormatSymbols()
     val shortMonthNames: List<String> = symbols.shortMonths.toList()

@@ -3,12 +3,27 @@ package com.lightningkite.khrysalis.observables
 import com.lightningkite.khrysalis.*
 import com.lightningkite.khrysalis.rx.addWeak
 import io.reactivex.Observable
+import io.reactivex.annotations.CheckReturnValue
+import io.reactivex.annotations.SchedulerSupport
 import io.reactivex.disposables.Disposable
+import io.reactivex.rxkotlin.subscribeBy
 
 val <T> ObservableProperty<T>.observable: Observable<Box<T>> get() = onChange.startWith(boxWrap(value))
 val <T> ObservableProperty<T>.observableNN: Observable<T> get() = onChange.startWith(boxWrap(value)).map { it -> it.value }
 val <T> ObservableProperty<T>.onChangeNN: Observable<T> get() = onChange.map { it -> it.value }
 
+@CheckReturnValue
+inline fun <T> ObservableProperty<T>.subscribeBy(
+    noinline onError: @escaping() (Throwable) -> Unit = { it -> it.printStackTrace() },
+    noinline onComplete: @escaping() () -> Unit = {},
+    crossinline onNext: @escaping() (T) -> Unit = { it -> }
+): Disposable = this.observable.subscribeBy(
+    onError = onError,
+    onComplete = onComplete,
+    onNext = { boxed -> onNext(boxed.value) }
+)
+
+@Deprecated("Just use RX disposal stuff")
 @discardableResult
 fun <A : AnyObject, T> ObservableProperty<T>.addAndRunWeak(
     referenceA: A,
@@ -23,6 +38,7 @@ fun <A : AnyObject, T> ObservableProperty<T>.addAndRunWeak(
     }
 )
 
+@Deprecated("Just use RX disposal stuff")
 @discardableResult
 fun <A : AnyObject, B : AnyObject, T> ObservableProperty<T>.addAndRunWeak(
     referenceA: A,
@@ -40,6 +56,7 @@ fun <A : AnyObject, B : AnyObject, T> ObservableProperty<T>.addAndRunWeak(
     }
 )
 
+@Deprecated("Just use RX disposal stuff")
 @discardableResult
 fun <A : AnyObject, B : AnyObject, C : AnyObject, T> ObservableProperty<T>.addAndRunWeak(
     referenceA: A,

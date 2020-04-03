@@ -80,7 +80,7 @@ public func test() -> Void {
     }.thenImmediate{ (a) in 
         4 + a
     }.then{ (a) in 
-        DelayedResultFunction<Double>{ (onResult) in 
+        DelayedResultFunction{ (onResult) in 
             onResult(a.toDouble() + 4.0)
         }
     }.invoke{ () in 

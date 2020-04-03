@@ -39,6 +39,16 @@ open class SwapView: UIView {
     override public func layoutSubviews() {
         updateAnimations()
     }
+    
+    public override func willRemoveSubview(_ subview: UIView) {
+        post {
+            subview.refreshLifecycle()
+        }
+    }
+    
+    public override func didAddSubview(_ subview: UIView) {
+        subview.refreshLifecycle()
+    }
 
     private func updateAnimations(){
         for view in subviews {

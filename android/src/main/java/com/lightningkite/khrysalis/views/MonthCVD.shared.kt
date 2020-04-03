@@ -10,8 +10,10 @@ import com.lightningkite.khrysalis.observables.*
 import com.lightningkite.khrysalis.floorDiv
 import com.lightningkite.khrysalis.floorMod
 import com.lightningkite.khrysalis.rx.addWeak
+import com.lightningkite.khrysalis.rx.forever
 import com.lightningkite.khrysalis.time.*
 import com.lightningkite.khrysalis.views.draw.drawTextCentered
+import io.reactivex.rxkotlin.subscribeBy
 import java.util.*
 import kotlin.math.absoluteValue
 import kotlin.math.max
@@ -32,7 +34,10 @@ open class MonthCVD : CustomViewDelegate() {
     var dragEnabled: Boolean = true
 
     init {
-        this.currentMonthObs.addAndRunWeak(this) { self, value -> self.postInvalidate() }
+        this.currentMonthObs.subscribeBy @weakSelf { value ->
+            this?.postInvalidate()
+        }.forever()
+
     }
 
     var labelFontSp: Float = 12f
@@ -101,7 +106,10 @@ open class MonthCVD : CustomViewDelegate() {
 
     fun dayAtPixel(x: Float, y: Float, existing: DateAlone? = null): DateAlone? {
         if (y < dayLabelHeight) return null
-        val columnRaw = (x / dayCellWidth - dayCellWidth * currentOffset * 7).toInt()
+//        val columnRaw = (x / dayCellWidth - (dayCellWidth + currentOffset) * 7).toInt()
+        val columnRawBeforeDrag = x / dayCellWidth
+        val columnDrag = currentOffset * 7
+        val columnRaw = (columnDrag + columnRawBeforeDrag).toInt()
         val column = columnRaw.floorMod(7)
         val monthOffset = columnRaw.floorDiv(7)
         val row = ((y - dayLabelHeight) / dayCellHeight).toInt()

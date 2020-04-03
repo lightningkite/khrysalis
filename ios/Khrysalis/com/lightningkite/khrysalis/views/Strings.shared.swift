@@ -116,7 +116,7 @@ public class ViewStringList: ViewString {
     
     
     public func get(dependency: ViewDependency) -> String {
-        return parts.joinToString(separator) { (it) in 
+        return parts.joinToString(separator){ (it) in 
             it.get(dependency)
         }
     }
@@ -162,7 +162,7 @@ extension ViewString {
                 return "\(it)"
             }
         } + ")"
-        case let thing as ViewStringList: return thing.parts.joinToString(thing.separator) { (it) in 
+        case let thing as ViewStringList: return thing.parts.joinToString(thing.separator){ (it) in 
             it.toDebugString()
         }
         case let thing as ViewStringComplex: return "<Complex string \(thing)>"

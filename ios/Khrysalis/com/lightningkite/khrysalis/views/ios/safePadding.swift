@@ -67,7 +67,6 @@ public extension UIView {
         var myDefault: UIEdgeInsets? = nil
         UIView.consumesExtension.set(self, {[weak self] insets in
             guard let self = self else { return insets }
-            print("Activate safe insets: \(insets) useTop: \(useTop)")
             let addedInsets = UIEdgeInsets(
                 top: useTop ? insets.top : 0,
                 left: useLeft ? insets.left : 0,
@@ -80,13 +79,11 @@ public extension UIView {
                     myDefault = self.padding
                 }
                 self.padding = myDefault! + addedInsets
-                print("Activate safe insets for \(self) via self.padding (LL) with \(addedInsets)")
             case let self as FrameLayout:
                 if myDefault == nil {
                     myDefault = self.padding
                 }
                 self.padding = myDefault! + addedInsets
-                print("Activate safe insets for \(self) via self.padding (FL) with \(addedInsets)")
             default:
                 if let superview = self.superview as? LinearLayout {
                     if var current = superview.params(for: self) {
@@ -95,7 +92,6 @@ public extension UIView {
                         }
                         current.padding = myDefault! + addedInsets
                         superview.params(for: self, setTo: current)
-                        print("Activate safe insets for \(self) via superview.padding (LL) with \(addedInsets)")
                     }
                 } else if let superview = self.superview as? FrameLayout {
                     if var current = superview.params(for: self) {
@@ -104,7 +100,6 @@ public extension UIView {
                         }
                         current.padding = myDefault! + addedInsets
                         superview.params(for: self, setTo: current)
-                        print("Activate safe insets for \(self) via superview.padding (FL) with \(addedInsets)")
                     }
                 }
             }
@@ -117,7 +112,6 @@ public extension UIView {
         })
         post { [weak self] in
             guard let self = self else { return }
-            print("---Dispatching safe inset update for just \(self)")
             self.updateSafeInsets(self.findParentSafeInsets())
         }
     }
@@ -177,7 +171,6 @@ public extension UIView {
         })
         post { [weak self] in
             guard let self = self else { return }
-            print("---Dispatching safe inset update for just \(self)")
             self.updateSafeInsets(self.findParentSafeInsets())
         }
     }

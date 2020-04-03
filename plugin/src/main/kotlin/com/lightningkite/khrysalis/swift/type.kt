@@ -70,17 +70,12 @@ fun SwiftAltListener.registerType() {
     handle<KotlinParser.SingleAnnotationContext> { item ->
         val unescapedText = item.unescapedAnnotation().text
         when {
-            unescapedText.startsWith("escaping") && (filterEscapingAnnotation && item.isOnTopLevelParameter()) -> return@handle
-            unescapedText.startsWith("swift") -> return@handle
-            unescapedText.startsWith("unowned") -> return@handle
-            unescapedText.startsWith("unownedSelf") -> return@handle
-            unescapedText.startsWith("weakSelf") -> return@handle
-            unescapedText.startsWith("Deprecated") -> return@handle
-            unescapedText.startsWith("JvmName") -> return@handle
-            unescapedText.startsWith("Suppress") -> return@handle
+            unescapedText.startsWith("escaping") && !(filterEscapingAnnotation && item.isOnTopLevelParameter()) -> {
+                direct.append('@')
+                write(item.unescapedAnnotation())
+            }
+            else -> return@handle
         }
-        direct.append('@')
-        write(item.unescapedAnnotation())
     }
     handle<KotlinParser.UnescapedAnnotationContext> {
         it.constructorInvocation()?.let {

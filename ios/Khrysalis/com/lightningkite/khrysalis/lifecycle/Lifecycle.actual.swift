@@ -5,20 +5,18 @@ import RxSwift
 //--- View.lifecycle
 public extension View {
     private static var lifecycleAssociationKey: UInt8 = 0
-    private static var lifecycleExtension: ExtensionProperty<View, StandardObservableProperty<Bool>> = ExtensionProperty()
+    internal static var lifecycleExtension: ExtensionProperty<View, StandardObservableProperty<Bool>> = ExtensionProperty()
     var lifecycle: Lifecycle {
         if let existing = View.lifecycleExtension.get(self) {
             return existing
         }
         let prop = StandardObservableProperty(true)
         View.lifecycleExtension.set(self, prop)
-        objc_setAssociatedObject(self, &View.lifecycleAssociationKey, DeinitCallback {
-            prop.value = false
-        }, .OBJC_ASSOCIATION_RETAIN_NONATOMIC)
+        prop.value = window != nil
         return prop
     }
     
-    class DeinitCallback {
+    private class DeinitCallback {
         var callback: ()->Void
         init(_ callback: @escaping ()->Void){
             self.callback = callback
@@ -26,6 +24,10 @@ public extension View {
         deinit {
             self.callback()
         }
+    }
+    
+    private func connected() -> Bool {
+        return self.window != nil || self.superview?.connected() ?? false
     }
 }
 

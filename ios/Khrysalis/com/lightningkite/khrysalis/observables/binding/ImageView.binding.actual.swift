@@ -8,7 +8,7 @@ import Alamofire
 public extension UIImageView {
     static var loadingProgressTintColor: UIColor?
     static var loadingTrackTintColor: UIColor?
-    
+
     func af_setImageProgress(
         withURL url: URL,
         placeholderImage: UIImage? = nil,
@@ -26,7 +26,7 @@ public extension UIImageView {
             activityIndicatorView.center.y = self.frame.size.height / 2
             self.addSubview(activityIndicatorView)
             weak var weakAIV = activityIndicatorView
-            
+
             var filter: ImageFilter? = nil
             if self.frame.size.width != 0 && self.frame.size.height != 0 {
                 switch self.contentMode {
@@ -40,7 +40,7 @@ public extension UIImageView {
                     filter = nil
                 }
             }
-            
+
             self.af_setImage(
                 withURL: url,
                 placeholderImage: placeholderImage,
@@ -61,7 +61,7 @@ public extension UIImageView {
             )
         }
     }
-    
+
     func loadImage(_ image: Image?) -> Void {
         switch(image){
         case let image as ImageReference:
@@ -88,9 +88,9 @@ public extension UIImageView {
 //--- ImageView.bindImage(ObservableProperty<Image?>)
 public extension UIImageView {
     func bindImage(_ image: ObservableProperty<Image?>) -> Void {
-        image.addAndRunWeak(self) {(self, it) in
+        image.subscribeBy { it in
             self.loadImage(it)
-        }
+        }.until(self.removed)
     }
     func bindImage(image: ObservableProperty<Image?>) -> Void {
         return bindImage(image)

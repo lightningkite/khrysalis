@@ -18,6 +18,7 @@ import kotlin.math.min
 typealias Bitmap = Bitmap
  */
 
+@Deprecated("Use Rx Style instead")
 fun loadImage(image: Image, onResult: (Bitmap?) -> Unit) {
     try {
         when (image) {
@@ -31,8 +32,10 @@ fun loadImage(image: Image, onResult: (Bitmap?) -> Unit) {
     }
 }
 
+@Deprecated("Use Rx Style instead")
 fun Image.load(onResult: (Bitmap?) -> Unit) = loadImage(this, onResult)
 
+@Deprecated("Use Rx Style instead")
 fun loadImage(uri: Uri, maxDimension: Int = 2048, onResult: (Bitmap?) -> Unit) {
     try {
         val finalOpts = BitmapFactory.Options()
@@ -54,6 +57,7 @@ fun loadImage(uri: Uri, maxDimension: Int = 2048, onResult: (Bitmap?) -> Unit) {
     }
 }
 
+@Deprecated("Use Rx Style instead")
 fun loadImage(url: String, onResult: (Bitmap?) -> Unit) {
     if (url.isBlank()) {
         onResult(null)

@@ -17,13 +17,7 @@ fun main(vararg args: String) {
 //        .filter { it.name.contains(".shared") }.toList()}")
     convertKotlinToSwiftByFolder(
         interfacesOut = File("./testDataOutput/interfaces.json"),
-        baseKotlin = File("./testData/shared").also {
-            it.listFiles()?.forEach {
-                if(it.extension == "kt" && !it.name.endsWith("shared.kt")) {
-                    it.renameTo(it.parentFile.resolve(it.name.replace(".kt", ".shared.kt")))
-                }
-            }
-        },
+        baseKotlin = File("./testData/shared"),
         baseSwift = File("./testDataOutput/shared"),
         clean = true
     )

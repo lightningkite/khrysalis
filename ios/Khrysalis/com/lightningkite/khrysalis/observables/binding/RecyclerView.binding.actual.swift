@@ -47,15 +47,15 @@ public extension UITableView {
         self.rowHeight = UITableView.automaticDimension
 
         var previouslyEmpty = data.value.isEmpty
-        data.addAndRunWeak(self) { this, value in
+        data.subscribeBy { value in
             let emptyNow = data.value.isEmpty
-            this.reloadData()
+            self.reloadData()
             if previouslyEmpty && !emptyNow {
-                this.scrollToRow(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
+                self.scrollToRow(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
             }
             previouslyEmpty = emptyNow
-        }
-        
+        }.until(self.removed)
+
         self.tableFooterView = UIView(frame: .zero)
     }
     func bind<T>(data: ObservableProperty<Array<T>>, defaultValue: T, makeView: @escaping (ObservableProperty<T>) -> View) -> Void {
@@ -68,7 +68,7 @@ public extension UITableView {
 public class RVTypeHandler {
 
     public var viewDependency: ViewDependency
-    
+
     //--- RVTypeHandler.Primary Constructor
     public init(viewDependency: ViewDependency) {
         self.viewDependency = viewDependency
@@ -77,21 +77,21 @@ public class RVTypeHandler {
         let handlers: Array<Handler> = Array<Handler>()
         self.handlers = handlers
         let defaultHandler: Handler = Handler(type: Any.self, defaultValue: (), handler: { (obs) in
-        EmptyView(viewDependency)
+        newEmptyView(viewDependency)
         })
         self.defaultHandler = defaultHandler
     }
     convenience public init(_ viewDependency: ViewDependency) {
         self.init(viewDependency: viewDependency)
     }
-    
+
     //--- RVTypeHandler.Handler.{
     public class Handler {
-        
+
         public var type: Any.Type
         public var defaultValue: Any
         public var handler:  (ObservableProperty<Any>) -> View
-        
+
         //--- RVTypeHandler.Handler.Primary Constructor
         public init(type: Any.Type, defaultValue: Any, handler: @escaping (ObservableProperty<Any>) -> View) {
             self.type = type
@@ -101,14 +101,14 @@ public class RVTypeHandler {
         convenience public init(_ type: Any.Type, _ defaultValue: Any, _ handler: @escaping (ObservableProperty<Any>) -> View) {
             self.init(type: type, defaultValue: defaultValue, handler: handler)
         }
-        
+
         //--- RVTypeHandler.Handler.}
     }
-    
+
     var typeCount: Int32
     private var handlers: Array<Handler>
     private var defaultHandler: Handler
-    
+
     //--- RVTypeHandler.handle(KClass<*>, Any,  @escaping()(ObservableProperty<Any>)->View)
     public func handle(type: Any.Type, defaultValue: Any, action: @escaping (ObservableProperty<Any>) -> View) -> Void {
         handlers.add(Handler(type: type, defaultValue: defaultValue, handler: action))
@@ -117,7 +117,7 @@ public class RVTypeHandler {
     public func handle(_ type: Any.Type, _ defaultValue: Any, _ action: @escaping (ObservableProperty<Any>) -> View) -> Void {
         return handle(type: type, defaultValue: defaultValue, action: action)
     }
-    
+
     //--- RVTypeHandler.handle(T,  @escaping()(ObservableProperty<T>)->View)
     public func handle<T: Any>(defaultValue: T, action: @escaping (ObservableProperty<T>) -> View) -> Void {
         handle(T.self, defaultValue) { (obs) in
@@ -129,7 +129,7 @@ public class RVTypeHandler {
     public func handle<T: Any>(_ defaultValue: T, _ action: @escaping (ObservableProperty<T>) -> View) -> Void {
         return handle(defaultValue: defaultValue, action: action)
     }
-    
+
     //--- RVTypeHandler Helpers
     func canCast(_ x: Any, toConcreteType destType: Any.Type) -> Bool {
         return sequence(
@@ -161,7 +161,7 @@ public class RVTypeHandler {
         let subview = handler.handler(event)
         return (subview, event)
     }
-    
+
     //--- RVTypeHandler.}
 }
 
@@ -181,14 +181,14 @@ public extension UITableView {
         self.rowHeight = UITableView.automaticDimension
 
         var previouslyEmpty = data.value.isEmpty
-        data.addAndRunWeak(self) { this, value in
+        data.subscribeBy { value in
             let emptyNow = data.value.isEmpty
-            this.reloadData()
+            self.reloadData()
             if previouslyEmpty && !emptyNow {
-                this.scrollToRow(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
+                self.scrollToRow(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
             }
             previouslyEmpty = emptyNow
-        }
+        }.until(self.removed)
         self.tableFooterView = UIView(frame: .zero)
     }
     func bindMulti(viewDependency: ViewDependency, data: ObservableProperty<Array<Any>>, typeHandlerSetup: (RVTypeHandler) -> Void) -> Void {
@@ -207,14 +207,14 @@ public extension UITableView {
         self.rowHeight = UITableView.automaticDimension
 
         var previouslyEmpty = data.value.isEmpty
-        data.addAndRunWeak(self) { this, value in
+        data.subscribeBy { value in
             let emptyNow = data.value.isEmpty
-            this.reloadData()
+            self.reloadData()
             if previouslyEmpty && !emptyNow {
-                this.scrollToRow(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
+                self.scrollToRow(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
             }
             previouslyEmpty = emptyNow
-        }
+        }.until(self.removed)
         self.tableFooterView = UIView(frame: .zero)
     }
     func bindMulti<T>(data: ObservableProperty<Array<T>>, defaultValue: T, determineType: @escaping (T) -> Int32, makeView: @escaping (Int32, ObservableProperty<T>) -> View) -> Void {
@@ -232,13 +232,13 @@ public extension UITableView {
         } else {
             addSubview(control)
         }
-        loading.addAndRunWeak(referenceA: control) { (this, value) in
+        loading.subscribeBy { (value) in
             if value {
-                this.beginRefreshing()
+                control.beginRefreshing()
             } else {
-                this.endRefreshing()
+                control.endRefreshing()
             }
-        }
+        }.until(control.removed)
     }
     func bindRefresh(loading: ObservableProperty<Bool>, refresh: @escaping () -> Void) -> Void {
         return bindRefresh(loading, refresh)
@@ -295,7 +295,7 @@ class BoundDataSource<T, VIEW: UIView>: NSObject, UITableViewDataSource, UITable
     let defaultValue: T
     var atEnd: () -> Void = {}
     let spacing: CGFloat
-    
+
     var reversedDirection: Bool = false
 
     init(source: ObservableProperty<[T]>, defaultValue: T, makeView: @escaping (ObservableProperty<T>) -> UIView) {
@@ -357,7 +357,7 @@ class BoundMultiDataSourceSameType<T>: NSObject, UITableViewDataSource, UITableV
     var atEnd: () -> Void = {}
     let spacing: CGFloat
     var registered: Set<Int32> = []
-    
+
     var reversedDirection: Bool = false
 
     init(source: ObservableProperty<[T]>, defaultValue: T, getType: @escaping (T)->Int32, makeView: @escaping (Int32, ObservableProperty<T>) -> UIView) {
@@ -378,7 +378,7 @@ class BoundMultiDataSourceSameType<T>: NSObject, UITableViewDataSource, UITableV
         let count = value.count
         return count
     }
-    
+
     private var showingLast = false
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let nowShowingLast = indexPath.row >= (source.value.count) - 1
@@ -421,7 +421,7 @@ class BoundMultiDataSource: NSObject, UITableViewDataSource, UITableViewDelegate
     let handler: RVTypeHandler
     var atEnd: () -> Void = {}
     let spacing: CGFloat
-    
+
     var reversedDirection: Bool = false
 
     init(source: ObservableProperty<[Any]>, handler: RVTypeHandler) {
@@ -440,7 +440,7 @@ class BoundMultiDataSource: NSObject, UITableViewDataSource, UITableViewDelegate
         let count = value.count
         return count
     }
-    
+
     private var showingLast = false
     func tableView(_ tableView: UITableView, willDisplay cell: UITableViewCell, forRowAt indexPath: IndexPath) {
         let nowShowingLast = indexPath.row >= (source.value.count) - 1
@@ -471,5 +471,5 @@ class BoundMultiDataSource: NSObject, UITableViewDataSource, UITableViewDelegate
         }
         return cell
     }
-    
+
 }

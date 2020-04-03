@@ -6,12 +6,12 @@ import UIKit
 //--- TextView.bindString(ObservableProperty<String>)
 public extension UILabel {
     func bindString(_ observable: ObservableProperty<String>) -> Void {
-        observable.addAndRunWeak(referenceA: self) { (this, value) in
-            if this.textString != value {
-                this.textString = value
+        observable.subscribeBy { ( value) in
+            if self.textString != value {
+                self.textString = value
             }
-            this.superview?.setNeedsLayout()
-        }
+            self.superview?.setNeedsLayout()
+        }.until(self.removed)
     }
     func bindString(observable: ObservableProperty<String>) -> Void {
         return bindString(observable)
@@ -22,12 +22,12 @@ public extension UITextView {
         return bindString(observable: observable)
     }
     func bindString(observable: ObservableProperty<String>) {
-        observable.addAndRunWeak(referenceA: self) { (this, value) in
-            if this.textString != value {
-                this.textString = value
+        observable.subscribeBy { ( value) in
+            if self.textString != value {
+                self.textString = value
             }
-            this.superview?.setNeedsLayout()
-        }
+            self.superview?.setNeedsLayout()
+        }.until(self.removed)
     }
 }
 public extension UITextField {
@@ -35,12 +35,12 @@ public extension UITextField {
         return bindString(observable: observable)
     }
     func bindString(observable: ObservableProperty<String>) {
-        observable.addAndRunWeak(referenceA: self) { (this, value) in
-            if this.textString != value {
-                this.textString = value
+        observable.subscribeBy { ( value) in
+            if self.textString != value {
+                self.textString = value
             }
-            this.superview?.setNeedsLayout()
-        }
+            self.superview?.setNeedsLayout()
+        }.until(self.removed)
     }
 }
 public extension UIButton {
@@ -48,29 +48,29 @@ public extension UIButton {
         return bindString(observable: observable)
     }
     func bindString(observable: ObservableProperty<String>) {
-        observable.addAndRunWeak(referenceA: self) { (this, value) in
-            if this.title(for: .normal) != value {
-                this.textString = value
+        observable.subscribeBy { ( value) in
+            if self.title(for: .normal) != value {
+                self.textString = value
             }
-            this.superview?.setNeedsLayout()
-        }
+            self.superview?.setNeedsLayout()
+        }.until(self.removed)
     }
 }
 
 //--- TextView.bindStringRes(ObservableProperty<StringResource?>)
 public extension UILabel {
     func bindStringRes(_ observable: ObservableProperty<StringResource?>) -> Void {
-        observable.addAndRunWeak(referenceA: self) { (this, value) in
+        observable.subscribeBy { ( value) in
             if let value = value {
                 let localValue = NSLocalizedString(value, comment: "")
-                if this.textString != localValue {
-                    this.textString = localValue
+                if self.textString != localValue {
+                    self.textString = localValue
                 }
             } else {
-                this.text = nil
+                self.text = nil
             }
-            this.superview?.setNeedsLayout()
-        }
+            self.superview?.setNeedsLayout()
+        }.until(self.removed)
     }
     func bindStringRes(observable: ObservableProperty<StringResource?>) -> Void {
         return bindStringRes(observable)
@@ -81,17 +81,17 @@ public extension UITextView {
         return bindStringRes(observableReference: observableReference)
     }
     func bindStringRes(observableReference: ObservableProperty<StringResource?>) {
-        observableReference.addAndRunWeak(referenceA: self) { (this, value) in
+        observableReference.subscribeBy { ( value) in
             if let value = value {
                 let localValue = NSLocalizedString(value, comment: "")
-                if this.textString != localValue {
-                    this.textString = localValue
+                if self.textString != localValue {
+                    self.textString = localValue
                 }
             } else {
-                this.text = nil
+                self.text = nil
             }
-            this.superview?.setNeedsLayout()
-        }
+            self.superview?.setNeedsLayout()
+        }.until(self.removed)
     }
 }
 public extension UITextField {
@@ -99,17 +99,17 @@ public extension UITextField {
         return bindStringRes(observableReference: observableReference)
     }
     func bindStringRes(observableReference: ObservableProperty<StringResource?>) {
-        observableReference.addAndRunWeak(referenceA: self) { (this, value) in
+        observableReference.subscribeBy { ( value) in
             if let value = value {
                 let localValue = NSLocalizedString(value, comment: "")
-                if this.textString != localValue {
-                    this.textString = localValue
+                if self.textString != localValue {
+                    self.textString = localValue
                 }
             } else {
-                this.text = nil
+                self.text = nil
             }
-            this.superview?.setNeedsLayout()
-        }
+            self.superview?.setNeedsLayout()
+        }.until(self.removed)
     }
 }
 public extension UIButton {
@@ -117,29 +117,29 @@ public extension UIButton {
         return bindStringRes(observableReference: observableReference)
     }
     func bindStringRes(observableReference: ObservableProperty<StringResource?>) {
-        observableReference.addAndRunWeak(referenceA: self) { (this, value) in
+        observableReference.subscribeBy { ( value) in
             if let value = value {
-                if this.title(for: .normal) != value {
-                    this.textString = value
+                if self.title(for: .normal) != value {
+                    self.textString = value
                 }
             } else {
-                this.textString = ""
+                self.textString = ""
             }
-            this.superview?.setNeedsLayout()
-        }
+            self.superview?.setNeedsLayout()
+        }.until(self.removed)
     }
 }
 
 //--- TextView.bindText(ObservableProperty<T>, (T)->String)
 public extension UILabel {
     func bindText<T>(_ observable: ObservableProperty<T>, _ transform: @escaping (T) -> String) -> Void {
-        observable.addAndRunWeak(referenceA: self) { (this, value) in
+        observable.subscribeBy { ( value) in
             let textValue = transform(value)
-            if this.textString != textValue {
-                this.textString = textValue
+            if self.textString != textValue {
+                self.textString = textValue
             }
-            this.superview?.setNeedsLayout()
-        }
+            self.superview?.setNeedsLayout()
+        }.until(self.removed)
     }
     func bindText<T>(observable: ObservableProperty<T>, transform: @escaping (T) -> String) -> Void {
         return bindText(observable, transform)

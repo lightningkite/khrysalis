@@ -7,8 +7,17 @@ import com.lightningkite.khrysalis.net.HttpClient
 import com.lightningkite.khrysalis.*
 import com.squareup.picasso.Picasso
 import com.lightningkite.khrysalis.observables.*
+import com.lightningkite.khrysalis.rx.removed
+import com.lightningkite.khrysalis.rx.until
 
 
+/**
+ *
+ * Loads the image into the imageview the function is called on.
+ * An image can be from multiple sources, such as the web, an android image reference,
+ * and a direct bitmap. It will handle all cases and load the image.
+ *
+ */
 fun ImageView.loadImage(image: Image?) {
     post {
         image?.let { image ->
@@ -34,10 +43,19 @@ fun ImageView.loadImage(image: Image?) {
     }
 }
 
+
+/**
+ *
+ * Binds the imageview internal image to the image provided by the observable.
+ * Any changes to the observable will cause a reload of the image to match the change.
+ * An image can be from multiple sources, such as the web, an android image reference,
+ * and a direct bitmap. It will handle all cases and load the image.
+ *
+ */
 fun ImageView.bindImage(image: ObservableProperty<Image?>) {
     post {
-        image.addAndRunWeak(this) { self, it ->
-            self.loadImage(it)
-        }
+        image.subscribeBy { it ->
+            this.loadImage(it)
+        }.until(this.removed)
     }
 }

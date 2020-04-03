@@ -6,7 +6,17 @@ import android.widget.AdapterView
 import android.widget.BaseAdapter
 import android.widget.Spinner
 import com.lightningkite.khrysalis.observables.*
+import com.lightningkite.khrysalis.rx.removed
+import com.lightningkite.khrysalis.rx.until
 
+
+/**
+ *
+ * Binds the available options to the options Observable
+ * Binds the selected item to the selected observable.
+ * makeView is a lambda that return the view for each item in the drop down.
+ *
+ */
 
 fun <T> Spinner.bind(
     options: ObservableProperty<List<T>>,
@@ -15,8 +25,8 @@ fun <T> Spinner.bind(
 ) {
     adapter = object : BaseAdapter() {
         init {
-            options.addAndRunWeak(this) { self, _ ->
-                self.notifyDataSetChanged()
+            options.subscribeBy { _ ->
+                this.notifyDataSetChanged()
             }
         }
 
@@ -40,12 +50,12 @@ fun <T> Spinner.bind(
         override fun getItemId(position: Int): Long = position.toLong()
         override fun getCount(): Int = options.value.size
     }
-    selected.addAndRunWeak(this) { self, it ->
+    selected.subscribeBy { it ->
         val index = options.value.indexOf(it)
         if (index != -1 && index != selectedItemPosition) {
             setSelection(index)
         }
-    }
+    }.until(this.removed)
     onItemSelectedListener = object : AdapterView.OnItemSelectedListener {
         override fun onNothingSelected(parent: AdapterView<*>?) {}
 

@@ -9,27 +9,25 @@ import RxRelay
 
 public typealias Lifecycle = ObservableProperty<Bool>
  
- 
 
 extension ObservableProperty where T == Bool {
-    public func and(other: ObservableProperty<Bool>) -> Lifecycle {
-        return self.combine(other) { (a, b) in 
+     public func and(other: ObservableProperty<Bool>) -> Lifecycle {
+        return self.combine(other){ (a, b) in 
             a && b
         }
     }
-    public func and(_ other: ObservableProperty<Bool>) -> Lifecycle {
+     public func and(_ other: ObservableProperty<Bool>) -> Lifecycle {
         return and(other: other)
     }
 }
- 
 
 extension ObservableProperty where T == Bool {
-    public func openCloseBinding<A: AnyObject>(target: A, open: @escaping (A) -> Void, close: @escaping (A) -> Void) -> Void {
+     public func openCloseBinding<A: AnyObject>(target: A, open: @escaping (A) -> Void, close: @escaping (A) -> Void) -> Void {
         var lastValue = self.value
         if self.value {
             open(target)
         }
-        self.addAndRunWeak(target) { (target, value) in 
+        self.addAndRunWeak(target){ (target, value) in 
             if lastValue, !value {
                 close(target)
             }
@@ -39,7 +37,7 @@ extension ObservableProperty where T == Bool {
             lastValue = value
         }
     }
-    public func openCloseBinding<A: AnyObject>(_ target: A, _ open: @escaping (A) -> Void, _ close: @escaping (A) -> Void) -> Void {
+     public func openCloseBinding<A: AnyObject>(_ target: A, _ open: @escaping (A) -> Void, _ close: @escaping (A) -> Void) -> Void {
         return openCloseBinding(target: target, open: open, close: close)
     }
 }
@@ -66,14 +64,12 @@ extension ObservableProperty where T == Bool {
     }
 }
  
- 
 
 extension ObservableProperty where T == Bool {
-    public func once() -> ObservableProperty<Bool> {
+     public func once() -> ObservableProperty<Bool> {
         return OnceObservableProperty(self)
     }
 }
- 
  
 
 private class OnceObservableProperty: ObservableProperty<Bool> {
@@ -100,10 +96,9 @@ private class OnceObservableProperty: ObservableProperty<Bool> {
     }
 }
  
- 
 
 extension ObservableProperty where T == Bool {
-    public func closeWhenOff(closeable: Disposable) -> Void {
+     public func closeWhenOff(closeable: Disposable) -> Void {
         var listener: Disposable?  = nil
         listener = self.observableNN.subscribe{ (it) in 
             if !it {
@@ -112,10 +107,9 @@ extension ObservableProperty where T == Bool {
             }
         }
     }
-    public func closeWhenOff(_ closeable: Disposable) -> Void {
+     public func closeWhenOff(_ closeable: Disposable) -> Void {
         return closeWhenOff(closeable: closeable)
     }
 }
- 
  
 public var appInForeground = StandardObservableProperty(false) 

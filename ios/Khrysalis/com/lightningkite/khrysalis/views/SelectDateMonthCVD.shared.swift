@@ -57,9 +57,9 @@ open class SelectDateMonthCVD: MonthCVD {
         if let it = (selected.value) {
             self.currentMonthObs.value = it.dayOfMonth(1) 
         }
-        self.selected.onChange.addWeak(self) { (self, value) in 
-            self.invalidate()
-        }
+        self.selected.onChange.subscribeBy { [weak self] (value) in 
+            self?.invalidate()
+        }.forever()
     }
 }
  

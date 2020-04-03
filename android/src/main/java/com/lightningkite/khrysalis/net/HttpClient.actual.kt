@@ -19,11 +19,17 @@ import com.fasterxml.jackson.databind.util.StdDateFormat
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.lightningkite.khrysalis.Image
 import com.lightningkite.khrysalis.PlatformSpecific
+import com.lightningkite.khrysalis.bytes.Data
 import com.lightningkite.khrysalis.escaping
 import com.lightningkite.khrysalis.loadImage
 import com.lightningkite.khrysalis.time.TimeAlone
 import com.lightningkite.khrysalis.time.DateAlone
 import com.lightningkite.khrysalis.time.iso8601
+import io.reactivex.Observable
+import io.reactivex.Scheduler
+import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
+import io.reactivex.schedulers.Schedulers
 import okhttp3.*
 import java.io.ByteArrayOutputStream
 import java.io.IOException
@@ -32,34 +38,37 @@ import java.util.*
 @SuppressLint("StaticFieldLeak")
 object HttpClient {
 
+    private var _appContext: Context? = null
     @PlatformSpecific
-    lateinit var appContext: Context
-
-    var immediateMode = false
-
-    @PlatformSpecific
-    inline fun runResult(crossinline action: () -> Unit) {
-        if (immediateMode) {
-            action()
-        } else {
-            Handler(Looper.getMainLooper()).post {
-                action()
-            }
+    var appContext: Context
+        get() = _appContext!!
+        set(value){
+            _appContext = value
+            ioScheduler =  Schedulers.io()
+            responseScheduler =  AndroidSchedulers.mainThread()
         }
+
+    var ioScheduler: Scheduler? = null
+    var responseScheduler: Scheduler? = null
+    fun <T> Single<T>.threadCorrectly(): Single<T> {
+        var current = this
+        if(ioScheduler != null){
+            current = current.subscribeOn(ioScheduler)
+        }
+        if(responseScheduler != null){
+            current = current.observeOn(responseScheduler)
+        }
+        return current
     }
-
-    @PlatformSpecific
-    inline fun Call.go(callback: Callback) {
-        if (immediateMode) {
-            try {
-                val result = execute()
-                callback.onResponse(this, result)
-            } catch (e: IOException) {
-                callback.onFailure(this, e)
-            }
-        } else {
-            enqueue(callback)
+    fun <T> Observable<T>.threadCorrectly(): Observable<T> {
+        var current = this
+        if(ioScheduler != null){
+            current = current.subscribeOn(ioScheduler)
         }
+        if(responseScheduler != null){
+            current = current.observeOn(responseScheduler)
+        }
+        return current
     }
 
     const val GET = "GET"
@@ -132,6 +141,71 @@ object HttpClient {
         .setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE)
         .setDateFormat(StdDateFormat().withLenient(true))
 
+    fun call(
+        url: String,
+        method: String = HttpClient.GET,
+        headers: Map<String, String> = mapOf(),
+        body: HttpBody? = null
+    ): Single<HttpResponse> {
+        val request = Request.Builder()
+            .url(url)
+            .method(method, body)
+            .headers(Headers.of(headers))
+            .addHeader("Accept-Language", Locale.getDefault().language)
+            .build()
+        return Single.create<HttpResponse> { emitter ->
+            try {
+                println("Sending $method request to $url with headers $headers")
+                val response = client.newCall(request).execute()
+                println("Response from $method request to $url with headers $headers: ${response.code()}")
+                emitter.onSuccess(response)
+            } catch(e:Exception) {
+                emitter.onError(e)
+            }
+        }.threadCorrectly()
+    }
+
+
+
+
+
+
+
+
+    //YONDER LIES OLD CODE
+    //Don't use these anymore.  Rx is better.
+
+
+
+
+    var immediateMode = false
+
+    @PlatformSpecific
+    inline fun runResult(crossinline action: () -> Unit) {
+        if (immediateMode) {
+            action()
+        } else {
+            Handler(Looper.getMainLooper()).post {
+                action()
+            }
+        }
+    }
+
+    @PlatformSpecific
+    inline fun Call.go(callback: Callback) {
+        if (immediateMode) {
+            try {
+                val result = execute()
+                callback.onResponse(this, result)
+            } catch (e: IOException) {
+                callback.onFailure(this, e)
+            }
+        } else {
+            enqueue(callback)
+        }
+    }
+
+    @Deprecated("Use Rx Style instead")
     inline fun <reified T : Any> call(
         url: String,
         method: String,
@@ -139,12 +213,12 @@ object HttpClient {
         body: Any? = null,
         crossinline onResult: @escaping() (code: Int, result: T?, error: String?) -> Unit
     ) {
-        Log.i("HttpClient", "Sending $method request to $url with headers $headers")
+        println("Sending $method request to $url with headers $headers")
         val request = Request.Builder()
             .url(url)
             .method(method, body?.let {
                 val sending = mapper.writeValueAsString(it)
-                Log.i("HttpClient", "with body $sending")
+                println("with body $sending")
                 RequestBody.create(MediaType.parse("application/json"), sending)
             })
             .headers(Headers.of(headers))
@@ -161,7 +235,7 @@ object HttpClient {
 
             override fun onResponse(call: Call, response: Response) {
                 val raw = response.body()!!.string()
-                Log.i("HttpClient", "Response ${response.code()}: $raw")
+                println("Response ${response.code()}: $raw")
                 runResult {
                     val code = response.code()
                     if (code / 100 == 2) {
@@ -184,6 +258,7 @@ object HttpClient {
         })
     }
 
+    @Deprecated("Use Rx Style instead")
     inline fun callRaw(
         url: String,
         method: String,
@@ -191,12 +266,12 @@ object HttpClient {
         body: Any? = null,
         crossinline onResult: @escaping() (code: Int, result: String?, error: String?) -> Unit
     ) {
-        Log.i("HttpClient", "Sending $method request to $url with headers $headers")
+        println("Sending $method request to $url with headers $headers")
         val request = Request.Builder()
             .url(url)
             .method(method, body?.let {
                 val sending = mapper.writeValueAsString(it)
-                Log.i("HttpClient", "with body $sending")
+                println("with body $sending")
                 RequestBody.create(MediaType.parse("application/json"), sending)
             })
             .headers(Headers.of(headers))
@@ -213,7 +288,7 @@ object HttpClient {
 
             override fun onResponse(call: Call, response: Response) {
                 val raw = response.body()!!.string()
-                Log.i("HttpClient", "Response ${response.code()}: $raw")
+                println("Response ${response.code()}: $raw")
                 runResult {
                     val code = response.code()
                     if (code / 100 == 2) {
@@ -226,6 +301,7 @@ object HttpClient {
         })
     }
 
+    @Deprecated("Use Rx Style instead")
     inline fun callWithoutResult(
         url: String,
         method: String,
@@ -233,12 +309,12 @@ object HttpClient {
         body: Any? = null,
         crossinline onResult: @escaping() (code: Int, error: String?) -> Unit
     ) {
-        Log.i("HttpClient", "Sending $method request to $url with headers $headers")
+        println("Sending $method request to $url with headers $headers")
         val request = Request.Builder()
             .url(url)
             .method(method, body?.let {
                 val sending = mapper.writeValueAsString(it)
-                Log.i("HttpClient", "with body $sending")
+                println("with body $sending")
                 RequestBody.create(MediaType.parse("application/json"), sending)
             })
             .headers(Headers.of(headers))
@@ -255,7 +331,7 @@ object HttpClient {
 
             override fun onResponse(call: Call, response: Response) {
                 val raw = response.body()!!.string()
-                Log.i("HttpClient", "Response ${response.code()}: $raw")
+                println("Response ${response.code()}: $raw")
                 runResult {
                     val code = response.code()
                     if (code / 100 == 2) {
@@ -268,6 +344,7 @@ object HttpClient {
         })
     }
 
+    @Deprecated("Use Rx Style instead")
     inline fun uploadImageWithoutResult(
         url: String,
         method: String,
@@ -331,7 +408,7 @@ object HttpClient {
 
                 override fun onResponse(call: Call, response: Response) {
                     val raw = response.body()!!.string()
-                    Log.i("HttpClient", "Response ${response.code()}: $raw")
+                    println("Response ${response.code()}: $raw")
                     runResult {
 
                         val code = response.code()
@@ -347,6 +424,7 @@ object HttpClient {
     }
 
 
+    @Deprecated("Use Rx Style instead")
     inline fun <reified T : Any> uploadImage(
         url: String,
         method: String,
@@ -410,7 +488,7 @@ object HttpClient {
 
                 override fun onResponse(call: Call, response: Response) {
                     val raw = response.body()!!.string()
-                    Log.i("HttpClient", "Response ${response.code()}: $raw")
+                    println("Response ${response.code()}: $raw")
                     runResult {
                         val code = response.code()
                         if (code / 100 == 2) {

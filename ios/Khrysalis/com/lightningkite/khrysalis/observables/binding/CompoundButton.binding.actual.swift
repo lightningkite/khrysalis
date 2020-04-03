@@ -5,12 +5,12 @@ import Foundation
 //--- CompoundButton.bindSelect(T, MutableObservableProperty<T>)
 public extension CompoundButton {
     func bindSelect<T: Equatable>(_ myValue: T, _ selected: MutableObservableProperty<T>) -> Void {
-        selected.addAndRunWeak(referenceA: self) { (this, value) in
+        selected.subscribeBy { ( value) in
             let shouldBeOn = value == myValue
-            if this.isOn != shouldBeOn {
-                this.isOn = shouldBeOn
+            if self.isOn != shouldBeOn {
+                self.isOn = shouldBeOn
             }
-        }
+        }.until((self as! UIView).removed)
         self.onCheckChanged = { [weak self] value in
             if value && selected.value != myValue {
                 selected.value = myValue
@@ -27,12 +27,12 @@ public extension CompoundButton {
 //--- CompoundButton.bindSelectNullable(T, MutableObservableProperty<T?>)
 public extension CompoundButton {
     func bindSelectNullable<T: Equatable>(_ myValue: T, _ selected: MutableObservableProperty<T?>) -> Void {
-        selected.addAndRunWeak(referenceA: self) { (this, value) in
+        selected.subscribeBy { ( value) in
             let shouldBeOn = value == myValue
-            if this.isOn != shouldBeOn {
-                this.isOn = shouldBeOn
+            if self.isOn != shouldBeOn {
+                self.isOn = shouldBeOn
             }
-        }
+        }.until((self as! UIView).removed)
         self.onCheckChanged = { [weak self] value in
             if value && selected.value != myValue {
                 selected.value = myValue
@@ -50,16 +50,16 @@ public extension CompoundButton {
 public extension CompoundButton {
     func bindSelectInvert<T: Equatable>(_ myValue: T, _ selected: MutableObservableProperty<T?>) -> Void {
         var suppress:Bool = false
-        selected.addAndRunWeak(referenceA: self) { (this, value) in
+        selected.subscribeBy { ( value) in
             if !suppress{
                 suppress = true
                 let shouldBeOn = value == myValue || value == nil
-                if this.isOn != shouldBeOn {
-                    this.isOn = shouldBeOn
+                if self.isOn != shouldBeOn {
+                    self.isOn = shouldBeOn
                 }
                 suppress = false
             }
-        }
+        }.until((self as! UIView).removed)
         self.onCheckChanged = { [weak self] value in
             if !suppress{
                 suppress = true
@@ -82,11 +82,11 @@ public extension CompoundButton {
 //--- CompoundButton.bind(MutableObservableProperty<Boolean>)
 public extension CompoundButton {
     func bind(_ observable: MutableObservableProperty<Bool>) -> Void {
-        observable.addAndRunWeak(referenceA: self) { (this, value) in
-            if this.isOn != value {
-                this.isOn = value
+        observable.subscribeBy { ( value) in
+            if self.isOn != value {
+                self.isOn = value
             }
-        }
+        }.until((self as! UIView).removed)
         self.onCheckChanged = { [weak self] value in
             if observable.value != self?.isOn {
                 observable.value = self?.isOn ?? false

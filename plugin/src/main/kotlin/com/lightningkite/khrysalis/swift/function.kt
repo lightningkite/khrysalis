@@ -184,14 +184,16 @@ fun List<KotlinParser.AnnotationContext>.get(name: String): List<String>? {
         it.singleAnnotation()?.unescapedAnnotation()?.userType()?.text == name ||
                 it.singleAnnotation()?.unescapedAnnotation()?.constructorInvocation()?.userType()?.text == name
     }?.let {
-        it.singleAnnotation()!!.unescapedAnnotation()!!.constructorInvocation()?.valueArguments()?.valueArgument()?.map { it.text }
+        it.singleAnnotation()!!.unescapedAnnotation()!!.constructorInvocation()?.valueArguments()?.valueArgument()
+            ?.map { it.text }
             ?: listOf()
     }
 }
 
 fun KotlinParser.ReceiverTypeContext.typeParamName(
     type: KotlinParser.TypeContext,
-    annotations: List<KotlinParser.AnnotationContext>? = type.typeModifiers()?.typeModifier()?.mapNotNull { it.annotation() },
+    annotations: List<KotlinParser.AnnotationContext>? = type.typeModifiers()?.typeModifier()
+        ?.mapNotNull { it.annotation() },
     totalCount: Int,
     index: Int
 ): String {
@@ -221,7 +223,8 @@ fun KotlinParser.ReceiverTypeContext.typeParamName(
 
 fun KotlinParser.ReceiverTypeContext.typeParamFinal(
     type: KotlinParser.TypeContext,
-    annotations: List<KotlinParser.AnnotationContext>? = type.typeModifiers()?.typeModifier()?.mapNotNull { it.annotation() }
+    annotations: List<KotlinParser.AnnotationContext>? = type.typeModifiers()?.typeModifier()
+        ?.mapNotNull { it.annotation() }
 ): Boolean {
     return annotations?.let {
         when {
@@ -257,7 +260,8 @@ fun SwiftAltListener.registerFunction() {
             handleNormalFunction(
                 this,
                 item,
-                usingTypeParameters = item.typeParameters()?.typeParameter()?.filter { it.simpleIdentifier().text in otherTypeArguments }?.takeUnless { it.isEmpty() }
+                usingTypeParameters = item.typeParameters()?.typeParameter()
+                    ?.filter { it.simpleIdentifier().text in otherTypeArguments }?.takeUnless { it.isEmpty() }
             )
         }
         line("}")
@@ -364,6 +368,40 @@ fun SwiftAltListener.registerFunction() {
             between = { direct.append(", ") }
         )
         direct.append(")")
+    }
+    handle<KotlinParser.CallSuffixContext> { ctx ->
+        val argList = ArrayList<() -> Unit>()
+        ctx.typeArguments()?.let {
+            val dontUseFoldedTypeArgs = ctx
+                .parentIfType<KotlinParser.PostfixUnarySuffixContext>()
+                ?.parentIfType<KotlinParser.PostfixUnaryExpressionContext>()
+                ?.takeIf { it.postfixUnarySuffix(0).sourceInterval.a == ctx.sourceInterval.a }
+                ?.primaryExpression()
+                ?.text
+                ?.split('.')
+                ?.all {
+                    it.firstOrNull()?.isUpperCase() == true && it.all { it.isJavaIdentifierPart() || it == '.' }
+                } == true
+            if (dontUseFoldedTypeArgs) {
+                write(it)
+            } else {
+                argList.addAll(it.typeProjection().map { it -> fun(): Unit { write(it); direct.append(".self") } })
+            }
+        }
+        ctx.valueArguments()?.let {
+            val sampleHasNoLabel = it.valueArgument().firstOrNull()?.MULT() == null
+            if (it.valueArgument().any { (it.MULT() == null) != sampleHasNoLabel }) {
+                println("WARNING: Function call at line ${it.start.line} has some arguments with keys and some without.  This is not supported by the standard function definition converter.")
+            }
+            argList.addAll(it.valueArgument().map { it -> { -> write(it) } })
+            direct.append("(")
+            argList.forEachBetween(
+                forItem = { it() },
+                between = { direct.append(", ") }
+            )
+            direct.append(")")
+        }
+        ctx.annotatedLambda()?.let { write(it) }
     }
     handle<KotlinParser.ValueArgumentsContext> {
         val sampleHasNoLabel = it.valueArgument().firstOrNull()?.MULT() == null

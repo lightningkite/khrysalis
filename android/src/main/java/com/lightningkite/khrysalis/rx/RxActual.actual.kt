@@ -11,14 +11,11 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.schedulers.Schedulers
 
 
-fun test(){
+private fun test(){
     Observable.just(1, 2, 3).map { it + 1 }.flatMap { Observable.just(it, it + 1) }.observeOn(AndroidSchedulers.mainThread()).subscribeBy { println(it) }.dispose()
     Observable.create { it: ObservableEmitter<Int> -> it.onNext(3); it.onComplete() }.subscribeBy { println(it) }.dispose()
     Observable.create { it: ObservableEmitter<Int> -> it.onNext(3); it.onComplete() }.asObservableProperty(1)
-    Single.create { it: SingleEmitter<Int> ->
-        it.onSuccess(2)
-        it.isDisposed
-    }
+
 }
 
 
