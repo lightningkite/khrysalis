@@ -6,11 +6,13 @@ import java.util.*
 data class TimeAlone(var hour: Int, var minute: Int, var second: Int) {
     companion object {
         fun now(): TimeAlone = Date().timeAlone
-        fun iso(string: String): TimeAlone = TimeAlone(
-            string.substringBefore(":").toInt(),
-            string.substringAfter(":").substringBefore(":").toInt(),
-            string.substringAfterLast(":").toInt()
-        )
+        fun iso(string: String): TimeAlone? {
+            return TimeAlone(
+                string.substringBefore(":", "").toIntOrNull() ?: return null,
+                string.substringAfter(":", "").substringBefore(":", "").toIntOrNull() ?: return null,
+                string.substringAfter(":", "").substringAfter(":", "").toIntOrNull() ?: 0
+            )
+        }
 
         val min = TimeAlone(0, 0, 0)
         val midnight = min

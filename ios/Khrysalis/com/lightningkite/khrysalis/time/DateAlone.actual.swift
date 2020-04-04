@@ -63,10 +63,16 @@ public class DateAlone: Equatable, Hashable, Codable {
     static public var farPast = DateAlone(-99999, 1, 1)
     static public var farFuture = DateAlone(99999, 12, 31)
 
-    static public func iso(string: String) -> DateAlone {
-        return DateAlone(string.substringBefore("-").toInt(), string.substringAfter("-").substringBefore("-").toInt(), string.substringAfterLast("-").toInt())
+    static public func iso(string: String) -> DateAlone? {
+        if let year = string.substringBefore("-", "").toIntOrNull(),
+            let month = string.substringAfter("-", "").substringBefore("-", "").toIntOrNull(),
+            let day = string.substringAfter("-", "").substringAfter("-", "").toIntOrNull()
+        {
+            return DateAlone(year, month, day)
+        }
+        return nil
     }
-    static public func iso(_ string: String) -> DateAlone {
+    static public func iso(_ string: String) -> DateAlone? {
         return iso(string: string)
     }
 

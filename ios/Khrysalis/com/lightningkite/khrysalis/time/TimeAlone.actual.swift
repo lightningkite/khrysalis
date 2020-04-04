@@ -61,10 +61,16 @@ public class TimeAlone: Equatable, Hashable, Codable {
         return Date().timeAlone
     }
     
-    static public func iso(string: String) -> TimeAlone {
-        return TimeAlone(string.substringBefore(":").toInt(), string.substringAfter(":").substringBefore(":").toInt(), string.substringAfterLast(":").toInt())
+    static public func iso(string: String) -> TimeAlone? {
+        if let hour = string.substringBefore(":", "").toIntOrNull(),
+            let minute = string.substringAfter(":", "").substringBefore(":").toIntOrNull()
+        {
+            let second = string.substringAfter(":", "").substringAfter(":", "").toIntOrNull()
+            return TimeAlone(hour: hour, minute: minute, second: second ?? 0)
+        }
+        return nil
     }
-    static public func iso(_ string: String) -> TimeAlone {
+    static public func iso(_ string: String) -> TimeAlone? {
         return iso(string: string)
     }
     static public var min = TimeAlone(0, 0, 0)
