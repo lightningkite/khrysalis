@@ -61,7 +61,7 @@ public extension UIView {
         if let self = self as? UIScrollView {
             let topLeftOfCenteredView = CGPoint(
                 x: origin.x + (size.width - self.frame.size.width) / 2,
-                y: origin.y + (size.height - self.frame.size.height) / 2
+                y: origin.y + (/*size.height*/CGFloat(16) - self.frame.size.height) / 2
             )
             let offset = CGPoint(
                 x: max(0, min(self.contentSize.width - self.bounds.size.width, topLeftOfCenteredView.x)),

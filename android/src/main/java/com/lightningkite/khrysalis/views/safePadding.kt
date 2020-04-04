@@ -84,6 +84,7 @@ fun View.resetWindowInsets() {
                 this.post {
                     this.rootWindowInsets?.let { startInsets ->
                         dispatchApplyWindowInsets(startInsets)
+                        requestLayout()
                     }
                     resetWindowInsetsPending.remove(this)
                 }
