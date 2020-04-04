@@ -399,6 +399,7 @@ public extension Set {
 public extension Character {
     func isUpperCase() -> Bool { return isUppercase }
     func isLowerCase() -> Bool { return isLowercase }
+    func isLetter() -> Bool { return isLetter }
 }
 
 public extension String {

@@ -52,16 +52,16 @@ fun EditText.bindString(observable: MutableObservableProperty<String>) {
 fun EditText.bindInteger(observable: MutableObservableProperty<Int>) {
     observable.subscribeBy { value ->
         val currentValue = this.text.toString().toIntOrNull()
-        if (currentValue != null && observable.value != currentValue) {
-            this.setText(observable.value.takeUnless { it == 0 }?.toString() ?: "")
+        if (value != currentValue) {
+            this.setText(value.takeUnless { it == 0 }?.toString() ?: "")
         }
     }.until(this.removed)
     addTextChangedListener(object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {}
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            val currentValue = s.toString().toIntOrNull()
-            if (currentValue != null && observable.value != currentValue) {
+            val currentValue = s.toString().toIntOrNull() ?: 0
+            if (observable.value != currentValue) {
                 observable.value = currentValue
             }
         }
@@ -86,16 +86,16 @@ fun EditText.bindInteger(observable: MutableObservableProperty<Int>) {
 fun EditText.bindDouble(observable: MutableObservableProperty<Double>) {
     observable.subscribeBy { value ->
         val currentValue = this.text.toString().toDoubleOrNull()
-        if (currentValue != null && observable.value != currentValue) {
-            this.setText(observable.value.takeUnless { it == 0.0 }?.toString() ?: "")
+        if (value != currentValue) {
+            this.setText(value.takeUnless { it == 0.0 }?.toString() ?: "")
         }
     }.until(this.removed)
     addTextChangedListener(object : TextWatcher {
         override fun afterTextChanged(s: Editable?) {}
         override fun beforeTextChanged(s: CharSequence?, start: Int, count: Int, after: Int) {}
         override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-            val currentValue = s.toString().toDoubleOrNull()
-            if (currentValue != null && observable.value != currentValue) {
+            val currentValue = s.toString().toDoubleOrNull() ?: 0.0
+            if (observable.value != currentValue) {
                 observable.value = currentValue
             }
         }
