@@ -23,6 +23,16 @@ public extension View {
         }
     }
     
+    var rotation: Float{
+        set(value){
+            self.transform = CGAffineTransform(rotationAngle: CGFloat(Double(value) * (Double.pi / 180.0)))
+        }
+        get{
+            let rad = atan2(self.transform.b, self.transform.a)
+            return Float(rad * (180 / .pi))
+        }
+    }
+    
     static let VISIBLE = ViewVisibility.VISIBLE
     static let INVISIBLE = ViewVisibility.INVISIBLE
     static let GONE = ViewVisibility.GONE

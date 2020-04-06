@@ -284,8 +284,8 @@ fun dateFrom(dateAlone: DateAlone, timeAlone: TimeAlone, existing: Date = Date()
     }
 }
 
-fun dateFromIso(iso8601: String): Date {
-    return StdDateFormat().withLenient(true).parse(iso8601) ?: throw IllegalStateException()
+fun dateFromIso(iso8601: String): Date? {
+    return StdDateFormat().withLenient(true).parse(iso8601)
 }
 
 fun Date.format(dateStyle: ClockPartSize, timeStyle: ClockPartSize): String {

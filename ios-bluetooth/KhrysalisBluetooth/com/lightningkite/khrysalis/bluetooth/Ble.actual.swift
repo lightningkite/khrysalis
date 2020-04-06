@@ -39,7 +39,7 @@ public enum Ble {
             .switchMap { manager in manager.scanForPeripherals(withServices: withServices.isEmpty ? nil : withServices.map { CBUUID(nsuuid: $0) }) }
             .map { it in BleScanResult(info: BleDeviceInfo(id: it.peripheral.identifier.uuidString, name: it.peripheral.name), rssi: Int32(it.rssi)) }
     }
-    public static func scan(viewDependency: ViewDependency, withServices: Array<UUID>, intensity: Float) -> Observable<BleScanResult> {
+    public static func scan(viewDependency: ViewDependency, withServices: Array<UUID> = [], intensity: Float = 0.5) -> Observable<BleScanResult> {
         return scan(viewDependency, withServices, intensity)
     }
 

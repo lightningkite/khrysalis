@@ -33,22 +33,24 @@ open class KhrysalisFcmAppDelegate: KhrysalisAppDelegate, UNUserNotificationCent
     // This method will be called when app received push notifications in foreground
     public func userNotificationCenter(_ center: UNUserNotificationCenter, willPresent notification: UNNotification, withCompletionHandler completionHandler: @escaping (UNNotificationPresentationOptions) -> Void)
     {
-        print("Got notification in foreground: \(notification.request.content.userInfo)")
-        
-        var shouldShow: ForegroundNotificationHandlerResult = .UNHANDLED
-        if let entryPoint = self.viewController?.main as? ForegroundNotificationHandler {
-            let info = notification.request.content.userInfo
-            shouldShow = entryPoint.handleNotificationInForeground(map: info
-                .filter { it in it.key is String && it.value is String }
-                .mapKeys { it in it as! String }
-                .mapValues { it in it as! String }
-            )
-        }
-        print("Notification was: \(shouldShow)")
-        if shouldShow == .SUPPRESS_NOTIFICATION {
-            completionHandler([])
-        } else {
-            completionHandler([.alert, .badge, .sound])
+        DispatchQueue.main.async {
+            print("Got notification in foreground: \(notification.request.content.userInfo)")
+            
+            var shouldShow: ForegroundNotificationHandlerResult = .UNHANDLED
+            if let entryPoint = self.viewController?.main as? ForegroundNotificationHandler {
+                let info = notification.request.content.userInfo
+                shouldShow = entryPoint.handleNotificationInForeground(map: info
+                    .filter { it in it.key is String && it.value is String }
+                    .mapKeys { it in it as! String }
+                    .mapValues { it in it as! String }
+                )
+            }
+            print("Notification was: \(shouldShow)")
+            if shouldShow == .SUPPRESS_NOTIFICATION {
+                completionHandler([])
+            } else {
+                completionHandler([.alert, .badge, .sound])
+            }
         }
     }
 

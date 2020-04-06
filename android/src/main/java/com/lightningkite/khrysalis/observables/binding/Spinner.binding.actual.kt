@@ -10,6 +10,14 @@ import com.lightningkite.khrysalis.rx.removed
 import com.lightningkite.khrysalis.rx.until
 
 
+/**
+ *
+ * Binds the available options to the options Observable
+ * Binds the selected item to the selected observable.
+ * makeView is a lambda that return the view for each item in the drop down.
+ *
+ */
+
 fun <T> Spinner.bind(
     options: ObservableProperty<List<T>>,
     selected: MutableObservableProperty<T>,

@@ -15,6 +15,15 @@ import com.lightningkite.khrysalis.rx.removed
 import com.lightningkite.khrysalis.rx.until
 import com.lightningkite.khrysalis.views.ColorResource
 
+/**
+ *
+ * bindLoading will flip the view between any built in views, and the native android loading animation.
+ * If the value in loading is false it will display whatever view it normally holds.
+ * If the value in loading is true it will hide any views it holds and display the loading animation.
+ * Color will set the color of the loading animation to whatever resource is provided.
+ *
+ */
+
 fun ViewFlipper.bindLoading(loading: ObservableProperty<Boolean>, color: ColorResource? = null) {
     if (this.inAnimation == null)
         this.inAnimation = AlphaAnimation(0f, 1f).apply {

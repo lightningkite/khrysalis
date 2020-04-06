@@ -5,6 +5,18 @@ import com.lightningkite.khrysalis.observables.*
 import com.lightningkite.khrysalis.rx.removed
 import com.lightningkite.khrysalis.rx.until
 
+/**
+ *
+ * Binds the rating bar to the observable provided, as well allows you to provide how
+ * many stars the rating is out of. Any changes to the rating bar will update the observable value,
+ * as well any change to the observable directly will update the rating bar.
+ *
+ * Example
+ * val rating:MutableObservableProperty<Int> = StandardObservableProperty(5)
+ * ratingBar.bind(5, rating)
+ *
+ */
+
 fun RatingBar.bind(
     stars: Int,
     observable: MutableObservableProperty<Int>
@@ -33,6 +45,18 @@ fun RatingBar.bind(
 
 }
 
+/**
+ *
+ * Binds the rating bar to the observable provided, as well allows you to provide how
+ * many stars the rating is out of. The value cannot be changed from the rating bar itself,
+ * though any change to the observable directly will manifest in the rating bar.
+ *
+ * Example
+ * val rating: ObservableProperty<Int> = StandardObservableProperty(5)
+ * ratingBar.bind(5, rating)
+ *
+ */
+
 fun RatingBar.bind(
     stars: Int,
     observable: ObservableProperty<Int>
@@ -45,6 +69,20 @@ fun RatingBar.bind(
         this.progress = value
     }.until(this.removed)
 }
+
+
+
+/**
+ *
+ * Binds the rating bar to the observable provided, as well allows you to provide how
+ * many stars the rating is out of. Any changes to the rating bar will update the observable value,
+ * as well any change to the observable directly will update the rating bar..
+ *
+ * Example
+ * val rating: MutableObservableProperty<Float> = StandardObservableProperty(5.0f)
+ * ratingBar.bind(5.0f, rating)
+ *
+ */
 
 fun RatingBar.bindFloat(
     stars: Int,
@@ -72,6 +110,19 @@ fun RatingBar.bindFloat(
     }
 
 }
+
+
+/**
+ *
+ * Binds the rating bar to the observable provided, as well allows you to provide how
+ * many stars the rating is out of. The value cannot be changed from the rating bar itself,
+ * though any change to the observable directly will manifest in the rating bar.
+ *
+ * Example
+ * val rating: ObservableProperty<Float> = StandardObservableProperty(5.0f)
+ * ratingBar.bind(5.0f, rating)
+ *
+ */
 
 fun RatingBar.bindFloat(
     stars: Int,

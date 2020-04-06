@@ -37,6 +37,7 @@ fun Image.load(onResult: (Bitmap?) -> Unit) = loadImage(this, onResult)
 
 @Deprecated("Use Rx Style instead")
 fun loadImage(uri: Uri, maxDimension: Int = 2048, onResult: (Bitmap?) -> Unit) {
+    var result: Bitmap? = null
     try {
         val finalOpts = BitmapFactory.Options()
         HttpClient.appContext.contentResolver.openInputStream(uri)?.use {
@@ -47,14 +48,14 @@ fun loadImage(uri: Uri, maxDimension: Int = 2048, onResult: (Bitmap?) -> Unit) {
                     sizeOpts.outHeight.toDouble().div(maxDimension).let { Math.ceil(it) }.toInt()
                 ).coerceAtLeast(1)
             }
-        } ?: onResult(null)
+        }
         HttpClient.appContext.contentResolver.openInputStream(uri)?.use {
-            onResult(BitmapFactory.decodeStream(it, null, finalOpts))
-        }?: onResult(null)
+            result = BitmapFactory.decodeStream(it, null, finalOpts)
+        }
     } catch (e: Exception) {
         e.printStackTrace()
-        onResult(null)
     }
+    onResult(result)
 }
 
 @Deprecated("Use Rx Style instead")

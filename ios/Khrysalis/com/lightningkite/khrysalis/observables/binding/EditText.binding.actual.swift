@@ -61,19 +61,19 @@ public extension UITextView {
 public extension UITextField {
     func bindInteger(_ observable: MutableObservableProperty<Int32>) -> Void {
         delegate = DoneDelegate.shared
-        if observable.value != 0 {
-            text = observable.value.toString()
-        }
         observable.subscribeBy { ( value) in
-            let currentValue = Int(self.textString)
-            if currentValue != nil, currentValue != Int(value) {
+            let currentValue = Int(self.textString) ?? 0
+            if currentValue != Int(value) {
                 self.textString = value.toString()
                 self.superview?.setNeedsLayout()
             }
         }.until(self.removed)
         addAction(for: UITextField.Event.editingChanged) { [weak self] in
-            if let self = self, let currentValue = Int(self.textString), observable.value != currentValue {
-                observable.value = Int32(currentValue)
+            if let self = self {
+                let currentValue = Int(self.textString) ?? 0
+                if observable.value != currentValue {
+                    observable.value = Int32(currentValue)
+                }
             }
         }
     }
@@ -86,19 +86,19 @@ public extension UITextField {
 public extension UITextField {
     func bindDouble(_ observable: MutableObservableProperty<Double>) -> Void {
         delegate = DoneDelegate.shared
-        if observable.value != 0.0 {
-            text = observable.value.toString()
-        }
         observable.subscribeBy { ( value) in
-            let currentValue = Double(self.textString)
-            if currentValue != nil, currentValue != value {
+            let currentValue = Double(self.textString) ?? 0
+            if currentValue != Double(value) {
                 self.textString = value.toString()
                 self.superview?.setNeedsLayout()
             }
         }.until(self.removed)
         addAction(for: UITextField.Event.editingChanged) { [weak self] in
-            if let self = self, let currentValue = Double(self.textString), observable.value != currentValue {
-                observable.value = currentValue
+            if let self = self {
+                let currentValue = Double(self.textString) ?? 0
+                if observable.value != currentValue {
+                    observable.value = Double(currentValue)
+                }
             }
         }
     }

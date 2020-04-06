@@ -55,25 +55,13 @@ val LayoutConverter.Companion.displayViews
                     appendln("view.visibility = View.${it.toUpperCase()}")
                 }
                 node.attributes["tools:systemEdges"]?.let {
-                    appendln("view.safeInsets(align: ${alignFill(
-                        width = null,
-                        height = null,
-                        gravityStrings = *arrayOf(it)
-                    )})")
+                    appendln("view.safeInsets(align: ${alignFill(it)})")
                 }
                 node.attributes["tools:systemEdgesSizing"]?.let {
-                    appendln("view.safeInsetsSizing(align: ${alignFill(
-                        width = null,
-                        height = null,
-                        gravityStrings = *arrayOf(it)
-                    )})")
+                    appendln("view.safeInsetsSizing(align: ${alignFill(it)})")
                 }
                 node.attributes["tools:systemEdgesBoth"]?.let {
-                    appendln("view.safeInsetsBoth(align: ${alignFill(
-                        width = null,
-                        height = null,
-                        gravityStrings = *arrayOf(it)
-                    )})")
+                    appendln("view.safeInsetsBoth(align: ${alignFill(it)})")
                 }
             },
             ViewType("Space", "UIView", "View") {},

@@ -54,6 +54,7 @@ fun View.safeInsets(flags: Int) {
             v.paddingTop
 
         v.setPadding(newPaddingLeft, newPaddingTop, newPaddingRight, newPaddingBottom)
+        v.requestLayout()
 
         return@label insets.replaceSystemWindowInsets(
             if (useLeft) 0 else insets.systemWindowInsetLeft,
@@ -118,6 +119,7 @@ fun View.safeInsetsSizing(flags: Int) {
 
         v.layoutParams.width = newWidth
         v.layoutParams.height = newHeight
+        v.parent.requestLayout()
 
         return@label insets.replaceSystemWindowInsets(
             if (useLeft) 0 else insets.systemWindowInsetLeft,
@@ -194,6 +196,7 @@ fun View.safeInsetsBoth(flags: Int) {
             v.paddingTop
 
         v.setPadding(newPaddingLeft, newPaddingTop, newPaddingRight, newPaddingBottom)
+        v.parent.requestLayout()
 
         return@label insets.replaceSystemWindowInsets(
             if (useLeft) 0 else insets.systemWindowInsetLeft,

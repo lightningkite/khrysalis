@@ -4,17 +4,25 @@ import android.annotation.SuppressLint
 import java.text.SimpleDateFormat
 import java.util.*
 
+/**
+ *
+ * A class to hold the current Year, Month, and day. Can be created from a Date object Date().dateAlone
+ * Has a full set of Methods and and variables for manipulating.
+ *
+ */
+
 data class DateAlone(var year: Int, var month: Int, var day: Int) {
     companion object {
         fun now(): DateAlone = Date().dateAlone
         val farPast = DateAlone(-99999, 1, 1)
         val farFuture = DateAlone(99999, 12, 31)
-        fun iso(string: String): DateAlone =
-            DateAlone(
-                string.substringBefore("-").toInt(),
-                string.substringAfter("-").substringBefore("-").toInt(),
-                string.substringAfterLast("-").toInt()
+        fun iso(string: String): DateAlone? {
+            return DateAlone(
+                string.substringBefore("-", "").toIntOrNull() ?: return null,
+                string.substringAfter("-", "").substringBefore("-", "").toIntOrNull() ?: return null,
+                string.substringAfterLast("-", "").toIntOrNull() ?: return null
             )
+        }
         fun fromMonthInEra(monthInEra: Int): DateAlone {
             return DateAlone(
                 year = (monthInEra - 1) / 12,

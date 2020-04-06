@@ -15,6 +15,11 @@ import com.lightningkite.khrysalis.views.newEmptyView
 import com.lightningkite.khrysalis.views.ViewDependency
 import kotlin.reflect.KClass
 
+/**
+ *
+ *  Provides the RecyclerView a lambda to call when the lambda reaches the end of the list.
+ *
+ */
 
 fun RecyclerView.whenScrolledToEnd(action: () -> Unit) {
     addOnScrollListener(object : RecyclerView.OnScrollListener() {
@@ -28,11 +33,37 @@ fun RecyclerView.whenScrolledToEnd(action: () -> Unit) {
     })
 }
 
+/**
+ *
+ *  When set to true will reverse the direction of the recycler view.
+ *  Rather than top to bottom, it will scroll bottom to top.
+ *
+ */
 var RecyclerView.reverseDirection: Boolean
     get() = (this.layoutManager as? LinearLayoutManager)?.reverseLayout ?: false
     set(value){
         (this.layoutManager as? LinearLayoutManager)?.reverseLayout = value
     }
+
+
+/**
+ *
+ * Binds the data in the RecyclerView to the data provided by the Observable.
+ * makeView is the lambda that creates the view tied to each item in the list of data.
+ *
+ * Example
+ * val data = StandardObservableProperty(listOf(1,2,3,4,5))
+ * recycler.bind(
+ *  data = data,
+ *  defaultValue = 0,
+ *  makeView = { observable ->
+ *       val xml = ViewXml()
+ *       val view = xml.setup(dependency)
+ *       view.text.bindString(obs.map{it -> it.toString()})
+ *       return view
+ *       }
+ * )
+ */
 
 fun <T> RecyclerView.bind(
     data: ObservableProperty<List<T>>,
@@ -152,6 +183,41 @@ fun RecyclerView.bindMulti(
     }
 }
 
+
+/**
+ *
+ * Binds the data in the RecyclerView to the data provided by the Observable.
+ * This is designed for multiple types of views in the recycler view.
+ * determineType is a lambda with an item input. The returned value is an Int determined by what view that item needs.
+ * makeView is the lambda that creates the view for the type determined
+ *
+ * Example
+ * val data = StandardObservableProperty(listOf(item1,item2,item3,item4,item5))
+ * recycler.bind(
+ *  data = data,
+ *  defaultValue = Item(),
+ *  determineType: { item ->
+ *      when(item){
+ *          ... return 1
+ *          ... return 2
+ *      }
+ *  },
+ *  makeView = { type, item ->
+ *      when(type){
+ *       1 -> {
+ *          val xml = ViewXml()
+ *          val view = xml.setup(dependency)
+ *          view.text.bindString(item.map{it -> it.toString()})
+ *          return view
+ *            }
+ *       2 -> {
+ *          .... return view
+ *            }
+ *          }
+ *      }
+ * )
+ */
+
 fun <T> RecyclerView.bindMulti(
     data: ObservableProperty<List<T>>,
     defaultValue: T,
@@ -190,6 +256,13 @@ fun <T> RecyclerView.bindMulti(
         }
     }
 }
+
+
+/**
+ *
+ *
+ *
+ */
 
 fun RecyclerView.bindRefresh(
     loading: ObservableProperty<Boolean>,

@@ -16,6 +16,12 @@ import java.io.InputStream
 import kotlin.math.max
 import kotlin.math.min
 
+
+/**
+ *
+ * Loads the image and return a Single<Bitmap>. This works for all the types of Images available.
+ *
+ */
 fun Image.load(): Single<Bitmap> {
     return try {
         when (this) {
@@ -29,6 +35,11 @@ fun Image.load(): Single<Bitmap> {
     }
 }
 
+/**
+ *
+ * Loads the image and return a Single<Bitmap> from an ImageReference
+ *
+ */
 fun ImageReference.load(maxDimension: Int = 2048): Single<Bitmap> {
     try {
         val finalOpts = BitmapFactory.Options()
@@ -51,6 +62,11 @@ fun ImageReference.load(maxDimension: Int = 2048): Single<Bitmap> {
     }
 }
 
+/**
+ *
+ * Loads the image and return a Single<Bitmap> from an ImageRemoteUrl
+ *
+ */
 fun ImageRemoteUrl.load(): Single<Bitmap> {
     return HttpClient.call(url, HttpClient.GET, mapOf())
         .unsuccessfulAsError()

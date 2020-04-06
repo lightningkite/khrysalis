@@ -212,8 +212,40 @@ fun align(width: String?, height: String?, vararg gravityStrings: String?): Stri
     }.firstOrNull() ?: ".top"
     return translatedVert + translatedHorz
 }
-fun alignFill(width: String?, height: String?, vararg gravityStrings: String?): String {
-    return align(width, height, *gravityStrings).replace("center", "fill").replace("Center", "Fill")
+fun alignFill(vararg gravityStrings: String?): String {
+    val raw = gravityStrings.flatMap { it?.split("|") ?: listOf() }
+    var gravity = 0
+    if(raw.contains("center"))
+        gravity = gravity or SafePaddingFlags.ALL
+    if(raw.contains("all"))
+        gravity = gravity or SafePaddingFlags.ALL
+    if(raw.contains("center_horizontal"))
+        gravity = gravity or SafePaddingFlags.LEFT or SafePaddingFlags.RIGHT
+    if(raw.contains("horizontal"))
+        gravity = gravity or SafePaddingFlags.LEFT or SafePaddingFlags.RIGHT
+    if(raw.contains("left"))
+        gravity = gravity or SafePaddingFlags.LEFT
+    if(raw.contains("right"))
+        gravity = gravity or SafePaddingFlags.RIGHT
+    if(raw.contains("center_vertical"))
+        gravity = gravity or SafePaddingFlags.TOP or SafePaddingFlags.BOTTOM
+    if(raw.contains("vertical"))
+        gravity = gravity or SafePaddingFlags.TOP or SafePaddingFlags.BOTTOM
+    if(raw.contains("top"))
+        gravity = gravity or SafePaddingFlags.TOP
+    if(raw.contains("bottom"))
+        gravity = gravity or SafePaddingFlags.BOTTOM
+    return "." + when {
+        gravity and SafePaddingFlags.TOP != 0 && gravity and SafePaddingFlags.BOTTOM != 0 -> "fill"
+        gravity and SafePaddingFlags.TOP != 0 -> "top"
+        gravity and SafePaddingFlags.BOTTOM != 0 -> "bottom"
+        else -> "center"
+    } + when {
+        gravity and SafePaddingFlags.LEFT != 0 && gravity and SafePaddingFlags.RIGHT != 0 -> "Fill"
+        gravity and SafePaddingFlags.LEFT != 0 -> "Left"
+        gravity and SafePaddingFlags.RIGHT != 0 -> "Right"
+        else -> "Center"
+    }
 }
 
 fun uiEdgeInsets(

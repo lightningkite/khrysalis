@@ -11,6 +11,13 @@ import com.lightningkite.khrysalis.views.android.SwapView
 import com.lightningkite.khrysalis.views.ViewGenerator
 
 
+/**
+ *
+ * Binds the view in the swap view to the top ViewGenerator in the ObservableStack.
+ * Any changes to the top of the stack will manifest in the swap view.
+ *
+ */
+
 fun SwapView.bindStack(dependency: ViewDependency, obs: ObservableStack<ViewGenerator>) {
     var currentData = obs.stack.lastOrNull()
     var currentStackSize = obs.stack.size

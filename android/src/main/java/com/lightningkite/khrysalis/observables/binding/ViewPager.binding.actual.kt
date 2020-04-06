@@ -8,6 +8,12 @@ import com.lightningkite.khrysalis.observables.*
 import com.lightningkite.khrysalis.rx.removed
 import com.lightningkite.khrysalis.rx.until
 
+/**
+ *
+ * Binds the items in the ViewPager to the list provided, and the showing index to the observable provided.
+ * Any changes to the observable will change the current page. AS well updating the pager will update the observable.
+ *
+ */
 fun <T> ViewPager.bind(
     items: List<T>,
     showIndex: MutableObservableProperty<Int> = StandardObservableProperty(0),
