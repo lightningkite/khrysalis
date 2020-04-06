@@ -119,9 +119,9 @@ open class SwapView: UIView {
             updateAnimations()
         }
         if let new = to {
-            if isHidden {
+            if visibility == View.GONE {
+                visibility = View.VISIBLE
                 print("Am I in layout? \(includeInLayout)")
-                isHidden = false
                 setNeedsLayout()
                 UIView.animate(withDuration: 0.25, animations: {
                     self.alpha = 1
@@ -179,7 +179,7 @@ open class SwapView: UIView {
                 self.alpha = 0
             }, completion: { _ in
                 print("My bounds are now \(self.frame)")
-                self.isHidden = true
+                self.visibility = View.GONE
             })
         }
     }
