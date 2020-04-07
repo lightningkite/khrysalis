@@ -393,7 +393,7 @@ private class ImageDelegate : NSObject, UIImagePickerControllerDelegate, UINavig
         imagePicker.delegate = self
         imagePicker.sourceType = .camera
         imagePicker.cameraCaptureMode = .photo
-        imagePicker.cameraDevice = .front
+        imagePicker.cameraDevice = .rear
         imagePicker.allowsEditing = false
     }
 
