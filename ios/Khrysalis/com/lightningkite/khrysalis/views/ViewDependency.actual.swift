@@ -323,17 +323,17 @@ public class ViewDependency: NSObject {
     }
 
     //--- ViewDependency.requestImageCamera((Uri)->Unit)
-    public func requestImageCamera(onResult: @escaping (Uri) -> Void) {
+    public func requestImageCamera(front:Bool = false, onResult: @escaping (Uri) -> Void) {
         DispatchQueue.main.async {
             if AVCaptureDevice.authorizationStatus(for: .video) == .authorized {
                 AVCaptureDevice.requestAccess(for: .video) { granted in
                     DispatchQueue.main.async {
                         if granted {
                             if PHPhotoLibrary.authorizationStatus() == .authorized {
-                                self.requestImageCameraRaw(onResult: onResult)
+                                self.requestImageCameraRaw(onResult: onResult, front:front)
                             } else {
                                 PHPhotoLibrary.requestAuthorization {_ in
-                                    self.requestImageCameraRaw(onResult: onResult)
+                                    self.requestImageCameraRaw(onResult: onResult, front:front)
                                 }
                             }
                         }
@@ -344,10 +344,10 @@ public class ViewDependency: NSObject {
                     DispatchQueue.main.async {
                         if granted {
                             if PHPhotoLibrary.authorizationStatus() == .authorized {
-                                self.requestImageCameraRaw(onResult: onResult)
+                                self.requestImageCameraRaw(onResult: onResult, front:front)
                             } else {
                                 PHPhotoLibrary.requestAuthorization {_ in
-                                    self.requestImageCameraRaw(onResult: onResult)
+                                    self.requestImageCameraRaw(onResult: onResult, front:front)
                                 }
                             }
                         }
@@ -356,12 +356,12 @@ public class ViewDependency: NSObject {
             }
         }
     }
-    private func requestImageCameraRaw(onResult: @escaping (Uri) -> Void) {
+    private func requestImageCameraRaw(front:Bool, onResult: @escaping (Uri) -> Void) {
         DispatchQueue.main.async {
             if UIImagePickerController.isSourceTypeAvailable(.camera){
                 let imageDelegate = self.imageDelegate
                 imageDelegate.onImagePicked = onResult
-                imageDelegate.prepareCamera()
+                imageDelegate.prepareCamera(front)
                 self.parentViewController.present(imageDelegate.imagePicker, animated: true, completion: nil)
             }
         }
@@ -389,11 +389,15 @@ private class ImageDelegate : NSObject, UIImagePickerControllerDelegate, UINavig
         imagePicker.allowsEditing = false
     }
 
-    func prepareCamera(){
+    func prepareCamera(front:Bool){
         imagePicker.delegate = self
         imagePicker.sourceType = .camera
         imagePicker.cameraCaptureMode = .photo
-        imagePicker.cameraDevice = .front
+        if front{
+            imagePicker.cameraDevice = .front
+        }else{
+            imagePicker.cameraDevice = .rear
+        }
         imagePicker.allowsEditing = false
     }
 
