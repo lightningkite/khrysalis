@@ -52,12 +52,12 @@ public extension View {
             case .GONE:
                 includeInLayout = false
                 isHidden = true
-            case .VISIBLE:
-                includeInLayout = true
-                isHidden = false
             case .INVISIBLE:
                 includeInLayout = true
                 isHidden = true
+            case .VISIBLE:
+                includeInLayout = true
+                isHidden = false
             }
             setNeedsLayout()
         }
