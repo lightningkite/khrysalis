@@ -1,6 +1,6 @@
 package com.lightningkite.khrysalis.flow
 
-import com.lightningkite.khrysalis.layout.readXMLStyles
+import com.lightningkite.khrysalis.ios.layout.readXMLStyles
 import com.lightningkite.khrysalis.log
 import com.lightningkite.khrysalis.utils.XmlNode
 import com.lightningkite.khrysalis.utils.camelCase

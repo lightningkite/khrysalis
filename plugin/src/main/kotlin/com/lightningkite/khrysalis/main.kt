@@ -1,7 +1,7 @@
 package com.lightningkite.khrysalis
 
-import com.lightningkite.khrysalis.swift.convertKotlinToSwiftByFolder
-import com.lightningkite.khrysalis.typescript.convertKotlinToTypescriptByFolder
+import com.lightningkite.khrysalis.ios.swift.convertKotlinToSwiftByFolder
+import com.lightningkite.khrysalis.web.typescript.convertKotlinToTypescriptByFolder
 import java.io.File
 
 

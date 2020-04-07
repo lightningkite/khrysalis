@@ -1,16 +1,16 @@
 package com.lightningkite.khrysalis.gradle
 
 import com.lightningkite.khrysalis.KhrysalisSettings
-import com.lightningkite.khrysalis.convertResourcesToIos
+import com.lightningkite.khrysalis.ios.convertResourcesToIos
 import com.lightningkite.khrysalis.flow.createFlowDocumentation
 import com.lightningkite.khrysalis.flow.createPrototypeViewGenerators
-import com.lightningkite.khrysalis.layout.LayoutConverter
-import com.lightningkite.khrysalis.layout.convertLayoutsToSwift
-import com.lightningkite.khrysalis.layout.createAndroidLayoutClasses
-import com.lightningkite.khrysalis.layout.normal
+import com.lightningkite.khrysalis.ios.layout.LayoutConverter
+import com.lightningkite.khrysalis.ios.layout.convertLayoutsToSwift
+import com.lightningkite.khrysalis.ios.layout.createAndroidLayoutClasses
+import com.lightningkite.khrysalis.ios.layout.normal
 import com.lightningkite.khrysalis.log
-import com.lightningkite.khrysalis.swift.SwiftAltListener
-import com.lightningkite.khrysalis.swift.convertKotlinToSwift
+import com.lightningkite.khrysalis.ios.swift.SwiftAltListener
+import com.lightningkite.khrysalis.ios.swift.convertKotlinToSwift
 import org.gradle.api.Project
 import java.io.File
 

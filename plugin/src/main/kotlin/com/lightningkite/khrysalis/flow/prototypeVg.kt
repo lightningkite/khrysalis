@@ -1,7 +1,7 @@
 package com.lightningkite.khrysalis.flow
 
-import com.lightningkite.khrysalis.layout.Styles
-import com.lightningkite.khrysalis.swift.TabWriter
+import com.lightningkite.khrysalis.ios.layout.Styles
+import com.lightningkite.khrysalis.ios.swift.TabWriter
 import com.lightningkite.khrysalis.utils.XmlNode
 import com.lightningkite.khrysalis.utils.attributeAsString
 import com.lightningkite.khrysalis.utils.camelCase

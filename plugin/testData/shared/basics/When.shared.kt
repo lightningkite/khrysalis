@@ -1,9 +1,9 @@
 package com.test
 
-fun main(){
+fun main() {
     var number: Int = 0
     var value = 43.toInt()
-    when(value){
+    when (value) {
         1 -> number += 1
         2 -> {
             number += 2
@@ -22,7 +22,17 @@ fun main(){
             number += 16
         }
         value == 43 -> number += 32
-        else -> {}
+        else -> {
+        }
     }
     println(number)
+
+    println(
+        when (value) {
+            0 -> "Hi"
+            else -> {
+                "Nope"
+            }
+        }
+    )
 }

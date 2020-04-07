@@ -1,6 +1,6 @@
 package com.lightningkite.khrysalis.preparse
 
-import com.lightningkite.khrysalis.swift.actuals.visibility
+import com.lightningkite.khrysalis.ios.swift.actuals.visibility
 import org.jetbrains.kotlin.KotlinParser
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap

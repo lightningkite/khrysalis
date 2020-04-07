@@ -1,6 +1,6 @@
 package com.lightningkite.khrysalis.utils
 
-import com.lightningkite.khrysalis.layout.Styles
+import com.lightningkite.khrysalis.ios.layout.Styles
 import org.w3c.dom.Node
 import java.io.File
 import java.lang.Exception

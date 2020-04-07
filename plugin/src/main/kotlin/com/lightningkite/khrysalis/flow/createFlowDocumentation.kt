@@ -4,9 +4,9 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.fasterxml.jackson.module.kotlin.readValues
-import com.lightningkite.khrysalis.layout.readXMLStyles
+import com.lightningkite.khrysalis.ios.layout.readXMLStyles
 import com.lightningkite.khrysalis.log
-import com.lightningkite.khrysalis.swift.FileConversionInfo
+import com.lightningkite.khrysalis.ios.swift.FileConversionInfo
 import com.lightningkite.khrysalis.utils.Versioned
 import com.lightningkite.khrysalis.utils.XmlNode
 import com.lightningkite.khrysalis.utils.camelCase
