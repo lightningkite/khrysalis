@@ -330,10 +330,10 @@ public class ViewDependency: NSObject {
                     DispatchQueue.main.async {
                         if granted {
                             if PHPhotoLibrary.authorizationStatus() == .authorized {
-                                self.requestImageCameraRaw(onResult: onResult, front:front)
+                                self.requestImageCameraRaw(front:front, onResult: onResult)
                             } else {
                                 PHPhotoLibrary.requestAuthorization {_ in
-                                    self.requestImageCameraRaw(onResult: onResult, front:front)
+                                    self.requestImageCameraRaw(front:front, onResult: onResult)
                                 }
                             }
                         }
@@ -344,10 +344,10 @@ public class ViewDependency: NSObject {
                     DispatchQueue.main.async {
                         if granted {
                             if PHPhotoLibrary.authorizationStatus() == .authorized {
-                                self.requestImageCameraRaw(onResult: onResult, front:front)
+                                self.requestImageCameraRaw(front:front, onResult: onResult)
                             } else {
                                 PHPhotoLibrary.requestAuthorization {_ in
-                                    self.requestImageCameraRaw(onResult: onResult, front:front)
+                                    self.requestImageCameraRaw(front:front, onResult: onResult)
                                 }
                             }
                         }
@@ -361,7 +361,7 @@ public class ViewDependency: NSObject {
             if UIImagePickerController.isSourceTypeAvailable(.camera){
                 let imageDelegate = self.imageDelegate
                 imageDelegate.onImagePicked = onResult
-                imageDelegate.prepareCamera(front)
+                imageDelegate.prepareCamera(front: front)
                 self.parentViewController.present(imageDelegate.imagePicker, animated: true, completion: nil)
             }
         }
