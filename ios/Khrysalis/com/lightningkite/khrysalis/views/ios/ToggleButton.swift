@@ -41,7 +41,7 @@ public class ToggleButton: UIButtonWithLayer, CompoundButton {
         }
     }
     
-    private func syncText(){
+    public func syncText(){
         if isOn{
             var toSet = textOn
             if textAllCaps {

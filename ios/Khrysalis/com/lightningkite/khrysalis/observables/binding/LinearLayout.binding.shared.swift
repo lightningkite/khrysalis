@@ -45,7 +45,7 @@ extension LinearLayout {
                 }
             }
             
-            for index in 0 ... value.size - 1 {
+            for index in 0..<value.size {
                 existingViews[ index ].property.value = value[ index ]
             }
         }.until(self.removed)
