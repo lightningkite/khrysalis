@@ -42,7 +42,7 @@ public extension UITableView {
         let boundDataSource = BoundDataSource(source: data, defaultValue: defaultValue, makeView: makeView)
         dataSource = boundDataSource
         delegate = boundDataSource
-        retain(as: "boundDataSource", item: boundDataSource)
+        retain(as: "boundDataSource", item: boundDataSource, until: removed)
 
         self.rowHeight = UITableView.automaticDimension
 
@@ -176,7 +176,7 @@ public extension UITableView {
         let boundDataSource = BoundMultiDataSource(source: data, handler: handler)
         dataSource = boundDataSource
         delegate = boundDataSource
-        retain(as: "boundDataSource", item: boundDataSource)
+        retain(as: "boundDataSource", item: boundDataSource, until: removed)
 
         self.rowHeight = UITableView.automaticDimension
 
@@ -202,7 +202,7 @@ public extension UITableView {
         let boundDataSource = BoundMultiDataSourceSameType(source: data, defaultValue: defaultValue, getType: determineType, makeView: makeView)
         dataSource = boundDataSource
         delegate = boundDataSource
-        retain(as: "boundDataSource", item: boundDataSource)
+        retain(as: "boundDataSource", item: boundDataSource, until: removed)
 
         self.rowHeight = UITableView.automaticDimension
 
@@ -344,8 +344,12 @@ class BoundDataSource<T, VIEW: UIView>: NSObject, UITableViewDataSource, UITable
         if let obs = cell.obs as? StandardObservableProperty<T> {
             obs.value = s[indexPath.row]
         }
+        post {
+            cell.refreshLifecycle()
+        }
         return cell
     }
+    
 }
 
 class BoundMultiDataSourceSameType<T>: NSObject, UITableViewDataSource, UITableViewDelegate, HasAtEnd {

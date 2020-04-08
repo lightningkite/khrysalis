@@ -255,6 +255,8 @@ public class ViewDependency: NSObject {
         }
     }
 
+//--- ViewDependency.requestImageCamera(Boolean, (Uri)->Unit)
+
     //--- ViewDependency.requestImagesGallery((List<Uri>)->Unit)
     public func requestImagesGallery(_ onResult: @escaping (Array<Uri>) -> Void) -> Void {
         if PHPhotoLibrary.authorizationStatus() == .authorized {
