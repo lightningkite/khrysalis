@@ -49,7 +49,7 @@ public extension UITextView {
                 observableWeak?.value = text
             }
         }
-        retain(as: "khrysalis_dg", item: delegate)
+        retain(as: "khrysalis_dg", item: delegate, until: removed)
         self.delegate = delegate
     }
     func bindString(observable: MutableObservableProperty<String>) -> Void {

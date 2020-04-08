@@ -68,7 +68,7 @@ public class LabeledRadioButton : LinearLayout, CompoundButton {
         checkViewContainer.layer.borderWidth = 1
         checkViewContainer.layer.cornerRadius = 12
 
-        let tapRecognizer = UITapGestureRecognizer().addAction { [weak self] in
+        let tapRecognizer = UITapGestureRecognizer().addAction(until: removed) { [weak self] in
             if let self = self {
                 self.isOn = !self.isOn
             }

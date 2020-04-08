@@ -42,7 +42,7 @@ public extension ViewDependency {
             }
         })
         manager.delegate = sd
-        manager.retain(as: "delegate", item: sd)
+        manager.retain(as: "delegate", item: sd, until: DisposeCondition{ _ in })
         
         DispatchQueue.main.asyncAfter(deadline: .now() + timeoutInSeconds) {
             manager.stopUpdatingLocation()

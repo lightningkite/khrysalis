@@ -107,34 +107,37 @@ public extension UIView {
     @objc func onClick(disabledMilliseconds: Int64, _ action: @escaping ()->Void) {
         self.isUserInteractionEnabled = true
         var lastActivated = Date()
-        let recognizer = UITapGestureRecognizer().addAction {
+        let recognizer = UITapGestureRecognizer().addAction(until: removed) {
             if Date().timeIntervalSince(lastActivated) > Double(disabledMilliseconds)/1000.0 {
                 action()
                 lastActivated = Date()
             }
         }
-        retain(as: "onClickRecognizer", item: recognizer)
+        retain(as: "onClickRecognizer", item: recognizer, until: removed)
         self.addGestureRecognizer(recognizer)
+        self.removed.call(DisposableLambda { self.unretain("onClickRecognizer") })
     }
     @objc func onLongClick(_ action: @escaping ()->Void) {
         self.isUserInteractionEnabled = true
         let recognizer = UILongPressGestureRecognizer()
-        recognizer.addAction { [unowned recognizer, weak self] in
+        recognizer.addAction(until: removed) { [unowned recognizer, weak self] in
             if recognizer.state == .ended {
                 action()
             }
         }
-        retain(as: "onLongClickRecognizer", item: recognizer)
+        retain(as: "onLongClickRecognizer", item: recognizer, until: removed)
         self.addGestureRecognizer(recognizer)
+        self.removed.call(DisposableLambda { self.unretain("onLongClickRecognizer") })
     }
     @objc func onLongClickWithGR(_ action: @escaping (UILongPressGestureRecognizer)->Void) {
         self.isUserInteractionEnabled = true
         let recognizer = UILongPressGestureRecognizer()
-        recognizer.addAction { [unowned recognizer, weak self] in
+        recognizer.addAction(until: removed) { [unowned recognizer, weak self] in
             action(recognizer)
         }
-        retain(as: "onLongClickRecognizer", item: recognizer)
+        retain(as: "onLongClickRecognizer", item: recognizer, until: removed)
         self.addGestureRecognizer(recognizer)
+        self.removed.call(DisposableLambda { self.unretain("onLongClickRecognizer") })
     }
 }
 extension UIButton {

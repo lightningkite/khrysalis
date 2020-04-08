@@ -42,7 +42,7 @@ public extension UITextView {
         toolbar.barStyle = UIBarStyle.default
         toolbar.isTranslucent = true
         toolbar.sizeToFit()
-        let doneButton = UIBarButtonItem(title: "Done", style: UIBarButtonItem.Style.plain) { [weak self] in
+        let doneButton = UIBarButtonItem(title: "Done", style: UIBarButtonItem.Style.plain, until: removed) { [weak self] in
             self?.resignFirstResponder()
         }
         let spaceButton = UIBarButtonItem(barButtonSystemItem: UIBarButtonItem.SystemItem.flexibleSpace, target: nil, action: nil)
