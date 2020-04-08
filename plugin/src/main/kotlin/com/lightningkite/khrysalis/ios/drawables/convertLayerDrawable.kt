@@ -15,7 +15,7 @@ fun convertLayerListDrawable(name: String, node: XmlNode, out: Appendable) {
         appendln("    let layer = CALayer()")
         for (subnode in node.children) {
             appendln("    layer.addSublayer({")
-            if(subnode.attributes.containsKey("android:drawable")){
+            if(subnode.allAttributes.containsKey("android:drawable")){
                 appendln(
                     "        let sublayer = ${subnode.attributeAsLayer("android:drawable", "view") ?: "CALayer() /* Unknown */"}"
                 )

@@ -16,7 +16,7 @@ fun convertSelectorDrawable(name: String, node: XmlNode, out: Appendable) {
         appendln("    let layer = CALayer()")
         node.children.forEachIndexed { index, subnode ->
             appendln("    let part${index + 1}: CALayer = {")
-            if(subnode.attributes.containsKey("android:drawable")){
+            if(subnode.allAttributes.containsKey("android:drawable")){
                 appendln(
                     "        let sublayer = ${subnode.attributeAsLayer("android:drawable", "view") ?: "CALayer() /* Unknown */"}"
                 )

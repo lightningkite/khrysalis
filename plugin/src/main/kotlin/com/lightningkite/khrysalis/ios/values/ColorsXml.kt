@@ -11,10 +11,10 @@ fun File.translateXMLColors(out: Appendable) {
         .children
         .asSequence()
         .filter { it.name == "color" }
-        .filter { it.attributes["name"] !in ignored }
+        .filter { it.allAttributes["name"] !in ignored }
         .forEach {
             val raw = it.element.textContent
-            val name = (it.attributes["name"] ?: "noname").camelCase()
+            val name = (it.allAttributes["name"] ?: "noname").camelCase()
             val color = when{
                 raw.startsWith("@color/") -> {
                     val colorName = raw.removePrefix("@color/")

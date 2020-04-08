@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.utils
 
+import com.lightningkite.khrysalis.generic.VirtualType
 import com.lightningkite.khrysalis.ios.layout.Styles
 import org.w3c.dom.Node
 import java.io.File
@@ -11,9 +12,19 @@ class XmlNode(
     val styles: Styles,
     val directory: File,
     val additionalAttributes: Map<String, String> = mapOf()
-) {
+): VirtualType {
+
+    class Attribute(override val type: String, val value: String): VirtualType {
+        override val parts: Iterable<Any> get() = listOf(value)
+    }
+
+    override val parts: Iterable<Attribute>
+        get() = directAttributes.entries.map { it -> Attribute(it.key, it.value) }
+    override val type: String
+        get() = element.nodeValue
+
     val name get() = element.nodeName
-    val attributes: Map<String, String> by lazy {
+    val allAttributes: Map<String, String> by lazy {
         if (!element.hasAttributes()) return@lazy mapOf<String, String>()
         val map = HashMap<String, String>()
         element.attributes.let { att ->
@@ -28,6 +39,17 @@ class XmlNode(
                     map[k] = v
                 }
             }
+        }
+        element.attributes.let { att ->
+            (0 until att.length).associateTo(map) { att.item(it).let { it.nodeName to it.nodeValue } }
+        }
+        additionalAttributes + map
+    }
+    val directAttributes: Map<String, String> by lazy {
+        if (!element.hasAttributes()) return@lazy mapOf<String, String>()
+        val map = HashMap<String, String>()
+        element.attributes.let { att ->
+            (0 until att.length).associateTo(map) { att.item(it).let { it.nodeName to it.nodeValue } }
         }
         element.attributes.let { att ->
             (0 until att.length).associateTo(map) { att.item(it).let { it.nodeName to it.nodeValue } }
@@ -50,7 +72,7 @@ class XmlNode(
                                 ?: return@map XmlNode(it, styles, directory)
                             val node =
                                 read(File(directory, filename), styles)
-                            XmlNode(it, styles, directory, node.attributes)
+                            XmlNode(it, styles, directory, node.allAttributes)
                         } catch(e:Exception){
                             e.printStackTrace()
                             XmlNode(it, styles, directory)
@@ -74,21 +96,21 @@ class XmlNode(
 
 
 fun XmlNode.attributeAsString(key: String): String? {
-    val raw = attributes[key] ?: return null
+    val raw = allAttributes[key] ?: return null
     return when {
         raw.startsWith("@string/") -> "ResourcesStrings.${raw.removePrefix("@string/").camelCase()}"
         else -> "\"$raw\""
     }
 }
 fun XmlNode.attributeAsStringKotlin(key: String): String? {
-    val raw = attributes[key] ?: return null
+    val raw = allAttributes[key] ?: return null
     return when {
         raw.startsWith("@string/") -> "ResourcesStrings.${raw.removePrefix("@string/").camelCase()}"
         else -> "\"${raw.replace("$", "\\$")}\""
     }
 }
 fun XmlNode.attributeAsGravityKotlin(key: String): Int? {
-    val raw = attributes[key]?.split('|') ?: return null
+    val raw = allAttributes[key]?.split('|') ?: return null
     var gravity = 0
     if(raw.contains("center"))
         gravity = gravity or 0x00000011
@@ -115,7 +137,7 @@ object SafePaddingFlags {
     const val ALL: Int = 15
 }
 fun XmlNode.attributeAsEdgeFlagsKotlin(key: String): Int? {
-    val raw = attributes[key]?.split('|') ?: return null
+    val raw = allAttributes[key]?.split('|') ?: return null
     var gravity = 0
     if(raw.contains("center"))
         gravity = gravity or SafePaddingFlags.ALL
@@ -141,19 +163,19 @@ fun XmlNode.attributeAsEdgeFlagsKotlin(key: String): Int? {
 }
 
 fun XmlNode.attributeAsInt(key: String): String? {
-    val raw = attributes[key] ?: return null
+    val raw = allAttributes[key] ?: return null
     return raw.filter { it.isDigit() }.toIntOrNull()?.toString()
 }
 
 fun XmlNode.attributeAsDimension(key: String): String? {
-    val raw = attributes[key] ?: return null
+    val raw = allAttributes[key] ?: return null
     return when {
         raw.startsWith("@dimen/") -> "ResourcesDimensions.${raw.removePrefix("@dimen/").camelCase()}"
         else -> raw.filter { it.isDigit() || it == '.' || it == '-' }.toIntOrNull()?.toString()
     }
 }
 fun XmlNode.attributeAsDrawable(key: String): String? {
-    val raw = attributes[key] ?: return null
+    val raw = allAttributes[key] ?: return null
     return when {
         raw.startsWith("@drawable/") -> "ResourcesDrawables.${raw.removePrefix("@drawable/").camelCase()}"
         else -> null
@@ -161,7 +183,7 @@ fun XmlNode.attributeAsDrawable(key: String): String? {
 }
 fun XmlNode.attributeAsLayer(key: String, forView: String = "nil"): String? = attributeAsDrawable(key)?.plus("($forView)")
 fun XmlNode.attributeAsBoolean(key: String): Boolean? {
-    val raw = attributes[key] ?: return null
+    val raw = allAttributes[key] ?: return null
     return when(raw.toLowerCase()) {
         "true" -> true
         "false" -> false
@@ -169,14 +191,14 @@ fun XmlNode.attributeAsBoolean(key: String): Boolean? {
     }
 }
 fun XmlNode.attributeAsDouble(key: String): Double? {
-    val raw = attributes[key] ?: return null
+    val raw = allAttributes[key] ?: return null
     return when {
         else -> raw.filter { it.isDigit() || it == '.' }.toDoubleOrNull()
     }
 }
 
 fun XmlNode.attributeAsImage(key: String): String? {
-    val raw = attributes[key] ?: return null
+    val raw = allAttributes[key] ?: return null
     return when {
         raw.startsWith("@drawable/") -> "UIImage(named: \"${raw.removePrefix("@drawable/")}\") ?? ${attributeAsLayer(key, "view")}.toImage()"
         raw.startsWith("@mipmap/") -> "UIImage(named: \"${raw.removePrefix("@mipmap/")}\")"
@@ -186,7 +208,7 @@ fun XmlNode.attributeAsImage(key: String): String? {
 
 
 fun XmlNode.attributeAsColor(key: String): String? {
-    val raw = attributes[key] ?: return null
+    val raw = allAttributes[key] ?: return null
     return when {
         raw.startsWith("@color/") -> {
             val colorName = raw.removePrefix("@color/")

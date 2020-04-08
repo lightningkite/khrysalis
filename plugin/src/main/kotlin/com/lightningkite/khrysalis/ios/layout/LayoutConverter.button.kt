@@ -29,7 +29,7 @@ val LayoutConverter.Companion.buttonViews
                 node.attributeAsInt("android:numStars")?.let {
                     appendln("view.settings.totalStars = $it")
                 }
-                when (node.attributes["style"]) {
+                when (node.allAttributes["style"]) {
                     "?android:attr/ratingBarStyle" -> {
                         appendln("view.settings.starSize = 48")
                     }
@@ -48,7 +48,7 @@ val LayoutConverter.Companion.buttonViews
                 }
             },
             ViewType("CheckBox", "LabeledCheckbox", "View")  { node ->
-                node.attributes["android:gravity"]?.split('|')?.forEach {
+                node.allAttributes["android:gravity"]?.split('|')?.forEach {
                     when(it){
                         "top" -> appendln("view.verticalAlign = .start")
                         "bottom" -> appendln("view.verticalAlign = .end")
@@ -58,7 +58,7 @@ val LayoutConverter.Companion.buttonViews
                 handleCommonText(node, "view.labelView")
             },
             ViewType("RadioButton", "LabeledRadioButton", "View") { node ->
-                node.attributes["android:gravity"]?.split('|')?.forEach {
+                node.allAttributes["android:gravity"]?.split('|')?.forEach {
                     when(it){
                         "top" -> appendln("view.verticalAlign = .start")
                         "bottom" -> appendln("view.verticalAlign = .end")
@@ -68,7 +68,7 @@ val LayoutConverter.Companion.buttonViews
                 handleCommonText(node, "view.labelView")
             },
             ViewType("Switch", "LabeledSwitch", "View") { node ->
-                node.attributes["android:gravity"]?.split('|')?.forEach {
+                node.allAttributes["android:gravity"]?.split('|')?.forEach {
                     when(it){
                         "top" -> appendln("view.verticalAlign = .start")
                         "bottom" -> appendln("view.verticalAlign = .end")
@@ -125,7 +125,7 @@ val LayoutConverter.Companion.buttonViews
                     appendln("view.setTitleColor($it, for: .normal)")
                 }
 
-                node.attributes["android:gravity"]
+                node.allAttributes["android:gravity"]
                     ?.split('|')
                     ?.asSequence()
                     ?.mapNotNull { horizontalGravityWords[it] }
@@ -141,7 +141,7 @@ val LayoutConverter.Companion.buttonViews
                     }
 
 
-                node.attributes["android:gravity"]?.let { text ->
+                node.allAttributes["android:gravity"]?.let { text ->
                     appendln("view.textGravity = ${align(null, null, text, "center")}")
                 }
                 node.attributeAsDimension("android:drawablePadding")?.let { text ->
@@ -168,7 +168,7 @@ val LayoutConverter.Companion.buttonViews
                     appendln("view.iconLayer = $text")
                 }
                 appendln(
-                    "view.contentMode = ${when (node.attributes["android:scaleType"]) {
+                    "view.contentMode = ${when (node.allAttributes["android:scaleType"]) {
                         "fitXY" -> ".scaleToFill"
                         "centerCrop" -> ".scaleAspectFill"
                         "centerInside" -> ".scaleAspectFit"

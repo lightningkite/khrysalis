@@ -1,6 +1,8 @@
 package com.lightningkite.khrysalis
 
 import com.lightningkite.khrysalis.ios.swift.convertKotlinToSwiftByFolder
+import com.lightningkite.khrysalis.web.layout.convertLayoutsToHtml
+import com.lightningkite.khrysalis.web.layout.convertLayoutsToHtmlRaw
 import com.lightningkite.khrysalis.web.typescript.convertKotlinToTypescriptByFolder
 import java.io.File
 
@@ -19,11 +21,15 @@ fun main(vararg args: String) {
 //        baseSwift = File("./testDataOutput/shared"),
 //        clean = true
 //    )
-    convertKotlinToTypescriptByFolder(
-        interfacesOut = File("./testDataOutputTs/interfaces.json"),
-        baseKotlin = File("./testData/shared"),
-        baseTs = File("./testDataOutputTs/shared"),
-        clean = true
+//    convertKotlinToTypescriptByFolder(
+//        interfacesOut = File("./testDataOutputTs/interfaces.json"),
+//        baseKotlin = File("./testData/shared"),
+//        baseTs = File("./testDataOutputTs/shared"),
+//        clean = true
+//    )
+    convertLayoutsToHtmlRaw(
+        androidMainFolder = File("testData"),
+        webFolder = File("testDataOutputTs")
     )
 //    convertResourcesToIos(
 //        androidResourcesFolder = File("./testData/res"),

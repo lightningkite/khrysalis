@@ -112,38 +112,38 @@ private fun generateFile(
                     line("}")
                 }
             }
-            node.attributes["tools:print"]?.let {
+            node.allAttributes["tools:print"]?.let {
                 println(it)
             }
-            node.attributes[ViewNode.attributePush]?.let {
+            node.allAttributes[ViewNode.attributePush]?.let {
                 val otherViewNode =
                     viewNodeMap[it.removePrefix("@layout/").camelCase().capitalize()] ?: return@let
-                val stackName = node.attributes[ViewNode.attributeOnStack] ?: "stack"
+                val stackName = node.allAttributes[ViewNode.attributeOnStack] ?: "stack"
                 makeAction {
                     line("$stackName.push(${makeView(otherViewNode, stackName, view)})")
                 }
-            } ?: node.attributes[ViewNode.attributeSwap]?.let {
+            } ?: node.allAttributes[ViewNode.attributeSwap]?.let {
                 val otherViewNode =
                     viewNodeMap[it.removePrefix("@layout/").camelCase().capitalize()] ?: return@let
-                val stackName = node.attributes[ViewNode.attributeOnStack] ?: "stack"
+                val stackName = node.allAttributes[ViewNode.attributeOnStack] ?: "stack"
                 makeAction {
                     line("this.$stackName.swap(${makeView(otherViewNode, stackName, view)})")
                 }
-            } ?: node.attributes[ViewNode.attributePopTo]?.let {
+            } ?: node.allAttributes[ViewNode.attributePopTo]?.let {
                 val otherViewNode = it.removePrefix("@layout/").camelCase().capitalize()
-                val stackName = node.attributes[ViewNode.attributeOnStack] ?: "stack"
+                val stackName = node.allAttributes[ViewNode.attributeOnStack] ?: "stack"
                 makeAction {
                     line("this.$stackName.popTo { it -> it is ${otherViewNode}VG }")
                 }
-            } ?: node.attributes[ViewNode.attributeReset]?.let {
+            } ?: node.allAttributes[ViewNode.attributeReset]?.let {
                 val otherViewNode =
                     viewNodeMap[it.removePrefix("@layout/").camelCase().capitalize()] ?: return@let
-                val stackName = node.attributes[ViewNode.attributeOnStack] ?: "stack"
+                val stackName = node.allAttributes[ViewNode.attributeOnStack] ?: "stack"
                 makeAction {
                     line("this.$stackName.reset(${makeView(otherViewNode, stackName, view)})")
                 }
-            } ?: node.attributes[ViewNode.attributePop]?.let {
-                val stackNames = node.attributes[ViewNode.attributeOnStack]?.split(';') ?: listOf("stack")
+            } ?: node.allAttributes[ViewNode.attributePop]?.let {
+                val stackNames = node.allAttributes[ViewNode.attributeOnStack]?.split(';') ?: listOf("stack")
                 if (stackNames.size == 1) {
                     makeAction {
                         line("this.${stackNames.first()}.pop()")
@@ -161,8 +161,8 @@ private fun generateFile(
                         )
                     }
                 }
-            } ?: node.attributes[ViewNode.attributeDismiss]?.let {
-                val stackNames = node.attributes[ViewNode.attributeOnStack]?.split(';') ?: listOf("stack")
+            } ?: node.allAttributes[ViewNode.attributeDismiss]?.let {
+                val stackNames = node.allAttributes[ViewNode.attributeOnStack]?.split(';') ?: listOf("stack")
                 if (stackNames.size == 1) {
                     makeAction {
                         line("this.${stackNames.first()}.dismiss()")
@@ -248,7 +248,7 @@ private fun generateFile(
 
                 fun handleNode(node: XmlNode, prefix: String) {
 
-                    val view = node.attributes["android:id"]?.removePrefix("@+id/")?.camelCase()?.let {
+                    val view = node.allAttributes["android:id"]?.removePrefix("@+id/")?.camelCase()?.let {
                         if (node.name == "include") it + ".xmlRoot"
                         else it
                     }?.let { prefix + it }
@@ -261,14 +261,14 @@ private fun generateFile(
                         if(node.name == "com.google.android.gms.maps.MapView"){
                             line("$view.bind(dependency)")
                         }
-                        node.attributes["tools:text"]?.let {
+                        node.allAttributes["tools:text"]?.let {
                             if (it.startsWith("@string")) {
                                 line("""$view.bindStringRes(ConstantObservableProperty(R.string.${it.removePrefix("@string/")}))""")
                             } else {
                                 line("""$view.bindString(ConstantObservableProperty("${it.replace("$", "\\$")}"))""")
                             }
                         }
-                        node.attributes["tools:src"]?.let {
+                        node.allAttributes["tools:src"]?.let {
                             if (it.startsWith("@drawable")) {
                                 line("""$view.setImageResource(R.drawable.${it.removePrefix("@drawable/")})""")
                             }
@@ -282,7 +282,7 @@ private fun generateFile(
                                 }
                             }
                         }
-                        node.attributes["tools:listitem"]?.let {
+                        node.allAttributes["tools:listitem"]?.let {
                             val xmlName = it.removePrefix("@layout/").camelCase().capitalize().plus("Xml")
                             val otherViewNode = viewNodeMap[it.removePrefix("@layout/").camelCase().capitalize()]
                             line("$view.bind(")
@@ -312,8 +312,8 @@ private fun generateFile(
                             line(")")
                         }
                         handleNodeClick(node, view)
-                        node.attributes[ViewNode.attributeStackId]?.let { stackName ->
-                            node.attributes[ViewNode.attributeStackDefault]?.let stackDefault@{
+                        node.allAttributes[ViewNode.attributeStackId]?.let { stackName ->
+                            node.allAttributes[ViewNode.attributeStackDefault]?.let stackDefault@{
                                 val otherViewNode =
                                     viewNodeMap[it.removePrefix("@layout/").camelCase().capitalize()]
                                         ?: return@stackDefault
@@ -326,15 +326,15 @@ private fun generateFile(
                             line("$view.bindStack(dependency, ${stackName})")
                         }
                     } else {
-                        if (node.attributes.keys.any { it.startsWith("tools:") }) {
+                        if (node.allAttributes.keys.any { it.startsWith("tools:") }) {
                             println("WARNING: ${xml.name}: Element type ${node.name} has tools but no id")
                         }
                     }
 
                     if (node.name == "include") {
-                        val id = node.attributes["android:id"]?.removePrefix("@+id/")?.camelCase()
+                        val id = node.allAttributes["android:id"]?.removePrefix("@+id/")?.camelCase()
                         if (id != null) {
-                            node.attributes["layout"]?.let {
+                            node.allAttributes["layout"]?.let {
                                 val file = xml.parentFile.resolve(it.removePrefix("@layout/").plus(".xml"))
                                 handleNode(XmlNode.read(file, styles), "$prefix$id.")
                             }

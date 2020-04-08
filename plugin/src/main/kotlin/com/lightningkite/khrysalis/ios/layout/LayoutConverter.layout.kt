@@ -31,27 +31,27 @@ val LayoutConverter.Companion.layoutViews
                 appendln("}")
             },
             ViewType("LinearLayout", "LinearLayout", "View", handlesPadding = true) { node ->
-                val isHorizontal = when (node.attributes["android:orientation"]) {
+                val isHorizontal = when (node.allAttributes["android:orientation"]) {
                     "horizontal" -> true
                     "vertical" -> false
                     else -> true
                 }
                 appendln("view.orientation = " + if (isHorizontal) ".x" else ".y")
 
-                val dividerStart = node.attributes["android:showDividers"]?.contains("beginning") ?: false
-                val dividerMiddle = node.attributes["android:showDividers"]?.contains("middle") ?: false
-                val dividerEnd = node.attributes["android:showDividers"]?.contains("end") ?: false
+                val dividerStart = node.allAttributes["android:showDividers"]?.contains("beginning") ?: false
+                val dividerMiddle = node.allAttributes["android:showDividers"]?.contains("middle") ?: false
+                val dividerEnd = node.allAttributes["android:showDividers"]?.contains("end") ?: false
 
                 setPadding(node)
 
-                val defaultGravity = node.attributes["android:gravity"]
+                val defaultGravity = node.allAttributes["android:gravity"]
                 appendln("view.gravity = ${align(null, null, defaultGravity)}")
 
                 val dividerText = if (isHorizontal)
-                    node.attributes["tools:iosDivider"]
+                    node.allAttributes["tools:iosDivider"]
                         ?: "view.addSubview(UIView(), size: CGSize(width: 1, height: 1), gravity: AlignPair(horizontal: .center, vertical: .fill)) { div in div.backgroundColor = .gray }"
                 else
-                    node.attributes["tools:iosDivider"]
+                    node.allAttributes["tools:iosDivider"]
                         ?: "view.addSubview(UIView(), size: CGSize(width: 1, height: 1), gravity: AlignPair(horizontal: .fill, vertical: .center)) { div in div.backgroundColor = .gray }"
 
                 appendln()
@@ -91,9 +91,9 @@ val LayoutConverter.Companion.layoutViews
                         append("gravity: ")
                         append(
                             align(
-                                width = child.attributes["android:layout_width"],
-                                height = child.attributes["android:layout_height"],
-                                gravityStrings = *arrayOf(child.attributes["android:layout_gravity"], defaultGravity)
+                                width = child.allAttributes["android:layout_width"],
+                                height = child.allAttributes["android:layout_height"],
+                                gravityStrings = *arrayOf(child.allAttributes["android:layout_gravity"], defaultGravity)
                             )
                         )
                         appendln(",")
@@ -125,7 +125,7 @@ val LayoutConverter.Companion.layoutViews
             ViewType("FrameLayout", "FrameLayout", "View", handlesPadding = true) { node ->
                 setPadding(node)
 
-                val defaultGravity = node.attributes["android:gravity"]
+                val defaultGravity = node.allAttributes["android:gravity"]
 
                 node.children.forEach { child ->
                     appendln("view.addSubview(")
@@ -158,9 +158,9 @@ val LayoutConverter.Companion.layoutViews
                     append("gravity: ")
                     append(
                         align(
-                            width = child.attributes["android:layout_width"],
-                            height = child.attributes["android:layout_height"],
-                            gravityStrings = *arrayOf(child.attributes["android:layout_gravity"], defaultGravity)
+                            width = child.allAttributes["android:layout_width"],
+                            height = child.allAttributes["android:layout_height"],
+                            gravityStrings = *arrayOf(child.allAttributes["android:layout_gravity"], defaultGravity)
                         )
                     )
                     appendln()

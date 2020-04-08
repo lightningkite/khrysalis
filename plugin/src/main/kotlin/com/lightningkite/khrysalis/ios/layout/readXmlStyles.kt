@@ -11,11 +11,11 @@ fun File.readXMLStyles(): Map<String, Map<String, String>> {
         .asSequence()
         .filter { it.name == "style" }
         .associate {
-            val name = (it.attributes["name"] ?: "noname")
+            val name = (it.allAttributes["name"] ?: "noname")
             val map = it.children.associate {
-                (it.attributes["name"] ?: "noname") to it.element.textContent
+                (it.allAttributes["name"] ?: "noname") to it.element.textContent
             }
-            val parent = it.attributes["parent"]?.removePrefix("@style/")
+            val parent = it.allAttributes["parent"]?.removePrefix("@style/")
             name to IntermediateStyle(parent, map)
         }
         .let {

@@ -6,7 +6,7 @@ import java.lang.Appendable
 
 fun convertShapeDrawable(name: String, node: XmlNode, out: Appendable) {
     println("Writing shape $name")
-    when (node.attributes["android:shape"]) {
+    when (node.allAttributes["android:shape"]) {
         "oval" -> {
             val width = 100.0
             val height = 100.0
@@ -83,7 +83,7 @@ fun convertShapeDrawable(name: String, node: XmlNode, out: Appendable) {
                                     "android:topLeftRadius" to ".layerMinXMinYCorner",
                                     "android:bottomRightRadius" to ".layerMaxXMaxYCorner",
                                     "android:topRightRadius" to ".layerMaxXMinYCorner"
-                                ).filterKeys { corners.attributes.containsKey(it) }.values.joinToString()
+                                ).filterKeys { corners.allAttributes.containsKey(it) }.values.joinToString()
                             )
                             appendln("]")
                         }

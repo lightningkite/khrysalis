@@ -7,13 +7,13 @@ val LayoutConverter.Companion.displayViews
     get() = LayoutConverter(
         viewTypes = ViewType.mapOf(
             ViewType("View", "UIView") { node ->
-                node.attributes["android:id"]?.let { raw ->
+                node.allAttributes["android:id"]?.let { raw ->
                     val name = raw.removePrefix("@+id/").removePrefix("@id/").camelCase()
                     appendln("self.$name = view")
                     bindings[name] =
                         converter.viewTypes[node.name]?.iosName ?: (node.name.substringAfterLast('.'))
                 }
-                node.attributes["android:background"]?.let { raw ->
+                node.allAttributes["android:background"]?.let { raw ->
                     when {
                         raw.startsWith("@drawable/") -> {
                             node.attributeAsLayer("android:background", "view")!!.let {
@@ -51,16 +51,16 @@ val LayoutConverter.Companion.displayViews
                 node.attributeAsDouble("android:rotation")?.let {
                     appendln("view.transform = CGAffineTransform(rotationAngle: ${it * PI / 180.0})")
                 }
-                node.attributes["android:visibility"]?.let {
+                node.allAttributes["android:visibility"]?.let {
                     appendln("view.visibility = View.${it.toUpperCase()}")
                 }
-                node.attributes["tools:systemEdges"]?.let {
+                node.allAttributes["tools:systemEdges"]?.let {
                     appendln("view.safeInsets(align: ${alignFill(it)})")
                 }
-                node.attributes["tools:systemEdgesSizing"]?.let {
+                node.allAttributes["tools:systemEdgesSizing"]?.let {
                     appendln("view.safeInsetsSizing(align: ${alignFill(it)})")
                 }
-                node.attributes["tools:systemEdgesBoth"]?.let {
+                node.allAttributes["tools:systemEdgesBoth"]?.let {
                     appendln("view.safeInsetsBoth(align: ${alignFill(it)})")
                 }
             },
@@ -79,7 +79,7 @@ val LayoutConverter.Companion.displayViews
                 }
                 appendln("view.clipsToBounds = true")
                 appendln(
-                    "view.contentMode = ${when (node.attributes["android:scaleType"]) {
+                    "view.contentMode = ${when (node.allAttributes["android:scaleType"]) {
                         "fitXY" -> ".scaleToFill"
                         "centerCrop" -> ".scaleAspectFill"
                         "centerInside" -> ".scaleAspectFit"
@@ -107,9 +107,9 @@ val LayoutConverter.Companion.displayViews
             },
             ViewType("com.lightningkite.khrysalis.views.CustomView", "CustomView", "View") { node ->
 
-                node.attributes["android:id"]?.let { raw ->
+                node.allAttributes["android:id"]?.let { raw ->
                     val id = raw.removePrefix("@+id/").removePrefix("@id/").camelCase()
-                    (node.attributes["app:delegateClass"] ?: node.attributes["delegateClass"])?.let { raw ->
+                    (node.allAttributes["app:delegateClass"] ?: node.allAttributes["delegateClass"])?.let { raw ->
                         val name = raw.removePrefix("@+id/").removePrefix("@id/").camelCase().substringAfterLast('.')
                         appendln("let dg = $name()")
                         appendln("view.delegate = dg")
@@ -136,10 +136,10 @@ internal fun OngoingLayoutConversion.handleCommonText(node: XmlNode, viewHandle:
     val size = node.attributeAsDimension("android:textSize") ?: "12"
 
     val fontStylesFromFamily = listOfNotNull(
-        if(node.attributes["android:fontFamily"]?.contains("bold", true) == true) "bold" else null,
-        if(node.attributes["android:fontFamily"]?.contains("light", true) == true) "light" else null
+        if(node.allAttributes["android:fontFamily"]?.contains("bold", true) == true) "bold" else null,
+        if(node.allAttributes["android:fontFamily"]?.contains("light", true) == true) "light" else null
     )
-    val fontStyles = (node.attributes["android:textStyle"]?.split('|') ?: listOf()) + fontStylesFromFamily
+    val fontStyles = (node.allAttributes["android:textStyle"]?.split('|') ?: listOf()) + fontStylesFromFamily
     appendln("$viewHandle.font = UIFont.get(size: $size, style: [${fontStyles.joinToString { "\"$it\"" }}])")
 
     node.attributeAsDimension("android:letterSpacing")?.let {
@@ -166,7 +166,7 @@ internal fun OngoingLayoutConversion.handleCommonText(node: XmlNode, viewHandle:
             appendln("$viewHandle.textColor = $it")
         }
     }
-    node.attributes["android:gravity"]?.let {
+    node.allAttributes["android:gravity"]?.let {
         it.split('|')
             .asSequence()
             .mapNotNull { horizontalGravityWords[it] }

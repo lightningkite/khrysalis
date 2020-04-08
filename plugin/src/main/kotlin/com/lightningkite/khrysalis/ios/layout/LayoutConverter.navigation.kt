@@ -10,14 +10,14 @@ val LayoutConverter.Companion.navigationViews
                 appendln("view.tintColor = .clear")
                 appendln("view.backgroundColor = .clear")
 
-                node.attributes["app:tabMode"]?.let {
+                node.allAttributes["app:tabMode"]?.let {
                     when (it) {
                         "scrollable" -> appendln("view.apportionsSegmentWidthsByContent = true")
                         "fixed" -> appendln("view.apportionsSegmentWidthsByContent = false")
                         else -> appendln("view.apportionsSegmentWidthsByContent = false")
                     }
                 }
-                node.attributes["app:tabGravity"]?.let {
+                node.allAttributes["app:tabGravity"]?.let {
                     when (it) {
                         "center" -> appendln("view.apportionsSegmentWidthsByContent = true")
                         "fill" -> appendln("view.apportionsSegmentWidthsByContent = false")
@@ -57,7 +57,7 @@ val LayoutConverter.Companion.navigationViews
                 appendln("view.separatorStyle = .none")
             },
             ViewType("com.lightningkite.khrysalis.views.android.VerticalRecyclerView", "UITableView", "androidx.recyclerview.widget.RecyclerView") { node ->
-                val pos = (node.attributes.get("app:dividerPositions")?.split('|') ?: node.attributes.get("dividerPositions")?.split('|')) ?: listOf()
+                val pos = (node.allAttributes.get("app:dividerPositions")?.split('|') ?: node.allAttributes.get("dividerPositions")?.split('|')) ?: listOf()
                 when{
                     pos.contains("start") -> appendln("//Separator position 'start' not supported yet")
                     pos.contains("between") -> appendln("view.separatorStyle = .singleLine")
@@ -74,7 +74,7 @@ val LayoutConverter.Companion.navigationViews
                 (node.attributeAsDimension("app:dividerHorizontalPadding") ?: node.attributeAsDimension("dividerHorizontalPadding") ?: "0").let {
                     appendln("view.separatorInset = UIEdgeInsets(top: 0, left: $it, bottom: 0, right: $it)")
                 }
-                if(node.attributes["android:background"] == null){
+                if(node.allAttributes["android:background"] == null){
                     appendln("view.backgroundColor = UIColor.clear")
                 }
             },

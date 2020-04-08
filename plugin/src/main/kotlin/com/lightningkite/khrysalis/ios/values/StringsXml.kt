@@ -11,7 +11,7 @@ fun File.readXMLStrings(): Map<String, String> {
         .asSequence()
         .filter { it.name == "string" }
         .associate {
-            (it.attributes["name"] ?: "noname") to it.element.textContent
+            (it.allAttributes["name"] ?: "noname") to it.element.textContent
         }
 }
 

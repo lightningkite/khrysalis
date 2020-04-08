@@ -36,13 +36,13 @@ fun convertVectorDrawable(name: String, node: XmlNode, out: Appendable) {
         appendln("    let layer = CALayer()")
         node.children.filter { it.name == "path" }.forEach { subnode ->
             subnode.children
-                .find { it.name == "aapt:attr" && it.attributes["name"] == "android:fillColor" }
+                .find { it.name == "aapt:attr" && it.allAttributes["name"] == "android:fillColor" }
                 ?.children?.find { it.name == "gradient" }
                 ?.let { gradientNode ->
 
                     appendln("    layer.addSublayer({")
                     appendln("        let mask = CAShapeLayer()")
-                    subnode.attributes["android:pathData"]?.let { pathData ->
+                    subnode.allAttributes["android:pathData"]?.let { pathData ->
                         appendln("        let path = CGMutablePath()")
                         pathDataToSwift(pathData)
                         appendln("        mask.path = path")
@@ -70,7 +70,7 @@ fun convertVectorDrawable(name: String, node: XmlNode, out: Appendable) {
                 } ?: run {
                 appendln("    layer.addSublayer({")
                 appendln("        let sublayer = CAShapeLayer()")
-                subnode.attributes["android:pathData"]?.let { pathData ->
+                subnode.allAttributes["android:pathData"]?.let { pathData ->
                     appendln("        let path = CGMutablePath()")
                     pathDataToSwift(pathData)
                     appendln("        sublayer.path = path")

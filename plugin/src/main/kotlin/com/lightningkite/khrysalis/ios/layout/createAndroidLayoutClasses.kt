@@ -59,11 +59,11 @@ private fun File.translateLayoutXmlAndroid(styles: Styles, packageName: String, 
     val emitCurse = ArrayList<String>()
 
     fun addBindings(node: XmlNode) {
-        node.attributes["android:id"]?.let { raw ->
+        node.allAttributes["android:id"]?.let { raw ->
             val id = raw.removePrefix("@+id/").removePrefix("@id/")
             val camelCasedId = id.camelCase()
             if (node.name == "include") {
-                val layout = node.attributes["layout"]!!.removePrefix("@layout/")
+                val layout = node.allAttributes["layout"]!!.removePrefix("@layout/")
                 sublayouts.add(
                     AndroidSubLayout(
                         name = camelCasedId,
@@ -89,7 +89,7 @@ private fun File.translateLayoutXmlAndroid(styles: Styles, packageName: String, 
                 node.attributeAsEdgeFlagsKotlin("tools:systemEdgesBoth")?.let {
                     emitCurse.add("$name.safeInsetsBoth($it)")
                 }
-                (node.attributes["app:delegateClass"] ?: node.attributes["delegateClass"])?.let {
+                (node.allAttributes["app:delegateClass"] ?: node.allAttributes["delegateClass"])?.let {
                     delegateBindings.add(
                         AndroidDelegateHook(
                             name = raw.removePrefix("@+id/").removePrefix("@id/").camelCase(),

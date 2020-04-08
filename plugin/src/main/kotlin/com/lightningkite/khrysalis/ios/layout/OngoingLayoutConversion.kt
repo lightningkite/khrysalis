@@ -18,7 +18,7 @@ data class OngoingLayoutConversion(
     val colorSets = layoutsDirectory.resolve("../color").listFiles()?.map { it.nameWithoutExtension }?.toSet() ?: setOf()
     var controlIndex: Int = 0
     fun XmlNode.setToColorGivenControl(key: String, controlView: String = "view", write: (color: String) -> Unit): Boolean {
-        val raw = this.attributes[key] ?: return false
+        val raw = this.allAttributes[key] ?: return false
         return when {
             raw.startsWith("@color/") || raw.startsWith("@android:color/") -> {
                 val colorName = raw.removePrefix("@color/").removePrefix("@android:color/")
@@ -44,8 +44,8 @@ data class OngoingLayoutConversion(
 
     fun construct(node: XmlNode) {
         if (node.name == "include") {
-            val className = node.attributes["layout"]!!.removePrefix("@layout/").camelCase().capitalize().plus("Xml")
-            val id = node.attributes["android:id"]?.removePrefix("@id/")?.removePrefix("@+id/")?.camelCase()
+            val className = node.allAttributes["layout"]!!.removePrefix("@layout/").camelCase().capitalize().plus("Xml")
+            val id = node.allAttributes["android:id"]?.removePrefix("@id/")?.removePrefix("@+id/")?.camelCase()
             if (id != null) {
                 sublayouts[id] = className
                 append("$id.setup(dependency)")

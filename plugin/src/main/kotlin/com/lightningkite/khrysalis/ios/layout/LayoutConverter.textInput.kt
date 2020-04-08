@@ -31,12 +31,12 @@ val LayoutConverter.Companion.textInputViews
                         appendln("view.placeholder = $text")
                     }
                 }
-                if (node.attributes["android:background"] == null) {
+                if (node.allAttributes["android:background"] == null) {
                     val boldColor = node.attributeAsColor("android:textColor") ?: "UIColor.white"
                     val hintColor = node.attributeAsColor("android:textColorHint") ?: "nil"
                     appendln("view.backgroundLayer = view.underlineLayer(boldColor: $boldColor, hintColor: $hintColor)")
                 }
-                node.attributes["android:inputType"]?.let { type ->
+                node.allAttributes["android:inputType"]?.let { type ->
                     appendln("view.autocapitalizationType = .none")
                     for (part in type.split('|')) {
                         when (part) {
