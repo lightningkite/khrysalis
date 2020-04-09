@@ -57,7 +57,7 @@ fun <T> LinearLayout.bind(
         }
 
         //Update views
-        for(index in 0..value.size-1){
+        for(index in value.indices){
             existingViews[index].property.value = value[index]
         }
     }.until(this.removed)
