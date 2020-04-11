@@ -497,6 +497,7 @@ public extension String {
     
     func substringAfter(_ string: String, _ defaultTo: String? = nil) -> String {
         let index = self.indexOf(string)
+        let array = [1,2,3,4]
         if index != -1 {
             return substring(index + string.length)
         } else {

@@ -79,7 +79,7 @@ public class LabeledCheckbox : LinearLayout, CompoundButton {
         checkViewContainer.layer.borderColor = checkView.textColor.cgColor
         checkViewContainer.layer.cornerRadius = 2
 
-        let tapRecognizer = UITapGestureRecognizer().addAction { [weak self] in
+        let tapRecognizer = UITapGestureRecognizer().addAction(until: removed) { [weak self] in
             if let self = self {
                 self.isOn = !self.isOn
             }

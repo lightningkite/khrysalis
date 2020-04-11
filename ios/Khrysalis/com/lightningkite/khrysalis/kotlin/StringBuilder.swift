@@ -20,7 +20,7 @@ public class StringBuilder {
     }
     
     @discardableResult
-    public func appendln(_ string: String) -> StringBuilder {
+    public func appendln(_ string: String = "") -> StringBuilder {
         underlying.append(string)
         underlying.append("\n")
         return self

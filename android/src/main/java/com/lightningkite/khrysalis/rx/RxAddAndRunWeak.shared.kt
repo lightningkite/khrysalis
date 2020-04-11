@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.rx
 
+import android.view.View
 import com.lightningkite.khrysalis.AnyObject
 import com.lightningkite.khrysalis.escaping
 import com.lightningkite.khrysalis.weak
@@ -7,6 +8,14 @@ import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
 import io.reactivex.functions.BiFunction
 import io.reactivex.rxkotlin.subscribeBy
+
+fun Disposable.solvePrivateDisposal(items: List<Any>) {
+    for(item in items){
+        if(item is View){
+            this.until(item.removed)
+        }
+    }
+}
 
 @Deprecated("Just use RX stuff")
 fun <Element: Any> Observable<Element>.add(listener: @escaping() (Element) -> Boolean): Disposable {
@@ -33,6 +42,7 @@ fun <A: AnyObject, Element: Any> Observable<Element>.addWeak(referenceA: A, list
         }
     })
     disposable = disp
+    disp.solvePrivateDisposal(listOf(referenceA))
     return disp
 }
 
@@ -51,6 +61,7 @@ fun <A: AnyObject, B: AnyObject, Element: Any> Observable<Element>.addWeak(refer
         }
     })
     disposable = disp
+    disp.solvePrivateDisposal(listOf(referenceA, referenceB))
     return disp
 }
 
@@ -71,6 +82,7 @@ fun <A: AnyObject, B: AnyObject, C: AnyObject, Element: Any> Observable<Element>
             disposable?.dispose()
         }
     })
+    disp.solvePrivateDisposal(listOf(referenceA, referenceB, referenceC))
     disposable = disp
     return disp
 }

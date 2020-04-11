@@ -49,7 +49,7 @@ public extension MKMapView {
                 annotation = nil
             }
         }
-        self.retain(as: "delegate", item: delegate)
+        self.retain(as: "delegate", item: delegate, until: removed)
     }
     
     func bindSelect(
@@ -95,7 +95,7 @@ public extension MKMapView {
             }
         }
         self.delegate = delegate
-        self.retain(as: "delegate", item: delegate)
+        self.retain(as: "delegate", item: delegate, until: removed)
         
         onLongClickWithGR { [weak self, unowned delegate] gr in
             guard let self = self else { return }

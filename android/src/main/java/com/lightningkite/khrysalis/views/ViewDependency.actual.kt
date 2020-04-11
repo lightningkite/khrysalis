@@ -10,6 +10,7 @@ import android.graphics.drawable.BitmapDrawable
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.StateListDrawable
+import android.os.Build
 import android.provider.CalendarContract
 import android.provider.MediaStore
 import android.util.DisplayMetrics
@@ -33,12 +34,12 @@ fun ViewDependency.getString(resource: StringResource): String = context.getStri
 fun ViewDependency.getColor(resource: ColorResource): Int = context.resources.getColor(resource)
 val ViewDependency.displayMetrics: DisplayMetrics get() = context.resources.displayMetrics
 
-fun ViewDependency.share(shareTitle: String, message: String? = null, url: String? = null, image: Image? = null){
+fun ViewDependency.share(shareTitle: String, message: String? = null, url: String? = null, image: Image? = null) {
     val i = Intent(Intent.ACTION_SEND)
     i.type = "text/plain"
     listOfNotNull(message, url).joinToString("\n").takeUnless { it == null }?.let { i.putExtra(Intent.EXTRA_TEXT, it) }
-    if(image != null){
-        when(image){
+    if (image != null) {
+        when (image) {
             is ImageReference -> {
                 i.setType("image/jpeg")
                 i.putExtra(Intent.EXTRA_STREAM, image.uri)
@@ -60,7 +61,7 @@ fun ViewDependency.openUrl(url: String): Boolean {
         intent,
         PackageManager.MATCH_DEFAULT_ONLY
     )
-    return if(list.size > 0){
+    return if (list.size > 0) {
         startIntent(intent = intent)
         true
     } else {
@@ -71,38 +72,39 @@ fun ViewDependency.openUrl(url: String): Boolean {
 fun ViewDependency.openAndroidAppOrStore(packageName: String) {
     val mgr = context.packageManager
     val intent = mgr.getLaunchIntentForPackage(packageName)
-    if(intent != null){
+    if (intent != null) {
         startIntent(intent = intent)
     } else {
         openUrl("market://details?id=$packageName")
     }
 }
 
-fun ViewDependency.openIosStore(numberId: String){
+fun ViewDependency.openIosStore(numberId: String) {
     openUrl("https://apps.apple.com/us/app/taxbot/id$numberId")
 }
 
 fun ViewDependency.openMap(coordinate: GeoCoordinate, label: String? = null, zoom: Float? = null) {
     startIntent(
         intent = Intent(Intent.ACTION_VIEW).apply {
-            if(label == null){
-                if(zoom == null){
+            if (label == null) {
+                if (zoom == null) {
                     data = Uri.parse("geo:${coordinate.latitude},${coordinate.longitude}")
                 } else {
                     data = Uri.parse("geo:${coordinate.latitude},${coordinate.longitude}?z=$zoom")
                 }
             } else {
-                if(zoom == null){
+                if (zoom == null) {
                     data = Uri.parse("geo:${coordinate.latitude},${coordinate.longitude}?q=${Uri.encode(label)}")
                 } else {
-                    data = Uri.parse("geo:${coordinate.latitude},${coordinate.longitude}?q=${Uri.encode(label)}&z=$zoom")
+                    data =
+                        Uri.parse("geo:${coordinate.latitude},${coordinate.longitude}?q=${Uri.encode(label)}&z=$zoom")
                 }
             }
         }
     )
 }
 
-fun ViewDependency.openEvent(title: String, description: String, location: String, start: Date, end: Date){
+fun ViewDependency.openEvent(title: String, description: String, location: String, start: Date, end: Date) {
     startIntent(
         intent = Intent(Intent.ACTION_INSERT).apply {
             data = CalendarContract.Events.CONTENT_URI
@@ -134,7 +136,7 @@ fun ViewDependency.requestImagesGallery(
                 if (code == Activity.RESULT_OK) {
                     result?.clipData?.let { clipData ->
                         callback((0 until clipData.itemCount).map { index -> clipData.getItemAt(index).uri })
-                    } ?: result?.data?.let { callback(listOf(it) )}
+                    } ?: result?.data?.let { callback(listOf(it)) }
                 }
             }
         }
@@ -166,6 +168,7 @@ fun ViewDependency.requestImageGallery(
 }
 
 fun ViewDependency.requestImageCamera(
+    front: Boolean = false,
     callback: (Uri) -> Unit
 ) {
     val fileProviderAuthority = context.packageName + ".fileprovider"
@@ -176,6 +179,17 @@ fun ViewDependency.requestImageCamera(
         if (it) {
             val intent = Intent(MediaStore.ACTION_IMAGE_CAPTURE)
             intent.putExtra(MediaStore.EXTRA_OUTPUT, file)
+            //TODO:Test this on an older device. This works on newest, but we need to make sure it works/doesn't crash a newer one.
+            if (front) {
+//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
+
+                intent.putExtra("android.intent.extras.LENS_FACING_FRONT", 1)
+//                }else{
+                intent.putExtra("android.intent.extras.CAMERA_FACING", 1)
+
+//                }
+                intent.putExtra("android.intent.extra.USE_FRONT_CAMERA", true)
+            }
             startIntent(intent) { code, result ->
                 if (code == Activity.RESULT_OK) callback(result?.data ?: file)
             }

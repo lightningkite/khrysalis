@@ -6,6 +6,13 @@ import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 
+
+/**
+ *
+ * An extensive collection of extension functions on the date object.
+ *
+ */
+
 internal val calendarPool = ConcurrentLinkedQueue<Calendar>()
 internal inline fun <T> useCalendar(action: (Calendar) -> T): T {
     val cal = calendarPool.poll() ?: Calendar.getInstance()
@@ -22,10 +29,27 @@ internal inline fun <T> useDate(action: (Date) -> T): T {
     return result
 }
 
+
+/**
+ *
+ * Returns a Date object with the time interval added with the current date.
+ *
+ */
 operator fun Date.plus(interval: TimeInterval): Date = Date(time + interval.milliseconds)
+
+
+/**
+ *
+ * Returns a Date object with the time interval subtracted from the current date.
+ *
+ */
 operator fun Date.minus(interval: TimeInterval): Date = Date(time - interval.milliseconds)
 
-/**One Indexed**/
+
+/**
+ * One Indexed
+ * Returns an in representing the dat of the week. Sunday
+ */
 val Date.dayOfWeek: Int get() = useCalendar {
     it.timeInMillis = time; it.get(Calendar.DAY_OF_WEEK)
 }

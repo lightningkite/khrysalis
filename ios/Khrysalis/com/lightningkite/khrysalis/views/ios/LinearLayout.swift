@@ -147,12 +147,16 @@ open class LinearLayout: UIView {
         var result = CGSize.zero
         
         result[orientation] += padding.start(orientation)
+        var weightTotal: CGFloat = 0
         
         for (subview, params) in subviewsWithParams {
             guard subview.includeInLayout else { continue }
+            weightTotal += params.weight
             let combined = params.combined
-            if let subview = subview as? UILabel, subview.text == "Clients will not be able to schedule appointments during your break time." {
-                print("RIGHT HERE")
+            if params.weight != 0 {
+                result[orientation] += combined.start(orientation)
+                result[orientation] += combined.end(orientation)
+                continue
             }
             let subMaximumsA = makeSize(
                 primary: size[orientation] - result[orientation] - combined.total(orientation),
@@ -181,7 +185,7 @@ open class LinearLayout: UIView {
             )
             measurements[subview] = viewSize
             result[orientation] += combined.start(orientation)
-            if includingWeighted || params.weight == 0 {
+            if params.weight == 0 {
                 result[orientation] += viewSize[orientation]
             }
             result[orientation] += combined.end(orientation)
@@ -195,6 +199,45 @@ open class LinearLayout: UIView {
         }
         
         result[orientation] += padding.end(orientation)
+        
+        let remainingArea = size[orientation] - result[orientation]
+        
+        for (subview, params) in subviewsWithParams {
+            if params.weight == 0 { continue }
+            let combined = params.combined
+            let subMaximumsA = makeSize(
+                primary: remainingArea * params.weight / weightTotal,
+                secondary: size[orientation.other] - combined.total(orientation.other)
+            )
+            let subMaximums = CGSize(
+                width: max(
+                    params.minimumSize.width,
+                    params.size.width == 0 ? subMaximumsA.width : params.size.width
+                ),
+                height: max(
+                    params.minimumSize.height,
+                    params.size.height == 0 ? subMaximumsA.height : params.size.height
+                )
+            )
+            let viewMeasured = subview.sizeThatFits(subMaximums)
+            let viewSize = CGSize(
+                width: max(
+                    params.minimumSize.width,
+                    params.size.width == 0 ? viewMeasured.width : params.size.width
+                ),
+                height: max(
+                    params.minimumSize.height,
+                    params.size.height == 0 ? viewMeasured.height : params.size.height
+                )
+            )
+            measurements[subview] = viewSize
+            result[orientation.other] = max(
+                result[orientation.other],
+                viewSize[orientation.other] +
+                    combined.total(orientation.other) +
+                    padding.total(orientation.other)
+            )
+        }
         
         return result
     }

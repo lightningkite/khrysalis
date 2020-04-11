@@ -7,6 +7,21 @@ import RxRelay
 
 
 
+extension Disposable {
+    public func solvePrivateDisposal(items: Array<Any>) -> Void {
+        
+        for item in items {
+            if let item = item as? View {
+                self.until(item.removed)
+            }
+        }
+    }
+    public func solvePrivateDisposal(_ items: Array<Any>) -> Void {
+        return solvePrivateDisposal(items: items)
+    }
+}
+ 
+
 extension Observable where Element: Any {
      public func add(listener: @escaping (Element) -> Bool) -> Disposable {
         var disposable: Disposable?  = nil
@@ -34,6 +49,7 @@ extension Observable where Element: Any {
             }
         })
         disposable = disp
+        disp.solvePrivateDisposal([referenceA])
         return disp
     }
      public func addWeak<A: AnyObject>(_ referenceA: A, _ listener: @escaping (A, Element) -> Void) -> Disposable {
@@ -57,6 +73,7 @@ extension Observable where Element: Any {
             }
         })
         disposable = disp
+        disp.solvePrivateDisposal([referenceA, referenceB])
         return disp
     }
      public func addWeak<A: AnyObject, B: AnyObject>(_ referenceA: A, _ referenceB: B, _ listener: @escaping (A, B, Element) -> Void) -> Disposable {
@@ -82,6 +99,7 @@ extension Observable where Element: Any {
                 disposable?.dispose()
             }
         })
+        disp.solvePrivateDisposal([referenceA, referenceB, referenceC])
         disposable = disp
         return disp
     }

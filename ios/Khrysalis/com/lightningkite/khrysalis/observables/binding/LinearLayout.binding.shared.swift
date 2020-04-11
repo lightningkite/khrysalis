@@ -23,6 +23,8 @@ private class LinearLayoutBoundSubview<T> {
 }
  
  
+ 
+ 
 
 extension LinearLayout {
     public func bind<T>(data: ObservableProperty<Array<T>>, defaultValue: T, makeView: @escaping (ObservableProperty<T>) -> View) -> Void {
@@ -45,7 +47,7 @@ extension LinearLayout {
                 }
             }
             
-            for index in 0 ... value.size - 1 {
+            for index in value.indices {
                 existingViews[ index ].property.value = value[ index ]
             }
         }.until(self.removed)

@@ -81,7 +81,7 @@ public extension UICollectionView {
         let boundDataSource = CollectionBoundDataSource(source: data, defaultValue: defaultValue, spacing: spacing, makeView: makeView)
         dataSource = boundDataSource
         delegate = boundDataSource
-        retain(as: "boundDataSource", item: boundDataSource)
+        retain(as: "boundDataSource", item: boundDataSource, until: removed)
 
         var previouslyEmpty = data.value.isEmpty
         data.subscribeBy { value in
@@ -112,7 +112,7 @@ public extension UICollectionView {
         let boundDataSource = CollectionSimpleDataSource(count: count, spacing: spacing, makeView: makeView)
         dataSource = boundDataSource
         delegate = boundDataSource
-        retain(as: "boundDataSource", item: boundDataSource)
+        retain(as: "boundDataSource", item: boundDataSource, until: removed)
     }
 }
 

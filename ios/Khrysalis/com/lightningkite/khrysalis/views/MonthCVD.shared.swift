@@ -68,7 +68,9 @@ open class MonthCVD: CustomViewDelegate {
         if y < dayLabelHeight {
             return nil
         }
-        var columnRaw = ( x / dayCellWidth - dayCellWidth * currentOffset * 7 ).toInt()
+        var columnRawBeforeDrag = x / dayCellWidth
+        var columnDrag = currentOffset * 7
+        var columnRaw = ( columnDrag + columnRawBeforeDrag ).toInt()
         var column = columnRaw.floorMod(7)
         var monthOffset = columnRaw.floorDiv(7)
         var row = ( ( y - dayLabelHeight ) / dayCellHeight ).toInt()

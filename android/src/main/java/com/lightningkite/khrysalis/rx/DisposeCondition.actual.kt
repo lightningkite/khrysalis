@@ -3,6 +3,7 @@ package com.lightningkite.khrysalis.rx
 import android.view.View
 import android.view.ViewParent
 import android.widget.AbsListView
+import android.widget.AdapterView
 import androidx.recyclerview.widget.RecyclerView
 import com.lightningkite.khrysalis.escaping
 import io.reactivex.disposables.Disposable
@@ -26,8 +27,8 @@ val View.removed: DisposeCondition
         }
     }
 
-private fun ViewParent.recyclingParent(): View? = this.parent as? RecyclerView
-    ?:this.parent as? AbsListView
+private fun ViewParent.recyclingParent(): View? = this as? RecyclerView
+    ?: this as? AdapterView<*>
     ?: this.parent?.recyclingParent()
 
 

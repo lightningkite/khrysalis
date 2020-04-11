@@ -1,6 +1,7 @@
 package com.lightningkite.khrysalis.observables.binding
 
 import android.widget.CompoundButton
+import android.widget.TextView
 import com.lightningkite.khrysalis.observables.*
 import com.lightningkite.khrysalis.rx.removed
 import com.lightningkite.khrysalis.rx.until
@@ -133,3 +134,4 @@ fun CompoundButton.bind(observable: MutableObservableProperty<Boolean>) {
         }
     }
 }
+
