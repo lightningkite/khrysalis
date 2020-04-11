@@ -22,7 +22,12 @@ class SwiftAltListener {
     var imports = listOf<String>("RxSwift", "RxRelay")
 
     fun loadInterfaces(file: File) {
-        interfaces += jacksonObjectMapper().readValue<Versioned<Map<String, FileCache>>>(file).value.values.asSequence().map { it.data }.mergedInterfaces()
+        try {
+            interfaces += jacksonObjectMapper().readValue<Versioned<Map<String, FileCache>>>(file).value.values.asSequence()
+                .map { it.data }.mergedInterfaces()
+        } catch(e:Exception) {
+            e.printStackTrace()
+        }
     }
 
     fun KotlinParser.ClassDeclarationContext.implements(): Sequence<InterfaceData> {

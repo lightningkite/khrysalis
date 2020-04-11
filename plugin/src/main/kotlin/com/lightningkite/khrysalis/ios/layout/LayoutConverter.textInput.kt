@@ -1,6 +1,7 @@
 package com.lightningkite.khrysalis.ios.layout
 
 import com.lightningkite.khrysalis.utils.*
+import com.lightningkite.khrysalis.ios.*
 
 val LayoutConverter.Companion.textInputViews
     get() = LayoutConverter(
@@ -11,11 +12,11 @@ val LayoutConverter.Companion.textInputViews
             },
             ViewType("AutoCompleteTextView", "UIAutoCompleteTextField", "EditText", handlesPadding = true) { node ->},
             ViewType("EditText", "UITextField", "View", handlesPadding = true) { node ->
-                val defaultPadding = node.attributeAsDimension("android:padding") ?: 0
-                val paddingTop = (node.attributeAsDimension("android:paddingTop") ?: defaultPadding)
-                val paddingLeft = (node.attributeAsDimension("android:paddingLeft") ?: defaultPadding)
-                val paddingBottom = (node.attributeAsDimension("android:paddingBottom") ?: defaultPadding)
-                val paddingRight = (node.attributeAsDimension("android:paddingRight") ?: defaultPadding)
+                val defaultPadding = node.attributeAsSwiftDimension("android:padding") ?: 0
+                val paddingTop = (node.attributeAsSwiftDimension("android:paddingTop") ?: defaultPadding)
+                val paddingLeft = (node.attributeAsSwiftDimension("android:paddingLeft") ?: defaultPadding)
+                val paddingBottom = (node.attributeAsSwiftDimension("android:paddingBottom") ?: defaultPadding)
+                val paddingRight = (node.attributeAsSwiftDimension("android:paddingRight") ?: defaultPadding)
 
                 if (paddingLeft != 0) {
                     appendln("view.setLeftPaddingPoints($paddingLeft)")
@@ -24,16 +25,16 @@ val LayoutConverter.Companion.textInputViews
                     appendln("view.setRightPaddingPoints($paddingRight)")
                 }
 
-                node.attributeAsString("android:hint")?.let { text ->
-                    node.attributeAsColor("android:textColorHint")?.let { color ->
+                node.attributeAsSwiftString("android:hint")?.let { text ->
+                    node.attributeAsSwiftColor("android:textColorHint")?.let { color ->
                         appendln("view.attributedPlaceholder = $text.attributedWithColor($color)")
                     } ?: run {
                         appendln("view.placeholder = $text")
                     }
                 }
                 if (node.allAttributes["android:background"] == null) {
-                    val boldColor = node.attributeAsColor("android:textColor") ?: "UIColor.white"
-                    val hintColor = node.attributeAsColor("android:textColorHint") ?: "nil"
+                    val boldColor = node.attributeAsSwiftColor("android:textColor") ?: "UIColor.white"
+                    val hintColor = node.attributeAsSwiftColor("android:textColorHint") ?: "nil"
                     appendln("view.backgroundLayer = view.underlineLayer(boldColor: $boldColor, hintColor: $hintColor)")
                 }
                 node.allAttributes["android:inputType"]?.let { type ->

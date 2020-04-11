@@ -1,7 +1,7 @@
 package com.lightningkite.khrysalis.ios.layout
 
-import com.lightningkite.khrysalis.utils.attributeAsColor
-import com.lightningkite.khrysalis.utils.attributeAsDimension
+import com.lightningkite.khrysalis.utils.*
+import com.lightningkite.khrysalis.ios.*
 
 val LayoutConverter.Companion.navigationViews
     get() = LayoutConverter(
@@ -28,7 +28,7 @@ val LayoutConverter.Companion.navigationViews
 //                }
 //                node.setToColor("app:tabRippleColor") {
 //                }
-                (node.attributeAsColor("app:tabTextColor") ?: "UIColor.black").let {
+                (node.attributeAsSwiftColor("app:tabTextColor") ?: "UIColor.black").let {
                     appendln(
                         """view.setTitleTextAttributes(
                 [NSAttributedString.Key.foregroundColor: $it], 
@@ -36,7 +36,7 @@ val LayoutConverter.Companion.navigationViews
                 )"""
                     )
                 }
-                (node.attributeAsColor("app:tabTextColor") ?: "ResourcesColors.colorPrimary").let {
+                (node.attributeAsSwiftColor("app:tabTextColor") ?: "ResourcesColors.colorPrimary").let {
                     appendln(
                         """view.setTitleTextAttributes(
                 [NSAttributedString.Key.foregroundColor: $it], 
@@ -44,7 +44,7 @@ val LayoutConverter.Companion.navigationViews
                 )"""
                     )
                 }
-                (node.attributeAsColor("app:tabTextColor") ?: "ResourcesColors.colorPrimary").let {
+                (node.attributeAsSwiftColor("app:tabTextColor") ?: "ResourcesColors.colorPrimary").let {
                     appendln("view.addIndicator(color: $it)")
                 }
             },
@@ -65,13 +65,13 @@ val LayoutConverter.Companion.navigationViews
                     else -> appendln("view.separatorStyle = .none")
                 }
 
-                (node.attributeAsColor("app:dividerColor") ?: node.attributeAsColor("dividerColor"))?.let {
+                (node.attributeAsSwiftColor("app:dividerColor") ?: node.attributeAsSwiftColor("dividerColor"))?.let {
                     appendln("view.separatorColor = $it")
                 }
-                (node.attributeAsDimension("app:dividerSize") ?: node.attributeAsDimension("dividerSize"))?.let {
+                (node.attributeAsSwiftDimension("app:dividerSize") ?: node.attributeAsSwiftDimension("dividerSize"))?.let {
                     appendln("//It is not possible to have a different divider size currently, though requested.")
                 }
-                (node.attributeAsDimension("app:dividerHorizontalPadding") ?: node.attributeAsDimension("dividerHorizontalPadding") ?: "0").let {
+                (node.attributeAsSwiftDimension("app:dividerHorizontalPadding") ?: node.attributeAsSwiftDimension("dividerHorizontalPadding") ?: "0").let {
                     appendln("view.separatorInset = UIEdgeInsets(top: 0, left: $it, bottom: 0, right: $it)")
                 }
                 if(node.allAttributes["android:background"] == null){
@@ -79,10 +79,10 @@ val LayoutConverter.Companion.navigationViews
                 }
             },
             ViewType("com.rd.PageIndicatorView", "UIPageControl", "View") { node ->
-                node.attributeAsColor("app:piv_selectedColor")?.let {
+                node.attributeAsSwiftColor("app:piv_selectedColor")?.let {
                     appendln("view.currentPageIndicatorTintColor = $it")
                 }
-                node.attributeAsColor("app:piv_unselectedColor")?.let {
+                node.attributeAsSwiftColor("app:piv_unselectedColor")?.let {
                     appendln("view.pageIndicatorTintColor = $it")
                 }
             },

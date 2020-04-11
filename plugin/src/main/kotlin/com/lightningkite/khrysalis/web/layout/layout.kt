@@ -1,10 +1,11 @@
 package com.lightningkite.khrysalis.web.layout
 
-import com.lightningkite.khrysalis.generic.PartialTranslator
 import com.lightningkite.khrysalis.utils.*
+import com.lightningkite.khrysalis.web.asCssDimension
+import com.lightningkite.khrysalis.web.attributeAsCssDimension
 
 
-internal fun HtmlTranslator2.layout() {
+internal fun HtmlTranslator.layout() {
 
     fun handleCommonLayoutStuff(rule: XmlNode, child: ResultNode, container: ResultNode) {
         rule.allAttributes["android:layout_width"]?.let { value ->
@@ -16,7 +17,7 @@ internal fun HtmlTranslator2.layout() {
                 "wrap_content" -> {
                 }
                 else -> {
-                    val converted = convertDimension(value)
+                    val converted = value.asCssDimension() ?: "failedConversion"
                     child.style["width"] = converted
                     container.style["width"] = converted
                 }
@@ -31,30 +32,32 @@ internal fun HtmlTranslator2.layout() {
                 "wrap_content" -> {
                 }
                 else -> {
-                    val converted = convertDimension(value)
+                    val converted = value.asCssDimension() ?: "failedConversion"
                     child.style["height"] = converted
                     container.style["height"] = converted
                 }
             }
         }
-        rule.allAttributes["android:layout_margin"]?.let { value -> container.style["padding"] = convertDimension(value) }
-        rule.allAttributes["android:layout_marginLeft"]?.let { value ->
-            container.style["padding-left"] = convertDimension(value)
+        rule.attributeAsCssDimension("android:layout_margin")?.let { value ->
+            container.style["padding"] = value
         }
-        rule.allAttributes["android:layout_marginRight"]?.let { value ->
-            container.style["padding-right"] = convertDimension(value)
+        rule.attributeAsCssDimension("android:layout_marginLeft")?.let { value ->
+            container.style["padding-left"] = value
         }
-        rule.allAttributes["android:layout_marginStart"]?.let { value ->
-            container.style["padding-left"] = convertDimension(value)
+        rule.attributeAsCssDimension("android:layout_marginRight")?.let { value ->
+            container.style["padding-right"] = value
         }
-        rule.allAttributes["android:layout_marginEnd"]?.let { value ->
-            container.style["padding-right"] = convertDimension(value)
+        rule.attributeAsCssDimension("android:layout_marginStart")?.let { value ->
+            container.style["padding-left"] = value
         }
-        rule.allAttributes["android:layout_marginTop"]?.let { value ->
-            container.style["padding-top"] = convertDimension(value)
+        rule.attributeAsCssDimension("android:layout_marginEnd")?.let { value ->
+            container.style["padding-right"] = value
         }
-        rule.allAttributes["android:layout_marginBottom"]?.let { value ->
-            container.style["padding-bottom"] = convertDimension(value)
+        rule.attributeAsCssDimension("android:layout_marginTop")?.let { value ->
+            container.style["padding-top"] = value
+        }
+        rule.attributeAsCssDimension("android:layout_marginBottom")?.let { value ->
+            container.style["padding-bottom"] = value
         }
         rule.allAttributes["android:layout_weight"]?.let { value ->
             container.style["flex-grow"] = value
@@ -62,12 +65,15 @@ internal fun HtmlTranslator2.layout() {
 
     }
     element.handle("LinearLayout") {
-        out.classes.add("khrysalis-" + rule.name.kabobCase())
+        out.style["display"] = "flex"
         val isVertical = rule.allAttributes["android:orientation"] == "vertical"
-        out.style["flex-direction"] = if(isVertical) "column" else "row"
+        out.style["flex-direction"] = if (isVertical) "column" else "row"
         out.contentNodes.addAll(rule.children.map { subrule ->
             val container = ResultNode("div")
-            val child = ResultNode().apply { element.translate(subrule, this) }
+            container.parent = out
+            val child = ResultNode()
+            child.parent = container
+            element.translate(subrule, child)
             container.contentNodes += child
             handleCommonLayoutStuff(subrule, child, container)
             subrule.allAttributes["android:layout_gravity"]?.let { value ->
@@ -81,10 +87,13 @@ internal fun HtmlTranslator2.layout() {
         })
     }
     element.handle("FrameLayout") {
-        out.classes.add("khrysalis-" + rule.name.kabobCase())
+        out.style["position"] = "relative"
         out.contentNodes.addAll(rule.children.map { subrule ->
             val container = ResultNode("div")
-            val child = ResultNode().apply { element.translate(subrule, this) }
+            container.parent = out
+            val child = ResultNode()
+            child.parent = container
+            element.translate(subrule, child)
             container.contentNodes += child
             handleCommonLayoutStuff(subrule, child, container)
             subrule.allAttributes["android:layout_gravity"]?.let { value ->
@@ -118,7 +127,8 @@ internal fun HtmlTranslator2.layout() {
         })
     }
     element.handle("ScrollView") {
-        out.classes.add("khrysalis-scroll-view")
+        out.style["overflow-y"] = "scroll";
+        out.style["overflow-x"] = "hidden";
         defer("FrameLayout")
     }
     element.handle("ViewFlipper") {
@@ -127,31 +137,24 @@ internal fun HtmlTranslator2.layout() {
     }
 
     attribute.handle("android:padding") {
-        val value = rule.value
-        out.style["padding"] = convertDimension(value)
+        rule.value.asCssDimension()?.let { out.style["padding"] = it }
     }
     attribute.handle("android:paddingLeft") {
-        val value = rule.value
-        out.style["padding-left"] = convertDimension(value)
+        rule.value.asCssDimension()?.let { out.style["padding-left"] = it }
     }
     attribute.handle("android:paddingRight") {
-        val value = rule.value
-        out.style["padding-right"] = convertDimension(value)
+        rule.value.asCssDimension()?.let { out.style["padding-right"] = it }
     }
     attribute.handle("android:paddingStart") {
-        val value = rule.value
-        out.style["padding-left"] = convertDimension(value)
+        rule.value.asCssDimension()?.let { out.style["padding-left"] = it }
     }
     attribute.handle("android:paddingEnd") {
-        val value = rule.value
-        out.style["padding-right"] = convertDimension(value)
+        rule.value.asCssDimension()?.let { out.style["padding-right"] = it }
     }
     attribute.handle("android:paddingTop") {
-        val value = rule.value
-        out.style["padding-top"] = convertDimension(value)
+        rule.value.asCssDimension()?.let { out.style["padding-top"] = it }
     }
     attribute.handle("android:paddingBottom") {
-        val value = rule.value
-        out.style["padding-bottom"] = convertDimension(value)
+        rule.value.asCssDimension()?.let { out.style["padding-bottom"] = it }
     }
 }

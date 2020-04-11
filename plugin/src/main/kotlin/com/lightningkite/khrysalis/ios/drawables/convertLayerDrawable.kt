@@ -1,8 +1,8 @@
 package com.lightningkite.khrysalis.ios.drawables
 
 import com.lightningkite.khrysalis.utils.XmlNode
-import com.lightningkite.khrysalis.utils.attributeAsDimension
-import com.lightningkite.khrysalis.utils.attributeAsLayer
+import com.lightningkite.khrysalis.utils.*
+import com.lightningkite.khrysalis.ios.*
 import java.lang.Appendable
 
 
@@ -17,7 +17,7 @@ fun convertLayerListDrawable(name: String, node: XmlNode, out: Appendable) {
             appendln("    layer.addSublayer({")
             if(subnode.allAttributes.containsKey("android:drawable")){
                 appendln(
-                    "        let sublayer = ${subnode.attributeAsLayer("android:drawable", "view") ?: "CALayer() /* Unknown */"}"
+                    "        let sublayer = ${subnode.attributeAsSwiftLayer("android:drawable", "view") ?: "CALayer() /* Unknown */"}"
                 )
             } else {
                 val subname = name + "Part" + (after.size + 1)
@@ -28,27 +28,27 @@ fun convertLayerListDrawable(name: String, node: XmlNode, out: Appendable) {
                     "        let sublayer = $subname(view)"
                 )
             }
-            subnode.attributeAsDimension("android:width")?.let {
+            subnode.attributeAsSwiftDimension("android:width")?.let {
                 appendln("        sublayer.frame.size.width = $it")
             }
-            subnode.attributeAsDimension("android:height")?.let {
+            subnode.attributeAsSwiftDimension("android:height")?.let {
                 appendln("        sublayer.frame.size.height = $it")
             }
             appendln("        layer.bounds.size = layer.bounds.size.expand(sublayer.bounds.size)")
             appendln("        layer.onResize.startWith(layer.bounds).addWeak(sublayer) { (sublayer, bounds) in ")
             appendln("             var subBounds = bounds ")
-            subnode.attributeAsDimension("android:top")?.let {
+            subnode.attributeAsSwiftDimension("android:top")?.let {
                 appendln("             subBounds.origin.y += $it")
                 appendln("             subBounds.size.height -= $it")
             }
-            subnode.attributeAsDimension("android:left")?.let {
+            subnode.attributeAsSwiftDimension("android:left")?.let {
                 appendln("             subBounds.origin.x += $it")
                 appendln("             subBounds.size.width -= $it")
             }
-            subnode.attributeAsDimension("android:right")?.let {
+            subnode.attributeAsSwiftDimension("android:right")?.let {
                 appendln("             subBounds.size.width -= $it")
             }
-            subnode.attributeAsDimension("android:botton")?.let {
+            subnode.attributeAsSwiftDimension("android:botton")?.let {
                 appendln("             subBounds.size.height -= $it")
             }
             appendln("             sublayer.frame = subBounds ")

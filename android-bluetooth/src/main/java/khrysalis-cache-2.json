@@ -1,1 +1,65 @@
-{"version":12,"value":{"com/lightningkite/khrysalis/bluetooth/BleDescriptor.shared.kt":{"path":"com/lightningkite/khrysalis/bluetooth/BleDescriptor.shared.kt","inputHash":"c358281ac8628f6147d57e48507a9ae9","outputHash":"49e104c71d919dca037d9ab1fc622e11","outputPath":"com/lightningkite/khrysalis/bluetooth/BleDescriptor.shared.swift"},"com/lightningkite/khrysalis/bluetooth/BleService.shared.kt":{"path":"com/lightningkite/khrysalis/bluetooth/BleService.shared.kt","inputHash":"4b1d92c45150c0662ef6dd11f97f4741","outputHash":"84e105b249d83150decb44b5efd11370","outputPath":"com/lightningkite/khrysalis/bluetooth/BleService.shared.swift"},"com/lightningkite/khrysalis/bluetooth/BleConnection.shared.kt":{"path":"com/lightningkite/khrysalis/bluetooth/BleConnection.shared.kt","inputHash":"ec90411445f6d29108652311fdeedf3f","outputHash":"036373437de48a124121545cd92c815c","outputPath":"com/lightningkite/khrysalis/bluetooth/BleConnection.shared.swift"},"com/lightningkite/khrysalis/bluetooth/BleCharacteristicServer.shared.kt":{"path":"com/lightningkite/khrysalis/bluetooth/BleCharacteristicServer.shared.kt","inputHash":"b9dcf684cc1f50a561ef300e682d8398","outputHash":"3e75222f5bdaa0ca8f61a75c23388f68","outputPath":"com/lightningkite/khrysalis/bluetooth/BleCharacteristicServer.shared.swift"},"com/lightningkite/khrysalis/bluetooth/BleServer.shared.kt":{"path":"com/lightningkite/khrysalis/bluetooth/BleServer.shared.kt","inputHash":"df9c3852794da6f51891ced8e330c7cd","outputHash":"a2b06ba51533d029673e61c3b356bd70","outputPath":"com/lightningkite/khrysalis/bluetooth/BleServer.shared.swift"},"com/lightningkite/khrysalis/bluetooth/PropertyBleCharacteristicServer.shared.kt":{"path":"com/lightningkite/khrysalis/bluetooth/PropertyBleCharacteristicServer.shared.kt","inputHash":"d554046129f442ff74699508a75365a0","outputHash":"8cce3c3e448a2bdd3a8cc501c0b4caa1","outputPath":"com/lightningkite/khrysalis/bluetooth/PropertyBleCharacteristicServer.shared.swift"},"com/lightningkite/khrysalis/bluetooth/BleCharacteristic.shared.kt":{"path":"com/lightningkite/khrysalis/bluetooth/BleCharacteristic.shared.kt","inputHash":"c5e90c70bdb39aba35b07907cadb0dd7","outputHash":"44a5b05f4ab15fd79cc5bd35008efa5f","outputPath":"com/lightningkite/khrysalis/bluetooth/BleCharacteristic.shared.swift"},"com/lightningkite/khrysalis/bluetooth/Ble.actual.kt":{"path":"com/lightningkite/khrysalis/bluetooth/Ble.actual.kt","inputHash":"74433e3a75f194f011a8ec1b6b54f758","outputHash":"4ca330645fa90d2917e47860cb1f1ea6","outputPath":"com/lightningkite/khrysalis/bluetooth/Ble.actual.swift"},"com/lightningkite/khrysalis/bluetooth/BleScanResult.shared.kt":{"path":"com/lightningkite/khrysalis/bluetooth/BleScanResult.shared.kt","inputHash":"937e0177888bf793a60d1ab59628df07","outputHash":"f990ec4dfc0b2da1ddcc33f80bb50cb0","outputPath":"com/lightningkite/khrysalis/bluetooth/BleScanResult.shared.swift"},"com/lightningkite/khrysalis/bluetooth/BleDeviceInfo.shared.kt":{"path":"com/lightningkite/khrysalis/bluetooth/BleDeviceInfo.shared.kt","inputHash":"3bd5de7d1aece699d62a5f8c4f665bb1","outputHash":"a515ac55b234ffe288b0b84640af5c6f","outputPath":"com/lightningkite/khrysalis/bluetooth/BleDeviceInfo.shared.swift"}}}
+{
+  "version": 12,
+  "value": {
+    "com/lightningkite/khrysalis/bluetooth/BleDescriptor.shared.kt": {
+      "path": "com/lightningkite/khrysalis/bluetooth/BleDescriptor.shared.kt",
+      "inputHash": "c358281ac8628f6147d57e48507a9ae9",
+      "outputHash": "49e104c71d919dca037d9ab1fc622e11",
+      "outputPath": "com/lightningkite/khrysalis/bluetooth/BleDescriptor.shared.swift"
+    },
+    "com/lightningkite/khrysalis/bluetooth/BleService.shared.kt": {
+      "path": "com/lightningkite/khrysalis/bluetooth/BleService.shared.kt",
+      "inputHash": "4b1d92c45150c0662ef6dd11f97f4741",
+      "outputHash": "84e105b249d83150decb44b5efd11370",
+      "outputPath": "com/lightningkite/khrysalis/bluetooth/BleService.shared.swift"
+    },
+    "com/lightningkite/khrysalis/bluetooth/BleConnection.shared.kt": {
+      "path": "com/lightningkite/khrysalis/bluetooth/BleConnection.shared.kt",
+      "inputHash": "ec90411445f6d29108652311fdeedf3f",
+      "outputHash": "036373437de48a124121545cd92c815c",
+      "outputPath": "com/lightningkite/khrysalis/bluetooth/BleConnection.shared.swift"
+    },
+    "com/lightningkite/khrysalis/bluetooth/BleCharacteristicServer.shared.kt": {
+      "path": "com/lightningkite/khrysalis/bluetooth/BleCharacteristicServer.shared.kt",
+      "inputHash": "b9dcf684cc1f50a561ef300e682d8398",
+      "outputHash": "3e75222f5bdaa0ca8f61a75c23388f68",
+      "outputPath": "com/lightningkite/khrysalis/bluetooth/BleCharacteristicServer.shared.swift"
+    },
+    "com/lightningkite/khrysalis/bluetooth/BleServer.shared.kt": {
+      "path": "com/lightningkite/khrysalis/bluetooth/BleServer.shared.kt",
+      "inputHash": "df9c3852794da6f51891ced8e330c7cd",
+      "outputHash": "a2b06ba51533d029673e61c3b356bd70",
+      "outputPath": "com/lightningkite/khrysalis/bluetooth/BleServer.shared.swift"
+    },
+    "com/lightningkite/khrysalis/bluetooth/PropertyBleCharacteristicServer.shared.kt": {
+      "path": "com/lightningkite/khrysalis/bluetooth/PropertyBleCharacteristicServer.shared.kt",
+      "inputHash": "d554046129f442ff74699508a75365a0",
+      "outputHash": "6648ba9bfca34b9ff8c89c7bfc941609",
+      "outputPath": "com/lightningkite/khrysalis/bluetooth/PropertyBleCharacteristicServer.shared.swift"
+    },
+    "com/lightningkite/khrysalis/bluetooth/BleCharacteristic.shared.kt": {
+      "path": "com/lightningkite/khrysalis/bluetooth/BleCharacteristic.shared.kt",
+      "inputHash": "c5e90c70bdb39aba35b07907cadb0dd7",
+      "outputHash": "44a5b05f4ab15fd79cc5bd35008efa5f",
+      "outputPath": "com/lightningkite/khrysalis/bluetooth/BleCharacteristic.shared.swift"
+    },
+    "com/lightningkite/khrysalis/bluetooth/Ble.actual.kt": {
+      "path": "com/lightningkite/khrysalis/bluetooth/Ble.actual.kt",
+      "inputHash": "74433e3a75f194f011a8ec1b6b54f758",
+      "outputHash": "4ca330645fa90d2917e47860cb1f1ea6",
+      "outputPath": "com/lightningkite/khrysalis/bluetooth/Ble.actual.swift"
+    },
+    "com/lightningkite/khrysalis/bluetooth/BleScanResult.shared.kt": {
+      "path": "com/lightningkite/khrysalis/bluetooth/BleScanResult.shared.kt",
+      "inputHash": "937e0177888bf793a60d1ab59628df07",
+      "outputHash": "f990ec4dfc0b2da1ddcc33f80bb50cb0",
+      "outputPath": "com/lightningkite/khrysalis/bluetooth/BleScanResult.shared.swift"
+    },
+    "com/lightningkite/khrysalis/bluetooth/BleDeviceInfo.shared.kt": {
+      "path": "com/lightningkite/khrysalis/bluetooth/BleDeviceInfo.shared.kt",
+      "inputHash": "3bd5de7d1aece699d62a5f8c4f665bb1",
+      "outputHash": "a515ac55b234ffe288b0b84640af5c6f",
+      "outputPath": "com/lightningkite/khrysalis/bluetooth/BleDeviceInfo.shared.swift"
+    }
+  }
+}

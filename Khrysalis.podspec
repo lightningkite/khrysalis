@@ -16,8 +16,8 @@ Pod::Spec.new do |s|
   s.requires_arc = true
   s.swift_version = '5.0'
   s.xcconfig = { 'SWIFT_VERSION' => '5.0' }
-  s.dependency "Alamofire"
-  s.dependency "AlamofireImage"
+  s.dependency "Alamofire", "~> 4.9.1"
+  s.dependency "AlamofireImage", "~> 3.6.0"
   s.dependency "KeychainAccess"
   s.dependency "UITextView+Placeholder"
   s.dependency "Cosmos", "~> 19.0"

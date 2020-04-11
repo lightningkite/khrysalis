@@ -1,8 +1,8 @@
 import com.lightningkite.khrysalis.KhrysalisSettings
-import com.lightningkite.khrysalis.convertResourcesToIos
-import com.lightningkite.khrysalis.layout.convertLayoutsToSwift
-import com.lightningkite.khrysalis.layout.createAndroidLayoutClasses
-import com.lightningkite.khrysalis.swift.convertKotlinToSwift
+import com.lightningkite.khrysalis.ios.convertResourcesToIos
+import com.lightningkite.khrysalis.ios.layout.convertLayoutsToSwift
+import com.lightningkite.khrysalis.ios.layout.createAndroidLayoutClasses
+import com.lightningkite.khrysalis.ios.swift.convertKotlinToSwift
 
 buildscript {
     val kotlin_version = "1.3.50"
@@ -104,8 +104,8 @@ tasks.create("khrysalisConvertKotlinToSwift") {
     doLast {
         println("Started on $androidBase")
         convertKotlinToSwift(
-            androidFolder = androidBase,
-            iosFolder = iosBase,
+            androidBase,
+            iosBase,
             clean = true,
             setup = {
                 this.imports += listOf("Khrysalis")

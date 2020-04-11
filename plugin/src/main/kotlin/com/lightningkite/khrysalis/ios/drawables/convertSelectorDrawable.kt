@@ -1,9 +1,8 @@
 package com.lightningkite.khrysalis.ios.drawables
 
 import com.lightningkite.khrysalis.utils.XmlNode
-import com.lightningkite.khrysalis.utils.attributeAsBoolean
-import com.lightningkite.khrysalis.utils.attributeAsDimension
-import com.lightningkite.khrysalis.utils.attributeAsLayer
+import com.lightningkite.khrysalis.utils.*
+import com.lightningkite.khrysalis.ios.*
 import java.lang.Appendable
 
 
@@ -18,7 +17,7 @@ fun convertSelectorDrawable(name: String, node: XmlNode, out: Appendable) {
             appendln("    let part${index + 1}: CALayer = {")
             if(subnode.allAttributes.containsKey("android:drawable")){
                 appendln(
-                    "        let sublayer = ${subnode.attributeAsLayer("android:drawable", "view") ?: "CALayer() /* Unknown */"}"
+                    "        let sublayer = ${subnode.attributeAsSwiftLayer("android:drawable", "view") ?: "CALayer() /* Unknown */"}"
                 )
             } else {
                 val subname = name + "Part" + (after.size + 1)
@@ -29,10 +28,10 @@ fun convertSelectorDrawable(name: String, node: XmlNode, out: Appendable) {
                     "        let sublayer = $subname(view)"
                 )
             }
-            subnode.attributeAsDimension("android:width")?.let {
+            subnode.attributeAsSwiftDimension("android:width")?.let {
                 appendln("        sublayer.frame.size.width = $it")
             }
-            subnode.attributeAsDimension("android:height")?.let {
+            subnode.attributeAsSwiftDimension("android:height")?.let {
                 appendln("        sublayer.frame.size.height = $it")
             }
             appendln("        layer.bounds.size = layer.bounds.size.expand(sublayer.bounds.size)")

@@ -14,12 +14,12 @@ class XmlNode(
     val additionalAttributes: Map<String, String> = mapOf()
 ): VirtualType {
 
-    class Attribute(override val type: String, val value: String): VirtualType {
+    class Attribute(val parent: XmlNode, override val type: String, val value: String): VirtualType {
         override val parts: Iterable<Any> get() = listOf(value)
     }
 
     override val parts: Iterable<Attribute>
-        get() = directAttributes.entries.map { it -> Attribute(it.key, it.value) }
+        get() = allAttributes.entries.map { it -> Attribute(this, it.key, it.value) }
     override val type: String
         get() = element.nodeValue
 
@@ -94,14 +94,26 @@ class XmlNode(
     }
 }
 
-
-fun XmlNode.attributeAsString(key: String): String? {
+fun XmlNode.attributeAsBoolean(key: String): Boolean? {
     val raw = allAttributes[key] ?: return null
-    return when {
-        raw.startsWith("@string/") -> "ResourcesStrings.${raw.removePrefix("@string/").camelCase()}"
-        else -> "\"$raw\""
+    return when(raw.toLowerCase()) {
+        "true" -> true
+        "false" -> false
+        else -> null
     }
 }
+fun XmlNode.attributeAsDouble(key: String): Double? {
+    val raw = allAttributes[key] ?: return null
+    return when {
+        else -> raw.filter { it.isDigit() || it == '.' }.toDoubleOrNull()
+    }
+}
+
+fun XmlNode.attributeAsInt(key: String): String? {
+    val raw = allAttributes[key] ?: return null
+    return raw.filter { it.isDigit() }.toIntOrNull()?.toString()
+}
+
 fun XmlNode.attributeAsStringKotlin(key: String): String? {
     val raw = allAttributes[key] ?: return null
     return when {
@@ -160,67 +172,4 @@ fun XmlNode.attributeAsEdgeFlagsKotlin(key: String): Int? {
     if(raw.contains("bottom"))
         gravity = gravity or SafePaddingFlags.BOTTOM
     return gravity
-}
-
-fun XmlNode.attributeAsInt(key: String): String? {
-    val raw = allAttributes[key] ?: return null
-    return raw.filter { it.isDigit() }.toIntOrNull()?.toString()
-}
-
-fun XmlNode.attributeAsDimension(key: String): String? {
-    val raw = allAttributes[key] ?: return null
-    return when {
-        raw.startsWith("@dimen/") -> "ResourcesDimensions.${raw.removePrefix("@dimen/").camelCase()}"
-        else -> raw.filter { it.isDigit() || it == '.' || it == '-' }.toIntOrNull()?.toString()
-    }
-}
-fun XmlNode.attributeAsDrawable(key: String): String? {
-    val raw = allAttributes[key] ?: return null
-    return when {
-        raw.startsWith("@drawable/") -> "ResourcesDrawables.${raw.removePrefix("@drawable/").camelCase()}"
-        else -> null
-    }
-}
-fun XmlNode.attributeAsLayer(key: String, forView: String = "nil"): String? = attributeAsDrawable(key)?.plus("($forView)")
-fun XmlNode.attributeAsBoolean(key: String): Boolean? {
-    val raw = allAttributes[key] ?: return null
-    return when(raw.toLowerCase()) {
-        "true" -> true
-        "false" -> false
-        else -> null
-    }
-}
-fun XmlNode.attributeAsDouble(key: String): Double? {
-    val raw = allAttributes[key] ?: return null
-    return when {
-        else -> raw.filter { it.isDigit() || it == '.' }.toDoubleOrNull()
-    }
-}
-
-fun XmlNode.attributeAsImage(key: String): String? {
-    val raw = allAttributes[key] ?: return null
-    return when {
-        raw.startsWith("@drawable/") -> "UIImage(named: \"${raw.removePrefix("@drawable/")}\") ?? ${attributeAsLayer(key, "view")}.toImage()"
-        raw.startsWith("@mipmap/") -> "UIImage(named: \"${raw.removePrefix("@mipmap/")}\")"
-        else -> null
-    }
-}
-
-
-fun XmlNode.attributeAsColor(key: String): String? {
-    val raw = allAttributes[key] ?: return null
-    return when {
-        raw.startsWith("@color/") -> {
-            val colorName = raw.removePrefix("@color/")
-            "ResourcesColors.${colorName.camelCase()}"
-        }
-        raw.startsWith("@android:color/") -> {
-            val colorName = raw.removePrefix("@android:color/")
-            "ResourcesColors.${colorName.camelCase()}"
-        }
-        raw.startsWith("#") -> {
-            raw.hashColorToUIColor()
-        }
-        else -> "UIColor.black"
-    }
 }

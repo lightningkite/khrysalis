@@ -18,10 +18,15 @@ fun preparseKotlinFiles(sources: Sequence<File>, out: File, relativeTo: File): P
     val declarations = HashMap<String, String>()
 
     val existingCache: Map<String, FileCache> = if (out.exists()) {
-        val versioned = jacksonObjectMapper().readValue<Versioned<Map<String, FileCache>>>(out)
-        if (versioned.version == INTERFACE_SCAN_VERSION) versioned.value else mapOf()
+        try {
+            val versioned = jacksonObjectMapper().readValue<Versioned<Map<String, FileCache>>>(out)
+            if (versioned.version == INTERFACE_SCAN_VERSION) versioned.value else mapOf<String, FileCache>()
+        } catch(e:Exception){
+            e.printStackTrace()
+            mapOf<String, FileCache>()
+        }
     } else
-        mapOf()
+        mapOf<String, FileCache>()
     val newCache = HashMap<String, FileCache>()
 
     sources.forEachMultithreaded { file ->

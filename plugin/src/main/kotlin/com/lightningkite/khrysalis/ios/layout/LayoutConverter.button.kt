@@ -1,6 +1,7 @@
 package com.lightningkite.khrysalis.ios.layout
 
 import com.lightningkite.khrysalis.utils.*
+import com.lightningkite.khrysalis.ios.*
 
 val LayoutConverter.Companion.buttonViews
     get() = LayoutConverter(
@@ -78,7 +79,7 @@ val LayoutConverter.Companion.buttonViews
                 handleCommonText(node, "view.labelView", controlView = "view.control")
             },
             ViewType("ToggleButton", "ToggleButton", "Button", handlesPadding = true) { node ->
-                node.attributeAsString("android:textOff")?.let { text ->
+                node.attributeAsSwiftString("android:textOff")?.let { text ->
                     if (node.attributeAsBoolean("android:textAllCaps") == true) {
                         appendln("view.textOff = $text.toUpperCase()")
                         appendln("view.setTitle($text.toUpperCase(), for: .normal)")
@@ -87,7 +88,7 @@ val LayoutConverter.Companion.buttonViews
                         appendln("view.setTitle($text, for: .normal)")
                     }
                 }
-                node.attributeAsString("android:textOn")?.let { text ->
+                node.attributeAsSwiftString("android:textOn")?.let { text ->
                     if (node.attributeAsBoolean("android:textAllCaps") == true) {
                         appendln("view.textOn = $text.toUpperCase()")
                     } else {
@@ -96,15 +97,15 @@ val LayoutConverter.Companion.buttonViews
                 }
             },
             ViewType("Spinner", "Dropdown", "View", handlesPadding = true) { node ->
-                val defaultPadding = node.attributeAsDimension("android:padding") ?: 0
+                val defaultPadding = node.attributeAsSwiftDimension("android:padding") ?: 0
                 append("view.contentEdgeInsets = UIEdgeInsets(top: ")
-                append((node.attributeAsDimension("android:paddingTop") ?: defaultPadding).toString())
+                append((node.attributeAsSwiftDimension("android:paddingTop") ?: defaultPadding).toString())
                 append(", left:")
-                append((node.attributeAsDimension("android:paddingLeft") ?: defaultPadding).toString())
+                append((node.attributeAsSwiftDimension("android:paddingLeft") ?: defaultPadding).toString())
                 append(", bottom:")
-                append((node.attributeAsDimension("android:paddingBottom") ?: defaultPadding).toString())
+                append((node.attributeAsSwiftDimension("android:paddingBottom") ?: defaultPadding).toString())
                 append(", right:")
-                append((node.attributeAsDimension("android:paddingRight") ?: defaultPadding).toString())
+                append((node.attributeAsSwiftDimension("android:paddingRight") ?: defaultPadding).toString())
                 appendln(")")
             },
             ViewType("RadioGroup", "UIView", "LinearLayout") {},
@@ -112,13 +113,13 @@ val LayoutConverter.Companion.buttonViews
             ViewType("Button", "UIButtonWithLayer", "View", handlesPadding = true) { node ->
                 handleCommonText(node, "view.titleLabel?", controlView = "view")
 
-                node.attributeAsDimension("android:letterSpacing")?.let {
+                node.attributeAsSwiftDimension("android:letterSpacing")?.let {
                     appendln("view.letterSpacing = $it")
                 }
                 node.attributeAsBoolean("android:textAllCaps")?.let {
                     appendln("view.textAllCaps = $it")
                 }
-                node.attributeAsString("android:text")?.let { text ->
+                node.attributeAsSwiftString("android:text")?.let { text ->
                     appendln("view.textString = $text")
                 }
                 node.setToColorGivenControl("android:textColor") {
@@ -144,26 +145,26 @@ val LayoutConverter.Companion.buttonViews
                 node.allAttributes["android:gravity"]?.let { text ->
                     appendln("view.textGravity = ${align(null, null, text, "center")}")
                 }
-                node.attributeAsDimension("android:drawablePadding")?.let { text ->
+                node.attributeAsSwiftDimension("android:drawablePadding")?.let { text ->
                     appendln("view.iconPadding = $text")
                 }
-                node.attributeAsLayer("android:drawableLeft", "view")?.let { text ->
+                node.attributeAsSwiftLayer("android:drawableLeft", "view")?.let { text ->
                     appendln("view.iconPosition = .left")
                     appendln("view.iconLayer = $text")
                 }
-                node.attributeAsLayer("android:drawableTop", "view")?.let { text ->
+                node.attributeAsSwiftLayer("android:drawableTop", "view")?.let { text ->
                     appendln("view.iconPosition = .top")
                     appendln("view.iconLayer = $text")
                 }
-                node.attributeAsLayer("android:drawableRight", "view")?.let { text ->
+                node.attributeAsSwiftLayer("android:drawableRight", "view")?.let { text ->
                     appendln("view.iconPosition = .right")
                     appendln("view.iconLayer = $text")
                 }
-                node.attributeAsLayer("android:drawableBottom", "view")?.let { text ->
+                node.attributeAsSwiftLayer("android:drawableBottom", "view")?.let { text ->
                     appendln("view.iconPosition = .bottom")
                     appendln("view.iconLayer = $text")
                 }
-                node.attributeAsLayer("android:src", "view")?.let { text ->
+                node.attributeAsSwiftLayer("android:src", "view")?.let { text ->
                     appendln("view.iconPosition = .top")
                     appendln("view.iconLayer = $text")
                 }
@@ -176,15 +177,15 @@ val LayoutConverter.Companion.buttonViews
                     }}"
                 )
 
-                val defaultPadding = node.attributeAsDimension("android:padding") ?: 0
+                val defaultPadding = node.attributeAsSwiftDimension("android:padding") ?: 0
                 append("view.contentEdgeInsets = UIEdgeInsets(top: ")
-                append((node.attributeAsDimension("android:paddingTop") ?: defaultPadding).toString())
+                append((node.attributeAsSwiftDimension("android:paddingTop") ?: defaultPadding).toString())
                 append(", left:")
-                append((node.attributeAsDimension("android:paddingLeft") ?: defaultPadding).toString())
+                append((node.attributeAsSwiftDimension("android:paddingLeft") ?: defaultPadding).toString())
                 append(", bottom:")
-                append((node.attributeAsDimension("android:paddingBottom") ?: defaultPadding).toString())
+                append((node.attributeAsSwiftDimension("android:paddingBottom") ?: defaultPadding).toString())
                 append(", right:")
-                append((node.attributeAsDimension("android:paddingRight") ?: defaultPadding).toString())
+                append((node.attributeAsSwiftDimension("android:paddingRight") ?: defaultPadding).toString())
                 appendln(")")
             }
         )

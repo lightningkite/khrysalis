@@ -1,6 +1,7 @@
 package com.lightningkite.khrysalis.ios.layout
 
 import com.lightningkite.khrysalis.utils.*
+import com.lightningkite.khrysalis.ios.*
 
 val LayoutConverter.Companion.layoutViews
     get() = LayoutConverter(
@@ -67,15 +68,15 @@ val LayoutConverter.Companion.layoutViews
                         appendln(",")
 
                         append("minimumSize: CGSize(width: ")
-                        append(child.attributeAsDimension("android:minWidth") ?: "0")
+                        append(child.attributeAsSwiftDimension("android:minWidth") ?: "0")
                         append(", height: ")
-                        append(child.attributeAsDimension("android:minHeight") ?: "0")
+                        append(child.attributeAsSwiftDimension("android:minHeight") ?: "0")
                         appendln("),")
 
                         append("size: CGSize(width: ")
-                        append(child.attributeAsDimension("android:layout_width") ?: "0")
+                        append(child.attributeAsSwiftDimension("android:layout_width") ?: "0")
                         append(", height: ")
-                        append(child.attributeAsDimension("android:layout_height") ?: "0")
+                        append(child.attributeAsSwiftDimension("android:layout_height") ?: "0")
                         appendln("),")
 
                         append(
@@ -134,15 +135,15 @@ val LayoutConverter.Companion.layoutViews
                     appendln(",")
 
                     append("minimumSize: CGSize(width: ")
-                    append(child.attributeAsDimension("android:minWidth") ?: "0")
+                    append(child.attributeAsSwiftDimension("android:minWidth") ?: "0")
                     append(", height: ")
-                    append(child.attributeAsDimension("android:minHeight") ?: "0")
+                    append(child.attributeAsSwiftDimension("android:minHeight") ?: "0")
                     appendln("),")
 
                     append("size: CGSize(width: ")
-                    append(child.attributeAsDimension("android:layout_width") ?: "0")
+                    append(child.attributeAsSwiftDimension("android:layout_width") ?: "0")
                     append(", height: ")
-                    append(child.attributeAsDimension("android:layout_height") ?: "0")
+                    append(child.attributeAsSwiftDimension("android:layout_height") ?: "0")
                     appendln("),")
 
                     append(
@@ -175,18 +176,18 @@ val LayoutConverter.Companion.layoutViews
     )
 
 private fun OngoingLayoutConversion.setPadding(node: XmlNode) {
-    val defaultPadding = node.attributeAsDimension("android:padding") ?: 0
+    val defaultPadding = node.attributeAsSwiftDimension("android:padding") ?: 0
     appendln(
         "view.padding = ${uiEdgeInsets(
-            (node.attributeAsDimension("android:paddingTop")
+            (node.attributeAsSwiftDimension("android:paddingTop")
                 ?: defaultPadding).toString(),
-            (node.attributeAsDimension("android:paddingLeft")
-                ?: node.attributeAsDimension("android:paddingStart")
+            (node.attributeAsSwiftDimension("android:paddingLeft")
+                ?: node.attributeAsSwiftDimension("android:paddingStart")
                 ?: defaultPadding).toString(),
-            (node.attributeAsDimension("android:paddingBottom")
+            (node.attributeAsSwiftDimension("android:paddingBottom")
                 ?: defaultPadding).toString(),
-            (node.attributeAsDimension("android:paddingRight")
-                ?: node.attributeAsDimension("android:paddingEnd")
+            (node.attributeAsSwiftDimension("android:paddingRight")
+                ?: node.attributeAsSwiftDimension("android:paddingEnd")
                 ?: defaultPadding).toString()
         )}"
     )
@@ -256,32 +257,32 @@ fun uiEdgeInsets(
 ): String = "UIEdgeInsets(top: $top, left: $left, bottom: $bottom, right: $right)"
 
 fun OngoingLayoutConversion.margins(child: XmlNode): String {
-    val defaultMargin = child.attributeAsDimension("android:layout_margin") ?: 0
-    val top = (child.attributeAsDimension("android:layout_marginTop")
+    val defaultMargin = child.attributeAsSwiftDimension("android:layout_margin") ?: 0
+    val top = (child.attributeAsSwiftDimension("android:layout_marginTop")
         ?: defaultMargin).toString()
-    val left = (child.attributeAsDimension("android:layout_marginLeft")
-        ?: child.attributeAsDimension("android:layout_marginStart")
+    val left = (child.attributeAsSwiftDimension("android:layout_marginLeft")
+        ?: child.attributeAsSwiftDimension("android:layout_marginStart")
         ?: defaultMargin).toString()
-    val bottom = (child.attributeAsDimension("android:layout_marginBottom")
+    val bottom = (child.attributeAsSwiftDimension("android:layout_marginBottom")
         ?: defaultMargin).toString()
-    val right = (child.attributeAsDimension("android:layout_marginRight")
-        ?: child.attributeAsDimension("android:layout_marginEnd")
+    val right = (child.attributeAsSwiftDimension("android:layout_marginRight")
+        ?: child.attributeAsSwiftDimension("android:layout_marginEnd")
         ?: defaultMargin).toString()
     return uiEdgeInsets(top, left, bottom, right)
 }
 
 fun OngoingLayoutConversion.padding(child: XmlNode): String {
     if(this.converter.viewTypes[child.name]?.handlesPadding != true) {
-        val defaultPadding = child.attributeAsDimension("android:padding") ?: 0
-        val top = (child.attributeAsDimension("android:paddingTop")
+        val defaultPadding = child.attributeAsSwiftDimension("android:padding") ?: 0
+        val top = (child.attributeAsSwiftDimension("android:paddingTop")
             ?: defaultPadding).toString()
-        val left = (child.attributeAsDimension("android:paddingLeft")
-            ?: child.attributeAsDimension("android:paddingStart")
+        val left = (child.attributeAsSwiftDimension("android:paddingLeft")
+            ?: child.attributeAsSwiftDimension("android:paddingStart")
             ?: defaultPadding).toString()
-        val bottom = (child.attributeAsDimension("android:paddingBottom")
+        val bottom = (child.attributeAsSwiftDimension("android:paddingBottom")
             ?: defaultPadding).toString()
-        val right = (child.attributeAsDimension("android:paddingRight")
-            ?: child.attributeAsDimension("android:paddingEnd")
+        val right = (child.attributeAsSwiftDimension("android:paddingRight")
+            ?: child.attributeAsSwiftDimension("android:paddingEnd")
             ?: defaultPadding).toString()
         return uiEdgeInsets(top, left, bottom, right)
     } else {

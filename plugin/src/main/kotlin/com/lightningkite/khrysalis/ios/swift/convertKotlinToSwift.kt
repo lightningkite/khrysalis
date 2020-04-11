@@ -20,13 +20,13 @@ import kotlin.collections.HashMap
 
 fun convertKotlinToSwift(
     androidFolder: File,
-    webFolder: File,
+    iosFolder: File,
     clean: Boolean = false,
     setup: SwiftAltListener.() -> Unit = {}
 ) = convertKotlinToSwiftByFolder(
     interfacesOut = androidFolder.resolve("src/main/resources/META-INF/khrysalis-interfaces.json"),
     baseKotlin = androidFolder.resolve("src/main/java"),
-    baseSwift = webFolder,
+    baseSwift = iosFolder,
     clean = clean,
     setup = setup
 )

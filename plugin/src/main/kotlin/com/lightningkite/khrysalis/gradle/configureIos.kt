@@ -22,7 +22,7 @@ fun Project.convertKotlinToSwiftWithDependencies(
 ) {
     convertKotlinToSwift(
         androidFolder = androidFolder,
-        webFolder = iosFolder,
+        iosFolder = iosFolder,
         clean = clean,
         setup = {
             configurations
@@ -68,7 +68,7 @@ fun Project.configureGradle(
     val iosBase = project.projectDir.resolve(iosRelativeBase)
 
     tasks.create("khrysalisConvertKotlinToSwiftClean") { task ->
-        task.group = "build"
+        task.group = "ios"
         task.doLast {
 
             convertKotlinToSwiftWithDependencies(
@@ -83,7 +83,7 @@ fun Project.configureGradle(
         }
     }
     tasks.create("khrysalisConvertKotlinToSwift") { task ->
-        task.group = "build"
+        task.group = "ios"
         task.doLast {
 
             convertKotlinToSwiftWithDependencies(
@@ -109,7 +109,7 @@ fun Project.configureGradle(
         }
     }
     tasks.create("khrysalisConvertLayoutsToSwift") { task ->
-        task.group = "build"
+        task.group = "ios"
         task.doLast {
 
             convertLayoutsToSwift(
@@ -121,7 +121,7 @@ fun Project.configureGradle(
         }
     }
     tasks.create("khrysalisConvertResourcesToIos") { task ->
-        task.group = "build"
+        task.group = "ios"
         task.doLast {
 
             convertResourcesToIos(
@@ -132,7 +132,7 @@ fun Project.configureGradle(
         }
     }
     tasks.create("khrysalisIos") { task ->
-        task.group = "build"
+        task.group = "ios"
         task.dependsOn("khrysalisConvertKotlinToSwift")
         task.dependsOn("khrysalisConvertLayoutsToSwift")
         task.dependsOn("khrysalisConvertResourcesToIos")

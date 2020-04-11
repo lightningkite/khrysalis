@@ -1,6 +1,7 @@
 package com.lightningkite.khrysalis.ios.layout
 
 import com.lightningkite.khrysalis.utils.*
+import com.lightningkite.khrysalis.ios.*
 import kotlin.math.PI
 
 val LayoutConverter.Companion.displayViews
@@ -16,7 +17,7 @@ val LayoutConverter.Companion.displayViews
                 node.allAttributes["android:background"]?.let { raw ->
                     when {
                         raw.startsWith("@drawable/") -> {
-                            node.attributeAsLayer("android:background", "view")!!.let {
+                            node.attributeAsSwiftLayer("android:background", "view")!!.let {
                                 appendln("view.backgroundLayer = $it")
                             }
                         }
@@ -41,7 +42,7 @@ val LayoutConverter.Companion.displayViews
                 node.attributeAsDouble("android:alpha")?.let {
                     appendln("view.alpha = $it")
                 }
-                node.attributeAsDimension("android:elevation")?.let {
+                node.attributeAsSwiftDimension("android:elevation")?.let {
                     appendln("view.layer.masksToBounds = false")
                     appendln("view.layer.shadowColor = UIColor.black.cgColor")
                     appendln("view.layer.shadowOffset = CGSize(width: 0, height: $it)")
@@ -67,14 +68,14 @@ val LayoutConverter.Companion.displayViews
             ViewType("Space", "UIView", "View") {},
             ViewType("ProgressBar", "UIActivityIndicatorView", "View") { node ->
                 appendln("view.startAnimating()")
-                node.attributeAsColor("android:indeterminateTint")?.let {
+                node.attributeAsSwiftColor("android:indeterminateTint")?.let {
                     appendln("view.color = $it")
                 } ?: run {
                     appendln("view.color = ResourcesColors.colorPrimary")
                 }
             },
             ViewType("ImageView", "UIImageView", "View") { node ->
-                node.attributeAsImage("android:src")?.let { text ->
+                node.attributeAsSwiftImage("android:src")?.let { text ->
                     appendln("view.image = $text")
                 }
                 appendln("view.clipsToBounds = true")
@@ -133,7 +134,7 @@ val LayoutConverter.Companion.displayViews
 
 internal fun OngoingLayoutConversion.handleCommonText(node: XmlNode, viewHandle: String = "view", controlView: String? = null) {
 
-    val size = node.attributeAsDimension("android:textSize") ?: "12"
+    val size = node.attributeAsSwiftDimension("android:textSize") ?: "12"
 
     val fontStylesFromFamily = listOfNotNull(
         if(node.allAttributes["android:fontFamily"]?.contains("bold", true) == true) "bold" else null,
@@ -142,13 +143,13 @@ internal fun OngoingLayoutConversion.handleCommonText(node: XmlNode, viewHandle:
     val fontStyles = (node.allAttributes["android:textStyle"]?.split('|') ?: listOf()) + fontStylesFromFamily
     appendln("$viewHandle.font = UIFont.get(size: $size, style: [${fontStyles.joinToString { "\"$it\"" }}])")
 
-    node.attributeAsDimension("android:letterSpacing")?.let {
+    node.attributeAsSwiftDimension("android:letterSpacing")?.let {
         appendln("$viewHandle.letterSpacing = $it")
     }
     node.attributeAsBoolean("android:textAllCaps")?.let {
         appendln("$viewHandle.textAllCaps = $it")
     }
-    node.attributeAsString("android:text")?.let { text ->
+    node.attributeAsSwiftString("android:text")?.let { text ->
         appendln("$viewHandle.textString = $text")
     }
     node.attributeAsDouble("android:lineSpacingMultiplier")?.let { lineSpacingMultiplier ->
@@ -162,7 +163,7 @@ internal fun OngoingLayoutConversion.handleCommonText(node: XmlNode, viewHandle:
             appendln("$viewHandle.textColor = $it")
         }
     } else {
-        node.attributeAsColor("android:textColor")?.let {
+        node.attributeAsSwiftColor("android:textColor")?.let {
             appendln("$viewHandle.textColor = $it")
         }
     }

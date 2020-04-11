@@ -1,6 +1,7 @@
 package com.lightningkite.khrysalis.ios.values
 
 import com.lightningkite.khrysalis.utils.*
+import com.lightningkite.khrysalis.ios.*
 import java.io.File
 import java.lang.Appendable
 
@@ -59,10 +60,10 @@ fun File.translateXmlColorSet(out: Appendable) {
             }
 
             if(conditions.isEmpty()) {
-                out.appendln("        return ${subnode.attributeAsColor("android:color")}")
+                out.appendln("        return ${subnode.attributeAsSwiftColor("android:color")}")
             } else {
                 out.appendln("        if ${conditions.joinToString(" && ")} {")
-                out.appendln("            return ${subnode.attributeAsColor("android:color")}")
+                out.appendln("            return ${subnode.attributeAsSwiftColor("android:color")}")
                 out.appendln("        }")
             }
         }

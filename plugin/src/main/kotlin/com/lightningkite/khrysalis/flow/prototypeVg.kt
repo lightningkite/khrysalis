@@ -3,7 +3,6 @@ package com.lightningkite.khrysalis.flow
 import com.lightningkite.khrysalis.ios.layout.Styles
 import com.lightningkite.khrysalis.ios.swift.TabWriter
 import com.lightningkite.khrysalis.utils.XmlNode
-import com.lightningkite.khrysalis.utils.attributeAsString
 import com.lightningkite.khrysalis.utils.camelCase
 import com.lightningkite.khrysalis.utils.forEachBetween
 import java.io.File
@@ -273,7 +272,7 @@ private fun generateFile(
                                 line("""$view.setImageResource(R.drawable.${it.removePrefix("@drawable/")})""")
                             }
                         }
-                        node.attributeAsString("tools:visibility")?.let {
+                        node.allAttributes["tools:visibility"]?.let {
                             when (it) {
                                 "gone" -> line("$view.visibility = View.GONE")
                                 "invisible" -> line("$view.visibility = View.INVISIBLE")

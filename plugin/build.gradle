@@ -8,12 +8,12 @@ buildscript {
     }
     dependencies {
         classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}"
-        classpath "com.jfrog.bintray.gradle:gradle-bintray-plugin:1.8.0"
         classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.+'
     }
 }
 
 apply plugin: "java"
+apply plugin: 'java-gradle-plugin'
 apply plugin: "kotlin"
 apply plugin: 'antlr'
 apply plugin: "idea"
@@ -41,6 +41,15 @@ bintray {
     }
 }
 
+gradlePlugin {
+    plugins {
+        mirrorPlugin {
+            id = "com.lightningkite.khrysalis"
+            implementationClass = "com.lightningkite.khrysalis.gradle.KhrysalisPlugin"
+        }
+    }
+}
+
 mainClassName = 'com.lightningkite.khrysalis.MainKt'
 
 repositories {
@@ -62,6 +71,7 @@ dependencies {
 //    api "org.jetbrains.kotlin:kotlin-gradle-plugin:${rootProject.kotlinVersion}"
     antlr "org.antlr:antlr4:4.5.3" // use ANTLR version 4
     // https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java
+    api "org.apache.commons:commons-lang3:3.10"
     api "me.eugeniomarletti.kotlin.metadata:kotlin-metadata:1.4.0"
     api "com.fasterxml.jackson.core:jackson-databind:2.9.+"
     api "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.+"
@@ -103,3 +113,12 @@ publishing {
     }
 }
 
+compileJava {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
+compileKotlin {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}

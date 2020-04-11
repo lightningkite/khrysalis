@@ -1,8 +1,7 @@
 package com.lightningkite.khrysalis.ios.layout
 
-import com.lightningkite.khrysalis.utils.attributeAsColor
-import com.lightningkite.khrysalis.utils.attributeAsDimension
-import com.lightningkite.khrysalis.utils.attributeAsString
+import com.lightningkite.khrysalis.utils.*
+import com.lightningkite.khrysalis.ios.*
 
 val LayoutConverter.Companion.dateViews
     get() = LayoutConverter(
@@ -14,116 +13,116 @@ val LayoutConverter.Companion.dateViews
             },
             ViewType("com.lightningkite.khrysalis.views.android.CalendarView", "CalendarView", "View") { node ->
 
-                node.attributeAsColor("app:titleColor")?.let {
+                node.attributeAsSwiftColor("app:titleColor")?.let {
                     appendln("view.headerColorSet.foreground = $it")
                 }
-                node.attributeAsColor("app:selectedForegroundColor")?.let {
+                node.attributeAsSwiftColor("app:selectedForegroundColor")?.let {
                     appendln("view.selectedColorSet.foreground = $it")
                 }
-                node.attributeAsColor("app:selectedBackgroundColor")?.let {
+                node.attributeAsSwiftColor("app:selectedBackgroundColor")?.let {
                     appendln("view.selectedColorSet.background = $it")
                 }
-                node.attributeAsColor("app:defaultForegroundColor")?.let {
+                node.attributeAsSwiftColor("app:defaultForegroundColor")?.let {
                     appendln("view.defaultColorSet.foreground = $it")
                 }
-                node.attributeAsColor("app:defaultBackgroundColor")?.let {
+                node.attributeAsSwiftColor("app:defaultBackgroundColor")?.let {
                     appendln("view.defaultColorSet.background = $it")
                 }
-                node.attributeAsColor("app:labelForegroundColor")?.let {
+                node.attributeAsSwiftColor("app:labelForegroundColor")?.let {
                     appendln("view.labelColorSet.foreground = $it")
                 }
-                node.attributeAsColor("app:labelBackgroundColor")?.let {
+                node.attributeAsSwiftColor("app:labelBackgroundColor")?.let {
                     appendln("view.labelColorSet.background = $it")
                 }
 
-                node.attributeAsDimension("app:headerFont")?.let {
+                node.attributeAsSwiftDimension("app:headerFont")?.let {
                     appendln("view.headerFont = $it")
                 }
-                node.attributeAsDimension("app:labelFont")?.let {
+                node.attributeAsSwiftDimension("app:labelFont")?.let {
                     appendln("view.labelFont = $it")
                 }
-                node.attributeAsDimension("app:dayFont")?.let {
+                node.attributeAsSwiftDimension("app:dayFont")?.let {
                     appendln("view.dayFont = $it")
                 }
 
-                node.attributeAsDimension("app:titleSize")?.let {
+                node.attributeAsSwiftDimension("app:titleSize")?.let {
                     appendln("view.headerFont = $it")
                 }
-                node.attributeAsDimension("app:labelSize")?.let {
+                node.attributeAsSwiftDimension("app:labelSize")?.let {
                     appendln("view.labelFont = $it")
                 }
-                node.attributeAsDimension("app:daySize")?.let {
+                node.attributeAsSwiftDimension("app:daySize")?.let {
                     appendln("view.dayFont = $it")
                 }
 
-                node.attributeAsDimension("app:internalPadding")?.let {
+                node.attributeAsSwiftDimension("app:internalPadding")?.let {
                     appendln("view.internalPadding = $it")
                 }
-                node.attributeAsDimension("app:dayCellMargin")?.let {
+                node.attributeAsSwiftDimension("app:dayCellMargin")?.let {
                     appendln("view.dayCellMargin = $it")
                 }
 
-                node.attributeAsString("app:leftText")?.let {
+                node.attributeAsSwiftString("app:leftText")?.let {
                     appendln("view.leftText = $it")
                 }
-                node.attributeAsString("app:rightText")?.let {
+                node.attributeAsSwiftString("app:rightText")?.let {
                     appendln("view.rightText = $it")
                 }
 
 
-                node.attributeAsColor("titleColor")?.let {
+                node.attributeAsSwiftColor("titleColor")?.let {
                     appendln("view.headerColorSet.foreground = $it")
                 }
-                node.attributeAsColor("selectedForegroundColor")?.let {
+                node.attributeAsSwiftColor("selectedForegroundColor")?.let {
                     appendln("view.selectedColorSet.foreground = $it")
                 }
-                node.attributeAsColor("selectedBackgroundColor")?.let {
+                node.attributeAsSwiftColor("selectedBackgroundColor")?.let {
                     appendln("view.selectedColorSet.background = $it")
                 }
-                node.attributeAsColor("defaultForegroundColor")?.let {
+                node.attributeAsSwiftColor("defaultForegroundColor")?.let {
                     appendln("view.defaultColorSet.foreground = $it")
                 }
-                node.attributeAsColor("defaultBackgroundColor")?.let {
+                node.attributeAsSwiftColor("defaultBackgroundColor")?.let {
                     appendln("view.defaultColorSet.background = $it")
                 }
-                node.attributeAsColor("labelForegroundColor")?.let {
+                node.attributeAsSwiftColor("labelForegroundColor")?.let {
                     appendln("view.labelColorSet.foreground = $it")
                 }
-                node.attributeAsColor("labelBackgroundColor")?.let {
+                node.attributeAsSwiftColor("labelBackgroundColor")?.let {
                     appendln("view.labelColorSet.background = $it")
                 }
 
-                node.attributeAsDimension("headerFont")?.let {
+                node.attributeAsSwiftDimension("headerFont")?.let {
                     appendln("view.headerFont = $it")
                 }
-                node.attributeAsDimension("labelFont")?.let {
+                node.attributeAsSwiftDimension("labelFont")?.let {
                     appendln("view.labelFont = $it")
                 }
-                node.attributeAsDimension("dayFont")?.let {
+                node.attributeAsSwiftDimension("dayFont")?.let {
                     appendln("view.dayFont = $it")
                 }
 
-                node.attributeAsDimension("titleSize")?.let {
+                node.attributeAsSwiftDimension("titleSize")?.let {
                     appendln("view.headerFont = $it")
                 }
-                node.attributeAsDimension("labelSize")?.let {
+                node.attributeAsSwiftDimension("labelSize")?.let {
                     appendln("view.labelFont = $it")
                 }
-                node.attributeAsDimension("daySize")?.let {
+                node.attributeAsSwiftDimension("daySize")?.let {
                     appendln("view.dayFont = $it")
                 }
 
-                node.attributeAsDimension("internalPadding")?.let {
+                node.attributeAsSwiftDimension("internalPadding")?.let {
                     appendln("view.internalPadding = $it")
                 }
-                node.attributeAsDimension("dayCellMargin")?.let {
+                node.attributeAsSwiftDimension("dayCellMargin")?.let {
                     appendln("view.dayCellMargin = $it")
                 }
 
-                node.attributeAsString("leftText")?.let {
+                node.attributeAsSwiftString("leftText")?.let {
                     appendln("view.leftText = $it")
                 }
-                node.attributeAsString("rightText")?.let {
+                node.attributeAsSwiftString("rightText")?.let {
                     appendln("view.rightText = $it")
                 }
 

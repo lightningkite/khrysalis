@@ -1,9 +1,7 @@
 package com.lightningkite.khrysalis.ios.drawables
 
-import com.lightningkite.khrysalis.utils.XmlNode
-import com.lightningkite.khrysalis.utils.attributeAsColor
-import com.lightningkite.khrysalis.utils.attributeAsDimension
-import com.lightningkite.khrysalis.utils.attributeAsDouble
+import com.lightningkite.khrysalis.utils.*
+import com.lightningkite.khrysalis.ios.*
 import java.lang.IllegalStateException
 
 fun <E> MutableList<E>.unshift(): E {
@@ -31,8 +29,8 @@ fun convertVectorDrawable(name: String, node: XmlNode, out: Appendable) {
 
     with(out) {
         appendln("static func $name(_ view: UIView? = nil) -> CALayer {")
-        appendln("    let scaleX: CGFloat = CGFloat(${node.attributeAsDimension("android:width") ?: "10"}) / ${node.attributeAsDouble("android:viewportWidth") ?: "10"}")
-        appendln("    let scaleY: CGFloat = CGFloat(${node.attributeAsDimension("android:height") ?: "10"}) / ${node.attributeAsDouble("android:viewportHeight") ?: "10"}")
+        appendln("    let scaleX: CGFloat = CGFloat(${node.attributeAsSwiftDimension("android:width") ?: "10"}) / ${node.attributeAsDouble("android:viewportWidth") ?: "10"}")
+        appendln("    let scaleY: CGFloat = CGFloat(${node.attributeAsSwiftDimension("android:height") ?: "10"}) / ${node.attributeAsDouble("android:viewportHeight") ?: "10"}")
         appendln("    let layer = CALayer()")
         node.children.filter { it.name == "path" }.forEach { subnode ->
             subnode.children
@@ -60,7 +58,7 @@ fun convertVectorDrawable(name: String, node: XmlNode, out: Appendable) {
                         }
                     }
                     val colors = gradientNode.children.filter { it.name == "item" }.mapNotNull {
-                        it.attributeAsColor("android:color")
+                        it.attributeAsSwiftColor("android:color")
                     }.joinToString(", ", "[", "]") { it + ".cgColor" }
                     appendln("        gradient.colors = $colors")
                     appendln("        gradient.frame = CGRect(x: 0, y: 0, width: $width, height: $height)")
@@ -75,10 +73,10 @@ fun convertVectorDrawable(name: String, node: XmlNode, out: Appendable) {
                     pathDataToSwift(pathData)
                     appendln("        sublayer.path = path")
                 }
-                subnode.attributeAsColor("android:fillColor")?.let {
+                subnode.attributeAsSwiftColor("android:fillColor")?.let {
                     appendln("        sublayer.fillColor = $it.cgColor")
                 }
-                subnode.attributeAsColor("android:strokeColor")?.let {
+                subnode.attributeAsSwiftColor("android:strokeColor")?.let {
                     appendln("        sublayer.strokeColor = $it.cgColor")
                 }
                 appendln("        return sublayer")

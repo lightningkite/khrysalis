@@ -7,7 +7,7 @@ import com.lightningkite.khrysalis.generic.SmartTabWriter
 import com.lightningkite.khrysalis.preparse.preparseKotlinFiles
 import com.lightningkite.khrysalis.log
 import com.lightningkite.khrysalis.ios.swift.FileConversionInfo
-import com.lightningkite.khrysalis.ios.swift.TabWriter
+import com.lightningkite.khrysalis.preparse.plus
 import com.lightningkite.khrysalis.web.typescript.actuals.typescriptStubs
 import com.lightningkite.khrysalis.utils.Versioned
 import com.lightningkite.khrysalis.utils.checksum
@@ -22,16 +22,16 @@ import java.util.*
 import kotlin.collections.HashMap
 
 fun convertKotlinToTypescript(
-    androidFolder: File,
-    iosFolder: File,
+    androidMainFolder: File,
+    webFolder: File,
     clean: Boolean = false,
-    setup: TypescriptTranslator.() -> Unit = {}
+    typescript: TypescriptTranslator
 ) = convertKotlinToTypescriptByFolder(
-    interfacesOut = androidFolder.resolve("src/main/resources/META-INF/khrysalis-interfaces.json"),
-    baseKotlin = androidFolder.resolve("src/main/java"),
-    baseTs = iosFolder,
+    interfacesOut = androidMainFolder.resolve("resources/META-INF/khrysalis-interfaces.json"),
+    baseKotlin = androidMainFolder.resolve("java"),
+    baseTs = webFolder,
     clean = clean,
-    setup = setup
+    typescript = typescript
 )
 
 fun convertKotlinToTypescriptByFolder(
@@ -39,7 +39,7 @@ fun convertKotlinToTypescriptByFolder(
     baseKotlin: File,
     baseTs: File,
     clean: Boolean = false,
-    setup: TypescriptTranslator.() -> Unit = {}
+    typescript: TypescriptTranslator
 ) {
 
     val toConvert = baseKotlin.walkTopDown()
@@ -51,8 +51,7 @@ fun convertKotlinToTypescriptByFolder(
         interfacesOut,
         baseKotlin
     )
-    val typescript = TypescriptTranslator().apply(setup)
-    typescript.preparseData = preparseData
+    typescript.preparseData += preparseData
 
     val cacheFile = baseKotlin.resolve("khrysalis-ts-cache-2.json")
     val existingCache = if (cacheFile.exists()) {

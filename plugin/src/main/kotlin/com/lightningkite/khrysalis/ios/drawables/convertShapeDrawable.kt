@@ -1,6 +1,7 @@
 package com.lightningkite.khrysalis.ios.drawables
 
 import com.lightningkite.khrysalis.utils.*
+import com.lightningkite.khrysalis.ios.*
 import java.lang.Appendable
 
 
@@ -18,9 +19,9 @@ fun convertShapeDrawable(name: String, node: XmlNode, out: Appendable) {
                     appendln("    let gradient = CAGradientLayer()")
                     appendln("    gradient.mask = mask")
                     val colors = listOfNotNull(
-                        it.attributeAsColor("android:startColor"),
-                        it.attributeAsColor("android:centerColor"),
-                        it.attributeAsColor("android:endColor")
+                        it.attributeAsSwiftColor("android:startColor"),
+                        it.attributeAsSwiftColor("android:centerColor"),
+                        it.attributeAsSwiftColor("android:endColor")
                     )
                     appendln("    gradient.colors = " + colors.joinToString(", ", "[", "]") { "$it.cgColor" })
                     val angle = it.attributeAsInt("android:angle") ?: 0
@@ -32,14 +33,14 @@ fun convertShapeDrawable(name: String, node: XmlNode, out: Appendable) {
                     appendln("    let layer = CAShapeLayer()")
                     appendln("    layer.path = CGPath(ellipseIn: CGRect(x: 0, y: 0, width: $width, height: $height), transform: nil)")
                     node.children.find { it.name == "stroke" }?.let {
-                        appendln("    layer.borderWidth = ${it.attributeAsDimension("android:width") ?: "0"}")
+                        appendln("    layer.borderWidth = ${it.attributeAsSwiftDimension("android:width") ?: "0"}")
                         appendln(
-                            "    layer.strokeColor = ${it.attributeAsColor("android:color") ?: "UIColor.black"}.cgColor"
+                            "    layer.strokeColor = ${it.attributeAsSwiftColor("android:color") ?: "UIColor.black"}.cgColor"
                         )
                     }
                     node.children.find { it.name == "solid" }?.let {
                         appendln(
-                            "    layer.fillColor = ${it.attributeAsColor("android:color") ?: "UIColor.black"}.cgColor"
+                            "    layer.fillColor = ${it.attributeAsSwiftColor("android:color") ?: "UIColor.black"}.cgColor"
                         )
                     }
                     appendln("    layer.bounds.size = CGSize(width: $width, height: $height)")
@@ -55,25 +56,25 @@ fun convertShapeDrawable(name: String, node: XmlNode, out: Appendable) {
                 appendln("static func $name(_ view: UIView? = nil) -> $className {")
                 appendln("    let layer = $className()")
                 node.children.find { it.name == "stroke" }?.let {
-                    appendln("    layer.borderWidth = ${it.attributeAsDimension("android:width") ?: "0"}")
+                    appendln("    layer.borderWidth = ${it.attributeAsSwiftDimension("android:width") ?: "0"}")
                     appendln(
-                        "    layer.borderColor = ${it.attributeAsColor("android:color") ?: "UIColor.black"}.cgColor"
+                        "    layer.borderColor = ${it.attributeAsSwiftColor("android:color") ?: "UIColor.black"}.cgColor"
                     )
                 }
                 node.children.find { it.name == "solid" }?.let {
                     appendln(
-                        "    layer.backgroundColor = ${it.attributeAsColor("android:color") ?: "UIColor.black"}.cgColor"
+                        "    layer.backgroundColor = ${it.attributeAsSwiftColor("android:color") ?: "UIColor.black"}.cgColor"
                     )
                 }
                 node.children.find { it.name == "corners" }?.let { corners ->
-                    corners.attributeAsDimension("android:radius")?.let {
+                    corners.attributeAsSwiftDimension("android:radius")?.let {
                         appendln("    layer.maxCornerRadius = $it")
                         appendln("    layer.cornerRadius = $it")
                     } ?: run {
-                        val radius = corners.attributeAsDimension("android:bottomLeftRadius")
-                            ?: corners.attributeAsDimension("android:topLeftRadius")
-                            ?: corners.attributeAsDimension("android:bottomRightRadius")
-                            ?: corners.attributeAsDimension("android:topRightRadius")
+                        val radius = corners.attributeAsSwiftDimension("android:bottomLeftRadius")
+                            ?: corners.attributeAsSwiftDimension("android:topLeftRadius")
+                            ?: corners.attributeAsSwiftDimension("android:bottomRightRadius")
+                            ?: corners.attributeAsSwiftDimension("android:topRightRadius")
                         if (radius != null) {
                             appendln("    layer.cornerRadius = $radius")
                             append("    layer.maskedCorners = [")
@@ -91,9 +92,9 @@ fun convertShapeDrawable(name: String, node: XmlNode, out: Appendable) {
                 }
                 node.children.find { it.name == "gradient" }?.let {
                     val colors = listOfNotNull(
-                        it.attributeAsColor("android:startColor"),
-                        it.attributeAsColor("android:centerColor"),
-                        it.attributeAsColor("android:endColor")
+                        it.attributeAsSwiftColor("android:startColor"),
+                        it.attributeAsSwiftColor("android:centerColor"),
+                        it.attributeAsSwiftColor("android:endColor")
                     )
                     appendln("    layer.colors = " + colors.joinToString(", ", "[", "]") { "$it.cgColor" })
                     val angle = it.attributeAsInt("android:angle") ?: 0

@@ -1,11 +1,14 @@
 package com.lightningkite.khrysalis.web.layout
 
 import com.lightningkite.khrysalis.utils.forEachBetween
+import org.apache.commons.lang3.StringEscapeUtils.escapeHtml4
 import java.lang.Appendable
+import java.net.URLEncoder
 
 class ResultNode(
     var name: String = "div"
 ) {
+    var parent: ResultNode? = null
     val classes = HashSet<String>()
     val stylesheet = ArrayList<String>()
     val style = HashMap<String, String>()
@@ -60,7 +63,7 @@ class ResultNode(
             out.append(">")
             for (node in contentNodes) {
                 when (node) {
-                    is String -> out.append(node)
+                    is String -> out.append(node.let { escapeHtml4(it) })
                     is ResultNode -> node.emitHtml(out)
                 }
             }
