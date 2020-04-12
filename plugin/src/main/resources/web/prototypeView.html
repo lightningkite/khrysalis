@@ -1,0 +1,119 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <script>
+            function isPrototypeSwapView(view){
+                return (view).stack != null;
+            }
+            function prototypeSwapViewStack(view){
+                return ((view).stack<string>);
+            }
+            function setPrototypeSwapViewStack(view, stack) {
+                (view).stack = stack;
+            }
+            function prototypeSwapViewSetup(view, key, defaultView) {
+                (view).stackKey = key;
+                if (defaultView != null){
+                    setPrototypeSwapViewStack(view, [defaultView]);
+                } else {
+                    setPrototypeSwapViewStack(view, []);
+                }
+            }
+            function prototypeSwapViewReload(view){
+                const stack = prototypeSwapViewStack(view);
+                if(stack.length === 0){
+                    view.style.display = "none";
+                    return;
+                }
+                view.style.display = "relative";
+                const link = stack[stack.length-1];
+                fetch("src/layouts/" + link + ".html")
+                    .then((response) => response.text())
+                    .then((html) => {
+                        view.innerHTML = html;
+                        const element = (view.firstElementChild);
+                        element.style["width"] = "100%";
+                        element.style["height"] = "100%";
+                    })
+                    .catch((error) => {
+                        console.warn(error)
+                    });
+            }
+            function prototypeSwapViewPush(view, name) {
+                prototypeSwapViewStack(view).push(name);
+                prototypeSwapViewReload(view);
+            }
+            function prototypeSwapViewSwap(view, name) {
+                const stack = prototypeSwapViewStack(view);
+                stack.pop();
+                stack.push(name);
+                prototypeSwapViewReload(view);
+            }
+            function prototypeSwapViewReset(view, name) {
+                setPrototypeSwapViewStack(view, [name]);
+                prototypeSwapViewReload(view);
+            }
+            function prototypeSwapViewPop(view) {
+                const stack = prototypeSwapViewStack(view);
+                if(stack.length > 1){
+                    stack.pop();
+                    prototypeSwapViewReload(view);
+                }
+            }
+            function prototypeSwapViewDismiss(view) {
+                const stack = prototypeSwapViewStack(view);
+                if(stack.length > 0){
+                    stack.pop();
+                    prototypeSwapViewReload(view);
+                }
+            }
+
+            function prototypeFindTarget(view, targetName){
+                let current = view;
+                while(true){
+                    if(targetName == null){
+                        if(isPrototypeSwapView(current)) return current;
+                    } else {
+                        const key = (view).stackKey;
+                        if(isPrototypeSwapView(current) && key === targetName) return current;
+                    }
+                    current = current.parentElement;
+                    if(current == null) return null;
+                }
+            }
+            function prototypePush(view, targetName, link) {
+                prototypeSwapViewPush(prototypeFindTarget(view, targetName), link)
+            }
+            function prototypeSwap(view, targetName, link) {
+                prototypeSwapViewSwap(prototypeFindTarget(view, targetName), link)
+            }
+            function prototypeReset(view, targetName, link) {
+                prototypeSwapViewReset(prototypeFindTarget(view, targetName), link)
+            }
+            function prototypePop(view, targetName) {
+                prototypeSwapViewPop(prototypeFindTarget(view, targetName))
+            }
+            function prototypeDismiss(view, targetName) {
+                prototypeSwapViewDismiss(prototypeFindTarget(view, targetName))
+            }
+        </script>
+    </head>
+    <body>
+        <div id="app"></div>
+        <script>
+            console.log("Hello world!");
+            let view = document.getElementById("app");
+            fetch("src/layouts/" + link + ".html")
+                .then((response) => response.text())
+                .then((html) => {
+                    view.innerHTML = html;
+                    const element = (view.firstElementChild);
+                    element.style["width"] = "100%";
+                    element.style["height"] = "100%";
+                })
+                .catch((error) => {
+                    console.warn(error)
+                });
+        </script>
+    </body>
+</html>

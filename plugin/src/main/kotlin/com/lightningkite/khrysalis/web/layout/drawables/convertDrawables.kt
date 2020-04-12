@@ -9,7 +9,7 @@ fun convertDrawablesToWeb(
     webFolder: File,
     out: Appendable
 ) {
-    val webFolderImages = webFolder.resolve("images").also {
+    val webFolderImages = webFolder.resolve("src/images").also {
         it.listFiles()?.forEach { it.delete() }
         it.mkdirs()
     }

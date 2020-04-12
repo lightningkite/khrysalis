@@ -1,5 +1,7 @@
 package com.lightningkite.khrysalis.web.layout
 
+import com.lightningkite.khrysalis.utils.kabobCase
+
 internal fun HtmlTranslator.display() {
     element.handle("TextView"){
         out.name = "div"
@@ -11,11 +13,24 @@ internal fun HtmlTranslator.display() {
     element.handle("ImageView") {
         out.name = "image"
     }
-    attribute.handle("android:src", condition = { rule.parent.name == "ImageView" }){
+    element.handle("ImageButton") {
+        out.name = "button"
+        val imageChild = ResultNode("image")
+        element.translate("ImageView", rule, imageChild)
+        out.contentNodes.add(imageChild)
+    }
+    attribute.handle("android:src", condition = { out.name == "image" }){
         val value = rule.value
-        out.attributes["src"] = when {
-            value.startsWith("@") -> "/res/" + value.substringAfter('/') + ".png"
-            else -> ""
+        when {
+            value.startsWith("@") -> {
+                val path = value.substringAfter('/')
+                outFolder.resolve("src/images").walkTopDown().find { it.nameWithoutExtension == path.kabobCase() }?.let {
+                    out.attributes["src"] = it.toRelativeString(outFolder)
+                } ?: run {
+                    println("WARNING: Failed to find $path in ${this@display.outFolder}/src/images")
+                }
+            }
+            else -> {}
         }
     }
 }

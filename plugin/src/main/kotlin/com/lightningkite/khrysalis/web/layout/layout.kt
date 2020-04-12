@@ -18,8 +18,12 @@ internal fun HtmlTranslator.layout() {
                 }
                 else -> {
                     val converted = value.asCssDimension() ?: "failedConversion"
-                    child.style["width"] = converted
-                    container.style["width"] = converted
+                    rule.allAttributes["android:layout_weight"]?.let {
+                        child.style["width"] = "100%"
+                        container.style["width"] = converted
+                    } ?: run {
+                        child.style["width"] = converted
+                    }
                 }
             }
         }
@@ -33,8 +37,12 @@ internal fun HtmlTranslator.layout() {
                 }
                 else -> {
                     val converted = value.asCssDimension() ?: "failedConversion"
-                    child.style["height"] = converted
-                    container.style["height"] = converted
+                    rule.allAttributes["android:layout_weight"]?.let {
+                        child.style["height"] = "100%"
+                        container.style["height"] = converted
+                    } ?: run {
+                        child.style["height"] = converted
+                    }
                 }
             }
         }
@@ -68,6 +76,28 @@ internal fun HtmlTranslator.layout() {
         out.style["display"] = "flex"
         val isVertical = rule.allAttributes["android:orientation"] == "vertical"
         out.style["flex-direction"] = if (isVertical) "column" else "row"
+        rule.allAttributes["android:gravity"]?.let { value ->
+            if (isVertical) horizontalGravity(value) else verticalGravity(value)
+        }
+            ?.alignDirection
+            ?.let {
+                out.style["align-items"] = when (it) {
+                    AlignDirection.START -> "flex-start"
+                    AlignDirection.END -> "flex-end"
+                    AlignDirection.CENTER -> "center"
+                }
+            }
+        rule.allAttributes["android:gravity"]?.let { value ->
+            if (isVertical) verticalGravity(value) else horizontalGravity(value)
+        }
+            ?.alignDirection
+            ?.let {
+                out.style["justify-content"] = when (it) {
+                    AlignDirection.START -> "flex-start"
+                    AlignDirection.END -> "flex-end"
+                    AlignDirection.CENTER -> "center"
+                }
+            }
         out.contentNodes.addAll(rule.children.map { subrule ->
             val container = ResultNode("div")
             container.parent = out
@@ -76,19 +106,25 @@ internal fun HtmlTranslator.layout() {
             element.translate(subrule, child)
             container.contentNodes += child
             handleCommonLayoutStuff(subrule, child, container)
-            subrule.allAttributes["android:layout_gravity"]?.let { value ->
-                when ((if (isVertical) horizontalGravity(value) else verticalGravity(value)).alignDirection) {
-                    AlignDirection.START -> container.style["align-self"] = "flex-start"
-                    AlignDirection.END -> container.style["align-self"] = "flex-end"
-                    AlignDirection.CENTER -> container.style["align-self"] = "center"
-                }
+            (subrule.allAttributes["android:layout_gravity"])?.let { value ->
+                if (isVertical) horizontalGravity(value) else verticalGravity(value)
             }
+                ?.alignDirection
+                ?.let {
+                    container.style["align-self"] = when (it) {
+                        AlignDirection.START -> "flex-start"
+                        AlignDirection.END -> "flex-end"
+                        AlignDirection.CENTER -> "center"
+                    }
+                }
+
             container
         })
     }
     element.handle("FrameLayout") {
         out.style["position"] = "relative"
-        out.contentNodes.addAll(rule.children.map { subrule ->
+        val parentGravityString = rule.allAttributes["android:gravity"]
+        out.contentNodes.addAll(rule.children.mapIndexed { index, subrule ->
             val container = ResultNode("div")
             container.parent = out
             val child = ResultNode()
@@ -96,30 +132,37 @@ internal fun HtmlTranslator.layout() {
             element.translate(subrule, child)
             container.contentNodes += child
             handleCommonLayoutStuff(subrule, child, container)
-            subrule.allAttributes["android:layout_gravity"]?.let { value ->
-                val vert = verticalGravity(value).alignDirection
-                val horz = horizontalGravity(value).alignDirection
+            val childGravityString = subrule.allAttributes["android:layout_gravity"]
+            val horz = (childGravityString?.let { horizontalGravity(it) }
+                ?: parentGravityString?.let { horizontalGravity(it) }
+                ?: Gravity.START_LOCAL).alignDirection
+            val vert = (childGravityString?.let { verticalGravity(it) }
+                ?: parentGravityString?.let { verticalGravity(it) }
+                ?: Gravity.START_LOCAL).alignDirection
+
+            if (index == 0)
+                container.style["position"] = "relative"
+            else
                 container.style["position"] = "absolute"
-                if (vert == AlignDirection.CENTER && horz == AlignDirection.CENTER) {
-                    container.style["transform"] = "translateX(-50%) translateY(-50%)"
-                    container.style["left"] = "50%"
-                    container.style["top"] = "50%"
-                } else {
-                    when (horz) {
-                        AlignDirection.START -> container.style["left"] = "0"
-                        AlignDirection.END -> container.style["right"] = "0"
-                        AlignDirection.CENTER -> {
-                            container.style["transform"] = "translateX(-50%)"
-                            container.style["left"] = "50%"
-                        }
+            if (vert == AlignDirection.CENTER && horz == AlignDirection.CENTER) {
+                container.style["transform"] = "translateX(-50%) translateY(-50%)"
+                container.style["left"] = "50%"
+                container.style["top"] = "50%"
+            } else {
+                when (horz) {
+                    AlignDirection.START -> container.style["left"] = "0"
+                    AlignDirection.END -> container.style["right"] = "0"
+                    AlignDirection.CENTER -> {
+                        container.style["transform"] = "translateX(-50%)"
+                        container.style["left"] = "50%"
                     }
-                    when (vert) {
-                        AlignDirection.START -> container.style["top"] = "0"
-                        AlignDirection.END -> container.style["bottom"] = "0"
-                        AlignDirection.CENTER -> {
-                            container.style["transform"] = "translateY(-50%)"
-                            container.style["top"] = "50%"
-                        }
+                }
+                when (vert) {
+                    AlignDirection.START -> container.style["top"] = "0"
+                    AlignDirection.END -> container.style["bottom"] = "0"
+                    AlignDirection.CENTER -> {
+                        container.style["transform"] = "translateY(-50%)"
+                        container.style["top"] = "50%"
                     }
                 }
             }
@@ -134,6 +177,15 @@ internal fun HtmlTranslator.layout() {
     element.handle("ViewFlipper") {
         out.classes.add("khrysalis-view-flipper")
         defer("FrameLayout")
+    }
+    element.handle("com.lightningkite.khrysalis.views.android.VerticalRecyclerView") {
+        defer("RecyclerView")
+    }
+    element.handle("RecyclerView") {
+        out.style["display"] = "flex"
+        out.style["flex-direction"] = "column"
+        out.style["align-items"] = "center"
+        out.style["justify-content"] = "flex-start"
     }
 
     attribute.handle("android:padding") {

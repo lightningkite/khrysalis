@@ -27,7 +27,7 @@ fun convertDrawableXmls(
                 val cssName = file.nameWithoutExtension.kabobCase()
                 css.appendln("/* ${cssName} */")
                 css.append(buildString {
-                    convertDrawableXml(".drawable-${cssName}", it, this)
+                    convertDrawableXml(webDrawablesFolder, cssName, ".drawable-${cssName}", it, this)
                 })
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -36,32 +36,44 @@ fun convertDrawableXmls(
 }
 
 fun convertDrawableXml(
+    webDrawablesFolder: File,
+    currentDrawable: String,
     selectors: String,
     node: XmlNode,
     out: Appendable
 ) {
     when (node.name.toLowerCase()) {
         "selector" -> convertSelectorDrawable(
+            webDrawablesFolder,
+            currentDrawable,
             selectors,
             node,
             out
         )
         "shape" -> convertShapeDrawable(
+            webDrawablesFolder,
+            currentDrawable,
             selectors,
             node,
             out
         )
         "layer-list" -> convertLayerListDrawable(
+            webDrawablesFolder,
+            currentDrawable,
             selectors,
             node,
             out
         )
         "vector" -> convertVectorDrawable(
+            webDrawablesFolder,
+            currentDrawable,
             selectors,
             node,
             out
         )
         "bitmap" -> convertBitmapDrawable(
+            webDrawablesFolder,
+            currentDrawable,
             selectors,
             node,
             out

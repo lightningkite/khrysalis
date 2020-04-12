@@ -12,7 +12,7 @@ enum class Gravity(val alignDirection: AlignDirection, val useLocal: Boolean) {
     CENTER(AlignDirection.CENTER, false);
 }
 
-fun horizontalGravity(text: String): Gravity {
+fun horizontalGravity(text: String): Gravity? {
     for (part in text.split('|')) {
         when (part) {
             "left" -> return Gravity.START
@@ -23,11 +23,11 @@ fun horizontalGravity(text: String): Gravity {
             "center" -> return Gravity.CENTER
         }
     }
-    return Gravity.START_LOCAL
+    return null
 }
 
 
-fun verticalGravity(text: String): Gravity {
+fun verticalGravity(text: String): Gravity? {
     for (part in text.split('|')) {
         when (part) {
             "top" -> return Gravity.START
@@ -36,5 +36,5 @@ fun verticalGravity(text: String): Gravity {
             "center" -> return Gravity.CENTER
         }
     }
-    return Gravity.START
+    return null
 }

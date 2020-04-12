@@ -9,6 +9,7 @@ class ResultNode(
     var name: String = "div"
 ) {
     var parent: ResultNode? = null
+    val other = HashMap<String, Any>()
     val classes = HashSet<String>()
     val stylesheet = ArrayList<String>()
     val style = HashMap<String, String>()
@@ -55,7 +56,7 @@ class ResultNode(
             for ((key, value) in attributes) {
                 out.append(key)
                 out.append("=\"")
-                out.append(value)
+                out.append(value.replace("\"", "&quot;"))
                 out.append("\" ")
             }
         }

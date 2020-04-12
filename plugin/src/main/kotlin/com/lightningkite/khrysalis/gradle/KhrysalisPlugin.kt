@@ -23,6 +23,8 @@ open class KhrysalisPluginExtension {
     open var htmlTranslator: HtmlTranslator = HtmlTranslator()
     open var typescriptTranslator: TypescriptTranslator = TypescriptTranslator()
     open var projectName: String? = null
+    open var overrideIosPackageName: String? = null
+    open var overrideWebPackageName: String? = null
 
     override fun toString(): String {
         return "(" +
@@ -51,6 +53,10 @@ class KhrysalisPlugin : Plugin<Project> {
         fun packageName() = project.extensions.findByName("android")?.untyped?.get("defaultConfig")?.get("applicationId")
             ?.asType<String>() ?: "unknown.packagename"
 
+        project.afterEvaluate {
+            println("Determined your package to be ${packageName()}")
+        }
+
         //IOS
 
         project.tasks.create("khrysalisSetupIosProject") { task ->
@@ -59,7 +65,7 @@ class KhrysalisPlugin : Plugin<Project> {
                 setUpIosProject(
                     target = iosBase(),
                     organization = extension().organizationName,
-                    organizationId = project.group?.toString() ?: "unknown.packagename",
+                    organizationId = extension().overrideIosPackageName ?: project.group?.toString() ?: "unknown.packagename",
                     projectName = projectName()
                 )
             }
@@ -160,6 +166,11 @@ class KhrysalisPlugin : Plugin<Project> {
             }
         }
         project.tasks.create("khrysalisConvertLayoutsToHtmlSass") { task ->
+            project.afterEvaluate {
+                if(!iosFolder().exists()) {
+                    task.dependsOn("khrysalisSetupWebProject")
+                }
+            }
             task.group = "web"
             task.doLast {
                 convertLayoutsToHtml(
@@ -225,7 +236,7 @@ class KhrysalisPlugin : Plugin<Project> {
         project.tasks.create("khrysalisAndroid") { task ->
             task.group = "android"
             task.dependsOn("khrysalisCreateAndroidLayoutClasses")
-            task.mustRunAfter("generateReleaseSources", "generateDebugSources")
+            task.mustRunAfter("generateReleaseResources", "generateDebugResources")
         }
         project.tasks.create("khrysalisCreateAndroidLayoutClasses") { task ->
             task.group = "build"

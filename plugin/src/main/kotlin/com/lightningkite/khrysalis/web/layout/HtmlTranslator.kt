@@ -3,14 +3,14 @@ package com.lightningkite.khrysalis.web.layout
 import com.lightningkite.khrysalis.generic.PartialTranslator
 import com.lightningkite.khrysalis.ios.layout.Styles
 import com.lightningkite.khrysalis.utils.*
+import java.io.File
 import java.lang.Appendable
 
 class HtmlTranslator {
 
-    var colorSets = HashSet<String>()
-    var colors = mapOf<String, String>("white" to "#FFF", "black" to "#000")
     var strings = mapOf<String, String>()
     var styles: Styles = mapOf()
+    var outFolder: File = File(".")
 
     inner class ElementTranslator : PartialTranslator<ResultNode, Unit, XmlNode, String>() {
         override fun getIdentifier(rule: XmlNode): String = rule.name
@@ -37,6 +37,7 @@ class HtmlTranslator {
         commonAttributes()
         display()
         input()
+        protoTemp()
     }
 
 

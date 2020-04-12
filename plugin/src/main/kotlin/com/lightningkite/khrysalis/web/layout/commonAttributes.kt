@@ -17,7 +17,7 @@ internal fun HtmlTranslator.commonAttributes() {
                         out.classes.add("drawable-$path")
                     }
                     "color" -> {
-                        out.style["background-color"] = path.asCssColor() ?: "#000"
+                        out.style["background-color"] = value.asCssColor() ?: "#000"
                     }
                 }
             }

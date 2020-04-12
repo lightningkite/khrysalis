@@ -8,7 +8,7 @@ import com.lightningkite.khrysalis.web.useScssVariables
 import java.io.File
 
 fun translateXmlDimensionsToCss(file: File, out: Appendable) {
-    if (!useScssVariables) out.appendln("* {")
+    if (!useScssVariables) out.appendln(":root {")
     XmlNode.read(file, mapOf())
         .children
         .asSequence()

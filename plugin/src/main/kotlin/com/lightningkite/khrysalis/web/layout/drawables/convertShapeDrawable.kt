@@ -4,10 +4,11 @@ import com.lightningkite.khrysalis.utils.*
 import com.lightningkite.khrysalis.web.asCssDimension
 import com.lightningkite.khrysalis.web.attributeAsCssColor
 import com.lightningkite.khrysalis.web.layout.HtmlTranslator
+import java.io.File
 import java.lang.Appendable
 
 
-fun convertShapeDrawable(selectors: String, node: XmlNode, out: Appendable) {
+fun convertShapeDrawable(webDrawablesFolder: File, currentDrawable: String, selectors: String, node: XmlNode, out: Appendable) {
     out.appendln("$selectors {")
     when (node.allAttributes["android:shape"]) {
         "oval" -> {
