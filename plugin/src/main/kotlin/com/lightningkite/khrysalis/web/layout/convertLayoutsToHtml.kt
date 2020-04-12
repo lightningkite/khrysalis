@@ -47,6 +47,14 @@ button {
     text-transform: uppercase;
     transition-duration: 0.2s;
 }
+input {
+    background: none;
+    border: none;
+    border-bottom: 1px solid var(--color-foreground-fade, black);
+}
+input:focus {
+    border-bottom: 2px solid var(--color-color-primary, black);
+}
 button:hover {
     box-shadow: 0 2px 2px 0 rgba(0,0,0,0.24), 0 4px 8px 0 rgba(0,0,0,0.19);
 }

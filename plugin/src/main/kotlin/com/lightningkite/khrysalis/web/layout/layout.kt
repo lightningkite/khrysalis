@@ -178,6 +178,9 @@ internal fun HtmlTranslator.layout() {
         out.classes.add("khrysalis-view-flipper")
         defer("FrameLayout")
     }
+    element.handle("RadioGroup") {
+        defer("LinearLayout")
+    }
     element.handle("com.lightningkite.khrysalis.views.android.VerticalRecyclerView") {
         defer("RecyclerView")
     }

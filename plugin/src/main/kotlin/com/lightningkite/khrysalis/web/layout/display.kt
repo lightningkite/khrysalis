@@ -1,6 +1,7 @@
 package com.lightningkite.khrysalis.web.layout
 
 import com.lightningkite.khrysalis.utils.kabobCase
+import com.lightningkite.khrysalis.web.asCssColor
 
 internal fun HtmlTranslator.display() {
     element.handle("TextView"){
@@ -32,5 +33,13 @@ internal fun HtmlTranslator.display() {
             }
             else -> {}
         }
+    }
+    attribute.handle("android:tint"){
+        val value = rule.value
+        out.style["mask-image"] = "url(" + out.attributes["src"] + ")"
+        out.style["mask-repeat"] = "no-repeat"
+        out.style["mask-size"] = "100%"
+        out.name = "div"
+        value.asCssColor()?.let { out.style["background-color"] = it }
     }
 }
