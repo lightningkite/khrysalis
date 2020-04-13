@@ -17,10 +17,13 @@ class ResultNode(
     val contentNodes = ArrayList<Any>()
     val postProcess = ArrayList<ResultNode.() -> Unit>()
 
+    var primary: ResultNode = this
+    var containerNode: ResultNode = this
+
     fun doPostProcess(){
         postProcess.forEach { it.invoke(this) }
         postProcess.clear()
-        for(child in contentNodes){
+        for(child in contentNodes.toList()){
             if(child is ResultNode){
                 child.doPostProcess()
             }

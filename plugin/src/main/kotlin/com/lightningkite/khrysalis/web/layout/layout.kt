@@ -179,6 +179,7 @@ internal fun HtmlTranslator.layout() {
         defer("FrameLayout")
     }
     element.handle("RadioGroup") {
+        out.other["RadioGroupId"] = "radioGroup_${idNumber.getAndIncrement()}"
         defer("LinearLayout")
     }
     element.handle("com.lightningkite.khrysalis.views.android.VerticalRecyclerView") {
