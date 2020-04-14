@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.web.typescript
 
+import com.lightningkite.khrysalis.generic.line
 import com.lightningkite.khrysalis.ios.swift.parentIfType
 import com.lightningkite.khrysalis.utils.forEachBetween
 import org.jetbrains.kotlin.KotlinParser
@@ -9,6 +10,8 @@ fun TypescriptTranslator.registerFile() {
     this.handle<KotlinParser.PackageHeaderContext> { }
 
     handle<KotlinParser.KotlinFileContext> {
+        val rule = typedRule
+        currentFile = typedRule
         line("//Package: ${rule.packageHeader()?.identifier()?.text}")
         line("//Converted using Khrysalis2")
         line("")
@@ -19,6 +22,7 @@ fun TypescriptTranslator.registerFile() {
     }
 
     this.handle<KotlinParser.ImportListContext> {
+        val rule = typedRule
         //all imports
         val takenNames = HashSet<String>()
 

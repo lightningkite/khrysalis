@@ -4,8 +4,8 @@ import org.jetbrains.kotlin.KotlinParser
 
 fun TypescriptTranslator.registerLiterals() {
     handle<KotlinParser.LineStringLiteralContext> {
-        val item = rule
-        val quoteType = if (item.children.any { it is KotlinParser.LineStringExpressionContext }) '`' else '"'
+        val item = typedRule
+        val quoteType = if (item.children.any { it is KotlinParser.LineStringExpressionContext }) "`" else "\""
         -(quoteType)
         item.children.forEach {
             when (it) {
@@ -31,11 +31,13 @@ fun TypescriptTranslator.registerLiterals() {
         -("??")
     }
     handle<KotlinParser.PostfixUnaryOperatorContext> {
+        val rule = typedRule
         val item = rule
         item.excl()?.let { -("!") } ?: item.INCR()?.let { -(" += 1") } ?: item.DECR()
             ?.let { -(" -= 1") }
     }
     handle(KotlinParser.RealLiteral) {
+        val rule = rule
         val it = rule
         if (it.text.endsWith('f', true)) {
             -(it.text.removeSuffix("f").removeSuffix("F"))

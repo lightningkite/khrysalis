@@ -2,29 +2,43 @@
 //Converted using Khrysalis2
 
 
-dataclassSillyBox(varsubBox:SillyBox | null=null)
-
+class SillyBox {
+    subBox: SillyBox | null;
+    
+    public constructor(subBox: SillyBox | null = null) {
+        this.subBox = subBox;
+    }
+    
+}
+ 
+ 
 
 export function main(): void {
-    valitem=SillyBox(SillyBox())
-    item.subBox?.subBox?.let{
-        println("I got a box!")
-    }??run{
-        println("I didn't get a box...")
+    const item = new SillyBox(new SillyBox());
+    item.subBox?.subBox?.let{ 
+         console.log("I got a box!")
+     } ?? run{ 
+         console.log("I didn't get a box...")
+     };
+    const tempVarSet0 = item.subBox?.subBox?.subBox;
+    if (tempVarSet0 !== null) {
+        tempVarSet0.subBox = new SillyBox()
     }
-    
-    item.subBox?.subBox?.subBox?.subBox=SillyBox()
-    item.subBox?.subBox?.let{
-        println("I got a box!")
-    }??run{
-        println("I didn't get a box...")
+    ;
+    item.subBox?.subBox?.let{ 
+         console.log("I got a box!")
+     } ?? run{ 
+         console.log("I didn't get a box...")
+     };
+    const tempVarSet1 = item.subBox;
+    if (tempVarSet1 !== null) {
+        tempVarSet1.subBox = new SillyBox()
     }
-    
-    item.subBox?.subBox=SillyBox()
-    item.subBox?.subBox?.let{
-        println("I got a box!")
-    }??run{
-        println("I didn't get a box...")
-    }
+    ;
+    item.subBox?.subBox?.let{ 
+         console.log("I got a box!")
+     } ?? run{ 
+         console.log("I didn't get a box...")
+     }
 }
-
+ 

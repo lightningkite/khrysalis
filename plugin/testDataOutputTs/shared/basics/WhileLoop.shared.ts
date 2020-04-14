@@ -3,10 +3,10 @@
 
 
 export function main(): void {
-    varaNumber:number=0
-    while (aNumber<10) {
+    let aNumber : number = 0;
+    while (aNumber < 10) {
         aNumber += 1
-    }
-    println(aNumber)
+    };
+    console.log(aNumber)
 }
-
+ 

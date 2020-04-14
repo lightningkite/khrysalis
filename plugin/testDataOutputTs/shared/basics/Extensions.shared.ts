@@ -2,33 +2,33 @@
 //Converted using Khrysalis2
 
 
-export type MyInteger = number;
-export let MyInteger = Number;
-
-
+export type MyInteger = number
+export let MyInteger = number
+ 
+ 
 
 export function doubleAdd(other: number): number {
-    returnthis+other+other
+    return this + other + other
 }
+ 
+ 
 
+const number . half : number get ( ) = this / 2 
+ 
 
-
-valnumber.half:numberget()=this/2
-
-
-valMyInteger.double:numberget()=this*2
-
+const MyInteger . double : number get ( ) = this * 2 
+ 
 
 export function div(other: string): string {
-    returnthis+"/"+other
+    return this + "/" + other
 }
-
-
+ 
+ 
 
 export function main(): void {
-    println(3.toInt()doubleAdd5)
-    println(18.toInt().half)
-    println(18.toInt().double)
-    println("a"/"b")
+console.log(3.toInt().doubleAdd5));
+console.log(18.toInt().half);
+console.log(18.toInt().double);
+console.log("a" / "b")
 }
-
+ 

@@ -137,7 +137,7 @@ fun convertKotlinToTypescriptByFolder(
                     try {
                         val outputText = buildString {
                             val tabs = SmartTabWriter(this)
-                            typescript(tabs, parser.kotlinFile())
+                            typescript.translate(parser.kotlinFile(), tabs)
                         }
                         output.writeText(outputText)
 

@@ -3,11 +3,11 @@
 
 
 export function main(): void {
-    varvalue:any | null=null
-    valasString=valueas?string
-    value="XP"
-    valforced=valueasstring
-    println(value??"Nope")
-    println(forced)
+    let value : any | null = null;
+    const asString = ((): string | null => { const _item: any = value; if(typeof _item == "string") return _item; else return null })();
+    value = "XP";
+    const forced = value as string;
+    console.log(value ?? "Nope");
+    console.log(forced)
 }
-
+ 

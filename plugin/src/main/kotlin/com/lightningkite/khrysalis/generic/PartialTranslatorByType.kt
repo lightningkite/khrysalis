@@ -2,9 +2,11 @@ package com.lightningkite.khrysalis.generic
 
 abstract class PartialTranslatorByType<OUT : Any, RESULT, IN : Any> : PartialTranslator<OUT, RESULT, IN, Class<*>>() {
 
+    override fun getIdentifier(rule: IN): Class<*> = rule::class.java
+
     inner class ContextByType<T: IN>: Context() {
         @Suppress("UNCHECKED_CAST")
-        val value: T get() = rule as T
+        val typedRule: T get() = rule as T
     }
 
     override fun makeContext(): Context = ContextByType<IN>()

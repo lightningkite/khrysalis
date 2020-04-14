@@ -14,6 +14,55 @@ import java.lang.IllegalStateException
 import java.util.*
 import kotlin.collections.HashMap
 
+/*
+
+UNSOLVED PROBLEMS
+
+UNSOLVED BUT LESS WORRYING PROBLEMS
+
+Circular import dependencies
+    - Check usage location for types; if so, just use `import type {} from "/asdf/asdf"`
+    - This might not be an issue, because unless the top level directly calls immediately, you're fine
+        - One hairy immediate call is extension, though.  That might cause problems.
+        - As long as superclasses NEVER refer to their children in a different file, you're good.
+Operator overloading
+    - This is outright not possible.  This could be somewhat an issue.
+    - This is only used for date manipulation.
+Equality/Hashability for data classes
+    - This might be passable.  Maybe even just disallow data classes.
+
+
+SOLVED PROBLEMS
+
+Extension Properties
+    - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty
+Function overloading
+    - https://howtodoinjava.com/typescript/function-overloading/
+    - https://github.com/lightningkite/lovesac-web/blob/master/client/js/utils/geometry/Point.ts#L57
+Extension function typing
+    - https://medium.com/my-coding-life/extension-method-in-typescript-66d801488589
+Extension function overloading
+    - Are there any cases of this occurring?
+    - This could be done with chained overloading - call existing if arguments do not match, call super
+
+*/
+
+/*
+
+Handling imports for TypeScript
+
+All classes are stored in independent files, located based on their package
+All top-level declarations are stored in a single file called 'topLevel'.
+The 'topLevel' file is special and uses marker separators for source files, like:
+//--- String.extensions.shared.kt
+In this sense, we have virtual files stored within.
+
+Imports now work like this:
+import x.y.z.Class -> import { Class } from "x/y/z/Class"
+import x.y.z.topLevelFunction -> import { topLevelFunction } from "x/y/z/topLevel"
+
+*/
+
 class TypescriptTranslator: Translator(SourceLanguage.kotlin) {
 
     var preparseData: PreparseData = PreparseData()
@@ -22,55 +71,7 @@ class TypescriptTranslator: Translator(SourceLanguage.kotlin) {
             identifiers.clear()
             identifiers.putAll(value.declarations)
         }
-
-    /*
-
-    UNSOLVED PROBLEMS
-
-    UNSOLVED BUT LESS WORRYING PROBLEMS
-
-    Circular import dependencies
-        - Check usage location for types; if so, just use `import type {} from "/asdf/asdf"`
-        - This might not be an issue, because unless the top level directly calls immediately, you're fine
-            - One hairy immediate call is extension, though.  That might cause problems.
-            - As long as superclasses NEVER refer to their children in a different file, you're good.
-    Operator overloading
-        - This is outright not possible.  This could be somewhat an issue.
-        - This is only used for date manipulation.
-    Equality/Hashability for data classes
-        - This might be passable.  Maybe even just disallow data classes.
-
-
-    SOLVED PROBLEMS
-
-    Extension Properties
-        - https://developer.mozilla.org/en-US/docs/Web/JavaScript/Reference/Global_Objects/Object/defineProperty
-    Function overloading
-        - https://howtodoinjava.com/typescript/function-overloading/
-        - https://github.com/lightningkite/lovesac-web/blob/master/client/js/utils/geometry/Point.ts#L57
-    Extension function typing
-        - https://medium.com/my-coding-life/extension-method-in-typescript-66d801488589
-    Extension function overloading
-        - Are there any cases of this occurring?
-        - This could be done with chained overloading - call existing if arguments do not match, call super
-
-    */
-
-    /*
-
-    Handling imports for TypeScript
-
-    All classes are stored in independent files, located based on their package
-    All top-level declarations are stored in a single file called 'topLevel'.
-    The 'topLevel' file is special and uses marker separators for source files, like:
-    //--- String.extensions.shared.kt
-    In this sense, we have virtual files stored within.
-
-    Imports now work like this:
-    import x.y.z.Class -> import { Class } from "x/y/z/Class"
-    import x.y.z.topLevelFunction -> import { topLevelFunction } from "x/y/z/topLevel"
-
-    */
+    lateinit var currentFile: KotlinParser.KotlinFileContext
 
     /**
      * This is a map from a Kotlin fully-qualified name to TypeScript file location.
@@ -79,17 +80,7 @@ class TypescriptTranslator: Translator(SourceLanguage.kotlin) {
     fun identifiersForPackage(packageName: String) =
         identifiers.tailMap(packageName).asSequence().takeWhile { it.key.startsWith(packageName) }
             .filter { it.key.substringBeforeLast('.') == packageName }
-//
-//    val options = HashMap<Class<*>, TabWriter.(ParserRuleContext) -> Unit>()
-//    val tokenOptions = HashMap<Int, TabWriter.(TerminalNode) -> Unit>()
-//    val functionReplacements = HashMap<String, TabWriter.(KotlinParser.PostfixUnaryExpressionContext) -> Unit>()
-//    fun simpleFunctionReplacement(kotlinFunctionName: String, swiftFunctionName: String) {
-//        functionReplacements[kotlinFunctionName] = {
-//            direct.append(swiftFunctionName)
-//            it.postfixUnarySuffix().forEach { write(it) }
-//        }
-//    }
-//
+
     fun resolve(currentFile: KotlinParser.KotlinFileContext, name: String): Sequence<InterfaceData> {
         return if (name.firstOrNull()?.isUpperCase() == true) {
             currentFile.importList().importHeader().asSequence()
@@ -106,40 +97,31 @@ class TypescriptTranslator: Translator(SourceLanguage.kotlin) {
             sequenceOf(name)
         }.mapNotNull { preparseData.interfaces[it] }
     }
-//
+
     val typeReplacements = HashMap<String, String>()
-//
-//    inline fun <reified T : ParserRuleContext> handle(noinline action: TabWriter.(T) -> Unit) {
-//        options[T::class.java] = { action(it as T) }
-//    }
-//
-//    fun handle(rule: Int, action: TabWriter.(TerminalNode) -> Unit) {
-//        tokenOptions[rule] = action
-//    }
-//
+
     init {
         registerFile()
         registerFunction()
         registerIdentifiers()
         registerType()
-//        registerClass()
-//        registerFunction()
-//        registerVariable()
+        registerClass()
+        registerVariable()
         registerExpression()
         registerLiterals()
 //        registerLambda()
         registerControl()
 //        registerStatement()
-//
-//        tokenOptions[KotlinParser.EOF] = { direct.append("") }
-//        tokenOptions[KotlinParser.VAL] = { direct.append("const") }
-//        tokenOptions[KotlinParser.VAR] = { direct.append("let") }
-//        tokenOptions[KotlinParser.AS] = { direct.append("as!") }
-//        tokenOptions[KotlinParser.AS_SAFE] = { direct.append("as?") }
-//        tokenOptions[KotlinParser.RETURN_AT] = { direct.append("return") }
-//        tokenOptions[KotlinParser.RANGE] = { direct.append("..") }
-//        tokenOptions[KotlinParser.NL] = {  }
-//
+
+        handle(KotlinParser.EOF) { out.append("") }
+        handle(KotlinParser.VAL) { out.append("const") }
+        handle(KotlinParser.VAR) { out.append("let") }
+        handle(KotlinParser.AS) { out.append("as!") }
+        handle(KotlinParser.AS_SAFE) { out.append("as?") }
+        handle(KotlinParser.RETURN_AT) { out.append("return") }
+        handle(KotlinParser.RANGE) { out.append("..") }
+//        handle(KotlinParser.NL) { }
+
         typeReplacements["Map"] = "Record"
         typeReplacements["List"] = "Array"
         typeReplacements["MutableMap"] = "Record"

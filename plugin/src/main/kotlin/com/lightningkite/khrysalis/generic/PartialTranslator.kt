@@ -7,7 +7,28 @@ import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.collections.HashMap
 
+interface TranslatorInterface<OUT: Any, RESULT> {
+    fun translate(
+        rule: Any,
+        out: OUT,
+        afterPriority: Int = Int.MAX_VALUE
+    ): RESULT
+}
+
+fun <RESULT, IN : Any, IDENTIFIER> PartialTranslator<Appendable, RESULT, IN, IDENTIFIER>.Context.line() {
+    out.appendln()
+}
+fun <RESULT, IN : Any, IDENTIFIER> PartialTranslator<Appendable, RESULT, IN, IDENTIFIER>.Context.line(text: String) {
+    out.appendln(text)
+}
+inline fun <RESULT, IN : Any, IDENTIFIER> PartialTranslator<Appendable, RESULT, IN, IDENTIFIER>.Context.line(action: ()->Unit) {
+    action()
+    out.appendln()
+}
+
 abstract class PartialTranslator<OUT : Any, RESULT, IN : Any, IDENTIFIER> {
+
+    open val parent: TranslatorInterface<OUT, RESULT>? = null
 
     abstract fun getIdentifier(rule: IN): IDENTIFIER
     abstract fun emitDefault(identifier: IDENTIFIER, rule: IN, out: OUT): RESULT
@@ -29,23 +50,26 @@ abstract class PartialTranslator<OUT : Any, RESULT, IN : Any, IDENTIFIER> {
         fun doSuper() : RESULT = translate(rule, out, option?.priority ?: Int.MAX_VALUE)
         fun defer(identifier: IDENTIFIER) = translate(identifier, rule, out)
 
-        inline fun emit(item: IN): RESULT {
-            return translate(item, out)
-        }
-        @JvmName("emitNullable")
-        inline fun emit(item: IN?): RESULT? {
+        fun emit(item: IN?): RESULT? {
             if (item == null) return null
             return translate(item, out)
         }
 
-        inline operator fun IN.unaryPlus() = emit(this)
-        inline operator fun IN.unaryMinus() = emit(this)
-        @JvmName("unaryPlusNullable")
         inline operator fun IN?.unaryPlus() = emit(this)
-        @JvmName("unaryMinusNullable")
         inline operator fun IN?.unaryMinus() = emit(this)
 
+        @JvmName("unaryPlusAnyNullable")
+        inline operator fun Any?.unaryPlus() = emit(this)
+        @JvmName("unaryMinusAnyNullable")
+        inline operator fun Any?.unaryMinus() = emit(this)
+
         inline fun write(item: IN) = emit(item)
+
+        @JvmName("emitAny")
+        fun emit(item: Any?): RESULT? {
+            if (item == null) return null
+            return parent!!.translate(item, out)
+        }
     }
 
     val recycledContexts = ConcurrentLinkedQueue<Context>()

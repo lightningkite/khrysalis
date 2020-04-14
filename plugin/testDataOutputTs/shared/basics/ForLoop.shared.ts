@@ -3,10 +3,10 @@
 
 
 export function main(): void {
-    varaNumber:number=0
-    for (const i of (0).toInt()..(20).toInt()) {
-        aNumber+=i
-    }
-    println(aNumber)
+    let aNumber : number = 0;
+    for (const i of makeRange(( 0 ).toInt(), ( 20 ).toInt())) {
+        aNumber += i
+    };
+    console.log(aNumber)
 }
-
+ 

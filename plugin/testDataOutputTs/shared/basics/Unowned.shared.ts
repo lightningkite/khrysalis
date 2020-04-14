@@ -2,18 +2,27 @@
 //Converted using Khrysalis2
 
 
-classThing(input:any){
-     @unownedvalthing:any=input
-    vallambda:() => voidget()= @unownedSelf(){
-        println("Hello!")
+class Thing {
+    
+    public constructor(input: any) {
     }
+    
+    public thing : any;
+    public lambda : () => void;
 }
+ 
+ 
 
-
-classDummyObject(){}
-
+class DummyObject {
+    
+    public constructor() {
+    }
+    
+}
+ 
+ 
 
 export function main(): void {
-    Thing(DummyObject()).lambda()
+    (new Thing(new DummyObject())).lambda()
 }
-
+ 

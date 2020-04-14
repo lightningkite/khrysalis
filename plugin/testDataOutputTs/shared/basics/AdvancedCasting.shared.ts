@@ -2,15 +2,28 @@
 //Converted using Khrysalis2
 
 
-interfaceAdvancedCastingTestInterface{}
+class AdvancedCastingTestInterface {
+    
+    public constructor() {
+    }
+    
+}
+ 
 
-classAdvancedCastingTestImplementation:AdvancedCastingTestInterface{}
-
+class AdvancedCastingTestImplementation implements AdvancedCastingTestInterface {
+    
+    public constructor() {
+    }
+    
+}
+ 
+ 
 
 export function main(): void {
-    varvalue:any | null=null
-    valasString=valueas?string
-    valasTestInterface=valueas?AdvancedCastingTestInterface
-    valasTestImplementation=valueas?AdvancedCastingTestImplementation
+    let value : any | null = null;
+    const asString = ((): string | null => { const _item: any = value; if(typeof _item == "string") return _item; else return null })();
+    const asTestInterface = ((): AdvancedCastingTestInterface | null => { const _item: any = value; if (_item.implementsInterfaceAdvancedCastingTestInterface) return _item; else return null })();
+    const asTestImplementation = ((): AdvancedCastingTestImplementation | null => { const _item: any = value; if (_item instanceof AdvancedCastingTestImplementation) return _item; else return null })() 
+    
 }
-
+ 

@@ -3,9 +3,9 @@
 
 
 export function main(): void {
-    vallambda:() => void={word1,word2->
-        println("${word1} ${word2}!")
-    }
-    lambda("Hello","world")
+    const lambda : () => void = { word1 , word2 -> 
+         console.log("${word1} ${word2}!")
+     };
+    lambda("Hello", "world")
 }
-
+ 

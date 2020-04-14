@@ -1,89 +1,75 @@
 package com.lightningkite.khrysalis.generic
 
+import com.lightningkite.khrysalis.utils.XmlNode
+import com.lightningkite.khrysalis.utils.forEachBetween
+import com.lightningkite.khrysalis.utils.kabobCase
+import com.lightningkite.khrysalis.web.layout.ResultNode
+import org.antlr.v4.runtime.ParserRuleContext
 import org.antlr.v4.runtime.tree.TerminalNode
+import java.lang.Appendable
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.collections.HashMap
 
-open class Translator(val sourceLanguage: SourceLanguage) {
+open class Translator(val sourceLanguage: SourceLanguage) : TranslatorInterface<Appendable, Unit> {
 
-    val virtualTypeHandlers: HashMap<String, TreeSet<TranslationOption<*>>> =
-        HashMap()
-    val typeHandlers: HashMap<Class<*>, TreeSet<TranslationOption<*>>> =
-        HashMap()
-    val tokenHandlers = Array(sourceLanguage.tokenCount) { TreeSet<TranslationOption<TerminalNode>>() }
-
-    inline fun <reified T : Any> handle(
-        noinline condition: TranslationalCondition<T> = { true },
-        priority: Int = 0,
-        noinline action: TranslatorContext<T>.() -> Unit
-    ): TranslationOption<T> {
-        val set: TreeSet<TranslationOption<*>> =
-            typeHandlers.getOrPut(T::class.java) { TreeSet<TranslationOption<*>>() }
-        val option = TranslationOption(
-                priority = priority,
-                condition = condition,
-                action = action
-            )
-        set.add(option)
-        return option
+    inner class RuleTranslator : PartialTranslatorByType<Appendable, Unit, ParserRuleContext>() {
+        override val parent = this@Translator
+        override fun emitDefault(identifier: Class<*>, rule: ParserRuleContext, out: Appendable) {
+            rule.children?.forEachBetween(
+                forItem = {
+                    when (it) {
+                        is ParserRuleContext -> translate(it, out)
+                        is TerminalNode -> token.translate(it, out)
+                    }
+                },
+                between = { out.append(' ') }
+            ) ?: out.append(rule.text)
+        }
     }
 
-    inline fun <reified T : VirtualType> handle(
-        type: String,
-        noinline condition: TranslationalCondition<T> = { true },
-        priority: Int = 0,
-        noinline action: TranslatorContext<T>.() -> Unit
-    ): TranslationOption<T> {
-        val set: TreeSet<TranslationOption<*>> = virtualTypeHandlers.getOrPut(type) { TreeSet<TranslationOption<*>>() }
-        val option = TranslationOption(
-                priority = priority,
-                condition = condition,
-                action = action
-            )
-        set.add(option)
-        return option
+    inner class TokenTranslator : PartialTranslator<Appendable, Unit, TerminalNode, Int>() {
+        override val parent = this@Translator
+        override fun getIdentifier(rule: TerminalNode): Int = rule.symbol.type
+        override fun emitDefault(identifier: Int, rule: TerminalNode, out: Appendable) {
+            out.append(rule.text)
+        }
     }
+
+    val rule = RuleTranslator()
+    val token = TokenTranslator()
+
+    override fun translate(rule: Any, out: Appendable, afterPriority: Int): Unit {
+        return when (rule) {
+            is String -> {
+                out.append(rule)
+                Unit
+            }
+            is ParserRuleContext -> this.rule.translate(rule, out)
+            is TerminalNode -> this.token.translate(rule.symbol.type, rule, out)
+            else -> Unit
+        }
+    }
+
+    inline fun <reified T : ParserRuleContext> handle(
+        noinline condition: PartialTranslatorByType<Appendable, Unit, ParserRuleContext>.ContextByType<T>.() -> Boolean = { true },
+        priority: Int = 0,
+        noinline action: PartialTranslatorByType<Appendable, Unit, ParserRuleContext>.ContextByType<T>.() -> Unit
+    ): PartialTranslator<Appendable, Unit, ParserRuleContext, Class<*>>.Handler =
+        rule.handle(condition, priority, action)
 
     fun handle(
         token: Int,
-        condition: TranslationalCondition<TerminalNode> = { true },
+        condition: PartialTranslator<Appendable, Unit, TerminalNode, Int>.Context.() -> Boolean = { true },
         priority: Int = 0,
-        action: TranslatorContext<TerminalNode>.() -> Unit
-    ): TranslationOption<TerminalNode> {
-        val option = TranslationOption(
-                priority = priority,
-                condition = condition,
-                action = action
-            )
-        tokenHandlers[token].add(option)
-        return option
-    }
+        action: PartialTranslator<Appendable, Unit, TerminalNode, Int>.Context.() -> Unit
+    ): PartialTranslator<Appendable, Unit, TerminalNode, Int>.Handler = this.token.handle(token, condition, priority, action)
 
-    @Suppress("UNCHECKED_CAST")
-    inline fun <reified T : Any> getHandlers(): Iterable<TranslationOption<T>> =
-        typeHandlers[T::class.java] as TreeSet<TranslationOption<T>>
+}
 
-    @Suppress("UNCHECKED_CAST")
-    fun <T : Any> getHandlers(type: Class<T>): Iterable<TranslationOption<T>> =
-        typeHandlers[type] as? TreeSet<TranslationOption<T>> ?: emptyList()
-
-    fun getHandlers(token: Int): Iterable<TranslationOption<TerminalNode>> = tokenHandlers[token]
-
-    @Suppress("UNCHECKED_CAST")
-    fun <T : Any> getHandlers(virtualType: String): Iterable<TranslationOption<T>> =
-        virtualTypeHandlers[virtualType] as TreeSet<TranslationOption<T>>
-
-    val pool =
-        ConcurrentLinkedQueue<TranslatorContext<*>>()
-    inline fun <T : Any> context(out: Appendable, rule: T, action: TranslatorContext<T>.() -> Unit) {
-        @Suppress("UNCHECKED_CAST")
-        val existing: TranslatorContext<*> = pool.poll() ?: TranslatorContext<Any>(this)
-        @Suppress("UNCHECKED_CAST") val fixed = (existing as TranslatorContext<T>)
-        fixed.out = out
-        fixed.rule = rule
-        action(fixed)
-        pool.add(fixed)
-    }
-    operator fun <T : Any> invoke(out: Appendable, rule: T) = context(out, rule) { run() }
+fun PartialTranslator<Appendable, Unit, ParserRuleContext, Class<*>>.Context.emitDefault(rule: ParserRuleContext, separator: String = " ", filter: (Any)->Boolean = { true }) {
+    rule.children.filter(filter).forEachBetween(
+        forItem = { emit(it) },
+        between = { out.append(separator) }
+    )
 }

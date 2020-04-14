@@ -2,17 +2,30 @@
 //Converted using Khrysalis2
 
 
-classSillyBox(valx:number)
-
-
-classStuff(box:SillyBox){
-    valweakBox:SillyBox | nullbyweak(box)
+class SillyBox {
+    x: number;
+    
+    public constructor(x: number) {
+        this.x = x;
+    }
+    
 }
+ 
+ 
 
+class Stuff {
+    
+    public constructor(box: SillyBox) {
+    }
+    
+    public weakBox : SillyBox | null;
+}
+ 
+ 
 
 export function main(): void {
-    valsillyBox=SillyBox(3)
-    valstuff=Stuff(sillyBox)
-    println(stuff.weakBox?.x?.toString()??"-")
+    const sillyBox = new SillyBox(3);
+    const stuff = new Stuff(sillyBox);
+    console.log(stuff.weakBox?.x?.toString() ?? "-")
 }
-
+ 

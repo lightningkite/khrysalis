@@ -2,44 +2,59 @@
 //Converted using Khrysalis2
 
 
-interfaceMyInterface{
-    valx:stringget()=""
-    y(aString: string): string {
-        returnx+aString
+class MyInterface {
+    
+    public constructor() {
     }
     
-}
-
-
-classImplOverX:MyInterface{
-    overridevalx:string
-    get()="Hello!"
-}
-
-
-classImplOverY:MyInterface{
+    public x : string;
     y(aString: string): string {
-        return"${x}!"
+        return x + aString
+    }
+}
+ 
+ 
+
+class ImplOverX implements MyInterface {
+    
+    public constructor() {
     }
     
+    public x : string;
 }
+ 
+ 
 
-
-classImplBoth:MyInterface{
-    overridevalx:string
-    get()="Hello!"
-    y(aString: string): string {
-        return"${x}!"
+class ImplOverY implements MyInterface {
+    
+    public constructor() {
     }
     
+    y(aString: string): string {
+        return "${x}!"
+    }
 }
+ 
+ 
 
+class ImplBoth implements MyInterface {
+    
+    public constructor() {
+    }
+    
+    public x : string;
+    y(aString: string): string {
+        return "${x}!"
+    }
+}
+ 
+ 
 
 export function main(): void {
-    valitems:Array<MyInterface>=listOf(ImplBoth(),ImplOverX(),ImplOverY())
+    const items : Array<MyInterface> = listOf(new ImplBoth(), new ImplOverX(), new ImplOverY());
     for (const item of items) {
-        println(item.x);
-        println(item.y("Input"))
+        console.log(item.x);
+        console.log(item.y("Input"))
     }
 }
-
+ 

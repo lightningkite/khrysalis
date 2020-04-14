@@ -1,6 +1,8 @@
 package com.lightningkite.khrysalis
 
 import com.lightningkite.khrysalis.web.layout.convertLayoutsToHtml
+import com.lightningkite.khrysalis.web.typescript.TypescriptTranslator
+import com.lightningkite.khrysalis.web.typescript.convertKotlinToTypescriptByFolder
 import java.io.File
 
 
@@ -18,20 +20,21 @@ fun main(vararg args: String) {
 //        baseSwift = File("./testDataOutput/shared"),
 //        clean = true
 //    )
-//    convertKotlinToTypescriptByFolder(
-//        interfacesOut = File("./testDataOutputTs/interfaces.json"),
-//        baseKotlin = File("./testData/shared"),
-//        baseTs = File("./testDataOutputTs/shared"),
-//        clean = true
-//    )
+    convertKotlinToTypescriptByFolder(
+        typescript = TypescriptTranslator(),
+        interfacesOut = File("./testDataOutputTs/interfaces.json"),
+        baseKotlin = File("./testData/shared"),
+        baseTs = File("./testDataOutputTs/shared"),
+        clean = true
+    )
 //    convertLayoutsToHtmlRaw(
 //        androidMainFolder = File("testData"),
 //        webFolder = File("testDataOutputTs")
 //    )
-    convertLayoutsToHtml(
-        androidMainFolder = File("/Users/josephivie/StudioProjects/khrysalis-template/android/app/src/main"),
-        webFolder = File("/Users/josephivie/StudioProjects/khrysalis-template/android/web/src")
-    )
+//    convertLayoutsToHtml(
+//        androidMainFolder = File("/Users/josephivie/StudioProjects/khrysalis-template/android/app/src/main"),
+//        webFolder = File("/Users/josephivie/StudioProjects/khrysalis-template/android/web/src")
+//    )
 //    convertResourcesToIos(
 //        androidResourcesFolder = File("./testData/res"),
 //        baseFolderForLocalizations = File("./testDataOutput/localizations"),

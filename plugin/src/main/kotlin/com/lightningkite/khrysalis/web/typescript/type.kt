@@ -1,5 +1,7 @@
 package com.lightningkite.khrysalis.web.typescript
 
+import com.lightningkite.khrysalis.generic.emitDefault
+import com.lightningkite.khrysalis.generic.line
 import com.lightningkite.khrysalis.ios.swift.actuals.visibility
 import com.lightningkite.khrysalis.utils.forEachBetween
 import org.jetbrains.kotlin.KotlinParser
@@ -9,10 +11,18 @@ fun KotlinParser.TypeContext.basic(): KotlinParser.SimpleUserTypeContext? = this
         it.parenthesizedType()?.type()?.basic() ?: it.typeReference()?.userType()?.simpleUserType(0)
     } ?: this.parenthesizedType()?.type()?.basic()
 
+val primitiveTypes = setOf("Number", "String", "Boolean", "Unit", "Any" )
+
+fun KotlinParser.TypeContext.isPrimitive(): Boolean = this.typeReference()?.userType()?.simpleUserType(0)?.let { it.text in primitiveTypes }
+    ?: this.nullableType()?.let {
+        it.parenthesizedType()?.type()?.isPrimitive() ?: it.typeReference()?.userType()?.simpleUserType(0)?.let { it.text in primitiveTypes }
+    } ?: this.parenthesizedType()?.type()?.isPrimitive()
+    ?: false
 
 fun TypescriptTranslator.registerType(){
 
     handle<KotlinParser.TypeAliasContext> {
+        val rule = typedRule
         val item = rule
         val name = item.simpleIdentifier().text
         line {
@@ -36,8 +46,8 @@ fun TypescriptTranslator.registerType(){
             -(name)
             -(" = ")
             val b = item.type().basic()
-            when(val t = buildString { invoke(this, b!!) }.trim().substringBefore("<")){
-                "number", "string", "boolean", "void", "any" -> -t.capitalize()
+            when(val t = buildString { translate(b!!, this) }.trim().substringBefore("<")){
+                in primitiveTypes -> -t.capitalize()
                 null -> throw IllegalArgumentException("Cannot do a typealias to a function type")
                 else -> -t
             }
@@ -45,6 +55,7 @@ fun TypescriptTranslator.registerType(){
         }
     }
     handle<KotlinParser.FunctionTypeContext> {
+        val rule = typedRule
         -"("
         rule.functionTypeParameters().parameter().forEachBetween(
             forItem = { -it },
@@ -55,10 +66,12 @@ fun TypescriptTranslator.registerType(){
     }
     handle<KotlinParser.UserTypeContext> { emitDefault(rule, "") }
     handle<KotlinParser.NullableTypeContext> {
+        val rule = typedRule
         -(rule.typeReference() ?: rule.parenthesizedType())
         -" | null"
     }
     handle<KotlinParser.SimpleUserTypeContext> {
+        val rule = typedRule
         val name = typeReplacements[rule.simpleIdentifier().text] ?: rule.simpleIdentifier().text
         if(name.endsWith("*")){
             -name.removeSuffix("*")
@@ -68,6 +81,7 @@ fun TypescriptTranslator.registerType(){
         -rule.typeArguments()
     }
     handle<KotlinParser.TypeArgumentsContext> {
+        val rule = typedRule
         -"<"
         rule.typeProjection().forEachBetween(
             forItem = { -it.type() },

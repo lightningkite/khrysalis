@@ -2,52 +2,83 @@
 //Converted using Khrysalis2
 
 
-dataclassNameTag<T:Hashable>(valitem:T,valname:string)
-
-
-export function printInterface<T extends MyInterface>(): void {
-    println(`Hello!  I am ${name}, I stand for ${item.x}.`)
-}
-
-
-
-interfaceMyInterface{
-    valx:stringget()=""
-    y(aString: string): string {
-        returnx+aString
+class NameTag< T : Hashable > {
+    item: T;
+    name: string;
+    
+    public constructor(item: T, name: string) {
+        this.item = item;
+        this.name = name;
     }
     
 }
+ 
+ 
 
-
-dataclassImplOverX(valk:number=0):MyInterface{
-    overridevalx:string
-    get()="Hello!"
+export function printInterfaceT extends MyInterface(): void {
+    console.log(`Hello!  I am ${name}, I stand for ${item.x}.`)
 }
+ 
+ 
 
-
-dataclassImplOverY(valk:number=0):MyInterface{
-    y(aString: string): string {
-        return"${x}!"
+class MyInterface {
+    
+    public constructor() {
     }
     
-}
-
-
-dataclassImplBoth(valk:number=0):MyInterface{
-    overridevalx:string
-    get()="Hello!"
+    public x : string;
     y(aString: string): string {
-        return"${x}!"
+        return x + aString
+    }
+}
+ 
+ 
+
+class ImplOverX implements MyInterface {
+    k: number;
+    
+    public constructor(k: number = 0) {
+        this.k = k;
     }
     
+    public x : string;
 }
+ 
+ 
 
+class ImplOverY implements MyInterface {
+    k: number;
+    
+    public constructor(k: number = 0) {
+        this.k = k;
+    }
+    
+    y(aString: string): string {
+        return "${x}!"
+    }
+}
+ 
+ 
+
+class ImplBoth implements MyInterface {
+    k: number;
+    
+    public constructor(k: number = 0) {
+        this.k = k;
+    }
+    
+    public x : string;
+    y(aString: string): string {
+        return "${x}!"
+    }
+}
+ 
+ 
 
 export function main(): void {
-    NameTag(ImplBoth(),"ImplBoth").printInterface()
-    NameTag(ImplOverX(),"ImplOverX").printInterface()
-    NameTag(ImplOverY(),"ImplOverY").printInterface()
+    (new NameTag(new ImplBoth(), "ImplBoth")).printInterface();
+    (new NameTag(new ImplOverX(), "ImplOverX")).printInterface();
+    (new NameTag(new ImplOverY(), "ImplOverY")).printInterface()
 }
-
-
+ 
+ 

@@ -3,6 +3,6 @@
 
 
 export function main(): void {
-    println("Hello World!")
+    console.log("Hello World!")
 }
-
+ 

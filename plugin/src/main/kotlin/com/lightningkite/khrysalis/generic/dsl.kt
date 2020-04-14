@@ -9,8 +9,6 @@ import org.antlr.v4.runtime.tree.TerminalNode
 import org.jetbrains.kotlin.KotlinLexer
 import org.jetbrains.kotlin.KotlinParser.*
 
-typealias TranslationalCondition<T> = TranslatorContext<T>.() -> Boolean
-
 inline fun <reified T : ParseTree, reified BOUNDARY : ParseTree> ParserRuleContext.parentOfType(boundaryCountMax: Int = 0): T? {
     var current = this
     var boundaryCount = 0

@@ -2,27 +2,31 @@
 //Converted using Khrysalis2
 
 
-dataclassRecord(varx:number,vary:string){
-    init{
-        println("Record created: ${x}, ${y}")
+class Record {
+    x: number;
+    y: string;
+    
+    public constructor(x: number, y: string) {
+        this.x = x;
+        this.y = y;
+        console.log("Record created: ${x}, ${y}")
     }
+    
     test(): void {
-        println("Test run")
+        console.log("Test run")
     }
-    
-    
-    companionobject{
-        valtheMeaning=Record(42,"The Question")
-        make(x: number, y: string): Record {
-            return Record(x,y);
+    companion object { 
+         public theMeaning;
+         make(x: number, y: string): Record {
+            return new Record(x, y);
         }
-        
-    }
-}
-
+         
+ }}
+ 
+ 
 
 export function main(): void {
-    Record.theMeaning.test()
-    Record.make(43,"One more").test()
+    Record.theMeaning.test();
+    Record.make(43, "One more").test()
 }
-
+ 
