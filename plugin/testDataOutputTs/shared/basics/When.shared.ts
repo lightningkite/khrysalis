@@ -1,8 +1,8 @@
-//Package: com.test
-//Converted using Khrysalis2
-
-
-export function main(): void {
+//Package: com.test
+//Converted using Khrysalis2
+
+
+export function main(): void {
     let aNumber : number = 0;
     let value = 43.toInt();
     switch(value) {
@@ -20,26 +20,34 @@ export function main(): void {
         aNumber -= 99;
         break;
     };
-    when { 
-         value == 42 -> aNumber += 8 
-         value == 41 -> {
-            aNumber += 16
-        } 
-         value == 43 -> aNumber += 32 
-         else -> {
-            
-        } 
-     };
+    if (value == 42) {
+        aNumber += 8;
+    }else if (value == 41) {
+        aNumber += 16;
+    }else if (value == 43 || value == 44) {
+        aNumber += 32;
+    }else { 
+    };
     console.log(aNumber);
-    console.log(() => {
-            switch(value) {
-                case 0:
-                return "Hi";
-                break;
-                default:
-                return "Nope";
-                break;
+    aNumber = (() => {
+            if (value == 42){
+                return 8;
+            }else if (value == 41){
+                return 16;
+            }else if (value == 43 || value == 44){
+                return 32;
+            }else {
+                return 0;
             }
-    })
-}
- 
+    })();
+    console.log(aNumber);
+    console.log((() => {
+                switch(value) {
+                    case 0:
+                    return "Hi";
+                    default:
+                    return "Nope";
+                }
+    })())
+}
+ 

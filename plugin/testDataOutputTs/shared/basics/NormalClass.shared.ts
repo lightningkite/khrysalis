@@ -1,7 +1,7 @@
-//Package: com.test
-//Converted using Khrysalis2
-
-
+//Package: com.test
+//Converted using Khrysalis2
+
+
 class Record {
     
     public constructor() {
@@ -10,21 +10,21 @@ class Record {
     
     public x : number;
     public y : string;
-    test(): void {
+    test(): void {
         console.log("Test run")
-    }
+    }
 }
- 
- 
-
-export function main(): void {
+ 
+ 
+
+export function main(): void {
     const record = new Record();
     record .x = 3;
     record .y = "Hello";
-    if (record.x == 3){
-        record .y = "Set"
-    };
+    (() => {if (record.x == 3){
+                record .y = "Set"
+    }})();
     record.test();
     console.log(`x: ${record.x}, y: ${record.y}`)
-}
- 
+}
+ 

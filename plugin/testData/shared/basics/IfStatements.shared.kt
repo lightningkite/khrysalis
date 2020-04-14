@@ -10,7 +10,9 @@ fun main(){
 
     if(false){
         number += 2
-    } else {
+    } else if(false){
+        number += 2
+    }else{
         number -= 2
     }
 

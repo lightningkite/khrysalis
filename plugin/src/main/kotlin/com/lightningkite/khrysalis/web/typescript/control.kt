@@ -2,10 +2,7 @@ package com.lightningkite.khrysalis.web.typescript
 
 import com.lightningkite.khrysalis.generic.addReturn
 import com.lightningkite.khrysalis.generic.set
-import com.lightningkite.khrysalis.ios.swift.TabWriter
-import com.lightningkite.khrysalis.ios.swift.oneOnly
-import com.lightningkite.khrysalis.ios.swift.parentOfType
-import com.lightningkite.khrysalis.ios.swift.usedAsStatement
+import com.lightningkite.khrysalis.ios.swift.*
 import com.lightningkite.khrysalis.utils.forEachBetween
 import org.antlr.v4.runtime.*
 import org.antlr.v4.runtime.tree.ParseTree
@@ -36,12 +33,96 @@ fun TypescriptTranslator.registerControl() {
         -"\n}"
     }
 
+    handle<ControlStructureBodyContext>(
+        condition = { typedRule.getOwningExpression()?.usedAsStatement() == false },
+        priority = 100
+    ) {
+
+        typedRule.block()?.let {
+            -"{\n"
+            it.statements()?.statement()?.dropLast(1)?.forEach {
+                -it
+                -";\n"
+            }
+            it.statements()?.statement()?.lastOrNull()?.let {
+                if (it.expression()
+                        ?.disjunction()
+                        ?.conjunction()?.oneOnly()
+                        ?.equality()?.oneOnly()
+                        ?.comparison()?.oneOnly()
+                        ?.infixOperation()?.oneOnly()
+                        ?.elvisExpression()?.oneOnly()
+                        ?.infixFunctionCall()?.oneOnly()
+                        ?.rangeExpression()?.oneOnly()
+                        ?.additiveExpression()?.oneOnly()
+                        ?.multiplicativeExpression()?.oneOnly()
+                        ?.asExpression()?.oneOnly()
+                        ?.prefixUnaryExpression()
+                        ?.postfixUnaryExpression()
+                        ?.primaryExpression()
+                        ?.let {
+                            it.ifExpression() ?: it.whenExpression()
+                        } == null
+                ) {
+                    -"return "
+                }
+                -it
+                -";\n"
+            }
+            -"}"
+        } ?: typedRule.statement()?.let {
+            if (it.expression()
+                    ?.disjunction()
+                    ?.conjunction()?.oneOnly()
+                    ?.equality()?.oneOnly()
+                    ?.comparison()?.oneOnly()
+                    ?.infixOperation()?.oneOnly()
+                    ?.elvisExpression()?.oneOnly()
+                    ?.infixFunctionCall()?.oneOnly()
+                    ?.rangeExpression()?.oneOnly()
+                    ?.additiveExpression()?.oneOnly()
+                    ?.multiplicativeExpression()?.oneOnly()
+                    ?.asExpression()?.oneOnly()
+                    ?.prefixUnaryExpression()
+                    ?.postfixUnaryExpression()
+                    ?.primaryExpression()
+                    ?.let {
+                        it.ifExpression() ?: it.whenExpression()
+                    } == null
+            ) {
+                -"{\n"
+                -"return "
+                -it
+                -";\n"
+                -"}"
+            }else{
+                -it
+                -"\n"
+            }
+        }
+    }
+
     handle<WhileStatementContext> {
         val rule = typedRule
         -"while ("
         -rule.expression()
         -") "
         -rule.controlStructureBody()
+    }
+
+    handle<IfExpressionContext>(
+        condition = { rule.getPlainStatement()?.getDirectControlStructure() != null },
+        priority = 100
+    ) {
+        val rule = typedRule
+        -"if ("
+        -rule.expression()
+        -")"
+        -rule.controlStructureBody(0)
+        rule.controlStructureBody(1)?.let {
+            -" else "
+            -it
+        }
     }
 
     handle<IfExpressionContext>(
@@ -57,6 +138,21 @@ fun TypescriptTranslator.registerControl() {
             -" else "
             -it
         }
+    }
+
+    handle<IfExpressionContext> {
+        val rule = typedRule
+
+        -"(() => {"
+        -"if ("
+        -rule.expression()
+        -")"
+        -rule.controlStructureBody(0)
+        rule.controlStructureBody(1)?.let {
+            -" else "
+            -it
+        }
+        -"})()"
     }
 
     val normalWhen = handle<WhenExpressionContext>(
@@ -130,7 +226,7 @@ fun TypescriptTranslator.registerControl() {
         priority = 50
     ) {
         val rule = typedRule
-        -"() => {\n"
+        -"(() => {\n"
         rule.whenSubject().variableDeclaration()?.let {
             -it
             -" = "
@@ -164,7 +260,6 @@ fun TypescriptTranslator.registerControl() {
                         -";\n"
                     }
                 }
-                -"break;\n"
             } ?: entry.whenCondition().let {
                 for (cond in it) {
                     -"case "
@@ -188,10 +283,151 @@ fun TypescriptTranslator.registerControl() {
                         -";\n"
                     }
                 }
-                -"break;\n"
             }
         }
         -"}"
-        -"\n}"
+        -"\n})()"
+    }
+
+
+    handle<WhenExpressionContext>(
+        condition = {
+            val rule = typedRule
+            rule.whenSubject() == null &&
+                    rule.whenEntry()
+                        .all { it.ELSE() != null || it.whenCondition().all { it.expression() != null } }
+        },
+        priority = 51
+    ) {
+        val rule = typedRule
+        -"(() => {\n"
+        rule.whenEntry().forEachIndexed { index, entry ->
+            when {
+                index == 0 -> {
+                    -"if ("
+                }
+                entry.ELSE() != null -> {
+                    -"else "
+                }
+                else -> {
+                    -"else if ("
+                }
+            }
+
+            if (entry.ELSE() != null) {
+                entry.controlStructureBody()?.let {
+                    -it
+//                    it.block()?.let {
+//                        it.statements()?.statement()?.dropLast(1)?.forEach {
+//                            -it
+//                            -";\n"
+//                        }
+//                        it.statements()?.statement()?.lastOrNull()?.let {
+//                            -"return "
+//                            -it
+//                            -";\n"
+//                        }
+//                    } ?: it.statement()?.let {
+//                        -"return "
+//                        -it
+//                        -";\n"
+//                    }
+                }
+            } else {
+                entry.whenCondition().let { conditions ->
+                    conditions.forEachBetween(
+                        {
+                            -it.expression()
+                        },
+                        {
+                            -" || "
+                        })
+                    -")"
+                }
+                entry.controlStructureBody()?.let {
+                    -it
+//                    it.block()?.let {
+//                        it.statements()?.statement()?.dropLast(1)?.forEach {
+//                            -it
+//                            -";\n"
+//                        }
+//                        it.statements()?.statement()?.lastOrNull()?.let {
+//                            -"return "
+//                            -it
+//                            -";\n"
+//                        }
+//                    } ?: it.statement()?.let {
+//                        -"return "
+//                        -it
+//                        -";\n"
+//                    }
+                }
+            }
+        }
+        -"\n})()"
+    }
+
+    handle<WhenExpressionContext>(
+        condition = {
+            val rule = typedRule
+            rule.usedAsStatement() && rule.whenSubject() == null &&
+                    rule.whenEntry()
+                        .all { it.ELSE() != null || it.whenCondition().all { it.expression() != null } }
+        },
+        priority = 120
+    ) {
+        val rule = typedRule
+        rule.whenEntry().forEachIndexed { index, entry ->
+            when {
+                index == 0 -> {
+                    -"if ("
+                }
+                entry.ELSE() != null -> {
+                    -"else { \n"
+                }
+                else -> {
+                    -"else if ("
+                }
+            }
+
+            if (entry.ELSE() != null) {
+                entry.controlStructureBody()?.let {
+                    it.block()?.let {
+                        it.statements()?.statement()?.forEach {
+                            -it
+                            -";\n"
+                        }
+                    } ?: it.statement()?.let {
+                        -it
+                        -";\n"
+                    }
+                }
+                -"}"
+            } else {
+                entry.whenCondition().let { conditions ->
+                    conditions.forEachBetween(
+                        {
+                            -it.expression()
+                        },
+                        {
+                            -" || "
+                        })
+                    -") {\n"
+                }
+                entry.controlStructureBody()?.let {
+                    it.block()?.let {
+                        it.statements()?.statement()?.forEach {
+                            -it
+                            -";\n"
+                        }
+                    } ?: it.statement()?.let {
+                        -it
+                        -";\n"
+                    }
+                }
+                -"}"
+            }
+        }
     }
 }
+

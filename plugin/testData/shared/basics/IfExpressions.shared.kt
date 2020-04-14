@@ -1,9 +1,19 @@
 package com.test
 
-fun main(){
+fun main() {
     var number: Int = 0
 
-    number += if(true) 1 else 0
+    number += if (true) {
+        2
+    } else if (true) {
+        var temp = 1
+        temp
+    }else if (1==1){
+        var temp = 9
+        9 + 10
+    } else {
+        0
+    }
 
     val letCheckValue: String? = null
     number += letCheckValue?.let { 2 } ?: 0

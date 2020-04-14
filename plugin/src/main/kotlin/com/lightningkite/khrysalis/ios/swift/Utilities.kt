@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.ios.swift
 
+import com.lightningkite.khrysalis.generic.sameAs
 import org.antlr.v4.runtime.ParserRuleContext
 import org.antlr.v4.runtime.RuleContext
 import org.jetbrains.kotlin.KotlinParser
@@ -57,8 +58,7 @@ private fun KotlinParser.TypeReferenceContext.getUserType(): KotlinParser.UserTy
     return this.userType() ?: throw IllegalStateException()
 }
 
-
-fun ParserRuleContext.usedAsStatement(): Boolean {
+fun ParserRuleContext.getPlainStatement(): KotlinParser.StatementContext? {
     return this
         .parentIfTypeAndOnlyChildOfTypeOrThis<KotlinParser.PrimaryExpressionContext>()
         .parentIfTypeAndOnlyChildOfTypeOrThis<KotlinParser.PostfixUnaryExpressionContext>()
@@ -75,8 +75,74 @@ fun ParserRuleContext.usedAsStatement(): Boolean {
         .parentIfTypeAndOnlyChildOfTypeOrThis<KotlinParser.ConjunctionContext>()
         .parentIfTypeAndOnlyChildOfTypeOrThis<KotlinParser.DisjunctionContext>()
         .parentIfTypeAndOnlyChildOfTypeOrThis<KotlinParser.ExpressionContext>()
-        .parentIfTypeAndOnlyChildOfTypeOrThis<KotlinParser.StatementContext>() is KotlinParser.StatementContext
+        .parentIfTypeAndOnlyChildOfTypeOrThis<KotlinParser.StatementContext>() as? KotlinParser.StatementContext
 }
+
+fun KotlinParser.StatementContext.getDirectControlStructure(): KotlinParser.ControlStructureBodyContext? {
+    return this
+        .parentIfType<KotlinParser.ControlStructureBodyContext>() ?:
+    this
+        .parentIfType<KotlinParser.StatementsContext>()
+        ?.takeIf { it.statement().last() sameAs this }
+        ?.parentIfType<KotlinParser.BlockContext>()
+        ?.parentIfType<KotlinParser.ControlStructureBodyContext>()
+}
+
+fun ParserRuleContext.usedAsStatement(): Boolean {
+    val plainExpression = this.getPlainStatement() ?: return false
+    val controlStructure = plainExpression.getDirectControlStructure() ?: return true
+    val parentToCheck = controlStructure.getOwningExpression() ?: return true
+    return parentToCheck.usedAsStatement()
+}
+
+fun KotlinParser.ControlStructureBodyContext.getOwningExpression(): ParserRuleContext? = this
+    .parentIfType<KotlinParser.IfExpressionContext>()
+    ?: this
+        .parentIfType<KotlinParser.WhenEntryContext>()
+        ?.parentIfType<KotlinParser.WhenExpressionContext>()
+    ?: null
+
+/*
+
+
+fun ParserRuleContext.usedAsStatement(): Boolean {
+    val statement =  this
+        .parentIfTypeAndOnlyChildOfTypeOrThis<KotlinParser.PrimaryExpressionContext>()
+        .parentIfTypeAndOnlyChildOfTypeOrThis<KotlinParser.PostfixUnaryExpressionContext>()
+        .parentIfTypeAndOnlyChildOfTypeOrThis<KotlinParser.PrefixUnaryExpressionContext>()
+        .parentIfTypeAndOnlyChildOfTypeOrThis<KotlinParser.AsExpressionContext>()
+        .parentIfTypeAndOnlyChildOfTypeOrThis<KotlinParser.MultiplicativeExpressionContext>()
+        .parentIfTypeAndOnlyChildOfTypeOrThis<KotlinParser.AdditiveExpressionContext>()
+        .parentIfTypeAndOnlyChildOfTypeOrThis<KotlinParser.RangeExpressionContext>()
+        .parentIfTypeAndOnlyChildOfTypeOrThis<KotlinParser.InfixFunctionCallContext>()
+        .parentIfTypeAndOnlyChildOfTypeOrThis<KotlinParser.ElvisExpressionContext>()
+        .parentIfTypeAndOnlyChildOfTypeOrThis<KotlinParser.InfixOperationContext>()
+        .parentIfTypeAndOnlyChildOfTypeOrThis<KotlinParser.ComparisonContext>()
+        .parentIfTypeAndOnlyChildOfTypeOrThis<KotlinParser.EqualityContext>()
+        .parentIfTypeAndOnlyChildOfTypeOrThis<KotlinParser.ConjunctionContext>()
+        .parentIfTypeAndOnlyChildOfTypeOrThis<KotlinParser.DisjunctionContext>()
+        .parentIfTypeAndOnlyChildOfTypeOrThis<KotlinParser.ExpressionContext>()
+        .parentIfTypeAndOnlyChildOfTypeOrThis<KotlinParser.StatementContext>() as? KotlinParser.StatementContext
+    if(statement == null) return false
+    val controlStructure = statement
+        .parentIfType<KotlinParser.ControlStructureBodyContext>() ?:
+            statement
+                .parentIfType<KotlinParser.StatementsContext>()
+                ?.takeIf { it.statement().last() sameAs statement }
+                ?.parentIfType<KotlinParser.BlockContext>()
+                ?.parentIfType<KotlinParser.ControlStructureBodyContext>()
+    if (controlStructure == null) return true
+    val parentToCheck = controlStructure.getOwningExpression() ?: return true
+    return parentToCheck.usedAsStatement()
+}
+
+fun KotlinParser.ControlStructureBodyContext.getOwningExpression(): ParserRuleContext? = this
+    .parentIfType<KotlinParser.IfExpressionContext>()
+    ?: this
+        .parentIfType<KotlinParser.WhenEntryContext>()
+        ?.parentIfType<KotlinParser.WhenExpressionContext>()
+    ?: null
+*/
 
 
 fun <E> List<E>.oneOnly(): E? = if (this.size == 1) first() else null

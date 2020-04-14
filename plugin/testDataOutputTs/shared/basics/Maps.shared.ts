@@ -1,8 +1,8 @@
-//Package: com.test
-//Converted using Khrysalis2
-
-
-export function main(): void {
+//Package: com.test
+//Converted using Khrysalis2
+
+
+export function main(): void {
 const map : Record<number, string> = mapOf(1.to"A"), 2.to"B"), 3.to"C"));
 assert(map[ 1 ] == "A");
 assert(map[ 2 ] == "B");
@@ -21,5 +21,5 @@ mutableMap.put(0, "x");
 assert(mutableMap[ 0 ] == "x");
 mutableMap [ 0 ] = null;
 assert(mutableMap[ 0 ] == null)
-}
- 
+}
+ 

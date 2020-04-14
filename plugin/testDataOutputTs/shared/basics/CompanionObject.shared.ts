@@ -1,7 +1,7 @@
-//Package: com.test
-//Converted using Khrysalis2
-
-
+//Package: com.test
+//Converted using Khrysalis2
+
+
 class Record {
     x: number;
     y: string;
@@ -12,21 +12,20 @@ class Record {
         console.log("Record created: ${x}, ${y}")
     }
     
-    test(): void {
+    test(): void {
+        const test : number = 0;
         console.log("Test run")
-    }
-    companion object { 
-         public theMeaning;
-         make(x: number, y: string): Record {
-            return new Record(x, y);
-        }
-         
- }}
- 
- 
-
-export function main(): void {
+    }
+    public static theMeaning : Record = new Record(42, "The Question");
+    static make(x: number, y: string): Record {
+        return new Record(x, y);
+    }
+}
+ 
+ 
+
+export function main(): void {
     Record.theMeaning.test();
     Record.make(43, "One more").test()
-}
- 
+}
+ 

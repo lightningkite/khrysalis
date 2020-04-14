@@ -21,9 +21,18 @@ fun main() {
         value == 41 -> {
             number += 16
         }
-        value == 43 -> number += 32
-        else -> {
+        value == 43, value == 44 -> number += 32
+        else -> { }
+    }
+    println(number)
+
+    number = when {
+        value == 42 -> 8
+        value == 41 -> {
+            16
         }
+        value == 43, value == 44 ->  32
+        else -> { 0}
     }
     println(number)
 

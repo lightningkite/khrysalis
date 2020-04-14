@@ -1,7 +1,7 @@
-//Package: com.test
-//Converted using Khrysalis2
-
-
+//Package: com.test
+//Converted using Khrysalis2
+
+
 class NameTag< T : Hashable > {
     item: T;
     name: string;
@@ -12,28 +12,28 @@ class NameTag< T : Hashable > {
     }
     
 }
- 
- 
-
-export function printInterfaceT extends MyInterface(): void {
+ 
+ 
+
+export function printInterfaceT extends MyInterface(): void {
     console.log(`Hello!  I am ${name}, I stand for ${item.x}.`)
-}
- 
- 
-
+}
+ 
+ 
+
 class MyInterface {
     
     public constructor() {
     }
     
     public x : string;
-    y(aString: string): string {
+    y(aString: string): string {
         return x + aString
-    }
+    }
 }
- 
- 
-
+ 
+ 
+
 class ImplOverX implements MyInterface {
     k: number;
     
@@ -43,9 +43,9 @@ class ImplOverX implements MyInterface {
     
     public x : string;
 }
- 
- 
-
+ 
+ 
+
 class ImplOverY implements MyInterface {
     k: number;
     
@@ -53,13 +53,13 @@ class ImplOverY implements MyInterface {
         this.k = k;
     }
     
-    y(aString: string): string {
+    y(aString: string): string {
         return "${x}!"
-    }
+    }
 }
- 
- 
-
+ 
+ 
+
 class ImplBoth implements MyInterface {
     k: number;
     
@@ -68,17 +68,17 @@ class ImplBoth implements MyInterface {
     }
     
     public x : string;
-    y(aString: string): string {
+    y(aString: string): string {
         return "${x}!"
-    }
+    }
 }
- 
- 
-
-export function main(): void {
+ 
+ 
+
+export function main(): void {
     (new NameTag(new ImplBoth(), "ImplBoth")).printInterface();
     (new NameTag(new ImplOverX(), "ImplOverX")).printInterface();
     (new NameTag(new ImplOverY(), "ImplOverY")).printInterface()
-}
- 
- 
+}
+ 
+ 
