@@ -67,7 +67,7 @@ class ResultNode(
             out.append(">")
             for (node in contentNodes) {
                 when (node) {
-                    is String -> out.append(node.let { escapeHtml4(it) })
+                    is String -> out.append(node.let { escapeHtml4(it) }.replace("\n", "<br>"))
                     is ResultNode -> node.emitHtml(out)
                 }
             }

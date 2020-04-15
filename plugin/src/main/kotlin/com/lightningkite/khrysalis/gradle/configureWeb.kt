@@ -6,7 +6,6 @@ import com.lightningkite.khrysalis.flow.createFlowDocumentation
 import com.lightningkite.khrysalis.flow.createPrototypeViewGenerators
 import com.lightningkite.khrysalis.ios.layout.LayoutConverter
 import com.lightningkite.khrysalis.ios.layout.convertLayoutsToSwift
-import com.lightningkite.khrysalis.ios.layout.createAndroidLayoutClasses
 import com.lightningkite.khrysalis.ios.layout.normal
 import com.lightningkite.khrysalis.log
 import com.lightningkite.khrysalis.ios.swift.SwiftAltListener

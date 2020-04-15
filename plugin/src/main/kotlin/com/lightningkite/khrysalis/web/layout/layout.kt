@@ -191,6 +191,18 @@ internal fun HtmlTranslator.layout() {
         out.style["align-items"] = "center"
         out.style["justify-content"] = "flex-start"
     }
+    element.handle("include") {
+        out.name = "div"
+        out.style["position"] = "relative"
+        rule.allAttributes["android:id"]?.removePrefix("@+id/")?.trim()?.let { it ->
+            out.attributes["id"] = "view_$it"
+            val stackDefault = rule.allAttributes["layout"]?.calcDest()
+            val stackDefaultJs = if (stackDefault != null) "'$stackDefault'" else "null"
+            out.contentNodes.add(ResultNode("script").apply {
+                contentNodes.add("""prototypeSwapViewSetup(document.getElementById('view_$it'), '$it', $stackDefaultJs)""")
+            })
+        }
+    }
 
     attribute.handle("android:padding") {
         rule.value.asCssDimension()?.let { out.style["padding"] = it }

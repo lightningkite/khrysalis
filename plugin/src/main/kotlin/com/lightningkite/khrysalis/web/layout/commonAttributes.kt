@@ -37,7 +37,7 @@ internal fun HtmlTranslator.commonAttributes() {
         out.primary.contentNodes.add(
             when {
                 value.startsWith("@") -> strings[value.substringAfter('/')] ?: "missing text"
-                else -> value
+                else -> value.replace("\\n", "\n").replace("\\t", "\t")
             }
         )
     }
@@ -100,6 +100,15 @@ internal fun HtmlTranslator.commonAttributes() {
             tint.asCssColor()?.let { image.style["background-color"] = it }
         }
 
+        rule.parent.allAttributes["android:drawablePadding"]?.asCssDimension()?.let { amount ->
+            val side = when(direction){
+                "column" -> if(after) "top" else "bottom"
+                "row" -> if(after) "left" else "right"
+                else -> "left"
+            }
+            image.style["margin-$side"] = amount
+        }
+
         val ruleName = rule.parent.name
         out.primary.postProcess.add {
             println("Adding image to $ruleName which is a ${name}")
@@ -115,4 +124,11 @@ internal fun HtmlTranslator.commonAttributes() {
     attribute.handle("android:drawableTop") { handleDrawable("column", false) }
     attribute.handle("android:drawableRight") { handleDrawable("row", true) }
     attribute.handle("android:drawableBottom") { handleDrawable("column", true) }
+
+    attribute.handle("android:minWidth") {
+        out.style["min-width"] = rule.value.asCssDimension() ?: "0"
+    }
+    attribute.handle("android:minHeight") {
+        out.style["min-height"] = rule.value.asCssDimension() ?: "0"
+    }
 }

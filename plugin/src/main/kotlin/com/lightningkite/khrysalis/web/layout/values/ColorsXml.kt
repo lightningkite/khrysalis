@@ -56,7 +56,7 @@ fun translateXmlColorSetToCss(file: File, out: Appendable) {
             conditions += if (it) ":focus" else ":not(:focus)"
         }
         subnode.attributeAsBoolean("android:state_checked")?.let {
-            conditions += if(it) ":checked+label" else ":not(:checked)+label"
+            conditions += if(it) ":checked ~ *" else ":not(:checked) ~ *"
         }
         subnode.allAttributes["android:color"]?.let { raw ->
             val color = raw.asCssColor()

@@ -16,7 +16,7 @@ fun File.translateLayoutXml(styles: Styles, converter: LayoutConverter = LayoutC
         styles = styles,
         converter = converter
     )
-    val root = XmlNode.read(this, styles)
+    val root = XmlNode.read(this, styles, this.parentFile.resolve("../layout"))
 
     val name = this.nameWithoutExtension.camelCase().capitalize()
 

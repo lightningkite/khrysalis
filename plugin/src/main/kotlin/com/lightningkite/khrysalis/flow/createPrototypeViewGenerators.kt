@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.flow
 
+import com.lightningkite.khrysalis.android.layout.readLayoutInfo
 import com.lightningkite.khrysalis.ios.layout.readXMLStyles
 import com.lightningkite.khrysalis.log
 import com.lightningkite.khrysalis.utils.XmlNode
@@ -21,6 +22,7 @@ internal fun createPrototypeViewGenerators(
 ) {
     outputFolder.mkdirs()
 
+    val layoutInfo = readLayoutInfo(resourcesFolder.resolve("../../../build"))
     val styles = File(resourcesFolder, "values/styles.xml").readXMLStyles()
     val packageName =
         outputFolder.absolutePath.replace('\\', '/').substringAfter("src/main/").substringAfter('/').replace('/', '.')
@@ -56,6 +58,7 @@ internal fun createPrototypeViewGenerators(
         val targetFileName = fileName + "VG.shared.kt"
         val targetFile = scannedDirectoryInfo[targetFileName] ?: outputFolder.resolve(targetFileName)
         createPrototypeVG(
+            layoutInfo = layoutInfo,
             styles = styles,
             viewName = fileName,
             xml = item,

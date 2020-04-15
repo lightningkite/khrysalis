@@ -11,6 +11,7 @@ class XmlNode(
     val element: Node,
     val styles: Styles,
     val directory: File,
+    val baseDirectoryAlt: File? = null,
     val additionalAttributes: Map<String, String> = mapOf()
 ): VirtualType {
 
@@ -65,14 +66,18 @@ class XmlNode(
                     if(it.nodeName == "include"){
                         try {
                             val filename = it.attributes
-                                ?.getNamedItem("layout")
-                                ?.nodeValue
-                                ?.removePrefix("@layout/")
-                                ?.plus(".xml")
-                                ?: return@map XmlNode(it, styles, directory)
+                                ?.getNamedItem("layout")!!
+                                .nodeValue
+                                .removePrefix("@layout/")
+                                .plus(".xml")
+                            val fileOptionA = directory.resolve(filename)
+                            val fileOptionB = baseDirectoryAlt?.resolve(filename)
+                            val file = fileOptionA.takeIf { it.exists() }
+                                ?: fileOptionB?.takeIf { it.exists() }
+                                ?: throw IllegalArgumentException("Could not find file for layout $filename in $fileOptionA or $fileOptionB")
                             val node =
-                                read(File(directory, filename), styles)
-                            XmlNode(it, styles, directory, node.allAttributes)
+                                read(file, styles)
+                            XmlNode(it, styles, directory, additionalAttributes = node.allAttributes)
                         } catch(e:Exception){
                             e.printStackTrace()
                             XmlNode(it, styles, directory)
@@ -87,9 +92,9 @@ class XmlNode(
 
 
     companion object {
-        fun read(file: File, styles: Styles): XmlNode {
+        fun read(file: File, styles: Styles, baseDirectoryAlt: File? = null): XmlNode {
             val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file)
-            return XmlNode(document.documentElement, styles, file.parentFile)
+            return XmlNode(document.documentElement, styles, file.parentFile, baseDirectoryAlt)
         }
     }
 }

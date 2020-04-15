@@ -1,6 +1,7 @@
 package com.lightningkite.khrysalis.gradle
 
 import com.lightningkite.khrysalis.KhrysalisSettings
+import com.lightningkite.khrysalis.android.layout.createAndroidLayoutClasses
 import com.lightningkite.khrysalis.flow.createFlowDocumentation
 import com.lightningkite.khrysalis.flow.createPrototypeViewGenerators
 import com.lightningkite.khrysalis.ios.layout.*
@@ -212,6 +213,7 @@ class KhrysalisPlugin : Plugin<Project> {
 
         project.tasks.create("khrysalisPrototype") { task ->
             task.group = "prototype"
+            task.dependsOn("khrysalisCreateAndroidLayoutClasses")
             task.doLast {
 
                 createPrototypeViewGenerators(
@@ -223,6 +225,7 @@ class KhrysalisPlugin : Plugin<Project> {
         }
         project.tasks.create("khrysalisFlowDoc") { task ->
             task.group = "prototype"
+            task.dependsOn("khrysalisCreateAndroidLayoutClasses")
             task.doLast {
                 createFlowDocumentation(
                     androidFolder = androidBase()
@@ -239,7 +242,7 @@ class KhrysalisPlugin : Plugin<Project> {
             task.mustRunAfter("generateReleaseResources", "generateDebugResources")
         }
         project.tasks.create("khrysalisCreateAndroidLayoutClasses") { task ->
-            task.group = "build"
+            task.group = "android"
             task.doLast {
 
                 createAndroidLayoutClasses(

@@ -1,7 +1,6 @@
 import com.lightningkite.khrysalis.KhrysalisSettings
 import com.lightningkite.khrysalis.ios.convertResourcesToIos
 import com.lightningkite.khrysalis.ios.layout.convertLayoutsToSwift
-import com.lightningkite.khrysalis.ios.layout.createAndroidLayoutClasses
 import com.lightningkite.khrysalis.ios.swift.convertKotlinToSwift
 
 buildscript {
