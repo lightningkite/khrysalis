@@ -69,6 +69,7 @@ internal fun HtmlTranslator.layout() {
         }
         rule.allAttributes["android:layout_weight"]?.let { value ->
             container.style["flex-grow"] = value
+            container.style["flex-shrink"] = value
         }
 
     }
@@ -170,6 +171,7 @@ internal fun HtmlTranslator.layout() {
         })
     }
     element.handle("ScrollView") {
+        out.classes.add("khrysalis-scroll-view")
         out.style["overflow-y"] = "scroll";
         out.style["overflow-x"] = "hidden";
         defer("FrameLayout")

@@ -31,6 +31,7 @@ fun convertShapeDrawable(webDrawablesFolder: File, currentDrawable: String, sele
                 out.appendln("border-color: $color;")
                 val width = it.directAttributes["android:width"]?.asCssDimension()
                 out.appendln("border-width: $width;")
+                out.appendln("border-style: solid;")
             }
             out.appendln("border-radius: 50%;")
         }
@@ -54,6 +55,7 @@ fun convertShapeDrawable(webDrawablesFolder: File, currentDrawable: String, sele
                 out.appendln("border-color: $color;")
                 val width = it.directAttributes["android:width"]?.asCssDimension()
                 out.appendln("border-width: $width;")
+                out.appendln("border-style: solid;")
             }
 
             node.children.find { it.name == "corners" }?.let { corners ->

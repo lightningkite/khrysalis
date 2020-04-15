@@ -12,6 +12,11 @@ import javax.imageio.ImageIO
 
 internal fun HtmlTranslator.commonAttributes() {
 
+    attribute.handle("tools:webCss") {
+        rule.value.split(';').forEach {
+            out.style[it.substringBefore(':')] = it.substringAfter(':')
+        }
+    }
     attribute.handle("android:background") {
         val value = rule.value
         when {

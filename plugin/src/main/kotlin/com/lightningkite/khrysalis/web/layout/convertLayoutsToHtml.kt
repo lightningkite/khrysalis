@@ -43,7 +43,13 @@ body > * {
     overflow-x: hidden;
     overflow-y: hidden;
     box-sizing: border-box;
+    flex-shrink: 0;
     font-family: "Roboto", "Open Sans", sans-serif;
+    max-width: 100%;
+    max-height: 100%;
+}
+.khrysalis-scroll-view > * {
+    max-height: none;
 }
 button {
     border: none;
