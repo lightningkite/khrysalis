@@ -8,7 +8,6 @@ import com.lightningkite.khrysalis.utils.kabobCase
 import com.lightningkite.khrysalis.web.asCssColor
 import com.lightningkite.khrysalis.web.asCssDimension
 import java.io.File
-import javax.imageio.ImageIO
 
 internal fun HtmlTranslator.commonAttributes() {
 
@@ -39,7 +38,7 @@ internal fun HtmlTranslator.commonAttributes() {
     }
     attribute.handle("android:text") {
         val value = rule.value
-        out.primary.contentNodes.add(
+        out.text.contentNodes.add(
             when {
                 value.startsWith("@") -> strings[value.substringAfter('/')] ?: "missing text"
                 else -> value.replace("\\n", "\n").replace("\\t", "\t")
@@ -48,7 +47,7 @@ internal fun HtmlTranslator.commonAttributes() {
     }
     attribute.handle("android:gravity") {
         horizontalGravity(rule.value)?.alignDirection?.let {
-            out.primary.style["text-align"] = when (it) {
+            out.text.style["text-align"] = when (it) {
                 AlignDirection.START -> "left"
                 AlignDirection.CENTER -> "center"
                 AlignDirection.END -> "right"
@@ -57,25 +56,25 @@ internal fun HtmlTranslator.commonAttributes() {
     }
     attribute.handle("android:textColor") {
         val value = rule.value
-        value.asCssColor()?.let { out.primary.style["color"] = it }
+        value.asCssColor()?.let { out.text.style["color"] = it }
     }
     attribute.handle("android:textSize") {
         val value = rule.value
-        value.asCssDimension()?.let { out.primary.style["font-size"] = it }
+        value.asCssDimension()?.let { out.text.style["font-size"] = it }
     }
     attribute.handle("android:textAllCaps") {
         val value = rule.value
-        out.primary.style["text-transform"] = if (value == "true") "uppercase" else "none"
+        out.text.style["text-transform"] = if (value == "true") "uppercase" else "none"
     }
     attribute.handle("android:id") {
         val value = rule.value.substringAfter('/')
-        out.primary.classes.add("id-${value.kabobCase()}")
+        out.text.classes.add("id-${value.kabobCase()}")
     }
 
     fun PartialTranslator<ResultNode, Unit, XmlNode.Attribute, String>.Context.handleDrawable(direction: String, after: Boolean){
-        out.primary.style["display"] = "flex"
-        out.primary.style["flex-direction"] = direction
-        out.primary.style["align-items"] = "center"
+        out.text.style["display"] = "flex"
+        out.text.style["flex-direction"] = direction
+        out.text.style["align-items"] = "center"
         val image = ResultNode("image")
 
         val value = rule.value
@@ -115,7 +114,7 @@ internal fun HtmlTranslator.commonAttributes() {
         }
 
         val ruleName = rule.parent.name
-        out.primary.postProcess.add {
+        out.containerNode.postProcess.add {
             println("Adding image to $ruleName which is a ${name}")
             if(after){
                 contentNodes.add(image)

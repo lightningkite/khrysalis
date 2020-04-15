@@ -18,6 +18,7 @@ class ResultNode(
     val postProcess = ArrayList<ResultNode.() -> Unit>()
 
     var primary: ResultNode = this
+    var text: ResultNode = this
     var containerNode: ResultNode = this
 
     fun doPostProcess(){

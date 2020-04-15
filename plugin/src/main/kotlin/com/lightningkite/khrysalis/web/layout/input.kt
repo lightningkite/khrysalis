@@ -10,9 +10,31 @@ val idNumber = AtomicInteger(0)
 
 internal fun HtmlTranslator.input() {
     element.handle("EditText"){
-        out.name = "input"
-        out.attributes["type"] = "text"
-        out.style["font-size"] = "12pt"
+        val hasDrawable = rule.allAttributes["android:drawableLeft"] != null
+                || rule.allAttributes["android:drawableTop"] != null
+                || rule.allAttributes["android:drawableRight"] != null
+                || rule.allAttributes["android:drawableBottom"] != null
+        if(hasDrawable){
+            val id = "id${idNumber.getAndIncrement()}"
+            out.name = "label"
+            out.attributes["for"] = id
+            out.style["display"] = "flex"
+            out.style["flex-direction"] = "row"
+            val main = ResultNode("input").apply {
+                attributes["type"] = "text"
+                style["font-size"] = "12pt"
+                style["flex-grow"] = "1"
+                style["flex-shrink"] = "1"
+                attributes["id"] = id
+            }
+            out.primary = main
+            out.text = main
+            out.contentNodes.add(main)
+        } else {
+            out.name = "input"
+            out.attributes["type"] = "text"
+            out.style["font-size"] = "12pt"
+        }
     }
 
     element.handle("CheckBox"){
@@ -46,12 +68,13 @@ internal fun HtmlTranslator.input() {
                 attributes["checked"] = "true"
             }
         }
+        out.primary = input
         out.contentNodes.add(input)
         val label = ResultNode("div").apply {
             style["flex-grow"] = "1"
         }
         out.contentNodes.add(label)
-        out.primary = label
+        out.text = label
     }
 
     element.handle("RadioButton"){
@@ -95,12 +118,13 @@ internal fun HtmlTranslator.input() {
                 attributes["checked"] = "true"
             }
         }
+        out.primary = input
         out.contentNodes.add(input)
         val label = ResultNode("div").apply {
             style["flex-grow"] = "1"
         }
         out.contentNodes.add(label)
-        out.primary = label
+        out.text = label
     }
 
     element.handle("Switch"){
@@ -124,7 +148,7 @@ internal fun HtmlTranslator.input() {
         }?.let { out.style["justify-content"] = it }
 
         val label = ResultNode("div")
-        out.primary = label
+        out.text = label
         out.contentNodes.add(label)
 
         out.contentNodes.add(ResultNode("input").apply {
@@ -134,6 +158,8 @@ internal fun HtmlTranslator.input() {
             if(rule.allAttributes["android:checked"] == "true") {
                 attributes["checked"] = "true"
             }
+        }.also {
+            out.primary = it
         })
 
         out.contentNodes.add(ResultNode("div").apply {
