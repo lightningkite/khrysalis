@@ -45,6 +45,10 @@ open class Translator(val sourceLanguage: SourceLanguage) : TranslatorInterface<
                 out.append(rule)
                 Unit
             }
+            is Char -> {
+                out.append(rule)
+                Unit
+            }
             is ParserRuleContext -> this.rule.translate(rule, out)
             is TerminalNode -> this.token.translate(rule.symbol.type, rule, out)
             else -> Unit

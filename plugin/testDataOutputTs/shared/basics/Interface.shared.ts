@@ -1,60 +1,55 @@
-//Package: com.test
-//Converted using Khrysalis2
-
-
-class MyInterface {
-    
-    public constructor() {
-    }
-    
-    public x : string;
-    y(aString: string): string {
-        return x + aString
-    }
+//Package: com.test
+//Converted using Khrysalis2
+
+
+interface MyInterface {
+    implementsInterfaceMyInterface: boolean;
+    readonly x : string;
+    y(aString: string): string ;
 }
- 
- 
-
-class ImplOverX implements MyInterface {
+
+ 
+
+class ImplOverX {
     
     public constructor() {
     }
     
     public x : string;
 }
- 
- 
-
-class ImplOverY implements MyInterface {
+
+ 
+
+class ImplOverY {
     
     public constructor() {
     }
     
-    y(aString: string): string {
-        return "${x}!"
-    }
+    y(aString: string): string {
+        return `${this.x}!`
+    }
 }
- 
- 
-
-class ImplBoth implements MyInterface {
+
+ 
+
+class ImplBoth {
     
     public constructor() {
     }
     
     public x : string;
-    y(aString: string): string {
-        return "${x}!"
-    }
+    y(aString: string): string {
+        return `${this.x}!`
+    }
 }
- 
- 
-
-export function main(): void {
+
+ 
+
+export function main(): void {
     const items : Array<MyInterface> = listOf(new ImplBoth(), new ImplOverX(), new ImplOverY());
     for (const item of items) {
         console.log(item.x);
         console.log(item.y("Input"))
     }
-}
- 
+}
+

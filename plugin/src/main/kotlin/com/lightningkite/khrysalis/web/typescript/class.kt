@@ -8,7 +8,49 @@ import com.lightningkite.khrysalis.web.typescript.actuals.visibility
 import org.antlr.v4.runtime.ParserRuleContext
 import org.jetbrains.kotlin.KotlinParser
 
+val skippedExtensions = setOf(
+    "AnyObject",
+    "AnyHashable",
+    "Hashable",
+    "Equatable",
+    "SomeEnum"
+)
+
 fun TypescriptTranslator.registerClass() {
+
+    handle<KotlinParser.ClassDeclarationContext>(
+        condition = { typedRule.INTERFACE() != null },
+        priority = 100
+    ) {
+        -"interface "
+        -typedRule.simpleIdentifier()
+        -typedRule.typeParameters()
+        -" "
+        typedRule.delegationSpecifiers()?.annotatedDelegationSpecifier()?.asSequence()
+            ?.mapNotNull { it.delegationSpecifier()?.userType() }
+            ?.filter { it.text in skippedExtensions }
+            ?.takeUnless { it.none() }
+            ?.let {
+                -"extends "
+                it.forEachBetween(
+                    forItem = { -it },
+                    between = { -", " }
+                )
+                -" "
+            }
+        -"{\n"
+
+        -"readonly implementsInterface"
+        -typedRule.simpleIdentifier()
+        -": boolean;\n"
+
+        typedRule.classBody()?.classMemberDeclarations()?.classMemberDeclaration()?.forEach {
+            -it
+        }
+
+        -"}\n"
+    }
+
     handle<KotlinParser.ClassDeclarationContext> {
         -"class "
         -typedRule.simpleIdentifier()
@@ -26,6 +68,7 @@ fun TypescriptTranslator.registerClass() {
             }
             it.asSequence()
                 .mapNotNull { it.delegationSpecifier()?.userType() }
+                .filter { it.text in skippedExtensions }
                 .takeUnless { it.none() }
                 ?.let {
                     -"implements "
@@ -38,6 +81,19 @@ fun TypescriptTranslator.registerClass() {
         }
         -"{\n"
 
+        typedRule.delegationSpecifiers()?.annotatedDelegationSpecifier()
+            ?.mapNotNull { it.delegationSpecifier()?.userType() }
+            ?.filter { it.text in skippedExtensions }
+            ?.forEach {
+                -"implementsInterface"
+                -it.translatedTextWithoutArguments(this).replace(".", "")
+                -": boolean = true;\n"
+
+                resolve(currentFile, it.withoutArgumentText()).firstOrNull()?.let {
+                    //write missing declarations with defaults
+//                    it.
+                }
+            }
 
         typedRule.primaryConstructor()?.classParameters()?.classParameter()?.forEach {
             if (it.VAL() != null || it.VAR() != null) {
@@ -98,6 +154,21 @@ fun TypescriptTranslator.registerClass() {
         }
 
         -"}\n"
+    }
+
+    handle<KotlinParser.TypeParametersContext> {
+        -"<"
+        typedRule.typeParameter().forEachBetween(
+            forItem = {
+                -(it.simpleIdentifier())
+                it.type()?.let {
+                    -(" extends ")
+                    -(it)
+                }
+            },
+            between = { -(", ") }
+        )
+        -">"
     }
 
     handle<KotlinParser.AnonymousInitializerContext> { /*suppress*/ }

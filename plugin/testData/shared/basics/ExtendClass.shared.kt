@@ -4,7 +4,7 @@ open class Record {
     var x: Int = 0
     var y: String = ""
     init {
-        println("Record created: $x, $y")
+        println("Record created: ${this.x}, ${this.y}")
     }
     open fun test(){
         println("Test run")
@@ -14,7 +14,7 @@ open class Record {
 class BetterRecord: Record() {
     var z: Double = 0.0
     override fun test() {
-        println("Test run ${z.toInt()}")
+        println("Test run ${this.z.toInt()}")
     }
 }
 

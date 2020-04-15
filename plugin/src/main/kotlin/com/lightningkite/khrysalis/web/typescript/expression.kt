@@ -63,45 +63,25 @@ fun TypescriptTranslator.registerExpression() {
         )
         -(")")
     }
+    handle<KotlinParser.CallSuffixContext> {
+        val valueArguments = typedRule.valueArguments()
+        val sampleHasNoLabel = valueArguments?.valueArgument()?.firstOrNull()?.MULT() == null
+        if (valueArguments?.valueArgument()?.any { (it.MULT() == null) != sampleHasNoLabel } == true) {
+            println("WARNING: Function call at line ${typedRule.valueArguments().start.line} has some arguments with keys and some without.  This is not supported by the standard function definition converter.")
+        }
+        -("(")
+        listOfNotNull(
+            typedRule.annotatedLambda()?.let { listOf(it) },
+            valueArguments?.valueArgument()
+        ).flatMap { it }.forEachBetween(
+            forItem = { -(it) },
+            between = { -(", ") }
+        )
+        -(")")
+    }
     handle<KotlinParser.ValueArgumentContext> {
         val rule = typedRule
         -(rule.expression())
-    }
-
-    handle<KotlinParser.AsExpressionContext> {
-        val rule = typedRule
-        rule.asOperator().zip(rule.type()).takeUnless { it.isEmpty() }?.let {
-            it.asReversed().forEachIndexed { index, (op, type) ->
-                if (op.AS_SAFE() != null) {
-                    -("((): ")
-                    -(type)
-                    -(" | null => { const _item: any = ")
-                }
-            }
-            -(rule.prefixUnaryExpression())
-            it.forEachIndexed { index, (op, type) ->
-                if (op.AS_SAFE() != null) {
-                    if (type.isPrimitive()) {
-                        -("; if(typeof _item == \"")
-                        -type.basic()
-                        -("\") return _item; else return null })()")
-                    } else {
-                        resolve(currentFile, type.basic()!!.text.substringBefore('<')).firstOrNull()?.let {
-                            -("; if (_item.implementsInterface${it.name}) return _item; else return null })()")
-                        } ?: run {
-                            -("; if (_item instanceof ")
-                            -(type)
-                            -(") return _item; else return null })()")
-                        }
-                    }
-                } else {
-                    -(" as ")
-                    -(type)
-                }
-            }
-        } ?: run {
-            -(rule.prefixUnaryExpression())
-        }
     }
 
     handle<KotlinParser.PostfixUnaryExpressionContext>(
@@ -173,6 +153,27 @@ fun TypescriptTranslator.registerExpression() {
 
         -(primaryExpression)
         postfixUnarySuffixes.forEach {
+            -(it)
+        }
+    }
+
+    handle<KotlinParser.PostfixUnaryExpressionContext>(
+        condition = {
+            typedRule.primaryExpression()?.literalConstant()?.let {
+                it.BinLiteral()
+                    ?: it.HexLiteral()
+                    ?: it.IntegerLiteral()
+                    ?: it.LongLiteral()
+                    ?: it.RealLiteral()
+                    ?: it.UnsignedLiteral()
+            } != null
+        },
+        priority = 1000
+    ) {
+        -"("
+        -typedRule.primaryExpression()
+        -")"
+        typedRule.postfixUnarySuffix().forEach {
             -(it)
         }
     }

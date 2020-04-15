@@ -18,7 +18,8 @@ class ExecuteFileTesterTest {
                             print("Hello World!")
                         }
                     """.trimIndent())
-                }
+                },
+                clean = true
             ),
             "swift" to ExecuteFileTester.swift(
                 buildDir.resolve("test.swift").also {
@@ -28,16 +29,18 @@ class ExecuteFileTesterTest {
                             print("Hello World!")
                         }
                     """.trimIndent())
-                }
+                },
+                clean = true
             ),
             "typescript" to ExecuteFileTester.typescript(
                 buildDir.resolve("test.ts").also {
                     it.writeText("""
-                        function main() {
+                        export function main() {
                             console.log("Hello World!")
                         }
                     """.trimIndent())
-                }
+                },
+                clean = true
             )
         )
         for((key, value) in outputs){

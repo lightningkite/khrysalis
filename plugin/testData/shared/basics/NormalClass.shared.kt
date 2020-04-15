@@ -4,7 +4,7 @@ class Record {
     var x: Int = 0
     var y: String = ""
     init {
-        println("Record created: $x, $y")
+        println("Record created: ${this.x}, ${this.y}")
     }
     fun test(){
         println("Test run")

@@ -43,6 +43,7 @@ abstract class PartialTranslator<OUT : Any, RESULT, IN : Any, IDENTIFIER> {
     }
 
     open inner class Context {
+        val partialTranslator = this@PartialTranslator
         lateinit var rule: IN
         lateinit var out: OUT
         var option: Handler? = null

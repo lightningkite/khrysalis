@@ -101,6 +101,7 @@ class TypescriptTranslator: Translator(SourceLanguage.kotlin) {
     val typeReplacements = HashMap<String, String>()
 
     init {
+        registerAnnotation()
         registerFile()
         registerFunction()
         registerIdentifiers()
@@ -109,7 +110,7 @@ class TypescriptTranslator: Translator(SourceLanguage.kotlin) {
         registerVariable()
         registerExpression()
         registerLiterals()
-//        registerLambda()
+        registerLambda()
         registerControl()
 //        registerStatement()
 

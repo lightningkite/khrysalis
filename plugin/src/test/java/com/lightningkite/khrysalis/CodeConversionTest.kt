@@ -1,6 +1,8 @@
 package com.lightningkite.khrysalis
 
-import com.lightningkite.khrysalis.swift.convertKotlinToSwiftByFolder
+import com.lightningkite.khrysalis.ios.swift.convertKotlinToSwiftByFolder
+import com.lightningkite.khrysalis.web.typescript.TypescriptTranslator
+import com.lightningkite.khrysalis.web.typescript.convertKotlinToTypescriptByFolder
 import org.junit.Test
 import java.io.File
 
@@ -9,23 +11,33 @@ class CodeConversionTest {
     @Test
     fun everything() {
         val kotlinFiles = File("./testData/shared")
-        val swiftFiles = File("./testDataSwift/shared")
-        val typescriptFiles = File("./testDataTypescript/shared")
+        val swiftFiles = File("./testDataOutput/shared")
+        val typescriptFiles = File("./testDataOutputTs/shared")
 
+        val clean = false
 
-        val isMac = System.getProperty("os.name").toLowerCase().let { it.contains("osx") || it.contains("mac") }
+        val isMac = false
+//        val isMac = System.getProperty("os.name").toLowerCase().let { it.contains("osx") || it.contains("mac") }
 
         if (isMac) {
             convertKotlinToSwiftByFolder(
-                interfacesOut = File("./testDataSwift/interfaces.json").also { it.parentFile.mkdirs() },
+                interfacesOut = File("./testDataOutput/interfaces.json").also { it.parentFile.mkdirs() },
                 baseKotlin = File("./testData/shared"),
-                baseSwift = File("./testDataSwift/shared").also { it.mkdirs() },
+                baseSwift = File("./testDataOutput/shared").also { it.mkdirs() },
                 clean = true,
                 setup = {
                     this.imports = listOf()
                 }
             )
         }
+
+        convertKotlinToTypescriptByFolder(
+            interfacesOut = File("./testDataOutput/interfaces.json").also { it.parentFile.mkdirs() },
+            baseKotlin = File("./testData/shared"),
+            baseTs = File("./testDataOutputTs/shared").also { it.mkdirs() },
+            clean = true,
+            typescript = TypescriptTranslator()
+        )
 
         val results = kotlinFiles.walkTopDown().filter { it.name.endsWith(".shared.kt") }.associate { kotlinFile ->
             val relative = kotlinFile.relativeTo(kotlinFiles)
@@ -36,29 +48,30 @@ class CodeConversionTest {
             var expectedLast = ""
             kotlinFile.nameWithoutExtension to (mapOf(
                 "kotlin" to try {
-                    ExecuteFileTester.kotlin(kotlinFile, additionalSources = listOf(File("../android/src/main/java/com/lightningkite/khrysalis/Swift.kt")))
+                    ExecuteFileTester.kotlin(kotlinFile, clean = clean, additionalSources = listOf(File("../android/src/main/java/com/lightningkite/khrysalis/Swift.kt")))
                         .also { expectedLast = it }
                 } catch (e: Exception) {
                     e.printStackTrace()
                     "FAILED TO COMPILE/EXECUTE: ${e.message}"
-                }//,
-//                "typescript" to try {
-//                    ExecuteFileTester.typescript(typescriptFile)
-//                    .also {
-//                        if(expectedLast == it) {
-//                            System.out.print(".")
-//                        } else {
-//                            System.out.print("F")
-//                        }
-//                    }
-//                } catch(e:Exception){
-                // e.printStackTrace()
-//                    "FAILED TO COMPILE/EXECUTE"
-//                }
+                },
+                "typescript" to try {
+                    ExecuteFileTester.typescript(typescriptFile, clean = clean)
+                    .also {
+                        if(expectedLast == it) {
+                            System.out.print(".")
+                        } else {
+                            System.out.print("F")
+                        }
+                        System.out.flush()
+                    }
+                } catch(e:Exception){
+                 e.printStackTrace()
+                    "FAILED TO COMPILE/EXECUTE"
+                }
             ) + if (isMac) {
                 mapOf(
                     "swift" to try {
-                        ExecuteFileTester.swift(swiftFile, listOf(File("../ios/Khrysalis/com/lightningkite/khrysalis/kotlin")))
+                        ExecuteFileTester.swift(swiftFile, clean = clean, directories = listOf(File("../ios/Khrysalis/com/lightningkite/khrysalis/kotlin")))
                             .also {
                                 if(expectedLast == it) {
                                     System.out.print(".")
@@ -88,7 +101,7 @@ class CodeConversionTest {
 
         if (failures.isNotEmpty()) {
             println("${failures.size} subtests failed:")
-            for (fail in failures) {
+            for (fail in failures.sorted()) {
                 println(fail)
             }
             throw Exception()

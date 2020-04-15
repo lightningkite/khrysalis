@@ -2,7 +2,7 @@ package com.test
 
 data class Record(var x: Int, var y: String){
     init {
-        println("Record created: $x, $y")
+        println("Record created: ${this.x}, ${this.y}")
     }
     fun test(){
         val test:Int = 0

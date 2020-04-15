@@ -21,6 +21,16 @@ fun TypescriptTranslator.registerFile() {
         }
     }
 
+    this.handle<KotlinParser.TopLevelObjectContext> {
+        typedRule.declaration()?.let {
+            it.propertyDeclaration()?.let {
+                -it
+                -";"
+            } ?: -it
+        }
+        -typedRule.semis()
+    }
+
     this.handle<KotlinParser.ImportListContext> {
         val rule = typedRule
         //all imports

@@ -50,6 +50,24 @@ fun TypescriptTranslator.registerVariable() {
             -";\n"
         }
     )
+    handle<KotlinParser.PropertyDeclarationContext>(
+        condition = {
+            typedRule.parentIfType<KotlinParser.DeclarationContext>()
+                ?.parentIfType<KotlinParser.ClassMemberDeclarationContext>()
+                ?.parentIfType<KotlinParser.ClassMemberDeclarationsContext>()
+                ?.parentIfType<KotlinParser.ClassBodyContext>()
+                ?.parentIfType<KotlinParser.ClassDeclarationContext>()
+                ?.INTERFACE() != null
+        },
+        priority = 102,
+        action = {
+            if(typedRule.VAL() != null){
+                -"readonly "
+            }
+            -typedRule.variableDeclaration()
+            -";\n"
+        }
+    )
 
     handle<KotlinParser.AssignmentContext>(
         condition = {

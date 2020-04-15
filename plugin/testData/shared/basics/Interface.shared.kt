@@ -3,7 +3,7 @@ package com.test
 interface MyInterface {
     val x: String get() = ""
     fun y(string: String): String {
-        return x + string
+        return this.x + string
     }
 }
 
@@ -14,7 +14,7 @@ class ImplOverX: MyInterface {
 
 class ImplOverY: MyInterface {
     override fun y(string: String): String {
-        return "$x!"
+        return "${this.x}!"
     }
 }
 
@@ -22,7 +22,7 @@ class ImplBoth: MyInterface {
     override val x: String
         get() = "Hello!"
     override fun y(string: String): String {
-        return "$x!"
+        return "${this.x}!"
     }
 }
 

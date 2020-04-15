@@ -4,7 +4,7 @@ import com.lightningkite.khrysalis.*
 
 class HasLambda(val action: @escaping() ()->Unit = {}) {
     fun invoke() {
-        action()
+        this.action()
     }
 }
 

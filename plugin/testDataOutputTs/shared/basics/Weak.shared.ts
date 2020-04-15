@@ -1,7 +1,7 @@
-//Package: com.test
-//Converted using Khrysalis2
-
-
+//Package: com.test
+//Converted using Khrysalis2
+
+
 class SillyBox {
     x: number;
     
@@ -10,9 +10,9 @@ class SillyBox {
     }
     
 }
- 
- 
-
+
+ 
+
 class Stuff {
     
     public constructor(box: SillyBox) {
@@ -20,12 +20,12 @@ class Stuff {
     
     public weakBox : SillyBox | null;
 }
- 
- 
-
-export function main(): void {
-    const sillyBox = new SillyBox(3);
+
+ 
+
+export function main(): void {
+    const sillyBox = new SillyBox((3));
     const stuff = new Stuff(sillyBox);
     console.log(stuff.weakBox?.x?.toString() ?? "-")
-}
- 
+}
+
