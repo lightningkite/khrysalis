@@ -75,6 +75,7 @@ internal fun HtmlTranslator.input() {
         }
         out.contentNodes.add(label)
         out.text = label
+        out.containerNode = label
     }
 
     element.handle("RadioButton"){
@@ -125,6 +126,7 @@ internal fun HtmlTranslator.input() {
         }
         out.contentNodes.add(label)
         out.text = label
+        out.containerNode = label
     }
 
     element.handle("Switch"){
@@ -149,6 +151,7 @@ internal fun HtmlTranslator.input() {
 
         val label = ResultNode("div")
         out.text = label
+        out.containerNode = label
         out.contentNodes.add(label)
 
         out.contentNodes.add(ResultNode("input").apply {
