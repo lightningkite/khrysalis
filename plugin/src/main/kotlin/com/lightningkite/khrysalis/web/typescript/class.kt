@@ -37,8 +37,10 @@ fun TypescriptTranslator.registerClass() {
                 }
         }
         -"{\n"
+
+
         typedRule.primaryConstructor()?.classParameters()?.classParameter()?.forEach {
-            if(it.VAL() != null || it.VAR() != null) {
+            if (it.VAL() != null || it.VAR() != null) {
                 -it.simpleIdentifier()
                 -": "
                 -it.type()
@@ -71,7 +73,7 @@ fun TypescriptTranslator.registerClass() {
             -";\n"
         }
         typedRule.primaryConstructor()?.classParameters()?.classParameter()?.forEach {
-            if(it.VAL() != null || it.VAR() != null) {
+            if (it.VAL() != null || it.VAR() != null) {
                 -"this."
                 -it.simpleIdentifier()
                 -" = "
@@ -94,8 +96,15 @@ fun TypescriptTranslator.registerClass() {
         typedRule.classBody()?.classMemberDeclarations()?.classMemberDeclaration()?.forEach {
             -it
         }
+
         -"}\n"
     }
 
     handle<KotlinParser.AnonymousInitializerContext> { /*suppress*/ }
+
+    handle<KotlinParser.CompanionObjectContext> {
+        typedRule.classBody()?.classMemberDeclarations()?.classMemberDeclaration()?.forEach {
+            -it.declaration()
+        }
+    }
 }

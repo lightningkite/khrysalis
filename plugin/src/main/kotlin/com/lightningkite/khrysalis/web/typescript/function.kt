@@ -3,6 +3,7 @@ package com.lightningkite.khrysalis.web.typescript
 import com.lightningkite.khrysalis.generic.line
 import com.lightningkite.khrysalis.ios.swift.parentIfType
 import com.lightningkite.khrysalis.utils.forEachBetween
+import org.jetbrains.kotlin.KotlinParser
 import org.jetbrains.kotlin.KotlinParser.*
 
 fun TypescriptTranslator.registerFunction() {
@@ -77,6 +78,19 @@ fun TypescriptTranslator.registerFunction() {
         action = {
             val rule = typedRule
             -"export function "
+            doSuper()
+        }
+    )
+    this.handle<FunctionDeclarationContext>(
+        condition = {typedRule.parentIfType<DeclarationContext>()
+            ?.parentIfType<ClassMemberDeclarationContext>()
+            ?.parentIfType<ClassMemberDeclarationsContext>()
+            ?.parentIfType<ClassBodyContext>()
+            ?.parentIfType<CompanionObjectContext>() != null },
+        priority = 11,
+        action = {
+            val rule = typedRule
+            -"static "
             doSuper()
         }
     )

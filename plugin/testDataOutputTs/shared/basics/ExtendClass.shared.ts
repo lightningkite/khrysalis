@@ -1,7 +1,7 @@
-//Package: com.test
-//Converted using Khrysalis2
-
-
+//Package: com.test
+//Converted using Khrysalis2
+
+
 class Record {
     
     public constructor() {
@@ -10,13 +10,13 @@ class Record {
     
     public x : number;
     public y : string;
-    test(): void {
+    test(): void {
         console.log("Test run")
-    }
+    }
 }
- 
- 
-
+ 
+ 
+
 class BetterRecord extends Record {
     
     public constructor() {
@@ -24,22 +24,22 @@ class BetterRecord extends Record {
     }
     
     public z : number;
-    test(): void {
+    test(): void {
         console.log(`Test run ${z.toInt()}`)
-    }
+    }
 }
- 
- 
-
-export function main(): void {
+ 
+ 
+
+export function main(): void {
     const record = new BetterRecord();
     record .x = 3;
     record .y = "Hello";
     record .z = 32.1;
-    if (record.x == 3){
-        record .y = "Set"
-    };
+    (() => {if (record.x == 3){
+                record .y = "Set"
+    }})();
     record.test();
     console.log(`x: ${record.x}, y: ${record.y}`)
-}
- 
+}
+ 

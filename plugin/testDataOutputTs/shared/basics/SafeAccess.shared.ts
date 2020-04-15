@@ -1,7 +1,7 @@
-//Package: com.test
-//Converted using Khrysalis2
-
-
+//Package: com.test
+//Converted using Khrysalis2
+
+
 class SillyBox {
     subBox: SillyBox | null;
     
@@ -10,14 +10,14 @@ class SillyBox {
     }
     
 }
- 
- 
-
-export function main(): void {
+ 
+ 
+
+export function main(): void {
     const item = new SillyBox(new SillyBox());
-    item.subBox?.subBox?.let{ 
+    item.subBox?.subBox?.let{ 
          console.log("I got a box!")
-     } ?? run{ 
+     } ?? run{ 
          console.log("I didn't get a box...")
      };
     const tempVarSet0 = item.subBox?.subBox?.subBox;
@@ -25,9 +25,9 @@ export function main(): void {
         tempVarSet0.subBox = new SillyBox()
     }
     ;
-    item.subBox?.subBox?.let{ 
+    item.subBox?.subBox?.let{ 
          console.log("I got a box!")
-     } ?? run{ 
+     } ?? run{ 
          console.log("I didn't get a box...")
      };
     const tempVarSet1 = item.subBox;
@@ -35,10 +35,10 @@ export function main(): void {
         tempVarSet1.subBox = new SillyBox()
     }
     ;
-    item.subBox?.subBox?.let{ 
+    item.subBox?.subBox?.let{ 
          console.log("I got a box!")
-     } ?? run{ 
+     } ?? run{ 
          console.log("I didn't get a box...")
      }
-}
- 
+}
+ 

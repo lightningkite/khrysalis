@@ -1,7 +1,7 @@
-//Package: com.test
-//Converted using Khrysalis2
-
-
+//Package: com.test
+//Converted using Khrysalis2
+
+
 class HasLambda {
     action:  @ escaping () () => void;
     
@@ -10,29 +10,29 @@ class HasLambda {
         this.action = action;
     }
     
-    invoke(): void {
+    invoke(): void {
         action()
-    }
+    }
 }
- 
- 
-
+ 
+ 
+
 let globalThing : () => void = { 
- } 
-
-export function doThing(action:  @ escaping () () => void): void {
+ } 
+
+export function doThing(action:  @ escaping () () => void): void {
     globalThing = action
-}
- 
- 
-
-export function main(): void {
-    (new HasLambda{ 
+}
+ 
+ 
+
+export function main(): void {
+    (new HasLambda{ 
              console.log("Hello world!")
      }).invoke();
-    doThing{ 
+    doThing{ 
          console.log("Hello world 2!")
      };
     globalThing()
-}
- 
+}
+ 

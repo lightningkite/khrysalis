@@ -27,6 +27,29 @@ fun TypescriptTranslator.registerVariable() {
             -";\n"
         }
     )
+    handle<KotlinParser.PropertyDeclarationContext>(
+        condition = {
+            typedRule.parentIfType<KotlinParser.DeclarationContext>()
+                ?.parentIfType<KotlinParser.ClassMemberDeclarationContext>()
+                ?.parentIfType<KotlinParser.ClassMemberDeclarationsContext>()
+                ?.parentIfType<KotlinParser.ClassBodyContext>()
+                ?.parentIfType<KotlinParser.CompanionObjectContext>() != null
+        },
+        priority = 101,
+        action = {
+            typedRule.visibility().let {
+                -it.name.toLowerCase()
+                -" "
+            }
+            -"static "
+            -typedRule.variableDeclaration()
+            typedRule.expression()?.let{
+                -" = "
+                -it
+            }
+            -";\n"
+        }
+    )
 
     handle<KotlinParser.AssignmentContext>(
         condition = {
