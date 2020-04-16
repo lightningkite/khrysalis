@@ -89,10 +89,16 @@ fun TypescriptTranslator.registerClass() {
                 -it.translatedTextWithoutArguments(this).replace(".", "")
                 -": boolean = true;\n"
 
-                resolve(currentFile, it.withoutArgumentText()).firstOrNull()?.let {
-                    //write missing declarations with defaults
-//                    it.
-                }
+//                resolve(currentFile, it.withoutArgumentText()).firstOrNull()?.let { interfaceData ->
+//                    //write missing declarations with defaults
+//                    typedRule.classBody()
+//                        ?.classMemberDeclarations()
+//                        ?.classMemberDeclaration()
+//                        ?.mapNotNull { it.declaration()?.functionDeclaration() }
+//                        ?.filter {
+//                            it.simpleIdentifier() !in
+//                        }
+//                }
             }
 
         typedRule.primaryConstructor()?.classParameters()?.classParameter()?.forEach {
