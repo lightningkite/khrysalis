@@ -1,4 +1,4 @@
-package com.lightningkite.khrysalis.typescript
+package com.lightningkite.khrysalis.util
 
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.descriptors.*
@@ -7,7 +7,9 @@ import org.jetbrains.kotlin.resolve.*
 import org.jetbrains.kotlin.resolve.calls.model.*
 import org.jetbrains.kotlin.types.DeferredType
 
-class AnalysisExtensions(val bindingContext: BindingContext){
+interface AnalysisExtensions {
+    val bindingContext: BindingContext
+
     val KtAnnotationEntry.resolvedAnnotation: org.jetbrains.kotlin.descriptors.annotations.AnnotationDescriptor?
         get() = bindingContext[BindingContext.ANNOTATION, this]
     val KtExpression.resolvedCompileTimeValue: org.jetbrains.kotlin.resolve.constants.CompileTimeConstant<*>?

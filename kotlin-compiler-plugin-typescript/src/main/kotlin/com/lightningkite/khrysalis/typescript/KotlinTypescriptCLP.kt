@@ -1,41 +1,47 @@
 package com.lightningkite.khrysalis.typescript
 
+import com.lightningkite.khrysalis.util.SmartTabWriter
 import org.jetbrains.kotlin.analyzer.AnalysisResult
 import org.jetbrains.kotlin.com.intellij.mock.MockProject
 import org.jetbrains.kotlin.com.intellij.openapi.project.Project
-import org.jetbrains.kotlin.com.intellij.psi.PsiReference
 import org.jetbrains.kotlin.compiler.plugin.AbstractCliOption
 import org.jetbrains.kotlin.compiler.plugin.CliOption
 import org.jetbrains.kotlin.compiler.plugin.CommandLineProcessor
 import org.jetbrains.kotlin.compiler.plugin.ComponentRegistrar
 import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.config.CompilerConfigurationKey
-import org.jetbrains.kotlin.container.ComponentProvider
-import org.jetbrains.kotlin.context.ProjectContext
 import org.jetbrains.kotlin.descriptors.ModuleDescriptor
-import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.psi.*
-import org.jetbrains.kotlin.resolve.BindingContext
 import org.jetbrains.kotlin.resolve.BindingTrace
 import org.jetbrains.kotlin.resolve.jvm.extensions.AnalysisHandlerExtension
-import org.jetbrains.kotlin.types.asSimpleType
 import java.io.File
 
 class KotlinTypescriptCLP : CommandLineProcessor {
     companion object {
-        const val KEY_ENABLED_NAME = "typescriptEnabled"
-        val KEY_ENABLED = CompilerConfigurationKey.create<Boolean>(KEY_ENABLED_NAME)
+        const val KEY_ACTUALS_DIRECTORY_NAME = "actualsDirectories"
+        val KEY_ACTUALS_DIRECTORY = CompilerConfigurationKey.create<List<File>>(KEY_ACTUALS_DIRECTORY_NAME)
+        const val KEY_OUTPUT_DIRECTORY_NAME = "outputDirectory"
+        val KEY_OUTPUT_DIRECTORY = CompilerConfigurationKey.create<File>(KEY_OUTPUT_DIRECTORY_NAME)
         const val PLUGIN_ID = "com.lightningkite.khrysalis.typescript"
     }
 
     override val pluginId: String get() = PLUGIN_ID
     override val pluginOptions: Collection<AbstractCliOption> = listOf(
-        CliOption(KEY_ENABLED_NAME, "<true|false>", "whether or not to do Typescript transpilation")
+        CliOption(KEY_OUTPUT_DIRECTORY_NAME, "A directory", "Where to store the output files.", required = true),
+        CliOption(
+            KEY_ACTUALS_DIRECTORY_NAME,
+            "A directory",
+            "Where to look for translational information.",
+            required = false
+        )
     )
 
     override fun processOption(option: AbstractCliOption, value: String, configuration: CompilerConfiguration) =
         when (option.optionName) {
-            "enabled" -> configuration.put(KEY_ENABLED, value.toBoolean())
+            KEY_ACTUALS_DIRECTORY_NAME -> configuration.put(
+                KEY_ACTUALS_DIRECTORY,
+                value.split(File.pathSeparatorChar).map { File(it) })
+            KEY_OUTPUT_DIRECTORY_NAME -> configuration.put(KEY_OUTPUT_DIRECTORY, value.let { File(it) })
             else -> {
             }
         }
@@ -43,17 +49,20 @@ class KotlinTypescriptCLP : CommandLineProcessor {
 
 class KotlinTypescriptCR : ComponentRegistrar {
     override fun registerProjectComponents(project: MockProject, configuration: CompilerConfiguration) {
-        if (configuration[KotlinTypescriptCLP.KEY_ENABLED] == false) {
-            return
-        }
         AnalysisHandlerExtension.registerExtension(
             project,
-            KotlinTypescriptExtension()
+            KotlinTypescriptExtension(
+                configuration[KotlinTypescriptCLP.KEY_ACTUALS_DIRECTORY] ?: listOf(),
+                configuration[KotlinTypescriptCLP.KEY_OUTPUT_DIRECTORY]!!
+            )
         )
     }
 }
 
-class KotlinTypescriptExtension() : AnalysisHandlerExtension {
+class KotlinTypescriptExtension(
+    val actuals: List<File>,
+    val output: File
+) : AnalysisHandlerExtension {
     override fun analysisCompleted(
         project: Project,
         module: ModuleDescriptor,
@@ -62,30 +71,16 @@ class KotlinTypescriptExtension() : AnalysisHandlerExtension {
     ): AnalysisResult? {
         println("Completed analysis.")
         val ctx = bindingTrace.bindingContext
-        with(AnalysisExtensions(ctx)){
-            for (file in files) {
-                for (decl in file.declarations) {
-                    println("Declaration: " + decl.name)
-                    if (decl is KtProperty) {
-                        decl.initializer?.let {
-                            println("Is a property with initializer of type ")
-                            println(ctx.getType(it)?.getJetTypeFqName(true))
-                        }
-                        decl.typeReference?.let {
-                            println("Is a property with declared type ")
-                            ctx[BindingContext.TYPE, it]?.let {
-                                println(it)
-                                println(it.getJetTypeFqName(true))
-                            } ?: run {
-                                println("Could not resolve.")
-                            }
-
-                        }
-                    }
-                }
+        val translator = TypescriptTranslator(ctx)
+        val commonPath = files.asSequence().map { it.virtualFilePath }.takeUnless { it.none() }?.reduce { acc, s -> acc.commonPrefixWith(s) } ?: ""
+        for (file in files) {
+            val outputFile = output.resolve(file.virtualFilePath.removePrefix(commonPath)).resolve(file.name.removeSuffix(".kt").plus(".ts"))
+            println("Translating $file to ... $outputFile")
+            outputFile.parentFile.mkdirs()
+            outputFile.bufferedWriter().use {
+                translator.translate(file, SmartTabWriter(it))
             }
         }
-
         return AnalysisResult.Companion.success(ctx, module, false)
     }
 }

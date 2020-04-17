@@ -6,16 +6,9 @@ buildscript {
         maven { url "http://dl.bintray.com/kotlin/kotlin-dev" }
         jcenter()
     }
-    dependencies {
-        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}"
-        classpath 'com.jfrog.bintray.gradle:gradle-bintray-plugin:1.+'
-    }
 }
 
 apply plugin: "kotlin"
-apply plugin: "kotlin-kapt"
-apply plugin: 'maven-publish'
-apply plugin: 'com.jfrog.bintray'
 
 group = "com.lightningkite.khrysalis"
 version = "0.1.0"
@@ -29,7 +22,6 @@ dependencies {
     compileOnly "org.jetbrains.kotlin:kotlin-compiler-embeddable"
     testImplementation("junit:junit:4.12")
     testImplementation("org.jetbrains.kotlin:kotlin-compiler-embeddable")
-    implementation(project(":kotlin-compiler-plugin-common"))
 }
 
 compileKotlin {
@@ -37,17 +29,4 @@ compileKotlin {
 }
 compileTestKotlin {
     kotlinOptions.jvmTarget = "1.8"
-}
-
-
-publishing {
-    publications {
-        maven(MavenPublication) {
-            groupId = project.group
-            artifactId = project.name
-            version = project.version
-
-            from components.java
-        }
-    }
 }
