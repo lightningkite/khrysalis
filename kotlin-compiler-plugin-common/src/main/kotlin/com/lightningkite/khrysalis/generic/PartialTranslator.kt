@@ -36,10 +36,14 @@ abstract class PartialTranslator<OUT : Any, RESULT, IN : Any, IDENTIFIER> {
         val priority: Int = 0,
         val action: Context.() -> RESULT
     ) : Comparable<Handler> {
+        private val uuid: UUID = UUID.randomUUID()
         override fun compareTo(other: Handler): Int {
             var result = other.priority.compareTo(this.priority)
             if(result == 0){
-                result = this.action.toString().compareTo(other.action.toString())
+                result = this.uuid.compareTo(other.uuid)
+            }
+            if(result == 0 && this !== other){
+                println("RUCK")
             }
             return result
         }
