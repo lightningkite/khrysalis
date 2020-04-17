@@ -7,6 +7,7 @@ import org.jetbrains.kotlin.com.intellij.lang.PsiParser
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafElement
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
+import org.jetbrains.kotlin.psi.KtElement
 import org.jetbrains.kotlin.psi.KtExpression
 import org.jetbrains.kotlin.psi.psiUtil.getElementTextWithContext
 import org.jetbrains.kotlin.psi.psiUtil.getTextWithLocation
@@ -60,6 +61,8 @@ class TypescriptTranslator(override val bindingContext: BindingContext) :
 
     override fun emitDefault(identifier: Class<*>, rule: Any, out: Appendable) {
         when (rule) {
+            is Iterable<*> -> rule.forEach { if(it != null) translate(it, out) }
+            is Sequence<*> -> rule.forEach { if(it != null) translate(it, out) }
             is Char -> out.append(rule)
             is String -> out.append(rule)
             is PsiElement -> {

@@ -1,8 +1,150 @@
 package com.lightningkite.khrysalis.typescript
 
+import com.lightningkite.khrysalis.util.forEachBetween
+import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
+import org.jetbrains.kotlin.fir.symbols.StandardClassIds.Unit
+import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
+import org.jetbrains.kotlin.js.descriptorUtils.nameIfStandardType
+import org.jetbrains.kotlin.psi.*
+import org.jetbrains.kotlin.psi.psiUtil.allChildren
+import org.jetbrains.kotlin.types.KotlinType
 import java.lang.IllegalArgumentException
 
 fun TypescriptTranslator.registerControl() {
+    handle<KtBlockExpression> {
+        if (typedRule.resolvedExpressionTypeInfo?.type != null && typedRule.resolvedExpressionTypeInfo?.type?.getJetTypeFqName(
+                true
+            ) != "kotlin.Unit"
+        ) {
+            val lastStatement = typedRule.statements.lastOrNull()
+            typedRule.allChildren.forEach {
+                if (it === lastStatement) {
+                    -"return "
+                }
+                -it
+            }
+        } else {
+            -typedRule.allChildren
+        }
+    }
+
+    handle<KtContainerNodeForControlStructureBody>(
+        condition = { (typedRule.parent as? KtExpression)?.resolvedUsedAsExpression == true },
+        priority = 100
+    ) {
+        if (typedRule.expression is KtBlockExpression || typedRule.expression is KtIfExpression) {
+            -typedRule.expression
+        } else {
+            -"{\n"
+            -"return "
+            -typedRule.expression
+            -"\n}\n"
+        }
+    }
+
+    handle<KtIfExpression> {
+
+        if (typedRule.resolvedUsedAsExpression == true && typedRule.parent !is KtContainerNodeForControlStructureBody) {
+            -"(() => {"
+        }
+        -typedRule.allChildren
+        if (typedRule.resolvedUsedAsExpression == true && typedRule.parent !is KtContainerNodeForControlStructureBody) {
+            -"})()"
+        }
+    }
+
+    handle<KtWhenExpression>(
+        condition = { typedRule.subjectExpression != null },
+        priority = 100
+    ) {
+        if (typedRule.resolvedUsedAsExpression == true) {
+            -"(() => {"
+        }
+        -"switch("
+        -typedRule.subjectExpression
+        -"){\n"
+        typedRule.entries.forEach { entry ->
+            entry.conditions.forEach { con ->
+                -"case "
+                -con
+                -":\n"
+            }
+            entry.elseKeyword?.let {
+                -"default:\n"
+            }
+            if (entry.expression is KtBlockExpression) {
+                val children = entry.expression?.allChildren?.toList()
+                    ?.drop(1)
+                    ?.dropLast(1)
+                    ?.dropWhile { it is PsiWhiteSpace }
+                    ?.dropLastWhile { it is PsiWhiteSpace }
+                children?.forEachIndexed { index, it ->
+                    if (typedRule.resolvedUsedAsExpression == true) {
+                        if (index == children.lastIndex) {
+                            -"return "
+                        }
+                    }
+                    -it
+                }
+            } else {
+                if (typedRule.resolvedUsedAsExpression == true) {
+                    -"return "
+                }
+                -entry.expression
+            }
+            -"\nbreak;\n"
+        }
+        -"}\n"
+//        -typedRule.allChildren
+//
+        if (typedRule.resolvedUsedAsExpression == true) {
+            -"})()"
+        }
+    }
+
+    handle<KtWhenExpression>(
+        condition = { typedRule.subjectExpression == null },
+        priority = 100
+    ) {
+        if (typedRule.resolvedUsedAsExpression == true) {
+            -"(() => {"
+        }
+        -typedRule.entries.forEachBetween(
+            forItem = { it ->
+                if(!it.isElse) {
+                    -"if("
+                    it.conditions.asIterable().forEachBetween(
+                        forItem = {
+                            -it
+                        },
+                        between = {
+                            -" || "
+                        }
+                    )
+                    -")"
+                }
+                if(it.expression is KtBlockExpression) {
+                    -it.expression
+                }else{
+                    -"{\n"
+                    if (typedRule.resolvedUsedAsExpression == true) {
+                        -"return "
+                    }
+                    -it.expression
+                    -"\n}"
+                }
+            },
+            between = {
+                -"else "
+            }
+        )
+
+        if (typedRule.resolvedUsedAsExpression == true) {
+            -"})()"
+        }
+    }
+
+
 //    handle<ForStatementContext> {
 //        val rule = typedRule
 //        -"for (const "
@@ -130,20 +272,6 @@ fun TypescriptTranslator.registerControl() {
 //        }
 //    }
 //
-//    handle<IfExpressionContext> {
-//        val rule = typedRule
-//
-//        -"(() => {"
-//        -"if ("
-//        -rule.expression()
-//        -")"
-//        -rule.controlStructureBody(0)
-//        rule.controlStructureBody(1)?.let {
-//            -" else "
-//            -it
-//        }
-//        -"})()"
-//    }
 //
 //    val normalWhen = handle<WhenExpressionContext>(
 //        condition = {
