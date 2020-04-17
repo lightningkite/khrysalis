@@ -1,9 +1,11 @@
 package com.lightningkite.khrysalis.util
 
+import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.util.*
 import org.jetbrains.kotlin.resolve.*
+import org.jetbrains.kotlin.resolve.calls.callUtil.getResolvedCall
 import org.jetbrains.kotlin.resolve.calls.model.*
 import org.jetbrains.kotlin.types.DeferredType
 
@@ -64,8 +66,7 @@ interface AnalysisExtensions {
         get() = bindingContext[BindingContext.TAIL_RECURSION_CALL, this]
     val KtElement.resolvedConstraintSystemCompleter: org.jetbrains.kotlin.resolve.calls.inference.ConstraintSystemCompleter?
         get() = bindingContext[BindingContext.CONSTRAINT_SYSTEM_COMPLETER, this]
-    val KtElement.resolvedCall: Call?
-        get() = bindingContext[BindingContext.CALL, this]
+    val KtElement.resolvedCall get() = this.getResolvedCall(bindingContext)
     val KtExpression.resolvedAmbiguousReferenceTarget: Collection<DeclarationDescriptor>?
         get() = bindingContext[BindingContext.AMBIGUOUS_REFERENCE_TARGET, this]
     val KtExpression.resolvedLoopRangeIteratorResolvedCall: ResolvedCall<FunctionDescriptor>?
@@ -132,29 +133,31 @@ interface AnalysisExtensions {
         get() = bindingContext[BindingContext.LAMBDA_INVOCATIONS, this]
     val KtLambdaExpression.resolvedBlock: Boolean?
         get() = bindingContext[BindingContext.BLOCK, this]
-    val org.jetbrains.kotlin.com.intellij.psi.PsiElement.resolvedClass: ClassDescriptor?
+    val KtClass.resolvedClass: ClassDescriptor?
         get() = bindingContext[BindingContext.CLASS, this]
-    val org.jetbrains.kotlin.com.intellij.psi.PsiElement.resolvedScript: ScriptDescriptor?
+    val KtScript.resolvedScript: ScriptDescriptor?
         get() = bindingContext[BindingContext.SCRIPT, this]
     val KtTypeParameter.resolvedTypeParameter: TypeParameterDescriptor?
         get() = bindingContext[BindingContext.TYPE_PARAMETER, this]
-    val org.jetbrains.kotlin.com.intellij.psi.PsiElement.resolvedFunction: SimpleFunctionDescriptor?
+    val KtFunction.resolvedFunction: SimpleFunctionDescriptor?
         get() = bindingContext[BindingContext.FUNCTION, this]
-    val org.jetbrains.kotlin.com.intellij.psi.PsiElement.resolvedConstructor: ConstructorDescriptor?
+    val KtConstructor<*>.resolvedConstructor: ConstructorDescriptor?
         get() = bindingContext[BindingContext.CONSTRUCTOR, this]
     val ConstructorDescriptor.resolvedConstructorResolvedDelegationCall: ResolvedCall<ConstructorDescriptor>?
         get() = bindingContext[BindingContext.CONSTRUCTOR_RESOLVED_DELEGATION_CALL, this]
-    val org.jetbrains.kotlin.com.intellij.psi.PsiElement.resolvedVariable: VariableDescriptor?
+    val KtProperty.resolvedVariable: VariableDescriptor?
         get() = bindingContext[BindingContext.VARIABLE, this]
+    val KtProperty.resolvedProperty: PropertyDescriptor?
+        get() = bindingContext[BindingContext.VARIABLE, this] as? PropertyDescriptor
     val KtParameter.resolvedValueParameter: VariableDescriptor?
         get() = bindingContext[BindingContext.VALUE_PARAMETER, this]
     val KtPropertyAccessor.resolvedPropertyAccessor: PropertyAccessorDescriptor?
         get() = bindingContext[BindingContext.PROPERTY_ACCESSOR, this]
-    val org.jetbrains.kotlin.com.intellij.psi.PsiElement.resolvedPrimaryConstructorParameter: PropertyDescriptor?
+    val KtParameter.resolvedPrimaryConstructorParameter: PropertyDescriptor?
         get() = bindingContext[BindingContext.PRIMARY_CONSTRUCTOR_PARAMETER, this]
-    val org.jetbrains.kotlin.com.intellij.psi.PsiElement.resolvedTypeAlias: TypeAliasDescriptor?
+    val KtTypeAlias.resolvedTypeAlias: TypeAliasDescriptor?
         get() = bindingContext[BindingContext.TYPE_ALIAS, this]
-    val org.jetbrains.kotlin.com.intellij.psi.PsiElement.resolvedDeprecatedShortNameAccess: Boolean?
+    val PsiElement.resolvedDeprecatedShortNameAccess: Boolean?
         get() = bindingContext[BindingContext.DEPRECATED_SHORT_NAME_ACCESS, this]
     val KtReferenceExpression.resolvedLabelTarget: org.jetbrains.kotlin.com.intellij.psi.PsiElement?
         get() = bindingContext[BindingContext.LABEL_TARGET, this]
@@ -178,4 +181,6 @@ interface AnalysisExtensions {
         get() = bindingContext[BindingContext.PRIMITIVE_NUMERIC_COMPARISON_INFO, this]
     val KtExpression.resolvedNewInferenceCatchExceptionParameter: org.jetbrains.kotlin.com.intellij.openapi.util.Ref<VariableDescriptor>?
         get() = bindingContext[BindingContext.NEW_INFERENCE_CATCH_EXCEPTION_PARAMETER, this]
+    val PsiElement.resolvedDeclarationToDescriptor: DeclarationDescriptor?
+        get() = bindingContext[BindingContext.DECLARATION_TO_DESCRIPTOR, this]
 }

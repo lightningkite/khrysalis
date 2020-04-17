@@ -15,6 +15,7 @@ fun topLevelUsage(){
     topLevelReal = -1
     println(topLevelReal)
     topLevelVirtual = -2
+    topLevelVirtual += 3
     println(topLevelVirtual)
     topLevelHybrid = -3
     println(topLevelHybrid)
@@ -38,8 +39,23 @@ class TestClass {
         println(memberVirtual)
         memberHybrid = -3
         println(memberHybrid)
+        extensionProperty = -4
+        println(extensionProperty)
+
+        topLevelReal = -1
+        println(topLevelReal)
+        topLevelVirtual = -2
+        println(topLevelVirtual)
+        topLevelHybrid = -3
+        println(topLevelHybrid)
     }
 }
+
+var TestClass.extensionProperty: Int
+    get() = memberReal
+    set(value){
+        memberReal = value
+    }
 
 object TestObject {
     var objectReal: Int = 0
@@ -59,5 +75,28 @@ object TestObject {
         println(objectVirtual)
         objectHybrid = -3
         println(objectHybrid)
+
+        topLevelReal = -1
+        println(topLevelReal)
+        topLevelVirtual = -2
+        println(topLevelVirtual)
+        topLevelHybrid = -3
+        println(topLevelHybrid)
+
+        val testInstance = TestClass()
+        testInstance.needlesslyComplex = -4
+        println(testInstance.needlesslyComplex)
     }
+    var TestClass.needlesslyComplex: Int
+        get() = memberReal
+        set(value) {
+            memberReal = value
+            objectReal = value
+        }
 }
+
+var TestObject.extensionProperty: Int
+    get() = this.objectReal
+    set(value){
+        this@extensionProperty.objectReal = value
+    }

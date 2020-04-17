@@ -1,18 +1,14 @@
 package com.lightningkite.khrysalis.typescript
 
-import com.lightningkite.khrysalis.generic.line
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.descriptors.PropertyDescriptor
-import org.jetbrains.kotlin.load.java.lazy.descriptors.isJavaField
+import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
+import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.toVisibility
-import org.jetbrains.kotlin.psi.psiUtil.visibilityModifier
 import org.jetbrains.kotlin.psi.psiUtil.visibilityModifierTypeOrDefault
 import org.jetbrains.kotlin.psi.synthetics.SyntheticClassOrObjectDescriptor
-import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
-import org.jetbrains.kotlin.resolve.descriptorUtil.parents
-import org.jetbrains.kotlin.resolve.descriptorUtil.propertyIfAccessor
 import java.util.concurrent.atomic.AtomicInteger
 
 val uniqueNumber = AtomicInteger(0)
@@ -108,6 +104,107 @@ fun TypescriptTranslator.registerVariable() {
         }
     }
 
+    //Member extension getter/setter
+//    handle<KtPropertyAccessor>(
+//        condition = { typedRule.isGetter && typedRule.property.isMember && typedRule.property.receiverTypeReference != null },
+//        priority = 10,
+//        action = {
+//            withReceiverScope(typedRule.property.fqName!!.asString()) { receiverName ->
+//                val resolved = typedRule.property.resolvedProperty!!
+//                -"function "
+//                -resolved.tsFunctionGetName
+//                -"("
+//                -receiverName
+//                -": "
+//                -typedRule.property.receiverTypeReference
+//                -"): "
+//                -(typedRule.property.typeReference
+//                    ?: typedRule.property.resolvedProperty!!.type.getJetTypeFqName(true))
+//                -" "
+//                typedRule.bodyExpression?.let {
+//                    -"{ return "
+//                    -it
+//                    -"; }"
+//                }
+//                -typedRule.bodyBlockExpression
+//                -"\n"
+//            }
+//        }
+//    )
+//    handle<KtPropertyAccessor>(
+//        condition = { typedRule.isSetter && typedRule.property.isMember && typedRule.property.receiverTypeReference != null },
+//        priority = 11,
+//        action = {
+//            withReceiverScope(typedRule.property.fqName!!.asString()) { receiverName ->
+//                val resolved = typedRule.property.resolvedProperty!!
+//                -"function "
+//                -resolved.tsFunctionSetName
+//                -"("
+//                -receiverName
+//                -": "
+//                -typedRule.property.receiverTypeReference
+//                -", "
+//                -(typedRule.parameter?.nameIdentifier ?: -"value")
+//                -": "
+//                -(typedRule.property.typeReference ?: typedRule.property.resolvedProperty!!.type.getJetTypeFqName(true))
+//                -") "
+//                -typedRule.bodyBlockExpression
+//                -"\n"
+//            }
+//        }
+//    )
+
+    //extension getter/setter
+    handle<KtPropertyAccessor>(
+        condition = { typedRule.isGetter && typedRule.property.receiverTypeReference != null },
+        priority = 8,
+        action = {
+            withReceiverScope(typedRule.property.fqName!!.asString()) { receiverName ->
+                val resolved = typedRule.property.resolvedProperty!!
+                -"function "
+                -resolved.tsFunctionGetName
+                -"("
+                -receiverName
+                -": "
+                -typedRule.property.receiverTypeReference
+                -"): "
+                -(typedRule.property.typeReference
+                    ?: typedRule.property.resolvedProperty!!.type.getJetTypeFqName(true))
+                -" "
+                typedRule.bodyExpression?.let {
+                    -"{ return "
+                    -it
+                    -"; }"
+                }
+                -typedRule.bodyBlockExpression
+                -"\n"
+            }
+        }
+    )
+    handle<KtPropertyAccessor>(
+        condition = { typedRule.isSetter && typedRule.property.receiverTypeReference != null },
+        priority = 9,
+        action = {
+            withReceiverScope(typedRule.property.fqName!!.asString()) { receiverName ->
+                val resolved = typedRule.property.resolvedProperty!!
+                -"function "
+                -resolved.tsFunctionSetName
+                -"("
+                -receiverName
+                -": "
+                -typedRule.property.receiverTypeReference
+                -", "
+                -(typedRule.parameter?.nameIdentifier ?: -"value")
+                -": "
+                -(typedRule.property.typeReference ?: typedRule.property.resolvedProperty!!.type.getJetTypeFqName(true))
+                -") "
+                -typedRule.bodyBlockExpression
+                -"\n"
+            }
+        }
+    )
+
+    //Member getter/setter
     handle<KtPropertyAccessor>(
         condition = { typedRule.isGetter && typedRule.property.isMember },
         priority = 4,
@@ -117,7 +214,7 @@ fun TypescriptTranslator.registerVariable() {
             -typedRule.property.nameIdentifier
             -"(): "
             -(typedRule.property.typeReference
-                ?: typedRule.property.resolvedVariable?.name) //TODO: Handle unimported type
+                ?: typedRule.property.resolvedProperty!!.type.getJetTypeFqName(true))
             -" "
             typedRule.bodyExpression?.let {
                 -"{ return "
@@ -139,12 +236,14 @@ fun TypescriptTranslator.registerVariable() {
             -(typedRule.parameter?.nameIdentifier ?: -"value")
             -": "
             -(typedRule.property.typeReference
-                ?: typedRule.property.resolvedVariable?.name) //TODO: Handle unimported type
+                ?: typedRule.property.resolvedProperty!!.type.getJetTypeFqName(true))
             -") "
             -typedRule.bodyBlockExpression
             -"\n"
         }
     )
+
+    //Global getter/setter
     handle<KtPropertyAccessor>(
         condition = { typedRule.isGetter },
         priority = 1,
@@ -153,7 +252,7 @@ fun TypescriptTranslator.registerVariable() {
             -typedRule.property.nameIdentifier!!.text.capitalize()
             -"(): "
             -(typedRule.property.typeReference
-                ?: typedRule.property.resolvedVariable?.name) //TODO: Handle unimported type
+                ?: typedRule.property.resolvedProperty!!.type.getJetTypeFqName(true))
             -" "
             typedRule.bodyExpression?.let {
                 -"{ return "
@@ -174,18 +273,20 @@ fun TypescriptTranslator.registerVariable() {
             -(typedRule.parameter?.nameIdentifier ?: -"value")
             -": "
             -(typedRule.property.typeReference
-                ?: typedRule.property.resolvedVariable?.name) //TODO: Handle unimported type
+                ?: typedRule.property.resolvedProperty!!.type.getJetTypeFqName(true))
             -") "
             -typedRule.bodyBlockExpression
             -"\n"
         }
     )
+
+    //'field' access
     handle<KtNameReferenceExpression>(
         condition = { typedRule.text == "field" && typedRule.parentOfType<KtPropertyAccessor>() != null },
         priority = 1000,
         action = {
             val prop = typedRule.parentOfType<KtPropertyAccessor>()!!
-            if(prop.property.isMember){
+            if (prop.property.isMember) {
                 -"this."
             }
             -"_"
@@ -195,52 +296,163 @@ fun TypescriptTranslator.registerVariable() {
 
     //handle virtual property access
     handle<KtNameReferenceExpression>(
-        condition = {
-            val resolved = typedRule.resolvedReferenceTarget as? PropertyDescriptor ?: return@handle false
-            val containing = resolved.containingDeclaration
-            if (containing is ClassDescriptor || containing is SyntheticClassOrObjectDescriptor) return@handle false
-            return@handle !resolved.accessors.all { it.isDefault }
-        },
+        condition = { (typedRule.resolvedReferenceTarget as? PropertyDescriptor)?.tsFunctionGetName != null },
         priority = 100,
         action = {
-            -"get"
-            -typedRule.text.capitalize()
-            -"()"
+            val prop = typedRule.resolvedReferenceTarget as PropertyDescriptor
+            -prop.tsFunctionGetName
+            when (prop.tsFunctionParameterCount) {
+                0 -> -"()"
+                1 -> {
+                    -'('
+                    -(typedRule.getTsReceiver())
+                    -')'
+                }
+            }
+        }
+    )
+    handle<KtDotQualifiedExpression>(
+        condition = { ((typedRule.selectorExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget as? PropertyDescriptor)?.tsFunctionGetName != null },
+        priority = 1000,
+        action = {
+            val nre = (typedRule.selectorExpression as KtNameReferenceExpression)
+            val prop = nre.resolvedReferenceTarget as PropertyDescriptor
+            -nre.getTsReceiver()
+            -"."
+            -prop.tsFunctionGetName
+            -'('
+            -typedRule.receiverExpression
+            -')'
         }
     )
     handle<KtBinaryExpression>(
         condition = {
             val left = typedRule.left as? KtNameReferenceExpression ?: return@handle false
-            val resolved = left.resolvedReferenceTarget as? PropertyDescriptor ?: return@handle false
-            val containing = resolved.containingDeclaration
-            if (containing is ClassDescriptor || containing is SyntheticClassOrObjectDescriptor) return@handle false
-            return@handle !resolved.accessors.all { it.isDefault }
+            (left.resolvedReferenceTarget as? PropertyDescriptor)?.tsFunctionSetName != null &&
+                    when (typedRule.operationToken) {
+                        KtTokens.EQ -> true
+                        KtTokens.PLUSEQ -> true
+                        KtTokens.MINUSEQ -> true
+                        KtTokens.MULTEQ -> true
+                        KtTokens.DIVEQ -> true
+                        KtTokens.PERCEQ -> true
+                        else -> false
+                    }
         },
         priority = 100,
         action = {
-            -"set"
-            -typedRule.left!!.text.capitalize()
-            -"("
+            val left = (typedRule.left as KtNameReferenceExpression)
+            val leftProp = left.resolvedReferenceTarget as PropertyDescriptor
+            -leftProp.tsFunctionSetName
+            when (leftProp.tsFunctionParameterCount) {
+                0 -> {
+                    -'('
+                }
+                1 -> {
+                    -'('
+                    -(left.getTsReceiver())
+                    -", "
+                }
+            }
+            if (typedRule.operationToken != KtTokens.EQ) {
+                -leftProp.tsFunctionGetName
+                -'('
+                -(left.getTsReceiver())
+                -')'
+                when (typedRule.operationToken) {
+                    KtTokens.PLUSEQ -> -" + "
+                    KtTokens.MINUSEQ -> -" - "
+                    KtTokens.MULTEQ -> -" * "
+                    KtTokens.DIVEQ -> -" / "
+                    KtTokens.PERCEQ -> -" % "
+                }
+            }
             -typedRule.right
-            -")"
+            -')'
         }
     )
-
-    //Prepend 'this'
-    handle<KtNameReferenceExpression>(
+    handle<KtBinaryExpression>(
         condition = {
-            if (typedRule.parent is KtDotQualifiedExpression) return@handle false
-            val resolvedTarget = typedRule.resolvedReferenceTarget ?: return@handle false
-            val containing = resolvedTarget.containingDeclaration ?: return@handle false
-            return@handle containing is ClassDescriptor || containing is SyntheticClassOrObjectDescriptor
+            val left = typedRule.left as? KtDotQualifiedExpression ?: return@handle false
+            ((left.selectorExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget as? PropertyDescriptor)?.tsFunctionGetName != null &&
+                    when (typedRule.operationToken) {
+                        KtTokens.EQ -> true
+                        KtTokens.PLUSEQ -> true
+                        KtTokens.MINUSEQ -> true
+                        KtTokens.MULTEQ -> true
+                        KtTokens.DIVEQ -> true
+                        KtTokens.PERCEQ -> true
+                        else -> false
+                    }
         },
-        priority = 99,
+        priority = 1000,
         action = {
-            -"this."
-            doSuper()
+            val left = (typedRule.left as KtDotQualifiedExpression)
+            val nre = (left.selectorExpression as KtNameReferenceExpression)
+            val prop = nre.resolvedReferenceTarget as PropertyDescriptor
+            -(nre.getTsReceiver())
+            -"."
+            -prop.tsFunctionSetName
+            -'('
+            -left.receiverExpression
+            -", "
+            if (typedRule.operationToken != KtTokens.EQ) {
+                -nre.getTsReceiver()
+                -"."
+                -prop.tsFunctionGetName
+                -'('
+                -left.receiverExpression
+                -')'
+                when (typedRule.operationToken) {
+                    KtTokens.PLUSEQ -> -" + "
+                    KtTokens.MINUSEQ -> -" - "
+                    KtTokens.MULTEQ -> -" * "
+                    KtTokens.DIVEQ -> -" / "
+                    KtTokens.PERCEQ -> -" % "
+                }
+            }
+            -typedRule.right
+            -')'
         }
     )
 }
+
+val PropertyDescriptor.tsFunctionParameterCount: Int
+    get() = if (extensionReceiverParameter != null) when (this.containingDeclaration) {
+        is ClassDescriptor -> 2
+        is SyntheticClassOrObjectDescriptor -> 2
+        else -> 1
+    } else when (this.containingDeclaration) {
+        is ClassDescriptor -> 1
+        is SyntheticClassOrObjectDescriptor -> 1
+        else -> 0
+    }
+val PropertyDescriptor.tsFunctionGetName: String?
+    get() = if (extensionReceiverParameter != null) "get" + extensionReceiverParameter!!
+        .value
+        .type
+        .getJetTypeFqName(false)
+        .replace(Regex("\\.([a-zA-Z])")) { it.groupValues[1] }
+        .capitalize() +
+            this.name.identifier.capitalize()
+    else when (this.containingDeclaration) {
+        is ClassDescriptor -> null
+        is SyntheticClassOrObjectDescriptor -> null
+        else -> if (this.accessors.all { it.isDefault }) null else "get" + this.name.identifier.capitalize()
+    }
+val PropertyDescriptor.tsFunctionSetName: String?
+    get() = if (extensionReceiverParameter != null) "set" + extensionReceiverParameter!!
+        .value
+        .type
+        .getJetTypeFqName(false)
+        .replace(Regex("\\.([a-zA-Z])")) { it.groupValues[1] }
+        .capitalize() +
+            this.name.identifier.capitalize()
+    else when (this.containingDeclaration) {
+        is ClassDescriptor -> null
+        is SyntheticClassOrObjectDescriptor -> null
+        else -> if (this.accessors.all { it.isDefault }) null else "set" + this.name.identifier.capitalize()
+    }
 
 inline fun <reified T : PsiElement> PsiElement.parentOfType(): T? = parentOfType(T::class.java)
 fun <T : PsiElement> PsiElement.parentOfType(type: Class<T>): T? =

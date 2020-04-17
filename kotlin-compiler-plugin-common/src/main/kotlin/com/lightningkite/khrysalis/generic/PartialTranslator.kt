@@ -36,7 +36,13 @@ abstract class PartialTranslator<OUT : Any, RESULT, IN : Any, IDENTIFIER> {
         val priority: Int = 0,
         val action: Context.() -> RESULT
     ) : Comparable<Handler> {
-        override fun compareTo(other: Handler): Int = -priority.compareTo(other.priority)
+        override fun compareTo(other: Handler): Int {
+            var result = other.priority.compareTo(this.priority)
+            if(result == 0){
+                result = this.action.toString().compareTo(other.action.toString())
+            }
+            return result
+        }
     }
 
     open inner class Context {
