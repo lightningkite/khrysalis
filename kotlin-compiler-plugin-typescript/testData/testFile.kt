@@ -95,6 +95,11 @@ object TestObject {
         }
 }
 
+class GenericTest<T> {
+}
+val <T> GenericTest<T>.ext: Int
+    get() = 1
+
 var TestObject.extensionProperty: Int
     get() = this.objectReal
     set(value){

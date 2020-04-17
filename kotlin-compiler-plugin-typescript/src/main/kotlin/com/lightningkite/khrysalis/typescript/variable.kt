@@ -17,7 +17,7 @@ fun TypescriptTranslator.registerVariable() {
 
     //Handle special case of completely virtual property
     handle<KtProperty>(
-        condition = { typedRule.getter != null && typedRule.setter != null && typedRule.initializer == null },
+        condition = { typedRule.getter != null && (!typedRule.isVar || typedRule.setter != null) && typedRule.initializer == null },
         priority = 100,
         action = {
             -typedRule.getter!!
@@ -163,6 +163,7 @@ fun TypescriptTranslator.registerVariable() {
                 val resolved = typedRule.property.resolvedProperty!!
                 -"function "
                 -resolved.tsFunctionGetName
+                -typedRule.property.typeParameterList
                 -"("
                 -receiverName
                 -": "
@@ -189,6 +190,7 @@ fun TypescriptTranslator.registerVariable() {
                 val resolved = typedRule.property.resolvedProperty!!
                 -"function "
                 -resolved.tsFunctionSetName
+                -typedRule.property.typeParameterList
                 -"("
                 -receiverName
                 -": "
@@ -302,7 +304,7 @@ fun TypescriptTranslator.registerVariable() {
             val prop = typedRule.resolvedReferenceTarget as PropertyDescriptor
             -prop.tsFunctionGetName
             when {
-                prop.extensionReceiverParameter != null -> -"()"
+                prop.extensionReceiverParameter == null -> -"()"
                 else -> {
                     -'('
                     -(typedRule.getTsReceiver())
@@ -345,7 +347,7 @@ fun TypescriptTranslator.registerVariable() {
             val leftProp = left.resolvedReferenceTarget as PropertyDescriptor
             -leftProp.tsFunctionSetName
             when {
-                leftProp.extensionReceiverParameter != null -> {
+                leftProp.extensionReceiverParameter == null -> {
                     -'('
                 }
                 else -> {
