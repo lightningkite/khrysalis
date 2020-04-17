@@ -40,10 +40,12 @@ class SmartTabWriter(val base: Appendable, val spaces: Int = 4): Appendable {
                 '{', '(', '[' -> {
                     currentEnd = index + 1
                     currentTabCount++
+                    justStartedLine = false
                 }
                 '}', ')', ']' -> {
                     currentEnd = index + 1
                     currentTabCount--
+                    justStartedLine = false
                 }
                 else -> {
                     if(c.isWhitespace() && justStartedLine) {
@@ -77,10 +79,12 @@ class SmartTabWriter(val base: Appendable, val spaces: Int = 4): Appendable {
                 '{', '(', '[' -> {
                     currentEnd = index + 1
                     currentTabCount++
+                    justStartedLine = false
                 }
                 '}', ')', ']' -> {
                     currentEnd = index + 1
                     currentTabCount--
+                    justStartedLine = false
                 }
                 else -> {
                     if(c.isWhitespace() && justStartedLine) {
@@ -104,10 +108,12 @@ class SmartTabWriter(val base: Appendable, val spaces: Int = 4): Appendable {
             '{', '(', '[' -> {
                 currentLine.append(c)
                 currentTabCount++
+                justStartedLine = false
             }
             '}', ')', ']' -> {
                 currentLine.append(c)
                 currentTabCount--
+                justStartedLine = false
             }
             else -> {
                 if(c.isWhitespace() && justStartedLine) {
