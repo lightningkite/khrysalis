@@ -301,9 +301,9 @@ fun TypescriptTranslator.registerVariable() {
         action = {
             val prop = typedRule.resolvedReferenceTarget as PropertyDescriptor
             -prop.tsFunctionGetName
-            when (prop.tsFunctionParameterCount) {
-                0 -> -"()"
-                1 -> {
+            when {
+                prop.extensionReceiverParameter != null -> -"()"
+                else -> {
                     -'('
                     -(typedRule.getTsReceiver())
                     -')'
@@ -344,11 +344,11 @@ fun TypescriptTranslator.registerVariable() {
             val left = (typedRule.left as KtNameReferenceExpression)
             val leftProp = left.resolvedReferenceTarget as PropertyDescriptor
             -leftProp.tsFunctionSetName
-            when (leftProp.tsFunctionParameterCount) {
-                0 -> {
+            when {
+                leftProp.extensionReceiverParameter != null -> {
                     -'('
                 }
-                1 -> {
+                else -> {
                     -'('
                     -(left.getTsReceiver())
                     -", "
@@ -417,16 +417,6 @@ fun TypescriptTranslator.registerVariable() {
     )
 }
 
-val PropertyDescriptor.tsFunctionParameterCount: Int
-    get() = if (extensionReceiverParameter != null) when (this.containingDeclaration) {
-        is ClassDescriptor -> 2
-        is SyntheticClassOrObjectDescriptor -> 2
-        else -> 1
-    } else when (this.containingDeclaration) {
-        is ClassDescriptor -> 1
-        is SyntheticClassOrObjectDescriptor -> 1
-        else -> 0
-    }
 val PropertyDescriptor.tsFunctionGetName: String?
     get() = if (extensionReceiverParameter != null) "get" + extensionReceiverParameter!!
         .value
