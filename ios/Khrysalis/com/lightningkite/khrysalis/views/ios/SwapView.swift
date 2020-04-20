@@ -183,5 +183,22 @@ open class SwapView: UIView {
             })
         }
     }
-}
+    
+    weak var lastHit: View?
+    var lastPoint: CGPoint?
+    override open func hitTest(_ point: CGPoint, with event: UIEvent?) -> UIView? {
+        lastPoint = point
+        for key in subviews.reversed() {
+            guard !key.isHidden, key.alpha > 0.1, key.includeInLayout else { continue }
+            if key.frame.contains(point) {
+                lastHit = key
+                if let sub = key.hitTest(key.convert(point, from: self), with: event) {
+                    return sub
+                } else {
+                    return key
+                }
+            }
+        }
+        return nil
+    }}
 
