@@ -75,6 +75,12 @@ public extension UIView {
             superview.scrollRectToVisibleClimb(origin: origin + self.frame.origin, size: size, animated: animated)
         }
     }
+    
+    func requestFocus(){
+        if(self.canBecomeFirstResponder){
+            self.becomeFirstResponder()
+        }
+    }
 }
 
 func +(lhs: CGPoint, rhs: CGPoint) -> CGPoint {
