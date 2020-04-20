@@ -2,6 +2,10 @@ package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.generic.PartialTranslatorByType
 import com.lightningkite.khrysalis.generic.line
+import org.jetbrains.kotlin.lexer.KtModifierKeywordToken
+import org.jetbrains.kotlin.psi.*
+import org.jetbrains.kotlin.psi.psiUtil.referenceExpression
+import org.jetbrains.kotlin.psi.psiUtil.visibilityModifierTypeOrDefault
 import java.lang.Appendable
 //
 //fun PartialTranslatorByType<Appendable, Unit, ParserRuleContext>.ContextByType<*>.emitWithoutTypeArguments(ctx: KotlinParser.UserTypeContext) {
@@ -36,7 +40,45 @@ import java.lang.Appendable
 //    } ?: this.parenthesizedType()?.type()?.isPrimitive()
 //    ?: false
 
+class Box<T>(thing: Int){}
+typealias AltBox<T> = com.lightningkite.khrysalis.typescript.Box<T>
+
 fun TypescriptTranslator.registerType(){
+
+    handle<KtTypeAlias> {
+        if(typedRule.visibilityModifierTypeOrDefault().value == "public") {
+            -"export "
+        }
+        -"type "
+        -typedRule.nameIdentifier
+        -typedRule.typeParameterList
+        -" = "
+        -typedRule.getTypeReference()
+        -";\n"
+
+        if(typedRule.visibilityModifierTypeOrDefault().value == "public") {
+            -"export "
+        }
+        -"let "
+        -typedRule.nameIdentifier
+        -" = "
+        fun handleTypeElement(e: KtTypeElement){
+            when(e){
+                is KtFunctionType -> {}
+                is KtNullableType -> {}
+                is KtSelfType -> {}
+                is KtUserType -> {
+                    e.qualifier?.let {
+                        handleTypeElement(it)
+                        -'.'
+                    }
+                    -e.referencedName
+                }
+            }
+        }
+        handleTypeElement(typedRule.getTypeReference()!!.typeElement!!)
+        -";\n"
+    }
 
 //    handle<KotlinParser.TypeAliasContext> {
 //        val rule = typedRule

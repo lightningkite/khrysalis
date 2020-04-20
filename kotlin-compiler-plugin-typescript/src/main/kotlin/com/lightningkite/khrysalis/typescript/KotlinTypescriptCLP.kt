@@ -2,6 +2,9 @@ package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.util.SmartTabWriter
 import org.jetbrains.kotlin.analyzer.AnalysisResult
+import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
+import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
+import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.com.intellij.mock.MockProject
 import org.jetbrains.kotlin.com.intellij.openapi.project.Project
 import org.jetbrains.kotlin.compiler.plugin.AbstractCliOption
@@ -11,10 +14,15 @@ import org.jetbrains.kotlin.compiler.plugin.ComponentRegistrar
 import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.config.CompilerConfigurationKey
 import org.jetbrains.kotlin.descriptors.ModuleDescriptor
+import org.jetbrains.kotlin.diagnostics.Diagnostic
+import org.jetbrains.kotlin.diagnostics.reportDiagnosticOnce
+import org.jetbrains.kotlin.org.jline.utils.Log
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.resolve.BindingTrace
 import org.jetbrains.kotlin.resolve.jvm.extensions.AnalysisHandlerExtension
 import java.io.File
+import java.io.PrintWriter
+import java.io.StringWriter
 
 class KotlinTypescriptCLP : CommandLineProcessor {
     companion object {
@@ -53,7 +61,8 @@ class KotlinTypescriptCR : ComponentRegistrar {
             project,
             KotlinTypescriptExtension(
                 configuration[KotlinTypescriptCLP.KEY_ACTUALS_DIRECTORY] ?: listOf(),
-                configuration[KotlinTypescriptCLP.KEY_OUTPUT_DIRECTORY]!!
+                configuration[KotlinTypescriptCLP.KEY_OUTPUT_DIRECTORY]!!,
+                configuration[CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY]
             )
         )
     }
@@ -61,7 +70,8 @@ class KotlinTypescriptCR : ComponentRegistrar {
 
 class KotlinTypescriptExtension(
     val actuals: List<File>,
-    val output: File
+    val output: File,
+    val collector: MessageCollector?
 ) : AnalysisHandlerExtension {
     override fun analysisCompleted(
         project: Project,
@@ -69,18 +79,30 @@ class KotlinTypescriptExtension(
         bindingTrace: BindingTrace,
         files: Collection<KtFile>
     ): AnalysisResult? {
-        println("Completed analysis.")
+        collector?.report(CompilerMessageSeverity.INFO, "Completed analysis.")
         val ctx = bindingTrace.bindingContext
-        val translator = TypescriptTranslator(ctx)
+        val translator = TypescriptTranslator(ctx, collector)
         val commonPath = files.asSequence().map { it.virtualFilePath }.takeUnless { it.none() }?.reduce { acc, s -> acc.commonPrefixWith(s) } ?: ""
         for (file in files) {
-            val outputFile = output.resolve(file.virtualFilePath.removePrefix(commonPath)).resolve(file.name.removeSuffix(".kt").plus(".ts"))
-            println("Translating $file to ... $outputFile")
-            outputFile.parentFile.mkdirs()
-            outputFile.bufferedWriter().use {
-                translator.translate(file, SmartTabWriter(it))
+            if(!file.virtualFilePath.endsWith(".shared.kt")) continue
+            try {
+                val outputFile = output.resolve(file.virtualFilePath.removePrefix(commonPath)).parentFile.resolve(
+                    file.name.removeSuffix(".kt").plus(".ts")
+                )
+                collector?.report(CompilerMessageSeverity.INFO, "Translating $file to $outputFile")
+                outputFile.parentFile.mkdirs()
+                outputFile.bufferedWriter().use {
+                    val tabWriter = SmartTabWriter(it)
+                    translator.translate(file, tabWriter)
+                    tabWriter.flush()
+                    it.flush()
+                }
+            } catch(t: Throwable){
+                collector?.report(CompilerMessageSeverity.ERROR, "Failed:")
+                collector?.report(CompilerMessageSeverity.ERROR, StringWriter().also { t.printStackTrace(PrintWriter(it)) }.buffer.toString())
             }
         }
+        collector?.report(CompilerMessageSeverity.INFO, "Completed translation.")
         return AnalysisResult.Companion.success(ctx, module, false)
     }
 }

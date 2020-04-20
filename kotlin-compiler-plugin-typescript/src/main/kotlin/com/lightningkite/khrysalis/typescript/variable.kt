@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.typescript
 
+import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.descriptors.PropertyDescriptor
@@ -9,6 +10,7 @@ import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.toVisibility
 import org.jetbrains.kotlin.psi.psiUtil.visibilityModifierTypeOrDefault
 import org.jetbrains.kotlin.psi.synthetics.SyntheticClassOrObjectDescriptor
+import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 import java.util.concurrent.atomic.AtomicInteger
 
 val uniqueNumber = AtomicInteger(0)
@@ -103,56 +105,6 @@ fun TypescriptTranslator.registerVariable() {
             }
         }
     }
-
-    //Member extension getter/setter
-//    handle<KtPropertyAccessor>(
-//        condition = { typedRule.isGetter && typedRule.property.isMember && typedRule.property.receiverTypeReference != null },
-//        priority = 10,
-//        action = {
-//            withReceiverScope(typedRule.property.fqName!!.asString()) { receiverName ->
-//                val resolved = typedRule.property.resolvedProperty!!
-//                -"function "
-//                -resolved.tsFunctionGetName
-//                -"("
-//                -receiverName
-//                -": "
-//                -typedRule.property.receiverTypeReference
-//                -"): "
-//                -(typedRule.property.typeReference
-//                    ?: typedRule.property.resolvedProperty!!.type.getJetTypeFqName(true))
-//                -" "
-//                typedRule.bodyExpression?.let {
-//                    -"{ return "
-//                    -it
-//                    -"; }"
-//                }
-//                -typedRule.bodyBlockExpression
-//                -"\n"
-//            }
-//        }
-//    )
-//    handle<KtPropertyAccessor>(
-//        condition = { typedRule.isSetter && typedRule.property.isMember && typedRule.property.receiverTypeReference != null },
-//        priority = 11,
-//        action = {
-//            withReceiverScope(typedRule.property.fqName!!.asString()) { receiverName ->
-//                val resolved = typedRule.property.resolvedProperty!!
-//                -"function "
-//                -resolved.tsFunctionSetName
-//                -"("
-//                -receiverName
-//                -": "
-//                -typedRule.property.receiverTypeReference
-//                -", "
-//                -(typedRule.parameter?.nameIdentifier ?: -"value")
-//                -": "
-//                -(typedRule.property.typeReference ?: typedRule.property.resolvedProperty!!.type.getJetTypeFqName(true))
-//                -") "
-//                -typedRule.bodyBlockExpression
-//                -"\n"
-//            }
-//        }
-//    )
 
     //extension getter/setter
     handle<KtPropertyAccessor>(
@@ -417,6 +369,101 @@ fun TypescriptTranslator.registerVariable() {
             -')'
         }
     )
+
+    //Getter actual overrides
+    handle<KtNameReferenceExpression>(
+        condition = {
+            val pd = typedRule.resolvedReferenceTarget as? PropertyDescriptor ?: return@handle false
+            replacements.getGet(pd) != null
+        },
+        priority = 10_000,
+        action = {
+            val pd = typedRule.resolvedReferenceTarget as PropertyDescriptor
+            val rule = replacements.getGet(pd)!!
+            rule.template.forEach { part ->
+                when(part){
+                    is TemplatePart.Text -> -part.string
+                    TemplatePart.DispatchReceiver -> -typedRule.getTsReceiver()
+                    TemplatePart.Value -> { }
+                    TemplatePart.ExtensionReceiver -> {}
+                    is TemplatePart.ParameterReceiver -> { }
+                    is TemplatePart.TypeParameterReceiver -> { }
+                }
+            }
+        }
+    )
+    handle<KtDotQualifiedExpression>(
+        condition = {
+            val nre = (typedRule.selectorExpression as? KtNameReferenceExpression) ?: return@handle false
+            val pd = nre.resolvedReferenceTarget as? PropertyDescriptor ?: return@handle false
+            replacements.getGet(pd) != null
+        },
+        priority = 10_000,
+        action = {
+            val nre = (typedRule.selectorExpression as KtNameReferenceExpression)
+            val pd = nre.resolvedReferenceTarget as PropertyDescriptor
+            val rule = replacements.getGet(pd)!!
+            rule.template.forEach { part ->
+                when(part){
+                    is TemplatePart.Text -> -part.string
+                    TemplatePart.DispatchReceiver -> -nre.getTsReceiver()
+                    TemplatePart.ExtensionReceiver -> -typedRule.receiverExpression
+                    TemplatePart.Value -> { }
+                    is TemplatePart.ParameterReceiver -> { }
+                    is TemplatePart.TypeParameterReceiver -> { }
+                }
+            }
+        }
+    )
+
+    //Setter actual overrides
+    handle<KtBinaryExpression>(
+        condition = {
+            val left = typedRule.left as? KtDotQualifiedExpression ?: return@handle false
+            val pd = ((left.selectorExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget as? PropertyDescriptor) ?: return@handle false
+            replacements.getSet(pd) != null
+        },
+        priority = 10_001,
+        action = {
+            val left = typedRule.left as KtDotQualifiedExpression
+            val nre = (left.selectorExpression as KtNameReferenceExpression)
+            val pd = (nre.resolvedReferenceTarget as PropertyDescriptor)
+            val rule = replacements.getSet(pd)!!
+            rule.template.forEach { part ->
+                when(part){
+                    is TemplatePart.Text -> -part.string
+                    TemplatePart.DispatchReceiver -> -nre.getTsReceiver()
+                    TemplatePart.ExtensionReceiver -> -left.receiverExpression
+                    TemplatePart.Value -> -typedRule.right
+                    is TemplatePart.ParameterReceiver -> { }
+                    is TemplatePart.TypeParameterReceiver -> { }
+                }
+            }
+        }
+    )
+    handle<KtBinaryExpression>(
+        condition = {
+            val left = typedRule.left as? KtNameReferenceExpression ?: return@handle false
+            val pd = (left?.resolvedReferenceTarget as? PropertyDescriptor) ?: return@handle false
+            replacements.getSet(pd) != null
+        },
+        priority = 10_000,
+        action = {
+            val nre = typedRule.left as KtNameReferenceExpression
+            val pd = (nre.resolvedReferenceTarget as PropertyDescriptor)
+            val rule = replacements.getSet(pd)!!
+            rule.template.forEach { part ->
+                when(part){
+                    is TemplatePart.Text -> -part.string
+                    TemplatePart.DispatchReceiver -> -nre.getTsReceiver()
+                    TemplatePart.ExtensionReceiver -> { }
+                    TemplatePart.Value -> -typedRule.right
+                    is TemplatePart.ParameterReceiver -> { }
+                    is TemplatePart.TypeParameterReceiver -> { }
+                }
+            }
+        }
+    )
 }
 
 val PropertyDescriptor.tsFunctionGetName: String?
@@ -424,8 +471,8 @@ val PropertyDescriptor.tsFunctionGetName: String?
         .value
         .type
         .getJetTypeFqName(false)
-        .replace(Regex("\\.([a-zA-Z])")) { it.groupValues[1] }
-        .capitalize() +
+        .split('.')
+        .joinToString("") { it.capitalize() } +
             this.name.identifier.capitalize()
     else when (this.containingDeclaration) {
         is ClassDescriptor -> null
@@ -437,8 +484,8 @@ val PropertyDescriptor.tsFunctionSetName: String?
         .value
         .type
         .getJetTypeFqName(false)
-        .replace(Regex("\\.([a-zA-Z])")) { it.groupValues[1] }
-        .capitalize() +
+        .split('.')
+        .joinToString("") { it.capitalize() } +
             this.name.identifier.capitalize()
     else when (this.containingDeclaration) {
         is ClassDescriptor -> null

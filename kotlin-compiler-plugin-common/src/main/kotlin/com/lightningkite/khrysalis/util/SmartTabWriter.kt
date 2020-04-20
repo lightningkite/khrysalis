@@ -16,52 +16,13 @@ class SmartTabWriter(val base: Appendable, val spaces: Int = 4): Appendable {
 
     val tabString = " ".repeat(spaces)
     private fun startLine() {
-        base.append(tabString.repeat(currentLineTabCount.coerceAtLeast(0)))
-        base.append(currentLine)
+        flush()
         base.appendln()
-        currentLine.clear()
         currentLineTabCount = currentTabCount
         justStartedLine = true
     }
 
-    override fun append(contents: CharSequence): Appendable {
-        var currentStart: Int = 0
-        var currentEnd: Int = 0
-        contents.forEachIndexed { index, c ->
-            when(c) {
-                '\n' -> {
-                    if(currentStart != currentEnd) {
-                        currentLine.append(contents, currentStart, currentEnd)
-                    }
-                    currentStart = index + 1
-                    currentEnd = currentStart
-                    startLine()
-                }
-                '{', '(', '[' -> {
-                    currentEnd = index + 1
-                    currentTabCount++
-                    justStartedLine = false
-                }
-                '}', ')', ']' -> {
-                    currentEnd = index + 1
-                    currentTabCount--
-                    justStartedLine = false
-                }
-                else -> {
-                    if(c.isWhitespace() && justStartedLine) {
-                        currentStart = index + 1
-                    } else {
-                        justStartedLine = false
-                    }
-                    currentEnd = index + 1
-                }
-            }
-        }
-        if(currentStart != currentEnd) {
-            currentLine.append(contents, currentStart, currentEnd)
-        }
-        return this
-    }
+    override fun append(contents: CharSequence): Appendable = append(contents, 0, contents.length)
 
     override fun append(contents: CharSequence, startIndex: Int, endIndexExclusive: Int): Appendable {
         var currentStart: Int = startIndex
@@ -125,6 +86,12 @@ class SmartTabWriter(val base: Appendable, val spaces: Int = 4): Appendable {
             }
         }
         return this
+    }
+
+    fun flush() {
+        base.append(tabString.repeat(currentLineTabCount.coerceAtLeast(0)))
+        base.append(currentLine)
+        currentLine.clear()
     }
 
 }

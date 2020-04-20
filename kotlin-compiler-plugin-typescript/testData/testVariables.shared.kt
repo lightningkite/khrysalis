@@ -1,4 +1,7 @@
-package com.test
+package com.test.variables
+
+import com.test.magicVariable
+import kotlin.math.absoluteValue
 
 var topLevelReal: Int = 0
 var topLevelVirtual: Int
@@ -105,3 +108,10 @@ var TestObject.extensionProperty: Int
     set(value){
         this@extensionProperty.objectReal = value
     }
+
+fun test(){
+    val instance = TestClass()
+    println(instance.memberReal)
+    println(magicVariable)
+    magicVariable = 9001.absoluteValue
+}

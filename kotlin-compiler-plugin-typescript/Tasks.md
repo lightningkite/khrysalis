@@ -1,0 +1,172 @@
+# Typescript Translation Tasks
+
+- [X] Receiver Handling
+- [ ] Properties
+    - [X] Top Level
+    - [X] Local
+    - [X] Member
+    - [X] Extension
+    - [X] Extension-Member
+    - [ ] Delegates
+- [ ] Controls
+    - [X] If
+        - [X] As Statement
+        - [X] As Expression
+    - [X] When
+        - [X] Subject As Statement
+        - [X] Subject As Expression
+        - [ ] Subject with Cast or Range As Statement
+        - [ ] Subject with Cast or Range As Expression
+        - [X] No Subject As Statement
+        - [X] No Subject As Expression
+    - [ ] While
+    - [ ] For Each
+        - [ ] Destructuring Declarations (`for((a, b) in x){}`)
+- [X] Functions -- 2 days
+    - [X] Top Level
+    - [X] Local
+    - [X] Member
+    - [X] Extension
+    - [X] Extension-Member
+    - [X] Parameter Names
+    - [X] Final Lambda Argument
+    - [X] Ordered Arguments
+    - [X] Vararg Arguments
+    - [X] Overloading
+        - Using `@JsName("")`
+- [ ] Operators -- 1 day
+    - [ ] Operator Overloading
+    - [ ] `in` and `is`
+- [ ] Classes -- 3 days
+    - [ ] Inheritance
+    - [ ] Interface Implementation
+    - [ ] Primary constructor
+        - [ ] Create variables
+        - [ ] Populate variables
+        - [ ] Init blocks
+    - [ ] Secondary constructors
+    - [ ] Equatable / Hashable
+    - [ ] Codable
+        - [ ] Serialization
+        - [ ] Deserialization
+    - [ ] Member public/private
+    - [ ] Object Access `.INSTANCE`
+        - [ ] Companion Objects
+- [ ] Generics -- 1/2 day
+    - [ ] Type Parameters
+    - [ ] Type Arguments
+- [ ] Top Level -- 1 day
+    - [ ] `export`
+    - [ ] Imports
+- [ ] Values -- 1/2 day
+    - [ ] Literals
+    - [ ] Lambdas
+        - [ ] With Receiver
+    - [ ] String Interpolation
+- [ ] Per-declaration conversions -- 3 days
+    - [ ] Description Language
+    - [ ] Get
+    - [ ] Set
+    - [ ] Call
+    - [ ] Type
+    - [ ] TypeRef
+
+# Typescript Usage Tasks
+- [ ] Standard Library Conversions -- 2 days
+    - [ ] Numbers
+    - [ ] Strings
+    - [ ] Collection
+    - [ ] List
+    - [ ] Set
+    - [ ] Map
+    - [ ] Common Functions
+        - [ ] Let
+        - [ ] Also
+        - [ ] Run
+        - [ ] Apply
+        - [ ] With
+    - [ ] Math
+    - [ ] Time -- 1 day
+- [ ] Khrysalis Library Conversions -- 1/2 day
+    - [ ] Rx -- 1/2 day
+    - [ ] Views -- 2 day
+        - [ ] AutoCompleteTextView
+        - [ ] Button
+        - [ ] CompoundButton
+        - [ ] DateButton
+        - [ ] EditText
+        - [ ] ImageView
+        - [ ] LinearLayout
+        - [ ] PageIndicatorView
+        - [ ] RatingBar
+        - [ ] RecyclerView
+        - [ ] SeekBar
+        - [ ] Spinner
+        - [ ] SwapView
+        - [ ] TabLayout
+        - [ ] TextView
+        - [ ] View
+        - [ ] ViewFlipper
+        - [ ] ViewPager
+    - [ ] Rx Binding -- 1 day
+        - [ ] AutoCompleteTextView
+        - [ ] Button
+        - [ ] CompoundButton
+        - [ ] DateButton
+        - [ ] EditText
+        - [ ] ImageView
+        - [ ] LinearLayout
+        - [ ] PageIndicatorView
+        - [ ] RatingBar
+        - [ ] RecyclerView
+        - [ ] SeekBar
+        - [ ] Spinner
+        - [ ] SwapView
+        - [ ] TabLayout
+        - [ ] TextView
+        - [ ] View
+        - [ ] ViewFlipper
+        - [ ] ViewPager
+    - [ ] Bytes -- 1/2 day
+    - [ ] Geolocation -- 1/2 day
+    - [ ] Network Calls -- 2 day
+    - [ ] Canvas -- 2 days
+    - [ ] Images -- 1/2 day
+    - [ ] Preferences -- 1/2 day
+    - [ ] Smaller Bits -- 1/2 day
+        - [ ] Random
+        - [ ] UUID
+        - [ ] Dialogs (deprecate?)
+        - [ ] Delay
+        
+        
+## Rough time estimate
+24.5 days, or one month
+
+## Notepad
+
+### Custom Conversions
+
+- type
+    - Fully-qualified name
+    - Access Type Parameters by Name `${T}`
+- typeObject
+    - Fully-qualified name
+    - Access Type Parameters by Name `${T}`
+- get
+    - Fully-qualified name
+    - Optional: Filter by Receiver `where receiver = asdf.asdf.asdf.Asdf`
+    - Access Type Parameters by Name `${T}`
+    - Access receiver `${this}`
+- set
+    - Fully-qualified name
+    - Optional: Filter by Receiver `where receiver = asdf.asdf.asdf.Asdf`
+    - Access Type Parameters by Name `${T}`
+    - Access receiver `${this}`
+- call
+    - Fully-qualified name
+    - Optional: Filter by Receiver `where receiver = asdf.asdf.asdf.Asdf`
+    - Optional: Filter by Value Argument List `where argumentName` or `where argumentName = asdf.asdf.asdf.Asdf`
+    - Access Type Parameters by Name `${T}`
+    - Access receiver `${this}`
+    - Access Value Parameters by Name `${param}`

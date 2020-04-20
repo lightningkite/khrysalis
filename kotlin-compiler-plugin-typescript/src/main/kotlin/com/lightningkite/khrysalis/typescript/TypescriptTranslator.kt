@@ -2,25 +2,65 @@ package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.generic.PartialTranslatorByType
 import com.lightningkite.khrysalis.generic.TranslatorInterface
+import com.lightningkite.khrysalis.typescript.replacements.GetReplacement
+import com.lightningkite.khrysalis.typescript.replacements.Replacements
+import com.lightningkite.khrysalis.typescript.replacements.SetReplacement
+import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.AnalysisExtensions
+import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
+import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.com.intellij.lang.PsiParser
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
+import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafElement
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
+import org.jetbrains.kotlin.org.jline.utils.Log
 import org.jetbrains.kotlin.psi.KtElement
 import org.jetbrains.kotlin.psi.KtExpression
+import org.jetbrains.kotlin.psi.psiUtil.allChildren
 import org.jetbrains.kotlin.psi.psiUtil.getElementTextWithContext
 import org.jetbrains.kotlin.psi.psiUtil.getTextWithLocation
 import org.jetbrains.kotlin.resolve.BindingContext
 import org.jetbrains.kotlin.resolve.calls.callUtil.isFakePsiElement
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 import org.jetbrains.kotlin.resolve.scopes.receivers.ExtensionReceiver
+import java.io.File
 import java.util.*
+import java.util.concurrent.atomic.AtomicInteger
 import kotlin.collections.ArrayList
 import kotlin.text.Appendable
 
-class TypescriptTranslator(override val bindingContext: BindingContext) :
-    PartialTranslatorByType<Appendable, Unit, Any>(), TranslatorInterface<Appendable, Unit>, AnalysisExtensions {
+class TypescriptTranslator(
+    override val bindingContext: BindingContext,
+    val collector: MessageCollector? = null,
+    val replacements: Replacements = Replacements()
+) : PartialTranslatorByType<Appendable, Unit, Any>(), TranslatorInterface<Appendable, Unit>, AnalysisExtensions {
+
+    init {
+        replacements += GetReplacement(
+            fqName = "kotlin.math.absoluteValue",
+            receiverFilter = "kotlin.Int",
+            template = listOf(
+                TemplatePart.Text("Math.abs("),
+                TemplatePart.ExtensionReceiver,
+                TemplatePart.Text(")")
+            )
+        )
+        replacements += GetReplacement(
+            fqName = "com.test.magicVariable",
+            template = listOf(
+                TemplatePart.Text("42 /*magicVariable get!*/")
+            )
+        )
+        replacements += SetReplacement(
+            fqName = "com.test.magicVariable",
+            template = listOf(
+                TemplatePart.Text("console.log(`Setting magicVariable to \${"),
+                TemplatePart.Value,
+                TemplatePart.Text("}`)")
+            )
+        )
+    }
 
     data class ReceiverAssignment(val fqName: String, val tsName: String)
 
@@ -39,10 +79,8 @@ class TypescriptTranslator(override val bindingContext: BindingContext) :
         }
 
         val newItem = ReceiverAssignment(fqName, tsName)
-        println("Start scope with $newItem")
         _receiverStack.add(newItem)
         action(tsName)
-        println("End scope with $newItem")
         _receiverStack.remove(newItem)
     }
     fun KtExpression.getTsReceiver(): String? {
@@ -65,24 +103,22 @@ class TypescriptTranslator(override val bindingContext: BindingContext) :
             is Sequence<*> -> rule.forEach { if(it != null) translate(it, out) }
             is Char -> out.append(rule)
             is String -> out.append(rule)
-            is PsiElement -> {
-                if (rule.firstChild == null) {
-                    out.append(rule.text)
-                    return
-                } else {
-                    var current = rule.firstChild!!
-                    while (true) {
-                        translate(current, out)
-                        current = current.nextSibling ?: break
-                    }
-                }
+            is PsiWhiteSpace -> {
+                out.append(rule.text)
+                return
             }
+            is LeafPsiElement -> {
+                out.append(rule.text)
+                return
+            }
+            is PsiElement -> rule.allChildren.forEach { translate(it, out) }
         }
     }
 
     val terminalMap = mapOf(
         "fun" to "function",
-        "object" to "class"
+        "object" to "class",
+        "vararg" to "..."
     )
 
     init {

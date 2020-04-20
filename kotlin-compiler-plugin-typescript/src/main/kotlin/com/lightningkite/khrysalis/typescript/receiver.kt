@@ -2,6 +2,7 @@ package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.generic.line
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
+import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 import org.jetbrains.kotlin.psi.KtNameReferenceExpression
 import org.jetbrains.kotlin.psi.KtThisExpression
@@ -16,6 +17,7 @@ fun TypescriptTranslator.registerReceiver() {
     handle<KtNameReferenceExpression>(
         condition = {
             if (typedRule.parent is KtDotQualifiedExpression) return@handle false
+            if((typedRule.parent as? KtCallExpression)?.parent is KtDotQualifiedExpression) return@handle false
             val resolved = typedRule.resolvedCall
             return@handle resolved?.dispatchReceiver != null
         },
