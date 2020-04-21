@@ -9,7 +9,10 @@ import org.jetbrains.kotlin.lexer.KtModifierKeywordToken
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.referenceExpression
 import org.jetbrains.kotlin.psi.psiUtil.visibilityModifierTypeOrDefault
+import org.jetbrains.kotlin.types.FlexibleType
 import org.jetbrains.kotlin.types.KotlinType
+import org.jetbrains.kotlin.types.SimpleType
+import org.jetbrains.kotlin.types.WrappedType
 import java.lang.Appendable
 //
 //fun PartialTranslatorByType<Appendable, Unit, ParserRuleContext>.ContextByType<*>.emitWithoutTypeArguments(ctx: KotlinParser.UserTypeContext) {
@@ -85,6 +88,11 @@ fun TypescriptTranslator.registerType(){
     }
 
     handle<KotlinType> {
+        when(typedRule){
+            is WrappedType -> {}
+            is SimpleType -> {}
+            is FlexibleType -> {}
+        }
         -typedRule
             .getJetTypeFqName(true)
             .split('.')

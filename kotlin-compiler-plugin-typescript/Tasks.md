@@ -59,16 +59,16 @@
     - [ ] `export`
     - [ ] Imports
 - [ ] Values -- 1/2 day
-    - [ ] Literals
-    - [ ] Lambdas
-        - [ ] With Receiver
-    - [ ] String Interpolation
+    - [X] Literals
+    - [X] Lambdas
+        - [X] With Receiver
+    - [X] String Interpolation
 - [ ] Per-declaration conversions -- 3 days
-    - [ ] Description Language
-    - [ ] Get
-    - [ ] Set
-    - [ ] Call
-    - [ ] Type
+    - [X] Description Language
+    - [X] Get
+    - [X] Set
+    - [X] Call
+    - [X] Type
     - [ ] TypeRef
 
 # Typescript Usage Tasks

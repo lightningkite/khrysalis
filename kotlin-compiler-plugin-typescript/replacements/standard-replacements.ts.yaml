@@ -4,6 +4,10 @@
   receiver: kotlin.Int
   template: Math.abs(~this~)
 
+- id: kotlin.Int
+  type: type
+  template: number
+
 - id: com.test.magicVariable
   type: get
   template: 42 /*magicVariable get!*/
