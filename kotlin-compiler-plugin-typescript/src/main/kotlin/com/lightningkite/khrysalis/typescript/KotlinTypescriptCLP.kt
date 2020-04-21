@@ -14,9 +14,6 @@ import org.jetbrains.kotlin.compiler.plugin.ComponentRegistrar
 import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.config.CompilerConfigurationKey
 import org.jetbrains.kotlin.descriptors.ModuleDescriptor
-import org.jetbrains.kotlin.diagnostics.Diagnostic
-import org.jetbrains.kotlin.diagnostics.reportDiagnosticOnce
-import org.jetbrains.kotlin.org.jline.utils.Log
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.resolve.BindingTrace
 import org.jetbrains.kotlin.resolve.jvm.extensions.AnalysisHandlerExtension
@@ -27,7 +24,7 @@ import java.io.StringWriter
 class KotlinTypescriptCLP : CommandLineProcessor {
     companion object {
         const val KEY_ACTUALS_DIRECTORY_NAME = "actualsDirectories"
-        val KEY_ACTUALS_DIRECTORY = CompilerConfigurationKey.create<List<File>>(KEY_ACTUALS_DIRECTORY_NAME)
+        val KEY_ACTUALS_DIRECTORIES = CompilerConfigurationKey.create<List<File>>(KEY_ACTUALS_DIRECTORY_NAME)
         const val KEY_OUTPUT_DIRECTORY_NAME = "outputDirectory"
         val KEY_OUTPUT_DIRECTORY = CompilerConfigurationKey.create<File>(KEY_OUTPUT_DIRECTORY_NAME)
         const val PLUGIN_ID = "com.lightningkite.khrysalis.typescript"
@@ -47,7 +44,7 @@ class KotlinTypescriptCLP : CommandLineProcessor {
     override fun processOption(option: AbstractCliOption, value: String, configuration: CompilerConfiguration) =
         when (option.optionName) {
             KEY_ACTUALS_DIRECTORY_NAME -> configuration.put(
-                KEY_ACTUALS_DIRECTORY,
+                KEY_ACTUALS_DIRECTORIES,
                 value.split(File.pathSeparatorChar).map { File(it) })
             KEY_OUTPUT_DIRECTORY_NAME -> configuration.put(KEY_OUTPUT_DIRECTORY, value.let { File(it) })
             else -> {
@@ -60,7 +57,7 @@ class KotlinTypescriptCR : ComponentRegistrar {
         AnalysisHandlerExtension.registerExtension(
             project,
             KotlinTypescriptExtension(
-                configuration[KotlinTypescriptCLP.KEY_ACTUALS_DIRECTORY] ?: listOf(),
+                configuration[KotlinTypescriptCLP.KEY_ACTUALS_DIRECTORIES] ?: listOf(),
                 configuration[KotlinTypescriptCLP.KEY_OUTPUT_DIRECTORY]!!,
                 configuration[CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY]
             )
@@ -82,13 +79,35 @@ class KotlinTypescriptExtension(
         collector?.report(CompilerMessageSeverity.INFO, "Completed analysis.")
         val ctx = bindingTrace.bindingContext
         val translator = TypescriptTranslator(ctx, collector)
-        val commonPath = files.asSequence().map { it.virtualFilePath }.takeUnless { it.none() }?.reduce { acc, s -> acc.commonPrefixWith(s) } ?: ""
+        try {
+            actuals.asSequence()
+                .flatMap { it.walkTopDown() }
+                .filter {
+                    it.name.endsWith(".ts.yaml") || it.name.endsWith(".ts.yml")
+                }
+                .forEach { actualFile ->
+                    collector?.report(CompilerMessageSeverity.INFO, "Reading equivalents from $actualFile...")
+                    translator.replacements += actualFile
+                }
+        } catch (t: Throwable) {
+            collector?.report(CompilerMessageSeverity.ERROR, "Failed to parse equivalents:")
+            collector?.report(
+                CompilerMessageSeverity.ERROR,
+                StringWriter().also { t.printStackTrace(PrintWriter(it)) }.buffer.toString()
+            )
+            return AnalysisResult.compilationError(ctx)
+        }
+        val commonPath = files.asSequence()
+            .map { it.virtualFilePath }
+            .takeUnless { it.none() }
+            ?.reduce { acc, s -> acc.commonPrefixWith(s) } ?: ""
         for (file in files) {
-            if(!file.virtualFilePath.endsWith(".shared.kt")) continue
+            if (!file.virtualFilePath.endsWith(".shared.kt")) continue
             try {
-                val outputFile = output.resolve(file.virtualFilePath.removePrefix(commonPath)).parentFile.resolve(
-                    file.name.removeSuffix(".kt").plus(".ts")
-                )
+                val outputFile = output
+                    .resolve(file.virtualFilePath.removePrefix(commonPath))
+                    .parentFile
+                    .resolve(file.name.removeSuffix(".kt").plus(".ts"))
                 collector?.report(CompilerMessageSeverity.INFO, "Translating $file to $outputFile")
                 outputFile.parentFile.mkdirs()
                 outputFile.bufferedWriter().use {
@@ -97,43 +116,15 @@ class KotlinTypescriptExtension(
                     tabWriter.flush()
                     it.flush()
                 }
-            } catch(t: Throwable){
+            } catch (t: Throwable) {
                 collector?.report(CompilerMessageSeverity.ERROR, "Failed:")
-                collector?.report(CompilerMessageSeverity.ERROR, StringWriter().also { t.printStackTrace(PrintWriter(it)) }.buffer.toString())
+                collector?.report(
+                    CompilerMessageSeverity.ERROR,
+                    StringWriter().also { t.printStackTrace(PrintWriter(it)) }.buffer.toString()
+                )
             }
         }
         collector?.report(CompilerMessageSeverity.INFO, "Completed translation.")
         return AnalysisResult.Companion.success(ctx, module, false)
     }
 }
-
-/* IDEA TIME!
-
-ACTUALS SUPPORT
-
-import fully.qualified.name.Receiver
-import fully.qualified.name.Something
-
-type Something<TypeArg, TypeArg2> = TypescriptThing<${TypeArg}>
-call Receiver<TypeArg>.functionName(arg: Arg, arg2: Arg...) = someTsFunction(${this}, ${arg}, ${arg})
-get Receiver<TypeArg>.propertyName = ${this}.otherNameInTs
-set Receiver<TypeArg>.propertyName = ${this}.otherNameInTs = ${value}
-call functionName(arg: Arg, arg2: Arg...) = someTsFunction(${this}, ${arg}, ${arg})
-get propertyName = ${this}.otherNameInTs
-set propertyName = ${this}.otherNameInTs = ${value}
-
-call ... = something
-    that
-    spans
-    multiple
-    lines
-
-add .Companion for static
-#import("asdfasdf.asdfasd.asdf") allows for macro stuff
-${temp} to create a temporary identifier
-
-Comment and whitespace preservation: Try to translate at the lowest level possible to preserve
-
-call kotlin.let -> asdfasdfasdfafd
-call kotlin.let where ARG1 = x ->
- */

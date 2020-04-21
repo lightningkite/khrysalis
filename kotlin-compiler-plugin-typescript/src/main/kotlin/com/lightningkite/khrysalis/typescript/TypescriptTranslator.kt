@@ -7,26 +7,15 @@ import com.lightningkite.khrysalis.typescript.replacements.Replacements
 import com.lightningkite.khrysalis.typescript.replacements.SetReplacement
 import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.AnalysisExtensions
-import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
-import org.jetbrains.kotlin.com.intellij.lang.PsiParser
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
-import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafElement
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
-import org.jetbrains.kotlin.org.jline.utils.Log
-import org.jetbrains.kotlin.psi.KtElement
 import org.jetbrains.kotlin.psi.KtExpression
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
-import org.jetbrains.kotlin.psi.psiUtil.getElementTextWithContext
-import org.jetbrains.kotlin.psi.psiUtil.getTextWithLocation
 import org.jetbrains.kotlin.resolve.BindingContext
-import org.jetbrains.kotlin.resolve.calls.callUtil.isFakePsiElement
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 import org.jetbrains.kotlin.resolve.scopes.receivers.ExtensionReceiver
-import java.io.File
-import java.util.*
-import java.util.concurrent.atomic.AtomicInteger
 import kotlin.collections.ArrayList
 import kotlin.text.Appendable
 
@@ -35,32 +24,6 @@ class TypescriptTranslator(
     val collector: MessageCollector? = null,
     val replacements: Replacements = Replacements()
 ) : PartialTranslatorByType<Appendable, Unit, Any>(), TranslatorInterface<Appendable, Unit>, AnalysisExtensions {
-
-    init {
-        replacements += GetReplacement(
-            fqName = "kotlin.math.absoluteValue",
-            receiverFilter = "kotlin.Int",
-            template = listOf(
-                TemplatePart.Text("Math.abs("),
-                TemplatePart.ExtensionReceiver,
-                TemplatePart.Text(")")
-            )
-        )
-        replacements += GetReplacement(
-            fqName = "com.test.magicVariable",
-            template = listOf(
-                TemplatePart.Text("42 /*magicVariable get!*/")
-            )
-        )
-        replacements += SetReplacement(
-            fqName = "com.test.magicVariable",
-            template = listOf(
-                TemplatePart.Text("console.log(`Setting magicVariable to \${"),
-                TemplatePart.Value,
-                TemplatePart.Text("}`)")
-            )
-        )
-    }
 
     data class ReceiverAssignment(val fqName: String, val tsName: String)
 

@@ -2,10 +2,14 @@ package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.generic.PartialTranslatorByType
 import com.lightningkite.khrysalis.generic.line
+import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
+import org.jetbrains.kotlin.descriptors.leastPermissiveDescriptor
+import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.lexer.KtModifierKeywordToken
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.referenceExpression
 import org.jetbrains.kotlin.psi.psiUtil.visibilityModifierTypeOrDefault
+import org.jetbrains.kotlin.types.KotlinType
 import java.lang.Appendable
 //
 //fun PartialTranslatorByType<Appendable, Unit, ParserRuleContext>.ContextByType<*>.emitWithoutTypeArguments(ctx: KotlinParser.UserTypeContext) {
@@ -79,6 +83,41 @@ fun TypescriptTranslator.registerType(){
         handleTypeElement(typedRule.getTypeReference()!!.typeElement!!)
         -";\n"
     }
+
+    handle<KotlinType> {
+        -typedRule
+            .getJetTypeFqName(true)
+            .split('.')
+            .dropWhile { it.firstOrNull()?.isLowerCase() != false }
+            .joinToString(".")
+    }
+
+    handle<KtTypeReference>(
+        condition = {
+            val type = typedRule.resolvedType ?: return@handle false
+            replacements.getType(type) != null
+        },
+        priority = 10_000,
+        action = {
+            val type = typedRule.resolvedType!!
+            val rule = replacements.getType(type)!!
+            val baseType = type.constructor
+            val typeParametersByName = type.arguments.withIndex().associate { (index, item) -> baseType.parameters[index].name.asString() to item }
+            rule.template.parts.forEach { part ->
+                when(part){
+                    is TemplatePart.Text -> -part.string
+                    TemplatePart.Receiver -> { }
+                    TemplatePart.DispatchReceiver -> { }
+                    TemplatePart.ExtensionReceiver -> { }
+                    TemplatePart.Value -> { }
+                    is TemplatePart.Parameter -> { }
+                    is TemplatePart.ParameterByIndex -> { }
+                    is TemplatePart.TypeParameter -> -(typeParametersByName[part.name])
+                    is TemplatePart.TypeParameterByIndex -> -(type.arguments.getOrNull(part.index))
+                }
+            }
+        }
+    )
 
 //    handle<KotlinParser.TypeAliasContext> {
 //        val rule = typedRule

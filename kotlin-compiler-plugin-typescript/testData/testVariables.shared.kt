@@ -113,5 +113,5 @@ fun test(){
     val instance = TestClass()
     println(instance.memberReal)
     println(magicVariable)
-    magicVariable = 9001.absoluteValue
+    magicVariable = 9001.absoluteValue.plus(4)
 }

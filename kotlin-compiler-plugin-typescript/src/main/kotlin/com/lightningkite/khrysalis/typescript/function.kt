@@ -1,6 +1,7 @@
 package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.generic.line
+import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.codegen.findJavaDefaultArgumentValue
 import org.jetbrains.kotlin.com.intellij.psi.PsiComment
@@ -148,6 +149,96 @@ fun TypescriptTranslator.registerFunction() {
             lambdaArgument = typedRule.lambdaArguments.firstOrNull()
         )
     }
+
+    //Equivalents replacements
+    handle<KtDotQualifiedExpression>(
+        condition = {
+            val desc = (((typedRule.selectorExpression as? KtCallExpression)?.calleeExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget as? FunctionDescriptor) ?: return@handle false
+            replacements.getCall(desc) != null
+        },
+        priority = 10_000,
+        action = {
+            val callExp = typedRule.selectorExpression as KtCallExpression
+            val nre = callExp.calleeExpression as KtNameReferenceExpression
+            val f = nre.resolvedReferenceTarget as FunctionDescriptor
+            val rule = replacements.getCall(f)!!
+
+            val allParametersByIndex = HashMap<Int, KtValueArgument>()
+            val allParametersByName = HashMap<String, KtValueArgument>()
+            callExp.valueArguments.forEachIndexed { index, valueArgument ->
+                if(valueArgument.name != null){
+                    allParametersByName[valueArgument.name!!] = valueArgument
+                    val i = f.valueParameters.indexOfFirst { it.name.asString() == valueArgument.name!! }
+                    if(i != -1) {
+                        allParametersByIndex[i] = valueArgument
+                    }
+                } else {
+                    allParametersByIndex[index] = valueArgument
+                    allParametersByName[f.valueParameters[index].name.asString()] = valueArgument
+                }
+            }
+            val typeParametersByName = callExp.resolvedCall?.typeArguments?.mapKeys { it.key.name.asString() } ?: mapOf()
+            val typeParametersByIndex = callExp.resolvedCall?.typeArguments?.mapKeys { it.key.index } ?: mapOf()
+
+            rule.template.forEach { part ->
+                when(part){
+                    is TemplatePart.Text -> -part.string
+                    TemplatePart.Receiver -> -typedRule.receiverExpression
+                    TemplatePart.DispatchReceiver -> -nre.getTsReceiver()
+                    TemplatePart.ExtensionReceiver -> -typedRule.receiverExpression
+                    TemplatePart.Value -> { }
+                    is TemplatePart.Parameter -> -(allParametersByName[part.name]?.getArgumentExpression())
+                    is TemplatePart.ParameterByIndex -> -(allParametersByIndex[part.index]?.getArgumentExpression())
+                    is TemplatePart.TypeParameter -> -(typeParametersByName[part.name])
+                    is TemplatePart.TypeParameterByIndex -> -(typeParametersByIndex[part.index])
+                }
+            }
+        }
+    )
+
+    handle<KtCallExpression>(
+        condition = {
+            val desc = (typedRule.calleeExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget as? FunctionDescriptor ?: return@handle false
+            replacements.getCall(desc) != null
+        },
+        priority = 10_001,
+        action = {
+            val nre = typedRule.calleeExpression as KtNameReferenceExpression
+            val f = nre.resolvedReferenceTarget as FunctionDescriptor
+            val rule = replacements.getCall(f)!!
+
+            val allParametersByIndex = HashMap<Int, KtValueArgument>()
+            val allParametersByName = HashMap<String, KtValueArgument>()
+            typedRule.valueArguments.forEachIndexed { index, valueArgument ->
+                if(valueArgument.name != null){
+                    allParametersByName[valueArgument.name!!] = valueArgument
+                    val i = f.valueParameters.indexOfFirst { it.name.asString() == valueArgument.name!! }
+                    if(i != -1) {
+                        allParametersByIndex[i] = valueArgument
+                    }
+                } else {
+                    allParametersByIndex[index] = valueArgument
+                    allParametersByName[f.valueParameters[index].name.asString()] = valueArgument
+                }
+            }
+            val typeParametersByName = typedRule.resolvedCall?.typeArguments?.mapKeys { it.key.name.asString() } ?: mapOf()
+            val typeParametersByIndex = typedRule.resolvedCall?.typeArguments?.mapKeys { it.key.index } ?: mapOf()
+
+            rule.template.forEach { part ->
+                when(part){
+                    is TemplatePart.Text -> -part.string
+                    TemplatePart.Receiver -> -nre.getTsReceiver()
+                    TemplatePart.DispatchReceiver -> -nre.getTsReceiver()
+                    TemplatePart.ExtensionReceiver -> { }
+                    TemplatePart.Value -> { }
+                    is TemplatePart.Parameter -> -(allParametersByName[part.name]?.getArgumentExpression())
+                    is TemplatePart.ParameterByIndex -> -(allParametersByIndex[part.index]?.getArgumentExpression())
+                    is TemplatePart.TypeParameter -> -(typeParametersByName[part.name])
+                    is TemplatePart.TypeParameterByIndex -> -(typeParametersByIndex[part.index])
+                }
+            }
+        }
+    )
 
     handle<ArgumentsList> {
         -'('

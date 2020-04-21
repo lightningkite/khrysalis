@@ -113,7 +113,9 @@ fun TypescriptTranslator.registerVariable() {
         action = {
             withReceiverScope(typedRule.property.fqName!!.asString()) { receiverName ->
                 val resolved = typedRule.property.resolvedProperty!!
-                -"function "
+                if (!typedRule.property.isMember) {
+                    -"function "
+                }
                 -resolved.tsFunctionGetName
                 -typedRule.property.typeParameterList
                 -"("
@@ -140,7 +142,9 @@ fun TypescriptTranslator.registerVariable() {
         action = {
             withReceiverScope(typedRule.property.fqName!!.asString()) { receiverName ->
                 val resolved = typedRule.property.resolvedProperty!!
-                -"function "
+                if (!typedRule.property.isMember) {
+                    -"function "
+                }
                 -resolved.tsFunctionSetName
                 -typedRule.property.typeParameterList
                 -"("
@@ -381,13 +385,22 @@ fun TypescriptTranslator.registerVariable() {
             val pd = typedRule.resolvedReferenceTarget as PropertyDescriptor
             val rule = replacements.getGet(pd)!!
             rule.template.forEach { part ->
-                when(part){
+                when (part) {
                     is TemplatePart.Text -> -part.string
+                    TemplatePart.Receiver -> -typedRule.getTsReceiver()
                     TemplatePart.DispatchReceiver -> -typedRule.getTsReceiver()
-                    TemplatePart.Value -> { }
-                    TemplatePart.ExtensionReceiver -> {}
-                    is TemplatePart.ParameterReceiver -> { }
-                    is TemplatePart.TypeParameterReceiver -> { }
+                    TemplatePart.Value -> {
+                    }
+                    TemplatePart.ExtensionReceiver -> {
+                    }
+                    is TemplatePart.Parameter -> {
+                    }
+                    is TemplatePart.ParameterByIndex -> {
+                    }
+                    is TemplatePart.TypeParameter -> {
+                    }
+                    is TemplatePart.TypeParameterByIndex -> {
+                    }
                 }
             }
         }
@@ -404,13 +417,21 @@ fun TypescriptTranslator.registerVariable() {
             val pd = nre.resolvedReferenceTarget as PropertyDescriptor
             val rule = replacements.getGet(pd)!!
             rule.template.forEach { part ->
-                when(part){
+                when (part) {
                     is TemplatePart.Text -> -part.string
+                    TemplatePart.Receiver -> -typedRule.receiverExpression
                     TemplatePart.DispatchReceiver -> -nre.getTsReceiver()
                     TemplatePart.ExtensionReceiver -> -typedRule.receiverExpression
-                    TemplatePart.Value -> { }
-                    is TemplatePart.ParameterReceiver -> { }
-                    is TemplatePart.TypeParameterReceiver -> { }
+                    TemplatePart.Value -> {
+                    }
+                    is TemplatePart.Parameter -> {
+                    }
+                    is TemplatePart.ParameterByIndex -> {
+                    }
+                    is TemplatePart.TypeParameter -> {
+                    }
+                    is TemplatePart.TypeParameterByIndex -> {
+                    }
                 }
             }
         }
@@ -420,7 +441,9 @@ fun TypescriptTranslator.registerVariable() {
     handle<KtBinaryExpression>(
         condition = {
             val left = typedRule.left as? KtDotQualifiedExpression ?: return@handle false
-            val pd = ((left.selectorExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget as? PropertyDescriptor) ?: return@handle false
+            val pd =
+                ((left.selectorExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget as? PropertyDescriptor)
+                    ?: return@handle false
             replacements.getSet(pd) != null
         },
         priority = 10_001,
@@ -430,13 +453,20 @@ fun TypescriptTranslator.registerVariable() {
             val pd = (nre.resolvedReferenceTarget as PropertyDescriptor)
             val rule = replacements.getSet(pd)!!
             rule.template.forEach { part ->
-                when(part){
+                when (part) {
                     is TemplatePart.Text -> -part.string
+                    TemplatePart.Receiver -> -left.receiverExpression
                     TemplatePart.DispatchReceiver -> -nre.getTsReceiver()
                     TemplatePart.ExtensionReceiver -> -left.receiverExpression
                     TemplatePart.Value -> -typedRule.right
-                    is TemplatePart.ParameterReceiver -> { }
-                    is TemplatePart.TypeParameterReceiver -> { }
+                    is TemplatePart.Parameter -> {
+                    }
+                    is TemplatePart.ParameterByIndex -> {
+                    }
+                    is TemplatePart.TypeParameter -> {
+                    }
+                    is TemplatePart.TypeParameterByIndex -> {
+                    }
                 }
             }
         }
@@ -444,7 +474,7 @@ fun TypescriptTranslator.registerVariable() {
     handle<KtBinaryExpression>(
         condition = {
             val left = typedRule.left as? KtNameReferenceExpression ?: return@handle false
-            val pd = (left?.resolvedReferenceTarget as? PropertyDescriptor) ?: return@handle false
+            val pd = (left.resolvedReferenceTarget as? PropertyDescriptor) ?: return@handle false
             replacements.getSet(pd) != null
         },
         priority = 10_000,
@@ -453,13 +483,21 @@ fun TypescriptTranslator.registerVariable() {
             val pd = (nre.resolvedReferenceTarget as PropertyDescriptor)
             val rule = replacements.getSet(pd)!!
             rule.template.forEach { part ->
-                when(part){
+                when (part) {
                     is TemplatePart.Text -> -part.string
+                    TemplatePart.Receiver -> -nre.getTsReceiver()
                     TemplatePart.DispatchReceiver -> -nre.getTsReceiver()
-                    TemplatePart.ExtensionReceiver -> { }
+                    TemplatePart.ExtensionReceiver -> {
+                    }
                     TemplatePart.Value -> -typedRule.right
-                    is TemplatePart.ParameterReceiver -> { }
-                    is TemplatePart.TypeParameterReceiver -> { }
+                    is TemplatePart.Parameter -> {
+                    }
+                    is TemplatePart.ParameterByIndex -> {
+                    }
+                    is TemplatePart.TypeParameter -> {
+                    }
+                    is TemplatePart.TypeParameterByIndex -> {
+                    }
                 }
             }
         }

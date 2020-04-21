@@ -1,0 +1,28 @@
+---
+- id: kotlin.math.absoluteValue
+  type: get
+  receiver: kotlin.Int
+  template: Math.abs(~this~)
+
+- id: com.test.magicVariable
+  type: get
+  template: 42 /*magicVariable get!*/
+
+- id: com.test.magicVariable
+  type: set
+  template: console.log(`Setting magicVariable to ${~value~}`);
+
+- id: kotlin.io.println
+  type: call
+  template: console.log(~0~)
+
+- id: kotlin.Int.plus
+  type: call
+  template: (~this~ + ~0~)
+
+
+
+-
+  type: set
+  id: android.view.TextView.text
+  template: ~this~.innerContent = ~value~

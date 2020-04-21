@@ -53,7 +53,10 @@ class KotlinTypescriptBasicTest {
                 this.classpathAsList = listOf(standardLibraryCopy)
                 this.pluginClasspaths = arrayOf("build/libs/kotlin-compiler-plugin-typescript-0.1.0.jar")
                 this.pluginOptions =
-                    arrayOf("plugin:${KotlinTypescriptCLP.PLUGIN_ID}:${KotlinTypescriptCLP.KEY_OUTPUT_DIRECTORY}=build/testResult")
+                    arrayOf(
+                        "plugin:${KotlinTypescriptCLP.PLUGIN_ID}:${KotlinTypescriptCLP.KEY_ACTUALS_DIRECTORIES}=replacements",
+                        "plugin:${KotlinTypescriptCLP.PLUGIN_ID}:${KotlinTypescriptCLP.KEY_OUTPUT_DIRECTORY}=build/testResult"
+                    )
                 this.destinationAsFile = File("build/testBuild").also { it.deleteRecursively(); it.mkdirs() }
             }
         )
