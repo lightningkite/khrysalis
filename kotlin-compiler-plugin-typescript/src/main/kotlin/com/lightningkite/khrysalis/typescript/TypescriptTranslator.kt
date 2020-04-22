@@ -62,6 +62,7 @@ class TypescriptTranslator(
 
     override fun emitDefault(identifier: Class<*>, rule: Any, out: Appendable) {
         when (rule) {
+            is Array<*> -> rule.forEach { if(it != null) translate(it, out) }
             is Iterable<*> -> rule.forEach { if(it != null) translate(it, out) }
             is Sequence<*> -> rule.forEach { if(it != null) translate(it, out) }
             is Char -> out.append(rule)

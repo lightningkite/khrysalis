@@ -19,9 +19,9 @@
         - [ ] Subject with Cast or Range As Expression
         - [X] No Subject As Statement
         - [X] No Subject As Expression
-    - [ ] While
-    - [ ] For Each
-        - [ ] Destructuring Declarations (`for((a, b) in x){}`)
+    - [X] While
+    - [X] For Each
+        - [X] Destructuring Declarations (`for((a, b) in x){}`)
 - [X] Functions -- 2 days
     - [X] Top Level
     - [X] Local

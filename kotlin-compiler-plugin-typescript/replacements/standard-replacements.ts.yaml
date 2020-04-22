@@ -25,8 +25,46 @@
   template: (~this~ + ~0~)
 
 
+# Collection Creation
+
+- id: kotlin.to
+  type: call
+  template: "[~this~, ~0~]"
+
+- id: kotlin.collections.listOf
+  type: call
+  template: "[~0~]"
+
+- id: kotlin.collections.mapOf
+  type: call
+  template: new Map([~0~])
+
+
+# Maps
+
+- id: kotlin.collections.component1
+  type: call
+  receiver: Map.Entry
+  template: ~this~[0]
+
+- id: kotlin.collections.component2
+  type: call
+  receiver: Map.Entry
+  template: ~this~[1]
+
+- id: kotlin.collections.Map.keys
+  type: get
+  template: ~this~.keys()
+
+- id: kotlin.collections.Map.values
+  type: get
+  template: ~this~.values()
+
+- id: kotlin.collections.Map.entries
+  type: get
+  template: ~this~.entries()
 
 -
-  type: set
   id: android.view.TextView.text
+  type: set
   template: ~this~.innerContent = ~value~

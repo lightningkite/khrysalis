@@ -1,20 +1,19 @@
 package com.lightningkite.khrysalis.typescript
 
+import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.forEachBetween
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
-import org.jetbrains.kotlin.fir.symbols.StandardClassIds.Unit
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
-import org.jetbrains.kotlin.js.descriptorUtils.nameIfStandardType
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
-import org.jetbrains.kotlin.types.KotlinType
-import java.lang.IllegalArgumentException
 
 fun TypescriptTranslator.registerControl() {
+
+    val dontReturnTypes = setOf("kotlin.Unit", "kotlin.Nothing")
     handle<KtBlockExpression> {
         if (typedRule.resolvedExpressionTypeInfo?.type != null && typedRule.resolvedExpressionTypeInfo?.type?.getJetTypeFqName(
                 true
-            ) != "kotlin.Unit"
+            ) !in dontReturnTypes
         ) {
             val lastStatement = typedRule.statements.lastOrNull()
             typedRule.allChildren.forEach {
@@ -144,6 +143,75 @@ fun TypescriptTranslator.registerControl() {
         }
     }
 
+    handle<KtForExpression>(
+        condition = { typedRule.loopParameter?.destructuringDeclaration != null },
+        priority = 100,
+        action = {
+            val destructuringDeclaration = typedRule.loopParameter?.destructuringDeclaration!!
+            -"for (const toDestructure of "
+            -typedRule.loopRange
+            -") "
+            -"{\n"
+            destructuringDeclaration.entries.forEachIndexed { index, it ->
+                -"const "
+                -it.name
+                -" = "
+                val rule = it.resolvedComponentResolvedCall?.resultingDescriptor?.let { replacements.getCall(it) }
+                if(rule != null) {
+                    rule.template.forEach { part ->
+                        when (part) {
+                            is TemplatePart.Text -> -part.string
+                            TemplatePart.Receiver -> -"toDestructure"
+                            TemplatePart.DispatchReceiver -> -"toDestructure"
+                            TemplatePart.ExtensionReceiver -> -"toDestructure"
+                            TemplatePart.Value -> {
+                            }
+                            is TemplatePart.Parameter -> {
+                            }
+                            is TemplatePart.ParameterByIndex -> {
+                            }
+                            is TemplatePart.TypeParameter -> {
+                            }
+                            is TemplatePart.TypeParameterByIndex -> {
+                            }
+                        }
+                    }
+                } else {
+                    -"toDestructure["
+                    -index.toString()
+                    -']'
+                }
+                -'\n'
+            }
+            val body = typedRule.body
+            if(body is KtBlockExpression){
+                -body.allChildren.toList().drop(1).dropLast(1)
+            } else {
+                -body
+            }
+            -"\n}"
+        }
+    )
+
+    handle<KtForExpression> {
+        -"for (const "
+        -typedRule.loopParameter
+        -" of "
+        -typedRule.loopRange
+        -") "
+        -typedRule.body
+    }
+
+    handle<KtLabeledExpression> {
+        -typedRule.name
+        -": "
+        -typedRule.baseExpression
+    }
+
+    handle<KtBreakExpression> {
+        -"break "
+        -typedRule.getLabelName()
+    }
 
 //    handle<ForStatementContext> {
 //        val rule = typedRule

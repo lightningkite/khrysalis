@@ -5,12 +5,14 @@ import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.codegen.findJavaDefaultArgumentValue
 import org.jetbrains.kotlin.com.intellij.psi.PsiComment
+import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.descriptors.ConstructorDescriptor
 import org.jetbrains.kotlin.descriptors.FunctionDescriptor
 import org.jetbrains.kotlin.descriptors.PropertyDescriptor
 import org.jetbrains.kotlin.descriptors.SimpleFunctionDescriptor
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
+import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
 import org.jetbrains.kotlin.psi.psiUtil.containingClassOrObject
@@ -218,7 +220,9 @@ fun TypescriptTranslator.registerFunction() {
                     }
                 } else {
                     allParametersByIndex[index] = valueArgument
-                    allParametersByName[f.valueParameters[index].name.asString()] = valueArgument
+                    f.valueParameters.getOrNull(index)?.name?.asString()?.let {
+                        allParametersByName[it] = valueArgument
+                    }
                 }
             }
             val typeParametersByName = typedRule.resolvedCall?.typeArguments?.mapKeys { it.key.name.asString() } ?: mapOf()
@@ -235,6 +239,44 @@ fun TypescriptTranslator.registerFunction() {
                     is TemplatePart.ParameterByIndex -> -(allParametersByIndex[part.index]?.getArgumentExpression())
                     is TemplatePart.TypeParameter -> -(typeParametersByName[part.name])
                     is TemplatePart.TypeParameterByIndex -> -(typeParametersByIndex[part.index])
+                }
+            }
+        }
+    )
+
+    handle<KtBinaryExpression>(
+        condition = { typedRule.operationReference.getIdentifier()?.let{ it is LeafPsiElement && it.elementType == KtTokens.IDENTIFIER } == true },
+        priority = 10_000,
+        action = {
+            val f = typedRule.operationReference.resolvedReferenceTarget as FunctionDescriptor
+            val rule = replacements.getCall(f)!!
+            if(f.extensionReceiverParameter != null){
+                rule.template.forEach { part ->
+                    when(part){
+                        is TemplatePart.Text -> -part.string
+                        TemplatePart.Receiver -> -typedRule.left
+                        TemplatePart.DispatchReceiver -> -typedRule.getTsReceiver()
+                        TemplatePart.ExtensionReceiver -> -typedRule.left
+                        TemplatePart.Value -> { }
+                        is TemplatePart.Parameter -> -typedRule.right
+                        is TemplatePart.ParameterByIndex -> -typedRule.right
+                        is TemplatePart.TypeParameter -> -typedRule.right
+                        is TemplatePart.TypeParameterByIndex -> -typedRule.right
+                    }
+                }
+            } else {
+                rule.template.forEach { part ->
+                    when(part){
+                        is TemplatePart.Text -> -part.string
+                        TemplatePart.Receiver -> -typedRule.left
+                        TemplatePart.DispatchReceiver -> -typedRule.left
+                        TemplatePart.ExtensionReceiver -> -typedRule.left
+                        TemplatePart.Value -> { }
+                        is TemplatePart.Parameter -> -typedRule.right
+                        is TemplatePart.ParameterByIndex -> -typedRule.right
+                        is TemplatePart.TypeParameter -> -typedRule.right
+                        is TemplatePart.TypeParameterByIndex -> -typedRule.right
+                    }
                 }
             }
         }
