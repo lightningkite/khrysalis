@@ -2,6 +2,7 @@ package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.generic.line
 import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
+import com.lightningkite.khrysalis.util.forEachBetween
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.codegen.findJavaDefaultArgumentValue
 import org.jetbrains.kotlin.com.intellij.psi.PsiComment
@@ -21,7 +22,7 @@ import org.jetbrains.kotlin.psi.psiUtil.visibilityModifierTypeOrDefault
 import org.jetbrains.kotlin.resolve.descriptorUtil.declaresOrInheritsDefaultValue
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 
-private val FunctionDescriptor.tsName: String?
+val FunctionDescriptor.tsName: String?
     get() = this.annotations
         .find { it.fqName?.asString()?.substringAfterLast('.') == "JsName" }
         ?.allValueArguments
@@ -129,7 +130,7 @@ fun TypescriptTranslator.registerFunction() {
             -ArgumentsList(
                 on = f,
                 prependArguments = listOf(typedRule.receiverExpression),
-                orderedArguments = withComments.filter { !it.first.isNamed() },
+                orderedArguments = withComments.filter { !it.first.isNamed() }.map { it.first.getArgumentExpression()!! to it.second },
                 namedArguments = withComments.filter { it.first.isNamed() },
                 lambdaArgument = callExp.lambdaArguments.firstOrNull()
             )
@@ -146,11 +147,36 @@ fun TypescriptTranslator.registerFunction() {
         -ArgumentsList(
             on = f,
             prependArguments = listOf(),
-            orderedArguments = withComments.filter { !it.first.isNamed() },
+            orderedArguments = withComments.filter { !it.first.isNamed() }.map { it.first.getArgumentExpression()!! to it.second },
             namedArguments = withComments.filter { it.first.isNamed() },
             lambdaArgument = typedRule.lambdaArguments.firstOrNull()
         )
     }
+
+    //infix
+    handle<KtBinaryExpression>(
+        condition = { typedRule.operationReference.getIdentifier() != null },
+        priority = 1_000,
+        action = {
+            val f = typedRule.operationReference.resolvedReferenceTarget as FunctionDescriptor
+            val doubleReceiver = f.dispatchReceiverParameter != null && f.extensionReceiverParameter != null
+            if (doubleReceiver) {
+                -typedRule.getTsReceiver()
+                -"."
+            } else if(f.dispatchReceiverParameter != null) {
+                -typedRule.left
+                -"."
+            }
+            -(f.tsName ?: typedRule.operationReference.text)
+            -ArgumentsList(
+                on = f,
+                prependArguments = if(f.extensionReceiverParameter != null) listOf(typedRule.left!!) else listOf(),
+                orderedArguments = listOf(typedRule.right!! to null),
+                namedArguments = listOf(),
+                lambdaArgument = null
+            )
+        }
+    )
 
     //Equivalents replacements
     handle<KtDotQualifiedExpression>(
@@ -188,7 +214,10 @@ fun TypescriptTranslator.registerFunction() {
                     TemplatePart.Receiver -> -typedRule.receiverExpression
                     TemplatePart.DispatchReceiver -> -nre.getTsReceiver()
                     TemplatePart.ExtensionReceiver -> -typedRule.receiverExpression
-                    TemplatePart.Value -> { }
+                    TemplatePart.AllParameters -> callExp.valueArguments.forEachBetween(
+                        forItem = { -it },
+                        between = { -", " }
+                    )
                     is TemplatePart.Parameter -> -(allParametersByName[part.name]?.getArgumentExpression())
                     is TemplatePart.ParameterByIndex -> -(allParametersByIndex[part.index]?.getArgumentExpression())
                     is TemplatePart.TypeParameter -> -(typeParametersByName[part.name])
@@ -233,50 +262,14 @@ fun TypescriptTranslator.registerFunction() {
                     is TemplatePart.Text -> -part.string
                     TemplatePart.Receiver -> -nre.getTsReceiver()
                     TemplatePart.DispatchReceiver -> -nre.getTsReceiver()
-                    TemplatePart.ExtensionReceiver -> { }
-                    TemplatePart.Value -> { }
+                    TemplatePart.AllParameters -> typedRule.valueArguments.forEachBetween(
+                        forItem = { -it },
+                        between = { -", " }
+                    )
                     is TemplatePart.Parameter -> -(allParametersByName[part.name]?.getArgumentExpression())
                     is TemplatePart.ParameterByIndex -> -(allParametersByIndex[part.index]?.getArgumentExpression())
                     is TemplatePart.TypeParameter -> -(typeParametersByName[part.name])
                     is TemplatePart.TypeParameterByIndex -> -(typeParametersByIndex[part.index])
-                }
-            }
-        }
-    )
-
-    handle<KtBinaryExpression>(
-        condition = { typedRule.operationReference.getIdentifier()?.let{ it is LeafPsiElement && it.elementType == KtTokens.IDENTIFIER } == true },
-        priority = 10_000,
-        action = {
-            val f = typedRule.operationReference.resolvedReferenceTarget as FunctionDescriptor
-            val rule = replacements.getCall(f)!!
-            if(f.extensionReceiverParameter != null){
-                rule.template.forEach { part ->
-                    when(part){
-                        is TemplatePart.Text -> -part.string
-                        TemplatePart.Receiver -> -typedRule.left
-                        TemplatePart.DispatchReceiver -> -typedRule.getTsReceiver()
-                        TemplatePart.ExtensionReceiver -> -typedRule.left
-                        TemplatePart.Value -> { }
-                        is TemplatePart.Parameter -> -typedRule.right
-                        is TemplatePart.ParameterByIndex -> -typedRule.right
-                        is TemplatePart.TypeParameter -> -typedRule.right
-                        is TemplatePart.TypeParameterByIndex -> -typedRule.right
-                    }
-                }
-            } else {
-                rule.template.forEach { part ->
-                    when(part){
-                        is TemplatePart.Text -> -part.string
-                        TemplatePart.Receiver -> -typedRule.left
-                        TemplatePart.DispatchReceiver -> -typedRule.left
-                        TemplatePart.ExtensionReceiver -> -typedRule.left
-                        TemplatePart.Value -> { }
-                        is TemplatePart.Parameter -> -typedRule.right
-                        is TemplatePart.ParameterByIndex -> -typedRule.right
-                        is TemplatePart.TypeParameter -> -typedRule.right
-                        is TemplatePart.TypeParameterByIndex -> -typedRule.right
-                    }
                 }
             }
         }
@@ -301,8 +294,8 @@ fun TypescriptTranslator.registerFunction() {
             } else {
                 -", "
             }
-            fun emitParam(v: Pair<KtValueArgument, PsiComment?>) {
-                -v.first.getArgumentExpression()
+            fun emitParam(v: Pair<KtExpression, PsiComment?>) {
+                -v.first
                 v.second?.let {
                     -"/*"
                     -it.text.removePrefix("//").removePrefix("/*").removeSuffix("*/")
@@ -321,7 +314,7 @@ fun TypescriptTranslator.registerFunction() {
                     } else {
                         -"undefined"
                     }
-                } else emitParam(v)
+                } else emitParam(v.first.getArgumentExpression()!! to v.second)
             }
         }
         -')'
@@ -357,7 +350,7 @@ fun KtValueArgumentList.withComments(): List<Pair<KtValueArgument, PsiComment?>>
 data class ArgumentsList(
     val on: FunctionDescriptor,
     val prependArguments: List<Any>,
-    val orderedArguments: List<Pair<KtValueArgument, PsiComment?>>,
+    val orderedArguments: List<Pair<KtExpression, PsiComment?>>,
     val namedArguments: List<Pair<KtValueArgument, PsiComment?>>,
     val lambdaArgument: KtLambdaArgument?
 ) {

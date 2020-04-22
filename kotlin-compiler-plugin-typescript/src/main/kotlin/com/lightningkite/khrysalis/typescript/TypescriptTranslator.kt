@@ -98,6 +98,7 @@ class TypescriptTranslator(
         registerLiterals()
         registerLambda()
         registerControl()
+        registerOperators()
         registerReceiver()
 //        registerStatement()
 

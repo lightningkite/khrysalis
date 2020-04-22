@@ -389,18 +389,6 @@ fun TypescriptTranslator.registerVariable() {
                     is TemplatePart.Text -> -part.string
                     TemplatePart.Receiver -> -typedRule.getTsReceiver()
                     TemplatePart.DispatchReceiver -> -typedRule.getTsReceiver()
-                    TemplatePart.Value -> {
-                    }
-                    TemplatePart.ExtensionReceiver -> {
-                    }
-                    is TemplatePart.Parameter -> {
-                    }
-                    is TemplatePart.ParameterByIndex -> {
-                    }
-                    is TemplatePart.TypeParameter -> {
-                    }
-                    is TemplatePart.TypeParameterByIndex -> {
-                    }
                 }
             }
         }
@@ -422,16 +410,6 @@ fun TypescriptTranslator.registerVariable() {
                     TemplatePart.Receiver -> -typedRule.receiverExpression
                     TemplatePart.DispatchReceiver -> -nre.getTsReceiver()
                     TemplatePart.ExtensionReceiver -> -typedRule.receiverExpression
-                    TemplatePart.Value -> {
-                    }
-                    is TemplatePart.Parameter -> {
-                    }
-                    is TemplatePart.ParameterByIndex -> {
-                    }
-                    is TemplatePart.TypeParameter -> {
-                    }
-                    is TemplatePart.TypeParameterByIndex -> {
-                    }
                 }
             }
         }

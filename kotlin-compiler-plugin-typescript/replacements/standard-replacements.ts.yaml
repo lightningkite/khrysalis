@@ -1,12 +1,4 @@
 ---
-- id: kotlin.math.absoluteValue
-  type: get
-  receiver: kotlin.Int
-  template: Math.abs(~this~)
-
-- id: kotlin.Int
-  type: type
-  template: number
 
 - id: com.test.magicVariable
   type: get
@@ -20,24 +12,27 @@
   type: call
   template: console.log(~0~)
 
-- id: kotlin.Int.plus
-  type: call
-  template: (~this~ + ~0~)
-
 
 # Collection Creation
 
 - id: kotlin.to
   type: call
-  template: "[~this~, ~0~]"
+  template: "[~this~, ~*~]"
 
 - id: kotlin.collections.listOf
   type: call
-  template: "[~0~]"
+  template: "[~*~]"
 
 - id: kotlin.collections.mapOf
   type: call
-  template: new Map([~0~])
+  template: new Map([~*~])
+
+
+# Lists
+
+- id: kotlin.collections.List.contains
+  type: call
+  template: (~this~.indexOf(~0~) != -1)
 
 
 # Maps

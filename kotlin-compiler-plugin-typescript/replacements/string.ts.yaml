@@ -1,0 +1,13 @@
+---
+- id: kotlin.String
+  type: type
+  template: string
+
+- id: kotlin.String.plus
+  type: call
+  infix: true
+  template: ~this~ + ~0~
+
+- id: kotlin.String.plus
+  type: call
+  template: ~this~ + ~0~
