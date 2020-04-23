@@ -24,7 +24,14 @@ fun convertDrawableXmls(
             val outputFile = swiftFolder.resolve("drawable").resolve(name + "Drawable.swift")
             println("$file -> $outputFile")
             try {
-                outputFile.writeTextIfDifferent(StringWriter().use { writer ->
+                if(outputFile.exists()){
+                    outputFile.useLines {
+                        if(it.firstOrNull() != "//Automatically created by Khrysalis"){
+                            return@forEach
+                        }
+                    }
+                }
+                outputFile.writeText(StringWriter().use { writer ->
                     writer.appendln("//Automatically created by Khrysalis")
                     writer.appendln("import UIKit")
                     writer.appendln("import Khrysalis")

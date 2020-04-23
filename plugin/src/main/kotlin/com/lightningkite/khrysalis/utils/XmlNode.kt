@@ -171,7 +171,7 @@ fun XmlNode.attributeAsBoolean(key: String): Boolean? {
 fun XmlNode.attributeAsDouble(key: String): Double? {
     val raw = attributes[key] ?: return null
     return when {
-        else -> raw.filter { it.isDigit() || it == '.' }.toDoubleOrNull()
+        else -> raw.filter { it.isDigit() || it == '.' || it == '-' }.toDoubleOrNull()
     }
 }
 
