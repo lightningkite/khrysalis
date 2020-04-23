@@ -142,7 +142,7 @@ fun XmlNode.attributeAsEdgeFlagsKotlin(key: String): Int? {
 
 fun XmlNode.attributeAsInt(key: String): String? {
     val raw = attributes[key] ?: return null
-    return raw.filter { it.isDigit() }.toIntOrNull()?.toString()
+    return raw.filter { it.isDigit() || it == '-' }.toIntOrNull()?.toString()
 }
 
 fun XmlNode.attributeAsDimension(key: String): String? {
