@@ -125,6 +125,14 @@ public extension Array {
         }
         return Int32(-(low + 1))
     }
+    
+    func asReversed() -> Array<Element>{
+        var reversed = self
+        forEachIndexed{ index, value in
+            reversed[self.count - Int(index) - 1] = value
+        }
+        return reversed
+    }
 }
 
 fileprivate extension Comparable {

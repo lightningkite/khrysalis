@@ -115,7 +115,9 @@ public extension UIView {
         }
         retain(as: "onClickRecognizer", item: recognizer, until: removed)
         self.addGestureRecognizer(recognizer)
-        self.removed.call(DisposableLambda { self.unretain("onClickRecognizer") })
+        self.removed.call(DisposableLambda {
+            self.unretain("onClickRecognizer")
+        })
     }
     @objc func onLongClick(_ action: @escaping ()->Void) {
         self.isUserInteractionEnabled = true

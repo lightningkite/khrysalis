@@ -110,13 +110,13 @@ fun XmlNode.attributeAsBoolean(key: String): Boolean? {
 fun XmlNode.attributeAsDouble(key: String): Double? {
     val raw = allAttributes[key] ?: return null
     return when {
-        else -> raw.filter { it.isDigit() || it == '.' }.toDoubleOrNull()
+        else -> raw.filter { it.isDigit() || it == '.' || it == '-'  }.toDoubleOrNull()
     }
 }
 
 fun XmlNode.attributeAsInt(key: String): String? {
     val raw = allAttributes[key] ?: return null
-    return raw.filter { it.isDigit() }.toIntOrNull()?.toString()
+    return raw.filter { it.isDigit() || it == '-'  }.toIntOrNull()?.toString()
 }
 
 fun XmlNode.attributeAsStringKotlin(key: String): String? {
