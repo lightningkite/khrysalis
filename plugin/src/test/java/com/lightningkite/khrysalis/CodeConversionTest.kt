@@ -1,8 +1,6 @@
 package com.lightningkite.khrysalis
 
 import com.lightningkite.khrysalis.ios.swift.convertKotlinToSwiftByFolder
-import com.lightningkite.khrysalis.web.typescript.TypescriptTranslator
-import com.lightningkite.khrysalis.web.typescript.convertKotlinToTypescriptByFolder
 import org.junit.Test
 import java.io.File
 
@@ -31,13 +29,13 @@ class CodeConversionTest {
             )
         }
 
-        convertKotlinToTypescriptByFolder(
-            interfacesOut = File("./testDataOutput/interfaces.json").also { it.parentFile.mkdirs() },
-            baseKotlin = File("./testData/shared"),
-            baseTs = File("./testDataOutputTs/shared").also { it.mkdirs() },
-            clean = true,
-            typescript = TypescriptTranslator()
-        )
+//        convertKotlinToTypescriptByFolder(
+//            interfacesOut = File("./testDataOutput/interfaces.json").also { it.parentFile.mkdirs() },
+//            baseKotlin = File("./testData/shared"),
+//            baseTs = File("./testDataOutputTs/shared").also { it.mkdirs() },
+//            clean = true,
+//            typescript = TypescriptTranslator()
+//        )
 
         val results = kotlinFiles.walkTopDown().filter { it.name.endsWith(".shared.kt") }.associate { kotlinFile ->
             val relative = kotlinFile.relativeTo(kotlinFiles)
@@ -53,21 +51,21 @@ class CodeConversionTest {
                 } catch (e: Exception) {
                     e.printStackTrace()
                     "FAILED TO COMPILE/EXECUTE: ${e.message}"
-                },
-                "typescript" to try {
-                    ExecuteFileTester.typescript(typescriptFile, clean = clean)
-                    .also {
-                        if(expectedLast == it) {
-                            System.out.print(".")
-                        } else {
-                            System.out.print("F")
-                        }
-                        System.out.flush()
-                    }
-                } catch(e:Exception){
-                 e.printStackTrace()
-                    "FAILED TO COMPILE/EXECUTE"
-                }
+                }//,
+//                "typescript" to try {
+//                    ExecuteFileTester.typescript(typescriptFile, clean = clean)
+//                    .also {
+//                        if(expectedLast == it) {
+//                            System.out.print(".")
+//                        } else {
+//                            System.out.print("F")
+//                        }
+//                        System.out.flush()
+//                    }
+//                } catch(e:Exception){
+//                 e.printStackTrace()
+//                    "FAILED TO COMPILE/EXECUTE"
+//                }
             ) + if (isMac) {
                 mapOf(
                     "swift" to try {

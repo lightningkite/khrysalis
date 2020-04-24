@@ -22,6 +22,8 @@ import org.jetbrains.kotlin.psi.psiUtil.visibilityModifierTypeOrDefault
 import org.jetbrains.kotlin.resolve.descriptorUtil.declaresOrInheritsDefaultValue
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 
+//TODO: Local function edgecase - the meaning of 'this' changes
+
 val FunctionDescriptor.tsName: String?
     get() = this.annotations
         .find { it.fqName?.asString()?.substringAfterLast('.') == "JsName" }
@@ -137,7 +139,7 @@ fun TypescriptTranslator.registerFunction() {
         }
     )
 
-    handle<KtCallExpression>(condition = { typedRule.calleeExpression is KtNameReferenceExpression }, priority = 1) {
+    handle<KtCallExpression>(condition = { (typedRule.calleeExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget is FunctionDescriptor }, priority = 1) {
         val withComments = typedRule.valueArgumentList?.withComments() ?: listOf()
         val nre = typedRule.calleeExpression as KtNameReferenceExpression
         val f = nre.resolvedReferenceTarget as FunctionDescriptor

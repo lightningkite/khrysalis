@@ -23,7 +23,7 @@ import java.io.StringWriter
 
 class KotlinTypescriptCLP : CommandLineProcessor {
     companion object {
-        const val KEY_ACTUALS_DIRECTORY_NAME = "actualsDirectories"
+        const val KEY_ACTUALS_DIRECTORY_NAME = "equivalents"
         val KEY_ACTUALS_DIRECTORIES = CompilerConfigurationKey.create<List<File>>(KEY_ACTUALS_DIRECTORY_NAME)
         const val KEY_OUTPUT_DIRECTORY_NAME = "outputDirectory"
         val KEY_OUTPUT_DIRECTORY = CompilerConfigurationKey.create<File>(KEY_OUTPUT_DIRECTORY_NAME)
@@ -45,8 +45,8 @@ class KotlinTypescriptCLP : CommandLineProcessor {
         when (option.optionName) {
             KEY_ACTUALS_DIRECTORY_NAME -> configuration.put(
                 KEY_ACTUALS_DIRECTORIES,
-                value.split(File.pathSeparatorChar).map { File(it) })
-            KEY_OUTPUT_DIRECTORY_NAME -> configuration.put(KEY_OUTPUT_DIRECTORY, value.let { File(it) })
+                value.trim('"').split(File.pathSeparatorChar).map { File(it) })
+            KEY_OUTPUT_DIRECTORY_NAME -> configuration.put(KEY_OUTPUT_DIRECTORY, value.trim('"').let { File(it) })
             else -> {
             }
         }

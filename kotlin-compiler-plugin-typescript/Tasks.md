@@ -34,9 +34,9 @@
     - [X] Vararg Arguments
     - [X] Overloading
         - Using `@JsName("")`
-- [ ] Operators -- 1 day
-    - [ ] Operator Overloading
-    - [ ] `in` and `is`
+- [X] Operators -- 1 day
+    - [X] Operator Overloading
+    - [X] `in` and `is`
 - [ ] Classes -- 3 days
     - [ ] Inheritance
     - [ ] Interface Implementation
@@ -46,6 +46,7 @@
         - [ ] Init blocks
     - [ ] Secondary constructors
     - [ ] Equatable / Hashable
+    - [ ] `toString`
     - [ ] Codable
         - [ ] Serialization
         - [ ] Deserialization
@@ -79,6 +80,7 @@
     - [ ] List
     - [ ] Set
     - [ ] Map
+    - [ ] Ranges
     - [ ] Common Functions
         - [ ] Let
         - [ ] Also

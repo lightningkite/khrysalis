@@ -21,6 +21,7 @@ fun copyOutFromRes(folder: String, target: File, organization: String, organizat
         .replace("Khrysalis_Organization_Name", organization)
         .replace("Khrysalis Organization Name", organization)
         .replace("khrysalisorganizationidentifier", organizationId)
+
     val jarConnection = KhrysalisPlugin::class.java.getResource("/$folder").openConnection() as JarURLConnection
 
     try {
@@ -44,11 +45,54 @@ fun copyOutFromRes(folder: String, target: File, organization: String, organizat
                 if (jarEntry.isDirectory) {
                     currentFile.mkdirs()
                 } else {
-                    if(!currentFile.exists()) {
+                    if (!currentFile.exists()) {
                         currentFile.bufferedWriter().use { out ->
                             jarFile.getInputStream(jarEntry).bufferedReader().useLines { input ->
                                 input.forEach { out.appendln(it.applyReplacements()) }
                             }
+                        }
+                    }
+                }
+            }
+        }
+    } catch (e: IOException) {
+        // TODO add logger
+        e.printStackTrace()
+    }
+}
+
+fun copyFolderOutFromRes(folder: String, target: File) {
+    val jarConnection = KhrysalisPlugin::class.java.getResource("/$folder").openConnection() as JarURLConnection
+
+    try {
+        val jarFile: JarFile = jarConnection.jarFile
+
+        /**
+         * Iterate all entries in the jar file.
+         */
+        val e: Enumeration<JarEntry> = jarFile.entries()
+        while (e.hasMoreElements()) {
+            val jarEntry: JarEntry = e.nextElement()
+            val jarEntryName: String = jarEntry.name
+            val jarConnectionEntryName: String = jarConnection.entryName
+            /**
+             * Extract files only if they match the path.
+             */
+            if (jarEntryName.startsWith(jarConnectionEntryName)) {
+                val filename =
+                    if (jarEntryName.startsWith(jarConnectionEntryName)) jarEntryName.substring(jarConnectionEntryName.length) else jarEntryName
+                val currentFile = target.resolve(filename.removePrefix("/"))
+                if (jarEntry.isDirectory) {
+                    currentFile.mkdirs()
+                } else {
+                    if (currentFile.exists()) {
+                        if (currentFile.checksum() == jarFile.getInputStream(jarEntry).checksum()) {
+                            println("Skipping file copy; already the same")
+                        }
+                    }
+                    currentFile.outputStream().use { out ->
+                        jarFile.getInputStream(jarEntry).use { input ->
+                            input.copyTo(out)
                         }
                     }
                 }
