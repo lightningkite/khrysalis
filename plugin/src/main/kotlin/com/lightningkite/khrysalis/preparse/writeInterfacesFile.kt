@@ -30,7 +30,7 @@ fun preparseKotlinFiles(sources: Sequence<File>, out: File, relativeTo: File): P
     val newCache = HashMap<String, FileCache>()
 
     sources.forEachMultithreaded { file ->
-        val relativePath = file.toRelativeString(relativeTo)
+        val relativePath = file.toRelativeString(relativeTo).replace('\\', '/')
         val hash = file.checksum()
         val existing = existingCache[relativePath]
         val cache = if (existing != null && existing.hash == hash) {

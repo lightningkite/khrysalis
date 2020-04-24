@@ -20,34 +20,37 @@ class PreparseListener {
                         topLevelDeclarations[ctx.simpleIdentifier().text] = relativePath
                     }
 
-                    if (ctx.INTERFACE() == null) return
-                    interfaces.add(InterfaceData(
-                        packageName = packageName,
-                        name = ctx.simpleIdentifier().text,
-                        implements = ctx.delegationSpecifiers()?.annotatedDelegationSpecifier()
-                            ?.map { it.delegationSpecifier() }?.flatMap {
-                                val id = it.userType()?.text?.substringBefore('<') ?: return@flatMap listOf<String>()
-                                if (id.firstOrNull()?.isLowerCase() == true) {
-                                    //qualified
-                                    listOf(id)
-                                } else {
-                                    imports.find {
-                                        it.endsWith(id)
-                                    }?.let { listOf(it) } ?: imports.filter {
-                                        it.endsWith('*')
-                                    }.map {
-                                        it.removeSuffix("*").plus(id)
-                                    }.plus(id)
-                                }
-                            } ?: listOf(),
-                        methods = ctx.classBody()?.classMemberDeclarations()?.classMemberDeclaration()
-                            ?.mapNotNull { it.declaration()?.functionDeclaration()?.simpleIdentifier()?.text }
-                            ?: listOf(),
-                        properties = ctx.classBody()?.classMemberDeclarations()?.classMemberDeclaration()
-                            ?.mapNotNull {
-                                it.declaration()?.propertyDeclaration()?.variableDeclaration()?.simpleIdentifier()?.text
-                            } ?: listOf()
-                    ))
+                    if (ctx.INTERFACE() != null) {
+                        interfaces.add(InterfaceData(
+                            packageName = packageName,
+                            name = ctx.simpleIdentifier().text,
+                            implements = ctx.delegationSpecifiers()?.annotatedDelegationSpecifier()
+                                ?.map { it.delegationSpecifier() }?.flatMap {
+                                    val id =
+                                        it.userType()?.text?.substringBefore('<') ?: return@flatMap listOf<String>()
+                                    if (id.firstOrNull()?.isLowerCase() == true) {
+                                        //qualified
+                                        listOf(id)
+                                    } else {
+                                        imports.find {
+                                            it.endsWith(id)
+                                        }?.let { listOf(it) } ?: imports.filter {
+                                            it.endsWith('*')
+                                        }.map {
+                                            it.removeSuffix("*").plus(id)
+                                        }.plus(id)
+                                    }
+                                } ?: listOf(),
+                            methods = ctx.classBody()?.classMemberDeclarations()?.classMemberDeclaration()
+                                ?.mapNotNull { it.declaration()?.functionDeclaration()?.simpleIdentifier()?.text }
+                                ?: listOf(),
+                            properties = ctx.classBody()?.classMemberDeclarations()?.classMemberDeclaration()
+                                ?.mapNotNull {
+                                    it.declaration()?.propertyDeclaration()?.variableDeclaration()
+                                        ?.simpleIdentifier()?.text
+                                } ?: listOf()
+                        ))
+                    }
 
                 } ?: it.functionDeclaration()?.let {
                     if (it.visibility().isExposed) {

@@ -2,7 +2,6 @@
 //Converted using Khrysalis2
 
 import Foundation
-import Khrysalis
 import RxSwift
 import RxRelay
 
@@ -40,15 +39,12 @@ public protocol UntypedFormField {
 
 public class FormField<T>: UntypedFormField {
     
-    public var _name: ViewString
-    override public var name: ViewString { get { return _name } set(value) { _name = value } }
+    public var name: ViewString
     public var observable: MutableObservableProperty<T>
-    public var _validation:  (UntypedFormField) -> ViewString?
+    public var validation:  (UntypedFormField) -> ViewString?
 
-    override public var validation:  (UntypedFormField) -> ViewString?
- { get { return _validation } set(value) { _validation = value } }
     
-    override public var error: StandardObservableProperty<ViewString?> { get { return _error } set(value) { _error = value } }
+    public var error: StandardObservableProperty<ViewString?>
     public var value: T {
         get {
             return observable.value
@@ -57,7 +53,7 @@ public class FormField<T>: UntypedFormField {
             observable.value = value
         }
     }
-    override public var untypedObservable: Any {
+    public var untypedObservable: Any {
         get {
             return observable
         }
@@ -65,16 +61,16 @@ public class FormField<T>: UntypedFormField {
     
     public init(name: ViewString, observable: MutableObservableProperty<T>, validation: @escaping (UntypedFormField) -> ViewString?
 ) {
-        self._name = name
+        self.name = name
         self.observable = observable
-        self._validation = validation
-        self._error = StandardObservableProperty(nil)
+        self.validation = validation
+        let error: StandardObservableProperty<ViewString?> = StandardObservableProperty(nil)
+        self.error = error
     }
     convenience public init(_ name: ViewString, _ observable: MutableObservableProperty<T>, _ validation: @escaping (UntypedFormField) -> ViewString?
 ) {
         self.init(name: name, observable: observable, validation: validation)
     }
-    private var _error: StandardObservableProperty<ViewString?>
 }
  
  

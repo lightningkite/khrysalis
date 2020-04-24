@@ -15,7 +15,6 @@ buildscript {
 apply plugin: "java"
 apply plugin: 'java-gradle-plugin'
 apply plugin: "kotlin"
-apply plugin: "kotlin-kapt"
 apply plugin: 'antlr'
 apply plugin: "idea"
 apply plugin: 'application'
@@ -89,9 +88,6 @@ dependencies {
     testApi "org.eclipse.aether:aether-transport-file:$aetherVersion"
     testApi "org.eclipse.aether:aether-transport-http:$aetherVersion"
     testApi "org.apache.maven:maven-aether-provider:$mavenVersion"
-
-    compileOnly "com.google.auto.service:auto-service:1.0-rc4"
-    kapt "com.google.auto.service:auto-service:1.0-rc4"
 
     api group: 'org.jetbrains.kotlin', name: 'kotlin-gradle-plugin', version: kotlinVersion
     api group: 'org.jetbrains.kotlin', name: 'kotlin-gradle-plugin-api', version: kotlinVersion

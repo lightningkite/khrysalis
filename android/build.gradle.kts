@@ -1,3 +1,6 @@
+import com.lightningkite.khrysalis.gradle.KhrysalisPluginExtension
+import com.lightningkite.khrysalis.ios.layout.mapViews
+
 buildscript {
     val kotlin_version = "1.3.50"
     repositories {
@@ -23,6 +26,14 @@ plugins {
 }
 
 apply(plugin = "com.lightningkite.khrysalis")
+
+configure<KhrysalisPluginExtension> {
+    projectName = "Khrysalis"
+    organizationName = "Lightning Kite"
+    swiftConversion = {
+        imports = listOf("RxSwift", "RxRelay")
+    }
+}
 
 group = "com.lightningkite.khrysalis"
 version = "0.1.1"

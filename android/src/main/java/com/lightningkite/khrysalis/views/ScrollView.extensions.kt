@@ -1,4 +1,4 @@
-package com.lightningkite.khrysalis
+package com.lightningkite.khrysalis.views
 
 import android.widget.ScrollView
 
