@@ -1,7 +1,6 @@
 package com.lightningkite.khrysalis
 
 import com.lightningkite.khrysalis.utils.checksum
-import junit.framework.Assert.assertEquals
 import java.io.File
 
 object ExecuteFileTester {
@@ -9,11 +8,12 @@ object ExecuteFileTester {
         System.getProperty("java.io.tmpdir").let { File(it) }.resolve("codeTranslationTesting").also { it.mkdirs() }
     val outCacheDir = File("build/testCompilationCache").also { it.mkdirs() }
 
-    fun swift(sourceFile: File, directories: List<File> = listOf()): String {
+    fun swift(sourceFile: File, clean: Boolean = false, directories: List<File> = listOf()): String {
         val sourceFileChecksum = sourceFile.checksum()
         val cacheFile =
-            outCacheDir.resolve(sourceFile.absolutePath.substringAfter("khrysalis").filter { it.isLetterOrDigit() } + ".out")
-        if (cacheFile.exists() && cacheFile.useLines { it.first() == sourceFileChecksum }) {
+            outCacheDir.resolve(
+                sourceFile.absolutePath.substringAfter("khrysalis").filter { it.isLetterOrDigit() } + ".out")
+        if (!clean && cacheFile.exists() && cacheFile.useLines { it.first() == sourceFileChecksum }) {
             return cacheFile.readText().substringAfter('\n').trim()
         }
         val copyFile = buildDir.resolve("main.swift")
@@ -50,11 +50,17 @@ object ExecuteFileTester {
         return result
     }
 
-    fun kotlin(sourceFile: File, libraries: List<File> = listOf()): String {
+    fun kotlin(
+        sourceFile: File,
+        clean: Boolean = false,
+        libraries: List<File> = listOf(),
+        additionalSources: List<File> = listOf()
+    ): String {
         val sourceFileChecksum = sourceFile.checksum()
         val cacheFile =
-            outCacheDir.resolve(sourceFile.absolutePath.substringAfter("khrysalis").filter { it.isLetterOrDigit() } + ".out")
-        if (cacheFile.exists() && cacheFile.useLines { it.first() == sourceFileChecksum }) {
+            outCacheDir.resolve(
+                sourceFile.absolutePath.substringAfter("khrysalis").filter { it.isLetterOrDigit() } + ".out")
+        if (!clean && cacheFile.exists() && cacheFile.useLines { it.first() == sourceFileChecksum }) {
             return cacheFile.readText().substringAfter('\n').trim()
         }
         val copyFile = buildDir.resolve(sourceFile.name)
@@ -65,7 +71,12 @@ object ExecuteFileTester {
                 ?: ""
         copyFile.writeText("""@file:JvmName("MainKt")""" + "\n" + sourceFile.readText())
         if (0 == ProcessBuilder()
-                .command("kotlinc", copyFile.path, "-d", outFile.path)
+                .command(listOf("kotlinc", copyFile.path) + additionalSources.map { it.path } + listOf("-classpath") +
+                        (listOf(outFile) + libraries).joinToString(File.pathSeparator) { it.path } +
+                        listOf(
+                            "-d",
+                            outFile.path
+                        ))
                 .redirectErrorStream(true)
                 .redirectOutput(outputFile)
                 .start()
@@ -88,11 +99,12 @@ object ExecuteFileTester {
         return result
     }
 
-    fun typescript(sourceFile: File): String {
+    fun typescript(sourceFile: File, clean: Boolean = false): String {
         val sourceFileChecksum = sourceFile.checksum()
         val cacheFile =
-            outCacheDir.resolve(sourceFile.absolutePath.substringAfter("khrysalis").filter { it.isLetterOrDigit() } + ".out")
-        if (cacheFile.exists() && cacheFile.useLines { it.first() == sourceFileChecksum }) {
+            outCacheDir.resolve(
+                sourceFile.absolutePath.substringAfter("khrysalis").filter { it.isLetterOrDigit() } + ".out")
+        if (!clean && cacheFile.exists() && cacheFile.useLines { it.first() == sourceFileChecksum }) {
             return cacheFile.readText().substringAfter('\n').trim()
         }
         val copyFile = buildDir.resolve(sourceFile.name)
@@ -100,7 +112,7 @@ object ExecuteFileTester {
         val outputFile = buildDir.resolve(sourceFile.nameWithoutExtension + ".out")
         copyFile.writeText(sourceFile.readText() + "\n" + "main()")
         if (0 == ProcessBuilder()
-                .command("tsc", "--outFile", outFile.path, copyFile.path)
+                .command("tsc", copyFile.path)
                 .redirectErrorStream(true)
                 .redirectOutput(outputFile)
                 .start()

@@ -1,6 +1,7 @@
 package com.lightningkite.khrysalis.utils
 
-import com.lightningkite.khrysalis.layout.Styles
+import com.lightningkite.khrysalis.generic.VirtualType
+import com.lightningkite.khrysalis.ios.layout.Styles
 import org.w3c.dom.Node
 import java.io.File
 import java.lang.Exception
@@ -10,10 +11,21 @@ class XmlNode(
     val element: Node,
     val styles: Styles,
     val directory: File,
+    val baseDirectoryAlt: File? = null,
     val additionalAttributes: Map<String, String> = mapOf()
-) {
+): VirtualType {
+
+    class Attribute(val parent: XmlNode, override val type: String, val value: String): VirtualType {
+        override val parts: Iterable<Any> get() = listOf(value)
+    }
+
+    override val parts: Iterable<Attribute>
+        get() = allAttributes.entries.map { it -> Attribute(this, it.key, it.value) }
+    override val type: String
+        get() = element.nodeValue
+
     val name get() = element.nodeName
-    val attributes: Map<String, String> by lazy {
+    val allAttributes: Map<String, String> by lazy {
         if (!element.hasAttributes()) return@lazy mapOf<String, String>()
         val map = HashMap<String, String>()
         element.attributes.let { att ->
@@ -34,6 +46,17 @@ class XmlNode(
         }
         additionalAttributes + map
     }
+    val directAttributes: Map<String, String> by lazy {
+        if (!element.hasAttributes()) return@lazy mapOf<String, String>()
+        val map = HashMap<String, String>()
+        element.attributes.let { att ->
+            (0 until att.length).associateTo(map) { att.item(it).let { it.nodeName to it.nodeValue } }
+        }
+        element.attributes.let { att ->
+            (0 until att.length).associateTo(map) { att.item(it).let { it.nodeName to it.nodeValue } }
+        }
+        additionalAttributes + map
+    }
     val children by lazy {
         element.childNodes.let { att ->
             (0 until att.length).asSequence()
@@ -43,14 +66,18 @@ class XmlNode(
                     if(it.nodeName == "include"){
                         try {
                             val filename = it.attributes
-                                ?.getNamedItem("layout")
-                                ?.nodeValue
-                                ?.removePrefix("@layout/")
-                                ?.plus(".xml")
-                                ?: return@map XmlNode(it, styles, directory)
+                                ?.getNamedItem("layout")!!
+                                .nodeValue
+                                .removePrefix("@layout/")
+                                .plus(".xml")
+                            val fileOptionA = directory.resolve(filename)
+                            val fileOptionB = baseDirectoryAlt?.resolve(filename)
+                            val file = fileOptionA.takeIf { it.exists() }
+                                ?: fileOptionB?.takeIf { it.exists() }
+                                ?: throw IllegalArgumentException("Could not find file for layout $filename in $fileOptionA or $fileOptionB")
                             val node =
-                                read(File(directory, filename), styles)
-                            XmlNode(it, styles, directory, node.attributes)
+                                read(file, styles)
+                            XmlNode(it, styles, directory, additionalAttributes = node.allAttributes)
                         } catch(e:Exception){
                             e.printStackTrace()
                             XmlNode(it, styles, directory)
@@ -65,30 +92,42 @@ class XmlNode(
 
 
     companion object {
-        fun read(file: File, styles: Styles): XmlNode {
+        fun read(file: File, styles: Styles, baseDirectoryAlt: File? = null): XmlNode {
             val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file)
-            return XmlNode(document.documentElement, styles, file.parentFile)
+            return XmlNode(document.documentElement, styles, file.parentFile, baseDirectoryAlt)
         }
     }
 }
 
-
-fun XmlNode.attributeAsString(key: String): String? {
-    val raw = attributes[key] ?: return null
-    return when {
-        raw.startsWith("@string/") -> "ResourcesStrings.${raw.removePrefix("@string/").camelCase()}"
-        else -> "\"$raw\""
+fun XmlNode.attributeAsBoolean(key: String): Boolean? {
+    val raw = allAttributes[key] ?: return null
+    return when(raw.toLowerCase()) {
+        "true" -> true
+        "false" -> false
+        else -> null
     }
 }
+fun XmlNode.attributeAsDouble(key: String): Double? {
+    val raw = allAttributes[key] ?: return null
+    return when {
+        else -> raw.filter { it.isDigit() || it == '.' || it == '-'  }.toDoubleOrNull()
+    }
+}
+
+fun XmlNode.attributeAsInt(key: String): String? {
+    val raw = allAttributes[key] ?: return null
+    return raw.filter { it.isDigit() || it == '-'  }.toIntOrNull()?.toString()
+}
+
 fun XmlNode.attributeAsStringKotlin(key: String): String? {
-    val raw = attributes[key] ?: return null
+    val raw = allAttributes[key] ?: return null
     return when {
         raw.startsWith("@string/") -> "ResourcesStrings.${raw.removePrefix("@string/").camelCase()}"
         else -> "\"${raw.replace("$", "\\$")}\""
     }
 }
 fun XmlNode.attributeAsGravityKotlin(key: String): Int? {
-    val raw = attributes[key]?.split('|') ?: return null
+    val raw = allAttributes[key]?.split('|') ?: return null
     var gravity = 0
     if(raw.contains("center"))
         gravity = gravity or 0x00000011
@@ -115,7 +154,7 @@ object SafePaddingFlags {
     const val ALL: Int = 15
 }
 fun XmlNode.attributeAsEdgeFlagsKotlin(key: String): Int? {
-    val raw = attributes[key]?.split('|') ?: return null
+    val raw = allAttributes[key]?.split('|') ?: return null
     var gravity = 0
     if(raw.contains("center"))
         gravity = gravity or SafePaddingFlags.ALL
@@ -138,67 +177,4 @@ fun XmlNode.attributeAsEdgeFlagsKotlin(key: String): Int? {
     if(raw.contains("bottom"))
         gravity = gravity or SafePaddingFlags.BOTTOM
     return gravity
-}
-
-fun XmlNode.attributeAsInt(key: String): String? {
-    val raw = attributes[key] ?: return null
-    return raw.filter { it.isDigit() || it == '-' }.toIntOrNull()?.toString()
-}
-
-fun XmlNode.attributeAsDimension(key: String): String? {
-    val raw = attributes[key] ?: return null
-    return when {
-        raw.startsWith("@dimen/") -> "ResourcesDimensions.${raw.removePrefix("@dimen/").camelCase()}"
-        else -> raw.filter { it.isDigit() || it == '.' || it == '-' }.toIntOrNull()?.toString()
-    }
-}
-fun XmlNode.attributeAsDrawable(key: String): String? {
-    val raw = attributes[key] ?: return null
-    return when {
-        raw.startsWith("@drawable/") -> "ResourcesDrawables.${raw.removePrefix("@drawable/").camelCase()}"
-        else -> null
-    }
-}
-fun XmlNode.attributeAsLayer(key: String, forView: String = "nil"): String? = attributeAsDrawable(key)?.plus("($forView)")
-fun XmlNode.attributeAsBoolean(key: String): Boolean? {
-    val raw = attributes[key] ?: return null
-    return when(raw.toLowerCase()) {
-        "true" -> true
-        "false" -> false
-        else -> null
-    }
-}
-fun XmlNode.attributeAsDouble(key: String): Double? {
-    val raw = attributes[key] ?: return null
-    return when {
-        else -> raw.filter { it.isDigit() || it == '.' || it == '-' }.toDoubleOrNull()
-    }
-}
-
-fun XmlNode.attributeAsImage(key: String): String? {
-    val raw = attributes[key] ?: return null
-    return when {
-        raw.startsWith("@drawable/") -> "UIImage(named: \"${raw.removePrefix("@drawable/")}\") ?? ${attributeAsLayer(key, "view")}.toImage()"
-        raw.startsWith("@mipmap/") -> "UIImage(named: \"${raw.removePrefix("@mipmap/")}\")"
-        else -> null
-    }
-}
-
-
-fun XmlNode.attributeAsColor(key: String): String? {
-    val raw = attributes[key] ?: return null
-    return when {
-        raw.startsWith("@color/") -> {
-            val colorName = raw.removePrefix("@color/")
-            "ResourcesColors.${colorName.camelCase()}"
-        }
-        raw.startsWith("@android:color/") -> {
-            val colorName = raw.removePrefix("@android:color/")
-            "ResourcesColors.${colorName.camelCase()}"
-        }
-        raw.startsWith("#") -> {
-            raw.hashColorToUIColor()
-        }
-        else -> "UIColor.black"
-    }
 }

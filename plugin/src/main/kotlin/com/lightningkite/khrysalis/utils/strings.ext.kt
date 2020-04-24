@@ -5,7 +5,8 @@ import java.io.InputStream
 import java.security.MessageDigest
 
 
-fun String.snakeCase(): String = this.replace(Regex("[A-Z]+")) { "_" + it.value.toLowerCase() }.trim('_')
+fun String.snakeCase(): String = this.replace(Regex("[A-Z]+")) { "_" + it.value.toLowerCase() }.trim('_').replace("-", "_")
+fun String.kabobCase(): String = this.replace(Regex("[A-Z]+")) { "-" + it.value.toLowerCase() }.trim('-').replace("_", "-")
 fun String.javaify(): String = this
     .replace(Regex("\\.([a-zA-Z])")) {
         it.groupValues[1].toUpperCase()

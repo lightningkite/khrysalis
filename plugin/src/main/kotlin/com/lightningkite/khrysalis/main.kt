@@ -1,13 +1,10 @@
 package com.lightningkite.khrysalis
 
-import com.lightningkite.khrysalis.layout.convertLayoutsToSwift
-import com.lightningkite.khrysalis.layout.createAndroidLayoutClasses
-import com.lightningkite.khrysalis.swift.convertKotlinToSwift
-import com.lightningkite.khrysalis.swift.convertKotlinToSwiftByFolder
+import com.lightningkite.khrysalis.web.layout.convertLayoutsToHtml
 import java.io.File
 
 
-const val INTERFACE_SCAN_VERSION: Int = 2
+const val INTERFACE_SCAN_VERSION: Int = 3
 const val VERSION: Int = 12
 
 fun main(vararg args: String) {
@@ -15,12 +12,20 @@ fun main(vararg args: String) {
 //    println("Checking ${File("./testData").walkTopDown()
 //        .filter { it.extension == "kt" }
 //        .filter { it.name.contains(".shared") }.toList()}")
-    convertKotlinToSwiftByFolder(
-        interfacesOut = File("./testDataOutput/interfaces.json"),
-        baseKotlin = File("./testData/shared"),
-        baseSwift = File("./testDataOutput/shared"),
-        clean = true
-    )
+//    convertKotlinToSwiftByFolder(
+//        interfacesOut = File("./testDataOutput/interfaces.json"),
+//        baseKotlin = File("./testData/shared"),
+//        baseSwift = File("./testDataOutput/shared"),
+//        clean = true
+//    )
+//    convertLayoutsToHtmlRaw(
+//        androidMainFolder = File("testData"),
+//        webFolder = File("testDataOutputTs")
+//    )
+//    convertLayoutsToHtml(
+//        androidMainFolder = File("/Users/josephivie/StudioProjects/khrysalis-template/android/app/src/main"),
+//        webFolder = File("/Users/josephivie/StudioProjects/khrysalis-template/android/web/src")
+//    )
 //    convertResourcesToIos(
 //        androidResourcesFolder = File("./testData/res"),
 //        baseFolderForLocalizations = File("./testDataOutput/localizations"),

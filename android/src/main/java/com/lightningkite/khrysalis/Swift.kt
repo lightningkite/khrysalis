@@ -1,6 +1,5 @@
 package com.lightningkite.khrysalis
 
-import android.net.Uri
 import java.lang.ref.WeakReference
 import kotlin.reflect.KProperty
 
@@ -10,7 +9,6 @@ typealias AnyHashable = Any
 typealias Hashable = Any
 typealias Equatable = Any
 typealias SomeEnum = Enum<*>
-typealias Uri = Uri
 
 @Target(AnnotationTarget.TYPE)
 annotation class escaping

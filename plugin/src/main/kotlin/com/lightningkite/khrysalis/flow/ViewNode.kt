@@ -1,6 +1,6 @@
 package com.lightningkite.khrysalis.flow
 
-import com.lightningkite.khrysalis.layout.Styles
+import com.lightningkite.khrysalis.ios.layout.Styles
 import com.lightningkite.khrysalis.utils.XmlNode
 import com.lightningkite.khrysalis.utils.camelCase
 import java.io.File
@@ -132,12 +132,12 @@ class ViewNode(
 
     fun gather(node: XmlNode, xml: File, styles: Styles, parentPath: String? = "xml") {
         val path = parentPath?.let { parentPath ->
-            node.attributes["android:id"]?.removePrefix("@+id/")?.camelCase()?.let {
+            node.allAttributes["android:id"]?.removePrefix("@+id/")?.camelCase()?.let {
                 parentPath + "." + it
             }
         }
-        node.attributes[attributePush]?.let {
-            val onStack = node.attributes[attributeOnStack] ?: "stack"
+        node.allAttributes[attributePush]?.let {
+            val onStack = node.allAttributes[attributeOnStack] ?: "stack"
             operations.add(
                 ViewStackOp.Push(
                     stack = onStack,
@@ -152,8 +152,8 @@ class ViewNode(
                 )
             )
         }
-        node.attributes[attributeSwap]?.let {
-            val onStack = node.attributes[attributeOnStack] ?: "stack"
+        node.allAttributes[attributeSwap]?.let {
+            val onStack = node.allAttributes[attributeOnStack] ?: "stack"
             operations.add(
                 ViewStackOp.Swap(
                     stack = onStack,
@@ -168,8 +168,8 @@ class ViewNode(
                 )
             )
         }
-        node.attributes[attributeReset]?.let {
-            val onStack = node.attributes[attributeOnStack] ?: "stack"
+        node.allAttributes[attributeReset]?.let {
+            val onStack = node.allAttributes[attributeOnStack] ?: "stack"
             operations.add(
                 ViewStackOp.Reset(
                     stack = onStack,
@@ -184,8 +184,8 @@ class ViewNode(
                 )
             )
         }
-        node.attributes[attributePopTo]?.let {
-            val onStack = node.attributes[attributeOnStack] ?: "stack"
+        node.allAttributes[attributePopTo]?.let {
+            val onStack = node.allAttributes[attributeOnStack] ?: "stack"
             operations.add(
                 ViewStackOp.PopTo(
                     stack = onStack,
@@ -200,8 +200,8 @@ class ViewNode(
                 )
             )
         }
-        node.attributes[attributePop]?.let {
-            (node.attributes[attributeOnStack]?.split(';') ?: listOf("stack")).forEach {
+        node.allAttributes[attributePop]?.let {
+            (node.allAttributes[attributeOnStack]?.split(';') ?: listOf("stack")).forEach {
                 operations.add(ViewStackOp.Pop(stack = it))
                 requires.add(
                     ViewVar(
@@ -212,8 +212,8 @@ class ViewNode(
                 )
             }
         }
-        node.attributes[attributeDismiss]?.let {
-            (node.attributes[attributeOnStack]?.split(';') ?: listOf("stack")).forEach {
+        node.allAttributes[attributeDismiss]?.let {
+            (node.allAttributes[attributeOnStack]?.split(';') ?: listOf("stack")).forEach {
                 operations.add(ViewStackOp.Dismiss(stack = it))
                 requires.add(
                     ViewVar(
@@ -224,9 +224,9 @@ class ViewNode(
                 )
             }
         }
-        node.attributes[attributeStackId]?.let { stackId ->
+        node.allAttributes[attributeStackId]?.let { stackId ->
             provides.add(ViewVar(stackId, "ObservableStack[ViewGenerator]", "ObservableStack()"))
-            node.attributes[attributeStackDefault]?.let {
+            node.allAttributes[attributeStackDefault]?.let {
                 operations.add(
                     ViewStackOp.Embed(
                         stack = stackId,
@@ -235,7 +235,7 @@ class ViewNode(
                 )
             }
         }
-        node.attributes[attributeRequires]?.let {
+        node.allAttributes[attributeRequires]?.let {
             it.split(';').filter { it.isNotBlank() }.forEach {
                 val newVar = ViewVar(
                     name = it.substringBefore(':').trim(),
@@ -247,7 +247,7 @@ class ViewNode(
                 requires.add(newVar)
             }
         }
-        node.attributes[attributeProvides]?.let {
+        node.allAttributes[attributeProvides]?.let {
             it.split(';').filter { it.isNotBlank() }.forEach {
                 provides.add(
                     ViewVar(
@@ -260,12 +260,12 @@ class ViewNode(
             }
         }
         if (node.name == "include") {
-            node.attributes["layout"]?.let {
+            node.allAttributes["layout"]?.let {
                 val file = xml.parentFile.resolve(it.removePrefix("@layout/").plus(".xml"))
                 gather(XmlNode.read(file, styles), xml, styles, path)
             }
         }
-        node.attributes["tools:listitem"]?.let {
+        node.allAttributes["tools:listitem"]?.let {
             val file = xml.parentFile.resolve(it.removePrefix("@layout/").plus(".xml"))
             gather(XmlNode.read(file, styles), xml, styles, parentPath)
         }

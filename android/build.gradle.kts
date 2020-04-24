@@ -1,8 +1,5 @@
-import com.lightningkite.khrysalis.KhrysalisSettings
-import com.lightningkite.khrysalis.convertResourcesToIos
-import com.lightningkite.khrysalis.layout.convertLayoutsToSwift
-import com.lightningkite.khrysalis.layout.createAndroidLayoutClasses
-import com.lightningkite.khrysalis.swift.convertKotlinToSwift
+import com.lightningkite.khrysalis.gradle.KhrysalisPluginExtension
+import com.lightningkite.khrysalis.ios.layout.mapViews
 
 buildscript {
     val kotlin_version = "1.3.50"
@@ -12,7 +9,6 @@ buildscript {
         mavenLocal()
     }
     dependencies {
-        //        classpath("com.lightningkite:khrysalis:0.1.0")
         classpath("com.lightningkite.khrysalis:plugin:0.1.0")
         classpath("com.android.tools.build:gradle:3.5.0")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
@@ -27,6 +23,16 @@ plugins {
     id("kotlin-android")
     id("kotlin-android-extensions")
     id("digital.wup.android-maven-publish") version "3.6.2"
+}
+
+apply(plugin = "com.lightningkite.khrysalis")
+
+configure<KhrysalisPluginExtension> {
+    projectName = "Khrysalis"
+    organizationName = "Lightning Kite"
+    swiftConversion = {
+        imports = listOf("RxSwift", "RxRelay")
+    }
 }
 
 group = "com.lightningkite.khrysalis"
@@ -99,42 +105,5 @@ publishing {
             artifactId = project.name
             version = project.version.toString()
         }
-    }
-}
-
-KhrysalisSettings.verbose = true
-
-val androidBase = project.projectDir
-val iosBase = project.projectDir.resolve("../ios/Khrysalis")
-
-tasks.create("khrysalisConvertKotlinToSwiftClean") {
-    this.group = "build"
-    doLast {
-        println("Started on $androidBase")
-        convertKotlinToSwift(
-            androidFolder = androidBase,
-            iosFolder = iosBase,
-            clean = true,
-            setup = {
-                this.imports = listOf("RxSwift", "RxRelay")
-            }
-        )
-        println("Finished")
-    }
-}
-
-tasks.create("khrysalisConvertKotlinToSwift") {
-    this.group = "build"
-    doLast {
-        println("Started on $androidBase")
-        convertKotlinToSwift(
-            androidFolder = androidBase,
-            iosFolder = iosBase,
-            clean = false,
-            setup = {
-                this.imports = listOf("RxSwift", "RxRelay")
-            }
-        )
-        println("Finished")
     }
 }

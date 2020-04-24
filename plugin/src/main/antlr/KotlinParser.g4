@@ -362,7 +362,7 @@ doWhileStatement
 
 assignment
     : directlyAssignableExpression ASSIGNMENT NL* expression
-    | assignableExpression assignmentAndOperator NL* expression
+    | directlyAssignableExpression assignmentAndOperator NL* expression
     ;
 
 semi
@@ -425,7 +425,7 @@ multiplicativeExpression
     ;
 
 asExpression
-    : prefixUnaryExpression (NL* asOperator NL* type)?
+    : prefixUnaryExpression (NL* asOperator NL* type)*
     ;
 
 prefixUnaryExpression

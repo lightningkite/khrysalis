@@ -1,0 +1,199 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <link rel="stylesheet" href="src/main.css">
+    <script>
+
+        function injectOtherHtml(view, text) {
+            view.insertAdjacentHTML('beforeend', text);
+            let newChild = view.lastElementChild;
+            const scripts = Array.prototype.slice.call(newChild.getElementsByTagName("script"));
+            for (let i = 0; i < scripts.length; i++) {
+                if (scripts[i].src !== "") {
+                    const tag = document.createElement("script");
+                    tag.src = scripts[i].src;
+                    document.getElementsByTagName("head")[0].appendChild(tag);
+                } else {
+                    eval(scripts[i].innerHTML);
+                }
+            }
+        }
+
+        function isPrototypeSwapView(view) {
+            return (view).stack != null;
+        }
+
+        function prototypeSwapViewStack(view) {
+            return ((view).stack);
+        }
+
+        function setPrototypeSwapViewStack(view, stack) {
+            (view).stack = stack;
+        }
+
+        function prototypeSwapViewSetup(view, key, defaultView) {
+            id = "view_" + key;
+            if (defaultView != null) {
+                setPrototypeSwapViewStack(view, [defaultView]);
+            } else {
+                setPrototypeSwapViewStack(view, []);
+            }
+            prototypeSwapViewReload(view);
+        }
+
+        function prototypeSwapViewReload(view) {
+            const stack = prototypeSwapViewStack(view);
+            if (stack.length === 0) {
+                view.style.display = "none";
+                view.parentElement.style.display = "none";
+                return;
+            }
+            view.style.display = "block";
+            view.parentElement.style.display = "block";
+            const link = stack[stack.length - 1];
+            fetch("src/layout/" + link + ".html")
+                .then((response) => response.text())
+                .then((html) => {
+                    view.innerHTML = '';
+                    injectOtherHtml(view, html);
+                    const element = (view.lastElementChild);
+                    element.style["width"] = "100%";
+                    element.style["height"] = "100%";
+                })
+                .catch((error) => {
+                    console.warn(error)
+                });
+        }
+
+        function prototypeSwapViewPush(view, name) {
+            prototypeSwapViewStack(view).push(name);
+            prototypeSwapViewReload(view);
+        }
+
+        function prototypeSwapViewSwap(view, name) {
+            const stack = prototypeSwapViewStack(view);
+            stack.pop();
+            stack.push(name);
+            prototypeSwapViewReload(view);
+        }
+
+        function prototypeSwapViewReset(view, name) {
+            setPrototypeSwapViewStack(view, [name]);
+            prototypeSwapViewReload(view);
+        }
+
+        function prototypeSwapViewPop(view) {
+            const stack = prototypeSwapViewStack(view);
+            if (stack.length > 1) {
+                stack.pop();
+                prototypeSwapViewReload(view);
+                return true;
+            }
+            return false;
+        }
+
+        function prototypeSwapViewDismiss(view) {
+            const stack = prototypeSwapViewStack(view);
+            if (stack.length > 0) {
+                stack.pop();
+                prototypeSwapViewReload(view);
+                return true;
+            }
+            return false;
+        }
+
+        function prototypeFindTarget(view, targetName) {
+            if(targetName != null){
+                console.log("Looking for " + "view_" + targetName);
+                return document.getElementById("view_" + targetName)
+            }
+            let current = view;
+            while (true) {
+                console.log("Looking..." + current.id + " is a " + current.nodeName);
+                if (isPrototypeSwapView(current)) return current;
+                current = current.parentElement;
+                if (current == null) return null;
+            }
+        }
+
+        function prototypeFindTargets(view, targetName) {
+            if(targetName != null){
+                const parts = targetName.split(';');
+                return parts.map((x) => document.getElementById("view_" + x))
+            }
+            let current = view;
+            while (true) {
+                console.log("Looking..." + current.id + " is a " + current.nodeName);
+                if (isPrototypeSwapView(current)) return [current];
+                current = current.parentElement;
+                if (current == null) return null;
+            }
+        }
+
+        function prototypePush(view, targetName, link) {
+            prototypeSwapViewPush(prototypeFindTarget(view, targetName), link)
+        }
+
+        function prototypeSwap(view, targetName, link) {
+            prototypeSwapViewSwap(prototypeFindTarget(view, targetName), link)
+        }
+
+        function prototypeReset(view, targetName, link) {
+            prototypeSwapViewReset(prototypeFindTarget(view, targetName), link)
+        }
+
+        function prototypePop(view, targetName) {
+            for(let target of prototypeFindTargets(view, targetName)){
+                if(prototypeSwapViewPop(target)){
+                    return
+                }
+            }
+        }
+
+        function prototypeDismiss(view, targetName) {
+            for(let target of prototypeFindTargets(view, targetName)){
+                if(prototypeSwapViewDismiss(target)){
+                    return
+                }
+            }
+        }
+
+        function prototypePopulateList(view, link) {
+            fetch("src/layout/" + link + ".html")
+                .then((response) => response.text())
+                .then((html) => {
+                    for(let i = 0; i < 4; i++) {
+                        injectOtherHtml(view, html);
+                    }
+                    let children = view.children;
+                    for(let i = 0; i < children.length; i++){
+                        children[i].style.width = "100%"
+                    }
+                })
+                .catch((error) => {
+                    console.warn(error)
+                });
+        }
+
+    </script>
+</head>
+<body>
+<div id="app"></div>
+<script>
+    console.log("Hello world!");
+    const view = document.getElementById("app");
+    const link = "root";
+    fetch("src/layout/" + link + ".html")
+        .then((response) => response.text())
+        .then((html) => {
+            injectOtherHtml(view, html);
+            const element = (view.firstElementChild);
+            element.style["width"] = "100%";
+            element.style["height"] = "100%";
+        })
+        .catch((error) => {
+            console.warn(error)
+        });
+</script>
+</body>
+</html>
