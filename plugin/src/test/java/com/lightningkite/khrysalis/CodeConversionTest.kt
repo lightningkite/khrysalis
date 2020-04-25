@@ -1,8 +1,10 @@
 package com.lightningkite.khrysalis
 
 import com.lightningkite.khrysalis.ios.swift.convertKotlinToSwiftByFolder
+import com.lightningkite.khrysalis.web.convertToTypescript
 import org.junit.Test
 import java.io.File
+import java.net.URL
 
 class CodeConversionTest {
 
@@ -14,8 +16,8 @@ class CodeConversionTest {
 
         val clean = false
 
-        val isMac = false
-//        val isMac = System.getProperty("os.name").toLowerCase().let { it.contains("osx") || it.contains("mac") }
+//        val isMac = false
+        val isMac = System.getProperty("os.name").toLowerCase().let { it.contains("osx") || it.contains("mac") }
 
         if (isMac) {
             convertKotlinToSwiftByFolder(
@@ -29,13 +31,24 @@ class CodeConversionTest {
             )
         }
 
-//        convertKotlinToTypescriptByFolder(
-//            interfacesOut = File("./testDataOutput/interfaces.json").also { it.parentFile.mkdirs() },
-//            baseKotlin = File("./testData/shared"),
-//            baseTs = File("./testDataOutputTs/shared").also { it.mkdirs() },
-//            clean = true,
-//            typescript = TypescriptTranslator()
-//        )
+        val standardLibraryCopy = File("build/temp/std-lib.jar").also { it.parentFile.mkdirs() }
+        if (!standardLibraryCopy.exists()) {
+            println("Downloading standard library...")
+            standardLibraryCopy.outputStream().use { out ->
+                URL("https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.3.72/kotlin-stdlib-1.3.72.jar").openStream()
+                    .use { input ->
+                        input.copyTo(out)
+                    }
+            }
+        }
+        convertToTypescript(
+            libraries = sequenceOf(standardLibraryCopy),
+            files = File("./testData/shared").walkTopDown() + sequenceOf(File("../android/src/main/java/com/lightningkite/khrysalis/Swift.kt")),
+            output = File("./testDataOutputTs/shared").also { it.mkdirs() },
+            pluginCache = File("./build/tsTest/pluginCache"),
+            buildCache = File("./build/tsTest/pluginCache"),
+            equivalents = File("../kotlin-compiler-plugin-typescript/replacements").walkTopDown()
+        )
 
         val results = kotlinFiles.walkTopDown().filter { it.name.endsWith(".shared.kt") }.associate { kotlinFile ->
             val relative = kotlinFile.relativeTo(kotlinFiles)
@@ -46,38 +59,45 @@ class CodeConversionTest {
             var expectedLast = ""
             kotlinFile.nameWithoutExtension to (mapOf(
                 "kotlin" to try {
-                    ExecuteFileTester.kotlin(kotlinFile, clean = clean, additionalSources = listOf(File("../android/src/main/java/com/lightningkite/khrysalis/Swift.kt")))
+                    ExecuteFileTester.kotlin(
+                            kotlinFile,
+                            clean = clean,
+                            additionalSources = listOf(File("../android/src/main/java/com/lightningkite/khrysalis/Swift.kt"))
+                        )
                         .also { expectedLast = it }
                 } catch (e: Exception) {
                     e.printStackTrace()
                     "FAILED TO COMPILE/EXECUTE: ${e.message}"
-                }//,
-//                "typescript" to try {
-//                    ExecuteFileTester.typescript(typescriptFile, clean = clean)
-//                    .also {
-//                        if(expectedLast == it) {
-//                            System.out.print(".")
-//                        } else {
-//                            System.out.print("F")
-//                        }
-//                        System.out.flush()
-//                    }
-//                } catch(e:Exception){
-//                 e.printStackTrace()
-//                    "FAILED TO COMPILE/EXECUTE"
-//                }
+                },
+                "typescript" to try {
+                    ExecuteFileTester.typescript(typescriptFile, clean = clean)
+                        .also {
+                            if (expectedLast == it) {
+                                print(".")
+                            } else {
+                                print("F")
+                            }
+                            System.out.flush()
+                        }
+                } catch (e: Exception) {
+                    e.printStackTrace()
+                    "FAILED TO COMPILE/EXECUTE"
+                }
             ) + if (isMac) {
                 mapOf(
                     "swift" to try {
-                        ExecuteFileTester.swift(swiftFile, clean = clean, directories = listOf(File("../ios/Khrysalis/com/lightningkite/khrysalis/kotlin")))
-                            .also {
-                                if(expectedLast == it) {
-                                    System.out.print(".")
-                                } else {
-                                    System.out.print("F")
-                                }
-                                System.out.flush()
+                        ExecuteFileTester.swift(
+                            swiftFile,
+                            clean = clean,
+                            directories = listOf(File("../ios/Khrysalis/com/lightningkite/khrysalis/kotlin"))
+                        ).also {
+                            if (expectedLast == it) {
+                                print(".")
+                            } else {
+                                print("F")
                             }
+                            System.out.flush()
+                        }
                     } catch (e: Exception) {
                         e.printStackTrace()
                         "FAILED TO COMPILE/EXECUTE: ${e.message}"

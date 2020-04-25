@@ -51,6 +51,40 @@ class TestClass {
         println(topLevelVirtual)
         topLevelHybrid = -3
         println(topLevelHybrid)
+
+        TestClass.companionReal = -1
+        println(TestClass.companionReal)
+        TestClass.companionVirtual = -2
+        println(TestClass.companionVirtual)
+        TestClass.companionHybrid = -3
+        println(TestClass.companionHybrid)
+
+        Companion.companionReal = -1
+        println(Companion.companionReal)
+        Companion.companionVirtual = -2
+        println(Companion.companionVirtual)
+        Companion.companionHybrid = -3
+        println(Companion.companionHybrid)
+
+        companionReal = -1
+        println(companionReal)
+        companionVirtual = -2
+        println(companionVirtual)
+        companionHybrid = -3
+        println(companionHybrid)
+    }
+
+    companion object {
+        var companionReal: Int = 0
+        var companionVirtual: Int
+            get() = 1
+            set(value){
+                println("Attempted to set ${value}")
+            }
+        var companionHybrid: Int = 2
+            set(value){
+                field = value + 1
+            }
     }
 }
 
@@ -111,6 +145,7 @@ var TestObject.extensionProperty: Int
 
 fun test(){
     val instance = TestClass()
+    println(TestObject.objectReal)
     println(instance.memberReal)
     println(magicVariable)
     magicVariable = 9001.absoluteValue.plus(4)

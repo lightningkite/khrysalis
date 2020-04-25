@@ -15,8 +15,9 @@
     - [X] When
         - [X] Subject As Statement
         - [X] Subject As Expression
-        - [ ] Subject with Cast or Range As Statement
-        - [ ] Subject with Cast or Range As Expression
+        - [X] Subject With Variable
+        - [X] Subject with Cast or Range As Statement
+        - [X] Subject with Cast or Range As Expression
         - [X] No Subject As Statement
         - [X] No Subject As Expression
     - [X] While
@@ -37,6 +38,7 @@
 - [X] Operators -- 1 day
     - [X] Operator Overloading
     - [X] `in` and `is`
+    - [X] Casting and Type Checking
 - [ ] Classes -- 3 days
     - [ ] Inheritance
     - [ ] Interface Implementation
@@ -51,8 +53,9 @@
         - [ ] Serialization
         - [ ] Deserialization
     - [ ] Member public/private
-    - [ ] Object Access `.INSTANCE`
-        - [ ] Companion Objects
+    - [X] Object Access `.INSTANCE`
+        - [X] Companion Objects
+        - [ ] Access to companion object without explicit reference
 - [ ] Generics -- 1/2 day
     - [ ] Type Parameters
     - [ ] Type Arguments

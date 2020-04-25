@@ -8,6 +8,7 @@ import com.lightningkite.khrysalis.ios.layout.*
 import com.lightningkite.khrysalis.ios.*
 import com.lightningkite.khrysalis.ios.swift.*
 import com.lightningkite.khrysalis.utils.*
+import com.lightningkite.khrysalis.web.convertToTypescript
 import com.lightningkite.khrysalis.web.layout.HtmlTranslator
 import com.lightningkite.khrysalis.web.layout.convertLayoutsToHtml
 import com.lightningkite.khrysalis.web.setUpWebProject
@@ -198,65 +199,30 @@ class KhrysalisPlugin : Plugin<Project> {
         project.tasks.create("khrysalisConvertKotlinToTypescript") { task ->
             task.group = "web"
             task.doFirst {
-                val result = K2JVMCompiler().exec(
-                    messageCollector = object : MessageCollector {
-                        override fun clear() {
-
-                        }
-
-                        override fun hasErrors(): Boolean {
-                            return false
-                        }
-
-                        override fun report(
-                            severity: CompilerMessageSeverity,
-                            message: String,
-                            location: CompilerMessageLocation?
-                        ) {
-                            if (message.isNotBlank() && severity <= CompilerMessageSeverity.STRONG_WARNING) {
-                                println(message + ":")
-                                location?.toString()?.let { println(it) }
+                val androidJar = androidSdkDirectory()!!.resolve("platforms/android-${sdkLevel()}/android.jar")
+                val libraries = sequenceOf(androidJar) + project.configurations.getByName("debugCompileClasspath").files.mapNotNull {
+                    when(it.extension){
+                        "aar" -> project.zipTree(it)
+                            .matching {
+                                it.include("classes.jar")
                             }
-                        }
-
-                    },
-                    services = Services.EMPTY,
-                    arguments = K2JVMCompilerArguments().apply {
-                        val originalTask = project.tasks.getByName("compileDebugKotlin") as KotlinCompile
-                        this.freeArgs = originalTask.source.toList().filter { it.extension in setOf("kt", "java") }.map { it.absolutePath }
-                        println("freeArgs: ${this.freeArgs.joinToString("\n","\n")}")
-                        val androidJar = androidSdkDirectory()!!.resolve("platforms/android-${sdkLevel()}/android.jar")
-                        this.classpathAsList =
-                            listOf(androidJar) + project.configurations.getByName("debugCompileClasspath").files.mapNotNull {
-                                when(it.extension){
-                                    "aar" -> project.zipTree(it)
-                                        .matching {
-                                            it.include("classes.jar")
-                                        }
-                                        .asSequence()
-                                        .firstOrNull()
-                                    else -> it
-                                }
-                            }
-                        this.pluginClasspaths = project.buildDir.resolve("khrysalis-kcp/typescript.jar")
-                            .also { it.parentFile.mkdirs() }
-                            .also {
-                                copyFolderOutFromRes("compiler-plugins", it.parentFile)
-                            }
-                            .let { arrayOf(it.path) }
-                        this.pluginOptions =
-                            arrayOf(
-                                "plugin:com.lightningkite.khrysalis.typescript:outputDirectory=\"${webBase().resolve("src").path}\"",
-                                "plugin:com.lightningkite.khrysalis.typescript:equivalents=\"${(ext.equivalentsDirectories + File(
-                                    project.projectDir.resolve("src/main/equivalents").path
-                                )).joinToString(File.pathSeparator)}\""
-                            )
-                        this.destinationAsFile = project.buildDir.resolve("testBuild").also { it.mkdirs() }
+                            .asSequence()
+                            .firstOrNull()
+                        else -> it
                     }
+                }.asSequence()
+                val originalTask = project.tasks.getByName("compileDebugKotlin") as KotlinCompile
+                val files = originalTask.source.toList().asSequence()
+                convertToTypescript(
+                    libraries = libraries,
+                    files = files,
+                    pluginCache = project.buildDir.resolve("khrysalis-kcp"),
+                    buildCache = project.buildDir.resolve("testBuild"),
+                    equivalents = (ext.equivalentsDirectories + File(
+                        project.projectDir.resolve("src/main/equivalents").path
+                    )).asSequence(),
+                    output = webBase().resolve("src")
                 )
-                if (result.code != 0) {
-                    throw IllegalStateException("Got a code ${result.code} back from the compiler! ${result.name}")
-                }
             }
         }
         project.tasks.create("khrysalisWeb") { task ->

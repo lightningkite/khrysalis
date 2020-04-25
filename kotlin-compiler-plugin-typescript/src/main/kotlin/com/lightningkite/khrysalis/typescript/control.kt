@@ -53,14 +53,23 @@ fun TypescriptTranslator.registerControl() {
     }
 
     handle<KtWhenExpression>(
-        condition = { typedRule.subjectExpression != null },
+        condition = { typedRule.subjectExpression != null && typedRule.entries.flatMap { it.conditions.toList() }.all { it is KtWhenConditionWithExpression } },
         priority = 100
     ) {
         if (typedRule.resolvedUsedAsExpression == true) {
             -"(() => {"
         }
+        val subj = typedRule.subjectExpression
+        if(subj is KtProperty){
+            -subj
+            -";\n"
+        }
         -"switch("
-        -typedRule.subjectExpression
+        if(subj is KtProperty) {
+            -subj.nameIdentifier
+        } else {
+            -subj
+        }
         -"){\n"
         typedRule.entries.forEach { entry ->
             entry.conditions.forEach { con ->
@@ -94,8 +103,6 @@ fun TypescriptTranslator.registerControl() {
             -"\nbreak;\n"
         }
         -"}\n"
-//        -typedRule.allChildren
-//
         if (typedRule.resolvedUsedAsExpression == true) {
             -"})()"
         }
@@ -115,6 +122,78 @@ fun TypescriptTranslator.registerControl() {
                     it.conditions.asIterable().forEachBetween(
                         forItem = {
                             -it
+                        },
+                        between = {
+                            -" || "
+                        }
+                    )
+                    -")"
+                }
+                if(it.expression is KtBlockExpression) {
+                    -it.expression
+                }else{
+                    -"{\n"
+                    if (typedRule.resolvedUsedAsExpression == true) {
+                        -"return "
+                    }
+                    -it.expression
+                    -"\n}"
+                }
+            },
+            between = {
+                -"else "
+            }
+        )
+
+        if (typedRule.resolvedUsedAsExpression == true) {
+            -"})()"
+        }
+    }
+
+    handle<KtWhenExpression>(
+        condition = { typedRule.subjectExpression != null },
+        priority = 10
+    ) {
+        if (typedRule.resolvedUsedAsExpression == true) {
+            -"(() => {"
+        }
+        val subj = typedRule.subjectExpression
+        if(subj is KtProperty){
+            -subj
+            -";\n"
+        }
+        fun subjExpr(): Any? {
+            return if(subj is KtProperty) {
+                subj.nameIdentifier
+            } else {
+                subj
+            }
+        }
+        -typedRule.entries.forEachBetween(
+            forItem = { it ->
+                if(!it.isElse) {
+                    -"if("
+                    it.conditions.asIterable().forEachBetween(
+                        forItem = {
+                            when(it){
+                                is KtWhenConditionWithExpression -> {
+                                    -subjExpr()
+                                    -" == "
+                                    -it
+                                }
+                                is KtWhenConditionInRange -> {
+                                    -it
+                                    -".contains("
+                                    -subjExpr()
+                                    -")"
+                                }
+                                is KtWhenConditionIsPattern -> {
+                                    emitIsExpression(
+                                        subjExpr(),
+                                        it.typeReference!!.resolvedType!!
+                                    )
+                                }
+                            }
                         },
                         between = {
                             -" || "
