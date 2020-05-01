@@ -110,10 +110,10 @@ class KotlinTypescriptExtension(
                     .resolve(file.name.removeSuffix(".kt").plus(".ts"))
                 collector?.report(CompilerMessageSeverity.INFO, "Translating $file to $outputFile")
                 outputFile.parentFile.mkdirs()
+                val out = TypescriptFileEmitter()
+                translator.translate(file, out)
                 outputFile.bufferedWriter().use {
-                    val tabWriter = SmartTabWriter(it)
-                    translator.translate(file, tabWriter)
-                    tabWriter.flush()
+                    out.write(it, file)
                     it.flush()
                 }
             } catch (t: Throwable) {

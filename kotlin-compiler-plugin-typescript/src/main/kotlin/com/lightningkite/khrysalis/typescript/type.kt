@@ -209,7 +209,7 @@ fun TypescriptTranslator.registerType(){
     )
 }
 
-fun PartialTranslatorByType<Appendable, Unit, Any>.ContextByType<*>.emitIsExpression(
+fun PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByType<*>.emitIsExpression(
     expression: Any?,
     resolvedType: KotlinType
 ) {

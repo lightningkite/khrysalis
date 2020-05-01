@@ -2,10 +2,7 @@ package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.generic.PartialTranslatorByType
 import com.lightningkite.khrysalis.generic.TranslatorInterface
-import com.lightningkite.khrysalis.typescript.replacements.GetReplacement
 import com.lightningkite.khrysalis.typescript.replacements.Replacements
-import com.lightningkite.khrysalis.typescript.replacements.SetReplacement
-import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.AnalysisExtensions
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
@@ -16,14 +13,12 @@ import org.jetbrains.kotlin.psi.psiUtil.allChildren
 import org.jetbrains.kotlin.resolve.BindingContext
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 import org.jetbrains.kotlin.resolve.scopes.receivers.ExtensionReceiver
-import kotlin.collections.ArrayList
-import kotlin.text.Appendable
 
 class TypescriptTranslator(
     override val bindingContext: BindingContext,
     val collector: MessageCollector? = null,
     val replacements: Replacements = Replacements()
-) : PartialTranslatorByType<Appendable, Unit, Any>(), TranslatorInterface<Appendable, Unit>, AnalysisExtensions {
+) : PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>(), TranslatorInterface<TypescriptFileEmitter, Unit>, AnalysisExtensions {
 
     data class ReceiverAssignment(val fqName: String, val tsName: String)
 
@@ -60,7 +55,7 @@ class TypescriptTranslator(
         return entry?.tsName ?: "this"
     }
 
-    override fun emitDefault(identifier: Class<*>, rule: Any, out: Appendable) {
+    override fun emitDefault(identifier: Class<*>, rule: Any, out: TypescriptFileEmitter) {
         when (rule) {
             is Array<*> -> rule.forEach { if(it != null) translate(it, out) }
             is Iterable<*> -> rule.forEach { if(it != null) translate(it, out) }
@@ -107,3 +102,4 @@ class TypescriptTranslator(
         }
     }
 }
+
