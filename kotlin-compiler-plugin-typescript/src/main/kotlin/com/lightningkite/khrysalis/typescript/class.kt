@@ -115,10 +115,10 @@ fun TypescriptTranslator.registerClass() {
             -") {\n"
             typedRule.superTypeListEntries.mapNotNull { it as? KtSuperTypeCallEntry }.takeUnless { it.isEmpty() }
                 ?.firstOrNull()?.let {
-                -"super"
-                -it.valueArgumentList
-                -";"
-            }
+                    -"super"
+                    -it.valueArgumentList
+                    -";"
+                }
             //Parameter assignment first
             cons.valueParameters.asSequence().filter { it.hasValOrVar() }.forEach {
                 -"this."
@@ -157,16 +157,16 @@ fun TypescriptTranslator.registerClass() {
         } ?: run {
             typedRule.superTypeListEntries.mapNotNull { it as? KtSuperTypeCallEntry }.takeUnless { it.isEmpty() }
                 ?.firstOrNull()?.let {
-                -"constructor() { super"
-                -it.valueArgumentList
-                -"; }"
-            }
+                    -"constructor() { super"
+                    -it.valueArgumentList
+                    -"; }"
+                }
         }
 
         if (typedRule.isData()) {
             //Generate hashCode() if not present
             if (typedRule.body?.declarations?.any { it is FunctionDescriptor && (it as KtDeclaration).name == "hashCode" && it.valueParameters.isEmpty() } != true) {
-                -"hashCode(): number {\nlet hash = 17;\n"
+                -"public hashCode(): number {\nlet hash = 17;\n"
                 typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEach { param ->
                     val type = param.typeReference?.resolvedType?.getJetTypeFqName(false)
                         ?: throw IllegalArgumentException("No type reference available to generate hashCode() function")
@@ -198,7 +198,7 @@ fun TypescriptTranslator.registerClass() {
 
             //Generate equals() if not present
             if (typedRule.body?.declarations?.any { it is FunctionDescriptor && (it as KtDeclaration).name == "equals" && it.valueParameters.size == 1 } != true) {
-                -"equals(other: any): boolean { return other instanceof "
+                -"public equals(other: any): boolean { return other instanceof "
                 -typedRule.nameIdentifier
                 typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEach { param ->
                     -" && "
@@ -239,7 +239,7 @@ fun TypescriptTranslator.registerClass() {
 
             //Generate toString() if not present
             if (typedRule.body?.declarations?.any { it is FunctionDescriptor && (it as KtDeclaration).name == "toString" && it.valueParameters.isEmpty() } != true) {
-                -"toString(): string { return "
+                -"public toString(): string { return "
                 -'`'
                 -typedRule.nameIdentifier
                 -'('
@@ -256,6 +256,29 @@ fun TypescriptTranslator.registerClass() {
                 -'`'
                 -" }\n"
             }
+
+            //Generate copy(..)
+            -"public copy("
+            typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEachBetween(
+                forItem = {
+                    -it.nameIdentifier
+                    -": "
+                    -it.typeReference
+                    -" = this."
+                    -it.nameIdentifier
+                },
+                between = { -", " }
+            )
+            -") { return new "
+            -typedRule.nameIdentifier
+            -"("
+            typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEachBetween(
+                forItem = {
+                    -it.nameIdentifier
+                },
+                between = { -", " }
+            )
+            -"); }\n"
         }
 
         -typedRule.body
@@ -356,173 +379,6 @@ fun TypescriptTranslator.registerClass() {
     }
 
     handle<KtClassInitializer> { /*skip*/ }
-
-//    handle<KotlinParser.ClassDeclarationContext>(
-//        condition = { typedRule.INTERFACE() != null },
-//        priority = 100
-//    ) {
-//        -"interface "
-//        -typedRule.simpleIdentifier()
-//        -typedRule.typeParameters()
-//        -" "
-//        typedRule.delegationSpecifiers()?.annotatedDelegationSpecifier()?.asSequence()
-//            ?.mapNotNull { it.delegationSpecifier()?.userType() }
-//            ?.filter { it.text in skippedExtensions }
-//            ?.takeUnless { it.none() }
-//            ?.let {
-//                -"extends "
-//                it.forEachBetween(
-//                    forItem = { -it },
-//                    between = { -", " }
-//                )
-//                -" "
-//            }
-//        -"{\n"
-//
-//        -"readonly implementsInterface"
-//        -typedRule.simpleIdentifier()
-//        -": boolean;\n"
-//
-//        typedRule.classBody()?.classMemberDeclarations()?.classMemberDeclaration()?.forEach {
-//            -it
-//        }
-//
-//        -"}\n"
-//    }
-//
-//    handle<KotlinParser.ClassDeclarationContext> {
-//        -"class "
-//        -typedRule.simpleIdentifier()
-//        -typedRule.typeParameters()
-//        -" "
-//        var extendedOne: KotlinParser.ConstructorInvocationContext? = null
-//        typedRule.delegationSpecifiers()?.annotatedDelegationSpecifier()?.let {
-//            extendedOne = it.asSequence().mapNotNull {
-//                it.delegationSpecifier()?.constructorInvocation()
-//            }.firstOrNull()
-//            extendedOne?.let {
-//                -"extends "
-//                -it.userType()
-//                -" "
-//            }
-//            it.asSequence()
-//                .mapNotNull { it.delegationSpecifier()?.userType() }
-//                .filter { it.text in skippedExtensions }
-//                .takeUnless { it.none() }
-//                ?.let {
-//                    -"implements "
-//                    it.forEachBetween(
-//                        forItem = { -it },
-//                        between = { -", " }
-//                    )
-//                    -" "
-//                }
-//        }
-//        -"{\n"
-//
-//        typedRule.delegationSpecifiers()?.annotatedDelegationSpecifier()
-//            ?.mapNotNull { it.delegationSpecifier()?.userType() }
-//            ?.filter { it.text in skippedExtensions }
-//            ?.forEach {
-//                -"implementsInterface"
-//                -it.translatedTextWithoutArguments(this).replace(".", "")
-//                -": boolean = true;\n"
-//
-////                resolve(currentFile, it.withoutArgumentText()).firstOrNull()?.let { interfaceData ->
-////                    //write missing declarations with defaults
-////                    typedRule.classBody()
-////                        ?.classMemberDeclarations()
-////                        ?.classMemberDeclaration()
-////                        ?.mapNotNull { it.declaration()?.functionDeclaration() }
-////                        ?.filter {
-////                            it.simpleIdentifier() !in
-////                        }
-////                }
-//            }
-//
-//        typedRule.primaryConstructor()?.classParameters()?.classParameter()?.forEach {
-//            if (it.VAL() != null || it.VAR() != null) {
-//                -it.simpleIdentifier()
-//                -": "
-//                -it.type()
-//                -";\n"
-//            }
-//        }
-//        -"\n"
-//        typedRule.primaryConstructor()?.modifiers()?.visibility()?.let {
-//            -it.name.toLowerCase()
-//        } ?: run {
-//            -"public"
-//        }
-//        -" constructor("
-//        typedRule.primaryConstructor()?.classParameters()?.classParameter()?.forEachBetween(
-//            forItem = {
-//                -it.simpleIdentifier()
-//                -": "
-//                -it.type()
-//                it.expression()?.let {
-//                    -" = "
-//                    -it
-//                }
-//            },
-//            between = { -", " }
-//        )
-//        -") {\n"
-//        extendedOne?.let {
-//            -"super"
-//            -it.valueArguments()
-//            -";\n"
-//        }
-//        typedRule.primaryConstructor()?.classParameters()?.classParameter()?.forEach {
-//            if (it.VAL() != null || it.VAR() != null) {
-//                -"this."
-//                -it.simpleIdentifier()
-//                -" = "
-//                -it.simpleIdentifier()
-//                -";\n"
-//            }
-//        }
-//        typedRule.classBody()?.classMemberDeclarations()?.classMemberDeclaration()?.forEach {
-//            -it.anonymousInitializer()?.block()?.statements()
-//        }
-//        -"}\n"
-//
-//        //TODO: Copy support?
-////        if(typedRule.modifiers()?.modifier()?.any { it.classModifier()?.DATA() != null } == true) {
-////            -"public copy("
-////            -")"
-////        }
-//
-//        -"\n"
-//        typedRule.classBody()?.classMemberDeclarations()?.classMemberDeclaration()?.forEach {
-//            -it
-//        }
-//
-//        -"}\n"
-//    }
-//
-//    handle<KotlinParser.TypeParametersContext> {
-//        -"<"
-//        typedRule.typeParameter().forEachBetween(
-//            forItem = {
-//                -(it.simpleIdentifier())
-//                it.type()?.let {
-//                    -(" extends ")
-//                    -(it)
-//                }
-//            },
-//            between = { -(", ") }
-//        )
-//        -">"
-//    }
-//
-//    handle<KotlinParser.AnonymousInitializerContext> { /*suppress*/ }
-//
-//    handle<KotlinParser.CompanionObjectContext> {
-//        typedRule.classBody()?.classMemberDeclarations()?.classMemberDeclaration()?.forEach {
-//            -it.declaration()
-//        }
-//    }
 }
 
 private val weakKtClassPostActions = WeakHashMap<KtClass, ArrayList<() -> Unit>>()

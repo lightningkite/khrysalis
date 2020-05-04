@@ -68,11 +68,11 @@
 
 - id: kotlin.Float.hashCode
   type: call
-  template: ~this~
+  template: ~this~ # TODO
 
 - id: kotlin.Double.hashCode
   type: call
-  template: ~this~
+  template: ~this~ # TODO
 
 - id: kotlin.String.hashCode
   type: call

@@ -8,7 +8,7 @@
     - [X] Extension
     - [X] Extension-Member
     - [ ] Delegates
-- [ ] Controls
+- [X] Controls
     - [X] If
         - [X] As Statement
         - [X] As Expression
@@ -64,6 +64,10 @@
     - [X] `toString`
     - [X] Comparable
     - [X] Data Class
+        - [X] Equatable
+        - [X] Hashable
+        - [X] toString
+        - [X] Copy
     - [ ] Codable
         - [ ] Serialization
         - [ ] Deserialization
@@ -78,7 +82,7 @@
 - [ ] Top Level -- 1 day
     - [ ] `export`
     - [ ] Imports
-- [ ] Values -- 1/2 day
+- [X] Values -- 1/2 day
     - [X] Literals
     - [X] Lambdas
         - [X] With Receiver
