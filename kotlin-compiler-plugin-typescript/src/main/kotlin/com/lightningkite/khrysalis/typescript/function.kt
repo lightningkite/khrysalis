@@ -71,7 +71,7 @@ fun TypescriptTranslator.registerFunction() {
                 val ktClass = typedRule.parentOfType<KtClassBody>()!!.parentOfType<KtClass>()!!
                 ktClass.addPostAction {
                     -"\n"
-                    if(ktClass.isPublic) {
+                    if (ktClass.isPublic) {
                         -"export "
                     }
                     -"function "
@@ -407,7 +407,7 @@ fun TypescriptTranslator.registerFunction() {
             } else {
                 -", "
             }
-            fun emitParam(v: Pair<KtExpression, PsiComment?>) {
+            fun emitParam(v: Pair<Any, PsiComment?>) {
                 -v.first
                 v.second?.let {
                     -"/*"
@@ -429,6 +429,14 @@ fun TypescriptTranslator.registerFunction() {
                     }
                 } else emitParam(v.first.getArgumentExpression()!! to v.second)
             }
+        }
+        for (item in typedRule.appendArguments) {
+            if (first) {
+                first = false
+            } else {
+                -", "
+            }
+            -item
         }
         -')'
     }
@@ -462,10 +470,11 @@ fun KtValueArgumentList.withComments(): List<Pair<KtValueArgument, PsiComment?>>
 
 data class ArgumentsList(
     val on: FunctionDescriptor,
-    val prependArguments: List<Any>,
-    val orderedArguments: List<Pair<KtExpression, PsiComment?>>,
-    val namedArguments: List<Pair<KtValueArgument, PsiComment?>>,
-    val lambdaArgument: KtLambdaArgument?
+    val prependArguments: List<Any> = listOf(),
+    val appendArguments: List<Any> = listOf(),
+    val orderedArguments: List<Pair<Any, PsiComment?>> = listOf(),
+    val namedArguments: List<Pair<KtValueArgument, PsiComment?>> = listOf(),
+    val lambdaArgument: KtLambdaArgument? = null
 ) {
 
 }

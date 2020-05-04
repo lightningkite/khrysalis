@@ -40,7 +40,7 @@
     - [X] `in` and `is`
     - [X] Casting and Type Checking
     - [ ] Iterable
-    - [ ] Get/Set operators?
+    - [X] Get/Set operators
 - [ ] Classes -- 3 days
     - [X] Inheritance
     - [X] Interface Implementation
@@ -62,8 +62,8 @@
         - Plan: Literally use `hashCode()`
         - [X] Create TypeScript base
     - [X] `toString`
-    - [ ] Comparable
-    - [ ] Data Class
+    - [X] Comparable
+    - [X] Data Class
     - [ ] Codable
         - [ ] Serialization
         - [ ] Deserialization
