@@ -1,4 +1,8 @@
 ---
+- id: kotlin.Char
+  type: type
+  template: string
+
 - id: kotlin.String
   type: type
   template: string
@@ -11,3 +15,19 @@
 - id: kotlin.String.plus
   type: call
   template: ~this~ + ~0~
+
+# Equals
+- id: kotlin.Char.equals
+  type: call
+  template: ~this~ === ~0~
+- id: kotlin.String.equals
+  type: call
+  template: ~this~ === ~0~
+
+# Comparison
+- id: kotlin.Char.compareTo
+  type: call
+  template: ~this~ ~operatorToken~ ~0~
+- id: kotlin.String.compareTo
+  type: call
+  template: ~this~ ~operatorToken~ ~0~

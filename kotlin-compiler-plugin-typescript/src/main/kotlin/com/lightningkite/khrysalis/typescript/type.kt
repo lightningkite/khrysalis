@@ -4,6 +4,7 @@ import com.lightningkite.khrysalis.generic.PartialTranslator
 import com.lightningkite.khrysalis.generic.PartialTranslatorByType
 import com.lightningkite.khrysalis.generic.line
 import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
+import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.descriptors.leastPermissiveDescriptor
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.lexer.KtModifierKeywordToken
@@ -115,6 +116,7 @@ fun TypescriptTranslator.registerType(){
             val typeParametersByName = type.arguments.withIndex().associate { (index, item) -> baseType.parameters[index].name.asString() to item }
             rule.template.parts.forEach { part ->
                 when(part){
+                    is TemplatePart.Import -> out.addImport(part)
                     is TemplatePart.Text -> -part.string
                     TemplatePart.Receiver -> { }
                     TemplatePart.DispatchReceiver -> { }
@@ -141,6 +143,7 @@ fun TypescriptTranslator.registerType(){
             val typeParametersByName = type.arguments.withIndex().associate { (index, item) -> baseType.parameters[index].name.asString() to item }
             rule.template.parts.forEach { part ->
                 when(part){
+                    is TemplatePart.Import -> out.addImport(part)
                     is TemplatePart.Text -> -part.string
                     TemplatePart.Receiver -> { }
                     TemplatePart.DispatchReceiver -> { }
@@ -167,6 +170,7 @@ fun TypescriptTranslator.registerType(){
             val typeParametersByName = type.arguments.withIndex().associate { (index, item) -> baseType.parameters[index].name.asString() to item }
             rule.template.parts.forEach { part ->
                 when(part){
+                    is TemplatePart.Import -> out.addImport(part)
                     is TemplatePart.Text -> -part.string
                     TemplatePart.Receiver -> { }
                     TemplatePart.DispatchReceiver -> { }
@@ -174,8 +178,8 @@ fun TypescriptTranslator.registerType(){
                     TemplatePart.Value -> { }
                     is TemplatePart.Parameter -> { }
                     is TemplatePart.ParameterByIndex -> { }
-                    is TemplatePart.TypeParameter -> -(typeParametersByName[part.name])
-                    is TemplatePart.TypeParameterByIndex -> -(type.arguments.getOrNull(part.index))
+                    is TemplatePart.TypeParameter -> { }
+                    is TemplatePart.TypeParameterByIndex -> { }
                 }
             }
         }
@@ -218,13 +222,13 @@ fun PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByType<*>.e
             -'('
             -expression
             -" as any).implementsInterface"
-            -BasicType(resolvedType)
+            -resolvedType.getJetTypeFqName(false).split('.').joinToString("") { it.capitalize() }
         }
         resolvedType.isPrimitive() -> {
             -"typeof ("
             -expression
             -") == \""
-            -BasicType(resolvedType)
+            -resolvedType
             -'"'
         }
         else -> {

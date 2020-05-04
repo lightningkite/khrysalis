@@ -1,13 +1,16 @@
 package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
+import com.lightningkite.khrysalis.util.forEachBetween
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.descriptors.PropertyDescriptor
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
+import org.jetbrains.kotlin.psi.psiUtil.isPublic
 import org.jetbrains.kotlin.psi.psiUtil.toVisibility
+import org.jetbrains.kotlin.psi.psiUtil.visibilityModifier
 import org.jetbrains.kotlin.psi.psiUtil.visibilityModifierTypeOrDefault
 import org.jetbrains.kotlin.psi.synthetics.SyntheticClassOrObjectDescriptor
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
@@ -16,6 +19,96 @@ import java.util.concurrent.atomic.AtomicInteger
 val uniqueNumber = AtomicInteger(0)
 
 fun TypescriptTranslator.registerVariable() {
+
+    //If we belong to an interface, skip the implementations
+    handle<KtProperty>(
+        condition = {
+            typedRule.parentOfType<KtClassBody>()?.parentOfType<KtClass>()?.isInterface() == true
+        },
+        priority = 150,
+        action = {
+            if (!typedRule.isVar) {
+                -"readonly "
+            }
+            -typedRule.nameIdentifier
+            -": "
+            -typedRule.typeReference
+            -";\n"
+            val tr = typedRule
+            val resolved = tr.resolvedProperty ?: return@handle
+            val ktClass = typedRule.parentOfType<KtClassBody>()!!.parentOfType<KtClass>()!!
+            tr.getter?.let { getter ->
+                ktClass.addPostAction {
+                    -"\n"
+                    if(ktClass.isPublic) {
+                        -"export "
+                    }
+                    -"function "
+                    -resolved.tsFunctionGetDefaultName
+                    (ktClass.typeParameters + tr.typeParameters).takeUnless { it.isEmpty() }?.let {
+                        -'<'
+                        it.forEachBetween(
+                            forItem = { -it },
+                            between = { -", " }
+                        )
+                        -'>'
+                    }
+                    withReceiverScope(resolved.fqNameSafe.asString()) { r ->
+                        -'('
+                        -r
+                        -": "
+                        -ktClass.nameIdentifier
+                        -')'
+                        val body = getter.bodyExpression
+                        if (body is KtBlockExpression) {
+                            -body
+                        } else {
+                            -"{ return "
+                            -body
+                            -"; }"
+                        }
+                    }
+                }
+            }
+            tr.setter?.let { setter ->
+                ktClass.addPostAction {
+                    -"\n"
+                    if(ktClass.isPublic) {
+                        -"export "
+                    }
+                    -"function "
+                    -resolved.tsFunctionSetDefaultName
+                    (ktClass.typeParameters + tr.typeParameters).takeUnless { it.isEmpty() }?.let {
+                        -'<'
+                        it.forEachBetween(
+                            forItem = { -it },
+                            between = { -", " }
+                        )
+                        -'>'
+                    }
+                    withReceiverScope(resolved.fqNameSafe.asString()) { r ->
+                        -'('
+                        -r
+                        -": "
+                        -ktClass.nameIdentifier
+                        -", "
+                        -(setter.parameter?.name ?: "value")
+                        -": "
+                        -tr.typeReference
+                        -')'
+                        val body = setter.bodyExpression
+                        if (body is KtBlockExpression) {
+                            -body
+                        } else {
+                            -"{ return "
+                            -body
+                            -"; }"
+                        }
+                    }
+                }
+            }
+        }
+    )
 
     //Handle special case of completely virtual property
     handle<KtProperty>(
@@ -29,7 +122,7 @@ fun TypescriptTranslator.registerVariable() {
 
     handle<KtProperty> {
         if (typedRule.isMember) {
-            -typedRule.visibilityModifierTypeOrDefault().toVisibility()
+            -(typedRule.visibilityModifier() ?: "public")
             -" "
             if (!typedRule.isVar) {
                 -"readonly "
@@ -62,7 +155,7 @@ fun TypescriptTranslator.registerVariable() {
                     -"get "
                     -typedRule.nameIdentifier
                     -"(): "
-                    -(typedRule.typeReference ?: typedRule.resolvedVariable?.name) //TODO: Handle unimported type
+                    -(typedRule.typeReference ?: typedRule.resolvedVariable?.type) //TODO: Handle unimported type
                     -" { return "
                     -"this._"
                     -typedRule.nameIdentifier
@@ -71,7 +164,7 @@ fun TypescriptTranslator.registerVariable() {
                     -"function get"
                     -typedRule.nameIdentifier?.text?.capitalize()
                     -"(): "
-                    -(typedRule.typeReference ?: typedRule.resolvedVariable?.name) //TODO: Handle unimported type
+                    -(typedRule.typeReference ?: typedRule.resolvedVariable?.type) //TODO: Handle unimported type
                     -" { return "
                     -"_"
                     -typedRule.nameIdentifier
@@ -87,7 +180,7 @@ fun TypescriptTranslator.registerVariable() {
                         -typedRule.nameIdentifier
                         -"(value: "
                         -(typedRule.typeReference
-                            ?: typedRule.resolvedVariable?.name) //TODO: Handle unimported type
+                            ?: typedRule.resolvedVariable?.type) //TODO: Handle unimported type
                         -") { this._"
                         -typedRule.nameIdentifier
                         -" = value; }\n"
@@ -96,7 +189,7 @@ fun TypescriptTranslator.registerVariable() {
                         -typedRule.nameIdentifier?.text?.capitalize()
                         -"(value: "
                         -(typedRule.typeReference
-                            ?: typedRule.resolvedVariable?.name) //TODO: Handle unimported type
+                            ?: typedRule.resolvedVariable?.type) //TODO: Handle unimported type
                         -") { _"
                         -typedRule.nameIdentifier
                         -" = value; }\n"
@@ -124,7 +217,7 @@ fun TypescriptTranslator.registerVariable() {
                 -typedRule.property.receiverTypeReference
                 -"): "
                 -(typedRule.property.typeReference
-                    ?: typedRule.property.resolvedProperty!!.type.getJetTypeFqName(true))
+                    ?: typedRule.property.resolvedProperty!!.type)
                 -" "
                 typedRule.bodyExpression?.let {
                     -"{ return "
@@ -154,7 +247,7 @@ fun TypescriptTranslator.registerVariable() {
                 -", "
                 -(typedRule.parameter?.nameIdentifier ?: -"value")
                 -": "
-                -(typedRule.property.typeReference ?: typedRule.property.resolvedProperty!!.type.getJetTypeFqName(true))
+                -(typedRule.property.typeReference ?: typedRule.property.resolvedProperty!!.type)
                 -") "
                 -typedRule.bodyBlockExpression
                 -"\n"
@@ -167,12 +260,12 @@ fun TypescriptTranslator.registerVariable() {
         condition = { typedRule.isGetter && typedRule.property.isMember },
         priority = 4,
         action = {
-            -typedRule.visibilityModifierTypeOrDefault().toVisibility()
+            -(typedRule.visibilityModifier() ?: "public")
             -" get "
             -typedRule.property.nameIdentifier
             -"(): "
             -(typedRule.property.typeReference
-                ?: typedRule.property.resolvedProperty!!.type.getJetTypeFqName(true))
+                ?: typedRule.property.resolvedProperty!!.type)
             -" "
             typedRule.bodyExpression?.let {
                 -"{ return "
@@ -187,14 +280,14 @@ fun TypescriptTranslator.registerVariable() {
         condition = { typedRule.isSetter && typedRule.property.isMember },
         priority = 3,
         action = {
-            -typedRule.visibilityModifierTypeOrDefault().toVisibility()
+            -(typedRule.visibilityModifier() ?: "public")
             -" set "
             -typedRule.property.nameIdentifier
             -"("
             -(typedRule.parameter?.nameIdentifier ?: -"value")
             -": "
             -(typedRule.property.typeReference
-                ?: typedRule.property.resolvedProperty!!.type.getJetTypeFqName(true))
+                ?: typedRule.property.resolvedProperty!!.type)
             -") "
             -typedRule.bodyBlockExpression
             -"\n"
@@ -210,7 +303,7 @@ fun TypescriptTranslator.registerVariable() {
             -typedRule.property.nameIdentifier!!.text.capitalize()
             -"(): "
             -(typedRule.property.typeReference
-                ?: typedRule.property.resolvedProperty!!.type.getJetTypeFqName(true))
+                ?: typedRule.property.resolvedProperty!!.type)
             -" "
             typedRule.bodyExpression?.let {
                 -"{ return "
@@ -231,7 +324,7 @@ fun TypescriptTranslator.registerVariable() {
             -(typedRule.parameter?.nameIdentifier ?: -"value")
             -": "
             -(typedRule.property.typeReference
-                ?: typedRule.property.resolvedProperty!!.type.getJetTypeFqName(true))
+                ?: typedRule.property.resolvedProperty!!.type)
             -") "
             -typedRule.bodyBlockExpression
             -"\n"
@@ -386,6 +479,7 @@ fun TypescriptTranslator.registerVariable() {
             val rule = replacements.getGet(pd)!!
             rule.template.forEach { part ->
                 when (part) {
+                    is TemplatePart.Import -> out.addImport(part)
                     is TemplatePart.Text -> -part.string
                     TemplatePart.Receiver -> -typedRule.getTsReceiver()
                     TemplatePart.DispatchReceiver -> -typedRule.getTsReceiver()
@@ -406,6 +500,7 @@ fun TypescriptTranslator.registerVariable() {
             val rule = replacements.getGet(pd)!!
             rule.template.forEach { part ->
                 when (part) {
+                    is TemplatePart.Import -> out.addImport(part)
                     is TemplatePart.Text -> -part.string
                     TemplatePart.Receiver -> -typedRule.receiverExpression
                     TemplatePart.DispatchReceiver -> -nre.getTsReceiver()
@@ -432,6 +527,7 @@ fun TypescriptTranslator.registerVariable() {
             val rule = replacements.getSet(pd)!!
             rule.template.forEach { part ->
                 when (part) {
+                    is TemplatePart.Import -> out.addImport(part)
                     is TemplatePart.Text -> -part.string
                     TemplatePart.Receiver -> -left.receiverExpression
                     TemplatePart.DispatchReceiver -> -nre.getTsReceiver()
@@ -462,6 +558,7 @@ fun TypescriptTranslator.registerVariable() {
             val rule = replacements.getSet(pd)!!
             rule.template.forEach { part ->
                 when (part) {
+                    is TemplatePart.Import -> out.addImport(part)
                     is TemplatePart.Text -> -part.string
                     TemplatePart.Receiver -> -nre.getTsReceiver()
                     TemplatePart.DispatchReceiver -> -nre.getTsReceiver()
@@ -507,6 +604,29 @@ val PropertyDescriptor.tsFunctionSetName: String?
         is ClassDescriptor -> null
         is SyntheticClassOrObjectDescriptor -> null
         else -> if (this.accessors.all { it.isDefault }) null else "set" + this.name.identifier.capitalize()
+    }
+
+val PropertyDescriptor.tsFunctionGetDefaultName: String?
+    get() {
+        return (containingDeclaration as? ClassDescriptor ?: return null)
+            .fqNameSafe
+            .asString()
+            .split('.')
+            .joinToString("") { it.capitalize() }
+            .plus("Get")
+            .plus(this.name.identifier.capitalize())
+            .decapitalize()
+    }
+val PropertyDescriptor.tsFunctionSetDefaultName: String?
+    get() {
+        return (containingDeclaration as? ClassDescriptor ?: return null)
+            .fqNameSafe
+            .asString()
+            .split('.')
+            .joinToString("") { it.capitalize() }
+            .plus("Set")
+            .plus(this.name.identifier.capitalize())
+            .decapitalize()
     }
 
 inline fun <reified T : PsiElement> PsiElement.parentOfType(): T? = parentOfType(T::class.java)

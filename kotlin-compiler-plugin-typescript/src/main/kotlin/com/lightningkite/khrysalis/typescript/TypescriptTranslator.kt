@@ -55,7 +55,7 @@ class TypescriptTranslator(
         return entry?.tsName ?: "this"
     }
 
-    override fun emitDefault(identifier: Class<*>, rule: Any, out: TypescriptFileEmitter) {
+    override fun emitFinalDefault(identifier: Class<*>, rule: Any, out: TypescriptFileEmitter) {
         when (rule) {
             is Array<*> -> rule.forEach { if(it != null) translate(it, out) }
             is Iterable<*> -> rule.forEach { if(it != null) translate(it, out) }

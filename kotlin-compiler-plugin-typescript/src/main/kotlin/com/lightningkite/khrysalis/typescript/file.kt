@@ -18,7 +18,7 @@ fun TypescriptTranslator.registerFile() {
         //Function import
         //Property import
         //Typealias import
-        typedRule.resolvedCall
+//        typedRule.resolvedCall
     }
 
 //

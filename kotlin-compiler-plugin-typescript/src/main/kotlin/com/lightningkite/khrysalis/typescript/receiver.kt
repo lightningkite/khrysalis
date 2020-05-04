@@ -26,10 +26,10 @@ fun TypescriptTranslator.registerReceiver() {
         },
         priority = 99,
         action = {
-            val resolved = typedRule.resolvedCall?.dispatchReceiver as? ImplicitClassReceiver
-            if(resolved != null){
-                collector?.report(CompilerMessageSeverity.INFO, "Receiver of ${typedRule.text} is ${resolved.type.getJetTypeFqName(false)} - ${resolved.classDescriptor.isCompanionObject}")
-            }
+//            val resolved = typedRule.resolvedCall?.dispatchReceiver as? ImplicitClassReceiver
+//            if(resolved != null){
+//                collector?.report(CompilerMessageSeverity.INFO, "Receiver of ${typedRule.text} is ${resolved.type.getJetTypeFqName(false)} - ${resolved.classDescriptor.isCompanionObject}")
+//            }
             -typedRule.getTsReceiver()
             -"."
             doSuper()

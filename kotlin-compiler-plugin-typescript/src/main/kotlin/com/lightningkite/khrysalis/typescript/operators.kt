@@ -8,6 +8,7 @@ import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.KtAnnotation
 import org.jetbrains.kotlin.psi.KtBinaryExpression
 import org.jetbrains.kotlin.psi.KtPrefixExpression
+import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 
 //class TestThing(){
 //    operator fun dec
@@ -46,7 +47,7 @@ fun TypescriptTranslator.registerOperators() {
             val f = typedRule.operationReference.resolvedReferenceTarget as FunctionDescriptor
             val rule = replacements.getCall(f)!!
 
-            if (typedRule.operationToken == KtTokens.NOT_IN) {
+            if (typedRule.operationToken == KtTokens.NOT_IN || typedRule.operationToken == KtTokens.EXCLEQ) {
                 -"!("
             }
 
@@ -61,18 +62,20 @@ fun TypescriptTranslator.registerOperators() {
             }
             rule.template.forEach { part ->
                 when (part) {
+                    is TemplatePart.Import -> out.addImport(part)
                     is TemplatePart.Text -> -part.string
                     TemplatePart.Receiver -> -left
                     TemplatePart.DispatchReceiver -> if (f.extensionReceiverParameter != null) -typedRule.getTsReceiver() else -left
                     TemplatePart.ExtensionReceiver -> -left
                     TemplatePart.AllParameters -> -right
+                    TemplatePart.OperatorToken -> -typedRule.operationReference
                     is TemplatePart.Parameter -> -right
                     is TemplatePart.ParameterByIndex -> -right
                     is TemplatePart.TypeParameter -> -right
                     is TemplatePart.TypeParameterByIndex -> -right
                 }
             }
-            if (typedRule.operationToken == KtTokens.NOT_IN) {
+            if (typedRule.operationToken == KtTokens.NOT_IN || typedRule.operationToken == KtTokens.EXCLEQ) {
                 -")"
             }
         }
@@ -83,7 +86,7 @@ fun TypescriptTranslator.registerOperators() {
         priority = 1_000,
         action = {
 
-            if (typedRule.operationToken == KtTokens.NOT_IN) {
+            if (typedRule.operationToken == KtTokens.NOT_IN || typedRule.operationToken == KtTokens.EXCLEQ) {
                 -"!("
             }
 
@@ -112,7 +115,7 @@ fun TypescriptTranslator.registerOperators() {
                 namedArguments = listOf(),
                 lambdaArgument = null
             )
-            if (typedRule.operationToken == KtTokens.NOT_IN) {
+            if (typedRule.operationToken == KtTokens.NOT_IN || typedRule.operationToken == KtTokens.EXCLEQ) {
                 -")"
             }
         }
@@ -130,6 +133,7 @@ fun TypescriptTranslator.registerOperators() {
             if (f.extensionReceiverParameter != null) {
                 rule.template.forEach { part ->
                     when (part) {
+                        is TemplatePart.Import -> out.addImport(part)
                         is TemplatePart.Text -> -part.string
                         TemplatePart.Receiver -> -typedRule.baseExpression
                         TemplatePart.DispatchReceiver -> -typedRule.getTsReceiver()
@@ -139,6 +143,7 @@ fun TypescriptTranslator.registerOperators() {
             } else {
                 rule.template.forEach { part ->
                     when (part) {
+                        is TemplatePart.Import -> out.addImport(part)
                         is TemplatePart.Text -> -part.string
                         TemplatePart.Receiver -> -typedRule.baseExpression
                         TemplatePart.DispatchReceiver -> -typedRule.baseExpression

@@ -5,6 +5,7 @@ import org.jetbrains.kotlin.codegen.AccessorForCompanionObjectInstanceFieldDescr
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.descriptors.PropertyDescriptor
 import org.jetbrains.kotlin.psi.KtNameReferenceExpression
+import org.jetbrains.kotlin.psi.psiUtil.getTextWithLocation
 import org.jetbrains.kotlin.psi.synthetics.SyntheticClassOrObjectDescriptor
 import org.jetbrains.kotlin.resolve.lazy.descriptors.LazyClassDescriptor
 
@@ -41,7 +42,7 @@ fun TypescriptTranslator.registerIdentifiers(){
     handle<KtNameReferenceExpression>(
         condition = {
             val resolved = typedRule.resolvedReferenceTarget ?: return@handle false
-            resolved is ClassDescriptor
+            resolved is ClassDescriptor && typedRule.resolvedUsedAsExpression == true
         },
         priority = 1011,
         action = {
