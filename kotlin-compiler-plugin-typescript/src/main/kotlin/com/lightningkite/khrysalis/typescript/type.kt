@@ -221,7 +221,7 @@ fun PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByType<*>.e
         resolvedType.isInterface() -> {
             -'('
             -expression
-            -" as any).implementsInterface"
+            -".constructor as any).implementsInterface"
             -resolvedType.getJetTypeFqName(false).split('.').joinToString("") { it.capitalize() }
         }
         resolvedType.isPrimitive() -> {

@@ -79,7 +79,7 @@
   template:
     pattern: hashString(~this~)
     imports:
-      hashString: kotlin/test
+      hashString: kotlin
 
 - id: kotlin.Char.hashCode
   type: call

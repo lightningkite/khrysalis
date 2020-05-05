@@ -55,6 +55,7 @@
         - [X] Populate variables
         - [X] Init blocks
     - [ ] Secondary constructors
+    - [ ] Delegation
     - [X] Equatable 
         - Plan: Literally use `equals(other)`
         - [X] Create TypeScript base
@@ -74,8 +75,18 @@
     - [X] Member public/private
     - [X] Object Access `.INSTANCE`
         - [X] Companion Objects
-        - [ ] Access to companion object without explicit reference
-- [ ] Enums
+        - [X] Access to companion object without explicit reference
+- [X] Objects
+    - [X] Companion
+    - [X] Interface implementation
+    - [X] Extending other objects
+- [X] Anonymous Objects
+- [X] Enums
+    - [X] Value Iteration
+    - [X] Get by string
+    - [X] Get name
+    - [X] Full object support
+    - [X] Short Support
 - [ ] Generics -- 1/2 day
     - [ ] Type Parameters
     - [ ] Type Arguments

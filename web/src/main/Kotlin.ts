@@ -8,6 +8,16 @@ export function hashString(item: string): number {
     return hash;
 }
 
+export function also<T>(item: T, action: (T)=>void): T {
+    action(item);
+    return item;
+}
+
+export interface Enum<T> {
+    values(): Array<T>
+    valueOf(name: string): T
+}
+
 export class Range<T> {
     start: T;
     endInclusive: T;

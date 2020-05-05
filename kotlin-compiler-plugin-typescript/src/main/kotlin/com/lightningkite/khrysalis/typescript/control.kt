@@ -22,9 +22,17 @@ fun TypescriptTranslator.registerControl() {
                     -"return "
                 }
                 -it
+                if(it is KtExpression && it !is KtDeclaration) {
+                    -';'
+                }
             }
         } else {
-            -typedRule.allChildren
+            typedRule.allChildren.forEach {
+                -it
+                if(it is KtExpression && it !is KtDeclaration) {
+                    -';'
+                }
+            }
         }
     }
 

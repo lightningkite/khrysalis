@@ -62,9 +62,6 @@ fun main(){
     instance.testExtension()
     instance.extensionFunction()
     instance.genericExtensionFunction(8)
-    32.let {
-
-    }
 }
 
 val anotherThing = 2

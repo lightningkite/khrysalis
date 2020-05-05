@@ -12,5 +12,5 @@ sealed class TemplatePart {
     class TypeParameter(val name: String) : TemplatePart()
     class ParameterByIndex(val index: Int) : TemplatePart()
     class TypeParameterByIndex(val index: Int) : TemplatePart()
-    class Import(val path: String, val identifier: String, val asName: String? = null): TemplatePart()
+    data class Import(val path: String, val identifier: String, val asName: String? = null): TemplatePart()
 }

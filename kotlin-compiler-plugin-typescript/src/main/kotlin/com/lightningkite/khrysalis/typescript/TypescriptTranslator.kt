@@ -3,6 +3,7 @@ package com.lightningkite.khrysalis.typescript
 import com.lightningkite.khrysalis.generic.PartialTranslatorByType
 import com.lightningkite.khrysalis.generic.TranslatorInterface
 import com.lightningkite.khrysalis.typescript.replacements.Replacements
+import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.AnalysisExtensions
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
@@ -13,12 +14,16 @@ import org.jetbrains.kotlin.psi.psiUtil.allChildren
 import org.jetbrains.kotlin.resolve.BindingContext
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 import org.jetbrains.kotlin.resolve.scopes.receivers.ExtensionReceiver
+import java.util.*
+import kotlin.collections.ArrayList
 
 class TypescriptTranslator(
     override val bindingContext: BindingContext,
     val collector: MessageCollector? = null,
     val replacements: Replacements = Replacements()
 ) : PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>(), TranslatorInterface<TypescriptFileEmitter, Unit>, AnalysisExtensions {
+
+    var kotlinFqNameToImport: SortedMap<String, ArrayList<TemplatePart.Import>> = TreeMap()
 
     data class ReceiverAssignment(val fqName: String, val tsName: String)
 
@@ -71,6 +76,7 @@ class TypescriptTranslator(
                 return
             }
             is PsiElement -> rule.allChildren.forEach { translate(it, out) }
+            is Function0<*> -> rule.invoke()
         }
     }
 

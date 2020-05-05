@@ -8,11 +8,13 @@ import org.jetbrains.kotlin.psi.KtCallExpression
 import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 import org.jetbrains.kotlin.psi.KtNameReferenceExpression
 import org.jetbrains.kotlin.psi.KtThisExpression
+import org.jetbrains.kotlin.psi.psiUtil.containingClass
 import org.jetbrains.kotlin.psi.synthetics.SyntheticClassOrObjectDescriptor
 import org.jetbrains.kotlin.resolve.calls.callUtil.getResolvedCall
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 import org.jetbrains.kotlin.resolve.scopes.receivers.ExtensionReceiver
 import org.jetbrains.kotlin.resolve.scopes.receivers.ImplicitClassReceiver
+import org.jetbrains.kotlin.types.typeUtil.isInterface
 
 fun TypescriptTranslator.registerReceiver() {
 
@@ -33,6 +35,24 @@ fun TypescriptTranslator.registerReceiver() {
             -typedRule.getTsReceiver()
             -"."
             doSuper()
+        }
+    )
+
+    handle<KtNameReferenceExpression>(
+        condition = {
+            if (typedRule.parent is KtDotQualifiedExpression) return@handle false
+            if((typedRule.parent as? KtCallExpression)?.parent is KtDotQualifiedExpression) return@handle false
+            val resolved = typedRule.resolvedCall ?: return@handle false
+            val targetDescriptor = resolved.dispatchReceiver?.type?.constructor?.declarationDescriptor as? ClassDescriptor ?: return@handle false
+            return@handle resolved.dispatchReceiver != null
+                    && targetDescriptor.isCompanionObject
+                    && targetDescriptor != typedRule.containingClass()?.resolvedClass
+        },
+        priority = 100,
+        action = {
+            -typedRule.containingClass()?.nameIdentifier
+            -".Companion.INSTANCE."
+            -typedRule.getIdentifier()
         }
     )
 

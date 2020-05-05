@@ -4,6 +4,7 @@ import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.forEachBetween
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
+import org.jetbrains.kotlin.descriptors.FunctionDescriptor
 import org.jetbrains.kotlin.descriptors.PropertyDescriptor
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.lexer.KtTokens
@@ -40,7 +41,7 @@ fun TypescriptTranslator.registerVariable() {
             tr.getter?.let { getter ->
                 ktClass.addPostAction {
                     -"\n"
-                    if(ktClass.isPublic) {
+                    if (ktClass.isPublic) {
                         -"export "
                     }
                     -"function "
@@ -73,7 +74,7 @@ fun TypescriptTranslator.registerVariable() {
             tr.setter?.let { setter ->
                 ktClass.addPostAction {
                     -"\n"
-                    if(ktClass.isPublic) {
+                    if (ktClass.isPublic) {
                         -"export "
                     }
                     -"function "
@@ -152,7 +153,8 @@ fun TypescriptTranslator.registerVariable() {
                 -it
             } ?: run {
                 if (typedRule.isMember) {
-                    -"get "
+                    -(typedRule.visibilityModifier() ?: "public")
+                    -" get "
                     -typedRule.nameIdentifier
                     -"(): "
                     -(typedRule.typeReference ?: typedRule.resolvedVariable?.type) //TODO: Handle unimported type
@@ -176,7 +178,8 @@ fun TypescriptTranslator.registerVariable() {
                     -it
                 } ?: run {
                     if (typedRule.isMember) {
-                        -"set "
+                        -(typedRule.visibilityModifier() ?: "public")
+                        -" set "
                         -typedRule.nameIdentifier
                         -"(value: "
                         -(typedRule.typeReference
@@ -405,20 +408,17 @@ fun TypescriptTranslator.registerVariable() {
                     -", "
                 }
             }
-            if (typedRule.operationToken != KtTokens.EQ) {
-                -leftProp.tsFunctionGetName
-                -'('
-                -(left.getTsReceiver())
-                -')'
-                when (typedRule.operationToken) {
-                    KtTokens.PLUSEQ -> -" + "
-                    KtTokens.MINUSEQ -> -" - "
-                    KtTokens.MULTEQ -> -" * "
-                    KtTokens.DIVEQ -> -" / "
-                    KtTokens.PERCEQ -> -" % "
-                }
+            if (typedRule.operationToken == KtTokens.EQ) {
+                -typedRule.right!!
+            } else {
+                -ValueOperator(
+                    left = typedRule.left!!,
+                    right = typedRule.right!!,
+                    functionDescriptor = typedRule.operationReference.resolvedReferenceTarget as FunctionDescriptor,
+                    dispatchReceiver = typedRule.getTsReceiver(),
+                    operationToken = typedRule.operationToken
+                )
             }
-            -typedRule.right
             -')'
         }
     )
@@ -447,22 +447,17 @@ fun TypescriptTranslator.registerVariable() {
             -'('
             -left.receiverExpression
             -", "
-            if (typedRule.operationToken != KtTokens.EQ) {
-                -nre.getTsReceiver()
-                -"."
-                -prop.tsFunctionGetName
-                -'('
-                -left.receiverExpression
-                -')'
-                when (typedRule.operationToken) {
-                    KtTokens.PLUSEQ -> -" + "
-                    KtTokens.MINUSEQ -> -" - "
-                    KtTokens.MULTEQ -> -" * "
-                    KtTokens.DIVEQ -> -" / "
-                    KtTokens.PERCEQ -> -" % "
-                }
+            if (typedRule.operationToken == KtTokens.EQ) {
+                -typedRule.right!!
+            } else {
+                -ValueOperator(
+                    left = typedRule.left!!,
+                    right = typedRule.right!!,
+                    functionDescriptor = typedRule.operationReference.resolvedReferenceTarget as FunctionDescriptor,
+                    dispatchReceiver = typedRule.getTsReceiver(),
+                    operationToken = typedRule.operationToken
+                )
             }
-            -typedRule.right
             -')'
         }
     )

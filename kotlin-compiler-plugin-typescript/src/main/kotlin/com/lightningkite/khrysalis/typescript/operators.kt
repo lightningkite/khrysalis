@@ -3,6 +3,9 @@ package com.lightningkite.khrysalis.typescript
 import com.lightningkite.khrysalis.generic.line
 import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.forEachBetween
+import org.jetbrains.kotlin.backend.common.serialization.findSourceFile
+import org.jetbrains.kotlin.backend.common.serialization.findTopLevelDescriptor
+import org.jetbrains.kotlin.backend.common.serialization.metadata.extractFileId
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.com.intellij.psi.tree.IElementType
@@ -281,7 +284,7 @@ fun TypescriptTranslator.registerOperators() {
                     && typedRule.operationReference.getReferencedNameElementType() != KtTokens.EQ
                     && typedRule.operationReference.resolvedReferenceTarget != null
         },
-        priority = 1_000,
+        priority = 10,
         action = {
         if (typedRule.resolvedVariableReassignment == true) {
             -typedRule.left

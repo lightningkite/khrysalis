@@ -110,7 +110,7 @@ class KotlinTypescriptExtension(
                     .resolve(file.name.removeSuffix(".kt").plus(".ts"))
                 collector?.report(CompilerMessageSeverity.INFO, "Translating $file to $outputFile")
                 outputFile.parentFile.mkdirs()
-                val out = TypescriptFileEmitter()
+                val out = TypescriptFileEmitter(translator)
                 translator.translate(file, out)
                 outputFile.bufferedWriter().use {
                     out.write(it, file)
