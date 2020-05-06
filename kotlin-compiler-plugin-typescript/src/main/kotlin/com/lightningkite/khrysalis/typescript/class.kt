@@ -46,10 +46,13 @@ fun MemberDescriptor.description(): String {
 
 fun TypescriptTranslator.registerClass() {
 
-    fun PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByType<*>.writeClassHeader(on: KtClassOrObject) {
+    fun PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByType<*>.writeClassHeader(
+        on: KtClassOrObject,
+        defaultName: String = "Companion"
+    ) {
         val typedRule = on
         -"class "
-        -typedRule.nameIdentifier
+        -(typedRule.nameIdentifier ?: defaultName)
         -typedRule.typeParameterList
         typedRule.superTypeListEntries.mapNotNull { it as? KtSuperTypeCallEntry }.takeUnless { it.isEmpty() }?.let {
             -" extends "
@@ -185,6 +188,7 @@ fun TypescriptTranslator.registerClass() {
         condition = { typedRule.isInterface() },
         priority = 100
     ) {
+        if(typedRule.isTopLevel() && !typedRule.isPrivate()) -"export "
         -"interface "
         -typedRule.nameIdentifier
         -typedRule.typeParameterList
@@ -200,6 +204,8 @@ fun TypescriptTranslator.registerClass() {
             -" static "
             -typedRule.nameIdentifier
             -" = "
+        } else {
+            if(typedRule.isTopLevel() && !typedRule.isPrivate()) -"export "
         }
 
         when (typedRule.modalityModifierType()) {
@@ -228,7 +234,7 @@ fun TypescriptTranslator.registerClass() {
                 -(cons.visibilityModifier() ?: "public")
             }
             -" constructor("
-            if(typedRule.isEnum()){
+            if (typedRule.isEnum()) {
                 listOf("name: string") + cons.valueParameters
             } else {
                 cons.valueParameters
@@ -240,7 +246,7 @@ fun TypescriptTranslator.registerClass() {
             typedRule.superTypeListEntries.mapNotNull { it as? KtSuperTypeCallEntry }.takeUnless { it.isEmpty() }
                 ?.firstOrNull()?.let {
                     -"super("
-                    if(typedRule.isEnum()){
+                    if (typedRule.isEnum()) {
                         listOf("name: string") + it.valueArguments
                     } else {
                         it.valueArguments
@@ -250,7 +256,7 @@ fun TypescriptTranslator.registerClass() {
                     )
                     -");\n"
                 }
-            if(typedRule.isEnum()){
+            if (typedRule.isEnum()) {
                 -"this.name = name;\n"
             }
             //Parameter assignment first
@@ -289,12 +295,12 @@ fun TypescriptTranslator.registerClass() {
             }
             -"}\n"
         } ?: typedRule.superTypeListEntries.mapNotNull { it as? KtSuperTypeCallEntry }.takeUnless { it.isEmpty() }
-                ?.firstOrNull()?.let {
-                    -"constructor() { super"
-                    -it.valueArgumentList
-                    -"; }"
-                } ?: run {
-            if(typedRule.isEnum()){
+            ?.firstOrNull()?.let {
+                -"constructor() { super"
+                -it.valueArgumentList
+                -"; }"
+            } ?: run {
+            if (typedRule.isEnum()) {
                 -"constructor(name: string) { this.name = name; }\n"
             }
         }
@@ -460,6 +466,8 @@ fun TypescriptTranslator.registerClass() {
             -" static "
             -(typedRule.nameIdentifier ?: "Companion")
             -" = "
+        } else {
+            if(typedRule.isTopLevel() && !typedRule.isPrivate()) -"export "
         }
         writeClassHeader(typedRule)
         -" {\n"
@@ -516,7 +524,7 @@ fun TypescriptTranslator.registerClass() {
 
     handle<KtObjectLiteralExpression> {
         -"new "
-        writeClassHeader(typedRule.objectDeclaration)
+        writeClassHeader(typedRule.objectDeclaration, "Anon")
         -" {\n"
         writeInterfaceMarkers(typedRule.objectDeclaration)
         -"public constructor() {\n"

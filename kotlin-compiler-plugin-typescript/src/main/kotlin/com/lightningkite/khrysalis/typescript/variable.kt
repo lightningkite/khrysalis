@@ -9,10 +9,7 @@ import org.jetbrains.kotlin.descriptors.PropertyDescriptor
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
-import org.jetbrains.kotlin.psi.psiUtil.isPublic
-import org.jetbrains.kotlin.psi.psiUtil.toVisibility
-import org.jetbrains.kotlin.psi.psiUtil.visibilityModifier
-import org.jetbrains.kotlin.psi.psiUtil.visibilityModifierTypeOrDefault
+import org.jetbrains.kotlin.psi.psiUtil.*
 import org.jetbrains.kotlin.psi.synthetics.SyntheticClassOrObjectDescriptor
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 import java.util.concurrent.atomic.AtomicInteger
@@ -129,6 +126,7 @@ fun TypescriptTranslator.registerVariable() {
                 -"readonly "
             }
         } else {
+            if (typedRule.isTopLevel && !typedRule.isPrivate()) -"export "
             if (typedRule.isVar) {
                 -"let "
             } else {
@@ -163,6 +161,7 @@ fun TypescriptTranslator.registerVariable() {
                     -typedRule.nameIdentifier
                     -"; }\n"
                 } else {
+                    if (typedRule.isTopLevel && !typedRule.isPrivate()) -"export "
                     -"function get"
                     -typedRule.nameIdentifier?.text?.capitalize()
                     -"(): "
@@ -188,6 +187,7 @@ fun TypescriptTranslator.registerVariable() {
                         -typedRule.nameIdentifier
                         -" = value; }\n"
                     } else {
+                        if (typedRule.isTopLevel && !typedRule.isPrivate()) -"export "
                         -"function set"
                         -typedRule.nameIdentifier?.text?.capitalize()
                         -"(value: "
@@ -210,6 +210,7 @@ fun TypescriptTranslator.registerVariable() {
             withReceiverScope(typedRule.property.fqName!!.asString()) { receiverName ->
                 val resolved = typedRule.property.resolvedProperty!!
                 if (!typedRule.property.isMember) {
+                    if (!typedRule.isPrivate()) -"export "
                     -"function "
                 }
                 -resolved.tsFunctionGetName
@@ -239,6 +240,7 @@ fun TypescriptTranslator.registerVariable() {
             withReceiverScope(typedRule.property.fqName!!.asString()) { receiverName ->
                 val resolved = typedRule.property.resolvedProperty!!
                 if (!typedRule.property.isMember) {
+                    if (!typedRule.isPrivate()) -"export "
                     -"function "
                 }
                 -resolved.tsFunctionSetName
@@ -302,6 +304,7 @@ fun TypescriptTranslator.registerVariable() {
         condition = { typedRule.isGetter },
         priority = 1,
         action = {
+            if (!typedRule.isPrivate()) -"export "
             -"function get"
             -typedRule.property.nameIdentifier!!.text.capitalize()
             -"(): "
@@ -321,6 +324,7 @@ fun TypescriptTranslator.registerVariable() {
         condition = { typedRule.isSetter },
         priority = 2,
         action = {
+            if (!typedRule.isPrivate()) -"export "
             -"function set"
             -typedRule.property.nameIdentifier!!.text.capitalize()
             -"("
@@ -354,6 +358,7 @@ fun TypescriptTranslator.registerVariable() {
         priority = 100,
         action = {
             val prop = typedRule.resolvedReferenceTarget as PropertyDescriptor
+            out.addImport(prop, prop.tsFunctionGetName)
             -prop.tsFunctionGetName
             when {
                 prop.extensionReceiverParameter == null -> -"()"
@@ -371,6 +376,7 @@ fun TypescriptTranslator.registerVariable() {
         action = {
             val nre = (typedRule.selectorExpression as KtNameReferenceExpression)
             val prop = nre.resolvedReferenceTarget as PropertyDescriptor
+            out.addImport(prop, prop.tsFunctionGetName)
             -nre.getTsReceiver()
             -"."
             -prop.tsFunctionGetName
@@ -397,6 +403,7 @@ fun TypescriptTranslator.registerVariable() {
         action = {
             val left = (typedRule.left as KtNameReferenceExpression)
             val leftProp = left.resolvedReferenceTarget as PropertyDescriptor
+            out.addImport(leftProp, leftProp.tsFunctionSetName)
             -leftProp.tsFunctionSetName
             when {
                 leftProp.extensionReceiverParameter == null -> {
@@ -441,6 +448,7 @@ fun TypescriptTranslator.registerVariable() {
             val left = (typedRule.left as KtDotQualifiedExpression)
             val nre = (left.selectorExpression as KtNameReferenceExpression)
             val prop = nre.resolvedReferenceTarget as PropertyDescriptor
+            out.addImport(prop, prop.tsFunctionSetName)
             -(nre.getTsReceiver())
             -"."
             -prop.tsFunctionSetName

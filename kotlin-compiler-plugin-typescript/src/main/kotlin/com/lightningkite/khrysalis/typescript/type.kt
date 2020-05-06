@@ -10,12 +10,10 @@ import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.lexer.KtModifierKeywordToken
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
+import org.jetbrains.kotlin.psi.psiUtil.isPrivate
 import org.jetbrains.kotlin.psi.psiUtil.referenceExpression
 import org.jetbrains.kotlin.psi.psiUtil.visibilityModifierTypeOrDefault
-import org.jetbrains.kotlin.types.FlexibleType
-import org.jetbrains.kotlin.types.KotlinType
-import org.jetbrains.kotlin.types.SimpleType
-import org.jetbrains.kotlin.types.WrappedType
+import org.jetbrains.kotlin.types.*
 import org.jetbrains.kotlin.types.typeUtil.isByte
 import org.jetbrains.kotlin.types.typeUtil.isInterface
 import kotlin.text.Appendable
@@ -42,9 +40,7 @@ data class BasicType(val type: KotlinType)
 fun TypescriptTranslator.registerType(){
 
     handle<KtTypeAlias> {
-        if(typedRule.visibilityModifierTypeOrDefault().value == "public") {
-            -"export "
-        }
+        if(typedRule.isTopLevel() && !typedRule.isPrivate()) -"export "
         -"type "
         -typedRule.nameIdentifier
         -typedRule.typeParameterList
@@ -113,23 +109,25 @@ fun TypescriptTranslator.registerType(){
             val type = typedRule.resolvedType!!
             val rule = replacements.getType(type)!!
             val baseType = type.constructor
-            val typeParametersByName = type.arguments.withIndex().associate { (index, item) -> baseType.parameters[index].name.asString() to item }
+            val typeParameters = when(val te = typedRule.typeElement){
+                is KtUserType -> te.typeArguments
+                else -> listOf()
+            }
+            val typeParametersByName = typeParameters.withIndex().associate { (index, item) -> baseType.parameters[index].name.asString() to item }
             rule.template.parts.forEach { part ->
                 when(part){
                     is TemplatePart.Import -> out.addImport(part)
                     is TemplatePart.Text -> -part.string
-                    TemplatePart.Receiver -> { }
-                    TemplatePart.DispatchReceiver -> { }
-                    TemplatePart.ExtensionReceiver -> { }
-                    TemplatePart.Value -> { }
-                    is TemplatePart.Parameter -> { }
-                    is TemplatePart.ParameterByIndex -> { }
                     is TemplatePart.TypeParameter -> -(typeParametersByName[part.name])
-                    is TemplatePart.TypeParameterByIndex -> -(type.arguments.getOrNull(part.index))
+                    is TemplatePart.TypeParameterByIndex -> -(typeParameters.getOrNull(part.index))
                 }
             }
         }
     )
+
+    handle<TypeProjectionBase> {
+        -typedRule.type
+    }
 
     handle<KotlinType>(
         condition = {
@@ -145,12 +143,6 @@ fun TypescriptTranslator.registerType(){
                 when(part){
                     is TemplatePart.Import -> out.addImport(part)
                     is TemplatePart.Text -> -part.string
-                    TemplatePart.Receiver -> { }
-                    TemplatePart.DispatchReceiver -> { }
-                    TemplatePart.ExtensionReceiver -> { }
-                    TemplatePart.Value -> { }
-                    is TemplatePart.Parameter -> { }
-                    is TemplatePart.ParameterByIndex -> { }
                     is TemplatePart.TypeParameter -> -(typeParametersByName[part.name])
                     is TemplatePart.TypeParameterByIndex -> -(type.arguments.getOrNull(part.index))
                 }
@@ -172,14 +164,6 @@ fun TypescriptTranslator.registerType(){
                 when(part){
                     is TemplatePart.Import -> out.addImport(part)
                     is TemplatePart.Text -> -part.string
-                    TemplatePart.Receiver -> { }
-                    TemplatePart.DispatchReceiver -> { }
-                    TemplatePart.ExtensionReceiver -> { }
-                    TemplatePart.Value -> { }
-                    is TemplatePart.Parameter -> { }
-                    is TemplatePart.ParameterByIndex -> { }
-                    is TemplatePart.TypeParameter -> { }
-                    is TemplatePart.TypeParameterByIndex -> { }
                 }
             }
         }

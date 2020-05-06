@@ -9,7 +9,7 @@ import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 import org.jetbrains.kotlin.resolve.descriptorUtil.getImportableDescriptor
 import java.io.BufferedWriter
 
-class TypescriptFileEmitter(val translator: TypescriptTranslator): Appendable {
+class TypescriptFileEmitter(val translator: TypescriptTranslator, val file: KtFile): Appendable {
     val stringBuilder = StringBuilder()
     val out = SmartTabWriter(stringBuilder)
     private val imports = HashMap<String, ImportInfo>()
@@ -23,13 +23,13 @@ class TypescriptFileEmitter(val translator: TypescriptTranslator): Appendable {
             writer.appendln("// Imported FQ name: ${it}")
         }
         imports.values.groupBy { it.path }.forEach { (path, parts) ->
-            writer.append("import {")
+            writer.append("import { ")
             writer.append(parts.joinToString(", ") {
                 it.asName?.let { name ->
                     it.identifier + " as " + name
                 } ?: it.identifier
             })
-            writer.append("} from '")
+            writer.append(" } from '")
             writer.append(path)
             writer.appendln("'")
         }
@@ -51,17 +51,34 @@ class TypescriptFileEmitter(val translator: TypescriptTranslator): Appendable {
         if(imports.containsKey(fqName)) return
         imports[fqName] = ImportInfo(path, identifier, asName)
     }
-    fun addImport(decl: DeclarationDescriptor){
-//        val name = decl.fqNameOrNull()?.asString() ?: return
-//        generateSequence(decl) { it.containingDeclaration }.take(10).joinToString().let { println(it) }
-        when(val p = decl.containingDeclaration) {
-            is PackageFragmentDescriptor -> {}
-            is ClassDescriptor -> if(p.containingDeclaration !is ClassDescriptor) return
-            else -> return
-        }
+    fun addImport(decl: DeclarationDescriptor, overrideName: String? = null){
+        val name = overrideName ?: decl.name.asString()
         val fq = decl.fqNameSafe.asString()
-        translator.kotlinFqNameToImport[fq]?.forEach { addImport(it) }
-        importedFqs.add(fq)
+        val n = "$fq TS $name"
+        if(importedFqs.contains(n))
+            return
+        importedFqs.add(n)
+        when(val p = decl.containingDeclaration) {
+            is PackageFragmentDescriptor -> {
+                translator.kotlinFqNameToFile[fq]?.let {
+                    if(!file.virtualFilePath.endsWith(it + ".kt")) {
+                        addImport(TemplatePart.Import(it, name))
+                    } else {
+                        importedFqs.add(n + " SKIPPED due to same file")
+                    }
+                }
+            }
+            is ClassDescriptor -> if(decl is ConstructorDescriptor) {
+                val fqFixed = p.fqNameSafe.asString()
+                translator.kotlinFqNameToFile[fqFixed]?.let {
+                    if(!file.virtualFilePath.endsWith(it + ".kt")) {
+                        addImport(TemplatePart.Import("./" + it, p.name.asString()))
+                    } else {
+                        importedFqs.add(n + " SKIPPED due to same file")
+                    }
+                }
+            }
+        }
     }
     fun addImport(part: TemplatePart.Import){
         addImport(

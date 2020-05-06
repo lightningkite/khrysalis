@@ -19,11 +19,12 @@ import kotlin.collections.ArrayList
 
 class TypescriptTranslator(
     override val bindingContext: BindingContext,
+    val commonPath: String,
     val collector: MessageCollector? = null,
     val replacements: Replacements = Replacements()
 ) : PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>(), TranslatorInterface<TypescriptFileEmitter, Unit>, AnalysisExtensions {
 
-    var kotlinFqNameToImport: SortedMap<String, ArrayList<TemplatePart.Import>> = TreeMap()
+    val kotlinFqNameToFile = HashMap<String, String>()
 
     data class ReceiverAssignment(val fqName: String, val tsName: String)
 
