@@ -42,6 +42,10 @@ public extension MKMapView {
                 annotation = point
                 self.setCenter(value.toIos(), animated: true)
                 
+                let location = CLLocationCoordinate2D(latitude: value.latitude, longitude: value.longitude)
+                let region = MKCoordinateRegion( center: location, latitudinalMeters: CLLocationDistance(exactly: (22 - zoomLevel) * 100)!, longitudinalMeters: CLLocationDistance(exactly: (22 - zoomLevel) * 100)!)
+                self.setRegion(self.regionThatFits(region), animated: animate)
+                
             } else {
                 if let point = annotation {
                     self.removeAnnotation(point)
@@ -85,6 +89,9 @@ public extension MKMapView {
                     delegate.suppress = false
                     if !delegate.suppressAnimation {
                         self.setCenter(value.toIos(), animated: true)
+                        let location = CLLocationCoordinate2D(latitude: value.latitude, longitude: value.longitude)
+                        let region = MKCoordinateRegion( center: location, latitudinalMeters: CLLocationDistance(exactly: (22 - zoomLevel)*100)!, longitudinalMeters: CLLocationDistance(exactly: (22 - zoomLevel)*100)!)
+                        self.setRegion(self.regionThatFits(region), animated: true)
                     }
                 }
             } else {
@@ -132,4 +139,5 @@ public extension MKMapView {
             }
         }
     }
+    
 }
