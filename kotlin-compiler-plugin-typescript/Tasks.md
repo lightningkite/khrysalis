@@ -8,7 +8,7 @@
     - [X] Extension
     - [X] Extension-Member
     - [ ] Delegates
-- [ ] Controls
+- [X] Controls
     - [X] If
         - [X] As Statement
         - [X] As Expression
@@ -39,30 +39,61 @@
     - [X] Operator Overloading
     - [X] `in` and `is`
     - [X] Casting and Type Checking
+    - [ ] Iterable
+    - [X] Get/Set operators
 - [ ] Classes -- 3 days
-    - [ ] Inheritance
-    - [ ] Interface Implementation
-    - [ ] Primary constructor
-        - [ ] Create variables
-        - [ ] Populate variables
-        - [ ] Init blocks
+    - [X] Inheritance
+    - [X] Interface Implementation
+        - [X] Interface Declaration
+        - [X] Implementation Marker
+        - [X] Interface Defaults
+            - [X] Usage
+                - [X] Identification
+            - [X] Creation
+    - [X] Primary constructor
+        - [X] Create variables
+        - [X] Populate variables
+        - [X] Init blocks
     - [ ] Secondary constructors
-    - [ ] Equatable / Hashable
-    - [ ] `toString`
+    - [ ] Delegation
+    - [X] Equatable 
+        - Plan: Literally use `equals(other)`
+        - [X] Create TypeScript base
+    - [X] Hashable
+        - Plan: Literally use `hashCode()`
+        - [X] Create TypeScript base
+    - [X] `toString`
+    - [X] Comparable
+    - [X] Data Class
+        - [X] Equatable
+        - [X] Hashable
+        - [X] toString
+        - [X] Copy
     - [ ] Codable
         - [ ] Serialization
         - [ ] Deserialization
-    - [ ] Member public/private
+    - [X] Member public/private
     - [X] Object Access `.INSTANCE`
         - [X] Companion Objects
-        - [ ] Access to companion object without explicit reference
+        - [X] Access to companion object without explicit reference
+- [X] Objects
+    - [X] Companion
+    - [X] Interface implementation
+    - [X] Extending other objects
+- [X] Anonymous Objects
+- [X] Enums
+    - [X] Value Iteration
+    - [X] Get by string
+    - [X] Get name
+    - [X] Full object support
+    - [X] Short Support
 - [ ] Generics -- 1/2 day
     - [ ] Type Parameters
     - [ ] Type Arguments
 - [ ] Top Level -- 1 day
     - [ ] `export`
     - [ ] Imports
-- [ ] Values -- 1/2 day
+- [X] Values -- 1/2 day
     - [X] Literals
     - [X] Lambdas
         - [X] With Receiver
@@ -150,28 +181,8 @@
 
 ## Notepad
 
-### Custom Conversions
+### Import Options
 
-- type
-    - Fully-qualified name
-    - Access Type Parameters by Name `${T}`
-- typeObject
-    - Fully-qualified name
-    - Access Type Parameters by Name `${T}`
-- get
-    - Fully-qualified name
-    - Optional: Filter by Receiver `where receiver = asdf.asdf.asdf.Asdf`
-    - Access Type Parameters by Name `${T}`
-    - Access receiver `${this}`
-- set
-    - Fully-qualified name
-    - Optional: Filter by Receiver `where receiver = asdf.asdf.asdf.Asdf`
-    - Access Type Parameters by Name `${T}`
-    - Access receiver `${this}`
-- call
-    - Fully-qualified name
-    - Optional: Filter by Receiver `where receiver = asdf.asdf.asdf.Asdf`
-    - Optional: Filter by Value Argument List `where argumentName` or `where argumentName = asdf.asdf.asdf.Asdf`
-    - Access Type Parameters by Name `${T}`
-    - Access receiver `${this}`
-    - Access Value Parameters by Name `${param}`
+- Ensure file privateness and import locality by having one-to-one files, track stuff externally
+- Put all declarations from a package in the same file
+- Put every declaration in its own file (file private -> semi-public)

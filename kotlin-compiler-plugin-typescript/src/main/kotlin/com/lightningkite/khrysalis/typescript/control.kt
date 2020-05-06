@@ -6,6 +6,7 @@ import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
+import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 
 fun TypescriptTranslator.registerControl() {
 
@@ -21,9 +22,17 @@ fun TypescriptTranslator.registerControl() {
                     -"return "
                 }
                 -it
+                if(it is KtExpression && it !is KtDeclaration) {
+                    -';'
+                }
             }
         } else {
-            -typedRule.allChildren
+            typedRule.allChildren.forEach {
+                -it
+                if(it is KtExpression && it !is KtDeclaration) {
+                    -';'
+                }
+            }
         }
     }
 
@@ -239,6 +248,7 @@ fun TypescriptTranslator.registerControl() {
                 if(rule != null) {
                     rule.template.forEach { part ->
                         when (part) {
+                            is TemplatePart.Import -> out.addImport(part)
                             is TemplatePart.Text -> -part.string
                             TemplatePart.Receiver -> -"toDestructure"
                             TemplatePart.DispatchReceiver -> -"toDestructure"

@@ -11,6 +11,13 @@ abstract class PartialTranslatorByType<OUT : Any, RESULT, IN : Any> : PartialTra
 
     override fun makeContext(): Context = ContextByType<IN>()
 
+    abstract fun emitFinalDefault(identifier: Class<*>, rule: IN, out: OUT): RESULT
+    override fun emitDefault(identifier: Class<*>, rule: IN, out: OUT): RESULT {
+        return identifier.superclass?.let {
+            translate(it, rule, out)
+        } ?: emitFinalDefault(identifier, rule, out)
+    }
+
     @Suppress("UNCHECKED_CAST")
     inline fun <reified T : IN> handle(
         noinline condition: ContextByType<T>.() -> Boolean = { true },

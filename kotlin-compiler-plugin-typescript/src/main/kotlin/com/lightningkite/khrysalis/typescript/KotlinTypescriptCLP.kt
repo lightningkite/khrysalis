@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.typescript
 
+import com.lightningkite.khrysalis.typescript.manifest.generateFqToFileMap
 import com.lightningkite.khrysalis.util.SmartTabWriter
 import org.jetbrains.kotlin.analyzer.AnalysisResult
 import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
@@ -78,7 +79,29 @@ class KotlinTypescriptExtension(
     ): AnalysisResult? {
         collector?.report(CompilerMessageSeverity.INFO, "Completed analysis.")
         val ctx = bindingTrace.bindingContext
-        val translator = TypescriptTranslator(ctx, collector)
+        val translator = TypescriptTranslator(
+            bindingContext = ctx,
+            commonPath = files.asSequence()
+                .map { it.virtualFilePath }
+                .takeUnless { it.none() }
+                ?.reduce { acc, s -> acc.commonPrefixWith(s) }
+                ?.substringBeforeLast('/')
+                ?.plus('/')
+                ?.also { println("Common file path: $it") }?: "",
+            collector = collector
+        )
+
+        val map = generateFqToFileMap(files.filter { it.virtualFilePath.endsWith(".shared.kt") }, translator.commonPath)
+        translator.kotlinFqNameToFile.putAll(map)
+        output.resolve("fqmanifest.txt").bufferedWriter().use {
+            for ((key, value) in map) {
+                it.append(key)
+                it.append('=')
+                it.append(value)
+                it.append('\n')
+            }
+        }
+
         try {
             actuals.asSequence()
                 .flatMap { it.walkTopDown() }
@@ -97,23 +120,19 @@ class KotlinTypescriptExtension(
             )
             return AnalysisResult.compilationError(ctx)
         }
-        val commonPath = files.asSequence()
-            .map { it.virtualFilePath }
-            .takeUnless { it.none() }
-            ?.reduce { acc, s -> acc.commonPrefixWith(s) } ?: ""
         for (file in files) {
             if (!file.virtualFilePath.endsWith(".shared.kt")) continue
             try {
                 val outputFile = output
-                    .resolve(file.virtualFilePath.removePrefix(commonPath))
+                    .resolve(file.virtualFilePath.removePrefix(translator.commonPath))
                     .parentFile
                     .resolve(file.name.removeSuffix(".kt").plus(".ts"))
                 collector?.report(CompilerMessageSeverity.INFO, "Translating $file to $outputFile")
                 outputFile.parentFile.mkdirs()
+                val out = TypescriptFileEmitter(translator, file)
+                translator.translate(file, out)
                 outputFile.bufferedWriter().use {
-                    val tabWriter = SmartTabWriter(it)
-                    translator.translate(file, tabWriter)
-                    tabWriter.flush()
+                    out.write(it, file)
                     it.flush()
                 }
             } catch (t: Throwable) {

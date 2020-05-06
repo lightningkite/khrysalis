@@ -1,35 +1,22 @@
-export interface Array<T> {
-    add(item: T): void;
+export function hashString(item: string): number {
+    let hash = 0, i, chr;
+    for (i = 0; i < this.length; i++) {
+        chr   = this.charCodeAt(i);
+        hash  = ((hash << 5) - hash) + chr;
+        hash |= 0; // Convert to 32bit integer
+    }
+    return hash;
 }
 
-Array.prototype.add = function (item: any) {
-    this.push(item);
-};
-
-export interface Number {
-    toByte(): number;
-
-    toShort(): number;
-
-    toInt(): number;
-
-    toLong(): number;
-
-    toFloat(): number;
-
-    toDouble(): number;
+export function also<T>(item: T, action: (T)=>void): T {
+    action(item);
+    return item;
 }
 
-Number.prototype.toByte = function (): number {
-    return Math.floor(this)
-};
-Number.prototype.toShort = Number.prototype.toByte;
-Number.prototype.toInt = Number.prototype.toByte;
-Number.prototype.toLong = Number.prototype.toByte;
-Number.prototype.toFloat = function (): number {
-    return this
-};
-Number.prototype.toDouble = Number.prototype.toFloat;
+export interface Enum<T> {
+    values(): Array<T>
+    valueOf(name: string): T
+}
 
 export class Range<T> {
     start: T;

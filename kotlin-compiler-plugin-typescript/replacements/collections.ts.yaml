@@ -1,0 +1,71 @@
+---
+
+
+# Tuples
+- id: kotlin.to
+  type: call
+  template: "[~this~, ~*~]"
+- id: kotlin.Pair
+  type: type
+  template: "[~T0~, ~T1~]"
+- id: kotlin.Pair.first
+  type: get
+  template: "~this~[0]"
+- id: kotlin.Pair.second
+  type: get
+  template: "~this~[1]"
+- id: kotlin.Triple
+  type: type
+  template: "[~T0~, ~T1~, ~T2~]"
+
+
+# Lists
+
+- id: kotlin.collections.listOf
+  type: call
+  template: "[~*~]"
+- id: kotlin.collections.List
+  type: type
+  template: Array<~T0~>
+- id: kotlin.collections.List
+  type: typeRef
+  template: Array
+- id: kotlin.collections.List.contains
+  type: call
+  template: (~this~.indexOf(~0~) != -1)
+- id: kotlin.collections.List.get
+  type: call
+  template: (~this~[~0~])
+
+
+# Maps
+
+- id: kotlin.collections.mapOf
+  type: call
+  template: new Map([~*~])
+- id: kotlin.collections.component1
+  type: call
+  receiver: Map.Entry
+  template: ~this~[0]
+
+- id: kotlin.collections.component2
+  type: call
+  receiver: Map.Entry
+  template: ~this~[1]
+
+- id: kotlin.collections.Map.keys
+  type: get
+  template: ~this~.keys()
+
+- id: kotlin.collections.Map.values
+  type: get
+  template: ~this~.values()
+
+- id: kotlin.collections.Map.entries
+  type: get
+  template: ~this~.entries()
+
+-
+  id: android.view.TextView.text
+  type: set
+  template: ~this~.innerContent = ~value~

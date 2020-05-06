@@ -11,6 +11,9 @@ class ExampleMutableThing {
     operator fun plusAssign(other: ExampleMutableThing) {
         this.containedNumber += other.containedNumber
     }
+
+    operator fun get(index: Int): Int = containedNumber + index
+    operator fun set(index: Int, value: Int): Int = value - index
 }
 
 class ExampleImmutableThing {
@@ -26,6 +29,8 @@ class ExampleImmutableThing {
         result.containedNumber = -this.containedNumber
         return result
     }
+
+    operator fun get(index: Int): Int = containedNumber + index
 }
 
 fun main() {
@@ -35,6 +40,12 @@ fun main() {
     println(1 * 2)
     println(1 / 2)
     println(1 % 2)
+    println(1 > 2)
+    println(1 < 2)
+    println(1 >= 2)
+    println(1 <= 2)
+    println(1 != 2)
+    println(1 == 2)
 
     //Direct calls
     println(1.plus(2))
@@ -71,6 +82,8 @@ fun main() {
     val thing3 = thing1 + thing2
     println(thing3.containedNumber)
 
+    println(thing3[1])
+
     val thing4 = -thing3
     println(thing4.containedNumber)
 
@@ -84,6 +97,10 @@ fun main() {
     mthing2.containedNumber = 2
     mthing1 += mthing2
     println(mthing1.containedNumber)
+    println(mthing1[2])
+    mthing1[2] = 8
+    mthing1[2] += 8
+    println(mthing1[1])
 
     //Binary
     println(true && true)

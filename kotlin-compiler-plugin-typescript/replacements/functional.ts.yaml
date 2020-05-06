@@ -1,0 +1,20 @@
+---
+- id: kotlin.let
+  type: call
+  template: "(~0~)(~this~)"
+- id: kotlin.run
+  type: call
+  template: "(~0~)(~this~)"
+
+- id: kotlin.also
+  type: call
+  template:
+    pattern: "also(~this~, ~0~)"
+    imports:
+      also: kotlin
+- id: kotlin.apply
+  type: call
+  template:
+    pattern: "also(~this~, ~0~)"
+    imports:
+      also: kotlin

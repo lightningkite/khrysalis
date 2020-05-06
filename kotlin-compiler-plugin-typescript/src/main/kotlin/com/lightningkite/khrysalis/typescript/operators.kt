@@ -2,121 +2,302 @@ package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.generic.line
 import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
+import com.lightningkite.khrysalis.util.forEachBetween
+import org.jetbrains.kotlin.backend.common.serialization.findSourceFile
+import org.jetbrains.kotlin.backend.common.serialization.findTopLevelDescriptor
+import org.jetbrains.kotlin.backend.common.serialization.metadata.extractFileId
+import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
+import org.jetbrains.kotlin.com.intellij.psi.tree.IElementType
 import org.jetbrains.kotlin.descriptors.FunctionDescriptor
+import org.jetbrains.kotlin.lexer.KtSingleValueToken
 import org.jetbrains.kotlin.lexer.KtTokens
-import org.jetbrains.kotlin.psi.KtAnnotation
-import org.jetbrains.kotlin.psi.KtBinaryExpression
-import org.jetbrains.kotlin.psi.KtPrefixExpression
+import org.jetbrains.kotlin.psi.*
+import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 
 //class TestThing(){
 //    operator fun dec
 //}
 
+data class ValueOperator(
+    val left: Any,
+    val right: Any,
+    val functionDescriptor: FunctionDescriptor,
+    val dispatchReceiver: Any? = null,
+    val operationToken: IElementType
+)
+
 fun TypescriptTranslator.registerOperators() {
 
-    val binaryFunctionNames = mapOf(
-        KtTokens.EQ to null,
-        KtTokens.PLUSEQ to "plusAssign",
-        KtTokens.MINUSEQ to "minusAssign",
-        KtTokens.MULTEQ to "timesAssign",
-        KtTokens.DIVEQ to "divAssign",
-        KtTokens.PERCEQ to "remAssign",
-        KtTokens.PLUS to "plus",
-        KtTokens.MINUS to "minus",
-        KtTokens.MUL to "times",
-        KtTokens.DIV to "div",
-        KtTokens.PERC to "rem",
-        KtTokens.RANGE to "rangeTo"
-    )
-    val unaryFunctionNames = mapOf(
-        KtTokens.PLUS to "unaryPlus",
-        KtTokens.MINUS to "unaryMinus",
-        KtTokens.PLUSPLUS to "inc",
-        KtTokens.MINUSMINUS to "dec"
+
+    //Array access, get
+    handle<KtArrayAccessExpression> {
+        val f = typedRule.resolvedReferenceTarget as FunctionDescriptor
+        val doubleReceiver = f.dispatchReceiverParameter != null && f.extensionReceiverParameter != null
+        if (doubleReceiver) {
+            -typedRule.getTsReceiver()
+            -"."
+        } else if (f.dispatchReceiverParameter != null) {
+            -typedRule.arrayExpression
+            -"."
+        }
+        -(f.tsName ?: "get")
+        -ArgumentsList(
+            on = f,
+            prependArguments = if (doubleReceiver) listOf(typedRule.arrayExpression!!) else listOf(),
+            orderedArguments = typedRule.indexExpressions.map { it to null },
+            namedArguments = listOf(),
+            lambdaArgument = null
+        )
+    }
+    handle<KtArrayAccessExpression>(
+        condition = {
+            val desc =
+                typedRule.resolvedReferenceTarget as? FunctionDescriptor
+                    ?: return@handle false
+            replacements.getCall(desc) != null
+        },
+        priority = 10_001,
+        action = {
+            val f = typedRule.resolvedReferenceTarget as FunctionDescriptor
+            val rule = replacements.getCall(f)!!
+
+            val allParametersByIndex = HashMap<Int, KtExpression>()
+            val allParametersByName = HashMap<String, KtExpression>()
+            typedRule.indexExpressions.forEachIndexed { index, valueArgument ->
+                if (valueArgument.name != null) {
+                    allParametersByName[valueArgument.name!!] = valueArgument
+                    val i = f.valueParameters.indexOfFirst { it.name.asString() == valueArgument.name!! }
+                    if (i != -1) {
+                        allParametersByIndex[i] = valueArgument
+                    }
+                } else {
+                    allParametersByIndex[index] = valueArgument
+                    f.valueParameters.getOrNull(index)?.name?.asString()?.let {
+                        allParametersByName[it] = valueArgument
+                    }
+                }
+            }
+            val typeParametersByName =
+                typedRule.resolvedCall?.typeArguments?.mapKeys { it.key.name.asString() } ?: mapOf()
+            val typeParametersByIndex = typedRule.resolvedCall?.typeArguments?.mapKeys { it.key.index } ?: mapOf()
+
+            rule.template.forEach { part ->
+                when (part) {
+                    is TemplatePart.Import -> out.addImport(part)
+                    is TemplatePart.Text -> -part.string
+                    TemplatePart.Receiver -> -typedRule.arrayExpression
+                    TemplatePart.DispatchReceiver -> -typedRule.getTsReceiver()
+                    TemplatePart.ExtensionReceiver -> -typedRule.arrayExpression
+                    TemplatePart.AllParameters -> typedRule.indexExpressions.forEachBetween(
+                        forItem = { -it },
+                        between = { -", " }
+                    )
+                    is TemplatePart.Parameter -> -(allParametersByName[part.name])
+                    is TemplatePart.ParameterByIndex -> -(allParametersByIndex[part.index])
+                    is TemplatePart.TypeParameter -> -(typeParametersByName[part.name])
+                    is TemplatePart.TypeParameterByIndex -> -(typeParametersByIndex[part.index])
+                }
+            }
+        }
     )
 
+    //Array access, set
     handle<KtBinaryExpression>(
         condition = {
-            val f = typedRule.operationReference.resolvedReferenceTarget as? FunctionDescriptor ?: return@handle false
-            replacements.getCall(f) != null
+            val arrayAccess = typedRule.left as? KtArrayAccessExpression ?: return@handle false
+            arrayAccess.resolvedIndexedLvalueSet?.resultingDescriptor != null
+                    && (typedRule.resolvedVariableReassignment == true || typedRule.operationToken == KtTokens.EQ)
+        },
+        priority = 12_000,
+        action = {
+            val arrayAccess = typedRule.left as KtArrayAccessExpression
+            val setFunction = arrayAccess.resolvedIndexedLvalueSet!!.resultingDescriptor
+            val right: Any = if(typedRule.operationToken == KtTokens.EQ) typedRule.right!! else ValueOperator(
+                left = typedRule.left!!,
+                right = typedRule.right!!,
+                functionDescriptor = typedRule.operationReference.resolvedReferenceTarget as FunctionDescriptor,
+                dispatchReceiver = typedRule.getTsReceiver(),
+                operationToken = typedRule.operationToken
+            )
+            val doubleReceiver = setFunction.dispatchReceiverParameter != null && setFunction.extensionReceiverParameter != null
+            if (doubleReceiver) {
+                -arrayAccess.getTsReceiver()
+                -"."
+            } else if (setFunction.dispatchReceiverParameter != null) {
+                -arrayAccess.arrayExpression
+                -"."
+            }
+            -(setFunction.tsName ?: "set")
+            -ArgumentsList(
+                on = setFunction,
+                prependArguments = if (doubleReceiver) listOf(arrayAccess.arrayExpression!!) else listOf(),
+                orderedArguments = arrayAccess.indexExpressions.map { it to null } + (right to null),
+                namedArguments = listOf(),
+                lambdaArgument = null
+            )
+        }
+    )
+    handle<KtBinaryExpression>(
+        condition = {
+            val arrayAccess = typedRule.left as? KtArrayAccessExpression ?: return@handle false
+            val f = arrayAccess.resolvedIndexedLvalueSet?.resultingDescriptor ?: return@handle false
+            (typedRule.resolvedVariableReassignment == true || typedRule.operationToken == KtTokens.EQ)
+                    && replacements.getCall(f) != null
+        },
+        priority = 20_002,
+        action = {
+            val arrayAccess = typedRule.left as KtArrayAccessExpression
+            val f = arrayAccess.resolvedIndexedLvalueSet!!.resultingDescriptor as FunctionDescriptor
+            val right: Any = if(typedRule.operationToken == KtTokens.EQ) typedRule.right!! else ValueOperator(
+                left = typedRule.left!!,
+                right = typedRule.right!!,
+                functionDescriptor = typedRule.operationReference.resolvedReferenceTarget as FunctionDescriptor,
+                dispatchReceiver = typedRule.getTsReceiver(),
+                operationToken = typedRule.operationToken
+            )
+            val rule = replacements.getCall(f)!!
+
+            val allParametersByIndex = HashMap<Int, Any>()
+            val allParametersByName = HashMap<String, Any>()
+            arrayAccess.indexExpressions.forEachIndexed { index, valueArgument ->
+                if (valueArgument.name != null) {
+                    allParametersByName[valueArgument.name!!] = valueArgument
+                    val i = f.valueParameters.indexOfFirst { it.name.asString() == valueArgument.name!! }
+                    if (i != -1) {
+                        allParametersByIndex[i] = valueArgument
+                    }
+                } else {
+                    allParametersByIndex[index] = valueArgument
+                    f.valueParameters.getOrNull(index)?.name?.asString()?.let {
+                        allParametersByName[it] = valueArgument
+                    }
+                }
+            }
+            right.let { valueArgument ->
+                val index = f.valueParameters.lastIndex
+                allParametersByIndex[index] = valueArgument
+                f.valueParameters.getOrNull(index)?.name?.asString()?.let {
+                    allParametersByName[it] = valueArgument
+                }
+                Unit
+            }
+            val typeParametersByName =
+                typedRule.resolvedCall?.typeArguments?.mapKeys { it.key.name.asString() } ?: mapOf()
+            val typeParametersByIndex = typedRule.resolvedCall?.typeArguments?.mapKeys { it.key.index } ?: mapOf()
+
+            rule.template.forEach { part ->
+                when (part) {
+                    is TemplatePart.Import -> out.addImport(part)
+                    is TemplatePart.Text -> -part.string
+                    TemplatePart.Receiver -> -arrayAccess.arrayExpression
+                    TemplatePart.DispatchReceiver -> -arrayAccess.getTsReceiver()
+                    TemplatePart.ExtensionReceiver -> -arrayAccess.arrayExpression
+                    TemplatePart.AllParameters -> arrayAccess.indexExpressions.forEachBetween(
+                        forItem = { -it },
+                        between = { -", " }
+                    )
+                    is TemplatePart.Parameter -> -(allParametersByName[part.name])
+                    is TemplatePart.ParameterByIndex -> -(allParametersByIndex[part.index])
+                    is TemplatePart.TypeParameter -> -(typeParametersByName[part.name])
+                    is TemplatePart.TypeParameterByIndex -> -(typeParametersByIndex[part.index])
+                    TemplatePart.Value -> -right
+                }
+            }
+        }
+    )
+
+    //Operator
+    handle<ValueOperator>(
+        condition = {
+            replacements.getCall(typedRule.functionDescriptor) != null
         },
         priority = 10_000,
         action = {
-            val f = typedRule.operationReference.resolvedReferenceTarget as FunctionDescriptor
-            val rule = replacements.getCall(f)!!
+            val rule = replacements.getCall(typedRule.functionDescriptor)!!
 
-            if (typedRule.operationToken == KtTokens.NOT_IN) {
+            if (typedRule.operationToken == KtTokens.NOT_IN || typedRule.operationToken == KtTokens.EXCLEQ) {
                 -"!("
             }
 
             val invertDirection =
                 typedRule.operationToken == KtTokens.IN_KEYWORD || typedRule.operationToken == KtTokens.NOT_IN
-            val left = if(invertDirection) typedRule.right else typedRule.left
-            val right = if(invertDirection) typedRule.left else typedRule.right
+            val left = if (invertDirection) typedRule.right else typedRule.left
+            val right = if (invertDirection) typedRule.left else typedRule.right
 
-            if (typedRule.resolvedVariableReassignment == true) {
-                -left
-                -" = "
-            }
             rule.template.forEach { part ->
                 when (part) {
+                    is TemplatePart.Import -> out.addImport(part)
                     is TemplatePart.Text -> -part.string
                     TemplatePart.Receiver -> -left
-                    TemplatePart.DispatchReceiver -> if (f.extensionReceiverParameter != null) -typedRule.getTsReceiver() else -left
+                    TemplatePart.DispatchReceiver -> typedRule.dispatchReceiver
                     TemplatePart.ExtensionReceiver -> -left
                     TemplatePart.AllParameters -> -right
+                    TemplatePart.OperatorToken -> when (val t = typedRule.operationToken) {
+                        is KtSingleValueToken -> -t.value
+                        else -> {
+                        }
+                    }
                     is TemplatePart.Parameter -> -right
                     is TemplatePart.ParameterByIndex -> -right
                     is TemplatePart.TypeParameter -> -right
                     is TemplatePart.TypeParameterByIndex -> -right
                 }
             }
-            if (typedRule.operationToken == KtTokens.NOT_IN) {
+            if (typedRule.operationToken == KtTokens.NOT_IN || typedRule.operationToken == KtTokens.EXCLEQ) {
                 -")"
             }
         }
     )
+    handle<ValueOperator> {
+        if (typedRule.operationToken == KtTokens.NOT_IN || typedRule.operationToken == KtTokens.EXCLEQ) {
+            -"!("
+        }
 
+        val invertDirection =
+            typedRule.operationToken == KtTokens.IN_KEYWORD || typedRule.operationToken == KtTokens.NOT_IN
+        val left = if (invertDirection) typedRule.right else typedRule.left
+        val right = if (invertDirection) typedRule.left else typedRule.right
+        val doubleReceiver = typedRule.functionDescriptor.dispatchReceiverParameter != null && typedRule.functionDescriptor.extensionReceiverParameter != null
+        if (doubleReceiver) {
+            -typedRule.dispatchReceiver
+            -"."
+        } else if (typedRule.dispatchReceiver != null) {
+            -left
+            -"."
+        }
+        -(typedRule.functionDescriptor.tsName ?: typedRule.functionDescriptor.name.asString())
+        -ArgumentsList(
+            on = typedRule.functionDescriptor,
+            prependArguments = if (typedRule.functionDescriptor.extensionReceiverParameter != null) listOf(left) else listOf(),
+            orderedArguments = listOf(right to null),
+            namedArguments = listOf(),
+            lambdaArgument = null
+        )
+        if (typedRule.operationToken == KtTokens.NOT_IN || typedRule.operationToken == KtTokens.EXCLEQ) {
+            -")"
+        }
+    }
     handle<KtBinaryExpression>(
-        condition = { typedRule.operationReference.getReferencedNameElementType() != KtTokens.IDENTIFIER && typedRule.operationReference.resolvedReferenceTarget != null },
-        priority = 1_000,
+        condition = {
+            typedRule.operationReference.getReferencedNameElementType() != KtTokens.IDENTIFIER
+                    && typedRule.operationReference.getReferencedNameElementType() != KtTokens.EQ
+                    && typedRule.operationReference.resolvedReferenceTarget != null
+        },
+        priority = 10,
         action = {
-
-            if (typedRule.operationToken == KtTokens.NOT_IN) {
-                -"!("
-            }
-
-            val invertDirection =
-                typedRule.operationToken == KtTokens.IN_KEYWORD || typedRule.operationToken == KtTokens.NOT_IN
-            val left = if(invertDirection) typedRule.right else typedRule.left
-            val right = if(invertDirection) typedRule.left else typedRule.right
-            if (typedRule.resolvedVariableReassignment == true) {
-                -left
-                -" = "
-            }
-            val f = typedRule.operationReference.resolvedReferenceTarget as FunctionDescriptor
-            val doubleReceiver = f.dispatchReceiverParameter != null && f.extensionReceiverParameter != null
-            if (doubleReceiver) {
-                -typedRule.getTsReceiver()
-                -"."
-            } else if (f.dispatchReceiverParameter != null) {
-                -left
-                -"."
-            }
-            -(f.tsName ?: typedRule.operationReference.text)
-            -ArgumentsList(
-                on = f,
-                prependArguments = if (f.extensionReceiverParameter != null) listOf(left!!) else listOf(),
-                orderedArguments = listOf(right!! to null),
-                namedArguments = listOf(),
-                lambdaArgument = null
-            )
-            if (typedRule.operationToken == KtTokens.NOT_IN) {
-                -")"
-            }
+        if (typedRule.resolvedVariableReassignment == true) {
+            -typedRule.left
+            -" = "
         }
-    )
+        -ValueOperator(
+            left = typedRule.left!!,
+            right = typedRule.right!!,
+            functionDescriptor = typedRule.operationReference.resolvedReferenceTarget as FunctionDescriptor,
+            dispatchReceiver = typedRule.getTsReceiver(),
+            operationToken = typedRule.operationToken
+        )
+    })
 
     handle<KtPrefixExpression>(
         condition = {
@@ -130,6 +311,7 @@ fun TypescriptTranslator.registerOperators() {
             if (f.extensionReceiverParameter != null) {
                 rule.template.forEach { part ->
                     when (part) {
+                        is TemplatePart.Import -> out.addImport(part)
                         is TemplatePart.Text -> -part.string
                         TemplatePart.Receiver -> -typedRule.baseExpression
                         TemplatePart.DispatchReceiver -> -typedRule.getTsReceiver()
@@ -139,6 +321,7 @@ fun TypescriptTranslator.registerOperators() {
             } else {
                 rule.template.forEach { part ->
                     when (part) {
+                        is TemplatePart.Import -> out.addImport(part)
                         is TemplatePart.Text -> -part.string
                         TemplatePart.Receiver -> -typedRule.baseExpression
                         TemplatePart.DispatchReceiver -> -typedRule.baseExpression

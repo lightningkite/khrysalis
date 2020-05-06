@@ -9,4 +9,13 @@ fun main(){
     theAnswer.let {
         println(it)
     }
+    32.let {
+    }
+    32.let {
+        println(it)
+    }
+    32.let {
+        println(it)
+        println(it)
+    }
 }

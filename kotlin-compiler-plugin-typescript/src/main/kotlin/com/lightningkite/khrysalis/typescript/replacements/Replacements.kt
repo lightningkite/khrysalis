@@ -20,8 +20,8 @@ class Replacements() {
     val types: HashMap<String, TreeSet<TypeReplacement>> = HashMap()
     val typeRefs: HashMap<String, TreeSet<TypeRefReplacement>> = HashMap()
 
-    fun getCall(functionDescriptor: FunctionDescriptor): FunctionReplacement? =
-        functions[functionDescriptor.fqNameSafe.asString()]?.find { it.passes(functionDescriptor) }
+    fun getCall(functionDescriptor: FunctionDescriptor, comparatorType: String? = null): FunctionReplacement? =
+        functions[functionDescriptor.fqNameSafe.asString()]?.find { it.passes(functionDescriptor, comparatorType) }
 
     fun getGet(propertyDescriptor: PropertyDescriptor): GetReplacement? =
         gets[propertyDescriptor.fqNameSafe.asString()]?.find { it.passes(propertyDescriptor) }

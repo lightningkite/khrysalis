@@ -27,7 +27,15 @@ fun TypescriptTranslator.registerLambda() {
                     }
                 }
                 -") => "
-                -typedRule.bodyExpression
+                when(typedRule.bodyExpression?.statements?.size){
+                    null, 0 -> -"{}"
+                    1 -> -typedRule.bodyExpression?.firstStatement
+                    else -> {
+                        -"{\n"
+                        -typedRule.bodyExpression
+                        -"\n}"
+                    }
+                }
             }
         }
     )
@@ -44,7 +52,15 @@ fun TypescriptTranslator.registerLambda() {
             }
         }
         -" => "
-        -typedRule.bodyExpression
+        when(typedRule.bodyExpression?.statements?.size){
+            null, 0 -> -"{}"
+            1 -> -typedRule.bodyExpression?.firstStatement
+            else -> {
+                -"{\n"
+                -typedRule.bodyExpression
+                -"\n}"
+            }
+        }
     }
 //    handle<KtFunctionLiteral> {
 //        val resolved = typedRule.resolvedFunction

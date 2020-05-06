@@ -579,6 +579,22 @@
   template: ~this~ >>> ~0~
 
 
+# Comparisons
+
+- id: kotlin.Byte.compareTo
+  type: call
+  template: ~this~ ~operatorToken~ ~0~
+- id: kotlin.Short.compareTo
+  type: call
+  template: ~this~ ~operatorToken~ ~0~
+- id: kotlin.Int.compareTo
+  type: call
+  template: ~this~ ~operatorToken~ ~0~
+- id: kotlin.Long.compareTo
+  type: call
+  template: ~this~ ~operatorToken~ ~0~
+
+
 # Math.X
 
 

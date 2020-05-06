@@ -5,7 +5,7 @@ data class Template(val parts: List<TemplatePart>) : Iterable<TemplatePart> {
 
     companion object {
         val tagRegex = Regex("""~([a-zA-Z0-9*]*)~""")
-        fun fromString(text: String): Template {
+        fun fromString(text: String, imports: List<TemplatePart.Import> = listOf()): Template {
             val tags = tagRegex.findAll(text).map {
                 val tag = it.groupValues[1]
                 val firstChar = tag.firstOrNull() ?: return@map TemplatePart.Text("~")
@@ -15,6 +15,7 @@ data class Template(val parts: List<TemplatePart>) : Iterable<TemplatePart> {
                     tag == "thisExtension" -> TemplatePart.ExtensionReceiver
                     tag == "thisDispatch" -> TemplatePart.DispatchReceiver
                     tag == "value" -> TemplatePart.Value
+                    tag == "operatorToken" -> TemplatePart.OperatorToken
                     firstChar.isDigit() -> TemplatePart.ParameterByIndex(tag.toInt())
                     firstChar == 'T' && tag.getOrNull(1)?.isDigit() == true -> TemplatePart.TypeParameterByIndex(
                         tag.drop(1).toInt()
@@ -29,7 +30,7 @@ data class Template(val parts: List<TemplatePart>) : Iterable<TemplatePart> {
                 )
             }
             return Template(
-                other
+                imports + other
                     .withIndex()
                     .flatMap { (index, it) ->
                         listOf(
