@@ -18,8 +18,7 @@ import org.jetbrains.kotlin.psi.psiUtil.referenceExpression
 import org.jetbrains.kotlin.psi.psiUtil.visibilityModifierTypeOrDefault
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 import org.jetbrains.kotlin.types.*
-import org.jetbrains.kotlin.types.typeUtil.isByte
-import org.jetbrains.kotlin.types.typeUtil.isInterface
+import org.jetbrains.kotlin.types.typeUtil.*
 import kotlin.text.Appendable
 
 private val primitiveTypes = setOf(
@@ -41,6 +40,7 @@ private val primitiveTypes = setOf(
 
 fun KotlinType.isPrimitive() = getJetTypeFqName(false) in primitiveTypes
 data class BasicType(val type: KotlinType)
+data class KtUserTypeBasic(val type: KtUserType)
 
 fun TypescriptTranslator.registerType() {
 
@@ -53,14 +53,14 @@ fun TypescriptTranslator.registerType() {
         -typedRule.getTypeReference()
         -";\n"
 
-        if(typedRule.getTypeReference()?.typeElement is KtUserType) {
+        (typedRule.getTypeReference()?.typeElement as? KtUserType)?.let { ut ->
             if (typedRule.visibilityModifierTypeOrDefault().value == "public") {
                 -"export "
             }
             -"let "
             -typedRule.nameIdentifier
             -" = "
-            -typedRule.getTypeReference()
+            -KtUserTypeBasic(ut)
             -";\n"
         }
     }
@@ -118,33 +118,109 @@ fun TypescriptTranslator.registerType() {
         }
     }
 
-    handle<KtTypeReference>(
+    handle<KtNullableType> {
+        -"("
+        -typedRule.innerType
+        -" | null)"
+    }
+
+    handle<KtUserType>(
         condition = {
-            //TODO: Figure out why this captures typealiases
-            val type = typedRule.resolvedType ?: typedRule.resolvedAbbreviatedType ?: return@handle false
+            val reference = typedRule.referenceExpression ?: return@handle false
+            val type = reference.resolvedReferenceTarget as? ClassDescriptor ?: return@handle false
             replacements.getType(type) != null
         },
         priority = 10_000,
         action = {
-            val type = typedRule.resolvedType ?: typedRule.resolvedAbbreviatedType!!
+            val reference = typedRule.referenceExpression!!
+            val type = reference.resolvedReferenceTarget as ClassDescriptor
             val rule = replacements.getType(type)!!
-            val baseType = type.constructor
-            val typeParameters = when (val te = typedRule.typeElement) {
-                is KtUserType -> te.typeArguments
-                else -> listOf()
-            }
-            val typeParametersByName = typeParameters.withIndex()
-                .associate { (index, item) -> baseType.parameters[index].name.asString() to item }
+            val typeParametersByName = typedRule.typeArguments.withIndex()
+                .associate { (index, item) -> type.declaredTypeParameters[index].name.asString() to item }
             rule.template.parts.forEach { part ->
                 when (part) {
                     is TemplatePart.Import -> out.addImport(part)
                     is TemplatePart.Text -> -part.string
                     is TemplatePart.TypeParameter -> -(typeParametersByName[part.name])
-                    is TemplatePart.TypeParameterByIndex -> -(typeParameters.getOrNull(part.index))
+                    is TemplatePart.TypeParameterByIndex -> -(typedRule.typeArguments.getOrNull(part.index))
                 }
             }
         }
     )
+
+    handle<KtUserType>(
+        condition = {
+            val reference = typedRule.referenceExpression ?: return@handle false
+            val type = reference.resolvedReferenceTarget as? ClassDescriptor ?: return@handle false
+            type.tsTopLevelMessedUp
+        },
+        priority = 100,
+        action = {
+            val reference = typedRule.referenceExpression!!
+            val type = reference.resolvedReferenceTarget as ClassDescriptor
+            val n = type.tsTopLevelName
+            -n
+            -typedRule.typeArgumentList
+            out.addImport(type, n)
+        }
+    )
+
+    handle<KtUserTypeBasic>(
+        condition = {
+            val reference = typedRule.type.referenceExpression ?: return@handle false
+            val type = reference.resolvedReferenceTarget as? ClassDescriptor ?: return@handle false
+            replacements.getTypeRef(type) != null
+        },
+        priority = 11_000,
+        action = {
+            val reference = typedRule.type.referenceExpression!!
+            val type = reference.resolvedReferenceTarget as ClassDescriptor
+            val rule = replacements.getTypeRef(type)!!
+            rule.template.parts.forEach { part ->
+                when (part) {
+                    is TemplatePart.Import -> out.addImport(part)
+                    is TemplatePart.Text -> -part.string
+                }
+            }
+        }
+    )
+    handle<KtUserTypeBasic>(
+        condition = {
+            val reference = typedRule.type.referenceExpression ?: return@handle false
+            val type = reference.resolvedReferenceTarget as? ClassDescriptor ?: return@handle false
+            replacements.getType(type) != null
+        },
+        priority = 10_000,
+        action = {
+            val reference = typedRule.type.referenceExpression!!
+            val type = reference.resolvedReferenceTarget as ClassDescriptor
+            val rule = replacements.getType(type)!!
+            rule.template.parts.forEach { part ->
+                when (part) {
+                    is TemplatePart.Import -> out.addImport(part)
+                    is TemplatePart.Text -> -part.string
+                }
+            }
+        }
+    )
+    handle<KtUserTypeBasic>(
+        condition = {
+            val reference = typedRule.type.referenceExpression ?: return@handle false
+            val type = reference.resolvedReferenceTarget as? ClassDescriptor ?: return@handle false
+            type.tsTopLevelMessedUp
+        },
+        priority = 100,
+        action = {
+            val reference = typedRule.type.referenceExpression!!
+            val type = reference.resolvedReferenceTarget as ClassDescriptor
+            val n = type.tsTopLevelName
+            -n
+            out.addImport(type, n)
+        }
+    )
+    handle<KtUserTypeBasic>{
+        -typedRule.type.referenceExpression
+    }
 
     handle<KtFunctionType> {
         -"("
@@ -235,20 +311,6 @@ fun TypescriptTranslator.registerType() {
             -") { return _item as "
             -typedRule.right
             -"; } else { return null; }"
-        }
-    )
-
-    handle<KtTypeReference>(
-        condition = {
-            val resolved = typedRule.resolvedType?.constructor?.declarationDescriptor as? ClassDescriptor ?: return@handle false
-            resolved.tsTopLevelMessedUp
-        },
-        priority = 100,
-        action = {
-            val cl = typedRule.resolvedType?.constructor?.declarationDescriptor as ClassDescriptor
-            val n = cl.tsTopLevelName
-            -n
-            out.addImport(cl, n)
         }
     )
 }

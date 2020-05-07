@@ -4,26 +4,40 @@
 - id: kotlin.Byte
   type: type
   template: number
-
 - id: kotlin.Short
   type: type
   template: number
-
 - id: kotlin.Int
   type: type
   template: number
-
 - id: kotlin.Long
   type: type
   template: number  # Should we use number or BigInt here?  I'm mildly worried about bitwise usage here
-
 - id: kotlin.Float
   type: type
   template: number
-
 - id: kotlin.Double
   type: type
   template: number
+
+- id: kotlin.Byte
+  type: typeRef
+  template: Number
+- id: kotlin.Short
+  type: typeRef
+  template: Number
+- id: kotlin.Int
+  type: typeRef
+  template: Number
+- id: kotlin.Long
+  type: typeRef
+  template: Number  # Should we use number or BigInt here?  I'm mildly worried about bitwise usage here
+- id: kotlin.Float
+  type: typeRef
+  template: Number
+- id: kotlin.Double
+  type: typeRef
+  template: Number
 
 
 

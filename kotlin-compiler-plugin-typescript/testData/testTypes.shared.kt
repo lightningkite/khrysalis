@@ -13,5 +13,7 @@ fun main(){
     val y: MyInteger = 0
     val stuff: ListOfThings = listOf(MyThing(), Thing())
     val otherList: List<Int> = listOf(1, 2, 3)
+    val nullabilityTest: Int? = null
+    val nullabilityTest2: ListOfThings? = null
     println("Success")
 }
