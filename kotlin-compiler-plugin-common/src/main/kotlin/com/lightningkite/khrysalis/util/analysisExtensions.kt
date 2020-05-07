@@ -133,7 +133,7 @@ interface AnalysisExtensions {
         get() = bindingContext[BindingContext.LAMBDA_INVOCATIONS, this]
     val KtLambdaExpression.resolvedBlock: Boolean?
         get() = bindingContext[BindingContext.BLOCK, this]
-    val KtClass.resolvedClass: ClassDescriptor?
+    val KtClassOrObject.resolvedClass: ClassDescriptor?
         get() = bindingContext[BindingContext.CLASS, this]
     val KtScript.resolvedScript: ScriptDescriptor?
         get() = bindingContext[BindingContext.SCRIPT, this]

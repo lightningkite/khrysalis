@@ -6,6 +6,9 @@ class TestClass {
 
 fun main(){
     val theAnswer = TestClass().apply { item = 42 }
+    val myLambda: (Int)->String = {
+        "Number: $it"
+    }
     theAnswer.let {
         println(it)
     }

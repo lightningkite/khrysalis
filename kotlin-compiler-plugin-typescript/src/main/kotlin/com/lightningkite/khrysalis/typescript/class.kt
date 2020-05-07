@@ -4,9 +4,6 @@ import com.lightningkite.khrysalis.generic.PartialTranslatorByType
 import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.allOverridden
 import com.lightningkite.khrysalis.util.forEachBetween
-import com.lightningkite.khrysalis.util.recursiveChildren
-import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
-import org.jetbrains.kotlin.codegen.isDefinitelyNotDefaultImplsMethod
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
@@ -14,35 +11,11 @@ import org.jetbrains.kotlin.js.translate.callTranslator.getReturnType
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
-import org.jetbrains.kotlin.psi2ir.findFirstFunction
-import org.jetbrains.kotlin.resolve.calls.tower.isSynthesized
-import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
-import org.jetbrains.kotlin.resolve.descriptorUtil.getSuperInterfaces
 import org.jetbrains.kotlin.resolve.scopes.DescriptorKindFilter
 import org.jetbrains.kotlin.types.typeUtil.supertypes
 import java.util.*
 import kotlin.collections.ArrayList
 
-
-val skippedExtensions = setOf(
-    "com.lightningkite.khrysalis.AnyObject",
-    "com.lightningkite.khrysalis.AnyHashable",
-    "com.lightningkite.khrysalis.Hashable",
-    "com.lightningkite.khrysalis.Equatable"
-//    "com.lightningkite.khrysalis.SomeEnum"
-)
-
-fun MemberDescriptor.description(): String {
-    return when (this) {
-        is FunctionDescriptor -> this.name.identifier + this.valueParameters.joinToString {
-            it.type.getJetTypeFqName(
-                true
-            )
-        }
-        is PropertyDescriptor -> this.name.identifier
-        else -> return "???"
-    }
-}
 
 fun TypescriptTranslator.registerClass() {
 
@@ -52,7 +25,7 @@ fun TypescriptTranslator.registerClass() {
     ) {
         val typedRule = on
         -"class "
-        -(typedRule.nameIdentifier ?: defaultName)
+        -(tsTopLevelNameElement(on) ?: defaultName)
         -typedRule.typeParameterList
         typedRule.superTypeListEntries.mapNotNull { it as? KtSuperTypeCallEntry }.takeUnless { it.isEmpty() }?.let {
             -" extends "
@@ -112,6 +85,16 @@ fun TypescriptTranslator.registerClass() {
                 }
             }
             ?.forEach {
+                fun writeDefaultObj(){
+                    val toOverrideParent = when(it){
+                        is PropertyDescriptor -> it.allOverridden().first().containingDeclaration as ClassDescriptor
+                        is FunctionDescriptor -> it.allOverridden().first().containingDeclaration as ClassDescriptor
+                        else -> return
+                    }
+                    -BasicType(toOverrideParent.defaultType)
+                    -"Defaults."
+                    out.addImport(toOverrideParent, toOverrideParent.tsTopLevelName + "Defaults")
+                }
                 when (it) {
                     is PropertyDescriptor -> {
                         -"public get "
@@ -127,6 +110,7 @@ fun TypescriptTranslator.registerClass() {
                         -"(): "
                         -it.type
                         -" { return "
+                        writeDefaultObj()
                         -it.allOverridden().first().tsFunctionGetDefaultName
                         -"(this); }\n"
 
@@ -144,6 +128,7 @@ fun TypescriptTranslator.registerClass() {
                             -"(value: "
                             -it.type
                             -") { "
+                            writeDefaultObj()
                             -it.allOverridden().first().tsFunctionGetDefaultName
                             -"(this, value); }\n"
                         }
@@ -171,6 +156,7 @@ fun TypescriptTranslator.registerClass() {
                         -"): "
                         -(it.returnType ?: "void")
                         -" { return "
+                        writeDefaultObj()
                         -it.allOverridden().first().tsDefaultName
                         -"(this"
                         it.valueParameters.forEach {
@@ -188,24 +174,62 @@ fun TypescriptTranslator.registerClass() {
         condition = { typedRule.isInterface() },
         priority = 100
     ) {
-        if(typedRule.isTopLevel() && !typedRule.isPrivate()) -"export "
+        if (!typedRule.isPrivate()) -"export "
         -"interface "
-        -typedRule.nameIdentifier
+        -tsTopLevelNameElement(typedRule)
         -typedRule.typeParameterList
         -" {\n"
         -typedRule.body
-        -"}"
+        -"}\n"
+        if (!typedRule.isPrivate()) -"export "
+        -"class "
+        -tsTopLevelNameElement(typedRule)
+        -"Defaults {"
         typedRule.runPostActions()
+        -"\n}"
+    }
+
+    handle<KtClass>(
+        condition = { typedRule.isInterface() && typedRule.parentOfType<KtClassBody>() != null },
+        priority = 1000
+    ) {
+        noReuse = true
+        out.fileEndingActions.add {
+            doSuper()
+            -"\n"
+        }
+    }
+
+    handle<KtClass>(
+        condition = { typedRule.parentOfType<KtClassBody>()?.parentOfType<KtClass>()?.isInterface() == true },
+        priority = 1000
+    ) {
+        noReuse = true
+        out.fileEndingActions.add {
+            doSuper()
+            -"\n"
+        }
+    }
+
+    handle<KtObjectDeclaration>(
+        condition = { typedRule.parentOfType<KtClassBody>()?.parentOfType<KtClass>()?.isInterface() == true },
+        priority = 1000
+    ) {
+        noReuse = true
+        out.fileEndingActions.add {
+            doSuper()
+            -"\n"
+        }
     }
 
     handle<KtClass> {
-        if (typedRule.parentOfType<KtClassBody>() != null) {
+        if (typedRule.parentOfType<KtClassBody>()?.parentOfType<KtClass>()?.isInterface() == false) {
             -(typedRule.visibilityModifier() ?: "public")
             -" static "
-            -typedRule.nameIdentifier
+            -tsTopLevelNameElement(typedRule)
             -" = "
         } else {
-            if(typedRule.isTopLevel() && !typedRule.isPrivate()) -"export "
+            if (!typedRule.isPrivate()) -"export "
         }
 
         when (typedRule.modalityModifierType()) {
@@ -342,7 +366,7 @@ fun TypescriptTranslator.registerClass() {
             //Generate equals() if not present
             if (typedRule.body?.declarations?.any { it is FunctionDescriptor && (it as KtDeclaration).name == "equals" && it.valueParameters.size == 1 } != true) {
                 -"public equals(other: any): boolean { return other instanceof "
-                -typedRule.nameIdentifier
+                -tsTopLevelNameElement(typedRule)
                 typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEach { param ->
                     -" && "
                     val type = param.typeReference?.resolvedType?.getJetTypeFqName(false)
@@ -384,7 +408,7 @@ fun TypescriptTranslator.registerClass() {
             if (typedRule.body?.declarations?.any { it is FunctionDescriptor && (it as KtDeclaration).name == "toString" && it.valueParameters.isEmpty() } != true) {
                 -"public toString(): string { return "
                 -'`'
-                -typedRule.nameIdentifier
+                -tsTopLevelNameElement(typedRule)
                 -'('
                 typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEachBetween(
                     forItem = {
@@ -429,11 +453,11 @@ fun TypescriptTranslator.registerClass() {
         writeInterfaceDefaultImplementations(typedRule)
         if (typedRule.isEnum()) {
             -"private static _values: Array<"
-            -typedRule.nameIdentifier
+            -tsTopLevelNameElement(typedRule)
             -"> = ["
             typedRule.body?.enumEntries?.forEachBetween(
                 forItem = {
-                    -typedRule.nameIdentifier
+                    -tsTopLevelNameElement(typedRule)
                     -'.'
                     -it.nameIdentifier
                 },
@@ -441,16 +465,16 @@ fun TypescriptTranslator.registerClass() {
             )
             -"];\n"
             -"public static values(): Array<"
-            -typedRule.nameIdentifier
+            -tsTopLevelNameElement(typedRule)
             -"> { return "
-            -typedRule.nameIdentifier
+            -tsTopLevelNameElement(typedRule)
             -"._values; }\n"
             -"public readonly name: string;\n"
 
             -"public static valueOf(name: string): "
-            -typedRule.nameIdentifier
+            -tsTopLevelNameElement(typedRule)
             -" { return "
-            -typedRule.nameIdentifier
+            -tsTopLevelNameElement(typedRule)
             -"[name]; }\n"
 
             -"public toString(): string { return this.name }\n"
@@ -461,13 +485,13 @@ fun TypescriptTranslator.registerClass() {
     }
 
     handle<KtObjectDeclaration> {
-        if (typedRule.parentOfType<KtClassBody>() != null) {
+        if (typedRule.parentOfType<KtClassBody>()?.parentOfType<KtClass>()?.isInterface() == false) {
             -(typedRule.visibilityModifier() ?: "public")
             -" static "
-            -(typedRule.nameIdentifier ?: "Companion")
+            -(tsTopLevelNameElement(typedRule) ?: "Companion")
             -" = "
         } else {
-            if(typedRule.isTopLevel() && !typedRule.isPrivate()) -"export "
+            if (!typedRule.isPrivate()) -"export "
         }
         writeClassHeader(typedRule)
         -" {\n"
@@ -507,11 +531,12 @@ fun TypescriptTranslator.registerClass() {
         }
         -"}\n"
         -"public static INSTANCE = new "
-        -(typedRule.nameIdentifier ?: "Companion")
+        -(tsTopLevelNameElement(typedRule) ?: "Companion")
         -"();\n"
         -typedRule.body
         writeInterfaceDefaultImplementations(typedRule)
         -"}"
+        typedRule.runPostActions()
     }
 
     handle<KtClassBody> {
@@ -569,7 +594,7 @@ fun TypescriptTranslator.registerClass() {
 
     handle<KtEnumEntry> {
         -"public static "
-        -typedRule.nameIdentifier
+        -tsTopLevelNameElement(typedRule)
         -" = new "
         writeClassHeader(typedRule)
         -" {\n"
@@ -579,7 +604,7 @@ fun TypescriptTranslator.registerClass() {
         -'('
         val args = arrayListOf({ ->
             -'"'
-            -typedRule.nameIdentifier
+            -tsTopLevelNameElement(typedRule)
             -'"'
             Unit
         })
@@ -628,13 +653,13 @@ fun TypescriptTranslator.registerClass() {
         priority = 100
     ) {
         -"public static "
-        -typedRule.nameIdentifier
+        -tsTopLevelNameElement(typedRule)
         -" = new "
         -typedRule.parentOfType<KtClassBody>()?.parentOfType<KtClass>()?.nameIdentifier
         -'('
         val args = arrayListOf({ ->
             -'"'
-            -typedRule.nameIdentifier
+            -tsTopLevelNameElement(typedRule)
             -'"'
             Unit
         })
@@ -647,13 +672,73 @@ fun TypescriptTranslator.registerClass() {
         )
         -");\n"
     }
+
+    handle<KtDotQualifiedExpression>(
+        condition = {
+            var current = typedRule
+            while (current.selectorExpression is KtDotQualifiedExpression) {
+                current = current.selectorExpression as KtDotQualifiedExpression
+            }
+            val callExp = current.selectorExpression as? KtCallExpression ?: return@handle false
+            val nre = callExp.calleeExpression as? KtNameReferenceExpression ?: return@handle false
+            val resolved = nre.resolvedReferenceTarget as? ConstructorDescriptor ?: return@handle false
+            (resolved.constructedClass as? ClassDescriptor)?.tsTopLevelMessedUp == true
+        },
+        priority = 100,
+        action = {
+            var current = typedRule
+            while (current.selectorExpression is KtDotQualifiedExpression) {
+                current = current.selectorExpression as KtDotQualifiedExpression
+            }
+            val callExp = current.selectorExpression as? KtCallExpression ?: return@handle
+            val nre = callExp.calleeExpression as? KtNameReferenceExpression ?: return@handle
+            val constructor = nre.resolvedReferenceTarget as ConstructorDescriptor
+            val cl = constructor.constructedClass
+            val n = cl.tsTopLevelName
+            -n
+            val withComments = callExp.valueArgumentList?.withComments() ?: listOf()
+            -ArgumentsList(
+                on = constructor,
+                orderedArguments = withComments.filter { !it.first.isNamed() }
+                    .map { it.first.getArgumentExpression()!! to it.second },
+                namedArguments = withComments.filter { it.first.isNamed() },
+                lambdaArgument = callExp.lambdaArguments.firstOrNull()
+            )
+            out.addImport(cl, n)
+        }
+    )
+
+    handle<KtDotQualifiedExpression>(
+        condition = {
+            var current = typedRule
+            while (current.selectorExpression is KtDotQualifiedExpression) {
+                current = current.selectorExpression as KtDotQualifiedExpression
+            }
+            val nre = current.selectorExpression as? KtNameReferenceExpression ?: return@handle false
+            val resolved = nre.resolvedReferenceTarget as? ClassDescriptor ?: return@handle false
+            resolved.tsTopLevelMessedUp
+        },
+        priority = 100,
+        action = {
+            var current = typedRule
+            while (current.selectorExpression is KtDotQualifiedExpression) {
+                current = current.selectorExpression as KtDotQualifiedExpression
+            }
+            val nre = current.selectorExpression as KtNameReferenceExpression
+            val cl = nre.resolvedReferenceTarget as ClassDescriptor
+            val n = cl.tsTopLevelName
+            -n
+            -".INSTANCE"
+            out.addImport(cl, n)
+        }
+    )
 }
 
-private val weakKtClassPostActions = WeakHashMap<KtClass, ArrayList<() -> Unit>>()
-fun KtClass.runPostActions() {
+private val weakKtClassPostActions = WeakHashMap<KtElement, ArrayList<() -> Unit>>()
+fun KtElement.runPostActions() {
     weakKtClassPostActions.remove(this)?.forEach { it() }
 }
 
-fun KtClass.addPostAction(action: () -> Unit) {
+fun KtElement.addPostAction(action: () -> Unit) {
     weakKtClassPostActions.getOrPut(this) { ArrayList() }.add(action)
 }

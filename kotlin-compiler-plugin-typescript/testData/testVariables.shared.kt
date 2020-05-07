@@ -3,6 +3,7 @@ package com.test.variables
 import com.test.magicVariable
 import kotlin.math.absoluteValue
 
+private var fileReal: Int = 0
 var topLevelReal: Int = 0
 var topLevelVirtual: Int
     get() = 1
@@ -44,6 +45,8 @@ class TestClass {
         println(memberHybrid)
         extensionProperty = -4
         println(extensionProperty)
+        this.extensionProperty = -4
+        println(this.extensionProperty)
 
         topLevelReal = -1
         println(topLevelReal)
@@ -145,8 +148,10 @@ var TestObject.extensionProperty: Int
 
 fun test(){
     val instance = TestClass()
+    fileReal += 1
     println(TestObject.objectReal)
     println(instance.memberReal)
+    println(instance.extensionProperty)
     println(magicVariable)
     magicVariable = 9001.absoluteValue.plus(4)
 }

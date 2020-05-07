@@ -91,7 +91,7 @@ class KotlinTypescriptExtension(
             collector = collector
         )
 
-        val map = generateFqToFileMap(files.filter { it.virtualFilePath.endsWith(".shared.kt") }, translator.commonPath)
+        val map = translator.run { generateFqToFileMap(files.filter { it.virtualFilePath.endsWith(".shared.kt") }) }
         translator.kotlinFqNameToFile.putAll(map)
         output.resolve("fqmanifest.txt").bufferedWriter().use {
             for ((key, value) in map) {

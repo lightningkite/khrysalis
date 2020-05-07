@@ -12,6 +12,7 @@ import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
 import org.jetbrains.kotlin.psi.synthetics.SyntheticClassOrObjectDescriptor
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
+import org.jetbrains.kotlin.resolve.descriptorUtil.isPublishedApi
 import java.util.concurrent.atomic.AtomicInteger
 
 val uniqueNumber = AtomicInteger(0)
@@ -37,11 +38,7 @@ fun TypescriptTranslator.registerVariable() {
             val ktClass = typedRule.parentOfType<KtClassBody>()!!.parentOfType<KtClass>()!!
             tr.getter?.let { getter ->
                 ktClass.addPostAction {
-                    -"\n"
-                    if (ktClass.isPublic) {
-                        -"export "
-                    }
-                    -"function "
+                    -"\npublic static "
                     -resolved.tsFunctionGetDefaultName
                     (ktClass.typeParameters + tr.typeParameters).takeUnless { it.isEmpty() }?.let {
                         -'<'
@@ -55,7 +52,7 @@ fun TypescriptTranslator.registerVariable() {
                         -'('
                         -r
                         -": "
-                        -ktClass.nameIdentifier
+                        -tsTopLevelNameElement(ktClass)
                         -')'
                         val body = getter.bodyExpression
                         if (body is KtBlockExpression) {
@@ -70,11 +67,7 @@ fun TypescriptTranslator.registerVariable() {
             }
             tr.setter?.let { setter ->
                 ktClass.addPostAction {
-                    -"\n"
-                    if (ktClass.isPublic) {
-                        -"export "
-                    }
-                    -"function "
+                    -"\npublic static "
                     -resolved.tsFunctionSetDefaultName
                     (ktClass.typeParameters + tr.typeParameters).takeUnless { it.isEmpty() }?.let {
                         -'<'
@@ -88,7 +81,7 @@ fun TypescriptTranslator.registerVariable() {
                         -'('
                         -r
                         -": "
-                        -ktClass.nameIdentifier
+                        -tsTopLevelNameElement(ktClass)
                         -", "
                         -(setter.parameter?.name ?: "value")
                         -": "
@@ -133,7 +126,7 @@ fun TypescriptTranslator.registerVariable() {
                 -"const "
             }
         }
-        if (typedRule.getter != null || typedRule.setter != null) {
+        if (typedRule.getter != null || typedRule.setter != null || (!typedRule.isPrivate() && typedRule.isTopLevel)) {
             -"_"
         }
         -typedRule.nameIdentifier
@@ -146,7 +139,7 @@ fun TypescriptTranslator.registerVariable() {
             -it
         }
         -";\n"
-        if (typedRule.getter != null || typedRule.setter != null) {
+        if (typedRule.getter != null || typedRule.setter != null || (!typedRule.isPrivate() && typedRule.isTopLevel)) {
             typedRule.getter?.let {
                 -it
             } ?: run {
@@ -377,8 +370,10 @@ fun TypescriptTranslator.registerVariable() {
             val nre = (typedRule.selectorExpression as KtNameReferenceExpression)
             val prop = nre.resolvedReferenceTarget as PropertyDescriptor
             out.addImport(prop, prop.tsFunctionGetName)
-            -nre.getTsReceiver()
-            -"."
+            if(prop.dispatchReceiverParameter != null) {
+                -nre.getTsReceiver()
+                -"."
+            }
             -prop.tsFunctionGetName
             -'('
             -typedRule.receiverExpression
@@ -449,8 +444,10 @@ fun TypescriptTranslator.registerVariable() {
             val nre = (left.selectorExpression as KtNameReferenceExpression)
             val prop = nre.resolvedReferenceTarget as PropertyDescriptor
             out.addImport(prop, prop.tsFunctionSetName)
-            -(nre.getTsReceiver())
-            -"."
+            if(prop.dispatchReceiverParameter != null) {
+                -nre.getTsReceiver()
+                -"."
+            }
             -prop.tsFunctionSetName
             -'('
             -left.receiverExpression
@@ -593,7 +590,7 @@ val PropertyDescriptor.tsFunctionGetName: String?
     else when (this.containingDeclaration) {
         is ClassDescriptor -> null
         is SyntheticClassOrObjectDescriptor -> null
-        else -> if (this.accessors.all { it.isDefault }) null else "get" + this.name.identifier.capitalize()
+        else -> if (this.accessors.all { it.isDefault } && this.visibility.name == "private") null else "get" + this.name.identifier.capitalize()
     }
 val PropertyDescriptor.tsFunctionSetName: String?
     get() = if (extensionReceiverParameter != null) "set" + extensionReceiverParameter!!
@@ -606,30 +603,16 @@ val PropertyDescriptor.tsFunctionSetName: String?
     else when (this.containingDeclaration) {
         is ClassDescriptor -> null
         is SyntheticClassOrObjectDescriptor -> null
-        else -> if (this.accessors.all { it.isDefault }) null else "set" + this.name.identifier.capitalize()
+        else -> if (this.accessors.all { it.isDefault } && this.visibility.name == "private") null else "set" + this.name.identifier.capitalize()
     }
 
 val PropertyDescriptor.tsFunctionGetDefaultName: String?
     get() {
-        return (containingDeclaration as? ClassDescriptor ?: return null)
-            .fqNameSafe
-            .asString()
-            .split('.')
-            .joinToString("") { it.capitalize() }
-            .plus("Get")
-            .plus(this.name.identifier.capitalize())
-            .decapitalize()
+        return "get" + this.name.identifier.capitalize()
     }
 val PropertyDescriptor.tsFunctionSetDefaultName: String?
     get() {
-        return (containingDeclaration as? ClassDescriptor ?: return null)
-            .fqNameSafe
-            .asString()
-            .split('.')
-            .joinToString("") { it.capitalize() }
-            .plus("Set")
-            .plus(this.name.identifier.capitalize())
-            .decapitalize()
+        return "set" + this.name.identifier.capitalize()
     }
 
 inline fun <reified T : PsiElement> PsiElement.parentOfType(): T? = parentOfType(T::class.java)

@@ -41,20 +41,21 @@
     - [X] Casting and Type Checking
     - [ ] Iterable
     - [X] Get/Set operators
+- [ ] Interfaces
+    - [X] Declaration
+    - [X] Defaults
+    - [ ] Within Class
 - [ ] Classes -- 3 days
     - [X] Inheritance
     - [X] Interface Implementation
-        - [X] Interface Declaration
         - [X] Implementation Marker
         - [X] Interface Defaults
-            - [X] Usage
-                - [X] Identification
-            - [X] Creation
     - [X] Primary constructor
         - [X] Create variables
         - [X] Populate variables
         - [X] Init blocks
     - [ ] Secondary constructors
+    - [ ] Inner Classes
     - [ ] Delegation
     - [X] Equatable 
         - Plan: Literally use `equals(other)`

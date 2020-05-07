@@ -1,28 +1,27 @@
 package com.lightningkite.khrysalis.typescript.manifest
 
-import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
-import com.lightningkite.khrysalis.typescript.tsFunctionGetName
-import com.lightningkite.khrysalis.typescript.tsFunctionSetName
-import com.lightningkite.khrysalis.typescript.tsName
-import com.lightningkite.khrysalis.util.AnalysisExtensions
-import org.jetbrains.kotlin.descriptors.ClassDescriptor
-import org.jetbrains.kotlin.descriptors.FunctionDescriptor
-import org.jetbrains.kotlin.descriptors.PropertyDescriptor
+import com.lightningkite.khrysalis.typescript.*
 import org.jetbrains.kotlin.psi.*
-import org.jetbrains.kotlin.psi.psiUtil.isPublic
-import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
-import org.jetbrains.kotlin.resolve.descriptorUtil.isPublishedApi
-import java.io.File
+import org.jetbrains.kotlin.psi.psiUtil.isPrivate
 
-fun generateFqToFileMap(files: Collection<KtFile>, commonPath: String): HashMap<String, String> {
+fun TypescriptTranslator.generateFqToFileMap(files: Collection<KtFile>): HashMap<String, String> {
     val manifest = HashMap<String, String>()
     for (file in files) {
         val pkg = file.packageFqName.asString()
         val path = file.virtualFilePath.removePrefix(commonPath).removeSuffix(".kt")
-        for (decl in file.declarations) {
-            val name = decl.name ?: continue
-            manifest["$pkg.$name"] = path
+        fun add(decl: KtDeclaration, prepend: String = "", addThis: Boolean = true){
+            if(decl.isPrivate()) return
+            val name = decl.name ?: return
+            if(addThis) {
+                manifest["$pkg.$prepend$name"] = path
+            }
+            if(decl is KtClassOrObject){
+                for(sub in decl.declarations){
+                    if(sub is KtClassOrObject) add(sub, "$prepend$name.", sub.resolvedClass?.tsTopLevelMessedUp == true)
+                }
+            }
         }
+        for (decl in file.declarations) { add(decl) }
     }
     return manifest
 }

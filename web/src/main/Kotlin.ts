@@ -13,10 +13,12 @@ export function also<T>(item: T, action: (T)=>void): T {
     return item;
 }
 
-export interface Enum<T> {
-    values(): Array<T>
-    valueOf(name: string): T
+export interface Object {
+    hashCode(): number
+    equals(other: any): boolean
 }
+Object.defineProperty(Object.prototype, "hashCode", { value: function(): number { return hashString(this.toString()) } })
+Object.defineProperty(Object.prototype, "equals", { value: function(other: any): boolean { return this == other } })
 
 export class Range<T> {
     start: T;

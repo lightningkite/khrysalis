@@ -4,15 +4,19 @@ import com.lightningkite.khrysalis.generic.PartialTranslator
 import com.lightningkite.khrysalis.generic.PartialTranslatorByType
 import com.lightningkite.khrysalis.generic.line
 import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
+import org.jetbrains.kotlin.builtins.functions.FunctionClassDescriptor
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
+import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.descriptors.leastPermissiveDescriptor
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.lexer.KtModifierKeywordToken
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
+import org.jetbrains.kotlin.psi.psiUtil.allChildren
 import org.jetbrains.kotlin.psi.psiUtil.isPrivate
 import org.jetbrains.kotlin.psi.psiUtil.referenceExpression
 import org.jetbrains.kotlin.psi.psiUtil.visibilityModifierTypeOrDefault
+import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 import org.jetbrains.kotlin.types.*
 import org.jetbrains.kotlin.types.typeUtil.isByte
 import org.jetbrains.kotlin.types.typeUtil.isInterface
@@ -34,13 +38,14 @@ private val primitiveTypes = setOf(
     "kotlin.Unit",
     "kotlin.Any"
 )
+
 fun KotlinType.isPrimitive() = getJetTypeFqName(false) in primitiveTypes
 data class BasicType(val type: KotlinType)
 
-fun TypescriptTranslator.registerType(){
+fun TypescriptTranslator.registerType() {
 
     handle<KtTypeAlias> {
-        if(typedRule.isTopLevel() && !typedRule.isPrivate()) -"export "
+        if (typedRule.isTopLevel() && !typedRule.isPrivate()) -"export "
         -"type "
         -typedRule.nameIdentifier
         -typedRule.typeParameterList
@@ -48,74 +53,90 @@ fun TypescriptTranslator.registerType(){
         -typedRule.getTypeReference()
         -";\n"
 
-        if(typedRule.visibilityModifierTypeOrDefault().value == "public") {
-            -"export "
-        }
-        -"let "
-        -typedRule.nameIdentifier
-        -" = "
-        fun handleTypeElement(e: KtTypeElement){
-            when(e){
-                is KtFunctionType -> {}
-                is KtNullableType -> {}
-                is KtSelfType -> {}
-                is KtUserType -> {
-                    e.qualifier?.let {
-                        handleTypeElement(it)
-                        -'.'
-                    }
-                    -e.referencedName
-                }
+        if(typedRule.getTypeReference()?.typeElement is KtUserType) {
+            if (typedRule.visibilityModifierTypeOrDefault().value == "public") {
+                -"export "
             }
+            -"let "
+            -typedRule.nameIdentifier
+            -" = "
+            -typedRule.getTypeReference()
+            -";\n"
         }
-        handleTypeElement(typedRule.getTypeReference()!!.typeElement!!)
-        -";\n"
     }
 
     handle<KotlinType> {
-        when(typedRule){
-            is WrappedType -> {}
-            is SimpleType -> {}
-            is FlexibleType -> {}
+        when(val desc = typedRule.constructor.declarationDescriptor) {
+            is FunctionClassDescriptor -> {
+                -'('
+                typedRule.arguments.dropLast(1).forEachIndexed { index, typeProjection ->
+                    -('a' + index)
+                    -": "
+                    -typeProjection
+                }
+                -") => "
+                -typedRule.arguments.last()
+            }
+            is ClassDescriptor -> {
+                var current: ClassDescriptor = desc
+                val items = ArrayList<ClassDescriptor>()
+                while(!current.tsTopLevelMessedUp){
+                    current = current.containingDeclaration as? ClassDescriptor ?: break
+                    items += current
+                }
+                out.addImport(current, current.tsTopLevelName)
+                -current.tsTopLevelName
+                for(item in items.asReversed()){
+                    -'.'
+                    -item.name.asString()
+                }
+                typedRule.arguments.takeUnless { it.isEmpty() }?.let {
+                    -'<'
+                    -it
+                    -'>'
+                }
+            }
         }
-        -typedRule
-            .getJetTypeFqName(true)
-            .split('.')
-            .dropWhile { it.firstOrNull()?.isLowerCase() != false }
-            .joinToString(".")
     }
 
     handle<BasicType> {
-        when(typedRule.type){
-            is WrappedType -> {}
-            is SimpleType -> {}
-            is FlexibleType -> {}
+        when(val desc = typedRule.type.constructor.declarationDescriptor) {
+            is ClassDescriptor -> {
+                var current: ClassDescriptor = desc
+                val items = ArrayList<ClassDescriptor>()
+                while (!current.tsTopLevelMessedUp) {
+                    current = current.containingDeclaration as? ClassDescriptor ?: break
+                    items += current
+                }
+                out.addImport(current, current.tsTopLevelName)
+                -current.tsTopLevelName
+                for (item in items.asReversed()) {
+                    -'.'
+                    -item.name.asString()
+                }
+            }
         }
-        -typedRule
-            .type
-            .getJetTypeFqName(false)
-            .split('.')
-            .dropWhile { it.firstOrNull()?.isLowerCase() != false }
-            .joinToString(".")
     }
 
     handle<KtTypeReference>(
         condition = {
-            val type = typedRule.resolvedType ?: return@handle false
+            //TODO: Figure out why this captures typealiases
+            val type = typedRule.resolvedType ?: typedRule.resolvedAbbreviatedType ?: return@handle false
             replacements.getType(type) != null
         },
         priority = 10_000,
         action = {
-            val type = typedRule.resolvedType!!
+            val type = typedRule.resolvedType ?: typedRule.resolvedAbbreviatedType!!
             val rule = replacements.getType(type)!!
             val baseType = type.constructor
-            val typeParameters = when(val te = typedRule.typeElement){
+            val typeParameters = when (val te = typedRule.typeElement) {
                 is KtUserType -> te.typeArguments
                 else -> listOf()
             }
-            val typeParametersByName = typeParameters.withIndex().associate { (index, item) -> baseType.parameters[index].name.asString() to item }
+            val typeParametersByName = typeParameters.withIndex()
+                .associate { (index, item) -> baseType.parameters[index].name.asString() to item }
             rule.template.parts.forEach { part ->
-                when(part){
+                when (part) {
                     is TemplatePart.Import -> out.addImport(part)
                     is TemplatePart.Text -> -part.string
                     is TemplatePart.TypeParameter -> -(typeParametersByName[part.name])
@@ -124,6 +145,25 @@ fun TypescriptTranslator.registerType(){
             }
         }
     )
+
+    handle<KtFunctionType> {
+        -"("
+        var currentNameChar = 'a'
+        typedRule.parameters.forEach {
+            var nextChar = currentNameChar++
+            while (typedRule.parameters.any {
+                    val n = it.name ?: return@any false
+                    n.length == 1 && n.first() == nextChar
+                }) {
+                nextChar = currentNameChar++
+            }
+            -(it.nameIdentifier ?: nextChar.toString())
+            -": "
+            -it.typeReference
+        }
+        -") => "
+        -typedRule.returnTypeReference
+    }
 
     handle<TypeProjectionBase> {
         -typedRule.type
@@ -138,9 +178,10 @@ fun TypescriptTranslator.registerType(){
             val type = typedRule
             val rule = replacements.getType(type)!!
             val baseType = type.constructor
-            val typeParametersByName = type.arguments.withIndex().associate { (index, item) -> baseType.parameters[index].name.asString() to item }
+            val typeParametersByName = type.arguments.withIndex()
+                .associate { (index, item) -> baseType.parameters[index].name.asString() to item }
             rule.template.parts.forEach { part ->
-                when(part){
+                when (part) {
                     is TemplatePart.Import -> out.addImport(part)
                     is TemplatePart.Text -> -part.string
                     is TemplatePart.TypeParameter -> -(typeParametersByName[part.name])
@@ -159,9 +200,10 @@ fun TypescriptTranslator.registerType(){
             val type = typedRule.type
             val rule = replacements.getType(type)!!
             val baseType = type.constructor
-            val typeParametersByName = type.arguments.withIndex().associate { (index, item) -> baseType.parameters[index].name.asString() to item }
+            val typeParametersByName = type.arguments.withIndex()
+                .associate { (index, item) -> baseType.parameters[index].name.asString() to item }
             rule.template.parts.forEach { part ->
-                when(part){
+                when (part) {
                     is TemplatePart.Import -> out.addImport(part)
                     is TemplatePart.Text -> -part.string
                 }
@@ -171,11 +213,11 @@ fun TypescriptTranslator.registerType(){
 
     handle<KtIsExpression> {
         val resolvedType = typedRule.typeReference!!.resolvedType!!
-        if(typedRule.isNegated){
+        if (typedRule.isNegated) {
             -"!("
         }
         emitIsExpression(typedRule.leftHandSide, resolvedType)
-        if(typedRule.isNegated){
+        if (typedRule.isNegated) {
             -")"
         }
     }
@@ -193,6 +235,20 @@ fun TypescriptTranslator.registerType(){
             -") { return _item as "
             -typedRule.right
             -"; } else { return null; }"
+        }
+    )
+
+    handle<KtTypeReference>(
+        condition = {
+            val resolved = typedRule.resolvedType?.constructor?.declarationDescriptor as? ClassDescriptor ?: return@handle false
+            resolved.tsTopLevelMessedUp
+        },
+        priority = 100,
+        action = {
+            val cl = typedRule.resolvedType?.constructor?.declarationDescriptor as ClassDescriptor
+            val n = cl.tsTopLevelName
+            -n
+            out.addImport(cl, n)
         }
     )
 }

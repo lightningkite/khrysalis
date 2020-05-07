@@ -44,14 +44,7 @@ val FunctionDescriptor.tsName: String?
     }
 
 val FunctionDescriptor.tsDefaultName: String?
-    get() {
-        return (this.containingDeclaration as? ClassDescriptor ?: return null)
-            .fqNameSafe.asString()
-            .split('.')
-            .joinToString("") { it.capitalize() }
-            .plus(tsName?.capitalize() ?: return null)
-            .decapitalize()
-    }
+    get() = tsName
 
 fun TypescriptTranslator.registerFunction() {
     handle<KtNamedFunction>(
@@ -68,11 +61,7 @@ fun TypescriptTranslator.registerFunction() {
                 val tr = typedRule
                 val ktClass = typedRule.parentOfType<KtClassBody>()!!.parentOfType<KtClass>()!!
                 ktClass.addPostAction {
-                    -"\n"
-                    if (ktClass.isPublic) {
-                        -"export "
-                    }
-                    -"function "
+                    -"\npublic static "
                     val fname = tr.resolvedFunction?.tsDefaultName
                         ?: throw IllegalStateException("Cannot write default method without name.")
                     -fname
@@ -88,7 +77,7 @@ fun TypescriptTranslator.registerFunction() {
                         -'('
                         -r
                         -": "
-                        -ktClass.nameIdentifier
+                        -tsTopLevelNameElement(ktClass)
                         ktClass.typeParameterList?.let {
                             -'<'
                             it.parameters.forEachBetween(
@@ -201,9 +190,24 @@ fun TypescriptTranslator.registerFunction() {
         }
     )
 
-    //TODO: Handle adding new for nested classes
     handle<KtCallExpression>(
         condition = { (typedRule.calleeExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget is ConstructorDescriptor && (typedRule.parent as? KtDotQualifiedExpression)?.selectorExpression != typedRule },
+        priority = 2000,
+        action = {
+            -"new "
+            doSuper()
+        }
+    )
+    handle<KtDotQualifiedExpression>(
+        condition = {
+            var current = typedRule
+            while (current.selectorExpression is KtDotQualifiedExpression) {
+                current = current.selectorExpression as KtDotQualifiedExpression
+            }
+            val callExp = current.selectorExpression as? KtCallExpression ?: return@handle false
+            val nre = callExp.calleeExpression as? KtNameReferenceExpression ?: return@handle false
+            nre.resolvedReferenceTarget is ConstructorDescriptor
+        },
         priority = 2000,
         action = {
             -"new "

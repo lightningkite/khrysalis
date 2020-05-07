@@ -4,7 +4,7 @@ import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
 import kotlin.collections.HashMap
 
-interface TranslatorInterface<OUT: Any, RESULT> {
+interface TranslatorInterface<OUT : Any, RESULT> {
     fun translate(
         rule: Any,
         out: OUT,
@@ -15,10 +15,12 @@ interface TranslatorInterface<OUT: Any, RESULT> {
 fun <RESULT, IN : Any, IDENTIFIER> PartialTranslator<Appendable, RESULT, IN, IDENTIFIER>.Context.line() {
     out.appendln()
 }
+
 fun <RESULT, IN : Any, IDENTIFIER> PartialTranslator<Appendable, RESULT, IN, IDENTIFIER>.Context.line(text: String) {
     out.appendln(text)
 }
-inline fun <RESULT, IN : Any, IDENTIFIER> PartialTranslator<Appendable, RESULT, IN, IDENTIFIER>.Context.line(action: ()->Unit) {
+
+inline fun <RESULT, IN : Any, IDENTIFIER> PartialTranslator<Appendable, RESULT, IN, IDENTIFIER>.Context.line(action: () -> Unit) {
     action()
     out.appendln()
 }
@@ -39,10 +41,10 @@ abstract class PartialTranslator<OUT : Any, RESULT, IN : Any, IDENTIFIER> {
         private val uuid: UUID = UUID.randomUUID()
         override fun compareTo(other: Handler): Int {
             var result = other.priority.compareTo(this.priority)
-            if(result == 0){
+            if (result == 0) {
                 result = this.uuid.compareTo(other.uuid)
             }
-            if(result == 0 && this !== other){
+            if (result == 0 && this !== other) {
                 println("RUCK")
             }
             return result
@@ -53,9 +55,10 @@ abstract class PartialTranslator<OUT : Any, RESULT, IN : Any, IDENTIFIER> {
         val partialTranslator = this@PartialTranslator
         lateinit var rule: IN
         lateinit var out: OUT
+        var noReuse: Boolean = false
         var option: Handler? = null
 
-        fun doSuper() : RESULT = translate(rule, out, option?.priority ?: Int.MAX_VALUE)
+        fun doSuper(): RESULT = translate(rule, out, option?.priority ?: Int.MAX_VALUE)
         fun defer(identifier: IDENTIFIER) = translate(identifier, rule, out)
 
         fun emit(item: IN?): RESULT? {
@@ -68,6 +71,7 @@ abstract class PartialTranslator<OUT : Any, RESULT, IN : Any, IDENTIFIER> {
 
         @JvmName("unaryPlusAnyNullable")
         inline operator fun Any?.unaryPlus() = emit(this)
+
         @JvmName("unaryMinusAnyNullable")
         inline operator fun Any?.unaryMinus() = emit(this)
 
@@ -99,7 +103,9 @@ abstract class PartialTranslator<OUT : Any, RESULT, IN : Any, IDENTIFIER> {
         val pulled = recycledContexts.poll() ?: makeContext()
         updateContext(pulled, rule, out)
         val result = action.invoke(pulled)
-        recycledContexts.add(pulled)
+        if (!pulled.noReuse) {
+            recycledContexts.add(pulled)
+        }
         return result
     }
 
