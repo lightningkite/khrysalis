@@ -56,7 +56,7 @@ val LayoutConverter.Companion.buttonViews
                         "center", "center_vertical" -> appendln("view.verticalAlign = .center")
                     }
                 }
-                handleCommonText(node, "view.labelView")
+                handleCommonText(node, "view.labelView", checkView = "view")
             },
             ViewType("RadioButton", "LabeledRadioButton", "View") { node ->
                 node.allAttributes["android:gravity"]?.split('|')?.forEach {
@@ -66,7 +66,7 @@ val LayoutConverter.Companion.buttonViews
                         "center", "center_vertical" -> appendln("view.verticalAlign = .center")
                     }
                 }
-                handleCommonText(node, "view.labelView")
+                handleCommonText(node, "view.labelView", checkView = "view")
             },
             ViewType("Switch", "LabeledSwitch", "View") { node ->
                 node.allAttributes["android:gravity"]?.split('|')?.forEach {
@@ -108,7 +108,7 @@ val LayoutConverter.Companion.buttonViews
                 append((node.attributeAsSwiftDimension("android:paddingRight") ?: defaultPadding).toString())
                 appendln(")")
             },
-            ViewType("RadioGroup", "UIView", "LinearLayout") {},
+            ViewType("RadioGroup", "LinearLayout", "LinearLayout") {},
             ViewType("ImageButton", "UIButtonWithLayer", "Button", handlesPadding = true) { node -> },
             ViewType("Button", "UIButtonWithLayer", "View", handlesPadding = true) { node ->
                 handleCommonText(node, "view.titleLabel?", controlView = "view")

@@ -15,6 +15,13 @@ public class LabeledRadioButton : LinearLayout, CompoundButton {
     public let checkView: UIView = UIView(frame: .zero)
     public let labelView: UILabel = UILabel(frame: .zero)
     public var onCheckChanged: (Bool) -> Void = { _ in }
+    public func addOnCheckChanged(_ item: @escaping (Bool) -> Void) {
+        let prev = onCheckChanged
+        onCheckChanged = { it in
+            prev(it)
+            item(it)
+        }
+    }
     public var isOn: Bool = false {
         didSet {
             UIView.animate(withDuration: 0.25, animations: { [weak self] in

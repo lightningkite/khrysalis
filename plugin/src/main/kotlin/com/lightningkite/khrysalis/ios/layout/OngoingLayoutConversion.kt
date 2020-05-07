@@ -41,6 +41,30 @@ data class OngoingLayoutConversion(
             }
         }
     }
+    fun XmlNode.setToColorGivenToggle(key: String, controlView: String = "view", write: (color: String) -> Unit): Boolean {
+        val raw = this.allAttributes[key] ?: return false
+        return when {
+            raw.startsWith("@color/") || raw.startsWith("@android:color/") -> {
+                val colorName = raw.removePrefix("@color/").removePrefix("@android:color/")
+                if (colorName !in colorSets) {
+                    write("ResourcesColors.${colorName.camelCase()}")
+                } else {
+                    write("ResourcesColors.${colorName.camelCase()}($controlView.isOn ? .selected : .normal)")
+                    appendln("let _ = $controlView.addOnCheckChanged({ isOn in")
+                    write("ResourcesColors.${colorName.camelCase()}(isOn ? .selected : .normal)")
+                    appendln("})")
+                }
+                true
+            }
+            raw.startsWith("#") -> {
+                write(raw.hashColorToUIColor())
+                true
+            }
+            else -> {
+                false
+            }
+        }
+    }
 
     fun construct(node: XmlNode) {
         if (node.name == "include") {
