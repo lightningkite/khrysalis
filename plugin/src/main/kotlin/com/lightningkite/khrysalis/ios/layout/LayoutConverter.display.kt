@@ -132,7 +132,7 @@ val LayoutConverter.Companion.displayViews
     )
 
 
-internal fun OngoingLayoutConversion.handleCommonText(node: XmlNode, viewHandle: String = "view", controlView: String? = null) {
+internal fun OngoingLayoutConversion.handleCommonText(node: XmlNode, viewHandle: String = "view", controlView: String? = null, checkView: String? = null) {
 
     val size = node.attributeAsSwiftDimension("android:textSize") ?: "12"
 
@@ -159,7 +159,11 @@ internal fun OngoingLayoutConversion.handleCommonText(node: XmlNode, viewHandle:
     appendln("$viewHandle.numberOfLines = ${lines ?: 0}")
 
     if(controlView!= null) {
-        node.setToColorGivenControl("android:textColor") {
+        node.setToColorGivenControl("android:textColor", controlView) {
+            appendln("$viewHandle.textColor = $it")
+        }
+    } else if(checkView != null){
+        node.setToColorGivenToggle("android:textColor", checkView) {
             appendln("$viewHandle.textColor = $it")
         }
     } else {

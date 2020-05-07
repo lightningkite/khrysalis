@@ -11,7 +11,14 @@ import UIKit
 
 
 public class ToggleButton: UIButtonWithLayer, CompoundButton {
-    public var onCheckChanged: (Bool) -> Void = {_ in }
+    public var onCheckChanged: (Bool) -> Void = { _ in }
+    public func addOnCheckChanged(_ item: @escaping (Bool) -> Void) {
+        let prev = onCheckChanged
+        onCheckChanged = { it in
+            prev(it)
+            item(it)
+        }
+    }
     public var isChecked: Bool {
         get{
             self.isOn

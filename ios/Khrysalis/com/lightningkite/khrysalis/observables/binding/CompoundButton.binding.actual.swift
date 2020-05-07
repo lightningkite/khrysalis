@@ -11,7 +11,7 @@ public extension CompoundButton {
                 self.isOn = shouldBeOn
             }
         }.until((self as! UIView).removed)
-        self.onCheckChanged = { [weak self] value in
+        self.addOnCheckChanged { [weak self] value in
             if value && selected.value != myValue {
                 selected.value = myValue
             } else if !value && selected.value == myValue  {
@@ -33,7 +33,7 @@ public extension CompoundButton {
                 self.isOn = shouldBeOn
             }
         }.until((self as! UIView).removed)
-        self.onCheckChanged = { [weak self] value in
+        self.addOnCheckChanged { [weak self] value in
             if value && selected.value != myValue {
                 selected.value = myValue
             } else if !value && selected.value == myValue  {
@@ -60,7 +60,7 @@ public extension CompoundButton {
                 suppress = false
             }
         }.until((self as! UIView).removed)
-        self.onCheckChanged = { [weak self] value in
+        self.addOnCheckChanged { [weak self] value in
             if !suppress{
                 suppress = true
                 if !value && selected.value == myValue {
@@ -87,7 +87,7 @@ public extension CompoundButton {
                 self.isOn = value
             }
         }.until((self as! UIView).removed)
-        self.onCheckChanged = { [weak self] value in
+        self.addOnCheckChanged { [weak self] value in
             if observable.value != self?.isOn {
                 observable.value = self?.isOn ?? false
             }
