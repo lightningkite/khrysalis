@@ -20,6 +20,16 @@ export interface Object {
 Object.defineProperty(Object.prototype, "hashCode", { value: function(): number { return hashString(this.toString()) } })
 Object.defineProperty(Object.prototype, "equals", { value: function(other: any): boolean { return this == other } })
 
+interface Comparable<T> {
+    compareTo(other: T): number
+}
+interface Number extends Comparable<Number> {}
+Object.defineProperty(Number.prototype, "compareTo", { value: function(other: number) { return (this > other ? 1 : this < other ? -1 : 0) } } )
+Object.defineProperty(Number.prototype, "implementsInterfaceKotlinComparable", { value: true })
+interface String extends Comparable<String> {}
+Object.defineProperty(String.prototype, "compareTo", { value: function(other: string) { return (this > other ? 1 : this < other ? -1 : 0) } } )
+Object.defineProperty(String.prototype, "implementsInterfaceKotlinComparable", { value: true })
+
 export class Range<T> {
     start: T;
     endInclusive: T;
@@ -36,28 +46,41 @@ export class NumberRange extends Range<number> implements Iterable<number> {
         super(start, endInclusive);
     }
     [Symbol.iterator](): Iterator<number> {
-        return new RangeIterator(this)
+        return new NumberRangeIterator(this)
     }
 }
-class RangeIterator implements Iterator<Number> {
+class NumberRangeIterator implements Iterator<number> {
     start: number;
     endInclusive: number;
     constructor(range: NumberRange) {
         this.start = range.start;
         this.endInclusive = range.endInclusive;
     }
-    next(): IteratorResult<Number> {
+    next(): IteratorResult<number> {
         const result = { done: this.start >= this.endInclusive, value: this.start };
         this.start++;
         return result
     }
 }
-export function makeRange(start: number, endInclusive: number): NumberRange
-export function makeRange<T>(start: T, endInclusive: T): Range<T>
-export function makeRange(start: any, endInclusive: any): any {
-    if (typeof start == "number" && typeof endInclusive == "number") {
-        return new NumberRange(start, endInclusive);
-    } else {
-        return new Range(start, endInclusive);
+
+export class CharRange extends Range<string> implements Iterable<string> {
+    constructor(start: string, endInclusive: string) {
+        super(start, endInclusive);
+    }
+    [Symbol.iterator](): Iterator<string> {
+        return new CharRangeIterator(this)
+    }
+}
+class CharRangeIterator implements Iterator<string> {
+    startCode: number;
+    endInclusiveCode: number;
+    constructor(range: CharRange) {
+        this.startCode = range.start.charCodeAt(0);
+        this.endInclusiveCode = range.endInclusive.charCodeAt(0);
+    }
+    next(): IteratorResult<string> {
+        const result = { done: this.startCode >= this.endInclusiveCode, value: String.fromCharCode(this.startCode) };
+        this.startCode++;
+        return result
     }
 }

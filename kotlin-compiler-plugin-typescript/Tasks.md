@@ -41,10 +41,10 @@
     - [X] Casting and Type Checking
     - [ ] Iterable
     - [X] Get/Set operators
-- [ ] Interfaces
+- [X] Interfaces
     - [X] Declaration
     - [X] Defaults
-    - [ ] Within Class
+    - [X] Within Class
 - [ ] Classes -- 3 days
     - [X] Inheritance
     - [X] Interface Implementation
@@ -54,7 +54,7 @@
         - [X] Create variables
         - [X] Populate variables
         - [X] Init blocks
-    - [ ] Secondary constructors
+    - [X] Secondary constructors
     - [ ] Inner Classes
     - [ ] Delegation
     - [X] Equatable 

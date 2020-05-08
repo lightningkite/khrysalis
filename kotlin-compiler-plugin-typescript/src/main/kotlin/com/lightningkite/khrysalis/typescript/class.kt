@@ -11,6 +11,7 @@ import org.jetbrains.kotlin.js.translate.callTranslator.getReturnType
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
+import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 import org.jetbrains.kotlin.resolve.scopes.DescriptorKindFilter
 import org.jetbrains.kotlin.types.typeUtil.supertypes
 import java.util.*
@@ -211,6 +212,16 @@ fun TypescriptTranslator.registerClass() {
         }
     }
 
+    handle<KtClass>(
+        condition = { typedRule.isInner() },
+        priority = 1000
+    ) {
+        val fq = typedRule.parentOfType<KtClassBody>()!!.parentOfType<KtClass>()!!.fqName!!.asString()
+        withReceiverScope(fq, "parentThis") {
+            doSuper()
+        }
+    }
+
     handle<KtObjectDeclaration>(
         condition = { typedRule.parentOfType<KtClassBody>()?.parentOfType<KtClass>()?.isInterface() == true },
         priority = 1000
@@ -251,6 +262,12 @@ fun TypescriptTranslator.registerClass() {
             }
             -";\n"
         }
+        val parentClassName = typedRule.parentOfType<KtClassBody>()?.parentOfType<KtClass>()?.resolvedClass?.tsTopLevelName
+        if(typedRule.isInner()){
+            -"parentThis: "
+            -parentClassName
+            -";\n"
+        }
         typedRule.primaryConstructor?.let { cons ->
             if (typedRule.isEnum()) {
                 -"private"
@@ -260,6 +277,8 @@ fun TypescriptTranslator.registerClass() {
             -" constructor("
             if (typedRule.isEnum()) {
                 listOf("name: string") + cons.valueParameters
+            } else if (typedRule.isInner()) {
+                listOf("parentThis: $parentClassName") + cons.valueParameters
             } else {
                 cons.valueParameters
             }.forEachBetween(
@@ -281,6 +300,7 @@ fun TypescriptTranslator.registerClass() {
                     -");\n"
                 }
             if (typedRule.isEnum()) {
+                -"this.parentThis = parentThis;\n"
                 -"this.name = name;\n"
             }
             //Parameter assignment first
@@ -732,6 +752,38 @@ fun TypescriptTranslator.registerClass() {
             out.addImport(cl, n)
         }
     )
+
+    handle<KtSecondaryConstructor> {
+        val resolved = typedRule.resolvedConstructor ?: return@handle
+        -(typedRule.visibilityModifier() ?: "public")
+        -" static "
+        -resolved.tsName
+        -typedRule.typeParameterList
+        -typedRule.valueParameterList
+        -" {\n"
+        val parent = typedRule.parentOfType<KtClassBody>()!!.parentOfType<KtClass>()!!.resolvedClass!!
+        withReceiverScope("real", "result"){ outName ->
+            -"let "
+            -outName
+            -" = new "
+            typedRule.getDelegationCallOrNull()?.let {
+                -parent.tsTopLevelName
+                -it.typeArgumentList
+                -it.valueArgumentList
+                -";\n"
+            }
+            val b = typedRule.bodyExpression
+            if(b is KtBlockExpression){
+                -b.allChildren.toList().drop(1).dropLast(1)
+            } else {
+                -b
+            }
+            -"\nreturn "
+            -outName
+            -";\n"
+        }
+        -"}"
+    }
 }
 
 private val weakKtClassPostActions = WeakHashMap<KtElement, ArrayList<() -> Unit>>()
@@ -742,3 +794,13 @@ fun KtElement.runPostActions() {
 fun KtElement.addPostAction(action: () -> Unit) {
     weakKtClassPostActions.getOrPut(this) { ArrayList() }.add(action)
 }
+
+val ConstructorDescriptor.tsName: String?
+    get() = this.annotations
+        .find { it.fqName?.asString()?.substringAfterLast('.') == "JsName" }
+        ?.allValueArguments
+        ?.entries
+        ?.firstOrNull()
+        ?.value
+        ?.value
+        ?.toString() ?: ("constructor" + this.valueParameters.joinToString { it.type.getJetTypeFqName(false).split('.').joinToString("").filter { it.isLetter() } })

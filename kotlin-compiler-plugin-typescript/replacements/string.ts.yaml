@@ -31,3 +31,10 @@
 - id: kotlin.String.compareTo
   type: call
   template: ~this~ ~operatorToken~ ~0~
+
+- id: kotlin.Char.rangeTo
+  type: call
+  template:
+    pattern: CharRange(~this~, ~0~)
+    imports:
+      Range: kotlin

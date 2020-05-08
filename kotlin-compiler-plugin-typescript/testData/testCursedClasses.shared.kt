@@ -3,9 +3,12 @@ package com.test.cursedclasses
 class A {
     class B {
         class C {
-            class D {
+            class D() {
                 interface E {
                     fun test() = println("Hi!")
+                }
+                constructor(jank: Int){
+                    println(jank)
                 }
             }
         }
@@ -32,4 +35,5 @@ fun main(){
     A.B()
     A.B.C()
     A.B.C.D()
+    A.B.C.D(4)
 }

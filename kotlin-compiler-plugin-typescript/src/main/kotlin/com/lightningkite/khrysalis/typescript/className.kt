@@ -34,6 +34,12 @@ val ClassDescriptor.tsTopLevelNameRaw: String get() = (containingDeclaration as?
     it.tsTopLevelNameRaw + this.name.asString()
 } ?: this.name.asString()
 val ClassDescriptor.tsTopLevelName: String get() = if(tsTopLevelMessedUp) (containingDeclaration as ClassDescriptor).tsTopLevelNameRaw + name.asString() else name.asString()
+val ClassDescriptor.tsTopLevelReference: String get() = if(tsTopLevelMessedUp)
+    (containingDeclaration as ClassDescriptor).tsTopLevelNameRaw + name.asString()
+else if(containingDeclaration is ClassDescriptor)
+    (containingDeclaration as ClassDescriptor).tsTopLevelReference + "/**/." + name.asString()
+else
+    name.asString()
 
 fun TypescriptTranslator.tsTopLevelNameElement(forElement: KtClassOrObject): Any? {
     val decl = forElement.resolvedClass ?: return forElement.nameIdentifier

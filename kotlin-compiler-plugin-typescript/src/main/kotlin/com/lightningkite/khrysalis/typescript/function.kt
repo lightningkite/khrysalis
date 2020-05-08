@@ -22,7 +22,9 @@ import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 //TODO: Local function edgecase - the meaning of 'this' changes
 
 val FunctionDescriptor.tsName: String?
-    get() = this.annotations
+    get() = if(this is ConstructorDescriptor && this.isPrimary == false) {
+        this.constructedClass.tsTopLevelName + "." + this.tsName
+    } else this.annotations
         .find { it.fqName?.asString()?.substringAfterLast('.') == "JsName" }
         ?.allValueArguments
         ?.entries
@@ -191,7 +193,10 @@ fun TypescriptTranslator.registerFunction() {
     )
 
     handle<KtCallExpression>(
-        condition = { (typedRule.calleeExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget is ConstructorDescriptor && (typedRule.parent as? KtDotQualifiedExpression)?.selectorExpression != typedRule },
+        condition = {
+            (typedRule.calleeExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget.let { it is ConstructorDescriptor && it.isPrimary }
+                && (typedRule.parent as? KtDotQualifiedExpression)?.selectorExpression != typedRule
+        },
         priority = 2000,
         action = {
             -"new "
@@ -206,7 +211,7 @@ fun TypescriptTranslator.registerFunction() {
             }
             val callExp = current.selectorExpression as? KtCallExpression ?: return@handle false
             val nre = callExp.calleeExpression as? KtNameReferenceExpression ?: return@handle false
-            nre.resolvedReferenceTarget is ConstructorDescriptor
+            nre.resolvedReferenceTarget.let { it is ConstructorDescriptor && it.isPrimary }
         },
         priority = 2000,
         action = {

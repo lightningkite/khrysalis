@@ -241,6 +241,14 @@ fun TypescriptTranslator.registerType() {
         -typedRule.returnTypeReference
     }
 
+    handle<KtTypeParameter> {
+        -typedRule.nameIdentifier
+        typedRule.extendsBound?.let {
+            -" extends "
+            -it
+        }
+    }
+
     handle<TypeProjectionBase> {
         -typedRule.type
     }

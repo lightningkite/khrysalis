@@ -609,6 +609,46 @@
   template: ~this~ ~operatorToken~ ~0~
 
 
+# RangeTo
+
+- id: kotlin.Byte.rangeTo
+  type: call
+  template:
+    pattern: NumberRange(~this~, ~0~)
+    imports:
+      NumberRange: kotlin
+- id: kotlin.Short.rangeTo
+  type: call
+  template:
+    pattern: NumberRange(~this~, ~0~)
+    imports:
+      NumberRange: kotlin
+- id: kotlin.Int.rangeTo
+  type: call
+  template:
+    pattern: NumberRange(~this~, ~0~)
+    imports:
+      NumberRange: kotlin
+- id: kotlin.Long.rangeTo
+  type: call
+  template:
+    pattern: NumberRange(~this~, ~0~)
+    imports:
+      NumberRange: kotlin
+- id: kotlin.Float.rangeTo
+  type: call
+  template:
+    pattern: Range(~this~, ~0~)
+    imports:
+      Range: kotlin
+- id: kotlin.Double.rangeTo
+  type: call
+  template:
+    pattern: Range(~this~, ~0~)
+    imports:
+      Range: kotlin
+
+
 # Math.X
 
 
