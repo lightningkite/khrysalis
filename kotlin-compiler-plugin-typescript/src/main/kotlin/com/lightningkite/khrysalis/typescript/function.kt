@@ -322,8 +322,8 @@ fun TypescriptTranslator.registerFunction() {
                     TemplatePart.DispatchReceiver -> -(typedRule.operationReference.getTsReceiver() ?: typedRule.left!!)
                     TemplatePart.ExtensionReceiver -> -(typedRule.left!!)
                     TemplatePart.AllParameters -> -allParametersByIndex[0]
-                    is TemplatePart.Parameter -> -allParametersByName[part.name]
-                    is TemplatePart.ParameterByIndex -> -allParametersByIndex[part.index]
+                    is TemplatePart.Parameter -> -(allParametersByName[part.name] ?: "undefined")
+                    is TemplatePart.ParameterByIndex -> -(allParametersByIndex[part.index] ?: "undefined")
                 }
             }
         }
@@ -373,10 +373,10 @@ fun TypescriptTranslator.registerFunction() {
                         forItem = { -it },
                         between = { -", " }
                     )
-                    is TemplatePart.Parameter -> -(allParametersByName[part.name]?.getArgumentExpression())
-                    is TemplatePart.ParameterByIndex -> -(allParametersByIndex[part.index]?.getArgumentExpression())
-                    is TemplatePart.TypeParameter -> -(typeParametersByName[part.name])
-                    is TemplatePart.TypeParameterByIndex -> -(typeParametersByIndex[part.index])
+                    is TemplatePart.Parameter -> -(allParametersByName[part.name]?.getArgumentExpression() ?: "undefined")
+                    is TemplatePart.ParameterByIndex -> -(allParametersByIndex[part.index]?.getArgumentExpression() ?: "undefined")
+                    is TemplatePart.TypeParameter -> -(typeParametersByName[part.name] ?: "undefined")
+                    is TemplatePart.TypeParameterByIndex -> -(typeParametersByIndex[part.index] ?: "undefined")
                 }
             }
         }
@@ -425,10 +425,10 @@ fun TypescriptTranslator.registerFunction() {
                         forItem = { -it },
                         between = { -", " }
                     )
-                    is TemplatePart.Parameter -> -(allParametersByName[part.name]?.getArgumentExpression())
-                    is TemplatePart.ParameterByIndex -> -(allParametersByIndex[part.index]?.getArgumentExpression())
-                    is TemplatePart.TypeParameter -> -(typeParametersByName[part.name])
-                    is TemplatePart.TypeParameterByIndex -> -(typeParametersByIndex[part.index])
+                    is TemplatePart.Parameter -> -(allParametersByName[part.name]?.getArgumentExpression() ?: "undefined")
+                    is TemplatePart.ParameterByIndex -> -(allParametersByIndex[part.index]?.getArgumentExpression() ?: "undefined")
+                    is TemplatePart.TypeParameter -> -(typeParametersByName[part.name] ?: "undefined")
+                    is TemplatePart.TypeParameterByIndex -> -(typeParametersByIndex[part.index] ?: "undefined")
                 }
             }
         }

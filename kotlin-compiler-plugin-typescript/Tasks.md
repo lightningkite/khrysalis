@@ -110,8 +110,8 @@
 
 # Typescript Usage Tasks
 - [ ] Standard Library Conversions -- 2 days
-    - [ ] Numbers
-    - [ ] Strings
+    - [X] Numbers
+    - [X] Strings
     - [ ] Collection
     - [ ] List
     - [ ] Set

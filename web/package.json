@@ -4,7 +4,9 @@
   "description": "",
   "main": "Kotlin.js",
   "types": "Kotlin.d.ts",
-  "dependencies": {},
+  "dependencies": {
+    "rxjs": "^6.5.5"
+  },
   "devDependencies": {
     "typescript": "^3.4.5"
   },

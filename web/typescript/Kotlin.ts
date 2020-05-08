@@ -110,3 +110,10 @@ class CharRangeIterator implements Iterator<string> {
         return result
     }
 }
+
+import { Observable, of } from 'rxjs'
+import { map, filter, flatMap } from 'rxjs/operators'
+let obs = of(1, 2, 3)
+map((number)=>number.toString())(obs)
+filter((value)=>true)(obs)
+flatMap((value)=>of(value))(obs)
