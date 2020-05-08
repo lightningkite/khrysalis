@@ -310,15 +310,34 @@ fun TypescriptTranslator.registerType() {
         condition = { typedRule.operationReference.getReferencedNameElementType() == KtTokens.AS_SAFE },
         priority = 100,
         action = {
-            -"((): "
-            -typedRule.right
-            -" | null => const _item = "
-            -typedRule.left
-            -"if("
-            emitIsExpression("_item", typedRule.right!!.resolvedType!!)
-            -") { return _item as "
-            -typedRule.right
-            -"; } else { return null; }"
+            val resolvedType = typedRule.right!!.resolvedType!!
+
+            when {
+                resolvedType.isInterface() -> {
+                    out.addImport("khrysalis/dist/Kotlin", "tryCastInterface")
+                    -"tryCastInterface("
+                    -typedRule.left
+                    -", \""
+                    -resolvedType.getJetTypeFqName(false).split('.').joinToString("") { it.capitalize() }
+                    -"\")"
+                }
+                resolvedType.isPrimitive() -> {
+                    out.addImport("khrysalis/dist/Kotlin", "tryCastPrimitive")
+                    -"tryCastPrimitive("
+                    -typedRule.left
+                    -", \""
+                    -resolvedType
+                    -"\")"
+                }
+                else -> {
+                    out.addImport("khrysalis/dist/Kotlin", "tryCastClass")
+                    -"tryCastClass("
+                    -typedRule.left
+                    -", "
+                    -BasicType(resolvedType)
+                    -")"
+                }
+            }
         }
     )
 }
@@ -329,10 +348,12 @@ fun PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByType<*>.e
 ) {
     when {
         resolvedType.isInterface() -> {
-            -'('
+            out.addImport("khrysalis/dist/Kotlin", "checkIsInterface")
+            -"checkIsInterface("
             -expression
-            -".constructor as any).implementsInterface"
+            -", \""
             -resolvedType.getJetTypeFqName(false).split('.').joinToString("") { it.capitalize() }
+            -"\")"
         }
         resolvedType.isPrimitive() -> {
             -"typeof ("
@@ -343,7 +364,7 @@ fun PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByType<*>.e
         }
         else -> {
             -expression
-            -" instanceOf "
+            -" instanceof "
             -BasicType(resolvedType)
         }
     }

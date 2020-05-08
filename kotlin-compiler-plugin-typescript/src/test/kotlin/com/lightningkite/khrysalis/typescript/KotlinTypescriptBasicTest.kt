@@ -43,7 +43,7 @@ class KotlinTypescriptBasicTest {
                     location: CompilerMessageLocation?
                 ) {
                     if (message.isNotBlank())
-                        println(message)
+                        println(message + if(location != null) ": $location" else "")
                 }
 
             },
@@ -54,8 +54,8 @@ class KotlinTypescriptBasicTest {
                 this.pluginClasspaths = arrayOf("build/libs/kotlin-compiler-plugin-typescript-0.1.0.jar")
                 this.pluginOptions =
                     arrayOf(
-                        "plugin:${KotlinTypescriptCLP.PLUGIN_ID}:${KotlinTypescriptCLP.KEY_ACTUALS_DIRECTORIES}=replacements",
-                        "plugin:${KotlinTypescriptCLP.PLUGIN_ID}:${KotlinTypescriptCLP.KEY_OUTPUT_DIRECTORY}=build/testResult"
+                        "plugin:${KotlinTypescriptCLP.PLUGIN_ID}:${KotlinTypescriptCLP.KEY_ACTUALS_DIRECTORIES}=testDataOut",
+                        "plugin:${KotlinTypescriptCLP.PLUGIN_ID}:${KotlinTypescriptCLP.KEY_OUTPUT_DIRECTORY}=testDataOut/typescript"
                     )
                 this.destinationAsFile = File("build/testBuild").also { it.deleteRecursively(); it.mkdirs() }
             }

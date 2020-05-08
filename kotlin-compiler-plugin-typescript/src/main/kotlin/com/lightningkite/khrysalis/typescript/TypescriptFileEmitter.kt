@@ -8,7 +8,6 @@ import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 import org.jetbrains.kotlin.resolve.descriptorUtil.getImportableDescriptor
 import java.io.BufferedWriter
-import java.lang.Exception
 
 class TypescriptFileEmitter(val translator: TypescriptTranslator, val file: KtFile) : Appendable {
     val stringBuilder = StringBuilder()
@@ -64,10 +63,10 @@ class TypescriptFileEmitter(val translator: TypescriptTranslator, val file: KtFi
         imports[fqName] = ImportInfo(path, identifier, asName)
     }
 
-    fun addImportFromFq(fqName: String, name: String) {
+    private fun addImportFromFq(fqName: String, name: String) {
         translator.kotlinFqNameToFile[fqName]?.let {
             if (!file.virtualFilePath.endsWith(it + ".kt")) {
-                addImport(TemplatePart.Import("./" + it, name))
+                addImport(TemplatePart.Import(it, name))
             } else {
                 importedFqs.add("$fqName SKIPPED due to same file")
             }
@@ -80,6 +79,9 @@ class TypescriptFileEmitter(val translator: TypescriptTranslator, val file: KtFi
             else -> decl
         }
         val name = overrideName ?: useDecl.name.asString()
+        if(name == "Weird.constructorkotlinInt") {
+            Exception().printStackTrace()
+        }
         val fq = useDecl.fqNameSafe.asString()
         val n = "$fq TS $name"
         if (importedFqs.contains(n))

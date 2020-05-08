@@ -35,6 +35,6 @@
 - id: kotlin.Char.rangeTo
   type: call
   template:
-    pattern: CharRange(~this~, ~0~)
+    pattern: new CharRange(~this~, ~0~)
     imports:
-      Range: kotlin
+      Range: khrysalis/dist/Kotlin

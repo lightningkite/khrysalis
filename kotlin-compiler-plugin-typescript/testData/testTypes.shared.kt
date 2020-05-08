@@ -1,5 +1,8 @@
 package com.test.types
 
+import com.test.classes.TestInterface
+import com.test.classes.Weird
+
 typealias MyInteger = Int
 
 class Thing()
@@ -16,4 +19,22 @@ fun main(){
     val nullabilityTest: Int? = null
     val nullabilityTest2: ListOfThings? = null
     println("Success")
+
+    val ugh = Weird(2)
+    val unknownThing: Any? = ugh
+
+    if(unknownThing is TestInterface){
+        println("Hello!")
+    }
+    println(unknownThing as? TestInterface)
+
+    if(unknownThing is Weird){
+        println("Hello!")
+    }
+    println(unknownThing as? Weird)
+
+    if(unknownThing is Int){
+        println("Hello!")
+    }
+    println(unknownThing as? Int)
 }

@@ -88,24 +88,25 @@
     - [X] Get name
     - [X] Full object support
     - [X] Short Support
-- [ ] Generics -- 1/2 day
-    - [ ] Type Parameters
-    - [ ] Type Arguments
+- [X] Generics -- 1/2 day
+    - [X] Type Parameters
+    - [X] Type Arguments
 - [ ] Top Level -- 1 day
-    - [ ] `export`
-    - [ ] Imports
+    - [X] `export`
+    - [X] Imports
+    - [ ] correct relative paths
 - [X] Values -- 1/2 day
     - [X] Literals
     - [X] Lambdas
         - [X] With Receiver
     - [X] String Interpolation
-- [ ] Per-declaration conversions -- 3 days
+- [X] Per-declaration conversions -- 3 days
     - [X] Description Language
     - [X] Get
     - [X] Set
     - [X] Call
     - [X] Type
-    - [ ] TypeRef
+    - [X] TypeRef
 
 # Typescript Usage Tasks
 - [ ] Standard Library Conversions -- 2 days

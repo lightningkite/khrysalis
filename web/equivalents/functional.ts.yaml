@@ -11,10 +11,10 @@
   template:
     pattern: "also(~this~, ~0~)"
     imports:
-      also: kotlin
+      also: khrysalis/dist/Kotlin
 - id: kotlin.apply
   type: call
   template:
     pattern: "also(~this~, ~0~)"
     imports:
-      also: kotlin
+      also: khrysalis/dist/Kotlin

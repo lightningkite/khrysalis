@@ -607,6 +607,139 @@
 - id: kotlin.Long.compareTo
   type: call
   template: ~this~ ~operatorToken~ ~0~
+- id: kotlin.Float.compareTo
+  type: call
+  template: ~this~ ~operatorToken~ ~0~
+- id: kotlin.Double.compareTo
+  type: call
+  template: ~this~ ~operatorToken~ ~0~
+  
+  
+# toByte
+
+- id: kotlin.Byte.toByte
+  type: call
+  template: ~this~
+- id: kotlin.Short.toByte
+  type: call
+  template: ~this~
+- id: kotlin.Int.toByte
+  type: call
+  template: ~this~
+- id: kotlin.Long.toByte
+  type: call
+  template: ~this~
+- id: kotlin.Float.toByte
+  type: call
+  template: Math.floor(~this~)
+- id: kotlin.Double.toByte
+  type: call
+  template: Math.floor(~this~)
+  
+# toShort
+
+- id: kotlin.Byte.toShort
+  type: call
+  template: ~this~
+- id: kotlin.Short.toShort
+  type: call
+  template: ~this~
+- id: kotlin.Int.toShort
+  type: call
+  template: ~this~
+- id: kotlin.Long.toShort
+  type: call
+  template: ~this~
+- id: kotlin.Float.toShort
+  type: call
+  template: Math.floor(~this~)
+- id: kotlin.Double.toShort
+  type: call
+  template: Math.floor(~this~)
+  
+# toInt
+
+- id: kotlin.Byte.toInt
+  type: call
+  template: ~this~
+- id: kotlin.Short.toInt
+  type: call
+  template: ~this~
+- id: kotlin.Int.toInt
+  type: call
+  template: ~this~
+- id: kotlin.Long.toInt
+  type: call
+  template: ~this~
+- id: kotlin.Float.toInt
+  type: call
+  template: Math.floor(~this~)
+- id: kotlin.Double.toInt
+  type: call
+  template: Math.floor(~this~)
+  
+# toLong
+
+- id: kotlin.Byte.toLong
+  type: call
+  template: ~this~
+- id: kotlin.Short.toLong
+  type: call
+  template: ~this~
+- id: kotlin.Int.toLong
+  type: call
+  template: ~this~
+- id: kotlin.Long.toLong
+  type: call
+  template: ~this~
+- id: kotlin.Float.toLong
+  type: call
+  template: Math.floor(~this~)
+- id: kotlin.Double.toLong
+  type: call
+  template: Math.floor(~this~)
+  
+# toFloat
+
+- id: kotlin.Byte.toFloat
+  type: call
+  template: ~this~
+- id: kotlin.Short.toFloat
+  type: call
+  template: ~this~
+- id: kotlin.Int.toFloat
+  type: call
+  template: ~this~
+- id: kotlin.Long.toFloat
+  type: call
+  template: ~this~
+- id: kotlin.Float.toFloat
+  type: call
+  template: ~this~
+- id: kotlin.Double.toFloat
+  type: call
+  template: ~this~
+  
+# toDouble
+
+- id: kotlin.Byte.toDouble
+  type: call
+  template: ~this~
+- id: kotlin.Short.toDouble
+  type: call
+  template: ~this~
+- id: kotlin.Int.toDouble
+  type: call
+  template: ~this~
+- id: kotlin.Long.toDouble
+  type: call
+  template: ~this~
+- id: kotlin.Float.toDouble
+  type: call
+  template: ~this~
+- id: kotlin.Double.toDouble
+  type: call
+  template: ~this~
 
 
 # RangeTo
@@ -614,39 +747,39 @@
 - id: kotlin.Byte.rangeTo
   type: call
   template:
-    pattern: NumberRange(~this~, ~0~)
+    pattern: new NumberRange(~this~, ~0~)
     imports:
-      NumberRange: kotlin
+      NumberRange: khrysalis/dist/Kotlin
 - id: kotlin.Short.rangeTo
   type: call
   template:
-    pattern: NumberRange(~this~, ~0~)
+    pattern: new NumberRange(~this~, ~0~)
     imports:
-      NumberRange: kotlin
+      NumberRange: khrysalis/dist/Kotlin
 - id: kotlin.Int.rangeTo
   type: call
   template:
-    pattern: NumberRange(~this~, ~0~)
+    pattern: new NumberRange(~this~, ~0~)
     imports:
-      NumberRange: kotlin
+      NumberRange: khrysalis/dist/Kotlin
 - id: kotlin.Long.rangeTo
   type: call
   template:
-    pattern: NumberRange(~this~, ~0~)
+    pattern: new NumberRange(~this~, ~0~)
     imports:
-      NumberRange: kotlin
+      NumberRange: khrysalis/dist/Kotlin
 - id: kotlin.Float.rangeTo
   type: call
   template:
-    pattern: Range(~this~, ~0~)
+    pattern: new Range(~this~, ~0~)
     imports:
-      Range: kotlin
+      Range: khrysalis/dist/Kotlin
 - id: kotlin.Double.rangeTo
   type: call
   template:
-    pattern: Range(~this~, ~0~)
+    pattern: new Range(~this~, ~0~)
     imports:
-      Range: kotlin
+      Range: khrysalis/dist/Kotlin
 
 
 # Math.X

@@ -22,14 +22,14 @@ fun TypescriptTranslator.registerControl() {
                     -"return "
                 }
                 -it
-                if(it is KtExpression && it !is KtDeclaration) {
+                if(it is KtExpression && it !is KtDeclaration && it !is KtLoopExpression && it !is KtIfExpression) {
                     -';'
                 }
             }
         } else {
             typedRule.allChildren.forEach {
                 -it
-                if(it is KtExpression && it !is KtDeclaration) {
+                if(it is KtExpression && it !is KtDeclaration && it !is KtLoopExpression && it !is KtIfExpression) {
                     -';'
                 }
             }

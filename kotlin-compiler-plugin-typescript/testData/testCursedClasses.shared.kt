@@ -4,11 +4,11 @@ class A {
     class B {
         class C {
             class D() {
+                constructor(jank: Int):this(){
+                    println(jank)
+                }
                 interface E {
                     fun test() = println("Hi!")
-                }
-                constructor(jank: Int){
-                    println(jank)
                 }
             }
         }

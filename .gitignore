@@ -8,4 +8,7 @@ ios/kwift.xcworkspace
 **/.idea
 **/.gradle
 
+**/dist/**.d.ts
+**/dist/**.js
+
 plugin/out

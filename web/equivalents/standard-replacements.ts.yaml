@@ -17,18 +17,18 @@
   template:
     pattern: Comparable<~T0~>
     imports:
-      Comparable: kotlin
+      Comparable: khrysalis/dist/Kotlin
 
 - id: kotlin.ranges.Range
   type: type
   template:
     pattern: Range<~T0~>
     imports:
-      Range: kotlin
+      Range: khrysalis/dist/Kotlin
 
 - id: kotlin.ranges.rangeTo
   type: call
   template:
-    pattern: Range(~this~, ~0~)
+    pattern: new Range(~this~, ~0~)
     imports:
-      Range: kotlin
+      Range: khrysalis/dist/Kotlin

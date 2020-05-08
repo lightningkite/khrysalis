@@ -68,18 +68,18 @@
 
 - id: kotlin.Float.hashCode
   type: call
-  template: ~this~ # TODO
+  template: Math.floor(~this~) # TODO - there are way better possibilities for hashing
 
 - id: kotlin.Double.hashCode
   type: call
-  template: ~this~ # TODO
+  template: Math.floor(~this~) # TODO - there are way better possibilities for hashing
 
 - id: kotlin.String.hashCode
   type: call
   template:
     pattern: hashString(~this~)
     imports:
-      hashString: kotlin
+      hashString: khrysalis/dist/Kotlin
 
 - id: kotlin.Char.hashCode
   type: call

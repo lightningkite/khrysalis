@@ -275,13 +275,13 @@ fun TypescriptTranslator.registerClass() {
                 -(cons.visibilityModifier() ?: "public")
             }
             -" constructor("
-            if (typedRule.isEnum()) {
+            (if (typedRule.isEnum()) {
                 listOf("name: string") + cons.valueParameters
             } else if (typedRule.isInner()) {
                 listOf("parentThis: $parentClassName") + cons.valueParameters
             } else {
                 cons.valueParameters
-            }.forEachBetween(
+            }).forEachBetween(
                 forItem = { -it },
                 between = { -", " }
             )
@@ -300,8 +300,9 @@ fun TypescriptTranslator.registerClass() {
                     -");\n"
                 }
             if (typedRule.isEnum()) {
-                -"this.parentThis = parentThis;\n"
                 -"this.name = name;\n"
+            } else if (typedRule.isInner()) {
+                -"this.parentThis = parentThis;\n"
             }
             //Parameter assignment first
             cons.valueParameters.asSequence().filter { it.hasValOrVar() }.forEach {
@@ -493,9 +494,9 @@ fun TypescriptTranslator.registerClass() {
 
             -"public static valueOf(name: string): "
             -tsTopLevelNameElement(typedRule)
-            -" { return "
+            -" { return ("
             -tsTopLevelNameElement(typedRule)
-            -"[name]; }\n"
+            -" as any)[name]; }\n"
 
             -"public toString(): string { return this.name }\n"
         }

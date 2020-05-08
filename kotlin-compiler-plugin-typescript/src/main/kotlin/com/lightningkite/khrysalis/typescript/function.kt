@@ -59,6 +59,8 @@ fun TypescriptTranslator.registerFunction() {
                 typedRule.typeReference?.let {
                     -": "
                     -it
+                } ?: run {
+                    -": void"
                 }
                 val tr = typedRule
                 val ktClass = typedRule.parentOfType<KtClassBody>()!!.parentOfType<KtClass>()!!
@@ -254,7 +256,13 @@ fun TypescriptTranslator.registerFunction() {
         val withComments = typedRule.valueArgumentList?.withComments() ?: listOf()
         val nre = typedRule.calleeExpression as KtNameReferenceExpression
         val f = nre.resolvedReferenceTarget as FunctionDescriptor
-        out.addImport(f, f.tsName)
+        if(f is ConstructorDescriptor){
+            if(f.constructedClass.let { it.tsTopLevelMessedUp || it.containingDeclaration !is ClassDescriptor }) {
+                out.addImport(f.constructedClass, f.constructedClass.tsTopLevelName)
+            }
+        } else {
+            out.addImport(f, f.tsName)
+        }
 
         -(f.tsName ?: nre.text)
         -typedRule.typeArgumentList

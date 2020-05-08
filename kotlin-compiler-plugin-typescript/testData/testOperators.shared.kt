@@ -34,28 +34,29 @@ class ExampleImmutableThing {
 }
 
 fun main() {
+    var x: Int = 2
+
     //Normal operators
-    println(1 + 2)
-    println(1 - 2)
-    println(1 * 2)
-    println(1 / 2)
-    println(1 % 2)
-    println(1 > 2)
-    println(1 < 2)
-    println(1 >= 2)
-    println(1 <= 2)
-    println(1 != 2)
-    println(1 == 2)
+    println(1 + x)
+    println(1 - x)
+    println(1 * x)
+    println(1 / x)
+    println(1 % x)
+    println(1 > x)
+    println(1 < x)
+    println(1 >= x)
+    println(1 <= x)
+    println(1 != x)
+    println(1 == x)
 
     //Direct calls
-    println(1.plus(2))
-    println(1.minus(2))
-    println(1.times(2))
-    println(1.div(2))
-    println(1.rem(2))
+    println(1.plus(x))
+    println(1.minus(x))
+    println(1.times(x))
+    println(1.div(x))
+    println(1.rem(x))
 
     //Assign operators
-    var x: Int = 0
     x += 1
     x -= 1
     x *= 2

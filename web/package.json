@@ -1,0 +1,15 @@
+{
+  "name": "khrysalis",
+  "version": "0.1.0",
+  "description": "",
+  "main": "Kotlin.js",
+  "types": "Kotlin.d.ts",
+  "dependencies": {},
+  "devDependencies": {
+    "typescript": "^3.4.5"
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "author": "Lightning Kite"
+}

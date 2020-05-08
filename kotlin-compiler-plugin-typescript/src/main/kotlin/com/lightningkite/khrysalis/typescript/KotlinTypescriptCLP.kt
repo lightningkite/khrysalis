@@ -1,7 +1,6 @@
 package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.typescript.manifest.generateFqToFileMap
-import com.lightningkite.khrysalis.util.SmartTabWriter
 import org.jetbrains.kotlin.analyzer.AnalysisResult
 import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
@@ -67,7 +66,7 @@ class KotlinTypescriptCR : ComponentRegistrar {
 }
 
 class KotlinTypescriptExtension(
-    val actuals: List<File>,
+    val equivalents: List<File>,
     val output: File,
     val collector: MessageCollector?
 ) : AnalysisHandlerExtension {
@@ -83,17 +82,21 @@ class KotlinTypescriptExtension(
             bindingContext = ctx,
             commonPath = files.asSequence()
                 .map { it.virtualFilePath }
+                .filter { it.endsWith(".shared.kt") }
                 .takeUnless { it.none() }
                 ?.reduce { acc, s -> acc.commonPrefixWith(s) }
                 ?.substringBeforeLast('/')
                 ?.plus('/')
-                ?.also { println("Common file path: $it") }?: "",
+                ?.also { println("Common file path: $it") } ?: "",
             collector = collector
         )
 
+        //Create manifest
         val map = translator.run { generateFqToFileMap(files.filter { it.virtualFilePath.endsWith(".shared.kt") }) }
         translator.kotlinFqNameToFile.putAll(map)
-        output.resolve("fqmanifest.txt").bufferedWriter().use {
+        val myManifestFile = output.parentFile.resolve("dist/shared.tsmanifest.txt")
+        myManifestFile.parentFile.mkdirs()
+        myManifestFile.bufferedWriter().use {
             for ((key, value) in map) {
                 it.append(key)
                 it.append('=')
@@ -102,8 +105,9 @@ class KotlinTypescriptExtension(
             }
         }
 
+        //Load equivalents
         try {
-            actuals.asSequence()
+            equivalents.asSequence()
                 .flatMap { it.walkTopDown() }
                 .filter {
                     it.name.endsWith(".ts.yaml") || it.name.endsWith(".ts.yml")
@@ -120,6 +124,35 @@ class KotlinTypescriptExtension(
             )
             return AnalysisResult.compilationError(ctx)
         }
+
+        //Load other manifests
+        try {
+            equivalents.asSequence()
+                .flatMap { it.walkTopDown() }
+                .filter {
+                    it.name.endsWith(".tsmanifest.txt") && it != myManifestFile
+                }
+                .forEach { actualFile ->
+                    val comparativeName = actualFile.relativeTo(output)
+                    val prefix = comparativeName.parentFile.path.replace('\\', '/')
+                    collector?.report(CompilerMessageSeverity.INFO, "Reading manifest from '$prefix'...")
+                    actualFile.useLines {
+                        for (line in it) {
+                            if (!line.contains('=')) continue
+                            translator.kotlinFqNameToFile[line.substringBefore('=').trim()] =
+                                "$prefix/" + line.substringAfter('=').trim()
+                        }
+                    }
+                }
+        } catch (t: Throwable) {
+            collector?.report(CompilerMessageSeverity.ERROR, "Failed to parse manifest:")
+            collector?.report(
+                CompilerMessageSeverity.ERROR,
+                StringWriter().also { t.printStackTrace(PrintWriter(it)) }.buffer.toString()
+            )
+            return AnalysisResult.compilationError(ctx)
+        }
+
         for (file in files) {
             if (!file.virtualFilePath.endsWith(".shared.kt")) continue
             try {

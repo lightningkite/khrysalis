@@ -8,7 +8,33 @@ export function hashString(item: string): number {
     return hash;
 }
 
-export function also<T>(item: T, action: (T)=>void): T {
+export function checkIsInterface<T>(item: any, key: string): T | null {
+    return (item.constructor as any)["implementsInterface" + key]
+}
+
+export function tryCastInterface<T>(item: any, key: string): T | null {
+    if((item.constructor as any)["implementsInterface" + key]) {
+        return item as T;
+    } else {
+        return null;
+    }
+}
+export function tryCastPrimitive<T>(item: any, key: string): T | null {
+    if(typeof item === key) {
+        return item as T;
+    } else {
+        return null;
+    }
+}
+export function tryCastClass<T>(item: any, erasedType: any): T | null {
+    if(item instanceof erasedType) {
+        return item as T;
+    } else {
+        return null;
+    }
+}
+
+export function also<T>(item: T, action: (a: T)=>void): T {
     action(item);
     return item;
 }

@@ -1,0 +1,16 @@
+{
+    "compilerOptions": {
+      "outDir": "./dist",
+      "rootDir": "./typescript",
+      "noImplicitAny": true,
+      "module": "commonjs",
+      "lib": ["es2017", "es7", "es6", "dom"],
+      "target": "es6",
+      "allowJs": true,
+      "typeRoots": ["./node_modules/@types", "./additionalTypings"],
+      "baseUrl": "./typescript",
+      "paths": {
+        "thisProject": ["./typescript"]
+      }
+    }
+  }
