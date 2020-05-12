@@ -1,3 +1,4 @@
+
 export function hashString(item: string): number {
     let hash = 0, i, chr;
     for (i = 0; i < this.length; i++) {
@@ -111,9 +112,11 @@ class CharRangeIterator implements Iterator<string> {
     }
 }
 
-import { Observable, of } from 'rxjs'
-import { map, filter, flatMap } from 'rxjs/operators'
-let obs = of(1, 2, 3)
-map((number)=>number.toString())(obs)
-filter((value)=>true)(obs)
-flatMap((value)=>of(value))(obs)
+import {Observable} from "rxjs";
+import { defer as rxDefer } from "rxjs";
+export function doOnSubscribe<T>(observable: Observable<T>, action: (x: any)=>void){
+    return rxDefer(()=>{
+        action(null);
+        return observable;
+    })
+}

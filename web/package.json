@@ -11,7 +11,8 @@
     "typescript": "^3.4.5"
   },
   "scripts": {
-    "build": "tsc"
+    "build": "tsc",
+    "execute": "tsc && node dist/Kotlin.js"
   },
   "author": "Lightning Kite"
 }

@@ -22,8 +22,8 @@ class JacksonReplacementsModule() : SimpleModule() {
                             (text["imports"] as ObjectNode).fields().asSequence().map { (key, value) ->
                                 TemplatePart.Import(
                                     path = value.asText(),
-                                    identifier = key,
-                                    asName = null
+                                    identifier = key.substringBefore(" as "),
+                                    asName = key.substringAfter(" as ", "").takeUnless { it.isEmpty() }
                                 )
                             }.toList()
                         )

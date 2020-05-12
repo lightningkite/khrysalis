@@ -9,11 +9,12 @@ data class FunctionReplacement(
     val infix: Boolean? = null,
     val receiver: String? = null,
     val arguments: List<String>? = null,
+    val hasExplicitTypeArguments: Boolean? = null,
     val comparatorType: String? = null,
     val template: Template
 ) : ReplacementRule {
     override val priority: Int
-        get() = (if (infix != null) 1 else 0) + (if (receiver != null) 2 else 0) + (if (arguments != null) 4 else 0) + (if(comparatorType != null) 8 else 0)
+        get() = (if (infix != null) 1 else 0) + (if (hasExplicitTypeArguments != null) 16 else 0) + (if (receiver != null) 2 else 0) + (if (arguments != null) 4 else 0) + (if (comparatorType != null) 8 else 0)
 
     fun passes(decl: FunctionDescriptor, comparatorType: String? = null): Boolean {
         return decl.fqNameSafe.asString() == id &&
