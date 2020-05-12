@@ -113,7 +113,7 @@
     - [X] Numbers
     - [X] Strings
     - [ ] Collection
-    - [ ] List
+    - [X] List
     - [ ] Set
     - [ ] Map
     - [X] Ranges
