@@ -116,17 +116,17 @@
     - [ ] List
     - [ ] Set
     - [ ] Map
-    - [ ] Ranges
+    - [X] Ranges
     - [ ] Common Functions
-        - [ ] Let
-        - [ ] Also
-        - [ ] Run
-        - [ ] Apply
-        - [ ] With
+        - [X] Let
+        - [X] Also
+        - [X] Run
+        - [X] Apply
+        - [X] With
     - [ ] Math
     - [ ] Time -- 1 day
 - [ ] Khrysalis Library Conversions -- 1/2 day
-    - [ ] Rx -- 1/2 day
+    - [X] Rx -- 1/2 day
     - [ ] Views -- 2 day
         - [ ] AutoCompleteTextView
         - [ ] Button

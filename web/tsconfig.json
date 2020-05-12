@@ -5,7 +5,7 @@
       "noImplicitAny": true,
       "declaration": true,
       "module": "commonjs",
-      "lib": ["es2017", "es7", "es6", "dom"],
+      "lib": ["es2019", "es7", "es6", "dom"],
       "target": "es6",
       "allowJs": true,
       "typeRoots": ["./node_modules/@types", "./additionalTypings"]

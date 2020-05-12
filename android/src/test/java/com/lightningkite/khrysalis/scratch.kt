@@ -6,6 +6,6 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.PublishSubject
 
 fun test(){
-    val obs = PublishSubject.create<Int>()
-    obs.doOnSubscribe {  }
+    val list = listOf(1, 2, 3)
+    list.any()
 }

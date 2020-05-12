@@ -1,0 +1,173 @@
+---
+
+# Lists
+
+- id: kotlin.collections.listOf
+  type: call
+  template: "[~*~]"
+- id: kotlin.collections.List
+  type: type
+  template: Array<~T0~>
+- id: kotlin.collections.List
+  type: typeRef
+  template: Array
+- id: kotlin.collections.List.contains
+  type: call
+  template: (~this~.indexOf(~0~) != -1)
+- id: kotlin.collections.List.get
+  type: call
+  template: ~this~[~0~]
+- id: kotlin.collecitons.List.subList
+  type: call
+  template: ~this~.slice(~0~, ~1~)
+
+# Mutable List
+- id: kotlin.collections.MutableList.add
+  type: call
+  template: ~this~.push(~0~)
+- id: kotlin.collections.MutableList.add
+  type: call
+  arguments: [kotlin.Int]
+  template: ~this~.splice(~0~, 0, ~1~)
+- id: kotlin.collections.MutableList.set
+  type: call
+  template: ~this~[~0~] = ~1~
+- id: kotlin.collections.MutableList.remove
+  type: call
+  template:
+    pattern: listRemoveItem(~this~, ~0~)
+    imports:
+      listRemoveItem: khrysalis/dist/Kotlin
+- id: kotlin.collections.MutableList.removeAt
+  type: call
+  template: ~this~.splice(~0~, 1)
+- id: kotlin.collections.MutableList.clear
+  type: call
+  template: ~this~.length = 0
+- id: kotlin.collections.MutableList.addAll
+  type: call
+  template: ~this~.push(...~0~)
+- id: kotlin.collections.MutableList.addAll
+  type: call
+  arguments: [kotlin.Int]
+  template: ~this~.splice(~0~, 0, ...~1~)
+# TODO: Could do removeAll
+
+# Extensions
+- id: kotlin.collections.indexOfFirst
+  type: call
+  template: ~this~.findIndex(~0~)
+- id: kotlin.collections.indexOfLast
+  type: call
+  template: ~this~.findIndexLast(~0~)
+- id: kotlin.collections.first
+  type: call
+  template: ~this~[0]
+- id: kotlin.collections.firstOrNull
+  type: call
+  template: (~this~[0] ?? null)
+- id: kotlin.collections.last
+  type: call
+  template: ~this~[~this~.length - 1]
+- id: kotlin.collections.lastOrNull
+  type: call
+  template: (~this~[~this~.length - 1] ?? null)
+- id: kotlin.collections.lastIndex
+  type: get
+  template: (~this~.length - 1)
+- id: kotlin.collections.single
+  type: call
+  template: "(~this~.length == 1 ? ~this~[0] : undefined)"
+- id: kotlin.collections.singleOrNull
+  type: call
+  template: "(~this~.length == 1 ? ~this~[0] : null)"
+  
+- id: kotlin.collections.drop
+  type: call
+  template: ~this~.slice(~0~)
+- id: kotlin.collections.dropLast
+  type: call
+  template: ~this~.slice(0, -~0~)
+- id: kotlin.collections.dropWhile
+  type: call
+  template: ~this~.slice(~this~.findIndex((_i)=> !(~0~)(_i)))
+- id: kotlin.collections.dropLastWhile
+  type: call
+  template: ~this~.slice(0, ~this~.findIndexLast((_i)=> !(~0~)(_i)))
+  
+- id: kotlin.collections.take
+  type: call
+  template: ~this~.slice(0, ~0~)
+- id: kotlin.collections.takeLast
+  type: call
+  template: ~this~.slice(-~0~)
+- id: kotlin.collections.takeWhile
+  type: call
+  template: ~this~.slice(0, ~this~.findIndex((_i)=> !(~0~)(_i)))
+- id: kotlin.collections.takeLastWhile
+  type: call
+  template: ~this~.slice(~this~.findIndexLast((_i)=> !(~0~)(_i)))
+
+- id: kotlin.collections.filterIndexed
+  type: call
+  template: ~this~.filter(~0~)
+- id: kotlin.collections.filterNot
+  type: call
+  template: ~this~.filter((_i) => !(~0~)(_i)))
+- id: kotlin.collections.filterNotNull
+  type: call
+  template: ~this~.filter((x) => x !== null)
+
+- id: kotlin.collections.sortBy
+  type: call
+  template: ~this~.sort((a, b) => ~0~(a).compareTo(~0~(b)))
+- id: kotlin.collections.sortByDescending
+  type: call
+  template: ~this~.sort((a, b) => -~0~(a).compareTo(~0~(b)))
+- id: kotlin.collections.sorted
+  type: call
+  template: ~this~.slice().sort()
+- id: kotlin.collections.sortedBy
+  type: call
+  template: ~this~.slice().sort((a, b) => ~0~(a).compareTo(~0~(b)))
+- id: kotlin.collections.sortedByDescending
+  type: call
+  template: ~this~.slice().sort((a, b) => -~0~(a).compareTo(~0~(b)))
+
+- id: kotlin.collections.associate
+  type: call
+  template: new Map(~this~.map(~0~))
+- id: kotlin.collections.associateBy
+  type: call
+  template: new Map(~this~.map((_i)=>[~0~(_i), _i]))
+
+- id: kotlin.collections.toList
+  type: call
+  template: Array.from(~this~)
+- id: kotlin.collections.toMutableList
+  type: call
+  template: Array.from(~this~)
+
+# TODO: groupBy
+
+- id: kotlin.collections.mapIndexed
+  type: call
+  template: ~this~.map(~0~)
+- id: kotlin.collections.mapNotNull
+  type: call
+  template: ~this~.map(~0~).filter((x) => x !== null)
+- id: kotlin.collections.mapIndexedNotNull
+  type: call
+  template: ~this~.map(~0~).filter((x) => x !== null)
+
+- id: kotlin.collections.any
+  type: call
+  template: ~this~.some(~0~)
+- id: kotlin.collections.all
+  type: call
+  template: ~this~.every(~0~)
+- id: kotlin.collections.none
+  type: call
+  template: !~this~.some(~0~)
+
+# TODO: Fold, max, min, reduce, scan

@@ -1,0 +1,42 @@
+---
+# Maps
+- id: kotlin.collecitons.Map
+  type: type
+  template: Map
+- id: kotlin.collecitons.Map
+  type: type
+  typeArgumentsHaveCustomEquals: [0]
+  template:
+    pattern: EqualOverrideMap
+    imports:
+      EqualOverrideMap: khrysalis/dist/Kotlin
+
+- id: kotlin.collections.mapOf
+  type: call
+  template: new Map([~*~])
+- id: kotlin.collections.component1
+  type: call
+  receiver: Map.Entry
+  template: ~this~[0]
+
+- id: kotlin.collections.component2
+  type: call
+  receiver: Map.Entry
+  template: ~this~[1]
+
+- id: kotlin.collections.Map.keys
+  type: get
+  template: ~this~.keys()
+
+- id: kotlin.collections.Map.values
+  type: get
+  template: ~this~.values()
+
+- id: kotlin.collections.Map.entries
+  type: get
+  template: ~this~.entries()
+
+-
+  id: android.view.TextView.text
+  type: set
+  template: ~this~.innerContent = ~value~
