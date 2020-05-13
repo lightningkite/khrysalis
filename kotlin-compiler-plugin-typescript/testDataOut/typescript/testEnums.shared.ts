@@ -18,8 +18,6 @@
 // Imported FQ name: com.test.classes.Suits.values TS values
 // Imported FQ name: com.test.classes.testEnums.simp TS simp
 // Imported FQ name: kotlin.Boolean TS Boolean
-// Imported FQ name: kotlin.Int TS Int
-// Imported FQ name: kotlin.io.println TS println
 
 export class Suits {
     constructor(name: string) { this.name = name; }
@@ -48,8 +46,8 @@ export class AdvancedSuits {
             super("SPADES", true);
         }
         
-        public print(cardNum: Int){
-            println(`♠${cardNum}`);
+        public print(cardNum: number){
+            console.log(`♠${cardNum}`);
         }
     }();
     
@@ -60,8 +58,8 @@ export class AdvancedSuits {
     public static HEARTS = new AdvancedSuits("HEARTS", false);
     
     
-    public print(cardNum: Int){
-        println(`${this}${cardNum}`);
+    public print(cardNum: number){
+        console.log(`${this}${cardNum}`);
     }
     private static _values: Array<AdvancedSuits> = [AdvancedSuits.SPADES, AdvancedSuits.CLUBS, AdvancedSuits.DIAMONDS, AdvancedSuits.HEARTS];
     public static values(): Array<AdvancedSuits> { return AdvancedSuits._values; }
@@ -76,12 +74,12 @@ export function testEnums(){
     const advancedSuit = AdvancedSuits.DIAMONDS;
     
     for (const simp of Suits.values()) {
-        println(simp.name);
-        println(Suits.valueOf(simp.name));
+        console.log(simp.name);
+        console.log(Suits.valueOf(simp.name));
     }
     for (const simp of AdvancedSuits.values()) {
-        println(simp.name);
+        console.log(simp.name);
         simp.print(3);
-        println(AdvancedSuits.valueOf(simp.name));
+        console.log(AdvancedSuits.valueOf(simp.name));
     }
 }

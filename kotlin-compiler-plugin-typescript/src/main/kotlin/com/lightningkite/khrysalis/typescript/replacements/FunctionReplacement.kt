@@ -17,11 +17,10 @@ data class FunctionReplacement(
         get() = (if (infix != null) 1 else 0) + (if (hasExplicitTypeArguments != null) 16 else 0) + (if (receiver != null) 2 else 0) + (if (arguments != null) 4 else 0) + (if (comparatorType != null) 8 else 0)
 
     fun passes(decl: FunctionDescriptor, comparatorType: String? = null): Boolean {
-        return decl.fqNameSafe.asString() == id &&
-                (receiver == null || receiver == decl.extensionReceiverParameter?.type?.getJetTypeFqName(
+        return (receiver == null || receiver == decl.extensionReceiverParameter?.type?.getJetTypeFqName(
                     false
-                )) && (arguments == null || decl.valueParameters.zip(arguments)
-            .all { (p, a) -> p.type.getJetTypeFqName(false) == a }) &&
+                )) && (arguments == null || decl.original.valueParameters.zip(arguments)
+            .all { (p, a) -> a == "*" || p.type.getJetTypeFqName(false) == a }) &&
                 (this.comparatorType == null || this.comparatorType == comparatorType)
     }
 }

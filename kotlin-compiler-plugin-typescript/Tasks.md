@@ -114,8 +114,8 @@
     - [X] Strings
     - [ ] Collection
     - [X] List
-    - [ ] Set
-    - [ ] Map
+    - [X] Set
+    - [X] Map
     - [X] Ranges
     - [ ] Common Functions
         - [X] Let

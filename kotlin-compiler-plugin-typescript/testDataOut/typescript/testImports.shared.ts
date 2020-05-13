@@ -18,9 +18,6 @@
 // Imported FQ name: com.test.variables.topLevelReal TS setTopLevelReal
 // Imported FQ name: com.test.variables.topLevelVirtual TS getTopLevelVirtual
 // Imported FQ name: com.test.variables.topLevelVirtual TS setTopLevelVirtual
-// Imported FQ name: kotlin.Int TS Int
-// Imported FQ name: kotlin.Unit TS Unit
-// Imported FQ name: kotlin.io.println TS println
 import { A, ABCDE, ABCDEDefaults, FH } from 'testCursedClasses.shared'
 import { TestClass, getComTestVariablesTestClassExtensionProperty, getTopLevelHybrid, getTopLevelReal, getTopLevelVirtual, setComTestVariablesTestClassExtensionProperty, setTopLevelHybrid, setTopLevelReal, setTopLevelVirtual } from 'testVariables.shared'
 
@@ -35,18 +32,18 @@ export function main(){
             this.x = 0;
         }
         
-        public readonly x: Int = 0;
+        public readonly x: number = 0;
         
-        public test(): Unit { return ABCDEDefaults.test(this); }
+        public test(): void { return ABCDEDefaults.test(this); }
     }();
     
-    println(FH.INSTANCE.x);
+    console.log(FH.INSTANCE.x);
     
-    setTopLevelReal(getTopLevelReal().plus(1));
-    setTopLevelVirtual(getTopLevelVirtual().plus(1));
-    setTopLevelHybrid(getTopLevelHybrid().plus(1));
+    setTopLevelReal(getTopLevelReal() + 1);
+    setTopLevelVirtual(getTopLevelVirtual() + 1);
+    setTopLevelHybrid(getTopLevelHybrid() + 1);
     
     const thing = new TestClass();
     
-    setComTestVariablesTestClassExtensionProperty(thing, getComTestVariablesTestClassExtensionProperty(thing).plus(1));
+    setComTestVariablesTestClassExtensionProperty(thing, getComTestVariablesTestClassExtensionProperty(thing) + 1);
 }

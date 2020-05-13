@@ -5,12 +5,34 @@
 - id: kotlin.collections.listOf
   type: call
   template: "[~*~]"
+- id: kotlin.collections.mutableListOf
+  type: call
+  template: "[~*~]"
+- id: kotlin.collections.arrayListOf
+  type: call
+  template: "[~*~]"
 - id: kotlin.collections.List
   type: type
   template: Array<~T0~>
 - id: kotlin.collections.List
   type: typeRef
   template: Array
+- id: kotlin.collections.MutableList
+  type: type
+  template: Array<~T0~>
+- id: kotlin.collections.MutableList
+  type: typeRef
+  template: Array
+- id: kotlin.collections.ArrayList
+  type: type
+  template: Array<~T0~>
+- id: kotlin.collections.ArrayList
+  type: typeRef
+  template: Array
+- id: kotlin.collections.ArrayList
+  type: call
+  arguments: []
+  template: "[]"
 - id: kotlin.collections.List.contains
   type: call
   template: (~this~.indexOf(~0~) != -1)
@@ -27,7 +49,7 @@
   template: ~this~.push(~0~)
 - id: kotlin.collections.MutableList.add
   type: call
-  arguments: [kotlin.Int]
+  arguments: [kotlin.Int, "*"]
   template: ~this~.splice(~0~, 0, ~1~)
 - id: kotlin.collections.MutableList.set
   type: call
@@ -52,6 +74,9 @@
   arguments: [kotlin.Int]
   template: ~this~.splice(~0~, 0, ...~1~)
 # TODO: Could do removeAll
+
+# TODO: All of these operations below actually should apply to iterators as well.
+# Problem: there aren't ANY built in operations on iterators.
 
 # Extensions
 - id: kotlin.collections.indexOfFirst
@@ -108,6 +133,17 @@
   type: call
   template: ~this~.slice(~this~.findIndexLast((_i)=> !(~0~)(_i)))
 
+
+- id: kotlin.collections.filter
+  type: call
+  template: ~this~.filter(~0~)
+- id: kotlin.collections.map
+  type: call
+  template: ~this~.map(~0~)
+- id: kotlin.collections.flatMap
+  type: call
+  template: ~this~.flatMap(~0~)
+
 - id: kotlin.collections.filterIndexed
   type: call
   template: ~this~.filter(~0~)
@@ -116,7 +152,10 @@
   template: ~this~.filter((_i) => !(~0~)(_i)))
 - id: kotlin.collections.filterNotNull
   type: call
-  template: ~this~.filter((x) => x !== null)
+  template:
+    pattern: listFilterNotNull(~this~)
+    imports:
+      listFilterNotNull: khrysalis/dist/Kotlin
 
 - id: kotlin.collections.sortBy
   type: call
@@ -155,10 +194,16 @@
   template: ~this~.map(~0~)
 - id: kotlin.collections.mapNotNull
   type: call
-  template: ~this~.map(~0~).filter((x) => x !== null)
+  template:
+    pattern: listFilterNotNull(~this~.map(~0~))
+    imports:
+      listFilterNotNull: khrysalis/dist/Kotlin
 - id: kotlin.collections.mapIndexedNotNull
   type: call
-  template: ~this~.map(~0~).filter((x) => x !== null)
+  template:
+    pattern: ~this~.map(~0~).filter((x) => x !== null)
+    imports:
+      listFilterNotNull: khrysalis/dist/Kotlin
 
 - id: kotlin.collections.any
   type: call

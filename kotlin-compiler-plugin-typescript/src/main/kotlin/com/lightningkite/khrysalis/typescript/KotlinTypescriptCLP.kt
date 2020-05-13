@@ -106,24 +106,24 @@ class KotlinTypescriptExtension(
         }
 
         //Load equivalents
-        try {
-            equivalents.asSequence()
-                .flatMap { it.walkTopDown() }
-                .filter {
-                    it.name.endsWith(".ts.yaml") || it.name.endsWith(".ts.yml")
-                }
-                .forEach { actualFile ->
+        equivalents.asSequence()
+            .flatMap { it.walkTopDown() }
+            .filter {
+                it.name.endsWith(".ts.yaml") || it.name.endsWith(".ts.yml")
+            }
+            .forEach { actualFile ->
+                try {
                     collector?.report(CompilerMessageSeverity.INFO, "Reading equivalents from $actualFile...")
                     translator.replacements += actualFile
+                } catch (t: Throwable) {
+                    collector?.report(CompilerMessageSeverity.ERROR, "Failed to parse equivalents for $actualFile:")
+                    collector?.report(
+                        CompilerMessageSeverity.ERROR,
+                        StringWriter().also { t.printStackTrace(PrintWriter(it)) }.buffer.toString()
+                    )
+                    return AnalysisResult.compilationError(ctx)
                 }
-        } catch (t: Throwable) {
-            collector?.report(CompilerMessageSeverity.ERROR, "Failed to parse equivalents:")
-            collector?.report(
-                CompilerMessageSeverity.ERROR,
-                StringWriter().also { t.printStackTrace(PrintWriter(it)) }.buffer.toString()
-            )
-            return AnalysisResult.compilationError(ctx)
-        }
+            }
 
         //Load other manifests
         try {

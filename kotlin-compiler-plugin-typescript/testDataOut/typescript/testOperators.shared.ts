@@ -27,103 +27,89 @@
 // Imported FQ name: com.test.operators.main.thing4 TS thing4
 // Imported FQ name: com.test.operators.main.thing5 TS thing5
 // Imported FQ name: com.test.operators.main.x TS x
-// Imported FQ name: kotlin.Int TS Int
-// Imported FQ name: kotlin.Int.and TS and
-// Imported FQ name: kotlin.Int.div TS div
-// Imported FQ name: kotlin.Int.inv TS inv
-// Imported FQ name: kotlin.Int.minus TS minus
-// Imported FQ name: kotlin.Int.or TS or
-// Imported FQ name: kotlin.Int.plus TS plus
-// Imported FQ name: kotlin.Int.rem TS rem
-// Imported FQ name: kotlin.Int.shl TS shl
-// Imported FQ name: kotlin.Int.shr TS shr
-// Imported FQ name: kotlin.Int.times TS times
-// Imported FQ name: kotlin.Int.ushr TS ushr
-// Imported FQ name: kotlin.Int.xor TS xor
-// Imported FQ name: kotlin.collections.listOf TS listOf
-// Imported FQ name: kotlin.io.println TS println
+import { NumberRange } from 'khrysalis/dist/Kotlin'
 
 export class ExampleMutableThing {
     
-    public containedNumber: Int = 0;
+    public containedNumber: number = 0;
     
     public plus(other: ExampleMutableThing): ExampleMutableThing{
         const result = new ExampleMutableThing();
         
-        result.containedNumber = this.containedNumber.plus(other.containedNumber);
+        result.containedNumber = this.containedNumber + other.containedNumber;
         return result;
     }
     
     public plusAssign(other: ExampleMutableThing){
-        this.containedNumber = this.containedNumber.plus(other.containedNumber);
+        this.containedNumber = this.containedNumber + other.containedNumber;
     }
     
-    public get(index: Int): Int{ return this.containedNumber.plus(index); }
-    public set(index: Int, value: Int): Int{ return value.minus(index); }
+    public get(index: number): number{ return this.containedNumber + index; }
+    public set(index: number, value: number): number{ return value - index; }
 }
 
 export class ExampleImmutableThing {
     
-    public containedNumber: Int = 0;
+    public containedNumber: number = 0;
     
     public plus(other: ExampleImmutableThing): ExampleImmutableThing{
         const result = new ExampleImmutableThing();
         
-        result.containedNumber = this.containedNumber.plus(other.containedNumber);
+        result.containedNumber = this.containedNumber + other.containedNumber;
         return result;
     }
     
     public unaryMinus(): ExampleImmutableThing{
         const result = new ExampleImmutableThing();
         
-        result.containedNumber = this.containedNumber.unaryMinus();
+        result.containedNumber = -this.containedNumber;
         return result;
     }
     
-    public get(index: Int): Int{ return this.containedNumber.plus(index); }
+    public get(index: number): number{ return this.containedNumber + index; }
 }
 
 export function main(){
-    let x: Int = 2;
+    let x: number = 2;
     
     
     //Normal operators
-    println(1.plus(x));
-    println(1.minus(x));
-    println(1.times(x));
-    println(1.div(x));
-    println(1.rem(x));
-    println(1.compareTo(x));
-    println(1.compareTo(x));
-    println(1.compareTo(x));
-    println(1.compareTo(x));
-    println(!(1.equals(x)));
-    println(1.equals(x));
+    console.log(1 + x);
+    console.log(1 - x);
+    console.log(1 * x);
+    console.log(1 / x);
+    console.log(1 % x);
+    console.log(1 > x);
+    console.log(1 < x);
+    console.log(1 >= x);
+    console.log(1 <= x);
+    console.log(!(1 === x));
+    console.log(1 === x);
     
     //Direct calls
-    println(1.plus(x));
-    println(1.minus(x));
-    println(1.times(x));
-    println(1.div(x));
-    println(1.rem(x));
+    console.log(1 + x);
+    console.log(1 - x);
+    console.log(1 * x);
+    console.log(1 / x);
+    console.log(1 % x);
     
     //Assign operators
-    x = x.plus(1);
-    x = x.minus(1);
-    x = x.times(2);
-    x = x.div(2);
-    x = x.rem(1);
-    x = x.unaryMinus();
-    println(x);
+    x = x + 1;
+    x = x - 1;
+    x = x * 2;
+    x = x / 2;
+    x = x % 1;
+    x = -x;
+    console.log(x);
     
     //Psuedo-operators
-    x = x.shl(1);
-    x = x.shr(1);
-    x = x.ushr(1);
-    x = x.and(1);
-    x = x.or(1);
-    x = x.xor(1);
-    x = 1.inv();
+    x = x << 1;
+    x = x >> 1;
+    x = x >>> 1;
+    x = x & 1;
+    x = x | 1;
+    x = x ^ 1;
+    x = ~1;
     
     //Overloading
     const thing1 = new ExampleImmutableThing();
@@ -135,18 +121,18 @@ export function main(){
     
     const thing3 = thing1.plus(thing2);
     
-    println(thing3.containedNumber);
+    console.log(thing3.containedNumber);
     
-    println(thing3.get(1));
+    console.log(thing3.get(1));
     
     const thing4 = thing3.unaryMinus();
     
-    println(thing4.containedNumber);
+    console.log(thing4.containedNumber);
     
     let thing5 = thing4;
     
     thing5 = thing5.plus(thing1);
-    println(thing5.containedNumber);
+    console.log(thing5.containedNumber);
     
     const mthing1 = new ExampleMutableThing();
     
@@ -155,25 +141,29 @@ export function main(){
     
     mthing2.containedNumber = 2;
     mthing1.plusAssign(mthing2);
-    println(mthing1.containedNumber);
-    println(mthing1.get(2));
-    mthing1.set(2, 8);
-    mthing1.set(2, mthing1.get(2).plus(8));
-    println(mthing1.get(1));
+    console.log(mthing1.containedNumber);
+    console.log(mthing1.get(2));
+    const array1 = mthing1;
+    const index2 = 2;
+    array1.set(index2, 8);
+    const array3 = mthing1;
+    const index4 = 2;
+    array3.set(index4, array3.get(index4) + 8);
+    console.log(mthing1.get(1));
     
     //Binary
-    println(true && true);
-    println(true || false);
+    console.log(true && true);
+    console.log(true || false);
     
     //Ranges
-    for (const num of 1.rangeTo(6)) {
-        println(num);
+    for (const num of new NumberRange(1, 6)) {
+        console.log(num);
     }
-    println(1.rangeTo(6).contains(3));
+    console.log(new NumberRange(1, 6).contains(3));
     
     //Containers
-    const choices = listOf(1);
+    const choices = [1, 2, 3, 4];
     
-    println(choices.contains(5));
-    println(!(choices.contains(5)));
+    console.log((choices.indexOf(5) != -1));
+    console.log(!((choices.indexOf(5) != -1)));
 }

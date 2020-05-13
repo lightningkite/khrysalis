@@ -11,19 +11,14 @@
 // Imported FQ name: com.test.classes.Weird.<init>.both TS both
 // Imported FQ name: com.test.classes.Weird.f TS f
 // Imported FQ name: com.test.classes.main.outsideInfo TS outsideInfo
-// Imported FQ name: kotlin.Double TS Double
-// Imported FQ name: kotlin.Int TS Int
-// Imported FQ name: kotlin.Int.toDouble TS toDouble
-// Imported FQ name: kotlin.Int.toLong TS toLong
 // Imported FQ name: kotlin.Int.toString TS toString
-// Imported FQ name: kotlin.Long TS Long
-// Imported FQ name: kotlin.String TS String
+import { hashString } from 'khrysalis/dist/Kotlin'
 
 export interface TestInterface {
     
-    readonly interfaceValue: String;
+    readonly interfaceValue: string;
     
-    interfaceFunction(): String
+    interfaceFunction(): string
 }
 export class TestInterfaceDefaults {
     public static getInterfaceValue(this_InterfaceValue: TestInterface){ return "Default"; }
@@ -32,67 +27,67 @@ export class TestInterfaceDefaults {
 
 export class DataClassThing implements TestInterface {
     public static implementsInterfaceComTestClassesTestInterface = true;
-    public readonly x: Double;
-    public readonly y: String;
-    public constructor( x: Double = 0.0,  y: String = "Hello!") {
+    public readonly x: number;
+    public readonly y: string;
+    public constructor( x: number = 0.0,  y: string = "Hello!") {
         this.x = x;
         this.y = y;
     }
     public hashCode(): number {
         let hash = 17;
-        hash = 31 * hash + this.x.hashCode();
-        hash = 31 * hash + this.y.hashCode();
+        hash = 31 * hash + Math.floor(this.x);
+        hash = 31 * hash + hashString(this.y);
         return hash;
     }
-    public equals(other: any): boolean { return other instanceof DataClassThing && this.x.equals(other.x) && this.y.equals(other.y) }
+    public equals(other: any): boolean { return other instanceof DataClassThing && this.x === other.x && this.y === other.y }
     public toString(): string { return `DataClassThing(x = ${this.x}, y = ${this.y})` }
-    public copy(x: Double = this.x, y: String = this.y) { return new DataClassThing(x, y); }
+    public copy(x: number = this.x, y: string = this.y) { return new DataClassThing(x, y); }
     
-    public interfaceFunction(): String{ return `${this.x} ${this.y}`; }
-    public get interfaceValue(): String { return TestInterfaceDefaults.getInterfaceValue(this); }
+    public interfaceFunction(): string{ return `${this.x} ${this.y}`; }
+    public get interfaceValue(): string { return TestInterfaceDefaults.getInterfaceValue(this); }
 }
 
 export class Weird implements TestInterface {
     public static implementsInterfaceComTestClassesTestInterface = true;
-    public readonly c: Double;
-    public d: Long;
-    public constructor(a: Int = 0, b: String,  c: Double,  d: Long) {
+    public readonly c: number;
+    public d: number;
+    public constructor(a: number = 0, b: string,  c: number,  d: number) {
         this.c = c;
         this.d = d;
         this.e = 0;
         this.f = "asdf";
     }
     
-    public readonly e: Int = 0;
+    public readonly e: number = 0;
     
-    public f: String;
+    public f: string;
     
     
     
-    public static constructorkotlinInt(both: Int) {
-        let result = new Weird(both, both.toString(), both.toDouble(), both.toLong());
+    public static constructorkotlinInt(both: number) {
+        let result = new Weird(both, both.toString(), both, both);
         
         result.f = "Something else"
         
         return result;
     }
     
-    public get interfaceValue(): String { return this.f; }
+    public get interfaceValue(): string { return this.f; }
     
-    public interfaceFunction(): String { return TestInterfaceDefaults.interfaceFunction(this); }
+    public interfaceFunction(): string { return TestInterfaceDefaults.interfaceFunction(this); }
 }
 
 export function main(){
-    const outsideInfo: String = "Pulled in";
+    const outsideInfo: string = "Pulled in";
     
     const instance = new class Anon implements TestInterface {
         public static implementsInterfaceComTestClassesTestInterface = true;
         public constructor() {
         }
         
-        public get interfaceValue(): String { return outsideInfo; }
+        public get interfaceValue(): string { return outsideInfo; }
         
-        public interfaceFunction(): String { return TestInterfaceDefaults.interfaceFunction(this); }
+        public interfaceFunction(): string { return TestInterfaceDefaults.interfaceFunction(this); }
     }();
     
     const ugh = Weird.constructorkotlinInt(2);

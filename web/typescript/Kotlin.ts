@@ -211,7 +211,7 @@ export class EqualOverrideMap<K extends Object, V> implements MapInterface<K, V>
 
     private getListForHash(hash: number): Array<[K, V]> {
         let e = this.internalEntries[hash]
-        if (e == undefined) {
+        if (e === undefined) {
             e = []
             this.internalEntries[hash] = e
         }
@@ -227,17 +227,14 @@ export class EqualOverrideMap<K extends Object, V> implements MapInterface<K, V>
         return null
     }
 
-    set(key: K, value: V): V | null {
+    set(key: K, value: V): void {
         const list = this.getListForHash(key.hashCode());
         const entry = this.getEntryFromList(list, key);
         if (entry != null) {
-            const oldValue = entry[1];
             entry[1] = value;
-            return oldValue;
         } else {
             list.push([key, value]);
             this.size++;
-            return null;
         }
     }
 
@@ -275,7 +272,7 @@ export class EqualOverrideMap<K extends Object, V> implements MapInterface<K, V>
         return this.internalEntries.flatMap((x) => x.map((y) => y[1]))[Symbol.iterator]()
     }
 
-    forEach(action: (e: [K, V], index: number | undefined) => void) {
+    forEachK(action: (e: [K, V], index: number | undefined) => void) {
         let index = 0
         for (const sublist of this.internalEntries) {
             for (const entry of sublist) {
@@ -313,20 +310,22 @@ export interface Collection<V> extends Iterable<V> {
     values(): IterableIterator<V>;
 }
 
-export interface MapInterface<K, V> extends Collection<V> {
+export interface MapInterface<K, V> {
+    size: number
+
     entries(): IterableIterator<[K, V]>;
 
     keys(): IterableIterator<K>;
 
-    set(key: K, value: V): V | null;
+    values(): IterableIterator<V>;
+
+    set(key: K, value: V): void;
 
     get(key: K): V | null;
 
     has(key: K): boolean;
 
     delete(key: K): void;
-
-    forEach(action: (e: [K, V], index: number | undefined) => void): void;
 
     clear(): void;
 
@@ -346,6 +345,7 @@ declare global {
 //Freakin' JS inconsistency.  We'll have to fix it.
 Object.defineProperty(Array.prototype, "size", {
     get: function () {
+        let thing: Map<string, string> = new Map()
         return this.length
     }
 })
@@ -356,6 +356,10 @@ export function safeEq(a: any, b: any): boolean {
     } else {
         return a === b
     }
+}
+
+export function listFilterNotNull<T>(array: Array<T | null>): Array<T> {
+    return this.filter((it: T | null) => it !== null)
 }
 
 export function listRemoveAll<T>(array: Array<T>, predicate: (a: T) => boolean) {

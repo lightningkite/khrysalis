@@ -14,9 +14,6 @@
 // Imported FQ name: com.test.cursedclasses.F.H SKIPPED due to same file
 // Imported FQ name: com.test.cursedclasses.F.H TS FH
 // Imported FQ name: com.test.cursedclasses.F.H.x TS x
-// Imported FQ name: kotlin.Int TS Int
-// Imported FQ name: kotlin.Unit TS Unit
-// Imported FQ name: kotlin.io.println TS println
 
 export class A {
     
@@ -28,10 +25,10 @@ export class A {
                 public constructor() {
                 }
                 
-                public static constructorkotlinInt(jank: Int) {
+                public static constructorkotlinInt(jank: number) {
                     let result = new D();
                     
-                    println(jank)
+                    console.log(jank)
                     
                     return result;
                 }
@@ -50,8 +47,8 @@ export class FDefaults {
 }
 
 export function main(){
-    println("Clearly, we hate ourselves.");
-    println(FH.INSTANCE.x);
+    console.log("Clearly, we hate ourselves.");
+    console.log(FH.INSTANCE.x);
     const thing = new class Anon implements ABCDE {
         public static implementsInterfaceComTestCursedclassesABCDE = true;
         public constructor() {
@@ -60,7 +57,7 @@ export function main(){
         
         public readonly hello = "Hello World!";
         
-        public test(): Unit { return ABCDEDefaults.test(this); }
+        public test(): void { return ABCDEDefaults.test(this); }
     }();
     
     const other = new FG();
@@ -78,7 +75,7 @@ export interface ABCDE {
     test(): void
 }
 export class ABCDEDefaults {
-    public static test(this_Test: ABCDE){ return println("Hi!"); }
+    public static test(this_Test: ABCDE){ return console.log("Hi!"); }
 }
 export class FG {
     
@@ -89,7 +86,7 @@ export class FH {
     }
     public static INSTANCE = new FH();
     
-    readonly x: Int;
+    readonly x: number;
     
 }
 

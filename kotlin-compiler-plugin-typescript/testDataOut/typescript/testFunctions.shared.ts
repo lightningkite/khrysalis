@@ -30,35 +30,33 @@
 // Imported FQ name: com.test.functions.varargFunction TS restParamsFunction
 // Imported FQ name: com.test.functions.varargFunction.item TS item
 // Imported FQ name: com.test.functions.varargFunction.numbers TS numbers
-// Imported FQ name: kotlin.Int TS Int
-// Imported FQ name: kotlin.io.println TS println
 
 export function topLevelFunction(){
-    println("Hello world!");
+    console.log("Hello world!");
     function localFunction(){
-        println("Hello from local!");
+        console.log("Hello from local!");
     }
     localFunction();
 }
 export function topLevelGenericFunction<T>(item: T){
-    println(`Hello ${item}`);
+    console.log(`Hello ${item}`);
 }
-export function restParamsFunction(...numbers: Int[]){
+export function restParamsFunction(...numbers: number[]){
     for (const item of numbers) {
-        println(`Item: ${item}`);
+        console.log(`Item: ${item}`);
     }
 }
 
 export class TestClass {
     
-    public memberFunction(a: Int = 2, b: Int = 3, c: Int = 4){
-        println("Hello from TestClass!");
+    public memberFunction(a: number = 2, b: number = 3, c: number = 4){
+        console.log("Hello from TestClass!");
     }
     public memberGenericFunction<T>(item: T){
-        println(`Hello ${item} from TestClass!`);
+        console.log(`Hello ${item} from TestClass!`);
     }
     public ComTestFunctionsTestClass2MemberExtensionFunction(this_MemberExtensionFunction: TestClass2){
-        println(`Hello ${this_MemberExtensionFunction} from ${this}!`);
+        console.log(`Hello ${this_MemberExtensionFunction} from ${this}!`);
     }
     public testExtension(){
         this.ComTestFunctionsTestClass2MemberExtensionFunction(new TestClass2());
@@ -68,16 +66,16 @@ export class TestClass {
 export class TestClass2 {
     
     public test(){
-        println("Hi!");
+        console.log("Hi!");
     }
 }
 
 export function ComTestFunctionsTestClassExtensionFunction(this_ExtensionFunction: TestClass){
-    println("From an extension:");
+    console.log("From an extension:");
     this_ExtensionFunction.memberFunction(undefined, undefined, undefined);
 }
 export function KotlinAnyGenericExtensionFunction<T, E>(this_GenericExtensionFunction: T, element: E){
-    println(`Hello ${element} from ${this_GenericExtensionFunction}!`);
+    console.log(`Hello ${element} from ${this_GenericExtensionFunction}!`);
 }
 
 export function main(){
@@ -98,5 +96,5 @@ export function main(){
 }
 
 export const _anotherThing = 2;
-export function getAnotherThing(): Int { return _anotherThing; }
+export function getAnotherThing(): number { return _anotherThing; }
 

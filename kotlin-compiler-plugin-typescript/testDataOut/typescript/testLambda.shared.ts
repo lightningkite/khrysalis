@@ -6,28 +6,24 @@
 // Imported FQ name: com.test.lambda.TestClass.item TS item
 // Imported FQ name: com.test.lambda.main.<anonymous>.it TS it
 // Imported FQ name: com.test.lambda.main.theAnswer TS theAnswer
-// Imported FQ name: kotlin.Int TS Int
-// Imported FQ name: kotlin.String TS String
-// Imported FQ name: kotlin.apply TS KotlinAnyApply
-// Imported FQ name: kotlin.io.println TS println
-// Imported FQ name: kotlin.let TS KotlinAnyLet
+import { also } from 'khrysalis/dist/Kotlin'
 
 export class TestClass {
     
-    public item: Int = 0;
+    public item: number = 0;
     
 }
 
 export function main(){
-    const theAnswer = KotlinAnyApply(new TestClass(), (this_) => this_.item = 42);
+    const theAnswer = also(new TestClass(), (this_) => this_.item = 42);
     
-    const myLambda: (a: Int) => String = (it) => `Number: ${it}`;
+    const myLambda: (a: number) => string = (it) => `Number: ${it}`;
     
-    KotlinAnyLet(theAnswer, (it) => println(it));
-    KotlinAnyLet(32, (it) => {});
-    KotlinAnyLet(32, (it) => println(it));
-    KotlinAnyLet(32, (it) => {
-            println(it);
-            println(it);
-    });
+    ((it) => console.log(it))(theAnswer);
+    ((it) => {})(32);
+    ((it) => console.log(it))(32);
+    ((it) => {
+            console.log(it);
+            console.log(it);
+    })(32);
 }

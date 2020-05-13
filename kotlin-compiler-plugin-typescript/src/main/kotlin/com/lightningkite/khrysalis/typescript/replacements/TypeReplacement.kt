@@ -8,7 +8,7 @@ import org.jetbrains.kotlin.types.KotlinType
 
 data class TypeReplacement(
     val id: String,
-    val typeArgumentsHaveCustomEquals: List<Int>,
+    val typeArgumentsHaveCustomEquals: List<Int> = listOf(),
     val template: Template
 ) : ReplacementRule {
     override val priority: Int

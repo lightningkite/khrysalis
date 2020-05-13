@@ -15,16 +15,11 @@
 // Imported FQ name: com.test.types.Thing TS Thing
 // Imported FQ name: com.test.types.main.ugh TS ugh
 // Imported FQ name: com.test.types.main.unknownThing TS unknownThing
-// Imported FQ name: kotlin.Any TS Any
-// Imported FQ name: kotlin.Int TS Int
-// Imported FQ name: kotlin.collections.List TS List
-// Imported FQ name: kotlin.collections.listOf TS listOf
-// Imported FQ name: kotlin.io.println TS println
 import { checkIsInterface, tryCastClass, tryCastInterface, tryCastPrimitive } from 'khrysalis/dist/Kotlin'
 import { Weird } from 'testClasses.shared'
 
-export type MyInteger = Int;
-export let MyInteger = Int;
+export type MyInteger = number;
+export let MyInteger = Number;
 
 
 export class Thing {
@@ -35,46 +30,46 @@ export class Thing {
 export type MyThing = Thing;
 export let MyThing = Thing;
 
-export type MyList<T> = List<T>;
-export let MyList = List;
+export type MyList<T> = Array<T>;
+export let MyList = Array;
 
 export type ListOfThings = MyList<MyThing>;
 export let ListOfThings = MyList;
 
 
 export function main(){
-    const x: Int = 0;
+    const x: number = 0;
     
     const y: MyInteger = 0;
     
-    const stuff: ListOfThings = listOf(new MyThing());
+    const stuff: ListOfThings = [new MyThing(), new Thing()];
     
-    const otherList: List<Int> = listOf(1);
+    const otherList: Array<number> = [1, 2, 3];
     
-    const nullabilityTest: (Int | null) = null;
+    const nullabilityTest: (number | null) = null;
     
     const nullabilityTest2: (ListOfThings | null) = null;
     
-    println("Success");
+    console.log("Success");
     
     const ugh = Weird.constructorkotlinInt(2);
     
-    const unknownThing: (Any | null) = ugh;
+    const unknownThing: (any | null) = ugh;
     
     
     if(checkIsInterface(unknownThing, "ComTestClassesTestInterface")){
-        println("Hello!");
+        console.log("Hello!");
     }
-    println(tryCastInterface(unknownThing, "ComTestClassesTestInterface"));
+    console.log(tryCastInterface(unknownThing, "ComTestClassesTestInterface"));
     
     if(unknownThing instanceof Weird){
-        println("Hello!");
+        console.log("Hello!");
     }
-    println(tryCastClass(unknownThing, Weird));
+    console.log(tryCastClass(unknownThing, Weird));
     
-    if(typeof (unknownThing) == "Int"){
-        println("Hello!");
+    if(typeof (unknownThing) == "number"){
+        console.log("Hello!");
     }
-    println(tryCastPrimitive(unknownThing, "Int"));
+    console.log(tryCastPrimitive(unknownThing, "number"));
 }
 

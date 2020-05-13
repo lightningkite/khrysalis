@@ -79,9 +79,6 @@ class TypescriptFileEmitter(val translator: TypescriptTranslator, val file: KtFi
             else -> decl
         }
         val name = overrideName ?: useDecl.name.asString()
-        if(name == "Weird.constructorkotlinInt") {
-            Exception().printStackTrace()
-        }
         val fq = useDecl.fqNameSafe.asString()
         val n = "$fq TS $name"
         if (importedFqs.contains(n))

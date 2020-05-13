@@ -5,36 +5,31 @@
 // Imported FQ name: com.test.loops.main.item TS item
 // Imported FQ name: com.test.loops.main.key TS key
 // Imported FQ name: com.test.loops.main.value TS value
-// Imported FQ name: kotlin.collections.Map.entries TS entries
-// Imported FQ name: kotlin.collections.listOf TS listOf
-// Imported FQ name: kotlin.collections.mapOf TS mapOf
-// Imported FQ name: kotlin.io.println TS println
-// Imported FQ name: kotlin.to TS KotlinAnyTo
 
 export function main(){
-    for (const item of listOf(1)) {
-        println(item);
+    for (const item of [1, 2, 3, 4]) {
+        console.log(item);
     }
-    for (const toDestructure of mapOf(KotlinAnyTo(1, 2)).entries) {
+    for (const toDestructure of new Map([[1, 2], [3, 4]]).entries()) {
         const key = toDestructure[0]
         const value = toDestructure[1]
         
-        println(`${key}: ${value}`)
+        console.log(`${key}: ${value}`)
         
     }
     let i = 0;
     
-    while(i.compareTo(4)){
+    while(i < 4){
         i++;
-        println(i);
+        console.log(i);
     }
-    label: while(i.compareTo(6)){
+    label: while(i < 6){
         i++;
-        println(i);
+        console.log(i);
         break label;
     };
     do {
         i++;
-        println(i);
-    } while(i.compareTo(8))
+        console.log(i);
+    } while(i < 8)
 }
