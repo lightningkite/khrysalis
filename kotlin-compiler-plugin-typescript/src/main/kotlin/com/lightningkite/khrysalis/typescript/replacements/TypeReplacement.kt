@@ -2,6 +2,7 @@ package com.lightningkite.khrysalis.typescript.replacements
 
 import com.lightningkite.khrysalis.util.recursiveChildren
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
+import org.jetbrains.kotlin.descriptors.DeclarationDescriptor
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.resolve.scopes.DescriptorKindFilter
 import org.jetbrains.kotlin.types.KotlinType
@@ -22,5 +23,5 @@ data class TypeReplacement(
         } == true
     }
 
-    fun passes(decl: ClassDescriptor): Boolean = typeArgumentsHaveCustomEquals.isEmpty()
+    fun passes(decl: DeclarationDescriptor): Boolean = typeArgumentsHaveCustomEquals.isEmpty()
 }

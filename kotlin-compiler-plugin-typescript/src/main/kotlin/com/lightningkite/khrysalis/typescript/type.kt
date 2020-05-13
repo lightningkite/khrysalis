@@ -7,6 +7,7 @@ import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
 import org.jetbrains.kotlin.builtins.functions.FunctionClassDescriptor
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
+import org.jetbrains.kotlin.descriptors.TypeAliasDescriptor
 import org.jetbrains.kotlin.descriptors.leastPermissiveDescriptor
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.lexer.KtModifierKeywordToken
@@ -127,37 +128,39 @@ fun TypescriptTranslator.registerType() {
     handle<KtUserType>(
         condition = {
             val reference = typedRule.referenceExpression ?: return@handle false
-            val type = reference.resolvedReferenceTarget as? ClassDescriptor ?: return@handle false
+            val type = reference.resolvedReferenceTarget ?: return@handle false
             replacements.getType(type) != null
         },
         priority = 10_000,
         action = {
             val reference = typedRule.referenceExpression!!
-            val type = reference.resolvedReferenceTarget as ClassDescriptor
+            val type = reference.resolvedReferenceTarget!!
             val rule = replacements.getType(type)!!
-            val typeParametersByName = typedRule.typeArguments.withIndex()
-                .associate { (index, item) -> type.declaredTypeParameters[index].name.asString() to item }
-            rule.template.parts.forEach { part ->
-                when (part) {
-                    is TemplatePart.Import -> out.addImport(part)
-                    is TemplatePart.Text -> -part.string
-                    is TemplatePart.TypeParameter -> -(typeParametersByName[part.name])
-                    is TemplatePart.TypeParameterByIndex -> -(typedRule.typeArguments.getOrNull(part.index))
-                }
+            val declaredParams = when(type){
+                is ClassDescriptor -> type.declaredTypeParameters
+                is TypeAliasDescriptor -> type.declaredTypeParameters
+                else -> listOf()
             }
+            val typeParametersByName = typedRule.typeArguments.withIndex()
+                .associate { (index, item) -> declaredParams[index].name.asString() to item }
+            emitTemplate(
+                template = rule.template,
+                typeParameter = { typeParametersByName[it.name] ?: "undefined" },
+                typeParameterByIndex = { typedRule.typeArguments.getOrNull(it.index) ?: "undefined" }
+            )
         }
     )
 
     handle<KtUserType>(
         condition = {
             val reference = typedRule.referenceExpression ?: return@handle false
-            val type = reference.resolvedReferenceTarget as? ClassDescriptor ?: return@handle false
+            val type = reference.resolvedReferenceTarget  ?: return@handle false
             type.tsTopLevelMessedUp
         },
         priority = 100,
         action = {
             val reference = typedRule.referenceExpression!!
-            val type = reference.resolvedReferenceTarget as ClassDescriptor
+            val type = reference.resolvedReferenceTarget!!
             val n = type.tsTopLevelName
             -n
             -typedRule.typeArgumentList
@@ -168,51 +171,45 @@ fun TypescriptTranslator.registerType() {
     handle<KtUserTypeBasic>(
         condition = {
             val reference = typedRule.type.referenceExpression ?: return@handle false
-            val type = reference.resolvedReferenceTarget as? ClassDescriptor ?: return@handle false
+            val type = reference.resolvedReferenceTarget  ?: return@handle false
             replacements.getTypeRef(type) != null
         },
         priority = 11_000,
         action = {
             val reference = typedRule.type.referenceExpression!!
-            val type = reference.resolvedReferenceTarget as ClassDescriptor
+            val type = reference.resolvedReferenceTarget!!
             val rule = replacements.getTypeRef(type)!!
-            rule.template.parts.forEach { part ->
-                when (part) {
-                    is TemplatePart.Import -> out.addImport(part)
-                    is TemplatePart.Text -> -part.string
-                }
-            }
+            emitTemplate(
+                template = rule.template
+            )
         }
     )
     handle<KtUserTypeBasic>(
         condition = {
             val reference = typedRule.type.referenceExpression ?: return@handle false
-            val type = reference.resolvedReferenceTarget as? ClassDescriptor ?: return@handle false
+            val type = reference.resolvedReferenceTarget  ?: return@handle false
             replacements.getType(type) != null
         },
         priority = 10_000,
         action = {
             val reference = typedRule.type.referenceExpression!!
-            val type = reference.resolvedReferenceTarget as ClassDescriptor
+            val type = reference.resolvedReferenceTarget!!
             val rule = replacements.getType(type)!!
-            rule.template.parts.forEach { part ->
-                when (part) {
-                    is TemplatePart.Import -> out.addImport(part)
-                    is TemplatePart.Text -> -part.string
-                }
-            }
+            emitTemplate(
+                template = rule.template
+            )
         }
     )
     handle<KtUserTypeBasic>(
         condition = {
             val reference = typedRule.type.referenceExpression ?: return@handle false
-            val type = reference.resolvedReferenceTarget as? ClassDescriptor ?: return@handle false
+            val type = reference.resolvedReferenceTarget  ?: return@handle false
             type.tsTopLevelMessedUp
         },
         priority = 100,
         action = {
             val reference = typedRule.type.referenceExpression!!
-            val type = reference.resolvedReferenceTarget as ClassDescriptor
+            val type = reference.resolvedReferenceTarget!!
             val n = type.tsTopLevelName
             -n
             out.addImport(type, n)
@@ -264,14 +261,11 @@ fun TypescriptTranslator.registerType() {
             val baseType = type.constructor
             val typeParametersByName = type.arguments.withIndex()
                 .associate { (index, item) -> baseType.parameters[index].name.asString() to item }
-            rule.template.parts.forEach { part ->
-                when (part) {
-                    is TemplatePart.Import -> out.addImport(part)
-                    is TemplatePart.Text -> -part.string
-                    is TemplatePart.TypeParameter -> -(typeParametersByName[part.name])
-                    is TemplatePart.TypeParameterByIndex -> -(type.arguments.getOrNull(part.index))
-                }
-            }
+            emitTemplate(
+                template = rule.template,
+                typeParameter = { typeParametersByName[it.name] ?: "undefined" },
+                typeParameterByIndex = { type.arguments.getOrNull(it.index) ?: "undefined" }
+            )
         }
     )
 
@@ -284,14 +278,9 @@ fun TypescriptTranslator.registerType() {
             val type = typedRule.type
             val rule = replacements.getType(type)!!
             val baseType = type.constructor
-            val typeParametersByName = type.arguments.withIndex()
-                .associate { (index, item) -> baseType.parameters[index].name.asString() to item }
-            rule.template.parts.forEach { part ->
-                when (part) {
-                    is TemplatePart.Import -> out.addImport(part)
-                    is TemplatePart.Text -> -part.string
-                }
-            }
+            emitTemplate(
+                template = rule.template
+            )
         }
     )
 

@@ -477,14 +477,11 @@ fun TypescriptTranslator.registerVariable() {
         action = {
             val pd = typedRule.resolvedReferenceTarget as PropertyDescriptor
             val rule = replacements.getGet(pd)!!
-            rule.template.forEach { part ->
-                when (part) {
-                    is TemplatePart.Import -> out.addImport(part)
-                    is TemplatePart.Text -> -part.string
-                    TemplatePart.Receiver -> -typedRule.getTsReceiver()
-                    TemplatePart.DispatchReceiver -> -typedRule.getTsReceiver()
-                }
-            }
+            emitTemplate(
+                requiresWrapping = typedRule.parent is KtBlockExpression,
+                template = rule.template,
+                receiver = typedRule.getTsReceiver()
+            )
         }
     )
     handle<KtDotQualifiedExpression>(
@@ -498,15 +495,12 @@ fun TypescriptTranslator.registerVariable() {
             val nre = (typedRule.selectorExpression as KtNameReferenceExpression)
             val pd = nre.resolvedReferenceTarget as PropertyDescriptor
             val rule = replacements.getGet(pd)!!
-            rule.template.forEach { part ->
-                when (part) {
-                    is TemplatePart.Import -> out.addImport(part)
-                    is TemplatePart.Text -> -part.string
-                    TemplatePart.Receiver -> -typedRule.receiverExpression
-                    TemplatePart.DispatchReceiver -> -nre.getTsReceiver()
-                    TemplatePart.ExtensionReceiver -> -typedRule.receiverExpression
-                }
-            }
+            emitTemplate(
+                requiresWrapping = typedRule.parent is KtBlockExpression,
+                template = rule.template,
+                receiver = typedRule.receiverExpression,
+                dispatchReceiver = typedRule.getTsReceiver()
+            )
         }
     )
 
@@ -525,24 +519,14 @@ fun TypescriptTranslator.registerVariable() {
             val nre = (left.selectorExpression as KtNameReferenceExpression)
             val pd = (nre.resolvedReferenceTarget as PropertyDescriptor)
             val rule = replacements.getSet(pd)!!
-            rule.template.forEach { part ->
-                when (part) {
-                    is TemplatePart.Import -> out.addImport(part)
-                    is TemplatePart.Text -> -part.string
-                    TemplatePart.Receiver -> -left.receiverExpression
-                    TemplatePart.DispatchReceiver -> -nre.getTsReceiver()
-                    TemplatePart.ExtensionReceiver -> -left.receiverExpression
-                    TemplatePart.Value -> -typedRule.right
-                    is TemplatePart.Parameter -> {
-                    }
-                    is TemplatePart.ParameterByIndex -> {
-                    }
-                    is TemplatePart.TypeParameter -> {
-                    }
-                    is TemplatePart.TypeParameterByIndex -> {
-                    }
-                }
-            }
+            emitTemplate(
+                requiresWrapping = typedRule.parent is KtBlockExpression,
+                template = rule.template,
+                receiver = left.receiverExpression,
+                dispatchReceiver = nre.getTsReceiver(),
+                extensionReceiver = null,
+                value = typedRule.right
+            )
         }
     )
     handle<KtBinaryExpression>(
@@ -556,25 +540,13 @@ fun TypescriptTranslator.registerVariable() {
             val nre = typedRule.left as KtNameReferenceExpression
             val pd = (nre.resolvedReferenceTarget as PropertyDescriptor)
             val rule = replacements.getSet(pd)!!
-            rule.template.forEach { part ->
-                when (part) {
-                    is TemplatePart.Import -> out.addImport(part)
-                    is TemplatePart.Text -> -part.string
-                    TemplatePart.Receiver -> -nre.getTsReceiver()
-                    TemplatePart.DispatchReceiver -> -nre.getTsReceiver()
-                    TemplatePart.ExtensionReceiver -> {
-                    }
-                    TemplatePart.Value -> -typedRule.right
-                    is TemplatePart.Parameter -> {
-                    }
-                    is TemplatePart.ParameterByIndex -> {
-                    }
-                    is TemplatePart.TypeParameter -> {
-                    }
-                    is TemplatePart.TypeParameterByIndex -> {
-                    }
-                }
-            }
+            emitTemplate(
+                requiresWrapping = typedRule.parent is KtBlockExpression,
+                template = rule.template,
+                receiver = nre.getTsReceiver(),
+                extensionReceiver = null,
+                value = typedRule.right
+            )
         }
     )
 }

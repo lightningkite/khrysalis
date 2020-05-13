@@ -213,15 +213,14 @@ class KhrysalisPlugin : Plugin<Project> {
                 }.asSequence()
                 val originalTask = project.tasks.getByName("compileDebugKotlin") as KotlinCompile
                 val files = originalTask.source.toList().asSequence()
+                println("All files: ${files.joinToString("\n")}")
                 convertToTypescript(
                     libraries = libraries,
                     files = files,
                     pluginCache = project.buildDir.resolve("khrysalis-kcp"),
                     buildCache = project.buildDir.resolve("testBuild"),
-                    equivalents = (ext.equivalentsDirectories + File(
-                        project.projectDir.resolve("src/main/equivalents").path
-                    )).asSequence(),
-                    output = webBase().resolve("src")
+                    equivalents = (ext.equivalentsDirectories + webBase().resolve("equivalents")).asSequence(),
+                    output = webBase().resolve("typescript")
                 )
             }
         }

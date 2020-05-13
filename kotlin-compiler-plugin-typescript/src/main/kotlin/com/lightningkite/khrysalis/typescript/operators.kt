@@ -83,21 +83,20 @@ fun TypescriptTranslator.registerOperators() {
                 }
             }
 
-            rule.template.forEach { part ->
-                when (part) {
-                    is TemplatePart.Import -> out.addImport(part)
-                    is TemplatePart.Text -> -part.string
-                    TemplatePart.Receiver -> -typedRule.arrayExpression
-                    TemplatePart.DispatchReceiver -> -typedRule.dispatchReceiver
-                    TemplatePart.ExtensionReceiver -> -typedRule.arrayExpression
-                    TemplatePart.AllParameters -> typedRule.indexExpressions.forEachBetween(
-                        forItem = { -it },
-                        between = { -", " }
+            emitTemplate(
+                requiresWrapping = true,
+                template = rule.template,
+                receiver = typedRule.arrayExpression,
+                dispatchReceiver = typedRule.dispatchReceiver,
+                allParameters = ArrayList<Any?>().apply {
+                    typedRule.indexExpressions.forEachBetween(
+                        forItem = { add(it) },
+                        between = { add(", ") }
                     )
-                    is TemplatePart.Parameter -> -(allParametersByName[part.name])
-                    is TemplatePart.ParameterByIndex -> -(allParametersByIndex[part.index])
-                }
-            }
+                },
+                parameter = { allParametersByName[it.name] ?: "undefined" },
+                parameterByIndex = { allParametersByIndex[it.index] ?: "undefined" }
+            )
         }
     )
 
@@ -217,24 +216,23 @@ fun TypescriptTranslator.registerOperators() {
                 typedRule.resolvedCall?.typeArguments?.mapKeys { it.key.name.asString() } ?: mapOf()
             val typeParametersByIndex = typedRule.resolvedCall?.typeArguments?.mapKeys { it.key.index } ?: mapOf()
 
-            rule.template.forEach { part ->
-                when (part) {
-                    is TemplatePart.Import -> out.addImport(part)
-                    is TemplatePart.Text -> -part.string
-                    TemplatePart.Receiver -> -tempArray
-                    TemplatePart.DispatchReceiver -> -arrayAccess.getTsReceiver()
-                    TemplatePart.ExtensionReceiver -> -tempArray
-                    TemplatePart.AllParameters -> tempIndexes.forEachBetween(
-                        forItem = { -it },
-                        between = { -", " }
+            emitTemplate(
+                requiresWrapping = typedRule.parent is KtBlockExpression,
+                template = rule.template,
+                receiver = tempArray,
+                dispatchReceiver = arrayAccess.getTsReceiver(),
+                value = right,
+                allParameters = ArrayList<Any?>().apply {
+                    tempIndexes.forEachBetween(
+                        forItem = { add(it) },
+                        between = { add(", ") }
                     )
-                    is TemplatePart.Parameter -> -(allParametersByName[part.name])
-                    is TemplatePart.ParameterByIndex -> -(allParametersByIndex[part.index])
-                    is TemplatePart.TypeParameter -> -(typeParametersByName[part.name])
-                    is TemplatePart.TypeParameterByIndex -> -(typeParametersByIndex[part.index])
-                    TemplatePart.Value -> -right
-                }
-            }
+                },
+                parameter = { allParametersByName[it.name] ?: "undefined" },
+                typeParameter = { typeParametersByName[it.name] ?: "undefined" },
+                parameterByIndex = { allParametersByIndex[it.index] ?: "undefined" },
+                typeParameterByIndex = { typeParametersByIndex[it.index] ?: "undefined" }
+            )
         }
     )
 
@@ -256,25 +254,19 @@ fun TypescriptTranslator.registerOperators() {
             val left = if (invertDirection) typedRule.right else typedRule.left
             val right = if (invertDirection) typedRule.left else typedRule.right
 
-            rule.template.forEach { part ->
-                when (part) {
-                    is TemplatePart.Import -> out.addImport(part)
-                    is TemplatePart.Text -> -part.string
-                    TemplatePart.Receiver -> -left
-                    TemplatePart.DispatchReceiver -> typedRule.dispatchReceiver
-                    TemplatePart.ExtensionReceiver -> -left
-                    TemplatePart.AllParameters -> -right
-                    TemplatePart.OperatorToken -> when (val t = typedRule.operationToken) {
-                        is KtSingleValueToken -> -t.value
-                        else -> {
-                        }
-                    }
-                    is TemplatePart.Parameter -> -right
-                    is TemplatePart.ParameterByIndex -> -right
-                    is TemplatePart.TypeParameter -> -right
-                    is TemplatePart.TypeParameterByIndex -> -right
-                }
-            }
+            emitTemplate(
+                requiresWrapping = true,
+                template = rule.template,
+                receiver = left,
+                dispatchReceiver = typedRule.dispatchReceiver,
+                operatorToken = when (val t = typedRule.operationToken) {
+                    is KtSingleValueToken -> t.value
+                    else -> null
+                },
+                allParameters = right,
+                parameter = { right },
+                parameterByIndex = { right }
+            )
             if (typedRule.operationToken == KtTokens.NOT_IN || typedRule.operationToken == KtTokens.EXCLEQ) {
                 -")"
             }
@@ -340,27 +332,13 @@ fun TypescriptTranslator.registerOperators() {
         action = {
             val f = typedRule.operationReference.resolvedReferenceTarget as FunctionDescriptor
             val rule = replacements.getCall(f)!!
-            if (f.extensionReceiverParameter != null) {
-                rule.template.forEach { part ->
-                    when (part) {
-                        is TemplatePart.Import -> out.addImport(part)
-                        is TemplatePart.Text -> -part.string
-                        TemplatePart.Receiver -> -typedRule.baseExpression
-                        TemplatePart.DispatchReceiver -> -typedRule.getTsReceiver()
-                        TemplatePart.ExtensionReceiver -> -typedRule.baseExpression
-                    }
-                }
-            } else {
-                rule.template.forEach { part ->
-                    when (part) {
-                        is TemplatePart.Import -> out.addImport(part)
-                        is TemplatePart.Text -> -part.string
-                        TemplatePart.Receiver -> -typedRule.baseExpression
-                        TemplatePart.DispatchReceiver -> -typedRule.baseExpression
-                        TemplatePart.ExtensionReceiver -> -typedRule.baseExpression
-                    }
-                }
-            }
+
+            emitTemplate(
+                requiresWrapping = typedRule.parent is KtBlockExpression,
+                template = rule.template,
+                receiver = typedRule.baseExpression,
+                dispatchReceiver = if(f.extensionReceiverParameter != null) typedRule.getTsReceiver() else typedRule.baseExpression
+            )
         }
     )
 

@@ -9,6 +9,21 @@
 - id: kotlin.Any
   type: type
   template: any
+- id: com.lightningkite.khrysalis.AnyObject
+  type: type
+  template: object
+- id: com.lightningkite.khrysalis.AnyHashable
+  type: type
+  template: any
+- id: com.lightningkite.khrysalis.Hashable
+  type: type
+  template: object
+- id: com.lightningkite.khrysalis.Equatable
+  type: type
+  template: object
+- id: com.lightningkite.khrysalis.SomeEnum
+  type: type
+  template: any
 
 # Primitive Equality
 

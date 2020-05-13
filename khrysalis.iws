@@ -2,31 +2,33 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="975a7880-5921-4347-b41e-aecac3ea78f3" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/template.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testData/Swift.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testData/anno.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testData/testAnnotations.shared.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/khrysalis.ipr" beforeDir="false" afterPath="$PROJECT_DIR$/khrysalis.ipr" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/khrysalis.iws" beforeDir="false" afterPath="$PROJECT_DIR$/khrysalis.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/Tasks.md" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/Tasks.md" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/KotlinTypescriptCLP.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/KotlinTypescriptCLP.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/TypescriptFileEmitter.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/TypescriptFileEmitter.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/annotation.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/annotation.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/class.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/class.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/className.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/className.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/control.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/control.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/function.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/function.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/lambda.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/lambda.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/operators.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/operators.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/replacements/FunctionReplacement.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/replacements/FunctionReplacement.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/replacements/Replacements.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/replacements/Replacements.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/replacements/TemplatePart.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/replacements/TemplatePart.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/replacements/TypeRefReplacement.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/replacements/TypeRefReplacement.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/replacements/TypeReplacement.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/replacements/TypeReplacement.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testData/testCollections.shared.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testData/testCollections.shared.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testDataOut/typescript/testClasses.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testDataOut/typescript/testClasses.shared.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/type.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/type.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/variable.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/variable.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testData/testLambda.shared.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testData/testLambda.shared.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testData/testTypes.shared.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testData/testTypes.shared.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testDataOut/typescript/testCollections.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testDataOut/typescript/testCollections.shared.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testDataOut/typescript/testCursedClasses.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testDataOut/typescript/testCursedClasses.shared.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testDataOut/typescript/testEnums.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testDataOut/typescript/testEnums.shared.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testDataOut/typescript/testFunctions.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testDataOut/typescript/testFunctions.shared.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testDataOut/typescript/testIfAndWhen.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testDataOut/typescript/testIfAndWhen.shared.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testDataOut/typescript/testImports.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testDataOut/typescript/testImports.shared.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testDataOut/typescript/testLambda.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testDataOut/typescript/testLambda.shared.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testDataOut/typescript/testLoops.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testDataOut/typescript/testLoops.shared.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testDataOut/typescript/testOperators.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testDataOut/typescript/testOperators.shared.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testDataOut/typescript/testTypes.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testDataOut/typescript/testTypes.shared.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testDataOut/typescript/testVariables.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testDataOut/typescript/testVariables.shared.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/equivalents/collections.ts.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/web/equivalents/collections.ts.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/equivalents/list.ts.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/web/equivalents/list.ts.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/equivalents/tuple.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/web/equivalents/tuple.ts.yaml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/typescript/Kotlin.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/Kotlin.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plugin/src/main/kotlin/com/lightningkite/khrysalis/gradle/KhrysalisPlugin.kt" beforeDir="false" afterPath="$PROJECT_DIR$/plugin/src/main/kotlin/com/lightningkite/khrysalis/gradle/KhrysalisPlugin.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/plugin/src/main/resources/compiler-plugins/typescript.jar" beforeDir="false" afterPath="$PROJECT_DIR$/plugin/src/main/resources/compiler-plugins/typescript.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/equivalents/primitives.ts.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/web/equivalents/primitives.ts.yaml" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -81,14 +83,92 @@
   <component name="ExternalProjectsManager">
     <system id="GRADLE">
       <state>
+        <task path="$PROJECT_DIR$">
+          <activation />
+        </task>
+        <task path="$PROJECT_DIR$/android">
+          <activation />
+        </task>
+        <task path="$PROJECT_DIR$/plugin">
+          <activation />
+        </task>
+        <task path="$PROJECT_DIR$/kotlin-compiler-plugin-typescript">
+          <activation />
+        </task>
         <projects_view>
           <tree_state>
-            <expand />
+            <expand>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="khrysalis" type="f1a62948:ProjectNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="khrysalis" type="f1a62948:ProjectNode" />
+                <item name="android" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="khrysalis" type="f1a62948:ProjectNode" />
+                <item name="android" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="khrysalis" type="f1a62948:ProjectNode" />
+                <item name="android" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="web" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="khrysalis" type="f1a62948:ProjectNode" />
+                <item name="kotlin-compiler-plugin-typescript" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="khrysalis" type="f1a62948:ProjectNode" />
+                <item name="kotlin-compiler-plugin-typescript" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="khrysalis" type="f1a62948:ProjectNode" />
+                <item name="kotlin-compiler-plugin-typescript" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="verification" type="c8890929:TasksNode$1" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="khrysalis" type="f1a62948:ProjectNode" />
+                <item name="plugin" type="2d1252cf:ModuleNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="khrysalis" type="f1a62948:ProjectNode" />
+                <item name="plugin" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+              </path>
+              <path>
+                <item name="" type="6a2764b6:ExternalProjectsStructure$RootNode" />
+                <item name="khrysalis" type="f1a62948:ProjectNode" />
+                <item name="plugin" type="2d1252cf:ModuleNode" />
+                <item name="Tasks" type="e4a08cd1:TasksNode" />
+                <item name="publishing" type="c8890929:TasksNode$1" />
+              </path>
+            </expand>
             <select />
           </tree_state>
         </projects_view>
       </state>
     </system>
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Kotlin File" />
+      </list>
+    </option>
   </component>
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
@@ -122,7 +202,7 @@
     <property name="RunOnceActivity.ShowReadmeOnStart" value="true" />
     <property name="WebServerToolWindowFactoryState" value="false" />
     <property name="aspect.path.notification.shown" value="true" />
-    <property name="last_opened_file_path" value="$PROJECT_DIR$/web/equivalents" />
+    <property name="last_opened_file_path" value="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testData" />
     <property name="node.js.detected.package.eslint" value="true" />
     <property name="node.js.detected.package.tslint" value="true" />
     <property name="node.js.path.for.package.eslint" value="project" />
@@ -131,14 +211,15 @@
     <property name="node.js.selected.package.tslint" value="(autodetect)" />
     <property name="nodejs_package_manager_path" value="npm" />
     <property name="settings.editor.selected.configurable" value="AndroidSdkUpdater" />
-    <property name="ts.external.directory.path" value="$APPLICATION_HOME_DIR$/plugins/JavaScriptLanguage/jsLanguageServicesImpl/external" />
+    <property name="ts.external.directory.path" value="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testDataOut/node_modules/typescript/lib" />
   </component>
   <component name="RecentsManager">
     <key name="CopyFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testData" />
       <recent name="$PROJECT_DIR$/web/equivalents" />
     </key>
   </component>
-  <component name="RunManager" selected="Gradle.KotlinTypescriptBasicTest.test">
+  <component name="RunManager" selected="Gradle.khrysalis:kotlin-compiler-plugin-typescript [test]">
     <configuration default="true" type="Applet" factoryName="Applet">
       <module name="" />
       <option name="MAIN_CLASS_NAME" />
@@ -185,6 +266,82 @@
       <GradleScriptDebugEnabled>false</GradleScriptDebugEnabled>
       <method v="2" />
     </configuration>
+    <configuration name="khrysalis:android [compileDebugKotlin]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/android" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="compileDebugKotlin" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="khrysalis:android [khrysalisConvertKotlinToTypescript]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/android" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="khrysalisConvertKotlinToTypescript" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="khrysalis:kotlin-compiler-plugin-typescript [test]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/kotlin-compiler-plugin-typescript" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="test" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
+    <configuration name="khrysalis:plugin [publishToMavenLocal]" type="GradleRunConfiguration" factoryName="Gradle" temporary="true">
+      <ExternalSystemSettings>
+        <option name="executionName" />
+        <option name="externalProjectPath" value="$PROJECT_DIR$/plugin" />
+        <option name="externalSystemIdString" value="GRADLE" />
+        <option name="scriptParameters" />
+        <option name="taskDescriptions">
+          <list />
+        </option>
+        <option name="taskNames">
+          <list>
+            <option value="publishToMavenLocal" />
+          </list>
+        </option>
+        <option name="vmOptions" />
+      </ExternalSystemSettings>
+      <GradleScriptDebugEnabled>true</GradleScriptDebugEnabled>
+      <method v="2" />
+    </configuration>
     <configuration default="true" type="JUnit" factoryName="JUnit">
       <option name="TEST_OBJECT" value="class" />
       <option name="VM_PARAMETERS" />
@@ -208,54 +365,13 @@
         <option name="BuildArtifacts" enabled="false" />
       </method>
     </configuration>
-    <configuration name="firstTime.sh" type="ShConfigurationType" temporary="true">
-      <option name="INDEPENDENT_SCRIPT_PATH" value="true" />
-      <option name="SCRIPT_PATH" value="$PROJECT_DIR$/firstTime.sh" />
-      <option name="SCRIPT_OPTIONS" value="" />
-      <option name="INDEPENDENT_SCRIPT_WORKING_DIRECTORY" value="true" />
-      <option name="SCRIPT_WORKING_DIRECTORY" value="$PROJECT_DIR$" />
-      <option name="INDEPENDENT_INTERPRETER_PATH" value="true" />
-      <option name="INTERPRETER_PATH" value="/bin/bash" />
-      <option name="INTERPRETER_OPTIONS" value="" />
-      <method v="2" />
-    </configuration>
-    <configuration name="build (1)" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testDataOut/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="build" />
-      </scripts>
-      <node-interpreter value="project" />
-      <envs />
-      <method v="2" />
-    </configuration>
-    <configuration name="build" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/web/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="build" />
-      </scripts>
-      <node-interpreter value="project" />
-      <envs />
-      <method v="2" />
-    </configuration>
-    <configuration name="execute" type="js.build_tools.npm" temporary="true" nameIsGenerated="true">
-      <package-json value="$PROJECT_DIR$/web/package.json" />
-      <command value="run" />
-      <scripts>
-        <script value="execute" />
-      </scripts>
-      <node-interpreter value="project" />
-      <envs />
-      <method v="2" />
-    </configuration>
     <recent_temporary>
       <list>
+        <item itemvalue="Gradle.khrysalis:kotlin-compiler-plugin-typescript [test]" />
+        <item itemvalue="Gradle.khrysalis:android [khrysalisConvertKotlinToTypescript]" />
+        <item itemvalue="Gradle.khrysalis:android [compileDebugKotlin]" />
+        <item itemvalue="Gradle.khrysalis:plugin [publishToMavenLocal]" />
         <item itemvalue="Gradle.KotlinTypescriptBasicTest.test" />
-        <item itemvalue="npm.build (1)" />
-        <item itemvalue="npm.execute" />
-        <item itemvalue="npm.build" />
-        <item itemvalue="Shell Script.firstTime.sh" />
       </list>
     </recent_temporary>
   </component>
@@ -272,7 +388,10 @@
       <workItem from="1589231068061" duration="1261000" />
       <workItem from="1589240160752" duration="217000" />
       <workItem from="1589240466773" duration="883000" />
-      <workItem from="1589302956726" duration="24542000" />
+      <workItem from="1589302956726" duration="25320000" />
+      <workItem from="1589389190497" duration="1884000" />
+      <workItem from="1589391205326" duration="2566000" />
+      <workItem from="1589398166314" duration="5040000" />
     </task>
     <task id="LOCAL-00001" summary="A lot of RX support">
       <created>1589310416385</created>
@@ -295,7 +414,14 @@
       <option name="project" value="LOCAL" />
       <updated>1589322353920</updated>
     </task>
-    <option name="localTasksCounter" value="4" />
+    <task id="LOCAL-00004" summary="More list support">
+      <created>1589329274330</created>
+      <option name="number" value="00004" />
+      <option name="presentableId" value="LOCAL-00004" />
+      <option name="project" value="LOCAL" />
+      <updated>1589329274330</updated>
+    </task>
+    <option name="localTasksCounter" value="5" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -308,7 +434,8 @@
     <MESSAGE value="A lot of RX support" />
     <MESSAGE value="Tons of list operations" />
     <MESSAGE value="Updated tasks file" />
-    <option name="LAST_COMMIT_MESSAGE" value="Updated tasks file" />
+    <MESSAGE value="More list support" />
+    <option name="LAST_COMMIT_MESSAGE" value="More list support" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="WindowStateProjectService">
@@ -320,62 +447,74 @@
       <screen x="1920" y="0" width="4096" height="2160" />
     </state>
     <state x="2194" y="782" width="374" height="569" key="#com.intellij.ide.util.MemberChooser/0.0.1920.1080/1920.0.4096.2160@1920.0.4096.2160" timestamp="1589315483941" />
-    <state x="1920" y="624" width="1037" height="886" key="CommitChangelistDialog2" timestamp="1589322353848">
-      <screen x="1920" y="0" width="4096" height="2160" />
+    <state x="1920" y="614" width="1037" height="886" key="CommitChangelistDialog2" timestamp="1589329274204">
+      <screen x="1920" y="0" width="3840" height="2127" />
     </state>
+    <state x="1920" y="614" key="CommitChangelistDialog2/0.0.1920.1080/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589329274204" />
     <state x="1920" y="624" width="1037" height="886" key="CommitChangelistDialog2/0.0.1920.1080/1920.0.4096.2160@1920.0.4096.2160" timestamp="1589322353848" />
     <state x="2278" y="765" width="424" height="604" key="FileChooserDialogImpl" timestamp="1589320310256">
       <screen x="1920" y="0" width="4096" height="2160" />
     </state>
     <state x="2278" y="765" width="424" height="604" key="FileChooserDialogImpl/0.0.1920.1080/1920.0.4096.2160@1920.0.4096.2160" timestamp="1589320310256" />
-    <state width="3798" height="391" key="GridCell.Tab.0.bottom" timestamp="1589329035104">
+    <state width="3798" height="367" key="GridCell.Tab.0.bottom" timestamp="1589403132987">
       <screen x="1920" y="0" width="3840" height="2127" />
     </state>
-    <state width="3798" height="391" key="GridCell.Tab.0.bottom/0.0.1920.1080/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589329035104" />
+    <state width="3798" height="367" key="GridCell.Tab.0.bottom/0.0.1920.1080/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589403132987" />
     <state width="2647" height="631" key="GridCell.Tab.0.bottom/0.0.1920.1080/1920.0.4096.2160@1920.0.4096.2160" timestamp="1589320221651" />
-    <state width="3798" height="391" key="GridCell.Tab.0.center" timestamp="1589329035104">
+    <state width="1878" height="367" key="GridCell.Tab.0.bottom/0.27.1920.1020@0.27.1920.1020" timestamp="1589391629097" />
+    <state width="3798" height="367" key="GridCell.Tab.0.bottom/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589398143088" />
+    <state width="3798" height="367" key="GridCell.Tab.0.center" timestamp="1589403132987">
       <screen x="1920" y="0" width="3840" height="2127" />
     </state>
-    <state width="3798" height="391" key="GridCell.Tab.0.center/0.0.1920.1080/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589329035104" />
+    <state width="3798" height="367" key="GridCell.Tab.0.center/0.0.1920.1080/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589403132987" />
     <state width="2647" height="631" key="GridCell.Tab.0.center/0.0.1920.1080/1920.0.4096.2160@1920.0.4096.2160" timestamp="1589320221651" />
-    <state width="3798" height="391" key="GridCell.Tab.0.left" timestamp="1589329035103">
+    <state width="1878" height="367" key="GridCell.Tab.0.center/0.27.1920.1020@0.27.1920.1020" timestamp="1589391629096" />
+    <state width="3798" height="367" key="GridCell.Tab.0.center/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589398143088" />
+    <state width="3798" height="367" key="GridCell.Tab.0.left" timestamp="1589403132986">
       <screen x="1920" y="0" width="3840" height="2127" />
     </state>
-    <state width="3798" height="391" key="GridCell.Tab.0.left/0.0.1920.1080/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589329035103" />
+    <state width="3798" height="367" key="GridCell.Tab.0.left/0.0.1920.1080/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589403132986" />
     <state width="2647" height="631" key="GridCell.Tab.0.left/0.0.1920.1080/1920.0.4096.2160@1920.0.4096.2160" timestamp="1589320221651" />
-    <state width="3798" height="391" key="GridCell.Tab.0.right" timestamp="1589329035104">
+    <state width="1878" height="367" key="GridCell.Tab.0.left/0.27.1920.1020@0.27.1920.1020" timestamp="1589391629096" />
+    <state width="3798" height="367" key="GridCell.Tab.0.left/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589398143087" />
+    <state width="3798" height="367" key="GridCell.Tab.0.right" timestamp="1589403132987">
       <screen x="1920" y="0" width="3840" height="2127" />
     </state>
-    <state width="3798" height="391" key="GridCell.Tab.0.right/0.0.1920.1080/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589329035104" />
+    <state width="3798" height="367" key="GridCell.Tab.0.right/0.0.1920.1080/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589403132987" />
     <state width="2647" height="631" key="GridCell.Tab.0.right/0.0.1920.1080/1920.0.4096.2160@1920.0.4096.2160" timestamp="1589320221651" />
+    <state width="1878" height="367" key="GridCell.Tab.0.right/0.27.1920.1020@0.27.1920.1020" timestamp="1589391629097" />
+    <state width="3798" height="367" key="GridCell.Tab.0.right/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589398143088" />
     <state x="396" y="202" width="902" height="735" key="SettingsEditor" timestamp="1589240569426">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
     <state x="396" y="202" width="902" height="735" key="SettingsEditor/0.0.1920.1080/1920.0.4096.2160@0.0.1920.1080" timestamp="1589240569426" />
     <state x="792" y="398" width="992" height="737" key="SettingsEditor/4096.1080.1920.1080/0.0.3840.2127@0.0.3840.2127" timestamp="1589240343610" />
-    <state x="1981" y="799" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1589322356264">
-      <screen x="1920" y="0" width="4096" height="2160" />
+    <state x="1977" y="787" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1589329275723">
+      <screen x="1920" y="0" width="3840" height="2127" />
     </state>
+    <state x="1977" y="787" key="Vcs.Push.Dialog.v2/0.0.1920.1080/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589329275723" />
     <state x="1981" y="799" width="800" height="535" key="Vcs.Push.Dialog.v2/0.0.1920.1080/1920.0.4096.2160@1920.0.4096.2160" timestamp="1589322356264" />
     <state x="2099" y="794" width="669" height="552" key="com.intellij.openapi.vcs.changes.SpecificFilesViewDialog" timestamp="1589322350910">
       <screen x="1920" y="0" width="4096" height="2160" />
     </state>
     <state x="2099" y="794" width="669" height="552" key="com.intellij.openapi.vcs.changes.SpecificFilesViewDialog/0.0.1920.1080/1920.0.4096.2160@1920.0.4096.2160" timestamp="1589322350910" />
-    <state x="2187" y="669" width="800" height="757" key="find.popup" timestamp="1589328767962">
+    <state x="2187" y="669" width="869" height="768" key="find.popup" timestamp="1589400487831">
       <screen x="1920" y="0" width="3840" height="2127" />
     </state>
-    <state x="2187" y="669" width="800" height="757" key="find.popup/0.0.1920.1080/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589328767962" />
+    <state x="2187" y="669" width="869" height="768" key="find.popup/0.0.1920.1080/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589400487831" />
     <state x="2205" y="679" width="581" height="768" key="find.popup/0.0.1920.1080/1920.0.4096.2160@1920.0.4096.2160" timestamp="1589316226507" />
+    <state x="2187" y="669" width="800" height="768" key="find.popup/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589397615705" />
     <state x="2050" y="507" width="672" height="677" key="run.anything.popup" timestamp="1589312635611">
       <screen x="1920" y="0" width="4096" height="2160" />
     </state>
     <state x="2050" y="507" width="672" height="677" key="run.anything.popup/0.0.1920.1080/1920.0.4096.2160@1920.0.4096.2160" timestamp="1589312635611" />
-    <state x="2872" y="483" width="1345" height="680" key="search.everywhere.popup" timestamp="1589328375486">
+    <state x="2872" y="483" width="1345" height="680" key="search.everywhere.popup" timestamp="1589401859496">
       <screen x="1920" y="0" width="3840" height="2127" />
     </state>
-    <state x="2872" y="483" width="1345" height="680" key="search.everywhere.popup/0.0.1920.1080/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589328375486" />
+    <state x="2872" y="483" width="1345" height="680" key="search.everywhere.popup/0.0.1920.1080/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589401859496" />
     <state x="476" y="245" width="672" height="345" key="search.everywhere.popup/0.0.1920.1080/1920.0.4096.2160@0.0.1920.1080" timestamp="1589240555152" />
     <state x="2935" y="490" width="1434" height="690" key="search.everywhere.popup/0.0.1920.1080/1920.0.4096.2160@1920.0.4096.2160" timestamp="1589317386328" />
+    <state x="476" y="259" width="673" height="327" key="search.everywhere.popup/0.27.1920.1020@0.27.1920.1020" timestamp="1589391333475" />
     <state x="951" y="482" width="672" height="678" key="search.everywhere.popup/4096.1080.1920.1080/0.0.3840.2127@0.0.3840.2127" timestamp="1589240295824" />
   </component>
 </project>

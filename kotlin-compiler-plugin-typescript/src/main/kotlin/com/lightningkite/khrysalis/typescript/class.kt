@@ -360,19 +360,11 @@ fun TypescriptTranslator.registerClass() {
                         ?: throw IllegalArgumentException("No type reference available to generate hashCode() function")
                     replacements.functions[type + ".hashCode"]?.firstOrNull()?.let {
                         -"hash = 31 * hash + "
-                        for (part in it.template.parts) {
-                            when (part) {
-                                is TemplatePart.Import -> out.addImport(part)
-                                is TemplatePart.Text -> -part.string
-                                TemplatePart.Receiver,
-                                TemplatePart.DispatchReceiver,
-                                TemplatePart.ExtensionReceiver -> {
-                                    -"this."; -param.nameIdentifier
-                                }
-                                else -> {
-                                }
-                            }
-                        }
+                        emitTemplate(
+                            requiresWrapping = true,
+                            template = it.template,
+                            receiver = listOf("this.", param.nameIdentifier)
+                        )
                     } ?: run {
                         -"hash = 31 * hash + this."
                         -param.nameIdentifier
@@ -393,26 +385,14 @@ fun TypescriptTranslator.registerClass() {
                     val type = param.typeReference?.resolvedType?.getJetTypeFqName(false)
                         ?: throw IllegalArgumentException("No type reference available to generate hashCode() function")
                     replacements.functions[type + ".equals"]?.firstOrNull()?.let {
-                        for (part in it.template.parts) {
-                            when (part) {
-                                is TemplatePart.Import -> out.addImport(part)
-                                is TemplatePart.Text -> -part.string
-                                TemplatePart.Receiver,
-                                TemplatePart.DispatchReceiver,
-                                TemplatePart.ExtensionReceiver -> {
-                                    -"this."
-                                    -param.nameIdentifier
-                                }
-                                TemplatePart.AllParameters,
-                                is TemplatePart.Parameter,
-                                is TemplatePart.ParameterByIndex -> {
-                                    -"other."
-                                    -param.nameIdentifier
-                                }
-                                else -> {
-                                }
-                            }
-                        }
+                        emitTemplate(
+                            requiresWrapping = true,
+                            template = it.template,
+                            receiver = listOf("this.", param.nameIdentifier),
+                            allParameters = listOf("other.", param.nameIdentifier),
+                            parameter = { listOf("other.", param.nameIdentifier) },
+                            parameterByIndex = { listOf("other.", param.nameIdentifier) }
+                        )
                     } ?: run {
                         -"this."
                         -param.nameIdentifier

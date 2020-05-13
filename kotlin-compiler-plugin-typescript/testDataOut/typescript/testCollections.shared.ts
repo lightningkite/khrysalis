@@ -31,8 +31,8 @@ export function test(){
     mutableList.splice(0, 0, 2);
     const x = 0;
     
-    const index0 = x + 1;
-    mutableList[index0] = mutableList[index0] + 4;
+    const index20 = x + 1;
+    mutableList[index20] = mutableList[index20] + 4;
     mutableList[0] = mutableList[0] + 4;
     console.log(mutableList[0]);
 }

@@ -241,31 +241,18 @@ fun TypescriptTranslator.registerControl() {
             -") "
             -"{\n"
             destructuringDeclaration.entries.forEachIndexed { index, it ->
-                -"const "
-                -it.name
-                -" = "
                 val rule = it.resolvedComponentResolvedCall?.resultingDescriptor?.let { replacements.getCall(it) }
                 if(rule != null) {
-                    rule.template.forEach { part ->
-                        when (part) {
-                            is TemplatePart.Import -> out.addImport(part)
-                            is TemplatePart.Text -> -part.string
-                            TemplatePart.Receiver -> -"toDestructure"
-                            TemplatePart.DispatchReceiver -> -"toDestructure"
-                            TemplatePart.ExtensionReceiver -> -"toDestructure"
-                            TemplatePart.Value -> {
-                            }
-                            is TemplatePart.Parameter -> {
-                            }
-                            is TemplatePart.ParameterByIndex -> {
-                            }
-                            is TemplatePart.TypeParameter -> {
-                            }
-                            is TemplatePart.TypeParameterByIndex -> {
-                            }
-                        }
-                    }
+                    emitTemplate(
+                        requiresWrapping = false,
+                        prefix = listOf("const ", it.name, " = "),
+                        template = rule.template,
+                        receiver = "toDestructure"
+                    )
                 } else {
+                    -"const "
+                    -it.name
+                    -" = "
                     -"toDestructure["
                     -index.toString()
                     -']'

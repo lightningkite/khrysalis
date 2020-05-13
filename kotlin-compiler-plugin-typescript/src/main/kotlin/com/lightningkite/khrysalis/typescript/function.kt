@@ -22,7 +22,7 @@ import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 //TODO: Local function edgecase - the meaning of 'this' changes
 
 val FunctionDescriptor.tsName: String?
-    get() = if(this is ConstructorDescriptor && this.isPrimary == false) {
+    get() = if (this is ConstructorDescriptor && this.isPrimary == false) {
         this.constructedClass.tsTopLevelName + "." + this.tsName
     } else this.annotations
         .find { it.fqName?.asString()?.substringAfterLast('.') == "JsName" }
@@ -137,7 +137,7 @@ fun TypescriptTranslator.registerFunction() {
             }
             -" "
         } else {
-            if(typedRule.isTopLevel() && !typedRule.isPrivate()) -"export "
+            if (typedRule.isTopLevel() && !typedRule.isPrivate()) -"export "
             -"function "
         }
         -(typedRule.resolvedFunction?.tsName ?: typedRule.nameIdentifier)
@@ -197,7 +197,7 @@ fun TypescriptTranslator.registerFunction() {
     handle<KtCallExpression>(
         condition = {
             (typedRule.calleeExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget.let { it is ConstructorDescriptor && it.isPrimary }
-                && (typedRule.parent as? KtDotQualifiedExpression)?.selectorExpression != typedRule
+                    && (typedRule.parent as? KtDotQualifiedExpression)?.selectorExpression != typedRule
         },
         priority = 2000,
         action = {
@@ -256,8 +256,8 @@ fun TypescriptTranslator.registerFunction() {
         val withComments = typedRule.valueArgumentList?.withComments() ?: listOf()
         val nre = typedRule.calleeExpression as KtNameReferenceExpression
         val f = nre.resolvedReferenceTarget as FunctionDescriptor
-        if(f is ConstructorDescriptor){
-            if(f.constructedClass.let { it.tsTopLevelMessedUp || it.containingDeclaration !is ClassDescriptor }) {
+        if (f is ConstructorDescriptor) {
+            if (f.constructedClass.let { it.tsTopLevelMessedUp || it.containingDeclaration !is ClassDescriptor }) {
                 out.addImport(f.constructedClass, f.constructedClass.tsTopLevelName)
             }
         } else {
@@ -303,7 +303,7 @@ fun TypescriptTranslator.registerFunction() {
     )
     handle<KtBinaryExpression>(
         condition = {
-            if(typedRule.operationReference.getIdentifier() == null) return@handle false
+            if (typedRule.operationReference.getIdentifier() == null) return@handle false
             val f = typedRule.operationReference.resolvedReferenceTarget as? FunctionDescriptor ?: return@handle false
             replacements.getCall(f) != null
         },
@@ -314,18 +314,16 @@ fun TypescriptTranslator.registerFunction() {
 
             val allParametersByIndex = mapOf<Int, Any>(0 to typedRule.right!!)
             val allParametersByName = mapOf<String, Any>(f.valueParameters.first().name.asString() to typedRule.right!!)
-            rule.template.forEach { part ->
-                when (part) {
-                    is TemplatePart.Import -> out.addImport(part)
-                    is TemplatePart.Text -> -part.string
-                    TemplatePart.Receiver -> -(typedRule.left!!)
-                    TemplatePart.DispatchReceiver -> -(typedRule.operationReference.getTsReceiver() ?: typedRule.left!!)
-                    TemplatePart.ExtensionReceiver -> -(typedRule.left!!)
-                    TemplatePart.AllParameters -> -allParametersByIndex[0]
-                    is TemplatePart.Parameter -> -(allParametersByName[part.name] ?: "undefined")
-                    is TemplatePart.ParameterByIndex -> -(allParametersByIndex[part.index] ?: "undefined")
-                }
-            }
+
+            emitTemplate(
+                requiresWrapping = typedRule.parent is KtBlockExpression,
+                template = rule.template,
+                receiver = typedRule.left,
+                dispatchReceiver = typedRule.operationReference.getTsReceiver() ?: typedRule.left,
+                allParameters = typedRule.right,
+                parameter = { typedRule.right },
+                parameterByIndex = { typedRule.right }
+            )
         }
     )
 
@@ -362,23 +360,23 @@ fun TypescriptTranslator.registerFunction() {
                 callExp.resolvedCall?.typeArguments?.mapKeys { it.key.name.asString() } ?: mapOf()
             val typeParametersByIndex = callExp.resolvedCall?.typeArguments?.mapKeys { it.key.index } ?: mapOf()
 
-            rule.template.forEach { part ->
-                when (part) {
-                    is TemplatePart.Import -> out.addImport(part)
-                    is TemplatePart.Text -> -part.string
-                    TemplatePart.Receiver -> -typedRule.receiverExpression
-                    TemplatePart.DispatchReceiver -> -nre.getTsReceiver()
-                    TemplatePart.ExtensionReceiver -> -typedRule.receiverExpression
-                    TemplatePart.AllParameters -> callExp.valueArguments.forEachBetween(
-                        forItem = { -it },
-                        between = { -", " }
+            emitTemplate(
+                requiresWrapping = typedRule.parent is KtBlockExpression,
+                template = rule.template,
+                receiver = typedRule.receiverExpression,
+                dispatchReceiver = nre.getTsReceiver(),
+                extensionReceiver = typedRule.receiverExpression,
+                allParameters = ArrayList<Any?>().apply {
+                    callExp.valueArguments.forEachBetween(
+                        forItem = { add(it) },
+                        between = { add(", ") }
                     )
-                    is TemplatePart.Parameter -> -(allParametersByName[part.name]?.getArgumentExpression() ?: "undefined")
-                    is TemplatePart.ParameterByIndex -> -(allParametersByIndex[part.index]?.getArgumentExpression() ?: "undefined")
-                    is TemplatePart.TypeParameter -> -(typeParametersByName[part.name] ?: "undefined")
-                    is TemplatePart.TypeParameterByIndex -> -(typeParametersByIndex[part.index] ?: "undefined")
-                }
-            }
+                },
+                parameter = { allParametersByName[it.name]?.getArgumentExpression() ?: "undefined" },
+                typeParameter = { typeParametersByName[it.name] ?: "undefined" },
+                parameterByIndex = { allParametersByIndex[it.index]?.getArgumentExpression() ?: "undefined" },
+                typeParameterByIndex = { typeParametersByIndex[it.index] ?: "undefined" }
+            )
         }
     )
 
@@ -415,22 +413,22 @@ fun TypescriptTranslator.registerFunction() {
                 typedRule.resolvedCall?.typeArguments?.mapKeys { it.key.name.asString() } ?: mapOf()
             val typeParametersByIndex = typedRule.resolvedCall?.typeArguments?.mapKeys { it.key.index } ?: mapOf()
 
-            rule.template.forEach { part ->
-                when (part) {
-                    is TemplatePart.Import -> out.addImport(part)
-                    is TemplatePart.Text -> -part.string
-                    TemplatePart.Receiver -> -nre.getTsReceiver()
-                    TemplatePart.DispatchReceiver -> -nre.getTsReceiver()
-                    TemplatePart.AllParameters -> typedRule.valueArguments.forEachBetween(
-                        forItem = { -it },
-                        between = { -", " }
+            emitTemplate(
+                requiresWrapping = typedRule.parent is KtBlockExpression,
+                template = rule.template,
+                receiver = nre.getTsReceiver(),
+                dispatchReceiver = nre.getTsReceiver(),
+                allParameters = ArrayList<Any?>().apply {
+                    typedRule.valueArguments.forEachBetween(
+                        forItem = { add(it) },
+                        between = { add(", ") }
                     )
-                    is TemplatePart.Parameter -> -(allParametersByName[part.name]?.getArgumentExpression() ?: "undefined")
-                    is TemplatePart.ParameterByIndex -> -(allParametersByIndex[part.index]?.getArgumentExpression() ?: "undefined")
-                    is TemplatePart.TypeParameter -> -(typeParametersByName[part.name] ?: "undefined")
-                    is TemplatePart.TypeParameterByIndex -> -(typeParametersByIndex[part.index] ?: "undefined")
-                }
-            }
+                },
+                parameter = { allParametersByName[it.name]?.getArgumentExpression() ?: "undefined" },
+                typeParameter = { typeParametersByName[it.name] ?: "undefined" },
+                parameterByIndex = { allParametersByIndex[it.index]?.getArgumentExpression() ?: "undefined" },
+                typeParameterByIndex = { typeParametersByIndex[it.index] ?: "undefined" }
+            )
         }
     )
 

@@ -25,5 +25,12 @@ export function main(){
     ((it) => {
             console.log(it);
             console.log(it);
+            return;
     })(32);
+    
+    const lambda: () => void = () => {
+        console.log("Hi");
+        return;
+    };
+    
 }

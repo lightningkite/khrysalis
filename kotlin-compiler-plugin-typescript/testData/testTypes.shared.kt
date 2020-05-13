@@ -2,6 +2,7 @@ package com.test.types
 
 import com.test.classes.TestInterface
 import com.test.classes.Weird
+import com.lightningkite.khrysalis.*
 
 typealias MyInteger = Int
 
@@ -37,4 +38,6 @@ fun main(){
         println("Hello!")
     }
     println(unknownThing as? Int)
+
+    val thingA: AnyObject = unknownThing
 }

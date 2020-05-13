@@ -71,5 +71,8 @@ export function main(){
         console.log("Hello!");
     }
     console.log(tryCastPrimitive(unknownThing, "number"));
+    
+    const thingA: object = unknownThing;
+    
 }
 

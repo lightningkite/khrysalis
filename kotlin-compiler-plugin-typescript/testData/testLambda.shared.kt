@@ -17,8 +17,14 @@ fun main(){
     32.let {
         println(it)
     }
-    32.let {
+    32.let label@{
         println(it)
         println(it)
+        return@label
+    }
+
+    val lambda: ()->Unit = label@{ ->
+        println("Hi")
+        return@label
     }
 }

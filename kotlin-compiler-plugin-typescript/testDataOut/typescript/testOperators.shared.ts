@@ -143,12 +143,12 @@ export function main(){
     mthing1.plusAssign(mthing2);
     console.log(mthing1.containedNumber);
     console.log(mthing1.get(2));
-    const array1 = mthing1;
-    const index2 = 2;
-    array1.set(index2, 8);
-    const array3 = mthing1;
-    const index4 = 2;
-    array3.set(index4, array3.get(index4) + 8);
+    const array111 = mthing1;
+    const index112 = 2;
+    array111.set(index112, 8);
+    const array113 = mthing1;
+    const index114 = 2;
+    array113.set(index114, array113.get(index114) + 8);
     console.log(mthing1.get(1));
     
     //Binary
