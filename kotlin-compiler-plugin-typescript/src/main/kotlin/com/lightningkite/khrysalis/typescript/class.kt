@@ -1,6 +1,7 @@
 package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.generic.PartialTranslatorByType
+import com.lightningkite.khrysalis.typescript.manifest.declaresPrefix
 import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.allOverridden
 import com.lightningkite.khrysalis.util.forEachBetween
@@ -175,6 +176,7 @@ fun TypescriptTranslator.registerClass() {
         condition = { typedRule.isInterface() },
         priority = 100
     ) {
+        -"$declaresPrefix${typedRule.fqName?.asString()}\n"
         if (!typedRule.isPrivate()) -"export "
         -"interface "
         -tsTopLevelNameElement(typedRule)
@@ -240,6 +242,7 @@ fun TypescriptTranslator.registerClass() {
             -tsTopLevelNameElement(typedRule)
             -" = "
         } else {
+            -"$declaresPrefix${typedRule.fqName?.asString()}\n"
             if (!typedRule.isPrivate()) -"export "
         }
 
@@ -492,7 +495,10 @@ fun TypescriptTranslator.registerClass() {
             -(tsTopLevelNameElement(typedRule) ?: "Companion")
             -" = "
         } else {
-            if (!typedRule.isPrivate()) -"export "
+            if (!typedRule.isPrivate()) {
+                -"$declaresPrefix${typedRule.fqName?.asString()}\n"
+                -"export "
+            }
         }
         writeClassHeader(typedRule)
         -" {\n"

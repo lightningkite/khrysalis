@@ -27,4 +27,8 @@ fun main(){
         println("Hi")
         return@label
     }
+    val lambda2: (Int, String)->Unit = label@{ i, s ->
+        println(s + i.toString())
+        return@label
+    }
 }

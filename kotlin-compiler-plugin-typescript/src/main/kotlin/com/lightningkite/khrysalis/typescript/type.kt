@@ -3,7 +3,9 @@ package com.lightningkite.khrysalis.typescript
 import com.lightningkite.khrysalis.generic.PartialTranslator
 import com.lightningkite.khrysalis.generic.PartialTranslatorByType
 import com.lightningkite.khrysalis.generic.line
+import com.lightningkite.khrysalis.typescript.manifest.declaresPrefix
 import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
+import com.lightningkite.khrysalis.util.forEachBetween
 import org.jetbrains.kotlin.builtins.functions.FunctionClassDescriptor
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
@@ -46,7 +48,10 @@ data class KtUserTypeBasic(val type: KtUserType)
 fun TypescriptTranslator.registerType() {
 
     handle<KtTypeAlias> {
-        if (typedRule.isTopLevel() && !typedRule.isPrivate()) -"export "
+        if (typedRule.isTopLevel() && !typedRule.isPrivate()) {
+            -"$declaresPrefix${typedRule.fqName?.asString()}\n"
+            -"export "
+        }
         -"type "
         -typedRule.nameIdentifier
         -typedRule.typeParameterList
@@ -56,6 +61,7 @@ fun TypescriptTranslator.registerType() {
 
         (typedRule.getTypeReference()?.typeElement as? KtUserType)?.let { ut ->
             if (typedRule.visibilityModifierTypeOrDefault().value == "public") {
+                -"$declaresPrefix${typedRule.fqName?.asString()}\n"
                 -"export "
             }
             -"let "
@@ -67,7 +73,7 @@ fun TypescriptTranslator.registerType() {
     }
 
     handle<KotlinType> {
-        when(val desc = typedRule.constructor.declarationDescriptor) {
+        when (val desc = typedRule.constructor.declarationDescriptor) {
             is FunctionClassDescriptor -> {
                 -'('
                 typedRule.arguments.dropLast(1).forEachIndexed { index, typeProjection ->
@@ -81,13 +87,13 @@ fun TypescriptTranslator.registerType() {
             is ClassDescriptor -> {
                 var current: ClassDescriptor = desc
                 val items = ArrayList<ClassDescriptor>()
-                while(!current.tsTopLevelMessedUp){
+                while (!current.tsTopLevelMessedUp) {
                     current = current.containingDeclaration as? ClassDescriptor ?: break
                     items += current
                 }
                 out.addImport(current, current.tsTopLevelName)
                 -current.tsTopLevelName
-                for(item in items.asReversed()){
+                for (item in items.asReversed()) {
                     -'.'
                     -item.name.asString()
                 }
@@ -101,7 +107,7 @@ fun TypescriptTranslator.registerType() {
     }
 
     handle<BasicType> {
-        when(val desc = typedRule.type.constructor.declarationDescriptor) {
+        when (val desc = typedRule.type.constructor.declarationDescriptor) {
             is ClassDescriptor -> {
                 var current: ClassDescriptor = desc
                 val items = ArrayList<ClassDescriptor>()
@@ -136,7 +142,7 @@ fun TypescriptTranslator.registerType() {
             val reference = typedRule.referenceExpression!!
             val type = reference.resolvedReferenceTarget!!
             val rule = replacements.getType(type)!!
-            val declaredParams = when(type){
+            val declaredParams = when (type) {
                 is ClassDescriptor -> type.declaredTypeParameters
                 is TypeAliasDescriptor -> type.declaredTypeParameters
                 else -> listOf()
@@ -154,7 +160,7 @@ fun TypescriptTranslator.registerType() {
     handle<KtUserType>(
         condition = {
             val reference = typedRule.referenceExpression ?: return@handle false
-            val type = reference.resolvedReferenceTarget  ?: return@handle false
+            val type = reference.resolvedReferenceTarget ?: return@handle false
             type.tsTopLevelMessedUp
         },
         priority = 100,
@@ -171,7 +177,7 @@ fun TypescriptTranslator.registerType() {
     handle<KtUserTypeBasic>(
         condition = {
             val reference = typedRule.type.referenceExpression ?: return@handle false
-            val type = reference.resolvedReferenceTarget  ?: return@handle false
+            val type = reference.resolvedReferenceTarget ?: return@handle false
             replacements.getTypeRef(type) != null
         },
         priority = 11_000,
@@ -187,7 +193,7 @@ fun TypescriptTranslator.registerType() {
     handle<KtUserTypeBasic>(
         condition = {
             val reference = typedRule.type.referenceExpression ?: return@handle false
-            val type = reference.resolvedReferenceTarget  ?: return@handle false
+            val type = reference.resolvedReferenceTarget ?: return@handle false
             replacements.getType(type) != null
         },
         priority = 10_000,
@@ -203,7 +209,7 @@ fun TypescriptTranslator.registerType() {
     handle<KtUserTypeBasic>(
         condition = {
             val reference = typedRule.type.referenceExpression ?: return@handle false
-            val type = reference.resolvedReferenceTarget  ?: return@handle false
+            val type = reference.resolvedReferenceTarget ?: return@handle false
             type.tsTopLevelMessedUp
         },
         priority = 100,
@@ -215,25 +221,28 @@ fun TypescriptTranslator.registerType() {
             out.addImport(type, n)
         }
     )
-    handle<KtUserTypeBasic>{
+    handle<KtUserTypeBasic> {
         -typedRule.type.referenceExpression
     }
 
     handle<KtFunctionType> {
         -"("
         var currentNameChar = 'a'
-        typedRule.parameters.forEach {
-            var nextChar = currentNameChar++
-            while (typedRule.parameters.any {
-                    val n = it.name ?: return@any false
-                    n.length == 1 && n.first() == nextChar
-                }) {
-                nextChar = currentNameChar++
-            }
-            -(it.nameIdentifier ?: nextChar.toString())
-            -": "
-            -it.typeReference
-        }
+        typedRule.parameters.forEachBetween(
+            forItem = {
+                var nextChar = currentNameChar++
+                while (typedRule.parameters.any {
+                        val n = it.name ?: return@any false
+                        n.length == 1 && n.first() == nextChar
+                    }) {
+                    nextChar = currentNameChar++
+                }
+                -(it.nameIdentifier ?: nextChar.toString())
+                -": "
+                -it.typeReference
+            },
+            between = { -", " }
+        )
         -") => "
         -typedRule.returnTypeReference
     }

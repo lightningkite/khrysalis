@@ -2,6 +2,7 @@ package com.test.imports
 
 import com.test.cursedclasses.*
 import com.test.variables.*
+import com.test.*
 
 fun main(){
     A()
@@ -19,4 +20,7 @@ fun main(){
 
     val thing = TestClass()
     thing.extensionProperty += 1
+
+    sayDelicious()
+    sayDeliciousFromOtherLib()
 }

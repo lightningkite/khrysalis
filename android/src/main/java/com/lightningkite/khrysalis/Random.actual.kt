@@ -3,11 +3,13 @@ package com.lightningkite.khrysalis
 import kotlin.random.Random
 
 
+
+fun Random.nextFloat(until: Float): Float = this.nextDouble(until.toDouble()).toFloat()
+fun Random.nextFloat(from: Float, until: Float): Float = this.nextDouble(from.toDouble(), until.toDouble()).toFloat()
+
 /* SHARED DECLARATIONS
 class Random(seed: Long) {
-    companion object {
-        val Default: Random
-    }
+    companion object : Random { }
     fun nextInt(): Int
     fun nextInt(until: Int): Int
     fun nextInt(from: Int, until: Int): Int
@@ -24,6 +26,3 @@ class Random(seed: Long) {
 }
 
  */
-
-fun Random.nextFloat(until: Float): Float = this.nextDouble(until.toDouble()).toFloat()
-fun Random.nextFloat(from: Float, until: Float): Float = this.nextDouble(from.toDouble(), until.toDouble()).toFloat()

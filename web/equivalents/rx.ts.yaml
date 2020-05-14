@@ -224,15 +224,18 @@
 
 
 # Disposable
-- id: io.reactivex.Disposable
+- id: io.reactivex.disposables.Disposable
   type: type
-  template: SubscriptionLike
-- id: io.reactivex.Disposable.dispose
+  template:
+    pattern: SubscriptionLike
+    imports:
+      SubscriptionLike: rxjs
+- id: io.reactivex.disposables.Disposable.dispose
   type: call
   template: ~this~.unsubscribe()
-- id: io.reactivex.Disposable.isDisposed
+- id: io.reactivex.disposables.Disposable.isDisposed
   type: call
   template: ~this~.closed
-- id: io.reactivex.Disposable.disposed
+- id: io.reactivex.disposables.Disposable.disposed
   type: get
   template: ~this~.closed

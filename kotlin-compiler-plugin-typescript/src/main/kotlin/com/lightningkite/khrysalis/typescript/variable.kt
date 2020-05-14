@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.typescript
 
+import com.lightningkite.khrysalis.typescript.manifest.declaresPrefix
 import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.forEachBetween
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
@@ -106,6 +107,7 @@ fun TypescriptTranslator.registerVariable() {
         condition = { typedRule.getter != null && (!typedRule.isVar || typedRule.setter != null) && typedRule.initializer == null },
         priority = 100,
         action = {
+            -"$declaresPrefix${typedRule.fqName?.asString()}\n"
             -typedRule.getter!!
             -typedRule.setter
         }
@@ -119,7 +121,10 @@ fun TypescriptTranslator.registerVariable() {
                 -"readonly "
             }
         } else {
-            if (typedRule.isTopLevel && !typedRule.isPrivate()) -"export "
+            if (typedRule.isTopLevel && !typedRule.isPrivate()) {
+                -"$declaresPrefix${typedRule.fqName?.asString()}\n"
+                -"export "
+            }
             if (typedRule.isVar) {
                 -"let "
             } else {
@@ -143,6 +148,7 @@ fun TypescriptTranslator.registerVariable() {
             typedRule.getter?.let {
                 -it
             } ?: run {
+                if(stubMode) return@run
                 if (typedRule.isMember) {
                     -(typedRule.visibilityModifier() ?: "public")
                     -" get "
@@ -169,6 +175,7 @@ fun TypescriptTranslator.registerVariable() {
                 typedRule.setter?.let {
                     -it
                 } ?: run {
+                    if(stubMode) return@run
                     if (typedRule.isMember) {
                         -(typedRule.visibilityModifier() ?: "public")
                         -" set "
@@ -216,6 +223,10 @@ fun TypescriptTranslator.registerVariable() {
                 -(typedRule.property.typeReference
                     ?: typedRule.property.resolvedProperty!!.type)
                 -" "
+                if(stubMode) {
+                    -"{}\n"
+                    return@handle
+                }
                 typedRule.bodyExpression?.let {
                     -"{ return "
                     -it
@@ -233,7 +244,9 @@ fun TypescriptTranslator.registerVariable() {
             withReceiverScope(typedRule.property.fqName!!.asString()) { receiverName ->
                 val resolved = typedRule.property.resolvedProperty!!
                 if (!typedRule.property.isMember) {
-                    if (!typedRule.isPrivate()) -"export "
+                    if (!typedRule.isPrivate()) {
+                        -"export "
+                    }
                     -"function "
                 }
                 -resolved.tsFunctionSetName
@@ -247,6 +260,10 @@ fun TypescriptTranslator.registerVariable() {
                 -": "
                 -(typedRule.property.typeReference ?: typedRule.property.resolvedProperty!!.type)
                 -") "
+                if(stubMode) {
+                    -"{}\n"
+                    return@handle
+                }
                 -typedRule.bodyBlockExpression
                 -"\n"
             }
@@ -270,6 +287,10 @@ fun TypescriptTranslator.registerVariable() {
                 -it
                 -"; }"
             }
+            if(stubMode) {
+                -"{}\n"
+                return@handle
+            }
             -typedRule.bodyBlockExpression
             -"\n"
         }
@@ -287,6 +308,10 @@ fun TypescriptTranslator.registerVariable() {
             -(typedRule.property.typeReference
                 ?: typedRule.property.resolvedProperty!!.type)
             -") "
+            if(stubMode) {
+                -"{}\n"
+                return@handle
+            }
             -typedRule.bodyBlockExpression
             -"\n"
         }
@@ -304,6 +329,10 @@ fun TypescriptTranslator.registerVariable() {
             -(typedRule.property.typeReference
                 ?: typedRule.property.resolvedProperty!!.type)
             -" "
+            if(stubMode) {
+                -"{}\n"
+                return@handle
+            }
             typedRule.bodyExpression?.let {
                 -"{ return "
                 -it
@@ -326,6 +355,10 @@ fun TypescriptTranslator.registerVariable() {
             -(typedRule.property.typeReference
                 ?: typedRule.property.resolvedProperty!!.type)
             -") "
+            if(stubMode) {
+                -"{}\n"
+                return@handle
+            }
             -typedRule.bodyBlockExpression
             -"\n"
         }

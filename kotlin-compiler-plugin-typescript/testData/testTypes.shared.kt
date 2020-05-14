@@ -39,5 +39,5 @@ fun main(){
     }
     println(unknownThing as? Int)
 
-    val thingA: AnyObject = unknownThing
+    val thingA: AnyObject = unknownThing!!
 }

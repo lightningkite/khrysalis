@@ -1,6 +1,7 @@
 package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.generic.line
+import com.lightningkite.khrysalis.typescript.manifest.declaresPrefix
 import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.forEachBetween
 import org.jetbrains.kotlin.backend.common.serialization.findSourceFile
@@ -61,6 +62,9 @@ fun TypescriptTranslator.registerFunction() {
                     -it
                 } ?: run {
                     -": void"
+                }
+                if(stubMode) {
+                    return
                 }
                 val tr = typedRule
                 val ktClass = typedRule.parentOfType<KtClassBody>()!!.parentOfType<KtClass>()!!
@@ -137,7 +141,10 @@ fun TypescriptTranslator.registerFunction() {
             }
             -" "
         } else {
-            if (typedRule.isTopLevel() && !typedRule.isPrivate()) -"export "
+            if (typedRule.isTopLevel() && !typedRule.isPrivate()) {
+                -"$declaresPrefix${typedRule.fqName?.asString()}\n"
+                -"export "
+            }
             -"function "
         }
         -(typedRule.resolvedFunction?.tsName ?: typedRule.nameIdentifier)
@@ -146,6 +153,10 @@ fun TypescriptTranslator.registerFunction() {
             typedRule.typeReference?.let {
                 -": "
                 -it
+            }
+            if(stubMode) {
+                -"{}"
+                return
             }
             val body = typedRule.bodyExpression
             if (body is KtBlockExpression) {
