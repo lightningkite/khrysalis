@@ -4,10 +4,7 @@ import com.lightningkite.khrysalis.generic.line
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
-import org.jetbrains.kotlin.psi.KtCallExpression
-import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
-import org.jetbrains.kotlin.psi.KtNameReferenceExpression
-import org.jetbrains.kotlin.psi.KtThisExpression
+import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.containingClass
 import org.jetbrains.kotlin.psi.synthetics.SyntheticClassOrObjectDescriptor
 import org.jetbrains.kotlin.resolve.calls.callUtil.getResolvedCall
@@ -21,8 +18,10 @@ fun TypescriptTranslator.registerReceiver() {
     //Prepend 'this'
     handle<KtNameReferenceExpression>(
         condition = {
-            if (typedRule.parent is KtDotQualifiedExpression) return@handle false
-            if((typedRule.parent as? KtCallExpression)?.parent is KtDotQualifiedExpression) return@handle false
+            if (typedRule.parentOfType<KtDotQualifiedExpression>()?.selectorExpression == typedRule) return@handle false
+            if (typedRule.parentOfType<KtCallExpression>()?.parentOfType<KtDotQualifiedExpression>()?.selectorExpression == typedRule) return@handle false
+            if (typedRule.parentOfType<KtSafeQualifiedExpression>()?.selectorExpression == typedRule) return@handle false
+            if (typedRule.parentOfType<KtCallExpression>()?.parentOfType<KtSafeQualifiedExpression>()?.selectorExpression == typedRule) return@handle false
             val resolved = typedRule.resolvedCall
             return@handle resolved?.dispatchReceiver != null
         },
@@ -40,8 +39,10 @@ fun TypescriptTranslator.registerReceiver() {
 
     handle<KtNameReferenceExpression>(
         condition = {
-            if (typedRule.parent is KtDotQualifiedExpression) return@handle false
-            if((typedRule.parent as? KtCallExpression)?.parent is KtDotQualifiedExpression) return@handle false
+            if (typedRule.parentOfType<KtDotQualifiedExpression>()?.selectorExpression == typedRule) return@handle false
+            if (typedRule.parentOfType<KtCallExpression>()?.parentOfType<KtDotQualifiedExpression>()?.selectorExpression == typedRule) return@handle false
+            if (typedRule.parentOfType<KtSafeQualifiedExpression>()?.selectorExpression == typedRule) return@handle false
+            if (typedRule.parentOfType<KtCallExpression>()?.parentOfType<KtSafeQualifiedExpression>()?.selectorExpression == typedRule) return@handle false
             val resolved = typedRule.resolvedCall ?: return@handle false
             val targetDescriptor = resolved.dispatchReceiver?.type?.constructor?.declarationDescriptor as? ClassDescriptor ?: return@handle false
             return@handle resolved.dispatchReceiver != null

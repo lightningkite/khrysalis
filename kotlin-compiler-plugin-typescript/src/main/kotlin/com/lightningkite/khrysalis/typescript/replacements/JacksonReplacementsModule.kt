@@ -20,11 +20,33 @@ class JacksonReplacementsModule() : SimpleModule() {
                         return Template.fromString(
                             text["pattern"].asText(),
                             (text["imports"] as ObjectNode).fields().asSequence().map { (key, value) ->
-                                TemplatePart.Import(
-                                    path = value.asText(),
-                                    identifier = key,
-                                    asName = null
-                                )
+                                val valueText = value.asText()
+                                when {
+                                    valueText.startsWith("DIRECT from ") -> TemplatePart.Import(
+                                        path = valueText.substringAfter(" from "),
+                                        identifier = TemplatePart.Import.WHOLE,
+                                        asName = key
+                                    )
+                                    valueText.contains(" from ") -> TemplatePart.Import(
+                                        path = valueText.substringAfter(" from "),
+                                        identifier = key,
+                                        asName = valueText.substringBefore(" from ")
+                                    )
+                                    valueText.contains(" as ") -> TemplatePart.Import(
+                                        path = valueText.substringBefore(" as "),
+                                        identifier = key,
+                                        asName = valueText.substringAfter(" as ")
+                                    )
+                                    key.contains(" as ") -> TemplatePart.Import(
+                                        path = valueText,
+                                        identifier = key.substringBefore(" as "),
+                                        asName = key.substringAfter(" as ", "")
+                                    )
+                                    else -> TemplatePart.Import(
+                                        path = valueText,
+                                        identifier = key
+                                    )
+                                }
                             }.toList()
                         )
                     }

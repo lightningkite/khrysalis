@@ -3,10 +3,13 @@ package com.lightningkite.khrysalis.typescript
 import com.lightningkite.khrysalis.generic.PartialTranslator
 import com.lightningkite.khrysalis.generic.PartialTranslatorByType
 import com.lightningkite.khrysalis.generic.line
+import com.lightningkite.khrysalis.typescript.manifest.declaresPrefix
 import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
+import com.lightningkite.khrysalis.util.forEachBetween
 import org.jetbrains.kotlin.builtins.functions.FunctionClassDescriptor
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
+import org.jetbrains.kotlin.descriptors.TypeAliasDescriptor
 import org.jetbrains.kotlin.descriptors.leastPermissiveDescriptor
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.lexer.KtModifierKeywordToken
@@ -18,8 +21,7 @@ import org.jetbrains.kotlin.psi.psiUtil.referenceExpression
 import org.jetbrains.kotlin.psi.psiUtil.visibilityModifierTypeOrDefault
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 import org.jetbrains.kotlin.types.*
-import org.jetbrains.kotlin.types.typeUtil.isByte
-import org.jetbrains.kotlin.types.typeUtil.isInterface
+import org.jetbrains.kotlin.types.typeUtil.*
 import kotlin.text.Appendable
 
 private val primitiveTypes = setOf(
@@ -41,11 +43,15 @@ private val primitiveTypes = setOf(
 
 fun KotlinType.isPrimitive() = getJetTypeFqName(false) in primitiveTypes
 data class BasicType(val type: KotlinType)
+data class KtUserTypeBasic(val type: KtUserType)
 
 fun TypescriptTranslator.registerType() {
 
     handle<KtTypeAlias> {
-        if (typedRule.isTopLevel() && !typedRule.isPrivate()) -"export "
+        if (typedRule.isTopLevel() && !typedRule.isPrivate()) {
+            -"$declaresPrefix${typedRule.fqName?.asString()}\n"
+            -"export "
+        }
         -"type "
         -typedRule.nameIdentifier
         -typedRule.typeParameterList
@@ -53,20 +59,21 @@ fun TypescriptTranslator.registerType() {
         -typedRule.getTypeReference()
         -";\n"
 
-        if(typedRule.getTypeReference()?.typeElement is KtUserType) {
+        (typedRule.getTypeReference()?.typeElement as? KtUserType)?.let { ut ->
             if (typedRule.visibilityModifierTypeOrDefault().value == "public") {
+                -"$declaresPrefix${typedRule.fqName?.asString()}\n"
                 -"export "
             }
             -"let "
             -typedRule.nameIdentifier
             -" = "
-            -typedRule.getTypeReference()
+            -KtUserTypeBasic(ut)
             -";\n"
         }
     }
 
     handle<KotlinType> {
-        when(val desc = typedRule.constructor.declarationDescriptor) {
+        when (val desc = typedRule.constructor.declarationDescriptor) {
             is FunctionClassDescriptor -> {
                 -'('
                 typedRule.arguments.dropLast(1).forEachIndexed { index, typeProjection ->
@@ -80,13 +87,13 @@ fun TypescriptTranslator.registerType() {
             is ClassDescriptor -> {
                 var current: ClassDescriptor = desc
                 val items = ArrayList<ClassDescriptor>()
-                while(!current.tsTopLevelMessedUp){
+                while (!current.tsTopLevelMessedUp) {
                     current = current.containingDeclaration as? ClassDescriptor ?: break
                     items += current
                 }
                 out.addImport(current, current.tsTopLevelName)
                 -current.tsTopLevelName
-                for(item in items.asReversed()){
+                for (item in items.asReversed()) {
                     -'.'
                     -item.name.asString()
                 }
@@ -100,7 +107,7 @@ fun TypescriptTranslator.registerType() {
     }
 
     handle<BasicType> {
-        when(val desc = typedRule.type.constructor.declarationDescriptor) {
+        when (val desc = typedRule.type.constructor.declarationDescriptor) {
             is ClassDescriptor -> {
                 var current: ClassDescriptor = desc
                 val items = ArrayList<ClassDescriptor>()
@@ -118,51 +125,134 @@ fun TypescriptTranslator.registerType() {
         }
     }
 
-    handle<KtTypeReference>(
+    handle<KtNullableType> {
+        -"("
+        -typedRule.innerType
+        -" | null)"
+    }
+
+    handle<KtUserType>(
         condition = {
-            //TODO: Figure out why this captures typealiases
-            val type = typedRule.resolvedType ?: typedRule.resolvedAbbreviatedType ?: return@handle false
+            val reference = typedRule.referenceExpression ?: return@handle false
+            val type = reference.resolvedReferenceTarget ?: return@handle false
             replacements.getType(type) != null
         },
         priority = 10_000,
         action = {
-            val type = typedRule.resolvedType ?: typedRule.resolvedAbbreviatedType!!
+            val reference = typedRule.referenceExpression!!
+            val type = reference.resolvedReferenceTarget!!
             val rule = replacements.getType(type)!!
-            val baseType = type.constructor
-            val typeParameters = when (val te = typedRule.typeElement) {
-                is KtUserType -> te.typeArguments
+            val declaredParams = when (type) {
+                is ClassDescriptor -> type.declaredTypeParameters
+                is TypeAliasDescriptor -> type.declaredTypeParameters
                 else -> listOf()
             }
-            val typeParametersByName = typeParameters.withIndex()
-                .associate { (index, item) -> baseType.parameters[index].name.asString() to item }
-            rule.template.parts.forEach { part ->
-                when (part) {
-                    is TemplatePart.Import -> out.addImport(part)
-                    is TemplatePart.Text -> -part.string
-                    is TemplatePart.TypeParameter -> -(typeParametersByName[part.name])
-                    is TemplatePart.TypeParameterByIndex -> -(typeParameters.getOrNull(part.index))
-                }
-            }
+            val typeParametersByName = typedRule.typeArguments.withIndex()
+                .associate { (index, item) -> declaredParams[index].name.asString() to item }
+            emitTemplate(
+                template = rule.template,
+                typeParameter = { typeParametersByName[it.name] ?: "undefined" },
+                typeParameterByIndex = { typedRule.typeArguments.getOrNull(it.index) ?: "undefined" }
+            )
         }
     )
+
+    handle<KtUserType>(
+        condition = {
+            val reference = typedRule.referenceExpression ?: return@handle false
+            val type = reference.resolvedReferenceTarget ?: return@handle false
+            type.tsTopLevelMessedUp
+        },
+        priority = 100,
+        action = {
+            val reference = typedRule.referenceExpression!!
+            val type = reference.resolvedReferenceTarget!!
+            val n = type.tsTopLevelName
+            -n
+            -typedRule.typeArgumentList
+            out.addImport(type, n)
+        }
+    )
+
+    handle<KtUserTypeBasic>(
+        condition = {
+            val reference = typedRule.type.referenceExpression ?: return@handle false
+            val type = reference.resolvedReferenceTarget ?: return@handle false
+            replacements.getTypeRef(type) != null
+        },
+        priority = 11_000,
+        action = {
+            val reference = typedRule.type.referenceExpression!!
+            val type = reference.resolvedReferenceTarget!!
+            val rule = replacements.getTypeRef(type)!!
+            emitTemplate(
+                template = rule.template
+            )
+        }
+    )
+    handle<KtUserTypeBasic>(
+        condition = {
+            val reference = typedRule.type.referenceExpression ?: return@handle false
+            val type = reference.resolvedReferenceTarget ?: return@handle false
+            replacements.getType(type) != null
+        },
+        priority = 10_000,
+        action = {
+            val reference = typedRule.type.referenceExpression!!
+            val type = reference.resolvedReferenceTarget!!
+            val rule = replacements.getType(type)!!
+            emitTemplate(
+                template = rule.template
+            )
+        }
+    )
+    handle<KtUserTypeBasic>(
+        condition = {
+            val reference = typedRule.type.referenceExpression ?: return@handle false
+            val type = reference.resolvedReferenceTarget ?: return@handle false
+            type.tsTopLevelMessedUp
+        },
+        priority = 100,
+        action = {
+            val reference = typedRule.type.referenceExpression!!
+            val type = reference.resolvedReferenceTarget!!
+            val n = type.tsTopLevelName
+            -n
+            out.addImport(type, n)
+        }
+    )
+    handle<KtUserTypeBasic> {
+        -typedRule.type.referenceExpression
+    }
 
     handle<KtFunctionType> {
         -"("
         var currentNameChar = 'a'
-        typedRule.parameters.forEach {
-            var nextChar = currentNameChar++
-            while (typedRule.parameters.any {
-                    val n = it.name ?: return@any false
-                    n.length == 1 && n.first() == nextChar
-                }) {
-                nextChar = currentNameChar++
-            }
-            -(it.nameIdentifier ?: nextChar.toString())
-            -": "
-            -it.typeReference
-        }
+        typedRule.parameters.forEachBetween(
+            forItem = {
+                var nextChar = currentNameChar++
+                while (typedRule.parameters.any {
+                        val n = it.name ?: return@any false
+                        n.length == 1 && n.first() == nextChar
+                    }) {
+                    nextChar = currentNameChar++
+                }
+                -(it.nameIdentifier ?: nextChar.toString())
+                -": "
+                -it.typeReference
+            },
+            between = { -", " }
+        )
         -") => "
         -typedRule.returnTypeReference
+    }
+
+    handle<KtTypeParameter> {
+        -typedRule.nameIdentifier
+        typedRule.extendsBound?.let {
+            -" extends "
+            -it
+        }
     }
 
     handle<TypeProjectionBase> {
@@ -180,14 +270,11 @@ fun TypescriptTranslator.registerType() {
             val baseType = type.constructor
             val typeParametersByName = type.arguments.withIndex()
                 .associate { (index, item) -> baseType.parameters[index].name.asString() to item }
-            rule.template.parts.forEach { part ->
-                when (part) {
-                    is TemplatePart.Import -> out.addImport(part)
-                    is TemplatePart.Text -> -part.string
-                    is TemplatePart.TypeParameter -> -(typeParametersByName[part.name])
-                    is TemplatePart.TypeParameterByIndex -> -(type.arguments.getOrNull(part.index))
-                }
-            }
+            emitTemplate(
+                template = rule.template,
+                typeParameter = { typeParametersByName[it.name] ?: "undefined" },
+                typeParameterByIndex = { type.arguments.getOrNull(it.index) ?: "undefined" }
+            )
         }
     )
 
@@ -200,14 +287,9 @@ fun TypescriptTranslator.registerType() {
             val type = typedRule.type
             val rule = replacements.getType(type)!!
             val baseType = type.constructor
-            val typeParametersByName = type.arguments.withIndex()
-                .associate { (index, item) -> baseType.parameters[index].name.asString() to item }
-            rule.template.parts.forEach { part ->
-                when (part) {
-                    is TemplatePart.Import -> out.addImport(part)
-                    is TemplatePart.Text -> -part.string
-                }
-            }
+            emitTemplate(
+                template = rule.template
+            )
         }
     )
 
@@ -226,29 +308,34 @@ fun TypescriptTranslator.registerType() {
         condition = { typedRule.operationReference.getReferencedNameElementType() == KtTokens.AS_SAFE },
         priority = 100,
         action = {
-            -"((): "
-            -typedRule.right
-            -" | null => const _item = "
-            -typedRule.left
-            -"if("
-            emitIsExpression("_item", typedRule.right!!.resolvedType!!)
-            -") { return _item as "
-            -typedRule.right
-            -"; } else { return null; }"
-        }
-    )
+            val resolvedType = typedRule.right!!.resolvedType!!
 
-    handle<KtTypeReference>(
-        condition = {
-            val resolved = typedRule.resolvedType?.constructor?.declarationDescriptor as? ClassDescriptor ?: return@handle false
-            resolved.tsTopLevelMessedUp
-        },
-        priority = 100,
-        action = {
-            val cl = typedRule.resolvedType?.constructor?.declarationDescriptor as ClassDescriptor
-            val n = cl.tsTopLevelName
-            -n
-            out.addImport(cl, n)
+            when {
+                resolvedType.isInterface() -> {
+                    out.addImport("khrysalis/dist/Kotlin", "tryCastInterface")
+                    -"tryCastInterface("
+                    -typedRule.left
+                    -", \""
+                    -resolvedType.getJetTypeFqName(false).split('.').joinToString("") { it.capitalize() }
+                    -"\")"
+                }
+                resolvedType.isPrimitive() -> {
+                    out.addImport("khrysalis/dist/Kotlin", "tryCastPrimitive")
+                    -"tryCastPrimitive("
+                    -typedRule.left
+                    -", \""
+                    -resolvedType
+                    -"\")"
+                }
+                else -> {
+                    out.addImport("khrysalis/dist/Kotlin", "tryCastClass")
+                    -"tryCastClass("
+                    -typedRule.left
+                    -", "
+                    -BasicType(resolvedType)
+                    -")"
+                }
+            }
         }
     )
 }
@@ -259,10 +346,12 @@ fun PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByType<*>.e
 ) {
     when {
         resolvedType.isInterface() -> {
-            -'('
+            out.addImport("khrysalis/dist/Kotlin", "checkIsInterface")
+            -"checkIsInterface("
             -expression
-            -".constructor as any).implementsInterface"
+            -", \""
             -resolvedType.getJetTypeFqName(false).split('.').joinToString("") { it.capitalize() }
+            -"\")"
         }
         resolvedType.isPrimitive() -> {
             -"typeof ("
@@ -273,7 +362,7 @@ fun PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByType<*>.e
         }
         else -> {
             -expression
-            -" instanceOf "
+            -" instanceof "
             -BasicType(resolvedType)
         }
     }

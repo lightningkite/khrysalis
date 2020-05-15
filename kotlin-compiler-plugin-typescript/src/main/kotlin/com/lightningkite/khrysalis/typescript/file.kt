@@ -1,6 +1,7 @@
 package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.generic.line
+import com.lightningkite.khrysalis.typescript.manifest.declaresPrefix
 import com.lightningkite.khrysalis.typescript.replacements.*
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren

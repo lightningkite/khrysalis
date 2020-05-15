@@ -25,15 +25,21 @@ fun MemberDescriptor.description(): String {
     }
 }
 
-val ClassDescriptor.tsTopLevelMessedUp: Boolean get() {
+val DeclarationDescriptor.tsTopLevelMessedUp: Boolean get() {
     val containing = (this.containingDeclaration as? ClassDescriptor) ?: return false
-    return containing.kind == ClassKind.INTERFACE || this.kind == ClassKind.INTERFACE
+    return containing.kind == ClassKind.INTERFACE || (this as? ClassDescriptor)?.kind == ClassKind.INTERFACE
 }
 
-val ClassDescriptor.tsTopLevelNameRaw: String get() = (containingDeclaration as? ClassDescriptor)?.let {
+val DeclarationDescriptor.tsTopLevelNameRaw: String get() = (containingDeclaration as? ClassDescriptor)?.let {
     it.tsTopLevelNameRaw + this.name.asString()
 } ?: this.name.asString()
-val ClassDescriptor.tsTopLevelName: String get() = if(tsTopLevelMessedUp) (containingDeclaration as ClassDescriptor).tsTopLevelNameRaw + name.asString() else name.asString()
+val DeclarationDescriptor.tsTopLevelName: String get() = if(tsTopLevelMessedUp) (containingDeclaration as ClassDescriptor).tsTopLevelNameRaw + name.asString() else name.asString()
+val DeclarationDescriptor.tsTopLevelReference: String get() = if(tsTopLevelMessedUp)
+    (containingDeclaration as ClassDescriptor).tsTopLevelNameRaw + name.asString()
+else if(containingDeclaration is ClassDescriptor)
+    (containingDeclaration as ClassDescriptor).tsTopLevelReference + "/**/." + name.asString()
+else
+    name.asString()
 
 fun TypescriptTranslator.tsTopLevelNameElement(forElement: KtClassOrObject): Any? {
     val decl = forElement.resolvedClass ?: return forElement.nameIdentifier

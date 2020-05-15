@@ -1,6 +1,7 @@
 package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.generic.PartialTranslatorByType
+import com.lightningkite.khrysalis.typescript.manifest.declaresPrefix
 import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.allOverridden
 import com.lightningkite.khrysalis.util.forEachBetween
@@ -11,6 +12,7 @@ import org.jetbrains.kotlin.js.translate.callTranslator.getReturnType
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
+import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 import org.jetbrains.kotlin.resolve.scopes.DescriptorKindFilter
 import org.jetbrains.kotlin.types.typeUtil.supertypes
 import java.util.*
@@ -174,6 +176,7 @@ fun TypescriptTranslator.registerClass() {
         condition = { typedRule.isInterface() },
         priority = 100
     ) {
+        -"$declaresPrefix${typedRule.fqName?.asString()}\n"
         if (!typedRule.isPrivate()) -"export "
         -"interface "
         -tsTopLevelNameElement(typedRule)
@@ -211,6 +214,16 @@ fun TypescriptTranslator.registerClass() {
         }
     }
 
+    handle<KtClass>(
+        condition = { typedRule.isInner() },
+        priority = 1000
+    ) {
+        val fq = typedRule.parentOfType<KtClassBody>()!!.parentOfType<KtClass>()!!.fqName!!.asString()
+        withReceiverScope(fq, "parentThis") {
+            doSuper()
+        }
+    }
+
     handle<KtObjectDeclaration>(
         condition = { typedRule.parentOfType<KtClassBody>()?.parentOfType<KtClass>()?.isInterface() == true },
         priority = 1000
@@ -229,6 +242,7 @@ fun TypescriptTranslator.registerClass() {
             -tsTopLevelNameElement(typedRule)
             -" = "
         } else {
+            -"$declaresPrefix${typedRule.fqName?.asString()}\n"
             if (!typedRule.isPrivate()) -"export "
         }
 
@@ -251,6 +265,12 @@ fun TypescriptTranslator.registerClass() {
             }
             -";\n"
         }
+        val parentClassName = typedRule.parentOfType<KtClassBody>()?.parentOfType<KtClass>()?.resolvedClass?.tsTopLevelName
+        if(typedRule.isInner()){
+            -"parentThis: "
+            -parentClassName
+            -";\n"
+        }
         typedRule.primaryConstructor?.let { cons ->
             if (typedRule.isEnum()) {
                 -"private"
@@ -258,11 +278,13 @@ fun TypescriptTranslator.registerClass() {
                 -(cons.visibilityModifier() ?: "public")
             }
             -" constructor("
-            if (typedRule.isEnum()) {
+            (if (typedRule.isEnum()) {
                 listOf("name: string") + cons.valueParameters
+            } else if (typedRule.isInner()) {
+                listOf("parentThis: $parentClassName") + cons.valueParameters
             } else {
                 cons.valueParameters
-            }.forEachBetween(
+            }).forEachBetween(
                 forItem = { -it },
                 between = { -", " }
             )
@@ -282,6 +304,8 @@ fun TypescriptTranslator.registerClass() {
                 }
             if (typedRule.isEnum()) {
                 -"this.name = name;\n"
+            } else if (typedRule.isInner()) {
+                -"this.parentThis = parentThis;\n"
             }
             //Parameter assignment first
             cons.valueParameters.asSequence().filter { it.hasValOrVar() }.forEach {
@@ -339,23 +363,15 @@ fun TypescriptTranslator.registerClass() {
                         ?: throw IllegalArgumentException("No type reference available to generate hashCode() function")
                     replacements.functions[type + ".hashCode"]?.firstOrNull()?.let {
                         -"hash = 31 * hash + "
-                        for (part in it.template.parts) {
-                            when (part) {
-                                is TemplatePart.Import -> out.addImport(part)
-                                is TemplatePart.Text -> -part.string
-                                TemplatePart.Receiver,
-                                TemplatePart.DispatchReceiver,
-                                TemplatePart.ExtensionReceiver -> {
-                                    -"this."; -param.nameIdentifier
-                                }
-                                else -> {
-                                }
-                            }
-                        }
+                        emitTemplate(
+                            requiresWrapping = true,
+                            template = it.template,
+                            receiver = listOf("this.", param.nameIdentifier)
+                        )
                     } ?: run {
                         -"hash = 31 * hash + this."
                         -param.nameIdentifier
-                        -".hashCode()"
+                        -"?.hashCode() ?? 0"
                     }
                     -";\n"
                 }
@@ -372,33 +388,21 @@ fun TypescriptTranslator.registerClass() {
                     val type = param.typeReference?.resolvedType?.getJetTypeFqName(false)
                         ?: throw IllegalArgumentException("No type reference available to generate hashCode() function")
                     replacements.functions[type + ".equals"]?.firstOrNull()?.let {
-                        for (part in it.template.parts) {
-                            when (part) {
-                                is TemplatePart.Import -> out.addImport(part)
-                                is TemplatePart.Text -> -part.string
-                                TemplatePart.Receiver,
-                                TemplatePart.DispatchReceiver,
-                                TemplatePart.ExtensionReceiver -> {
-                                    -"this."
-                                    -param.nameIdentifier
-                                }
-                                TemplatePart.AllParameters,
-                                is TemplatePart.Parameter,
-                                is TemplatePart.ParameterByIndex -> {
-                                    -"other."
-                                    -param.nameIdentifier
-                                }
-                                else -> {
-                                }
-                            }
-                        }
+                        emitTemplate(
+                            requiresWrapping = true,
+                            template = it.template,
+                            receiver = listOf("this.", param.nameIdentifier),
+                            allParameters = listOf("other.", param.nameIdentifier),
+                            parameter = { listOf("other.", param.nameIdentifier) },
+                            parameterByIndex = { listOf("other.", param.nameIdentifier) }
+                        )
                     } ?: run {
-                        -"this."
+                        -"(this."
                         -param.nameIdentifier
-                        -".equals("
+                        -"?.equals("
                         -"other."
                         -param.nameIdentifier
-                        -")"
+                        -") ?? false)"
                     }
                 }
                 -" }\n"
@@ -473,9 +477,9 @@ fun TypescriptTranslator.registerClass() {
 
             -"public static valueOf(name: string): "
             -tsTopLevelNameElement(typedRule)
-            -" { return "
+            -" { return ("
             -tsTopLevelNameElement(typedRule)
-            -"[name]; }\n"
+            -" as any)[name]; }\n"
 
             -"public toString(): string { return this.name }\n"
         }
@@ -491,7 +495,10 @@ fun TypescriptTranslator.registerClass() {
             -(tsTopLevelNameElement(typedRule) ?: "Companion")
             -" = "
         } else {
-            if (!typedRule.isPrivate()) -"export "
+            if (!typedRule.isPrivate()) {
+                -"$declaresPrefix${typedRule.fqName?.asString()}\n"
+                -"export "
+            }
         }
         writeClassHeader(typedRule)
         -" {\n"
@@ -732,6 +739,38 @@ fun TypescriptTranslator.registerClass() {
             out.addImport(cl, n)
         }
     )
+
+    handle<KtSecondaryConstructor> {
+        val resolved = typedRule.resolvedConstructor ?: return@handle
+        -(typedRule.visibilityModifier() ?: "public")
+        -" static "
+        -resolved.tsName
+        -typedRule.typeParameterList
+        -typedRule.valueParameterList
+        -" {\n"
+        val parent = typedRule.parentOfType<KtClassBody>()!!.parentOfType<KtClass>()!!.resolvedClass!!
+        withReceiverScope("real", "result"){ outName ->
+            -"let "
+            -outName
+            -" = new "
+            typedRule.getDelegationCallOrNull()?.let {
+                -parent.tsTopLevelName
+                -it.typeArgumentList
+                -it.valueArgumentList
+                -";\n"
+            }
+            val b = typedRule.bodyExpression
+            if(b is KtBlockExpression){
+                -b.allChildren.toList().drop(1).dropLast(1)
+            } else {
+                -b
+            }
+            -"\nreturn "
+            -outName
+            -";\n"
+        }
+        -"}"
+    }
 }
 
 private val weakKtClassPostActions = WeakHashMap<KtElement, ArrayList<() -> Unit>>()
@@ -742,3 +781,13 @@ fun KtElement.runPostActions() {
 fun KtElement.addPostAction(action: () -> Unit) {
     weakKtClassPostActions.getOrPut(this) { ArrayList() }.add(action)
 }
+
+val ConstructorDescriptor.tsName: String?
+    get() = this.annotations
+        .find { it.fqName?.asString()?.substringAfterLast('.') == "JsName" }
+        ?.allValueArguments
+        ?.entries
+        ?.firstOrNull()
+        ?.value
+        ?.value
+        ?.toString() ?: ("constructor" + this.valueParameters.joinToString { it.type.getJetTypeFqName(false).split('.').joinToString("").filter { it.isLetter() } })

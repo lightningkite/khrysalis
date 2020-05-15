@@ -1,0 +1,34 @@
+---
+
+- id: com.test.magicVariable
+  type: get
+  template: 42 /*magicVariable get!*/
+
+- id: com.test.magicVariable
+  type: set
+  template: console.log(`Setting magicVariable to ${~value~}`);
+
+- id: kotlin.io.println
+  type: call
+  template: console.log(~0~)
+
+- id: kotlin.Comparable
+  type: type
+  template:
+    pattern: Comparable<~T0~>
+    imports:
+      Comparable: khrysalis/dist/Kotlin
+
+- id: kotlin.ranges.Range
+  type: type
+  template:
+    pattern: Range<~T0~>
+    imports:
+      Range: khrysalis/dist/Kotlin
+
+- id: kotlin.ranges.rangeTo
+  type: call
+  template:
+    pattern: new Range(~this~, ~0~)
+    imports:
+      Range: khrysalis/dist/Kotlin

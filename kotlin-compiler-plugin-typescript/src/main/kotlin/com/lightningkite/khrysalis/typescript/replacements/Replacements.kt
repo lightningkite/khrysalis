@@ -4,6 +4,8 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.readValue
+import org.jetbrains.kotlin.descriptors.ClassDescriptor
+import org.jetbrains.kotlin.descriptors.DeclarationDescriptor
 import org.jetbrains.kotlin.descriptors.FunctionDescriptor
 import org.jetbrains.kotlin.descriptors.PropertyDescriptor
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
@@ -20,18 +22,23 @@ class Replacements() {
     val types: HashMap<String, TreeSet<TypeReplacement>> = HashMap()
     val typeRefs: HashMap<String, TreeSet<TypeRefReplacement>> = HashMap()
 
-    fun getCall(functionDescriptor: FunctionDescriptor, comparatorType: String? = null): FunctionReplacement? =
-        functions[functionDescriptor.fqNameSafe.asString()]?.find { it.passes(functionDescriptor, comparatorType) }
+    fun getCall(functionDescriptor: FunctionDescriptor, comparatorType: String? = null): FunctionReplacement? {
+        return functions[functionDescriptor.fqNameSafe.asString().substringBefore(".<")]?.find { it.passes(functionDescriptor, comparatorType) }
+            ?: functionDescriptor.overriddenDescriptors.asSequence().map { getCall(it) }.firstOrNull()
+    }
 
     fun getGet(propertyDescriptor: PropertyDescriptor): GetReplacement? =
         gets[propertyDescriptor.fqNameSafe.asString()]?.find { it.passes(propertyDescriptor) }
+            ?: propertyDescriptor.overriddenDescriptors.asSequence().map { getGet(it) }.firstOrNull()
 
     fun getSet(propertyDescriptor: PropertyDescriptor): SetReplacement? =
         sets[propertyDescriptor.fqNameSafe.asString()]?.find { it.passes(propertyDescriptor) }
+            ?: propertyDescriptor.overriddenDescriptors.asSequence().map { getSet(it) }.firstOrNull()
 
+    fun getType(type: DeclarationDescriptor): TypeReplacement? = types[type.fqNameSafe.asString()]?.find { it.passes(type) }
     fun getType(type: KotlinType): TypeReplacement? = types[type.getJetTypeFqName(false)]?.find { it.passes(type) }
-    fun getTypeRef(type: KotlinType): TypeRefReplacement? =
-        typeRefs[type.getJetTypeFqName(false)]?.find { it.passes(type) }
+    fun getTypeRef(type: KotlinType): TypeRefReplacement? = typeRefs[type.getJetTypeFqName(false)]?.find { it.passes(type) }
+    fun getTypeRef(type: DeclarationDescriptor): TypeRefReplacement? = typeRefs[type.fqNameSafe.asString()]?.find { it.passes(type) }
 
     companion object {
         val mapper: ObjectMapper = ObjectMapper(YAMLFactory())

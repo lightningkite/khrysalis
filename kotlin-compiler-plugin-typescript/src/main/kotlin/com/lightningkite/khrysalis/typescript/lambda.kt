@@ -43,7 +43,9 @@ fun TypescriptTranslator.registerLambda() {
         val resolved = typedRule.resolvedFunction
         -typedRule.typeParameterList
         typedRule.valueParameterList?.let {
+            -'('
             -it
+            -')'
         } ?: run {
             if(resolved?.valueParameters?.size == 1){
                 -"(it)"
@@ -62,25 +64,19 @@ fun TypescriptTranslator.registerLambda() {
             }
         }
     }
-//    handle<KtFunctionLiteral> {
-//        val resolved = typedRule.resolvedFunction
-//        resolved?.typeParameters?.takeUnless { it.isEmpty() }?.let {
-//            -'<'
-//            -it.forEach {
-//                -it.name.asString()
-//            }
-//            -'>'
-//        }
-//        -'('
-//        resolved?.valueParameters?.forEachBetween(
-//            forItem = {
-//                -it.name
-//                -": "
-//                -it.type
-//            },
-//            between = { -", " }
-//        )
-//        -") => "
-//        -typedRule.bodyExpression
-//    }
+
+    handle<KtLabeledExpression>(
+        condition = {typedRule.baseExpression is KtLambdaExpression},
+        priority = 100
+    ) {
+        -typedRule.baseExpression
+    }
+
+    handle<KtReturnExpression> {
+        -"return"
+        typedRule.returnedExpression?.let {
+            -" "
+            -it
+        }
+    }
 }

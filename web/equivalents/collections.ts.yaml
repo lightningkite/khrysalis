@@ -1,0 +1,11 @@
+---
+
+# Collection
+
+- id: kotlin.collections.Iterable
+  type: type
+  template: Iterable<~T0~>
+
+- id: kotlin.collections.forEach
+  type: call
+  template: ~this~.forEach(~0~)

@@ -1,7 +1,7 @@
 package com.lightningkite.khrysalis.typescript
 
+import com.lightningkite.khrysalis.typescript.manifest.declaresPrefix
 import com.lightningkite.khrysalis.typescript.manifest.generateFqToFileMap
-import com.lightningkite.khrysalis.util.SmartTabWriter
 import org.jetbrains.kotlin.analyzer.AnalysisResult
 import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
@@ -67,7 +67,7 @@ class KotlinTypescriptCR : ComponentRegistrar {
 }
 
 class KotlinTypescriptExtension(
-    val actuals: List<File>,
+    val equivalents: List<File>,
     val output: File,
     val collector: MessageCollector?
 ) : AnalysisHandlerExtension {
@@ -83,43 +83,75 @@ class KotlinTypescriptExtension(
             bindingContext = ctx,
             commonPath = files.asSequence()
                 .map { it.virtualFilePath }
+                .filter { it.endsWith(".shared.kt") }
                 .takeUnless { it.none() }
                 ?.reduce { acc, s -> acc.commonPrefixWith(s) }
                 ?.substringBeforeLast('/')
                 ?.plus('/')
-                ?.also { println("Common file path: $it") }?: "",
+                ?.also { println("Common file path: $it") } ?: "",
             collector = collector
         )
+        println("Output: $output")
 
-        val map = translator.run { generateFqToFileMap(files.filter { it.virtualFilePath.endsWith(".shared.kt") }) }
-        translator.kotlinFqNameToFile.putAll(map)
-        output.resolve("fqmanifest.txt").bufferedWriter().use {
-            for ((key, value) in map) {
-                it.append(key)
-                it.append('=')
-                it.append(value)
-                it.append('\n')
+        //Load other declarations
+        equivalents.asSequence().plus(output)
+            .flatMap { it.walkTopDown() }
+            .filter {
+                it.name.endsWith(".ts")
             }
-        }
-
-        try {
-            actuals.asSequence()
-                .flatMap { it.walkTopDown() }
-                .filter {
-                    it.name.endsWith(".ts.yaml") || it.name.endsWith(".ts.yml")
+            .forEach { actualFile ->
+                val decls = try {
+                    actualFile.useLines { lines ->
+                        lines.filter { it.startsWith(declaresPrefix) }
+                            .map { it.removePrefix(declaresPrefix) }
+                            .toList()
+                    }
+                } catch (t: Throwable) {
+                    collector?.report(CompilerMessageSeverity.ERROR, "Failed to parse TS/KT declarations from $actualFile:")
+                    collector?.report(
+                        CompilerMessageSeverity.ERROR,
+                        StringWriter().also { t.printStackTrace(PrintWriter(it)) }.buffer.toString()
+                    )
+                    return AnalysisResult.compilationError(ctx)
                 }
-                .forEach { actualFile ->
+                if(decls.isEmpty()) return@forEach
+                if(actualFile.absoluteFile.startsWith(output.absoluteFile)) {
+                    val r = actualFile.relativeTo(output)
+                    for(decl in decls) {
+                        translator.kotlinFqNameToRelativeFile[decl] = r
+                    }
+                } else {
+                    val r = actualFile.relativeTo(output.parentFile.resolve("node_modules"))
+                    for(decl in decls) {
+                        translator.kotlinFqNameToFile[decl] = r
+                    }
+                }
+            }
+
+        //Create manifest of declarations within this module
+        val map: Map<String, File> = translator.run { generateFqToFileMap(files.filter { it.virtualFilePath.endsWith(".shared.kt") }, output) }
+        translator.kotlinFqNameToRelativeFile.putAll(map)
+
+        //Load equivalents
+        equivalents.asSequence()
+            .flatMap { it.walkTopDown() }
+            .filter {
+                it.name.endsWith(".ts.yaml") || it.name.endsWith(".ts.yml")
+            }
+            .forEach { actualFile ->
+                try {
                     collector?.report(CompilerMessageSeverity.INFO, "Reading equivalents from $actualFile...")
                     translator.replacements += actualFile
+                } catch (t: Throwable) {
+                    collector?.report(CompilerMessageSeverity.ERROR, "Failed to parse equivalents for $actualFile:")
+                    collector?.report(
+                        CompilerMessageSeverity.ERROR,
+                        StringWriter().also { t.printStackTrace(PrintWriter(it)) }.buffer.toString()
+                    )
+                    return AnalysisResult.compilationError(ctx)
                 }
-        } catch (t: Throwable) {
-            collector?.report(CompilerMessageSeverity.ERROR, "Failed to parse equivalents:")
-            collector?.report(
-                CompilerMessageSeverity.ERROR,
-                StringWriter().also { t.printStackTrace(PrintWriter(it)) }.buffer.toString()
-            )
-            return AnalysisResult.compilationError(ctx)
-        }
+            }
+
         for (file in files) {
             if (!file.virtualFilePath.endsWith(".shared.kt")) continue
             try {
@@ -127,6 +159,7 @@ class KotlinTypescriptExtension(
                     .resolve(file.virtualFilePath.removePrefix(translator.commonPath))
                     .parentFile
                     .resolve(file.name.removeSuffix(".kt").plus(".ts"))
+                if(outputFile.exists() && outputFile.useLines { it.first() } != TypescriptFileEmitter.overwriteWarning) continue
                 collector?.report(CompilerMessageSeverity.INFO, "Translating $file to $outputFile")
                 outputFile.parentFile.mkdirs()
                 val out = TypescriptFileEmitter(translator, file)
@@ -136,9 +169,34 @@ class KotlinTypescriptExtension(
                     it.flush()
                 }
             } catch (t: Throwable) {
-                collector?.report(CompilerMessageSeverity.ERROR, "Failed:")
+                collector?.report(CompilerMessageSeverity.WARNING, "Failed to convert $file:")
                 collector?.report(
                     CompilerMessageSeverity.ERROR,
+                    StringWriter().also { t.printStackTrace(PrintWriter(it)) }.buffer.toString()
+                )
+            }
+        }
+        translator.stubMode = true
+        for(file in files){
+            if (!file.virtualFilePath.endsWith(".actual.kt")) continue
+            try {
+                val outputFile = output
+                    .resolve(file.virtualFilePath.removePrefix(translator.commonPath))
+                    .parentFile
+                    .resolve(file.name.removeSuffix(".kt").plus(".ts"))
+                if(outputFile.exists() && outputFile.useLines { it.first() } != TypescriptFileEmitter.overwriteWarning) continue
+                collector?.report(CompilerMessageSeverity.INFO, "Stubbing $file to $outputFile")
+                outputFile.parentFile.mkdirs()
+                val out = TypescriptFileEmitter(translator, file)
+                translator.translate(file, out)
+                outputFile.bufferedWriter().use {
+                    out.write(it, file)
+                    it.flush()
+                }
+            } catch (t: Throwable) {
+                collector?.report(CompilerMessageSeverity.WARNING, "Failed to do stubs for $file:")
+                collector?.report(
+                    CompilerMessageSeverity.WARNING,
                     StringWriter().also { t.printStackTrace(PrintWriter(it)) }.buffer.toString()
                 )
             }

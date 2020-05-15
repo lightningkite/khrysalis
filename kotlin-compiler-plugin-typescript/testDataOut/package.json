@@ -1,0 +1,17 @@
+{
+  "name": "khrysalis-quick-test",
+  "version": "0.1.0",
+  "description": "",
+  "main": "dist",
+  "types": "dist",
+  "dependencies": {
+    "khrysalis": "file:../../web"
+  },
+  "devDependencies": {
+    "typescript": "^3.4.5"
+  },
+  "scripts": {
+    "build": "tsc"
+  },
+  "author": "Lightning Kite"
+}

@@ -1,0 +1,105 @@
+---
+# Weird Primitives
+- id: kotlin.Nothing
+  type: type
+  template: void
+- id: kotlin.Unit
+  type: type
+  template: void
+- id: kotlin.Any
+  type: type
+  template: any
+- id: com.lightningkite.khrysalis.AnyObject
+  type: type
+  template: object
+- id: com.lightningkite.khrysalis.AnyHashable
+  type: type
+  template: any
+- id: com.lightningkite.khrysalis.Hashable
+  type: type
+  template: object
+- id: com.lightningkite.khrysalis.Equatable
+  type: type
+  template: object
+- id: com.lightningkite.khrysalis.SomeEnum
+  type: type
+  template: any
+
+# Primitive Equality
+
+- id: kotlin.Byte.equals
+  type: call
+  template: ~this~ === ~0~
+
+- id: kotlin.Short.equals
+  type: call
+  template: ~this~ === ~0~
+
+- id: kotlin.Int.equals
+  type: call
+  template: ~this~ === ~0~
+
+- id: kotlin.Long.equals
+  type: call
+  template: ~this~ === ~0~
+
+- id: kotlin.Float.equals
+  type: call
+  template: ~this~ === ~0~
+
+- id: kotlin.Double.equals
+  type: call
+  template: ~this~ === ~0~
+
+- id: kotlin.String.equals
+  type: call
+  template: ~this~ === ~0~
+
+- id: kotlin.Char.equals
+  type: call
+  template: ~this~ === ~0~
+
+- id: kotlin.Boolean.equals
+  type: call
+  template: ~this~ === ~0~
+
+# Primitive Hash Codes
+
+- id: kotlin.Byte.hashCode
+  type: call
+  template: ~this~
+
+- id: kotlin.Short.hashCode
+  type: call
+  template: ~this~
+
+- id: kotlin.Int.hashCode
+  type: call
+  template: ~this~
+
+- id: kotlin.Long.hashCode
+  type: call
+  template: ~this~
+
+- id: kotlin.Float.hashCode
+  type: call
+  template: Math.floor(~this~) # TODO - there are way better possibilities for hashing
+
+- id: kotlin.Double.hashCode
+  type: call
+  template: Math.floor(~this~) # TODO - there are way better possibilities for hashing
+
+- id: kotlin.String.hashCode
+  type: call
+  template:
+    pattern: hashString(~this~)
+    imports:
+      hashString: khrysalis/dist/Kotlin
+
+- id: kotlin.Char.hashCode
+  type: call
+  template: ~this~.charCodeAt(0)
+
+- id: kotlin.Boolean.hashCode
+  type: call
+  template: "(~this~ ? 1 : 0)"

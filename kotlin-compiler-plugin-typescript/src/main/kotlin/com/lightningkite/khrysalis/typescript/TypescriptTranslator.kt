@@ -14,6 +14,7 @@ import org.jetbrains.kotlin.psi.psiUtil.allChildren
 import org.jetbrains.kotlin.resolve.BindingContext
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 import org.jetbrains.kotlin.resolve.scopes.receivers.ExtensionReceiver
+import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -24,7 +25,9 @@ class TypescriptTranslator(
     val replacements: Replacements = Replacements()
 ) : PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>(), TranslatorInterface<TypescriptFileEmitter, Unit>, AnalysisExtensions {
 
-    val kotlinFqNameToFile = HashMap<String, String>()
+    var stubMode: Boolean = false
+    val kotlinFqNameToFile = HashMap<String, File>()
+    val kotlinFqNameToRelativeFile = HashMap<String, File>()
 
     data class ReceiverAssignment(val fqName: String, val tsName: String)
 
@@ -49,7 +52,6 @@ class TypescriptTranslator(
     }
     fun KtExpression.getTsReceiver(): String? {
         val dr = this.resolvedCall?.dispatchReceiver ?: this.resolvedCall?.extensionReceiver ?: run {
-            println("Found no receiver for ${this.text}, despite it being requested")
             return null
         }
         val fq = if(dr is ExtensionReceiver) {
@@ -81,6 +83,13 @@ class TypescriptTranslator(
         }
     }
 
+    override fun translate(identifier: Class<*>, rule: Any, out: TypescriptFileEmitter, afterPriority: Int) {
+//        if(rule is KtExpression){
+//            out.append("/*${rule.resolvedUsedAsExpression}*/")
+//        }
+        super.translate(identifier, rule, out, afterPriority)
+    }
+
     val terminalMap = mapOf(
         "fun" to "function",
         "object" to "class",
@@ -102,7 +111,6 @@ class TypescriptTranslator(
         registerControl()
         registerOperators()
         registerReceiver()
-//        registerStatement()
 
         handle<LeafPsiElement>(condition = { typedRule.text in terminalMap.keys }, priority = 1) {
             out.append(terminalMap[typedRule.text])

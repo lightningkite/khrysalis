@@ -35,7 +35,7 @@ fun convertToTypescript(
                 message: String,
                 location: CompilerMessageLocation?
             ) {
-                if (message.isNotBlank() && severity <= CompilerMessageSeverity.STRONG_WARNING) {
+                if (message.isNotBlank()/* && severity <= CompilerMessageSeverity.STRONG_WARNING*/) {
                     println(message + ":")
                     location?.toString()?.let { println(it) }
                 }

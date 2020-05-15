@@ -1,5 +1,7 @@
 package com.lightningkite.khrysalis
 
+import java.util.*
+
 
 /* SHARED DECLARATIONS
 class UUID {

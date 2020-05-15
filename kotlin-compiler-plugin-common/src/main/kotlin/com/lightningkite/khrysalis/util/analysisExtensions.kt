@@ -183,4 +183,13 @@ interface AnalysisExtensions {
         get() = bindingContext[BindingContext.NEW_INFERENCE_CATCH_EXCEPTION_PARAMETER, this]
     val PsiElement.resolvedDeclarationToDescriptor: DeclarationDescriptor?
         get() = bindingContext[BindingContext.DECLARATION_TO_DESCRIPTOR, this]
+
+    val KtExpression.actuallyCouldBeExpression: Boolean
+        get() {
+            (this.parent as? KtBlockExpression)?.let{
+                if(it.statements.lastOrNull() != this) return false
+                if(it.resolvedUsedAsExpression == false) return false
+            }
+            return true
+        }
 }

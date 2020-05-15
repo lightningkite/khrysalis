@@ -41,10 +41,10 @@
     - [X] Casting and Type Checking
     - [ ] Iterable
     - [X] Get/Set operators
-- [ ] Interfaces
+- [X] Interfaces
     - [X] Declaration
     - [X] Defaults
-    - [ ] Within Class
+    - [X] Within Class
 - [ ] Classes -- 3 days
     - [X] Inheritance
     - [X] Interface Implementation
@@ -54,7 +54,7 @@
         - [X] Create variables
         - [X] Populate variables
         - [X] Init blocks
-    - [ ] Secondary constructors
+    - [X] Secondary constructors
     - [ ] Inner Classes
     - [ ] Delegation
     - [X] Equatable 
@@ -88,44 +88,45 @@
     - [X] Get name
     - [X] Full object support
     - [X] Short Support
-- [ ] Generics -- 1/2 day
-    - [ ] Type Parameters
-    - [ ] Type Arguments
+- [X] Generics -- 1/2 day
+    - [X] Type Parameters
+    - [X] Type Arguments
 - [ ] Top Level -- 1 day
-    - [ ] `export`
-    - [ ] Imports
+    - [X] `export`
+    - [X] Imports
+    - [ ] correct relative paths
 - [X] Values -- 1/2 day
     - [X] Literals
     - [X] Lambdas
         - [X] With Receiver
     - [X] String Interpolation
-- [ ] Per-declaration conversions -- 3 days
+- [X] Per-declaration conversions -- 3 days
     - [X] Description Language
     - [X] Get
     - [X] Set
     - [X] Call
     - [X] Type
-    - [ ] TypeRef
+    - [X] TypeRef
 
 # Typescript Usage Tasks
 - [ ] Standard Library Conversions -- 2 days
-    - [ ] Numbers
-    - [ ] Strings
+    - [X] Numbers
+    - [X] Strings
     - [ ] Collection
-    - [ ] List
-    - [ ] Set
-    - [ ] Map
-    - [ ] Ranges
+    - [X] List
+    - [X] Set
+    - [X] Map
+    - [X] Ranges
     - [ ] Common Functions
-        - [ ] Let
-        - [ ] Also
-        - [ ] Run
-        - [ ] Apply
-        - [ ] With
+        - [X] Let
+        - [X] Also
+        - [X] Run
+        - [X] Apply
+        - [X] With
     - [ ] Math
     - [ ] Time -- 1 day
 - [ ] Khrysalis Library Conversions -- 1/2 day
-    - [ ] Rx -- 1/2 day
+    - [X] Rx -- 1/2 day
     - [ ] Views -- 2 day
         - [ ] AutoCompleteTextView
         - [ ] Button

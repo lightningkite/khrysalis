@@ -1,0 +1,5 @@
+---
+
+- id: com.lightningkite.khrysalis.PI
+  type: get
+  template: Math.PI

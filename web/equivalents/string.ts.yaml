@@ -1,0 +1,178 @@
+---
+- id: kotlin.Char
+  type: type
+  template: string
+
+- id: kotlin.String
+  type: type
+  template: string
+
+- id: kotlin.String.plus
+  type: call
+  infix: true
+  template: ~this~ + ~0~
+
+- id: kotlin.String.plus
+  type: call
+  template: (~this~ + ~0~)
+
+- id: kotlin.text.plus
+  receiver: kotlin.Char
+  type: call
+  infix: true
+  template: ~this~ + ~0~
+
+- id: kotlin.text.plus
+  receiver: kotlin.Char
+  type: call
+  template: (~this~ + ~0~)
+
+# Equals
+- id: kotlin.Char.equals
+  type: call
+  template: ~this~ === ~0~
+- id: kotlin.String.equals
+  type: call
+  template: ~this~ === ~0~
+
+# Comparison
+- id: kotlin.Char.compareTo
+  type: call
+  template: ~this~ ~operatorToken~ ~0~
+- id: kotlin.String.compareTo
+  type: call
+  template: ~this~ ~operatorToken~ ~0~
+
+- id: kotlin.Char.rangeTo
+  type: call
+  template:
+    pattern: new CharRange(~this~, ~0~)
+    imports:
+      Range: khrysalis/dist/Kotlin
+
+- id: kotlin.text.toLowerCase
+  type: call
+  template: ~this~.toLowerCase()
+- id: kotlin.text.toUpperCase
+  type: call
+  template: ~this~.toUpperCase()
+- id: kotlin.text.trim
+  type: call
+  arguments: []
+  template: ~this~.trim()
+- id: kotlin.text.trimStart
+  type: call
+  arguments: []
+  template: ~this~.trimStart()
+- id: kotlin.text.trimEnd
+  type: call
+  arguments: []
+  template: ~this~.trimEnd()
+- id: kotlin.text.padStart
+  type: call
+  template: ~this~.padStart(~*~)
+- id: kotlin.text.padEnd
+  type: call
+  template: ~this~.padEnd(~*~)
+- id: kotlin.text.isEmpty
+  type: call
+  template: ~this~ === ""
+- id: kotlin.text.isNullOrEmpty
+  type: call
+  template: ~this~ === ""
+- id: kotlin.text.isNotEmpty
+  type: call
+  template: ~this~ !== ""
+- id: kotlin.text.isNotBlank
+  type: call
+  template:
+    pattern: !kotlinCharSequenceIsBlank(~this~)
+    imports:
+      kotlinCharSequenceIsBlank: khrysalis/dist/kotlin/kotlin.text
+- id: kotlin.text.isNullOrBlank
+  type: call
+  template:
+    pattern: kotlinCharSequenceIsBlank(~this~)
+    imports:
+      kotlinCharSequenceIsBlank: khrysalis/dist/kotlin/kotlin.text
+- id: kotlin.text.orEmpty
+  type: call
+  template: (~this~ ?? "")
+- id: kotlin.text.substring
+  type: call
+  template: ~this~.substring(~*~)
+- id: kotlin.text.removePrefix
+  type: call
+  template:
+    pattern: kotlinStringSubstringAfter(~this~, ~0~)
+    imports:
+      kotlinStringSubstringAfter: khrysalis/dist/kotlin/kotlin.text
+- id: kotlin.text.removeSuffix
+  type: call
+  template:
+    pattern: kotlinStringSubstringBeforeLast(~this~, ~0~)
+    imports:
+      kotlinStringSubstringBeforeLast: khrysalis/dist/kotlin/kotlin.text
+- id: kotlin.text.replace
+  type: call
+  template: ~this~.replace(~0~, ~1~)
+- id: kotlin.text.startsWith
+  type: call
+  template: ~this~.startsWith(~*~)
+- id: kotlin.text.endsWith
+  type: call
+  template: ~this~.endsWith(~*~)
+- id: kotlin.text.split
+  type: call
+  template: ~this~.split(~*~)
+- id: kotlin.text.lines
+  type: call
+  template: ~this~.split('\n')
+- id: kotlin.String.get
+  type: call
+  template: ~this~[~0~]
+
+# Characters
+
+
+# Regex
+
+- id: kotlin.text.Regex
+  type: type
+  template: RegExp
+- id: kotlin.text.Regex
+  type: call
+  template: new RegExp(~0~)
+
+# String Builder
+- id: kotlin.text.StringBuilder
+  type: call
+  template:
+    pattern: StringBuilder()
+    imports:
+      StringBuilder: khrysalis/dist/kotlin/kotlin.text
+- id: kotlin.text.StringBuilder.append
+  type: call
+  template: ~this~.value += ~0~
+- id: java.lang.StringBuilder.append
+  type: call
+  template: ~this~.value += ~0~
+- id: kotlin.text.appendln
+  type: call
+  template: ~this~.value += ~0~ + '\n'
+- id: kotlin.text.appendln
+  type: call
+  arguments: []
+  template: ~this~.value += '\n'
+- id: kotlin.text.format
+  type: call
+  template:
+    pattern: sprintf(~this~, ~*~)
+    imports:
+      sprintf: sprintf
+- id: com.lightningkite.khrysalis.formatList
+  type: call
+  template:
+    pattern: vsprintf(~this~, ~0~)
+    imports:
+      vsprintf: sprintf
