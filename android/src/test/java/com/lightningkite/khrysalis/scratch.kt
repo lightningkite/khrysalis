@@ -6,6 +6,8 @@ import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.PublishSubject
 
 fun test(){
-    val list = listOf(1, 2, 3)
-    list.any()
+    "asdf".split('s')
+    "asdf".format()
+    'a'.toLowerCase()
+    val c: Char = 'a'
 }

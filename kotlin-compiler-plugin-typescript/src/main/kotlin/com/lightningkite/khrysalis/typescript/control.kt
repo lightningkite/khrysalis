@@ -51,7 +51,6 @@ fun TypescriptTranslator.registerControl() {
     }
 
     handle<KtIfExpression> {
-
         if (typedRule.resolvedUsedAsExpression == true && typedRule.parent !is KtContainerNodeForControlStructureBody) {
             -"(() => {"
         }
@@ -60,6 +59,20 @@ fun TypescriptTranslator.registerControl() {
             -"})()"
         }
     }
+
+    handle<KtIfExpression>(
+        condition = {
+            typedRule.then !is KtBlockExpression && typedRule.`else` !is KtBlockExpression
+        },
+        priority = 1,
+        action = {
+            -typedRule.condition
+            -" ? "
+            -typedRule.then
+            -" : "
+            -typedRule.`else`
+        }
+    )
 
     handle<KtWhenExpression>(
         condition = { typedRule.subjectExpression != null && typedRule.entries.flatMap { it.conditions.toList() }.all { it is KtWhenConditionWithExpression } },

@@ -29,7 +29,8 @@ data class VirtualArrayGet(
 
 fun KtExpression.isSimple(): Boolean = when(this){
     is KtNameReferenceExpression,
-    is KtConstantExpression -> true
+    is KtConstantExpression,
+    is KtThisExpression -> true
     else -> false
 }
 

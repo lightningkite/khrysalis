@@ -5,7 +5,11 @@
   "main": "Kotlin.js",
   "types": "Kotlin.d.ts",
   "dependencies": {
-    "rxjs": "^6.5.5"
+    "rxjs": "^6.5.5",
+    "sprintf": "^0.1.5",
+    "@types/sprintf": "^0.1.0",
+    "mersenne-twister": "^1.1.0",
+    "@types/mersenne-twister": "^1.1.2"
   },
   "devDependencies": {
     "typescript": "^3.4.5"

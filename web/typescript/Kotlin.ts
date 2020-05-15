@@ -58,7 +58,7 @@ Object.defineProperty(Object.prototype, "equals", {
     }
 })
 
-interface Comparable<T> {
+export interface Comparable<T> {
     compareTo(other: T): number
 }
 

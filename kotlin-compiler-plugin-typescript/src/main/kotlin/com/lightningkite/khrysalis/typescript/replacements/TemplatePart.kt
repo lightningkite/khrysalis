@@ -12,5 +12,9 @@ sealed class TemplatePart {
     data class TypeParameter(val name: String) : TemplatePart()
     data class ParameterByIndex(val index: Int) : TemplatePart()
     data class TypeParameterByIndex(val index: Int) : TemplatePart()
-    data class Import(val path: String, val identifier: String, val asName: String? = null): TemplatePart()
+    data class Import(val path: String, val identifier: String, val asName: String? = null): TemplatePart() {
+        companion object {
+            const val WHOLE = "WHOLE"
+        }
+    }
 }

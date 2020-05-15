@@ -1,0 +1,14 @@
+---
+
+- id: com.lightningkite.khrysalis.Box
+  type: type
+  template: ~T0~
+- id: com.lightningkite.khrysalis.Box.value
+  type: get
+  template: ~this~
+- id: com.lightningkite.khrysalis.Box.Companion.wrap
+  type: call
+  template: ~0~
+- id: com.lightningkite.khrysalis.boxWrap
+  type: call
+  template: ~0~

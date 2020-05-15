@@ -1,9 +1,10 @@
 package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.typescript.manifest.declaresPrefix
-import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.forEachBetween
+import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
+import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.descriptors.FunctionDescriptor
 import org.jetbrains.kotlin.descriptors.PropertyDescriptor
@@ -13,10 +14,25 @@ import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
 import org.jetbrains.kotlin.psi.synthetics.SyntheticClassOrObjectDescriptor
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
-import org.jetbrains.kotlin.resolve.descriptorUtil.isPublishedApi
 import java.util.concurrent.atomic.AtomicInteger
 
 val uniqueNumber = AtomicInteger(0)
+
+data class VirtualGet(
+    val receiver: Any,
+    val property: PropertyDescriptor,
+    val expr: KtExpression,
+    val safe: Boolean
+)
+
+data class VirtualSet(
+    val receiver: Any,
+    val property: PropertyDescriptor,
+    val expr: KtExpression,
+    val safe: Boolean,
+    val value: Any,
+    val dispatchReceiver: String?
+)
 
 fun TypescriptTranslator.registerVariable() {
 
@@ -148,7 +164,6 @@ fun TypescriptTranslator.registerVariable() {
             typedRule.getter?.let {
                 -it
             } ?: run {
-                if(stubMode) return@run
                 if (typedRule.isMember) {
                     -(typedRule.visibilityModifier() ?: "public")
                     -" get "
@@ -175,7 +190,6 @@ fun TypescriptTranslator.registerVariable() {
                 typedRule.setter?.let {
                     -it
                 } ?: run {
-                    if(stubMode) return@run
                     if (typedRule.isMember) {
                         -(typedRule.visibilityModifier() ?: "public")
                         -" set "
@@ -223,10 +237,6 @@ fun TypescriptTranslator.registerVariable() {
                 -(typedRule.property.typeReference
                     ?: typedRule.property.resolvedProperty!!.type)
                 -" "
-                if(stubMode) {
-                    -"{}\n"
-                    return@handle
-                }
                 typedRule.bodyExpression?.let {
                     -"{ return "
                     -it
@@ -260,10 +270,6 @@ fun TypescriptTranslator.registerVariable() {
                 -": "
                 -(typedRule.property.typeReference ?: typedRule.property.resolvedProperty!!.type)
                 -") "
-                if(stubMode) {
-                    -"{}\n"
-                    return@handle
-                }
                 -typedRule.bodyBlockExpression
                 -"\n"
             }
@@ -287,10 +293,6 @@ fun TypescriptTranslator.registerVariable() {
                 -it
                 -"; }"
             }
-            if(stubMode) {
-                -"{}\n"
-                return@handle
-            }
             -typedRule.bodyBlockExpression
             -"\n"
         }
@@ -308,10 +310,6 @@ fun TypescriptTranslator.registerVariable() {
             -(typedRule.property.typeReference
                 ?: typedRule.property.resolvedProperty!!.type)
             -") "
-            if(stubMode) {
-                -"{}\n"
-                return@handle
-            }
             -typedRule.bodyBlockExpression
             -"\n"
         }
@@ -329,10 +327,6 @@ fun TypescriptTranslator.registerVariable() {
             -(typedRule.property.typeReference
                 ?: typedRule.property.resolvedProperty!!.type)
             -" "
-            if(stubMode) {
-                -"{}\n"
-                return@handle
-            }
             typedRule.bodyExpression?.let {
                 -"{ return "
                 -it
@@ -355,10 +349,6 @@ fun TypescriptTranslator.registerVariable() {
             -(typedRule.property.typeReference
                 ?: typedRule.property.resolvedProperty!!.type)
             -") "
-            if(stubMode) {
-                -"{}\n"
-                return@handle
-            }
             -typedRule.bodyBlockExpression
             -"\n"
         }
@@ -378,7 +368,80 @@ fun TypescriptTranslator.registerVariable() {
         }
     )
 
-    //handle virtual property access
+    //Getter usage
+    handle<VirtualGet>(
+        condition = {
+            replacements.getGet(typedRule.property) != null
+        },
+        priority = 10_000,
+        action = {
+            val rule = replacements.getGet(typedRule.property)!!
+            if (typedRule.safe) {
+                -"((_it)=>{\n"
+                -"if(_it === null) return null;\nreturn "
+            }
+            emitTemplate(
+                requiresWrapping = typedRule.expr.parent is KtBlockExpression,
+                template = rule.template,
+                receiver = (if (typedRule.safe) "_it" else typedRule.receiver),
+                dispatchReceiver = typedRule.expr.getTsReceiver()
+            )
+            if (typedRule.safe) {
+                -"\n})("
+                -typedRule.receiver
+                -')'
+            }
+        }
+    )
+    handle<VirtualGet>(
+        condition = {
+            typedRule.property.tsFunctionGetName != null
+        },
+        priority = 1000,
+        action = {
+            out.addImport(typedRule.property, typedRule.property.tsFunctionGetName)
+            if (typedRule.safe) {
+                -"((_it)=>{\n"
+                -"if(_it === null) return null;\nreturn "
+            }
+            if (typedRule.property.dispatchReceiverParameter != null) {
+                -"/*dis*/"
+                -typedRule.expr.getTsReceiver()
+                -"."
+            }
+            -typedRule.property.tsFunctionGetName
+            -'('
+            -(if (typedRule.safe) "_it" else typedRule.receiver)
+            -')'
+            if (typedRule.safe) {
+                -"\n})("
+                -typedRule.receiver
+                -')'
+            }
+        }
+    )
+    handle<VirtualGet> {
+        -typedRule.expr.allChildren
+    }
+    handle<KtDotQualifiedExpression>(
+        condition = { ((typedRule.selectorExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget as? PropertyDescriptor) != null },
+        priority = 1000,
+        action = {
+            val p =
+                (typedRule.selectorExpression as KtNameReferenceExpression).resolvedReferenceTarget as PropertyDescriptor
+            -VirtualGet(typedRule.receiverExpression, p, typedRule, false)
+        }
+    )
+    handle<KtSafeQualifiedExpression>(
+        condition = { ((typedRule.selectorExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget as? PropertyDescriptor) != null },
+        priority = 1000,
+        action = {
+            val p =
+                (typedRule.selectorExpression as KtNameReferenceExpression).resolvedReferenceTarget as PropertyDescriptor
+            -VirtualGet(typedRule.receiverExpression, p, typedRule, true)
+        }
+    )
+
     handle<KtNameReferenceExpression>(
         condition = { (typedRule.resolvedReferenceTarget as? PropertyDescriptor)?.tsFunctionGetName != null },
         priority = 100,
@@ -396,21 +459,154 @@ fun TypescriptTranslator.registerVariable() {
             }
         }
     )
-    handle<KtDotQualifiedExpression>(
-        condition = { ((typedRule.selectorExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget as? PropertyDescriptor)?.tsFunctionGetName != null },
+    handle<KtNameReferenceExpression>(
+        condition = {
+            val pd = typedRule.resolvedReferenceTarget as? PropertyDescriptor ?: return@handle false
+            replacements.getGet(pd) != null
+        },
+        priority = 10_000,
+        action = {
+            val pd = typedRule.resolvedReferenceTarget as PropertyDescriptor
+            val rule = replacements.getGet(pd)!!
+            emitTemplate(
+                requiresWrapping = typedRule.parent is KtBlockExpression,
+                template = rule.template,
+                receiver = typedRule.getTsReceiver()
+            )
+        }
+    )
+
+    //Setter usage
+    handle<VirtualSet>(
+        condition = {
+            typedRule.property.tsFunctionSetName != null
+        },
         priority = 1000,
         action = {
-            val nre = (typedRule.selectorExpression as KtNameReferenceExpression)
-            val prop = nre.resolvedReferenceTarget as PropertyDescriptor
-            out.addImport(prop, prop.tsFunctionGetName)
-            if(prop.dispatchReceiverParameter != null) {
-                -nre.getTsReceiver()
+            out.addImport(typedRule.property, typedRule.property.tsFunctionSetName)
+
+            val tempName = if (typedRule.safe) {
+                val r = typedRule.receiver
+                if (r is String || (r as? KtExpression)?.isSimple() == true) {
+                    -"if("
+                    -r
+                    -" !== null) "
+                    r
+                } else {
+                    val n = "temp${uniqueNumber.getAndIncrement()}"
+                    -"const $n = "
+                    -typedRule.receiver
+                    -";\nif($n !== null) "
+                    n
+                }
+            } else ""
+            if (typedRule.property.dispatchReceiverParameter != null) {
+                -typedRule.dispatchReceiver
                 -"."
             }
-            -prop.tsFunctionGetName
+            -typedRule.property.tsFunctionSetName
             -'('
-            -typedRule.receiverExpression
+            -(if (typedRule.safe) tempName else typedRule.receiver)
+            -", "
+            -typedRule.value
             -')'
+        }
+    )
+    handle<VirtualSet>(
+        condition = {
+            replacements.getSet(typedRule.property) != null
+        },
+        priority = 10_000,
+        action = {
+            val rule = replacements.getSet(typedRule.property)!!
+            emitTemplate(
+                requiresWrapping = false,
+                template = rule.template,
+                receiver = typedRule.receiver,
+                dispatchReceiver = typedRule.dispatchReceiver,
+                extensionReceiver = null,
+                value = typedRule.value
+            )
+        }
+    )
+    handle<VirtualSet>(condition = { typedRule.safe }, priority = 1) {
+        val r = typedRule.receiver
+        val tempName = if (r is String || (r as? KtExpression)?.isSimple() == true) {
+            -"if("
+            -r
+            -" !== null) "
+            r
+        } else {
+            val n = "temp${uniqueNumber.getAndIncrement()}"
+            -"const $n = "
+            -r
+            -";\nif($n !== null) "
+            n
+        }
+
+        -tempName
+        -"."
+        -typedRule.property.name.asString()
+        -" = "
+        -typedRule.value
+    }
+    handle<VirtualSet> {
+        -typedRule.expr.allChildren.map {
+            if(it is LeafPsiElement && it.elementType == KtTokens.SAFE_ACCESS)
+                "."
+            else
+                it
+        }
+    }
+    handle<KtBinaryExpression>(
+        condition = {
+            val left = typedRule.left as? KtQualifiedExpression ?: return@handle false
+            val nre = left.selectorExpression as? KtNameReferenceExpression ?: return@handle false
+            val pd = nre.resolvedReferenceTarget as? PropertyDescriptor ?: return@handle false
+            true
+        },
+        priority = 100,
+        action = {
+            val left = (typedRule.left as KtQualifiedExpression)
+            val nre = left.selectorExpression as KtNameReferenceExpression
+            val leftProp = nre.resolvedReferenceTarget as PropertyDescriptor
+            val rec: Any = if (typedRule.operationToken == KtTokens.EQ)
+                left.receiverExpression
+            else {
+                if(left.receiverExpression.isSimple()){
+                    left.receiverExpression
+                } else {
+                    val n = "temp${uniqueNumber.getAndIncrement()}"
+                    -"const $n = "
+                    -left.receiverExpression
+                    -";\n"
+                    n
+                }
+            }
+
+            -VirtualSet(
+                receiver = rec,
+                property = leftProp,
+                expr = typedRule,
+                dispatchReceiver = nre.getTsReceiver(),
+                safe = typedRule.operationToken != KtTokens.EQ || left is KtSafeQualifiedExpression,
+                value = if (typedRule.operationToken == KtTokens.EQ) {
+                    typedRule.right!!
+                } else {
+                    ValueOperator(
+                        left = VirtualGet(
+                            receiver = rec,
+                            property = leftProp,
+                            expr = left,
+                            safe = false
+                        ),
+                        right = typedRule.right!!,
+                        functionDescriptor = typedRule.operationReference.resolvedReferenceTarget as FunctionDescriptor,
+                        dispatchReceiver = typedRule.getTsReceiver(),
+                        operationToken = typedRule.operationToken
+                    )
+                }
+            )
         }
     )
     handle<KtBinaryExpression>(
@@ -455,111 +651,6 @@ fun TypescriptTranslator.registerVariable() {
                 )
             }
             -')'
-        }
-    )
-    handle<KtBinaryExpression>(
-        condition = {
-            val left = typedRule.left as? KtDotQualifiedExpression ?: return@handle false
-            ((left.selectorExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget as? PropertyDescriptor)?.tsFunctionGetName != null &&
-                    when (typedRule.operationToken) {
-                        KtTokens.EQ -> true
-                        KtTokens.PLUSEQ -> true
-                        KtTokens.MINUSEQ -> true
-                        KtTokens.MULTEQ -> true
-                        KtTokens.DIVEQ -> true
-                        KtTokens.PERCEQ -> true
-                        else -> false
-                    }
-        },
-        priority = 1000,
-        action = {
-            val left = (typedRule.left as KtDotQualifiedExpression)
-            val nre = (left.selectorExpression as KtNameReferenceExpression)
-            val prop = nre.resolvedReferenceTarget as PropertyDescriptor
-            out.addImport(prop, prop.tsFunctionSetName)
-            if(prop.dispatchReceiverParameter != null) {
-                -nre.getTsReceiver()
-                -"."
-            }
-            -prop.tsFunctionSetName
-            -'('
-            -left.receiverExpression
-            -", "
-            if (typedRule.operationToken == KtTokens.EQ) {
-                -typedRule.right!!
-            } else {
-                -ValueOperator(
-                    left = typedRule.left!!,
-                    right = typedRule.right!!,
-                    functionDescriptor = typedRule.operationReference.resolvedReferenceTarget as FunctionDescriptor,
-                    dispatchReceiver = typedRule.getTsReceiver(),
-                    operationToken = typedRule.operationToken
-                )
-            }
-            -')'
-        }
-    )
-
-    //Getter actual overrides
-    handle<KtNameReferenceExpression>(
-        condition = {
-            val pd = typedRule.resolvedReferenceTarget as? PropertyDescriptor ?: return@handle false
-            replacements.getGet(pd) != null
-        },
-        priority = 10_000,
-        action = {
-            val pd = typedRule.resolvedReferenceTarget as PropertyDescriptor
-            val rule = replacements.getGet(pd)!!
-            emitTemplate(
-                requiresWrapping = typedRule.parent is KtBlockExpression,
-                template = rule.template,
-                receiver = typedRule.getTsReceiver()
-            )
-        }
-    )
-    handle<KtDotQualifiedExpression>(
-        condition = {
-            val nre = (typedRule.selectorExpression as? KtNameReferenceExpression) ?: return@handle false
-            val pd = nre.resolvedReferenceTarget as? PropertyDescriptor ?: return@handle false
-            replacements.getGet(pd) != null
-        },
-        priority = 10_000,
-        action = {
-            val nre = (typedRule.selectorExpression as KtNameReferenceExpression)
-            val pd = nre.resolvedReferenceTarget as PropertyDescriptor
-            val rule = replacements.getGet(pd)!!
-            emitTemplate(
-                requiresWrapping = typedRule.parent is KtBlockExpression,
-                template = rule.template,
-                receiver = typedRule.receiverExpression,
-                dispatchReceiver = typedRule.getTsReceiver()
-            )
-        }
-    )
-
-    //Setter actual overrides
-    handle<KtBinaryExpression>(
-        condition = {
-            val left = typedRule.left as? KtDotQualifiedExpression ?: return@handle false
-            val pd =
-                ((left.selectorExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget as? PropertyDescriptor)
-                    ?: return@handle false
-            replacements.getSet(pd) != null
-        },
-        priority = 10_001,
-        action = {
-            val left = typedRule.left as KtDotQualifiedExpression
-            val nre = (left.selectorExpression as KtNameReferenceExpression)
-            val pd = (nre.resolvedReferenceTarget as PropertyDescriptor)
-            val rule = replacements.getSet(pd)!!
-            emitTemplate(
-                requiresWrapping = typedRule.parent is KtBlockExpression,
-                template = rule.template,
-                receiver = left.receiverExpression,
-                dispatchReceiver = nre.getTsReceiver(),
-                extensionReceiver = null,
-                value = typedRule.right
-            )
         }
     )
     handle<KtBinaryExpression>(

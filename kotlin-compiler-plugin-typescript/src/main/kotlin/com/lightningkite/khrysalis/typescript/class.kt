@@ -371,7 +371,7 @@ fun TypescriptTranslator.registerClass() {
                     } ?: run {
                         -"hash = 31 * hash + this."
                         -param.nameIdentifier
-                        -".hashCode()"
+                        -"?.hashCode() ?? 0"
                     }
                     -";\n"
                 }
@@ -397,12 +397,12 @@ fun TypescriptTranslator.registerClass() {
                             parameterByIndex = { listOf("other.", param.nameIdentifier) }
                         )
                     } ?: run {
-                        -"this."
+                        -"(this."
                         -param.nameIdentifier
-                        -".equals("
+                        -"?.equals("
                         -"other."
                         -param.nameIdentifier
-                        -")"
+                        -") ?? false)"
                     }
                 }
                 -" }\n"

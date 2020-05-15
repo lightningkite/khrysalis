@@ -24,6 +24,7 @@ fun String.toSnakeCase(): String {
             builder.append('_')
             builder.append(char.toLowerCase())
         } else {
+            builder.appendln()
             builder.append(char)
         }
     }

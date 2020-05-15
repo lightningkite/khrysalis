@@ -46,6 +46,31 @@ fun main(){
         println(thing2 + thing)
     }
 
+    val ifAsExpression = if(thing2 != null) thing2 else 0
+    val ifAsExpression2 = if(thing2 != null) {
+        println("Hi!")
+        thing2
+    } else {
+        println("SAD")
+        0
+    }
+    fun subfunction(): Int {
+        return if(thing2 != null) thing2 else 0
+    }
+    fun subfunction2(): Int {
+        return if(thing2 != null) {
+            println("Hi!")
+            thing2
+        } else {
+            println("SAD")
+            0
+        }
+    }
+
+    thing2?.let {
+        println("It's a $it")
+    }
+
     //When on subject
     when(thing){
         0 -> println("is zero")

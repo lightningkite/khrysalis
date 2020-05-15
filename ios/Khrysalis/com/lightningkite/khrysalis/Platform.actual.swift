@@ -4,7 +4,7 @@ import Foundation
 
 //--- Platform.{
 public enum Platform: StringEnum {
-    case iOS, Android
+    case iOS, Android, Web
     public static let current = Platform.iOS
 
     //--- Platform.}

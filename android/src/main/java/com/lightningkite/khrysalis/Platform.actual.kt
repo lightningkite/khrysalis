@@ -7,7 +7,7 @@ package com.lightningkite.khrysalis
  */
 
 enum class Platform {
-    iOS, Android;
+    iOS, Android, Web;
 
     companion object {
         val current = Android

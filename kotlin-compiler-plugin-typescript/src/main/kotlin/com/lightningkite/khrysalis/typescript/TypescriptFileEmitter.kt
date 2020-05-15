@@ -2,6 +2,7 @@ package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.SmartTabWriter
+import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.psi.KtFile
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
@@ -25,16 +26,27 @@ class TypescriptFileEmitter(val translator: TypescriptTranslator, val file: KtFi
         writer.appendln(overwriteWarning)
         writer.appendln("// File: ${file.virtualFilePath.removePrefix(translator.commonPath)}")
         writer.appendln("// Package: ${file.packageFqName.asString()}")
+        importedFqs.forEach {
+            writer.appendln("// FQImport: $it")
+        }
         imports.values.groupBy { it.path }.forEach { (path, parts) ->
-            writer.append("import { ")
-            writer.append(parts.sortedBy { it.asName ?: it.identifier }.joinToString(", ") {
-                it.asName?.let { name ->
-                    it.identifier + " as " + name
-                } ?: it.identifier
-            })
-            writer.append(" } from '")
-            writer.append(path)
-            writer.appendln("'")
+            if(parts.size == 1 && parts.first().identifier == TemplatePart.Import.WHOLE){
+                writer.append("import ")
+                writer.append(parts.first().identifier)
+                writer.append(" from '")
+                writer.append(path)
+                writer.appendln("'")
+            } else {
+                writer.append("import { ")
+                writer.append(parts.sortedBy { it.asName ?: it.identifier }.joinToString(", ") {
+                    it.asName?.let { name ->
+                        it.identifier + " as " + name
+                    } ?: it.identifier
+                })
+                writer.append(" } from '")
+                writer.append(path)
+                writer.appendln("'")
+            }
         }
         writer.appendln()
 
@@ -67,7 +79,8 @@ class TypescriptFileEmitter(val translator: TypescriptTranslator, val file: KtFi
 
     private fun addImportFromFq(fqName: String, name: String) {
         translator.kotlinFqNameToRelativeFile[fqName]?.let { relFile ->
-            val asPath = File(file.virtualFilePath.removePrefix(translator.commonPath))
+            val asPath = File(file.virtualFilePath.removePrefix(translator.commonPath).removeSuffix(".kt").plus(".ts"))
+            translator.collector?.report(CompilerMessageSeverity.WARNING, "Comparing $asPath and $relFile for importing $fqName")
             if(asPath == relFile){
                 importedFqs.add("$fqName SKIPPED due to same file")
             } else {
