@@ -75,7 +75,7 @@ import { LocationResult } from './LocationResult.shared'
 export function comLightningkiteKhrysalisAndroidActivityAccessRequestLocation(this_RequestLocation: ViewDependency, accuracyBetterThanMeters: number = 10.0, timeoutInSeconds: number = 100.0, onResult: (a: (LocationResult | null), b: (string | null)) => void){
     const alreadyDone = AtomicBoolean.constructorkotlinBoolean(false);
     
-    const manager = (tryCastClass(context.getSystemService(Context.LOCATION_SERVICE), LocationManager));
+    const manager = (tryCastClass(this_RequestLocation.context.getSystemService(Context.LOCATION_SERVICE), LocationManager));
     
     const listener = new class Anon implements LocationListener {
         public static implementsInterfaceAndroidLocationLocationListener = true;
@@ -102,20 +102,20 @@ export function comLightningkiteKhrysalisAndroidActivityAccessRequestLocation(th
         }
     }();
     
-    requestPermission(Manifest.permission.ACCESS_FINE_LOCATION, (it) => if (it) {
-            const criteria = Criteria.constructor();
-            
-            setAndroidLocationCriteriaHorizontalAccuracy(criteria, (() => {if(in new Range(0f, 100f).contains(accuracyBetterThanMeters)){
-                            return Criteria.ACCURACY_HIGH
+    requestPermission(Manifest.permission.ACCESS_FINE_LOCATION, (it) => (() => {if (it) {
+                    const criteria = Criteria.constructor();
+                    
+                    setAndroidLocationCriteriaHorizontalAccuracy(criteria, if(in new Range(0f, 100f).contains(accuracyBetterThanMeters)){
+                            Criteria.ACCURACY_HIGH
                         }else if(in new Range(100f, 500f).contains(accuracyBetterThanMeters)){
-                            return Criteria.ACCURACY_MEDIUM
+                            Criteria.ACCURACY_MEDIUM
                         }else {
-                            return Criteria.ACCURACY_LOW
-            }})());
-            manager?.requestSingleUpdate(Criteria.constructor(), listener, Looper.getMainLooper());
-        } else {
-            alreadyDone.compareAndSet(false, true) ? this.onResult(null, "No permission") : 
-    });
+                            Criteria.ACCURACY_LOW
+                    });
+                    manager?.requestSingleUpdate(Criteria.constructor(), listener, Looper.getMainLooper());
+                } else {
+                    alreadyDone.compareAndSet(false, true) ? this.onResult(null, "No permission") : 
+    }})());
     return Handler.constructorandroidosLooper(Looper.getMainLooper()).postDelayed(() => try {
             manager?.removeUpdates(listener);
             alreadyDone.compareAndSet(false, true) ? this.onResult(null, "Timeout") : 
@@ -138,12 +138,12 @@ export class LocationCache {
     }
     public hashCode(): number {
         let hash = 17;
-        hash = 31 * hash + this.location.hashCode();
-        hash = 31 * hash + this.timeSinceCall.hashCode();
+        hash = 31 * hash + this.location?.hashCode() ?? 0;
+        hash = 31 * hash + this.timeSinceCall?.hashCode() ?? 0;
         hash = 31 * hash + Math.floor(this.accuracy);
         return hash;
     }
-    public equals(other: any): boolean { return other instanceof LocationCache && this.location.equals(other.location) && this.timeSinceCall.equals(other.timeSinceCall) && this.accuracy === other.accuracy }
+    public equals(other: any): boolean { return other instanceof LocationCache && (this.location?.equals(other.location) ?? false) && (this.timeSinceCall?.equals(other.timeSinceCall) ?? false) && this.accuracy === other.accuracy }
     public toString(): string { return `LocationCache(location = ${this.location}, timeSinceCall = ${this.timeSinceCall}, accuracy = ${this.accuracy})` }
     public copy(location: LocationResult = this.location, timeSinceCall: Date = this.timeSinceCall, accuracy: number = this.accuracy) { return new LocationCache(location, timeSinceCall, accuracy); }
 }
@@ -156,16 +156,17 @@ export function setLastLocation(value: (LocationCache | null)) { _lastLocation =
 
 //! Declares com.lightningkite.khrysalis.location.requestLocationCached
 export function comLightningkiteKhrysalisAndroidActivityAccessRequestLocationCached(this_RequestLocationCached: ViewDependency, accuracyBetterThanMeters: number = 10.0, timeoutInSeconds: number = 100.0, onResult: (a: (LocationResult | null), b: (string | null)) => void){
-    if (!(getLastLocation().equals(null)) && getJavaUtilDateTime(getLastLocation()!!.timeSinceCall) - getJavaUtilDateTime(java.util.Date.constructor()) < 300000 && getLastLocation()!!.accuracy < accuracyBetterThanMeters) {
-        this.onResult(
-            getLastLocation()!!.location,
-            null
-        );
-    } else {
-        comLightningkiteKhrysalisAndroidActivityAccessRequestLocation(accuracyBetterThanMeters, undefined, (result, string) => {
-                result?.((it) => setLastLocation(new LocationCache(it, Date.constructor(), accuracyBetterThanMeters)))(this);
-                this.onResult(result, string);
-        });
-    }
+    (() => {if (!(getLastLocation().equals(null)) && getJavaUtilDateTime(getLastLocation()!!.timeSinceCall) - getJavaUtilDateTime(java.util.Date.constructor()) < 300000 && getLastLocation()!!.accuracy < accuracyBetterThanMeters) {
+                this.onResult(
+                    getLastLocation()!!.location,
+                    null
+                );
+            } else {
+                comLightningkiteKhrysalisAndroidActivityAccessRequestLocation(accuracyBetterThanMeters, undefined, (result, string) => {
+                        const temp281 = result;
+                        if(temp281 !== null) ((it) => setLastLocation(new LocationCache(it, Date.constructor(), accuracyBetterThanMeters)))(temp281);
+                        this.onResult(result, string);
+                });
+    }})()
 }
 

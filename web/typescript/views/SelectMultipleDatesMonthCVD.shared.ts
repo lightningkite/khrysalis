@@ -70,7 +70,7 @@ export class SelectMultipleDatesMonthCVD extends MonthCVD {
     
     public measure(width: number, height: number, displayMetrics: DisplayMetrics){
         .measure(width, height, displayMetrics);
-        setAndroidGraphicsPaintTextSize(selectedDayPaint, getAndroidGraphicsPaintTextSize(dayPaint));
+        setAndroidGraphicsPaintTextSize(this.selectedDayPaint, getAndroidGraphicsPaintTextSize(this.dayPaint));
     }
     
     public readonly drawDay_dateAlone: DateAlone = new DateAlone(0, 0, 0);
@@ -83,31 +83,31 @@ export class SelectMultipleDatesMonthCVD extends MonthCVD {
         outer: RectF,
         inner: RectF
     ){
-        if (dates.value.contains(day)) {
-            const leftDate = comLightningkiteKhrysalisTimeDateAloneSetAddDayOfMonth(comLightningkiteKhrysalisTimeDateAloneSet(drawDay_dateAlone, day), -1);
-            
-            const left = dates.value.contains(leftDate);
-            
-            const rightDate = comLightningkiteKhrysalisTimeDateAloneSetAddDayOfMonth(comLightningkiteKhrysalisTimeDateAloneSet(drawDay_dateAlone, day), 1);
-            
-            const right = dates.value.contains(rightDate);
-            
-            
-            if(left.not() && right.not()){
-                CalendarDrawing.INSTANCE.dayBackground(canvas, inner, this.selectedPaint);
-            }else if(left.not() && right){
-                CalendarDrawing.INSTANCE.dayBackgroundStart(canvas, inner, outer, this.selectedPaint);
-            }else if(left && right.not()){
-                CalendarDrawing.INSTANCE.dayBackgroundEnd(canvas, inner, outer, this.selectedPaint);
-            }else if(left && right){
-                CalendarDrawing.INSTANCE.dayBackgroundMid(canvas, inner, outer, this.selectedPaint);
-            }else {
-                CalendarDrawing.INSTANCE.dayBackground(canvas, inner, this.selectedPaint);
-            };
-            CalendarDrawing.INSTANCE.day(canvas, showingMonth, day, inner, this.selectedDayPaint);
-        } else {
-            CalendarDrawing.INSTANCE.day(canvas, showingMonth, day, inner, this.dayPaint);
-        }
+        (() => {if (this.dates.value.contains(day)) {
+                    const leftDate = comLightningkiteKhrysalisTimeDateAloneSetAddDayOfMonth(comLightningkiteKhrysalisTimeDateAloneSet(this.drawDay_dateAlone, day), -1);
+                    
+                    const left = this.dates.value.contains(leftDate);
+                    
+                    const rightDate = comLightningkiteKhrysalisTimeDateAloneSetAddDayOfMonth(comLightningkiteKhrysalisTimeDateAloneSet(this.drawDay_dateAlone, day), 1);
+                    
+                    const right = this.dates.value.contains(rightDate);
+                    
+                    
+                    (() => {if(left.not() && right.not()){
+                                CalendarDrawing.INSTANCE.dayBackground(canvas, inner, this.selectedPaint);
+                            }else if(left.not() && right){
+                                CalendarDrawing.INSTANCE.dayBackgroundStart(canvas, inner, outer, this.selectedPaint);
+                            }else if(left && right.not()){
+                                CalendarDrawing.INSTANCE.dayBackgroundEnd(canvas, inner, outer, this.selectedPaint);
+                            }else if(left && right){
+                                CalendarDrawing.INSTANCE.dayBackgroundMid(canvas, inner, outer, this.selectedPaint);
+                            }else {
+                                CalendarDrawing.INSTANCE.dayBackground(canvas, inner, this.selectedPaint);
+                    }})();
+                    CalendarDrawing.INSTANCE.day(canvas, showingMonth, day, inner, this.selectedDayPaint);
+                } else {
+                    CalendarDrawing.INSTANCE.day(canvas, showingMonth, day, inner, this.dayPaint);
+        }})()
     }
     
     public onTap(day: DateAlone){
@@ -124,13 +124,13 @@ export class SelectMultipleDatesMonthCVD extends MonthCVD {
     }
     
     public onTouchMove(day: DateAlone): Boolean{
-        if (this.adding) {
-            if () {
-                dates.value = kotlinCollectionsSetPlus(dates.value, day);
-            }
-        } else {
-            dates.value = kotlinCollectionsIterableToSet(dates.value.filter((it) => !(it.equals(day))));
-        }
+        (() => {if (this.adding) {
+                    (() => {if () {
+                                this.dates.value = kotlinCollectionsSetPlus(this.dates.value, day);
+                    }})()
+                } else {
+                    this.dates.value = kotlinCollectionsIterableToSet(this.dates.value.filter((it) => !(it.equals(day))));
+        }})()
         return true;
     }
     

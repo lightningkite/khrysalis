@@ -32,17 +32,17 @@ export class TransformedObservableProperty<A, B> extends ObservableProperty<any>
         super();
         this.basedOn = basedOn;
         this.read = read;
-        this.onChange = rxMap((it) => boxWrap(this.read(it.value)))(basedOn.onChange);
+        this.onChange = rxMap((it) => boxWrap(this.read(it.value)))(this.basedOn.onChange);
     }
     
     //! Declares com.lightningkite.khrysalis.observables.TransformedObservableProperty.value
     public get value(): B { return {
-            return this.read(basedOn.value);
+            return this.read(this.basedOn.value);
     }; }{
-        return this.read(basedOn.value);
+        return this.read(this.basedOn.value);
     }
     
-    public readonly onChange: Observable<Box<B>> = rxMap((it) => boxWrap(this.read(it.value)))(basedOn.onChange);
+    public readonly onChange: Observable<Box<B>> = rxMap((it) => boxWrap(this.read(it.value)))(this.basedOn.onChange);
     
 }
 

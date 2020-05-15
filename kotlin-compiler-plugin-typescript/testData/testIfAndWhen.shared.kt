@@ -3,24 +3,24 @@ package com.test.ifandwhen
 fun setNullable(): Int? = 2
 fun makeSomething(): Any? = "Hello"
 
-fun main(){
+fun main() {
     var thing: Int = 0
 
     //If/else chaining
 
-    if(thing == 1){
+    if (thing == 1) {
         println("is 1")
     }
 
-    if(thing == 0){
+    if (thing == 0) {
         println("is zero")
     } else {
         println("is not zero")
     }
 
-    if(thing == 0){
+    if (thing == 0) {
         println("is zero")
-    } else if(thing == 1){
+    } else if (thing == 1) {
         println("is one")
     } else {
         println("is more")
@@ -28,13 +28,13 @@ fun main(){
 
     //If nullable smart cast
     var thing2: Int? = setNullable()
-    if(thing2 != null){
+    if (thing2 != null) {
         println("Thing is not null")
         val result = 3 + thing2
         println(result)
     }
 
-    if(thing2 == null){
+    if (thing2 == null) {
         println("thing is null")
     } else {
         println("Thing is not null")
@@ -42,23 +42,25 @@ fun main(){
         println(result)
     }
 
-    if(thing2 != null && thing == 0){
+    if (thing2 != null && thing == 0) {
         println(thing2 + thing)
     }
 
-    val ifAsExpression = if(thing2 != null) thing2 else 0
-    val ifAsExpression2 = if(thing2 != null) {
+    val ifAsExpression = if (thing2 != null) thing2 else 0
+    val ifAsExpression2 = if (thing2 != null) {
         println("Hi!")
         thing2
     } else {
         println("SAD")
         0
     }
+
     fun subfunction(): Int {
-        return if(thing2 != null) thing2 else 0
+        return if (thing2 != null) thing2 else 0
     }
+
     fun subfunction2(): Int {
-        return if(thing2 != null) {
+        return if (thing2 != null) {
             println("Hi!")
             thing2
         } else {
@@ -67,12 +69,14 @@ fun main(){
         }
     }
 
-    thing2?.let {
-        println("It's a $it")
+    if (thing == 0) {
+        thing2?.let {
+            println("It's a $it")
+        }
     }
 
     //When on subject
-    when(thing){
+    when (thing) {
         0 -> println("is zero")
         1 -> println("is one")
         2 -> {
@@ -92,7 +96,7 @@ fun main(){
     }
 
     //when on subject advanced
-    when(thing2){
+    when (thing2) {
         0 -> println("is zero")
         null -> println("is null")
         else -> println("is something")
@@ -100,7 +104,7 @@ fun main(){
 
     //when on subject typed
     var thing3: Any? = makeSomething()
-    when(thing3){
+    when (thing3) {
         is String -> println("Found string " + thing3)
         is Int -> println("Found int ${thing3}")
         null -> println("Found null")

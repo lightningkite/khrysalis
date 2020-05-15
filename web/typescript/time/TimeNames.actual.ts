@@ -20,22 +20,22 @@
 export class TimeNames {
     private constructor() {
         this.symbols = DateFormatSymbols.constructor();
-        this.shortMonthNames = Array.from(getJavaTextDateFormatSymbolsShortMonths(symbols));
-        this.monthNames = Array.from(getJavaTextDateFormatSymbolsMonths(symbols));
-        this.shortWeekdayNames = Array.from(getJavaTextDateFormatSymbolsShortWeekdays(symbols)).slice(1);
-        this.weekdayNames = Array.from(getJavaTextDateFormatSymbolsWeekdays(symbols)).slice(1);
+        this.shortMonthNames = Array.from(getJavaTextDateFormatSymbolsShortMonths(this.symbols));
+        this.monthNames = Array.from(getJavaTextDateFormatSymbolsMonths(this.symbols));
+        this.shortWeekdayNames = Array.from(getJavaTextDateFormatSymbolsShortWeekdays(this.symbols)).slice(1);
+        this.weekdayNames = Array.from(getJavaTextDateFormatSymbolsWeekdays(this.symbols)).slice(1);
     }
     public static INSTANCE = new TimeNames();
     
     private readonly symbols = DateFormatSymbols.constructor();
     
-    public readonly shortMonthNames: Array<string> = Array.from(getJavaTextDateFormatSymbolsShortMonths(symbols));
+    public readonly shortMonthNames: Array<string> = Array.from(getJavaTextDateFormatSymbolsShortMonths(this.symbols));
     
-    public readonly monthNames: Array<string> = Array.from(getJavaTextDateFormatSymbolsMonths(symbols));
+    public readonly monthNames: Array<string> = Array.from(getJavaTextDateFormatSymbolsMonths(this.symbols));
     
-    public readonly shortWeekdayNames: Array<string> = Array.from(getJavaTextDateFormatSymbolsShortWeekdays(symbols)).slice(1);
+    public readonly shortWeekdayNames: Array<string> = Array.from(getJavaTextDateFormatSymbolsShortWeekdays(this.symbols)).slice(1);
     
-    public readonly weekdayNames: Array<string> = Array.from(getJavaTextDateFormatSymbolsWeekdays(symbols)).slice(1);
+    public readonly weekdayNames: Array<string> = Array.from(getJavaTextDateFormatSymbolsWeekdays(this.symbols)).slice(1);
     
     shortMonthName(oneIndexedPosition: number): string{ return this.shortMonthNames[oneIndexedPosition - 1]; }
     monthName(oneIndexedPosition: number): string{ return this.monthNames[oneIndexedPosition - 1]; }

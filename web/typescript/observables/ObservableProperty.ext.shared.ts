@@ -58,13 +58,13 @@ import { map as rxMap } from 'rxjs/operators'
 import { MutableObservableProperty } from './MutableObservableProperty.shared'
 
 //! Declares com.lightningkite.khrysalis.observables.observable
-export function getComLightningkiteKhrysalisObservablesObservablePropertyObservable<T>(this_Observable: ObservableProperty<T>): Observable<Box<T>> { return onChange.startWith(boxWrap(this_Observable.value)); }
+export function getComLightningkiteKhrysalisObservablesObservablePropertyObservable<T>(this_Observable: ObservableProperty<T>): Observable<Box<T>> { return this_Observable.onChange.startWith(boxWrap(this_Observable.value)); }
 
 //! Declares com.lightningkite.khrysalis.observables.observableNN
-export function getComLightningkiteKhrysalisObservablesObservablePropertyObservableNN<T>(this_ObservableNN: ObservableProperty<T>): Observable<T> { return rxMap((it) => it.value)(onChange.startWith(boxWrap(this_ObservableNN.value))); }
+export function getComLightningkiteKhrysalisObservablesObservablePropertyObservableNN<T>(this_ObservableNN: ObservableProperty<T>): Observable<T> { return rxMap((it) => it.value)(this_ObservableNN.onChange.startWith(boxWrap(this_ObservableNN.value))); }
 
 //! Declares com.lightningkite.khrysalis.observables.onChangeNN
-export function getComLightningkiteKhrysalisObservablesObservablePropertyOnChangeNN<T>(this_OnChangeNN: ObservableProperty<T>): Observable<T> { return rxMap((it) => it.value)(onChange); }
+export function getComLightningkiteKhrysalisObservablesObservablePropertyOnChangeNN<T>(this_OnChangeNN: ObservableProperty<T>): Observable<T> { return rxMap((it) => it.value)(this_OnChangeNN.onChange); }
 
 
 //! Declares com.lightningkite.khrysalis.observables.subscribeBy
@@ -93,10 +93,10 @@ export function comLightningkiteKhrysalisObservablesObservablePropertyAddAndRunW
 
 //! Declares com.lightningkite.khrysalis.observables.includes
 export function includes<E>(collection: MutableObservableProperty<Set<E>>, element: E): MutableObservableProperty<Boolean>{
-    return comLightningkiteKhrysalisObservablesObservablePropertyWithWrite(comLightningkiteKhrysalisObservablesObservablePropertyMap(collection, (it) => it.contains(element)), (it) => if (it) {
-            collection.value = kotlinCollectionsSetPlus(collection.value, element);
-        } else {
-            collection.value = kotlinCollectionsSetMinus(collection.value, element);
-    });
+    return comLightningkiteKhrysalisObservablesObservablePropertyWithWrite(comLightningkiteKhrysalisObservablesObservablePropertyMap(collection, (it) => it.contains(element)), (it) => (() => {if (it) {
+                    collection.value = kotlinCollectionsSetPlus(collection.value, element);
+                } else {
+                    collection.value = kotlinCollectionsSetMinus(collection.value, element);
+    }})());
 }
 

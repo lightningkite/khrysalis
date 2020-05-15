@@ -43,10 +43,10 @@ export class CombineObservableProperty<T, A, B> extends ObservableProperty<any> 
     }
     
     //! Declares com.lightningkite.khrysalis.observables.CombineObservableProperty.value
-    public get value(): T { return this.combiner(observableA.value, observableB.value); }
+    public get value(): T { return this.combiner(this.observableA.value, this.observableB.value); }
     
     //! Declares com.lightningkite.khrysalis.observables.CombineObservableProperty.onChange
-    public get onChange(): Observable<Box<T>> { return ioReactivexObservableCombineLatest(observableA.onChange.startWith(Box.Companion.INSTANCE.wrap(observableA.value)), observableB.onChange.startWith(Box.Companion.INSTANCE.wrap(observableB.value)), (a: Box<A>, b: Box<B>) => boxWrap(this.combiner(a.value, b.value)))
+    public get onChange(): Observable<Box<T>> { return ioReactivexObservableCombineLatest(this.observableA.onChange.startWith(Box.Companion.INSTANCE.wrap(this.observableA.value)), this.observableB.onChange.startWith(Box.Companion.INSTANCE.wrap(this.observableB.value)), (a: Box<A>, b: Box<B>) => boxWrap(this.this.combiner(a.value, b.value)))
     .skip(1); }
     
     

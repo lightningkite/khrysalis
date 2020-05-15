@@ -29,12 +29,12 @@ export class StandardObservableProperty<T> extends MutableObservableProperty<any
     public get value(): T { return this.underlyingValue; }
     public set value(value: T) {
         this.underlyingValue = value;
-        onChange.onNext(boxWrap(value));
+        this.onChange.onNext(boxWrap(value));
     }
     
     
     public update(){
-        onChange.onNext(boxWrap(this.value));
+        this.onChange.onNext(boxWrap(this.value));
     }
 }
 

@@ -23,9 +23,9 @@ import { ClockPartSize } from './ClockPartSize.shared'
 
 //! Declares com.lightningkite.khrysalis.time.normalize
 export function comLightningkiteKhrysalisTimeTimeAloneNormalize(this_Normalize: TimeAlone){
-    this_Normalize.hour = kotlinIntFloorMod((this_Normalize.hour + kotlinIntFloorDiv(minute, 60)), 24);
-    this_Normalize.minute = kotlinIntFloorMod((this_Normalize.minute + kotlinIntFloorDiv(second, 60)), 60);
-    this_Normalize.second = kotlinIntFloorMod(second, 60);
+    this_Normalize.hour = kotlinIntFloorMod((this_Normalize.hour + kotlinIntFloorDiv(this_Normalize.minute, 60)), 24);
+    this_Normalize.minute = kotlinIntFloorMod((this_Normalize.minute + kotlinIntFloorDiv(this_Normalize.second, 60)), 60);
+    this_Normalize.second = kotlinIntFloorMod(this_Normalize.second, 60);
 }
 
 //! Declares com.lightningkite.khrysalis.time.set

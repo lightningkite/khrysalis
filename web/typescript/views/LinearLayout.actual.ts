@@ -47,26 +47,26 @@ export function androidWidgetLinearLayoutParams(this_Params: LinearLayout, sizeX
     const align = getAndroidWidgetLinearLayoutOrientation(this_Params) === LinearLayout.HORIZONTAL ? gravity.vertical : gravity.horizontal;
     
     
-    return also((() => {if (getAndroidWidgetLinearLayoutOrientation(this_Params) === LinearLayout.HORIZONTAL) {
-                    return LinearLayout.LayoutParams.constructorkotlinInt, kotlinInt, kotlinFloat(!(weight === 0f) ? 0 : sizeX === 0 ? WRAP_CONTENT : Math.floor((sizeX * d)), align.equals(Align.fill) ? MATCH_PARENT : sizeY === 0 ? WRAP_CONTENT : Math.floor((sizeY * d)), weight);
-                } else {
-                    return LinearLayout.LayoutParams.constructorkotlinInt, kotlinInt, kotlinFloat(align.equals(Align.fill) ? MATCH_PARENT : sizeX === 0 ? WRAP_CONTENT : Math.floor((sizeX * d)), !(weight === 0f) ? 0 : sizeY === 0 ? WRAP_CONTENT : Math.floor((sizeY * d)), weight);
-        }})(), (this_) => {
-            this_.gravity = (() => {switch(align){
-                        case Align.start:
-                        return Gravity.TOP | Gravity.START
-                        break;
-                        case Align.center:
-                        return Gravity.CENTER
-                        break;
-                        case Align.end:
-                        return Gravity.BOTTOM | Gravity.END
-                        break;
-                        case Align.fill:
-                        return Gravity.CENTER
-                        break;
-                    }
-            })();
+    return also(if (getAndroidWidgetLinearLayoutOrientation(this_Params) === LinearLayout.HORIZONTAL) {
+            return LinearLayout.LayoutParams.constructorkotlinInt, kotlinInt, kotlinFloat(!(weight === 0f) ? 0 : sizeX === 0 ? WRAP_CONTENT : Math.floor((sizeX * d)), align.equals(Align.fill) ? MATCH_PARENT : sizeY === 0 ? WRAP_CONTENT : Math.floor((sizeY * d)), weight);
+        } else {
+            return LinearLayout.LayoutParams.constructorkotlinInt, kotlinInt, kotlinFloat(align.equals(Align.fill) ? MATCH_PARENT : sizeX === 0 ? WRAP_CONTENT : Math.floor((sizeX * d)), !(weight === 0f) ? 0 : sizeY === 0 ? WRAP_CONTENT : Math.floor((sizeY * d)), weight);
+        }, (this_) => {
+            this_.gravity = switch(align){
+                case Align.start:
+                Gravity.TOP | Gravity.START
+                break;
+                case Align.center:
+                Gravity.CENTER
+                break;
+                case Align.end:
+                Gravity.BOTTOM | Gravity.END
+                break;
+                case Align.fill:
+                Gravity.CENTER
+                break;
+            }
+            ;
             setMargins(Math.floor((d * marginStart)), Math.floor((d * marginTop)), Math.floor((d * marginEnd)), Math.floor((d * marginBottom)));
     });
 }

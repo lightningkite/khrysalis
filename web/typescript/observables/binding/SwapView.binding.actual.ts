@@ -49,8 +49,8 @@ import { ViewDependency } from './../../views/ViewDependency.actual'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindStack
 export function comLightningkiteKhrysalisViewsAndroidSwapViewBindStack(this_BindStack: SwapView, dependency: ViewDependency, obs: ObservableStack<ViewGenerator>){
-    let currentData = const temp416 = obs.stack;
-    (temp416[temp416.length - 1] ?? null);
+    let currentData = const temp410 = obs.stack;
+    (temp410[temp410.length - 1] ?? null);
     
     let currentStackSize = obs.stack.size;
     
@@ -65,36 +65,36 @@ export function comLightningkiteKhrysalisViewsAndroidSwapViewBindStack(this_Bind
                     const oldStackSize = currentStackSize;
                     
                     
-                    let newView = const temp418 = obs.stack;
-                    (temp418[temp418.length - 1] ?? null)?.generate(dependency);
+                    let newView = const temp412 = obs.stack;
+                    (temp412[temp412.length - 1] ?? null)?.generate(dependency);
                     
-                    if (newView.equals(null)) {
-                        newView = View.constructorandroidcontentContext(getComLightningkiteKhrysalisViewsAndroidSwapViewContext(this_BindStack));
-                        setComLightningkiteKhrysalisViewsAndroidSwapViewVisibility(this_BindStack, View.GONE);
-                    } else {
-                        setComLightningkiteKhrysalisViewsAndroidSwapViewVisibility(this_BindStack, View.VISIBLE);
-                    }
+                    (() => {if (newView.equals(null)) {
+                                newView = View.constructorandroidcontentContext(getComLightningkiteKhrysalisViewsAndroidSwapViewContext(this_BindStack));
+                                setComLightningkiteKhrysalisViewsAndroidSwapViewVisibility(this_BindStack, View.GONE);
+                            } else {
+                                setComLightningkiteKhrysalisViewsAndroidSwapViewVisibility(this_BindStack, View.VISIBLE);
+                    }})()
                     addView(newView, FrameLayout.LayoutParams.constructorkotlinInt, kotlinInt(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                     const newStackSize = datas.size;
                     
                     
-                    if(oldStackSize === 0){
-                        oldView.animate().alpha(0f);
-                        setAndroidViewViewAlpha(newView, 0f);
-                        return newView.animate().alpha(1f);
-                    }else if(oldStackSize > newStackSize){
-                        oldView.animate().translationX(getComLightningkiteKhrysalisViewsAndroidSwapViewWidth(this_BindStack));
-                        setAndroidViewViewTranslationX(newView, -getComLightningkiteKhrysalisViewsAndroidSwapViewWidth(this_BindStack));
-                        return newView.animate().translationX(0f);
-                    }else if(oldStackSize < newStackSize){
-                        oldView.animate().translationX(-getComLightningkiteKhrysalisViewsAndroidSwapViewWidth(this_BindStack));
-                        setAndroidViewViewTranslationX(newView, getComLightningkiteKhrysalisViewsAndroidSwapViewWidth(this_BindStack));
-                        return newView.animate().translationX(0f);
-                    }else {
-                        oldView.animate().alpha(0f);
-                        setAndroidViewViewAlpha(newView, 0f);
-                        return newView.animate().alpha(1f);
-                    };
+                    (() => {if(oldStackSize === 0){
+                                oldView.animate().alpha(0f);
+                                setAndroidViewViewAlpha(newView, 0f);
+                                return newView.animate().alpha(1f);
+                            }else if(oldStackSize > newStackSize){
+                                oldView.animate().translationX(getComLightningkiteKhrysalisViewsAndroidSwapViewWidth(this_BindStack));
+                                setAndroidViewViewTranslationX(newView, -getComLightningkiteKhrysalisViewsAndroidSwapViewWidth(this_BindStack));
+                                return newView.animate().translationX(0f);
+                            }else if(oldStackSize < newStackSize){
+                                oldView.animate().translationX(-getComLightningkiteKhrysalisViewsAndroidSwapViewWidth(this_BindStack));
+                                setAndroidViewViewTranslationX(newView, getComLightningkiteKhrysalisViewsAndroidSwapViewWidth(this_BindStack));
+                                return newView.animate().translationX(0f);
+                            }else {
+                                oldView.animate().alpha(0f);
+                                setAndroidViewViewAlpha(newView, 0f);
+                                return newView.animate().alpha(1f);
+                    }})();
                     oldView.animate().withEndAction(() => removeView(oldView));
                     
                     currentData = (datas[datas.length - 1] ?? null);

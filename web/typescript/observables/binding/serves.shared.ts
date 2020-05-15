@@ -27,17 +27,17 @@ export function comLightningkiteKhrysalisObservablesMutableObservablePropertySer
     let suppress = false;
     
     
-    ioReactivexObservableAddWeak(getComLightningkiteKhrysalisObservablesObservablePropertyObservable(other), whilePresent, (ignored, value) => if (suppress.not()) {
-            suppress = true;
-            this_Serves.value = value.value;
-            suppress = false;
-    });
+    ioReactivexObservableAddWeak(getComLightningkiteKhrysalisObservablesObservablePropertyObservable(other), whilePresent, (ignored, value) => (() => {if (suppress.not()) {
+                    suppress = true;
+                    this_Serves.value = value.value;
+                    suppress = false;
+    }})());
     
-    return ioReactivexObservableAddWeak(this_Serves.onChange, whilePresent, (ignored, value) => if (suppress.not()) {
-            suppress = true;
-            other.value = value.value;
-            suppress = false;
-    });
+    return ioReactivexObservableAddWeak(this_Serves.onChange, whilePresent, (ignored, value) => (() => {if (suppress.not()) {
+                    suppress = true;
+                    other.value = value.value;
+                    suppress = false;
+    }})());
 }
 
 //! Declares com.lightningkite.khrysalis.observables.binding.serves
@@ -46,17 +46,17 @@ export function comLightningkiteKhrysalisObservablesMutableObservablePropertySer
     let suppress = false;
     
     
-    ioReactivexDisposablesDisposableUntil(getComLightningkiteKhrysalisObservablesObservablePropertyObservable(other).subscribe(undefined, (value) => if (suppress.not()) {
-                suppress = true;
-                this_Serves.value = value.value;
-                suppress = false;
-    }, undefined), until);
+    ioReactivexDisposablesDisposableUntil(getComLightningkiteKhrysalisObservablesObservablePropertyObservable(other).subscribe(undefined, (value) => (() => {if (suppress.not()) {
+                        suppress = true;
+                        this_Serves.value = value.value;
+                        suppress = false;
+    }})(), undefined), until);
     
-    return ioReactivexDisposablesDisposableUntil(this_Serves.onChange.subscribe(undefined, (value) => if (suppress.not()) {
-                suppress = true;
-                other.value = value.value;
-                suppress = false;
-    }, undefined), until);
+    return ioReactivexDisposablesDisposableUntil(this_Serves.onChange.subscribe(undefined, (value) => (() => {if (suppress.not()) {
+                        suppress = true;
+                        other.value = value.value;
+                        suppress = false;
+    }})(), undefined), until);
 }
 
 

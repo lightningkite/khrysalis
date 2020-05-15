@@ -73,7 +73,7 @@ export class SelectDateRangeMonthCVD extends MonthCVD {
     
     public measure(width: number, height: number, displayMetrics: DisplayMetrics){
         .measure(width, height, displayMetrics);
-        setAndroidGraphicsPaintTextSize(selectedDayPaint, getAndroidGraphicsPaintTextSize(dayPaint));
+        setAndroidGraphicsPaintTextSize(this.selectedDayPaint, getAndroidGraphicsPaintTextSize(this.dayPaint));
     }
     
     public readonly drawDay_dateAlone: DateAlone = new DateAlone(0, 0, 0);
@@ -86,21 +86,21 @@ export class SelectDateRangeMonthCVD extends MonthCVD {
         outer: RectF,
         inner: RectF
     ){
-        if(day.equals(start.value) && (day.equals(endInclusive.value) || endInclusive.value.equals(null))){
-            CalendarDrawing.INSTANCE.dayBackground(canvas, inner, this.selectedPaint);
-            CalendarDrawing.INSTANCE.day(canvas, showingMonth, day, inner, this.selectedDayPaint);
-        }else if(day.equals(start.value)){
-            CalendarDrawing.INSTANCE.dayBackgroundStart(canvas, inner, outer, this.selectedPaint);
-            CalendarDrawing.INSTANCE.day(canvas, showingMonth, day, inner, this.selectedDayPaint);
-        }else if(day.equals(endInclusive.value)){
-            CalendarDrawing.INSTANCE.dayBackgroundEnd(canvas, inner, outer, this.selectedPaint);
-            CalendarDrawing.INSTANCE.day(canvas, showingMonth, day, inner, this.selectedDayPaint);
-        }else if(day.comparable > (start.value?.this.comparable ?: Int.Companion.INSTANCE.MAX_VALUE) && day.comparable < (endInclusive.value?.this.comparable ?: Int.Companion.INSTANCE.MIN_VALUE)){
-            CalendarDrawing.INSTANCE.dayBackgroundMid(canvas, inner, outer, this.selectedPaint);
-            CalendarDrawing.INSTANCE.day(canvas, showingMonth, day, inner, this.selectedDayPaint);
-        }else {
-            CalendarDrawing.INSTANCE.day(canvas, showingMonth, day, inner, this.dayPaint);
-        };
+        (() => {if(day.equals(this.start.value) && (day.equals(this.endInclusive.value) || this.endInclusive.value.equals(null))){
+                    CalendarDrawing.INSTANCE.dayBackground(canvas, inner, this.selectedPaint);
+                    CalendarDrawing.INSTANCE.day(canvas, showingMonth, day, inner, this.selectedDayPaint);
+                }else if(day.equals(this.start.value)){
+                    CalendarDrawing.INSTANCE.dayBackgroundStart(canvas, inner, outer, this.selectedPaint);
+                    CalendarDrawing.INSTANCE.day(canvas, showingMonth, day, inner, this.selectedDayPaint);
+                }else if(day.equals(this.endInclusive.value)){
+                    CalendarDrawing.INSTANCE.dayBackgroundEnd(canvas, inner, outer, this.selectedPaint);
+                    CalendarDrawing.INSTANCE.day(canvas, showingMonth, day, inner, this.selectedDayPaint);
+                }else if(day.comparable > (this.start.value?.comparable ?: Int.Companion.INSTANCE.MAX_VALUE) && day.comparable < (this.endInclusive.value?.comparable ?: Int.Companion.INSTANCE.MIN_VALUE)){
+                    CalendarDrawing.INSTANCE.dayBackgroundMid(canvas, inner, outer, this.selectedPaint);
+                    CalendarDrawing.INSTANCE.day(canvas, showingMonth, day, inner, this.selectedDayPaint);
+                }else {
+                    CalendarDrawing.INSTANCE.day(canvas, showingMonth, day, inner, this.dayPaint);
+        }})();
     }
     
     
@@ -108,64 +108,64 @@ export class SelectDateRangeMonthCVD extends MonthCVD {
     
     
     public onTap(day: DateAlone){
-        if(!(start.value.equals(null)) && start.value.equals(endInclusive.value) && day.comparable > start.value!!.comparable){
-            endInclusive.value = day;
-        } else {
-            start.value = day;
-            endInclusive.value = day;
-        }
+        (() => {if(!(this.start.value.equals(null)) && this.start.value.equals(this.endInclusive.value) && day.comparable > this.start.value!!.comparable){
+                    this.endInclusive.value = day;
+                } else {
+                    this.start.value = day;
+                    this.endInclusive.value = day;
+        }})()
     }
     
     public onTouchDown(day: DateAlone): Boolean{
-        if(!(day.equals(start.value)) && !(day.equals(endInclusive.value))){
-            return false;
-        }
+        (() => {if(!(day.equals(this.start.value)) && !(day.equals(this.endInclusive.value))){
+                    return false;
+        }})()
         this.startedDraggingOn = day;
         //If on start/end - drag
         //If after, extend
         //If before, extend
         //If middle, collapse all
-        const startValue = start.value;
+        const startValue = this.start.value;
         
-        const endInclusiveValue = endInclusive.value;
+        const endInclusiveValue = this.endInclusive.value;
         
         
-        if(startValue.equals(null) || endInclusiveValue.equals(null)){
-            start.value = day;
-            endInclusive.value = day;
-            this.draggingStart = false;
-        }else if(day.equals(endInclusiveValue)){
-            this.draggingStart = false;
-        }else if(day.equals(startValue)){
-            this.draggingStart = true;
-        }else if(day.comparable > endInclusiveValue!!.comparable && startValue.equals(endInclusiveValue)){
-            endInclusive.value = day;
-            this.draggingStart = false;
-        }else {
-            start.value = day;
-            endInclusive.value = day;
-            this.draggingStart = false;
-        };
+        (() => {if(startValue.equals(null) || endInclusiveValue.equals(null)){
+                    this.start.value = day;
+                    this.endInclusive.value = day;
+                    this.draggingStart = false;
+                }else if(day.equals(endInclusiveValue)){
+                    this.draggingStart = false;
+                }else if(day.equals(startValue)){
+                    this.draggingStart = true;
+                }else if(day.comparable > endInclusiveValue!!.comparable && startValue.equals(endInclusiveValue)){
+                    this.endInclusive.value = day;
+                    this.draggingStart = false;
+                }else {
+                    this.start.value = day;
+                    this.endInclusive.value = day;
+                    this.draggingStart = false;
+        }})();
         return true;
     }
     
     public onTouchMove(day: DateAlone): Boolean{
-        const startValue = start.value;
+        const startValue = this.start.value;
         
-        const endInclusiveValue = endInclusive.value;
+        const endInclusiveValue = this.endInclusive.value;
         
-        if(startValue.equals(null) || endInclusiveValue.equals(null)){
-        }else if(this.draggingStart && day.comparable > endInclusiveValue!!.comparable){
-            start.value = endInclusive.value;
-            endInclusive.value = day;
-            this.draggingStart = false;
-            return true;
-        }else if(this.draggingStart.not() && day.comparable < startValue!!.comparable){
-            endInclusive.value = start.value;
-            start.value = day;
-            this.draggingStart = true;
-            return true;
-        };
+        (() => {if(startValue.equals(null) || endInclusiveValue.equals(null)){
+                }else if(this.draggingStart && day.comparable > endInclusiveValue!!.comparable){
+                    this.start.value = this.endInclusive.value;
+                    this.endInclusive.value = day;
+                    this.draggingStart = false;
+                    return true;
+                }else if(this.draggingStart.not() && day.comparable < startValue!!.comparable){
+                    this.endInclusive.value = this.start.value;
+                    this.start.value = day;
+                    this.draggingStart = true;
+                    return true;
+        }})();
         
         const obs: MutableObservableProperty<(DateAlone | null)> = this.draggingStart ? this.start : this.endInclusive;
         

@@ -63,68 +63,68 @@ export class ObservableStack<T extends object> extends ObservableProperty<any> {
     
     
     public push(t: T){
-        stack.add(t);
-        onChange.onNext(boxWrap(this.stack));
+        this.stack.add(t);
+        this.onChange.onNext(boxWrap(this.stack));
     }
     
     public swap(t: T){
-        stack.splice((stack.length - 1), 1);
-        stack.add(t);
-        onChange.onNext(boxWrap(this.stack));
+        this.stack.splice((this.stack.length - 1), 1);
+        this.stack.add(t);
+        this.onChange.onNext(boxWrap(this.stack));
     }
     
     public pop(): Boolean{
-        if (stack.size <= 1) {
-            return false;
-        }
-        stack.splice((stack.length - 1), 1);
-        onChange.onNext(boxWrap(this.stack));
+        (() => {if (this.stack.size <= 1) {
+                    return false;
+        }})()
+        this.stack.splice((this.stack.length - 1), 1);
+        this.onChange.onNext(boxWrap(this.stack));
         return true;
     }
     
     public dismiss(): Boolean{
-        if (stack.isEmpty()) {
-            return false;
-        }
-        stack.splice((stack.length - 1), 1);
-        onChange.onNext(boxWrap(this.stack));
+        (() => {if (this.stack.isEmpty()) {
+                    return false;
+        }})()
+        this.stack.splice((this.stack.length - 1), 1);
+        this.onChange.onNext(boxWrap(this.stack));
         return true;
     }
     
     public popTo(t: T){
         let found = false;
         
-        for (const i of new NumberRange(0, (stack.length - 1))) {
-            return if (found) {
-                return stack.splice((stack.length - 1), 1);
-            } else if (this.stack[i] === t) {
-                found = true;
-            }
+        for (const i of new NumberRange(0, (this.stack.length - 1))) {
+            return (() => {if (found) {
+                        return this.stack.splice((this.stack.length - 1), 1);
+                    } else if (this.stack[i] === t) {
+                        found = true;
+            }})()
         }
-        onChange.onNext(boxWrap(this.stack));
+        this.onChange.onNext(boxWrap(this.stack));
     }
     
     public popTo(predicate: (a: T) => Boolean){
         let found = false;
         
-        for (const i of new NumberRange(0, (stack.length - 1))) {
-            return if (found) {
-                return stack.splice((stack.length - 1), 1);
-            } else if (this.predicate(this.stack[i])) {
-                found = true;
-            }
+        for (const i of new NumberRange(0, (this.stack.length - 1))) {
+            return (() => {if (found) {
+                        return this.stack.splice((this.stack.length - 1), 1);
+                    } else if (this.predicate(this.stack[i])) {
+                        found = true;
+            }})()
         }
-        onChange.onNext(boxWrap(this.stack));
+        this.onChange.onNext(boxWrap(this.stack));
     }
     
     public root(){
-        popTo(stack[0]);
+        popTo(this.stack[0]);
     }
     
     public reset(t: T){
-        stack.clear();
-        stack.add(t);
-        onChange.onNext(boxWrap(this.stack));
+        this.stack.clear();
+        this.stack.add(t);
+        this.onChange.onNext(boxWrap(this.stack));
     }
 }
 

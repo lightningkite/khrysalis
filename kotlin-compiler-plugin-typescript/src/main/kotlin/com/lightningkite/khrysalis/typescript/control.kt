@@ -12,24 +12,21 @@ fun TypescriptTranslator.registerControl() {
 
     val dontReturnTypes = setOf("kotlin.Unit", "kotlin.Nothing")
     handle<KtBlockExpression> {
-        if (typedRule.resolvedExpressionTypeInfo?.type != null && typedRule.resolvedExpressionTypeInfo?.type?.getJetTypeFqName(
-                true
-            ) !in dontReturnTypes
-        ) {
+        if (typedRule.actuallyCouldBeExpression) {
             val lastStatement = typedRule.statements.lastOrNull()
             typedRule.allChildren.forEach {
-                if (it === lastStatement) {
+                if (it === lastStatement && it.resolvedUsedAsExpression == true) {
                     -"return "
                 }
                 -it
-                if(it is KtExpression && it !is KtDeclaration && it !is KtLoopExpression && it !is KtIfExpression) {
+                if (it is KtExpression && it !is KtDeclaration && it !is KtLoopExpression && it !is KtIfExpression && it !is KtWhenExpression) {
                     -';'
                 }
             }
         } else {
             typedRule.allChildren.forEach {
                 -it
-                if(it is KtExpression && it !is KtDeclaration && it !is KtLoopExpression && it !is KtIfExpression) {
+                if (it is KtExpression && it !is KtDeclaration && it !is KtLoopExpression && it !is KtIfExpression && it !is KtWhenExpression) {
                     -';'
                 }
             }
@@ -37,7 +34,7 @@ fun TypescriptTranslator.registerControl() {
     }
 
     handle<KtContainerNodeForControlStructureBody>(
-        condition = { (typedRule.parent as? KtExpression)?.resolvedUsedAsExpression == true },
+        condition = { (typedRule.parent as? KtExpression)?.actuallyCouldBeExpression == true },
         priority = 100
     ) {
         if (typedRule.expression is KtBlockExpression || typedRule.expression is KtIfExpression) {
@@ -51,11 +48,11 @@ fun TypescriptTranslator.registerControl() {
     }
 
     handle<KtIfExpression> {
-        if (typedRule.resolvedUsedAsExpression == true && typedRule.parent !is KtContainerNodeForControlStructureBody) {
+        if (typedRule.actuallyCouldBeExpression && typedRule.parent !is KtContainerNodeForControlStructureBody) {
             -"(() => {"
         }
         -typedRule.allChildren
-        if (typedRule.resolvedUsedAsExpression == true && typedRule.parent !is KtContainerNodeForControlStructureBody) {
+        if (typedRule.actuallyCouldBeExpression && typedRule.parent !is KtContainerNodeForControlStructureBody) {
             -"})()"
         }
     }
@@ -75,24 +72,27 @@ fun TypescriptTranslator.registerControl() {
     )
 
     handle<KtWhenExpression>(
-        condition = { typedRule.subjectExpression != null && typedRule.entries.flatMap { it.conditions.toList() }.all { it is KtWhenConditionWithExpression } },
+        condition = {
+            typedRule.subjectExpression != null && typedRule.entries.flatMap { it.conditions.toList() }
+                .all { it is KtWhenConditionWithExpression }
+        },
         priority = 100
     ) {
-        if (typedRule.resolvedUsedAsExpression == true) {
+        if (typedRule.actuallyCouldBeExpression) {
             -"(() => {"
         }
         val subj = typedRule.subjectExpression
-        if(subj is KtProperty){
+        if (subj is KtProperty) {
             -subj
             -";\n"
         }
         -"switch("
-        if(subj is KtProperty) {
+        if (subj is KtProperty) {
             -subj.nameIdentifier
         } else {
             -subj
         }
-        -"){\n"
+        -") {\n"
         typedRule.entries.forEach { entry ->
             entry.conditions.forEach { con ->
                 -"case "
@@ -109,7 +109,7 @@ fun TypescriptTranslator.registerControl() {
                     ?.dropWhile { it is PsiWhiteSpace }
                     ?.dropLastWhile { it is PsiWhiteSpace }
                 children?.forEachIndexed { index, it ->
-                    if (typedRule.resolvedUsedAsExpression == true) {
+                    if (typedRule.actuallyCouldBeExpression) {
                         if (index == children.lastIndex) {
                             -"return "
                         }
@@ -117,7 +117,7 @@ fun TypescriptTranslator.registerControl() {
                     -it
                 }
             } else {
-                if (typedRule.resolvedUsedAsExpression == true) {
+                if (typedRule.actuallyCouldBeExpression) {
                     -"return "
                 }
                 -entry.expression
@@ -125,7 +125,7 @@ fun TypescriptTranslator.registerControl() {
             -"\nbreak;\n"
         }
         -"}\n"
-        if (typedRule.resolvedUsedAsExpression == true) {
+        if (typedRule.actuallyCouldBeExpression) {
             -"})()"
         }
     }
@@ -134,13 +134,13 @@ fun TypescriptTranslator.registerControl() {
         condition = { typedRule.subjectExpression == null },
         priority = 100
     ) {
-        if (typedRule.resolvedUsedAsExpression == true) {
+        if (typedRule.actuallyCouldBeExpression) {
             -"(() => {"
         }
         -typedRule.entries.forEachBetween(
             forItem = { it ->
-                if(!it.isElse) {
-                    -"if("
+                if (!it.isElse) {
+                    -"if ("
                     it.conditions.asIterable().forEachBetween(
                         forItem = {
                             -it
@@ -151,11 +151,11 @@ fun TypescriptTranslator.registerControl() {
                     )
                     -")"
                 }
-                if(it.expression is KtBlockExpression) {
+                if (it.expression is KtBlockExpression) {
                     -it.expression
-                }else{
-                    -"{\n"
-                    if (typedRule.resolvedUsedAsExpression == true) {
+                } else {
+                    -" {\n"
+                    if (typedRule.actuallyCouldBeExpression) {
                         -"return "
                     }
                     -it.expression
@@ -163,11 +163,11 @@ fun TypescriptTranslator.registerControl() {
                 }
             },
             between = {
-                -"else "
+                -" else "
             }
         )
 
-        if (typedRule.resolvedUsedAsExpression == true) {
+        if (typedRule.actuallyCouldBeExpression) {
             -"})()"
         }
     }
@@ -176,16 +176,16 @@ fun TypescriptTranslator.registerControl() {
         condition = { typedRule.subjectExpression != null },
         priority = 10
     ) {
-        if (typedRule.resolvedUsedAsExpression == true) {
+        if (typedRule.actuallyCouldBeExpression) {
             -"(() => {"
         }
         val subj = typedRule.subjectExpression
-        if(subj is KtProperty){
+        if (subj is KtProperty) {
             -subj
             -";\n"
         }
         fun subjExpr(): Any? {
-            return if(subj is KtProperty) {
+            return if (subj is KtProperty) {
                 subj.nameIdentifier
             } else {
                 subj
@@ -193,11 +193,11 @@ fun TypescriptTranslator.registerControl() {
         }
         -typedRule.entries.forEachBetween(
             forItem = { it ->
-                if(!it.isElse) {
-                    -"if("
+                if (!it.isElse) {
+                    -"if ("
                     it.conditions.asIterable().forEachBetween(
                         forItem = {
-                            when(it){
+                            when (it) {
                                 is KtWhenConditionWithExpression -> {
                                     -subjExpr()
                                     -" == "
@@ -223,11 +223,11 @@ fun TypescriptTranslator.registerControl() {
                     )
                     -")"
                 }
-                if(it.expression is KtBlockExpression) {
+                if (it.expression is KtBlockExpression) {
                     -it.expression
-                }else{
-                    -"{\n"
-                    if (typedRule.resolvedUsedAsExpression == true) {
+                } else {
+                    -" {\n"
+                    if (typedRule.actuallyCouldBeExpression) {
                         -"return "
                     }
                     -it.expression
@@ -235,11 +235,11 @@ fun TypescriptTranslator.registerControl() {
                 }
             },
             between = {
-                -"else "
+                -" else "
             }
         )
 
-        if (typedRule.resolvedUsedAsExpression == true) {
+        if (typedRule.actuallyCouldBeExpression) {
             -"})()"
         }
     }
@@ -255,7 +255,7 @@ fun TypescriptTranslator.registerControl() {
             -"{\n"
             destructuringDeclaration.entries.forEachIndexed { index, it ->
                 val rule = it.resolvedComponentResolvedCall?.resultingDescriptor?.let { replacements.getCall(it) }
-                if(rule != null) {
+                if (rule != null) {
                     emitTemplate(
                         requiresWrapping = false,
                         prefix = listOf("const ", it.name, " = "),
@@ -273,7 +273,7 @@ fun TypescriptTranslator.registerControl() {
                 -'\n'
             }
             val body = typedRule.body
-            if(body is KtBlockExpression){
+            if (body is KtBlockExpression) {
                 -body.allChildren.toList().drop(1).dropLast(1)
             } else {
                 -body

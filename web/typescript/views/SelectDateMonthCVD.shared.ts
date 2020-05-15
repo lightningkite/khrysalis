@@ -56,21 +56,21 @@ export class SelectDateMonthCVD extends MonthCVD {
         outer: RectF,
         inner: RectF
     ){
-        if(day.equals(selected.value)){
-            CalendarDrawing.INSTANCE.dayBackground(canvas, inner, this.selectedPaint);
-            CalendarDrawing.INSTANCE.day(canvas, showingMonth, day, inner, this.selectedDayPaint);
-        }else {
-            CalendarDrawing.INSTANCE.day(canvas, showingMonth, day, inner, this.dayPaint);
-        };
+        (() => {if(day.equals(this.selected.value)){
+                    CalendarDrawing.INSTANCE.dayBackground(canvas, inner, this.selectedPaint);
+                    CalendarDrawing.INSTANCE.day(canvas, showingMonth, day, inner, this.selectedDayPaint);
+                }else {
+                    CalendarDrawing.INSTANCE.day(canvas, showingMonth, day, inner, this.dayPaint);
+        }})();
     }
     
     public measure(width: number, height: number, displayMetrics: DisplayMetrics){
         .measure(width, height, displayMetrics);
-        setAndroidGraphicsPaintTextSize(selectedDayPaint, getAndroidGraphicsPaintTextSize(dayPaint));
+        setAndroidGraphicsPaintTextSize(this.selectedDayPaint, getAndroidGraphicsPaintTextSize(this.dayPaint));
     }
     
     public onTap(day: DateAlone){
-        selected.value = day;
+        this.selected.value = day;
     }
 }
 

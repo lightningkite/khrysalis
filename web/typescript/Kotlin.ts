@@ -8,7 +8,7 @@ export function hashString(item: string): number {
     return hash;
 }
 
-export function checkIsInterface<T>(item: any, key: string): T | null {
+export function checkIsInterface<T>(item: any, key: string): item is T {
     return (item.constructor as any)["implementsInterface" + key]
 }
 

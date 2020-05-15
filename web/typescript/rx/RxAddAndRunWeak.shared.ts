@@ -37,9 +37,9 @@ import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from
 //! Declares com.lightningkite.khrysalis.rx.solvePrivateDisposal
 export function ioReactivexDisposablesDisposableSolvePrivateDisposal(this_SolvePrivateDisposal: SubscriptionLike, items: Array<any>){
     for (const item of items) {
-        if(item instanceof View){
-            return ioReactivexDisposablesDisposableUntil(this_SolvePrivateDisposal, getAndroidViewViewRemoved(item));
-        }
+        (() => {if(item instanceof View){
+                    return ioReactivexDisposablesDisposableUntil(this_SolvePrivateDisposal, getAndroidViewViewRemoved(item));
+        }})()
     }
 }
 
@@ -47,9 +47,10 @@ export function ioReactivexDisposablesDisposableSolvePrivateDisposal(this_SolveP
 export function ioReactivexObservableAdd<Element extends any>(this_Add: Observable<Element>, listener:  (a: Element) => Boolean): SubscriptionLike{
     let disposable: (SubscriptionLike | null) = null;
     
-    const disp = this_Add.subscribe(undefined, (item) => if (this.listener(item)) {
-            disposable?.this.unsubscribe();
-    }, undefined);
+    const disp = this_Add.subscribe(undefined, (item) => (() => {if (this.listener(item)) {
+                    const temp112 = disposable;
+                    if(temp112 !== null) temp112.unsubscribe();
+    }})(), undefined);
     
     disposable = disp;
     return disp;
@@ -64,11 +65,12 @@ export function ioReactivexObservableAddWeak<A extends object, Element extends a
     const disp = this_AddWeak.subscribe(undefined, (item) => {
             const a = weakA;
             
-            if (!(a.equals(null))) {
-                this.listener(a, item);
-            } else {
-                disposable?.this.unsubscribe();
-            }
+            (() => {if (!(a.equals(null))) {
+                        this.listener(a, item);
+                    } else {
+                        const temp114 = disposable;
+                        if(temp114 !== null) temp114.unsubscribe();
+            }})()
     }, undefined);
     
     disposable = disp;
@@ -89,11 +91,12 @@ export function ioReactivexObservableAddWeak<A extends object, B extends object,
             
             const b = weakB;
             
-            if (!(a.equals(null)) && !(b.equals(null))) {
-                this.listener(a, b, item);
-            } else {
-                disposable?.this.unsubscribe();
-            }
+            (() => {if (!(a.equals(null)) && !(b.equals(null))) {
+                        this.listener(a, b, item);
+                    } else {
+                        const temp116 = disposable;
+                        if(temp116 !== null) temp116.unsubscribe();
+            }})()
     }, undefined);
     
     disposable = disp;
@@ -119,11 +122,12 @@ export function ioReactivexObservableAddWeak<A extends object, B extends object,
             
             const c = weakC;
             
-            if (!(a.equals(null)) && !(b.equals(null)) && !(c.equals(null))) {
-                this.listener(a, b, c, item);
-            } else {
-                disposable?.this.unsubscribe();
-            }
+            (() => {if (!(a.equals(null)) && !(b.equals(null)) && !(c.equals(null))) {
+                        this.listener(a, b, c, item);
+                    } else {
+                        const temp118 = disposable;
+                        if(temp118 !== null) temp118.unsubscribe();
+            }})()
     }, undefined);
     
     ioReactivexDisposablesDisposableSolvePrivateDisposal(disp, [referenceA, referenceB, referenceC]);

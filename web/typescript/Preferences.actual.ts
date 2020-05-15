@@ -31,19 +31,22 @@ export class Preferences {
     
     
     set<T>(key: string, value: T){
-        sharedPreferences.edit().putString(key, kotlinAnyToJsonString(value)).apply();
+        this.sharedPreferences.edit().putString(key, kotlinAnyToJsonString(value)).apply();
     }
     
     remove(key: string){
-        sharedPreferences.edit().remove(key).apply();
+        this.sharedPreferences.edit().remove(key).apply();
     }
     
     get<T extends IsCodable>(key: string): (T | null){
-        return sharedPreferences.getString(key, null)?.kotlinStringFromJsonString();
+        return ((_it)=>{
+                if(_it === null) return null;
+                return kotlinStringFromJsonString(_it)
+        })(this.sharedPreferences.getString(key, null));
     }
     
     clear(){
-        sharedPreferences.edit().clear().apply();
+        this.sharedPreferences.edit().clear().apply();
     }
 }
 

@@ -56,15 +56,15 @@ import { also } from 'khrysalis/dist/Kotlin'
 //! Declares com.lightningkite.khrysalis.load
 export function comLightningkiteKhrysalisImageLoad(this_Load: Image): Observable<Bitmap>{
     return try {
-        return (() => {if(this_Load instanceof ImageRaw){
-                    return rxOf(BitmapFactory.decodeByteArray(this_Load.raw, 0, this_Load.raw.size))
-                }else if(this_Load instanceof ImageReference){
-                    return comLightningkiteKhrysalisImageReferenceLoad(undefined)
-                }else if(this_Load instanceof ImageBitmap){
-                    return rxOf(this_Load.bitmap)
-                }else if(this_Load instanceof ImageRemoteUrl){
-                    return comLightningkiteKhrysalisImageRemoteUrlLoad()
-        }})();
+        return if(this_Load instanceof ImageRaw){
+            rxOf(BitmapFactory.decodeByteArray(this_Load.raw, 0, this_Load.raw.size))
+        }else if(this_Load instanceof ImageReference){
+            comLightningkiteKhrysalisImageReferenceLoad(undefined)
+        }else if(this_Load instanceof ImageBitmap){
+            rxOf(this_Load.bitmap)
+        }else if(this_Load instanceof ImageRemoteUrl){
+            comLightningkiteKhrysalisImageRemoteUrlLoad()
+        };
     } catch (e: Exception) {
         return Single.error(e);
     };
@@ -75,13 +75,19 @@ export function comLightningkiteKhrysalisImageReferenceLoad(this_Load: ImageRefe
     try {
         const finalOpts = BitmapFactory.Options.constructor();
         
-        getAndroidContentContextContentResolver(HttpClient.INSTANCE.appContext).openInputStream(this_Load.uri)?.javaIoCloseableUse((it) => {
-                const sizeOpts = also(BitmapFactory.Options.constructor(), (this_) => this_.inJustDecodeBounds = true);
-                
-                also(BitmapFactory.decodeStream(it, null, sizeOpts), (this_) => finalOpts.inSampleSize = kotlinIntCoerceAtLeast(max(Math.floor(((it) => Math.ceil(it))(sizeOpts.outWidth / maxDimension)), Math.floor(((it) => Math.ceil(it))(sizeOpts.outHeight / maxDimension))), 1));
-        })
+        ((_it)=>{
+                if(_it === null) return null;
+                return javaIoCloseableUse(_it, (it) => {
+                        const sizeOpts = also(BitmapFactory.Options.constructor(), (this_) => this_.inJustDecodeBounds = true);
+                        
+                        also(BitmapFactory.decodeStream(it, null, sizeOpts), (this_) => finalOpts.inSampleSize = kotlinIntCoerceAtLeast(max(Math.floor(((it) => Math.ceil(it))(sizeOpts.outWidth / maxDimension)), Math.floor(((it) => Math.ceil(it))(sizeOpts.outHeight / maxDimension))), 1));
+                })
+        })(getAndroidContentContextContentResolver(HttpClient.INSTANCE.appContext).openInputStream(this_Load.uri))
         ?: return Single.error(IllegalStateException.constructorkotlinString("Context from HttpClient is missing; please set up HttpClient before attempting this."));
-        getAndroidContentContextContentResolver(HttpClient.INSTANCE.appContext).openInputStream(this_Load.uri)?.javaIoCloseableUse((it) => return rxOf(BitmapFactory.decodeStream(it, null, finalOpts)))
+        ((_it)=>{
+                if(_it === null) return null;
+                return javaIoCloseableUse(_it, (it) => return rxOf(BitmapFactory.decodeStream(it, null, finalOpts)))
+        })(getAndroidContentContextContentResolver(HttpClient.INSTANCE.appContext).openInputStream(this_Load.uri))
         ?: return Single.error(IllegalStateException.constructorkotlinString("Context from HttpClient is missing; please set up HttpClient before attempting this."));
     } catch (e: Exception) {
         return Single.error(e);
@@ -90,6 +96,7 @@ export function comLightningkiteKhrysalisImageReferenceLoad(this_Load: ImageRefe
 
 //! Declares com.lightningkite.khrysalis.load
 export function comLightningkiteKhrysalisImageRemoteUrlLoad(this_Load: ImageRemoteUrl): Observable<Bitmap>{
-    return rxMap((response) => response.body()?.javaIoCloseableUse((it) => javaIoCloseableUse(it.byteStream(), (it) => BitmapFactory.decodeStream(it))))(ioReactivexSingleUnsuccessfulAsError(HttpClient.INSTANCE.call(this_Load.url, HttpClient.INSTANCE.GET, new Map([]), undefined)));
+    return rxMap((response) => const temp260 = response.body();
+    if(temp260 !== null) javaIoCloseableUse(temp260, (it) => javaIoCloseableUse(it.byteStream(), (it) => BitmapFactory.decodeStream(it))))(ioReactivexSingleUnsuccessfulAsError(HttpClient.INSTANCE.call(this_Load.url, HttpClient.INSTANCE.GET, new Map([]), undefined)));
 }
 

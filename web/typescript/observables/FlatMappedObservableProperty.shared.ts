@@ -50,10 +50,10 @@ export class FlatMappedObservableProperty<A, B> extends ObservableProperty<any> 
     }
     
     //! Declares com.lightningkite.khrysalis.observables.FlatMappedObservableProperty.value
-    public get value(): B { return transformation(basedOn.value).value; }
+    public get value(): B { return this.transformation(this.basedOn.value).value; }
     
     //! Declares com.lightningkite.khrysalis.observables.FlatMappedObservableProperty.onChange
-    public get onChange(): Observable<Box<B>> { return rxSwitchMap((it) => getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this.transformation(it.value)))(getComLightningkiteKhrysalisObservablesObservablePropertyObservable(basedOn)).skip(1); }
+    public get onChange(): Observable<Box<B>> { return rxSwitchMap((it) => getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this.this.transformation(it.value)))(getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this.basedOn)).skip(1); }
     
 }
 
@@ -74,9 +74,9 @@ export class MutableFlatMappedObservableProperty<A, B> extends MutableObservable
     }
     
     //! Declares com.lightningkite.khrysalis.observables.MutableFlatMappedObservableProperty.value
-    public get value(): B { return transformation(basedOn.value).value; }
+    public get value(): B { return this.transformation(this.basedOn.value).value; }
     public set value(value: B) {
-        transformation(basedOn.value).value = value;
+        this.transformation(this.basedOn.value).value = value;
     }
     
     
@@ -85,11 +85,11 @@ export class MutableFlatMappedObservableProperty<A, B> extends MutableObservable
     
     //! Declares com.lightningkite.khrysalis.observables.MutableFlatMappedObservableProperty.onChange
     public get onChange(): Observable<Box<B>> { return rxSwitchMap( (it: Box<A>) => {
-                const prop = this.transformation(it.value);
+                const prop = this.this.transformation(it.value);
                 
                 this.lastProperty = prop;
                 return getComLightningkiteKhrysalisObservablesObservablePropertyObservable(prop);
-    })(getComLightningkiteKhrysalisObservablesObservablePropertyObservable(basedOn)).skip(1); }
+    })(getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this.basedOn)).skip(1); }
     
     
     public update(){

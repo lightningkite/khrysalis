@@ -83,6 +83,13 @@ class TypescriptTranslator(
         }
     }
 
+    override fun translate(identifier: Class<*>, rule: Any, out: TypescriptFileEmitter, afterPriority: Int) {
+//        if(rule is KtExpression){
+//            out.append("/*${rule.resolvedUsedAsExpression}*/")
+//        }
+        super.translate(identifier, rule, out, afterPriority)
+    }
+
     val terminalMap = mapOf(
         "fun" to "function",
         "object" to "class",

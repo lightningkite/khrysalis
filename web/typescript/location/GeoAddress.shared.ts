@@ -43,7 +43,7 @@ export class GeoAddress implements Codable {
     }
     public hashCode(): number {
         let hash = 17;
-        hash = 31 * hash + this.coordinate.hashCode();
+        hash = 31 * hash + this.coordinate?.hashCode() ?? 0;
         hash = 31 * hash + hashString(this.name);
         hash = 31 * hash + hashString(this.street);
         hash = 31 * hash + hashString(this.subLocality);
@@ -54,34 +54,39 @@ export class GeoAddress implements Codable {
         hash = 31 * hash + hashString(this.postalCode);
         return hash;
     }
-    public equals(other: any): boolean { return other instanceof GeoAddress && this.coordinate.equals(other.coordinate) && this.name === other.name && this.street === other.street && this.subLocality === other.subLocality && this.locality === other.locality && this.subAdminArea === other.subAdminArea && this.adminArea === other.adminArea && this.countryName === other.countryName && this.postalCode === other.postalCode }
+    public equals(other: any): boolean { return other instanceof GeoAddress && (this.coordinate?.equals(other.coordinate) ?? false) && this.name === other.name && this.street === other.street && this.subLocality === other.subLocality && this.locality === other.locality && this.subAdminArea === other.subAdminArea && this.adminArea === other.adminArea && this.countryName === other.countryName && this.postalCode === other.postalCode }
     public toString(): string { return `GeoAddress(coordinate = ${this.coordinate}, name = ${this.name}, street = ${this.street}, subLocality = ${this.subLocality}, locality = ${this.locality}, subAdminArea = ${this.subAdminArea}, adminArea = ${this.adminArea}, countryName = ${this.countryName}, postalCode = ${this.postalCode})` }
     public copy(coordinate: (GeoCoordinate | null) = this.coordinate, name: (string | null) = this.name, street: (string | null) = this.street, subLocality: (string | null) = this.subLocality, locality: (string | null) = this.locality, subAdminArea: (string | null) = this.subAdminArea, adminArea: (string | null) = this.adminArea, countryName: (string | null) = this.countryName, postalCode: (string | null) = this.postalCode) { return new GeoAddress(coordinate, name, street, subLocality, locality, subAdminArea, adminArea, countryName, postalCode); }
     
     public oneLine(withCountry: Boolean = false, withZip: Boolean = false): string{
         const builder = StringBuilder();
         
-        this.street?.((it) => builder.value += it)(this);
-        this.locality?.((it) => {
+        const temp36 = this.street;
+        if(temp36 !== null) ((it) => builder.value += it)(temp36);
+        const temp38 = this.locality;
+        if(temp38 !== null) ((it) => {
                 builder.value += ' ';
                 builder.value += it;
-        })(this);
-        this.adminArea?.((it) => {
+        })(temp38);
+        const temp40 = this.adminArea;
+        if(temp40 !== null) ((it) => {
                 builder.value += ", ";
                 builder.value += it;
-        })(this);
-        if (withCountry) {
-            return this.adminArea?.((it) => {
-                    builder.value += ' ';
-                    builder.value += it;
-            })(this);
-        }
-        if (withZip) {
-            return this.postalCode?.((it) => {
-                    builder.value += ' ';
-                    builder.value += it;
-            })(this);
-        }
+        })(temp40);
+        (() => {if (withCountry) {
+                    return const temp43 = this.adminArea;
+                    if(temp43 !== null) ((it) => {
+                            builder.value += ' ';
+                            builder.value += it;
+                    })(temp43);
+        }})()
+        (() => {if (withZip) {
+                    return const temp45 = this.postalCode;
+                    if(temp45 !== null) ((it) => {
+                            builder.value += ' ';
+                            builder.value += it;
+                    })(temp45);
+        }})()
         return builder.toString().trim();
     }
 }

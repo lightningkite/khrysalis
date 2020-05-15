@@ -36,11 +36,11 @@ export class AlignPair {
     }
     public hashCode(): number {
         let hash = 17;
-        hash = 31 * hash + this.horizontal.hashCode();
-        hash = 31 * hash + this.vertical.hashCode();
+        hash = 31 * hash + this.horizontal?.hashCode() ?? 0;
+        hash = 31 * hash + this.vertical?.hashCode() ?? 0;
         return hash;
     }
-    public equals(other: any): boolean { return other instanceof AlignPair && this.horizontal.equals(other.horizontal) && this.vertical.equals(other.vertical) }
+    public equals(other: any): boolean { return other instanceof AlignPair && (this.horizontal?.equals(other.horizontal) ?? false) && (this.vertical?.equals(other.vertical) ?? false) }
     public toString(): string { return `AlignPair(horizontal = ${this.horizontal}, vertical = ${this.vertical})` }
     public copy(horizontal: Align = this.horizontal, vertical: Align = this.vertical) { return new AlignPair(horizontal, vertical); }
     

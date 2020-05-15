@@ -20,6 +20,7 @@ fun varargFunction(vararg numbers: Int){
 }
 
 class TestClass {
+    val member: Int? = 0
     fun memberFunction(a: Int = 2, b: Int = 3, c: Int = 4){
         println("Hello from TestClass!")
     }
@@ -31,6 +32,20 @@ class TestClass {
     }
     fun testExtension(){
         TestClass2().memberExtensionFunction()
+    }
+    fun otherTest(){
+        member?.let {
+            println(it)
+        }
+        val x = member?.let {
+            it + 2
+        }
+        this.member?.let {
+            println(it)
+        }
+        member?.let {
+            println(it)
+        }
     }
 }
 

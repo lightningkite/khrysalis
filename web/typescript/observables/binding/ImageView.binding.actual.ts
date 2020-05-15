@@ -50,20 +50,21 @@ import { kotlinCharSequenceIsBlank } from 'khrysalis/dist/kotlin/kotlin.text'
 //! Declares com.lightningkite.khrysalis.observables.binding.loadImage
 export function androidWidgetImageViewLoadImage(this_LoadImage: ImageView, image: (Image | null)){
     return post(() => {
-            image?.((image) => if(image instanceof ImageRaw){
-                    this_LoadImage.setImageBitmap(BitmapFactory.decodeByteArray(image.raw, 0, image.raw.size))
-                }else if(image instanceof ImageReference){
-                    this_LoadImage.setImageBitmap(MediaStore.Images.Media.getBitmap(getAndroidContentContextContentResolver(HttpClient.INSTANCE.appContext), image.uri))
-                }else if(image instanceof ImageBitmap){
-                    this_LoadImage.setImageBitmap(image.bitmap)
-                }else if(image instanceof ImageRemoteUrl){
-                    if ( && getAndroidWidgetImageViewWidth(this_LoadImage) > 0 && getAndroidWidgetImageViewHeight(this_LoadImage) > 0) {
-                        Picasso.get().load(image.url).resize(getAndroidWidgetImageViewWidth(this_LoadImage) * 2, getAndroidWidgetImageViewHeight(this_LoadImage) * 2).centerInside().into(this_LoadImage);
-                    }
-            })(this);
-            if (image.equals(null)) {
-                this_LoadImage.setImageDrawable(null);
-            }
+            const temp374 = image;
+            if(temp374 !== null) ((image) => (() => {if(image instanceof ImageRaw){
+                            return this_LoadImage.setImageBitmap(BitmapFactory.decodeByteArray(image.raw, 0, image.raw.size))
+                        }else if(image instanceof ImageReference){
+                            return this_LoadImage.setImageBitmap(MediaStore.Images.Media.getBitmap(getAndroidContentContextContentResolver(HttpClient.INSTANCE.appContext), image.uri))
+                        }else if(image instanceof ImageBitmap){
+                            return this_LoadImage.setImageBitmap(image.bitmap)
+                        }else if(image instanceof ImageRemoteUrl){
+                            (() => {if ( && getAndroidWidgetImageViewWidth(this_LoadImage) > 0 && getAndroidWidgetImageViewHeight(this_LoadImage) > 0) {
+                                        Picasso.get().load(image.url).resize(getAndroidWidgetImageViewWidth(this_LoadImage) * 2, getAndroidWidgetImageViewHeight(this_LoadImage) * 2).centerInside().into(this_LoadImage);
+                            }})()
+            }})())(temp374);
+            (() => {if (image.equals(null)) {
+                        this_LoadImage.setImageDrawable(null);
+            }})()
     });
 }
 

@@ -46,10 +46,10 @@ export function androidViewViewOnClick(this_OnClick: View, action: () => void){
 export function androidViewViewOnClick(this_OnClick: View, disabledMilliseconds: number, action: () => void){
     let lastActivated = System.currentTimeMillis();
     
-    setOnClickListener((it) => if(System.currentTimeMillis() - lastActivated > disabledMilliseconds) {
-            this.action();
-            lastActivated = System.currentTimeMillis();
-    });
+    setOnClickListener((it) => (() => {if(System.currentTimeMillis() - lastActivated > disabledMilliseconds) {
+                    this.action();
+                    lastActivated = System.currentTimeMillis();
+    }})());
 }
 
 //! Declares com.lightningkite.khrysalis.views.onLongClick

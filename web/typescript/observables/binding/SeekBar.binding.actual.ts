@@ -30,22 +30,22 @@ export function androidWidgetSeekBarBind(this_Bind: SeekBar, start: number, endI
     
     let suppress = false;
     
-    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => if (suppress.not()) {
-                suppress = true;
-                setAndroidWidgetSeekBarProgress(this_Bind, value + start);
-                suppress = false;
-    }), getAndroidViewViewRemoved(this_Bind));
+    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => (() => {if (suppress.not()) {
+                        suppress = true;
+                        setAndroidWidgetSeekBarProgress(this_Bind, value + start);
+                        suppress = false;
+    }})()), getAndroidViewViewRemoved(this_Bind));
     this_Bind.setOnSeekBarChangeListener(new class Anon implements SeekBarOnSeekBarChangeListener {
             public static implementsInterfaceAndroidWidgetSeekBarOnSeekBarChangeListener = true;
             public constructor() {
             }
             
             onProgressChanged(p0: (SeekBar | null), p1: number, p2: Boolean){
-                if (suppress.not()) {
-                    suppress = true;
-                    observable.value = p1 + start;
-                    suppress = false;
-                }
+                (() => {if (suppress.not()) {
+                            suppress = true;
+                            observable.value = p1 + start;
+                            suppress = false;
+                }})()
             }
             
             onStartTrackingTouch(p0: (SeekBar | null)){

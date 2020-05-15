@@ -62,31 +62,31 @@ export function androidGraphicsCanvasDrawText(this_DrawText: Canvas, text: strin
     
     const textHeight = getAndroidGraphicsPaintTextHeight(paint);
     
-    drawText(text, (() => {switch(gravity.horizontal){
-                    case Align.start:
-                    return x
-                    break;
-                    case Align.fill:
-                    case Align.center:
-                    return x - textWidth / 2
-                    break;
-                    case Align.end:
-                    return x - textWidth
-                    break;
-                }
-        })(), (() => {switch(gravity.vertical){
-                    case Align.start:
-                    return y - getAndroidGraphicsPaintFontMetrics(paint).ascent
-                    break;
-                    case Align.fill:
-                    case Align.center:
-                    return y - ((it) => it.ascent + it.descent)(getAndroidGraphicsPaintFontMetrics(paint)) / 2
-                    break;
-                    case Align.end:
-                    return y - getAndroidGraphicsPaintFontMetrics(paint).descent
-                    break;
-                }
-    })(), paint);
+    drawText(text, switch(gravity.horizontal){
+            case Align.start:
+            x
+            break;
+            case Align.fill:
+            case Align.center:
+            x - textWidth / 2
+            break;
+            case Align.end:
+            x - textWidth
+            break;
+        }
+        , switch(gravity.vertical){
+            case Align.start:
+            y - getAndroidGraphicsPaintFontMetrics(paint).ascent
+            break;
+            case Align.fill:
+            case Align.center:
+            y - ((it) => it.ascent + it.descent)(getAndroidGraphicsPaintFontMetrics(paint)) / 2
+            break;
+            case Align.end:
+            y - getAndroidGraphicsPaintFontMetrics(paint).descent
+            break;
+        }
+    , paint);
 }
 
 

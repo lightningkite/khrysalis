@@ -34,7 +34,7 @@ export class EventToObservableProperty<T> extends ObservableProperty<any> {
     public get onChange(): Observable<Box<T>> { return rxMap((it) => {
                 this.value = it.value;
                 return it;
-    })(wrapped); }
+    })(this.wrapped); }
     
 }
 //! Declares com.lightningkite.khrysalis.observables.asObservableProperty

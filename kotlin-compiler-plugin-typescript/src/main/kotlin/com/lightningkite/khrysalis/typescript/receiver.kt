@@ -18,9 +18,10 @@ fun TypescriptTranslator.registerReceiver() {
     //Prepend 'this'
     handle<KtNameReferenceExpression>(
         condition = {
-            if (typedRule.parent is KtDotQualifiedExpression) return@handle false
-            if (typedRule.parent is KtSafeQualifiedExpression) return@handle false
-            if((typedRule.parent as? KtCallExpression)?.parent is KtDotQualifiedExpression) return@handle false
+            if (typedRule.parentOfType<KtDotQualifiedExpression>()?.selectorExpression == typedRule) return@handle false
+            if (typedRule.parentOfType<KtCallExpression>()?.parentOfType<KtDotQualifiedExpression>()?.selectorExpression == typedRule) return@handle false
+            if (typedRule.parentOfType<KtSafeQualifiedExpression>()?.selectorExpression == typedRule) return@handle false
+            if (typedRule.parentOfType<KtCallExpression>()?.parentOfType<KtSafeQualifiedExpression>()?.selectorExpression == typedRule) return@handle false
             val resolved = typedRule.resolvedCall
             return@handle resolved?.dispatchReceiver != null
         },
@@ -38,9 +39,10 @@ fun TypescriptTranslator.registerReceiver() {
 
     handle<KtNameReferenceExpression>(
         condition = {
-            if (typedRule.parent is KtDotQualifiedExpression) return@handle false
-            if (typedRule.parent is KtSafeQualifiedExpression) return@handle false
-            if((typedRule.parent as? KtCallExpression)?.parent is KtDotQualifiedExpression) return@handle false
+            if (typedRule.parentOfType<KtDotQualifiedExpression>()?.selectorExpression == typedRule) return@handle false
+            if (typedRule.parentOfType<KtCallExpression>()?.parentOfType<KtDotQualifiedExpression>()?.selectorExpression == typedRule) return@handle false
+            if (typedRule.parentOfType<KtSafeQualifiedExpression>()?.selectorExpression == typedRule) return@handle false
+            if (typedRule.parentOfType<KtCallExpression>()?.parentOfType<KtSafeQualifiedExpression>()?.selectorExpression == typedRule) return@handle false
             val resolved = typedRule.resolvedCall ?: return@handle false
             val targetDescriptor = resolved.dispatchReceiver?.type?.constructor?.declarationDescriptor as? ClassDescriptor ?: return@handle false
             return@handle resolved.dispatchReceiver != null

@@ -96,26 +96,35 @@ export function androidWidgetAutoCompleteTextViewBind<T>(this_Bind: AutoComplete
                     }
                     
                     performFiltering(p0: (CharSequence | null)): FilterResults{ return also(FilterResults.constructor(), (this_) => {
-                                const query = p0?.toString()?.this.split(" ")?.kotlinAnyTakeUnless((it) => it.isEmpty());
+                                const query = ((_it)=>{
+                                        if(_it === null) return null;
+                                        return kotlinAnyTakeUnless(_it, (it) => it.isEmpty())
+                                })(((_it)=>{
+                                            if(_it === null) return null;
+                                            return _it.split(" ")
+                                })(p0?.toString()));
                                 
-                                if (!(query.equals(null))) {
-                                    const newFilteredOptions = options.value.filter((it) => query.every((q) => kotlinCharSequenceContains((toString)(it), q, true)));
-                                    
-                                    this_.values = newFilteredOptions;
-                                    this_.count = newFilteredOptions.size;
-                                } else {
-                                    this_.values = options.value;
-                                    this_.count = options.value.size;
-                                }
+                                (() => {if (!(query.equals(null))) {
+                                            const newFilteredOptions = options.value.filter((it) => query.every((q) => kotlinCharSequenceContains((toString)(it), q, true)));
+                                            
+                                            this_.values = newFilteredOptions;
+                                            this_.count = newFilteredOptions.size;
+                                        } else {
+                                            this_.values = options.value;
+                                            this_.count = options.value.size;
+                                }})()
                     }); }
                     
                     convertResultToString(resultValue: (any | null)): CharSequence{
-                        return (tryCastPrimitive(resultValue, "any"))?.(toString)(this) ?: "";
+                        return ((_it)=>{
+                                if(_it === null) return null;
+                                return (toString)(_it)
+                        })((tryCastPrimitive(resultValue, "any"))) ?: "";
                     }
                     
                     publishResults(p0: (CharSequence | null), p1: (FilterResults | null)){
                         filtered.length = 0;
-                        filtered.push(...tryCastInterface(p1?.this.values, "KotlinCollectionsList") ?: []);
+                        filtered.push(...tryCastInterface(p1?.values, "KotlinCollectionsList") ?: []);
                         notifyDataSetChanged();
                     }
             }(); }
@@ -126,18 +135,21 @@ export function androidWidgetAutoCompleteTextViewBind<T>(this_Bind: AutoComplete
                 const view = (tryCastClass(convertView, TextView)) ?: also(TextView.constructorandroidcontentContext(getAndroidWidgetAutoCompleteTextViewContext(this_Bind)), (this_) => {
                         setTextColor(getAndroidWidgetAutoCompleteTextViewTextColors(this_Bind));
                         setAndroidWidgetTextViewTextSize(this_, getAndroidWidgetAutoCompleteTextViewTextSize(this_Bind) / getAndroidContentResResourcesDisplayMetrics(getAndroidWidgetTextViewResources(this_)).scaledDensity);
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
-                            setAndroidWidgetTextViewMaxLines(this_, getAndroidWidgetAutoCompleteTextViewMaxLines(this_Bind));
-                        }
-                        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                            setAndroidWidgetTextViewLetterSpacing(this_, getAndroidWidgetAutoCompleteTextViewLetterSpacing(this_Bind));
-                        }
+                        (() => {if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
+                                    setAndroidWidgetTextViewMaxLines(this_, getAndroidWidgetAutoCompleteTextViewMaxLines(this_Bind));
+                        }})()
+                        (() => {if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+                                    setAndroidWidgetTextViewLetterSpacing(this_, getAndroidWidgetAutoCompleteTextViewLetterSpacing(this_Bind));
+                        }})()
                         const size = Math.floor((getAndroidContentResResourcesDisplayMetrics(getAndroidContentContextResources(getAndroidWidgetTextViewContext(this_))).density * 8));
                         
                         setPadding(size, size, size, size);
                 });
                 
-                setAndroidWidgetTextViewText(view, kotlinCollectionsListGetOrNull(filtered, position)?.(toString)(this));
+                setAndroidWidgetTextViewText(view, ((_it)=>{
+                            if(_it === null) return null;
+                            return (toString)(_it)
+                })(kotlinCollectionsListGetOrNull(filtered, position)));
                 return view;
             }
             
@@ -145,6 +157,7 @@ export function androidWidgetAutoCompleteTextViewBind<T>(this_Bind: AutoComplete
             getItemId(position: number): number{ return position; }
             getCount(): number{ return filtered.size; }
     }());
-    this_Bind.setOnItemClickListener((adapterView, view, index, id) => kotlinCollectionsListGetOrNull(filtered, index)?.(onItemSelected)(this));
+    this_Bind.setOnItemClickListener((adapterView, view, index, id) => const temp359 = kotlinCollectionsListGetOrNull(filtered, index);
+    if(temp359 !== null) (onItemSelected)(temp359));
 }
 

@@ -70,7 +70,7 @@ export function comLightningkiteKhrysalisNetHttpClientWebSocket(this_WebSocket: 
     return Observable.using<ConnectedWebSocket, ConnectedWebSocket>(() => {
             const out = new ConnectedWebSocket(url);
             
-            out.underlyingSocket = client.newWebSocket(Request.Builder.constructor()
+            out.underlyingSocket = this_WebSocket.client.newWebSocket(Request.Builder.constructor()
                 .url(url.replace("http", "ws"))
                 .headers(Headers.of(headers))
                 .addHeader("Accept-Language", getJavaUtilLocaleLanguage(Locale.getDefault()))
@@ -89,7 +89,7 @@ export class ConnectedWebSocket extends WebSocketListener implements Observer<We
         this.underlyingSocket = null;
         this._read = PublishSubject.create<WebSocketFrame>();
         this.ownConnection = PublishSubject.create<ConnectedWebSocket>();
-        this.read = ((this_) => this_.ioReactivexObservableThreadCorrectly(_read))(HttpClient.INSTANCE);
+        this.read = ((this_) => this_.ioReactivexObservableThreadCorrectly(this._read))(HttpClient.INSTANCE);
     }
     
     internal underlyingSocket: (WebSocket | null) = null;
@@ -98,33 +98,33 @@ export class ConnectedWebSocket extends WebSocketListener implements Observer<We
     
     public readonly ownConnection = PublishSubject.create<ConnectedWebSocket>();
     
-    public readonly read: Observable<WebSocketFrame> = ((this_) => this_.ioReactivexObservableThreadCorrectly(_read))(HttpClient.INSTANCE);
+    public readonly read: Observable<WebSocketFrame> = ((this_) => this_.ioReactivexObservableThreadCorrectly(this._read))(HttpClient.INSTANCE);
     
     public onOpen(webSocket: WebSocket, response: Response){
         console.log(`Socket to ${this.url} opened successfully.`);
-        ownConnection.onNext(this);
+        this.ownConnection.onNext(this);
     }
     
     public onFailure(webSocket: WebSocket, t: Throwable, response: (Response | null)){
         console.log(`Socket to ${this.url} failed with ${t}.`);
-        ownConnection.onError(t);
-        _read.onError(t);
+        this.ownConnection.onError(t);
+        this._read.onError(t);
     }
     
     public onClosing(webSocket: WebSocket, code: number, reason: string){
         console.log(`Socket to ${this.url} closing.`);
-        ownConnection.onComplete();
-        _read.onComplete();
+        this.ownConnection.onComplete();
+        this._read.onComplete();
     }
     
     public onMessage(webSocket: WebSocket, text: string){
         console.log(`Socket to ${this.url} got message '${text}'.`);
-        _read.onNext(new WebSocketFrame(undefined, text));
+        this._read.onNext(new WebSocketFrame(undefined, text));
     }
     
     public onMessage(webSocket: WebSocket, bytes: ByteString){
         console.log(`Socket to ${this.url} got binary message of length ${bytes.size()}.`);
-        _read.onNext(new WebSocketFrame(bytes.toByteArray(), undefined));
+        this._read.onNext(new WebSocketFrame(bytes.toByteArray(), undefined));
     }
     
     public onClosed(webSocket: WebSocket, code: number, reason: string){
@@ -139,8 +139,10 @@ export class ConnectedWebSocket extends WebSocketListener implements Observer<We
     }
     
     public onNext(t: WebSocketFrame){
-        t.text?.((it) => this.underlyingSocket?.send(it))(this);
-        return t.binary?.((binary) => this.underlyingSocket?.send(ByteString.of(binary, 0, binary.size)))(this);
+        const temp333 = t.text;
+        if(temp333 !== null) ((it) => this.underlyingSocket?.send(it))(temp333);
+        return const temp335 = t.binary;
+        if(temp335 !== null) ((binary) => this.underlyingSocket?.send(ByteString.of(binary, 0, binary.size)))(temp335);
     }
     
     public onError(e: Throwable){
@@ -158,7 +160,10 @@ export class WebSocketFrame {
     }
     
     public toString(): string{
-        return this.text ?: this.binary?.kotlinByteArrayToString(Charsets.INSTANCE.UTF_8) ?: "<Empty Frame>";
+        return this.text ?: ((_it)=>{
+                if(_it === null) return null;
+                return kotlinByteArrayToString(_it, Charsets.INSTANCE.UTF_8)
+        })(this.binary) ?: "<Empty Frame>";
     }
 }
 

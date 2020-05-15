@@ -521,55 +521,55 @@ export function dateFromIso(iso8601: string): (Date | null){
 
 //! Declares com.lightningkite.khrysalis.time.format
 export function javaUtilDateFormat(this_Format: Date, dateStyle: ClockPartSize, timeStyle: ClockPartSize): string{
-    const rawDateStyle = (() => {switch(dateStyle){
-                case ClockPartSize.None:
-                return DateFormat.SHORT
-                break;
-                case ClockPartSize.Short:
-                return DateFormat.SHORT
-                break;
-                case ClockPartSize.Medium:
-                return DateFormat.MEDIUM
-                break;
-                case ClockPartSize.Long:
-                return DateFormat.LONG
-                break;
-                case ClockPartSize.Full:
-                return DateFormat.FULL
-                break;
-            }
-    })();
+    const rawDateStyle = switch(dateStyle){
+        case ClockPartSize.None:
+        DateFormat.SHORT
+        break;
+        case ClockPartSize.Short:
+        DateFormat.SHORT
+        break;
+        case ClockPartSize.Medium:
+        DateFormat.MEDIUM
+        break;
+        case ClockPartSize.Long:
+        DateFormat.LONG
+        break;
+        case ClockPartSize.Full:
+        DateFormat.FULL
+        break;
+    }
+    ;
     
-    const rawTimeStyle = (() => {switch(timeStyle){
-                case ClockPartSize.None:
-                return DateFormat.SHORT
-                break;
-                case ClockPartSize.Short:
-                return DateFormat.SHORT
-                break;
-                case ClockPartSize.Medium:
-                return DateFormat.MEDIUM
-                break;
-                case ClockPartSize.Long:
-                return DateFormat.LONG
-                break;
-                case ClockPartSize.Full:
-                return DateFormat.FULL
-                break;
-            }
-    })();
+    const rawTimeStyle = switch(timeStyle){
+        case ClockPartSize.None:
+        DateFormat.SHORT
+        break;
+        case ClockPartSize.Short:
+        DateFormat.SHORT
+        break;
+        case ClockPartSize.Medium:
+        DateFormat.MEDIUM
+        break;
+        case ClockPartSize.Long:
+        DateFormat.LONG
+        break;
+        case ClockPartSize.Full:
+        DateFormat.FULL
+        break;
+    }
+    ;
     
     
-    const format = (() => {if (dateStyle.equals(ClockPartSize.None)) {
-                if (timeStyle.equals(ClockPartSize.None)) {
+    const format = if (dateStyle.equals(ClockPartSize.None)) {
+        (() => {if (timeStyle.equals(ClockPartSize.None)) {
                     throw IllegalStateException.constructor();
-                }
-                return DateFormat.getTimeInstance(rawTimeStyle);
-            } else if (timeStyle.equals(ClockPartSize.None)) {
-                return DateFormat.getDateInstance(rawDateStyle);
-            } else {
-                return DateFormat.getDateTimeInstance(rawDateStyle, rawTimeStyle);
-    }})();
+        }})()
+        return DateFormat.getTimeInstance(rawTimeStyle);
+    } else if (timeStyle.equals(ClockPartSize.None)) {
+        return DateFormat.getDateInstance(rawDateStyle);
+    } else {
+        return DateFormat.getDateTimeInstance(rawDateStyle, rawTimeStyle);
+    };
     
     return format.format(this_Format);
 }

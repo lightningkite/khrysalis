@@ -29,11 +29,13 @@ import { ColorResource } from './../../views/ResourceTypes.actual'
 export function androidWidgetButtonBindActive(this_BindActive: Button, observable: ObservableProperty<Boolean>, activeColorResource: (ColorResource | null) = null, inactiveColorResource: (ColorResource | null) = null){
     return ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (it) => {
                 setAndroidWidgetButtonIsEnabled(this_BindActive, it);
-                if (it) {
-                    activeColorResource?.((color) => this_BindActive.setBackgroundResource(color))(this);
-                } else {
-                    inactiveColorResource?.((color) => this_BindActive.setBackgroundResource(color))(this);
-                }
+                (() => {if (it) {
+                            const temp360 = activeColorResource;
+                            if(temp360 !== null) ((color) => this_BindActive.setBackgroundResource(color))(temp360);
+                        } else {
+                            const temp362 = inactiveColorResource;
+                            if(temp362 !== null) ((color) => this_BindActive.setBackgroundResource(color))(temp362);
+                }})()
     }), getAndroidViewViewRemoved(this_BindActive));
 }
 
@@ -42,12 +44,12 @@ export function androidWidgetButtonBindActive(this_BindActive: Button, observabl
 export function androidWidgetButtonBindActive(this_BindActive: Button, observable: ObservableProperty<Boolean>, activeBackground: Drawable, inactiveBackground: Drawable){
     return ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (it) => {
                 setAndroidWidgetButtonIsEnabled(this_BindActive, it);
-                if (it) {
-                    setAndroidViewViewBackgroundDrawable(this_BindActive, activeBackground);
-                } else {
-                    
-                    setAndroidViewViewBackgroundDrawable(this_BindActive, inactiveBackground);
-                }
+                (() => {if (it) {
+                            setAndroidViewViewBackgroundDrawable(this_BindActive, activeBackground);
+                        } else {
+                            
+                            setAndroidViewViewBackgroundDrawable(this_BindActive, inactiveBackground);
+                }})()
     }), getAndroidViewViewRemoved(this_BindActive));
 }
 

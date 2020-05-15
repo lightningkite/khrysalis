@@ -28,9 +28,9 @@ export class ReferenceObservableProperty<T> extends MutableObservableProperty<an
     public get onChange(): Observable<Box<T>> { return this.event; }
     
     //! Declares com.lightningkite.khrysalis.observables.ReferenceObservableProperty.value
-    public get value(): T { return this.get(); }
+    public get value(): T { return this.this.get(); }
     public set value(value: T) {
-        this.set(value);
+        this.this.set(value);
     }
     
     public update(){

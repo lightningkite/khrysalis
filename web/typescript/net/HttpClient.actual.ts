@@ -269,11 +269,11 @@ export class HttpClient {
                         }
                         
                         serialize(value: (Enum<*> | null), gen: JsonGenerator, provider: (SerializerProvider | null)){
-                            if (value.equals(null)) {
-                                gen.writeNull();
-                            } else {
-                                gen.writeString(value.name.toLowerCase());
-                            }
+                            (() => {if (value.equals(null)) {
+                                        gen.writeNull();
+                                    } else {
+                                        gen.writeString(value.name.toLowerCase());
+                            }})()
                         }
                     }(), new class Anon extends StdSerializer<any> {
                         public constructor() {
@@ -281,11 +281,11 @@ export class HttpClient {
                         }
                         
                         serialize(value: (TimeAlone | null), gen: JsonGenerator, provider: (SerializerProvider | null)){
-                            if (value.equals(null)) {
-                                gen.writeNull();
-                            } else {
-                                gen.writeString(comLightningkiteKhrysalisTimeTimeAloneIso8601(value));
-                            }
+                            (() => {if (value.equals(null)) {
+                                        gen.writeNull();
+                                    } else {
+                                        gen.writeString(comLightningkiteKhrysalisTimeTimeAloneIso8601(value));
+                            }})()
                         }
                     }(), new class Anon extends StdSerializer<any> {
                         public constructor() {
@@ -293,11 +293,11 @@ export class HttpClient {
                         }
                         
                         serialize(value: (DateAlone | null), gen: JsonGenerator, provider: (SerializerProvider | null)){
-                            if (value.equals(null)) {
-                                gen.writeNull();
-                            } else {
-                                gen.writeString(comLightningkiteKhrysalisTimeDateAloneIso8601(value));
-                            }
+                            (() => {if (value.equals(null)) {
+                                        gen.writeNull();
+                                    } else {
+                                        gen.writeString(comLightningkiteKhrysalisTimeDateAloneIso8601(value));
+                            }})()
                         }
         }()]))
         .disable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES)
@@ -330,23 +330,23 @@ export class HttpClient {
     ioReactivexSingleThreadCorrectly<T>(this_ThreadCorrectly: Observable<T>): Observable<T>{
         let current = this_ThreadCorrectly;
         
-        if(!(this.ioScheduler.equals(null))){
-            current = current;
-        }
-        if(!(this.responseScheduler.equals(null))){
-            current = current.observeOn(this.responseScheduler);
-        }
+        (() => {if(!(this.ioScheduler.equals(null))){
+                    current = current;
+        }})()
+        (() => {if(!(this.responseScheduler.equals(null))){
+                    current = current.observeOn(this.responseScheduler);
+        }})()
         return current;
     }
     ioReactivexObservableThreadCorrectly<T>(this_ThreadCorrectly: Observable<T>): Observable<T>{
         let current = this_ThreadCorrectly;
         
-        if(!(this.ioScheduler.equals(null))){
-            current = current;
-        }
-        if(!(this.responseScheduler.equals(null))){
-            current = current.observeOn(this.responseScheduler);
-        }
+        (() => {if(!(this.ioScheduler.equals(null))){
+                    current = current;
+        }})()
+        (() => {if(!(this.responseScheduler.equals(null))){
+                    current = current.observeOn(this.responseScheduler);
+        }})()
         return current;
     }
     
@@ -393,11 +393,11 @@ export class HttpClient {
                     }
                     
                     serialize(value: (Enum<*> | null), gen: JsonGenerator, provider: (SerializerProvider | null)){
-                        if (value.equals(null)) {
-                            gen.writeNull();
-                        } else {
-                            gen.writeString(value.name.toLowerCase());
-                        }
+                        (() => {if (value.equals(null)) {
+                                    gen.writeNull();
+                                } else {
+                                    gen.writeString(value.name.toLowerCase());
+                        }})()
                     }
                 }(), new class Anon extends StdSerializer<any> {
                     public constructor() {
@@ -405,11 +405,11 @@ export class HttpClient {
                     }
                     
                     serialize(value: (TimeAlone | null), gen: JsonGenerator, provider: (SerializerProvider | null)){
-                        if (value.equals(null)) {
-                            gen.writeNull();
-                        } else {
-                            gen.writeString(comLightningkiteKhrysalisTimeTimeAloneIso8601(value));
-                        }
+                        (() => {if (value.equals(null)) {
+                                    gen.writeNull();
+                                } else {
+                                    gen.writeString(comLightningkiteKhrysalisTimeTimeAloneIso8601(value));
+                        }})()
                     }
                 }(), new class Anon extends StdSerializer<any> {
                     public constructor() {
@@ -417,11 +417,11 @@ export class HttpClient {
                     }
                     
                     serialize(value: (DateAlone | null), gen: JsonGenerator, provider: (SerializerProvider | null)){
-                        if (value.equals(null)) {
-                            gen.writeNull();
-                        } else {
-                            gen.writeString(comLightningkiteKhrysalisTimeDateAloneIso8601(value));
-                        }
+                        (() => {if (value.equals(null)) {
+                                    gen.writeNull();
+                                } else {
+                                    gen.writeString(comLightningkiteKhrysalisTimeDateAloneIso8601(value));
+                        }})()
                     }
     }()]))
     .disable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES)
@@ -448,7 +448,7 @@ export class HttpClient {
         
         return this.ioReactivexSingleThreadCorrectly(new Observable<Response>((emitter) => try {
                     console.log(`Sending ${method} request to ${url} with headers ${headers}`);
-                    const response = client.newCall(request).execute();
+                    const response = this.client.newCall(request).execute();
                     
                     console.log(`Response from ${method} request to ${url} with headers ${headers}: ${response.code()}`);
                     emitter.next(response); emitter.complete();
@@ -474,25 +474,25 @@ export class HttpClient {
     
     
     runResult(crossinline action: () => void){
-        return if (this.immediateMode) {
-            this.action();
-        } else {
-            return Handler.constructorandroidosLooper(Looper.getMainLooper()).post(() => this.action());
-        }
+        return (() => {if (this.immediateMode) {
+                    this.action();
+                } else {
+                    return Handler.constructorandroidosLooper(Looper.getMainLooper()).post(() => this.action());
+        }})()
     }
     
     okhttp3CallGo(this_Go: Call, callback: Callback){
-        if (this.immediateMode) {
-            try {
-                const result = execute();
-                
-                callback.onResponse(this_Go, result);
-            } catch (e: IOException) {
-                callback.onFailure(this_Go, e);
-            };
-        } else {
-            enqueue(callback);
-        }
+        (() => {if (this.immediateMode) {
+                    try {
+                        const result = execute();
+                        
+                        callback.onResponse(this_Go, result);
+                    } catch (e: IOException) {
+                        callback.onFailure(this_Go, e);
+                    };
+                } else {
+                    enqueue(callback);
+        }})()
     }
     
     call<T extends any>(
@@ -505,18 +505,21 @@ export class HttpClient {
         console.log(`Sending ${method} request to ${url} with headers ${headers}`);
         const request = Request.Builder.constructor()
         .url(url)
-        .method(method, body?.((it) => {
-                    const sending = mapper.writeValueAsString(it);
-                    
-                    console.log(`with body ${sending}`);
-                    RequestBody.create(MediaType.parse("application/json"), sending);
-        })(this))
+        .method(method, ((_it)=>{
+                    if(_it === null) return null;
+                    return ((it) => {
+                            const sending = this.mapper.writeValueAsString(it);
+                            
+                            console.log(`with body ${sending}`);
+                            RequestBody.create(MediaType.parse("application/json"), sending);
+                    })(_it)
+        })(body))
         .headers(Headers.of(headers))
         .addHeader("Accept-Language", getJavaUtilLocaleLanguage(Locale.getDefault()))
         .build();
         
         
-        this.okhttp3CallGo(client.newCall(request), new class Anon implements Callback {
+        this.okhttp3CallGo(this.client.newCall(request), new class Anon implements Callback {
                 public static implementsInterfaceOkhttp3Callback = true;
                 public constructor() {
                 }
@@ -533,23 +536,23 @@ export class HttpClient {
                     runResult(() => {
                             const code = response.code();
                             
-                            if (code / 100 === 2) {
-                                try {
-                                    const read = mapper.readValue<T>(raw, new class Anon extends TypeReference<any> {
-                                            public constructor() {
-                                                super();
-                                            }
-                                    }());
-                                    
-                                    onResult.invoke(code, read, null);
-                                } catch (e: Exception) {
-                                    Log.e("HttpClient", `Failure to parse: ${e.message}`);
-                                    e.printStackTrace();
-                                    onResult.invoke(code, null, e.message);
-                                };
-                            } else {
-                                onResult.invoke(code, null, raw ?: "");
-                            }
+                            (() => {if (code / 100 === 2) {
+                                        try {
+                                            const read = this.mapper.readValue<T>(raw, new class Anon extends TypeReference<any> {
+                                                    public constructor() {
+                                                        super();
+                                                    }
+                                            }());
+                                            
+                                            onResult.invoke(code, read, null);
+                                        } catch (e: Exception) {
+                                            Log.e("HttpClient", `Failure to parse: ${e.message}`);
+                                            e.printStackTrace();
+                                            onResult.invoke(code, null, e.message);
+                                        };
+                                    } else {
+                                        onResult.invoke(code, null, raw ?: "");
+                            }})()
                     });
                 }
         }());
@@ -565,18 +568,21 @@ export class HttpClient {
         console.log(`Sending ${method} request to ${url} with headers ${headers}`);
         const request = Request.Builder.constructor()
         .url(url)
-        .method(method, body?.((it) => {
-                    const sending = mapper.writeValueAsString(it);
-                    
-                    console.log(`with body ${sending}`);
-                    RequestBody.create(MediaType.parse("application/json"), sending);
-        })(this))
+        .method(method, ((_it)=>{
+                    if(_it === null) return null;
+                    return ((it) => {
+                            const sending = this.mapper.writeValueAsString(it);
+                            
+                            console.log(`with body ${sending}`);
+                            RequestBody.create(MediaType.parse("application/json"), sending);
+                    })(_it)
+        })(body))
         .headers(Headers.of(headers))
         .addHeader("Accept-Language", getJavaUtilLocaleLanguage(Locale.getDefault()))
         .build();
         
         
-        this.okhttp3CallGo(client.newCall(request), new class Anon implements Callback {
+        this.okhttp3CallGo(this.client.newCall(request), new class Anon implements Callback {
                 public static implementsInterfaceOkhttp3Callback = true;
                 public constructor() {
                 }
@@ -593,11 +599,11 @@ export class HttpClient {
                     runResult(() => {
                             const code = response.code();
                             
-                            if (code / 100 === 2) {
-                                onResult.invoke(code, raw, null);
-                            } else {
-                                onResult.invoke(code, null, raw ?: "");
-                            }
+                            (() => {if (code / 100 === 2) {
+                                        onResult.invoke(code, raw, null);
+                                    } else {
+                                        onResult.invoke(code, null, raw ?: "");
+                            }})()
                     });
                 }
         }());
@@ -613,18 +619,21 @@ export class HttpClient {
         console.log(`Sending ${method} request to ${url} with headers ${headers}`);
         const request = Request.Builder.constructor()
         .url(url)
-        .method(method, body?.((it) => {
-                    const sending = mapper.writeValueAsString(it);
-                    
-                    console.log(`with body ${sending}`);
-                    RequestBody.create(MediaType.parse("application/json"), sending);
-        })(this))
+        .method(method, ((_it)=>{
+                    if(_it === null) return null;
+                    return ((it) => {
+                            const sending = this.mapper.writeValueAsString(it);
+                            
+                            console.log(`with body ${sending}`);
+                            RequestBody.create(MediaType.parse("application/json"), sending);
+                    })(_it)
+        })(body))
         .headers(Headers.of(headers))
         .addHeader("Accept-Language", getJavaUtilLocaleLanguage(Locale.getDefault()))
         .build();
         
         
-        this.okhttp3CallGo(client.newCall(request), new class Anon implements Callback {
+        this.okhttp3CallGo(this.client.newCall(request), new class Anon implements Callback {
                 public static implementsInterfaceOkhttp3Callback = true;
                 public constructor() {
                 }
@@ -641,11 +650,11 @@ export class HttpClient {
                     runResult(() => {
                             const code = response.code();
                             
-                            if (code / 100 === 2) {
-                                onResult.invoke(response.code(), null);
-                            } else {
-                                onResult.invoke(code, raw ?: "");
-                            }
+                            (() => {if (code / 100 === 2) {
+                                        onResult.invoke(response.code(), null);
+                                    } else {
+                                        onResult.invoke(code, raw ?: "");
+                            }})()
                     });
                 }
         }());
@@ -662,10 +671,10 @@ export class HttpClient {
         crossinline onResult:  (code: number, error: (string | null)) => void
     ){
         loadImage(image, (rawImage) => {
-                if (rawImage.equals(null)) {
-                    this.onResult(0, "Failed to read image.");
-                    return;
-                }
+                (() => {if (rawImage.equals(null)) {
+                            this.onResult(0, "Failed to read image.");
+                            return;
+                }})()
                 let qualityToTry = 100;
                 
                 let data = javaIoCloseableUse(ByteArrayOutputStream.constructor(), (it) => {
@@ -702,7 +711,7 @@ export class HttpClient {
                 .build();
                 
                 
-                this.okhttp3CallGo(client.newCall(request), new class Anon implements Callback {
+                this.okhttp3CallGo(this.client.newCall(request), new class Anon implements Callback {
                         public static implementsInterfaceOkhttp3Callback = true;
                         public constructor() {
                         }
@@ -718,11 +727,11 @@ export class HttpClient {
                             runResult(() => {
                                     const code = response.code();
                                     
-                                    if (code / 100 === 2) {
-                                        onResult.invoke(response.code(), null);
-                                    } else {
-                                        onResult.invoke(code, raw ?: "");
-                                    }
+                                    (() => {if (code / 100 === 2) {
+                                                onResult.invoke(response.code(), null);
+                                            } else {
+                                                onResult.invoke(code, raw ?: "");
+                                    }})()
                             });
                         }
                 }());
@@ -741,10 +750,10 @@ export class HttpClient {
         crossinline onResult:  (code: number, result: (T | null), error: (string | null)) => void
     ){
         loadImage(image, (rawImage) => {
-                if (rawImage.equals(null)) {
-                    this.onResult(0, null, "Failed to read image.");
-                    return;
-                }
+                (() => {if (rawImage.equals(null)) {
+                            this.onResult(0, null, "Failed to read image.");
+                            return;
+                }})()
                 let qualityToTry = 100;
                 
                 let data = javaIoCloseableUse(ByteArrayOutputStream.constructor(), (it) => {
@@ -781,7 +790,7 @@ export class HttpClient {
                 .build();
                 
                 
-                this.okhttp3CallGo(client.newCall(request), new class Anon implements Callback {
+                this.okhttp3CallGo(this.client.newCall(request), new class Anon implements Callback {
                         public static implementsInterfaceOkhttp3Callback = true;
                         public constructor() {
                         }
@@ -797,22 +806,22 @@ export class HttpClient {
                             runResult(() => {
                                     const code = response.code();
                                     
-                                    if (code / 100 === 2) {
-                                        try {
-                                            const read = mapper.readValue<T>(raw, new class Anon extends TypeReference<any> {
-                                                    public constructor() {
-                                                        super();
-                                                    }
-                                            }());
-                                            
-                                            onResult.invoke(code, read, null);
-                                        } catch (e: Exception) {
-                                            Log.e("HttpClient", `Failure to parse: ${e.message}`);
-                                            onResult.invoke(code, null, e.message);
-                                        };
-                                    } else {
-                                        onResult.invoke(code, null, raw ?: "");
-                                    }
+                                    (() => {if (code / 100 === 2) {
+                                                try {
+                                                    const read = this.mapper.readValue<T>(raw, new class Anon extends TypeReference<any> {
+                                                            public constructor() {
+                                                                super();
+                                                            }
+                                                    }());
+                                                    
+                                                    onResult.invoke(code, read, null);
+                                                } catch (e: Exception) {
+                                                    Log.e("HttpClient", `Failure to parse: ${e.message}`);
+                                                    onResult.invoke(code, null, e.message);
+                                                };
+                                            } else {
+                                                onResult.invoke(code, null, raw ?: "");
+                                    }})()
                             });
                         }
                 }());

@@ -109,9 +109,9 @@ export class FormField<T> implements UntypedFormField {
     public readonly error: StandardObservableProperty<(ViewString | null)> = new StandardObservableProperty(null, undefined);
     
     //! Declares com.lightningkite.khrysalis.views.FormField.value
-    public get value(): T { return observable.value; }
+    public get value(): T { return this.observable.value; }
     public set value(value: T) {
-        observable.value = value;
+        this.observable.value = value;
     }
     
     //! Declares com.lightningkite.khrysalis.views.FormField.untypedObservable
@@ -148,7 +148,7 @@ export class Form {
         
         const field = new FormField(name, obs, (untypedField) => this.validation(untypedField as FormField<T>));
         
-        fields.add(field);
+        this.fields.add(field);
         return field;
     }
     
@@ -165,7 +165,7 @@ export class Form {
     ): FormField<T>{
         const field = new FormField(name, property, (untypedField) => this.validation(untypedField as FormField<T>));
         
-        fields.add(field);
+        this.fields.add(field);
         return field;
     }
     
@@ -176,29 +176,29 @@ export class Form {
     ): FormField<T>{ return fieldFromProperty(new ViewStringResource(name), property, validation); }
     
     public check(): Array<FormValidationError>{
-        return listFilterNotNull(fields.map((it) => {
+        return listFilterNotNull(this.fields.map((it) => {
                     const result = checkField(it);
                     
-                    if (!(result.equals(null))) {
-                        return new FormValidationError(it, result);
-                    } else {
-                        return null;
-                    }
+                    (() => {if (!(result.equals(null))) {
+                                return new FormValidationError(it, result);
+                            } else {
+                                return null;
+                    }})()
         }));
     }
     
     public runOrDialog(action:() => void){
         const errors = check();
         
-        if(kotlinCollectionsCollectionIsNotEmpty(errors)){
-            showDialog(kotlinCollectionsListJoinToViewString(errors.map((it) => it.string), undefined));
-        } else {
-            this.action();
-        }
+        (() => {if(kotlinCollectionsCollectionIsNotEmpty(errors)){
+                    showDialog(kotlinCollectionsListJoinToViewString(errors.map((it) => it.string), undefined));
+                } else {
+                    this.action();
+        }})()
     }
     
     public checkField(field: UntypedFormField): (ViewString | null){
-        const result = field.validation(field);
+        const result = field.this.validation(field);
         
         field.error.value = result;
         return result;
@@ -207,48 +207,48 @@ export class Form {
 
 //! Declares com.lightningkite.khrysalis.views.required
 export function comLightningkiteKhrysalisViewsFormFieldRequired(this_Required: FormField<string>): (ViewString | null){
-    if (kotlinCharSequenceIsBlank(this_Required.observable.value)) {
-        return new ViewStringTemplate(Form.Companion.INSTANCE.xIsRequired, [this_Required.name]);
-    } else {
-        return null;
-    }
+    (() => {if (kotlinCharSequenceIsBlank(this_Required.observable.value)) {
+                return new ViewStringTemplate(Form.Companion.INSTANCE.xIsRequired, [this_Required.name]);
+            } else {
+                return null;
+    }})()
 }
 
 //! Declares com.lightningkite.khrysalis.views.notNull
 export function comLightningkiteKhrysalisViewsFormFieldNotNull<T>(this_NotNull: FormField<T>): (ViewString | null){
-    if (this_NotNull.observable.value.equals(null)) {
-        return new ViewStringTemplate(Form.Companion.INSTANCE.xIsRequired, [this_NotNull.name]);
-    } else {
-        return null;
-    }
+    (() => {if (this_NotNull.observable.value.equals(null)) {
+                return new ViewStringTemplate(Form.Companion.INSTANCE.xIsRequired, [this_NotNull.name]);
+            } else {
+                return null;
+    }})()
 }
 
 //! Declares com.lightningkite.khrysalis.views.notFalse
 export function comLightningkiteKhrysalisViewsFormFieldNotFalse(this_NotFalse: FormField<Boolean>): (ViewString | null){
-    if (this_NotFalse.observable.value.not()) {
-        return new ViewStringTemplate(Form.Companion.INSTANCE.xIsRequired, [this_NotFalse.name]);
-    } else {
-        return null;
-    }
+    (() => {if (this_NotFalse.observable.value.not()) {
+                return new ViewStringTemplate(Form.Companion.INSTANCE.xIsRequired, [this_NotFalse.name]);
+            } else {
+                return null;
+    }})()
 }
 
 //! Declares com.lightningkite.khrysalis.views.unless
 export function comLightningkiteKhrysalisViewsViewStringUnless(this_Unless: ViewString, condition: Boolean): (ViewString | null){
-    if (condition) {
-        return null;
-    } else {
-        return this_Unless;
-    }
+    (() => {if (condition) {
+                return null;
+            } else {
+                return this_Unless;
+    }})()
 }
 
 
 //! Declares com.lightningkite.khrysalis.views.matches
 export function comLightningkiteKhrysalisViewsFormFieldMatches<T extends object>(this_Matches: FormField<T>, other: FormField<T>): (ViewString | null){
-    if (!(this_Matches.observable.value.equals(other.observable.value))) {
-        return new ViewStringTemplate(Form.Companion.INSTANCE.xMustMatchY, [this_Matches.name, other.name]);
-    } else {
-        return null;
-    }
+    (() => {if (!(this_Matches.observable.value.equals(other.observable.value))) {
+                return new ViewStringTemplate(Form.Companion.INSTANCE.xMustMatchY, [this_Matches.name, other.name]);
+            } else {
+                return null;
+    }})()
 }
 
 //object test {

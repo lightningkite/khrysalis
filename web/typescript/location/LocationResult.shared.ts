@@ -22,7 +22,7 @@ export class LocationResult {
     }
     public hashCode(): number {
         let hash = 17;
-        hash = 31 * hash + this.coordinate.hashCode();
+        hash = 31 * hash + this.coordinate?.hashCode() ?? 0;
         hash = 31 * hash + Math.floor(this.accuracyMeters);
         hash = 31 * hash + Math.floor(this.altitudeMeters);
         hash = 31 * hash + Math.floor(this.altitudeAccuracyMeters);
@@ -30,7 +30,7 @@ export class LocationResult {
         hash = 31 * hash + Math.floor(this.speedMetersPerSecond);
         return hash;
     }
-    public equals(other: any): boolean { return other instanceof LocationResult && this.coordinate.equals(other.coordinate) && this.accuracyMeters === other.accuracyMeters && this.altitudeMeters === other.altitudeMeters && this.altitudeAccuracyMeters === other.altitudeAccuracyMeters && this.headingFromNorth === other.headingFromNorth && this.speedMetersPerSecond === other.speedMetersPerSecond }
+    public equals(other: any): boolean { return other instanceof LocationResult && (this.coordinate?.equals(other.coordinate) ?? false) && this.accuracyMeters === other.accuracyMeters && this.altitudeMeters === other.altitudeMeters && this.altitudeAccuracyMeters === other.altitudeAccuracyMeters && this.headingFromNorth === other.headingFromNorth && this.speedMetersPerSecond === other.speedMetersPerSecond }
     public toString(): string { return `LocationResult(coordinate = ${this.coordinate}, accuracyMeters = ${this.accuracyMeters}, altitudeMeters = ${this.altitudeMeters}, altitudeAccuracyMeters = ${this.altitudeAccuracyMeters}, headingFromNorth = ${this.headingFromNorth}, speedMetersPerSecond = ${this.speedMetersPerSecond})` }
     public copy(coordinate: GeoCoordinate = this.coordinate, accuracyMeters: number = this.accuracyMeters, altitudeMeters: number = this.altitudeMeters, altitudeAccuracyMeters: number = this.altitudeAccuracyMeters, headingFromNorth: number = this.headingFromNorth, speedMetersPerSecond: number = this.speedMetersPerSecond) { return new LocationResult(coordinate, accuracyMeters, altitudeMeters, altitudeAccuracyMeters, headingFromNorth, speedMetersPerSecond); }
 }

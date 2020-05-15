@@ -214,23 +214,23 @@ export function comLightningkiteKhrysalisTimeDateAloneIso8601(this_Iso8601: Date
 
 //! Declares com.lightningkite.khrysalis.time.formatYearless
 export function comLightningkiteKhrysalisTimeDateAloneFormatYearless(this_FormatYearless: DateAlone, clockPartSize: ClockPartSize): string{
-    return (() => {switch(clockPartSize){
-                case ClockPartSize.None:
-                return ""
-                break;
-                case ClockPartSize.Short:
-                return SimpleDateFormat.constructorkotlinString("MMM d").format(dateFrom(this_FormatYearless, TimeAlone.Companion.INSTANCE.noon, undefined))
-                break;
-                case ClockPartSize.Medium:
-                return SimpleDateFormat.constructorkotlinString("MMMM d").format(dateFrom(this_FormatYearless, TimeAlone.Companion.INSTANCE.noon, undefined))
-                break;
-                case ClockPartSize.Long:
-                return SimpleDateFormat.constructorkotlinString("EEE MMM d").format(dateFrom(this_FormatYearless, TimeAlone.Companion.INSTANCE.noon, undefined))
-                break;
-                case ClockPartSize.Full:
-                return SimpleDateFormat.constructorkotlinString("EEEE MMMM d").format(dateFrom(this_FormatYearless, TimeAlone.Companion.INSTANCE.noon, undefined))
-                break;
-            }
-    })();
+    return switch(clockPartSize){
+        case ClockPartSize.None:
+        ""
+        break;
+        case ClockPartSize.Short:
+        SimpleDateFormat.constructorkotlinString("MMM d").format(dateFrom(this_FormatYearless, TimeAlone.Companion.INSTANCE.noon, undefined))
+        break;
+        case ClockPartSize.Medium:
+        SimpleDateFormat.constructorkotlinString("MMMM d").format(dateFrom(this_FormatYearless, TimeAlone.Companion.INSTANCE.noon, undefined))
+        break;
+        case ClockPartSize.Long:
+        SimpleDateFormat.constructorkotlinString("EEE MMM d").format(dateFrom(this_FormatYearless, TimeAlone.Companion.INSTANCE.noon, undefined))
+        break;
+        case ClockPartSize.Full:
+        SimpleDateFormat.constructorkotlinString("EEEE MMMM d").format(dateFrom(this_FormatYearless, TimeAlone.Companion.INSTANCE.noon, undefined))
+        break;
+    }
+    ;
 }
 

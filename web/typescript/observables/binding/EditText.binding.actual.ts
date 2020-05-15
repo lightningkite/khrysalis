@@ -40,9 +40,9 @@ import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindString
 export function androidWidgetEditTextBindString(this_BindString: EditText, observable: MutableObservableProperty<string>){
-    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => if (!(observable.value === getAndroidWidgetEditTextText(this_BindString).toString())) {
-                this_BindString.setText(observable.value);
-    }), getAndroidViewViewRemoved(this_BindString));
+    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => (() => {if (!(observable.value === getAndroidWidgetEditTextText(this_BindString).toString())) {
+                        this_BindString.setText(observable.value);
+    }})()), getAndroidViewViewRemoved(this_BindString));
     addTextChangedListener(new class Anon implements TextWatcher {
             public static implementsInterfaceAndroidTextTextWatcher = true;
             public static implementsInterfaceAndroidTextNoCopySpan = true;
@@ -52,9 +52,9 @@ export function androidWidgetEditTextBindString(this_BindString: EditText, obser
             afterTextChanged(s: (Editable | null)){}
             beforeTextChanged(s: (CharSequence | null), start: number, count: number, after: number){}
             onTextChanged(s: (CharSequence | null), start: number, before: number, count: number){
-                if (!(observable.value === s)) {
-                    observable.value = (kotlinAnyToString(s));
-                }
+                (() => {if (!(observable.value === s)) {
+                            observable.value = (kotlinAnyToString(s));
+                }})()
             }
     }());
 }
@@ -64,9 +64,9 @@ export function androidWidgetEditTextBindInteger(this_BindInteger: EditText, obs
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
                 const currentValue = kotlinStringToIntOrNull(getAndroidWidgetEditTextText(this_BindInteger).toString());
                 
-                if (!(value === currentValue)) {
-                    this_BindInteger.setText(kotlinAnyTakeUnless(value, (it) => it === 0)?.toString() ?: "");
-                }
+                (() => {if (!(value === currentValue)) {
+                            this_BindInteger.setText(kotlinAnyTakeUnless(value, (it) => it === 0)?.toString() ?: "");
+                }})()
     }), getAndroidViewViewRemoved(this_BindInteger));
     addTextChangedListener(new class Anon implements TextWatcher {
             public static implementsInterfaceAndroidTextTextWatcher = true;
@@ -79,9 +79,9 @@ export function androidWidgetEditTextBindInteger(this_BindInteger: EditText, obs
             onTextChanged(s: (CharSequence | null), start: number, before: number, count: number){
                 const currentValue = kotlinStringToIntOrNull(kotlinAnyToString(s)) ?: 0;
                 
-                if (!(observable.value === currentValue)) {
-                    observable.value = currentValue;
-                }
+                (() => {if (!(observable.value === currentValue)) {
+                            observable.value = currentValue;
+                }})()
             }
     }());
 }
@@ -93,9 +93,9 @@ export function androidWidgetEditTextBindDouble(this_BindDouble: EditText, obser
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
                 const currentValue = kotlinStringToDoubleOrNull(getAndroidWidgetEditTextText(this_BindDouble).toString());
                 
-                if (!(value === currentValue)) {
-                    this_BindDouble.setText(kotlinAnyTakeUnless(value, (it) => it === 0.0)?.toString() ?: "");
-                }
+                (() => {if (!(value === currentValue)) {
+                            this_BindDouble.setText(kotlinAnyTakeUnless(value, (it) => it === 0.0)?.toString() ?: "");
+                }})()
     }), getAndroidViewViewRemoved(this_BindDouble));
     addTextChangedListener(new class Anon implements TextWatcher {
             public static implementsInterfaceAndroidTextTextWatcher = true;
@@ -108,9 +108,9 @@ export function androidWidgetEditTextBindDouble(this_BindDouble: EditText, obser
             onTextChanged(s: (CharSequence | null), start: number, before: number, count: number){
                 const currentValue = kotlinStringToDoubleOrNull(kotlinAnyToString(s)) ?: 0.0;
                 
-                if (!(observable.value === currentValue)) {
-                    observable.value = currentValue;
-                }
+                (() => {if (!(observable.value === currentValue)) {
+                            observable.value = currentValue;
+                }})()
             }
     }());
 }

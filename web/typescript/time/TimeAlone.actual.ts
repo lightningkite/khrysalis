@@ -101,11 +101,11 @@ export function comLightningkiteKhrysalisTimeTimeAloneIso8601(this_Iso8601: Time
 export function comLightningkiteKhrysalisTimeTimeAloneMinus(this_Minus: TimeAlone, rhs: TimeAlone): TimeAlone{
     const result = (this_Minus.hour * 60 * 60 + this_Minus.minute * 60 + this_Minus.second) - (rhs.hour * 60 * 60 + rhs.minute * 60 + rhs.second);
     
-    return (() => {if (result < 0) {
-                return new TimeAlone(0, 0, 0);
-            } else {
-                return new TimeAlone(result / 60 / 60, result / 60 % 60, result % 60);
-    }})();
+    return if (result < 0) {
+        return new TimeAlone(0, 0, 0);
+    } else {
+        return new TimeAlone(result / 60 / 60, result / 60 % 60, result % 60);
+    };
 }
 
 //! Declares com.lightningkite.khrysalis.time.plus
@@ -119,11 +119,11 @@ export function comLightningkiteKhrysalisTimeTimeAlonePlus(this_Plus: TimeAlone,
 export function comLightningkiteKhrysalisTimeTimeAloneMinus(this_Minus: TimeAlone, rhs: TimeInterval): TimeAlone{
     const result = (this_Minus.hour * 60 * 60 + this_Minus.minute * 60 + this_Minus.second) - rhs.milliseconds / 1000;
     
-    return (() => {if (result < 0) {
-                return new TimeAlone(0, 0, 0);
-            } else {
-                return new TimeAlone(result / 60 / 60, result / 60 % 60, result % 60);
-    }})();
+    return if (result < 0) {
+        return new TimeAlone(0, 0, 0);
+    } else {
+        return new TimeAlone(result / 60 / 60, result / 60 % 60, result % 60);
+    };
 }
 
 //! Declares com.lightningkite.khrysalis.time.plus

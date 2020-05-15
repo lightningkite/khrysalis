@@ -58,24 +58,24 @@ export function androidWidgetLinearLayoutBind<T>(this_Bind: LinearLayout, data: 
                 //Fix view count
                 const excessViews = existingViews.size - value.size;
                 
-                if(excessViews > 0){
-                    //remove views
-                    for (const iter of new NumberRange(1, excessViews)) {
-                        const old = existingViews.splice((existingViews.length - 1), 1);
-                        
-                        this_Bind.removeView(old.view);
-                    }
-                } else if(existingViews.size < value.size) {
-                    //add views
-                    for (const iter of new NumberRange(1, (-excessViews))) {
-                        const prop = new StandardObservableProperty(defaultValue, undefined);
-                        
-                        const view = this.makeView(prop);
-                        
-                        this_Bind.addView(view, androidWidgetLinearLayoutParams(this_Bind, undefined, undefined, undefined, undefined, undefined, undefined, AlignPair.Companion.INSTANCE.centerFill, undefined));
-                        return existingViews.add(new LinearLayoutBoundSubview(view, prop));
-                    }
-                }
+                (() => {if(excessViews > 0){
+                            //remove views
+                            for (const iter of new NumberRange(1, excessViews)) {
+                                const old = existingViews.splice((existingViews.length - 1), 1);
+                                
+                                this_Bind.removeView(old.view);
+                            }
+                        } else if(existingViews.size < value.size) {
+                            //add views
+                            for (const iter of new NumberRange(1, (-excessViews))) {
+                                const prop = new StandardObservableProperty(defaultValue, undefined);
+                                
+                                const view = this.makeView(prop);
+                                
+                                this_Bind.addView(view, androidWidgetLinearLayoutParams(this_Bind, undefined, undefined, undefined, undefined, undefined, undefined, AlignPair.Companion.INSTANCE.centerFill, undefined));
+                                return existingViews.add(new LinearLayoutBoundSubview(view, prop));
+                            }
+                }})()
                 
                 //Update views
                 for (const index of getKotlinCollectionsCollectionIndices(value)) {

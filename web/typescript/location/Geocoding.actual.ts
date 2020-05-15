@@ -26,10 +26,10 @@ import { post } from './../delay.actual'
 
 //! Declares com.lightningkite.khrysalis.location.geocode
 export function comLightningkiteKhrysalisAndroidActivityAccessGeocode(this_Geocode: ViewDependency, coordinate: GeoCoordinate, onResult: (a: Array<GeoAddress>) => void){
-    if(coordinate.latitude === 0.0 && coordinate.longitude === 0.0){
-        this.onResult([]);
-        return;
-    }
+    (() => {if(coordinate.latitude === 0.0 && coordinate.longitude === 0.0){
+                this.onResult([]);
+                return;
+    }})()
     Thread.constructorkotlinFunction(() => {
             const result = Geocoder.constructorandroidcontentContext(this_Geocode.context)
             .getFromLocation(coordinate.latitude, coordinate.longitude, 1);
@@ -40,10 +40,10 @@ export function comLightningkiteKhrysalisAndroidActivityAccessGeocode(this_Geoco
 
 //! Declares com.lightningkite.khrysalis.location.geocode
 export function comLightningkiteKhrysalisAndroidActivityAccessGeocode(this_Geocode: ViewDependency, address: string, onResult: (a: Array<GeoAddress>) => void){
-    if(address === ""){
-        this.onResult([]);
-        return;
-    }
+    (() => {if(address === ""){
+                this.onResult([]);
+                return;
+    }})()
     Thread.constructorkotlinFunction(() => {
             const result = Geocoder.constructorandroidcontentContext(this_Geocode.context)
             .getFromLocationName(address, 1);

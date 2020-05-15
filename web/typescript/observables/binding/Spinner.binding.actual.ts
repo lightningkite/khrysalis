@@ -70,7 +70,10 @@ export function androidWidgetSpinnerBind<T>(this_Bind: Spinner, options: Observa
                         return subview;
                 })(this);
                 
-                (tryCastClass(getAndroidViewViewTag(view), StandardObservableProperty))?.((it) => it.value = kotlinCollectionsListGetOrNull(options.value, position) ?: selected.value)(this) ?: throw IllegalStateException.constructor();
+                ((_it)=>{
+                        if(_it === null) return null;
+                        return ((it) => it.value = kotlinCollectionsListGetOrNull(options.value, position) ?: selected.value)(_it)
+                })((tryCastClass(getAndroidViewViewTag(view), StandardObservableProperty))) ?: throw IllegalStateException.constructor();
                 return view;
             }
             
@@ -81,9 +84,9 @@ export function androidWidgetSpinnerBind<T>(this_Bind: Spinner, options: Observa
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(selected, undefined, undefined, (it) => {
                 const index = options.value.indexOf(it);
                 
-                if (!(index === -1) && !(index === getAndroidWidgetSpinnerSelectedItemPosition(this_Bind))) {
-                    setSelection(index);
-                }
+                (() => {if (!(index === -1) && !(index === getAndroidWidgetSpinnerSelectedItemPosition(this_Bind))) {
+                            setSelection(index);
+                }})()
     }), getAndroidViewViewRemoved(this_Bind));
     setAndroidWidgetSpinnerOnItemSelectedListener(this_Bind, new class Anon implements AdapterViewOnItemSelectedListener {
             public static implementsInterfaceAndroidWidgetAdapterViewOnItemSelectedListener = true;
@@ -95,9 +98,9 @@ export function androidWidgetSpinnerBind<T>(this_Bind: Spinner, options: Observa
             onItemSelected(parent: (AdapterView<*> | null), view: (View | null), position: number, id: number){
                 const newValue = kotlinCollectionsListGetOrNull(options.value, position) ?: return;
                 
-                if (!(selected.value.equals(newValue))) {
-                    selected.value = newValue;
-                }
+                (() => {if (!(selected.value.equals(newValue))) {
+                            selected.value = newValue;
+                }})()
             }
     }());
 }

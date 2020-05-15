@@ -36,9 +36,9 @@ export function androidWidgetTextViewBindString(this_BindString: TextView, obser
 export function androidWidgetTextViewBindStringRes(this_BindStringRes: TextView, observable: ObservableProperty<(StringResource | null)>){
     return ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
                 setAndroidWidgetTextViewVisibility(this_BindStringRes, value === null ? View.GONE : View.VISIBLE);
-                if (!(value === null)) {
-                    setAndroidWidgetTextViewText(this_BindStringRes, getAndroidWidgetTextViewResources(this_BindStringRes).getString(value));
-                }
+                (() => {if (!(value === null)) {
+                            setAndroidWidgetTextViewText(this_BindStringRes, getAndroidWidgetTextViewResources(this_BindStringRes).getString(value));
+                }})()
     }), getAndroidViewViewRemoved(this_BindStringRes));
 }
 

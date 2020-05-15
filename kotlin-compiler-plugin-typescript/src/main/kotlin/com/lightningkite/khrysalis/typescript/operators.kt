@@ -218,7 +218,7 @@ fun TypescriptTranslator.registerOperators() {
             val typeParametersByIndex = typedRule.resolvedCall?.typeArguments?.mapKeys { it.key.index } ?: mapOf()
 
             emitTemplate(
-                requiresWrapping = typedRule.parent is KtBlockExpression,
+                requiresWrapping = typedRule.actuallyCouldBeExpression,
                 template = rule.template,
                 receiver = tempArray,
                 dispatchReceiver = arrayAccess.getTsReceiver(),
@@ -335,7 +335,7 @@ fun TypescriptTranslator.registerOperators() {
             val rule = replacements.getCall(f)!!
 
             emitTemplate(
-                requiresWrapping = typedRule.parent is KtBlockExpression,
+                requiresWrapping = typedRule.actuallyCouldBeExpression,
                 template = rule.template,
                 receiver = typedRule.baseExpression,
                 dispatchReceiver = if(f.extensionReceiverParameter != null) typedRule.getTsReceiver() else typedRule.baseExpression

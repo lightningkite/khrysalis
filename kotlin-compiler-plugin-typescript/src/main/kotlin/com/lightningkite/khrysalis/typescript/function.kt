@@ -289,7 +289,7 @@ fun TypescriptTranslator.registerFunction() {
 
     handle<KtSafeQualifiedExpression>(
         condition = {
-            typedRule.parent is KtBlockExpression
+            typedRule.actuallyCouldBeExpression
                     && (((typedRule.selectorExpression as? KtCallExpression)?.calleeExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget as? FunctionDescriptor)?.extensionReceiverParameter != null
         },
         priority = 1001,
@@ -387,7 +387,7 @@ fun TypescriptTranslator.registerFunction() {
             val allParametersByName = mapOf<String, Any>(f.valueParameters.first().name.asString() to typedRule.right!!)
 
             emitTemplate(
-                requiresWrapping = typedRule.parent is KtBlockExpression,
+                requiresWrapping = typedRule.actuallyCouldBeExpression,
                 template = rule.template,
                 receiver = typedRule.left,
                 dispatchReceiver = typedRule.operationReference.getTsReceiver() ?: typedRule.left,
@@ -432,7 +432,7 @@ fun TypescriptTranslator.registerFunction() {
             val typeParametersByIndex = callExp.resolvedCall?.typeArguments?.mapKeys { it.key.index } ?: mapOf()
 
             emitTemplate(
-                requiresWrapping = typedRule.parent is KtBlockExpression,
+                requiresWrapping = typedRule.actuallyCouldBeExpression,
                 template = rule.template,
                 receiver = typedRule.receiverExpression,
                 dispatchReceiver = nre.getTsReceiver(),
@@ -482,12 +482,25 @@ fun TypescriptTranslator.registerFunction() {
                 callExp.resolvedCall?.typeArguments?.mapKeys { it.key.name.asString() } ?: mapOf()
             val typeParametersByIndex = callExp.resolvedCall?.typeArguments?.mapKeys { it.key.index } ?: mapOf()
 
-            -"((_it)=>{\n"
-            -"if(_it === null || _it === undefined) return null;\nreturn "
+            val rec: String = if(typedRule.actuallyCouldBeExpression){
+                val n = "temp${uniqueNumber.getAndIncrement()}"
+                -"const $n = "
+                -typedRule.receiverExpression
+                -";\n"
+                n
+                -"if("
+                -n
+                -" !== null) "
+                n
+            } else {
+                -"((_it)=>{\n"
+                -"if(_it === null) return null;\nreturn "
+                "_it"
+            }
             emitTemplate(
-                requiresWrapping = typedRule.parent is KtBlockExpression,
+                requiresWrapping = typedRule.actuallyCouldBeExpression,
                 template = rule.template,
-                receiver = "_it",
+                receiver = rec,
                 dispatchReceiver = nre.getTsReceiver(),
                 extensionReceiver = typedRule.receiverExpression,
                 allParameters = ArrayList<Any?>().apply {
@@ -501,9 +514,11 @@ fun TypescriptTranslator.registerFunction() {
                 parameterByIndex = { allParametersByIndex[it.index]?.getArgumentExpression() ?: "undefined" },
                 typeParameterByIndex = { typeParametersByIndex[it.index] ?: "undefined" }
             )
-            -"\n})("
-            -typedRule.receiverExpression
-            -')'
+            if(!typedRule.actuallyCouldBeExpression) {
+                -"\n})("
+                -typedRule.receiverExpression
+                -')'
+            }
         }
     )
 
@@ -541,7 +556,7 @@ fun TypescriptTranslator.registerFunction() {
             val typeParametersByIndex = typedRule.resolvedCall?.typeArguments?.mapKeys { it.key.index } ?: mapOf()
 
             emitTemplate(
-                requiresWrapping = typedRule.parent is KtBlockExpression,
+                requiresWrapping = typedRule.actuallyCouldBeExpression,
                 template = rule.template,
                 receiver = nre.getTsReceiver(),
                 dispatchReceiver = nre.getTsReceiver(),

@@ -34,7 +34,7 @@ export function andAllDisposeConditions(list: Array<DisposeCondition>): DisposeC
             let disposalsLeft = list.size;
             
             for (const item of list) {
-                item.call(new DisposableLambda(() => {
+                item.this.call(new DisposableLambda(() => {
                             disposalsLeft = disposalsLeft - 1;
                             disposalsLeft === 0 ? it.unsubscribe() : 
                 }));
@@ -43,6 +43,6 @@ export function andAllDisposeConditions(list: Array<DisposeCondition>): DisposeC
 
 //! Declares com.lightningkite.khrysalis.rx.or
 export function comLightningkiteKhrysalisRxDisposeConditionOr(this_Or: DisposeCondition, other: DisposeCondition): DisposeCondition{ return new DisposeCondition((it) => {
-            this_Or.call(it);; other.call(it);
+            this_Or.this.call(it);; other.this.call(it);
 }); }
 

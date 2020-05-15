@@ -27,10 +27,10 @@ export class ImageReference extends Image {
     }
     public hashCode(): number {
         let hash = 17;
-        hash = 31 * hash + this.uri.hashCode();
+        hash = 31 * hash + this.uri?.hashCode() ?? 0;
         return hash;
     }
-    public equals(other: any): boolean { return other instanceof ImageReference && this.uri.equals(other.uri) }
+    public equals(other: any): boolean { return other instanceof ImageReference && (this.uri?.equals(other.uri) ?? false) }
     public toString(): string { return `ImageReference(uri = ${this.uri})` }
     public copy(uri: Uri = this.uri) { return new ImageReference(uri); }
 }
@@ -43,10 +43,10 @@ export class ImageBitmap extends Image {
     }
     public hashCode(): number {
         let hash = 17;
-        hash = 31 * hash + this.bitmap.hashCode();
+        hash = 31 * hash + this.bitmap?.hashCode() ?? 0;
         return hash;
     }
-    public equals(other: any): boolean { return other instanceof ImageBitmap && this.bitmap.equals(other.bitmap) }
+    public equals(other: any): boolean { return other instanceof ImageBitmap && (this.bitmap?.equals(other.bitmap) ?? false) }
     public toString(): string { return `ImageBitmap(bitmap = ${this.bitmap})` }
     public copy(bitmap: Bitmap = this.bitmap) { return new ImageBitmap(bitmap); }
 }
@@ -59,10 +59,10 @@ export class ImageRaw extends Image {
     }
     public hashCode(): number {
         let hash = 17;
-        hash = 31 * hash + this.raw.hashCode();
+        hash = 31 * hash + this.raw?.hashCode() ?? 0;
         return hash;
     }
-    public equals(other: any): boolean { return other instanceof ImageRaw && this.raw.equals(other.raw) }
+    public equals(other: any): boolean { return other instanceof ImageRaw && (this.raw?.equals(other.raw) ?? false) }
     public toString(): string { return `ImageRaw(raw = ${this.raw})` }
     public copy(raw: Data = this.raw) { return new ImageRaw(raw); }
 }

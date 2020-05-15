@@ -23,9 +23,9 @@ export function captureWeak<Z extends object>(capture: Z, lambda:  (a: Z) => voi
     return () => {
         const actualCaptured = captured;
         
-        if (actualCaptured.equals(null)) {
-            return;
-        }
+        (() => {if (actualCaptured.equals(null)) {
+                    return;
+        }})()
         this.lambda(actualCaptured!!);
     };
 }
@@ -37,9 +37,9 @@ export function captureWeak<Z extends object, A>(capture: Z, lambda:  (a: Z, b: 
     return (a) => {
         const actualCaptured = captured;
         
-        if (actualCaptured.equals(null)) {
-            return;
-        }
+        (() => {if (actualCaptured.equals(null)) {
+                    return;
+        }})()
         this.lambda(actualCaptured!!, a);
     };
 }
@@ -51,9 +51,9 @@ export function captureWeak<Z extends object, A, B>(capture: Z, lambda:  (a: Z, 
     return (a, b) => {
         const actualCaptured = captured;
         
-        if (actualCaptured.equals(null)) {
-            return;
-        }
+        (() => {if (actualCaptured.equals(null)) {
+                    return;
+        }})()
         this.lambda(actualCaptured!!, a, b);
     };
 }
@@ -65,9 +65,9 @@ export function captureWeak<Z extends object, A, B, C>(capture: Z, lambda:  (a: 
     return (a, b, c) => {
         const actualCaptured = captured;
         
-        if (actualCaptured.equals(null)) {
-            return;
-        }
+        (() => {if (actualCaptured.equals(null)) {
+                    return;
+        }})()
         this.lambda(actualCaptured!!, a, b, c);
     };
 }
@@ -82,9 +82,9 @@ export function captureWeak<Z extends object, A, B, C, D>(
     return (a, b, c, d) => {
         const actualCaptured = captured;
         
-        if (actualCaptured.equals(null)) {
-            return;
-        }
+        (() => {if (actualCaptured.equals(null)) {
+                    return;
+        }})()
         this.lambda(actualCaptured!!, a, b, c, d);
     };
 }
@@ -99,9 +99,9 @@ export function captureWeak<Z extends object, A, B, C, D, E>(
     return (a, b, c, d, e) => {
         const actualCaptured = captured;
         
-        if (actualCaptured.equals(null)) {
-            return;
-        }
+        (() => {if (actualCaptured.equals(null)) {
+                    return;
+        }})()
         this.lambda(actualCaptured!!, a, b, c, d, e);
     };
 }

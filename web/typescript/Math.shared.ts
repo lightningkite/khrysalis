@@ -8,22 +8,22 @@
 export function kotlinIntFloorMod(this_FloorMod: number, other: number): number{ return (this_FloorMod % other + other) % other; }
 //! Declares com.lightningkite.khrysalis.floorDiv
 export function kotlinIntFloorDiv(this_FloorDiv: number, other: number): number{
-    if(this_FloorDiv < 0){
-        return this_FloorDiv / other - 1;
-    } else {
-        return this_FloorDiv / other;
-    }
+    (() => {if(this_FloorDiv < 0){
+                return this_FloorDiv / other - 1;
+            } else {
+                return this_FloorDiv / other;
+    }})()
 }
 
 //! Declares com.lightningkite.khrysalis.floorMod
 export function kotlinFloatFloorMod(this_FloorMod: number, other: number): number{ return (this_FloorMod % other + other) % other; }
 //! Declares com.lightningkite.khrysalis.floorDiv
 export function kotlinFloatFloorDiv(this_FloorDiv: number, other: number): number{
-    if(this_FloorDiv < 0){
-        return this_FloorDiv / other - 1;
-    } else {
-        return this_FloorDiv / other;
-    }
+    (() => {if(this_FloorDiv < 0){
+                return this_FloorDiv / other - 1;
+            } else {
+                return this_FloorDiv / other;
+    }})()
 }
 
 
@@ -31,10 +31,10 @@ export function kotlinFloatFloorDiv(this_FloorDiv: number, other: number): numbe
 export function kotlinDoubleFloorMod(this_FloorMod: number, other: number): number{ return (this_FloorMod % other + other) % other; }
 //! Declares com.lightningkite.khrysalis.floorDiv
 export function kotlinDoubleFloorDiv(this_FloorDiv: number, other: number): number{
-    if(this_FloorDiv < 0){
-        return this_FloorDiv / other - 1;
-    } else {
-        return this_FloorDiv / other;
-    }
+    (() => {if(this_FloorDiv < 0){
+                return this_FloorDiv / other - 1;
+            } else {
+                return this_FloorDiv / other;
+    }})()
 }
 

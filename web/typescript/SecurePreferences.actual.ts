@@ -35,23 +35,26 @@ export class SecurePreferences {
     
     
     set<T>(key: string, value: T){
-        sharedPreferences.edit().putString(key, kotlinAnyToJsonString(value)).apply();
+        this.sharedPreferences.edit().putString(key, kotlinAnyToJsonString(value)).apply();
     }
     
     remove(key: string){
-        sharedPreferences.edit().remove(key).apply();
+        this.sharedPreferences.edit().remove(key).apply();
     }
     
     get<T extends IsCodable>(key: string): (T | null){
-        const raw = sharedPreferences.getString(key, null);
+        const raw = this.sharedPreferences.getString(key, null);
         
-        const result = raw?.kotlinStringFromJsonString<T>();
+        const result = ((_it)=>{
+                if(_it === null) return null;
+                return kotlinStringFromJsonString(_it)
+        })(raw);
         
         return result;
     }
     
     clear(){
-        sharedPreferences.edit().clear().apply();
+        this.sharedPreferences.edit().clear().apply();
     }
 }
 
