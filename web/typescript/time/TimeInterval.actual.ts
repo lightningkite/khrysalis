@@ -8,7 +8,7 @@
 //! Declares com.lightningkite.khrysalis.time.TimeInterval
 export class TimeInterval {
     public readonly milliseconds: number;
-    public constructor( milliseconds: number) {
+    public constructor(milliseconds: number) {
         this.milliseconds = milliseconds;
     }
     
@@ -18,13 +18,13 @@ export class TimeInterval {
 }
 
 //! Declares com.lightningkite.khrysalis.time.milliseconds
-export function kotlinIntMilliseconds(this_Milliseconds: number): TimeInterval{ return new TimeInterval(this_Milliseconds); }
+export function kotlinIntMilliseconds(this_: number): TimeInterval{ return new TimeInterval(this_); }
 //! Declares com.lightningkite.khrysalis.time.seconds
-export function kotlinIntSeconds(this_Seconds: number): TimeInterval{ return new TimeInterval(this_Seconds * 1000L); }
+export function kotlinIntSeconds(this_: number): TimeInterval{ return new TimeInterval(this_ * 1000L); }
 //! Declares com.lightningkite.khrysalis.time.minutes
-export function kotlinIntMinutes(this_Minutes: number): TimeInterval{ return new TimeInterval(this_Minutes * 60L * 1000L); }
+export function kotlinIntMinutes(this_: number): TimeInterval{ return new TimeInterval(this_ * 60L * 1000L); }
 //! Declares com.lightningkite.khrysalis.time.hours
-export function kotlinIntHours(this_Hours: number): TimeInterval{ return new TimeInterval(this_Hours * 60L * 60L * 1000L); }
+export function kotlinIntHours(this_: number): TimeInterval{ return new TimeInterval(this_ * 60L * 60L * 1000L); }
 //! Declares com.lightningkite.khrysalis.time.days
-export function kotlinIntDays(this_Days: number): TimeInterval{ return new TimeInterval(this_Days * 24L * 60L * 60L * 1000L); }
+export function kotlinIntDays(this_: number): TimeInterval{ return new TimeInterval(this_ * 24L * 60L * 60L * 1000L); }
 

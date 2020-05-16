@@ -22,21 +22,21 @@ import { dateFrom, getJavaUtilDateDateAlone } from './Date.actual'
 import { ClockPartSize } from './ClockPartSize.shared'
 
 //! Declares com.lightningkite.khrysalis.time.normalize
-export function comLightningkiteKhrysalisTimeTimeAloneNormalize(this_Normalize: TimeAlone){
-    this_Normalize.hour = kotlinIntFloorMod((this_Normalize.hour + kotlinIntFloorDiv(this_Normalize.minute, 60)), 24);
-    this_Normalize.minute = kotlinIntFloorMod((this_Normalize.minute + kotlinIntFloorDiv(this_Normalize.second, 60)), 60);
-    this_Normalize.second = kotlinIntFloorMod(this_Normalize.second, 60);
+export function comLightningkiteKhrysalisTimeTimeAloneNormalize(this_: TimeAlone){
+    this_.hour = kotlinIntFloorMod((this_.hour + kotlinIntFloorDiv(this_.minute, 60)), 24);
+    this_.minute = kotlinIntFloorMod((this_.minute + kotlinIntFloorDiv(this_.second, 60)), 60);
+    this_.second = kotlinIntFloorMod(this_.second, 60);
 }
 
 //! Declares com.lightningkite.khrysalis.time.set
-export function comLightningkiteKhrysalisTimeTimeAloneSet(this_Set: TimeAlone, other: TimeAlone): TimeAlone{
-    this_Set.hour = other.hour;
-    this_Set.minute = other.minute;
-    this_Set.second = other.second;
-    return this_Set;
+export function comLightningkiteKhrysalisTimeTimeAloneSet(this_: TimeAlone, other: TimeAlone): TimeAlone{
+    this_.hour = other.hour;
+    this_.minute = other.minute;
+    this_.second = other.second;
+    return this_;
 }
 
 
 //! Declares com.lightningkite.khrysalis.time.format
-export function comLightningkiteKhrysalisTimeTimeAloneFormat(this_Format: TimeAlone, clockPartSize: ClockPartSize): string{ return javaUtilDateFormat(dateFrom(getJavaUtilDateDateAlone(Date.constructor()), this_Format, undefined), ClockPartSize.None, clockPartSize); }
+export function comLightningkiteKhrysalisTimeTimeAloneFormat(this_: TimeAlone, clockPartSize: ClockPartSize): string{ return javaUtilDateFormat(dateFrom(getJavaUtilDateDateAlone(Date.constructor()), this_, undefined), ClockPartSize.None, clockPartSize); }
 

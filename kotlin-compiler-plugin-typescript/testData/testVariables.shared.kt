@@ -36,19 +36,42 @@ class TestClass {
         set(value){
             field = value + 1
         }
+    val memberLambda: (Int)->Unit = {
+        println(it)
+    }
     fun memberUsage(){
+
+        memberLambda(1)
+        this.memberLambda(1)
+
         memberReal = -1
         memberReal += -1
         println(memberReal)
+
+        this.memberReal = -1
+        this.memberReal += -1
+        println(this.memberReal)
+
         memberVirtual = -2
         memberVirtual += -2
         println(memberVirtual)
+
+        this.memberVirtual = -2
+        this.memberVirtual += -2
+        println(this.memberVirtual)
+
         memberHybrid = -3
         memberHybrid += -3
         println(memberHybrid)
+
+        this.memberHybrid = -3
+        this.memberHybrid += -3
+        println(this.memberHybrid)
+
         extensionProperty = -4
         extensionProperty += -4
         println(extensionProperty)
+
         this.extensionProperty = -4
         this.extensionProperty += -4
         println(this.extensionProperty)

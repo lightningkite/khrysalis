@@ -24,4 +24,14 @@ fun test(){
     mutableList[x + 1] += 4
     mutableList[0] += 4
     println(mutableList[0])
+    println(mutableList.size)
+
+    val arrayList = ArrayList<Int>()
+    arrayList.add(1)
+    arrayList.add(2)
+    arrayList.add(0, 2)
+    arrayList[x + 1] += 4
+    arrayList[0] += 4
+    println(arrayList[0])
+    println(arrayList.size)
 }

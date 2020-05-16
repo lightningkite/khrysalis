@@ -89,7 +89,7 @@ export class DateAlone {
     public year: number;
     public month: number;
     public day: number;
-    public constructor( year: number,  month: number,  day: number) {
+    public constructor(year: number, month: number, day: number) {
         this.year = year;
         this.month = month;
         this.day = day;
@@ -136,101 +136,101 @@ export class DateAlone {
 }
 
 //! Declares com.lightningkite.khrysalis.time.setDayOfMonth
-export function comLightningkiteKhrysalisTimeDateAloneSetDayOfMonth(this_SetDayOfMonth: DateAlone, value: number): DateAlone{ return also(this_SetDayOfMonth, (this_) => useDate((date) => {
-                javaUtilDateSet(date, this_);; javaUtilDateSetDayOfMonth(date, value);; comLightningkiteKhrysalisTimeDateAloneSet(date);
+export function comLightningkiteKhrysalisTimeDateAloneSetDayOfMonth(this_: DateAlone, value: number): DateAlone{ return also(this_, (this_1) => useDate((date) => {
+                javaUtilDateSet(date, this_1);; javaUtilDateSetDayOfMonth(date, value);; return comLightningkiteKhrysalisTimeDateAloneSet(date);
 })); }
 
 //! Declares com.lightningkite.khrysalis.time.setMonthOfYear
-export function comLightningkiteKhrysalisTimeDateAloneSetMonthOfYear(this_SetMonthOfYear: DateAlone, value: number): DateAlone{ return also(this_SetMonthOfYear, (this_) => useDate((date) => {
-                javaUtilDateSet(date, this_);; javaUtilDateSetMonthOfYear(date, value);; comLightningkiteKhrysalisTimeDateAloneSet(date);
+export function comLightningkiteKhrysalisTimeDateAloneSetMonthOfYear(this_: DateAlone, value: number): DateAlone{ return also(this_, (this_1) => useDate((date) => {
+                javaUtilDateSet(date, this_1);; javaUtilDateSetMonthOfYear(date, value);; return comLightningkiteKhrysalisTimeDateAloneSet(date);
 })); }
 
 //! Declares com.lightningkite.khrysalis.time.setYearAd
-export function comLightningkiteKhrysalisTimeDateAloneSetYearAd(this_SetYearAd: DateAlone, value: number): DateAlone{ return also(this_SetYearAd, (this_) => useDate((date) => {
-                javaUtilDateSet(date, this_);; javaUtilDateSetYearAd(date, value);; comLightningkiteKhrysalisTimeDateAloneSet(date);
+export function comLightningkiteKhrysalisTimeDateAloneSetYearAd(this_: DateAlone, value: number): DateAlone{ return also(this_, (this_1) => useDate((date) => {
+                javaUtilDateSet(date, this_1);; javaUtilDateSetYearAd(date, value);; return comLightningkiteKhrysalisTimeDateAloneSet(date);
 })); }
 
 //! Declares com.lightningkite.khrysalis.time.setDayOfWeek
-export function comLightningkiteKhrysalisTimeDateAloneSetDayOfWeek(this_SetDayOfWeek: DateAlone, value: number): DateAlone{ return also(this_SetDayOfWeek, (this_) => useDate((date) => {
-                javaUtilDateSet(date, this_);; javaUtilDateSetDayOfWeek(date, value);; comLightningkiteKhrysalisTimeDateAloneSet(date);
+export function comLightningkiteKhrysalisTimeDateAloneSetDayOfWeek(this_: DateAlone, value: number): DateAlone{ return also(this_, (this_1) => useDate((date) => {
+                javaUtilDateSet(date, this_1);; javaUtilDateSetDayOfWeek(date, value);; return comLightningkiteKhrysalisTimeDateAloneSet(date);
 })); }
 
 //! Declares com.lightningkite.khrysalis.time.setAddDayOfWeek
-export function comLightningkiteKhrysalisTimeDateAloneSetAddDayOfWeek(this_SetAddDayOfWeek: DateAlone, value: number): DateAlone{ return also(this_SetAddDayOfWeek, (this_) => useDate((date) => {
-                javaUtilDateSet(date, this_);; javaUtilDateSetAddDayOfWeek(date, value);; comLightningkiteKhrysalisTimeDateAloneSet(date);
+export function comLightningkiteKhrysalisTimeDateAloneSetAddDayOfWeek(this_: DateAlone, value: number): DateAlone{ return also(this_, (this_1) => useDate((date) => {
+                javaUtilDateSet(date, this_1);; javaUtilDateSetAddDayOfWeek(date, value);; return comLightningkiteKhrysalisTimeDateAloneSet(date);
 })); }
 
 //! Declares com.lightningkite.khrysalis.time.setAddDayOfMonth
-export function comLightningkiteKhrysalisTimeDateAloneSetAddDayOfMonth(this_SetAddDayOfMonth: DateAlone, value: number): DateAlone{ return also(this_SetAddDayOfMonth, (this_) => useDate((date) => {
-                javaUtilDateSet(date, this_);; javaUtilDateSetAddDayOfMonth(date, value);; comLightningkiteKhrysalisTimeDateAloneSet(date);
+export function comLightningkiteKhrysalisTimeDateAloneSetAddDayOfMonth(this_: DateAlone, value: number): DateAlone{ return also(this_, (this_1) => useDate((date) => {
+                javaUtilDateSet(date, this_1);; javaUtilDateSetAddDayOfMonth(date, value);; return comLightningkiteKhrysalisTimeDateAloneSet(date);
 })); }
 
 //! Declares com.lightningkite.khrysalis.time.setAddMonthOfYear
-export function comLightningkiteKhrysalisTimeDateAloneSetAddMonthOfYear(this_SetAddMonthOfYear: DateAlone, value: number): DateAlone{ return also(this_SetAddMonthOfYear, (this_) => useDate((date) => {
-                javaUtilDateSet(date, this_);; javaUtilDateSetAddMonthOfYear(date, value);; comLightningkiteKhrysalisTimeDateAloneSet(date);
+export function comLightningkiteKhrysalisTimeDateAloneSetAddMonthOfYear(this_: DateAlone, value: number): DateAlone{ return also(this_, (this_1) => useDate((date) => {
+                javaUtilDateSet(date, this_1);; javaUtilDateSetAddMonthOfYear(date, value);; return comLightningkiteKhrysalisTimeDateAloneSet(date);
 })); }
 
 //! Declares com.lightningkite.khrysalis.time.setAddYearAd
-export function comLightningkiteKhrysalisTimeDateAloneSetAddYearAd(this_SetAddYearAd: DateAlone, value: number): DateAlone{ return also(this_SetAddYearAd, (this_) => useDate((date) => {
-                javaUtilDateSet(date, this_);; javaUtilDateSetAddYearAd(date, value);; comLightningkiteKhrysalisTimeDateAloneSet(date);
+export function comLightningkiteKhrysalisTimeDateAloneSetAddYearAd(this_: DateAlone, value: number): DateAlone{ return also(this_, (this_1) => useDate((date) => {
+                javaUtilDateSet(date, this_1);; javaUtilDateSetAddYearAd(date, value);; return comLightningkiteKhrysalisTimeDateAloneSet(date);
 })); }
 
 
 //! Declares com.lightningkite.khrysalis.time.dayOfMonth
-export function comLightningkiteKhrysalisTimeDateAloneDayOfMonth(this_DayOfMonth: DateAlone, value: number): DateAlone{ return useDate((date) => {
-            javaUtilDateSet(date, this_DayOfMonth);; javaUtilDateSetDayOfMonth(date, value);; getJavaUtilDateDateAlone(date);
+export function comLightningkiteKhrysalisTimeDateAloneDayOfMonth(this_: DateAlone, value: number): DateAlone{ return useDate((date) => {
+            javaUtilDateSet(date, this_);; javaUtilDateSetDayOfMonth(date, value);; return getJavaUtilDateDateAlone(date);
 }); }
 //! Declares com.lightningkite.khrysalis.time.monthOfYear
-export function comLightningkiteKhrysalisTimeDateAloneMonthOfYear(this_MonthOfYear: DateAlone, value: number): DateAlone{ return useDate((date) => {
-            javaUtilDateSet(date, this_MonthOfYear);; javaUtilDateSetMonthOfYear(date, value);; getJavaUtilDateDateAlone(date);
+export function comLightningkiteKhrysalisTimeDateAloneMonthOfYear(this_: DateAlone, value: number): DateAlone{ return useDate((date) => {
+            javaUtilDateSet(date, this_);; javaUtilDateSetMonthOfYear(date, value);; return getJavaUtilDateDateAlone(date);
 }); }
 //! Declares com.lightningkite.khrysalis.time.yearAd
-export function comLightningkiteKhrysalisTimeDateAloneYearAd(this_YearAd: DateAlone, value: number): DateAlone{ return useDate((date) => {
-            javaUtilDateSet(date, this_YearAd);; javaUtilDateSetYearAd(date, value);; getJavaUtilDateDateAlone(date);
+export function comLightningkiteKhrysalisTimeDateAloneYearAd(this_: DateAlone, value: number): DateAlone{ return useDate((date) => {
+            javaUtilDateSet(date, this_);; javaUtilDateSetYearAd(date, value);; return getJavaUtilDateDateAlone(date);
 }); }
 //! Declares com.lightningkite.khrysalis.time.dayOfWeek
-export function comLightningkiteKhrysalisTimeDateAloneDayOfWeek(this_DayOfWeek: DateAlone, value: number): DateAlone{ return useDate((date) => {
-            javaUtilDateSet(date, this_DayOfWeek);; javaUtilDateSetDayOfWeek(date, value);; getJavaUtilDateDateAlone(date);
+export function comLightningkiteKhrysalisTimeDateAloneDayOfWeek(this_: DateAlone, value: number): DateAlone{ return useDate((date) => {
+            javaUtilDateSet(date, this_);; javaUtilDateSetDayOfWeek(date, value);; return getJavaUtilDateDateAlone(date);
 }); }
 //! Declares com.lightningkite.khrysalis.time.addDayOfWeek
-export function comLightningkiteKhrysalisTimeDateAloneAddDayOfWeek(this_AddDayOfWeek: DateAlone, value: number): DateAlone{ return useDate((date) => {
-            javaUtilDateSet(date, this_AddDayOfWeek);; javaUtilDateSetAddDayOfWeek(date, value);; getJavaUtilDateDateAlone(date);
+export function comLightningkiteKhrysalisTimeDateAloneAddDayOfWeek(this_: DateAlone, value: number): DateAlone{ return useDate((date) => {
+            javaUtilDateSet(date, this_);; javaUtilDateSetAddDayOfWeek(date, value);; return getJavaUtilDateDateAlone(date);
 }); }
 //! Declares com.lightningkite.khrysalis.time.addDayOfMonth
-export function comLightningkiteKhrysalisTimeDateAloneAddDayOfMonth(this_AddDayOfMonth: DateAlone, value: number): DateAlone{ return useDate((date) => {
-            javaUtilDateSet(date, this_AddDayOfMonth);; javaUtilDateSetAddDayOfMonth(date, value);; getJavaUtilDateDateAlone(date);
+export function comLightningkiteKhrysalisTimeDateAloneAddDayOfMonth(this_: DateAlone, value: number): DateAlone{ return useDate((date) => {
+            javaUtilDateSet(date, this_);; javaUtilDateSetAddDayOfMonth(date, value);; return getJavaUtilDateDateAlone(date);
 }); }
 //! Declares com.lightningkite.khrysalis.time.addMonthOfYear
-export function comLightningkiteKhrysalisTimeDateAloneAddMonthOfYear(this_AddMonthOfYear: DateAlone, value: number): DateAlone{ return useDate((date) => {
-            javaUtilDateSet(date, this_AddMonthOfYear);; javaUtilDateSetAddMonthOfYear(date, value);; getJavaUtilDateDateAlone(date);
+export function comLightningkiteKhrysalisTimeDateAloneAddMonthOfYear(this_: DateAlone, value: number): DateAlone{ return useDate((date) => {
+            javaUtilDateSet(date, this_);; javaUtilDateSetAddMonthOfYear(date, value);; return getJavaUtilDateDateAlone(date);
 }); }
 //! Declares com.lightningkite.khrysalis.time.addYearAd
-export function comLightningkiteKhrysalisTimeDateAloneAddYearAd(this_AddYearAd: DateAlone, value: number): DateAlone{ return useDate((date) => {
-            javaUtilDateSet(date, this_AddYearAd);; javaUtilDateSetAddYearAd(date, value);; getJavaUtilDateDateAlone(date);
+export function comLightningkiteKhrysalisTimeDateAloneAddYearAd(this_: DateAlone, value: number): DateAlone{ return useDate((date) => {
+            javaUtilDateSet(date, this_);; javaUtilDateSetAddYearAd(date, value);; return getJavaUtilDateDateAlone(date);
 }); }
 
 //! Declares com.lightningkite.khrysalis.time.iso8601
-export function comLightningkiteKhrysalisTimeDateAloneIso8601(this_Iso8601: DateAlone): string{ return SimpleDateFormat.constructorkotlinString("yyyy-MM-dd").format(dateFrom(this_Iso8601, TimeAlone.Companion.INSTANCE.noon, undefined)); }
+export function comLightningkiteKhrysalisTimeDateAloneIso8601(this_: DateAlone): string{ return SimpleDateFormat.constructorkotlinString("yyyy-MM-dd").format(dateFrom(this_, TimeAlone.Companion.INSTANCE.noon, undefined)); }
 
 //! Declares com.lightningkite.khrysalis.time.formatYearless
-export function comLightningkiteKhrysalisTimeDateAloneFormatYearless(this_FormatYearless: DateAlone, clockPartSize: ClockPartSize): string{
-    return switch(clockPartSize){
-        case ClockPartSize.None:
-        ""
-        break;
-        case ClockPartSize.Short:
-        SimpleDateFormat.constructorkotlinString("MMM d").format(dateFrom(this_FormatYearless, TimeAlone.Companion.INSTANCE.noon, undefined))
-        break;
-        case ClockPartSize.Medium:
-        SimpleDateFormat.constructorkotlinString("MMMM d").format(dateFrom(this_FormatYearless, TimeAlone.Companion.INSTANCE.noon, undefined))
-        break;
-        case ClockPartSize.Long:
-        SimpleDateFormat.constructorkotlinString("EEE MMM d").format(dateFrom(this_FormatYearless, TimeAlone.Companion.INSTANCE.noon, undefined))
-        break;
-        case ClockPartSize.Full:
-        SimpleDateFormat.constructorkotlinString("EEEE MMMM d").format(dateFrom(this_FormatYearless, TimeAlone.Companion.INSTANCE.noon, undefined))
-        break;
-    }
-    ;
+export function comLightningkiteKhrysalisTimeDateAloneFormatYearless(this_: DateAlone, clockPartSize: ClockPartSize): string{
+    return (() => {switch(clockPartSize) {
+                case ClockPartSize.None:
+                return ""
+                break;
+                case ClockPartSize.Short:
+                return SimpleDateFormat.constructorkotlinString("MMM d").format(dateFrom(this_, TimeAlone.Companion.INSTANCE.noon, undefined))
+                break;
+                case ClockPartSize.Medium:
+                return SimpleDateFormat.constructorkotlinString("MMMM d").format(dateFrom(this_, TimeAlone.Companion.INSTANCE.noon, undefined))
+                break;
+                case ClockPartSize.Long:
+                return SimpleDateFormat.constructorkotlinString("EEE MMM d").format(dateFrom(this_, TimeAlone.Companion.INSTANCE.noon, undefined))
+                break;
+                case ClockPartSize.Full:
+                return SimpleDateFormat.constructorkotlinString("EEEE MMMM d").format(dateFrom(this_, TimeAlone.Companion.INSTANCE.noon, undefined))
+                break;
+            }
+    })();
 }
 

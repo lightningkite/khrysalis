@@ -288,12 +288,14 @@ fun TypescriptTranslator.registerVariable() {
             -(typedRule.property.typeReference
                 ?: typedRule.property.resolvedProperty!!.type)
             -" "
-            typedRule.bodyExpression?.let {
+            val body = typedRule.bodyExpression
+            if (body is KtBlockExpression) {
+                -body
+            } else {
                 -"{ return "
-                -it
+                -body
                 -"; }"
             }
-            -typedRule.bodyBlockExpression
             -"\n"
         }
     )
@@ -327,12 +329,14 @@ fun TypescriptTranslator.registerVariable() {
             -(typedRule.property.typeReference
                 ?: typedRule.property.resolvedProperty!!.type)
             -" "
-            typedRule.bodyExpression?.let {
+            val body = typedRule.bodyExpression
+            if (body is KtBlockExpression) {
+                -body
+            } else {
                 -"{ return "
-                -it
+                -body
                 -"; }"
             }
-            -typedRule.bodyBlockExpression
             -"\n"
         }
     )

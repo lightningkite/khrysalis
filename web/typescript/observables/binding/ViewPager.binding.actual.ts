@@ -16,7 +16,6 @@
 // FQImport: android.view.ViewGroup TS ViewGroup
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.items TS items
 // FQImport: android.view.View TS View
-// FQImport: kotlin.collections.List.size TS size
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.T TS T
 // FQImport: com.lightningkite.khrysalis.rx.until TS ioReactivexDisposablesDisposableUntil
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.isViewFromObject.p1 TS p1
@@ -39,8 +38,8 @@ import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from
 import { StandardObservableProperty } from './../StandardObservableProperty.shared'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind
-export function androidxViewpagerWidgetViewPagerBind<T>(this_Bind: ViewPager, items: Array<T>, showIndex: MutableObservableProperty<number> = new StandardObservableProperty(0, undefined), makeView: (a: T) => View){
-    setAndroidxViewpagerWidgetViewPagerAdapter(this_Bind, new class Anon extends PagerAdapter {
+export function androidxViewpagerWidgetViewPagerBind<T>(this_: ViewPager, items: Array<T>, showIndex: MutableObservableProperty<number> = new StandardObservableProperty(0, undefined), makeView: (a: T) => View){
+    setAndroidxViewpagerWidgetViewPagerAdapter(this_, new class Anon extends PagerAdapter {
             public constructor() {
                 super();
             }
@@ -48,7 +47,7 @@ export function androidxViewpagerWidgetViewPagerBind<T>(this_Bind: ViewPager, it
             
             isViewFromObject(p0: View, p1: any): Boolean{ return p1.equals(p0); }
             
-            getCount(): number{ return items.size; }
+            getCount(): number{ return items.length; }
             
             instantiateItem(container: ViewGroup, position: number): any{
                 const data = items[position];
@@ -64,8 +63,8 @@ export function androidxViewpagerWidgetViewPagerBind<T>(this_Bind: ViewPager, it
             }
     }());
     
-    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(showIndex, undefined, undefined, (value) => setAndroidxViewpagerWidgetViewPagerCurrentItem(this_Bind, value)), getAndroidViewViewRemoved(this_Bind));
-    this_Bind.addOnPageChangeListener(new class Anon implements ViewPagerOnPageChangeListener {
+    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(showIndex, undefined, undefined, (value) => setAndroidxViewpagerWidgetViewPagerCurrentItem(this_, value)), getAndroidViewViewRemoved(this_));
+    this_.addOnPageChangeListener(new class Anon implements ViewPagerOnPageChangeListener {
             public static implementsInterfaceAndroidxViewpagerWidgetViewPagerOnPageChangeListener = true;
             public constructor() {
             }

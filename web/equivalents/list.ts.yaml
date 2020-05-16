@@ -33,6 +33,8 @@
   type: call
   arguments: []
   template: "[]"
+  
+# List Operations
 - id: kotlin.collections.List.contains
   type: call
   template: (~this~.indexOf(~0~) != -1)
@@ -42,8 +44,14 @@
 - id: kotlin.collecitons.List.subList
   type: call
   template: ~this~.slice(~0~, ~1~)
+- id: kotlin.collections.List.isEmpty
+  type: call
+  template: ~this~.length === 0
+- id: kotlin.collections.List.size
+  type: get
+  template: ~this~.length
 
-# Mutable List
+# Mutable List Operations
 - id: kotlin.collections.MutableList.add
   type: call
   template: ~this~.push(~0~)
@@ -73,6 +81,18 @@
   type: call
   arguments: [kotlin.Int]
   template: ~this~.splice(~0~, 0, ...~1~)
+
+# Questionable
+- id: java.util.AbstractList.add
+  type: call
+  template: ~this~.push(~0~)
+- id: java.util.AbstractList.isEmpty
+  type: call
+  template: ~this~.length === 0
+- id: java.util.AbstractList.size
+  type: get
+  template: ~this~.length
+  
 # TODO: Could do removeAll
 
 # TODO: All of these operations below actually should apply to iterators as well.

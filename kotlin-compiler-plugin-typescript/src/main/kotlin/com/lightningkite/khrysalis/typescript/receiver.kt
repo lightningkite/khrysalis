@@ -8,6 +8,8 @@ import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.containingClass
 import org.jetbrains.kotlin.psi.synthetics.SyntheticClassOrObjectDescriptor
 import org.jetbrains.kotlin.resolve.calls.callUtil.getResolvedCall
+import org.jetbrains.kotlin.resolve.calls.model.VariableAsFunctionResolvedCall
+import org.jetbrains.kotlin.resolve.calls.resolvedCallUtil.getImplicitReceiverValue
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 import org.jetbrains.kotlin.resolve.scopes.receivers.ExtensionReceiver
 import org.jetbrains.kotlin.resolve.scopes.receivers.ImplicitClassReceiver
@@ -18,19 +20,18 @@ fun TypescriptTranslator.registerReceiver() {
     //Prepend 'this'
     handle<KtNameReferenceExpression>(
         condition = {
-            if (typedRule.parentOfType<KtDotQualifiedExpression>()?.selectorExpression == typedRule) return@handle false
-            if (typedRule.parentOfType<KtCallExpression>()?.parentOfType<KtDotQualifiedExpression>()?.selectorExpression == typedRule) return@handle false
-            if (typedRule.parentOfType<KtSafeQualifiedExpression>()?.selectorExpression == typedRule) return@handle false
-            if (typedRule.parentOfType<KtCallExpression>()?.parentOfType<KtSafeQualifiedExpression>()?.selectorExpression == typedRule) return@handle false
-            val resolved = typedRule.resolvedCall
-            return@handle resolved?.dispatchReceiver != null
+            val resolved = typedRule.resolvedCall ?: return@handle false
+            if(typedRule.text == "memberLambda"){
+                val detailed = resolved as VariableAsFunctionResolvedCall
+                println("Here's the call ${detailed.variableCall.getImplicitReceiverValue()}")
+            }
+            when(resolved){
+                is VariableAsFunctionResolvedCall -> resolved.variableCall.getImplicitReceiverValue() != null
+                else -> resolved.getImplicitReceiverValue() != null
+            }
         },
         priority = 99,
         action = {
-//            val resolved = typedRule.resolvedCall?.dispatchReceiver as? ImplicitClassReceiver
-//            if(resolved != null){
-//                collector?.report(CompilerMessageSeverity.INFO, "Receiver of ${typedRule.text} is ${resolved.type.getJetTypeFqName(false)} - ${resolved.classDescriptor.isCompanionObject}")
-//            }
             -typedRule.getTsReceiver()
             -"."
             doSuper()
@@ -39,13 +40,11 @@ fun TypescriptTranslator.registerReceiver() {
 
     handle<KtNameReferenceExpression>(
         condition = {
-            if (typedRule.parentOfType<KtDotQualifiedExpression>()?.selectorExpression == typedRule) return@handle false
-            if (typedRule.parentOfType<KtCallExpression>()?.parentOfType<KtDotQualifiedExpression>()?.selectorExpression == typedRule) return@handle false
-            if (typedRule.parentOfType<KtSafeQualifiedExpression>()?.selectorExpression == typedRule) return@handle false
-            if (typedRule.parentOfType<KtCallExpression>()?.parentOfType<KtSafeQualifiedExpression>()?.selectorExpression == typedRule) return@handle false
             val resolved = typedRule.resolvedCall ?: return@handle false
-            val targetDescriptor = resolved.dispatchReceiver?.type?.constructor?.declarationDescriptor as? ClassDescriptor ?: return@handle false
-            return@handle resolved.dispatchReceiver != null
+            val targetDescriptor =
+                resolved.dispatchReceiver?.type?.constructor?.declarationDescriptor as? ClassDescriptor
+                    ?: return@handle false
+            return@handle resolved.getImplicitReceiverValue() != null
                     && targetDescriptor.isCompanionObject
                     && targetDescriptor != typedRule.containingClass()?.resolvedClass
         },

@@ -20,7 +20,6 @@
 // FQImport: com.lightningkite.khrysalis.views.ViewStringList.separator TS separator
 // FQImport: com.lightningkite.khrysalis.views.toDebugString.thing TS thing
 // FQImport: com.lightningkite.khrysalis.views.ViewStringRaw SKIPPED due to same file
-// FQImport: kotlin.collections.List.size TS size
 // FQImport: com.lightningkite.khrysalis.views.ViewStringResource.resource TS resource
 // FQImport: com.lightningkite.khrysalis.views.ViewDependency TS ViewDependency
 // FQImport: com.lightningkite.khrysalis.views.ViewStringTemplate.get.<anonymous>.it TS it
@@ -51,14 +50,14 @@ export interface ViewString {
     get(dependency: ViewDependency): string
 }
 export class ViewStringDefaults {
-    public static get(this_Get: ViewString, dependency: ViewDependency){ return ; }
+    public static get(this_: ViewString, dependency: ViewDependency){ return ; }
 }
 
 //! Declares com.lightningkite.khrysalis.views.ViewStringRaw
 export class ViewStringRaw implements ViewString {
     public static implementsInterfaceComLightningkiteKhrysalisViewsViewString = true;
     public readonly string: string;
-    public constructor( string: string) {
+    public constructor(string: string) {
         this.string = string;
     }
     
@@ -69,7 +68,7 @@ export class ViewStringRaw implements ViewString {
 export class ViewStringResource implements ViewString {
     public static implementsInterfaceComLightningkiteKhrysalisViewsViewString = true;
     public readonly resource: StringResource;
-    public constructor( resource: StringResource) {
+    public constructor(resource: StringResource) {
         this.resource = resource;
     }
     
@@ -81,7 +80,7 @@ export class ViewStringTemplate implements ViewString {
     public static implementsInterfaceComLightningkiteKhrysalisViewsViewString = true;
     public readonly template: ViewString;
     public readonly arguments: Array<any>;
-    public constructor( template: ViewString,  arguments: Array<any>) {
+    public constructor(template: ViewString, arguments: Array<any>) {
         this.template = template;
         this.arguments = arguments;
     }
@@ -99,7 +98,7 @@ export class ViewStringTemplate implements ViewString {
 export class ViewStringComplex implements ViewString {
     public static implementsInterfaceComLightningkiteKhrysalisViewsViewString = true;
     public readonly getter:  (a: ViewDependency) => string;
-    public constructor( getter:  (a: ViewDependency) => string) {
+    public constructor(getter:  (a: ViewDependency) => string) {
         this.getter = getter;
     }
     
@@ -111,7 +110,7 @@ export class ViewStringList implements ViewString {
     public static implementsInterfaceComLightningkiteKhrysalisViewsViewString = true;
     public readonly parts: Array<ViewString>;
     public readonly separator: string;
-    public constructor( parts: Array<ViewString>,  separator: string = `\n`) {
+    public constructor(parts: Array<ViewString>, separator: string = `\n`) {
         this.parts = parts;
         this.separator = separator;
     }
@@ -122,29 +121,29 @@ export class ViewStringList implements ViewString {
 }
 
 //! Declares com.lightningkite.khrysalis.views.joinToViewString
-export function kotlinCollectionsListJoinToViewString(this_JoinToViewString: Array< ViewString>, separator: string = `\n`): ViewString{
-    (() => {if(this_JoinToViewString.size === 1){
-                return this_JoinToViewString[0];
-    }})()
-    return new ViewStringList(this_JoinToViewString, separator);
+export function kotlinCollectionsListJoinToViewString(this_: Array< ViewString>, separator: string = `\n`): ViewString{
+    if(this_.length === 1){
+        return this_[0];
+    }
+    return new ViewStringList(this_, separator);
 }
 
 //! Declares com.lightningkite.khrysalis.views.toDebugString
-export function comLightningkiteKhrysalisViewsViewStringToDebugString(this_ToDebugString: ViewString): string{
-    const thing = this_ToDebugString;
+export function comLightningkiteKhrysalisViewsViewStringToDebugString(this_: ViewString): string{
+    const thing = this_;
     
-    (() => {if(thing instanceof ViewStringRaw){
-                return return thing.string
-            }else if(thing instanceof ViewStringResource){
-                return return thing.resource.toString()
-            }else if(thing instanceof ViewStringTemplate){
-                return return comLightningkiteKhrysalisViewsViewStringToDebugString(thing.template) + "(" + kotlinCollectionsIterableJoinToString(thing.arguments, undefined, undefined, undefined, undefined, undefined, (it) => checkIsInterface(it, "ComLightningkiteKhrysalisViewsViewString") ? return comLightningkiteKhrysalisViewsViewStringToDebugString(it) : return `${it}`) + ")"
-            }else if(thing instanceof ViewStringList){
-                return return kotlinCollectionsIterableJoinToString(thing.parts, thing.separator, undefined, undefined, undefined, undefined, (it) => comLightningkiteKhrysalisViewsViewStringToDebugString(it))
-            }else if(thing instanceof ViewStringComplex){
-                return return `<Complex string ${thing}>`
-            }else {
-                return return "Unknown"
-    }})();
+    if (thing instanceof ViewStringRaw) {
+        return thing.string
+    } else if (thing instanceof ViewStringResource) {
+        return thing.resource.toString()
+    } else if (thing instanceof ViewStringTemplate) {
+        return comLightningkiteKhrysalisViewsViewStringToDebugString(thing.template) + "(" + kotlinCollectionsIterableJoinToString(thing.arguments, undefined, undefined, undefined, undefined, undefined, (it) => checkIsInterface(it, "ComLightningkiteKhrysalisViewsViewString") ? return comLightningkiteKhrysalisViewsViewStringToDebugString(it) : return `${it}`) + ")"
+    } else if (thing instanceof ViewStringList) {
+        return kotlinCollectionsIterableJoinToString(thing.parts, thing.separator, undefined, undefined, undefined, undefined, (it) => comLightningkiteKhrysalisViewsViewStringToDebugString(it))
+    } else if (thing instanceof ViewStringComplex) {
+        return `<Complex string ${thing}>`
+    } else  {
+        return "Unknown"
+    }
 }
 

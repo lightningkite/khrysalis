@@ -102,16 +102,16 @@ export class CustomView extends FrameLayout {
         this.delegate = null;
         const a = getAndroidContentContextTheme(context).obtainStyledAttributes(attrs, R.styleable.CustomView, defStyleAttr, 0);
         ;
-        const temp635 = a.getString(R.styleable.CustomView_delegateClass);
-        if(temp635 !== null) ((delegateClassName) => this.delegate = try {
+        const temp634 = a.getString(R.styleable.CustomView_delegateClass);
+        if(temp634 !== null) ((delegateClassName) => this.delegate = try {
                 return ((it) => it as CustomViewDelegate)(getJavaLangClassClassLoader(getKotlinReflectKClassJava(context::class))!!
                     .loadClass(delegateClassName)
                 .newInstance());
-            } catch(e:ClassNotFoundException){
+            } catch(e: ClassNotFoundException){
                 return ((it) => it as CustomViewDelegate)(getJavaLangClassClassLoader(getKotlinReflectKClassJava(this::class))!!
                     .loadClass(delegateClassName)
                 .newInstance());
-        })(temp635);
+        })(temp634);
         this.accessibilityView = null;
         this.touches = HashMap.constructor<number, Touch>();
         this.metrics = getAndroidContentResResourcesDisplayMetrics(getAndroidContentContextResources(context));
@@ -121,18 +121,18 @@ export class CustomView extends FrameLayout {
     public _delegate: (CustomViewDelegate | null) = null;
     public get delegate(): (CustomViewDelegate | null) { return this._delegate; }
     public set delegate(value: (CustomViewDelegate | null)) {
-        const temp641 = this._delegate;
-        if(temp641 !== null) ((it) => it.customView = null)(temp641);
-        (() => {if(!(value.equals(null))) {
-                    value.customView = this;
-        }})()
+        const temp640 = this._delegate;
+        if(temp640 !== null) ((it) => it.customView = null)(temp640);
+        if(!(value.equals(null))) {
+            value.customView = this;
+        }
         this._delegate = value;
         
-        (() => {if (getAndroidViewAccessibilityAccessibilityManagerIsEnabled((getComLightningkiteKhrysalisViewsCustomViewContext(this).getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager))) {
-                    this.accessibilityView = this.delegate?.generateAccessibilityView();
-                    const temp643 = this.accessibilityView;
-                    if(temp643 !== null) ((it) => addView(it, FrameLayout.LayoutParams.constructorkotlinInt, kotlinInt(MATCH_PARENT, MATCH_PARENT)))(temp643);
-        }})()
+        if (getAndroidViewAccessibilityAccessibilityManagerIsEnabled((getComLightningkiteKhrysalisViewsCustomViewContext(this).getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager))) {
+            this.accessibilityView = this.delegate?.generateAccessibilityView();
+            const temp642 = this.accessibilityView;
+            if(temp642 !== null) ((it) => this.addView(it, FrameLayout.LayoutParams.constructorkotlinInt, kotlinInt(MATCH_PARENT, MATCH_PARENT)))(temp642);
+        }
     }
     
     
@@ -145,7 +145,7 @@ export class CustomView extends FrameLayout {
         public x: number;
         public y: number;
         public id: number;
-        public constructor( x: number,  y: number,  id: number) {
+        public constructor(x: number, y: number, id: number) {
             this.x = x;
             this.y = y;
             this.id = id;
@@ -166,52 +166,52 @@ export class CustomView extends FrameLayout {
     
     
     public onTouchEvent(event: MotionEvent): Boolean{
-        !(this.accessibilityView.equals(null)) ? return .onTouchEvent(event) : 
+        if (!(this.accessibilityView.equals(null))) return .onTouchEvent(event)
         let takenCareOf = false;
         
-        (() => {switch(getAndroidViewMotionEventActionMasked(event)){
-                    case MotionEvent.ACTION_DOWN:
-                    case MotionEvent.ACTION_POINTER_DOWN:
-                    const pointerId = event.getPointerId(getAndroidViewMotionEventActionIndex(event));
-                    
-                    const touch = new Touch(event.getX(getAndroidViewMotionEventActionIndex(event)), event.getY(getAndroidViewMotionEventActionIndex(event)), pointerId);
-                    
-                    const array654 = this.touches;
-                    const index655 = pointerId;
-                    kotlinCollectionsMutableMapSet(index655, touch)
-                    return takenCareOf = (this.delegate?.onTouchDown(touch.id, touch.x, touch.y, getComLightningkiteKhrysalisViewsCustomViewWidth(this), getComLightningkiteKhrysalisViewsCustomViewHeight(this)) ?: false) || takenCareOf
-                    break;
-                    case MotionEvent.ACTION_MOVE:
-                    return for (const pointerIndex of kotlinIntUntil(0, getAndroidViewMotionEventPointerCount(event))) {
-                        const pointerId = event.getPointerId(pointerIndex);
-                        
-                        const touch = this.touches.get(pointerId);
-                        
-                        (() => {if (!(touch.equals(null))) {
-                                    touch.x = event.getX(pointerIndex);
-                                    touch.y = event.getY(pointerIndex);
-                                    takenCareOf = (this.delegate?.onTouchMove(touch.id, touch.x, touch.y, getComLightningkiteKhrysalisViewsCustomViewWidth(this), getComLightningkiteKhrysalisViewsCustomViewHeight(this)) ?: false) || takenCareOf;
-                        }})()
-                    }
-                    break;
-                    case MotionEvent.ACTION_CANCEL:
-                    const pointerId = event.getPointerId(getAndroidViewMotionEventActionIndex(event));
-                    
-                    return const touch = this.touches.remove(pointerId);
-                    
-                    break;
-                    case MotionEvent.ACTION_UP:
-                    case MotionEvent.ACTION_POINTER_UP:
-                    const pointerId = event.getPointerId(getAndroidViewMotionEventActionIndex(event));
-                    
-                    const touch = this.touches.remove(pointerId);
-                    
-                    return (() => {if (!(touch.equals(null))) {
-                                takenCareOf = (this.delegate?.onTouchUp(touch.id, touch.x, touch.y, getComLightningkiteKhrysalisViewsCustomViewWidth(this), getComLightningkiteKhrysalisViewsCustomViewHeight(this)) ?: false) || takenCareOf;
-                    }})()
-                    break;
+        switch(getAndroidViewMotionEventActionMasked(event)) {
+            case MotionEvent.ACTION_DOWN:
+            case MotionEvent.ACTION_POINTER_DOWN:
+            const pointerId = event.getPointerId(getAndroidViewMotionEventActionIndex(event));
+            
+            const touch = new Touch(event.getX(getAndroidViewMotionEventActionIndex(event)), event.getY(getAndroidViewMotionEventActionIndex(event)), pointerId);
+            
+            const array653 = this.touches;
+            const index654 = pointerId;
+            kotlinCollectionsMutableMapSet(index654, touch)
+            takenCareOf = (this.delegate?.onTouchDown(touch.id, touch.x, touch.y, getComLightningkiteKhrysalisViewsCustomViewWidth(this), getComLightningkiteKhrysalisViewsCustomViewHeight(this)) ?: false) || takenCareOf
+            break;
+            case MotionEvent.ACTION_MOVE:
+            for (const pointerIndex of kotlinIntUntil(0, getAndroidViewMotionEventPointerCount(event))) {
+                const pointerId = event.getPointerId(pointerIndex);
+                
+                const touch = this.touches.get(pointerId);
+                
+                if (!(touch.equals(null))) {
+                    touch.x = event.getX(pointerIndex);
+                    touch.y = event.getY(pointerIndex);
+                    takenCareOf = (this.delegate?.onTouchMove(touch.id, touch.x, touch.y, getComLightningkiteKhrysalisViewsCustomViewWidth(this), getComLightningkiteKhrysalisViewsCustomViewHeight(this)) ?: false) || takenCareOf;
                 }
-        })();
+            }
+            break;
+            case MotionEvent.ACTION_CANCEL:
+            const pointerId = event.getPointerId(getAndroidViewMotionEventActionIndex(event));
+            
+            const touch = this.touches.remove(pointerId);
+            
+            break;
+            case MotionEvent.ACTION_UP:
+            case MotionEvent.ACTION_POINTER_UP:
+            const pointerId = event.getPointerId(getAndroidViewMotionEventActionIndex(event));
+            
+            const touch = this.touches.remove(pointerId);
+            
+            if (!(touch.equals(null))) {
+                takenCareOf = (this.delegate?.onTouchUp(touch.id, touch.x, touch.y, getComLightningkiteKhrysalisViewsCustomViewWidth(this), getComLightningkiteKhrysalisViewsCustomViewHeight(this)) ?: false) || takenCareOf;
+            }
+            break;
+        }
+        
         return takenCareOf;
     }
     
@@ -219,9 +219,9 @@ export class CustomView extends FrameLayout {
     
     public onDraw(canvas: Canvas){
         .onDraw(canvas);
-        (() => {if (this.accessibilityView.equals(null)) {
-                    this.delegate?.draw(canvas, getComLightningkiteKhrysalisViewsCustomViewWidth(this), getComLightningkiteKhrysalisViewsCustomViewHeight(this), this.metrics);
-        }})()
+        if (this.accessibilityView.equals(null)) {
+            this.delegate?.draw(canvas, getComLightningkiteKhrysalisViewsCustomViewWidth(this), getComLightningkiteKhrysalisViewsCustomViewHeight(this), this.metrics);
+        }
     }
     public onMeasure(widthMeasureSpec: number, heightMeasureSpec: number){
         const widthMode = MeasureSpec.getMode(widthMeasureSpec);
@@ -232,33 +232,33 @@ export class CustomView extends FrameLayout {
         
         const heightSize = MeasureSpec.getSize(heightMeasureSpec);
         
-        const width = switch(widthMode){
-            case MeasureSpec.EXACTLY:
-            widthSize
-            break;
-            default:
-            min(((_it)=>{
-                        if(_it === null) return null;
-                        return Math.floor(_it)
-            })(this.delegate?.sizeThatFitsWidth(widthSize, heightSize)) ?: widthSize, widthSize)
-            break;
-        }
-        ;
+        const width = (() => {switch(widthMode) {
+                    case MeasureSpec.EXACTLY:
+                    return widthSize
+                    break;
+                    default:
+                    return min(((_it)=>{
+                                if(_it === null) return null;
+                                return Math.floor(_it)
+                    })(this.delegate?.sizeThatFitsWidth(widthSize, heightSize)) ?: widthSize, widthSize)
+                    break;
+                }
+        })();
         
-        const height = switch(heightMode){
-            case MeasureSpec.EXACTLY:
-            heightSize
-            break;
-            default:
-            min(((_it)=>{
-                        if(_it === null) return null;
-                        return Math.floor(_it)
-            })(this.delegate?.sizeThatFitsHeight(width, heightSize)) ?: heightSize, heightSize)
-            break;
-        }
-        ;
+        const height = (() => {switch(heightMode) {
+                    case MeasureSpec.EXACTLY:
+                    return heightSize
+                    break;
+                    default:
+                    return min(((_it)=>{
+                                if(_it === null) return null;
+                                return Math.floor(_it)
+                    })(this.delegate?.sizeThatFitsHeight(width, heightSize)) ?: heightSize, heightSize)
+                    break;
+                }
+        })();
         
-        setMeasuredDimension(width, height);
+        this.setMeasuredDimension(width, height);
     }
 }
 

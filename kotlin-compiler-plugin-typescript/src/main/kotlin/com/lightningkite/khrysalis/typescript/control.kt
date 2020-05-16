@@ -59,7 +59,7 @@ fun TypescriptTranslator.registerControl() {
 
     handle<KtIfExpression>(
         condition = {
-            typedRule.then !is KtBlockExpression && typedRule.`else` !is KtBlockExpression
+            typedRule.then.let { it != null && it !is KtBlockExpression } && typedRule.`else`.let { it != null && it !is KtBlockExpression }
         },
         priority = 1,
         action = {

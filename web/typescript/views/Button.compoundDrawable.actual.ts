@@ -12,11 +12,11 @@
 // FQImport: android.widget.Button.setCompoundDrawablesWithIntrinsicBounds TS setCompoundDrawablesWithIntrinsicBounds
 
 //! Declares com.lightningkite.khrysalis.views.compoundDrawable
-export function getAndroidWidgetButtonCompoundDrawable(this_CompoundDrawable: Button): (Drawable | null) { return kotlinSequencesSequenceFirstOrNull(kotlinSequencesSequenceFilterNotNull(kotlinArrayAsSequence(getAndroidWidgetButtonCompoundDrawables(this_CompoundDrawable)))); }
-export function setAndroidWidgetButtonCompoundDrawable(this_CompoundDrawable: Button, value: (Drawable | null)) {
-    const existing = getAndroidWidgetButtonCompoundDrawables(this_CompoundDrawable);
+export function getAndroidWidgetButtonCompoundDrawable(this_: Button): (Drawable | null) { return kotlinSequencesSequenceFirstOrNull(kotlinSequencesSequenceFilterNotNull(kotlinArrayAsSequence(getAndroidWidgetButtonCompoundDrawables(this_)))); }
+export function setAndroidWidgetButtonCompoundDrawable(this_: Button, value: (Drawable | null)) {
+    const existing = getAndroidWidgetButtonCompoundDrawables(this_);
     
-    setCompoundDrawablesWithIntrinsicBounds(!(existing.get(0).equals(null)) ? value : null, !(existing.get(1).equals(null)) ? value : null, !(existing.get(2).equals(null)) ? value : null, !(existing.get(3).equals(null)) ? value : null);
+    this_.setCompoundDrawablesWithIntrinsicBounds(!(existing.get(0).equals(null)) ? value : null, !(existing.get(1).equals(null)) ? value : null, !(existing.get(2).equals(null)) ? value : null, !(existing.get(3).equals(null)) ? value : null);
 }
 
 

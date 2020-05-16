@@ -72,22 +72,22 @@ import { also } from 'khrysalis/dist/Kotlin'
 //! Declares com.lightningkite.khrysalis.loadImage
 export function loadImage(image: Image, onResult: (a: (Bitmap | null)) => void){
     try {
-        (() => {if(image instanceof ImageRaw){
-                    return this.onResult(BitmapFactory.decodeByteArray(image.raw, 0, image.raw.size))
-                }else if(image instanceof ImageReference){
-                    return loadImage(image.uri, undefined, onResult)
-                }else if(image instanceof ImageBitmap){
-                    return this.onResult(image.bitmap)
-                }else if(image instanceof ImageRemoteUrl){
-                    return loadImage(image.url, onResult)
-        }})();
+        if (image instanceof ImageRaw) {
+            this.onResult(BitmapFactory.decodeByteArray(image.raw, 0, image.raw.size))
+        } else if (image instanceof ImageReference) {
+            loadImage(image.uri, undefined, onResult)
+        } else if (image instanceof ImageBitmap) {
+            this.onResult(image.bitmap)
+        } else if (image instanceof ImageRemoteUrl) {
+            loadImage(image.url, onResult)
+        }
     } catch (e: Exception) {
         this.onResult(null);
     };
 }
 
 //! Declares com.lightningkite.khrysalis.load
-export function comLightningkiteKhrysalisImageLoad(this_Load: Image, onResult: (a: (Bitmap | null)) => void){ return loadImage(this_Load, onResult); }
+export function comLightningkiteKhrysalisImageLoad(this_: Image, onResult: (a: (Bitmap | null)) => void){ return loadImage(this_, onResult); }
 
 //! Declares com.lightningkite.khrysalis.loadImage
 export function loadImage(uri: Uri, maxDimension: number = 2048, onResult: (a: (Bitmap | null)) => void){
@@ -96,14 +96,18 @@ export function loadImage(uri: Uri, maxDimension: number = 2048, onResult: (a: (
     try {
         const finalOpts = BitmapFactory.Options.constructor();
         
-        const temp223 = getAndroidContentContextContentResolver(HttpClient.INSTANCE.appContext).openInputStream(uri);
-        if(temp223 !== null) javaIoCloseableUse(temp223, (it) => {
-                const sizeOpts = also(BitmapFactory.Options.constructor(), (this_) => this_.inJustDecodeBounds = true);
-                
-                also(BitmapFactory.decodeStream(it, null, sizeOpts), (this_) => finalOpts.inSampleSize = kotlinIntCoerceAtLeast(max(Math.floor(((it) => Math.ceil(it))(sizeOpts.outWidth / maxDimension)), Math.floor(((it) => Math.ceil(it))(sizeOpts.outHeight / maxDimension))), 1));
-        });
-        const temp238 = getAndroidContentContextContentResolver(HttpClient.INSTANCE.appContext).openInputStream(uri);
-        if(temp238 !== null) javaIoCloseableUse(temp238, (it) => result = BitmapFactory.decodeStream(it, null, finalOpts));
+        ((_it)=>{
+                if(_it === null) return null;
+                return javaIoCloseableUse(_it, (it) => {
+                        const sizeOpts = also(BitmapFactory.Options.constructor(), (this_) => this_.inJustDecodeBounds = true);
+                        
+                        return also(BitmapFactory.decodeStream(it, null, sizeOpts), (this_) => finalOpts.inSampleSize = kotlinIntCoerceAtLeast(max(Math.floor(((it) => Math.ceil(it))(sizeOpts.outWidth / maxDimension)), Math.floor(((it) => Math.ceil(it))(sizeOpts.outHeight / maxDimension))), 1));
+                })
+        })(getAndroidContentContextContentResolver(HttpClient.INSTANCE.appContext).openInputStream(uri));
+        ((_it)=>{
+                if(_it === null) return null;
+                return javaIoCloseableUse(_it, (it) => result = BitmapFactory.decodeStream(it, null, finalOpts))
+        })(getAndroidContentContextContentResolver(HttpClient.INSTANCE.appContext).openInputStream(uri));
     } catch (e: Exception) {
         e.printStackTrace();
     };
@@ -112,10 +116,10 @@ export function loadImage(uri: Uri, maxDimension: number = 2048, onResult: (a: (
 
 //! Declares com.lightningkite.khrysalis.loadImage
 export function loadImage(url: string, onResult: (a: (Bitmap | null)) => void){
-    (() => {if (kotlinCharSequenceIsBlank(url)) {
-                this.onResult(null);
-                return;
-    }})()
+    if (kotlinCharSequenceIsBlank(url)) {
+        this.onResult(null);
+        return;
+    }
     const call = Request.Builder.constructor()
     .url(url)
     .get()
@@ -133,8 +137,10 @@ export function loadImage(url: string, onResult: (a: (Bitmap | null)) => void){
                 
                 onResponse(call: Call, response: Response){
                     try {
-                        const temp240 = response.body();
-                        if(temp240 !== null) javaIoCloseableUse(temp240, (it) => javaIoCloseableUse(it.byteStream(), (it) => this.onResult(BitmapFactory.decodeStream(it))));
+                        ((_it)=>{
+                                if(_it === null) return null;
+                                return javaIoCloseableUse(_it, (it) => javaIoCloseableUse(it.byteStream(), (it) => this.onResult(BitmapFactory.decodeStream(it))))
+                        })(response.body());
                     } catch (e: Exception) {
                         e.printStackTrace();
                         this.onResult(null);

@@ -46,6 +46,8 @@ class TestClass {
         member?.let {
             println(it)
         }
+        memberFunction()
+        this.memberFunction()
     }
 }
 

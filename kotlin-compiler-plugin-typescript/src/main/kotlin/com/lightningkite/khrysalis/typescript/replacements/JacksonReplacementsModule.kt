@@ -29,8 +29,8 @@ class JacksonReplacementsModule() : SimpleModule() {
                                     )
                                     valueText.contains(" from ") -> TemplatePart.Import(
                                         path = valueText.substringAfter(" from "),
-                                        identifier = key,
-                                        asName = valueText.substringBefore(" from ")
+                                        identifier = valueText.substringBefore(" from "),
+                                        asName = key
                                     )
                                     valueText.contains(" as ") -> TemplatePart.Import(
                                         path = valueText.substringBefore(" as "),

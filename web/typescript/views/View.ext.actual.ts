@@ -23,45 +23,45 @@
 import { ColorResource } from './ResourceTypes.actual'
 
 //! Declares com.lightningkite.khrysalis.views.backgroundDrawable
-export function getAndroidViewViewBackgroundDrawable(this_BackgroundDrawable: View): (Drawable | null) { return getAndroidViewViewBackground(this_BackgroundDrawable); }
-export function setAndroidViewViewBackgroundDrawable(this_BackgroundDrawable: View, value: (Drawable | null)) {
-    setAndroidViewViewBackground(this_BackgroundDrawable, value);
+export function getAndroidViewViewBackgroundDrawable(this_: View): (Drawable | null) { return getAndroidViewViewBackground(this_); }
+export function setAndroidViewViewBackgroundDrawable(this_: View, value: (Drawable | null)) {
+    setAndroidViewViewBackground(this_, value);
 }
 
 
 //! Declares com.lightningkite.khrysalis.views.backgroundResource
-export function getAndroidViewViewBackgroundResource(this_BackgroundResource: View): number { return 0; }
-export function setAndroidViewViewBackgroundResource(this_BackgroundResource: View, value: number) {
-    this_BackgroundResource.setBackgroundResource(value);
+export function getAndroidViewViewBackgroundResource(this_: View): number { return 0; }
+export function setAndroidViewViewBackgroundResource(this_: View, value: number) {
+    this_.setBackgroundResource(value);
 }
 
 
 
 //! Declares com.lightningkite.khrysalis.views.onClick
-export function androidViewViewOnClick(this_OnClick: View, action: () => void){
+export function androidViewViewOnClick(this_: View, action: () => void){
     androidViewViewOnClick(500, action);
 }
 
 //! Declares com.lightningkite.khrysalis.views.onClick
-export function androidViewViewOnClick(this_OnClick: View, disabledMilliseconds: number, action: () => void){
+export function androidViewViewOnClick(this_: View, disabledMilliseconds: number, action: () => void){
     let lastActivated = System.currentTimeMillis();
     
-    setOnClickListener((it) => (() => {if(System.currentTimeMillis() - lastActivated > disabledMilliseconds) {
-                    this.action();
-                    lastActivated = System.currentTimeMillis();
-    }})());
+    this_.setOnClickListener((it) => if(System.currentTimeMillis() - lastActivated > disabledMilliseconds) {
+            this.action();
+            lastActivated = System.currentTimeMillis();
+    });
 }
 
 //! Declares com.lightningkite.khrysalis.views.onLongClick
-export function androidViewViewOnLongClick(this_OnLongClick: View, action: () => void){
-    setOnLongClickListener((it) => {
-            this.action();; true;
+export function androidViewViewOnLongClick(this_: View, action: () => void){
+    this_.setOnLongClickListener((it) => {
+            this.action();; return true;
     });
 }
 
 
 //! Declares com.lightningkite.khrysalis.views.setBackgroundColorResource
-export function androidViewViewSetBackgroundColorResource(this_SetBackgroundColorResource: View, color: ColorResource){
-    setBackgroundResource(color);
+export function androidViewViewSetBackgroundColorResource(this_: View, color: ColorResource){
+    this_.setBackgroundResource(color);
 }
 

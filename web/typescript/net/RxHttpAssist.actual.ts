@@ -16,23 +16,23 @@ import { Observable } from 'rxjs'
 import { map as rxMap } from 'rxjs/operators'
 
 //! Declares com.lightningkite.khrysalis.net.unsuccessfulAsError
-export function ioReactivexSingleUnsuccessfulAsError(this_UnsuccessfulAsError: Observable< HttpResponse>): Observable<HttpResponse>{
-    return rxMap((it) => (() => {if(getOkhttp3ResponseIsSuccessful(it)){
-                    return it;
-                } else {
-                    throw new HttpResponseException(it, undefined);
-    }})())(this_UnsuccessfulAsError);
+export function ioReactivexSingleUnsuccessfulAsError(this_: Observable< HttpResponse>): Observable<HttpResponse>{
+    return this_.pipe(rxMap((it) => if(getOkhttp3ResponseIsSuccessful(it)){
+                return it;
+            } else {
+                throw new HttpResponseException(it, undefined);
+    }));
 }
 
 
 //! Declares com.lightningkite.khrysalis.net.readJson
-export function ioReactivexSingleReadJson<T>(this_ReadJson: Observable< HttpResponse>): Observable<T>{
+export function ioReactivexSingleReadJson<T>(this_: Observable< HttpResponse>): Observable<T>{
     const typeReference = jacksonTypeRef<T>();
     
-    return rxMap((it) => (() => {if(getOkhttp3ResponseIsSuccessful(it)){
-                    return okhttp3ResponseReadJson(it, typeReference);
-                } else {
-                    throw new HttpResponseException(it, undefined);
-    }})())(this_ReadJson);
+    return this_.pipe(rxMap((it) => if(getOkhttp3ResponseIsSuccessful(it)){
+                return okhttp3ResponseReadJson(it, typeReference);
+            } else {
+                throw new HttpResponseException(it, undefined);
+    }));
 }
 

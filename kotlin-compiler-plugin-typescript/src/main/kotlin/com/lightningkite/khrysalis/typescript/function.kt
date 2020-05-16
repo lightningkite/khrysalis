@@ -182,8 +182,15 @@ fun TypescriptTranslator.registerFunction() {
     }
 
     handle<KtParameter> {
-        -typedRule.allChildren
-            .filter { it !is LeafPsiElement || (it.elementType != KtTokens.VAL_KEYWORD && it.elementType != KtTokens.VAR_KEYWORD) }
+        -typedRule.nameIdentifier
+        typedRule.typeReference?.let {
+            -": "
+            -it
+        }
+        typedRule.defaultValue?.let {
+            -" = "
+            -it
+        }
     }
 
     handle<KtParameter>(
@@ -228,20 +235,19 @@ fun TypescriptTranslator.registerFunction() {
 
     handle<KtDotQualifiedExpression>(
         condition = {
-            (((typedRule.selectorExpression as? KtCallExpression)?.calleeExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget as? FunctionDescriptor)?.extensionReceiverParameter != null
+            if(typedRule.selectorExpression?.text == "action"){
+                println("Having a cow")
+            }
+            ((typedRule.selectorExpression as? KtCallExpression)?.resolvedCall?.candidateDescriptor as? FunctionDescriptor)?.extensionReceiverParameter != null
         },
         priority = 1000,
         action = {
             val callExp = typedRule.selectorExpression as KtCallExpression
             val nre = callExp.calleeExpression as KtNameReferenceExpression
-            val f = nre.resolvedReferenceTarget as FunctionDescriptor
+            val f = callExp.resolvedCall!!.candidateDescriptor as FunctionDescriptor
             out.addImport(f, f.tsName)
 
-            if (f.dispatchReceiverParameter != null) {
-                -nre.getTsReceiver()
-                -"."
-            }
-            -(f.tsName ?: nre.text)
+            -nre
             val withComments = callExp.valueArgumentList?.withComments() ?: listOf()
             -ArgumentsList(
                 on = f,
@@ -256,22 +262,18 @@ fun TypescriptTranslator.registerFunction() {
 
     handle<KtSafeQualifiedExpression>(
         condition = {
-            (((typedRule.selectorExpression as? KtCallExpression)?.calleeExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget as? FunctionDescriptor)?.extensionReceiverParameter != null
+            ((typedRule.selectorExpression as? KtCallExpression)?.resolvedCall?.candidateDescriptor as? FunctionDescriptor)?.extensionReceiverParameter != null
         },
         priority = 1001,
         action = {
             val callExp = typedRule.selectorExpression as KtCallExpression
             val nre = callExp.calleeExpression as KtNameReferenceExpression
-            val f = nre.resolvedReferenceTarget as FunctionDescriptor
+            val f = callExp.resolvedCall!!.candidateDescriptor as FunctionDescriptor
             out.addImport(f, f.tsName)
 
             -"((_it)=>{\n"
             -"if(_it === null) return null;\nreturn "
-            if (f.dispatchReceiverParameter != null) {
-                -nre.getTsReceiver()
-                -"."
-            }
-            -(f.tsName ?: nre.text)
+            -nre
             val withComments = callExp.valueArgumentList?.withComments() ?: listOf()
             -ArgumentsList(
                 on = f,
@@ -290,7 +292,7 @@ fun TypescriptTranslator.registerFunction() {
     handle<KtSafeQualifiedExpression>(
         condition = {
             typedRule.actuallyCouldBeExpression
-                    && (((typedRule.selectorExpression as? KtCallExpression)?.calleeExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget as? FunctionDescriptor)?.extensionReceiverParameter != null
+                    && ((typedRule.selectorExpression as? KtCallExpression)?.resolvedCall?.candidateDescriptor as? FunctionDescriptor)?.extensionReceiverParameter != null
         },
         priority = 1001,
         action = {
@@ -303,11 +305,7 @@ fun TypescriptTranslator.registerFunction() {
             -"const $tempName = "
             -typedRule.receiverExpression
             -";\nif($tempName !== null) "
-            if (f.dispatchReceiverParameter != null) {
-                -nre.getTsReceiver()
-                -"."
-            }
-            -(f.tsName ?: nre.text)
+            -nre
             val withComments = callExp.valueArgumentList?.withComments() ?: listOf()
             -ArgumentsList(
                 on = f,
@@ -335,7 +333,7 @@ fun TypescriptTranslator.registerFunction() {
             out.addImport(f, f.tsName)
         }
 
-        -(f.tsName ?: nre.text)
+        -nre
         -typedRule.typeArgumentList
         -ArgumentsList(
             on = f,
@@ -346,6 +344,14 @@ fun TypescriptTranslator.registerFunction() {
             lambdaArgument = typedRule.lambdaArguments.firstOrNull()
         )
     }
+
+    handle<KtNameReferenceExpression>(
+        condition = { typedRule.resolvedReferenceTarget is FunctionDescriptor },
+        priority = 50,
+        action = {
+            -((typedRule.resolvedReferenceTarget as FunctionDescriptor).tsName ?: typedRule.text)
+        }
+    )
 
     //infix
     handle<KtBinaryExpression>(
@@ -482,7 +488,7 @@ fun TypescriptTranslator.registerFunction() {
                 callExp.resolvedCall?.typeArguments?.mapKeys { it.key.name.asString() } ?: mapOf()
             val typeParametersByIndex = callExp.resolvedCall?.typeArguments?.mapKeys { it.key.index } ?: mapOf()
 
-            val rec: String = if(typedRule.actuallyCouldBeExpression){
+            val rec: String = if(!typedRule.actuallyCouldBeExpression){
                 val n = "temp${uniqueNumber.getAndIncrement()}"
                 -"const $n = "
                 -typedRule.receiverExpression
@@ -514,7 +520,7 @@ fun TypescriptTranslator.registerFunction() {
                 parameterByIndex = { allParametersByIndex[it.index]?.getArgumentExpression() ?: "undefined" },
                 typeParameterByIndex = { typeParametersByIndex[it.index] ?: "undefined" }
             )
-            if(!typedRule.actuallyCouldBeExpression) {
+            if(typedRule.actuallyCouldBeExpression) {
                 -"\n})("
                 -typedRule.receiverExpression
                 -')'

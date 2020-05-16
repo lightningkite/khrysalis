@@ -24,7 +24,7 @@ export class CodableDefaults {
 //! Declares com.lightningkite.khrysalis.IsCodable
 export type IsCodable = any;
 //! Declares com.lightningkite.khrysalis.IsCodable
-export let IsCodable = any;
+export let IsCodable = null;
 
 //! Declares com.lightningkite.khrysalis.JsonList
 export type JsonList = Array<*>;
@@ -38,27 +38,27 @@ export let JsonMap = Map;
 
 
 //! Declares com.lightningkite.khrysalis.toJsonString
-export function kotlinAnyToJsonString(this_ToJsonString: (IsCodable | null)): string{
-    return HttpClient.INSTANCE.mapper.writeValueAsString(this_ToJsonString);
+export function kotlinAnyToJsonString(this_: (IsCodable | null)): string{
+    return HttpClient.INSTANCE.mapper.writeValueAsString(this_);
 }
 
 //! Declares com.lightningkite.khrysalis.fromJsonString
-export function kotlinStringFromJsonString<T extends IsCodable>(this_FromJsonString: string): (T | null){
+export function kotlinStringFromJsonString<T extends IsCodable>(this_: string): (T | null){
     return try {
-        return HttpClient.INSTANCE.mapper.readValue(this_FromJsonString, jacksonTypeRef<T>());
+        return HttpClient.INSTANCE.mapper.readValue(this_, jacksonTypeRef<T>());
     } catch (e: Exception) {
         e.printStackTrace();
-        null;
+        return null;
     };
 }
 
 //! Declares com.lightningkite.khrysalis.fromJsonStringUntyped
-export function kotlinStringFromJsonStringUntyped(this_FromJsonStringUntyped: string): (IsCodable | null){
+export function kotlinStringFromJsonStringUntyped(this_: string): (IsCodable | null){
     return try {
-        return HttpClient.INSTANCE.mapper.readValue(this_FromJsonStringUntyped, getKotlinReflectKClassJava(Any::class));
+        return HttpClient.INSTANCE.mapper.readValue(this_, getKotlinReflectKClassJava(Any::class));
     } catch (e: Exception) {
         e.printStackTrace();
-        null;
+        return null;
     };
 }
 

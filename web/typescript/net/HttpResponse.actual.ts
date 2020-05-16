@@ -34,32 +34,32 @@ export let HttpResponse = Response;
 
 
 //! Declares com.lightningkite.khrysalis.net.code
-export function getOkhttp3ResponseCode(this_Code: HttpResponse): number { return this_Code.code(); }
+export function getOkhttp3ResponseCode(this_: HttpResponse): number { return this_.code(); }
 
 //! Declares com.lightningkite.khrysalis.net.headers
-export function getOkhttp3ResponseHeaders(this_Headers: HttpResponse): Map<string, string> { return kotlinCollectionsMapMapValues(this_Headers.headers().toMultimap(), (it) => kotlinCollectionsIterableJoinToString(it.value, ";", undefined, undefined, undefined, undefined, undefined)); }
+export function getOkhttp3ResponseHeaders(this_: HttpResponse): Map<string, string> { return kotlinCollectionsMapMapValues(this_.headers().toMultimap(), (it) => kotlinCollectionsIterableJoinToString(it.value, ";", undefined, undefined, undefined, undefined, undefined)); }
 
 //! Declares com.lightningkite.khrysalis.net.readText
-export function okhttp3ResponseReadText(this_ReadText: HttpResponse){ return this_ReadText.body()!!.string(); }
+export function okhttp3ResponseReadText(this_: HttpResponse){ return this_.body()!!.string(); }
 //! Declares com.lightningkite.khrysalis.net.readJson
-export function okhttp3ResponseReadJson<T>(this_ReadJson: HttpResponse): T{
+export function okhttp3ResponseReadJson<T>(this_: HttpResponse): T{
     let raw: (string | null) = null;
     
     try {
         raw = okhttp3ResponseReadText();
         return comFasterxmlJacksonDatabindObjectMapperReadValue(HttpClient.INSTANCE.mapper, raw);
-    } catch(e:Exception){
+    } catch(e: Exception){
         throw IllegalStateException.constructorkotlinString, kotlinThrowable(`Failed to parse '${raw}'`, e);
     };
 }
 //! Declares com.lightningkite.khrysalis.net.readJson
-export function okhttp3ResponseReadJson<T>(this_ReadJson: HttpResponse, typeToken: TypeReference<T>): T{
+export function okhttp3ResponseReadJson<T>(this_: HttpResponse, typeToken: TypeReference<T>): T{
     let raw: (string | null) = null;
     
     try {
         raw = okhttp3ResponseReadText();
         return HttpClient.INSTANCE.mapper.readValue<T>(raw, typeToken);
-    } catch(e:Exception){
+    } catch(e: Exception){
         throw IllegalStateException.constructorkotlinString, kotlinThrowable(`Failed to parse '${raw}'`, e);
     };
 }

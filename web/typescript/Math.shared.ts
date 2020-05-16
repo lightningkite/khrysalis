@@ -5,36 +5,36 @@
 // FQImport: com.lightningkite.khrysalis.floorDiv.other TS other
 
 //! Declares com.lightningkite.khrysalis.floorMod
-export function kotlinIntFloorMod(this_FloorMod: number, other: number): number{ return (this_FloorMod % other + other) % other; }
+export function kotlinIntFloorMod(this_: number, other: number): number{ return (this_ % other + other) % other; }
 //! Declares com.lightningkite.khrysalis.floorDiv
-export function kotlinIntFloorDiv(this_FloorDiv: number, other: number): number{
-    (() => {if(this_FloorDiv < 0){
-                return this_FloorDiv / other - 1;
-            } else {
-                return this_FloorDiv / other;
-    }})()
+export function kotlinIntFloorDiv(this_: number, other: number): number{
+    if(this_ < 0){
+        return this_ / other - 1;
+    } else {
+        return this_ / other;
+    }
 }
 
 //! Declares com.lightningkite.khrysalis.floorMod
-export function kotlinFloatFloorMod(this_FloorMod: number, other: number): number{ return (this_FloorMod % other + other) % other; }
+export function kotlinFloatFloorMod(this_: number, other: number): number{ return (this_ % other + other) % other; }
 //! Declares com.lightningkite.khrysalis.floorDiv
-export function kotlinFloatFloorDiv(this_FloorDiv: number, other: number): number{
-    (() => {if(this_FloorDiv < 0){
-                return this_FloorDiv / other - 1;
-            } else {
-                return this_FloorDiv / other;
-    }})()
+export function kotlinFloatFloorDiv(this_: number, other: number): number{
+    if(this_ < 0){
+        return this_ / other - 1;
+    } else {
+        return this_ / other;
+    }
 }
 
 
 //! Declares com.lightningkite.khrysalis.floorMod
-export function kotlinDoubleFloorMod(this_FloorMod: number, other: number): number{ return (this_FloorMod % other + other) % other; }
+export function kotlinDoubleFloorMod(this_: number, other: number): number{ return (this_ % other + other) % other; }
 //! Declares com.lightningkite.khrysalis.floorDiv
-export function kotlinDoubleFloorDiv(this_FloorDiv: number, other: number): number{
-    (() => {if(this_FloorDiv < 0){
-                return this_FloorDiv / other - 1;
-            } else {
-                return this_FloorDiv / other;
-    }})()
+export function kotlinDoubleFloorDiv(this_: number, other: number): number{
+    if(this_ < 0){
+        return this_ / other - 1;
+    } else {
+        return this_ / other;
+    }
 }
 

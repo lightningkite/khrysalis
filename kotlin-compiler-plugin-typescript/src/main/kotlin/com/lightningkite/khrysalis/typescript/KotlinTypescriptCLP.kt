@@ -133,7 +133,7 @@ class KotlinTypescriptExtension(
         translator.kotlinFqNameToRelativeFile.putAll(map)
 
         //Load equivalents
-        equivalents.asSequence()
+        equivalents.asSequence().plus(output)
             .flatMap { it.walkTopDown() }
             .filter {
                 it.name.endsWith(".ts.yaml") || it.name.endsWith(".ts.yml")

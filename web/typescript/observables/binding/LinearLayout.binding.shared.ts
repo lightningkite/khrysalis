@@ -12,7 +12,6 @@
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<anonymous>.old TS old
 // FQImport: android.widget.LinearLayout.removeView TS removeView
 // FQImport: android.view.View TS View
-// FQImport: kotlin.collections.List.size TS size
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.defaultValue TS defaultValue
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.T TS T
 // FQImport: com.lightningkite.khrysalis.rx.until TS ioReactivexDisposablesDisposableUntil
@@ -22,10 +21,8 @@
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.makeView TS makeView
 // FQImport: com.lightningkite.khrysalis.observables.ObservableProperty TS ObservableProperty
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<anonymous>.prop TS prop
-// FQImport: java.util.ArrayList.add TS add
 // FQImport: android.widget.LinearLayout TS LinearLayout
 // FQImport: com.lightningkite.khrysalis.observables.binding.LinearLayoutBoundSubview TS LinearLayoutBoundSubview
-// FQImport: java.util.ArrayList.size TS size
 // FQImport: com.lightningkite.khrysalis.observables.StandardObservableProperty TS StandardObservableProperty
 // FQImport: kotlin.collections.indices TS getKotlinCollectionsCollectionIndices
 // FQImport: com.lightningkite.khrysalis.rx.removed TS getAndroidViewViewRemoved
@@ -44,44 +41,44 @@ import { NumberRange } from 'khrysalis/dist/Kotlin'
 class LinearLayoutBoundSubview<T> {
     public readonly view: View;
     public readonly property: StandardObservableProperty<T>;
-    public constructor( view: View,  property: StandardObservableProperty<T>) {
+    public constructor(view: View, property: StandardObservableProperty<T>) {
         this.view = view;
         this.property = property;
     }
 }
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind
-export function androidWidgetLinearLayoutBind<T>(this_Bind: LinearLayout, data: ObservableProperty<Array<T>>, defaultValue: T, makeView:  (a: ObservableProperty<T>) => View){
+export function androidWidgetLinearLayoutBind<T>(this_: LinearLayout, data: ObservableProperty<Array<T>>, defaultValue: T, makeView:  (a: ObservableProperty<T>) => View){
     const existingViews: Array<LinearLayoutBoundSubview<T>> = [];
     
-    return ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(data, undefined, undefined, (value) => {
+    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(data, undefined, undefined, (value) => {
                 //Fix view count
-                const excessViews = existingViews.size - value.size;
+                const excessViews = existingViews.length - value.length;
                 
-                (() => {if(excessViews > 0){
-                            //remove views
-                            for (const iter of new NumberRange(1, excessViews)) {
-                                const old = existingViews.splice((existingViews.length - 1), 1);
-                                
-                                this_Bind.removeView(old.view);
-                            }
-                        } else if(existingViews.size < value.size) {
-                            //add views
-                            for (const iter of new NumberRange(1, (-excessViews))) {
-                                const prop = new StandardObservableProperty(defaultValue, undefined);
-                                
-                                const view = this.makeView(prop);
-                                
-                                this_Bind.addView(view, androidWidgetLinearLayoutParams(this_Bind, undefined, undefined, undefined, undefined, undefined, undefined, AlignPair.Companion.INSTANCE.centerFill, undefined));
-                                return existingViews.add(new LinearLayoutBoundSubview(view, prop));
-                            }
-                }})()
+                if(excessViews > 0){
+                    //remove views
+                    for (const iter of new NumberRange(1, excessViews)) {
+                        const old = existingViews.splice((existingViews.length - 1), 1);
+                        
+                        this_.removeView(old.view);
+                    }
+                } else if(existingViews.length < value.length) {
+                    //add views
+                    for (const iter of new NumberRange(1, (-excessViews))) {
+                        const prop = new StandardObservableProperty(defaultValue, undefined);
+                        
+                        const view = this.makeView(prop);
+                        
+                        this_.addView(view, androidWidgetLinearLayoutParams(this_, undefined, undefined, undefined, undefined, undefined, undefined, AlignPair.Companion.INSTANCE.centerFill, undefined));
+                        existingViews.push(new LinearLayoutBoundSubview(view, prop));
+                    }
+                }
                 
                 //Update views
                 for (const index of getKotlinCollectionsCollectionIndices(value)) {
                     existingViews[index].property.value = value[index];
                 }
-    }), getAndroidViewViewRemoved(this_Bind));
+    }), getAndroidViewViewRemoved(this_));
 }
 
 

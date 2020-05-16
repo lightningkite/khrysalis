@@ -39,11 +39,11 @@ import { MutableObservableProperty } from './../MutableObservableProperty.shared
 import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from './../../rx/DisposeCondition.actual'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindString
-export function androidWidgetEditTextBindString(this_BindString: EditText, observable: MutableObservableProperty<string>){
-    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => (() => {if (!(observable.value === getAndroidWidgetEditTextText(this_BindString).toString())) {
-                        this_BindString.setText(observable.value);
-    }})()), getAndroidViewViewRemoved(this_BindString));
-    addTextChangedListener(new class Anon implements TextWatcher {
+export function androidWidgetEditTextBindString(this_: EditText, observable: MutableObservableProperty<string>){
+    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => if (!(observable.value === getAndroidWidgetEditTextText(this_).toString())) {
+                this_.setText(observable.value);
+    }), getAndroidViewViewRemoved(this_));
+    this_.addTextChangedListener(new class Anon implements TextWatcher {
             public static implementsInterfaceAndroidTextTextWatcher = true;
             public static implementsInterfaceAndroidTextNoCopySpan = true;
             public constructor() {
@@ -52,23 +52,23 @@ export function androidWidgetEditTextBindString(this_BindString: EditText, obser
             afterTextChanged(s: (Editable | null)){}
             beforeTextChanged(s: (CharSequence | null), start: number, count: number, after: number){}
             onTextChanged(s: (CharSequence | null), start: number, before: number, count: number){
-                (() => {if (!(observable.value === s)) {
-                            observable.value = (kotlinAnyToString(s));
-                }})()
+                if (!(observable.value === s)) {
+                    observable.value = (kotlinAnyToString(s));
+                }
             }
     }());
 }
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindInteger
-export function androidWidgetEditTextBindInteger(this_BindInteger: EditText, observable: MutableObservableProperty<number>){
+export function androidWidgetEditTextBindInteger(this_: EditText, observable: MutableObservableProperty<number>){
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
-                const currentValue = kotlinStringToIntOrNull(getAndroidWidgetEditTextText(this_BindInteger).toString());
+                const currentValue = kotlinStringToIntOrNull(getAndroidWidgetEditTextText(this_).toString());
                 
-                (() => {if (!(value === currentValue)) {
-                            this_BindInteger.setText(kotlinAnyTakeUnless(value, (it) => it === 0)?.toString() ?: "");
-                }})()
-    }), getAndroidViewViewRemoved(this_BindInteger));
-    addTextChangedListener(new class Anon implements TextWatcher {
+                if (!(value === currentValue)) {
+                    this_.setText(kotlinAnyTakeUnless(value, (it) => it === 0)?.toString() ?: "");
+                }
+    }), getAndroidViewViewRemoved(this_));
+    this_.addTextChangedListener(new class Anon implements TextWatcher {
             public static implementsInterfaceAndroidTextTextWatcher = true;
             public static implementsInterfaceAndroidTextNoCopySpan = true;
             public constructor() {
@@ -79,9 +79,9 @@ export function androidWidgetEditTextBindInteger(this_BindInteger: EditText, obs
             onTextChanged(s: (CharSequence | null), start: number, before: number, count: number){
                 const currentValue = kotlinStringToIntOrNull(kotlinAnyToString(s)) ?: 0;
                 
-                (() => {if (!(observable.value === currentValue)) {
-                            observable.value = currentValue;
-                }})()
+                if (!(observable.value === currentValue)) {
+                    observable.value = currentValue;
+                }
             }
     }());
 }
@@ -89,15 +89,15 @@ export function androidWidgetEditTextBindInteger(this_BindInteger: EditText, obs
 
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindDouble
-export function androidWidgetEditTextBindDouble(this_BindDouble: EditText, observable: MutableObservableProperty<number>){
+export function androidWidgetEditTextBindDouble(this_: EditText, observable: MutableObservableProperty<number>){
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
-                const currentValue = kotlinStringToDoubleOrNull(getAndroidWidgetEditTextText(this_BindDouble).toString());
+                const currentValue = kotlinStringToDoubleOrNull(getAndroidWidgetEditTextText(this_).toString());
                 
-                (() => {if (!(value === currentValue)) {
-                            this_BindDouble.setText(kotlinAnyTakeUnless(value, (it) => it === 0.0)?.toString() ?: "");
-                }})()
-    }), getAndroidViewViewRemoved(this_BindDouble));
-    addTextChangedListener(new class Anon implements TextWatcher {
+                if (!(value === currentValue)) {
+                    this_.setText(kotlinAnyTakeUnless(value, (it) => it === 0.0)?.toString() ?: "");
+                }
+    }), getAndroidViewViewRemoved(this_));
+    this_.addTextChangedListener(new class Anon implements TextWatcher {
             public static implementsInterfaceAndroidTextTextWatcher = true;
             public static implementsInterfaceAndroidTextNoCopySpan = true;
             public constructor() {
@@ -108,9 +108,9 @@ export function androidWidgetEditTextBindDouble(this_BindDouble: EditText, obser
             onTextChanged(s: (CharSequence | null), start: number, before: number, count: number){
                 const currentValue = kotlinStringToDoubleOrNull(kotlinAnyToString(s)) ?: 0.0;
                 
-                (() => {if (!(observable.value === currentValue)) {
-                            observable.value = currentValue;
-                }})()
+                if (!(observable.value === currentValue)) {
+                    observable.value = currentValue;
+                }
             }
     }());
 }

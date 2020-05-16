@@ -19,13 +19,13 @@ export interface Closeable {
     close(): void
 }
 export class CloseableDefaults {
-    public static isDisposed(this_IsDisposed: Closeable){
+    public static isDisposed(this_: Closeable){
         return false;
     }
-    public static dispose(this_Dispose: Closeable){
-        close();
+    public static dispose(this_: Closeable){
+        this.close();
     }
-    public static close(this_Close: Closeable){ return ; }
+    public static close(this_: Closeable){ return ; }
 }
 
 //! Declares com.lightningkite.khrysalis.observables.Close
@@ -33,7 +33,7 @@ export class Close implements Closeable {
     public static implementsInterfaceComLightningkiteKhrysalisObservablesCloseable = true;
     public static implementsInterfaceIoReactivexDisposablesDisposable = true;
     public readonly closer:  () => void;
-    public constructor( closer:  () => void) {
+    public constructor(closer:  () => void) {
         this.closer = closer;
         this.disposed = false;
     }

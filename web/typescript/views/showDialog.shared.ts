@@ -6,7 +6,6 @@
 // FQImport: com.lightningkite.khrysalis.views.showDialog TS showDialog
 // FQImport: com.lightningkite.khrysalis.views.DialogRequest TS DialogRequest
 // FQImport: com.lightningkite.khrysalis.views.showDialog.message TS message
-// FQImport: io.reactivex.subjects.PublishSubject.onNext TS onNext
 // FQImport: com.lightningkite.khrysalis.views.lastDialog TS getLastDialog
 // FQImport: com.lightningkite.khrysalis.views.showDialog.request TS request
 // FQImport: com.lightningkite.khrysalis.views.showDialog SKIPPED due to same file
@@ -33,7 +32,7 @@ export function getShowDialogEvent(): PublishSubject<DialogRequest> { return _sh
 export class DialogRequest {
     public readonly string: ViewString;
     public readonly confirmation: (() => void | null);
-    public constructor( string: ViewString,  confirmation: (() => void | null) = null) {
+    public constructor(string: ViewString, confirmation: (() => void | null) = null) {
         this.string = string;
         this.confirmation = confirmation;
     }
@@ -42,7 +41,7 @@ export class DialogRequest {
 //! Declares com.lightningkite.khrysalis.views.showDialog
 export function showDialog(request: DialogRequest){
     getLastDialog().value = request;
-    getShowDialogEvent().onNext(request);
+    getShowDialogEvent().next(request);
 }
 
 //! Declares com.lightningkite.khrysalis.views.showDialog

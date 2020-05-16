@@ -28,23 +28,23 @@ import { ObservableProperty } from './../ObservableProperty.shared'
 import { StringResource } from './../../views/ResourceTypes.actual'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindString
-export function androidWidgetTextViewBindString(this_BindString: TextView, observable: ObservableProperty<string>){
-    return ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => setAndroidWidgetTextViewText(this_BindString, value)), getAndroidViewViewRemoved(this_BindString));
+export function androidWidgetTextViewBindString(this_: TextView, observable: ObservableProperty<string>){
+    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => setAndroidWidgetTextViewText(this_, value)), getAndroidViewViewRemoved(this_));
 }
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindStringRes
-export function androidWidgetTextViewBindStringRes(this_BindStringRes: TextView, observable: ObservableProperty<(StringResource | null)>){
-    return ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
-                setAndroidWidgetTextViewVisibility(this_BindStringRes, value === null ? View.GONE : View.VISIBLE);
-                (() => {if (!(value === null)) {
-                            setAndroidWidgetTextViewText(this_BindStringRes, getAndroidWidgetTextViewResources(this_BindStringRes).getString(value));
-                }})()
-    }), getAndroidViewViewRemoved(this_BindStringRes));
+export function androidWidgetTextViewBindStringRes(this_: TextView, observable: ObservableProperty<(StringResource | null)>){
+    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
+                setAndroidWidgetTextViewVisibility(this_, value === null ? View.GONE : View.VISIBLE);
+                if (!(value === null)) {
+                    setAndroidWidgetTextViewText(this_, getAndroidWidgetTextViewResources(this_).getString(value));
+                }
+    }), getAndroidViewViewRemoved(this_));
 }
 
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindText
-export function androidWidgetTextViewBindText<T>(this_BindText: TextView, observable: ObservableProperty<T>, transform: (a: T) => string){
-    return ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => setAndroidWidgetTextViewText(this_BindText, this.transform(value))), getAndroidViewViewRemoved(this_BindText));
+export function androidWidgetTextViewBindText<T>(this_: TextView, observable: ObservableProperty<T>, transform: (a: T) => string){
+    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => setAndroidWidgetTextViewText(this_, this.transform(value))), getAndroidViewViewRemoved(this_));
 }
 

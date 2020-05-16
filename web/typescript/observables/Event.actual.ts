@@ -3,9 +3,8 @@
 // Package: com.lightningkite.khrysalis.observables
 // FQImport: com.lightningkite.khrysalis.observables.invokeAll.Element TS Element
 // FQImport: com.lightningkite.khrysalis.observables.invokeAll.value TS value
-// FQImport: io.reactivex.Observer.onNext TS onNext
-// FQImport: io.reactivex.Observer TS Observer
+import { Observer } from 'rxjs'
 
 //! Declares com.lightningkite.khrysalis.observables.invokeAll
-export function ioReactivexObserverInvokeAll<Element>(this_InvokeAll: Observer<Element>, value: Element){ return onNext(value); }
+export function ioReactivexObserverInvokeAll<Element>(this_: Observer<Element>, value: Element){ return this_.next(value); }
 

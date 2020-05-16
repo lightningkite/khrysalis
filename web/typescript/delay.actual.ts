@@ -14,12 +14,12 @@
 
 //! Declares com.lightningkite.khrysalis.delay
 export function delay(milliseconds: number, action: () => void){
-    return milliseconds === 0L ? this.action() : Handler.constructorandroidosLooper(Looper.getMainLooper()).postDelayed(action, milliseconds)
+    milliseconds === 0L ? this.action() : Handler.constructorandroidosLooper(Looper.getMainLooper()).postDelayed(action, milliseconds)
 }
 
 //! Declares com.lightningkite.khrysalis.post
 export function post(action: () => void){
-    return Handler.constructorandroidosLooper(Looper.getMainLooper()).post(action);
+    Handler.constructorandroidosLooper(Looper.getMainLooper()).post(action);
 }
 
 //! Declares com.lightningkite.khrysalis.animationFrame

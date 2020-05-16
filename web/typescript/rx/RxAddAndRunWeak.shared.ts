@@ -35,42 +35,42 @@ import { Observable, SubscriptionLike } from 'rxjs'
 import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from './DisposeCondition.actual'
 
 //! Declares com.lightningkite.khrysalis.rx.solvePrivateDisposal
-export function ioReactivexDisposablesDisposableSolvePrivateDisposal(this_SolvePrivateDisposal: SubscriptionLike, items: Array<any>){
+export function ioReactivexDisposablesDisposableSolvePrivateDisposal(this_: SubscriptionLike, items: Array<any>){
     for (const item of items) {
-        (() => {if(item instanceof View){
-                    return ioReactivexDisposablesDisposableUntil(this_SolvePrivateDisposal, getAndroidViewViewRemoved(item));
-        }})()
+        if(item instanceof View){
+            ioReactivexDisposablesDisposableUntil(this_, getAndroidViewViewRemoved(item));
+        }
     }
 }
 
 //! Declares com.lightningkite.khrysalis.rx.add
-export function ioReactivexObservableAdd<Element extends any>(this_Add: Observable<Element>, listener:  (a: Element) => Boolean): SubscriptionLike{
+export function ioReactivexObservableAdd<Element extends any>(this_: Observable<Element>, listener:  (a: Element) => Boolean): SubscriptionLike{
     let disposable: (SubscriptionLike | null) = null;
     
-    const disp = this_Add.subscribe(undefined, (item) => (() => {if (this.listener(item)) {
-                    const temp112 = disposable;
-                    if(temp112 !== null) temp112.unsubscribe();
-    }})(), undefined);
+    const disp = this_.subscribe(undefined, (item) => if (this.listener(item)) {
+            const temp143 = disposable;
+            if(temp143 !== null) temp143.unsubscribe();
+    }, undefined);
     
     disposable = disp;
     return disp;
 }
 
 //! Declares com.lightningkite.khrysalis.rx.addWeak
-export function ioReactivexObservableAddWeak<A extends object, Element extends any>(this_AddWeak: Observable<Element>, referenceA: A, listener:  (a: A, b: Element) => void): SubscriptionLike{
+export function ioReactivexObservableAddWeak<A extends object, Element extends any>(this_: Observable<Element>, referenceA: A, listener:  (a: A, b: Element) => void): SubscriptionLike{
     let disposable: (SubscriptionLike | null) = null;
     
     const weakA: (A | null);
     
-    const disp = this_AddWeak.subscribe(undefined, (item) => {
+    const disp = this_.subscribe(undefined, (item) => {
             const a = weakA;
             
-            (() => {if (!(a.equals(null))) {
-                        this.listener(a, item);
-                    } else {
-                        const temp114 = disposable;
-                        if(temp114 !== null) temp114.unsubscribe();
-            }})()
+            if (!(a.equals(null))) {
+                this.listener(a, item);
+            } else {
+                const temp145 = disposable;
+                if(temp145 !== null) temp145.unsubscribe();
+            }
     }, undefined);
     
     disposable = disp;
@@ -79,24 +79,24 @@ export function ioReactivexObservableAddWeak<A extends object, Element extends a
 }
 
 //! Declares com.lightningkite.khrysalis.rx.addWeak
-export function ioReactivexObservableAddWeak<A extends object, B extends object, Element extends any>(this_AddWeak: Observable<Element>, referenceA: A, referenceB: B, listener:  (a: A, b: B, c: Element) => void): SubscriptionLike{
+export function ioReactivexObservableAddWeak<A extends object, B extends object, Element extends any>(this_: Observable<Element>, referenceA: A, referenceB: B, listener:  (a: A, b: B, c: Element) => void): SubscriptionLike{
     let disposable: (SubscriptionLike | null) = null;
     
     const weakA: (A | null);
     
     const weakB: (B | null);
     
-    const disp = this_AddWeak.subscribe(undefined, (item) => {
+    const disp = this_.subscribe(undefined, (item) => {
             const a = weakA;
             
             const b = weakB;
             
-            (() => {if (!(a.equals(null)) && !(b.equals(null))) {
-                        this.listener(a, b, item);
-                    } else {
-                        const temp116 = disposable;
-                        if(temp116 !== null) temp116.unsubscribe();
-            }})()
+            if (!(a.equals(null)) && !(b.equals(null))) {
+                this.listener(a, b, item);
+            } else {
+                const temp147 = disposable;
+                if(temp147 !== null) temp147.unsubscribe();
+            }
     }, undefined);
     
     disposable = disp;
@@ -106,7 +106,7 @@ export function ioReactivexObservableAddWeak<A extends object, B extends object,
 
 
 //! Declares com.lightningkite.khrysalis.rx.addWeak
-export function ioReactivexObservableAddWeak<A extends object, B extends object, C extends object, Element extends any>(this_AddWeak: Observable<Element>, referenceA: A, referenceB: B, referenceC: C, listener:  (a: A, b: B, c: C, d: Element) => void): SubscriptionLike{
+export function ioReactivexObservableAddWeak<A extends object, B extends object, C extends object, Element extends any>(this_: Observable<Element>, referenceA: A, referenceB: B, referenceC: C, listener:  (a: A, b: B, c: C, d: Element) => void): SubscriptionLike{
     let disposable: (SubscriptionLike | null) = null;
     
     const weakA: (A | null);
@@ -115,19 +115,19 @@ export function ioReactivexObservableAddWeak<A extends object, B extends object,
     
     const weakC: (C | null);
     
-    const disp = this_AddWeak.subscribe(undefined, (item) => {
+    const disp = this_.subscribe(undefined, (item) => {
             const a = weakA;
             
             const b = weakB;
             
             const c = weakC;
             
-            (() => {if (!(a.equals(null)) && !(b.equals(null)) && !(c.equals(null))) {
-                        this.listener(a, b, c, item);
-                    } else {
-                        const temp118 = disposable;
-                        if(temp118 !== null) temp118.unsubscribe();
-            }})()
+            if (!(a.equals(null)) && !(b.equals(null)) && !(c.equals(null))) {
+                this.listener(a, b, c, item);
+            } else {
+                const temp149 = disposable;
+                if(temp149 !== null) temp149.unsubscribe();
+            }
     }, undefined);
     
     ioReactivexDisposablesDisposableSolvePrivateDisposal(disp, [referenceA, referenceB, referenceC]);

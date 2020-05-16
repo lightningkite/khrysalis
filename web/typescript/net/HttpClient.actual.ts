@@ -249,7 +249,7 @@ export class HttpClient {
                                 }
                                 
                                 deserialize(p: JsonParser, ctxt: DeserializationContext): (TimeAlone | null){
-                                    getComFasterxmlJacksonCoreJsonParserCurrentToken(p).equals(JsonToken.VALUE_NULL) ? return null : 
+                                    if (getComFasterxmlJacksonCoreJsonParserCurrentToken(p).equals(JsonToken.VALUE_NULL)) return null
                                     return TimeAlone.Companion.INSTANCE.iso(getComFasterxmlJacksonCoreJsonParserText(p));
                                 }
                         }()], [getKotlinReflectKClassJava(DateAlone::class), new class Anon extends StdDeserializer<any> {
@@ -260,7 +260,7 @@ export class HttpClient {
                                 }
                                 
                                 deserialize(p: JsonParser, ctxt: DeserializationContext): (DateAlone | null){
-                                    getComFasterxmlJacksonCoreJsonParserCurrentToken(p).equals(JsonToken.VALUE_NULL) ? return null : 
+                                    if (getComFasterxmlJacksonCoreJsonParserCurrentToken(p).equals(JsonToken.VALUE_NULL)) return null
                                     return DateAlone.Companion.INSTANCE.iso(getComFasterxmlJacksonCoreJsonParserText(p));
                                 }
                 }()]]), [new class Anon extends StdSerializer<any> {
@@ -269,11 +269,11 @@ export class HttpClient {
                         }
                         
                         serialize(value: (Enum<*> | null), gen: JsonGenerator, provider: (SerializerProvider | null)){
-                            (() => {if (value.equals(null)) {
-                                        gen.writeNull();
-                                    } else {
-                                        gen.writeString(value.name.toLowerCase());
-                            }})()
+                            if (value.equals(null)) {
+                                gen.writeNull();
+                            } else {
+                                gen.writeString(value.name.toLowerCase());
+                            }
                         }
                     }(), new class Anon extends StdSerializer<any> {
                         public constructor() {
@@ -281,11 +281,11 @@ export class HttpClient {
                         }
                         
                         serialize(value: (TimeAlone | null), gen: JsonGenerator, provider: (SerializerProvider | null)){
-                            (() => {if (value.equals(null)) {
-                                        gen.writeNull();
-                                    } else {
-                                        gen.writeString(comLightningkiteKhrysalisTimeTimeAloneIso8601(value));
-                            }})()
+                            if (value.equals(null)) {
+                                gen.writeNull();
+                            } else {
+                                gen.writeString(comLightningkiteKhrysalisTimeTimeAloneIso8601(value));
+                            }
                         }
                     }(), new class Anon extends StdSerializer<any> {
                         public constructor() {
@@ -293,11 +293,11 @@ export class HttpClient {
                         }
                         
                         serialize(value: (DateAlone | null), gen: JsonGenerator, provider: (SerializerProvider | null)){
-                            (() => {if (value.equals(null)) {
-                                        gen.writeNull();
-                                    } else {
-                                        gen.writeString(comLightningkiteKhrysalisTimeDateAloneIso8601(value));
-                            }})()
+                            if (value.equals(null)) {
+                                gen.writeNull();
+                            } else {
+                                gen.writeString(comLightningkiteKhrysalisTimeDateAloneIso8601(value));
+                            }
                         }
         }()]))
         .disable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES)
@@ -327,26 +327,26 @@ export class HttpClient {
     
     public responseScheduler: (Scheduler | null) = null;
     
-    ioReactivexSingleThreadCorrectly<T>(this_ThreadCorrectly: Observable<T>): Observable<T>{
-        let current = this_ThreadCorrectly;
+    ioReactivexSingleThreadCorrectly<T>(this_: Observable<T>): Observable<T>{
+        let current = this_;
         
-        (() => {if(!(this.ioScheduler.equals(null))){
-                    current = current;
-        }})()
-        (() => {if(!(this.responseScheduler.equals(null))){
-                    current = current.observeOn(this.responseScheduler);
-        }})()
+        if(!(this.ioScheduler.equals(null))){
+            current = current;
+        }
+        if(!(this.responseScheduler.equals(null))){
+            current = current.observeOn(this.responseScheduler);
+        }
         return current;
     }
-    ioReactivexObservableThreadCorrectly<T>(this_ThreadCorrectly: Observable<T>): Observable<T>{
-        let current = this_ThreadCorrectly;
+    ioReactivexObservableThreadCorrectly<T>(this_: Observable<T>): Observable<T>{
+        let current = this_;
         
-        (() => {if(!(this.ioScheduler.equals(null))){
-                    current = current;
-        }})()
-        (() => {if(!(this.responseScheduler.equals(null))){
-                    current = current.observeOn(this.responseScheduler);
-        }})()
+        if(!(this.ioScheduler.equals(null))){
+            current = current;
+        }
+        if(!(this.responseScheduler.equals(null))){
+            current = current.observeOn(this.responseScheduler);
+        }
         return current;
     }
     
@@ -373,7 +373,7 @@ export class HttpClient {
                             }
                             
                             deserialize(p: JsonParser, ctxt: DeserializationContext): (TimeAlone | null){
-                                getComFasterxmlJacksonCoreJsonParserCurrentToken(p).equals(JsonToken.VALUE_NULL) ? return null : 
+                                if (getComFasterxmlJacksonCoreJsonParserCurrentToken(p).equals(JsonToken.VALUE_NULL)) return null
                                 return TimeAlone.Companion.INSTANCE.iso(getComFasterxmlJacksonCoreJsonParserText(p));
                             }
                     }()], [getKotlinReflectKClassJava(DateAlone::class), new class Anon extends StdDeserializer<any> {
@@ -384,7 +384,7 @@ export class HttpClient {
                             }
                             
                             deserialize(p: JsonParser, ctxt: DeserializationContext): (DateAlone | null){
-                                getComFasterxmlJacksonCoreJsonParserCurrentToken(p).equals(JsonToken.VALUE_NULL) ? return null : 
+                                if (getComFasterxmlJacksonCoreJsonParserCurrentToken(p).equals(JsonToken.VALUE_NULL)) return null
                                 return DateAlone.Companion.INSTANCE.iso(getComFasterxmlJacksonCoreJsonParserText(p));
                             }
             }()]]), [new class Anon extends StdSerializer<any> {
@@ -393,11 +393,11 @@ export class HttpClient {
                     }
                     
                     serialize(value: (Enum<*> | null), gen: JsonGenerator, provider: (SerializerProvider | null)){
-                        (() => {if (value.equals(null)) {
-                                    gen.writeNull();
-                                } else {
-                                    gen.writeString(value.name.toLowerCase());
-                        }})()
+                        if (value.equals(null)) {
+                            gen.writeNull();
+                        } else {
+                            gen.writeString(value.name.toLowerCase());
+                        }
                     }
                 }(), new class Anon extends StdSerializer<any> {
                     public constructor() {
@@ -405,11 +405,11 @@ export class HttpClient {
                     }
                     
                     serialize(value: (TimeAlone | null), gen: JsonGenerator, provider: (SerializerProvider | null)){
-                        (() => {if (value.equals(null)) {
-                                    gen.writeNull();
-                                } else {
-                                    gen.writeString(comLightningkiteKhrysalisTimeTimeAloneIso8601(value));
-                        }})()
+                        if (value.equals(null)) {
+                            gen.writeNull();
+                        } else {
+                            gen.writeString(comLightningkiteKhrysalisTimeTimeAloneIso8601(value));
+                        }
                     }
                 }(), new class Anon extends StdSerializer<any> {
                     public constructor() {
@@ -417,11 +417,11 @@ export class HttpClient {
                     }
                     
                     serialize(value: (DateAlone | null), gen: JsonGenerator, provider: (SerializerProvider | null)){
-                        (() => {if (value.equals(null)) {
-                                    gen.writeNull();
-                                } else {
-                                    gen.writeString(comLightningkiteKhrysalisTimeDateAloneIso8601(value));
-                        }})()
+                        if (value.equals(null)) {
+                            gen.writeNull();
+                        } else {
+                            gen.writeString(comLightningkiteKhrysalisTimeDateAloneIso8601(value));
+                        }
                     }
     }()]))
     .disable(DeserializationFeature.FAIL_ON_IGNORED_PROPERTIES)
@@ -452,7 +452,7 @@ export class HttpClient {
                     
                     console.log(`Response from ${method} request to ${url} with headers ${headers}: ${response.code()}`);
                     emitter.next(response); emitter.complete();
-                } catch(e:Exception) {
+                } catch(e: Exception) {
                     emitter.error(e);
         }));
     }
@@ -473,26 +473,26 @@ export class HttpClient {
     public immediateMode = false;
     
     
-    runResult(crossinline action: () => void){
-        return (() => {if (this.immediateMode) {
-                    this.action();
-                } else {
-                    return Handler.constructorandroidosLooper(Looper.getMainLooper()).post(() => this.action());
-        }})()
+    runResult(action: () => void){
+        if (this.immediateMode) {
+            this.action();
+        } else {
+            Handler.constructorandroidosLooper(Looper.getMainLooper()).post(() => this.action());
+        }
     }
     
-    okhttp3CallGo(this_Go: Call, callback: Callback){
-        (() => {if (this.immediateMode) {
-                    try {
-                        const result = execute();
-                        
-                        callback.onResponse(this_Go, result);
-                    } catch (e: IOException) {
-                        callback.onFailure(this_Go, e);
-                    };
-                } else {
-                    enqueue(callback);
-        }})()
+    okhttp3CallGo(this_: Call, callback: Callback){
+        if (this.immediateMode) {
+            try {
+                const result = this_.execute();
+                
+                callback.onResponse(this_, result);
+            } catch (e: IOException) {
+                callback.onFailure(this_, e);
+            };
+        } else {
+            this_.enqueue(callback);
+        }
     }
     
     call<T extends any>(
@@ -500,7 +500,7 @@ export class HttpClient {
         method: string,
         headers: Map<string, string>,
         body: (any | null) = null,
-        crossinline onResult:  (code: number, result: (T | null), error: (string | null)) => void
+        onResult:  (code: number, result: (T | null), error: (string | null)) => void
     ){
         console.log(`Sending ${method} request to ${url} with headers ${headers}`);
         const request = Request.Builder.constructor()
@@ -511,7 +511,7 @@ export class HttpClient {
                             const sending = this.mapper.writeValueAsString(it);
                             
                             console.log(`with body ${sending}`);
-                            RequestBody.create(MediaType.parse("application/json"), sending);
+                            return RequestBody.create(MediaType.parse("application/json"), sending);
                     })(_it)
         })(body))
         .headers(Headers.of(headers))
@@ -526,33 +526,33 @@ export class HttpClient {
                 
                 onFailure(call: Call, e: IOException){
                     Log.e("HttpClient", `Failure: ${e.message}`);
-                    runResult(() => onResult.invoke(0, null, e.message ?: ""));
+                    this.runResult(() => onResult.invoke(0, null, e.message ?: ""));
                 }
                 
                 onResponse(call: Call, response: Response){
                     const raw = response.body()!!.string();
                     
                     console.log(`Response ${response.code()}: ${raw}`);
-                    runResult(() => {
+                    this.runResult(() => {
                             const code = response.code();
                             
-                            (() => {if (code / 100 === 2) {
-                                        try {
-                                            const read = this.mapper.readValue<T>(raw, new class Anon extends TypeReference<any> {
-                                                    public constructor() {
-                                                        super();
-                                                    }
-                                            }());
-                                            
-                                            onResult.invoke(code, read, null);
-                                        } catch (e: Exception) {
-                                            Log.e("HttpClient", `Failure to parse: ${e.message}`);
-                                            e.printStackTrace();
-                                            onResult.invoke(code, null, e.message);
-                                        };
-                                    } else {
-                                        onResult.invoke(code, null, raw ?: "");
-                            }})()
+                            if (code / 100 === 2) {
+                                try {
+                                    const read = this.mapper.readValue<T>(raw, new class Anon extends TypeReference<any> {
+                                            public constructor() {
+                                                super();
+                                            }
+                                    }());
+                                    
+                                    onResult.invoke(code, read, null);
+                                } catch (e: Exception) {
+                                    Log.e("HttpClient", `Failure to parse: ${e.message}`);
+                                    e.printStackTrace();
+                                    onResult.invoke(code, null, e.message);
+                                };
+                            } else {
+                                onResult.invoke(code, null, raw ?: "");
+                            }
                     });
                 }
         }());
@@ -563,7 +563,7 @@ export class HttpClient {
         method: string,
         headers: Map<string, string>,
         body: (any | null) = null,
-        crossinline onResult:  (code: number, result: (string | null), error: (string | null)) => void
+        onResult:  (code: number, result: (string | null), error: (string | null)) => void
     ){
         console.log(`Sending ${method} request to ${url} with headers ${headers}`);
         const request = Request.Builder.constructor()
@@ -574,7 +574,7 @@ export class HttpClient {
                             const sending = this.mapper.writeValueAsString(it);
                             
                             console.log(`with body ${sending}`);
-                            RequestBody.create(MediaType.parse("application/json"), sending);
+                            return RequestBody.create(MediaType.parse("application/json"), sending);
                     })(_it)
         })(body))
         .headers(Headers.of(headers))
@@ -589,21 +589,21 @@ export class HttpClient {
                 
                 onFailure(call: Call, e: IOException){
                     Log.e("HttpClient", `Failure: ${e.message}`);
-                    runResult(() => onResult.invoke(0, null, e.message ?: ""));
+                    this.runResult(() => onResult.invoke(0, null, e.message ?: ""));
                 }
                 
                 onResponse(call: Call, response: Response){
                     const raw = response.body()!!.string();
                     
                     console.log(`Response ${response.code()}: ${raw}`);
-                    runResult(() => {
+                    this.runResult(() => {
                             const code = response.code();
                             
-                            (() => {if (code / 100 === 2) {
-                                        onResult.invoke(code, raw, null);
-                                    } else {
-                                        onResult.invoke(code, null, raw ?: "");
-                            }})()
+                            if (code / 100 === 2) {
+                                onResult.invoke(code, raw, null);
+                            } else {
+                                onResult.invoke(code, null, raw ?: "");
+                            }
                     });
                 }
         }());
@@ -614,7 +614,7 @@ export class HttpClient {
         method: string,
         headers: Map<string, string>,
         body: (any | null) = null,
-        crossinline onResult:  (code: number, error: (string | null)) => void
+        onResult:  (code: number, error: (string | null)) => void
     ){
         console.log(`Sending ${method} request to ${url} with headers ${headers}`);
         const request = Request.Builder.constructor()
@@ -625,7 +625,7 @@ export class HttpClient {
                             const sending = this.mapper.writeValueAsString(it);
                             
                             console.log(`with body ${sending}`);
-                            RequestBody.create(MediaType.parse("application/json"), sending);
+                            return RequestBody.create(MediaType.parse("application/json"), sending);
                     })(_it)
         })(body))
         .headers(Headers.of(headers))
@@ -640,21 +640,21 @@ export class HttpClient {
                 
                 onFailure(call: Call, e: IOException){
                     Log.e("HttpClient", `Failure: ${e.message}`);
-                    runResult(() => onResult.invoke(0, e.message ?: ""));
+                    this.runResult(() => onResult.invoke(0, e.message ?: ""));
                 }
                 
                 onResponse(call: Call, response: Response){
                     const raw = response.body()!!.string();
                     
                     console.log(`Response ${response.code()}: ${raw}`);
-                    runResult(() => {
+                    this.runResult(() => {
                             const code = response.code();
                             
-                            (() => {if (code / 100 === 2) {
-                                        onResult.invoke(response.code(), null);
-                                    } else {
-                                        onResult.invoke(code, raw ?: "");
-                            }})()
+                            if (code / 100 === 2) {
+                                onResult.invoke(response.code(), null);
+                            } else {
+                                onResult.invoke(code, raw ?: "");
+                            }
                     });
                 }
         }());
@@ -668,25 +668,25 @@ export class HttpClient {
         image: Image,
         maxSize: number = 10_000_000,
         additionalFields: Map<string, string> = new Map([]),
-        crossinline onResult:  (code: number, error: (string | null)) => void
+        onResult:  (code: number, error: (string | null)) => void
     ){
         loadImage(image, (rawImage) => {
-                (() => {if (rawImage.equals(null)) {
-                            this.onResult(0, "Failed to read image.");
-                            return;
-                }})()
+                if (rawImage.equals(null)) {
+                    this.onResult(0, "Failed to read image.");
+                    return;
+                }
                 let qualityToTry = 100;
                 
                 let data = javaIoCloseableUse(ByteArrayOutputStream.constructor(), (it) => {
                         rawImage.compress(Bitmap.CompressFormat.JPEG, qualityToTry, it);
-                        it.toByteArray();
+                        return it.toByteArray();
                 });
                 
                 while (data.size > maxSize) {
                     qualityToTry = qualityToTry - 5;
                     data = javaIoCloseableUse(ByteArrayOutputStream.constructor(), (it) => {
                             rawImage.compress(Bitmap.CompressFormat.JPEG, qualityToTry, it);
-                            it.toByteArray();
+                            return it.toByteArray();
                     });
                 }
                 Log.i("HttpClient", `Sending ${method} request to ${url} with headers ${headers} and image at quality level ${qualityToTry}`);
@@ -702,7 +702,7 @@ export class HttpClient {
                                 result = result.addFormDataPart(key, value)
                                 
                             }
-                            result;
+                            return result;
                     })(MultipartBody.Builder.constructor()
                         .setType(MultipartBody.FORM)
                     .addFormDataPart(fieldName, "image.jpg", RequestBody.create(MediaType.parse("image/jpeg"), data)))
@@ -717,21 +717,21 @@ export class HttpClient {
                         }
                         
                         onFailure(call: Call, e: IOException){
-                            runResult(() => onResult.invoke(0, e.message ?: ""));
+                            this.runResult(() => onResult.invoke(0, e.message ?: ""));
                         }
                         
                         onResponse(call: Call, response: Response){
                             const raw = response.body()!!.string();
                             
                             console.log(`Response ${response.code()}: ${raw}`);
-                            runResult(() => {
+                            this.runResult(() => {
                                     const code = response.code();
                                     
-                                    (() => {if (code / 100 === 2) {
-                                                onResult.invoke(response.code(), null);
-                                            } else {
-                                                onResult.invoke(code, raw ?: "");
-                                    }})()
+                                    if (code / 100 === 2) {
+                                        onResult.invoke(response.code(), null);
+                                    } else {
+                                        onResult.invoke(code, raw ?: "");
+                                    }
                             });
                         }
                 }());
@@ -747,25 +747,25 @@ export class HttpClient {
         image: Image,
         maxSize: number = 10_000_000,
         additionalFields: Map<string, string> = new Map([]),
-        crossinline onResult:  (code: number, result: (T | null), error: (string | null)) => void
+        onResult:  (code: number, result: (T | null), error: (string | null)) => void
     ){
         loadImage(image, (rawImage) => {
-                (() => {if (rawImage.equals(null)) {
-                            this.onResult(0, null, "Failed to read image.");
-                            return;
-                }})()
+                if (rawImage.equals(null)) {
+                    this.onResult(0, null, "Failed to read image.");
+                    return;
+                }
                 let qualityToTry = 100;
                 
                 let data = javaIoCloseableUse(ByteArrayOutputStream.constructor(), (it) => {
                         rawImage.compress(Bitmap.CompressFormat.JPEG, qualityToTry, it);
-                        it.toByteArray();
+                        return it.toByteArray();
                 });
                 
                 while (data.size > maxSize) {
                     qualityToTry = qualityToTry - 5;
                     data = javaIoCloseableUse(ByteArrayOutputStream.constructor(), (it) => {
                             rawImage.compress(Bitmap.CompressFormat.JPEG, qualityToTry, it);
-                            it.toByteArray();
+                            return it.toByteArray();
                     });
                 }
                 Log.i("HttpClient", `Sending ${method} request to ${url} with headers ${headers} and image at quality level ${qualityToTry}`);
@@ -781,7 +781,7 @@ export class HttpClient {
                                 result = result.addFormDataPart(key, value)
                                 
                             }
-                            result;
+                            return result;
                     })(MultipartBody.Builder.constructor()
                         .setType(MultipartBody.FORM)
                     .addFormDataPart(fieldName, "image.jpg", RequestBody.create(MediaType.parse("image/jpeg"), data)))
@@ -796,32 +796,32 @@ export class HttpClient {
                         }
                         
                         onFailure(call: Call, e: IOException){
-                            runResult(() => onResult.invoke(0, null, e.message ?: ""));
+                            this.runResult(() => onResult.invoke(0, null, e.message ?: ""));
                         }
                         
                         onResponse(call: Call, response: Response){
                             const raw = response.body()!!.string();
                             
                             console.log(`Response ${response.code()}: ${raw}`);
-                            runResult(() => {
+                            this.runResult(() => {
                                     const code = response.code();
                                     
-                                    (() => {if (code / 100 === 2) {
-                                                try {
-                                                    const read = this.mapper.readValue<T>(raw, new class Anon extends TypeReference<any> {
-                                                            public constructor() {
-                                                                super();
-                                                            }
-                                                    }());
-                                                    
-                                                    onResult.invoke(code, read, null);
-                                                } catch (e: Exception) {
-                                                    Log.e("HttpClient", `Failure to parse: ${e.message}`);
-                                                    onResult.invoke(code, null, e.message);
-                                                };
-                                            } else {
-                                                onResult.invoke(code, null, raw ?: "");
-                                    }})()
+                                    if (code / 100 === 2) {
+                                        try {
+                                            const read = this.mapper.readValue<T>(raw, new class Anon extends TypeReference<any> {
+                                                    public constructor() {
+                                                        super();
+                                                    }
+                                            }());
+                                            
+                                            onResult.invoke(code, read, null);
+                                        } catch (e: Exception) {
+                                            Log.e("HttpClient", `Failure to parse: ${e.message}`);
+                                            onResult.invoke(code, null, e.message);
+                                        };
+                                    } else {
+                                        onResult.invoke(code, null, raw ?: "");
+                                    }
                             });
                         }
                 }());

@@ -6,7 +6,6 @@
 // FQImport: com.lightningkite.khrysalis.observables.ReferenceObservableProperty.set TS set
 // FQImport: com.lightningkite.khrysalis.observables.ReferenceObservableProperty.<set-value>.value TS value
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty TS MutableObservableProperty
-// FQImport: com.lightningkite.khrysalis.Box TS Box
 // FQImport: com.lightningkite.khrysalis.observables.ReferenceObservableProperty.get TS get
 import { Observable } from 'rxjs'
 import { MutableObservableProperty } from './MutableObservableProperty.shared'
@@ -15,8 +14,8 @@ import { MutableObservableProperty } from './MutableObservableProperty.shared'
 export class ReferenceObservableProperty<T> extends MutableObservableProperty<any> {
     public readonly get:  () => T;
     public readonly set:  (a: T) => void;
-    public readonly event: Observable<Box<T>>;
-    public constructor( get:  () => T,  set:  (a: T) => void,  event: Observable<Box<T>>) {
+    public readonly event: Observable<T>;
+    public constructor(get:  () => T, set:  (a: T) => void, event: Observable<T>) {
         super();
         this.get = get;
         this.set = set;
@@ -25,12 +24,12 @@ export class ReferenceObservableProperty<T> extends MutableObservableProperty<an
     
     
     //! Declares com.lightningkite.khrysalis.observables.ReferenceObservableProperty.onChange
-    public get onChange(): Observable<Box<T>> { return this.event; }
+    public get onChange(): Observable<T> { return this.event; }
     
     //! Declares com.lightningkite.khrysalis.observables.ReferenceObservableProperty.value
-    public get value(): T { return this.this.get(); }
+    public get value(): T { return this.get(); }
     public set value(value: T) {
-        this.this.set(value);
+        this.set(value);
     }
     
     public update(){

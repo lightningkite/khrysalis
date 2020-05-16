@@ -34,89 +34,89 @@
 import { Data } from './Data.actual'
 
 //! Declares com.lightningkite.khrysalis.bytes.buffer
-export function kotlinByteArrayBuffer(this_Buffer: Data): ByteBuffer{
-    return ByteBuffer.wrap(this_Buffer);
+export function kotlinByteArrayBuffer(this_: Data): ByteBuffer{
+    return ByteBuffer.wrap(this_);
 }
 
 //! Declares com.lightningkite.khrysalis.bytes.data
-export function javaNioByteBufferData(this_Data: ByteBuffer): Data{ return array(); }
+export function javaNioByteBufferData(this_: ByteBuffer): Data{ return this_.array(); }
 
 //! Declares com.lightningkite.khrysalis.bytes.getUtf8
-export function javaNioByteBufferGetUtf8(this_GetUtf8: ByteBuffer): string{
-    const length = getShort();
+export function javaNioByteBufferGetUtf8(this_: ByteBuffer): string{
+    const length = this_.getShort();
     
     const byteArray = new ByteArray(length);
     
-    this_GetUtf8.get(byteArray);
+    this_.get(byteArray);
     return kotlinByteArrayToString(byteArray, Charsets.INSTANCE.UTF_8);
 }
 
 //! Declares com.lightningkite.khrysalis.bytes.getUtf8
-export function javaNioByteBufferGetUtf8(this_GetUtf8: ByteBuffer, index: number): string{
-    const beforePosition = position();
+export function javaNioByteBufferGetUtf8(this_: ByteBuffer, index: number): string{
+    const beforePosition = this_.position();
     
-    position(index);
-    const length = getShort();
+    this_.position(index);
+    const length = this_.getShort();
     
     const byteArray = new ByteArray(length);
     
-    this_GetUtf8.get(byteArray);
-    position(beforePosition);
+    this_.get(byteArray);
+    this_.position(beforePosition);
     return kotlinByteArrayToString(byteArray, Charsets.INSTANCE.UTF_8);
 }
 
 //! Declares com.lightningkite.khrysalis.bytes.putUtf8
-export function javaNioByteBufferPutUtf8(this_PutUtf8: ByteBuffer, string: string): ByteBuffer{
-    putShort(string.length);
-    put(kotlinStringToByteArray(string, Charsets.INSTANCE.UTF_8));
-    return this_PutUtf8;
+export function javaNioByteBufferPutUtf8(this_: ByteBuffer, string: string): ByteBuffer{
+    this_.putShort(string.length);
+    this_.put(kotlinStringToByteArray(string, Charsets.INSTANCE.UTF_8));
+    return this_;
 }
 
 //! Declares com.lightningkite.khrysalis.bytes.putUtf8
-export function javaNioByteBufferPutUtf8(this_PutUtf8: ByteBuffer, index: number, string: string): ByteBuffer{
-    const beforePosition = position();
+export function javaNioByteBufferPutUtf8(this_: ByteBuffer, index: number, string: string): ByteBuffer{
+    const beforePosition = this_.position();
     
-    position(index);
-    putShort(string.length);
-    put(kotlinStringToByteArray(string, Charsets.INSTANCE.UTF_8));
-    position(beforePosition);
-    return this_PutUtf8;
+    this_.position(index);
+    this_.putShort(string.length);
+    this_.put(kotlinStringToByteArray(string, Charsets.INSTANCE.UTF_8));
+    this_.position(beforePosition);
+    return this_;
 }
 
 //! Declares com.lightningkite.khrysalis.bytes.getSetSizeUtf8
-export function javaNioByteBufferGetSetSizeUtf8(this_GetSetSizeUtf8: ByteBuffer, length: number): string{
+export function javaNioByteBufferGetSetSizeUtf8(this_: ByteBuffer, length: number): string{
     const byteArray = new ByteArray(length);
     
-    this_GetSetSizeUtf8.get(byteArray);
+    this_.get(byteArray);
     return kotlinByteArrayToString(byteArray, Charsets.INSTANCE.UTF_8);
 }
 
 //! Declares com.lightningkite.khrysalis.bytes.getSetSizeUtf8
-export function javaNioByteBufferGetSetSizeUtf8(this_GetSetSizeUtf8: ByteBuffer, length: number, index: number): string{
-    const beforePosition = position();
+export function javaNioByteBufferGetSetSizeUtf8(this_: ByteBuffer, length: number, index: number): string{
+    const beforePosition = this_.position();
     
-    position(index);
+    this_.position(index);
     const byteArray = new ByteArray(length);
     
-    this_GetSetSizeUtf8.get(byteArray);
-    position(beforePosition);
+    this_.get(byteArray);
+    this_.position(beforePosition);
     return kotlinByteArrayToString(byteArray, Charsets.INSTANCE.UTF_8);
 }
 
 //! Declares com.lightningkite.khrysalis.bytes.putSetSizeUtf8
-export function javaNioByteBufferPutSetSizeUtf8(this_PutSetSizeUtf8: ByteBuffer, length: number, string: string): ByteBuffer{
-    put(kotlinStringToByteArray(kotlinStringTake(string, length).padEnd(length, '\u0000'), Charsets.INSTANCE.UTF_8));
-    return this_PutSetSizeUtf8;
+export function javaNioByteBufferPutSetSizeUtf8(this_: ByteBuffer, length: number, string: string): ByteBuffer{
+    this_.put(kotlinStringToByteArray(kotlinStringTake(string, length).padEnd(length, '\u0000'), Charsets.INSTANCE.UTF_8));
+    return this_;
 }
 
 //! Declares com.lightningkite.khrysalis.bytes.putSetSizeUtf8
-export function javaNioByteBufferPutSetSizeUtf8(this_PutSetSizeUtf8: ByteBuffer, length: number, index: number, string: string): ByteBuffer{
-    const beforePosition = position();
+export function javaNioByteBufferPutSetSizeUtf8(this_: ByteBuffer, length: number, index: number, string: string): ByteBuffer{
+    const beforePosition = this_.position();
     
-    position(index);
-    put(kotlinStringToByteArray(kotlinStringTake(string, length).padEnd(length, '\u0000'), Charsets.INSTANCE.UTF_8));
-    position(beforePosition);
-    return this_PutSetSizeUtf8;
+    this_.position(index);
+    this_.put(kotlinStringToByteArray(kotlinStringTake(string, length).padEnd(length, '\u0000'), Charsets.INSTANCE.UTF_8));
+    this_.position(beforePosition);
+    return this_;
 }
 
 /* SHARED DECLARATIONS

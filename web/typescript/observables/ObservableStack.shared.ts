@@ -2,33 +2,27 @@
 // File: observables/ObservableStack.shared.kt
 // Package: com.lightningkite.khrysalis.observables
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.onChange TS onChange
+// FQImport: com.lightningkite.khrysalis.observables.ObservableStack.swap.t TS t
 // FQImport: kotlin.Boolean TS Boolean
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.stack TS stack
-// FQImport: java.util.ArrayList.isEmpty TS isEmpty
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.T TS T
+// FQImport: com.lightningkite.khrysalis.observables.ObservableStack TS ObservableStack
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.popTo.found TS found
-// FQImport: io.reactivex.subjects.PublishSubject.onNext TS onNext
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.push.t TS t
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.popTo.predicate TS predicate
-// FQImport: com.lightningkite.khrysalis.observables.ObservableStack.Companion.withFirst.value TS value
-// FQImport: com.lightningkite.khrysalis.observables.ObservableStack SKIPPED due to same file
-// FQImport: java.util.ArrayList.clear TS clear
-// FQImport: com.lightningkite.khrysalis.observables.ObservableStack.reset.t TS t
-// FQImport: com.lightningkite.khrysalis.Box TS Box
-// FQImport: com.lightningkite.khrysalis.observables.ObservableStack.popTo.t TS t
-// FQImport: com.lightningkite.khrysalis.observables.ObservableStack.swap.t TS t
-// FQImport: com.lightningkite.khrysalis.observables.ObservableStack TS ObservableStack
-// FQImport: com.lightningkite.khrysalis.boxWrap TS boxWrap
 // FQImport: com.lightningkite.khrysalis.observables.ObservableProperty TS ObservableProperty
-// FQImport: java.util.ArrayList.add TS add
-// FQImport: java.util.ArrayList.size TS size
+// FQImport: com.lightningkite.khrysalis.observables.ObservableStack.Companion.withFirst.value TS value
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.popTo TS popTo
+// FQImport: com.lightningkite.khrysalis.observables.ObservableStack SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.popTo.i TS i
+// FQImport: java.util.ArrayList.clear TS clear
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.Companion.withFirst.T TS T
 // FQImport: io.reactivex.subjects.PublishSubject TS PublishSubject
 // FQImport: io.reactivex.subjects.PublishSubject.create TS create
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.Companion.withFirst.result TS result
+// FQImport: com.lightningkite.khrysalis.observables.ObservableStack.reset.t TS t
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.reset TS reset
+// FQImport: com.lightningkite.khrysalis.observables.ObservableStack.popTo.t TS t
 import { ObservableProperty } from './ObservableProperty.shared'
 import { NumberRange } from 'khrysalis/dist/Kotlin'
 
@@ -49,12 +43,10 @@ export class ObservableStack<T extends object> extends ObservableProperty<any> {
         }
     }
     
-    public readonly onChange: PublishSubject<Box<Array<T>>> = PublishSubject.create();
+    public readonly onChange: PublishSubject<Array<T>> = PublishSubject.create();
     
     //! Declares com.lightningkite.khrysalis.observables.ObservableStack.value
-    public get value(): Array<T> { return {
-            return this.stack;
-    }; }{
+    public get value(): Array<T> {
         return this.stack;
     }
     
@@ -63,31 +55,31 @@ export class ObservableStack<T extends object> extends ObservableProperty<any> {
     
     
     public push(t: T){
-        this.stack.add(t);
-        this.onChange.onNext(boxWrap(this.stack));
+        this.stack.push(t);
+        this.onChange.next(this.stack);
     }
     
     public swap(t: T){
         this.stack.splice((this.stack.length - 1), 1);
-        this.stack.add(t);
-        this.onChange.onNext(boxWrap(this.stack));
+        this.stack.push(t);
+        this.onChange.next(this.stack);
     }
     
     public pop(): Boolean{
-        (() => {if (this.stack.size <= 1) {
-                    return false;
-        }})()
+        if (this.stack.length <= 1) {
+            return false;
+        }
         this.stack.splice((this.stack.length - 1), 1);
-        this.onChange.onNext(boxWrap(this.stack));
+        this.onChange.next(this.stack);
         return true;
     }
     
     public dismiss(): Boolean{
-        (() => {if (this.stack.isEmpty()) {
-                    return false;
-        }})()
+        if (this.stack.length === 0) {
+            return false;
+        }
         this.stack.splice((this.stack.length - 1), 1);
-        this.onChange.onNext(boxWrap(this.stack));
+        this.onChange.next(this.stack);
         return true;
     }
     
@@ -95,36 +87,36 @@ export class ObservableStack<T extends object> extends ObservableProperty<any> {
         let found = false;
         
         for (const i of new NumberRange(0, (this.stack.length - 1))) {
-            return (() => {if (found) {
-                        return this.stack.splice((this.stack.length - 1), 1);
-                    } else if (this.stack[i] === t) {
-                        found = true;
-            }})()
+            if (found) {
+                this.stack.splice((this.stack.length - 1), 1);
+            } else if (this.stack[i] === t) {
+                found = true;
+            }
         }
-        this.onChange.onNext(boxWrap(this.stack));
+        this.onChange.next(this.stack);
     }
     
     public popTo(predicate: (a: T) => Boolean){
         let found = false;
         
         for (const i of new NumberRange(0, (this.stack.length - 1))) {
-            return (() => {if (found) {
-                        return this.stack.splice((this.stack.length - 1), 1);
-                    } else if (this.predicate(this.stack[i])) {
-                        found = true;
-            }})()
+            if (found) {
+                this.stack.splice((this.stack.length - 1), 1);
+            } else if (this.predicate(this.stack[i])) {
+                found = true;
+            }
         }
-        this.onChange.onNext(boxWrap(this.stack));
+        this.onChange.next(this.stack);
     }
     
     public root(){
-        popTo(this.stack[0]);
+        this.popTo(this.stack[0]);
     }
     
     public reset(t: T){
         this.stack.clear();
-        this.stack.add(t);
-        this.onChange.onNext(boxWrap(this.stack));
+        this.stack.push(t);
+        this.onChange.next(this.stack);
     }
 }
 

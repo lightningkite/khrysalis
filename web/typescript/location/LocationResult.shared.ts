@@ -12,7 +12,7 @@ export class LocationResult {
     public readonly altitudeAccuracyMeters: number;
     public readonly headingFromNorth: number;
     public readonly speedMetersPerSecond: number;
-    public constructor( coordinate: GeoCoordinate = new GeoCoordinate(0.0, 0.0),  accuracyMeters: number = 100.0,  altitudeMeters: number = 0.0,  altitudeAccuracyMeters: number = 100.0,  headingFromNorth: number = 0.0,  speedMetersPerSecond: number = 0.0) {
+    public constructor(coordinate: GeoCoordinate = new GeoCoordinate(0.0, 0.0), accuracyMeters: number = 100.0, altitudeMeters: number = 0.0, altitudeAccuracyMeters: number = 100.0, headingFromNorth: number = 0.0, speedMetersPerSecond: number = 0.0) {
         this.coordinate = coordinate;
         this.accuracyMeters = accuracyMeters;
         this.altitudeMeters = altitudeMeters;
@@ -30,7 +30,7 @@ export class LocationResult {
         hash = 31 * hash + Math.floor(this.speedMetersPerSecond);
         return hash;
     }
-    public equals(other: any): boolean { return other instanceof LocationResult && (this.coordinate?.equals(other.coordinate) ?? false) && this.accuracyMeters === other.accuracyMeters && this.altitudeMeters === other.altitudeMeters && this.altitudeAccuracyMeters === other.altitudeAccuracyMeters && this.headingFromNorth === other.headingFromNorth && this.speedMetersPerSecond === other.speedMetersPerSecond }
+    public equals(other: any): boolean { return other instanceof LocationResult && (this.coordinate?.equals(other.coordinate) ?? other.coordinate === null) && this.accuracyMeters === other.accuracyMeters && this.altitudeMeters === other.altitudeMeters && this.altitudeAccuracyMeters === other.altitudeAccuracyMeters && this.headingFromNorth === other.headingFromNorth && this.speedMetersPerSecond === other.speedMetersPerSecond }
     public toString(): string { return `LocationResult(coordinate = ${this.coordinate}, accuracyMeters = ${this.accuracyMeters}, altitudeMeters = ${this.altitudeMeters}, altitudeAccuracyMeters = ${this.altitudeAccuracyMeters}, headingFromNorth = ${this.headingFromNorth}, speedMetersPerSecond = ${this.speedMetersPerSecond})` }
     public copy(coordinate: GeoCoordinate = this.coordinate, accuracyMeters: number = this.accuracyMeters, altitudeMeters: number = this.altitudeMeters, altitudeAccuracyMeters: number = this.altitudeAccuracyMeters, headingFromNorth: number = this.headingFromNorth, speedMetersPerSecond: number = this.speedMetersPerSecond) { return new LocationResult(coordinate, accuracyMeters, altitudeMeters, altitudeAccuracyMeters, headingFromNorth, speedMetersPerSecond); }
 }

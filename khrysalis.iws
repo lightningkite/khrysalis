@@ -2,36 +2,64 @@
 <project version="4">
   <component name="ChangeListManager">
     <list default="true" id="975a7880-5921-4347-b41e-aecac3ea78f3" name="Default Changelist" comment="">
+      <change afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testData/testCodable.shared.kt" afterDir="false" />
+      <change afterPath="$PROJECT_DIR$/web/typescript/net/jsonParsing.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/android/src/main/java/com/lightningkite/khrysalis/observables/CombineObservableProperty.shared.kt" beforeDir="false" afterPath="$PROJECT_DIR$/android/src/main/java/com/lightningkite/khrysalis/observables/CombineObservableProperty.shared.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/khrysalis.ipr" beforeDir="false" afterPath="$PROJECT_DIR$/khrysalis.ipr" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/khrysalis.iws" beforeDir="false" afterPath="$PROJECT_DIR$/khrysalis.iws" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-common/src/main/kotlin/com/lightningkite/khrysalis/util/analysisExtensions.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-common/src/main/kotlin/com/lightningkite/khrysalis/util/analysisExtensions.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/KotlinTypescriptCLP.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/KotlinTypescriptCLP.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/TypescriptTranslator.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/TypescriptTranslator.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/class.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/class.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/control.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/control.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/function.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/function.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/operators.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/operators.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/lambda.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/lambda.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/receiver.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/receiver.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/replacements/JacksonReplacementsModule.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/replacements/JacksonReplacementsModule.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/type.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/type.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/variable.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/src/main/kotlin/com/lightningkite/khrysalis/typescript/variable.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testData/Swift.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testData/Swift.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testData/testCollections.shared.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testData/testCollections.shared.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testData/testFunctions.shared.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testData/testFunctions.shared.kt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testData/testIfAndWhen.shared.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testData/testIfAndWhen.shared.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testData/testLambda.shared.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testData/testLambda.shared.kt" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testData/testVariables.shared.kt" beforeDir="false" afterPath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/testData/testVariables.shared.kt" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/plugin/src/main/resources/compiler-plugins/typescript.jar" beforeDir="false" afterPath="$PROJECT_DIR$/plugin/src/main/resources/compiler-plugins/typescript.jar" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/equivalents/list.ts.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/web/equivalents/list.ts.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/equivalents/primitives.ts.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/web/equivalents/primitives.ts.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/equivalents/rx.ts.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/rx/rx.ts.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/equivalents/string.ts.yaml" beforeDir="false" afterPath="$PROJECT_DIR$/web/equivalents/string.ts.yaml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/typescript/Codable.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/Codable.actual.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/typescript/Failable.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/Failable.shared.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/Image.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/Image.actual.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/Image.loadingRx.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/Image.loadingRx.actual.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/Image.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/Image.shared.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/Kotlin.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/Kotlin.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/Math.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/Math.shared.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/typescript/Preferences.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/Preferences.actual.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/typescript/SecurePreferences.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/SecurePreferences.actual.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/typescript/bluetooth/BleServer.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/bluetooth/BleServer.actual.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/typescript/bytes/ByteBuffer.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/bytes/ByteBuffer.actual.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/captureWeak.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/captureWeak.shared.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/typescript/delay.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/delay.actual.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/location/GeoAddress.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/location/GeoAddress.shared.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/typescript/location/GeoCoordinate.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/location/GeoCoordinate.actual.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/typescript/location/GeoCoordinate.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/location/GeoCoordinate.shared.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/location/Geocoding.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/location/Geocoding.actual.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/location/LocationResult.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/location/LocationResult.shared.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/location/ViewDependency.location.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/location/ViewDependency.location.actual.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/typescript/net/HttpBody.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/net/HttpBody.actual.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/net/HttpClient.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/net/HttpClient.actual.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/net/HttpClient.websocket.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/net/HttpClient.websocket.actual.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/typescript/net/HttpResponse.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/net/HttpResponse.actual.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/typescript/net/HttpResponseError.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/net/HttpResponseError.actual.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/net/RxHttpAssist.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/net/RxHttpAssist.actual.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/typescript/observables/Closeable.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/observables/Closeable.actual.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/observables/CombineObservableProperty.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/observables/CombineObservableProperty.shared.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/typescript/observables/ConstantObservableProperty.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/observables/ConstantObservableProperty.shared.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/typescript/observables/Event.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/observables/Event.actual.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/typescript/observables/Event.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/observables/Event.shared.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/typescript/observables/EventToObservableProperty.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/observables/EventToObservableProperty.actual.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/observables/EventToObservableProperty.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/observables/EventToObservableProperty.shared.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/observables/FlatMappedObservableProperty.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/observables/FlatMappedObservableProperty.shared.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/observables/ObservableProperty.ext.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/observables/ObservableProperty.ext.shared.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/typescript/observables/ObservableProperty.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/observables/ObservableProperty.shared.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/observables/ObservableStack.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/observables/ObservableStack.shared.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/observables/ReferenceObservableProperty.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/observables/ReferenceObservableProperty.shared.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/observables/StandardObservableProperty.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/observables/StandardObservableProperty.shared.ts" afterDir="false" />
@@ -42,26 +70,37 @@
       <change beforePath="$PROJECT_DIR$/web/typescript/observables/binding/AutoCompleteTextView.binding.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/observables/binding/AutoCompleteTextView.binding.actual.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/observables/binding/Button.binding.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/observables/binding/Button.binding.actual.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/observables/binding/CompoundButton.binding.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/observables/binding/CompoundButton.binding.actual.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/typescript/observables/binding/DateButton.binding.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/observables/binding/DateButton.binding.actual.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/observables/binding/EditText.binding.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/observables/binding/EditText.binding.actual.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/observables/binding/ImageView.binding.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/observables/binding/ImageView.binding.actual.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/observables/binding/LinearLayout.binding.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/observables/binding/LinearLayout.binding.shared.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/typescript/observables/binding/PageIndicatorView.binding.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/observables/binding/PageIndicatorView.binding.actual.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/observables/binding/RatingBar.binding.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/observables/binding/RatingBar.binding.actual.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/observables/binding/RecyclerView.binding.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/observables/binding/RecyclerView.binding.actual.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/observables/binding/SeekBar.binding.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/observables/binding/SeekBar.binding.actual.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/observables/binding/Spinner.binding.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/observables/binding/Spinner.binding.actual.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/observables/binding/SwapView.binding.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/observables/binding/SwapView.binding.actual.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/typescript/observables/binding/TabLayout.binding.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/observables/binding/TabLayout.binding.actual.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/observables/binding/TextView.binding.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/observables/binding/TextView.binding.actual.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/typescript/observables/binding/View.binding.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/observables/binding/View.binding.actual.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/observables/binding/ViewFlipper.binding.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/observables/binding/ViewFlipper.binding.actual.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/typescript/observables/binding/ViewPager.binding.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/observables/binding/ViewPager.binding.actual.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/observables/binding/serves.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/observables/binding/serves.shared.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/rx/DisposeCondition.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/rx/DisposeCondition.shared.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/typescript/rx/RxActual.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/rx/RxActual.actual.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/rx/RxAddAndRunWeak.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/rx/RxAddAndRunWeak.shared.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/typescript/rx/RxExtensions.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/rx/RxExtensions.actual.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/time/Date.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/time/Date.actual.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/time/DateAlone.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/time/DateAlone.actual.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/typescript/time/DateAlone.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/time/DateAlone.shared.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/time/TimeAlone.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/time/TimeAlone.actual.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/time/TimeAlone.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/time/TimeAlone.shared.ts" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/web/typescript/time/TimeNames.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/time/TimeNames.actual.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/typescript/time/TimeInterval.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/time/TimeInterval.actual.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/typescript/views/Button.compoundDrawable.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/views/Button.compoundDrawable.actual.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/typescript/views/Colors.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/views/Colors.actual.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/views/CustomView.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/views/CustomView.actual.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/views/DjangoErrorTranslator.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/views/DjangoErrorTranslator.shared.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/typescript/views/EntryPoint.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/views/EntryPoint.shared.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/views/Form.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/views/Form.shared.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/views/LinearLayout.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/views/LinearLayout.actual.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/views/MonthCVD.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/views/MonthCVD.shared.ts" afterDir="false" />
@@ -71,8 +110,11 @@
       <change beforePath="$PROJECT_DIR$/web/typescript/views/Strings.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/views/Strings.shared.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/views/View.ext.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/views/View.ext.actual.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/views/ViewDependency.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/views/ViewDependency.actual.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/typescript/views/ViewWithText.ext.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/views/ViewWithText.ext.actual.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/views/draw/Canvas.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/views/draw/Canvas.actual.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/typescript/views/draw/Paint.actual.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/views/draw/Paint.actual.ts" afterDir="false" />
       <change beforePath="$PROJECT_DIR$/web/typescript/views/geometry/Align.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/views/geometry/Align.shared.ts" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/web/typescript/views/showDialog.shared.ts" beforeDir="false" afterPath="$PROJECT_DIR$/web/typescript/views/showDialog.shared.ts" afterDir="false" />
     </list>
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
@@ -267,6 +309,7 @@
   </component>
   <component name="RecentsManager">
     <key name="MoveFile.RECENT_KEYS">
+      <recent name="$PROJECT_DIR$/web/typescript/rx" />
       <recent name="$PROJECT_DIR$/web/typescript" />
     </key>
     <key name="CopyFile.RECENT_KEYS">
@@ -417,9 +460,9 @@
     <recent_temporary>
       <list>
         <item itemvalue="Gradle.khrysalis:kotlin-compiler-plugin-typescript [test]" />
+        <item itemvalue="Gradle.khrysalis:android [khrysalisConvertKotlinToTypescript]" />
         <item itemvalue="Gradle.khrysalis:plugin [publishToMavenLocal]" />
         <item itemvalue="Gradle.khrysalis:kotlin-compiler-plugin-typescript [jar]" />
-        <item itemvalue="Gradle.khrysalis:android [khrysalisConvertKotlinToTypescript]" />
         <item itemvalue="npm.build" />
       </list>
     </recent_temporary>
@@ -442,7 +485,8 @@
       <workItem from="1589391205326" duration="2566000" />
       <workItem from="1589398166314" duration="5468000" />
       <workItem from="1589403668425" duration="12888000" />
-      <workItem from="1589424786346" duration="31460000" />
+      <workItem from="1589424786346" duration="50081000" />
+      <workItem from="1589582176721" duration="7529000" />
     </task>
     <task id="LOCAL-00001" summary="A lot of RX support">
       <created>1589310416385</created>
@@ -493,7 +537,14 @@
       <option name="project" value="LOCAL" />
       <updated>1589518008407</updated>
     </task>
-    <option name="localTasksCounter" value="8" />
+    <task id="LOCAL-00008" summary="Fixed variable retrieval with nulls">
+      <created>1589522403861</created>
+      <option name="number" value="00008" />
+      <option name="presentableId" value="LOCAL-00008" />
+      <option name="project" value="LOCAL" />
+      <updated>1589522403861</updated>
+    </task>
+    <option name="localTasksCounter" value="9" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -527,10 +578,10 @@
       <screen x="1920" y="0" width="3840" height="2127" />
     </state>
     <state x="3481" y="841" width="708" height="451" key="#org.jetbrains.kotlin.idea.refactoring.move.moveDeclarations.ui.MoveKotlinTopLevelDeclarationsDialog/0.0.1920.1080/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589411616399" />
-    <state x="1920" y="614" width="1036" height="886" key="CommitChangelistDialog2" timestamp="1589518007897">
+    <state x="1920" y="614" width="1036" height="886" key="CommitChangelistDialog2" timestamp="1589522403546">
       <screen x="1920" y="0" width="3840" height="2127" />
     </state>
-    <state x="1920" y="614" width="1036" height="886" key="CommitChangelistDialog2/0.0.1920.1080/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589518007897" />
+    <state x="1920" y="614" width="1036" height="886" key="CommitChangelistDialog2/0.0.1920.1080/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589522403546" />
     <state x="1920" y="624" width="1037" height="886" key="CommitChangelistDialog2/0.0.1920.1080/1920.0.4096.2160@1920.0.4096.2160" timestamp="1589322353848" />
     <state x="2020" y="100" width="2450" height="1927" key="DiffContextDialog" timestamp="1589502403606">
       <screen x="1920" y="0" width="3840" height="2127" />
@@ -540,52 +591,60 @@
       <screen x="1920" y="0" width="4096" height="2160" />
     </state>
     <state x="2278" y="765" width="424" height="604" key="FileChooserDialogImpl/0.0.1920.1080/1920.0.4096.2160@1920.0.4096.2160" timestamp="1589320310256" />
-    <state width="2608" height="857" key="GridCell.Tab.0.bottom" timestamp="1589521911121">
-      <screen x="1920" y="0" width="3840" height="2127" />
+    <state width="2206" height="573" key="GridCell.Tab.0.bottom" timestamp="1589589902617">
+      <screen x="1920" y="0" width="1920" height="2127" />
     </state>
     <state width="1878" height="367" key="GridCell.Tab.0.bottom/0.0.1920.1080/1920.0.3840.2127@0.0.1920.1080" timestamp="1589403649830" />
-    <state width="2608" height="857" key="GridCell.Tab.0.bottom/0.0.1920.1080/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589521911121" />
-    <state width="2966" height="857" key="GridCell.Tab.0.bottom/0.0.1920.1080/1920.0.3840.2160@1920.0.3840.2160" timestamp="1589489977769" />
+    <state width="2608" height="857" key="GridCell.Tab.0.bottom/0.0.1920.1080/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589522417582" />
+    <state width="2196" height="573" key="GridCell.Tab.0.bottom/0.0.1920.1080/1920.0.3840.2160@1920.0.3840.2160" timestamp="1589582055472" />
     <state width="2647" height="631" key="GridCell.Tab.0.bottom/0.0.1920.1080/1920.0.4096.2160@1920.0.4096.2160" timestamp="1589320221651" />
     <state width="1878" height="367" key="GridCell.Tab.0.bottom/0.27.1920.1020@0.27.1920.1020" timestamp="1589391629097" />
     <state width="3798" height="367" key="GridCell.Tab.0.bottom/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589398143088" />
-    <state width="2608" height="857" key="GridCell.Tab.0.center" timestamp="1589521911121">
-      <screen x="1920" y="0" width="3840" height="2127" />
+    <state width="2186" height="573" key="GridCell.Tab.0.bottom/3840.1080.1920.1080/0.0.3840.2127@0.0.3840.2127" timestamp="1589585738103" />
+    <state width="2206" height="573" key="GridCell.Tab.0.bottom/3840.1080.1920.1080/1920.0.1920.2127@1920.0.1920.2127" timestamp="1589589902617" />
+    <state width="2206" height="573" key="GridCell.Tab.0.center" timestamp="1589589902617">
+      <screen x="1920" y="0" width="1920" height="2127" />
     </state>
     <state width="1878" height="367" key="GridCell.Tab.0.center/0.0.1920.1080/1920.0.3840.2127@0.0.1920.1080" timestamp="1589403649829" />
-    <state width="2608" height="857" key="GridCell.Tab.0.center/0.0.1920.1080/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589521911121" />
-    <state width="2966" height="857" key="GridCell.Tab.0.center/0.0.1920.1080/1920.0.3840.2160@1920.0.3840.2160" timestamp="1589489977769" />
+    <state width="2608" height="857" key="GridCell.Tab.0.center/0.0.1920.1080/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589522417582" />
+    <state width="2196" height="573" key="GridCell.Tab.0.center/0.0.1920.1080/1920.0.3840.2160@1920.0.3840.2160" timestamp="1589582055472" />
     <state width="2647" height="631" key="GridCell.Tab.0.center/0.0.1920.1080/1920.0.4096.2160@1920.0.4096.2160" timestamp="1589320221651" />
     <state width="1878" height="367" key="GridCell.Tab.0.center/0.27.1920.1020@0.27.1920.1020" timestamp="1589391629096" />
     <state width="3798" height="367" key="GridCell.Tab.0.center/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589398143088" />
-    <state width="2608" height="857" key="GridCell.Tab.0.left" timestamp="1589521911121">
-      <screen x="1920" y="0" width="3840" height="2127" />
+    <state width="2186" height="573" key="GridCell.Tab.0.center/3840.1080.1920.1080/0.0.3840.2127@0.0.3840.2127" timestamp="1589585738103" />
+    <state width="2206" height="573" key="GridCell.Tab.0.center/3840.1080.1920.1080/1920.0.1920.2127@1920.0.1920.2127" timestamp="1589589902617" />
+    <state width="2206" height="573" key="GridCell.Tab.0.left" timestamp="1589589902617">
+      <screen x="1920" y="0" width="1920" height="2127" />
     </state>
     <state width="1878" height="367" key="GridCell.Tab.0.left/0.0.1920.1080/1920.0.3840.2127@0.0.1920.1080" timestamp="1589403649829" />
-    <state width="2608" height="857" key="GridCell.Tab.0.left/0.0.1920.1080/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589521911121" />
-    <state width="2966" height="857" key="GridCell.Tab.0.left/0.0.1920.1080/1920.0.3840.2160@1920.0.3840.2160" timestamp="1589489977768" />
+    <state width="2608" height="857" key="GridCell.Tab.0.left/0.0.1920.1080/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589522417581" />
+    <state width="2196" height="573" key="GridCell.Tab.0.left/0.0.1920.1080/1920.0.3840.2160@1920.0.3840.2160" timestamp="1589582055471" />
     <state width="2647" height="631" key="GridCell.Tab.0.left/0.0.1920.1080/1920.0.4096.2160@1920.0.4096.2160" timestamp="1589320221651" />
     <state width="1878" height="367" key="GridCell.Tab.0.left/0.27.1920.1020@0.27.1920.1020" timestamp="1589391629096" />
     <state width="3798" height="367" key="GridCell.Tab.0.left/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589398143087" />
-    <state width="2608" height="857" key="GridCell.Tab.0.right" timestamp="1589521911121">
-      <screen x="1920" y="0" width="3840" height="2127" />
+    <state width="2186" height="573" key="GridCell.Tab.0.left/3840.1080.1920.1080/0.0.3840.2127@0.0.3840.2127" timestamp="1589585738102" />
+    <state width="2206" height="573" key="GridCell.Tab.0.left/3840.1080.1920.1080/1920.0.1920.2127@1920.0.1920.2127" timestamp="1589589902617" />
+    <state width="2206" height="573" key="GridCell.Tab.0.right" timestamp="1589589902617">
+      <screen x="1920" y="0" width="1920" height="2127" />
     </state>
     <state width="1878" height="367" key="GridCell.Tab.0.right/0.0.1920.1080/1920.0.3840.2127@0.0.1920.1080" timestamp="1589403649829" />
-    <state width="2608" height="857" key="GridCell.Tab.0.right/0.0.1920.1080/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589521911121" />
-    <state width="2966" height="857" key="GridCell.Tab.0.right/0.0.1920.1080/1920.0.3840.2160@1920.0.3840.2160" timestamp="1589489977769" />
+    <state width="2608" height="857" key="GridCell.Tab.0.right/0.0.1920.1080/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589522417582" />
+    <state width="2196" height="573" key="GridCell.Tab.0.right/0.0.1920.1080/1920.0.3840.2160@1920.0.3840.2160" timestamp="1589582055472" />
     <state width="2647" height="631" key="GridCell.Tab.0.right/0.0.1920.1080/1920.0.4096.2160@1920.0.4096.2160" timestamp="1589320221651" />
     <state width="1878" height="367" key="GridCell.Tab.0.right/0.27.1920.1020@0.27.1920.1020" timestamp="1589391629097" />
     <state width="3798" height="367" key="GridCell.Tab.0.right/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589398143088" />
+    <state width="2186" height="573" key="GridCell.Tab.0.right/3840.1080.1920.1080/0.0.3840.2127@0.0.3840.2127" timestamp="1589585738103" />
+    <state width="2206" height="573" key="GridCell.Tab.0.right/3840.1080.1920.1080/1920.0.1920.2127@1920.0.1920.2127" timestamp="1589589902617" />
     <state x="116" y="0" width="1804" height="1080" key="SettingsEditor" timestamp="1589485264923">
       <screen x="0" y="0" width="1920" height="1080" />
     </state>
     <state x="116" y="0" width="1804" height="1080" key="SettingsEditor/0.0.1920.1080/1920.0.3840.2160@1920.0.3840.2160" timestamp="1589485264923" />
     <state x="396" y="202" width="902" height="735" key="SettingsEditor/0.0.1920.1080/1920.0.4096.2160@0.0.1920.1080" timestamp="1589240569426" />
     <state x="792" y="398" width="992" height="737" key="SettingsEditor/4096.1080.1920.1080/0.0.3840.2127@0.0.3840.2127" timestamp="1589240343610" />
-    <state x="1977" y="787" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1589518009773">
+    <state x="1977" y="787" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1589522405271">
       <screen x="1920" y="0" width="3840" height="2127" />
     </state>
-    <state x="1977" y="787" width="800" height="535" key="Vcs.Push.Dialog.v2/0.0.1920.1080/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589518009773" />
+    <state x="1977" y="787" width="800" height="535" key="Vcs.Push.Dialog.v2/0.0.1920.1080/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589522405271" />
     <state x="1981" y="799" width="800" height="535" key="Vcs.Push.Dialog.v2/0.0.1920.1080/1920.0.4096.2160@1920.0.4096.2160" timestamp="1589322356264" />
     <state x="3639" y="844" width="392" height="446" key="chooseDestDirectoryDialog" timestamp="1589411854318">
       <screen x="1920" y="0" width="3840" height="2127" />
@@ -595,11 +654,11 @@
       <screen x="1920" y="0" width="4096" height="2160" />
     </state>
     <state x="2099" y="794" width="669" height="552" key="com.intellij.openapi.vcs.changes.SpecificFilesViewDialog/0.0.1920.1080/1920.0.4096.2160@1920.0.4096.2160" timestamp="1589322350910" />
-    <state x="2187" y="669" width="869" height="768" key="find.popup" timestamp="1589520065708">
-      <screen x="1920" y="0" width="3840" height="2127" />
+    <state x="2187" y="679" width="869" height="780" key="find.popup" timestamp="1589579508438">
+      <screen x="1920" y="0" width="3840" height="2160" />
     </state>
     <state x="2187" y="669" width="869" height="768" key="find.popup/0.0.1920.1080/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589520065708" />
-    <state x="2187" y="679" width="869" height="780" key="find.popup/0.0.1920.1080/1920.0.3840.2160@1920.0.3840.2160" timestamp="1589476168015" />
+    <state x="2187" y="679" width="869" height="780" key="find.popup/0.0.1920.1080/1920.0.3840.2160@1920.0.3840.2160" timestamp="1589579508438" />
     <state x="2205" y="679" width="581" height="768" key="find.popup/0.0.1920.1080/1920.0.4096.2160@1920.0.4096.2160" timestamp="1589316226507" />
     <state x="2187" y="669" width="800" height="768" key="find.popup/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589397615705" />
     <state x="3087" y="837" width="306" height="460" key="refactoring.ChangeSignatureDialog" timestamp="1589502385326">
@@ -610,14 +669,15 @@
       <screen x="1920" y="0" width="4096" height="2160" />
     </state>
     <state x="2050" y="507" width="672" height="677" key="run.anything.popup/0.0.1920.1080/1920.0.4096.2160@1920.0.4096.2160" timestamp="1589312635611" />
-    <state x="2872" y="483" width="1345" height="680" key="search.everywhere.popup" timestamp="1589520336508">
-      <screen x="1920" y="0" width="3840" height="2127" />
+    <state x="212" y="610" width="1345" height="681" key="search.everywhere.popup" timestamp="1589585559021">
+      <screen x="0" y="0" width="3840" height="2127" />
     </state>
     <state x="2872" y="483" width="1345" height="680" key="search.everywhere.popup/0.0.1920.1080/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589520336508" />
-    <state x="2132" y="619" width="1345" height="691" key="search.everywhere.popup/0.0.1920.1080/1920.0.3840.2160@1920.0.3840.2160" timestamp="1589489866575" />
+    <state x="2132" y="619" width="1345" height="691" key="search.everywhere.popup/0.0.1920.1080/1920.0.3840.2160@1920.0.3840.2160" timestamp="1589581612208" />
     <state x="476" y="245" width="672" height="345" key="search.everywhere.popup/0.0.1920.1080/1920.0.4096.2160@0.0.1920.1080" timestamp="1589240555152" />
     <state x="2935" y="490" width="1434" height="690" key="search.everywhere.popup/0.0.1920.1080/1920.0.4096.2160@1920.0.4096.2160" timestamp="1589317386328" />
     <state x="476" y="259" width="673" height="327" key="search.everywhere.popup/0.27.1920.1020@0.27.1920.1020" timestamp="1589391333475" />
+    <state x="212" y="610" width="1345" height="681" key="search.everywhere.popup/3840.1080.1920.1080/0.0.3840.2127@0.0.3840.2127" timestamp="1589585559021" />
     <state x="951" y="482" width="672" height="678" key="search.everywhere.popup/4096.1080.1920.1080/0.0.3840.2127@0.0.3840.2127" timestamp="1589240295824" />
   </component>
 </project>

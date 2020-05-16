@@ -10,6 +10,7 @@ import org.jetbrains.kotlin.builtins.functions.FunctionClassDescriptor
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.descriptors.TypeAliasDescriptor
+import org.jetbrains.kotlin.descriptors.TypeParameterDescriptor
 import org.jetbrains.kotlin.descriptors.leastPermissiveDescriptor
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.lexer.KtModifierKeywordToken
@@ -43,6 +44,7 @@ private val primitiveTypes = setOf(
 
 fun KotlinType.isPrimitive() = getJetTypeFqName(false) in primitiveTypes
 data class BasicType(val type: KotlinType)
+data class CompleteReflectableType(val type: KotlinType)
 data class KtUserTypeBasic(val type: KtUserType)
 
 fun TypescriptTranslator.registerType() {
@@ -108,6 +110,9 @@ fun TypescriptTranslator.registerType() {
 
     handle<BasicType> {
         when (val desc = typedRule.type.constructor.declarationDescriptor) {
+            null -> {
+                -"/*null type*/any"
+            }
             is ClassDescriptor -> {
                 var current: ClassDescriptor = desc
                 val items = ArrayList<ClassDescriptor>()
@@ -122,7 +127,23 @@ fun TypescriptTranslator.registerType() {
                     -item.name.asString()
                 }
             }
+            is TypeParameterDescriptor -> {
+                -desc.name.asString()
+            }
+            else -> {
+                -"/*${desc::class.java}*/"
+            }
         }
+    }
+
+    handle<CompleteReflectableType> {
+        -"["
+        -BasicType(typedRule.type)
+        typedRule.type.arguments.forEach {
+            -", "
+            -CompleteReflectableType(it.type)
+        }
+        -"]"
     }
 
     handle<KtNullableType> {
@@ -228,7 +249,7 @@ fun TypescriptTranslator.registerType() {
     handle<KtFunctionType> {
         -"("
         var currentNameChar = 'a'
-        typedRule.parameters.forEachBetween(
+        listOfNotNull(typedRule.receiverTypeReference?.let { null to it }).plus(typedRule.parameters.map { it.nameIdentifier to it.typeReference }).forEachBetween(
             forItem = {
                 var nextChar = currentNameChar++
                 while (typedRule.parameters.any {
@@ -237,9 +258,9 @@ fun TypescriptTranslator.registerType() {
                     }) {
                     nextChar = currentNameChar++
                 }
-                -(it.nameIdentifier ?: nextChar.toString())
+                -(it.first ?: nextChar.toString())
                 -": "
-                -it.typeReference
+                -it.second
             },
             between = { -", " }
         )
@@ -283,6 +304,20 @@ fun TypescriptTranslator.registerType() {
             replacements.getTypeRef(typedRule.type) != null
         },
         priority = 10_000,
+        action = {
+            val type = typedRule.type
+            val rule = replacements.getTypeRef(type)!!
+            val baseType = type.constructor
+            emitTemplate(
+                template = rule.template
+            )
+        }
+    )
+    handle<BasicType>(
+        condition = {
+            replacements.getType(typedRule.type) != null
+        },
+        priority = 9_000,
         action = {
             val type = typedRule.type
             val rule = replacements.getType(type)!!

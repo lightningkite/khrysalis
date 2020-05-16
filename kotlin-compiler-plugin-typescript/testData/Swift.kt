@@ -10,6 +10,8 @@ typealias Hashable = Any
 typealias Equatable = Any
 typealias SomeEnum = Enum<*>
 
+interface Codable {}
+
 @Target(AnnotationTarget.TYPE)
 annotation class escaping
 

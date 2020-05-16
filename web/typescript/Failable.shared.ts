@@ -13,7 +13,7 @@
 export class Failable<T> {
     public readonly result: (T | null);
     public readonly issue: (string | null);
-    public constructor( result: (T | null) = null,  issue: (string | null) = null) {
+    public constructor(result: (T | null) = null, issue: (string | null) = null) {
         this.result = result;
         this.issue = issue;
     }

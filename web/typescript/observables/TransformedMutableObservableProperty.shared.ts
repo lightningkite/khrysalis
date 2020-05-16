@@ -11,19 +11,16 @@
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty.update TS update
 // FQImport: com.lightningkite.khrysalis.observables.TransformedMutableObservableProperty.<set-value>.value TS value
 // FQImport: com.lightningkite.khrysalis.observables.transformed.read TS read
-// FQImport: com.lightningkite.khrysalis.boxWrap TS boxWrap
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty.onChange TS onChange
 // FQImport: com.lightningkite.khrysalis.observables.map.read TS read
 // FQImport: com.lightningkite.khrysalis.observables.TransformedMutableObservableProperty.A TS A
 // FQImport: com.lightningkite.khrysalis.observables.TransformedMutableObservableProperty.write TS write
-// FQImport: com.lightningkite.khrysalis.Box.value TS value
 // FQImport: com.lightningkite.khrysalis.observables.map.write TS write
 // FQImport: com.lightningkite.khrysalis.observables.transformed.write TS write
 // FQImport: com.lightningkite.khrysalis.observables.TransformedMutableObservableProperty.onChange.<anonymous>.it TS it
 // FQImport: com.lightningkite.khrysalis.observables.transformed.B TS B
 // FQImport: com.lightningkite.khrysalis.observables.map.B TS B
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty TS MutableObservableProperty
-// FQImport: com.lightningkite.khrysalis.Box TS Box
 // FQImport: com.lightningkite.khrysalis.observables.TransformedMutableObservableProperty TS TransformedMutableObservableProperty
 import { Observable } from 'rxjs'
 import { map as rxMap } from 'rxjs/operators'
@@ -34,12 +31,12 @@ export class TransformedMutableObservableProperty<A, B> extends MutableObservabl
     public readonly basedOn: MutableObservableProperty<A>;
     public readonly read:  (a: A) => B;
     public readonly write:  (a: B) => A;
-    public constructor( basedOn: MutableObservableProperty<A>,  read:  (a: A) => B,  write:  (a: B) => A) {
+    public constructor(basedOn: MutableObservableProperty<A>, read:  (a: A) => B, write:  (a: B) => A) {
         super();
         this.basedOn = basedOn;
         this.read = read;
         this.write = write;
-        this.onChange = rxMap((it) => boxWrap(this.read(it.value)))(this.basedOn.onChange);
+        this.onChange = this.basedOn.onChange.pipe(rxMap((it) => this.read(it)));
     }
     
     public update(){
@@ -47,27 +44,25 @@ export class TransformedMutableObservableProperty<A, B> extends MutableObservabl
     }
     
     //! Declares com.lightningkite.khrysalis.observables.TransformedMutableObservableProperty.value
-    public get value(): B { return {
-            return this.read(this.basedOn.value);
-    }; }{
+    public get value(): B {
         return this.read(this.basedOn.value);
     }
     public set value(value: B) {
         this.basedOn.value = this.write(value);
     }
     
-    public readonly onChange: Observable<Box<B>> = rxMap((it) => boxWrap(this.read(it.value)))(this.basedOn.onChange);
+    public readonly onChange: Observable<B> = this.basedOn.onChange.pipe(rxMap((it) => this.read(it)));
     
 }
 
 
 //! Declares com.lightningkite.khrysalis.observables.transformed
-export function comLightningkiteKhrysalisObservablesMutableObservablePropertyTransformed<T, B>(this_Transformed: MutableObservableProperty<T>, read:  (a: T) => B, write:  (a: B) => T): MutableObservableProperty<B>{
-    return new TransformedMutableObservableProperty<T, B>(this_Transformed, read, write);
+export function comLightningkiteKhrysalisObservablesMutableObservablePropertyTransformed<T, B>(this_: MutableObservableProperty<T>, read:  (a: T) => B, write:  (a: B) => T): MutableObservableProperty<B>{
+    return new TransformedMutableObservableProperty<T, B>(this_, read, write);
 }
 
 //! Declares com.lightningkite.khrysalis.observables.map
-export function comLightningkiteKhrysalisObservablesMutableObservablePropertyMap<T, B>(this_Map: MutableObservableProperty<T>, read:  (a: T) => B, write:  (a: B) => T): MutableObservableProperty<B>{
-    return new TransformedMutableObservableProperty<T, B>(this_Map, read, write);
+export function comLightningkiteKhrysalisObservablesMutableObservablePropertyMap<T, B>(this_: MutableObservableProperty<T>, read:  (a: T) => B, write:  (a: B) => T): MutableObservableProperty<B>{
+    return new TransformedMutableObservableProperty<T, B>(this_, read, write);
 }
 

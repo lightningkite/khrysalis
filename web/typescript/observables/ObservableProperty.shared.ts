@@ -2,7 +2,6 @@
 // File: observables/ObservableProperty.shared.kt
 // Package: com.lightningkite.khrysalis.observables
 // FQImport: com.lightningkite.khrysalis.observables.ObservableProperty.T TS T
-// FQImport: com.lightningkite.khrysalis.Box TS Box
 import { Observable } from 'rxjs'
 
 //! Declares com.lightningkite.khrysalis.observables.ObservableProperty
@@ -10,7 +9,7 @@ export abstract class ObservableProperty<T> {
     
     public readonly value: T;
     
-    public readonly onChange: Observable<Box<T>>;
+    public readonly onChange: Observable<T>;
     
 }
 

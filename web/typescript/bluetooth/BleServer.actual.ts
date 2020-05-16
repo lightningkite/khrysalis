@@ -10,7 +10,7 @@ export let RequestId = Number;
 //! Declares com.lightningkite.khrysalis.bluetooth.BleResponseStatus
 export class BleResponseStatus {
     public readonly value: number;
-    private constructor(name: string,  value: number) {
+    private constructor(name: string, value: number) {
         this.name = name;
         this.value = value;
     }

@@ -7,6 +7,14 @@
   type: type
   template: string
 
+- id: kotlin.Char
+  type: typeRef
+  template: String
+
+- id: kotlin.String
+  type: typeRef
+  template: String
+
 - id: kotlin.String.plus
   type: call
   infix: true

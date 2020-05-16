@@ -12,7 +12,7 @@ import { HttpResponse, getOkhttp3ResponseCode } from './HttpResponse.actual'
 //! Declares com.lightningkite.khrysalis.net.HttpResponseException
 export class HttpResponseException extends Exception {
     public readonly response: HttpResponse;
-    public constructor( response: HttpResponse, cause: (Throwable | null) = null) {
+    public constructor(response: HttpResponse, cause: (Throwable | null) = null) {
         super(`Got code ${getOkhttp3ResponseCode(response)}`, cause);
         this.response = response;
     }

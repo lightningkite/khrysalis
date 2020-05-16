@@ -25,6 +25,31 @@
   type: type
   template: any
 
+- id: kotlin.Nothing
+  type: typeRef
+  template: "null"
+- id: kotlin.Unit
+  type: typeRef
+  template: "null"
+- id: kotlin.Any
+  type: typeRef
+  template: "null"
+- id: com.lightningkite.khrysalis.AnyObject
+  type: typeRef
+  template: Object
+- id: com.lightningkite.khrysalis.AnyHashable
+  type: typeRef
+  template: "null"
+- id: com.lightningkite.khrysalis.Hashable
+  type: typeRef
+  template: Object
+- id: com.lightningkite.khrysalis.Equatable
+  type: typeRef
+  template: Object
+- id: com.lightningkite.khrysalis.SomeEnum
+  type: typeRef
+  template: "null"
+
 # Primitive Equality
 
 - id: kotlin.Byte.equals

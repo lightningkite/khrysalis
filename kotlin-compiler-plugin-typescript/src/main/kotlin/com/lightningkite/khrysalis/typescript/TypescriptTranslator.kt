@@ -35,7 +35,7 @@ class TypescriptTranslator(
     val receiverStack: List<ReceiverAssignment> get() = _receiverStack
     inline fun withReceiverScope(
         fqName: String,
-        suggestedName: String = "this_${fqName.substringAfterLast('.').capitalize()}",
+        suggestedName: String = "this_",
         action: (newIdentifier: String) -> Unit
     ) {
         var currentNumber = 0

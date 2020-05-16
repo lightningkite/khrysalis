@@ -2,6 +2,12 @@ package com.test.lambda
 
 class TestClass {
     var item: Int = 0
+    fun test(action: ()->Unit){
+        action()
+    }
+    fun testRec(action: Int.()->Unit){
+        2.action()
+    }
 }
 
 fun main(){

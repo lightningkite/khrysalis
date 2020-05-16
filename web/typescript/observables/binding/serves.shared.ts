@@ -8,7 +8,6 @@
 // FQImport: com.lightningkite.khrysalis.observables.binding.serves.T TS T
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty.onChange TS onChange
 // FQImport: com.lightningkite.khrysalis.rx.DisposeCondition TS DisposeCondition
-// FQImport: com.lightningkite.khrysalis.Box.value TS value
 // FQImport: com.lightningkite.khrysalis.rx.addWeak TS ioReactivexObservableAddWeak
 // FQImport: com.lightningkite.khrysalis.observables.binding.serves.whilePresent TS whilePresent
 // FQImport: com.lightningkite.khrysalis.observables.binding.serves.suppress TS suppress
@@ -22,41 +21,41 @@ import { getComLightningkiteKhrysalisObservablesObservablePropertyObservable } f
 import { DisposeCondition } from './../../rx/DisposeCondition.shared'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.serves
-export function comLightningkiteKhrysalisObservablesMutableObservablePropertyServes<T>(this_Serves: MutableObservableProperty<T>, whilePresent: object, other: MutableObservableProperty<T>){
+export function comLightningkiteKhrysalisObservablesMutableObservablePropertyServes<T>(this_: MutableObservableProperty<T>, whilePresent: object, other: MutableObservableProperty<T>){
     
     let suppress = false;
     
     
-    ioReactivexObservableAddWeak(getComLightningkiteKhrysalisObservablesObservablePropertyObservable(other), whilePresent, (ignored, value) => (() => {if (suppress.not()) {
-                    suppress = true;
-                    this_Serves.value = value.value;
-                    suppress = false;
-    }})());
+    ioReactivexObservableAddWeak(getComLightningkiteKhrysalisObservablesObservablePropertyObservable(other), whilePresent, (ignored, value) => if (suppress.not()) {
+            suppress = true;
+            this_.value = value;
+            suppress = false;
+    });
     
-    return ioReactivexObservableAddWeak(this_Serves.onChange, whilePresent, (ignored, value) => (() => {if (suppress.not()) {
-                    suppress = true;
-                    other.value = value.value;
-                    suppress = false;
-    }})());
+    ioReactivexObservableAddWeak(this_.onChange, whilePresent, (ignored, value) => if (suppress.not()) {
+            suppress = true;
+            other.value = value;
+            suppress = false;
+    });
 }
 
 //! Declares com.lightningkite.khrysalis.observables.binding.serves
-export function comLightningkiteKhrysalisObservablesMutableObservablePropertyServes<T>(this_Serves: MutableObservableProperty<T>, until: DisposeCondition, other: MutableObservableProperty<T>){
+export function comLightningkiteKhrysalisObservablesMutableObservablePropertyServes<T>(this_: MutableObservableProperty<T>, until: DisposeCondition, other: MutableObservableProperty<T>){
     
     let suppress = false;
     
     
-    ioReactivexDisposablesDisposableUntil(getComLightningkiteKhrysalisObservablesObservablePropertyObservable(other).subscribe(undefined, (value) => (() => {if (suppress.not()) {
-                        suppress = true;
-                        this_Serves.value = value.value;
-                        suppress = false;
-    }})(), undefined), until);
+    ioReactivexDisposablesDisposableUntil(getComLightningkiteKhrysalisObservablesObservablePropertyObservable(other).subscribe(undefined, (value) => if (suppress.not()) {
+                suppress = true;
+                this_.value = value;
+                suppress = false;
+    }, undefined), until);
     
-    return ioReactivexDisposablesDisposableUntil(this_Serves.onChange.subscribe(undefined, (value) => (() => {if (suppress.not()) {
-                        suppress = true;
-                        other.value = value.value;
-                        suppress = false;
-    }})(), undefined), until);
+    ioReactivexDisposablesDisposableUntil(this_.onChange.subscribe(undefined, (value) => if (suppress.not()) {
+                suppress = true;
+                other.value = value;
+                suppress = false;
+    }, undefined), until);
 }
 
 

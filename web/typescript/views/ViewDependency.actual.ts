@@ -146,7 +146,6 @@
 // FQImport: cacheDir TS getAndroidContentContextCacheDir
 // FQImport: android.content.ClipData.getItemAt TS getItemAt
 // FQImport: com.lightningkite.khrysalis.Uri TS Uri
-// FQImport: kotlin.collections.MutableList.size TS size
 // FQImport: android.content.pm.PackageManager.getLaunchIntentForPackage TS getLaunchIntentForPackage
 // FQImport: com.lightningkite.khrysalis.views.share.i TS i
 // FQImport: android.content.Intent.ACTION_PICK TS ACTION_PICK
@@ -184,186 +183,188 @@ export let ViewDependency = ActivityAccess;
 
 
 //! Declares com.lightningkite.khrysalis.views.getString
-export function comLightningkiteKhrysalisAndroidActivityAccessGetString(this_GetString: ViewDependency, resource: StringResource): string{ return this_GetString.context.getString(resource); }
+export function comLightningkiteKhrysalisAndroidActivityAccessGetString(this_: ViewDependency, resource: StringResource): string{ return this_.context.getString(resource); }
 //! Declares com.lightningkite.khrysalis.views.getColor
-export function comLightningkiteKhrysalisAndroidActivityAccessGetColor(this_GetColor: ViewDependency, resource: ColorResource): number{ return getAndroidContentContextResources(this_GetColor.context).getColor(resource); }
+export function comLightningkiteKhrysalisAndroidActivityAccessGetColor(this_: ViewDependency, resource: ColorResource): number{ return getAndroidContentContextResources(this_.context).getColor(resource); }
 //! Declares com.lightningkite.khrysalis.views.displayMetrics
-export function getComLightningkiteKhrysalisAndroidActivityAccessDisplayMetrics(this_DisplayMetrics: ViewDependency): DisplayMetrics { return getAndroidContentResResourcesDisplayMetrics(getAndroidContentContextResources(this_DisplayMetrics.context)); }
+export function getComLightningkiteKhrysalisAndroidActivityAccessDisplayMetrics(this_: ViewDependency): DisplayMetrics { return getAndroidContentResResourcesDisplayMetrics(getAndroidContentContextResources(this_.context)); }
 
 
 //! Declares com.lightningkite.khrysalis.views.share
-export function comLightningkiteKhrysalisAndroidActivityAccessShare(this_Share: ViewDependency, shareTitle: string, message: (string | null) = null, url: (string | null) = null, image: (Image | null) = null){
+export function comLightningkiteKhrysalisAndroidActivityAccessShare(this_: ViewDependency, shareTitle: string, message: (string | null) = null, url: (string | null) = null, image: (Image | null) = null){
     const i = Intent.constructorkotlinString(Intent.ACTION_SEND);
     
     setAndroidContentIntentType(i, "text/plain");
-    const temp676 = kotlinAnyTakeUnless(kotlinCollectionsIterableJoinToString(listOfNotNull(message), `\n`, undefined, undefined, undefined, undefined, undefined), (it) => it === null);
-    if(temp676 !== null) ((it) => i.putExtra(Intent.EXTRA_TEXT, it))(temp676);
-    (() => {if (!(image.equals(null))) {
-                return (() => {if(image instanceof ImageReference){
-                            i.setType("image/jpeg");
-                            return i.putExtra(Intent.EXTRA_STREAM, image.uri);
-                        }else if(image instanceof ImageRemoteUrl){
-                            i.setType("image/jpeg");
-                            return i.putExtra(Intent.EXTRA_STREAM, Uri.parse(image.url));
-                }})();
-    }})()
-    this_Share.context.startActivity(Intent.createChooser(i, shareTitle));
+    const temp675 = kotlinAnyTakeUnless(kotlinCollectionsIterableJoinToString(listOfNotNull(message), `\n`, undefined, undefined, undefined, undefined, undefined), (it) => it === null);
+    if(temp675 !== null) ((it) => i.putExtra(Intent.EXTRA_TEXT, it))(temp675);
+    if (!(image.equals(null))) {
+        if (image instanceof ImageReference){
+            i.setType("image/jpeg");
+            i.putExtra(Intent.EXTRA_STREAM, image.uri);
+        } else if (image instanceof ImageRemoteUrl){
+            i.setType("image/jpeg");
+            i.putExtra(Intent.EXTRA_STREAM, Uri.parse(image.url));
+        }
+    }
+    this_.context.startActivity(Intent.createChooser(i, shareTitle));
 }
 
 //! Declares com.lightningkite.khrysalis.views.openUrl
-export function comLightningkiteKhrysalisAndroidActivityAccessOpenUrl(this_OpenUrl: ViewDependency, url: string): Boolean{
-    const mgr = getAndroidContentContextPackageManager(this_OpenUrl.context);
+export function comLightningkiteKhrysalisAndroidActivityAccessOpenUrl(this_: ViewDependency, url: string): Boolean{
+    const mgr = getAndroidContentContextPackageManager(this_.context);
     
-    const intent = also(Intent.constructorkotlinString(Intent.ACTION_VIEW), (this_) => setAndroidContentIntentData(this_, Uri.parse(url)));
+    const intent = also(Intent.constructorkotlinString(Intent.ACTION_VIEW), (this_1) => setAndroidContentIntentData(this_1, Uri.parse(url)));
     
     const list = mgr.queryIntentActivities(intent, PackageManager.MATCH_DEFAULT_ONLY);
     
-    return if (list.size > 0) {
-        comLightningkiteKhrysalisAndroidActivityAccessStartIntent(intent, undefined, undefined);
-        return true;
-    } else {
-        return false;
-    };
+    return (() => {if (list.length > 0) {
+                comLightningkiteKhrysalisAndroidActivityAccessStartIntent(intent, undefined, undefined);
+                return true;
+            } else {
+                return false;
+    }})();
 }
 
 //! Declares com.lightningkite.khrysalis.views.openAndroidAppOrStore
-export function comLightningkiteKhrysalisAndroidActivityAccessOpenAndroidAppOrStore(this_OpenAndroidAppOrStore: ViewDependency, packageName: string){
-    const mgr = getAndroidContentContextPackageManager(this_OpenAndroidAppOrStore.context);
+export function comLightningkiteKhrysalisAndroidActivityAccessOpenAndroidAppOrStore(this_: ViewDependency, packageName: string){
+    const mgr = getAndroidContentContextPackageManager(this_.context);
     
     const intent = mgr.getLaunchIntentForPackage(packageName);
     
-    return (() => {if (!(intent.equals(null))) {
-                comLightningkiteKhrysalisAndroidActivityAccessStartIntent(intent, undefined, undefined);
-            } else {
-                return comLightningkiteKhrysalisAndroidActivityAccessOpenUrl(`market://details?id=${packageName}`);
-    }})()
+    if (!(intent.equals(null))) {
+        comLightningkiteKhrysalisAndroidActivityAccessStartIntent(intent, undefined, undefined);
+    } else {
+        comLightningkiteKhrysalisAndroidActivityAccessOpenUrl(`market://details?id=${packageName}`);
+    }
 }
 
 //! Declares com.lightningkite.khrysalis.views.openIosStore
-export function comLightningkiteKhrysalisAndroidActivityAccessOpenIosStore(this_OpenIosStore: ViewDependency, numberId: string){
-    return comLightningkiteKhrysalisAndroidActivityAccessOpenUrl(`https://apps.apple.com/us/app/taxbot/id${numberId}`);
+export function comLightningkiteKhrysalisAndroidActivityAccessOpenIosStore(this_: ViewDependency, numberId: string){
+    comLightningkiteKhrysalisAndroidActivityAccessOpenUrl(`https://apps.apple.com/us/app/taxbot/id${numberId}`);
 }
 
 //! Declares com.lightningkite.khrysalis.views.openMap
-export function comLightningkiteKhrysalisAndroidActivityAccessOpenMap(this_OpenMap: ViewDependency, coordinate: GeoCoordinate, label: (string | null) = null, zoom: (number | null) = null){
-    comLightningkiteKhrysalisAndroidActivityAccessStartIntent(also(Intent.constructorkotlinString(Intent.ACTION_VIEW), (this_) => (() => {if (label === null) {
-                        (() => {if (zoom === null) {
-                                    setAndroidContentIntentData(this_, Uri.parse(`geo:${coordinate.latitude},${coordinate.longitude}`));
-                                } else {
-                                    setAndroidContentIntentData(this_, Uri.parse(`geo:${coordinate.latitude},${coordinate.longitude}?z=${zoom}`));
-                        }})()
-                    } else {
-                        (() => {if (zoom === null) {
-                                    setAndroidContentIntentData(this_, Uri.parse(`geo:${coordinate.latitude},${coordinate.longitude}?q=${Uri.encode(label)}`));
-                                } else {
-                                    setAndroidContentIntentData(this_, Uri.parse(`geo:${coordinate.latitude},${coordinate.longitude}?q=${Uri.encode(label)}&z=${zoom}`));
-                        }})()
-    }})()), undefined, undefined);
+export function comLightningkiteKhrysalisAndroidActivityAccessOpenMap(this_: ViewDependency, coordinate: GeoCoordinate, label: (string | null) = null, zoom: (number | null) = null){
+    comLightningkiteKhrysalisAndroidActivityAccessStartIntent(also(Intent.constructorkotlinString(Intent.ACTION_VIEW), (this_1) => if (label === null) {
+                if (zoom === null) {
+                    setAndroidContentIntentData(this_1, Uri.parse(`geo:${coordinate.latitude},${coordinate.longitude}`));
+                } else {
+                    setAndroidContentIntentData(this_1, Uri.parse(`geo:${coordinate.latitude},${coordinate.longitude}?z=${zoom}`));
+                }
+            } else {
+                if (zoom === null) {
+                    setAndroidContentIntentData(this_1, Uri.parse(`geo:${coordinate.latitude},${coordinate.longitude}?q=${Uri.encode(label)}`));
+                } else {
+                    setAndroidContentIntentData(this_1, Uri.parse(`geo:${coordinate.latitude},${coordinate.longitude}?q=${Uri.encode(label)}&z=${zoom}`));
+                }
+    }), undefined, undefined);
 }
 
 //! Declares com.lightningkite.khrysalis.views.openEvent
-export function comLightningkiteKhrysalisAndroidActivityAccessOpenEvent(this_OpenEvent: ViewDependency, title: string, description: string, location: string, start: Date, end: Date){
-    comLightningkiteKhrysalisAndroidActivityAccessStartIntent(also(Intent.constructorkotlinString(Intent.ACTION_INSERT), (this_) => {
-                setAndroidContentIntentData(this_, CalendarContract.Events.CONTENT_URI);
-                putExtra(CalendarContract.Events.TITLE, title);
-                putExtra(CalendarContract.Events.DESCRIPTION, description);
-                putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, getJavaUtilDateTime(start));
-                putExtra(CalendarContract.EXTRA_EVENT_END_TIME, getJavaUtilDateTime(end));
-                putExtra(CalendarContract.Events.EVENT_LOCATION, location);
+export function comLightningkiteKhrysalisAndroidActivityAccessOpenEvent(this_: ViewDependency, title: string, description: string, location: string, start: Date, end: Date){
+    comLightningkiteKhrysalisAndroidActivityAccessStartIntent(also(Intent.constructorkotlinString(Intent.ACTION_INSERT), (this_1) => {
+                setAndroidContentIntentData(this_1, CalendarContract.Events.CONTENT_URI);
+                this_1.putExtra(CalendarContract.Events.TITLE, title);
+                this_1.putExtra(CalendarContract.Events.DESCRIPTION, description);
+                this_1.putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, getJavaUtilDateTime(start));
+                this_1.putExtra(CalendarContract.EXTRA_EVENT_END_TIME, getJavaUtilDateTime(end));
+                this_1.putExtra(CalendarContract.Events.EVENT_LOCATION, location);
     }), undefined, undefined);
 }
 
 //! Declares com.lightningkite.khrysalis.views.requestImagesGallery
-export function comLightningkiteKhrysalisAndroidActivityAccessRequestImagesGallery(this_RequestImagesGallery: ViewDependency, callback: (a: Array<Uri>) => void){
-    requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE, (hasPermission) => (() => {if (hasPermission) {
-                    const getIntent = Intent.constructorkotlinString(Intent.ACTION_GET_CONTENT);
-                    
-                    setAndroidContentIntentType(getIntent, "image/*");
-                    getIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
-                    
-                    const pickIntent = Intent.constructorkotlinString, androidnetUri(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    
-                    setAndroidContentIntentType(pickIntent, "image/*");
-                    
-                    const chooserIntent = Intent.createChooser(getIntent, "Select Image");
-                    
-                    chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(pickIntent));
-                    
-                    comLightningkiteKhrysalisAndroidActivityAccessStartIntent(this_RequestImagesGallery, chooserIntent, undefined, (code, result) => (() => {if (code === Activity.RESULT_OK) {
-                                    ((_it)=>{
-                                            if(_it === null) return null;
-                                            return ((clipData) => this.callback((kotlinIntUntil(0, getAndroidContentClipDataItemCount(clipData))).map((index) => getAndroidContentClipDataItemUri(clipData.getItemAt(index)))))(_it)
-                                    })(((_it)=>{
-                                                if(_it === null) return null;
-                                                return getAndroidContentIntentClipData(_it)
-                                    })(result)) ?: const temp690 = ((_it)=>{
-                                            if(_it === null) return null;
-                                            return getAndroidContentIntentData(_it)
-                                    })(result);
-                                    if(temp690 !== null) ((it) => this.callback([it]))(temp690);
-                    }})());
-    }})());
+export function comLightningkiteKhrysalisAndroidActivityAccessRequestImagesGallery(this_: ViewDependency, callback: (a: Array<Uri>) => void){
+    this_.requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE, (hasPermission) => if (hasPermission) {
+            const getIntent = Intent.constructorkotlinString(Intent.ACTION_GET_CONTENT);
+            
+            setAndroidContentIntentType(getIntent, "image/*");
+            getIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true);
+            
+            const pickIntent = Intent.constructorkotlinString, androidnetUri(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            
+            setAndroidContentIntentType(pickIntent, "image/*");
+            
+            const chooserIntent = Intent.createChooser(getIntent, "Select Image");
+            
+            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(pickIntent));
+            
+            comLightningkiteKhrysalisAndroidActivityAccessStartIntent(this_, chooserIntent, undefined, (code, result) => if (code === Activity.RESULT_OK) {
+                    ((_it)=>{
+                            if(_it === null) return null;
+                            return ((clipData) => this.callback((kotlinIntUntil(0, getAndroidContentClipDataItemCount(clipData))).map((index) => getAndroidContentClipDataItemUri(clipData.getItemAt(index)))))(_it)
+                    })(((_it)=>{
+                                if(_it === null) return null;
+                                return getAndroidContentIntentClipData(_it)
+                    })(result)) ?: ((_it)=>{
+                            if(_it === null) return null;
+                            return ((it) => this.callback([it]))(_it)
+                    })(((_it)=>{
+                                if(_it === null) return null;
+                                return getAndroidContentIntentData(_it)
+                    })(result));
+            });
+    });
 }
 
 //! Declares com.lightningkite.khrysalis.views.requestImageGallery
-export function comLightningkiteKhrysalisAndroidActivityAccessRequestImageGallery(this_RequestImageGallery: ViewDependency, callback: (a: Uri) => void){
-    requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE, (it) => (() => {if (it) {
-                    const getIntent = Intent.constructorkotlinString(Intent.ACTION_GET_CONTENT);
+export function comLightningkiteKhrysalisAndroidActivityAccessRequestImageGallery(this_: ViewDependency, callback: (a: Uri) => void){
+    this_.requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE, (it) => if (it) {
+            const getIntent = Intent.constructorkotlinString(Intent.ACTION_GET_CONTENT);
+            
+            setAndroidContentIntentType(getIntent, "image/*");
+            
+            const pickIntent = Intent.constructorkotlinString, androidnetUri(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
+            
+            setAndroidContentIntentType(pickIntent, "image/*");
+            
+            const chooserIntent = Intent.createChooser(getIntent, "Select Image");
+            
+            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(pickIntent));
+            
+            comLightningkiteKhrysalisAndroidActivityAccessStartIntent(this_, chooserIntent, undefined, (code, result) => {
+                    const uri = ((_it)=>{
+                            if(_it === null) return null;
+                            return getAndroidContentIntentData(_it)
+                    })(result);
                     
-                    setAndroidContentIntentType(getIntent, "image/*");
-                    
-                    const pickIntent = Intent.constructorkotlinString, androidnetUri(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI);
-                    
-                    setAndroidContentIntentType(pickIntent, "image/*");
-                    
-                    const chooserIntent = Intent.createChooser(getIntent, "Select Image");
-                    
-                    chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(pickIntent));
-                    
-                    comLightningkiteKhrysalisAndroidActivityAccessStartIntent(this_RequestImageGallery, chooserIntent, undefined, (code, result) => {
-                            const uri = ((_it)=>{
-                                    if(_it === null) return null;
-                                    return getAndroidContentIntentData(_it)
-                            })(result);
-                            
-                            (() => {if (code === Activity.RESULT_OK && !(uri.equals(null))) {
-                                        this.callback(uri);
-                            }})()
-                    });
-    }})());
+                    if (code === Activity.RESULT_OK && !(uri.equals(null))) {
+                        this.callback(uri);
+                    }
+            });
+    });
 }
 
 //! Declares com.lightningkite.khrysalis.views.requestImageCamera
-export function comLightningkiteKhrysalisAndroidActivityAccessRequestImageCamera(this_RequestImageCamera: ViewDependency, front: Boolean = false, callback: (a: Uri) => void){
-    const fileProviderAuthority = getAndroidContentContextPackageName(this_RequestImageCamera.context) + ".fileprovider";
+export function comLightningkiteKhrysalisAndroidActivityAccessRequestImageCamera(this_: ViewDependency, front: Boolean = false, callback: (a: Uri) => void){
+    const fileProviderAuthority = getAndroidContentContextPackageName(this_.context) + ".fileprovider";
     
-    const file = ((it) => FileProvider.getUriForFile(this_RequestImageCamera.context, fileProviderAuthority, it))(((it) => File.createTempFile("image", ".jpg", it))(also(File.constructorjavaioFile, kotlinString(getAndroidContentContextCacheDir(this_RequestImageCamera.context), "images"), (it) => it.mkdirs())));
+    const file = ((it) => FileProvider.getUriForFile(this_.context, fileProviderAuthority, it))(((it) => File.createTempFile("image", ".jpg", it))(also(File.constructorjavaioFile, kotlinString(getAndroidContentContextCacheDir(this_.context), "images"), (it) => it.mkdirs())));
     
-    requestPermission(Manifest.permission.CAMERA, (it) => (() => {if (it) {
-                    const intent = Intent.constructorkotlinString(MediaStore.ACTION_IMAGE_CAPTURE);
+    this_.requestPermission(Manifest.permission.CAMERA, (it) => if (it) {
+            const intent = Intent.constructorkotlinString(MediaStore.ACTION_IMAGE_CAPTURE);
+            
+            intent.putExtra(MediaStore.EXTRA_OUTPUT, file);
+            //TODO:Test this on an older device. This works on newest, but we need to make sure it works/doesn't crash a newer one.
+            if (front) {
+                //                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
                     
-                    intent.putExtra(MediaStore.EXTRA_OUTPUT, file);
-                    //TODO:Test this on an older device. This works on newest, but we need to make sure it works/doesn't crash a newer one.
-                    (() => {if (front) {
-                                //                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-                                    
-                                    intent.putExtra("android.intent.extras.LENS_FACING_FRONT", 1);
-                                //                }else{
-                                    intent.putExtra("android.intent.extras.CAMERA_FACING", 1);
-                                    
-                                //                }
-                                return intent.putExtra("android.intent.extra.USE_FRONT_CAMERA", true);
-                    }})()
-                    comLightningkiteKhrysalisAndroidActivityAccessStartIntent(intent, undefined, (code, result) => code === Activity.RESULT_OK ? this.callback(((_it)=>{
-                                    if(_it === null) return null;
-                                    return getAndroidContentIntentData(_it)
-                    })(result) ?: file) : );
-    }})());
+                    intent.putExtra("android.intent.extras.LENS_FACING_FRONT", 1);
+                //                }else{
+                    intent.putExtra("android.intent.extras.CAMERA_FACING", 1);
+                    
+                //                }
+                intent.putExtra("android.intent.extra.USE_FRONT_CAMERA", true);
+            }
+            comLightningkiteKhrysalisAndroidActivityAccessStartIntent(intent, undefined, (code, result) => if (code === Activity.RESULT_OK) this.callback(((_it)=>{
+                            if(_it === null) return null;
+                            return getAndroidContentIntentData(_it)
+            })(result) ?: file));
+    });
 }
 
 
 //! Declares com.lightningkite.khrysalis.views.downloadDrawable
-export function comLightningkiteKhrysalisAndroidActivityAccessDownloadDrawable(this_DownloadDrawable: ViewDependency, url: string, width: (number | null) = null, height: (number | null) = null, onResult: (a: (Drawable | null)) => void){
+export function comLightningkiteKhrysalisAndroidActivityAccessDownloadDrawable(this_: ViewDependency, url: string, width: (number | null) = null, height: (number | null) = null, onResult: (a: (Drawable | null)) => void){
     ((it) => width === null || height === null ? it : it.resize(kotlinIntCoerceAtLeast(width, 100), kotlinIntCoerceAtLeast(height, 100)).centerCrop())(Picasso.get()
     .load(url))
     .into(new class Anon implements Target {
@@ -384,14 +385,14 @@ export function comLightningkiteKhrysalisAndroidActivityAccessDownloadDrawable(t
 }
 
 //! Declares com.lightningkite.khrysalis.views.checkedDrawable
-export function comLightningkiteKhrysalisAndroidActivityAccessCheckedDrawable(this_CheckedDrawable: ViewDependency, checked: Drawable, normal: Drawable){ return also(StateListDrawable.constructor(), (this_) => {
-            addState(intArrayOf(android.R.attr.state_checked), checked);
-            addState(intArrayOf(undefined), normal);
+export function comLightningkiteKhrysalisAndroidActivityAccessCheckedDrawable(this_: ViewDependency, checked: Drawable, normal: Drawable){ return also(StateListDrawable.constructor(), (this_1) => {
+            this_1.addState(intArrayOf(android.R.attr.state_checked), checked);
+            this_1.addState(intArrayOf(undefined), normal);
 }); }
 
 //! Declares com.lightningkite.khrysalis.views.setSizeDrawable
-export function comLightningkiteKhrysalisAndroidActivityAccessSetSizeDrawable(this_SetSizeDrawable: ViewDependency, drawable: Drawable, width: number, height: number): Drawable{
-    const scale = getAndroidContentResResourcesDisplayMetrics(getAndroidContentContextResources(this_SetSizeDrawable.context)).density;
+export function comLightningkiteKhrysalisAndroidActivityAccessSetSizeDrawable(this_: ViewDependency, drawable: Drawable, width: number, height: number): Drawable{
+    const scale = getAndroidContentResResourcesDisplayMetrics(getAndroidContentContextResources(this_.context)).density;
     
     return new class Anon extends LayerDrawable {
         public constructor() {

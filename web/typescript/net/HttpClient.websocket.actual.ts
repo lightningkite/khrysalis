@@ -36,19 +36,15 @@
 // FQImport: okhttp3.Response TS Response
 // FQImport: okhttp3.WebSocket.close TS close
 // FQImport: com.lightningkite.khrysalis.net.ConnectedWebSocket.url TS url
-// FQImport: io.reactivex.subjects.PublishSubject.onNext TS onNext
 // FQImport: com.lightningkite.khrysalis.net.ConnectedWebSocket.onFailure.t TS t
 // FQImport: com.lightningkite.khrysalis.net.ConnectedWebSocket.onMessage.bytes TS bytes
 // FQImport: com.lightningkite.khrysalis.net.ConnectedWebSocket.ownConnection TS ownConnection
 // FQImport: com.lightningkite.khrysalis.net.HttpClient TS HttpClient
-// FQImport: com.lightningkite.khrysalis.net.ConnectedWebSocket.onComplete TS onComplete
 // FQImport: com.lightningkite.khrysalis.net.ConnectedWebSocket TS ConnectedWebSocket
 // FQImport: okio.ByteString.of TS of
 // FQImport: com.lightningkite.khrysalis.net.webSocket.<anonymous>.out TS out
-// FQImport: io.reactivex.Observer TS Observer
 // FQImport: io.reactivex.Observable TS Observable
 // FQImport: okhttp3.Request.Builder.build TS build
-// FQImport: io.reactivex.subjects.PublishSubject.onComplete TS onComplete
 // FQImport: com.lightningkite.khrysalis.net.ConnectedWebSocket.underlyingSocket TS underlyingSocket
 // FQImport: kotlin.collections.toString TS kotlinByteArrayToString
 // FQImport: com.lightningkite.khrysalis.net.HttpClient.threadCorrectly TS ioReactivexObservableThreadCorrectly
@@ -59,31 +55,30 @@
 // FQImport: io.reactivex.Observable.using TS using
 // FQImport: com.lightningkite.khrysalis.net.HttpClient.client TS client
 // FQImport: okhttp3.Request.Builder.addHeader TS addHeader
-// FQImport: io.reactivex.subjects.PublishSubject.onError TS onError
 // FQImport: com.lightningkite.khrysalis.bytes.Data TS Data
+import { Observable, Observer, SubscriptionLike } from 'rxjs'
 import { Data } from './../bytes/Data.actual'
-import { Observable, SubscriptionLike } from 'rxjs'
 import { HttpClient } from './HttpClient.actual'
 
 //! Declares com.lightningkite.khrysalis.net.webSocket
-export function comLightningkiteKhrysalisNetHttpClientWebSocket(this_WebSocket: HttpClient, url: string, headers: Map<string, string> = new Map([])): Observable<ConnectedWebSocket>{
+export function comLightningkiteKhrysalisNetHttpClientWebSocket(this_: HttpClient, url: string, headers: Map<string, string> = new Map([])): Observable<ConnectedWebSocket>{
     return Observable.using<ConnectedWebSocket, ConnectedWebSocket>(() => {
             const out = new ConnectedWebSocket(url);
             
-            out.underlyingSocket = this_WebSocket.client.newWebSocket(Request.Builder.constructor()
+            out.underlyingSocket = this_.client.newWebSocket(Request.Builder.constructor()
                 .url(url.replace("http", "ws"))
                 .headers(Headers.of(headers))
                 .addHeader("Accept-Language", getJavaUtilLocaleLanguage(Locale.getDefault()))
             .build(), out);
-            out;
-    }, (it) => it.ownConnection, (it) => it.onComplete());
+            return out;
+    }, (it) => it.ownConnection, (it) => it.complete());
 }
 
 //! Declares com.lightningkite.khrysalis.net.ConnectedWebSocket
 export class ConnectedWebSocket extends WebSocketListener implements Observer<WebSocketFrame> {
     public static implementsInterfaceIoReactivexObserver = true;
     public readonly url: string;
-    public constructor( url: string) {
+    public constructor(url: string) {
         super();
         this.url = url;
         this.underlyingSocket = null;
@@ -102,29 +97,29 @@ export class ConnectedWebSocket extends WebSocketListener implements Observer<We
     
     public onOpen(webSocket: WebSocket, response: Response){
         console.log(`Socket to ${this.url} opened successfully.`);
-        this.ownConnection.onNext(this);
+        this.ownConnection.next(this);
     }
     
     public onFailure(webSocket: WebSocket, t: Throwable, response: (Response | null)){
         console.log(`Socket to ${this.url} failed with ${t}.`);
-        this.ownConnection.onError(t);
-        this._read.onError(t);
+        this.ownConnection.error(t);
+        this._read.error(t);
     }
     
     public onClosing(webSocket: WebSocket, code: number, reason: string){
         console.log(`Socket to ${this.url} closing.`);
-        this.ownConnection.onComplete();
-        this._read.onComplete();
+        this.ownConnection.complete();
+        this._read.complete();
     }
     
     public onMessage(webSocket: WebSocket, text: string){
         console.log(`Socket to ${this.url} got message '${text}'.`);
-        this._read.onNext(new WebSocketFrame(undefined, text));
+        this._read.next(new WebSocketFrame(undefined, text));
     }
     
     public onMessage(webSocket: WebSocket, bytes: ByteString){
         console.log(`Socket to ${this.url} got binary message of length ${bytes.size()}.`);
-        this._read.onNext(new WebSocketFrame(bytes.toByteArray(), undefined));
+        this._read.next(new WebSocketFrame(bytes.toByteArray(), undefined));
     }
     
     public onClosed(webSocket: WebSocket, code: number, reason: string){
@@ -132,21 +127,21 @@ export class ConnectedWebSocket extends WebSocketListener implements Observer<We
     }
     
     public onComplete(){
-        return this.underlyingSocket?.close(1000, null);
+        this.underlyingSocket?.close(1000, null);
     }
     
     public onSubscribe(d: SubscriptionLike){
     }
     
     public onNext(t: WebSocketFrame){
-        const temp333 = t.text;
-        if(temp333 !== null) ((it) => this.underlyingSocket?.send(it))(temp333);
-        return const temp335 = t.binary;
-        if(temp335 !== null) ((binary) => this.underlyingSocket?.send(ByteString.of(binary, 0, binary.size)))(temp335);
+        const temp344 = t.text;
+        if(temp344 !== null) ((it) => this.underlyingSocket?.send(it))(temp344);
+        const temp346 = t.binary;
+        if(temp346 !== null) ((binary) => this.underlyingSocket?.send(ByteString.of(binary, 0, binary.size)))(temp346);
     }
     
     public onError(e: Throwable){
-        return this.underlyingSocket?.close(1011, e.message);
+        this.underlyingSocket?.close(1011, e.message);
     }
 }
 
@@ -154,7 +149,7 @@ export class ConnectedWebSocket extends WebSocketListener implements Observer<We
 export class WebSocketFrame {
     public readonly binary: (Data | null);
     public readonly text: (string | null);
-    public constructor( binary: (Data | null) = null,  text: (string | null) = null) {
+    public constructor(binary: (Data | null) = null, text: (string | null) = null) {
         this.binary = binary;
         this.text = text;
     }

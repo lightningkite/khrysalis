@@ -48,29 +48,29 @@ import { ObservableProperty } from './../ObservableProperty.shared'
 import { kotlinCharSequenceIsBlank } from 'khrysalis/dist/kotlin/kotlin.text'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.loadImage
-export function androidWidgetImageViewLoadImage(this_LoadImage: ImageView, image: (Image | null)){
-    return post(() => {
-            const temp374 = image;
-            if(temp374 !== null) ((image) => (() => {if(image instanceof ImageRaw){
-                            return this_LoadImage.setImageBitmap(BitmapFactory.decodeByteArray(image.raw, 0, image.raw.size))
-                        }else if(image instanceof ImageReference){
-                            return this_LoadImage.setImageBitmap(MediaStore.Images.Media.getBitmap(getAndroidContentContextContentResolver(HttpClient.INSTANCE.appContext), image.uri))
-                        }else if(image instanceof ImageBitmap){
-                            return this_LoadImage.setImageBitmap(image.bitmap)
-                        }else if(image instanceof ImageRemoteUrl){
-                            (() => {if ( && getAndroidWidgetImageViewWidth(this_LoadImage) > 0 && getAndroidWidgetImageViewHeight(this_LoadImage) > 0) {
-                                        Picasso.get().load(image.url).resize(getAndroidWidgetImageViewWidth(this_LoadImage) * 2, getAndroidWidgetImageViewHeight(this_LoadImage) * 2).centerInside().into(this_LoadImage);
-                            }})()
-            }})())(temp374);
-            (() => {if (image.equals(null)) {
-                        this_LoadImage.setImageDrawable(null);
-            }})()
+export function androidWidgetImageViewLoadImage(this_: ImageView, image: (Image | null)){
+    this_.post(() => {
+            const temp387 = image;
+            if(temp387 !== null) ((image) => if (image instanceof ImageRaw) {
+                    this_.setImageBitmap(BitmapFactory.decodeByteArray(image.raw, 0, image.raw.size))
+                } else if (image instanceof ImageReference) {
+                    this_.setImageBitmap(MediaStore.Images.Media.getBitmap(getAndroidContentContextContentResolver(HttpClient.INSTANCE.appContext), image.uri))
+                } else if (image instanceof ImageBitmap) {
+                    this_.setImageBitmap(image.bitmap)
+                } else if (image instanceof ImageRemoteUrl){
+                    if ( && getAndroidWidgetImageViewWidth(this_) > 0 && getAndroidWidgetImageViewHeight(this_) > 0) {
+                        Picasso.get().load(image.url).resize(getAndroidWidgetImageViewWidth(this_) * 2, getAndroidWidgetImageViewHeight(this_) * 2).centerInside().into(this_);
+                    }
+            })(temp387);
+            if (image.equals(null)) {
+                this_.setImageDrawable(null);
+            }
     });
 }
 
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindImage
-export function androidWidgetImageViewBindImage(this_BindImage: ImageView, image: ObservableProperty<(Image | null)>){
-    return post(() => ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(image, undefined, undefined, (it) => androidWidgetImageViewLoadImage(this_BindImage, it)), getAndroidViewViewRemoved(this_BindImage)));
+export function androidWidgetImageViewBindImage(this_: ImageView, image: ObservableProperty<(Image | null)>){
+    this_.post(() => ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(image, undefined, undefined, (it) => androidWidgetImageViewLoadImage(this_, it)), getAndroidViewViewRemoved(this_)));
 }
 

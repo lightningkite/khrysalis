@@ -1,6 +1,8 @@
 ---
 
+
 # Observables
+
 
 - id: io.reactivex.Observable
   type: type
@@ -8,19 +10,23 @@
     pattern: Observable<~T0~>
     imports:
       Observable: rxjs
+
 - id: io.reactivex.Observable
   type: typeRef
   template:
     pattern: Observable
     imports:
       Observable: rxjs
+
 - id: io.reactivex.Observable.subscribe
   type: call
   arguments: [io.reactivex.Observer]
   template: ~this~.subscribe(~0~)
+
 - id: io.reactivex.Observable.subscribe
   type: call
   template: ~this~.subscribe(~0~, ~1~, ~2~)
+
 - id: io.reactivex.rxkotlin.subscribeBy
   type: call
   receiver: io.reactivex.Observable
@@ -30,39 +36,76 @@
 - id: io.reactivex.Observable.map
   type: call
   template:
-    pattern: rxMap(~0~)(~this~)
+    pattern: ~this~.pipe(rxMap(~0~))
     imports:
-      map: rxjs/operators as rxMap
+      rxMap: map from rxjs/operators
+
 - id: io.reactivex.Observable.filter
   type: call
   template:
-    pattern: rxFilter(~0~)(~this~)
+    pattern: ~this~.pipe(rxFilter(~0~))
     imports:
-      filter: rxjs/operators as rxFilter
+      rxFilter: filter from rxjs/operators
+
+- id: io.reactivex.Observable.mapNotNull
+  type: call
+  template:
+    pattern: ~this~.pipe(rxMap(~0~), rxFilter(x => x !== null))
+    imports:
+      rxMap: map from rxjs/operators
+      rxFilter: filter from rxjs/operators
+
+- id: io.reactivex.Observable.filterNotNull
+  type: call
+  template:
+    pattern: ~this~.pipe(rxFilter(x => x !== null))
+    imports:
+      rxFilter: filter from rxjs/operators
+
+- id: com.lightningkite.khrysalis.rx.combineLatest
+  type: call
+  template:
+    pattern: rxCombineLatest([~this~, ~0~]).pipe(rxMap(x => (~1~)(x[0], x[1])))
+    imports:
+      rxMap: map from rxjs/operators
+      rxCombineLatest: combineLatest from rxjs
+
+- id: io.reactivex.Observable.skip
+  type: call
+  template:
+    pattern: ~this~.pipe(rxSkip(0))
+    imports:
+      rxSkip: skip from rxjs/operators
+
 - id: io.reactivex.Observable.flatMap
   type: call
   template:
-    pattern: rxFlatMap(~0~)(~this~)
+    pattern: ~this~.pipe(rxFlatMap(~0~))
     imports:
-      flatMap: rxjs/operators as rxFlatMap
+      rxFlatMap: flatMap from rxjs/operators
+
 - id: io.reactivex.Observable.switchMap
   type: call
   template:
-    pattern: rxSwitchMap(~0~)(~this~)
+    pattern: ~this~.pipe(rxSwitchMap(~0~))
     imports:
-      switchMap: rxjs/operators as rxSwitchMap
+      rxSwitchMap: switchMap from rxjs/operators
+
 - id: io.reactivex.Observable.subscribeOn
   type: call
   template: ~this~
+
 - id: io.reactivex.Observable.scheduleOn
   type: call
   template: ~this~
+
 - id: io.reactivex.Observable.create
   type: call
   template:
     pattern: new Observable(~0~)
     imports:
       Observable: rxjs
+
 - id: io.reactivex.Observable.create
   type: call
   hasExplicitTypeArguments: true
@@ -70,59 +113,95 @@
     pattern: new Observable<~T0~>(~0~)
     imports:
       Observable: rxjs
+
 - id: io.reactivex.Observable.just
   type: call
   template:
     pattern: rxOf(~*~)
     imports:
-      of: rxjs as rxOf
+      rxOf: of from rxjs
+
 - id: io.reactivex.Observable.empty
   type: call
   template:
     pattern: rxOf()
     imports:
-      of: rxjs as rxoF
+      rxOf: of from rxjs
+
+- id: io.reactivex.Observable.never
+  type: call
+  template:
+    pattern: rxNEVER
+    imports:
+      rxNEVER: NEVER from rxjs
+
 - id: io.reactivex.Observable.doFinally
   type: call
   template:
-    pattern: rxFinalize(~0~)(~this~)
+    pattern: ~this~.pipe(rxFinalize(~0~))
     imports:
-      finalize: rxjs/operators as rxFinalize
+      rxFinalize: finalize from rxjs/operators
+
 - id: io.reactivex.Observable.doOnNext
   type: call
   template:
-    pattern: rxTap(~0~)(~this~)
+    pattern: ~this~.pipe(rxTap(~0~))
     imports:
-      tap: rxjs/operators as rxTap
+      rxTap: tap from rxjs/operators
+
 - id: io.reactivex.Observable.doOnError
   type: call
   template:
-    pattern: rxTap(undefined, ~0~)(ud~this~)
+    pattern: ~this~.pipe(rxTap(undefined, ~0~))
     imports:
-      tap: rxjs/operators as rxTap
+      rxTap: tap from rxjs/operators
+
 - id: io.reactivex.Observable.doOnComplete
   type: call
   template:
-    pattern: rxTap(undefined, undefined, ~0~)(ud~this~)
+    pattern: ~this~.pipe(rxTap(undefined, undefined, ~0~))
     imports:
-      tap: rxjs/operators as rxTap
+      rxTap: tap from rxjs/operators
+
+- id: io.reactivex.Observable.startWith
+  type: call
+  template:
+    pattern: rxConcat(rxOf(~0~), ~this~)
+    imports:
+      rxOf: of from rxjs
+      rxConcat: concat from rxjs
+
+# Observer
+- id: io.reactivex.Observer
+  type: type
+  template:
+    pattern: Observer<~T0~>
+    imports:
+      Observer: rxjs
+
+- id: io.reactivex.Observer.onNext
+  type: call
+  template: ~this~.next(~0~)
+
+- id: io.reactivex.Observer.onError
+  type: call
+  template: ~this~.error(~0~)
+
+- id: io.reactivex.Observer.onComplete
+  type: call
+  template: ~this~.complete()
 
 # ObservableEmitter
 - id: io.reactivex.ObservableEmitter
   type: type
-  template: Observer<~T0~>
-- id: io.reactivex.ObservableEmitter.onNext
-  type: call
-  template: ~this~.next(~0~)
-- id: io.reactivex.ObservableEmitter.onError
-  type: call
-  template: ~this~.error(~0~)
-- id: io.reactivex.ObservableEmitter.onComplete
-  type: call
-  template: ~this~.complete()
+  template:
+    pattern: Observer<~T0~>
+    imports:
+      Observer: rxjs
 
 
 # Single
+
 
 - id: io.reactivex.Single
   type: type
@@ -130,19 +209,23 @@
     pattern: Observable<~T0~>
     imports:
       Observable: rxjs
+
 - id: io.reactivex.Single
   type: typeRef
   template:
     pattern: Observable
     imports:
       Observable: rxjs
+
 - id: io.reactivex.Single.subscribe
   type: call
   arguments: [io.reactivex.Observer]
   template: ~this~.subscribe(~0~)
+
 - id: io.reactivex.Single.subscribe
   type: call
   template: ~this~.subscribe(~0~, ~1~)
+
 - id: io.reactivex.rxkotlin.subscribeBy
   type: call
   receiver: io.reactivex.Single
@@ -152,27 +235,32 @@
 - id: io.reactivex.Single.map
   type: call
   template:
-    pattern: rxMap(~0~)(~this~)
+    pattern: ~this~.pipe(rxMap(~0~))
     imports:
       map: rxjs/operators as rxMap
+
 - id: io.reactivex.Single.flatMap
   type: call
   template:
-    pattern: rxFlatMap(~0~)(~this~)
+    pattern: ~this~.pipe(rxFlatMap(~0~))
     imports:
       flatMap: rxjs/operators as rxFlatMap
+
 - id: io.reactivex.Single.subscribeOn
   type: call
   template: ~this~
+
 - id: io.reactivex.Single.scheduleOn
   type: call
   template: ~this~
+
 - id: io.reactivex.Single.create
   type: call
   template:
     pattern: new Observable(~0~)
     imports:
       Observable: rxjs
+
 - id: io.reactivex.Single.create
   type: call
   hasExplicitTypeArguments: true
@@ -180,62 +268,74 @@
     pattern: new Observable<~T0~>(~0~)
     imports:
       Observable: rxjs
+
 - id: io.reactivex.Single.just
   type: call
   template:
     pattern: rxOf(~0~)
     imports:
       of: rxjs as rxOf
+
 - id: io.reactivex.Single.doOnSubscribe
   type: call
   template:
     pattern: doOnSubscribe(~this~, ~0~)
     imports:
       doOnSubscribe: khrysalis/dist/Kotlin
+
 - id: io.reactivex.Single.doFinally
   type: call
   template:
-    pattern: rxFinalize(~0~)(~this~)
+    pattern: ~this~.pipe(rxFinalize(~0~))
     imports:
       finalize: rxjs/operators as rxFinalize
+
 - id: io.reactivex.Single.doOnError
   type: call
   template:
     pattern: rxTap(undefined, ~0~)(ud~this~)
     imports:
       tap: rxjs/operators as rxTap
+
 - id: io.reactivex.Single.doOnSuccess
   type: call
   template:
-    pattern: rxTap(~0~)(~this~)
+    pattern: ~this~.pipe(rxTap(~0~))
     imports:
       tap: rxjs/operators as rxTap
 
 # SingleEmitter
+
 - id: io.reactivex.SingleEmitter
   type: type
   template: Observer<~T0~>
+
 - id: io.reactivex.SingleEmitter.onSuccess
   type: call
   template: ~this~.next(~0~); ~this~.complete()
+
 - id: io.reactivex.SingleEmitter.onError
   type: call
   template: ~this~.error(~0~)
 
 
 # Disposable
+
 - id: io.reactivex.disposables.Disposable
   type: type
   template:
     pattern: SubscriptionLike
     imports:
       SubscriptionLike: rxjs
+
 - id: io.reactivex.disposables.Disposable.dispose
   type: call
   template: ~this~.unsubscribe()
+
 - id: io.reactivex.disposables.Disposable.isDisposed
   type: call
   template: ~this~.closed
+
 - id: io.reactivex.disposables.Disposable.disposed
   type: get
   template: ~this~.closed

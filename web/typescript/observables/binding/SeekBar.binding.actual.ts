@@ -24,28 +24,28 @@ import { MutableObservableProperty } from './../MutableObservableProperty.shared
 import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from './../../rx/DisposeCondition.actual'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind
-export function androidWidgetSeekBarBind(this_Bind: SeekBar, start: number, endInclusive: number, observable: MutableObservableProperty<number>){
-    setAndroidWidgetSeekBarMax(this_Bind, endInclusive - start);
-    this_Bind.incrementProgressBy(1);
+export function androidWidgetSeekBarBind(this_: SeekBar, start: number, endInclusive: number, observable: MutableObservableProperty<number>){
+    setAndroidWidgetSeekBarMax(this_, endInclusive - start);
+    this_.incrementProgressBy(1);
     
     let suppress = false;
     
-    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => (() => {if (suppress.not()) {
-                        suppress = true;
-                        setAndroidWidgetSeekBarProgress(this_Bind, value + start);
-                        suppress = false;
-    }})()), getAndroidViewViewRemoved(this_Bind));
-    this_Bind.setOnSeekBarChangeListener(new class Anon implements SeekBarOnSeekBarChangeListener {
+    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => if (suppress.not()) {
+                suppress = true;
+                setAndroidWidgetSeekBarProgress(this_, value + start);
+                suppress = false;
+    }), getAndroidViewViewRemoved(this_));
+    this_.setOnSeekBarChangeListener(new class Anon implements SeekBarOnSeekBarChangeListener {
             public static implementsInterfaceAndroidWidgetSeekBarOnSeekBarChangeListener = true;
             public constructor() {
             }
             
             onProgressChanged(p0: (SeekBar | null), p1: number, p2: Boolean){
-                (() => {if (suppress.not()) {
-                            suppress = true;
-                            observable.value = p1 + start;
-                            suppress = false;
-                }})()
+                if (suppress.not()) {
+                    suppress = true;
+                    observable.value = p1 + start;
+                    suppress = false;
+                }
             }
             
             onStartTrackingTouch(p0: (SeekBar | null)){

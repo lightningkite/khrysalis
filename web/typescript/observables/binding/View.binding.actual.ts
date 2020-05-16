@@ -20,13 +20,13 @@ import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from
 import { ObservableProperty } from './../ObservableProperty.shared'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindVisible
-export function androidViewViewBindVisible(this_BindVisible: View, observable: ObservableProperty<Boolean>){
-    return ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => setAndroidViewViewVisibility(this_BindVisible, value ? View.VISIBLE : View.INVISIBLE)), getAndroidViewViewRemoved(this_BindVisible));
+export function androidViewViewBindVisible(this_: View, observable: ObservableProperty<Boolean>){
+    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => setAndroidViewViewVisibility(this_, value ? View.VISIBLE : View.INVISIBLE)), getAndroidViewViewRemoved(this_));
 }
 
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindExists
-export function androidViewViewBindExists(this_BindExists: View, observable: ObservableProperty<Boolean>){
-    return ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => setAndroidViewViewVisibility(this_BindExists, value ? View.VISIBLE : View.GONE)), getAndroidViewViewRemoved(this_BindExists));
+export function androidViewViewBindExists(this_: View, observable: ObservableProperty<Boolean>){
+    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => setAndroidViewViewVisibility(this_, value ? View.VISIBLE : View.GONE)), getAndroidViewViewRemoved(this_));
 }
 

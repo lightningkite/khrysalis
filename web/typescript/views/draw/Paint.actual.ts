@@ -8,6 +8,6 @@
 // FQImport: com.lightningkite.khrysalis.views.draw.<get-textHeight>.<anonymous>.it TS it
 
 //! Declares com.lightningkite.khrysalis.views.draw.textHeight
-export function getAndroidGraphicsPaintTextHeight(this_TextHeight: Paint): number { return ((it) => it.descent - it.ascent)(getAndroidGraphicsPaintFontMetrics(this_TextHeight)); }
+export function getAndroidGraphicsPaintTextHeight(this_: Paint): number { return ((it) => it.descent - it.ascent)(getAndroidGraphicsPaintFontMetrics(this_)); }
 
 

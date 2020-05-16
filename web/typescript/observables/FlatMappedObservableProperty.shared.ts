@@ -8,13 +8,10 @@
 // FQImport: com.lightningkite.khrysalis.observables.flatMap.B TS B
 // FQImport: com.lightningkite.khrysalis.observables.FlatMappedObservableProperty SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.observables.FlatMappedObservableProperty.basedOn TS basedOn
-// FQImport: com.lightningkite.khrysalis.Box.value TS value
 // FQImport: com.lightningkite.khrysalis.observables.MutableFlatMappedObservableProperty.<get-onChange>.<anonymous>.prop TS prop
 // FQImport: com.lightningkite.khrysalis.observables.MutableFlatMappedObservableProperty.basedOn TS basedOn
 // FQImport: com.lightningkite.khrysalis.observables.FlatMappedObservableProperty.transformation TS transformation
-// FQImport: io.reactivex.Observable.skip TS skip
 // FQImport: com.lightningkite.khrysalis.observables.MutableFlatMappedObservableProperty.B TS B
-// FQImport: com.lightningkite.khrysalis.Box TS Box
 // FQImport: com.lightningkite.khrysalis.observables.MutableFlatMappedObservableProperty SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.observables.flatMapMutable.transformation TS transformation
 // FQImport: com.lightningkite.khrysalis.observables.FlatMappedObservableProperty.B TS B
@@ -33,17 +30,17 @@
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty TS MutableObservableProperty
 // FQImport: com.lightningkite.khrysalis.observables.MutableFlatMappedObservableProperty TS MutableFlatMappedObservableProperty
 // FQImport: com.lightningkite.khrysalis.observables.ObservableProperty.value TS value
+import { skip as rxSkip, switchMap as rxSwitchMap } from 'rxjs/operators'
 import { ObservableProperty } from './ObservableProperty.shared'
 import { getComLightningkiteKhrysalisObservablesObservablePropertyObservable } from './ObservableProperty.ext.shared'
 import { Observable } from 'rxjs'
-import { switchMap as rxSwitchMap } from 'rxjs/operators'
 import { MutableObservableProperty } from './MutableObservableProperty.shared'
 
 //! Declares com.lightningkite.khrysalis.observables.FlatMappedObservableProperty
 export class FlatMappedObservableProperty<A, B> extends ObservableProperty<any> {
     public readonly basedOn: ObservableProperty<A>;
     public readonly transformation:  (a: A) => ObservableProperty<B>;
-    public constructor( basedOn: ObservableProperty<A>,  transformation:  (a: A) => ObservableProperty<B>) {
+    public constructor(basedOn: ObservableProperty<A>, transformation:  (a: A) => ObservableProperty<B>) {
         super();
         this.basedOn = basedOn;
         this.transformation = transformation;
@@ -53,20 +50,20 @@ export class FlatMappedObservableProperty<A, B> extends ObservableProperty<any> 
     public get value(): B { return this.transformation(this.basedOn.value).value; }
     
     //! Declares com.lightningkite.khrysalis.observables.FlatMappedObservableProperty.onChange
-    public get onChange(): Observable<Box<B>> { return rxSwitchMap((it) => getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this.this.transformation(it.value)))(getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this.basedOn)).skip(1); }
+    public get onChange(): Observable<B> { return getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this.basedOn).pipe(rxSwitchMap((it) => getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this.transformation(it)))).pipe(rxSkip(0)); }
     
 }
 
 //! Declares com.lightningkite.khrysalis.observables.flatMap
-export function comLightningkiteKhrysalisObservablesObservablePropertyFlatMap<T, B>(this_FlatMap: ObservableProperty<T>, transformation:  (a: T) => ObservableProperty<B>): FlatMappedObservableProperty<T, B>{
-    return new FlatMappedObservableProperty<T, B>(this_FlatMap, transformation);
+export function comLightningkiteKhrysalisObservablesObservablePropertyFlatMap<T, B>(this_: ObservableProperty<T>, transformation:  (a: T) => ObservableProperty<B>): FlatMappedObservableProperty<T, B>{
+    return new FlatMappedObservableProperty<T, B>(this_, transformation);
 }
 
 //! Declares com.lightningkite.khrysalis.observables.MutableFlatMappedObservableProperty
 export class MutableFlatMappedObservableProperty<A, B> extends MutableObservableProperty<any> {
     public readonly basedOn: ObservableProperty<A>;
     public readonly transformation:  (a: A) => MutableObservableProperty<B>;
-    public constructor( basedOn: ObservableProperty<A>,  transformation:  (a: A) => MutableObservableProperty<B>) {
+    public constructor(basedOn: ObservableProperty<A>, transformation:  (a: A) => MutableObservableProperty<B>) {
         super();
         this.basedOn = basedOn;
         this.transformation = transformation;
@@ -84,12 +81,12 @@ export class MutableFlatMappedObservableProperty<A, B> extends MutableObservable
     
     
     //! Declares com.lightningkite.khrysalis.observables.MutableFlatMappedObservableProperty.onChange
-    public get onChange(): Observable<Box<B>> { return rxSwitchMap( (it: Box<A>) => {
-                const prop = this.this.transformation(it.value);
-                
-                this.lastProperty = prop;
-                return getComLightningkiteKhrysalisObservablesObservablePropertyObservable(prop);
-    })(getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this.basedOn)).skip(1); }
+    public get onChange(): Observable<B> { return getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this.basedOn).pipe(rxSwitchMap( (it: A) => {
+                    const prop = this.transformation(it);
+                    
+                    this.lastProperty = prop;
+                    return getComLightningkiteKhrysalisObservablesObservablePropertyObservable(prop);
+    })).pipe(rxSkip(0)); }
     
     
     public update(){
@@ -98,7 +95,7 @@ export class MutableFlatMappedObservableProperty<A, B> extends MutableObservable
 }
 
 //! Declares com.lightningkite.khrysalis.observables.flatMapMutable
-export function comLightningkiteKhrysalisObservablesObservablePropertyFlatMapMutable<T, B>(this_FlatMapMutable: ObservableProperty<T>, transformation:  (a: T) => MutableObservableProperty<B>): MutableFlatMappedObservableProperty<T, B>{
-    return new MutableFlatMappedObservableProperty<T, B>(this_FlatMapMutable, transformation);
+export function comLightningkiteKhrysalisObservablesObservablePropertyFlatMapMutable<T, B>(this_: ObservableProperty<T>, transformation:  (a: T) => MutableObservableProperty<B>): MutableFlatMappedObservableProperty<T, B>{
+    return new MutableFlatMappedObservableProperty<T, B>(this_, transformation);
 }
 

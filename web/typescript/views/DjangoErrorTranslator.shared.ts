@@ -43,7 +43,7 @@ export class DjangoErrorTranslator {
     public readonly connectivityErrorResource: StringResource;
     public readonly serverErrorResource: StringResource;
     public readonly otherErrorResource: StringResource;
-    public constructor( connectivityErrorResource: StringResource,  serverErrorResource: StringResource,  otherErrorResource: StringResource) {
+    public constructor(connectivityErrorResource: StringResource, serverErrorResource: StringResource, otherErrorResource: StringResource) {
         this.connectivityErrorResource = connectivityErrorResource;
         this.serverErrorResource = serverErrorResource;
         this.otherErrorResource = otherErrorResource;
@@ -51,61 +51,61 @@ export class DjangoErrorTranslator {
     
     
     public handleNode(builder: StringBuilder, node: (any | null)){
-        node.equals(null) ? return : 
-        (() => {if(checkIsInterface(node, "KotlinCollectionsMap")){
-                    for (const toDestructure of node) {
-                        const key = toDestructure[0]
-                        const value = toDestructure[1]
-                        
-                        handleNode(builder, value)
-                        
-                    }
-                }else if(checkIsInterface(node, "KotlinCollectionsList")){
-                    for (const value of node) {
-                        handleNode(builder, value);
-                    }
-                }else if(typeof (node) == "string"){
-                    //Rough check for human-readability - sentences start with uppercase and will have spaces
-                    (() => {if(node !== "" && kotlinCharIsUpperCase(node[0]) && kotlinCharSequenceContains(node, " ", undefined)) {
-                                return builder.value += '\n';
-                    }})()
-        }})();
+        if(node.equals(null)) return
+        if (checkIsInterface(node, "KotlinCollectionsMap")){
+            for (const toDestructure of node) {
+                const key = toDestructure[0]
+                const value = toDestructure[1]
+                
+                this.handleNode(builder, value)
+                
+            }
+        } else if (checkIsInterface(node, "KotlinCollectionsList")){
+            for (const value of node) {
+                this.handleNode(builder, value);
+            }
+        } else if (typeof (node) == "string"){
+            //Rough check for human-readability - sentences start with uppercase and will have spaces
+            if(node !== "" && kotlinCharIsUpperCase(node[0]) && kotlinCharSequenceContains(node, " ", undefined)) {
+                builder.value += '\n';
+            }
+        }
     }
     public parseError(code: number, error: (string | null)): (ViewString | null){
         let resultError: (ViewString | null) = null;
         
-        (() => {switch(code / 100){
-                    case 0:
-                    return resultError = new ViewStringResource(this.connectivityErrorResource)
-                    break;
-                    case 1:
-                    case 2:
-                    case 3:
-                    
-                    break;
-                    case 4:
-                    const errorJson = ((_it)=>{
-                            if(_it === null) return null;
-                            return kotlinStringFromJsonStringUntyped(_it)
-                    })(error);
-                    
-                    return (() => {if(!(errorJson.equals(null))){
-                                const builder = StringBuilder();
-                                
-                                handleNode(builder, errorJson);
-                                resultError = new ViewStringRaw(builder.toString());
-                            } else {
-                                resultError = new ViewStringRaw(error ?: "");
-                    }})()
-                    break;
-                    case 5:
-                    return resultError = new ViewStringResource(this.serverErrorResource)
-                    break;
-                    default:
-                    return resultError = new ViewStringResource(this.otherErrorResource)
-                    break;
-                }
-        })();
+        switch(code / 100) {
+            case 0:
+            resultError = new ViewStringResource(this.connectivityErrorResource)
+            break;
+            case 1:
+            case 2:
+            case 3:
+            
+            break;
+            case 4:
+            const errorJson = ((_it)=>{
+                    if(_it === null) return null;
+                    return kotlinStringFromJsonStringUntyped(_it)
+            })(error);
+            
+            if(!(errorJson.equals(null))){
+                const builder = StringBuilder();
+                
+                this.handleNode(builder, errorJson);
+                resultError = new ViewStringRaw(builder.toString());
+            } else {
+                resultError = new ViewStringRaw(error ?: "");
+            }
+            break;
+            case 5:
+            resultError = new ViewStringResource(this.serverErrorResource)
+            break;
+            default:
+            resultError = new ViewStringResource(this.otherErrorResource)
+            break;
+        }
+        
         return resultError;
     }
     

@@ -22,7 +22,6 @@
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.getView.<anonymous>.it TS it
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<anonymous>.it TS it
 // FQImport: android.view.View TS View
-// FQImport: kotlin.collections.List.size TS size
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.T TS T
 // FQImport: tag TS setAndroidViewViewTag
 // FQImport: com.lightningkite.khrysalis.rx.until TS ioReactivexDisposablesDisposableUntil
@@ -51,8 +50,8 @@ import { ObservableProperty } from './../ObservableProperty.shared'
 import { tryCastClass } from 'khrysalis/dist/Kotlin'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind
-export function androidWidgetSpinnerBind<T>(this_Bind: Spinner, options: ObservableProperty<Array<T>>, selected: MutableObservableProperty<T>, makeView: (a: ObservableProperty<T>) => View){
-    setAndroidWidgetSpinnerAdapter(this_Bind, new class Anon extends BaseAdapter {
+export function androidWidgetSpinnerBind<T>(this_: Spinner, options: ObservableProperty<Array<T>>, selected: MutableObservableProperty<T>, makeView: (a: ObservableProperty<T>) => View){
+    setAndroidWidgetSpinnerAdapter(this_, new class Anon extends BaseAdapter {
             public constructor() {
                 super();
                 comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(options, undefined, undefined, (_) => this.notifyDataSetChanged());
@@ -61,7 +60,7 @@ export function androidWidgetSpinnerBind<T>(this_Bind: Spinner, options: Observa
             
             
             getView(position: number, convertView: (View | null), parent: (ViewGroup | null)): View{
-                const view = convertView ?: ((this_) => {
+                const view = convertView ?: ((this_1) => {
                         const event = new StandardObservableProperty<T>(kotlinCollectionsListGetOrNull(options.value, position) ?: selected.value, undefined);
                         
                         const subview = this.makeView(event);
@@ -79,16 +78,16 @@ export function androidWidgetSpinnerBind<T>(this_Bind: Spinner, options: Observa
             
             getItem(position: number): (any | null){ return kotlinCollectionsListGetOrNull(options.value, position); }
             getItemId(position: number): number{ return position; }
-            getCount(): number{ return options.value.size; }
+            getCount(): number{ return options.value.length; }
     }());
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(selected, undefined, undefined, (it) => {
                 const index = options.value.indexOf(it);
                 
-                (() => {if (!(index === -1) && !(index === getAndroidWidgetSpinnerSelectedItemPosition(this_Bind))) {
-                            setSelection(index);
-                }})()
-    }), getAndroidViewViewRemoved(this_Bind));
-    setAndroidWidgetSpinnerOnItemSelectedListener(this_Bind, new class Anon implements AdapterViewOnItemSelectedListener {
+                if (!(index === -1) && !(index === getAndroidWidgetSpinnerSelectedItemPosition(this_))) {
+                    this_.setSelection(index);
+                }
+    }), getAndroidViewViewRemoved(this_));
+    setAndroidWidgetSpinnerOnItemSelectedListener(this_, new class Anon implements AdapterViewOnItemSelectedListener {
             public static implementsInterfaceAndroidWidgetAdapterViewOnItemSelectedListener = true;
             public constructor() {
             }
@@ -98,9 +97,9 @@ export function androidWidgetSpinnerBind<T>(this_Bind: Spinner, options: Observa
             onItemSelected(parent: (AdapterView<*> | null), view: (View | null), position: number, id: number){
                 const newValue = kotlinCollectionsListGetOrNull(options.value, position) ?: return;
                 
-                (() => {if (!(selected.value.equals(newValue))) {
-                            selected.value = newValue;
-                }})()
+                if (!(selected.value.equals(newValue))) {
+                    selected.value = newValue;
+                }
             }
     }());
 }

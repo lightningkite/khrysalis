@@ -49,44 +49,44 @@ import { Align, AlignPair } from './../geometry/Align.shared'
 import { getAndroidGraphicsPaintTextHeight } from './Paint.actual'
 
 //! Declares com.lightningkite.khrysalis.views.draw.drawTextCentered
-export function androidGraphicsCanvasDrawTextCentered(this_DrawTextCentered: Canvas, text: string, centerX: number, centerY: number, paint: Paint){
+export function androidGraphicsCanvasDrawTextCentered(this_: Canvas, text: string, centerX: number, centerY: number, paint: Paint){
     const textWidth = paint.measureText(text);
     
     const textHeightOffset = ((it) => it.ascent + it.descent)(getAndroidGraphicsPaintFontMetrics(paint)) / 2;
     
-    drawText(text, centerX - textWidth / 2, centerY - textHeightOffset, paint);
+    this_.drawText(text, centerX - textWidth / 2, centerY - textHeightOffset, paint);
 }
 //! Declares com.lightningkite.khrysalis.views.draw.drawText
-export function androidGraphicsCanvasDrawText(this_DrawText: Canvas, text: string, x: number, y: number, gravity: AlignPair, paint: Paint){
+export function androidGraphicsCanvasDrawText(this_: Canvas, text: string, x: number, y: number, gravity: AlignPair, paint: Paint){
     const textWidth = paint.measureText(text);
     
     const textHeight = getAndroidGraphicsPaintTextHeight(paint);
     
-    drawText(text, switch(gravity.horizontal){
-            case Align.start:
-            x
-            break;
-            case Align.fill:
-            case Align.center:
-            x - textWidth / 2
-            break;
-            case Align.end:
-            x - textWidth
-            break;
-        }
-        , switch(gravity.vertical){
-            case Align.start:
-            y - getAndroidGraphicsPaintFontMetrics(paint).ascent
-            break;
-            case Align.fill:
-            case Align.center:
-            y - ((it) => it.ascent + it.descent)(getAndroidGraphicsPaintFontMetrics(paint)) / 2
-            break;
-            case Align.end:
-            y - getAndroidGraphicsPaintFontMetrics(paint).descent
-            break;
-        }
-    , paint);
+    this_.drawText(text, (() => {switch(gravity.horizontal) {
+                    case Align.start:
+                    return x
+                    break;
+                    case Align.fill:
+                    case Align.center:
+                    return x - textWidth / 2
+                    break;
+                    case Align.end:
+                    return x - textWidth
+                    break;
+                }
+        })(), (() => {switch(gravity.vertical) {
+                    case Align.start:
+                    return y - getAndroidGraphicsPaintFontMetrics(paint).ascent
+                    break;
+                    case Align.fill:
+                    case Align.center:
+                    return y - ((it) => it.ascent + it.descent)(getAndroidGraphicsPaintFontMetrics(paint)) / 2
+                    break;
+                    case Align.end:
+                    return y - getAndroidGraphicsPaintFontMetrics(paint).descent
+                    break;
+                }
+    })(), paint);
 }
 
 
@@ -96,12 +96,12 @@ export function getTempRect(): RectF { return _tempRect; }
 export function setTempRect(value: RectF) { _tempRect = value; }
 
 //! Declares com.lightningkite.khrysalis.views.draw.drawBitmap
-export function androidGraphicsCanvasDrawBitmap(this_DrawBitmap: Canvas, bitmap: Bitmap, left: number, top: number, right: number, bottom: number){
+export function androidGraphicsCanvasDrawBitmap(this_: Canvas, bitmap: Bitmap, left: number, top: number, right: number, bottom: number){
     getTempRect().left = left;
     getTempRect().top = top;
     getTempRect().right = right;
     getTempRect().bottom = bottom;
-    drawBitmap(bitmap, null, getTempRect(), null);
+    this_.drawBitmap(bitmap, null, getTempRect(), null);
 }
 
 

@@ -1,3 +1,5 @@
+// export type FullType = Array<any>;
+
 export function hashString(item: string): number {
     let hash = 0, i, chr;
     for (i = 0; i < this.length; i++) {
@@ -6,6 +8,30 @@ export function hashString(item: string): number {
         hash |= 0; // Convert to 32bit integer
     }
     return hash;
+}
+
+export function hashAnything(item: any): number {
+    if(item === null || item === undefined) return 0;
+    switch(typeof item){
+        case "object":
+            return item.hashCode();
+        case "number":
+            return Math.floor(item);
+        case "string":
+            return hashString(item);
+        case "boolean":
+            return item ? 1 : 0;
+        default:
+            return 0;
+    }
+}
+
+export function equalityAnything(left: any, right: any): boolean {
+    if(typeof left === "object") {
+        return left.equals(right)
+    } else {
+        return left === right
+    }
 }
 
 export function checkIsInterface<T>(item: any, key: string): item is T {

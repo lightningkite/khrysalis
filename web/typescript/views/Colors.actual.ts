@@ -17,11 +17,11 @@ export let ColorValue = Number;
 
 
 //! Declares com.lightningkite.khrysalis.views.asColor
-export function kotlinIntAsColor(this_AsColor: number): ColorValue{ return this_AsColor; }
+export function kotlinIntAsColor(this_: number): ColorValue{ return this_; }
 //! Declares com.lightningkite.khrysalis.views.asColor
-export function kotlinLongAsColor(this_AsColor: number): ColorValue{ return this_AsColor; }
+export function kotlinLongAsColor(this_: number): ColorValue{ return this_; }
 
 
 //! Declares com.lightningkite.khrysalis.views.colorAlpha
-export function kotlinIntColorAlpha(this_ColorAlpha: ColorValue, desiredAlpha: number): ColorValue{ return Color.argb(desiredAlpha, Color.red(this_ColorAlpha), Color.green(this_ColorAlpha), Color.blue(this_ColorAlpha)); }
+export function kotlinIntColorAlpha(this_: ColorValue, desiredAlpha: number): ColorValue{ return Color.argb(desiredAlpha, Color.red(this_), Color.green(this_), Color.blue(this_)); }
 

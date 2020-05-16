@@ -62,37 +62,37 @@ export let HttpBodyPart = Part;
 
 
 //! Declares com.lightningkite.khrysalis.net.toJsonHttpBody
-export function comLightningkiteKhrysalisCodableToJsonHttpBody(this_ToJsonHttpBody: Codable): HttpBody{
-    const sending = HttpClient.INSTANCE.mapper.writeValueAsString(this_ToJsonHttpBody);
+export function comLightningkiteKhrysalisCodableToJsonHttpBody(this_: Codable): HttpBody{
+    const sending = HttpClient.INSTANCE.mapper.writeValueAsString(this_);
     
     Log.i("HttpClient", `with body ${sending}`);
     return RequestBody.create(HttpMediaTypes.INSTANCE.JSON, sending);
 }
 
 //! Declares com.lightningkite.khrysalis.net.toHttpBody
-export function kotlinByteArrayToHttpBody(this_ToHttpBody: Data, mediaType: HttpMediaType): HttpBody{
-    return RequestBody.create(mediaType, this_ToHttpBody);
+export function kotlinByteArrayToHttpBody(this_: Data, mediaType: HttpMediaType): HttpBody{
+    return RequestBody.create(mediaType, this_);
 }
 
 //! Declares com.lightningkite.khrysalis.net.toHttpBody
-export function kotlinStringToHttpBody(this_ToHttpBody: string, mediaType: HttpMediaType = HttpMediaTypes.INSTANCE.TEXT): HttpBody{
-    return RequestBody.create(mediaType, this_ToHttpBody);
+export function kotlinStringToHttpBody(this_: string, mediaType: HttpMediaType = HttpMediaTypes.INSTANCE.TEXT): HttpBody{
+    return RequestBody.create(mediaType, this_);
 }
 
 //! Declares com.lightningkite.khrysalis.net.toHttpBody
-export function androidGraphicsBitmapToHttpBody(this_ToHttpBody: Bitmap, maxBytes: number = 10_000_000): HttpBody{
+export function androidGraphicsBitmapToHttpBody(this_: Bitmap, maxBytes: number = 10_000_000): HttpBody{
     let qualityToTry = 100;
     
     let data = javaIoCloseableUse(ByteArrayOutputStream.constructor(), (it) => {
-            this_ToHttpBody.compress(Bitmap.CompressFormat.JPEG, qualityToTry, it);
-            it.toByteArray();
+            this_.compress(Bitmap.CompressFormat.JPEG, qualityToTry, it);
+            return it.toByteArray();
     });
     
     while (data.size > maxBytes) {
         qualityToTry = qualityToTry - 5;
         data = javaIoCloseableUse(ByteArrayOutputStream.constructor(), (it) => {
-                this_ToHttpBody.compress(Bitmap.CompressFormat.JPEG, qualityToTry, it);
-                it.toByteArray();
+                this_.compress(Bitmap.CompressFormat.JPEG, qualityToTry, it);
+                return it.toByteArray();
         });
     }
     return RequestBody.create(HttpMediaTypes.INSTANCE.JPEG, data);
@@ -101,7 +101,7 @@ export function androidGraphicsBitmapToHttpBody(this_ToHttpBody: Bitmap, maxByte
 //! Declares com.lightningkite.khrysalis.net.multipartFormBody
 export function multipartFormBody(...parts: HttpBodyPart[]): HttpBody{
     return also(MultipartBody.Builder.constructor().setType(MultipartBody.FORM), (it) => for (const part of parts) {
-            return it.addPart(part);
+            it.addPart(part);
     }).build();
 }
 //! Declares com.lightningkite.khrysalis.net.multipartFormFilePart

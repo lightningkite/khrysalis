@@ -33,7 +33,7 @@ export class TimeAlone {
     public hour: number;
     public minute: number;
     public second: number;
-    public constructor( hour: number,  minute: number,  second: number) {
+    public constructor(hour: number, minute: number, second: number) {
         this.hour = hour;
         this.minute = minute;
         this.second = second;
@@ -95,40 +95,40 @@ export class TimeAlone {
 }
 
 //! Declares com.lightningkite.khrysalis.time.iso8601
-export function comLightningkiteKhrysalisTimeTimeAloneIso8601(this_Iso8601: TimeAlone): string{ return SimpleDateFormat.constructorkotlinString("HH:mm:ss").format(dateFrom(getJavaUtilDateDateAlone(Date.constructor()), this_Iso8601, undefined)); }
+export function comLightningkiteKhrysalisTimeTimeAloneIso8601(this_: TimeAlone): string{ return SimpleDateFormat.constructorkotlinString("HH:mm:ss").format(dateFrom(getJavaUtilDateDateAlone(Date.constructor()), this_, undefined)); }
 
 //! Declares com.lightningkite.khrysalis.time.minus
-export function comLightningkiteKhrysalisTimeTimeAloneMinus(this_Minus: TimeAlone, rhs: TimeAlone): TimeAlone{
-    const result = (this_Minus.hour * 60 * 60 + this_Minus.minute * 60 + this_Minus.second) - (rhs.hour * 60 * 60 + rhs.minute * 60 + rhs.second);
+export function comLightningkiteKhrysalisTimeTimeAloneMinus(this_: TimeAlone, rhs: TimeAlone): TimeAlone{
+    const result = (this_.hour * 60 * 60 + this_.minute * 60 + this_.second) - (rhs.hour * 60 * 60 + rhs.minute * 60 + rhs.second);
     
-    return if (result < 0) {
-        return new TimeAlone(0, 0, 0);
-    } else {
-        return new TimeAlone(result / 60 / 60, result / 60 % 60, result % 60);
-    };
+    return (() => {if (result < 0) {
+                return new TimeAlone(0, 0, 0);
+            } else {
+                return new TimeAlone(result / 60 / 60, result / 60 % 60, result % 60);
+    }})();
 }
 
 //! Declares com.lightningkite.khrysalis.time.plus
-export function comLightningkiteKhrysalisTimeTimeAlonePlus(this_Plus: TimeAlone, rhs: TimeAlone): TimeAlone{
-    const result = (this_Plus.hour * 60 * 60 + this_Plus.minute * 60 + this_Plus.second) + (rhs.hour * 60 * 60 + rhs.minute * 60 + rhs.second);
+export function comLightningkiteKhrysalisTimeTimeAlonePlus(this_: TimeAlone, rhs: TimeAlone): TimeAlone{
+    const result = (this_.hour * 60 * 60 + this_.minute * 60 + this_.second) + (rhs.hour * 60 * 60 + rhs.minute * 60 + rhs.second);
     
     return new TimeAlone(result / 60 / 60, result / 60 % 60, result % 60);
 }
 
 //! Declares com.lightningkite.khrysalis.time.minus
-export function comLightningkiteKhrysalisTimeTimeAloneMinus(this_Minus: TimeAlone, rhs: TimeInterval): TimeAlone{
-    const result = (this_Minus.hour * 60 * 60 + this_Minus.minute * 60 + this_Minus.second) - rhs.milliseconds / 1000;
+export function comLightningkiteKhrysalisTimeTimeAloneMinus(this_: TimeAlone, rhs: TimeInterval): TimeAlone{
+    const result = (this_.hour * 60 * 60 + this_.minute * 60 + this_.second) - rhs.milliseconds / 1000;
     
-    return if (result < 0) {
-        return new TimeAlone(0, 0, 0);
-    } else {
-        return new TimeAlone(result / 60 / 60, result / 60 % 60, result % 60);
-    };
+    return (() => {if (result < 0) {
+                return new TimeAlone(0, 0, 0);
+            } else {
+                return new TimeAlone(result / 60 / 60, result / 60 % 60, result % 60);
+    }})();
 }
 
 //! Declares com.lightningkite.khrysalis.time.plus
-export function comLightningkiteKhrysalisTimeTimeAlonePlus(this_Plus: TimeAlone, rhs: TimeInterval): TimeAlone{
-    const result = (this_Plus.hour * 60 * 60 + this_Plus.minute * 60 + this_Plus.second) + rhs.milliseconds / 1000;
+export function comLightningkiteKhrysalisTimeTimeAlonePlus(this_: TimeAlone, rhs: TimeInterval): TimeAlone{
+    const result = (this_.hour * 60 * 60 + this_.minute * 60 + this_.second) + rhs.milliseconds / 1000;
     
     return new TimeAlone(result / 60 / 60, result / 60 % 60, result % 60);
 }

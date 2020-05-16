@@ -30,7 +30,7 @@ export class Align {
 export class AlignPair {
     public readonly horizontal: Align;
     public readonly vertical: Align;
-    public constructor( horizontal: Align,  vertical: Align) {
+    public constructor(horizontal: Align, vertical: Align) {
         this.horizontal = horizontal;
         this.vertical = vertical;
     }
@@ -40,7 +40,7 @@ export class AlignPair {
         hash = 31 * hash + this.vertical?.hashCode() ?? 0;
         return hash;
     }
-    public equals(other: any): boolean { return other instanceof AlignPair && (this.horizontal?.equals(other.horizontal) ?? false) && (this.vertical?.equals(other.vertical) ?? false) }
+    public equals(other: any): boolean { return other instanceof AlignPair && (this.horizontal?.equals(other.horizontal) ?? other.horizontal === null) && (this.vertical?.equals(other.vertical) ?? other.vertical === null) }
     public toString(): string { return `AlignPair(horizontal = ${this.horizontal}, vertical = ${this.vertical})` }
     public copy(horizontal: Align = this.horizontal, vertical: Align = this.vertical) { return new AlignPair(horizontal, vertical); }
     

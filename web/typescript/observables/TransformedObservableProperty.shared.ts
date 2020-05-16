@@ -10,15 +10,12 @@
 // FQImport: com.lightningkite.khrysalis.observables.TransformedObservableProperty TS TransformedObservableProperty
 // FQImport: com.lightningkite.khrysalis.observables.TransformedObservableProperty SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.observables.transformed.read TS read
-// FQImport: com.lightningkite.khrysalis.boxWrap TS boxWrap
 // FQImport: com.lightningkite.khrysalis.observables.ObservableProperty TS ObservableProperty
 // FQImport: com.lightningkite.khrysalis.observables.map.read TS read
-// FQImport: com.lightningkite.khrysalis.Box.value TS value
 // FQImport: com.lightningkite.khrysalis.observables.TransformedObservableProperty.B TS B
 // FQImport: com.lightningkite.khrysalis.observables.TransformedObservableProperty.read TS read
 // FQImport: com.lightningkite.khrysalis.observables.transformed.B TS B
 // FQImport: com.lightningkite.khrysalis.observables.map.B TS B
-// FQImport: com.lightningkite.khrysalis.Box TS Box
 // FQImport: com.lightningkite.khrysalis.observables.ObservableProperty.value TS value
 import { ObservableProperty } from './ObservableProperty.shared'
 import { Observable } from 'rxjs'
@@ -28,31 +25,29 @@ import { map as rxMap } from 'rxjs/operators'
 export class TransformedObservableProperty<A, B> extends ObservableProperty<any> {
     public readonly basedOn: ObservableProperty<A>;
     public readonly read:  (a: A) => B;
-    public constructor( basedOn: ObservableProperty<A>,  read:  (a: A) => B) {
+    public constructor(basedOn: ObservableProperty<A>, read:  (a: A) => B) {
         super();
         this.basedOn = basedOn;
         this.read = read;
-        this.onChange = rxMap((it) => boxWrap(this.read(it.value)))(this.basedOn.onChange);
+        this.onChange = this.basedOn.onChange.pipe(rxMap((it) => this.read(it)));
     }
     
     //! Declares com.lightningkite.khrysalis.observables.TransformedObservableProperty.value
-    public get value(): B { return {
-            return this.read(this.basedOn.value);
-    }; }{
+    public get value(): B {
         return this.read(this.basedOn.value);
     }
     
-    public readonly onChange: Observable<Box<B>> = rxMap((it) => boxWrap(this.read(it.value)))(this.basedOn.onChange);
+    public readonly onChange: Observable<B> = this.basedOn.onChange.pipe(rxMap((it) => this.read(it)));
     
 }
 
 //! Declares com.lightningkite.khrysalis.observables.transformed
-export function comLightningkiteKhrysalisObservablesObservablePropertyTransformed<T, B>(this_Transformed: ObservableProperty<T>, read:  (a: T) => B): ObservableProperty<B>{
-    return new TransformedObservableProperty<T, B>(this_Transformed, read);
+export function comLightningkiteKhrysalisObservablesObservablePropertyTransformed<T, B>(this_: ObservableProperty<T>, read:  (a: T) => B): ObservableProperty<B>{
+    return new TransformedObservableProperty<T, B>(this_, read);
 }
 
 //! Declares com.lightningkite.khrysalis.observables.map
-export function comLightningkiteKhrysalisObservablesObservablePropertyMap<T, B>(this_Map: ObservableProperty<T>, read:  (a: T) => B): ObservableProperty<B>{
-    return new TransformedObservableProperty<T, B>(this_Map, read);
+export function comLightningkiteKhrysalisObservablesObservablePropertyMap<T, B>(this_: ObservableProperty<T>, read:  (a: T) => B): ObservableProperty<B>{
+    return new TransformedObservableProperty<T, B>(this_, read);
 }
 

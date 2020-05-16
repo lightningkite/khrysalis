@@ -213,291 +213,291 @@ export function useDate<T>(action: (a: Date) => T): T{
 
 
 //! Declares com.lightningkite.khrysalis.time.plus
-export function javaUtilDatePlus(this_Plus: Date, interval: TimeInterval): Date{ return Date.constructorkotlinLong(getJavaUtilDateTime(this_Plus) + interval.milliseconds); }
+export function javaUtilDatePlus(this_: Date, interval: TimeInterval): Date{ return Date.constructorkotlinLong(getJavaUtilDateTime(this_) + interval.milliseconds); }
 
 
 //! Declares com.lightningkite.khrysalis.time.minus
-export function javaUtilDateMinus(this_Minus: Date, interval: TimeInterval): Date{ return Date.constructorkotlinLong(getJavaUtilDateTime(this_Minus) - interval.milliseconds); }
+export function javaUtilDateMinus(this_: Date, interval: TimeInterval): Date{ return Date.constructorkotlinLong(getJavaUtilDateTime(this_) - interval.milliseconds); }
 
 
 //! Declares com.lightningkite.khrysalis.time.dayOfWeek
-export function getJavaUtilDateDayOfWeek(this_DayOfWeek: Date): number { return useCalendar((it) => {
-            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_DayOfWeek));; it.get(Calendar.DAY_OF_WEEK);
+export function getJavaUtilDateDayOfWeek(this_: Date): number { return useCalendar((it) => {
+            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_));; return it.get(Calendar.DAY_OF_WEEK);
 }); }
 
 //! Declares com.lightningkite.khrysalis.time.dayOfMonth
-export function getJavaUtilDateDayOfMonth(this_DayOfMonth: Date): number { return useCalendar((it) => {
-            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_DayOfMonth));; it.get(Calendar.DAY_OF_MONTH);
+export function getJavaUtilDateDayOfMonth(this_: Date): number { return useCalendar((it) => {
+            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_));; return it.get(Calendar.DAY_OF_MONTH);
 }); }
 
 //! Declares com.lightningkite.khrysalis.time.monthOfYear
-export function getJavaUtilDateMonthOfYear(this_MonthOfYear: Date): number { return useCalendar((it) => {
-            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_MonthOfYear));; it.get(Calendar.MONTH) + 1;
+export function getJavaUtilDateMonthOfYear(this_: Date): number { return useCalendar((it) => {
+            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_));; return it.get(Calendar.MONTH) + 1;
 }); }
 
 //! Declares com.lightningkite.khrysalis.time.yearAd
-export function getJavaUtilDateYearAd(this_YearAd: Date): number { return useCalendar((it) => {
-            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_YearAd));; it.get(Calendar.YEAR);
+export function getJavaUtilDateYearAd(this_: Date): number { return useCalendar((it) => {
+            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_));; return it.get(Calendar.YEAR);
 }); }
 
 //! Declares com.lightningkite.khrysalis.time.hourOfDay
-export function getJavaUtilDateHourOfDay(this_HourOfDay: Date): number { return useCalendar((it) => {
-            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_HourOfDay));; it.get(Calendar.HOUR_OF_DAY);
+export function getJavaUtilDateHourOfDay(this_: Date): number { return useCalendar((it) => {
+            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_));; return it.get(Calendar.HOUR_OF_DAY);
 }); }
 
 //! Declares com.lightningkite.khrysalis.time.minuteOfHour
-export function getJavaUtilDateMinuteOfHour(this_MinuteOfHour: Date): number { return useCalendar((it) => {
-            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_MinuteOfHour));; it.get(Calendar.MINUTE);
+export function getJavaUtilDateMinuteOfHour(this_: Date): number { return useCalendar((it) => {
+            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_));; return it.get(Calendar.MINUTE);
 }); }
 
 //! Declares com.lightningkite.khrysalis.time.secondOfMinute
-export function getJavaUtilDateSecondOfMinute(this_SecondOfMinute: Date): number { return useCalendar((it) => {
-            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_SecondOfMinute));; it.get(Calendar.SECOND);
+export function getJavaUtilDateSecondOfMinute(this_: Date): number { return useCalendar((it) => {
+            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_));; return it.get(Calendar.SECOND);
 }); }
 
 
 //! Declares com.lightningkite.khrysalis.time.dateAlone
-export function getJavaUtilDateDateAlone(this_DateAlone: Date): DateAlone { return {
+export function getJavaUtilDateDateAlone(this_: Date): DateAlone { return {
         return useCalendar((cal) => {
-                setJavaUtilCalendarTimeInMillis(cal, getJavaUtilDateTime(this_DateAlone));
-                new DateAlone(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DAY_OF_MONTH));
+                setJavaUtilCalendarTimeInMillis(cal, getJavaUtilDateTime(this_));
+                return new DateAlone(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DAY_OF_MONTH));
         });
 }; }{
     return useCalendar((cal) => {
-            setJavaUtilCalendarTimeInMillis(cal, getJavaUtilDateTime(this_DateAlone));
-            new DateAlone(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DAY_OF_MONTH));
+            setJavaUtilCalendarTimeInMillis(cal, getJavaUtilDateTime(this_));
+            return new DateAlone(cal.get(Calendar.YEAR), cal.get(Calendar.MONTH) + 1, cal.get(Calendar.DAY_OF_MONTH));
     });
 }
 
 //! Declares com.lightningkite.khrysalis.time.timeAlone
-export function getJavaUtilDateTimeAlone(this_TimeAlone: Date): TimeAlone { return {
+export function getJavaUtilDateTimeAlone(this_: Date): TimeAlone { return {
         return useCalendar((cal) => {
-                setJavaUtilCalendarTimeInMillis(cal, getJavaUtilDateTime(this_TimeAlone));
-                new TimeAlone(cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), cal.get(Calendar.SECOND));
+                setJavaUtilCalendarTimeInMillis(cal, getJavaUtilDateTime(this_));
+                return new TimeAlone(cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), cal.get(Calendar.SECOND));
         });
 }; }{
     return useCalendar((cal) => {
-            setJavaUtilCalendarTimeInMillis(cal, getJavaUtilDateTime(this_TimeAlone));
-            new TimeAlone(cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), cal.get(Calendar.SECOND));
+            setJavaUtilCalendarTimeInMillis(cal, getJavaUtilDateTime(this_));
+            return new TimeAlone(cal.get(Calendar.HOUR_OF_DAY), cal.get(Calendar.MINUTE), cal.get(Calendar.SECOND));
     });
 }
 
 
 //! Declares com.lightningkite.khrysalis.time.sameDay
-export function javaUtilDateSameDay(this_SameDay: Date, other: Date): Boolean{
-    return getJavaUtilDateYearAd(this_SameDay) === getJavaUtilDateYearAd(other) && getJavaUtilDateMonthOfYear(this_SameDay) === getJavaUtilDateMonthOfYear(other) && getJavaUtilDateDayOfMonth(this_SameDay) === getJavaUtilDateDayOfMonth(other);
+export function javaUtilDateSameDay(this_: Date, other: Date): Boolean{
+    return getJavaUtilDateYearAd(this_) === getJavaUtilDateYearAd(other) && getJavaUtilDateMonthOfYear(this_) === getJavaUtilDateMonthOfYear(other) && getJavaUtilDateDayOfMonth(this_) === getJavaUtilDateDayOfMonth(other);
 }
 
 //! Declares com.lightningkite.khrysalis.time.sameMonth
-export function javaUtilDateSameMonth(this_SameMonth: Date, other: Date): Boolean{
-    return getJavaUtilDateYearAd(this_SameMonth) === getJavaUtilDateYearAd(other) && getJavaUtilDateMonthOfYear(this_SameMonth) === getJavaUtilDateMonthOfYear(other);
+export function javaUtilDateSameMonth(this_: Date, other: Date): Boolean{
+    return getJavaUtilDateYearAd(this_) === getJavaUtilDateYearAd(other) && getJavaUtilDateMonthOfYear(this_) === getJavaUtilDateMonthOfYear(other);
 }
 
 //! Declares com.lightningkite.khrysalis.time.sameYear
-export function javaUtilDateSameYear(this_SameYear: Date, other: Date): Boolean{
-    return getJavaUtilDateYearAd(this_SameYear) === getJavaUtilDateYearAd(other);
+export function javaUtilDateSameYear(this_: Date, other: Date): Boolean{
+    return getJavaUtilDateYearAd(this_) === getJavaUtilDateYearAd(other);
 }
 
 //! Declares com.lightningkite.khrysalis.time.dayOfWeek
-export function javaUtilDateDayOfWeek(this_DayOfWeek: Date, value: number, existing: Date = Date.constructor()){ return useCalendar((it) => {
-            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_DayOfWeek));
+export function javaUtilDateDayOfWeek(this_: Date, value: number, existing: Date = Date.constructor()){ return useCalendar((it) => {
+            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_));
             it.set(Calendar.DAY_OF_WEEK, value);
             setJavaUtilDateTime(existing, getJavaUtilCalendarTimeInMillis(it));
-            existing;
+            return existing;
 }); }
 
 //! Declares com.lightningkite.khrysalis.time.dayOfMonth
-export function javaUtilDateDayOfMonth(this_DayOfMonth: Date, value: number, existing: Date = Date.constructor()){ return useCalendar((it) => {
-            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_DayOfMonth));
+export function javaUtilDateDayOfMonth(this_: Date, value: number, existing: Date = Date.constructor()){ return useCalendar((it) => {
+            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_));
             it.set(Calendar.DAY_OF_MONTH, value);
             setJavaUtilDateTime(existing, getJavaUtilCalendarTimeInMillis(it));
-            existing;
+            return existing;
 }); }
 
 //! Declares com.lightningkite.khrysalis.time.monthOfYear
-export function javaUtilDateMonthOfYear(this_MonthOfYear: Date, value: number, existing: Date = Date.constructor()){ return useCalendar((it) => {
-            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_MonthOfYear));
+export function javaUtilDateMonthOfYear(this_: Date, value: number, existing: Date = Date.constructor()){ return useCalendar((it) => {
+            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_));
             it.set(Calendar.MONTH, value - 1);
             setJavaUtilDateTime(existing, getJavaUtilCalendarTimeInMillis(it));
-            existing;
+            return existing;
 }); }
 
 //! Declares com.lightningkite.khrysalis.time.yearAd
-export function javaUtilDateYearAd(this_YearAd: Date, value: number, existing: Date = Date.constructor()){ return useCalendar((it) => {
-            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_YearAd));
+export function javaUtilDateYearAd(this_: Date, value: number, existing: Date = Date.constructor()){ return useCalendar((it) => {
+            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_));
             it.set(Calendar.YEAR, value);
             setJavaUtilDateTime(existing, getJavaUtilCalendarTimeInMillis(it));
-            existing;
+            return existing;
 }); }
 
 //! Declares com.lightningkite.khrysalis.time.hourOfDay
-export function javaUtilDateHourOfDay(this_HourOfDay: Date, value: number, existing: Date = Date.constructor()){ return useCalendar((it) => {
-            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_HourOfDay));
+export function javaUtilDateHourOfDay(this_: Date, value: number, existing: Date = Date.constructor()){ return useCalendar((it) => {
+            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_));
             it.set(Calendar.HOUR_OF_DAY, value);
             setJavaUtilDateTime(existing, getJavaUtilCalendarTimeInMillis(it));
-            existing;
+            return existing;
 }); }
 
 //! Declares com.lightningkite.khrysalis.time.minuteOfHour
-export function javaUtilDateMinuteOfHour(this_MinuteOfHour: Date, value: number, existing: Date = Date.constructor()){ return useCalendar((it) => {
-            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_MinuteOfHour));
+export function javaUtilDateMinuteOfHour(this_: Date, value: number, existing: Date = Date.constructor()){ return useCalendar((it) => {
+            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_));
             it.set(Calendar.MINUTE, value);
             setJavaUtilDateTime(existing, getJavaUtilCalendarTimeInMillis(it));
-            existing;
+            return existing;
 }); }
 
 //! Declares com.lightningkite.khrysalis.time.secondOfMinute
-export function javaUtilDateSecondOfMinute(this_SecondOfMinute: Date, value: number, existing: Date = Date.constructor()){ return useCalendar((it) => {
-            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_SecondOfMinute));
+export function javaUtilDateSecondOfMinute(this_: Date, value: number, existing: Date = Date.constructor()){ return useCalendar((it) => {
+            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_));
             it.set(Calendar.SECOND, value);
             setJavaUtilDateTime(existing, getJavaUtilCalendarTimeInMillis(it));
-            existing;
+            return existing;
 }); }
 
 //! Declares com.lightningkite.khrysalis.time.addDayOfWeek
-export function javaUtilDateAddDayOfWeek(this_AddDayOfWeek: Date, value: number, existing: Date = Date.constructor()){ return useCalendar((it) => {
-            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_AddDayOfWeek));
+export function javaUtilDateAddDayOfWeek(this_: Date, value: number, existing: Date = Date.constructor()){ return useCalendar((it) => {
+            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_));
             it.add(Calendar.DAY_OF_WEEK, value);
             setJavaUtilDateTime(existing, getJavaUtilCalendarTimeInMillis(it));
-            existing;
+            return existing;
 }); }
 
 //! Declares com.lightningkite.khrysalis.time.addDayOfMonth
-export function javaUtilDateAddDayOfMonth(this_AddDayOfMonth: Date, value: number, existing: Date = Date.constructor()){ return useCalendar((it) => {
-            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_AddDayOfMonth));
+export function javaUtilDateAddDayOfMonth(this_: Date, value: number, existing: Date = Date.constructor()){ return useCalendar((it) => {
+            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_));
             it.add(Calendar.DAY_OF_MONTH, value);
             setJavaUtilDateTime(existing, getJavaUtilCalendarTimeInMillis(it));
-            existing;
+            return existing;
 }); }
 
 //! Declares com.lightningkite.khrysalis.time.addMonthOfYear
-export function javaUtilDateAddMonthOfYear(this_AddMonthOfYear: Date, value: number, existing: Date = Date.constructor()){ return useCalendar((it) => {
-            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_AddMonthOfYear));
+export function javaUtilDateAddMonthOfYear(this_: Date, value: number, existing: Date = Date.constructor()){ return useCalendar((it) => {
+            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_));
             it.add(Calendar.MONTH, value);
             setJavaUtilDateTime(existing, getJavaUtilCalendarTimeInMillis(it));
-            existing;
+            return existing;
 }); }
 
 //! Declares com.lightningkite.khrysalis.time.addYearAd
-export function javaUtilDateAddYearAd(this_AddYearAd: Date, value: number, existing: Date = Date.constructor()){ return useCalendar((it) => {
-            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_AddYearAd));
+export function javaUtilDateAddYearAd(this_: Date, value: number, existing: Date = Date.constructor()){ return useCalendar((it) => {
+            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_));
             it.add(Calendar.YEAR, value);
             setJavaUtilDateTime(existing, getJavaUtilCalendarTimeInMillis(it));
-            existing;
+            return existing;
 }); }
 
 //! Declares com.lightningkite.khrysalis.time.addHourOfDay
-export function javaUtilDateAddHourOfDay(this_AddHourOfDay: Date, value: number, existing: Date = Date.constructor()){ return useCalendar((it) => {
-            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_AddHourOfDay));
+export function javaUtilDateAddHourOfDay(this_: Date, value: number, existing: Date = Date.constructor()){ return useCalendar((it) => {
+            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_));
             it.add(Calendar.HOUR_OF_DAY, value);
             setJavaUtilDateTime(existing, getJavaUtilCalendarTimeInMillis(it));
-            existing;
+            return existing;
 }); }
 
 //! Declares com.lightningkite.khrysalis.time.addMinuteOfHour
-export function javaUtilDateAddMinuteOfHour(this_AddMinuteOfHour: Date, value: number, existing: Date = Date.constructor()){ return useCalendar((it) => {
-            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_AddMinuteOfHour));
+export function javaUtilDateAddMinuteOfHour(this_: Date, value: number, existing: Date = Date.constructor()){ return useCalendar((it) => {
+            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_));
             it.add(Calendar.MINUTE, value);
             setJavaUtilDateTime(existing, getJavaUtilCalendarTimeInMillis(it));
-            existing;
+            return existing;
 }); }
 
 //! Declares com.lightningkite.khrysalis.time.addSecondOfMinute
-export function javaUtilDateAddSecondOfMinute(this_AddSecondOfMinute: Date, value: number, existing: Date = Date.constructor()){ return useCalendar((it) => {
-            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_AddSecondOfMinute));
+export function javaUtilDateAddSecondOfMinute(this_: Date, value: number, existing: Date = Date.constructor()){ return useCalendar((it) => {
+            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_));
             it.add(Calendar.SECOND, value);
             setJavaUtilDateTime(existing, getJavaUtilCalendarTimeInMillis(it));
-            existing;
+            return existing;
 }); }
 
 //! Declares com.lightningkite.khrysalis.time.setDayOfWeek
-export function javaUtilDateSetDayOfWeek(this_SetDayOfWeek: Date, value: number){ return javaUtilDateDayOfWeek(this_SetDayOfWeek, value, this_SetDayOfWeek); }
+export function javaUtilDateSetDayOfWeek(this_: Date, value: number){ return javaUtilDateDayOfWeek(this_, value, this_); }
 //! Declares com.lightningkite.khrysalis.time.setDayOfMonth
-export function javaUtilDateSetDayOfMonth(this_SetDayOfMonth: Date, value: number){ return javaUtilDateDayOfMonth(this_SetDayOfMonth, value, this_SetDayOfMonth); }
+export function javaUtilDateSetDayOfMonth(this_: Date, value: number){ return javaUtilDateDayOfMonth(this_, value, this_); }
 //! Declares com.lightningkite.khrysalis.time.setMonthOfYear
-export function javaUtilDateSetMonthOfYear(this_SetMonthOfYear: Date, value: number){ return javaUtilDateMonthOfYear(this_SetMonthOfYear, value, this_SetMonthOfYear); }
+export function javaUtilDateSetMonthOfYear(this_: Date, value: number){ return javaUtilDateMonthOfYear(this_, value, this_); }
 //! Declares com.lightningkite.khrysalis.time.setYearAd
-export function javaUtilDateSetYearAd(this_SetYearAd: Date, value: number){ return javaUtilDateYearAd(this_SetYearAd, value, this_SetYearAd); }
+export function javaUtilDateSetYearAd(this_: Date, value: number){ return javaUtilDateYearAd(this_, value, this_); }
 //! Declares com.lightningkite.khrysalis.time.setHourOfDay
-export function javaUtilDateSetHourOfDay(this_SetHourOfDay: Date, value: number){ return javaUtilDateHourOfDay(this_SetHourOfDay, value, this_SetHourOfDay); }
+export function javaUtilDateSetHourOfDay(this_: Date, value: number){ return javaUtilDateHourOfDay(this_, value, this_); }
 //! Declares com.lightningkite.khrysalis.time.setMinuteOfHour
-export function javaUtilDateSetMinuteOfHour(this_SetMinuteOfHour: Date, value: number){ return javaUtilDateMinuteOfHour(this_SetMinuteOfHour, value, this_SetMinuteOfHour); }
+export function javaUtilDateSetMinuteOfHour(this_: Date, value: number){ return javaUtilDateMinuteOfHour(this_, value, this_); }
 //! Declares com.lightningkite.khrysalis.time.setSecondOfMinute
-export function javaUtilDateSetSecondOfMinute(this_SetSecondOfMinute: Date, value: number){ return javaUtilDateSecondOfMinute(this_SetSecondOfMinute, value, this_SetSecondOfMinute); }
+export function javaUtilDateSetSecondOfMinute(this_: Date, value: number){ return javaUtilDateSecondOfMinute(this_, value, this_); }
 //! Declares com.lightningkite.khrysalis.time.setAddDayOfWeek
-export function javaUtilDateSetAddDayOfWeek(this_SetAddDayOfWeek: Date, value: number){ return javaUtilDateAddDayOfWeek(this_SetAddDayOfWeek, value, this_SetAddDayOfWeek); }
+export function javaUtilDateSetAddDayOfWeek(this_: Date, value: number){ return javaUtilDateAddDayOfWeek(this_, value, this_); }
 //! Declares com.lightningkite.khrysalis.time.setAddDayOfMonth
-export function javaUtilDateSetAddDayOfMonth(this_SetAddDayOfMonth: Date, value: number){ return javaUtilDateAddDayOfMonth(this_SetAddDayOfMonth, value, this_SetAddDayOfMonth); }
+export function javaUtilDateSetAddDayOfMonth(this_: Date, value: number){ return javaUtilDateAddDayOfMonth(this_, value, this_); }
 //! Declares com.lightningkite.khrysalis.time.setAddMonthOfYear
-export function javaUtilDateSetAddMonthOfYear(this_SetAddMonthOfYear: Date, value: number){ return javaUtilDateAddMonthOfYear(this_SetAddMonthOfYear, value, this_SetAddMonthOfYear); }
+export function javaUtilDateSetAddMonthOfYear(this_: Date, value: number){ return javaUtilDateAddMonthOfYear(this_, value, this_); }
 //! Declares com.lightningkite.khrysalis.time.setAddYearAd
-export function javaUtilDateSetAddYearAd(this_SetAddYearAd: Date, value: number){ return javaUtilDateAddYearAd(this_SetAddYearAd, value, this_SetAddYearAd); }
+export function javaUtilDateSetAddYearAd(this_: Date, value: number){ return javaUtilDateAddYearAd(this_, value, this_); }
 //! Declares com.lightningkite.khrysalis.time.setAddHourOfDay
-export function javaUtilDateSetAddHourOfDay(this_SetAddHourOfDay: Date, value: number){ return javaUtilDateAddHourOfDay(this_SetAddHourOfDay, value, this_SetAddHourOfDay); }
+export function javaUtilDateSetAddHourOfDay(this_: Date, value: number){ return javaUtilDateAddHourOfDay(this_, value, this_); }
 //! Declares com.lightningkite.khrysalis.time.setAddMinuteOfHour
-export function javaUtilDateSetAddMinuteOfHour(this_SetAddMinuteOfHour: Date, value: number){ return javaUtilDateAddMinuteOfHour(this_SetAddMinuteOfHour, value, this_SetAddMinuteOfHour); }
+export function javaUtilDateSetAddMinuteOfHour(this_: Date, value: number){ return javaUtilDateAddMinuteOfHour(this_, value, this_); }
 //! Declares com.lightningkite.khrysalis.time.setAddSecondOfMinute
-export function javaUtilDateSetAddSecondOfMinute(this_SetAddSecondOfMinute: Date, value: number){ return javaUtilDateAddSecondOfMinute(this_SetAddSecondOfMinute, value, this_SetAddSecondOfMinute); }
+export function javaUtilDateSetAddSecondOfMinute(this_: Date, value: number){ return javaUtilDateAddSecondOfMinute(this_, value, this_); }
 
 //! Declares com.lightningkite.khrysalis.time.set
-export function javaUtilDateSet(this_Set: Date, dateAlone: DateAlone): Date{
+export function javaUtilDateSet(this_: Date, dateAlone: DateAlone): Date{
     useCalendar((it) => {
-            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_Set));
+            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_));
             it.set(Calendar.YEAR, dateAlone.year);
             it.set(Calendar.MONTH, dateAlone.month - 1);
             it.set(Calendar.DAY_OF_MONTH, dateAlone.day);
-            setJavaUtilDateTime(this_Set, getJavaUtilCalendarTimeInMillis(it));
+            setJavaUtilDateTime(this_, getJavaUtilCalendarTimeInMillis(it));
     });
-    return this_Set;
+    return this_;
 }
 
 //! Declares com.lightningkite.khrysalis.time.set
-export function javaUtilDateSet(this_Set: Date, timeAlone: TimeAlone): Date{
+export function javaUtilDateSet(this_: Date, timeAlone: TimeAlone): Date{
     useCalendar((it) => {
-            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_Set));
+            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_));
             it.set(Calendar.HOUR_OF_DAY, timeAlone.hour);
             it.set(Calendar.MINUTE, timeAlone.minute);
             it.set(Calendar.SECOND, timeAlone.second);
-            setJavaUtilDateTime(this_Set, getJavaUtilCalendarTimeInMillis(it));
+            setJavaUtilDateTime(this_, getJavaUtilCalendarTimeInMillis(it));
     });
-    return this_Set;
+    return this_;
 }
 
 //! Declares com.lightningkite.khrysalis.time.set
-export function javaUtilDateSet(this_Set: Date, dateAlone: DateAlone, timeAlone: TimeAlone): Date{
+export function javaUtilDateSet(this_: Date, dateAlone: DateAlone, timeAlone: TimeAlone): Date{
     useCalendar((it) => {
-            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_Set));
+            setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(this_));
             it.set(Calendar.YEAR, dateAlone.year);
             it.set(Calendar.MONTH, dateAlone.month - 1);
             it.set(Calendar.DAY_OF_MONTH, dateAlone.day);
             it.set(Calendar.HOUR_OF_DAY, timeAlone.hour);
             it.set(Calendar.MINUTE, timeAlone.minute);
             it.set(Calendar.SECOND, timeAlone.second);
-            setJavaUtilDateTime(this_Set, getJavaUtilCalendarTimeInMillis(it));
+            setJavaUtilDateTime(this_, getJavaUtilCalendarTimeInMillis(it));
     });
-    return this_Set;
+    return this_;
 }
 
 //! Declares com.lightningkite.khrysalis.time.set
-export function comLightningkiteKhrysalisTimeDateAloneSet(this_Set: DateAlone, date: Date): DateAlone{
+export function comLightningkiteKhrysalisTimeDateAloneSet(this_: DateAlone, date: Date): DateAlone{
     useCalendar((it) => {
             setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(date));
-            this_Set.year = it.get(Calendar.YEAR);
-            this_Set.month = it.get(Calendar.MONTH) + 1;
-            this_Set.day = it.get(Calendar.DAY_OF_MONTH);
+            this_.year = it.get(Calendar.YEAR);
+            this_.month = it.get(Calendar.MONTH) + 1;
+            this_.day = it.get(Calendar.DAY_OF_MONTH);
     });
-    return this_Set;
+    return this_;
 }
 
 //! Declares com.lightningkite.khrysalis.time.set
-export function comLightningkiteKhrysalisTimeTimeAloneSet(this_Set: TimeAlone, date: Date): TimeAlone{
+export function comLightningkiteKhrysalisTimeTimeAloneSet(this_: TimeAlone, date: Date): TimeAlone{
     useCalendar((it) => {
             setJavaUtilCalendarTimeInMillis(it, getJavaUtilDateTime(date));
-            this_Set.hour = it.get(Calendar.HOUR_OF_DAY);
-            this_Set.minute = it.get(Calendar.MINUTE);
-            this_Set.second = it.get(Calendar.SECOND);
+            this_.hour = it.get(Calendar.HOUR_OF_DAY);
+            this_.minute = it.get(Calendar.MINUTE);
+            this_.second = it.get(Calendar.SECOND);
     });
-    return this_Set;
+    return this_;
 }
 
 //! Declares com.lightningkite.khrysalis.time.dateFrom
@@ -510,7 +510,7 @@ export function dateFrom(dateAlone: DateAlone, timeAlone: TimeAlone, existing: D
             it.set(Calendar.MINUTE, timeAlone.minute);
             it.set(Calendar.SECOND, timeAlone.second);
             setJavaUtilDateTime(existing, getJavaUtilCalendarTimeInMillis(it));
-            existing;
+            return existing;
     });
 }
 
@@ -520,60 +520,60 @@ export function dateFromIso(iso8601: string): (Date | null){
 }
 
 //! Declares com.lightningkite.khrysalis.time.format
-export function javaUtilDateFormat(this_Format: Date, dateStyle: ClockPartSize, timeStyle: ClockPartSize): string{
-    const rawDateStyle = switch(dateStyle){
-        case ClockPartSize.None:
-        DateFormat.SHORT
-        break;
-        case ClockPartSize.Short:
-        DateFormat.SHORT
-        break;
-        case ClockPartSize.Medium:
-        DateFormat.MEDIUM
-        break;
-        case ClockPartSize.Long:
-        DateFormat.LONG
-        break;
-        case ClockPartSize.Full:
-        DateFormat.FULL
-        break;
-    }
-    ;
+export function javaUtilDateFormat(this_: Date, dateStyle: ClockPartSize, timeStyle: ClockPartSize): string{
+    const rawDateStyle = (() => {switch(dateStyle) {
+                case ClockPartSize.None:
+                return DateFormat.SHORT
+                break;
+                case ClockPartSize.Short:
+                return DateFormat.SHORT
+                break;
+                case ClockPartSize.Medium:
+                return DateFormat.MEDIUM
+                break;
+                case ClockPartSize.Long:
+                return DateFormat.LONG
+                break;
+                case ClockPartSize.Full:
+                return DateFormat.FULL
+                break;
+            }
+    })();
     
-    const rawTimeStyle = switch(timeStyle){
-        case ClockPartSize.None:
-        DateFormat.SHORT
-        break;
-        case ClockPartSize.Short:
-        DateFormat.SHORT
-        break;
-        case ClockPartSize.Medium:
-        DateFormat.MEDIUM
-        break;
-        case ClockPartSize.Long:
-        DateFormat.LONG
-        break;
-        case ClockPartSize.Full:
-        DateFormat.FULL
-        break;
-    }
-    ;
+    const rawTimeStyle = (() => {switch(timeStyle) {
+                case ClockPartSize.None:
+                return DateFormat.SHORT
+                break;
+                case ClockPartSize.Short:
+                return DateFormat.SHORT
+                break;
+                case ClockPartSize.Medium:
+                return DateFormat.MEDIUM
+                break;
+                case ClockPartSize.Long:
+                return DateFormat.LONG
+                break;
+                case ClockPartSize.Full:
+                return DateFormat.FULL
+                break;
+            }
+    })();
     
     
-    const format = if (dateStyle.equals(ClockPartSize.None)) {
-        (() => {if (timeStyle.equals(ClockPartSize.None)) {
+    const format = (() => {if (dateStyle.equals(ClockPartSize.None)) {
+                if (timeStyle.equals(ClockPartSize.None)) {
                     throw IllegalStateException.constructor();
-        }})()
-        return DateFormat.getTimeInstance(rawTimeStyle);
-    } else if (timeStyle.equals(ClockPartSize.None)) {
-        return DateFormat.getDateInstance(rawDateStyle);
-    } else {
-        return DateFormat.getDateTimeInstance(rawDateStyle, rawTimeStyle);
-    };
+                }
+                return DateFormat.getTimeInstance(rawTimeStyle);
+            } else if (timeStyle.equals(ClockPartSize.None)) {
+                return DateFormat.getDateInstance(rawDateStyle);
+            } else {
+                return DateFormat.getDateTimeInstance(rawDateStyle, rawTimeStyle);
+    }})();
     
-    return format.format(this_Format);
+    return format.format(this_);
 }
 
 //! Declares com.lightningkite.khrysalis.time.iso8601
-export function javaUtilDateIso8601(this_Iso8601: Date): string{ return also(SimpleDateFormat.constructorkotlinString("yyyy-MM-dd'T'HH:mm:ss"), (this_) => setJavaTextSimpleDateFormatTimeZone(this_, TimeZone.getTimeZone("UTC"))).format(this_Iso8601); }
+export function javaUtilDateIso8601(this_: Date): string{ return also(SimpleDateFormat.constructorkotlinString("yyyy-MM-dd'T'HH:mm:ss"), (this_1) => setJavaTextSimpleDateFormatTimeZone(this_1, TimeZone.getTimeZone("UTC"))).format(this_); }
 

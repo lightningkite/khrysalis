@@ -2,6 +2,7 @@
 // File: location/GeoCoordinate.shared.kt
 // Package: com.lightningkite.khrysalis.location
 // FQImport: com.lightningkite.khrysalis.Codable TS Codable
+import { parse as parseJsonTyped } from 'khrysalis/dist/net/jsonParsing'
 import { Codable } from './../Codable.actual'
 
 //! Declares com.lightningkite.khrysalis.location.GeoCoordinate
@@ -9,10 +10,18 @@ export class GeoCoordinate implements Codable {
     public static implementsInterfaceComLightningkiteKhrysalisCodable = true;
     public readonly latitude: number;
     public readonly longitude: number;
-    public constructor( latitude: number,  longitude: number) {
+    public constructor(latitude: number, longitude: number) {
         this.latitude = latitude;
         this.longitude = longitude;
     }
+    public static fromJson(obj: any): GeoCoordinate { return new GeoCoordinate(
+            parseJsonTyped(obj["latitude"], [Number]) as number, 
+            parseJsonTyped(obj["longitude"], [Number]) as number
+    ) }
+    public toJson(): object { return {
+            latitude: this.latitude, 
+            longitude: this.longitude
+    } }
     public hashCode(): number {
         let hash = 17;
         hash = 31 * hash + Math.floor(this.latitude);

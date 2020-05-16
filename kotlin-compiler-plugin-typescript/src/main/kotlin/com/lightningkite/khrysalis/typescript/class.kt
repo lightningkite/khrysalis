@@ -2,7 +2,6 @@ package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.generic.PartialTranslatorByType
 import com.lightningkite.khrysalis.typescript.manifest.declaresPrefix
-import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.allOverridden
 import com.lightningkite.khrysalis.util.forEachBetween
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
@@ -12,11 +11,11 @@ import org.jetbrains.kotlin.js.translate.callTranslator.getReturnType
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
-import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 import org.jetbrains.kotlin.resolve.scopes.DescriptorKindFilter
 import org.jetbrains.kotlin.types.typeUtil.supertypes
 import java.util.*
 import kotlin.collections.ArrayList
+import kotlin.reflect.jvm.internal.impl.types.FlexibleType
 
 
 fun TypescriptTranslator.registerClass() {
@@ -87,8 +86,8 @@ fun TypescriptTranslator.registerClass() {
                 }
             }
             ?.forEach {
-                fun writeDefaultObj(){
-                    val toOverrideParent = when(it){
+                fun writeDefaultObj() {
+                    val toOverrideParent = when (it) {
                         is PropertyDescriptor -> it.allOverridden().first().containingDeclaration as ClassDescriptor
                         is FunctionDescriptor -> it.allOverridden().first().containingDeclaration as ClassDescriptor
                         else -> return
@@ -265,8 +264,9 @@ fun TypescriptTranslator.registerClass() {
             }
             -";\n"
         }
-        val parentClassName = typedRule.parentOfType<KtClassBody>()?.parentOfType<KtClass>()?.resolvedClass?.tsTopLevelName
-        if(typedRule.isInner()){
+        val parentClassName =
+            typedRule.parentOfType<KtClassBody>()?.parentOfType<KtClass>()?.resolvedClass?.tsTopLevelName
+        if (typedRule.isInner()) {
             -"parentThis: "
             -parentClassName
             -";\n"
@@ -353,25 +353,96 @@ fun TypescriptTranslator.registerClass() {
             }
         }
 
+        if (typedRule.superTypeListEntries
+                .mapNotNull { it as? KtSuperTypeEntry }
+                .any { it.typeReference?.resolvedType?.getJetTypeFqName(false) == "com.lightningkite.khrysalis.Codable" }
+        ) {
+            //Generate codable constructor
+            out.addImport("khrysalis/dist/net/jsonParsing", "parse", "parseJsonTyped")
+            -"public static fromJson"
+            -typedRule.typeParameterList
+            -"(obj: any"
+            typedRule.typeParameters.forEach {
+                -", "
+                -it.name
+                -": any"
+            }
+            -"): "
+            -tsTopLevelNameElement(typedRule)
+            -typedRule.typeParameterList
+            -" { return new "
+            -tsTopLevelNameElement(typedRule)
+            -"(\n"
+            typedRule.primaryConstructor?.valueParameters?.forEachBetween(
+                forItem = {
+                    if(it.hasValOrVar()) {
+                        val type = it.typeReference?.resolvedType ?: run {
+                            -"obj[\""
+                            -it.jsonName
+                            -"\"]"
+                            return@forEachBetween
+                        }
+
+                        -"parseJsonTyped("
+                        -"obj[\""
+                        -it.jsonName
+                        -"\"], "
+                        (type.constructor.declarationDescriptor as? TypeParameterDescriptor)?.let {
+                            -it.name.asString()
+                        } ?: -CompleteReflectableType(type)
+                        -") as "
+                        -type
+                    } else {
+                        -"undefined"
+                    }
+                },
+                between = {
+                    -", \n"
+                }
+            )
+            -"\n) }\n"
+
+            //Generate toJson()
+            -"public toJson(): object { return {\n"
+            typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEachBetween(
+                forItem = {
+                    -it.jsonName
+                    -": this."
+                    -it.jsonName
+                },
+                between = {
+                    -", \n"
+                }
+            )
+            -"\n} }\n"
+        }
 
         if (typedRule.isData()) {
             //Generate hashCode() if not present
             if (typedRule.body?.declarations?.any { it is FunctionDescriptor && (it as KtDeclaration).name == "hashCode" && it.valueParameters.isEmpty() } != true) {
                 -"public hashCode(): number {\nlet hash = 17;\n"
                 typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEach { param ->
-                    val type = param.typeReference?.resolvedType?.getJetTypeFqName(false)
+                    val rawType = param.typeReference?.resolvedType
                         ?: throw IllegalArgumentException("No type reference available to generate hashCode() function")
-                    replacements.functions[type + ".hashCode"]?.firstOrNull()?.let {
-                        -"hash = 31 * hash + "
+                    val typeName = param.typeReference?.resolvedType?.getJetTypeFqName(false)
+                    -"hash = 31 * hash + "
+                    replacements.functions[typeName + ".hashCode"]?.firstOrNull()?.let {
                         emitTemplate(
                             requiresWrapping = true,
                             template = it.template,
                             receiver = listOf("this.", param.nameIdentifier)
                         )
                     } ?: run {
-                        -"hash = 31 * hash + this."
-                        -param.nameIdentifier
-                        -"?.hashCode() ?? 0"
+                        if(rawType.constructor.declarationDescriptor is TypeParameterDescriptor) {
+                            out.addImport("khrysalis/dist/Kotlin", "hashAnything")
+                            -"hashAnything(this."
+                            -param.nameIdentifier
+                            -")"
+                        } else {
+                            -"this."
+                            -param.nameIdentifier
+                            -"?.hashCode() ?? 0"
+                        }
                     }
                     -";\n"
                 }
@@ -385,9 +456,10 @@ fun TypescriptTranslator.registerClass() {
                 -tsTopLevelNameElement(typedRule)
                 typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEach { param ->
                     -" && "
-                    val type = param.typeReference?.resolvedType?.getJetTypeFqName(false)
+                    val rawType = param.typeReference?.resolvedType
                         ?: throw IllegalArgumentException("No type reference available to generate hashCode() function")
-                    replacements.functions[type + ".equals"]?.firstOrNull()?.let {
+                    val typeName = param.typeReference?.resolvedType?.getJetTypeFqName(false)
+                    replacements.functions[typeName + ".equals"]?.firstOrNull()?.let {
                         emitTemplate(
                             requiresWrapping = true,
                             template = it.template,
@@ -397,12 +469,26 @@ fun TypescriptTranslator.registerClass() {
                             parameterByIndex = { listOf("other.", param.nameIdentifier) }
                         )
                     } ?: run {
-                        -"(this."
-                        -param.nameIdentifier
-                        -"?.equals("
-                        -"other."
-                        -param.nameIdentifier
-                        -") ?? false)"
+                        if(rawType.constructor.declarationDescriptor is TypeParameterDescriptor) {
+                            out.addImport("khrysalis/dist/Kotlin", "equalityAnything")
+                            -"equalityAnything(this."
+                            -param.nameIdentifier
+                            -", "
+                            -"other."
+                            -param.nameIdentifier
+                            -")"
+                        } else {
+                            -"(this."
+                            -param.nameIdentifier
+                            -"?.equals("
+                            -"other."
+                            -param.nameIdentifier
+                            -") ?? "
+                            -"other."
+                            -param.nameIdentifier
+                            -" === null"
+                            -")"
+                        }
                     }
                 }
                 -" }\n"
@@ -749,7 +835,7 @@ fun TypescriptTranslator.registerClass() {
         -typedRule.valueParameterList
         -" {\n"
         val parent = typedRule.parentOfType<KtClassBody>()!!.parentOfType<KtClass>()!!.resolvedClass!!
-        withReceiverScope("real", "result"){ outName ->
+        withReceiverScope("real", "result") { outName ->
             -"let "
             -outName
             -" = new "
@@ -760,7 +846,7 @@ fun TypescriptTranslator.registerClass() {
                 -";\n"
             }
             val b = typedRule.bodyExpression
-            if(b is KtBlockExpression){
+            if (b is KtBlockExpression) {
                 -b.allChildren.toList().drop(1).dropLast(1)
             } else {
                 -b
@@ -773,6 +859,16 @@ fun TypescriptTranslator.registerClass() {
     }
 }
 
+private val KtParameter.jsonName: String
+    get() = this.annotations
+        .flatMap { it.entries }
+        .find { it.typeReference?.text?.substringAfterLast('.')?.substringBefore('(') == "JsonProperty" }
+        ?.valueArguments
+        ?.firstOrNull()
+        ?.getArgumentExpression()
+        ?.text
+        ?.trim('"')
+        ?: this.name ?: "x"
 private val weakKtClassPostActions = WeakHashMap<KtElement, ArrayList<() -> Unit>>()
 fun KtElement.runPostActions() {
     weakKtClassPostActions.remove(this)?.forEach { it() }
@@ -790,4 +886,6 @@ val ConstructorDescriptor.tsName: String?
         ?.firstOrNull()
         ?.value
         ?.value
-        ?.toString() ?: ("constructor" + this.valueParameters.joinToString { it.type.getJetTypeFqName(false).split('.').joinToString("").filter { it.isLetter() } })
+        ?.toString() ?: ("constructor" + this.valueParameters.joinToString {
+        it.type.getJetTypeFqName(false).split('.').joinToString("").filter { it.isLetter() }
+    })
