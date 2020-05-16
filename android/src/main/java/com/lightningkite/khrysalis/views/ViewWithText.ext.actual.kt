@@ -15,7 +15,7 @@ var TextView.textString: String
         setText(value)
     }
 
-fun TextView.setColor(color: ColorResource) {
+fun TextView.setTextColorResource(color: ColorResource) {
     setTextColor(resources.getColor(color))
 }
 

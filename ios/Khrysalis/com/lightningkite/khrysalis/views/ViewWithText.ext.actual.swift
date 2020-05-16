@@ -56,11 +56,11 @@ public extension UILabel {
         }
     }
 
-    func setTextColor(color: ColorResource){
+    func setTextColorResource(color: ColorResource){
         textColor = color
     }
 
-    func setTextColor(_ color: ColorResource){
+    func setTextColorResource(_ color: ColorResource){
         textColor = color
     }
 }
