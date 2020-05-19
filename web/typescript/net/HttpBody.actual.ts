@@ -100,8 +100,10 @@ export function androidGraphicsBitmapToHttpBody(this_: Bitmap, maxBytes: number 
 
 //! Declares com.lightningkite.khrysalis.net.multipartFormBody
 export function multipartFormBody(...parts: HttpBodyPart[]): HttpBody{
-    return also(MultipartBody.Builder.constructor().setType(MultipartBody.FORM), (it) => for (const part of parts) {
-            it.addPart(part);
+    return also(MultipartBody.Builder.constructor().setType(MultipartBody.FORM), (it) => {
+            for (const part of parts) {
+                it.addPart(part);
+            }
     }).build();
 }
 //! Declares com.lightningkite.khrysalis.net.multipartFormFilePart

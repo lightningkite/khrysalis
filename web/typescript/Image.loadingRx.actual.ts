@@ -59,11 +59,11 @@ export function comLightningkiteKhrysalisImageLoad(this_: Image): Observable<Bit
         return (() => {if (this_ instanceof ImageRaw) {
                     return rxOf(BitmapFactory.decodeByteArray(this_.raw, 0, this_.raw.size))
                 } else if (this_ instanceof ImageReference) {
-                    return comLightningkiteKhrysalisImageReferenceLoad(undefined)
+                    return this_.comLightningkiteKhrysalisImageReferenceLoad(undefined)
                 } else if (this_ instanceof ImageBitmap) {
                     return rxOf(this_.bitmap)
                 } else if (this_ instanceof ImageRemoteUrl) {
-                    return comLightningkiteKhrysalisImageRemoteUrlLoad()
+                    return this_.comLightningkiteKhrysalisImageRemoteUrlLoad()
         }})()
     } catch (e: Exception) {
         return Single.error(e);
@@ -78,15 +78,21 @@ export function comLightningkiteKhrysalisImageReferenceLoad(this_: ImageReferenc
         ((_it)=>{
                 if(_it === null) return null;
                 return javaIoCloseableUse(_it, (it) => {
-                        const sizeOpts = also(BitmapFactory.Options.constructor(), (this_1) => this_1.inJustDecodeBounds = true);
+                        const sizeOpts = also(BitmapFactory.Options.constructor(), (this_1) => {
+                                this_1.inJustDecodeBounds = true
+                        });
                         
-                        return also(BitmapFactory.decodeStream(it, null, sizeOpts), (this_1) => finalOpts.inSampleSize = kotlinIntCoerceAtLeast(max(Math.floor(((it) => Math.ceil(it))(sizeOpts.outWidth / maxDimension)), Math.floor(((it) => Math.ceil(it))(sizeOpts.outHeight / maxDimension))), 1));
+                        return also(BitmapFactory.decodeStream(it, null, sizeOpts), (this_1) => {
+                                finalOpts.inSampleSize = kotlinIntCoerceAtLeast(max(Math.floor(((it) => Math.ceil(it))(sizeOpts.outWidth / maxDimension)), Math.floor(((it) => Math.ceil(it))(sizeOpts.outHeight / maxDimension))), 1)
+                        });
                 })
         })(getAndroidContentContextContentResolver(HttpClient.INSTANCE.appContext).openInputStream(this_.uri))
         ?: return Single.error(IllegalStateException.constructorkotlinString("Context from HttpClient is missing; please set up HttpClient before attempting this."));
         ((_it)=>{
                 if(_it === null) return null;
-                return javaIoCloseableUse(_it, (it) => return rxOf(BitmapFactory.decodeStream(it, null, finalOpts)))
+                return javaIoCloseableUse(_it, (it) => {
+                        return rxOf(BitmapFactory.decodeStream(it, null, finalOpts))
+                })
         })(getAndroidContentContextContentResolver(HttpClient.INSTANCE.appContext).openInputStream(this_.uri))
         ?: return Single.error(IllegalStateException.constructorkotlinString("Context from HttpClient is missing; please set up HttpClient before attempting this."));
     } catch (e: Exception) {

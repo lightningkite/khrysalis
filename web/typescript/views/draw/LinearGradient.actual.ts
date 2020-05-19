@@ -17,13 +17,5 @@
 // FQImport: android.graphics.Shader TS Shader
 
 //! Declares com.lightningkite.khrysalis.views.draw.newLinearGradient
-export function newLinearGradient(
-    x0: number,
-    y0: number,
-    x1: number,
-    y1: number,
-    colors: Array<number>,
-    positions: Array<number>,
-    tile: Shader.TileMode
-){ return android.graphics.LinearGradient.constructorkotlinFloat, kotlinFloat, kotlinFloat, kotlinFloat, kotlinIntArray, kotlinFloatArray, androidgraphicsShaderTileMode(x0, y0, x1, y1, kotlinCollectionsCollectionToIntArray(colors), kotlinCollectionsCollectionToFloatArray(positions), tile); }
+export function newLinearGradient(x0: number, y0: number, x1: number, y1: number, colors: Array<number>, positions: Array<number>, tile: Shader.TileMode): LinearGradient{ return android.graphics.LinearGradient.constructorkotlinFloat, kotlinFloat, kotlinFloat, kotlinFloat, kotlinIntArray, kotlinFloatArray, androidgraphicsShaderTileMode(x0, y0, x1, y1, kotlinCollectionsCollectionToIntArray(colors), kotlinCollectionsCollectionToFloatArray(positions), tile); }
 

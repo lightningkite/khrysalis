@@ -35,6 +35,7 @@ import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from
 import { androidWidgetLinearLayoutParams } from './../../views/LinearLayout.actual'
 import { StandardObservableProperty } from './../StandardObservableProperty.shared'
 import { ObservableProperty } from './../ObservableProperty.shared'
+import { SubscriptionLike } from 'rxjs'
 import { NumberRange } from 'khrysalis/dist/Kotlin'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.LinearLayoutBoundSubview
@@ -48,7 +49,7 @@ class LinearLayoutBoundSubview<T> {
 }
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind
-export function androidWidgetLinearLayoutBind<T>(this_: LinearLayout, data: ObservableProperty<Array<T>>, defaultValue: T, makeView:  (a: ObservableProperty<T>) => View){
+export function androidWidgetLinearLayoutBind<T>(this_: LinearLayout, data: ObservableProperty<Array<T>>, defaultValue: T, makeView:  (a: ObservableProperty<T>) => View): SubscriptionLike{
     const existingViews: Array<LinearLayoutBoundSubview<T>> = [];
     
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(data, undefined, undefined, (value) => {
@@ -67,7 +68,7 @@ export function androidWidgetLinearLayoutBind<T>(this_: LinearLayout, data: Obse
                     for (const iter of new NumberRange(1, (-excessViews))) {
                         const prop = new StandardObservableProperty(defaultValue, undefined);
                         
-                        const view = this.makeView(prop);
+                        const view = makeView(prop);
                         
                         this_.addView(view, androidWidgetLinearLayoutParams(this_, undefined, undefined, undefined, undefined, undefined, undefined, AlignPair.Companion.INSTANCE.centerFill, undefined));
                         existingViews.push(new LinearLayoutBoundSubview(view, prop));

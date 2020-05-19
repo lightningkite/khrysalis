@@ -252,6 +252,7 @@ fun TypescriptTranslator.registerClass() {
         -" {\n"
         writeInterfaceMarkers(typedRule)
         typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEach {
+
             -(it.visibilityModifier() ?: "public")
             -" "
             if ((it.valOrVarKeyword as? LeafPsiElement)?.elementType == KtTokens.VAL_KEYWORD) {
@@ -274,6 +275,8 @@ fun TypescriptTranslator.registerClass() {
         typedRule.primaryConstructor?.let { cons ->
             if (typedRule.isEnum()) {
                 -"private"
+            } else if (typedRule.hasModifier(KtTokens.ABSTRACT_KEYWORD)) {
+                -"protected"
             } else {
                 -(cons.visibilityModifier() ?: "public")
             }
@@ -344,6 +347,11 @@ fun TypescriptTranslator.registerClass() {
             -"}\n"
         } ?: typedRule.superTypeListEntries.mapNotNull { it as? KtSuperTypeCallEntry }.takeUnless { it.isEmpty() }
             ?.firstOrNull()?.let {
+                if (typedRule.hasModifier(KtTokens.ABSTRACT_KEYWORD)) {
+                    -"protected "
+                } else {
+                    -"public "
+                }
                 -"constructor() { super"
                 -it.valueArgumentList
                 -"; }"
@@ -375,7 +383,7 @@ fun TypescriptTranslator.registerClass() {
             -"(\n"
             typedRule.primaryConstructor?.valueParameters?.forEachBetween(
                 forItem = {
-                    if(it.hasValOrVar()) {
+                    if (it.hasValOrVar()) {
                         val type = it.typeReference?.resolvedType ?: run {
                             -"obj[\""
                             -it.jsonName
@@ -433,7 +441,7 @@ fun TypescriptTranslator.registerClass() {
                             receiver = listOf("this.", param.nameIdentifier)
                         )
                     } ?: run {
-                        if(rawType.constructor.declarationDescriptor is TypeParameterDescriptor) {
+                        if (rawType.constructor.declarationDescriptor is TypeParameterDescriptor) {
                             out.addImport("khrysalis/dist/Kotlin", "hashAnything")
                             -"hashAnything(this."
                             -param.nameIdentifier
@@ -469,7 +477,7 @@ fun TypescriptTranslator.registerClass() {
                             parameterByIndex = { listOf("other.", param.nameIdentifier) }
                         )
                     } ?: run {
-                        if(rawType.constructor.declarationDescriptor is TypeParameterDescriptor) {
+                        if (rawType.constructor.declarationDescriptor is TypeParameterDescriptor) {
                             out.addImport("khrysalis/dist/Kotlin", "equalityAnything")
                             -"equalityAnything(this."
                             -param.nameIdentifier
@@ -792,6 +800,7 @@ fun TypescriptTranslator.registerClass() {
             val withComments = callExp.valueArgumentList?.withComments() ?: listOf()
             -ArgumentsList(
                 on = constructor,
+                resolvedCall = callExp.resolvedCall,
                 orderedArguments = withComments.filter { !it.first.isNamed() }
                     .map { it.first.getArgumentExpression()!! to it.second },
                 namedArguments = withComments.filter { it.first.isNamed() },

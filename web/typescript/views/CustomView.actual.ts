@@ -103,14 +103,16 @@ export class CustomView extends FrameLayout {
         const a = getAndroidContentContextTheme(context).obtainStyledAttributes(attrs, R.styleable.CustomView, defStyleAttr, 0);
         ;
         const temp634 = a.getString(R.styleable.CustomView_delegateClass);
-        if(temp634 !== null) ((delegateClassName) => this.delegate = try {
-                return ((it) => it as CustomViewDelegate)(getJavaLangClassClassLoader(getKotlinReflectKClassJava(context::class))!!
-                    .loadClass(delegateClassName)
-                .newInstance());
-            } catch(e: ClassNotFoundException){
-                return ((it) => it as CustomViewDelegate)(getJavaLangClassClassLoader(getKotlinReflectKClassJava(this::class))!!
-                    .loadClass(delegateClassName)
-                .newInstance());
+        if(temp634 !== null) ((delegateClassName) => {
+                this.delegate = try {
+                    return ((it) => it as CustomViewDelegate)(getJavaLangClassClassLoader(getKotlinReflectKClassJava(context::class))!!
+                        .loadClass(delegateClassName)
+                    .newInstance());
+                } catch(e: ClassNotFoundException){
+                    return ((it) => it as CustomViewDelegate)(getJavaLangClassClassLoader(getKotlinReflectKClassJava(this::class))!!
+                        .loadClass(delegateClassName)
+                    .newInstance());
+                }
         })(temp634);
         this.accessibilityView = null;
         this.touches = HashMap.constructor<number, Touch>();
@@ -122,7 +124,9 @@ export class CustomView extends FrameLayout {
     public get delegate(): (CustomViewDelegate | null) { return this._delegate; }
     public set delegate(value: (CustomViewDelegate | null)) {
         const temp640 = this._delegate;
-        if(temp640 !== null) ((it) => it.customView = null)(temp640);
+        if(temp640 !== null) ((it) => {
+                it.customView = null
+        })(temp640);
         if(!(value.equals(null))) {
             value.customView = this;
         }
@@ -131,7 +135,9 @@ export class CustomView extends FrameLayout {
         if (getAndroidViewAccessibilityAccessibilityManagerIsEnabled((getComLightningkiteKhrysalisViewsCustomViewContext(this).getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager))) {
             this.accessibilityView = this.delegate?.generateAccessibilityView();
             const temp642 = this.accessibilityView;
-            if(temp642 !== null) ((it) => this.addView(it, FrameLayout.LayoutParams.constructorkotlinInt, kotlinInt(MATCH_PARENT, MATCH_PARENT)))(temp642);
+            if(temp642 !== null) ((it) => {
+                    this.addView(it, FrameLayout.LayoutParams.constructorkotlinInt, kotlinInt(MATCH_PARENT, MATCH_PARENT))
+            })(temp642);
         }
     }
     
@@ -217,13 +223,13 @@ export class CustomView extends FrameLayout {
     
     private readonly metrics = getAndroidContentResResourcesDisplayMetrics(getAndroidContentContextResources(context));
     
-    public onDraw(canvas: Canvas){
+    public onDraw(canvas: Canvas): void{
         .onDraw(canvas);
         if (this.accessibilityView.equals(null)) {
             this.delegate?.draw(canvas, getComLightningkiteKhrysalisViewsCustomViewWidth(this), getComLightningkiteKhrysalisViewsCustomViewHeight(this), this.metrics);
         }
     }
-    public onMeasure(widthMeasureSpec: number, heightMeasureSpec: number){
+    public onMeasure(widthMeasureSpec: number, heightMeasureSpec: number): void{
         const widthMode = MeasureSpec.getMode(widthMeasureSpec);
         
         const widthSize = MeasureSpec.getSize(widthMeasureSpec);

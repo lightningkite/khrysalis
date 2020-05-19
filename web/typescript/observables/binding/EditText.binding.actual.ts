@@ -39,9 +39,11 @@ import { MutableObservableProperty } from './../MutableObservableProperty.shared
 import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from './../../rx/DisposeCondition.actual'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindString
-export function androidWidgetEditTextBindString(this_: EditText, observable: MutableObservableProperty<string>){
-    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => if (!(observable.value === getAndroidWidgetEditTextText(this_).toString())) {
-                this_.setText(observable.value);
+export function androidWidgetEditTextBindString(this_: EditText, observable: MutableObservableProperty<string>): void{
+    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
+                if (!(observable.value === getAndroidWidgetEditTextText(this_).toString())) {
+                    this_.setText(observable.value);
+                }
     }), getAndroidViewViewRemoved(this_));
     this_.addTextChangedListener(new class Anon implements TextWatcher {
             public static implementsInterfaceAndroidTextTextWatcher = true;
@@ -49,9 +51,9 @@ export function androidWidgetEditTextBindString(this_: EditText, observable: Mut
             public constructor() {
             }
             
-            afterTextChanged(s: (Editable | null)){}
-            beforeTextChanged(s: (CharSequence | null), start: number, count: number, after: number){}
-            onTextChanged(s: (CharSequence | null), start: number, before: number, count: number){
+            afterTextChanged(s: (Editable | null)): void{}
+            beforeTextChanged(s: (CharSequence | null), start: number, count: number, after: number): void{}
+            onTextChanged(s: (CharSequence | null), start: number, before: number, count: number): void{
                 if (!(observable.value === s)) {
                     observable.value = (kotlinAnyToString(s));
                 }
@@ -60,7 +62,7 @@ export function androidWidgetEditTextBindString(this_: EditText, observable: Mut
 }
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindInteger
-export function androidWidgetEditTextBindInteger(this_: EditText, observable: MutableObservableProperty<number>){
+export function androidWidgetEditTextBindInteger(this_: EditText, observable: MutableObservableProperty<number>): void{
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
                 const currentValue = kotlinStringToIntOrNull(getAndroidWidgetEditTextText(this_).toString());
                 
@@ -74,9 +76,9 @@ export function androidWidgetEditTextBindInteger(this_: EditText, observable: Mu
             public constructor() {
             }
             
-            afterTextChanged(s: (Editable | null)){}
-            beforeTextChanged(s: (CharSequence | null), start: number, count: number, after: number){}
-            onTextChanged(s: (CharSequence | null), start: number, before: number, count: number){
+            afterTextChanged(s: (Editable | null)): void{}
+            beforeTextChanged(s: (CharSequence | null), start: number, count: number, after: number): void{}
+            onTextChanged(s: (CharSequence | null), start: number, before: number, count: number): void{
                 const currentValue = kotlinStringToIntOrNull(kotlinAnyToString(s)) ?: 0;
                 
                 if (!(observable.value === currentValue)) {
@@ -89,7 +91,7 @@ export function androidWidgetEditTextBindInteger(this_: EditText, observable: Mu
 
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindDouble
-export function androidWidgetEditTextBindDouble(this_: EditText, observable: MutableObservableProperty<number>){
+export function androidWidgetEditTextBindDouble(this_: EditText, observable: MutableObservableProperty<number>): void{
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
                 const currentValue = kotlinStringToDoubleOrNull(getAndroidWidgetEditTextText(this_).toString());
                 
@@ -103,9 +105,9 @@ export function androidWidgetEditTextBindDouble(this_: EditText, observable: Mut
             public constructor() {
             }
             
-            afterTextChanged(s: (Editable | null)){}
-            beforeTextChanged(s: (CharSequence | null), start: number, count: number, after: number){}
-            onTextChanged(s: (CharSequence | null), start: number, before: number, count: number){
+            afterTextChanged(s: (Editable | null)): void{}
+            beforeTextChanged(s: (CharSequence | null), start: number, count: number, after: number): void{}
+            onTextChanged(s: (CharSequence | null), start: number, before: number, count: number): void{
                 const currentValue = kotlinStringToDoubleOrNull(kotlinAnyToString(s)) ?: 0.0;
                 
                 if (!(observable.value === currentValue)) {

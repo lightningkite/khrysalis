@@ -3,10 +3,12 @@ package com.lightningkite.khrysalis.typescript
 import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.forEachBetween
 import org.jetbrains.kotlin.com.intellij.psi.tree.IElementType
+import org.jetbrains.kotlin.descriptors.CallableDescriptor
 import org.jetbrains.kotlin.descriptors.FunctionDescriptor
 import org.jetbrains.kotlin.lexer.KtSingleValueToken
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
+import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
 
 //class TestThing(){
 //    operator fun dec
@@ -17,14 +19,16 @@ data class ValueOperator(
     val right: Any,
     val functionDescriptor: FunctionDescriptor,
     val dispatchReceiver: Any? = null,
-    val operationToken: IElementType
+    val operationToken: IElementType,
+    val resolvedCall: ResolvedCall<out CallableDescriptor>? = null
 )
 
 data class VirtualArrayGet(
     val arrayExpression: Any,
     val indexExpressions: List<Any>,
     val functionDescriptor: FunctionDescriptor,
-    val dispatchReceiver: Any? = null
+    val dispatchReceiver: Any? = null,
+    val resolvedCall: ResolvedCall<out CallableDescriptor>? = null
 )
 
 fun KtExpression.isSimple(): Boolean = when(this){
@@ -44,7 +48,8 @@ fun TypescriptTranslator.registerOperators() {
             arrayExpression = typedRule.arrayExpression!!,
             indexExpressions = typedRule.indexExpressions,
             functionDescriptor = f,
-            dispatchReceiver = typedRule.getTsReceiver()
+            dispatchReceiver = typedRule.getTsReceiver(),
+            resolvedCall = typedRule.resolvedCall
         )
     }
     handle<VirtualArrayGet> {
@@ -60,6 +65,7 @@ fun TypescriptTranslator.registerOperators() {
         -(f.tsName ?: "get")
         -ArgumentsList(
             on = f,
+            resolvedCall = typedRule.resolvedCall,
             prependArguments = if (doubleReceiver) listOf(typedRule.arrayExpression) else listOf(),
             orderedArguments = typedRule.indexExpressions.map { it to null },
             namedArguments = listOf(),
@@ -126,7 +132,13 @@ fun TypescriptTranslator.registerOperators() {
             }
 
             val right: Any = if (typedRule.operationToken == KtTokens.EQ) typedRule.right!! else ValueOperator(
-                left = VirtualArrayGet(tempArray, tempIndexes, arrayAccess.resolvedIndexedLvalueGet!!.resultingDescriptor, typedRule.getTsReceiver()),
+                left = VirtualArrayGet(
+                    arrayExpression = tempArray,
+                    indexExpressions = tempIndexes,
+                    functionDescriptor = arrayAccess.resolvedIndexedLvalueGet!!.resultingDescriptor,
+                    dispatchReceiver = typedRule.getTsReceiver(),
+                    resolvedCall = arrayAccess.resolvedIndexedLvalueSet
+                ),
                 right = typedRule.right!!,
                 functionDescriptor = typedRule.operationReference.resolvedReferenceTarget as FunctionDescriptor,
                 dispatchReceiver = typedRule.getTsReceiver(),
@@ -144,6 +156,7 @@ fun TypescriptTranslator.registerOperators() {
             -(setFunction.tsName ?: "set")
             -ArgumentsList(
                 on = setFunction,
+                resolvedCall = typedRule.resolvedCall,
                 prependArguments = if (doubleReceiver) listOf(arrayAccess.arrayExpression!!) else listOf(),
                 orderedArguments = tempIndexes.map { it to null } + (right to null),
                 namedArguments = listOf(),
@@ -189,7 +202,13 @@ fun TypescriptTranslator.registerOperators() {
             }
 
             val right: Any = if (reuseIdentifiers) ValueOperator(
-                left = VirtualArrayGet(tempArray, tempIndexes, arrayAccess.resolvedIndexedLvalueGet!!.resultingDescriptor, typedRule.getTsReceiver()),
+                left = VirtualArrayGet(
+                    arrayExpression = tempArray,
+                    indexExpressions = tempIndexes,
+                    functionDescriptor = arrayAccess.resolvedIndexedLvalueGet!!.resultingDescriptor,
+                    dispatchReceiver = typedRule.getTsReceiver(),
+                    resolvedCall = arrayAccess.resolvedIndexedLvalueSet
+                ),
                 right = typedRule.right!!,
                 functionDescriptor = typedRule.operationReference.resolvedReferenceTarget as FunctionDescriptor,
                 dispatchReceiver = typedRule.getTsReceiver(),
@@ -294,6 +313,7 @@ fun TypescriptTranslator.registerOperators() {
         -(typedRule.functionDescriptor.tsName ?: typedRule.functionDescriptor.name.asString())
         -ArgumentsList(
             on = typedRule.functionDescriptor,
+            resolvedCall = typedRule.resolvedCall,
             prependArguments = if (typedRule.functionDescriptor.extensionReceiverParameter != null) listOf(left) else listOf(),
             orderedArguments = listOf(right to null),
             namedArguments = listOf(),
@@ -320,7 +340,8 @@ fun TypescriptTranslator.registerOperators() {
                 right = typedRule.right!!,
                 functionDescriptor = typedRule.operationReference.resolvedReferenceTarget as FunctionDescriptor,
                 dispatchReceiver = typedRule.getTsReceiver(),
-                operationToken = typedRule.operationToken
+                operationToken = typedRule.operationToken,
+                resolvedCall = typedRule.resolvedCall
             )
         })
 
@@ -359,6 +380,7 @@ fun TypescriptTranslator.registerOperators() {
             -(f.tsName ?: typedRule.operationReference.text)
             -ArgumentsList(
                 on = f,
+                resolvedCall = typedRule.resolvedCall,
                 prependArguments = if (f.extensionReceiverParameter != null) listOf(typedRule.baseExpression!!) else listOf(),
                 orderedArguments = listOf(),
                 namedArguments = listOf(),

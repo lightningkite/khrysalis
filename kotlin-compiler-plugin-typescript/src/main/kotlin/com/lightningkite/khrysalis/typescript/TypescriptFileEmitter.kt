@@ -80,7 +80,6 @@ class TypescriptFileEmitter(val translator: TypescriptTranslator, val file: KtFi
     private fun addImportFromFq(fqName: String, name: String) {
         translator.kotlinFqNameToRelativeFile[fqName]?.let { relFile ->
             val asPath = File(file.virtualFilePath.removePrefix(translator.commonPath).removeSuffix(".kt").plus(".ts"))
-            translator.collector?.report(CompilerMessageSeverity.WARNING, "Comparing $asPath and $relFile for importing $fqName")
             if(asPath == relFile){
                 importedFqs.add("$fqName SKIPPED due to same file")
             } else {

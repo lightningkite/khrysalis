@@ -56,7 +56,7 @@ import { MonthCVD } from './MonthCVD.shared'
 
 //! Declares com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD
 export class SelectMultipleDatesMonthCVD extends MonthCVD {
-    constructor() { super(); }
+    public constructor() { super(); }
     public generateAccessibilityView(): (View | null){ return null; }
     
     public readonly dates: StandardObservableProperty<Set<DateAlone>> = new StandardObservableProperty(setOf(), undefined);
@@ -68,21 +68,14 @@ export class SelectMultipleDatesMonthCVD extends MonthCVD {
     
     
     
-    public measure(width: number, height: number, displayMetrics: DisplayMetrics){
+    public measure(width: number, height: number, displayMetrics: DisplayMetrics): void{
         .measure(width, height, displayMetrics);
         setAndroidGraphicsPaintTextSize(this.selectedDayPaint, getAndroidGraphicsPaintTextSize(this.dayPaint));
     }
     
     public readonly drawDay_dateAlone: DateAlone = new DateAlone(0, 0, 0);
     
-    public drawDay(
-        canvas: Canvas,
-        showingMonth: DateAlone,
-        day: DateAlone,
-        displayMetrics: DisplayMetrics,
-        outer: RectF,
-        inner: RectF
-    ){
+    public drawDay(canvas: Canvas, showingMonth: DateAlone, day: DateAlone, displayMetrics: DisplayMetrics, outer: RectF, inner: RectF): void{
         if (this.dates.value.contains(day)) {
             const leftDate = comLightningkiteKhrysalisTimeDateAloneSetAddDayOfMonth(comLightningkiteKhrysalisTimeDateAloneSet(this.drawDay_dateAlone, day), -1);
             
@@ -110,7 +103,7 @@ export class SelectMultipleDatesMonthCVD extends MonthCVD {
         }
     }
     
-    public onTap(day: DateAlone){
+    public onTap(day: DateAlone): Boolean{
         this.adding = ;
         this.onTouchMove(day);
     }

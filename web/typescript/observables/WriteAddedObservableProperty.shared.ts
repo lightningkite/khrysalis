@@ -36,7 +36,7 @@ export class WriteAddedObservableProperty<A> extends MutableObservableProperty<a
     //! Declares com.lightningkite.khrysalis.observables.WriteAddedObservableProperty.onChange
     public get onChange(): Observable<A> { return this.basedOn.onChange; }
     
-    public update(){
+    public update(): void{
         //Do nothing
     }
 }

@@ -76,14 +76,16 @@ import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from
 import { ObservableProperty } from './../ObservableProperty.shared'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind
-export function androidWidgetAutoCompleteTextViewBind<T>(this_: AutoCompleteTextView, options: ObservableProperty<Array<T>>, toString: (a: T) => string, onItemSelected: (a: T) => void){
+export function androidWidgetAutoCompleteTextViewBind<T>(this_: AutoCompleteTextView, options: ObservableProperty<Array<T>>, toString: (a: T) => string, onItemSelected: (a: T) => void): void{
     const filtered = Array.from(options.value);
     
     this_.setAdapter(new class Anon extends BaseAdapter implements Filterable {
             public static implementsInterfaceAndroidWidgetFilterable = true;
             public constructor() {
                 super();
-                ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(options, undefined, undefined, (text) => getComLightningkiteKhrysalisObservablesBindingBind<no name provided>Filter(this).filter(text.toString())), getAndroidViewViewRemoved(this_));
+                ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(options, undefined, undefined, (text) => {
+                            getComLightningkiteKhrysalisObservablesBindingBind<no name provided>Filter(this).filter(text.toString())
+                }), getAndroidViewViewRemoved(this_));
             }
             
             
@@ -119,7 +121,7 @@ export function androidWidgetAutoCompleteTextViewBind<T>(this_: AutoCompleteText
                         })((tryCastPrimitive(resultValue, "any"))) ?: "";
                     }
                     
-                    publishResults(p0: (CharSequence | null), p1: (FilterResults | null)){
+                    publishResults(p0: (CharSequence | null), p1: (FilterResults | null)): void{
                         filtered.length = 0;
                         filtered.push(...tryCastInterface(p1?.values, "KotlinCollectionsList") ?: []);
                         this.notifyDataSetChanged();
@@ -154,7 +156,9 @@ export function androidWidgetAutoCompleteTextViewBind<T>(this_: AutoCompleteText
             getItemId(position: number): number{ return position; }
             getCount(): number{ return filtered.length; }
     }());
-    this_.setOnItemClickListener((adapterView, view, index, id) => const temp372 = kotlinCollectionsListGetOrNull(filtered, index);
-    if(temp372 !== null) (onItemSelected)(temp372));
+    this_.setOnItemClickListener((adapterView, view, index, id) => {
+            const temp372 = kotlinCollectionsListGetOrNull(filtered, index);
+            if(temp372 !== null) (onItemSelected)(temp372)
+    });
 }
 

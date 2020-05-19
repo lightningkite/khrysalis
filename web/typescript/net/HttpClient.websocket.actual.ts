@@ -27,9 +27,8 @@
 // FQImport: okhttp3.OkHttpClient.newWebSocket TS newWebSocket
 // FQImport: com.lightningkite.khrysalis.net.ConnectedWebSocket.onNext.<anonymous>.binary TS binary
 // FQImport: kotlin.Throwable TS Throwable
-// FQImport: io.reactivex.subjects.PublishSubject TS PublishSubject
-// FQImport: io.reactivex.subjects.PublishSubject.create TS create
 // FQImport: com.lightningkite.khrysalis.net.WebSocketFrame.text TS text
+// FQImport: kotlin.Boolean TS Boolean
 // FQImport: okhttp3.WebSocket TS WebSocket
 // FQImport: com.lightningkite.khrysalis.net.webSocket.headers TS headers
 // FQImport: java.util.Locale TS Locale
@@ -56,7 +55,7 @@
 // FQImport: com.lightningkite.khrysalis.net.HttpClient.client TS client
 // FQImport: okhttp3.Request.Builder.addHeader TS addHeader
 // FQImport: com.lightningkite.khrysalis.bytes.Data TS Data
-import { Observable, Observer, SubscriptionLike } from 'rxjs'
+import { Observable, Observer, Subject, SubscriptionLike } from 'rxjs'
 import { Data } from './../bytes/Data.actual'
 import { HttpClient } from './HttpClient.actual'
 
@@ -71,7 +70,9 @@ export function comLightningkiteKhrysalisNetHttpClientWebSocket(this_: HttpClien
                 .addHeader("Accept-Language", getJavaUtilLocaleLanguage(Locale.getDefault()))
             .build(), out);
             return out;
-    }, (it) => it.ownConnection, (it) => it.complete());
+        }, (it) => it.ownConnection, (it) => {
+            it.complete()
+    });
 }
 
 //! Declares com.lightningkite.khrysalis.net.ConnectedWebSocket
@@ -82,65 +83,65 @@ export class ConnectedWebSocket extends WebSocketListener implements Observer<We
         super();
         this.url = url;
         this.underlyingSocket = null;
-        this._read = PublishSubject.create<WebSocketFrame>();
-        this.ownConnection = PublishSubject.create<ConnectedWebSocket>();
+        this._read = new Subject();
+        this.ownConnection = new Subject();
         this.read = ((this_) => this_.ioReactivexObservableThreadCorrectly(this._read))(HttpClient.INSTANCE);
     }
     
     internal underlyingSocket: (WebSocket | null) = null;
     
-    private readonly _read = PublishSubject.create<WebSocketFrame>();
+    private readonly _read = new Subject();
     
-    public readonly ownConnection = PublishSubject.create<ConnectedWebSocket>();
+    public readonly ownConnection = new Subject();
     
     public readonly read: Observable<WebSocketFrame> = ((this_) => this_.ioReactivexObservableThreadCorrectly(this._read))(HttpClient.INSTANCE);
     
-    public onOpen(webSocket: WebSocket, response: Response){
+    public onOpen(webSocket: WebSocket, response: Response): void{
         console.log(`Socket to ${this.url} opened successfully.`);
         this.ownConnection.next(this);
     }
     
-    public onFailure(webSocket: WebSocket, t: Throwable, response: (Response | null)){
+    public onFailure(webSocket: WebSocket, t: Throwable, response: (Response | null)): void{
         console.log(`Socket to ${this.url} failed with ${t}.`);
         this.ownConnection.error(t);
         this._read.error(t);
     }
     
-    public onClosing(webSocket: WebSocket, code: number, reason: string){
+    public onClosing(webSocket: WebSocket, code: number, reason: string): void{
         console.log(`Socket to ${this.url} closing.`);
         this.ownConnection.complete();
         this._read.complete();
     }
     
-    public onMessage(webSocket: WebSocket, text: string){
+    public onMessage(webSocket: WebSocket, text: string): void{
         console.log(`Socket to ${this.url} got message '${text}'.`);
         this._read.next(new WebSocketFrame(undefined, text));
     }
     
-    public onMessage(webSocket: WebSocket, bytes: ByteString){
+    public onMessage(webSocket: WebSocket, bytes: ByteString): void{
         console.log(`Socket to ${this.url} got binary message of length ${bytes.size()}.`);
         this._read.next(new WebSocketFrame(bytes.toByteArray(), undefined));
     }
     
-    public onClosed(webSocket: WebSocket, code: number, reason: string){
+    public onClosed(webSocket: WebSocket, code: number, reason: string): void{
         console.log(`Socket to ${this.url} closed.`);
     }
     
-    public onComplete(){
+    public onComplete(): Boolean{
         this.underlyingSocket?.close(1000, null);
     }
     
-    public onSubscribe(d: SubscriptionLike){
+    public onSubscribe(d: SubscriptionLike): void{
     }
     
-    public onNext(t: WebSocketFrame){
+    public onNext(t: WebSocketFrame): Boolean{
         const temp344 = t.text;
         if(temp344 !== null) ((it) => this.underlyingSocket?.send(it))(temp344);
         const temp346 = t.binary;
         if(temp346 !== null) ((binary) => this.underlyingSocket?.send(ByteString.of(binary, 0, binary.size)))(temp346);
     }
     
-    public onError(e: Throwable){
+    public onError(e: Throwable): Boolean{
         this.underlyingSocket?.close(1011, e.message);
     }
 }

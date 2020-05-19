@@ -50,11 +50,13 @@ import { ObservableProperty } from './../ObservableProperty.shared'
 import { tryCastClass } from 'khrysalis/dist/Kotlin'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind
-export function androidWidgetSpinnerBind<T>(this_: Spinner, options: ObservableProperty<Array<T>>, selected: MutableObservableProperty<T>, makeView: (a: ObservableProperty<T>) => View){
+export function androidWidgetSpinnerBind<T>(this_: Spinner, options: ObservableProperty<Array<T>>, selected: MutableObservableProperty<T>, makeView: (a: ObservableProperty<T>) => View): void{
     setAndroidWidgetSpinnerAdapter(this_, new class Anon extends BaseAdapter {
             public constructor() {
                 super();
-                comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(options, undefined, undefined, (_) => this.notifyDataSetChanged());
+                comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(options, undefined, undefined, (_) => {
+                        this.notifyDataSetChanged()
+                });
             }
             
             
@@ -63,7 +65,7 @@ export function androidWidgetSpinnerBind<T>(this_: Spinner, options: ObservableP
                 const view = convertView ?: ((this_1) => {
                         const event = new StandardObservableProperty<T>(kotlinCollectionsListGetOrNull(options.value, position) ?: selected.value, undefined);
                         
-                        const subview = this.makeView(event);
+                        const subview = makeView(event);
                         
                         setAndroidViewViewTag(subview, event);
                         return subview;
@@ -71,7 +73,9 @@ export function androidWidgetSpinnerBind<T>(this_: Spinner, options: ObservableP
                 
                 ((_it)=>{
                         if(_it === null) return null;
-                        return ((it) => it.value = kotlinCollectionsListGetOrNull(options.value, position) ?: selected.value)(_it)
+                        return ((it) => {
+                                it.value = kotlinCollectionsListGetOrNull(options.value, position) ?: selected.value
+                        })(_it)
                 })((tryCastClass(getAndroidViewViewTag(view), StandardObservableProperty))) ?: throw IllegalStateException.constructor();
                 return view;
             }
@@ -92,9 +96,9 @@ export function androidWidgetSpinnerBind<T>(this_: Spinner, options: ObservableP
             public constructor() {
             }
             
-            onNothingSelected(parent: (AdapterView<*> | null)){}
+            onNothingSelected(parent: (AdapterView<*> | null)): void{}
             
-            onItemSelected(parent: (AdapterView<*> | null), view: (View | null), position: number, id: number){
+            onItemSelected(parent: (AdapterView<*> | null), view: (View | null), position: number, id: number): void{
                 const newValue = kotlinCollectionsListGetOrNull(options.value, position) ?: return;
                 
                 if (!(selected.value.equals(newValue))) {

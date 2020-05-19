@@ -114,22 +114,24 @@ import { ViewDependency } from './../../views/ViewDependency.actual'
 import { also, tryCastClass } from 'khrysalis/dist/Kotlin'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.whenScrolledToEnd
-export function androidxRecyclerviewWidgetRecyclerViewWhenScrolledToEnd(this_: RecyclerView, action: () => void){
+export function androidxRecyclerviewWidgetRecyclerViewWhenScrolledToEnd(this_: RecyclerView, action: () => void): void{
     this_.addOnScrollListener(new class Anon extends RecyclerView.RecyclerView {
             public constructor() {
                 super();
             }
             
-            onScrolled(recyclerView: RecyclerView, dx: number, dy: number){
+            onScrolled(recyclerView: RecyclerView, dx: number, dy: number): void{
                 const temp393 = (tryCastClass(getAndroidxRecyclerviewWidgetRecyclerViewLayoutManager(this_), LinearLayoutManager));
-                if(temp393 !== null) ((it) => if (it.findLastVisibleItemPosition() === ((_it)=>{
-                                if(_it === null) return null;
-                                return _it - 1
-                        })(((_it)=>{
+                if(temp393 !== null) ((it) => {
+                        if (it.findLastVisibleItemPosition() === ((_it)=>{
                                     if(_it === null) return null;
-                                    return getAndroidxRecyclerviewWidgetRecyclerViewAdapterItemCount(_it)
-                    })(getAndroidxRecyclerviewWidgetRecyclerViewAdapter(this_)))) {
-                        this.action();
+                                    return _it - 1
+                            })(((_it)=>{
+                                        if(_it === null) return null;
+                                        return getAndroidxRecyclerviewWidgetRecyclerViewAdapterItemCount(_it)
+                        })(getAndroidxRecyclerviewWidgetRecyclerViewAdapter(this_)))) {
+                            action();
+                        }
                 })(temp393);
             }
     }());
@@ -148,12 +150,14 @@ export function setAndroidxRecyclerviewWidgetRecyclerViewReverseDirection(this_:
 
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind
-export function androidxRecyclerviewWidgetRecyclerViewBind<T>(this_: RecyclerView, data: ObservableProperty<Array<T>>, defaultValue: T, makeView: (a: ObservableProperty<T>) => View){
+export function androidxRecyclerviewWidgetRecyclerViewBind<T>(this_: RecyclerView, data: ObservableProperty<Array<T>>, defaultValue: T, makeView: (a: ObservableProperty<T>) => View): void{
     setAndroidxRecyclerviewWidgetRecyclerViewLayoutManager(this_, LinearLayoutManager.constructorandroidcontentContext(getAndroidxRecyclerviewWidgetRecyclerViewContext(this_)));
     setAndroidxRecyclerviewWidgetRecyclerViewAdapter(this_, new class Anon extends RecyclerView.RecyclerView<> {
             public constructor() {
                 super();
-                ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(data, undefined, undefined, (_) => this.notifyDataSetChanged()), getAndroidViewViewRemoved(this_));
+                ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(data, undefined, undefined, (_) => {
+                            this.notifyDataSetChanged()
+                }), getAndroidViewViewRemoved(this_));
             }
             
             
@@ -161,7 +165,7 @@ export function androidxRecyclerviewWidgetRecyclerViewBind<T>(this_: RecyclerVie
             onCreateViewHolder(parent: ViewGroup, viewType: number): RecyclerView.ViewHolder{
                 const event = new StandardObservableProperty<T>(defaultValue, undefined);
                 
-                const subview = this.makeView(event);
+                const subview = makeView(event);
                 
                 setAndroidViewViewTag(subview, event);
                 setAndroidViewViewLayoutParams(subview, RecyclerView.LayoutParams.constructorkotlinInt, kotlinInt(MATCH_PARENT, WRAP_CONTENT));
@@ -174,11 +178,15 @@ export function androidxRecyclerviewWidgetRecyclerViewBind<T>(this_: RecyclerVie
             
             getItemCount(): number{ return data.value.length; }
             
-            onBindViewHolder(holder: RecyclerView.ViewHolder, position: number){
+            onBindViewHolder(holder: RecyclerView.ViewHolder, position: number): void{
                 ((_it)=>{
                         if(_it === null) return null;
-                        return ((it) => it.value = data.value[position])(_it)
-                })((tryCastClass(getAndroidViewViewTag(holder.itemView), StandardObservableProperty))) ?: ((this_1) => console.log("Failed to find property to update"))(this);
+                        return ((it) => {
+                                it.value = data.value[position]
+                        })(_it)
+                })((tryCastClass(getAndroidViewViewTag(holder.itemView), StandardObservableProperty))) ?: ((this_1) => {
+                        console.log("Failed to find property to update")
+                })(this);
             }
     }());
 }
@@ -212,17 +220,19 @@ export class RVTypeHandler {
     private readonly defaultHandler: Handler = new Handler(Any::class, Unit.INSTANCE, (obs) => newEmptyView(this.viewDependency));
     
     
-    public handle(type: KClass<*>, defaultValue: any, action:  (a: ObservableProperty<any>) => View ){
+    public handle(type: KClass<*>, defaultValue: any, action:  (a: ObservableProperty<any>) => View): number{
         this.handlers.kotlinCollectionsMutableCollectionPlusAssign(this.handlers, new Handler(type, defaultValue, action));
         return this.typeCount++;
     }
-    public handle<T extends any>(defaultValue: T, action:  (a: ObservableProperty<T>) => View ){
-        this.handle(T::class, defaultValue, (obs) => this.action(comLightningkiteKhrysalisObservablesObservablePropertyMap(obs, (it) => it as T)));
+    public handle<T extends any>(T: any, defaultValue: T, action:  (a: ObservableProperty<T>) => View): void{
+        this.handle(T::class, defaultValue, (obs) => action(comLightningkiteKhrysalisObservablesObservablePropertyMap(obs, (it) => it as T)));
     }
     
     internal type(item: any): number{
-        kotlinCollectionsIterableForEachIndexed(this.handlers, (index, handler) => if(handler.type.isInstance(item)){
-                return index;
+        kotlinCollectionsIterableForEachIndexed(this.handlers, (index, handler) => {
+                if(handler.type.isInstance(item)){
+                    return index;
+                }
         });
         return this.typeCount;
     }
@@ -240,14 +250,16 @@ export class RVTypeHandler {
 }
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindMulti
-export function androidxRecyclerviewWidgetRecyclerViewBindMulti(this_: RecyclerView, viewDependency: ViewDependency, data: ObservableProperty<Array<any>>, typeHandlerSetup: (a: RVTypeHandler) => void){
+export function androidxRecyclerviewWidgetRecyclerViewBindMulti(this_: RecyclerView, viewDependency: ViewDependency, data: ObservableProperty<Array<any>>, typeHandlerSetup: (a: RVTypeHandler) => void): void{
     const typeHandler = also(new RVTypeHandler(viewDependency), typeHandlerSetup);
     
     setAndroidxRecyclerviewWidgetRecyclerViewLayoutManager(this_, LinearLayoutManager.constructorandroidcontentContext(getAndroidxRecyclerviewWidgetRecyclerViewContext(this_)));
     setAndroidxRecyclerviewWidgetRecyclerViewAdapter(this_, new class Anon extends RecyclerView.RecyclerView<> {
             public constructor() {
                 super();
-                ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(data, undefined, undefined, (_) => this.notifyDataSetChanged()), getAndroidViewViewRemoved(this_));
+                ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(data, undefined, undefined, (_) => {
+                            this.notifyDataSetChanged()
+                }), getAndroidViewViewRemoved(this_));
             }
             
             
@@ -267,35 +279,41 @@ export function androidxRecyclerviewWidgetRecyclerViewBindMulti(this_: RecyclerV
             }
             getItemCount(): number{ return data.value.length; }
             
-            onBindViewHolder(holder: RecyclerView.ViewHolder, position: number){
+            onBindViewHolder(holder: RecyclerView.ViewHolder, position: number): void{
                 ((_it)=>{
                         if(_it === null) return null;
-                        return ((it) => it.value = data.value[position])(_it)
-                })((tryCastClass(getAndroidViewViewTag(holder.itemView), MutableObservableProperty))) ?: ((this_1) => console.log("Failed to find property to update"))(this);
+                        return ((it) => {
+                                it.value = data.value[position]
+                        })(_it)
+                })((tryCastClass(getAndroidViewViewTag(holder.itemView), MutableObservableProperty))) ?: ((this_1) => {
+                        console.log("Failed to find property to update")
+                })(this);
             }
     }());
 }
 
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindMulti
-export function androidxRecyclerviewWidgetRecyclerViewBindMulti<T>(this_: RecyclerView, data: ObservableProperty<Array<T>>, defaultValue: T, determineType: (a: T) => number, makeView: (a: number, b: ObservableProperty<T>) => View){
+export function androidxRecyclerviewWidgetRecyclerViewBindMulti<T>(this_: RecyclerView, data: ObservableProperty<Array<T>>, defaultValue: T, determineType: (a: T) => number, makeView: (a: number, b: ObservableProperty<T>) => View): void{
     setAndroidxRecyclerviewWidgetRecyclerViewLayoutManager(this_, LinearLayoutManager.constructorandroidcontentContext(getAndroidxRecyclerviewWidgetRecyclerViewContext(this_)));
     setAndroidxRecyclerviewWidgetRecyclerViewAdapter(this_, new class Anon extends RecyclerView.RecyclerView<> {
             public constructor() {
                 super();
-                ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(data, undefined, undefined, (_) => this.notifyDataSetChanged()), getAndroidViewViewRemoved(this_));
+                ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(data, undefined, undefined, (_) => {
+                            this.notifyDataSetChanged()
+                }), getAndroidViewViewRemoved(this_));
             }
             
             
             
             getItemViewType(position: number): number{
-                return this.determineType(data.value[position]);
+                return determineType(data.value[position]);
             }
             
             onCreateViewHolder(parent: ViewGroup, viewType: number): RecyclerView.ViewHolder{
                 const event = new StandardObservableProperty<T>(defaultValue, undefined);
                 
-                const subview = this.makeView(viewType, event);
+                const subview = makeView(viewType, event);
                 
                 setAndroidViewViewTag(subview, event);
                 setAndroidViewViewLayoutParams(subview, RecyclerView.LayoutParams.constructorkotlinInt, kotlinInt(MATCH_PARENT, WRAP_CONTENT));
@@ -308,22 +326,32 @@ export function androidxRecyclerviewWidgetRecyclerViewBindMulti<T>(this_: Recycl
             
             getItemCount(): number{ return data.value.length; }
             
-            onBindViewHolder(holder: RecyclerView.ViewHolder, position: number){
+            onBindViewHolder(holder: RecyclerView.ViewHolder, position: number): void{
                 ((_it)=>{
                         if(_it === null) return null;
-                        return ((it) => it.value = data.value[position])(_it)
-                })((tryCastClass(getAndroidViewViewTag(holder.itemView), StandardObservableProperty))) ?: ((this_1) => console.log("Failed to find property to update"))(this);
+                        return ((it) => {
+                                it.value = data.value[position]
+                        })(_it)
+                })((tryCastClass(getAndroidViewViewTag(holder.itemView), StandardObservableProperty))) ?: ((this_1) => {
+                        console.log("Failed to find property to update")
+                })(this);
             }
     }());
 }
 
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindRefresh
-export function androidxRecyclerviewWidgetRecyclerViewBindRefresh(this_: RecyclerView, loading: ObservableProperty<Boolean>, refresh: () => void){
+export function androidxRecyclerviewWidgetRecyclerViewBindRefresh(this_: RecyclerView, loading: ObservableProperty<Boolean>, refresh: () => void): void{
     const temp419 = (tryCastClass(getAndroidxRecyclerviewWidgetRecyclerViewParent(this_), SwipeRefreshLayout));
     if(temp419 !== null) ((this_1) => {
-            ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(loading, undefined, undefined, (value) => this_1.post(() => setAndroidxSwiperefreshlayoutWidgetSwipeRefreshLayoutIsRefreshing(this_1, value))), getAndroidViewViewRemoved(this_));
-            this_1.setOnRefreshListener(() => this.refresh());
+            ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(loading, undefined, undefined, (value) => {
+                        this_1.post(() => {
+                                setAndroidxSwiperefreshlayoutWidgetSwipeRefreshLayoutIsRefreshing(this_1, value)
+                        })
+            }), getAndroidViewViewRemoved(this_));
+            this_1.setOnRefreshListener(() => {
+                    refresh()
+            });
     })(temp419);
 }
 

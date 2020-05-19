@@ -33,26 +33,29 @@ import { comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy } fro
 import { MutableObservableProperty } from './../MutableObservableProperty.shared'
 import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from './../../rx/DisposeCondition.actual'
 import { ObservableProperty } from './../ObservableProperty.shared'
+import { SubscriptionLike } from 'rxjs'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind
-export function androidWidgetRatingBarBind(this_: RatingBar, stars: number, observable: MutableObservableProperty<number>){
+export function androidWidgetRatingBarBind(this_: RatingBar, stars: number, observable: MutableObservableProperty<number>): void{
     setAndroidWidgetRatingBarMax(this_, stars);
     setAndroidWidgetRatingBarNumStars(this_, stars);
     this_.incrementProgressBy(1);
     
     let suppress = false;
     
-    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => if (suppress.not()) {
-                suppress = true;
-                setAndroidWidgetRatingBarProgress(this_, value);
-                suppress = false;
+    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
+                if (suppress.not()) {
+                    suppress = true;
+                    setAndroidWidgetRatingBarProgress(this_, value);
+                    suppress = false;
+                }
     }), getAndroidViewViewRemoved(this_));
     setAndroidWidgetRatingBarOnRatingBarChangeListener(this_, new class Anon implements RatingBarOnRatingBarChangeListener {
             public static implementsInterfaceAndroidWidgetRatingBarOnRatingBarChangeListener = true;
             public constructor() {
             }
             
-            onRatingChanged(p0: RatingBar, p1: number, p2: Boolean){
+            onRatingChanged(p0: RatingBar, p1: number, p2: Boolean): void{
                 if (suppress.not()) {
                     suppress = true;
                     observable.value = getAndroidWidgetRatingBarProgress(p0);
@@ -64,34 +67,38 @@ export function androidWidgetRatingBarBind(this_: RatingBar, stars: number, obse
 }
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind
-export function androidWidgetRatingBarBind(this_: RatingBar, stars: number, observable: ObservableProperty<number>){
+export function androidWidgetRatingBarBind(this_: RatingBar, stars: number, observable: ObservableProperty<number>): SubscriptionLike{
     setAndroidWidgetRatingBarMax(this_, stars);
     setAndroidWidgetRatingBarNumStars(this_, stars);
     this_.setIsIndicator(true);
     
-    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => setAndroidWidgetRatingBarProgress(this_, value)), getAndroidViewViewRemoved(this_));
+    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
+                setAndroidWidgetRatingBarProgress(this_, value)
+    }), getAndroidViewViewRemoved(this_));
 }
 
 
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindFloat
-export function androidWidgetRatingBarBindFloat(this_: RatingBar, stars: number, observable: MutableObservableProperty<number>){
+export function androidWidgetRatingBarBindFloat(this_: RatingBar, stars: number, observable: MutableObservableProperty<number>): void{
     setAndroidWidgetRatingBarNumStars(this_, stars);
     setAndroidWidgetRatingBarStepSize(this_, 0.01f);
     
     let suppress = false;
     
-    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => if (suppress.not()) {
-                suppress = true;
-                setAndroidWidgetRatingBarRating(this_, value);
-                suppress = false;
+    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
+                if (suppress.not()) {
+                    suppress = true;
+                    setAndroidWidgetRatingBarRating(this_, value);
+                    suppress = false;
+                }
     }), getAndroidViewViewRemoved(this_));
     setAndroidWidgetRatingBarOnRatingBarChangeListener(this_, new class Anon implements RatingBarOnRatingBarChangeListener {
             public static implementsInterfaceAndroidWidgetRatingBarOnRatingBarChangeListener = true;
             public constructor() {
             }
             
-            onRatingChanged(p0: RatingBar, p1: number, p2: Boolean){
+            onRatingChanged(p0: RatingBar, p1: number, p2: Boolean): void{
                 if (suppress.not()) {
                     suppress = true;
                     observable.value = p1;
@@ -104,10 +111,12 @@ export function androidWidgetRatingBarBindFloat(this_: RatingBar, stars: number,
 
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindFloat
-export function androidWidgetRatingBarBindFloat(this_: RatingBar, stars: number, observable: ObservableProperty<number>){
+export function androidWidgetRatingBarBindFloat(this_: RatingBar, stars: number, observable: ObservableProperty<number>): SubscriptionLike{
     setAndroidWidgetRatingBarNumStars(this_, stars);
     this_.setIsIndicator(true);
     
-    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => setAndroidWidgetRatingBarRating(this_, value)), getAndroidViewViewRemoved(this_));
+    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
+                setAndroidWidgetRatingBarRating(this_, value)
+    }), getAndroidViewViewRemoved(this_));
 }
 

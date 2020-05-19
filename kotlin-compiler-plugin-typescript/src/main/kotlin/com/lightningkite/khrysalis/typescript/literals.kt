@@ -2,6 +2,8 @@ package com.lightningkite.khrysalis.typescript
 
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
+import org.jetbrains.kotlin.psi.stubs.elements.KtConstantExpressionElementType
+import org.jetbrains.kotlin.psi.stubs.elements.KtStubElementTypes
 
 fun TypescriptTranslator.registerLiterals() {
     handle<KtStringTemplateExpression> {
@@ -26,9 +28,9 @@ fun TypescriptTranslator.registerLiterals() {
 
     handle<KtConstantExpression> {
         when(typedRule.node.elementType){
-            KtTokens.INTEGER_LITERAL -> -typedRule.text.replace("_", "").removeSuffix("L").removeSuffix("l")
-            KtTokens.CHARACTER_LITERAL -> -typedRule.text
-            KtTokens.FLOAT_LITERAL -> -typedRule.text.removeSuffix("F").removeSuffix("f")
+            KtStubElementTypes.INTEGER_CONSTANT -> -typedRule.text.replace("_", "").removeSuffix("L").removeSuffix("l")
+            KtStubElementTypes.CHARACTER_CONSTANT -> -typedRule.text
+            KtStubElementTypes.FLOAT_CONSTANT -> -typedRule.text.removeSuffix("F").removeSuffix("f")
             else -> doSuper()
         }
     }

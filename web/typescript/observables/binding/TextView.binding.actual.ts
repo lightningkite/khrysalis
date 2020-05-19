@@ -25,15 +25,18 @@
 import { comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy } from './../ObservableProperty.ext.shared'
 import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from './../../rx/DisposeCondition.actual'
 import { ObservableProperty } from './../ObservableProperty.shared'
+import { SubscriptionLike } from 'rxjs'
 import { StringResource } from './../../views/ResourceTypes.actual'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindString
-export function androidWidgetTextViewBindString(this_: TextView, observable: ObservableProperty<string>){
-    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => setAndroidWidgetTextViewText(this_, value)), getAndroidViewViewRemoved(this_));
+export function androidWidgetTextViewBindString(this_: TextView, observable: ObservableProperty<string>): SubscriptionLike{
+    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
+                setAndroidWidgetTextViewText(this_, value)
+    }), getAndroidViewViewRemoved(this_));
 }
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindStringRes
-export function androidWidgetTextViewBindStringRes(this_: TextView, observable: ObservableProperty<(StringResource | null)>){
+export function androidWidgetTextViewBindStringRes(this_: TextView, observable: ObservableProperty<(StringResource | null)>): SubscriptionLike{
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
                 setAndroidWidgetTextViewVisibility(this_, value === null ? View.GONE : View.VISIBLE);
                 if (!(value === null)) {
@@ -44,7 +47,9 @@ export function androidWidgetTextViewBindStringRes(this_: TextView, observable: 
 
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindText
-export function androidWidgetTextViewBindText<T>(this_: TextView, observable: ObservableProperty<T>, transform: (a: T) => string){
-    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => setAndroidWidgetTextViewText(this_, this.transform(value))), getAndroidViewViewRemoved(this_));
+export function androidWidgetTextViewBindText<T>(this_: TextView, observable: ObservableProperty<T>, transform: (a: T) => string): SubscriptionLike{
+    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
+                setAndroidWidgetTextViewText(this_, transform(value))
+    }), getAndroidViewViewRemoved(this_));
 }
 

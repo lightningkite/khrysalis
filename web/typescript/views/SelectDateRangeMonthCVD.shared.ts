@@ -55,7 +55,7 @@ import { MonthCVD } from './MonthCVD.shared'
 
 //! Declares com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD
 export class SelectDateRangeMonthCVD extends MonthCVD {
-    constructor() { super(); }
+    public constructor() { super(); }
     public generateAccessibilityView(): (View | null){ return null; }
     
     public draggingStart: Boolean = true;
@@ -71,21 +71,14 @@ export class SelectDateRangeMonthCVD extends MonthCVD {
     public readonly selectedPaint: Paint = Paint.constructor();
     
     
-    public measure(width: number, height: number, displayMetrics: DisplayMetrics){
+    public measure(width: number, height: number, displayMetrics: DisplayMetrics): void{
         .measure(width, height, displayMetrics);
         setAndroidGraphicsPaintTextSize(this.selectedDayPaint, getAndroidGraphicsPaintTextSize(this.dayPaint));
     }
     
     public readonly drawDay_dateAlone: DateAlone = new DateAlone(0, 0, 0);
     
-    public drawDay(
-        canvas: Canvas,
-        showingMonth: DateAlone,
-        day: DateAlone,
-        displayMetrics: DisplayMetrics,
-        outer: RectF,
-        inner: RectF
-    ){
+    public drawDay(canvas: Canvas, showingMonth: DateAlone, day: DateAlone, displayMetrics: DisplayMetrics, outer: RectF, inner: RectF): void{
         if (day.equals(this.start.value) && (day.equals(this.endInclusive.value) || this.endInclusive.value.equals(null))){
             CalendarDrawing.INSTANCE.dayBackground(canvas, inner, this.selectedPaint);
             CalendarDrawing.INSTANCE.day(canvas, showingMonth, day, inner, this.selectedDayPaint);
@@ -107,7 +100,7 @@ export class SelectDateRangeMonthCVD extends MonthCVD {
     private startedDraggingOn: (DateAlone | null) = null;
     
     
-    public onTap(day: DateAlone){
+    public onTap(day: DateAlone): void{
         if(!(this.start.value.equals(null)) && this.start.value.equals(this.endInclusive.value) && day.comparable > this.start.value!!.comparable){
             this.endInclusive.value = day;
         } else {

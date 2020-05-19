@@ -18,15 +18,15 @@ export abstract class CustomViewDelegate {
     
     public customView: (CustomView | null);
     
-    public generateAccessibilityView(): (View | null){ return ; }
-    public draw(canvas: Canvas, width: number, height: number, displayMetrics: DisplayMetrics){ return ; }
+    public abstract generateAccessibilityView(): (View | null)
+    public abstract draw(canvas: Canvas, width: number, height: number, displayMetrics: DisplayMetrics): void
     public onTouchDown(id: number, x: number, y: number, width: number, height: number): Boolean{ return false; }
     public onTouchMove(id: number, x: number, y: number, width: number, height: number): Boolean{ return false; }
     public onTouchUp(id: number, x: number, y: number, width: number, height: number): Boolean{ return false; }
     public sizeThatFitsWidth(width: number, height: number): number{ return width; }
     public sizeThatFitsHeight(width: number, height: number): number{ return height; }
     
-    public invalidate(){ this.customView?.invalidate(); }
-    public postInvalidate(){ this.customView?.postInvalidate(); }
+    public invalidate(): void{ this.customView?.invalidate(); }
+    public postInvalidate(): void{ this.customView?.postInvalidate(); }
 }
 

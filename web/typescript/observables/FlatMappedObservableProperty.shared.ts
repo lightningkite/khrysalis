@@ -89,7 +89,7 @@ export class MutableFlatMappedObservableProperty<A, B> extends MutableObservable
     })).pipe(rxSkip(0)); }
     
     
-    public update(){
+    public update(): void{
         this.lastProperty?.update();
     }
 }

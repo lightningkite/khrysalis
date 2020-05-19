@@ -4,19 +4,17 @@
 // FQImport: com.lightningkite.khrysalis.observables.StandardObservableProperty.underlyingValue TS underlyingValue
 // FQImport: com.lightningkite.khrysalis.observables.StandardObservableProperty.onChange TS onChange
 // FQImport: com.lightningkite.khrysalis.observables.StandardObservableProperty.T TS T
-// FQImport: io.reactivex.subjects.Subject TS Subject
-// FQImport: io.reactivex.subjects.PublishSubject TS PublishSubject
-// FQImport: io.reactivex.subjects.PublishSubject.create TS create
 // FQImport: com.lightningkite.khrysalis.observables.StandardObservableProperty.value TS value
 // FQImport: com.lightningkite.khrysalis.observables.StandardObservableProperty.<set-value>.value TS value
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty TS MutableObservableProperty
 import { MutableObservableProperty } from './MutableObservableProperty.shared'
+import { Subject } from 'rxjs'
 
 //! Declares com.lightningkite.khrysalis.observables.StandardObservableProperty
 export class StandardObservableProperty<T> extends MutableObservableProperty<any> {
     public underlyingValue: T;
     public readonly onChange: Subject<T>;
-    public constructor(underlyingValue: T, onChange: Subject<T> = PublishSubject.create()) {
+    public constructor(underlyingValue: T, onChange: Subject<T> = new Subject()) {
         super();
         this.underlyingValue = underlyingValue;
         this.onChange = onChange;
@@ -30,7 +28,7 @@ export class StandardObservableProperty<T> extends MutableObservableProperty<any
     }
     
     
-    public update(){
+    public update(): void{
         this.onChange.next(this.value);
     }
 }

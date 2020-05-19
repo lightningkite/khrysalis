@@ -40,24 +40,24 @@ export function getOkhttp3ResponseCode(this_: HttpResponse): number { return thi
 export function getOkhttp3ResponseHeaders(this_: HttpResponse): Map<string, string> { return kotlinCollectionsMapMapValues(this_.headers().toMultimap(), (it) => kotlinCollectionsIterableJoinToString(it.value, ";", undefined, undefined, undefined, undefined, undefined)); }
 
 //! Declares com.lightningkite.khrysalis.net.readText
-export function okhttp3ResponseReadText(this_: HttpResponse){ return this_.body()!!.string(); }
+export function okhttp3ResponseReadText(this_: HttpResponse): string{ return this_.body()!!.string(); }
 //! Declares com.lightningkite.khrysalis.net.readJson
-export function okhttp3ResponseReadJson<T>(this_: HttpResponse): T{
+export function okhttp3ResponseReadJson<T>(this_: HttpResponse, T: any): T{
     let raw: (string | null) = null;
     
     try {
-        raw = okhttp3ResponseReadText();
-        return comFasterxmlJacksonDatabindObjectMapperReadValue(HttpClient.INSTANCE.mapper, raw);
+        raw = this_.okhttp3ResponseReadText();
+        return comFasterxmlJacksonDatabindObjectMapperReadValue(HttpClient.INSTANCE.mapper[null], , raw);
     } catch(e: Exception){
         throw IllegalStateException.constructorkotlinString, kotlinThrowable(`Failed to parse '${raw}'`, e);
     };
 }
 //! Declares com.lightningkite.khrysalis.net.readJson
-export function okhttp3ResponseReadJson<T>(this_: HttpResponse, typeToken: TypeReference<T>): T{
+export function okhttp3ResponseReadJson<T>(this_: HttpResponse, T: any, typeToken: TypeReference<T>): T{
     let raw: (string | null) = null;
     
     try {
-        raw = okhttp3ResponseReadText();
+        raw = this_.okhttp3ResponseReadText();
         return HttpClient.INSTANCE.mapper.readValue<T>(raw, typeToken);
     } catch(e: Exception){
         throw IllegalStateException.constructorkotlinString, kotlinThrowable(`Failed to parse '${raw}'`, e);

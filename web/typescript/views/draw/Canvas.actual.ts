@@ -49,7 +49,7 @@ import { Align, AlignPair } from './../geometry/Align.shared'
 import { getAndroidGraphicsPaintTextHeight } from './Paint.actual'
 
 //! Declares com.lightningkite.khrysalis.views.draw.drawTextCentered
-export function androidGraphicsCanvasDrawTextCentered(this_: Canvas, text: string, centerX: number, centerY: number, paint: Paint){
+export function androidGraphicsCanvasDrawTextCentered(this_: Canvas, text: string, centerX: number, centerY: number, paint: Paint): void{
     const textWidth = paint.measureText(text);
     
     const textHeightOffset = ((it) => it.ascent + it.descent)(getAndroidGraphicsPaintFontMetrics(paint)) / 2;
@@ -57,7 +57,7 @@ export function androidGraphicsCanvasDrawTextCentered(this_: Canvas, text: strin
     this_.drawText(text, centerX - textWidth / 2, centerY - textHeightOffset, paint);
 }
 //! Declares com.lightningkite.khrysalis.views.draw.drawText
-export function androidGraphicsCanvasDrawText(this_: Canvas, text: string, x: number, y: number, gravity: AlignPair, paint: Paint){
+export function androidGraphicsCanvasDrawText(this_: Canvas, text: string, x: number, y: number, gravity: AlignPair, paint: Paint): void{
     const textWidth = paint.measureText(text);
     
     const textHeight = getAndroidGraphicsPaintTextHeight(paint);
@@ -96,7 +96,7 @@ export function getTempRect(): RectF { return _tempRect; }
 export function setTempRect(value: RectF) { _tempRect = value; }
 
 //! Declares com.lightningkite.khrysalis.views.draw.drawBitmap
-export function androidGraphicsCanvasDrawBitmap(this_: Canvas, bitmap: Bitmap, left: number, top: number, right: number, bottom: number){
+export function androidGraphicsCanvasDrawBitmap(this_: Canvas, bitmap: Bitmap, left: number, top: number, right: number, bottom: number): void{
     getTempRect().left = left;
     getTempRect().top = top;
     getTempRect().right = right;

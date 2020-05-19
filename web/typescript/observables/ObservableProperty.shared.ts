@@ -7,9 +7,9 @@ import { Observable } from 'rxjs'
 //! Declares com.lightningkite.khrysalis.observables.ObservableProperty
 export abstract class ObservableProperty<T> {
     
-    public readonly value: T;
+    public abstract readonly value: T;
     
-    public readonly onChange: Observable<T>;
+    public abstract readonly onChange: Observable<T>;
     
 }
 

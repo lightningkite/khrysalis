@@ -14,10 +14,13 @@
 import { comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy } from './../ObservableProperty.ext.shared'
 import { MutableObservableProperty } from './../MutableObservableProperty.shared'
 import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from './../../rx/DisposeCondition.actual'
+import { SubscriptionLike } from 'rxjs'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind
-export function comRdPageIndicatorViewBind(this_: PageIndicatorView, count: number = 0, selected: MutableObservableProperty<number>){
+export function comRdPageIndicatorViewBind(this_: PageIndicatorView, count: number = 0, selected: MutableObservableProperty<number>): SubscriptionLike{
     setComRdPageIndicatorViewCount(this_, count);
-    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(selected, undefined, undefined, (value) => setComRdPageIndicatorViewSelection(this_, value)), getAndroidViewViewRemoved(this_));
+    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(selected, undefined, undefined, (value) => {
+                setComRdPageIndicatorViewSelection(this_, value)
+    }), getAndroidViewViewRemoved(this_));
 }
 

@@ -43,9 +43,9 @@ export function kotlinAnyToJsonString(this_: (IsCodable | null)): string{
 }
 
 //! Declares com.lightningkite.khrysalis.fromJsonString
-export function kotlinStringFromJsonString<T extends IsCodable>(this_: string): (T | null){
+export function kotlinStringFromJsonString<T extends IsCodable>(this_: string, T: any): (T | null){
     return try {
-        return HttpClient.INSTANCE.mapper.readValue(this_, jacksonTypeRef<T>());
+        return HttpClient.INSTANCE.mapper.readValue(this_, jacksonTypeRef<T>([null]));
     } catch (e: Exception) {
         e.printStackTrace();
         return null;

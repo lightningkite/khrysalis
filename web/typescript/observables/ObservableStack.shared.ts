@@ -17,18 +17,17 @@
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.popTo.i TS i
 // FQImport: java.util.ArrayList.clear TS clear
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.Companion.withFirst.T TS T
-// FQImport: io.reactivex.subjects.PublishSubject TS PublishSubject
-// FQImport: io.reactivex.subjects.PublishSubject.create TS create
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.Companion.withFirst.result TS result
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.reset.t TS t
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.reset TS reset
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.popTo.t TS t
 import { ObservableProperty } from './ObservableProperty.shared'
+import { Subject } from 'rxjs'
 import { NumberRange } from 'khrysalis/dist/Kotlin'
 
 //! Declares com.lightningkite.khrysalis.observables.ObservableStack
 export class ObservableStack<T extends object> extends ObservableProperty<any> {
-    constructor() { super(); }
+    public constructor() { super(); }
     
     public static Companion = class Companion {
         private constructor() {
@@ -43,7 +42,7 @@ export class ObservableStack<T extends object> extends ObservableProperty<any> {
         }
     }
     
-    public readonly onChange: PublishSubject<Array<T>> = PublishSubject.create();
+    public readonly onChange: Subject<Array<T>> = new Subject();
     
     //! Declares com.lightningkite.khrysalis.observables.ObservableStack.value
     public get value(): Array<T> {
@@ -54,12 +53,12 @@ export class ObservableStack<T extends object> extends ObservableProperty<any> {
     public readonly stack: Array<T> = [];
     
     
-    public push(t: T){
+    public push(t: T): void{
         this.stack.push(t);
         this.onChange.next(this.stack);
     }
     
-    public swap(t: T){
+    public swap(t: T): void{
         this.stack.splice((this.stack.length - 1), 1);
         this.stack.push(t);
         this.onChange.next(this.stack);
@@ -83,7 +82,7 @@ export class ObservableStack<T extends object> extends ObservableProperty<any> {
         return true;
     }
     
-    public popTo(t: T){
+    public popTo(t: T): void{
         let found = false;
         
         for (const i of new NumberRange(0, (this.stack.length - 1))) {
@@ -96,24 +95,24 @@ export class ObservableStack<T extends object> extends ObservableProperty<any> {
         this.onChange.next(this.stack);
     }
     
-    public popTo(predicate: (a: T) => Boolean){
+    public popTo(predicate: (a: T) => Boolean): void{
         let found = false;
         
         for (const i of new NumberRange(0, (this.stack.length - 1))) {
             if (found) {
                 this.stack.splice((this.stack.length - 1), 1);
-            } else if (this.predicate(this.stack[i])) {
+            } else if (predicate(this.stack[i])) {
                 found = true;
             }
         }
         this.onChange.next(this.stack);
     }
     
-    public root(){
+    public root(): void{
         this.popTo(this.stack[0]);
     }
     
-    public reset(t: T){
+    public reset(t: T): void{
         this.stack.clear();
         this.stack.push(t);
         this.onChange.next(this.stack);

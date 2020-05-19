@@ -65,6 +65,10 @@ fun <T, E> T.genericExtensionFunction(element: E){
     println("Hello $element from $this!")
 }
 
+inline fun <reified T> resolve(): T? {
+    return null
+}
+
 fun main(){
     topLevelFunction()
     topLevelGenericFunction(2)
@@ -79,6 +83,8 @@ fun main(){
     instance.testExtension()
     instance.extensionFunction()
     instance.genericExtensionFunction(8)
+    val x: Int? = resolve()
+    val y = resolve<String>()
 }
 
 val anotherThing = 2

@@ -35,7 +35,16 @@ fun TypescriptTranslator.registerLambda() {
                 -") => "
                 when (typedRule.bodyExpression?.statements?.size) {
                     null, 0 -> -"{}"
-                    1 -> -typedRule.bodyExpression?.firstStatement
+                    1 -> {
+                        val s = typedRule.bodyExpression?.firstStatement
+                        if(s!!.actuallyCouldBeExpression){
+                            -s
+                        } else {
+                            -"{\n"
+                            -s
+                            -"\n}"
+                        }
+                    }
                     else -> {
                         -"{\n"
                         -typedRule.bodyExpression
@@ -62,7 +71,16 @@ fun TypescriptTranslator.registerLambda() {
         -" => "
         when (typedRule.bodyExpression?.statements?.size) {
             null, 0 -> -"{}"
-            1 -> -typedRule.bodyExpression?.firstStatement
+            1 -> {
+                val s = typedRule.bodyExpression?.firstStatement
+                if(s!!.actuallyCouldBeExpression){
+                    -s
+                } else {
+                    -"{\n"
+                    -s
+                    -"\n}"
+                }
+            }
             else -> {
                 -"{\n"
                 -typedRule.bodyExpression

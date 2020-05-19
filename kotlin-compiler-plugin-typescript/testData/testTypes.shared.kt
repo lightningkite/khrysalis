@@ -40,4 +40,9 @@ fun main(){
     println(unknownThing as? Int)
 
     val thingA: AnyObject = unknownThing!!
+
+    val a = 23L
+    val b = 23f
+    val c = 23
+    val d = 23.0
 }

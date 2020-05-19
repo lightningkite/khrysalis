@@ -18,15 +18,20 @@
 import { comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy } from './../ObservableProperty.ext.shared'
 import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from './../../rx/DisposeCondition.actual'
 import { ObservableProperty } from './../ObservableProperty.shared'
+import { SubscriptionLike } from 'rxjs'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindVisible
-export function androidViewViewBindVisible(this_: View, observable: ObservableProperty<Boolean>){
-    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => setAndroidViewViewVisibility(this_, value ? View.VISIBLE : View.INVISIBLE)), getAndroidViewViewRemoved(this_));
+export function androidViewViewBindVisible(this_: View, observable: ObservableProperty<Boolean>): SubscriptionLike{
+    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
+                setAndroidViewViewVisibility(this_, value ? View.VISIBLE : View.INVISIBLE)
+    }), getAndroidViewViewRemoved(this_));
 }
 
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindExists
-export function androidViewViewBindExists(this_: View, observable: ObservableProperty<Boolean>){
-    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => setAndroidViewViewVisibility(this_, value ? View.VISIBLE : View.GONE)), getAndroidViewViewRemoved(this_));
+export function androidViewViewBindExists(this_: View, observable: ObservableProperty<Boolean>): SubscriptionLike{
+    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
+                setAndroidViewViewVisibility(this_, value ? View.VISIBLE : View.GONE)
+    }), getAndroidViewViewRemoved(this_));
 }
 

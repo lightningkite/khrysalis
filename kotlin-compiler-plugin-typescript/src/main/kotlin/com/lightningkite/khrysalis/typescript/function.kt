@@ -16,9 +16,12 @@ import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
+import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
 import org.jetbrains.kotlin.resolve.descriptorUtil.classValueType
 import org.jetbrains.kotlin.resolve.descriptorUtil.declaresOrInheritsDefaultValue
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
+import org.jetbrains.kotlin.types.typeUtil.isTypeParameter
+import java.lang.Exception
 
 //TODO: Local function edgecase - the meaning of 'this' changes
 
@@ -49,84 +52,82 @@ val FunctionDescriptor.tsName: String?
 val FunctionDescriptor.tsDefaultName: String?
     get() = tsName
 
+data class VirtualFunction(
+    val name: Any,
+    val resolvedFunction: FunctionDescriptor? = null,
+    val typeParameters: List<Any>,
+    val valueParameters: List<Any>,
+    val returnType: Any,
+    val body: KtExpression?
+)
+
 fun TypescriptTranslator.registerFunction() {
+    handle<VirtualFunction> {
+        -typedRule.name
+        typedRule.typeParameters.takeUnless { it.isEmpty() }?.let {
+            -'<'
+            it.forEachBetween(
+                forItem = { -it },
+                between = { -", " }
+            )
+            -'>'
+        }
+        -'('
+        typedRule.valueParameters.forEachBetween(
+            forItem = { -it },
+            between = { -", " }
+        )
+        -')'
+        -": "
+        -typedRule.returnType
+        val body = typedRule.body
+        when (body) {
+            null -> {
+            }
+            is KtBlockExpression -> {
+                -body
+            }
+            else -> {
+                -"{ return "
+                -body
+                -"; }"
+            }
+        }
+
+    }
     handle<KtNamedFunction>(
         condition = { typedRule.parentOfType<KtClassBody>()?.parentOfType<KtClass>()?.isInterface() == true },
         priority = 100,
         action = {
-            -(typedRule.resolvedFunction?.tsName ?: typedRule.nameIdentifier)
-            -typedRule.typeParameterList
-            fun afterParameters() {
-                typedRule.typeReference?.let {
-                    -": "
-                    -it
-                } ?: run {
-                    -": void"
-                }
+            if (typedRule.receiverTypeReference != null) throw IllegalArgumentException("Receivers on interface methods aren't supported yet.")
+            val mainDecl = VirtualFunction(
+                name = typedRule.resolvedFunction?.tsName ?: typedRule.nameIdentifier!!,
+                resolvedFunction = typedRule.resolvedFunction,
+                typeParameters = typedRule.typeParameters,
+                valueParameters = (typedRule.typeParameters.filter { it.hasModifier(KtTokens.REIFIED_KEYWORD) }
+                    .map { listOf(it.name, ": any") })
+                    .plus(typedRule.valueParameters),
+                returnType = typedRule.typeReference ?: typedRule.bodyExpression?.resolvedExpressionTypeInfo?.type
+                ?: "void",
+                body = null
+            )
+            -mainDecl
+            if (typedRule.bodyExpression != null) {
                 val tr = typedRule
                 val ktClass = typedRule.parentOfType<KtClassBody>()!!.parentOfType<KtClass>()!!
                 ktClass.addPostAction {
-                    -"\npublic static "
-                    val fname = tr.resolvedFunction?.tsDefaultName
-                        ?: throw IllegalStateException("Cannot write default method without name.")
-                    -fname
-                    (ktClass.typeParameters + tr.typeParameters).takeUnless { it.isEmpty() }?.let {
-                        -'<'
-                        it.forEachBetween(
-                            forItem = { -it },
-                            between = { -", " }
+                    withReceiverScope(tr.resolvedFunction!!.fqNameSafe.asString()) { rName2 ->
+                        -"\npublic static "
+                        -VirtualFunction(
+                            name = tr.resolvedFunction!!.tsDefaultName!!,
+                            resolvedFunction = tr.resolvedFunction,
+                            typeParameters = ktClass.typeParameters + mainDecl.typeParameters,
+                            valueParameters = listOf(rName2) + mainDecl.valueParameters,
+                            returnType = mainDecl.returnType,
+                            body = tr.bodyExpression
                         )
-                        -'>'
-                    }
-                    withReceiverScope(tr.resolvedFunction!!.fqNameSafe.asString()) { r ->
-                        -'('
-                        -r
-                        -": "
-                        -tsTopLevelNameElement(ktClass)
-                        ktClass.typeParameterList?.let {
-                            -'<'
-                            it.parameters.forEachBetween(
-                                forItem = { -it.name },
-                                between = { -", " }
-                            )
-                            -'>'
-                        }
-                        if (tr.valueParameters.isNotEmpty()) {
-                            tr.valueParameters.forEach {
-                                -", "
-                                -it
-                            }
-                        }
-                        -')'
-                        val body = tr.bodyExpression
-                        if (body is KtBlockExpression) {
-                            -body
-                        } else {
-                            -"{ return "
-                            -body
-                            -"; }"
-                        }
                     }
                 }
-            }
-            typedRule.receiverTypeReference?.let { rType ->
-                withReceiverScope(typedRule.resolvedFunction!!.fqNameSafe.asString()) { r ->
-                    -'('
-                    -r
-                    -": "
-                    -rType
-                    if (typedRule.valueParameters.isNotEmpty()) {
-                        typedRule.valueParameters.forEach {
-                            -", "
-                            -it
-                        }
-                    }
-                    -')'
-                    afterParameters()
-                }
-            } ?: run {
-                -typedRule.valueParameterList
-                afterParameters()
             }
         }
     )
@@ -137,6 +138,9 @@ fun TypescriptTranslator.registerFunction() {
                 -(typedRule.visibilityModifier() ?: "public")
             }
             -" "
+            if(typedRule.hasModifier(KtTokens.ABSTRACT_KEYWORD)){
+                -"abstract "
+            }
         } else {
             if (typedRule.isTopLevel() && !typedRule.isPrivate()) {
                 -"$declaresPrefix${typedRule.fqName?.asString()}\n"
@@ -144,40 +148,28 @@ fun TypescriptTranslator.registerFunction() {
             }
             -"function "
         }
-        -(typedRule.resolvedFunction?.tsName ?: typedRule.nameIdentifier)
-        -typedRule.typeParameterList
-        fun afterParameters() {
-            typedRule.typeReference?.let {
-                -": "
-                -it
-            }
-            val body = typedRule.bodyExpression
-            if (body is KtBlockExpression) {
-                -body
-            } else {
-                -"{ return "
-                -body
-                -"; }"
-            }
+        fun emit(rName: String? = null) {
+            -VirtualFunction(
+                name = typedRule.resolvedFunction?.tsName ?: typedRule.nameIdentifier!!,
+                resolvedFunction = typedRule.resolvedFunction,
+                typeParameters = typedRule.typeParameters,
+                valueParameters = (typedRule.receiverTypeReference?.let {
+                    listOf(listOf(rName, ": ", it))
+                } ?: listOf())
+                    .plus(typedRule.typeParameters.filter { it.hasModifier(KtTokens.REIFIED_KEYWORD) }
+                        .map { listOf(it.name, ": any") })
+                    .plus(typedRule.valueParameters),
+                returnType = typedRule.typeReference ?: typedRule.bodyExpression?.resolvedExpressionTypeInfo?.type
+                ?: "void",
+                body = typedRule.bodyExpression
+            )
         }
-        typedRule.receiverTypeReference?.let { rType ->
-            withReceiverScope(typedRule.resolvedFunction!!.fqNameSafe.asString()) { r ->
-                -'('
-                -r
-                -": "
-                -rType
-                if (typedRule.valueParameters.isNotEmpty()) {
-                    typedRule.valueParameters.forEach {
-                        -", "
-                        -it
-                    }
-                }
-                -')'
-                afterParameters()
+        typedRule.receiverTypeReference?.let {
+            withReceiverScope(typedRule.resolvedFunction!!.fqNameSafe.asString()) { rName ->
+                emit(rName)
             }
         } ?: run {
-            -typedRule.valueParameterList
-            afterParameters()
+            emit(null)
         }
     }
 
@@ -235,7 +227,7 @@ fun TypescriptTranslator.registerFunction() {
 
     handle<KtDotQualifiedExpression>(
         condition = {
-            if(typedRule.selectorExpression?.text == "action"){
+            if (typedRule.selectorExpression?.text == "action") {
                 println("Having a cow")
             }
             ((typedRule.selectorExpression as? KtCallExpression)?.resolvedCall?.candidateDescriptor as? FunctionDescriptor)?.extensionReceiverParameter != null
@@ -251,6 +243,7 @@ fun TypescriptTranslator.registerFunction() {
             val withComments = callExp.valueArgumentList?.withComments() ?: listOf()
             -ArgumentsList(
                 on = f,
+                resolvedCall = callExp.resolvedCall,
                 prependArguments = listOf(typedRule.receiverExpression),
                 orderedArguments = withComments.filter { !it.first.isNamed() }
                     .map { it.first.getArgumentExpression()!! to it.second },
@@ -277,6 +270,7 @@ fun TypescriptTranslator.registerFunction() {
             val withComments = callExp.valueArgumentList?.withComments() ?: listOf()
             -ArgumentsList(
                 on = f,
+                resolvedCall = callExp.resolvedCall,
                 prependArguments = listOf("_it"),
                 orderedArguments = withComments.filter { !it.first.isNamed() }
                     .map { it.first.getArgumentExpression()!! to it.second },
@@ -309,6 +303,7 @@ fun TypescriptTranslator.registerFunction() {
             val withComments = callExp.valueArgumentList?.withComments() ?: listOf()
             -ArgumentsList(
                 on = f,
+                resolvedCall = callExp.resolvedCall,
                 prependArguments = listOf(tempName),
                 orderedArguments = withComments.filter { !it.first.isNamed() }
                     .map { it.first.getArgumentExpression()!! to it.second },
@@ -337,6 +332,7 @@ fun TypescriptTranslator.registerFunction() {
         -typedRule.typeArgumentList
         -ArgumentsList(
             on = f,
+            resolvedCall = typedRule.resolvedCall,
             prependArguments = listOf(),
             orderedArguments = withComments.filter { !it.first.isNamed() }
                 .map { it.first.getArgumentExpression()!! to it.second },
@@ -371,6 +367,7 @@ fun TypescriptTranslator.registerFunction() {
             -(f.tsName ?: typedRule.operationReference.text)
             -ArgumentsList(
                 on = f,
+                resolvedCall = typedRule.resolvedCall,
                 prependArguments = if (f.extensionReceiverParameter != null) listOf(typedRule.left!!) else listOf(),
                 orderedArguments = listOf(typedRule.right!! to null),
                 namedArguments = listOf(),
@@ -422,9 +419,10 @@ fun TypescriptTranslator.registerFunction() {
             val allParametersByIndex = HashMap<Int, KtValueArgument>()
             val allParametersByName = HashMap<String, KtValueArgument>()
             callExp.valueArguments.forEachIndexed { index, valueArgument ->
-                if (valueArgument.name != null) {
-                    allParametersByName[valueArgument.name!!] = valueArgument
-                    val i = f.valueParameters.indexOfFirst { it.name.asString() == valueArgument.name!! }
+                val argName = valueArgument.getArgumentName()?.text
+                if (argName != null) {
+                    allParametersByName[argName] = valueArgument
+                    val i = f.valueParameters.indexOfFirst { it.name.asString() == argName }
                     if (i != -1) {
                         allParametersByIndex[i] = valueArgument
                     }
@@ -473,9 +471,10 @@ fun TypescriptTranslator.registerFunction() {
             val allParametersByIndex = HashMap<Int, KtValueArgument>()
             val allParametersByName = HashMap<String, KtValueArgument>()
             callExp.valueArguments.forEachIndexed { index, valueArgument ->
-                if (valueArgument.name != null) {
-                    allParametersByName[valueArgument.name!!] = valueArgument
-                    val i = f.valueParameters.indexOfFirst { it.name.asString() == valueArgument.name!! }
+                val argName = valueArgument.getArgumentName()?.text
+                if (argName != null) {
+                    allParametersByName[argName] = valueArgument
+                    val i = f.valueParameters.indexOfFirst { it.name.asString() == argName }
                     if (i != -1) {
                         allParametersByIndex[i] = valueArgument
                     }
@@ -488,7 +487,7 @@ fun TypescriptTranslator.registerFunction() {
                 callExp.resolvedCall?.typeArguments?.mapKeys { it.key.name.asString() } ?: mapOf()
             val typeParametersByIndex = callExp.resolvedCall?.typeArguments?.mapKeys { it.key.index } ?: mapOf()
 
-            val rec: String = if(!typedRule.actuallyCouldBeExpression){
+            val rec: String = if (!typedRule.actuallyCouldBeExpression) {
                 val n = "temp${uniqueNumber.getAndIncrement()}"
                 -"const $n = "
                 -typedRule.receiverExpression
@@ -520,7 +519,7 @@ fun TypescriptTranslator.registerFunction() {
                 parameterByIndex = { allParametersByIndex[it.index]?.getArgumentExpression() ?: "undefined" },
                 typeParameterByIndex = { typeParametersByIndex[it.index] ?: "undefined" }
             )
-            if(typedRule.actuallyCouldBeExpression) {
+            if (typedRule.actuallyCouldBeExpression) {
                 -"\n})("
                 -typedRule.receiverExpression
                 -')'
@@ -544,17 +543,16 @@ fun TypescriptTranslator.registerFunction() {
             val allParametersByIndex = HashMap<Int, KtValueArgument>()
             val allParametersByName = HashMap<String, KtValueArgument>()
             typedRule.valueArguments.forEachIndexed { index, valueArgument ->
-                if (valueArgument.name != null) {
-                    allParametersByName[valueArgument.name!!] = valueArgument
-                    val i = f.valueParameters.indexOfFirst { it.name.asString() == valueArgument.name!! }
+                val argName = valueArgument.getArgumentName()?.text
+                if (argName != null) {
+                    allParametersByName[argName] = valueArgument
+                    val i = f.valueParameters.indexOfFirst { it.name.asString() == argName }
                     if (i != -1) {
                         allParametersByIndex[i] = valueArgument
                     }
-                } else {
+                } else if(index < f.valueParameters.size){
                     allParametersByIndex[index] = valueArgument
-                    f.valueParameters.getOrNull(index)?.name?.asString()?.let {
-                        allParametersByName[it] = valueArgument
-                    }
+                    allParametersByName[f.valueParameters[index].name.asString()] = valueArgument
                 }
             }
             val typeParametersByName =
@@ -590,6 +588,14 @@ fun TypescriptTranslator.registerFunction() {
                 -", "
             }
             -item
+        }
+        typedRule.on.typeParameters.filter { it.isReified }.forEach {
+            -typedRule.resolvedCall?.typeArguments?.get(it)?.let { CompleteReflectableType(it) }
+            if (first) {
+                first = false
+            } else {
+                -", "
+            }
         }
         var currentOrderedIndex = 0
         val parameters = typedRule.on.valueParameters
@@ -662,6 +668,7 @@ fun KtValueArgumentList.withComments(): List<Pair<KtValueArgument, PsiComment?>>
 
 data class ArgumentsList(
     val on: FunctionDescriptor,
+    val resolvedCall: ResolvedCall<out CallableDescriptor>? = null,
     val prependArguments: List<Any> = listOf(),
     val appendArguments: List<Any> = listOf(),
     val orderedArguments: List<Pair<Any, PsiComment?>> = listOf(),

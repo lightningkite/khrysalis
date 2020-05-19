@@ -21,10 +21,6 @@ fun TypescriptTranslator.registerReceiver() {
     handle<KtNameReferenceExpression>(
         condition = {
             val resolved = typedRule.resolvedCall ?: return@handle false
-            if(typedRule.text == "memberLambda"){
-                val detailed = resolved as VariableAsFunctionResolvedCall
-                println("Here's the call ${detailed.variableCall.getImplicitReceiverValue()}")
-            }
             when(resolved){
                 is VariableAsFunctionResolvedCall -> resolved.variableCall.getImplicitReceiverValue() != null
                 else -> resolved.getImplicitReceiverValue() != null

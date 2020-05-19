@@ -70,27 +70,27 @@ import { kotlinCharSequenceIsBlank } from './kotlin/kotlin.text'
 import { also } from 'khrysalis/dist/Kotlin'
 
 //! Declares com.lightningkite.khrysalis.loadImage
-export function loadImage(image: Image, onResult: (a: (Bitmap | null)) => void){
+export function loadImage(image: Image, onResult: (a: (Bitmap | null)) => void): void{
     try {
         if (image instanceof ImageRaw) {
-            this.onResult(BitmapFactory.decodeByteArray(image.raw, 0, image.raw.size))
+            onResult(BitmapFactory.decodeByteArray(image.raw, 0, image.raw.size))
         } else if (image instanceof ImageReference) {
             loadImage(image.uri, undefined, onResult)
         } else if (image instanceof ImageBitmap) {
-            this.onResult(image.bitmap)
+            onResult(image.bitmap)
         } else if (image instanceof ImageRemoteUrl) {
             loadImage(image.url, onResult)
         }
     } catch (e: Exception) {
-        this.onResult(null);
+        onResult(null);
     };
 }
 
 //! Declares com.lightningkite.khrysalis.load
-export function comLightningkiteKhrysalisImageLoad(this_: Image, onResult: (a: (Bitmap | null)) => void){ return loadImage(this_, onResult); }
+export function comLightningkiteKhrysalisImageLoad(this_: Image, onResult: (a: (Bitmap | null)) => void): void{ return loadImage(this_, onResult); }
 
 //! Declares com.lightningkite.khrysalis.loadImage
-export function loadImage(uri: Uri, maxDimension: number = 2048, onResult: (a: (Bitmap | null)) => void){
+export function loadImage(uri: Uri, maxDimension: number = 2048, onResult: (a: (Bitmap | null)) => void): void{
     let result: (Bitmap | null) = null;
     
     try {
@@ -99,25 +99,31 @@ export function loadImage(uri: Uri, maxDimension: number = 2048, onResult: (a: (
         ((_it)=>{
                 if(_it === null) return null;
                 return javaIoCloseableUse(_it, (it) => {
-                        const sizeOpts = also(BitmapFactory.Options.constructor(), (this_) => this_.inJustDecodeBounds = true);
+                        const sizeOpts = also(BitmapFactory.Options.constructor(), (this_) => {
+                                this_.inJustDecodeBounds = true
+                        });
                         
-                        return also(BitmapFactory.decodeStream(it, null, sizeOpts), (this_) => finalOpts.inSampleSize = kotlinIntCoerceAtLeast(max(Math.floor(((it) => Math.ceil(it))(sizeOpts.outWidth / maxDimension)), Math.floor(((it) => Math.ceil(it))(sizeOpts.outHeight / maxDimension))), 1));
+                        return also(BitmapFactory.decodeStream(it, null, sizeOpts), (this_) => {
+                                finalOpts.inSampleSize = kotlinIntCoerceAtLeast(max(Math.floor(((it) => Math.ceil(it))(sizeOpts.outWidth / maxDimension)), Math.floor(((it) => Math.ceil(it))(sizeOpts.outHeight / maxDimension))), 1)
+                        });
                 })
         })(getAndroidContentContextContentResolver(HttpClient.INSTANCE.appContext).openInputStream(uri));
         ((_it)=>{
                 if(_it === null) return null;
-                return javaIoCloseableUse(_it, (it) => result = BitmapFactory.decodeStream(it, null, finalOpts))
+                return javaIoCloseableUse(_it, (it) => {
+                        result = BitmapFactory.decodeStream(it, null, finalOpts)
+                })
         })(getAndroidContentContextContentResolver(HttpClient.INSTANCE.appContext).openInputStream(uri));
     } catch (e: Exception) {
         e.printStackTrace();
     };
-    this.onResult(result);
+    onResult(result);
 }
 
 //! Declares com.lightningkite.khrysalis.loadImage
-export function loadImage(url: string, onResult: (a: (Bitmap | null)) => void){
+export function loadImage(url: string, onResult: (a: (Bitmap | null)) => void): void{
     if (kotlinCharSequenceIsBlank(url)) {
-        this.onResult(null);
+        onResult(null);
         return;
     }
     const call = Request.Builder.constructor()
@@ -125,27 +131,33 @@ export function loadImage(url: string, onResult: (a: (Bitmap | null)) => void){
     .get()
     .build();
     
-    ((this_) => this_.okhttp3CallGo(this_.client.newCall(call), new class Anon implements Callback {
-                public static implementsInterfaceOkhttp3Callback = true;
-                public constructor() {
-                }
-                
-                onFailure(call: Call, e: IOException){
-                    e.printStackTrace();
-                    this.onResult(null);
-                }
-                
-                onResponse(call: Call, response: Response){
-                    try {
-                        ((_it)=>{
-                                if(_it === null) return null;
-                                return javaIoCloseableUse(_it, (it) => javaIoCloseableUse(it.byteStream(), (it) => this.onResult(BitmapFactory.decodeStream(it))))
-                        })(response.body());
-                    } catch (e: Exception) {
+    ((this_) => {
+            this_.okhttp3CallGo(this_.client.newCall(call), new class Anon implements Callback {
+                    public static implementsInterfaceOkhttp3Callback = true;
+                    public constructor() {
+                    }
+                    
+                    onFailure(call: Call, e: IOException): void{
                         e.printStackTrace();
-                        this.onResult(null);
-                    };
-                }
-    }()))(HttpClient.INSTANCE);
+                        onResult(null);
+                    }
+                    
+                    onResponse(call: Call, response: Response): void{
+                        try {
+                            ((_it)=>{
+                                    if(_it === null) return null;
+                                    return javaIoCloseableUse(_it, (it) => {
+                                            javaIoCloseableUse(it.byteStream(), (it) => {
+                                                    onResult(BitmapFactory.decodeStream(it))
+                                            })
+                                    })
+                            })(response.body());
+                        } catch (e: Exception) {
+                            e.printStackTrace();
+                            onResult(null);
+                        };
+                    }
+            }())
+    })(HttpClient.INSTANCE);
 }
 

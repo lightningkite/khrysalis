@@ -33,34 +33,51 @@ import { MutableObservableProperty } from './../MutableObservableProperty.shared
 import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from './../../rx/DisposeCondition.actual'
 import { dateFrom, getJavaUtilDateDateAlone, getJavaUtilDateTimeAlone } from './../../time/Date.actual'
 import { DateAlone } from './../../time/DateAlone.actual'
+import { SubscriptionLike } from 'rxjs'
 import { TimeAlone } from './../../time/TimeAlone.actual'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind
-export function comLightningkiteKhrysalisViewsAndroidDateButtonBind(this_: DateButton, date: MutableObservableProperty<Date>){
-    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(date, undefined, undefined, (it) => this_.date = it), getAndroidViewViewRemoved(this_));
-    ioReactivexDisposablesDisposableUntil(this_.onDateEntered.subscribe((it) => date.value = it), getAndroidViewViewRemoved(this_));
+export function comLightningkiteKhrysalisViewsAndroidDateButtonBind(this_: DateButton, date: MutableObservableProperty<Date>): SubscriptionLike{
+    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(date, undefined, undefined, (it) => {
+                this_.date = it
+    }), getAndroidViewViewRemoved(this_));
+    ioReactivexDisposablesDisposableUntil(this_.onDateEntered.subscribe((it) => {
+                date.value = it
+    }), getAndroidViewViewRemoved(this_));
 }
 
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind
-export function comLightningkiteKhrysalisViewsAndroidTimeButtonBind(this_: TimeButton, date: MutableObservableProperty<Date>, minuteInterval: number = 1){
+export function comLightningkiteKhrysalisViewsAndroidTimeButtonBind(this_: TimeButton, date: MutableObservableProperty<Date>, minuteInterval: number = 1): SubscriptionLike{
     this_.minuteInterval = minuteInterval;
-    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(date, undefined, undefined, (it) => this_.date = it), getAndroidViewViewRemoved(this_));
-    ioReactivexDisposablesDisposableUntil(this_.onDateEntered.subscribe((it) => date.value = it), getAndroidViewViewRemoved(this_));
+    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(date, undefined, undefined, (it) => {
+                this_.date = it
+    }), getAndroidViewViewRemoved(this_));
+    ioReactivexDisposablesDisposableUntil(this_.onDateEntered.subscribe((it) => {
+                date.value = it
+    }), getAndroidViewViewRemoved(this_));
 }
 
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindDateAlone
-export function comLightningkiteKhrysalisViewsAndroidDateButtonBindDateAlone(this_: DateButton, date: MutableObservableProperty<DateAlone>){
-    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(date, undefined, undefined, (it) => this_.date = dateFrom(it, getJavaUtilDateTimeAlone(Date.constructor()), undefined)), getAndroidViewViewRemoved(this_));
-    ioReactivexDisposablesDisposableUntil(this_.onDateEntered.subscribe((it) => date.value = getJavaUtilDateDateAlone(it)), getAndroidViewViewRemoved(this_));
+export function comLightningkiteKhrysalisViewsAndroidDateButtonBindDateAlone(this_: DateButton, date: MutableObservableProperty<DateAlone>): SubscriptionLike{
+    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(date, undefined, undefined, (it) => {
+                this_.date = dateFrom(it, getJavaUtilDateTimeAlone(Date.constructor()), undefined)
+    }), getAndroidViewViewRemoved(this_));
+    ioReactivexDisposablesDisposableUntil(this_.onDateEntered.subscribe((it) => {
+                date.value = getJavaUtilDateDateAlone(it)
+    }), getAndroidViewViewRemoved(this_));
 }
 
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindTimeAlone
-export function comLightningkiteKhrysalisViewsAndroidTimeButtonBindTimeAlone(this_: TimeButton, date: MutableObservableProperty<TimeAlone>, minuteInterval: number = 1){
+export function comLightningkiteKhrysalisViewsAndroidTimeButtonBindTimeAlone(this_: TimeButton, date: MutableObservableProperty<TimeAlone>, minuteInterval: number = 1): SubscriptionLike{
     this_.minuteInterval = minuteInterval;
-    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(date, undefined, undefined, (it) => this_.date = dateFrom(getJavaUtilDateDateAlone(Date.constructor()), it, undefined)), getAndroidViewViewRemoved(this_));
-    ioReactivexDisposablesDisposableUntil(this_.onDateEntered.subscribe((it) => date.value = getJavaUtilDateTimeAlone(it)), getAndroidViewViewRemoved(this_));
+    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(date, undefined, undefined, (it) => {
+                this_.date = dateFrom(getJavaUtilDateDateAlone(Date.constructor()), it, undefined)
+    }), getAndroidViewViewRemoved(this_));
+    ioReactivexDisposablesDisposableUntil(this_.onDateEntered.subscribe((it) => {
+                date.value = getJavaUtilDateTimeAlone(it)
+    }), getAndroidViewViewRemoved(this_));
 }
 

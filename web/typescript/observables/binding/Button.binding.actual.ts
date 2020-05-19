@@ -23,25 +23,30 @@ import { comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy } fro
 import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from './../../rx/DisposeCondition.actual'
 import { ObservableProperty } from './../ObservableProperty.shared'
 import { setAndroidViewViewBackgroundDrawable } from './../../views/View.ext.actual'
+import { SubscriptionLike } from 'rxjs'
 import { ColorResource } from './../../views/ResourceTypes.actual'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindActive
-export function androidWidgetButtonBindActive(this_: Button, observable: ObservableProperty<Boolean>, activeColorResource: (ColorResource | null) = null, inactiveColorResource: (ColorResource | null) = null){
+export function androidWidgetButtonBindActive(this_: Button, observable: ObservableProperty<Boolean>, activeColorResource: (ColorResource | null) = null, inactiveColorResource: (ColorResource | null) = null): SubscriptionLike{
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (it) => {
                 setAndroidWidgetButtonIsEnabled(this_, it);
                 if (it) {
                     const temp373 = activeColorResource;
-                    if(temp373 !== null) ((color) => this_.setBackgroundResource(color))(temp373);
+                    if(temp373 !== null) ((color) => {
+                            this_.setBackgroundResource(color)
+                    })(temp373);
                 } else {
                     const temp375 = inactiveColorResource;
-                    if(temp375 !== null) ((color) => this_.setBackgroundResource(color))(temp375);
+                    if(temp375 !== null) ((color) => {
+                            this_.setBackgroundResource(color)
+                    })(temp375);
                 }
     }), getAndroidViewViewRemoved(this_));
 }
 
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindActive
-export function androidWidgetButtonBindActive(this_: Button, observable: ObservableProperty<Boolean>, activeBackground: Drawable, inactiveBackground: Drawable){
+export function androidWidgetButtonBindActive(this_: Button, observable: ObservableProperty<Boolean>, activeBackground: Drawable, inactiveBackground: Drawable): SubscriptionLike{
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (it) => {
                 setAndroidWidgetButtonIsEnabled(this_, it);
                 if (it) {

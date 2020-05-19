@@ -37,4 +37,11 @@ fun main(){
         println(s + i.toString())
         return@label
     }
+    val lambda3: ()->Unit = label@{ ->
+        if(theAnswer.item < 22){
+            println("Hello!")
+        } else {
+            println("WRONG")
+        }
+    }
 }

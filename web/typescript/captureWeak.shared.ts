@@ -26,7 +26,7 @@ export function captureWeak<Z extends object>(capture: Z, lambda:  (a: Z) => voi
         if (actualCaptured.equals(null)) {
             return;
         }
-        this.lambda(actualCaptured!!);
+        lambda(actualCaptured!!);
     };
 }
 
@@ -40,7 +40,7 @@ export function captureWeak<Z extends object, A>(capture: Z, lambda:  (a: Z, b: 
         if (actualCaptured.equals(null)) {
             return;
         }
-        this.lambda(actualCaptured!!, a);
+        lambda(actualCaptured!!, a);
     };
 }
 
@@ -54,7 +54,7 @@ export function captureWeak<Z extends object, A, B>(capture: Z, lambda:  (a: Z, 
         if (actualCaptured.equals(null)) {
             return;
         }
-        this.lambda(actualCaptured!!, a, b);
+        lambda(actualCaptured!!, a, b);
     };
 }
 
@@ -68,15 +68,12 @@ export function captureWeak<Z extends object, A, B, C>(capture: Z, lambda:  (a: 
         if (actualCaptured.equals(null)) {
             return;
         }
-        this.lambda(actualCaptured!!, a, b, c);
+        lambda(actualCaptured!!, a, b, c);
     };
 }
 
 //! Declares com.lightningkite.khrysalis.captureWeak
-export function captureWeak<Z extends object, A, B, C, D>(
-    capture: Z,
-    lambda:  (a: Z, b: A, c: B, d: C, e: D) => void
-): (a: A, b: B, c: C, d: D) => void{
+export function captureWeak<Z extends object, A, B, C, D>(capture: Z, lambda:  (a: Z, b: A, c: B, d: C, e: D) => void): (a: A, b: B, c: C, d: D) => void{
     const captured;
     
     return (a, b, c, d) => {
@@ -85,15 +82,12 @@ export function captureWeak<Z extends object, A, B, C, D>(
         if (actualCaptured.equals(null)) {
             return;
         }
-        this.lambda(actualCaptured!!, a, b, c, d);
+        lambda(actualCaptured!!, a, b, c, d);
     };
 }
 
 //! Declares com.lightningkite.khrysalis.captureWeak
-export function captureWeak<Z extends object, A, B, C, D, E>(
-    capture: Z,
-    lambda:  (a: Z, b: A, c: B, d: C, e: D, f: E) => void
-): (a: A, b: B, c: C, d: D, e: E) => void{
+export function captureWeak<Z extends object, A, B, C, D, E>(capture: Z, lambda:  (a: Z, b: A, c: B, d: C, e: D, f: E) => void): (a: A, b: B, c: C, d: D, e: E) => void{
     const captured;
     
     return (a, b, c, d, e) => {
@@ -102,7 +96,7 @@ export function captureWeak<Z extends object, A, B, C, D, E>(
         if (actualCaptured.equals(null)) {
             return;
         }
-        this.lambda(actualCaptured!!, a, b, c, d, e);
+        lambda(actualCaptured!!, a, b, c, d, e);
     };
 }
 

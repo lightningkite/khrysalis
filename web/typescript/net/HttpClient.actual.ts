@@ -268,7 +268,7 @@ export class HttpClient {
                             super(getKotlinReflectKClassJava(Enum::class));
                         }
                         
-                        serialize(value: (Enum<*> | null), gen: JsonGenerator, provider: (SerializerProvider | null)){
+                        serialize(value: (Enum<*> | null), gen: JsonGenerator, provider: (SerializerProvider | null)): void{
                             if (value.equals(null)) {
                                 gen.writeNull();
                             } else {
@@ -280,7 +280,7 @@ export class HttpClient {
                             super(getKotlinReflectKClassJava(TimeAlone::class));
                         }
                         
-                        serialize(value: (TimeAlone | null), gen: JsonGenerator, provider: (SerializerProvider | null)){
+                        serialize(value: (TimeAlone | null), gen: JsonGenerator, provider: (SerializerProvider | null)): void{
                             if (value.equals(null)) {
                                 gen.writeNull();
                             } else {
@@ -292,7 +292,7 @@ export class HttpClient {
                             super(getKotlinReflectKClassJava(DateAlone::class));
                         }
                         
-                        serialize(value: (DateAlone | null), gen: JsonGenerator, provider: (SerializerProvider | null)){
+                        serialize(value: (DateAlone | null), gen: JsonGenerator, provider: (SerializerProvider | null)): void{
                             if (value.equals(null)) {
                                 gen.writeNull();
                             } else {
@@ -392,7 +392,7 @@ export class HttpClient {
                         super(getKotlinReflectKClassJava(Enum::class));
                     }
                     
-                    serialize(value: (Enum<*> | null), gen: JsonGenerator, provider: (SerializerProvider | null)){
+                    serialize(value: (Enum<*> | null), gen: JsonGenerator, provider: (SerializerProvider | null)): void{
                         if (value.equals(null)) {
                             gen.writeNull();
                         } else {
@@ -404,7 +404,7 @@ export class HttpClient {
                         super(getKotlinReflectKClassJava(TimeAlone::class));
                     }
                     
-                    serialize(value: (TimeAlone | null), gen: JsonGenerator, provider: (SerializerProvider | null)){
+                    serialize(value: (TimeAlone | null), gen: JsonGenerator, provider: (SerializerProvider | null)): void{
                         if (value.equals(null)) {
                             gen.writeNull();
                         } else {
@@ -416,7 +416,7 @@ export class HttpClient {
                         super(getKotlinReflectKClassJava(DateAlone::class));
                     }
                     
-                    serialize(value: (DateAlone | null), gen: JsonGenerator, provider: (SerializerProvider | null)){
+                    serialize(value: (DateAlone | null), gen: JsonGenerator, provider: (SerializerProvider | null)): void{
                         if (value.equals(null)) {
                             gen.writeNull();
                         } else {
@@ -433,12 +433,7 @@ export class HttpClient {
     .setDateFormat(StdDateFormat.constructor().withLenient(true));
     
     
-    call(
-        url: string,
-        method: string = HttpClient.INSTANCE.GET,
-        headers: Map<string, string> = new Map([]),
-        body: (HttpBody | null) = null
-    ): Observable<HttpResponse>{
+    call(url: string, method: string = HttpClient.INSTANCE.GET, headers: Map<string, string> = new Map([]), body: (HttpBody | null) = null): Observable<HttpResponse>{
         const request = Request.Builder.constructor()
         .url(url)
         .method(method, body)
@@ -446,14 +441,16 @@ export class HttpClient {
         .addHeader("Accept-Language", getJavaUtilLocaleLanguage(Locale.getDefault()))
         .build();
         
-        return this.ioReactivexSingleThreadCorrectly(new Observable<Response>((emitter) => try {
-                    console.log(`Sending ${method} request to ${url} with headers ${headers}`);
-                    const response = this.client.newCall(request).execute();
-                    
-                    console.log(`Response from ${method} request to ${url} with headers ${headers}: ${response.code()}`);
-                    emitter.next(response); emitter.complete();
-                } catch(e: Exception) {
-                    emitter.error(e);
+        return this.ioReactivexSingleThreadCorrectly(new Observable<Response>((emitter) => {
+                    try {
+                        console.log(`Sending ${method} request to ${url} with headers ${headers}`);
+                        const response = this.client.newCall(request).execute();
+                        
+                        console.log(`Response from ${method} request to ${url} with headers ${headers}: ${response.code()}`);
+                        emitter.next(response); emitter.complete();
+                    } catch(e: Exception) {
+                        emitter.error(e);
+                    }
         }));
     }
     
@@ -473,15 +470,17 @@ export class HttpClient {
     public immediateMode = false;
     
     
-    runResult(action: () => void){
+    runResult(action: () => void): any{
         if (this.immediateMode) {
-            this.action();
+            action();
         } else {
-            Handler.constructorandroidosLooper(Looper.getMainLooper()).post(() => this.action());
+            Handler.constructorandroidosLooper(Looper.getMainLooper()).post(() => {
+                    action()
+            });
         }
     }
     
-    okhttp3CallGo(this_: Call, callback: Callback){
+    okhttp3CallGo(this_: Call, callback: Callback): void{
         if (this.immediateMode) {
             try {
                 const result = this_.execute();
@@ -495,13 +494,7 @@ export class HttpClient {
         }
     }
     
-    call<T extends any>(
-        url: string,
-        method: string,
-        headers: Map<string, string>,
-        body: (any | null) = null,
-        onResult:  (code: number, result: (T | null), error: (string | null)) => void
-    ){
+    call<T extends any>(T: any, url: string, method: string, headers: Map<string, string>, body: (any | null) = null, onResult:  (code: number, result: (T | null), error: (string | null)) => void): void{
         console.log(`Sending ${method} request to ${url} with headers ${headers}`);
         const request = Request.Builder.constructor()
         .url(url)
@@ -524,12 +517,14 @@ export class HttpClient {
                 public constructor() {
                 }
                 
-                onFailure(call: Call, e: IOException){
+                onFailure(call: Call, e: IOException): void{
                     Log.e("HttpClient", `Failure: ${e.message}`);
-                    this.runResult(() => onResult.invoke(0, null, e.message ?: ""));
+                    this.runResult(() => {
+                            onResult.invoke(0, null, e.message ?: "")
+                    });
                 }
                 
-                onResponse(call: Call, response: Response){
+                onResponse(call: Call, response: Response): void{
                     const raw = response.body()!!.string();
                     
                     console.log(`Response ${response.code()}: ${raw}`);
@@ -558,13 +553,7 @@ export class HttpClient {
         }());
     }
     
-    callRaw(
-        url: string,
-        method: string,
-        headers: Map<string, string>,
-        body: (any | null) = null,
-        onResult:  (code: number, result: (string | null), error: (string | null)) => void
-    ){
+    callRaw(url: string, method: string, headers: Map<string, string>, body: (any | null) = null, onResult:  (code: number, result: (string | null), error: (string | null)) => void): void{
         console.log(`Sending ${method} request to ${url} with headers ${headers}`);
         const request = Request.Builder.constructor()
         .url(url)
@@ -587,12 +576,14 @@ export class HttpClient {
                 public constructor() {
                 }
                 
-                onFailure(call: Call, e: IOException){
+                onFailure(call: Call, e: IOException): void{
                     Log.e("HttpClient", `Failure: ${e.message}`);
-                    this.runResult(() => onResult.invoke(0, null, e.message ?: ""));
+                    this.runResult(() => {
+                            onResult.invoke(0, null, e.message ?: "")
+                    });
                 }
                 
-                onResponse(call: Call, response: Response){
+                onResponse(call: Call, response: Response): void{
                     const raw = response.body()!!.string();
                     
                     console.log(`Response ${response.code()}: ${raw}`);
@@ -609,13 +600,7 @@ export class HttpClient {
         }());
     }
     
-    callWithoutResult(
-        url: string,
-        method: string,
-        headers: Map<string, string>,
-        body: (any | null) = null,
-        onResult:  (code: number, error: (string | null)) => void
-    ){
+    callWithoutResult(url: string, method: string, headers: Map<string, string>, body: (any | null) = null, onResult:  (code: number, error: (string | null)) => void): void{
         console.log(`Sending ${method} request to ${url} with headers ${headers}`);
         const request = Request.Builder.constructor()
         .url(url)
@@ -638,12 +623,14 @@ export class HttpClient {
                 public constructor() {
                 }
                 
-                onFailure(call: Call, e: IOException){
+                onFailure(call: Call, e: IOException): void{
                     Log.e("HttpClient", `Failure: ${e.message}`);
-                    this.runResult(() => onResult.invoke(0, e.message ?: ""));
+                    this.runResult(() => {
+                            onResult.invoke(0, e.message ?: "")
+                    });
                 }
                 
-                onResponse(call: Call, response: Response){
+                onResponse(call: Call, response: Response): void{
                     const raw = response.body()!!.string();
                     
                     console.log(`Response ${response.code()}: ${raw}`);
@@ -660,19 +647,10 @@ export class HttpClient {
         }());
     }
     
-    uploadImageWithoutResult(
-        url: string,
-        method: string,
-        headers: Map<string, string>,
-        fieldName: string,
-        image: Image,
-        maxSize: number = 10_000_000,
-        additionalFields: Map<string, string> = new Map([]),
-        onResult:  (code: number, error: (string | null)) => void
-    ){
+    uploadImageWithoutResult(url: string, method: string, headers: Map<string, string>, fieldName: string, image: Image, maxSize: number = 10_000_000, additionalFields: Map<string, string> = new Map([]), onResult:  (code: number, error: (string | null)) => void): void{
         loadImage(image, (rawImage) => {
                 if (rawImage.equals(null)) {
-                    this.onResult(0, "Failed to read image.");
+                    onResult(0, "Failed to read image.");
                     return;
                 }
                 let qualityToTry = 100;
@@ -716,11 +694,13 @@ export class HttpClient {
                         public constructor() {
                         }
                         
-                        onFailure(call: Call, e: IOException){
-                            this.runResult(() => onResult.invoke(0, e.message ?: ""));
+                        onFailure(call: Call, e: IOException): void{
+                            this.runResult(() => {
+                                    onResult.invoke(0, e.message ?: "")
+                            });
                         }
                         
-                        onResponse(call: Call, response: Response){
+                        onResponse(call: Call, response: Response): void{
                             const raw = response.body()!!.string();
                             
                             console.log(`Response ${response.code()}: ${raw}`);
@@ -739,19 +719,10 @@ export class HttpClient {
     }
     
     
-    uploadImage<T extends any>(
-        url: string,
-        method: string,
-        headers: Map<string, string>,
-        fieldName: string,
-        image: Image,
-        maxSize: number = 10_000_000,
-        additionalFields: Map<string, string> = new Map([]),
-        onResult:  (code: number, result: (T | null), error: (string | null)) => void
-    ){
+    uploadImage<T extends any>(T: any, url: string, method: string, headers: Map<string, string>, fieldName: string, image: Image, maxSize: number = 10_000_000, additionalFields: Map<string, string> = new Map([]), onResult:  (code: number, result: (T | null), error: (string | null)) => void): void{
         loadImage(image, (rawImage) => {
                 if (rawImage.equals(null)) {
-                    this.onResult(0, null, "Failed to read image.");
+                    onResult(0, null, "Failed to read image.");
                     return;
                 }
                 let qualityToTry = 100;
@@ -795,11 +766,13 @@ export class HttpClient {
                         public constructor() {
                         }
                         
-                        onFailure(call: Call, e: IOException){
-                            this.runResult(() => onResult.invoke(0, null, e.message ?: ""));
+                        onFailure(call: Call, e: IOException): void{
+                            this.runResult(() => {
+                                    onResult.invoke(0, null, e.message ?: "")
+                            });
                         }
                         
-                        onResponse(call: Call, response: Response){
+                        onResponse(call: Call, response: Response): void{
                             const raw = response.body()!!.string();
                             
                             console.log(`Response ${response.code()}: ${raw}`);

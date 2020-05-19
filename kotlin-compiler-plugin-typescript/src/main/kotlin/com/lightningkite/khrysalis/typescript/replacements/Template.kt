@@ -3,6 +3,10 @@ package com.lightningkite.khrysalis.typescript.replacements
 data class Template(val parts: List<TemplatePart>) : Iterable<TemplatePart> {
     override fun iterator(): Iterator<TemplatePart> = parts.iterator()
 
+    override fun toString(): String {
+        return parts.joinToString("")
+    }
+
     companion object {
         val tagRegex = Regex("""~([a-zA-Z0-9*]*)~""")
         fun fromString(text: String, imports: List<TemplatePart.Import> = listOf()): Template {

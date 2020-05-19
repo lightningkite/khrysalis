@@ -12,13 +12,13 @@
 // FQImport: resources TS getAndroidWidgetTextViewResources
 // FQImport: android.content.res.Resources.getColor TS getColor
 // FQImport: text TS getAndroidWidgetToggleButtonText
+// FQImport: com.lightningkite.khrysalis.views.setTextColorResource.color TS color
 // FQImport: android.widget.TextView.setText TS setText
 // FQImport: resources TS getAndroidWidgetToggleButtonResources
 // FQImport: com.lightningkite.khrysalis.views.ColorResource TS ColorResource
 // FQImport: kotlin.CharSequence.toString TS toString
 // FQImport: text TS getAndroidWidgetTextViewText
 // FQImport: com.lightningkite.khrysalis.views.<set-textString>.value TS value
-// FQImport: com.lightningkite.khrysalis.views.setColor.color TS color
 import { ColorResource } from './ResourceTypes.actual'
 
 //! Declares com.lightningkite.khrysalis.views.textResource
@@ -35,8 +35,8 @@ export function setAndroidWidgetTextViewTextString(this_: TextView, value: strin
 }
 
 
-//! Declares com.lightningkite.khrysalis.views.setColor
-export function androidWidgetTextViewSetColor(this_: TextView, color: ColorResource){
+//! Declares com.lightningkite.khrysalis.views.setTextColorResource
+export function androidWidgetTextViewSetTextColorResource(this_: TextView, color: ColorResource): void{
     this_.setTextColor(getAndroidWidgetTextViewResources(this_).getColor(color));
 }
 

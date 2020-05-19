@@ -39,11 +39,12 @@
 import { comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy } from './../ObservableProperty.ext.shared'
 import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from './../../rx/DisposeCondition.actual'
 import { ObservableProperty } from './../ObservableProperty.shared'
+import { SubscriptionLike } from 'rxjs'
 import { also } from 'khrysalis/dist/Kotlin'
 import { ColorResource } from './../../views/ResourceTypes.actual'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindLoading
-export function androidWidgetViewFlipperBindLoading(this_: ViewFlipper, loading: ObservableProperty<Boolean>, color: (ColorResource | null) = null){
+export function androidWidgetViewFlipperBindLoading(this_: ViewFlipper, loading: ObservableProperty<Boolean>, color: (ColorResource | null) = null): SubscriptionLike{
     if (getAndroidWidgetViewFlipperInAnimation(this_).equals(null))
     setAndroidWidgetViewFlipperInAnimation(this_, also(AlphaAnimation.constructorkotlinFloat, kotlinFloat(0f, 1f), (this_1) => {
                 setAndroidViewAnimationAlphaAnimationDuration(this_1, 250);
@@ -66,6 +67,8 @@ export function androidWidgetViewFlipperBindLoading(this_: ViewFlipper, loading:
         })(temp442);
         this_.addView(spinner, 1, FrameLayout.LayoutParams.constructorkotlinInt, kotlinInt, kotlinInt(WRAP_CONTENT, WRAP_CONTENT, Gravity.CENTER));
     }
-    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(loading, undefined, undefined, (it) => setAndroidWidgetViewFlipperDisplayedChild(this_, it ? 1 : 0)), getAndroidViewViewRemoved(this_));
+    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(loading, undefined, undefined, (it) => {
+                setAndroidWidgetViewFlipperDisplayedChild(this_, it ? 1 : 0)
+    }), getAndroidViewViewRemoved(this_));
 }
 

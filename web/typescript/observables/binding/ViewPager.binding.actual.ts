@@ -38,7 +38,7 @@ import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from
 import { StandardObservableProperty } from './../StandardObservableProperty.shared'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind
-export function androidxViewpagerWidgetViewPagerBind<T>(this_: ViewPager, items: Array<T>, showIndex: MutableObservableProperty<number> = new StandardObservableProperty(0, undefined), makeView: (a: T) => View){
+export function androidxViewpagerWidgetViewPagerBind<T>(this_: ViewPager, items: Array<T>, showIndex: MutableObservableProperty<number> = new StandardObservableProperty(0, undefined), makeView: (a: T) => View): void{
     setAndroidxViewpagerWidgetViewPagerAdapter(this_, new class Anon extends PagerAdapter {
             public constructor() {
                 super();
@@ -52,26 +52,28 @@ export function androidxViewpagerWidgetViewPagerBind<T>(this_: ViewPager, items:
             instantiateItem(container: ViewGroup, position: number): any{
                 const data = items[position];
                 
-                const view = this.makeView(data);
+                const view = makeView(data);
                 
                 container.addView(view);
                 return view;
             }
             
-            destroyItem(container: ViewGroup, position: number, `object`: any){
+            destroyItem(container: ViewGroup, position: number, `object`: any): void{
                 container.removeView(`object` as View);
             }
     }());
     
-    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(showIndex, undefined, undefined, (value) => setAndroidxViewpagerWidgetViewPagerCurrentItem(this_, value)), getAndroidViewViewRemoved(this_));
+    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(showIndex, undefined, undefined, (value) => {
+                setAndroidxViewpagerWidgetViewPagerCurrentItem(this_, value)
+    }), getAndroidViewViewRemoved(this_));
     this_.addOnPageChangeListener(new class Anon implements ViewPagerOnPageChangeListener {
             public static implementsInterfaceAndroidxViewpagerWidgetViewPagerOnPageChangeListener = true;
             public constructor() {
             }
             
-            onPageScrollStateChanged(p0: number){}
-            onPageScrolled(p0: number, p1: number, p2: number){}
-            onPageSelected(p0: number){
+            onPageScrollStateChanged(p0: number): void{}
+            onPageScrolled(p0: number, p1: number, p2: number): void{}
+            onPageSelected(p0: number): void{
                 showIndex.value = p0;
             }
     }());

@@ -13,10 +13,10 @@ import { newEmptyView } from './EmptyView.actual'
 //! Declares com.lightningkite.khrysalis.views.ViewGenerator
 export abstract class ViewGenerator {
     
-    public readonly title: string;
+    public abstract readonly title: string;
     
     
-    public generate(dependency: ViewDependency): View{ return ; }
+    public abstract generate(dependency: ViewDependency): View
     
     public static Default = class Default extends ViewGenerator {
         public constructor() {

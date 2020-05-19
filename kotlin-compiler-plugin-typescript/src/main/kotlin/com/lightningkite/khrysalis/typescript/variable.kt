@@ -133,6 +133,9 @@ fun TypescriptTranslator.registerVariable() {
         if (typedRule.isMember) {
             -(typedRule.visibilityModifier() ?: "public")
             -" "
+            if(typedRule.hasModifier(KtTokens.ABSTRACT_KEYWORD)){
+                -"abstract "
+            }
             if (!typedRule.isVar) {
                 -"readonly "
             }
@@ -615,7 +618,8 @@ fun TypescriptTranslator.registerVariable() {
                         right = typedRule.right!!,
                         functionDescriptor = typedRule.operationReference.resolvedReferenceTarget as FunctionDescriptor,
                         dispatchReceiver = typedRule.getTsReceiver(),
-                        operationToken = typedRule.operationToken
+                        operationToken = typedRule.operationToken,
+                        resolvedCall = typedRule.resolvedCall
                     )
                 }
             )
@@ -659,7 +663,8 @@ fun TypescriptTranslator.registerVariable() {
                     right = typedRule.right!!,
                     functionDescriptor = typedRule.operationReference.resolvedReferenceTarget as FunctionDescriptor,
                     dispatchReceiver = typedRule.getTsReceiver(),
-                    operationToken = typedRule.operationToken
+                    operationToken = typedRule.operationToken,
+                    resolvedCall = typedRule.resolvedCall
                 )
             }
             -')'

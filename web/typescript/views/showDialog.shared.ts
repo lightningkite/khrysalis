@@ -13,19 +13,18 @@
 // FQImport: com.lightningkite.khrysalis.views.ViewString TS ViewString
 // FQImport: com.lightningkite.khrysalis.views.DialogRequest SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.observables.StandardObservableProperty TS StandardObservableProperty
-// FQImport: io.reactivex.subjects.PublishSubject TS PublishSubject
-// FQImport: io.reactivex.subjects.PublishSubject.create TS create
 // FQImport: com.lightningkite.khrysalis.observables.StandardObservableProperty.value TS value
 import { StandardObservableProperty } from './../observables/StandardObservableProperty.shared'
 import { ViewString } from './Strings.shared'
+import { Subject } from 'rxjs'
 
 //! Declares com.lightningkite.khrysalis.views.lastDialog
 export const _lastDialog = new StandardObservableProperty<(DialogRequest | null)>(null, undefined);
 export function getLastDialog(): StandardObservableProperty<DialogRequest> { return _lastDialog; }
 
 //! Declares com.lightningkite.khrysalis.views.showDialogEvent
-export const _showDialogEvent: PublishSubject<DialogRequest> = PublishSubject.create();
-export function getShowDialogEvent(): PublishSubject<DialogRequest> { return _showDialogEvent; }
+export const _showDialogEvent: Subject<DialogRequest> = new Subject();
+export function getShowDialogEvent(): Subject<DialogRequest> { return _showDialogEvent; }
 
 
 //! Declares com.lightningkite.khrysalis.views.DialogRequest
@@ -39,13 +38,13 @@ export class DialogRequest {
 }
 
 //! Declares com.lightningkite.khrysalis.views.showDialog
-export function showDialog(request: DialogRequest){
+export function showDialog(request: DialogRequest): void{
     getLastDialog().value = request;
     getShowDialogEvent().next(request);
 }
 
 //! Declares com.lightningkite.khrysalis.views.showDialog
-export function showDialog(message: ViewString){
+export function showDialog(message: ViewString): void{
     showDialog(new DialogRequest(message, undefined));
 }
 

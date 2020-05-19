@@ -229,7 +229,7 @@
 - id: io.reactivex.rxkotlin.subscribeBy
   type: call
   receiver: io.reactivex.Single
-  template: ~this~.subscribe(~onNext~, ~onError~)
+  template: ~this~.subscribe(~onNext~, ~onError~, ~onComplete~)
 
 # Operators for Single
 - id: io.reactivex.Single.map
@@ -339,3 +339,24 @@
 - id: io.reactivex.disposables.Disposable.disposed
   type: get
   template: ~this~.closed
+
+# Subjects
+
+- id: io.reactivex.subjects.Subject
+  type: type
+  template:
+    pattern: Subject<~T0~>
+    imports:
+      Subject: rxjs
+- id: io.reactivex.subjects.PublishSubject
+  type: type
+  template:
+    pattern: Subject<~T0~>
+    imports:
+      Subject: rxjs
+- id: io.reactivex.subjects.PublishSubject.create
+  type: call
+  template:
+    pattern: new Subject()
+    imports:
+      Subject: rxjs

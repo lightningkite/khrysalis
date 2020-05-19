@@ -188,7 +188,7 @@ import { getJavaUtilDateDateAlone } from './../time/Date.actual'
 
 //! Declares com.lightningkite.khrysalis.views.MonthCVD
 export class MonthCVD extends CustomViewDelegate {
-    constructor() { super(); }
+    public constructor() { super(); }
     public generateAccessibilityView(): (View | null){ return null; }
     
     public readonly currentMonthObs: MutableObservableProperty<DateAlone> = new StandardObservableProperty(comLightningkiteKhrysalisTimeDateAloneSetDayOfMonth(getJavaUtilDateDateAlone(Date.constructor()), 1), undefined);
@@ -246,13 +246,13 @@ export class MonthCVD extends CustomViewDelegate {
     private draggingId: number = this.DRAGGING_NONE;
     
     
-    public animateNextMonth(){
+    public animateNextMonth(): void{
         comLightningkiteKhrysalisTimeDateAloneSetAddMonthOfYear(this.currentMonthObs.value, 1);
         this.currentMonthObs.update();
         this.currentOffset = 1f;
     }
     
-    public animatePreviousMonth(){
+    public animatePreviousMonth(): void{
         comLightningkiteKhrysalisTimeDateAloneSetAddMonthOfYear(this.currentMonthObs.value, -1);
         this.currentMonthObs.update();
         this.currentOffset = -1f;
@@ -288,13 +288,11 @@ export class MonthCVD extends CustomViewDelegate {
         return this.dayAt(comLightningkiteKhrysalisTimeDateAloneSetAddMonthOfYear(comLightningkiteKhrysalisTimeDateAloneSet(this.calcMonth, this.currentMonth), monthOffset), row, column, existing ?: new DateAlone(0, 0, 0));
     }
     
-    public dayAt(
-        month: DateAlone, row: number, column: number, existing: DateAlone = new DateAlone(0, 0, 0)
-    ): DateAlone{
+    public dayAt(month: DateAlone, row: number, column: number, existing: DateAlone = new DateAlone(0, 0, 0)): DateAlone{
         return comLightningkiteKhrysalisTimeDateAloneSetAddDayOfMonth(comLightningkiteKhrysalisTimeDateAloneSetDayOfWeek(comLightningkiteKhrysalisTimeDateAloneSetDayOfMonth(comLightningkiteKhrysalisTimeDateAloneSet(existing, month), 1), 1), row * 7 + column);
     }
     
-    public measure(width: number, height: number, displayMetrics: DisplayMetrics){
+    public measure(width: number, height: number, displayMetrics: DisplayMetrics): void{
         this.internalPadding = displayMetrics.density * this.internalPaddingDp;
         this.dayCellMargin = displayMetrics.density * this.dayCellMarginDp;
         setAndroidGraphicsPaintTextSize(this.labelPaint, this.labelFontSp * displayMetrics.scaledDensity);
@@ -307,7 +305,7 @@ export class MonthCVD extends CustomViewDelegate {
     private readonly calcMonthB: DateAlone = new DateAlone(0, 0, 0);
     
     
-    public draw(canvas: Canvas, width: number, height: number, displayMetrics: DisplayMetrics){
+    public draw(canvas: Canvas, width: number, height: number, displayMetrics: DisplayMetrics): void{
         this.measure(width, height, displayMetrics);
         if (this.currentOffset > 0f) {
             //draw past month and current month
@@ -329,7 +327,7 @@ export class MonthCVD extends CustomViewDelegate {
     
     private readonly rectForReuseB: RectF = RectF.constructor();
     
-    public drawMonth(canvas: Canvas, xOffset: number, width: number, month: DateAlone, displayMetrics: DisplayMetrics){
+    public drawMonth(canvas: Canvas, xOffset: number, width: number, month: DateAlone, displayMetrics: DisplayMetrics): void{
         for (const day of new NumberRange(1, 7)) {
             const col = day - 1;
             
@@ -356,18 +354,11 @@ export class MonthCVD extends CustomViewDelegate {
         }
     }
     
-    public drawLabel(canvas: Canvas, dayOfWeek: number, displayMetrics: DisplayMetrics, outer: RectF, inner: RectF){
+    public drawLabel(canvas: Canvas, dayOfWeek: number, displayMetrics: DisplayMetrics, outer: RectF, inner: RectF): void{
         CalendarDrawing.INSTANCE.label(canvas, dayOfWeek, inner, this.labelPaint);
     }
     
-    public drawDay(
-        canvas: Canvas,
-        showingMonth: DateAlone,
-        day: DateAlone,
-        displayMetrics: DisplayMetrics,
-        outer: RectF,
-        inner: RectF
-    ){
+    public drawDay(canvas: Canvas, showingMonth: DateAlone, day: DateAlone, displayMetrics: DisplayMetrics, outer: RectF, inner: RectF): void{
         CalendarDrawing.INSTANCE.day(canvas, showingMonth, day, outer, this.dayPaint);
     }
     
@@ -375,14 +366,16 @@ export class MonthCVD extends CustomViewDelegate {
     
     public dragStartY: number = 0f;
     
-    public onTap(day: DateAlone){}
+    public onTap(day: DateAlone): void{}
     
     public onTouchDown(id: number, x: number, y: number, width: number, height: number): Boolean{
         const day = this.dayAtPixel(x, y, undefined);
         
         const temp198 = day;
-        if(temp198 !== null) ((it) => if (this.onTouchDown(it)) {
-                return true;
+        if(temp198 !== null) ((it) => {
+                if (this.onTouchDown(it)) {
+                    return true;
+                }
         })(temp198);
         this.dragStartX = x / width;
         this.dragStartY = y / height;
@@ -406,7 +399,9 @@ export class MonthCVD extends CustomViewDelegate {
             }
         } else {
             const temp207 = this.dayAtPixel(x, y, undefined);
-            if(temp207 !== null) ((it) => return this.onTouchMove(it))(temp207);
+            if(temp207 !== null) ((it) => {
+                    return this.onTouchMove(it)
+            })(temp207);
         }
         return true;
     }
@@ -416,7 +411,9 @@ export class MonthCVD extends CustomViewDelegate {
         if (this.draggingId === id) {
             if (this.isTap) {
                 const temp209 = this.dayAtPixel(x, y, undefined);
-                if(temp209 !== null) ((it) => this.onTap(it))(temp209);
+                if(temp209 !== null) ((it) => {
+                        this.onTap(it)
+                })(temp209);
             } else if (this.dragEnabled) {
                 const weighted = this.currentOffset + (this.currentOffset - this.lastOffset) * 200f / (System.currentTimeMillis() - this.lastOffsetTime);
                 
@@ -435,7 +432,9 @@ export class MonthCVD extends CustomViewDelegate {
             this.draggingId = this.DRAGGING_NONE;
         } else {
             const temp218 = this.dayAtPixel(x, y, undefined);
-            if(temp218 !== null) ((it) => return this.onTouchUp(it))(temp218);
+            if(temp218 !== null) ((it) => {
+                    return this.onTouchUp(it)
+            })(temp218);
         }
         return true;
     }
@@ -457,7 +456,7 @@ export class CalendarDrawing {
     }
     public static INSTANCE = new CalendarDrawing();
     
-    day(canvas: Canvas, month: DateAlone, date: DateAlone, inner: RectF, paint: Paint){
+    day(canvas: Canvas, month: DateAlone, date: DateAlone, inner: RectF, paint: Paint): void{
         if (date.month === month.month && date.year === month.year) {
             androidGraphicsCanvasDrawTextCentered(canvas, date.day.toString(), inner.centerX(), inner.centerY(), paint);
         } else {
@@ -471,26 +470,26 @@ export class CalendarDrawing {
         }
     }
     
-    label(canvas: Canvas, dayOfWeek: number, inner: RectF, paint: Paint){
+    label(canvas: Canvas, dayOfWeek: number, inner: RectF, paint: Paint): void{
         const text = TimeNames.INSTANCE.shortWeekdayName(dayOfWeek);
         
         androidGraphicsCanvasDrawTextCentered(canvas, text, inner.centerX(), inner.centerY(), paint);
     }
     
-    dayBackground(canvas: Canvas, inner: RectF, paint: Paint){
+    dayBackground(canvas: Canvas, inner: RectF, paint: Paint): void{
         canvas.drawCircle(inner.centerX(), inner.centerY(), min(inner.width() / 2f, inner.height() / 2f), paint);
     }
     
-    dayBackgroundStart(canvas: Canvas, inner: RectF, outer: RectF, paint: Paint){
+    dayBackgroundStart(canvas: Canvas, inner: RectF, outer: RectF, paint: Paint): void{
         canvas.drawCircle(inner.centerX(), inner.centerY(), min(inner.width() / 2f, inner.height() / 2f), paint);
         canvas.drawRect(outer.centerX(), inner.top, outer.right, inner.bottom, paint);
     }
     
-    dayBackgroundMid(canvas: Canvas, inner: RectF, outer: RectF, paint: Paint){
+    dayBackgroundMid(canvas: Canvas, inner: RectF, outer: RectF, paint: Paint): void{
         canvas.drawRect(outer.left, inner.top, outer.right, inner.bottom, paint);
     }
     
-    dayBackgroundEnd(canvas: Canvas, inner: RectF, outer: RectF, paint: Paint){
+    dayBackgroundEnd(canvas: Canvas, inner: RectF, outer: RectF, paint: Paint): void{
         canvas.drawCircle(inner.centerX(), inner.centerY(), min(inner.width() / 2f, inner.height() / 2f), paint);
         canvas.drawRect(outer.left, inner.top, outer.centerX(), inner.bottom, paint);
     }

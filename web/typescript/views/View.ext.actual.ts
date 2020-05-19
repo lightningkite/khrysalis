@@ -38,30 +38,32 @@ export function setAndroidViewViewBackgroundResource(this_: View, value: number)
 
 
 //! Declares com.lightningkite.khrysalis.views.onClick
-export function androidViewViewOnClick(this_: View, action: () => void){
-    androidViewViewOnClick(500, action);
+export function androidViewViewOnClick(this_: View, action: () => void): void{
+    this_.androidViewViewOnClick(500, action);
 }
 
 //! Declares com.lightningkite.khrysalis.views.onClick
-export function androidViewViewOnClick(this_: View, disabledMilliseconds: number, action: () => void){
+export function androidViewViewOnClick(this_: View, disabledMilliseconds: number, action: () => void): void{
     let lastActivated = System.currentTimeMillis();
     
-    this_.setOnClickListener((it) => if(System.currentTimeMillis() - lastActivated > disabledMilliseconds) {
-            this.action();
-            lastActivated = System.currentTimeMillis();
+    this_.setOnClickListener((it) => {
+            if(System.currentTimeMillis() - lastActivated > disabledMilliseconds) {
+                action();
+                lastActivated = System.currentTimeMillis();
+            }
     });
 }
 
 //! Declares com.lightningkite.khrysalis.views.onLongClick
-export function androidViewViewOnLongClick(this_: View, action: () => void){
+export function androidViewViewOnLongClick(this_: View, action: () => void): void{
     this_.setOnLongClickListener((it) => {
-            this.action();; return true;
+            action();; return true;
     });
 }
 
 
 //! Declares com.lightningkite.khrysalis.views.setBackgroundColorResource
-export function androidViewViewSetBackgroundColorResource(this_: View, color: ColorResource){
+export function androidViewViewSetBackgroundColorResource(this_: View, color: ColorResource): void{
     this_.setBackgroundResource(color);
 }
 

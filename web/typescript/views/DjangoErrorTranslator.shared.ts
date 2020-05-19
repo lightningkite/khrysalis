@@ -50,7 +50,7 @@ export class DjangoErrorTranslator {
     }
     
     
-    public handleNode(builder: StringBuilder, node: (any | null)){
+    public handleNode(builder: StringBuilder, node: (any | null)): void{
         if(node.equals(null)) return
         if (checkIsInterface(node, "KotlinCollectionsMap")){
             for (const toDestructure of node) {
@@ -109,16 +109,16 @@ export class DjangoErrorTranslator {
         return resultError;
     }
     
-    public wrap<T>(
-        callback:  (result: (T | null), error: (ViewString | null)) => void
-    ): (code: number, result: (T | null), error: (string | null)) => void{
-        return (code, result, error) => this.callback(result, this.parseError(code, error));
+    public wrap<T>(callback:  (result: (T | null), error: (ViewString | null)) => void): (code: number, result: (T | null), error: (string | null)) => void{
+        return (code, result, error) => {
+            callback(result, this.parseError(code, error))
+        };
     }
     
-    public wrapNoResponse(
-        callback:  (error: (ViewString | null)) => void
-    ): (code: number, error: (string | null)) => void{
-        return (code, error) => this.callback(this.parseError(code, error));
+    public wrapNoResponse(callback:  (error: (ViewString | null)) => void): (code: number, error: (string | null)) => void{
+        return (code, error) => {
+            callback(this.parseError(code, error))
+        };
     }
     
 }

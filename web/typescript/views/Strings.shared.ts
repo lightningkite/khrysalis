@@ -50,7 +50,6 @@ export interface ViewString {
     get(dependency: ViewDependency): string
 }
 export class ViewStringDefaults {
-    public static get(this_: ViewString, dependency: ViewDependency){ return ; }
 }
 
 //! Declares com.lightningkite.khrysalis.views.ViewStringRaw
@@ -137,7 +136,9 @@ export function comLightningkiteKhrysalisViewsViewStringToDebugString(this_: Vie
     } else if (thing instanceof ViewStringResource) {
         return thing.resource.toString()
     } else if (thing instanceof ViewStringTemplate) {
-        return comLightningkiteKhrysalisViewsViewStringToDebugString(thing.template) + "(" + kotlinCollectionsIterableJoinToString(thing.arguments, undefined, undefined, undefined, undefined, undefined, (it) => checkIsInterface(it, "ComLightningkiteKhrysalisViewsViewString") ? return comLightningkiteKhrysalisViewsViewStringToDebugString(it) : return `${it}`) + ")"
+        return comLightningkiteKhrysalisViewsViewStringToDebugString(thing.template) + "(" + kotlinCollectionsIterableJoinToString(thing.arguments, undefined, undefined, undefined, undefined, undefined, (it) => {
+                    checkIsInterface(it, "ComLightningkiteKhrysalisViewsViewString") ? return comLightningkiteKhrysalisViewsViewStringToDebugString(it) : return `${it}`
+        }) + ")"
     } else if (thing instanceof ViewStringList) {
         return kotlinCollectionsIterableJoinToString(thing.parts, thing.separator, undefined, undefined, undefined, undefined, (it) => comLightningkiteKhrysalisViewsViewStringToDebugString(it))
     } else if (thing instanceof ViewStringComplex) {

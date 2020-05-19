@@ -64,35 +64,47 @@ export function getComLightningkiteKhrysalisObservablesObservablePropertyOnChang
 
 
 //! Declares com.lightningkite.khrysalis.observables.subscribeBy
-export function comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy<T>(this_: ObservableProperty<T>, onError:  (a: Throwable) => void = (it) => it.printStackTrace(), onComplete:  () => void = () => {}, onNext:  (a: T) => void = (it) => {}): SubscriptionLike{ return getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this_).subscribe((boxed) => this.onNext(boxed), onError, onComplete); }
+export function comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy<T>(this_: ObservableProperty<T>, onError:  (a: Throwable) => void = (it) => {
+        it.printStackTrace()
+}, onComplete:  () => void = () => {}, onNext:  (a: T) => void = (it) => {}): SubscriptionLike{ return getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this_).subscribe((boxed) => {
+            onNext(boxed)
+}, onError, onComplete); }
 
 //! Declares com.lightningkite.khrysalis.observables.addAndRunWeak
-export function comLightningkiteKhrysalisObservablesObservablePropertyAddAndRunWeak<A extends object, T>(this_: ObservableProperty<T>, referenceA: A, listener:  (a: A, b: T) => void): SubscriptionLike{ return ioReactivexObservableAddWeak(getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this_), referenceA, (a, value) => this.listener(
-            a,
-            value
-)); }
+export function comLightningkiteKhrysalisObservablesObservablePropertyAddAndRunWeak<A extends object, T>(this_: ObservableProperty<T>, referenceA: A, listener:  (a: A, b: T) => void): SubscriptionLike{ return ioReactivexObservableAddWeak(getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this_), referenceA, (a, value) => {
+            listener(
+                a,
+                value
+            )
+}); }
 
 //! Declares com.lightningkite.khrysalis.observables.addAndRunWeak
-export function comLightningkiteKhrysalisObservablesObservablePropertyAddAndRunWeak<A extends object, B extends object, T>(this_: ObservableProperty<T>, referenceA: A, referenceB: B, listener:  (a: A, b: B, c: T) => void): SubscriptionLike{ return ioReactivexObservableAddWeak(getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this_), referenceA, referenceB, (a, b, value) => this.listener(
-            a,
-            b,
-            value
-)); }
+export function comLightningkiteKhrysalisObservablesObservablePropertyAddAndRunWeak<A extends object, B extends object, T>(this_: ObservableProperty<T>, referenceA: A, referenceB: B, listener:  (a: A, b: B, c: T) => void): SubscriptionLike{ return ioReactivexObservableAddWeak(getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this_), referenceA, referenceB, (a, b, value) => {
+            listener(
+                a,
+                b,
+                value
+            )
+}); }
 
 //! Declares com.lightningkite.khrysalis.observables.addAndRunWeak
-export function comLightningkiteKhrysalisObservablesObservablePropertyAddAndRunWeak<A extends object, B extends object, C extends object, T>(this_: ObservableProperty<T>, referenceA: A, referenceB: B, referenceC: C, listener:  (a: A, b: B, c: C, d: T) => void): SubscriptionLike{ return ioReactivexObservableAddWeak(getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this_), referenceA, referenceB, referenceC, (a, b, c, value) => this.listener(
-            a,
-            b,
-            c,
-            value
-)); }
+export function comLightningkiteKhrysalisObservablesObservablePropertyAddAndRunWeak<A extends object, B extends object, C extends object, T>(this_: ObservableProperty<T>, referenceA: A, referenceB: B, referenceC: C, listener:  (a: A, b: B, c: C, d: T) => void): SubscriptionLike{ return ioReactivexObservableAddWeak(getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this_), referenceA, referenceB, referenceC, (a, b, c, value) => {
+            listener(
+                a,
+                b,
+                c,
+                value
+            )
+}); }
 
 //! Declares com.lightningkite.khrysalis.observables.includes
 export function includes<E>(collection: MutableObservableProperty<Set<E>>, element: E): MutableObservableProperty<Boolean>{
-    return comLightningkiteKhrysalisObservablesObservablePropertyWithWrite(comLightningkiteKhrysalisObservablesObservablePropertyMap(collection, (it) => it.contains(element)), (it) => if (it) {
-            collection.value = kotlinCollectionsSetPlus(collection.value, element);
-        } else {
-            collection.value = kotlinCollectionsSetMinus(collection.value, element);
+    return comLightningkiteKhrysalisObservablesObservablePropertyWithWrite(comLightningkiteKhrysalisObservablesObservablePropertyMap(collection, (it) => it.contains(element)), (it) => {
+            if (it) {
+                collection.value = kotlinCollectionsSetPlus(collection.value, element);
+            } else {
+                collection.value = kotlinCollectionsSetMinus(collection.value, element);
+            }
     });
 }
 
