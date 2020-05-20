@@ -14,6 +14,7 @@ import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
 import org.jetbrains.kotlin.psi.synthetics.SyntheticClassOrObjectDescriptor
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
+import org.jetbrains.kotlin.types.KotlinType
 import java.util.concurrent.atomic.AtomicInteger
 
 val uniqueNumber = AtomicInteger(0)
@@ -21,6 +22,7 @@ val uniqueNumber = AtomicInteger(0)
 data class VirtualGet(
     val receiver: Any,
     val property: PropertyDescriptor,
+    val receiverType: KotlinType?,
     val expr: KtExpression,
     val safe: Boolean
 )
@@ -28,6 +30,7 @@ data class VirtualGet(
 data class VirtualSet(
     val receiver: Any,
     val property: PropertyDescriptor,
+    val receiverType: KotlinType?,
     val expr: KtExpression,
     val safe: Boolean,
     val value: Any,
@@ -158,9 +161,11 @@ fun TypescriptTranslator.registerVariable() {
             -": "
             -it
         }
-        typedRule.initializer?.let {
-            -" = "
-            -it
+        if(!typedRule.isMember) {
+            typedRule.initializer?.let {
+                -" = "
+                -it
+            }
         }
         -";\n"
         if (typedRule.getter != null || typedRule.setter != null || (!typedRule.isPrivate() && typedRule.isTopLevel)) {
@@ -378,11 +383,11 @@ fun TypescriptTranslator.registerVariable() {
     //Getter usage
     handle<VirtualGet>(
         condition = {
-            replacements.getGet(typedRule.property) != null
+            replacements.getGet(typedRule.property, typedRule.receiverType) != null
         },
         priority = 10_000,
         action = {
-            val rule = replacements.getGet(typedRule.property)!!
+            val rule = replacements.getGet(typedRule.property, typedRule.receiverType)!!
             if (typedRule.safe) {
                 -"((_it)=>{\n"
                 -"if(_it === null) return null;\nreturn "
@@ -436,7 +441,13 @@ fun TypescriptTranslator.registerVariable() {
         action = {
             val p =
                 (typedRule.selectorExpression as KtNameReferenceExpression).resolvedReferenceTarget as PropertyDescriptor
-            -VirtualGet(typedRule.receiverExpression, p, typedRule, false)
+            -VirtualGet(
+                receiver = typedRule.receiverExpression,
+                property = p,
+                receiverType = typedRule.receiverExpression.resolvedExpressionTypeInfo?.type,
+                expr = typedRule,
+                safe = false
+            )
         }
     )
     handle<KtSafeQualifiedExpression>(
@@ -445,7 +456,13 @@ fun TypescriptTranslator.registerVariable() {
         action = {
             val p =
                 (typedRule.selectorExpression as KtNameReferenceExpression).resolvedReferenceTarget as PropertyDescriptor
-            -VirtualGet(typedRule.receiverExpression, p, typedRule, true)
+            -VirtualGet(
+                receiver = typedRule.receiverExpression,
+                property = p,
+                receiverType = typedRule.receiverExpression.resolvedExpressionTypeInfo?.type,
+                expr = typedRule,
+                safe = true
+            )
         }
     )
 
@@ -602,6 +619,7 @@ fun TypescriptTranslator.registerVariable() {
             -VirtualSet(
                 receiver = rec,
                 property = leftProp,
+                receiverType = left.receiverExpression.resolvedExpressionTypeInfo?.type,
                 expr = typedRule,
                 dispatchReceiver = nre.getTsReceiver(),
                 safe = left is KtSafeQualifiedExpression,
@@ -612,6 +630,7 @@ fun TypescriptTranslator.registerVariable() {
                         left = VirtualGet(
                             receiver = rec,
                             property = leftProp,
+                            receiverType = left.receiverExpression.resolvedExpressionTypeInfo?.type,
                             expr = left,
                             safe = false
                         ),

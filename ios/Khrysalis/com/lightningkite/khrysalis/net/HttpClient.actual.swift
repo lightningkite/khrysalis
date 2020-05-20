@@ -365,5 +365,21 @@ public enum HttpClient {
         return uploadImage(url, method, headers, fieldName, image, maxSize, additionalFields, onResult)
     }
 
+    //--- HttpClient.webSocket(String)
+    static func webSocket(_ url: String) -> Observable<ConnectedWebSocket> {
+        return Observable.using({ () -> ConnectedWebSocket in
+            var out = ConnectedWebSocket(url: url)
+            var request = URLRequest(url: URL(string: url)!)
+            let socket = WebSocket(request: request)
+            socket.delegate = out
+            out.underlyingSocket = socket
+            socket.connect()
+            return out
+        }, observableFactory: { $0.ownConnection })
+    }
+    static func webSocket(url: String) -> Observable<ConnectedWebSocket> {
+        return webSocket(url)
+    }
+
     //--- HttpClient.}
 }

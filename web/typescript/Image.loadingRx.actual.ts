@@ -20,7 +20,6 @@
 // FQImport: android.graphics.BitmapFactory.decodeByteArray TS decodeByteArray
 // FQImport: android.graphics.BitmapFactory.Options.inJustDecodeBounds TS inJustDecodeBounds
 // FQImport: android.content.ContentResolver.openInputStream TS openInputStream
-// FQImport: kotlin.ByteArray.size TS size
 // FQImport: io.reactivex.Single.error TS error
 // FQImport: kotlin.Exception TS Exception
 // FQImport: com.lightningkite.khrysalis.load.<anonymous>.it TS it
@@ -57,7 +56,7 @@ import { also } from 'khrysalis/dist/Kotlin'
 export function comLightningkiteKhrysalisImageLoad(this_: Image): Observable<Bitmap>{
     return try {
         return (() => {if (this_ instanceof ImageRaw) {
-                    return rxOf(BitmapFactory.decodeByteArray(this_.raw, 0, this_.raw.size))
+                    return rxOf(BitmapFactory.decodeByteArray(this_.raw, 0, this_.raw.length))
                 } else if (this_ instanceof ImageReference) {
                     return this_.comLightningkiteKhrysalisImageReferenceLoad(undefined)
                 } else if (this_ instanceof ImageBitmap) {
@@ -75,26 +74,20 @@ export function comLightningkiteKhrysalisImageReferenceLoad(this_: ImageReferenc
     try {
         const finalOpts = BitmapFactory.Options.constructor();
         
-        ((_it)=>{
-                if(_it === null) return null;
-                return javaIoCloseableUse(_it, (it) => {
-                        const sizeOpts = also(BitmapFactory.Options.constructor(), (this_1) => {
-                                this_1.inJustDecodeBounds = true
-                        });
-                        
-                        return also(BitmapFactory.decodeStream(it, null, sizeOpts), (this_1) => {
-                                finalOpts.inSampleSize = kotlinIntCoerceAtLeast(max(Math.floor(((it) => Math.ceil(it))(sizeOpts.outWidth / maxDimension)), Math.floor(((it) => Math.ceil(it))(sizeOpts.outHeight / maxDimension))), 1)
-                        });
-                })
-        })(getAndroidContentContextContentResolver(HttpClient.INSTANCE.appContext).openInputStream(this_.uri))
-        ?: return Single.error(IllegalStateException.constructorkotlinString("Context from HttpClient is missing; please set up HttpClient before attempting this."));
-        ((_it)=>{
-                if(_it === null) return null;
-                return javaIoCloseableUse(_it, (it) => {
-                        return rxOf(BitmapFactory.decodeStream(it, null, finalOpts))
-                })
-        })(getAndroidContentContextContentResolver(HttpClient.INSTANCE.appContext).openInputStream(this_.uri))
-        ?: return Single.error(IllegalStateException.constructorkotlinString("Context from HttpClient is missing; please set up HttpClient before attempting this."));
+        const temp286 = getAndroidContentContextContentResolver(HttpClient.INSTANCE.appContext).openInputStream(this_.uri);
+        if(temp286 !== null) javaIoCloseableUse(temp286, (it) => {
+                const sizeOpts = also(BitmapFactory.Options.constructor(), (this_1) => {
+                        this_1.inJustDecodeBounds = true
+                });
+                
+                return also(BitmapFactory.decodeStream(it, null, sizeOpts), (this_1) => {
+                        finalOpts.inSampleSize = kotlinIntCoerceAtLeast(max(Math.floor(((it) => Math.ceil(it))(sizeOpts.outWidth / maxDimension)), Math.floor(((it) => Math.ceil(it))(sizeOpts.outHeight / maxDimension))), 1)
+                });
+        }) ?? return Single.error(IllegalStateException.constructorkotlinString("Context from HttpClient is missing; please set up HttpClient before attempting this."));
+        const temp301 = getAndroidContentContextContentResolver(HttpClient.INSTANCE.appContext).openInputStream(this_.uri);
+        if(temp301 !== null) javaIoCloseableUse(temp301, (it) => {
+                return rxOf(BitmapFactory.decodeStream(it, null, finalOpts))
+        }) ?? return Single.error(IllegalStateException.constructorkotlinString("Context from HttpClient is missing; please set up HttpClient before attempting this."));
     } catch (e: Exception) {
         return Single.error(e);
     };
@@ -102,9 +95,7 @@ export function comLightningkiteKhrysalisImageReferenceLoad(this_: ImageReferenc
 
 //! Declares com.lightningkite.khrysalis.load
 export function comLightningkiteKhrysalisImageRemoteUrlLoad(this_: ImageRemoteUrl): Observable<Bitmap>{
-    return ioReactivexSingleUnsuccessfulAsError(HttpClient.INSTANCE.call(this_.url, HttpClient.INSTANCE.GET, new Map([]), undefined)).pipe(rxMap((response) => ((_it)=>{
-                    if(_it === null) return null;
-                    return javaIoCloseableUse(_it, (it) => javaIoCloseableUse(it.byteStream(), (it) => BitmapFactory.decodeStream(it)))
-    })(response.body())));
+    return ioReactivexSingleUnsuccessfulAsError(HttpClient.INSTANCE.call(this_.url, HttpClient.INSTANCE.GET, new Map([]), undefined)).pipe(rxMap((response) => const temp305 = response.body();
+    if(temp305 !== null) javaIoCloseableUse(temp305, (it) => javaIoCloseableUse(it.byteStream(), (it) => BitmapFactory.decodeStream(it)))));
 }
 

@@ -20,6 +20,7 @@ import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
 import org.jetbrains.kotlin.resolve.descriptorUtil.classValueType
 import org.jetbrains.kotlin.resolve.descriptorUtil.declaresOrInheritsDefaultValue
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
+import org.jetbrains.kotlin.types.KotlinType
 import org.jetbrains.kotlin.types.typeUtil.isTypeParameter
 import java.lang.Exception
 
@@ -107,7 +108,7 @@ fun TypescriptTranslator.registerFunction() {
                 valueParameters = (typedRule.typeParameters.filter { it.hasModifier(KtTokens.REIFIED_KEYWORD) }
                     .map { listOf(it.name, ": any") })
                     .plus(typedRule.valueParameters),
-                returnType = typedRule.typeReference ?: typedRule.bodyExpression?.resolvedExpressionTypeInfo?.type
+                returnType = typedRule.typeReference ?: typedRule.bodyExpression?.takeUnless { it is KtBlockExpression }?.resolvedExpressionTypeInfo?.type
                 ?: "void",
                 body = null
             )
@@ -227,9 +228,6 @@ fun TypescriptTranslator.registerFunction() {
 
     handle<KtDotQualifiedExpression>(
         condition = {
-            if (typedRule.selectorExpression?.text == "action") {
-                println("Having a cow")
-            }
             ((typedRule.selectorExpression as? KtCallExpression)?.resolvedCall?.candidateDescriptor as? FunctionDescriptor)?.extensionReceiverParameter != null
         },
         priority = 1000,
@@ -407,14 +405,14 @@ fun TypescriptTranslator.registerFunction() {
             val desc =
                 (((typedRule.selectorExpression as? KtCallExpression)?.calleeExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget as? FunctionDescriptor)
                     ?: return@handle false
-            replacements.getCall(desc) != null
+            replacements.getCall(desc, receiverType = typedRule.receiverExpression.resolvedExpressionTypeInfo?.type) != null
         },
         priority = 10_000,
         action = {
             val callExp = typedRule.selectorExpression as KtCallExpression
             val nre = callExp.calleeExpression as KtNameReferenceExpression
             val f = nre.resolvedReferenceTarget as FunctionDescriptor
-            val rule = replacements.getCall(f)!!
+            val rule = replacements.getCall(f, receiverType = typedRule.receiverExpression.resolvedExpressionTypeInfo?.type)!!
 
             val allParametersByIndex = HashMap<Int, KtValueArgument>()
             val allParametersByName = HashMap<String, KtValueArgument>()
@@ -459,14 +457,14 @@ fun TypescriptTranslator.registerFunction() {
             val desc =
                 (((typedRule.selectorExpression as? KtCallExpression)?.calleeExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget as? FunctionDescriptor)
                     ?: return@handle false
-            replacements.getCall(desc) != null
+            replacements.getCall(desc, receiverType = typedRule.receiverExpression.resolvedExpressionTypeInfo?.type) != null
         },
         priority = 10_001,
         action = {
             val callExp = typedRule.selectorExpression as KtCallExpression
             val nre = callExp.calleeExpression as KtNameReferenceExpression
             val f = nre.resolvedReferenceTarget as FunctionDescriptor
-            val rule = replacements.getCall(f)!!
+            val rule = replacements.getCall(f, receiverType = typedRule.receiverExpression.resolvedExpressionTypeInfo?.type)!!
 
             val allParametersByIndex = HashMap<Int, KtValueArgument>()
             val allParametersByName = HashMap<String, KtValueArgument>()

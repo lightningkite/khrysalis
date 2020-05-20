@@ -1,0 +1,3 @@
+- id: com.lightningkite.khrysalis.net.HttpBody
+  type: type
+  template: BodyInit

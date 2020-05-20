@@ -49,6 +49,9 @@
 - id: com.lightningkite.khrysalis.SomeEnum
   type: typeRef
   template: "null"
+- id: com.lightningkite.khrysalis.Throwable
+  type: type
+  template: any
 
 # Primitive Equality
 

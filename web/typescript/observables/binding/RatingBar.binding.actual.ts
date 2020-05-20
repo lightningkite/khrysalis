@@ -82,7 +82,7 @@ export function androidWidgetRatingBarBind(this_: RatingBar, stars: number, obse
 //! Declares com.lightningkite.khrysalis.observables.binding.bindFloat
 export function androidWidgetRatingBarBindFloat(this_: RatingBar, stars: number, observable: MutableObservableProperty<number>): void{
     setAndroidWidgetRatingBarNumStars(this_, stars);
-    setAndroidWidgetRatingBarStepSize(this_, 0.01f);
+    setAndroidWidgetRatingBarStepSize(this_, 0.01);
     
     let suppress = false;
     

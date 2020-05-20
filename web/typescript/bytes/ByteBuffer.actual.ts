@@ -27,19 +27,17 @@
 // FQImport: java.nio.ByteBuffer.position TS position
 // FQImport: com.lightningkite.khrysalis.bytes.getSetSizeUtf8.beforePosition TS beforePosition
 // FQImport: com.lightningkite.khrysalis.bytes.getSetSizeUtf8.index TS index
-// FQImport: com.lightningkite.khrysalis.bytes.Data TS Data
 // FQImport: com.lightningkite.khrysalis.bytes.getUtf8.length TS length
 // FQImport: com.lightningkite.khrysalis.bytes.getSetSizeUtf8.length TS length
 // FQImport: java.nio.ByteBuffer TS ByteBuffer
-import { Data } from './Data.actual'
 
 //! Declares com.lightningkite.khrysalis.bytes.buffer
-export function kotlinByteArrayBuffer(this_: Data): ByteBuffer{
+export function kotlinByteArrayBuffer(this_: Int8Array): ByteBuffer{
     return ByteBuffer.wrap(this_);
 }
 
 //! Declares com.lightningkite.khrysalis.bytes.data
-export function javaNioByteBufferData(this_: ByteBuffer): Data{ return this_.array(); }
+export function javaNioByteBufferData(this_: ByteBuffer): Int8Array{ return this_.array(); }
 
 //! Declares com.lightningkite.khrysalis.bytes.getUtf8
 export function javaNioByteBufferGetUtf8(this_: ByteBuffer): string{

@@ -46,25 +46,25 @@ import { ColorResource } from './../../views/ResourceTypes.actual'
 //! Declares com.lightningkite.khrysalis.observables.binding.bindLoading
 export function androidWidgetViewFlipperBindLoading(this_: ViewFlipper, loading: ObservableProperty<Boolean>, color: (ColorResource | null) = null): SubscriptionLike{
     if (getAndroidWidgetViewFlipperInAnimation(this_).equals(null))
-    setAndroidWidgetViewFlipperInAnimation(this_, also(AlphaAnimation.constructorkotlinFloat, kotlinFloat(0f, 1f), (this_1) => {
+    setAndroidWidgetViewFlipperInAnimation(this_, also(AlphaAnimation.constructorkotlinFloat, kotlinFloat(0, 1), (this_1) => {
                 setAndroidViewAnimationAlphaAnimationDuration(this_1, 250);
                 setAndroidViewAnimationAlphaAnimationInterpolator(this_1, LinearInterpolator.constructor());
     }))
     if (getAndroidWidgetViewFlipperOutAnimation(this_).equals(null))
-    setAndroidWidgetViewFlipperOutAnimation(this_, also(AlphaAnimation.constructorkotlinFloat, kotlinFloat(1f, 0f), (this_1) => {
+    setAndroidWidgetViewFlipperOutAnimation(this_, also(AlphaAnimation.constructorkotlinFloat, kotlinFloat(1, 0), (this_1) => {
                 setAndroidViewAnimationAlphaAnimationDuration(this_1, 250);
                 setAndroidViewAnimationAlphaAnimationInterpolator(this_1, LinearInterpolator.constructor());
     }))
     if (getAndroidWidgetViewFlipperChildCount(this_) === 1) {
         const spinner = ProgressBar.constructorandroidcontentContext(getAndroidWidgetViewFlipperContext(this_));
         
-        const temp442 = color;
-        if(temp442 !== null) ((color) => {
+        const temp418 = color;
+        if(temp418 !== null) ((color) => {
                 //TODO: Make this actually show the proper color. Currently it only makes it white.
                 const colorValue = getAndroidWidgetViewFlipperResources(this_).getColor(color);
                 
                 setAndroidGraphicsDrawableDrawableColorFilter(getAndroidWidgetProgressBarIndeterminateDrawable(spinner), LightingColorFilter.constructorkotlinInt, kotlinInt(0xFFFFFFFF - colorValue, colorValue));
-        })(temp442);
+        })(temp418);
         this_.addView(spinner, 1, FrameLayout.LayoutParams.constructorkotlinInt, kotlinInt, kotlinInt(WRAP_CONTENT, WRAP_CONTENT, Gravity.CENTER));
     }
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(loading, undefined, undefined, (it) => {

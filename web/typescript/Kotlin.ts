@@ -1,5 +1,13 @@
 // export type FullType = Array<any>;
 
+export class Exception extends Error {
+    cause: any;
+    constructor(message: string, cause: any) {
+        super(message);
+        this.cause = cause;
+    }
+}
+
 export function hashString(item: string): number {
     let hash = 0, i, chr;
     for (i = 0; i < this.length; i++) {
@@ -65,6 +73,17 @@ export function tryCastClass<T>(item: any, erasedType: any): T | null {
 export function also<T>(item: T, action: (a: T) => void): T {
     action(item);
     return item;
+}
+
+export function parseIntOrNull(s: string): number | null {
+    const r = parseInt(s);
+    if(isNaN(r)) return null;
+    return r;
+}
+export function parseFloatOrNull(s: string): number | null {
+    const r = parseFloat(s);
+    if(isNaN(r)) return null;
+    return r;
 }
 
 export interface Object {

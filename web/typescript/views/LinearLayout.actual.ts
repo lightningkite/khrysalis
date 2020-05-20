@@ -41,16 +41,16 @@ import { Align, AlignPair } from './geometry/Align.shared'
 import { also } from 'khrysalis/dist/Kotlin'
 
 //! Declares com.lightningkite.khrysalis.views.params
-export function androidWidgetLinearLayoutParams(this_: LinearLayout, sizeX: number = 0, sizeY: number = 0, marginStart: number = 0, marginEnd: number = 0, marginTop: number = 0, marginBottom: number = 0, gravity: AlignPair = AlignPair.Companion.INSTANCE.center, weight: number = 0f): LinearLayout.LayoutParams{
+export function androidWidgetLinearLayoutParams(this_: LinearLayout, sizeX: number = 0, sizeY: number = 0, marginStart: number = 0, marginEnd: number = 0, marginTop: number = 0, marginBottom: number = 0, gravity: AlignPair = AlignPair.Companion.INSTANCE.center, weight: number = 0): LinearLayout.LayoutParams{
     const d = getAndroidContentResResourcesDisplayMetrics(getAndroidWidgetLinearLayoutResources(this_)).density;
     
     const align = getAndroidWidgetLinearLayoutOrientation(this_) === LinearLayout.HORIZONTAL ? gravity.vertical : gravity.horizontal;
     
     
     return also((() => {if (getAndroidWidgetLinearLayoutOrientation(this_) === LinearLayout.HORIZONTAL) {
-                    return LinearLayout.LayoutParams.constructorkotlinInt, kotlinInt, kotlinFloat(!(weight === 0f) ? 0 : sizeX === 0 ? WRAP_CONTENT : Math.floor((sizeX * d)), align.equals(Align.fill) ? MATCH_PARENT : sizeY === 0 ? WRAP_CONTENT : Math.floor((sizeY * d)), weight);
+                    return LinearLayout.LayoutParams.constructorkotlinInt, kotlinInt, kotlinFloat(!(weight === 0) ? 0 : sizeX === 0 ? WRAP_CONTENT : Math.floor((sizeX * d)), align.equals(Align.fill) ? MATCH_PARENT : sizeY === 0 ? WRAP_CONTENT : Math.floor((sizeY * d)), weight);
                 } else {
-                    return LinearLayout.LayoutParams.constructorkotlinInt, kotlinInt, kotlinFloat(align.equals(Align.fill) ? MATCH_PARENT : sizeX === 0 ? WRAP_CONTENT : Math.floor((sizeX * d)), !(weight === 0f) ? 0 : sizeY === 0 ? WRAP_CONTENT : Math.floor((sizeY * d)), weight);
+                    return LinearLayout.LayoutParams.constructorkotlinInt, kotlinInt, kotlinFloat(align.equals(Align.fill) ? MATCH_PARENT : sizeX === 0 ? WRAP_CONTENT : Math.floor((sizeX * d)), !(weight === 0) ? 0 : sizeY === 0 ? WRAP_CONTENT : Math.floor((sizeY * d)), weight);
         }})(), (this_1) => {
             this_1.gravity = (() => {switch(align) {
                         case Align.start:

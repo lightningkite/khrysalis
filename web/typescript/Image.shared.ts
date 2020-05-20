@@ -10,10 +10,8 @@
 // FQImport: com.lightningkite.khrysalis.ImageReference TS ImageReference
 // FQImport: com.lightningkite.khrysalis.ImageRemoteUrl SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.ImageReference SKIPPED due to same file
-// FQImport: com.lightningkite.khrysalis.bytes.Data TS Data
 // FQImport: com.lightningkite.khrysalis.ImageBitmap SKIPPED due to same file
 import { hashString } from 'khrysalis/dist/Kotlin'
-import { Data } from './bytes/Data.actual'
 
 //! Declares com.lightningkite.khrysalis.Image
 export class Image {
@@ -52,8 +50,8 @@ export class ImageBitmap extends Image {
 }
 //! Declares com.lightningkite.khrysalis.ImageRaw
 export class ImageRaw extends Image {
-    public readonly raw: Data;
-    public constructor(raw: Data) {
+    public readonly raw: Int8Array;
+    public constructor(raw: Int8Array) {
         super();
         this.raw = raw;
     }
@@ -64,7 +62,7 @@ export class ImageRaw extends Image {
     }
     public equals(other: any): boolean { return other instanceof ImageRaw && (this.raw?.equals(other.raw) ?? other.raw === null) }
     public toString(): string { return `ImageRaw(raw = ${this.raw})` }
-    public copy(raw: Data = this.raw) { return new ImageRaw(raw); }
+    public copy(raw: Int8Array = this.raw) { return new ImageRaw(raw); }
 }
 //! Declares com.lightningkite.khrysalis.ImageRemoteUrl
 export class ImageRemoteUrl extends Image {

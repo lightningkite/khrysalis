@@ -43,4 +43,24 @@ extension PrimitiveSequence where Element == HttpResponse, Trait == SingleTrait 
             }
         }
     }
+    //--- Single<@swiftExactly("Element")HttpResponse>.readText()
+    public func readText() -> Single<String> {
+        return self.map{ (it) in
+            if it.isSuccessful {
+                return String(data: it.data, encoding: .utf8)!
+            } else {
+                throw HttpResponseException(it)
+            }
+        }
+    }
+    //--- Single<@swiftExactly("Element")HttpResponse>.readData()
+    public func readData() -> Single<Data> {
+        return self.map{ (it) in
+            if it.isSuccessful {
+                return it.data
+            } else {
+                throw HttpResponseException(it)
+            }
+        }
+    }
 }

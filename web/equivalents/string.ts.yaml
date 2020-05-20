@@ -184,3 +184,61 @@
     pattern: vsprintf(~this~, ~0~)
     imports:
       vsprintf: sprintf
+
+# Converting to Numbers
+
+- id: kotlin.text.toByteOrNull
+  type: call
+  template:
+    pattern: parseIntOrNull(~0~)
+    imports:
+      parseIntOrNull: khrysalis/dist/Kotlin
+- id: kotlin.text.toShortOrNull
+  type: call
+  template:
+    pattern: parseIntOrNull(~0~)
+    imports:
+      parseIntOrNull: khrysalis/dist/Kotlin
+- id: kotlin.text.toIntOrNull
+  type: call
+  template:
+    pattern: parseIntOrNull(~0~)
+    imports:
+      parseIntOrNull: khrysalis/dist/Kotlin
+- id: kotlin.text.toLongOrNull
+  type: call
+  template:
+    pattern: parseIntOrNull(~0~)
+    imports:
+      parseIntOrNull: khrysalis/dist/Kotlin
+- id: kotlin.text.toFloatOrNull
+  type: call
+  template:
+    pattern: parseFloatOrNull(~0~)
+    imports:
+      parseIntOrNull: khrysalis/dist/Kotlin
+- id: kotlin.text.toDoubleOrNull
+  type: call
+  template:
+    pattern: parseFloatOrNull(~0~)
+    imports:
+      parseIntOrNull: khrysalis/dist/Kotlin
+
+- id: kotlin.text.toByte
+  type: call
+  template: parseInt(~0~)
+- id: kotlin.text.toShort
+  type: call
+  template: parseInt(~0~)
+- id: kotlin.text.toInt
+  type: call
+  template: parseInt(~0~)
+- id: kotlin.text.toLong
+  type: call
+  template: parseInt(~0~)
+- id: kotlin.text.toFloat
+  type: call
+  template: parseFloat(~0~)
+- id: kotlin.text.toDouble
+  type: call
+  template: parseFloat(~0~)

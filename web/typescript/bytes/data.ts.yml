@@ -1,0 +1,6 @@
+- id: com.lightningkite.khrysalis.bytes.Data
+  type: type
+  template: Int8Array
+- id: com.lightningkite.khrysalis.bytes.Data
+  type: typeRef
+  template: Int8Array

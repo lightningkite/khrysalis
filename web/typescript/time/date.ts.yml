@@ -27,30 +27,30 @@
   type: get
   template: ~this~.getSeconds()
 
-#- id: com.lightningkite.khrysalis.time.dateAlone
-#  type: call
-#  template:
-#
-#- id: com.lightningkite.khrysalis.time.timeAlone
-#  type: call
-#  template:
-
 #- id: com.lightningkite.khrysalis.time.sameDay
 #  type: call
-#  template: (~this~.getX() === ~0~.getX())
+#  template: (~this~.getX() === ~0~.getX()) # TODO
 #
 #- id: com.lightningkite.khrysalis.time.sameMonth
 #  type: call
-#  template: (~this~.getX() === ~0~.getX())
+#  template: (~this~.getX() === ~0~.getX()) # TODO
 
 - id: com.lightningkite.khrysalis.time.sameYear
   type: call
   template: (~this~.getFullYear() === ~0~.getFullYear())
-#
-#- id: com.lightningkite.khrysalis.time.dayOfWeek
-#  type: call
-#  template:
-#
+
+- id: com.lightningkite.khrysalis.time.dayOfWeek
+  type: call
+  template:
+    pattern: |
+      also(new Date(~this~), (d)=>{
+        const diff = ~0~ - d.getDay();
+        d.setDate(d.getDate() + diff);
+      })
+    imports:
+      also: khrysalis/dist/Kotlin
+
+
 - id: com.lightningkite.khrysalis.time.dayOfMonth
   type: call
   template:
@@ -93,9 +93,12 @@
     imports:
       copyDateMod: khrysalis/dist/time/Date.actual
 
-#- id: com.lightningkite.khrysalis.time.addDayOfWeek
-#  type: call
-#  template:
+- id: com.lightningkite.khrysalis.time.addDayOfWeek
+  type: call
+  template:
+    pattern: copyDateModRelative(~this~, Date.prototype.getDate, Date.prototype.setDate, ~0~)
+    imports:
+      copyDateModRelative: khrysalis/dist/time/Date.actual
 
 - id: com.lightningkite.khrysalis.time.addDayOfMonth
   type: call
@@ -139,9 +142,16 @@
     imports:
       copyDateModRelative: khrysalis/dist/time/Date.actual
 
-#- id: com.lightningkite.khrysalis.time.setDayOfWeek
-#  type: call
-#  template:
+- id: com.lightningkite.khrysalis.time.setDayOfWeek
+  type: call
+  template:
+    pattern: |
+      also(~this~, (d)=>{
+        const diff = ~0~ - d.getDay();
+        d.setDate(d.getDate() + diff);
+      })
+    imports:
+      also: khrysalis/dist/Kotlin
 
 - id: com.lightningkite.khrysalis.time.setDayOfMonth
   type: call
@@ -185,9 +195,12 @@
     imports:
       dateMod: khrysalis/dist/time/Date.actual
 
-#- id: com.lightningkite.khrysalis.time.setAddDayOfWeek
-#  type: call
-#  template:
+- id: com.lightningkite.khrysalis.time.setAddDayOfWeek
+  type: call
+  template:
+    pattern: dateModRelative(~this~, Date.prototype.getDate, Date.prototype.setDate, ~0~)
+    imports:
+      dateModRelative: khrysalis/dist/time/Date.actual
 
 - id: com.lightningkite.khrysalis.time.setAddDayOfMonth
   type: call
@@ -238,41 +251,6 @@
 - id: java.util.Date.hashCode
   type: call
   template: ~this~.getTime()
-
-#- id: com.lightningkite.khrysalis.time.set
-#  type: call
-#  receiver: java.util.Date
-#  arguments: [com.lightningkite.khrysalis.time.DateAlone]
-#  template:
-#
-#- id: com.lightningkite.khrysalis.time.set
-#  type: call
-#  template:
-#
-#- id: com.lightningkite.khrysalis.time.set
-#  type: call
-#  template:
-#
-#- id: com.lightningkite.khrysalis.time.set
-#  type: call
-#  template:
-#
-#- id: com.lightningkite.khrysalis.time.set
-#  type: call
-#  template:
-#
-#- id: com.lightningkite.khrysalis.time.dateFrom
-#  type: call
-#  template:
-#
-#- id: com.lightningkite.khrysalis.time.dateFromIso
-#  type: call
-#  template:
-#
-#- id: com.lightningkite.khrysalis.time.format
-#  type: call
-#  receiver: java.util.Date
-#
 
 - id: com.lightningkite.khrysalis.time.iso8601
   type: call

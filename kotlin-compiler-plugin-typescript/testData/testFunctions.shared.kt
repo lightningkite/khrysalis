@@ -1,6 +1,7 @@
 package com.test.functions
 
 import com.test.JsName
+import com.lightningkite.khrysalis.bytes.Data
 
 fun topLevelFunction(){
     println("Hello world!")
@@ -43,9 +44,11 @@ class TestClass {
         this.member?.let {
             println(it)
         }
-        member?.let {
-            println(it)
-        }
+        val y = member?.let {
+            it + 1
+        } ?: member?.let {
+            it + 1
+        } ?: 0
         memberFunction()
         this.memberFunction()
     }
@@ -88,3 +91,7 @@ fun main(){
 }
 
 val anotherThing = 2
+
+fun testRepl(data: Data) {
+    println(data.size)
+}

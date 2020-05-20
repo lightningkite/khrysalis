@@ -84,10 +84,8 @@ export class DjangoErrorTranslator {
             
             break;
             case 4:
-            const errorJson = ((_it)=>{
-                    if(_it === null) return null;
-                    return kotlinStringFromJsonStringUntyped(_it)
-            })(error);
+            const errorJson = const temp146 = error;
+            if(temp146 !== null) kotlinStringFromJsonStringUntyped(temp146);
             
             if(!(errorJson.equals(null))){
                 const builder = StringBuilder();
@@ -95,7 +93,7 @@ export class DjangoErrorTranslator {
                 this.handleNode(builder, errorJson);
                 resultError = new ViewStringRaw(builder.toString());
             } else {
-                resultError = new ViewStringRaw(error ?: "");
+                resultError = new ViewStringRaw(error ?? "");
             }
             break;
             case 5:

@@ -121,8 +121,8 @@ export function androidxRecyclerviewWidgetRecyclerViewWhenScrolledToEnd(this_: R
             }
             
             onScrolled(recyclerView: RecyclerView, dx: number, dy: number): void{
-                const temp393 = (tryCastClass(getAndroidxRecyclerviewWidgetRecyclerViewLayoutManager(this_), LinearLayoutManager));
-                if(temp393 !== null) ((it) => {
+                const temp369 = (tryCastClass(getAndroidxRecyclerviewWidgetRecyclerViewLayoutManager(this_), LinearLayoutManager));
+                if(temp369 !== null) ((it) => {
                         if (it.findLastVisibleItemPosition() === ((_it)=>{
                                     if(_it === null) return null;
                                     return _it - 1
@@ -132,7 +132,7 @@ export function androidxRecyclerviewWidgetRecyclerViewWhenScrolledToEnd(this_: R
                         })(getAndroidxRecyclerviewWidgetRecyclerViewAdapter(this_)))) {
                             action();
                         }
-                })(temp393);
+                })(temp369);
             }
     }());
 }
@@ -141,10 +141,10 @@ export function androidxRecyclerviewWidgetRecyclerViewWhenScrolledToEnd(this_: R
 export function getAndroidxRecyclerviewWidgetRecyclerViewReverseDirection(this_: RecyclerView): Boolean { return ((_it)=>{
             if(_it === null) return null;
             return getAndroidxRecyclerviewWidgetLinearLayoutManagerReverseLayout(_it)
-})((tryCastClass(getAndroidxRecyclerviewWidgetRecyclerViewLayoutManager(this_), LinearLayoutManager))) ?: false; }
+})((tryCastClass(getAndroidxRecyclerviewWidgetRecyclerViewLayoutManager(this_), LinearLayoutManager))) ?? false; }
 export function setAndroidxRecyclerviewWidgetRecyclerViewReverseDirection(this_: RecyclerView, value: Boolean) {
-    const temp398 = (tryCastClass(getAndroidxRecyclerviewWidgetRecyclerViewLayoutManager(this_), LinearLayoutManager));
-    if(temp398 !== null) setAndroidxRecyclerviewWidgetLinearLayoutManagerReverseLayout(temp398, value);
+    const temp374 = (tryCastClass(getAndroidxRecyclerviewWidgetRecyclerViewLayoutManager(this_), LinearLayoutManager));
+    if(temp374 !== null) setAndroidxRecyclerviewWidgetLinearLayoutManagerReverseLayout(temp374, value);
 }
 
 
@@ -184,7 +184,7 @@ export function androidxRecyclerviewWidgetRecyclerViewBind<T>(this_: RecyclerVie
                         return ((it) => {
                                 it.value = data.value[position]
                         })(_it)
-                })((tryCastClass(getAndroidViewViewTag(holder.itemView), StandardObservableProperty))) ?: ((this_1) => {
+                })((tryCastClass(getAndroidViewViewTag(holder.itemView), StandardObservableProperty))) ?? ((this_1) => {
                         console.log("Failed to find property to update")
                 })(this);
             }
@@ -275,7 +275,7 @@ export function androidxRecyclerviewWidgetRecyclerViewBindMulti(this_: RecyclerV
             }
             
             getItemViewType(position: number): number{
-                return typeHandler.type(kotlinCollectionsListGetOrNull(data.value, position) ?: return typeHandler.typeCount);
+                return typeHandler.type(kotlinCollectionsListGetOrNull(data.value, position) ?? return typeHandler.typeCount);
             }
             getItemCount(): number{ return data.value.length; }
             
@@ -285,7 +285,7 @@ export function androidxRecyclerviewWidgetRecyclerViewBindMulti(this_: RecyclerV
                         return ((it) => {
                                 it.value = data.value[position]
                         })(_it)
-                })((tryCastClass(getAndroidViewViewTag(holder.itemView), MutableObservableProperty))) ?: ((this_1) => {
+                })((tryCastClass(getAndroidViewViewTag(holder.itemView), MutableObservableProperty))) ?? ((this_1) => {
                         console.log("Failed to find property to update")
                 })(this);
             }
@@ -332,7 +332,7 @@ export function androidxRecyclerviewWidgetRecyclerViewBindMulti<T>(this_: Recycl
                         return ((it) => {
                                 it.value = data.value[position]
                         })(_it)
-                })((tryCastClass(getAndroidViewViewTag(holder.itemView), StandardObservableProperty))) ?: ((this_1) => {
+                })((tryCastClass(getAndroidViewViewTag(holder.itemView), StandardObservableProperty))) ?? ((this_1) => {
                         console.log("Failed to find property to update")
                 })(this);
             }
@@ -342,8 +342,8 @@ export function androidxRecyclerviewWidgetRecyclerViewBindMulti<T>(this_: Recycl
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindRefresh
 export function androidxRecyclerviewWidgetRecyclerViewBindRefresh(this_: RecyclerView, loading: ObservableProperty<Boolean>, refresh: () => void): void{
-    const temp419 = (tryCastClass(getAndroidxRecyclerviewWidgetRecyclerViewParent(this_), SwipeRefreshLayout));
-    if(temp419 !== null) ((this_1) => {
+    const temp395 = (tryCastClass(getAndroidxRecyclerviewWidgetRecyclerViewParent(this_), SwipeRefreshLayout));
+    if(temp395 !== null) ((this_1) => {
             ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(loading, undefined, undefined, (value) => {
                         this_1.post(() => {
                                 setAndroidxSwiperefreshlayoutWidgetSwipeRefreshLayoutIsRefreshing(this_1, value)
@@ -352,7 +352,7 @@ export function androidxRecyclerviewWidgetRecyclerViewBindRefresh(this_: Recycle
             this_1.setOnRefreshListener(() => {
                     refresh()
             });
-    })(temp419);
+    })(temp395);
 }
 
 

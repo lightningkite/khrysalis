@@ -195,8 +195,8 @@ export function comLightningkiteKhrysalisAndroidActivityAccessShare(this_: ViewD
     const i = Intent.constructorkotlinString(Intent.ACTION_SEND);
     
     setAndroidContentIntentType(i, "text/plain");
-    const temp675 = kotlinAnyTakeUnless(kotlinCollectionsIterableJoinToString(listOfNotNull(message), `\n`, undefined, undefined, undefined, undefined, undefined), (it) => it === null);
-    if(temp675 !== null) ((it) => i.putExtra(Intent.EXTRA_TEXT, it))(temp675);
+    const temp462 = kotlinAnyTakeUnless(kotlinCollectionsIterableJoinToString(listOfNotNull(message), `\n`, undefined, undefined, undefined, undefined, undefined), (it) => it === null);
+    if(temp462 !== null) ((it) => i.putExtra(Intent.EXTRA_TEXT, it))(temp462);
     if (!(image.equals(null))) {
         if (image instanceof ImageReference){
             i.setType("image/jpeg");
@@ -303,7 +303,7 @@ export function comLightningkiteKhrysalisAndroidActivityAccessRequestImagesGalle
                             })(((_it)=>{
                                         if(_it === null) return null;
                                         return getAndroidContentIntentClipData(_it)
-                            })(result)) ?: ((_it)=>{
+                            })(result)) ?? ((_it)=>{
                                     if(_it === null) return null;
                                     return ((it) => {
                                             callback([it])
@@ -376,7 +376,7 @@ export function comLightningkiteKhrysalisAndroidActivityAccessRequestImageCamera
                         if (code === Activity.RESULT_OK) callback(((_it)=>{
                                     if(_it === null) return null;
                                     return getAndroidContentIntentData(_it)
-                        })(result) ?: file)
+                        })(result) ?? file)
                 });
             }
     });

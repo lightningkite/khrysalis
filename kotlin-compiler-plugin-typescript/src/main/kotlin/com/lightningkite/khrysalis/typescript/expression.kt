@@ -1,6 +1,18 @@
 package com.lightningkite.khrysalis.typescript
 
+import org.jetbrains.kotlin.lexer.KtTokens
+import org.jetbrains.kotlin.psi.KtBinaryExpression
+
 fun TypescriptTranslator.registerExpression() {
+    handle<KtBinaryExpression>(
+        condition = { typedRule.operationToken == KtTokens.ELVIS },
+        priority = 1000,
+        action = {
+            -typedRule.left
+            -" ?? "
+            -typedRule.right
+        }
+    )
 //
 //    handle<KotlinParser.NavigationSuffixContext> {
 //        val rule = typedRule

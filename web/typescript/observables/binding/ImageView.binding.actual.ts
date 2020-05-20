@@ -19,7 +19,6 @@
 // FQImport: android.graphics.BitmapFactory.decodeByteArray TS decodeByteArray
 // FQImport: com.lightningkite.khrysalis.observables.binding.loadImage SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.observables.binding.loadImage.image TS image
-// FQImport: kotlin.ByteArray.size TS size
 // FQImport: android.widget.ImageView.setImageDrawable TS setImageDrawable
 // FQImport: com.lightningkite.khrysalis.rx.until TS ioReactivexDisposablesDisposableUntil
 // FQImport: com.squareup.picasso.RequestCreator.resize TS resize
@@ -51,10 +50,10 @@ import { kotlinCharSequenceIsBlank } from 'khrysalis/dist/kotlin/kotlin.text'
 //! Declares com.lightningkite.khrysalis.observables.binding.loadImage
 export function androidWidgetImageViewLoadImage(this_: ImageView, image: (Image | null)): Boolean{
     this_.post(() => {
-            const temp387 = image;
-            if(temp387 !== null) ((image) => {
+            const temp362 = image;
+            if(temp362 !== null) ((image) => {
                     if (image instanceof ImageRaw) {
-                        this_.setImageBitmap(BitmapFactory.decodeByteArray(image.raw, 0, image.raw.size))
+                        this_.setImageBitmap(BitmapFactory.decodeByteArray(image.raw, 0, image.raw.length))
                     } else if (image instanceof ImageReference) {
                         this_.setImageBitmap(MediaStore.Images.Media.getBitmap(getAndroidContentContextContentResolver(HttpClient.INSTANCE.appContext), image.uri))
                     } else if (image instanceof ImageBitmap) {
@@ -64,7 +63,7 @@ export function androidWidgetImageViewLoadImage(this_: ImageView, image: (Image 
                             Picasso.get().load(image.url).resize(getAndroidWidgetImageViewWidth(this_) * 2, getAndroidWidgetImageViewHeight(this_) * 2).centerInside().into(this_);
                         }
                     }
-            })(temp387);
+            })(temp362);
             if (image.equals(null)) {
                 this_.setImageDrawable(null);
             }

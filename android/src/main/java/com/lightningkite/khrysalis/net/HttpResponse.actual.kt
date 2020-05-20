@@ -17,7 +17,10 @@ val HttpResponse.code: Int get() = this.code()
 val HttpResponse.isSuccessful: Boolean get() = true
 */
 val HttpResponse.headers: Map<String, String> get() = this.headers().toMultimap().mapValues { it.value.joinToString(";") }
+
+@Deprecated("Instead, you should use the single Rx transformation to read the data due to flow.")
 fun HttpResponse.readText() = this.body()!!.string()
+@Deprecated("Instead, you should use the single Rx transformation to read the data due to flow.")
 inline fun <reified T> HttpResponse.readJson(): T {
     var raw: String? = null
     try {
@@ -27,6 +30,8 @@ inline fun <reified T> HttpResponse.readJson(): T {
         throw IllegalStateException("Failed to parse '$raw'", e)
     }
 }
+
+@Deprecated("Instead, you should use the single Rx transformation to read the data due to flow.")
 @PlatformSpecific inline fun <reified T> HttpResponse.readJson(typeToken: TypeReference<T>): T {
     var raw: String? = null
     try {

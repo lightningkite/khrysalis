@@ -48,12 +48,12 @@ import { SubscriptionLike } from 'rxjs'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindStack
 export function comLightningkiteKhrysalisViewsAndroidSwapViewBindStack(this_: SwapView, dependency: ViewDependency, obs: ObservableStack<ViewGenerator>): SubscriptionLike{
-    let currentData = (()=>{const temp427 = obs.stack;
-    (temp427[temp427.length - 1] ?? null)})();
+    let currentData = (()=>{const temp403 = obs.stack;
+    (temp403[temp403.length - 1] ?? null)})();
     
     let currentStackSize = obs.stack.length;
     
-    let currentView = currentData?.generate(dependency) ?: View.constructorandroidcontentContext(getComLightningkiteKhrysalisViewsAndroidSwapViewContext(this_));
+    let currentView = currentData?.generate(dependency) ?? View.constructorandroidcontentContext(getComLightningkiteKhrysalisViewsAndroidSwapViewContext(this_));
     
     this_.addView(currentView, FrameLayout.LayoutParams.constructorkotlinInt, kotlinInt(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(obs, undefined, undefined, (datas) => {
@@ -65,8 +65,8 @@ export function comLightningkiteKhrysalisViewsAndroidSwapViewBindStack(this_: Sw
                         const oldStackSize = currentStackSize;
                         
                         
-                        let newView = (()=>{const temp430 = obs.stack;
-                        (temp430[temp430.length - 1] ?? null)})()?.generate(dependency);
+                        let newView = (()=>{const temp406 = obs.stack;
+                        (temp406[temp406.length - 1] ?? null)})()?.generate(dependency);
                         
                         if (newView.equals(null)) {
                             newView = View.constructorandroidcontentContext(getComLightningkiteKhrysalisViewsAndroidSwapViewContext(this_));
@@ -79,21 +79,21 @@ export function comLightningkiteKhrysalisViewsAndroidSwapViewBindStack(this_: Sw
                         
                         
                         if (oldStackSize === 0){
-                            oldView.animate().alpha(0f);
-                            setAndroidViewViewAlpha(newView, 0f);
-                            newView.animate().alpha(1f);
+                            oldView.animate().alpha(0);
+                            setAndroidViewViewAlpha(newView, 0);
+                            newView.animate().alpha(1);
                         } else if (oldStackSize > newStackSize){
                             oldView.animate().translationX(getComLightningkiteKhrysalisViewsAndroidSwapViewWidth(this_));
                             setAndroidViewViewTranslationX(newView, -getComLightningkiteKhrysalisViewsAndroidSwapViewWidth(this_));
-                            newView.animate().translationX(0f);
+                            newView.animate().translationX(0);
                         } else if (oldStackSize < newStackSize){
                             oldView.animate().translationX(-getComLightningkiteKhrysalisViewsAndroidSwapViewWidth(this_));
                             setAndroidViewViewTranslationX(newView, getComLightningkiteKhrysalisViewsAndroidSwapViewWidth(this_));
-                            newView.animate().translationX(0f);
+                            newView.animate().translationX(0);
                         } else {
-                            oldView.animate().alpha(0f);
-                            setAndroidViewViewAlpha(newView, 0f);
-                            newView.animate().alpha(1f);
+                            oldView.animate().alpha(0);
+                            setAndroidViewViewAlpha(newView, 0);
+                            newView.animate().alpha(1);
                         }
                         oldView.animate().withEndAction(() => {
                                 this_.removeView(oldView)

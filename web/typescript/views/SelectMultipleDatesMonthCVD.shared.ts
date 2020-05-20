@@ -25,7 +25,6 @@
 // FQImport: com.lightningkite.khrysalis.time.DateAlone TS DateAlone
 // FQImport: android.util.DisplayMetrics TS DisplayMetrics
 // FQImport: textSize TS setAndroidGraphicsPaintTextSize
-// FQImport: com.lightningkite.khrysalis.time.setAddDayOfMonth TS comLightningkiteKhrysalisTimeDateAloneSetAddDayOfMonth
 // FQImport: kotlin.collections.plus TS kotlinCollectionsSetPlus
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.onTouchMove.day TS day
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.drawDay.inner TS inner
@@ -50,8 +49,9 @@
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.measure.width TS width
 // FQImport: com.lightningkite.khrysalis.time.set TS comLightningkiteKhrysalisTimeDateAloneSet
 import { StandardObservableProperty } from './../observables/StandardObservableProperty.shared'
-import { DateAlone, comLightningkiteKhrysalisTimeDateAloneSetAddDayOfMonth } from './../time/DateAlone.actual'
+import { DateAlone } from './../time/DateAlone.actual'
 import { comLightningkiteKhrysalisTimeDateAloneSet } from './../time/TimeAlone.shared'
+import { dateModRelative } from 'khrysalis/dist/time/Date.actual'
 import { MonthCVD } from './MonthCVD.shared'
 
 //! Declares com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD
@@ -77,11 +77,11 @@ export class SelectMultipleDatesMonthCVD extends MonthCVD {
     
     public drawDay(canvas: Canvas, showingMonth: DateAlone, day: DateAlone, displayMetrics: DisplayMetrics, outer: RectF, inner: RectF): void{
         if (this.dates.value.contains(day)) {
-            const leftDate = comLightningkiteKhrysalisTimeDateAloneSetAddDayOfMonth(comLightningkiteKhrysalisTimeDateAloneSet(this.drawDay_dateAlone, day), -1);
+            const leftDate = dateModRelative(comLightningkiteKhrysalisTimeDateAloneSet(this.drawDay_dateAlone, day), Date.prototype.getDate, Date.prototype.setDate, -1);
             
             const left = this.dates.value.contains(leftDate);
             
-            const rightDate = comLightningkiteKhrysalisTimeDateAloneSetAddDayOfMonth(comLightningkiteKhrysalisTimeDateAloneSet(this.drawDay_dateAlone, day), 1);
+            const rightDate = dateModRelative(comLightningkiteKhrysalisTimeDateAloneSet(this.drawDay_dateAlone, day), Date.prototype.getDate, Date.prototype.setDate, 1);
             
             const right = this.dates.value.contains(rightDate);
             

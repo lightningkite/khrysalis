@@ -87,7 +87,7 @@ export class ViewStringTemplate implements ViewString {
     public get(dependency: ViewDependency): string{
         const templateResolved = this.template.get(dependency);
         
-        const fixedArguments = this.arguments.map((it) => (tryCastInterface(it, "ComLightningkiteKhrysalisViewsViewString"))?.get(dependency) ?: it);
+        const fixedArguments = this.arguments.map((it) => (tryCastInterface(it, "ComLightningkiteKhrysalisViewsViewString"))?.get(dependency) ?? it);
         
         return vsprintf(templateResolved, fixedArguments);
     }

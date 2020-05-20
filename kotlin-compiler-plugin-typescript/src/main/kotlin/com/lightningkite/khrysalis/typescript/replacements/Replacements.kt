@@ -22,23 +22,39 @@ class Replacements() {
     val types: HashMap<String, TreeSet<TypeReplacement>> = HashMap()
     val typeRefs: HashMap<String, TreeSet<TypeRefReplacement>> = HashMap()
 
-    fun getCall(functionDescriptor: FunctionDescriptor, comparatorType: String? = null): FunctionReplacement? {
-        return functions[functionDescriptor.fqNameSafe.asString().substringBefore(".<")]?.find { it.passes(functionDescriptor, comparatorType) }
-            ?: functionDescriptor.overriddenDescriptors.asSequence().map { getCall(it) }.firstOrNull()
+    fun getCall(
+        functionDescriptor: FunctionDescriptor,
+        comparatorType: String? = null,
+        receiverType: KotlinType? = null
+    ): FunctionReplacement? {
+        return functions[functionDescriptor.fqNameSafe.asString().substringBefore(".<")]?.find {
+            it.passes(
+                functionDescriptor,
+                comparatorType,
+                receiverType
+            )
+        }
+            ?: functionDescriptor.overriddenDescriptors.asSequence().map { getCall(it, comparatorType, receiverType) }
+                .firstOrNull()
     }
 
-    fun getGet(propertyDescriptor: PropertyDescriptor): GetReplacement? =
-        gets[propertyDescriptor.fqNameSafe.asString()]?.find { it.passes(propertyDescriptor) }
-            ?: propertyDescriptor.overriddenDescriptors.asSequence().map { getGet(it) }.firstOrNull()
+    fun getGet(propertyDescriptor: PropertyDescriptor, receiverType: KotlinType? = null): GetReplacement? =
+        gets[propertyDescriptor.fqNameSafe.asString()]?.find { it.passes(propertyDescriptor, receiverType) }
+            ?: propertyDescriptor.overriddenDescriptors.asSequence().map { getGet(it, receiverType) }.firstOrNull()
 
-    fun getSet(propertyDescriptor: PropertyDescriptor): SetReplacement? =
-        sets[propertyDescriptor.fqNameSafe.asString()]?.find { it.passes(propertyDescriptor) }
-            ?: propertyDescriptor.overriddenDescriptors.asSequence().map { getSet(it) }.firstOrNull()
+    fun getSet(propertyDescriptor: PropertyDescriptor, receiverType: KotlinType? = null): SetReplacement? =
+        sets[propertyDescriptor.fqNameSafe.asString()]?.find { it.passes(propertyDescriptor, receiverType) }
+            ?: propertyDescriptor.overriddenDescriptors.asSequence().map { getSet(it, receiverType) }.firstOrNull()
 
-    fun getType(type: DeclarationDescriptor): TypeReplacement? = types[type.fqNameSafe.asString()]?.find { it.passes(type) }
+    fun getType(type: DeclarationDescriptor): TypeReplacement? =
+        types[type.fqNameSafe.asString()]?.find { it.passes(type) }
+
     fun getType(type: KotlinType): TypeReplacement? = types[type.getJetTypeFqName(false)]?.find { it.passes(type) }
-    fun getTypeRef(type: KotlinType): TypeRefReplacement? = typeRefs[type.getJetTypeFqName(false)]?.find { it.passes(type) }
-    fun getTypeRef(type: DeclarationDescriptor): TypeRefReplacement? = typeRefs[type.fqNameSafe.asString()]?.find { it.passes(type) }
+    fun getTypeRef(type: KotlinType): TypeRefReplacement? =
+        typeRefs[type.getJetTypeFqName(false)]?.find { it.passes(type) }
+
+    fun getTypeRef(type: DeclarationDescriptor): TypeRefReplacement? =
+        typeRefs[type.fqNameSafe.asString()]?.find { it.passes(type) }
 
     companion object {
         val mapper: ObjectMapper = ObjectMapper(YAMLFactory())

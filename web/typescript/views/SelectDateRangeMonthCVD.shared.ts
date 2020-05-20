@@ -88,7 +88,7 @@ export class SelectDateRangeMonthCVD extends MonthCVD {
         } else if (day.equals(this.endInclusive.value)){
             CalendarDrawing.INSTANCE.dayBackgroundEnd(canvas, inner, outer, this.selectedPaint);
             CalendarDrawing.INSTANCE.day(canvas, showingMonth, day, inner, this.selectedDayPaint);
-        } else if (day.comparable > (this.start.value?.comparable ?: Int.Companion.INSTANCE.MAX_VALUE) && day.comparable < (this.endInclusive.value?.comparable ?: Int.Companion.INSTANCE.MIN_VALUE)){
+        } else if (day.comparable > (this.start.value?.comparable ?? Int.Companion.INSTANCE.MAX_VALUE) && day.comparable < (this.endInclusive.value?.comparable ?? Int.Companion.INSTANCE.MIN_VALUE)){
             CalendarDrawing.INSTANCE.dayBackgroundMid(canvas, inner, outer, this.selectedPaint);
             CalendarDrawing.INSTANCE.day(canvas, showingMonth, day, inner, this.selectedDayPaint);
         } else {

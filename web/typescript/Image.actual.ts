@@ -19,7 +19,6 @@
 // FQImport: com.lightningkite.khrysalis.loadImage.image TS image
 // FQImport: okhttp3.OkHttpClient.newCall TS newCall
 // FQImport: android.content.ContentResolver.openInputStream TS openInputStream
-// FQImport: kotlin.ByteArray.size TS size
 // FQImport: kotlin.Exception TS Exception
 // FQImport: okhttp3.Request TS Request
 // FQImport: android.graphics.BitmapFactory.Options.inSampleSize TS inSampleSize
@@ -73,7 +72,7 @@ import { also } from 'khrysalis/dist/Kotlin'
 export function loadImage(image: Image, onResult: (a: (Bitmap | null)) => void): void{
     try {
         if (image instanceof ImageRaw) {
-            onResult(BitmapFactory.decodeByteArray(image.raw, 0, image.raw.size))
+            onResult(BitmapFactory.decodeByteArray(image.raw, 0, image.raw.length))
         } else if (image instanceof ImageReference) {
             loadImage(image.uri, undefined, onResult)
         } else if (image instanceof ImageBitmap) {

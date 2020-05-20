@@ -165,7 +165,25 @@ object HttpClient {
         }.threadCorrectly()
     }
 
-
+    fun webSocket(
+        url: String
+    ): Observable<ConnectedWebSocket> {
+        return Observable.using<ConnectedWebSocket, ConnectedWebSocket>(
+            {
+                val out = ConnectedWebSocket(url)
+                out.underlyingSocket = client.newWebSocket(
+                    Request.Builder()
+                        .url(url.replace("http", "ws"))
+                        .addHeader("Accept-Language", Locale.getDefault().language)
+                        .build(),
+                    out
+                )
+                out
+            },
+            { it.ownConnection },
+            { it.onComplete() }
+        )
+    }
 
 
 

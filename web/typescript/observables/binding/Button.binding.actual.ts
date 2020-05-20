@@ -31,15 +31,15 @@ export function androidWidgetButtonBindActive(this_: Button, observable: Observa
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (it) => {
                 setAndroidWidgetButtonIsEnabled(this_, it);
                 if (it) {
-                    const temp373 = activeColorResource;
-                    if(temp373 !== null) ((color) => {
+                    const temp348 = activeColorResource;
+                    if(temp348 !== null) ((color) => {
                             this_.setBackgroundResource(color)
-                    })(temp373);
+                    })(temp348);
                 } else {
-                    const temp375 = inactiveColorResource;
-                    if(temp375 !== null) ((color) => {
+                    const temp350 = inactiveColorResource;
+                    if(temp350 !== null) ((color) => {
                             this_.setBackgroundResource(color)
-                    })(temp375);
+                    })(temp350);
                 }
     }), getAndroidViewViewRemoved(this_));
 }

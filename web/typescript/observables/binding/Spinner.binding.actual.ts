@@ -62,8 +62,8 @@ export function androidWidgetSpinnerBind<T>(this_: Spinner, options: ObservableP
             
             
             getView(position: number, convertView: (View | null), parent: (ViewGroup | null)): View{
-                const view = convertView ?: ((this_1) => {
-                        const event = new StandardObservableProperty<T>(kotlinCollectionsListGetOrNull(options.value, position) ?: selected.value, undefined);
+                const view = convertView ?? ((this_1) => {
+                        const event = new StandardObservableProperty<T>(kotlinCollectionsListGetOrNull(options.value, position) ?? selected.value, undefined);
                         
                         const subview = makeView(event);
                         
@@ -74,9 +74,9 @@ export function androidWidgetSpinnerBind<T>(this_: Spinner, options: ObservableP
                 ((_it)=>{
                         if(_it === null) return null;
                         return ((it) => {
-                                it.value = kotlinCollectionsListGetOrNull(options.value, position) ?: selected.value
+                                it.value = kotlinCollectionsListGetOrNull(options.value, position) ?? selected.value
                         })(_it)
-                })((tryCastClass(getAndroidViewViewTag(view), StandardObservableProperty))) ?: throw IllegalStateException.constructor();
+                })((tryCastClass(getAndroidViewViewTag(view), StandardObservableProperty))) ?? throw IllegalStateException.constructor();
                 return view;
             }
             
@@ -99,7 +99,7 @@ export function androidWidgetSpinnerBind<T>(this_: Spinner, options: ObservableP
             onNothingSelected(parent: (AdapterView<*> | null)): void{}
             
             onItemSelected(parent: (AdapterView<*> | null), view: (View | null), position: number, id: number): void{
-                const newValue = kotlinCollectionsListGetOrNull(options.value, position) ?: return;
+                const newValue = kotlinCollectionsListGetOrNull(options.value, position) ?? return;
                 
                 if (!(selected.value.equals(newValue))) {
                     selected.value = newValue;

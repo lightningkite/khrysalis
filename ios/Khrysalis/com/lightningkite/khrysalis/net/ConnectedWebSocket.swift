@@ -2,27 +2,6 @@ import RxSwift
 import RxRelay
 import Starscream
 
-//--- HttpClient.webSocket(String, Map<String,String>)
-public extension HttpClient {
-    static func webSocket(_ url: String, _ headers: Dictionary<String, String> = [:]) -> Observable<ConnectedWebSocket> {
-        return Observable.using({ () -> ConnectedWebSocket in
-            var out = ConnectedWebSocket(url: url)
-            var request = URLRequest(url: URL(string: url)!)
-            for (key, value) in headers {
-                request.setValue(value, forHTTPHeaderField: key)
-            }
-            let socket = WebSocket(request: request)
-            socket.delegate = out
-            out.underlyingSocket = socket
-            socket.connect()
-            return out
-        }, observableFactory: { $0.ownConnection })
-    }
-    static func webSocket(url: String, headers: Dictionary<String, String> = [:]) -> Observable<ConnectedWebSocket> {
-        return webSocket(url, headers)
-    }
-}
-
 //--- ConnectedWebSocket.{
 public final class ConnectedWebSocket: WebSocketDelegate, Disposable {
     
@@ -112,22 +91,8 @@ public final class ConnectedWebSocket: WebSocketDelegate, Disposable {
     //--- ConnectedWebSocket.}
 }
 
-//--- WebSocketFrame.{
-public struct WebSocketFrame: CustomStringConvertible {
-    
-    public let binary: Data?
-    public let text: String?
-    
-    //--- WebSocketFrame.Primary Constructor
-    public init(binary: Data? = nil, text: String? = nil) {
-        self.binary = binary
-        self.text = text
-    }
-    
-    //--- WebSocketFrame.toString()
+extension WebSocketFrame: CustomStringConvertible {
     public var description: String {
         return text ?? "<binary>"
     }
-    
-    //--- WebSocketFrame.}
 }
