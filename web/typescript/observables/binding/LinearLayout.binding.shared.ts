@@ -11,7 +11,6 @@
 // FQImport: com.lightningkite.khrysalis.views.params TS androidWidgetLinearLayoutParams
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<anonymous>.old TS old
 // FQImport: android.widget.LinearLayout.removeView TS removeView
-// FQImport: android.view.View TS View
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.defaultValue TS defaultValue
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.T TS T
 // FQImport: com.lightningkite.khrysalis.rx.until TS ioReactivexDisposablesDisposableUntil
@@ -21,7 +20,6 @@
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.makeView TS makeView
 // FQImport: com.lightningkite.khrysalis.observables.ObservableProperty TS ObservableProperty
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<anonymous>.prop TS prop
-// FQImport: android.widget.LinearLayout TS LinearLayout
 // FQImport: com.lightningkite.khrysalis.observables.binding.LinearLayoutBoundSubview TS LinearLayoutBoundSubview
 // FQImport: com.lightningkite.khrysalis.observables.StandardObservableProperty TS StandardObservableProperty
 // FQImport: kotlin.collections.indices TS getKotlinCollectionsCollectionIndices
@@ -40,30 +38,30 @@ import { NumberRange } from 'khrysalis/dist/Kotlin'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.LinearLayoutBoundSubview
 class LinearLayoutBoundSubview<T> {
-    public readonly view: View;
+    public readonly view: HTMLElement;
     public readonly property: StandardObservableProperty<T>;
-    public constructor(view: View, property: StandardObservableProperty<T>) {
+    public constructor(view: HTMLElement, property: StandardObservableProperty<T>) {
         this.view = view;
         this.property = property;
     }
 }
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind
-export function androidWidgetLinearLayoutBind<T>(this_: LinearLayout, data: ObservableProperty<Array<T>>, defaultValue: T, makeView:  (a: ObservableProperty<T>) => View): SubscriptionLike{
+export function androidWidgetLinearLayoutBind<T>(this_: HTML_Element, data: ObservableProperty<Array<T>>, defaultValue: T, makeView:  (a: ObservableProperty<T>) => HTMLElement): SubscriptionLike{
     const existingViews: Array<LinearLayoutBoundSubview<T>> = [];
     
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(data, undefined, undefined, (value) => {
                 //Fix view count
                 const excessViews = existingViews.length - value.length;
                 
-                if(excessViews > 0){
+                if (excessViews > 0) {
                     //remove views
                     for (const iter of new NumberRange(1, excessViews)) {
                         const old = existingViews.splice((existingViews.length - 1), 1);
                         
                         this_.removeView(old.view);
                     }
-                } else if(existingViews.length < value.length) {
+                } else if (existingViews.length < value.length) {
                     //add views
                     for (const iter of new NumberRange(1, (-excessViews))) {
                         const prop = new StandardObservableProperty(defaultValue, undefined);

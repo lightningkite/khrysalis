@@ -19,7 +19,6 @@
 // FQImport: java.io.File.createTempFile TS createTempFile
 // FQImport: android.provider.CalendarContract.Events.DESCRIPTION TS DESCRIPTION
 // FQImport: android.content.Intent.ACTION_GET_CONTENT TS ACTION_GET_CONTENT
-// FQImport: kotlin.collections.joinToString TS kotlinCollectionsIterableJoinToString
 // FQImport: com.lightningkite.khrysalis.views.openMap.zoom TS zoom
 // FQImport: com.lightningkite.khrysalis.views.getColor.resource TS resource
 // FQImport: android.Manifest TS Manifest
@@ -195,8 +194,8 @@ export function comLightningkiteKhrysalisAndroidActivityAccessShare(this_: ViewD
     const i = Intent.constructorkotlinString(Intent.ACTION_SEND);
     
     setAndroidContentIntentType(i, "text/plain");
-    const temp462 = kotlinAnyTakeUnless(kotlinCollectionsIterableJoinToString(listOfNotNull(message), `\n`, undefined, undefined, undefined, undefined, undefined), (it) => it === null);
-    if(temp462 !== null) ((it) => i.putExtra(Intent.EXTRA_TEXT, it))(temp462);
+    const temp446 = kotlinAnyTakeUnless(listOfNotNull(message).join(`\n`), (it) => it === null);
+    if(temp446 !== null) ((it) => i.putExtra(Intent.EXTRA_TEXT, it))(temp446);
     if (!(image.equals(null))) {
         if (image instanceof ImageReference){
             i.setType("image/jpeg");
@@ -376,7 +375,7 @@ export function comLightningkiteKhrysalisAndroidActivityAccessRequestImageCamera
                         if (code === Activity.RESULT_OK) callback(((_it)=>{
                                     if(_it === null) return null;
                                     return getAndroidContentIntentData(_it)
-                        })(result) ?? file)
+                        })(result) ?? file);
                 });
             }
     });

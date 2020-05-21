@@ -7,7 +7,6 @@
 // FQImport: android.os.Build.VERSION_CODES.LOLLIPOP TS LOLLIPOP
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.getView.position TS position
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.getFilter.<no name provided>.performFiltering.<anonymous>.<anonymous>.<anonymous>.q TS q
-// FQImport: android.widget.TextView.setPadding TS setPadding
 // FQImport: android.os.Build TS Build
 // FQImport: maxLines TS setAndroidWidgetTextViewMaxLines
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.getFilter.<no name provided>.performFiltering.<anonymous>.query TS query
@@ -24,8 +23,6 @@
 // FQImport: android.widget.Filter.FilterResults.values TS values
 // FQImport: android.widget.AutoCompleteTextView.setAdapter TS setAdapter
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.getFilter.<no name provided>.performFiltering.<anonymous>.newFilteredOptions TS newFilteredOptions
-// FQImport: android.widget.TextView TS TextView
-// FQImport: context TS getAndroidWidgetAutoCompleteTextViewContext
 // FQImport: textSize TS getAndroidWidgetAutoCompleteTextViewTextSize
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.getFilter.<no name provided>.publishResults.p1 TS p1
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.getItem.position TS position
@@ -47,7 +44,6 @@
 // FQImport: android.widget.BaseAdapter TS BaseAdapter
 // FQImport: kotlin.CharSequence TS CharSequence
 // FQImport: android.widget.Filter.FilterResults.count TS count
-// FQImport: android.view.View TS View
 // FQImport: android.os.Build.VERSION_CODES.JELLY_BEAN TS JELLY_BEAN
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.T TS T
 // FQImport: kotlin.text.contains TS kotlinCharSequenceContains
@@ -63,7 +59,6 @@
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.onItemSelected TS onItemSelected
 // FQImport: android.util.DisplayMetrics.scaledDensity TS scaledDensity
 // FQImport: android.util.DisplayMetrics.density TS density
-// FQImport: android.widget.AutoCompleteTextView TS AutoCompleteTextView
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.filtered TS filtered
 // FQImport: kotlin.collections.getOrNull TS kotlinCollectionsListGetOrNull
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<anonymous>.index TS index
@@ -76,7 +71,7 @@ import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from
 import { ObservableProperty } from './../ObservableProperty.shared'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind
-export function androidWidgetAutoCompleteTextViewBind<T>(this_: AutoCompleteTextView, options: ObservableProperty<Array<T>>, toString: (a: T) => string, onItemSelected: (a: T) => void): void{
+export function androidWidgetAutoCompleteTextViewBind<T>(this_: HTML_Element, options: ObservableProperty<Array<T>>, toString: (a: T) => string, onItemSelected: (a: T) => void): void{
     const filtered = Array.from(options.value);
     
     this_.setAdapter(new class Anon extends BaseAdapter implements Filterable {
@@ -95,11 +90,11 @@ export function androidWidgetAutoCompleteTextViewBind<T>(this_: AutoCompleteText
                     }
                     
                     performFiltering(p0: (CharSequence | null)): FilterResults{ return also(FilterResults.constructor(), (this_1) => {
-                                const query = const temp328 = ((_it)=>{
+                                const query = const temp307 = ((_it)=>{
                                         if(_it === null) return null;
                                         return _it.split(" ")
                                 })(p0?.toString());
-                                if(temp328 !== null) kotlinAnyTakeUnless(temp328, (it) => it.length === 0);
+                                if(temp307 !== null) kotlinAnyTakeUnless(temp307, (it) => it.length === 0);
                                 
                                 if (!(query.equals(null))) {
                                     const newFilteredOptions = options.value.filter((it) => query.every((q) => kotlinCharSequenceContains((toString)(it), q, true)));
@@ -128,8 +123,8 @@ export function androidWidgetAutoCompleteTextViewBind<T>(this_: AutoCompleteText
             
             
             
-            getView(position: number, convertView: (View | null), parent: (ViewGroup | null)): View{
-                const view = (tryCastClass(convertView, TextView)) ?? also(TextView.constructorandroidcontentContext(getAndroidWidgetAutoCompleteTextViewContext(this_)), (this_1) => {
+            getView(position: number, convertView: (HTMLElement | null), parent: (ViewGroup | null)): HTMLElement{
+                const view = (tryCastClass(convertView, HTMLDivElement)) ?? also(document.createElement('p'), (this_1) => {
                         this_1.setTextColor(getAndroidWidgetAutoCompleteTextViewTextColors(this_));
                         setAndroidWidgetTextViewTextSize(this_1, getAndroidWidgetAutoCompleteTextViewTextSize(this_) / getAndroidContentResResourcesDisplayMetrics(getAndroidWidgetTextViewResources(this_1)).scaledDensity);
                         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.JELLY_BEAN) {
@@ -140,7 +135,7 @@ export function androidWidgetAutoCompleteTextViewBind<T>(this_: AutoCompleteText
                         }
                         const size = Math.floor((getAndroidContentResResourcesDisplayMetrics(getAndroidContentContextResources(getAndroidWidgetTextViewContext(this_1))).density * 8));
                         
-                        this_1.setPadding(size, size, size, size);
+                        this_1.style.padding = `${size}px ${size}px ${size}px ${size}px `;
                 });
                 
                 setAndroidWidgetTextViewText(view, ((_it)=>{
@@ -155,8 +150,8 @@ export function androidWidgetAutoCompleteTextViewBind<T>(this_: AutoCompleteText
             getCount(): number{ return filtered.length; }
     }());
     this_.setOnItemClickListener((adapterView, view, index, id) => {
-            const temp347 = kotlinCollectionsListGetOrNull(filtered, index);
-            if(temp347 !== null) (onItemSelected)(temp347)
+            const temp327 = kotlinCollectionsListGetOrNull(filtered, index);
+            if(temp327 !== null) (onItemSelected)(temp327)
     });
 }
 

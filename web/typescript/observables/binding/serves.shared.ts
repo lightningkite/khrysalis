@@ -50,21 +50,21 @@ export function comLightningkiteKhrysalisObservablesMutableObservablePropertySer
     let suppress = false;
     
     
-    ioReactivexDisposablesDisposableUntil(getComLightningkiteKhrysalisObservablesObservablePropertyObservable(other).subscribe(undefined, (value) => {
+    ioReactivexDisposablesDisposableUntil(getComLightningkiteKhrysalisObservablesObservablePropertyObservable(other).subscribe((value) => {
                 if (suppress.not()) {
                     suppress = true;
                     this_.value = value;
                     suppress = false;
                 }
-    }, undefined), until);
+    }, undefined, undefined), until);
     
-    ioReactivexDisposablesDisposableUntil(this_.onChange.subscribe(undefined, (value) => {
+    ioReactivexDisposablesDisposableUntil(this_.onChange.subscribe((value) => {
                 if (suppress.not()) {
                     suppress = true;
                     other.value = value;
                     suppress = false;
                 }
-    }, undefined), until);
+    }, undefined, undefined), until);
 }
 
 

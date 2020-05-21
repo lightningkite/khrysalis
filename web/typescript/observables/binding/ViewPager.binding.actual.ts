@@ -15,7 +15,6 @@
 // FQImport: com.lightningkite.khrysalis.observables.subscribeBy TS comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy
 // FQImport: android.view.ViewGroup TS ViewGroup
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.items TS items
-// FQImport: android.view.View TS View
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.T TS T
 // FQImport: com.lightningkite.khrysalis.rx.until TS ioReactivexDisposablesDisposableUntil
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.isViewFromObject.p1 TS p1
@@ -38,14 +37,14 @@ import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from
 import { StandardObservableProperty } from './../StandardObservableProperty.shared'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind
-export function androidxViewpagerWidgetViewPagerBind<T>(this_: ViewPager, items: Array<T>, showIndex: MutableObservableProperty<number> = new StandardObservableProperty(0, undefined), makeView: (a: T) => View): void{
+export function androidxViewpagerWidgetViewPagerBind<T>(this_: ViewPager, items: Array<T>, showIndex: MutableObservableProperty<number> = new StandardObservableProperty(0, undefined), makeView: (a: T) => HTMLElement): void{
     setAndroidxViewpagerWidgetViewPagerAdapter(this_, new class Anon extends PagerAdapter {
             public constructor() {
                 super();
             }
             
             
-            isViewFromObject(p0: View, p1: any): Boolean{ return p1.equals(p0); }
+            isViewFromObject(p0: HTMLElement, p1: any): Boolean{ return p1.equals(p0); }
             
             getCount(): number{ return items.length; }
             
@@ -59,7 +58,7 @@ export function androidxViewpagerWidgetViewPagerBind<T>(this_: ViewPager, items:
             }
             
             destroyItem(container: ViewGroup, position: number, `object`: any): void{
-                container.removeView(`object` as View);
+                container.removeView(`object` as HTMLElement);
             }
     }());
     

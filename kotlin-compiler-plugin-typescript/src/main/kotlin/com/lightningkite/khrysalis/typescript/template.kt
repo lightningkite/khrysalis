@@ -4,16 +4,14 @@ import com.lightningkite.khrysalis.generic.*
 import com.lightningkite.khrysalis.typescript.replacements.Template
 import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.AnalysisExtensions
-import org.jetbrains.kotlin.psi.KtBlockExpression
-import org.jetbrains.kotlin.psi.KtClassOrObject
-import org.jetbrains.kotlin.psi.KtElement
-import org.jetbrains.kotlin.psi.KtExpression
+import com.lightningkite.khrysalis.util.forEachBetween
+import org.jetbrains.kotlin.psi.*
 
 
 fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByType<T>.dedup(
     requireWrapping: Boolean = false,
     action: DeDupEmitter.() -> Unit
-)  {
+) {
     val emitter = DeDupEmitter()
     action(emitter)
     val dedup = emitter.dedupNecessary
@@ -43,22 +41,53 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
 ) {
     dedup(requiresWrapping) {
         -prefix
-        for (part in template.parts) {
-            when (part) {
-                is TemplatePart.Text -> -part.string
-                TemplatePart.Receiver -> deduplicateEmit(receiver)
-                TemplatePart.DispatchReceiver -> deduplicateEmit(dispatchReceiver)
-                TemplatePart.ExtensionReceiver -> deduplicateEmit(extensionReceiver)
-                TemplatePart.Value -> deduplicateEmit(value)
-                TemplatePart.AllParameters -> -allParameters
-                TemplatePart.OperatorToken -> -operatorToken
-                is TemplatePart.Parameter -> deduplicateEmit(parameter(part))
-                is TemplatePart.ParameterByIndex -> deduplicateEmit(parameterByIndex(part))
-                is TemplatePart.TypeParameter -> -typeParameter(part)
-                is TemplatePart.TypeParameterByIndex -> -typeParameterByIndex(part)
-                is TemplatePart.Import -> out.addImport(part)
+        fun onParts(list: List<TemplatePart>) {
+            loop@ for (part in list) {
+                when (part) {
+                    is TemplatePart.Text -> -part.string
+                    TemplatePart.Receiver -> deduplicateEmit(receiver)
+                    TemplatePart.DispatchReceiver -> deduplicateEmit(dispatchReceiver)
+                    TemplatePart.ExtensionReceiver -> deduplicateEmit(extensionReceiver)
+                    TemplatePart.Value -> deduplicateEmit(value)
+                    TemplatePart.AllParameters -> -allParameters
+                    TemplatePart.OperatorToken -> -operatorToken
+                    is TemplatePart.Parameter -> deduplicateEmit(parameter(part))
+                    is TemplatePart.ParameterByIndex -> deduplicateEmit(parameterByIndex(part))
+                    is TemplatePart.LambdaParameterContents -> {
+                        -"\n"
+                        val item = when (val p = part.pointer) {
+                            is TemplatePart.ParameterByIndex -> parameterByIndex(p)
+                            is TemplatePart.Parameter -> parameter(p)
+                            else -> continue@loop
+                        }
+                        if (item is KtLambdaExpression) {
+                            part.paramMap.zip(item.valueParameters.map { it.name }.takeUnless { it.isEmpty() } ?: listOf("it")).forEach {
+                                -"const "
+                                -it.second
+                                -" = "
+                                onParts(it.first)
+                                -";\n"
+                            }
+                            -item.bodyExpression
+                        } else {
+                            -item
+                            -"("
+                            part.paramMap.forEachBetween(forItem = {
+                                onParts(it)
+                            }, between = {
+                                -", "
+                            })
+                            - ")"
+                        }
+                        -"\n"
+                    }
+                    is TemplatePart.TypeParameter -> -typeParameter(part)
+                    is TemplatePart.TypeParameterByIndex -> -typeParameterByIndex(part)
+                    is TemplatePart.Import -> out.addImport(part)
+                }
             }
         }
+        onParts(template.parts)
     }
 }
 
@@ -89,6 +118,7 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
             is TemplatePart.TypeParameter -> -typeParameter(part)
             is TemplatePart.TypeParameterByIndex -> -typeParameterByIndex(part)
             is TemplatePart.Import -> out.addImport(part)
+            is TemplatePart.LambdaParameterContents -> { }
         }
     }
 }

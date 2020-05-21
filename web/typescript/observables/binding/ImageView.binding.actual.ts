@@ -32,7 +32,6 @@
 // FQImport: com.lightningkite.khrysalis.ImageBitmap TS ImageBitmap
 // FQImport: com.lightningkite.khrysalis.ImageRemoteUrl TS ImageRemoteUrl
 // FQImport: com.squareup.picasso.Picasso.load TS load
-// FQImport: android.widget.ImageView TS ImageView
 // FQImport: android.provider.MediaStore.Images TS Images
 // FQImport: com.lightningkite.khrysalis.observables.binding.loadImage TS androidWidgetImageViewLoadImage
 // FQImport: android.graphics.BitmapFactory TS BitmapFactory
@@ -48,10 +47,10 @@ import { ObservableProperty } from './../ObservableProperty.shared'
 import { kotlinCharSequenceIsBlank } from 'khrysalis/dist/kotlin/kotlin.text'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.loadImage
-export function androidWidgetImageViewLoadImage(this_: ImageView, image: (Image | null)): Boolean{
+export function androidWidgetImageViewLoadImage(this_: HTMLImageElement, image: (Image | null)): Boolean{
     this_.post(() => {
-            const temp362 = image;
-            if(temp362 !== null) ((image) => {
+            const temp342 = image;
+            if(temp342 !== null) ((image) => {
                     if (image instanceof ImageRaw) {
                         this_.setImageBitmap(BitmapFactory.decodeByteArray(image.raw, 0, image.raw.length))
                     } else if (image instanceof ImageReference) {
@@ -63,7 +62,7 @@ export function androidWidgetImageViewLoadImage(this_: ImageView, image: (Image 
                             Picasso.get().load(image.url).resize(getAndroidWidgetImageViewWidth(this_) * 2, getAndroidWidgetImageViewHeight(this_) * 2).centerInside().into(this_);
                         }
                     }
-            })(temp362);
+            })(temp342);
             if (image.equals(null)) {
                 this_.setImageDrawable(null);
             }
@@ -72,7 +71,7 @@ export function androidWidgetImageViewLoadImage(this_: ImageView, image: (Image 
 
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindImage
-export function androidWidgetImageViewBindImage(this_: ImageView, image: ObservableProperty<(Image | null)>): Boolean{
+export function androidWidgetImageViewBindImage(this_: HTMLImageElement, image: ObservableProperty<(Image | null)>): Boolean{
     this_.post(() => {
             ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(image, undefined, undefined, (it) => {
                         androidWidgetImageViewLoadImage(this_, it)

@@ -25,16 +25,18 @@ class Replacements() {
     fun getCall(
         functionDescriptor: FunctionDescriptor,
         comparatorType: String? = null,
-        receiverType: KotlinType? = null
+        receiverType: KotlinType? = null,
+        suppliedArguments: Set<String>? = null
     ): FunctionReplacement? {
         return functions[functionDescriptor.fqNameSafe.asString().substringBefore(".<")]?.find {
             it.passes(
                 functionDescriptor,
                 comparatorType,
-                receiverType
+                receiverType,
+                suppliedArguments ?: setOf()
             )
         }
-            ?: functionDescriptor.overriddenDescriptors.asSequence().map { getCall(it, comparatorType, receiverType) }
+            ?: functionDescriptor.overriddenDescriptors.asSequence().map { getCall(it, comparatorType, receiverType, suppliedArguments) }
                 .firstOrNull()
     }
 

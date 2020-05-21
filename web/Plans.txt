@@ -1,0 +1,8 @@
+Unknowns:
+- Bitmap
+- View
+
+POSSIBLE SOLUTIONS FOR VIEW
+- Use HTML_Element directly
+
+POSSIBLE SOLUTIONS FOR BITMAP

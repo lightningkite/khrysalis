@@ -37,7 +37,7 @@ export class Close implements Closeable {
         this.disposed = false;
     }
     
-    public disposed: Boolean = false;
+    public disposed: Boolean;
     
     public isDisposed(): Boolean{
         return this.disposed;

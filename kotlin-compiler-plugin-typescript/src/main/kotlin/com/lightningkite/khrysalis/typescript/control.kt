@@ -8,6 +8,12 @@ import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 
+fun KtExpression.needsSemi(): Boolean = this !is KtDeclaration
+        && this !is KtLoopExpression
+        && this !is KtBlockExpression
+        && this !is KtIfExpression
+        && this !is KtWhenExpression
+
 fun TypescriptTranslator.registerControl() {
 
     val dontReturnTypes = setOf("kotlin.Unit", "kotlin.Nothing")
@@ -19,14 +25,14 @@ fun TypescriptTranslator.registerControl() {
                     -"return "
                 }
                 -it
-                if (it is KtExpression && it !is KtDeclaration && it !is KtLoopExpression && it !is KtIfExpression && it !is KtWhenExpression) {
+                if (it is KtExpression && it.needsSemi()) {
                     -';'
                 }
             }
         } else {
             typedRule.allChildren.forEach {
                 -it
-                if (it is KtExpression && it !is KtDeclaration && it !is KtLoopExpression && it !is KtIfExpression && it !is KtWhenExpression) {
+                if (it is KtExpression && it.needsSemi()) {
                     -';'
                 }
             }
@@ -51,7 +57,22 @@ fun TypescriptTranslator.registerControl() {
         if (typedRule.actuallyCouldBeExpression && typedRule.parent !is KtContainerNodeForControlStructureBody) {
             -"(() => {"
         }
-        -typedRule.allChildren
+        -"if ("
+        -typedRule.condition
+        -") "
+        typedRule.then?.let {
+            -it
+            if(it.needsSemi()) {
+                -";"
+            }
+        }
+        typedRule.`else`?.let {
+            -" else "
+            -it
+            if(it.needsSemi()){
+                -";"
+            }
+        }
         if (typedRule.actuallyCouldBeExpression && typedRule.parent !is KtContainerNodeForControlStructureBody) {
             -"})()"
         }
@@ -59,7 +80,9 @@ fun TypescriptTranslator.registerControl() {
 
     handle<KtIfExpression>(
         condition = {
-            typedRule.then.let { it != null && it !is KtBlockExpression } && typedRule.`else`.let { it != null && it !is KtBlockExpression }
+            typedRule.actuallyCouldBeExpression &&
+                    typedRule.then.let { it != null && it !is KtBlockExpression && it !is KtStatementExpression } &&
+                    typedRule.`else`.let { it != null && it !is KtBlockExpression && it !is KtStatementExpression }
         },
         priority = 1,
         action = {

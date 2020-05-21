@@ -5,7 +5,6 @@
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.stack TS stack
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindStack.<anonymous>.<anonymous>.newStackSize TS newStackSize
 // FQImport: com.lightningkite.khrysalis.views.android.SwapView.post TS post
-// FQImport: android.view.View.GONE TS GONE
 // FQImport: com.lightningkite.khrysalis.views.ViewGenerator TS ViewGenerator
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindStack.currentView TS currentView
 // FQImport: com.lightningkite.khrysalis.observables.subscribeBy TS comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy
@@ -15,7 +14,6 @@
 // FQImport: android.view.ViewGroup.LayoutParams.MATCH_PARENT TS MATCH_PARENT
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindStack.<anonymous>.<anonymous>.oldView TS oldView
 // FQImport: com.lightningkite.khrysalis.views.android.SwapView.removeView TS removeView
-// FQImport: android.view.View TS View
 // FQImport: alpha TS setAndroidViewViewAlpha
 // FQImport: com.lightningkite.khrysalis.rx.until TS ioReactivexDisposablesDisposableUntil
 // FQImport: com.lightningkite.khrysalis.views.android.SwapView.addView TS addView
@@ -25,7 +23,6 @@
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack TS ObservableStack
 // FQImport: android.view.ViewGroup.LayoutParams TS LayoutParams
 // FQImport: android.view.ViewPropertyAnimator.translationX TS translationX
-// FQImport: android.view.View.VISIBLE TS VISIBLE
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindStack.currentData TS currentData
 // FQImport: visibility TS setComLightningkiteKhrysalisViewsAndroidSwapViewVisibility
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindStack.<anonymous>.datas TS datas
@@ -35,7 +32,6 @@
 // FQImport: translationX TS setAndroidViewViewTranslationX
 // FQImport: android.widget.FrameLayout TS FrameLayout
 // FQImport: com.lightningkite.khrysalis.rx.removed TS getAndroidViewViewRemoved
-// FQImport: context TS getComLightningkiteKhrysalisViewsAndroidSwapViewContext
 // FQImport: width TS getComLightningkiteKhrysalisViewsAndroidSwapViewWidth
 // FQImport: com.lightningkite.khrysalis.views.android.SwapView TS SwapView
 // FQImport: com.lightningkite.khrysalis.views.ViewGenerator.generate TS generate
@@ -48,31 +44,31 @@ import { SubscriptionLike } from 'rxjs'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindStack
 export function comLightningkiteKhrysalisViewsAndroidSwapViewBindStack(this_: SwapView, dependency: ViewDependency, obs: ObservableStack<ViewGenerator>): SubscriptionLike{
-    let currentData = (()=>{const temp403 = obs.stack;
-    (temp403[temp403.length - 1] ?? null)})();
+    let currentData = (()=>{const temp383 = obs.stack;
+    (temp383[temp383.length - 1] ?? null)})();
     
     let currentStackSize = obs.stack.length;
     
-    let currentView = currentData?.generate(dependency) ?? View.constructorandroidcontentContext(getComLightningkiteKhrysalisViewsAndroidSwapViewContext(this_));
+    let currentView = currentData?.generate(dependency) ?? document.createElement('div');
     
     this_.addView(currentView, FrameLayout.LayoutParams.constructorkotlinInt, kotlinInt(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(obs, undefined, undefined, (datas) => {
                 this_.post(() => {
-                        if (currentData.equals((datas[datas.length - 1] ?? null))) return
+                        if (currentData.equals((datas[datas.length - 1] ?? null))) return;
                         
                         const oldView = currentView;
                         
                         const oldStackSize = currentStackSize;
                         
                         
-                        let newView = (()=>{const temp406 = obs.stack;
-                        (temp406[temp406.length - 1] ?? null)})()?.generate(dependency);
+                        let newView = (()=>{const temp386 = obs.stack;
+                        (temp386[temp386.length - 1] ?? null)})()?.generate(dependency);
                         
                         if (newView.equals(null)) {
-                            newView = View.constructorandroidcontentContext(getComLightningkiteKhrysalisViewsAndroidSwapViewContext(this_));
-                            setComLightningkiteKhrysalisViewsAndroidSwapViewVisibility(this_, View.GONE);
+                            newView = document.createElement('div');
+                            setComLightningkiteKhrysalisViewsAndroidSwapViewVisibility(this_, "gone");
                         } else {
-                            setComLightningkiteKhrysalisViewsAndroidSwapViewVisibility(this_, View.VISIBLE);
+                            setComLightningkiteKhrysalisViewsAndroidSwapViewVisibility(this_, "visible");
                         }
                         this_.addView(newView, FrameLayout.LayoutParams.constructorkotlinInt, kotlinInt(ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT));
                         const newStackSize = datas.length;

@@ -70,10 +70,10 @@ import { listFilterNotNull } from 'khrysalis/dist/Kotlin'
 //! Declares com.lightningkite.khrysalis.views.FormValidationError
 export class FormValidationError {
     public readonly field: UntypedFormField;
-    public readonly string: ViewString;
-    public constructor(field: UntypedFormField, string: ViewString) {
+    public readonly _string: ViewString;
+    public constructor(field: UntypedFormField, _string: ViewString) {
         this.field = field;
-        this.string = string;
+        this._string = _string;
     }
 }
 
@@ -105,7 +105,7 @@ export class FormField<T> implements UntypedFormField {
         this.error = new StandardObservableProperty(null, undefined);
     }
     
-    public readonly error: StandardObservableProperty<(ViewString | null)> = new StandardObservableProperty(null, undefined);
+    public readonly error: StandardObservableProperty<(ViewString | null)>;
     
     //! Declares com.lightningkite.khrysalis.views.FormField.value
     public get value(): T { return this.observable.value; }
@@ -129,13 +129,13 @@ export class Form {
         }
         public static INSTANCE = new Companion();
         
-        public xIsRequired: ViewString = new ViewStringRaw(`%1\$s is required.`);
+        public xIsRequired: ViewString;
         
-        public xMustMatchY: ViewString = new ViewStringRaw(`%1\$s must match %2\$s.`);
+        public xMustMatchY: ViewString;
         
     }
     
-    public readonly fields: Array<UntypedFormField> = [];
+    public readonly fields: Array<UntypedFormField>;
     
     
     public field<T>(name: ViewString, defaultValue: T, validation:  (a: FormField<T>) => (ViewString | null)): FormField<T>{
@@ -173,8 +173,8 @@ export class Form {
     public runOrDialog(action: () => void): void{
         const errors = this.check();
         
-        if(kotlinCollectionsCollectionIsNotEmpty(errors)){
-            showDialog(kotlinCollectionsListJoinToViewString(errors.map((it) => it.string), undefined));
+        if (kotlinCollectionsCollectionIsNotEmpty(errors)) {
+            showDialog(kotlinCollectionsListJoinToViewString(errors.map((it) => it._string), undefined));
         } else {
             action();
         }

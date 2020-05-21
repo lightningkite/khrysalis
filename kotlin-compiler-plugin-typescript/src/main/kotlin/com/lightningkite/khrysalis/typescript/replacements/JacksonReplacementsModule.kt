@@ -16,10 +16,10 @@ class JacksonReplacementsModule() : SimpleModule() {
             override fun deserialize(p: JsonParser, ctxt: DeserializationContext): Template {
                 when (p.currentToken) {
                     JsonToken.START_OBJECT -> {
-                        val text = p.readValueAsTree<ObjectNode>()
+                        val obj = p.readValueAsTree<ObjectNode>()
                         return Template.fromString(
-                            text["pattern"].asText(),
-                            (text["imports"] as ObjectNode).fields().asSequence().map { (key, value) ->
+                            obj["pattern"].asText(),
+                            (obj["imports"] as? ObjectNode)?.fields()?.asSequence()?.map { (key, value) ->
                                 val valueText = value.asText()
                                 when {
                                     valueText.startsWith("DIRECT from ") -> TemplatePart.Import(
@@ -47,7 +47,10 @@ class JacksonReplacementsModule() : SimpleModule() {
                                         identifier = key
                                     )
                                 }
-                            }.toList()
+                            }?.toList() ?: listOf(),
+                            (obj["lambdaTransforms"] as? ObjectNode)?.fields()?.asSequence()?.associate { (key, value) ->
+                                key.toInt() to (value as ArrayNode).map { Template.fromString(it.asText()).parts }
+                            } ?: mapOf()
                         )
                     }
                     JsonToken.VALUE_STRING -> {

@@ -8,10 +8,8 @@
 // FQImport: isEnabled TS setAndroidWidgetButtonIsEnabled
 // FQImport: android.graphics.drawable.Drawable TS Drawable
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindActive.activeColorResource TS activeColorResource
-// FQImport: android.widget.Button TS Button
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindActive.<anonymous>.<anonymous>.color TS color
 // FQImport: com.lightningkite.khrysalis.observables.ObservableProperty TS ObservableProperty
-// FQImport: android.widget.Button.setBackgroundResource TS setBackgroundResource
 // FQImport: com.lightningkite.khrysalis.views.backgroundDrawable TS setAndroidViewViewBackgroundDrawable
 // FQImport: com.lightningkite.khrysalis.observables.subscribeBy TS comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy
 // FQImport: com.lightningkite.khrysalis.views.ColorResource TS ColorResource
@@ -27,26 +25,26 @@ import { SubscriptionLike } from 'rxjs'
 import { ColorResource } from './../../views/ResourceTypes.actual'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindActive
-export function androidWidgetButtonBindActive(this_: Button, observable: ObservableProperty<Boolean>, activeColorResource: (ColorResource | null) = null, inactiveColorResource: (ColorResource | null) = null): SubscriptionLike{
+export function androidWidgetButtonBindActive(this_: HTMLButtonElement, observable: ObservableProperty<Boolean>, activeColorResource: (ColorResource | null) = null, inactiveColorResource: (ColorResource | null) = null): SubscriptionLike{
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (it) => {
                 setAndroidWidgetButtonIsEnabled(this_, it);
                 if (it) {
-                    const temp348 = activeColorResource;
-                    if(temp348 !== null) ((color) => {
-                            this_.setBackgroundResource(color)
-                    })(temp348);
+                    const temp328 = activeColorResource;
+                    if(temp328 !== null) ((color) => {
+                            this_.style.background = color
+                    })(temp328);
                 } else {
-                    const temp350 = inactiveColorResource;
-                    if(temp350 !== null) ((color) => {
-                            this_.setBackgroundResource(color)
-                    })(temp350);
+                    const temp330 = inactiveColorResource;
+                    if(temp330 !== null) ((color) => {
+                            this_.style.background = color
+                    })(temp330);
                 }
     }), getAndroidViewViewRemoved(this_));
 }
 
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindActive
-export function androidWidgetButtonBindActive(this_: Button, observable: ObservableProperty<Boolean>, activeBackground: Drawable, inactiveBackground: Drawable): SubscriptionLike{
+export function androidWidgetButtonBindActive(this_: HTMLButtonElement, observable: ObservableProperty<Boolean>, activeBackground: Drawable, inactiveBackground: Drawable): SubscriptionLike{
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (it) => {
                 setAndroidWidgetButtonIsEnabled(this_, it);
                 if (it) {

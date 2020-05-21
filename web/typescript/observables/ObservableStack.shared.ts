@@ -42,7 +42,7 @@ export class ObservableStack<T extends object> extends ObservableProperty<any> {
         }
     }
     
-    public readonly onChange: Subject<Array<T>> = new Subject();
+    public readonly onChange: Subject<Array<T>>;
     
     //! Declares com.lightningkite.khrysalis.observables.ObservableStack.value
     public get value(): Array<T> {
@@ -50,7 +50,7 @@ export class ObservableStack<T extends object> extends ObservableProperty<any> {
     }
     
     
-    public readonly stack: Array<T> = [];
+    public readonly stack: Array<T>;
     
     
     public push(t: T): void{

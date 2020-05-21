@@ -68,42 +68,42 @@ export class AlignPair {
         }
         public static INSTANCE = new Companion();
         
-        public readonly center = new AlignPair(Align.center, Align.center);
+        public readonly center;
         
-        public readonly fill = new AlignPair(Align.fill, Align.fill);
+        public readonly fill;
         
         
-        public readonly topLeft = new AlignPair(Align.start, Align.start);
+        public readonly topLeft;
         
-        public readonly topCenter = new AlignPair(Align.center, Align.start);
+        public readonly topCenter;
         
-        public readonly topFill = new AlignPair(Align.fill, Align.start);
+        public readonly topFill;
         
-        public readonly topRight = new AlignPair(Align.end, Align.start);
+        public readonly topRight;
         
-        public readonly centerLeft = new AlignPair(Align.start, Align.center);
+        public readonly centerLeft;
         
-        public readonly centerCenter = new AlignPair(Align.center, Align.center);
+        public readonly centerCenter;
         
-        public readonly centerFill = new AlignPair(Align.fill, Align.center);
+        public readonly centerFill;
         
-        public readonly centerRight = new AlignPair(Align.end, Align.center);
+        public readonly centerRight;
         
-        public readonly fillLeft = new AlignPair(Align.start, Align.fill);
+        public readonly fillLeft;
         
-        public readonly fillCenter = new AlignPair(Align.center, Align.fill);
+        public readonly fillCenter;
         
-        public readonly fillFill = new AlignPair(Align.fill, Align.fill);
+        public readonly fillFill;
         
-        public readonly fillRight = new AlignPair(Align.end, Align.fill);
+        public readonly fillRight;
         
-        public readonly bottomLeft = new AlignPair(Align.start, Align.end);
+        public readonly bottomLeft;
         
-        public readonly bottomCenter = new AlignPair(Align.center, Align.end);
+        public readonly bottomCenter;
         
-        public readonly bottomFill = new AlignPair(Align.fill, Align.end);
+        public readonly bottomFill;
         
-        public readonly bottomRight = new AlignPair(Align.end, Align.end);
+        public readonly bottomRight;
         
     }
     

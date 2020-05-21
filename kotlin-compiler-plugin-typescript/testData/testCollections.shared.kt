@@ -34,4 +34,8 @@ fun test(){
     arrayList[0] += 4
     println(arrayList[0])
     println(arrayList.size)
+
+    println(listOf("a", "b", "c").joinToString())
+    println(listOf("a", "b", "c").joinToString("|"))
+    println(listOf("a", "b", "c").joinToString("|"){ it + "j" })
 }

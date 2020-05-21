@@ -1,5 +1,7 @@
 package com.test.lambda
 
+import android.view.View
+
 class TestClass {
     var item: Int = 0
     fun test(action: ()->Unit){
@@ -44,4 +46,13 @@ fun main(){
             println("WRONG")
         }
     }
+
+    val view: View = View()
+    view.setOnClickListener {
+        println("Hello!  I am $it")
+    }
+    val altCallback = { it: View ->
+        println("Hello!  I am also $it")
+    }
+    view.setOnClickListener(altCallback)
 }

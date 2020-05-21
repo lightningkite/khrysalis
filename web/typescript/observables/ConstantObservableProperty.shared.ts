@@ -16,7 +16,7 @@ export class ConstantObservableProperty<T> extends ObservableProperty<any> {
         this.onChange = rxNEVER;
     }
     
-    public readonly onChange: Observable<T> = rxNEVER;
+    public readonly onChange: Observable<T>;
     
     //! Declares com.lightningkite.khrysalis.observables.ConstantObservableProperty.value
     public get value(): T { return this.underlyingValue; }

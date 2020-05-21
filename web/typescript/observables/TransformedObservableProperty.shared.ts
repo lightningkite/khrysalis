@@ -37,7 +37,7 @@ export class TransformedObservableProperty<A, B> extends ObservableProperty<any>
         return this.read(this.basedOn.value);
     }
     
-    public readonly onChange: Observable<B> = this.basedOn.onChange.pipe(rxMap((it) => this.read(it)));
+    public readonly onChange: Observable<B>;
     
 }
 

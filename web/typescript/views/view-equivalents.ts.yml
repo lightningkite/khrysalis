@@ -1,0 +1,91 @@
+---
+
+# android.widget.AutoCompleteTextView
+- id: android.widget.AutoCompleteTextView
+  type: type
+  template: HTML_Element
+
+# android.widget.Button
+- id: android.widget.Button
+  type: type
+  template: HTMLButtonElement
+
+# android.widget.CompoundButton
+- id: android.widget.CompoundButton
+  type: type
+  template: HTML_Element
+
+# android.widget.DateButton
+- id: android.widget.DateButton
+  type: type
+  template: HTMLInputElement
+
+# android.widget.TimeButton
+- id: android.widget.DateButton
+  type: type
+  template: HTMLInputElement
+
+# android.widget.EditText
+- id: android.widget.EditText
+  type: type
+  template: HTMLInputElement
+
+# android.widget.ImageView
+- id: android.widget.ImageView
+  type: type
+  template: HTMLImageElement
+
+# android.widget.LinearLayout
+- id: android.widget.LinearLayout
+  type: type
+  template: HTML_Element
+
+# android.widget.PageIndicatorView
+- id: android.widget.PageIndicatorView
+  type: type
+  template: HTML_Element
+
+# android.widget.RatingBar
+- id: android.widget.RatingBar
+  type: type
+  template: HTML_Element
+
+# android.widget.RecyclerView
+- id: android.widget.RecyclerView
+  type: type
+  template: HTMLDivElement
+
+# android.widget.SeekBar
+- id: android.widget.SeekBar
+  type: type
+  template: HTMLInputElement
+
+# android.widget.Spinner
+- id: android.widget.Spinner
+  type: type
+  template: HTMLInputElement
+
+# android.widget.SwapView
+- id: android.widget.SwapView
+  type: type
+  template: HTMLDivElement
+
+# android.widget.TabLayout
+- id: android.widget.TabLayout
+  type: type
+  template: HTMLDivElement
+
+# android.widget.TextView
+- id: android.widget.TextView
+  type: type
+  template: HTMLDivElement
+
+# android.widget.ViewFlipper
+- id: android.widget.ViewFlipper
+  type: type
+  template: HTMLDivElement
+
+# android.widget.ViewPager
+- id: android.widget.ViewPager
+  type: type
+  template: HTMLDivElement

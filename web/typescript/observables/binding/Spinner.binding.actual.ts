@@ -5,7 +5,6 @@
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.getView.view TS view
 // FQImport: tag TS getAndroidViewViewTag
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty.value TS value
-// FQImport: android.widget.Spinner TS Spinner
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.notifyDataSetChanged TS notifyDataSetChanged
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.getView.position TS position
 // FQImport: adapter TS setAndroidWidgetSpinnerAdapter
@@ -21,7 +20,6 @@
 // FQImport: android.widget.Spinner.setSelection TS setSelection
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.getView.<anonymous>.it TS it
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<anonymous>.it TS it
-// FQImport: android.view.View TS View
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.T TS T
 // FQImport: tag TS setAndroidViewViewTag
 // FQImport: com.lightningkite.khrysalis.rx.until TS ioReactivexDisposablesDisposableUntil
@@ -50,7 +48,7 @@ import { ObservableProperty } from './../ObservableProperty.shared'
 import { tryCastClass } from 'khrysalis/dist/Kotlin'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind
-export function androidWidgetSpinnerBind<T>(this_: Spinner, options: ObservableProperty<Array<T>>, selected: MutableObservableProperty<T>, makeView: (a: ObservableProperty<T>) => View): void{
+export function androidWidgetSpinnerBind<T>(this_: HTMLInputElement, options: ObservableProperty<Array<T>>, selected: MutableObservableProperty<T>, makeView: (a: ObservableProperty<T>) => HTMLElement): void{
     setAndroidWidgetSpinnerAdapter(this_, new class Anon extends BaseAdapter {
             public constructor() {
                 super();
@@ -61,7 +59,7 @@ export function androidWidgetSpinnerBind<T>(this_: Spinner, options: ObservableP
             
             
             
-            getView(position: number, convertView: (View | null), parent: (ViewGroup | null)): View{
+            getView(position: number, convertView: (HTMLElement | null), parent: (ViewGroup | null)): HTMLElement{
                 const view = convertView ?? ((this_1) => {
                         const event = new StandardObservableProperty<T>(kotlinCollectionsListGetOrNull(options.value, position) ?? selected.value, undefined);
                         
@@ -98,7 +96,7 @@ export function androidWidgetSpinnerBind<T>(this_: Spinner, options: ObservableP
             
             onNothingSelected(parent: (AdapterView<*> | null)): void{}
             
-            onItemSelected(parent: (AdapterView<*> | null), view: (View | null), position: number, id: number): void{
+            onItemSelected(parent: (AdapterView<*> | null), view: (HTMLElement | null), position: number, id: number): void{
                 const newValue = kotlinCollectionsListGetOrNull(options.value, position) ?? return;
                 
                 if (!(selected.value.equals(newValue))) {

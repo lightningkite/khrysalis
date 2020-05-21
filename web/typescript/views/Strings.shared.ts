@@ -25,7 +25,6 @@
 // FQImport: com.lightningkite.khrysalis.views.ViewStringTemplate.get.<anonymous>.it TS it
 // FQImport: com.lightningkite.khrysalis.views.ViewStringComplex TS ViewStringComplex
 // FQImport: com.lightningkite.khrysalis.views.ViewStringComplex SKIPPED due to same file
-// FQImport: kotlin.collections.joinToString TS kotlinCollectionsIterableJoinToString
 // FQImport: com.lightningkite.khrysalis.views.joinToViewString.separator TS separator
 // FQImport: com.lightningkite.khrysalis.views.ViewStringTemplate.arguments TS arguments
 // FQImport: com.lightningkite.khrysalis.views.ViewStringList.get.<anonymous>.it TS it
@@ -55,12 +54,12 @@ export class ViewStringDefaults {
 //! Declares com.lightningkite.khrysalis.views.ViewStringRaw
 export class ViewStringRaw implements ViewString {
     public static implementsInterfaceComLightningkiteKhrysalisViewsViewString = true;
-    public readonly string: string;
-    public constructor(string: string) {
-        this.string = string;
+    public readonly _string: string;
+    public constructor(_string: string) {
+        this._string = _string;
     }
     
-    public get(dependency: ViewDependency): string{ return this.string; }
+    public get(dependency: ViewDependency): string{ return this._string; }
 }
 
 //! Declares com.lightningkite.khrysalis.views.ViewStringResource
@@ -78,16 +77,16 @@ export class ViewStringResource implements ViewString {
 export class ViewStringTemplate implements ViewString {
     public static implementsInterfaceComLightningkiteKhrysalisViewsViewString = true;
     public readonly template: ViewString;
-    public readonly arguments: Array<any>;
-    public constructor(template: ViewString, arguments: Array<any>) {
+    public readonly _arguments: Array<any>;
+    public constructor(template: ViewString, _arguments: Array<any>) {
         this.template = template;
-        this.arguments = arguments;
+        this._arguments = _arguments;
     }
     
     public get(dependency: ViewDependency): string{
         const templateResolved = this.template.get(dependency);
         
-        const fixedArguments = this.arguments.map((it) => (tryCastInterface(it, "ComLightningkiteKhrysalisViewsViewString"))?.get(dependency) ?? it);
+        const fixedArguments = this._arguments.map((it) => (tryCastInterface(it, "ComLightningkiteKhrysalisViewsViewString"))?.get(dependency) ?? it);
         
         return vsprintf(templateResolved, fixedArguments);
     }
@@ -115,13 +114,13 @@ export class ViewStringList implements ViewString {
     }
     
     public get(dependency: ViewDependency): string{
-        return kotlinCollectionsIterableJoinToString(this.parts, this.separator, undefined, undefined, undefined, undefined, (it) => it.get(dependency));
+        return this.parts.map((it) => it.get(dependency)).join(this.separator);
     }
 }
 
 //! Declares com.lightningkite.khrysalis.views.joinToViewString
 export function kotlinCollectionsListJoinToViewString(this_: Array< ViewString>, separator: string = `\n`): ViewString{
-    if(this_.length === 1){
+    if (this_.length === 1) {
         return this_[0];
     }
     return new ViewStringList(this_, separator);
@@ -132,15 +131,15 @@ export function comLightningkiteKhrysalisViewsViewStringToDebugString(this_: Vie
     const thing = this_;
     
     if (thing instanceof ViewStringRaw) {
-        return thing.string
+        return thing._string
     } else if (thing instanceof ViewStringResource) {
         return thing.resource.toString()
     } else if (thing instanceof ViewStringTemplate) {
-        return comLightningkiteKhrysalisViewsViewStringToDebugString(thing.template) + "(" + kotlinCollectionsIterableJoinToString(thing.arguments, undefined, undefined, undefined, undefined, undefined, (it) => {
-                    checkIsInterface(it, "ComLightningkiteKhrysalisViewsViewString") ? return comLightningkiteKhrysalisViewsViewStringToDebugString(it) : return `${it}`
-        }) + ")"
+        return comLightningkiteKhrysalisViewsViewStringToDebugString(thing.template) + "(" + thing._arguments.map((it) => {
+                    if (checkIsInterface(it, "ComLightningkiteKhrysalisViewsViewString")) return comLightningkiteKhrysalisViewsViewStringToDebugString(it); else return `${it}`;
+        }).join(", ") + ")"
     } else if (thing instanceof ViewStringList) {
-        return kotlinCollectionsIterableJoinToString(thing.parts, thing.separator, undefined, undefined, undefined, undefined, (it) => comLightningkiteKhrysalisViewsViewStringToDebugString(it))
+        return thing.parts.map((it) => comLightningkiteKhrysalisViewsViewStringToDebugString(it)).join(thing.separator)
     } else if (thing instanceof ViewStringComplex) {
         return `<Complex string ${thing}>`
     } else  {

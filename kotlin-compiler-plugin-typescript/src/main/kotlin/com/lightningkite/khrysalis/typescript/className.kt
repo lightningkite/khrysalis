@@ -33,11 +33,11 @@ val DeclarationDescriptor.tsTopLevelMessedUp: Boolean get() {
 val DeclarationDescriptor.tsTopLevelNameRaw: String get() = (containingDeclaration as? ClassDescriptor)?.let {
     it.tsTopLevelNameRaw + this.name.asString()
 } ?: this.name.asString()
-val DeclarationDescriptor.tsTopLevelName: String get() = if(tsTopLevelMessedUp) (containingDeclaration as ClassDescriptor).tsTopLevelNameRaw + name.asString() else name.asString()
+val DeclarationDescriptor.tsTopLevelName: String get() = if(tsTopLevelMessedUp) (containingDeclaration as ClassDescriptor).tsTopLevelNameRaw + name.asString() else name.asString().safeJsIdentifier()
 val DeclarationDescriptor.tsTopLevelReference: String get() = if(tsTopLevelMessedUp)
     (containingDeclaration as ClassDescriptor).tsTopLevelNameRaw + name.asString()
 else if(containingDeclaration is ClassDescriptor)
-    (containingDeclaration as ClassDescriptor).tsTopLevelReference + "/**/." + name.asString()
+    (containingDeclaration as ClassDescriptor).tsTopLevelReference + "." + name.asString().safeJsIdentifier()
 else
     name.asString()
 

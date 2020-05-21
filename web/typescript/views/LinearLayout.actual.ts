@@ -41,7 +41,7 @@ import { Align, AlignPair } from './geometry/Align.shared'
 import { also } from 'khrysalis/dist/Kotlin'
 
 //! Declares com.lightningkite.khrysalis.views.params
-export function androidWidgetLinearLayoutParams(this_: LinearLayout, sizeX: number = 0, sizeY: number = 0, marginStart: number = 0, marginEnd: number = 0, marginTop: number = 0, marginBottom: number = 0, gravity: AlignPair = AlignPair.Companion.INSTANCE.center, weight: number = 0): LinearLayout.LayoutParams{
+export function androidWidgetLinearLayoutParams(this_: HTML_Element, sizeX: number = 0, sizeY: number = 0, marginStart: number = 0, marginEnd: number = 0, marginTop: number = 0, marginBottom: number = 0, gravity: AlignPair = AlignPair.Companion.INSTANCE.center, weight: number = 0): HTML_Element.LayoutParams{
     const d = getAndroidContentResResourcesDisplayMetrics(getAndroidWidgetLinearLayoutResources(this_)).density;
     
     const align = getAndroidWidgetLinearLayoutOrientation(this_) === LinearLayout.HORIZONTAL ? gravity.vertical : gravity.horizontal;

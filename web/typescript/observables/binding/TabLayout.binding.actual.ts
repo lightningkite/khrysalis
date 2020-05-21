@@ -40,15 +40,13 @@ export function comGoogleAndroidMaterialTabsTabLayoutBind(this_: TabLayout, tabs
             }
             
             onTabReselected(p0: TabLayout.Tab): void{
-                if(!(selected.value === getComGoogleAndroidMaterialTabsTabLayoutTabPosition(p0)))
-                selected.value = getComGoogleAndroidMaterialTabsTabLayoutTabPosition(p0)
+                if (!(selected.value === getComGoogleAndroidMaterialTabsTabLayoutTabPosition(p0))) selected.value = getComGoogleAndroidMaterialTabsTabLayoutTabPosition(p0);
             }
             
             onTabUnselected(p0: TabLayout.Tab): void{}
             
             onTabSelected(p0: TabLayout.Tab): void{
-                if(!(selected.value === getComGoogleAndroidMaterialTabsTabLayoutTabPosition(p0)))
-                selected.value = getComGoogleAndroidMaterialTabsTabLayoutTabPosition(p0)
+                if (!(selected.value === getComGoogleAndroidMaterialTabsTabLayoutTabPosition(p0))) selected.value = getComGoogleAndroidMaterialTabsTabLayoutTabPosition(p0);
             }
     }());
 }

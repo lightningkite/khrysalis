@@ -77,7 +77,7 @@ export class MutableFlatMappedObservableProperty<A, B> extends MutableObservable
     }
     
     
-    public lastProperty: (MutableObservableProperty<B> | null) = null;
+    public lastProperty: (MutableObservableProperty<B> | null);
     
     
     //! Declares com.lightningkite.khrysalis.observables.MutableFlatMappedObservableProperty.onChange

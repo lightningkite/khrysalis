@@ -55,6 +55,10 @@ fun main() {
         0
     }
 
+    val ifAsExpression3 = listOf(1, 2, 3).map {
+        if(it % 2 === 0) return@map it else return@map it + 1
+    }
+
     fun subfunction(): Int {
         return if (thing2 != null) thing2 else 0
     }

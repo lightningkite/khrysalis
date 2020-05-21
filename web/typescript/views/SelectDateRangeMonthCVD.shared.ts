@@ -17,7 +17,6 @@
 // FQImport: com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD.selectedPaint TS selectedPaint
 // FQImport: android.graphics.RectF TS RectF
 // FQImport: com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD.measure.height TS height
-// FQImport: android.view.View TS View
 // FQImport: com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD.drawDay.canvas TS canvas
 // FQImport: com.lightningkite.khrysalis.time.DateAlone TS DateAlone
 // FQImport: android.util.DisplayMetrics TS DisplayMetrics
@@ -38,7 +37,6 @@
 // FQImport: com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD.onTouchMove.endInclusiveValue TS endInclusiveValue
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.measure TS measure
 // FQImport: com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD.onTap.day TS day
-// FQImport: com.lightningkite.khrysalis.observables.StandardObservableProperty TS StandardObservableProperty
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.dayBackgroundMid TS dayBackgroundMid
 // FQImport: com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD.startedDraggingOn TS startedDraggingOn
 // FQImport: com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD.onTouchMove.startValue TS startValue
@@ -48,7 +46,6 @@
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.day TS day
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty TS MutableObservableProperty
 // FQImport: com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD.drawDay.inner TS inner
-import { StandardObservableProperty } from './../observables/StandardObservableProperty.shared'
 import { MutableObservableProperty } from './../observables/MutableObservableProperty.shared'
 import { DateAlone } from './../time/DateAlone.actual'
 import { MonthCVD } from './MonthCVD.shared'
@@ -56,19 +53,19 @@ import { MonthCVD } from './MonthCVD.shared'
 //! Declares com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD
 export class SelectDateRangeMonthCVD extends MonthCVD {
     public constructor() { super(); }
-    public generateAccessibilityView(): (View | null){ return null; }
+    public generateAccessibilityView(): (HTMLElement | null){ return null; }
     
-    public draggingStart: Boolean = true;
+    public draggingStart: Boolean;
     
-    public start: MutableObservableProperty<(DateAlone | null)> = new StandardObservableProperty(null, undefined);
+    public start: MutableObservableProperty<(DateAlone | null)>;
     
-    public endInclusive: MutableObservableProperty<(DateAlone | null)> = new StandardObservableProperty(null, undefined);
+    public endInclusive: MutableObservableProperty<(DateAlone | null)>;
     
     
     
-    public readonly selectedDayPaint: Paint = Paint.constructor();
+    public readonly selectedDayPaint: Paint;
     
-    public readonly selectedPaint: Paint = Paint.constructor();
+    public readonly selectedPaint: Paint;
     
     
     public measure(width: number, height: number, displayMetrics: DisplayMetrics): void{
@@ -76,7 +73,7 @@ export class SelectDateRangeMonthCVD extends MonthCVD {
         setAndroidGraphicsPaintTextSize(this.selectedDayPaint, getAndroidGraphicsPaintTextSize(this.dayPaint));
     }
     
-    public readonly drawDay_dateAlone: DateAlone = new DateAlone(0, 0, 0);
+    public readonly drawDay_dateAlone: DateAlone;
     
     public drawDay(canvas: Canvas, showingMonth: DateAlone, day: DateAlone, displayMetrics: DisplayMetrics, outer: RectF, inner: RectF): void{
         if (day.equals(this.start.value) && (day.equals(this.endInclusive.value) || this.endInclusive.value.equals(null))){
@@ -97,11 +94,11 @@ export class SelectDateRangeMonthCVD extends MonthCVD {
     }
     
     
-    private startedDraggingOn: (DateAlone | null) = null;
+    private startedDraggingOn: (DateAlone | null);
     
     
     public onTap(day: DateAlone): void{
-        if(!(this.start.value.equals(null)) && this.start.value.equals(this.endInclusive.value) && day.comparable > this.start.value!!.comparable){
+        if (!(this.start.value.equals(null)) && this.start.value.equals(this.endInclusive.value) && day.comparable > this.start.value!!.comparable) {
             this.endInclusive.value = day;
         } else {
             this.start.value = day;
@@ -110,7 +107,7 @@ export class SelectDateRangeMonthCVD extends MonthCVD {
     }
     
     public onTouchDown(day: DateAlone): Boolean{
-        if(!(day.equals(this.start.value)) && !(day.equals(this.endInclusive.value))){
+        if (!(day.equals(this.start.value)) && !(day.equals(this.endInclusive.value))) {
             return false;
         }
         this.startedDraggingOn = day;

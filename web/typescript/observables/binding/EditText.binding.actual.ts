@@ -2,7 +2,6 @@
 // File: observables/binding/EditText.binding.actual.kt
 // Package: com.lightningkite.khrysalis.observables.binding
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindString.<no name provided>.onTextChanged.s TS s
-// FQImport: android.widget.EditText TS EditText
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty.value TS value
 // FQImport: kotlin.takeUnless TS kotlinAnyTakeUnless
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindDouble.<anonymous>.<anonymous>.it TS it
@@ -36,7 +35,7 @@ import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from
 import { parseIntOrNull } from 'khrysalis/dist/Kotlin'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindString
-export function androidWidgetEditTextBindString(this_: EditText, observable: MutableObservableProperty<string>): void{
+export function androidWidgetEditTextBindString(this_: HTMLInputElement, observable: MutableObservableProperty<string>): void{
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
                 if (!(observable.value === getAndroidWidgetEditTextText(this_).toString())) {
                     this_.setText(observable.value);
@@ -59,7 +58,7 @@ export function androidWidgetEditTextBindString(this_: EditText, observable: Mut
 }
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindInteger
-export function androidWidgetEditTextBindInteger(this_: EditText, observable: MutableObservableProperty<number>): void{
+export function androidWidgetEditTextBindInteger(this_: HTMLInputElement, observable: MutableObservableProperty<number>): void{
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
                 const currentValue = parseIntOrNull(undefined);
                 
@@ -88,7 +87,7 @@ export function androidWidgetEditTextBindInteger(this_: EditText, observable: Mu
 
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindDouble
-export function androidWidgetEditTextBindDouble(this_: EditText, observable: MutableObservableProperty<number>): void{
+export function androidWidgetEditTextBindDouble(this_: HTMLInputElement, observable: MutableObservableProperty<number>): void{
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
                 const currentValue = parseFloatOrNull(undefined);
                 

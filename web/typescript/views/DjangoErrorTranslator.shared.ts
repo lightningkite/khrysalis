@@ -51,7 +51,7 @@ export class DjangoErrorTranslator {
     
     
     public handleNode(builder: StringBuilder, node: (any | null)): void{
-        if(node.equals(null)) return
+        if (node.equals(null)) return;
         if (checkIsInterface(node, "KotlinCollectionsMap")){
             for (const toDestructure of node) {
                 const key = toDestructure[0]
@@ -66,7 +66,7 @@ export class DjangoErrorTranslator {
             }
         } else if (typeof (node) == "string"){
             //Rough check for human-readability - sentences start with uppercase and will have spaces
-            if(node !== "" && kotlinCharIsUpperCase(node[0]) && kotlinCharSequenceContains(node, " ", undefined)) {
+            if (node !== "" && kotlinCharIsUpperCase(node[0]) && kotlinCharSequenceContains(node, " ", undefined)) {
                 builder.value += '\n';
             }
         }
@@ -84,10 +84,10 @@ export class DjangoErrorTranslator {
             
             break;
             case 4:
-            const errorJson = const temp146 = error;
-            if(temp146 !== null) kotlinStringFromJsonStringUntyped(temp146);
+            const errorJson = const temp138 = error;
+            if(temp138 !== null) kotlinStringFromJsonStringUntyped(temp138);
             
-            if(!(errorJson.equals(null))){
+            if (!(errorJson.equals(null))) {
                 const builder = StringBuilder();
                 
                 this.handleNode(builder, errorJson);

@@ -10,7 +10,6 @@
 // FQImport: com.lightningkite.khrysalis.views.SelectDateMonthCVD.drawDay.day TS day
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD TS MonthCVD
 // FQImport: android.graphics.RectF TS RectF
-// FQImport: android.view.View TS View
 // FQImport: com.lightningkite.khrysalis.time.DateAlone TS DateAlone
 // FQImport: android.util.DisplayMetrics TS DisplayMetrics
 // FQImport: textSize TS setAndroidGraphicsPaintTextSize
@@ -20,7 +19,6 @@
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.dayBackground TS dayBackground
 // FQImport: com.lightningkite.khrysalis.views.SelectDateMonthCVD.selectedDayPaint TS selectedDayPaint
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.measure TS measure
-// FQImport: com.lightningkite.khrysalis.observables.StandardObservableProperty TS StandardObservableProperty
 // FQImport: com.lightningkite.khrysalis.views.SelectDateMonthCVD.selected TS selected
 // FQImport: com.lightningkite.khrysalis.views.SelectDateMonthCVD.drawDay.showingMonth TS showingMonth
 // FQImport: android.graphics.Paint TS Paint
@@ -28,7 +26,6 @@
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.day TS day
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty TS MutableObservableProperty
 // FQImport: com.lightningkite.khrysalis.views.SelectDateMonthCVD.selectedPaint TS selectedPaint
-import { StandardObservableProperty } from './../observables/StandardObservableProperty.shared'
 import { MutableObservableProperty } from './../observables/MutableObservableProperty.shared'
 import { DateAlone } from './../time/DateAlone.actual'
 import { MonthCVD } from './MonthCVD.shared'
@@ -36,16 +33,16 @@ import { MonthCVD } from './MonthCVD.shared'
 //! Declares com.lightningkite.khrysalis.views.SelectDateMonthCVD
 export class SelectDateMonthCVD extends MonthCVD {
     public constructor() { super(); }
-    public generateAccessibilityView(): (View | null){ return null; }
+    public generateAccessibilityView(): (HTMLElement | null){ return null; }
     
-    public selected: MutableObservableProperty<(DateAlone | null)> = new StandardObservableProperty(null, undefined);
-    
-    
+    public selected: MutableObservableProperty<(DateAlone | null)>;
     
     
-    public readonly selectedDayPaint: Paint = Paint.constructor();
     
-    public readonly selectedPaint: Paint = Paint.constructor();
+    
+    public readonly selectedDayPaint: Paint;
+    
+    public readonly selectedPaint: Paint;
     
     
     public drawDay(canvas: Canvas, showingMonth: DateAlone, day: DateAlone, displayMetrics: DisplayMetrics, outer: RectF, inner: RectF): void{

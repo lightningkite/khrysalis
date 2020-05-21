@@ -10,7 +10,6 @@
 // FQImport: android.widget.SeekBar.OnSeekBarChangeListener TS SeekBarOnSeekBarChangeListener
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.start TS start
 // FQImport: android.widget.SeekBar.incrementProgressBy TS incrementProgressBy
-// FQImport: android.widget.SeekBar TS SeekBar
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.suppress TS suppress
 // FQImport: com.lightningkite.khrysalis.observables.subscribeBy TS comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.onProgressChanged.p1 TS p1
@@ -24,7 +23,7 @@ import { MutableObservableProperty } from './../MutableObservableProperty.shared
 import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from './../../rx/DisposeCondition.actual'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind
-export function androidWidgetSeekBarBind(this_: SeekBar, start: number, endInclusive: number, observable: MutableObservableProperty<number>): void{
+export function androidWidgetSeekBarBind(this_: HTMLInputElement, start: number, endInclusive: number, observable: MutableObservableProperty<number>): void{
     setAndroidWidgetSeekBarMax(this_, endInclusive - start);
     this_.incrementProgressBy(1);
     
@@ -42,7 +41,7 @@ export function androidWidgetSeekBarBind(this_: SeekBar, start: number, endInclu
             public constructor() {
             }
             
-            onProgressChanged(p0: (SeekBar | null), p1: number, p2: Boolean): void{
+            onProgressChanged(p0: (HTMLInputElement | null), p1: number, p2: Boolean): void{
                 if (suppress.not()) {
                     suppress = true;
                     observable.value = p1 + start;
@@ -50,10 +49,10 @@ export function androidWidgetSeekBarBind(this_: SeekBar, start: number, endInclu
                 }
             }
             
-            onStartTrackingTouch(p0: (SeekBar | null)): void{
+            onStartTrackingTouch(p0: (HTMLInputElement | null)): void{
             }
             
-            onStopTrackingTouch(p0: (SeekBar | null)): void{
+            onStopTrackingTouch(p0: (HTMLInputElement | null)): void{
             }
     }());
     

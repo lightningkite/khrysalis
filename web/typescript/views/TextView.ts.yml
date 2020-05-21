@@ -1,0 +1,26 @@
+
+
+# android.widget.TextView
+- id: android.widget.TextView
+  type: type
+  template: HTMLElement
+
+- id: android.widget.TextView
+  type: call
+  template: document.createElement('p')
+
+- id: com.lightningkite.khrysalis.views.textResource
+  type: set
+  template: ~this~.innerText = ~0~
+
+- id: com.lightningkite.khrysalis.views.textString
+  type: set
+  template: ~this~.innerText = ~0~
+
+- id: android.widget.TextView.text
+  type: set
+  template: ~this~.innerText = ~0~
+
+- id: com.lightningkite.khrysalis.views.setTextColorResource
+  type: call
+  template: ~this~.style.color = ~0~

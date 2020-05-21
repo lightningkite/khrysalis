@@ -20,7 +20,6 @@
 // FQImport: android.graphics.RectF TS RectF
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.drawDay.canvas TS canvas
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.dates TS dates
-// FQImport: android.view.View TS View
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.onTap.day TS day
 // FQImport: com.lightningkite.khrysalis.time.DateAlone TS DateAlone
 // FQImport: android.util.DisplayMetrics TS DisplayMetrics
@@ -37,7 +36,6 @@
 // FQImport: android.graphics.Canvas TS Canvas
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.drawDay.rightDate TS rightDate
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.dayBackground TS dayBackground
-// FQImport: kotlin.collections.setOf TS setOf
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.measure TS measure
 // FQImport: kotlin.collections.Set.contains TS contains
 // FQImport: com.lightningkite.khrysalis.observables.StandardObservableProperty TS StandardObservableProperty
@@ -57,13 +55,13 @@ import { MonthCVD } from './MonthCVD.shared'
 //! Declares com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD
 export class SelectMultipleDatesMonthCVD extends MonthCVD {
     public constructor() { super(); }
-    public generateAccessibilityView(): (View | null){ return null; }
+    public generateAccessibilityView(): (HTMLElement | null){ return null; }
     
-    public readonly dates: StandardObservableProperty<Set<DateAlone>> = new StandardObservableProperty(setOf(), undefined);
+    public readonly dates: StandardObservableProperty<Set<DateAlone>>;
     
-    public readonly selectedDayPaint: Paint = Paint.constructor();
+    public readonly selectedDayPaint: Paint;
     
-    public readonly selectedPaint: Paint = Paint.constructor();
+    public readonly selectedPaint: Paint;
     
     
     
@@ -73,7 +71,7 @@ export class SelectMultipleDatesMonthCVD extends MonthCVD {
         setAndroidGraphicsPaintTextSize(this.selectedDayPaint, getAndroidGraphicsPaintTextSize(this.dayPaint));
     }
     
-    public readonly drawDay_dateAlone: DateAlone = new DateAlone(0, 0, 0);
+    public readonly drawDay_dateAlone: DateAlone;
     
     public drawDay(canvas: Canvas, showingMonth: DateAlone, day: DateAlone, displayMetrics: DisplayMetrics, outer: RectF, inner: RectF): void{
         if (this.dates.value.contains(day)) {
@@ -108,7 +106,7 @@ export class SelectMultipleDatesMonthCVD extends MonthCVD {
         this.onTouchMove(day);
     }
     
-    public adding: Boolean = false;
+    public adding: Boolean;
     
     public onTouchDown(day: DateAlone): Boolean{
         this.adding = ;

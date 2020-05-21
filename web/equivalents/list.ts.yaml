@@ -235,4 +235,39 @@
   type: call
   template: !~this~.some(~0~)
 
+- id: kotlin.collections.joinToString
+  type: call
+  suppliedArguments: []
+  template: ~this~.join(", ")
+
+- id: kotlin.collections.joinToString
+  type: call
+  suppliedArguments: [separator]
+  template: ~this~.join(~separator~)
+
+- id: kotlin.collections.joinToString
+  type: call
+  suppliedArguments: [transform]
+  template: ~this~.map(~transform~).join(", ")
+
+- id: kotlin.collections.joinToString
+  type: call
+  suppliedArguments: [separator, transform]
+  template: ~this~.map(~transform~).join(~separator~)
+
+- id: kotlin.collections.joinToString
+  type: call
+  suppliedArguments: [separator, transform, prefix]
+  template: (~prefix~ + ~this~.map(~transform~).join(~separator~))
+
+- id: kotlin.collections.joinToString
+  type: call
+  suppliedArguments: [separator, transform, prefix, postfix]
+  template: (~prefix~ + ~this~.map(~transform~).join(~separator~) + ~postfix~)
+
+- id: kotlin.collections.joinToString
+  type: call
+  suppliedArguments: [separator, transform, postfix]
+  template: (~this~.map(~transform~).join(~separator~) + ~postfix~)
+
 # TODO: Fold, max, min, reduce, scan

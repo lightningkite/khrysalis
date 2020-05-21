@@ -29,10 +29,10 @@ export function getShowDialogEvent(): Subject<DialogRequest> { return _showDialo
 
 //! Declares com.lightningkite.khrysalis.views.DialogRequest
 export class DialogRequest {
-    public readonly string: ViewString;
+    public readonly _string: ViewString;
     public readonly confirmation: (() => void | null);
-    public constructor(string: ViewString, confirmation: (() => void | null) = null) {
-        this.string = string;
+    public constructor(_string: ViewString, confirmation: (() => void | null) = null) {
+        this._string = _string;
         this.confirmation = confirmation;
     }
 }
