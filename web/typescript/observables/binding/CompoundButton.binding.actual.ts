@@ -18,8 +18,8 @@
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindSelectInvert.<anonymous>.shouldBeChecked TS shouldBeChecked
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindSelectInvert.observable TS observable
 // FQImport: com.lightningkite.khrysalis.observables.subscribeBy TS comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy
+// FQImport: android.widget.CompoundButton.isChecked TS getAndroidWidgetCompoundButtonIsChecked
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindSelectNullable.value TS value
-// FQImport: isChecked TS setAndroidWidgetCompoundButtonIsChecked
 // FQImport: android.widget.CompoundButton.setOnCheckedChangeListener TS setOnCheckedChangeListener
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindSelectNullable.<anonymous>.it TS it
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.observable TS observable
@@ -31,8 +31,8 @@
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindSelect.observable TS observable
 // FQImport: com.lightningkite.khrysalis.rx.removed TS getAndroidViewViewRemoved
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindSelectNullable.T TS T
+// FQImport: android.widget.CompoundButton.isChecked TS setAndroidWidgetCompoundButtonIsChecked
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty TS MutableObservableProperty
-// FQImport: isChecked TS getAndroidWidgetCompoundButtonIsChecked
 import { comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy } from './../ObservableProperty.ext.shared'
 import { MutableObservableProperty } from './../MutableObservableProperty.shared'
 import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from './../../rx/DisposeCondition.actual'

@@ -41,7 +41,7 @@
 import { ViewDependency, comLightningkiteKhrysalisAndroidActivityAccessGetString } from './ViewDependency.actual'
 import { StringResource } from './ResourceTypes.actual'
 import { vsprintf } from 'sprintf'
-import { checkIsInterface, tryCastInterface } from 'khrysalis/dist/Kotlin'
+import { checkIsInterface, tryCastInterface } from 'Kotlin'
 
 //! Declares com.lightningkite.khrysalis.views.ViewString
 export interface ViewString {
@@ -86,7 +86,7 @@ export class ViewStringTemplate implements ViewString {
     public get(dependency: ViewDependency): string{
         const templateResolved = this.template.get(dependency);
         
-        const fixedArguments = this._arguments.map((it) => (tryCastInterface(it, "ComLightningkiteKhrysalisViewsViewString"))?.get(dependency) ?? it);
+        const fixedArguments = this._arguments.map((it) => (tryCastInterface<ViewString>(it, "ComLightningkiteKhrysalisViewsViewString"))?.get(dependency) ?? it);
         
         return vsprintf(templateResolved, fixedArguments);
     }
@@ -136,7 +136,7 @@ export function comLightningkiteKhrysalisViewsViewStringToDebugString(this_: Vie
         return thing.resource.toString()
     } else if (thing instanceof ViewStringTemplate) {
         return comLightningkiteKhrysalisViewsViewStringToDebugString(thing.template) + "(" + thing._arguments.map((it) => {
-                    if (checkIsInterface(it, "ComLightningkiteKhrysalisViewsViewString")) return comLightningkiteKhrysalisViewsViewStringToDebugString(it); else return `${it}`;
+                    if (checkIsInterface<ViewString>(it, "ComLightningkiteKhrysalisViewsViewString")) return comLightningkiteKhrysalisViewsViewStringToDebugString(it); else return `${it}`;
         }).join(", ") + ")"
     } else if (thing instanceof ViewStringList) {
         return thing.parts.map((it) => comLightningkiteKhrysalisViewsViewStringToDebugString(it)).join(thing.separator)

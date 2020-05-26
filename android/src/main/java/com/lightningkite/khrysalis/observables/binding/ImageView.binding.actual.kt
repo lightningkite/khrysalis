@@ -9,6 +9,7 @@ import com.squareup.picasso.Picasso
 import com.lightningkite.khrysalis.observables.*
 import com.lightningkite.khrysalis.rx.removed
 import com.lightningkite.khrysalis.rx.until
+import com.lightningkite.khrysalis.views.loadImageAlt
 
 
 /**
@@ -18,30 +19,8 @@ import com.lightningkite.khrysalis.rx.until
  * and a direct bitmap. It will handle all cases and load the image.
  *
  */
-fun ImageView.loadImage(image: Image?) {
-    post {
-        image?.let { image ->
-            when (image) {
-                is ImageRaw -> this.setImageBitmap(BitmapFactory.decodeByteArray(image.raw, 0, image.raw.size))
-                is ImageReference -> this.setImageBitmap(
-                    MediaStore.Images.Media.getBitmap(
-                        HttpClient.appContext.contentResolver,
-                        image.uri
-                    )
-                )
-                is ImageBitmap -> this.setImageBitmap(image.bitmap)
-                is ImageRemoteUrl -> {
-                    if (image.url.isNotBlank() && this.width > 0 && this.height > 0) {
-                        Picasso.get().load(image.url).resize(this.width * 2, this.height * 2).centerInside().into(this)
-                    }
-                }
-            }
-        }
-        if (image == null) {
-            this.setImageDrawable(null)
-        }
-    }
-}
+@Deprecated("Use the one in the 'views' package instead.", ReplaceWith("this.loadImage(image)", "com.lightningkite.khrysalis.views.loadImage"))
+fun ImageView.loadImage(image: Image?) = loadImageAlt(image)
 
 
 /**

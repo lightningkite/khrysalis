@@ -34,7 +34,7 @@ import { androidWidgetLinearLayoutParams } from './../../views/LinearLayout.actu
 import { StandardObservableProperty } from './../StandardObservableProperty.shared'
 import { ObservableProperty } from './../ObservableProperty.shared'
 import { SubscriptionLike } from 'rxjs'
-import { NumberRange } from 'khrysalis/dist/Kotlin'
+import { NumberRange } from 'Kotlin'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.LinearLayoutBoundSubview
 class LinearLayoutBoundSubview<T> {

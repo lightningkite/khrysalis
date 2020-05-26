@@ -28,6 +28,22 @@ class ViewNode(
 
     var depth: Int = -1
 
+    data class Resolved(
+        val node: ViewNode,
+        val comesFrom: Set<String>,
+        val totalRequires: Set<String>,
+        val belongsToStacks: Set<String>
+    )
+
+    fun resolve(map: Map<String, ViewNode>): Resolved {
+        return Resolved(
+            node = this,
+            comesFrom = this.createdBy(map),
+            totalRequires = this.totalRequires(map).map { it.name }.toSet(),
+            belongsToStacks = this.belongsToStacks(map)
+        )
+    }
+
     companion object {
         val stack = ViewVar(
             "stack",
@@ -83,7 +99,7 @@ class ViewNode(
             val leakMessages = ArrayList<String>()
             for (leakedVar in root.totalRequires(map)) {
                 if (leakedVar.default != null) continue
-                val requiredBy = map.values.filter { leakedVar in it.requires }
+                val requiredBy = map.values.filter { leakedVar in it.requires && leakedVar !in it.provides }
                 val climbing = requiredBy.map { listOf(it) }.toMutableList()
                 val seen = mutableSetOf<String>()
                 while (climbing.isNotEmpty()) {

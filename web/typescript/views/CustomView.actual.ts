@@ -4,6 +4,7 @@
 // FQImport: com.lightningkite.khrysalis.views.CustomViewDelegate.onTouchUp TS onTouchUp
 // FQImport: java.util.HashMap TS HashMap
 // FQImport: com.lightningkite.khrysalis.views.CustomViewDelegate.customView TS customView
+// FQImport: android.view.accessibility.AccessibilityManager.isEnabled TS getAndroidViewAccessibilityAccessibilityManagerIsEnabled
 // FQImport: android.content.Context.ACCESSIBILITY_SERVICE TS ACCESSIBILITY_SERVICE
 // FQImport: com.lightningkite.khrysalis.R.styleable TS styleable
 // FQImport: android.util.AttributeSet TS AttributeSet
@@ -14,7 +15,6 @@
 // FQImport: java.lang.ClassNotFoundException TS ClassNotFoundException
 // FQImport: android.view.accessibility.AccessibilityManager TS AccessibilityManager
 // FQImport: com.lightningkite.khrysalis.R.styleable.CustomView_delegateClass TS CustomView_delegateClass
-// FQImport: height TS getComLightningkiteKhrysalisViewsCustomViewHeight
 // FQImport: android.view.MotionEvent.ACTION_POINTER_UP TS ACTION_POINTER_UP
 // FQImport: com.lightningkite.khrysalis.R.styleable.CustomView TS CustomView
 // FQImport: com.lightningkite.khrysalis.views.CustomViewDelegate.generateAccessibilityView TS generateAccessibilityView
@@ -26,37 +26,39 @@
 // FQImport: android.view.ViewGroup.LayoutParams.MATCH_PARENT TS MATCH_PARENT
 // FQImport: android.view.MotionEvent.ACTION_MOVE TS ACTION_MOVE
 // FQImport: com.lightningkite.khrysalis.views.CustomView.<init>.<anonymous>.<anonymous>.it TS it
-// FQImport: theme TS getAndroidContentContextTheme
 // FQImport: kotlin.math.min TS min
 // FQImport: android.content.Context.getSystemService TS getSystemService
-// FQImport: isEnabled TS getAndroidViewAccessibilityAccessibilityManagerIsEnabled
+// FQImport: android.view.MotionEvent.actionIndex TS getAndroidViewMotionEventActionIndex
 // FQImport: com.lightningkite.khrysalis.views.CustomViewDelegate.sizeThatFitsWidth TS sizeThatFitsWidth
-// FQImport: actionIndex TS getAndroidViewMotionEventActionIndex
 // FQImport: com.lightningkite.khrysalis.views.CustomView.onMeasure.widthSize TS widthSize
 // FQImport: kotlin.ranges.until TS kotlinIntUntil
 // FQImport: android.content.res.TypedArray.getString TS getString
 // FQImport: com.lightningkite.khrysalis.views.CustomViewDelegate.onTouchMove TS onTouchMove
+// FQImport: com.lightningkite.khrysalis.views.CustomView.context TS getComLightningkiteKhrysalisViewsCustomViewContext
 // FQImport: com.lightningkite.khrysalis.views.CustomView.onTouchEvent.takenCareOf TS takenCareOf
+// FQImport: android.view.MotionEvent.pointerCount TS getAndroidViewMotionEventPointerCount
 // FQImport: com.lightningkite.khrysalis.views.CustomView.onDraw.canvas TS canvas
 // FQImport: com.lightningkite.khrysalis.views.CustomViewDelegate.draw TS draw
 // FQImport: com.lightningkite.khrysalis.views.CustomView.onMeasure.heightSize TS heightSize
+// FQImport: com.lightningkite.khrysalis.views.CustomView.width TS getComLightningkiteKhrysalisViewsCustomViewWidth
+// FQImport: android.content.res.Resources.displayMetrics TS getAndroidContentResResourcesDisplayMetrics
 // FQImport: com.lightningkite.khrysalis.views.CustomView.accessibilityView TS accessibilityView
+// FQImport: android.content.Context.resources TS getAndroidContentContextResources
 // FQImport: java.util.HashMap.remove TS remove
 // FQImport: java.lang.Class.newInstance TS newInstance
-// FQImport: context TS getComLightningkiteKhrysalisViewsCustomViewContext
 // FQImport: com.lightningkite.khrysalis.views.CustomViewDelegate.sizeThatFitsHeight TS sizeThatFitsHeight
 // FQImport: kotlin.Boolean TS Boolean
 // FQImport: com.lightningkite.khrysalis.views.CustomView.touches TS touches
 // FQImport: com.lightningkite.khrysalis.views.CustomView.Touch.x TS x
 // FQImport: android.view.View.MeasureSpec TS MeasureSpec
 // FQImport: kotlin.jvm.java TS getKotlinReflectKClassJava
+// FQImport: java.lang.Class.classLoader TS getJavaLangClassClassLoader
 // FQImport: android.view.MotionEvent.getY TS getY
 // FQImport: com.lightningkite.khrysalis.views.CustomView.onTouchEvent.pointerId TS pointerId
 // FQImport: com.lightningkite.khrysalis.views.CustomView.<init>.defStyleAttr TS defStyleAttr
 // FQImport: com.lightningkite.khrysalis.views.CustomView.addView TS addView
-// FQImport: pointerCount TS getAndroidViewMotionEventPointerCount
 // FQImport: com.lightningkite.khrysalis.views.CustomView.onMeasure.heightMeasureSpec TS heightMeasureSpec
-// FQImport: actionMasked TS getAndroidViewMotionEventActionMasked
+// FQImport: android.content.Context.theme TS getAndroidContentContextTheme
 // FQImport: com.lightningkite.khrysalis.views.CustomView.onTouchEvent.touch TS touch
 // FQImport: com.lightningkite.khrysalis.R TS R
 // FQImport: com.lightningkite.khrysalis.views.CustomView.<init>.<anonymous>.delegateClassName TS delegateClassName
@@ -70,7 +72,7 @@
 // FQImport: java.lang.ClassLoader.loadClass TS loadClass
 // FQImport: com.lightningkite.khrysalis.views.CustomView.onMeasure.widthMode TS widthMode
 // FQImport: com.lightningkite.khrysalis.views.CustomView.onTouchEvent.event TS event
-// FQImport: width TS getComLightningkiteKhrysalisViewsCustomViewWidth
+// FQImport: android.view.MotionEvent.actionMasked TS getAndroidViewMotionEventActionMasked
 // FQImport: android.view.MotionEvent.ACTION_DOWN TS ACTION_DOWN
 // FQImport: com.lightningkite.khrysalis.views.CustomView.delegate TS delegate
 // FQImport: android.content.Context TS Context
@@ -80,18 +82,15 @@
 // FQImport: com.lightningkite.khrysalis.views.CustomView.metrics TS metrics
 // FQImport: com.lightningkite.khrysalis.views.CustomView.onMeasure.heightMode TS heightMode
 // FQImport: com.lightningkite.khrysalis.views.CustomView.onMeasure.width TS width
-// FQImport: classLoader TS getJavaLangClassClassLoader
-// FQImport: displayMetrics TS getAndroidContentResResourcesDisplayMetrics
 // FQImport: com.lightningkite.khrysalis.views.CustomView.Touch.y TS y
-// FQImport: android.graphics.Canvas TS Canvas
 // FQImport: android.widget.FrameLayout TS FrameLayout
+// FQImport: com.lightningkite.khrysalis.views.CustomView.height TS getComLightningkiteKhrysalisViewsCustomViewHeight
 // FQImport: android.view.MotionEvent.ACTION_CANCEL TS ACTION_CANCEL
 // FQImport: android.view.View.MeasureSpec.getMode TS getMode
 // FQImport: android.content.res.Resources.Theme.obtainStyledAttributes TS obtainStyledAttributes
 // FQImport: com.lightningkite.khrysalis.views.CustomView.onTouchEvent.pointerIndex TS pointerIndex
 // FQImport: android.view.MotionEvent.ACTION_UP TS ACTION_UP
 // FQImport: com.lightningkite.khrysalis.views.CustomView.Touch TS Touch
-// FQImport: resources TS getAndroidContentContextResources
 import { CustomViewDelegate } from './CustomViewDelegate.shared'
 
 //! Declares com.lightningkite.khrysalis.views.CustomView
@@ -222,7 +221,7 @@ export class CustomView extends FrameLayout {
     
     private readonly metrics;
     
-    public onDraw(canvas: Canvas): void{
+    public onDraw(canvas: CanvasRenderingContext2D): void{
         .onDraw(canvas);
         if (this.accessibilityView.equals(null)) {
             this.delegate?.draw(canvas, getComLightningkiteKhrysalisViewsCustomViewWidth(this), getComLightningkiteKhrysalisViewsCustomViewHeight(this), this.metrics);

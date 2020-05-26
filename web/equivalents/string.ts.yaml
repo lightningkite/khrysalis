@@ -216,13 +216,13 @@
   template:
     pattern: parseFloatOrNull(~0~)
     imports:
-      parseIntOrNull: khrysalis/dist/Kotlin
+      parseFloatOrNull: khrysalis/dist/Kotlin
 - id: kotlin.text.toDoubleOrNull
   type: call
   template:
     pattern: parseFloatOrNull(~0~)
     imports:
-      parseIntOrNull: khrysalis/dist/Kotlin
+      parseFloatOrNull: khrysalis/dist/Kotlin
 
 - id: kotlin.text.toByte
   type: call

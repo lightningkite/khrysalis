@@ -4,6 +4,7 @@
 // FQImport: com.lightningkite.khrysalis.views.DjangoErrorTranslator.parseError.code TS code
 // FQImport: com.lightningkite.khrysalis.views.DjangoErrorTranslator.wrapNoResponse.<anonymous>.error TS error
 // FQImport: kotlin.text.StringBuilder TS StringBuilder
+// FQImport: kotlin.collections.Map TS Map
 // FQImport: com.lightningkite.khrysalis.views.DjangoErrorTranslator.handleNode.builder TS builder
 // FQImport: com.lightningkite.khrysalis.views.DjangoErrorTranslator.parseError.builder TS builder
 // FQImport: com.lightningkite.khrysalis.views.DjangoErrorTranslator.handleNode.node TS node
@@ -34,9 +35,9 @@
 import { StringBuilder, kotlinCharIsUpperCase } from './../kotlin/kotlin.text'
 import { kotlinStringFromJsonStringUntyped } from './../Codable.actual'
 import { ViewString, ViewStringRaw, ViewStringResource } from './Strings.shared'
-import { StringBuilder } from 'khrysalis/dist/kotlin/kotlin.text'
+import { StringBuilder } from 'kotlin/kotlin.text'
 import { StringResource } from './ResourceTypes.actual'
-import { checkIsInterface } from 'khrysalis/dist/Kotlin'
+import { checkIsInterface } from 'Kotlin'
 
 //! Declares com.lightningkite.khrysalis.views.DjangoErrorTranslator
 export class DjangoErrorTranslator {
@@ -52,7 +53,7 @@ export class DjangoErrorTranslator {
     
     public handleNode(builder: StringBuilder, node: (any | null)): void{
         if (node.equals(null)) return;
-        if (checkIsInterface(node, "KotlinCollectionsMap")){
+        if (checkIsInterface<Map<anyany>>(node, "KotlinCollectionsMap")){
             for (const toDestructure of node) {
                 const key = toDestructure[0]
                 const value = toDestructure[1]
@@ -60,7 +61,7 @@ export class DjangoErrorTranslator {
                 this.handleNode(builder, value)
                 
             }
-        } else if (checkIsInterface(node, "KotlinCollectionsList")){
+        } else if (checkIsInterface<Array<any>>(node, "KotlinCollectionsList")){
             for (const value of node) {
                 this.handleNode(builder, value);
             }
@@ -84,8 +85,10 @@ export class DjangoErrorTranslator {
             
             break;
             case 4:
-            const errorJson = const temp138 = error;
-            if(temp138 !== null) kotlinStringFromJsonStringUntyped(temp138);
+            const errorJson = ((_it)=>{
+                    if(_it === null) return null;
+                    return kotlinStringFromJsonStringUntyped(_it)
+            })(error);
             
             if (!(errorJson.equals(null))) {
                 const builder = StringBuilder();

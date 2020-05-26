@@ -42,6 +42,7 @@ class CodeConversionTest {
             }
         }
         convertToTypescript(
+            projectName = null,
             libraries = sequenceOf(standardLibraryCopy),
             files = File("./testData/shared").walkTopDown() + sequenceOf(File("../android/src/main/java/com/lightningkite/khrysalis/Swift.kt")),
             output = File("./testDataOutputTs/shared").also { it.mkdirs() },

@@ -2,6 +2,7 @@ package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.generic.line
 import com.lightningkite.khrysalis.util.forEachBetween
+import com.lightningkite.khrysalis.util.simpleFqName
 import org.jetbrains.kotlin.builtins.functions.FunctionInvokeDescriptor
 import org.jetbrains.kotlin.builtins.getReceiverTypeFromFunctionType
 import org.jetbrains.kotlin.builtins.isFunctionType
@@ -20,7 +21,7 @@ fun TypescriptTranslator.registerLambda() {
         priority = 100,
         action = {
             val resolved = typedRule.resolvedFunction!!
-            withReceiverScope(resolved.fqNameSafe.asString(), "this_") { name ->
+            withReceiverScope(resolved.simpleFqName, "this_") { name ->
                 -typedRule.typeParameterList
                 -'('
                 -name

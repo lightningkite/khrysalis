@@ -215,6 +215,7 @@ class KhrysalisPlugin : Plugin<Project> {
                 val files = originalTask.source.toList().asSequence()
                 println("All files: ${files.joinToString("\n")}")
                 convertToTypescript(
+                    projectName = projectName(),
                     libraries = libraries,
                     files = files,
                     pluginCache = project.buildDir.resolve("khrysalis-kcp"),

@@ -2,7 +2,6 @@
 // File: views/SelectMultipleDatesMonthCVD.shared.kt
 // Package: com.lightningkite.khrysalis.views
 // FQImport: kotlin.Boolean TS Boolean
-// FQImport: textSize TS getAndroidGraphicsPaintTextSize
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.dayBackgroundEnd TS dayBackgroundEnd
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.dayBackgroundStart TS dayBackgroundStart
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.drawDay.showingMonth TS showingMonth
@@ -17,23 +16,23 @@
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD TS MonthCVD
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.measure.height TS height
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.onTouchMove.<anonymous>.it TS it
+// FQImport: android.graphics.Paint.textSize TS setAndroidGraphicsPaintTextSize
 // FQImport: android.graphics.RectF TS RectF
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.drawDay.canvas TS canvas
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.dates TS dates
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.onTap.day TS day
 // FQImport: com.lightningkite.khrysalis.time.DateAlone TS DateAlone
 // FQImport: android.util.DisplayMetrics TS DisplayMetrics
-// FQImport: textSize TS setAndroidGraphicsPaintTextSize
 // FQImport: kotlin.collections.plus TS kotlinCollectionsSetPlus
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.onTouchMove.day TS day
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.drawDay.inner TS inner
+// FQImport: android.graphics.Paint.textSize TS getAndroidGraphicsPaintTextSize
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.selectedDayPaint TS selectedDayPaint
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.measure.displayMetrics TS displayMetrics
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.adding TS adding
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.onTouchDown.day TS day
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.dayPaint TS dayPaint
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.drawDay.day TS day
-// FQImport: android.graphics.Canvas TS Canvas
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.drawDay.rightDate TS rightDate
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.dayBackground TS dayBackground
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.measure TS measure
@@ -49,7 +48,8 @@
 import { StandardObservableProperty } from './../observables/StandardObservableProperty.shared'
 import { DateAlone } from './../time/DateAlone.actual'
 import { comLightningkiteKhrysalisTimeDateAloneSet } from './../time/TimeAlone.shared'
-import { dateModRelative } from 'khrysalis/dist/time/Date.actual'
+import { dateModRelative } from 'time/Date.actual'
+import { Paint } from './draw/Paint.actual'
 import { MonthCVD } from './MonthCVD.shared'
 
 //! Declares com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD
@@ -73,7 +73,7 @@ export class SelectMultipleDatesMonthCVD extends MonthCVD {
     
     public readonly drawDay_dateAlone: DateAlone;
     
-    public drawDay(canvas: Canvas, showingMonth: DateAlone, day: DateAlone, displayMetrics: DisplayMetrics, outer: RectF, inner: RectF): void{
+    public drawDay(canvas: CanvasRenderingContext2D, showingMonth: DateAlone, day: DateAlone, displayMetrics: DisplayMetrics, outer: RectF, inner: RectF): void{
         if (this.dates.value.contains(day)) {
             const leftDate = dateModRelative(comLightningkiteKhrysalisTimeDateAloneSet(this.drawDay_dateAlone, day), Date.prototype.getDate, Date.prototype.setDate, -1);
             

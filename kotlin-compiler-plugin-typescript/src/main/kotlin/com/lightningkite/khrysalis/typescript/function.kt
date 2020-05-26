@@ -4,6 +4,7 @@ import com.lightningkite.khrysalis.generic.line
 import com.lightningkite.khrysalis.typescript.manifest.declaresPrefix
 import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.forEachBetween
+import com.lightningkite.khrysalis.util.simpleFqName
 import org.jetbrains.kotlin.backend.common.serialization.findSourceFile
 import org.jetbrains.kotlin.backend.common.serialization.metadata.extractFileId
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
@@ -118,7 +119,7 @@ fun TypescriptTranslator.registerFunction() {
                 val tr = typedRule
                 val ktClass = typedRule.parentOfType<KtClassBody>()!!.parentOfType<KtClass>()!!
                 ktClass.addPostAction {
-                    withReceiverScope(tr.resolvedFunction!!.fqNameSafe.asString()) { rName2 ->
+                    withReceiverScope(tr.resolvedFunction!!.simpleFqName) { rName2 ->
                         -"\npublic static "
                         -VirtualFunction(
                             name = tr.resolvedFunction!!.tsDefaultName!!,
@@ -167,7 +168,7 @@ fun TypescriptTranslator.registerFunction() {
             )
         }
         typedRule.receiverTypeReference?.let {
-            withReceiverScope(typedRule.resolvedFunction!!.fqNameSafe.asString()) { rName ->
+            withReceiverScope(typedRule.resolvedFunction!!.simpleFqName) { rName ->
                 emit(rName)
             }
         } ?: run {

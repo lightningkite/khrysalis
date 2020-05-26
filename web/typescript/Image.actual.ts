@@ -13,11 +13,11 @@
 // FQImport: kotlin.ranges.coerceAtLeast TS kotlinIntCoerceAtLeast
 // FQImport: com.lightningkite.khrysalis.ImageReference.uri TS uri
 // FQImport: com.lightningkite.khrysalis.net.HttpClient.go TS okhttp3CallGo
-// FQImport: android.net.Uri TS Uri
 // FQImport: com.lightningkite.khrysalis.loadImage.finalOpts TS finalOpts
 // FQImport: android.graphics.BitmapFactory.decodeByteArray TS decodeByteArray
 // FQImport: com.lightningkite.khrysalis.loadImage.image TS image
 // FQImport: okhttp3.OkHttpClient.newCall TS newCall
+// FQImport: android.content.Context.contentResolver TS getAndroidContentContextContentResolver
 // FQImport: android.content.ContentResolver.openInputStream TS openInputStream
 // FQImport: kotlin.Exception TS Exception
 // FQImport: okhttp3.Request TS Request
@@ -36,12 +36,10 @@
 // FQImport: com.lightningkite.khrysalis.Image TS Image
 // FQImport: com.lightningkite.khrysalis.loadImage.uri TS uri
 // FQImport: java.lang.Math.ceil TS ceil
-// FQImport: contentResolver TS getAndroidContentContextContentResolver
 // FQImport: okhttp3.Response TS Response
 // FQImport: android.graphics.BitmapFactory.Options.outHeight TS outHeight
 // FQImport: com.lightningkite.khrysalis.loadImage.<anonymous>.<no name provided>.onResponse.response TS response
 // FQImport: com.lightningkite.khrysalis.loadImage.url TS url
-// FQImport: android.graphics.Bitmap TS Bitmap
 // FQImport: okhttp3.ResponseBody.byteStream TS byteStream
 // FQImport: android.graphics.BitmapFactory.Options.inJustDecodeBounds TS inJustDecodeBounds
 // FQImport: com.lightningkite.khrysalis.loadImage.e TS e
@@ -52,7 +50,6 @@
 // FQImport: com.lightningkite.khrysalis.loadImage.<anonymous>.<no name provided>.onResponse.e TS e
 // FQImport: kotlin.io.use TS javaIoCloseableUse
 // FQImport: com.lightningkite.khrysalis.ImageRaw TS ImageRaw
-// FQImport: com.lightningkite.khrysalis.ImageBitmap TS ImageBitmap
 // FQImport: com.lightningkite.khrysalis.ImageRemoteUrl TS ImageRemoteUrl
 // FQImport: java.lang.Math TS Math
 // FQImport: com.lightningkite.khrysalis.loadImage.<anonymous>.<no name provided>.onResponse.<anonymous>.<anonymous>.it TS it
@@ -61,21 +58,22 @@
 // FQImport: com.lightningkite.khrysalis.ImageBitmap.bitmap TS bitmap
 // FQImport: kotlin.text.isBlank TS kotlinCharSequenceIsBlank
 // FQImport: com.lightningkite.khrysalis.net.HttpClient.client TS client
+// FQImport: com.lightningkite.khrysalis.ImageBitmap TS ImageImageBitmap
 // FQImport: java.io.IOException TS IOException
 // FQImport: android.graphics.BitmapFactory.Options.outWidth TS outWidth
 // FQImport: com.lightningkite.khrysalis.loadImage.<anonymous>.<no name provided>.onFailure.e TS e
-import { Image, ImageBitmap, ImageRaw, ImageReference, ImageRemoteUrl } from './Image.shared'
+import { Image, ImageImageBitmap, ImageRaw, ImageReference, ImageRemoteUrl } from './Image.shared'
 import { kotlinCharSequenceIsBlank } from './kotlin/kotlin.text'
-import { also } from 'khrysalis/dist/Kotlin'
+import { also } from 'Kotlin'
 
 //! Declares com.lightningkite.khrysalis.loadImage
-export function loadImage(image: Image, onResult: (a: (Bitmap | null)) => void): void{
+export function loadImage(image: Image, onResult: (a: (ImageBitmap | null)) => void): void{
     try {
         if (image instanceof ImageRaw) {
             onResult(BitmapFactory.decodeByteArray(image.raw, 0, image.raw.length))
         } else if (image instanceof ImageReference) {
             loadImage(image.uri, undefined, onResult)
-        } else if (image instanceof ImageBitmap) {
+        } else if (image instanceof ImageImageBitmap) {
             onResult(image.bitmap)
         } else if (image instanceof ImageRemoteUrl) {
             loadImage(image.url, onResult)
@@ -86,11 +84,11 @@ export function loadImage(image: Image, onResult: (a: (Bitmap | null)) => void):
 }
 
 //! Declares com.lightningkite.khrysalis.load
-export function comLightningkiteKhrysalisImageLoad(this_: Image, onResult: (a: (Bitmap | null)) => void): void{ return loadImage(this_, onResult); }
+export function comLightningkiteKhrysalisImageLoad(this_: Image, onResult: (a: (ImageBitmap | null)) => void): void{ return loadImage(this_, onResult); }
 
 //! Declares com.lightningkite.khrysalis.loadImage
-export function loadImage(uri: Uri, maxDimension: number = 2048, onResult: (a: (Bitmap | null)) => void): void{
-    let result: (Bitmap | null) = null;
+export function loadImage(uri: string, maxDimension: number = 2048, onResult: (a: (ImageBitmap | null)) => void): void{
+    let result: (ImageBitmap | null) = null;
     
     try {
         const finalOpts = BitmapFactory.Options.constructor();
@@ -120,7 +118,7 @@ export function loadImage(uri: Uri, maxDimension: number = 2048, onResult: (a: (
 }
 
 //! Declares com.lightningkite.khrysalis.loadImage
-export function loadImage(url: string, onResult: (a: (Bitmap | null)) => void): void{
+export function loadImage(url: string, onResult: (a: (ImageBitmap | null)) => void): void{
     if (kotlinCharSequenceIsBlank(url)) {
         onResult(null);
         return;

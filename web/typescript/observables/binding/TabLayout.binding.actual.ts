@@ -19,8 +19,8 @@
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.onTabReselected.p0 TS p0
 // FQImport: com.google.android.material.tabs.TabLayout.Tab.setText TS setText
 // FQImport: com.google.android.material.tabs.TabLayout.BaseOnTabSelectedListener TS TabLayoutBaseOnTabSelectedListener
-// FQImport: position TS getComGoogleAndroidMaterialTabsTabLayoutTabPosition
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty TS MutableObservableProperty
+// FQImport: com.google.android.material.tabs.TabLayout.Tab.position TS getComGoogleAndroidMaterialTabsTabLayoutTabPosition
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.onTabSelected.p0 TS p0
 import { comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy } from './../ObservableProperty.ext.shared'
 import { MutableObservableProperty } from './../MutableObservableProperty.shared'

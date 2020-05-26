@@ -1,0 +1,12 @@
+
+---
+- id: com.lightningkite.khrysalis.views.android.TimeButton
+  type: type
+  template: HTMLInputElement
+
+- id: com.lightningkite.khrysalis.views.android.TimeButton
+  type: call
+  template:
+    pattern: also(document.createElement('input') as HTMLInputElement, (x)=>{ x.type = "time" })
+    imports:
+      also: khrysalis/dist/Kotlin

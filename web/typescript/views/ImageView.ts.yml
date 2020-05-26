@@ -1,0 +1,14 @@
+
+
+# android.widget.TextView
+- id: android.widget.ImageView
+  type: type
+  template: HTMLImageElement
+
+- id: android.widget.ImageView
+  type: call
+  template: (document.createElement('img') as HTMLImageElement)
+
+- id: android.widget.ImageView.setImageBitmap
+  type: call
+  template: x # TODO

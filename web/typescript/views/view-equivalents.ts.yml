@@ -5,28 +5,13 @@
   type: type
   template: HTML_Element
 
-# android.widget.Button
-- id: android.widget.Button
-  type: type
-  template: HTMLButtonElement
-
 # android.widget.CompoundButton
 - id: android.widget.CompoundButton
   type: type
   template: HTML_Element
 
-# android.widget.DateButton
-- id: android.widget.DateButton
-  type: type
-  template: HTMLInputElement
-
 # android.widget.TimeButton
 - id: android.widget.DateButton
-  type: type
-  template: HTMLInputElement
-
-# android.widget.EditText
-- id: android.widget.EditText
   type: type
   template: HTMLInputElement
 
@@ -72,11 +57,6 @@
 
 # android.widget.TabLayout
 - id: android.widget.TabLayout
-  type: type
-  template: HTMLDivElement
-
-# android.widget.TextView
-- id: android.widget.TextView
   type: type
   template: HTMLDivElement
 

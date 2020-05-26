@@ -3,7 +3,6 @@ package com.lightningkite.khrysalis.typescript
 import com.lightningkite.khrysalis.generic.PartialTranslatorByType
 import com.lightningkite.khrysalis.generic.TranslatorInterface
 import com.lightningkite.khrysalis.typescript.replacements.Replacements
-import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.AnalysisExtensions
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
@@ -19,6 +18,7 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class TypescriptTranslator(
+    val projectName: String?,
     override val bindingContext: BindingContext,
     val commonPath: String,
     val collector: MessageCollector? = null,

@@ -34,9 +34,9 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
     value: Any? = null,
     allParameters: Any? = null,
     operatorToken: Any? = null,
-    parameter: (TemplatePart.Parameter) -> Any? = { null },
+    parameter: (TemplatePart.Parameter) -> Any? = { value },
     typeParameter: (TemplatePart.TypeParameter) -> Any? = { null },
-    parameterByIndex: (TemplatePart.ParameterByIndex) -> Any? = { null },
+    parameterByIndex: (TemplatePart.ParameterByIndex) -> Any? = { value },
     typeParameterByIndex: (TemplatePart.TypeParameterByIndex) -> Any? = { null }
 ) {
     dedup(requiresWrapping) {
@@ -99,9 +99,9 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
     value: Any? = null,
     allParameters: Any? = null,
     operatorToken: Any? = null,
-    parameter: (TemplatePart.Parameter) -> Any? = { null },
+    parameter: (TemplatePart.Parameter) -> Any? = { value },
     typeParameter: (TemplatePart.TypeParameter) -> Any? = { null },
-    parameterByIndex: (TemplatePart.ParameterByIndex) -> Any? = { null },
+    parameterByIndex: (TemplatePart.ParameterByIndex) -> Any? = { value },
     typeParameterByIndex: (TemplatePart.TypeParameterByIndex) -> Any? = { null }
 ) {
     for (part in template.parts) {

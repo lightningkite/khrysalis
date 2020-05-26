@@ -43,11 +43,8 @@ fun createFlowDocumentation(
     //Sort
     ViewNode.estimateDepth(nodes)
 
-    //Throw on leaks
-    ViewNode.assertNoLeaks(nodes)
-
     //Emit info
-    ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(docsOutputFolder.resolve("view-nodes.json"), nodes)
+    ObjectMapper().writerWithDefaultPrettyPrinter().writeValue(docsOutputFolder.resolve("view-nodes.json"), nodes.mapValues { it.value.resolve(nodes) })
 
     //Emit inaccessible nodes warning
     val inaccessibleNodes = nodes.values.filter { node ->
@@ -62,26 +59,33 @@ fun createFlowDocumentation(
     partialGraphs(docsOutputFolder, nodes)
 
     //Convert all mermaid diagrams
-    val checksumFile = docsOutputFolder.resolve("mermaid-checksum.json")
-    val checksums = checksumFile.takeIf { it.exists() }
-        ?.let { jacksonObjectMapper().readValue<Map<String, Int>>(it) } ?: mapOf()
-    val newChecksums = HashMap<String, Int>()
-    docsOutputFolder.listFiles()?.filter { it.extension == "mmd" }?.forEach {
-        val text = it.readText()
-        val sum = text.hashCode()
-        newChecksums[it.name] = sum
-        if(checksums[it.name] != sum) {
-            it.mermaidToSvg()
-            it.mermaidToPng()
-        } else {
-            if(!it.parentFile.resolve(it.nameWithoutExtension + ".svg").exists()){
+    try {
+        val checksumFile = docsOutputFolder.resolve("mermaid-checksum.json")
+        val checksums = checksumFile.takeIf { it.exists() }
+            ?.let { jacksonObjectMapper().readValue<Map<String, Int>>(it) } ?: mapOf()
+        val newChecksums = HashMap<String, Int>()
+        docsOutputFolder.listFiles()?.filter { it.extension == "mmd" }?.forEach {
+            val text = it.readText()
+            val sum = text.hashCode()
+            newChecksums[it.name] = sum
+            if (checksums[it.name] != sum) {
                 it.mermaidToSvg()
-            }
-            if(!it.parentFile.resolve(it.nameWithoutExtension + ".png").exists()){
                 it.mermaidToPng()
+            } else {
+                if (!it.parentFile.resolve(it.nameWithoutExtension + ".svg").exists()) {
+                    it.mermaidToSvg()
+                }
+                if (!it.parentFile.resolve(it.nameWithoutExtension + ".png").exists()) {
+                    it.mermaidToPng()
+                }
             }
         }
+        jacksonObjectMapper().writeValue(checksumFile, newChecksums)
+    } catch(e:Exception) {
+        e.printStackTrace()
     }
-    jacksonObjectMapper().writeValue(checksumFile, newChecksums)
+
+    //Throw on leaks
+    ViewNode.assertNoLeaks(nodes)
 
 }

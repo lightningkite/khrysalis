@@ -1,0 +1,9 @@
+
+---
+- id: android.widget.Button
+  type: type
+  template: HTMLButtonElement
+
+- id: android.widget.Button
+  type: call
+  template: (document.createElement('button') as HTMLButtonElement)

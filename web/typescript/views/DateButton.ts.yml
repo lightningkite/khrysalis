@@ -1,0 +1,20 @@
+
+---
+- id: com.lightningkite.khrysalis.views.android.DateButton
+  type: type
+  template: HTMLInputElement
+
+- id: com.lightningkite.khrysalis.views.android.DateButton
+  type: call
+  template:
+    pattern: also(document.createElement('input') as HTMLInputElement, (x)=>{ x.type = "date" })
+    imports:
+      also: khrysalis/dist/Kotlin
+
+- id: com.lightningkite.khrysalis.views.android.DateButton.date
+  type: set
+  template: ~this~.valueAsDate = ~value~
+
+- id: com.lightningkite.khrysalis.views.android.DateButton.date
+  type: get
+  template: (~this~.valueAsDate as Date)

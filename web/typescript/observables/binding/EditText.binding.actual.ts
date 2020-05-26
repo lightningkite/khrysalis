@@ -3,7 +3,6 @@
 // Package: com.lightningkite.khrysalis.observables.binding
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindString.<no name provided>.onTextChanged.s TS s
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty.value TS value
-// FQImport: kotlin.takeUnless TS kotlinAnyTakeUnless
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindDouble.<anonymous>.<anonymous>.it TS it
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindInteger.<no name provided>.onTextChanged.currentValue TS currentValue
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindDouble.<anonymous>.value TS value
@@ -22,23 +21,21 @@
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindInteger.<anonymous>.value TS value
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindDouble.observable TS observable
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindDouble.<no name provided>.onTextChanged.currentValue TS currentValue
-// FQImport: text TS getAndroidWidgetEditTextText
 // FQImport: kotlin.toString TS kotlinAnyToString
 // FQImport: kotlin.Double.toString TS toString
 // FQImport: com.lightningkite.khrysalis.rx.removed TS getAndroidViewViewRemoved
-// FQImport: android.widget.EditText.setText TS setText
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty TS MutableObservableProperty
 // FQImport: android.text.Editable TS Editable
 import { comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy } from './../ObservableProperty.ext.shared'
+import { parseFloatOrNull, parseIntOrNull, takeUnless } from 'Kotlin'
 import { MutableObservableProperty } from './../MutableObservableProperty.shared'
 import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from './../../rx/DisposeCondition.actual'
-import { parseIntOrNull } from 'khrysalis/dist/Kotlin'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindString
 export function androidWidgetEditTextBindString(this_: HTMLInputElement, observable: MutableObservableProperty<string>): void{
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
-                if (!(observable.value === getAndroidWidgetEditTextText(this_).toString())) {
-                    this_.setText(observable.value);
+                if (!(observable.value === this_.value.toString())) {
+                    this_.value = observable.value;
                 }
     }), getAndroidViewViewRemoved(this_));
     this_.addTextChangedListener(new class Anon implements TextWatcher {
@@ -63,7 +60,7 @@ export function androidWidgetEditTextBindInteger(this_: HTMLInputElement, observ
                 const currentValue = parseIntOrNull(undefined);
                 
                 if (!(value === currentValue)) {
-                    this_.setText(kotlinAnyTakeUnless(value, (it) => it === 0)?.toString() ?? "");
+                    this_.value = takeUnless(value, (it) => it === 0)?.toString() ?? "";
                 }
     }), getAndroidViewViewRemoved(this_));
     this_.addTextChangedListener(new class Anon implements TextWatcher {
@@ -92,7 +89,7 @@ export function androidWidgetEditTextBindDouble(this_: HTMLInputElement, observa
                 const currentValue = parseFloatOrNull(undefined);
                 
                 if (!(value === currentValue)) {
-                    this_.setText(kotlinAnyTakeUnless(value, (it) => it === 0.0)?.toString() ?? "");
+                    this_.value = takeUnless(value, (it) => it === 0.0)?.toString() ?? "";
                 }
     }), getAndroidViewViewRemoved(this_));
     this_.addTextChangedListener(new class Anon implements TextWatcher {

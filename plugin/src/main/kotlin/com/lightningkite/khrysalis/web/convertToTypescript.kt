@@ -13,6 +13,7 @@ import org.jetbrains.kotlin.incremental.destinationAsFile
 import java.io.File
 
 fun convertToTypescript(
+    projectName: String? = null,
     libraries: Sequence<File>,
     files: Sequence<File>,
     pluginCache: File,
@@ -53,10 +54,11 @@ fun convertToTypescript(
                 }
                 .let { arrayOf(it.path) }
             this.pluginOptions =
-                arrayOf(
+                listOfNotNull(
                     "plugin:com.lightningkite.khrysalis.typescript:outputDirectory=\"${output.path}\"",
+                    projectName?.let { "plugin:com.lightningkite.khrysalis.typescript:projName=\"${it}\"" },
                     "plugin:com.lightningkite.khrysalis.typescript:equivalents=\"${equivalents.joinToString(File.pathSeparator)}\""
-                )
+                ).toTypedArray()
             this.destinationAsFile = buildCache.also { it.mkdirs() }
         }
     )

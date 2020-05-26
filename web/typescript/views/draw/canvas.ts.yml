@@ -1,0 +1,99 @@
+#
+#  /* SHARED DECLARATIONS
+#    typealias Canvas = Canvas
+#
+#  fun Canvas.clipRect(left: Float, top: Float, right: Float, bottom: Float)
+#  fun Canvas.clipRect(rect: RectF)
+#  fun Canvas.drawCircle(cx: Float, cy: Float, radius: Float, paint: Paint)
+#  fun Canvas.drawRect(left: Float, top: Float, right: Float, bottom: Float, paint: Paint)
+#  fun Canvas.drawRect(rect: RectF, paint: Paint)
+#  fun Canvas.drawOval(left: Float, top: Float, right: Float, bottom: Float, paint: Paint)
+#  fun Canvas.drawOval(rect: RectF, paint: Paint)
+#  fun Canvas.drawRoundRect(left: Float, top: Float, right: Float, bottom: Float, rx: Float, ry: Float, paint: Paint)
+#  fun Canvas.drawRoundRect(rect: RectF, rx: Float, ry: Float, paint: Paint)
+#  fun Canvas.drawLine(x1: Float, y1: Float, x2: Float, y2: Float, paint: Paint)
+#  fun Canvas.drawPath(path: Path, paint: Paint)
+#    fun Canvas.save()
+#    fun Canvas.restore()
+#  fun Canvas.translate(dx: Float, dy: Float)
+#  fun Canvas.scale(scaleX: Float, scaleY: Float)
+#  fun Canvas.rotate(degrees: Float)
+#
+#    */
+---
+- id: android.graphics.Canvas
+  type: type
+  template: CanvasRenderingContext2D
+
+- id: android.graphics.Canvas.clipRect
+  type: call
+  arguments: [kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float]
+  template: x #TODO
+
+- id: android.graphics.Canvas.clipRect
+  type: call
+  arguments: [android.graphics.RectF]
+  template: x #TODO
+
+- id: android.graphics.Canvas.drawCircle
+  type: call
+  template: x #TODO
+
+- id: android.graphics.Canvas.drawRect
+  type: call
+  arguments: [kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float, android.graphics.Paint]
+  template: x #TODO
+
+- id: android.graphics.Canvas.drawRect
+  type: call
+  arguments: [android.graphics.RectF, android.graphics.Paint]
+  template: x #TODO
+
+- id: android.graphics.Canvas.drawOval
+  type: call
+  arguments: [kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float, android.graphics.Paint]
+  template: x #TODO
+
+- id: android.graphics.Canvas.drawOval
+  type: call
+  arguments: [android.graphics.RectF, android.graphics.Paint]
+  template: x #TODO
+
+- id: android.graphics.Canvas.drawRoundRect
+  type: call
+  arguments: [kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float, android.graphics.Paint]
+  template: x #TODO
+
+- id: android.graphics.Canvas.drawRoundRect
+  type: call
+  arguments: [android.graphics.RectF, kotlin.Float, kotlin.Float, android.graphics.Paint]
+  template: x #TODO
+
+- id: android.graphics.Canvas.drawLine
+  type: call
+  arguments: [kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float, android.graphics.Paint]
+  template: x #TODO
+
+- id: android.graphics.Canvas.drawPath
+  type: call
+  template: x #TODO
+
+- id: android.graphics.Canvas.save
+  type: call
+  template: x #TODO
+
+- id: android.graphics.Canvas.restore
+  type: call
+  template: x #TODO
+
+- id: android.graphics.Canvas.translate
+  type: call
+  template: x #TODO
+
+- id: android.graphics.Canvas.scale
+  type: call
+  template: x #TODO
+
+- id: android.graphics.Canvas.rotate
+  type: call
+  template: x #TODO

@@ -1,0 +1,19 @@
+
+---
+- id: com.lightningkite.khrysalis.views.ColorValue
+  type: type
+  template: string
+
+- id: com.lightningkite.khrysalis.views.asColor
+  type: call
+  template:
+    pattern: numberToColor(~this~)
+    imports:
+      numberToColor: khrysalis/dist/views/Colors.actual
+
+- id: com.lightningkite.khrysalis.views.colorAlpha
+  type: call
+  template:
+    pattern: applyAlphaToColor(~this~, ~0~)
+    imports:
+      applyAlphaToColor: khrysalis/dist/views/Colors.actual

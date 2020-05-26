@@ -1,0 +1,17 @@
+---
+- id: android.net.Uri
+  type: type
+  template: string
+- id: android.graphics.Bitmap
+  type: type
+  template: ImageBitmap
+
+- id: android.net.Uri.hashCode
+  type: call
+  template:
+    pattern: hashString(~this~)
+    imports:
+      hashString: khrysalis/dist/Kotlin
+- id: android.net.Uri.equals
+  type: call
+  template: ~this~ === ~0~

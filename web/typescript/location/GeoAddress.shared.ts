@@ -13,10 +13,10 @@
 // FQImport: com.lightningkite.khrysalis.Codable TS Codable
 // FQImport: com.lightningkite.khrysalis.location.GeoAddress.locality TS locality
 // FQImport: com.lightningkite.khrysalis.location.GeoAddress.oneLine.withZip TS withZip
-import { hashString } from 'khrysalis/dist/Kotlin'
-import { StringBuilder } from 'khrysalis/dist/kotlin/kotlin.text'
+import { hashString } from 'Kotlin'
+import { StringBuilder } from 'kotlin/kotlin.text'
 import { GeoCoordinate } from './GeoCoordinate.shared'
-import { parse as parseJsonTyped } from 'khrysalis/dist/net/jsonParsing'
+import { parse as parseJsonTyped } from 'net/jsonParsing'
 import { Codable } from './../Codable.actual'
 
 //! Declares com.lightningkite.khrysalis.location.GeoAddress
@@ -84,31 +84,31 @@ export class GeoAddress implements Codable {
     public oneLine(withCountry: Boolean = false, withZip: Boolean = false): string{
         const builder = StringBuilder();
         
-        const temp36 = this.street;
-        if(temp36 !== null) ((it) => builder.value += it)(temp36);
-        const temp38 = this.locality;
-        if(temp38 !== null) ((it) => {
+        const temp39 = this.street;
+        if(temp39 !== null) ((it) => builder.value += it)(temp39);
+        const temp41 = this.locality;
+        if(temp41 !== null) ((it) => {
                 builder.value += ' ';
                 return builder.value += it;
-        })(temp38);
-        const temp40 = this.adminArea;
-        if(temp40 !== null) ((it) => {
+        })(temp41);
+        const temp43 = this.adminArea;
+        if(temp43 !== null) ((it) => {
                 builder.value += ", ";
                 return builder.value += it;
-        })(temp40);
+        })(temp43);
         if (withCountry) {
-            const temp43 = this.adminArea;
-            if(temp43 !== null) ((it) => {
+            const temp46 = this.adminArea;
+            if(temp46 !== null) ((it) => {
                     builder.value += ' ';
                     return builder.value += it;
-            })(temp43);
+            })(temp46);
         }
         if (withZip) {
-            const temp45 = this.postalCode;
-            if(temp45 !== null) ((it) => {
+            const temp48 = this.postalCode;
+            if(temp48 !== null) ((it) => {
                     builder.value += ' ';
                     return builder.value += it;
-            })(temp45);
+            })(temp48);
         }
         return builder.toString().trim();
     }

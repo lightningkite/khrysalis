@@ -4,29 +4,29 @@
 // FQImport: kotlin.Boolean TS Boolean
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty.value TS value
 // FQImport: android.widget.RatingBar.OnRatingBarChangeListener TS RatingBarOnRatingBarChangeListener
-// FQImport: stepSize TS setAndroidWidgetRatingBarStepSize
+// FQImport: android.widget.RatingBar.progress TS getAndroidWidgetRatingBarProgress
+// FQImport: android.widget.RatingBar.rating TS setAndroidWidgetRatingBarRating
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.onRatingChanged.p0 TS p0
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindFloat.stars TS stars
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.stars TS stars
 // FQImport: com.lightningkite.khrysalis.observables.subscribeBy TS comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy
 // FQImport: android.widget.RatingBar.setIsIndicator TS setIsIndicator
+// FQImport: android.widget.RatingBar.progress TS setAndroidWidgetRatingBarProgress
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.observable TS observable
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindFloat.suppress TS suppress
 // FQImport: android.widget.RatingBar.incrementProgressBy TS incrementProgressBy
-// FQImport: max TS setAndroidWidgetRatingBarMax
 // FQImport: com.lightningkite.khrysalis.rx.until TS ioReactivexDisposablesDisposableUntil
-// FQImport: onRatingBarChangeListener TS setAndroidWidgetRatingBarOnRatingBarChangeListener
+// FQImport: android.widget.RatingBar.numStars TS setAndroidWidgetRatingBarNumStars
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindFloat.observable TS observable
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<anonymous>.value TS value
-// FQImport: rating TS setAndroidWidgetRatingBarRating
-// FQImport: progress TS setAndroidWidgetRatingBarProgress
 // FQImport: com.lightningkite.khrysalis.observables.ObservableProperty TS ObservableProperty
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.suppress TS suppress
-// FQImport: numStars TS setAndroidWidgetRatingBarNumStars
-// FQImport: progress TS getAndroidWidgetRatingBarProgress
+// FQImport: android.widget.RatingBar.max TS setAndroidWidgetRatingBarMax
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindFloat.<no name provided>.onRatingChanged.p1 TS p1
 // FQImport: com.lightningkite.khrysalis.rx.removed TS getAndroidViewViewRemoved
+// FQImport: android.widget.RatingBar.onRatingBarChangeListener TS setAndroidWidgetRatingBarOnRatingBarChangeListener
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindFloat.<anonymous>.value TS value
+// FQImport: android.widget.RatingBar.stepSize TS setAndroidWidgetRatingBarStepSize
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty TS MutableObservableProperty
 import { comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy } from './../ObservableProperty.ext.shared'
 import { MutableObservableProperty } from './../MutableObservableProperty.shared'

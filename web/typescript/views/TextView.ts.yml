@@ -21,6 +21,10 @@
   type: set
   template: ~this~.innerText = ~0~
 
+- id: android.widget.TextView.setText
+  type: call
+  template: ~this~.innerText = ~0~
+
 - id: com.lightningkite.khrysalis.views.setTextColorResource
   type: call
   template: ~this~.style.color = ~0~

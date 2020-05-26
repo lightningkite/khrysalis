@@ -1,0 +1,40 @@
+
+
+# android.widget.TextView
+- id: android.widget.EditText
+  type: type
+  template: HTMLInputElement
+
+- id: android.widget.EditText
+  type: call
+  template: (document.createElement('input') as HTMLInputElement)
+
+- id: com.lightningkite.khrysalis.views.textResource
+  type: set
+  template: ~this~.value = ~0~
+
+- id: com.lightningkite.khrysalis.views.textString
+  type: set
+  template: ~this~.value = ~0~
+
+- id: android.widget.TextView.text
+  type: set
+  actualReceiver: android.widget.EditText
+  template: ~this~.value = ~0~
+
+- id: android.widget.EditText.text
+  type: get
+  template: ~this~.value
+
+- id: android.widget.EditText.setText
+  type: call
+  template: ~this~.value = ~0~
+
+- id: com.lightningkite.khrysalis.views.textString
+  type: get
+  template: ~this~.value
+
+- id: android.widget.TextView.text
+  type: get
+  actualReceiver: android.widget.EditText
+  template: ~this~.value

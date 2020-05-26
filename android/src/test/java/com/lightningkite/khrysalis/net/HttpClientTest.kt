@@ -31,10 +31,10 @@ class HttpClientTest {
                 println("Frame: $frame")
                 recievedFrame = true
             }
-            socket.writeText("Hello world!")
+            socket.onNext(WebSocketFrame(text = "Hello world!"))
         }
         Thread.sleep(3000L)
-        mySocket?.dispose()
+        mySocket?.onComplete()
         assert(recievedFrame)
     }
 }

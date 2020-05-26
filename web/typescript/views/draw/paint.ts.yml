@@ -1,0 +1,7 @@
+---
+- id: android.graphics.Shader
+  type: type
+  template:
+    pattern: CanvasGradientMaker
+    imports:
+      CanvasGradientMaker: khrysalis/dist/views/draw/LinearGradient.actual

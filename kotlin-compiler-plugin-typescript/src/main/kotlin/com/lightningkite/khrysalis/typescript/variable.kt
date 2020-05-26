@@ -2,6 +2,7 @@ package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.typescript.manifest.declaresPrefix
 import com.lightningkite.khrysalis.util.forEachBetween
+import com.lightningkite.khrysalis.util.simpleFqName
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
@@ -68,7 +69,7 @@ fun TypescriptTranslator.registerVariable() {
                         )
                         -'>'
                     }
-                    withReceiverScope(resolved.fqNameSafe.asString()) { r ->
+                    withReceiverScope(resolved.simpleFqName) { r ->
                         -'('
                         -r
                         -": "
@@ -97,7 +98,7 @@ fun TypescriptTranslator.registerVariable() {
                         )
                         -'>'
                     }
-                    withReceiverScope(resolved.fqNameSafe.asString()) { r ->
+                    withReceiverScope(resolved.simpleFqName) { r ->
                         -'('
                         -r
                         -": "

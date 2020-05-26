@@ -4,6 +4,7 @@
 // FQImport: android.widget.LinearLayout.HORIZONTAL TS HORIZONTAL
 // FQImport: android.widget.LinearLayout.LayoutParams.gravity TS gravity
 // FQImport: android.view.Gravity.TOP TS TOP
+// FQImport: android.widget.LinearLayout.orientation TS getAndroidWidgetLinearLayoutOrientation
 // FQImport: com.lightningkite.khrysalis.views.geometry.Align TS Align
 // FQImport: com.lightningkite.khrysalis.views.geometry.Align.fill TS fill
 // FQImport: com.lightningkite.khrysalis.views.params.marginStart TS marginStart
@@ -16,9 +17,9 @@
 // FQImport: com.lightningkite.khrysalis.views.geometry.Align.start TS start
 // FQImport: android.widget.LinearLayout.LayoutParams.setMargins TS setMargins
 // FQImport: com.lightningkite.khrysalis.views.params.d TS d
-// FQImport: orientation TS getAndroidWidgetLinearLayoutOrientation
 // FQImport: com.lightningkite.khrysalis.views.geometry.AlignPair TS AlignPair
 // FQImport: android.view.Gravity TS Gravity
+// FQImport: android.widget.LinearLayout.resources TS getAndroidWidgetLinearLayoutResources
 // FQImport: android.view.Gravity.CENTER TS CENTER
 // FQImport: com.lightningkite.khrysalis.views.geometry.Align.center TS center
 // FQImport: com.lightningkite.khrysalis.views.params.gravity TS gravity
@@ -28,17 +29,16 @@
 // FQImport: android.view.Gravity.END TS END
 // FQImport: com.lightningkite.khrysalis.views.params.marginEnd TS marginEnd
 // FQImport: android.widget.LinearLayout TS LinearLayout
-// FQImport: resources TS getAndroidWidgetLinearLayoutResources
-// FQImport: displayMetrics TS getAndroidContentResResourcesDisplayMetrics
 // FQImport: android.view.Gravity.BOTTOM TS BOTTOM
 // FQImport: com.lightningkite.khrysalis.views.geometry.Align.end TS end
 // FQImport: android.widget.LinearLayout.LayoutParams TS LayoutParams
+// FQImport: android.content.res.Resources.displayMetrics TS getAndroidContentResResourcesDisplayMetrics
 // FQImport: android.util.DisplayMetrics.density TS density
 // FQImport: com.lightningkite.khrysalis.views.params.align TS align
 // FQImport: com.lightningkite.khrysalis.views.geometry.AlignPair.Companion.center TS center
 // FQImport: com.lightningkite.khrysalis.views.params.sizeX TS sizeX
 import { Align, AlignPair } from './geometry/Align.shared'
-import { also } from 'khrysalis/dist/Kotlin'
+import { also } from 'Kotlin'
 
 //! Declares com.lightningkite.khrysalis.views.params
 export function androidWidgetLinearLayoutParams(this_: HTML_Element, sizeX: number = 0, sizeY: number = 0, marginStart: number = 0, marginEnd: number = 0, marginTop: number = 0, marginBottom: number = 0, gravity: AlignPair = AlignPair.Companion.INSTANCE.center, weight: number = 0): HTML_Element.LayoutParams{

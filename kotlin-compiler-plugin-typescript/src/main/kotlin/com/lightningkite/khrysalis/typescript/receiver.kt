@@ -1,6 +1,7 @@
 package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.generic.line
+import com.lightningkite.khrysalis.util.simpleFqName
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
@@ -53,7 +54,7 @@ fun TypescriptTranslator.registerReceiver() {
     )
 
     handle<KtThisExpression> {
-        val fq = typedRule.resolvedCall?.resultingDescriptor?.containingDeclaration?.fqNameSafe?.asString()
+        val fq = typedRule.resolvedCall?.resultingDescriptor?.containingDeclaration?.simpleFqName
         val entry = receiverStack.lastOrNull { it.fqName == fq }
         -(entry?.tsName ?: "this")
     }

@@ -65,7 +65,7 @@ import { MutableObservableProperty } from './../observables/MutableObservablePro
 import { StringResource } from './ResourceTypes.actual'
 import { kotlinCharSequenceIsBlank } from './../kotlin/kotlin.text'
 import { showDialog } from './showDialog.shared'
-import { listFilterNotNull } from 'khrysalis/dist/Kotlin'
+import { listFilterNotNull } from 'Kotlin'
 
 //! Declares com.lightningkite.khrysalis.views.FormValidationError
 export class FormValidationError {

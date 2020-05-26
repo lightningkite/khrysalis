@@ -11,20 +11,15 @@
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.label TS label
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.label.inner TS inner
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.onTouchDown.<anonymous>.it TS it
-// FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.dayBackgroundStart.outer TS outer
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.calcMonthB TS calcMonthB
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.label.paint TS paint
-// FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.dayBackgroundEnd.paint TS paint
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.dayPaint TS dayPaint
-// FQImport: kotlin.math.min TS min
-// FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.dayBackgroundMid.canvas TS canvas
-// FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.dayBackgroundStart.canvas TS canvas
+// FQImport: android.graphics.Paint.color TS getAndroidGraphicsPaintColor
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD._currentOffset TS _currentOffset
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.draw.displayMetrics TS displayMetrics
 // FQImport: com.lightningkite.khrysalis.time.DateAlone.day TS day
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.dayAtPixel.existing TS existing
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.lastOffset TS lastOffset
-// FQImport: android.graphics.RectF.width TS width
 // FQImport: android.graphics.RectF.inset TS inset
 // FQImport: com.lightningkite.khrysalis.views.draw.drawTextCentered TS androidGraphicsCanvasDrawTextCentered
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.label.dayOfWeek TS dayOfWeek
@@ -40,9 +35,7 @@
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.label.text TS text
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.drawDay.showingMonth TS showingMonth
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.drawDay.outer TS outer
-// FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.dayBackgroundStart.paint TS paint
 // FQImport: android.graphics.RectF.centerX TS centerX
-// FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.dayBackgroundEnd.outer TS outer
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.drawDate TS drawDate
 // FQImport: com.lightningkite.khrysalis.floorDiv TS kotlinIntFloorDiv
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.drawMonth.width TS width
@@ -51,6 +44,7 @@
 // FQImport: com.lightningkite.khrysalis.views.CustomViewDelegate TS CustomViewDelegate
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.onTouchUp.x TS x
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.dayCellHeight TS dayCellHeight
+// FQImport: android.graphics.Paint.textSize TS setAndroidGraphicsPaintTextSize
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.dayAtPixel.columnDrag TS columnDrag
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.dayAtPixel.columnRaw TS columnRaw
 // FQImport: android.graphics.RectF TS RectF
@@ -58,13 +52,9 @@
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.calcMonth TS calcMonth
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.onTouchUp.weighted TS weighted
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.onTouchMove TS onTouchMove
-// FQImport: android.graphics.Canvas.drawCircle TS drawCircle
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.measure.height TS height
-// FQImport: android.graphics.RectF.height TS height
-// FQImport: android.graphics.Canvas.drawRect TS drawRect
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.dayAtPixel TS dayAtPixel
-// FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.dayBackgroundMid.paint TS paint
-// FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.dayBackgroundEnd.inner TS inner
+// FQImport: android.graphics.Paint.textSize TS getAndroidGraphicsPaintTextSize
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.drawMonth.month TS month
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.<set-currentOffset>.value TS value
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.rectForReuse TS rectForReuse
@@ -74,18 +64,14 @@
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.onTap TS onTap
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.draw.width TS width
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.customView TS customView
-// FQImport: com.lightningkite.khrysalis.views.colorAlpha TS kotlinIntColorAlpha
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.draggingId TS draggingId
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.onTouchUp.id TS id
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.onTouchDown.y TS y
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.dragEnabled TS dragEnabled
-// FQImport: android.graphics.Canvas TS Canvas
 // FQImport: android.util.DisplayMetrics.scaledDensity TS scaledDensity
-// FQImport: color TS setAndroidGraphicsPaintColor
 // FQImport: android.util.DisplayMetrics.density TS density
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.dayCellMarginDp TS dayCellMarginDp
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.drawDay.day TS day
-// FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.dayBackgroundMid.outer TS outer
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.currentMonthObs TS currentMonthObs
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.drawMonth TS drawMonth
 // FQImport: com.lightningkite.khrysalis.time.set TS comLightningkiteKhrysalisTimeDateAloneSet
@@ -93,32 +79,25 @@
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.sizeThatFitsHeight.width TS width
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.drawMonth.displayMetrics TS displayMetrics
 // FQImport: com.lightningkite.khrysalis.time.DateAlone.month TS month
-// FQImport: textSize TS getAndroidGraphicsPaintTextSize
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.internalPaddingDp TS internalPaddingDp
-// FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.dayBackground.inner TS inner
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.drawMonth.col TS col
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.onTouchMove.id TS id
 // FQImport: android.graphics.RectF.set TS set
-// FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.dayBackgroundEnd.canvas TS canvas
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.labelFontSp TS labelFontSp
 // FQImport: java.lang.System.currentTimeMillis TS currentTimeMillis
-// FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.dayBackgroundMid.inner TS inner
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.dayAtPixel.column TS column
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.drawLabel TS drawLabel
 // FQImport: kotlin.Int.toString TS toString
-// FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.dayBackground.paint TS paint
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.day.paint TS paint
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.day.canvas TS canvas
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.currentMonth TS currentMonth
 // FQImport: android.graphics.RectF.centerY TS centerY
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.onTouchMove.<anonymous>.it TS it
-// FQImport: color TS getAndroidGraphicsPaintColor
 // FQImport: com.lightningkite.khrysalis.time.DateAlone TS DateAlone
 // FQImport: android.util.DisplayMetrics TS DisplayMetrics
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.onTouchDown.day TS day
 // FQImport: com.lightningkite.khrysalis.time.DateAlone.year TS year
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.onTouchDown.width TS width
-// FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.dayBackgroundStart.inner TS inner
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.dragStartX TS dragStartX
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.dayAtPixel.y TS y
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.drawMonth.xOffset TS xOffset
@@ -131,7 +110,6 @@
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.label.canvas TS canvas
 // FQImport: kotlin.Boolean TS Boolean
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.drawMonth.row TS row
-// FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.dayBackground.canvas TS canvas
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty.value TS value
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.dayAt.existing TS existing
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.onTouchDown.x TS x
@@ -142,16 +120,14 @@
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.onTouchUp.<anonymous>.it TS it
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.dayCellMargin TS dayCellMargin
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.draw.height TS height
-// FQImport: android.graphics.RectF.top TS top
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.day.originalColor TS originalColor
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.drawLabel.dayOfWeek TS dayOfWeek
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.drawLabel.canvas TS canvas
+// FQImport: android.graphics.Paint.color TS setAndroidGraphicsPaintColor
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.measure.displayMetrics TS displayMetrics
-// FQImport: textSize TS setAndroidGraphicsPaintTextSize
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.onTouchDown.height TS height
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.day.date TS date
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.dayAtPixel.x TS x
-// FQImport: android.graphics.RectF.bottom TS bottom
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.rectForReuseB TS rectForReuseB
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.day.month TS month
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.dayAtPixel.columnRawBeforeDrag TS columnRawBeforeDrag
@@ -167,15 +143,16 @@
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.day TS day
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.drawLabel.inner TS inner
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.<set-currentMonth>.value TS value
-import { kotlinIntFloorDiv, kotlinIntFloorMod } from './../Math.shared'
-import { CustomViewDelegate } from './CustomViewDelegate.shared'
 import { MutableObservableProperty } from './../observables/MutableObservableProperty.shared'
-import { DateAlone } from './../time/DateAlone.actual'
+import { kotlinIntFloorDiv, kotlinIntFloorMod } from './../Math.shared'
 import { comLightningkiteKhrysalisTimeDateAloneSet } from './../time/TimeAlone.shared'
-import { kotlinIntColorAlpha } from './Colors.actual'
-import { dateMod, dateModRelative } from 'khrysalis/dist/time/Date.actual'
+import { dateMod, dateModRelative } from 'time/Date.actual'
+import { Paint } from './draw/Paint.actual'
 import { androidGraphicsCanvasDrawTextCentered } from './draw/Canvas.actual'
-import { NumberRange, also } from 'khrysalis/dist/Kotlin'
+import { NumberRange, also } from 'Kotlin'
+import { CustomViewDelegate } from './CustomViewDelegate.shared'
+import { applyAlphaToColor } from 'views/Colors.actual'
+import { DateAlone } from './../time/DateAlone.actual'
 
 //! Declares com.lightningkite.khrysalis.views.MonthCVD
 export class MonthCVD extends CustomViewDelegate {
@@ -300,7 +277,7 @@ export class MonthCVD extends CustomViewDelegate {
     private readonly calcMonthB: DateAlone;
     
     
-    public draw(canvas: Canvas, width: number, height: number, displayMetrics: DisplayMetrics): void{
+    public draw(canvas: CanvasRenderingContext2D, width: number, height: number, displayMetrics: DisplayMetrics): void{
         this.measure(width, height, displayMetrics);
         if (this.currentOffset > 0) {
             //draw past month and current month
@@ -322,7 +299,7 @@ export class MonthCVD extends CustomViewDelegate {
     
     private readonly rectForReuseB: RectF;
     
-    public drawMonth(canvas: Canvas, xOffset: number, width: number, month: DateAlone, displayMetrics: DisplayMetrics): void{
+    public drawMonth(canvas: CanvasRenderingContext2D, xOffset: number, width: number, month: DateAlone, displayMetrics: DisplayMetrics): void{
         for (const day of new NumberRange(1, 7)) {
             const col = day - 1;
             
@@ -349,11 +326,11 @@ export class MonthCVD extends CustomViewDelegate {
         }
     }
     
-    public drawLabel(canvas: Canvas, dayOfWeek: number, displayMetrics: DisplayMetrics, outer: RectF, inner: RectF): void{
+    public drawLabel(canvas: CanvasRenderingContext2D, dayOfWeek: number, displayMetrics: DisplayMetrics, outer: RectF, inner: RectF): void{
         CalendarDrawing.INSTANCE.label(canvas, dayOfWeek, inner, this.labelPaint);
     }
     
-    public drawDay(canvas: Canvas, showingMonth: DateAlone, day: DateAlone, displayMetrics: DisplayMetrics, outer: RectF, inner: RectF): void{
+    public drawDay(canvas: CanvasRenderingContext2D, showingMonth: DateAlone, day: DateAlone, displayMetrics: DisplayMetrics, outer: RectF, inner: RectF): void{
         CalendarDrawing.INSTANCE.day(canvas, showingMonth, day, outer, this.dayPaint);
     }
     
@@ -366,12 +343,12 @@ export class MonthCVD extends CustomViewDelegate {
     public onTouchDown(id: number, x: number, y: number, width: number, height: number): Boolean{
         const day = this.dayAtPixel(x, y, undefined);
         
-        const temp196 = day;
-        if(temp196 !== null) ((it) => {
+        const temp198 = day;
+        if(temp198 !== null) ((it) => {
                 if (this.onTouchDown(it)) {
                     return true;
                 }
-        })(temp196);
+        })(temp198);
         this.dragStartX = x / width;
         this.dragStartY = y / height;
         this.draggingId = id;
@@ -393,10 +370,10 @@ export class MonthCVD extends CustomViewDelegate {
                 }
             }
         } else {
-            const temp205 = this.dayAtPixel(x, y, undefined);
-            if(temp205 !== null) ((it) => {
+            const temp207 = this.dayAtPixel(x, y, undefined);
+            if(temp207 !== null) ((it) => {
                     return this.onTouchMove(it)
-            })(temp205);
+            })(temp207);
         }
         return true;
     }
@@ -405,10 +382,10 @@ export class MonthCVD extends CustomViewDelegate {
     public onTouchUp(id: number, x: number, y: number, width: number, height: number): Boolean{
         if (this.draggingId === id) {
             if (this.isTap) {
-                const temp207 = this.dayAtPixel(x, y, undefined);
-                if(temp207 !== null) ((it) => {
+                const temp209 = this.dayAtPixel(x, y, undefined);
+                if(temp209 !== null) ((it) => {
                         this.onTap(it)
-                })(temp207);
+                })(temp209);
             } else if (this.dragEnabled) {
                 const weighted = this.currentOffset + (this.currentOffset - this.lastOffset) * 200 / (System.currentTimeMillis() - this.lastOffsetTime);
                 
@@ -426,10 +403,10 @@ export class MonthCVD extends CustomViewDelegate {
             }
             this.draggingId = this.DRAGGING_NONE;
         } else {
-            const temp219 = this.dayAtPixel(x, y, undefined);
-            if(temp219 !== null) ((it) => {
+            const temp221 = this.dayAtPixel(x, y, undefined);
+            if(temp221 !== null) ((it) => {
                     return this.onTouchUp(it)
-            })(temp219);
+            })(temp221);
         }
         return true;
     }
@@ -451,7 +428,7 @@ export class CalendarDrawing {
     }
     public static INSTANCE = new CalendarDrawing();
     
-    day(canvas: Canvas, month: DateAlone, date: DateAlone, inner: RectF, paint: Paint): void{
+    day(canvas: CanvasRenderingContext2D, month: DateAlone, date: DateAlone, inner: RectF, paint: Paint): void{
         if (date.month === month.month && date.year === month.year) {
             androidGraphicsCanvasDrawTextCentered(canvas, date.day.toString(), inner.centerX(), inner.centerY(), paint);
         } else {
@@ -459,34 +436,34 @@ export class CalendarDrawing {
             
             let myPaint = paint;
             
-            setAndroidGraphicsPaintColor(myPaint, kotlinIntColorAlpha(getAndroidGraphicsPaintColor(paint), 64));
+            setAndroidGraphicsPaintColor(myPaint, applyAlphaToColor(getAndroidGraphicsPaintColor(paint), 64));
             androidGraphicsCanvasDrawTextCentered(canvas, date.day.toString(), inner.centerX(), inner.centerY(), myPaint);
             setAndroidGraphicsPaintColor(myPaint, originalColor);
         }
     }
     
-    label(canvas: Canvas, dayOfWeek: number, inner: RectF, paint: Paint): void{
+    label(canvas: CanvasRenderingContext2D, dayOfWeek: number, inner: RectF, paint: Paint): void{
         const text = TimeNames.INSTANCE.shortWeekdayName(dayOfWeek);
         
         androidGraphicsCanvasDrawTextCentered(canvas, text, inner.centerX(), inner.centerY(), paint);
     }
     
-    dayBackground(canvas: Canvas, inner: RectF, paint: Paint): void{
-        canvas.drawCircle(inner.centerX(), inner.centerY(), min(inner.width() / 2, inner.height() / 2), paint);
+    dayBackground(canvas: CanvasRenderingContext2D, inner: RectF, paint: Paint): void{
+        x;
     }
     
-    dayBackgroundStart(canvas: Canvas, inner: RectF, outer: RectF, paint: Paint): void{
-        canvas.drawCircle(inner.centerX(), inner.centerY(), min(inner.width() / 2, inner.height() / 2), paint);
-        canvas.drawRect(outer.centerX(), inner.top, outer.right, inner.bottom, paint);
+    dayBackgroundStart(canvas: CanvasRenderingContext2D, inner: RectF, outer: RectF, paint: Paint): void{
+        x;
+        x;
     }
     
-    dayBackgroundMid(canvas: Canvas, inner: RectF, outer: RectF, paint: Paint): void{
-        canvas.drawRect(outer.left, inner.top, outer.right, inner.bottom, paint);
+    dayBackgroundMid(canvas: CanvasRenderingContext2D, inner: RectF, outer: RectF, paint: Paint): void{
+        x;
     }
     
-    dayBackgroundEnd(canvas: Canvas, inner: RectF, outer: RectF, paint: Paint): void{
-        canvas.drawCircle(inner.centerX(), inner.centerY(), min(inner.width() / 2, inner.height() / 2), paint);
-        canvas.drawRect(outer.left, inner.top, outer.centerX(), inner.bottom, paint);
+    dayBackgroundEnd(canvas: CanvasRenderingContext2D, inner: RectF, outer: RectF, paint: Paint): void{
+        x;
+        x;
     }
 }
 

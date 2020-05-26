@@ -3,8 +3,8 @@
 // Package: com.lightningkite.khrysalis.observables.binding
 // FQImport: kotlin.Boolean TS Boolean
 // FQImport: com.lightningkite.khrysalis.rx.until TS ioReactivexDisposablesDisposableUntil
+// FQImport: android.widget.SeekBar.max TS setAndroidWidgetSeekBarMax
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty.value TS value
-// FQImport: max TS setAndroidWidgetSeekBarMax
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.endInclusive TS endInclusive
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<anonymous>.value TS value
 // FQImport: android.widget.SeekBar.OnSeekBarChangeListener TS SeekBarOnSeekBarChangeListener
@@ -16,8 +16,8 @@
 // FQImport: android.widget.SeekBar.setOnSeekBarChangeListener TS setOnSeekBarChangeListener
 // FQImport: com.lightningkite.khrysalis.rx.removed TS getAndroidViewViewRemoved
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.observable TS observable
+// FQImport: android.widget.SeekBar.progress TS setAndroidWidgetSeekBarProgress
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty TS MutableObservableProperty
-// FQImport: progress TS setAndroidWidgetSeekBarProgress
 import { comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy } from './../ObservableProperty.ext.shared'
 import { MutableObservableProperty } from './../MutableObservableProperty.shared'
 import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from './../../rx/DisposeCondition.actual'

@@ -2,7 +2,7 @@
 // File: location/GeoCoordinate.shared.kt
 // Package: com.lightningkite.khrysalis.location
 // FQImport: com.lightningkite.khrysalis.Codable TS Codable
-import { parse as parseJsonTyped } from 'khrysalis/dist/net/jsonParsing'
+import { parse as parseJsonTyped } from 'net/jsonParsing'
 import { Codable } from './../Codable.actual'
 
 //! Declares com.lightningkite.khrysalis.location.GeoCoordinate

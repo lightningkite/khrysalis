@@ -5,7 +5,7 @@
 // FQImport: kotlin.sequences.filterNotNull TS kotlinSequencesSequenceFilterNotNull
 // FQImport: com.lightningkite.khrysalis.views.<set-compoundDrawable>.existing TS existing
 // FQImport: kotlin.sequences.firstOrNull TS kotlinSequencesSequenceFirstOrNull
-// FQImport: compoundDrawables TS getAndroidWidgetButtonCompoundDrawables
+// FQImport: android.widget.Button.compoundDrawables TS getAndroidWidgetButtonCompoundDrawables
 // FQImport: android.graphics.drawable.Drawable TS Drawable
 // FQImport: com.lightningkite.khrysalis.views.<set-compoundDrawable>.value TS value
 // FQImport: android.widget.Button.setCompoundDrawablesWithIntrinsicBounds TS setCompoundDrawablesWithIntrinsicBounds

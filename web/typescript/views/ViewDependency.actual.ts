@@ -22,6 +22,7 @@
 // FQImport: com.lightningkite.khrysalis.views.openMap.zoom TS zoom
 // FQImport: com.lightningkite.khrysalis.views.getColor.resource TS resource
 // FQImport: android.Manifest TS Manifest
+// FQImport: android.content.ClipData.itemCount TS getAndroidContentClipDataItemCount
 // FQImport: kotlin.ranges.until TS kotlinIntUntil
 // FQImport: android.content.Intent TS Intent
 // FQImport: android.content.pm.PackageManager.queryIntentActivities TS queryIntentActivities
@@ -30,6 +31,7 @@
 // FQImport: com.lightningkite.khrysalis.views.openIosStore.numberId TS numberId
 // FQImport: com.lightningkite.khrysalis.ImageRemoteUrl.url TS url
 // FQImport: com.lightningkite.khrysalis.views.requestImageCamera.<anonymous>.it TS it
+// FQImport: android.content.res.Resources.displayMetrics TS getAndroidContentResResourcesDisplayMetrics
 // FQImport: com.lightningkite.khrysalis.views.openEvent.start TS start
 // FQImport: android.provider.CalendarContract.Events.EVENT_LOCATION TS EVENT_LOCATION
 // FQImport: com.lightningkite.khrysalis.views.requestImageCamera.fileProviderAuthority TS fileProviderAuthority
@@ -37,11 +39,10 @@
 // FQImport: com.lightningkite.khrysalis.views.requestImagesGallery.<anonymous>.chooserIntent TS chooserIntent
 // FQImport: com.lightningkite.khrysalis.location.GeoCoordinate.longitude TS longitude
 // FQImport: com.lightningkite.khrysalis.views.setSizeDrawable.width TS width
+// FQImport: android.content.Intent.data TS getAndroidContentIntentData
 // FQImport: com.lightningkite.khrysalis.views.openMap.label TS label
-// FQImport: uri TS getAndroidContentClipDataItemUri
 // FQImport: android.content.Intent.createChooser TS createChooser
 // FQImport: android.content.pm.PackageManager TS PackageManager
-// FQImport: android.graphics.Bitmap TS Bitmap
 // FQImport: android.content.res.Resources.getColor TS getColor
 // FQImport: com.lightningkite.khrysalis.views.openEvent.description TS description
 // FQImport: com.squareup.picasso.Picasso TS Picasso
@@ -50,6 +51,7 @@
 // FQImport: android.provider.CalendarContract TS CalendarContract
 // FQImport: kotlin.collections.listOfNotNull TS listOfNotNull
 // FQImport: com.lightningkite.khrysalis.views.requestImagesGallery.<anonymous>.<anonymous>.<anonymous>.<anonymous>.index TS index
+// FQImport: android.content.Context.packageManager TS getAndroidContentContextPackageManager
 // FQImport: com.lightningkite.khrysalis.views.requestImagesGallery.<anonymous>.getIntent TS getIntent
 // FQImport: android.net.Uri.parse TS parse
 // FQImport: com.lightningkite.khrysalis.views.requestImagesGallery.<anonymous>.<anonymous>.<anonymous>.it TS it
@@ -59,11 +61,11 @@
 // FQImport: com.lightningkite.khrysalis.views.openUrl.url TS url
 // FQImport: com.lightningkite.khrysalis.android.ActivityAccess.requestPermission TS requestPermission
 // FQImport: android.content.Intent.setType TS setType
+// FQImport: java.util.Date.time TS getJavaUtilDateTime
 // FQImport: com.lightningkite.khrysalis.views.requestImageGallery.<anonymous>.it TS it
 // FQImport: com.lightningkite.khrysalis.views.requestImageCamera.<anonymous>.intent TS intent
 // FQImport: android.graphics.drawable.StateListDrawable TS StateListDrawable
 // FQImport: android.provider.MediaStore TS MediaStore
-// FQImport: itemCount TS getAndroidContentClipDataItemCount
 // FQImport: com.lightningkite.khrysalis.views.requestImageGallery.<anonymous>.pickIntent TS pickIntent
 // FQImport: com.squareup.picasso.Picasso.load TS load
 // FQImport: android.provider.MediaStore.Images TS Images
@@ -73,26 +75,20 @@
 // FQImport: android.util.DisplayMetrics.density TS density
 // FQImport: android.provider.CalendarContract.Events.TITLE TS TITLE
 // FQImport: kotlin.arrayOf TS arrayOf
-// FQImport: packageName TS getAndroidContentContextPackageName
-// FQImport: resources TS getAndroidContentContextResources
-// FQImport: clipData TS getAndroidContentIntentClipData
-// FQImport: packageManager TS getAndroidContentContextPackageManager
-// FQImport: time TS getJavaUtilDateTime
+// FQImport: android.content.Intent.data TS setAndroidContentIntentData
 // FQImport: com.lightningkite.khrysalis.views.openAndroidAppOrStore.mgr TS mgr
-// FQImport: kotlin.takeUnless TS kotlinAnyTakeUnless
 // FQImport: com.lightningkite.khrysalis.android.ActivityAccess TS ActivityAccess
 // FQImport: com.lightningkite.khrysalis.views.downloadDrawable.height TS height
 // FQImport: com.squareup.picasso.RequestCreator.centerCrop TS centerCrop
-// FQImport: type TS setAndroidContentIntentType
 // FQImport: com.squareup.picasso.Target TS Target
 // FQImport: com.lightningkite.khrysalis.ImageReference.uri TS uri
+// FQImport: android.content.Intent.clipData TS getAndroidContentIntentClipData
 // FQImport: com.lightningkite.khrysalis.views.requestImagesGallery.<anonymous>.<anonymous>.code TS code
 // FQImport: android.provider.CalendarContract.EXTRA_EVENT_BEGIN_TIME TS EXTRA_EVENT_BEGIN_TIME
 // FQImport: com.lightningkite.khrysalis.views.ColorResource TS ColorResource
 // FQImport: android.graphics.drawable.BitmapDrawable TS BitmapDrawable
 // FQImport: android.R.attr.state_checked TS state_checked
 // FQImport: com.lightningkite.khrysalis.views.setSizeDrawable.drawable TS drawable
-// FQImport: data TS setAndroidContentIntentData
 // FQImport: com.lightningkite.khrysalis.views.requestImagesGallery.<anonymous>.<anonymous>.result TS result
 // FQImport: com.lightningkite.khrysalis.views.requestImageGallery.<anonymous>.getIntent TS getIntent
 // FQImport: androidx.core.content.FileProvider.getUriForFile TS getUriForFile
@@ -112,8 +108,10 @@
 // FQImport: android.content.Intent.ACTION_SEND TS ACTION_SEND
 // FQImport: com.lightningkite.khrysalis.views.share.<anonymous>.it TS it
 // FQImport: com.lightningkite.khrysalis.views.checkedDrawable.normal TS normal
+// FQImport: android.content.Intent.type TS setAndroidContentIntentType
 // FQImport: com.lightningkite.khrysalis.views.requestImageCamera.file TS file
 // FQImport: android.content.Intent.putExtra TS putExtra
+// FQImport: android.content.Context.packageName TS getAndroidContentContextPackageName
 // FQImport: android.graphics.drawable.LayerDrawable TS LayerDrawable
 // FQImport: android.Manifest.permission.CAMERA TS CAMERA
 // FQImport: android.app.Activity TS Activity
@@ -122,6 +120,7 @@
 // FQImport: android.content.Intent.EXTRA_TEXT TS EXTRA_TEXT
 // FQImport: com.lightningkite.khrysalis.views.requestImagesGallery.<anonymous>.<anonymous>.<anonymous>.clipData TS clipData
 // FQImport: com.lightningkite.khrysalis.views.downloadDrawable.<no name provided>.onBitmapLoaded.bitmap TS bitmap
+// FQImport: android.content.Context.resources TS getAndroidContentContextResources
 // FQImport: com.lightningkite.khrysalis.views.openAndroidAppOrStore.packageName TS packageName
 // FQImport: com.lightningkite.khrysalis.views.requestImagesGallery.<anonymous>.pickIntent TS pickIntent
 // FQImport: android.content.Context.startActivity TS startActivity
@@ -142,7 +141,6 @@
 // FQImport: com.lightningkite.khrysalis.views.openEvent.title TS title
 // FQImport: com.lightningkite.khrysalis.views.openEvent.end TS end
 // FQImport: android.provider.MediaStore.ACTION_IMAGE_CAPTURE TS ACTION_IMAGE_CAPTURE
-// FQImport: cacheDir TS getAndroidContentContextCacheDir
 // FQImport: android.content.ClipData.getItemAt TS getItemAt
 // FQImport: com.lightningkite.khrysalis.Uri TS Uri
 // FQImport: android.content.pm.PackageManager.getLaunchIntentForPackage TS getLaunchIntentForPackage
@@ -150,6 +148,7 @@
 // FQImport: android.content.Intent.ACTION_PICK TS ACTION_PICK
 // FQImport: com.lightningkite.khrysalis.views.downloadDrawable.onResult TS onResult
 // FQImport: android.content.Intent.EXTRA_STREAM TS EXTRA_STREAM
+// FQImport: android.content.ClipData.Item.uri TS getAndroidContentClipDataItemUri
 // FQImport: com.lightningkite.khrysalis.views.share.image TS image
 // FQImport: android.provider.CalendarContract.Events.CONTENT_URI TS CONTENT_URI
 // FQImport: com.lightningkite.khrysalis.views.setSizeDrawable.height TS height
@@ -160,20 +159,19 @@
 // FQImport: kotlin.intArrayOf TS intArrayOf
 // FQImport: com.lightningkite.khrysalis.location.GeoCoordinate TS GeoCoordinate
 // FQImport: com.lightningkite.khrysalis.views.requestImageCamera.<anonymous>.<anonymous>.result TS result
-// FQImport: data TS getAndroidContentIntentData
 // FQImport: com.lightningkite.khrysalis.views.getString.resource TS resource
 // FQImport: com.lightningkite.khrysalis.views.ViewDependency SKIPPED due to same file
+// FQImport: android.content.Context.cacheDir TS getAndroidContentContextCacheDir
 // FQImport: com.lightningkite.khrysalis.ImageRemoteUrl TS ImageRemoteUrl
 // FQImport: android TS android
 // FQImport: com.lightningkite.khrysalis.views.requestImageCamera.callback TS callback
-// FQImport: displayMetrics TS getAndroidContentResResourcesDisplayMetrics
 // FQImport: java.io.File.mkdirs TS mkdirs
 // FQImport: android.R TS R
 // FQImport: com.lightningkite.khrysalis.views.android.startIntent TS comLightningkiteKhrysalisAndroidActivityAccessStartIntent
 import { ColorResource, StringResource } from './ResourceTypes.actual'
 import { Image, ImageReference, ImageRemoteUrl } from './../Image.shared'
 import { GeoCoordinate } from './../location/GeoCoordinate.shared'
-import { also } from 'khrysalis/dist/Kotlin'
+import { also, takeUnless } from 'Kotlin'
 
 //! Declares com.lightningkite.khrysalis.views.ViewDependency
 export type ViewDependency = ActivityAccess;
@@ -194,7 +192,7 @@ export function comLightningkiteKhrysalisAndroidActivityAccessShare(this_: ViewD
     const i = Intent.constructorkotlinString(Intent.ACTION_SEND);
     
     setAndroidContentIntentType(i, "text/plain");
-    const temp446 = kotlinAnyTakeUnless(listOfNotNull(message).join(`\n`), (it) => it === null);
+    const temp446 = takeUnless(listOfNotNull(message).join(`\n`), (it) => it === null);
     if(temp446 !== null) ((it) => i.putExtra(Intent.EXTRA_TEXT, it))(temp446);
     if (!(image.equals(null))) {
         if (image instanceof ImageReference){
@@ -339,7 +337,7 @@ export function comLightningkiteKhrysalisAndroidActivityAccessRequestImageGaller
                                 return getAndroidContentIntentData(_it)
                         })(result);
                         
-                        if (code === Activity.RESULT_OK && !(uri.equals(null))) {
+                        if (code === Activity.RESULT_OK && !(uri === null)) {
                             callback(uri);
                         }
                 });
@@ -397,7 +395,7 @@ export function comLightningkiteKhrysalisAndroidActivityAccessDownloadDrawable(t
                 onResult(null);
             }
             
-            onBitmapLoaded(bitmap: (Bitmap | null), from: (Picasso.LoadedFrom | null)): void{
+            onBitmapLoaded(bitmap: (ImageBitmap | null), from: (Picasso.LoadedFrom | null)): void{
                 onResult(BitmapDrawable.constructorandroidgraphicsBitmap(bitmap));
             }
     }());

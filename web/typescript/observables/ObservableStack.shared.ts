@@ -23,7 +23,7 @@
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.popTo.t TS t
 import { ObservableProperty } from './ObservableProperty.shared'
 import { Subject } from 'rxjs'
-import { NumberRange } from 'khrysalis/dist/Kotlin'
+import { NumberRange } from 'Kotlin'
 
 //! Declares com.lightningkite.khrysalis.observables.ObservableStack
 export class ObservableStack<T extends object> extends ObservableProperty<any> {

@@ -2,6 +2,7 @@ package com.lightningkite.khrysalis.typescript
 
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
+import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtClassOrObject
 
 
@@ -25,25 +26,37 @@ fun MemberDescriptor.description(): String {
     }
 }
 
-val DeclarationDescriptor.tsTopLevelMessedUp: Boolean get() {
-    val containing = (this.containingDeclaration as? ClassDescriptor) ?: return false
-    return containing.kind == ClassKind.INTERFACE || (this as? ClassDescriptor)?.kind == ClassKind.INTERFACE
-}
+val DeclarationDescriptor.tsTopLevelMessedUp: Boolean
+    get() {
+        val containing = (this.containingDeclaration as? ClassDescriptor) ?: return false
+        return containing.kind == ClassKind.INTERFACE || (this as? ClassDescriptor)?.kind == ClassKind.INTERFACE
+    }
 
-val DeclarationDescriptor.tsTopLevelNameRaw: String get() = (containingDeclaration as? ClassDescriptor)?.let {
-    it.tsTopLevelNameRaw + this.name.asString()
-} ?: this.name.asString()
-val DeclarationDescriptor.tsTopLevelName: String get() = if(tsTopLevelMessedUp) (containingDeclaration as ClassDescriptor).tsTopLevelNameRaw + name.asString() else name.asString().safeJsIdentifier()
-val DeclarationDescriptor.tsTopLevelReference: String get() = if(tsTopLevelMessedUp)
-    (containingDeclaration as ClassDescriptor).tsTopLevelNameRaw + name.asString()
-else if(containingDeclaration is ClassDescriptor)
-    (containingDeclaration as ClassDescriptor).tsTopLevelReference + "." + name.asString().safeJsIdentifier()
-else
-    name.asString()
+private val DeclarationDescriptor.tsNameByAnnotation: String?
+    get() = (this.annotations.findAnnotation(
+        FqName.fromSegments(
+            listOf("com", "lightningkite", "khrysalis", "JsName")
+        )
+    )?.allValueArguments?.entries?.firstOrNull()?.value?.value as? String)
+val DeclarationDescriptor.tsTopLevelNameRaw: String
+    get() = tsNameByAnnotation ?: (containingDeclaration as? ClassDescriptor)?.let {
+        it.tsTopLevelNameRaw + this.name.asString()
+    } ?: this.name.asString()
+val DeclarationDescriptor.tsTopLevelName: String
+    get() = tsNameByAnnotation
+        ?: if (tsTopLevelMessedUp) (containingDeclaration as ClassDescriptor).tsTopLevelNameRaw + name.asString() else name.asString()
+            .safeJsIdentifier()
+val DeclarationDescriptor.tsTopLevelReference: String
+    get() = tsNameByAnnotation ?: if (tsTopLevelMessedUp)
+        (containingDeclaration as ClassDescriptor).tsTopLevelNameRaw + name.asString()
+    else if (containingDeclaration is ClassDescriptor)
+        (containingDeclaration as ClassDescriptor).tsTopLevelReference + "." + name.asString().safeJsIdentifier()
+    else
+        name.asString()
 
 fun TypescriptTranslator.tsTopLevelNameElement(forElement: KtClassOrObject): Any? {
     val decl = forElement.resolvedClass ?: return forElement.nameIdentifier
-    return if(decl.tsTopLevelMessedUp){
+    return decl.tsNameByAnnotation ?: if (decl.tsTopLevelMessedUp) {
         listOf((decl.containingDeclaration as ClassDescriptor).tsTopLevelNameRaw, forElement.nameIdentifier)
     } else forElement.nameIdentifier
 }

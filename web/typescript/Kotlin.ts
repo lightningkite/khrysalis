@@ -75,6 +75,16 @@ export function also<T>(item: T, action: (a: T) => void): T {
     return item;
 }
 
+export function takeIf<T>(item: T, action: (a: T) => boolean): T | null {
+    if(action(item)) return item;
+    else return null;
+}
+
+export function takeUnless<T>(item: T, action: (a: T) => boolean): T | null {
+    if(!action(item)) return item;
+    else return null;
+}
+
 export function parseIntOrNull(s: string): number | null {
     const r = parseInt(s);
     if(isNaN(r)) return null;
@@ -86,15 +96,21 @@ export function parseFloatOrNull(s: string): number | null {
     return r;
 }
 
-export interface Object {
-    hashCode(): number
+declare global {
+    export interface Object {
+        hashCode(): number
 
-    equals(other: any): boolean
+        equals(other: any): boolean
+    }
 }
 
 Object.defineProperty(Object.prototype, "hashCode", {
     value: function (): number {
-        return hashString(this.toString())
+        const existing = (this as any)["__randomizedHash"];
+        if(existing) return existing;
+        const r = Math.random() * 1000000;
+        (this as any)["__randomizedHash"] = r;
+        return r
     }
 })
 Object.defineProperty(Object.prototype, "equals", {

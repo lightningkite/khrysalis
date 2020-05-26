@@ -6,25 +6,25 @@
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.instantiateItem.view TS view
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.destroyItem.container TS container
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.destroyItem.object TS object
-// FQImport: currentItem TS setAndroidxViewpagerWidgetViewPagerCurrentItem
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty.value TS value
 // FQImport: android.view.ViewGroup.addView TS addView
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.instantiateItem.container TS container
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.instantiateItem.position TS position
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.instantiateItem.data TS data
+// FQImport: androidx.viewpager.widget.ViewPager.adapter TS setAndroidxViewpagerWidgetViewPagerAdapter
 // FQImport: com.lightningkite.khrysalis.observables.subscribeBy TS comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy
 // FQImport: android.view.ViewGroup TS ViewGroup
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.items TS items
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.T TS T
 // FQImport: com.lightningkite.khrysalis.rx.until TS ioReactivexDisposablesDisposableUntil
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.isViewFromObject.p1 TS p1
-// FQImport: adapter TS setAndroidxViewpagerWidgetViewPagerAdapter
 // FQImport: androidx.viewpager.widget.PagerAdapter TS PagerAdapter
 // FQImport: androidx.viewpager.widget.ViewPager TS ViewPager
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.showIndex TS showIndex
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<anonymous>.value TS value
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.makeView TS makeView
 // FQImport: androidx.viewpager.widget.ViewPager.OnPageChangeListener TS ViewPagerOnPageChangeListener
+// FQImport: androidx.viewpager.widget.ViewPager.currentItem TS setAndroidxViewpagerWidgetViewPagerCurrentItem
 // FQImport: androidx.viewpager.widget.ViewPager.addOnPageChangeListener TS addOnPageChangeListener
 // FQImport: com.lightningkite.khrysalis.observables.StandardObservableProperty TS StandardObservableProperty
 // FQImport: com.lightningkite.khrysalis.rx.removed TS getAndroidViewViewRemoved

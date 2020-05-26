@@ -2,40 +2,38 @@
 // File: Image.shared.kt
 // Package: com.lightningkite.khrysalis
 // FQImport: com.lightningkite.khrysalis.ImageRemoteUrl TS ImageRemoteUrl
-// FQImport: com.lightningkite.khrysalis.ImageBitmap TS ImageBitmap
 // FQImport: com.lightningkite.khrysalis.Image TS Image
 // FQImport: com.lightningkite.khrysalis.Image SKIPPED due to same file
-// FQImport: android.graphics.Bitmap TS Bitmap
-// FQImport: android.net.Uri TS Uri
 // FQImport: com.lightningkite.khrysalis.ImageReference TS ImageReference
 // FQImport: com.lightningkite.khrysalis.ImageRemoteUrl SKIPPED due to same file
+// FQImport: com.lightningkite.khrysalis.ImageBitmap TS ImageImageBitmap
 // FQImport: com.lightningkite.khrysalis.ImageReference SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.ImageBitmap SKIPPED due to same file
-import { hashString } from 'khrysalis/dist/Kotlin'
+import { hashString } from 'Kotlin'
 
 //! Declares com.lightningkite.khrysalis.Image
 export class Image {
 }
 //! Declares com.lightningkite.khrysalis.ImageReference
 export class ImageReference extends Image {
-    public readonly uri: Uri;
-    public constructor(uri: Uri) {
+    public readonly uri: string;
+    public constructor(uri: string) {
         super();
         this.uri = uri;
     }
     public hashCode(): number {
         let hash = 17;
-        hash = 31 * hash + this.uri?.hashCode() ?? 0;
+        hash = 31 * hash + hashString(this.uri);
         return hash;
     }
-    public equals(other: any): boolean { return other instanceof ImageReference && (this.uri?.equals(other.uri) ?? other.uri === null) }
+    public equals(other: any): boolean { return other instanceof ImageReference && this.uri === other.uri }
     public toString(): string { return `ImageReference(uri = ${this.uri})` }
-    public copy(uri: Uri = this.uri) { return new ImageReference(uri); }
+    public copy(uri: string = this.uri) { return new ImageReference(uri); }
 }
 //! Declares com.lightningkite.khrysalis.ImageBitmap
-export class ImageBitmap extends Image {
-    public readonly bitmap: Bitmap;
-    public constructor(bitmap: Bitmap) {
+export class ImageImageBitmap extends Image {
+    public readonly bitmap: ImageBitmap;
+    public constructor(bitmap: ImageBitmap) {
         super();
         this.bitmap = bitmap;
     }
@@ -44,9 +42,9 @@ export class ImageBitmap extends Image {
         hash = 31 * hash + this.bitmap?.hashCode() ?? 0;
         return hash;
     }
-    public equals(other: any): boolean { return other instanceof ImageBitmap && (this.bitmap?.equals(other.bitmap) ?? other.bitmap === null) }
-    public toString(): string { return `ImageBitmap(bitmap = ${this.bitmap})` }
-    public copy(bitmap: Bitmap = this.bitmap) { return new ImageBitmap(bitmap); }
+    public equals(other: any): boolean { return other instanceof ImageImageBitmap && (this.bitmap?.equals(other.bitmap) ?? other.bitmap === null) }
+    public toString(): string { return `ImageImageBitmap(bitmap = ${this.bitmap})` }
+    public copy(bitmap: ImageBitmap = this.bitmap) { return new ImageBitmap(bitmap); }
 }
 //! Declares com.lightningkite.khrysalis.ImageRaw
 export class ImageRaw extends Image {
@@ -84,7 +82,7 @@ export class ImageRemoteUrl extends Image {
 //! Declares com.lightningkite.khrysalis.asImage
 export function kotlinStringAsImage(this_: string): Image{ return new ImageRemoteUrl(this_); }
 //! Declares com.lightningkite.khrysalis.asImage
-export function androidNetUriAsImage(this_: Uri): Image{ return new ImageReference(this_); }
+export function androidNetUriAsImage(this_: string): Image{ return new ImageReference(this_); }
 //! Declares com.lightningkite.khrysalis.asImage
-export function androidGraphicsBitmapAsImage(this_: Bitmap): Image{ return new ImageBitmap(this_); }
+export function androidGraphicsBitmapAsImage(this_: ImageBitmap): Image{ return new ImageBitmap(this_); }
 

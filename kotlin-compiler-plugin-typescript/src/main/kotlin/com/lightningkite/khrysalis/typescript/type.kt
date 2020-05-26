@@ -348,7 +348,9 @@ fun TypescriptTranslator.registerType() {
             when {
                 resolvedType.isInterface() -> {
                     out.addImport("khrysalis/dist/Kotlin", "tryCastInterface")
-                    -"tryCastInterface("
+                    -"tryCastInterface<"
+                    -typedRule.right
+                    -">("
                     -typedRule.left
                     -", \""
                     -resolvedType.getJetTypeFqName(false).split('.').joinToString("") { it.capitalize() }
@@ -356,7 +358,9 @@ fun TypescriptTranslator.registerType() {
                 }
                 resolvedType.isPrimitive() -> {
                     out.addImport("khrysalis/dist/Kotlin", "tryCastPrimitive")
-                    -"tryCastPrimitive("
+                    -"tryCastPrimitive<"
+                    -typedRule.right
+                    -">("
                     -typedRule.left
                     -", \""
                     -resolvedType
@@ -364,7 +368,9 @@ fun TypescriptTranslator.registerType() {
                 }
                 else -> {
                     out.addImport("khrysalis/dist/Kotlin", "tryCastClass")
-                    -"tryCastClass("
+                    -"tryCastClass<"
+                    -typedRule.right
+                    -">("
                     -typedRule.left
                     -", "
                     -BasicType(resolvedType)
@@ -382,7 +388,9 @@ fun PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByType<*>.e
     when {
         resolvedType.isInterface() -> {
             out.addImport("khrysalis/dist/Kotlin", "checkIsInterface")
-            -"checkIsInterface("
+            -"checkIsInterface<"
+            -resolvedType
+            -">("
             -expression
             -", \""
             -resolvedType.getJetTypeFqName(false).split('.').joinToString("") { it.capitalize() }

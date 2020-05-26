@@ -5,11 +5,11 @@
 // FQImport: com.lightningkite.khrysalis.rx.until TS ioReactivexDisposablesDisposableUntil
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindActive.inactiveBackground TS inactiveBackground
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindActive.observable TS observable
-// FQImport: isEnabled TS setAndroidWidgetButtonIsEnabled
 // FQImport: android.graphics.drawable.Drawable TS Drawable
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindActive.activeColorResource TS activeColorResource
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindActive.<anonymous>.<anonymous>.color TS color
 // FQImport: com.lightningkite.khrysalis.observables.ObservableProperty TS ObservableProperty
+// FQImport: android.widget.Button.isEnabled TS setAndroidWidgetButtonIsEnabled
 // FQImport: com.lightningkite.khrysalis.views.backgroundDrawable TS setAndroidViewViewBackgroundDrawable
 // FQImport: com.lightningkite.khrysalis.observables.subscribeBy TS comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy
 // FQImport: com.lightningkite.khrysalis.views.ColorResource TS ColorResource
@@ -29,15 +29,15 @@ export function androidWidgetButtonBindActive(this_: HTMLButtonElement, observab
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (it) => {
                 setAndroidWidgetButtonIsEnabled(this_, it);
                 if (it) {
-                    const temp328 = activeColorResource;
-                    if(temp328 !== null) ((color) => {
+                    const temp324 = activeColorResource;
+                    if(temp324 !== null) ((color) => {
                             this_.style.background = color
-                    })(temp328);
+                    })(temp324);
                 } else {
-                    const temp330 = inactiveColorResource;
-                    if(temp330 !== null) ((color) => {
+                    const temp326 = inactiveColorResource;
+                    if(temp326 !== null) ((color) => {
                             this_.style.background = color
-                    })(temp330);
+                    })(temp326);
                 }
     }), getAndroidViewViewRemoved(this_));
 }
