@@ -126,7 +126,7 @@ class ViewNode(
 
     fun totalRequires(map: Map<String, ViewNode>, seen: Set<String> = setOf()): Set<ViewVar> {
         if (name in seen) return setOf()
-        return (requires + (instantiates.flatMap {
+        return (requires.filter { it.default == null }.toSet() + (instantiates.flatMap {
             map[it]?.totalRequires(map, seen + name)?.filter { it.default == null }?.toSet() ?: setOf()
         }.filter { it.name != "stack" }.toSet()) - provides)
     }
