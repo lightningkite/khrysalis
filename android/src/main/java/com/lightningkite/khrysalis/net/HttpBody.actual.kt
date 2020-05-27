@@ -3,16 +3,18 @@ package com.lightningkite.khrysalis.net
 import android.graphics.Bitmap
 import android.util.Log
 import com.lightningkite.khrysalis.Codable
+import com.lightningkite.khrysalis.IsCodable
 import com.lightningkite.khrysalis.Image
 import com.lightningkite.khrysalis.bytes.Data
 import okhttp3.MultipartBody
 import okhttp3.RequestBody
 import java.io.ByteArrayOutputStream
 
+
 typealias HttpBody = RequestBody
 typealias HttpBodyPart = MultipartBody.Part
 
-fun Codable.toJsonHttpBody(): HttpBody {
+fun IsCodable.toJsonHttpBody(): HttpBody {
     val sending = HttpClient.mapper.writeValueAsString(this)
     Log.i("HttpClient", "with body $sending")
     return RequestBody.create(HttpMediaTypes.JSON, sending)
