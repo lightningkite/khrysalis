@@ -28,72 +28,96 @@
 - id: android.graphics.Canvas.clipRect
   type: call
   arguments: [kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float]
-  template: x #TODO
+  template:
+    pattern: ~this~.clip(pathFromLTRB(~0~, ~1~, ~2~, ~3~))
+    imports:
+      pathFromLTRB: khrysalis/dist/views/draw/Path.actual
 
 - id: android.graphics.Canvas.clipRect
   type: call
   arguments: [android.graphics.RectF]
-  template: x #TODO
+  template:
+    pattern: ~this~.clip(pathFromRectF(~0~))
+    imports:
+      pathFromRectF: khrysalis/dist/views/draw/Path.actual
 
 - id: android.graphics.Canvas.drawCircle
   type: call
-  template: x #TODO
+  template: ~this~.arc(~0~, ~1~, ~2~, 0, Math.PI * 2); ~3~.complete(~this~)
 
 - id: android.graphics.Canvas.drawRect
   type: call
   arguments: [kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float, android.graphics.Paint]
-  template: x #TODO
+  template:
+    pattern: ~this~.clip(pathFromLTRB(~0~, ~1~, ~2~, ~3~)); ~4~.complete(~this~)
+    imports:
+      pathFromLTRB: khrysalis/dist/views/draw/Path.actual
 
 - id: android.graphics.Canvas.drawRect
   type: call
   arguments: [android.graphics.RectF, android.graphics.Paint]
-  template: x #TODO
+  template:
+    pattern: ~this~.clip(pathFromRectF(~0~)); ~1~.complete(~this~)
+    imports:
+      pathFromRectF: khrysalis/dist/views/draw/Path.actual
 
 - id: android.graphics.Canvas.drawOval
   type: call
   arguments: [kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float, android.graphics.Paint]
-  template: x #TODO
+  template:
+    pattern: ~this~.clip(pathOvalFromLTRB(~0~, ~1~, ~2~, ~3~)); ~4~.complete(~this~)
+    imports:
+      pathOvalFromLTRB: khrysalis/dist/views/draw/Path.actual
 
 - id: android.graphics.Canvas.drawOval
   type: call
   arguments: [android.graphics.RectF, android.graphics.Paint]
-  template: x #TODO
+  template:
+    pattern: ~this~.clip(pathOvalFromRectF(~0~)); ~1~.complete(~this~)
+    imports:
+      pathOvalFromRectF: khrysalis/dist/views/draw/Path.actual
 
 - id: android.graphics.Canvas.drawRoundRect
   type: call
   arguments: [kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float, android.graphics.Paint]
-  template: x #TODO
+  template:
+    pattern: ~this~.clip(pathRoundedFromLTRB(~0~, ~1~, ~2~, ~3~, ~4~, ~5~)); ~6~.complete(~this~)
+    imports:
+      pathRoundedFromLTRB: khrysalis/dist/views/draw/Path.actual
 
 - id: android.graphics.Canvas.drawRoundRect
   type: call
   arguments: [android.graphics.RectF, kotlin.Float, kotlin.Float, android.graphics.Paint]
-  template: x #TODO
+  template:
+    pattern: ~this~.clip(pathRoundedFromRectF(~0~, ~1~, ~2~)); ~3~.complete(~this~)
+    imports:
+      pathRoundedFromRectF: khrysalis/dist/views/draw/Path.actual
 
 - id: android.graphics.Canvas.drawLine
   type: call
   arguments: [kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float, android.graphics.Paint]
-  template: x #TODO
+  template: ~this~.moveTo(~0~, ~1~); ~this~.lineTo(~2~, ~3~); ~4~.complete(~this~)
 
 - id: android.graphics.Canvas.drawPath
   type: call
-  template: x #TODO
+  template: ~1~.render(~this~, ~0~)
 
 - id: android.graphics.Canvas.save
   type: call
-  template: x #TODO
+  template: ~this~.save()
 
 - id: android.graphics.Canvas.restore
   type: call
-  template: x #TODO
+  template: ~this~.restore()
 
 - id: android.graphics.Canvas.translate
   type: call
-  template: x #TODO
+  template: ~this~.translate(~0~, ~1~)
 
 - id: android.graphics.Canvas.scale
   type: call
-  template: x #TODO
+  template: ~this~.scale(~0~, ~1~)
 
 - id: android.graphics.Canvas.rotate
   type: call
-  template: x #TODO
+  template: ~this~.rotate(~0~ * Math.PI / 180)

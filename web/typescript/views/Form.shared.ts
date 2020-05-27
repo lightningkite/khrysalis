@@ -24,11 +24,12 @@
 // FQImport: com.lightningkite.khrysalis.observables.StandardObservableProperty TS StandardObservableProperty
 // FQImport: com.lightningkite.khrysalis.views.Form.runOrDialog.<anonymous>.it TS it
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty TS MutableObservableProperty
+// FQImport: com.lightningkite.khrysalis.views.Form TS Form
 // FQImport: com.lightningkite.khrysalis.views.Form.fieldFromProperty.<anonymous>.untypedField TS untypedField
-// FQImport: kotlin.Boolean TS Boolean
 // FQImport: com.lightningkite.khrysalis.views.FormField.T TS T
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty.value TS value
 // FQImport: com.lightningkite.khrysalis.views.Form.field.obs TS obs
+// FQImport: com.lightningkite.khrysalis.views.Form SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.views.Form.checkField.field TS field
 // FQImport: com.lightningkite.khrysalis.views.UntypedFormField SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.views.UntypedFormField TS UntypedFormField
@@ -36,19 +37,17 @@
 // FQImport: com.lightningkite.khrysalis.views.Form.check.<anonymous>.it TS it
 // FQImport: com.lightningkite.khrysalis.views.FormValidationError.string TS string
 // FQImport: com.lightningkite.khrysalis.views.FormField TS FormField
-// FQImport: com.lightningkite.khrysalis.views.joinToViewString TS kotlinCollectionsListJoinToViewString
 // FQImport: com.lightningkite.khrysalis.views.FormField.<set-value>.value TS value
 // FQImport: com.lightningkite.khrysalis.views.Form.field.defaultValue TS defaultValue
 // FQImport: com.lightningkite.khrysalis.views.Form.fieldFromProperty.T TS T
 // FQImport: com.lightningkite.khrysalis.views.Form.field.name TS name
 // FQImport: com.lightningkite.khrysalis.views.Form.runOrDialog.errors TS errors
 // FQImport: com.lightningkite.khrysalis.views.UntypedFormField.error TS error
-// FQImport: com.lightningkite.khrysalis.views.showDialog TS showDialog
 // FQImport: com.lightningkite.khrysalis.views.Form.field.T TS T
-// FQImport: kotlin.collections.isNotEmpty TS kotlinCollectionsCollectionIsNotEmpty
+// FQImport: com.lightningkite.khrysalis.views.showDialog TS showDialogAlert
 // FQImport: com.lightningkite.khrysalis.views.Form.fieldFromProperty.validation TS validation
 // FQImport: com.lightningkite.khrysalis.views.ViewStringTemplate TS ViewStringTemplate
-// FQImport: kotlin.text.isBlank TS kotlinCharSequenceIsBlank
+// FQImport: kotlin.text.isBlank>kotlin.CharSequence TS kotlinCharSequenceIsBlank
 // FQImport: com.lightningkite.khrysalis.views.Form.check.<anonymous>.result TS result
 // FQImport: com.lightningkite.khrysalis.views.ViewString TS ViewString
 // FQImport: com.lightningkite.khrysalis.views.Form.fieldFromProperty.property TS property
@@ -59,12 +58,13 @@
 // FQImport: com.lightningkite.khrysalis.observables.StandardObservableProperty.value TS value
 // FQImport: com.lightningkite.khrysalis.views.unless.condition TS condition
 // FQImport: com.lightningkite.khrysalis.views.Form.field.validation TS validation
+// FQImport: com.lightningkite.khrysalis.views.joinToViewString>kotlin.collections.List<com.lightningkite.khrysalis.views.ViewString> TS kotlinCollectionsListJoinToViewString
 import { StandardObservableProperty } from './../observables/StandardObservableProperty.shared'
 import { ViewString, ViewStringRaw, ViewStringResource, ViewStringTemplate, kotlinCollectionsListJoinToViewString } from './Strings.shared'
 import { MutableObservableProperty } from './../observables/MutableObservableProperty.shared'
 import { StringResource } from './ResourceTypes.actual'
 import { kotlinCharSequenceIsBlank } from './../kotlin/kotlin.text'
-import { showDialog } from './showDialog.shared'
+import { showDialogAlert } from './showDialog.shared'
 import { listFilterNotNull } from 'Kotlin'
 
 //! Declares com.lightningkite.khrysalis.views.FormValidationError
@@ -147,7 +147,7 @@ export class Form {
         return field;
     }
     
-    public field<T>(name: StringResource, defaultValue: T, validation:  (a: FormField<T>) => (ViewString | null)): FormField<T>{ return this.field(new ViewStringResource(name), defaultValue, validation); }
+    public fieldRes<T>(name: StringResource, defaultValue: T, validation:  (a: FormField<T>) => (ViewString | null)): FormField<T>{ return this.field(new ViewStringResource(name), defaultValue, validation); }
     
     public fieldFromProperty<T>(name: ViewString, property: MutableObservableProperty<T>, validation:  (a: FormField<T>) => (ViewString | null)): FormField<T>{
         const field = new FormField(name, property, (untypedField) => validation(untypedField as FormField<T>));
@@ -156,7 +156,7 @@ export class Form {
         return field;
     }
     
-    public fieldFromProperty<T>(name: StringResource, property: MutableObservableProperty<T>, validation:  (a: FormField<T>) => (ViewString | null)): FormField<T>{ return this.fieldFromProperty(new ViewStringResource(name), property, validation); }
+    public fieldFromPropertyRes<T>(name: StringResource, property: MutableObservableProperty<T>, validation:  (a: FormField<T>) => (ViewString | null)): FormField<T>{ return this.fieldFromProperty(new ViewStringResource(name), property, validation); }
     
     public check(): Array<FormValidationError>{
         return listFilterNotNull(this.fields.map((it) => {
@@ -173,8 +173,8 @@ export class Form {
     public runOrDialog(action: () => void): void{
         const errors = this.check();
         
-        if (kotlinCollectionsCollectionIsNotEmpty(errors)) {
-            showDialog(kotlinCollectionsListJoinToViewString(errors.map((it) => it._string), undefined));
+        if (errors.length !== 0) {
+            showDialogAlert(kotlinCollectionsListJoinToViewString(errors.map((it) => it._string), undefined));
         } else {
             action();
         }
@@ -188,7 +188,7 @@ export class Form {
     }
 }
 
-//! Declares com.lightningkite.khrysalis.views.required
+//! Declares com.lightningkite.khrysalis.views.required>com.lightningkite.khrysalis.views.FormField<kotlin.String>
 export function comLightningkiteKhrysalisViewsFormFieldRequired(this_: FormField<string>): (ViewString | null){
     if (kotlinCharSequenceIsBlank(this_.observable.value)) {
         return new ViewStringTemplate(Form.Companion.INSTANCE.xIsRequired, [this_.name]);
@@ -197,7 +197,7 @@ export function comLightningkiteKhrysalisViewsFormFieldRequired(this_: FormField
     }
 }
 
-//! Declares com.lightningkite.khrysalis.views.notNull
+//! Declares com.lightningkite.khrysalis.views.notNull>com.lightningkite.khrysalis.views.FormField<kotlin.Any>
 export function comLightningkiteKhrysalisViewsFormFieldNotNull<T>(this_: FormField<T>): (ViewString | null){
     if (this_.observable.value.equals(null)) {
         return new ViewStringTemplate(Form.Companion.INSTANCE.xIsRequired, [this_.name]);
@@ -206,17 +206,17 @@ export function comLightningkiteKhrysalisViewsFormFieldNotNull<T>(this_: FormFie
     }
 }
 
-//! Declares com.lightningkite.khrysalis.views.notFalse
-export function comLightningkiteKhrysalisViewsFormFieldNotFalse(this_: FormField<Boolean>): (ViewString | null){
-    if (this_.observable.value.not()) {
+//! Declares com.lightningkite.khrysalis.views.notFalse>com.lightningkite.khrysalis.views.FormField<kotlin.Boolean>
+export function comLightningkiteKhrysalisViewsFormFieldNotFalse(this_: FormField<boolean>): (ViewString | null){
+    if (!this_.observable.value) {
         return new ViewStringTemplate(Form.Companion.INSTANCE.xIsRequired, [this_.name]);
     } else {
         return null;
     }
 }
 
-//! Declares com.lightningkite.khrysalis.views.unless
-export function comLightningkiteKhrysalisViewsViewStringUnless(this_: ViewString, condition: Boolean): (ViewString | null){
+//! Declares com.lightningkite.khrysalis.views.unless>com.lightningkite.khrysalis.views.ViewString
+export function comLightningkiteKhrysalisViewsViewStringUnless(this_: ViewString, condition: boolean): (ViewString | null){
     if (condition) {
         return null;
     } else {
@@ -225,7 +225,7 @@ export function comLightningkiteKhrysalisViewsViewStringUnless(this_: ViewString
 }
 
 
-//! Declares com.lightningkite.khrysalis.views.matches
+//! Declares com.lightningkite.khrysalis.views.matches>com.lightningkite.khrysalis.views.FormField<kotlin.Any>
 export function comLightningkiteKhrysalisViewsFormFieldMatches<T extends object>(this_: FormField<T>, other: FormField<T>): (ViewString | null){
     if (!(this_.observable.value.equals(other.observable.value))) {
         return new ViewStringTemplate(Form.Companion.INSTANCE.xMustMatchY, [this_.name, other.name]);

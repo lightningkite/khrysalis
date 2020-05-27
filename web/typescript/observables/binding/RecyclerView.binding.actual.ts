@@ -9,18 +9,17 @@
 // FQImport: com.lightningkite.khrysalis.observables.binding.RVTypeHandler.viewDependency TS viewDependency
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.onBindViewHolder.holder TS holder
 // FQImport: androidx.recyclerview.widget.RecyclerView.context TS getAndroidxRecyclerviewWidgetRecyclerViewContext
-// FQImport: com.lightningkite.khrysalis.observables.subscribeBy TS comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy
 // FQImport: android.view.ViewGroup.LayoutParams.MATCH_PARENT TS MATCH_PARENT
+// FQImport: com.lightningkite.khrysalis.rx.until>io.reactivex.disposables.Disposable TS ioReactivexDisposablesDisposableUntil
 // FQImport: com.lightningkite.khrysalis.observables.binding.RVTypeHandler.type.<anonymous>.handler TS handler
+// FQImport: com.lightningkite.khrysalis.observables.map>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any> TS comLightningkiteKhrysalisObservablesObservablePropertyMap
 // FQImport: androidx.recyclerview.widget.LinearLayoutManager.reverseLayout TS setAndroidxRecyclerviewWidgetLinearLayoutManagerReverseLayout
-// FQImport: com.lightningkite.khrysalis.rx.until TS ioReactivexDisposablesDisposableUntil
 // FQImport: com.lightningkite.khrysalis.observables.binding.RVTypeHandler.defaultHandler TS defaultHandler
 // FQImport: androidx.swiperefreshlayout.widget.SwipeRefreshLayout.isRefreshing TS setAndroidxSwiperefreshlayoutWidgetSwipeRefreshLayoutIsRefreshing
 // FQImport: androidx.recyclerview.widget.RecyclerView.parent TS getAndroidxRecyclerviewWidgetRecyclerViewParent
 // FQImport: kotlin.Any TS Any
 // FQImport: com.lightningkite.khrysalis.observables.binding.RVTypeHandler.make.handler TS handler
 // FQImport: com.lightningkite.khrysalis.observables.binding.RVTypeHandler.make.type TS type
-// FQImport: com.lightningkite.khrysalis.rx.removed TS getAndroidViewViewRemoved
 // FQImport: com.lightningkite.khrysalis.observables.StandardObservableProperty TS StandardObservableProperty
 // FQImport: com.lightningkite.khrysalis.observables.binding.RVTypeHandler.handle.T TS T
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindMulti.<no name provided>.onCreateViewHolder.event TS event
@@ -34,7 +33,6 @@
 // FQImport: android.view.View.layoutParams TS setAndroidViewViewLayoutParams
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.defaultValue TS defaultValue
 // FQImport: android.view.View.tag TS setAndroidViewViewTag
-// FQImport: com.lightningkite.khrysalis.observables.map TS comLightningkiteKhrysalisObservablesObservablePropertyMap
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindMulti.viewDependency TS viewDependency
 // FQImport: com.lightningkite.khrysalis.observables.binding.whenScrolledToEnd.<no name provided>.onScrolled.<anonymous>.it TS it
 // FQImport: androidx.recyclerview.widget.LinearLayoutManager.findLastVisibleItemPosition TS findLastVisibleItemPosition
@@ -46,11 +44,13 @@
 // FQImport: androidx.recyclerview.widget.LinearLayoutManager TS LinearLayoutManager
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.onCreateViewHolder.event TS event
 // FQImport: androidx.recyclerview.widget.RecyclerView.Adapter.itemCount TS getAndroidxRecyclerviewWidgetRecyclerViewAdapterItemCount
-// FQImport: kotlin.collections.getOrNull TS kotlinCollectionsListGetOrNull
+// FQImport: kotlin.collections.forEachIndexed>kotlin.collections.Iterable<kotlin.Any> TS kotlinCollectionsIterableForEachIndexed
 // FQImport: com.lightningkite.khrysalis.observables.binding.RVTypeHandler SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.observables.binding.RVTypeHandler.Handler.defaultValue TS defaultValue
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindMulti.makeView TS makeView
+// FQImport: kotlin.Unit TS Unit
 // FQImport: com.lightningkite.khrysalis.observables.binding.RVTypeHandler.type.item TS item
+// FQImport: com.lightningkite.khrysalis.observables.subscribeBy>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any> TS comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindMulti.<no name provided>.onBindViewHolder.holder TS holder
 // FQImport: android.view.ViewGroup TS ViewGroup
 // FQImport: com.lightningkite.khrysalis.observables.binding.RVTypeHandler.handlers TS handlers
@@ -67,25 +67,25 @@
 // FQImport: androidx.recyclerview.widget.RecyclerView.layoutManager TS getAndroidxRecyclerviewWidgetRecyclerViewLayoutManager
 // FQImport: android.view.ViewGroup.LayoutParams.WRAP_CONTENT TS WRAP_CONTENT
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindMulti.<no name provided>.onCreateViewHolder.subview TS subview
+// FQImport: kotlin.collections.getOrNull>kotlin.collections.List<kotlin.Any> TS kotlinCollectionsListGetOrNull
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.makeView TS makeView
 // FQImport: androidx.recyclerview.widget.LinearLayoutManager.reverseLayout TS getAndroidxRecyclerviewWidgetLinearLayoutManagerReverseLayout
 // FQImport: androidx.recyclerview.widget.RecyclerView.addOnScrollListener TS addOnScrollListener
 // FQImport: androidx.recyclerview.widget.RecyclerView TS RecyclerView
 // FQImport: com.lightningkite.khrysalis.observables.binding.RVTypeHandler TS RVTypeHandler
 // FQImport: com.lightningkite.khrysalis.observables.binding.<set-reverseDirection>.value TS value
+// FQImport: com.lightningkite.khrysalis.rx.removed>android.view.View TS getAndroidViewViewRemoved
 // FQImport: com.lightningkite.khrysalis.observables.binding.RVTypeHandler.handle.type TS type
 // FQImport: com.lightningkite.khrysalis.observables.binding.RVTypeHandler.typeCount TS typeCount
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.onCreateViewHolder.subview TS subview
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty TS MutableObservableProperty
 // FQImport: com.lightningkite.khrysalis.views.newEmptyView TS newEmptyView
-// FQImport: kotlin.Boolean TS Boolean
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.data TS data
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty.value TS value
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindMulti.<no name provided>.notifyDataSetChanged TS notifyDataSetChanged
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindMulti.typeHandler TS typeHandler
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindMulti.typeHandlerSetup TS typeHandlerSetup
 // FQImport: com.lightningkite.khrysalis.observables.binding.RVTypeHandler.handle.<anonymous>.<anonymous>.it TS it
-// FQImport: kotlin.collections.forEachIndexed TS kotlinCollectionsIterableForEachIndexed
 // FQImport: androidx.swiperefreshlayout.widget.SwipeRefreshLayout.setOnRefreshListener TS setOnRefreshListener
 // FQImport: androidx.swiperefreshlayout.widget.SwipeRefreshLayout.post TS post
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindMulti.<no name provided>.getItemViewType.position TS position
@@ -112,7 +112,7 @@ import { ObservableProperty } from './../ObservableProperty.shared'
 import { ViewDependency } from './../../views/ViewDependency.actual'
 import { also, tryCastClass } from 'Kotlin'
 
-//! Declares com.lightningkite.khrysalis.observables.binding.whenScrolledToEnd
+//! Declares com.lightningkite.khrysalis.observables.binding.whenScrolledToEnd>androidx.recyclerview.widget.RecyclerView
 export function androidxRecyclerviewWidgetRecyclerViewWhenScrolledToEnd(this_: RecyclerView, action: () => void): void{
     this_.addOnScrollListener(new class Anon extends RecyclerView.RecyclerView {
             public constructor() {
@@ -120,8 +120,8 @@ export function androidxRecyclerviewWidgetRecyclerViewWhenScrolledToEnd(this_: R
             }
             
             onScrolled(recyclerView: RecyclerView, dx: number, dy: number): void{
-                const temp345 = (tryCastClass<LinearLayoutManager>(getAndroidxRecyclerviewWidgetRecyclerViewLayoutManager(this_), LinearLayoutManager));
-                if(temp345 !== null) ((it) => {
+                const temp337 = (tryCastClass<LinearLayoutManager>(getAndroidxRecyclerviewWidgetRecyclerViewLayoutManager(this_), LinearLayoutManager));
+                if(temp337 !== null) ((it) => {
                         if (it.findLastVisibleItemPosition() === ((_it)=>{
                                     if(_it === null) return null;
                                     return _it - 1
@@ -131,24 +131,24 @@ export function androidxRecyclerviewWidgetRecyclerViewWhenScrolledToEnd(this_: R
                         })(getAndroidxRecyclerviewWidgetRecyclerViewAdapter(this_)))) {
                             action();
                         }
-                })(temp345);
+                })(temp337);
             }
     }());
 }
 
-//! Declares com.lightningkite.khrysalis.observables.binding.reverseDirection
-export function getAndroidxRecyclerviewWidgetRecyclerViewReverseDirection(this_: RecyclerView): Boolean { return ((_it)=>{
+//! Declares com.lightningkite.khrysalis.observables.binding.reverseDirection>androidx.recyclerview.widget.RecyclerView
+export function getAndroidxRecyclerviewWidgetRecyclerViewReverseDirection(this_: RecyclerView): boolean { return ((_it)=>{
             if(_it === null) return null;
             return getAndroidxRecyclerviewWidgetLinearLayoutManagerReverseLayout(_it)
 })((tryCastClass<LinearLayoutManager>(getAndroidxRecyclerviewWidgetRecyclerViewLayoutManager(this_), LinearLayoutManager))) ?? false; }
-export function setAndroidxRecyclerviewWidgetRecyclerViewReverseDirection(this_: RecyclerView, value: Boolean) {
-    const temp350 = (tryCastClass<LinearLayoutManager>(getAndroidxRecyclerviewWidgetRecyclerViewLayoutManager(this_), LinearLayoutManager));
-    if(temp350 !== null) setAndroidxRecyclerviewWidgetLinearLayoutManagerReverseLayout(temp350, value);
+export function setAndroidxRecyclerviewWidgetRecyclerViewReverseDirection(this_: RecyclerView, value: boolean) {
+    const temp342 = (tryCastClass<LinearLayoutManager>(getAndroidxRecyclerviewWidgetRecyclerViewLayoutManager(this_), LinearLayoutManager));
+    if(temp342 !== null) setAndroidxRecyclerviewWidgetLinearLayoutManagerReverseLayout(temp342, value);
 }
 
 
 
-//! Declares com.lightningkite.khrysalis.observables.binding.bind
+//! Declares com.lightningkite.khrysalis.observables.binding.bind>androidx.recyclerview.widget.RecyclerView
 export function androidxRecyclerviewWidgetRecyclerViewBind<T>(this_: RecyclerView, data: ObservableProperty<Array<T>>, defaultValue: T, makeView: (a: ObservableProperty<T>) => HTMLElement): void{
     setAndroidxRecyclerviewWidgetRecyclerViewLayoutManager(this_, LinearLayoutManager.constructorandroidcontentContext(getAndroidxRecyclerviewWidgetRecyclerViewContext(this_)));
     setAndroidxRecyclerviewWidgetRecyclerViewAdapter(this_, new class Anon extends RecyclerView.RecyclerView<> {
@@ -248,7 +248,7 @@ export class RVTypeHandler {
     }
 }
 
-//! Declares com.lightningkite.khrysalis.observables.binding.bindMulti
+//! Declares com.lightningkite.khrysalis.observables.binding.bindMulti>androidx.recyclerview.widget.RecyclerView
 export function androidxRecyclerviewWidgetRecyclerViewBindMulti(this_: RecyclerView, viewDependency: ViewDependency, data: ObservableProperty<Array<any>>, typeHandlerSetup: (a: RVTypeHandler) => void): void{
     const typeHandler = also(new RVTypeHandler(viewDependency), typeHandlerSetup);
     
@@ -292,7 +292,7 @@ export function androidxRecyclerviewWidgetRecyclerViewBindMulti(this_: RecyclerV
 }
 
 
-//! Declares com.lightningkite.khrysalis.observables.binding.bindMulti
+//! Declares com.lightningkite.khrysalis.observables.binding.bindMulti>androidx.recyclerview.widget.RecyclerView
 export function androidxRecyclerviewWidgetRecyclerViewBindMulti<T>(this_: RecyclerView, data: ObservableProperty<Array<T>>, defaultValue: T, determineType: (a: T) => number, makeView: (a: number, b: ObservableProperty<T>) => HTMLElement): void{
     setAndroidxRecyclerviewWidgetRecyclerViewLayoutManager(this_, LinearLayoutManager.constructorandroidcontentContext(getAndroidxRecyclerviewWidgetRecyclerViewContext(this_)));
     setAndroidxRecyclerviewWidgetRecyclerViewAdapter(this_, new class Anon extends RecyclerView.RecyclerView<> {
@@ -339,10 +339,10 @@ export function androidxRecyclerviewWidgetRecyclerViewBindMulti<T>(this_: Recycl
 }
 
 
-//! Declares com.lightningkite.khrysalis.observables.binding.bindRefresh
-export function androidxRecyclerviewWidgetRecyclerViewBindRefresh(this_: RecyclerView, loading: ObservableProperty<Boolean>, refresh: () => void): void{
-    const temp371 = (tryCastClass<SwipeRefreshLayout>(getAndroidxRecyclerviewWidgetRecyclerViewParent(this_), SwipeRefreshLayout));
-    if(temp371 !== null) ((this_1) => {
+//! Declares com.lightningkite.khrysalis.observables.binding.bindRefresh>androidx.recyclerview.widget.RecyclerView
+export function androidxRecyclerviewWidgetRecyclerViewBindRefresh(this_: RecyclerView, loading: ObservableProperty<boolean>, refresh: () => void): void{
+    const temp363 = (tryCastClass<SwipeRefreshLayout>(getAndroidxRecyclerviewWidgetRecyclerViewParent(this_), SwipeRefreshLayout));
+    if(temp363 !== null) ((this_1) => {
             ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(loading, undefined, undefined, (value) => {
                         this_1.post(() => {
                                 setAndroidxSwiperefreshlayoutWidgetSwipeRefreshLayoutIsRefreshing(this_1, value)
@@ -351,7 +351,7 @@ export function androidxRecyclerviewWidgetRecyclerViewBindRefresh(this_: Recycle
             this_1.setOnRefreshListener(() => {
                     refresh()
             });
-    })(temp371);
+    })(temp363);
 }
 
 

@@ -3,7 +3,7 @@
 // Package: com.lightningkite.khrysalis
 import {Comparable, also} from './Kotlin'
 
-//! Declares kotlin.collections.binarySearch
+//! Declares kotlin.collections.binarySearch>kotlin.collections.List
 export function kotlinCollectionsListBinarySearch<T>(
     self: Array<T>,
     fromIndex: number = 0,
@@ -28,7 +28,7 @@ export function kotlinCollectionsListBinarySearch<T>(
     return -(low + 1)  // key not found
 }
 
-//! Declares kotlin.collections.binarySearchBy
+//! Declares kotlin.collections.binarySearchBy>kotlin.collections.List
 export function kotlinCollectionsListBinarySearchBy<T, K extends Comparable<K>>(
     self: Array<T>,
     key: K | null,
@@ -44,12 +44,12 @@ export function kotlinCollectionsListBinarySearchBy<T, K extends Comparable<K>>(
     )
 }
 
-//! Declares com.lightningkite.khrysalis.withoutIndex
+//! Declares com.lightningkite.khrysalis.withoutIndex>kotlin.collections.List
 export function kotlinCollectionsListWithoutIndex<T>(this_WithoutIndex: Array<T>, index: number): Array<T> {
     return also(Array.from(this_WithoutIndex), (this_: Array<T>) => this_.splice(index, 1));
 }
 
-//! Declares com.lightningkite.khrysalis.sumByLong
+//! Declares com.lightningkite.khrysalis.sumByLong>kotlin.collections.Iterable
 export function kotlinCollectionsIterableSumByLong<T>(this_SumByLong: Iterable<T>, selector: (a: T) => number): number {
     let sum: number = 0;
 
@@ -59,7 +59,7 @@ export function kotlinCollectionsIterableSumByLong<T>(this_SumByLong: Iterable<T
     return sum;
 }
 
-//! Declares com.lightningkite.khrysalis.binaryInsertBy
+//! Declares com.lightningkite.khrysalis.binaryInsertBy>kotlin.collections.MutableList
 export function kotlinCollectionsMutableListBinaryInsertBy<T, K extends Comparable<K>>(this_BinaryInsertBy: Array<T>, item: T, selector: (a: T) => (K | null)) {
     const index = kotlinCollectionsListBinarySearchBy(this_BinaryInsertBy, this.selector(item), undefined, undefined, selector);
 
@@ -70,7 +70,7 @@ export function kotlinCollectionsMutableListBinaryInsertBy<T, K extends Comparab
     }
 }
 
-//! Declares com.lightningkite.khrysalis.binaryInsertByDistinct
+//! Declares com.lightningkite.khrysalis.binaryInsertByDistinct>kotlin.collections.MutableList
 export function kotlinCollectionsMutableListBinaryInsertByDistinct<T, K extends Comparable<K>>(this_BinaryInsertByDistinct: Array<T>, item: T, selector: (a: T) => (K | null)): Boolean {
     const index = kotlinCollectionsListBinarySearchBy(this_BinaryInsertByDistinct, this.selector(item), undefined, undefined, selector);
 
@@ -83,7 +83,7 @@ export function kotlinCollectionsMutableListBinaryInsertByDistinct<T, K extends 
 }
 
 
-//! Declares com.lightningkite.khrysalis.binaryFind
+//! Declares com.lightningkite.khrysalis.binaryFind>kotlin.collections.List
 export function kotlinCollectionsListBinaryFind<T, K extends Comparable<K>>(this_BinaryFind: Array<T>, key: K, selector: (a: T) => (K | null)): (T | null) {
     const index = kotlinCollectionsListBinarySearchBy(this_BinaryFind, key, undefined, undefined, selector);
 
@@ -95,7 +95,7 @@ export function kotlinCollectionsListBinaryFind<T, K extends Comparable<K>>(this
 }
 
 
-//! Declares com.lightningkite.khrysalis.binaryForEach
+//! Declares com.lightningkite.khrysalis.binaryForEach>kotlin.collections.List
 export function kotlinCollectionsListBinaryForEach<T, K extends Comparable<K>>(this_BinaryForEach: Array<T>, lower: K, upper: K, selector: (a: T) => (K | null), action: (a: T) => void) {
     let index = kotlinCollectionsListBinarySearchBy(this_BinaryForEach, lower, undefined, undefined, selector);
 

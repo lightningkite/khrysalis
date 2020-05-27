@@ -47,6 +47,9 @@
 - id: kotlin.collections.List.isEmpty
   type: call
   template: ~this~.length === 0
+- id: kotlin.collections.isNotEmpty
+  type: call
+  template: ~this~.length !== 0
 - id: kotlin.collections.List.size
   type: get
   template: ~this~.length

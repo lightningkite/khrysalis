@@ -29,6 +29,7 @@ fun TypescriptTranslator.registerIdentifiers(){
         },
         priority = 1013,
         action = {
+            out.addImport((typedRule.resolvedReferenceTarget!!))
             -typedRule.resolvedReferenceTarget!!.containingDeclaration?.name?.identifier
             -".Companion.INSTANCE"
         }
@@ -40,6 +41,7 @@ fun TypescriptTranslator.registerIdentifiers(){
         },
         priority = 1012,
         action = {
+            out.addImport((typedRule.resolvedReferenceTarget!!))
             -typedRule.getIdentifier()
             -".Companion.INSTANCE"
         }
@@ -51,6 +53,7 @@ fun TypescriptTranslator.registerIdentifiers(){
         },
         priority = 1011,
         action = {
+            out.addImport((typedRule.resolvedReferenceTarget!!))
             -typedRule.getIdentifier()
             -".INSTANCE"
         }

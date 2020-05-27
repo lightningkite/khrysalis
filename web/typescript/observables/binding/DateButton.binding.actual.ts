@@ -2,29 +2,29 @@
 // File: observables/binding/DateButton.binding.actual.kt
 // Package: com.lightningkite.khrysalis.observables.binding
 // FQImport: java.util.Date TS Date
-// FQImport: com.lightningkite.khrysalis.time.dateAlone TS getJavaUtilDateDateAlone
 // FQImport: com.lightningkite.khrysalis.time.DateAlone TS DateAlone
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindDateAlone.date TS date
-// FQImport: com.lightningkite.khrysalis.rx.until TS ioReactivexDisposablesDisposableUntil
 // FQImport: io.reactivex.subjects.PublishSubject.subscribe TS subscribe
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty.value TS value
 // FQImport: com.lightningkite.khrysalis.time.TimeAlone TS TimeAlone
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindDateAlone.<anonymous>.it TS it
-// FQImport: com.lightningkite.khrysalis.time.timeAlone TS getJavaUtilDateTimeAlone
+// FQImport: com.lightningkite.khrysalis.observables.subscribeBy>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any> TS comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy
 // FQImport: com.lightningkite.khrysalis.views.android.DateButton.onDateEntered TS onDateEntered
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindTimeAlone.date TS date
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.minuteInterval TS minuteInterval
-// FQImport: com.lightningkite.khrysalis.observables.subscribeBy TS comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy
-// FQImport: com.lightningkite.khrysalis.rx.removed TS getAndroidViewViewRemoved
+// FQImport: com.lightningkite.khrysalis.rx.removed>android.view.View TS getAndroidViewViewRemoved
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.date TS date
 // FQImport: com.lightningkite.khrysalis.views.android.TimeButton.onDateEntered TS onDateEntered
 // FQImport: com.lightningkite.khrysalis.time.dateFrom TS dateFrom
 // FQImport: com.lightningkite.khrysalis.views.android.TimeButton.minuteInterval TS minuteInterval
+// FQImport: com.lightningkite.khrysalis.time.dateAlone>java.util.Date TS getJavaUtilDateDateAlone
+// FQImport: com.lightningkite.khrysalis.rx.until>io.reactivex.disposables.Disposable TS ioReactivexDisposablesDisposableUntil
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindTimeAlone.<anonymous>.it TS it
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty TS MutableObservableProperty
 // FQImport: com.lightningkite.khrysalis.views.android.TimeButton.date TS date
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindTimeAlone.minuteInterval TS minuteInterval
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<anonymous>.it TS it
+// FQImport: com.lightningkite.khrysalis.time.timeAlone>java.util.Date TS getJavaUtilDateTimeAlone
 import { comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy } from './../ObservableProperty.ext.shared'
 import { MutableObservableProperty } from './../MutableObservableProperty.shared'
 import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from './../../rx/DisposeCondition.actual'
@@ -33,7 +33,7 @@ import { DateAlone } from './../../time/DateAlone.actual'
 import { SubscriptionLike } from 'rxjs'
 import { TimeAlone } from './../../time/TimeAlone.actual'
 
-//! Declares com.lightningkite.khrysalis.observables.binding.bind
+//! Declares com.lightningkite.khrysalis.observables.binding.bind>com.lightningkite.khrysalis.views.android.DateButton
 export function comLightningkiteKhrysalisViewsAndroidDateButtonBind(this_: HTMLInputElement, date: MutableObservableProperty<Date>): SubscriptionLike{
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(date, undefined, undefined, (it) => {
                 this_.valueAsDate = it
@@ -44,7 +44,7 @@ export function comLightningkiteKhrysalisViewsAndroidDateButtonBind(this_: HTMLI
 }
 
 
-//! Declares com.lightningkite.khrysalis.observables.binding.bind
+//! Declares com.lightningkite.khrysalis.observables.binding.bind>com.lightningkite.khrysalis.views.android.TimeButton
 export function comLightningkiteKhrysalisViewsAndroidTimeButtonBind(this_: HTMLInputElement, date: MutableObservableProperty<Date>, minuteInterval: number = 1): SubscriptionLike{
     this_.minuteInterval = minuteInterval;
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(date, undefined, undefined, (it) => {
@@ -56,7 +56,7 @@ export function comLightningkiteKhrysalisViewsAndroidTimeButtonBind(this_: HTMLI
 }
 
 
-//! Declares com.lightningkite.khrysalis.observables.binding.bindDateAlone
+//! Declares com.lightningkite.khrysalis.observables.binding.bindDateAlone>com.lightningkite.khrysalis.views.android.DateButton
 export function comLightningkiteKhrysalisViewsAndroidDateButtonBindDateAlone(this_: HTMLInputElement, date: MutableObservableProperty<DateAlone>): SubscriptionLike{
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(date, undefined, undefined, (it) => {
                 this_.valueAsDate = dateFrom(it, getJavaUtilDateTimeAlone(Date.constructor()), undefined)
@@ -67,7 +67,7 @@ export function comLightningkiteKhrysalisViewsAndroidDateButtonBindDateAlone(thi
 }
 
 
-//! Declares com.lightningkite.khrysalis.observables.binding.bindTimeAlone
+//! Declares com.lightningkite.khrysalis.observables.binding.bindTimeAlone>com.lightningkite.khrysalis.views.android.TimeButton
 export function comLightningkiteKhrysalisViewsAndroidTimeButtonBindTimeAlone(this_: HTMLInputElement, date: MutableObservableProperty<TimeAlone>, minuteInterval: number = 1): SubscriptionLike{
     this_.minuteInterval = minuteInterval;
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(date, undefined, undefined, (it) => {

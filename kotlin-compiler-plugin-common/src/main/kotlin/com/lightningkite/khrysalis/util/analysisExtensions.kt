@@ -12,6 +12,8 @@ import org.jetbrains.kotlin.types.DeferredType
 interface AnalysisExtensions {
     val bindingContext: BindingContext
 
+    val KtNamedDeclaration.simpleFqName: String get() = this.resolvedDeclarationToDescriptor?.simpleFqName ?: ""
+
     val KtAnnotationEntry.resolvedAnnotation: org.jetbrains.kotlin.descriptors.annotations.AnnotationDescriptor?
         get() = bindingContext[BindingContext.ANNOTATION, this]
     val KtExpression.resolvedCompileTimeValue: org.jetbrains.kotlin.resolve.constants.CompileTimeConstant<*>?

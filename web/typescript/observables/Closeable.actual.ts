@@ -2,7 +2,6 @@
 // File: observables/Closeable.actual.kt
 // Package: com.lightningkite.khrysalis.observables
 // FQImport: com.lightningkite.khrysalis.observables.Closeable TS CloseableDefaults
-// FQImport: kotlin.Boolean TS Boolean
 // FQImport: com.lightningkite.khrysalis.observables.Closeable.close TS close
 // FQImport: com.lightningkite.khrysalis.observables.Close.closer TS closer
 // FQImport: com.lightningkite.khrysalis.observables.Closeable SKIPPED due to same file
@@ -12,14 +11,14 @@
 //! Declares com.lightningkite.khrysalis.observables.Closeable
 export interface Closeable {
     
-    isDisposed(): Boolean
+    isDisposed(): boolean
     
     dispose(): void
     
     close(): void
 }
 export class CloseableDefaults {
-    public static isDisposed(this_): Boolean{
+    public static isDisposed(this_): boolean{
         return false;
     }
     public static dispose(this_): void{
@@ -37,9 +36,9 @@ export class Close implements Closeable {
         this.disposed = false;
     }
     
-    public disposed: Boolean;
+    public disposed: boolean;
     
-    public isDisposed(): Boolean{
+    public isDisposed(): boolean{
         return this.disposed;
     }
     

@@ -127,7 +127,7 @@ fun TypescriptTranslator.registerVariable() {
         condition = { typedRule.getter != null && (!typedRule.isVar || typedRule.setter != null) && typedRule.initializer == null },
         priority = 100,
         action = {
-            -"$declaresPrefix${typedRule.fqName?.asString()}\n"
+            -"$declaresPrefix${typedRule.simpleFqName}\n"
             -typedRule.getter!!
             -typedRule.setter
         }
@@ -145,7 +145,7 @@ fun TypescriptTranslator.registerVariable() {
             }
         } else {
             if (typedRule.isTopLevel && !typedRule.isPrivate()) {
-                -"$declaresPrefix${typedRule.fqName?.asString()}\n"
+                -"$declaresPrefix${typedRule.simpleFqName}\n"
                 -"export "
             }
             if (typedRule.isVar) {
@@ -230,7 +230,7 @@ fun TypescriptTranslator.registerVariable() {
         condition = { typedRule.isGetter && typedRule.property.receiverTypeReference != null },
         priority = 8,
         action = {
-            withReceiverScope(typedRule.property.fqName!!.asString()) { receiverName ->
+            withReceiverScope(typedRule.property.simpleFqName) { receiverName ->
                 val resolved = typedRule.property.resolvedProperty!!
                 if (!typedRule.property.isMember) {
                     if (!typedRule.isPrivate()) -"export "
@@ -260,7 +260,7 @@ fun TypescriptTranslator.registerVariable() {
         condition = { typedRule.isSetter && typedRule.property.receiverTypeReference != null },
         priority = 9,
         action = {
-            withReceiverScope(typedRule.property.fqName!!.asString()) { receiverName ->
+            withReceiverScope(typedRule.property.simpleFqName) { receiverName ->
                 val resolved = typedRule.property.resolvedProperty!!
                 if (!typedRule.property.isMember) {
                     if (!typedRule.isPrivate()) {

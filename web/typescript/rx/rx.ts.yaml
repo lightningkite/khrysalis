@@ -121,6 +121,13 @@
     imports:
       rxOf: of from rxjs
 
+- id: io.reactivex.Observable.error
+  type: call
+  template:
+    pattern: rxThrowError(~*~)
+    imports:
+      rxThrowError: throwError from rxjs
+
 - id: io.reactivex.Observable.empty
   type: call
   template:

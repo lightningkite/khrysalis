@@ -44,7 +44,7 @@ export function showDialog(request: DialogRequest): void{
 }
 
 //! Declares com.lightningkite.khrysalis.views.showDialog
-export function showDialog(message: ViewString): void{
+export function showDialogAlert(message: ViewString): void{
     showDialog(new DialogRequest(message, undefined));
 }
 

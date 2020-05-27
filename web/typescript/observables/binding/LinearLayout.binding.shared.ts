@@ -5,35 +5,37 @@
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<anonymous>.view TS view
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.data TS data
 // FQImport: android.widget.LinearLayout.addView TS addView
+// FQImport: com.lightningkite.khrysalis.observables.subscribeBy>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any> TS comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.existingViews TS existingViews
 // FQImport: com.lightningkite.khrysalis.observables.binding.LinearLayoutBoundSubview.view TS view
-// FQImport: com.lightningkite.khrysalis.observables.subscribeBy TS comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy
-// FQImport: com.lightningkite.khrysalis.views.params TS androidWidgetLinearLayoutParams
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<anonymous>.old TS old
+// FQImport: com.lightningkite.khrysalis.rx.until>io.reactivex.disposables.Disposable TS ioReactivexDisposablesDisposableUntil
 // FQImport: android.widget.LinearLayout.removeView TS removeView
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.defaultValue TS defaultValue
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.T TS T
-// FQImport: com.lightningkite.khrysalis.rx.until TS ioReactivexDisposablesDisposableUntil
+// FQImport: com.lightningkite.khrysalis.views.geometry.AlignPair TS AlignPair
 // FQImport: com.lightningkite.khrysalis.observables.binding.LinearLayoutBoundSubview.property TS property
 // FQImport: com.lightningkite.khrysalis.observables.binding.LinearLayoutBoundSubview SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<anonymous>.value TS value
+// FQImport: kotlin.collections.indices>kotlin.collections.Collection<kotlin.Any> TS getKotlinCollectionsCollectionIndices
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.makeView TS makeView
 // FQImport: com.lightningkite.khrysalis.observables.ObservableProperty TS ObservableProperty
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<anonymous>.prop TS prop
 // FQImport: com.lightningkite.khrysalis.observables.binding.LinearLayoutBoundSubview TS LinearLayoutBoundSubview
 // FQImport: com.lightningkite.khrysalis.observables.StandardObservableProperty TS StandardObservableProperty
-// FQImport: kotlin.collections.indices TS getKotlinCollectionsCollectionIndices
-// FQImport: com.lightningkite.khrysalis.rx.removed TS getAndroidViewViewRemoved
+// FQImport: com.lightningkite.khrysalis.rx.removed>android.view.View TS getAndroidViewViewRemoved
 // FQImport: com.lightningkite.khrysalis.observables.binding.LinearLayoutBoundSubview.T TS T
 // FQImport: com.lightningkite.khrysalis.views.geometry.AlignPair.Companion.centerFill TS centerFill
 // FQImport: com.lightningkite.khrysalis.observables.StandardObservableProperty.value TS value
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<anonymous>.index TS index
+// FQImport: com.lightningkite.khrysalis.views.params>android.widget.LinearLayout TS androidWidgetLinearLayoutParams
 import { comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy } from './../ObservableProperty.ext.shared'
 import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from './../../rx/DisposeCondition.actual'
 import { androidWidgetLinearLayoutParams } from './../../views/LinearLayout.actual'
 import { StandardObservableProperty } from './../StandardObservableProperty.shared'
 import { ObservableProperty } from './../ObservableProperty.shared'
 import { SubscriptionLike } from 'rxjs'
+import { AlignPair } from './../../views/geometry/Align.shared'
 import { NumberRange } from 'Kotlin'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.LinearLayoutBoundSubview
@@ -46,7 +48,7 @@ class LinearLayoutBoundSubview<T> {
     }
 }
 
-//! Declares com.lightningkite.khrysalis.observables.binding.bind
+//! Declares com.lightningkite.khrysalis.observables.binding.bind>android.widget.LinearLayout
 export function androidWidgetLinearLayoutBind<T>(this_: HTML_Element, data: ObservableProperty<Array<T>>, defaultValue: T, makeView:  (a: ObservableProperty<T>) => HTMLElement): SubscriptionLike{
     const existingViews: Array<LinearLayoutBoundSubview<T>> = [];
     

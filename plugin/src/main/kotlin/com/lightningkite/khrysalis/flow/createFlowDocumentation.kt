@@ -83,6 +83,7 @@ fun createFlowDocumentation(
         jacksonObjectMapper().writeValue(checksumFile, newChecksums)
     } catch(e:Exception) {
         e.printStackTrace()
+        System.err.println("Failed to convert to SVG and PNG.  Have you installed the Mermaid command line tool?  Try 'npm install -g mermaid.cli'.")
     }
 
     //Throw on leaks

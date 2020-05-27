@@ -1,35 +1,25 @@
 package com.lightningkite.khrysalis.typescript
 
-import com.lightningkite.khrysalis.generic.line
 import com.lightningkite.khrysalis.typescript.manifest.declaresPrefix
-import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.forEachBetween
 import com.lightningkite.khrysalis.util.simpleFqName
-import org.jetbrains.kotlin.backend.common.serialization.findSourceFile
-import org.jetbrains.kotlin.backend.common.serialization.metadata.extractFileId
-import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
-import org.jetbrains.kotlin.codegen.findJavaDefaultArgumentValue
 import org.jetbrains.kotlin.com.intellij.psi.PsiComment
-import org.jetbrains.kotlin.com.intellij.psi.PsiElement
-import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
-import org.jetbrains.kotlin.resolve.descriptorUtil.classValueType
-import org.jetbrains.kotlin.resolve.descriptorUtil.declaresOrInheritsDefaultValue
-import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
-import org.jetbrains.kotlin.types.KotlinType
-import org.jetbrains.kotlin.types.typeUtil.isTypeParameter
-import java.lang.Exception
 
 //TODO: Local function edgecase - the meaning of 'this' changes
 
 val FunctionDescriptor.tsName: String?
-    get() = if (this is ConstructorDescriptor && this.isPrimary == false) {
-        this.constructedClass.tsTopLevelName + "." + this.tsName
+    get() = if (this is ConstructorDescriptor) {
+        if(this.isPrimary == false) {
+            this.constructedClass.tsTopLevelName + "." + this.tsConstructorName
+        } else {
+            this.constructedClass.tsTopLevelName
+        }
     } else this.annotations
         .find { it.fqName?.asString()?.substringAfterLast('.') == "JsName" }
         ?.allValueArguments
@@ -146,7 +136,7 @@ fun TypescriptTranslator.registerFunction() {
             }
         } else {
             if (typedRule.isTopLevel() && !typedRule.isPrivate()) {
-                -"$declaresPrefix${typedRule.fqName?.asString()}\n"
+                -"$declaresPrefix${typedRule.simpleFqName}\n"
                 -"export "
             }
             -"function "

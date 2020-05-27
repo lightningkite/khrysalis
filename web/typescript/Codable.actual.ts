@@ -3,7 +3,6 @@
 // Package: com.lightningkite.khrysalis
 // FQImport: com.lightningkite.khrysalis.IsCodable SKIPPED due to same file
 // FQImport: com.fasterxml.jackson.module.kotlin.jacksonTypeRef TS jacksonTypeRef
-// FQImport: kotlin.jvm.java TS getKotlinReflectKClassJava
 // FQImport: kotlin.collections.Map TS Map
 // FQImport: com.fasterxml.jackson.databind.ObjectMapper.readValue TS readValue
 // FQImport: com.lightningkite.khrysalis.net.HttpClient.mapper TS mapper
@@ -12,9 +11,13 @@
 // FQImport: kotlin.Any TS Any
 // FQImport: java.lang.Exception.printStackTrace TS printStackTrace
 // FQImport: com.lightningkite.khrysalis.fromJsonStringUntyped.e TS e
+// FQImport: com.lightningkite.khrysalis.net.HttpClient TS HttpClient
 // FQImport: com.fasterxml.jackson.databind.ObjectMapper.writeValueAsString TS writeValueAsString
 // FQImport: com.lightningkite.khrysalis.IsCodable TS IsCodable
+// FQImport: kotlin.jvm.java>kotlin.reflect.KClass<kotlin.Any> TS getKotlinReflectKClassJava
 // FQImport: kotlin.Exception TS Exception
+import { Exception } from './Kotlin'
+import { HttpClient } from './net/HttpClient.actual'
 
 //! Declares com.lightningkite.khrysalis.Codable
 export interface Codable {
@@ -37,29 +40,29 @@ export type JsonMap = Map<*, *>;
 export let JsonMap = Map;
 
 
-//! Declares com.lightningkite.khrysalis.toJsonString
+//! Declares com.lightningkite.khrysalis.toJsonString>kotlin.Any
 export function kotlinAnyToJsonString(this_: (IsCodable | null)): string{
     return HttpClient.INSTANCE.mapper.writeValueAsString(this_);
 }
 
-//! Declares com.lightningkite.khrysalis.fromJsonString
+//! Declares com.lightningkite.khrysalis.fromJsonString>kotlin.String
 export function kotlinStringFromJsonString<T extends IsCodable>(this_: string, T: any): (T | null){
-    return try {
-        return HttpClient.INSTANCE.mapper.readValue(this_, jacksonTypeRef<T>([null]));
-    } catch (e: Exception) {
-        e.printStackTrace();
-        return null;
-    };
+    return (() => {
+            try {
+                return HttpClient.INSTANCE.mapper.readValue(this_, jacksonTypeRef<T>([null]));
+            } catch (_e) { let e = _e as Exception; e.printStackTrace()
+            return null}
+    })();
 }
 
-//! Declares com.lightningkite.khrysalis.fromJsonStringUntyped
+//! Declares com.lightningkite.khrysalis.fromJsonStringUntyped>kotlin.String
 export function kotlinStringFromJsonStringUntyped(this_: string): (IsCodable | null){
-    return try {
-        return HttpClient.INSTANCE.mapper.readValue(this_, getKotlinReflectKClassJava(Any::class));
-    } catch (e: Exception) {
-        e.printStackTrace();
-        return null;
-    };
+    return (() => {
+            try {
+                return HttpClient.INSTANCE.mapper.readValue(this_, getKotlinReflectKClassJava(Any::class));
+            } catch (_e) { let e = _e as Exception; e.printStackTrace()
+            return null}
+    })();
 }
 
 

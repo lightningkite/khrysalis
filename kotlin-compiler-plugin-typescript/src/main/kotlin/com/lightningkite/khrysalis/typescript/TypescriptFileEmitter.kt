@@ -2,6 +2,8 @@ package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.SmartTabWriter
+import com.lightningkite.khrysalis.util.simpleFqName
+import com.lightningkite.khrysalis.util.simplerFqName
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.load.java.descriptors.JavaPropertyDescriptor
@@ -86,7 +88,7 @@ class TypescriptFileEmitter(val translator: TypescriptTranslator, val file: KtFi
         imports[fqName] = ImportInfo(path, identifier, asName)
     }
 
-    private fun addImportFromFq(fqName: String, name: String) {
+    private fun addImportFromFq(fqName: String, name: String): Boolean {
         translator.kotlinFqNameToRelativeFile[fqName]?.let { relFile ->
             val asPath = File(file.virtualFilePath.removePrefix(translator.commonPath).removeSuffix(".kt").plus(".ts"))
             if (asPath == relFile) {
@@ -95,33 +97,30 @@ class TypescriptFileEmitter(val translator: TypescriptTranslator, val file: KtFi
                 addImport(TemplatePart.Import("./" + (asPath.parentFile?.let { p -> relFile.relativeTo(p).path }
                     ?: relFile.path).removeSuffix(".ts"), name))
             }
+            return true
         } ?: translator.kotlinFqNameToFile[fqName]?.let {
             addImport(TemplatePart.Import(it.path.removeSuffix(".ts"), name))
+            return true
         }
+        return false
     }
 
     fun addImport(decl: DeclarationDescriptor, overrideName: String? = null) {
         val useDecl = when (decl) {
             is ConstructorDescriptor -> decl.containingDeclaration
+            is ClassDescriptor -> if(decl.isCompanionObject) decl.containingDeclaration else decl
             else -> decl
         }
         val name = overrideName ?: useDecl.name.asString()
-        val fq = when (decl) {
-            is SyntheticJavaPropertyDescriptor -> {
-                val result = decl.getMethod.containingDeclaration.fqNameSafe.asString() + "." + decl.fqNameSafe.asString()
-                translator.collector?.report(
-                    CompilerMessageSeverity.INFO,
-                    "${decl.fqNameSafe.asString()} is a SyntheticJavaPropertyDescriptor, returning $result"
-                )
-                result
-            }
-            else -> useDecl.fqNameSafe.asString()
-        }
+        val fq = useDecl.simpleFqName
+        val fq2 = useDecl.simplerFqName
         val n = "$fq TS $name"
         if (importedFqs.contains(n))
             return
         importedFqs.add(n)
-        addImportFromFq(fq, name)
+        if(!addImportFromFq(fq, name)){
+            addImportFromFq(fq2, name)
+        }
     }
 
     fun addImport(part: TemplatePart.Import) {

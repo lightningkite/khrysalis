@@ -3,7 +3,6 @@
 // Package: com.lightningkite.khrysalis.observables
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.onChange TS onChange
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.swap.t TS t
-// FQImport: kotlin.Boolean TS Boolean
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.stack TS stack
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.T TS T
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack TS ObservableStack
@@ -64,7 +63,7 @@ export class ObservableStack<T extends object> extends ObservableProperty<any> {
         this.onChange.next(this.stack);
     }
     
-    public pop(): Boolean{
+    public pop(): boolean{
         if (this.stack.length <= 1) {
             return false;
         }
@@ -73,7 +72,7 @@ export class ObservableStack<T extends object> extends ObservableProperty<any> {
         return true;
     }
     
-    public dismiss(): Boolean{
+    public dismiss(): boolean{
         if (this.stack.length === 0) {
             return false;
         }
@@ -95,7 +94,7 @@ export class ObservableStack<T extends object> extends ObservableProperty<any> {
         this.onChange.next(this.stack);
     }
     
-    public popTo(predicate: (a: T) => Boolean): void{
+    public popTo(predicate: (a: T) => boolean): void{
         let found = false;
         
         for (const i of new NumberRange(0, (this.stack.length - 1))) {

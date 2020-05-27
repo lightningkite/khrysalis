@@ -28,7 +28,6 @@ data class FunctionReplacement(
                     false
                 )) &&
                 (this.suppliedArguments == null || run {
-                    println("Looking for $id args, got $suppliedArguments, looking for ${this.suppliedArguments}, result: ${this.suppliedArguments == suppliedArguments}")
                     this.suppliedArguments?.sorted()?.toString() == suppliedArguments.sorted().toString()
                 } )
     }

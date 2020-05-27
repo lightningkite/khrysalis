@@ -5,6 +5,7 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.lightningkite.khrysalis.util.simpleFqName
+import com.lightningkite.khrysalis.util.simplerFqName
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.descriptors.DeclarationDescriptor
 import org.jetbrains.kotlin.descriptors.FunctionDescriptor
@@ -37,20 +38,32 @@ class Replacements() {
                 suppliedArguments ?: setOf()
             )
         }
-            ?: functionDescriptor.overriddenDescriptors.asSequence().map { getCall(it, comparatorType, receiverType, suppliedArguments) }
+            ?: functions[functionDescriptor.simplerFqName.substringBefore(".<")]?.find {
+                it.passes(
+                    functionDescriptor,
+                    comparatorType,
+                    receiverType,
+                    suppliedArguments ?: setOf()
+                )
+            }
+            ?: functionDescriptor.overriddenDescriptors.asSequence()
+                .map { getCall(it, comparatorType, receiverType, suppliedArguments) }
                 .firstOrNull()
     }
 
     fun getGet(propertyDescriptor: PropertyDescriptor, receiverType: KotlinType? = null): GetReplacement? =
         gets[propertyDescriptor.simpleFqName]?.find { it.passes(propertyDescriptor, receiverType) }
+            ?: gets[propertyDescriptor.simplerFqName]?.find { it.passes(propertyDescriptor, receiverType) }
             ?: propertyDescriptor.overriddenDescriptors.asSequence().map { getGet(it, receiverType) }.firstOrNull()
 
     fun getSet(propertyDescriptor: PropertyDescriptor, receiverType: KotlinType? = null): SetReplacement? =
         sets[propertyDescriptor.simpleFqName]?.find { it.passes(propertyDescriptor, receiverType) }
+            ?: sets[propertyDescriptor.simplerFqName]?.find { it.passes(propertyDescriptor, receiverType) }
             ?: propertyDescriptor.overriddenDescriptors.asSequence().map { getSet(it, receiverType) }.firstOrNull()
 
     fun getType(type: DeclarationDescriptor): TypeReplacement? =
         types[type.simpleFqName]?.find { it.passes(type) }
+            ?: types[type.simplerFqName]?.find { it.passes(type) }
 
     fun getType(type: KotlinType): TypeReplacement? = types[type.getJetTypeFqName(false)]?.find { it.passes(type) }
     fun getTypeRef(type: KotlinType): TypeRefReplacement? =
@@ -58,6 +71,7 @@ class Replacements() {
 
     fun getTypeRef(type: DeclarationDescriptor): TypeRefReplacement? =
         typeRefs[type.simpleFqName]?.find { it.passes(type) }
+            ?: typeRefs[type.simplerFqName]?.find { it.passes(type) }
 
     companion object {
         val mapper: ObjectMapper = ObjectMapper(YAMLFactory())

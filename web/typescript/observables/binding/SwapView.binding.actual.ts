@@ -5,17 +5,17 @@
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.stack TS stack
 // FQImport: com.lightningkite.khrysalis.views.android.SwapView.visibility TS setComLightningkiteKhrysalisViewsAndroidSwapViewVisibility
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindStack.<anonymous>.<anonymous>.newStackSize TS newStackSize
+// FQImport: com.lightningkite.khrysalis.observables.subscribeBy>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any> TS comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy
 // FQImport: com.lightningkite.khrysalis.views.android.SwapView.post TS post
 // FQImport: com.lightningkite.khrysalis.views.ViewGenerator TS ViewGenerator
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindStack.currentView TS currentView
-// FQImport: com.lightningkite.khrysalis.observables.subscribeBy TS comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy
 // FQImport: android.view.ViewGroup TS ViewGroup
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindStack.<anonymous>.<anonymous>.oldStackSize TS oldStackSize
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindStack.obs TS obs
 // FQImport: android.view.ViewGroup.LayoutParams.MATCH_PARENT TS MATCH_PARENT
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindStack.<anonymous>.<anonymous>.oldView TS oldView
 // FQImport: com.lightningkite.khrysalis.views.android.SwapView.removeView TS removeView
-// FQImport: com.lightningkite.khrysalis.rx.until TS ioReactivexDisposablesDisposableUntil
+// FQImport: com.lightningkite.khrysalis.rx.until>io.reactivex.disposables.Disposable TS ioReactivexDisposablesDisposableUntil
 // FQImport: com.lightningkite.khrysalis.views.android.SwapView.addView TS addView
 // FQImport: android.view.View.translationX TS setAndroidViewViewTranslationX
 // FQImport: com.lightningkite.khrysalis.views.ViewDependency TS ViewDependency
@@ -31,7 +31,7 @@
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindStack.dependency TS dependency
 // FQImport: android.view.ViewPropertyAnimator.withEndAction TS withEndAction
 // FQImport: android.widget.FrameLayout TS FrameLayout
-// FQImport: com.lightningkite.khrysalis.rx.removed TS getAndroidViewViewRemoved
+// FQImport: com.lightningkite.khrysalis.rx.removed>android.view.View TS getAndroidViewViewRemoved
 // FQImport: com.lightningkite.khrysalis.views.android.SwapView TS SwapView
 // FQImport: com.lightningkite.khrysalis.views.ViewGenerator.generate TS generate
 import { comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy } from './../ObservableProperty.ext.shared'
@@ -41,10 +41,10 @@ import { ViewGenerator } from './../../views/ViewGenerator.shared'
 import { ViewDependency } from './../../views/ViewDependency.actual'
 import { SubscriptionLike } from 'rxjs'
 
-//! Declares com.lightningkite.khrysalis.observables.binding.bindStack
+//! Declares com.lightningkite.khrysalis.observables.binding.bindStack>com.lightningkite.khrysalis.views.android.SwapView
 export function comLightningkiteKhrysalisViewsAndroidSwapViewBindStack(this_: SwapView, dependency: ViewDependency, obs: ObservableStack<ViewGenerator>): SubscriptionLike{
-    let currentData = (()=>{const temp379 = obs.stack;
-    (temp379[temp379.length - 1] ?? null)})();
+    let currentData = (()=>{const temp371 = obs.stack;
+    (temp371[temp371.length - 1] ?? null)})();
     
     let currentStackSize = obs.stack.length;
     
@@ -60,8 +60,8 @@ export function comLightningkiteKhrysalisViewsAndroidSwapViewBindStack(this_: Sw
                         const oldStackSize = currentStackSize;
                         
                         
-                        let newView = (()=>{const temp382 = obs.stack;
-                        (temp382[temp382.length - 1] ?? null)})()?.generate(dependency);
+                        let newView = (()=>{const temp374 = obs.stack;
+                        (temp374[temp374.length - 1] ?? null)})()?.generate(dependency);
                         
                         if (newView.equals(null)) {
                             newView = document.createElement('div');
