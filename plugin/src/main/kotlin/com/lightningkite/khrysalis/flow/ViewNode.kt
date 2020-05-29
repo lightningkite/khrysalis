@@ -31,7 +31,7 @@ class ViewNode(
     data class Resolved(
         val node: ViewNode,
         val comesFrom: Set<String>,
-        val totalRequires: Set<String>,
+        val totalRequires: Set<ViewVar>,
         val belongsToStacks: Set<String>
     )
 
@@ -39,7 +39,7 @@ class ViewNode(
         return Resolved(
             node = this,
             comesFrom = this.createdBy(map),
-            totalRequires = this.totalRequires(map).map { it.name }.toSet(),
+            totalRequires = this.totalRequires(map),
             belongsToStacks = this.belongsToStacks(map)
         )
     }
@@ -126,9 +126,13 @@ class ViewNode(
 
     fun totalRequires(map: Map<String, ViewNode>, seen: Set<String> = setOf()): Set<ViewVar> {
         if (name in seen) return setOf()
-        return ((instantiates.flatMap {
+        val totalSet = HashSet<ViewVar>()
+        totalSet.addAll(requires.filter { it.default == null })
+        totalSet.addAll(instantiates.flatMap {
             map[it]?.totalRequires(map, seen + name)?.filter { it.default == null }?.toSet() ?: setOf()
-        }.filter { it.name != "stack" }.toSet()) + requires.filter { it.default == null }.toSet() - provides)
+        }.filter { it.name != "stack" }.toSet() - requires)
+        totalSet.removeAll(provides)
+        return totalSet
     }
 
     fun belongsToStacks(map: Map<String, ViewNode>): Set<String> {

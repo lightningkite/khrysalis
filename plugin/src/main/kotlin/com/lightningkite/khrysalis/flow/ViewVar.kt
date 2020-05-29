@@ -20,6 +20,6 @@ class ViewVar(val name: String, val type: String, val default: String? = null, v
         }
     }
 
-    override fun equals(other: Any?): Boolean = other is ViewVar && other.name == name
-    override fun hashCode(): Int = name.hashCode() + 1
+    override fun equals(other: Any?): Boolean = other is ViewVar && other.name == name && other.type == type
+    override fun hashCode(): Int = name.hashCode() + type.hashCode() shl 8
 }
