@@ -130,7 +130,7 @@ class ViewNode(
         totalSet.addAll(requires.filter { it.default == null })
         totalSet.addAll(instantiates.flatMap {
             map[it]?.totalRequires(map, seen + name)?.filter { it.default == null }?.toSet() ?: setOf()
-        }.filter { it.name != "stack" })
+        }.filter { it.name != "stack" }.toSet() - requires)
         totalSet.removeAll(provides)
         return totalSet
     }
