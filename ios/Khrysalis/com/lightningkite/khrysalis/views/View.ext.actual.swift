@@ -115,9 +115,6 @@ public extension UIView {
         }
         retain(as: "onClickRecognizer", item: recognizer, until: removed)
         self.addGestureRecognizer(recognizer)
-        self.removed.call(DisposableLambda {
-            self.unretain("onClickRecognizer")
-        })
     }
     @objc func onLongClick(_ action: @escaping ()->Void) {
         self.isUserInteractionEnabled = true
@@ -129,7 +126,6 @@ public extension UIView {
         }
         retain(as: "onLongClickRecognizer", item: recognizer, until: removed)
         self.addGestureRecognizer(recognizer)
-        self.removed.call(DisposableLambda { self.unretain("onLongClickRecognizer") })
     }
     @objc func onLongClickWithGR(_ action: @escaping (UILongPressGestureRecognizer)->Void) {
         self.isUserInteractionEnabled = true
@@ -139,7 +135,6 @@ public extension UIView {
         }
         retain(as: "onLongClickRecognizer", item: recognizer, until: removed)
         self.addGestureRecognizer(recognizer)
-        self.removed.call(DisposableLambda { self.unretain("onLongClickRecognizer") })
     }
 }
 extension UIButton {
