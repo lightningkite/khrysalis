@@ -126,9 +126,13 @@ class ViewNode(
 
     fun totalRequires(map: Map<String, ViewNode>, seen: Set<String> = setOf()): Set<ViewVar> {
         if (name in seen) return setOf()
-        return ((instantiates.flatMap {
+        val totalSet = HashSet<ViewVar>()
+        totalSet.addAll(requires.filter { it.default == null })
+        totalSet.addAll(instantiates.flatMap {
             map[it]?.totalRequires(map, seen + name)?.filter { it.default == null }?.toSet() ?: setOf()
-        }.filter { it.name != "stack" }.toSet()) + requires.filter { it.default == null }.toSet() - provides)
+        }.filter { it.name != "stack" })
+        totalSet.removeAll(provides)
+        return totalSet
     }
 
     fun belongsToStacks(map: Map<String, ViewNode>): Set<String> {
