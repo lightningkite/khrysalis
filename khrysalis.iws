@@ -380,7 +380,7 @@
       <workItem from="1590098562893" duration="40641000" />
       <workItem from="1590594364957" duration="17859000" />
       <workItem from="1590769590563" duration="598000" />
-      <workItem from="1590772079045" duration="923000" />
+      <workItem from="1590772079045" duration="1164000" />
     </task>
     <task id="LOCAL-00001" summary="A lot of RX support">
       <created>1589310416385</created>
@@ -487,7 +487,14 @@
       <option name="project" value="LOCAL" />
       <updated>1590778873742</updated>
     </task>
-    <option name="localTasksCounter" value="16" />
+    <task id="LOCAL-00016" summary="Local requires take type priority again">
+      <created>1590779101566</created>
+      <option name="number" value="00016" />
+      <option name="presentableId" value="LOCAL-00016" />
+      <option name="project" value="LOCAL" />
+      <updated>1590779101566</updated>
+    </task>
+    <option name="localTasksCounter" value="17" />
     <servers />
   </component>
   <component name="TypeScriptGeneratedFilesManager">
@@ -521,7 +528,8 @@
     <MESSAGE value="Solved import issue for top level objects&#10;Boolean logic implementation&#10;Image loading logic&#10;Exceptions&#10;Canvas drawing" />
     <MESSAGE value="Suppress default provided paths" />
     <MESSAGE value="Local requires take type priority" />
-    <option name="LAST_COMMIT_MESSAGE" value="Local requires take type priority" />
+    <MESSAGE value="Local requires take type priority again" />
+    <option name="LAST_COMMIT_MESSAGE" value="Local requires take type priority again" />
     <option name="MAKE_NEW_CHANGELIST_ACTIVE" value="true" />
   </component>
   <component name="WindowStateProjectService">
@@ -543,12 +551,12 @@
       <screen x="1920" y="0" width="3840" height="2127" />
     </state>
     <state x="3481" y="841" width="708" height="451" key="#org.jetbrains.kotlin.idea.refactoring.move.moveDeclarations.ui.MoveKotlinTopLevelDeclarationsDialog/0.0.1920.1080/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589411616399" />
-    <state x="1920" y="279" width="802" height="970" key="CommitChangelistDialog2" timestamp="1590778873229">
+    <state x="1920" y="279" width="802" height="970" key="CommitChangelistDialog2" timestamp="1590779101465">
       <screen x="1920" y="0" width="3840" height="2127" />
     </state>
     <state x="1920" y="614" width="1036" height="886" key="CommitChangelistDialog2/0.0.1920.1080/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589522403546" />
     <state x="1920" y="624" width="1037" height="886" key="CommitChangelistDialog2/0.0.1920.1080/1920.0.4096.2160@1920.0.4096.2160" timestamp="1589322353848" />
-    <state x="1920" y="279" width="1036" height="886" key="CommitChangelistDialog2/0.1080.1920.1080/1920.0.3840.2127@1920.0.3840.2127" timestamp="1590778873229" />
+    <state x="1920" y="279" width="1036" height="886" key="CommitChangelistDialog2/0.1080.1920.1080/1920.0.3840.2127@1920.0.3840.2127" timestamp="1590779101465" />
     <state x="1920" y="279" width="802" height="970" key="CommitChangelistDialog2/1920.0.3840.2127@1920.0.3840.2127" timestamp="1590619532097" />
     <state x="0" y="161" width="1037" height="886" key="CommitChangelistDialog2/3840.1080.1920.1080/0.27.1920.1020@0.27.1920.1020" timestamp="1590007302598" />
     <state x="1920" y="614" width="802" height="886" key="CommitChangelistDialog2/3840.1080.1920.1080/1920.0.1920.2127@1920.0.1920.2127" timestamp="1589848212860" />
@@ -621,12 +629,12 @@
     <state x="116" y="0" width="1804" height="1080" key="SettingsEditor/0.0.1920.1080/1920.0.3840.2160@1920.0.3840.2160" timestamp="1589485264923" />
     <state x="396" y="202" width="902" height="735" key="SettingsEditor/0.0.1920.1080/1920.0.4096.2160@0.0.1920.1080" timestamp="1589240569426" />
     <state x="792" y="398" width="992" height="737" key="SettingsEditor/4096.1080.1920.1080/0.0.3840.2127@0.0.3840.2127" timestamp="1589240343610" />
-    <state x="1978" y="786" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1590778876246">
+    <state x="1978" y="786" width="800" height="535" key="Vcs.Push.Dialog.v2" timestamp="1590779105305">
       <screen x="1920" y="0" width="3840" height="2127" />
     </state>
     <state x="1977" y="787" width="800" height="535" key="Vcs.Push.Dialog.v2/0.0.1920.1080/1920.0.3840.2127@1920.0.3840.2127" timestamp="1589522405271" />
     <state x="1981" y="799" width="800" height="535" key="Vcs.Push.Dialog.v2/0.0.1920.1080/1920.0.4096.2160@1920.0.4096.2160" timestamp="1589322356264" />
-    <state x="1978" y="786" width="800" height="535" key="Vcs.Push.Dialog.v2/0.1080.1920.1080/1920.0.3840.2127@1920.0.3840.2127" timestamp="1590778876246" />
+    <state x="1978" y="786" width="800" height="535" key="Vcs.Push.Dialog.v2/0.1080.1920.1080/1920.0.3840.2127@1920.0.3840.2127" timestamp="1590779105305" />
     <state x="1978" y="786" width="800" height="535" key="Vcs.Push.Dialog.v2/1920.0.3840.2127@1920.0.3840.2127" timestamp="1590619534103" />
     <state x="29" y="404" width="489" height="264" key="Vcs.Push.Dialog.v2/3840.1080.1920.1080/0.27.1920.1020@0.27.1920.1020" timestamp="1590007304585" />
     <state x="1949" y="787" width="489" height="535" key="Vcs.Push.Dialog.v2/3840.1080.1920.1080/1920.0.1920.2127@1920.0.1920.2127" timestamp="1589848215388" />

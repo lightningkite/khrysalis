@@ -31,7 +31,7 @@ class ViewNode(
     data class Resolved(
         val node: ViewNode,
         val comesFrom: Set<String>,
-        val totalRequires: Set<String>,
+        val totalRequires: Set<ViewVar>,
         val belongsToStacks: Set<String>
     )
 
@@ -39,7 +39,7 @@ class ViewNode(
         return Resolved(
             node = this,
             comesFrom = this.createdBy(map),
-            totalRequires = this.totalRequires(map).map { it.name }.toSet(),
+            totalRequires = this.totalRequires(map),
             belongsToStacks = this.belongsToStacks(map)
         )
     }
