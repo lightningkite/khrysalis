@@ -12,6 +12,7 @@ fun KtExpression.needsSemi(): Boolean = this !is KtDeclaration
         && this !is KtLoopExpression
         && this !is KtBlockExpression
         && this !is KtIfExpression
+        && this !is KtTryExpression
         && this !is KtWhenExpression
 
 fun TypescriptTranslator.registerControl() {
@@ -93,6 +94,93 @@ fun TypescriptTranslator.registerControl() {
             -typedRule.`else`
         }
     )
+
+    handle<KtTryExpression>{
+        if (typedRule.actuallyCouldBeExpression && typedRule.parent !is KtContainerNodeForControlStructureBody) {
+            -"(() => {\n"
+        }
+
+        -typedRule.allChildren.takeWhile { it !is KtCatchClause }
+        if(typedRule.catchClauses.size == 1){
+            -typedRule.catchClauses.first()
+        } else if(typedRule.catchClauses.isNotEmpty()) {
+            -"catch (e) {\n"
+            typedRule.catchClauses.forEachBetween(
+                forItem = { catchClause ->
+                    catchClause.catchParameter?.let { p ->
+                        val t = catchClause.catchParameter!!.typeReference?.resolvedType ?: return@let
+                        -"if ("
+                        emitIsExpression("e", t)
+                        -") {\n"
+                    }
+                    val b = catchClause.catchBody
+                    if (b is KtBlockExpression) {
+                        val children = b.allChildren.toList()
+                            .drop(1)
+                            .dropLast(1)
+                            .dropWhile { it is PsiWhiteSpace }
+                            .dropLastWhile { it is PsiWhiteSpace }
+                        children.forEachIndexed { index, it ->
+                            if (typedRule.actuallyCouldBeExpression) {
+                                if (index == children.lastIndex) {
+                                    -"return "
+                                }
+                            }
+                            -it
+                        }
+                    } else {
+                        if (typedRule.actuallyCouldBeExpression) {
+                            -"return "
+                        }
+                        -b
+                    }
+                },
+                between = {
+                    -"\n} else "
+                }
+            )
+            -"\n} else throw e;\n}"
+        }
+
+        if (typedRule.actuallyCouldBeExpression && typedRule.parent !is KtContainerNodeForControlStructureBody) {
+            -"\n})()"
+        }
+    }
+
+    handle<KtCatchClause>{
+        val expr = (typedRule.parent as KtTryExpression).actuallyCouldBeExpression
+        -"catch (_"
+        -(typedRule.catchParameter?.nameIdentifier ?: "e")
+        -") { let "
+        -(typedRule.catchParameter?.nameIdentifier ?: "e")
+        - " = _"
+        -(typedRule.catchParameter?.nameIdentifier ?: "e")
+        -" as "
+        -typedRule.catchParameter!!.typeReference
+        -"; "
+        val b = typedRule.catchBody
+        if (b is KtBlockExpression) {
+            val children = b.allChildren.toList()
+                .drop(1)
+                .dropLast(1)
+                .dropWhile { it is PsiWhiteSpace }
+                .dropLastWhile { it is PsiWhiteSpace }
+            children.forEachIndexed { index, it ->
+                if (expr) {
+                    if (index == children.lastIndex) {
+                        -"return "
+                    }
+                }
+                -it
+            }
+        } else {
+            if (expr) {
+                -"return "
+            }
+            -b
+        }
+        -"}"
+    }
 
     handle<KtWhenExpression>(
         condition = {

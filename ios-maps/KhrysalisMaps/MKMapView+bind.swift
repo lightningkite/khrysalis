@@ -53,6 +53,9 @@ public extension MKMapView {
                 annotation = nil
             }
         }
+        self.onClick {
+            dependency.openMap(coordinate: position.value ?? GeoCoordinate(39.161913, -142.788386))
+        }
         self.retain(as: "delegate", item: delegate, until: removed)
     }
     

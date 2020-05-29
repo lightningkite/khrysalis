@@ -40,7 +40,7 @@
 import { Align, AlignPair } from './geometry/Align.shared'
 import { also } from 'Kotlin'
 
-//! Declares com.lightningkite.khrysalis.views.params
+//! Declares com.lightningkite.khrysalis.views.params>android.widget.LinearLayout
 export function androidWidgetLinearLayoutParams(this_: HTML_Element, sizeX: number = 0, sizeY: number = 0, marginStart: number = 0, marginEnd: number = 0, marginTop: number = 0, marginBottom: number = 0, gravity: AlignPair = AlignPair.Companion.INSTANCE.center, weight: number = 0): HTML_Element.LayoutParams{
     const d = getAndroidContentResResourcesDisplayMetrics(getAndroidWidgetLinearLayoutResources(this_)).density;
     

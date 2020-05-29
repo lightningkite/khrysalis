@@ -5,22 +5,22 @@
 // FQImport: com.lightningkite.khrysalis.views.ViewString SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.views.ViewStringTemplate.get.dependency TS dependency
 // FQImport: com.lightningkite.khrysalis.views.ViewStringComplex.get.dependency TS dependency
-// FQImport: com.lightningkite.khrysalis.views.toDebugString SKIPPED due to same file
-// FQImport: com.lightningkite.khrysalis.views.toDebugString TS comLightningkiteKhrysalisViewsViewStringToDebugString
 // FQImport: com.lightningkite.khrysalis.views.ViewString.get TS get
 // FQImport: com.lightningkite.khrysalis.views.ViewStringResource TS ViewStringResource
 // FQImport: kotlin.Int.toString TS toString
 // FQImport: com.lightningkite.khrysalis.views.StringResource TS StringResource
+// FQImport: com.lightningkite.khrysalis.views.getString>com.lightningkite.khrysalis.android.ActivityAccess TS comLightningkiteKhrysalisAndroidActivityAccessGetString
 // FQImport: com.lightningkite.khrysalis.views.ViewStringList.get.dependency TS dependency
 // FQImport: com.lightningkite.khrysalis.views.ViewStringTemplate SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.views.ViewStringResource SKIPPED due to same file
-// FQImport: com.lightningkite.khrysalis.views.getString TS comLightningkiteKhrysalisAndroidActivityAccessGetString
 // FQImport: com.lightningkite.khrysalis.views.ViewStringTemplate.get.fixedArguments TS fixedArguments
 // FQImport: com.lightningkite.khrysalis.views.ViewStringRaw TS ViewStringRaw
 // FQImport: com.lightningkite.khrysalis.views.ViewStringList.separator TS separator
+// FQImport: com.lightningkite.khrysalis.views.toDebugString>com.lightningkite.khrysalis.views.ViewString TS comLightningkiteKhrysalisViewsViewStringToDebugString
 // FQImport: com.lightningkite.khrysalis.views.toDebugString.thing TS thing
 // FQImport: com.lightningkite.khrysalis.views.ViewStringRaw SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.views.ViewStringResource.resource TS resource
+// FQImport: com.lightningkite.khrysalis.views.toDebugString>com.lightningkite.khrysalis.views.ViewString SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.views.ViewDependency TS ViewDependency
 // FQImport: com.lightningkite.khrysalis.views.ViewStringTemplate.get.<anonymous>.it TS it
 // FQImport: com.lightningkite.khrysalis.views.ViewStringComplex TS ViewStringComplex
@@ -118,7 +118,7 @@ export class ViewStringList implements ViewString {
     }
 }
 
-//! Declares com.lightningkite.khrysalis.views.joinToViewString
+//! Declares com.lightningkite.khrysalis.views.joinToViewString>kotlin.collections.List<com.lightningkite.khrysalis.views.ViewString>
 export function kotlinCollectionsListJoinToViewString(this_: Array< ViewString>, separator: string = `\n`): ViewString{
     if (this_.length === 1) {
         return this_[0];
@@ -126,7 +126,7 @@ export function kotlinCollectionsListJoinToViewString(this_: Array< ViewString>,
     return new ViewStringList(this_, separator);
 }
 
-//! Declares com.lightningkite.khrysalis.views.toDebugString
+//! Declares com.lightningkite.khrysalis.views.toDebugString>com.lightningkite.khrysalis.views.ViewString
 export function comLightningkiteKhrysalisViewsViewStringToDebugString(this_: ViewString): string{
     const thing = this_;
     

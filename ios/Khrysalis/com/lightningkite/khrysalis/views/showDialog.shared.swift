@@ -34,12 +34,11 @@ public func showDialog(_ request: DialogRequest) -> Void {
     return showDialog(request: request)
 }
  
- 
 
-public func showDialog(message: ViewString) -> Void {
+ public func showDialog(message: ViewString) -> Void {
     showDialog(DialogRequest(string: message))
 }
-public func showDialog(_ message: ViewString) -> Void {
+ public func showDialog(_ message: ViewString) -> Void {
     return showDialog(message: message)
 }
  

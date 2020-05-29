@@ -1,6 +1,7 @@
 package com.lightningkite.khrysalis.views
 
 import com.lightningkite.khrysalis.Equatable
+import com.lightningkite.khrysalis.JsName
 import com.lightningkite.khrysalis.escaping
 import com.lightningkite.khrysalis.observables.MutableObservableProperty
 import com.lightningkite.khrysalis.observables.StandardObservableProperty
@@ -60,6 +61,7 @@ class Form {
         return field
     }
 
+    @JsName("fieldRes")
     fun <T> field(
         name: StringResource,
         defaultValue: T,
@@ -82,6 +84,7 @@ class Form {
         return field
     }
 
+    @JsName("fieldFromPropertyRes")
     fun <T> fieldFromProperty(
         name: StringResource,
         property: MutableObservableProperty<T>,

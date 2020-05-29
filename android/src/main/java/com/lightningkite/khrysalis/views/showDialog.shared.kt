@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.views
 
+import com.lightningkite.khrysalis.JsName
 import com.lightningkite.khrysalis.observables.StandardEvent
 import com.lightningkite.khrysalis.observables.StandardObservableProperty
 import io.reactivex.subjects.PublishSubject
@@ -17,6 +18,7 @@ fun showDialog(request: DialogRequest) {
     showDialogEvent.onNext(request)
 }
 
+@JsName("showDialogAlert")
 fun showDialog(message: ViewString) {
     showDialog(DialogRequest(string = message))
 }

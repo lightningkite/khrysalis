@@ -2,22 +2,22 @@
 // File: observables/binding/TabLayout.binding.actual.kt
 // Package: com.lightningkite.khrysalis.observables.binding
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.tabs TS tabs
-// FQImport: com.lightningkite.khrysalis.rx.until TS ioReactivexDisposablesDisposableUntil
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty.value TS value
 // FQImport: com.google.android.material.tabs.TabLayout.newTab TS newTab
 // FQImport: com.google.android.material.tabs.TabLayout.addTab TS addTab
 // FQImport: com.google.android.material.tabs.TabLayout.getTabAt TS getTabAt
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<anonymous>.value TS value
 // FQImport: com.google.android.material.tabs.TabLayout.addOnTabSelectedListener TS addOnTabSelectedListener
+// FQImport: com.lightningkite.khrysalis.observables.subscribeBy>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any> TS comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy
 // FQImport: com.google.android.material.tabs.TabLayout.Tab TS Tab
 // FQImport: com.google.android.material.tabs.TabLayout TS TabLayout
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.tab TS tab
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.selected TS selected
-// FQImport: com.lightningkite.khrysalis.observables.subscribeBy TS comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy
 // FQImport: com.google.android.material.tabs.TabLayout.Tab.select TS select
-// FQImport: com.lightningkite.khrysalis.rx.removed TS getAndroidViewViewRemoved
+// FQImport: com.lightningkite.khrysalis.rx.removed>android.view.View TS getAndroidViewViewRemoved
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.onTabReselected.p0 TS p0
 // FQImport: com.google.android.material.tabs.TabLayout.Tab.setText TS setText
+// FQImport: com.lightningkite.khrysalis.rx.until>io.reactivex.disposables.Disposable TS ioReactivexDisposablesDisposableUntil
 // FQImport: com.google.android.material.tabs.TabLayout.BaseOnTabSelectedListener TS TabLayoutBaseOnTabSelectedListener
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty TS MutableObservableProperty
 // FQImport: com.google.android.material.tabs.TabLayout.Tab.position TS getComGoogleAndroidMaterialTabsTabLayoutTabPosition
@@ -26,7 +26,7 @@ import { comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy } fro
 import { MutableObservableProperty } from './../MutableObservableProperty.shared'
 import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from './../../rx/DisposeCondition.actual'
 
-//! Declares com.lightningkite.khrysalis.observables.binding.bind
+//! Declares com.lightningkite.khrysalis.observables.binding.bind>com.google.android.material.tabs.TabLayout
 export function comGoogleAndroidMaterialTabsTabLayoutBind(this_: TabLayout, tabs: Array<string>, selected: MutableObservableProperty<number>): void{
     for (const tab of tabs) {
         this_.addTab(this_.newTab().setText(tab));

@@ -7,14 +7,15 @@
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty.value TS value
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.notifyDataSetChanged TS notifyDataSetChanged
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.getView.position TS position
+// FQImport: com.lightningkite.khrysalis.observables.subscribeBy>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any> TS comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.getView.<anonymous>.subview TS subview
 // FQImport: android.widget.Spinner.selectedItemPosition TS getAndroidWidgetSpinnerSelectedItemPosition
-// FQImport: com.lightningkite.khrysalis.observables.subscribeBy TS comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy
 // FQImport: android.view.ViewGroup TS ViewGroup
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.onItemSelected.newValue TS newValue
 // FQImport: android.widget.Spinner.adapter TS setAndroidWidgetSpinnerAdapter
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.getView.<anonymous>.event TS event
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.options TS options
+// FQImport: com.lightningkite.khrysalis.rx.until>io.reactivex.disposables.Disposable TS ioReactivexDisposablesDisposableUntil
 // FQImport: android.widget.Spinner.onItemSelectedListener TS setAndroidWidgetSpinnerOnItemSelectedListener
 // FQImport: android.widget.BaseAdapter TS BaseAdapter
 // FQImport: android.widget.Spinner.setSelection TS setSelection
@@ -22,9 +23,8 @@
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<anonymous>.it TS it
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.T TS T
 // FQImport: android.view.View.tag TS setAndroidViewViewTag
-// FQImport: com.lightningkite.khrysalis.rx.until TS ioReactivexDisposablesDisposableUntil
-// FQImport: java.lang.IllegalStateException TS IllegalStateException
 // FQImport: android.widget.AdapterView TS AdapterView
+// FQImport: kotlin.collections.getOrNull>kotlin.collections.List<kotlin.Any> TS kotlinCollectionsListGetOrNull
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.makeView TS makeView
 // FQImport: com.lightningkite.khrysalis.observables.ObservableProperty TS ObservableProperty
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.getItemId.position TS position
@@ -33,9 +33,8 @@
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.selected TS selected
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.getItem.position TS position
 // FQImport: com.lightningkite.khrysalis.observables.StandardObservableProperty TS StandardObservableProperty
-// FQImport: com.lightningkite.khrysalis.rx.removed TS getAndroidViewViewRemoved
+// FQImport: com.lightningkite.khrysalis.rx.removed>android.view.View TS getAndroidViewViewRemoved
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.onItemSelected.position TS position
-// FQImport: kotlin.collections.getOrNull TS kotlinCollectionsListGetOrNull
 // FQImport: com.lightningkite.khrysalis.observables.StandardObservableProperty.value TS value
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<anonymous>.index TS index
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty TS MutableObservableProperty
@@ -45,9 +44,9 @@ import { MutableObservableProperty } from './../MutableObservableProperty.shared
 import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from './../../rx/DisposeCondition.actual'
 import { StandardObservableProperty } from './../StandardObservableProperty.shared'
 import { ObservableProperty } from './../ObservableProperty.shared'
-import { tryCastClass } from 'Kotlin'
+import { IllegalStateException, tryCastClass } from 'Kotlin'
 
-//! Declares com.lightningkite.khrysalis.observables.binding.bind
+//! Declares com.lightningkite.khrysalis.observables.binding.bind>android.widget.Spinner
 export function androidWidgetSpinnerBind<T>(this_: HTMLInputElement, options: ObservableProperty<Array<T>>, selected: MutableObservableProperty<T>, makeView: (a: ObservableProperty<T>) => HTMLElement): void{
     setAndroidWidgetSpinnerAdapter(this_, new class Anon extends BaseAdapter {
             public constructor() {
@@ -74,7 +73,7 @@ export function androidWidgetSpinnerBind<T>(this_: HTMLInputElement, options: Ob
                         return ((it) => {
                                 it.value = kotlinCollectionsListGetOrNull(options.value, position) ?? selected.value
                         })(_it)
-                })((tryCastClass<StandardObservableProperty<T>>(getAndroidViewViewTag(view), StandardObservableProperty))) ?? throw IllegalStateException.constructor();
+                })((tryCastClass<StandardObservableProperty<T>>(getAndroidViewViewTag(view), StandardObservableProperty))) ?? throw new IllegalStateException(undefined, undefined);
                 return view;
             }
             

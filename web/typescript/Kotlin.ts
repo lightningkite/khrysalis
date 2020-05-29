@@ -1,12 +1,23 @@
 // export type FullType = Array<any>;
 
+//! Declares kotlin.Exception
+//! Declares java.lang.Exception
 export class Exception extends Error {
     cause: any;
     constructor(message: string, cause: any) {
         super(message);
         this.cause = cause;
     }
+    printStackTrace(){
+        console.trace(this);
+    }
 }
+//! Declares kotlin.IllegalArgumentException
+//! Declares java.lang.IllegalArgumentException
+export class IllegalArgumentException extends Exception {}
+//! Declares kotlin.IllegalStateException
+//! Declares java.lang.IllegalStateException
+export class IllegalStateException extends Exception {}
 
 export function hashString(item: string): number {
     let hash = 0, i, chr;

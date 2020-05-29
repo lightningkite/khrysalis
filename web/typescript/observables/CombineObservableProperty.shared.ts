@@ -43,7 +43,7 @@ export class CombineObservableProperty<T, A, B> extends ObservableProperty<any> 
     
 }
 
-//! Declares com.lightningkite.khrysalis.observables.combine
+//! Declares com.lightningkite.khrysalis.observables.combine>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
 export function comLightningkiteKhrysalisObservablesObservablePropertyCombine<T, B, C>(this_: ObservableProperty<T>, other: ObservableProperty<B>, combiner:  (a: T, b: B) => C): ObservableProperty<C>{
     return new CombineObservableProperty(this_, other, combiner);
 }

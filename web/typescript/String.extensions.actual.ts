@@ -5,13 +5,13 @@ import { StringBuilder } from './kotlin/kotlin.text'
 import { kotlinCharIsUpperCase } from './kotlin/kotlin.text'
 import { vsprintf } from 'sprintf'
 
-//! Declares com.lightningkite.khrysalis.humanify
+//! Declares com.lightningkite.khrysalis.humanify>kotlin.String
 export function kotlinStringHumanify(this_Humanify: string): string{
     if(this_Humanify === "") return ""
     return this_Humanify[0].toUpperCase() + this_Humanify.replace(".", " - ").replace(new RegExp("[A-Z]"), (result) => " " + result).replace('_', ' ').trim();
 }
 
-//! Declares com.lightningkite.khrysalis.toSnakeCase
+//! Declares com.lightningkite.khrysalis.toSnakeCase>kotlin.String
 export function kotlinStringToSnakeCase(this_ToSnakeCase: string): string{
     const builder = new StringBuilder();
     
@@ -27,6 +27,6 @@ export function kotlinStringToSnakeCase(this_ToSnakeCase: string): string{
     return builder.toString().trim();
 }
 
-//! Declares com.lightningkite.khrysalis.formatList
+//! Declares com.lightningkite.khrysalis.formatList>kotlin.String
 export function kotlinStringFormatList(this_FormatList: string, args: Array<(any | null)>){ return vsprintf(this_FormatList, args); }
 

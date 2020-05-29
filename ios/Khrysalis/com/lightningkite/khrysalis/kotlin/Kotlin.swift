@@ -523,6 +523,10 @@ public extension String {
         }
     }
     
+    func remove(_ string:String) -> String{
+        let temp = self
+        return temp.replacingOccurrences(of: string, with:"")
+    }
 }
 
 

@@ -40,7 +40,7 @@ fun Image.load(): Single<Bitmap> {
  * Loads the image and return a Single<Bitmap> from an ImageReference
  *
  */
-fun ImageReference.load(maxDimension: Int = 2048): Single<Bitmap> {
+private fun ImageReference.load(maxDimension: Int = 2048): Single<Bitmap> {
     try {
         val finalOpts = BitmapFactory.Options()
         HttpClient.appContext.contentResolver.openInputStream(uri)?.use {
@@ -67,7 +67,7 @@ fun ImageReference.load(maxDimension: Int = 2048): Single<Bitmap> {
  * Loads the image and return a Single<Bitmap> from an ImageRemoteUrl
  *
  */
-fun ImageRemoteUrl.load(): Single<Bitmap> {
+private fun ImageRemoteUrl.load(): Single<Bitmap> {
     return HttpClient.call(url, HttpClient.GET, mapOf())
         .unsuccessfulAsError()
         .map { response ->

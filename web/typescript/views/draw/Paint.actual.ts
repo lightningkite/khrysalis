@@ -49,6 +49,7 @@ export class Paint {
         context.imageSmoothingEnabled = this.isAntiAlias;
     }
     complete(context: CanvasRenderingContext2D){
+        this.apply(context);
         switch(this.style){
             case Paint.Style.FILL:
                 context.fill();
@@ -59,6 +60,36 @@ export class Paint {
             case Paint.Style.FILL_AND_STROKE:
                 context.fill();
                 context.stroke();
+                break;
+        }
+    }
+    render(context: CanvasRenderingContext2D, path: Path2D){
+        this.apply(context);
+        switch(this.style){
+            case Paint.Style.FILL:
+                context.fill(path);
+                break;
+            case Paint.Style.STROKE:
+                context.stroke(path);
+                break;
+            case Paint.Style.FILL_AND_STROKE:
+                context.fill(path);
+                context.stroke(path);
+                break;
+        }
+    }
+    text(context: CanvasRenderingContext2D, text: string, x: number, y: number, maxWidth?: number){
+        this.apply(context);
+        switch(this.style){
+            case Paint.Style.FILL:
+                context.fillText(text, x, y, maxWidth);
+                break;
+            case Paint.Style.STROKE:
+                context.strokeText(text, x, y, maxWidth);
+                break;
+            case Paint.Style.FILL_AND_STROKE:
+                context.fillText(text, x, y, maxWidth);
+                context.strokeText(text, x, y, maxWidth);
                 break;
         }
     }

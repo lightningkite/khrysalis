@@ -8,23 +8,25 @@
 // FQImport: android.os.Build.VERSION_CODES.LOLLIPOP TS LOLLIPOP
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.getView.position TS position
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.getFilter.<no name provided>.performFiltering.<anonymous>.<anonymous>.<anonymous>.q TS q
+// FQImport: com.lightningkite.khrysalis.observables.subscribeBy>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any> TS comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy
 // FQImport: android.os.Build TS Build
+// FQImport: kotlin.text.contains>kotlin.CharSequence TS kotlinCharSequenceContains
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.getFilter.<no name provided>.performFiltering.<anonymous>.query TS query
-// FQImport: com.lightningkite.khrysalis.observables.subscribeBy TS comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy
 // FQImport: android.view.ViewGroup TS ViewGroup
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.getFilter.<no name provided>.convertResultToString.resultValue TS resultValue
+// FQImport: com.lightningkite.khrysalis.rx.until>io.reactivex.disposables.Disposable TS ioReactivexDisposablesDisposableUntil
 // FQImport: kotlin.CharSequence.toString TS toString
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.toString TS toString
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.getView.<anonymous>.size TS size
-// FQImport: com.lightningkite.khrysalis.rx.until TS ioReactivexDisposablesDisposableUntil
 // FQImport: android.widget.Filter.FilterResults.values TS values
+// FQImport: kotlin.collections.getOrNull>kotlin.collections.List<kotlin.Any> TS kotlinCollectionsListGetOrNull
 // FQImport: android.widget.AutoCompleteTextView.setAdapter TS setAdapter
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.getFilter.<no name provided>.performFiltering.<anonymous>.newFilteredOptions TS newFilteredOptions
 // FQImport: android.widget.AutoCompleteTextView.textSize TS getAndroidWidgetAutoCompleteTextViewTextSize
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.getFilter.<no name provided>.publishResults.p1 TS p1
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.getItem.position TS position
 // FQImport: android.widget.TextView.letterSpacing TS setAndroidWidgetTextViewLetterSpacing
-// FQImport: com.lightningkite.khrysalis.rx.removed TS getAndroidViewViewRemoved
+// FQImport: com.lightningkite.khrysalis.rx.removed>android.view.View TS getAndroidViewViewRemoved
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.getFilter.<no name provided>.performFiltering.<anonymous>.<anonymous>.it TS it
 // FQImport: android.widget.TextView.resources TS getAndroidWidgetTextViewResources
 // FQImport: android.content.res.Resources.displayMetrics TS getAndroidContentResResourcesDisplayMetrics
@@ -46,7 +48,6 @@
 // FQImport: android.os.Build.VERSION_CODES.JELLY_BEAN TS JELLY_BEAN
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.T TS T
 // FQImport: android.widget.TextView.textSize TS setAndroidWidgetTextViewTextSize
-// FQImport: kotlin.text.contains TS kotlinCharSequenceContains
 // FQImport: android.widget.TextView.setTextColor TS setTextColor
 // FQImport: kotlin.collections.List.toString TS toString
 // FQImport: android.widget.TextView.maxLines TS setAndroidWidgetTextViewMaxLines
@@ -59,7 +60,6 @@
 // FQImport: android.util.DisplayMetrics.scaledDensity TS scaledDensity
 // FQImport: android.util.DisplayMetrics.density TS density
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.filtered TS filtered
-// FQImport: kotlin.collections.getOrNull TS kotlinCollectionsListGetOrNull
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<anonymous>.index TS index
 // FQImport: android.widget.AutoCompleteTextView.setOnItemClickListener TS setOnItemClickListener
 // FQImport: com.lightningkite.khrysalis.observables.ObservableProperty.value TS value
@@ -68,7 +68,7 @@ import { also, takeUnless, tryCastClass, tryCastInterface, tryCastPrimitive } fr
 import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from './../../rx/DisposeCondition.actual'
 import { ObservableProperty } from './../ObservableProperty.shared'
 
-//! Declares com.lightningkite.khrysalis.observables.binding.bind
+//! Declares com.lightningkite.khrysalis.observables.binding.bind>android.widget.AutoCompleteTextView
 export function androidWidgetAutoCompleteTextViewBind<T>(this_: HTML_Element, options: ObservableProperty<Array<T>>, toString: (a: T) => string, onItemSelected: (a: T) => void): void{
     const filtered = Array.from(options.value);
     
@@ -150,8 +150,8 @@ export function androidWidgetAutoCompleteTextViewBind<T>(this_: HTML_Element, op
             getCount(): number{ return filtered.length; }
     }());
     this_.setOnItemClickListener((adapterView, view, index, id) => {
-            const temp323 = kotlinCollectionsListGetOrNull(filtered, index);
-            if(temp323 !== null) (onItemSelected)(temp323)
+            const temp315 = kotlinCollectionsListGetOrNull(filtered, index);
+            if(temp315 !== null) (onItemSelected)(temp315)
     });
 }
 

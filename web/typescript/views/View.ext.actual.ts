@@ -16,14 +16,14 @@
 // FQImport: com.lightningkite.khrysalis.views.<set-backgroundResource>.value TS value
 import { ColorResource } from './ResourceTypes.actual'
 
-//! Declares com.lightningkite.khrysalis.views.backgroundDrawable
+//! Declares com.lightningkite.khrysalis.views.backgroundDrawable>android.view.View
 export function getAndroidViewViewBackgroundDrawable(this_: HTMLElement): (Drawable | null) { return getAndroidViewViewBackground(this_); }
 export function setAndroidViewViewBackgroundDrawable(this_: HTMLElement, value: (Drawable | null)) {
     setAndroidViewViewBackground(this_, value);
 }
 
 
-//! Declares com.lightningkite.khrysalis.views.backgroundResource
+//! Declares com.lightningkite.khrysalis.views.backgroundResource>android.view.View
 export function getAndroidViewViewBackgroundResource(this_: HTMLElement): number { return 0; }
 export function setAndroidViewViewBackgroundResource(this_: HTMLElement, value: number) {
     this_.style.background = value;
@@ -31,14 +31,14 @@ export function setAndroidViewViewBackgroundResource(this_: HTMLElement, value: 
 
 
 
-//! Declares com.lightningkite.khrysalis.views.onClick
+//! Declares com.lightningkite.khrysalis.views.onClick>android.view.View
 export function androidViewViewOnClick(this_: HTMLElement, action: () => void): void{
     this_.addEventListener("onclick", (_ev) => {
             500(_ev.target as HTMLElement)
     });
 }
 
-//! Declares com.lightningkite.khrysalis.views.onClick
+//! Declares com.lightningkite.khrysalis.views.onClick>android.view.View
 export function androidViewViewOnClick(this_: HTMLElement, disabledMilliseconds: number, action: () => void): void{
     let lastActivated = System.currentTimeMillis();
     
@@ -51,7 +51,7 @@ export function androidViewViewOnClick(this_: HTMLElement, disabledMilliseconds:
     });
 }
 
-//! Declares com.lightningkite.khrysalis.views.onLongClick
+//! Declares com.lightningkite.khrysalis.views.onLongClick>android.view.View
 export function androidViewViewOnLongClick(this_: HTMLElement, action: () => void): void{
     this_.addEventListener("oncontextmenu", (_ev) => {
             const it = _ev.target as HTMLElement;
@@ -60,7 +60,7 @@ export function androidViewViewOnLongClick(this_: HTMLElement, action: () => voi
 }
 
 
-//! Declares com.lightningkite.khrysalis.views.setBackgroundColorResource
+//! Declares com.lightningkite.khrysalis.views.setBackgroundColorResource>android.view.View
 export function androidViewViewSetBackgroundColorResource(this_: HTMLElement, color: ColorResource): void{
     this_.style.background = color;
 }

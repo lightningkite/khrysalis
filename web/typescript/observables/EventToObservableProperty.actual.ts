@@ -9,7 +9,7 @@ import { ObservableProperty } from './ObservableProperty.shared'
 import { EventToObservableProperty } from './EventToObservableProperty.shared'
 import { Observable } from 'rxjs'
 
-//! Declares com.lightningkite.khrysalis.observables.asObservablePropertyUnboxed
+//! Declares com.lightningkite.khrysalis.observables.asObservablePropertyUnboxed>io.reactivex.Observable<com.lightningkite.khrysalis.Box>
 export function ioReactivexObservableAsObservablePropertyUnboxed<T>(this_: Observable<T>, defaultValue: T): ObservableProperty<T>{
     return new EventToObservableProperty<T>(defaultValue, this_);
 }

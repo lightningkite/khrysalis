@@ -15,7 +15,6 @@ import org.jetbrains.kotlin.resolve.scopes.DescriptorKindFilter
 import org.jetbrains.kotlin.types.typeUtil.supertypes
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.reflect.jvm.internal.impl.types.FlexibleType
 
 
 fun TypescriptTranslator.registerClass() {
@@ -175,7 +174,7 @@ fun TypescriptTranslator.registerClass() {
         condition = { typedRule.isInterface() },
         priority = 100
     ) {
-        -"$declaresPrefix${typedRule.fqName?.asString()}\n"
+        -"$declaresPrefix${typedRule.simpleFqName}\n"
         if (!typedRule.isPrivate()) -"export "
         -"interface "
         -tsTopLevelNameElement(typedRule)
@@ -217,7 +216,7 @@ fun TypescriptTranslator.registerClass() {
         condition = { typedRule.isInner() },
         priority = 1000
     ) {
-        val fq = typedRule.parentOfType<KtClassBody>()!!.parentOfType<KtClass>()!!.fqName!!.asString()
+        val fq = typedRule.parentOfType<KtClassBody>()!!.parentOfType<KtClass>()!!.simpleFqName
         withReceiverScope(fq, "parentThis") {
             doSuper()
         }
@@ -535,7 +534,7 @@ fun TypescriptTranslator.registerClass() {
                 between = { -", " }
             )
             -") { return new "
-            -typedRule.nameIdentifier
+            -tsTopLevelNameElement(typedRule)
             -"("
             typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEachBetween(
                 forItem = {
@@ -590,7 +589,7 @@ fun TypescriptTranslator.registerClass() {
             -" = "
         } else {
             if (!typedRule.isPrivate()) {
-                -"$declaresPrefix${typedRule.fqName?.asString()}\n"
+                -"$declaresPrefix${typedRule.simpleFqName}\n"
                 -"export "
             }
         }
@@ -839,7 +838,7 @@ fun TypescriptTranslator.registerClass() {
         val resolved = typedRule.resolvedConstructor ?: return@handle
         -(typedRule.visibilityModifier() ?: "public")
         -" static "
-        -resolved.tsName
+        -resolved.tsConstructorName
         -typedRule.typeParameterList
         -typedRule.valueParameterList
         -" {\n"
@@ -887,7 +886,7 @@ fun KtElement.addPostAction(action: () -> Unit) {
     weakKtClassPostActions.getOrPut(this) { ArrayList() }.add(action)
 }
 
-val ConstructorDescriptor.tsName: String?
+val ConstructorDescriptor.tsConstructorName: String?
     get() = this.annotations
         .find { it.fqName?.asString()?.substringAfterLast('.') == "JsName" }
         ?.allValueArguments

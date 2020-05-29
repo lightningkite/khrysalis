@@ -43,7 +43,6 @@ public class ImageReference: Image, Equatable, Hashable {
         self.init(uri: uri)
     }
 }
- 
 
 public class ImageBitmap: Image, Equatable, Hashable {
     

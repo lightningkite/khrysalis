@@ -4,6 +4,7 @@ import com.lightningkite.khrysalis.generic.PartialTranslatorByType
 import com.lightningkite.khrysalis.generic.TranslatorInterface
 import com.lightningkite.khrysalis.typescript.replacements.Replacements
 import com.lightningkite.khrysalis.util.AnalysisExtensions
+import com.lightningkite.khrysalis.util.simpleFqName
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
@@ -55,7 +56,7 @@ class TypescriptTranslator(
             return null
         }
         val fq = if(dr is ExtensionReceiver) {
-            dr.declarationDescriptor.fqNameSafe.asString()
+            dr.declarationDescriptor.simpleFqName
         } else {
             "real"
         }

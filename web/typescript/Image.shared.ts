@@ -44,7 +44,7 @@ export class ImageImageBitmap extends Image {
     }
     public equals(other: any): boolean { return other instanceof ImageImageBitmap && (this.bitmap?.equals(other.bitmap) ?? other.bitmap === null) }
     public toString(): string { return `ImageImageBitmap(bitmap = ${this.bitmap})` }
-    public copy(bitmap: ImageBitmap = this.bitmap) { return new ImageBitmap(bitmap); }
+    public copy(bitmap: ImageBitmap = this.bitmap) { return new ImageImageBitmap(bitmap); }
 }
 //! Declares com.lightningkite.khrysalis.ImageRaw
 export class ImageRaw extends Image {
@@ -79,10 +79,10 @@ export class ImageRemoteUrl extends Image {
     public copy(url: string = this.url) { return new ImageRemoteUrl(url); }
 }
 
-//! Declares com.lightningkite.khrysalis.asImage
+//! Declares com.lightningkite.khrysalis.asImage>kotlin.String
 export function kotlinStringAsImage(this_: string): Image{ return new ImageRemoteUrl(this_); }
-//! Declares com.lightningkite.khrysalis.asImage
+//! Declares com.lightningkite.khrysalis.asImage>android.net.Uri
 export function androidNetUriAsImage(this_: string): Image{ return new ImageReference(this_); }
-//! Declares com.lightningkite.khrysalis.asImage
-export function androidGraphicsBitmapAsImage(this_: ImageBitmap): Image{ return new ImageBitmap(this_); }
+//! Declares com.lightningkite.khrysalis.asImage>android.graphics.Bitmap
+export function androidGraphicsBitmapAsImage(this_: ImageBitmap): Image{ return new ImageImageBitmap(this_); }
 
