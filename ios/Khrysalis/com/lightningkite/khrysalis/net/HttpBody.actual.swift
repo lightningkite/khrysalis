@@ -16,7 +16,7 @@ public enum HttpBodyPart {
     case value(name: String, value: String)
 }
 
-//--- Codable.toJsonHttpBody()
+//--- IsCodable.toJsonHttpBody()
 public extension Encodable {
     func toJsonHttpBody() -> HttpBody {
         return HttpBody(mediaType: HttpMediaTypes.JSON, data: self.toJsonData())
