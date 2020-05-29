@@ -3,6 +3,7 @@ import Foundation
 import AlamofireImage
 import Alamofire
 import RxSwift
+import Starscream
 
 
 //--- HttpClient.{

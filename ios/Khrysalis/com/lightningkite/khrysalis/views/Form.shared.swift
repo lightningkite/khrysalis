@@ -100,11 +100,11 @@ public class Form {
         return field(name: name, defaultValue: defaultValue, validation: validation)
     }
     
-    public func field<T>(name: StringResource, defaultValue: T, validation: @escaping (FormField<T>) -> ViewString?
+     public func field<T>(name: StringResource, defaultValue: T, validation: @escaping (FormField<T>) -> ViewString?
 ) -> FormField<T> {
         return field(ViewStringResource(name), defaultValue, validation)
     }
-    public func field<T>(_ name: StringResource, _ defaultValue: T, _ validation: @escaping (FormField<T>) -> ViewString?
+     public func field<T>(_ name: StringResource, _ defaultValue: T, _ validation: @escaping (FormField<T>) -> ViewString?
 ) -> FormField<T> {
         return field(name: name, defaultValue: defaultValue, validation: validation)
     }
@@ -122,11 +122,11 @@ public class Form {
         return fieldFromProperty(name: name, property: property, validation: validation)
     }
     
-    public func fieldFromProperty<T>(name: StringResource, property: MutableObservableProperty<T>, validation: @escaping (FormField<T>) -> ViewString?
+     public func fieldFromProperty<T>(name: StringResource, property: MutableObservableProperty<T>, validation: @escaping (FormField<T>) -> ViewString?
 ) -> FormField<T> {
         return fieldFromProperty(ViewStringResource(name), property, validation)
     }
-    public func fieldFromProperty<T>(_ name: StringResource, _ property: MutableObservableProperty<T>, _ validation: @escaping (FormField<T>) -> ViewString?
+     public func fieldFromProperty<T>(_ name: StringResource, _ property: MutableObservableProperty<T>, _ validation: @escaping (FormField<T>) -> ViewString?
 ) -> FormField<T> {
         return fieldFromProperty(name: name, property: property, validation: validation)
     }

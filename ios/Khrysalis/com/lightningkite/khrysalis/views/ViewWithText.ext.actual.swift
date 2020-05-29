@@ -5,6 +5,7 @@ import UIKit
 
 //--- TextView.textResource
 //--- TextView.textString
+//--- TextView.setTextColorResource(ColorResource)
 //--- TextView.setColor(ColorResource)
 //--- ToggleButton.textResource
 //--- ToggleButton.textString
