@@ -22,8 +22,8 @@ class ViewNode(
     }
 
     val operations: HashSet<ViewStackOp> = HashSet()
-    val requires: HashSet<ViewVar> = HashSet()
-    val provides: HashSet<ViewVar> = HashSet()
+    val requires = MergableCollection<ViewVar>()
+    val provides = MergableCollection<ViewVar>()
     val instantiates: Set<String> get() = operations.mapNotNull { it.viewName }.toSet()
 
     var depth: Int = -1
@@ -31,7 +31,7 @@ class ViewNode(
     data class Resolved(
         val node: ViewNode,
         val comesFrom: Set<String>,
-        val totalRequires: Set<ViewVar>,
+        val totalRequires: List<ViewVar.Requirement>,
         val belongsToStacks: Set<String>
     )
 
@@ -39,7 +39,7 @@ class ViewNode(
         return Resolved(
             node = this,
             comesFrom = this.createdBy(map),
-            totalRequires = this.totalRequires(map),
+            totalRequires = this.totalRequiresBetter(map).sortedBy { it.viewVar.name },
             belongsToStacks = this.belongsToStacks(map)
         )
     }
@@ -95,43 +95,51 @@ class ViewNode(
 
         fun assertNoLeaks(map: Map<String, ViewNode>) {
             val root = root(map) ?: return
-            if (root.totalRequires(map).isEmpty()) return
             val leakMessages = ArrayList<String>()
-            for (leakedVar in root.totalRequires(map)) {
-                if (leakedVar.default != null) continue
-                val requiredBy = map.values.filter { leakedVar in it.requires && leakedVar !in it.provides }
-                val climbing = requiredBy.map { listOf(it) }.toMutableList()
-                val seen = mutableSetOf<String>()
-                while (climbing.isNotEmpty()) {
-                    val next = climbing.removeAt(0)
-                    for (it in next.last().createdBy(map)) {
-                        if (it in seen) continue
-                        seen.add(it)
-                        val node = map[it] ?: continue
-                        if (leakedVar in node.provides) continue
-                        if (node == root) {
-                            val message = "Leak path for ${leakedVar}: ${next.joinToString(" <- ") { it.name }}"
-                            leakMessages += message
-                            println(message)
-                            break
+
+            for(node in map.values){
+                val tr = node.totalRequiresBetter(map).toList()
+                for(i1 in tr.indices){
+                    for(i2 in tr.indices){
+                        val v1 = tr[i1]
+                        val v2 = tr[i2]
+                        if(i1 != i2 && v1.viewVar.name == v2.viewVar.name){
+                            leakMessages += "Found same-name variable requirements with different types on ${node.name}.${v1.viewVar.name}:\n    ${v1.viewVar.type} from ${v1.paths.minBy { it.size }}\n    ${v2.viewVar.type} from ${v2.paths.minBy { it.size }}"
                         }
-                        climbing.add(next + node)
                     }
                 }
             }
 
-            throw Exception("Leak detected! ${leakMessages.joinToString("\n")}")
+            for (leakedVar in root.totalRequiresBetter(map)) {
+                leakMessages += leakedVar.paths.map {
+                    "${leakedVar.viewVar} leaked through path $it"
+                }
+            }
+
+            if (leakMessages.isEmpty()) return
+            throw Exception("Leak detected!\n${leakMessages.joinToString("\n")}")
         }
     }
 
-    fun totalRequires(map: Map<String, ViewNode>, seen: Set<String> = setOf()): Set<ViewVar> {
-        if (name in seen) return setOf()
-        val totalSet = HashSet<ViewVar>()
-        totalSet.addAll(requires.filter { it.default == null })
-        totalSet.addAll(instantiates.flatMap {
-            map[it]?.totalRequires(map, seen + name)?.filter { it.default == null }?.toSet() ?: setOf()
-        }.filter { it.name != "stack" }.toSet() - requires)
-        totalSet.removeAll(provides)
+    fun totalRequires(map: Map<String, ViewNode>, seen: Set<String> = setOf()): MergableCollection<ViewVar> = MergableCollection(ArrayList(totalRequiresBetter(map, seen).map { it.viewVar }))
+    fun totalRequiresBetter(map: Map<String, ViewNode>, seen: Set<String> = setOf()): MergableCollection<ViewVar.Requirement> {
+        val totalSet = MergableCollection<ViewVar.Requirement>()
+        if (name in seen) return totalSet
+        for(direct in requires){
+            totalSet.add(direct.requiredByMe(this.name))
+        }
+        for(inst in instantiates){
+            val subnode = map[inst] ?: continue
+            for(x in subnode.totalRequiresBetter(map, seen + name)){
+                totalSet.add(x.requiredBy(inst))
+            }
+        }
+        for(provided in provides){
+            totalSet.items.removeAll {
+                provided.satisfies(it.viewVar)
+            }
+        }
+        totalSet.items.removeAll { it.viewVar.name == "stack" }
         return totalSet
     }
 

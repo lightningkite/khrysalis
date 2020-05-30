@@ -52,6 +52,9 @@ fun createFlowDocumentation(
     }
     inaccessibleNodes.forEach { println("WARNING! Node ${it.name} is not accessible") }
 
+    //Throw on leaks
+    ViewNode.assertNoLeaks(nodes)
+
     //Emit graph
     groupedGraph(docsOutputFolder, nodes)
     sortedGraph(docsOutputFolder, nodes)
@@ -85,8 +88,5 @@ fun createFlowDocumentation(
         e.printStackTrace()
         System.err.println("Failed to convert to SVG and PNG.  Have you installed the Mermaid command line tool?  Try 'npm install -g mermaid.cli'.")
     }
-
-    //Throw on leaks
-    ViewNode.assertNoLeaks(nodes)
 
 }

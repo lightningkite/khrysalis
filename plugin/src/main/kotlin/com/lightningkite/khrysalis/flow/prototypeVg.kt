@@ -94,8 +94,8 @@ private fun generateFile(
             .totalRequires(viewNodeMap)
             .sortedBy { it.name }
             .filter {
-                val included = it in totalProvides || it.name == "stack"
-                if (!included && it.default == null) throw IllegalArgumentException("Cannot provide arg ${it.name} for ${otherViewNode.name} in ${viewNode.name}")
+                val included = totalProvides.any { p -> p.satisfies(it) } || it.name == "stack"
+                if (!included && it.default == null) throw IllegalArgumentException("Cannot provide arg ${it} for ${otherViewNode.name} in ${viewNode.name}")
                 included
             }
             .joinToString(
