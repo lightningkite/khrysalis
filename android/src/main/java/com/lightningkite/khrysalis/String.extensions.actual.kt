@@ -13,6 +13,19 @@ fun String.humanify(): String {
 }
 
 /**
+ *  Returns a new string with all occurrences of [char] removed.
+ */
+fun String.remove(char:Char):String{
+    return splitToSequence(char).joinToString(separator = "")
+}
+/**
+ *  Returns a new string with all occurrences of [char] removed.
+ */
+fun String.remove(sequence:String):String{
+    return splitToSequence(sequence).joinToString(separator = "")
+}
+
+/**
  *
  * Modifies the string to make follow the snake case standard. Adds underscore before an uppercase char, and then makes them all lowercase.
  *
