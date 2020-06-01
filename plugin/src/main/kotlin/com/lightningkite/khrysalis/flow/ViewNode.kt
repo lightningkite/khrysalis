@@ -99,12 +99,11 @@ class ViewNode(
 
             for(node in map.values){
                 val tr = node.totalRequiresBetter(map).toList()
-                for(i1 in tr.indices){
-                    for(i2 in tr.indices){
-                        val v1 = tr[i1]
-                        val v2 = tr[i2]
-                        if(i1 != i2 && v1.viewVar.name == v2.viewVar.name){
-                            leakMessages += "Found same-name variable requirements with different types on ${node.name}.${v1.viewVar.name}:\n    ${v1.viewVar.type} from ${v1.paths.minBy { it.size }}\n    ${v2.viewVar.type} from ${v2.paths.minBy { it.size }}"
+                tr.groupBy { it.viewVar.name }.filter { it.value.size > 1 }.forEach {
+                    leakMessages += "Found same-name variable requirements with different types on ${node.name}.${it.key}:"
+                    it.value.forEach { v ->
+                        v.paths.forEach { p ->
+                            leakMessages += "    ${v.viewVar.type} from ${p}"
                         }
                     }
                 }
@@ -121,26 +120,46 @@ class ViewNode(
         }
     }
 
-    fun totalRequires(map: Map<String, ViewNode>, seen: Set<String> = setOf()): MergableCollection<ViewVar> = MergableCollection(ArrayList(totalRequiresBetter(map, seen).map { it.viewVar }))
-    fun totalRequiresBetter(map: Map<String, ViewNode>, seen: Set<String> = setOf()): MergableCollection<ViewVar.Requirement> {
-        val totalSet = MergableCollection<ViewVar.Requirement>()
-        if (name in seen) return totalSet
-        for(direct in requires){
-            totalSet.add(direct.requiredByMe(this.name))
-        }
+    fun totalRequires(map: Map<String, ViewNode>, seen: Set<String> = setOf()): Collection<ViewVar> = totalRequiresBetter(map, seen).map { it.viewVar }
+    fun totalRequiresBetter(map: Map<String, ViewNode>, seen: Set<String> = setOf()): Collection<ViewVar.Requirement> {
+//        val totalSet = MergableCollection<ViewVar.Requirement>()
+//        if (name in seen) return totalSet
+//        for(direct in requires){
+//            totalSet.add(direct.requiredByMe(this.name))
+//        }
+//        for(inst in instantiates){
+//            val subnode = map[inst] ?: continue
+//            for(x in subnode.totalRequiresBetter(map, seen + name)){
+//                if(x.viewVar.name == "stack") continue
+//                if(x.viewVar.default != null) continue
+//                totalSet.add(x.requiredBy(inst))
+//            }
+//        }
+//        for(provided in provides){
+//            totalSet.items.removeAll {
+//                provided.satisfies(it.viewVar)
+//            }
+//        }
+//        return totalSet
+        if(name in seen) return listOf()
+
+        val directRequirements = requires.map { it.requiredByMe(this.name) }
+
+        val indirectRequirements = ArrayList<ViewVar.Requirement>()
         for(inst in instantiates){
             val subnode = map[inst] ?: continue
             for(x in subnode.totalRequiresBetter(map, seen + name)){
-                totalSet.add(x.requiredBy(inst))
+                if(x.viewVar.name == "stack") continue
+                if(x.viewVar.default != null) continue
+                if(directRequirements.any { it.viewVar.satisfies(x.viewVar) }) continue
+                indirectRequirements.addOrMerge(
+                    x.requiredBy(inst),
+                    satisfies = { myItem, existing -> existing.merge(myItem) }
+                )
             }
         }
-        for(provided in provides){
-            totalSet.items.removeAll {
-                provided.satisfies(it.viewVar)
-            }
-        }
-        totalSet.items.removeAll { it.viewVar.name == "stack" }
-        return totalSet
+
+        return directRequirements.filter { provides.none { p -> p.sameAs(it.viewVar) } } + indirectRequirements.filter { provides.none { p -> p.satisfies(it.viewVar) } }
     }
 
     fun belongsToStacks(map: Map<String, ViewNode>): Set<String> {

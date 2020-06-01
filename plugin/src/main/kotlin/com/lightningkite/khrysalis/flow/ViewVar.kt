@@ -46,9 +46,9 @@ data class ViewVar(val name: String, val type: String, val default: String? = nu
                 return this
             }
         } else if (this.satisfies(other)) {
-            return this.copy(default = this.default ?: other.default)
+            return this
         } else if (other.satisfies(this)) {
-            return other.copy(default = this.default ?: other.default)
+            return other
         } else {
             return null
         }
@@ -73,5 +73,5 @@ data class ViewVar(val name: String, val type: String, val default: String? = nu
         }
     }
 
-    fun requiredByMe(name: String): Requirement = Requirement(this, listOf(listOf(name)))
+    fun requiredByMe(name: String): Requirement = Requirement(this, listOf(listOf()))
 }
