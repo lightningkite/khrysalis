@@ -216,8 +216,7 @@ fun TypescriptTranslator.registerClass() {
         condition = { typedRule.isInner() },
         priority = 1000
     ) {
-        val fq = typedRule.parentOfType<KtClassBody>()!!.parentOfType<KtClass>()!!.simpleFqName
-        withReceiverScope(fq, "parentThis") {
+        withReceiverScope(typedRule.parentOfType<KtClassBody>()!!.parentOfType<KtClass>()!!.resolvedClass!!, "parentThis") {
             doSuper()
         }
     }
@@ -581,6 +580,10 @@ fun TypescriptTranslator.registerClass() {
         typedRule.runPostActions()
     }
 
+    handle<KtSuperExpression> {
+        -"super"
+    }
+
     handle<KtObjectDeclaration> {
         if (typedRule.parentOfType<KtClassBody>()?.parentOfType<KtClass>()?.isInterface() == false) {
             -(typedRule.visibilityModifier() ?: "public")
@@ -843,7 +846,7 @@ fun TypescriptTranslator.registerClass() {
         -typedRule.valueParameterList
         -" {\n"
         val parent = typedRule.parentOfType<KtClassBody>()!!.parentOfType<KtClass>()!!.resolvedClass!!
-        withReceiverScope("real", "result") { outName ->
+        withReceiverScope(parent, "result") { outName ->
             -"let "
             -outName
             -" = new "

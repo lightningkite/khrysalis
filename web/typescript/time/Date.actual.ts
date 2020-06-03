@@ -8,38 +8,65 @@ import {ClockPartSize} from './ClockPartSize.shared'
 //! Declares com.lightningkite.khrysalis.time.plus
 export function javaUtilDatePlus(this_: Date, interval: TimeInterval): Date {
     let newDate = new Date();
-    newDate.setTime(this_.getTime() + interval.milliseconds)
-    return newDate
+    newDate.setTime(this_.getTime() + interval.milliseconds);
+    return newDate;
 }
 
 
 //! Declares com.lightningkite.khrysalis.time.minus
 export function javaUtilDateMinus(this_: Date, interval: TimeInterval): Date {
     let newDate = new Date();
-    newDate.setTime(this_.getTime() - interval.milliseconds)
-    return newDate
+    newDate.setTime(this_.getTime() - interval.milliseconds);
+    return newDate;
 }
 
 export function copyDateMod(on: Date, action: Function, ...params: Array<any>): Date {
     const to = new Date(on);
-    action.call(to, ...params)
-    return to
+    action.call(to, ...params);
+    return to;
 }
 
 export function dateMod(on: Date, action: Function, ...params: Array<any>): Date {
-    action.call(on, ...params)
-    return on
+    action.call(on, ...params);
+    return on;
 }
 
 export function copyDateModRelative(on: Date, getter: () => number, action: Function, num: number): Date {
     const to = new Date(on);
-    action.call(to, getter.call(to) + num)
-    return to
+    action.call(to, getter.call(to) + num);
+    return to;
 }
 
 export function dateModRelative(on: Date, getter: () => number, action: Function, num: number): Date {
-    action.call(on, getter.call(on) + num)
-    return on
+    action.call(on, getter.call(on) + num);
+    return on;
+}
+
+let tempDate = new Date();
+export function copyDateAloneMod(on: DateAlone, action: Function, ...params: Array<any>): DateAlone {
+    javaUtilDateSet(tempDate, on);
+    action.call(tempDate, ...params);
+    return getJavaUtilDateDateAlone(tempDate);
+}
+
+export function dateAloneMod(on: DateAlone, action: Function, ...params: Array<any>): DateAlone {
+    javaUtilDateSet(tempDate, on);
+    action.call(tempDate, ...params);
+    comLightningkiteKhrysalisTimeDateAloneSet(on, tempDate);
+    return on;
+}
+
+export function copyDateAloneModRelative(on: DateAlone, getter: () => number, action: Function, num: number): DateAlone {
+    javaUtilDateSet(tempDate, on);
+    action.call(tempDate, getter.call(tempDate) + num);
+    return getJavaUtilDateDateAlone(tempDate);
+}
+
+export function dateAloneModRelative(on: DateAlone, getter: () => number, action: Function, num: number): DateAlone {
+    javaUtilDateSet(tempDate, on);
+    action.call(tempDate, getter.call(on) + num);
+    comLightningkiteKhrysalisTimeDateAloneSet(on, tempDate);
+    return on;
 }
 
 

@@ -4,7 +4,6 @@
 // FQImport: com.lightningkite.khrysalis.views.CustomViewDelegate.onTouchUp TS onTouchUp
 // FQImport: java.util.HashMap TS HashMap
 // FQImport: com.lightningkite.khrysalis.views.CustomViewDelegate.customView TS customView
-// FQImport: android.view.accessibility.AccessibilityManager.isEnabled TS getAndroidViewAccessibilityAccessibilityManagerIsEnabled
 // FQImport: android.content.Context.ACCESSIBILITY_SERVICE TS ACCESSIBILITY_SERVICE
 // FQImport: com.lightningkite.khrysalis.R.styleable TS styleable
 // FQImport: android.util.AttributeSet TS AttributeSet
@@ -14,7 +13,9 @@
 // FQImport: com.lightningkite.khrysalis.views.CustomView.<init>.a TS a
 // FQImport: java.lang.ClassNotFoundException TS ClassNotFoundException
 // FQImport: android.view.accessibility.AccessibilityManager TS AccessibilityManager
+// FQImport: android.view.accessibility.AccessibilityManager.isEnabled TS isEnabled
 // FQImport: com.lightningkite.khrysalis.R.styleable.CustomView_delegateClass TS CustomView_delegateClass
+// FQImport: com.lightningkite.khrysalis.views.CustomView.context TS context
 // FQImport: android.view.MotionEvent.ACTION_POINTER_UP TS ACTION_POINTER_UP
 // FQImport: com.lightningkite.khrysalis.R.styleable.CustomView TS CustomView
 // FQImport: com.lightningkite.khrysalis.views.CustomViewDelegate.generateAccessibilityView TS generateAccessibilityView
@@ -26,38 +27,34 @@
 // FQImport: android.view.ViewGroup.LayoutParams.MATCH_PARENT TS MATCH_PARENT
 // FQImport: android.view.MotionEvent.ACTION_MOVE TS ACTION_MOVE
 // FQImport: com.lightningkite.khrysalis.views.CustomView.<init>.<anonymous>.<anonymous>.it TS it
-// FQImport: kotlin.math.min TS min
 // FQImport: android.content.Context.getSystemService TS getSystemService
-// FQImport: android.view.MotionEvent.actionIndex TS getAndroidViewMotionEventActionIndex
+// FQImport: android.view.MotionEvent.actionIndex TS actionIndex
 // FQImport: com.lightningkite.khrysalis.views.CustomViewDelegate.sizeThatFitsWidth TS sizeThatFitsWidth
 // FQImport: com.lightningkite.khrysalis.views.CustomView.onMeasure.widthSize TS widthSize
 // FQImport: android.content.res.TypedArray.getString TS getString
+// FQImport: android.view.MotionEvent.pointerCount TS pointerCount
 // FQImport: kotlin.ranges.until>kotlin.Int TS kotlinIntUntil
 // FQImport: com.lightningkite.khrysalis.views.CustomViewDelegate.onTouchMove TS onTouchMove
-// FQImport: com.lightningkite.khrysalis.views.CustomView.context TS getComLightningkiteKhrysalisViewsCustomViewContext
 // FQImport: com.lightningkite.khrysalis.views.CustomView.onTouchEvent.takenCareOf TS takenCareOf
-// FQImport: android.view.MotionEvent.pointerCount TS getAndroidViewMotionEventPointerCount
 // FQImport: com.lightningkite.khrysalis.views.CustomView.onDraw.canvas TS canvas
 // FQImport: com.lightningkite.khrysalis.views.CustomViewDelegate.draw TS draw
 // FQImport: com.lightningkite.khrysalis.views.CustomView.onMeasure.heightSize TS heightSize
-// FQImport: com.lightningkite.khrysalis.views.CustomView.width TS getComLightningkiteKhrysalisViewsCustomViewWidth
-// FQImport: android.content.res.Resources.displayMetrics TS getAndroidContentResResourcesDisplayMetrics
 // FQImport: com.lightningkite.khrysalis.views.CustomView.accessibilityView TS accessibilityView
-// FQImport: android.content.Context.resources TS getAndroidContentContextResources
+// FQImport: com.lightningkite.khrysalis.views.CustomView.height TS height
 // FQImport: java.util.HashMap.remove TS remove
 // FQImport: kotlin.jvm.java>kotlin.reflect.KClass<kotlin.Any> TS getKotlinReflectKClassJava
 // FQImport: java.lang.Class.newInstance TS newInstance
 // FQImport: com.lightningkite.khrysalis.views.CustomViewDelegate.sizeThatFitsHeight TS sizeThatFitsHeight
+// FQImport: java.lang.Class.classLoader TS classLoader
 // FQImport: com.lightningkite.khrysalis.views.CustomView.touches TS touches
 // FQImport: com.lightningkite.khrysalis.views.CustomView.Touch.x TS x
 // FQImport: android.view.View.MeasureSpec TS MeasureSpec
-// FQImport: java.lang.Class.classLoader TS getJavaLangClassClassLoader
 // FQImport: android.view.MotionEvent.getY TS getY
 // FQImport: com.lightningkite.khrysalis.views.CustomView.onTouchEvent.pointerId TS pointerId
+// FQImport: android.content.Context.theme TS theme
 // FQImport: com.lightningkite.khrysalis.views.CustomView.<init>.defStyleAttr TS defStyleAttr
 // FQImport: com.lightningkite.khrysalis.views.CustomView.addView TS addView
 // FQImport: com.lightningkite.khrysalis.views.CustomView.onMeasure.heightMeasureSpec TS heightMeasureSpec
-// FQImport: android.content.Context.theme TS getAndroidContentContextTheme
 // FQImport: com.lightningkite.khrysalis.views.CustomView.onTouchEvent.touch TS touch
 // FQImport: com.lightningkite.khrysalis.R TS R
 // FQImport: com.lightningkite.khrysalis.views.CustomView.<init>.<anonymous>.delegateClassName TS delegateClassName
@@ -71,22 +68,24 @@
 // FQImport: java.lang.ClassLoader.loadClass TS loadClass
 // FQImport: com.lightningkite.khrysalis.views.CustomView.onMeasure.widthMode TS widthMode
 // FQImport: com.lightningkite.khrysalis.views.CustomView.onTouchEvent.event TS event
-// FQImport: android.view.MotionEvent.actionMasked TS getAndroidViewMotionEventActionMasked
 // FQImport: android.view.MotionEvent.ACTION_DOWN TS ACTION_DOWN
 // FQImport: com.lightningkite.khrysalis.views.CustomView.delegate TS delegate
 // FQImport: android.content.Context TS Context
 // FQImport: com.lightningkite.khrysalis.views.CustomView.<init>.context TS context
 // FQImport: com.lightningkite.khrysalis.views.CustomView.onMeasure.widthMeasureSpec TS widthMeasureSpec
 // FQImport: com.lightningkite.khrysalis.views.CustomView.<init>.attrs TS attrs
+// FQImport: android.view.MotionEvent.actionMasked TS actionMasked
 // FQImport: com.lightningkite.khrysalis.views.CustomView.metrics TS metrics
+// FQImport: com.lightningkite.khrysalis.views.CustomView.width TS width
 // FQImport: com.lightningkite.khrysalis.views.CustomView.onMeasure.heightMode TS heightMode
 // FQImport: com.lightningkite.khrysalis.views.CustomView.onMeasure.width TS width
 // FQImport: com.lightningkite.khrysalis.views.CustomView.Touch.y TS y
+// FQImport: android.content.Context.resources TS resources
 // FQImport: android.widget.FrameLayout TS FrameLayout
-// FQImport: com.lightningkite.khrysalis.views.CustomView.height TS getComLightningkiteKhrysalisViewsCustomViewHeight
 // FQImport: android.view.MotionEvent.ACTION_CANCEL TS ACTION_CANCEL
 // FQImport: android.view.View.MeasureSpec.getMode TS getMode
 // FQImport: android.content.res.Resources.Theme.obtainStyledAttributes TS obtainStyledAttributes
+// FQImport: android.content.res.Resources.displayMetrics TS displayMetrics
 // FQImport: com.lightningkite.khrysalis.views.CustomView.onTouchEvent.pointerIndex TS pointerIndex
 // FQImport: android.view.MotionEvent.ACTION_UP TS ACTION_UP
 // FQImport: com.lightningkite.khrysalis.views.CustomView.Touch TS Touch
@@ -97,44 +96,44 @@ export class CustomView extends FrameLayout {
     public constructor(context: Context, attrs: (AttributeSet | null) = null, defStyleAttr: number = 0) {
         super(context, attrs, defStyleAttr);
         this.delegate = null;
-        const a = getAndroidContentContextTheme(context).obtainStyledAttributes(attrs, R.styleable.CustomView, defStyleAttr, 0);
+        const a = context.theme.obtainStyledAttributes(attrs, R.styleable.CustomView, defStyleAttr, 0);
         ;
-        const temp393 = a.getString(R.styleable.CustomView_delegateClass);
-        if(temp393 !== null) ((delegateClassName) => {
+        const temp402 = a.getString(R.styleable.CustomView_delegateClass);
+        if(temp402 !== null) ((delegateClassName) => {
                 this.delegate = (() => {
                         try {
-                            return ((it) => it as CustomViewDelegate)(getJavaLangClassClassLoader(getKotlinReflectKClassJava(context::class))!!
+                            return ((it) => it as CustomViewDelegate)(getKotlinReflectKClassJava(context::class).classLoader!!
                                 .loadClass(delegateClassName)
                             .newInstance());
-                        } catch (_e) { let e = _e as ClassNotFoundException; return ((it) => it as CustomViewDelegate)(getJavaLangClassClassLoader(getKotlinReflectKClassJava(this::class))!!
+                        } catch (_e) { let e = _e as ClassNotFoundException; return ((it) => it as CustomViewDelegate)(getKotlinReflectKClassJava(this::class).classLoader!!
                                 .loadClass(delegateClassName)
                         .newInstance())}
                 })()
-        })(temp393);
+        })(temp402);
         this.accessibilityView = null;
         this.touches = HashMap.constructor<number, Touch>();
-        this.metrics = getAndroidContentResResourcesDisplayMetrics(getAndroidContentContextResources(context));
+        this.metrics = context.resources.displayMetrics;
     }
     
     
     public _delegate: (CustomViewDelegate | null);
     public get delegate(): (CustomViewDelegate | null) { return this._delegate; }
     public set delegate(value: (CustomViewDelegate | null)) {
-        const temp399 = this._delegate;
-        if(temp399 !== null) ((it) => {
+        const temp408 = this._delegate;
+        if(temp408 !== null) ((it) => {
                 it.customView = null
-        })(temp399);
+        })(temp408);
         if (!(value.equals(null))) {
             value.customView = this;
         }
         this._delegate = value;
         
-        if (getAndroidViewAccessibilityAccessibilityManagerIsEnabled((getComLightningkiteKhrysalisViewsCustomViewContext(this).getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager))) {
+        if ((this.context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager).isEnabled) {
             this.accessibilityView = this.delegate?.generateAccessibilityView();
-            const temp401 = this.accessibilityView;
-            if(temp401 !== null) ((it) => {
+            const temp410 = this.accessibilityView;
+            if(temp410 !== null) ((it) => {
                     this.addView(it, FrameLayout.LayoutParams.constructorkotlinInt, kotlinInt(MATCH_PARENT, MATCH_PARENT))
-            })(temp401);
+            })(temp410);
         }
     }
     
@@ -169,23 +168,23 @@ export class CustomView extends FrameLayout {
     
     
     public onTouchEvent(event: MotionEvent): boolean{
-        if (!(this.accessibilityView.equals(null))) return .onTouchEvent(event);
+        if (!(this.accessibilityView.equals(null))) return super.onTouchEvent(event);
         let takenCareOf = false;
         
-        switch(getAndroidViewMotionEventActionMasked(event)) {
+        switch(event.actionMasked) {
             case MotionEvent.ACTION_DOWN:
             case MotionEvent.ACTION_POINTER_DOWN:
-            const pointerId = event.getPointerId(getAndroidViewMotionEventActionIndex(event));
+            const pointerId = event.getPointerId(event.actionIndex);
             
-            const touch = new Touch(event.getX(getAndroidViewMotionEventActionIndex(event)), event.getY(getAndroidViewMotionEventActionIndex(event)), pointerId);
+            const touch = new Touch(event.getX(event.actionIndex), event.getY(event.actionIndex), pointerId);
             
-            const array412 = this.touches;
-            const index413 = pointerId;
-            kotlinCollectionsMutableMapSet(index413, touch)
-            takenCareOf = (this.delegate?.onTouchDown(touch.id, touch.x, touch.y, getComLightningkiteKhrysalisViewsCustomViewWidth(this), getComLightningkiteKhrysalisViewsCustomViewHeight(this)) ?? false) || takenCareOf
+            const array421 = this.touches;
+            const index422 = pointerId;
+            kotlinCollectionsMutableMapSet(index422, touch)
+            takenCareOf = (this.delegate?.onTouchDown(touch.id, touch.x, touch.y, this.width, this.height) ?? false) || takenCareOf
             break;
             case MotionEvent.ACTION_MOVE:
-            for (const pointerIndex of kotlinIntUntil(0, getAndroidViewMotionEventPointerCount(event))) {
+            for (const pointerIndex of kotlinIntUntil(0, event.pointerCount)) {
                 const pointerId = event.getPointerId(pointerIndex);
                 
                 const touch = this.touches.get(pointerId);
@@ -193,24 +192,24 @@ export class CustomView extends FrameLayout {
                 if (!(touch.equals(null))) {
                     touch.x = event.getX(pointerIndex);
                     touch.y = event.getY(pointerIndex);
-                    takenCareOf = (this.delegate?.onTouchMove(touch.id, touch.x, touch.y, getComLightningkiteKhrysalisViewsCustomViewWidth(this), getComLightningkiteKhrysalisViewsCustomViewHeight(this)) ?? false) || takenCareOf;
+                    takenCareOf = (this.delegate?.onTouchMove(touch.id, touch.x, touch.y, this.width, this.height) ?? false) || takenCareOf;
                 }
             }
             break;
             case MotionEvent.ACTION_CANCEL:
-            const pointerId = event.getPointerId(getAndroidViewMotionEventActionIndex(event));
+            const pointerId = event.getPointerId(event.actionIndex);
             
             const touch = this.touches.remove(pointerId);
             
             break;
             case MotionEvent.ACTION_UP:
             case MotionEvent.ACTION_POINTER_UP:
-            const pointerId = event.getPointerId(getAndroidViewMotionEventActionIndex(event));
+            const pointerId = event.getPointerId(event.actionIndex);
             
             const touch = this.touches.remove(pointerId);
             
             if (!(touch.equals(null))) {
-                takenCareOf = (this.delegate?.onTouchUp(touch.id, touch.x, touch.y, getComLightningkiteKhrysalisViewsCustomViewWidth(this), getComLightningkiteKhrysalisViewsCustomViewHeight(this)) ?? false) || takenCareOf;
+                takenCareOf = (this.delegate?.onTouchUp(touch.id, touch.x, touch.y, this.width, this.height) ?? false) || takenCareOf;
             }
             break;
         }
@@ -221,9 +220,9 @@ export class CustomView extends FrameLayout {
     private readonly metrics;
     
     public onDraw(canvas: CanvasRenderingContext2D): void{
-        .onDraw(canvas);
+        super.onDraw(canvas);
         if (this.accessibilityView.equals(null)) {
-            this.delegate?.draw(canvas, getComLightningkiteKhrysalisViewsCustomViewWidth(this), getComLightningkiteKhrysalisViewsCustomViewHeight(this), this.metrics);
+            this.delegate?.draw(canvas, this.width, this.height, this.metrics);
         }
     }
     public onMeasure(widthMeasureSpec: number, heightMeasureSpec: number): void{
@@ -240,7 +239,7 @@ export class CustomView extends FrameLayout {
                     return widthSize
                     break;
                     default:
-                    return min(((_it)=>{
+                    return Math.min(((_it)=>{
                                 if(_it === null) return null;
                                 return Math.floor(_it)
                     })(this.delegate?.sizeThatFitsWidth(widthSize, heightSize)) ?? widthSize, widthSize)
@@ -253,7 +252,7 @@ export class CustomView extends FrameLayout {
                     return heightSize
                     break;
                     default:
-                    return min(((_it)=>{
+                    return Math.min(((_it)=>{
                                 if(_it === null) return null;
                                 return Math.floor(_it)
                     })(this.delegate?.sizeThatFitsHeight(width, heightSize)) ?? heightSize, heightSize)

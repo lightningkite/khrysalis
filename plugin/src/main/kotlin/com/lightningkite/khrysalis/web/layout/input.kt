@@ -15,6 +15,58 @@ internal fun HtmlTranslator.input() {
         out.style["font-size"] = "12pt"
     }
 
+    element.handle("com.lightningkite.khrysalis.views.android.DateButton"){
+        out.name = "input"
+        out.attributes["type"] = "date"
+        out.style["font-size"] = "12pt"
+    }
+
+    element.handle("com.lightningkite.khrysalis.views.android.TimeButton"){
+        out.name = "input"
+        out.attributes["type"] = "time"
+        out.style["font-size"] = "12pt"
+    }
+
+    element.handle("SeekBar"){
+        out.name = "input"
+        out.attributes["type"] = "range"
+        out.attributes["min"] = "1"
+        out.attributes["max"] = "100"
+        out.attributes["value"] = "50"
+    }
+
+    element.handle("Spinner"){
+        out.name = "select"
+    }
+
+    element.handle("android.widget.RatingBar"){
+        out.name = "div"
+        out.classes += "khrysalis-rating-bar"
+        out.style["display"] = "flex"
+        out.style["flex-direction"] = "row"
+        out.style["justify-content"] = "center"
+        out.style["align-items"] = "center"
+
+        for(i in 1 .. 5){
+            out.contentNodes += ResultNode("div").apply {
+                classes += "khrysalis-rating-bar-star-on"
+                style["flex-grow"] = "1"
+            }
+        }
+    }
+
+    element.handle("AutoCompleteTextView") {
+        out.name = "div"
+        out.classes += "khrysalis-autocomplete"
+        val i = ResultNode("input").apply {
+            name = "input"
+            attributes["type"] = "text"
+            style["font-size"] = "12pt"
+        }
+        out.contentNodes.add(i)
+        out.primary = i
+    }
+
     element.handle("CheckBox"){
         val id = "id${idNumber.getAndIncrement()}"
         out.name = "label"

@@ -2,8 +2,8 @@
 // File: views/Button.compoundDrawable.actual.kt
 // Package: com.lightningkite.khrysalis.views
 // FQImport: kotlin.sequences.filterNotNull>kotlin.sequences.Sequence<kotlin.Any> TS kotlinSequencesSequenceFilterNotNull
+// FQImport: android.widget.Button.compoundDrawables TS compoundDrawables
 // FQImport: com.lightningkite.khrysalis.views.<set-compoundDrawable>.existing TS existing
-// FQImport: android.widget.Button.compoundDrawables TS getAndroidWidgetButtonCompoundDrawables
 // FQImport: kotlin.collections.asSequence>kotlin.Array<kotlin.Any> TS kotlinArrayAsSequence
 // FQImport: android.graphics.drawable.Drawable TS Drawable
 // FQImport: com.lightningkite.khrysalis.views.<set-compoundDrawable>.value TS value
@@ -11,9 +11,9 @@
 // FQImport: android.widget.Button.setCompoundDrawablesWithIntrinsicBounds TS setCompoundDrawablesWithIntrinsicBounds
 
 //! Declares com.lightningkite.khrysalis.views.compoundDrawable>android.widget.Button
-export function getAndroidWidgetButtonCompoundDrawable(this_: HTMLButtonElement): (Drawable | null) { return kotlinSequencesSequenceFirstOrNull(kotlinSequencesSequenceFilterNotNull(kotlinArrayAsSequence(getAndroidWidgetButtonCompoundDrawables(this_)))); }
+export function getAndroidWidgetButtonCompoundDrawable(this_: HTMLButtonElement): (Drawable | null) { return kotlinSequencesSequenceFirstOrNull(kotlinSequencesSequenceFilterNotNull(kotlinArrayAsSequence(this_.compoundDrawables))); }
 export function setAndroidWidgetButtonCompoundDrawable(this_: HTMLButtonElement, value: (Drawable | null)) {
-    const existing = getAndroidWidgetButtonCompoundDrawables(this_);
+    const existing = this_.compoundDrawables;
     
     this_.setCompoundDrawablesWithIntrinsicBounds(!(existing.get(0).equals(null)) ? value : null, !(existing.get(1).equals(null)) ? value : null, !(existing.get(2).equals(null)) ? value : null, !(existing.get(3).equals(null)) ? value : null);
 }

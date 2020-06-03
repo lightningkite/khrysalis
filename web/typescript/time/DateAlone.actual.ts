@@ -69,33 +69,6 @@ export class DateAlone {
     
 }
 
-//! Declares com.lightningkite.khrysalis.time.setDayOfMonth
-export function comLightningkiteKhrysalisTimeDateAloneSetDayOfMonth(this_: DateAlone, value: number): DateAlone{
-    usableDate.setFullYear(this_.year, this_.month, value);
-    this_.year = usableDate.getFullYear();
-    this_.month = usableDate.getMonth();
-    this_.day = usableDate.getDate();
-    return this;
-}
-
-//! Declares com.lightningkite.khrysalis.time.setMonthOfYear
-export function comLightningkiteKhrysalisTimeDateAloneSetMonthOfYear(this_: DateAlone, value: number): DateAlone{
-    usableDate.setFullYear(this_.year, value, this_.day);
-    this_.year = usableDate.getFullYear();
-    this_.month = usableDate.getMonth();
-    this_.day = usableDate.getDate();
-    return this;
-}
-
-//! Declares com.lightningkite.khrysalis.time.setYearAd
-export function comLightningkiteKhrysalisTimeDateAloneSetYearAd(this_: DateAlone, value: number): DateAlone{
-    usableDate.setFullYear(value, this_.month, this_.day);
-    this_.year = usableDate.getFullYear();
-    this_.month = usableDate.getMonth();
-    this_.day = usableDate.getDate();
-    return this;
-}
-
 //! Declares com.lightningkite.khrysalis.time.setDayOfWeek
 export function comLightningkiteKhrysalisTimeDateAloneSetDayOfWeek(this_: DateAlone, value: number): DateAlone{
     usableDate.setFullYear(this_.year, this_.month, this_.day);
@@ -114,46 +87,6 @@ export function comLightningkiteKhrysalisTimeDateAloneSetAddDayOfWeek(this_: Dat
     return this;
 }
 
-//! Declares com.lightningkite.khrysalis.time.setAddDayOfMonth
-export function comLightningkiteKhrysalisTimeDateAloneSetAddDayOfMonth(this_: DateAlone, value: number): DateAlone{
-    usableDate.setFullYear(this_.year, this_.month, this_.day + value);
-    this_.year = usableDate.getFullYear();
-    this_.month = usableDate.getMonth();
-    this_.day = usableDate.getDate();
-    return this;
-}
-
-//! Declares com.lightningkite.khrysalis.time.setAddMonthOfYear
-export function comLightningkiteKhrysalisTimeDateAloneSetAddMonthOfYear(this_: DateAlone, value: number): DateAlone{
-    usableDate.setFullYear(this_.year, this_.month + value, this_.day);
-    this_.year = usableDate.getFullYear();
-    this_.month = usableDate.getMonth();
-    this_.day = usableDate.getDate();
-    return this;
-}
-
-//! Declares com.lightningkite.khrysalis.time.setAddYearAd
-export function comLightningkiteKhrysalisTimeDateAloneSetAddYearAd(this_: DateAlone, value: number): DateAlone{
-    usableDate.setFullYear(this_.year + value, this_.month, this_.day);
-    this_.year = usableDate.getFullYear();
-    this_.month = usableDate.getMonth();
-    this_.day = usableDate.getDate();
-    return this;
-}
-
-
-//! Declares com.lightningkite.khrysalis.time.dayOfMonth
-export function comLightningkiteKhrysalisTimeDateAloneDayOfMonth(this_: DateAlone, value: number): DateAlone {
-    return comLightningkiteKhrysalisTimeDateAloneSetDayOfMonth(this_.copy(), value);
-}
-//! Declares com.lightningkite.khrysalis.time.monthOfYear
-export function comLightningkiteKhrysalisTimeDateAloneMonthOfYear(this_: DateAlone, value: number): DateAlone {
-    return comLightningkiteKhrysalisTimeDateAloneSetMonthOfYear(this_.copy(), value);
-}
-//! Declares com.lightningkite.khrysalis.time.yearAd
-export function comLightningkiteKhrysalisTimeDateAloneYearAd(this_: DateAlone, value: number): DateAlone {
-    return comLightningkiteKhrysalisTimeDateAloneSetYearAd(this_.copy(), value);
-}
 //! Declares com.lightningkite.khrysalis.time.dayOfWeek
 export function comLightningkiteKhrysalisTimeDateAloneDayOfWeek(this_: DateAlone, value: number): DateAlone {
     return comLightningkiteKhrysalisTimeDateAloneSetDayOfWeek(this_.copy(), value);
@@ -161,18 +94,6 @@ export function comLightningkiteKhrysalisTimeDateAloneDayOfWeek(this_: DateAlone
 //! Declares com.lightningkite.khrysalis.time.addDayOfWeek
 export function comLightningkiteKhrysalisTimeDateAloneAddDayOfWeek(this_: DateAlone, value: number): DateAlone {
     return comLightningkiteKhrysalisTimeDateAloneSetAddDayOfWeek(this_.copy(), value);
-}
-//! Declares com.lightningkite.khrysalis.time.addDayOfMonth
-export function comLightningkiteKhrysalisTimeDateAloneAddDayOfMonth(this_: DateAlone, value: number): DateAlone {
-    return comLightningkiteKhrysalisTimeDateAloneSetAddDayOfMonth(this_.copy(), value);
-}
-//! Declares com.lightningkite.khrysalis.time.addMonthOfYear
-export function comLightningkiteKhrysalisTimeDateAloneAddMonthOfYear(this_: DateAlone, value: number): DateAlone {
-    return comLightningkiteKhrysalisTimeDateAloneSetAddMonthOfYear(this_.copy(), value);
-}
-//! Declares com.lightningkite.khrysalis.time.addYearAd
-export function comLightningkiteKhrysalisTimeDateAloneAddYearAd(this_: DateAlone, value: number): DateAlone {
-    return comLightningkiteKhrysalisTimeDateAloneSetAddYearAd(this_.copy(), value);
 }
 
 //! Declares com.lightningkite.khrysalis.time.iso8601

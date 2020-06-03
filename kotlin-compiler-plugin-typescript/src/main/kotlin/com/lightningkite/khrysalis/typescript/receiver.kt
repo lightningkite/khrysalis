@@ -54,8 +54,6 @@ fun TypescriptTranslator.registerReceiver() {
     )
 
     handle<KtThisExpression> {
-        val fq = typedRule.resolvedCall?.resultingDescriptor?.containingDeclaration?.simpleFqName
-        val entry = receiverStack.lastOrNull { it.fqName == fq }
-        -(entry?.tsName ?: "this")
+        -typedRule.getTsReceiver()
     }
 }

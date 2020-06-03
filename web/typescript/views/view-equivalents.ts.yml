@@ -1,20 +1,5 @@
 ---
 
-# android.widget.AutoCompleteTextView
-- id: android.widget.AutoCompleteTextView
-  type: type
-  template: HTML_Element
-
-# android.widget.CompoundButton
-- id: android.widget.CompoundButton
-  type: type
-  template: HTML_Element
-
-# android.widget.TimeButton
-- id: android.widget.DateButton
-  type: type
-  template: HTMLInputElement
-
 # android.widget.ImageView
 - id: android.widget.ImageView
   type: type

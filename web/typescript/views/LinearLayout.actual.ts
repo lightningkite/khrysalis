@@ -4,9 +4,9 @@
 // FQImport: android.widget.LinearLayout.HORIZONTAL TS HORIZONTAL
 // FQImport: android.widget.LinearLayout.LayoutParams.gravity TS gravity
 // FQImport: android.view.Gravity.TOP TS TOP
-// FQImport: android.widget.LinearLayout.orientation TS getAndroidWidgetLinearLayoutOrientation
 // FQImport: com.lightningkite.khrysalis.views.geometry.Align TS Align
 // FQImport: com.lightningkite.khrysalis.views.geometry.Align.fill TS fill
+// FQImport: android.widget.LinearLayout.orientation TS orientation
 // FQImport: com.lightningkite.khrysalis.views.params.marginStart TS marginStart
 // FQImport: com.lightningkite.khrysalis.views.params.weight TS weight
 // FQImport: com.lightningkite.khrysalis.views.params.sizeY TS sizeY
@@ -19,11 +19,11 @@
 // FQImport: com.lightningkite.khrysalis.views.params.d TS d
 // FQImport: com.lightningkite.khrysalis.views.geometry.AlignPair TS AlignPair
 // FQImport: android.view.Gravity TS Gravity
-// FQImport: android.widget.LinearLayout.resources TS getAndroidWidgetLinearLayoutResources
 // FQImport: android.view.Gravity.CENTER TS CENTER
 // FQImport: com.lightningkite.khrysalis.views.geometry.Align.center TS center
 // FQImport: com.lightningkite.khrysalis.views.params.gravity TS gravity
 // FQImport: android.view.ViewGroup.LayoutParams.WRAP_CONTENT TS WRAP_CONTENT
+// FQImport: android.widget.LinearLayout.resources TS resources
 // FQImport: android.view.Gravity.START TS START
 // FQImport: com.lightningkite.khrysalis.views.geometry.AlignPair.vertical TS vertical
 // FQImport: android.view.Gravity.END TS END
@@ -32,7 +32,7 @@
 // FQImport: android.view.Gravity.BOTTOM TS BOTTOM
 // FQImport: com.lightningkite.khrysalis.views.geometry.Align.end TS end
 // FQImport: android.widget.LinearLayout.LayoutParams TS LayoutParams
-// FQImport: android.content.res.Resources.displayMetrics TS getAndroidContentResResourcesDisplayMetrics
+// FQImport: android.content.res.Resources.displayMetrics TS displayMetrics
 // FQImport: android.util.DisplayMetrics.density TS density
 // FQImport: com.lightningkite.khrysalis.views.params.align TS align
 // FQImport: com.lightningkite.khrysalis.views.geometry.AlignPair.Companion.center TS center
@@ -42,12 +42,12 @@ import { also } from 'Kotlin'
 
 //! Declares com.lightningkite.khrysalis.views.params>android.widget.LinearLayout
 export function androidWidgetLinearLayoutParams(this_: HTML_Element, sizeX: number = 0, sizeY: number = 0, marginStart: number = 0, marginEnd: number = 0, marginTop: number = 0, marginBottom: number = 0, gravity: AlignPair = AlignPair.Companion.INSTANCE.center, weight: number = 0): HTML_Element.LayoutParams{
-    const d = getAndroidContentResResourcesDisplayMetrics(getAndroidWidgetLinearLayoutResources(this_)).density;
+    const d = this_.resources.displayMetrics.density;
     
-    const align = getAndroidWidgetLinearLayoutOrientation(this_) === LinearLayout.HORIZONTAL ? gravity.vertical : gravity.horizontal;
+    const align = this_.orientation === LinearLayout.HORIZONTAL ? gravity.vertical : gravity.horizontal;
     
     
-    return also((() => {if (getAndroidWidgetLinearLayoutOrientation(this_) === LinearLayout.HORIZONTAL) {
+    return also((() => {if (this_.orientation === LinearLayout.HORIZONTAL) {
                     return LinearLayout.LayoutParams.constructorkotlinInt, kotlinInt, kotlinFloat(!(weight === 0) ? 0 : sizeX === 0 ? WRAP_CONTENT : Math.floor((sizeX * d)), align.equals(Align.fill) ? MATCH_PARENT : sizeY === 0 ? WRAP_CONTENT : Math.floor((sizeY * d)), weight);
                 } else {
                     return LinearLayout.LayoutParams.constructorkotlinInt, kotlinInt, kotlinFloat(align.equals(Align.fill) ? MATCH_PARENT : sizeX === 0 ? WRAP_CONTENT : Math.floor((sizeX * d)), !(weight === 0) ? 0 : sizeY === 0 ? WRAP_CONTENT : Math.floor((sizeY * d)), weight);

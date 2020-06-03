@@ -10,6 +10,7 @@
 // FQImport: com.google.android.material.tabs.TabLayout.addOnTabSelectedListener TS addOnTabSelectedListener
 // FQImport: com.lightningkite.khrysalis.observables.subscribeBy>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any> TS comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy
 // FQImport: com.google.android.material.tabs.TabLayout.Tab TS Tab
+// FQImport: com.google.android.material.tabs.TabLayout.Tab.position TS position
 // FQImport: com.google.android.material.tabs.TabLayout TS TabLayout
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.tab TS tab
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.selected TS selected
@@ -20,7 +21,6 @@
 // FQImport: com.lightningkite.khrysalis.rx.until>io.reactivex.disposables.Disposable TS ioReactivexDisposablesDisposableUntil
 // FQImport: com.google.android.material.tabs.TabLayout.BaseOnTabSelectedListener TS TabLayoutBaseOnTabSelectedListener
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty TS MutableObservableProperty
-// FQImport: com.google.android.material.tabs.TabLayout.Tab.position TS getComGoogleAndroidMaterialTabsTabLayoutTabPosition
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.onTabSelected.p0 TS p0
 import { comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy } from './../ObservableProperty.ext.shared'
 import { MutableObservableProperty } from './../MutableObservableProperty.shared'
@@ -40,13 +40,13 @@ export function comGoogleAndroidMaterialTabsTabLayoutBind(this_: TabLayout, tabs
             }
             
             onTabReselected(p0: TabLayout.Tab): void{
-                if (!(selected.value === getComGoogleAndroidMaterialTabsTabLayoutTabPosition(p0))) selected.value = getComGoogleAndroidMaterialTabsTabLayoutTabPosition(p0);
+                if (!(selected.value === p0.position)) selected.value = p0.position;
             }
             
             onTabUnselected(p0: TabLayout.Tab): void{}
             
             onTabSelected(p0: TabLayout.Tab): void{
-                if (!(selected.value === getComGoogleAndroidMaterialTabsTabLayoutTabPosition(p0))) selected.value = getComGoogleAndroidMaterialTabsTabLayoutTabPosition(p0);
+                if (!(selected.value === p0.position)) selected.value = p0.position;
             }
     }());
 }

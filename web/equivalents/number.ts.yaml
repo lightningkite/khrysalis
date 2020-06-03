@@ -790,3 +790,76 @@
   type: get
   template: Math.abs(~this~)
 
+# Max Min
+
+- id: kotlin.Byte.Companion.MIN_VALUE
+  type: get
+  template: "-128"
+
+- id: kotlin.Byte.Companion.MAX_VALUE
+  type: get
+  template: "127"
+
+- id: kotlin.Short.Companion.MIN_VALUE
+  type: get
+  template: "-32768"
+
+- id: kotlin.Short.Companion.MAX_VALUE
+  type: get
+  template: "32767"
+
+- id: kotlin.Int.Companion.MIN_VALUE
+  type: get
+  template: "-2147483648"
+
+- id: kotlin.Int.Companion.MAX_VALUE
+  type: get
+  template: "2147483647"
+
+- id: kotlin.Long.Companion.MIN_VALUE
+  type: get
+  template: "-2147483648"
+
+- id: kotlin.Long.Companion.MAX_VALUE
+  type: get
+  template: "2147483647"
+
+- id: kotlin.Float.Companion.MIN_VALUE
+  type: get
+  template: "1.175494351E-38"
+
+- id: kotlin.Double.Companion.MIN_VALUE
+  type: get
+  template: "2.2250738585072014E-308"
+
+- id: kotlin.Float.Companion.MAX_VALUE
+  type: get
+  template: "3.402823466E+38"
+
+- id: kotlin.Double.Companion.MAX_VALUE
+  type: get
+  template: "1.7976931348623158E+308"
+
+- id: kotlin.Float.Companion.POSITIVE_INFINITY
+  type: get
+  template: Number.POSITIVE_INFINITY
+
+- id: kotlin.Double.Companion.POSITIVE_INFINITY
+  type: get
+  template: Number.POSITIVE_INFINITY
+
+- id: kotlin.Float.Companion.NEGATIVE_INFINITY
+  type: get
+  template: Number.NEGATIVE_INFINITY
+
+- id: kotlin.Double.Companion.NEGATIVE_INFINITY
+  type: get
+  template: Number.NEGATIVE_INFINITY
+
+- id: kotlin.Float.Companion.NaN
+  type: get
+  template: Number.NaN
+
+- id: kotlin.Double.Companion.NaN
+  type: get
+  template: Number.NaN

@@ -13,7 +13,7 @@ import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
 
 //TODO: Local function edgecase - the meaning of 'this' changes
 
-val FunctionDescriptor.tsName: String?
+val FunctionDescriptor.tsNameOverridden: String?
     get() = if (this is ConstructorDescriptor) {
         if(this.isPrimary == false) {
             this.constructedClass.tsTopLevelName + "." + this.tsConstructorName
@@ -35,7 +35,10 @@ val FunctionDescriptor.tsName: String?
             .split('.')
             .joinToString("") { it.capitalize() }.decapitalize() +
                 this.name.identifier.capitalize()
-    } else if (this.name.isSpecial) {
+    } else this.overriddenDescriptors.asSequence().mapNotNull { it.tsNameOverridden }.firstOrNull()
+
+val FunctionDescriptor.tsName: String?
+    get() = tsNameOverridden ?: if (this.name.isSpecial) {
         null
     } else {
         this.name.identifier
@@ -109,13 +112,18 @@ fun TypescriptTranslator.registerFunction() {
                 val tr = typedRule
                 val ktClass = typedRule.parentOfType<KtClassBody>()!!.parentOfType<KtClass>()!!
                 ktClass.addPostAction {
-                    withReceiverScope(tr.resolvedFunction!!.simpleFqName) { rName2 ->
+                    withReceiverScope(tr.containingClass()!!.resolvedClass!!) { rName2 ->
+                        val recParam = listOf<Any>(
+                            rName2,
+                            ": ",
+                            tr.containingClass()?.let{ tsTopLevelNameElement(it) } ?: "any"
+                        )
                         -"\npublic static "
                         -VirtualFunction(
                             name = tr.resolvedFunction!!.tsDefaultName!!,
                             resolvedFunction = tr.resolvedFunction,
                             typeParameters = ktClass.typeParameters + mainDecl.typeParameters,
-                            valueParameters = listOf(rName2) + mainDecl.valueParameters,
+                            valueParameters = listOf<Any>(recParam) + mainDecl.valueParameters,
                             returnType = mainDecl.returnType,
                             body = tr.bodyExpression
                         )
@@ -158,7 +166,7 @@ fun TypescriptTranslator.registerFunction() {
             )
         }
         typedRule.receiverTypeReference?.let {
-            withReceiverScope(typedRule.resolvedFunction!!.simpleFqName) { rName ->
+            withReceiverScope(typedRule.resolvedFunction!!) { rName ->
                 emit(rName)
             }
         } ?: run {

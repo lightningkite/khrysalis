@@ -21,7 +21,7 @@ fun TypescriptTranslator.registerLambda() {
         priority = 100,
         action = {
             val resolved = typedRule.resolvedFunction!!
-            withReceiverScope(resolved.simpleFqName, "this_") { name ->
+            withReceiverScope(resolved, "this_") { name ->
                 -typedRule.typeParameterList
                 -'('
                 -name

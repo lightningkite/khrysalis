@@ -11,9 +11,10 @@
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.instantiateItem.position TS position
 // FQImport: com.lightningkite.khrysalis.observables.subscribeBy>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any> TS comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.instantiateItem.data TS data
-// FQImport: androidx.viewpager.widget.ViewPager.adapter TS setAndroidxViewpagerWidgetViewPagerAdapter
+// FQImport: androidx.viewpager.widget.ViewPager.adapter TS adapter
 // FQImport: android.view.ViewGroup TS ViewGroup
 // FQImport: com.lightningkite.khrysalis.rx.until>io.reactivex.disposables.Disposable TS ioReactivexDisposablesDisposableUntil
+// FQImport: androidx.viewpager.widget.ViewPager.currentItem TS currentItem
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.items TS items
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.T TS T
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.isViewFromObject.p1 TS p1
@@ -23,7 +24,6 @@
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<anonymous>.value TS value
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.makeView TS makeView
 // FQImport: androidx.viewpager.widget.ViewPager.OnPageChangeListener TS ViewPagerOnPageChangeListener
-// FQImport: androidx.viewpager.widget.ViewPager.currentItem TS setAndroidxViewpagerWidgetViewPagerCurrentItem
 // FQImport: androidx.viewpager.widget.ViewPager.addOnPageChangeListener TS addOnPageChangeListener
 // FQImport: com.lightningkite.khrysalis.observables.StandardObservableProperty TS StandardObservableProperty
 // FQImport: com.lightningkite.khrysalis.rx.removed>android.view.View TS getAndroidViewViewRemoved
@@ -37,32 +37,32 @@ import { StandardObservableProperty } from './../StandardObservableProperty.shar
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>androidx.viewpager.widget.ViewPager
 export function androidxViewpagerWidgetViewPagerBind<T>(this_: ViewPager, items: Array<T>, showIndex: MutableObservableProperty<number> = new StandardObservableProperty(0, undefined), makeView: (a: T) => HTMLElement): void{
-    setAndroidxViewpagerWidgetViewPagerAdapter(this_, new class Anon extends PagerAdapter {
-            public constructor() {
-                super();
-            }
+    this_.adapter = new class Anon extends PagerAdapter {
+        public constructor() {
+            super();
+        }
+        
+        
+        isViewFromObject(p0: HTMLElement, p1: any): boolean{ return p1.equals(p0); }
+        
+        getCount(): number{ return items.length; }
+        
+        instantiateItem(container: ViewGroup, position: number): any{
+            const data = items[position];
             
+            const view = makeView(data);
             
-            isViewFromObject(p0: HTMLElement, p1: any): boolean{ return p1.equals(p0); }
-            
-            getCount(): number{ return items.length; }
-            
-            instantiateItem(container: ViewGroup, position: number): any{
-                const data = items[position];
-                
-                const view = makeView(data);
-                
-                container.addView(view);
-                return view;
-            }
-            
-            destroyItem(container: ViewGroup, position: number, `object`: any): void{
-                container.removeView(`object` as HTMLElement);
-            }
-    }());
+            container.addView(view);
+            return view;
+        }
+        
+        destroyItem(container: ViewGroup, position: number, `object`: any): void{
+            container.removeView(`object` as HTMLElement);
+        }
+    }();
     
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(showIndex, undefined, undefined, (value) => {
-                setAndroidxViewpagerWidgetViewPagerCurrentItem(this_, value)
+                this_.currentItem = value
     }), getAndroidViewViewRemoved(this_));
     this_.addOnPageChangeListener(new class Anon implements ViewPagerOnPageChangeListener {
             public static implementsInterfaceAndroidxViewpagerWidgetViewPagerOnPageChangeListener = true;

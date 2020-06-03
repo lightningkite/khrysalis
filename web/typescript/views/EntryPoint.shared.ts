@@ -20,10 +20,10 @@ export interface EntryPoint {
     
 }
 export class EntryPointDefaults {
-    public static handleDeepLink(this_, schema: string, host: string, path: string, params: Map<string, string>): void{
+    public static handleDeepLink(this_: EntryPoint, schema: string, host: string, path: string, params: Map<string, string>): void{
         console.log(`Empty handler; ${schema}://${host}/${path}/${params}`);
     }
-    public static onBackPressed(this_): boolean{ return false; }
+    public static onBackPressed(this_: EntryPoint): boolean{ return false; }
     public static getMainStack(this_: EntryPoint){ return null; }
 }
 

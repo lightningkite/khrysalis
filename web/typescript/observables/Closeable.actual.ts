@@ -18,11 +18,11 @@ export interface Closeable {
     close(): void
 }
 export class CloseableDefaults {
-    public static isDisposed(this_): boolean{
+    public static isDisposed(this_: Closeable): boolean{
         return false;
     }
-    public static dispose(this_): void{
-        this.close();
+    public static dispose(this_: Closeable): void{
+        this_.close();
     }
 }
 

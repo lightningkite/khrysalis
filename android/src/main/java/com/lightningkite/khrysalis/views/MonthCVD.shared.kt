@@ -243,6 +243,8 @@ open class MonthCVD : CustomViewDelegate() {
     var dragStartY: Float = 0f
     open fun onTap(day: DateAlone) {}
 
+    @JsName("onTouchDownDate")
+    open fun onTouchDown(day: DateAlone): Boolean = false
     override fun onTouchDown(id: Int, x: Float, y: Float, width: Float, height: Float): Boolean {
         val day = dayAtPixel(x, y)
         day?.let {
@@ -259,7 +261,8 @@ open class MonthCVD : CustomViewDelegate() {
         return true
     }
 
-    open fun onTouchDown(day: DateAlone): Boolean = false
+    @JsName("onTouchMoveDate")
+    open fun onTouchMove(day: DateAlone): Boolean = false
     override fun onTouchMove(id: Int, x: Float, y: Float, width: Float, height: Float): Boolean {
         if (draggingId == id) {
             lastOffset = currentOffset
@@ -278,7 +281,8 @@ open class MonthCVD : CustomViewDelegate() {
         return true
     }
 
-    open fun onTouchMove(day: DateAlone): Boolean = false
+    @JsName("onTouchUpDate")
+    open fun onTouchUp(day: DateAlone): Boolean = false
     override fun onTouchUp(id: Int, x: Float, y: Float, width: Float, height: Float): Boolean {
         if (draggingId == id) {
             if (isTap) {
@@ -309,7 +313,6 @@ open class MonthCVD : CustomViewDelegate() {
         return true
     }
 
-    open fun onTouchUp(day: DateAlone): Boolean = false
 
     override fun sizeThatFitsWidth(width: Float, height: Float): Float {
         return dayLabelHeight * 28f

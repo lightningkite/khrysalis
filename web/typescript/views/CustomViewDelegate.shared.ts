@@ -6,8 +6,8 @@
 // FQImport: com.lightningkite.khrysalis.views.CustomView TS CustomView
 // FQImport: com.lightningkite.khrysalis.views.CustomViewDelegate.sizeThatFitsHeight.height TS height
 // FQImport: com.lightningkite.khrysalis.views.CustomViewDelegate.sizeThatFitsWidth.width TS width
-// FQImport: com.lightningkite.khrysalis.views.CustomView.postInvalidate TS postInvalidate
 import { CustomView } from './CustomView.actual'
+import { DisplayMetrics } from './DisplayMetrics.actual'
 
 //! Declares com.lightningkite.khrysalis.views.CustomViewDelegate
 export abstract class CustomViewDelegate {
@@ -23,7 +23,8 @@ export abstract class CustomViewDelegate {
     public sizeThatFitsHeight(width: number, height: number): number{ return height; }
     
     public invalidate(): void{ const temp140 = this.customView;
-    if(temp140 !== null) /* Invalidate.  Not needed in JS. */; }
-    public postInvalidate(): void{ this.customView?.postInvalidate(); }
+    if(temp140 !== null) temp140 /* Invalidate.  Not needed in JS. */; }
+    public postInvalidate(): void{ const temp141 = this.customView;
+    if(temp141 !== null) temp141 /* Invalidate.  Not needed in JS. */; }
 }
 
