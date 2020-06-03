@@ -15,6 +15,14 @@ internal fun HtmlTranslator.display() {
     element.handle("Button") {
         out.name = "button"
     }
+    element.handle("CompoundButton") {
+        out.name = "button"
+        out.classes += "khrysalis-compound-off"
+    }
+    element.handle("com.rd.PageIndicatorView") {
+        out.name = "div"
+        out.classes += "khrysalis-page-indicator"
+    }
     element.handle("ImageView") {
         out.name = "image"
     }
@@ -24,6 +32,33 @@ internal fun HtmlTranslator.display() {
         element.translate("ImageView", rule, imageChild)
         out.contentNodes.add(imageChild)
     }
+
+    element.handle("com.lightningkite.khrysalis.views.android.SwapView"){
+        out.name = "div"
+        out.classes += "khrysalis-swap"
+    }
+
+    element.handle("ViewFlipper"){
+        out.name = "div"
+        out.classes += "khrysalis-flip"
+    }
+
+    element.handle("androidx.viewpager.widget.ViewPager"){
+        out.name = "div"
+        out.classes += "khrysalis-pager"
+        out.contentNodes += ResultNode("button").apply {
+            classes += "khrysalis-pager-left"
+        }
+        out.contentNodes += ResultNode("button").apply {
+            classes += "khrysalis-pager-right"
+        }
+    }
+
+    element.handle("com.google.android.material.tabs.TabLayout"){
+        out.name = "div"
+        out.classes += "khrysalis-tabs"
+    }
+
     attribute.handle("android:src", condition = { out.name == "image" }) {
         val value = rule.value
         when {

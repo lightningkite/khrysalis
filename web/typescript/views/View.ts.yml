@@ -66,7 +66,11 @@
 
 - id: android.view.View.invalidate
   type: call
-  template: /* Invalidate.  Not needed in JS. */
+  template: ~this~ /* Invalidate.  Not needed in JS. */
+
+- id: android.view.View.postInvalidate
+  type: call
+  template: ~this~ /* Invalidate.  Not needed in JS. */
 
 - id: android.view.View.setBackgroundColor
   type: call

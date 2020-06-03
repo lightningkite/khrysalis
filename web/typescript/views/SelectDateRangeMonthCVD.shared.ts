@@ -5,6 +5,7 @@
 // FQImport: com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD.drawDay.day TS day
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty.value TS value
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.dayBackgroundStart TS dayBackgroundStart
+// FQImport: android.graphics.Paint.textSize TS textSize
 // FQImport: com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD.dayPaint TS dayPaint
 // FQImport: com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD.start TS start
 // FQImport: com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD.measure.width TS width
@@ -12,28 +13,23 @@
 // FQImport: com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD.draggingStart TS draggingStart
 // FQImport: com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD.drawDay.outer TS outer
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD TS MonthCVD
-// FQImport: android.graphics.Paint.textSize TS setAndroidGraphicsPaintTextSize
 // FQImport: com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD.selectedPaint TS selectedPaint
 // FQImport: android.graphics.RectF TS RectF
 // FQImport: com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD.measure.height TS height
 // FQImport: com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD.drawDay.canvas TS canvas
 // FQImport: com.lightningkite.khrysalis.time.DateAlone TS DateAlone
 // FQImport: android.util.DisplayMetrics TS DisplayMetrics
-// FQImport: kotlin.Int TS Int
-// FQImport: android.graphics.Paint.textSize TS getAndroidGraphicsPaintTextSize
 // FQImport: com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD.onTouchDown.day TS day
-// FQImport: kotlin.Int.Companion.MIN_VALUE TS MIN_VALUE
-// FQImport: kotlin.Int.Companion.MAX_VALUE TS MAX_VALUE
 // FQImport: com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD.onTouchDown.endInclusiveValue TS endInclusiveValue
 // FQImport: com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD.endInclusive TS endInclusive
 // FQImport: com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD.onTouchMove.day TS day
-// FQImport: com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD.onTouchMove TS onTouchMove
 // FQImport: com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD.selectedDayPaint TS selectedDayPaint
 // FQImport: com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD.onTouchDown.startValue TS startValue
 // FQImport: com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD.onTouchUp.day TS day
 // FQImport: com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD.onTouchMove.obs TS obs
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.dayBackground TS dayBackground
 // FQImport: com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD.onTouchMove.endInclusiveValue TS endInclusiveValue
+// FQImport: com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD.onTouchMove TS onTouchMoveDate
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.measure TS measure
 // FQImport: com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD.onTap.day TS day
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing TS CalendarDrawing
@@ -47,6 +43,7 @@
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty TS MutableObservableProperty
 // FQImport: com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD.drawDay.inner TS inner
 import { MutableObservableProperty } from './../observables/MutableObservableProperty.shared'
+import { DisplayMetrics } from './DisplayMetrics.actual'
 import { DateAlone } from './../time/DateAlone.actual'
 import { CalendarDrawing, MonthCVD } from './MonthCVD.shared'
 import { Paint } from './draw/Paint.actual'
@@ -70,8 +67,8 @@ export class SelectDateRangeMonthCVD extends MonthCVD {
     
     
     public measure(width: number, height: number, displayMetrics: DisplayMetrics): void{
-        .measure(width, height, displayMetrics);
-        setAndroidGraphicsPaintTextSize(this.selectedDayPaint, getAndroidGraphicsPaintTextSize(this.dayPaint));
+        super.measure(width, height, displayMetrics);
+        this.selectedDayPaint.textSize = this.dayPaint.textSize;
     }
     
     public readonly drawDay_dateAlone: DateAlone;
@@ -86,7 +83,7 @@ export class SelectDateRangeMonthCVD extends MonthCVD {
         } else if (day.equals(this.endInclusive.value)){
             CalendarDrawing.INSTANCE.dayBackgroundEnd(canvas, inner, outer, this.selectedPaint);
             CalendarDrawing.INSTANCE.day(canvas, showingMonth, day, inner, this.selectedDayPaint);
-        } else if (day.comparable > (this.start.value?.comparable ?? Int.Companion.INSTANCE.MAX_VALUE) && day.comparable < (this.endInclusive.value?.comparable ?? Int.Companion.INSTANCE.MIN_VALUE)){
+        } else if (day.comparable > (this.start.value?.comparable ?? 2147483647) && day.comparable < (this.endInclusive.value?.comparable ?? -2147483648)){
             CalendarDrawing.INSTANCE.dayBackgroundMid(canvas, inner, outer, this.selectedPaint);
             CalendarDrawing.INSTANCE.day(canvas, showingMonth, day, inner, this.selectedDayPaint);
         } else {
@@ -107,7 +104,7 @@ export class SelectDateRangeMonthCVD extends MonthCVD {
         }
     }
     
-    public onTouchDown(day: DateAlone): boolean{
+    public onTouchDownDate(day: DateAlone): boolean{
         if (!(day.equals(this.start.value)) && !(day.equals(this.endInclusive.value))) {
             return false;
         }
@@ -140,7 +137,7 @@ export class SelectDateRangeMonthCVD extends MonthCVD {
         return true;
     }
     
-    public onTouchMove(day: DateAlone): boolean{
+    public onTouchMoveDate(day: DateAlone): boolean{
         const startValue = this.start.value;
         
         const endInclusiveValue = this.endInclusive.value;
@@ -164,8 +161,8 @@ export class SelectDateRangeMonthCVD extends MonthCVD {
         return true;
     }
     
-    public onTouchUp(day: DateAlone): boolean{
-        this.onTouchMove(day);
+    public onTouchUpDate(day: DateAlone): boolean{
+        this.onTouchMoveDate(day);
         return true;
     }
 }

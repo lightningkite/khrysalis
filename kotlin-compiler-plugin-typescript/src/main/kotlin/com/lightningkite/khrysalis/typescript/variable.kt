@@ -15,6 +15,7 @@ import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
 import org.jetbrains.kotlin.psi.synthetics.SyntheticClassOrObjectDescriptor
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
+import org.jetbrains.kotlin.synthetic.SyntheticJavaPropertyDescriptor
 import org.jetbrains.kotlin.types.KotlinType
 import java.util.concurrent.atomic.AtomicInteger
 
@@ -69,7 +70,7 @@ fun TypescriptTranslator.registerVariable() {
                         )
                         -'>'
                     }
-                    withReceiverScope(resolved.simpleFqName) { r ->
+                    withReceiverScope(resolved) { r ->
                         -'('
                         -r
                         -": "
@@ -98,7 +99,7 @@ fun TypescriptTranslator.registerVariable() {
                         )
                         -'>'
                     }
-                    withReceiverScope(resolved.simpleFqName) { r ->
+                    withReceiverScope(resolved) { r ->
                         -'('
                         -r
                         -": "
@@ -230,7 +231,7 @@ fun TypescriptTranslator.registerVariable() {
         condition = { typedRule.isGetter && typedRule.property.receiverTypeReference != null },
         priority = 8,
         action = {
-            withReceiverScope(typedRule.property.simpleFqName) { receiverName ->
+            withReceiverScope(typedRule.property.resolvedProperty!!) { receiverName ->
                 val resolved = typedRule.property.resolvedProperty!!
                 if (!typedRule.property.isMember) {
                     if (!typedRule.isPrivate()) -"export "
@@ -260,7 +261,7 @@ fun TypescriptTranslator.registerVariable() {
         condition = { typedRule.isSetter && typedRule.property.receiverTypeReference != null },
         priority = 9,
         action = {
-            withReceiverScope(typedRule.property.simpleFqName) { receiverName ->
+            withReceiverScope(typedRule.property.resolvedProperty!!) { receiverName ->
                 val resolved = typedRule.property.resolvedProperty!!
                 if (!typedRule.property.isMember) {
                     if (!typedRule.isPrivate()) {
@@ -722,7 +723,7 @@ fun TypescriptTranslator.registerVariable() {
 }
 
 val PropertyDescriptor.tsFunctionGetName: String?
-    get() = if (extensionReceiverParameter != null) "get" + extensionReceiverParameter!!
+    get() = if(this is SyntheticJavaPropertyDescriptor) null else if (extensionReceiverParameter != null) "get" + extensionReceiverParameter!!
         .value
         .type
         .getJetTypeFqName(false)
@@ -735,7 +736,7 @@ val PropertyDescriptor.tsFunctionGetName: String?
         else -> if (this.accessors.all { it.isDefault } && this.visibility.name == "private") null else "get" + this.name.identifier.capitalize()
     }
 val PropertyDescriptor.tsFunctionSetName: String?
-    get() = if (extensionReceiverParameter != null) "set" + extensionReceiverParameter!!
+    get() = if(this is SyntheticJavaPropertyDescriptor) null else if (extensionReceiverParameter != null) "set" + extensionReceiverParameter!!
         .value
         .type
         .getJetTypeFqName(false)

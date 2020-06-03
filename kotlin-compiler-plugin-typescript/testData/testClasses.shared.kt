@@ -12,7 +12,7 @@ data class DataClassThing(val x: Double = 0.0, val y: String = "Hello!"): TestIn
     override fun interfaceFunction(): String = "$x $y"
 }
 
-class Weird(a: Int = 0, b: String, val c: Double, var d: Long): TestInterface {
+open class Weird(a: Int = 0, b: String, val c: Double, var d: Long): TestInterface {
     val e: Int = 0
     var f: String
     init {
@@ -25,6 +25,16 @@ class Weird(a: Int = 0, b: String, val c: Double, var d: Long): TestInterface {
 
     override val interfaceValue: String
         get() = f
+
+    open fun test(){
+        println("Hi!")
+    }
+}
+
+class SubWeird(a: Int, b: String, c: Double, d: Long): Weird(a, b, c, d) {
+    override fun test() {
+        super.test()
+    }
 }
 
 fun main(){

@@ -9,7 +9,10 @@ import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
+import org.jetbrains.kotlin.descriptors.DeclarationDescriptor
+import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.psi.KtExpression
+import org.jetbrains.kotlin.psi.KtThisExpression
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
 import org.jetbrains.kotlin.resolve.BindingContext
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
@@ -30,12 +33,12 @@ class TypescriptTranslator(
     val kotlinFqNameToFile = HashMap<String, File>()
     val kotlinFqNameToRelativeFile = HashMap<String, File>()
 
-    data class ReceiverAssignment(val fqName: String, val tsName: String)
+    data class ReceiverAssignment(val declaration: DeclarationDescriptor, val tsName: String)
 
     val _receiverStack = ArrayList<ReceiverAssignment>()
     val receiverStack: List<ReceiverAssignment> get() = _receiverStack
     inline fun withReceiverScope(
-        fqName: String,
+        descriptor: DeclarationDescriptor,
         suggestedName: String = "this_",
         action: (newIdentifier: String) -> Unit
     ) {
@@ -46,7 +49,7 @@ class TypescriptTranslator(
             tsName = suggestedName + currentNumber
         }
 
-        val newItem = ReceiverAssignment(fqName, tsName)
+        val newItem = ReceiverAssignment(descriptor, tsName)
         _receiverStack.add(newItem)
         action(tsName)
         _receiverStack.remove(newItem)
@@ -55,12 +58,18 @@ class TypescriptTranslator(
         val dr = this.resolvedCall?.dispatchReceiver ?: this.resolvedCall?.extensionReceiver ?: run {
             return null
         }
-        val fq = if(dr is ExtensionReceiver) {
-            dr.declarationDescriptor.simpleFqName
+        val target = if(dr is ExtensionReceiver) {
+            dr.declarationDescriptor
         } else {
-            "real"
+            dr.type.constructor.declarationDescriptor
         }
-        val entry = receiverStack.lastOrNull { it.fqName == fq }
+        val entry = receiverStack.lastOrNull { it.declaration == target }
+        return entry?.tsName ?: "this"
+    }
+
+    fun KtThisExpression.getTsReceiver(): String? {
+        val target = this.instanceReference.resolvedReferenceTarget
+        val entry = receiverStack.lastOrNull { it.declaration == target }
         return entry?.tsName ?: "this"
     }
 

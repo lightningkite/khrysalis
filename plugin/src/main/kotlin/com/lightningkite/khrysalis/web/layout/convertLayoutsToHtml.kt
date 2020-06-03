@@ -101,6 +101,29 @@ button:hover {
 :checked ~ .khrysalis-switch-back > .khrysalis-switch-front {
     right: 2px;
 }
+.khrysalis-swap {
+    position: relative;
+}
+.khrysalis-flip {
+    position: relative;
+}
+.khrysalis-pager {
+    position: relative;
+}
+.khrysalis-tabs {
+    display: flex;
+    flex-direction: row;
+}
+.khrysalis-compound-on {
+    background-color: var(--color-color-primary);
+    color: white;
+}
+.khrysalis-compound-off {
+    background-color: transparent;
+    color: var(--color-foreground);
+}
+.khrysalis-page-indicator {
+}
       """
         )
         androidMainFolder.resolve("res/values/colors.xml").takeIf { it.exists() }?.let {
