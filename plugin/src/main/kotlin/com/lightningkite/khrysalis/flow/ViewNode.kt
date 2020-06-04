@@ -23,7 +23,7 @@ class ViewNode(
 
     val operations: HashSet<ViewStackOp> = HashSet()
     val requires = MergableCollection<ViewVar>()
-    val provides = MergableCollection<ViewVar>()
+    val provides = ArrayList<ViewVar>()
     val instantiates: Set<String> get() = operations.mapNotNull { it.viewName }.toSet()
 
     var depth: Int = -1
