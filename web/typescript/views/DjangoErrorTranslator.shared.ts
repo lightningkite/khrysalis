@@ -12,7 +12,6 @@
 // FQImport: com.lightningkite.khrysalis.views.DjangoErrorTranslator.wrap.<anonymous>.result TS result
 // FQImport: kotlin.text.contains>kotlin.CharSequence TS kotlinCharSequenceContains
 // FQImport: com.lightningkite.khrysalis.views.ViewStringResource TS ViewStringResource
-// FQImport: com.lightningkite.khrysalis.views.StringResource TS StringResource
 // FQImport: com.lightningkite.khrysalis.views.DjangoErrorTranslator.parseError.error TS error
 // FQImport: com.lightningkite.khrysalis.views.DjangoErrorTranslator.parseError.errorJson TS errorJson
 // FQImport: com.lightningkite.khrysalis.views.DjangoErrorTranslator.wrap.<anonymous>.code TS code
@@ -36,15 +35,14 @@ import { StringBuilder, kotlinCharIsUpperCase } from './../kotlin/kotlin.text'
 import { kotlinStringFromJsonStringUntyped } from './../Codable.actual'
 import { ViewString, ViewStringRaw, ViewStringResource } from './Strings.shared'
 import { StringBuilder } from 'kotlin/kotlin.text'
-import { StringResource } from './ResourceTypes.actual'
 import { checkIsInterface } from 'Kotlin'
 
 //! Declares com.lightningkite.khrysalis.views.DjangoErrorTranslator
 export class DjangoErrorTranslator {
-    public readonly connectivityErrorResource: StringResource;
-    public readonly serverErrorResource: StringResource;
-    public readonly otherErrorResource: StringResource;
-    public constructor(connectivityErrorResource: StringResource, serverErrorResource: StringResource, otherErrorResource: StringResource) {
+    public readonly connectivityErrorResource: string;
+    public readonly serverErrorResource: string;
+    public readonly otherErrorResource: string;
+    public constructor(connectivityErrorResource: string, serverErrorResource: string, otherErrorResource: string) {
         this.connectivityErrorResource = connectivityErrorResource;
         this.serverErrorResource = serverErrorResource;
         this.otherErrorResource = otherErrorResource;

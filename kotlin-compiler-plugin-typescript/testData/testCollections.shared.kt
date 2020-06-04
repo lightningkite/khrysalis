@@ -38,4 +38,12 @@ fun test(){
     println(listOf("a", "b", "c").joinToString())
     println(listOf("a", "b", "c").joinToString("|"))
     println(listOf("a", "b", "c").joinToString("|"){ it + "j" })
+
+    sequenceOf(1, 2, 3)
+        .map { it + 1 }
+        .filter { it % 2 == 0 }
+        .sorted()
+        .forEach {
+            println("Got $it")
+        }
 }

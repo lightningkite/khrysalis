@@ -18,12 +18,7 @@ var View.backgroundResource: Int
         this.setBackgroundResource(value)
     }
 
-
-fun View.onClick(action: () -> Unit) {
-    onClick(500, action)
-}
-
-fun View.onClick(disabledMilliseconds: Long, action: () -> Unit) {
+fun View.onClick(disabledMilliseconds: Long = 500, action: () -> Unit) {
     var lastActivated = System.currentTimeMillis()
     setOnClickListener {
         if(System.currentTimeMillis() - lastActivated > disabledMilliseconds) {

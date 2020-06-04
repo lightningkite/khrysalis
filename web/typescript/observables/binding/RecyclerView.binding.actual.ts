@@ -114,15 +114,15 @@ export function androidxRecyclerviewWidgetRecyclerViewWhenScrolledToEnd(this_: R
             }
             
             onScrolled(recyclerView: RecyclerView, dx: number, dy: number): void{
-                const temp345 = (tryCastClass<LinearLayoutManager>(this_.layoutManager, LinearLayoutManager));
-                if(temp345 !== null) ((it) => {
+                const temp354 = (tryCastClass<LinearLayoutManager>(this_.layoutManager, LinearLayoutManager));
+                if(temp354 !== null) ((it) => {
                         if (it.findLastVisibleItemPosition() === ((_it)=>{
                                     if(_it === null) return null;
                                     return _it - 1
                         })(this_.adapter?.itemCount)) {
                             action();
                         }
-                })(temp345);
+                })(temp354);
             }
     }());
 }
@@ -130,8 +130,8 @@ export function androidxRecyclerviewWidgetRecyclerViewWhenScrolledToEnd(this_: R
 //! Declares com.lightningkite.khrysalis.observables.binding.reverseDirection>androidx.recyclerview.widget.RecyclerView
 export function getAndroidxRecyclerviewWidgetRecyclerViewReverseDirection(this_: RecyclerView): boolean { return (tryCastClass<LinearLayoutManager>(this_.layoutManager, LinearLayoutManager))?.reverseLayout ?? false; }
 export function setAndroidxRecyclerviewWidgetRecyclerViewReverseDirection(this_: RecyclerView, value: boolean) {
-    const temp350 = (tryCastClass<LinearLayoutManager>(this_.layoutManager, LinearLayoutManager));
-    if(temp350 !== null) temp350.reverseLayout = value;
+    const temp359 = (tryCastClass<LinearLayoutManager>(this_.layoutManager, LinearLayoutManager));
+    if(temp359 !== null) temp359.reverseLayout = value;
 }
 
 
@@ -329,8 +329,8 @@ export function androidxRecyclerviewWidgetRecyclerViewBindMulti<T>(this_: Recycl
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindRefresh>androidx.recyclerview.widget.RecyclerView
 export function androidxRecyclerviewWidgetRecyclerViewBindRefresh(this_: RecyclerView, loading: ObservableProperty<boolean>, refresh: () => void): void{
-    const temp371 = (tryCastClass<SwipeRefreshLayout>(this_.parent, SwipeRefreshLayout));
-    if(temp371 !== null) ((this_1) => {
+    const temp380 = (tryCastClass<SwipeRefreshLayout>(this_.parent, SwipeRefreshLayout));
+    if(temp380 !== null) ((this_1) => {
             ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(loading, undefined, undefined, (value) => {
                         this_1.post(() => {
                                 this_1.isRefreshing = value
@@ -339,7 +339,7 @@ export function androidxRecyclerviewWidgetRecyclerViewBindRefresh(this_: Recycle
             this_1.setOnRefreshListener(() => {
                     refresh()
             });
-    })(temp371);
+    })(temp380);
 }
 
 

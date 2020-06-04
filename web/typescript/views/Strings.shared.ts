@@ -8,7 +8,6 @@
 // FQImport: com.lightningkite.khrysalis.views.ViewString.get TS get
 // FQImport: com.lightningkite.khrysalis.views.ViewStringResource TS ViewStringResource
 // FQImport: kotlin.Int.toString TS toString
-// FQImport: com.lightningkite.khrysalis.views.StringResource TS StringResource
 // FQImport: com.lightningkite.khrysalis.views.ViewStringList.get.dependency TS dependency
 // FQImport: com.lightningkite.khrysalis.views.ViewStringTemplate SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.views.ViewStringResource SKIPPED due to same file
@@ -35,7 +34,6 @@
 // FQImport: com.lightningkite.khrysalis.views.ViewStringTemplate.get.templateResolved TS templateResolved
 // FQImport: com.lightningkite.khrysalis.views.ViewStringComplex.getter TS getter
 // FQImport: com.lightningkite.khrysalis.views.ViewStringList SKIPPED due to same file
-import { StringResource } from './ResourceTypes.actual'
 import { vsprintf } from 'sprintf'
 import { checkIsInterface, tryCastInterface } from 'Kotlin'
 
@@ -61,12 +59,12 @@ export class ViewStringRaw implements ViewString {
 //! Declares com.lightningkite.khrysalis.views.ViewStringResource
 export class ViewStringResource implements ViewString {
     public static implementsInterfaceComLightningkiteKhrysalisViewsViewString = true;
-    public readonly resource: StringResource;
-    public constructor(resource: StringResource) {
+    public readonly resource: string;
+    public constructor(resource: string) {
         this.resource = resource;
     }
     
-    public get(dependency: Window): string{ return $0; }
+    public get(dependency: Window): string{ return this.resource; }
 }
 
 //! Declares com.lightningkite.khrysalis.views.ViewStringTemplate

@@ -9,7 +9,6 @@
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindActive.<anonymous>.<anonymous>.color TS color
 // FQImport: com.lightningkite.khrysalis.observables.subscribeBy>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any> TS comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy
 // FQImport: com.lightningkite.khrysalis.observables.ObservableProperty TS ObservableProperty
-// FQImport: com.lightningkite.khrysalis.views.ColorResource TS ColorResource
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindActive.activeBackground TS activeBackground
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindActive.inactiveColorResource TS inactiveColorResource
 // FQImport: com.lightningkite.khrysalis.rx.removed>android.view.View TS getAndroidViewViewRemoved
@@ -19,24 +18,22 @@
 import { comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy } from './../ObservableProperty.ext.shared'
 import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from './../../rx/DisposeCondition.actual'
 import { ObservableProperty } from './../ObservableProperty.shared'
-import { setAndroidViewViewBackgroundDrawable } from './../../views/View.ext.actual'
 import { SubscriptionLike } from 'rxjs'
-import { ColorResource } from './../../views/ResourceTypes.actual'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindActive>android.widget.Button
-export function androidWidgetButtonBindActive(this_: HTMLButtonElement, observable: ObservableProperty<boolean>, activeColorResource: (ColorResource | null) = null, inactiveColorResource: (ColorResource | null) = null): SubscriptionLike{
+export function androidWidgetButtonBindActive(this_: HTMLButtonElement, observable: ObservableProperty<boolean>, activeColorResource: (string | null) = null, inactiveColorResource: (string | null) = null): SubscriptionLike{
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (it) => {
                 this_.isEnabled = it;
                 if (it) {
-                    const temp324 = activeColorResource;
-                    if(temp324 !== null) ((color) => {
+                    const temp333 = activeColorResource;
+                    if(temp333 !== null) ((color) => {
                             this_.style.background = color
-                    })(temp324);
+                    })(temp333);
                 } else {
-                    const temp326 = inactiveColorResource;
-                    if(temp326 !== null) ((color) => {
+                    const temp335 = inactiveColorResource;
+                    if(temp335 !== null) ((color) => {
                             this_.style.background = color
-                    })(temp326);
+                    })(temp335);
                 }
     }), getAndroidViewViewRemoved(this_));
 }

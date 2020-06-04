@@ -138,7 +138,6 @@ object HttpClient {
         .enable(MapperFeature.ACCEPT_CASE_INSENSITIVE_ENUMS)
         .disable(MapperFeature.AUTO_DETECT_IS_GETTERS)
         .enable(DeserializationFeature.READ_UNKNOWN_ENUM_VALUES_USING_DEFAULT_VALUE)
-        .setPropertyNamingStrategy(PropertyNamingStrategy.SNAKE_CASE)
         .setDateFormat(StdDateFormat().withLenient(true))
 
     fun call(

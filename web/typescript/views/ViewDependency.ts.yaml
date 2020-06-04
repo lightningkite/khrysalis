@@ -9,11 +9,11 @@
 
 - id: com.lightningkite.khrysalis.views.getString
   type: call
-  template: $0
+  template: ~0~
 
 - id: com.lightningkite.khrysalis.views.getColor
   type: call
-  template: $0
+  template: ~0~
 
 - id: com.lightningkite.khrysalis.views.displayMetrics
   type: call

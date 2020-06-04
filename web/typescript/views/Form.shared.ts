@@ -7,7 +7,6 @@
 // FQImport: com.lightningkite.khrysalis.views.notNull.T TS T
 // FQImport: com.lightningkite.khrysalis.views.Form.Companion.xMustMatchY TS xMustMatchY
 // FQImport: com.lightningkite.khrysalis.views.Form.fieldFromProperty.field TS field
-// FQImport: com.lightningkite.khrysalis.views.StringResource TS StringResource
 // FQImport: com.lightningkite.khrysalis.views.Form.field TS field
 // FQImport: com.lightningkite.khrysalis.views.Form.Companion.xIsRequired TS xIsRequired
 // FQImport: com.lightningkite.khrysalis.views.ViewStringRaw TS ViewStringRaw
@@ -62,7 +61,6 @@
 import { StandardObservableProperty } from './../observables/StandardObservableProperty.shared'
 import { ViewString, ViewStringRaw, ViewStringResource, ViewStringTemplate, kotlinCollectionsListJoinToViewString } from './Strings.shared'
 import { MutableObservableProperty } from './../observables/MutableObservableProperty.shared'
-import { StringResource } from './ResourceTypes.actual'
 import { kotlinCharSequenceIsBlank } from './../kotlin/kotlin.text'
 import { showDialogAlert } from './showDialog.shared'
 import { listFilterNotNull } from 'Kotlin'
@@ -147,7 +145,7 @@ export class Form {
         return field;
     }
     
-    public fieldRes<T>(name: StringResource, defaultValue: T, validation:  (a: FormField<T>) => (ViewString | null)): FormField<T>{ return this.field(new ViewStringResource(name), defaultValue, validation); }
+    public fieldRes<T>(name: string, defaultValue: T, validation:  (a: FormField<T>) => (ViewString | null)): FormField<T>{ return this.field(new ViewStringResource(name), defaultValue, validation); }
     
     public fieldFromProperty<T>(name: ViewString, property: MutableObservableProperty<T>, validation:  (a: FormField<T>) => (ViewString | null)): FormField<T>{
         const field = new FormField(name, property, (untypedField) => validation(untypedField as FormField<T>));
@@ -156,7 +154,7 @@ export class Form {
         return field;
     }
     
-    public fieldFromPropertyRes<T>(name: StringResource, property: MutableObservableProperty<T>, validation:  (a: FormField<T>) => (ViewString | null)): FormField<T>{ return this.fieldFromProperty(new ViewStringResource(name), property, validation); }
+    public fieldFromPropertyRes<T>(name: string, property: MutableObservableProperty<T>, validation:  (a: FormField<T>) => (ViewString | null)): FormField<T>{ return this.fieldFromProperty(new ViewStringResource(name), property, validation); }
     
     public check(): Array<FormValidationError>{
         return listFilterNotNull(this.fields.map((it) => {
