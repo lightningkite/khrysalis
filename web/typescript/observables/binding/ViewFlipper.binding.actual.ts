@@ -10,7 +10,6 @@
 // FQImport: com.lightningkite.khrysalis.observables.subscribeBy>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any> TS comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy
 // FQImport: android.content.res.Resources.getColor TS getColor
 // FQImport: android.widget.ViewFlipper.addView TS addView
-// FQImport: com.lightningkite.khrysalis.views.ColorResource TS ColorResource
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindLoading.color TS color
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindLoading.spinner TS spinner
 // FQImport: android.widget.ProgressBar TS ProgressBar
@@ -37,10 +36,9 @@ import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from
 import { ObservableProperty } from './../ObservableProperty.shared'
 import { SubscriptionLike } from 'rxjs'
 import { also } from 'Kotlin'
-import { ColorResource } from './../../views/ResourceTypes.actual'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindLoading>android.widget.ViewFlipper
-export function androidWidgetViewFlipperBindLoading(this_: HTMLDivElement, loading: ObservableProperty<boolean>, color: (ColorResource | null) = null): SubscriptionLike{
+export function androidWidgetViewFlipperBindLoading(this_: HTMLDivElement, loading: ObservableProperty<boolean>, color: (string | null) = null): SubscriptionLike{
     if (this_.inAnimation.equals(null)) this_.inAnimation = also(AlphaAnimation.constructorkotlinFloat, kotlinFloat(0, 1), (this_1) => {
             this_1.duration = 250;
             this_1.interpolator = LinearInterpolator.constructor();
@@ -52,13 +50,13 @@ export function androidWidgetViewFlipperBindLoading(this_: HTMLDivElement, loadi
     if (this_.childCount === 1) {
         const spinner = ProgressBar.constructorandroidcontentContext(this_.context);
         
-        const temp398 = color;
-        if(temp398 !== null) ((color) => {
+        const temp407 = color;
+        if(temp407 !== null) ((color) => {
                 //TODO: Make this actually show the proper color. Currently it only makes it white.
                 const colorValue = this_.resources.getColor(color);
                 
                 spinner.indeterminateDrawable.colorFilter = LightingColorFilter.constructorkotlinInt, kotlinInt(0xFFFFFFFF - colorValue, colorValue);
-        })(temp398);
+        })(temp407);
         this_.addView(spinner, 1, FrameLayout.LayoutParams.constructorkotlinInt, kotlinInt, kotlinInt(WRAP_CONTENT, WRAP_CONTENT, Gravity.CENTER));
     }
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(loading, undefined, undefined, (it) => {

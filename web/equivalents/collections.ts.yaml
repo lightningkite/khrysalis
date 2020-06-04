@@ -9,3 +9,17 @@
 - id: kotlin.collections.forEach
   type: call
   template: ~this~.forEach(~0~)
+
+# Set
+
+- id: kotlin.collections.Set.contains
+  type: call
+  template: ~this~.has(~0~)
+
+- id: kotlin.collections.Set.add
+  type: call
+  template: ~this~.add(~0~)
+
+- id: kotlin.collections.Set.remove
+  type: call
+  template: ~this~.delete(~0~)

@@ -98,8 +98,8 @@ export class CustomView extends FrameLayout {
         this.delegate = null;
         const a = context.theme.obtainStyledAttributes(attrs, R.styleable.CustomView, defStyleAttr, 0);
         ;
-        const temp401 = a.getString(R.styleable.CustomView_delegateClass);
-        if(temp401 !== null) ((delegateClassName) => {
+        const temp410 = a.getString(R.styleable.CustomView_delegateClass);
+        if(temp410 !== null) ((delegateClassName) => {
                 this.delegate = (() => {
                         try {
                             return ((it) => it as CustomViewDelegate)(getKotlinReflectKClassJava(context::class).classLoader!!
@@ -109,7 +109,7 @@ export class CustomView extends FrameLayout {
                                 .loadClass(delegateClassName)
                         .newInstance())}
                 })()
-        })(temp401);
+        })(temp410);
         this.accessibilityView = null;
         this.touches = HashMap.constructor<number, Touch>();
         this.metrics = context.resources.displayMetrics;
@@ -119,10 +119,10 @@ export class CustomView extends FrameLayout {
     public _delegate: (CustomViewDelegate | null);
     public get delegate(): (CustomViewDelegate | null) { return this._delegate; }
     public set delegate(value: (CustomViewDelegate | null)) {
-        const temp407 = this._delegate;
-        if(temp407 !== null) ((it) => {
+        const temp416 = this._delegate;
+        if(temp416 !== null) ((it) => {
                 it.customView = null
-        })(temp407);
+        })(temp416);
         if (!(value.equals(null))) {
             value.customView = this;
         }
@@ -130,10 +130,10 @@ export class CustomView extends FrameLayout {
         
         if ((this.context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager).isEnabled) {
             this.accessibilityView = this.delegate?.generateAccessibilityView();
-            const temp409 = this.accessibilityView;
-            if(temp409 !== null) ((it) => {
+            const temp418 = this.accessibilityView;
+            if(temp418 !== null) ((it) => {
                     this.addView(it, FrameLayout.LayoutParams.constructorkotlinInt, kotlinInt(MATCH_PARENT, MATCH_PARENT))
-            })(temp409);
+            })(temp418);
         }
     }
     
@@ -178,9 +178,9 @@ export class CustomView extends FrameLayout {
             
             const touch = new Touch(event.getX(event.actionIndex), event.getY(event.actionIndex), pointerId);
             
-            const array420 = this.touches;
-            const index421 = pointerId;
-            kotlinCollectionsMutableMapSet(index421, touch)
+            const array429 = this.touches;
+            const index430 = pointerId;
+            kotlinCollectionsMutableMapSet(index430, touch)
             takenCareOf = (this.delegate?.onTouchDown(touch.id, touch.x, touch.y, this.width, this.height) ?? false) || takenCareOf
             break;
             case MotionEvent.ACTION_MOVE:

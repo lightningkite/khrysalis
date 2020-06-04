@@ -1,0 +1,227 @@
+---
+
+
+- id: kotlin.sequences.Sequence
+  type: call
+  template: Iterable<~T0~>
+- id: kotlin.sequences.sequenceOf
+  type: call
+  template: "[~*~]"
+
+# Extensions
+
+- id: kotlin.sequences.drop
+  type: call
+  receiver: kotlin.sequences.Sequence
+  template:
+    pattern: iterDrop(~this~, ~0~)
+    imports:
+      iterFilter: filter from iterable-operator
+      iterDrop: drop from iterable-operator
+- id: kotlin.sequences.dropLast
+  type: call
+  receiver: kotlin.sequences.Sequence
+  template:
+    pattern: iterDrop(~this~, ~0~)
+    imports:
+      iterDropRight: dropRight from iterable-operator
+- id: kotlin.sequences.dropWhile
+  type: call
+  receiver: kotlin.sequences.Sequence
+  template:
+    pattern: iterDropUntil(~this~, (x) => { !~0~(x) })
+    imports:
+      iterDropUntil: dropUntil from iterable-operator
+#- id: kotlin.sequences.dropLastWhile
+
+- id: kotlin.sequences.take
+  type: call
+  receiver: kotlin.sequences.Sequence
+  template:
+    pattern: iterTake(~this~, ~0~)
+    imports:
+      iterTake: take from iterable-operator
+- id: kotlin.sequences.takeLast
+  type: call
+  receiver: kotlin.sequences.Sequence
+  template:
+    pattern: iterTake(~this~, ~0~)
+    imports:
+      iterTakeRight: takeRight from iterable-operator
+- id: kotlin.sequences.takeWhile
+  type: call
+  receiver: kotlin.sequences.Sequence
+  template:
+    pattern: iterTakeUntil(~this~, (x) => { !~0~(x) })
+    imports:
+      iterTakeUntil: takeUntil from iterable-operator
+#- id: kotlin.sequences.takeLastWhile
+
+- id: kotlin.sequences.filter
+  type: call
+  receiver: kotlin.sequences.Sequence
+  template:
+    pattern: iterFilter(~this~, ~0~)
+    imports:
+      iterFilter: filter from iterable-operator
+- id: kotlin.sequences.map
+  type: call
+  receiver: kotlin.sequences.Sequence
+  template:
+    pattern: iterMap(~this~, ~0~)
+    imports:
+      iterMap: map from iterable-operator
+- id: kotlin.sequences.mapIndexed
+  type: call
+  receiver: kotlin.sequences.Sequence
+  template:
+    pattern: iterMap(~this~, ~0~)
+    imports:
+      iterMap: map from iterable-operator
+- id: kotlin.sequences.flatMap
+  type: call
+  receiver: kotlin.sequences.Sequence
+  template:
+    pattern: iterFlatten(iterMap(~this~, ~0~))
+    imports:
+      iterMap: map from iterable-operator
+      iterFlatten: flatten from iterable-operator
+
+- id: kotlin.sequences.filterIndexed
+  type: call
+  receiver: kotlin.sequences.Sequence
+  template:
+    pattern: iterFilter(~this~, ~0~)
+    imports:
+      iterFilter: filter from iterable-operator
+- id: kotlin.sequences.filterNot
+  type: call
+  receiver: kotlin.sequences.Sequence
+  template:
+    pattern: iterFilter(~this~, (x)=>{ !~0~(x) )
+    imports:
+      iterFilter: filter from iterable-operator
+- id: kotlin.sequences.filterNotNull
+  type: call
+  receiver: kotlin.sequences.Sequence
+  template:
+    pattern: iterFilter(~this~, (x)=>{ x != null })
+    imports:
+      iterMap: map from iterable-operator
+      iterFilter: filter from iterable-operator
+- id: kotlin.sequences.mapNotNull
+  type: call
+  receiver: kotlin.sequences.Sequence
+  template:
+    pattern: iterFilter(iterMap(~this~, ~0~), (x)=>{ x != null })
+    imports:
+      iterMap: map from iterable-operator
+      iterFilter: filter from iterable-operator
+- id: kotlin.sequences.mapIndexedNotNull
+  type: call
+  receiver: kotlin.sequences.Sequence
+  template:
+    pattern: iterFilter(iterMap(~this~, ~0~), (x)=>{ x != null })
+    imports:
+      iterMap: map from iterable-operator
+      iterFilter: filter from iterable-operator
+- id: kotlin.sequences.chunked
+  type: call
+  receiver: kotlin.sequences.Sequence
+  template:
+    pattern: iterChunk(~this~, ~0~)
+    imports:
+      iterChunk: chunk from iterable-operator
+
+
+
+- id: kotlin.sequences.sorted
+  type: call
+  template:
+    pattern: iterToArray(~this~).sort()
+    imports:
+      iterToArray: toArray from iterable-operator
+- id: kotlin.sequences.sortedBy
+  type: call
+  template:
+    pattern: iterToArray(~this~).sort((a, b) => ~0~(a).compareTo(~0~(b)))
+    imports:
+      iterToArray: toArray from iterable-operator
+- id: kotlin.sequences.sortedByDescending
+  type: call
+  template:
+    pattern: iterToArray(~this~).sort((a, b) => -~0~(a).compareTo(~0~(b)))
+    imports:
+      iterToArray: toArray from iterable-operator
+
+- id: kotlin.sequences.associate
+  type: call
+  template:
+    pattern: new Map(iterMap(~this~, ~0~))
+    imports:
+      iterToArray: toArray from iterable-operator
+- id: kotlin.sequences.associateBy
+  type: call
+  template:
+    pattern: new Map(iterMap(~this~, (_x)=>{ [~0~(_x), _x] }))
+    imports:
+      iterToArray: toArray from iterable-operator
+
+- id: kotlin.sequences.toList
+  type: call
+  template:
+    pattern: iterToArray(~this~)
+    imports:
+      iterToArray: toArray from iterable-operator
+
+- id: kotlin.sequences.toMutableList
+  type: call
+  template:
+    pattern: iterToArray(~this~)
+    imports:
+      iterToArray: toArray from iterable-operator
+
+- id: kotlin.sequences.toSet
+  type: call
+  template:
+    pattern: iterToSet(~this~)
+    imports:
+      iterToSet: toSet from iterable-operator
+
+- id: kotlin.sequences.toMutableSet
+  type: call
+  template:
+    pattern: iterToSet(~this~)
+    imports:
+      iterToSet: toSet from iterable-operator
+
+# TODO: groupBy
+
+- id: kotlin.sequences.any
+  type: call
+  template:
+    pattern: iterSome(~this~, ~0~)
+    imports:
+      iterSome: some from iterable-operator
+
+- id: kotlin.sequences.all
+  type: call
+  template:
+    pattern: iterEvery(~this~, ~0~)
+    imports:
+      iterEvery: every from iterable-operator
+
+- id: kotlin.sequences.none
+  type: call
+  template:
+    pattern: (!iterSome(~this~, ~0~))
+    imports:
+      iterSome: some from iterable-operator
+
+
+- id: kotlin.sequences.forEach
+  type: call
+  template:
+    pattern: for(const _x of ~this~) { ~L0~ }
+    lambdaTransforms:
+      0: ["_x"]

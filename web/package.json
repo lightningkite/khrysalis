@@ -13,7 +13,8 @@
     "moment": "^2.25.3",
     "@types/moment": "^2.13.0",
     "uuid": "^8.1.0",
-    "@types/uuid": "^8.0.0"
+    "@types/uuid": "^8.0.0",
+    "iterable-operator": "^0.10.3"
   },
   "devDependencies": {
     "typescript": "^3.4.5"

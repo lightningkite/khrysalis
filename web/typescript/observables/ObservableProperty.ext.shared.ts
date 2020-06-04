@@ -36,7 +36,6 @@
 // FQImport: com.lightningkite.khrysalis.observables.onChangeNN.T TS T
 // FQImport: com.lightningkite.khrysalis.observables.includes.element TS element
 // FQImport: kotlin.Throwable TS Throwable
-// FQImport: kotlin.collections.Set.contains TS contains
 // FQImport: com.lightningkite.khrysalis.observables.subscribeBy.<anonymous>.boxed TS boxed
 // FQImport: kotlin.collections.minus>kotlin.collections.Set<kotlin.Any> TS kotlinCollectionsSetMinus
 // FQImport: com.lightningkite.khrysalis.observables.addAndRunWeak.B TS B
@@ -98,7 +97,7 @@ export function comLightningkiteKhrysalisObservablesObservablePropertyAddAndRunW
 
 //! Declares com.lightningkite.khrysalis.observables.includes
 export function includes<E>(collection: MutableObservableProperty<Set<E>>, element: E): MutableObservableProperty<boolean>{
-    return comLightningkiteKhrysalisObservablesObservablePropertyWithWrite(comLightningkiteKhrysalisObservablesObservablePropertyMap(collection, (it) => it.contains(element)), (it) => {
+    return comLightningkiteKhrysalisObservablesObservablePropertyWithWrite(comLightningkiteKhrysalisObservablesObservablePropertyMap(collection, (it) => it.has(element)), (it) => {
             if (it) {
                 collection.value = kotlinCollectionsSetPlus(collection.value, element);
             } else {

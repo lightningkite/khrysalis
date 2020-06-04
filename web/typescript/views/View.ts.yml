@@ -111,27 +111,27 @@
 - id: android.view.View.setOnClickListener
   type: call
   template:
-    pattern: ~this~.addEventListener("onclick", (_ev) => {~L0~})
+    pattern: ~this~.addEventListener("onclick", (_ev) => { _ev.stopPropagataion(); ~L0~})
     lambdaTransforms:
       0: ["_ev.target as HTMLElement"]
 
 - id: android.view.View.setOnLongClickListener
   type: call
   template:
-    pattern: ~this~.addEventListener("oncontextmenu", (_ev) => {~L0~})
+    pattern: ~this~.addEventListener("oncontextmenu", (_ev) => { _ev.stopPropagataion(); ~L0~})
     lambdaTransforms:
       0: ["_ev.target as HTMLElement"]
 
 - id: com.lightningkite.khrysalis.views.onClick
   type: call
   template:
-    pattern: ~this~.addEventListener("onclick", (_ev) => {~L0~})
+    pattern: ~this~.addEventListener("onclick", (_ev) => { _ev.stopPropagataion(); ~L0~})
     lambdaTransforms:
       0: ["_ev.target as HTMLElement"]
 
 - id: com.lightningkite.khrysalis.views.onLongClick
   type: call
   template:
-    pattern: ~this~.addEventListener("oncontextmenu", (_ev) => {~L0~})
+    pattern: ~this~.addEventListener("oncontextmenu", (_ev) => { _ev.stopPropagataion(); ~L0~})
     lambdaTransforms:
       0: ["_ev.target as HTMLElement"]

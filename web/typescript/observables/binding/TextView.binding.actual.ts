@@ -10,7 +10,6 @@
 // FQImport: android.content.res.Resources.getString TS getString
 // FQImport: com.lightningkite.khrysalis.observables.ObservableProperty TS ObservableProperty
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindText.<anonymous>.value TS value
-// FQImport: com.lightningkite.khrysalis.views.StringResource TS StringResource
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindStringRes.observable TS observable
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindString.<anonymous>.value TS value
 // FQImport: com.lightningkite.khrysalis.rx.removed>android.view.View TS getAndroidViewViewRemoved
@@ -21,7 +20,6 @@ import { comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy } fro
 import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from './../../rx/DisposeCondition.actual'
 import { ObservableProperty } from './../ObservableProperty.shared'
 import { SubscriptionLike } from 'rxjs'
-import { StringResource } from './../../views/ResourceTypes.actual'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindString>android.widget.TextView
 export function androidWidgetTextViewBindString(this_: HTMLElement, observable: ObservableProperty<string>): SubscriptionLike{
@@ -31,7 +29,7 @@ export function androidWidgetTextViewBindString(this_: HTMLElement, observable: 
 }
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindStringRes>android.widget.TextView
-export function androidWidgetTextViewBindStringRes(this_: HTMLElement, observable: ObservableProperty<(StringResource | null)>): SubscriptionLike{
+export function androidWidgetTextViewBindStringRes(this_: HTMLElement, observable: ObservableProperty<(string | null)>): SubscriptionLike{
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
                 this_.visibility = value === null ? "gone" : "visible";
                 if (!(value === null)) {

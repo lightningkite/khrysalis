@@ -41,8 +41,8 @@ import { SubscriptionLike } from 'rxjs'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindStack>com.lightningkite.khrysalis.views.android.SwapView
 export function comLightningkiteKhrysalisViewsAndroidSwapViewBindStack(this_: SwapView, dependency: Window, obs: ObservableStack<ViewGenerator>): SubscriptionLike{
-    let currentData = (()=>{const temp379 = obs.stack;
-    (temp379[temp379.length - 1] ?? null)})();
+    let currentData = (()=>{const temp388 = obs.stack;
+    (temp388[temp388.length - 1] ?? null)})();
     
     let currentStackSize = obs.stack.length;
     
@@ -58,8 +58,8 @@ export function comLightningkiteKhrysalisViewsAndroidSwapViewBindStack(this_: Sw
                         const oldStackSize = currentStackSize;
                         
                         
-                        let newView = (()=>{const temp382 = obs.stack;
-                        (temp382[temp382.length - 1] ?? null)})()?.generate(dependency);
+                        let newView = (()=>{const temp391 = obs.stack;
+                        (temp391[temp391.length - 1] ?? null)})()?.generate(dependency);
                         
                         if (newView.equals(null)) {
                             newView = document.createElement('div');
