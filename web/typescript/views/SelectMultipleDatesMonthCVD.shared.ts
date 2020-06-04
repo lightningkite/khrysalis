@@ -16,7 +16,6 @@
 // FQImport: kotlin.collections.Set TS Set
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD TS MonthCVD
 // FQImport: com.lightningkite.khrysalis.time.set>com.lightningkite.khrysalis.time.DateAlone TS comLightningkiteKhrysalisTimeDateAloneSet
-// FQImport: kotlin.collections.plus>kotlin.collections.Set<kotlin.Any> TS kotlinCollectionsSetPlus
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.measure.height TS height
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.onTouchMove.<anonymous>.it TS it
 // FQImport: android.graphics.RectF TS RectF
@@ -39,7 +38,6 @@
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing TS CalendarDrawing
 // FQImport: com.lightningkite.khrysalis.observables.StandardObservableProperty TS StandardObservableProperty
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.dayBackgroundMid TS dayBackgroundMid
-// FQImport: kotlin.collections.toSet>kotlin.collections.Iterable<kotlin.Any> TS kotlinCollectionsIterableToSet
 // FQImport: android.graphics.Paint TS Paint
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.drawDay.right TS right
 // FQImport: com.lightningkite.khrysalis.observables.StandardObservableProperty.value TS value
@@ -48,6 +46,7 @@
 import { StandardObservableProperty } from './../observables/StandardObservableProperty.shared'
 import { DisplayMetrics } from './DisplayMetrics.actual'
 import { dateAloneModRelative } from 'time/Date.actual'
+import { filter as iterFilter, some as iterSome, toArray as iterToArray, toSet as iterToSet } from 'iterable-operator'
 import { DateAlone } from './../time/DateAlone.actual'
 import { CalendarDrawing, MonthCVD } from './MonthCVD.shared'
 import { Paint } from './draw/Paint.actual'
@@ -56,7 +55,7 @@ import { comLightningkiteKhrysalisTimeDateAloneSet } from './../time/DateAlone.s
 //! Declares com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD
 export class SelectMultipleDatesMonthCVD extends MonthCVD {
     public constructor() { super(); }
-    public generateAccessibilityView(): (HTMLElement | null){ return null; }
+    public generateAccessibilityView(): (HTMLElement | null) { return null; }
     
     public readonly dates: StandardObservableProperty<Set<DateAlone>>;
     
@@ -67,14 +66,14 @@ export class SelectMultipleDatesMonthCVD extends MonthCVD {
     
     
     
-    public measure(width: number, height: number, displayMetrics: DisplayMetrics): void{
+    public measure(width: number, height: number, displayMetrics: DisplayMetrics): void {
         super.measure(width, height, displayMetrics);
         this.selectedDayPaint.textSize = this.dayPaint.textSize;
     }
     
     public readonly drawDay_dateAlone: DateAlone;
     
-    public drawDay(canvas: CanvasRenderingContext2D, showingMonth: DateAlone, day: DateAlone, displayMetrics: DisplayMetrics, outer: RectF, inner: RectF): void{
+    public drawDay(canvas: CanvasRenderingContext2D, showingMonth: DateAlone, day: DateAlone, displayMetrics: DisplayMetrics, outer: RectF, inner: RectF): void {
         if (this.dates.value.has(day)) {
             const leftDate = dateAloneModRelative(comLightningkiteKhrysalisTimeDateAloneSet(this.drawDay_dateAlone, day), Date.prototype.getDate, Date.prototype.setDate, -1);
             
@@ -102,31 +101,31 @@ export class SelectMultipleDatesMonthCVD extends MonthCVD {
         }
     }
     
-    public onTap(day: DateAlone): boolean{
-        this.adding = (!this.dates.value.some((it) => day.equals(it)));
+    public onTap(day: DateAlone): void {
+        this.adding = (!iterSome(this.dates.value, (it) => day.equals(it)));
         this.onTouchMoveDate(day);
     }
     
     public adding: boolean;
     
-    public onTouchDownDate(day: DateAlone): boolean{
-        this.adding = (!this.dates.value.some((it) => day.equals(it)));
+    public onTouchDownDate(day: DateAlone): boolean {
+        this.adding = (!iterSome(this.dates.value, (it) => day.equals(it)));
         this.onTouchMoveDate(day);
         return true;
     }
     
-    public onTouchMoveDate(day: DateAlone): boolean{
+    public onTouchMoveDate(day: DateAlone): boolean {
         if (this.adding) {
-            if ((!this.dates.value.some((it) => day.equals(it)))) {
-                this.dates.value = kotlinCollectionsSetPlus(this.dates.value, day);
+            if ((!iterSome(this.dates.value, (it) => day.equals(it)))) {
+                this.dates.value = new Set([...this.dates.value, day]);
             }
         } else {
-            this.dates.value = kotlinCollectionsIterableToSet(this.dates.value.filter((it) => !(it.equals(day))));
+            this.dates.value = iterToSet(iterToArray(iterFilter(this.dates.value, (it) => !(it.equals(day)))));
         }
         return true;
     }
     
-    public onTouchUpDate(day: DateAlone): boolean{
+    public onTouchUpDate(day: DateAlone): boolean {
         return true;
     }
 }

@@ -36,13 +36,13 @@ export class WriteAddedObservableProperty<A> extends MutableObservableProperty<a
     //! Declares com.lightningkite.khrysalis.observables.WriteAddedObservableProperty.onChange
     public get onChange(): Observable<A> { return this.basedOn.onChange; }
     
-    public update(): void{
+    public update(): void {
         //Do nothing
     }
 }
 
 //! Declares com.lightningkite.khrysalis.observables.withWrite>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
-export function comLightningkiteKhrysalisObservablesObservablePropertyWithWrite<T>(this_: ObservableProperty<T>, onWrite:  (a: T) => void): MutableObservableProperty<T>{
+export function comLightningkiteKhrysalisObservablesObservablePropertyWithWrite<T>(this_: ObservableProperty<T>, onWrite:  (a: T) => void): MutableObservableProperty<T> {
     return new WriteAddedObservableProperty<T>(this_, onWrite);
 }
 

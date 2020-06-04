@@ -98,8 +98,8 @@ export class CustomView extends FrameLayout {
         this.delegate = null;
         const a = context.theme.obtainStyledAttributes(attrs, R.styleable.CustomView, defStyleAttr, 0);
         ;
-        const temp410 = a.getString(R.styleable.CustomView_delegateClass);
-        if(temp410 !== null) ((delegateClassName) => {
+        const temp416 = a.getString(R.styleable.CustomView_delegateClass);
+        if(temp416 !== null) ((delegateClassName) => {
                 this.delegate = (() => {
                         try {
                             return ((it) => it as CustomViewDelegate)(getKotlinReflectKClassJava(context::class).classLoader!!
@@ -109,7 +109,7 @@ export class CustomView extends FrameLayout {
                                 .loadClass(delegateClassName)
                         .newInstance())}
                 })()
-        })(temp410);
+        })(temp416);
         this.accessibilityView = null;
         this.touches = HashMap.constructor<number, Touch>();
         this.metrics = context.resources.displayMetrics;
@@ -119,10 +119,10 @@ export class CustomView extends FrameLayout {
     public _delegate: (CustomViewDelegate | null);
     public get delegate(): (CustomViewDelegate | null) { return this._delegate; }
     public set delegate(value: (CustomViewDelegate | null)) {
-        const temp416 = this._delegate;
-        if(temp416 !== null) ((it) => {
+        const temp422 = this._delegate;
+        if(temp422 !== null) ((it) => {
                 it.customView = null
-        })(temp416);
+        })(temp422);
         if (!(value.equals(null))) {
             value.customView = this;
         }
@@ -130,10 +130,10 @@ export class CustomView extends FrameLayout {
         
         if ((this.context.getSystemService(Context.ACCESSIBILITY_SERVICE) as AccessibilityManager).isEnabled) {
             this.accessibilityView = this.delegate?.generateAccessibilityView();
-            const temp418 = this.accessibilityView;
-            if(temp418 !== null) ((it) => {
+            const temp424 = this.accessibilityView;
+            if(temp424 !== null) ((it) => {
                     this.addView(it, FrameLayout.LayoutParams.constructorkotlinInt, kotlinInt(MATCH_PARENT, MATCH_PARENT))
-            })(temp418);
+            })(temp424);
         }
     }
     
@@ -167,7 +167,7 @@ export class CustomView extends FrameLayout {
     private readonly touches;
     
     
-    public onTouchEvent(event: MotionEvent): boolean{
+    public onTouchEvent(event: MotionEvent): boolean {
         if (!(this.accessibilityView.equals(null))) return super.onTouchEvent(event);
         let takenCareOf = false;
         
@@ -178,9 +178,9 @@ export class CustomView extends FrameLayout {
             
             const touch = new Touch(event.getX(event.actionIndex), event.getY(event.actionIndex), pointerId);
             
-            const array429 = this.touches;
-            const index430 = pointerId;
-            kotlinCollectionsMutableMapSet(index430, touch)
+            const array435 = this.touches;
+            const index436 = pointerId;
+            kotlinCollectionsMutableMapSet(index436, touch)
             takenCareOf = (this.delegate?.onTouchDown(touch.id, touch.x, touch.y, this.width, this.height) ?? false) || takenCareOf
             break;
             case MotionEvent.ACTION_MOVE:
@@ -219,13 +219,13 @@ export class CustomView extends FrameLayout {
     
     private readonly metrics;
     
-    public onDraw(canvas: CanvasRenderingContext2D): void{
+    public onDraw(canvas: CanvasRenderingContext2D): void {
         super.onDraw(canvas);
         if (this.accessibilityView.equals(null)) {
             this.delegate?.draw(canvas, this.width, this.height, this.metrics);
         }
     }
-    public onMeasure(widthMeasureSpec: number, heightMeasureSpec: number): void{
+    public onMeasure(widthMeasureSpec: number, heightMeasureSpec: number): void {
         const widthMode = MeasureSpec.getMode(widthMeasureSpec);
         
         const widthSize = MeasureSpec.getSize(widthMeasureSpec);

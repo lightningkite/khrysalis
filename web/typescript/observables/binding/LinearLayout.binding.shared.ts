@@ -4,7 +4,6 @@
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<anonymous>.excessViews TS excessViews
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<anonymous>.view TS view
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.data TS data
-// FQImport: android.widget.LinearLayout.addView TS addView
 // FQImport: com.lightningkite.khrysalis.observables.subscribeBy>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any> TS comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.existingViews TS existingViews
 // FQImport: com.lightningkite.khrysalis.observables.binding.LinearLayoutBoundSubview.view TS view
@@ -34,7 +33,6 @@ import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from
 import { androidWidgetLinearLayoutParams } from './../../views/LinearLayout.actual'
 import { StandardObservableProperty } from './../StandardObservableProperty.shared'
 import { ObservableProperty } from './../ObservableProperty.shared'
-import { SubscriptionLike } from 'rxjs'
 import { AlignPair } from './../../views/geometry/Align.shared'
 import { NumberRange } from 'Kotlin'
 
@@ -49,7 +47,7 @@ class LinearLayoutBoundSubview<T> {
 }
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>android.widget.LinearLayout
-export function androidWidgetLinearLayoutBind<T>(this_: HTML_Element, data: ObservableProperty<Array<T>>, defaultValue: T, makeView:  (a: ObservableProperty<T>) => HTMLElement): SubscriptionLike{
+export function androidWidgetLinearLayoutBind<T>(this_: HTMLDivElement, data: ObservableProperty<Array<T>>, defaultValue: T, makeView:  (a: ObservableProperty<T>) => HTMLElement): void {
     const existingViews: Array<LinearLayoutBoundSubview<T>> = [];
     
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(data, undefined, undefined, (value) => {
@@ -70,7 +68,7 @@ export function androidWidgetLinearLayoutBind<T>(this_: HTML_Element, data: Obse
                         
                         const view = makeView(prop);
                         
-                        this_.addView(view, androidWidgetLinearLayoutParams(this_, undefined, undefined, undefined, undefined, undefined, undefined, AlignPair.Companion.INSTANCE.centerFill, undefined));
+                        this_.appendChild(androidWidgetLinearLayoutParams(this_, undefined, undefined, undefined, undefined, undefined, undefined, AlignPair.Companion.INSTANCE.centerFill, undefined)(view));
                         existingViews.push(new LinearLayoutBoundSubview(view, prop));
                     }
                 }

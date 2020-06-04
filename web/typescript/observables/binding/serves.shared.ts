@@ -19,10 +19,9 @@ import { ioReactivexDisposablesDisposableUntil } from './../../rx/DisposeConditi
 import { ioReactivexObservableAddWeak } from './../../rx/RxAddAndRunWeak.shared'
 import { getComLightningkiteKhrysalisObservablesObservablePropertyObservable } from './../ObservableProperty.ext.shared'
 import { DisposeCondition } from './../../rx/DisposeCondition.shared'
-import { SubscriptionLike } from 'rxjs'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.serves>com.lightningkite.khrysalis.observables.MutableObservableProperty<kotlin.Any>
-export function comLightningkiteKhrysalisObservablesMutableObservablePropertyServes<T>(this_: MutableObservableProperty<T>, whilePresent: object, other: MutableObservableProperty<T>): SubscriptionLike{
+export function comLightningkiteKhrysalisObservablesMutableObservablePropertyServes<T>(this_: MutableObservableProperty<T>, whilePresent: object, other: MutableObservableProperty<T>): void {
     
     let suppress = false;
     
@@ -45,7 +44,7 @@ export function comLightningkiteKhrysalisObservablesMutableObservablePropertySer
 }
 
 //! Declares com.lightningkite.khrysalis.observables.binding.serves>com.lightningkite.khrysalis.observables.MutableObservableProperty<kotlin.Any>
-export function comLightningkiteKhrysalisObservablesMutableObservablePropertyServes<T>(this_: MutableObservableProperty<T>, until: DisposeCondition, other: MutableObservableProperty<T>): SubscriptionLike{
+export function comLightningkiteKhrysalisObservablesMutableObservablePropertyServes<T>(this_: MutableObservableProperty<T>, until: DisposeCondition, other: MutableObservableProperty<T>): void {
     
     let suppress = false;
     

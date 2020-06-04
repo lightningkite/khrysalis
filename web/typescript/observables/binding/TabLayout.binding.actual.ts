@@ -27,7 +27,7 @@ import { MutableObservableProperty } from './../MutableObservableProperty.shared
 import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from './../../rx/DisposeCondition.actual'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>com.google.android.material.tabs.TabLayout
-export function comGoogleAndroidMaterialTabsTabLayoutBind(this_: TabLayout, tabs: Array<string>, selected: MutableObservableProperty<number>): void{
+export function comGoogleAndroidMaterialTabsTabLayoutBind(this_: TabLayout, tabs: Array<string>, selected: MutableObservableProperty<number>): void {
     for (const tab of tabs) {
         this_.addTab(this_.newTab().setText(tab));
     }
@@ -39,13 +39,13 @@ export function comGoogleAndroidMaterialTabsTabLayoutBind(this_: TabLayout, tabs
             public constructor() {
             }
             
-            onTabReselected(p0: TabLayout.Tab): void{
+            onTabReselected(p0: TabLayout.Tab): void {
                 if (!(selected.value === p0.position)) selected.value = p0.position;
             }
             
-            onTabUnselected(p0: TabLayout.Tab): void{}
+            onTabUnselected(p0: TabLayout.Tab): void {}
             
-            onTabSelected(p0: TabLayout.Tab): void{
+            onTabSelected(p0: TabLayout.Tab): void {
                 if (!(selected.value === p0.position)) selected.value = p0.position;
             }
     }());

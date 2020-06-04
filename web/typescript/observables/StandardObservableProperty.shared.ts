@@ -28,7 +28,7 @@ export class StandardObservableProperty<T> extends MutableObservableProperty<any
     }
     
     
-    public update(): void{
+    public update(): void {
         this.onChange.next(this.value);
     }
 }

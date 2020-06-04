@@ -19,7 +19,7 @@ import { DateAlone } from './DateAlone.actual'
 import { ClockPartSize } from './ClockPartSize.shared'
 
 //! Declares com.lightningkite.khrysalis.time.set>com.lightningkite.khrysalis.time.DateAlone
-export function comLightningkiteKhrysalisTimeDateAloneSet(this_: DateAlone, other: DateAlone): DateAlone{
+export function comLightningkiteKhrysalisTimeDateAloneSet(this_: DateAlone, other: DateAlone): DateAlone {
     this_.year = other.year;
     this_.month = other.month;
     this_.day = other.day;
@@ -27,5 +27,5 @@ export function comLightningkiteKhrysalisTimeDateAloneSet(this_: DateAlone, othe
 }
 
 //! Declares com.lightningkite.khrysalis.time.format>com.lightningkite.khrysalis.time.DateAlone
-export function comLightningkiteKhrysalisTimeDateAloneFormat(this_: DateAlone, clockPartSize: ClockPartSize): string{ return javaUtilDateFormat(dateFrom(this_, TimeAlone.Companion.INSTANCE.noon, undefined), clockPartSize, ClockPartSize.None); }
+export function comLightningkiteKhrysalisTimeDateAloneFormat(this_: DateAlone, clockPartSize: ClockPartSize): string { return javaUtilDateFormat(dateFrom(this_, TimeAlone.Companion.INSTANCE.noon, undefined), clockPartSize, ClockPartSize.None); }
 

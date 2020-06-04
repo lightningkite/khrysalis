@@ -27,8 +27,14 @@ data class FunctionReplacement(
         suppliedArguments: Set<String> = setOf()
     ): Boolean {
         if(receiver != null && receiver != decl.extensionReceiverParameter?.type?.getJetTypeFqName(false)) return false
-        if(arguments != null && !decl.original.valueParameters.zip(arguments)
-                .all { (p, a) -> a == "*" || p.type.getJetTypeFqName(false) == a }) return false
+        if (arguments != null) {
+            println("${decl.simpleFqName} checking arguments for ${this.arguments} against ${decl.original.valueParameters.joinToString { it.type.getJetTypeFqName(false) }}")
+            if(this.arguments.size != decl.original.valueParameters.size) return false
+            if (!this.arguments.zip(decl.original.valueParameters)
+                    .all { (a, p) -> a == "*" || p.type.getJetTypeFqName(false) == a }
+            ) return false
+            println("${decl.simpleFqName} Passed!")
+        }
         if(this.comparatorType != null && this.comparatorType != comparatorType) return false
         if(actualReceiver != null){
             if(receiverType == null) return false
@@ -36,8 +42,14 @@ data class FunctionReplacement(
 //            println("${decl.simpleFqName}, checking for $actualReceiver: ${allTypes.joinToString { it.getJetTypeFqName(false) }}")
             if(allTypes.none { it.getJetTypeFqName(false) == actualReceiver }) return false
         }
-        if(this.suppliedArguments != null && !this.suppliedArguments.sorted().zip(suppliedArguments.sorted())
-                .all { (a, b) -> a == b }) return false
+        if (this.suppliedArguments != null) {
+//            println("${decl.simpleFqName}, checking arguments for ${this.suppliedArguments} against ${suppliedArguments}")
+            if(this.suppliedArguments.size != suppliedArguments.size) return false
+            if (!this.suppliedArguments.sorted().zip(suppliedArguments.sorted())
+                    .all { (a, b) -> a == b }
+            ) return false
+            println("${decl.simpleFqName} Passed!")
+        }
         return true
     }
 }

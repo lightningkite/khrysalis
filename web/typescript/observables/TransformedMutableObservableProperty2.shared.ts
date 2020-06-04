@@ -35,7 +35,7 @@ export class TransformedMutableObservableProperty2<A, B> extends MutableObservab
         this.onChange = this.basedOn.onChange.pipe(rxMap((it) => this.read(it)));
     }
     
-    public update(): void{
+    public update(): void {
         this.basedOn.update();
     }
     
@@ -52,7 +52,7 @@ export class TransformedMutableObservableProperty2<A, B> extends MutableObservab
 }
 
 //! Declares com.lightningkite.khrysalis.observables.mapWithExisting>com.lightningkite.khrysalis.observables.MutableObservableProperty<kotlin.Any>
-export function comLightningkiteKhrysalisObservablesMutableObservablePropertyMapWithExisting<T, B>(this_: MutableObservableProperty<T>, read:  (a: T) => B, write:  (a: T, b: B) => T): MutableObservableProperty<B>{
+export function comLightningkiteKhrysalisObservablesMutableObservablePropertyMapWithExisting<T, B>(this_: MutableObservableProperty<T>, read:  (a: T) => B, write:  (a: T, b: B) => T): MutableObservableProperty<B> {
     return new TransformedMutableObservableProperty2<T, B>(this_, read, write);
 }
 

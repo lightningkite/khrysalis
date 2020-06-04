@@ -23,8 +23,8 @@ export class Failable<T> {
         }
         public static INSTANCE = new Companion();
         
-        public failure<T>(message: string): Failable<T>{ return new Failable<T>(undefined, message); }
-        public success<T>(value: T): Failable<T>{ return new Failable<T>(value, undefined); }
+        public failure<T>(message: string): Failable<T> { return new Failable<T>(undefined, message); }
+        public success<T>(value: T): Failable<T> { return new Failable<T>(value, undefined); }
     }
 }
 

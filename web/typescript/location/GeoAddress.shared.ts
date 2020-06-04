@@ -80,8 +80,8 @@ export class GeoAddress implements Codable {
     public toString(): string { return `GeoAddress(coordinate = ${this.coordinate}, name = ${this.name}, street = ${this.street}, subLocality = ${this.subLocality}, locality = ${this.locality}, subAdminArea = ${this.subAdminArea}, adminArea = ${this.adminArea}, countryName = ${this.countryName}, postalCode = ${this.postalCode})` }
     public copy(coordinate: (GeoCoordinate | null) = this.coordinate, name: (string | null) = this.name, street: (string | null) = this.street, subLocality: (string | null) = this.subLocality, locality: (string | null) = this.locality, subAdminArea: (string | null) = this.subAdminArea, adminArea: (string | null) = this.adminArea, countryName: (string | null) = this.countryName, postalCode: (string | null) = this.postalCode) { return new GeoAddress(coordinate, name, street, subLocality, locality, subAdminArea, adminArea, countryName, postalCode); }
     
-    public oneLine(withCountry: boolean = false, withZip: boolean = false): string{
-        const builder = StringBuilder();
+    public oneLine(withCountry: boolean = false, withZip: boolean = false): string {
+        const builder = new StringBuilder();
         
         const temp39 = this.street;
         if(temp39 !== null) ((it) => builder.value += it)(temp39);

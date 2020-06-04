@@ -169,6 +169,10 @@ class KotlinTypescriptExtension(
                 }
             }
 
+//        println("Equivalents for kotlin.collections.joinToString>kotlin.collections.Iterable: ${translator.replacements.functions.entries.joinToString("\n"){
+//            "${it.key} -> ${it.value.joinToString("\n") { "    $it" }}"
+//        }}")
+
         for (file in files) {
             if (!file.virtualFilePath.endsWith(".shared.kt")) continue
             try {

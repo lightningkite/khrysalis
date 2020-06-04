@@ -33,7 +33,7 @@ export class ObservableStack<T extends object> extends ObservableProperty<any> {
         }
         public static INSTANCE = new Companion();
         
-        public withFirst<T extends object>(value: T): ObservableStack<T>{
+        public withFirst<T extends object>(value: T): ObservableStack<T> {
             const result = new ObservableStack<T>();
             
             result.reset(value);
@@ -52,18 +52,18 @@ export class ObservableStack<T extends object> extends ObservableProperty<any> {
     public readonly stack: Array<T>;
     
     
-    public push(t: T): void{
+    public push(t: T): void {
         this.stack.push(t);
         this.onChange.next(this.stack);
     }
     
-    public swap(t: T): void{
+    public swap(t: T): void {
         this.stack.splice((this.stack.length - 1), 1);
         this.stack.push(t);
         this.onChange.next(this.stack);
     }
     
-    public pop(): boolean{
+    public pop(): boolean {
         if (this.stack.length <= 1) {
             return false;
         }
@@ -72,7 +72,7 @@ export class ObservableStack<T extends object> extends ObservableProperty<any> {
         return true;
     }
     
-    public dismiss(): boolean{
+    public dismiss(): boolean {
         if (this.stack.length === 0) {
             return false;
         }
@@ -81,7 +81,7 @@ export class ObservableStack<T extends object> extends ObservableProperty<any> {
         return true;
     }
     
-    public popTo(t: T): void{
+    public popTo(t: T): void {
         let found = false;
         
         for (const i of new NumberRange(0, (this.stack.length - 1))) {
@@ -94,7 +94,7 @@ export class ObservableStack<T extends object> extends ObservableProperty<any> {
         this.onChange.next(this.stack);
     }
     
-    public popTo(predicate: (a: T) => boolean): void{
+    public popTo(predicate: (a: T) => boolean): void {
         let found = false;
         
         for (const i of new NumberRange(0, (this.stack.length - 1))) {
@@ -107,11 +107,11 @@ export class ObservableStack<T extends object> extends ObservableProperty<any> {
         this.onChange.next(this.stack);
     }
     
-    public root(): void{
+    public root(): void {
         this.popTo(this.stack[0]);
     }
     
-    public reset(t: T): void{
+    public reset(t: T): void {
         this.stack.clear();
         this.stack.push(t);
         this.onChange.next(this.stack);

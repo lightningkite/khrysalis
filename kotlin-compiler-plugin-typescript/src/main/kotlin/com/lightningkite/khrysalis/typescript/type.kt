@@ -101,7 +101,10 @@ fun TypescriptTranslator.registerType() {
                 }
                 typedRule.arguments.takeUnless { it.isEmpty() }?.let {
                     -'<'
-                    -it
+                    it.forEachBetween(
+                        forItem = { -it },
+                        between = { -", " }
+                    )
                     -'>'
                 }
             }

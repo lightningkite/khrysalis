@@ -46,7 +46,7 @@ import { ObservableProperty } from './../ObservableProperty.shared'
 import { IllegalStateException, tryCastClass } from 'Kotlin'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>android.widget.Spinner
-export function androidWidgetSpinnerBind<T>(this_: HTMLInputElement, options: ObservableProperty<Array<T>>, selected: MutableObservableProperty<T>, makeView: (a: ObservableProperty<T>) => HTMLElement): void{
+export function androidWidgetSpinnerBind<T>(this_: HTMLInputElement, options: ObservableProperty<Array<T>>, selected: MutableObservableProperty<T>, makeView: (a: ObservableProperty<T>) => HTMLElement): void {
     this_.adapter = new class Anon extends BaseAdapter {
         public constructor() {
             super();
@@ -57,7 +57,7 @@ export function androidWidgetSpinnerBind<T>(this_: HTMLInputElement, options: Ob
         
         
         
-        getView(position: number, convertView: (HTMLElement | null), parent: (ViewGroup | null)): HTMLElement{
+        getView(position: number, convertView: (HTMLElement | null), parent: (ViewGroup | null)): HTMLElement {
             const view = convertView ?? ((this_1) => {
                     const event = new StandardObservableProperty<T>(kotlinCollectionsListGetOrNull(options.value, position) ?? selected.value, undefined);
                     
@@ -76,9 +76,9 @@ export function androidWidgetSpinnerBind<T>(this_: HTMLInputElement, options: Ob
             return view;
         }
         
-        getItem(position: number): (any | null){ return kotlinCollectionsListGetOrNull(options.value, position); }
-        getItemId(position: number): number{ return position; }
-        getCount(): number{ return options.value.length; }
+        getItem(position: number): (any | null) { return kotlinCollectionsListGetOrNull(options.value, position); }
+        getItemId(position: number): number { return position; }
+        getCount(): number { return options.value.length; }
     }();
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(selected, undefined, undefined, (it) => {
                 const index = options.value.indexOf(it);
@@ -92,9 +92,9 @@ export function androidWidgetSpinnerBind<T>(this_: HTMLInputElement, options: Ob
         public constructor() {
         }
         
-        onNothingSelected(parent: (AdapterView<*> | null)): void{}
+        onNothingSelected(parent: (AdapterView<any> | null)): void {}
         
-        onItemSelected(parent: (AdapterView<*> | null), view: (HTMLElement | null), position: number, id: number): void{
+        onItemSelected(parent: (AdapterView<any> | null), view: (HTMLElement | null), position: number, id: number): void {
             const newValue = kotlinCollectionsListGetOrNull(options.value, position) ?? return;
             
             if (!(selected.value.equals(newValue))) {

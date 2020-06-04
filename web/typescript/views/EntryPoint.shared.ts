@@ -14,16 +14,16 @@ import { ObservableStack } from './../observables/ObservableStack.shared'
 //! Declares com.lightningkite.khrysalis.views.EntryPoint
 export interface EntryPoint {
     
-    handleDeepLink(schema: string, host: string, path: string, params: Map<string, string>): void
-    onBackPressed(): boolean
+    handleDeepLink(schema: string, host: string, path: string, params: Map<string, string>): void 
+    onBackPressed(): boolean 
     readonly mainStack: (ObservableStack<ViewGenerator> | null);
     
 }
 export class EntryPointDefaults {
-    public static handleDeepLink(this_: EntryPoint, schema: string, host: string, path: string, params: Map<string, string>): void{
+    public static handleDeepLink(this_: EntryPoint, schema: string, host: string, path: string, params: Map<string, string>): void {
         console.log(`Empty handler; ${schema}://${host}/${path}/${params}`);
     }
-    public static onBackPressed(this_: EntryPoint): boolean{ return false; }
-    public static getMainStack(this_: EntryPoint){ return null; }
+    public static onBackPressed(this_: EntryPoint): boolean { return false; }
+    public static getMainStack(this_: EntryPoint): (ObservableStack<ViewGenerator> | null) { return null; }
 }
 

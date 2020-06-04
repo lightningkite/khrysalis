@@ -42,12 +42,12 @@ export class TransformedObservableProperty<A, B> extends ObservableProperty<any>
 }
 
 //! Declares com.lightningkite.khrysalis.observables.transformed>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
-export function comLightningkiteKhrysalisObservablesObservablePropertyTransformed<T, B>(this_: ObservableProperty<T>, read:  (a: T) => B): ObservableProperty<B>{
+export function comLightningkiteKhrysalisObservablesObservablePropertyTransformed<T, B>(this_: ObservableProperty<T>, read:  (a: T) => B): ObservableProperty<B> {
     return new TransformedObservableProperty<T, B>(this_, read);
 }
 
 //! Declares com.lightningkite.khrysalis.observables.map>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
-export function comLightningkiteKhrysalisObservablesObservablePropertyMap<T, B>(this_: ObservableProperty<T>, read:  (a: T) => B): ObservableProperty<B>{
+export function comLightningkiteKhrysalisObservablesObservablePropertyMap<T, B>(this_: ObservableProperty<T>, read:  (a: T) => B): ObservableProperty<B> {
     return new TransformedObservableProperty<T, B>(this_, read);
 }
 

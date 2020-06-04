@@ -1,0 +1,32 @@
+---
+
+- id: kotlin.collections.Set.contains
+  type: call
+  template: ~this~.has(~0~)
+
+- id: kotlin.collections.Set.add
+  type: call
+  template: ~this~.add(~0~)
+
+- id: kotlin.collections.Set.remove
+  type: call
+  template: ~this~.delete(~0~)
+
+- id: kotlin.collections.plus
+  receiver: kotlin.collections.Set
+  type: call
+  arguments: [kotlin.collections.Set]
+  template: new Set([...~this~, ...~0~])
+
+- id: kotlin.collections.plus
+  receiver: kotlin.collections.Set
+  type: call
+  arguments: [kotlin.Any]
+  template: new Set([...~this~, ~0~])
+
+- id: kotlin.collections.minus
+  receiver: kotlin.collections.Set
+  type: call
+  arguments: [kotlin.Any]
+  template: new Set([...~this~].filter(x => !~0~.has(x)))
+

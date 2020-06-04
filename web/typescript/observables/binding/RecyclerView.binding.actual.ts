@@ -107,22 +107,22 @@ import { ObservableProperty } from './../ObservableProperty.shared'
 import { also, tryCastClass } from 'Kotlin'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.whenScrolledToEnd>androidx.recyclerview.widget.RecyclerView
-export function androidxRecyclerviewWidgetRecyclerViewWhenScrolledToEnd(this_: RecyclerView, action: () => void): void{
+export function androidxRecyclerviewWidgetRecyclerViewWhenScrolledToEnd(this_: RecyclerView, action: () => void): void {
     this_.addOnScrollListener(new class Anon extends RecyclerView.RecyclerView {
             public constructor() {
                 super();
             }
             
-            onScrolled(recyclerView: RecyclerView, dx: number, dy: number): void{
-                const temp354 = (tryCastClass<LinearLayoutManager>(this_.layoutManager, LinearLayoutManager));
-                if(temp354 !== null) ((it) => {
+            onScrolled(recyclerView: RecyclerView, dx: number, dy: number): void {
+                const temp360 = (tryCastClass<LinearLayoutManager>(this_.layoutManager, LinearLayoutManager));
+                if(temp360 !== null) ((it) => {
                         if (it.findLastVisibleItemPosition() === ((_it)=>{
                                     if(_it === null) return null;
                                     return _it - 1
                         })(this_.adapter?.itemCount)) {
                             action();
                         }
-                })(temp354);
+                })(temp360);
             }
     }());
 }
@@ -130,14 +130,14 @@ export function androidxRecyclerviewWidgetRecyclerViewWhenScrolledToEnd(this_: R
 //! Declares com.lightningkite.khrysalis.observables.binding.reverseDirection>androidx.recyclerview.widget.RecyclerView
 export function getAndroidxRecyclerviewWidgetRecyclerViewReverseDirection(this_: RecyclerView): boolean { return (tryCastClass<LinearLayoutManager>(this_.layoutManager, LinearLayoutManager))?.reverseLayout ?? false; }
 export function setAndroidxRecyclerviewWidgetRecyclerViewReverseDirection(this_: RecyclerView, value: boolean) {
-    const temp359 = (tryCastClass<LinearLayoutManager>(this_.layoutManager, LinearLayoutManager));
-    if(temp359 !== null) temp359.reverseLayout = value;
+    const temp365 = (tryCastClass<LinearLayoutManager>(this_.layoutManager, LinearLayoutManager));
+    if(temp365 !== null) temp365.reverseLayout = value;
 }
 
 
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>androidx.recyclerview.widget.RecyclerView
-export function androidxRecyclerviewWidgetRecyclerViewBind<T>(this_: RecyclerView, data: ObservableProperty<Array<T>>, defaultValue: T, makeView: (a: ObservableProperty<T>) => HTMLElement): void{
+export function androidxRecyclerviewWidgetRecyclerViewBind<T>(this_: RecyclerView, data: ObservableProperty<Array<T>>, defaultValue: T, makeView: (a: ObservableProperty<T>) => HTMLElement): void {
     this_.layoutManager = LinearLayoutManager.constructorandroidcontentContext(this_.context);
     this_.adapter = new class Anon extends RecyclerView.RecyclerView<> {
         public constructor() {
@@ -149,7 +149,7 @@ export function androidxRecyclerviewWidgetRecyclerViewBind<T>(this_: RecyclerVie
         
         
         
-        onCreateViewHolder(parent: ViewGroup, viewType: number): RecyclerView.ViewHolder{
+        onCreateViewHolder(parent: ViewGroup, viewType: number): RecyclerView.ViewHolder {
             const event = new StandardObservableProperty<T>(defaultValue, undefined);
             
             const subview = makeView(event);
@@ -163,9 +163,9 @@ export function androidxRecyclerviewWidgetRecyclerViewBind<T>(this_: RecyclerVie
             }();
         }
         
-        getItemCount(): number{ return data.value.length; }
+        getItemCount(): number { return data.value.length; }
         
-        onBindViewHolder(holder: RecyclerView.ViewHolder, position: number): void{
+        onBindViewHolder(holder: RecyclerView.ViewHolder, position: number): void {
             ((_it)=>{
                     if(_it === null) return null;
                     return ((it) => {
@@ -189,10 +189,10 @@ export class RVTypeHandler {
     }
     
     public static Handler = class Handler {
-        public readonly type: KClass<*>;
+        public readonly type: KClass<any>;
         public readonly defaultValue: any;
         public readonly handler:  (a: ObservableProperty<any>) => HTMLElement;
-        public constructor(type: KClass<*>, defaultValue: any, handler:  (a: ObservableProperty<any>) => HTMLElement) {
+        public constructor(type: KClass<any>, defaultValue: any, handler:  (a: ObservableProperty<any>) => HTMLElement) {
             this.type = type;
             this.defaultValue = defaultValue;
             this.handler = handler;
@@ -207,15 +207,15 @@ export class RVTypeHandler {
     private readonly defaultHandler: Handler;
     
     
-    public handle(type: KClass<*>, defaultValue: any, action:  (a: ObservableProperty<any>) => HTMLElement): number{
+    public handle(type: KClass<any>, defaultValue: any, action:  (a: ObservableProperty<any>) => HTMLElement): void {
         this.handlers.kotlinCollectionsMutableCollectionPlusAssign(this.handlers, new Handler(type, defaultValue, action));
         return this.typeCount++;
     }
-    public handle<T extends any>(T: any, defaultValue: T, action:  (a: ObservableProperty<T>) => HTMLElement): void{
+    public handle<T extends any>(T: any, defaultValue: T, action:  (a: ObservableProperty<T>) => HTMLElement): void {
         this.handle(T::class, defaultValue, (obs) => action(comLightningkiteKhrysalisObservablesObservablePropertyMap(obs, (it) => it as T)));
     }
     
-    internal type(item: any): number{
+    internal type(item: any): number {
         kotlinCollectionsIterableForEachIndexed(this.handlers, (index, handler) => {
                 if (handler.type.isInstance(item)) {
                     return index;
@@ -223,7 +223,7 @@ export class RVTypeHandler {
         });
         return this.typeCount;
     }
-    internal make(type: number): HTMLElement{
+    internal make(type: number): HTMLElement {
         const handler = type < this.typeCount ? this.handlers[type] : this.defaultHandler;
         
         const event = new StandardObservableProperty<any>(handler.defaultValue, undefined);
@@ -237,7 +237,7 @@ export class RVTypeHandler {
 }
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindMulti>androidx.recyclerview.widget.RecyclerView
-export function androidxRecyclerviewWidgetRecyclerViewBindMulti(this_: RecyclerView, viewDependency: Window, data: ObservableProperty<Array<any>>, typeHandlerSetup: (a: RVTypeHandler) => void): void{
+export function androidxRecyclerviewWidgetRecyclerViewBindMulti(this_: RecyclerView, viewDependency: Window, data: ObservableProperty<Array<any>>, typeHandlerSetup: (a: RVTypeHandler) => void): void {
     const typeHandler = also(new RVTypeHandler(viewDependency), typeHandlerSetup);
     
     this_.layoutManager = LinearLayoutManager.constructorandroidcontentContext(this_.context);
@@ -251,7 +251,7 @@ export function androidxRecyclerviewWidgetRecyclerViewBindMulti(this_: RecyclerV
         
         
         
-        onCreateViewHolder(parent: ViewGroup, viewType: number): RecyclerView.ViewHolder{
+        onCreateViewHolder(parent: ViewGroup, viewType: number): RecyclerView.ViewHolder {
             const subview = typeHandler.make(viewType);
             
             return new class Anon extends RecyclerView.RecyclerView {
@@ -261,12 +261,12 @@ export function androidxRecyclerviewWidgetRecyclerViewBindMulti(this_: RecyclerV
             }();
         }
         
-        getItemViewType(position: number): number{
+        getItemViewType(position: number): number {
             return typeHandler.type(kotlinCollectionsListGetOrNull(data.value, position) ?? return typeHandler.typeCount);
         }
-        getItemCount(): number{ return data.value.length; }
+        getItemCount(): number { return data.value.length; }
         
-        onBindViewHolder(holder: RecyclerView.ViewHolder, position: number): void{
+        onBindViewHolder(holder: RecyclerView.ViewHolder, position: number): void {
             ((_it)=>{
                     if(_it === null) return null;
                     return ((it) => {
@@ -281,7 +281,7 @@ export function androidxRecyclerviewWidgetRecyclerViewBindMulti(this_: RecyclerV
 
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindMulti>androidx.recyclerview.widget.RecyclerView
-export function androidxRecyclerviewWidgetRecyclerViewBindMulti<T>(this_: RecyclerView, data: ObservableProperty<Array<T>>, defaultValue: T, determineType: (a: T) => number, makeView: (a: number, b: ObservableProperty<T>) => HTMLElement): void{
+export function androidxRecyclerviewWidgetRecyclerViewBindMulti<T>(this_: RecyclerView, data: ObservableProperty<Array<T>>, defaultValue: T, determineType: (a: T) => number, makeView: (a: number, b: ObservableProperty<T>) => HTMLElement): void {
     this_.layoutManager = LinearLayoutManager.constructorandroidcontentContext(this_.context);
     this_.adapter = new class Anon extends RecyclerView.RecyclerView<> {
         public constructor() {
@@ -293,11 +293,11 @@ export function androidxRecyclerviewWidgetRecyclerViewBindMulti<T>(this_: Recycl
         
         
         
-        getItemViewType(position: number): number{
+        getItemViewType(position: number): number {
             return determineType(data.value[position]);
         }
         
-        onCreateViewHolder(parent: ViewGroup, viewType: number): RecyclerView.ViewHolder{
+        onCreateViewHolder(parent: ViewGroup, viewType: number): RecyclerView.ViewHolder {
             const event = new StandardObservableProperty<T>(defaultValue, undefined);
             
             const subview = makeView(viewType, event);
@@ -311,9 +311,9 @@ export function androidxRecyclerviewWidgetRecyclerViewBindMulti<T>(this_: Recycl
             }();
         }
         
-        getItemCount(): number{ return data.value.length; }
+        getItemCount(): number { return data.value.length; }
         
-        onBindViewHolder(holder: RecyclerView.ViewHolder, position: number): void{
+        onBindViewHolder(holder: RecyclerView.ViewHolder, position: number): void {
             ((_it)=>{
                     if(_it === null) return null;
                     return ((it) => {
@@ -328,9 +328,9 @@ export function androidxRecyclerviewWidgetRecyclerViewBindMulti<T>(this_: Recycl
 
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindRefresh>androidx.recyclerview.widget.RecyclerView
-export function androidxRecyclerviewWidgetRecyclerViewBindRefresh(this_: RecyclerView, loading: ObservableProperty<boolean>, refresh: () => void): void{
-    const temp380 = (tryCastClass<SwipeRefreshLayout>(this_.parent, SwipeRefreshLayout));
-    if(temp380 !== null) ((this_1) => {
+export function androidxRecyclerviewWidgetRecyclerViewBindRefresh(this_: RecyclerView, loading: ObservableProperty<boolean>, refresh: () => void): void {
+    const temp386 = (tryCastClass<SwipeRefreshLayout>(this_.parent, SwipeRefreshLayout));
+    if(temp386 !== null) ((this_1) => {
             ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(loading, undefined, undefined, (value) => {
                         this_1.post(() => {
                                 this_1.isRefreshing = value
@@ -339,7 +339,7 @@ export function androidxRecyclerviewWidgetRecyclerViewBindRefresh(this_: Recycle
             this_1.setOnRefreshListener(() => {
                     refresh()
             });
-    })(temp380);
+    })(temp386);
 }
 
 

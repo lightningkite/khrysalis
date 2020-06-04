@@ -2,6 +2,7 @@ package com.lightningkite.khrysalis.observables
 
 import com.lightningkite.khrysalis.AnyObject
 import com.lightningkite.khrysalis.Box
+import com.lightningkite.khrysalis.JsName
 import com.lightningkite.khrysalis.boxWrap
 import io.reactivex.subjects.PublishSubject
 
@@ -64,6 +65,7 @@ class ObservableStack<T : AnyObject> : ObservableProperty<List<T>>() {
         onChange.onNext(boxWrap(stack))
     }
 
+    @JsName("popToPredicate")
     fun popTo(predicate: (T) -> Boolean) {
         var found = false
         for (i in 0..stack.lastIndex) {

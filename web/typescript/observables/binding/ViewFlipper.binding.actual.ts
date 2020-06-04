@@ -34,11 +34,10 @@
 import { comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy } from './../ObservableProperty.ext.shared'
 import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from './../../rx/DisposeCondition.actual'
 import { ObservableProperty } from './../ObservableProperty.shared'
-import { SubscriptionLike } from 'rxjs'
 import { also } from 'Kotlin'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindLoading>android.widget.ViewFlipper
-export function androidWidgetViewFlipperBindLoading(this_: HTMLDivElement, loading: ObservableProperty<boolean>, color: (string | null) = null): SubscriptionLike{
+export function androidWidgetViewFlipperBindLoading(this_: HTMLDivElement, loading: ObservableProperty<boolean>, color: (string | null) = null): void {
     if (this_.inAnimation.equals(null)) this_.inAnimation = also(AlphaAnimation.constructorkotlinFloat, kotlinFloat(0, 1), (this_1) => {
             this_1.duration = 250;
             this_1.interpolator = LinearInterpolator.constructor();
@@ -50,13 +49,13 @@ export function androidWidgetViewFlipperBindLoading(this_: HTMLDivElement, loadi
     if (this_.childCount === 1) {
         const spinner = ProgressBar.constructorandroidcontentContext(this_.context);
         
-        const temp407 = color;
-        if(temp407 !== null) ((color) => {
+        const temp413 = color;
+        if(temp413 !== null) ((color) => {
                 //TODO: Make this actually show the proper color. Currently it only makes it white.
                 const colorValue = this_.resources.getColor(color);
                 
                 spinner.indeterminateDrawable.colorFilter = LightingColorFilter.constructorkotlinInt, kotlinInt(0xFFFFFFFF - colorValue, colorValue);
-        })(temp407);
+        })(temp413);
         this_.addView(spinner, 1, FrameLayout.LayoutParams.constructorkotlinInt, kotlinInt, kotlinInt(WRAP_CONTENT, WRAP_CONTENT, Gravity.CENTER));
     }
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(loading, undefined, undefined, (it) => {

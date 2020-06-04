@@ -70,7 +70,14 @@
   template:
     pattern: listRemoveItem(~this~, ~0~)
     imports:
-      listRemoveItem: khrysalis/dist/Kotlin
+      listRemoveItem: khrysalis/dist/KotlinCollections
+- id: kotlin.collections.removeAll
+  type: call
+  receiver: kotlin.collections.MutableList
+  template:
+    pattern: listRemoveAll(~this~, ~0~)
+    imports:
+      listRemoveAll: khrysalis/dist/KotlinCollections
 - id: kotlin.collections.MutableList.removeAt
   type: call
   template: ~this~.splice(~0~, 1)
@@ -201,7 +208,7 @@
   template:
     pattern: listFilterNotNull(~this~)
     imports:
-      listFilterNotNull: khrysalis/dist/Kotlin
+      listFilterNotNull: khrysalis/dist/KotlinCollections
 
 - id: kotlin.collections.sortBy
   type: call
@@ -253,14 +260,14 @@
   template:
     pattern: listFilterNotNull(~this~.map(~0~))
     imports:
-      listFilterNotNull: khrysalis/dist/Kotlin
+      listFilterNotNull: khrysalis/dist/KotlinCollections
 - id: kotlin.collections.mapIndexedNotNull
   type: call
   actualReceiver: kotlin.collections.List
   template:
     pattern: ~this~.map(~0~).filter((x) => x !== null)
     imports:
-      listFilterNotNull: khrysalis/dist/Kotlin
+      listFilterNotNull: khrysalis/dist/KotlinCollections
 
 - id: kotlin.collections.any
   type: call

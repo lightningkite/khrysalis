@@ -17,6 +17,13 @@
     pattern: new IllegalStateException(~0~, ~1~)
     imports:
       IllegalStateException: khrysalis/dist/Kotlin
+- id: java.lang.NoSuchElementException
+  type: call
+  template:
+    pattern: new NoSuchElementException(~0~, ~1~)
+    imports:
+      NoSuchElementException: khrysalis/dist/Kotlin
+
 - id: kotlin.Exception
   type: call
   template:
@@ -35,3 +42,9 @@
     pattern: new IllegalStateException(~0~, ~1~)
     imports:
       IllegalStateException: khrysalis/dist/Kotlin
+- id: kotlin.NoSuchElementException
+  type: call
+  template:
+    pattern: new NoSuchElementException(~0~, ~1~)
+    imports:
+      NoSuchElementException: khrysalis/dist/Kotlin

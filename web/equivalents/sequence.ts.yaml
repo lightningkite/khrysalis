@@ -101,30 +101,26 @@
     pattern: iterFilter(~this~, (x)=>{ !~0~(x) )
     imports:
       iterFilter: filter from iterable-operator
-- id: kotlin.sequences.filterNotNull
+- id: kotlin.collections.filterNotNull
   type: call
-  receiver: kotlin.sequences.Sequence
   template:
-    pattern: iterFilter(~this~, (x)=>{ x != null })
+    pattern: iterableFilterNotNull(~this~)
+    imports:
+      iterableFilterNotNull: khrysalis/dist/KotlinCollections
+- id: kotlin.collections.mapNotNull
+  type: call
+  template:
+    pattern: iterableFilterNotNull(iterMap(~this~, ~0~))
     imports:
       iterMap: map from iterable-operator
-      iterFilter: filter from iterable-operator
-- id: kotlin.sequences.mapNotNull
+      iterableFilterNotNull: khrysalis/dist/KotlinCollections
+- id: kotlin.collections.mapIndexedNotNull
   type: call
-  receiver: kotlin.sequences.Sequence
   template:
-    pattern: iterFilter(iterMap(~this~, ~0~), (x)=>{ x != null })
+    pattern: iterableFilterNotNull(iterMap(~this~, ~0~))
     imports:
       iterMap: map from iterable-operator
-      iterFilter: filter from iterable-operator
-- id: kotlin.sequences.mapIndexedNotNull
-  type: call
-  receiver: kotlin.sequences.Sequence
-  template:
-    pattern: iterFilter(iterMap(~this~, ~0~), (x)=>{ x != null })
-    imports:
-      iterMap: map from iterable-operator
-      iterFilter: filter from iterable-operator
+      iterableFilterNotNull: khrysalis/dist/KotlinCollections
 - id: kotlin.sequences.chunked
   type: call
   receiver: kotlin.sequences.Sequence
@@ -132,7 +128,6 @@
     pattern: iterChunk(~this~, ~0~)
     imports:
       iterChunk: chunk from iterable-operator
-
 
 
 - id: kotlin.sequences.sorted

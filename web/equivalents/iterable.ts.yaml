@@ -101,27 +101,26 @@
 - id: kotlin.collections.filterNotNull
   type: call
   template:
-    pattern: iterToArray(iterFilter(~this~, (x)=>{ x != null }))
+    pattern: iterToArray(iterableFilterNotNull(~this~))
     imports:
       iterToArray: toArray from iterable-operator
-      iterMap: map from iterable-operator
-      iterFilter: filter from iterable-operator
+      iterableFilterNotNull: khrysalis/dist/KotlinCollections
 - id: kotlin.collections.mapNotNull
   type: call
   template:
-    pattern: iterToArray(iterFilter(iterMap(~this~, ~0~), (x)=>{ x != null }))
+    pattern: iterToArray(iterableFilterNotNull(iterMap(~this~, ~0~)))
     imports:
       iterToArray: toArray from iterable-operator
       iterMap: map from iterable-operator
-      iterFilter: filter from iterable-operator
+      iterableFilterNotNull: khrysalis/dist/KotlinCollections
 - id: kotlin.collections.mapIndexedNotNull
   type: call
   template:
-    pattern: iterToArray(iterFilter(iterMap(~this~, ~0~), (x)=>{ x != null }))
+    pattern: iterToArray(iterableFilterNotNull(iterMap(~this~, ~0~)))
     imports:
       iterToArray: toArray from iterable-operator
       iterMap: map from iterable-operator
-      iterFilter: filter from iterable-operator
+      iterableFilterNotNull: khrysalis/dist/KotlinCollections
 - id: kotlin.collections.chunked
   type: call
   template:

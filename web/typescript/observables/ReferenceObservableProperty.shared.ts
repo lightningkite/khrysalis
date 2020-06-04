@@ -32,7 +32,7 @@ export class ReferenceObservableProperty<T> extends MutableObservableProperty<an
         this.set(value);
     }
     
-    public update(): void{
+    public update(): void {
         //do nothing
     }
 }

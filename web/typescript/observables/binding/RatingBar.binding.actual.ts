@@ -30,10 +30,9 @@ import { comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy } fro
 import { MutableObservableProperty } from './../MutableObservableProperty.shared'
 import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from './../../rx/DisposeCondition.actual'
 import { ObservableProperty } from './../ObservableProperty.shared'
-import { SubscriptionLike } from 'rxjs'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>android.widget.RatingBar
-export function androidWidgetRatingBarBind(this_: HTML_Element, stars: number, observable: MutableObservableProperty<number>): void{
+export function androidWidgetRatingBarBind(this_: HTML_Element, stars: number, observable: MutableObservableProperty<number>): void {
     this_.max = stars;
     this_.numStars = stars;
     this_.incrementProgressBy(1);
@@ -52,7 +51,7 @@ export function androidWidgetRatingBarBind(this_: HTML_Element, stars: number, o
         public constructor() {
         }
         
-        onRatingChanged(p0: HTML_Element, p1: number, p2: boolean): void{
+        onRatingChanged(p0: HTML_Element, p1: number, p2: boolean): void {
             if (!suppress) {
                 suppress = true;
                 observable.value = p0.progress;
@@ -64,7 +63,7 @@ export function androidWidgetRatingBarBind(this_: HTML_Element, stars: number, o
 }
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>android.widget.RatingBar
-export function androidWidgetRatingBarBind(this_: HTML_Element, stars: number, observable: ObservableProperty<number>): SubscriptionLike{
+export function androidWidgetRatingBarBind(this_: HTML_Element, stars: number, observable: ObservableProperty<number>): void {
     this_.max = stars;
     this_.numStars = stars;
     this_.setIsIndicator(true);
@@ -77,7 +76,7 @@ export function androidWidgetRatingBarBind(this_: HTML_Element, stars: number, o
 
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindFloat>android.widget.RatingBar
-export function androidWidgetRatingBarBindFloat(this_: HTML_Element, stars: number, observable: MutableObservableProperty<number>): void{
+export function androidWidgetRatingBarBindFloat(this_: HTML_Element, stars: number, observable: MutableObservableProperty<number>): void {
     this_.numStars = stars;
     this_.stepSize = 0.01;
     
@@ -95,7 +94,7 @@ export function androidWidgetRatingBarBindFloat(this_: HTML_Element, stars: numb
         public constructor() {
         }
         
-        onRatingChanged(p0: HTML_Element, p1: number, p2: boolean): void{
+        onRatingChanged(p0: HTML_Element, p1: number, p2: boolean): void {
             if (!suppress) {
                 suppress = true;
                 observable.value = p1;
@@ -108,7 +107,7 @@ export function androidWidgetRatingBarBindFloat(this_: HTML_Element, stars: numb
 
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindFloat>android.widget.RatingBar
-export function androidWidgetRatingBarBindFloat(this_: HTML_Element, stars: number, observable: ObservableProperty<number>): SubscriptionLike{
+export function androidWidgetRatingBarBindFloat(this_: HTML_Element, stars: number, observable: ObservableProperty<number>): void {
     this_.numStars = stars;
     this_.setIsIndicator(true);
     

@@ -13,7 +13,7 @@ export abstract class ViewGenerator {
     public abstract readonly title: string;
     
     
-    public abstract generate(dependency: Window): HTMLElement
+    public abstract generate(dependency: Window): HTMLElement 
     
     public static Default = class Default extends ViewGenerator {
         public constructor() {
@@ -24,7 +24,7 @@ export abstract class ViewGenerator {
         public get title(): string { return "Empty"; }
         
         
-        public generate(dependency: Window): HTMLElement{ return newEmptyView(dependency); }
+        public generate(dependency: Window): HTMLElement { return newEmptyView(dependency); }
         
     }
 }

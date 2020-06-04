@@ -6,7 +6,6 @@
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.destroyItem.container TS container
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.destroyItem.object TS object
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty.value TS value
-// FQImport: android.view.ViewGroup.addView TS addView
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.instantiateItem.container TS container
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.instantiateItem.position TS position
 // FQImport: com.lightningkite.khrysalis.observables.subscribeBy>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any> TS comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy
@@ -36,27 +35,27 @@ import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from
 import { StandardObservableProperty } from './../StandardObservableProperty.shared'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>androidx.viewpager.widget.ViewPager
-export function androidxViewpagerWidgetViewPagerBind<T>(this_: ViewPager, items: Array<T>, showIndex: MutableObservableProperty<number> = new StandardObservableProperty(0, undefined), makeView: (a: T) => HTMLElement): void{
+export function androidxViewpagerWidgetViewPagerBind<T>(this_: ViewPager, items: Array<T>, showIndex: MutableObservableProperty<number> = new StandardObservableProperty(0, undefined), makeView: (a: T) => HTMLElement): void {
     this_.adapter = new class Anon extends PagerAdapter {
         public constructor() {
             super();
         }
         
         
-        isViewFromObject(p0: HTMLElement, p1: any): boolean{ return p1.equals(p0); }
+        isViewFromObject(p0: HTMLElement, p1: any): boolean { return p1.equals(p0); }
         
-        getCount(): number{ return items.length; }
+        getCount(): number { return items.length; }
         
-        instantiateItem(container: ViewGroup, position: number): any{
+        instantiateItem(container: ViewGroup, position: number): any {
             const data = items[position];
             
             const view = makeView(data);
             
-            container.addView(view);
+            container.appendChild(view);
             return view;
         }
         
-        destroyItem(container: ViewGroup, position: number, `object`: any): void{
+        destroyItem(container: ViewGroup, position: number, `object`: any): void {
             container.removeView(`object` as HTMLElement);
         }
     }();
@@ -69,9 +68,9 @@ export function androidxViewpagerWidgetViewPagerBind<T>(this_: ViewPager, items:
             public constructor() {
             }
             
-            onPageScrollStateChanged(p0: number): void{}
-            onPageScrolled(p0: number, p1: number, p2: number): void{}
-            onPageSelected(p0: number): void{
+            onPageScrollStateChanged(p0: number): void {}
+            onPageScrolled(p0: number, p1: number, p2: number): void {}
+            onPageSelected(p0: number): void {
                 showIndex.value = p0;
             }
     }());

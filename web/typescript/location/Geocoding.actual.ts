@@ -3,16 +3,15 @@
 // Package: com.lightningkite.khrysalis.location
 import { GeoCoordinate } from './GeoCoordinate.shared'
 import { GeoAddress } from './GeoAddress.shared'
-import { ViewDependency } from '../views/ViewDependency.actual'
 import { post } from '../delay.actual'
 
 let geoMethod = (
-    this_Geocode: ViewDependency,
+    this_Geocode: Window,
     coordinate: GeoCoordinate | string,
     onResult: (a: Array<GeoAddress>) => void
 ) => { onResult([]) }
 export function setGeocodingMethod(method: (
-    this_Geocode: ViewDependency,
+    this_Geocode: Window,
     coordinate: GeoCoordinate | string,
     onResult: (a: Array<GeoAddress>) => void
 )=>void) {
@@ -21,7 +20,7 @@ export function setGeocodingMethod(method: (
 
 //! Declares com.lightningkite.khrysalis.location.geocode
 export function comLightningkiteKhrysalisAndroidActivityAccessGeocode(
-    this_Geocode: ViewDependency,
+    this_Geocode: Window,
     coordinate: GeoCoordinate | string,
     onResult: (a: Array<GeoAddress>) => void
 ){

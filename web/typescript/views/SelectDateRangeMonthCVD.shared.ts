@@ -51,7 +51,7 @@ import { Paint } from './draw/Paint.actual'
 //! Declares com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD
 export class SelectDateRangeMonthCVD extends MonthCVD {
     public constructor() { super(); }
-    public generateAccessibilityView(): (HTMLElement | null){ return null; }
+    public generateAccessibilityView(): (HTMLElement | null) { return null; }
     
     public draggingStart: boolean;
     
@@ -66,14 +66,14 @@ export class SelectDateRangeMonthCVD extends MonthCVD {
     public readonly selectedPaint: Paint;
     
     
-    public measure(width: number, height: number, displayMetrics: DisplayMetrics): void{
+    public measure(width: number, height: number, displayMetrics: DisplayMetrics): void {
         super.measure(width, height, displayMetrics);
         this.selectedDayPaint.textSize = this.dayPaint.textSize;
     }
     
     public readonly drawDay_dateAlone: DateAlone;
     
-    public drawDay(canvas: CanvasRenderingContext2D, showingMonth: DateAlone, day: DateAlone, displayMetrics: DisplayMetrics, outer: RectF, inner: RectF): void{
+    public drawDay(canvas: CanvasRenderingContext2D, showingMonth: DateAlone, day: DateAlone, displayMetrics: DisplayMetrics, outer: RectF, inner: RectF): void {
         if (day.equals(this.start.value) && (day.equals(this.endInclusive.value) || this.endInclusive.value.equals(null))){
             CalendarDrawing.INSTANCE.dayBackground(canvas, inner, this.selectedPaint);
             CalendarDrawing.INSTANCE.day(canvas, showingMonth, day, inner, this.selectedDayPaint);
@@ -95,7 +95,7 @@ export class SelectDateRangeMonthCVD extends MonthCVD {
     private startedDraggingOn: (DateAlone | null);
     
     
-    public onTap(day: DateAlone): void{
+    public onTap(day: DateAlone): void {
         if (!(this.start.value.equals(null)) && this.start.value.equals(this.endInclusive.value) && day.comparable > this.start.value!!.comparable) {
             this.endInclusive.value = day;
         } else {
@@ -104,7 +104,7 @@ export class SelectDateRangeMonthCVD extends MonthCVD {
         }
     }
     
-    public onTouchDownDate(day: DateAlone): boolean{
+    public onTouchDownDate(day: DateAlone): boolean {
         if (!(day.equals(this.start.value)) && !(day.equals(this.endInclusive.value))) {
             return false;
         }
@@ -137,7 +137,7 @@ export class SelectDateRangeMonthCVD extends MonthCVD {
         return true;
     }
     
-    public onTouchMoveDate(day: DateAlone): boolean{
+    public onTouchMoveDate(day: DateAlone): boolean {
         const startValue = this.start.value;
         
         const endInclusiveValue = this.endInclusive.value;
@@ -161,7 +161,7 @@ export class SelectDateRangeMonthCVD extends MonthCVD {
         return true;
     }
     
-    public onTouchUpDate(day: DateAlone): boolean{
+    public onTouchUpDate(day: DateAlone): boolean {
         this.onTouchMoveDate(day);
         return true;
     }

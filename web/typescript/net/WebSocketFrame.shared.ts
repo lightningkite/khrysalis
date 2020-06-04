@@ -14,7 +14,7 @@ export class WebSocketFrame {
         this.text = text;
     }
     
-    public toString(): string{
+    public toString(): string {
         return this.text ?? ((_it)=>{
                 if(_it === null) return null;
                 return ((it) => `<Binary data length ${it.length}`)(_it)

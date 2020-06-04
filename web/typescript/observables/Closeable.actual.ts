@@ -11,17 +11,17 @@
 //! Declares com.lightningkite.khrysalis.observables.Closeable
 export interface Closeable {
     
-    isDisposed(): boolean
+    isDisposed(): boolean 
     
-    dispose(): void
+    dispose(): void 
     
-    close(): void
+    close(): void 
 }
 export class CloseableDefaults {
-    public static isDisposed(this_: Closeable): boolean{
+    public static isDisposed(this_: Closeable): boolean {
         return false;
     }
-    public static dispose(this_: Closeable): void{
+    public static dispose(this_: Closeable): void {
         this_.close();
     }
 }
@@ -38,11 +38,11 @@ export class Close implements Closeable {
     
     public disposed: boolean;
     
-    public isDisposed(): boolean{
+    public isDisposed(): boolean {
         return this.disposed;
     }
     
-    public close(): void{
+    public close(): void {
         this.disposed = true;
         this.closer();
     }

@@ -5,11 +5,6 @@
   type: type
   template: HTMLImageElement
 
-# android.widget.LinearLayout
-- id: android.widget.LinearLayout
-  type: type
-  template: HTML_Element
-
 # android.widget.PageIndicatorView
 - id: android.widget.PageIndicatorView
   type: type

@@ -19,17 +19,16 @@
 import { comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy } from './../ObservableProperty.ext.shared'
 import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from './../../rx/DisposeCondition.actual'
 import { ObservableProperty } from './../ObservableProperty.shared'
-import { SubscriptionLike } from 'rxjs'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindString>android.widget.TextView
-export function androidWidgetTextViewBindString(this_: HTMLElement, observable: ObservableProperty<string>): SubscriptionLike{
+export function androidWidgetTextViewBindString(this_: HTMLElement, observable: ObservableProperty<string>): void {
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
                 this_.innerText = value
     }), getAndroidViewViewRemoved(this_));
 }
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindStringRes>android.widget.TextView
-export function androidWidgetTextViewBindStringRes(this_: HTMLElement, observable: ObservableProperty<(string | null)>): SubscriptionLike{
+export function androidWidgetTextViewBindStringRes(this_: HTMLElement, observable: ObservableProperty<(string | null)>): void {
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
                 this_.visibility = value === null ? "gone" : "visible";
                 if (!(value === null)) {
@@ -40,7 +39,7 @@ export function androidWidgetTextViewBindStringRes(this_: HTMLElement, observabl
 
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindText>android.widget.TextView
-export function androidWidgetTextViewBindText<T>(this_: HTMLElement, observable: ObservableProperty<T>, transform: (a: T) => string): SubscriptionLike{
+export function androidWidgetTextViewBindText<T>(this_: HTMLElement, observable: ObservableProperty<T>, transform: (a: T) => string): void {
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
                 this_.innerText = transform(value)
     }), getAndroidViewViewRemoved(this_));

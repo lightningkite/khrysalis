@@ -18,29 +18,28 @@
 import { comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy } from './../ObservableProperty.ext.shared'
 import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from './../../rx/DisposeCondition.actual'
 import { ObservableProperty } from './../ObservableProperty.shared'
-import { SubscriptionLike } from 'rxjs'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindActive>android.widget.Button
-export function androidWidgetButtonBindActive(this_: HTMLButtonElement, observable: ObservableProperty<boolean>, activeColorResource: (string | null) = null, inactiveColorResource: (string | null) = null): SubscriptionLike{
+export function androidWidgetButtonBindActive(this_: HTMLButtonElement, observable: ObservableProperty<boolean>, activeColorResource: (string | null) = null, inactiveColorResource: (string | null) = null): void {
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (it) => {
                 this_.isEnabled = it;
                 if (it) {
-                    const temp333 = activeColorResource;
-                    if(temp333 !== null) ((color) => {
+                    const temp339 = activeColorResource;
+                    if(temp339 !== null) ((color) => {
                             this_.style.background = color
-                    })(temp333);
+                    })(temp339);
                 } else {
-                    const temp335 = inactiveColorResource;
-                    if(temp335 !== null) ((color) => {
+                    const temp341 = inactiveColorResource;
+                    if(temp341 !== null) ((color) => {
                             this_.style.background = color
-                    })(temp335);
+                    })(temp341);
                 }
     }), getAndroidViewViewRemoved(this_));
 }
 
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindActive>android.widget.Button
-export function androidWidgetButtonBindActive(this_: HTMLButtonElement, observable: ObservableProperty<boolean>, activeBackground: Drawable, inactiveBackground: Drawable): SubscriptionLike{
+export function androidWidgetButtonBindActive(this_: HTMLButtonElement, observable: ObservableProperty<boolean>, activeBackground: Drawable, inactiveBackground: Drawable): void {
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (it) => {
                 this_.isEnabled = it;
                 if (it) {

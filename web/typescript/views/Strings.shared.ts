@@ -40,7 +40,7 @@ import { checkIsInterface, tryCastInterface } from 'Kotlin'
 //! Declares com.lightningkite.khrysalis.views.ViewString
 export interface ViewString {
     
-    get(dependency: Window): string
+    get(dependency: Window): string 
 }
 export class ViewStringDefaults {
 }
@@ -53,7 +53,7 @@ export class ViewStringRaw implements ViewString {
         this._string = _string;
     }
     
-    public get(dependency: Window): string{ return this._string; }
+    public get(dependency: Window): string { return this._string; }
 }
 
 //! Declares com.lightningkite.khrysalis.views.ViewStringResource
@@ -64,7 +64,7 @@ export class ViewStringResource implements ViewString {
         this.resource = resource;
     }
     
-    public get(dependency: Window): string{ return this.resource; }
+    public get(dependency: Window): string { return this.resource; }
 }
 
 //! Declares com.lightningkite.khrysalis.views.ViewStringTemplate
@@ -77,7 +77,7 @@ export class ViewStringTemplate implements ViewString {
         this._arguments = _arguments;
     }
     
-    public get(dependency: Window): string{
+    public get(dependency: Window): string {
         const templateResolved = this.template.get(dependency);
         
         const fixedArguments = this._arguments.map((it) => (tryCastInterface<ViewString>(it, "ComLightningkiteKhrysalisViewsViewString"))?.get(dependency) ?? it);
@@ -94,7 +94,7 @@ export class ViewStringComplex implements ViewString {
         this.getter = getter;
     }
     
-    public get(dependency: Window): string{ return this.getter(dependency); }
+    public get(dependency: Window): string { return this.getter(dependency); }
 }
 
 //! Declares com.lightningkite.khrysalis.views.ViewStringList
@@ -107,13 +107,13 @@ export class ViewStringList implements ViewString {
         this.separator = separator;
     }
     
-    public get(dependency: Window): string{
+    public get(dependency: Window): string {
         return this.parts.map((it) => it.get(dependency)).join(this.separator);
     }
 }
 
 //! Declares com.lightningkite.khrysalis.views.joinToViewString>kotlin.collections.List<com.lightningkite.khrysalis.views.ViewString>
-export function kotlinCollectionsListJoinToViewString(this_: Array< ViewString>, separator: string = `\n`): ViewString{
+export function kotlinCollectionsListJoinToViewString(this_: Array< ViewString>, separator: string = `\n`): ViewString {
     if (this_.length === 1) {
         return this_[0];
     }
@@ -121,7 +121,7 @@ export function kotlinCollectionsListJoinToViewString(this_: Array< ViewString>,
 }
 
 //! Declares com.lightningkite.khrysalis.views.toDebugString>com.lightningkite.khrysalis.views.ViewString
-export function comLightningkiteKhrysalisViewsViewStringToDebugString(this_: ViewString): string{
+export function comLightningkiteKhrysalisViewsViewStringToDebugString(this_: ViewString): string {
     const thing = this_;
     
     if (thing instanceof ViewStringRaw) {

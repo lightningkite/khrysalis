@@ -22,7 +22,7 @@ import { MutableObservableProperty } from './../MutableObservableProperty.shared
 import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from './../../rx/DisposeCondition.actual'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>android.widget.SeekBar
-export function androidWidgetSeekBarBind(this_: HTMLInputElement, start: number, endInclusive: number, observable: MutableObservableProperty<number>): void{
+export function androidWidgetSeekBarBind(this_: HTMLInputElement, start: number, endInclusive: number, observable: MutableObservableProperty<number>): void {
     this_.max = endInclusive - start;
     this_.incrementProgressBy(1);
     
@@ -40,7 +40,7 @@ export function androidWidgetSeekBarBind(this_: HTMLInputElement, start: number,
             public constructor() {
             }
             
-            onProgressChanged(p0: (HTMLInputElement | null), p1: number, p2: boolean): void{
+            onProgressChanged(p0: (HTMLInputElement | null), p1: number, p2: boolean): void {
                 if (!suppress) {
                     suppress = true;
                     observable.value = p1 + start;
@@ -48,10 +48,10 @@ export function androidWidgetSeekBarBind(this_: HTMLInputElement, start: number,
                 }
             }
             
-            onStartTrackingTouch(p0: (HTMLInputElement | null)): void{
+            onStartTrackingTouch(p0: (HTMLInputElement | null)): void {
             }
             
-            onStopTrackingTouch(p0: (HTMLInputElement | null)): void{
+            onStopTrackingTouch(p0: (HTMLInputElement | null)): void {
             }
     }());
     

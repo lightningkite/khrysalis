@@ -55,7 +55,7 @@ export class FlatMappedObservableProperty<A, B> extends ObservableProperty<any> 
 }
 
 //! Declares com.lightningkite.khrysalis.observables.flatMap>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
-export function comLightningkiteKhrysalisObservablesObservablePropertyFlatMap<T, B>(this_: ObservableProperty<T>, transformation:  (a: T) => ObservableProperty<B>): FlatMappedObservableProperty<T, B>{
+export function comLightningkiteKhrysalisObservablesObservablePropertyFlatMap<T, B>(this_: ObservableProperty<T>, transformation:  (a: T) => ObservableProperty<B>): FlatMappedObservableProperty<T, B> {
     return new FlatMappedObservableProperty<T, B>(this_, transformation);
 }
 
@@ -89,13 +89,13 @@ export class MutableFlatMappedObservableProperty<A, B> extends MutableObservable
     })).pipe(rxSkip(0)); }
     
     
-    public update(): void{
+    public update(): void {
         this.lastProperty?.update();
     }
 }
 
 //! Declares com.lightningkite.khrysalis.observables.flatMapMutable>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
-export function comLightningkiteKhrysalisObservablesObservablePropertyFlatMapMutable<T, B>(this_: ObservableProperty<T>, transformation:  (a: T) => MutableObservableProperty<B>): MutableFlatMappedObservableProperty<T, B>{
+export function comLightningkiteKhrysalisObservablesObservablePropertyFlatMapMutable<T, B>(this_: ObservableProperty<T>, transformation:  (a: T) => MutableObservableProperty<B>): MutableFlatMappedObservableProperty<T, B> {
     return new MutableFlatMappedObservableProperty<T, B>(this_, transformation);
 }
 

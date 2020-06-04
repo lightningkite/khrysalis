@@ -75,6 +75,7 @@ fun TypescriptTranslator.registerFunction() {
         -')'
         -": "
         -typedRule.returnType
+        -' '
         val body = typedRule.body
         when (body) {
             null -> {
@@ -160,8 +161,9 @@ fun TypescriptTranslator.registerFunction() {
                     .plus(typedRule.typeParameters.filter { it.hasModifier(KtTokens.REIFIED_KEYWORD) }
                         .map { listOf(it.name, ": any") })
                     .plus(typedRule.valueParameters),
-                returnType = typedRule.typeReference ?: typedRule.bodyExpression?.resolvedExpressionTypeInfo?.type
-                ?: "void",
+                returnType = typedRule.typeReference
+                    ?: typedRule.bodyExpression?.takeUnless { it is KtBlockExpression }?.resolvedExpressionTypeInfo?.type
+                    ?: "void",
                 body = typedRule.bodyExpression
             )
         }
@@ -253,7 +255,8 @@ fun TypescriptTranslator.registerFunction() {
 
     handle<KtSafeQualifiedExpression>(
         condition = {
-            ((typedRule.selectorExpression as? KtCallExpression)?.resolvedCall?.candidateDescriptor as? FunctionDescriptor)?.extensionReceiverParameter != null
+            typedRule.actuallyCouldBeExpression &&
+                    ((typedRule.selectorExpression as? KtCallExpression)?.resolvedCall?.candidateDescriptor as? FunctionDescriptor)?.extensionReceiverParameter != null
         },
         priority = 1001,
         action = {
@@ -283,8 +286,7 @@ fun TypescriptTranslator.registerFunction() {
 
     handle<KtSafeQualifiedExpression>(
         condition = {
-            typedRule.actuallyCouldBeExpression
-                    && ((typedRule.selectorExpression as? KtCallExpression)?.resolvedCall?.candidateDescriptor as? FunctionDescriptor)?.extensionReceiverParameter != null
+            ((typedRule.selectorExpression as? KtCallExpression)?.resolvedCall?.candidateDescriptor as? FunctionDescriptor)?.extensionReceiverParameter != null
         },
         priority = 1001,
         action = {
@@ -522,7 +524,11 @@ fun TypescriptTranslator.registerFunction() {
                 suppliedArguments = typeParametersByName.keys
             )!!
 
-            val rec: String = if (!typedRule.actuallyCouldBeExpression) {
+            val rec: String = if (typedRule.actuallyCouldBeExpression) {
+                -"((_it)=>{\n"
+                -"if(_it === null) return null;\nreturn "
+                "_it"
+            } else {
                 val n = "temp${uniqueNumber.getAndIncrement()}"
                 -"const $n = "
                 -typedRule.receiverExpression
@@ -532,10 +538,6 @@ fun TypescriptTranslator.registerFunction() {
                 -n
                 -" !== null) "
                 n
-            } else {
-                -"((_it)=>{\n"
-                -"if(_it === null) return null;\nreturn "
-                "_it"
             }
             emitTemplate(
                 requiresWrapping = typedRule.actuallyCouldBeExpression,

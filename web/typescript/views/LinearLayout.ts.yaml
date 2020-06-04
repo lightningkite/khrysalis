@@ -1,0 +1,14 @@
+---
+- id: android.widget.LinearLayout
+  type: type
+  template: HTMLDivElement
+
+- id: android.view.ViewGroup.addView
+  type: call
+  arguments: [android.view.View]
+  template: ~this~.appendChild(~0~)
+
+- id: android.view.ViewGroup.addView
+  type: call
+  actualReceiver: android.widget.LinearLayout
+  template: ~this~.appendChild(~1~(~0~))

@@ -34,7 +34,7 @@ import { Paint } from './draw/Paint.actual'
 //! Declares com.lightningkite.khrysalis.views.SelectDateMonthCVD
 export class SelectDateMonthCVD extends MonthCVD {
     public constructor() { super(); }
-    public generateAccessibilityView(): (HTMLElement | null){ return null; }
+    public generateAccessibilityView(): (HTMLElement | null) { return null; }
     
     public selected: MutableObservableProperty<(DateAlone | null)>;
     
@@ -46,7 +46,7 @@ export class SelectDateMonthCVD extends MonthCVD {
     public readonly selectedPaint: Paint;
     
     
-    public drawDay(canvas: CanvasRenderingContext2D, showingMonth: DateAlone, day: DateAlone, displayMetrics: DisplayMetrics, outer: RectF, inner: RectF): void{
+    public drawDay(canvas: CanvasRenderingContext2D, showingMonth: DateAlone, day: DateAlone, displayMetrics: DisplayMetrics, outer: RectF, inner: RectF): void {
         if (day.equals(this.selected.value)){
             CalendarDrawing.INSTANCE.dayBackground(canvas, inner, this.selectedPaint);
             CalendarDrawing.INSTANCE.day(canvas, showingMonth, day, inner, this.selectedDayPaint);
@@ -55,12 +55,12 @@ export class SelectDateMonthCVD extends MonthCVD {
         }
     }
     
-    public measure(width: number, height: number, displayMetrics: DisplayMetrics): void{
+    public measure(width: number, height: number, displayMetrics: DisplayMetrics): void {
         super.measure(width, height, displayMetrics);
         this.selectedDayPaint.textSize = this.dayPaint.textSize;
     }
     
-    public onTap(day: DateAlone): void{
+    public onTap(day: DateAlone): void {
         this.selected.value = day;
     }
 }

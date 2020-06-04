@@ -10,6 +10,6 @@ export abstract class MutableObservableProperty<T> extends ObservableProperty<an
     protected constructor() { super(); }
     public abstract value: T;
     
-    public abstract update(): void
+    public abstract update(): void 
 }
 

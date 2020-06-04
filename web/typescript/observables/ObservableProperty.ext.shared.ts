@@ -16,7 +16,6 @@
 // FQImport: com.lightningkite.khrysalis.observables.observableNN.T TS T
 // FQImport: com.lightningkite.khrysalis.observables.addAndRunWeak.referenceA TS referenceA
 // FQImport: com.lightningkite.khrysalis.observables.observable>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any> TS getComLightningkiteKhrysalisObservablesObservablePropertyObservable
-// FQImport: kotlin.collections.plus>kotlin.collections.Set<kotlin.Any> TS kotlinCollectionsSetPlus
 // FQImport: com.lightningkite.khrysalis.observables.subscribeBy.onComplete TS onComplete
 // FQImport: com.lightningkite.khrysalis.observables.addAndRunWeak.referenceC TS referenceC
 // FQImport: com.lightningkite.khrysalis.observables.observable>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any> SKIPPED due to same file
@@ -60,46 +59,11 @@ export function getComLightningkiteKhrysalisObservablesObservablePropertyObserva
 //! Declares com.lightningkite.khrysalis.observables.onChangeNN>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
 export function getComLightningkiteKhrysalisObservablesObservablePropertyOnChangeNN<T>(this_: ObservableProperty<T>): Observable<T> { return this_.onChange.pipe(rxMap((it) => it)); }
 
-
-//! Declares com.lightningkite.khrysalis.observables.subscribeBy>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
-export function comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy<T>(this_: ObservableProperty<T>, onError:  (a: Throwable) => void = (it) => {
-        it.printStackTrace()
-}, onComplete:  () => void = () => {}, onNext:  (a: T) => void = (it) => {}): SubscriptionLike{ return getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this_).subscribe((boxed) => {
-            onNext(boxed)
-}, onError, onComplete); }
-
-//! Declares com.lightningkite.khrysalis.observables.addAndRunWeak>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
-export function comLightningkiteKhrysalisObservablesObservablePropertyAddAndRunWeak<A extends object, T>(this_: ObservableProperty<T>, referenceA: A, listener:  (a: A, b: T) => void): SubscriptionLike{ return ioReactivexObservableAddWeak(getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this_), referenceA, (a, value) => {
-            listener(
-                a,
-                value
-            )
-}); }
-
-//! Declares com.lightningkite.khrysalis.observables.addAndRunWeak>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
-export function comLightningkiteKhrysalisObservablesObservablePropertyAddAndRunWeak<A extends object, B extends object, T>(this_: ObservableProperty<T>, referenceA: A, referenceB: B, listener:  (a: A, b: B, c: T) => void): SubscriptionLike{ return ioReactivexObservableAddWeak(getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this_), referenceA, referenceB, (a, b, value) => {
-            listener(
-                a,
-                b,
-                value
-            )
-}); }
-
-//! Declares com.lightningkite.khrysalis.observables.addAndRunWeak>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
-export function comLightningkiteKhrysalisObservablesObservablePropertyAddAndRunWeak<A extends object, B extends object, C extends object, T>(this_: ObservableProperty<T>, referenceA: A, referenceB: B, referenceC: C, listener:  (a: A, b: B, c: C, d: T) => void): SubscriptionLike{ return ioReactivexObservableAddWeak(getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this_), referenceA, referenceB, referenceC, (a, b, c, value) => {
-            listener(
-                a,
-                b,
-                c,
-                value
-            )
-}); }
-
 //! Declares com.lightningkite.khrysalis.observables.includes
-export function includes<E>(collection: MutableObservableProperty<Set<E>>, element: E): MutableObservableProperty<boolean>{
+export function includes<E>(collection: MutableObservableProperty<Set<E>>, element: E): MutableObservableProperty<boolean> {
     return comLightningkiteKhrysalisObservablesObservablePropertyWithWrite(comLightningkiteKhrysalisObservablesObservablePropertyMap(collection, (it) => it.has(element)), (it) => {
             if (it) {
-                collection.value = kotlinCollectionsSetPlus(collection.value, element);
+                collection.value = new Set([...collection.value, element]);
             } else {
                 collection.value = kotlinCollectionsSetMinus(collection.value, element);
             }

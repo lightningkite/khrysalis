@@ -38,13 +38,13 @@ export class DialogRequest {
 }
 
 //! Declares com.lightningkite.khrysalis.views.showDialog
-export function showDialog(request: DialogRequest): void{
+export function showDialog(request: DialogRequest): void {
     getLastDialog().value = request;
     getShowDialogEvent().next(request);
 }
 
 //! Declares com.lightningkite.khrysalis.views.showDialog
-export function showDialogAlert(message: ViewString): void{
+export function showDialogAlert(message: ViewString): void {
     showDialog(new DialogRequest(message, undefined));
 }
 

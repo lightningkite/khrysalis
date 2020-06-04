@@ -10,7 +10,6 @@
 // FQImport: com.lightningkite.khrysalis.observables.subscribeBy>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any> TS comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy
 // FQImport: android.widget.AutoCompleteTextView.letterSpacing TS letterSpacing
 // FQImport: android.os.Build TS Build
-// FQImport: kotlin.text.contains>kotlin.CharSequence TS kotlinCharSequenceContains
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.<no name provided>.getFilter.<no name provided>.performFiltering.<anonymous>.query TS query
 // FQImport: android.view.ViewGroup TS ViewGroup
 // FQImport: android.widget.AutoCompleteTextView.maxLines TS maxLines
@@ -41,7 +40,6 @@
 // FQImport: android.widget.AutoCompleteTextView.textColors TS textColors
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.options TS options
 // FQImport: android.widget.BaseAdapter TS BaseAdapter
-// FQImport: kotlin.CharSequence TS CharSequence
 // FQImport: android.widget.Filter.FilterResults.count TS count
 // FQImport: android.os.Build.VERSION_CODES.JELLY_BEAN TS JELLY_BEAN
 // FQImport: com.lightningkite.khrysalis.observables.binding.bind.T TS T
@@ -69,7 +67,7 @@ import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from
 import { ObservableProperty } from './../ObservableProperty.shared'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>android.widget.AutoCompleteTextView
-export function androidWidgetAutoCompleteTextViewBind<T>(this_: HTMLInputElement, options: ObservableProperty<Array<T>>, toString: (a: T) => string, onItemSelected: (a: T) => void): void{
+export function androidWidgetAutoCompleteTextViewBind<T>(this_: HTMLInputElement, options: ObservableProperty<Array<T>>, toString: (a: T) => string, onItemSelected: (a: T) => void): void {
     const filtered = Array.from(options.value);
     
     this_.setAdapter(new class Anon extends BaseAdapter implements Filterable {
@@ -82,12 +80,12 @@ export function androidWidgetAutoCompleteTextViewBind<T>(this_: HTMLInputElement
             }
             
             
-            getFilter(): Filter{ return new class Anon extends Filter {
+            getFilter(): Filter { return new class Anon extends Filter {
                     public constructor() {
                         super();
                     }
                     
-                    performFiltering(p0: (CharSequence | null)): FilterResults{ return also(FilterResults.constructor(), (this_1) => {
+                    performFiltering(p0: (string | null)): FilterResults { return also(FilterResults.constructor(), (this_1) => {
                                 const query = ((_it)=>{
                                         if(_it === null) return null;
                                         return takeUnless(_it, (it) => it.length === 0)
@@ -97,7 +95,7 @@ export function androidWidgetAutoCompleteTextViewBind<T>(this_: HTMLInputElement
                                 })(p0?.toString()));
                                 
                                 if (!(query.equals(null))) {
-                                    const newFilteredOptions = options.value.filter((it) => query.every((q) => kotlinCharSequenceContains((toString)(it), q, true)));
+                                    const newFilteredOptions = options.value.filter((it) => query.every((q) => ((toString)(it).indexOf(q) != -1)));
                                     
                                     this_1.values = newFilteredOptions;
                                     this_1.count = newFilteredOptions.length;
@@ -107,14 +105,14 @@ export function androidWidgetAutoCompleteTextViewBind<T>(this_: HTMLInputElement
                                 }
                     }); }
                     
-                    convertResultToString(resultValue: (any | null)): CharSequence{
+                    convertResultToString(resultValue: (any | null)): string {
                         return ((_it)=>{
                                 if(_it === null) return null;
                                 return (toString)(_it)
                         })((tryCastPrimitive<T>(resultValue, "any"))) ?? "";
                     }
                     
-                    publishResults(p0: (CharSequence | null), p1: (FilterResults | null)): void{
+                    publishResults(p0: (string | null), p1: (FilterResults | null)): void {
                         filtered.length = 0;
                         filtered.push(...tryCastInterface<Array<T>>(p1?.values, "KotlinCollectionsList") ?? []);
                         this.notifyDataSetChanged();
@@ -123,7 +121,7 @@ export function androidWidgetAutoCompleteTextViewBind<T>(this_: HTMLInputElement
             
             
             
-            getView(position: number, convertView: (HTMLElement | null), parent: (ViewGroup | null)): HTMLElement{
+            getView(position: number, convertView: (HTMLElement | null), parent: (ViewGroup | null)): HTMLElement {
                 const view = (tryCastClass<HTMLElement>(convertView, HTMLElement)) ?? also(document.createElement('p'), (this_1) => {
                         this_1.setTextColor(this_.textColors);
                         this_1.textSize = this_.textSize / this_1.resources.displayMetrics.scaledDensity;
@@ -145,13 +143,13 @@ export function androidWidgetAutoCompleteTextViewBind<T>(this_: HTMLInputElement
                 return view;
             }
             
-            getItem(position: number): (any | null){ return kotlinCollectionsListGetOrNull(filtered, position); }
-            getItemId(position: number): number{ return position; }
-            getCount(): number{ return filtered.length; }
+            getItem(position: number): (any | null) { return kotlinCollectionsListGetOrNull(filtered, position); }
+            getItemId(position: number): number { return position; }
+            getCount(): number { return filtered.length; }
     }());
     this_.setOnItemClickListener((adapterView, view, index, id) => {
-            const temp332 = kotlinCollectionsListGetOrNull(filtered, index);
-            if(temp332 !== null) (onItemSelected)(temp332)
+            const temp338 = kotlinCollectionsListGetOrNull(filtered, index);
+            if(temp338 !== null) (onItemSelected)(temp338)
     });
 }
 

@@ -7,6 +7,10 @@
   type: type
   template: string
 
+- id: kotlin.CharSequence
+  type: type
+  template: string
+
 - id: kotlin.Char
   type: typeRef
   template: String
@@ -15,35 +19,15 @@
   type: typeRef
   template: String
 
-- id: kotlin.String.plus
-  type: call
-  infix: true
-  template: ~this~ + ~0~
+- id: kotlin.CharSequence
+  type: typeRef
+  template: String
 
-- id: kotlin.String.plus
-  type: call
-  template: (~this~ + ~0~)
-
-- id: kotlin.text.plus
-  receiver: kotlin.Char
-  type: call
-  infix: true
-  template: ~this~ + ~0~
-
-- id: kotlin.text.plus
-  receiver: kotlin.Char
-  type: call
-  template: (~this~ + ~0~)
-
-# Equals
+# Char
 - id: kotlin.Char.equals
   type: call
   template: ~this~ === ~0~
-- id: kotlin.String.equals
-  type: call
-  template: ~this~ === ~0~
 
-# Comparison
 - id: kotlin.Char.compareTo
   type: call
   template: ~this~ ~operatorToken~ ~0~
@@ -57,6 +41,56 @@
     pattern: new CharRange(~this~, ~0~)
     imports:
       Range: khrysalis/dist/Kotlin
+
+- id: kotlin.text.plus
+  receiver: kotlin.Char
+  type: call
+  infix: true
+  template: ~this~ + ~0~
+
+- id: kotlin.text.plus
+  receiver: kotlin.Char
+  type: call
+  template: (~this~ + ~0~)
+
+# String
+- id: kotlin.String.equals
+  type: call
+  template: ~this~ === ~0~
+
+- id: kotlin.String.plus
+  type: call
+  infix: true
+  template: ~this~ + ~0~
+
+- id: kotlin.String.plus
+  type: call
+  template: (~this~ + ~0~)
+
+- id: kotlin.String.get
+  type: call
+  template: ~this~[~0~]
+
+
+# CharSequence
+- id: kotlin.CharSequence.equals
+  type: call
+  template: ~this~ === ~0~
+
+- id: kotlin.CharSequence.plus
+  type: call
+  infix: true
+  template: ~this~ + ~0~
+
+- id: kotlin.CharSequence.plus
+  type: call
+  template: (~this~ + ~0~)
+
+- id: kotlin.CharSequence.get
+  type: call
+  template: ~this~[~0~]
+
+# Operators
 
 - id: kotlin.text.toLowerCase
   type: call
@@ -136,9 +170,9 @@
 - id: kotlin.text.lines
   type: call
   template: ~this~.split('\n')
-- id: kotlin.String.get
+- id: kotlin.text.contains
   type: call
-  template: ~this~[~0~]
+  template: (~this~.indexOf(~0~) != -1)
 
 # Characters
 
@@ -156,7 +190,7 @@
 - id: kotlin.text.StringBuilder
   type: call
   template:
-    pattern: StringBuilder()
+    pattern: new StringBuilder()
     imports:
       StringBuilder: khrysalis/dist/kotlin/kotlin.text
 - id: kotlin.text.StringBuilder.append

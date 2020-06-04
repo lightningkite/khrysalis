@@ -14,7 +14,11 @@ export function androidWidgetImageViewLoadImage(this_: HTMLImageElement, image: 
             const url = URL.createObjectURL(new Blob([image.raw]));
             this_.src = url;
         } else if (image instanceof ImageReference) {
-            this_.src = image.uri;
+            const reader = new FileReader();
+            reader.onload = (e) => {
+                this_.src = e.target.result as string;
+            }
+            reader.readAsDataURL(image.uri)
         } else if (image instanceof ImageImageBitmap) {
             canvasElement.width = image.bitmap.width;
             canvasElement.height = image.bitmap.height;

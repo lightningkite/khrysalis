@@ -80,9 +80,9 @@ export class ImageRemoteUrl extends Image {
 }
 
 //! Declares com.lightningkite.khrysalis.asImage>kotlin.String
-export function kotlinStringAsImage(this_: string): Image{ return new ImageRemoteUrl(this_); }
+export function kotlinStringAsImage(this_: string): Image { return new ImageRemoteUrl(this_); }
 //! Declares com.lightningkite.khrysalis.asImage>android.net.Uri
-export function androidNetUriAsImage(this_: File): Image{ return new ImageReference(this_); }
+export function androidNetUriAsImage(this_: File): Image { return new ImageReference(this_); }
 //! Declares com.lightningkite.khrysalis.asImage>android.graphics.Bitmap
-export function androidGraphicsBitmapAsImage(this_: ImageBitmap): Image{ return new ImageImageBitmap(this_); }
+export function androidGraphicsBitmapAsImage(this_: ImageBitmap): Image { return new ImageImageBitmap(this_); }
 

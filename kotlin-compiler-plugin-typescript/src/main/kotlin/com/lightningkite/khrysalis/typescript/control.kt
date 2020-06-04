@@ -22,7 +22,7 @@ fun TypescriptTranslator.registerControl() {
         if (typedRule.actuallyCouldBeExpression) {
             val lastStatement = typedRule.statements.lastOrNull()
             typedRule.allChildren.forEach {
-                if (it === lastStatement && it.resolvedUsedAsExpression == true) {
+                if (it === lastStatement && it.actuallyCouldBeExpression) {
                     -"return "
                 }
                 -it

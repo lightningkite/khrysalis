@@ -75,7 +75,9 @@ fun TypescriptTranslator.registerVariable() {
                         -r
                         -": "
                         -tsTopLevelNameElement(ktClass)
-                        -')'
+                        -"): "
+                        -tr.typeReference
+                        -" "
                         val body = getter.bodyExpression
                         if (body is KtBlockExpression) {
                             -body
@@ -108,7 +110,7 @@ fun TypescriptTranslator.registerVariable() {
                         -(setter.parameter?.name ?: "value")
                         -": "
                         -tr.typeReference
-                        -')'
+                        -") "
                         val body = setter.bodyExpression
                         if (body is KtBlockExpression) {
                             -body
