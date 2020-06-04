@@ -28,15 +28,15 @@ export function androidWidgetButtonBindActive(this_: HTMLButtonElement, observab
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (it) => {
                 this_.isEnabled = it;
                 if (it) {
-                    const temp325 = activeColorResource;
-                    if(temp325 !== null) ((color) => {
+                    const temp324 = activeColorResource;
+                    if(temp324 !== null) ((color) => {
                             this_.style.background = color
-                    })(temp325);
+                    })(temp324);
                 } else {
-                    const temp327 = inactiveColorResource;
-                    if(temp327 !== null) ((color) => {
+                    const temp326 = inactiveColorResource;
+                    if(temp326 !== null) ((color) => {
                             this_.style.background = color
-                    })(temp327);
+                    })(temp326);
                 }
     }), getAndroidViewViewRemoved(this_));
 }

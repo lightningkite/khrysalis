@@ -1,0 +1,35 @@
+---
+- id: com.lightningkite.khrysalis.views.ViewDependency
+  type: type
+  template: Window
+
+- id: com.lightningkite.khrysalis.android.ActivityAccess
+  type: type
+  template: Window
+
+- id: com.lightningkite.khrysalis.views.getString
+  type: call
+  template: $0
+
+- id: com.lightningkite.khrysalis.views.getColor
+  type: call
+  template: $0
+
+- id: com.lightningkite.khrysalis.views.displayMetrics
+  type: call
+  template:
+    pattern: DisplayMetrics.INSTANCE
+    imports:
+      DisplayMetrics: khrysalis/dist/views/DisplayMetrics.actual
+
+- id: com.lightningkite.khrysalis.views.openUrl
+  type: call
+  template: window.open(~0~, "_blank")
+
+- id: com.lightningkite.khrysalis.views.openAndroidAppOrStore
+  type: call
+  template: window.open("https://play.google.com/store/apps/details?id=" + ~0~, "_blank")
+
+- id: com.lightningkite.khrysalis.views.openIosStore
+  type: call
+  template: window.open("https://apps.apple.com/us/app/app/id" + ~0~, "_blank")

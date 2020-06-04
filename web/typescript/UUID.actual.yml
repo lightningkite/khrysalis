@@ -10,4 +10,4 @@
   template:
     pattern: randomUuidV4()
     imports:
-      v4: uuid as uuidv4
+      randomUuidV4: v4 from uuid

@@ -19,7 +19,6 @@
 // FQImport: com.lightningkite.khrysalis.rx.until>io.reactivex.disposables.Disposable TS ioReactivexDisposablesDisposableUntil
 // FQImport: com.lightningkite.khrysalis.views.android.SwapView.addView TS addView
 // FQImport: android.view.View.translationX TS translationX
-// FQImport: com.lightningkite.khrysalis.views.ViewDependency TS ViewDependency
 // FQImport: android.view.ViewPropertyAnimator.alpha TS alpha
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindStack.<anonymous>.<anonymous>.newView TS newView
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack TS ObservableStack
@@ -38,13 +37,12 @@ import { comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy } fro
 import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from './../../rx/DisposeCondition.actual'
 import { ObservableStack } from './../ObservableStack.shared'
 import { ViewGenerator } from './../../views/ViewGenerator.shared'
-import { ViewDependency } from './../../views/ViewDependency.actual'
 import { SubscriptionLike } from 'rxjs'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindStack>com.lightningkite.khrysalis.views.android.SwapView
-export function comLightningkiteKhrysalisViewsAndroidSwapViewBindStack(this_: SwapView, dependency: ViewDependency, obs: ObservableStack<ViewGenerator>): SubscriptionLike{
-    let currentData = (()=>{const temp380 = obs.stack;
-    (temp380[temp380.length - 1] ?? null)})();
+export function comLightningkiteKhrysalisViewsAndroidSwapViewBindStack(this_: SwapView, dependency: Window, obs: ObservableStack<ViewGenerator>): SubscriptionLike{
+    let currentData = (()=>{const temp379 = obs.stack;
+    (temp379[temp379.length - 1] ?? null)})();
     
     let currentStackSize = obs.stack.length;
     
@@ -60,8 +58,8 @@ export function comLightningkiteKhrysalisViewsAndroidSwapViewBindStack(this_: Sw
                         const oldStackSize = currentStackSize;
                         
                         
-                        let newView = (()=>{const temp383 = obs.stack;
-                        (temp383[temp383.length - 1] ?? null)})()?.generate(dependency);
+                        let newView = (()=>{const temp382 = obs.stack;
+                        (temp382[temp382.length - 1] ?? null)})()?.generate(dependency);
                         
                         if (newView.equals(null)) {
                             newView = document.createElement('div');

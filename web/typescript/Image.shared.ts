@@ -16,8 +16,8 @@ export class Image {
 }
 //! Declares com.lightningkite.khrysalis.ImageReference
 export class ImageReference extends Image {
-    public readonly uri: string;
-    public constructor(uri: string) {
+    public readonly uri: File;
+    public constructor(uri: File) {
         super();
         this.uri = uri;
     }
@@ -28,7 +28,7 @@ export class ImageReference extends Image {
     }
     public equals(other: any): boolean { return other instanceof ImageReference && this.uri === other.uri }
     public toString(): string { return `ImageReference(uri = ${this.uri})` }
-    public copy(uri: string = this.uri) { return new ImageReference(uri); }
+    public copy(uri: File = this.uri) { return new ImageReference(uri); }
 }
 //! Declares com.lightningkite.khrysalis.ImageBitmap
 export class ImageImageBitmap extends Image {
@@ -82,7 +82,7 @@ export class ImageRemoteUrl extends Image {
 //! Declares com.lightningkite.khrysalis.asImage>kotlin.String
 export function kotlinStringAsImage(this_: string): Image{ return new ImageRemoteUrl(this_); }
 //! Declares com.lightningkite.khrysalis.asImage>android.net.Uri
-export function androidNetUriAsImage(this_: string): Image{ return new ImageReference(this_); }
+export function androidNetUriAsImage(this_: File): Image{ return new ImageReference(this_); }
 //! Declares com.lightningkite.khrysalis.asImage>android.graphics.Bitmap
 export function androidGraphicsBitmapAsImage(this_: ImageBitmap): Image{ return new ImageImageBitmap(this_); }
 

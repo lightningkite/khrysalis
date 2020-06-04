@@ -52,13 +52,13 @@ export function androidWidgetViewFlipperBindLoading(this_: HTMLDivElement, loadi
     if (this_.childCount === 1) {
         const spinner = ProgressBar.constructorandroidcontentContext(this_.context);
         
-        const temp399 = color;
-        if(temp399 !== null) ((color) => {
+        const temp398 = color;
+        if(temp398 !== null) ((color) => {
                 //TODO: Make this actually show the proper color. Currently it only makes it white.
                 const colorValue = this_.resources.getColor(color);
                 
                 spinner.indeterminateDrawable.colorFilter = LightingColorFilter.constructorkotlinInt, kotlinInt(0xFFFFFFFF - colorValue, colorValue);
-        })(temp399);
+        })(temp398);
         this_.addView(spinner, 1, FrameLayout.LayoutParams.constructorkotlinInt, kotlinInt, kotlinInt(WRAP_CONTENT, WRAP_CONTENT, Gravity.CENTER));
     }
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(loading, undefined, undefined, (it) => {

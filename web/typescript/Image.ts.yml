@@ -1,7 +1,12 @@
 ---
 - id: android.net.Uri
   type: type
-  template: string
+  template: File
+
+- id: com.lightningkite.khrysalis.Uri
+  type: type
+  template: File
+
 - id: android.graphics.Bitmap
   type: type
   template: ImageBitmap

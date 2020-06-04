@@ -11,7 +11,9 @@
     "mersenne-twister": "^1.1.0",
     "@types/mersenne-twister": "^1.1.2",
     "moment": "^2.25.3",
-    "@types/moment": "^2.13.0"
+    "@types/moment": "^2.13.0",
+    "uuid": "^8.1.0",
+    "@types/uuid": "^8.0.0"
   },
   "devDependencies": {
     "typescript": "^3.4.5"

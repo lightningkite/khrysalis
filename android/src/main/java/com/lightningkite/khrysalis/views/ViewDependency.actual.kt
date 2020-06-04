@@ -198,6 +198,7 @@ fun ViewDependency.requestImageCamera(
 }
 
 
+@Deprecated("")
 fun ViewDependency.downloadDrawable(
     url: String,
     width: Int? = null,
@@ -223,6 +224,7 @@ fun ViewDependency.downloadDrawable(
         })
 }
 
+@Deprecated("")
 fun ViewDependency.checkedDrawable(
     checked: Drawable,
     normal: Drawable
@@ -231,6 +233,7 @@ fun ViewDependency.checkedDrawable(
     addState(intArrayOf(), normal)
 }
 
+@Deprecated("")
 fun ViewDependency.setSizeDrawable(drawable: Drawable, width: Int, height: Int): Drawable {
     val scale = context.resources.displayMetrics.density
     return object : LayerDrawable(arrayOf(drawable)) {

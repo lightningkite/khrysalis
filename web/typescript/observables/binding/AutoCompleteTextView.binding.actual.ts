@@ -150,8 +150,8 @@ export function androidWidgetAutoCompleteTextViewBind<T>(this_: HTMLInputElement
             getCount(): number{ return filtered.length; }
     }());
     this_.setOnItemClickListener((adapterView, view, index, id) => {
-            const temp324 = kotlinCollectionsListGetOrNull(filtered, index);
-            if(temp324 !== null) (onItemSelected)(temp324)
+            const temp323 = kotlinCollectionsListGetOrNull(filtered, index);
+            if(temp323 !== null) (onItemSelected)(temp323)
     });
 }
 

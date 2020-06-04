@@ -283,7 +283,8 @@ class ViewNode(
             }
         }
         node.allAttributes[attributeRequires]?.let {
-            it.split(';').filter { it.isNotBlank() }.forEach {
+            it.split(';', ',').filter { it.isNotBlank() }.forEach { unfixed ->
+                val it = unfixed.removePrefix("val ").removePrefix("var ").trim()
                 val newVar = ViewVar(
                     name = it.substringBefore(':').trim(),
                     type = it.substringAfter(':').substringBefore('=').trim(),
@@ -295,7 +296,8 @@ class ViewNode(
             }
         }
         node.allAttributes[attributeProvides]?.let {
-            it.split(';').filter { it.isNotBlank() }.forEach {
+            it.split(';', ',').filter { it.isNotBlank() }.forEach { unfixed ->
+                val it = unfixed.removePrefix("val ").removePrefix("var ").trim()
                 provides.add(
                     ViewVar(
                         name = it.substringBefore(':').trim(),

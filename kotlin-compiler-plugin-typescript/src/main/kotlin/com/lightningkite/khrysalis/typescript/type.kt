@@ -268,6 +268,15 @@ fun TypescriptTranslator.registerType() {
         -typedRule.returnTypeReference
     }
 
+    handle<KtTypeProjection> {
+        when(typedRule.projectionKind){
+            KtProjectionKind.IN -> -typedRule.typeReference
+            KtProjectionKind.OUT -> -typedRule.typeReference
+            KtProjectionKind.STAR -> -"any"
+            KtProjectionKind.NONE -> -typedRule.typeReference
+        }
+    }
+
     handle<KtTypeParameter> {
         -typedRule.nameIdentifier
         typedRule.extendsBound?.let {

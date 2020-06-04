@@ -9,7 +9,6 @@
 // FQImport: com.lightningkite.khrysalis.views.ViewStringResource TS ViewStringResource
 // FQImport: kotlin.Int.toString TS toString
 // FQImport: com.lightningkite.khrysalis.views.StringResource TS StringResource
-// FQImport: com.lightningkite.khrysalis.views.getString>com.lightningkite.khrysalis.android.ActivityAccess TS comLightningkiteKhrysalisAndroidActivityAccessGetString
 // FQImport: com.lightningkite.khrysalis.views.ViewStringList.get.dependency TS dependency
 // FQImport: com.lightningkite.khrysalis.views.ViewStringTemplate SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.views.ViewStringResource SKIPPED due to same file
@@ -21,7 +20,6 @@
 // FQImport: com.lightningkite.khrysalis.views.ViewStringRaw SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.views.ViewStringResource.resource TS resource
 // FQImport: com.lightningkite.khrysalis.views.toDebugString>com.lightningkite.khrysalis.views.ViewString SKIPPED due to same file
-// FQImport: com.lightningkite.khrysalis.views.ViewDependency TS ViewDependency
 // FQImport: com.lightningkite.khrysalis.views.ViewStringTemplate.get.<anonymous>.it TS it
 // FQImport: com.lightningkite.khrysalis.views.ViewStringComplex TS ViewStringComplex
 // FQImport: com.lightningkite.khrysalis.views.ViewStringComplex SKIPPED due to same file
@@ -30,7 +28,6 @@
 // FQImport: com.lightningkite.khrysalis.views.ViewStringList.get.<anonymous>.it TS it
 // FQImport: com.lightningkite.khrysalis.views.ViewStringRaw.string TS string
 // FQImport: com.lightningkite.khrysalis.views.ViewStringList TS ViewStringList
-// FQImport: com.lightningkite.khrysalis.views.ViewStringResource.get.dependency TS dependency
 // FQImport: com.lightningkite.khrysalis.views.ViewStringTemplate.template TS template
 // FQImport: com.lightningkite.khrysalis.views.ViewStringTemplate TS ViewStringTemplate
 // FQImport: com.lightningkite.khrysalis.views.toDebugString.<anonymous>.it TS it
@@ -38,7 +35,6 @@
 // FQImport: com.lightningkite.khrysalis.views.ViewStringTemplate.get.templateResolved TS templateResolved
 // FQImport: com.lightningkite.khrysalis.views.ViewStringComplex.getter TS getter
 // FQImport: com.lightningkite.khrysalis.views.ViewStringList SKIPPED due to same file
-import { ViewDependency, comLightningkiteKhrysalisAndroidActivityAccessGetString } from './ViewDependency.actual'
 import { StringResource } from './ResourceTypes.actual'
 import { vsprintf } from 'sprintf'
 import { checkIsInterface, tryCastInterface } from 'Kotlin'
@@ -46,7 +42,7 @@ import { checkIsInterface, tryCastInterface } from 'Kotlin'
 //! Declares com.lightningkite.khrysalis.views.ViewString
 export interface ViewString {
     
-    get(dependency: ViewDependency): string
+    get(dependency: Window): string
 }
 export class ViewStringDefaults {
 }
@@ -59,7 +55,7 @@ export class ViewStringRaw implements ViewString {
         this._string = _string;
     }
     
-    public get(dependency: ViewDependency): string{ return this._string; }
+    public get(dependency: Window): string{ return this._string; }
 }
 
 //! Declares com.lightningkite.khrysalis.views.ViewStringResource
@@ -70,7 +66,7 @@ export class ViewStringResource implements ViewString {
         this.resource = resource;
     }
     
-    public get(dependency: ViewDependency): string{ return comLightningkiteKhrysalisAndroidActivityAccessGetString(dependency, this.resource); }
+    public get(dependency: Window): string{ return $0; }
 }
 
 //! Declares com.lightningkite.khrysalis.views.ViewStringTemplate
@@ -83,7 +79,7 @@ export class ViewStringTemplate implements ViewString {
         this._arguments = _arguments;
     }
     
-    public get(dependency: ViewDependency): string{
+    public get(dependency: Window): string{
         const templateResolved = this.template.get(dependency);
         
         const fixedArguments = this._arguments.map((it) => (tryCastInterface<ViewString>(it, "ComLightningkiteKhrysalisViewsViewString"))?.get(dependency) ?? it);
@@ -95,12 +91,12 @@ export class ViewStringTemplate implements ViewString {
 //! Declares com.lightningkite.khrysalis.views.ViewStringComplex
 export class ViewStringComplex implements ViewString {
     public static implementsInterfaceComLightningkiteKhrysalisViewsViewString = true;
-    public readonly getter:  (a: ViewDependency) => string;
-    public constructor(getter:  (a: ViewDependency) => string) {
+    public readonly getter:  (a: Window) => string;
+    public constructor(getter:  (a: Window) => string) {
         this.getter = getter;
     }
     
-    public get(dependency: ViewDependency): string{ return this.getter(dependency); }
+    public get(dependency: Window): string{ return this.getter(dependency); }
 }
 
 //! Declares com.lightningkite.khrysalis.views.ViewStringList
@@ -113,7 +109,7 @@ export class ViewStringList implements ViewString {
         this.separator = separator;
     }
     
-    public get(dependency: ViewDependency): string{
+    public get(dependency: Window): string{
         return this.parts.map((it) => it.get(dependency)).join(this.separator);
     }
 }
