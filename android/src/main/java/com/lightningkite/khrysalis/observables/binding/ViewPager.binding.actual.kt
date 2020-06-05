@@ -48,3 +48,47 @@ fun <T> ViewPager.bind(
         }
     })
 }
+
+/**
+ *
+ * Binds the items in the ViewPager to the list provided, and the showing index to the observable provided.
+ * Any changes to the observable will change the current page. AS well updating the pager will update the observable.
+ *
+ */
+fun <T> ViewPager.bind(
+    items: ObservableProperty<List<T>>,
+    default: T,
+    showIndex: MutableObservableProperty<Int> = StandardObservableProperty(0),
+    makeView: (ObservableProperty<T>)->View
+) {
+    adapter = object : PagerAdapter() {
+
+        override fun isViewFromObject(p0: View, p1: Any): Boolean = p1 == p0
+
+        override fun getCount(): Int = items.value.size
+
+        override fun instantiateItem(container: ViewGroup, position: Int): Any {
+            val view = makeView(items.map { it.getOrElse(position){ default } })
+            container.addView(view)
+            return view
+        }
+
+        override fun destroyItem(container: ViewGroup, position: Int, `object`: Any) {
+            container.removeView(`object` as View)
+        }
+    }
+
+    items.subscribeBy { list ->
+        adapter!!.notifyDataSetChanged()
+    }.until(this.removed)
+    showIndex.subscribeBy{ value ->
+        this.currentItem = value
+    }.until(this.removed)
+    this.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        override fun onPageScrollStateChanged(p0: Int) {}
+        override fun onPageScrolled(p0: Int, p1: Float, p2: Int) {}
+        override fun onPageSelected(p0: Int) {
+            showIndex.value = p0
+        }
+    })
+}
