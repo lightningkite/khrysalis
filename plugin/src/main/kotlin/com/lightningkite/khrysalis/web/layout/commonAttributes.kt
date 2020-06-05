@@ -1,16 +1,17 @@
 package com.lightningkite.khrysalis.web.layout
 
 import com.lightningkite.khrysalis.generic.PartialTranslator
-import com.lightningkite.khrysalis.utils.AlignDirection
-import com.lightningkite.khrysalis.utils.XmlNode
-import com.lightningkite.khrysalis.utils.horizontalGravity
-import com.lightningkite.khrysalis.utils.kabobCase
+import com.lightningkite.khrysalis.utils.*
 import com.lightningkite.khrysalis.web.asCssColor
 import com.lightningkite.khrysalis.web.asCssDimension
 import java.io.File
 
 internal fun HtmlTranslator.commonAttributes() {
-
+    attribute.handle("android:id") {
+        val value = rule.value.substringAfter('/')
+        out.primary.classes.add("id-${value.kabobCase()}")
+        out.primary.subtreeId = value
+    }
     attribute.handle("tools:webCss") {
         rule.value.split(';').forEach {
             out.style[it.substringBefore(':')] = it.substringAfter(':')
@@ -65,10 +66,6 @@ internal fun HtmlTranslator.commonAttributes() {
     attribute.handle("android:textAllCaps") {
         val value = rule.value
         out.text.style["text-transform"] = if (value == "true") "uppercase" else "none"
-    }
-    attribute.handle("android:id") {
-        val value = rule.value.substringAfter('/')
-        out.text.classes.add("id-${value.kabobCase()}")
     }
 
     fun PartialTranslator<ResultNode, Unit, XmlNode.Attribute, String>.Context.handleDrawable(direction: String, after: Boolean){

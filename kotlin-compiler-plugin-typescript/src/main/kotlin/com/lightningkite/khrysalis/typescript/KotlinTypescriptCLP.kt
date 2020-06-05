@@ -150,24 +150,25 @@ class KotlinTypescriptExtension(
         translator.kotlinFqNameToRelativeFile.putAll(map)
 
         //Load equivalents
-        equivalents.asSequence().plus(output)
-            .flatMap { it.walkTopDown() }
-            .filter {
-                it.name.endsWith(".ts.yaml") || it.name.endsWith(".ts.yml")
-            }
-            .forEach { actualFile ->
-                try {
-                    collector?.report(CompilerMessageSeverity.INFO, "Reading equivalents from $actualFile...")
-                    translator.replacements += actualFile
-                } catch (t: Throwable) {
-                    collector?.report(CompilerMessageSeverity.ERROR, "Failed to parse equivalents for $actualFile:")
-                    collector?.report(
-                        CompilerMessageSeverity.ERROR,
-                        StringWriter().also { t.printStackTrace(PrintWriter(it)) }.buffer.toString()
-                    )
-                    return AnalysisResult.compilationError(ctx)
-                }
-            }
+        loadDeclarations(equivalents.asSequence().plus(output), output, translator.declarations)
+//        equivalents.asSequence().plus(output)
+//            .flatMap { it.walkTopDown() }
+//            .filter {
+//                it.name.endsWith(".ts.yaml") || it.name.endsWith(".ts.yml")
+//            }
+//            .forEach { actualFile ->
+//                try {
+//                    collector?.report(CompilerMessageSeverity.INFO, "Reading equivalents from $actualFile...")
+//                    translator.replacements += actualFile
+//                } catch (t: Throwable) {
+//                    collector?.report(CompilerMessageSeverity.ERROR, "Failed to parse equivalents for $actualFile:")
+//                    collector?.report(
+//                        CompilerMessageSeverity.ERROR,
+//                        StringWriter().also { t.printStackTrace(PrintWriter(it)) }.buffer.toString()
+//                    )
+//                    return AnalysisResult.compilationError(ctx)
+//                }
+//            }
 
 //        println("Equivalents for kotlin.collections.joinToString>kotlin.collections.Iterable: ${translator.replacements.functions.entries.joinToString("\n"){
 //            "${it.key} -> ${it.value.joinToString("\n") { "    $it" }}"

@@ -9,6 +9,7 @@ let geoMethod = (
     this_Geocode: Window,
     coordinate: GeoCoordinate | string,
     onResult: (a: Array<GeoAddress>) => void
+
 ) => { onResult([]) }
 export function setGeocodingMethod(method: (
     this_Geocode: Window,

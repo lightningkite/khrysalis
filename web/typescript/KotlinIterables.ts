@@ -1,6 +1,7 @@
 // Kotlin iterables
 
 import {IllegalArgumentException} from "./Kotlin";
+import { map } from 'iterable-operator'
 
 function test() {
 }
