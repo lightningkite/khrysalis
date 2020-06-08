@@ -16,7 +16,6 @@
 // FQImport: com.lightningkite.khrysalis.observables.TransformedMutableObservableProperty2.basedOn TS basedOn
 // FQImport: com.lightningkite.khrysalis.observables.TransformedMutableObservableProperty2.read TS read
 // FQImport: com.lightningkite.khrysalis.observables.TransformedMutableObservableProperty2.onChange.<anonymous>.it TS it
-// FQImport: com.lightningkite.khrysalis.observables.TransformedMutableObservableProperty2 SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty TS MutableObservableProperty
 import { Observable } from 'rxjs'
 import { map as rxMap } from 'rxjs/operators'

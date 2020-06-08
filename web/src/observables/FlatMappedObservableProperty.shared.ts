@@ -5,14 +5,12 @@
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty.value TS value
 // FQImport: com.lightningkite.khrysalis.observables.flatMap.T TS T
 // FQImport: com.lightningkite.khrysalis.observables.flatMap.B TS B
-// FQImport: com.lightningkite.khrysalis.observables.FlatMappedObservableProperty SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.observables.FlatMappedObservableProperty.basedOn TS basedOn
 // FQImport: com.lightningkite.khrysalis.observables.MutableFlatMappedObservableProperty.<get-onChange>.<anonymous>.prop TS prop
 // FQImport: com.lightningkite.khrysalis.observables.observable>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any> TS getComLightningkiteKhrysalisObservablesObservablePropertyObservable
 // FQImport: com.lightningkite.khrysalis.observables.MutableFlatMappedObservableProperty.basedOn TS basedOn
 // FQImport: com.lightningkite.khrysalis.observables.FlatMappedObservableProperty.transformation TS transformation
 // FQImport: com.lightningkite.khrysalis.observables.MutableFlatMappedObservableProperty.B TS B
-// FQImport: com.lightningkite.khrysalis.observables.MutableFlatMappedObservableProperty SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.observables.flatMapMutable.transformation TS transformation
 // FQImport: com.lightningkite.khrysalis.observables.FlatMappedObservableProperty.B TS B
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty.update TS update

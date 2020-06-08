@@ -8,7 +8,6 @@
 // FQImport: com.lightningkite.khrysalis.observables.map.T TS T
 // FQImport: com.lightningkite.khrysalis.observables.ObservableProperty.onChange TS onChange
 // FQImport: com.lightningkite.khrysalis.observables.TransformedObservableProperty TS TransformedObservableProperty
-// FQImport: com.lightningkite.khrysalis.observables.TransformedObservableProperty SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.observables.transformed.read TS read
 // FQImport: com.lightningkite.khrysalis.observables.ObservableProperty TS ObservableProperty
 // FQImport: com.lightningkite.khrysalis.observables.map.read TS read

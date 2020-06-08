@@ -12,9 +12,7 @@
 // FQImport: com.lightningkite.khrysalis.observables.ObservableProperty TS ObservableProperty
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.Companion.withFirst.value TS value
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.popTo TS popTo
-// FQImport: com.lightningkite.khrysalis.observables.ObservableStack SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.popTo.i TS i
-// FQImport: java.util.ArrayList.clear TS clear
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.Companion.withFirst.T TS T
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.Companion.withFirst.result TS result
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.reset.t TS t
@@ -22,7 +20,7 @@
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.popTo.t TS t
 import { ObservableProperty } from './ObservableProperty.shared'
 import { Subject } from 'rxjs'
-import { NumberRange } from 'Kotlin'
+import { NumberRange } from '../Kotlin'
 
 //! Declares com.lightningkite.khrysalis.observables.ObservableStack
 export class ObservableStack<T extends object> extends ObservableProperty<any> {
@@ -94,7 +92,7 @@ export class ObservableStack<T extends object> extends ObservableProperty<any> {
         this.onChange.next(this.stack);
     }
     
-    public popTo(predicate: (a: T) => boolean): void {
+    public popToPredicate(predicate: (a: T) => boolean): void {
         let found = false;
         
         for (const i of new NumberRange(0, (this.stack.length - 1))) {
@@ -112,7 +110,7 @@ export class ObservableStack<T extends object> extends ObservableProperty<any> {
     }
     
     public reset(t: T): void {
-        this.stack.clear();
+        this.stack.length = 0;
         this.stack.push(t);
         this.onChange.next(this.stack);
     }

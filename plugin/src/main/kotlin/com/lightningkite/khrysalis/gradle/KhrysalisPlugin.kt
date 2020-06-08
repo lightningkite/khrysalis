@@ -195,7 +195,7 @@ class KhrysalisPlugin : Plugin<Project> {
                     projectName = projectName(),
                     packageName = packageName(),
                     androidLayoutsSummaryFile = androidBase().resolve("build/layout/summary.json"),
-                    baseTypescriptFolder = webBase().resolve("typescript"),
+                    baseTypescriptFolder = webBase().resolve("src"),
                     outputFolder = webBase().resolve("src/layout")
                 )
             }
@@ -240,7 +240,7 @@ class KhrysalisPlugin : Plugin<Project> {
                     pluginCache = project.buildDir.resolve("khrysalis-kcp"),
                     buildCache = project.buildDir.resolve("testBuild"),
                     equivalents = (ext.equivalentsDirectories + webBase().resolve("equivalents")).asSequence(),
-                    output = webBase().resolve("typescript")
+                    output = webBase().resolve("src")
                 )
             }
         }

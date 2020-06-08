@@ -4,6 +4,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager.widget.PagerAdapter
 import androidx.viewpager.widget.ViewPager
+import com.lightningkite.khrysalis.JsName
 import com.lightningkite.khrysalis.observables.*
 import com.lightningkite.khrysalis.rx.removed
 import com.lightningkite.khrysalis.rx.until
@@ -14,6 +15,7 @@ import com.lightningkite.khrysalis.rx.until
  * Any changes to the observable will change the current page. AS well updating the pager will update the observable.
  *
  */
+@JsName("androidxViewpagerWidgetViewPagerBindStatic")
 fun <T> ViewPager.bind(
     items: List<T>,
     showIndex: MutableObservableProperty<Int> = StandardObservableProperty(0),

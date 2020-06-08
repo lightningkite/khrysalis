@@ -1,0 +1,31 @@
+---
+- id: com.lightningkite.khrysalis.views.CustomView
+  type: type
+  template: HTMLCanvasElement
+
+- id: com.lightningkite.khrysalis.views.CustomView
+  type: call
+  template: document.createElement('canvas') as HTMLCanvasElement
+
+- id: com.lightningkite.khrysalis.views.CustomView.delegate
+  type: set
+  template:
+    pattern: customViewSetDelegate(~this~, ~0~)
+    imports:
+      customViewSetDelegate: khrysalis/dist/views/CustomView.actual
+
+- id: android.view.View.invalidate
+  type: call
+  actualReceiver: com.lightningkite.khrysalis.views.CustomView
+  template:
+    pattern: customViewInvalidate(~this~)
+    imports:
+      customViewInvalidate: khrysalis/dist/views/CustomView.actual
+
+- id: android.view.View.postInvalidate
+  type: call
+  actualReceiver: com.lightningkite.khrysalis.views.CustomView
+  template:
+    pattern: customViewInvalidate(~this~)
+    imports:
+      customViewInvalidate: khrysalis/dist/views/CustomView.actual

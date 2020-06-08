@@ -3,12 +3,11 @@
 // Package: com.lightningkite.khrysalis.location
 import { GeoCoordinate } from './GeoCoordinate.shared'
 import { Range, tryCastClass } from '../Kotlin'
-import { ViewDependency } from '../views/ViewDependency.actual'
 import { LocationResult } from './LocationResult.shared'
 
 //! Declares com.lightningkite.khrysalis.location.requestLocation
 export function comLightningkiteKhrysalisAndroidActivityAccessRequestLocation(
-    this_RequestLocation: ViewDependency,
+    this_RequestLocation: Window,
     accuracyBetterThanMeters: number = 10.0,
     timeoutInSeconds: number = 100.0,
     onResult: (a: (LocationResult | null), b: (string | null)) => void
@@ -33,7 +32,7 @@ export function comLightningkiteKhrysalisAndroidActivityAccessRequestLocation(
 
 //! Declares com.lightningkite.khrysalis.location.requestLocationCached
 export function comLightningkiteKhrysalisAndroidActivityAccessRequestLocationCached(
-    this_RequestLocationCached: ViewDependency,
+    this_RequestLocationCached: Window,
     accuracyBetterThanMeters: number = 10.0,
     timeoutInSeconds: number = 100.0,
     onResult: (a: (LocationResult | null), b: (string | null)) => void

@@ -15,8 +15,8 @@
 // FQImport: com.lightningkite.khrysalis.time.TimeAlone.minute TS minute
 // FQImport: com.lightningkite.khrysalis.time.dateFrom TS dateFrom
 // FQImport: com.lightningkite.khrysalis.time.dateAlone>java.util.Date TS getJavaUtilDateDateAlone
-import { kotlinIntFloorDiv, kotlinIntFloorMod } from './../Math.shared'
 import { TimeAlone } from './TimeAlone.actual'
+import { kotlinIntFloorDiv, kotlinIntFloorMod } from '../Math.shared'
 import { dateFrom, getJavaUtilDateDateAlone, javaUtilDateFormat } from './Date.actual'
 import { ClockPartSize } from './ClockPartSize.shared'
 

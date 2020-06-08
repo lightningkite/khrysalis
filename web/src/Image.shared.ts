@@ -3,13 +3,9 @@
 // Package: com.lightningkite.khrysalis
 // FQImport: com.lightningkite.khrysalis.ImageRemoteUrl TS ImageRemoteUrl
 // FQImport: com.lightningkite.khrysalis.Image TS Image
-// FQImport: com.lightningkite.khrysalis.Image SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.ImageReference TS ImageReference
-// FQImport: com.lightningkite.khrysalis.ImageRemoteUrl SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.ImageBitmap TS ImageImageBitmap
-// FQImport: com.lightningkite.khrysalis.ImageReference SKIPPED due to same file
-// FQImport: com.lightningkite.khrysalis.ImageBitmap SKIPPED due to same file
-import { hashString } from 'Kotlin'
+import { hashString } from './Kotlin'
 
 //! Declares com.lightningkite.khrysalis.Image
 export class Image {
@@ -23,7 +19,7 @@ export class ImageReference extends Image {
     }
     public hashCode(): number {
         let hash = 17;
-        hash = 31 * hash + hashString(this.uri);
+        hash = 31 * hash + this.uri?.hashCode() ?? 0;
         return hash;
     }
     public equals(other: any): boolean { return other instanceof ImageReference && this.uri === other.uri }

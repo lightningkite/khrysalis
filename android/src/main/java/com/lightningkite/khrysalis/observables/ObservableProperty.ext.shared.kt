@@ -23,60 +23,6 @@ inline fun <T> ObservableProperty<T>.subscribeBy(
     onNext = { boxed -> onNext(boxed.value) }
 )
 
-@Deprecated("Just use RX disposal stuff")
-@discardableResult
-fun <A : AnyObject, T> ObservableProperty<T>.addAndRunWeak(
-    referenceA: A,
-    listener: @escaping() (A, T) -> Unit
-): Disposable = observable.addWeak(
-    referenceA = referenceA,
-    listener = { a, value ->
-        listener(
-            a,
-            value.value
-        )
-    }
-)
-
-@Deprecated("Just use RX disposal stuff")
-@discardableResult
-fun <A : AnyObject, B : AnyObject, T> ObservableProperty<T>.addAndRunWeak(
-    referenceA: A,
-    referenceB: B,
-    listener: @escaping() (A, B, T) -> Unit
-): Disposable = observable.addWeak(
-    referenceA = referenceA,
-    referenceB = referenceB,
-    listener = { a, b, value ->
-        listener(
-            a,
-            b,
-            value.value
-        )
-    }
-)
-
-@Deprecated("Just use RX disposal stuff")
-@discardableResult
-fun <A : AnyObject, B : AnyObject, C : AnyObject, T> ObservableProperty<T>.addAndRunWeak(
-    referenceA: A,
-    referenceB: B,
-    referenceC: C,
-    listener: @escaping() (A, B, C, T) -> Unit
-): Disposable = observable.addWeak(
-    referenceA = referenceA,
-    referenceB = referenceB,
-    referenceC = referenceC,
-    listener = { a, b, c, value ->
-        listener(
-            a,
-            b,
-            c,
-            value.value
-        )
-    }
-)
-
 fun <E> includes(collection: MutableObservableProperty<Set<E>>, element: E): MutableObservableProperty<Boolean> {
     return collection.map { it ->
         it.contains(element)

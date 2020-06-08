@@ -3,7 +3,6 @@
 // Package: com.lightningkite.khrysalis.views
 // FQImport: com.lightningkite.khrysalis.views.newEmptyView TS newEmptyView
 // FQImport: com.lightningkite.khrysalis.views.ViewGenerator TS ViewGenerator
-// FQImport: com.lightningkite.khrysalis.views.ViewGenerator SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.views.ViewGenerator.Default.generate.dependency TS dependency
 import { newEmptyView } from './EmptyView.actual'
 

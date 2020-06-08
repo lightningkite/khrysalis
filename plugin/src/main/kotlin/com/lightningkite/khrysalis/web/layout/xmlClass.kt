@@ -89,7 +89,7 @@ fun AndroidLayoutFile.toTypescript(
     out.appendln("// Created by Khrysalis XML Typescript")
     out.appendln("//")
     out.appendln("import { loadHtmlFromString, findViewById, getViewById, replaceViewWithId } from 'khrysalis/dist/views/html'")
-    renderImports(projectName, imports, out)
+    renderImports(projectName, file.relativeTo(base).path, imports, out)
     for(variant in variants) {
         out.append("import htmlFor")
         out.append(variant.camelCase())

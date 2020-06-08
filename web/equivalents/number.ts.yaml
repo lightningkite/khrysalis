@@ -863,3 +863,29 @@
 - id: kotlin.Double.Companion.NaN
   type: get
   template: Number.NaN
+
+# Coerce
+- id: kotlin.ranges.coerceIn
+  type: call
+  arguments: [kotlin.Byte, kotlin.Byte]
+  template: Math.min(Math.max(~this~, ~0~), ~1~)
+- id: kotlin.ranges.coerceIn
+  type: call
+  arguments: [kotlin.Short, kotlin.Short]
+  template: Math.min(Math.max(~this~, ~0~), ~1~)
+- id: kotlin.ranges.coerceIn
+  type: call
+  arguments: [kotlin.Int, kotlin.Int]
+  template: Math.min(Math.max(~this~, ~0~), ~1~)
+- id: kotlin.ranges.coerceIn
+  type: call
+  arguments: [kotlin.Long, kotlin.Long]
+  template: Math.min(Math.max(~this~, ~0~), ~1~)
+- id: kotlin.ranges.coerceIn
+  type: call
+  arguments: [kotlin.Float, kotlin.Float]
+  template: Math.min(Math.max(~this~, ~0~), ~1~)
+- id: kotlin.ranges.coerceIn
+  type: call
+  arguments: [kotlin.Double, kotlin.Double]
+  template: Math.min(Math.max(~this~, ~0~), ~1~)

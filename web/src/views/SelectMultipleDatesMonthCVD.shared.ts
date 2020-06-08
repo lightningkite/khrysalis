@@ -43,14 +43,14 @@
 // FQImport: com.lightningkite.khrysalis.observables.StandardObservableProperty.value TS value
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.day TS day
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.measure.width TS width
-import { StandardObservableProperty } from './../observables/StandardObservableProperty.shared'
+import { DateAlone } from '../time/DateAlone.actual'
 import { DisplayMetrics } from './DisplayMetrics.actual'
-import { dateAloneModRelative } from 'time/Date.actual'
+import { dateAloneModRelative } from '../time/Date.actual'
 import { filter as iterFilter, some as iterSome, toArray as iterToArray, toSet as iterToSet } from 'iterable-operator'
-import { DateAlone } from './../time/DateAlone.actual'
 import { CalendarDrawing, MonthCVD } from './MonthCVD.shared'
+import { StandardObservableProperty } from '../observables/StandardObservableProperty.shared'
 import { Paint } from './draw/Paint.actual'
-import { comLightningkiteKhrysalisTimeDateAloneSet } from './../time/DateAlone.shared'
+import { comLightningkiteKhrysalisTimeDateAloneSet } from '../time/DateAlone.shared'
 
 //! Declares com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD
 export class SelectMultipleDatesMonthCVD extends MonthCVD {

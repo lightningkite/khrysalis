@@ -16,9 +16,7 @@ export function comLightningkiteKhrysalisImageLoad(this_: Image): Observable<Ima
                 if (this_ instanceof ImageRaw) {
                     return rxFrom(createImageBitmap(new Blob([this_.raw])))
                 } else if (this_ instanceof ImageReference) {
-                    return rxFrom(fetch(this_.uri))
-                        .pipe(flatMap((x) => { return x.blob() }))
-                        .pipe(flatMap((x) => { return createImageBitmap(x); }))
+                    return rxFrom(createImageBitmap(this_.uri));
                 } else if (this_ instanceof ImageImageBitmap) {
                     return rxOf(this_.bitmap)
                 } else if (this_ instanceof ImageRemoteUrl) {

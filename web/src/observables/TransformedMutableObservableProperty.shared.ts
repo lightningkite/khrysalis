@@ -6,7 +6,6 @@
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty.value TS value
 // FQImport: com.lightningkite.khrysalis.observables.transformed.T TS T
 // FQImport: com.lightningkite.khrysalis.observables.TransformedMutableObservableProperty.B TS B
-// FQImport: com.lightningkite.khrysalis.observables.TransformedMutableObservableProperty SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.observables.map.T TS T
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty.update TS update
 // FQImport: com.lightningkite.khrysalis.observables.TransformedMutableObservableProperty.<set-value>.value TS value

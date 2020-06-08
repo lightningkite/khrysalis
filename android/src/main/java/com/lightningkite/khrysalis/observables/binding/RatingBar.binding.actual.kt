@@ -1,6 +1,7 @@
 package com.lightningkite.khrysalis.observables.binding
 
 import android.widget.RatingBar
+import com.lightningkite.khrysalis.JsName
 import com.lightningkite.khrysalis.observables.*
 import com.lightningkite.khrysalis.rx.removed
 import com.lightningkite.khrysalis.rx.until
@@ -17,6 +18,7 @@ import com.lightningkite.khrysalis.rx.until
  *
  */
 
+@JsName("ratingBarBindMutable")
 fun RatingBar.bind(
     stars: Int,
     observable: MutableObservableProperty<Int>
@@ -84,6 +86,7 @@ fun RatingBar.bind(
  *
  */
 
+@JsName("ratingBarBindFloatMutable")
 fun RatingBar.bindFloat(
     stars: Int,
     observable: MutableObservableProperty<Float>

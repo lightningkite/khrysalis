@@ -258,7 +258,7 @@ fun TypescriptTranslator.registerFunction() {
             typedRule.actuallyCouldBeExpression &&
                     ((typedRule.selectorExpression as? KtCallExpression)?.resolvedCall?.candidateDescriptor as? FunctionDescriptor)?.extensionReceiverParameter != null
         },
-        priority = 1001,
+        priority = 1002,
         action = {
             val callExp = typedRule.selectorExpression as KtCallExpression
             val nre = callExp.calleeExpression as KtNameReferenceExpression

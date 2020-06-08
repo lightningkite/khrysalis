@@ -28,12 +28,13 @@ class TypescriptFileEmitter(val translator: TypescriptTranslator, val file: KtFi
 
     fun write(writer: BufferedWriter, file: KtFile) {
         writer.appendln(overwriteWarning)
-        writer.appendln("// File: ${file.virtualFilePath.removePrefix(translator.commonPath)}")
+        val relPath = file.virtualFilePath.removePrefix(translator.commonPath)
+        writer.appendln("// File: $relPath")
         writer.appendln("// Package: ${file.packageFqName.asString()}")
         importedFqs.forEach {
             writer.appendln("// FQImport: $it")
         }
-        renderImports(translator.projectName, imports.values, writer)
+        renderImports(translator.projectName, relPath, imports.values, writer)
         writer.appendln()
 
         out.flush()

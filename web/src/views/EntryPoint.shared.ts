@@ -9,7 +9,7 @@
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack TS ObservableStack
 // FQImport: com.lightningkite.khrysalis.views.EntryPoint.handleDeepLink.path TS path
 import { ViewGenerator } from './ViewGenerator.shared'
-import { ObservableStack } from './../observables/ObservableStack.shared'
+import { ObservableStack } from '../observables/ObservableStack.shared'
 
 //! Declares com.lightningkite.khrysalis.views.EntryPoint
 export interface EntryPoint {

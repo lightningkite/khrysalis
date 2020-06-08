@@ -155,23 +155,23 @@
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.onTouchMove.x TS x
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.day.inner TS inner
 // FQImport: android.graphics.Paint TS Paint
-// FQImport: com.lightningkite.khrysalis.views.CalendarDrawing SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.day TS day
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.drawLabel.inner TS inner
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.<set-currentMonth>.value TS value
-import { MutableObservableProperty } from './../observables/MutableObservableProperty.shared'
-import { dateAloneMod, dateAloneModRelative } from 'time/Date.actual'
+import { dateAloneMod, dateAloneModRelative } from '../time/Date.actual'
 import { DisplayMetrics } from './DisplayMetrics.actual'
-import { kotlinIntFloorDiv, kotlinIntFloorMod } from './../Math.shared'
+import { kotlinIntFloorDiv, kotlinIntFloorMod } from '../Math.shared'
+import { TimeNames } from '../time/TimeNames.actual'
 import { Paint } from './draw/Paint.actual'
+import { comLightningkiteKhrysalisTimeDateAloneSet } from '../time/DateAlone.shared'
 import { androidGraphicsCanvasDrawTextCentered } from './draw/Canvas.actual'
-import { comLightningkiteKhrysalisTimeDateAloneSet } from './../time/DateAlone.shared'
-import { NumberRange } from 'Kotlin'
+import { MutableObservableProperty } from '../observables/MutableObservableProperty.shared'
+import { NumberRange } from '../Kotlin'
+import { DateAlone } from '../time/DateAlone.actual'
 import { CustomViewDelegate } from './CustomViewDelegate.shared'
-import { applyAlphaToColor } from 'views/Colors.actual'
-import { DateAlone } from './../time/DateAlone.actual'
-import { TimeNames } from './../time/TimeNames.actual'
-import { pathFromLTRB } from 'views/draw/Path.actual'
+import { applyAlphaToColor } from './Colors.actual'
+import { customViewInvalidate } from './CustomView.actual'
+import { pathFromLTRB } from './draw/Path.actual'
 
 //! Declares com.lightningkite.khrysalis.views.MonthCVD
 export class MonthCVD extends CustomViewDelegate {
@@ -219,8 +219,8 @@ export class MonthCVD extends CustomViewDelegate {
     }
     public set currentOffset(value: number) {
         this._currentOffset = value;
-        const temp149 = this.customView;
-        if(temp149 !== null) temp149 /* Invalidate.  Not needed in JS. */;
+        const temp140 = this.customView;
+        if(temp140 !== null) customViewInvalidate(temp140);
     }
     
     private dragStartX: number;
@@ -365,12 +365,12 @@ export class MonthCVD extends CustomViewDelegate {
     public onTouchDown(id: number, x: number, y: number, width: number, height: number): boolean {
         const day = this.dayAtPixel(x, y, undefined);
         
-        const temp204 = day;
-        if(temp204 !== null) ((it) => {
+        const temp195 = day;
+        if(temp195 !== null) ((it) => {
                 if (this.onTouchDownDate(it)) {
                     return true;
                 }
-        })(temp204);
+        })(temp195);
         this.dragStartX = x / width;
         this.dragStartY = y / height;
         this.draggingId = id;
@@ -392,10 +392,10 @@ export class MonthCVD extends CustomViewDelegate {
                 }
             }
         } else {
-            const temp213 = this.dayAtPixel(x, y, undefined);
-            if(temp213 !== null) ((it) => {
+            const temp204 = this.dayAtPixel(x, y, undefined);
+            if(temp204 !== null) ((it) => {
                     return this.onTouchMoveDate(it)
-            })(temp213);
+            })(temp204);
         }
         return true;
     }
@@ -404,10 +404,10 @@ export class MonthCVD extends CustomViewDelegate {
     public onTouchUp(id: number, x: number, y: number, width: number, height: number): boolean {
         if (this.draggingId === id) {
             if (this.isTap) {
-                const temp215 = this.dayAtPixel(x, y, undefined);
-                if(temp215 !== null) ((it) => {
+                const temp206 = this.dayAtPixel(x, y, undefined);
+                if(temp206 !== null) ((it) => {
                         this.onTap(it)
-                })(temp215);
+                })(temp206);
             } else if (this.dragEnabled) {
                 const weighted = this.currentOffset + (this.currentOffset - this.lastOffset) * 200 / (Date.now() - this.lastOffsetTime);
                 
@@ -415,20 +415,20 @@ export class MonthCVD extends CustomViewDelegate {
                     //shift right one
                     dateAloneModRelative(this.currentMonthObs.value, Date.prototype.getMonth, Date.prototype.setMonth, -1);
                     this.currentMonthObs.update();
-                    return this.currentOffset = this.currentOffset - 1;
+                    this.currentOffset = this.currentOffset - 1;
                 } else if (weighted < -0.5) {
                     //shift left one
                     dateAloneModRelative(this.currentMonthObs.value, Date.prototype.getMonth, Date.prototype.setMonth, 1);
                     this.currentMonthObs.update();
-                    return this.currentOffset = this.currentOffset + 1;
+                    this.currentOffset = this.currentOffset + 1;
                 }
             }
             this.draggingId = this.DRAGGING_NONE;
         } else {
-            const temp227 = this.dayAtPixel(x, y, undefined);
-            if(temp227 !== null) ((it) => {
+            const temp218 = this.dayAtPixel(x, y, undefined);
+            if(temp218 !== null) ((it) => {
                     return this.onTouchUpDate(it)
-            })(temp227);
+            })(temp218);
         }
         return true;
     }

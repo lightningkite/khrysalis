@@ -7,6 +7,7 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.lightningkite.khrysalis.JsName
 import com.lightningkite.khrysalis.escaping
 import com.lightningkite.khrysalis.observables.*
 import com.lightningkite.khrysalis.rx.removed
@@ -148,6 +149,7 @@ class RVTypeHandler(val viewDependency: ViewDependency) {
     }
 }
 
+@JsName("recyclerViewBindMultiType")
 fun RecyclerView.bindMulti(
     viewDependency: ViewDependency,
     data: ObservableProperty<List<Any>>,

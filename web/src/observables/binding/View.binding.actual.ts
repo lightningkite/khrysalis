@@ -9,10 +9,10 @@
 // FQImport: com.lightningkite.khrysalis.observables.subscribeBy>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any> TS comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy
 // FQImport: com.lightningkite.khrysalis.observables.ObservableProperty TS ObservableProperty
 // FQImport: com.lightningkite.khrysalis.observables.binding.bindVisible.observable TS observable
-import { comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy } from './../ObservableProperty.ext.shared'
-import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from './../../rx/DisposeCondition.actual'
-import { ObservableProperty } from './../ObservableProperty.shared'
-import { setViewVisibility } from 'views/View.ext'
+import { comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy } from '../ObservableProperty.ext.shared'
+import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from '../../rx/DisposeCondition.actual'
+import { ObservableProperty } from '../ObservableProperty.shared'
+import { setViewVisibility } from '../../views/View.ext.actual'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindVisible>android.view.View
 export function androidViewViewBindVisible(this_: HTMLElement, observable: ObservableProperty<boolean>): void {

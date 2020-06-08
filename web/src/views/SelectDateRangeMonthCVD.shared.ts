@@ -42,11 +42,11 @@
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.day TS day
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty TS MutableObservableProperty
 // FQImport: com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD.drawDay.inner TS inner
-import { MutableObservableProperty } from './../observables/MutableObservableProperty.shared'
+import { DateAlone } from '../time/DateAlone.actual'
 import { DisplayMetrics } from './DisplayMetrics.actual'
-import { DateAlone } from './../time/DateAlone.actual'
 import { CalendarDrawing, MonthCVD } from './MonthCVD.shared'
 import { Paint } from './draw/Paint.actual'
+import { MutableObservableProperty } from '../observables/MutableObservableProperty.shared'
 
 //! Declares com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD
 export class SelectDateRangeMonthCVD extends MonthCVD {

@@ -164,6 +164,11 @@ fun TypescriptTranslator.registerVariable() {
         typedRule.typeReference?.let {
             -": "
             -it
+        } ?: run {
+            if(typedRule.isMember || typedRule.initializer == null){
+                -": "
+                -typedRule.resolvedProperty?.type
+            }
         }
         if(!typedRule.isMember) {
             typedRule.initializer?.let {

@@ -4,7 +4,6 @@
 // FQImport: com.lightningkite.khrysalis.observables.Closeable TS CloseableDefaults
 // FQImport: com.lightningkite.khrysalis.observables.Closeable.close TS close
 // FQImport: com.lightningkite.khrysalis.observables.Close.closer TS closer
-// FQImport: com.lightningkite.khrysalis.observables.Closeable SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.observables.Close.disposed TS disposed
 // FQImport: com.lightningkite.khrysalis.observables.Closeable TS Closeable
 

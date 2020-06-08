@@ -3,6 +3,7 @@ package com.lightningkite.khrysalis.util
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.descriptors.*
+import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.util.*
 import org.jetbrains.kotlin.resolve.*
 import org.jetbrains.kotlin.resolve.calls.callUtil.getResolvedCall
@@ -186,8 +187,19 @@ interface AnalysisExtensions {
     val PsiElement.resolvedDeclarationToDescriptor: DeclarationDescriptor?
         get() = bindingContext[BindingContext.DECLARATION_TO_DESCRIPTOR, this]
 
+    companion object {
+        val neverExpressionTokens = setOf(
+            KtTokens.EQ,
+            KtTokens.PLUSEQ,
+            KtTokens.MINUSEQ,
+            KtTokens.MULTEQ,
+            KtTokens.DIVEQ,
+            KtTokens.PERCEQ
+        )
+    }
     val KtExpression.actuallyCouldBeExpression: Boolean
         get() {
+            if(this is KtBinaryExpression && this.operationToken in neverExpressionTokens) return false
             (this.parent as? KtBlockExpression)?.let{
                 if(it.statements.lastOrNull() != this) return false
                 if(it.resolvedUsedAsExpression == false) return false

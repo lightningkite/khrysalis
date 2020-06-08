@@ -8,6 +8,9 @@
 - id: kotlin.Pair
   type: type
   template: "[~T0~, ~T1~]"
+- id: kotlin.Pair
+  type: call
+  template: "[~0~, ~1~]"
 - id: kotlin.Pair.first
   type: get
   template: "~this~[0]"

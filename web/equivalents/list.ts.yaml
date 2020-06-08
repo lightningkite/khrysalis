@@ -84,6 +84,9 @@
 - id: kotlin.collections.MutableList.clear
   type: call
   template: ~this~.length = 0
+- id: java.util.AbstractList.clear
+  type: call
+  template: ~this~.length = 0
 - id: kotlin.collections.MutableList.addAll
   type: call
   template: ~this~.push(...~0~)
@@ -109,6 +112,13 @@
 # TODO: Could do removeAll
 
 # Extensions
+- id: kotlin.collections.indicies
+  type: get
+  actualReceiver: kotlin.collections.List
+  template:
+    pattern: range(0, ~this~.length-1)
+    imports:
+      range: iterable-operator
 - id: kotlin.collections.indexOfFirst
   type: call
   actualReceiver: kotlin.collections.List

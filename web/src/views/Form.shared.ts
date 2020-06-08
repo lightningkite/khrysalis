@@ -11,7 +11,6 @@
 // FQImport: com.lightningkite.khrysalis.views.Form.Companion.xIsRequired TS xIsRequired
 // FQImport: com.lightningkite.khrysalis.views.ViewStringRaw TS ViewStringRaw
 // FQImport: com.lightningkite.khrysalis.views.matches.T TS T
-// FQImport: com.lightningkite.khrysalis.views.FormValidationError SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.views.Form.runOrDialog.action TS action
 // FQImport: com.lightningkite.khrysalis.views.FormValidationError TS FormValidationError
 // FQImport: com.lightningkite.khrysalis.views.FormField.observable TS observable
@@ -28,9 +27,7 @@
 // FQImport: com.lightningkite.khrysalis.views.FormField.T TS T
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty.value TS value
 // FQImport: com.lightningkite.khrysalis.views.Form.field.obs TS obs
-// FQImport: com.lightningkite.khrysalis.views.Form SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.views.Form.checkField.field TS field
-// FQImport: com.lightningkite.khrysalis.views.UntypedFormField SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.views.UntypedFormField TS UntypedFormField
 // FQImport: com.lightningkite.khrysalis.views.ViewStringResource TS ViewStringResource
 // FQImport: com.lightningkite.khrysalis.views.Form.check.<anonymous>.it TS it
@@ -52,19 +49,17 @@
 // FQImport: com.lightningkite.khrysalis.views.Form.fieldFromProperty.property TS property
 // FQImport: com.lightningkite.khrysalis.views.FormField.name TS name
 // FQImport: com.lightningkite.khrysalis.views.matches.other TS other
-// FQImport: com.lightningkite.khrysalis.views.FormField SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.views.Form.fieldFromProperty TS fieldFromProperty
 // FQImport: com.lightningkite.khrysalis.observables.StandardObservableProperty.value TS value
 // FQImport: com.lightningkite.khrysalis.views.unless.condition TS condition
 // FQImport: com.lightningkite.khrysalis.views.Form.field.validation TS validation
 // FQImport: com.lightningkite.khrysalis.views.joinToViewString>kotlin.collections.List<com.lightningkite.khrysalis.views.ViewString> TS kotlinCollectionsListJoinToViewString
-import { StandardObservableProperty } from './../observables/StandardObservableProperty.shared'
 import { ViewString, ViewStringRaw, ViewStringResource, ViewStringTemplate, kotlinCollectionsListJoinToViewString } from './Strings.shared'
-import { MutableObservableProperty } from './../observables/MutableObservableProperty.shared'
-import { kotlinCharSequenceIsBlank } from './../kotlin/kotlin.text'
-import { map as iterMap, toArray as iterToArray } from 'iterable-operator'
 import { showDialogAlert } from './showDialog.shared'
-import { iterableFilterNotNull } from 'KotlinCollections'
+import { kotlinCharSequenceIsBlank } from '../kotlin/kotlin.text'
+import { StandardObservableProperty } from '../observables/StandardObservableProperty.shared'
+import { listFilterNotNull } from '../KotlinCollections'
+import { MutableObservableProperty } from '../observables/MutableObservableProperty.shared'
 
 //! Declares com.lightningkite.khrysalis.views.FormValidationError
 export class FormValidationError {
@@ -158,15 +153,15 @@ export class Form {
     public fieldFromPropertyRes<T>(name: string, property: MutableObservableProperty<T>, validation:  (a: FormField<T>) => (ViewString | null)): FormField<T> { return this.fieldFromProperty(new ViewStringResource(name), property, validation); }
     
     public check(): Array<FormValidationError> {
-        return iterToArray(iterableFilterNotNull(iterMap(this.fields, (it) => {
-                        const result = this.checkField(it);
-                        
-                        if (!(result.equals(null))) {
-                            return new FormValidationError(it, result);
-                        } else {
-                            return null;
-                        }
-        })));
+        return listFilterNotNull(this.fields.map((it) => {
+                    const result = this.checkField(it);
+                    
+                    if (!(result.equals(null))) {
+                        return new FormValidationError(it, result);
+                    } else {
+                        return null;
+                    }
+        }));
     }
     
     public runOrDialog(action: () => void): void {

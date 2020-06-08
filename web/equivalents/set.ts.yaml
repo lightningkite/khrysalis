@@ -27,6 +27,12 @@
 - id: kotlin.collections.minus
   receiver: kotlin.collections.Set
   type: call
-  arguments: [kotlin.Any]
+  arguments: [kotlin.collections.Set]
   template: new Set([...~this~].filter(x => !~0~.has(x)))
+
+- id: kotlin.collections.minus
+  receiver: kotlin.collections.Set
+  type: call
+  arguments: [kotlin.Any]
+  template: new Set([...~this~].filter(x => x !== ~0~))
 

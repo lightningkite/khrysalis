@@ -1,19 +1,24 @@
 ---
 
+# android.widget.ProgressBar
+- id: android.widget.ProgressBar
+  type: type
+  template: HTMLProgressElement
+
 # android.widget.ImageView
 - id: android.widget.ImageView
   type: type
   template: HTMLImageElement
 
-# android.widget.PageIndicatorView
-- id: android.widget.PageIndicatorView
+# com.rd.PageIndicatorView
+- id: com.rd.PageIndicatorView
   type: type
-  template: HTML_Element
+  template: HTMLDivElement
 
 # android.widget.RatingBar
 - id: android.widget.RatingBar
   type: type
-  template: HTML_Element
+  template: HTMLDivElement
 
 # android.widget.RecyclerView
 - id: android.widget.RecyclerView
@@ -47,5 +52,20 @@
 
 # android.widget.ViewPager
 - id: android.widget.ViewPager
+  type: type
+  template: HTMLDivElement
+
+# com.lightningkite.khrysalis.views.android.SwapView
+- id: com.lightningkite.khrysalis.views.android.SwapView
+  type: type
+  template: HTMLDivElement
+
+# com.google.android.material.tabs.TabLayout
+- id: com.google.android.material.tabs.TabLayout
+  type: type
+  template: HTMLDivElement
+
+# androidx.viewpager.widget.ViewPager
+- id: androidx.viewpager.widget.ViewPager
   type: type
   template: HTMLDivElement

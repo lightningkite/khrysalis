@@ -39,14 +39,14 @@
   template:
     pattern: getViewVisibility(~this~)
     imports:
-      getViewVisibility: khrysalis/dist/views/View.ext
+      getViewVisibility: khrysalis/dist/views/View.ext.actual
 
 - id: android.view.View.visibility
   type: set
   template:
     pattern: setViewVisibility(~this~, ~value~)
     imports:
-      setViewVisibility: khrysalis/dist/views/View.ext
+      setViewVisibility: khrysalis/dist/views/View.ext.actual
 
 - id: android.view.View.rotation
   type: set

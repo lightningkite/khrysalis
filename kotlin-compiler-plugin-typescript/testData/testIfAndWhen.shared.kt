@@ -35,6 +35,22 @@ fun main() {
     }
 
     if (thing2 == null) {
+        if(makeSomething()) {
+            makeSomething()
+        } else {
+            makeSomething()
+        }
+    } else {
+        if(makeSomething()) {
+            makeSomething()
+            thing += 1
+        } else {
+            makeSomething()
+            thing += 1
+        }
+    }
+
+    if (thing2 == null) {
         println("thing is null")
     } else {
         println("Thing is not null")

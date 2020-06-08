@@ -2,26 +2,20 @@
 // File: views/Strings.shared.kt
 // Package: com.lightningkite.khrysalis.views
 // FQImport: com.lightningkite.khrysalis.views.ViewStringList.parts TS parts
-// FQImport: com.lightningkite.khrysalis.views.ViewString SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.views.ViewStringTemplate.get.dependency TS dependency
 // FQImport: com.lightningkite.khrysalis.views.ViewStringComplex.get.dependency TS dependency
 // FQImport: com.lightningkite.khrysalis.views.ViewString.get TS get
 // FQImport: com.lightningkite.khrysalis.views.ViewStringResource TS ViewStringResource
 // FQImport: kotlin.Int.toString TS toString
 // FQImport: com.lightningkite.khrysalis.views.ViewStringList.get.dependency TS dependency
-// FQImport: com.lightningkite.khrysalis.views.ViewStringTemplate SKIPPED due to same file
-// FQImport: com.lightningkite.khrysalis.views.ViewStringResource SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.views.ViewStringTemplate.get.fixedArguments TS fixedArguments
 // FQImport: com.lightningkite.khrysalis.views.ViewStringRaw TS ViewStringRaw
 // FQImport: com.lightningkite.khrysalis.views.ViewStringList.separator TS separator
 // FQImport: com.lightningkite.khrysalis.views.toDebugString>com.lightningkite.khrysalis.views.ViewString TS comLightningkiteKhrysalisViewsViewStringToDebugString
 // FQImport: com.lightningkite.khrysalis.views.toDebugString.thing TS thing
-// FQImport: com.lightningkite.khrysalis.views.ViewStringRaw SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.views.ViewStringResource.resource TS resource
-// FQImport: com.lightningkite.khrysalis.views.toDebugString>com.lightningkite.khrysalis.views.ViewString SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.views.ViewStringTemplate.get.<anonymous>.it TS it
 // FQImport: com.lightningkite.khrysalis.views.ViewStringComplex TS ViewStringComplex
-// FQImport: com.lightningkite.khrysalis.views.ViewStringComplex SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.views.joinToViewString.separator TS separator
 // FQImport: com.lightningkite.khrysalis.views.ViewStringTemplate.arguments TS arguments
 // FQImport: com.lightningkite.khrysalis.views.ViewStringList.get.<anonymous>.it TS it
@@ -33,9 +27,8 @@
 // FQImport: com.lightningkite.khrysalis.views.ViewString TS ViewString
 // FQImport: com.lightningkite.khrysalis.views.ViewStringTemplate.get.templateResolved TS templateResolved
 // FQImport: com.lightningkite.khrysalis.views.ViewStringComplex.getter TS getter
-// FQImport: com.lightningkite.khrysalis.views.ViewStringList SKIPPED due to same file
 import { vsprintf } from 'sprintf'
-import { checkIsInterface, tryCastInterface } from 'Kotlin'
+import { checkIsInterface, tryCastInterface } from '../Kotlin'
 
 //! Declares com.lightningkite.khrysalis.views.ViewString
 export interface ViewString {

@@ -4,9 +4,7 @@
 // FQImport: com.lightningkite.khrysalis.views.geometry.Align.fill TS fill
 // FQImport: com.lightningkite.khrysalis.views.geometry.AlignPair TS AlignPair
 // FQImport: com.lightningkite.khrysalis.views.geometry.Align.center TS center
-// FQImport: com.lightningkite.khrysalis.views.geometry.AlignPair SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.views.geometry.Align.end TS end
-// FQImport: com.lightningkite.khrysalis.views.geometry.Align SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.views.geometry.Align.start TS start
 // FQImport: com.lightningkite.khrysalis.views.geometry.Align TS Align
 
@@ -68,42 +66,42 @@ export class AlignPair {
         }
         public static INSTANCE = new Companion();
         
-        public readonly center;
+        public readonly center: AlignPair;
         
-        public readonly fill;
+        public readonly fill: AlignPair;
         
         
-        public readonly topLeft;
+        public readonly topLeft: AlignPair;
         
-        public readonly topCenter;
+        public readonly topCenter: AlignPair;
         
-        public readonly topFill;
+        public readonly topFill: AlignPair;
         
-        public readonly topRight;
+        public readonly topRight: AlignPair;
         
-        public readonly centerLeft;
+        public readonly centerLeft: AlignPair;
         
-        public readonly centerCenter;
+        public readonly centerCenter: AlignPair;
         
-        public readonly centerFill;
+        public readonly centerFill: AlignPair;
         
-        public readonly centerRight;
+        public readonly centerRight: AlignPair;
         
-        public readonly fillLeft;
+        public readonly fillLeft: AlignPair;
         
-        public readonly fillCenter;
+        public readonly fillCenter: AlignPair;
         
-        public readonly fillFill;
+        public readonly fillFill: AlignPair;
         
-        public readonly fillRight;
+        public readonly fillRight: AlignPair;
         
-        public readonly bottomLeft;
+        public readonly bottomLeft: AlignPair;
         
-        public readonly bottomCenter;
+        public readonly bottomCenter: AlignPair;
         
-        public readonly bottomFill;
+        public readonly bottomFill: AlignPair;
         
-        public readonly bottomRight;
+        public readonly bottomRight: AlignPair;
         
     }
     

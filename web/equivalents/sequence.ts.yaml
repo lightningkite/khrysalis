@@ -101,20 +101,20 @@
     pattern: iterFilter(~this~, (x)=>{ !~0~(x) )
     imports:
       iterFilter: filter from iterable-operator
-- id: kotlin.collections.filterNotNull
+- id: kotlin.sequences.filterNotNull
   type: call
   template:
     pattern: iterableFilterNotNull(~this~)
     imports:
       iterableFilterNotNull: khrysalis/dist/KotlinCollections
-- id: kotlin.collections.mapNotNull
+- id: kotlin.sequences.mapNotNull
   type: call
   template:
     pattern: iterableFilterNotNull(iterMap(~this~, ~0~))
     imports:
       iterMap: map from iterable-operator
       iterableFilterNotNull: khrysalis/dist/KotlinCollections
-- id: kotlin.collections.mapIndexedNotNull
+- id: kotlin.sequences.mapIndexedNotNull
   type: call
   template:
     pattern: iterableFilterNotNull(iterMap(~this~, ~0~))

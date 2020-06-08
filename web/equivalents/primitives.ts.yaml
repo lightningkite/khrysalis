@@ -49,7 +49,10 @@
 - id: com.lightningkite.khrysalis.SomeEnum
   type: typeRef
   template: "null"
-- id: com.lightningkite.khrysalis.Throwable
+- id: kotlin.Throwable
+  type: type
+  template: any
+- id: java.lang.Throwable
   type: type
   template: any
 

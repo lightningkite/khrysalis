@@ -6,7 +6,6 @@
 // FQImport: com.lightningkite.khrysalis.observables.WriteAddedObservableProperty TS WriteAddedObservableProperty
 // FQImport: com.lightningkite.khrysalis.observables.withWrite.T TS T
 // FQImport: com.lightningkite.khrysalis.observables.ObservableProperty.onChange TS onChange
-// FQImport: com.lightningkite.khrysalis.observables.WriteAddedObservableProperty SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.observables.WriteAddedObservableProperty.basedOn TS basedOn
 // FQImport: com.lightningkite.khrysalis.observables.withWrite.onWrite TS onWrite
 // FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty TS MutableObservableProperty

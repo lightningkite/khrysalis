@@ -7,7 +7,6 @@
 // FQImport: com.lightningkite.khrysalis.observables.CombineObservableProperty.observableB TS observableB
 // FQImport: com.lightningkite.khrysalis.observables.CombineObservableProperty.<get-onChange>.<anonymous>.a TS a
 // FQImport: com.lightningkite.khrysalis.observables.ObservableProperty.onChange TS onChange
-// FQImport: com.lightningkite.khrysalis.observables.CombineObservableProperty SKIPPED due to same file
 // FQImport: com.lightningkite.khrysalis.observables.combine.C TS C
 // FQImport: com.lightningkite.khrysalis.observables.ObservableProperty TS ObservableProperty
 // FQImport: com.lightningkite.khrysalis.observables.CombineObservableProperty.T TS T

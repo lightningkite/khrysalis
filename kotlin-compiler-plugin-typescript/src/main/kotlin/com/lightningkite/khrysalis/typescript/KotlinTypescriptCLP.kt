@@ -142,7 +142,7 @@ class KotlinTypescriptExtension(
 //        }}")
 
         for (file in files) {
-            if (!file.virtualFilePath.endsWith(".shared.kt")) continue
+            if (!file.virtualFilePath.endsWith(".shared.kt") && !file.virtualFilePath.endsWith(".actual.kt")) continue
             try {
                 val outputFile = output
                     .resolve(file.virtualFilePath.removePrefix(translator.commonPath))
@@ -161,31 +161,6 @@ class KotlinTypescriptExtension(
                 collector?.report(CompilerMessageSeverity.WARNING, "Failed to convert $file:")
                 collector?.report(
                     CompilerMessageSeverity.ERROR,
-                    StringWriter().also { t.printStackTrace(PrintWriter(it)) }.buffer.toString()
-                )
-            }
-        }
-        translator.stubMode = true
-        for(file in files){
-            if (!file.virtualFilePath.endsWith(".actual.kt")) continue
-            try {
-                val outputFile = output
-                    .resolve(file.virtualFilePath.removePrefix(translator.commonPath))
-                    .parentFile
-                    .resolve(file.name.removeSuffix(".kt").plus(".ts"))
-                if(outputFile.exists() && outputFile.useLines { it.first() } != TypescriptFileEmitter.overwriteWarning) continue
-                collector?.report(CompilerMessageSeverity.INFO, "Stubbing $file to $outputFile")
-                outputFile.parentFile.mkdirs()
-                val out = TypescriptFileEmitter(translator, file)
-                translator.translate(file, out)
-                outputFile.bufferedWriter().use {
-                    out.write(it, file)
-                    it.flush()
-                }
-            } catch (t: Throwable) {
-                collector?.report(CompilerMessageSeverity.WARNING, "Failed to do stubs for $file:")
-                collector?.report(
-                    CompilerMessageSeverity.WARNING,
                     StringWriter().also { t.printStackTrace(PrintWriter(it)) }.buffer.toString()
                 )
             }
