@@ -9,7 +9,7 @@ import java.io.File
 internal fun HtmlTranslator.commonAttributes() {
     attribute.handle("android:id") {
         val value = rule.value.substringAfter('/')
-        out.primary.classes.add("id-${value.kabobCase()}")
+        out.primary.classes.add("id-${value}")
         out.primary.subtreeId = value
     }
     attribute.handle("tools:webCss") {

@@ -1,7 +1,7 @@
 {
     "compilerOptions": {
       "outDir": "./dist",
-      "rootDir": "./typescript",
+      "rootDir": "./src",
       "noImplicitAny": true,
       "declaration": true,
       "module": "commonjs",
@@ -10,9 +10,9 @@
       "allowJs": true,
       "esModuleInterop": true,
       "typeRoots": ["./node_modules/@types", "./additionalTypings"],
-      "baseUrl": "./typescript",
+      "baseUrl": "./src",
       "paths": {
-        "thisProject": ["./typescript"]
+        "thisProject": ["./src"]
       }
     }
   }

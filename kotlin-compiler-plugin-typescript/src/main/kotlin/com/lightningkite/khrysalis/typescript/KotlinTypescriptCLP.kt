@@ -111,64 +111,31 @@ class KotlinTypescriptExtension(
         println("Output: $output")
 
         //Load other declarations
-        equivalents.asSequence().plus(output)
-            .flatMap { it.walkTopDown() }
-            .filter {
-                it.name.endsWith(".ts")
-            }
-            .forEach { actualFile ->
-                val decls = try {
-                    actualFile.useLines { lines ->
-                        lines.filter { it.startsWith(declaresPrefix) }
-                            .map { it.removePrefix(declaresPrefix) }
-                            .toList()
-                    }
-                } catch (t: Throwable) {
-                    collector?.report(CompilerMessageSeverity.ERROR, "Failed to parse TS/KT declarations from $actualFile:")
-                    collector?.report(
-                        CompilerMessageSeverity.ERROR,
-                        StringWriter().also { t.printStackTrace(PrintWriter(it)) }.buffer.toString()
-                    )
-                    return AnalysisResult.compilationError(ctx)
-                }
-                if(decls.isEmpty()) return@forEach
-                if(actualFile.absoluteFile.startsWith(output.absoluteFile)) {
-                    val r = actualFile.relativeTo(output)
-                    for(decl in decls) {
-                        translator.kotlinFqNameToRelativeFile[decl] = r
-                    }
-                } else {
-                    val r = actualFile.relativeTo(output.parentFile.resolve("node_modules"))
-                    for(decl in decls) {
-                        translator.kotlinFqNameToFile[decl] = r
-                    }
-                }
-            }
+        translator.declarations.load(equivalents.asSequence().plus(output), output)
 
         //Create manifest of declarations within this module
         val map: Map<String, File> = translator.run { generateFqToFileMap(files.filter { it.virtualFilePath.endsWith(".shared.kt") }, output) }
         translator.kotlinFqNameToRelativeFile.putAll(map)
 
         //Load equivalents
-        loadDeclarations(equivalents.asSequence().plus(output), output, translator.declarations)
-//        equivalents.asSequence().plus(output)
-//            .flatMap { it.walkTopDown() }
-//            .filter {
-//                it.name.endsWith(".ts.yaml") || it.name.endsWith(".ts.yml")
-//            }
-//            .forEach { actualFile ->
-//                try {
-//                    collector?.report(CompilerMessageSeverity.INFO, "Reading equivalents from $actualFile...")
-//                    translator.replacements += actualFile
-//                } catch (t: Throwable) {
-//                    collector?.report(CompilerMessageSeverity.ERROR, "Failed to parse equivalents for $actualFile:")
-//                    collector?.report(
-//                        CompilerMessageSeverity.ERROR,
-//                        StringWriter().also { t.printStackTrace(PrintWriter(it)) }.buffer.toString()
-//                    )
-//                    return AnalysisResult.compilationError(ctx)
-//                }
-//            }
+        equivalents.asSequence().plus(output)
+            .flatMap { it.walkTopDown() }
+            .filter {
+                it.name.endsWith(".ts.yaml") || it.name.endsWith(".ts.yml")
+            }
+            .forEach { actualFile ->
+                try {
+                    collector?.report(CompilerMessageSeverity.INFO, "Reading equivalents from $actualFile...")
+                    translator.replacements += actualFile
+                } catch (t: Throwable) {
+                    collector?.report(CompilerMessageSeverity.ERROR, "Failed to parse equivalents for $actualFile:")
+                    collector?.report(
+                        CompilerMessageSeverity.ERROR,
+                        StringWriter().also { t.printStackTrace(PrintWriter(it)) }.buffer.toString()
+                    )
+                    return AnalysisResult.compilationError(ctx)
+                }
+            }
 
 //        println("Equivalents for kotlin.collections.joinToString>kotlin.collections.Iterable: ${translator.replacements.functions.entries.joinToString("\n"){
 //            "${it.key} -> ${it.value.joinToString("\n") { "    $it" }}"

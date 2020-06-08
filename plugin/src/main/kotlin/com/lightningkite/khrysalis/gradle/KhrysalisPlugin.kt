@@ -24,6 +24,7 @@ import org.jetbrains.kotlin.config.Services
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.incremental.classpathAsList
 import org.jetbrains.kotlin.incremental.destinationAsFile
+import com.lightningkite.khrysalis.web.layout.convertLayoutsToHtmlXmlClasses
 import java.io.File
 
 open class KhrysalisPluginExtension {
@@ -178,6 +179,24 @@ class KhrysalisPlugin : Plugin<Project> {
                     organization = extension().organizationName,
                     organizationId = project.group?.toString() ?: "unknown.packagename",
                     projectName = projectName()
+                )
+            }
+        }
+        project.tasks.create("khrysalisCreateXmlClasses") { task ->
+            project.afterEvaluate {
+                if (!iosFolder().exists()) {
+                    task.dependsOn("khrysalisSetupWebProject")
+                }
+            }
+            task.group = "web"
+            task.dependsOn("khrysalisCreateAndroidLayoutClasses")
+            task.doLast {
+                convertLayoutsToHtmlXmlClasses(
+                    projectName = projectName(),
+                    packageName = packageName(),
+                    androidLayoutsSummaryFile = androidBase().resolve("build/layout/summary.json"),
+                    baseTypescriptFolder = webBase().resolve("typescript"),
+                    outputFolder = webBase().resolve("src/layout")
                 )
             }
         }
