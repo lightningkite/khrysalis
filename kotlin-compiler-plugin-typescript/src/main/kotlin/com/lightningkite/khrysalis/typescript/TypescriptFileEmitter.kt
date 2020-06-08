@@ -18,7 +18,7 @@ import java.io.File
 class TypescriptFileEmitter(val translator: TypescriptTranslator, val file: KtFile) : Appendable {
     val stringBuilder = StringBuilder()
     val out = SmartTabWriter(stringBuilder)
-    private val imports = HashMap<String, ImportInfo>()
+    private val imports = HashMap<String, TemplatePart.Import>()
     val importedFqs = HashSet<String>()
     var fileEndingActions = ArrayList<() -> Unit>()
 
@@ -33,32 +33,7 @@ class TypescriptFileEmitter(val translator: TypescriptTranslator, val file: KtFi
         importedFqs.forEach {
             writer.appendln("// FQImport: $it")
         }
-        imports.values.groupBy { it.path }.forEach { (path, parts) ->
-            val usePath = translator.projectName?.let { p ->
-                val prefix = "$p/dist/"
-                if (path.startsWith(prefix, true))
-                    path.drop(prefix.length)
-                else
-                    path
-            } ?: path
-            if (parts.size == 1 && parts.first().identifier == TemplatePart.Import.WHOLE) {
-                writer.append("import ")
-                writer.append(parts.first().identifier)
-                writer.append(" from '")
-                writer.append(usePath)
-                writer.appendln("'")
-            } else {
-                writer.append("import { ")
-                writer.append(parts.sortedBy { it.asName ?: it.identifier }.joinToString(", ") {
-                    it.asName?.let { name ->
-                        it.identifier + " as " + name
-                    } ?: it.identifier
-                })
-                writer.append(" } from '")
-                writer.append(usePath)
-                writer.appendln("'")
-            }
-        }
+        renderImports(translator.projectName, imports.values, writer)
         writer.appendln()
 
         out.flush()
@@ -75,31 +50,21 @@ class TypescriptFileEmitter(val translator: TypescriptTranslator, val file: KtFi
         }
     }
 
-    private data class ImportInfo(
-        val path: String,
-        val identifier: String,
-        val asName: String? = null
-    )
-
     //Map of FQ name to import info
     fun addImport(path: String, identifier: String, asName: String? = null) {
         val fqName = "$path->$identifier"
         if (imports.containsKey(fqName)) return
-        imports[fqName] = ImportInfo(path, identifier, asName)
+        imports[fqName] = TemplatePart.Import(path, identifier, asName)
     }
 
     private fun addImportFromFq(fqName: String, name: String): Boolean {
-        translator.kotlinFqNameToRelativeFile[fqName]?.let { relFile ->
-            val asPath = File(file.virtualFilePath.removePrefix(translator.commonPath).removeSuffix(".kt").plus(".ts"))
-            if (asPath == relFile) {
-                importedFqs.add("$fqName SKIPPED due to same file")
-            } else {
-                addImport(TemplatePart.Import("./" + (asPath.parentFile?.let { p -> relFile.relativeTo(p).path }
-                    ?: relFile.path).removeSuffix(".ts"), name))
-            }
-            return true
-        } ?: translator.kotlinFqNameToFile[fqName]?.let {
-            addImport(TemplatePart.Import(it.path.removeSuffix(".ts"), name))
+        val newImport = translator.declarations.importLine(
+            currentRelativeFile = File(file.virtualFilePath.removePrefix(translator.commonPath).removeSuffix(".kt").plus(".ts")),
+            fqName = fqName,
+            name = name
+        )
+        if(newImport != null) {
+            addImport(newImport)
             return true
         }
         return false

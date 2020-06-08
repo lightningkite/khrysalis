@@ -5,6 +5,7 @@ local.properties
 ios/kwift.xcworkspace
 **/xcuserdata
 **.iml
+**.iws
 **/.idea
 **/.gradle
 
@@ -12,3 +13,4 @@ ios/kwift.xcworkspace
 **/dist/**.js
 
 plugin/out
+**/node_modules

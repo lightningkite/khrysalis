@@ -111,39 +111,7 @@ class KotlinTypescriptExtension(
         println("Output: $output")
 
         //Load other declarations
-        equivalents.asSequence().plus(output)
-            .flatMap { it.walkTopDown() }
-            .filter {
-                it.name.endsWith(".ts")
-            }
-            .forEach { actualFile ->
-                val decls = try {
-                    actualFile.useLines { lines ->
-                        lines.filter { it.startsWith(declaresPrefix) }
-                            .map { it.removePrefix(declaresPrefix) }
-                            .toList()
-                    }
-                } catch (t: Throwable) {
-                    collector?.report(CompilerMessageSeverity.ERROR, "Failed to parse TS/KT declarations from $actualFile:")
-                    collector?.report(
-                        CompilerMessageSeverity.ERROR,
-                        StringWriter().also { t.printStackTrace(PrintWriter(it)) }.buffer.toString()
-                    )
-                    return AnalysisResult.compilationError(ctx)
-                }
-                if(decls.isEmpty()) return@forEach
-                if(actualFile.absoluteFile.startsWith(output.absoluteFile)) {
-                    val r = actualFile.relativeTo(output)
-                    for(decl in decls) {
-                        translator.kotlinFqNameToRelativeFile[decl] = r
-                    }
-                } else {
-                    val r = actualFile.relativeTo(output.parentFile.resolve("node_modules"))
-                    for(decl in decls) {
-                        translator.kotlinFqNameToFile[decl] = r
-                    }
-                }
-            }
+        translator.declarations.load(equivalents.asSequence().plus(output), output)
 
         //Create manifest of declarations within this module
         val map: Map<String, File> = translator.run { generateFqToFileMap(files.filter { it.virtualFilePath.endsWith(".shared.kt") }, output) }

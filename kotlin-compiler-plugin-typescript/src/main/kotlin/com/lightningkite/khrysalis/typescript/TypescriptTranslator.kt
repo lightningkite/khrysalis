@@ -29,9 +29,11 @@ class TypescriptTranslator(
     val replacements: Replacements = Replacements()
 ) : PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>(), TranslatorInterface<TypescriptFileEmitter, Unit>, AnalysisExtensions {
 
+    val declarations: DeclarationManifest = DeclarationManifest()
+
     var stubMode: Boolean = false
-    val kotlinFqNameToFile = HashMap<String, File>()
-    val kotlinFqNameToRelativeFile = HashMap<String, File>()
+    @Deprecated("NO.  Go to your room.") val kotlinFqNameToFile get() = declarations.node
+    @Deprecated("NO.  Go to your room.") val kotlinFqNameToRelativeFile get() = declarations.local
 
     data class ReceiverAssignment(val declaration: DeclarationDescriptor, val tsName: String)
 

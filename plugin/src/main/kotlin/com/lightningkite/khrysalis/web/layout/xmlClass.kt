@@ -1,0 +1,161 @@
+package com.lightningkite.khrysalis.web.layout
+
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
+import com.lightningkite.khrysalis.android.layout.AndroidLayoutFile
+import com.lightningkite.khrysalis.generic.SmartTabWriter
+import com.lightningkite.khrysalis.typescript.DeclarationManifest
+import com.lightningkite.khrysalis.typescript.renderImports
+import com.lightningkite.khrysalis.typescript.replacements.Replacements
+import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
+import com.lightningkite.khrysalis.utils.camelCase
+import java.io.File
+
+fun convertLayoutsToHtmlXmlClasses(
+    projectName: String?,
+    packageName: String,
+    androidLayoutsSummaryFile: File,
+    baseTypescriptFolder: File,
+    outputFolder: File
+) {
+    outputFolder.mkdirs()
+    val declarationManifest = DeclarationManifest.load(
+        baseTypescriptFolder.resolve("../node_modules").walkTopDown() + sequenceOf(baseTypescriptFolder),
+        baseTypescriptFolder
+    )
+    val replacements = Replacements()
+    baseTypescriptFolder.parentFile.walkTopDown()
+        .filter { it.name.endsWith(".ts.yml") || it.name.endsWith(".ts.yaml") }
+        .forEach {
+            try {
+                replacements += it
+            } catch(e:Exception){
+                throw IllegalArgumentException("Could not parse $it", e)
+            }
+        }
+    val layouts = jacksonObjectMapper().readValue<Map<String, AndroidLayoutFile>>(androidLayoutsSummaryFile)
+    for((name, layout) in layouts){
+        val outputFile = outputFolder.resolve(name.camelCase().plus("Xml.ts"))
+        outputFile.bufferedWriter().use {
+            val s = SmartTabWriter(it)
+            layout.toTypescript(
+                projectName = projectName,
+                packageName = packageName,
+                file = outputFile,
+                base = baseTypescriptFolder,
+                manifest = declarationManifest,
+                replacements = replacements,
+                out = s
+            )
+        }
+    }
+}
+
+fun AndroidLayoutFile.toTypescript(
+    projectName: String?,
+    packageName: String,
+    file: File,
+    base: File,
+    manifest: DeclarationManifest,
+    replacements: Replacements,
+    out: Appendable
+) {
+    fun String.toTsType(): String {
+        return (replacements.types[this]?.firstOrNull()
+            ?: replacements.types["android.widget.$this"]?.firstOrNull()
+            ?: replacements.types["android.view.$this"]?.firstOrNull()
+                )?.template?.parts?.joinToString("") { (it as? TemplatePart.Text)?.string ?: "" } ?: this
+    }
+    fun String.getImport(): TemplatePart.Import? {
+        return (replacements.types[this]?.firstOrNull()
+            ?: replacements.types["android.widget.$this"]?.firstOrNull()
+            ?: replacements.types["android.view.$this"]?.firstOrNull()
+                )?.template?.find { it is TemplatePart.Import } as? TemplatePart.Import ?:
+            manifest.importLine(file.relativeTo(base), this, this.substringAfter('.'))
+    }
+
+    val imports = listOf(
+        bindings.mapNotNull {
+            it.value.type.getImport()
+        },
+        delegateBindings.mapNotNull {
+            it.value.type.getImport()
+        },
+        sublayouts.map { TemplatePart.Import("./" + it.value.layoutXmlClass, it.value.layoutXmlClass) }
+    ).flatten()
+
+    out.appendln("//")
+    out.appendln("// ${name}Xml.ts")
+    out.appendln("// Created by Khrysalis XML Typescript")
+    out.appendln("//")
+    out.appendln("import { loadHtmlFromString, findViewById, getViewById, replaceViewWithId } from 'khrysalis/dist/views/html'")
+    renderImports(projectName, imports, out)
+    for(variant in variants) {
+        out.append("import htmlFor")
+        out.append(variant.camelCase())
+        out.append(" from 'layout-")
+        out.append(variant)
+        out.append("/")
+        out.append(this.fileName)
+        out.appendln(".html'")
+    }
+    out.appendln("import htmlForDefault from 'layout/$fileName.html'")
+    out.appendln("//! Declares ${packageName}.${name}Xml")
+    out.appendln("export class ${name}Xml {")
+    out.appendln("xmlRoot!: HTMLElement;")
+    bindings.values.forEach {
+        if(it.optional){
+            out.appendln(it.run { "$name?: ${type.toTsType()};" })
+        } else {
+            out.appendln(it.run { "$name!: ${type.toTsType()};" })
+        }
+    }
+    delegateBindings.values.forEach {
+        if(it.optional){
+            out.appendln(it.run { "$name?: ${type.toTsType()};" })
+        } else {
+            out.appendln(it.run { "$name!: ${type.toTsType()};" })
+        }
+    }
+    sublayouts.values.forEach {
+        if(it.optional){
+            out.appendln(it.run { "$name?: ${layoutXmlClass};" })
+        } else {
+            out.appendln(it.run { "$name!: ${layoutXmlClass};" })
+        }
+    }
+    out.appendln("loadHtmlString(): string {")
+    for(variant in variants.sortedDescending()) {
+        when(variant.firstOrNull()){
+            'w' -> {
+                val w = variant.substring(1).toInt()
+                out.appendln("if (window.innerWidth > $w) return htmlFor${variant.camelCase()}")
+            }
+        }
+    }
+    out.appendln("return htmlForDefault;")
+    out.appendln("}")
+    out.appendln("setup(dependency: Window): HTMLElement {")
+    out.appendln("const view = loadHtmlFromString(this.loadHtmlString());")
+    out.appendln("this.xmlRoot = view")
+    bindings.values.forEach {
+        if(it.optional){
+            out.appendln(it.run { "this.$name = findViewById<${type.toTsType()}>(view, \"$resourceId\");" })
+        } else {
+            out.appendln(it.run { "this.$name = getViewById<${type.toTsType()}>(view, \"$resourceId\");" })
+        }
+    }
+    delegateBindings.values.forEach {
+        out.appendln("const ${it.name}View = this.${it.resourceId.camelCase()}")
+        out.appendln("if(${it.name}View){ this.${it.name} = new ${it.type.toTsType()}(); ${it.name}View.delegate = this.${it.name}; }")
+    }
+    sublayouts.values.forEach {
+        out.appendln(it.run { "replaceViewWithId<HTMLDivElement>(view, ()=>{ " })
+        out.appendln(it.run { "this.$name = new $layoutXmlClass();" })
+        out.appendln(it.run { "return this.$name.setup(dependency);" })
+        out.appendln(it.run { "}, \"$resourceId\");" })
+    }
+    out.appendln("return view")
+    out.appendln("}")
+    out.appendln("}")
+}

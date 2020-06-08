@@ -3,6 +3,62 @@
 <head>
     <link rel="stylesheet" href="src/main.css">
     <script>
+        let manifestData = {};
+        fetch('src/layout/manifest.json')
+            .then((response) => response.text())
+            .then((text) => {
+                manifestData = JSON.parse(text);
+            })
+            .catch((error) => {
+                console.warn(error)
+            });
+
+        let viewsToRefresh = [];
+        window.addEventListener("resize", function(e){
+            for(const view of viewsToRefresh){
+                refreshView(view)
+            }
+        });
+
+        function refreshView(view){
+            const name = view.subViewName;
+            let link = "src/layout/" + name;
+            const variants = manifestData[name] ?? [];
+            variants.sort();
+            for(const variant of variants){
+                if(variant.startsWith("w")) {
+                    const dimension = parseInt(variant.substring(1).replace("dp", ""));
+                    if(window.innerWidth >= dimension){
+                        link = "src/layout-" + variant + "/" + name;
+                        console.log("Pass variant " + variant)
+                    }
+                }
+            }
+            if(view.previousSubViewLink === link){
+                return;
+            }
+            view.previousSubViewLink = link;
+            fetch(link + ".html")
+                .then((response) => response.text())
+                .then((html) => {
+                    view.innerHTML = '';
+                    injectOtherHtml(view, html);
+                    const element = (view.lastElementChild);
+                    element.style["width"] = "100%";
+                    element.style["height"] = "100%";
+                })
+                .catch((error) => {
+                    console.warn(error)
+                });
+        }
+
+        function bindLayout(view, name) {
+            if(view.subViewName == null){
+                viewsToRefresh.push(view)
+            }
+            view.subViewName = name;
+            refreshView(view);
+        }
 
         function injectOtherHtml(view, text) {
             view.insertAdjacentHTML('beforeend', text);
@@ -50,19 +106,7 @@
             }
             view.style.display = "block";
             view.parentElement.style.display = "block";
-            const link = stack[stack.length - 1];
-            fetch("src/layout/" + link + ".html")
-                .then((response) => response.text())
-                .then((html) => {
-                    view.innerHTML = '';
-                    injectOtherHtml(view, html);
-                    const element = (view.lastElementChild);
-                    element.style["width"] = "100%";
-                    element.style["height"] = "100%";
-                })
-                .catch((error) => {
-                    console.warn(error)
-                });
+            bindLayout(view, stack[stack.length - 1])
         }
 
         function prototypeSwapViewPush(view, name) {
