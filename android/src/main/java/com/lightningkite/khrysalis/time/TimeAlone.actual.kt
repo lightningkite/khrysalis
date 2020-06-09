@@ -47,7 +47,7 @@ operator fun TimeAlone.minus(rhs: TimeAlone): TimeInterval {
 
 operator fun TimeAlone.minus(rhs: TimeInterval): TimeAlone {
     val result =
-        (this.hour * 60 * 60 + this.minute * 60 + this.second) - rhs.milliseconds.toInt() / 1000
+        this.secondsInDay - rhs.milliseconds.toInt() / 1000
     return if (result < 0) {
         TimeAlone(0, 0, 0)
     } else {
@@ -57,6 +57,6 @@ operator fun TimeAlone.minus(rhs: TimeInterval): TimeAlone {
 
 operator fun TimeAlone.plus(rhs: TimeInterval): TimeAlone {
     val result =
-        (this.hour * 60 * 60 + this.minute * 60 + this.second) + rhs.milliseconds.toInt() / 1000
+        this.secondsInDay + rhs.milliseconds.toInt() / 1000
     return TimeAlone(result / 60 / 60, result / 60 % 60, result % 60)
 }
