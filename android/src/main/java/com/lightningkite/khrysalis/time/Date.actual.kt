@@ -5,6 +5,7 @@ import java.text.DateFormat
 import java.text.SimpleDateFormat
 import java.util.*
 import java.util.concurrent.ConcurrentLinkedQueue
+import kotlin.time.milliseconds
 
 
 /**
@@ -45,6 +46,7 @@ operator fun Date.plus(interval: TimeInterval): Date = Date(time + interval.mill
  */
 operator fun Date.minus(interval: TimeInterval): Date = Date(time - interval.milliseconds)
 
+operator fun Date.minus(other: Date): TimeInterval = (this.time - other.time).milliseconds()
 
 /**
  * One Indexed
