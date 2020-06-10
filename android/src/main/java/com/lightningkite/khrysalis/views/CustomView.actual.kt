@@ -29,6 +29,10 @@ class CustomView @JvmOverloads constructor(
     defStyleAttr: Int = 0
 ) : FrameLayout(context, attrs, defStyleAttr) {
 
+    init{
+        setWillNotDraw(false)
+    }
+
     var delegate: CustomViewDelegate? = null
         set(value) {
             field?.let {
