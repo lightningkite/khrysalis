@@ -9,6 +9,10 @@
   type: call
   template: (document.createElement('input') as HTMLInputElement)
 
+- id: com.lightningkite.khrysalis.views.android.MultilineEditText
+  type: type
+  template: HTMLTextAreaElement
+
 - id: com.lightningkite.khrysalis.views.textResource
   type: set
   template: ~this~.value = ~0~

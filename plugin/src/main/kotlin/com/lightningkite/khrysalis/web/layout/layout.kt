@@ -180,14 +180,29 @@ internal fun HtmlTranslator.layout() {
         out.classes.add("khrysalis-view-flipper")
         defer("FrameLayout")
     }
+    element.handle("com.lightningkite.khrysalis.views.android.SwapView"){
+        out.name = "div"
+        out.classes += "khrysalis-swap"
+    }
+
+    element.handle("androidx.viewpager.widget.ViewPager"){
+        out.name = "div"
+        out.classes += "khrysalis-pager"
+        out.contentNodes += ResultNode("button").apply {
+            classes += "khrysalis-pager-left"
+        }
+        out.contentNodes += ResultNode("button").apply {
+            classes += "khrysalis-pager-right"
+        }
+    }
     element.handle("RadioGroup") {
         out.other["RadioGroupId"] = "radioGroup_${idNumber.getAndIncrement()}"
         defer("LinearLayout")
     }
     element.handle("com.lightningkite.khrysalis.views.android.VerticalRecyclerView") {
-        defer("RecyclerView")
+        defer("androidx.recyclerview.widget.RecyclerView")
     }
-    element.handle("RecyclerView") {
+    element.handle("androidx.recyclerview.widget.RecyclerView") {
         out.style["display"] = "flex"
         out.style["flex-direction"] = "column"
         out.style["align-items"] = "center"

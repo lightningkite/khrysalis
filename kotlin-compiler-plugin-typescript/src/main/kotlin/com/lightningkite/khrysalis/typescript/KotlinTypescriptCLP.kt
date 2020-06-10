@@ -1,6 +1,5 @@
 package com.lightningkite.khrysalis.typescript
 
-import com.lightningkite.khrysalis.typescript.manifest.declaresPrefix
 import com.lightningkite.khrysalis.typescript.manifest.generateFqToFileMap
 import org.jetbrains.kotlin.analyzer.AnalysisResult
 import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
@@ -24,8 +23,8 @@ import java.io.StringWriter
 
 class KotlinTypescriptCLP : CommandLineProcessor {
     companion object {
-        const val KEY_ACTUALS_DIRECTORY_NAME = "equivalents"
-        val KEY_ACTUALS_DIRECTORIES = CompilerConfigurationKey.create<List<File>>(KEY_ACTUALS_DIRECTORY_NAME)
+        const val KEY_TS_DEPENDENCIES_NAME = "tsDependencies"
+        val KEY_TS_DEPENDENCIES = CompilerConfigurationKey.create<List<File>>(KEY_TS_DEPENDENCIES_NAME)
         const val KEY_PROJECT_NAME_NAME = "projName"
         val KEY_PROJECT_NAME = CompilerConfigurationKey.create<String>(KEY_PROJECT_NAME_NAME)
         const val KEY_OUTPUT_DIRECTORY_NAME = "outputDirectory"
@@ -42,8 +41,8 @@ class KotlinTypescriptCLP : CommandLineProcessor {
             required = true
         ),
         CliOption(
-            KEY_ACTUALS_DIRECTORY_NAME,
-            "A directory",
+            KEY_TS_DEPENDENCIES_NAME,
+            "A list of directories",
             "Where to look for translational information.",
             required = false
         ),
@@ -57,8 +56,8 @@ class KotlinTypescriptCLP : CommandLineProcessor {
 
     override fun processOption(option: AbstractCliOption, value: String, configuration: CompilerConfiguration) =
         when (option.optionName) {
-            KEY_ACTUALS_DIRECTORY_NAME -> configuration.put(
-                KEY_ACTUALS_DIRECTORIES,
+            KEY_TS_DEPENDENCIES_NAME -> configuration.put(
+                KEY_TS_DEPENDENCIES,
                 value.trim('"').split(File.pathSeparatorChar).map { File(it) })
             KEY_OUTPUT_DIRECTORY_NAME -> configuration.put(KEY_OUTPUT_DIRECTORY, value.trim('"').let { File(it) })
             KEY_PROJECT_NAME_NAME -> configuration.put(KEY_PROJECT_NAME, value.trim('"'))
@@ -73,7 +72,7 @@ class KotlinTypescriptCR : ComponentRegistrar {
             project,
             KotlinTypescriptExtension(
                 configuration[KotlinTypescriptCLP.KEY_PROJECT_NAME],
-                configuration[KotlinTypescriptCLP.KEY_ACTUALS_DIRECTORIES] ?: listOf(),
+                configuration[KotlinTypescriptCLP.KEY_TS_DEPENDENCIES] ?: listOf(),
                 configuration[KotlinTypescriptCLP.KEY_OUTPUT_DIRECTORY]!!,
                 configuration[CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY]
             )
@@ -83,7 +82,7 @@ class KotlinTypescriptCR : ComponentRegistrar {
 
 class KotlinTypescriptExtension(
     val projectName: String? = null,
-    val equivalents: List<File>,
+    val dependencies: List<File>,
     val output: File,
     val collector: MessageCollector?
 ) : AnalysisHandlerExtension {
@@ -111,14 +110,14 @@ class KotlinTypescriptExtension(
         println("Output: $output")
 
         //Load other declarations
-        translator.declarations.load(equivalents.asSequence().plus(output), output)
+        translator.declarations.load(dependencies.asSequence().plus(output), output)
 
         //Create manifest of declarations within this module
         val map: Map<String, File> = translator.run { generateFqToFileMap(files.filter { it.virtualFilePath.endsWith(".shared.kt") }, output) }
-        translator.kotlinFqNameToRelativeFile.putAll(map)
+        translator.declarations.local.putAll(map)
 
         //Load equivalents
-        equivalents.asSequence().plus(output)
+        dependencies.asSequence().plus(output)
             .flatMap { it.walkTopDown() }
             .filter {
                 it.name.endsWith(".ts.yaml") || it.name.endsWith(".ts.yml")

@@ -15,15 +15,7 @@ import com.lightningkite.khrysalis.web.setUpWebProject
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.Exec
-import org.jetbrains.kotlin.cli.common.arguments.K2JVMCompilerArguments
-import org.jetbrains.kotlin.cli.common.messages.CompilerMessageLocation
-import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
-import org.jetbrains.kotlin.cli.common.messages.MessageCollector
-import org.jetbrains.kotlin.cli.jvm.K2JVMCompiler
-import org.jetbrains.kotlin.config.Services
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
-import org.jetbrains.kotlin.incremental.classpathAsList
-import org.jetbrains.kotlin.incremental.destinationAsFile
 import com.lightningkite.khrysalis.web.layout.convertLayoutsToHtmlXmlClasses
 import java.io.File
 
@@ -35,8 +27,6 @@ open class KhrysalisPluginExtension {
     open var projectName: String? = null
     open var overrideIosPackageName: String? = null
     open var overrideWebPackageName: String? = null
-
-    open var equivalentsDirectories: Set<File> = setOf()
 
     override fun toString(): String {
         return "(" +
@@ -182,24 +172,6 @@ class KhrysalisPlugin : Plugin<Project> {
                 )
             }
         }
-        project.tasks.create("khrysalisCreateXmlClasses") { task ->
-            project.afterEvaluate {
-                if (!iosFolder().exists()) {
-                    task.dependsOn("khrysalisSetupWebProject")
-                }
-            }
-            task.group = "web"
-            task.dependsOn("khrysalisCreateAndroidLayoutClasses")
-            task.doLast {
-                convertLayoutsToHtmlXmlClasses(
-                    projectName = projectName(),
-                    packageName = packageName(),
-                    androidLayoutsSummaryFile = androidBase().resolve("build/layout/summary.json"),
-                    baseTypescriptFolder = webBase().resolve("src"),
-                    outputFolder = webBase().resolve("src/layout")
-                )
-            }
-        }
         project.tasks.create("khrysalisConvertLayoutsToHtmlSass") { task ->
             project.afterEvaluate {
                 if (!iosFolder().exists()) {
@@ -213,10 +185,18 @@ class KhrysalisPlugin : Plugin<Project> {
                     webFolder = webBase(),
                     converter = extension().htmlTranslator
                 )
+                convertLayoutsToHtmlXmlClasses(
+                    projectName = projectName(),
+                    packageName = packageName(),
+                    androidLayoutsSummaryFile = androidBase().resolve("build/layout/summary.json"),
+                    baseTypescriptFolder = webBase().resolve("src"),
+                    outputFolder = webBase().resolve("src/layout")
+                )
             }
         }
         project.tasks.create("khrysalisConvertKotlinToTypescript") { task ->
             task.group = "web"
+            task.mustRunAfter("generateReleaseResources", "generateDebugResources")
             task.doFirst {
                 val androidJar = androidSdkDirectory()!!.resolve("platforms/android-${sdkLevel()}/android.jar")
                 val libraries = sequenceOf(androidJar) + project.configurations.getByName("debugCompileClasspath").files.mapNotNull {
@@ -239,7 +219,7 @@ class KhrysalisPlugin : Plugin<Project> {
                     files = files,
                     pluginCache = project.buildDir.resolve("khrysalis-kcp"),
                     buildCache = project.buildDir.resolve("testBuild"),
-                    equivalents = (ext.equivalentsDirectories + webBase().resolve("equivalents")).asSequence(),
+                    dependencies = sequenceOf(webBase()),
                     output = webBase().resolve("src")
                 )
             }

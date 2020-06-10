@@ -82,7 +82,7 @@ public class ObservableStack<T: AnyObject>: ObservableProperty<Array<T>> {
         return popTo(t: t)
     }
     
-    public func popTo(predicate: (T) -> Bool) -> Void {
+     public func popTo(predicate: (T) -> Bool) -> Void {
         var found = false
         
         for i in 0 ... stack.lastIndex {

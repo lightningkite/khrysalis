@@ -33,25 +33,10 @@
 # android.widget.Spinner
 - id: android.widget.Spinner
   type: type
-  template: HTMLInputElement
-
-# android.widget.SwapView
-- id: android.widget.SwapView
-  type: type
-  template: HTMLDivElement
-
-# android.widget.TabLayout
-- id: android.widget.TabLayout
-  type: type
-  template: HTMLDivElement
+  template: HTMLSelectElement
 
 # android.widget.ViewFlipper
 - id: android.widget.ViewFlipper
-  type: type
-  template: HTMLDivElement
-
-# android.widget.ViewPager
-- id: android.widget.ViewPager
   type: type
   template: HTMLDivElement
 

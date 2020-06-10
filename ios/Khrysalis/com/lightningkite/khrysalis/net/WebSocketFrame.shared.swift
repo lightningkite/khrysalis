@@ -13,10 +13,10 @@ public class WebSocketFrame {
     public var text: String? 
     
     
-    public func toString() -> String {
+    override public func toString() -> String {
         return text ?? { () in 
             if let it = (binary) {
-                return "<Binary data length \(it.count)"
+                return "<Binary data length \(it.size)"
             }
             return nil
         }() ?? "<Empty Frame>"

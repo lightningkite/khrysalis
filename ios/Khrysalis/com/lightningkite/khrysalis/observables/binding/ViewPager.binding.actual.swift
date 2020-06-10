@@ -244,3 +244,13 @@ class CollectionSimpleDataSource: NSObject, UICollectionViewDataSource, UICollec
     }
 
 }
+
+//--- ViewPager.bind(ObservableProperty<List<T>>, T, MutableObservableProperty<Int>, (ObservableProperty<T>)->View) (overwritten on flow generation)
+public extension ViewPager {
+    func bind<T>(_ items: ObservableProperty<Array<T>>, _ default: T, _ showIndex: MutableObservableProperty<Int32>, _ makeView: (ObservableProperty<T>) -> View) -> Void {
+        TODO()
+    }
+    func bind<T>(items: ObservableProperty<Array<T>>, default: T, showIndex: MutableObservableProperty<Int32>, makeView: (ObservableProperty<T>) -> View) -> Void {
+        return bind(items, default, showIndex, makeView)
+    }
+}

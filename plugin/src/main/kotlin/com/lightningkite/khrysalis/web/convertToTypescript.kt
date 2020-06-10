@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.web
 
+import com.lightningkite.khrysalis.typescript.KotlinTypescriptCLP
 import com.lightningkite.khrysalis.utils.copyFolderOutFromRes
 import org.jetbrains.kotlin.cli.common.arguments.K2JVMCompilerArguments
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageLocation
@@ -7,7 +8,6 @@ import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.cli.jvm.K2JVMCompiler
 import org.jetbrains.kotlin.config.Services
-import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.jetbrains.kotlin.incremental.classpathAsList
 import org.jetbrains.kotlin.incremental.destinationAsFile
 import java.io.File
@@ -18,7 +18,7 @@ fun convertToTypescript(
     files: Sequence<File>,
     pluginCache: File,
     buildCache: File,
-    equivalents: Sequence<File>,
+    dependencies: Sequence<File>,
     output: File
 ){
     val result = K2JVMCompiler().exec(
@@ -55,9 +55,9 @@ fun convertToTypescript(
                 .let { arrayOf(it.path) }
             this.pluginOptions =
                 listOfNotNull(
-                    "plugin:com.lightningkite.khrysalis.typescript:outputDirectory=\"${output.path}\"",
-                    projectName?.let { "plugin:com.lightningkite.khrysalis.typescript:projName=\"${it}\"" },
-                    "plugin:com.lightningkite.khrysalis.typescript:equivalents=\"${equivalents.joinToString(File.pathSeparator)}\""
+                    "plugin:${KotlinTypescriptCLP.PLUGIN_ID}:${KotlinTypescriptCLP.KEY_OUTPUT_DIRECTORY_NAME}=\"${output.path}\"",
+                    projectName?.let { "plugin:${KotlinTypescriptCLP.PLUGIN_ID}:${KotlinTypescriptCLP.KEY_PROJECT_NAME_NAME}=\"${it}\"" },
+                    "plugin:${KotlinTypescriptCLP.PLUGIN_ID}:${KotlinTypescriptCLP.KEY_TS_DEPENDENCIES_NAME}=\"${dependencies.joinToString(File.pathSeparator)}\""
                 ).toTypedArray()
             this.destinationAsFile = buildCache.also { it.mkdirs() }
         }

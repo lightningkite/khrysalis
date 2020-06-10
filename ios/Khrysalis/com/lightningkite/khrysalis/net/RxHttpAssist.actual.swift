@@ -23,8 +23,8 @@ extension Single where Element == HttpResponse, Trait == SingleTrait {
  
  
 
-//--- Single<@swiftExactly("Element")HttpResponse>.readJson()
 extension PrimitiveSequence where Element == HttpResponse, Trait == SingleTrait {
+    //--- Single<@swiftExactly("Element")HttpResponse>.readJson()
     public func readJson<T: Codable>() -> Single<T> {
         return self.map{ (it) in
             if it.isSuccessful {
@@ -60,6 +60,14 @@ extension PrimitiveSequence where Element == HttpResponse, Trait == SingleTrait 
                 return it.data
             } else {
                 throw HttpResponseException(it)
+            }
+        }
+    }
+    //--- Single<Element>.readHttpException()
+    func readHttpException<Element>() -> Single<Element> {
+        return self.catchError { error -> Single<Element> in
+            if error is HttpResponseException {
+                throw HttpReadResponseException(error.response, error.readText(), error.cause)
             }
         }
     }

@@ -5,9 +5,45 @@ import { comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy } fro
 import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from '../../rx/DisposeCondition.actual'
 import { ObservableProperty } from '../ObservableProperty.shared'
 import { also } from 'Kotlin'
+import {swapViewSwap} from "../../views/SwapView";
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindLoading>android.widget.ViewFlipper
 export function androidWidgetViewFlipperBindLoading(this_: HTMLDivElement, loading: ObservableProperty<boolean>, color: (string | null) = null): void {
+    const mainChild = this_.firstElementChild as HTMLElement;
+    const loadingChild = this_.children.item(1) as HTMLElement ?? (()=>{
+        const newElement = document.createElement("progress") as HTMLProgressElement;
+        newElement.classList.add("khrysalis-flipper-progress")
+        this_.appendChild(newElement);
+        return newElement;
+    })()
+    const animation = "khrysalis-animate-fade"
+    let currentView = mainChild;
+    let hiddenView = loadingChild;
+    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(loading, undefined, undefined, (e)=>{
+        //animate out
+        const animationOut = `${animation}-out`
+        let animOutHandler: (ev: AnimationEvent) => void;
+        animOutHandler = (ev: AnimationEvent) => {
+            if (ev.animationName === animationOut) {
+                ev.target.removeEventListener("animationEnd", animOutHandler);
+                (ev.target as HTMLElement).style.display = "hidden";
+            }
+        }
+        currentView.addEventListener("animationend", animOutHandler)
+        currentView.style.animation = `${animationOut} 0.25s`
 
+        //animate in
+        const animationIn = `${animation}-in`
+        let animInHandler: (ev: AnimationEvent) => void;
+        animInHandler = (ev: AnimationEvent) => {
+            if (ev.animationName === animationIn) {
+                ev.target.removeEventListener("animationEnd", animInHandler);
+                (ev.target as HTMLElement).style.display = "hidden";
+            }
+        }
+        hiddenView.addEventListener("animationend", animInHandler)
+        hiddenView.style.animation = `${animationIn} 0.25s`
+
+    }), getAndroidViewViewRemoved(this_))
 }
 

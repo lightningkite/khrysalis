@@ -8,20 +8,47 @@ import { MutableObservableProperty } from '../MutableObservableProperty.shared'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>android.widget.RatingBar
 export function ratingBarBindMutable(this_: HTMLDivElement, stars: number, observable: MutableObservableProperty<number>): void {
+    for(let i = 0; i < stars; i++){
+        const e = document.createElement("div");
+        e.classList.add("khrysalis-rating-bar-star");
+        e.onclick = (ev) => {
+            ev.stopPropagation();
+            observable.value = i + 1;
+        }
+        this_.appendChild(e);
+    }
+    androidWidgetRatingBarBind(this_, stars, observable);
 }
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>android.widget.RatingBar
 export function androidWidgetRatingBarBind(this_: HTMLDivElement, stars: number, observable: ObservableProperty<number>): void {
+    for(let i = 0; i < stars; i++){
+        const e = document.createElement("div");
+        e.classList.add("khrysalis-rating-bar-star");
+        this_.appendChild(e);
+    }
+    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (rating)=>{
+        for(let i = 0; i < stars; i++){
+            const e = this_.children.item(i);
+            if(i + 1 < rating){
+                e.classList.remove("khrysalis-rating-bar-star-on");
+            } else {
+                e.classList.add("khrysalis-rating-bar-star-on");
+            }
+        }
+    }), getAndroidViewViewRemoved(this_));
 }
 
 
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindFloat>android.widget.RatingBar
 export function ratingBarBindFloatMutable(this_: HTMLDivElement, stars: number, observable: MutableObservableProperty<number>): void {
+    ratingBarBindMutable(this_, stars, observable);
 }
 
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindFloat>android.widget.RatingBar
 export function androidWidgetRatingBarBindFloat(this_: HTMLDivElement, stars: number, observable: ObservableProperty<number>): void {
+    androidWidgetRatingBarBind(this_, stars, observable);
 }
 

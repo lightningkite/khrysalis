@@ -7,6 +7,7 @@ import com.lightningkite.khrysalis.IsCodable
 import com.lightningkite.khrysalis.PlatformSpecific
 import com.lightningkite.khrysalis.bytes.Data
 import com.lightningkite.khrysalis.swiftExactly
+import io.reactivex.Observable
 import io.reactivex.Single
 import java.lang.reflect.ParameterizedType
 
@@ -46,6 +47,15 @@ fun Single<@swiftExactly("Element") HttpResponse>.readData(): Single<Data> {
             return@map it.body()!!.bytes()
         } else {
             throw HttpResponseException(it)
+        }
+    }
+}
+fun <Element> Single<Element>.readHttpException(): Single<Element> {
+    return this.onErrorResumeNext {
+        if(it is HttpResponseException){
+            Single.error(HttpReadResponseException(it.response, it.response.body()!!.string(), it.cause))
+        } else {
+            Single.error<Element>(it)
         }
     }
 }

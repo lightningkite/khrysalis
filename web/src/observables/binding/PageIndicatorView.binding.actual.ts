@@ -9,11 +9,48 @@ import { MutableObservableProperty } from '../MutableObservableProperty.shared'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>com.rd.PageIndicatorView
 export function comRdPageIndicatorViewBind(this_: HTMLDivElement, count: number = 0, selected: MutableObservableProperty<number>): void {
-
+    for(let i = 0; i < count; i++){
+        const e = document.createElement("div");
+        e.classList.add("khrysalis-page-indicator");
+        this_.appendChild(e);
+    }
+    let previouslyActive = this_.firstElementChild;
+    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(selected, undefined, undefined, (page)=>{
+        if(previouslyActive){
+            previouslyActive.classList.remove("khrysalis-page-indicator-active");
+        }
+        const e = this_.children.item(page);
+        if(e){
+            e.classList.add("khrysalis-page-indicator-active");
+        }
+        previouslyActive = e;
+    }), getAndroidViewViewRemoved(this_));
 }
-//
-// //! Declares com.lightningkite.khrysalis.observables.binding.bind>com.rd.PageIndicatorView
-// export function comRdPageIndicatorViewBind(this_: HTMLDivElement, count: ObservableProperty<number>, selected: MutableObservableProperty<number>): void {
-//
-// }
-//
+
+//! Declares com.lightningkite.khrysalis.observables.binding.bind>com.rd.PageIndicatorView
+export function comRdPageIndicatorViewBindDynamic(this_: HTMLDivElement, count: ObservableProperty<number>, selected: MutableObservableProperty<number>): void {
+    let previouslyActive = this_.firstElementChild;
+    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(count, undefined, undefined, (count)=>{
+        this_.innerHTML = "";
+        for(let i = 0; i < count; i++){
+            const e = document.createElement("div");
+            e.classList.add("khrysalis-page-indicator");
+            if(i === selected.value){
+                e.classList.add("khrysalis-page-indicator-active");
+                previouslyActive = e;
+            }
+            this_.appendChild(e);
+        }
+    }), getAndroidViewViewRemoved(this_));
+    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(selected, undefined, undefined, (page)=>{
+        if(previouslyActive){
+            previouslyActive.classList.remove("khrysalis-page-indicator-active");
+        }
+        const e = this_.children.item(page);
+        if(e){
+            e.classList.add("khrysalis-page-indicator-active");
+        }
+        previouslyActive = e;
+    }), getAndroidViewViewRemoved(this_));
+}
+

@@ -7,9 +7,20 @@ import {Exception} from "../Kotlin";
 //! Declares com.lightningkite.khrysalis.net.HttpResponseException
 export class HttpResponseException extends Exception {
     public readonly response: Response;
+
     public constructor(response: Response, cause: any = null) {
         super(`Got code ${response.status}`, cause);
         this.response = response;
+    }
+}
+//! Declares com.lightningkite.khrysalis.net.HttpReadResponseException
+export class HttpReadResponseException extends Exception {
+    public readonly response: Response;
+    public readonly text: string;
+    public constructor(response: Response, text: string, cause: any = null) {
+        super(`Got code ${response.status}`, cause);
+        this.response = response;
+        this.text = text;
     }
 }
 

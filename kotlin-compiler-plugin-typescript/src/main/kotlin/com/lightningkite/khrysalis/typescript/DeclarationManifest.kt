@@ -32,10 +32,11 @@ class DeclarationManifest(
     }
 
     fun load(files: Sequence<File>, local: File){
+        files.forEach { println("Looking for declarations in $it") }
         files
             .flatMap { it.walkTopDown() }
             .filter {
-                it.name.endsWith(".ts")
+                it.isFile && it.name.endsWith(".ts")
             }
             .forEach { actualFile ->
                 val decls = try {
@@ -48,6 +49,7 @@ class DeclarationManifest(
                     throw IllegalArgumentException("Failed to parse TS/KT declarations from $actualFile.", t)
                 }
                 if(decls.isEmpty()) return@forEach
+                println("Found declarations in ${actualFile}")
                 if(actualFile.absoluteFile.startsWith(local.absoluteFile)) {
                     val r = actualFile.relativeTo(local)
                     for(decl in decls) {
@@ -55,8 +57,9 @@ class DeclarationManifest(
                     }
                 } else {
                     val r = actualFile.relativeTo(local.parentFile.resolve("node_modules"))
+                    val shiftedPath = File(r.path.replace("/src/", "/dist/"))
                     for(decl in decls) {
-                        this.node[decl] = r
+                        this.node[decl] = shiftedPath
                     }
                 }
             }

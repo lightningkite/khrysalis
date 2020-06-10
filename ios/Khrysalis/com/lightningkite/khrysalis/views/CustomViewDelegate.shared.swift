@@ -31,6 +31,13 @@ open class CustomViewDelegate {
         return onTouchMove(id: id, x: x, y: y, width: width, height: height)
     }
     
+    open func onTouchCancelled(id: Int32, x: Float, y: Float, width: Float, height: Float) -> Bool {
+        return false
+    }
+    open func onTouchCancelled(_ id: Int32, _ x: Float, _ y: Float, _ width: Float, _ height: Float) -> Bool {
+        return onTouchCancelled(id: id, x: x, y: y, width: width, height: height)
+    }
+    
     open func onTouchUp(id: Int32, x: Float, y: Float, width: Float, height: Float) -> Bool {
         return false
     }

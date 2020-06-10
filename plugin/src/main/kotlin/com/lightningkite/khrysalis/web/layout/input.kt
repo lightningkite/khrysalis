@@ -15,6 +15,12 @@ internal fun HtmlTranslator.input() {
         out.style["font-size"] = "12pt"
     }
 
+    element.handle("com.lightningkite.khrysalis.views.android.MultilineEditText"){
+        out.name = "textarea"
+        out.attributes["type"] = "text"
+        out.style["font-size"] = "12pt"
+    }
+
     element.handle("com.lightningkite.khrysalis.views.android.DateButton"){
         out.name = "input"
         out.attributes["type"] = "date"
@@ -39,6 +45,10 @@ internal fun HtmlTranslator.input() {
         out.name = "select"
     }
 
+    element.handle("com.lightningkite.khrysalis.views.android.ColorRatingBar"){
+        defer("android.widget.RatingBar")
+    }
+
     element.handle("android.widget.RatingBar"){
         out.name = "div"
         out.classes += "khrysalis-rating-bar"
@@ -49,6 +59,7 @@ internal fun HtmlTranslator.input() {
 
         for(i in 1 .. 5){
             out.contentNodes += ResultNode("div").apply {
+                classes += "khrysalis-rating-bar-star"
                 classes += "khrysalis-rating-bar-star-on"
                 style["flex-grow"] = "1"
             }
@@ -144,6 +155,45 @@ internal fun HtmlTranslator.input() {
                 return@run id
             }
             attributes["type"] = "radio"
+            attributes["value"] = id
+            if(rule.allAttributes["android:checked"] == "true") {
+                attributes["checked"] = "true"
+            }
+        }
+        out.primary = input
+        out.contentNodes.add(input)
+        val label = ResultNode("div").apply {
+            style["flex-grow"] = "1"
+        }
+        out.contentNodes.add(label)
+        out.text = label
+        out.containerNode = label
+    }
+
+    element.handle("ToggleButton"){
+        val id = "id${idNumber.getAndIncrement()}"
+        out.name = "label"
+        out.attributes["for"] = id
+        out.style["display"] = "flex"
+        out.style["flex-direction"] = "row"
+        out.style["align-items"] = rule.allAttributes["android:gravity"]?.let { verticalGravity(it)?.alignDirection }?.let {
+            when(it){
+                AlignDirection.START -> "flex-start"
+                AlignDirection.CENTER -> "center"
+                AlignDirection.END -> "flex-end"
+            }
+        } ?: "center"
+        rule.allAttributes["android:gravity"]?.let { horizontalGravity(it)?.alignDirection }?.let {
+            when(it){
+                AlignDirection.START -> "flex-start"
+                AlignDirection.CENTER -> "center"
+                AlignDirection.END -> "flex-end"
+            }
+        }?.let { out.style["justify-content"] = it }
+        val input = ResultNode("input").apply {
+            style["display"] = "none"
+            attributes["id"] = id
+            attributes["type"] = "checkbox"
             attributes["value"] = id
             if(rule.allAttributes["android:checked"] == "true") {
                 attributes["checked"] = "true"

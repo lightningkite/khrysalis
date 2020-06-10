@@ -2,6 +2,7 @@
 
 package com.lightningkite.khrysalis.observables.binding
 
+import com.lightningkite.khrysalis.JsName
 import com.lightningkite.khrysalis.observables.*
 import com.lightningkite.khrysalis.rx.removed
 import com.lightningkite.khrysalis.rx.until
@@ -36,7 +37,7 @@ fun PageIndicatorView.bind(count: Int = 0, selected: MutableObservableProperty<I
  *  val page = StandardObservableProperites(1)
  *  pageView.bind(numberOfPages, page)
  */
-
+@JsName("comRdPageIndicatorViewBindDynamic")
 fun PageIndicatorView.bind(count: ObservableProperty<Int> , selected: MutableObservableProperty<Int>){
 
     count.combine(selected){count, selected ->

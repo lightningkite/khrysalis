@@ -3,6 +3,7 @@ import Foundation
 import UIKit
 
 
+//--- Spinner.bind(ObservableProperty<List<T>>, MutableObservableProperty<T>, (T)->String)
 //--- Spinner.bind(ObservableProperty<List<T>>, MutableObservableProperty<T>, (ObservableProperty<T>)->View)
 public extension Dropdown {
     func bind<T: Equatable>(_ options: ObservableProperty<Array<T>>, _ selected: MutableObservableProperty<T>, _ makeView: @escaping (ObservableProperty<T>) -> View) -> Void {
@@ -23,6 +24,14 @@ public extension Dropdown {
         }.until(self.removed)
     }
     func bind<T: Equatable>(options: ObservableProperty<Array<T>>, selected: MutableObservableProperty<T>, makeView: @escaping (ObservableProperty<T>) -> View) -> Void {
+        return bind(options, selected, makeView)
+    }
+    func bind<T: Equatable>(_ options: ObservableProperty<Array<T>>, _ selected: MutableObservableProperty<T>, _ toString: @escaping (T) -> String) -> Void {
+        bind(options, selected) { obs in
+            //TODO: Make label
+        }
+    }
+    func bind<T: Equatable>(options: ObservableProperty<Array<T>>, selected: MutableObservableProperty<T>, toString: @escaping (T) -> String) -> Void {
         return bind(options, selected, makeView)
     }
 }

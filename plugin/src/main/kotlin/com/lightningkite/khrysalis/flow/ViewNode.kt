@@ -248,7 +248,7 @@ class ViewNode(
             )
         }
         node.allAttributes[attributePop]?.let {
-            (node.allAttributes[attributeOnStack]?.split(';') ?: listOf("stack")).forEach {
+            (node.allAttributes[attributeOnStack]?.split(';') ?: listOf("stack")).map { it.trim() }.forEach {
                 operations.add(ViewStackOp.Pop(stack = it))
                 requires.add(
                     ViewVar(
@@ -260,7 +260,7 @@ class ViewNode(
             }
         }
         node.allAttributes[attributeDismiss]?.let {
-            (node.allAttributes[attributeOnStack]?.split(';') ?: listOf("stack")).forEach {
+            (node.allAttributes[attributeOnStack]?.split(';') ?: listOf("stack")).map { it.trim() }.forEach {
                 operations.add(ViewStackOp.Dismiss(stack = it))
                 requires.add(
                     ViewVar(

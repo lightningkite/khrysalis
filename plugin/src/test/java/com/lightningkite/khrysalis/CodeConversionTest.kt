@@ -48,7 +48,7 @@ class CodeConversionTest {
             output = File("./testDataOutputTs/shared").also { it.mkdirs() },
             pluginCache = File("./build/tsTest/pluginCache"),
             buildCache = File("./build/tsTest/pluginCache"),
-            equivalents = File("../kotlin-compiler-plugin-typescript/replacements").walkTopDown()
+            dependencies = File("../kotlin-compiler-plugin-typescript/replacements").walkTopDown()
         )
 
         val results = kotlinFiles.walkTopDown().filter { it.name.endsWith(".shared.kt") }.associate { kotlinFile ->

@@ -5,9 +5,24 @@ import { comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy } fro
 import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from '../../rx/DisposeCondition.actual'
 import { ViewGenerator } from '../../views/ViewGenerator.shared'
 import { ObservableStack } from '../ObservableStack.shared'
+import {swapViewSwap} from "../../views/SwapView";
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindStack>com.lightningkite.khrysalis.views.android.SwapView
 export function comLightningkiteKhrysalisViewsAndroidSwapViewBindStack(this_: HTMLDivElement, dependency: Window, obs: ObservableStack<ViewGenerator>): void {
-
+    let previousStackSize = obs.value.length;
+    ioReactivexDisposablesDisposableUntil(obs.onChange.subscribe({
+        next(stack){
+            const newStackSize = stack.length;
+            let animation = "khrysalis-animate-fade"
+            if(newStackSize > previousStackSize){
+                animation = "khrysalis-animate-push"
+            } else if(newStackSize < previousStackSize){
+                animation = "khrysalis-animate-pop"
+            }
+            const newVG = stack[stack.length-1] ?? null;
+            const newView = newVG?.generate(window);
+            swapViewSwap(this_, newView, animation);
+        }
+    }), getAndroidViewViewRemoved(this_));
 }
 

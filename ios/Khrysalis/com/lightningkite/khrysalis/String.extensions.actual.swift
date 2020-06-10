@@ -23,6 +23,26 @@ public extension String {
         ).trimmingCharacters(in: .whitespaces)
     }
 
+//--- String.remove(Char) (overwritten on flow generation)
+public extension String {
+    func remove(_ char: Character) -> String {
+        TODO()
+    }
+    func remove(char: Character) -> String {
+        return remove(char)
+    }
+}
+
+//--- String.remove(String) (overwritten on flow generation)
+public extension String {
+    func remove(_ sequence: String) -> String {
+        TODO()
+    }
+    func remove(sequence: String) -> String {
+        return remove(sequence)
+    }
+}
+
     //--- String.toSnakeCase()
     fileprivate static let snakeCaseRegex: NSRegularExpression = { ()->NSRegularExpression in
         do {

@@ -22,9 +22,9 @@ export abstract class CustomViewDelegate {
     public sizeThatFitsWidth(width: number, height: number): number { return width; }
     public sizeThatFitsHeight(width: number, height: number): number { return height; }
     
-    public invalidate(): void { const temp133 = this.customView;
-    if(temp133 !== null) customViewInvalidate(temp133); }
-    public postInvalidate(): void { const temp134 = this.customView;
-    if(temp134 !== null) customViewInvalidate(temp134); }
+    public invalidate(): void { const temp138 = this.customView;
+    if(temp138 !== null) customViewInvalidate(temp138); }
+    public postInvalidate(): void { const temp139 = this.customView;
+    if(temp139 !== null) customViewInvalidate(temp139); }
 }
 

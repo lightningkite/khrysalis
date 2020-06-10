@@ -64,14 +64,14 @@ fun AndroidLayoutFile.toTypescript(
         return (replacements.types[this]?.firstOrNull()
             ?: replacements.types["android.widget.$this"]?.firstOrNull()
             ?: replacements.types["android.view.$this"]?.firstOrNull()
-                )?.template?.parts?.joinToString("") { (it as? TemplatePart.Text)?.string ?: "" } ?: this
+                )?.template?.parts?.joinToString("") { (it as? TemplatePart.Text)?.string ?: "" } ?: this.substringAfterLast('.')
     }
     fun String.getImport(): TemplatePart.Import? {
         return (replacements.types[this]?.firstOrNull()
             ?: replacements.types["android.widget.$this"]?.firstOrNull()
             ?: replacements.types["android.view.$this"]?.firstOrNull()
                 )?.template?.find { it is TemplatePart.Import } as? TemplatePart.Import ?:
-            manifest.importLine(file.relativeTo(base), this, this.substringAfter('.'))
+            manifest.importLine(file.relativeTo(base), this, this.substringAfterLast('.'))
     }
 
     val imports = listOf(
@@ -93,14 +93,14 @@ fun AndroidLayoutFile.toTypescript(
     for(variant in variants) {
         out.append("import htmlFor")
         out.append(variant.camelCase())
-        out.append(" from 'layout-")
+        out.append(" from '../layout-")
         out.append(variant)
         out.append("/")
         out.append(this.fileName)
         out.appendln(".html'")
     }
-    out.appendln("import htmlForDefault from 'layout/$fileName.html'")
-    out.appendln("//! Declares ${packageName}.${name}Xml")
+    out.appendln("import htmlForDefault from './$fileName.html'")
+    out.appendln("//! Declares ${packageName}.layouts.${name}Xml")
     out.appendln("export class ${name}Xml {")
     out.appendln("xmlRoot!: HTMLElement;")
     bindings.values.forEach {

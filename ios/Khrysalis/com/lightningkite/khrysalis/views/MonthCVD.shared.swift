@@ -179,6 +179,13 @@ open class MonthCVD: CustomViewDelegate {
         return onTap(day: day)
     }
     
+     open func onTouchDown(day: DateAlone) -> Bool {
+        return false
+    }
+     open func onTouchDown(_ day: DateAlone) -> Bool {
+        return onTouchDown(day: day)
+    }
+    
     override public func onTouchDown(id: Int32, x: Float, y: Float, width: Float, height: Float) -> Bool {
         var day = dayAtPixel(x, y)
         
@@ -198,11 +205,11 @@ open class MonthCVD: CustomViewDelegate {
         return onTouchDown(id: id, x: x, y: y, width: width, height: height)
     }
     
-    open func onTouchDown(day: DateAlone) -> Bool {
+     open func onTouchMove(day: DateAlone) -> Bool {
         return false
     }
-    open func onTouchDown(_ day: DateAlone) -> Bool {
-        return onTouchDown(day: day)
+     open func onTouchMove(_ day: DateAlone) -> Bool {
+        return onTouchMove(day: day)
     }
     
     override public func onTouchMove(id: Int32, x: Float, y: Float, width: Float, height: Float) -> Bool {
@@ -227,11 +234,11 @@ open class MonthCVD: CustomViewDelegate {
         return onTouchMove(id: id, x: x, y: y, width: width, height: height)
     }
     
-    open func onTouchMove(day: DateAlone) -> Bool {
+     open func onTouchUp(day: DateAlone) -> Bool {
         return false
     }
-    open func onTouchMove(_ day: DateAlone) -> Bool {
-        return onTouchMove(day: day)
+     open func onTouchUp(_ day: DateAlone) -> Bool {
+        return onTouchUp(day: day)
     }
     
     override public func onTouchUp(id: Int32, x: Float, y: Float, width: Float, height: Float) -> Bool {
@@ -264,13 +271,6 @@ open class MonthCVD: CustomViewDelegate {
     }
     override public func onTouchUp(_ id: Int32, _ x: Float, _ y: Float, _ width: Float, _ height: Float) -> Bool {
         return onTouchUp(id: id, x: x, y: y, width: width, height: height)
-    }
-    
-    open func onTouchUp(day: DateAlone) -> Bool {
-        return false
-    }
-    open func onTouchUp(_ day: DateAlone) -> Bool {
-        return onTouchUp(day: day)
     }
     
     override public func sizeThatFitsWidth(width: Float, height: Float) -> Float {
