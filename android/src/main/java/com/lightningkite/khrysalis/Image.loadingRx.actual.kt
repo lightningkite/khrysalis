@@ -45,18 +45,23 @@ private fun ImageReference.load(maxDimension: Int = 2048): Single<Bitmap> {
         val finalOpts = BitmapFactory.Options()
         HttpClient.appContext.contentResolver.openInputStream(uri)?.use {
             val sizeOpts = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-            BitmapFactory.decodeStream(it, null, sizeOpts).apply {
+            BitmapFactory.decodeStream(it, null, sizeOpts)?.apply {
                 finalOpts.inSampleSize = max(
                     sizeOpts.outWidth.toDouble().div(maxDimension).let { Math.ceil(it) }.toInt(),
                     sizeOpts.outHeight.toDouble().div(maxDimension).let { Math.ceil(it) }.toInt()
                 ).coerceAtLeast(1)
             }
+            Unit
         }
             ?: return Single.error(IllegalStateException("Could not find file '$uri'."))
         HttpClient.appContext.contentResolver.openInputStream(uri)?.use {
-            return Single.just(BitmapFactory.decodeStream(it, null, finalOpts))
+            return Single.just(
+                BitmapFactory.decodeStream(it, null, finalOpts) ?: return Single.error(
+                    IllegalStateException("File '$uri' could not be parsed, got null.  Tried with options $finalOpts")
+                )
+            )
         }
-            ?: return Single.error(IllegalStateException("Could not find file '$uri'."))
+            ?: return Single.error(IllegalStateException("Could not find file '$uri', but found it earlier. Huh?"))
     } catch (e: Exception) {
         return Single.error(e)
     }
