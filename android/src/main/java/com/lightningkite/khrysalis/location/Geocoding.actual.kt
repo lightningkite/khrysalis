@@ -7,6 +7,7 @@ import com.lightningkite.khrysalis.views.ViewDependency
 import com.lightningkite.khrysalis.views.ViewStringRaw
 import com.lightningkite.khrysalis.views.showDialog
 import io.reactivex.Single
+import io.reactivex.android.schedulers.AndroidSchedulers
 
 @Deprecated("Use the new RX Style instead")
 fun ViewDependency.geocode(
@@ -59,7 +60,7 @@ fun ViewDependency.geocode(
     if (address.isEmpty()) {
         return Single.just(listOf())
     }
-    return Single.create { emitter ->
+    return Single.create <List<GeoAddress>>{ emitter ->
         Thread {
             try {
                 emitter.onSuccess(Geocoder(context)
@@ -68,7 +69,7 @@ fun ViewDependency.geocode(
                 emitter.onError(e)
             }
         }.start()
-    }
+    }.observeOn(AndroidSchedulers.mainThread())
 }
 
 fun ViewDependency.geocode(
@@ -78,7 +79,7 @@ fun ViewDependency.geocode(
     if (coordinate.latitude == 0.0 && coordinate.longitude == 0.0) {
         return Single.just(listOf())
     }
-    return Single.create { emitter ->
+    return Single.create <List<GeoAddress>>{ emitter ->
         Thread {
             try {
                 emitter.onSuccess(Geocoder(context)
@@ -88,5 +89,5 @@ fun ViewDependency.geocode(
                 emitter.onError(e)
             }
         }.start()
-    }
+    }.observeOn(AndroidSchedulers.mainThread())
 }
