@@ -52,11 +52,11 @@ private fun ImageReference.load(maxDimension: Int = 2048): Single<Bitmap> {
                 ).coerceAtLeast(1)
             }
         }
-            ?: return Single.error(IllegalStateException("Context from HttpClient is missing; please set up HttpClient before attempting this."))
+            ?: return Single.error(IllegalStateException("Could not find file '$uri'."))
         HttpClient.appContext.contentResolver.openInputStream(uri)?.use {
             return Single.just(BitmapFactory.decodeStream(it, null, finalOpts))
         }
-            ?: return Single.error(IllegalStateException("Context from HttpClient is missing; please set up HttpClient before attempting this."))
+            ?: return Single.error(IllegalStateException("Could not find file '$uri'."))
     } catch (e: Exception) {
         return Single.error(e)
     }

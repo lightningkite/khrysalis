@@ -2,6 +2,7 @@ package com.lightningkite.khrysalis.net
 
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
+import com.fasterxml.jackson.module.kotlin.readValue
 import com.lightningkite.khrysalis.Codable
 import com.lightningkite.khrysalis.IsCodable
 import com.lightningkite.khrysalis.PlatformSpecific
@@ -23,37 +24,48 @@ fun Single<@swiftExactly("Element") HttpResponse>.unsuccessfulAsError(): Single<
 
 
 inline fun <reified T> Single<@swiftExactly("Element") HttpResponse>.readJson(): Single<T> {
-    val typeReference = jacksonTypeRef<T>()
-    return this.map { it ->
+    return this.flatMap { it ->
         if(it.isSuccessful){
-            return@map it.readJson<T>(typeReference)
+            return@flatMap with(HttpClient){
+                Single.create<T> { em -> em.onSuccess(HttpClient.mapper.readValue<T>(it.body()!!.byteStream())) }
+                    .threadCorrectly()
+            }
         } else {
-            throw HttpResponseException(it)
+            Single.error<T>(HttpResponseException(it))
         }
     }
 }
 fun Single<@swiftExactly("Element") HttpResponse>.readText(): Single<String> {
-    return this.map { it ->
+    return this.flatMap { it ->
         if(it.isSuccessful){
-            return@map it.body()!!.string()
+            return@flatMap with(HttpClient){
+                Single.create<String> { em -> em.onSuccess(it.body()!!.string()) }
+                    .threadCorrectly()
+            }
         } else {
-            throw HttpResponseException(it)
+            Single.error<String>(HttpResponseException(it))
         }
     }
 }
 fun Single<@swiftExactly("Element") HttpResponse>.readData(): Single<Data> {
-    return this.map { it ->
+    return this.flatMap { it ->
         if(it.isSuccessful){
-            return@map it.body()!!.bytes()
+            return@flatMap with(HttpClient){
+                Single.create<Data> { em -> em.onSuccess(it.body()!!.bytes()) }
+                    .threadCorrectly()
+            }
         } else {
-            throw HttpResponseException(it)
+            Single.error<Data>(HttpResponseException(it))
         }
     }
 }
 fun <Element> Single<Element>.readHttpException(): Single<Element> {
     return this.onErrorResumeNext {
         if(it is HttpResponseException){
-            Single.error(HttpReadResponseException(it.response, it.response.body()!!.string(), it.cause))
+            return@onErrorResumeNext with(HttpClient){
+                Single.create<Element> { em -> throw HttpReadResponseException(it.response, it.response.body()!!.string(), it.cause) }
+                    .threadCorrectly()
+            }
         } else {
             Single.error<Element>(it)
         }
