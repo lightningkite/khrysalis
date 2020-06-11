@@ -24,10 +24,11 @@ fun Single<@swiftExactly("Element") HttpResponse>.unsuccessfulAsError(): Single<
 
 
 inline fun <reified T> Single<@swiftExactly("Element") HttpResponse>.readJson(): Single<T> {
+    val typeReference = jacksonTypeRef<T>()
     return this.flatMap { it ->
         if(it.isSuccessful){
             return@flatMap with(HttpClient){
-                Single.create<T> { em -> em.onSuccess(HttpClient.mapper.readValue<T>(it.body()!!.byteStream())) }
+                Single.create<T> { em -> em.onSuccess(HttpClient.mapper.readValue<T>(it.body()!!.byteStream(), typeReference)) }
                     .threadCorrectly()
             }
         } else {
