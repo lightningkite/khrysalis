@@ -3,6 +3,7 @@ package com.lightningkite.khrysalis.typescript
 import com.lightningkite.khrysalis.typescript.manifest.declaresPrefix
 import com.lightningkite.khrysalis.util.forEachBetween
 import com.lightningkite.khrysalis.util.simpleFqName
+import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.com.intellij.psi.PsiComment
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
@@ -15,7 +16,7 @@ import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
 
 val FunctionDescriptor.tsNameOverridden: String?
     get() = if (this is ConstructorDescriptor) {
-        if(this.isPrimary == false) {
+        if (this.isPrimary == false) {
             this.constructedClass.tsTopLevelName + "." + this.tsConstructorName
         } else {
             this.constructedClass.tsTopLevelName
@@ -117,7 +118,7 @@ fun TypescriptTranslator.registerFunction() {
                         val recParam = listOf<Any>(
                             rName2,
                             ": ",
-                            tr.containingClass()?.let{ tsTopLevelNameElement(it) } ?: "any"
+                            tr.containingClass()?.let { tsTopLevelNameElement(it) } ?: "any"
                         )
                         -"\npublic static "
                         -VirtualFunction(
@@ -345,7 +346,12 @@ fun TypescriptTranslator.registerFunction() {
         condition = { typedRule.resolvedReferenceTarget is FunctionDescriptor },
         priority = 50,
         action = {
-            -((typedRule.resolvedReferenceTarget as FunctionDescriptor).tsName ?: typedRule.text)
+            var fd = typedRule.resolvedReferenceTarget as FunctionDescriptor
+            if(fd.tsName == "androidxViewpagerWidgetViewPagerBind"){
+                collector?.report(CompilerMessageSeverity.INFO, "We're hitting the view pager.")
+                collector?.report(CompilerMessageSeverity.INFO, "FD: $fd -----> ${fd.annotations.joinToString { it.fqName?.asString() ?: "???" }}")
+            }
+            -(fd.tsName ?: typedRule.text)
         }
     )
 
@@ -439,7 +445,9 @@ fun TypescriptTranslator.registerFunction() {
                         allParametersByIndex[i] = valueArgument
                     }
                 } else {
-                    val useIndex = if(valueArgument is KtLambdaArgument) f.valueParameters.lastIndex else index
+                    val useIndex = if (valueArgument is KtLambdaArgument) {
+                        f.valueParameters.lastIndex
+                    } else index
                     allParametersByIndex[useIndex] = valueArgument
                     allParametersByName[f.valueParameters[useIndex].name.asString()] = valueArgument
                 }
@@ -509,7 +517,7 @@ fun TypescriptTranslator.registerFunction() {
                         allParametersByIndex[i] = valueArgument
                     }
                 } else {
-                    val useIndex = if(valueArgument is KtLambdaArgument) f.valueParameters.lastIndex else index
+                    val useIndex = if (valueArgument is KtLambdaArgument) f.valueParameters.lastIndex else index
                     allParametersByIndex[useIndex] = valueArgument
                     allParametersByName[f.valueParameters[useIndex].name.asString()] = valueArgument
                 }

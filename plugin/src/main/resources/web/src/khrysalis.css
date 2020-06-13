@@ -1,6 +1,10 @@
 :root {
     --color-foreground-fade: gray;
-    --color-foreground: blue;
+    --color-foreground: black;
+    --color-background: white;
+    --color-background-fade: #ddd;
+    --color-color-primary: blue;
+    --color-color-accent: blue;
 }
 html,
 body {
@@ -33,10 +37,10 @@ button {
 input {
     background: none;
     border: none;
-    border-bottom: 1px solid var(--color-foreground-fade, gray);
+    border-bottom: 1px solid var(--color-foreground-fade);
 }
 input:focus {
-    border-bottom: 2px solid var(--color-foreground, blue);
+    border-bottom: 2px solid var(--color-foreground);
 }
 button:hover {
     box-shadow: 0 2px 2px 0 rgba(0,0,0,0.24), 0 4px 8px 0 rgba(0,0,0,0.19);
@@ -82,6 +86,15 @@ button:hover {
 }
 .khrysalis-pager {
     position: relative;
+}
+.khrysalis-pager-content {
+
+}
+.khrysalis-pager-left {
+
+}
+.khrysalis-pager-right {
+
 }
 .khrysalis-tabs {
     display: flex;
@@ -499,13 +512,19 @@ button:hover {
     max-width: 100%;
     max-height: 100%;
 }
+.khrysalis-recycler {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: flex-start;
+    overflow-y: scroll;
+}
 .khrysalis-tab-bar {
     display: flex;
     position: relative;
     flex-direction: row;
     height: min-content;
 }
-
 .khrysalis-tab {
     padding: 8px;
     height: 100%;
@@ -523,4 +542,69 @@ button:hover {
     bottom: 0px;
     background-color: red;
     transition: 0.25s;
+}
+.khrysalis-refresh {
+    position: relative;
+}
+.khrysalis-refresh-button {
+    box-sizing: border-box;
+    position: absolute;
+    background-color: var(--color-background-fade);
+    border-radius: 2px;
+    padding: 8px;
+    right: 16px;
+    top: 16px;
+}
+.khrysalis-refresh-button-loading {
+    box-sizing: border-box;
+    display: block;
+    position: absolute;
+    background-color: transparent;
+    width: 32px;
+    height: 32px;
+    padding: 8px;
+    border: 8px solid;
+    border-radius: 50%;
+    color: transparent;
+    animation: khrysalis-load-ring 1s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    border-color: var(--color-foreground-fade) transparent transparent transparent;
+}
+
+@keyframes khrysalis-load-ring {
+    0% {
+        transform: rotate(0deg);
+    }
+    100% {
+        transform: rotate(360deg);
+    }
+}
+.khrysalis-autocomplete {
+    overflow-x: visible;
+    overflow-y: visible;
+    position: relative;
+    display: inline-block;
+    height: min-content;
+}
+.khrysalis-autocomplete-options {
+    position: fixed;
+    display: flex;
+    flex-direction: column;
+    width: 150px;
+    border: 1px solid var(--color-background-fade);
+    background-color: var(--color-background);
+    border-bottom: none;
+    border-top: none;
+    max-height: 150px;
+    overflow-y: scroll;
+    z-index: 99;
+}
+.khrysalis-autocomplete-option {
+    padding: 10px;
+    width: 100%;
+    cursor: pointer;
+    background-color: var(--color-background);
+    border-bottom: 1px solid var(--color-background-fade);
+}
+.khrysalis-autocomplete-option:focus {
+    background-color: var(--color-foreground-fade)
 }

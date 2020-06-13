@@ -36,3 +36,10 @@
   arguments: [kotlin.Any]
   template: new Set([...~this~].filter(x => x !== ~0~))
 
+- id: kotlin.collections.setOf
+  type: call
+  hasExplicitTypeArguments: true
+  template: "new Set<~T0~>([~*~])"
+- id: kotlin.collections.setOf
+  type: call
+  template: "new Set([~*~])"

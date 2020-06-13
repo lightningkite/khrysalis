@@ -7,7 +7,7 @@ import {getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil} from '
 import {MutableObservableProperty} from '../MutableObservableProperty.shared'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindString>android.widget.EditText
-export function androidWidgetEditTextBindString(this_: HTMLInputElement, observable: MutableObservableProperty<string>): void {
+export function androidWidgetEditTextBindString(this_: HTMLInputElement | HTMLTextAreaElement, observable: MutableObservableProperty<string>): void {
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
         if (!(observable.value === this_.value.toString())) {
             this_.value = observable.value;
@@ -22,7 +22,7 @@ export function androidWidgetEditTextBindString(this_: HTMLInputElement, observa
 }
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindInteger>android.widget.EditText
-export function androidWidgetEditTextBindInteger(this_: HTMLInputElement, observable: MutableObservableProperty<number>): void {
+export function androidWidgetEditTextBindInteger(this_: HTMLInputElement | HTMLTextAreaElement, observable: MutableObservableProperty<number>): void {
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
         const currentValue = parseIntOrNull(undefined);
 
@@ -41,7 +41,7 @@ export function androidWidgetEditTextBindInteger(this_: HTMLInputElement, observ
 
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindDouble>android.widget.EditText
-export function androidWidgetEditTextBindDouble(this_: HTMLInputElement, observable: MutableObservableProperty<number>): void {
+export function androidWidgetEditTextBindDouble(this_: HTMLInputElement | HTMLTextAreaElement, observable: MutableObservableProperty<number>): void {
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
         const currentValue = parseFloatOrNull(undefined);
 

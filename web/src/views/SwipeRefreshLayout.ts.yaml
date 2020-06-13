@@ -1,0 +1,4 @@
+---
+- id: androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+  type: type
+  template: HTMLDivElement

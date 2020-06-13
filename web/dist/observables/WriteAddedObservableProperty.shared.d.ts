@@ -1,0 +1,13 @@
+import { ObservableProperty } from './ObservableProperty.shared';
+import { Observable } from 'rxjs';
+import { MutableObservableProperty } from './MutableObservableProperty.shared';
+export declare class WriteAddedObservableProperty<A> extends MutableObservableProperty<any> {
+    readonly basedOn: ObservableProperty<A>;
+    readonly onWrite: (a: A) => void;
+    constructor(basedOn: ObservableProperty<A>, onWrite: (a: A) => void);
+    get value(): A;
+    set value(value: A);
+    get onChange(): Observable<A>;
+    update(): void;
+}
+export declare function comLightningkiteKhrysalisObservablesObservablePropertyWithWrite<T>(this_: ObservableProperty<T>, onWrite: (a: T) => void): MutableObservableProperty<T>;

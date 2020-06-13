@@ -9,6 +9,7 @@ import { androidWidgetLinearLayoutParams } from '../../views/LinearLayout.actual
 import { AlignPair } from '../../views/geometry/Align.shared'
 import { NumberRange } from 'Kotlin'
 import {range} from "iterable-operator";
+import {triggerAttachmentEvent} from "../../views/viewAttached";
 
 //! Declares com.lightningkite.khrysalis.observables.binding.LinearLayoutBoundSubview
 class LinearLayoutBoundSubview<T> {
@@ -33,6 +34,7 @@ export function androidWidgetLinearLayoutBind<T>(this_: HTMLDivElement, data: Ob
                     for (const iter of new NumberRange(1, excessViews)) {
                         const old = existingViews.splice((existingViews.length - 1), 1)[0];
                         this_.removeChild(old.view);
+                        triggerAttachmentEvent(old.view);
                     }
                 } else if (existingViews.length < value.length) {
                     //add views
@@ -42,6 +44,7 @@ export function androidWidgetLinearLayoutBind<T>(this_: HTMLDivElement, data: Ob
                         const view = makeView(prop);
                         
                         this_.appendChild(androidWidgetLinearLayoutParams(this_, undefined, undefined, undefined, undefined, undefined, undefined, AlignPair.Companion.INSTANCE.centerFill, undefined)(view));
+                        triggerAttachmentEvent(view);
                         existingViews.push(new LinearLayoutBoundSubview(view, prop));
                     }
                 }
@@ -50,6 +53,7 @@ export function androidWidgetLinearLayoutBind<T>(this_: HTMLDivElement, data: Ob
                 for (const index of range(0, value.length-1)) {
                     existingViews[index].property.value = value[index];
                 }
+
     }), getAndroidViewViewRemoved(this_));
 }
 

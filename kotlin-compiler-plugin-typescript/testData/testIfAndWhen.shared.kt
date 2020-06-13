@@ -35,13 +35,13 @@ fun main() {
     }
 
     if (thing2 == null) {
-        if(makeSomething()) {
+        if(makeSomething() != null) {
             makeSomething()
         } else {
             makeSomething()
         }
     } else {
-        if(makeSomething()) {
+        if(makeSomething() != null) {
             makeSomething()
             thing += 1
         } else {

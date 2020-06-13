@@ -4,6 +4,18 @@
 
 - id: kotlin.collections.listOf
   type: call
+  hasExplicitTypeArguments: true
+  template: "[~*~] as Array<~T0~>"
+- id: kotlin.collections.mutableListOf
+  type: call
+  hasExplicitTypeArguments: true
+  template: "[~*~] as Array<~T0~>"
+- id: kotlin.collections.arrayListOf
+  type: call
+  hasExplicitTypeArguments: true
+  template: "[~*~] as Array<~T0~>"
+- id: kotlin.collections.listOf
+  type: call
   template: "[~*~]"
 - id: kotlin.collections.mutableListOf
   type: call
@@ -33,6 +45,11 @@
   type: call
   arguments: []
   template: "[]"
+- id: kotlin.collections.ArrayList
+  type: call
+  arguments: []
+  hasExplicitTypeArguments: true
+  template: "[] as Array<~T0~>"
   
 # List Operations
 - id: kotlin.collections.List.contains

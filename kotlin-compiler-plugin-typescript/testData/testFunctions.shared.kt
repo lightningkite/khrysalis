@@ -64,6 +64,11 @@ fun TestClass.extensionFunction(){
     println("From an extension:")
     this.memberFunction()
 }
+@JsName("extensionFunction2")
+fun TestClass.extensionFunction(str: String){
+    println("From an extension with $str:")
+    this.memberFunction()
+}
 fun <T, E> T.genericExtensionFunction(element: E){
     println("Hello $element from $this!")
 }
@@ -85,6 +90,7 @@ fun main(){
     instance.memberGenericFunction(32 /*comment*/)
     instance.testExtension()
     instance.extensionFunction()
+    instance.extensionFunction("asdf")
     instance.genericExtensionFunction(8)
     val x: Int? = resolve()
     val y = resolve<String>()

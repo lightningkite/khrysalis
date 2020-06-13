@@ -171,6 +171,14 @@ class KhrysalisPlugin : Plugin<Project> {
                     projectName = projectName()
                 )
             }
+            task.finalizedBy("khrysalisWebNpmInstall")
+        }
+        project.tasks.create("khrysalisWebNpmInstall", Exec::class.java) { task ->
+            task.group = "web"
+            task.commandLine = listOf("npm", "install")
+            task.doFirst {
+                task.workingDir = webBase()
+            }
         }
         project.tasks.create("khrysalisConvertLayoutsToHtmlSass") { task ->
             project.afterEvaluate {

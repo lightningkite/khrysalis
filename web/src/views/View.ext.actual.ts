@@ -46,3 +46,10 @@ export function setViewVisibility(this_: HTMLElement, value: string) {
             break;
     }
 }
+export function findView(view: HTMLElement, predicate: (e: HTMLElement)=>boolean): HTMLElement | null {
+    for(let i = 0; i < view.children.length; i++){
+        const child = view.children.item(i);
+        if(child instanceof HTMLElement && predicate(child)) { return child; }
+    }
+    return null;
+}

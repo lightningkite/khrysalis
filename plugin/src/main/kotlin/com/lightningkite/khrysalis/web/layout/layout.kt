@@ -188,6 +188,9 @@ internal fun HtmlTranslator.layout() {
     element.handle("androidx.viewpager.widget.ViewPager"){
         out.name = "div"
         out.classes += "khrysalis-pager"
+        out.contentNodes += ResultNode("div").apply {
+            classes += "khrysalis-pager-content"
+        }
         out.contentNodes += ResultNode("button").apply {
             classes += "khrysalis-pager-left"
         }
@@ -203,10 +206,19 @@ internal fun HtmlTranslator.layout() {
         defer("androidx.recyclerview.widget.RecyclerView")
     }
     element.handle("androidx.recyclerview.widget.RecyclerView") {
-        out.style["display"] = "flex"
-        out.style["flex-direction"] = "column"
-        out.style["align-items"] = "center"
-        out.style["justify-content"] = "flex-start"
+        out.classes += "khrysalis-recycler"
+    }
+    element.handle("androidx.swiperefreshlayout.widget.SwipeRefreshLayout") {
+        out.classes += "khrysalis-refresh"
+        out.contentNodes.addAll(rule.children.map {
+            val child = ResultNode()
+            child.parent = out
+            element.translate(it, child)
+            child
+        })
+        out.contentNodes += ResultNode("button").apply {
+            classes += "khrysalis-refresh-button"
+        }
     }
     element.handle("include") {
         out.name = "div"

@@ -1,6 +1,7 @@
 package com.lightningkite.khrysalis
 
-@Retention(AnnotationRetention.SOURCE)
+@Retention(AnnotationRetention.RUNTIME)
+@MustBeDocumented
 @Target(
     AnnotationTarget.CLASS,
     AnnotationTarget.ANNOTATION_CLASS,
@@ -14,7 +15,6 @@ package com.lightningkite.khrysalis
     AnnotationTarget.PROPERTY_GETTER,
     AnnotationTarget.PROPERTY_SETTER,
     AnnotationTarget.TYPE,
-    AnnotationTarget.EXPRESSION,
     AnnotationTarget.FILE,
     AnnotationTarget.TYPEALIAS
 )

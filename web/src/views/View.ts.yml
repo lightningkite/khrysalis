@@ -125,7 +125,7 @@
 - id: com.lightningkite.khrysalis.views.onClick
   type: call
   template:
-    pattern: ~this~.addEventListener("onclick", (_ev) => { _ev.stopPropagation(); ~L0~})
+    pattern: ~this~.addEventListener("onclick", (_ev) => { _ev.stopPropagation(); ~L1~})
     lambdaTransforms:
       0: ["_ev.target as HTMLElement"]
 

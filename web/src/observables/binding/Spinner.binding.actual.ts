@@ -27,9 +27,10 @@ export function androidWidgetSpinnerBind<T>(this_: HTMLSelectElement, options: O
                 this_.options.add(newOpt);
                 observables.push(newObs);
             }
-        } else if (diff < 0) {
-            observables.
         }
+        // else if (diff < 0) {
+        //     observables.
+        // }
     }), vRemoved(this_));
 }
 

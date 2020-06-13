@@ -178,6 +178,27 @@
       rxOf: of from rxjs
       rxConcat: concat from rxjs
 
+- id: io.reactivex.Observable.replay
+  type: call
+  template:
+    pattern: ~this~.pipe(rxPublishReplay(~0~))
+    imports:
+      rxPublishReplay: publishReplay from rxjs/operators
+
+- id: io.reactivex.Observable.refCount
+  type: call
+  template:
+    pattern: ~this~.pipe(rxRefCount())
+    imports:
+      rxRefCount: refCount from rxjs/operators
+
+- id: io.reactivex.Observable.take
+  type: call
+  template:
+    pattern: ~this~.pipe(rxTake(~0~))
+    imports:
+      rxTake: take from rxjs/operators
+
 # Observer
 - id: io.reactivex.Observer
   type: type

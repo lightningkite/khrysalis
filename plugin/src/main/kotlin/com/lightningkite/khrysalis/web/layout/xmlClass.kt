@@ -112,9 +112,9 @@ fun AndroidLayoutFile.toTypescript(
     }
     delegateBindings.values.forEach {
         if(it.optional){
-            out.appendln(it.run { "$name?: ${type.toTsType()};" })
+            out.appendln(it.run { "${name}Delegate?: ${type.toTsType()};" })
         } else {
-            out.appendln(it.run { "$name!: ${type.toTsType()};" })
+            out.appendln(it.run { "${name}Delegate!: ${type.toTsType()};" })
         }
     }
     sublayouts.values.forEach {
@@ -146,8 +146,7 @@ fun AndroidLayoutFile.toTypescript(
         }
     }
     delegateBindings.values.forEach {
-        out.appendln("const ${it.name}View = this.${it.resourceId.camelCase()}")
-        out.appendln("if(${it.name}View){ this.${it.name} = new ${it.type.toTsType()}(); ${it.name}View.delegate = this.${it.name}; }")
+        out.appendln("if(${it.name}View){ this.${it.name}Delegate = new ${it.type.toTsType()}(); ${it.name}View.delegate = this.${it.name}; }")
     }
     sublayouts.values.forEach {
         out.appendln(it.run { "replaceViewWithId<HTMLDivElement>(view, ()=>{ " })
