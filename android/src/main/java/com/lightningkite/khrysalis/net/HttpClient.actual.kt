@@ -104,15 +104,6 @@ object HttpClient {
                 }
             ),
             listOf(
-                object : StdSerializer<Enum<*>>(Enum::class.java) {
-                    override fun serialize(value: Enum<*>?, gen: JsonGenerator, provider: SerializerProvider?) {
-                        if (value == null) {
-                            gen.writeNull()
-                        } else {
-                            gen.writeString(value.name.toLowerCase())
-                        }
-                    }
-                },
                 object : StdSerializer<TimeAlone>(TimeAlone::class.java) {
                     override fun serialize(value: TimeAlone?, gen: JsonGenerator, provider: SerializerProvider?) {
                         if (value == null) {
