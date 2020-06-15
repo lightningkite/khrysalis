@@ -18,6 +18,28 @@ public extension UICollectionView {
     func bind<T>(items: Array<T>, showIndex: MutableObservableProperty<Int32>, makeView: @escaping (T) -> View) -> Void {
         return bind(items, showIndex, makeView)
     }
+    
+    //--- ViewPager.bind(ObservableProperty<List<T>>, T, MutableObservableProperty<Int>, (ObservableProperty<T>)->View)
+    func bind<T>(
+    _ data: ObservableProperty<[T]>,
+    _ defaultValue: T,
+    _ showIndex:MutableObservableProperty<Int32> = StandardObservableProperty(0),
+    _ makeView: @escaping (ObservableProperty<T>) -> UIView
+    ){
+        bind(data: data, defaultValue: defaultValue, spacing: 0, makeView: makeView)
+        bindIndex(showIndex)
+    }
+    
+    
+    //--- ViewPager.bind(ObservableProperty<List<T>>, T, MutableObservableProperty<Int>, (ObservableProperty<T>)->View)
+    func bind<T>(
+    data: ObservableProperty<[T]>,
+    defaultValue: T,
+    showIndex:MutableObservableProperty<Int32> = StandardObservableProperty(0),
+    makeView: @escaping (ObservableProperty<T>) -> UIView
+    ){
+        bind(data, defaultValue, showIndex, makeView)
+    }
 
     func bindRefresh(_ loading: ObservableProperty<Bool>, _ onRefresh: @escaping () -> Void) {
         return bindRefresh(loading: loading, onRefresh: onRefresh)
@@ -70,9 +92,11 @@ public extension UICollectionView {
             delegate.atPosition = action
         }
     }
-
+    
+    
+    
     func bind<T>(
-        data: ObservableProperty<[T]>,
+        data: ObservableProperty<Array<T>>,
         defaultValue: T,
         spacing: CGFloat = 0,
         makeView: @escaping (ObservableProperty<T>) -> UIView
@@ -245,12 +269,4 @@ class CollectionSimpleDataSource: NSObject, UICollectionViewDataSource, UICollec
 
 }
 
-//--- ViewPager.bind(ObservableProperty<List<T>>, T, MutableObservableProperty<Int>, (ObservableProperty<T>)->View) (overwritten on flow generation)
-public extension ViewPager {
-    func bind<T>(_ items: ObservableProperty<Array<T>>, _ default: T, _ showIndex: MutableObservableProperty<Int32>, _ makeView: (ObservableProperty<T>) -> View) -> Void {
-        TODO()
-    }
-    func bind<T>(items: ObservableProperty<Array<T>>, default: T, showIndex: MutableObservableProperty<Int32>, makeView: (ObservableProperty<T>) -> View) -> Void {
-        return bind(items, default, showIndex, makeView)
-    }
-}
+

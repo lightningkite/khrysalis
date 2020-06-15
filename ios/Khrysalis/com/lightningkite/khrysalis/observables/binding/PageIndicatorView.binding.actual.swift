@@ -27,7 +27,7 @@ public extension UIPageControl {
 }
 
 //--- PageIndicatorView.bind(ObservableProperty<Int>, MutableObservableProperty<Int>)
-public extension PageIndicatorView {
+public extension UIPageControl {
     func bind(_ count: ObservableProperty<Int32>, _ selected: MutableObservableProperty<Int32>) -> Void {
         count.subscribeBy { count in
             self.numberOfPages = Int(count)

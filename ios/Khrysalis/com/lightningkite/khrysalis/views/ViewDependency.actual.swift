@@ -255,45 +255,34 @@ public class ViewDependency: NSObject {
         }
     }
 
-//--- ViewDependency.requestImageCamera(Boolean, (Uri)->Unit)
+    //--- ViewDependency.requestImageCamera(Boolean, (Uri)->Unit)
 
-//--- ViewDependency.requestVideoGallery((Uri)->Unit) (overwritten on flow generation)
-public extension ViewDependency {
+    //--- ViewDependency.requestVideoGallery((Uri)->Unit)
     func requestVideoGallery(_ callback: (Uri) -> Void) -> Void {
         TODO()
     }
-}
 
-//--- ViewDependency.requestVideosGallery((List<Uri>)->Unit) (overwritten on flow generation)
-public extension ViewDependency {
+    //--- ViewDependency.requestVideosGallery((List<Uri>)->Unit)
     func requestVideosGallery(_ callback: (Array<Uri>) -> Void) -> Void {
         TODO()
     }
-}
 
-//--- ViewDependency.requestVideoCamera(Boolean, (Uri)->Unit) (overwritten on flow generation)
-public extension ViewDependency {
+    //--- ViewDependency.requestVideoCamera(Boolean, (Uri)->Unit)
     func requestVideoCamera(_ front: Bool, _ callback: (Uri) -> Void) -> Void {
         TODO()
     }
     func requestVideoCamera(front: Bool, callback: (Uri) -> Void) -> Void {
         return requestVideoCamera(front, callback)
     }
-}
 
-//--- ViewDependency.requestMediasGallery((List<Uri>)->Unit) (overwritten on flow generation)
-public extension ViewDependency {
+    //--- ViewDependency.requestMediasGallery((List<Uri>)->Unit)
     func requestMediasGallery(_ callback: (Array<Uri>) -> Void) -> Void {
         TODO()
     }
-}
-
-//--- ViewDependency.requestMediaGallery((Uri)->Unit) (overwritten on flow generation)
-public extension ViewDependency {
+    //--- ViewDependency.requestMediaGallery((Uri)->Unit)
     func requestMediaGallery(_ callback: (Uri) -> Void) -> Void {
         TODO()
     }
-}
 
     //--- ViewDependency.requestImagesGallery((List<Uri>)->Unit)
     public func requestImagesGallery(_ onResult: @escaping (Array<Uri>) -> Void) -> Void {

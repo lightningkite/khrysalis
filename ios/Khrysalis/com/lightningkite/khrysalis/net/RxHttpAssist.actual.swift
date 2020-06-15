@@ -63,11 +63,17 @@ extension PrimitiveSequence where Element == HttpResponse, Trait == SingleTrait 
             }
         }
     }
+}
+
+extension PrimitiveSequence where Trait == SingleTrait {
     //--- Single<Element>.readHttpException()
-    func readHttpException<Element>() -> Single<Element> {
-        return self.catchError { error -> Single<Element> in
-            if error is HttpResponseException {
-                throw HttpReadResponseException(error.response, error.readText(), error.cause)
+    func readHttpException() -> PrimitiveSequence<SingleTrait, Element> {
+        return self.catchError { (error) -> PrimitiveSequence<SingleTrait, Element> in
+            switch error {
+            case let HttpResponseExceptions.Exception(response, cause):
+                return Single<Element>.error(HttpReadResponseException(response, response.readText(), cause))
+            default:
+                return Single<Element>.error(error)
             }
         }
     }
