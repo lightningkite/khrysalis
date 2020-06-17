@@ -92,6 +92,7 @@ class KotlinTypescriptExtension(
         bindingTrace: BindingTrace,
         files: Collection<KtFile>
     ): AnalysisResult? {
+
         collector?.report(CompilerMessageSeverity.INFO, "Completed analysis for ${projectName}.")
         val ctx = bindingTrace.bindingContext
         val translator = TypescriptTranslator(

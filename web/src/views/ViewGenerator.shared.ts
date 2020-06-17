@@ -8,13 +8,19 @@ import { newEmptyView } from './EmptyView.actual'
 
 //! Declares com.lightningkite.khrysalis.views.ViewGenerator
 export abstract class ViewGenerator {
+    protected constructor() {
+    }
     
     public abstract readonly title: string;
     
     
     public abstract generate(dependency: Window): HTMLElement 
     
-    public static Default = class Default extends ViewGenerator {
+    
+}
+export namespace ViewGenerator {
+    //! Declares com.lightningkite.khrysalis.views.ViewGenerator.Default
+    export class Default extends ViewGenerator {
         public constructor() {
             super();
         }

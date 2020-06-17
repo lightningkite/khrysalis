@@ -88,17 +88,16 @@ fun TypescriptTranslator.registerType() {
             }
             is ClassDescriptor -> {
                 var current: ClassDescriptor = desc
-                val items = ArrayList<ClassDescriptor>()
-                while (!current.tsTopLevelMessedUp) {
+                val items = arrayListOf(current)
+                while (true) {
                     current = current.containingDeclaration as? ClassDescriptor ?: break
                     items += current
                 }
-                out.addImport(current, current.tsTopLevelName)
-                -current.tsTopLevelName
-                for (item in items.asReversed()) {
-                    -'.'
-                    -item.name.asString()
-                }
+                out.addImport(current)
+                items.asReversed().forEachBetween(
+                    forItem = { -it.name.asString() },
+                    between = { -'.' }
+                )
                 typedRule.arguments.takeUnless { it.isEmpty() }?.let {
                     -'<'
                     it.forEachBetween(
@@ -118,17 +117,16 @@ fun TypescriptTranslator.registerType() {
             }
             is ClassDescriptor -> {
                 var current: ClassDescriptor = desc
-                val items = ArrayList<ClassDescriptor>()
-                while (!current.tsTopLevelMessedUp) {
+                val items = arrayListOf(current)
+                while (true) {
                     current = current.containingDeclaration as? ClassDescriptor ?: break
                     items += current
                 }
-                out.addImport(current, current.tsTopLevelName)
-                -current.tsTopLevelName
-                for (item in items.asReversed()) {
-                    -'.'
-                    -item.name.asString()
-                }
+                out.addImport(current)
+                items.asReversed().forEachBetween(
+                    forItem = { -it.name.asString() },
+                    between = { -'.' }
+                )
             }
             is TypeParameterDescriptor -> {
                 -desc.name.asString()
@@ -181,23 +179,6 @@ fun TypescriptTranslator.registerType() {
         }
     )
 
-    handle<KtUserType>(
-        condition = {
-            val reference = typedRule.referenceExpression ?: return@handle false
-            val type = reference.resolvedReferenceTarget ?: return@handle false
-            type.tsTopLevelMessedUp
-        },
-        priority = 100,
-        action = {
-            val reference = typedRule.referenceExpression!!
-            val type = reference.resolvedReferenceTarget!!
-            val n = type.tsTopLevelName
-            -n
-            -typedRule.typeArgumentList
-            out.addImport(type, n)
-        }
-    )
-
     handle<KtUserTypeBasic>(
         condition = {
             val reference = typedRule.type.referenceExpression ?: return@handle false
@@ -228,21 +209,6 @@ fun TypescriptTranslator.registerType() {
             emitTemplate(
                 template = rule.template
             )
-        }
-    )
-    handle<KtUserTypeBasic>(
-        condition = {
-            val reference = typedRule.type.referenceExpression ?: return@handle false
-            val type = reference.resolvedReferenceTarget ?: return@handle false
-            type.tsTopLevelMessedUp
-        },
-        priority = 100,
-        action = {
-            val reference = typedRule.type.referenceExpression!!
-            val type = reference.resolvedReferenceTarget!!
-            val n = type.tsTopLevelName
-            -n
-            out.addImport(type, n)
         }
     )
     handle<KtUserTypeBasic> {

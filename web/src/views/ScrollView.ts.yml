@@ -10,3 +10,7 @@
     pattern: also(document.createElement('div') as HTMLDivElement, (x)=>{ x.classList.add("khrysalis-scroll") })
     imports:
       also: khrysalis/dist/Kotlin
+
+- id: android.widget.ScrollView.smoothScrollTo
+  type: call
+  template: ~this~.scroll(~0~, ~1~)

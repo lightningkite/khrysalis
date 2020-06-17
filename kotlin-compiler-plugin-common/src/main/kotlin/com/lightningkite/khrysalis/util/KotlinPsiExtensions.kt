@@ -17,8 +17,12 @@ fun PropertyDescriptor.allOverridden(): Sequence<PropertyDescriptor> =
     this.overriddenDescriptors.asSequence().flatMap { it.allSuperVersions() }
 fun FunctionDescriptor.allOverridden(): Sequence<FunctionDescriptor> =
     this.overriddenDescriptors.asSequence().flatMap { it.allSuperVersions() }
+fun CallableMemberDescriptor.allOverridden(): Sequence<CallableMemberDescriptor> =
+    this.overriddenDescriptors.asSequence().flatMap { it.allSuperVersions() }
 
 fun PropertyDescriptor.allSuperVersions(): Sequence<PropertyDescriptor> =
     sequenceOf(this) + this.overriddenDescriptors.asSequence().flatMap { it.allSuperVersions() }
 fun FunctionDescriptor.allSuperVersions(): Sequence<FunctionDescriptor> =
+    sequenceOf(this) + this.overriddenDescriptors.asSequence().flatMap { it.allSuperVersions() }
+fun CallableMemberDescriptor.allSuperVersions(): Sequence<CallableMemberDescriptor> =
     sequenceOf(this) + this.overriddenDescriptors.asSequence().flatMap { it.allSuperVersions() }

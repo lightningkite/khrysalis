@@ -17,7 +17,11 @@ export class Failable<T> {
         this.issue = issue;
     }
     
-    public static Companion = class Companion {
+    
+}
+export namespace Failable {
+    //! Declares com.lightningkite.khrysalis.Failable.Companion
+    export class Companion {
         private constructor() {
         }
         public static INSTANCE = new Companion();

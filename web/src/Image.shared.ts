@@ -2,13 +2,15 @@
 // File: Image.shared.kt
 // Package: com.lightningkite.khrysalis
 // FQImport: com.lightningkite.khrysalis.ImageRemoteUrl TS ImageRemoteUrl
+// FQImport: com.lightningkite.khrysalis.ImageBitmap TS ImageBitmap
 // FQImport: com.lightningkite.khrysalis.Image TS Image
 // FQImport: com.lightningkite.khrysalis.ImageReference TS ImageReference
-// FQImport: com.lightningkite.khrysalis.ImageBitmap TS ImageImageBitmap
 import { hashString } from './Kotlin'
 
 //! Declares com.lightningkite.khrysalis.Image
 export class Image {
+    public constructor() {
+    }
 }
 //! Declares com.lightningkite.khrysalis.ImageReference
 export class ImageReference extends Image {

@@ -4,7 +4,9 @@
 
 //! Declares com.lightningkite.khrysalis.time.ClockPartSize
 export class ClockPartSize {
-    constructor(name: string) { this.name = name; }
+    private constructor(name: string) {
+        this.name = name;
+    }
     public static None = new ClockPartSize("None");
     public static Short = new ClockPartSize("Short");
     public static Medium = new ClockPartSize("Medium");

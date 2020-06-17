@@ -4,18 +4,20 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.readValue
+import com.lightningkite.khrysalis.util.allOverridden
+import com.lightningkite.khrysalis.util.allSuperVersions
 import com.lightningkite.khrysalis.util.simpleFqName
 import com.lightningkite.khrysalis.util.simplerFqName
-import org.jetbrains.kotlin.descriptors.ClassDescriptor
-import org.jetbrains.kotlin.descriptors.DeclarationDescriptor
-import org.jetbrains.kotlin.descriptors.FunctionDescriptor
-import org.jetbrains.kotlin.descriptors.PropertyDescriptor
+import org.jetbrains.kotlin.codegen.AccessorForCompanionObjectInstanceFieldDescriptor
+import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
+import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 import org.jetbrains.kotlin.types.KotlinType
 import java.io.File
 import java.util.*
 import kotlin.collections.HashMap
+import kotlin.collections.HashSet
 
 class Replacements() {
     val functions: HashMap<String, TreeSet<FunctionReplacement>> = HashMap()
@@ -25,36 +27,42 @@ class Replacements() {
     val typeRefs: HashMap<String, TreeSet<TypeRefReplacement>> = HashMap()
 
     fun getCall(
-        functionDescriptor: FunctionDescriptor,
-        comparatorType: String? = null,
-        receiverType: KotlinType? = null,
-        suppliedArguments: Set<String>? = null
+        call: ResolvedCall<out CallableDescriptor>,
+        descriptor: CallableDescriptor = call.candidateDescriptor,
+        alreadyChecked: HashSet<CallableDescriptor> = HashSet()
     ): FunctionReplacement? {
-        return functions[functionDescriptor.simpleFqName.substringBefore(".<")]?.find {
+        if(!alreadyChecked.add(descriptor)) return null
+        val result =  functions[descriptor.simpleFqName.substringBefore(".<")]?.find {
             it.passes(
-                functionDescriptor,
-                comparatorType,
-                receiverType,
-                suppliedArguments ?: setOf()
+                call = call,
+                descriptor = descriptor
             )
         }
-            ?: functions[functionDescriptor.simplerFqName.substringBefore(".<")]?.find {
+            ?: functions[descriptor.simplerFqName.substringBefore(".<")]?.find {
                 it.passes(
-                    functionDescriptor,
-                    comparatorType,
-                    receiverType,
-                    suppliedArguments ?: setOf()
+                    call = call,
+                    descriptor = descriptor
                 )
             }
-            ?: functionDescriptor.overriddenDescriptors.asSequence()
-                .map { getCall(it, comparatorType, receiverType, suppliedArguments) }
-                .firstOrNull()
+            ?: (descriptor as? CallableMemberDescriptor)?.allOverridden()
+                ?.map {
+                    getCall(
+                        call = call,
+                        descriptor = it,
+                        alreadyChecked = alreadyChecked
+                    )
+                }
+                ?.firstOrNull()
+        return result
     }
 
     fun getGet(propertyDescriptor: PropertyDescriptor, receiverType: KotlinType? = null): GetReplacement? =
         gets[propertyDescriptor.simpleFqName]?.find { it.passes(propertyDescriptor, receiverType) }
             ?: gets[propertyDescriptor.simplerFqName]?.find { it.passes(propertyDescriptor, receiverType) }
             ?: propertyDescriptor.overriddenDescriptors.asSequence().map { getGet(it, receiverType) }.firstOrNull()
+
+    fun getGet(objectDescriptor: DeclarationDescriptor): GetReplacement? =
+        gets[objectDescriptor.simpleFqName]?.firstOrNull()
 
     fun getSet(propertyDescriptor: PropertyDescriptor, receiverType: KotlinType? = null): SetReplacement? =
         sets[propertyDescriptor.simpleFqName]?.find { it.passes(propertyDescriptor, receiverType) }

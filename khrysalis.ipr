@@ -331,11 +331,18 @@
     <option name="HIGHLIGHT" value="false" />
     <option name="FILTER_WHITESPACE" value="false" />
     <option name="SHOW_PROPERTIES" value="true" />
-    <option name="SPLIT_DIVIDER_POSITION" value="204" />
+    <option name="SPLIT_DIVIDER_POSITION" value="476" />
     <option name="AUTOSCROLL_TO_SOURCE" value="false" />
     <option name="AUTOSCROLL_FROM_SOURCE" value="false" />
   </component>
   <component name="libraryTable">
+    <library name="Gradle: _home_josephivie_IdeaProjects_khrysalis_plugin_build_pluginUnderTestMetadata">
+      <CLASSES>
+        <root url="file://$PROJECT_DIR$/plugin/build/pluginUnderTestMetadata" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
     <library name="Gradle: aether-api-1.0.0.v20140518">
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.eclipse.aether/aether-api/1.0.0.v20140518/be68e917f454dcd841865ad7cf9b7615b26a51f7/aether-api-1.0.0.v20140518.jar!/" />
@@ -401,8 +408,8 @@
     </library>
     <library name="Gradle: androidx.activity:activity:1.0.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a5f0bf91e5898acf461c7a3ca9fda052/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a5f0bf91e5898acf461c7a3ca9fda052/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6f798685fab86892c7c4b003de65c258/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6f798685fab86892c7c4b003de65c258/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -420,8 +427,8 @@
     </library>
     <library name="Gradle: androidx.appcompat:appcompat-resources:1.1.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/20932e284185620277895c441525f8a1/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/20932e284185620277895c441525f8a1/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/77390305cab1494c1aa8fdd28ec7a762/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/77390305cab1494c1aa8fdd28ec7a762/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -430,11 +437,11 @@
     </library>
     <library name="Gradle: androidx.appcompat:appcompat:1.1.0@aar">
       <ANNOTATIONS>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/65e8aa0bc2663040fdf59d53c3247266/annotations.zip!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c5214603348d84388c7644457a62d600/annotations.zip!/" />
       </ANNOTATIONS>
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/65e8aa0bc2663040fdf59d53c3247266/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/65e8aa0bc2663040fdf59d53c3247266/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c5214603348d84388c7644457a62d600/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c5214603348d84388c7644457a62d600/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -452,8 +459,8 @@
     </library>
     <library name="Gradle: androidx.arch.core:core-runtime:2.0.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/58e98cd9df7680cbcf1f0461444feaa8/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/58e98cd9df7680cbcf1f0461444feaa8/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b3674982cc5f2c3c06bd509739419a08/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b3674982cc5f2c3c06bd509739419a08/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -462,8 +469,8 @@
     </library>
     <library name="Gradle: androidx.asynclayoutinflater:asynclayoutinflater:1.0.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/dba4892071e554b74e935fab4951fa58/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/dba4892071e554b74e935fab4951fa58/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/7e5fa10124f012b29ab89695d486b609/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/7e5fa10124f012b29ab89695d486b609/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -472,8 +479,8 @@
     </library>
     <library name="Gradle: androidx.cardview:cardview:1.0.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/461aae7ab79b07a9c88c70d30c537700/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/461aae7ab79b07a9c88c70d30c537700/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ccdbb2b70e6df29724b990a92bb661ec/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ccdbb2b70e6df29724b990a92bb661ec/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -498,19 +505,19 @@
     </library>
     <library name="Gradle: androidx.constraintlayout:constraintlayout:1.1.2@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1e53af2dfab9aac657684eb21f88c794/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1e53af2dfab9aac657684eb21f88c794/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/fa122579932970077fa9d6d35e77e29a/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/fa122579932970077fa9d6d35e77e29a/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
     </library>
     <library name="Gradle: androidx.coordinatorlayout:coordinatorlayout:1.0.0@aar">
       <ANNOTATIONS>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e7d804c6262b11709139e40786a0ed53/annotations.zip!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/16839e40d44963808f55041171a9ae1a/annotations.zip!/" />
       </ANNOTATIONS>
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e7d804c6262b11709139e40786a0ed53/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e7d804c6262b11709139e40786a0ed53/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/16839e40d44963808f55041171a9ae1a/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/16839e40d44963808f55041171a9ae1a/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -519,11 +526,11 @@
     </library>
     <library name="Gradle: androidx.core:core:1.1.0@aar">
       <ANNOTATIONS>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6c02a9cc1026fa0ae2ac44bddee87506/annotations.zip!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1a2e4ee2417bbd00dd220998b18a3364/annotations.zip!/" />
       </ANNOTATIONS>
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6c02a9cc1026fa0ae2ac44bddee87506/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6c02a9cc1026fa0ae2ac44bddee87506/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1a2e4ee2417bbd00dd220998b18a3364/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1a2e4ee2417bbd00dd220998b18a3364/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -532,8 +539,8 @@
     </library>
     <library name="Gradle: androidx.cursoradapter:cursoradapter:1.0.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/49b04bcdd385b26627177366a004d501/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/49b04bcdd385b26627177366a004d501/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6e35319da1a1d2eaeddefb9a9369dbc3/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6e35319da1a1d2eaeddefb9a9369dbc3/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -542,8 +549,8 @@
     </library>
     <library name="Gradle: androidx.customview:customview:1.0.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/44e9b96a703c36e42de6f4d18ccae931/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/44e9b96a703c36e42de6f4d18ccae931/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/facb59b7917991611990a633e6a1d5fa/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/facb59b7917991611990a633e6a1d5fa/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -552,8 +559,8 @@
     </library>
     <library name="Gradle: androidx.documentfile:documentfile:1.0.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8244e2583a89a1a217ca78293c57ffd8/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8244e2583a89a1a217ca78293c57ffd8/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/62a6dc7fdf4f4f6fec9b8dfeb2450a2d/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/62a6dc7fdf4f4f6fec9b8dfeb2450a2d/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -562,11 +569,11 @@
     </library>
     <library name="Gradle: androidx.drawerlayout:drawerlayout:1.0.0@aar">
       <ANNOTATIONS>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/dd410da652c94fbec37a8908bcee6e75/annotations.zip!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9d6687700471bbc250766352db77d2b5/annotations.zip!/" />
       </ANNOTATIONS>
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/dd410da652c94fbec37a8908bcee6e75/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/dd410da652c94fbec37a8908bcee6e75/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9d6687700471bbc250766352db77d2b5/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9d6687700471bbc250766352db77d2b5/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -575,11 +582,11 @@
     </library>
     <library name="Gradle: androidx.exifinterface:exifinterface:1.0.0-rc01@aar">
       <ANNOTATIONS>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2a673860a088a8c6206e20476b56a680/annotations.zip!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e1e836d2c47df50fd8259164db7644d5/annotations.zip!/" />
       </ANNOTATIONS>
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2a673860a088a8c6206e20476b56a680/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2a673860a088a8c6206e20476b56a680/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e1e836d2c47df50fd8259164db7644d5/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e1e836d2c47df50fd8259164db7644d5/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -588,11 +595,11 @@
     </library>
     <library name="Gradle: androidx.fragment:fragment:1.1.0@aar">
       <ANNOTATIONS>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/214aa33d832cf10cb7d5a751188107c6/annotations.zip!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/108a80b726300bb7623efcd16fb1233a/annotations.zip!/" />
       </ANNOTATIONS>
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/214aa33d832cf10cb7d5a751188107c6/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/214aa33d832cf10cb7d5a751188107c6/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/108a80b726300bb7623efcd16fb1233a/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/108a80b726300bb7623efcd16fb1233a/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -601,8 +608,8 @@
     </library>
     <library name="Gradle: androidx.interpolator:interpolator:1.0.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/7b1b2a38c55c7243b17f5e99abbead45/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/7b1b2a38c55c7243b17f5e99abbead45/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/63db2eb89330bf24a63a1895062ec075/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/63db2eb89330bf24a63a1895062ec075/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -611,8 +618,8 @@
     </library>
     <library name="Gradle: androidx.legacy:legacy-support-core-ui:1.0.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c428c831edc373d3d32ec0f37db5f1bb/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c428c831edc373d3d32ec0f37db5f1bb/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/bb820ae24bd7f6b6d35c4d22e99a1bc9/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/bb820ae24bd7f6b6d35c4d22e99a1bc9/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -621,8 +628,8 @@
     </library>
     <library name="Gradle: androidx.legacy:legacy-support-core-utils:1.0.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/115e1664cfd29c4f8f73965794973ec3/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/115e1664cfd29c4f8f73965794973ec3/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/5bbd79358d7ae15779d9548b73a4b81b/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/5bbd79358d7ae15779d9548b73a4b81b/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -640,8 +647,8 @@
     </library>
     <library name="Gradle: androidx.lifecycle:lifecycle-livedata-core:2.0.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ca04090d0a5713a7a430826110b5dbc8/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ca04090d0a5713a7a430826110b5dbc8/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d8c410f9c8893f69680dcf43e95900c9/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d8c410f9c8893f69680dcf43e95900c9/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -650,8 +657,8 @@
     </library>
     <library name="Gradle: androidx.lifecycle:lifecycle-livedata:2.0.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1906ee5a6b1a1b3c6d2fd973d81a3982/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1906ee5a6b1a1b3c6d2fd973d81a3982/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8bc7f71beae8b15bf18dc25e79cfd5d4/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8bc7f71beae8b15bf18dc25e79cfd5d4/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -660,8 +667,8 @@
     </library>
     <library name="Gradle: androidx.lifecycle:lifecycle-runtime:2.1.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3b3653e5181318a9f715e7510f591da7/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3b3653e5181318a9f715e7510f591da7/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/eae74f78b0e9bfb5610a67c7ceaebdfc/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/eae74f78b0e9bfb5610a67c7ceaebdfc/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -670,8 +677,8 @@
     </library>
     <library name="Gradle: androidx.lifecycle:lifecycle-viewmodel:2.1.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/bcee0dfcd5dbca68a69ec55d912233af/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/bcee0dfcd5dbca68a69ec55d912233af/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a221248557d50f7bb64402692affaa8f/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a221248557d50f7bb64402692affaa8f/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -680,8 +687,8 @@
     </library>
     <library name="Gradle: androidx.loader:loader:1.0.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e31bc789cd403f10110787d132ea883b/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e31bc789cd403f10110787d132ea883b/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/925ec06150cf44c564ffdd258cebd4fa/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/925ec06150cf44c564ffdd258cebd4fa/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -690,8 +697,8 @@
     </library>
     <library name="Gradle: androidx.localbroadcastmanager:localbroadcastmanager:1.0.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b3f5e608a7da1d15f486e8f93514825f/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b3f5e608a7da1d15f486e8f93514825f/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3c0c36084dc3b656ca6113eaebcf51c1/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3c0c36084dc3b656ca6113eaebcf51c1/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -700,11 +707,11 @@
     </library>
     <library name="Gradle: androidx.print:print:1.0.0@aar">
       <ANNOTATIONS>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b70f1bfd4120b6e90c86fc74aab255cb/annotations.zip!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/98ec3b8ba76f9263e5e49d86a5b9fba2/annotations.zip!/" />
       </ANNOTATIONS>
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b70f1bfd4120b6e90c86fc74aab255cb/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b70f1bfd4120b6e90c86fc74aab255cb/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/98ec3b8ba76f9263e5e49d86a5b9fba2/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/98ec3b8ba76f9263e5e49d86a5b9fba2/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -713,11 +720,11 @@
     </library>
     <library name="Gradle: androidx.recyclerview:recyclerview:1.0.0@aar">
       <ANNOTATIONS>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/54173b8f42ce7a8fa2677f5acfa8b55c/annotations.zip!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/280208fa72ae5f04e07af3156bdbf8a5/annotations.zip!/" />
       </ANNOTATIONS>
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/54173b8f42ce7a8fa2677f5acfa8b55c/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/54173b8f42ce7a8fa2677f5acfa8b55c/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/280208fa72ae5f04e07af3156bdbf8a5/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/280208fa72ae5f04e07af3156bdbf8a5/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -726,8 +733,8 @@
     </library>
     <library name="Gradle: androidx.savedstate:savedstate:1.0.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d1482e91597ebc588885c4ae81af8536/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d1482e91597ebc588885c4ae81af8536/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1bb26836fad1399a3ac1eebe76493e9e/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1bb26836fad1399a3ac1eebe76493e9e/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -736,8 +743,8 @@
     </library>
     <library name="Gradle: androidx.slidingpanelayout:slidingpanelayout:1.0.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/5e74eb3c2741f9504c38caaa75b14721/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/5e74eb3c2741f9504c38caaa75b14721/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f760cf7fa29038ebad96c0d0702a9045/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f760cf7fa29038ebad96c0d0702a9045/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -746,11 +753,11 @@
     </library>
     <library name="Gradle: androidx.swiperefreshlayout:swiperefreshlayout:1.0.0@aar">
       <ANNOTATIONS>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/aba40f4816d9dc616822956320d8a91a/annotations.zip!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/46cc9b0126528128ffa10bec022a2293/annotations.zip!/" />
       </ANNOTATIONS>
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/aba40f4816d9dc616822956320d8a91a/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/aba40f4816d9dc616822956320d8a91a/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/46cc9b0126528128ffa10bec022a2293/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/46cc9b0126528128ffa10bec022a2293/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -759,8 +766,8 @@
     </library>
     <library name="Gradle: androidx.test.espresso:espresso-core:3.1.0-alpha3@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/45de4278f57a1e4fc6fe33b4ab94ba3c/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/45de4278f57a1e4fc6fe33b4ab94ba3c/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/182107c30005093b25d694f55c8c0072/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/182107c30005093b25d694f55c8c0072/res" />
       </CLASSES>
       <JAVADOC>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/androidx.test.espresso/espresso-core/3.1.0-alpha3/dd67921bd009f4ac8147dfc29f3b54395c55ac7d/espresso-core-3.1.0-alpha3-javadoc.jar!/" />
@@ -771,8 +778,8 @@
     </library>
     <library name="Gradle: androidx.test.espresso:espresso-idling-resource:3.1.0-alpha3@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c2546ffe6c31bb436ec5b47bb3deab6b/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/c2546ffe6c31bb436ec5b47bb3deab6b/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/fcd803d40cf1657e773c70259520742a/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/fcd803d40cf1657e773c70259520742a/res" />
       </CLASSES>
       <JAVADOC>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/androidx.test.espresso/espresso-idling-resource/3.1.0-alpha3/ac774bb29e6171578dc7508bf390a4a3ccbedfea/espresso-idling-resource-3.1.0-alpha3-javadoc.jar!/" />
@@ -783,8 +790,8 @@
     </library>
     <library name="Gradle: androidx.test:monitor:1.2.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a08d19112b80e176ea263311eae50504/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a08d19112b80e176ea263311eae50504/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f5fbd3e9d0f0355bf698a9ffa0f99bf0/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f5fbd3e9d0f0355bf698a9ffa0f99bf0/res" />
       </CLASSES>
       <JAVADOC>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/androidx.test/monitor/1.2.0/2af6ec82fa4b1151212001e83514ccb39f360adc/monitor-1.2.0-javadoc.jar!/" />
@@ -795,8 +802,8 @@
     </library>
     <library name="Gradle: androidx.test:runner:1.2.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f5238b34b346d22b096be922375182a1/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f5238b34b346d22b096be922375182a1/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f99105330b8d5f3f06d3ff38dca913cc/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f99105330b8d5f3f06d3ff38dca913cc/res" />
       </CLASSES>
       <JAVADOC>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/androidx.test/runner/1.2.0/f4763c62f19d8d2a8835d5648144245900a31bc1/runner-1.2.0-javadoc.jar!/" />
@@ -807,11 +814,11 @@
     </library>
     <library name="Gradle: androidx.transition:transition:1.0.0@aar">
       <ANNOTATIONS>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/5839e698fd442f9f9f51590348daffeb/annotations.zip!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/09fbf37fa6f5b05551e835e462463528/annotations.zip!/" />
       </ANNOTATIONS>
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/5839e698fd442f9f9f51590348daffeb/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/5839e698fd442f9f9f51590348daffeb/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/09fbf37fa6f5b05551e835e462463528/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/09fbf37fa6f5b05551e835e462463528/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -820,8 +827,8 @@
     </library>
     <library name="Gradle: androidx.vectordrawable:vectordrawable-animated:1.1.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b270cdadc2c7ad4082ff8320613fd38a/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b270cdadc2c7ad4082ff8320613fd38a/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/295868024400dfe96803fe777110c508/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/295868024400dfe96803fe777110c508/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -830,8 +837,8 @@
     </library>
     <library name="Gradle: androidx.vectordrawable:vectordrawable:1.1.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8ee0158394cca7ce16d750e4a49e6fa3/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8ee0158394cca7ce16d750e4a49e6fa3/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/aed55288a0dca771b61ea05696fbb667/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/aed55288a0dca771b61ea05696fbb667/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -840,8 +847,8 @@
     </library>
     <library name="Gradle: androidx.versionedparcelable:versionedparcelable:1.1.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/15ba79a32ee261794c2997fd87b95814/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/15ba79a32ee261794c2997fd87b95814/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9b27d6a5f21e5e53d72f67f8fa0a6e76/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9b27d6a5f21e5e53d72f67f8fa0a6e76/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -850,8 +857,8 @@
     </library>
     <library name="Gradle: androidx.viewpager:viewpager:1.0.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/dca4ed073d53ab5b4bb2b20a2174e424/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/dca4ed073d53ab5b4bb2b20a2174e424/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/820c9681796f8f725b4032b7d4533f94/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/820c9681796f8f725b4032b7d4533f94/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -903,8 +910,8 @@
     </library>
     <library name="Gradle: br.com.simplepass:loading-button-android:1.14.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8284ea6bdbb0b8074bcb679a4fd12deb/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/8284ea6bdbb0b8074bcb679a4fd12deb/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/676f0ee2ca8f98fde99f54ef4a04f61a/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/676f0ee2ca8f98fde99f54ef4a04f61a/res" />
       </CLASSES>
       <JAVADOC>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/br.com.simplepass/loading-button-android/1.14.0/4352042538ce3ae84a0fec3d9f99b559443acdd2/loading-button-android-1.14.0-javadoc.jar!/" />
@@ -912,13 +919,6 @@
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/br.com.simplepass/loading-button-android/1.14.0/395cb14ee6780237d9b85781031c756ea3ea60b8/loading-button-android-1.14.0-sources.jar!/" />
       </SOURCES>
-    </library>
-    <library name="Gradle: C__Users_Brady_Svedin_LK_khrysalis_plugin_build_pluginUnderTestMetadata">
-      <CLASSES>
-        <root url="file://$PROJECT_DIR$/plugin/build/pluginUnderTestMetadata" />
-      </CLASSES>
-      <JAVADOC />
-      <SOURCES />
     </library>
     <library name="Gradle: cdi-api-1.0">
       <CLASSES>
@@ -931,8 +931,8 @@
     </library>
     <library name="Gradle: com.android.volley:volley:1.1.1@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/5eda886531424b51d27071ce4e69fad7/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/5eda886531424b51d27071ce4e69fad7/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0418efec05b8e9d430a920c7e499a4e0/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0418efec05b8e9d430a920c7e499a4e0/res" />
       </CLASSES>
       <JAVADOC>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.volley/volley/1.1.1/4dab8aeeac8192fb8b6d7f9186b7357d94808049/volley-1.1.1-javadoc.jar!/" />
@@ -970,8 +970,8 @@
     </library>
     <library name="Gradle: com.github.marcoscgdev:Android-Week-View:1.2.7@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f544a01a3788425e799b404ccb1bc86e/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f544a01a3788425e799b404ccb1bc86e/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a6845e39911b5454d39cae32b6390300/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a6845e39911b5454d39cae32b6390300/res" />
       </CLASSES>
       <JAVADOC>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.marcoscgdev/Android-Week-View/1.2.7/794dcc817f7db7174e86990b92d40edc24316fab/Android-Week-View-1.2.7-javadoc.jar!/" />
@@ -982,8 +982,8 @@
     </library>
     <library name="Gradle: com.google.android.datatransport:transport-api:2.2.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9d39355632ea19324d7700698d95d2a0/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9d39355632ea19324d7700698d95d2a0/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ba6ee26ba837e52893a6fe46584e69b5/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ba6ee26ba837e52893a6fe46584e69b5/res" />
       </CLASSES>
       <JAVADOC>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.android.datatransport/transport-api/2.2.0/f3ef3a5b401818d979e05ca4fa1f0eb06e69eeb0/transport-api-2.2.0-javadoc.jar!/" />
@@ -992,8 +992,8 @@
     </library>
     <library name="Gradle: com.google.android.datatransport:transport-backend-cct:2.2.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6b64db44b9d0046da7ecc321ab11e6cd/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6b64db44b9d0046da7ecc321ab11e6cd/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/095480316eac78fe8dcb1141973a57d8/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/095480316eac78fe8dcb1141973a57d8/res" />
       </CLASSES>
       <JAVADOC>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.android.datatransport/transport-backend-cct/2.2.0/f3ef3a5b401818d979e05ca4fa1f0eb06e69eeb0/transport-backend-cct-2.2.0-javadoc.jar!/" />
@@ -1002,8 +1002,8 @@
     </library>
     <library name="Gradle: com.google.android.datatransport:transport-runtime:2.2.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0aab6abb268fd98ccbaccc4f075df33e/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0aab6abb268fd98ccbaccc4f075df33e/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/185d6c6d4a4ae4ecff85e0a5f9bc68b5/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/185d6c6d4a4ae4ecff85e0a5f9bc68b5/res" />
       </CLASSES>
       <JAVADOC>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.android.datatransport/transport-runtime/2.2.0/f3ef3a5b401818d979e05ca4fa1f0eb06e69eeb0/transport-runtime-2.2.0-javadoc.jar!/" />
@@ -1012,8 +1012,8 @@
     </library>
     <library name="Gradle: com.google.android.gms:play-services-base:17.0.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9f24c6014fe6dbd169bfe6185cad59dd/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9f24c6014fe6dbd169bfe6185cad59dd/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e83c23b8f7791c53b5c41dd323516b57/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e83c23b8f7791c53b5c41dd323516b57/res" />
       </CLASSES>
       <JAVADOC>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.android.gms/play-services-base/17.0.0/d2c4415b10482b4829dd3708f5391f637ed5816/play-services-base-17.0.0-javadoc.jar!/" />
@@ -1022,8 +1022,8 @@
     </library>
     <library name="Gradle: com.google.android.gms:play-services-basement:17.0.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d1676f628cb80503d8f3c70165d08677/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d1676f628cb80503d8f3c70165d08677/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b38d59c05d360a3ec5061f7fd83131bf/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b38d59c05d360a3ec5061f7fd83131bf/res" />
       </CLASSES>
       <JAVADOC>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.android.gms/play-services-basement/17.0.0/4faccf8c10bad282388a4067b8ef53d8476bbbc8/play-services-basement-17.0.0-javadoc.jar!/" />
@@ -1032,24 +1032,24 @@
     </library>
     <library name="Gradle: com.google.android.gms:play-services-clearcut:17.0.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/28c085bd4d66e627a0183d8624af4694/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/28c085bd4d66e627a0183d8624af4694/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/bd2ecfadfd8f6edaf046d6095a829263/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/bd2ecfadfd8f6edaf046d6095a829263/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
     </library>
     <library name="Gradle: com.google.android.gms:play-services-location:17.0.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9a4edc392209b0e21ef089bfd3b94085/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9a4edc392209b0e21ef089bfd3b94085/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/de9b0d700d05b9bbcc33e30e94dfefee/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/de9b0d700d05b9bbcc33e30e94dfefee/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
     </library>
     <library name="Gradle: com.google.android.gms:play-services-maps:17.0.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0802d44dd20f4145c7aeb1512566f595/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0802d44dd20f4145c7aeb1512566f595/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/543bbd74e302756830d6df0c4e1c3ec8/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/543bbd74e302756830d6df0c4e1c3ec8/res" />
       </CLASSES>
       <JAVADOC>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.android.gms/play-services-maps/17.0.0/d997ae8f2b0b4a330bcafcba55f8af323c816562/play-services-maps-17.0.0-javadoc.jar!/" />
@@ -1058,40 +1058,40 @@
     </library>
     <library name="Gradle: com.google.android.gms:play-services-phenotype:17.0.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/36ddb669e3d5318ea1d224d0794b50ee/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/36ddb669e3d5318ea1d224d0794b50ee/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/223d60277d46fa5f3092bee4c9f75931/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/223d60277d46fa5f3092bee4c9f75931/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
     </library>
     <library name="Gradle: com.google.android.gms:play-services-places-placereport:17.0.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b80931085dd687437057fd81ecd819dc/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b80931085dd687437057fd81ecd819dc/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4e31d9238844517235aea9aba63428e6/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/4e31d9238844517235aea9aba63428e6/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
     </library>
     <library name="Gradle: com.google.android.gms:play-services-stats:17.0.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cdda7685f9bfdf815bb72bf1b43fa189/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cdda7685f9bfdf815bb72bf1b43fa189/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/337034c738281ccbcf6db45f984d2dfa/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/337034c738281ccbcf6db45f984d2dfa/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
     </library>
     <library name="Gradle: com.google.android.gms:play-services-tasks:17.0.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a503418cf7865455e15a1a3140451c3c/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a503418cf7865455e15a1a3140451c3c/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cb2e199820446b04568f8f275fbed8b2/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/cb2e199820446b04568f8f275fbed8b2/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
     </library>
     <library name="Gradle: com.google.android.libraries.places:places:2.0.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/65856bdf39bb45f51bcc5a237186f4f3/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/65856bdf39bb45f51bcc5a237186f4f3/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e10471f5fff28a587538dbf8056bdfe2/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e10471f5fff28a587538dbf8056bdfe2/res" />
       </CLASSES>
       <JAVADOC>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.android.libraries.places/places/2.0.0/38bd6e02eb1784ba11b14a02ef41ad9e12d6fb4f/places-2.0.0-javadoc.jar!/" />
@@ -1100,11 +1100,11 @@
     </library>
     <library name="Gradle: com.google.android.material:material:1.0.0@aar">
       <ANNOTATIONS>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/67c0e0983de85070328a48736382a494/annotations.zip!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b60cf52bab8b37feb79801ef42b41f26/annotations.zip!/" />
       </ANNOTATIONS>
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/67c0e0983de85070328a48736382a494/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/67c0e0983de85070328a48736382a494/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b60cf52bab8b37feb79801ef42b41f26/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b60cf52bab8b37feb79801ef42b41f26/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
@@ -1154,8 +1154,8 @@
     </library>
     <library name="Gradle: com.google.firebase:firebase-common:19.3.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/5c1dc283106679e54cf082bd4496a0a9/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/5c1dc283106679e54cf082bd4496a0a9/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b485173e1980c06027713df76ec17856/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/b485173e1980c06027713df76ec17856/res" />
       </CLASSES>
       <JAVADOC>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.firebase/firebase-common/19.3.0/8c633ce718daf595bb05a0180d299f0034cbe97e/firebase-common-19.3.0-javadoc.jar!/" />
@@ -1166,8 +1166,8 @@
     </library>
     <library name="Gradle: com.google.firebase:firebase-components:16.0.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1c51df3516d4482ab82a664158714021/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1c51df3516d4482ab82a664158714021/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/71ce3820979a8849e6af2f3e71d2cbbb/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/71ce3820979a8849e6af2f3e71d2cbbb/res" />
       </CLASSES>
       <JAVADOC>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.firebase/firebase-components/16.0.0/f1f25eec68651b3cbe494a265507ac945fdb9e61/firebase-components-16.0.0-javadoc.jar!/" />
@@ -1178,8 +1178,8 @@
     </library>
     <library name="Gradle: com.google.firebase:firebase-datatransport:17.0.3@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/97f1e93bab60f40c79627f2268d3931c/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/97f1e93bab60f40c79627f2268d3931c/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2a4f0ec5ca85e5f64ae87568c370e83a/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/2a4f0ec5ca85e5f64ae87568c370e83a/res" />
       </CLASSES>
       <JAVADOC>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.firebase/firebase-datatransport/17.0.3/8c8c8d5417add6218ebf9f99cbf6ae6d4a3b827/firebase-datatransport-17.0.3-javadoc.jar!/" />
@@ -1190,8 +1190,8 @@
     </library>
     <library name="Gradle: com.google.firebase:firebase-encoders-json:16.0.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/bbbbf8818afaf93285cf2072f8400086/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/bbbbf8818afaf93285cf2072f8400086/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/7e7c32c62f9b3bc47824207c10103466/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/7e7c32c62f9b3bc47824207c10103466/res" />
       </CLASSES>
       <JAVADOC>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.firebase/firebase-encoders-json/16.0.0/ab9c0e744cb8696974b03ae85286413fd98e50e8/firebase-encoders-json-16.0.0-javadoc.jar!/" />
@@ -1202,16 +1202,16 @@
     </library>
     <library name="Gradle: com.google.firebase:firebase-iid-interop:17.0.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/97de6208f24feae90266dc7a9b2989f6/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/97de6208f24feae90266dc7a9b2989f6/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/93980b4184b79f724f6a6e8041dca34f/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/93980b4184b79f724f6a6e8041dca34f/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
     </library>
     <library name="Gradle: com.google.firebase:firebase-iid:20.0.2@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0bcd4aafd0bbb667be226928d2e3f277/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/0bcd4aafd0bbb667be226928d2e3f277/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e98bf04b1adb98724e77d3ecc2beef7f/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e98bf04b1adb98724e77d3ecc2beef7f/res" />
       </CLASSES>
       <JAVADOC>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.firebase/firebase-iid/20.0.2/64c597e3ef4949d67ce7ee7bcf6283e62a470c5b/firebase-iid-20.0.2-javadoc.jar!/" />
@@ -1220,16 +1220,16 @@
     </library>
     <library name="Gradle: com.google.firebase:firebase-measurement-connector:18.0.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/38bba838aa8b95bd29243de9d9e313ca/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/38bba838aa8b95bd29243de9d9e313ca/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/679eb758a63af1a0ee10dce552be37f8/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/679eb758a63af1a0ee10dce552be37f8/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
     </library>
     <library name="Gradle: com.google.firebase:firebase-messaging:20.1.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/fed7f82d4f0b81c1ec36f7533d95183a/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/fed7f82d4f0b81c1ec36f7533d95183a/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/45d299c53a1063177e477231c195351e/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/45d299c53a1063177e477231c195351e/res" />
       </CLASSES>
       <JAVADOC>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.firebase/firebase-messaging/20.1.0/f5f1b1094df5c7acffb142dc0aa4c3dce31cea42/firebase-messaging-20.1.0-javadoc.jar!/" />
@@ -1256,11 +1256,11 @@
     </library>
     <library name="Gradle: com.polidea.rxandroidble2:rxandroidble:1.11.0@aar">
       <ANNOTATIONS>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/411cbc8bb4acfba283d7429308551770/annotations.zip!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f628c6f349209a9b96e559ca66bfd9c2/annotations.zip!/" />
       </ANNOTATIONS>
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/411cbc8bb4acfba283d7429308551770/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/411cbc8bb4acfba283d7429308551770/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f628c6f349209a9b96e559ca66bfd9c2/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/f628c6f349209a9b96e559ca66bfd9c2/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -1269,8 +1269,8 @@
     </library>
     <library name="Gradle: com.romandanylyk:pageindicatorview:1.0.3@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d6330725513ad2545bdd2e1dcef8a180/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d6330725513ad2545bdd2e1dcef8a180/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ece0187aeb8f6ef0c8104bfa4f7293c9/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ece0187aeb8f6ef0c8104bfa4f7293c9/res" />
       </CLASSES>
       <JAVADOC>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.romandanylyk/pageindicatorview/1.0.3/bb453d85a6835627a01967615cacb9caa93a3c24/pageindicatorview-1.0.3-javadoc.jar!/" />
@@ -1299,8 +1299,8 @@
     </library>
     <library name="Gradle: com.squareup.picasso:picasso:2.71828@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3bc2e3b5b5d6a63efc1b6f28984d040e/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3bc2e3b5b5d6a63efc1b6f28984d040e/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6694d5f3ea94f85f0eea699eb150de8f/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/6694d5f3ea94f85f0eea699eb150de8f/res" />
       </CLASSES>
       <JAVADOC>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup.picasso/picasso/2.71828/2843564e6bac90b1e125104d7c842c87a96a8ee9/picasso-2.71828-javadoc.jar!/" />
@@ -1320,8 +1320,8 @@
     </library>
     <library name="Gradle: com.theartofdev.edmodo:android-image-cropper:2.7.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d37c786d9d12ff62d6811a82188f4dcc/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/d37c786d9d12ff62d6811a82188f4dcc/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/92484ec4875521c2c6765b6382d1dd17/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/92484ec4875521c2c6765b6382d1dd17/res" />
       </CLASSES>
       <JAVADOC>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.theartofdev.edmodo/android-image-cropper/2.7.0/b09b91344e82ab3a1ba3770766962adcbb1c7d20/android-image-cropper-2.7.0-javadoc.jar!/" />
@@ -1332,8 +1332,8 @@
     </library>
     <library name="Gradle: com.wdullaer:materialdatetimepicker:4.2.3@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3a7dd2e9eb3644925884a9517cf048de/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/3a7dd2e9eb3644925884a9517cf048de/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ea707a975248fda9727818434569cdbf/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/ea707a975248fda9727818434569cdbf/res" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
@@ -1360,8 +1360,8 @@
     </library>
     <library name="Gradle: de.hdodenhof:circleimageview:2.2.0@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/15f7390936624e86b284a8d4222716a5/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/15f7390936624e86b284a8d4222716a5/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e0afc40d7b6c88a2e8559b8bda5cf40c/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e0afc40d7b6c88a2e8559b8bda5cf40c/res" />
       </CLASSES>
       <JAVADOC>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/de.hdodenhof/circleimageview/2.2.0/5c68ac4974e0c1cf827ec184dda9ea2523f74347/circleimageview-2.2.0-javadoc.jar!/" />
@@ -1454,8 +1454,8 @@
     </library>
     <library name="Gradle: io.reactivex.rxjava2:rxandroid:2.1.1@aar">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/34f36e365d58f0d548ad959e938e99e3/jars/classes.jar!/" />
-        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/34f36e365d58f0d548ad959e938e99e3/res" />
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1bb54704246c8e3a2fba11b539bd4b3b/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/1bb54704246c8e3a2fba11b539bd4b3b/res" />
       </CLASSES>
       <JAVADOC>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.reactivex.rxjava2/rxandroid/2.1.1/634c77382eff415441853908e7e1429c786f6320/rxandroid-2.1.1-javadoc.jar!/" />
@@ -1597,23 +1597,9 @@
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/junit/junit/4.12/a6c32b40bf3d76eca54e3c601e5d1470c86fcdfa/junit-4.12-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Gradle: khrysalis.kotlin-compiler-plugin-common.kotlin-compiler-plugin-common-0.1.0">
+    <library name="Gradle: khrysalis.plugin.plugin-0.1.0">
       <CLASSES>
-        <root url="jar://$PROJECT_DIR$/kotlin-compiler-plugin-common/build/libs/kotlin-compiler-plugin-common-0.1.0.jar!/" />
-      </CLASSES>
-      <JAVADOC />
-      <SOURCES />
-    </library>
-    <library name="Gradle: khrysalis.kotlin-compiler-plugin-typescript.kotlin-compiler-plugin-typescript-0.1.0">
-      <CLASSES>
-        <root url="jar://$PROJECT_DIR$/kotlin-compiler-plugin-typescript/build/libs/kotlin-compiler-plugin-typescript-0.1.0.jar!/" />
-      </CLASSES>
-      <JAVADOC />
-      <SOURCES />
-    </library>
-    <library name="Gradle: khrysalis.kotlin-compiler-plugin-typescript.kotlin-compiler-plugin-typescript-0.1.0-all">
-      <CLASSES>
-        <root url="jar://$PROJECT_DIR$/kotlin-compiler-plugin-typescript/build/libs/kotlin-compiler-plugin-typescript-0.1.0-all.jar!/" />
+        <root url="jar://$PROJECT_DIR$/plugin/build/libs/plugin-0.1.0.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES />
@@ -1662,6 +1648,27 @@
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/me.eugeniomarletti.kotlin.metadata/kotlin-compiler-lite/1.0.3-k-1.2.40/e9ea26600601f4b2b1397055da065aa3440af2a4/kotlin-compiler-lite-1.0.3-k-1.2.40-sources.jar!/" />
       </SOURCES>
+    </library>
+    <library name="Gradle: kotlin-compiler-plugin-common.kotlin-compiler-plugin-common-0.1.0">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/kotlin-compiler-plugin-common/build/libs/kotlin-compiler-plugin-common-0.1.0.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="Gradle: kotlin-compiler-plugin-typescript.kotlin-compiler-plugin-typescript-0.1.0">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/kotlin-compiler-plugin-typescript/build/libs/kotlin-compiler-plugin-typescript-0.1.0.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="Gradle: kotlin-compiler-plugin-typescript.kotlin-compiler-plugin-typescript-0.1.0-all">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/kotlin-compiler-plugin-typescript/build/libs/kotlin-compiler-plugin-typescript-0.1.0-all.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
     </library>
     <library name="Gradle: kotlin-compiler-runner-1.3.71">
       <CLASSES>
@@ -1860,13 +1867,6 @@
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlinx/kotlinx-coroutines-core/1.2.1/75e0ac676a7c7ef6239179b415d86ed002a7cc2c/kotlinx-coroutines-core-1.2.1-sources.jar!/" />
       </SOURCES>
-    </library>
-    <library name="Gradle: LK.khrysalis.plugin.plugin-0.1.0">
-      <CLASSES>
-        <root url="jar://$PROJECT_DIR$/plugin/build/libs/plugin-0.1.0.jar!/" />
-      </CLASSES>
-      <JAVADOC />
-      <SOURCES />
     </library>
     <library name="Gradle: maven-aether-provider-3.1.0">
       <CLASSES>

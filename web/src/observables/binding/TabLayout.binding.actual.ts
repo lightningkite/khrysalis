@@ -6,7 +6,7 @@ import {getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil} from '
 import {MutableObservableProperty} from '../MutableObservableProperty.shared'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>com.google.android.material.tabs.TabLayout
-export function comGoogleAndroidMaterialTabsTabLayoutBind(this_: HTMLDivElement, tabs: Array<string>, selected: MutableObservableProperty<number>): void {
+export function comGoogleAndroidMaterialTabsTabLayoutBind(this_: HTMLDivElement, tabs: Array<string>, selected: MutableObservableProperty<number>, allowReselect: boolean = false): void {
     const myName = this.id ?? "tabLayout";
 
     const selectedIndicator = document.createElement("div");
@@ -30,7 +30,9 @@ export function comGoogleAndroidMaterialTabsTabLayoutBind(this_: HTMLDivElement,
         radio.id = myName + myIndex.toString();
         radio.name = myName;
         radio.onchange = (ev) => {
-            selected.value = myIndex;
+            if(allowReselect || selected.value !== myIndex) {
+                selected.value = myIndex;
+            }
         }
         tabList.appendChild(radio);
         index++;

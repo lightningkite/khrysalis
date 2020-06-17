@@ -17,25 +17,15 @@ fun KtExpression.needsSemi(): Boolean = this !is KtDeclaration
 
 fun TypescriptTranslator.registerControl() {
 
-    val dontReturnTypes = setOf("kotlin.Unit", "kotlin.Nothing")
     handle<KtBlockExpression> {
-        if (typedRule.actuallyCouldBeExpression) {
-            val lastStatement = typedRule.statements.lastOrNull()
-            typedRule.allChildren.forEach {
-                if (it === lastStatement && it.actuallyCouldBeExpression) {
-                    -"return "
-                }
-                -it
-                if (it is KtExpression && it.needsSemi()) {
-                    -';'
-                }
+        val lastStatement = typedRule.statements.lastOrNull()
+        typedRule.allChildren.forEach {
+            if (it === lastStatement && it.actuallyCouldBeExpression) {
+                -"return "
             }
-        } else {
-            typedRule.allChildren.forEach {
-                -it
-                if (it is KtExpression && it.needsSemi()) {
-                    -';'
-                }
+            -it
+            if (it is KtExpression && it.needsSemi()) {
+                -';'
             }
         }
     }
@@ -365,7 +355,7 @@ fun TypescriptTranslator.registerControl() {
             -") "
             -"{\n"
             destructuringDeclaration.entries.forEachIndexed { index, it ->
-                val rule = it.resolvedComponentResolvedCall?.resultingDescriptor?.let { replacements.getCall(it) }
+                val rule = it.resolvedComponentResolvedCall?.let { replacements.getCall(it) }
                 if (rule != null) {
                     emitTemplate(
                         requiresWrapping = false,

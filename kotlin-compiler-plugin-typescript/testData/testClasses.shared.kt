@@ -2,6 +2,7 @@ package com.test.classes
 
 import com.test.magicVariable
 import kotlin.math.absoluteValue
+import kotlin.random.Random
 
 interface TestInterface {
     val interfaceValue: String get() = "Default"
@@ -44,4 +45,5 @@ fun main(){
             get() = outsideInfo
     }
     val ugh = Weird(2)
+    Random.nextInt()
 }

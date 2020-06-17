@@ -57,10 +57,11 @@ fun TypescriptTranslator.registerVariable() {
             -";\n"
             val tr = typedRule
             val resolved = tr.resolvedProperty ?: return@handle
-            val ktClass = typedRule.parentOfType<KtClassBody>()!!.parentOfType<KtClass>()!!
+            val ktClassBody = typedRule.parentOfType<KtClassBody>()!!
+            val ktClass = ktClassBody.parentOfType<KtClass>()!!
             tr.getter?.let { getter ->
-                ktClass.addPostAction {
-                    -"\npublic static "
+                ktClassBody.addPostAction {
+                    -"\nexport function "
                     -resolved.tsFunctionGetDefaultName
                     (ktClass.typeParameters + tr.typeParameters).takeUnless { it.isEmpty() }?.let {
                         -'<'
@@ -74,7 +75,7 @@ fun TypescriptTranslator.registerVariable() {
                         -'('
                         -r
                         -": "
-                        -tsTopLevelNameElement(ktClass)
+                        -ktClass.nameIdentifier
                         -"): "
                         -tr.typeReference
                         -" "
@@ -90,8 +91,8 @@ fun TypescriptTranslator.registerVariable() {
                 }
             }
             tr.setter?.let { setter ->
-                ktClass.addPostAction {
-                    -"\npublic static "
+                ktClassBody.addPostAction {
+                    -"\nexport function "
                     -resolved.tsFunctionSetDefaultName
                     (ktClass.typeParameters + tr.typeParameters).takeUnless { it.isEmpty() }?.let {
                         -'<'
@@ -105,7 +106,7 @@ fun TypescriptTranslator.registerVariable() {
                         -'('
                         -r
                         -": "
-                        -tsTopLevelNameElement(ktClass)
+                        -ktClass.nameIdentifier
                         -", "
                         -(setter.parameter?.name ?: "value")
                         -": "

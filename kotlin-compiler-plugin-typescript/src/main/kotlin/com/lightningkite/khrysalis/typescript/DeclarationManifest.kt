@@ -32,7 +32,7 @@ class DeclarationManifest(
     }
 
     fun load(files: Sequence<File>, local: File){
-        files.forEach { println("Looking for declarations in $it") }
+        println("Files: ${files.joinToString()}")
         files
             .flatMap { it.walkTopDown() }
             .filter {
@@ -49,7 +49,6 @@ class DeclarationManifest(
                     throw IllegalArgumentException("Failed to parse TS/KT declarations from $actualFile.", t)
                 }
                 if(decls.isEmpty()) return@forEach
-//                println("Found declarations in ${actualFile}")
                 if(actualFile.absoluteFile.startsWith(local.absoluteFile)) {
                     val r = actualFile.relativeTo(local)
                     for(decl in decls) {

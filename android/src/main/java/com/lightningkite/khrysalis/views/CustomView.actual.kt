@@ -14,9 +14,10 @@ import android.view.accessibility.AccessibilityManager
 import android.view.accessibility.AccessibilityNodeInfo
 import android.view.accessibility.AccessibilityNodeProvider
 import android.widget.FrameLayout
-import com.alamkanak.weekview.MonthLoader
 import com.lightningkite.khrysalis.PlatformSpecific
 import com.lightningkite.khrysalis.R
+import com.lightningkite.khrysalis.rx.DisposableLambda
+import com.lightningkite.khrysalis.rx.removed
 import com.lightningkite.khrysalis.views.android.QuickMonthView
 import com.lightningkite.khrysalis.views.CustomViewDelegate
 import java.util.ArrayList
@@ -31,12 +32,16 @@ class CustomView @JvmOverloads constructor(
 
     init{
         setWillNotDraw(false)
+        this.removed.call(DisposableLambda {
+            this.delegate = null
+        })
     }
 
     var delegate: CustomViewDelegate? = null
         set(value) {
             field?.let {
                 it.customView = null
+                it.dispose()
             }
             if(value != null) {
                 value.customView = this

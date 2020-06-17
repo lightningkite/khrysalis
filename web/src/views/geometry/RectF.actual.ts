@@ -19,7 +19,8 @@ class RectF {
 }
  */
 
-class RectF {
+//! Declares android.graphics.RectF
+export class RectF {
     right: number = 0.0;
     bottom: number = 0.0;
     top: number = 0.0;

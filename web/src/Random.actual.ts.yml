@@ -11,6 +11,8 @@
     pattern: new Random(~0~)
     imports:
       Random: DIRECTLY from MersenneTwister
+      
+# Random Instance
 
 - id: kotlin.random.Random.nextInt
   type: call
@@ -68,3 +70,18 @@
   type: call
   arguments: [kotlin.Float, kotlin.Float]
   template: (~this~.random() * (~1~ - ~0~) + ~0~)
+  
+# Main Random
+
+- id: kotlin.random.Random.Companion
+  type: get
+  template:
+    pattern: RandomInstance
+    imports:
+      RandomInstance: khrysalis/dist/Random.actual
+- id: kotlin.random.Random
+  type: get
+  template:
+    pattern: RandomInstance
+    imports:
+      RandomInstance: khrysalis/dist/Random.actual

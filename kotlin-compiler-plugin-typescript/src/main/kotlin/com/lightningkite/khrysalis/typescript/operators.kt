@@ -1,6 +1,5 @@
 package com.lightningkite.khrysalis.typescript
 
-import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.forEachBetween
 import org.jetbrains.kotlin.com.intellij.psi.tree.IElementType
 import org.jetbrains.kotlin.descriptors.CallableDescriptor
@@ -8,6 +7,8 @@ import org.jetbrains.kotlin.descriptors.FunctionDescriptor
 import org.jetbrains.kotlin.lexer.KtSingleValueToken
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
+import org.jetbrains.kotlin.psi.psiUtil.getTextWithLocation
+import org.jetbrains.kotlin.resolve.calls.components.isVararg
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
 
 //class TestThing(){
@@ -62,7 +63,7 @@ fun TypescriptTranslator.registerOperators() {
             -typedRule.arrayExpression
             -"."
         }
-        -(f.tsName ?: "get")
+        -(f.tsNameOverridden ?: "get")
         -ArgumentsList(
             on = f,
             resolvedCall = typedRule.resolvedCall,
@@ -74,21 +75,12 @@ fun TypescriptTranslator.registerOperators() {
     }
     handle<VirtualArrayGet>(
         condition = {
-            replacements.getCall(typedRule.functionDescriptor) != null
+            replacements.getCall(typedRule.resolvedCall ?: return@handle false) != null
         },
         priority = 10_001,
         action = {
-            val f = typedRule.functionDescriptor
-            val rule = replacements.getCall(f)!!
-
-            val allParametersByIndex = HashMap<Int, Any>()
-            val allParametersByName = HashMap<String, Any>()
-            typedRule.indexExpressions.forEachIndexed { index, valueArgument ->
-                allParametersByIndex[index] = valueArgument
-                f.valueParameters.getOrNull(index)?.name?.asString()?.let {
-                    allParametersByName[it] = valueArgument
-                }
-            }
+            val resolvedCall = typedRule.resolvedCall!!
+            val rule = replacements.getCall(resolvedCall)!!
 
             emitTemplate(
                 requiresWrapping = true,
@@ -101,8 +93,10 @@ fun TypescriptTranslator.registerOperators() {
                         between = { add(", ") }
                     )
                 },
-                parameter = { allParametersByName[it.name] ?: "undefined" },
-                parameterByIndex = { allParametersByIndex[it.index] ?: "undefined" }
+                parameter = resolvedCall.template_parameter,
+                typeParameter = resolvedCall.template_typeParameter,
+                parameterByIndex = resolvedCall.template_parameterByIndex,
+                typeParameterByIndex = resolvedCall.template_typeParameterByIndex
             )
         }
     )
@@ -142,7 +136,8 @@ fun TypescriptTranslator.registerOperators() {
                 right = typedRule.right!!,
                 functionDescriptor = typedRule.operationReference.resolvedReferenceTarget as FunctionDescriptor,
                 dispatchReceiver = typedRule.getTsReceiver(),
-                operationToken = typedRule.operationToken
+                operationToken = typedRule.operationToken,
+                resolvedCall = typedRule.resolvedCall
             )
             val doubleReceiver =
                 setFunction.dispatchReceiverParameter != null && setFunction.extensionReceiverParameter != null
@@ -153,7 +148,7 @@ fun TypescriptTranslator.registerOperators() {
                 -tempArray
                 -"."
             }
-            -(setFunction.tsName ?: "set")
+            -(setFunction.tsNameOverridden ?: "set")
             -ArgumentsList(
                 on = setFunction,
                 resolvedCall = typedRule.resolvedCall,
@@ -167,14 +162,14 @@ fun TypescriptTranslator.registerOperators() {
     handle<KtBinaryExpression>(
         condition = {
             val arrayAccess = typedRule.left as? KtArrayAccessExpression ?: return@handle false
-            val f = arrayAccess.resolvedIndexedLvalueSet?.resultingDescriptor ?: return@handle false
+            val f = arrayAccess.resolvedIndexedLvalueSet ?: return@handle false
             (typedRule.resolvedVariableReassignment == true || typedRule.operationToken == KtTokens.EQ)
                     && replacements.getCall(f) != null
         },
         priority = 20_002,
         action = {
             val arrayAccess = typedRule.left as KtArrayAccessExpression
-            val f = arrayAccess.resolvedIndexedLvalueSet!!.resultingDescriptor
+            val resolvedCall = arrayAccess.resolvedIndexedLvalueSet!!
 
             val reuseIdentifiers = typedRule.operationToken != KtTokens.EQ
 
@@ -205,37 +200,17 @@ fun TypescriptTranslator.registerOperators() {
                 left = VirtualArrayGet(
                     arrayExpression = tempArray,
                     indexExpressions = tempIndexes,
-                    functionDescriptor = arrayAccess.resolvedIndexedLvalueGet!!.resultingDescriptor,
+                    functionDescriptor = arrayAccess.resolvedIndexedLvalueGet!!.candidateDescriptor,
                     dispatchReceiver = typedRule.getTsReceiver(),
-                    resolvedCall = arrayAccess.resolvedIndexedLvalueSet
+                    resolvedCall = arrayAccess.resolvedIndexedLvalueGet
                 ),
                 right = typedRule.right!!,
-                functionDescriptor = typedRule.operationReference.resolvedReferenceTarget as FunctionDescriptor,
+                functionDescriptor = typedRule.resolvedCall!!.candidateDescriptor as FunctionDescriptor,
                 dispatchReceiver = typedRule.getTsReceiver(),
-                operationToken = typedRule.operationToken
+                operationToken = typedRule.operationToken,
+                resolvedCall = typedRule.resolvedCall
             ) else typedRule.right!!
-            val rule = replacements.getCall(f)!!
-
-            val allParametersByIndex = HashMap<Int, Any>()
-            val allParametersByName = HashMap<String, Any>()
-            tempIndexes.forEachIndexed { index, valueArgument ->
-                allParametersByIndex[index] = valueArgument
-                f.valueParameters.getOrNull(index)?.name?.asString()?.let {
-                    allParametersByName[it] = valueArgument
-                }
-            }
-            right.let { valueArgument ->
-                val index = f.valueParameters.lastIndex
-                allParametersByIndex[index] = valueArgument
-                f.valueParameters.getOrNull(index)?.name?.asString()?.let {
-                    allParametersByName[it] = valueArgument
-                }
-                Unit
-            }
-            val typeParametersByName =
-                typedRule.resolvedCall?.typeArguments?.mapKeys { it.key.name.asString() } ?: mapOf()
-            val typeParametersByIndex = typedRule.resolvedCall?.typeArguments?.mapKeys { it.key.index } ?: mapOf()
-
+            val rule = replacements.getCall(resolvedCall)!!
             emitTemplate(
                 requiresWrapping = typedRule.actuallyCouldBeExpression,
                 template = rule.template,
@@ -248,10 +223,10 @@ fun TypescriptTranslator.registerOperators() {
                         between = { add(", ") }
                     )
                 },
-                parameter = { allParametersByName[it.name] ?: "undefined" },
-                typeParameter = { typeParametersByName[it.name] ?: "undefined" },
-                parameterByIndex = { allParametersByIndex[it.index] ?: "undefined" },
-                typeParameterByIndex = { typeParametersByIndex[it.index] ?: "undefined" }
+                parameter = resolvedCall.template_parameter,
+                typeParameter = resolvedCall.template_typeParameter,
+                parameterByIndex = resolvedCall.template_parameterByIndex,
+                typeParameterByIndex = resolvedCall.template_typeParameterByIndex
             )
         }
     )
@@ -259,11 +234,12 @@ fun TypescriptTranslator.registerOperators() {
     //Operator
     handle<ValueOperator>(
         condition = {
-            replacements.getCall(typedRule.functionDescriptor) != null
+            replacements.getCall(typedRule.resolvedCall ?: return@handle false) != null
         },
         priority = 10_000,
         action = {
-            val rule = replacements.getCall(typedRule.functionDescriptor)!!
+            val resolvedCall = typedRule.resolvedCall!!
+            val rule = replacements.getCall(resolvedCall)!!
 
             if (typedRule.operationToken == KtTokens.NOT_IN || typedRule.operationToken == KtTokens.EXCLEQ) {
                 -"!("
@@ -284,8 +260,10 @@ fun TypescriptTranslator.registerOperators() {
                     else -> null
                 },
                 allParameters = right,
-                parameter = { right },
-                parameterByIndex = { right }
+                parameter = resolvedCall.template_parameter,
+                typeParameter = resolvedCall.template_typeParameter,
+                parameterByIndex = resolvedCall.template_parameterByIndex,
+                typeParameterByIndex = resolvedCall.template_typeParameterByIndex
             )
             if (typedRule.operationToken == KtTokens.NOT_IN || typedRule.operationToken == KtTokens.EXCLEQ) {
                 -")"
@@ -310,7 +288,7 @@ fun TypescriptTranslator.registerOperators() {
             -left
             -"."
         }
-        -(typedRule.functionDescriptor.tsName ?: typedRule.functionDescriptor.name.asString())
+        -(typedRule.functionDescriptor.tsNameOverridden ?: typedRule.functionDescriptor.name.asString())
         -ArgumentsList(
             on = typedRule.functionDescriptor,
             resolvedCall = typedRule.resolvedCall,
@@ -347,19 +325,18 @@ fun TypescriptTranslator.registerOperators() {
 
     handle<KtPrefixExpression>(
         condition = {
-            val f = typedRule.operationReference.resolvedReferenceTarget as? FunctionDescriptor ?: return@handle false
-            replacements.getCall(f) != null
+            replacements.getCall(typedRule.resolvedCall ?: return@handle false) != null
         },
         priority = 10_000,
         action = {
-            val f = typedRule.operationReference.resolvedReferenceTarget as FunctionDescriptor
+            val f = typedRule.resolvedCall!!
             val rule = replacements.getCall(f)!!
 
             emitTemplate(
                 requiresWrapping = typedRule.actuallyCouldBeExpression,
                 template = rule.template,
                 receiver = typedRule.baseExpression,
-                dispatchReceiver = if(f.extensionReceiverParameter != null) typedRule.getTsReceiver() else typedRule.baseExpression
+                dispatchReceiver = if(f.candidateDescriptor.extensionReceiverParameter != null) typedRule.getTsReceiver() else typedRule.baseExpression
             )
         }
     )
@@ -377,7 +354,7 @@ fun TypescriptTranslator.registerOperators() {
                 -typedRule.baseExpression
                 -"."
             }
-            -(f.tsName ?: typedRule.operationReference.text)
+            -(f.tsNameOverridden ?: f.name.asString())
             -ArgumentsList(
                 on = f,
                 resolvedCall = typedRule.resolvedCall,

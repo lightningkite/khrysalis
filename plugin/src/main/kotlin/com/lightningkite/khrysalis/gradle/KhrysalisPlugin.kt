@@ -191,6 +191,7 @@ class KhrysalisPlugin : Plugin<Project> {
                 convertLayoutsToHtml(
                     androidMainFolder = androidBase().resolve("src/main"),
                     webFolder = webBase(),
+                    packageName = packageName(),
                     converter = extension().htmlTranslator
                 )
                 convertLayoutsToHtmlXmlClasses(

@@ -10,9 +10,10 @@ import {ObservableProperty} from '../ObservableProperty.shared'
 import {StandardObservableProperty} from '../StandardObservableProperty.shared'
 import {IllegalStateException, tryCastClass} from 'Kotlin'
 import {MutableObservableProperty} from '../MutableObservableProperty.shared'
+import {triggerAttachmentEvent} from "../../views/viewAttached";
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>android.widget.Spinner
-export function androidWidgetSpinnerBind<T>(this_: HTMLSelectElement, options: ObservableProperty<Array<T>>, selected: MutableObservableProperty<T>, makeView: (a: ObservableProperty<T>) => HTMLElement): void {
+export function spinnerBindAdvanced<T>(this_: HTMLSelectElement, options: ObservableProperty<Array<T>>, selected: MutableObservableProperty<T>, makeView: (a: ObservableProperty<T>) => HTMLElement): void {
     const observables = options.value.map((x) => {
         return new StandardObservableProperty(x)
     })
@@ -22,15 +23,70 @@ export function androidWidgetSpinnerBind<T>(this_: HTMLSelectElement, options: O
         if (diff > 0) {
             for (let i = 0; i < diff; i++) {
                 const newOpt = document.createElement("option");
+                newOpt.value = (options.length - 1 - diff + i).toString();
                 const newObs = new StandardObservableProperty(options[options.length - 1 - diff + i]);
                 makeView(newObs);
                 this_.options.add(newOpt);
                 observables.push(newObs);
+                triggerAttachmentEvent(newOpt);
+            }
+        } else if (diff < 0) {
+            for(let i = 0; i < -diff; i++){
+                const opt = this_.options.item(this_.options.length-1);
+                triggerAttachmentEvent(opt);
+                this_.options.remove(this_.options.length-1);
+                observables.pop();
             }
         }
-        // else if (diff < 0) {
-        //     observables.
-        // }
+        for(let i = 0; i < options.length; i++){
+            observables[i].value = options[i]
+        }
+        this_.selectedIndex = options.indexOf(selected.value);
+    }), vRemoved(this_));
+
+    until(subBy(selected, undefined, undefined, (sel)=>{
+        this_.selectedIndex = options.value.indexOf(sel);
+    }), vRemoved(this_));
+}
+
+
+
+//! Declares com.lightningkite.khrysalis.observables.binding.bind>android.widget.Spinner
+export function spinnerBind<T>(this_: HTMLSelectElement, options: ObservableProperty<Array<T>>, selected: MutableObservableProperty<T>, toString: (a: T)=>string): void {
+    const observables = options.value.map((x) => {
+        return new StandardObservableProperty(x)
+    })
+    until(subBy(options, undefined, undefined, (options) => {
+        //correct number of options
+        const diff = options.length - this_.options.length;
+        if (diff > 0) {
+            for (let i = 0; i < diff; i++) {
+                const newOpt = document.createElement("option");
+                newOpt.value = (options.length - 1 - diff + i).toString();
+                const newObs = new StandardObservableProperty(options[options.length - 1 - diff + i]);
+                until(subBy(newObs, undefined, undefined, (x) => {
+                    newOpt.innerText = toString(x);
+                }), vRemoved(newOpt))
+                this_.options.add(newOpt);
+                observables.push(newObs);
+                triggerAttachmentEvent(newOpt);
+            }
+        } else if (diff < 0) {
+            for(let i = 0; i < -diff; i++){
+                const opt = this_.options.item(this_.options.length-1);
+                triggerAttachmentEvent(opt);
+                this_.options.remove(this_.options.length-1);
+                observables.pop();
+            }
+        }
+        for(let i = 0; i < options.length; i++){
+            observables[i].value = options[i]
+        }
+        this_.selectedIndex = options.indexOf(selected.value);
+    }), vRemoved(this_));
+
+    until(subBy(selected, undefined, undefined, (sel)=>{
+        this_.selectedIndex = options.value.indexOf(sel);
     }), vRemoved(this_));
 }
 

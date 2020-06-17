@@ -2,7 +2,10 @@
 // File: views/SelectMultipleDatesMonthCVD.shared.kt
 // Package: com.lightningkite.khrysalis.views
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.dayBackgroundEnd TS dayBackgroundEnd
+// FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.<init>.<anonymous>.it TS it
+// FQImport: com.lightningkite.khrysalis.observables.MutableObservableProperty.value TS value
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.dayBackgroundStart TS dayBackgroundStart
+// FQImport: com.lightningkite.khrysalis.observables.StandardObservableProperty.onChange TS onChange
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.drawDay.showingMonth TS showingMonth
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.onTouchDown.<anonymous>.it TS it
 // FQImport: android.graphics.Paint.textSize TS textSize
@@ -13,6 +16,7 @@
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.onTouchMove TS onTouchMoveDate
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.drawDay.outer TS outer
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.drawDay.leftDate TS leftDate
+// FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.currentMonthObs TS currentMonthObs
 // FQImport: kotlin.collections.Set TS Set
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD TS MonthCVD
 // FQImport: com.lightningkite.khrysalis.time.set>com.lightningkite.khrysalis.time.DateAlone TS comLightningkiteKhrysalisTimeDateAloneSet
@@ -26,9 +30,11 @@
 // FQImport: android.util.DisplayMetrics TS DisplayMetrics
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.onTouchMove.day TS day
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.drawDay.inner TS inner
+// FQImport: com.lightningkite.khrysalis.rx.forever>io.reactivex.disposables.Disposable TS ioReactivexDisposablesDisposableForever
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.selectedDayPaint TS selectedDayPaint
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.measure.displayMetrics TS displayMetrics
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.adding TS adding
+// FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.invalidate TS invalidate
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.onTouchDown.day TS day
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.dayPaint TS dayPaint
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.drawDay.day TS day
@@ -43,18 +49,33 @@
 // FQImport: com.lightningkite.khrysalis.observables.StandardObservableProperty.value TS value
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.day TS day
 // FQImport: com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD.measure.width TS width
-import { DateAlone } from '../time/DateAlone.actual'
 import { DisplayMetrics } from './DisplayMetrics.actual'
-import { dateAloneModRelative } from '../time/Date.actual'
-import { filter as iterFilter, some as iterSome, toArray as iterToArray, toSet as iterToSet } from 'iterable-operator'
 import { CalendarDrawing, MonthCVD } from './MonthCVD.shared'
-import { StandardObservableProperty } from '../observables/StandardObservableProperty.shared'
+import { filter as iterFilter, first as iterFirst, some as iterSome, toArray as iterToArray, toSet as iterToSet } from 'iterable-operator'
 import { Paint } from './draw/Paint.actual'
 import { comLightningkiteKhrysalisTimeDateAloneSet } from '../time/DateAlone.shared'
+import { DateAlone } from '../time/DateAlone.actual'
+import { copyDateAloneMod, dateAloneModRelative } from '../time/Date.actual'
+import { StandardObservableProperty } from '../observables/StandardObservableProperty.shared'
+import { RectF } from './geometry/RectF.actual'
+import { ioReactivexDisposablesDisposableForever } from '../rx/DisposeCondition.actual'
 
 //! Declares com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD
 export class SelectMultipleDatesMonthCVD extends MonthCVD {
-    public constructor() { super(); }
+    public constructor() {
+        super();
+        this.dates = new StandardObservableProperty(new Set([]), undefined);
+        this.selectedDayPaint = Paint.constructor();
+        this.selectedPaint = Paint.constructor();
+        const temp289 = (iterFirst(this.dates.value) ?? null);
+        if(temp289 !== null) ((it) => this.currentMonthObs.value = copyDateAloneMod(it, Date.prototype.setDate, 1))(temp289);
+        ioReactivexDisposablesDisposableForever(this.dates.onChange.subscribe( (value) => {
+                    this?.invalidate()
+        }, undefined, undefined));
+        this.drawDay_dateAlone = new DateAlone(0, 0, 0);
+        this.adding = false;
+    }
+    
     public generateAccessibilityView(): (HTMLElement | null) { return null; }
     
     public readonly dates: StandardObservableProperty<Set<DateAlone>>;
