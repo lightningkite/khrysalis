@@ -2,7 +2,7 @@
 // File: net/ConnectedWebSocket.actual.kt
 // Package: com.lightningkite.khrysalis.net
 import {Observable, Observer, Subject, SubscriptionLike, Unsubscribable} from 'rxjs'
-import { WebSocketFrame } from './WebSocketFrame.shared'
+import { WebSocketFrame } from './WebSocketFrame.actual'
 
 //! Declares com.lightningkite.khrysalis.net.ConnectedWebSocket
 export class ConnectedWebSocket implements Observer<WebSocketFrame>, Unsubscribable {

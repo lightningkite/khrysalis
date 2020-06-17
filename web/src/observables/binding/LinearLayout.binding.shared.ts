@@ -7,7 +7,7 @@ import { StandardObservableProperty } from '../StandardObservableProperty.shared
 import { ObservableProperty } from '../ObservableProperty.shared'
 import { androidWidgetLinearLayoutParams } from '../../views/LinearLayout.actual'
 import { AlignPair } from '../../views/geometry/Align.shared'
-import { NumberRange } from 'Kotlin'
+import { NumberRange } from '../../Kotlin'
 import {range} from "iterable-operator";
 import {triggerAttachmentEvent} from "../../views/viewAttached";
 

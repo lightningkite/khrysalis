@@ -2,7 +2,7 @@
 // File: views/draw/Path.actual.kt
 // Package: com.lightningkite.khrysalis.views.draw
 
-import { RectF } from "views/geometry/RectF.actual";
+import { RectF } from "../geometry/RectF.actual";
 
 
 
