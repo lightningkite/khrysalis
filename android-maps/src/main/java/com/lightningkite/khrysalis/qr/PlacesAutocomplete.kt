@@ -1,9 +1,8 @@
-package com.lightningkite.khrysalis.maps
+package com.lightningkite.khrysalis.qr
 
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
-import com.lightningkite.khrysalis.location.GeoAddress
 import com.lightningkite.khrysalis.views.ViewDependency
 
 class PlacesAutocomplete(dependency: ViewDependency){

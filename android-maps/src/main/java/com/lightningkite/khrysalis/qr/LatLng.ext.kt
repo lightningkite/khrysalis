@@ -1,4 +1,4 @@
-package com.lightningkite.khrysalis.maps
+package com.lightningkite.khrysalis.qr
 
 import com.google.android.gms.maps.model.LatLng
 import com.lightningkite.khrysalis.location.GeoCoordinate

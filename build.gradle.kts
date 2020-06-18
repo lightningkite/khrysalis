@@ -37,5 +37,6 @@ idea {
         excludeDirs.add(file("ios-bluetooth"))
         excludeDirs.add(file("ios-fcm"))
         excludeDirs.add(file("ios-maps"))
+        excludeDirs.add(file("ios-qr"))
     }
 }

@@ -16,6 +16,7 @@
       <module name="android-bluetooth" target="11" />
       <module name="android-fcm" target="11" />
       <module name="android-maps" target="11" />
+      <module name="android-qr" target="11" />
       <module name="com.lightningkite.khrysalis.khrysalis.plugin.main" target="1.8" />
       <module name="com.lightningkite.khrysalis.khrysalis.plugin.test" target="11" />
       <module name="khrysalis.android" target="11" />
@@ -56,6 +57,7 @@
             <option value="$PROJECT_DIR$/android-bluetooth" />
             <option value="$PROJECT_DIR$/android-fcm" />
             <option value="$PROJECT_DIR$/android-maps" />
+            <option value="$PROJECT_DIR$/android-qr" />
             <option value="$PROJECT_DIR$/kotlin-compiler-plugin-common" />
             <option value="$PROJECT_DIR$/kotlin-compiler-plugin-typescript" />
             <option value="$PROJECT_DIR$/plugin" />
@@ -223,6 +225,7 @@
       <module fileurl="file://$PROJECT_DIR$/android-bluetooth/android-bluetooth.iml" filepath="$PROJECT_DIR$/android-bluetooth/android-bluetooth.iml" group="khrysalis/android-bluetooth" />
       <module fileurl="file://$PROJECT_DIR$/android-fcm/android-fcm.iml" filepath="$PROJECT_DIR$/android-fcm/android-fcm.iml" group="khrysalis/android-fcm" />
       <module fileurl="file://$PROJECT_DIR$/android-maps/android-maps.iml" filepath="$PROJECT_DIR$/android-maps/android-maps.iml" group="khrysalis/android-maps" />
+      <module fileurl="file://$PROJECT_DIR$/android-qr/android-qr.iml" filepath="$PROJECT_DIR$/android-qr/android-qr.iml" group="khrysalis/android-qr" />
       <module fileurl="file://$PROJECT_DIR$/khrysalis.iml" filepath="$PROJECT_DIR$/khrysalis.iml" group="khrysalis" />
       <module fileurl="file://$PROJECT_DIR$/android/khrysalis.android.iml" filepath="$PROJECT_DIR$/android/khrysalis.android.iml" group="khrysalis/android" />
       <module fileurl="file://$PROJECT_DIR$/android-bluetooth/khrysalis.android-bluetooth.iml" filepath="$PROJECT_DIR$/android-bluetooth/khrysalis.android-bluetooth.iml" group="khrysalis/android-bluetooth" />
@@ -1038,6 +1041,14 @@
       <JAVADOC />
       <SOURCES />
     </library>
+    <library name="Gradle: com.google.android.gms:play-services-flags:17.0.0@aar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/22a647798ada66d6f72e6a41d992bdfb/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/22a647798ada66d6f72e6a41d992bdfb/res" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
+    </library>
     <library name="Gradle: com.google.android.gms:play-services-location:17.0.0@aar">
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/9a4edc392209b0e21ef089bfd3b94085/jars/classes.jar!/" />
@@ -1086,6 +1097,26 @@
         <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/a503418cf7865455e15a1a3140451c3c/res" />
       </CLASSES>
       <JAVADOC />
+      <SOURCES />
+    </library>
+    <library name="Gradle: com.google.android.gms:play-services-vision-common:19.1.0@aar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e23f7e381e843055ce34cb37a5f4a199/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/e23f7e381e843055ce34cb37a5f4a199/res" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.android.gms/play-services-vision-common/19.1.0/96e555f689f53f5664fef8b9be79475b16e74126/play-services-vision-common-19.1.0-javadoc.jar!/" />
+      </JAVADOC>
+      <SOURCES />
+    </library>
+    <library name="Gradle: com.google.android.gms:play-services-vision:20.1.0@aar">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/827939aaef78e5d99d1e2739b3b7f45a/jars/classes.jar!/" />
+        <root url="file://$USER_HOME$/.gradle/caches/transforms-2/files-2.1/827939aaef78e5d99d1e2739b3b7f45a/res" />
+      </CLASSES>
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.android.gms/play-services-vision/20.1.0/6bf6a2f7d5a3e04d11286cbe701d4d9897b7b53b/play-services-vision-20.1.0-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES />
     </library>
     <library name="Gradle: com.google.android.libraries.places:places:2.0.0@aar">
