@@ -56,8 +56,8 @@ android {
     packagingOptions {
         pickFirst("META-INF/android_release.kotlin_module")
         pickFirst("META-INF/android_debug.kotlin_module")
-        pickFirst("META-INF/android-maps_release.kotlin_module")
-        pickFirst("META-INF/android-maps_debug.kotlin_module")
+        pickFirst("META-INF/android-qr_release.kotlin_module")
+        pickFirst("META-INF/android-qr_debug.kotlin_module")
     }
 }
 

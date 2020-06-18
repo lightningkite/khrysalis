@@ -1,4 +1,4 @@
-package com.lightningkite.khrysalis.qr
+package com.lightningkite.khrysalis.maps
 
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap

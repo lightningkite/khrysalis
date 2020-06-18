@@ -1,4 +1,4 @@
-package com.lightningkite.khrysalis.qr
+package com.lightningkite.khrysalis.maps
 
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.AutocompleteSessionToken
