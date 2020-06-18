@@ -11,6 +11,7 @@ import com.lightningkite.khrysalis.floorDiv
 import com.lightningkite.khrysalis.floorMod
 import com.lightningkite.khrysalis.rx.addWeak
 import com.lightningkite.khrysalis.rx.forever
+import com.lightningkite.khrysalis.rx.until
 import com.lightningkite.khrysalis.time.*
 import com.lightningkite.khrysalis.views.draw.drawTextCentered
 import io.reactivex.rxkotlin.subscribeBy
@@ -87,7 +88,7 @@ open class MonthCVD : CustomViewDelegate() {
         this.dayPaint.isAntiAlias = true
         this.dayPaint.style = Paint.Style.FILL
         this.dayPaint.color = 0xFF202020.asColor()
-        animationFrame.addWeak(this) { self, timePassed ->
+        animationFrame.subscribeBy { timePassed ->
             if (this.draggingId == DRAGGING_NONE && this.currentOffset != 0f) {
                 var newOffset = this.currentOffset * max(0f, (1f - 8f * timePassed))
                 val min = 0.001f
@@ -98,7 +99,7 @@ open class MonthCVD : CustomViewDelegate() {
                 }
                 this.currentOffset = newOffset
             }
-        }
+        }.until(removed)
     }
 
     private val calcMonth: DateAlone =

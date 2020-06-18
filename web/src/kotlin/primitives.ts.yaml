@@ -15,6 +15,9 @@
 - id: com.lightningkite.khrysalis.AnyHashable
   type: type
   template: any
+- id: com.lightningkite.khrysalis.AnyEquatable
+  type: type
+  template: any
 - id: com.lightningkite.khrysalis.Hashable
   type: type
   template: object
@@ -30,7 +33,10 @@
   template: "null"
 - id: kotlin.Unit
   type: typeRef
-  template: "null"
+  template: "undefined"
+- id: kotlin.Unit
+  type: get
+  template: "undefined"
 - id: kotlin.Any
   type: typeRef
   template: "null"

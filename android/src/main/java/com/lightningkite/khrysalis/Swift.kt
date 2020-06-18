@@ -5,6 +5,7 @@ import kotlin.reflect.KProperty
 
 
 typealias AnyObject = Any
+typealias AnyEquatable = Any
 typealias AnyHashable = Any
 typealias Hashable = Any
 typealias Equatable = Any

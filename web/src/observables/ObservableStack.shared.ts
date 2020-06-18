@@ -5,8 +5,8 @@
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.swap.t TS t
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.stack TS stack
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.T TS T
-// FQImport: com.lightningkite.khrysalis.observables.ObservableStack TS ObservableStack
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.popTo.found TS found
+// FQImport: com.lightningkite.khrysalis.observables.ObservableStack TS ObservableStack
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.push.t TS t
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.popTo.predicate TS predicate
 // FQImport: com.lightningkite.khrysalis.observables.ObservableProperty TS ObservableProperty
@@ -14,8 +14,8 @@
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.popTo TS popTo
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.popTo.i TS i
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.Companion.withFirst.T TS T
-// FQImport: com.lightningkite.khrysalis.observables.ObservableStack.Companion.withFirst.result TS result
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.reset.t TS t
+// FQImport: com.lightningkite.khrysalis.observables.ObservableStack.Companion.withFirst.result TS result
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.reset TS reset
 // FQImport: com.lightningkite.khrysalis.observables.ObservableStack.popTo.t TS t
 import { ObservableProperty } from './ObservableProperty.shared'
@@ -24,20 +24,14 @@ import { NumberRange } from '../Kotlin'
 
 //! Declares com.lightningkite.khrysalis.observables.ObservableStack
 export class ObservableStack<T extends object> extends ObservableProperty<any> {
-    public constructor() { super(); }
-    
-    public static Companion = class Companion {
-        private constructor() {
-        }
-        public static INSTANCE = new Companion();
-        
-        public withFirst<T extends object>(value: T): ObservableStack<T> {
-            const result = new ObservableStack<T>();
-            
-            result.reset(value);
-            return result;
-        }
+    public constructor() {
+        super();
+        this.onChange = new Subject();
+        this.stack = [] as Array<any>;
     }
+    
+    
+    
     
     public readonly onChange: Subject<Array<T>>;
     
@@ -113,6 +107,21 @@ export class ObservableStack<T extends object> extends ObservableProperty<any> {
         this.stack.length = 0;
         this.stack.push(t);
         this.onChange.next(this.stack);
+    }
+}
+export namespace ObservableStack {
+    //! Declares com.lightningkite.khrysalis.observables.ObservableStack.Companion
+    export class Companion {
+        private constructor() {
+        }
+        public static INSTANCE = new Companion();
+        
+        public withFirst<T extends object>(value: T): ObservableStack<T> {
+            const result = new ObservableStack<T>();
+            
+            result.reset(value);
+            return result;
+        }
     }
 }
 

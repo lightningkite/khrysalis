@@ -52,7 +52,8 @@
   template: "[] as Array<~T0~>"
   
 # List Operations
-- id: kotlin.collections.List.contains
+- id: kotlin.collections.Collection.contains
+  actualReceiver: kotlin.collections.List
   type: call
   template: (~this~.indexOf(~0~) != -1)
 - id: kotlin.collections.List.get
@@ -61,18 +62,21 @@
 - id: kotlin.collecitons.List.subList
   type: call
   template: ~this~.slice(~0~, ~1~)
-- id: kotlin.collections.List.isEmpty
+- id: kotlin.collections.Collection.isEmpty
   type: call
+  actualReceiver: kotlin.collections.List
   template: ~this~.length === 0
 - id: kotlin.collections.isNotEmpty
   type: call
   template: ~this~.length !== 0
-- id: kotlin.collections.List.size
+- id: kotlin.collections.Collection.size
   type: get
+  actualReceiver: kotlin.collections.List
   template: ~this~.length
 
 # Mutable List Operations
-- id: kotlin.collections.MutableList.add
+- id: kotlin.collections.MutableCollection.add
+  actualReceiver: kotlin.collections.MutableList
   type: call
   template: ~this~.push(~0~)
 - id: kotlin.collections.MutableList.add
@@ -98,33 +102,22 @@
 - id: kotlin.collections.MutableList.removeAt
   type: call
   template: ~this~.splice(~0~, 1)
-- id: kotlin.collections.MutableList.clear
+- id: kotlin.collections.MutableCollection.clear
+  actualReceiver: kotlin.collections.MutableList
   type: call
   template: ~this~.length = 0
 - id: java.util.AbstractList.clear
   type: call
   template: ~this~.length = 0
-- id: kotlin.collections.MutableList.addAll
+- id: kotlin.collections.MutableCollection.addAll
+  actualReceiver: kotlin.collections.MutableList
   type: call
   template: ~this~.push(...~0~)
-- id: kotlin.collections.MutableList.addAll
+- id: kotlin.collections.MutableCollection.addAll
+  actualReceiver: kotlin.collections.MutableList
   type: call
   arguments: [kotlin.Int]
   template: ~this~.splice(~0~, 0, ...~1~)
-
-# Questionable
-- id: java.util.AbstractList.add
-  type: call
-  actualReceiver: kotlin.collections.List
-  template: ~this~.push(~0~)
-- id: java.util.AbstractList.isEmpty
-  type: call
-  actualReceiver: kotlin.collections.List
-  template: ~this~.length === 0
-- id: java.util.AbstractList.size
-  type: get
-  actualReceiver: kotlin.collections.List
-  template: ~this~.length
   
 # TODO: Could do removeAll
 

@@ -1,8 +1,14 @@
 package com.lightningkite.khrysalis.typescript.replacements
 
+import com.lightningkite.khrysalis.util.cannotSatisfy
+import com.lightningkite.khrysalis.util.satisfies
 import com.lightningkite.khrysalis.util.simpleFqName
+import org.jetbrains.kotlin.descriptors.CallableDescriptor
 import org.jetbrains.kotlin.descriptors.FunctionDescriptor
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
+import org.jetbrains.kotlin.lexer.KtSingleValueToken
+import org.jetbrains.kotlin.psi.KtBinaryExpression
+import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
 import org.jetbrains.kotlin.types.KotlinType
 import org.jetbrains.kotlin.types.typeUtil.supertypes
 
@@ -21,34 +27,33 @@ data class FunctionReplacement(
         get() = (if (suppliedArguments != null) 20 else 0) + (if (infix != null) 1 else 0) + (if (hasExplicitTypeArguments != null) 16 else 0) + (if (actualReceiver != null) 4 else 0) + (if (receiver != null) 2 else 0) + (if (arguments != null) 4 else 0) + (if (comparatorType != null) 8 else 0)
 
     fun passes(
-        decl: FunctionDescriptor,
-        comparatorType: String? = null,
-        receiverType: KotlinType?,
-        suppliedArguments: Set<String> = setOf()
+        call: ResolvedCall<out CallableDescriptor>,
+        descriptor: CallableDescriptor
     ): Boolean {
-        if(receiver != null && receiver != decl.extensionReceiverParameter?.type?.getJetTypeFqName(false)) return false
+        val hasExplicitTypeArguments = call.call.typeArgumentList != null
+        if (this.hasExplicitTypeArguments != null && this.hasExplicitTypeArguments != hasExplicitTypeArguments) return false
+        if (receiver != null && receiver != descriptor.extensionReceiverParameter?.type?.getJetTypeFqName(false)) return false
         if (arguments != null) {
-//            println("${decl.simpleFqName} checking arguments for ${this.arguments} against ${decl.original.valueParameters.joinToString { it.type.getJetTypeFqName(false) }}")
-            if(this.arguments.size != decl.original.valueParameters.size) return false
-            if (!this.arguments.zip(decl.original.valueParameters)
+            if (this.arguments.size != descriptor.original.valueParameters.size) return false
+            if (!this.arguments.zip(descriptor.original.valueParameters)
                     .all { (a, p) -> a == "*" || p.type.getJetTypeFqName(false) == a }
             ) return false
-//            println("${decl.simpleFqName} Passed!")
         }
-        if(this.comparatorType != null && this.comparatorType != comparatorType) return false
-        if(actualReceiver != null){
-            if(receiverType == null) return false
-            val allTypes = listOf(receiverType) + receiverType.supertypes()
-//            println("${decl.simpleFqName}, checking for $actualReceiver: ${allTypes.joinToString { it.getJetTypeFqName(false) }}")
-            if(allTypes.none { it.getJetTypeFqName(false) == actualReceiver }) return false
+        if (this.comparatorType != null) {
+            val comparatorType =
+                ((call.call.callElement as? KtBinaryExpression)?.operationToken as? KtSingleValueToken)?.value
+            if (this.comparatorType != comparatorType) return false
         }
+        if (actualReceiver != null && (call.extensionReceiver?.type ?: call.dispatchReceiver?.type)?.satisfies(
+                actualReceiver
+            ) != true
+        ) return false
         if (this.suppliedArguments != null) {
-//            println("${decl.simpleFqName}, checking arguments for ${this.suppliedArguments} against ${suppliedArguments}")
-            if(this.suppliedArguments.size != suppliedArguments.size) return false
+            val suppliedArguments = call.valueArguments.filter { it.value.arguments.isNotEmpty() }.keys.map { it.name.asString() }
+            if (this.suppliedArguments.size != suppliedArguments.size) return false
             if (!this.suppliedArguments.sorted().zip(suppliedArguments.sorted())
                     .all { (a, b) -> a == b }
             ) return false
-//            println("${decl.simpleFqName} Passed!")
         }
         return true
     }

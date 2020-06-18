@@ -20,7 +20,7 @@ fun convertLayoutsToHtmlXmlClasses(
 ) {
     outputFolder.mkdirs()
     val declarationManifest = DeclarationManifest.load(
-        baseTypescriptFolder.resolve("../node_modules").walkTopDown() + sequenceOf(baseTypescriptFolder),
+        baseTypescriptFolder.parentFile.walkTopDown() + sequenceOf(baseTypescriptFolder),
         baseTypescriptFolder
     )
     val replacements = Replacements()
@@ -89,6 +89,7 @@ fun AndroidLayoutFile.toTypescript(
     out.appendln("// Created by Khrysalis XML Typescript")
     out.appendln("//")
     out.appendln("import { loadHtmlFromString, findViewById, getViewById, replaceViewWithId } from 'khrysalis/dist/views/html'")
+    out.appendln("import { customViewSetDelegate } from 'khrysalis/dist/views/CustomView.actual'")
     renderImports(projectName, file.relativeTo(base).path, imports, out)
     for(variant in variants) {
         out.append("import htmlFor")
@@ -146,7 +147,7 @@ fun AndroidLayoutFile.toTypescript(
         }
     }
     delegateBindings.values.forEach {
-        out.appendln("if(${it.name}View){ this.${it.name}Delegate = new ${it.type.toTsType()}(); ${it.name}View.delegate = this.${it.name}; }")
+        out.appendln("if(this.${it.name}){ this.${it.name}Delegate = new ${it.type.toTsType()}(); customViewSetDelegate(this.${it.name}, this.${it.name}Delegate); }")
     }
     sublayouts.values.forEach {
         out.appendln(it.run { "replaceViewWithId<HTMLDivElement>(view, ()=>{ " })

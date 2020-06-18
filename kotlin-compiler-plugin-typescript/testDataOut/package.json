@@ -5,6 +5,7 @@
   "main": "dist",
   "types": "dist",
   "dependencies": {
+    "iterable-operator": "^0.10.3",
     "khrysalis": "file:../../web"
   },
   "devDependencies": {

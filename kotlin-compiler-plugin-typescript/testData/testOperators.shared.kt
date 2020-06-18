@@ -37,6 +37,7 @@ fun main() {
     var x: Int = 2
 
     //Normal operators
+    println(-x)
     println(1 + x)
     println(1 - x)
     println(1 * x)

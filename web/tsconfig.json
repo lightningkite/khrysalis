@@ -4,15 +4,18 @@
       "rootDir": "./src",
       "noImplicitAny": true,
       "declaration": true,
+      "sourceMap": true,
       "module": "commonjs",
       "lib": ["es2019", "es7", "es6", "dom"],
       "target": "es6",
       "allowJs": true,
       "esModuleInterop": true,
-      "typeRoots": ["./node_modules/@types", "./additionalTypings"],
+      "typeRoots": ["./node_modules/**/"],
       "baseUrl": "./src",
       "paths": {
-        "thisProject": ["./src"]
+        "*": [ "node_modules/@types/*", "*"],
+        "rxjs": ["node_modules/rxjs"],
+        "rxjs/*": ["node_modules/rxjs/*"]
       }
     }
   }

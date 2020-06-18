@@ -3,12 +3,15 @@ package com.lightningkite.khrysalis.util
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.descriptors.*
+import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.lexer.KtTokens
+import org.jetbrains.kotlin.psi.psiUtil.getTextWithLocation
 import org.jetbrains.kotlin.util.*
 import org.jetbrains.kotlin.resolve.*
 import org.jetbrains.kotlin.resolve.calls.callUtil.getResolvedCall
 import org.jetbrains.kotlin.resolve.calls.model.*
 import org.jetbrains.kotlin.types.DeferredType
+import org.jetbrains.kotlin.types.TypeUtils
 
 interface AnalysisExtensions {
     val bindingContext: BindingContext
@@ -196,13 +199,45 @@ interface AnalysisExtensions {
             KtTokens.DIVEQ,
             KtTokens.PERCEQ
         )
+        val dontReturnTypes = setOf("kotlin.Unit", "kotlin.Nothing")
     }
+
+    fun test(): Int {
+        return 0
+    }
+
     val KtExpression.actuallyCouldBeExpression: Boolean
         get() {
-            if(this is KtBinaryExpression && this.operationToken in neverExpressionTokens) return false
-            (this.parent as? KtBlockExpression)?.let{
-                if(it.statements.lastOrNull() != this) return false
-                if(it.resolvedUsedAsExpression == false) return false
+            if (this is KtStatementExpression) {
+                return false
+            }
+            var parentControlBody: KtContainerNodeForControlStructureBody? =
+                this.parent as? KtContainerNodeForControlStructureBody
+            (this.parent as? KtBlockExpression)?.let {
+                if (it.statements.lastOrNull() != this) {
+                    return false
+                }
+                (it.parent as? KtFunctionLiteral)?.let {
+                    it.resolvedExpectedReturnType?.let { expected ->
+                        if (expected !is TypeUtils.SpecialType) {
+                            return expected.getJetTypeFqName(false) !in dontReturnTypes
+                        }
+                    } ?: return false
+                }
+//                if((it.parent as? KtFunctionLiteral)?.resolvedExpectedReturnType?.getJetTypeFqName(false)?.let { it in dontReturnTypes} == true) {
+//                    return false
+//                }
+                //Check if control is expression
+                parentControlBody = it.parent as? KtContainerNodeForControlStructureBody ?: return false
+            }
+            parentControlBody?.let {
+                (it.parent as? KtIfExpression)?.let {
+                    return it.actuallyCouldBeExpression
+                }
+                (it.parent as? KtWhenExpression)?.let {
+                    return it.actuallyCouldBeExpression
+                }
+                return false
             }
             return true
         }

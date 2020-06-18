@@ -15,13 +15,13 @@ func HttpResponseException(_ response: HttpResponse, _ cause: Error? = nil) -> H
     return HttpResponseExceptions.Exception(response: response, cause: cause)
 }
 func HttpReadResponseException(_ response: HttpResponse, _ text: String, _ cause: Error? = nil) -> HttpResponseExceptions {
-    return HttpResponseExceptions.Exception(response: response, text: text, cause: cause)
+    return HttpResponseExceptions.Exception(response: response, cause: cause)
 }
 func HttpResponseException(response: HttpResponse, cause: Error? = nil) -> HttpResponseExceptions {
     return HttpResponseExceptions.Exception(response: response, cause: cause)
 }
 func HttpReadResponseException(response: HttpResponse, text: String, cause: Error? = nil) -> HttpResponseExceptions {
-    return HttpResponseExceptions.Exception(response: response, text: text, cause: cause)
+    return HttpResponseExceptions.Exception(response: response, cause: cause)
 }
 
 private func thingThatThrowsError() throws {

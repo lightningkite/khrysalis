@@ -19,11 +19,11 @@ export interface EntryPoint {
     readonly mainStack: (ObservableStack<ViewGenerator> | null);
     
 }
-export class EntryPointDefaults {
-    public static handleDeepLink(this_: EntryPoint, schema: string, host: string, path: string, params: Map<string, string>): void {
+export namespace EntryPointDefaults {
+    export function handleDeepLink(this_: EntryPoint, schema: string, host: string, path: string, params: Map<string, string>): void {
         console.log(`Empty handler; ${schema}://${host}/${path}/${params}`);
     }
-    public static onBackPressed(this_: EntryPoint): boolean { return false; }
-    public static getMainStack(this_: EntryPoint): (ObservableStack<ViewGenerator> | null) { return null; }
+    export function onBackPressed(this_: EntryPoint): boolean { return false; }
+    export function getMainStack(this_: EntryPoint): (ObservableStack<ViewGenerator> | null) { return null; }
 }
 

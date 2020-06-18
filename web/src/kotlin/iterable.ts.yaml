@@ -218,3 +218,31 @@
     pattern: for(const _x of ~this~) { ~L0~ }
     lambdaTransforms:
       0: ["_x"]
+
+- id: kotlin.collections.first
+  type: call
+  template:
+    pattern: iterFirst(~this~)
+    imports:
+      iterFirst: first from iterable-operator
+
+- id: kotlin.collections.firstOrNull
+  type: call
+  template:
+    pattern: (iterFirst(~this~) ?? null)
+    imports:
+      iterFirst: first from iterable-operator
+
+- id: kotlin.collections.last
+  type: call
+  template:
+    pattern: (iterLast(~this~) ?? null)
+    imports:
+      iterLast: last from iterable-operator
+
+- id: kotlin.collections.lastOrNull
+  type: call
+  template:
+    pattern: (iterLast(~this~) ?? null)
+    imports:
+      iterLast: last from iterable-operator

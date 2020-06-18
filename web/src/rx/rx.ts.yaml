@@ -40,6 +40,13 @@
     imports:
       rxMap: map from rxjs/operators
 
+- id: io.reactivex.Observable.delay
+  type: call
+  template:
+    pattern: ~this~.pipe(rxDelay(~0~))
+    imports:
+      delay: rxjs/operators as rxDelay
+
 - id: io.reactivex.Observable.filter
   type: call
   template:
@@ -185,7 +192,7 @@
     imports:
       rxPublishReplay: publishReplay from rxjs/operators
 
-- id: io.reactivex.Observable.refCount
+- id: io.reactivex.observables.ConnectableObservable.refCount
   type: call
   template:
     pattern: ~this~.pipe(rxRefCount())
@@ -198,6 +205,10 @@
     pattern: ~this~.pipe(rxTake(~0~))
     imports:
       rxTake: take from rxjs/operators
+
+- id: io.reactivex.Observable.singleOrError
+  type: call
+  template: ~this~
 
 # Observer
 - id: io.reactivex.Observer
@@ -267,6 +278,13 @@
     imports:
       map: rxjs/operators as rxMap
 
+- id: io.reactivex.Single.delay
+  type: call
+  template:
+    pattern: ~this~.pipe(rxDelay(~0~))
+    imports:
+      delay: rxjs/operators as rxDelay
+
 - id: io.reactivex.Single.flatMap
   type: call
   template:
@@ -331,6 +349,10 @@
     pattern: ~this~.pipe(rxTap(~0~))
     imports:
       tap: rxjs/operators as rxTap
+
+- id: io.reactivex.Single.toObservable
+  type: call
+  template: ~this~
 
 # SingleEmitter
 

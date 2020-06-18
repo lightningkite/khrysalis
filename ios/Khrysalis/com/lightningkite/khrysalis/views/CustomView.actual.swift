@@ -10,10 +10,12 @@ public class CustomView: FrameLayout {
     //--- CustomView.Primary Constructor
     
     //--- CustomView.delegate
+    private var disposeSet: Bool = false
     public var delegate: CustomViewDelegate? {
         willSet {
             isOpaque = false
             delegate?.customView = nil
+            delegate?.dispose()
         }
         didSet {
             delegate?.customView = self
@@ -24,6 +26,12 @@ public class CustomView: FrameLayout {
                     addSubview(accessibilityView, gravity: .fillFill)
                     self.accessibilityView = accessibilityView
                 }
+            }
+            if !disposeSet {
+                disposeSet = true
+                self.removed.call(DisposableLambda {
+                    self.delegate = nil
+                })
             }
         }
     }

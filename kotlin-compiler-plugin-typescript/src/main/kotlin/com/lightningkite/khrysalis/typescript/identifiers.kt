@@ -4,12 +4,9 @@ import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.codegen.AccessorForCompanionObjectInstanceFieldDescriptor
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.contracts.parsing.isInvocationKindEnum
-import org.jetbrains.kotlin.descriptors.ClassDescriptor
-import org.jetbrains.kotlin.descriptors.ClassKind
-import org.jetbrains.kotlin.descriptors.PropertyDescriptor
-import org.jetbrains.kotlin.descriptors.isFinalOrEnum
+import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.lexer.KtTokens
-import org.jetbrains.kotlin.psi.KtNameReferenceExpression
+import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.getTextWithLocation
 import org.jetbrains.kotlin.psi.synthetics.SyntheticClassOrObjectDescriptor
 import org.jetbrains.kotlin.resolve.lazy.descriptors.LazyClassDescriptor
@@ -48,14 +45,57 @@ fun TypescriptTranslator.registerIdentifiers(){
     )
     handle<KtNameReferenceExpression>(
         condition = {
+            //Use .INSTANCE in all cases EXCEPT pointing to another type
+
+            // Condition: I am not a receiver pointing to another type
+            val parent = typedRule.parent as? KtDotQualifiedExpression
+            if(parent?.receiverExpression == typedRule) {
+                val next = (parent.selectorExpression as? KtQualifiedExpression)?.selectorExpression as? KtNameReferenceExpression ?: parent.selectorExpression as? KtNameReferenceExpression
+                if(next?.resolvedReferenceTarget is ClassDescriptor){
+                    return@handle false
+                }
+            }
+            // Condition: I refer to a type
             val resolved = typedRule.resolvedReferenceTarget ?: return@handle false
-            resolved is ClassDescriptor && typedRule.resolvedUsedAsExpression == true && resolved.kind != ClassKind.ENUM_ENTRY
+            resolved is ClassDescriptor
+                    && typedRule.resolvedUsedAsExpression == true
+                    && resolved.kind != ClassKind.ENUM_ENTRY
+
         },
         priority = 1011,
         action = {
             out.addImport((typedRule.resolvedReferenceTarget!!))
             -typedRule.getIdentifier()
             -".INSTANCE"
+        }
+    )
+    handle<KtNameReferenceExpression>(
+        condition = {
+            typedRule.resolvedUsedAsExpression == true
+                    && replacements.getGet(typedRule.resolvedReferenceTarget ?: return@handle false) != null
+                    || replacements.getGet(typedRule.resolvedShortReferenceToCompanionObject ?: return@handle false) != null
+        },
+        priority = 10_011,
+        action = {
+            val rule = typedRule.resolvedReferenceTarget?.let { replacements.getGet(it) }
+                ?: typedRule.resolvedShortReferenceToCompanionObject?.let { replacements.getGet(it) }!!
+            emitTemplate(rule.template)
+        }
+    )
+    //Naked local type references
+    handle<KtNameReferenceExpression>(
+        condition = {
+            val untypedTarget = typedRule.resolvedReferenceTarget
+            val target = untypedTarget as? ClassDescriptor ?: (untypedTarget as? ConstructorDescriptor)?.constructedClass ?: return@handle false
+            if((typedRule.parent as? KtQualifiedExpression)?.selectorExpression == this) return@handle false
+            val context = (typedRule.parentOfType<KtClassBody>()?.parent as? KtClassOrObject)?.resolvedClass ?: return@handle false
+            target.containingDeclaration == context
+        },
+        priority = 10,
+        action = {
+            -(typedRule.parentOfType<KtClassBody>()?.parent as? KtClassOrObject)?.nameIdentifier
+            -'.'
+            -typedRule.getIdentifier()
         }
     )
     handle<KtNameReferenceExpression> {
@@ -140,6 +180,7 @@ fun String.safeJsIdentifier(): String = when(this){
     "while",
     "with",
     "yield" -> "_" + this
+    "ImageBitmap" -> "ImageImageBitmap"
     else -> this
 }
 /*

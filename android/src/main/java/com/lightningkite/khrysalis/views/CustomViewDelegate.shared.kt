@@ -3,11 +3,13 @@ package com.lightningkite.khrysalis.views
 import android.graphics.Canvas
 import android.util.DisplayMetrics
 import android.view.View
+import com.lightningkite.khrysalis.rx.DisposeCondition
 import com.lightningkite.khrysalis.weak
 import com.lightningkite.khrysalis.views.CustomView
+import io.reactivex.disposables.Disposable
 
 abstract class CustomViewDelegate {
-    var customView: CustomView? by weak(null)
+    var customView: CustomView? = null
     abstract fun generateAccessibilityView(): View?
     abstract fun draw(canvas: Canvas, width: Float, height: Float, displayMetrics: DisplayMetrics)
     open fun onTouchDown(id: Int, x: Float, y: Float, width: Float, height: Float): Boolean = false
@@ -19,4 +21,12 @@ abstract class CustomViewDelegate {
 
     fun invalidate() { customView?.invalidate() }
     fun postInvalidate() { customView?.postInvalidate() }
+
+    val toDispose: ArrayList<Disposable> = ArrayList()
+    val removed: DisposeCondition = DisposeCondition { it -> toDispose.add(it) }
+    fun dispose() {
+        for(item in toDispose){
+            item.dispose()
+        }
+    }
 }

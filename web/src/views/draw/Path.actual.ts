@@ -2,6 +2,8 @@
 // File: views/draw/Path.actual.kt
 // Package: com.lightningkite.khrysalis.views.draw
 
+import { RectF } from "../geometry/RectF.actual";
+
 
 
 export function pathFromLTRB(left: number, top: number, right: number, bottom: number): Path2D {

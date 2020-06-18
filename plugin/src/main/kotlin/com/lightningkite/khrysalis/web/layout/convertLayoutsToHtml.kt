@@ -2,6 +2,7 @@ package com.lightningkite.khrysalis.web.layout
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.lightningkite.khrysalis.android.layout.readLayoutInfo
+import com.lightningkite.khrysalis.generic.SmartTabWriter
 import com.lightningkite.khrysalis.ios.layout.*
 import com.lightningkite.khrysalis.ios.values.readXMLStrings
 import com.lightningkite.khrysalis.log
@@ -18,6 +19,7 @@ import java.lang.StringBuilder
 fun convertLayoutsToHtml(
     androidMainFolder: File,
     webFolder: File,
+    packageName: String,
     converter: HtmlTranslator = HtmlTranslator()
 ) {
     converter.styles = androidMainFolder.resolve("res/values/styles.xml").readXMLStyles()
@@ -77,4 +79,29 @@ fun convertLayoutsToHtml(
                 }
         }
 
+    val stringsFile = webFolder.resolve("src/R.ts")
+    val defaultStrings = androidMainFolder.resolve("res/values/strings.xml").readXMLStrings()
+    val whitespace = Regex("\\s+")
+    stringsFile.bufferedWriter().use {
+        with(SmartTabWriter(it)){
+            appendln("//! Declares $packageName.R")
+            appendln("export namespace R {")
+
+            appendln("export interface Strings {")
+            defaultStrings.keys.forEach {
+                appendln("$it: string;")
+            }
+            appendln("}")
+
+            appendln("export namespace DefaultStrings {")
+            defaultStrings.entries.forEach {
+                appendln("export const ${it.key}: string = \"${it.value.replace(whitespace, " ")}\";")
+            }
+            appendln("}")
+
+            appendln("export let _string = DefaultStrings;")
+
+            appendln("}")
+        }
+    }
 }

@@ -16,11 +16,11 @@ export interface Closeable {
     
     close(): void 
 }
-export class CloseableDefaults {
-    public static isDisposed(this_: Closeable): boolean {
+export namespace CloseableDefaults {
+    export function isDisposed(this_: Closeable): boolean {
         return false;
     }
-    public static dispose(this_: Closeable): void {
+    export function dispose(this_: Closeable): void {
         this_.close();
     }
 }

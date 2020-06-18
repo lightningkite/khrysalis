@@ -2,14 +2,27 @@
 // File: views/CustomViewDelegate.shared.kt
 // Package: com.lightningkite.khrysalis.views
 // FQImport: android.util.DisplayMetrics TS DisplayMetrics
+// FQImport: com.lightningkite.khrysalis.rx.DisposeCondition TS DisposeCondition
 // FQImport: com.lightningkite.khrysalis.views.CustomViewDelegate.customView TS customView
 // FQImport: com.lightningkite.khrysalis.views.CustomViewDelegate.sizeThatFitsHeight.height TS height
+// FQImport: com.lightningkite.khrysalis.views.CustomViewDelegate.removed.<anonymous>.it TS it
 // FQImport: com.lightningkite.khrysalis.views.CustomViewDelegate.sizeThatFitsWidth.width TS width
+// FQImport: com.lightningkite.khrysalis.views.CustomViewDelegate.dispose.item TS item
+// FQImport: com.lightningkite.khrysalis.views.CustomViewDelegate.toDispose TS toDispose
 import { DisplayMetrics } from './DisplayMetrics.actual'
+import { DisposeCondition } from '../rx/DisposeCondition.shared'
 import { customViewInvalidate } from './CustomView.actual'
+import { SubscriptionLike } from 'rxjs'
 
 //! Declares com.lightningkite.khrysalis.views.CustomViewDelegate
 export abstract class CustomViewDelegate {
+    protected constructor() {
+        this.customView = null;
+        this.toDispose = [];
+        this.removed = new DisposeCondition((it) => {
+                this.toDispose.push(it)
+        });
+    }
     
     public customView: (HTMLCanvasElement | null);
     
@@ -22,9 +35,19 @@ export abstract class CustomViewDelegate {
     public sizeThatFitsWidth(width: number, height: number): number { return width; }
     public sizeThatFitsHeight(width: number, height: number): number { return height; }
     
-    public invalidate(): void { const temp138 = this.customView;
-    if(temp138 !== null) customViewInvalidate(temp138); }
-    public postInvalidate(): void { const temp139 = this.customView;
-    if(temp139 !== null) customViewInvalidate(temp139); }
+    public invalidate(): void { const temp133 = this.customView;
+    if(temp133 !== null) customViewInvalidate(temp133); }
+    public postInvalidate(): void { const temp134 = this.customView;
+    if(temp134 !== null) customViewInvalidate(temp134); }
+    
+    public readonly toDispose: Array<SubscriptionLike>;
+    
+    public readonly removed: DisposeCondition;
+    
+    public dispose(): void {
+        for (const item of this.toDispose) {
+            item.unsubscribe();
+        }
+    }
 }
 

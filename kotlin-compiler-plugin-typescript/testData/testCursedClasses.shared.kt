@@ -3,6 +3,10 @@ package com.test.cursedclasses
 class A {
     class B {
         class C {
+            companion object {
+                val x: Int = 0
+            }
+            val d: D = D()
             class D() {
                 constructor(jank: Int):this(){
                     println(jank)
@@ -20,6 +24,7 @@ interface F {
     }
     object H {
         val x: Int = 0
+        val y: G = G()
     }
 }
 

@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.views
 
+import com.lightningkite.khrysalis.AnyEquatable
 import com.lightningkite.khrysalis.Equatable
 import com.lightningkite.khrysalis.JsName
 import com.lightningkite.khrysalis.escaping
@@ -151,7 +152,7 @@ fun ViewString.unless(condition: Boolean): ViewString? {
 }
 
 
-fun <T : Equatable> FormField<T>.matches(other: FormField<T>): ViewString? {
+fun <T : AnyEquatable> FormField<T>.matches(other: FormField<T>): ViewString? {
     if (this.observable.value != other.observable.value) {
         return ViewStringTemplate(Form.xMustMatchY, listOf(this.name, other.name))
     } else {

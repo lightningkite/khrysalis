@@ -2,6 +2,7 @@
 // File: views/MonthCVD.shared.kt
 // Package: com.lightningkite.khrysalis.views
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.drawMonth.day TS day
+// FQImport: com.lightningkite.khrysalis.views.MonthCVD.removed TS removed
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.measure.width TS width
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.labelPaint TS labelPaint
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.dragStartY TS dragStartY
@@ -16,6 +17,7 @@
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.label.paint TS paint
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.dayBackgroundEnd.paint TS paint
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.dayPaint TS dayPaint
+// FQImport: com.lightningkite.khrysalis.rx.until>io.reactivex.disposables.Disposable TS ioReactivexDisposablesDisposableUntil
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.dayBackgroundMid.canvas TS canvas
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.dayBackgroundStart.canvas TS canvas
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD._currentOffset TS _currentOffset
@@ -26,14 +28,18 @@
 // FQImport: android.graphics.RectF.width TS width
 // FQImport: android.graphics.RectF.inset TS inset
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.label.dayOfWeek TS dayOfWeek
+// FQImport: com.lightningkite.khrysalis.views.MonthCVD.postInvalidate TS postInvalidate
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.draw.canvas TS canvas
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.drawDay TS drawDay
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.measure TS measure
+// FQImport: com.lightningkite.khrysalis.observables.StandardObservableProperty TS StandardObservableProperty
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.dayAt.row TS row
+// FQImport: com.lightningkite.khrysalis.time.dateAlone>java.util.Date TS getJavaUtilDateDateAlone
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.dayCellWidth TS dayCellWidth
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.drawDay.canvas TS canvas
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.onTouchMove.height TS height
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.dayAtPixel.row TS row
+// FQImport: android.graphics.Paint.isAntiAlias TS isAntiAlias
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.onTouchMove.y TS y
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.label.text TS text
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.drawDay.showingMonth TS showingMonth
@@ -42,12 +48,14 @@
 // FQImport: android.graphics.RectF.centerX TS centerX
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.dayBackgroundEnd.outer TS outer
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.drawDate TS drawDate
+// FQImport: android.graphics.Paint.style TS style
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.drawMonth.width TS width
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.dayAt TS dayAt
 // FQImport: android.graphics.RectF.right TS right
 // FQImport: com.lightningkite.khrysalis.views.CustomViewDelegate TS CustomViewDelegate
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.onTouchUp.x TS x
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.dayCellHeight TS dayCellHeight
+// FQImport: com.lightningkite.khrysalis.views.MonthCVD.<init>.<anonymous>.timePassed TS timePassed
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.dayAtPixel.columnDrag TS columnDrag
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.dayAtPixel.columnRaw TS columnRaw
 // FQImport: android.graphics.RectF TS RectF
@@ -72,12 +80,14 @@
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.onTouchUp.id TS id
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.onTouchDown.y TS y
 // FQImport: com.lightningkite.khrysalis.views.draw.drawTextCentered>android.graphics.Canvas TS androidGraphicsCanvasDrawTextCentered
+// FQImport: android.graphics.Paint.Style.FILL TS FILL
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.dragEnabled TS dragEnabled
 // FQImport: android.util.DisplayMetrics.scaledDensity TS scaledDensity
 // FQImport: android.util.DisplayMetrics.density TS density
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.dayCellMarginDp TS dayCellMarginDp
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.drawDay.day TS day
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.dayBackgroundMid.outer TS outer
+// FQImport: com.lightningkite.khrysalis.views.MonthCVD.<init>.<anonymous>.min TS min
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.currentMonthObs TS currentMonthObs
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.drawMonth TS drawMonth
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.DRAGGING_NONE TS DRAGGING_NONE
@@ -89,8 +99,10 @@
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.drawMonth.col TS col
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.onTouchMove.id TS id
 // FQImport: android.graphics.RectF.set TS set
+// FQImport: com.lightningkite.khrysalis.views.MonthCVD.<init>.<anonymous>.newOffset TS newOffset
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.dayBackgroundEnd.canvas TS canvas
 // FQImport: android.graphics.Paint.color TS color
+// FQImport: com.lightningkite.khrysalis.observables.subscribeBy>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any> TS comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.labelFontSp TS labelFontSp
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.dayBackgroundMid.inner TS inner
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.dayAtPixel.column TS column
@@ -105,6 +117,7 @@
 // FQImport: com.lightningkite.khrysalis.time.DateAlone TS DateAlone
 // FQImport: android.util.DisplayMetrics TS DisplayMetrics
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.onTouchMove TS onTouchMoveDate
+// FQImport: com.lightningkite.khrysalis.rx.forever>io.reactivex.disposables.Disposable TS ioReactivexDisposablesDisposableForever
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.onTouchDown.day TS day
 // FQImport: com.lightningkite.khrysalis.time.DateAlone.year TS year
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.onTouchDown.width TS width
@@ -135,6 +148,7 @@
 // FQImport: com.lightningkite.khrysalis.time.set>com.lightningkite.khrysalis.time.DateAlone TS comLightningkiteKhrysalisTimeDateAloneSet
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.day.originalColor TS originalColor
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.drawLabel.dayOfWeek TS dayOfWeek
+// FQImport: android.graphics.Paint.Style TS Style
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.drawLabel.canvas TS canvas
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.measure.displayMetrics TS displayMetrics
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.onTouchDown.height TS height
@@ -152,6 +166,7 @@
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.dayFontSp TS dayFontSp
 // FQImport: com.lightningkite.khrysalis.time.TimeNames.shortWeekdayName TS shortWeekdayName
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.day.myPaint TS myPaint
+// FQImport: com.lightningkite.khrysalis.animationFrame TS getAnimationFrame
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.onTouchMove.x TS x
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.day.inner TS inner
 // FQImport: android.graphics.Paint TS Paint
@@ -160,22 +175,82 @@
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.<set-currentMonth>.value TS value
 import { dateAloneMod, dateAloneModRelative } from '../time/Date.actual'
 import { DisplayMetrics } from './DisplayMetrics.actual'
+import { getAnimationFrame } from '../delay.actual'
 import { kotlinIntFloorDiv, kotlinIntFloorMod } from '../Math.shared'
 import { TimeNames } from '../time/TimeNames.actual'
 import { Paint } from './draw/Paint.actual'
 import { comLightningkiteKhrysalisTimeDateAloneSet } from '../time/DateAlone.shared'
 import { androidGraphicsCanvasDrawTextCentered } from './draw/Canvas.actual'
 import { MutableObservableProperty } from '../observables/MutableObservableProperty.shared'
+import { getJavaUtilDateDateAlone } from '../time/Date.actual'
 import { NumberRange } from '../Kotlin'
 import { DateAlone } from '../time/DateAlone.actual'
 import { CustomViewDelegate } from './CustomViewDelegate.shared'
-import { applyAlphaToColor } from './Colors.actual'
+import { applyAlphaToColor, numberToColor } from './Colors.actual'
 import { customViewInvalidate } from './CustomView.actual'
+import { StandardObservableProperty } from '../observables/StandardObservableProperty.shared'
+import { ioReactivexDisposablesDisposableForever, ioReactivexDisposablesDisposableUntil } from '../rx/DisposeCondition.actual'
+import { RectF } from './geometry/RectF.actual'
 import { pathFromLTRB } from './draw/Path.actual'
+import { comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy } from '../observables/ObservableProperty.ext.shared'
 
 //! Declares com.lightningkite.khrysalis.views.MonthCVD
 export class MonthCVD extends CustomViewDelegate {
-    public constructor() { super(); }
+    public constructor() {
+        super();
+        this.currentMonthObs = new StandardObservableProperty(dateAloneMod(getJavaUtilDateDateAlone(Date.constructor()), Date.prototype.setDate, 1), undefined);
+        this.dragEnabled = true;
+        ioReactivexDisposablesDisposableForever(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(this.currentMonthObs, undefined, undefined, (value) => {
+                    this?.postInvalidate()
+        }));
+        this.labelFontSp = 12;
+        this.dayFontSp = 16;
+        this.internalPaddingDp = 8;
+        this.dayCellMarginDp = 8;
+        this.internalPadding = 0;
+        this.dayLabelHeight = 0;
+        this.dayCellHeight = 0;
+        this.dayCellWidth = 0;
+        this.dayCellMargin = 0;
+        this._currentOffset = 0;
+        this.dragStartX = 0;
+        this.lastOffset = 0;
+        this.lastOffsetTime = 0;
+        this.DRAGGING_NONE = -1;
+        this.draggingId = this.DRAGGING_NONE;
+        this.labelPaint = Paint.constructor();
+        this.dayPaint = Paint.constructor();
+        this.labelPaint.isAntiAlias = true;
+        this.labelPaint.style = Paint.Style.FILL;
+        this.labelPaint.color = numberToColor(0xFF808080);
+        this.dayPaint.isAntiAlias = true;
+        this.dayPaint.style = Paint.Style.FILL;
+        this.dayPaint.color = numberToColor(0xFF202020);
+        ioReactivexDisposablesDisposableUntil(getAnimationFrame().subscribe((timePassed) => {
+                    if (this.draggingId === this.DRAGGING_NONE && !(this.currentOffset === 0)) {
+                        let newOffset = this.currentOffset * Math.max(0, (1 - 8 * timePassed));
+                        
+                        const min = 0.001;
+                        
+                        if (newOffset > min) {
+                            newOffset = newOffset - min
+                        } else if (newOffset < -min) {
+                            newOffset = newOffset + min
+                        } else  {
+                            newOffset = 0
+                        }
+                        this.currentOffset = newOffset;
+                    }
+        }, undefined, undefined), this.removed);
+        this.calcMonth = new DateAlone(1, 1, 1);
+        this.calcMonthB = new DateAlone(0, 0, 0);
+        this.drawDate = new DateAlone(1, 1, 1);
+        this.rectForReuse = RectF.constructor();
+        this.rectForReuseB = RectF.constructor();
+        this.isTap = false;
+        this.dragStartY = 0;
+    }
+    
     public generateAccessibilityView(): (HTMLElement | null) { return null; }
     
     public readonly currentMonthObs: MutableObservableProperty<DateAlone>;
@@ -219,8 +294,8 @@ export class MonthCVD extends CustomViewDelegate {
     }
     public set currentOffset(value: number) {
         this._currentOffset = value;
-        const temp145 = this.customView;
-        if(temp145 !== null) customViewInvalidate(temp145);
+        const temp149 = this.customView;
+        if(temp149 !== null) customViewInvalidate(temp149);
     }
     
     private dragStartX: number;
@@ -365,12 +440,10 @@ export class MonthCVD extends CustomViewDelegate {
     public onTouchDown(id: number, x: number, y: number, width: number, height: number): boolean {
         const day = this.dayAtPixel(x, y, undefined);
         
-        const temp200 = day;
-        if(temp200 !== null) ((it) => {
-                if (this.onTouchDownDate(it)) {
-                    return true;
-                }
-        })(temp200);
+        const temp204 = day;
+        if(temp204 !== null) ((it) => (() => {if (this.onTouchDownDate(it)) {
+                        return true;
+        }})())(temp204);
         this.dragStartX = x / width;
         this.dragStartY = y / height;
         this.draggingId = id;
@@ -392,10 +465,10 @@ export class MonthCVD extends CustomViewDelegate {
                 }
             }
         } else {
-            const temp209 = this.dayAtPixel(x, y, undefined);
-            if(temp209 !== null) ((it) => {
+            const temp213 = this.dayAtPixel(x, y, undefined);
+            if(temp213 !== null) ((it) => {
                     return this.onTouchMoveDate(it)
-            })(temp209);
+            })(temp213);
         }
         return true;
     }
@@ -404,10 +477,8 @@ export class MonthCVD extends CustomViewDelegate {
     public onTouchUp(id: number, x: number, y: number, width: number, height: number): boolean {
         if (this.draggingId === id) {
             if (this.isTap) {
-                const temp211 = this.dayAtPixel(x, y, undefined);
-                if(temp211 !== null) ((it) => {
-                        this.onTap(it)
-                })(temp211);
+                const temp215 = this.dayAtPixel(x, y, undefined);
+                if(temp215 !== null) ((it) => this.onTap(it))(temp215);
             } else if (this.dragEnabled) {
                 const weighted = this.currentOffset + (this.currentOffset - this.lastOffset) * 200 / (Date.now() - this.lastOffsetTime);
                 
@@ -425,10 +496,10 @@ export class MonthCVD extends CustomViewDelegate {
             }
             this.draggingId = this.DRAGGING_NONE;
         } else {
-            const temp223 = this.dayAtPixel(x, y, undefined);
-            if(temp223 !== null) ((it) => {
+            const temp227 = this.dayAtPixel(x, y, undefined);
+            if(temp227 !== null) ((it) => {
                     return this.onTouchUpDate(it)
-            })(temp223);
+            })(temp227);
         }
         return true;
     }

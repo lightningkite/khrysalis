@@ -7,7 +7,10 @@ import { ObservableProperty } from './ObservableProperty.shared'
 
 //! Declares com.lightningkite.khrysalis.observables.MutableObservableProperty
 export abstract class MutableObservableProperty<T> extends ObservableProperty<any> {
-    protected constructor() { super(); }
+    protected constructor() {
+        super();
+    }
+    
     public abstract value: T;
     
     public abstract update(): void 

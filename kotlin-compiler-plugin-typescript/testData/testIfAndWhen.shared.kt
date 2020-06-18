@@ -79,12 +79,23 @@ fun main() {
         return if (thing2 != null) thing2 else 0
     }
 
-    fun subfunction2(): Int {
+    fun subfunction2() {
+        if (thing2 != null) {
+            println("yeah")
+            println("it's right here")
+            thing++
+        } else {
+            println("No")
+            thing++
+        }
+    }
+
+    fun subfunction3(): Int {
         return if (thing2 != null) {
-            println("Hi!")
+            println("Hi3!")
             thing2
         } else {
-            println("SAD")
+            println("SAD3")
             0
         }
     }

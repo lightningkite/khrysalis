@@ -10,7 +10,9 @@
 
 //! Declares com.lightningkite.khrysalis.views.geometry.Align
 export class Align {
-    constructor(name: string) { this.name = name; }
+    private constructor(name: string) {
+        this.name = name;
+    }
     
     public static start = new Align("start");
     public static center = new Align("center");
@@ -43,7 +45,12 @@ export class AlignPair {
     public copy(horizontal: Align = this.horizontal, vertical: Align = this.vertical) { return new AlignPair(horizontal, vertical); }
     
     
-    public static Companion = class Companion {
+    
+    
+}
+export namespace AlignPair {
+    //! Declares com.lightningkite.khrysalis.views.geometry.AlignPair.Companion
+    export class Companion {
         private constructor() {
             this.center = new AlignPair(Align.center, Align.center);
             this.fill = new AlignPair(Align.fill, Align.fill);
@@ -104,6 +111,5 @@ export class AlignPair {
         public readonly bottomRight: AlignPair;
         
     }
-    
 }
 

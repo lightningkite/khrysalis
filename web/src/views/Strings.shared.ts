@@ -35,8 +35,7 @@ export interface ViewString {
     
     get(dependency: Window): string 
 }
-export class ViewStringDefaults {
-}
+
 
 //! Declares com.lightningkite.khrysalis.views.ViewStringRaw
 export class ViewStringRaw implements ViewString {
@@ -122,9 +121,7 @@ export function comLightningkiteKhrysalisViewsViewStringToDebugString(this_: Vie
     } else if (thing instanceof ViewStringResource) {
         return thing.resource.toString()
     } else if (thing instanceof ViewStringTemplate) {
-        return comLightningkiteKhrysalisViewsViewStringToDebugString(thing.template) + "(" + thing._arguments.map((it) => {
-                    if (checkIsInterface<ViewString>(it, "ComLightningkiteKhrysalisViewsViewString")) return comLightningkiteKhrysalisViewsViewStringToDebugString(it); else return `${it}`;
-        }).join(", ") + ")"
+        return comLightningkiteKhrysalisViewsViewStringToDebugString(thing.template) + "(" + thing._arguments.map((it) => (() => {if (checkIsInterface<ViewString>(it, "ComLightningkiteKhrysalisViewsViewString")) return comLightningkiteKhrysalisViewsViewStringToDebugString(it); else return `${it}`;})()).join(", ") + ")"
     } else if (thing instanceof ViewStringList) {
         return thing.parts.map((it) => comLightningkiteKhrysalisViewsViewStringToDebugString(it)).join(thing.separator)
     } else if (thing instanceof ViewStringComplex) {
