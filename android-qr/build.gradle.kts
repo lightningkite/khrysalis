@@ -70,8 +70,9 @@ dependencies {
     androidTestImplementation("com.android.support.test.espresso:espresso-core:3.0.2")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version")
     implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version")
-    api("com.google.android.gms:play-services-vision:20.1.0")
-
+    implementation("com.google.zxing:core:3.2.1")
+    implementation("com.journeyapps:zxing-android-embedded:3.2.0@aar")
+    implementation("com.google.android.gms:play-services-vision:20.1.0")
 }
 
 tasks.create("sourceJar", Jar::class) {
