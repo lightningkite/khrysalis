@@ -9,6 +9,7 @@ import com.lightningkite.khrysalis.observables.subscribeBy
 import com.lightningkite.khrysalis.rx.removed
 import com.lightningkite.khrysalis.rx.until
 import com.lightningkite.khrysalis.views.VideoPlayer
+import com.lightningkite.khrysalis.views.onClick
 
 fun VideoPlayer.bind(video: ObservableProperty<Video?>) {
     video.subscribeBy { video ->
@@ -25,4 +26,25 @@ fun VideoPlayer.bind(video: ObservableProperty<Video?>) {
             }
         }
     }.until(removed)
+    this.onClick{}
+}
+
+fun VideoPlayer.bindAndStart(video: ObservableProperty<Video?>) {
+    video.subscribeBy { video ->
+        when (video) {
+            is VideoReference -> {
+                this.videoView.setVideoURI(video.uri)
+                this.videoView.start()
+            }
+            is VideoRemoteUrl -> {
+                val videoUrl = Uri.parse(video.url)
+                this.videoView.setVideoURI(videoUrl)
+                this.videoView.start()
+            }
+            else -> {
+                this.videoView.setVideoURI(null)
+            }
+        }
+    }.until(removed)
+    this.onClick{}
 }

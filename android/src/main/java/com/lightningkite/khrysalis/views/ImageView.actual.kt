@@ -3,16 +3,12 @@ package com.lightningkite.khrysalis.views
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
-import android.media.ThumbnailUtils
 import android.provider.MediaStore
 import android.util.Size
 import android.widget.ImageView
 import com.lightningkite.khrysalis.*
 import com.lightningkite.khrysalis.net.HttpClient
 import com.squareup.picasso.Picasso
-import com.squareup.picasso.Picasso.LoadedFrom
-import com.squareup.picasso.Request
-import com.squareup.picasso.RequestHandler
 import java.io.IOException
 
 
@@ -61,14 +57,23 @@ fun ImageView.loadVideoThumbnail(video: Video?) {
     when (video) {
         is VideoReference -> {
             try {
-                this.setImageBitmap(
-                    context.contentResolver.loadThumbnail(
-                        video.uri,
-                        Size(this.width, this.height),
-                        null
+
+                val mMMR = MediaMetadataRetriever()
+                mMMR.setDataSource(context, video.uri)
+                if(this.width > 0 && this.height > 0) {
+                    this.setImageBitmap(
+                        mMMR.getScaledFrameAtTime(
+                            2000000,
+                            MediaMetadataRetriever.OPTION_CLOSEST_SYNC,
+                            this.width,
+                            this.height
+                        )
                     )
-                )
-            } catch (e: IOException) {
+                }else{
+                    this.setImageBitmap(mMMR.frameAtTime)
+                }
+            } catch (e: Exception) {
+                e.printStackTrace()
                 showDialog(ViewStringRaw(e.message ?: "An Unknown Error Occurred"))
             }
         }
