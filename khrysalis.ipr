@@ -1559,13 +1559,13 @@
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.9.10/2bbe05a007ca22ecf0ed3d3b0b0d8cd9726271c2/jackson-core-2.9.10-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Gradle: jackson-databind-2.9.10.4">
+    <library name="Gradle: jackson-databind-2.9.10.5">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-databind/2.9.10.4/8bf2862fa05856f54de453afdb9d1aac0ec942f9/jackson-databind-2.9.10.4.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-databind/2.9.10.5/676c202a516e7d759624aa826904c12fde4de123/jackson-databind-2.9.10.5.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-databind/2.9.10.4/36c00bcdad9dd11bc5ec80fe8d708c686d78d855/jackson-databind-2.9.10.4-sources.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-databind/2.9.10.5/cfdcfefd35ef0f56fba4f18fc3426cb8d72cee14/jackson-databind-2.9.10.5-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Gradle: jackson-dataformat-yaml-2.9.10">

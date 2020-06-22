@@ -1,11 +1,19 @@
 package com.lightningkite.khrysalis.views
 
+import android.graphics.Bitmap
 import android.graphics.BitmapFactory
+import android.media.MediaMetadataRetriever
+import android.media.ThumbnailUtils
 import android.provider.MediaStore
+import android.util.Size
 import android.widget.ImageView
 import com.lightningkite.khrysalis.*
 import com.lightningkite.khrysalis.net.HttpClient
 import com.squareup.picasso.Picasso
+import com.squareup.picasso.Picasso.LoadedFrom
+import com.squareup.picasso.Request
+import com.squareup.picasso.RequestHandler
+import java.io.IOException
 
 
 /**
@@ -39,4 +47,64 @@ fun ImageView.loadImage(image: Image?) {
         }
     }
 }
+
 inline fun ImageView.loadImageAlt(image: Image?) = loadImage(image)
+
+
+/**
+ *
+ * Loads a thumbnail from the video into the imageview the function is called on.
+ * Video can be from a local reference or a URL.
+ *
+ */
+fun ImageView.loadVideoThumbnail(video: Video?) {
+    when (video) {
+        is VideoReference -> {
+            try {
+                this.setImageBitmap(
+                    context.contentResolver.loadThumbnail(
+                        video.uri,
+                        Size(this.width, this.height),
+                        null
+                    )
+                )
+            } catch (e: IOException) {
+                showDialog(ViewStringRaw(e.message ?: "An Unknown Error Occurred"))
+            }
+        }
+        is VideoRemoteUrl -> {
+            this.setImageBitmap(retrieveVideoFrameFromVideo(video.url))
+        }
+        else -> {
+            this.setImageDrawable(null)
+        }
+    }
+}
+
+fun retrieveVideoFrameFromVideo(videoPath: String?): Bitmap? {
+    var mediaMetadataRetriever: MediaMetadataRetriever? = null
+    try {
+        mediaMetadataRetriever = MediaMetadataRetriever()
+        mediaMetadataRetriever.setDataSource(videoPath, HashMap<String, String>())
+        return mediaMetadataRetriever.getFrameAtTime(2000000, MediaMetadataRetriever.OPTION_CLOSEST_SYNC)
+    } catch (e: Exception) {
+        e.printStackTrace()
+    } finally {
+        mediaMetadataRetriever?.release()
+    }
+    return null
+}
+
+//class VideoRequestHandler : RequestHandler() {
+//    var SCHEME_VIDEO = "video"
+//    override fun canHandleRequest(data: Request): Boolean {
+//        val scheme: String? = data.uri.scheme
+//        return SCHEME_VIDEO == scheme
+//    }
+//
+//    @Throws(IOException::class)
+//    override fun load(data: Request, arg1: Int): Result {
+//        val bm: Bitmap = ThumbnailUtils.createVideoThumbnail(data.uri.getPath(), MediaStore.Images.Thumbnails.MINI_KIND)
+//        return Result(bm, LoadedFrom.DISK)
+//    }
+//}

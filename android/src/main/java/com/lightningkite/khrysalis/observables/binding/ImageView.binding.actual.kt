@@ -10,6 +10,7 @@ import com.lightningkite.khrysalis.observables.*
 import com.lightningkite.khrysalis.rx.removed
 import com.lightningkite.khrysalis.rx.until
 import com.lightningkite.khrysalis.views.loadImageAlt
+import com.lightningkite.khrysalis.views.loadVideoThumbnail
 
 
 /**
@@ -37,4 +38,10 @@ fun ImageView.bindImage(image: ObservableProperty<Image?>) {
             this.loadImage(it)
         }.until(this.removed)
     }
+}
+
+fun ImageView.bindVideoThumbnail(video:ObservableProperty<Video?>){
+    video.subscribeBy {
+        this.loadVideoThumbnail(it)
+    }.until(removed)
 }
