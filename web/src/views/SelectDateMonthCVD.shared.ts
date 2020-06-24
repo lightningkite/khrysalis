@@ -33,6 +33,7 @@
 // FQImport: com.lightningkite.khrysalis.views.SelectDateMonthCVD.selectedPaint TS selectedPaint
 import { DateAlone } from '../time/DateAlone.actual'
 import { DisplayMetrics } from './DisplayMetrics.actual'
+import { safeEq } from '../Kotlin'
 import { CalendarDrawing, MonthCVD } from './MonthCVD.shared'
 import { copyDateAloneMod } from '../time/Date.actual'
 import { StandardObservableProperty } from '../observables/StandardObservableProperty.shared'
@@ -46,8 +47,8 @@ export class SelectDateMonthCVD extends MonthCVD {
     public constructor() {
         super();
         this.selected = new StandardObservableProperty(null, undefined);
-        const temp269 = this.selected.value;
-        if(temp269 !== null) ((it) => this.currentMonthObs.value = copyDateAloneMod(it, Date.prototype.setDate, 1))(temp269);
+        const temp274 = this.selected.value;
+        if(temp274 !== null) ((it) => this.currentMonthObs.value = copyDateAloneMod(it, Date.prototype.setDate, 1))(temp274);
         ioReactivexDisposablesDisposableForever(this.selected.onChange.subscribe( (value) => {
                     this?.invalidate()
         }, undefined, undefined));
@@ -68,7 +69,7 @@ export class SelectDateMonthCVD extends MonthCVD {
     
     
     public drawDay(canvas: CanvasRenderingContext2D, showingMonth: DateAlone, day: DateAlone, displayMetrics: DisplayMetrics, outer: RectF, inner: RectF): void {
-        if (day.equals(this.selected.value)){
+        if (safeEq(day, this.selected.value)){
             CalendarDrawing.INSTANCE.dayBackground(canvas, inner, this.selectedPaint);
             CalendarDrawing.INSTANCE.day(canvas, showingMonth, day, inner, this.selectedDayPaint);
         } else {

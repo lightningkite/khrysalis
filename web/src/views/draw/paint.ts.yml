@@ -5,3 +5,11 @@
     pattern: CanvasGradientMaker
     imports:
       CanvasGradientMaker: khrysalis/dist/views/draw/LinearGradient.actual
+
+
+- id: android.graphics.paint
+  type: call
+  template:
+    pattern: new Paint()
+    imports:
+      RectF: khrysalis/dist/views/draw/Paint.actual

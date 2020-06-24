@@ -1,4 +1,4 @@
-import {triggerAttachmentEvent} from "./viewAttached";
+import {triggerDetatchEvent} from "./viewAttached";
 
 const previousViewSymbol = Symbol("previousView")
 
@@ -9,6 +9,10 @@ declare global {
 }
 
 export function swapViewSwap(view: HTMLDivElement, to: HTMLElement | null, animation: string) {
+    if(to){
+        to.style.width = "100%";
+        to.style.height = "100%";
+    }
     view.style.visibility = "visible";
     const current = view[previousViewSymbol];
     if (current) {
@@ -19,7 +23,7 @@ export function swapViewSwap(view: HTMLDivElement, to: HTMLElement | null, anima
             if (ev.animationName === animationOut) {
                 current.removeEventListener("animationend", animOutHandler)
                 view.removeChild(current);
-                triggerAttachmentEvent(current);
+                triggerDetatchEvent(current);
             }
         }
         current.addEventListener("animationend", animOutHandler)
@@ -29,13 +33,11 @@ export function swapViewSwap(view: HTMLDivElement, to: HTMLElement | null, anima
         if (to) {
             to.style.animation = `${animation}-in 0.25s`
             view.appendChild(to);
-            triggerAttachmentEvent(to);
         } else {
             view.style.visibility = "hidden"; //TODO: Smooth fade would look nicer
         }
     } else if (to) {
         view.appendChild(to);
-        triggerAttachmentEvent(to);
     }
     view[previousViewSymbol] = to;
 }

@@ -7,7 +7,7 @@ import {post} from "../delay.actual";
 
 //! Declares com.lightningkite.khrysalis.observables.binding.loadImage>android.widget.ImageView
 //! Declares com.lightningkite.khrysalis.views.loadImage>android.widget.ImageView
-let canvasElement = new HTMLCanvasElement();
+let canvasElement = document.createElement("canvas");
 export function androidWidgetImageViewLoadImage(this_: HTMLImageElement, image: (Image | null)){
     post(()=>{
         if (image instanceof ImageRaw) {

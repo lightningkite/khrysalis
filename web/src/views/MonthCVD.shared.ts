@@ -173,23 +173,23 @@
 // FQImport: com.lightningkite.khrysalis.views.CalendarDrawing.day TS day
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.drawLabel.inner TS inner
 // FQImport: com.lightningkite.khrysalis.views.MonthCVD.<set-currentMonth>.value TS value
-import { dateAloneMod, dateAloneModRelative } from '../time/Date.actual'
 import { DisplayMetrics } from './DisplayMetrics.actual'
 import { getAnimationFrame } from '../delay.actual'
-import { kotlinIntFloorDiv, kotlinIntFloorMod } from '../Math.shared'
-import { TimeNames } from '../time/TimeNames.actual'
-import { Paint } from './draw/Paint.actual'
-import { comLightningkiteKhrysalisTimeDateAloneSet } from '../time/DateAlone.shared'
 import { androidGraphicsCanvasDrawTextCentered } from './draw/Canvas.actual'
 import { MutableObservableProperty } from '../observables/MutableObservableProperty.shared'
 import { getJavaUtilDateDateAlone } from '../time/Date.actual'
 import { NumberRange } from '../Kotlin'
-import { DateAlone } from '../time/DateAlone.actual'
 import { CustomViewDelegate } from './CustomViewDelegate.shared'
+import { StandardObservableProperty } from '../observables/StandardObservableProperty.shared'
+import { kotlinIntFloorDiv, kotlinIntFloorMod } from '../Math.shared'
+import { ioReactivexDisposablesDisposableForever, ioReactivexDisposablesDisposableUntil } from '../rx/DisposeCondition.actual'
+import { dateAloneMod, dateAloneModRelative } from '../time/Date.actual'
+import { TimeNames } from '../time/TimeNames.actual'
+import { Paint } from './draw/Paint.actual'
+import { comLightningkiteKhrysalisTimeDateAloneSet } from '../time/DateAlone.shared'
+import { DateAlone } from '../time/DateAlone.actual'
 import { applyAlphaToColor, numberToColor } from './Colors.actual'
 import { customViewInvalidate } from './CustomView.actual'
-import { StandardObservableProperty } from '../observables/StandardObservableProperty.shared'
-import { ioReactivexDisposablesDisposableForever, ioReactivexDisposablesDisposableUntil } from '../rx/DisposeCondition.actual'
 import { RectF } from './geometry/RectF.actual'
 import { pathFromLTRB } from './draw/Path.actual'
 import { comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy } from '../observables/ObservableProperty.ext.shared'
@@ -245,8 +245,8 @@ export class MonthCVD extends CustomViewDelegate {
         this.calcMonth = new DateAlone(1, 1, 1);
         this.calcMonthB = new DateAlone(0, 0, 0);
         this.drawDate = new DateAlone(1, 1, 1);
-        this.rectForReuse = RectF.constructor();
-        this.rectForReuseB = RectF.constructor();
+        this.rectForReuse = new RectF();
+        this.rectForReuseB = new RectF();
         this.isTap = false;
         this.dragStartY = 0;
     }
@@ -294,8 +294,8 @@ export class MonthCVD extends CustomViewDelegate {
     }
     public set currentOffset(value: number) {
         this._currentOffset = value;
-        const temp149 = this.customView;
-        if(temp149 !== null) customViewInvalidate(temp149);
+        const temp154 = this.customView;
+        if(temp154 !== null) customViewInvalidate(temp154);
     }
     
     private dragStartX: number;
@@ -440,10 +440,10 @@ export class MonthCVD extends CustomViewDelegate {
     public onTouchDown(id: number, x: number, y: number, width: number, height: number): boolean {
         const day = this.dayAtPixel(x, y, undefined);
         
-        const temp204 = day;
-        if(temp204 !== null) ((it) => (() => {if (this.onTouchDownDate(it)) {
+        const temp209 = day;
+        if(temp209 !== null) ((it) => (() => {if (this.onTouchDownDate(it)) {
                         return true;
-        }})())(temp204);
+        }})())(temp209);
         this.dragStartX = x / width;
         this.dragStartY = y / height;
         this.draggingId = id;
@@ -465,10 +465,10 @@ export class MonthCVD extends CustomViewDelegate {
                 }
             }
         } else {
-            const temp213 = this.dayAtPixel(x, y, undefined);
-            if(temp213 !== null) ((it) => {
+            const temp218 = this.dayAtPixel(x, y, undefined);
+            if(temp218 !== null) ((it) => {
                     return this.onTouchMoveDate(it)
-            })(temp213);
+            })(temp218);
         }
         return true;
     }
@@ -477,8 +477,8 @@ export class MonthCVD extends CustomViewDelegate {
     public onTouchUp(id: number, x: number, y: number, width: number, height: number): boolean {
         if (this.draggingId === id) {
             if (this.isTap) {
-                const temp215 = this.dayAtPixel(x, y, undefined);
-                if(temp215 !== null) ((it) => this.onTap(it))(temp215);
+                const temp220 = this.dayAtPixel(x, y, undefined);
+                if(temp220 !== null) ((it) => this.onTap(it))(temp220);
             } else if (this.dragEnabled) {
                 const weighted = this.currentOffset + (this.currentOffset - this.lastOffset) * 200 / (Date.now() - this.lastOffsetTime);
                 
@@ -496,10 +496,10 @@ export class MonthCVD extends CustomViewDelegate {
             }
             this.draggingId = this.DRAGGING_NONE;
         } else {
-            const temp227 = this.dayAtPixel(x, y, undefined);
-            if(temp227 !== null) ((it) => {
+            const temp232 = this.dayAtPixel(x, y, undefined);
+            if(temp232 !== null) ((it) => {
                     return this.onTouchUpDate(it)
-            })(temp227);
+            })(temp232);
         }
         return true;
     }
@@ -546,16 +546,16 @@ export class CalendarDrawing {
     
     dayBackgroundStart(canvas: CanvasRenderingContext2D, inner: RectF, outer: RectF, paint: Paint): void {
         canvas.arc(inner.centerX(), inner.centerY(), Math.min(inner.width() / 2, inner.height() / 2), 0, Math.PI * 2); paint.complete(canvas);
-        canvas.clip(pathFromLTRB(outer.centerX(), inner.top, outer.right, inner.bottom)); paint.complete(canvas);
+        paint.render(canvas, pathFromLTRB(outer.centerX(), inner.top, outer.right, inner.bottom));
     }
     
     dayBackgroundMid(canvas: CanvasRenderingContext2D, inner: RectF, outer: RectF, paint: Paint): void {
-        canvas.clip(pathFromLTRB(outer.left, inner.top, outer.right, inner.bottom)); paint.complete(canvas);
+        paint.render(canvas, pathFromLTRB(outer.left, inner.top, outer.right, inner.bottom));
     }
     
     dayBackgroundEnd(canvas: CanvasRenderingContext2D, inner: RectF, outer: RectF, paint: Paint): void {
         canvas.arc(inner.centerX(), inner.centerY(), Math.min(inner.width() / 2, inner.height() / 2), 0, Math.PI * 2); paint.complete(canvas);
-        canvas.clip(pathFromLTRB(outer.left, inner.top, outer.centerX(), inner.bottom)); paint.complete(canvas);
+        paint.render(canvas, pathFromLTRB(outer.left, inner.top, outer.centerX(), inner.bottom));
     }
 }
 

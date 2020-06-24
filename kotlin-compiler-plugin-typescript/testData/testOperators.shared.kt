@@ -49,6 +49,7 @@ fun main() {
     println(1 <= x)
     println(1 != x)
     println(1 == x)
+    println(1 === x)
 
     //Direct calls
     println(1.plus(x))
@@ -80,6 +81,16 @@ fun main() {
     thing1.containedNumber = 1
     val thing2 = ExampleImmutableThing()
     thing2.containedNumber = 2
+
+    val maybe = if(x > 1) thing1 else null
+    println(maybe == null)
+    println(maybe != null)
+    println(maybe === null)
+    println(maybe !== null)
+    println(null == maybe)
+    println(null != maybe)
+    println(null === maybe)
+    println(null !== maybe)
 
     val thing3 = thing1 + thing2
     println(thing3.containedNumber)

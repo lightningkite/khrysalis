@@ -19,17 +19,22 @@ export function post(action: () => void) {
 
 //! Declares com.lightningkite.khrysalis.animationFrame
 export const _animationFrame: Subject<number> = new Subject();
-let started = false;
+let active = false;
 export function getAnimationFrame(): Subject<number> {
-    if(!started){
-        started = true;
-    }
-    let currentTime = Date.now()
-    setInterval(()=>{
-        const now = Date.now()
-        _animationFrame.next((now - currentTime) / 1000.0)
-        currentTime = now
-    }, 16)
+    if(active) return _animationFrame;
+    active = true;
+    let last = 0;
+    requestAnimationFrame(function callback(ms){
+        if(last === 0) {
+            last = ms;
+        }
+        const delta = (ms - last) / 1000;
+        last = ms;
+        _animationFrame.next(delta);
+        if(_animationFrame.observers.length > 0){
+            requestAnimationFrame(callback);
+        }
+    });
     return _animationFrame;
 }
 

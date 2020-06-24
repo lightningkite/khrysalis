@@ -49,7 +49,7 @@
   type: call
   arguments: [kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float, android.graphics.Paint]
   template:
-    pattern: ~this~.clip(pathFromLTRB(~0~, ~1~, ~2~, ~3~)); ~4~.complete(~this~)
+    pattern: ~4~.render(~this~, pathFromLTRB(~0~, ~1~, ~2~, ~3~))
     imports:
       pathFromLTRB: khrysalis/dist/views/draw/Path.actual
 
@@ -57,7 +57,7 @@
   type: call
   arguments: [android.graphics.RectF, android.graphics.Paint]
   template:
-    pattern: ~this~.clip(pathFromRectF(~0~)); ~1~.complete(~this~)
+    pattern: ~1~.render(~this~, pathFromRectF(~0~))
     imports:
       pathFromRectF: khrysalis/dist/views/draw/Path.actual
 
@@ -65,7 +65,7 @@
   type: call
   arguments: [kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float, android.graphics.Paint]
   template:
-    pattern: ~this~.clip(pathOvalFromLTRB(~0~, ~1~, ~2~, ~3~)); ~4~.complete(~this~)
+    pattern: ~4~.render(~this~, pathOvalFromLTRB(~0~, ~1~, ~2~, ~3~))
     imports:
       pathOvalFromLTRB: khrysalis/dist/views/draw/Path.actual
 
@@ -73,7 +73,7 @@
   type: call
   arguments: [android.graphics.RectF, android.graphics.Paint]
   template:
-    pattern: ~this~.clip(pathOvalFromRectF(~0~)); ~1~.complete(~this~)
+    pattern: ~1~.render(~this~, pathOvalFromRectF(~0~))
     imports:
       pathOvalFromRectF: khrysalis/dist/views/draw/Path.actual
 
@@ -81,7 +81,7 @@
   type: call
   arguments: [kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float, android.graphics.Paint]
   template:
-    pattern: ~this~.clip(pathRoundedFromLTRB(~0~, ~1~, ~2~, ~3~, ~4~, ~5~)); ~6~.complete(~this~)
+    pattern: ~6~.render(~this~, pathRoundedFromLTRB(~0~, ~1~, ~2~, ~3~, ~4~, ~5~))
     imports:
       pathRoundedFromLTRB: khrysalis/dist/views/draw/Path.actual
 
@@ -89,7 +89,7 @@
   type: call
   arguments: [android.graphics.RectF, kotlin.Float, kotlin.Float, android.graphics.Paint]
   template:
-    pattern: ~this~.clip(pathRoundedFromRectF(~0~, ~1~, ~2~)); ~3~.complete(~this~)
+    pattern: ~3~.render(~this~, pathRoundedFromRectF(~0~, ~1~, ~2~))
     imports:
       pathRoundedFromRectF: khrysalis/dist/views/draw/Path.actual
 

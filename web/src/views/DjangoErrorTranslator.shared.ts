@@ -49,7 +49,7 @@ export class DjangoErrorTranslator {
     
     
     public handleNode(builder: StringBuilder, node: (any | null)): void {
-        if (node.equals(null)) return;
+        if (node === null) return;
         if (checkIsInterface<Map<any, any>>(node, "KotlinCollectionsMap")){
             for (const toDestructure of node) {
                 const key = toDestructure[0]
@@ -87,7 +87,7 @@ export class DjangoErrorTranslator {
                     return kotlinStringFromJsonStringUntyped(_it)
             })(error);
             
-            if (!(errorJson.equals(null))) {
+            if (errorJson !== null) {
                 const builder = new StringBuilder();
                 
                 this.handleNode(builder, errorJson);

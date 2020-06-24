@@ -35,6 +35,7 @@ export function androidxViewpagerWidgetViewPagerBindStatic<T>(this_: HTMLDivElem
         } else if (it < pastIndex){
             animation = "khrysalis-animate-pop"
         }
+        pastIndex = it;
         swapViewSwap(content, newView, animation);
     }), getAndroidViewViewRemoved(this_));
     left.onclick = (ev) => {
@@ -74,6 +75,7 @@ export function androidxViewpagerWidgetViewPagerBind<T>(this_: HTMLDivElement, i
         } else if (it < pastIndex){
             animation = "khrysalis-animate-pop"
         }
+        pastIndex = it;
         swapViewSwap(content, newView, animation);
     }), getAndroidViewViewRemoved(this_));
     left.onclick = (ev) => {

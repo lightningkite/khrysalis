@@ -30,7 +30,7 @@ export class TimeAlone {
     public static Companion = class Companion {
         private constructor() {
             this.min = new TimeAlone(0, 0, 0);
-            this.midnight = TimeAlone.Companion.INSTANCE.min;
+            this.midnight = this.min;
             this.noon = new TimeAlone(12, 0, 0);
             this.max = new TimeAlone(23, 59, 59);
         }
@@ -50,7 +50,7 @@ export class TimeAlone {
         
         public readonly min = new TimeAlone(0, 0, 0);
         
-        public readonly midnight = TimeAlone.Companion.INSTANCE.min;
+        public readonly midnight = this.min;
         
         public readonly noon = new TimeAlone(12, 0, 0);
         

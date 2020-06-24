@@ -51,6 +51,7 @@
 // FQImport: com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD.drawDay.inner TS inner
 import { DateAlone } from '../time/DateAlone.actual'
 import { DisplayMetrics } from './DisplayMetrics.actual'
+import { safeEq } from '../Kotlin'
 import { CalendarDrawing, MonthCVD } from './MonthCVD.shared'
 import { copyDateAloneMod } from '../time/Date.actual'
 import { StandardObservableProperty } from '../observables/StandardObservableProperty.shared'
@@ -67,8 +68,8 @@ export class SelectDateRangeMonthCVD extends MonthCVD {
         this.draggingStart = true;
         this.start = new StandardObservableProperty(null, undefined);
         this.endInclusive = new StandardObservableProperty(null, undefined);
-        const temp273 = this.start.value;
-        if(temp273 !== null) ((it) => this.currentMonthObs.value = copyDateAloneMod(it, Date.prototype.setDate, 1))(temp273);
+        const temp278 = this.start.value;
+        if(temp278 !== null) ((it) => this.currentMonthObs.value = copyDateAloneMod(it, Date.prototype.setDate, 1))(temp278);
         ioReactivexDisposablesDisposableForever(this.start.onChange.subscribe( (value) => {
                     this?.invalidate()
         }, undefined, undefined));
@@ -104,13 +105,13 @@ export class SelectDateRangeMonthCVD extends MonthCVD {
     public readonly drawDay_dateAlone: DateAlone;
     
     public drawDay(canvas: CanvasRenderingContext2D, showingMonth: DateAlone, day: DateAlone, displayMetrics: DisplayMetrics, outer: RectF, inner: RectF): void {
-        if (day.equals(this.start.value) && (day.equals(this.endInclusive.value) || this.endInclusive.value.equals(null))){
+        if (safeEq(day, this.start.value) && (safeEq(day, this.endInclusive.value) || this.endInclusive.value === null)){
             CalendarDrawing.INSTANCE.dayBackground(canvas, inner, this.selectedPaint);
             CalendarDrawing.INSTANCE.day(canvas, showingMonth, day, inner, this.selectedDayPaint);
-        } else if (day.equals(this.start.value)){
+        } else if (safeEq(day, this.start.value)){
             CalendarDrawing.INSTANCE.dayBackgroundStart(canvas, inner, outer, this.selectedPaint);
             CalendarDrawing.INSTANCE.day(canvas, showingMonth, day, inner, this.selectedDayPaint);
-        } else if (day.equals(this.endInclusive.value)){
+        } else if (safeEq(day, this.endInclusive.value)){
             CalendarDrawing.INSTANCE.dayBackgroundEnd(canvas, inner, outer, this.selectedPaint);
             CalendarDrawing.INSTANCE.day(canvas, showingMonth, day, inner, this.selectedDayPaint);
         } else if (day.comparable > (this.start.value?.comparable ?? 2147483647) && day.comparable < (this.endInclusive.value?.comparable ?? -2147483648)){
@@ -126,7 +127,7 @@ export class SelectDateRangeMonthCVD extends MonthCVD {
     
     
     public onTap(day: DateAlone): void {
-        if (!(this.start.value.equals(null)) && this.start.value.equals(this.endInclusive.value) && day.comparable > this.start.value!!.comparable) {
+        if (this.start.value !== null && safeEq(this.start.value, this.endInclusive.value) && day.comparable > this.start.value!!.comparable) {
             this.endInclusive.value = day;
         } else {
             this.start.value = day;
@@ -135,7 +136,7 @@ export class SelectDateRangeMonthCVD extends MonthCVD {
     }
     
     public onTouchDownDate(day: DateAlone): boolean {
-        if (!(day.equals(this.start.value)) && !(day.equals(this.endInclusive.value))) {
+        if (!safeEq(day, this.start.value) && !safeEq(day, this.endInclusive.value)) {
             return false;
         }
         this.startedDraggingOn = day;
@@ -148,15 +149,15 @@ export class SelectDateRangeMonthCVD extends MonthCVD {
         const endInclusiveValue = this.endInclusive.value;
         
         
-        if (startValue.equals(null) || endInclusiveValue.equals(null)){
+        if (startValue === null || endInclusiveValue === null){
             this.start.value = day;
             this.endInclusive.value = day;
             this.draggingStart = false;
-        } else if (day.equals(endInclusiveValue)){
+        } else if (safeEq(day, endInclusiveValue)){
             this.draggingStart = false;
-        } else if (day.equals(startValue)){
+        } else if (safeEq(day, startValue)){
             this.draggingStart = true;
-        } else if (day.comparable > endInclusiveValue!!.comparable && startValue.equals(endInclusiveValue)){
+        } else if (day.comparable > endInclusiveValue!!.comparable && safeEq(startValue, endInclusiveValue)){
             this.endInclusive.value = day;
             this.draggingStart = false;
         } else {
@@ -172,7 +173,7 @@ export class SelectDateRangeMonthCVD extends MonthCVD {
         
         const endInclusiveValue = this.endInclusive.value;
         
-        if (startValue.equals(null) || endInclusiveValue.equals(null)){
+        if (startValue === null || endInclusiveValue === null){
         } else if (this.draggingStart && day.comparable > endInclusiveValue!!.comparable){
             this.start.value = this.endInclusive.value;
             this.endInclusive.value = day;

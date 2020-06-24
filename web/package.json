@@ -4,8 +4,7 @@
   "description": "",
   "main": "Kotlin.js",
   "types": "Kotlin.d.ts",
-  "dependencies": {
-  },
+  "dependencies": {},
   "peerDependencies": {
     "rxjs": "6.x",
     "sprintf": "0.1.x",

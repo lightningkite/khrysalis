@@ -3,12 +3,12 @@
 // Package: com.lightningkite.khrysalis.rx
 import { DisposeCondition } from './DisposeCondition.shared'
 import { SubscriptionLike } from 'rxjs'
-import {addAttachmentEvent} from "../views/viewAttached";
+import {addDetatchEvent} from "../views/viewAttached";
 
 //! Declares com.lightningkite.khrysalis.rx.removed
-export function getAndroidViewViewRemoved(this_Removed: Node): DisposeCondition {
+export function getAndroidViewViewRemoved(this_Removed: HTMLElement): DisposeCondition {
     return new DisposeCondition((a)=>{
-        addAttachmentEvent(this_Removed, (_)=>{
+        addDetatchEvent(this_Removed, (_)=>{
             a.unsubscribe();
         })
     })

@@ -18,7 +18,7 @@ export function pathFromRectF(rect: RectF): Path2D {
 
 export function pathOvalFromLTRB(left: number, top: number, right: number, bottom: number): Path2D {
     const p = new Path2D();
-    p.ellipse(left, top, (right - left)/2, (bottom - top)/2, 0, 0, Math.PI * 2);
+    p.ellipse((left + right) / 2, (top + bottom) / 2, (right - left)/2, (bottom - top)/2, 0, 0, Math.PI * 2);
     return p;
 }
 

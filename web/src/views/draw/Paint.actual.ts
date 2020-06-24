@@ -80,6 +80,7 @@ export class Paint {
     }
     text(context: CanvasRenderingContext2D, text: string, x: number, y: number, maxWidth?: number){
         this.apply(context);
+        context.font = `${this.textSize}px ${this.isFakeBoldText ? "bold" : ""} sans-serif`;
         switch(this.style){
             case Paint.Style.FILL:
                 context.fillText(text, x, y, maxWidth);

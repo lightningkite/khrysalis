@@ -83,31 +83,31 @@ export class GeoAddress implements Codable {
     public oneLine(withCountry: boolean = false, withZip: boolean = false): string {
         const builder = new StringBuilder();
         
-        const temp38 = this.street;
-        if(temp38 !== null) ((it) => builder.value += it)(temp38);
-        const temp40 = this.locality;
-        if(temp40 !== null) ((it) => {
+        const temp43 = this.street;
+        if(temp43 !== null) ((it) => builder.value += it)(temp43);
+        const temp45 = this.locality;
+        if(temp45 !== null) ((it) => {
                 builder.value += ' ';
                 return builder.value += it;
-        })(temp40);
-        const temp42 = this.adminArea;
-        if(temp42 !== null) ((it) => {
+        })(temp45);
+        const temp47 = this.adminArea;
+        if(temp47 !== null) ((it) => {
                 builder.value += ", ";
                 return builder.value += it;
-        })(temp42);
+        })(temp47);
         if (withCountry) {
-            const temp45 = this.adminArea;
-            if(temp45 !== null) ((it) => {
+            const temp50 = this.adminArea;
+            if(temp50 !== null) ((it) => {
                     builder.value += ' ';
                     return builder.value += it;
-            })(temp45);
+            })(temp50);
         }
         if (withZip) {
-            const temp47 = this.postalCode;
-            if(temp47 !== null) ((it) => {
+            const temp52 = this.postalCode;
+            if(temp52 !== null) ((it) => {
                     builder.value += ' ';
                     return builder.value += it;
-            })(temp47);
+            })(temp52);
         }
         return builder.toString().trim();
     }

@@ -8,12 +8,12 @@ import {ObservableProperty} from '../ObservableProperty.shared'
 import {StandardObservableProperty} from '../StandardObservableProperty.shared'
 import {comLightningkiteKhrysalisObservablesObservablePropertyMap} from '../TransformedObservableProperty.shared'
 import {MutableObservableProperty} from '../MutableObservableProperty.shared'
-import {also, NumberRange, tryCastClass} from 'Kotlin'
+import {also, checkReified, NumberRange, tryCastClass} from '../../Kotlin'
 import {androidWidgetLinearLayoutBind} from "./LinearLayout.binding.shared";
 import {androidWidgetLinearLayoutParams} from "../../views/LinearLayout.actual";
 import {AlignPair} from "../../views/geometry/Align.shared";
 import {range} from "iterable-operator";
-import {triggerAttachmentEvent} from "../../views/viewAttached";
+import {triggerDetatchEvent} from "../../views/viewAttached";
 
 //! Declares com.lightningkite.khrysalis.observables.binding.whenScrolledToEnd>androidx.recyclerview.widget.RecyclerView
 export function androidxRecyclerviewWidgetRecyclerViewWhenScrolledToEnd(this_: HTMLDivElement, action: () => void): void {
@@ -80,7 +80,7 @@ export function recyclerViewBindMultiType(this_: HTMLDivElement, viewDependency:
         this_,
         data,
         null,
-        (x) => h.handlers.findIndex((handler) => x instanceof handler.type[0]),
+        (x) => h.handlers.findIndex((handler) => checkReified(x, handler.type)),
         (type, prop) => {
             const handler = h.handlers[type]
             if(handler){
@@ -111,15 +111,19 @@ export function androidxRecyclerviewWidgetRecyclerViewBindMulti<T>(this_: HTMLDi
                 return [obs, makeView(type, obs)] as [StandardObservableProperty<T>, HTMLElement];
             })()
             view[0].value = item;
+            if(this_.style.flexDirection.startsWith("column")){
+                view[1].style.width = "100%";
+            } else {
+                view[1].style.height = "100%";
+            }
             this_.appendChild(view[1]);
-            triggerAttachmentEvent(view[1])
             const sublist = existingViews[type] ?? [];
             sublist.push(view);
             existingViews[type] = sublist;
         }
         for (const parts of unusedViews) {
             for (const part of parts) {
-                triggerAttachmentEvent(part[1]);
+                triggerDetatchEvent(part[1]);
             }
         }
     }), getAndroidViewViewRemoved(this_));

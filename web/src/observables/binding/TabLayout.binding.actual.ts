@@ -4,10 +4,11 @@
 import {comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy} from '../ObservableProperty.ext.shared'
 import {getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil} from '../../rx/DisposeCondition.actual'
 import {MutableObservableProperty} from '../MutableObservableProperty.shared'
+import {v4} from "uuid";
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>com.google.android.material.tabs.TabLayout
 export function comGoogleAndroidMaterialTabsTabLayoutBind(this_: HTMLDivElement, tabs: Array<string>, selected: MutableObservableProperty<number>, allowReselect: boolean = false): void {
-    const myName = this.id ?? "tabLayout";
+    const myName = v4();
 
     const selectedIndicator = document.createElement("div");
     selectedIndicator.classList.add("khrysalis-tab-indicator");

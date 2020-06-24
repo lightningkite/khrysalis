@@ -56,6 +56,7 @@ import { Paint } from './draw/Paint.actual'
 import { comLightningkiteKhrysalisTimeDateAloneSet } from '../time/DateAlone.shared'
 import { DateAlone } from '../time/DateAlone.actual'
 import { copyDateAloneMod, dateAloneModRelative } from '../time/Date.actual'
+import { safeEq } from '../Kotlin'
 import { StandardObservableProperty } from '../observables/StandardObservableProperty.shared'
 import { RectF } from './geometry/RectF.actual'
 import { ioReactivexDisposablesDisposableForever } from '../rx/DisposeCondition.actual'
@@ -67,8 +68,8 @@ export class SelectMultipleDatesMonthCVD extends MonthCVD {
         this.dates = new StandardObservableProperty(new Set([]), undefined);
         this.selectedDayPaint = Paint.constructor();
         this.selectedPaint = Paint.constructor();
-        const temp289 = (iterFirst(this.dates.value) ?? null);
-        if(temp289 !== null) ((it) => this.currentMonthObs.value = copyDateAloneMod(it, Date.prototype.setDate, 1))(temp289);
+        const temp294 = (iterFirst(this.dates.value) ?? null);
+        if(temp294 !== null) ((it) => this.currentMonthObs.value = copyDateAloneMod(it, Date.prototype.setDate, 1))(temp294);
         ioReactivexDisposablesDisposableForever(this.dates.onChange.subscribe( (value) => {
                     this?.invalidate()
         }, undefined, undefined));
@@ -123,25 +124,25 @@ export class SelectMultipleDatesMonthCVD extends MonthCVD {
     }
     
     public onTap(day: DateAlone): void {
-        this.adding = (!iterSome(this.dates.value, (it) => day.equals(it)));
+        this.adding = (!iterSome(this.dates.value, (it) => safeEq(day, it)));
         this.onTouchMoveDate(day);
     }
     
     public adding: boolean;
     
     public onTouchDownDate(day: DateAlone): boolean {
-        this.adding = (!iterSome(this.dates.value, (it) => day.equals(it)));
+        this.adding = (!iterSome(this.dates.value, (it) => safeEq(day, it)));
         this.onTouchMoveDate(day);
         return true;
     }
     
     public onTouchMoveDate(day: DateAlone): boolean {
         if (this.adding) {
-            if ((!iterSome(this.dates.value, (it) => day.equals(it)))) {
+            if ((!iterSome(this.dates.value, (it) => safeEq(day, it)))) {
                 this.dates.value = new Set([...this.dates.value, day]);
             }
         } else {
-            this.dates.value = iterToSet(iterToArray(iterFilter(this.dates.value, (it) => !(it.equals(day)))));
+            this.dates.value = iterToSet(iterToArray(iterFilter(this.dates.value, (it) => !safeEq(it, day))));
         }
         return true;
     }

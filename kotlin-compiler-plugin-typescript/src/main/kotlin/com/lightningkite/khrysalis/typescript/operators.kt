@@ -270,6 +270,56 @@ fun TypescriptTranslator.registerOperators() {
             }
         }
     )
+    handle<ValueOperator>(
+        condition = { typedRule.operationToken == KtTokens.EQEQ },
+        priority = 20
+    ) {
+        out.addImport("khrysalis/dist/Kotlin", "safeEq")
+        -"safeEq("
+        -typedRule.left
+        -", "
+        -typedRule.right
+        -")"
+    }
+    handle<ValueOperator>(
+        condition = { typedRule.operationToken == KtTokens.EXCLEQ },
+        priority = 20
+    ) {
+        out.addImport("khrysalis/dist/Kotlin", "safeEq")
+        -"!safeEq("
+        -typedRule.left
+        -", "
+        -typedRule.right
+        -")"
+    }
+    handle<ValueOperator>(
+        condition = { typedRule.operationToken == KtTokens.EQEQ && (typedRule.left as? KtConstantExpression)?.text == "null"  },
+        priority = 20
+    ) {
+        -typedRule.right
+        -" === null"
+    }
+    handle<ValueOperator>(
+        condition = { typedRule.operationToken == KtTokens.EXCLEQ && (typedRule.left as? KtConstantExpression)?.text == "null" },
+        priority = 21
+    ) {
+        -typedRule.right
+        -" !== null"
+    }
+    handle<ValueOperator>(
+        condition = { typedRule.operationToken == KtTokens.EQEQ && (typedRule.right as? KtConstantExpression)?.text == "null"  },
+        priority = 22
+    ) {
+        -typedRule.left
+        -" === null"
+    }
+    handle<ValueOperator>(
+        condition = { typedRule.operationToken == KtTokens.EXCLEQ && (typedRule.right as? KtConstantExpression)?.text == "null" },
+        priority = 23
+    ) {
+        -typedRule.left
+        -" !== null"
+    }
     handle<ValueOperator> {
         if (typedRule.operationToken == KtTokens.NOT_IN || typedRule.operationToken == KtTokens.EXCLEQ) {
             -"!("

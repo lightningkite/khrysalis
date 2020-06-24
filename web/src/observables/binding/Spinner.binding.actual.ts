@@ -10,7 +10,7 @@ import {ObservableProperty} from '../ObservableProperty.shared'
 import {StandardObservableProperty} from '../StandardObservableProperty.shared'
 import {IllegalStateException, tryCastClass} from 'Kotlin'
 import {MutableObservableProperty} from '../MutableObservableProperty.shared'
-import {triggerAttachmentEvent} from "../../views/viewAttached";
+import {triggerDetatchEvent} from "../../views/viewAttached";
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>android.widget.Spinner
 export function spinnerBindAdvanced<T>(this_: HTMLSelectElement, options: ObservableProperty<Array<T>>, selected: MutableObservableProperty<T>, makeView: (a: ObservableProperty<T>) => HTMLElement): void {
@@ -28,12 +28,11 @@ export function spinnerBindAdvanced<T>(this_: HTMLSelectElement, options: Observ
                 makeView(newObs);
                 this_.options.add(newOpt);
                 observables.push(newObs);
-                triggerAttachmentEvent(newOpt);
             }
         } else if (diff < 0) {
             for(let i = 0; i < -diff; i++){
                 const opt = this_.options.item(this_.options.length-1);
-                triggerAttachmentEvent(opt);
+                triggerDetatchEvent(opt);
                 this_.options.remove(this_.options.length-1);
                 observables.pop();
             }
@@ -69,12 +68,11 @@ export function spinnerBind<T>(this_: HTMLSelectElement, options: ObservableProp
                 }), vRemoved(newOpt))
                 this_.options.add(newOpt);
                 observables.push(newObs);
-                triggerAttachmentEvent(newOpt);
             }
         } else if (diff < 0) {
             for(let i = 0; i < -diff; i++){
                 const opt = this_.options.item(this_.options.length-1);
-                triggerAttachmentEvent(opt);
+                triggerDetatchEvent(opt);
                 this_.options.remove(this_.options.length-1);
                 observables.pop();
             }

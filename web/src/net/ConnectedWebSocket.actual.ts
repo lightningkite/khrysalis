@@ -10,6 +10,7 @@ export class ConnectedWebSocket implements Observer<WebSocketFrame>, Unsubscriba
     public readonly url: string;
     public constructor(url: string) {
         this.url = url;
+        this.resetSocket();
     }
 
     underlyingSocket: (WebSocket | null) = null;

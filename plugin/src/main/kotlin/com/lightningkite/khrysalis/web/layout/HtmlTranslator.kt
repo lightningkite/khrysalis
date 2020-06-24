@@ -37,7 +37,7 @@ class HtmlTranslator {
         commonAttributes()
         display()
         input()
-        protoTemp()
+//        protoTemp()
     }
 
 

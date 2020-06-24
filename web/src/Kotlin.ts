@@ -48,11 +48,29 @@ export function hashAnything(item: any): number {
     }
 }
 
-export function equalityAnything(left: any, right: any): boolean {
+export function safeEq(left: any, right: any): boolean {
     if(typeof left === "object") {
         return left.equals(right)
     } else {
         return left === right
+    }
+}
+
+export function checkReified<T>(item: any, fullType: Array<any>): item is T {
+    const type = fullType[0];
+    switch(type){
+        case String:
+            return typeof item === "string";
+        case Number:
+            return typeof item === "number";
+        case Boolean:
+            return typeof item === "boolean";
+        case undefined:
+            return typeof item === "undefined";
+        case null:
+            return !item;
+        default:
+            return item instanceof type;
     }
 }
 
@@ -191,7 +209,8 @@ class NumberRangeIterator implements Iterator<number> {
     }
 
     next(): IteratorResult<number> {
-        const result = {done: this.start >= this.endInclusive, value: this.start};
+        if(this.endInclusive < this.start) return { done: true, value: undefined }
+        const result = {done: this.start > this.endInclusive, value: this.start};
         this.start++;
         return result
     }
@@ -236,14 +255,6 @@ class CharRangeIterator implements Iterator<string> {
 //     retainAll(elements: Collection<E>): boolean
 //     clear(): boolean
 // }
-
-export function safeEq(a: any, b: any): boolean {
-    if (typeof a === "object") {
-        return a.equals(b)
-    } else {
-        return a === b
-    }
-}
 
 import {Observable} from "rxjs";
 import {defer as rxDefer} from "rxjs";

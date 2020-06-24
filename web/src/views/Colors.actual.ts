@@ -3,7 +3,7 @@
 // Package: com.lightningkite.khrysalis.views
 
 export function numberToColor(this_: number): string {
-    const alpha = this_ & 0xFF000000 >>> 24;
+    const alpha = this_ >>> 24 & 0xFF;
     const withoutAlpha = this_ & 0x00FFFFFF;
     return `#${withoutAlpha.toString(16).padStart(6, "0")}${alpha.toString(16).padStart(2, "0")}`;
 }
