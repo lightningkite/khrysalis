@@ -48,7 +48,8 @@ fun Bitmap.toHttpBody(maxBytes: Long = 10_000_000): HttpBody {
     return RequestBody.create(HttpMediaTypes.JPEG, data)
 }
 
-fun Uri.toHttpBody(type: HttpMediaType): HttpBody {
+fun Uri.toHttpBody(): HttpBody {
+    val type = HttpMediaTypes.fromString(HttpClient.appContext.contentResolver.getType(this) ?: "*/*")
     return object : RequestBody() {
         override fun contentType(): MediaType = type
 
