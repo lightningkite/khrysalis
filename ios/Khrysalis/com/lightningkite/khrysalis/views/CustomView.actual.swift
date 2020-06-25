@@ -15,7 +15,7 @@ public class CustomView: FrameLayout {
         willSet {
             isOpaque = false
             delegate?.customView = nil
-            delegate?.dispose()
+//            delegate?.dispose()
         }
         didSet {
             delegate?.customView = self

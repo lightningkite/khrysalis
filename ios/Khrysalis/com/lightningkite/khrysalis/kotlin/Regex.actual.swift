@@ -35,7 +35,7 @@ public struct Regex {
         return Match(value: groupValues[0], groupValues: groupValues)
     }
 
-    public func matchEntire(_ input: String): String?{
-        TODO
+    public func matchEntire(_ input: String) -> String?{
+        TODO()
     }
 }

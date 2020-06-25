@@ -43,10 +43,9 @@ public extension UITextView {
             }
             self.superview?.setNeedsLayout()
         }.until(self.removed)
-        weak var observableWeak = observable
         let delegate = LambdaDelegate { text in
-            if observableWeak?.value != text {
-                observableWeak?.value = text
+            if observable.value != text {
+                observable.value = text
             }
         }
         retain(as: "khrysalis_dg", item: delegate, until: removed)
