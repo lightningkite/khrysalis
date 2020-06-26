@@ -27,6 +27,8 @@ open class KhrysalisPluginExtension {
     open var projectName: String? = null
     open var overrideIosPackageName: String? = null
     open var overrideWebPackageName: String? = null
+    open var overrideIosFolder: String? = null
+    open var overrideWebFolder: String? = null
 
     override fun toString(): String {
         return "(" +
@@ -48,8 +50,8 @@ class KhrysalisPlugin : Plugin<Project> {
         ?: project.rootProject.name
         KhrysalisSettings.verbose = true
         fun androidBase() = project.projectDir
-        fun webBase() = project.projectDir.resolve("../web")
-        fun iosBase() = project.projectDir.resolve("../ios")
+        fun webBase() = project.projectDir.resolve(ext.overrideWebFolder ?: "../web")
+        fun iosBase() = project.projectDir.resolve(ext.overrideIosFolder ?: "../ios")
         fun iosFolder() = iosBase().resolve(projectName())
         fun packageName() =
             project.extensions.findByName("android")?.groovyObject?.getPropertyAsObject("defaultConfig")?.getProperty("applicationId") as? String ?: "unknown.packagename"
@@ -222,6 +224,7 @@ class KhrysalisPlugin : Plugin<Project> {
                 val originalTask = project.tasks.getByName("compileDebugKotlin") as KotlinCompile
                 val files = originalTask.source.toList().asSequence()
                 println("All files: ${files.joinToString("\n")}")
+                println("All libraries: ${libraries.joinToString("\n")}")
                 convertToTypescript(
                     projectName = projectName(),
                     libraries = libraries,

@@ -81,7 +81,7 @@ internal fun HtmlTranslator.commonAttributes() {
                 val path = value.substringAfter('/')
                 outFolder.resolve("src/images").walkTopDown().find { it.nameWithoutExtension == path.kabobCase() }?.let {
                     imageUrl = it
-                    image.attributes["src"] = imageUrl!!.toRelativeString(outFolder)
+                    image.attributes["src"] = imageUrl!!.toRelativeString(outFolder.resolve("src"))
                 } ?: run {
                     println("WARNING: Failed to find $path in ${outFolder}/src/images")
                 }

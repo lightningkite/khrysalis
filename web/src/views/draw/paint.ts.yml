@@ -7,9 +7,9 @@
       CanvasGradientMaker: khrysalis/dist/views/draw/LinearGradient.actual
 
 
-- id: android.graphics.paint
+- id: android.graphics.Paint
   type: call
   template:
     pattern: new Paint()
     imports:
-      RectF: khrysalis/dist/views/draw/Paint.actual
+      Paint: khrysalis/dist/views/draw/Paint.actual

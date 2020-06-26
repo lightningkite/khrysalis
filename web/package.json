@@ -4,11 +4,20 @@
   "description": "",
   "main": "Kotlin.js",
   "types": "Kotlin.d.ts",
-  "dependencies": {},
+  "dependencies": {
+    "rxjs": "^6.5.5",
+    "sprintf-js": "^1.1.2",
+    "@types/sprintf-js": "1.1.2",
+    "mersenne-twister": "^1.1.0",
+    "@types/mersenne-twister": "^1.1.2",
+    "uuid": "^8.1.0",
+    "@types/uuid": "^8.0.0",
+    "iterable-operator": "^0.10.3"
+  },
   "peerDependencies": {
     "rxjs": "6.x",
-    "sprintf": "0.1.x",
-    "@types/sprintf": "0.1.x",
+    "sprintf-js": "1.1.x",
+    "@types/sprintf-js": "1.1.x",
     "mersenne-twister": "1.x",
     "@types/mersenne-twister": "1.x",
     "uuid": "8.x",

@@ -57,11 +57,18 @@ internal fun HtmlTranslator.input() {
         out.style["justify-content"] = "center"
         out.style["align-items"] = "center"
 
-        for(i in 1 .. 5){
-            out.contentNodes += ResultNode("div").apply {
-                classes += "khrysalis-rating-bar-star"
-                classes += "khrysalis-rating-bar-star-on"
-                style["flex-grow"] = "1"
+        when (rule.allAttributes["style"]) {
+            "?android:attr/ratingBarStyle" -> {
+                out.classes += "khrysalis-rating-bar-big"
+            }
+            "?android:attr/ratingBarStyleIndicator" -> {
+                out.classes += "khrysalis-rating-bar-reg"
+            }
+            "?android:attr/ratingBarStyleSmall" -> {
+                out.classes += "khrysalis-rating-bar-small"
+            }
+            else -> {
+                out.classes += "khrysalis-rating-bar-tiny"
             }
         }
     }
@@ -75,6 +82,7 @@ internal fun HtmlTranslator.input() {
             style["font-size"] = "12pt"
         }
         out.contentNodes.add(i)
+        out.text = i
         out.primary = i
     }
 
@@ -245,7 +253,7 @@ internal fun HtmlTranslator.input() {
             out.primary = it
         })
 
-        out.contentNodes.add(ResultNode("div").apply {
+        out.contentNodes.add(ResultNode("span").apply {
             classes.add("khrysalis-switch-back")
             contentNodes.add(ResultNode("span").apply {
                 rule.allAttributes["android:thumbTint"]?.asCssColor()?.let {

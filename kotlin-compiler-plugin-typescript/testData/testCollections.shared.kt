@@ -1,5 +1,7 @@
 package com.test.collections
 
+data class CustomEq(val value: Int)
+
 fun test(){
     val list = listOf(1, 2, 3)
     println(list[0])
@@ -46,4 +48,36 @@ fun test(){
         .forEach {
             println("Got $it")
         }
+
+    println(setOf(1, 2, 3))
+    println(setOf("A", "B", "C"))
+    println(setOf('a', 'b', 'c'))
+    println(setOf(CustomEq(1), CustomEq(2), CustomEq(3)))
+
+    println(mapOf(1 to 2, 3 to 4))
+    println(mapOf(CustomEq(1) to 2, CustomEq(3) to 4))
+
+    println(mutableSetOf(1, 2, 3))
+    println(mutableSetOf("A", "B", "C"))
+    println(mutableSetOf('a', 'b', 'c'))
+    println(mutableSetOf(CustomEq(1), CustomEq(2), CustomEq(3)))
+
+    println(mutableMapOf(1 to 2, 3 to 4))
+    println(mutableMapOf(CustomEq(1) to 2, CustomEq(3) to 4))
+
+    println(hashSetOf(1, 2, 3))
+    println(hashSetOf("A", "B", "C"))
+    println(hashSetOf('a', 'b', 'c'))
+    println(hashSetOf(CustomEq(1), CustomEq(2), CustomEq(3)))
+
+    println(hashMapOf(1 to 2, 3 to 4))
+    println(hashMapOf(CustomEq(1) to 2, CustomEq(3) to 4))
+
+    println(HashSet<Int>())
+    println(HashSet<CustomEq>())
+
+    println(HashMap<Int, String>())
+    println(HashMap<CustomEq, String>())
+
+    println(ArrayList<Int>())
 }

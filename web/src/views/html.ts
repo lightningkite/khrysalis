@@ -5,10 +5,12 @@ export function loadHtmlFromString(data: string): HTMLElement {
 }
 
 export function findViewById<T extends HTMLElement>(view: HTMLElement, id: string): T | null {
+    if(view.classList.contains(`id-${id}`)) return view as (T | undefined) ?? null;
     return (view.getElementsByClassName(`id-${id}`)[0] as (T | undefined)) ?? null;
 }
 
 export function getViewById<T extends HTMLElement>(view: HTMLElement, id: string): T {
+    if(view.classList.contains(`id-${id}`)) return view as T;
     return view.getElementsByClassName(`id-${id}`)[0] as T;
 }
 

@@ -11,20 +11,28 @@
 
 - id: com.lightningkite.khrysalis.views.textResource
   type: set
-  template: ~this~.innerText = ~0~
-
+  template:
+    pattern: setViewText(~this~, ~0~)
+    imports:
+      setViewText: khrysalis/dist/views/ViewWithText.ext.actual
 - id: com.lightningkite.khrysalis.views.textString
   type: set
-  template: ~this~.innerText = ~0~
-
+  template:
+    pattern: setViewText(~this~, ~0~)
+    imports:
+      setViewText: khrysalis/dist/views/ViewWithText.ext.actual
 - id: android.widget.TextView.text
   type: set
-  template: ~this~.innerText = ~0~
-
+  template:
+    pattern: setViewText(~this~, ~0~)
+    imports:
+      setViewText: khrysalis/dist/views/ViewWithText.ext.actual
 - id: android.widget.TextView.setText
   type: call
-  template: ~this~.innerText = ~0~
-
+  template:
+    pattern: setViewText(~this~, ~0~)
+    imports:
+      setViewText: khrysalis/dist/views/ViewWithText.ext.actual
 - id: com.lightningkite.khrysalis.views.setTextColorResource
   type: call
   template: ~this~.style.color = ~0~

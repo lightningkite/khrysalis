@@ -24,7 +24,7 @@ export function spinnerBindAdvanced<T>(this_: HTMLSelectElement, options: Observ
             for (let i = 0; i < diff; i++) {
                 const newOpt = document.createElement("option");
                 newOpt.value = (options.length - 1 - diff + i).toString();
-                const newObs = new StandardObservableProperty(options[options.length - 1 - diff + i]);
+                const newObs = new StandardObservableProperty(options[options.length - diff + i]);
                 makeView(newObs);
                 this_.options.add(newOpt);
                 observables.push(newObs);
@@ -46,12 +46,19 @@ export function spinnerBindAdvanced<T>(this_: HTMLSelectElement, options: Observ
     until(subBy(selected, undefined, undefined, (sel)=>{
         this_.selectedIndex = options.value.indexOf(sel);
     }), vRemoved(this_));
+
+    this_.oninput = (ev)=> {
+        const sel = options.value[this_.selectedIndex];
+        if(sel !== undefined){
+            selected.value = sel
+        }
+    }
 }
 
 
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>android.widget.Spinner
-export function spinnerBind<T>(this_: HTMLSelectElement, options: ObservableProperty<Array<T>>, selected: MutableObservableProperty<T>, toString: (a: T)=>string): void {
+export function spinnerBind<T>(this_: HTMLSelectElement, options: ObservableProperty<Array<T>>, selected: MutableObservableProperty<T>, toString: (a: T)=>string = (x)=>x?.toString() ?? "null"): void {
     const observables = options.value.map((x) => {
         return new StandardObservableProperty(x)
     })
@@ -62,7 +69,7 @@ export function spinnerBind<T>(this_: HTMLSelectElement, options: ObservableProp
             for (let i = 0; i < diff; i++) {
                 const newOpt = document.createElement("option");
                 newOpt.value = (options.length - 1 - diff + i).toString();
-                const newObs = new StandardObservableProperty(options[options.length - 1 - diff + i]);
+                const newObs = new StandardObservableProperty(options[options.length - diff + i]);
                 until(subBy(newObs, undefined, undefined, (x) => {
                     newOpt.innerText = toString(x);
                 }), vRemoved(newOpt))
@@ -86,5 +93,12 @@ export function spinnerBind<T>(this_: HTMLSelectElement, options: ObservableProp
     until(subBy(selected, undefined, undefined, (sel)=>{
         this_.selectedIndex = options.value.indexOf(sel);
     }), vRemoved(this_));
+
+    this_.oninput = (ev)=> {
+        const sel = options.value[this_.selectedIndex];
+        if(sel !== undefined){
+            selected.value = sel
+        }
+    }
 }
 

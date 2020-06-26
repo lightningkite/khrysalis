@@ -5,11 +5,12 @@ import {comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy} from 
 import {getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil} from '../../rx/DisposeCondition.actual'
 import {ObservableProperty} from '../ObservableProperty.shared'
 import {setViewVisibility} from "../../views/View.ext.actual";
+import {setViewText} from "../../views/ViewWithText.ext.actual";
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindString>android.widget.TextView
 export function androidWidgetTextViewBindString(this_: HTMLElement, observable: ObservableProperty<string>): void {
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
-        this_.innerText = value
+        setViewText(this_, value);
     }), getAndroidViewViewRemoved(this_));
 }
 
@@ -18,7 +19,7 @@ export function androidWidgetTextViewBindStringRes(this_: HTMLElement, observabl
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
         setViewVisibility(this_, value === null ? "gone" : "visible");
         if (value !== null) {
-            this_.innerText = value;
+            setViewText(this_, value);
         }
     }), getAndroidViewViewRemoved(this_));
 }
@@ -27,7 +28,7 @@ export function androidWidgetTextViewBindStringRes(this_: HTMLElement, observabl
 //! Declares com.lightningkite.khrysalis.observables.binding.bindText>android.widget.TextView
 export function androidWidgetTextViewBindText<T>(this_: HTMLElement, observable: ObservableProperty<T>, transform: (a: T) => string): void {
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
-        this_.innerText = transform(value)
+        setViewText(this_, transform(value));
     }), getAndroidViewViewRemoved(this_));
 }
 

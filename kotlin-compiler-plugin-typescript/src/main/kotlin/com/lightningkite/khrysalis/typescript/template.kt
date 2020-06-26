@@ -12,7 +12,7 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
     requireWrapping: Boolean = false,
     action: DeDupEmitter.() -> Unit
 ) {
-    val emitter = DeDupEmitter()
+    val emitter = DeDupEmitter(this.partialTranslator as TypescriptTranslator)
     action(emitter)
     val dedup = emitter.dedupNecessary
     if (dedup && requireWrapping) {
@@ -123,7 +123,7 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
     }
 }
 
-class DeDupEmitter() {
+class DeDupEmitter(analysis: AnalysisExtensions): AnalysisExtensions by analysis {
     val deduplicated = HashMap<Any, String>()
     val toEmit = ArrayList<Any>()
     fun deduplicate(item: Any) {

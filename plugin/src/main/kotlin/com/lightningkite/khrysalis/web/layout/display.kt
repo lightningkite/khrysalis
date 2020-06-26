@@ -25,6 +25,37 @@ internal fun HtmlTranslator.display() {
     }
     element.handle("ImageView") {
         out.name = "image"
+        when(rule.allAttributes["android:scaleType"]){
+            null -> {
+                out.style["object-fit"] = "contain"
+            }
+            "center" -> {
+                out.style["object-fit"] = "none"
+            }
+            "centerCrop" -> {
+                out.style["object-fit"] = "cover"
+            }
+            "centerInside" -> {
+                out.style["object-fit"] = "contain"
+            }
+            "fitCenter" -> {
+                out.style["object-fit"] = "contain"
+            }
+            "fitEnd" -> {
+                out.style["object-fit"] = "contain"
+                out.style["object-position"] = "right"
+            }
+            "fitStart" -> {
+                out.style["object-fit"] = "contain"
+                out.style["object-position"] = "left"
+            }
+            "fitXY" -> {
+                out.style["object-fit"] = "fill"
+            }
+            "matrix" -> {
+                out.style["object-fit"] = "fill"
+            }
+        }
     }
     element.handle("ImageButton") {
         out.name = "button"
@@ -45,7 +76,7 @@ internal fun HtmlTranslator.display() {
                 val path = value.substringAfter('/')
                 outFolder.resolve("src/images").walkTopDown().find { it.nameWithoutExtension == path.kabobCase() }
                     ?.let {
-                        out.attributes["src"] = it.toRelativeString(outFolder)
+                        out.attributes["src"] = it.toRelativeString(outFolder.resolve("src"))
                     } ?: run {
                     println("WARNING: Failed to find $path in ${this@display.outFolder}/src/images")
                 }

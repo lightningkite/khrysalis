@@ -72,6 +72,6 @@ fun convertVectorDrawable(
     }
 
     out.appendln("$selectors {")
-    out.appendln("background-image: url(\"src/images/${file.name}\")")
+    out.appendln("background-image: url(\"images/${file.name}\")")
     out.appendln("}")
 }

@@ -3,19 +3,23 @@
 // Package: com.lightningkite.khrysalis.observables.binding
 import {comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy} from '../ObservableProperty.ext.shared'
 import {parseFloatOrNull, parseIntOrNull, takeUnless} from '../../Kotlin'
-import {getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil} from '../../rx/DisposeCondition.actual'
+import {
+    DisposableLambda,
+    getAndroidViewViewRemoved,
+    ioReactivexDisposablesDisposableUntil
+} from '../../rx/DisposeCondition.actual'
 import {MutableObservableProperty} from '../MutableObservableProperty.shared'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindString>android.widget.EditText
 export function androidWidgetEditTextBindString(this_: HTMLInputElement | HTMLTextAreaElement, observable: MutableObservableProperty<string>): void {
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
-        if (!(observable.value === this_.value.toString())) {
+        if (observable.value !== this_.value.toString()) {
             this_.value = observable.value;
         }
     }), getAndroidViewViewRemoved(this_));
-    this_.onchange = (e) => {
+    this_.oninput = (e) => {
         const s = this_.value;
-        if (!(observable.value === s)) {
+        if (observable.value !== s) {
             observable.value = s;
         }
     }
@@ -24,13 +28,13 @@ export function androidWidgetEditTextBindString(this_: HTMLInputElement | HTMLTe
 //! Declares com.lightningkite.khrysalis.observables.binding.bindInteger>android.widget.EditText
 export function androidWidgetEditTextBindInteger(this_: HTMLInputElement | HTMLTextAreaElement, observable: MutableObservableProperty<number>): void {
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
-        const currentValue = parseIntOrNull(undefined);
+        const currentValue = parseIntOrNull(this_.value);
 
-        if (!(value === currentValue)) {
+        if (value !== currentValue) {
             this_.value = takeUnless(value, (it) => it === 0)?.toString() ?? "";
         }
     }), getAndroidViewViewRemoved(this_));
-    this_.onchange = (e) => {
+    this_.oninput = (e) => {
         const currentValue = parseIntOrNull(this_.value) ?? 0;
 
         if (observable.value !== currentValue) {
@@ -43,13 +47,13 @@ export function androidWidgetEditTextBindInteger(this_: HTMLInputElement | HTMLT
 //! Declares com.lightningkite.khrysalis.observables.binding.bindDouble>android.widget.EditText
 export function androidWidgetEditTextBindDouble(this_: HTMLInputElement | HTMLTextAreaElement, observable: MutableObservableProperty<number>): void {
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
-        const currentValue = parseFloatOrNull(undefined);
+        const currentValue = parseFloatOrNull(this_.value);
 
-        if (!(value === currentValue)) {
+        if (value !== currentValue) {
             this_.value = takeUnless(value, (it) => it === 0.0)?.toString() ?? "";
         }
     }), getAndroidViewViewRemoved(this_));
-    this_.onchange = (e) => {
+    this_.oninput = (e) => {
         const currentValue = parseFloatOrNull(this_.value) ?? 0;
 
         if (observable.value !== currentValue) {

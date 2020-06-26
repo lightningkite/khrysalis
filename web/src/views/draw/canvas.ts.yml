@@ -43,7 +43,7 @@
 
 - id: android.graphics.Canvas.drawCircle
   type: call
-  template: ~this~.arc(~0~, ~1~, ~2~, 0, Math.PI * 2); ~3~.complete(~this~)
+  template: ~this~.beginPath(); ~this~.arc(~0~, ~1~, ~2~, 0, Math.PI * 2); ~3~.complete(~this~)
 
 - id: android.graphics.Canvas.drawRect
   type: call
@@ -96,7 +96,7 @@
 - id: android.graphics.Canvas.drawLine
   type: call
   arguments: [kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float, android.graphics.Paint]
-  template: ~this~.moveTo(~0~, ~1~); ~this~.lineTo(~2~, ~3~); ~4~.complete(~this~)
+  template: ~this~.beginPath(); ~this~.moveTo(~0~, ~1~); ~this~.lineTo(~2~, ~3~); ~4~.complete(~this~)
 
 - id: android.graphics.Canvas.drawPath
   type: call

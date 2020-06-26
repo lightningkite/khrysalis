@@ -2,6 +2,8 @@ import com.lightningkite.khrysalis.KhrysalisSettings
 import com.lightningkite.khrysalis.ios.convertResourcesToIos
 import com.lightningkite.khrysalis.ios.layout.convertLayoutsToSwift
 import com.lightningkite.khrysalis.ios.swift.convertKotlinToSwift
+import com.lightningkite.khrysalis.gradle.KhrysalisPluginExtension
+import com.lightningkite.khrysalis.ios.layout.mapViews
 
 buildscript {
     val kotlin_version = "1.3.50"
@@ -13,7 +15,7 @@ buildscript {
     dependencies {
         //        classpath("com.lightningkite:khrysalis:0.1.0")
         classpath("com.lightningkite.khrysalis:plugin:0.1.0")
-        classpath("com.android.tools.build:gradle:3.5.0")
+        classpath("com.android.tools.build:gradle:3.5.3")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version")
 
         // NOTE: Do not place your application dependencies here; they belong
@@ -26,6 +28,17 @@ plugins {
     id("kotlin-android")
     id("kotlin-android-extensions")
     id("digital.wup.android-maven-publish") version "3.6.2"
+}
+apply(plugin = "com.lightningkite.khrysalis")
+
+configure<KhrysalisPluginExtension> {
+    projectName = "KhrysalisMaps"
+    organizationName = "Lightning Kite"
+    swiftConversion = {
+        imports = listOf("RxSwift", "RxRelay")
+    }
+    overrideIosFolder = "../ios-maps"
+    overrideWebFolder = "../web-maps"
 }
 
 group = "com.lightningkite.khrysalis"
@@ -64,7 +77,7 @@ android {
 
 val kotlin_version = "1.3.50"
 dependencies {
-    api(project(":android"))
+    api(project(":android", "default"))
 //    implementation("com.lightningkite.khrysalis:android:0.1.0")
     testImplementation("junit:junit:4.12")
     androidTestImplementation("androidx.test:runner:1.2.0")
@@ -72,7 +85,9 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version")
     implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version")
     api("com.google.android.gms:play-services-maps:17.0.0")
-    api("com.google.android.libraries.places:places:2.0.0")
+    api("com.google.android.libraries.places:places:2.3.0")
+    api("io.reactivex.rxjava2:rxkotlin:2.4.0")
+    api("io.reactivex.rxjava2:rxandroid:2.1.1")
 
 }
 
@@ -95,22 +110,3 @@ publishing {
 }
 
 KhrysalisSettings.verbose = true
-
-val androidBase = project.projectDir
-val iosBase = project.projectDir.resolve("../ios-maps/KhrysalisMaps")
-
-tasks.create("khrysalisConvertKotlinToSwift") {
-    this.group = "build"
-    doLast {
-        println("Started on $androidBase")
-        convertKotlinToSwift(
-            androidBase,
-            iosBase,
-            clean = true,
-            setup = {
-                this.imports += listOf("Khrysalis")
-            }
-        )
-        println("Finished")
-    }
-}

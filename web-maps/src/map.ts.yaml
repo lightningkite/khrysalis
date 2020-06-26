@@ -1,0 +1,11 @@
+---
+- id: com.google.android.gms.maps.MapView
+  type: type
+  template: HTMLDivElement
+
+- id: com.google.android.gms.maps.MapView.getMapAsync
+  type: call
+  template:
+    pattern: getMapAsync(~this~, ~0~)
+    imports:
+      getMapAsync: khrysalis-maps/dist/MapView.bind.actual

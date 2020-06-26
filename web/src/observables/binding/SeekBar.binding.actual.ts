@@ -19,10 +19,10 @@ export function androidWidgetSeekBarBind(this_: HTMLInputElement, start: number,
                     suppress = false;
                 }
     }), getAndroidViewViewRemoved(this_));
-    this_.onchange = (e) => {
+    this_.oninput = (e) => {
         if(!suppress){
             suppress = true;
-            observable.value = start;
+            observable.value = this_.valueAsNumber;
             suppress = false;
         }
     }

@@ -3,6 +3,10 @@
   type: call
   template: Date.now()
 
+- id: java.util.Date
+  type: call
+  template: new Date()
+
 - id: com.lightningkite.khrysalis.time.dayOfWeek
   type: get
   template: (~this~.getDay() + 1)

@@ -10,26 +10,28 @@ import com.lightningkite.khrysalis.observables.MutableObservableProperty
 import com.lightningkite.khrysalis.observables.ObservableProperty
 import com.lightningkite.khrysalis.observables.addAndRunWeak
 import com.lightningkite.khrysalis.rx.addWeak
+import com.lightningkite.khrysalis.rx.removed
+import com.lightningkite.khrysalis.rx.until
 import com.lightningkite.khrysalis.views.ViewDependency
 
 fun MapView.bind(dependency: ViewDependency) {
     this.onCreate(dependency.savedInstanceState)
     this.onResume()
-    dependency.onResume.addWeak(this) { self, value ->
-        self.onResume()
-    }
-    dependency.onPause.addWeak(this) { self, value ->
-        self.onPause()
-    }
-    dependency.onSaveInstanceState.addWeak(this) { self, value ->
-        self.onSaveInstanceState(value)
-    }
-    dependency.onLowMemory.addWeak(this) { self, value ->
-        self.onLowMemory()
-    }
-    dependency.onDestroy.addWeak(this) { self, value ->
-        self.onDestroy()
-    }
+    dependency.onResume.subscribe { value ->
+        this.onResume()
+    }.until(removed)
+    dependency.onPause.subscribe { value ->
+        this.onPause()
+    }.until(removed)
+    dependency.onSaveInstanceState.subscribe { value ->
+        this.onSaveInstanceState(value)
+    }.until(removed)
+    dependency.onLowMemory.subscribe { value ->
+        this.onLowMemory()
+    }.until(removed)
+    dependency.onDestroy.subscribe { value ->
+        this.onDestroy()
+    }.until(removed)
 }
 
 fun MapView.bindView(

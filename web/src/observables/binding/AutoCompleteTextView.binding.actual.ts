@@ -11,6 +11,7 @@ export function androidWidgetAutoCompleteTextViewBind<T>(this_: HTMLInputElement
     let selectionView: HTMLDivElement | null = null;
 
     function removeOptions(){
+        console.log("Removing");
         if (selectionView) {
             container.removeChild(selectionView);
             selectionView = null;
@@ -18,17 +19,21 @@ export function androidWidgetAutoCompleteTextViewBind<T>(this_: HTMLInputElement
     }
     let lastCancel = Date.now();
     function removeOptionsCancel(){
+        console.log("Cancel removal");
         lastCancel = Date.now();
     }
     function removeOptionsTenative(){
+        console.log("Tenative removal set");
         window.setTimeout(()=>{
-            if(Date.now() - lastCancel > 50){
-                removeOptions()
+            console.log(`Remove? Diff is ${Date.now() - lastCancel}`)
+            if(Date.now() - lastCancel > 150){
+                removeOptions();
             }
         }, 100)
     }
     function showOptions(query: string, options: Array<T>) {
         removeOptions();
+        console.log("Showing Options");
         const newSelectionView = document.createElement("div");
         newSelectionView.tabIndex = -1;
         newSelectionView.classList.add("khrysalis-autocomplete-options")

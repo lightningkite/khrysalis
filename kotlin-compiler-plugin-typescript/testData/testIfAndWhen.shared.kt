@@ -104,6 +104,24 @@ fun main() {
         thing2?.let {
             println("It's a $it")
         }
+        println("Did the thing")
+    }
+
+    thing2?.let {
+        println("It's a $it")
+        thing2?.let {
+            println("ANOTHER")
+        }
+    } ?: thing2?.let {
+        println("It's a $it")
+    } ?: run {
+        println("Dunno what it is")
+    }
+
+    thing2?.let {
+        if (subfunction3() == 0) {
+            println("Hiii")
+        }
     }
 
     //When on subject
