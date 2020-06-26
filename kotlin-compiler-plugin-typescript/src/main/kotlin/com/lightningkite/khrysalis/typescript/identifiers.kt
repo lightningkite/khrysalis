@@ -20,6 +20,13 @@ fun TypescriptTranslator.registerIdentifiers(){
 //        }
 //    }
     handle<KtNameReferenceExpression>(
+        condition = { identifierScopes.containsKey(typedRule.text) && (typedRule.parent as? KtQualifiedExpression)?.let { it.selectorExpression == typedRule } != true },
+        priority = 100_000,
+        action = {
+            -identifierScopes[typedRule.text]!!.last()
+        }
+    )
+    handle<KtNameReferenceExpression>(
         condition = {
             val resolved = typedRule.resolvedReferenceTarget ?: return@handle false
             resolved is ClassDescriptor && resolved.isCompanionObject && typedRule.text == "Companion"

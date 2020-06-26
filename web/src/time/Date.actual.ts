@@ -64,7 +64,7 @@ export function copyDateAloneModRelative(on: DateAlone, getter: () => number, ac
 
 export function dateAloneModRelative(on: DateAlone, getter: () => number, action: Function, num: number): DateAlone {
     javaUtilDateSet(tempDate, on);
-    action.call(tempDate, getter.call(on) + num);
+    action.call(tempDate, getter.call(tempDate) + num);
     comLightningkiteKhrysalisTimeDateAloneSet(on, tempDate);
     return on;
 }

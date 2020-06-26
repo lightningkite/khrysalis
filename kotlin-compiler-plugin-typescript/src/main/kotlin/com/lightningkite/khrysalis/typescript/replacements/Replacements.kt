@@ -4,10 +4,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.lightningkite.khrysalis.util.allOverridden
-import com.lightningkite.khrysalis.util.allSuperVersions
-import com.lightningkite.khrysalis.util.simpleFqName
-import com.lightningkite.khrysalis.util.simplerFqName
+import com.lightningkite.khrysalis.util.*
 import org.jetbrains.kotlin.codegen.AccessorForCompanionObjectInstanceFieldDescriptor
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
@@ -27,6 +24,7 @@ class Replacements() {
     val typeRefs: HashMap<String, TreeSet<TypeRefReplacement>> = HashMap()
 
     fun getCall(
+        analysis: AnalysisExtensions,
         call: ResolvedCall<out CallableDescriptor>,
         descriptor: CallableDescriptor = call.candidateDescriptor,
         alreadyChecked: HashSet<CallableDescriptor> = HashSet()
@@ -34,12 +32,14 @@ class Replacements() {
         if(!alreadyChecked.add(descriptor)) return null
         val result =  functions[descriptor.simpleFqName.substringBefore(".<")]?.find {
             it.passes(
+                analysis = analysis,
                 call = call,
                 descriptor = descriptor
             )
         }
             ?: functions[descriptor.simplerFqName.substringBefore(".<")]?.find {
                 it.passes(
+                    analysis = analysis,
                     call = call,
                     descriptor = descriptor
                 )
@@ -47,6 +47,7 @@ class Replacements() {
             ?: (descriptor as? CallableMemberDescriptor)?.allOverridden()
                 ?.map {
                     getCall(
+                        analysis = analysis,
                         call = call,
                         descriptor = it,
                         alreadyChecked = alreadyChecked

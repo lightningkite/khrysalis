@@ -179,16 +179,30 @@
 - id: kotlin.sequences.toSet
   type: call
   template:
-    pattern: iterToSet(~this~)
+    pattern: "new EqualOverrideSet(~this~)"
     imports:
-      iterToSet: toSet from iterable-operator
+      EqualOverrideSet: khrysalis/dist/KotlinCollections
 
 - id: kotlin.sequences.toMutableSet
   type: call
   template:
-    pattern: iterToSet(~this~)
+    pattern: "new EqualOverrideSet(~this~)"
     imports:
-      iterToSet: toSet from iterable-operator
+      EqualOverrideSet: khrysalis/dist/KotlinCollections
+
+- id: kotlin.sequences.toSet
+  type: call
+  typeArgumentRequirements:
+    0: primitive
+  template:
+    pattern: new Set(~this~)
+
+- id: kotlin.sequences.toMutableSet
+  type: call
+  typeArgumentRequirements:
+    0: primitive
+  template:
+    pattern: new Set(~this~)
 
 # TODO: groupBy
 
@@ -229,12 +243,12 @@
     imports:
       iterFirst: first from iterable-operator
 
-- id: kotlin.sequences.firstOrNull
+- id: kotlin.collections.firstOrNull
   type: call
   template:
-    pattern: (iterFirst(~this~) ?? null)
+    pattern: iterFirstOrNull(~this~)
     imports:
-      iterFirst: first from iterable-operator
+      iterFirstOrNull: khrysalis/dist/KotlinCollections
 
 - id: kotlin.sequences.last
   type: call
@@ -243,9 +257,9 @@
     imports:
       iterLast: last from iterable-operator
 
-- id: kotlin.sequences.lastOrNull
+- id: kotlin.collections.lastOrNull
   type: call
   template:
-    pattern: (iterLast(~this~) ?? null)
+    pattern: iterLastOrNull(~this~)
     imports:
-      iterLast: last from iterable-operator
+      iterLastOrNull: khrysalis/dist/KotlinCollections

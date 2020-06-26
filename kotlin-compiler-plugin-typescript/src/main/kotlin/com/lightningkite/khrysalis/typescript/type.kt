@@ -36,6 +36,7 @@ private val primitiveTypes = setOf(
     "kotlin.ULong",
     "kotlin.Float",
     "kotlin.Double",
+    "kotlin.Char",
     "kotlin.String",
     "kotlin.Boolean",
     "kotlin.Unit",

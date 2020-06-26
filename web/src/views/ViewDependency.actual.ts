@@ -6,6 +6,62 @@ import {Exception} from '../Kotlin'
 import {GeoCoordinate} from '../location/GeoCoordinate.shared'
 import {also, takeUnless} from 'Kotlin'
 import {v4 as randomUuidV4} from 'uuid'
+import {_showDialogEvent, showDialog} from "./showDialog.shared";
+import {setViewText} from "./ViewWithText.ext.actual";
+
+export function listenForDialogs(){
+    _showDialogEvent.subscribe({
+        next(value){
+            const top = document.createElement("div");
+            top.classList.add("resp-sharing-dialog-back");
+            const dialog = document.createElement("dialog");
+            dialog.classList.add("khrysalis-dialog-front");
+
+            const message = document.createElement("p");
+            message.classList.add("khrysalis-dialog-message");
+            setViewText(message, value._string.get(window));
+            dialog.appendChild(message);
+
+            const buttons = document.createElement("div");
+            buttons.classList.add("khrysalis-dialog-buttons")
+
+            if(value.confirmation){
+                const cancel = document.createElement("button");
+                cancel.classList.add("khrysalis-dialog-cancel");
+                cancel.textContent = "Cancel";
+                cancel.onclick = (e)=>{
+                    e.preventDefault();
+                    document.body.removeChild(top);
+                }
+                buttons.appendChild(cancel);
+            }
+
+            const ok = document.createElement("button");
+            ok.classList.add("khrysalis-dialog-ok");
+            ok.textContent = "OK";
+            ok.onclick = (e)=>{
+                e.preventDefault();
+                if(value.confirmation){
+                    value.confirmation();
+                }
+                document.body.removeChild(top);
+            }
+            buttons.appendChild(ok);
+
+            dialog.appendChild(buttons);
+
+            dialog.onclick = (e) => {
+                e.preventDefault();
+            }
+            top.onclick = (e) => {
+                e.preventDefault();
+                document.body.removeChild(top);
+            };
+            top.appendChild(dialog);
+            document.body.appendChild(top);
+        }
+    });
+}
 
 //! Declares com.lightningkite.khrysalis.views.share>com.lightningkite.khrysalis.android.ActivityAccess
 export function comLightningkiteKhrysalisAndroidActivityAccessShare(this_: Window, shareTitle: string, message: (string | null) = null, url: (string | null) = null, image: (Image | null) = null): void {
@@ -190,6 +246,7 @@ export function comLightningkiteKhrysalisAndroidActivityAccessRequestImagesGalle
         }
         callback(files)
     };
+    f.click();
 }
 
 //! Declares com.lightningkite.khrysalis.views.requestImageGallery>com.lightningkite.khrysalis.android.ActivityAccess
@@ -203,6 +260,7 @@ export function comLightningkiteKhrysalisAndroidActivityAccessRequestImageGaller
             callback(file);
         }
     };
+    f.click();
 }
 
 //! Declares com.lightningkite.khrysalis.views.requestImageCamera>com.lightningkite.khrysalis.android.ActivityAccess
@@ -217,4 +275,5 @@ export function comLightningkiteKhrysalisAndroidActivityAccessRequestImageCamera
             callback(file);
         }
     };
+    f.click();
 }

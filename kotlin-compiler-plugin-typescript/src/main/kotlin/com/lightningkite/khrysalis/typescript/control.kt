@@ -8,13 +8,6 @@ import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 
-fun KtExpression.needsSemi(): Boolean = this !is KtDeclaration
-        && this !is KtLoopExpression
-        && this !is KtBlockExpression
-        && this !is KtIfExpression
-        && this !is KtTryExpression
-        && this !is KtWhenExpression
-
 fun TypescriptTranslator.registerControl() {
 
     handle<KtBlockExpression> {
@@ -355,7 +348,7 @@ fun TypescriptTranslator.registerControl() {
             -") "
             -"{\n"
             destructuringDeclaration.entries.forEachIndexed { index, it ->
-                val rule = it.resolvedComponentResolvedCall?.let { replacements.getCall(it) }
+                val rule = it.resolvedComponentResolvedCall?.let { replacements.getCall(this@registerControl, it) }
                 if (rule != null) {
                     emitTemplate(
                         requiresWrapping = false,

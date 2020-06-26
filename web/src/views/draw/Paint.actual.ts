@@ -49,6 +49,7 @@ export class Paint {
         context.imageSmoothingEnabled = this.isAntiAlias;
     }
     complete(context: CanvasRenderingContext2D){
+        context.closePath()
         this.apply(context);
         switch(this.style){
             case Paint.Style.FILL:

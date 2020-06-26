@@ -1,19 +1,127 @@
 ---
 # Maps
-- id: kotlin.collecitons.Map
+- id: kotlin.collections.Map
   type: type
-  template: Map
-- id: kotlin.collecitons.Map
+  template: Map<~T0~, ~T1~>
+
+- id: kotlin.collections.HashMap
   type: type
-  typeArgumentsHaveCustomEquals: [0]
-  template:
-    pattern: EqualOverrideMap
-    imports:
-      EqualOverrideMap: khrysalis/dist/Kotlin
+  template: Map<~T0~, ~T1~>
+
+- id: kotlin.collections.MutableMap
+  type: type
+  template: Map<~T0~, ~T1~>
+
+## Creation
 
 - id: kotlin.collections.mapOf
   type: call
-  template: new Map([~*~])
+  typeArgumentRequirements:
+    0: primitive
+  hasExplicitTypeArguments: true
+  template: "new Map<~T0~>([~*~])"
+- id: kotlin.collections.mapOf
+  type: call
+  typeArgumentRequirements:
+    0: primitive
+  template: "new Map([~*~])"
+
+- id: kotlin.collections.mapOf
+  type: call
+  hasExplicitTypeArguments: true
+  template:
+    pattern: "new EqualOverrideMap<~T0~>([~*~])"
+    imports:
+      EqualOverrideMap: khrysalis/dist/KotlinCollections
+- id: kotlin.collections.mapOf
+  type: call
+  template:
+    pattern: "new EqualOverrideMap([~*~])"
+    imports:
+      EqualOverrideMap: khrysalis/dist/KotlinCollections
+
+- id: kotlin.collections.mutableMapOf
+  type: call
+  typeArgumentRequirements:
+    0: primitive
+  hasExplicitTypeArguments: true
+  template: "new Map<~T0~>([~*~])"
+- id: kotlin.collections.mutableMapOf
+  type: call
+  typeArgumentRequirements:
+    0: primitive
+  template: "new Map([~*~])"
+
+- id: kotlin.collections.mutableMapOf
+  type: call
+  hasExplicitTypeArguments: true
+  template:
+    pattern: "new EqualOverrideMap<~T0~>([~*~])"
+    imports:
+      EqualOverrideMap: khrysalis/dist/KotlinCollections
+- id: kotlin.collections.mutableMapOf
+  type: call
+  template:
+    pattern: "new EqualOverrideMap([~*~])"
+    imports:
+      EqualOverrideMap: khrysalis/dist/KotlinCollections
+
+- id: kotlin.collections.hashMapOf
+  type: call
+  typeArgumentRequirements:
+    0: primitive
+  hasExplicitTypeArguments: true
+  template: "new Map<~T0~>([~*~])"
+- id: kotlin.collections.hashMapOf
+  type: call
+  typeArgumentRequirements:
+    0: primitive
+  template: "new Map([~*~])"
+
+- id: kotlin.collections.hashMapOf
+  type: call
+  hasExplicitTypeArguments: true
+  template:
+    pattern: "new EqualOverrideMap<~T0~>([~*~])"
+    imports:
+      EqualOverrideMap: khrysalis/dist/KotlinCollections
+- id: kotlin.collections.hashMapOf
+  type: call
+  template:
+    pattern: "new EqualOverrideMap([~*~])"
+    imports:
+      EqualOverrideMap: khrysalis/dist/KotlinCollections
+
+- id: kotlin.collections.HashMap
+  type: call
+  hasExplicitTypeArguments: true
+  typeArgumentRequirements:
+    0: primitive
+  template: new Map<~T0~, ~T1~>()
+
+- id: kotlin.collections.HashMap
+  type: call
+  typeArgumentRequirements:
+    0: primitive
+  template: new Map()
+
+- id: kotlin.collections.HashMap
+  type: call
+  hasExplicitTypeArguments: true
+  template:
+    pattern: "new EqualOverrideMap<~T0~, ~T1~>()"
+    imports:
+      EqualOverrideMap: khrysalis/dist/KotlinCollections
+
+- id: kotlin.collections.HashMap
+  type: call
+  template:
+    pattern: "new EqualOverrideMap()"
+    imports:
+      EqualOverrideMap: khrysalis/dist/KotlinCollections
+
+## Usage
+
 - id: kotlin.collections.component1
   type: call
   receiver: Map.Entry
@@ -35,8 +143,3 @@
 - id: kotlin.collections.Map.entries
   type: get
   template: ~this~.entries()
-
--
-  id: android.view.TextView.text
-  type: set
-  template: ~this~.innerContent = ~value~

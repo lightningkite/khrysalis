@@ -16,34 +16,47 @@ export function androidWidgetViewFlipperBindLoading(this_: HTMLDivElement, loadi
         this_.appendChild(newElement);
         return newElement;
     })()
-    const animation = "khrysalis-animate-fade"
+    const animation = "khrysalis-animate-fade";
     let currentView = mainChild;
     let hiddenView = loadingChild;
-    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(loading, undefined, undefined, (e)=>{
+    ioReactivexDisposablesDisposableUntil(loading.onChange.subscribe(  (e)=>{
+        if(e){
+            hiddenView = mainChild;
+            currentView = loadingChild;
+        } else {
+            currentView = mainChild;
+            hiddenView = loadingChild;
+        }
+
+        currentView.style.animation = "none";
+        hiddenView.style.animation = "none";
+
         //animate out
-        const animationOut = `${animation}-out`
+        const animationOut = `${animation}-out`;
         let animOutHandler: (ev: AnimationEvent) => void;
         animOutHandler = (ev: AnimationEvent) => {
             if (ev.animationName === animationOut) {
-                ev.target.removeEventListener("animationEnd", animOutHandler);
-                (ev.target as HTMLElement).style.display = "hidden";
+                (ev.target as HTMLElement).onanimationend = null;
+                (ev.target as HTMLElement).style.visibility = "hidden";
             }
-        }
-        currentView.addEventListener("animationend", animOutHandler)
-        currentView.style.animation = `${animationOut} 0.25s`
+        };
+        hiddenView.onanimationend = animOutHandler;
+        hiddenView.style.animation = `${animationOut} 0.25s`;
 
         //animate in
-        const animationIn = `${animation}-in`
-        let animInHandler: (ev: AnimationEvent) => void;
-        animInHandler = (ev: AnimationEvent) => {
-            if (ev.animationName === animationIn) {
-                ev.target.removeEventListener("animationEnd", animInHandler);
-                (ev.target as HTMLElement).style.display = "hidden";
-            }
-        }
-        hiddenView.addEventListener("animationend", animInHandler)
-        hiddenView.style.animation = `${animationIn} 0.25s`
+        const animationIn = `${animation}-in`;
+        currentView.style.visibility = "visible";
+        currentView.style.animation = `${animationIn} 0.25s`;
 
     }), getAndroidViewViewRemoved(this_))
-}
 
+    if(loading.value){
+        hiddenView = mainChild;
+        currentView = loadingChild;
+    } else {
+        currentView = mainChild;
+        hiddenView = loadingChild;
+    }
+    currentView.style.visibility = "visible";
+    hiddenView.style.visibility = "hidden";
+}

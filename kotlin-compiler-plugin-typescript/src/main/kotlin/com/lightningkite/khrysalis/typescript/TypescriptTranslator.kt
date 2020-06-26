@@ -4,20 +4,18 @@ import com.lightningkite.khrysalis.generic.PartialTranslatorByType
 import com.lightningkite.khrysalis.generic.TranslatorInterface
 import com.lightningkite.khrysalis.typescript.replacements.Replacements
 import com.lightningkite.khrysalis.util.AnalysisExtensions
-import com.lightningkite.khrysalis.util.simpleFqName
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.descriptors.DeclarationDescriptor
-import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
-import org.jetbrains.kotlin.psi.KtExpression
-import org.jetbrains.kotlin.psi.KtThisExpression
+import org.jetbrains.kotlin.lexer.KtTokens
+import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
+import org.jetbrains.kotlin.psi.psiUtil.getTextWithLocation
 import org.jetbrains.kotlin.resolve.BindingContext
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 import org.jetbrains.kotlin.resolve.scopes.receivers.ExtensionReceiver
-import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -36,6 +34,18 @@ class TypescriptTranslator(
     @Deprecated("NO.  Go to your room.", ReplaceWith("this.declarations.local")) val kotlinFqNameToRelativeFile get() = declarations.local
 
     data class ReceiverAssignment(val declaration: DeclarationDescriptor, val tsName: String)
+
+    val _identifierScopes = HashMap<String, ArrayList<String>>()
+    val identifierScopes: Map<String, List<String>> get() = _identifierScopes
+    inline fun withName(ktName: String, tsName: String, action: (String)->Unit){
+        val list = _identifierScopes.getOrPut(ktName){ ArrayList() }
+        list.add(tsName)
+        action(tsName)
+        list.removeAt(list.lastIndex)
+        if(list.isEmpty()) {
+            _identifierScopes.remove(ktName)
+        }
+    }
 
     val _receiverStack = ArrayList<ReceiverAssignment>()
     val receiverStack: List<ReceiverAssignment> get() = _receiverStack
@@ -123,10 +133,79 @@ class TypescriptTranslator(
         registerControl()
         registerOperators()
         registerReceiver()
+        registerSpecialLet()
 
         handle<LeafPsiElement>(condition = { typedRule.text in terminalMap.keys }, priority = 1) {
             out.append(terminalMap[typedRule.text])
         }
+    }
+
+
+    fun KtExpression.isSafeLetDirect(): Boolean {
+        if (this !is KtSafeQualifiedExpression) return false
+        val callExpression = this.selectorExpression as? KtCallExpression ?: return false
+        if (callExpression.lambdaArguments.isEmpty()) return false
+        if ((callExpression.calleeExpression as? KtReferenceExpression)?.resolvedReferenceTarget?.fqNameSafe?.asString() != "kotlin.let") return false
+        return true
+    }
+
+    fun KtExpression.isRunDirect(): Boolean {
+        if (this !is KtCallExpression) return false
+        if (this.lambdaArguments.isEmpty()) return false
+        if ((this.calleeExpression as? KtReferenceExpression)?.resolvedReferenceTarget?.fqNameSafe?.asString() != "kotlin.run") return false
+        return true
+    }
+
+    fun KtBinaryExpression.isSafeLetChain(): Boolean {
+        if (this.operationToken != KtTokens.ELVIS) return false
+        if (this.left?.isSafeLetDirect() == true) return true
+        return (this.left as? KtBinaryExpression)?.isSafeLetChain() == true && this.right?.let {
+            it.isRunDirect() || it.isSafeLetDirect()
+        } == true
+    }
+
+    fun KtBinaryExpression.safeLetChainRoot(): KtBinaryExpression {
+        (this.parent as? KtBinaryExpression)?.let { p ->
+            if (p.left == this && p.right?.let { it.isRunDirect() || it.isSafeLetDirect() } == true) {
+                if (p.operationToken == KtTokens.ELVIS) {
+                    return p.safeLetChainRoot()
+                }
+            }
+        }
+        return this
+    }
+
+    fun KtExpression.needsSemi(): Boolean = this !is KtDeclaration
+            && this !is KtLoopExpression
+            && this !is KtBlockExpression
+            && this !is KtIfExpression
+            && this !is KtTryExpression
+            && this !is KtWhenExpression
+            && !this.isSafeLetDirect()
+            && ((this as? KtBinaryExpression)?.isSafeLetChain() != true)
+
+    override fun determineNotStatementLambda(it: KtFunctionLiteral): Boolean {
+        if(!super.determineNotStatementLambda(it)) {
+            return false
+        }
+        if(it
+            .parentOfType<KtLambdaExpression>()
+            ?.parentOfType<KtLambdaArgument>()
+            ?.parentOfType<KtCallExpression>()
+            ?.let {
+                if((it.parent as? KtExpression)?.let {
+                        it.isSafeLetDirect() && !determineNotStatement(it)
+                    } == true){
+                    return false
+                }
+                it.parentOfType<KtBinaryExpression>()
+                    ?: it.parentOfType<KtQualifiedExpression>()
+                        ?.parentOfType<KtBinaryExpression>()
+            }
+            ?.isSafeLetChain() == true){
+            return false
+        }
+        return true
     }
 }
 

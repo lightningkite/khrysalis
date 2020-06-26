@@ -11,17 +11,17 @@ import { MutableObservableProperty } from '../MutableObservableProperty.shared'
 export function comRdPageIndicatorViewBind(this_: HTMLDivElement, count: number = 0, selected: MutableObservableProperty<number>): void {
     for(let i = 0; i < count; i++){
         const e = document.createElement("div");
-        e.classList.add("khrysalis-page-indicator");
+        e.classList.add("khrysalis-page-indicator-dot");
         this_.appendChild(e);
     }
     let previouslyActive = this_.firstElementChild;
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(selected, undefined, undefined, (page)=>{
         if(previouslyActive){
-            previouslyActive.classList.remove("khrysalis-page-indicator-active");
+            previouslyActive.classList.remove("khrysalis-page-indicator-dot-active");
         }
         const e = this_.children.item(page);
         if(e){
-            e.classList.add("khrysalis-page-indicator-active");
+            e.classList.add("khrysalis-page-indicator-dot-active");
         }
         previouslyActive = e;
     }), getAndroidViewViewRemoved(this_));
@@ -34,9 +34,9 @@ export function comRdPageIndicatorViewBindDynamic(this_: HTMLDivElement, count: 
         this_.innerHTML = "";
         for(let i = 0; i < count; i++){
             const e = document.createElement("div");
-            e.classList.add("khrysalis-page-indicator");
+            e.classList.add("khrysalis-page-indicator-dot");
             if(i === selected.value){
-                e.classList.add("khrysalis-page-indicator-active");
+                e.classList.add("khrysalis-page-indicator-dot-active");
                 previouslyActive = e;
             }
             this_.appendChild(e);
@@ -44,11 +44,11 @@ export function comRdPageIndicatorViewBindDynamic(this_: HTMLDivElement, count: 
     }), getAndroidViewViewRemoved(this_));
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(selected, undefined, undefined, (page)=>{
         if(previouslyActive){
-            previouslyActive.classList.remove("khrysalis-page-indicator-active");
+            previouslyActive.classList.remove("khrysalis-page-indicator-dot-active");
         }
         const e = this_.children.item(page);
         if(e){
-            e.classList.add("khrysalis-page-indicator-active");
+            e.classList.add("khrysalis-page-indicator-dot-active");
         }
         previouslyActive = e;
     }), getAndroidViewViewRemoved(this_));
