@@ -211,13 +211,13 @@
   template:
     pattern: sprintf(~this~, ~*~)
     imports:
-      sprintf: sprintf
+      sprintf: sprintf-js
 - id: com.lightningkite.khrysalis.formatList
   type: call
   template:
     pattern: vsprintf(~this~, ~0~)
     imports:
-      vsprintf: sprintf
+      vsprintf: sprintf-js
 
 # Converting to Numbers
 
