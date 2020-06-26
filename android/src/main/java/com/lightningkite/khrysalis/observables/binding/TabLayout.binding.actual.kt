@@ -1,6 +1,7 @@
 package com.lightningkite.khrysalis.observables.binding
 
 import com.google.android.material.tabs.TabLayout
+import com.lightningkite.khrysalis.Hashable
 import com.lightningkite.khrysalis.observables.*
 import com.lightningkite.khrysalis.rx.removed
 import com.lightningkite.khrysalis.rx.until
@@ -17,7 +18,7 @@ import com.lightningkite.khrysalis.rx.until
 fun TabLayout.bind(
     tabs: List<String>,
     selected: MutableObservableProperty<Int>,
-    allowReselect:Boolean = false
+    allowReselect: Boolean = false
 ) {
     for (tab in tabs) {
         addTab(newTab().setText(tab))
@@ -60,20 +61,27 @@ fun TabLayout.bind(
  *
  */
 
-fun TabLayout.bind(
-    tabs: ObservableProperty<List<String>>,
-    selected: MutableObservableProperty<Int>,
-    allowReselect:Boolean = false
+fun <T : Hashable> TabLayout.bind(
+    options: ObservableProperty<List<T>>,
+    selected: MutableObservableProperty<T>,
+    allowReselect: Boolean = false,
+    toString: (T) -> String
 ) {
-    tabs.subscribeBy{tabs ->
+    val map = HashMap<T, TabLayout.Tab>()
+    val reverse = HashMap<TabLayout.Tab, T>()
+    options.subscribeBy { tabs ->
         this.removeAllTabs()
+        map.clear()
         for (tab in tabs) {
-            addTab(newTab().setText(tab))
+            val actual = newTab().setText(toString(tab))
+            map[tab] = actual
+            reverse[actual] = tab
+            addTab(actual)
         }
     }.until(this.removed)
 
     selected.subscribeBy { value ->
-        this.getTabAt(value)?.select()
+        map[value]?.select()
     }.until(this.removed)
     this.addOnTabSelectedListener(object : TabLayout.BaseOnTabSelectedListener<TabLayout.Tab> {
 
@@ -82,7 +90,9 @@ fun TabLayout.bind(
         override fun onTabReselected(p0: TabLayout.Tab) {
             if (!suppress && allowReselect) {
                 suppress = true
-                selected.value = p0.position
+                val value = reverse[p0]
+                if (value != null)
+                    selected.value = value
                 suppress = false
             }
         }
@@ -92,8 +102,9 @@ fun TabLayout.bind(
         override fun onTabSelected(p0: TabLayout.Tab) {
             if (!suppress) {
                 suppress = true
-                if (selected.value != p0.position)
-                    selected.value = p0.position
+                val value = reverse[p0]
+                if (value != null && selected.value != value)
+                    selected.value = value
                 suppress = false
             }
         }
