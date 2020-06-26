@@ -35,7 +35,13 @@ public struct Regex {
         return Match(value: groupValues[0], groupValues: groupValues)
     }
 
-    public func matchEntire(_ input: String) -> String?{
-        TODO()
+    public func matchEntire(_ input: String) -> Match?{
+        let x = find(input)
+        if let x = x {
+            if x.value.count == input.count {
+                return x
+            }
+        }
+        return nil
     }
 }
