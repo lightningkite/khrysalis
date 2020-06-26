@@ -6,23 +6,23 @@
 export function androidViewViewOnClick(this_: HTMLElement, disabledMilliseconds: number = 500, action: () => void): void {
     let lastActivated = Date.now();
 
-    this_.addEventListener("onclick", (_ev) => {
+    this_.onclick = (_ev) => {
         _ev.stopPropagation();
         const it = _ev.target as HTMLElement;
         if (Date.now() - lastActivated > disabledMilliseconds) {
             action();
             lastActivated = Date.now();
         }
-    });
+    };
 }
 
 //! Declares com.lightningkite.khrysalis.views.onLongClick>android.view.View
 export function androidViewViewOnLongClick(this_: HTMLElement, action: () => void): void {
-    this_.addEventListener("oncontextmenu", (_ev) => {
+    this_.oncontextmenu = (_ev) => {
         _ev.stopPropagation();
         const it = _ev.target as HTMLElement;
         action();
-    });
+    };
 }
 
 export function getViewVisibility(this_: HTMLElement): string {

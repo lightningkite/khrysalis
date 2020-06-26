@@ -31,9 +31,9 @@ class TypescriptFileEmitter(val translator: TypescriptTranslator, val file: KtFi
         val relPath = file.virtualFilePath.removePrefix(translator.commonPath)
         writer.appendln("// File: $relPath")
         writer.appendln("// Package: ${file.packageFqName.asString()}")
-        importedFqs.forEach {
-            writer.appendln("// FQImport: $it")
-        }
+//        importedFqs.forEach {
+//            writer.appendln("// FQImport: $it")
+//        }
         renderImports(translator.projectName, relPath, imports.values, writer)
         writer.appendln()
 

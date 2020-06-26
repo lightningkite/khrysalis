@@ -26,12 +26,12 @@ public extension Dropdown {
     func bind<T: Equatable>(options: ObservableProperty<Array<T>>, selected: MutableObservableProperty<T>, makeView: @escaping (ObservableProperty<T>) -> View) -> Void {
         return bind(options, selected, makeView)
     }
-    func bind<T: Equatable>(_ options: ObservableProperty<Array<T>>, _ selected: MutableObservableProperty<T>, _ toString: @escaping (T) -> String) -> Void {
+    func bind<T: Equatable>(_ options: ObservableProperty<Array<T>>, _ selected: MutableObservableProperty<T>, _ toString: @escaping (T) -> String = { $0.toString() } ) -> Void {
 //        bind(options, selected) { obs in
             TODO() //Make label
 //        }
     }
-    func bind<T: Equatable>(options: ObservableProperty<Array<T>>, selected: MutableObservableProperty<T>, toString: @escaping (T) -> String) -> Void {
+    func bind<T: Equatable>(options: ObservableProperty<Array<T>>, selected: MutableObservableProperty<T>, toString: @escaping (T) -> String = { $0.toString() } ) -> Void {
         return bind(options, selected, toString)
     }
 }

@@ -8,16 +8,55 @@ import { MutableObservableProperty } from '../MutableObservableProperty.shared'
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>android.widget.RatingBar
 export function ratingBarBindMutable(this_: HTMLDivElement, stars: number, observable: MutableObservableProperty<number>): void {
+    androidWidgetRatingBarBind(this_, stars, observable);
+    const input = document.createElement("input");
+    input.type = "range"
+    input.min = "1";
+    input.max = stars.toString();
+    input.style.display = "none";
+    this_.appendChild(input);
+
+    let suppress = false;
+    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
+        if (!suppress) {
+            suppress = true;
+            input.valueAsNumber = (value);
+            suppress = false;
+        }
+    }), getAndroidViewViewRemoved(input));
+    input.oninput = (e) => {
+        if(!suppress){
+            suppress = true;
+            observable.value = input.valueAsNumber;
+            suppress = false;
+        }
+    }
+
+    this_.tabIndex = 0;
+    this_.addEventListener("keydown", (ev) => {
+        switch(ev.code){
+            case "ArrowRight":
+                ev.preventDefault();
+                if(observable.value < stars){
+                    observable.value++;
+                }
+                break;
+            case "ArrowLeft":
+                ev.preventDefault();
+                if(observable.value > 1){
+                    observable.value--;
+                }
+                break;
+        }
+    })
+
     for(let i = 0; i < stars; i++){
-        const e = document.createElement("div");
-        e.classList.add("khrysalis-rating-bar-star");
+        const e = this_.children.item(i) as HTMLElement;
         e.onclick = (ev) => {
             ev.stopPropagation();
             observable.value = i + 1;
         }
-        this_.appendChild(e);
     }
-    androidWidgetRatingBarBind(this_, stars, observable);
 }
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>android.widget.RatingBar
@@ -30,10 +69,10 @@ export function androidWidgetRatingBarBind(this_: HTMLDivElement, stars: number,
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (rating)=>{
         for(let i = 0; i < stars; i++){
             const e = this_.children.item(i);
-            if(i + 1 < rating){
-                e.classList.remove("khrysalis-rating-bar-star-on");
-            } else {
+            if(Math.round(i + 1) <= Math.round(rating)){
                 e.classList.add("khrysalis-rating-bar-star-on");
+            } else {
+                e.classList.remove("khrysalis-rating-bar-star-on");
             }
         }
     }), getAndroidViewViewRemoved(this_));

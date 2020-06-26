@@ -9,7 +9,7 @@ export class Exception extends Error {
         this.cause = cause;
     }
     printStackTrace(){
-        console.trace(this);
+        console.error(`${this.name}: ${this.message}\n${this.stack}`);
     }
 }
 //! Declares kotlin.IllegalArgumentException

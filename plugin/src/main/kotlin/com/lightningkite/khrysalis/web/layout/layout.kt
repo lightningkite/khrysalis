@@ -193,9 +193,11 @@ internal fun HtmlTranslator.layout() {
         }
         out.contentNodes += ResultNode("button").apply {
             classes += "khrysalis-pager-left"
+            contentNodes.add("←")
         }
         out.contentNodes += ResultNode("button").apply {
             classes += "khrysalis-pager-right"
+            contentNodes.add("→")
         }
     }
     element.handle("RadioGroup") {

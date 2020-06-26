@@ -5,6 +5,7 @@
 import {CustomViewDelegate} from "./CustomViewDelegate.shared";
 import {DisplayMetrics} from "./DisplayMetrics.actual";
 import {DisposableLambda, getAndroidViewViewRemoved} from "../rx/DisposeCondition.actual";
+import {tryCastClass} from "../Kotlin";
 
 const customViewDelegateSymbol = Symbol("customViewDelegateSymbol");
 const customViewConfiguredSymbol = Symbol("customViewConfiguredSymbol");
@@ -20,56 +21,64 @@ export function customViewSetDelegate(view: HTMLCanvasElement, delegate: CustomV
     view[customViewDelegateSymbol]?.dispose();
     delegate.customView = view;
 
-    if(!view[customViewConfiguredSymbol]){
-        view[customViewConfiguredSymbol] = true;
-        getAndroidViewViewRemoved(view).call(new DisposableLambda(()=>{
-            view[customViewDelegateSymbol]?.dispose();
-            view[customViewDelegateSymbol] = null;
-        }))
-    }
-
+    view.style.touchAction = "none";
     view.onpointerdown = (e) => {
         const b = view.getBoundingClientRect();
-        delegate.onTouchDown(e.pointerId, e.pageX - b.x, e.pageY - b.y, view.width, view.height)
+        delegate.onTouchDown(e.pointerId, e.pageX - b.x, e.pageY - b.y, view.width, view.height);
     }
     view.onpointermove = (e) => {
-        const b = view.getBoundingClientRect();
-        delegate.onTouchMove(e.pointerId, e.pageX - b.x, e.pageY - b.y, view.width, view.height)
+        if(e.buttons > 0){
+            const b = view.getBoundingClientRect();
+            delegate.onTouchMove(e.pointerId, e.pageX - b.x, e.pageY - b.y, view.width, view.height);
+        }
     }
     view.onpointercancel = (e) => {
         const b = view.getBoundingClientRect();
-        delegate.onTouchCancelled(e.pointerId, e.pageX - b.x, e.pageY - b.y, view.width, view.height)
+        delegate.onTouchCancelled(e.pointerId, e.pageX - b.x, e.pageY - b.y, view.width, view.height);
     }
     view.onpointerup = (e) => {
         const b = view.getBoundingClientRect();
-        delegate.onTouchUp(e.pointerId, e.pageX - b.x, e.pageY - b.y, view.width, view.height)
-    }
-
-    const p = view.parentElement;
-    if(p){
-        const obs = new ResizeObserver(function callback(){
-            if(!view.style.width.endsWith("%") && !(p.style.flexDirection == "column" && view.style.alignSelf == "stretch")){
-                view.style.width = delegate.sizeThatFitsWidth(p.scrollWidth, p.scrollHeight).toString() + "px";
-            }
-            if(!view.style.height.endsWith("%") && !(p.style.flexDirection == "row" && view.style.alignSelf == "stretch")) {
-                view.style.height = delegate.sizeThatFitsHeight(p.scrollWidth, p.scrollHeight).toString() + "px";
-            }
-            if(!document.contains(view)) {
-                obs.disconnect();
-            }
-        });
-        obs.observe(p);
+        delegate.onTouchUp(e.pointerId, e.pageX - b.x, e.pageY - b.y, view.width, view.height);
     }
 
     if(view.getContext){
         const ctx = view.getContext("2d");
         view.width = view.offsetWidth;
         view.height = view.offsetHeight;
-        delegate.draw(ctx, view.width, view.height, DisplayMetrics.INSTANCE);
+        if(view.width > 2 && view.height > 2){
+            delegate.draw(ctx, view.width, view.height, DisplayMetrics.INSTANCE);
+        }
     } else {
-        p?.appendChild(delegate.generateAccessibilityView());
+        view.parentElement?.appendChild(delegate.generateAccessibilityView());
     }
     view[customViewDelegateSymbol] = delegate;
+
+    if(!view[customViewConfiguredSymbol]){
+        view[customViewConfiguredSymbol] = true;
+        getAndroidViewViewRemoved(view).call(new DisposableLambda(()=>{
+            view[customViewDelegateSymbol]?.dispose();
+            view[customViewDelegateSymbol] = null;
+        }))
+
+        const p = view.parentElement;
+        const adjWidth = !view.style.width && !(p.style.flexDirection == "column" && view.style.alignSelf == "stretch");
+        const adjHeight = !view.style.height && !(p.style.flexDirection == "row" && view.style.alignSelf == "stretch");
+        if(p){
+            const obs = new ResizeObserver(function callback(){
+                if(adjWidth){
+                    view.style.width = delegate.sizeThatFitsWidth(p.scrollWidth, p.scrollHeight).toString() + "px";
+                }
+                if(adjHeight) {
+                    view.style.height = delegate.sizeThatFitsHeight(p.scrollWidth, p.scrollHeight).toString() + "px";
+                }
+                customViewInvalidate(view);
+                if(!document.contains(view)) {
+                    obs.disconnect();
+                }
+            });
+            obs.observe(p);
+        }
+    }
 }
 
 export function customViewInvalidate(view: HTMLCanvasElement) {
@@ -79,7 +88,9 @@ export function customViewInvalidate(view: HTMLCanvasElement) {
         const ctx = view.getContext("2d");
         view.width = view.offsetWidth;
         view.height = view.offsetHeight;
-        ctx.clearRect(0, 0, view.width, view.height);
-        delegate.draw(ctx, view.width, view.height, DisplayMetrics.INSTANCE);
+        if(view.width > 2 && view.height > 2){
+            ctx.clearRect(0, 0, view.width, view.height);
+            delegate.draw(ctx, view.width, view.height, DisplayMetrics.INSTANCE);
+        }
     }
 }

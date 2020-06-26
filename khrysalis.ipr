@@ -347,7 +347,7 @@
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
   </component>
   <component name="idea.plugin.psiviewer.controller.project.PsiViewerProjectService">
-    <option name="HIGHLIGHT" value="false" />
+    <option name="HIGHLIGHT" value="true" />
     <option name="FILTER_WHITESPACE" value="false" />
     <option name="SHOW_PROPERTIES" value="true" />
     <option name="SPLIT_DIVIDER_POSITION" value="476" />

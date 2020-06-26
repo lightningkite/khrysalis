@@ -76,7 +76,7 @@ fun <T> Spinner.bind(
 fun <T> Spinner.bind(
     options: ObservableProperty<List<T>>,
     selected: MutableObservableProperty<T>,
-    toString: (T) -> String
+    toString: (T) -> String = { it.toString() }
 ) {
     adapter = object : BaseAdapter() {
         init {

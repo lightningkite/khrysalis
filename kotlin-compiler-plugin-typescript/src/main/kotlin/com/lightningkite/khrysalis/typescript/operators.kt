@@ -1,9 +1,11 @@
 package com.lightningkite.khrysalis.typescript
 
+import com.lightningkite.khrysalis.util.AnalysisExtensions
 import com.lightningkite.khrysalis.util.forEachBetween
 import org.jetbrains.kotlin.com.intellij.psi.tree.IElementType
 import org.jetbrains.kotlin.descriptors.CallableDescriptor
 import org.jetbrains.kotlin.descriptors.FunctionDescriptor
+import org.jetbrains.kotlin.descriptors.PropertyDescriptor
 import org.jetbrains.kotlin.lexer.KtSingleValueToken
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
@@ -32,12 +34,6 @@ data class VirtualArrayGet(
     val resolvedCall: ResolvedCall<out CallableDescriptor>? = null
 )
 
-fun KtExpression.isSimple(): Boolean = when(this){
-    is KtNameReferenceExpression,
-    is KtConstantExpression,
-    is KtThisExpression -> true
-    else -> false
-}
 
 fun TypescriptTranslator.registerOperators() {
 
@@ -75,12 +71,12 @@ fun TypescriptTranslator.registerOperators() {
     }
     handle<VirtualArrayGet>(
         condition = {
-            replacements.getCall(typedRule.resolvedCall ?: return@handle false) != null
+            replacements.getCall(this@registerOperators, typedRule.resolvedCall ?: return@handle false) != null
         },
         priority = 10_001,
         action = {
             val resolvedCall = typedRule.resolvedCall!!
-            val rule = replacements.getCall(resolvedCall)!!
+            val rule = replacements.getCall(this@registerOperators, resolvedCall)!!
 
             emitTemplate(
                 requiresWrapping = true,
@@ -164,7 +160,7 @@ fun TypescriptTranslator.registerOperators() {
             val arrayAccess = typedRule.left as? KtArrayAccessExpression ?: return@handle false
             val f = arrayAccess.resolvedIndexedLvalueSet ?: return@handle false
             (typedRule.resolvedVariableReassignment == true || typedRule.operationToken == KtTokens.EQ)
-                    && replacements.getCall(f) != null
+                    && replacements.getCall(this@registerOperators, f) != null
         },
         priority = 20_002,
         action = {
@@ -210,7 +206,7 @@ fun TypescriptTranslator.registerOperators() {
                 operationToken = typedRule.operationToken,
                 resolvedCall = typedRule.resolvedCall
             ) else typedRule.right!!
-            val rule = replacements.getCall(resolvedCall)!!
+            val rule = replacements.getCall(this@registerOperators, resolvedCall)!!
             emitTemplate(
                 requiresWrapping = typedRule.actuallyCouldBeExpression,
                 template = rule.template,
@@ -234,12 +230,12 @@ fun TypescriptTranslator.registerOperators() {
     //Operator
     handle<ValueOperator>(
         condition = {
-            replacements.getCall(typedRule.resolvedCall ?: return@handle false) != null
+            replacements.getCall(this@registerOperators, typedRule.resolvedCall ?: return@handle false) != null
         },
         priority = 10_000,
         action = {
             val resolvedCall = typedRule.resolvedCall!!
-            val rule = replacements.getCall(resolvedCall)!!
+            val rule = replacements.getCall(this@registerOperators, resolvedCall)!!
 
             if (typedRule.operationToken == KtTokens.NOT_IN || typedRule.operationToken == KtTokens.EXCLEQ) {
                 -"!("
@@ -375,12 +371,12 @@ fun TypescriptTranslator.registerOperators() {
 
     handle<KtPrefixExpression>(
         condition = {
-            replacements.getCall(typedRule.resolvedCall ?: return@handle false) != null
+            replacements.getCall(this@registerOperators, typedRule.resolvedCall ?: return@handle false) != null
         },
         priority = 10_000,
         action = {
             val f = typedRule.resolvedCall!!
-            val rule = replacements.getCall(f)!!
+            val rule = replacements.getCall(this@registerOperators, f)!!
 
             emitTemplate(
                 requiresWrapping = typedRule.actuallyCouldBeExpression,
