@@ -9,6 +9,7 @@ import com.lightningkite.khrysalis.location.GeoCoordinate
 import com.lightningkite.khrysalis.observables.MutableObservableProperty
 import com.lightningkite.khrysalis.observables.ObservableProperty
 import com.lightningkite.khrysalis.observables.addAndRunWeak
+import com.lightningkite.khrysalis.observables.subscribeBy
 import com.lightningkite.khrysalis.rx.addWeak
 import com.lightningkite.khrysalis.rx.removed
 import com.lightningkite.khrysalis.rx.until
@@ -44,7 +45,7 @@ fun MapView.bindView(
     getMapAsync { map ->
         var marker: Marker? = null
         @Suppress("NAME_SHADOWING")
-        position.addAndRunWeak(this) { view, value ->
+        position.subscribeBy { value ->
             if (value != null) {
                 val newMarker = marker ?: map.addMarker(MarkerOptions().draggable(true).position(value.toMaps()))
                 newMarker.position = value.toMaps()
@@ -58,7 +59,7 @@ fun MapView.bindView(
                 marker?.remove()
                 marker = null
             }
-        }
+        }.until(this.removed)
     }
 }
 
@@ -75,7 +76,7 @@ fun MapView.bindSelect(
         var suppressAnimation: Boolean = false
         var marker: Marker? = null
         @Suppress("NAME_SHADOWING")
-        position.addAndRunWeak(this) { view, value ->
+        position.subscribeBy { value ->
             if (!suppress) {
                 suppress = true
                 if (value != null) {
@@ -95,7 +96,7 @@ fun MapView.bindSelect(
                 }
                 suppress = false
             }
-        }
+        }.until(this.removed)
 
         map.setOnMapLongClickListener { coord ->
             suppressAnimation = true
