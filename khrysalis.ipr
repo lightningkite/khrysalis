@@ -39,6 +39,7 @@
       <module name="khrysalis.kotlin-compiler-plugin-typescript.test" target="11" />
       <module name="khrysalis.plugin" target="11" />
       <module name="kotlin-compiler-plugin-common" target="11" />
+      <module name="kotlin-compiler-plugin-swift" target="11" />
       <module name="kotlin-compiler-plugin-typescript" target="11" />
       <module name="LK.khrysalis.plugin" target="11" />
     </bytecodeTargetLevel>
@@ -67,6 +68,7 @@
             <option value="$PROJECT_DIR$/android-maps" />
             <option value="$PROJECT_DIR$/android-qr" />
             <option value="$PROJECT_DIR$/kotlin-compiler-plugin-common" />
+            <option value="$PROJECT_DIR$/kotlin-compiler-plugin-swift" />
             <option value="$PROJECT_DIR$/kotlin-compiler-plugin-typescript" />
             <option value="$PROJECT_DIR$/plugin" />
           </set>
@@ -251,6 +253,7 @@
       <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-typescript/khrysalis.kotlin-compiler-plugin-typescript.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/khrysalis.kotlin-compiler-plugin-typescript.iml" group="khrysalis/kotlin-compiler-plugin-typescript" />
       <module fileurl="file://$PROJECT_DIR$/plugin/khrysalis.plugin.iml" filepath="$PROJECT_DIR$/plugin/khrysalis.plugin.iml" group="khrysalis/plugin" />
       <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-common/kotlin-compiler-plugin-common.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-common/kotlin-compiler-plugin-common.iml" group="khrysalis/kotlin-compiler-plugin-common" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-swift/kotlin-compiler-plugin-swift.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-swift/kotlin-compiler-plugin-swift.iml" group="khrysalis/kotlin-compiler-plugin-swift" />
       <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-typescript/kotlin-compiler-plugin-typescript.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/kotlin-compiler-plugin-typescript.iml" group="khrysalis/kotlin-compiler-plugin-typescript" />
       <module fileurl="file://$PROJECT_DIR$/plugin/plugin.iml" filepath="$PROJECT_DIR$/plugin/plugin.iml" />
     </modules>
@@ -347,10 +350,10 @@
     <mapping directory="$PROJECT_DIR$" vcs="Git" />
   </component>
   <component name="idea.plugin.psiviewer.controller.project.PsiViewerProjectService">
-    <option name="HIGHLIGHT" value="true" />
+    <option name="HIGHLIGHT" value="false" />
     <option name="FILTER_WHITESPACE" value="false" />
     <option name="SHOW_PROPERTIES" value="true" />
-    <option name="SPLIT_DIVIDER_POSITION" value="476" />
+    <option name="SPLIT_DIVIDER_POSITION" value="121" />
     <option name="AUTOSCROLL_TO_SOURCE" value="false" />
     <option name="AUTOSCROLL_FROM_SOURCE" value="false" />
   </component>
@@ -1819,6 +1822,13 @@
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/me.eugeniomarletti.kotlin.metadata/kotlin-compiler-lite/1.0.3-k-1.2.40/e9ea26600601f4b2b1397055da065aa3440af2a4/kotlin-compiler-lite-1.0.3-k-1.2.40-sources.jar!/" />
       </SOURCES>
+    </library>
+    <library name="Gradle: kotlin-compiler-plugin-swift.kotlin-compiler-plugin-swift-0.1.0">
+      <CLASSES>
+        <root url="jar://$PROJECT_DIR$/kotlin-compiler-plugin-swift/build/libs/kotlin-compiler-plugin-swift-0.1.0.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES />
     </library>
     <library name="Gradle: kotlin-compiler-runner-1.3.71">
       <CLASSES>

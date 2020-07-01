@@ -427,7 +427,6 @@ fun TypescriptTranslator.registerVariable() {
                 -"if(_it === null) return null;\nreturn "
             }
             if (typedRule.property.dispatchReceiverParameter != null) {
-                -"/*dis*/"
                 -typedRule.expr.getTsReceiver()
                 -"."
             }
@@ -443,7 +442,13 @@ fun TypescriptTranslator.registerVariable() {
         }
     )
     handle<VirtualGet> {
-        -typedRule.expr.allChildren
+        -typedRule.receiver
+        if(typedRule.safe){
+            -"?."
+        } else {
+            -"."
+        }
+        -typedRule.property.name.asString()
     }
     handle<KtDotQualifiedExpression>(
         condition = { ((typedRule.selectorExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget as? PropertyDescriptor) != null },

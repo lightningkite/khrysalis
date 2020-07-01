@@ -36,3 +36,16 @@ public protocol OptionalConvertible {
 extension Optional: OptionalConvertible {
     public var asOptional: Optional<Wrapped> { return self }
 }
+
+
+public func invertOptional<T>(_ value: T??): T?? {
+    if let inner = value {
+        if let value = inner {
+            return .some(.some(value))
+        } else {
+            return nil
+        }
+    } else {
+        return .some(nil)
+    }
+}

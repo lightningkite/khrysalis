@@ -7,6 +7,7 @@ import org.jetbrains.kotlin.psi.psiUtil.allChildren
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 
 data class SafeLetChain(
+    val outermost: KtExpression,
     val entries: List<Pair<KtExpression, KtLambdaExpression>>,
     val default: KtExpression?
 )
@@ -39,6 +40,9 @@ fun TypescriptTranslator.registerSpecialLet() {
     }
 
     handle<SafeLetChain> {
+        if(typedRule.outermost.actuallyCouldBeExpression){
+            -"(()=>{\n"
+        }
         val temp = "temp_${uniqueNumber.getAndIncrement()}"
         -"let $temp;\n"
         typedRule.entries.forEachBetween(
@@ -60,19 +64,30 @@ fun TypescriptTranslator.registerSpecialLet() {
                 -"\n}"
             } else {
                 -" else {\n"
+                if(typedRule.outermost.actuallyCouldBeExpression){
+                    -"return "
+                }
                 -it
                 -"\n}"
             }
+        } ?: run {
+            if(typedRule.outermost.actuallyCouldBeExpression){
+                -" else { return null }"
+            }
+        }
+        if(typedRule.outermost.actuallyCouldBeExpression){
+            -"\n})()"
         }
     }
 
     handle<KtSafeQualifiedExpression>(
         condition = {
-            typedRule.isSafeLetDirect() && !typedRule.actuallyCouldBeExpression
+            typedRule.isSafeLetDirect()
         },
         priority = 20_000
     ) {
         -SafeLetChain(
+            outermost = typedRule,
             entries = listOf(
                 typedRule.receiverExpression to (typedRule.selectorExpression as KtCallExpression).lambdaArguments.first()
                     .getLambdaExpression()!!
@@ -88,7 +103,7 @@ fun TypescriptTranslator.registerSpecialLet() {
         priority = 20_000
     ) {
         val entries = ArrayList<Pair<KtExpression, KtLambdaExpression>>()
-        val default: KtExpression? = if (typedRule.right?.isRunDirect() == true) typedRule.right else null
+        val default: KtExpression? = typedRule.right
 
         var current = typedRule
         outer@ while (true) {
@@ -114,6 +129,7 @@ fun TypescriptTranslator.registerSpecialLet() {
         }
 
         -SafeLetChain(
+            outermost = typedRule,
             entries = entries.reversed(),
             default = default
         )

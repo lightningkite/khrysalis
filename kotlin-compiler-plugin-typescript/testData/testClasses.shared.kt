@@ -9,7 +9,7 @@ interface TestInterface {
     fun interfaceFunction(): String = "Default"
 }
 
-data class DataClassThing(val x: Double = 0.0, val y: String = "Hello!"): TestInterface {
+data class DataClassThing(val x: Double = 0.0, val y: String = "Hello!", val z: DataClassThing? = null): TestInterface {
     override fun interfaceFunction(): String = "$x $y"
 }
 

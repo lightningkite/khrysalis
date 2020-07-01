@@ -201,6 +201,7 @@ fun TypescriptTranslator.registerFunction() {
         }
     )
 
+    //Constructors
     handle<KtCallExpression>(
         condition = {
             (typedRule.calleeExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget.let { it is ConstructorDescriptor && it.isPrimary }
@@ -229,6 +230,7 @@ fun TypescriptTranslator.registerFunction() {
         }
     )
 
+    //Normal calls
     handle<KtDotQualifiedExpression>(
         condition = {
             ((typedRule.selectorExpression as? KtCallExpression)?.resolvedCall?.candidateDescriptor as? FunctionDescriptor)?.extensionReceiverParameter != null

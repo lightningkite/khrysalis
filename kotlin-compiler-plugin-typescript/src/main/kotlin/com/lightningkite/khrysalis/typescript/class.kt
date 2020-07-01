@@ -379,6 +379,7 @@ fun TypescriptTranslator.registerClass() {
             -" { return new "
             -typedRule.nameIdentifier
             -"(\n"
+            //TODO: Use annotation for json
             typedRule.primaryConstructor?.valueParameters?.forEachBetween(
                 forItem = {
                     if (it.hasValOrVar()) {
@@ -475,26 +476,13 @@ fun TypescriptTranslator.registerClass() {
                             parameterByIndex = { listOf("other.", param.nameIdentifier) }
                         )
                     } ?: run {
-                        if (rawType.constructor.declarationDescriptor is TypeParameterDescriptor) {
-                            out.addImport("khrysalis/dist/Kotlin", "equalityAnything")
-                            -"equalityAnything(this."
-                            -param.nameIdentifier
-                            -", "
-                            -"other."
-                            -param.nameIdentifier
-                            -")"
-                        } else {
-                            -"(this."
-                            -param.nameIdentifier
-                            -"?.equals("
-                            -"other."
-                            -param.nameIdentifier
-                            -") ?? "
-                            -"other."
-                            -param.nameIdentifier
-                            -" === null"
-                            -")"
-                        }
+                        out.addImport("khrysalis/dist/Kotlin", "safeEq")
+                        -"safeEq(this."
+                        -param.nameIdentifier
+                        -", "
+                        -"other."
+                        -param.nameIdentifier
+                        -")"
                     }
                 }
                 -" }\n"

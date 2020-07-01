@@ -13,3 +13,6 @@ ios/kwift.xcworkspace
 
 plugin/out
 **/node_modules
+
+**/testDataOut/**/*.shared.ts
+**/testDataOut/**/*.shared.swift

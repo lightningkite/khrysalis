@@ -187,28 +187,28 @@ fun test(){
 var maybeInstance: TestClass? = null
 fun testNullable(){
     maybeInstance?.memberReal = -1
-//    maybeInstance?.memberReal += -1
+    maybeInstance?.memberReal += -1
     println(maybeInstance?.memberReal)
     maybeInstance?.memberVirtual = -2
-//    maybeInstance?.memberVirtual += -2
+    maybeInstance?.memberVirtual += -2
     println(maybeInstance?.memberVirtual)
     maybeInstance?.memberHybrid = -3
-//    maybeInstance?.memberHybrid += -3
+    maybeInstance?.memberHybrid += -3
     println(maybeInstance?.memberHybrid)
     maybeInstance?.extensionProperty = -4
-//    maybeInstance?.extensionProperty += -4
+    maybeInstance?.extensionProperty += -4
     println(maybeInstance?.extensionProperty)
     val instance = maybeInstance
     instance?.memberReal = -1
-//    instance?.memberReal += -1
+    instance?.memberReal += -1
     println(instance?.memberReal)
     instance?.memberVirtual = -2
-//    instance?.memberVirtual += -2
+    instance?.memberVirtual += -2
     println(instance?.memberVirtual)
     instance?.memberHybrid = -3
-//    instance?.memberHybrid += -3
+    instance?.memberHybrid += -3
     println(instance?.memberHybrid)
     instance?.extensionProperty = -4
-//    instance?.extensionProperty += -4
+    instance?.extensionProperty += -4
     println(instance?.extensionProperty)
 }

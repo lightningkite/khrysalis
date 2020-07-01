@@ -159,14 +159,12 @@ class TypescriptTranslator(
     fun KtBinaryExpression.isSafeLetChain(): Boolean {
         if (this.operationToken != KtTokens.ELVIS) return false
         if (this.left?.isSafeLetDirect() == true) return true
-        return (this.left as? KtBinaryExpression)?.isSafeLetChain() == true && this.right?.let {
-            it.isRunDirect() || it.isSafeLetDirect()
-        } == true
+        return (this.left as? KtBinaryExpression)?.isSafeLetChain() == true
     }
 
     fun KtBinaryExpression.safeLetChainRoot(): KtBinaryExpression {
         (this.parent as? KtBinaryExpression)?.let { p ->
-            if (p.left == this && p.right?.let { it.isRunDirect() || it.isSafeLetDirect() } == true) {
+            if (p.left == this) {
                 if (p.operationToken == KtTokens.ELVIS) {
                     return p.safeLetChainRoot()
                 }
@@ -189,20 +187,21 @@ class TypescriptTranslator(
             return false
         }
         if(it
-            .parentOfType<KtLambdaExpression>()
-            ?.parentOfType<KtLambdaArgument>()
-            ?.parentOfType<KtCallExpression>()
-            ?.let {
-                if((it.parent as? KtExpression)?.let {
-                        it.isSafeLetDirect() && !determineNotStatement(it)
-                    } == true){
-                    return false
+                .parentOfType<KtLambdaExpression>()
+                ?.parentOfType<KtLambdaArgument>()
+                ?.parentOfType<KtCallExpression>()
+                ?.let {
+                    if((it.parent as? KtExpression)?.let {
+                            it.isSafeLetDirect() && !determineNotStatement(it)
+                        } == true){
+                        return false
+                    }
+                    it.parentOfType<KtBinaryExpression>()
+                        ?: it.parentOfType<KtQualifiedExpression>()
+                            ?.parentOfType<KtBinaryExpression>()
                 }
-                it.parentOfType<KtBinaryExpression>()
-                    ?: it.parentOfType<KtQualifiedExpression>()
-                        ?.parentOfType<KtBinaryExpression>()
-            }
-            ?.isSafeLetChain() == true){
+                ?.let { it.isSafeLetChain() && !determineNotStatement(it.safeLetChainRoot()) } == true
+        ){
             return false
         }
         return true

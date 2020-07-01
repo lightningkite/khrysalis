@@ -17,6 +17,10 @@ public typealias Uri = URL
 public typealias ByteArray = NSData
 public typealias Throwable = Error
 
+public func run<T>(_ action: ()->T)->T {
+    return action()
+}
+
 public extension Sequence {
     func first() -> Element {
         for item in self {
