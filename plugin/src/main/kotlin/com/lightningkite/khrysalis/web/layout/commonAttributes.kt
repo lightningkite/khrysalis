@@ -38,6 +38,8 @@ internal fun HtmlTranslator.commonAttributes() {
         }
     }
     attribute.handle("android:text") {
+        if(out.other["textAdded"] == true) return@handle
+        out.other["textAdded"] = true
         val value = rule.value
         out.text.contentNodes.add(
             when {
@@ -45,6 +47,12 @@ internal fun HtmlTranslator.commonAttributes() {
                 else -> value.replace("\\n", "\n").replace("\\t", "\t")
             }
         )
+    }
+    attribute.handle("android:textOn") {
+        defer("android:text")
+    }
+    attribute.handle("android:textOff") {
+        defer("android:text")
     }
     attribute.handle("android:gravity") {
         horizontalGravity(rule.value)?.alignDirection?.let {

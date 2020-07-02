@@ -234,7 +234,7 @@ class KhrysalisPlugin : Plugin<Project> {
         }
         project.tasks.create("khrysalisConvertKotlinToTypescript") { task ->
             task.group = "web"
-            task.mustRunAfter("generateReleaseResources", "generateDebugResources")
+            task.dependsOn("generateReleaseResources", "generateDebugResources")
             task.doFirst {
                 val androidJar = androidSdkDirectory()!!.resolve("platforms/android-${sdkLevel()}/android.jar")
                 val libraries = sequenceOf(androidJar) + project.configurations.getByName("debugCompileClasspath").files.mapNotNull {

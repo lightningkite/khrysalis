@@ -91,7 +91,7 @@ internal fun HtmlTranslator.display() {
         out.style["mask-repeat"] = "no-repeat"
         out.style["mask-size"] = "100%"
         out.name = "div"
-        out.attributes["src"]?.let { File(outFolder, it) }?.let { imageUrl ->
+        out.attributes["src"]?.let { File(outFolder.resolve("src"), it) }?.let { imageUrl ->
             val pair = measureImage(imageUrl)
             out.style["width"] = pair.first
             out.style["height"] = pair.second

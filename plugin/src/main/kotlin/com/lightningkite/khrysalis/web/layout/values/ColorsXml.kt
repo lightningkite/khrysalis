@@ -9,7 +9,7 @@ import java.lang.Appendable
 
 fun translateXmlColorsToCss(file: File, out: Appendable) {
     val ignored = setOf("white", "black", "transparent")
-    if(!useScssVariables) out.appendln(":root {")
+    if(!useScssVariables) out.appendln("* {")
     XmlNode.read(file, mapOf())
         .children
         .asSequence()
@@ -61,7 +61,7 @@ fun translateXmlColorSetToCss(file: File, out: Appendable) {
         subnode.allAttributes["android:color"]?.let { raw ->
             val color = raw.asCssColor()
             if (conditions.isEmpty()) {
-                out.appendln(":root {")
+                out.appendln("* {")
             } else {
                 out.appendln("$conditions {")
             }

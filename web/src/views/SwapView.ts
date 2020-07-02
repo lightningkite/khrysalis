@@ -31,13 +31,17 @@ export function swapViewSwap(view: HTMLDivElement, to: HTMLElement | null, anima
 
         //animate in
         if (to) {
-            to.style.animation = `${animation}-in 0.25s`
+            to.style.animation = `${animation}-in 0.25s 0.25s` //Delay seems to make this work right
             view.appendChild(to);
         } else {
             view.style.visibility = "hidden"; //TODO: Smooth fade would look nicer
+            console.log("Hiding myself... I'm shy")
         }
     } else if (to) {
         view.appendChild(to);
+    } else {
+        view.style.visibility = "hidden";
+        console.log("Hiding myself... I'm shy")
     }
     view[previousViewSymbol] = to;
 }

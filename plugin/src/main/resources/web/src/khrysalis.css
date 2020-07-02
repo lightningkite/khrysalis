@@ -667,3 +667,9 @@ button:hover {
     margin: 8px;
     flex-grow: 1;
 }
+.khrysalis-box {
+    pointer-events: none;
+}
+.khrysalis-box>* {
+    pointer-events: auto;
+}

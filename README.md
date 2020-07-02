@@ -21,7 +21,7 @@ Dual licensed under GPLv3 and private commercial license - prices yet to be dete
 
 ## What actually is it?
 
-Khrysalis is the combination of several different parts:
+Khrysalis is the combination of several parts:
 
 - An Android XML layout to iOS programmatic Swift layout converter
 - A Kotlin to Swift syntax transformer
@@ -29,7 +29,7 @@ Khrysalis is the combination of several different parts:
 - A Swift library giving Android-like functionality
 - A rapid-prototyping tool, whose output is then modifiable to become a full app.
 
-## Do I have to use all of the features?
+## Do I have to use all the features?
 
 The only requirement is that the library portion be imported - other than that you can use only the parts you want.  For example, you could:
 - just use the library and syntax transformer to share logic between the two apps

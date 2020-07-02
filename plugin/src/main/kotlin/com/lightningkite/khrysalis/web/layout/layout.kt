@@ -101,6 +101,7 @@ internal fun HtmlTranslator.layout() {
             }
         out.contentNodes.addAll(rule.children.map { subrule ->
             val container = ResultNode("div")
+            container.classes.add("khrysalis-box")
             container.parent = out
             val child = ResultNode()
             child.parent = container
@@ -127,6 +128,7 @@ internal fun HtmlTranslator.layout() {
         val parentGravityString = rule.allAttributes["android:gravity"]
         out.contentNodes.addAll(rule.children.mapIndexed { index, subrule ->
             val container = ResultNode("div")
+            container.classes.add("khrysalis-box")
             container.parent = out
             val child = ResultNode()
             child.parent = container
