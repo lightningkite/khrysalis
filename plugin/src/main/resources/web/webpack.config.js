@@ -1,14 +1,14 @@
 const path = require('path');
+const BundleAnalyzerPlugin = require('webpack-bundle-analyzer').BundleAnalyzerPlugin;
 
 module.exports = {
-  entry: './src/typescript/index.ts',
+  plugins: [
+    new BundleAnalyzerPlugin()
+  ],
+  entry: './compiled/index.js',
+  devtool: 'inline-source-map',
   module: {
     rules: [
-      {
-        test: /\.tsx?$/,
-        use: 'ts-loader',
-        exclude: /node_modules/,
-      },
       {
         test: /\.s[ac]ss$/i,
         use: [
@@ -41,10 +41,13 @@ module.exports = {
     ],
   },
   resolve: {
-    extensions: ['.ts', '.js', '.html', '.scss'],
+    extensions: ['.ts', '.js', '.html', '.scss']
   },
   output: {
     filename: 'index.js',
-    path: path.resolve(__dirname, 'output'),
+    path: path.resolve(__dirname, 'dist'),
   },
+  devServer: {
+    contentBase: './dist',
+  }
 };

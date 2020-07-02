@@ -17,6 +17,7 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.Exec
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import com.lightningkite.khrysalis.web.layout.convertLayoutsToHtmlXmlClasses
+import org.gradle.api.Task
 import java.io.File
 
 open class KhrysalisPluginExtension {
@@ -63,6 +64,31 @@ class KhrysalisPlugin : Plugin<Project> {
 
         project.afterEvaluate {
             println("Determined your package to be ${packageName()}")
+        }
+
+
+        //Android support
+
+        project.tasks.create("khrysalisAndroid") { task ->
+            task.group = "android"
+            task.dependsOn("khrysalisCreateAndroidLayoutClasses")
+        }
+        project.tasks.create("khrysalisCreateAndroidLayoutClasses") { task ->
+            task.group = "android"
+            task.doLast {
+                createAndroidLayoutClasses(
+                    androidFolder = androidBase(),
+                    applicationPackage = packageName()
+                )
+            }
+        }
+        project.afterEvaluate {
+            project.tasks.findByName("generateReleaseResources")?.dependsOn("khrysalisAndroid") ?: run {
+                println("Could not configure resource dependency.  You'll need to run 'khrysalisAndroid' manually.")
+            }
+            project.tasks.findByName("generateDebugResources")?.dependsOn("khrysalisAndroid") ?: run {
+                println("Could not configure resource dependency.  You'll need to run 'khrysalisAndroid' manually.")
+            }
         }
 
         //IOS
@@ -183,6 +209,7 @@ class KhrysalisPlugin : Plugin<Project> {
             }
         }
         project.tasks.create("khrysalisConvertLayoutsToHtmlSass") { task ->
+            task.dependsOn("khrysalisCreateAndroidLayoutClasses")
             project.afterEvaluate {
                 if (!iosFolder().exists()) {
                     task.dependsOn("khrysalisSetupWebProject")
@@ -267,22 +294,5 @@ class KhrysalisPlugin : Plugin<Project> {
             }
         }
 
-
-        //Android support
-
-        project.tasks.create("khrysalisAndroid") { task ->
-            task.group = "android"
-            task.dependsOn("khrysalisCreateAndroidLayoutClasses")
-            task.mustRunAfter("generateReleaseResources", "generateDebugResources")
-        }
-        project.tasks.create("khrysalisCreateAndroidLayoutClasses") { task ->
-            task.group = "android"
-            task.doLast {
-                createAndroidLayoutClasses(
-                    androidFolder = androidBase(),
-                    applicationPackage = packageName()
-                )
-            }
-        }
     }
 }
