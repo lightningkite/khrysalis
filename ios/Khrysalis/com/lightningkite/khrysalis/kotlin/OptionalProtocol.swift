@@ -38,7 +38,7 @@ extension Optional: OptionalConvertible {
 }
 
 
-public func invertOptional<T>(_ value: T??): T?? {
+public func invertOptional<T>(_ value: T??) -> T?? {
     if let inner = value {
         if let value = inner {
             return .some(.some(value))
