@@ -17,54 +17,6 @@ data class OngoingLayoutConversion(
 
     val colorSets = layoutsDirectory.resolve("../color").listFiles()?.map { it.nameWithoutExtension }?.toSet() ?: setOf()
     var controlIndex: Int = 0
-    fun XmlNode.setToColorGivenControl(key: String, controlView: String = "view", write: (color: String) -> Unit): Boolean {
-        val raw = this.allAttributes[key] ?: return false
-        return when {
-            raw.startsWith("@color/") || raw.startsWith("@android:color/") -> {
-                val colorName = raw.removePrefix("@color/").removePrefix("@android:color/")
-                if (colorName !in colorSets) {
-                    write("ResourcesColors.${colorName.camelCase()}")
-                } else {
-                    write("ResourcesColors.${colorName.camelCase()}($controlView.state)")
-                    appendln("let _ = $controlView.addOnStateChange(retainer: $controlView, id: ${controlIndex++}, action: { state in")
-                    write("ResourcesColors.${colorName.camelCase()}(state)")
-                    appendln("})")
-                }
-                true
-            }
-            raw.startsWith("#") -> {
-                write(raw.hashColorToUIColor())
-                true
-            }
-            else -> {
-                false
-            }
-        }
-    }
-    fun XmlNode.setToColorGivenToggle(key: String, controlView: String = "view", write: (color: String) -> Unit): Boolean {
-        val raw = this.allAttributes[key] ?: return false
-        return when {
-            raw.startsWith("@color/") || raw.startsWith("@android:color/") -> {
-                val colorName = raw.removePrefix("@color/").removePrefix("@android:color/")
-                if (colorName !in colorSets) {
-                    write("ResourcesColors.${colorName.camelCase()}")
-                } else {
-                    write("ResourcesColors.${colorName.camelCase()}($controlView.isOn ? .selected : .normal)")
-                    appendln("let _ = $controlView.addOnCheckChanged({ isOn in")
-                    write("ResourcesColors.${colorName.camelCase()}(isOn ? .selected : .normal)")
-                    appendln("})")
-                }
-                true
-            }
-            raw.startsWith("#") -> {
-                write(raw.hashColorToUIColor())
-                true
-            }
-            else -> {
-                false
-            }
-        }
-    }
 
     fun construct(node: XmlNode) {
         if (node.name == "include") {
@@ -117,3 +69,23 @@ data class OngoingLayoutConversion(
     }*/
 }
 
+
+fun Appendable.setToColor(node: XmlNode, key: String, controlView: String = "view", write: (color: String) -> Unit): Boolean {
+    val raw = node.allAttributes[key] ?: return false
+    return when {
+        raw.startsWith("@color/") || raw.startsWith("@android:color/") -> {
+            val colorName = raw.removePrefix("@color/").removePrefix("@android:color/")
+            appendln("applyColor($controlView, ResourcesColors.${colorName.camelCase()}) { c in")
+            write("c")
+            appendln("}")
+            true
+        }
+        raw.startsWith("#") -> {
+            write(raw.hashColorToUIColor())
+            true
+        }
+        else -> {
+            false
+        }
+    }
+}

@@ -8,20 +8,20 @@ val LayoutConverter.Companion.buttonViews
         viewTypes = ViewType.mapOf(
 
             ViewType("SeekBar", "UISlider", "View") { node ->
-                node.setToColorGivenControl(key = "android:progressTint") {
+                setToColor(node, key = "android:progressTint") {
                     appendln("view.minimumTrackTintColor = $it")
                     appendln("view.maximumTrackTintColor = $it")
                 }
-                node.setToColorGivenControl(key = "android:thumbTint") {
+                setToColor(node, key = "android:thumbTint") {
                     appendln("view.thumbTintColor = $it")
                 }
             },
             ViewType("com.lightningkite.khrysalis.views.android.ColorRatingBar", "UIRatingBar", "RatingBar") { node ->
-                node.setToColorGivenControl(key = "app:empty_color") {
+                setToColor(node, key = "app:empty_color") {
                     appendln("view.settings.emptyColor = $it")
                     appendln("view.settings.emptyBorderColor = $it")
                 }
-                node.setToColorGivenControl(key = "app:progress_color") {
+                setToColor(node, key = "app:progress_color") {
                     appendln("view.settings.filledColor = $it")
                     appendln("view.settings.filledBorderColor = $it")
                 }
@@ -122,7 +122,7 @@ val LayoutConverter.Companion.buttonViews
                 node.attributeAsSwiftString("android:text")?.let { text ->
                     appendln("view.textString = $text")
                 }
-                node.setToColorGivenControl("android:textColor") {
+                setToColor(node, "android:textColor") {
                     appendln("view.setTitleColor($it, for: .normal)")
                 }
 

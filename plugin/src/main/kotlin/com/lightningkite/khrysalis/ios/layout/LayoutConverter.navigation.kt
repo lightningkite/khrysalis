@@ -24,27 +24,38 @@ val LayoutConverter.Companion.navigationViews
                         else -> appendln("view.apportionsSegmentWidthsByContent = false")
                     }
                 }
-//                node.setToColor("app:tabBackground") {
+//                setToColor(node, "app:tabBackground") {
 //                }
-//                node.setToColor("app:tabRippleColor") {
+//                setToColor(node, "app:tabRippleColor") {
 //                }
-                (node.attributeAsSwiftColor("app:tabTextColor") ?: "UIColor.black").let {
-                    appendln(
-                        """view.setTitleTextAttributes(
+                if(!setToColor(node, "app:tabTextColor"){
+                        appendln(
+                            """view.setTitleTextAttributes(
+                [NSAttributedString.Key.foregroundColor: $it], 
+                for: .selected
+                )"""
+                        )
+                        appendln(
+                            """view.setTitleTextAttributes(
                 [NSAttributedString.Key.foregroundColor: $it], 
                 for: .normal
                 )"""
-                    )
-                }
-                (node.attributeAsSwiftColor("app:tabTextColor") ?: "ResourcesColors.colorPrimary").let {
+                        )
+                        appendln("view.addIndicator(color: $it)")
+                }) {
+                    val it = "UIColor.black"
                     appendln(
                         """view.setTitleTextAttributes(
                 [NSAttributedString.Key.foregroundColor: $it], 
                 for: .selected
                 )"""
                     )
-                }
-                (node.attributeAsSwiftColor("app:tabTextColor") ?: "ResourcesColors.colorPrimary").let {
+                    appendln(
+                        """view.setTitleTextAttributes(
+                [NSAttributedString.Key.foregroundColor: $it], 
+                for: .normal
+                )"""
+                    )
                     appendln("view.addIndicator(color: $it)")
                 }
             },
@@ -65,7 +76,9 @@ val LayoutConverter.Companion.navigationViews
                     else -> appendln("view.separatorStyle = .none")
                 }
 
-                (node.attributeAsSwiftColor("app:dividerColor") ?: node.attributeAsSwiftColor("dividerColor"))?.let {
+                setToColor(node, "app:dividerColor"){
+                    appendln("view.separatorColor = $it")
+                } || setToColor(node, "dividerColor"){
                     appendln("view.separatorColor = $it")
                 }
                 (node.attributeAsSwiftDimension("app:dividerSize") ?: node.attributeAsSwiftDimension("dividerSize"))?.let {
@@ -79,10 +92,10 @@ val LayoutConverter.Companion.navigationViews
                 }
             },
             ViewType("com.rd.PageIndicatorView", "UIPageControl", "View") { node ->
-                node.attributeAsSwiftColor("app:piv_selectedColor")?.let {
+                setToColor(node, "app:piv_selectedColor"){
                     appendln("view.currentPageIndicatorTintColor = $it")
                 }
-                node.attributeAsSwiftColor("app:piv_unselectedColor")?.let {
+                setToColor(node, "app:piv_unselectedColor"){
                     appendln("view.pageIndicatorTintColor = $it")
                 }
             },

@@ -2,6 +2,7 @@ package com.lightningkite.khrysalis.ios.drawables
 
 import com.lightningkite.khrysalis.utils.*
 import com.lightningkite.khrysalis.ios.*
+import com.lightningkite.khrysalis.ios.layout.setToColor
 import java.lang.IllegalStateException
 
 fun <E> MutableList<E>.unshift(): E {
@@ -73,10 +74,10 @@ fun convertVectorDrawable(name: String, node: XmlNode, out: Appendable) {
                     pathDataToSwift(pathData)
                     appendln("        sublayer.path = path")
                 }
-                subnode.attributeAsSwiftColor("android:fillColor")?.let {
+                setToColor(subnode, "android:fillColor") {
                     appendln("        sublayer.fillColor = $it.cgColor")
                 }
-                subnode.attributeAsSwiftColor("android:strokeColor")?.let {
+                setToColor(subnode, "android:strokeColor") {
                     appendln("        sublayer.strokeColor = $it.cgColor")
                 }
                 appendln("        return sublayer")

@@ -2,6 +2,7 @@ package com.lightningkite.khrysalis.ios.drawables
 
 import com.lightningkite.khrysalis.utils.*
 import com.lightningkite.khrysalis.ios.*
+import com.lightningkite.khrysalis.ios.layout.setToColor
 import java.lang.Appendable
 
 
@@ -34,14 +35,18 @@ fun convertShapeDrawable(name: String, node: XmlNode, out: Appendable) {
                     appendln("    layer.path = CGPath(ellipseIn: CGRect(x: 0, y: 0, width: $width, height: $height), transform: nil)")
                     node.children.find { it.name == "stroke" }?.let {
                         appendln("    layer.borderWidth = ${it.attributeAsSwiftDimension("android:width") ?: "0"}")
-                        appendln(
-                            "    layer.strokeColor = ${it.attributeAsSwiftColor("android:color") ?: "UIColor.black"}.cgColor"
-                        )
+                        setToColor(it, "android:color") {
+                            appendln(
+                                "    layer.strokeColor = $it.cgColor"
+                            )
+                        }
                     }
                     node.children.find { it.name == "solid" }?.let {
-                        appendln(
-                            "    layer.fillColor = ${it.attributeAsSwiftColor("android:color") ?: "UIColor.black"}.cgColor"
-                        )
+                        setToColor(it, "android:color") {
+                            appendln(
+                                "    layer.fillColor = $it.cgColor"
+                            )
+                        }
                     }
                     appendln("    layer.bounds.size = CGSize(width: $width, height: $height)")
                     appendln("    layer.scaleOverResize = true")
@@ -57,14 +62,18 @@ fun convertShapeDrawable(name: String, node: XmlNode, out: Appendable) {
                 appendln("    let layer = $className()")
                 node.children.find { it.name == "stroke" }?.let {
                     appendln("    layer.borderWidth = ${it.attributeAsSwiftDimension("android:width") ?: "0"}")
-                    appendln(
-                        "    layer.borderColor = ${it.attributeAsSwiftColor("android:color") ?: "UIColor.black"}.cgColor"
-                    )
+                    setToColor(it, "android:color") {
+                        appendln(
+                            "    layer.borderColor = $it.cgColor"
+                        )
+                    }
                 }
                 node.children.find { it.name == "solid" }?.let {
-                    appendln(
-                        "    layer.backgroundColor = ${it.attributeAsSwiftColor("android:color") ?: "UIColor.black"}.cgColor"
-                    )
+                    setToColor(it, "android:color") {
+                        appendln(
+                            "    layer.backgroundColor = $it.cgColor"
+                        )
+                    }
                 }
                 node.children.find { it.name == "corners" }?.let { corners ->
                     corners.attributeAsSwiftDimension("android:radius")?.let {

@@ -1,5 +1,7 @@
 # Khrysalis
 
+This is synced
+
 ![image](logo.png)
 
 By [Lightning Kite](https://lightningkite.com)

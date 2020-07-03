@@ -27,13 +27,10 @@ val LayoutConverter.Companion.displayViews
                             appendln("view.backgroundColor = UIColor(patternImage: image)")
                             appendln("}")
                         }
-                        raw.startsWith("@color/") -> {
-                            val colorName = raw.removePrefix("@color/")
-                            appendln("view.backgroundColor = ResourcesColors.${colorName.camelCase()}")
-                        }
-                        raw.startsWith("@android:color/") -> {
-                            val colorName = raw.removePrefix("@android:color/")
-                            appendln("view.backgroundColor = ResourcesColors.${colorName.camelCase()}")
+                        raw.startsWith("@color/") || raw.startsWith("@android:color/") -> {
+                            setToColor(node, "android:background") {
+                                appendln("view.backgroundColor = $it")
+                            }
                         }
                         else -> {
                         }
@@ -68,9 +65,9 @@ val LayoutConverter.Companion.displayViews
             ViewType("Space", "UIView", "View") {},
             ViewType("ProgressBar", "UIActivityIndicatorView", "View") { node ->
                 appendln("view.startAnimating()")
-                node.attributeAsSwiftColor("android:indeterminateTint")?.let {
+                if(!setToColor(node, "android:indeterminateTint") {
                     appendln("view.color = $it")
-                } ?: run {
+                }) {
                     appendln("view.color = ResourcesColors.colorPrimary")
                 }
             },
@@ -158,18 +155,9 @@ internal fun OngoingLayoutConversion.handleCommonText(node: XmlNode, viewHandle:
     val lines = node.attributeAsInt("android:maxLines")
     appendln("$viewHandle.numberOfLines = ${lines ?: 0}")
 
-    if(controlView!= null) {
-        node.setToColorGivenControl("android:textColor", controlView) {
-            appendln("$viewHandle.textColor = $it")
-        }
-    } else if(checkView != null){
-        node.setToColorGivenToggle("android:textColor", checkView) {
-            appendln("$viewHandle.textColor = $it")
-        }
-    } else {
-        node.attributeAsSwiftColor("android:textColor")?.let {
-            appendln("$viewHandle.textColor = $it")
-        }
+
+    setToColor(node, "android:textColor", controlView ?: checkView ?: viewHandle) {
+        appendln("$viewHandle.textColor = $it")
     }
     node.allAttributes["android:gravity"]?.let {
         it.split('|')
