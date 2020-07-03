@@ -1,5 +1,6 @@
 //Stub file made with Khrysalis 2 (by Lightning Kite)
 import Foundation
+import UIKit
 
 
 //--- CompoundButton.bindSelect(T, MutableObservableProperty<T>)

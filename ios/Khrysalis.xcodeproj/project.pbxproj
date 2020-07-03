@@ -12,8 +12,7 @@
 		5EAABEA1233EC33F007E7CED /* Khrysalis.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 5EAABE97233EC33F007E7CED /* Khrysalis.framework */; };
 		5EAABEA6233EC33F007E7CED /* khrysalisTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5EAABEA5233EC33F007E7CED /* khrysalisTests.swift */; };
 		5ED664E923C3E04B00C078DA /* DateAloneTests.swift in Sources */ = {isa = PBXBuildFile; fileRef = 5ED664E823C3E04B00C078DA /* DateAloneTests.swift */; };
-		7CEC9C9324AEA8B800C5A0AE /* Khrysalis.h in Headers */ = {isa = PBXBuildFile; fileRef = 7CEC9BC724AEA8B800C5A0AE /* Khrysalis.h */; };
-		7CEC9C9424AEA8B800C5A0AE /* Info.plist in Resources */ = {isa = PBXBuildFile; fileRef = 7CEC9BC824AEA8B800C5A0AE /* Info.plist */; };
+		7CEC9C9324AEA8B800C5A0AE /* Khrysalis.h in Headers */ = {isa = PBXBuildFile; fileRef = 7CEC9BC724AEA8B800C5A0AE /* Khrysalis.h */; settings = {ATTRIBUTES = (Public, ); }; };
 		7CEC9C9524AEA8B800C5A0AE /* Image.actual.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CEC9BCC24AEA8B800C5A0AE /* Image.actual.swift */; };
 		7CEC9C9624AEA8B800C5A0AE /* UUID.actual.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CEC9BCD24AEA8B800C5A0AE /* UUID.actual.swift */; };
 		7CEC9C9724AEA8B800C5A0AE /* Random.actual.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CEC9BCE24AEA8B800C5A0AE /* Random.actual.swift */; };
@@ -198,6 +197,7 @@
 		7CEC9D4A24AEA8B800C5A0AE /* String.extensions.actual.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CEC9C9024AEA8B800C5A0AE /* String.extensions.actual.swift */; };
 		7CEC9D4B24AEA8B800C5A0AE /* delay.actual.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CEC9C9124AEA8B800C5A0AE /* delay.actual.swift */; };
 		7CEC9D4C24AEA8B800C5A0AE /* Preferences.actual.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CEC9C9224AEA8B800C5A0AE /* Preferences.actual.swift */; };
+		7CEC9D5424AEADF800C5A0AE /* UIView+applyColor.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CEC9D5324AEADF800C5A0AE /* UIView+applyColor.swift */; };
 		FBF03959EF07A62058F04C40 /* libPods-KhrysalisTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B70BB512F95B07C77779AD7 /* libPods-KhrysalisTests.a */; };
 /* End PBXBuildFile section */
 
@@ -406,6 +406,7 @@
 		7CEC9C9024AEA8B800C5A0AE /* String.extensions.actual.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = String.extensions.actual.swift; sourceTree = "<group>"; };
 		7CEC9C9124AEA8B800C5A0AE /* delay.actual.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = delay.actual.swift; sourceTree = "<group>"; };
 		7CEC9C9224AEA8B800C5A0AE /* Preferences.actual.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Preferences.actual.swift; sourceTree = "<group>"; };
+		7CEC9D5324AEADF800C5A0AE /* UIView+applyColor.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = "UIView+applyColor.swift"; sourceTree = "<group>"; };
 		9B70BB512F95B07C77779AD7 /* libPods-KhrysalisTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-KhrysalisTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA4E7DD701799277BF915081 /* Pods-KhrysalisTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KhrysalisTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-KhrysalisTests/Pods-KhrysalisTests.debug.xcconfig"; sourceTree = "<group>"; };
 		CDB666FED9439CFEAB1EBEC8 /* Pods-KhrysalisTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KhrysalisTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-KhrysalisTests/Pods-KhrysalisTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -764,6 +765,7 @@
 				7CEC9C7224AEA8B800C5A0AE /* UIButtonWithInput.swift */,
 				7CEC9C7324AEA8B800C5A0AE /* SwapView.swift */,
 				7CEC9C7424AEA8B800C5A0AE /* extensionProperty.swift */,
+				7CEC9D5324AEADF800C5A0AE /* UIView+applyColor.swift */,
 			);
 			path = ios;
 			sourceTree = "<group>";
@@ -843,7 +845,6 @@
 				5EAABE92233EC33F007E7CED /* Headers */,
 				5EAABE93233EC33F007E7CED /* Sources */,
 				5EAABE94233EC33F007E7CED /* Frameworks */,
-				5EAABE95233EC33F007E7CED /* Resources */,
 				143924E9F83B96B4B9F5125C /* [CP] Copy Pods Resources */,
 			);
 			buildRules = (
@@ -913,14 +914,6 @@
 /* End PBXProject section */
 
 /* Begin PBXResourcesBuildPhase section */
-		5EAABE95233EC33F007E7CED /* Resources */ = {
-			isa = PBXResourcesBuildPhase;
-			buildActionMask = 2147483647;
-			files = (
-				7CEC9C9424AEA8B800C5A0AE /* Info.plist in Resources */,
-			);
-			runOnlyForDeploymentPostprocessing = 0;
-		};
 		5EAABE9E233EC33F007E7CED /* Resources */ = {
 			isa = PBXResourcesBuildPhase;
 			buildActionMask = 2147483647;
@@ -1118,6 +1111,7 @@
 				7CEC9CD124AEA8B800C5A0AE /* ObservableProperty.ext.shared.swift in Sources */,
 				7CEC9CB824AEA8B800C5A0AE /* AutoCompleteTextView.binding.actual.swift in Sources */,
 				7CEC9D3E24AEA8B800C5A0AE /* Canvas.actual.swift in Sources */,
+				7CEC9D5424AEADF800C5A0AE /* UIView+applyColor.swift in Sources */,
 				7CEC9CFF24AEA8B800C5A0AE /* CustomViewDelegate.shared.swift in Sources */,
 				7CEC9CED24AEA8B800C5A0AE /* Image.shared.swift in Sources */,
 				7CEC9D3624AEA8B800C5A0AE /* ScrollView.actual.swift in Sources */,
