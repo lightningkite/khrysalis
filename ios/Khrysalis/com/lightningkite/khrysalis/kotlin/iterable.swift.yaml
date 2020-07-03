@@ -1,0 +1,262 @@
+---
+
+
+- id: kotlin.collections.Iterable
+  type: call
+  template: Iterable<~T0~>
+
+# Extensions
+
+- id: kotlin.collections.drop
+  type: call
+  template:
+    pattern: iterToArray(iterDrop(~this~, ~0~))
+    imports:
+      iterToArray: toArray from iterable-operator
+      iterFilter: filter from iterable-operator
+      iterDrop: drop from iterable-operator
+- id: kotlin.collections.dropLast
+  type: call
+  template:
+    pattern: iterToArray(iterDrop(~this~, ~0~))
+    imports:
+      iterToArray: toArray from iterable-operator
+      iterDropRight: dropRight from iterable-operator
+- id: kotlin.collections.dropWhile
+  type: call
+  template:
+    pattern: iterToArray(iterDropUntil(~this~, (x) => { !~0~(x) }))
+    imports:
+      iterToArray: toArray from iterable-operator
+      iterDropUntil: dropUntil from iterable-operator
+#- id: kotlin.collections.dropLastWhile
+
+- id: kotlin.collections.take
+  type: call
+  template:
+    pattern: iterToArray(iterTake(~this~, ~0~))
+    imports:
+      iterToArray: toArray from iterable-operator
+      iterTake: take from iterable-operator
+- id: kotlin.collections.takeLast
+  type: call
+  template:
+    pattern: iterToArray(iterTake(~this~, ~0~))
+    imports:
+      iterToArray: toArray from iterable-operator
+      iterTakeRight: takeRight from iterable-operator
+- id: kotlin.collections.takeWhile
+  type: call
+  template:
+    pattern: iterToArray(iterTakeUntil(~this~, (x) => { !~0~(x) }))
+    imports:
+      iterToArray: toArray from iterable-operator
+      iterTakeUntil: takeUntil from iterable-operator
+#- id: kotlin.collections.takeLastWhile
+
+- id: kotlin.collections.filter
+  type: call
+  template:
+    pattern: iterToArray(iterFilter(~this~, ~0~))
+    imports:
+      iterToArray: toArray from iterable-operator
+      iterFilter: filter from iterable-operator
+- id: kotlin.collections.map
+  type: call
+  template:
+    pattern: iterToArray(iterMap(~this~, ~0~))
+    imports:
+      iterToArray: toArray from iterable-operator
+      iterMap: map from iterable-operator
+- id: kotlin.collections.mapIndexed
+  type: call
+  template:
+    pattern: iterToArray(iterMap(~this~, ~0~))
+    imports:
+      iterToArray: toArray from iterable-operator
+      iterMap: map from iterable-operator
+- id: kotlin.collections.flatMap
+  type: call
+  template:
+    pattern: iterToArray(iterFlatten(iterMap(~this~, ~0~)))
+    imports:
+      iterToArray: toArray from iterable-operator
+      iterMap: map from iterable-operator
+      iterFlatten: flatten from iterable-operator
+
+- id: kotlin.collections.filterIndexed
+  type: call
+  template:
+    pattern: iterToArray(iterFilter(~this~, ~0~))
+    imports:
+      iterToArray: toArray from iterable-operator
+      iterFilter: filter from iterable-operator
+- id: kotlin.collections.filterNot
+  type: call
+  template:
+    pattern: iterToArray(iterFilter(~this~, (x)=>{ !~0~(x) ))
+    imports:
+      iterToArray: toArray from iterable-operator
+      iterFilter: filter from iterable-operator
+- id: kotlin.collections.filterNotNull
+  type: call
+  template:
+    pattern: iterToArray(iterableFilterNotNull(~this~))
+    imports:
+      iterToArray: toArray from iterable-operator
+      iterableFilterNotNull: khrysalis/dist/KotlinCollections
+- id: kotlin.collections.mapNotNull
+  type: call
+  template:
+    pattern: iterToArray(iterableFilterNotNull(iterMap(~this~, ~0~)))
+    imports:
+      iterToArray: toArray from iterable-operator
+      iterMap: map from iterable-operator
+      iterableFilterNotNull: khrysalis/dist/KotlinCollections
+- id: kotlin.collections.mapIndexedNotNull
+  type: call
+  template:
+    pattern: iterToArray(iterableFilterNotNull(iterMap(~this~, ~0~)))
+    imports:
+      iterToArray: toArray from iterable-operator
+      iterMap: map from iterable-operator
+      iterableFilterNotNull: khrysalis/dist/KotlinCollections
+- id: kotlin.collections.chunked
+  type: call
+  template:
+    pattern: iterToArray(iterChunk(~this~, ~0~))
+    imports:
+      iterToArray: toArray from iterable-operator
+      iterChunk: chunk from iterable-operator
+
+- id: kotlin.collections.sorted
+  type: call
+  template:
+    pattern: iterToArray(~this~).sort()
+    imports:
+      iterToArray: toArray from iterable-operator
+- id: kotlin.collections.sortedBy
+  type: call
+  template:
+    pattern: iterToArray(~this~).sort((a, b) => ~0~(a).compareTo(~0~(b)))
+    imports:
+      iterToArray: toArray from iterable-operator
+- id: kotlin.collections.sortedByDescending
+  type: call
+  template:
+    pattern: iterToArray(~this~).sort((a, b) => -~0~(a).compareTo(~0~(b)))
+    imports:
+      iterToArray: toArray from iterable-operator
+
+- id: kotlin.collections.associate
+  type: call
+  template:
+    pattern: new Map(iterMap(~this~, ~0~))
+    imports:
+      iterToArray: toArray from iterable-operator
+- id: kotlin.collections.associateBy
+  type: call
+  template:
+    pattern: new Map(iterMap(~this~, (_x)=>{ [~0~(_x), _x] }))
+    imports:
+      iterToArray: toArray from iterable-operator
+
+- id: kotlin.collections.toList
+  type: call
+  template:
+    pattern: iterToArray(~this~)
+    imports:
+      iterToArray: toArray from iterable-operator
+
+- id: kotlin.collections.toMutableList
+  type: call
+  template:
+    pattern: iterToArray(~this~)
+    imports:
+      iterToArray: toArray from iterable-operator
+
+- id: kotlin.collections.toSet
+  type: call
+  template:
+    pattern: "new EqualOverrideSet(~this~)"
+    imports:
+      EqualOverrideSet: khrysalis/dist/KotlinCollections
+
+- id: kotlin.collections.toMutableSet
+  type: call
+  template:
+    pattern: "new EqualOverrideSet(~this~)"
+    imports:
+      EqualOverrideSet: khrysalis/dist/KotlinCollections
+
+- id: kotlin.collections.toSet
+  type: call
+  typeArgumentRequirements:
+    0: primitive
+  template:
+    pattern: new Set(~this~)
+
+- id: kotlin.collections.toMutableSet
+  type: call
+  typeArgumentRequirements:
+    0: primitive
+  template:
+    pattern: new Set(~this~)
+
+# TODO: groupBy
+
+- id: kotlin.collections.any
+  type: call
+  template:
+    pattern: iterSome(~this~, ~0~)
+    imports:
+      iterSome: some from iterable-operator
+
+- id: kotlin.collections.all
+  type: call
+  template:
+    pattern: iterEvery(~this~, ~0~)
+    imports:
+      iterEvery: every from iterable-operator
+
+- id: kotlin.collections.none
+  type: call
+  template:
+    pattern: (!iterSome(~this~, ~0~))
+    imports:
+      iterSome: some from iterable-operator
+
+- id: kotlin.collections.forEach
+  type: call
+  template:
+    pattern: for(const _x of ~this~) { ~L0~ }
+    lambdaTransforms:
+      0: ["_x"]
+
+- id: kotlin.collections.first
+  type: call
+  template:
+    pattern: iterFirst(~this~)
+    imports:
+      iterFirst: first from iterable-operator
+
+- id: kotlin.collections.firstOrNull
+  type: call
+  template:
+    pattern: iterFirstOrNull(~this~)
+    imports:
+      iterFirstOrNull: khrysalis/dist/KotlinCollections
+
+- id: kotlin.collections.last
+  type: call
+  template:
+    pattern: iterLast(~this~)
+    imports:
+      iterLast: last from iterable-operator
+
+- id: kotlin.collections.lastOrNull
+  type: call
+  template:
+    pattern: iterLastOrNull(~this~)
+    imports:
+      iterLastOrNull: khrysalis/dist/KotlinCollections

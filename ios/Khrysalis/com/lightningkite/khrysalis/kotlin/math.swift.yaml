@@ -1,0 +1,87 @@
+---
+- id: kotlin.math.min
+  type: call
+  arguments: [kotlin.Byte, kotlin.Byte]
+  template: Math.min(~0~, ~1~)
+
+- id: kotlin.math.min
+  type: call
+  arguments: [kotlin.Short, kotlin.Short]
+  template: Math.min(~0~, ~1~)
+
+- id: kotlin.math.min
+  type: call
+  arguments: [kotlin.Int, kotlin.Int]
+  template: Math.min(~0~, ~1~)
+
+- id: kotlin.math.min
+  type: call
+  arguments: [kotlin.Long, kotlin.Long]
+  template: Math.min(~0~, ~1~)
+
+- id: kotlin.math.min
+  type: call
+  arguments: [kotlin.Float, kotlin.Float]
+  template: Math.min(~0~, ~1~)
+
+- id: kotlin.math.min
+  type: call
+  arguments: [kotlin.Double, kotlin.Double]
+  template: Math.min(~0~, ~1~)
+
+
+- id: kotlin.math.max
+  type: call
+  arguments: [kotlin.Byte, kotlin.Byte]
+  template: Math.max(~0~, ~1~)
+
+- id: kotlin.math.max
+  type: call
+  arguments: [kotlin.Short, kotlin.Short]
+  template: Math.max(~0~, ~1~)
+
+- id: kotlin.math.max
+  type: call
+  arguments: [kotlin.Int, kotlin.Int]
+  template: Math.max(~0~, ~1~)
+
+- id: kotlin.math.max
+  type: call
+  arguments: [kotlin.Long, kotlin.Long]
+  template: Math.max(~0~, ~1~)
+
+- id: kotlin.math.max
+  type: call
+  arguments: [kotlin.Float, kotlin.Float]
+  template: Math.max(~0~, ~1~)
+
+- id: kotlin.math.max
+  type: call
+  arguments: [kotlin.Double, kotlin.Double]
+  template: Math.max(~0~, ~1~)
+
+
+- id: kotlin.math.abs
+  type: call
+  template: Math.abs(~0~)
+- id: kotlin.math.sin
+  type: call
+  template: Math.sin(~0~)
+- id: kotlin.math.cos
+  type: call
+  template: Math.cos(~0~)
+- id: kotlin.math.tan
+  type: call
+  template: Math.tan(~0~)
+- id: kotlin.math.asin
+  type: call
+  template: Math.asin(~0~)
+- id: kotlin.math.acos
+  type: call
+  template: Math.acos(~0~)
+- id: kotlin.math.atan
+  type: call
+  template: Math.atan(~0~)
+- id: kotlin.math.sqrt
+  type: call
+  template: Math.sqrt(~0~)
