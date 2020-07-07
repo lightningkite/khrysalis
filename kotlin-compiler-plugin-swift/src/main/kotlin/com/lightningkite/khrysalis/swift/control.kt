@@ -33,7 +33,7 @@ fun SwiftTranslator.registerControl() {
 
     handle<KtIfExpression> {
         if (typedRule.actuallyCouldBeExpression && typedRule.parent !is KtContainerNodeForControlStructureBody) {
-            -"(() => {"
+            -"run {"
         }
         -"if "
         -typedRule.condition
@@ -64,7 +64,7 @@ fun SwiftTranslator.registerControl() {
             }
         }
         if (typedRule.actuallyCouldBeExpression && typedRule.parent !is KtContainerNodeForControlStructureBody) {
-            -"})()"
+            -"}"
         }
     }
 
@@ -98,7 +98,7 @@ fun SwiftTranslator.registerControl() {
         priority = 100
     ) {
         if (typedRule.actuallyCouldBeExpression) {
-            -"(() => {"
+            -"run {"
         }
         val subj = typedRule.subjectExpression
         if (subj is KtProperty) {
@@ -147,7 +147,7 @@ fun SwiftTranslator.registerControl() {
         }
         -"}\n"
         if (typedRule.actuallyCouldBeExpression) {
-            -"})()"
+            -"}"
         }
     }
 
@@ -156,7 +156,7 @@ fun SwiftTranslator.registerControl() {
         priority = 100
     ) {
         if (typedRule.actuallyCouldBeExpression) {
-            -"(() => {"
+            -"run {"
         }
         -typedRule.entries.forEachBetween(
             forItem = { it ->
@@ -188,7 +188,7 @@ fun SwiftTranslator.registerControl() {
         )
 
         if (typedRule.actuallyCouldBeExpression) {
-            -"})()"
+            -"}"
         }
     }
 
@@ -197,7 +197,7 @@ fun SwiftTranslator.registerControl() {
         priority = 10
     ) {
         if (typedRule.actuallyCouldBeExpression) {
-            -"(() => {"
+            -"run {"
         }
         val subj = typedRule.subjectExpression
         if (subj is KtProperty) {
@@ -230,10 +230,9 @@ fun SwiftTranslator.registerControl() {
                                     -")"
                                 }
                                 is KtWhenConditionIsPattern -> {
-                                    emitIsExpression(
-                                        subjExpr(),
-                                        it.typeReference!!.resolvedType!!
-                                    )
+                                    -subjExpr()
+                                    -" is "
+                                    -it.typeReference!!.resolvedType!!
                                 }
                             }
                         },
@@ -259,7 +258,7 @@ fun SwiftTranslator.registerControl() {
         )
 
         if (typedRule.actuallyCouldBeExpression) {
-            -"})()"
+            -"}"
         }
     }
 

@@ -4,6 +4,7 @@ import com.lightningkite.khrysalis.util.forEachBetween
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
+import org.jetbrains.kotlin.descriptors.ClassKind
 import org.jetbrains.kotlin.descriptors.FunctionDescriptor
 import org.jetbrains.kotlin.descriptors.PropertyDescriptor
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
@@ -58,14 +59,22 @@ fun SwiftTranslator.registerVariable() {
             val resolved = tr.resolvedProperty ?: return@handle
             val ktClassBody = typedRule.parentOfType<KtClassBody>()!!
             val ktClass = ktClassBody.parentOfType<KtClass>()!!
-            tr.getter?.let { getter ->
+            if (typedRule.getter != null || typedRule.setter != null) {
                 ktClassBody.addPostAction {
-                    -getter
-                }
-            }
-            tr.setter?.let { setter ->
-                ktClassBody.addPostAction {
-                    -setter
+                    -"\n"
+                    -"var "
+                    -tr.nameIdentifier
+                    tr.typeReference?.let {
+                        -": "
+                        -it
+                    } ?: run {
+                        -": "
+                        -tr.resolvedProperty?.type
+                    }
+                    -" {\n"
+                    -tr.getter
+                    -tr.setter
+                    -"}"
                 }
             }
         }
@@ -73,11 +82,20 @@ fun SwiftTranslator.registerVariable() {
 
     //Plain
     handle<KtProperty> {
+        if (typedRule.isMember) {
+            if (typedRule.resolvedProperty?.overriddenDescriptors
+                    ?.any { (it.containingDeclaration as? ClassDescriptor)?.kind != ClassKind.INTERFACE } == true
+            ) {
+                -"override "
+            }
+        }
         if (typedRule.isMember || typedRule.isTopLevel) {
             -(typedRule.visibilityModifier() ?: "public")
             -" "
         }
-        if (typedRule.isVar) {
+        if (typedRule.isVar || (typedRule.resolvedProperty?.type?.requiresMutable()
+                ?: typedRule.resolvedVariable?.type?.requiresMutable()) == true
+        ) {
             -"var "
         } else {
             -"let "
@@ -104,6 +122,13 @@ fun SwiftTranslator.registerVariable() {
         condition = { typedRule.initializer == null && typedRule.getter != null },
         priority = 10,
         action = {
+            if (typedRule.isMember) {
+                if (typedRule.resolvedProperty?.overriddenDescriptors
+                        ?.any { (it.containingDeclaration as? ClassDescriptor)?.kind != ClassKind.INTERFACE } == true
+                ) {
+                    -"override "
+                }
+            }
             if (typedRule.isMember || typedRule.isTopLevel) {
                 -(typedRule.visibilityModifier() ?: "public")
                 -" "
@@ -234,7 +259,7 @@ fun SwiftTranslator.registerVariable() {
         action = {
             val rule = replacements.getGet(typedRule.property, typedRule.receiverType)!!
             if (typedRule.safe) {
-                -"((_it)=>{\n"
+                -"({ _it in \n"
                 -"if(_it === null) return null\nreturn "
             }
             emitTemplate(
@@ -257,7 +282,7 @@ fun SwiftTranslator.registerVariable() {
         priority = 1000,
         action = {
             if (typedRule.safe) {
-                -"((_it)=>{\n"
+                -"({ _it in \n"
                 -"if(_it === null) return null\nreturn "
             }
             if (typedRule.property.dispatchReceiverParameter != null) {
@@ -277,7 +302,7 @@ fun SwiftTranslator.registerVariable() {
     )
     handle<VirtualGet> {
         -typedRule.receiver
-        if(typedRule.safe){
+        if (typedRule.safe) {
             -"?."
         } else {
             -"."

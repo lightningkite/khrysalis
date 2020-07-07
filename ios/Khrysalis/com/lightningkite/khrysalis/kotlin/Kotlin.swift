@@ -21,6 +21,36 @@ public func run<T>(_ action: ()->T)->T {
     return action()
 }
 
+public func also<T>(_ value: T, _ action: (T)->Void)->T {
+    action(value)
+    return value
+}
+
+public func takeIf<T>(_ value: T, _ condition: (T)->Bool)->T? {
+    if condition(value) {
+        return value
+    }
+    return nil
+}
+public func takeIf<T>(_ value: T?, _ condition: (T)->Bool)->T? {
+    if let value = value, condition(value) {
+        return value
+    }
+    return nil
+}
+public func takeUnless<T>(_ value: T, _ condition: (T)->Bool)->T? {
+    if !condition(value) {
+        return value
+    }
+    return nil
+}
+public func takeUnless<T>(_ value: T?, _ condition: (T)->Bool)->T? {
+    if let value = value, !condition(value) {
+        return value
+    }
+    return nil
+}
+
 public extension Sequence {
     func first() -> Element {
         for item in self {
@@ -33,6 +63,20 @@ public extension Sequence {
             return item
         }
         return nil
+    }
+    func last() -> Element {
+        var current: Element? = nil
+        for item in self {
+            current = item
+        }
+        return current!
+    }
+    func lastOrNull() -> Element? {
+        var current: Element? = nil
+        for item in self {
+            current = item
+        }
+        return current
     }
     func mapNotNull<OUT>(transform: (Element)->OUT?) -> Array<OUT> {
         var newArray = Array<OUT>()

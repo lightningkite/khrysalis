@@ -4,7 +4,7 @@ import android.view.View
 
 class TestClass {
     var item: Int = 0
-    fun test(action: ()->Unit){
+    private fun test(action: ()->Unit){
         action()
     }
     fun testRec(action: Int.()->Unit){

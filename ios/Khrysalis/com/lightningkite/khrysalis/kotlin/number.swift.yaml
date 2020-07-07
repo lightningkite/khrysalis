@@ -3,41 +3,41 @@
 
 - id: kotlin.Byte
   type: type
-  template: number
+  template: Int8
 - id: kotlin.Short
   type: type
-  template: number
+  template: Short8
 - id: kotlin.Int
   type: type
-  template: number
+  template: Int
 - id: kotlin.Long
   type: type
-  template: number  # Should we use number or BigInt here?  I'm mildly worried about bitwise usage here
+  template: Int64
 - id: kotlin.Float
   type: type
-  template: number
+  template: Float
 - id: kotlin.Double
   type: type
-  template: number
+  template: Double
 
 - id: kotlin.Byte
   type: typeRef
-  template: Number
+  template: Int8
 - id: kotlin.Short
   type: typeRef
-  template: Number
+  template: Short8
 - id: kotlin.Int
   type: typeRef
-  template: Number
+  template: Int
 - id: kotlin.Long
   type: typeRef
-  template: Number  # Should we use number or BigInt here?  I'm mildly worried about bitwise usage here
+  template: Int64
 - id: kotlin.Float
   type: typeRef
-  template: Number
+  template: Float
 - id: kotlin.Double
   type: typeRef
-  template: Number
+  template: Double
 
 
 
@@ -619,167 +619,127 @@
 
 - id: kotlin.Byte.toByte
   type: call
-  template: ~this~
+  template: Int8(~this~)
 - id: kotlin.Short.toByte
   type: call
-  template: ~this~
+  template: Int8(~this~)
 - id: kotlin.Int.toByte
   type: call
-  template: ~this~
+  template: Int8(~this~)
 - id: kotlin.Long.toByte
   type: call
-  template: ~this~
+  template: Int8(~this~)
 - id: kotlin.Float.toByte
   type: call
-  template: Math.floor(~this~)
+  template: Int8(~this~)
 - id: kotlin.Double.toByte
   type: call
-  template: Math.floor(~this~)
+  template: Int8(~this~)
   
 # toShort
 
 - id: kotlin.Byte.toShort
   type: call
-  template: ~this~
+  template: Int16(~this~)
 - id: kotlin.Short.toShort
   type: call
-  template: ~this~
+  template: Int16(~this~)
 - id: kotlin.Int.toShort
   type: call
-  template: ~this~
+  template: Int16(~this~)
 - id: kotlin.Long.toShort
   type: call
-  template: ~this~
+  template: Int16(~this~)
 - id: kotlin.Float.toShort
   type: call
-  template: Math.floor(~this~)
+  template: Int16(~this~)
 - id: kotlin.Double.toShort
   type: call
-  template: Math.floor(~this~)
+  template: Int16(~this~)
   
 # toInt
 
 - id: kotlin.Byte.toInt
   type: call
-  template: ~this~
+  template: Int(~this)
 - id: kotlin.Short.toInt
   type: call
-  template: ~this~
+  template: Int(~this)
 - id: kotlin.Int.toInt
   type: call
-  template: ~this~
+  template: Int(~this)
 - id: kotlin.Long.toInt
   type: call
-  template: ~this~
+  template: Int(~this)
 - id: kotlin.Float.toInt
   type: call
-  template: Math.floor(~this~)
+  template: Int(~this)
 - id: kotlin.Double.toInt
   type: call
-  template: Math.floor(~this~)
+  template: Int(~this)
   
 # toLong
 
 - id: kotlin.Byte.toLong
   type: call
-  template: ~this~
+  template: Int64(~this~)
 - id: kotlin.Short.toLong
   type: call
-  template: ~this~
+  template: Int64(~this~)
 - id: kotlin.Int.toLong
   type: call
-  template: ~this~
+  template: Int64(~this~)
 - id: kotlin.Long.toLong
   type: call
-  template: ~this~
+  template: Int64(~this~)
 - id: kotlin.Float.toLong
   type: call
-  template: Math.floor(~this~)
+  template: Int64(~this~)
 - id: kotlin.Double.toLong
   type: call
-  template: Math.floor(~this~)
+  template: Int64(~this~)
   
 # toFloat
 
 - id: kotlin.Byte.toFloat
   type: call
-  template: ~this~
+  template: Float(~this~)
 - id: kotlin.Short.toFloat
   type: call
-  template: ~this~
+  template: Float(~this~)
 - id: kotlin.Int.toFloat
   type: call
-  template: ~this~
+  template: Float(~this~)
 - id: kotlin.Long.toFloat
   type: call
-  template: ~this~
+  template: Float(~this~)
 - id: kotlin.Float.toFloat
   type: call
-  template: ~this~
+  template: Float(~this~)
 - id: kotlin.Double.toFloat
   type: call
-  template: ~this~
+  template: Float(~this~)
   
 # toDouble
 
 - id: kotlin.Byte.toDouble
   type: call
-  template: ~this~
+  template: Double(~this~)
 - id: kotlin.Short.toDouble
   type: call
-  template: ~this~
+  template: Double(~this~)
 - id: kotlin.Int.toDouble
   type: call
-  template: ~this~
+  template: Double(~this~)
 - id: kotlin.Long.toDouble
   type: call
-  template: ~this~
+  template: Double(~this~)
 - id: kotlin.Float.toDouble
   type: call
-  template: ~this~
+  template: Double(~this~)
 - id: kotlin.Double.toDouble
   type: call
-  template: ~this~
-
-
-# RangeTo
-
-- id: kotlin.Byte.rangeTo
-  type: call
-  template:
-    pattern: new NumberRange(~this~, ~0~)
-    imports:
-      NumberRange: khrysalis/dist/Kotlin
-- id: kotlin.Short.rangeTo
-  type: call
-  template:
-    pattern: new NumberRange(~this~, ~0~)
-    imports:
-      NumberRange: khrysalis/dist/Kotlin
-- id: kotlin.Int.rangeTo
-  type: call
-  template:
-    pattern: new NumberRange(~this~, ~0~)
-    imports:
-      NumberRange: khrysalis/dist/Kotlin
-- id: kotlin.Long.rangeTo
-  type: call
-  template:
-    pattern: new NumberRange(~this~, ~0~)
-    imports:
-      NumberRange: khrysalis/dist/Kotlin
-- id: kotlin.Float.rangeTo
-  type: call
-  template:
-    pattern: new Range(~this~, ~0~)
-    imports:
-      Range: khrysalis/dist/Kotlin
-- id: kotlin.Double.rangeTo
-  type: call
-  template:
-    pattern: new Range(~this~, ~0~)
-    imports:
-      Range: khrysalis/dist/Kotlin
+  template: Double(~this~)
 
 
 # Math.X
@@ -788,104 +748,104 @@
 # Math
 - id: kotlin.math.absoluteValue
   type: get
-  template: Math.abs(~this~)
+  template: abs(~this~)
 
 # Max Min
 
 - id: kotlin.Byte.Companion.MIN_VALUE
   type: get
-  template: "-128"
+  template: Int8.min
 
 - id: kotlin.Byte.Companion.MAX_VALUE
   type: get
-  template: "127"
+  template: Int8.max
 
 - id: kotlin.Short.Companion.MIN_VALUE
   type: get
-  template: "-32768"
+  template: Int16.min
 
 - id: kotlin.Short.Companion.MAX_VALUE
   type: get
-  template: "32767"
+  template: Int16.max
 
 - id: kotlin.Int.Companion.MIN_VALUE
   type: get
-  template: "-2147483648"
+  template: Int.min
 
 - id: kotlin.Int.Companion.MAX_VALUE
   type: get
-  template: "2147483647"
+  template: Int.max
 
 - id: kotlin.Long.Companion.MIN_VALUE
   type: get
-  template: "-2147483648"
+  template: Int64.min
 
 - id: kotlin.Long.Companion.MAX_VALUE
   type: get
-  template: "2147483647"
+  template: Int64.max
 
 - id: kotlin.Float.Companion.MIN_VALUE
   type: get
-  template: "1.175494351E-38"
+  template: Float.min
 
 - id: kotlin.Double.Companion.MIN_VALUE
   type: get
-  template: "2.2250738585072014E-308"
+  template: Double.min
 
 - id: kotlin.Float.Companion.MAX_VALUE
   type: get
-  template: "3.402823466E+38"
+  template: Float.max
 
 - id: kotlin.Double.Companion.MAX_VALUE
   type: get
-  template: "1.7976931348623158E+308"
+  template: Double.max
 
 - id: kotlin.Float.Companion.POSITIVE_INFINITY
   type: get
-  template: Number.POSITIVE_INFINITY
+  template: Float.infinity
 
 - id: kotlin.Double.Companion.POSITIVE_INFINITY
   type: get
-  template: Number.POSITIVE_INFINITY
+  template: Double.infinity
 
 - id: kotlin.Float.Companion.NEGATIVE_INFINITY
   type: get
-  template: Number.NEGATIVE_INFINITY
+  template: -Float.infinity
 
 - id: kotlin.Double.Companion.NEGATIVE_INFINITY
   type: get
-  template: Number.NEGATIVE_INFINITY
+  template: -Double.infinity
 
 - id: kotlin.Float.Companion.NaN
   type: get
-  template: Number.NaN
+  template: Float.nan
 
 - id: kotlin.Double.Companion.NaN
   type: get
-  template: Number.NaN
+  template: Double.nan
 
 # Coerce
 - id: kotlin.ranges.coerceIn
   type: call
   arguments: [kotlin.Byte, kotlin.Byte]
-  template: Math.min(Math.max(~this~, ~0~), ~1~)
+  template: min(max(~this~, ~0~), ~1~)
 - id: kotlin.ranges.coerceIn
   type: call
   arguments: [kotlin.Short, kotlin.Short]
-  template: Math.min(Math.max(~this~, ~0~), ~1~)
+  template: min(max(~this~, ~0~), ~1~)
 - id: kotlin.ranges.coerceIn
   type: call
   arguments: [kotlin.Int, kotlin.Int]
-  template: Math.min(Math.max(~this~, ~0~), ~1~)
+  template: min(max(~this~, ~0~), ~1~)
 - id: kotlin.ranges.coerceIn
   type: call
   arguments: [kotlin.Long, kotlin.Long]
-  template: Math.min(Math.max(~this~, ~0~), ~1~)
+  template: min(max(~this~, ~0~), ~1~)
 - id: kotlin.ranges.coerceIn
   type: call
   arguments: [kotlin.Float, kotlin.Float]
-  template: Math.min(Math.max(~this~, ~0~), ~1~)
+  template: min(max(~this~, ~0~), ~1~)
 - id: kotlin.ranges.coerceIn
   type: call
   arguments: [kotlin.Double, kotlin.Double]
-  template: Math.min(Math.max(~this~, ~0~), ~1~)
+  template: min(max(~this~, ~0~), ~1~)

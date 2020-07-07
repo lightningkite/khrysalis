@@ -12,7 +12,7 @@ class A {
                     println(jank)
                 }
                 interface E {
-                    fun test() = println("Hi!")
+                    private fun test() = println("Hi!")
                 }
             }
         }

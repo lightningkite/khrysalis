@@ -2,7 +2,7 @@ package com.test.collections
 
 data class CustomEq(val value: Int)
 
-fun test(){
+private fun test(){
     val list = listOf(1, 2, 3)
     println(list[0])
 

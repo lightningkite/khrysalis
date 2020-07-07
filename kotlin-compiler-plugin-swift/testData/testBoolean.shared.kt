@@ -1,6 +1,6 @@
 package com.test.booleans
 
-fun test(){
+private fun test(){
     val t = true
     val f = false
 

@@ -10,6 +10,7 @@ import org.jetbrains.kotlin.js.translate.callTranslator.getReturnType
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
+import org.jetbrains.kotlin.resolve.descriptorUtil.getSuperClassNotAny
 import org.jetbrains.kotlin.resolve.scopes.DescriptorKindFilter
 import org.jetbrains.kotlin.types.FlexibleType
 import org.jetbrains.kotlin.types.SimpleType
@@ -40,6 +41,16 @@ fun SwiftTranslator.registerClass() {
                     .mapNotNull { it as? KtSuperTypeEntry }
                     .map { it.typeReference }
             )
+            .let {
+                if (on is KtClass && on.isData()) {
+                    it + listOf("KDataClass")
+                } else it
+            }
+            .let {
+                if (on is KtClass && on.isEnum()) {
+                    it + listOf("KEnum")
+                } else it
+            }
             .takeUnless { it.isEmpty() }?.let {
                 -" : "
                 it.forEachBetween(
@@ -47,6 +58,10 @@ fun SwiftTranslator.registerClass() {
                     between = { -", " }
                 )
             }
+        typedRule.typeConstraintList?.let {
+            -" where "
+            -it
+        }
     }
 
     handle<KtClass>(
@@ -83,23 +98,6 @@ fun SwiftTranslator.registerClass() {
         typedRule.runPostActions()
     }
 
-    handle<KtClass>(
-        condition = { !typedRule.isTopLevel() },
-        priority = 10000
-    ) {
-        noReuse = true
-        val parent = (typedRule.parent as KtClassBody).parent as KtClassOrObject
-        parent.addPostAction {
-            -"\n"
-            -(typedRule.visibilityModifier() ?: "public")
-            -"namespace "
-            -parent.nameIdentifier
-            -" {\n"
-            doSuper()
-            -"\n}"
-        }
-    }
-
     handle<KtClass> {
         -(typedRule.visibilityModifier() ?: "public")
         -' '
@@ -108,10 +106,7 @@ fun SwiftTranslator.registerClass() {
         typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEach {
 
             -(it.visibilityModifier() ?: "public")
-            -" "
-            if ((it.valOrVarKeyword as? LeafPsiElement)?.elementType == KtTokens.VAL_KEYWORD) {
-                -"readonly "
-            }
+            -" var "
             -it.nameIdentifier
             it.typeReference?.let {
                 -": "
@@ -127,6 +122,19 @@ fun SwiftTranslator.registerClass() {
             -"\n"
         }
 
+        run {
+            val c = typedRule.resolvedClass ?: return@run
+            val s = c.getSuperClassNotAny() ?: return@run
+            val sc = c.unsubstitutedPrimaryConstructor ?: return@run
+            val cc = c.unsubstitutedPrimaryConstructor ?: return@run
+            if (sc.valueParameters.size != cc.valueParameters.size) return@run
+            if (sc.valueParameters.zip(cc.valueParameters).all {
+                    it.first.name.asString() == it.second.name.asString()
+                            && it.first.type.getJetTypeFqName(false) == it.second.type.getJetTypeFqName(false)
+                }) {
+                -"override "
+            }
+        }
         if (typedRule.isEnum()) {
             -"private"
         } else if (typedRule.hasModifier(KtTokens.ABSTRACT_KEYWORD)) {
@@ -137,7 +145,7 @@ fun SwiftTranslator.registerClass() {
         -" init("
         typedRule.primaryConstructor?.let { cons ->
             (if (typedRule.isEnum()) {
-                listOf("name: string") + cons.valueParameters
+                listOf("name: String") + cons.valueParameters
             } else if (typedRule.isInner()) {
                 listOf("parentThis: $parentClassName") + cons.valueParameters
             } else {
@@ -148,7 +156,7 @@ fun SwiftTranslator.registerClass() {
             )
         } ?: run {
             if (typedRule.isEnum()) {
-                -"name: string"
+                -"name: String"
             } else if (typedRule.isInner()) {
                 -"parentThis: $parentClassName"
             } else Unit
@@ -187,14 +195,42 @@ fun SwiftTranslator.registerClass() {
         typedRule.superTypeListEntries.mapNotNull { it as? KtSuperTypeCallEntry }.takeUnless { it.isEmpty() }
             ?.firstOrNull()?.let {
                 -"super.init("
+                var first = true
                 if (typedRule.isEnum()) {
-                    listOf("name: string") + it.valueArguments
-                } else {
-                    it.valueArguments
-                }.forEachBetween(
-                    forItem = { -it },
-                    between = { -", " }
-                )
+                    first = false
+                    -"name: String"
+                }
+                it.resolvedCall?.valueArguments?.entries?.sortedBy { it.key.index }?.forEach {
+                    val args = it.value.arguments
+                    when (args.size) {
+                        0 -> {
+                        }
+                        1 -> {
+                            if (first) {
+                                first = false
+                            } else {
+                                -", "
+                            }
+                            -it.key.name.asString()
+                            -": "
+                            -args[0].getArgumentExpression()
+                        }
+                        else -> {
+                            if (first) {
+                                first = false
+                            } else {
+                                -", "
+                            }
+                            -it.key.name.asString()
+                            -": ["
+                            args.forEachBetween(
+                                forItem = { -it.getArgumentExpression() },
+                                between = { -", " }
+                            )
+                            -"]"
+                        }
+                    }
+                }
                 -")\n"
             }
         //Then, in order, anon initializers
@@ -267,6 +303,7 @@ fun SwiftTranslator.registerClass() {
                         -")"
                     }
                 }
+                -"\n"
             }
 
             -"}\n"
@@ -274,7 +311,9 @@ fun SwiftTranslator.registerClass() {
             -"enum CodingKeys: String, CodingKey {\n"
             typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEach {
                 val jsonName = it.jsonName
-                -"case ${it.nameIdentifier} = \"${jsonName}\"\n"
+                -"case "
+                -it.nameIdentifier
+                -" = \"${jsonName}\"\n"
             }
 
             -"}\n"
@@ -295,6 +334,7 @@ fun SwiftTranslator.registerClass() {
                     -it.nameIdentifier
                     -")"
                 }
+                -"\n"
             }
 
             -"}\n"
@@ -319,7 +359,7 @@ fun SwiftTranslator.registerClass() {
                 -typedRule.nameIdentifier
                 -", rhs: "
                 -typedRule.nameIdentifier
-                -"): Bool { return "
+                -") -> Bool { return "
                 typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEachBetween(
                     forItem = { param ->
                         val typeName = param.typeReference?.resolvedType?.getJetTypeFqName(false)
@@ -375,7 +415,7 @@ fun SwiftTranslator.registerClass() {
                     -": "
                     -it.typeReference
                     -"? = "
-                    if(it.typeReference?.resolvedType?.isNullable() == true){
+                    if (it.typeReference?.resolvedType?.isNullable() == true) {
                         -".some(nil)"
                     } else {
                         -"nil"
@@ -383,12 +423,17 @@ fun SwiftTranslator.registerClass() {
                 },
                 between = { -", " }
             )
-            -") { return "
+            -") -> "
+            -typedRule.nameIdentifier
+            -typedRule.typeParameterList
+            -" { return "
             -typedRule.nameIdentifier
             -"("
             typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEachBetween(
                 forItem = {
-                    if(it.typeReference?.resolvedType?.isNullable() == true) {
+                    -it.nameIdentifier
+                    -": "
+                    if (it.typeReference?.resolvedType?.isNullable() == true) {
                         -"invertOptional("
                         -it.nameIdentifier
                         -") ?? self."
@@ -407,7 +452,7 @@ fun SwiftTranslator.registerClass() {
         -typedRule.body
 
         if (typedRule.isEnum()) {
-            -"private static _values: Array<"
+            -"private static let _values: Array<"
             -typedRule.nameIdentifier
             -"> = ["
             typedRule.body?.enumEntries?.forEachBetween(
@@ -422,15 +467,9 @@ fun SwiftTranslator.registerClass() {
             -"public static func values() -> Array<"
             -typedRule.nameIdentifier
             -"> { return _values }\n"
-            -"public let name: string;\n"
+            -"public let name: String;\n"
 
-            -"public static valueOf(name: string) -> "
-            -typedRule.nameIdentifier
-            -" { return ("
-            -typedRule.nameIdentifier
-            -" as any)[name]; }\n"
-
-            -"public toString(): string { return self.name }\n"
+            -"public func toString() -> String { return self.name }\n"
         }
 
         -"}"
@@ -480,7 +519,7 @@ fun SwiftTranslator.registerClass() {
                 -"\n"
             }
         -"}\n"
-        -"public static INSTANCE = "
+        -"public static let INSTANCE = "
         -(typedRule.nameIdentifier ?: "Companion")
         -"()\n"
         -typedRule.body
@@ -502,14 +541,14 @@ fun SwiftTranslator.registerClass() {
 
     //Simple enum
     handle<KtClass>(
-        condition = { typedRule.isEnum() && typedRule.body?.enumEntries?.all { !it.hasInitializer() && it.body == null } == true },
+        condition = { typedRule.isSimpleEnum() },
         priority = 10,
         action = {
             -(typedRule.visibilityModifier() ?: "public")
             -" enum "
             -typedRule.nameIdentifier
             -": CaseIterable {\n"
-            for(entry in typedRule.body?.enumEntries ?: listOf()){
+            for (entry in typedRule.body?.enumEntries ?: listOf()) {
                 -"case "
                 -entry.nameIdentifier
                 -"\n"
@@ -517,6 +556,13 @@ fun SwiftTranslator.registerClass() {
             -typedRule.body
             -"}"
         }
+    )
+    handle<KtEnumEntry>(
+        condition = {
+            typedRule.containingClass()?.isSimpleEnum() == true
+        },
+        priority = 1,
+        action = {}
     )
     handle<KtEnumEntry> {
         -"public class "
@@ -544,19 +590,32 @@ fun SwiftTranslator.registerClass() {
         }
         -"super.init"
         -'('
-        val args = arrayListOf({ ->
-            -'"'
-            -typedRule.nameIdentifier
-            -'"'
-            Unit
-        })
-        (typedRule.initializerList?.initializers?.firstOrNull() as? KtSuperTypeCallEntry)?.valueArguments?.forEach {
-            args.add { -it }
+        -"name: \""
+        -typedRule.nameIdentifier
+        -"\""
+        typedRule.initializerList?.initializers?.firstOrNull()?.resolvedCall?.valueArguments?.entries?.sortedBy { it.key.index }?.forEach {
+            val args = it.value.arguments
+            when (args.size) {
+                0 -> {
+                }
+                1 -> {
+                    -", "
+                    -it.key.name.asString()
+                    -": "
+                    -args[0].getArgumentExpression()
+                }
+                else -> {
+                    -", "
+                    -it.key.name.asString()
+                    -": ["
+                    args.forEachBetween(
+                        forItem = { -it.getArgumentExpression() },
+                        between = { -", " }
+                    )
+                    -"]"
+                }
+            }
         }
-        args.forEachBetween(
-            forItem = { it() },
-            between = { -", " }
-        )
         -");\n"
         //Then anon initializers
         typedRule.body?.children?.forEach {
@@ -578,7 +637,7 @@ fun SwiftTranslator.registerClass() {
         -"}\n"
 
         -typedRule.body
-        -"}\npublic static "
+        -"}\npublic static let "
         -typedRule.nameIdentifier
         -" = "
         -typedRule.nameIdentifier
@@ -588,37 +647,42 @@ fun SwiftTranslator.registerClass() {
     handle<KtSecondaryConstructor> {
         -(typedRule.visibilityModifier() ?: "public")
         -" convenience init("
+        typedRule.valueParameters.forEachBetween(
+            forItem = { -it },
+            between = { -", " }
+        )
         -") {\n"
         -"self.init("
         val dg = typedRule.getDelegationCallOrNull()
         val resSuper = dg?.resolvedCall
-        if(resSuper != null) {
+        if (resSuper != null) {
             var first = true
             resSuper.valueArguments.entries.sortedBy { it.key.index }.forEach {
                 val args = it.value.arguments
-                when(args.size){
-                    0 -> {}
+                when (args.size) {
+                    0 -> {
+                    }
                     1 -> {
-                        if(first){
+                        if (first) {
                             first = false
                         } else {
                             -", "
                         }
                         -it.key.name.asString()
-                        -" = "
+                        -": "
                         -args[0].getArgumentExpression()
                     }
                     else -> {
-                        if(first){
+                        if (first) {
                             first = false
                         } else {
                             -", "
                         }
                         -it.key.name.asString()
-                        -" = ["
+                        -": ["
                         args.forEachBetween(
                             forItem = { -it.getArgumentExpression() },
-                            between = { -", "}
+                            between = { -", " }
                         )
                         -"]"
                     }
@@ -653,3 +717,6 @@ fun KtElement.hasPostActions(): Boolean {
 fun KtElement.addPostAction(action: () -> Unit) {
     weakKtClassPostActions.getOrPut(this) { ArrayList() }.add(action)
 }
+
+
+fun KtClass.isSimpleEnum() = isEnum() && body?.enumEntries?.all { !it.hasInitializer() && it.body == null } == true

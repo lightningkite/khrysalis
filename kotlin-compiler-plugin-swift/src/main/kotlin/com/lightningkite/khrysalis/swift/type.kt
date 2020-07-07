@@ -38,6 +38,7 @@ data class KtUserTypeBasic(val type: KtUserType)
 data class SwiftExtensionStart(val forDescriptor: CallableDescriptor)
 
 fun KotlinType.worksAsSwiftConstraint(): Boolean {
+    if(this.getJetTypeFqName(false) == "kotlin.Any") return false
     return when (this) {
         is WrappedType -> false
         is SimpleType -> true
@@ -178,12 +179,6 @@ fun SwiftTranslator.registerType() {
         -"]"
     }
 
-    handle<KtNullableType> {
-        -"("
-        -typedRule.innerType
-        -" | null)"
-    }
-
     handle<KtUserType>(
         condition = {
             val reference = typedRule.referenceExpression ?: return@handle false
@@ -248,24 +243,14 @@ fun SwiftTranslator.registerType() {
 
     handle<KtFunctionType> {
         -"("
-        var currentNameChar = 'a'
         listOfNotNull(typedRule.receiverTypeReference?.let { null to it }).plus(typedRule.parameters.map { it.nameIdentifier to it.typeReference })
             .forEachBetween(
                 forItem = {
-                    var nextChar = currentNameChar++
-                    while (typedRule.parameters.any {
-                            val n = it.name ?: return@any false
-                            n.length == 1 && n.first() == nextChar
-                        }) {
-                        nextChar = currentNameChar++
-                    }
-                    -(it.first ?: nextChar.toString())
-                    -": "
                     -it.second
                 },
                 between = { -", " }
             )
-        -") => "
+        -") -> "
         -typedRule.returnTypeReference
     }
 
@@ -281,7 +266,7 @@ fun SwiftTranslator.registerType() {
     handle<KtTypeParameter> {
         -typedRule.nameIdentifier
         typedRule.extendsBound?.let {
-            -" extends "
+            -" : "
             -it
         }
     }
@@ -339,11 +324,12 @@ fun SwiftTranslator.registerType() {
     )
 
     handle<KtIsExpression> {
-        val resolvedType = typedRule.typeReference!!.resolvedType!!
         if (typedRule.isNegated) {
             -"!("
         }
-        emitIsExpression(typedRule.leftHandSide, resolvedType)
+        -typedRule.leftHandSide
+        -" is "
+        -typedRule.typeReference
         if (typedRule.isNegated) {
             -")"
         }
@@ -353,66 +339,18 @@ fun SwiftTranslator.registerType() {
         condition = { typedRule.operationReference.getReferencedNameElementType() == KtTokens.AS_SAFE },
         priority = 100,
         action = {
-            val resolvedType = typedRule.right!!.resolvedType!!
-
-            when {
-                resolvedType.isInterface() -> {
-                    -"tryCastInterface<"
-                    -typedRule.right
-                    -">("
-                    -typedRule.left
-                    -", \""
-                    -resolvedType.getJetTypeFqName(false).split('.').joinToString("") { it.capitalize() }
-                    -"\")"
-                }
-                resolvedType.isPrimitive() -> {
-                    -"tryCastPrimitive<"
-                    -typedRule.right
-                    -">("
-                    -typedRule.left
-                    -", \""
-                    -resolvedType
-                    -"\")"
-                }
-                else -> {
-                    -"tryCastClass<"
-                    -typedRule.right
-                    -">("
-                    -typedRule.left
-                    -", "
-                    -BasicType(resolvedType)
-                    -")"
-                }
-            }
+            -typedRule.left
+            -" as? "
+            -typedRule.right
         }
     )
-}
-
-fun PartialTranslatorByType<SwiftFileEmitter, Unit, Any>.ContextByType<*>.emitIsExpression(
-    expression: Any?,
-    resolvedType: KotlinType
-) {
-    when {
-        resolvedType.isInterface() -> {
-            -"checkIsInterface<"
-            -resolvedType
-            -">("
-            -expression
-            -", \""
-            -resolvedType.getJetTypeFqName(false).split('.').joinToString("") { it.capitalize() }
-            -"\")"
+    handle<KtBinaryExpressionWithTypeRHS>(
+        condition = { typedRule.operationReference.getReferencedNameElementType() == KtTokens.AS_KEYWORD },
+        priority = 100,
+        action = {
+            -typedRule.left
+            -" as! "
+            -typedRule.right
         }
-        resolvedType.isPrimitive() -> {
-            -"typeof ("
-            -expression
-            -") == \""
-            -resolvedType
-            -'"'
-        }
-        else -> {
-            -expression
-            -" instanceof "
-            -BasicType(resolvedType)
-        }
-    }
+    )
 }

@@ -2,7 +2,7 @@ package com.test.classes
 
 class GenericThing<T: Comparable<T>>(val item: T) {
     inner class SomeThing(val comparableThing: T){
-        fun test() = comparableThing > item
+        private fun test() = comparableThing > item
         fun explicitTest() = this.comparableThing > this@GenericThing.item
     }
 }

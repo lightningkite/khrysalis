@@ -7,6 +7,7 @@ import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
+import org.jetbrains.kotlin.psi2ir.findFirstFunction
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
 
 val FunctionDescriptor.swiftNameOverridden: String?
@@ -18,18 +19,18 @@ val FunctionDescriptor.swiftNameOverridden: String?
         ?.value
         ?.value
         ?.toString()?.safeSwiftIdentifier() ?: when {
-            this.worksAsSwiftConstraint() -> null
-            extensionReceiverParameter != null -> {
-                extensionReceiverParameter!!
-                    .value
-                    .type
-                    .getJetTypeFqName(false)
-                    .split('.')
-                    .joinToString("") { it.capitalize() }.decapitalize() +
-                        this.name.identifier.capitalize()
-            }
-            else -> this.overriddenDescriptors.asSequence().mapNotNull { it.swiftNameOverridden }.firstOrNull()
+        this.worksAsSwiftConstraint() && this.containingDeclaration !is ClassDescriptor -> null
+        extensionReceiverParameter != null -> {
+            extensionReceiverParameter!!
+                .value
+                .type
+                .getJetTypeFqName(false)
+                .split('.')
+                .joinToString("") { it.capitalize() }.decapitalize() +
+                    this.name.identifier.capitalize()
         }
+        else -> this.overriddenDescriptors.asSequence().mapNotNull { it.swiftNameOverridden }.firstOrNull()
+    }
 
 val FunctionDescriptor.swiftName: String?
     get() = swiftNameOverridden ?: if (this.name.isSpecial) {
@@ -104,8 +105,7 @@ fun SwiftTranslator.registerFunction() {
                 val ktClassBody = typedRule.parentOfType<KtClassBody>()!!
                 val ktClass = ktClassBody.parentOfType<KtClass>()!!
                 ktClassBody.addPostAction {
-                    -(typedRule.visibilityModifier() ?: "public")
-                    -' '
+                    -"\n"
                     -mainDecl.copy(
                         body = tr.bodyExpression
                     )
@@ -114,7 +114,7 @@ fun SwiftTranslator.registerFunction() {
         }
     )
     handle<KtNamedFunction>(
-        condition = { typedRule.receiverTypeReference != null && typedRule.resolvedFunction?.worksAsSwiftConstraint() == true },
+        condition = { typedRule.receiverTypeReference != null && typedRule.resolvedFunction?.worksAsSwiftConstraint() == true && typedRule.containingClassOrObject == null },
         priority = 10,
         action = {
             -SwiftExtensionStart(typedRule.resolvedFunction!!)
@@ -125,7 +125,14 @@ fun SwiftTranslator.registerFunction() {
     )
     handle<KtNamedFunction> {
         val isMember = typedRule.containingClassOrObject != null
-        if(isMember || typedRule.isTopLevel) {
+        if (isMember) {
+            if (typedRule.resolvedFunction?.overriddenDescriptors
+                    ?.any { (it.containingDeclaration as? ClassDescriptor)?.kind != ClassKind.INTERFACE } == true
+            ) {
+                -"override "
+            }
+        }
+        if (isMember || typedRule.isTopLevel) {
             -(typedRule.visibilityModifier() ?: "public")
             -' '
         }
@@ -148,8 +155,11 @@ fun SwiftTranslator.registerFunction() {
                 body = typedRule.bodyExpression
             )
         }
-        if(resolved?.worksAsSwiftConstraint() == false){
-            withReceiverScope(resolved) { rName ->
+        if (typedRule.receiverTypeReference != null &&
+            (typedRule.resolvedFunction?.worksAsSwiftConstraint() != true ||
+            typedRule.containingClassOrObject != null)
+        ) {
+            withReceiverScope(resolved!!) { rName ->
                 emit(rName)
             }
         } else {
@@ -421,20 +431,20 @@ fun SwiftTranslator.registerFunction() {
             .filter { it.value.arguments.isNotEmpty() }
             .sortedBy { it.key.index }
             .forEach {
-            if (first) {
-                first = false
-            } else {
-                -", "
+                if (first) {
+                    first = false
+                } else {
+                    -", "
+                }
+                it.key.name.takeUnless { it.isSpecial }?.let {
+                    -it.asString()
+                    -": "
+                }
+                it.value.arguments.forEachBetween(
+                    forItem = { -it.getArgumentExpression() },
+                    between = { -", " }
+                )
             }
-            it.key.name.takeUnless { it.isSpecial }?.let {
-                -it.asString()
-                -": "
-            }
-            it.value.arguments.forEachBetween(
-                forItem = { -it.getArgumentExpression() },
-                between = { -", " }
-            )
-        }
         -')'
     }
 }

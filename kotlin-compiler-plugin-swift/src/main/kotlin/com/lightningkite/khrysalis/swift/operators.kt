@@ -101,11 +101,30 @@ fun SwiftTranslator.registerOperators() {
         action = {
             val arrayAccess = typedRule.left as KtArrayAccessExpression
             val setFunction = arrayAccess.resolvedIndexedLvalueSet!!.resultingDescriptor
-
-            val tempArray = "array${uniqueNumber.getAndIncrement()}"
-            -"let $tempArray = "
-            -arrayAccess.arrayExpression
-            -"\n"
+            val needsClose = when {
+                arrayAccess.arrayExpression?.isSimple() == true -> false
+                arrayAccess.arrayExpression?.resolvedExpressionTypeInfo?.type?.requiresMutable() == true -> true
+                else -> false
+            }
+            val handle: Any = when {
+                arrayAccess.arrayExpression?.isSimple() == true -> {
+                    arrayAccess.arrayExpression!!
+                }
+                arrayAccess.arrayExpression?.resolvedExpressionTypeInfo?.type?.requiresMutable() == true -> {
+                    val tempArray = "array${uniqueNumber.getAndIncrement()}"
+                    -"var $tempArray = "
+                    -arrayAccess.arrayExpression
+                    -"\n"
+                    tempArray
+                }
+                else -> {
+                    val tempArray = "array${uniqueNumber.getAndIncrement()}"
+                    -"let $tempArray = "
+                    -arrayAccess.arrayExpression
+                    -"\n"
+                    tempArray
+                }
+            }
             val tempIndexes = arrayAccess.indexExpressions.map {
                 val tempName = "index${uniqueNumber.getAndIncrement()}"
                 -"let $tempName = "
@@ -116,7 +135,7 @@ fun SwiftTranslator.registerOperators() {
 
             val right: Any = if (typedRule.operationToken == KtTokens.EQ) typedRule.right!! else ValueOperator(
                 left = VirtualArrayGet(
-                    arrayExpression = tempArray,
+                    arrayExpression = handle,
                     indexExpressions = tempIndexes,
                     functionDescriptor = arrayAccess.resolvedIndexedLvalueGet!!.resultingDescriptor,
                     dispatchReceiver = typedRule.getTsReceiver(),
@@ -134,15 +153,21 @@ fun SwiftTranslator.registerOperators() {
                 -arrayAccess.getTsReceiver()
                 -"."
             } else if (setFunction.dispatchReceiverParameter != null) {
-                -tempArray
+                -handle
                 -"."
             }
             -(setFunction.swiftNameOverridden ?: "set")
             -ArgumentsList(
                 on = setFunction,
-                resolvedCall = typedRule.resolvedCall!!,
+                resolvedCall = typedRule.resolvedCall ?: return@handle,
                 prependArguments = if (doubleReceiver) listOf(arrayAccess.arrayExpression!!) else listOf()
             )
+            if(needsClose){
+                -"\n"
+                -arrayAccess.arrayExpression
+                -" = "
+                -handle
+            }
         }
     )
     handle<KtBinaryExpression>(
@@ -159,13 +184,30 @@ fun SwiftTranslator.registerOperators() {
 
             val reuseIdentifiers = typedRule.operationToken != KtTokens.EQ
 
-            val tempArray: Any = if(reuseIdentifiers && !arrayAccess.arrayExpression!!.isSimple()) {
-                val t = "array${uniqueNumber.getAndIncrement()}"
-                -"let $t = "
-                -arrayAccess.arrayExpression
-                -"\n"
-                t
-            } else arrayAccess.arrayExpression!!
+            val needsClose = when {
+                arrayAccess.arrayExpression?.isSimple() == true -> false
+                arrayAccess.arrayExpression?.resolvedExpressionTypeInfo?.type?.requiresMutable() == true -> true
+                else -> false
+            }
+            val handle: Any = when {
+                arrayAccess.arrayExpression?.isSimple() == true -> {
+                    arrayAccess.arrayExpression!!
+                }
+                arrayAccess.arrayExpression?.resolvedExpressionTypeInfo?.type?.requiresMutable() == true -> {
+                    val tempArray = "array${uniqueNumber.getAndIncrement()}"
+                    -"var $tempArray = "
+                    -arrayAccess.arrayExpression
+                    -"\n"
+                    tempArray
+                }
+                else -> {
+                    val tempArray = "array${uniqueNumber.getAndIncrement()}"
+                    -"let $tempArray = "
+                    -arrayAccess.arrayExpression
+                    -"\n"
+                    tempArray
+                }
+            }
             val tempIndexes = if(reuseIdentifiers) {
                 arrayAccess.indexExpressions.map {
                     if(it.isSimple()) {
@@ -184,7 +226,7 @@ fun SwiftTranslator.registerOperators() {
 
             val right: Any = if (reuseIdentifiers) ValueOperator(
                 left = VirtualArrayGet(
-                    arrayExpression = tempArray,
+                    arrayExpression = handle,
                     indexExpressions = tempIndexes,
                     functionDescriptor = arrayAccess.resolvedIndexedLvalueGet!!.candidateDescriptor,
                     dispatchReceiver = typedRule.getTsReceiver(),
@@ -200,7 +242,7 @@ fun SwiftTranslator.registerOperators() {
             emitTemplate(
                 requiresWrapping = typedRule.actuallyCouldBeExpression,
                 template = rule.template,
-                receiver = tempArray,
+                receiver = handle,
                 dispatchReceiver = arrayAccess.getTsReceiver(),
                 value = right,
                 allParameters = ArrayList<Any?>().apply {
@@ -214,6 +256,12 @@ fun SwiftTranslator.registerOperators() {
                 parameterByIndex = resolvedCall.template_parameterByIndex,
                 typeParameterByIndex = resolvedCall.template_typeParameterByIndex
             )
+            if(needsClose){
+                -"\n"
+                -arrayAccess.arrayExpression
+                -" = "
+                -handle
+            }
         }
     )
 
@@ -304,6 +352,26 @@ fun SwiftTranslator.registerOperators() {
                 operationToken = typedRule.operationToken,
                 resolvedCall = typedRule.resolvedCall
             )
+        })
+    handle<KtBinaryExpression>(
+        condition = {
+            typedRule.operationReference.getReferencedNameElementType() ==KtTokens.EQEQ
+        },
+        priority = 100,
+        action = {
+            -typedRule.left
+            -" == "
+            -typedRule.right
+        })
+    handle<KtBinaryExpression>(
+        condition = {
+            typedRule.operationReference.getReferencedNameElementType() == KtTokens.EXCLEQ
+        },
+        priority = 100,
+        action = {
+            -typedRule.left
+            -" != "
+            -typedRule.right
         })
 
     handle<KtPrefixExpression>(

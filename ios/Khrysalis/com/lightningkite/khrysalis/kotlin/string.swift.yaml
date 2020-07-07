@@ -1,169 +1,58 @@
 ---
 - id: kotlin.Char
   type: type
-  template: string
+  template: Character
 
 - id: kotlin.String
   type: type
-  template: string
+  template: String
 
 - id: kotlin.CharSequence
   type: type
-  template: string
-
-- id: kotlin.Char
-  type: typeRef
   template: String
-
-- id: kotlin.String
-  type: typeRef
-  template: String
-
-- id: kotlin.CharSequence
-  type: typeRef
-  template: String
-
-# Char
-- id: kotlin.Char.equals
-  type: call
-  template: ~this~ === ~0~
-
-- id: kotlin.Char.compareTo
-  type: call
-  template: ~this~ ~operatorToken~ ~0~
-- id: kotlin.String.compareTo
-  type: call
-  template: ~this~ ~operatorToken~ ~0~
-
-- id: kotlin.Char.rangeTo
-  type: call
-  template:
-    pattern: new CharRange(~this~, ~0~)
-    imports:
-      Range: khrysalis/dist/Kotlin
-
-- id: kotlin.text.plus
-  receiver: kotlin.Char
-  type: call
-  infix: true
-  template: ~this~ + ~0~
-
-- id: kotlin.text.plus
-  receiver: kotlin.Char
-  type: call
-  template: (~this~ + ~0~)
-
-# String
-- id: kotlin.String.equals
-  type: call
-  template: ~this~ === ~0~
-
-- id: kotlin.String.plus
-  type: call
-  infix: true
-  template: ~this~ + ~0~
-
-- id: kotlin.String.plus
-  type: call
-  template: (~this~ + ~0~)
-
-- id: kotlin.String.get
-  type: call
-  template: ~this~[~0~]
-
-
-# CharSequence
-- id: kotlin.CharSequence.equals
-  type: call
-  template: ~this~ === ~0~
-
-- id: kotlin.CharSequence.plus
-  type: call
-  infix: true
-  template: ~this~ + ~0~
-
-- id: kotlin.CharSequence.plus
-  type: call
-  template: (~this~ + ~0~)
-
-- id: kotlin.CharSequence.get
-  type: call
-  template: ~this~[~0~]
 
 # Operators
 
 - id: kotlin.text.toLowerCase
   type: call
-  template: ~this~.toLowerCase()
+  template: ~this~.lowercased()
 - id: kotlin.text.toUpperCase
   type: call
-  template: ~this~.toUpperCase()
+  template: ~this~.uppercased()
 - id: kotlin.text.trim
   type: call
   arguments: []
-  template: ~this~.trim()
-- id: kotlin.text.trimStart
-  type: call
-  arguments: []
-  template: ~this~.trimStart()
-- id: kotlin.text.trimEnd
-  type: call
-  arguments: []
-  template: ~this~.trimEnd()
-- id: kotlin.text.padStart
-  type: call
-  template: ~this~.padStart(~*~)
+  template: "~this~.trimmingCharacters(in: .whitespaceAndNewlines)"
 - id: kotlin.text.padEnd
   type: call
-  template: ~this~.padEnd(~*~)
+  template: "~this~.padding(toLength: ~0~, withPad: ~1~, startingAtIndex: 0)"
 - id: kotlin.text.isEmpty
   type: call
-  template: ~this~ === ""
+  template: ~this~.isEmpty
 - id: kotlin.text.isNullOrEmpty
   type: call
-  template: ~this~ === ""
+  template: (~this~?.isEmpty ?? true)
 - id: kotlin.text.isNotEmpty
   type: call
-  template: ~this~ !== ""
+  template: (!~this~.isEmpty)
 - id: kotlin.text.isNotBlank
   type: call
-  template:
-    pattern: !kotlinCharSequenceIsBlank(~this~)
-    imports:
-      kotlinCharSequenceIsBlank: khrysalis/dist/kotlin/kotlin.text
+  template: "~this~.trimmingCharacters(in: CharacterSet.whitespaces).isEmpty"
 - id: kotlin.text.isNullOrBlank
   type: call
-  template:
-    pattern: kotlinCharSequenceIsBlank(~this~)
-    imports:
-      kotlinCharSequenceIsBlank: khrysalis/dist/kotlin/kotlin.text
+  template: "(~this~?.trimmingCharacters(in: CharacterSet.whitespaces).isEmpty ?? true)"
 - id: kotlin.text.orEmpty
   type: call
   template: (~this~ ?? "")
-- id: kotlin.text.substring
-  type: call
-  template: ~this~.substring(~*~)
-- id: kotlin.text.removePrefix
-  type: call
-  template:
-    pattern: kotlinStringSubstringAfter(~this~, ~0~)
-    imports:
-      kotlinStringSubstringAfter: khrysalis/dist/kotlin/kotlin.text
-- id: kotlin.text.removeSuffix
-  type: call
-  template:
-    pattern: kotlinStringSubstringBeforeLast(~this~, ~0~)
-    imports:
-      kotlinStringSubstringBeforeLast: khrysalis/dist/kotlin/kotlin.text
 - id: kotlin.text.replace
   type: call
-  template: ~this~.replace(~0~, ~1~)
+  template: "~this~.replacingOccurrences(of: ~0~, with: ~1~)"
 - id: kotlin.text.startsWith
   type: call
-  template: ~this~.startsWith(~*~)
+  template: "~this~.starts(with: ~0~)"
 - id: kotlin.text.endsWith
   type: call
-  template: ~this~.endsWith(~*~)
+  template: "~this~.ends(with: ~0~)"
 - id: kotlin.text.split
   type: call
   template: ~this~.split(~*~)
@@ -177,102 +66,105 @@
 # Characters
 
 
+# String
+- id: kotlin.String.plus
+  type: call
+  infix: true
+  template: ~this~ + ~0~
+
+- id: kotlin.String.plus
+  type: call
+  template: (~this~ + ~0~)
+
+- id: kotlin.String.get
+  type: call
+  template: ~this~[~0~]
+
+- id: kotlin.Any.toString
+  type: call
+  template: 'String(describing: ~this~)'
+
+# CharSequence
+- id: kotlin.CharSequence.plus
+  type: call
+  infix: true
+  template: ~this~ + ~0~
+
+- id: kotlin.CharSequence.plus
+  type: call
+  template: (~this~ + ~0~)
+
+- id: kotlin.CharSequence.get
+  type: call
+  template: ~this~[~0~]
+
 # Regex
 
 - id: kotlin.text.Regex
   type: type
-  template: RegExp
+  template: NSRegularExpression
 - id: kotlin.text.Regex
   type: call
-  template: new RegExp(~0~)
+  template: "NSRegularExpression(pattern: ~0~, options: [])"
 
 # String Builder
 - id: kotlin.text.StringBuilder
+  type: type
+  requiresMutable: true
+  template: String
+- id: kotlin.text.StringBuilder
   type: call
-  template:
-    pattern: new StringBuilder()
-    imports:
-      StringBuilder: khrysalis/dist/kotlin/kotlin.text
+  template: '""'
 - id: kotlin.text.StringBuilder.append
   type: call
-  template: ~this~.value += ~0~
+  template: ~this~.append(~0~)
 - id: java.lang.StringBuilder.append
   type: call
-  template: ~this~.value += ~0~
+  template: ~this~.append(~0~)
 - id: kotlin.text.appendln
   type: call
-  template: ~this~.value += ~0~ + '\n'
+  template: ~this~.append(~0~ + "\n")
 - id: kotlin.text.appendln
   type: call
   arguments: []
-  template: ~this~.value += '\n'
-- id: kotlin.text.format
-  type: call
-  template:
-    pattern: sprintf(~this~, ~*~)
-    imports:
-      sprintf: sprintf-js
-- id: com.lightningkite.khrysalis.formatList
-  type: call
-  template:
-    pattern: vsprintf(~this~, ~0~)
-    imports:
-      vsprintf: sprintf-js
+  template: ~this~.append("\n")
 
 # Converting to Numbers
 
-- id: kotlin.text.toByteOrNull
-  type: call
-  template:
-    pattern: parseIntOrNull(~0~)
-    imports:
-      parseIntOrNull: khrysalis/dist/Kotlin
-- id: kotlin.text.toShortOrNull
-  type: call
-  template:
-    pattern: parseIntOrNull(~0~)
-    imports:
-      parseIntOrNull: khrysalis/dist/Kotlin
-- id: kotlin.text.toIntOrNull
-  type: call
-  template:
-    pattern: parseIntOrNull(~0~)
-    imports:
-      parseIntOrNull: khrysalis/dist/Kotlin
-- id: kotlin.text.toLongOrNull
-  type: call
-  template:
-    pattern: parseIntOrNull(~0~)
-    imports:
-      parseIntOrNull: khrysalis/dist/Kotlin
-- id: kotlin.text.toFloatOrNull
-  type: call
-  template:
-    pattern: parseFloatOrNull(~0~)
-    imports:
-      parseFloatOrNull: khrysalis/dist/Kotlin
-- id: kotlin.text.toDoubleOrNull
-  type: call
-  template:
-    pattern: parseFloatOrNull(~0~)
-    imports:
-      parseFloatOrNull: khrysalis/dist/Kotlin
-
 - id: kotlin.text.toByte
   type: call
-  template: parseInt(~0~)
+  template: Int8(~this~)!
 - id: kotlin.text.toShort
   type: call
-  template: parseInt(~0~)
+  template: Int16(~this~)!
 - id: kotlin.text.toInt
   type: call
-  template: parseInt(~0~)
+  template: Int(~this~)!
 - id: kotlin.text.toLong
   type: call
-  template: parseInt(~0~)
+  template: Int64(~this~)!
 - id: kotlin.text.toFloat
   type: call
-  template: parseFloat(~0~)
+  template: Float(~this~)!
 - id: kotlin.text.toDouble
   type: call
-  template: parseFloat(~0~)
+  template: Double(~this~)!
+
+- id: kotlin.text.toByteOrNull
+  type: call
+  template: Int8(~this~)
+- id: kotlin.text.toShortOrNull
+  type: call
+  template: Int16(~this~)
+- id: kotlin.text.toIntOrNull
+  type: call
+  template: Int(~this~)
+- id: kotlin.text.toLongOrNull
+  type: call
+  template: Int64(~this~)
+- id: kotlin.text.toFloatOrNull
+  type: call
+  template: Float(~this~)
+- id: kotlin.text.toDoubleOrNull
+  type: call
+  template: Double(~this~)

@@ -3,44 +3,51 @@
 ---
 - id: kotlin.ByteArray
   type: type
-  template: Int8Array
+  requiresMutable: true
+  template: Array<Int8>
 - id: kotlin.ShortArray
   type: type
-  template: Int16Array
+  requiresMutable: true
+  template: Array<Int16>
 - id: kotlin.IntArray
   type: type
-  template: Int32Array
+  requiresMutable: true
+  template: Array<Int>
 - id: kotlin.LongArray
   type: type
-  template: BigInt64Array
+  requiresMutable: true
+  template: Array<Int64>
 - id: kotlin.FloatArray
   type: type
-  template: Float32Array
+  requiresMutable: true
+  template: Array<Float>
 - id: kotlin.DoubleArray
   type: type
-  template: Float64Array
+  requiresMutable: true
+  template: Array<Double>
 - id: kotlin.Array
   type: type
+  requiresMutable: true
   template: Array<~T0~>
 
 - id: kotlin.ByteArray
   type: typeRef
-  template: Int8Array
+  template: Array<Int8>
 - id: kotlin.ShortArray
   type: typeRef
-  template: Int16Array
+  template: Array<Int16>
 - id: kotlin.IntArray
   type: typeRef
-  template: Int32Array
+  template: Array<Int>
 - id: kotlin.LongArray
   type: typeRef
-  template: BigInt64Array
+  template: Array<Int64>
 - id: kotlin.FloatArray
   type: typeRef
-  template: Float32Array
+  template: Array<Float>
 - id: kotlin.DoubleArray
   type: typeRef
-  template: Float64Array
+  template: Array<Double>
 - id: kotlin.Array
   type: typeRef
   template: Array
@@ -48,22 +55,22 @@
 # Size
 - id: kotlin.ByteArray.size
   type: get
-  template: ~this~.length
+  template: ~this~.count
 - id: kotlin.ShortArray.size
   type: get
-  template: ~this~.length
+  template: ~this~.count
 - id: kotlin.IntArray.size
   type: get
-  template: ~this~.length
+  template: ~this~.count
 - id: kotlin.LongArray.size
   type: get
-  template: ~this~.length
+  template: ~this~.count
 - id: kotlin.FloatArray.size
   type: get
-  template: ~this~.length
+  template: ~this~.count
 - id: kotlin.DoubleArray.size
   type: get
-  template: ~this~.length
+  template: ~this~.count
 - id: kotlin.Array.size
   type: get
-  template: ~this~.length
+  template: ~this~.count

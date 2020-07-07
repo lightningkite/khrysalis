@@ -22,8 +22,8 @@ import java.io.StringWriter
 
 class KotlinSwiftCLP : CommandLineProcessor {
     companion object {
-        const val KEY_TS_DEPENDENCIES_NAME = "tsDependencies"
-        val KEY_TS_DEPENDENCIES = CompilerConfigurationKey.create<List<File>>(KEY_TS_DEPENDENCIES_NAME)
+        const val KEY_DEPENDENCIES_NAME = "swiftDependencies"
+        val KEY_SWIFT_DEPENDENCIES = CompilerConfigurationKey.create<List<File>>(KEY_DEPENDENCIES_NAME)
         const val KEY_PROJECT_NAME_NAME = "projName"
         val KEY_PROJECT_NAME = CompilerConfigurationKey.create<String>(KEY_PROJECT_NAME_NAME)
         const val KEY_OUTPUT_DIRECTORY_NAME = "outputDirectory"
@@ -40,7 +40,7 @@ class KotlinSwiftCLP : CommandLineProcessor {
             required = true
         ),
         CliOption(
-            KEY_TS_DEPENDENCIES_NAME,
+            KEY_DEPENDENCIES_NAME,
             "A list of directories",
             "Where to look for translational information.",
             required = false
@@ -55,8 +55,8 @@ class KotlinSwiftCLP : CommandLineProcessor {
 
     override fun processOption(option: AbstractCliOption, value: String, configuration: CompilerConfiguration) =
         when (option.optionName) {
-            KEY_TS_DEPENDENCIES_NAME -> configuration.put(
-                KEY_TS_DEPENDENCIES,
+            KEY_DEPENDENCIES_NAME -> configuration.put(
+                KEY_SWIFT_DEPENDENCIES,
                 value.trim('"').split(File.pathSeparatorChar).map { File(it) })
             KEY_OUTPUT_DIRECTORY_NAME -> configuration.put(KEY_OUTPUT_DIRECTORY, value.trim('"').let { File(it) })
             KEY_PROJECT_NAME_NAME -> configuration.put(KEY_PROJECT_NAME, value.trim('"'))
@@ -71,7 +71,7 @@ class KotlinSwiftCR : ComponentRegistrar {
             project,
             KotlinSwiftExtension(
                 configuration[KotlinSwiftCLP.KEY_PROJECT_NAME],
-                configuration[KotlinSwiftCLP.KEY_TS_DEPENDENCIES] ?: listOf(),
+                configuration[KotlinSwiftCLP.KEY_SWIFT_DEPENDENCIES] ?: listOf(),
                 configuration[KotlinSwiftCLP.KEY_OUTPUT_DIRECTORY]!!,
                 configuration[CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY]
             )

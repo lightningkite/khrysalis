@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.swift
 
+import com.lightningkite.khrysalis.util.forEachBetween
 import org.jetbrains.kotlin.psi.*
 
 fun SwiftTranslator.registerLambda() {
@@ -41,7 +42,18 @@ fun SwiftTranslator.registerLambda() {
     handle<KtFunctionLiteral> {
         val resolved = typedRule.resolvedFunction
         -"{ "
-        typedRule.valueParameterList?.let {
+        resolved?.valueParameters?.let {
+            -'('
+            it.forEachBetween(
+                forItem = {
+                    -it.name.asString()
+                    -": "
+                    -it.type
+                },
+                between = { -", " }
+            )
+            -')'
+        } ?: typedRule.valueParameterList?.let {
             -'('
             -it
             -')'
@@ -51,6 +63,10 @@ fun SwiftTranslator.registerLambda() {
             } else {
                 -"()"
             }
+        }
+        resolved?.returnType?.let {
+            - " -> "
+            -it
         }
         -" in "
         when (typedRule.bodyExpression?.statements?.size) {

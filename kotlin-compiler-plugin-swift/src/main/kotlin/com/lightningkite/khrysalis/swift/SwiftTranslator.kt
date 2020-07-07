@@ -4,11 +4,13 @@ import com.lightningkite.khrysalis.generic.PartialTranslatorByType
 import com.lightningkite.khrysalis.generic.TranslatorInterface
 import com.lightningkite.khrysalis.swift.replacements.Replacements
 import com.lightningkite.khrysalis.util.AnalysisExtensions
+import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.descriptors.DeclarationDescriptor
+import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
@@ -111,12 +113,6 @@ class SwiftTranslator(
         super.translate(identifier, rule, out, afterPriority)
     }
 
-    val terminalMap = mapOf(
-        "fun" to "function",
-        "object" to "class",
-        "vararg" to "..."
-    )
-
     init {
 
         registerAnnotation()
@@ -133,10 +129,6 @@ class SwiftTranslator(
         registerOperators()
         registerReceiver()
         registerSpecialLet()
-
-        handle<LeafPsiElement>(condition = { typedRule.text in terminalMap.keys }, priority = 1) {
-            out.append(terminalMap[typedRule.text])
-        }
     }
 
 
@@ -195,6 +187,12 @@ class SwiftTranslator(
             return false
         }
         return true
+    }
+
+
+
+    fun KotlinType.requiresMutable(): Boolean {
+        return replacements.requiresMutable(this)
     }
 }
 

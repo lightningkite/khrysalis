@@ -8,7 +8,7 @@ fun failableAction(state: Boolean = true) {
     }
 }
 
-fun test() {
+private fun test() {
     try {
         failableAction()
     } catch (e: Exception) {

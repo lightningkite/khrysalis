@@ -62,7 +62,7 @@ class TestClass {
 }
 
 class TestClass2 {
-    fun test(){
+    private fun test(){
         println("Hi!")
     }
 }

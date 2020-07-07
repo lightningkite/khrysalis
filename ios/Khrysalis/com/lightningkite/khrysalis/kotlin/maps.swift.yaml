@@ -2,15 +2,17 @@
 # Maps
 - id: kotlin.collections.Map
   type: type
-  template: Map<~T0~, ~T1~>
+  template: Dictionary<~T0~, ~T1~>
 
 - id: kotlin.collections.HashMap
   type: type
-  template: Map<~T0~, ~T1~>
+  requiresMutable: true
+  template: Dictionary<~T0~, ~T1~>
 
 - id: kotlin.collections.MutableMap
   type: type
-  template: Map<~T0~, ~T1~>
+  requiresMutable: true
+  template: Dictionary<~T0~, ~T1~>
 
 ## Creation
 
@@ -19,127 +21,49 @@
   typeArgumentRequirements:
     0: primitive
   hasExplicitTypeArguments: true
-  template: "new Map<~T0~>([~*~])"
+  template: "Dictionary<~T0~, ~T1~>(uniqueKeysWithValues: [~*~])"
 - id: kotlin.collections.mapOf
   type: call
-  typeArgumentRequirements:
-    0: primitive
-  template: "new Map([~*~])"
-
-- id: kotlin.collections.mapOf
-  type: call
-  hasExplicitTypeArguments: true
-  template:
-    pattern: "new EqualOverrideMap<~T0~>([~*~])"
-    imports:
-      EqualOverrideMap: khrysalis/dist/KotlinCollections
-- id: kotlin.collections.mapOf
-  type: call
-  template:
-    pattern: "new EqualOverrideMap([~*~])"
-    imports:
-      EqualOverrideMap: khrysalis/dist/KotlinCollections
-
-- id: kotlin.collections.mutableMapOf
-  type: call
-  typeArgumentRequirements:
-    0: primitive
-  hasExplicitTypeArguments: true
-  template: "new Map<~T0~>([~*~])"
-- id: kotlin.collections.mutableMapOf
-  type: call
-  typeArgumentRequirements:
-    0: primitive
-  template: "new Map([~*~])"
+  template: "Dictionary(uniqueKeysWithValues: [~*~])"
 
 - id: kotlin.collections.mutableMapOf
   type: call
   hasExplicitTypeArguments: true
-  template:
-    pattern: "new EqualOverrideMap<~T0~>([~*~])"
-    imports:
-      EqualOverrideMap: khrysalis/dist/KotlinCollections
+  template: "Dictionary<~T0~, ~T1~>(uniqueKeysWithValues: [~*~])"
 - id: kotlin.collections.mutableMapOf
   type: call
-  template:
-    pattern: "new EqualOverrideMap([~*~])"
-    imports:
-      EqualOverrideMap: khrysalis/dist/KotlinCollections
-
-- id: kotlin.collections.hashMapOf
-  type: call
-  typeArgumentRequirements:
-    0: primitive
-  hasExplicitTypeArguments: true
-  template: "new Map<~T0~>([~*~])"
-- id: kotlin.collections.hashMapOf
-  type: call
-  typeArgumentRequirements:
-    0: primitive
-  template: "new Map([~*~])"
+  template: "Dictionary(uniqueKeysWithValues: [~*~])"
 
 - id: kotlin.collections.hashMapOf
   type: call
   hasExplicitTypeArguments: true
-  template:
-    pattern: "new EqualOverrideMap<~T0~>([~*~])"
-    imports:
-      EqualOverrideMap: khrysalis/dist/KotlinCollections
+  template: "Dictionary<~T0~, ~T1~>(uniqueKeysWithValues: [~*~])"
 - id: kotlin.collections.hashMapOf
   type: call
-  template:
-    pattern: "new EqualOverrideMap([~*~])"
-    imports:
-      EqualOverrideMap: khrysalis/dist/KotlinCollections
+  template: "Dictionary(uniqueKeysWithValues: [~*~])"
+
 
 - id: kotlin.collections.HashMap
   type: call
   hasExplicitTypeArguments: true
-  typeArgumentRequirements:
-    0: primitive
-  template: new Map<~T0~, ~T1~>()
+  template: "Dictionary<~T0~, ~T1~>()"
 
 - id: kotlin.collections.HashMap
   type: call
-  typeArgumentRequirements:
-    0: primitive
-  template: new Map()
-
-- id: kotlin.collections.HashMap
-  type: call
-  hasExplicitTypeArguments: true
-  template:
-    pattern: "new EqualOverrideMap<~T0~, ~T1~>()"
-    imports:
-      EqualOverrideMap: khrysalis/dist/KotlinCollections
-
-- id: kotlin.collections.HashMap
-  type: call
-  template:
-    pattern: "new EqualOverrideMap()"
-    imports:
-      EqualOverrideMap: khrysalis/dist/KotlinCollections
+  template: "Dictionary()"
 
 ## Usage
 
 - id: kotlin.collections.component1
   type: call
   receiver: Map.Entry
-  template: ~this~[0]
+  template: ~this~.key
 
 - id: kotlin.collections.component2
   type: call
   receiver: Map.Entry
-  template: ~this~[1]
-
-- id: kotlin.collections.Map.keys
-  type: get
-  template: ~this~.keys()
-
-- id: kotlin.collections.Map.values
-  type: get
-  template: ~this~.values()
+  template: ~this~.value
 
 - id: kotlin.collections.Map.entries
   type: get
-  template: ~this~.entries()
+  template: ~this~

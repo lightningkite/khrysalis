@@ -178,7 +178,7 @@ var TestObject.extensionProperty: Int
         this@extensionProperty.objectReal = value
     }
 
-fun test(){
+private fun test(){
     val instance = TestClass()
     fileReal += 1
     println(TestObject.objectReal)
