@@ -3,6 +3,7 @@ package com.lightningkite.khrysalis.maps
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.lightningkite.khrysalis.location.GeoCoordinate
@@ -39,10 +40,14 @@ fun MapView.bindView(
     dependency: ViewDependency,
     position: ObservableProperty<GeoCoordinate?>,
     zoomLevel: Float = 15f,
-    animate: Boolean = true
+    animate: Boolean = true,
+    style: String? = null
 ) {
     bind(dependency)
     getMapAsync { map ->
+        if (style != null) {
+            map.setMapStyle(MapStyleOptions(style))
+        }
         var marker: Marker? = null
         @Suppress("NAME_SHADOWING")
         position.subscribeBy { value ->
@@ -68,10 +73,14 @@ fun MapView.bindSelect(
     dependency: ViewDependency,
     position: MutableObservableProperty<GeoCoordinate?>,
     zoomLevel: Float = 15f,
-    animate: Boolean = true
+    animate: Boolean = true,
+    style: String? = null
 ) {
     bind(dependency)
     getMapAsync { map ->
+        if (style != null) {
+            map.setMapStyle(MapStyleOptions(style))
+        }
         var suppress: Boolean = false
         var suppressAnimation: Boolean = false
         var marker: Marker? = null
