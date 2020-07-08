@@ -1,38 +1,38 @@
-package com.test.functions
+package com.test
 
 import com.test.JsName
 import com.lightningkite.khrysalis.bytes.Data
 
-fun topLevelFunction(){
+private fun topLevelFunction(){
     println("Hello world!")
     fun localFunction(){
         println("Hello from local!")
     }
     localFunction()
 }
-fun <T> topLevelGenericFunction(item: T){
+private fun <T> topLevelGenericFunction(item: T){
     println("Hello ${item}")
 }
 @JsName("restParamsFunction")
-fun varargFunction(vararg numbers: Int){
+private fun varargFunction(vararg numbers: Int){
     for(item in numbers){
         println("Item: $item")
     }
 }
 
-class TestClass {
+private class FunctionTestClass {
     val member: Int? = 0
     fun memberFunction(a: Int = 2, b: Int = 3, c: Int = 4){
-        println("Hello from TestClass!")
+        println("Hello from FunctionTestClass!")
     }
     fun <T> memberGenericFunction(item: T){
-        println("Hello ${item} from TestClass!")
+        println("Hello ${item} from FunctionTestClass!")
     }
-    fun TestClass2.memberExtensionFunction(){
-        println("Hello ${this} from ${this@TestClass}!")
+    fun FunctionTestClass2.memberExtensionFunction(){
+        println("Hello ${this} from ${this@FunctionTestClass}!")
     }
     fun testExtension(){
-        TestClass2().memberExtensionFunction()
+        FunctionTestClass2().memberExtensionFunction()
     }
     fun otherTest(){
         member?.let {
@@ -61,34 +61,34 @@ class TestClass {
     }
 }
 
-class TestClass2 {
+private class FunctionTestClass2 {
     private fun test(){
         println("Hi!")
     }
 }
 
-fun TestClass.extensionFunction(){
+private fun FunctionTestClass.extensionFunction(){
     println("From an extension:")
     this.memberFunction()
 }
 @JsName("extensionFunction2")
-fun TestClass.extensionFunction(str: String){
+private fun FunctionTestClass.extensionFunction(str: String){
     println("From an extension with $str:")
     this.memberFunction()
 }
-fun <T, E> T.genericExtensionFunction(element: E){
+private fun <T, E> T.genericExtensionFunction(element: E){
     println("Hello $element from $this!")
 }
 
-inline fun <reified T> resolve(): T? {
+private inline fun <reified T> functionResolve(): T? {
     return null
 }
 
-fun main(){
+private fun functionMain(){
     topLevelFunction()
     topLevelGenericFunction(2)
     varargFunction(1, 2, 3, 4, 5)
-    val instance = TestClass()
+    val instance = FunctionTestClass()
     instance.memberFunction()
     instance.memberFunction(a = 1)
     instance.memberFunction(b = 1)
@@ -99,12 +99,12 @@ fun main(){
     instance.extensionFunction()
     instance.extensionFunction("asdf")
     instance.genericExtensionFunction(8)
-    val x: Int? = resolve()
-    val y = resolve<String>()
+    val x: Int? = functionResolve()
+    val y = functionResolve<String>()
 }
 
-val anotherThing = 2
+private val functionAnotherThing = 2
 
-fun testRepl(data: Data) {
+private fun functionTestRepl(data: Data) {
     println(data.size)
 }

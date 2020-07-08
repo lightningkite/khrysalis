@@ -7,11 +7,13 @@ import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
+import org.jetbrains.kotlin.psi.psiUtil.getTextWithLocation
 import org.jetbrains.kotlin.psi.psiUtil.isPrivate
 import org.jetbrains.kotlin.psi.psiUtil.visibilityModifier
 import org.jetbrains.kotlin.psi.psiUtil.visibilityModifierTypeOrDefault
 import org.jetbrains.kotlin.types.*
 import org.jetbrains.kotlin.types.typeUtil.*
+import java.util.*
 
 private val primitiveTypes = setOf(
     "kotlin.Byte",
@@ -37,8 +39,15 @@ data class CompleteReflectableType(val type: KotlinType)
 data class KtUserTypeBasic(val type: KtUserType)
 data class SwiftExtensionStart(val forDescriptor: CallableDescriptor)
 
+private val partOfParameterWeak = WeakHashMap<KotlinType, Boolean>()
+var KotlinType.partOfParameter: Boolean
+    get() = partOfParameterWeak[this] ?: false
+    set(value){
+        partOfParameterWeak[this] = value
+    }
+
 fun KotlinType.worksAsSwiftConstraint(): Boolean {
-    if(this.getJetTypeFqName(false) == "kotlin.Any") return false
+    if (this.getJetTypeFqName(false) == "kotlin.Any") return false
     return when (this) {
         is WrappedType -> false
         is SimpleType -> true
@@ -59,7 +68,7 @@ fun SwiftTranslator.registerType() {
         -BasicType(t)
         t.arguments
             .mapIndexedNotNull { index, it ->
-                if(it.type.constructor.declarationDescriptor is TypeParameterDescriptor) return@mapIndexedNotNull null
+                if (it.type.constructor.declarationDescriptor is TypeParameterDescriptor) return@mapIndexedNotNull null
                 val swiftExactly = it.type.annotations.find {
                     it.fqName?.asString()?.endsWith("swiftExactly") == true
                 }?.allValueArguments?.entries?.first()?.value?.value as? String
@@ -97,7 +106,7 @@ fun SwiftTranslator.registerType() {
 
     handle<KtTypeAlias> {
         -(typedRule.visibilityModifier() ?: "public")
-        -"typealias "
+        -" typealias "
         -typedRule.nameIdentifier
         -typedRule.typeParameterList
         -" = "
@@ -107,6 +116,9 @@ fun SwiftTranslator.registerType() {
     handle<KotlinType> {
         when (val desc = typedRule.constructor.declarationDescriptor) {
             is FunctionClassDescriptor -> {
+                if (typedRule.partOfParameter && typedRule.annotations.any { it.fqName?.asString() == "com.lightningkite.khrysalis.escaping" }) {
+                    -"@escaping "
+                }
                 -'('
                 typedRule.arguments.dropLast(1).forEachIndexed { index, typeProjection ->
                     -typeProjection
@@ -138,7 +150,7 @@ fun SwiftTranslator.registerType() {
                 -desc.name.asString()
             }
             else -> {
-                println("What is this? ${desc?.let { it::class.qualifiedName}}")
+                println("What is this? ${desc?.let { it::class.qualifiedName }}")
             }
         }
     }
@@ -253,6 +265,19 @@ fun SwiftTranslator.registerType() {
         -") -> "
         -typedRule.returnTypeReference
     }
+
+    handle<KtTypeReference>(
+        condition = {
+            typedRule.annotationEntries
+                .any { it.resolvedAnnotation?.fqName?.asString() == "com.lightningkite.khrysalis.escaping" }
+                    && typedRule.parentOfType<KtParameter>() != null
+        },
+        priority = 10,
+        action = {
+            -"@escaping "
+            doSuper()
+        }
+    )
 
     handle<KtTypeProjection> {
         when (typedRule.projectionKind) {

@@ -1,10 +1,10 @@
-package com.test.classes
+package com.test
 
-enum class Suits {
+private enum class EnumSuits {
     SPADES, CLUBS, DIAMONDS, HEARTS;
 }
 
-enum class AdvancedSuits(val black: Boolean) {
+private enum class EnumAdvancedSuits(val black: Boolean) {
     SPADES(true){
         override fun print(cardNum: Int){
             println("♠$cardNum")
@@ -19,16 +19,16 @@ enum class AdvancedSuits(val black: Boolean) {
     }
 }
 
-fun testEnums(){
-    val simpleSuit = Suits.CLUBS
-    val advancedSuit = AdvancedSuits.DIAMONDS
-    for(simp in Suits.values()){
+private fun enumTest(){
+    val simpleSuit = EnumSuits.CLUBS
+    val advancedSuit = EnumAdvancedSuits.DIAMONDS
+    for(simp in EnumSuits.values()){
         println(simp.name)
-        println(Suits.valueOf(simp.name))
+        println(EnumSuits.valueOf(simp.name))
     }
-    for(simp in AdvancedSuits.values()){
+    for(simp in EnumAdvancedSuits.values()){
         println(simp.name)
         simp.print(3)
-        println(AdvancedSuits.valueOf(simp.name))
+        println(EnumAdvancedSuits.valueOf(simp.name))
     }
 }

@@ -4,6 +4,8 @@ import com.lightningkite.khrysalis.generic.PartialTranslatorByType
 import com.lightningkite.khrysalis.generic.TranslatorInterface
 import com.lightningkite.khrysalis.swift.replacements.Replacements
 import com.lightningkite.khrysalis.util.AnalysisExtensions
+import com.lightningkite.khrysalis.util.forEachBetween
+import com.lightningkite.khrysalis.util.walkTopDown
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
@@ -194,5 +196,35 @@ class SwiftTranslator(
     fun KotlinType.requiresMutable(): Boolean {
         return replacements.requiresMutable(this)
     }
-}
 
+    fun PartialTranslatorByType<SwiftFileEmitter, Unit, Any>.ContextByType<*>.runWithTypeHeader(
+        on: KtExpression
+    ) {
+        val type = on.resolvedExpressionTypeInfo?.type
+        if(type?.getJetTypeFqName(false) == "kotlin.Nothing") {
+            //find type via returns
+            on.walkTopDown()
+                .mapNotNull { it as? KtReturnExpression }
+                .mapNotNull { it.getTargetLabel()?.resolvedLabelTarget }
+                .mapNotNull { it as? KtFunctionLiteral }
+                .firstOrNull()
+                ?.resolvedFunction
+                ?.returnType
+                ?.let { type ->
+                    -"run {"
+                    -" () -> "
+                    -type
+                    -" in "
+                } ?: run {
+                -"run { "
+            }
+        } else if(type != null) {
+            -"run {"
+            -" () -> "
+            -type
+            -" in "
+        } else {
+            -"run { /*!*/ "
+        }
+    }
+}

@@ -1,6 +1,6 @@
-package com.test.cursedclasses
+package com.test
 
-class A {
+private class CursedA {
     class B {
         class C {
             companion object {
@@ -19,7 +19,7 @@ class A {
     }
 }
 
-interface F {
+private interface CursedF {
     class G {
     }
     object H {
@@ -28,17 +28,17 @@ interface F {
     }
 }
 
-fun main(){
+private fun cursedmain(){
     println("Clearly, we hate ourselves.")
-    println(F.H.x)
-    val thing = object: A.B.C.D.E {
+    println(CursedF.H.x)
+    val thing = object: CursedA.B.C.D.E {
         val hello = "Hello World!"
     }
-    val other = F.G()
+    val other = CursedF.G()
 
-    A()
-    A.B()
-    A.B.C()
-    A.B.C.D()
-    A.B.C.D(4)
+    CursedA()
+    CursedA.B()
+    CursedA.B.C()
+    CursedA.B.C.D()
+    CursedA.B.C.D(4)
 }

@@ -1,0 +1,88 @@
+---
+
+## Types
+- id: kotlin.collections.Set
+  type: type
+  template: Set<~T0~>
+- id: kotlin.collections.MutableSet
+  type: type
+  requiresMutable: true
+  template: Set<~T0~>
+- id: kotlin.collections.HashSet
+  type: type
+  requiresMutable: true
+  template: Set<~T0~>
+
+## Creation
+- id: kotlin.collections.HashSet
+  type: call
+  hasExplicitTypeArguments: true
+  template: Set<~T0~>()
+
+- id: kotlin.collections.HashSet
+  type: call
+  template: Set()
+
+- id: kotlin.collections.setOf
+  type: call
+  hasExplicitTypeArguments: true
+  template: "[~*~] as Set<~T0~>"
+- id: kotlin.collections.setOf
+  type: call
+  template: "Set([~*~])"
+
+- id: kotlin.collections.mutableSetOf
+  type: call
+  hasExplicitTypeArguments: true
+  template: "[~*~] as Set<~T0~>"
+- id: kotlin.collections.mutableSetOf
+  type: call
+  template: "Set([~*~])"
+
+- id: kotlin.collections.hashSetOf
+  type: call
+  hasExplicitTypeArguments: true
+  template: "[~*~] as Set<~T0~>"
+- id: kotlin.collections.hashSetOf
+  type: call
+  template: "Set([~*~])"
+
+
+## Operations
+
+- id: kotlin.collections.Set.add
+  type: call
+  template: '~this~.insert(~0~).inserted'
+
+- id: kotlin.collections.Set.add
+  type: call
+  usedAsExpression: false
+  template: '~this~.insert(~0~)'
+
+- id: kotlin.collections.Set.remove
+  type: call
+  template: ~this~.remove(~0~)
+
+- id: kotlin.collections.plus
+  receiver: kotlin.collections.Set
+  type: call
+  arguments: [kotlin.collections.Set]
+  template: '~this~.union(~0~)'
+
+- id: kotlin.collections.plus
+  receiver: kotlin.collections.Set
+  type: call
+  arguments: [kotlin.Any]
+  template: '~this~.union([~0~])'
+
+- id: kotlin.collections.minus
+  receiver: kotlin.collections.Set
+  type: call
+  arguments: [kotlin.collections.Set]
+  template: '~this~.subtracting(~0~)'
+
+- id: kotlin.collections.minus
+  receiver: kotlin.collections.Set
+  type: call
+  arguments: [kotlin.Any]
+  template: '~this~.subtracting([~0~])'

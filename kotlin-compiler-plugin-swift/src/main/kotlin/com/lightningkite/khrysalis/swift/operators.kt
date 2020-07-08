@@ -139,7 +139,7 @@ fun SwiftTranslator.registerOperators() {
                     indexExpressions = tempIndexes,
                     functionDescriptor = arrayAccess.resolvedIndexedLvalueGet!!.resultingDescriptor,
                     dispatchReceiver = typedRule.getTsReceiver(),
-                    resolvedCall = arrayAccess.resolvedIndexedLvalueSet
+                    resolvedCall = arrayAccess.resolvedIndexedLvalueGet
                 ),
                 right = typedRule.right!!,
                 functionDescriptor = typedRule.operationReference.resolvedReferenceTarget as FunctionDescriptor,
@@ -159,7 +159,7 @@ fun SwiftTranslator.registerOperators() {
             -(setFunction.swiftNameOverridden ?: "set")
             -ArgumentsList(
                 on = setFunction,
-                resolvedCall = typedRule.resolvedCall ?: return@handle,
+                resolvedCall = arrayAccess.resolvedIndexedLvalueSet!!,
                 prependArguments = if (doubleReceiver) listOf(arrayAccess.arrayExpression!!) else listOf()
             )
             if(needsClose){
@@ -410,6 +410,24 @@ fun SwiftTranslator.registerOperators() {
                 on = f,
                 resolvedCall = typedRule.resolvedCall!!,
                 prependArguments = if (f.extensionReceiverParameter != null) listOf(typedRule.baseExpression!!) else listOf()
+            )
+        }
+    )
+
+    handle<KtPostfixExpression>(
+        condition = {
+            replacements.getCall(this@registerOperators, typedRule.resolvedCall ?: return@handle false) != null
+        },
+        priority = 10_000,
+        action = {
+            val f = typedRule.resolvedCall!!
+            val rule = replacements.getCall(this@registerOperators, f)!!
+
+            emitTemplate(
+                requiresWrapping = typedRule.actuallyCouldBeExpression,
+                template = rule.template,
+                receiver = typedRule.baseExpression,
+                dispatchReceiver = if(f.candidateDescriptor.extensionReceiverParameter != null) typedRule.getTsReceiver() else typedRule.baseExpression
             )
         }
     )

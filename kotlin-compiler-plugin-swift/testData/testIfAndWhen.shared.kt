@@ -1,9 +1,9 @@
-package com.test.ifandwhen
+package com.test
 
-fun setNullable(): Int? = 2
-fun makeSomething(): Any? = "Hello"
+fun ifAndWhenSetNullable(): Int? = 2
+fun ifAndWhenMakeSomething(): Any? = "Hello"
 
-fun main() {
+fun ifAndWhenMain() {
     var thing: Int = 0
 
     //If/else chaining
@@ -27,7 +27,7 @@ fun main() {
     }
 
     //If nullable smart cast
-    var thing2: Int? = setNullable()
+    var thing2: Int? = ifAndWhenSetNullable()
     if (thing2 != null) {
         println("Thing is not null")
         val result = 3 + thing2
@@ -35,17 +35,17 @@ fun main() {
     }
 
     if (thing2 == null) {
-        if(makeSomething() != null) {
-            makeSomething()
+        if(ifAndWhenMakeSomething() != null) {
+            ifAndWhenMakeSomething()
         } else {
-            makeSomething()
+            ifAndWhenMakeSomething()
         }
     } else {
-        if(makeSomething() != null) {
-            makeSomething()
+        if(ifAndWhenMakeSomething() != null) {
+            ifAndWhenMakeSomething()
             thing += 1
         } else {
-            makeSomething()
+            ifAndWhenMakeSomething()
             thing += 1
         }
     }
@@ -72,7 +72,7 @@ fun main() {
     }
 
     val ifAsExpression3 = listOf(1, 2, 3).map {
-        if(it % 2 === 0) return@map it else return@map it + 1
+        if(it % 2 == 0) return@map it else return@map it + 1
     }
 
     fun subfunction(): Int {
@@ -152,7 +152,7 @@ fun main() {
     }
 
     //when on subject typed
-    var thing3: Any? = makeSomething()
+    var thing3: Any? = ifAndWhenMakeSomething()
     when (thing3) {
         is String -> println("Found string " + thing3)
         is Int -> println("Found int ${thing3}")

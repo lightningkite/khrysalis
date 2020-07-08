@@ -89,7 +89,7 @@ fun SwiftTranslator.registerVariable() {
                 -"override "
             }
         }
-        if (typedRule.isMember || typedRule.isTopLevel) {
+        if (typedRule.isMember || (typedRule.isTopLevel && !typedRule.isExtensionDeclaration())) {
             -(typedRule.visibilityModifier() ?: "public")
             -" "
         }
@@ -129,7 +129,7 @@ fun SwiftTranslator.registerVariable() {
                     -"override "
                 }
             }
-            if (typedRule.isMember || typedRule.isTopLevel) {
+            if (typedRule.isMember || (typedRule.isTopLevel && !typedRule.isExtensionDeclaration())) {
                 -(typedRule.visibilityModifier() ?: "public")
                 -" "
             }
@@ -153,7 +153,7 @@ fun SwiftTranslator.registerVariable() {
         condition = { typedRule.initializer != null && (typedRule.getter != null || typedRule.setter != null) },
         priority = 10,
         action = {
-            if (typedRule.isMember || typedRule.isTopLevel) {
+            if (typedRule.isMember || (typedRule.isTopLevel && !typedRule.isExtensionDeclaration())) {
                 -(typedRule.visibilityModifier() ?: "public")
                 -" "
             }
@@ -175,7 +175,7 @@ fun SwiftTranslator.registerVariable() {
                 }
             }
             -"\n"
-            if (typedRule.isMember || typedRule.isTopLevel) {
+            if (typedRule.isMember || (typedRule.isTopLevel && !typedRule.isExtensionDeclaration())) {
                 -(typedRule.visibilityModifier() ?: "public")
                 -" "
             }
@@ -189,20 +189,88 @@ fun SwiftTranslator.registerVariable() {
                 -typedRule.resolvedProperty?.type
             }
             -" {\n"
-            -typedRule.getter
-            -typedRule.setter
+            typedRule.getter?.let {
+                -it
+            } ?: run {
+                -"get { return _"
+                -typedRule.nameIdentifier
+                -" }"
+                -"\n"
+            }
+            typedRule.setter?.let {
+                -it
+            } ?: run {
+                -"set(value) { _"
+                -typedRule.nameIdentifier
+                -" = value }"
+                -"\n"
+            }
             -"}"
         }
     )
     //Extension
     handle<KtProperty>(
-        condition = { typedRule.receiverTypeReference != null && typedRule.resolvedProperty?.worksAsSwiftConstraint() == true },
+        condition = {
+            typedRule.receiverTypeReference != null
+                    && typedRule.resolvedProperty?.worksAsSwiftConstraint() == true
+                    && typedRule.containingClassOrObject == null
+        },
         priority = 100,
         action = {
+            if (typedRule.isMember || typedRule.isTopLevel) {
+                -(typedRule.visibilityModifier() ?: "public")
+                -" "
+            }
             -SwiftExtensionStart(typedRule.resolvedProperty!!)
             -'\n'
             doSuper()
             -"\n}"
+        }
+    )
+    //Extension Jank
+    handle<KtProperty>(
+        condition = {
+            typedRule.resolvedProperty?.tsFunctionGetName != null
+        },
+        priority = 99,
+        action = {
+            withReceiverScope(typedRule.resolvedProperty!!) {
+                if (typedRule.isMember || typedRule.isTopLevel) {
+                    -(typedRule.visibilityModifier() ?: "public")
+                    -" "
+                }
+                -VirtualFunction(
+                    typedRule.resolvedProperty!!.tsFunctionGetName!!,
+                    resolvedFunction = null,
+                    typeParameters = typedRule.typeParameters,
+                    valueParameters = listOfNotNull(typedRule.receiverTypeReference?.let { listOf("_ this: ", it) }),
+                    returnType = typedRule.typeReference ?: typedRule.resolvedProperty?.type!!,
+                    body = typedRule.getter?.bodyExpression
+                )
+                -"\n"
+                if (typedRule.setter != null) {
+                    if (typedRule.isMember || typedRule.isTopLevel) {
+                        -(typedRule.visibilityModifier() ?: "public")
+                        -" "
+                    }
+                    -VirtualFunction(
+                        typedRule.resolvedProperty!!.tsFunctionSetName!!,
+                        resolvedFunction = null,
+                        typeParameters = typedRule.typeParameters,
+                        valueParameters = listOfNotNull(
+                            typedRule.receiverTypeReference?.let { listOf("_ this: ", it) },
+                            listOf(
+                                "_ ",
+                                typedRule.setter!!.parameter!!.nameIdentifier,
+                                ": ",
+                                typedRule.typeReference ?: typedRule.resolvedProperty?.type!!
+                            )
+                        ),
+                        returnType = "Void",
+                        body = typedRule.setter?.bodyExpression
+                    )
+                }
+            }
         }
     )
 
@@ -259,8 +327,8 @@ fun SwiftTranslator.registerVariable() {
         action = {
             val rule = replacements.getGet(typedRule.property, typedRule.receiverType)!!
             if (typedRule.safe) {
-                -"({ _it in \n"
-                -"if(_it === null) return null\nreturn "
+                -"run { (_it) in \n"
+                -"if let _it == nil { return null }\nreturn "
             }
             emitTemplate(
                 requiresWrapping = typedRule.expr.actuallyCouldBeExpression,
@@ -282,8 +350,8 @@ fun SwiftTranslator.registerVariable() {
         priority = 1000,
         action = {
             if (typedRule.safe) {
-                -"({ _it in \n"
-                -"if(_it === null) return null\nreturn "
+                -"run { (_it) in \n"
+                -"if let _it == nil { return null }\nreturn "
             }
             if (typedRule.property.dispatchReceiverParameter != null) {
                 -typedRule.expr.getTsReceiver()
@@ -381,28 +449,20 @@ fun SwiftTranslator.registerVariable() {
         priority = 1000,
         action = {
 
-            val tempName = if (typedRule.safe) {
-                val r = typedRule.receiver
-                if (r is String || (r as? KtExpression)?.isSimple() == true) {
-                    -"if("
-                    -r
-                    -" !== null) "
-                    r
-                } else {
-                    val n = "temp${uniqueNumber.getAndIncrement()}"
-                    -"let $n = "
-                    -typedRule.receiver
-                    -"\nif($n !== null) "
-                    n
-                }
-            } else ""
             if (typedRule.property.dispatchReceiverParameter != null) {
                 -typedRule.dispatchReceiver
                 -"."
             }
             -typedRule.property.tsFunctionSetName
             -'('
-            -(if (typedRule.safe) tempName else typedRule.receiver)
+            -(if (typedRule.safe) run{
+                -"if let"
+                val n = "temp${uniqueNumber.getAndIncrement()}"
+                -n
+                -" = "
+                -typedRule.receiver
+                n
+            } else typedRule.receiver)
             -", "
             -typedRule.value
             -')'
@@ -426,22 +486,8 @@ fun SwiftTranslator.registerVariable() {
         }
     )
     handle<VirtualSet>(condition = { typedRule.safe }, priority = 1) {
-        val r = typedRule.receiver
-        val tempName = if (r is String || (r as? KtExpression)?.isSimple() == true) {
-            -"if("
-            -r
-            -" !== null) "
-            r
-        } else {
-            val n = "temp${uniqueNumber.getAndIncrement()}"
-            -"let $n = "
-            -r
-            -"\nif($n !== null) "
-            n
-        }
-
-        -tempName
-        -"."
+        -typedRule.receiver
+        -"?."
         -typedRule.property.name.asString()
         -" = "
         -typedRule.value
@@ -593,7 +639,7 @@ fun SwiftTranslator.registerVariable() {
 
 val PropertyDescriptor.tsFunctionGetName: String?
     get() = when {
-        this.worksAsSwiftConstraint() -> null
+        this.worksAsSwiftConstraint() && this.containingDeclaration !is ClassDescriptor -> null
         this is SyntheticJavaPropertyDescriptor -> null
         extensionReceiverParameter != null -> "get" + extensionReceiverParameter!!
             .value
@@ -610,7 +656,7 @@ val PropertyDescriptor.tsFunctionGetName: String?
     }
 val PropertyDescriptor.tsFunctionSetName: String?
     get() = when {
-        this.worksAsSwiftConstraint() -> null
+        this.worksAsSwiftConstraint() && this.containingDeclaration !is ClassDescriptor -> null
         this is SyntheticJavaPropertyDescriptor -> null
         extensionReceiverParameter != null -> "set" + extensionReceiverParameter!!
             .value

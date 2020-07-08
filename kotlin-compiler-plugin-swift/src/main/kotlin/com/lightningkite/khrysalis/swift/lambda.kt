@@ -48,7 +48,9 @@ fun SwiftTranslator.registerLambda() {
                 forItem = {
                     -it.name.asString()
                     -": "
+                    it.type.partOfParameter = true
                     -it.type
+                    it.type.partOfParameter = false
                 },
                 between = { -", " }
             )

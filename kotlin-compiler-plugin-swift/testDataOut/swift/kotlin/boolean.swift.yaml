@@ -1,0 +1,26 @@
+---
+- id: kotlin.Boolean
+  type: type
+  template: Bool
+
+- id: kotlin.Boolean
+  type: typeRef
+  template: Bool
+
+- id: kotlin.Boolean.not
+  type: call
+  infix: true
+  template: "!~this~"
+
+- id: kotlin.Boolean.not
+  type: call
+  template: "(!~this~)"
+
+- id: kotlin.Boolean.xor
+  type: call
+  infix: true
+  template: "~this~ != ~0~"
+
+- id: kotlin.Boolean.xor
+  type: call
+  template: "(~this~ != ~0~)"

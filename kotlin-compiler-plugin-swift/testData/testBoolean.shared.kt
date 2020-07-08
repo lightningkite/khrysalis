@@ -1,4 +1,4 @@
-package com.test.booleans
+package com.test
 
 private fun test(){
     val t = true

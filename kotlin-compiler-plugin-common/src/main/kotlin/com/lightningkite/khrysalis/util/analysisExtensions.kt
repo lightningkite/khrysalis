@@ -224,6 +224,7 @@ interface AnalysisExtensions {
         if (exp is KtStatementExpression) {
             return false
         }
+        if(exp.resolvedExpressionTypeInfo?.type?.getJetTypeFqName(false) == "kotlin.Nothing") return false
         var parentControlBody: KtContainerNodeForControlStructureBody? =
             exp.parent as? KtContainerNodeForControlStructureBody
         (exp.parent as? KtBlockExpression)?.let {

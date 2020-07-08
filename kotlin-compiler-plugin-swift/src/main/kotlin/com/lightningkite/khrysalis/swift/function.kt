@@ -45,7 +45,7 @@ data class VirtualFunction(
     val typeParameters: List<Any>,
     val valueParameters: List<Any>,
     val returnType: Any,
-    val body: KtExpression?
+    val body: Any?
 )
 
 fun SwiftTranslator.registerFunction() {
@@ -76,10 +76,13 @@ fun SwiftTranslator.registerFunction() {
             is KtBlockExpression -> {
                 -body
             }
-            else -> {
+            is KtExpression -> {
                 -"{ return "
                 -body
                 -" }"
+            }
+            else -> {
+                -body
             }
         }
 
@@ -114,9 +117,18 @@ fun SwiftTranslator.registerFunction() {
         }
     )
     handle<KtNamedFunction>(
-        condition = { typedRule.receiverTypeReference != null && typedRule.resolvedFunction?.worksAsSwiftConstraint() == true && typedRule.containingClassOrObject == null },
+        condition = {
+            typedRule.receiverTypeReference != null
+                && typedRule.resolvedFunction?.worksAsSwiftConstraint() == true
+                    && typedRule.containingClassOrObject == null
+        },
         priority = 10,
         action = {
+            val isMember = typedRule.containingClassOrObject != null
+            if (isMember || typedRule.isTopLevel) {
+                -(typedRule.visibilityModifier() ?: "public")
+                -" "
+            }
             -SwiftExtensionStart(typedRule.resolvedFunction!!)
             -'\n'
             doSuper()
@@ -132,7 +144,7 @@ fun SwiftTranslator.registerFunction() {
                 -"override "
             }
         }
-        if (isMember || typedRule.isTopLevel) {
+        if (isMember || (typedRule.isTopLevel && !typedRule.isExtensionDeclaration())) {
             -(typedRule.visibilityModifier() ?: "public")
             -' '
         }
