@@ -109,6 +109,18 @@ class KotlinSwiftExtension(
         )
         println("Output: $output")
 
+        //Load manifests
+        dependencies.asSequence()
+            .flatMap { it.walkTopDown() }
+            .filter { it.name == "fqnames.txt" }
+            .forEach {
+                val lines = it.readLines().filter { it.isNotBlank() }
+                val name = lines.first()
+                lines.drop(1).forEach {
+                    translator.fqToImport[it] = name
+                }
+            }
+
         //Load equivalents
         dependencies.asSequence().plus(output)
             .flatMap { it.walkTopDown() }
@@ -129,9 +141,6 @@ class KotlinSwiftExtension(
                 }
             }
 
-//        println("Equivalents for kotlin.collections.joinToString>kotlin.collections.Iterable: ${translator.replacements.functions.entries.joinToString("\n"){
-//            "${it.key} -> ${it.value.joinToString("\n") { "    $it" }}"
-//        }}")
 
         for (file in files) {
             if (!file.virtualFilePath.endsWith(".shared.kt") && !file.virtualFilePath.endsWith(".actual.kt")) continue
@@ -140,7 +149,7 @@ class KotlinSwiftExtension(
                     .resolve(file.virtualFilePath.removePrefix(translator.commonPath))
                     .parentFile
                     .resolve(file.name.removeSuffix(".kt").plus(".swift"))
-                if(outputFile.exists() && outputFile.useLines { it.first() } != SwiftFileEmitter.overwriteWarning) continue
+                if (outputFile.exists() && outputFile.useLines { it.first() } != SwiftFileEmitter.overwriteWarning) continue
                 collector?.report(CompilerMessageSeverity.INFO, "Translating $file to $outputFile")
                 outputFile.parentFile.mkdirs()
                 val out = SwiftFileEmitter(translator, file)
@@ -159,12 +168,16 @@ class KotlinSwiftExtension(
         }
         collector?.report(CompilerMessageSeverity.INFO, "Writing manifest file...")
         output.resolve("fqnames.txt").bufferedWriter().use {
-            files.asSequence()
-                .flatMap { f ->
-                    f.declarations.asSequence()
-                        .mapNotNull { it as? KtNamedDeclaration }
-                        .mapNotNull { it.fqName?.asString() }
-                }
+            sequenceOf(projectName ?: "Module").plus(
+                files.asSequence()
+                    .flatMap { f ->
+                        f.declarations.asSequence()
+                            .mapNotNull { it as? KtNamedDeclaration }
+                            .mapNotNull { it.fqName?.asString() }
+                            .plus(f.packageFqName.asString())
+                    }
+            )
+                .distinct()
                 .forEach { line ->
                     it.appendln(line)
                 }

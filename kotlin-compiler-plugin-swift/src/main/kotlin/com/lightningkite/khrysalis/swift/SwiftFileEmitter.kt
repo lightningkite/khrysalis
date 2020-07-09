@@ -13,6 +13,9 @@ class SwiftFileEmitter(val translator: SwiftTranslator, val file: KtFile) : Appe
     val stringBuilder = StringBuilder()
     val out = SmartTabWriter(stringBuilder)
     private val imports = HashSet<TemplatePart.Import>()
+    init {
+        imports.add(TemplatePart.Import("Foundation"))
+    }
     val importedFqs = HashSet<String>()
     var fileEndingActions = ArrayList<() -> Unit>()
 
