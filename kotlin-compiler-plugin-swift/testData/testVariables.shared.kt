@@ -1,31 +1,31 @@
-package com.test.variables
+package com.test
 
 import com.test.magicVariable
 import kotlin.math.absoluteValue
 
-private var fileReal: Int = 0
-var topLevelReal: Int = 0
-var topLevelVirtual: Int
+private var variableFileReal: Int = 0
+private var variableTopLevelReal: Int = 0
+private var variableTopLevelVirtual: Int
     get() = 1
     set(value){
         println("Attempted to set ${value}")
     }
-var topLevelHybrid: Int = 2
+private var variableTopLevelHybrid: Int = 2
     set(value){
         field = value + 1
     }
 
-fun topLevelUsage(){
-    topLevelReal = -1
-    println(topLevelReal)
-    topLevelVirtual = -2
-    topLevelVirtual += 3
-    println(topLevelVirtual)
-    topLevelHybrid = -3
-    println(topLevelHybrid)
+private fun variableTopLevelUsage(){
+    variableTopLevelReal = -1
+    println(variableTopLevelReal)
+    variableTopLevelVirtual = -2
+    variableTopLevelVirtual += 3
+    println(variableTopLevelVirtual)
+    variableTopLevelHybrid = -3
+    println(variableTopLevelHybrid)
 }
 
-class TestClass {
+private class VariableTestClass {
     var memberReal: Int = 0
     var memberVirtual: Int
         get() = 1
@@ -76,19 +76,19 @@ class TestClass {
         this.extensionProperty += -4
         println(this.extensionProperty)
 
-        topLevelReal = -1
-        println(topLevelReal)
-        topLevelVirtual = -2
-        println(topLevelVirtual)
-        topLevelHybrid = -3
-        println(topLevelHybrid)
+        variableTopLevelReal = -1
+        println(variableTopLevelReal)
+        variableTopLevelVirtual = -2
+        println(variableTopLevelVirtual)
+        variableTopLevelHybrid = -3
+        println(variableTopLevelHybrid)
 
-        TestClass.companionReal = -1
-        println(TestClass.companionReal)
-        TestClass.companionVirtual = -2
-        println(TestClass.companionVirtual)
-        TestClass.companionHybrid = -3
-        println(TestClass.companionHybrid)
+        VariableTestClass.companionReal = -1
+        println(VariableTestClass.companionReal)
+        VariableTestClass.companionVirtual = -2
+        println(VariableTestClass.companionVirtual)
+        VariableTestClass.companionHybrid = -3
+        println(VariableTestClass.companionHybrid)
 
         Companion.companionReal = -1
         println(Companion.companionReal)
@@ -119,13 +119,13 @@ class TestClass {
     }
 }
 
-var TestClass.extensionProperty: Int
+private var VariableTestClass.extensionProperty: Int
     get() = memberReal
     set(value){
         memberReal = value
     }
 
-object TestObject {
+private object VariableTestObject {
     var objectReal: Int = 0
     var objectVirtual: Int
         get() = 1
@@ -144,18 +144,18 @@ object TestObject {
         objectHybrid = -3
         println(objectHybrid)
 
-        topLevelReal = -1
-        println(topLevelReal)
-        topLevelVirtual = -2
-        println(topLevelVirtual)
-        topLevelHybrid = -3
-        println(topLevelHybrid)
+        variableTopLevelReal = -1
+        println(variableTopLevelReal)
+        variableTopLevelVirtual = -2
+        println(variableTopLevelVirtual)
+        variableTopLevelHybrid = -3
+        println(variableTopLevelHybrid)
 
-        val testInstance = TestClass()
+        val testInstance = VariableTestClass()
         testInstance.needlesslyComplex = -4
         println(testInstance.needlesslyComplex)
     }
-    var TestClass.needlesslyComplex: Int
+    var VariableTestClass.needlesslyComplex: Int
         get() = memberReal
         set(value) {
             memberReal = value
@@ -163,42 +163,42 @@ object TestObject {
         }
 }
 
-class GenericTest<T> {
+private class VariableGenericTest<T> {
 }
-val <T> GenericTest<T>.ext: Int
+private val <T> VariableGenericTest<T>.ext: Int
     get() = 1
-val GenericTest<Int>.ext2: Int
+private val VariableGenericTest<Int>.ext2: Int
     get() = 1
-val GenericTest<Any>.ext3: Int
+private val VariableGenericTest<Any>.ext3: Int
     get() = 1
 
-var TestObject.extensionProperty: Int
+private var VariableTestObject.extensionProperty: Int
     get() = this.objectReal
     set(value){
         this@extensionProperty.objectReal = value
     }
 
-fun test(){
-    val instance = TestClass()
-    fileReal += 1
-    println(TestObject.objectReal)
+private fun variableTest(){
+    val instance = VariableTestClass()
+    variableFileReal += 1
+    println(VariableTestObject.objectReal)
     println(instance.memberReal)
     println(instance.extensionProperty)
     println(magicVariable)
     magicVariable = 9001.absoluteValue.plus(4)
 }
 
-var maybeInstance: TestClass? = null
-fun testNullable(){
-    maybeInstance?.memberReal = -1
-    println(maybeInstance?.memberReal)
-    maybeInstance?.memberVirtual = -2
-    println(maybeInstance?.memberVirtual)
-    maybeInstance?.memberHybrid = -3
-    println(maybeInstance?.memberHybrid)
-    maybeInstance?.extensionProperty = -4
-    println(maybeInstance?.extensionProperty)
-    val instance = maybeInstance
+private var variableMaybeInstance: VariableTestClass? = null
+private fun variableTestNullable(){
+    variableMaybeInstance?.memberReal = -1
+    println(variableMaybeInstance?.memberReal)
+    variableMaybeInstance?.memberVirtual = -2
+    println(variableMaybeInstance?.memberVirtual)
+    variableMaybeInstance?.memberHybrid = -3
+    println(variableMaybeInstance?.memberHybrid)
+    variableMaybeInstance?.extensionProperty = -4
+    println(variableMaybeInstance?.extensionProperty)
+    val instance = variableMaybeInstance
     instance?.memberReal = -1
     println(instance?.memberReal)
     instance?.memberVirtual = -2

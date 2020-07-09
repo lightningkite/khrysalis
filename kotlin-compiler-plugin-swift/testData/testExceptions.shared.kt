@@ -1,6 +1,6 @@
-package com.test.exceptions
+package com.test
 
-fun failableAction(state: Boolean = true) {
+private fun failableAction(state: Boolean = true) {
     if (state) {
         throw IllegalStateException("Reasons")
     } else {
@@ -8,7 +8,7 @@ fun failableAction(state: Boolean = true) {
     }
 }
 
-fun test() {
+private fun exceptionTest() {
     try {
         failableAction()
     } catch (e: Exception) {

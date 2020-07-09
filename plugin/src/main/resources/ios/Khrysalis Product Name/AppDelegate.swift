@@ -17,8 +17,8 @@ class AppDelegate: KhrysalisAppDelegate {
 
     override func makeViewController() -> KhrysalisViewController {
         let vc = super.makeViewController()
-        vc.forceDefaultBackgroundColor = true
-        vc.drawOverSystemWindows = true
+        vc.forceDefaultBackgroundColor = false
+        vc.drawOverSystemWindows = false
         return vc
     }
 

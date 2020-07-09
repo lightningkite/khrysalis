@@ -1,8 +1,10 @@
-package com.test.annot
+package com.test
 
 import com.test.magicVariable
 import kotlin.math.absoluteValue
+import com.lightningkite.khrysalis.escaping
 
-@Throws(IllegalArgumentException::class) fun test(){}
-
-val lambda: @Example(2) ()->Unit = {}
+private val annotationsLambda: @escaping() ()->Unit = {}
+private fun annotationsLambdaUseTest(lambda: @escaping() ()->Unit) {
+    lambda()
+}

@@ -1,19 +1,19 @@
-package com.test.classes
+package com.test
 
 import com.test.magicVariable
 import kotlin.math.absoluteValue
 import kotlin.random.Random
 
-interface TestInterface {
+private interface ClassesTestInterface {
     val interfaceValue: String get() = "Default"
     fun interfaceFunction(): String = "Default"
 }
 
-data class DataClassThing(val x: Double = 0.0, val y: String = "Hello!"): TestInterface {
+private data class ClassesDataClassThing(val x: Double = 0.0, val y: String = "Hello!"): ClassesTestInterface {
     override fun interfaceFunction(): String = "$x $y"
 }
 
-open class Weird(a: Int = 0, b: String, val c: Double, var d: Long): TestInterface {
+private open class ClassesWeird(a: Int = 0, b: String, val c: Double, var d: Long): ClassesTestInterface {
     val e: Int = 0
     var f: String
     init {
@@ -30,20 +30,32 @@ open class Weird(a: Int = 0, b: String, val c: Double, var d: Long): TestInterfa
     open fun test(){
         println("Hi!")
     }
+
+    override fun toString(): String {
+        return "$c $d"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return other is ClassesWeird && this.d == other.d
+    }
+
+    override fun hashCode(): Int {
+        return d.toInt()
+    }
 }
 
-class SubWeird(a: Int, b: String, c: Double, d: Long): Weird(a, b, c, d) {
+private class ClassesSubWeird(a: Int, b: String, c: Double, d: Long): ClassesWeird(a, b, c, d) {
     override fun test() {
         super.test()
     }
 }
 
-fun main(){
+private fun classesMain(){
     val outsideInfo: String = "Pulled in"
-    val instance = object: TestInterface {
+    val instance = object: ClassesTestInterface {
         override val interfaceValue: String
             get() = outsideInfo
     }
-    val ugh = Weird(2)
+    val ugh = ClassesWeird(2)
     Random.nextInt()
 }

@@ -4,11 +4,16 @@ import com.lightningkite.khrysalis.generic.PartialTranslatorByType
 import com.lightningkite.khrysalis.generic.TranslatorInterface
 import com.lightningkite.khrysalis.swift.replacements.Replacements
 import com.lightningkite.khrysalis.util.AnalysisExtensions
+import com.lightningkite.khrysalis.util.forEachBetween
+import com.lightningkite.khrysalis.util.walkTopDown
+import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.descriptors.DeclarationDescriptor
+import org.jetbrains.kotlin.descriptors.ValueDescriptor
+import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
@@ -29,22 +34,30 @@ class SwiftTranslator(
     val commonPath: String,
     val collector: MessageCollector? = null,
     val replacements: Replacements = Replacements()
-) : PartialTranslatorByType<SwiftFileEmitter, Unit, Any>(), TranslatorInterface<SwiftFileEmitter, Unit>, AnalysisExtensions {
+) : PartialTranslatorByType<SwiftFileEmitter, Unit, Any>(), TranslatorInterface<SwiftFileEmitter, Unit>,
+    AnalysisExtensions {
 
     var stubMode: Boolean = false
+
     data class ReceiverAssignment(val declaration: DeclarationDescriptor, val tsName: String)
 
     val _identifierScopes = HashMap<String, ArrayList<String>>()
     val identifierScopes: Map<String, List<String>> get() = _identifierScopes
-    inline fun withName(ktName: String, tsName: String, action: (String)->Unit){
-        val list = _identifierScopes.getOrPut(ktName){ ArrayList() }
+    inline fun withName(ktName: String, tsName: String, action: (String) -> Unit) {
+        val list = _identifierScopes.getOrPut(ktName) { ArrayList() }
         list.add(tsName)
         action(tsName)
         list.removeAt(list.lastIndex)
-        if(list.isEmpty()) {
+        if (list.isEmpty()) {
             _identifierScopes.remove(ktName)
         }
     }
+
+    private val ignoreSmartcast = ArrayList<HashSet<ValueDescriptor>>()
+    fun beginSmartcastBlock() = ignoreSmartcast.add(HashSet())
+    fun endSmartcastBlock() = ignoreSmartcast.removeAt(ignoreSmartcast.lastIndex)
+    fun ignoreSmartcast(v: ValueDescriptor) = ignoreSmartcast.last().add(v)
+    fun isSmartcastIgnored(v: ValueDescriptor?) = v != null && ignoreSmartcast.any { it.contains(v) }
 
     val _receiverStack = ArrayList<ReceiverAssignment>()
     val receiverStack: List<ReceiverAssignment> get() = _receiverStack
@@ -65,11 +78,12 @@ class SwiftTranslator(
         action(tsName)
         _receiverStack.remove(newItem)
     }
+
     fun KtExpression.getTsReceiver(): String? {
         val dr = this.resolvedCall?.dispatchReceiver ?: this.resolvedCall?.extensionReceiver ?: run {
             return null
         }
-        val target = if(dr is ExtensionReceiver) {
+        val target = if (dr is ExtensionReceiver) {
             dr.declarationDescriptor
         } else {
             dr.type.constructor.declarationDescriptor
@@ -86,9 +100,9 @@ class SwiftTranslator(
 
     override fun emitFinalDefault(identifier: Class<*>, rule: Any, out: SwiftFileEmitter) {
         when (rule) {
-            is Array<*> -> rule.forEach { if(it != null) translate(it, out) }
-            is Iterable<*> -> rule.forEach { if(it != null) translate(it, out) }
-            is Sequence<*> -> rule.forEach { if(it != null) translate(it, out) }
+            is Array<*> -> rule.forEach { if (it != null) translate(it, out) }
+            is Iterable<*> -> rule.forEach { if (it != null) translate(it, out) }
+            is Sequence<*> -> rule.forEach { if (it != null) translate(it, out) }
             is Char -> out.append(rule)
             is String -> out.append(rule)
             is PsiWhiteSpace -> {
@@ -111,12 +125,6 @@ class SwiftTranslator(
         super.translate(identifier, rule, out, afterPriority)
     }
 
-    val terminalMap = mapOf(
-        "fun" to "function",
-        "object" to "class",
-        "vararg" to "..."
-    )
-
     init {
 
         registerAnnotation()
@@ -133,10 +141,6 @@ class SwiftTranslator(
         registerOperators()
         registerReceiver()
         registerSpecialLet()
-
-        handle<LeafPsiElement>(condition = { typedRule.text in terminalMap.keys }, priority = 1) {
-            out.append(terminalMap[typedRule.text])
-        }
     }
 
 
@@ -173,17 +177,17 @@ class SwiftTranslator(
     }
 
     override fun determineNotStatementLambda(it: KtFunctionLiteral): Boolean {
-        if(!super.determineNotStatementLambda(it)) {
+        if (!super.determineNotStatementLambda(it)) {
             return false
         }
-        if(it
+        if (it
                 .parentOfType<KtLambdaExpression>()
                 ?.parentOfType<KtLambdaArgument>()
                 ?.parentOfType<KtCallExpression>()
                 ?.let {
-                    if((it.parent as? KtExpression)?.let {
+                    if ((it.parent as? KtExpression)?.let {
                             it.isSafeLetDirect() && !determineNotStatement(it)
-                        } == true){
+                        } == true) {
                         return false
                     }
                     it.parentOfType<KtBinaryExpression>()
@@ -191,10 +195,45 @@ class SwiftTranslator(
                             ?.parentOfType<KtBinaryExpression>()
                 }
                 ?.let { it.isSafeLetChain() && !determineNotStatement(it.safeLetChainRoot()) } == true
-        ){
+        ) {
             return false
         }
         return true
     }
-}
 
+
+    fun KotlinType.requiresMutable(): Boolean {
+        return replacements.requiresMutable(this)
+    }
+
+    fun PartialTranslatorByType<SwiftFileEmitter, Unit, Any>.ContextByType<*>.runWithTypeHeader(
+        on: KtExpression
+    ) {
+        val type = on.resolvedExpressionTypeInfo?.type
+        if (type?.getJetTypeFqName(false) == "kotlin.Nothing") {
+            //find type via returns
+            on.walkTopDown()
+                .mapNotNull { it as? KtReturnExpression }
+                .mapNotNull { it.getTargetLabel()?.resolvedLabelTarget }
+                .mapNotNull { it as? KtFunctionLiteral }
+                .firstOrNull()
+                ?.resolvedFunction
+                ?.returnType
+                ?.let { type ->
+                    -"run {"
+                    -" () -> "
+                    -type
+                    -" in "
+                } ?: run {
+                -"run { "
+            }
+        } else if (type != null) {
+            -"run {"
+            -" () -> "
+            -type
+            -" in "
+        } else {
+            -"run { /*!*/ "
+        }
+    }
+}

@@ -1,4 +1,4 @@
-package com.test.annot
+package com.test
 
 @Retention(AnnotationRetention.SOURCE)
 @Target(

@@ -7,42 +7,42 @@ import UIKit
 //--- Path
 public typealias Path = CGMutablePath
 
-//--- Path.moveTo(Float, Float)
+//--- Path.moveTo(GFloat, GFloat)
 public extension Path {
-    func moveTo(_ x: Float, _ y: Float) -> Void {
+    func moveTo(_ x: GFloat, _ y: GFloat) -> Void {
         self.move(to: CGPoint(x: CGFloat(x), y: CGFloat(y)))
     }
-    func moveTo(x: Float, y: Float) -> Void {
+    func moveTo(x: GFloat, y: GFloat) -> Void {
         return moveTo(x, y)
     }
 }
 
-//--- Path.lineTo(Float, Float)
+//--- Path.lineTo(GFloat, GFloat)
 public extension Path {
-    func lineTo(_ x: Float, _ y: Float) -> Void {
+    func lineTo(_ x: GFloat, _ y: GFloat) -> Void {
         self.addLine(to: CGPoint(x: CGFloat(x), y: CGFloat(y)))
     }
-    func lineTo(x: Float, y: Float) -> Void {
+    func lineTo(x: GFloat, y: GFloat) -> Void {
         return lineTo(x, y)
     }
 }
 
-//--- Path.quadTo(Float, Float, Float, Float)
+//--- Path.quadTo(GFloat, GFloat, GFloat, GFloat)
 public extension Path {
-    func quadTo(_ cx: Float, _ cy: Float, _ dx: Float, _ dy: Float) -> Void {
+    func quadTo(_ cx: GFloat, _ cy: GFloat, _ dx: GFloat, _ dy: GFloat) -> Void {
         self.addQuadCurve(to: CGPoint(x: CGFloat(dx), y: CGFloat(dy)), control: CGPoint(x: CGFloat(cx), y: CGFloat(cy)))
     }
-    func quadTo(cx: Float, cy: Float, dx: Float, dy: Float) -> Void {
+    func quadTo(cx: GFloat, cy: GFloat, dx: GFloat, dy: GFloat) -> Void {
         return quadTo(cx, cy, dx, dy)
     }
 }
 
-//--- Path.cubicTo(Float, Float, Float, Float, Float, Float)
+//--- Path.cubicTo(GFloat, GFloat, GFloat, GFloat, GFloat, GFloat)
 public extension Path {
-    func cubicTo(_ c1x: Float, _ c1y: Float, _ c2x: Float, _ c2y: Float, _ dx: Float, _ dy: Float) -> Void {
+    func cubicTo(_ c1x: GFloat, _ c1y: GFloat, _ c2x: GFloat, _ c2y: GFloat, _ dx: GFloat, _ dy: GFloat) -> Void {
         self.addCurve(to: CGPoint(x: CGFloat(dx), y: CGFloat(dy)), control1: CGPoint(x: CGFloat(c1x), y: CGFloat(c1y)), control2: CGPoint(x: CGFloat(c2x), y: CGFloat(c2y)))
     }
-    func cubicTo(c1x: Float, c1y: Float, c2x: Float, c2y: Float, dx: Float, dy: Float) -> Void {
+    func cubicTo(c1x: GFloat, c1y: GFloat, c2x: GFloat, c2y: GFloat, dx: GFloat, dy: GFloat) -> Void {
         return cubicTo(c1x, c1y, c2x, c2y, dx, dy)
     }
 }
@@ -111,7 +111,7 @@ public extension Path {
         }
         let dq = (rxs * y1ps + rys * x1ps)
         let pq = (rxs*rys - dq) / dq
-        var q = sqrt( max(0,pq) ) //use Max to account for float precision
+        var q = sqrt( max(0,pq) ) //use Max to account for GFloat precision
         if large == sweep {
           q = -q
         }

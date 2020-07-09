@@ -1,10 +1,10 @@
-package com.test.lambda
+package com.test
 
 import android.view.View
 
-class TestClass {
+private class LambdaTestClass {
     var item: Int = 0
-    fun test(action: ()->Unit){
+    private fun test(action: ()->Unit){
         action()
     }
     fun testRec(action: Int.()->Unit){
@@ -12,8 +12,8 @@ class TestClass {
     }
 }
 
-fun main(){
-    val theAnswer = TestClass().apply { item = 42 }
+private fun lambdaMain(){
+    val theAnswer = LambdaTestClass().apply { item = 42 }
     val myLambda: (Int)->String = {
         "Number: $it"
     }

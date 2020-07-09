@@ -5,12 +5,11 @@ import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.lightningkite.khrysalis.util.*
-import org.jetbrains.kotlin.codegen.AccessorForCompanionObjectInstanceFieldDescriptor
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
-import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 import org.jetbrains.kotlin.types.KotlinType
+import org.jetbrains.kotlin.types.typeUtil.supertypes
 import java.io.File
 import java.util.*
 import kotlin.collections.HashMap
@@ -22,6 +21,7 @@ class Replacements() {
     val sets: HashMap<String, TreeSet<SetReplacement>> = HashMap()
     val types: HashMap<String, TreeSet<TypeReplacement>> = HashMap()
     val typeRefs: HashMap<String, TreeSet<TypeRefReplacement>> = HashMap()
+    val casts: HashMap<String, TreeSet<CastRule>> = HashMap()
 
     fun getCall(
         analysis: AnalysisExtensions,
@@ -74,6 +74,33 @@ class Replacements() {
         types[type.simpleFqName]?.find { it.passes(type) }
             ?: types[type.simplerFqName]?.find { it.passes(type) }
 
+    fun getImplicitCast(from: KotlinType, to: KotlinType): CastRule? {
+        casts[from.getJetTypeFqName(false) + "->" + to.getJetTypeFqName(false)]
+            ?.find { it.passes(from, to) }
+            ?.let { return it }
+        val detailedPossibilities = from.supertypes().filter { it.supertypes().contains(to) }
+        for(d in detailedPossibilities){
+            casts[d.getJetTypeFqName(false) + "->" + to.getJetTypeFqName(false)]
+                ?.find { it.passes(d, to) }
+                ?.let { return it }
+        }
+        return null
+    }
+    fun getExplicitCast(from: KotlinType, to: KotlinType): CastRule? {
+        casts[from.getJetTypeFqName(false) + "->" + to.getJetTypeFqName(false)]
+            ?.find { it.passes(from, to) }
+            ?.let { return it }
+        val detailedPossibilities = to.supertypes().filter { it.supertypes().contains(from) }
+        for(d in detailedPossibilities){
+            casts[d.getJetTypeFqName(false) + "->" + to.getJetTypeFqName(false)]
+                ?.find { it.passes(from, d) }
+                ?.let { return it }
+        }
+        return null
+    }
+
+    fun requiresMutable(type: KotlinType): Boolean = (sequenceOf(type) + type.supertypes().asSequence())
+        .any { t -> types[t.getJetTypeFqName(false)]?.find { it.passes(t) }?.requiresMutable == true }
     fun getType(type: KotlinType): TypeReplacement? = types[type.getJetTypeFqName(false)]?.find { it.passes(type) }
     fun getTypeRef(type: KotlinType): TypeRefReplacement? =
         typeRefs[type.getJetTypeFqName(false)]?.find { it.passes(type) }

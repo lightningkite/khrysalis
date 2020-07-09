@@ -1,27 +1,18 @@
 package com.lightningkite.khrysalis.views
 
-import android.accessibilityservice.AccessibilityService
 import android.annotation.SuppressLint
 import android.content.Context
 import android.graphics.Canvas
-import android.graphics.Color
-import android.os.Bundle
 import android.util.AttributeSet
 import android.view.MotionEvent
 import android.view.View
 import android.view.ViewGroup.LayoutParams.MATCH_PARENT
 import android.view.accessibility.AccessibilityManager
-import android.view.accessibility.AccessibilityNodeInfo
-import android.view.accessibility.AccessibilityNodeProvider
 import android.widget.FrameLayout
 import com.lightningkite.khrysalis.PlatformSpecific
 import com.lightningkite.khrysalis.R
 import com.lightningkite.khrysalis.rx.DisposableLambda
 import com.lightningkite.khrysalis.rx.removed
-import com.lightningkite.khrysalis.views.android.QuickMonthView
-import com.lightningkite.khrysalis.views.CustomViewDelegate
-import java.util.ArrayList
-import kotlin.math.max
 import kotlin.math.min
 
 class CustomView @JvmOverloads constructor(

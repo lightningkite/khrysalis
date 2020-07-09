@@ -1,31 +1,33 @@
-package com.test.operators
+package com.test
 
-class ExampleMutableThing {
+private class OperatorMutableThing {
     var containedNumber: Int = 0
-    operator fun plus(other: ExampleMutableThing): ExampleMutableThing {
-        val result = ExampleMutableThing()
+    operator fun plus(other: OperatorMutableThing): OperatorMutableThing {
+        val result = OperatorMutableThing()
         result.containedNumber = this.containedNumber + other.containedNumber
         return result
     }
 
-    operator fun plusAssign(other: ExampleMutableThing) {
+    operator fun plusAssign(other: OperatorMutableThing) {
         this.containedNumber += other.containedNumber
     }
 
     operator fun get(index: Int): Int = containedNumber + index
-    operator fun set(index: Int, value: Int): Int = value - index
+    operator fun set(index: Int, value: Int) {
+        this.containedNumber = value - index
+    }
 }
 
-class ExampleImmutableThing {
+private class OperatorImmutableThing {
     var containedNumber: Int = 0
-    operator fun plus(other: ExampleImmutableThing): ExampleImmutableThing {
-        val result = ExampleImmutableThing()
+    operator fun plus(other: OperatorImmutableThing): OperatorImmutableThing {
+        val result = OperatorImmutableThing()
         result.containedNumber = this.containedNumber + other.containedNumber
         return result
     }
 
-    operator fun unaryMinus(): ExampleImmutableThing {
-        val result = ExampleImmutableThing()
+    operator fun unaryMinus(): OperatorImmutableThing {
+        val result = OperatorImmutableThing()
         result.containedNumber = -this.containedNumber
         return result
     }
@@ -33,7 +35,7 @@ class ExampleImmutableThing {
     operator fun get(index: Int): Int = containedNumber + index
 }
 
-fun main() {
+private fun operatorMain() {
     var x: Int = 2
 
     //Normal operators
@@ -49,7 +51,6 @@ fun main() {
     println(1 <= x)
     println(1 != x)
     println(1 == x)
-    println(1 === x)
 
     //Direct calls
     println(1.plus(x))
@@ -77,9 +78,9 @@ fun main() {
     x = 1.inv()
 
     //Overloading
-    val thing1 = ExampleImmutableThing()
+    val thing1 = OperatorImmutableThing()
     thing1.containedNumber = 1
-    val thing2 = ExampleImmutableThing()
+    val thing2 = OperatorImmutableThing()
     thing2.containedNumber = 2
 
     val maybe = if(x > 1) thing1 else null
@@ -104,9 +105,9 @@ fun main() {
     thing5 += thing1
     println(thing5.containedNumber)
 
-    val mthing1 = ExampleMutableThing()
+    val mthing1 = OperatorMutableThing()
     mthing1.containedNumber = 1
-    val mthing2 = ExampleMutableThing()
+    val mthing2 = OperatorMutableThing()
     mthing2.containedNumber = 2
     mthing1 += mthing2
     println(mthing1.containedNumber)

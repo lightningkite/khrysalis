@@ -1,6 +1,6 @@
-package com.test.loops
+package com.test
 
-fun main(){
+private fun loopMain(){
     for(item in listOf(1, 2, 3, 4)) {
         println(item)
     }

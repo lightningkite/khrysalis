@@ -1,0 +1,159 @@
+---
+
+
+- id: kotlin.collections.Iterable
+  type: call
+  template: Sequence<~T0~> #!!
+
+# Extensions
+
+- id: kotlin.collections.drop
+  type: call
+  template: ~this~.dropFirst(~0~)
+- id: kotlin.collections.dropLast
+  type: call
+  template: ~this~.dropLast(~0~)
+- id: kotlin.collections.dropWhile
+  type: call
+  template: "~this~.drop(while: ~0~)"
+#- id: kotlin.collections.dropLastWhile
+
+- id: kotlin.collections.take
+  type: call
+  template: "~this~.prefix(~0~)"
+- id: kotlin.collections.takeLast
+  type: call
+  template: "~this~.suffix(~0~)"
+- id: kotlin.collections.takeWhile
+  type: call
+  template: "~this~.prefix(while: ~0~)"
+- id: kotlin.collections.takeLastWhile
+  type: call
+  template: "~this~.suffix(while: ~0~)"
+
+- id: kotlin.collections.forEach
+  type: call
+  template: "~this~.forEach(~0~)"
+
+- id: kotlin.collections.filter
+  type: call
+  template: "~this~.filter(~0~)"
+- id: kotlin.collections.map
+  type: call
+  template: "~this~.map(~0~)"
+- id: kotlin.collections.mapIndexed
+  type: call
+  template: ~this~ #TODO
+- id: kotlin.collections.flatMap
+  type: call
+  template: "~this~.flatMap(~0~)"
+
+- id: kotlin.collections.filterIndexed
+  type: call
+  template: ~this~ #TODO
+- id: kotlin.collections.filterNot
+  type: call
+  template: "~this~.filter({ x in !~0~(x) })"
+- id: kotlin.collections.filterNotNull
+  type: call
+  template: "~this~.compactMap({$0})"
+- id: kotlin.collections.mapNotNull
+  type: call
+  template: "~this~.compactMap(~0~)"
+- id: kotlin.collections.mapIndexedNotNull
+  type: call
+  template: ~this~ #TODO
+- id: kotlin.collections.chunked
+  type: call
+  template: ~this~ #TODO
+
+- id: kotlin.collections.sorted
+  type: call
+  template: ~this~.sorted()
+- id: kotlin.collections.sortedBy
+  type: call
+  template: ~this~ #TODO
+- id: kotlin.collections.sortedByDescending
+  type: call
+  template: ~this~ #TODO
+
+- id: kotlin.collections.associate
+  type: call
+  template: "Dictionary(~this~.map(~0~), uniquingKeysWith: { $0.0 })"
+- id: kotlin.collections.associateBy
+  type: call
+  template: "Dictionary(~this~.map { it in (~0~(it), it) }, uniquingKeysWith: { $0.0 })"
+
+- id: kotlin.collections.toList
+  type: call
+  template: "Array(~this~)"
+
+- id: kotlin.collections.toMutableList
+  type: call
+  template: "Array(~this~)"
+
+- id: kotlin.collections.toSet
+  type: call
+  template: "Set(~this~)"
+
+- id: kotlin.collections.toMutableSet
+  type: call
+  template: "Set(~this~)"
+
+# TODO: groupBy
+
+- id: kotlin.collections.any
+  type: call
+  template:
+    pattern: iterSome(~this~, ~0~)
+    imports:
+      iterSome: some from iterable-operator
+
+- id: kotlin.collections.all
+  type: call
+  template: ~this~.allSatisfy(~0~)
+
+- id: kotlin.collections.none
+  type: call
+  template: ~this~.allSatisfy({ !~0~($0) })
+
+- id: kotlin.collections.find
+  type: call
+  template: "~this~.first(where: ~0~)"
+
+# Join
+
+- id: kotlin.collections.joinToString
+  type: call
+  suppliedArguments: []
+  template: '~this~.map { "\($0)" }.joined(separator: ", ")'
+
+- id: kotlin.collections.joinToString
+  type: call
+  suppliedArguments: [separator]
+  template: '~this~.map { "\($0)" }.joined(separator: ~0~)'
+
+- id: kotlin.collections.joinToString
+  type: call
+  suppliedArguments: [transform]
+  template: '~this~.map(~transform~).joined(separator: ", ")'
+
+- id: kotlin.collections.joinToString
+  type: call
+  suppliedArguments: [separator, transform]
+  template: '~this~.map(~transform~).joined(separator: ~separator~)'
+
+- id: kotlin.collections.joinToString
+  type: call
+  suppliedArguments: [separator, transform, prefix]
+  template: '(~prefix~ + ~this~.map(~transform~).joined(separator: ~separator~))'
+
+- id: kotlin.collections.joinToString
+  type: call
+  suppliedArguments: [separator, transform, prefix, postfix]
+  template: '(~prefix~ + ~this~.map(~transform~).joined(separator: ~separator~) + ~postfix~)'
+
+- id: kotlin.collections.joinToString
+  type: call
+  suppliedArguments: [separator, transform, postfix]
+  template: '(~this~.map(~transform~).joined(separator: ~separator~) + ~postfix~)'

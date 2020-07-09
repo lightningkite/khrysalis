@@ -1,0 +1,28 @@
+---
+- id: kotlin.let
+  type: call
+  template: "(~0~)(~this~)"
+
+- id: kotlin.run
+  type: call
+  template: "(~0~)(~this~)"
+
+- id: kotlin.with
+  type: call
+  template: "(~1~)(~0~)"
+
+- id: kotlin.also
+  type: call
+  template: "also(~this~, ~0~)"
+
+- id: kotlin.apply
+  type: call
+  template: "also(~this~, ~0~)"
+
+- id: kotlin.takeIf
+  type: call
+  template: takeIf(~this~, ~0~)
+
+- id: kotlin.takeUnless
+  type: call
+  template: takeUnless(~this~, ~0~)

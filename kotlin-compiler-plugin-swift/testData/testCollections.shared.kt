@@ -1,8 +1,8 @@
-package com.test.collections
+package com.test
 
-data class CustomEq(val value: Int)
+private data class CollectionsCustomEq(val value: Int)
 
-fun test(){
+private fun collectionsTest(){
     val list = listOf(1, 2, 3)
     println(list[0])
 
@@ -52,32 +52,32 @@ fun test(){
     println(setOf(1, 2, 3))
     println(setOf("A", "B", "C"))
     println(setOf('a', 'b', 'c'))
-    println(setOf(CustomEq(1), CustomEq(2), CustomEq(3)))
+    println(setOf(CollectionsCustomEq(1), CollectionsCustomEq(2), CollectionsCustomEq(3)))
 
     println(mapOf(1 to 2, 3 to 4))
-    println(mapOf(CustomEq(1) to 2, CustomEq(3) to 4))
+    println(mapOf(CollectionsCustomEq(1) to 2, CollectionsCustomEq(3) to 4))
 
     println(mutableSetOf(1, 2, 3))
     println(mutableSetOf("A", "B", "C"))
     println(mutableSetOf('a', 'b', 'c'))
-    println(mutableSetOf(CustomEq(1), CustomEq(2), CustomEq(3)))
+    println(mutableSetOf(CollectionsCustomEq(1), CollectionsCustomEq(2), CollectionsCustomEq(3)))
 
     println(mutableMapOf(1 to 2, 3 to 4))
-    println(mutableMapOf(CustomEq(1) to 2, CustomEq(3) to 4))
+    println(mutableMapOf(CollectionsCustomEq(1) to 2, CollectionsCustomEq(3) to 4))
 
     println(hashSetOf(1, 2, 3))
     println(hashSetOf("A", "B", "C"))
     println(hashSetOf('a', 'b', 'c'))
-    println(hashSetOf(CustomEq(1), CustomEq(2), CustomEq(3)))
+    println(hashSetOf(CollectionsCustomEq(1), CollectionsCustomEq(2), CollectionsCustomEq(3)))
 
     println(hashMapOf(1 to 2, 3 to 4))
-    println(hashMapOf(CustomEq(1) to 2, CustomEq(3) to 4))
+    println(hashMapOf(CollectionsCustomEq(1) to 2, CollectionsCustomEq(3) to 4))
 
     println(HashSet<Int>())
-    println(HashSet<CustomEq>())
+    println(HashSet<CollectionsCustomEq>())
 
     println(HashMap<Int, String>())
-    println(HashMap<CustomEq, String>())
+    println(HashMap<CollectionsCustomEq, String>())
 
     println(ArrayList<Int>())
 }

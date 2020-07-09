@@ -26,9 +26,9 @@ val LayoutConverter.Companion.textInputViews
                 }
 
                 node.attributeAsSwiftString("android:hint")?.let { text ->
-                    node.attributeAsSwiftColor("android:textColorHint")?.let { color ->
-                        appendln("view.attributedPlaceholder = $text.attributedWithColor($color)")
-                    } ?: run {
+                    if(!setToColor(node, "android:textColorHint"){
+                            appendln("view.attributedPlaceholder = $text.attributedWithColor($it")
+                    }) {
                         appendln("view.placeholder = $text")
                     }
                 }

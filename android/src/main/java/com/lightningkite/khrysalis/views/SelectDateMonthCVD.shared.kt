@@ -8,6 +8,7 @@ import android.view.View
 import com.lightningkite.khrysalis.observables.*
 import com.lightningkite.khrysalis.rx.forever
 import com.lightningkite.khrysalis.time.*
+import com.lightningkite.khrysalis.views.geometry.GFloat
 import com.lightningkite.khrysalis.weakSelf
 import io.reactivex.rxkotlin.subscribeBy
 
@@ -48,7 +49,7 @@ open class SelectDateMonthCVD : MonthCVD() {
         }
     }
 
-    override fun measure(width: Float, height: Float, displayMetrics: DisplayMetrics) {
+    override fun measure(width: GFloat, height: GFloat, displayMetrics: DisplayMetrics) {
         super.measure(width = width, height = height, displayMetrics = displayMetrics)
         selectedDayPaint.textSize = dayPaint.textSize
     }

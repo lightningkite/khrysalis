@@ -11,7 +11,9 @@ import org.jetbrains.kotlin.types.KotlinType
 data class TypeReplacement(
     val id: String,
     val typeArgumentRequirements: Map<Int, String>? = null,
-    val template: Template
+    val requiresMutable: Boolean = false,
+    val template: Template,
+    val constraintTemplate: Template? = null
 ) : ReplacementRule {
     override val priority: Int
         get() = typeArgumentRequirements?.size ?: 0

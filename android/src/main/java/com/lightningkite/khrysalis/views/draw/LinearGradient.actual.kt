@@ -1,14 +1,15 @@
 package com.lightningkite.khrysalis.views.draw
 
 import android.graphics.Shader
+import com.lightningkite.khrysalis.views.geometry.GFloat
 
 fun newLinearGradient(
-    x0: Float,
-    y0: Float,
-    x1: Float,
-    y1: Float,
+    x0: GFloat,
+    y0: GFloat,
+    x1: GFloat,
+    y1: GFloat,
     colors: List<Int>,
-    positions: List<Float>,
+    positions: List<GFloat>,
     tile: Shader.TileMode
 ) = android.graphics.LinearGradient(
     x0,

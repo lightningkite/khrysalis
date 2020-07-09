@@ -38,7 +38,7 @@ fun SwiftTranslator.registerSpecialLet() {
 
     handle<SafeLetChain> {
         if(typedRule.outermost.actuallyCouldBeExpression){
-            -"run {\n"
+            runWithTypeHeader(typedRule.outermost)
         }
         typedRule.entries.forEachBetween(
             forItem = { (basis, lambda) ->

@@ -2,8 +2,12 @@ package com.lightningkite.khrysalis.swift
 
 import com.lightningkite.khrysalis.util.forEachBetween
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
+import org.jetbrains.kotlin.descriptors.ValueDescriptor
+import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
+
+data class IfCondition(val expression: KtExpression)
 
 fun SwiftTranslator.registerControl() {
 
@@ -25,25 +29,108 @@ fun SwiftTranslator.registerControl() {
             -typedRule.expression
         } else {
             -"{\n"
-            -"return "
+            if (typedRule.expression!!.actuallyCouldBeExpression) {
+                -"return "
+            }
             -typedRule.expression
             -"\n}\n"
         }
     }
 
+    handle<IfCondition>(
+        condition = {
+            val exp = typedRule.expression as? KtBinaryExpression ?: return@handle false
+            exp.operationToken == KtTokens.EXCLEQ && exp.left is KtNameReferenceExpression && exp.right!!.text == "null"
+        },
+        priority = 10,
+        action = {
+            val exp = typedRule.expression as KtBinaryExpression
+            val vd = (exp.left as KtNameReferenceExpression).resolvedReferenceTarget as? ValueDescriptor
+            vd?.let { ignoreSmartcast(it) }
+            -"let "
+            -exp.left
+            -" = "
+            -exp.left
+        }
+    )
+
+    handle<IfCondition>(
+        condition = {
+            val exp = typedRule.expression as? KtBinaryExpression ?: return@handle false
+            exp.operationToken == KtTokens.EXCLEQ && exp.right is KtNameReferenceExpression && exp.left!!.text == "null"
+        },
+        priority = 10,
+        action = {
+            val exp = typedRule.expression as KtBinaryExpression
+            val vd = (exp.right as KtNameReferenceExpression).resolvedReferenceTarget as? ValueDescriptor
+            vd?.let { ignoreSmartcast(it) }
+            -"let "
+            -exp.right
+            -" = "
+            -exp.right
+        }
+    )
+
+    handle<IfCondition>(
+        condition = {
+            val exp = typedRule.expression as? KtIsExpression ?: return@handle false
+            exp.leftHandSide is KtNameReferenceExpression
+        },
+        priority = 10,
+        action = {
+            val exp = typedRule.expression as KtIsExpression
+            val vd = (exp.leftHandSide as KtNameReferenceExpression).resolvedReferenceTarget as? ValueDescriptor
+            vd?.let { ignoreSmartcast(it) }
+            -"let "
+            -exp.leftHandSide
+            -" = "
+            -exp.leftHandSide
+            -" as? "
+            -exp.typeReference
+        }
+    )
+
+    handle<IfCondition> {
+        -typedRule.expression
+    }
+
+    handle<KtBinaryExpression>(
+        condition = { typedRule.operationToken == KtTokens.ANDAND && typedRule.parentOfType<KtIfExpression>()?.condition == typedRule },
+        priority = 100,
+        action = {
+            val elements = ArrayList<KtExpression>()
+            var current: KtExpression = typedRule
+            while (current is KtBinaryExpression && current.operationToken == KtTokens.ANDAND) {
+                elements.add(current.right!!)
+                current = current.left!!
+            }
+            elements.add(current)
+            elements.reverse()
+            elements.forEachBetween(
+                forItem = {
+                    -IfCondition(it)
+                },
+                between = {
+                    -", "
+                }
+            )
+        }
+    )
+
     handle<KtIfExpression> {
+        beginSmartcastBlock()
         if (typedRule.actuallyCouldBeExpression && typedRule.parent !is KtContainerNodeForControlStructureBody) {
-            -"(() => {"
+            runWithTypeHeader(typedRule)
         }
         -"if "
-        -typedRule.condition
+        -IfCondition(typedRule.condition!!)
         -" "
         typedRule.then?.let {
-            if(it is KtBlockExpression){
+            if (it is KtBlockExpression) {
                 -it
             } else {
                 -"{ "
-                if (typedRule.actuallyCouldBeExpression && typedRule.parent !is KtContainerNodeForControlStructureBody) {
+                if (typedRule.actuallyCouldBeExpression && it.actuallyCouldBeExpression && typedRule.parent !is KtContainerNodeForControlStructureBody) {
                     -"return "
                 }
                 -it
@@ -52,11 +139,11 @@ fun SwiftTranslator.registerControl() {
         }
         typedRule.`else`?.let {
             -" else "
-            if(it is KtBlockExpression){
+            if (it is KtBlockExpression) {
                 -it
             } else {
                 -"{ "
-                if (typedRule.actuallyCouldBeExpression && typedRule.parent !is KtContainerNodeForControlStructureBody) {
+                if (typedRule.actuallyCouldBeExpression && it.actuallyCouldBeExpression && typedRule.parent !is KtContainerNodeForControlStructureBody) {
                     -"return "
                 }
                 -it
@@ -64,8 +151,9 @@ fun SwiftTranslator.registerControl() {
             }
         }
         if (typedRule.actuallyCouldBeExpression && typedRule.parent !is KtContainerNodeForControlStructureBody) {
-            -"})()"
+            -"}"
         }
+        endSmartcastBlock()
     }
 
     handle<KtIfExpression>(
@@ -98,7 +186,7 @@ fun SwiftTranslator.registerControl() {
         priority = 100
     ) {
         if (typedRule.actuallyCouldBeExpression) {
-            -"(() => {"
+            runWithTypeHeader(typedRule)
         }
         val subj = typedRule.subjectExpression
         if (subj is KtProperty) {
@@ -113,6 +201,7 @@ fun SwiftTranslator.registerControl() {
         }
         -" {\n"
         typedRule.entries.forEach { entry ->
+            beginSmartcastBlock()
             entry.elseKeyword?.let {
                 -"default:\n"
             } ?: entry.conditions.takeUnless { it.isEmpty() }?.let { cons ->
@@ -138,16 +227,17 @@ fun SwiftTranslator.registerControl() {
                     -it
                 }
             } else {
-                if (typedRule.actuallyCouldBeExpression) {
+                if (typedRule.actuallyCouldBeExpression && entry.expression!!.actuallyCouldBeExpression) {
                     -"return "
                 }
                 -entry.expression
             }
             -"\nbreak\n"
+            endSmartcastBlock()
         }
         -"}\n"
         if (typedRule.actuallyCouldBeExpression) {
-            -"})()"
+            -"}"
         }
     }
 
@@ -156,15 +246,20 @@ fun SwiftTranslator.registerControl() {
         priority = 100
     ) {
         if (typedRule.actuallyCouldBeExpression) {
-            -"(() => {"
+            runWithTypeHeader(typedRule)
         }
         -typedRule.entries.forEachBetween(
             forItem = { it ->
+                beginSmartcastBlock()
                 if (!it.isElse) {
                     -"if "
                     it.conditions.asIterable().forEachBetween(
-                        forItem = {
-                            -it
+                        forItem = { c ->
+                            if (it.conditions.size == 1) {
+                                -IfCondition((c as KtWhenConditionWithExpression).expression!!)
+                            } else {
+                                -it
+                            }
                         },
                         between = {
                             -" || "
@@ -175,12 +270,13 @@ fun SwiftTranslator.registerControl() {
                     -it.expression
                 } else {
                     -" {\n"
-                    if (typedRule.actuallyCouldBeExpression) {
+                    if (typedRule.actuallyCouldBeExpression && it.expression!!.actuallyCouldBeExpression) {
                         -"return "
                     }
                     -it.expression
                     -"\n}"
                 }
+                endSmartcastBlock()
             },
             between = {
                 -" else "
@@ -188,7 +284,7 @@ fun SwiftTranslator.registerControl() {
         )
 
         if (typedRule.actuallyCouldBeExpression) {
-            -"})()"
+            -"}"
         }
     }
 
@@ -197,7 +293,7 @@ fun SwiftTranslator.registerControl() {
         priority = 10
     ) {
         if (typedRule.actuallyCouldBeExpression) {
-            -"(() => {"
+            runWithTypeHeader(typedRule)
         }
         val subj = typedRule.subjectExpression
         if (subj is KtProperty) {
@@ -213,45 +309,82 @@ fun SwiftTranslator.registerControl() {
         }
         -typedRule.entries.forEachBetween(
             forItem = { it ->
+                beginSmartcastBlock()
                 if (!it.isElse) {
                     -"if "
-                    it.conditions.asIterable().forEachBetween(
-                        forItem = {
-                            when (it) {
-                                is KtWhenConditionWithExpression -> {
-                                    -subjExpr()
-                                    -" == "
-                                    -it
-                                }
-                                is KtWhenConditionInRange -> {
-                                    -it
-                                    -".contains("
-                                    -subjExpr()
-                                    -")"
-                                }
-                                is KtWhenConditionIsPattern -> {
-                                    emitIsExpression(
-                                        subjExpr(),
-                                        it.typeReference!!.resolvedType!!
-                                    )
+                    if (it.conditions.size == 1) {
+                        when (val it = it.conditions.first()) {
+                            is KtWhenConditionWithExpression -> {
+                                -subjExpr()
+                                -" == "
+                                -it
+                            }
+                            is KtWhenConditionInRange -> {
+                                -it
+                                -".contains("
+                                -subjExpr()
+                                -")"
+                            }
+                            is KtWhenConditionIsPattern -> {
+                                val expr = subjExpr()
+                                when {
+                                    expr is KtNameReferenceExpression -> {
+                                        val vd = expr.resolvedReferenceTarget as? ValueDescriptor
+                                        vd?.let { ignoreSmartcast(it) }
+                                        -"let "
+                                        -expr
+                                        -" = "
+                                        -expr
+                                        -" as? "
+                                        -it.typeReference!!.resolvedType!!
+                                    }
+                                    else -> {
+                                        -expr
+                                        -" is "
+                                        -it.typeReference!!.resolvedType!!
+                                    }
                                 }
                             }
-                        },
-                        between = {
-                            -" || "
                         }
-                    )
+                    } else {
+                        it.conditions.asIterable().forEachBetween(
+                            forItem = {
+                                when (it) {
+                                    is KtWhenConditionWithExpression -> {
+                                        -subjExpr()
+                                        -" == "
+                                        -it
+                                    }
+                                    is KtWhenConditionInRange -> {
+                                        -it
+                                        -".contains("
+                                        -subjExpr()
+                                        -")"
+                                    }
+                                    is KtWhenConditionIsPattern -> {
+                                        -subjExpr()
+                                        -" is "
+                                        -it.typeReference!!.resolvedType!!
+                                    }
+                                }
+                            },
+                            between = {
+                                -" || "
+                            }
+                        )
+                    }
                 }
                 if (it.expression is KtBlockExpression) {
                     -it.expression
                 } else {
                     -" {\n"
-                    if (typedRule.actuallyCouldBeExpression) {
+                    if (typedRule.actuallyCouldBeExpression && it.expression!!.actuallyCouldBeExpression) {
                         -"return "
                     }
                     -it.expression
                     -"\n}"
                 }
+                endSmartcastBlock()
             },
             between = {
                 -" else "
@@ -259,7 +392,7 @@ fun SwiftTranslator.registerControl() {
         )
 
         if (typedRule.actuallyCouldBeExpression) {
-            -"})()"
+            -"}"
         }
     }
 
@@ -268,35 +401,19 @@ fun SwiftTranslator.registerControl() {
         priority = 100,
         action = {
             val destructuringDeclaration = typedRule.loopParameter?.destructuringDeclaration!!
-            -"for toDestructure of "
-            -typedRule.loopRange
-            -" {\n"
-            destructuringDeclaration.entries.forEachIndexed { index, it ->
-                val rule = it.resolvedComponentResolvedCall?.let { replacements.getCall(this@registerControl, it) }
-                if (rule != null) {
-                    emitTemplate(
-                        requiresWrapping = false,
-                        prefix = listOf("let ", it.name, " = "),
-                        template = rule.template,
-                        receiver = "toDestructure"
-                    )
-                } else {
-                    -"let "
-                    -it.name
-                    -" = "
-                    -"toDestructure["
-                    -index.toString()
-                    -']'
+            -"for ("
+            destructuringDeclaration.entries.forEachBetween(
+                forItem = {
+                    -(it.name ?: "_")
+                },
+                between = {
+                    -", "
                 }
-                -'\n'
-            }
-            val body = typedRule.body
-            if (body is KtBlockExpression) {
-                -body.allChildren.toList().drop(1).dropLast(1)
-            } else {
-                -body
-            }
-            -"\n}"
+            )
+            -") in "
+            -typedRule.loopRange
+            -" "
+            -typedRule.body
         }
     )
 
@@ -318,6 +435,21 @@ fun SwiftTranslator.registerControl() {
     handle<KtBreakExpression> {
         -"break "
         -typedRule.getLabelName()
+    }
+
+    handle<KtWhileExpression> {
+        -"while "
+        -typedRule.condition
+        -" "
+        -typedRule.body
+    }
+
+    handle<KtDoWhileExpression> {
+        -"repeat "
+        -typedRule.body
+        -" while("
+        -typedRule.condition
+        -")"
     }
 }
 

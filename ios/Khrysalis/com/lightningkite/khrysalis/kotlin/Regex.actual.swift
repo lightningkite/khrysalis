@@ -7,24 +7,15 @@
 
 import Foundation
 
-public struct Regex {
-    public let pattern: NSRegularExpression
-    public init(pattern: String){
-        self.pattern = (try? NSRegularExpression(pattern: pattern, options: []))!
-    }
-    
-    
-    public init(_ pattern: String){
-        self.pattern = (try? NSRegularExpression(pattern: pattern, options: []))!
-    }
-    
+public extension NSRegularExpression {
+
     public struct Match {
         public let value: String
         public let groupValues: Array<String>
     }
     
     public func find(_ string: String) -> Match? {
-        guard let match = self.pattern.firstMatch(in: string, options: [], range: NSRange(string.startIndex ..< string.endIndex, in: string)) else { return nil }
+        guard let match = self.firstMatch(in: string, options: [], range: NSRange(string.startIndex ..< string.endIndex, in: string)) else { return nil }
  
         var groupValues = Array<String>()
         for index in 0 ..< match.numberOfRanges {

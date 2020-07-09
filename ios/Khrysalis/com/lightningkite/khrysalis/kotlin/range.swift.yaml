@@ -1,0 +1,5 @@
+---
+
+- id: kotlin.ranges.ClosedRange.contains
+  type: call
+  template: ~this~.contains(~0~)
