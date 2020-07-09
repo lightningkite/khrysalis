@@ -19,9 +19,9 @@ public class TimeAlone: Equatable, Hashable, Codable {
     
     required public init(from decoder: Decoder) throws {
         let string: String = try decoder.singleValueContainer().decode(String.self)
-        hour = string.substringBefore(":").toInt()
-        minute = string.substringAfter(":").substringBefore(":").toInt()
-        second = string.substringAfterLast(":").toInt()
+        hour = Int(string.substringBefore(":"))!
+        minute = Int(string.substringAfter(":").substringBefore(":"))!
+        second = Int(string.substringAfterLast(":"))!
     }
     
     public func encode(to encoder: Encoder) throws {
@@ -62,10 +62,10 @@ public class TimeAlone: Equatable, Hashable, Codable {
     }
     
     static public func iso(string: String) -> TimeAlone? {
-        if let hour = string.substringBefore(":", "").toIntOrNull(),
-            let minute = string.substringAfter(":", "").substringBefore(":").toIntOrNull()
+        if let hour = Int(string.substringBefore(":", "")),
+            let minute = Int(string.substringAfter(":", "").substringBefore(":"))
         {
-            let second = string.substringAfter(":", "").substringAfter(":", "").toIntOrNull()
+            let second = Int(string.substringAfter(":", "").substringAfter(":", ""))
             return TimeAlone(hour: hour, minute: minute, second: second ?? 0)
         }
         return nil
@@ -96,12 +96,12 @@ public class TimeAlone: Equatable, Hashable, Codable {
     }
     public var hoursInDay: Float {
         get {
-            return self.hour.toFloat() + self.minute.toFloat() / Float(60) + self.second.toFloat() / Float(3600) + Float(0.5) / Float(3600)
+            return Float(self.hour) + Float(self.minute) / Float(60) + Float(self.second) / Float(3600) + Float(0.5) / Float(3600)
         }
         set(value) {
-            self.hour = value.toInt()
-            self.minute = ( value * Float(60) ).toInt() % 60
-            self.second = ( value * Float(3600) ).toInt() % 60
+            self.hour = Int(value)
+            self.minute = Int( value * Float(60) ) % 60
+            self.second = Int( value * Float(3600) ) % 60
         }
     }
     

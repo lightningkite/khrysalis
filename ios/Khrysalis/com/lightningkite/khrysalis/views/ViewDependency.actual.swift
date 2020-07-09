@@ -26,10 +26,10 @@ public class ViewDependency: NSObject {
     //--- ViewDependency.displayMetrics
     public var displayMetrics: DisplayMetrics {
         return DisplayMetrics(
-            density: Float(UIScreen.main.scale),
-            scaledDensity: Float(UIScreen.main.scale),
-            widthPixels: Int32(UIScreen.main.bounds.width * UIScreen.main.scale),
-            heightPixels: Int32(UIScreen.main.bounds.height * UIScreen.main.scale)
+            density: (UIScreen.main.scale),
+            scaledDensity: (UIScreen.main.scale),
+            widthPixels: Int(UIScreen.main.bounds.width * UIScreen.main.scale),
+            heightPixels: Int(UIScreen.main.bounds.height * UIScreen.main.scale)
         )
     }
 
@@ -37,10 +37,10 @@ public class ViewDependency: NSObject {
     public func share(_ shareTitle: String, _ message: String? = nil, _ url: String? = nil, _ image: Image? = nil) -> Void {
         var items: Array<Any> = []
         if let message = message {
-            items.add(message)
+            items.append(message)
         }
         if let url = url, let fixed = URL(string: url) {
-            items.add(fixed)
+            items.append(fixed)
         }
         if let image = image {
             TODO()
@@ -234,8 +234,8 @@ public class ViewDependency: NSObject {
         return new
     }
 
-    //--- ViewDependency.requestImageGallery((Uri)->Unit)
-    public func requestImageGallery(onResult: @escaping (Uri) -> Void) {
+    //--- ViewDependency.requestImageGallery((URL)->Unit)
+    public func requestImageGallery(onResult: @escaping (URL) -> Void) {
         if PHPhotoLibrary.authorizationStatus() == .authorized {
             self.requestImageGalleryRaw(onResult: onResult)
         } else {
@@ -246,7 +246,7 @@ public class ViewDependency: NSObject {
             }
         }
     }
-    private func requestImageGalleryRaw(onResult: @escaping (Uri) -> Void) {
+    private func requestImageGalleryRaw(onResult: @escaping (URL) -> Void) {
         if UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum){
             let imageDelegate = self.imageDelegate
             imageDelegate.onImagePicked = onResult
@@ -255,37 +255,37 @@ public class ViewDependency: NSObject {
         }
     }
 
-    //--- ViewDependency.requestImageCamera(Boolean, (Uri)->Unit)
+    //--- ViewDependency.requestImageCamera(Boolean, (URL)->Unit)
 
-    //--- ViewDependency.requestVideoGallery((Uri)->Unit)
-    func requestVideoGallery(_ callback: (Uri) -> Void) -> Void {
+    //--- ViewDependency.requestVideoGallery((URL)->Unit)
+    func requestVideoGallery(_ callback: (URL) -> Void) -> Void {
         TODO()
     }
 
-    //--- ViewDependency.requestVideosGallery((List<Uri>)->Unit)
-    func requestVideosGallery(_ callback: (Array<Uri>) -> Void) -> Void {
+    //--- ViewDependency.requestVideosGallery((List<URL>)->Unit)
+    func requestVideosGallery(_ callback: (Array<URL>) -> Void) -> Void {
         TODO()
     }
 
-    //--- ViewDependency.requestVideoCamera(Boolean, (Uri)->Unit)
-    func requestVideoCamera(_ front: Bool, _ callback: (Uri) -> Void) -> Void {
+    //--- ViewDependency.requestVideoCamera(Boolean, (URL)->Unit)
+    func requestVideoCamera(_ front: Bool, _ callback: (URL) -> Void) -> Void {
         TODO()
     }
-    func requestVideoCamera(front: Bool, callback: (Uri) -> Void) -> Void {
+    func requestVideoCamera(front: Bool, callback: (URL) -> Void) -> Void {
         return requestVideoCamera(front, callback)
     }
 
-    //--- ViewDependency.requestMediasGallery((List<Uri>)->Unit)
-    func requestMediasGallery(_ callback: (Array<Uri>) -> Void) -> Void {
+    //--- ViewDependency.requestMediasGallery((List<URL>)->Unit)
+    func requestMediasGallery(_ callback: (Array<URL>) -> Void) -> Void {
         TODO()
     }
-    //--- ViewDependency.requestMediaGallery((Uri)->Unit)
-    func requestMediaGallery(_ callback: (Uri) -> Void) -> Void {
+    //--- ViewDependency.requestMediaGallery((URL)->Unit)
+    func requestMediaGallery(_ callback: (URL) -> Void) -> Void {
         TODO()
     }
 
-    //--- ViewDependency.requestImagesGallery((List<Uri>)->Unit)
-    public func requestImagesGallery(_ onResult: @escaping (Array<Uri>) -> Void) -> Void {
+    //--- ViewDependency.requestImagesGallery((List<URL>)->Unit)
+    public func requestImagesGallery(_ onResult: @escaping (Array<URL>) -> Void) -> Void {
         if PHPhotoLibrary.authorizationStatus() == .authorized {
             self.requestImagesGalleryRaw(onResult: onResult)
         } else {
@@ -296,14 +296,14 @@ public class ViewDependency: NSObject {
             }
         }
     }
-    private func requestImagesGalleryRaw(onResult: @escaping (Array<Uri>) -> Void) {
+    private func requestImagesGalleryRaw(onResult: @escaping (Array<URL>) -> Void) {
         let pickerController = DKImagePickerController()
         pickerController.assetType = .allPhotos
         pickerController.didSelectAssets = { (assets: [DKAsset]) in
             print("didSelectAssets")
             print(assets)
             //Select Assets
-            var result: Array<Uri> = []
+            var result: Array<URL> = []
             var remaining = assets.count
             print("Assets remaining: \(remaining)")
             for item in assets {
@@ -327,7 +327,7 @@ public class ViewDependency: NSObject {
 //        self.parentViewController.presentOpalImagePickerController(imagePicker, animated: true,
 //            select: { (assets) in
 //                //Select Assets
-//                var result: Array<Uri> = []
+//                var result: Array<URL> = []
 //                var remaining = assets.count
 //                print("Assets remaining: \(remaining)")
 //                for item in assets {
@@ -351,8 +351,8 @@ public class ViewDependency: NSObject {
 //            })
     }
 
-    //--- ViewDependency.requestImageCamera((Uri)->Unit)
-    public func requestImageCamera(front:Bool = false, onResult: @escaping (Uri) -> Void) {
+    //--- ViewDependency.requestImageCamera((URL)->Unit)
+    public func requestImageCamera(front:Bool = false, onResult: @escaping (URL) -> Void) {
         DispatchQueue.main.async {
             if AVCaptureDevice.authorizationStatus(for: .video) == .authorized {
                 AVCaptureDevice.requestAccess(for: .video) { granted in
@@ -385,7 +385,7 @@ public class ViewDependency: NSObject {
             }
         }
     }
-    private func requestImageCameraRaw(front:Bool, onResult: @escaping (Uri) -> Void) {
+    private func requestImageCameraRaw(front:Bool, onResult: @escaping (URL) -> Void) {
         DispatchQueue.main.async {
             if UIImagePickerController.isSourceTypeAvailable(.camera){
                 let imageDelegate = self.imageDelegate
@@ -410,7 +410,7 @@ extension ViewDependency: EKEventEditViewDelegate {
 private class ImageDelegate : NSObject, UIImagePickerControllerDelegate, UINavigationControllerDelegate {
 
     var imagePicker = UIImagePickerController()
-    var onImagePicked: ((Uri)->Void)? = nil
+    var onImagePicked: ((URL)->Void)? = nil
 
     func prepareGallery(){
         imagePicker.delegate = self

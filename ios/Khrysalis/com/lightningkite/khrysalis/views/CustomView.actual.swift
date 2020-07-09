@@ -41,21 +41,21 @@ public class CustomView: FrameLayout {
     
     //--- CustomView implementation
     let scaleInformation = DisplayMetrics(
-        density: Float(UIScreen.main.scale),
-        scaledDensity: Float(UIScreen.main.scale),
-        widthPixels: Int32(UIScreen.main.bounds.width * UIScreen.main.scale),
-        heightPixels: Int32(UIScreen.main.bounds.height * UIScreen.main.scale)
+        density: (UIScreen.main.scale),
+        scaledDensity: (UIScreen.main.scale),
+        widthPixels: Int(UIScreen.main.bounds.width * UIScreen.main.scale),
+        heightPixels: Int(UIScreen.main.bounds.height * UIScreen.main.scale)
     )
     
     override public func draw(_ rect: CGRect) {
         guard let ctx = UIGraphicsGetCurrentContext() else { return }
 //        ctx.clear(rect)
         ctx.scale(1/scaleInformation.density, 1/scaleInformation.density)
-        delegate?.draw(ctx, Float(rect.size.width) * scaleInformation.density, Float(rect.size.height) * scaleInformation.density, scaleInformation)
+        delegate?.draw(ctx, (rect.size.width) * scaleInformation.density, (rect.size.height) * scaleInformation.density, scaleInformation)
     }
     
-    private var touchIds = Dictionary<UITouch, Int32>()
-    private var currentTouchId: Int32 = 0
+    private var touchIds = Dictionary<UITouch, Int>()
+    private var currentTouchId: Int = 0
     override public func touchesBegan(_ touches: Set<UITouch>, with event: UIEvent?) {
         handleTouches(touches)
         super.touchesBegan(touches, with: event)
@@ -74,8 +74,8 @@ public class CustomView: FrameLayout {
     override public func sizeThatFits(_ size: CGSize) -> CGSize {
         if let delegate = delegate {
             return CGSize(
-                width: CGFloat(delegate.sizeThatFitsWidth(Float(size.width), Float(size.height))),
-                height: CGFloat(delegate.sizeThatFitsHeight(Float(size.width), Float(size.height)))
+                width: CGFloat(delegate.sizeThatFitsWidth((size.width), (size.height))),
+                height: CGFloat(delegate.sizeThatFitsHeight((size.width), (size.height)))
             )
         } else {
             return super.sizeThatFits(size)
@@ -92,29 +92,29 @@ public class CustomView: FrameLayout {
                 touchIds[touch] = id
                 let _ = delegate?.onTouchDown(
                     id,
-                    Float(loc.x) * scaleInformation.density,
-                    Float(loc.y) * scaleInformation.density,
-                    Float(frame.size.width) * scaleInformation.density,
-                    Float(frame.size.height) * scaleInformation.density
+                    (loc.x) * scaleInformation.density,
+                    (loc.y) * scaleInformation.density,
+                    (frame.size.width) * scaleInformation.density,
+                    (frame.size.height) * scaleInformation.density
                 )
             case .moved:
                 if let id = touchIds[touch] {
                     let _ = delegate?.onTouchMove(
                         id,
-                        Float(loc.x) * scaleInformation.density,
-                        Float(loc.y) * scaleInformation.density,
-                        Float(frame.size.width) * scaleInformation.density,
-                        Float(frame.size.height) * scaleInformation.density
+                        (loc.x) * scaleInformation.density,
+                        (loc.y) * scaleInformation.density,
+                        (frame.size.width) * scaleInformation.density,
+                        (frame.size.height) * scaleInformation.density
                     )
                 }
             case .ended:
                 if let id = touchIds[touch] {
                     let _ = delegate?.onTouchUp(
                         id,
-                        Float(loc.x) * scaleInformation.density,
-                        Float(loc.y) * scaleInformation.density,
-                        Float(frame.size.width) * scaleInformation.density,
-                        Float(frame.size.height) * scaleInformation.density
+                        (loc.x) * scaleInformation.density,
+                        (loc.y) * scaleInformation.density,
+                        (frame.size.width) * scaleInformation.density,
+                        (frame.size.height) * scaleInformation.density
                     )
                 }
                 touchIds.removeValue(forKey: touch)

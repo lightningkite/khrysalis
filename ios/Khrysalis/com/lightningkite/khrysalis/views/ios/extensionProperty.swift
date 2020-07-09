@@ -18,29 +18,29 @@ public class ExtensionProperty<On: AnyObject, T> {
             self.value = value
         }
     }
-    private var table = NSMapTable<On, T>(keyOptions: .weakMemory, valueOptions: .strongMemory)
+    private var table = NSMapTable<On, Box<T>>(keyOptions: .weakMemory, valueOptions: .strongMemory)
     public func get(_ from: On) -> T? {
         return table.object(forKey: from)?.value
     }
     public func getOrPut(_ from: On, _ generate: ()->T) -> T {
         if let value = table.object(forKey: from)?.value { return value }
         let generated = generate()
-        let box = Box(value: generated)
+        let box = Box(generated)
         table.setObject(box, forKey: from)
         return generated
     }
-    public func modify(_ from: On, defaultValue:T? = nil, modifier: (T)->Void) {
+    public func modify(_ from: On, defaultValue:T? = nil, modifier: (inout T)->Void) {
         if let box = table.object(forKey: from) {
-            modifier(box)
+            modifier(&box.value)
         } else if let defaultValue = defaultValue {
-            let box = Box(value: defaultValue)
-            modifier(box)
+            let box = Box(defaultValue)
+            modifier(&box.value)
             table.setObject(box, forKey: from)
         }
     }
     public func set(_ from: On, _ value: T?) {
         if let value = value {
-            let box = Box(value: value)
+            let box = Box(value)
             table.setObject(box, forKey: from)
         } else {
             table.removeObject(forKey: from)

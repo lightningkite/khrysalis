@@ -18,9 +18,9 @@ public class DateAlone: Equatable, Hashable, Codable {
 
     required public init(from decoder: Decoder) throws {
         let string: String = try decoder.singleValueContainer().decode(String.self)
-        year = string.substringBefore("-").toInt()
-        month = string.substringAfter("-").substringBefore("-").toInt()
-        day = string.substringAfterLast("-").toInt()
+        year = Int(string.substringBefore("-"))!
+        month = Int(string.substringAfter("-").substringBefore("-"))!
+        day = Int(string.substringAfterLast("-"))!
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -64,9 +64,9 @@ public class DateAlone: Equatable, Hashable, Codable {
     static public var farFuture = DateAlone(99999, 12, 31)
 
     static public func iso(string: String) -> DateAlone? {
-        if let year = string.substringBefore("-", "").toIntOrNull(),
-            let month = string.substringAfter("-", "").substringBefore("-", "").toIntOrNull(),
-            let day = string.substringAfter("-", "").substringAfter("-", "").toIntOrNull()
+        if let year = Int(string.substringBefore("-", "")),
+            let month = Int(string.substringAfter("-", "").substringBefore("-", "")),
+            let day = Int(string.substringAfter("-", "").substringAfter("-", ""))
         {
             return DateAlone(year, month, day)
         }
@@ -155,11 +155,11 @@ public extension DateAlone {
         year += yearsMod
     }
     private func cap(){
-        day = day.coerceIn(1, DateAlone.daysForMonth(year: year, month: month))
-        month = month.coerceIn(1, 12)
+        day = min(max(day, 1), DateAlone.daysForMonth(year: year, month: month))
+        month = min(max(month, 1), 12)
     }
     private func correct(){
-        month = month.coerceIn(1, 12)
+        month = min(max(month, 1), 12)
         var newDays = self.day
         while newDays <= 0 {
             self.addMonths(-1)

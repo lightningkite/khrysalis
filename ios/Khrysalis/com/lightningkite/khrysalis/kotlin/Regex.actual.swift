@@ -20,8 +20,8 @@ public extension NSRegularExpression {
         var groupValues = Array<String>()
         for index in 0 ..< match.numberOfRanges {
             let nsRange = match.range(at: index)
-            let match = string.substring(Int32(nsRange.lowerBound), Int32(nsRange.lowerBound + nsRange.length))
-            groupValues.add(match)
+            let match = string.substring(Int(nsRange.lowerBound), Int(nsRange.lowerBound + nsRange.length))
+            groupValues.append(match)
         }
         return Match(value: groupValues[0], groupValues: groupValues)
     }

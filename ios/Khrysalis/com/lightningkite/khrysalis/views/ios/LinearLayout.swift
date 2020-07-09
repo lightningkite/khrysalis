@@ -70,7 +70,7 @@ open class LinearLayout: UIView {
     
     public func addView(_ view: UIView, _ params: LayoutParams) {
         addSubview(view)
-        subviewsWithParams.add((view, params))
+        subviewsWithParams.append((view, params))
         setNeedsLayout()
     }
     
@@ -84,7 +84,7 @@ open class LinearLayout: UIView {
     
     public func addSubview(_ view: UIView, _ params: LayoutParams) {
         addSubview(view)
-        subviewsWithParams.add((view, params))
+        subviewsWithParams.append((view, params))
         setNeedsLayout()
     }
     public func addSubview(
@@ -98,7 +98,7 @@ open class LinearLayout: UIView {
     ) {
         addSubview(view)
         let params = LayoutParams(minimumSize: minimumSize, size: size, margin: margin, padding:padding, gravity: gravity, weight: weight)
-        subviewsWithParams.add((view, params))
+        subviewsWithParams.append((view, params))
         setNeedsLayout()
     }
     

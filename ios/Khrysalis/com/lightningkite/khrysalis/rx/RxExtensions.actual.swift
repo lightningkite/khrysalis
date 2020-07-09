@@ -23,8 +23,8 @@ extension ObservableType {
 
 //--- Observable<Element>.filterNotNull()
 extension Observable where Observable.Element: OptionalConvertible {
-    func filterNotNull() -> Observable<T.Wrapped> {
-        self.filter { $0 != nil }.map { $0! }
+    func filterNotNull() -> Observable<Element.Wrapped> {
+        self.filter { $0.asOptional != nil }.map { $0.asOptional! }
     }
 }
 

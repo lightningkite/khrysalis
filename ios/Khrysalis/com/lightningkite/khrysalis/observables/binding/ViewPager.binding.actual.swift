@@ -7,7 +7,7 @@ import UIKit
 public extension UICollectionView {
     func bind<T>(_ items: Array<T>, _ showIndex: MutableObservableProperty<Int>, _ makeView: @escaping (T) -> View) -> Void {
         bind(
-            count: items.size,
+            count: items.count,
             spacing: 0,
             makeView: { index in
                 makeView(items[index])

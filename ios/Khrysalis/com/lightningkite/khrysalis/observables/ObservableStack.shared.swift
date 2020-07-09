@@ -100,8 +100,8 @@ public class ObservableStack<T: AnyObject>: ObservableProperty<Array<T>> {
     }
     
     public func reset(t: T) -> Void {
-        stack.clear()
-        stack.add(t)
+        stack.removeAll()
+        stack.append(t)
         onChange.onNext(stack)
     }
     public func reset(_ t: T) -> Void {

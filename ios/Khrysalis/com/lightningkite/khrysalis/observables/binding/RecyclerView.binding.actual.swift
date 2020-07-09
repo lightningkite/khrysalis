@@ -111,7 +111,7 @@ public class RVTypeHandler {
 
     //--- RVTypeHandler.handle(KClass<*>, Any,  @escaping()(ObservableProperty<Any>)->View)
     public func handle(type: Any.Type, defaultValue: Any, action: @escaping (ObservableProperty<Any>) -> View) -> Void {
-        handlers.add(Handler(type: type, defaultValue: defaultValue, handler: action))
+        handlers.append(Handler(type: type, defaultValue: defaultValue, handler: action))
         typeCount += 1
     }
     public func handle(_ type: Any.Type, _ defaultValue: Any, _ action: @escaping (ObservableProperty<Any>) -> View) -> Void {
@@ -171,7 +171,7 @@ public extension UITableView {
         let handler = RVTypeHandler(viewDependency)
         typeHandlerSetup(handler)
         for i in 0...handler.typeCount {
-            register(CustomUITableViewCell.self, forCellReuseIdentifier: i.toString())
+            register(CustomUITableViewCell.self, forCellReuseIdentifier: String(describing: i))
         }
         let boundDataSource = BoundMultiDataSource(source: data, handler: handler)
         dataSource = boundDataSource
@@ -395,10 +395,10 @@ class BoundMultiDataSourceSameType<T>: NSObject, UITableViewDataSource, UITableV
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let s = source.value
         let typeIndex = getType(s[indexPath.row])
-        if registered.add(typeIndex) {
-            tableView.register(CustomUITableViewCell.self, forCellReuseIdentifier: typeIndex.toString())
+        if registered.insert(typeIndex).inserted {
+            tableView.register(CustomUITableViewCell.self, forCellReuseIdentifier: String(typeIndex))
         }
-        let cell: CustomUITableViewCell = tableView.dequeueReusableCell(withIdentifier: typeIndex.toString()) as! CustomUITableViewCell
+        let cell: CustomUITableViewCell = tableView.dequeueReusableCell(withIdentifier: String(typeIndex)) as! CustomUITableViewCell
         cell.spacing = self.spacing
         if reversedDirection {
             cell.transform = CGAffineTransform(rotationAngle: CGFloat.pi)
@@ -457,7 +457,7 @@ class BoundMultiDataSource: NSObject, UITableViewDataSource, UITableViewDelegate
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let s = source.value
         let typeIndex = self.handler.type(s[indexPath.row])
-        let cell: CustomUITableViewCell = tableView.dequeueReusableCell(withIdentifier: typeIndex.toString()) as! CustomUITableViewCell
+        let cell: CustomUITableViewCell = tableView.dequeueReusableCell(withIdentifier: String(typeIndex)) as! CustomUITableViewCell
         cell.spacing = self.spacing
         if reversedDirection {
             cell.transform = CGAffineTransform(rotationAngle: CGFloat.pi)

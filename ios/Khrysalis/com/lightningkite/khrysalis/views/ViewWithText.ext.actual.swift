@@ -51,7 +51,7 @@ public extension UILabel {
         set(value) {
             var toSet = value
             if textAllCaps {
-                toSet = toSet.toUpperCase()
+                toSet = toSet.uppercased()
             }
             self.attributedText = NSAttributedString(string: toSet, attributes: [.kern: letterSpacing * font.pointSize])
         }
@@ -102,7 +102,7 @@ public extension UITextView {
         set(value) {
             var toSet = value
             if textAllCaps {
-                toSet = toSet.toUpperCase()
+                toSet = toSet.uppercased()
             }
             self.attributedText = NSAttributedString(string: toSet, attributes: [.kern: letterSpacing * (font?.pointSize ?? 12)])
         }
@@ -145,7 +145,7 @@ public extension UITextField {
         set(value) {
             var toSet = value
             if textAllCaps {
-                toSet = toSet.toUpperCase()
+                toSet = toSet.uppercased()
             }
             self.attributedText = NSAttributedString(string: toSet, attributes: [.kern: letterSpacing * (font?.pointSize ?? 12)])
         }
@@ -188,7 +188,7 @@ public extension UIButton {
         set(value) {
             var toSet = value
             if textAllCaps {
-                toSet = toSet.toUpperCase()
+                toSet = toSet.uppercased()
             }
             setAttributedTitle(
                 NSAttributedString(string: toSet, attributes: [.kern: letterSpacing * (titleLabel?.font.pointSize ?? 12)]),

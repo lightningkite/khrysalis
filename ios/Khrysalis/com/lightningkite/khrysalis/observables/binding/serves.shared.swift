@@ -13,14 +13,14 @@ extension MutableObservableProperty {
         other.observable.addWeak(whilePresent, { (ignored, value) in 
             if !suppress {
                 suppress = true
-                self.value = value.value
+                self.value = value
                 suppress = false
             }
         })
         self.onChange.addWeak(whilePresent, { (ignored, value) in 
             if !suppress {
                 suppress = true
-                other.value = value.value
+                other.value = value
                 suppress = false
             }
         })

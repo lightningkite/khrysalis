@@ -80,7 +80,7 @@ public extension Encodable {
         }
         let result = try? coder.encode([self])
         let string = String(data: result!, encoding: .utf8)!
-        return string.substring(1, string.length - 1).data(using: .utf8)!
+        return string.substring(1, string.count - 1).data(using: .utf8)!
     }
     func toJsonString(coder: JSONEncoder = encoder) -> String {
         let data = try toJsonData(coder: coder)

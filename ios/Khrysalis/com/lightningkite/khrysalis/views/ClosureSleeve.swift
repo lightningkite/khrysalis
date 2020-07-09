@@ -75,7 +75,7 @@ public extension UIBarButtonItem {
 }
 
 public extension NSObject {
-    private static var anything = ExtensionProperty<NSObject, Dictionary<String, Any>>()
+    private static var anything = ExtensionProperty<NSObject, Dictionary<String, Any?>>()
     var extensions: Dictionary<String, Any>? {
         get {
             return NSObject.anything.get(self)
@@ -84,7 +84,7 @@ public extension NSObject {
 
     func retain<T>(as string: String = "[\(arc4random())]", item: T, until: DisposeCondition) {
         NSObject.anything.modify(self, defaultValue: [:]) { box in
-            box.value[string] = item
+            box[string] = item
         }
         until.call(DisposableLambda {
             self.unretain(string)
@@ -95,7 +95,7 @@ public extension NSObject {
     }
     func unretain(_ string: String) {
         NSObject.anything.modify(self, defaultValue: [:]) { box in
-            box.value[string] = nil
+            box[string] = nil
         }
     }
 }

@@ -22,14 +22,14 @@ public extension Array {
     ) {
         let index = binarySearchBy(selector(item), selector)
         if index < 0 {
-            add(
-                -index - 1,
-                item
+            insert(
+                item,
+                at: -index - 1
             )
         } else {
-            add(
-                index,
-                item
+            insert(
+                item,
+                at: index
             )
         }
     }
@@ -44,9 +44,9 @@ public extension Array {
     mutating func binaryInsertByDistinct<K: Comparable>(_ item: Element, _ selector: (Element) -> K?) -> Bool {
         let index = binarySearchBy(selector(item), selector)
         if index < 0 {
-            add(
-                -index - 1,
-                item
+            insert(
+                item,
+                at: -index - 1
             )
             return true
         } else {
@@ -73,7 +73,7 @@ public extension Array {
         if index < 0 {
             index = -index - 1
         }
-        while index < size {
+        while index < count {
             let item = self[index]
             let itemK = selector(item)
             if let itemK = itemK, itemK > upper { break }
@@ -89,13 +89,13 @@ public extension Array {
     func binarySearchBy<K: Comparable>(
         _ key: K?,
         _ selector: (Element)->K?
-    ) -> Int32 {
+    ) -> Int {
         binarySearchBy(key: key, selector: selector)
     }
     func binarySearchBy<K: Comparable>(
         key: K?,
         selector: (Element)->K?
-    ) -> Int32 {
+    ) -> Int {
         let a = key
         return binarySearchBy(
             comparison: { item in
@@ -108,7 +108,7 @@ public extension Array {
     
     func binarySearchBy(
         comparison: (Element)->ComparisonResult
-    ) -> Int32{
+    ) -> Int{
         var low = 0
         var high = count - 1
         while low <= high {
@@ -118,18 +118,18 @@ public extension Array {
             case .orderedAscending:
                 low = mid + 1
             case .orderedSame:
-                return Int32(mid)
+                return mid
             case .orderedDescending:
                 high = mid - 1
             }
         }
-        return Int32(-(low + 1))
+        return -(low + 1)
     }
     
     func asReversed() -> Array<Element>{
         var reversed = self
         forEachIndexed{ index, value in
-            reversed[self.count - Int(index) - 1] = value
+            reversed[self.count - index - 1] = value
         }
         return reversed
     }

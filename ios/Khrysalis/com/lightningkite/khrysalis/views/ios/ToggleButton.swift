@@ -52,7 +52,7 @@ public class ToggleButton: UIButtonWithLayer, CompoundButton {
         if isOn{
             var toSet = textOn
             if textAllCaps {
-                toSet = toSet.toUpperCase()
+                toSet = toSet.uppercased()
             }
             setAttributedTitle(
                 NSAttributedString(string: toSet, attributes: [.kern: letterSpacing * (titleLabel?.font.pointSize ?? 12)]),
@@ -61,7 +61,7 @@ public class ToggleButton: UIButtonWithLayer, CompoundButton {
         } else{
             var toSet = textOff
             if textAllCaps {
-                toSet = toSet.toUpperCase()
+                toSet = toSet.uppercased()
             }
             setAttributedTitle(
                 NSAttributedString(string: toSet, attributes: [.kern: letterSpacing * (titleLabel?.font.pointSize ?? 12)]),

@@ -39,10 +39,10 @@ public final class ConnectedWebSocket: WebSocketDelegate, Disposable {
     }
     
     //--- ConnectedWebSocket.onError(Throwable)
-    public func onError(_ e: Throwable) -> Void {
+    public func onError(_ e: Error) -> Void {
         underlyingSocket?.disconnect(closeCode: 1011)
     }
-    public func onError(e: Throwable) -> Void {
+    public func onError(e: Error) -> Void {
         return onError(e)
     }
     

@@ -35,8 +35,8 @@ public extension UIView {
         }
 
         if let superview = superview {
-            let myIndex = superview.subviews.indexOf(self)
-            return superview.findNextParentFocus(afterIndex: Int(myIndex))
+            let myIndex = superview.subviews.firstIndex(of: self) ?? -1
+            return superview.findNextParentFocus(afterIndex: myIndex)
         }
 
         return nil
@@ -44,8 +44,8 @@ public extension UIView {
 
     func findNextFocus(afterIndex: Int = 0) -> UIView? {
         if let superview = superview {
-            let myIndex = superview.subviews.indexOf(self)
-            return superview.findNextParentFocus(afterIndex: Int(myIndex))
+            let myIndex = superview.subviews.firstIndex(of: self) ?? -1
+            return superview.findNextParentFocus(afterIndex: myIndex)
         }
 
         return nil

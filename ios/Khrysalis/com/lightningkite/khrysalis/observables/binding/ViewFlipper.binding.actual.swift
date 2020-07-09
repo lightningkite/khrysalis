@@ -6,7 +6,7 @@ import UIKit
 //--- ViewFlipper.bindLoading(ObservableProperty<Boolean>, ColorResource? )
 public extension ViewFlipper {
     func bindLoading(_ loading: ObservableProperty<Bool>, _ color: ColorResource? = nil) -> Void {
-        if subviews.size == 1 {
+        if subviews.count == 1 {
             let new = UIActivityIndicatorView(frame: .zero)
             if let color = color {
                 new.color = color

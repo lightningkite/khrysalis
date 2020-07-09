@@ -30,11 +30,3 @@ public extension Int {
     func hours() -> TimeInterval { return TimeInterval(self * 60 * 60) }
     func days() -> TimeInterval { return TimeInterval(self * 60 * 60 * 24) }
 }
-
-public extension Int {
-    func milliseconds() -> TimeInterval { return TimeInterval(self) / 1000 }
-    func seconds() -> TimeInterval { return TimeInterval(self) }
-    func minutes() -> TimeInterval { return TimeInterval(self * 60) }
-    func hours() -> TimeInterval { return TimeInterval(self * 60 * 60) }
-    func days() -> TimeInterval { return TimeInterval(self * 60 * 60 * 24) }
-}

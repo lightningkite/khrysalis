@@ -47,7 +47,7 @@ open class UIButtonWithLayer: UIButton {
         var result = CGSize.zero
         let isHorizontal = iconPosition == .left || iconPosition == .right
         let isVertical = iconPosition == .top || iconPosition == .bottom
-        let hasTitle = self.titleLabel?.text?.isNotBlank() == true
+        let hasTitle = self.titleLabel?.text?.trimmingCharacters(in: .whitespaces).isEmpty == true
         if let iconLayer = iconLayer {
             if isHorizontal {
                 result.width += iconLayer.frame.size.width
@@ -66,7 +66,7 @@ open class UIButtonWithLayer: UIButton {
                 result.height = max(result.height, iconLayer.frame.size.height)
             }
         }
-        if let title = self.titleLabel?.text, title.isNotBlank(), let labelSize = titleLabel?.sizeThatFits(size) {
+        if let title = self.titleLabel?.text, title.trimmingCharacters(in: .whitespaces).isEmpty, let labelSize = titleLabel?.sizeThatFits(size) {
             if isHorizontal {
                 result.width += labelSize.width
             } else {
@@ -86,7 +86,7 @@ open class UIButtonWithLayer: UIButton {
     override open func layoutSubviews() {
         super.layoutSubviews()
         var placeableRect = self.bounds.inset(by: self.contentEdgeInsets)
-        if let title = self.titleLabel?.text, title.isNotBlank(), let titleLabel = titleLabel {
+        if let title = self.titleLabel?.text, title.trimmingCharacters(in: .whitespaces).isEmpty, let titleLabel = titleLabel {
             if let iconLayer = iconLayer {
                 switch iconPosition {
                 case .center:

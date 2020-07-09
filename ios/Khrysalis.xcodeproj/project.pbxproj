@@ -150,7 +150,6 @@
 		7CEC9F9424B7D0EC00C5A0AE /* TimeButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CEC9EE624B7D0EB00C5A0AE /* TimeButton.swift */; };
 		7CEC9F9524B7D0EC00C5A0AE /* DatePickerButton.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CEC9EE724B7D0EB00C5A0AE /* DatePickerButton.swift */; };
 		7CEC9F9624B7D0EC00C5A0AE /* safePadding.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CEC9EE824B7D0EB00C5A0AE /* safePadding.swift */; };
-		7CEC9F9724B7D0EC00C5A0AE /* CalendarView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CEC9EE924B7D0EB00C5A0AE /* CalendarView.swift */; };
 		7CEC9F9824B7D0EC00C5A0AE /* UIButtonWithInput.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CEC9EEA24B7D0EB00C5A0AE /* UIButtonWithInput.swift */; };
 		7CEC9F9924B7D0EC00C5A0AE /* SwapView.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CEC9EEB24B7D0EB00C5A0AE /* SwapView.swift */; };
 		7CEC9F9A24B7D0EC00C5A0AE /* extensionProperty.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CEC9EEC24B7D0EB00C5A0AE /* extensionProperty.swift */; };
@@ -181,6 +180,7 @@
 		7CEC9FB324B7D0EC00C5A0AE /* String.extensions.actual.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CEC9F0B24B7D0EC00C5A0AE /* String.extensions.actual.swift */; };
 		7CEC9FB424B7D0EC00C5A0AE /* delay.actual.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CEC9F0C24B7D0EC00C5A0AE /* delay.actual.swift */; };
 		7CEC9FB524B7D0EC00C5A0AE /* Preferences.actual.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CEC9F0D24B7D0EC00C5A0AE /* Preferences.actual.swift */; };
+		7CEC9FB724B7DA9100C5A0AE /* Box.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CEC9FB624B7DA9100C5A0AE /* Box.swift */; };
 		FBF03959EF07A62058F04C40 /* libPods-KhrysalisTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B70BB512F95B07C77779AD7 /* libPods-KhrysalisTests.a */; };
 /* End PBXBuildFile section */
 
@@ -359,7 +359,6 @@
 		7CEC9EE624B7D0EB00C5A0AE /* TimeButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = TimeButton.swift; sourceTree = "<group>"; };
 		7CEC9EE724B7D0EB00C5A0AE /* DatePickerButton.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = DatePickerButton.swift; sourceTree = "<group>"; };
 		7CEC9EE824B7D0EB00C5A0AE /* safePadding.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = safePadding.swift; sourceTree = "<group>"; };
-		7CEC9EE924B7D0EB00C5A0AE /* CalendarView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = CalendarView.swift; sourceTree = "<group>"; };
 		7CEC9EEA24B7D0EB00C5A0AE /* UIButtonWithInput.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = UIButtonWithInput.swift; sourceTree = "<group>"; };
 		7CEC9EEB24B7D0EB00C5A0AE /* SwapView.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = SwapView.swift; sourceTree = "<group>"; };
 		7CEC9EEC24B7D0EB00C5A0AE /* extensionProperty.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = extensionProperty.swift; sourceTree = "<group>"; };
@@ -393,6 +392,7 @@
 		7CEC9F0B24B7D0EC00C5A0AE /* String.extensions.actual.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = String.extensions.actual.swift; sourceTree = "<group>"; };
 		7CEC9F0C24B7D0EC00C5A0AE /* delay.actual.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = delay.actual.swift; sourceTree = "<group>"; };
 		7CEC9F0D24B7D0EC00C5A0AE /* Preferences.actual.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Preferences.actual.swift; sourceTree = "<group>"; };
+		7CEC9FB624B7DA9100C5A0AE /* Box.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Box.swift; sourceTree = "<group>"; };
 		9B70BB512F95B07C77779AD7 /* libPods-KhrysalisTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-KhrysalisTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA4E7DD701799277BF915081 /* Pods-KhrysalisTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KhrysalisTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-KhrysalisTests/Pods-KhrysalisTests.debug.xcconfig"; sourceTree = "<group>"; };
 		CDB666FED9439CFEAB1EBEC8 /* Pods-KhrysalisTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KhrysalisTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-KhrysalisTests/Pods-KhrysalisTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -480,32 +480,33 @@
 		7CEC9E4324B7D0EB00C5A0AE /* khrysalis */ = {
 			isa = PBXGroup;
 			children = (
-				7CEC9E4424B7D0EB00C5A0AE /* Image.actual.swift */,
-				7CEC9E4524B7D0EB00C5A0AE /* UUID.actual.swift */,
-				7CEC9E4624B7D0EB00C5A0AE /* Random.actual.swift */,
-				7CEC9E4724B7D0EB00C5A0AE /* net */,
-				7CEC9E5024B7D0EB00C5A0AE /* Codable.actual.swift */,
-				7CEC9E5124B7D0EB00C5A0AE /* bytes */,
-				7CEC9E5324B7D0EB00C5A0AE /* Math.shared.swift */,
-				7CEC9E5424B7D0EB00C5A0AE /* location */,
-				7CEC9E5C24B7D0EB00C5A0AE /* SecurePreferences.actual.swift */,
-				7CEC9E5D24B7D0EB00C5A0AE /* lifecycle */,
-				7CEC9E6024B7D0EB00C5A0AE /* observables */,
-				7CEC9E8924B7D0EB00C5A0AE /* BuildConfig.swift */,
-				7CEC9E8A24B7D0EB00C5A0AE /* kotlin */,
+				7CEC9FB624B7DA9100C5A0AE /* Box.swift */,
 				7CEC9EA024B7D0EB00C5A0AE /* Box.actual.swift.yml */,
-				7CEC9EA124B7D0EB00C5A0AE /* ios */,
-				7CEC9EA624B7D0EB00C5A0AE /* time */,
+				7CEC9E8924B7D0EB00C5A0AE /* BuildConfig.swift */,
+				7CEC9E5124B7D0EB00C5A0AE /* bytes */,
 				7CEC9EB024B7D0EB00C5A0AE /* captureWeak.shared.swift */,
-				7CEC9EB124B7D0EB00C5A0AE /* Image.shared.swift */,
+				7CEC9E5024B7D0EB00C5A0AE /* Codable.actual.swift */,
 				7CEC9EB224B7D0EB00C5A0AE /* collection.actual.swift */,
-				7CEC9EB324B7D0EB00C5A0AE /* Image.loadingRx.actual.swift */,
-				7CEC9EB424B7D0EB00C5A0AE /* Platform.actual.swift */,
-				7CEC9EB524B7D0EB00C5A0AE /* views */,
-				7CEC9F0524B7D0EB00C5A0AE /* rx */,
-				7CEC9F0B24B7D0EC00C5A0AE /* String.extensions.actual.swift */,
 				7CEC9F0C24B7D0EC00C5A0AE /* delay.actual.swift */,
+				7CEC9E4424B7D0EB00C5A0AE /* Image.actual.swift */,
+				7CEC9EB324B7D0EB00C5A0AE /* Image.loadingRx.actual.swift */,
+				7CEC9EB124B7D0EB00C5A0AE /* Image.shared.swift */,
+				7CEC9EA124B7D0EB00C5A0AE /* ios */,
+				7CEC9E8A24B7D0EB00C5A0AE /* kotlin */,
+				7CEC9E5D24B7D0EB00C5A0AE /* lifecycle */,
+				7CEC9E5424B7D0EB00C5A0AE /* location */,
+				7CEC9E5324B7D0EB00C5A0AE /* Math.shared.swift */,
+				7CEC9E4724B7D0EB00C5A0AE /* net */,
+				7CEC9E6024B7D0EB00C5A0AE /* observables */,
+				7CEC9EB424B7D0EB00C5A0AE /* Platform.actual.swift */,
 				7CEC9F0D24B7D0EC00C5A0AE /* Preferences.actual.swift */,
+				7CEC9E4624B7D0EB00C5A0AE /* Random.actual.swift */,
+				7CEC9F0524B7D0EB00C5A0AE /* rx */,
+				7CEC9E5C24B7D0EB00C5A0AE /* SecurePreferences.actual.swift */,
+				7CEC9F0B24B7D0EC00C5A0AE /* String.extensions.actual.swift */,
+				7CEC9EA624B7D0EB00C5A0AE /* time */,
+				7CEC9E4524B7D0EB00C5A0AE /* UUID.actual.swift */,
+				7CEC9EB524B7D0EB00C5A0AE /* views */,
 			);
 			path = khrysalis;
 			sourceTree = "<group>";
@@ -668,34 +669,34 @@
 		7CEC9EB524B7D0EB00C5A0AE /* views */ = {
 			isa = PBXGroup;
 			children = (
-				7CEC9EB624B7D0EB00C5A0AE /* MonthCVD.shared.swift */,
-				7CEC9EB724B7D0EB00C5A0AE /* ViewDependency.actual.swift */,
-				7CEC9EB824B7D0EB00C5A0AE /* CustomView.actual.swift */,
-				7CEC9EB924B7D0EB00C5A0AE /* EntryPoint.shared.swift */,
-				7CEC9EBA24B7D0EB00C5A0AE /* ViewGenerator.shared.swift */,
-				7CEC9EBB24B7D0EB00C5A0AE /* LinearLayout.actual.swift */,
-				7CEC9EBC24B7D0EB00C5A0AE /* showDialog.shared.swift */,
-				7CEC9EBD24B7D0EB00C5A0AE /* ResourceTypes.actual.swift */,
-				7CEC9EBE24B7D0EB00C5A0AE /* ClosureSleeve.swift */,
-				7CEC9EBF24B7D0EB00C5A0AE /* EmptyView.actual.swift */,
-				7CEC9EC024B7D0EB00C5A0AE /* CustomViewDelegate.shared.swift */,
 				7CEC9EC124B7D0EB00C5A0AE /* Button.compoundDrawable.actual.swift */,
-				7CEC9EC224B7D0EB00C5A0AE /* View.ext.actual.swift */,
-				7CEC9EC324B7D0EB00C5A0AE /* ios */,
-				7CEC9EED24B7D0EB00C5A0AE /* DjangoErrorTranslator.shared.swift */,
-				7CEC9EEE24B7D0EB00C5A0AE /* SelectDateRangeMonthCVD.shared.swift */,
-				7CEC9EEF24B7D0EB00C5A0AE /* SelectDateMonthCVD.shared.swift */,
-				7CEC9EF024B7D0EB00C5A0AE /* Drawable.actual.swift */,
-				7CEC9EF124B7D0EB00C5A0AE /* ScrollView.actual.swift */,
-				7CEC9EF224B7D0EB00C5A0AE /* ImageView.actual.swift */,
-				7CEC9EF324B7D0EB00C5A0AE /* geometry */,
-				7CEC9EF924B7D0EB00C5A0AE /* ViewWithText.ext.actual.swift */,
-				7CEC9EFA24B7D0EB00C5A0AE /* DisplayMetrics.actual.swift */,
-				7CEC9EFB24B7D0EB00C5A0AE /* Form.shared.swift */,
-				7CEC9EFC24B7D0EB00C5A0AE /* SelectMultipleDatesMonthCVD.shared.swift */,
-				7CEC9EFD24B7D0EB00C5A0AE /* draw */,
-				7CEC9F0324B7D0EB00C5A0AE /* Strings.shared.swift */,
+				7CEC9EBE24B7D0EB00C5A0AE /* ClosureSleeve.swift */,
 				7CEC9F0424B7D0EB00C5A0AE /* Colors.actual.swift */,
+				7CEC9EB824B7D0EB00C5A0AE /* CustomView.actual.swift */,
+				7CEC9EC024B7D0EB00C5A0AE /* CustomViewDelegate.shared.swift */,
+				7CEC9EFA24B7D0EB00C5A0AE /* DisplayMetrics.actual.swift */,
+				7CEC9EED24B7D0EB00C5A0AE /* DjangoErrorTranslator.shared.swift */,
+				7CEC9EF024B7D0EB00C5A0AE /* Drawable.actual.swift */,
+				7CEC9EBF24B7D0EB00C5A0AE /* EmptyView.actual.swift */,
+				7CEC9EB924B7D0EB00C5A0AE /* EntryPoint.shared.swift */,
+				7CEC9EFB24B7D0EB00C5A0AE /* Form.shared.swift */,
+				7CEC9EF224B7D0EB00C5A0AE /* ImageView.actual.swift */,
+				7CEC9EBB24B7D0EB00C5A0AE /* LinearLayout.actual.swift */,
+				7CEC9EB624B7D0EB00C5A0AE /* MonthCVD.shared.swift */,
+				7CEC9EBD24B7D0EB00C5A0AE /* ResourceTypes.actual.swift */,
+				7CEC9EF124B7D0EB00C5A0AE /* ScrollView.actual.swift */,
+				7CEC9EEF24B7D0EB00C5A0AE /* SelectDateMonthCVD.shared.swift */,
+				7CEC9EEE24B7D0EB00C5A0AE /* SelectDateRangeMonthCVD.shared.swift */,
+				7CEC9EFC24B7D0EB00C5A0AE /* SelectMultipleDatesMonthCVD.shared.swift */,
+				7CEC9EBC24B7D0EB00C5A0AE /* showDialog.shared.swift */,
+				7CEC9F0324B7D0EB00C5A0AE /* Strings.shared.swift */,
+				7CEC9EC224B7D0EB00C5A0AE /* View.ext.actual.swift */,
+				7CEC9EB724B7D0EB00C5A0AE /* ViewDependency.actual.swift */,
+				7CEC9EBA24B7D0EB00C5A0AE /* ViewGenerator.shared.swift */,
+				7CEC9EF924B7D0EB00C5A0AE /* ViewWithText.ext.actual.swift */,
+				7CEC9EFD24B7D0EB00C5A0AE /* draw */,
+				7CEC9EF324B7D0EB00C5A0AE /* geometry */,
+				7CEC9EC324B7D0EB00C5A0AE /* ios */,
 			);
 			path = views;
 			sourceTree = "<group>";
@@ -703,47 +704,46 @@
 		7CEC9EC324B7D0EB00C5A0AE /* ios */ = {
 			isa = PBXGroup;
 			children = (
-				7CEC9EC424B7D0EB00C5A0AE /* geometry.swift */,
-				7CEC9EC524B7D0EB00C5A0AE /* UILabel+lineSpacingMultiplier.swift */,
-				7CEC9EC624B7D0EB00C5A0AE /* SelectableText.swift */,
-				7CEC9EC724B7D0EB00C5A0AE /* Dropdown.swift */,
-				7CEC9EC824B7D0EB00C5A0AE /* PreviewVariedFlipper.swift */,
-				7CEC9EC924B7D0EB00C5A0AE /* UIView.focus.swift */,
-				7CEC9ECA24B7D0EB00C5A0AE /* CompoundButton.swift */,
-				7CEC9ECB24B7D0EB00C5A0AE /* CAStateLayer.swift */,
-				7CEC9ECC24B7D0EB00C5A0AE /* ScrollSavingDelegate.swift */,
-				7CEC9ECD24B7D0EB00C5A0AE /* UIScrollView+flexFix.swift */,
-				7CEC9ECE24B7D0EB00C5A0AE /* ScrollViewHorizontal.swift */,
-				7CEC9ECF24B7D0EB00C5A0AE /* LabeledCheckbox.swift */,
-				7CEC9ED024B7D0EB00C5A0AE /* UITextView.placeholder.swift */,
 				7CEC9ED124B7D0EB00C5A0AE /* alias.swift */,
-				7CEC9ED224B7D0EB00C5A0AE /* Flex+root.swift */,
-				7CEC9ED324B7D0EB00C5A0AE /* UIViewController+keyboard.swift */,
-				7CEC9ED424B7D0EB00C5A0AE /* FrameLayout.swift */,
-				7CEC9ED524B7D0EB00C5A0AE /* LinearLayout.swift */,
-				7CEC9ED624B7D0EB00C5A0AE /* UIFont.get.swift */,
-				7CEC9ED724B7D0EB00C5A0AE /* UISegmentedControl+addIndicator.swift */,
-				7CEC9ED824B7D0EB00C5A0AE /* UIView+includeInLayout.swift */,
-				7CEC9ED924B7D0EB00C5A0AE /* UIButtonWithLayer.swift */,
-				7CEC9EDA24B7D0EB00C5A0AE /* UIImage+backgroundLayer.swift */,
-				7CEC9EDB24B7D0EB00C5A0AE /* UIView+applyColor.swift */,
-				7CEC9EDC24B7D0EB00C5A0AE /* UITextField.ext.swift */,
-				7CEC9EDD24B7D0EB00C5A0AE /* layoutConvenience.swift */,
-				7CEC9EDE24B7D0EB00C5A0AE /* ViewFlipper.swift */,
-				7CEC9EDF24B7D0EB00C5A0AE /* onLayoutSubviewsSwizzle.swift */,
-				7CEC9EE024B7D0EB00C5A0AE /* ToggleButton.swift */,
-				7CEC9EE124B7D0EB00C5A0AE /* UIImageView.ext.swift */,
+				7CEC9ECB24B7D0EB00C5A0AE /* CAStateLayer.swift */,
+				7CEC9ECA24B7D0EB00C5A0AE /* CompoundButton.swift */,
 				7CEC9EE224B7D0EB00C5A0AE /* DateButton.swift */,
-				7CEC9EE324B7D0EB00C5A0AE /* LabeledRadioButton.swift */,
-				7CEC9EE424B7D0EB00C5A0AE /* ViewPagerLayout.swift */,
-				7CEC9EE524B7D0EB00C5A0AE /* LabeledSwitch.swift */,
-				7CEC9EE624B7D0EB00C5A0AE /* TimeButton.swift */,
 				7CEC9EE724B7D0EB00C5A0AE /* DatePickerButton.swift */,
-				7CEC9EE824B7D0EB00C5A0AE /* safePadding.swift */,
-				7CEC9EE924B7D0EB00C5A0AE /* CalendarView.swift */,
-				7CEC9EEA24B7D0EB00C5A0AE /* UIButtonWithInput.swift */,
-				7CEC9EEB24B7D0EB00C5A0AE /* SwapView.swift */,
+				7CEC9EC724B7D0EB00C5A0AE /* Dropdown.swift */,
 				7CEC9EEC24B7D0EB00C5A0AE /* extensionProperty.swift */,
+				7CEC9ED224B7D0EB00C5A0AE /* Flex+root.swift */,
+				7CEC9ED424B7D0EB00C5A0AE /* FrameLayout.swift */,
+				7CEC9EC424B7D0EB00C5A0AE /* geometry.swift */,
+				7CEC9ECF24B7D0EB00C5A0AE /* LabeledCheckbox.swift */,
+				7CEC9EE324B7D0EB00C5A0AE /* LabeledRadioButton.swift */,
+				7CEC9EE524B7D0EB00C5A0AE /* LabeledSwitch.swift */,
+				7CEC9EDD24B7D0EB00C5A0AE /* layoutConvenience.swift */,
+				7CEC9ED524B7D0EB00C5A0AE /* LinearLayout.swift */,
+				7CEC9EDF24B7D0EB00C5A0AE /* onLayoutSubviewsSwizzle.swift */,
+				7CEC9EC824B7D0EB00C5A0AE /* PreviewVariedFlipper.swift */,
+				7CEC9EE824B7D0EB00C5A0AE /* safePadding.swift */,
+				7CEC9ECC24B7D0EB00C5A0AE /* ScrollSavingDelegate.swift */,
+				7CEC9ECE24B7D0EB00C5A0AE /* ScrollViewHorizontal.swift */,
+				7CEC9EC624B7D0EB00C5A0AE /* SelectableText.swift */,
+				7CEC9EEB24B7D0EB00C5A0AE /* SwapView.swift */,
+				7CEC9EE624B7D0EB00C5A0AE /* TimeButton.swift */,
+				7CEC9EE024B7D0EB00C5A0AE /* ToggleButton.swift */,
+				7CEC9EEA24B7D0EB00C5A0AE /* UIButtonWithInput.swift */,
+				7CEC9ED924B7D0EB00C5A0AE /* UIButtonWithLayer.swift */,
+				7CEC9ED624B7D0EB00C5A0AE /* UIFont.get.swift */,
+				7CEC9EDA24B7D0EB00C5A0AE /* UIImage+backgroundLayer.swift */,
+				7CEC9EE124B7D0EB00C5A0AE /* UIImageView.ext.swift */,
+				7CEC9EC524B7D0EB00C5A0AE /* UILabel+lineSpacingMultiplier.swift */,
+				7CEC9ECD24B7D0EB00C5A0AE /* UIScrollView+flexFix.swift */,
+				7CEC9ED724B7D0EB00C5A0AE /* UISegmentedControl+addIndicator.swift */,
+				7CEC9EDC24B7D0EB00C5A0AE /* UITextField.ext.swift */,
+				7CEC9ED024B7D0EB00C5A0AE /* UITextView.placeholder.swift */,
+				7CEC9EC924B7D0EB00C5A0AE /* UIView.focus.swift */,
+				7CEC9EDB24B7D0EB00C5A0AE /* UIView+applyColor.swift */,
+				7CEC9ED824B7D0EB00C5A0AE /* UIView+includeInLayout.swift */,
+				7CEC9ED324B7D0EB00C5A0AE /* UIViewController+keyboard.swift */,
+				7CEC9EDE24B7D0EB00C5A0AE /* ViewFlipper.swift */,
+				7CEC9EE424B7D0EB00C5A0AE /* ViewPagerLayout.swift */,
 			);
 			path = ios;
 			sourceTree = "<group>";
@@ -992,7 +992,6 @@
 			files = (
 				7CEC9F2824B7D0EC00C5A0AE /* EventToObservableProperty.shared.swift in Sources */,
 				7CEC9F2C24B7D0EC00C5A0AE /* TransformedMutableObservableProperty2.shared.swift in Sources */,
-				7CEC9F9724B7D0EC00C5A0AE /* CalendarView.swift in Sources */,
 				7CEC9FA324B7D0EC00C5A0AE /* ViewWithText.ext.actual.swift in Sources */,
 				7CEC9F8024B7D0EC00C5A0AE /* Flex+root.swift in Sources */,
 				7CEC9F8224B7D0EC00C5A0AE /* FrameLayout.swift in Sources */,
@@ -1123,6 +1122,7 @@
 				7CEC9F4D24B7D0EC00C5A0AE /* BuildConfig.swift in Sources */,
 				7CEC9F1C24B7D0EC00C5A0AE /* GeoCoordinate.shared.swift in Sources */,
 				7CEC9F8324B7D0EC00C5A0AE /* LinearLayout.swift in Sources */,
+				7CEC9FB724B7DA9100C5A0AE /* Box.swift in Sources */,
 				7CEC9F7024B7D0EC00C5A0AE /* Button.compoundDrawable.actual.swift in Sources */,
 				7CEC9F1B24B7D0EC00C5A0AE /* Math.shared.swift in Sources */,
 				7CEC9FA424B7D0EC00C5A0AE /* DisplayMetrics.actual.swift in Sources */,

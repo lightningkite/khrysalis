@@ -14,48 +14,48 @@ open class CustomViewDelegate {
     
     open func generateAccessibilityView() -> View? { fatalError() }
     
-    open func draw(canvas: Canvas, width: Float, height: Float, displayMetrics: DisplayMetrics) -> Void { fatalError() }
-    open func draw(_ canvas: Canvas, _ width: Float, _ height: Float, _ displayMetrics: DisplayMetrics) -> Void { fatalError() }
+    open func draw(canvas: Canvas, width: CGFloat, height: CGFloat, displayMetrics: DisplayMetrics) -> Void { fatalError() }
+    open func draw(_ canvas: Canvas, _ width: CGFloat, _ height: CGFloat, _ displayMetrics: DisplayMetrics) -> Void { fatalError() }
     
-    open func onTouchDown(id: Int32, x: Float, y: Float, width: Float, height: Float) -> Bool {
+    open func onTouchDown(id: Int, x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat) -> Bool {
         return false
     }
-    open func onTouchDown(_ id: Int32, _ x: Float, _ y: Float, _ width: Float, _ height: Float) -> Bool {
+    open func onTouchDown(_ id: Int, _ x: CGFloat, _ y: CGFloat, _ width: CGFloat, _ height: CGFloat) -> Bool {
         return onTouchDown(id: id, x: x, y: y, width: width, height: height)
     }
     
-    open func onTouchMove(id: Int32, x: Float, y: Float, width: Float, height: Float) -> Bool {
+    open func onTouchMove(id: Int, x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat) -> Bool {
         return false
     }
-    open func onTouchMove(_ id: Int32, _ x: Float, _ y: Float, _ width: Float, _ height: Float) -> Bool {
+    open func onTouchMove(_ id: Int, _ x: CGFloat, _ y: CGFloat, _ width: CGFloat, _ height: CGFloat) -> Bool {
         return onTouchMove(id: id, x: x, y: y, width: width, height: height)
     }
     
-    open func onTouchCancelled(id: Int32, x: Float, y: Float, width: Float, height: Float) -> Bool {
+    open func onTouchCancelled(id: Int, x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat) -> Bool {
         return false
     }
-    open func onTouchCancelled(_ id: Int32, _ x: Float, _ y: Float, _ width: Float, _ height: Float) -> Bool {
+    open func onTouchCancelled(_ id: Int, _ x: CGFloat, _ y: CGFloat, _ width: CGFloat, _ height: CGFloat) -> Bool {
         return onTouchCancelled(id: id, x: x, y: y, width: width, height: height)
     }
     
-    open func onTouchUp(id: Int32, x: Float, y: Float, width: Float, height: Float) -> Bool {
+    open func onTouchUp(id: Int, x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat) -> Bool {
         return false
     }
-    open func onTouchUp(_ id: Int32, _ x: Float, _ y: Float, _ width: Float, _ height: Float) -> Bool {
+    open func onTouchUp(_ id: Int, _ x: CGFloat, _ y: CGFloat, _ width: CGFloat, _ height: CGFloat) -> Bool {
         return onTouchUp(id: id, x: x, y: y, width: width, height: height)
     }
     
-    open func sizeThatFitsWidth(width: Float, height: Float) -> Float {
+    open func sizeThatFitsWidth(width: CGFloat, height: CGFloat) -> CGFloat {
         return width
     }
-    open func sizeThatFitsWidth(_ width: Float, _ height: Float) -> Float {
+    open func sizeThatFitsWidth(_ width: CGFloat, _ height: CGFloat) -> CGFloat {
         return sizeThatFitsWidth(width: width, height: height)
     }
     
-    open func sizeThatFitsHeight(width: Float, height: Float) -> Float {
+    open func sizeThatFitsHeight(width: CGFloat, height: CGFloat) -> CGFloat {
         return height
     }
-    open func sizeThatFitsHeight(_ width: Float, _ height: Float) -> Float {
+    open func sizeThatFitsHeight(_ width: CGFloat, _ height: CGFloat) -> CGFloat {
         return sizeThatFitsHeight(width: width, height: height)
     }
     

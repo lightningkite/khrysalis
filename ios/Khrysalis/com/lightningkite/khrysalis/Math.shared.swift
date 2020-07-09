@@ -7,29 +7,24 @@ import RxRelay
 
 
 
-extension Int32 {
-    public func floorMod(other: Int32) -> Int32 {
+extension Int {
+    public func floorMod(other: Self) -> Self {
         return ( self % other + other ) % other
     }
-    public func floorMod(_ other: Int32) -> Int32 {
+    public func floorMod(_ other: Self) -> Self {
         return floorMod(other: other)
     }
-}
- 
-
-extension Int32 {
-    public func floorDiv(other: Int32) -> Int32 {
+    public func floorDiv(other: Self) -> Self {
         if self < 0 {
             return self / other - 1
         } else {
             return self / other
         }
     }
-    public func floorDiv(_ other: Int32) -> Int32 {
+    public func floorDiv(_ other: Self) -> Self {
         return floorDiv(other: other)
     }
 }
- 
  
 
 extension Float {

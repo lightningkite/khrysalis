@@ -18,7 +18,8 @@ public func run<T>(_ action: ()->T)->T {
 }
 
 public func also<T>(_ value: T, _ action: (inout T)->Void)->T {
-    action(value)
+    var value = value
+    action(&value)
     return value
 }
 
@@ -80,16 +81,16 @@ public extension Array {
     func chunked(_ count: Int) -> Array<Array<Element>> {
         var output = Array<Array<Element>>()
         var chunkIndex = 0
-        while chunkIndex < size {
+        while chunkIndex < count {
             var subset = Array<Element>()
             for inChunkIndex in 0..<count {
                 let index = chunkIndex + inChunkIndex
-                if index >= size {
+                if index >= count {
                     break
                 }
-                subset.add(self[index])
+                subset.append(self[index])
             }
-            output.add(subset)
+            output.append(subset)
             chunkIndex += count
         }
         return output
@@ -103,12 +104,12 @@ public extension Array {
     
     func plus(_ element: Element) -> Array<Element> {
         var copy = self
-        copy.add(element)
+        copy.append(element)
         return copy
     }
     func withoutIndex(_ index: Int) -> Array<Element> {
         var copy = self
-        copy.removeAt(index)
+        copy.remove(at: index)
         return copy
     }
     func sumByDouble(selector: (Element) -> Double)-> Double{
@@ -179,11 +180,11 @@ public extension String {
     
     func substring(_ startIndex: Int, _ endIndex: Int? = nil) -> String {
         let s = self.index(self.startIndex, offsetBy: Int(startIndex))
-        let e = self.index(self.startIndex, offsetBy: Int(endIndex ?? self.length))
+        let e = self.index(self.startIndex, offsetBy: Int(endIndex ?? self.count))
         return String(self[s..<e])
     }
     func substring(_ startIndex: Int) -> String {
-        return substring(startIndex, self.length)
+        return substring(startIndex, self.count)
     }
     func contains(_ string: String) -> Bool {
         if string.isEmpty { return true }
@@ -194,16 +195,16 @@ public extension String {
     }
 
     func removePrefix(_ string: String) -> String {
-        if startsWith(string) {
-            return substring(string.length)
+        if starts(with: string) {
+            return substring(string.count)
         } else {
             return self
         }
     }
     
     func removeSuffix(_ string: String) -> String {
-        if endsWith(string) {
-            return substring(0, self.length - string.length)
+        if hasSuffix(string) {
+            return substring(0, self.count - string.count)
         } else {
             return self
         }
@@ -222,7 +223,7 @@ public extension String {
         let index = self.indexOf(string)
         let array = [1,2,3,4]
         if index != -1 {
-            return substring(index + string.length)
+            return substring(index + string.count)
         } else {
             return defaultTo ?? self
         }
@@ -240,7 +241,7 @@ public extension String {
     func substringAfterLast(_ string: String, _ defaultTo: String? = nil) -> String {
         let index = self.lastIndexOf(string)
         if index != -1 {
-            return substring(index + string.length)
+            return substring(index + string.count)
         } else {
             return defaultTo ?? self
         }
@@ -289,14 +290,14 @@ public class System {
 public class Exception: Error {
     public let message: String
     public let cause: Exception?
-    public init(_ message: String, _ cause: Exception? = nil) {
+    public init(_ message: String = "?", _ cause: Exception? = nil) {
         self.message = message
         self.cause = cause
     }
 }
 
-public class IllegalStateException: Error {}
-public class IllegalArgumentException: Error {}
+public class IllegalStateException: Exception {}
+public class IllegalArgumentException: Exception {}
 
 public extension Error {
     func printStackTrace(){
@@ -307,7 +308,7 @@ public extension Error {
 public extension CaseIterable {
     /// A collection of all values of this type.
     static func values() -> Array<Self> {
-        return self.allCases.toList()
+        return Array(self.allCases)
     }
     static func valueOf(_ string: String) -> Self {
         return values().find { "\($0)" == string }!

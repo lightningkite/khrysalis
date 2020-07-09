@@ -6,10 +6,11 @@
 //
 
 import Foundation
+import CoreGraphics
 
 public struct DisplayMetrics {
-    public let density: Float
-    public let scaledDensity: Float
-    public let widthPixels: Int32
-    public let heightPixels: Int32
+    public let density: CGFloat
+    public let scaledDensity: CGFloat
+    public let widthPixels: Int
+    public let heightPixels: Int
 }
