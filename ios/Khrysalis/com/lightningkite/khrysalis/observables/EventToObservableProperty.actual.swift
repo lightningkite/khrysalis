@@ -2,12 +2,11 @@ import RxSwift
 import RxRelay
 
 //--- Observable<T>.asObservablePropertyUnboxed(T)
-extension Observable where Observable.Element: BoxProtocol {
-    public typealias T = Observable.Element.T
-    public func asObservablePropertyNullable(defaultValue: T) -> ObservableProperty<T> {
-        return EventToObservableProperty<T>(defaultValue, self.map { it in it.asBox() })
+extension Observable {
+    public func asObservablePropertyNullable(defaultValue: Element) -> ObservableProperty<Element> {
+        return EventToObservableProperty<Element>(defaultValue, self)
     }
-    public func asObservablePropertyNullable(_ defaultValue: T) -> ObservableProperty<T> {
+    public func asObservablePropertyNullable(_ defaultValue: Element) -> ObservableProperty<Element> {
         return asObservablePropertyNullable(defaultValue: defaultValue)
     }
 }

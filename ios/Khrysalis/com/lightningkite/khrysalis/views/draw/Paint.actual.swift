@@ -18,7 +18,7 @@ public class Paint {
     public var color: ColorValue = UIColor.black
     
     //--- Paint.strokeWidth
-    public var strokeWidth: GFloat = 0
+    public var strokeWidth: CGFloat = 0
     
     //--- Paint.alpha
     public var alpha: Int = 255
@@ -27,7 +27,7 @@ public class Paint {
     public var style: Style = .FILL_AND_STROKE
     
     //--- Paint.textSize
-    public var textSize: GFloat = 12
+    public var textSize: CGFloat = 12
     
     //--- Paint.shader
     public var shader: ShaderValue? = nil
@@ -45,24 +45,24 @@ public class Paint {
     //--- Paint.measureText(String)
     private struct MeasureTextCacheKey: Hashable {
         var text: String
-        var textSize: GFloat
+        var textSize: CGFloat
     }
-    static private var measureText_cache: Dictionary<MeasureTextCacheKey, GFloat> = Dictionary()
-    public func measureText(_ text: String) -> GFloat {
+    static private var measureText_cache: Dictionary<MeasureTextCacheKey, CGFloat> = Dictionary()
+    public func measureText(_ text: String) -> CGFloat {
         let key = MeasureTextCacheKey(text: text, textSize: textSize)
         if let result = Paint.measureText_cache[key] {
             return result
         }
-        let result = GFloat(NSString(string: text).size(withAttributes: attributes).width)
+        let result = CGFloat(NSString(string: text).size(withAttributes: attributes).width)
         Paint.measureText_cache[key] = result
         return result
     }
-    public func measureText(text: String) -> GFloat {
+    public func measureText(text: String) -> CGFloat {
         return measureText(text)
     }
 
     //--- Paint.textHeight
-    public var textHeight: GFloat {
+    public var textHeight: CGFloat {
         let font = UIFont.get(size: CGFloat(textSize), style: [])
         return GFloat(font.lineHeight)
     }

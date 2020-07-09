@@ -22,9 +22,9 @@ extension ObservableType {
 }
 
 //--- Observable<Element>.filterNotNull()
-extension Observable where Observable.Element: BoxProtocol, Observable.Element.T: OptionalConvertible {
+extension Observable where Observable.Element: OptionalConvertible {
     func filterNotNull() -> Observable<T.Wrapped> {
-        self.map { $0.asBox().value.asOptional }.filter { $0 != nil }.map { $0! }
+        self.filter { $0 != nil }.map { $0! }
     }
 }
 

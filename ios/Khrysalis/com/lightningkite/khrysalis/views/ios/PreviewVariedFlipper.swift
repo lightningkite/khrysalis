@@ -19,7 +19,7 @@ public class PreviewVariedFlipper: FrameLayout {
     }
     
     func setup(){
-        if subviews.isNotEmpty() {
+        if !subviews.isEmpty {
             for child in subviews {
                 child.includeInLayout = false
             }

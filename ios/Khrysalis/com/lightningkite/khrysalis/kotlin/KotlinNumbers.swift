@@ -25,8 +25,8 @@ func >>> (lhs: Int64, rhs: Int64) -> Int64 {
 func >>> (lhs: Int32, rhs: Int32) -> Int32 {
     return Int32(bitPattern: UInt32(bitPattern: lhs) >> UInt32(rhs))
 }
-func >>> (lhs: Int, rhs: Int) -> Int32 {
-    return Int(bitPattern: UInt32(bitPattern: lhs) >> UInt32(rhs))
+func >>> (lhs: Int, rhs: Int) -> Int {
+    return Int(Int32(bitPattern: UInt32(bitPattern: Int32(lhs)) >> UInt32(rhs)))
 }
 func >>> (lhs: Int16, rhs: Int16) -> Int16 {
     return Int16(bitPattern: UInt16(bitPattern: lhs) >> UInt16(rhs))

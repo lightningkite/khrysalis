@@ -24,9 +24,9 @@ public struct HttpResponse {
 
     //--- HttpResponse.headers
     var headers: Dictionary<String, String> {
-        return self.response.allHeaderFields
-            .filter { it in it.0 is String && it.1 is String }
-            .associate { it in (it.key as! String, it.value as! String) }
+        return Dictionary(self.response.allHeaderFields
+        .filter { it in it.0 is String && it.1 is String }
+        .map { it in (it.key as! String, it.value as! String) }, uniquingKeysWith: { _, a in a} )
     }
 
 

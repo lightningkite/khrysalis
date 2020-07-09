@@ -12,9 +12,9 @@ import UIKit
 
 open class ViewFlipper: FrameLayout {
     private var previousSubview: UIView? = nil
-    public var displayedChild: Int32 = 0 {
+    public var displayedChild: Int = 0 {
         didSet {
-            if displayedChild >= subviews.size {
+            if displayedChild >= subviews.count {
                 return
             }
             let displayingView = subviews[displayedChild]
@@ -46,7 +46,7 @@ open class ViewFlipper: FrameLayout {
     }
     
     override open func didAddSubview(_ subview: UIView) {
-        if subviews.size == 1 {
+        if subviews.count == 1 {
             subview.isHidden = false
             subview.alpha = 1
             previousSubview = subview
