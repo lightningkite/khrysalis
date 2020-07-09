@@ -17,20 +17,20 @@ public class TransformedObservableProperty<A, B>: ObservableProperty<B> {
             return read(basedOn.value)
         }
     }
-    override public var onChange: Observable<Box<B>> { get { return _onChange } set(value) { _onChange = value } }
+    override public var onChange: Observable<B> { get { return _onChange } set(value) { _onChange = value } }
     
     public init(basedOn: ObservableProperty<A>, read: @escaping (A) -> B) {
         self.basedOn = basedOn
         self.read = read
         self._onChange = basedOn.onChange.map{ (it) in 
-            boxWrap(read(it.value))
+            read(it)
         }
         super.init()
     }
     convenience public init(_ basedOn: ObservableProperty<A>, _ read: @escaping (A) -> B) {
         self.init(basedOn: basedOn, read: read)
     }
-    private var _onChange: Observable<Box<B>>
+    private var _onChange: Observable<B>
 }
  
 

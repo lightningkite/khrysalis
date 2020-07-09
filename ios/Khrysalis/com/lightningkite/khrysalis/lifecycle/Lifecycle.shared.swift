@@ -81,7 +81,7 @@ private class OnceObservableProperty: ObservableProperty<Bool> {
             return basedOn.value
         }
     }
-    override public var onChange: Observable<Box<Bool>> {
+    override public var onChange: Observable<Bool> {
         get {
             return basedOn.onChange.take(1)
         }

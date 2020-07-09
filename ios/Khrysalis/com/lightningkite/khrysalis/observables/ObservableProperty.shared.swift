@@ -11,7 +11,7 @@ open class ObservableProperty<T> {
     
     
     open var value: T { get { fatalError() } }
-    open var onChange: Observable<Box<T>> { get { fatalError() } }
+    open var onChange: Observable<T> { get { fatalError() } }
     
     public init() {
     }
