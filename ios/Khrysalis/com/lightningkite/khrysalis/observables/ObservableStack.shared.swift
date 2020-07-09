@@ -23,7 +23,7 @@ public class ObservableStack<T: AnyObject>: ObservableProperty<Array<T>> {
     }
     //End Companion
     
-    override public var onChange: PublishSubject<Box<Array<T>>> { get { return _onChange } set(value) { _onChange = value } }
+    override public var onChange: PublishSubject<Array<T>> { get { return _onChange } set(value) { _onChange = value } }
     override public var value: Array<T> {
         get {
             return stack
@@ -33,7 +33,7 @@ public class ObservableStack<T: AnyObject>: ObservableProperty<Array<T>> {
     
     public func push(t: T) -> Void {
         stack.add(t)
-        onChange.onNext(boxWrap(stack))
+        onChange.onNext(stack)
     }
     public func push(_ t: T) -> Void {
         return push(t: t)
@@ -42,7 +42,7 @@ public class ObservableStack<T: AnyObject>: ObservableProperty<Array<T>> {
     public func swap(t: T) -> Void {
         stack.removeAt(stack.lastIndex)
         stack.add(t)
-        onChange.onNext(boxWrap(stack))
+        onChange.onNext(stack)
     }
     public func swap(_ t: T) -> Void {
         return swap(t: t)
@@ -53,7 +53,7 @@ public class ObservableStack<T: AnyObject>: ObservableProperty<Array<T>> {
             return false
         }
         stack.removeAt(stack.lastIndex)
-        onChange.onNext(boxWrap(stack))
+        onChange.onNext(stack)
         return true
     }
     
@@ -62,7 +62,7 @@ public class ObservableStack<T: AnyObject>: ObservableProperty<Array<T>> {
             return false
         }
         stack.removeAt(stack.lastIndex)
-        onChange.onNext(boxWrap(stack))
+        onChange.onNext(stack)
         return true
     }
     
@@ -76,7 +76,7 @@ public class ObservableStack<T: AnyObject>: ObservableProperty<Array<T>> {
                 found = true
             }
         }
-        onChange.onNext(boxWrap(stack))
+        onChange.onNext(stack)
     }
     public func popTo(_ t: T) -> Void {
         return popTo(t: t)
@@ -92,7 +92,7 @@ public class ObservableStack<T: AnyObject>: ObservableProperty<Array<T>> {
                 found = true
             }
         }
-        onChange.onNext(boxWrap(stack))
+        onChange.onNext(stack)
     }
     
     public func root() -> Void {
@@ -102,7 +102,7 @@ public class ObservableStack<T: AnyObject>: ObservableProperty<Array<T>> {
     public func reset(t: T) -> Void {
         stack.clear()
         stack.add(t)
-        onChange.onNext(boxWrap(stack))
+        onChange.onNext(stack)
     }
     public func reset(_ t: T) -> Void {
         return reset(t: t)
@@ -114,6 +114,6 @@ public class ObservableStack<T: AnyObject>: ObservableProperty<Array<T>> {
         self.stack = stack
         super.init()
     }
-    private var _onChange: PublishSubject<Box<Array<T>>>
+    private var _onChange: PublishSubject<Array<T>>
 }
  

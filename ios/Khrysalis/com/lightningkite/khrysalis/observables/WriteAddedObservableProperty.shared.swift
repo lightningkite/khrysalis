@@ -20,7 +20,7 @@ public class WriteAddedObservableProperty<A>: MutableObservableProperty<A> {
             onWrite(value)
         }
     }
-    override public var onChange: Observable<Box<A>> {
+    override public var onChange: Observable<A> {
         get {
             return basedOn.onChange
         }

@@ -12,13 +12,13 @@ public class ExtensionProperty<On: AnyObject, T> {
     
     public init(){}
 
-    public class Box<T> {
+    public class T {
         var value: T
         init(value: T){
             self.value = value
         }
     }
-    private var table = NSMapTable<On, Box<T>>(keyOptions: .weakMemory, valueOptions: .strongMemory)
+    private var table = NSMapTable<On, T>(keyOptions: .weakMemory, valueOptions: .strongMemory)
     public func get(_ from: On) -> T? {
         return table.object(forKey: from)?.value
     }
@@ -29,7 +29,7 @@ public class ExtensionProperty<On: AnyObject, T> {
         table.setObject(box, forKey: from)
         return generated
     }
-    public func modify(_ from: On, defaultValue:T? = nil, modifier: (Box<T>)->Void) {
+    public func modify(_ from: On, defaultValue:T? = nil, modifier: (T)->Void) {
         if let box = table.object(forKey: from) {
             modifier(box)
         } else if let defaultValue = defaultValue {

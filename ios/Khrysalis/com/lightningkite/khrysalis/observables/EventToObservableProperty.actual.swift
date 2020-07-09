@@ -1,7 +1,7 @@
 import RxSwift
 import RxRelay
 
-//--- Observable<Box<T>>.asObservablePropertyUnboxed(T)
+//--- Observable<T>.asObservablePropertyUnboxed(T)
 extension Observable where Observable.Element: BoxProtocol {
     public typealias T = Observable.Element.T
     public func asObservablePropertyNullable(defaultValue: T) -> ObservableProperty<T> {

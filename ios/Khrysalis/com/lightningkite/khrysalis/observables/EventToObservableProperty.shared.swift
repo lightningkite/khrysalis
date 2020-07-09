@@ -11,9 +11,9 @@ public class EventToObservableProperty<T>: ObservableProperty<T> {
     
     public var _value: T
     override public var value: T { get { return _value } set(value) { _value = value } }
-    public var wrapped: Observable<Box<T>>
+    public var wrapped: Observable<T>
     
-    override public var onChange: Observable<Box<T>> {
+    override public var onChange: Observable<T> {
         get {
             return wrapped.map{ (it) in 
                 self.value = it.value
@@ -22,12 +22,12 @@ public class EventToObservableProperty<T>: ObservableProperty<T> {
         }
     }
     
-    public init(value: T, wrapped: Observable<Box<T>>) {
+    public init(value: T, wrapped: Observable<T>) {
         self._value = value
         self.wrapped = wrapped
         super.init()
     }
-    convenience public init(_ value: T, _ wrapped: Observable<Box<T>>) {
+    convenience public init(_ value: T, _ wrapped: Observable<T>) {
         self.init(value: value, wrapped: wrapped)
     }
 }
@@ -35,9 +35,7 @@ public class EventToObservableProperty<T>: ObservableProperty<T> {
 
 extension Observable {
     public func asObservableProperty(defaultValue: Element) -> ObservableProperty<Element> {
-        return EventToObservableProperty<Element>(defaultValue, self.map{ (it) in 
-            boxWrap(it)
-        })
+        return EventToObservableProperty<Element>(defaultValue, self)
     }
     public func asObservableProperty(_ defaultValue: Element) -> ObservableProperty<Element> {
         return asObservableProperty(defaultValue: defaultValue)
@@ -48,9 +46,7 @@ extension Observable {
 
 extension Observable {
     public func asObservablePropertyDefaultNull() -> ObservableProperty<Element?> {
-        return EventToObservableProperty<Element?>(nil, self.map{ (it) in 
-            boxWrap(it)
-        })
+        return EventToObservableProperty<Element?>(nil, self)
     }
 }
  

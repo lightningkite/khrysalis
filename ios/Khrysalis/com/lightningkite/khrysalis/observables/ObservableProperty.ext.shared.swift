@@ -8,9 +8,9 @@ import RxRelay
 
 
 extension ObservableProperty {
-    public var observable: Observable<Box<T>> {
+    public var observable: Observable<T> {
         get {
-            return onChange.startWith(boxWrap(value))
+            return onChange.startWith(value)
         }
     }
 }
@@ -19,9 +19,7 @@ extension ObservableProperty {
 extension ObservableProperty {
     public var observableNN: Observable<T> {
         get {
-            return onChange.startWith(boxWrap(value)).map{ (it) in 
-                it.value
-            }
+            return onChange.startWith(value)
         }
     }
 }
@@ -30,9 +28,7 @@ extension ObservableProperty {
 extension ObservableProperty {
     public var onChangeNN: Observable<T> {
         get {
-            return onChange.map{ (it) in 
-                it.value
-            }
+            return onChange
         }
     }
 }
