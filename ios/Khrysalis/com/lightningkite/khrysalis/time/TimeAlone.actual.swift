@@ -29,9 +29,9 @@ public class TimeAlone: Equatable, Hashable, Codable {
         try container.encode(iso8601())
     }
     
-    public var hour: Int32
-    public var minute: Int32
-    public var second: Int32
+    public var hour: Int
+    public var minute: Int
+    public var second: Int
     
     public static func == (lhs: TimeAlone, rhs: TimeAlone) -> Bool {
         return lhs.hour == rhs.hour &&
@@ -44,9 +44,9 @@ public class TimeAlone: Equatable, Hashable, Codable {
         hasher.combine(second)
     }
     public func copy(
-        hour: (Int32)? = nil,
-        minute: (Int32)? = nil,
-        second: (Int32)? = nil
+        hour: (Int)? = nil,
+        minute: (Int)? = nil,
+        second: (Int)? = nil
     ) -> TimeAlone {
         return TimeAlone(
             hour: hour ?? self.hour,
@@ -79,12 +79,12 @@ public class TimeAlone: Equatable, Hashable, Codable {
     static public var max = TimeAlone(23, 59, 59)
     //End Companion
     
-    public var comparable: Int32 {
+    public var comparable: Int {
         get {
             return self.hour * 60 * 60 + self.minute * 60 + self.second
         }
     }
-    public var secondsInDay: Int32 {
+    public var secondsInDay: Int {
         get {
             return self.hour * 60 * 60 + self.minute * 60 + self.second
         }
@@ -105,12 +105,12 @@ public class TimeAlone: Equatable, Hashable, Codable {
         }
     }
     
-    public init(hour: Int32, minute: Int32, second: Int32) {
+    public init(hour: Int, minute: Int, second: Int) {
         self.hour = hour
         self.minute = minute
         self.second = second
     }
-    convenience public init(_ hour: Int32, _ minute: Int32, _ second: Int32) {
+    convenience public init(_ hour: Int, _ minute: Int, _ second: Int) {
         self.init(hour: hour, minute: minute, second: second)
     }
 }
@@ -145,7 +145,7 @@ public extension TimeAlone {
 
     //--- TimeAlone.minus(TimeInterval)
     static func - (left: TimeAlone, right: TimeInterval) -> TimeAlone{
-        let result = left.hour * 60 * 60 + left.minute * 60 + left.second - Int32(right)
+        let result = left.hour * 60 * 60 + left.minute * 60 + left.second - Int(right)
         if result < 0{
             return TimeAlone(0,0,0)
         }else{
@@ -155,7 +155,7 @@ public extension TimeAlone {
 
     //--- TimeAlone.plus(TimeInterval)
     static func + (left: TimeAlone, right: TimeInterval) -> TimeAlone{
-        let result = (left.hour * 60 * 60 + left.minute * 60 + left.second) + Int32(right)
+        let result = (left.hour * 60 * 60 + left.minute * 60 + left.second) + Int(right)
         return TimeAlone(result / 60 / 60,  result / 60 % 60, result % 60)
     }
 

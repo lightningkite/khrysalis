@@ -23,7 +23,7 @@ public extension TimeInterval {
 //--- Int.minutes()
 //--- Int.hours()
 //--- Int.days()
-public extension Int32 {
+public extension Int {
     func milliseconds() -> TimeInterval { return TimeInterval(self) / 1000 }
     func seconds() -> TimeInterval { return TimeInterval(self) }
     func minutes() -> TimeInterval { return TimeInterval(self * 60) }

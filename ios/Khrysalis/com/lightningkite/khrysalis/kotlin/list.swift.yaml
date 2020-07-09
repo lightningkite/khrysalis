@@ -59,7 +59,7 @@
 - id: kotlin.collections.List.indexOf
   type: call
   actualReceiver: kotlin.collections.List
-  template: "~this~.firstIndex(of: ~0~)"
+  template: "(~this~.firstIndex(of: ~0~) ?? -1)"
 - id: kotlin.collections.List.get
   type: call
   template: ~this~[~0~]

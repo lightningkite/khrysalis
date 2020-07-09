@@ -39,13 +39,13 @@ public extension Date {
     //--- Date.hourOfDay
     //--- Date.minuteOfHour
     //--- Date.secondOfMinute
-    var dayOfWeek: Int32 { return Int32(Calendar.current.component(.weekday, from: self)) }
-    var dayOfMonth: Int32 { return Int32(Calendar.current.component(.day, from: self)) }
-    var monthOfYear: Int32 { return Int32(Calendar.current.component(.month, from: self)) }
-    var yearAd: Int32 { return Int32(Calendar.current.component(.year, from: self)) }
-    var hourOfDay: Int32 { return Int32(Calendar.current.component(.hour, from: self)) }
-    var minuteOfHour: Int32 { return Int32(Calendar.current.component(.minute, from: self)) }
-    var secondOfMinute: Int32 { return Int32(Calendar.current.component(.second, from: self)) }
+    var dayOfWeek: Int { return Int(Calendar.current.component(.weekday, from: self)) }
+    var dayOfMonth: Int { return Int(Calendar.current.component(.day, from: self)) }
+    var monthOfYear: Int { return Int(Calendar.current.component(.month, from: self)) }
+    var yearAd: Int { return Int(Calendar.current.component(.year, from: self)) }
+    var hourOfDay: Int { return Int(Calendar.current.component(.hour, from: self)) }
+    var minuteOfHour: Int { return Int(Calendar.current.component(.minute, from: self)) }
+    var secondOfMinute: Int { return Int(Calendar.current.component(.second, from: self)) }
     
     //--- Date.dateAlone
     var dateAlone: DateAlone {
@@ -76,37 +76,37 @@ public extension Date {
     //--- Date.hourOfDay(Int, Date)
     //--- Date.minuteOfHour(Int, Date)
     //--- Date.secondOfMinute(Int, Date)
-    func dayOfWeek(_ value: Int32, _ existing: Date? = nil) -> Date {
+    func dayOfWeek(_ value: Int, _ existing: Date? = nil) -> Date {
         let components = Calendar.current.dateComponents([.weekday], from: self)
         let diff = Int(value) - components.weekday!
         return self + diff.days()
     }
-    func dayOfMonth(_ value: Int32, _ existing: Date? = nil) -> Date {
+    func dayOfMonth(_ value: Int, _ existing: Date? = nil) -> Date {
         var components = Calendar.current.dateComponents([.year, .month, .hour, .minute, .second, .nanosecond], from: self)
         components.day = Int(value)
         return Calendar.current.date(from: components)!
     }
-    func monthOfYear(_ value: Int32, _ existing: Date? = nil) -> Date {
+    func monthOfYear(_ value: Int, _ existing: Date? = nil) -> Date {
         var components = Calendar.current.dateComponents([.year, .day, .hour, .minute, .second, .nanosecond], from: self)
         components.month = Int(value)
         return Calendar.current.date(from: components)!
     }
-    func yearAd(_ value: Int32, _ existing: Date? = nil) -> Date {
+    func yearAd(_ value: Int, _ existing: Date? = nil) -> Date {
         var components = Calendar.current.dateComponents([.month, .day, .hour, .minute, .second, .nanosecond], from: self)
         components.year = Int(value)
         return Calendar.current.date(from: components)!
     }
-    func hourOfDay(_ value: Int32, _ existing: Date? = nil) -> Date {
+    func hourOfDay(_ value: Int, _ existing: Date? = nil) -> Date {
         var components = Calendar.current.dateComponents([.year, .month, .day, .minute, .second, .nanosecond], from: self)
         components.hour = Int(value)
         return Calendar.current.date(from: components)!
     }
-    func minuteOfHour(_ value: Int32, _ existing: Date? = nil) -> Date {
+    func minuteOfHour(_ value: Int, _ existing: Date? = nil) -> Date {
         var components = Calendar.current.dateComponents([.year, .month, .day, .hour, .second, .nanosecond], from: self)
         components.minute = Int(value)
         return Calendar.current.date(from: components)!
     }
-    func secondOfMinute(_ value: Int32, _ existing: Date? = nil) -> Date {
+    func secondOfMinute(_ value: Int, _ existing: Date? = nil) -> Date {
         var components = Calendar.current.dateComponents([.year, .month, .day, .hour, .minute, .nanosecond], from: self)
         components.second = Int(value)
         return Calendar.current.date(from: components)!
@@ -119,25 +119,25 @@ public extension Date {
     //--- Date.addHourOfDay(Int, Date)
     //--- Date.addMinuteOfHour(Int, Date)
     //--- Date.addSecondOfMinute(Int, Date)
-    func addDayOfWeek(_ value: Int32, _ existing: Date? = nil) -> Date {
+    func addDayOfWeek(_ value: Int, _ existing: Date? = nil) -> Date {
         return Calendar.current.date(byAdding: .weekday, value: Int(value), to: self)!
     }
-    func addDayOfMonth(_ value: Int32, _ existing: Date? = nil) -> Date {
+    func addDayOfMonth(_ value: Int, _ existing: Date? = nil) -> Date {
         return Calendar.current.date(byAdding: .day, value: Int(value), to: self)!
     }
-    func addMonthOfYear(_ value: Int32, _ existing: Date? = nil) -> Date {
+    func addMonthOfYear(_ value: Int, _ existing: Date? = nil) -> Date {
         return Calendar.current.date(byAdding: .month, value: Int(value), to: self)!
     }
-    func addYearAd(_ value: Int32, _ existing: Date? = nil) -> Date {
+    func addYearAd(_ value: Int, _ existing: Date? = nil) -> Date {
         return Calendar.current.date(byAdding: .year, value: Int(value), to: self)!
     }
-    func addHourOfDay(_ value: Int32, _ existing: Date? = nil) -> Date {
+    func addHourOfDay(_ value: Int, _ existing: Date? = nil) -> Date {
         return Calendar.current.date(byAdding: .hour, value: Int(value), to: self)!
     }
-    func addMinuteOfHour(_ value: Int32, _ existing: Date? = nil) -> Date {
+    func addMinuteOfHour(_ value: Int, _ existing: Date? = nil) -> Date {
         return Calendar.current.date(byAdding: .minute, value: Int(value), to: self)!
     }
-    func addSecondOfMinute(_ value: Int32, _ existing: Date? = nil) -> Date {
+    func addSecondOfMinute(_ value: Int, _ existing: Date? = nil) -> Date {
         return Calendar.current.date(byAdding: .second, value: Int(value), to: self)!
     }
 
@@ -148,13 +148,13 @@ public extension Date {
     //--- Date.setHourOfDay(Int)
     //--- Date.setMinuteOfHour(Int)
     //--- Date.setSecondOfMinute(Int)
-    mutating func setDayOfWeek(_ value: Int32) -> Date { self = self.dayOfWeek(value); return self }
-    mutating func setDayOfMonth(_ value: Int32) -> Date { self = self.dayOfMonth(value); return self }
-    mutating func setMonthOfYear(_ value: Int32) -> Date { self = self.monthOfYear(value); return self }
-    mutating func setYearAd(_ value: Int32) -> Date { self = self.yearAd(value); return self }
-    mutating func setHourOfDay(_ value: Int32) -> Date { self = self.hourOfDay(value); return self }
-    mutating func setMinuteOfHour(_ value: Int32) -> Date { self = self.minuteOfHour(value); return self }
-    mutating func setSecondOfMinute(_ value: Int32) -> Date { self = self.secondOfMinute(value); return self }
+    mutating func setDayOfWeek(_ value: Int) -> Date { self = self.dayOfWeek(value); return self }
+    mutating func setDayOfMonth(_ value: Int) -> Date { self = self.dayOfMonth(value); return self }
+    mutating func setMonthOfYear(_ value: Int) -> Date { self = self.monthOfYear(value); return self }
+    mutating func setYearAd(_ value: Int) -> Date { self = self.yearAd(value); return self }
+    mutating func setHourOfDay(_ value: Int) -> Date { self = self.hourOfDay(value); return self }
+    mutating func setMinuteOfHour(_ value: Int) -> Date { self = self.minuteOfHour(value); return self }
+    mutating func setSecondOfMinute(_ value: Int) -> Date { self = self.secondOfMinute(value); return self }
 
     //--- Date.setAddDayOfWeek(Int)
     //--- Date.setAddDayOfMonth(Int)
@@ -163,13 +163,13 @@ public extension Date {
     //--- Date.setAddHourOfDay(Int)
     //--- Date.setAddMinuteOfHour(Int)
     //--- Date.setAddSecondOfMinute(Int)
-    mutating func setAddDayOfWeek(_ value: Int32) -> Date { self = self.addDayOfWeek(value); return self }
-    mutating func setAddDayOfMonth(_ value: Int32) -> Date { self = self.addDayOfMonth(value); return self }
-    mutating func setAddMonthOfYear(_ value: Int32) -> Date { self = self.addMonthOfYear(value); return self }
-    mutating func setAddYearAd(_ value: Int32) -> Date { self = self.addYearAd(value); return self }
-    mutating func setAddHourOfDay(_ value: Int32) -> Date { self = self.addHourOfDay(value); return self }
-    mutating func setAddMinuteOfHour(_ value: Int32) -> Date { self = self.addMinuteOfHour(value); return self }
-    mutating func setAddSecondOfMinute(_ value: Int32) -> Date { self = self.addSecondOfMinute(value); return self }
+    mutating func setAddDayOfWeek(_ value: Int) -> Date { self = self.addDayOfWeek(value); return self }
+    mutating func setAddDayOfMonth(_ value: Int) -> Date { self = self.addDayOfMonth(value); return self }
+    mutating func setAddMonthOfYear(_ value: Int) -> Date { self = self.addMonthOfYear(value); return self }
+    mutating func setAddYearAd(_ value: Int) -> Date { self = self.addYearAd(value); return self }
+    mutating func setAddHourOfDay(_ value: Int) -> Date { self = self.addHourOfDay(value); return self }
+    mutating func setAddMinuteOfHour(_ value: Int) -> Date { self = self.addMinuteOfHour(value); return self }
+    mutating func setAddSecondOfMinute(_ value: Int) -> Date { self = self.addSecondOfMinute(value); return self }
 
     //--- Date.set(DateAlone)
     mutating func set(_ dateAlone: DateAlone) -> Date {
@@ -251,9 +251,9 @@ public extension Date {
 public extension DateAlone {
     func set(_ date: Date) -> DateAlone {
         let components = Calendar.current.dateComponents([.year, .month, .day], from: date)
-        self.year = Int32(components.year!)
-        self.month = Int32(components.month!)
-        self.day = Int32(components.day!)
+        self.year = Int(components.year!)
+        self.month = Int(components.month!)
+        self.day = Int(components.day!)
         return self
     }
 }
@@ -262,9 +262,9 @@ public extension DateAlone {
 public extension TimeAlone {
     func set(_ date: Date) -> TimeAlone {
         let components = Calendar.current.dateComponents([.hour, .minute, .second], from: date)
-        self.hour = Int32(components.hour!)
-        self.minute = Int32(components.minute!)
-        self.second = Int32(components.second!)
+        self.hour = Int(components.hour!)
+        self.minute = Int(components.minute!)
+        self.second = Int(components.second!)
         return self
     }
 }
