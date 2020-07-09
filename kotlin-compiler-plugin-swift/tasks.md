@@ -5,12 +5,15 @@
 - [X] When auto-cast
 - [X] `++`
 - [X] `do-while` -> `repeat-while`
-- [ ] Operator overloads
-- [X Int right shift unsigned
-- [ ] 'contains' needs no argument
+- [X] Operator overloads
+- [ ] toString -> KStringable
+- [ ] equals -> KEquatable
+- [X] Int right shift unsigned
+- [X] 'contains' needs no argument
 - [ ] `rangeTo`
 - [ ] Enums, preferably force to be Swift enums
 - [ ] Explicit generic arguments (?)
+    - [ ] via adding explicit casts to control types of in/out
 - [ ] Try/Catch
 - [ ] Exceptions
 - [ ] Local classes

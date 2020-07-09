@@ -2,4 +2,3 @@
 - id: android.graphics.PointF
   type: type
   template: CGPoint
-  import: CoreGraphics

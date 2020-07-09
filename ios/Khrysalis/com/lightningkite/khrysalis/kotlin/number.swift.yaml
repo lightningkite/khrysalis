@@ -891,3 +891,57 @@
   type: call
   arguments: [kotlin.Double, kotlin.Double]
   template: min(max(~this~, ~0~), ~1~)
+
+
+# RangeTo
+
+- id: kotlin.Byte.rangeTo
+  type: call
+  infix: true
+  template: (~this~...~0~)
+- id: kotlin.Short.rangeTo
+  type: call
+  infix: true
+  template: (~this~...~0~)
+- id: kotlin.Int.rangeTo
+  type: call
+  infix: true
+  template: (~this~...~0~)
+- id: kotlin.Long.rangeTo
+  type: call
+  infix: true
+  template: (~this~...~0~)
+- id: kotlin.Float.rangeTo
+  type: call
+  infix: true
+  template: (~this~...~0~)
+- id: kotlin.Double.rangeTo
+  type: call
+  infix: true
+  template: (~this~...~0~)
+- id: kotlin.ranges.until
+  type: call
+  infix: true
+  template: (~this~..<~0~)
+
+- id: kotlin.Byte.rangeTo
+  type: call
+  template: ~this~...~0~
+- id: kotlin.Short.rangeTo
+  type: call
+  template: ~this~...~0~
+- id: kotlin.Int.rangeTo
+  type: call
+  template: ~this~...~0~
+- id: kotlin.Long.rangeTo
+  type: call
+  template: ~this~...~0~
+- id: kotlin.Float.rangeTo
+  type: call
+  template: ~this~...~0~
+- id: kotlin.Double.rangeTo
+  type: call
+  template: ~this~...~0~
+- id: kotlin.ranges.until
+  type: call
+  template: ~this~..<~0~

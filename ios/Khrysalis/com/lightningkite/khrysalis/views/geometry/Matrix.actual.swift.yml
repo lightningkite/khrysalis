@@ -2,7 +2,6 @@
 - id: android.graphics.Matrix
   type: type
   template: CGAffineTransform
-  import: CoreGraphics
 
 - id: com.lightningkite.khrysalis.views.geometry.mapPoint
   type: call

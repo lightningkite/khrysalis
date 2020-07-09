@@ -5,6 +5,7 @@ import org.jetbrains.kotlin.com.intellij.psi.tree.IElementType
 import org.jetbrains.kotlin.descriptors.CallableDescriptor
 import org.jetbrains.kotlin.descriptors.FunctionDescriptor
 import org.jetbrains.kotlin.lexer.KtSingleValueToken
+import org.jetbrains.kotlin.lexer.KtToken
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
@@ -30,9 +31,78 @@ data class VirtualArrayGet(
     val resolvedCall: ResolvedCall<out CallableDescriptor>? = null
 )
 
+data class OpInfo(
+    val name: String,
+    val binary: Boolean,
+    val swiftToken: String,
+    val kotlinToken: KtToken,
+    val pureKotlinToken: KtToken? = null
+)
+
+val operators = listOf(
+    OpInfo(name = "plus", binary = true, swiftToken = "+", kotlinToken = KtTokens.PLUS),
+    OpInfo(name = "minus", binary = true, swiftToken = "-", kotlinToken = KtTokens.MINUS),
+    OpInfo(name = "times", binary = true, swiftToken = "*", kotlinToken = KtTokens.MUL),
+    OpInfo(name = "div", binary = true, swiftToken = "/", kotlinToken = KtTokens.DIV),
+    OpInfo(name = "rem", binary = true, swiftToken = "%", kotlinToken = KtTokens.PERC),
+    OpInfo(name = "plusAssign", binary = true, swiftToken = "+=", kotlinToken = KtTokens.PLUSEQ, pureKotlinToken = KtTokens.PLUS),
+    OpInfo(name = "minusAssign", binary = true, swiftToken = "-=", kotlinToken = KtTokens.MINUSEQ, pureKotlinToken = KtTokens.MINUS),
+    OpInfo(name = "timesAssign", binary = true, swiftToken = "*=", kotlinToken = KtTokens.MULTEQ, pureKotlinToken = KtTokens.MUL),
+    OpInfo(name = "divAssign", binary = true, swiftToken = "/=", kotlinToken = KtTokens.DIVEQ, pureKotlinToken = KtTokens.DIV),
+    OpInfo(name = "remAssign", binary = true, swiftToken = "%=", kotlinToken = KtTokens.PERCEQ, pureKotlinToken = KtTokens.PERC),
+    OpInfo(name = "unaryMinus", binary = false, swiftToken = "-", kotlinToken = KtTokens.MINUS),
+    OpInfo(name = "unaryPlus", binary = false, swiftToken = "+", kotlinToken = KtTokens.PLUS),
+    OpInfo(name = "not", binary = false, swiftToken = "!", kotlinToken = KtTokens.EXCL)
+)
+val operatorsByName = operators.associateBy { it.name }
+
+val FunctionDescriptor.swiftOperatorPossible: Boolean
+    get() = isOperator && (dispatchReceiverParameter == null) != (extensionReceiverParameter == null) && typeParameters.isEmpty() && operatorsByName[name.asString()] != null
 
 fun SwiftTranslator.registerOperators() {
-
+    handle<VirtualFunction>(
+        condition = {
+            typedRule.resolvedFunction?.swiftOperatorPossible == true
+        },
+        priority = 10
+    ) {
+        doSuper()
+        1 until 20
+        val opName = typedRule.resolvedFunction?.name?.asString()
+        val (_, isBinary, operator) = operatorsByName[opName]!!
+        val useStatic = true
+        val rType = typedRule.resolvedFunction?.dispatchReceiverParameter?.type
+            ?: typedRule.resolvedFunction?.extensionReceiverParameter?.type
+        if (isBinary) {
+            -"\n"
+            if (useStatic) {
+                -"static "
+            }
+            -"func $operator(receiver: "
+            -rType
+            -", value: "
+            -typedRule.resolvedFunction?.valueParameters?.firstOrNull()?.type
+            -") -> "
+            -typedRule.resolvedFunction?.returnType
+            -" { receiver."
+            -opName
+            -"("
+            -typedRule.resolvedFunction?.valueParameters?.firstOrNull()?.name?.asString()
+            -": value) }"
+        } else {
+            -"\n"
+            if (useStatic) {
+                -"static "
+            }
+            -"prefix func $operator(receiver: "
+            -rType
+            -") -> "
+            -typedRule.resolvedFunction?.returnType
+            -" { receiver."
+            -opName
+            -"() }"
+        }
+    }
 
     //Array access, get
     handle<KtArrayAccessExpression> {
@@ -162,7 +232,7 @@ fun SwiftTranslator.registerOperators() {
                 resolvedCall = arrayAccess.resolvedIndexedLvalueSet!!,
                 prependArguments = if (doubleReceiver) listOf(arrayAccess.arrayExpression!!) else listOf()
             )
-            if(needsClose){
+            if (needsClose) {
                 -"\n"
                 -arrayAccess.arrayExpression
                 -" = "
@@ -208,9 +278,9 @@ fun SwiftTranslator.registerOperators() {
                     tempArray
                 }
             }
-            val tempIndexes = if(reuseIdentifiers) {
+            val tempIndexes = if (reuseIdentifiers) {
                 arrayAccess.indexExpressions.map {
-                    if(it.isSimple()) {
+                    if (it.isSimple()) {
                         it
                     } else {
                         val t = "index${uniqueNumber.getAndIncrement()}"
@@ -256,7 +326,7 @@ fun SwiftTranslator.registerOperators() {
                 parameterByIndex = resolvedCall.template_parameterByIndex,
                 typeParameterByIndex = resolvedCall.template_typeParameterByIndex
             )
-            if(needsClose){
+            if (needsClose) {
                 -"\n"
                 -arrayAccess.arrayExpression
                 -" = "
@@ -332,6 +402,22 @@ fun SwiftTranslator.registerOperators() {
             -")"
         }
     }
+    handle<ValueOperator>(
+        condition = {
+            typedRule.functionDescriptor.swiftOperatorPossible
+        },
+        priority = 10,
+        action = {
+            -typedRule.left
+            -' '
+            -when (val t = typedRule.operationToken) {
+                is KtSingleValueToken -> t.value
+                else -> null
+            }
+            -' '
+            -typedRule.right
+        }
+    )
     handle<KtBinaryExpression>(
         condition = {
             typedRule.operationReference.getReferencedNameElementType() != KtTokens.IDENTIFIER
@@ -340,6 +426,7 @@ fun SwiftTranslator.registerOperators() {
         },
         priority = 10,
         action = {
+            val token = operatorsByName[(typedRule.operationReference.resolvedReferenceTarget as FunctionDescriptor).name.asString()]
             if (typedRule.resolvedVariableReassignment == true) {
                 -typedRule.left
                 -" = "
@@ -349,13 +436,13 @@ fun SwiftTranslator.registerOperators() {
                 right = typedRule.right!!,
                 functionDescriptor = typedRule.operationReference.resolvedReferenceTarget as FunctionDescriptor,
                 dispatchReceiver = typedRule.getTsReceiver(),
-                operationToken = typedRule.operationToken,
+                operationToken = token?.kotlinToken ?: typedRule.operationToken,
                 resolvedCall = typedRule.resolvedCall
             )
         })
     handle<KtBinaryExpression>(
         condition = {
-            typedRule.operationReference.getReferencedNameElementType() ==KtTokens.EQEQ
+            typedRule.operationReference.getReferencedNameElementType() == KtTokens.EQEQ
         },
         priority = 100,
         action = {
@@ -387,7 +474,7 @@ fun SwiftTranslator.registerOperators() {
                 requiresWrapping = typedRule.actuallyCouldBeExpression,
                 template = rule.template,
                 receiver = typedRule.baseExpression,
-                dispatchReceiver = if(f.candidateDescriptor.extensionReceiverParameter != null) typedRule.getTsReceiver() else typedRule.baseExpression
+                dispatchReceiver = if (f.candidateDescriptor.extensionReceiverParameter != null) typedRule.getTsReceiver() else typedRule.baseExpression
             )
         }
     )
@@ -427,7 +514,7 @@ fun SwiftTranslator.registerOperators() {
                 requiresWrapping = typedRule.actuallyCouldBeExpression,
                 template = rule.template,
                 receiver = typedRule.baseExpression,
-                dispatchReceiver = if(f.candidateDescriptor.extensionReceiverParameter != null) typedRule.getTsReceiver() else typedRule.baseExpression
+                dispatchReceiver = if (f.candidateDescriptor.extensionReceiverParameter != null) typedRule.getTsReceiver() else typedRule.baseExpression
             )
         }
     )
