@@ -157,6 +157,18 @@ class KotlinSwiftExtension(
                 )
             }
         }
+        collector?.report(CompilerMessageSeverity.INFO, "Writing manifest file...")
+        output.resolve("fqnames.txt").bufferedWriter().use {
+            files.asSequence()
+                .flatMap { f ->
+                    f.declarations.asSequence()
+                        .mapNotNull { it as? KtNamedDeclaration }
+                        .mapNotNull { it.fqName?.asString() }
+                }
+                .forEach { line ->
+                    it.appendln(line)
+                }
+        }
         collector?.report(CompilerMessageSeverity.INFO, "Completed translation.")
         return AnalysisResult.Companion.success(ctx, module, false)
     }
