@@ -72,7 +72,7 @@ public class RVTypeHandler {
     //--- RVTypeHandler.Primary Constructor
     public init(viewDependency: ViewDependency) {
         self.viewDependency = viewDependency
-        let typeCount: Int32 = 0
+        let typeCount: Int = 0
         self.typeCount = typeCount
         let handlers: Array<Handler> = Array<Handler>()
         self.handlers = handlers
@@ -105,7 +105,7 @@ public class RVTypeHandler {
         //--- RVTypeHandler.Handler.}
     }
 
-    var typeCount: Int32
+    var typeCount: Int
     private var handlers: Array<Handler>
     private var defaultHandler: Handler
 
@@ -138,21 +138,21 @@ public class RVTypeHandler {
         .contains { $0.subjectType == destType }
     }
 
-    func type(item: Any) -> Int32 {
+    func type(item: Any) -> Int {
         var index = 0
         for handler in handlers{
             if canCast(item, toConcreteType: handler.type) {
-                return Int32(index)
+                return Int(index)
             }
                 index += 1
             }
             return typeCount
         }
-    func type(_ item: Any) -> Int32 {
+    func type(_ item: Any) -> Int {
         return type(item: item)
     }
 
-    func make(type: Int32) -> (View, MutableObservableProperty<Any>) {
+    func make(type: Int) -> (View, MutableObservableProperty<Any>) {
         var handler = defaultHandler
         if type < typeCount {
             handler = handlers[ type ]
@@ -198,7 +198,7 @@ public extension UITableView {
 
 //--- RecyclerView.bindMulti(ObservableProperty<List<T>>, T, (T)->Int, (Int,ObservableProperty<T>)->View)
 public extension UITableView {
-    func bindMulti<T>(_ data: ObservableProperty<Array<T>>, _ defaultValue: T, _ determineType: @escaping (T) -> Int32, _ makeView: @escaping (Int32, ObservableProperty<T>) -> View) -> Void {
+    func bindMulti<T>(_ data: ObservableProperty<Array<T>>, _ defaultValue: T, _ determineType: @escaping (T) -> Int, _ makeView: @escaping (Int, ObservableProperty<T>) -> View) -> Void {
         let boundDataSource = BoundMultiDataSourceSameType(source: data, defaultValue: defaultValue, getType: determineType, makeView: makeView)
         dataSource = boundDataSource
         delegate = boundDataSource
@@ -217,7 +217,7 @@ public extension UITableView {
         }.until(self.removed)
         self.tableFooterView = UIView(frame: .zero)
     }
-    func bindMulti<T>(data: ObservableProperty<Array<T>>, defaultValue: T, determineType: @escaping (T) -> Int32, makeView: @escaping (Int32, ObservableProperty<T>) -> View) -> Void {
+    func bindMulti<T>(data: ObservableProperty<Array<T>>, defaultValue: T, determineType: @escaping (T) -> Int, makeView: @escaping (Int, ObservableProperty<T>) -> View) -> Void {
         return bindMulti(data, defaultValue, determineType, makeView)
     }
 }
@@ -355,16 +355,16 @@ class BoundDataSource<T, VIEW: UIView>: NSObject, UITableViewDataSource, UITable
 class BoundMultiDataSourceSameType<T>: NSObject, UITableViewDataSource, UITableViewDelegate, HasAtEnd {
 
     var source: ObservableProperty<[T]>
-    let getType: (T) -> Int32
-    let makeView: (Int32, ObservableProperty<T>) -> UIView
+    let getType: (T) -> Int
+    let makeView: (Int, ObservableProperty<T>) -> UIView
     let defaultValue: T
     var atEnd: () -> Void = {}
     let spacing: CGFloat
-    var registered: Set<Int32> = []
+    var registered: Set<Int> = []
 
     var reversedDirection: Bool = false
 
-    init(source: ObservableProperty<[T]>, defaultValue: T, getType: @escaping (T)->Int32, makeView: @escaping (Int32, ObservableProperty<T>) -> UIView) {
+    init(source: ObservableProperty<[T]>, defaultValue: T, getType: @escaping (T)->Int, makeView: @escaping (Int, ObservableProperty<T>) -> UIView) {
         self.source = source
         self.spacing = 0
         self.makeView = makeView

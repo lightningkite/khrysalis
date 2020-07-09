@@ -58,7 +58,7 @@ public extension UITextView {
 
 //--- EditText.bindInteger(MutableObservableProperty<Int>)
 public extension UITextField {
-    func bindInteger(_ observable: MutableObservableProperty<Int32>) -> Void {
+    func bindInteger(_ observable: MutableObservableProperty<Int>) -> Void {
         delegate = DoneDelegate.shared
         observable.subscribeBy { ( value) in
             let currentValue = Int(self.textString) ?? 0
@@ -71,12 +71,12 @@ public extension UITextField {
             if let self = self {
                 let currentValue = Int(self.textString) ?? 0
                 if observable.value != currentValue {
-                    observable.value = Int32(currentValue)
+                    observable.value = Int(currentValue)
                 }
             }
         }
     }
-    func bindInteger(observable: MutableObservableProperty<Int32>) -> Void {
+    func bindInteger(observable: MutableObservableProperty<Int>) -> Void {
         return bindInteger(observable)
     }
 }

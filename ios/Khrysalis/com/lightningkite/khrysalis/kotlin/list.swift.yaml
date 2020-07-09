@@ -56,27 +56,19 @@
   template: "[] as Array<~T0~>"
   
 # List Operations
-- id: kotlin.collections.Collection.contains
-  actualReceiver: kotlin.collections.List
+- id: kotlin.collections.List.indexOf
   type: call
-  template: ~this~.contains(~0~)
+  actualReceiver: kotlin.collections.List
+  template: "~this~.firstIndex(of: ~0~)"
 - id: kotlin.collections.List.get
   type: call
   template: ~this~[~0~]
 - id: kotlin.collecitons.List.subList
   type: call
   template: Array(~this~[~0~ ..< ~1~])
-- id: kotlin.collections.Collection.isEmpty
-  type: call
-  actualReceiver: kotlin.collections.List
-  template: ~this~.isEmpty
 - id: kotlin.collections.isNotEmpty
   type: call
   template: (!~this~.isEmpty)
-- id: kotlin.collections.Collection.size
-  type: get
-  actualReceiver: kotlin.collections.List
-  template: ~this~.count
 
 # Mutable List Operations
 - id: kotlin.collections.MutableCollection.add
@@ -92,7 +84,7 @@
   template: "~this~[~0~] = ~1~"
 - id: kotlin.collections.MutableList.remove
   type: call
-  template: "~this~.removeAll(where: { $0 != ~0~ })"
+  template: "~this~.remove(~0~)"
 - id: kotlin.collections.removeAll
   type: call
   template: "~this~.removeAll(where: ~0~)"

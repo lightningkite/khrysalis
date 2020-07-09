@@ -5,7 +5,7 @@ import UIKit
 
 //--- PageIndicatorView.bind(Int, MutableObservableProperty<Int>)
 public extension UIPageControl {
-    func bind(_ count: Int32, _ selected: MutableObservableProperty<Int32>) -> Void {
+    func bind(_ count: Int, _ selected: MutableObservableProperty<Int>) -> Void {
         self.numberOfPages = Int(count)
         var suppress = false
         selected.subscribeBy { value in
@@ -17,18 +17,18 @@ public extension UIPageControl {
         self.addAction(for: .valueChanged, action: {
             guard !suppress else { return }
             suppress = true
-            selected.value = Int32(self.currentPage)
+            selected.value = Int(self.currentPage)
             suppress = false
         })
     }
-    func bind(count: Int32, selected: MutableObservableProperty<Int32>) -> Void {
+    func bind(count: Int, selected: MutableObservableProperty<Int>) -> Void {
         return bind(count, selected)
     }
 }
 
 //--- PageIndicatorView.bind(ObservableProperty<Int>, MutableObservableProperty<Int>)
 public extension UIPageControl {
-    func bind(_ count: ObservableProperty<Int32>, _ selected: MutableObservableProperty<Int32>) -> Void {
+    func bind(_ count: ObservableProperty<Int>, _ selected: MutableObservableProperty<Int>) -> Void {
         count.subscribeBy { count in
             self.numberOfPages = Int(count)
         }
@@ -42,11 +42,11 @@ public extension UIPageControl {
         self.addAction(for: .valueChanged, action: {
             guard !suppress else { return }
             suppress = true
-            selected.value = Int32(self.currentPage)
+            selected.value = Int(self.currentPage)
             suppress = false
         })
     }
-    func bind(count: ObservableProperty<Int32>, selected: MutableObservableProperty<Int32>) -> Void {
+    func bind(count: ObservableProperty<Int>, selected: MutableObservableProperty<Int>) -> Void {
         return bind(count, selected)
     }
 }

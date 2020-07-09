@@ -5,7 +5,7 @@ import UIKit
 
 //--- ViewPager.bind(List<T>, MutableObservableProperty<Int>, (T)->View)
 public extension UICollectionView {
-    func bind<T>(_ items: Array<T>, _ showIndex: MutableObservableProperty<Int32>, _ makeView: @escaping (T) -> View) -> Void {
+    func bind<T>(_ items: Array<T>, _ showIndex: MutableObservableProperty<Int>, _ makeView: @escaping (T) -> View) -> Void {
         bind(
             count: items.size,
             spacing: 0,
@@ -15,7 +15,7 @@ public extension UICollectionView {
         )
         bindIndex(showIndex)
     }
-    func bind<T>(items: Array<T>, showIndex: MutableObservableProperty<Int32>, makeView: @escaping (T) -> View) -> Void {
+    func bind<T>(items: Array<T>, showIndex: MutableObservableProperty<Int>, makeView: @escaping (T) -> View) -> Void {
         return bind(items, showIndex, makeView)
     }
     
@@ -23,7 +23,7 @@ public extension UICollectionView {
     func bind<T>(
     _ data: ObservableProperty<[T]>,
     _ defaultValue: T,
-    _ showIndex:MutableObservableProperty<Int32> = StandardObservableProperty(0),
+    _ showIndex:MutableObservableProperty<Int> = StandardObservableProperty(0),
     _ makeView: @escaping (ObservableProperty<T>) -> UIView
     ){
         bind(data: data, defaultValue: defaultValue, spacing: 0, makeView: makeView)
@@ -35,7 +35,7 @@ public extension UICollectionView {
     func bind<T>(
     data: ObservableProperty<[T]>,
     defaultValue: T,
-    showIndex:MutableObservableProperty<Int32> = StandardObservableProperty(0),
+    showIndex:MutableObservableProperty<Int> = StandardObservableProperty(0),
     makeView: @escaping (ObservableProperty<T>) -> UIView
     ){
         bind(data, defaultValue, showIndex, makeView)
@@ -65,7 +65,7 @@ public extension UICollectionView {
         return self.indexPathForItem(at: CGPoint(x: self.contentOffset.x + self.bounds.size.width / 2, y: self.contentOffset.y + self.bounds.size.height / 2))?.row
     }
 
-    func bindIndex(_ index: MutableObservableProperty<Int32>){
+    func bindIndex(_ index: MutableObservableProperty<Int>){
         var suppress = false
         index.subscribeBy { value in
             guard !suppress else { return }
@@ -87,7 +87,7 @@ public extension UICollectionView {
         }
     }
 
-    func whenScrolled(action: @escaping (_ index: Int32)->Void) {
+    func whenScrolled(action: @escaping (_ index: Int)->Void) {
         if var delegate = delegate as? HasAtPosition {
             delegate.atPosition = action
         }
@@ -128,9 +128,9 @@ public extension UICollectionView {
     }
 
     func bind(
-        count: Int32,
+        count: Int,
         spacing: CGFloat = 0,
-        makeView: @escaping (_ index: Int32) -> UIView
+        makeView: @escaping (_ index: Int) -> UIView
     ) {
         register(CustomUICollectionViewCell.self, forCellWithReuseIdentifier: "main-cell")
         let boundDataSource = CollectionSimpleDataSource(count: count, spacing: spacing, makeView: makeView)
@@ -163,7 +163,7 @@ class CustomUICollectionViewCell: UICollectionViewCell {
 }
 
 protocol HasAtPosition {
-    var atPosition: (Int32) -> Void { get set }
+    var atPosition: (Int) -> Void { get set }
 }
 
 class CollectionBoundDataSource<T>: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, HasAtEnd, HasAtPosition {
@@ -212,11 +212,11 @@ class CollectionBoundDataSource<T>: NSObject, UICollectionViewDataSource, UIColl
         return cell
     }
 
-    var atPosition: (Int32) -> Void = { _ in }
+    var atPosition: (Int) -> Void = { _ in }
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         let collectionView = scrollView as! UICollectionView
         if let x = collectionView.currentIndex {
-            atPosition(Int32(x))
+            atPosition(Int(x))
         }
     }
 
@@ -226,20 +226,20 @@ class CollectionBoundDataSource<T>: NSObject, UICollectionViewDataSource, UIColl
 class CollectionSimpleDataSource: NSObject, UICollectionViewDataSource, UICollectionViewDelegate, HasAtEnd, HasAtPosition {
     var reversedDirection: Bool = false
 
-    var atPosition: (Int32) -> Void = { _ in }
+    var atPosition: (Int) -> Void = { _ in }
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
         let collectionView = scrollView as! UICollectionView
         if let x = collectionView.currentIndex {
-            atPosition(Int32(x))
+            atPosition(Int(x))
         }
     }
 
-    var count: Int32
-    let makeView: (Int32) -> UIView
+    var count: Int
+    let makeView: (Int) -> UIView
     var atEnd: () -> Void = {}
     let spacing: CGFloat
 
-    init(count: Int32, spacing: CGFloat, makeView: @escaping (Int32) -> UIView) {
+    init(count: Int, spacing: CGFloat, makeView: @escaping (Int) -> UIView) {
         self.count = count
         self.spacing = spacing
         self.makeView = makeView
@@ -261,7 +261,7 @@ class CollectionSimpleDataSource: NSObject, UICollectionViewDataSource, UICollec
         let cell: CustomUICollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: "main-cell", for: indexPath) as! CustomUICollectionViewCell
         cell.spacing = self.spacing
         cell.contentView.subviews.forEach { $0.removeFromSuperview() }
-        let new = makeView(Int32(indexPath.row))
+        let new = makeView(Int(indexPath.row))
         cell.contentView.addSubview(new)
         cell.setNeedsLayout()
         return cell

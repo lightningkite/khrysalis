@@ -24,7 +24,7 @@ public extension DateButton {
 
 //--- TimeButton.bind(MutableObservableProperty<Date>, Int)
 public extension TimeButton {
-    func bind(_ observable: MutableObservableProperty<Date>, _ minuteInterval: Int32 = 1) -> Void {
+    func bind(_ observable: MutableObservableProperty<Date>, _ minuteInterval: Int = 1) -> Void {
         self.minuteInterval = Int(minuteInterval)
         self.date = observable.value
         observable.subscribeBy { ( value) in
@@ -38,7 +38,7 @@ public extension TimeButton {
             }
         }.until(self.removed)
     }
-    func bind(date: MutableObservableProperty<Date>, minuteInterval: Int32 = 1) -> Void {
+    func bind(date: MutableObservableProperty<Date>, minuteInterval: Int = 1) -> Void {
         return bind(date, minuteInterval)
     }
 }
@@ -65,7 +65,7 @@ public extension DateButton {
 
 //--- TimeButton.bindTimeAlone(MutableObservableProperty<TimeAlone>, Int)
 public extension TimeButton {
-    func bindTimeAlone(_ observable: MutableObservableProperty<TimeAlone>, _ minuteInterval: Int32 = 1) -> Void {
+    func bindTimeAlone(_ observable: MutableObservableProperty<TimeAlone>, _ minuteInterval: Int = 1) -> Void {
         self.minuteInterval = Int(minuteInterval)
         observable.subscribeBy { ( value) in
             if self.date.timeAlone != value {
@@ -79,7 +79,7 @@ public extension TimeButton {
             }
         }.until(self.removed)
     }
-    func bindTimeAlone(date: MutableObservableProperty<TimeAlone>, minuteInterval: Int32 = 1) -> Void {
+    func bindTimeAlone(date: MutableObservableProperty<TimeAlone>, minuteInterval: Int = 1) -> Void {
         return bindTimeAlone(date, minuteInterval)
     }
 }

@@ -5,14 +5,14 @@ import UIKit
 
 //--- SeekBar.bind(Int, Int, MutableObservableProperty<Int>)
 public extension UISlider {
-    func bind(_ start: Int32, _ endInclusive: Int32, _ observable: MutableObservableProperty<Int32>) -> Void {
+    func bind(_ start: Int, _ endInclusive: Int, _ observable: MutableObservableProperty<Int>) -> Void {
         var suppress = false
         self.minimumValue = Float(start)
         self.maximumValue = Float(endInclusive)
         self.addAction(for: .valueChanged, action: { [weak self] in
             guard let self = self, !suppress else { return }
             suppress = true
-            observable.value = Int32(self.value.rounded())
+            observable.value = Int(self.value.rounded())
             suppress = false
         })
         observable.subscribeBy { (value) in
@@ -22,7 +22,7 @@ public extension UISlider {
             suppress = false
         }.until(self.removed)
     }
-    func bind(start: Int32, endInclusive: Int32, observable: MutableObservableProperty<Int32>) -> Void {
+    func bind(start: Int, endInclusive: Int, observable: MutableObservableProperty<Int>) -> Void {
         return bind(start, endInclusive, observable)
     }
 }
