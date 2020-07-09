@@ -1,0 +1,13 @@
+---
+- id: android.graphics.Matrix
+  type: type
+  template: CGAffineTransform
+  import: CoreGraphics
+
+- id: com.lightningkite.khrysalis.views.geometry.mapPoint
+  type: call
+  template: ~0~.applying(~this~)
+
+- id: com.lightningkite.khrysalis.views.geometry.inverted
+  type: call
+  template: ~this~.inverted()

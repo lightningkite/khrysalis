@@ -17,32 +17,6 @@
     <attr name="defaultBackgroundColor" format="color"/>
     <attr name="labelForegroundColor" format="color"/>
     <attr name="labelBackgroundColor" format="color"/>
-    <declare-styleable name="QuickMonthView">
-        <attr name="showMonthHeader"/>
-        <attr name="titleSize"/>
-        <attr name="labelSize"/>
-        <attr name="daySize"/>
-        <attr name="titleColor"/>
-        <attr name="selectedForegroundColor"/>
-        <attr name="selectedBackgroundColor"/>
-        <attr name="defaultForegroundColor"/>
-        <attr name="defaultBackgroundColor"/>
-        <attr name="labelForegroundColor"/>
-        <attr name="labelBackgroundColor"/>
-    </declare-styleable>
-    <declare-styleable name="AbstractQuickCalendarView">
-        <attr name="showMonthHeader"/>
-        <attr name="titleSize"/>
-        <attr name="labelSize"/>
-        <attr name="daySize"/>
-        <attr name="titleColor"/>
-        <attr name="selectedForegroundColor"/>
-        <attr name="selectedBackgroundColor"/>
-        <attr name="defaultForegroundColor"/>
-        <attr name="defaultBackgroundColor"/>
-        <attr name="labelForegroundColor"/>
-        <attr name="labelBackgroundColor"/>
-    </declare-styleable>
     <attr name="dividerPositions">
         <flag name="start" value="0x01"/>
         <flag name="between" value="0x02"/>

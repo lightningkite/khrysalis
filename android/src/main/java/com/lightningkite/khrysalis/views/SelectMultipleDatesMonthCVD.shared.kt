@@ -13,6 +13,7 @@ import com.lightningkite.khrysalis.rx.addWeak
 import com.lightningkite.khrysalis.rx.forever
 import com.lightningkite.khrysalis.time.*
 import com.lightningkite.khrysalis.views.draw.drawTextCentered
+import com.lightningkite.khrysalis.views.geometry.GFloat
 import io.reactivex.rxkotlin.subscribeBy
 import java.util.*
 import kotlin.math.absoluteValue
@@ -35,7 +36,7 @@ open class SelectMultipleDatesMonthCVD : MonthCVD() {
         }.forever()
     }
 
-    override fun measure(width: Float, height: Float, displayMetrics: DisplayMetrics) {
+    override fun measure(width: GFloat, height: GFloat, displayMetrics: DisplayMetrics) {
         super.measure(width = width, height = height, displayMetrics = displayMetrics)
         selectedDayPaint.textSize = dayPaint.textSize
     }

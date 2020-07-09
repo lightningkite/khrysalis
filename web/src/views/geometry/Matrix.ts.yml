@@ -1,0 +1,12 @@
+---
+- id: android.graphics.Matrix
+  type: type
+  template: DOMMatrix
+
+- id: com.lightningkite.khrysalis.views.geometry.mapPoint
+  type: call
+  template: ~0~.matrixTransform(~this~)
+
+- id: com.lightningkite.khrysalis.views.geometry.inverted
+  type: call
+  template: ~this~.inverse()

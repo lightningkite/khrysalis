@@ -14,6 +14,7 @@ import com.lightningkite.khrysalis.rx.forever
 import com.lightningkite.khrysalis.rx.until
 import com.lightningkite.khrysalis.time.*
 import com.lightningkite.khrysalis.views.draw.drawTextCentered
+import com.lightningkite.khrysalis.views.geometry.GFloat
 import io.reactivex.rxkotlin.subscribeBy
 import java.util.*
 import kotlin.math.absoluteValue
@@ -41,18 +42,18 @@ open class MonthCVD : CustomViewDelegate() {
 
     }
 
-    var labelFontSp: Float = 12f
-    var dayFontSp: Float = 16f
-    var internalPaddingDp: Float = 8f
-    var dayCellMarginDp: Float = 8f
-    private var internalPadding: Float = 0f
-    private var dayLabelHeight: Float = 0f
-    private var dayCellHeight: Float = 0f
-    private var dayCellWidth: Float = 0f
-    private var dayCellMargin: Float = 0f
+    var labelFontSp: GFloat = 12f
+    var dayFontSp: GFloat = 16f
+    var internalPaddingDp: GFloat = 8f
+    var dayCellMarginDp: GFloat = 8f
+    private var internalPadding: GFloat = 0f
+    private var dayLabelHeight: GFloat = 0f
+    private var dayCellHeight: GFloat = 0f
+    private var dayCellWidth: GFloat = 0f
+    private var dayCellMargin: GFloat = 0f
 
-    private var _currentOffset: Float = 0f //ratio of widths
-    var currentOffset: Float //ratio of widths
+    private var _currentOffset: GFloat = 0f //ratio of widths
+    var currentOffset: GFloat //ratio of widths
         get() {
             return _currentOffset
         }
@@ -60,8 +61,8 @@ open class MonthCVD : CustomViewDelegate() {
             _currentOffset = value
             customView?.postInvalidate()
         }
-    private var dragStartX: Float = 0f
-    private var lastOffset: Float = 0f
+    private var dragStartX: GFloat = 0f
+    private var lastOffset: GFloat = 0f
     private var lastOffsetTime: Long = 0L
     private val DRAGGING_NONE: Int = -1
     private var draggingId: Int = DRAGGING_NONE
@@ -105,7 +106,7 @@ open class MonthCVD : CustomViewDelegate() {
     private val calcMonth: DateAlone =
         DateAlone(1, 1, 1)
 
-    fun dayAtPixel(x: Float, y: Float, existing: DateAlone? = null): DateAlone? {
+    fun dayAtPixel(x: GFloat, y: GFloat, existing: DateAlone? = null): DateAlone? {
         if (y < dayLabelHeight) return null
 //        val columnRaw = (x / dayCellWidth - (dayCellWidth + currentOffset) * 7).toInt()
         val columnRawBeforeDrag = x / dayCellWidth
@@ -138,7 +139,7 @@ open class MonthCVD : CustomViewDelegate() {
             .setAddDayOfMonth(row * 7 + column)
     }
 
-    open fun measure(width: Float, height: Float, displayMetrics: DisplayMetrics) {
+    open fun measure(width: GFloat, height: GFloat, displayMetrics: DisplayMetrics) {
         internalPadding = displayMetrics.density * internalPaddingDp
         dayCellMargin = displayMetrics.density * dayCellMarginDp
         labelPaint.textSize = labelFontSp * displayMetrics.scaledDensity
@@ -151,7 +152,7 @@ open class MonthCVD : CustomViewDelegate() {
     private val calcMonthB: DateAlone =
         DateAlone(0, 0, 0)
 
-    override fun draw(canvas: Canvas, width: Float, height: Float, displayMetrics: DisplayMetrics) {
+    override fun draw(canvas: Canvas, width: GFloat, height: GFloat, displayMetrics: DisplayMetrics) {
         measure(width, height, displayMetrics)
         if (currentOffset > 0f) {
             //draw past month and current month
@@ -183,7 +184,7 @@ open class MonthCVD : CustomViewDelegate() {
         DateAlone(1, 1, 1)
     private val rectForReuse: RectF = RectF()
     private val rectForReuseB: RectF = RectF()
-    open fun drawMonth(canvas: Canvas, xOffset: Float, width: Float, month: DateAlone, displayMetrics: DisplayMetrics) {
+    open fun drawMonth(canvas: Canvas, xOffset: GFloat, width: GFloat, month: DateAlone, displayMetrics: DisplayMetrics) {
         for (day in 1.toInt()..7.toInt()) {
             val col = day - 1
             rectForReuse.set(
@@ -241,12 +242,12 @@ open class MonthCVD : CustomViewDelegate() {
     }
 
     var isTap: Boolean = false
-    var dragStartY: Float = 0f
+    var dragStartY: GFloat = 0f
     open fun onTap(day: DateAlone) {}
 
     @JsName("onTouchDownDate")
     open fun onTouchDown(day: DateAlone): Boolean = false
-    override fun onTouchDown(id: Int, x: Float, y: Float, width: Float, height: Float): Boolean {
+    override fun onTouchDown(id: Int, x: GFloat, y: GFloat, width: GFloat, height: GFloat): Boolean {
         val day = dayAtPixel(x, y)
         day?.let {
             if (onTouchDown(it)) {
@@ -264,7 +265,7 @@ open class MonthCVD : CustomViewDelegate() {
 
     @JsName("onTouchMoveDate")
     open fun onTouchMove(day: DateAlone): Boolean = false
-    override fun onTouchMove(id: Int, x: Float, y: Float, width: Float, height: Float): Boolean {
+    override fun onTouchMove(id: Int, x: GFloat, y: GFloat, width: GFloat, height: GFloat): Boolean {
         if (draggingId == id) {
             lastOffset = currentOffset
             lastOffsetTime = System.currentTimeMillis()
@@ -284,7 +285,7 @@ open class MonthCVD : CustomViewDelegate() {
 
     @JsName("onTouchUpDate")
     open fun onTouchUp(day: DateAlone): Boolean = false
-    override fun onTouchUp(id: Int, x: Float, y: Float, width: Float, height: Float): Boolean {
+    override fun onTouchUp(id: Int, x: GFloat, y: GFloat, width: GFloat, height: GFloat): Boolean {
         if (draggingId == id) {
             if (isTap) {
                 dayAtPixel(x, y)?.let {
@@ -315,11 +316,11 @@ open class MonthCVD : CustomViewDelegate() {
     }
 
 
-    override fun sizeThatFitsWidth(width: Float, height: Float): Float {
+    override fun sizeThatFitsWidth(width: GFloat, height: GFloat): GFloat {
         return dayLabelHeight * 28f
     }
 
-    override fun sizeThatFitsHeight(width: Float, height: Float): Float {
+    override fun sizeThatFitsHeight(width: GFloat, height: GFloat): GFloat {
         return width * 6f / 7f + dayLabelHeight
     }
 }

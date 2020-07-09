@@ -6,18 +6,19 @@ import android.view.View
 import com.lightningkite.khrysalis.rx.DisposeCondition
 import com.lightningkite.khrysalis.weak
 import com.lightningkite.khrysalis.views.CustomView
+import com.lightningkite.khrysalis.views.geometry.GFloat
 import io.reactivex.disposables.Disposable
 
 abstract class CustomViewDelegate {
     var customView: CustomView? = null
     abstract fun generateAccessibilityView(): View?
-    abstract fun draw(canvas: Canvas, width: Float, height: Float, displayMetrics: DisplayMetrics)
-    open fun onTouchDown(id: Int, x: Float, y: Float, width: Float, height: Float): Boolean = false
-    open fun onTouchMove(id: Int, x: Float, y: Float, width: Float, height: Float): Boolean = false
-    open fun onTouchCancelled(id: Int, x: Float, y: Float, width: Float, height: Float): Boolean = false
-    open fun onTouchUp(id: Int, x: Float, y: Float, width: Float, height: Float): Boolean = false
-    open fun sizeThatFitsWidth(width: Float, height: Float): Float = width
-    open fun sizeThatFitsHeight(width: Float, height: Float): Float = height
+    abstract fun draw(canvas: Canvas, width: GFloat, height: GFloat, displayMetrics: DisplayMetrics)
+    open fun onTouchDown(id: Int, x: GFloat, y: GFloat, width: GFloat, height: GFloat): Boolean = false
+    open fun onTouchMove(id: Int, x: GFloat, y: GFloat, width: GFloat, height: GFloat): Boolean = false
+    open fun onTouchCancelled(id: Int, x: GFloat, y: GFloat, width: GFloat, height: GFloat): Boolean = false
+    open fun onTouchUp(id: Int, x: GFloat, y: GFloat, width: GFloat, height: GFloat): Boolean = false
+    open fun sizeThatFitsWidth(width: GFloat, height: GFloat): GFloat = width
+    open fun sizeThatFitsHeight(width: GFloat, height: GFloat): GFloat = height
 
     fun invalidate() { customView?.invalidate() }
     fun postInvalidate() { customView?.postInvalidate() }

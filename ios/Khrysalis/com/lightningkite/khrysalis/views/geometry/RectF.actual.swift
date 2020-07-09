@@ -11,27 +11,27 @@ public extension RectF {
         self = .zero
     }
     //--- RectF.right
-    var right: Float {
+    var right: GFloat {
         get {
-            return Float(origin.x + size.width)
+            return GFloat(origin.x + size.width)
         }
         set(value){
             size.width = CGFloat(value) - origin.x
         }
     }
     //--- RectF.bottom
-    var bottom: Float {
+    var bottom: GFloat {
         get {
-            return Float(origin.y + size.height)
+            return GFloat(origin.y + size.height)
         }
         set(value){
             size.height = CGFloat(value) - origin.y
         }
     }
     //--- RectF.left
-    var left: Float {
+    var left: GFloat {
         get {
-            return Float(origin.x)
+            return GFloat(origin.x)
         }
         set(value){
             let cg = CGFloat(value)
@@ -40,9 +40,9 @@ public extension RectF {
         }
     }
     //--- RectF.top
-    var top: Float {
+    var top: GFloat {
         get {
-            return Float(origin.y)
+            return GFloat(origin.y)
         }
         set(value){
             let cg = CGFloat(value)
@@ -50,8 +50,8 @@ public extension RectF {
             origin.y = cg
         }
     }
-    //--- RectF.set(Float, Float, Float, Float)
-    mutating func set(_ left: Float, _ top: Float, _ right: Float, _ bottom: Float) {
+    //--- RectF.set(GFloat, GFloat, GFloat, GFloat)
+    mutating func set(_ left: GFloat, _ top: GFloat, _ right: GFloat, _ bottom: GFloat) {
         origin.x = CGFloat(left)
         origin.y = CGFloat(top)
         size.width = CGFloat(right - left)
@@ -65,23 +65,23 @@ public extension RectF {
         size.height = rect.size.height
     }
     //--- RectF.centerX()
-    func centerX() -> Float {
-        return Float(midX)
+    func centerX() -> GFloat {
+        return GFloat(midX)
     }
     //--- RectF.centerY()
-    func centerY() -> Float {
-        return Float(midY)
+    func centerY() -> GFloat {
+        return GFloat(midY)
     }
     //--- RectF.width()
-    func width() -> Float {
-        return Float(size.width)
+    func width() -> GFloat {
+        return GFloat(size.width)
     }
     //--- RectF.height()
-    func height() -> Float {
-        return Float(size.height)
+    func height() -> GFloat {
+        return GFloat(size.height)
     }
-    //--- RectF.inset(Float, Float)
-    mutating func inset(_ dx: Float, _ dy: Float) {
+    //--- RectF.inset(GFloat, GFloat)
+    mutating func inset(_ dx: GFloat, _ dy: GFloat) {
         self = self.insetBy(dx: CGFloat(dx), dy: CGFloat(dy))
     }
     

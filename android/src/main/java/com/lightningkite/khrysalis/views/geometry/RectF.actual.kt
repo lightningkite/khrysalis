@@ -3,16 +3,16 @@ package com.lightningkite.khrysalis.views.geometry
 
 /* SHARED DECLARATIONS
 class RectF {
-    var right: Float
-    var bottom: Float
-    var top: Float
-    var left: Float
-    fun set(left: Float, top: Float, right: Float, bottom: Float)
+    var right: GFloat
+    var bottom: GFloat
+    var top: GFloat
+    var left: GFloat
+    fun set(left: GFloat, top: GFloat, right: GFloat, bottom: GFloat)
     fun set(rect: RectF)
-    fun centerX(): Float
-    fun centerY(): Float
-    fun width(): Float
-    fun height(): Float
-    fun inset(dx: Float, dy: Float)
+    fun centerX(): GFloat
+    fun centerY(): GFloat
+    fun width(): GFloat
+    fun height(): GFloat
+    fun inset(dx: GFloat, dy: GFloat)
 }
  */
