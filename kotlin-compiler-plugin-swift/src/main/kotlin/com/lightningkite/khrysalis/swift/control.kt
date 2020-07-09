@@ -2,6 +2,7 @@ package com.lightningkite.khrysalis.swift
 
 import com.lightningkite.khrysalis.util.forEachBetween
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
+import org.jetbrains.kotlin.descriptors.ValueDescriptor
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
@@ -44,6 +45,8 @@ fun SwiftTranslator.registerControl() {
         priority = 10,
         action = {
             val exp = typedRule.expression as KtBinaryExpression
+            val vd = (exp.left as KtNameReferenceExpression).resolvedReferenceTarget as? ValueDescriptor
+            vd?.let { ignoreSmartcast(it) }
             -"let "
             -exp.left
             -" = "
@@ -59,6 +62,8 @@ fun SwiftTranslator.registerControl() {
         priority = 10,
         action = {
             val exp = typedRule.expression as KtBinaryExpression
+            val vd = (exp.right as KtNameReferenceExpression).resolvedReferenceTarget as? ValueDescriptor
+            vd?.let { ignoreSmartcast(it) }
             -"let "
             -exp.right
             -" = "
@@ -74,6 +79,8 @@ fun SwiftTranslator.registerControl() {
         priority = 10,
         action = {
             val exp = typedRule.expression as KtIsExpression
+            val vd = (exp.leftHandSide as KtNameReferenceExpression).resolvedReferenceTarget as? ValueDescriptor
+            vd?.let { ignoreSmartcast(it) }
             -"let "
             -exp.leftHandSide
             -" = "
@@ -111,6 +118,7 @@ fun SwiftTranslator.registerControl() {
     )
 
     handle<KtIfExpression> {
+        beginSmartcastBlock()
         if (typedRule.actuallyCouldBeExpression && typedRule.parent !is KtContainerNodeForControlStructureBody) {
             runWithTypeHeader(typedRule)
         }
@@ -145,6 +153,7 @@ fun SwiftTranslator.registerControl() {
         if (typedRule.actuallyCouldBeExpression && typedRule.parent !is KtContainerNodeForControlStructureBody) {
             -"}"
         }
+        endSmartcastBlock()
     }
 
     handle<KtIfExpression>(
@@ -192,6 +201,7 @@ fun SwiftTranslator.registerControl() {
         }
         -" {\n"
         typedRule.entries.forEach { entry ->
+            beginSmartcastBlock()
             entry.elseKeyword?.let {
                 -"default:\n"
             } ?: entry.conditions.takeUnless { it.isEmpty() }?.let { cons ->
@@ -223,6 +233,7 @@ fun SwiftTranslator.registerControl() {
                 -entry.expression
             }
             -"\nbreak\n"
+            endSmartcastBlock()
         }
         -"}\n"
         if (typedRule.actuallyCouldBeExpression) {
@@ -239,11 +250,12 @@ fun SwiftTranslator.registerControl() {
         }
         -typedRule.entries.forEachBetween(
             forItem = { it ->
+                beginSmartcastBlock()
                 if (!it.isElse) {
                     -"if "
                     it.conditions.asIterable().forEachBetween(
-                        forItem = {c ->
-                            if(it.conditions.size == 1){
+                        forItem = { c ->
+                            if (it.conditions.size == 1) {
                                 -IfCondition((c as KtWhenConditionWithExpression).expression!!)
                             } else {
                                 -it
@@ -264,6 +276,7 @@ fun SwiftTranslator.registerControl() {
                     -it.expression
                     -"\n}"
                 }
+                endSmartcastBlock()
             },
             between = {
                 -" else "
@@ -296,9 +309,10 @@ fun SwiftTranslator.registerControl() {
         }
         -typedRule.entries.forEachBetween(
             forItem = { it ->
+                beginSmartcastBlock()
                 if (!it.isElse) {
                     -"if "
-                    if(it.conditions.size == 1){
+                    if (it.conditions.size == 1) {
                         when (val it = it.conditions.first()) {
                             is KtWhenConditionWithExpression -> {
                                 -subjExpr()
@@ -314,7 +328,9 @@ fun SwiftTranslator.registerControl() {
                             is KtWhenConditionIsPattern -> {
                                 val expr = subjExpr()
                                 when {
-                                    expr is KtNameReferenceExpression || expr is String -> {
+                                    expr is KtNameReferenceExpression -> {
+                                        val vd = expr.resolvedReferenceTarget as? ValueDescriptor
+                                        vd?.let { ignoreSmartcast(it) }
                                         -"let "
                                         -expr
                                         -" = "
@@ -368,6 +384,7 @@ fun SwiftTranslator.registerControl() {
                     -it.expression
                     -"\n}"
                 }
+                endSmartcastBlock()
             },
             between = {
                 -" else "

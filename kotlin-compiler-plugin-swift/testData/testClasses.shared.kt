@@ -30,6 +30,18 @@ private open class ClassesWeird(a: Int = 0, b: String, val c: Double, var d: Lon
     open fun test(){
         println("Hi!")
     }
+
+    override fun toString(): String {
+        return "$c $d"
+    }
+
+    override fun equals(other: Any?): Boolean {
+        return other is ClassesWeird && this.d == other.d
+    }
+
+    override fun hashCode(): Int {
+        return d.toInt()
+    }
 }
 
 private class ClassesSubWeird(a: Int, b: String, c: Double, d: Long): ClassesWeird(a, b, c, d) {

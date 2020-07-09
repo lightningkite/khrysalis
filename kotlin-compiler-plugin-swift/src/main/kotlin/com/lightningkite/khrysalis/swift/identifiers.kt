@@ -2,6 +2,7 @@ package com.lightningkite.khrysalis.swift
 
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.descriptors.*
+import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 
@@ -80,28 +81,34 @@ fun SwiftTranslator.registerIdentifiers(){
             emitTemplate(rule.template)
         }
     )
-    //Naked local type references
-    handle<KtNameReferenceExpression>(
-        condition = {
-            val untypedTarget = typedRule.resolvedReferenceTarget
-            val target = untypedTarget as? ClassDescriptor ?: (untypedTarget as? ConstructorDescriptor)?.constructedClass ?: return@handle false
-            if((typedRule.parent as? KtQualifiedExpression)?.selectorExpression == this) return@handle false
-            val context = (typedRule.parentOfType<KtClassBody>()?.parent as? KtClassOrObject)?.resolvedClass ?: return@handle false
-            target.containingDeclaration == context
-        },
-        priority = 10,
-        action = {
-            -(typedRule.parentOfType<KtClassBody>()?.parent as? KtClassOrObject)?.nameIdentifier
-            -'.'
-            -typedRule.getIdentifier()
-        }
-    )
 
     handle<LeafPsiElement>(
         condition = { typedRule.elementType === KtTokens.IDENTIFIER },
         priority = 1,
         action = {
             -typedRule.text.safeSwiftIdentifier()
+        }
+    )
+
+    //smartcast
+    handle<KtNameReferenceExpression>(
+        condition = {
+            typedRule.resolvedSmartcast != null && !isSmartcastIgnored(typedRule.resolvedReferenceTarget as? ValueDescriptor)
+        },
+        priority = 4000,
+        action = {
+            val before = (typedRule.resolvedReferenceTarget as? ValueDescriptor)?.type
+            val now = typedRule.resolvedSmartcast!!.defaultType
+            if(before?.getJetTypeFqName(true) == now?.getJetTypeFqName(true) && now?.isMarkedNullable == false){
+                doSuper()
+                -'!'
+            } else {
+                -'('
+                doSuper()
+                -" as! "
+                -now
+                -')'
+            }
         }
     )
 }

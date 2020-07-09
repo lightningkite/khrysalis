@@ -703,22 +703,22 @@
 
 - id: kotlin.Byte.toInt
   type: call
-  template: Int(~this)
+  template: Int(~this~)
 - id: kotlin.Short.toInt
   type: call
-  template: Int(~this)
+  template: Int(~this~)
 - id: kotlin.Int.toInt
   type: call
-  template: Int(~this)
+  template: Int(~this~)
 - id: kotlin.Long.toInt
   type: call
-  template: Int(~this)
+  template: Int(~this~)
 - id: kotlin.Float.toInt
   type: call
-  template: Int(~this)
+  template: Int(~this~)
 - id: kotlin.Double.toInt
   type: call
-  template: Int(~this)
+  template: Int(~this~)
   
 # toLong
 

@@ -6,11 +6,11 @@
 - [X] `++`
 - [X] `do-while` -> `repeat-while`
 - [X] Operator overloads
-- [ ] toString -> KStringable
-- [ ] equals -> KEquatable
+- [X] toString -> KStringable
+- [X] equals -> KEquatable
 - [X] Int right shift unsigned
 - [X] 'contains' needs no argument
-- [ ] `rangeTo`
+- [X] `rangeTo`
 - [ ] Enums, preferably force to be Swift enums
 - [ ] Explicit generic arguments (?)
     - [ ] via adding explicit casts to control types of in/out

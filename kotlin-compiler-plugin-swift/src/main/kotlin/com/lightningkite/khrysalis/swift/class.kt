@@ -10,6 +10,8 @@ import org.jetbrains.kotlin.js.translate.callTranslator.getReturnType
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
+import org.jetbrains.kotlin.psi2ir.findFirstFunction
+import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
 import org.jetbrains.kotlin.resolve.descriptorUtil.getSuperClassNotAny
 import org.jetbrains.kotlin.resolve.scopes.DescriptorKindFilter
 import org.jetbrains.kotlin.types.FlexibleType
@@ -49,6 +51,30 @@ fun SwiftTranslator.registerClass() {
             .let {
                 if (on is KtClass && on.isEnum()) {
                     it + listOf("KEnum")
+                } else it
+            }
+            .let {
+                val over = on.resolvedClass?.findFirstFunction("equals") { it.valueParameters.size == 1 && it.valueParameters[0].type.getJetTypeFqName(false) == "kotlin.Any" }
+                val immediate = over?.containingDeclaration == on.resolvedClass
+                val anyOtherExists = over?.overriddenDescriptors?.any { it.containingDeclaration.fqNameOrNull()?.asString() != "kotlin.Any" } == true
+                if (immediate && !anyOtherExists) {
+                    it + listOf("KEquatable")
+                } else it
+            }
+            .let {
+                val over = on.resolvedClass?.findFirstFunction("hashCode") { it.valueParameters.size == 0 }
+                val immediate = over?.containingDeclaration == on.resolvedClass
+                val anyOtherExists = over?.overriddenDescriptors?.any { it.containingDeclaration.fqNameOrNull()?.asString() != "kotlin.Any" } == true
+                if (immediate && !anyOtherExists) {
+                    it + listOf("KHashable")
+                } else it
+            }
+            .let {
+                val over = on.resolvedClass?.findFirstFunction("toString") { it.valueParameters.size == 0 }
+                val immediate = over?.containingDeclaration == on.resolvedClass
+                val anyOtherExists = over?.overriddenDescriptors?.any { it.containingDeclaration.fqNameOrNull()?.asString() != "kotlin.Any" } == true
+                if (immediate && !anyOtherExists) {
+                    it + listOf("KStringable")
                 } else it
             }
             .takeUnless { it.isEmpty() }?.let {
