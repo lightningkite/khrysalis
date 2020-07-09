@@ -1,6 +1,6 @@
 ---
 
-- id: com.lightningkite.khrysalis.views.geometry.GFloat
+- id: com.lightningkite.khrysalis.views.geometry.CGFloat
   type: type
   template: CGFloat
 

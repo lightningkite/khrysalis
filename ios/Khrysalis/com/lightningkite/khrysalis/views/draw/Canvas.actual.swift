@@ -33,10 +33,10 @@ public extension Canvas {
     }
 }
 
-//--- Canvas.clipRect(GFloat, GFloat, GFloat, GFloat)
+//--- Canvas.clipRect(CGFloat, CGFloat, CGFloat, CGFloat)
 //--- Canvas.clipRect(RectF)
 public extension Canvas {
-    func clipRect(_ left: GFloat, _ top: GFloat, _ right: GFloat, _ bottom: GFloat){
+    func clipRect(_ left: CGFloat, _ top: CGFloat, _ right: CGFloat, _ bottom: CGFloat){
         clip(to: CGRect(
             x: CGFloat(left),
             y: CGFloat(top),
@@ -49,9 +49,9 @@ public extension Canvas {
     }
 }
 
-//--- Canvas.drawCircle(GFloat, GFloat, GFloat, Paint)
+//--- Canvas.drawCircle(CGFloat, CGFloat, CGFloat, Paint)
 public extension Canvas {
-    func drawCircle(_ cx: GFloat, _ cy: GFloat, _ radius: GFloat, _ paint: Paint) {
+    func drawCircle(_ cx: CGFloat, _ cy: CGFloat, _ radius: CGFloat, _ paint: Paint) {
         let path = Path()
         path.addArc(center: CGPoint(x: CGFloat(cx), y: CGFloat(cy)), radius: CGFloat(radius), startAngle: 0, endAngle: CGFloat.pi * 2, clockwise: true)
         path.closeSubpath()
@@ -59,10 +59,10 @@ public extension Canvas {
     }
 }
 
-//--- Canvas.drawRect(GFloat, GFloat, GFloat, GFloat, Paint)
+//--- Canvas.drawRect(CGFloat, CGFloat, CGFloat, CGFloat, Paint)
 //--- Canvas.drawRect(RectF, Paint)
 public extension Canvas {
-    func drawRect(_ left: GFloat, _ top: GFloat, _ right: GFloat, _ bottom: GFloat, _ paint: Paint) {
+    func drawRect(_ left: CGFloat, _ top: CGFloat, _ right: CGFloat, _ bottom: CGFloat, _ paint: Paint) {
         self.completePath(
             CGPath(
                 rect: CGRect(
@@ -87,10 +87,10 @@ public extension Canvas {
     }
 }
 
-//--- Canvas.drawOval(GFloat, GFloat, GFloat, GFloat, Paint)
+//--- Canvas.drawOval(CGFloat, CGFloat, CGFloat, CGFloat, Paint)
 //--- Canvas.drawOval(RectF, Paint)
 public extension Canvas {
-    func drawOval(_ left: GFloat, _ top: GFloat, _ right: GFloat, _ bottom: GFloat, _ paint: Paint) {
+    func drawOval(_ left: CGFloat, _ top: CGFloat, _ right: CGFloat, _ bottom: CGFloat, _ paint: Paint) {
         self.completePath(
             CGPath(
                 ellipseIn: CGRect(
@@ -115,10 +115,10 @@ public extension Canvas {
     }
 }
 
-//--- Canvas.drawRoundRect(GFloat, GFloat, GFloat, GFloat, GFloat, GFloat, Paint)
-//--- Canvas.drawRoundRect(RectF, GFloat, GFloat, Paint)
+//--- Canvas.drawRoundRect(CGFloat, CGFloat, CGFloat, CGFloat, CGFloat, CGFloat, Paint)
+//--- Canvas.drawRoundRect(RectF, CGFloat, CGFloat, Paint)
 public extension Canvas {
-    func drawRoundRect(_ left: GFloat, _ top: GFloat, _ right: GFloat, _ bottom: GFloat, _ rx: GFloat, _ ry: GFloat, _ paint: Paint) {
+    func drawRoundRect(_ left: CGFloat, _ top: CGFloat, _ right: CGFloat, _ bottom: CGFloat, _ rx: CGFloat, _ ry: CGFloat, _ paint: Paint) {
         self.completePath(
             CGPath(
                 roundedRect: CGRect(x: CGFloat(left), y: CGFloat(top), width: CGFloat(right-left), height: CGFloat(bottom-top)),
@@ -129,7 +129,7 @@ public extension Canvas {
             paint
         )
     }
-    func drawRoundRect(_ rect: RectF, _ rx: GFloat, _ ry: GFloat, _ paint: Paint) {
+    func drawRoundRect(_ rect: RectF, _ rx: CGFloat, _ ry: CGFloat, _ paint: Paint) {
         self.completePath(
             CGPath(
                 roundedRect: rect,
@@ -142,9 +142,9 @@ public extension Canvas {
     }
 }
 
-//--- Canvas.drawLine(GFloat, GFloat, GFloat, GFloat, Paint)
+//--- Canvas.drawLine(CGFloat, CGFloat, CGFloat, CGFloat, Paint)
 public extension Canvas {
-    func drawLine(_ x1: GFloat, _ y1: GFloat, _ x2: GFloat, _ y2: GFloat, _ paint: Paint) {
+    func drawLine(_ x1: CGFloat, _ y1: CGFloat, _ x2: CGFloat, _ y2: CGFloat, _ paint: Paint) {
         let path = Path()
         path.moveTo(x1, y1)
         path.lineTo(x2, y2)
@@ -174,37 +174,37 @@ public extension Canvas {
     }
 }
 
-//--- Canvas.translate(GFloat, GFloat)
+//--- Canvas.translate(CGFloat, CGFloat)
 public extension Canvas {
-    func translate(_ dx: GFloat, _ dy: GFloat) {
+    func translate(_ dx: CGFloat, _ dy: CGFloat) {
         self.translateBy(x: CGFloat(dx), y: CGFloat(dy))
     }
 }
 
-//--- Canvas.scale(GFloat, GFloat)
+//--- Canvas.scale(CGFloat, CGFloat)
 public extension Canvas {
-    func scale(_ scaleX: GFloat, _ scaleY: GFloat) {
+    func scale(_ scaleX: CGFloat, _ scaleY: CGFloat) {
         self.scaleBy(x: CGFloat(scaleX), y: CGFloat(scaleY))
     }
 }
 
-//--- Canvas.rotate(GFloat)
+//--- Canvas.rotate(CGFloat)
 public extension Canvas {
-    func rotate(_ degrees: GFloat) {
+    func rotate(_ degrees: CGFloat) {
         self.rotate(by: CGFloat(degrees) * CGFloat.pi / 180)
     }
 }
 
-//--- Canvas.drawTextCentered(String, GFloat, GFloat, Paint)
+//--- Canvas.drawTextCentered(String, CGFloat, CGFloat, Paint)
 public extension Canvas {
-    func drawTextCentered(_ text: String, _ centerX: GFloat, _ centerY: GFloat, _ paint: Paint) {
+    func drawTextCentered(_ text: String, _ centerX: CGFloat, _ centerY: CGFloat, _ paint: Paint) {
         drawText(text, centerX, centerY, .center, paint)
     }
 }
 
-//--- Canvas.drawText(String, GFloat, GFloat, AlignPair, Paint)
+//--- Canvas.drawText(String, CGFloat, CGFloat, AlignPair, Paint)
 public extension Canvas {
-    func drawText(_ text: String, _ x: GFloat, _ y: GFloat, _ gravity: AlignPair, _ paint: Paint) {
+    func drawText(_ text: String, _ x: CGFloat, _ y: CGFloat, _ gravity: AlignPair, _ paint: Paint) {
         let sizeTaken = CGFloat(paint.measureText(text))
         var dx = CGFloat(x)
         var dy = CGFloat(y)
@@ -226,22 +226,22 @@ public extension Canvas {
         }
         text.draw(at: CGPoint(x: dx, y: dy), withAttributes: paint.attributes)
     }
-    func drawText(text: String, x: GFloat, y: GFloat, gravity: AlignPair, paint: Paint) {
+    func drawText(text: String, x: CGFloat, y: CGFloat, gravity: AlignPair, paint: Paint) {
         drawText(text, x, y, gravity, paint)
     }
 }
 
 //--- tempRect
 
-//--- Canvas.drawBitmap(Bitmap, GFloat, GFloat, GFloat, GFloat)
+//--- Canvas.drawBitmap(Bitmap, CGFloat, CGFloat, CGFloat, CGFloat)
 public extension Canvas {
-    func drawBitmap(_ bitmap: UIImage, _ left: GFloat, _ top: GFloat) {
+    func drawBitmap(_ bitmap: UIImage, _ left: CGFloat, _ top: CGFloat) {
         if let cg = bitmap.cgImage {
             self.draw(cg, in: CGRect(x: CGFloat(left), y: CGFloat(top), width: CGFloat(cg.width), height: CGFloat(cg.height)))
         }
     }
     
-    func drawBitmap(_ bitmap: UIImage, _ left: GFloat, _ top: GFloat, _ right: GFloat, _ bottom: GFloat) {
+    func drawBitmap(_ bitmap: UIImage, _ left: CGFloat, _ top: CGFloat, _ right: CGFloat, _ bottom: CGFloat) {
         if let cg = bitmap.cgImage {
             self.draw(cg, in: CGRect(x: CGFloat(left), y: CGFloat(top), width: CGFloat(right-left), height: CGFloat(bottom-top)))
         }

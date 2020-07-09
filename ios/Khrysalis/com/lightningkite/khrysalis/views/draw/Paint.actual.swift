@@ -64,7 +64,7 @@ public class Paint {
     //--- Paint.textHeight
     public var textHeight: CGFloat {
         let font = UIFont.get(size: CGFloat(textSize), style: [])
-        return GFloat(font.lineHeight)
+        return CGFloat(font.lineHeight)
     }
     
     //--- Paint.attributes

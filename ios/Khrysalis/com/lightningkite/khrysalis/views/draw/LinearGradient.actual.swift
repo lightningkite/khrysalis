@@ -4,12 +4,12 @@ import CoreGraphics
 import UIKit
 
 
-//--- newLinearGradient(GFloat, GFloat, GFloat, GFloat, List<Int>, List<GFloat>, Shader.TileMode)
-public func newLinearGradient(x0: GFloat, y0: GFloat, x1: GFloat, y1: GFloat, colors: Array<UIColor>, positions: Array<GFloat>, tile: Shader.TileMode) -> ShaderValue {
+//--- newLinearGradient(CGFloat, CGFloat, CGFloat, CGFloat, List<Int>, List<CGFloat>, Shader.TileMode)
+public func newLinearGradient(x0: CGFloat, y0: CGFloat, x1: CGFloat, y1: CGFloat, colors: Array<UIColor>, positions: Array<CGFloat>, tile: Shader.TileMode) -> ShaderValue {
     return newLinearGradient(x0, y0, x1, y1, colors, positions, tile)
 }
 
-public func newLinearGradient(_ x0: GFloat, _ y0: GFloat, _ x1: GFloat, _ y1: GFloat, _ colors: Array<UIColor>, _ positions: Array<GFloat>, _ tile: Shader.TileMode) -> ShaderValue {
+public func newLinearGradient(_ x0: CGFloat, _ y0: CGFloat, _ x1: CGFloat, _ y1: CGFloat, _ colors: Array<UIColor>, _ positions: Array<CGFloat>, _ tile: Shader.TileMode) -> ShaderValue {
     return { context in
         context.drawLinearGradient(
             CGGradient(
