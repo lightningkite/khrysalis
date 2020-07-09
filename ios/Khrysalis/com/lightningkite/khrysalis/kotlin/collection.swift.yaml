@@ -1,0 +1,19 @@
+---
+
+# Lists
+
+- id: kotlin.collections.Collection
+  type: type
+  template: Collection<~T0~>
+
+- id: kotlin.collections.Collection.contains
+  type: call
+  template: ~this~.contains(~0~)
+
+- id: kotlin.collections.Collection.isEmpty
+  type: call
+  template: ~this~.isEmpty
+
+- id: kotlin.collections.Collection.size
+  type: get
+  template: ~this~.count

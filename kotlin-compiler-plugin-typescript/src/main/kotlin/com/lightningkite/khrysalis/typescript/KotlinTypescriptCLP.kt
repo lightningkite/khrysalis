@@ -15,6 +15,8 @@ import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.config.CompilerConfigurationKey
 import org.jetbrains.kotlin.descriptors.ModuleDescriptor
 import org.jetbrains.kotlin.psi.*
+import org.jetbrains.kotlin.psi.psiUtil.toVisibility
+import org.jetbrains.kotlin.psi.psiUtil.visibilityModifierTypeOrDefault
 import org.jetbrains.kotlin.resolve.BindingTrace
 import org.jetbrains.kotlin.resolve.jvm.extensions.AnalysisHandlerExtension
 import java.io.File
@@ -114,7 +116,8 @@ class KotlinTypescriptExtension(
         translator.declarations.load(dependencies.asSequence().plus(output), output)
 
         //Create manifest of declarations within this module
-        val map: Map<String, File> = translator.run { generateFqToFileMap(files.filter { it.virtualFilePath.endsWith(".shared.kt") }, output) }
+        val map: Map<String, File> =
+            translator.run { generateFqToFileMap(files.filter { it.virtualFilePath.endsWith(".shared.kt") }, output) }
         translator.declarations.local.putAll(map)
 
         //Load equivalents
@@ -148,7 +151,7 @@ class KotlinTypescriptExtension(
                     .resolve(file.virtualFilePath.removePrefix(translator.commonPath))
                     .parentFile
                     .resolve(file.name.removeSuffix(".kt").plus(".ts"))
-                if(outputFile.exists() && outputFile.useLines { it.first() } != TypescriptFileEmitter.overwriteWarning) continue
+                if (outputFile.exists() && outputFile.useLines { it.first() } != TypescriptFileEmitter.overwriteWarning) continue
                 collector?.report(CompilerMessageSeverity.INFO, "Translating $file to $outputFile")
                 outputFile.parentFile.mkdirs()
                 val out = TypescriptFileEmitter(translator, file)
@@ -165,6 +168,7 @@ class KotlinTypescriptExtension(
                 )
             }
         }
+
         collector?.report(CompilerMessageSeverity.INFO, "Completed translation.")
         return AnalysisResult.Companion.success(ctx, module, false)
     }

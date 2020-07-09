@@ -5,18 +5,18 @@ import UIKit
 
 //--- TabLayout.bind(List<String>, MutableObservableProperty<Int>)
 public extension UISegmentedControl {
-    func bind(_ tabs: Array<String>, _ selected: MutableObservableProperty<Int32>) -> Void {
+    func bind(_ tabs: Array<String>, _ selected: MutableObservableProperty<Int>) -> Void {
         for entry in tabs {
             self.insertSegment(withTitle: entry, at: self.numberOfSegments, animated: false)
         }
         self.addAction(for: .valueChanged, action: { [weak self, weak selected] in
-            selected?.value = Int32(self?.selectedSegmentIndex ?? 0)
+            selected?.value = Int(self?.selectedSegmentIndex ?? 0)
         })
         selected.subscribeBy { value in
             self.selectedSegmentIndex = Int(value)
         }.until(self.removed)
     }
-    func bind(tabs: Array<String>, selected: MutableObservableProperty<Int32>) -> Void {
+    func bind(tabs: Array<String>, selected: MutableObservableProperty<Int>) -> Void {
         return bind(tabs, selected)
     }
 }

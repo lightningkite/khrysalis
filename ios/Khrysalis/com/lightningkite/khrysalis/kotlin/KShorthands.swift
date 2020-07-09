@@ -8,7 +8,7 @@ public extension KHashable {
         hasher.combine(hashCode())
     }
 }
-public protocol KEnum: Hashable, CustomStringConvertible {
+public protocol KEnum: StringEnum, CaseIterable, Hashable {
 }
 public protocol KDataClass: Hashable, CustomStringConvertible {
 }

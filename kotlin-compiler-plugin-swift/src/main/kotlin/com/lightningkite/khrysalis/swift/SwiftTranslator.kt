@@ -37,6 +37,8 @@ class SwiftTranslator(
 ) : PartialTranslatorByType<SwiftFileEmitter, Unit, Any>(), TranslatorInterface<SwiftFileEmitter, Unit>,
     AnalysisExtensions {
 
+    val fqToImport = HashMap<String, String>()
+
     var stubMode: Boolean = false
 
     data class ReceiverAssignment(val declaration: DeclarationDescriptor, val tsName: String)

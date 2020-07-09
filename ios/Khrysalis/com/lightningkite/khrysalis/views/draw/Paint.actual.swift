@@ -12,7 +12,7 @@ public class Paint {
     }
     
     //--- Paint.flags
-    public var flags: Int32 = 0
+    public var flags: Int = 0
     
     //--- Paint.color
     public var color: ColorValue = UIColor.black
@@ -21,7 +21,7 @@ public class Paint {
     public var strokeWidth: GFloat = 0
     
     //--- Paint.alpha
-    public var alpha: Int32 = 255
+    public var alpha: Int = 255
     
     //--- Paint.style
     public var style: Style = .FILL_AND_STROKE

@@ -72,6 +72,10 @@
   infix: true
   template: ~this~ + ~0~
 
+- id: kotlin.String.length
+  type: get
+  template: ~this~.count
+
 - id: kotlin.String.plus
   type: call
   template: (~this~ + ~0~)

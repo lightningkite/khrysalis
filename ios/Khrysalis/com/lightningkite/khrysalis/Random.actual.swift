@@ -24,38 +24,38 @@ public class Random {
     //--- Random.Companion.}
     
     //--- Random.nextInt()
-    public func nextInt() -> Int32 {
-        return Int32.random(in: Int32.min...Int32.max, using: &twister)
+    public func nextInt() -> Int {
+        return Int.random(in: Int.min...Int.max, using: &twister)
     }
-    static public func nextInt() -> Int32 {
-        return Int32.random(in: Int32.min...Int32.max)
+    static public func nextInt() -> Int {
+        return Int.random(in: Int.min...Int.max)
     }
     
     //--- Random.nextInt(Int)
-    public func nextInt(_ until: Int32) -> Int32 {
-        return Int32.random(in: 0...until, using: &twister)
+    public func nextInt(_ until: Int) -> Int {
+        return Int.random(in: 0...until, using: &twister)
     }
-    public func nextInt(until: Int32) -> Int32 {
+    public func nextInt(until: Int) -> Int {
         return nextInt(until)
     }
-    static public func nextInt(_ until: Int32) -> Int32 {
-        return Int32.random(in: 0...until)
+    static public func nextInt(_ until: Int) -> Int {
+        return Int.random(in: 0...until)
     }
-    static public func nextInt(until: Int32) -> Int32 {
+    static public func nextInt(until: Int) -> Int {
         return nextInt(until)
     }
     
     //--- Random.nextInt(Int, Int)
-    public func nextInt(_ from: Int32, _ until: Int32) -> Int32 {
-        return Int32.random(in: from...until, using: &twister)
+    public func nextInt(_ from: Int, _ until: Int) -> Int {
+        return Int.random(in: from...until, using: &twister)
     }
-    public func nextInt(from: Int32, until: Int32) -> Int32 {
+    public func nextInt(from: Int, until: Int) -> Int {
         return nextInt(from, until)
     }
-    static public func nextInt(_ from: Int32, _ until: Int32) -> Int32 {
-        return Int32.random(in: from...until)
+    static public func nextInt(_ from: Int, _ until: Int) -> Int {
+        return Int.random(in: from...until)
     }
-    static public func nextInt(from: Int32, until: Int32) -> Int32 {
+    static public func nextInt(from: Int, until: Int) -> Int {
         return nextInt(from, until)
     }
     

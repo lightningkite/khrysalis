@@ -11,8 +11,8 @@ public struct HttpResponse {
     }
 
     //--- HttpResponse.code
-    var code: Int32 {
-        return Int32(self.response.statusCode)
+    var code: Int {
+        return Int(self.response.statusCode)
     }
 
     //--- HttpResponse.isSuccessful

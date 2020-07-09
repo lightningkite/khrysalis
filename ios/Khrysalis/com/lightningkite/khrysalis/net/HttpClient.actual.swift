@@ -83,7 +83,7 @@ public enum HttpClient {
     }
     
     //--- HttpClient.call(String, String, Map<String,String>, Any? ,  @escaping()(code:Int,result:T?,error:String?)->Unit)
-    public static func call<T: Decodable>(_ url: String, _ method: String = GET, _ headers: Dictionary<String, String> = [:], _ body: Encodable? = nil, _ onResult: @escaping (_ code: Int32, _ result: T?, _ error: String?) -> Void) -> Void {
+    public static func call<T: Decodable>(_ url: String, _ method: String = GET, _ headers: Dictionary<String, String> = [:], _ body: Encodable? = nil, _ onResult: @escaping (_ code: Int, _ result: T?, _ error: String?) -> Void) -> Void {
         print("HttpClient: Sending \(method) request to \(url) with headers \(headers)")
         let urlObj = URL(string: url)!
 
@@ -96,13 +96,13 @@ public enum HttpClient {
                         do {
                             let parsed = try T.fromJsonString(dataString)
                             print("HttpClient: Parsed: \(parsed)")
-                            onResult(Int32(casted.statusCode), parsed, nil)
+                            onResult(Int(casted.statusCode), parsed, nil)
                         } catch {
                             print("HttpClient: Failed to parse due to: \(error.localizedDescription)")
-                            onResult(Int32(casted.statusCode), nil, error.localizedDescription)
+                            onResult(Int(casted.statusCode), nil, error.localizedDescription)
                         }
                     } else {
-                        onResult(Int32(casted.statusCode), nil, dataString)
+                        onResult(Int(casted.statusCode), nil, dataString)
                     }
                 } else {
                     print("HttpClient: ERROR!  Response is not URLResponse")
@@ -132,12 +132,12 @@ public enum HttpClient {
             session.dataTask(with: request, completionHandler: completionHandler).resume()
         }
     }
-    public static func call<T: Decodable>(url: String, method: String = GET, headers: Dictionary<String, String> = [:], body: Encodable? = nil, onResult: @escaping (_ code: Int32, _ result: T?, _ error: String?) -> Void) -> Void {
+    public static func call<T: Decodable>(url: String, method: String = GET, headers: Dictionary<String, String> = [:], body: Encodable? = nil, onResult: @escaping (_ code: Int, _ result: T?, _ error: String?) -> Void) -> Void {
         return call(url, method, headers, body, onResult)
     }
 
     //--- HttpClient.callRaw(String, String, Map<String,String>, Any? ,  @escaping()(code:Int,result:String?,error:String?)->Unit)
-    public static func callRaw(_ url: String, _ method: String = GET, _ headers: Dictionary<String, String> = [:], _ body: Encodable? = nil, _ onResult: @escaping (_ code: Int32, _ result: String?, _ error: String?) -> Void) -> Void {
+    public static func callRaw(_ url: String, _ method: String = GET, _ headers: Dictionary<String, String> = [:], _ body: Encodable? = nil, _ onResult: @escaping (_ code: Int, _ result: String?, _ error: String?) -> Void) -> Void {
         print("HttpClient: Sending \(method) request to \(url) with headers \(headers)")
         let urlObj = URL(string: url)!
 
@@ -147,9 +147,9 @@ public enum HttpClient {
                     let dataString = String(data: data, encoding: .utf8) ?? ""
                     print("HttpClient: Response \(casted.statusCode): \(dataString)")
                     if casted.statusCode / 100 == 2 {
-                        onResult(Int32(casted.statusCode), dataString, nil)
+                        onResult(Int(casted.statusCode), dataString, nil)
                     } else {
-                        onResult(Int32(casted.statusCode), nil, dataString)
+                        onResult(Int(casted.statusCode), nil, dataString)
                     }
                 } else {
                     print("HttpClient: ERROR!  Response is not URLResponse")
@@ -179,12 +179,12 @@ public enum HttpClient {
             session.dataTask(with: request, completionHandler: completionHandler).resume()
         }
     }
-    public static func callRaw(url: String, method: String = GET, headers: Dictionary<String, String> = [:], body: Encodable? = nil, onResult: @escaping (_ code: Int32, _ result: String?, _ error: String?) -> Void) -> Void {
+    public static func callRaw(url: String, method: String = GET, headers: Dictionary<String, String> = [:], body: Encodable? = nil, onResult: @escaping (_ code: Int, _ result: String?, _ error: String?) -> Void) -> Void {
         return callRaw(url, method, headers, body, onResult)
     }
 
     //--- HttpClient.callWithoutResult(String, String, Map<String,String>, Any? ,  @escaping()(code:Int,error:String?)->Unit)
-    public static func callWithoutResult(_ url: String, _ method: String = GET, _ headers: Dictionary<String, String> = [:], _ body: Encodable? = nil, _ onResult: @escaping (_ code: Int32, _ error: String?) -> Void) -> Void {
+    public static func callWithoutResult(_ url: String, _ method: String = GET, _ headers: Dictionary<String, String> = [:], _ body: Encodable? = nil, _ onResult: @escaping (_ code: Int, _ error: String?) -> Void) -> Void {
         print("HttpClient: Sending \(method) request to \(url) with headers \(headers)")
         let urlObj = URL(string: url)!
 
@@ -194,9 +194,9 @@ public enum HttpClient {
                     let dataString = String(data: data, encoding: .utf8) ?? ""
                     print("HttpClient: Response \(casted.statusCode): \(dataString)")
                     if casted.statusCode / 100 == 2 {
-                        onResult(Int32(casted.statusCode), nil)
+                        onResult(Int(casted.statusCode), nil)
                     } else {
-                        onResult(Int32(casted.statusCode), dataString)
+                        onResult(Int(casted.statusCode), dataString)
                     }
                 } else {
                     print("HttpClient: ERROR!  Response is not URLResponse")
@@ -224,12 +224,12 @@ public enum HttpClient {
             session.dataTask(with: request, completionHandler: completionHandler).resume()
         }
     }
-    public static func callWithoutResult(url: String, method: String = GET, headers: Dictionary<String, String> = [:], body: Encodable? = nil, onResult: @escaping (_ code: Int32, _ error: String?) -> Void) -> Void {
+    public static func callWithoutResult(url: String, method: String = GET, headers: Dictionary<String, String> = [:], body: Encodable? = nil, onResult: @escaping (_ code: Int, _ error: String?) -> Void) -> Void {
         return callWithoutResult(url, method, headers, body, onResult)
     }
 
     //--- HttpClient.uploadImageWithoutResult(String, String, Map<String,String>, String, Image, Long, Map<String,String>,  @escaping()(code:Int,error:String?)->Unit)
-    public static func uploadImageWithoutResult(_ url: String, _ method: String = POST, _ headers: Dictionary<String, String> = [:], _ fieldName: String, _ image: Image, _ maxSize: Int64 = 10_000_000, _ additionalFields: Dictionary<String, String> = [:], _ onResult: @escaping (_ code: Int32, _ error: String?) -> Void) -> Void {
+    public static func uploadImageWithoutResult(_ url: String, _ method: String = POST, _ headers: Dictionary<String, String> = [:], _ fieldName: String, _ image: Image, _ maxSize: Int64 = 10_000_000, _ additionalFields: Dictionary<String, String> = [:], _ onResult: @escaping (_ code: Int, _ error: String?) -> Void) -> Void {
         loadImage(image) { image in
             if let image = image {
                 var quality: CGFloat = 1.0
@@ -270,9 +270,9 @@ public enum HttpClient {
                                     let dataString = String(data: data, encoding: .utf8) ?? ""
                                     print("HttpClient: Response \(casted.statusCode): \(dataString)")
                                     if casted.statusCode / 100 == 2 {
-                                        onResult(Int32(casted.statusCode), nil)
+                                        onResult(Int(casted.statusCode), nil)
                                     } else {
-                                        onResult(Int32(casted.statusCode), dataString)
+                                        onResult(Int(casted.statusCode), dataString)
                                     }
                                 } else {
                                     onResult(0, "Failed")
@@ -290,12 +290,12 @@ public enum HttpClient {
             }
         }
     }
-    public static func uploadImageWithoutResult(url: String, method: String = POST, headers: Dictionary<String, String> = [:], fieldName: String, image: Image, maxSize: Int64 = 10_000_000, additionalFields: Dictionary<String, String> = [:], onResult: @escaping (_ code: Int32, _ error: String?) -> Void) -> Void {
+    public static func uploadImageWithoutResult(url: String, method: String = POST, headers: Dictionary<String, String> = [:], fieldName: String, image: Image, maxSize: Int64 = 10_000_000, additionalFields: Dictionary<String, String> = [:], onResult: @escaping (_ code: Int, _ error: String?) -> Void) -> Void {
         return uploadImageWithoutResult(url, method, headers, fieldName, image, maxSize, additionalFields, onResult)
     }
 
     //--- HttpClient.uploadImage(String, String, Map<String,String>, String, Image, Long, Map<String,String>,  @escaping()(code:Int,result:T?,error:String?)->Unit)
-    public static func uploadImage<T: Decodable>(_ url: String, _ method: String = POST, _ headers: Dictionary<String, String> = [:], _ fieldName: String, _ image: Image, _ maxSize: Int64 = 10_000_000, _ additionalFields: Dictionary<String, String> = [:], _ onResult: @escaping (_ code: Int32, _ result: T?, _ error: String?) -> Void) -> Void {
+    public static func uploadImage<T: Decodable>(_ url: String, _ method: String = POST, _ headers: Dictionary<String, String> = [:], _ fieldName: String, _ image: Image, _ maxSize: Int64 = 10_000_000, _ additionalFields: Dictionary<String, String> = [:], _ onResult: @escaping (_ code: Int, _ result: T?, _ error: String?) -> Void) -> Void {
         loadImage(image) { image in
             if let image = image {
                 var quality: CGFloat = 1.0
@@ -338,13 +338,13 @@ public enum HttpClient {
                                     if casted.statusCode / 100 == 2 {
                                         do {
                                             let parsed = try T.fromJsonString(dataString)
-                                            onResult(Int32(casted.statusCode), parsed, nil)
+                                            onResult(Int(casted.statusCode), parsed, nil)
                                         } catch {
                                             print("HttpClient: Failed to parse due to: \(error.localizedDescription)")
-                                            onResult(Int32(casted.statusCode), nil, error.localizedDescription)
+                                            onResult(Int(casted.statusCode), nil, error.localizedDescription)
                                         }
                                     } else {
-                                        onResult(Int32(casted.statusCode), nil, dataString)
+                                        onResult(Int(casted.statusCode), nil, dataString)
                                     }
                                 } else {
                                     onResult(0, nil, "Failed")
@@ -362,7 +362,7 @@ public enum HttpClient {
             }
         }
     }
-    public static func uploadImage<T: Decodable>(url: String, method: String = POST, headers: Dictionary<String, String> = [:], fieldName: String, image: Image, maxSize: Int64 = 10_000_000, additionalFields: Dictionary<String, String> = [:], onResult: @escaping (_ code: Int32, _ result: T?, _ error: String?) -> Void) -> Void {
+    public static func uploadImage<T: Decodable>(url: String, method: String = POST, headers: Dictionary<String, String> = [:], fieldName: String, image: Image, maxSize: Int64 = 10_000_000, additionalFields: Dictionary<String, String> = [:], onResult: @escaping (_ code: Int, _ result: T?, _ error: String?) -> Void) -> Void {
         return uploadImage(url, method, headers, fieldName, image, maxSize, additionalFields, onResult)
     }
 
