@@ -5,6 +5,7 @@ import com.lightningkite.khrysalis.util.walkTopDown
 import org.jetbrains.kotlin.com.intellij.psi.PsiComment
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
+import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
 import org.jetbrains.kotlin.psi2ir.findFirstFunction
@@ -164,7 +165,7 @@ fun SwiftTranslator.registerFunction() {
                 returnType = typedRule.typeReference
                     ?: typedRule.bodyExpression?.takeUnless { it is KtBlockExpression }?.resolvedExpressionTypeInfo?.type
                     ?: "Void",
-                body = typedRule.bodyExpression
+                body = typedRule.bodyExpression ?: "{ TODO() }"
             )
         }
         if (typedRule.receiverTypeReference != null &&

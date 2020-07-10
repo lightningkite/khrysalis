@@ -36,7 +36,7 @@ class ViewStringList(val parts: List<ViewString>, val separator: String = "\n"):
     }
 }
 
-fun List<@swiftExactly() ViewString>.joinToViewString(separator: String = "\n"): ViewString {
+fun List<@swiftExactly("Element") ViewString>.joinToViewString(separator: String = "\n"): ViewString {
     if(this.size == 1){
         return this.first()
     }

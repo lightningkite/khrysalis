@@ -80,6 +80,36 @@ fun SwiftTranslator.registerVariable() {
         }
     )
 
+    //abstract
+    handle<KtProperty>(
+        condition = {
+            typedRule.hasModifier(KtTokens.ABSTRACT_KEYWORD)
+        },
+        priority = 150,
+        action = {
+            if (typedRule.isMember) {
+                if (typedRule.resolvedProperty?.overriddenDescriptors
+                        ?.any { (it.containingDeclaration as? ClassDescriptor)?.kind != ClassKind.INTERFACE } == true
+                ) {
+                    -"override "
+                }
+            }
+            if (typedRule.isMember || (typedRule.isTopLevel && !typedRule.isExtensionDeclaration())) {
+                -(typedRule.visibilityModifier() ?: "public")
+                -" "
+            }
+            -"var "
+            -typedRule.nameIdentifier
+            -": "
+            -typedRule.typeReference
+            if (typedRule.isVar) {
+                -" { get { TODO() } set { TODO() } }"
+            } else {
+                -" { get { TODO() } }"
+            }
+        }
+    )
+
     //Plain
     handle<KtProperty> {
         if (typedRule.isMember) {

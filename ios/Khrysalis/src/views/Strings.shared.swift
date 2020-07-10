@@ -64,7 +64,7 @@ public class ViewStringList : ViewString {
     }
 }
 
-public extension Array where T: ViewString {
+public extension Array where Element: ViewString {
     func joinToViewString(separator: String = "\n") -> ViewString {
         if self.count == 1 {
             return self.first!

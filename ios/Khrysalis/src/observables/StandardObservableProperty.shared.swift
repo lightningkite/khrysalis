@@ -2,11 +2,12 @@
 // File: observables/StandardObservableProperty.shared.kt
 // Package: com.lightningkite.khrysalis.observables
 import Foundation
+import RxRelay
 
-public class StandardObservableProperty<T> : MutableObservableProperty<Any> {
+public class StandardObservableProperty<T> : MutableObservableProperty<T> {
     public var underlyingValue: T
     public var onChange: Subject<T>
-    override public init(underlyingValue: T, onChange: Subject<T> = PublishSubject.create()) {
+    public init(underlyingValue: T, onChange: Subject<T> = new Subject()) {
         self.underlyingValue = underlyingValue
         self.onChange = onChange
         super.init()

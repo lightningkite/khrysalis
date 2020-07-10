@@ -2,9 +2,10 @@
 // File: views/showDialog.shared.kt
 // Package: com.lightningkite.khrysalis.views
 import Foundation
+import RxRelay
 
 public let lastDialog = StandardObservableProperty(underlyingValue: nil)
-public let showDialogEvent: PublishSubject<DialogRequest> = PublishSubject.create()
+public let showDialogEvent: Subject<DialogRequest> = new Subject()
 
 public class DialogRequest {
     public var string: ViewString

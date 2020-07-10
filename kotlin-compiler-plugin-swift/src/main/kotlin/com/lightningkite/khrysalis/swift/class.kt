@@ -45,11 +45,15 @@ fun SwiftTranslator.registerClass() {
         -typedRule.typeParameterList
         typedRule.superTypeListEntries
             .mapNotNull { it as? KtSuperTypeCallEntry }
-            .map { it.resolvedCall?.getReturnType() }
+            .map {
+                it.calleeExpression?.typeReference
+            }
             .plus(
                 typedRule.superTypeListEntries
                     .mapNotNull { it as? KtSuperTypeEntry }
-                    .map { it.typeReference }
+                    .map {
+                        listOf(it.typeReference)
+                    }
             )
             .let {
                 if (on is KtClass && on.isData()) {
@@ -153,9 +157,10 @@ fun SwiftTranslator.registerClass() {
         run {
             val c = typedRule.resolvedClass ?: return@run
             val s = c.getSuperClassNotAny() ?: return@run
-            val sc = c.unsubstitutedPrimaryConstructor ?: return@run
+            val sc = s.unsubstitutedPrimaryConstructor ?: return@run
             val cc = c.unsubstitutedPrimaryConstructor ?: return@run
             if (sc.valueParameters.size != cc.valueParameters.size) return@run
+            println("Matching up $sc against $cc")
             if (sc.valueParameters.zip(cc.valueParameters).all {
                     it.first.name.asString() == it.second.name.asString()
                             && it.first.type.getJetTypeFqName(false) == it.second.type.getJetTypeFqName(false)
@@ -165,8 +170,6 @@ fun SwiftTranslator.registerClass() {
         }
         if (typedRule.isEnum()) {
             -"private"
-        } else if (typedRule.hasModifier(KtTokens.ABSTRACT_KEYWORD)) {
-            -"protected"
         } else {
             -(typedRule.primaryConstructor?.visibilityModifier() ?: "public")
         }

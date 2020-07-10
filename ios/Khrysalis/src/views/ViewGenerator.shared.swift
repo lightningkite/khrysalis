@@ -4,12 +4,12 @@
 import Foundation
 
 public class ViewGenerator {
-    protected init() {
+    public init() {
     }
     
-    public let title: String
+    public var title: String { get { TODO() } }
     
-    public func generate(dependency: ViewDependency) -> View 
+    public func generate(dependency: ViewDependency) -> View { TODO() }
     
     public class Default : ViewGenerator {
         override public init() {

@@ -9,7 +9,7 @@ public class Video {
 }
 public class VideoReference : Video, KDataClass {
     public var uri: Uri
-    override public init(uri: Uri) {
+    public init(uri: Uri) {
         self.uri = uri
         super.init()
     }
@@ -22,7 +22,7 @@ public class VideoReference : Video, KDataClass {
 }
 public class VideoRemoteUrl : Video, KDataClass {
     public var url: String
-    override public init(url: String) {
+    public init(url: String) {
         self.url = url
         super.init()
     }

@@ -283,7 +283,7 @@ fun SwiftTranslator.registerType() {
         when (typedRule.projectionKind) {
             KtProjectionKind.IN -> -typedRule.typeReference
             KtProjectionKind.OUT -> -typedRule.typeReference
-            KtProjectionKind.STAR -> -"any"
+            KtProjectionKind.STAR -> -"Any?"
             KtProjectionKind.NONE -> -typedRule.typeReference
         }
     }

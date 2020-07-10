@@ -2,10 +2,11 @@
 // File: observables/ObservableStack.shared.kt
 // Package: com.lightningkite.khrysalis.observables
 import Foundation
+import RxRelay
 
-public class ObservableStack<T : AnyObject> : ObservableProperty<Any> {
+public class ObservableStack<T : AnyObject> : ObservableProperty<Array<T>> {
     override public init() {
-        self.onChange = PublishSubject.create()
+        self.onChange = new Subject()
         self.stack = [] as Array<Any>
         super.init()
     }
@@ -23,7 +24,7 @@ public class ObservableStack<T : AnyObject> : ObservableProperty<Any> {
         }
     }
     
-    override public let onChange: PublishSubject<Array<T>>
+    override public let onChange: Subject<Array<T>>
     override public var value: Array<T> {
         get {
             return self.stack
