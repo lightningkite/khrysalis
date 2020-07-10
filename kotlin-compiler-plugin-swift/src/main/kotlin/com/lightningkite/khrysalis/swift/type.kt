@@ -39,11 +39,11 @@ data class CompleteReflectableType(val type: KotlinType)
 data class KtUserTypeBasic(val type: KtUserType)
 data class SwiftExtensionStart(val forDescriptor: CallableDescriptor)
 
-private val partOfParameterWeak = WeakHashMap<KotlinType, Boolean>()
-var KotlinType.partOfParameter: Boolean
-    get() = partOfParameterWeak[this] ?: false
+val partOfParameterLocal = ThreadLocal<Boolean>()
+var partOfParameter: Boolean
+    get() = partOfParameterLocal.get()
     set(value){
-        partOfParameterWeak[this] = value
+        partOfParameterLocal.set(value)
     }
 
 fun KotlinType.worksAsSwiftConstraint(): Boolean {
@@ -116,7 +116,7 @@ fun SwiftTranslator.registerType() {
     handle<KotlinType> {
         when (val desc = typedRule.constructor.declarationDescriptor) {
             is FunctionClassDescriptor -> {
-                if (typedRule.partOfParameter && typedRule.annotations.any { it.fqName?.asString() == "com.lightningkite.khrysalis.escaping" }) {
+                if (partOfParameter && typedRule.annotations.any { it.fqName?.asString() == "com.lightningkite.khrysalis.escaping" }) {
                     -"@escaping "
                 }
                 -'('
@@ -268,7 +268,7 @@ fun SwiftTranslator.registerType() {
 
     handle<KtTypeReference>(
         condition = {
-            typedRule.annotationEntries
+            partOfParameter && typedRule.annotationEntries
                 .any { it.resolvedAnnotation?.fqName?.asString() == "com.lightningkite.khrysalis.escaping" }
                     && typedRule.parentOfType<KtParameter>() != null
         },

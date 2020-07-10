@@ -3,7 +3,7 @@
 // Package: com.lightningkite.khrysalis
 import Foundation
 
-public class Video : KEquatable, KHashable, KStringable {
+public class Video {
     public init() {
     }
 }

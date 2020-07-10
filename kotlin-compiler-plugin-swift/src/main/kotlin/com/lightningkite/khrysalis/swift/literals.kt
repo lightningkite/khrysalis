@@ -16,6 +16,13 @@ fun SwiftTranslator.registerLiterals() {
         -typedRule.expression
         -")"
     }
+    handle<KtEscapeStringTemplateEntry> {
+        if(typedRule.unescapedValue == "$"){
+            -"$"
+        } else {
+            doSuper()
+        }
+    }
 
     handle<KtConstantExpression> {
         when(typedRule.node.elementType){

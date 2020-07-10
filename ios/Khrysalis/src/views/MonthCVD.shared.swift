@@ -278,7 +278,7 @@ public class MonthCVD : CustomViewDelegate {
     }
 }
 
-public class CalendarDrawing : KEquatable, KHashable, KStringable {
+public class CalendarDrawing {
     private init() {
     }
     public static let INSTANCE = CalendarDrawing()

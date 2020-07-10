@@ -3,7 +3,7 @@
 // Package: com.lightningkite.khrysalis.views
 import Foundation
 
-public class CustomViewDelegate : KEquatable, KHashable, KStringable {
+public class CustomViewDelegate {
     protected init() {
         self.customView = nil
         self.toDispose = []

@@ -4,8 +4,8 @@
 import Foundation
 
 public class ReferenceObservableProperty<T> : MutableObservableProperty<Any> {
-    public var get: @escaping  () -> T
-    public var set: @escaping  (T) -> Void
+    public var get:  () -> T
+    public var set:  (T) -> Void
     public var event: Observable<T>
     override public init(get: @escaping  () -> T, set: @escaping  (T) -> Void, event: Observable<T>) {
         self.get = get

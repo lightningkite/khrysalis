@@ -5,7 +5,7 @@ import Foundation
 
 public class TransformedObservableProperty<A, B> : ObservableProperty<Any> {
     public var basedOn: ObservableProperty<A>
-    public var read: @escaping  (A) -> B
+    public var read:  (A) -> B
     override public init(basedOn: ObservableProperty<A>, read: @escaping  (A) -> B) {
         self.basedOn = basedOn
         self.read = read

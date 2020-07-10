@@ -6,7 +6,7 @@ import Foundation
 public class CombineObservableProperty<T, A, B> : ObservableProperty<Any> {
     public var observableA: ObservableProperty<A>
     public var observableB: ObservableProperty<B>
-    public var combiner: @escaping  (A, B) -> T
+    public var combiner:  (A, B) -> T
     override public init(observableA: ObservableProperty<A>, observableB: ObservableProperty<B>, combiner: @escaping  (A, B) -> T) {
         self.observableA = observableA
         self.observableB = observableB

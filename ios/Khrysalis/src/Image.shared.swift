@@ -3,7 +3,7 @@
 // Package: com.lightningkite.khrysalis
 import Foundation
 
-public class Image : KEquatable, KHashable, KStringable {
+public class Image {
     public init() {
     }
 }

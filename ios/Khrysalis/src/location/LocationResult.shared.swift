@@ -3,7 +3,7 @@
 // Package: com.lightningkite.khrysalis.location
 import Foundation
 
-public class LocationResult : KDataClass, KEquatable, KHashable, KStringable {
+public class LocationResult : KDataClass {
     public var coordinate: GeoCoordinate
     public var accuracyMeters: Double
     public var altitudeMeters: Double

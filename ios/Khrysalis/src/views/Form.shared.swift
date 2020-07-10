@@ -3,7 +3,7 @@
 // Package: com.lightningkite.khrysalis.views
 import Foundation
 
-public class FormValidationError : KEquatable, KHashable, KStringable {
+public class FormValidationError {
     public var field: UntypedFormField
     public var string: ViewString
     public init(field: UntypedFormField, string: ViewString) {
@@ -28,7 +28,7 @@ public protocol UntypedFormField {
 public class FormField<T> : UntypedFormField {
     public var name: ViewString
     public var observable: MutableObservableProperty<T>
-    public var validation: @escaping  (UntypedFormField) -> ViewString?
+    public var validation:  (UntypedFormField) -> ViewString?
     public init(name: ViewString, observable: MutableObservableProperty<T>, validation: @escaping  (UntypedFormField) -> ViewString?) {
         self.name = name
         self.observable = observable
@@ -48,16 +48,16 @@ public class FormField<T> : UntypedFormField {
     }
 }
 
-public class Form : KEquatable, KHashable, KStringable {
+public class Form {
     public init() {
         self.fields = []
     }
     
     
-    public class Companion : KEquatable, KHashable, KStringable {
+    public class Companion {
         private init() {
-            self.xIsRequired = ViewStringRaw(string: "%1\$s is required.")
-            self.xMustMatchY = ViewStringRaw(string: "%1\$s must match %2\$s.")
+            self.xIsRequired = ViewStringRaw(string: "%1$s is required.")
+            self.xMustMatchY = ViewStringRaw(string: "%1$s must match %2$s.")
         }
         public static let INSTANCE = Companion()
         

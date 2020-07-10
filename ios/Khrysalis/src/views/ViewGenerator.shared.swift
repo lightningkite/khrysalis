@@ -3,7 +3,7 @@
 // Package: com.lightningkite.khrysalis.views
 import Foundation
 
-public class ViewGenerator : KEquatable, KHashable, KStringable {
+public class ViewGenerator {
     protected init() {
     }
     

@@ -3,8 +3,8 @@
 // Package: com.lightningkite.khrysalis.rx
 import Foundation
 
-public class DisposeCondition : KEquatable, KHashable, KStringable {
-    public var call: @escaping  (Disposable) -> Void
+public class DisposeCondition {
+    public var call:  (Disposable) -> Void
     public init(call: @escaping  (Disposable) -> Void) {
         self.call = call
     }

@@ -5,7 +5,7 @@ import Foundation
 
 public class FlatMappedObservableProperty<A, B> : ObservableProperty<Any> {
     public var basedOn: ObservableProperty<A>
-    public var transformation: @escaping  (A) -> ObservableProperty<B>
+    public var transformation:  (A) -> ObservableProperty<B>
     override public init(basedOn: ObservableProperty<A>, transformation: @escaping  (A) -> ObservableProperty<B>) {
         self.basedOn = basedOn
         self.transformation = transformation
@@ -28,7 +28,7 @@ public extension ObservableProperty {
 
 public class MutableFlatMappedObservableProperty<A, B> : MutableObservableProperty<Any> {
     public var basedOn: ObservableProperty<A>
-    public var transformation: @escaping  (A) -> MutableObservableProperty<B>
+    public var transformation:  (A) -> MutableObservableProperty<B>
     override public init(basedOn: ObservableProperty<A>, transformation: @escaping  (A) -> MutableObservableProperty<B>) {
         self.basedOn = basedOn
         self.transformation = transformation

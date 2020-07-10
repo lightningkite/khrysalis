@@ -22,7 +22,7 @@ fun createAndroidLayoutClasses(
     outputFolder: File,
     buildFileForPrototyper: File
 ) {
-    val styles = File(resourcesFolder, "values/styles.xml").readXMLStyles()
+    val styles = File(resourcesFolder, "values/styles.xml").takeIf { it.exists() }?.readXMLStyles() ?: return
     val packageName =
         outputFolder.absolutePath.replace('\\', '/').substringAfter("src/main/").substringAfter('/').replace('/', '.')
 

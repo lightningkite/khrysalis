@@ -3,7 +3,7 @@
 // Package: com.lightningkite.khrysalis.views
 import Foundation
 
-public class DjangoErrorTranslator : KEquatable, KHashable, KStringable {
+public class DjangoErrorTranslator {
     public var connectivityErrorResource: StringResource
     public var serverErrorResource: StringResource
     public var otherErrorResource: StringResource

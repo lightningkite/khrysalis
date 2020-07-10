@@ -183,7 +183,9 @@ fun SwiftTranslator.registerFunction() {
         -typedRule.nameIdentifier
         typedRule.typeReference?.let {
             -": "
+            partOfParameter = true
             -it
+            partOfParameter = false
         }
         typedRule.defaultValue?.let {
             -" = "
@@ -197,7 +199,9 @@ fun SwiftTranslator.registerFunction() {
         action = {
             -typedRule.nameIdentifier
             -": "
+            partOfParameter = true
             -typedRule.typeReference
+            partOfParameter = false
             -"..."
         }
     )

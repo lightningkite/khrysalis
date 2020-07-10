@@ -3,7 +3,7 @@
 // Package: com.lightningkite.khrysalis.observables
 import Foundation
 
-public class ObservableProperty<T> : KEquatable, KHashable, KStringable {
+public class ObservableProperty<T> {
     protected init() {
     }
     

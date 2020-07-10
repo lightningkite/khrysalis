@@ -11,7 +11,7 @@ public class ObservableStack<T : AnyObject> : ObservableProperty<Any> {
     }
     
     
-    public class Companion : KEquatable, KHashable, KStringable {
+    public class Companion {
         private init() {
         }
         public static let INSTANCE = Companion()

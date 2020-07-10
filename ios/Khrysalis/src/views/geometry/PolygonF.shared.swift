@@ -3,7 +3,7 @@
 // Package: com.lightningkite.khrysalis.views.geometry
 import Foundation
 
-public class PolygonF : KDataClass, KEquatable, KHashable, KStringable {
+public class PolygonF : KDataClass {
     public var points: Array<CGPoint>
     public init(points: Array<CGPoint>) {
         self.points = points

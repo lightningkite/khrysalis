@@ -5,7 +5,7 @@ import Foundation
 
 public class WriteAddedObservableProperty<A> : MutableObservableProperty<Any> {
     public var basedOn: ObservableProperty<A>
-    public var onWrite: @escaping  (A) -> Void
+    public var onWrite:  (A) -> Void
     override public init(basedOn: ObservableProperty<A>, onWrite: @escaping  (A) -> Void) {
         self.basedOn = basedOn
         self.onWrite = onWrite

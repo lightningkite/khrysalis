@@ -11,6 +11,7 @@ import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
 import org.jetbrains.kotlin.psi2ir.findFirstFunction
+import org.jetbrains.kotlin.resolve.calls.tower.isSynthesized
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
 import org.jetbrains.kotlin.resolve.descriptorUtil.getSuperClassNotAny
 import org.jetbrains.kotlin.resolve.scopes.DescriptorKindFilter
@@ -24,6 +25,13 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.reflect.jvm.internal.impl.types.KotlinType
 
+fun FunctionDescriptor.callsForSwiftInterface(on: ClassDescriptor?): Boolean {
+    val immediate = this.containingDeclaration == on
+    val overriddenDescriptors = this.overriddenDescriptors
+        .filter{ it.kind == CallableMemberDescriptor.Kind.DECLARATION }
+        .filter{ it.containingDeclaration.fqNameOrNull()?.asString()?.startsWith("kotlin.") == false }
+    return immediate && overriddenDescriptors.isNotEmpty() == true
+}
 
 fun SwiftTranslator.registerClass() {
 
@@ -55,25 +63,19 @@ fun SwiftTranslator.registerClass() {
             }
             .let {
                 val over = on.resolvedClass?.findFirstFunction("equals") { it.valueParameters.size == 1 && it.valueParameters[0].type.getJetTypeFqName(false) == "kotlin.Any" }
-                val immediate = over?.containingDeclaration == on.resolvedClass
-                val anyOtherExists = over?.overriddenDescriptors?.any { it.containingDeclaration.fqNameOrNull()?.asString() != "kotlin.Any" } == true
-                if (immediate && !anyOtherExists) {
+                if (over?.callsForSwiftInterface(on.resolvedClass) == true) {
                     it + listOf("KEquatable")
                 } else it
             }
             .let {
                 val over = on.resolvedClass?.findFirstFunction("hashCode") { it.valueParameters.size == 0 }
-                val immediate = over?.containingDeclaration == on.resolvedClass
-                val anyOtherExists = over?.overriddenDescriptors?.any { it.containingDeclaration.fqNameOrNull()?.asString() != "kotlin.Any" } == true
-                if (immediate && !anyOtherExists) {
+                if (over?.callsForSwiftInterface(on.resolvedClass) == true) {
                     it + listOf("KHashable")
                 } else it
             }
             .let {
                 val over = on.resolvedClass?.findFirstFunction("toString") { it.valueParameters.size == 0 }
-                val immediate = over?.containingDeclaration == on.resolvedClass
-                val anyOtherExists = over?.overriddenDescriptors?.any { it.containingDeclaration.fqNameOrNull()?.asString() != "kotlin.Any" } == true
-                if (immediate && !anyOtherExists) {
+                if (over?.callsForSwiftInterface(on.resolvedClass) == true) {
                     it + listOf("KStringable")
                 } else it
             }
@@ -169,6 +171,7 @@ fun SwiftTranslator.registerClass() {
             -(typedRule.primaryConstructor?.visibilityModifier() ?: "public")
         }
         -" init("
+        partOfParameter = true
         typedRule.primaryConstructor?.let { cons ->
             (if (typedRule.isEnum()) {
                 listOf("name: String") + cons.valueParameters
@@ -187,6 +190,7 @@ fun SwiftTranslator.registerClass() {
                 -"parentThis: $parentClassName"
             } else Unit
         }
+        partOfParameter = false
         -") {\n"
         if (typedRule.isEnum()) {
             -"self.name = name;\n"

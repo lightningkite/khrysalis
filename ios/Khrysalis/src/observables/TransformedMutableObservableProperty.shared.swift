@@ -5,8 +5,8 @@ import Foundation
 
 public class TransformedMutableObservableProperty<A, B> : MutableObservableProperty<Any> {
     public var basedOn: MutableObservableProperty<A>
-    public var read: @escaping  (A) -> B
-    public var write: @escaping  (B) -> A
+    public var read:  (A) -> B
+    public var write:  (B) -> A
     override public init(basedOn: MutableObservableProperty<A>, read: @escaping  (A) -> B, write: @escaping  (B) -> A) {
         self.basedOn = basedOn
         self.read = read

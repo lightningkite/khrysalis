@@ -6,7 +6,7 @@ import Foundation
 public let lastDialog = StandardObservableProperty(underlyingValue: nil)
 public let showDialogEvent: PublishSubject<DialogRequest> = PublishSubject.create()
 
-public class DialogRequest : KEquatable, KHashable, KStringable {
+public class DialogRequest {
     public var string: ViewString
     public var confirmation: (() -> Void)?
     public init(string: ViewString, confirmation: (() -> Void)? = nil) {

@@ -3,7 +3,7 @@
 // Package: com.lightningkite.khrysalis.observables.binding
 import Foundation
 
-private class LinearLayoutBoundSubview<T> : KEquatable, KHashable, KStringable {
+private class LinearLayoutBoundSubview<T> {
     public var view: View
     public var property: StandardObservableProperty<T>
     public init(view: View, property: StandardObservableProperty<T>) {
