@@ -22,7 +22,6 @@ import java.io.File
 
 open class KhrysalisPluginExtension {
     open var organizationName: String = "Organization"
-    open var swiftConversion: SwiftAltListener.() -> Unit = {}
     open var swiftLayoutConversion: LayoutConverter = LayoutConverter.normal
     open var htmlTranslator: HtmlTranslator = HtmlTranslator()
     open var projectName: String? = null
@@ -34,7 +33,6 @@ open class KhrysalisPluginExtension {
     override fun toString(): String {
         return "(" +
                 "\norganizationName: " + organizationName +
-                "\nswiftConversion: " + swiftConversion +
                 "\nswiftLayoutConversion: " + swiftLayoutConversion +
                 "\nhtmlTranslator: " + htmlTranslator +
                 "\nprojectName: " + projectName +
@@ -113,40 +111,35 @@ class KhrysalisPlugin : Plugin<Project> {
                 task.workingDir = iosBase()
             }
         }
-
-        project.tasks.create("khrysalisConvertKotlinToSwiftClean") { task ->
-            task.group = "ios"
-            task.doLast {
-
-                project.convertKotlinToSwiftWithDependencies(
-                    androidFolder = androidBase(),
-                    iosFolder = iosFolder(),
-                    clean = true
-                ) {
-                    imports = listOf("Khrysalis", "RxSwift", "RxRelay")
-                    extension().swiftConversion.invoke(this)
-                }
-
-            }
-        }
         project.tasks.create("khrysalisConvertKotlinToSwift") { task ->
             task.group = "ios"
-            project.afterEvaluate {
-                if (!iosFolder().exists()) {
-                    task.dependsOn("khrysalisSetupIosProject")
-                }
-            }
-            task.doLast {
-
-                project.convertKotlinToSwiftWithDependencies(
-                    androidFolder = androidBase(),
-                    iosFolder = iosFolder(),
-                    clean = false
-                ) {
-                    imports = listOf("Khrysalis", "RxSwift", "RxRelay")
-                    extension().swiftConversion.invoke(this)
-                }
-
+            task.dependsOn("generateReleaseResources", "generateDebugResources")
+            task.doFirst {
+                val androidJar = androidSdkDirectory()!!.resolve("platforms/android-${sdkLevel()}/android.jar")
+                val libraries = sequenceOf(androidJar) + project.configurations.getByName("debugCompileClasspath").files.mapNotNull {
+                    when(it.extension){
+                        "aar" -> project.zipTree(it)
+                            .matching {
+                                it.include("classes.jar")
+                            }
+                            .asSequence()
+                            .firstOrNull()
+                        else -> it
+                    }
+                }.asSequence()
+                val originalTask = project.tasks.getByName("compileDebugKotlin") as KotlinCompile
+                val files = originalTask.source.toList().asSequence()
+                println("All files: ${files.joinToString("\n")}")
+                println("All libraries: ${libraries.joinToString("\n")}")
+                convertToSwift(
+                    projectName = projectName(),
+                    libraries = libraries,
+                    files = files,
+                    pluginCache = project.buildDir.resolve("khrysalis-kcp"),
+                    buildCache = project.buildDir.resolve("testBuild"),
+                    dependencies = sequenceOf(iosBase().resolve("Pods")),
+                    output = iosFolder().resolve("src")
+                )
             }
         }
         project.tasks.create("khrysalisConvertLayoutsToSwift") { task ->

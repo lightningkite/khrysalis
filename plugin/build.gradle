@@ -78,6 +78,7 @@ dependencies {
     api "net.jodah:xsylum:0.1.0"
     testImplementation("junit:junit:4.12")
     api(project(":kotlin-compiler-plugin-typescript"))
+    api(project(":kotlin-compiler-plugin-swift"))
 
     def aetherVersion = "1.0.0.v20140518"
     def mavenVersion = "3.1.0"
@@ -99,7 +100,7 @@ generateGrammarSource {
 
 compileKotlin.dependsOn generateGrammarSource
 
-task insertCompilerJar(type: Copy){
+task insertTypescriptJar(type: Copy){
     dependsOn(":kotlin-compiler-plugin-typescript:shadowJar")
     from('../kotlin-compiler-plugin-typescript/build/libs'){
         include '*-all.jar'
@@ -107,7 +108,17 @@ task insertCompilerJar(type: Copy){
     into 'src/main/resources/compiler-plugins'
     rename '.*', 'typescript.jar'
 }
-tasks.jar.dependsOn("insertCompilerJar")
+tasks.jar.dependsOn("insertTypescriptJar")
+
+task insertSwiftJar(type: Copy){
+    dependsOn(":kotlin-compiler-plugin-swift:shadowJar")
+    from('../kotlin-compiler-plugin-swift/build/libs'){
+        include '*-all.jar'
+    }
+    into 'src/main/resources/compiler-plugins'
+    rename '.*', 'swift.jar'
+}
+tasks.jar.dependsOn("insertSwiftJar")
 
 task sourceJar(type: Jar) {
     from sourceSets.main.allJava

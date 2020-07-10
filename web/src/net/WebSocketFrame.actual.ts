@@ -12,10 +12,12 @@ export class WebSocketFrame {
     }
     
     public toString(): string {
-        return this.text ?? ((_it)=>{
-                if(_it === null) return null;
-                return ((it) => `<Binary data length ${it.length}`)(_it)
-        })(this.binary) ?? "<Empty Frame>";
+        return this.text ?? (()=>{
+                let temp_100;
+                if ((temp_100 = this.binary) !== null) { 
+                    return `<Binary data length ${temp_100.length}`;
+                } else { return null }
+        })() ?? "<Empty Frame>";
     }
 }
 

@@ -36,26 +36,12 @@ fun Map<String, String>.writeXMLStringsTranslation(base: Map<String, String>, lo
     }
 }
 
-fun Map<String, String>.writeXMLStrings(): String {
-    return buildString {
-        appendln("//")
-        appendln("// ResourcesStrings.swift")
-        appendln("// Created by Khrysalis")
-        appendln("//")
-        appendln("")
-        appendln("import Foundation")
-        appendln("import UIKit")
-        appendln("import Khrysalis")
-        appendln("")
-        appendln("")
-        appendln("public enum ResourcesStrings {")
-        for((key, value) in this@writeXMLStrings.entries){
-            val fixedString = value
-                .replace("\\'", "'")
-                .replace("\\$", "$")
-                .replace(Regex("\n *"), " ")
-            appendln("    static let ${key.camelCase()} = NSLocalizedString(\"$fixedString\", comment: \"$key\")")
-        }
-        appendln("}")
+fun Map<String, String>.writeXMLStrings(out: Appendable) {
+    for((key, value) in this@writeXMLStrings.entries){
+        val fixedString = value
+            .replace("\\'", "'")
+            .replace("\\$", "$")
+            .replace(Regex("\n *"), " ")
+        out.appendln("    static let ${key.camelCase()} = NSLocalizedString(\"$fixedString\", comment: \"$key\")")
     }
 }

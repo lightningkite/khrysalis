@@ -16,3 +16,4 @@ plugin/out
 
 **/testDataOut/**/*.shared.ts
 **/testDataOut/**/*.shared.swift
+plugin/src/main/resources/compiler-plugins/**

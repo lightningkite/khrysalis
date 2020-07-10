@@ -2,12 +2,13 @@
 // File: views/Form.shared.kt
 // Package: com.lightningkite.khrysalis.views
 import { ViewString, ViewStringRaw, ViewStringResource, ViewStringTemplate, kotlinCollectionsListJoinToViewString } from './Strings.shared'
+import { map as iterMap, toArray as iterToArray } from 'iterable-operator'
+import { iterableFilterNotNull } from '../KotlinCollections'
+import { MutableObservableProperty } from '../observables/MutableObservableProperty.shared'
 import { safeEq } from '../Kotlin'
 import { showDialogAlert } from './showDialog.shared'
 import { kotlinCharSequenceIsBlank } from '../kotlin/kotlin.text'
 import { StandardObservableProperty } from '../observables/StandardObservableProperty.shared'
-import { listFilterNotNull } from '../KotlinCollections'
-import { MutableObservableProperty } from '../observables/MutableObservableProperty.shared'
 
 //! Declares com.lightningkite.khrysalis.views.FormValidationError
 export class FormValidationError {
@@ -92,22 +93,22 @@ export class Form {
     public fieldFromPropertyRes<T>(name: string, property: MutableObservableProperty<T>, validation:  (a: FormField<T>) => (ViewString | null)): FormField<T> { return this.fieldFromProperty(new ViewStringResource(name), property, validation); }
     
     public check(): Array<FormValidationError> {
-        return listFilterNotNull(this.fields.map((it) => {
-                    const result = this.checkField(it);
-                    
-                    return (() => {if (result !== null) {
-                                return new FormValidationError(it, result);
-                            } else {
-                                return null;
-                    }})()
-        }));
+        return iterToArray(iterableFilterNotNull(iterMap(this.fields, (it) => {
+                        const result = this.checkField(it);
+                        
+                        if (result !== null) {
+                            return new FormValidationError(it, result);
+                        } else {
+                            return null;
+                        }
+        })));
     }
     
     public runOrDialog(action: () => void): void {
         const errors = this.check();
         
         if (errors.length !== 0) {
-            showDialogAlert(kotlinCollectionsListJoinToViewString(errors.map((it) => it._string), undefined));
+            showDialogAlert(kotlinCollectionsListJoinToViewString(errors.map((it) => it.string), undefined));
         } else {
             action();
         }

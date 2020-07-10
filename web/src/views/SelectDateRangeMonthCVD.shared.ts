@@ -20,9 +20,9 @@ export class SelectDateRangeMonthCVD extends MonthCVD {
         this.draggingStart = true;
         this.start = new StandardObservableProperty(null, undefined);
         this.endInclusive = new StandardObservableProperty(null, undefined);
-        let temp_506;
-        if ((temp_506 = this.start.value) !== null) { 
-            this.currentMonthObs.value = copyDateAloneMod(temp_506, Date.prototype.setDate, 1);
+        let temp_505;
+        if ((temp_505 = this.start.value) !== null) { 
+            this.currentMonthObs.value = copyDateAloneMod(temp_505, Date.prototype.setDate, 1);
         };
         ioReactivexDisposablesDisposableForever(this.start.onChange.subscribe( (value) => {
                     this?.invalidate()
@@ -51,7 +51,7 @@ export class SelectDateRangeMonthCVD extends MonthCVD {
     public readonly selectedPaint: Paint;
     
     
-    public measure(width: number, height: number, displayMetrics: DisplayMetrics): void {
+    public measure(width: GFloat, height: GFloat, displayMetrics: DisplayMetrics): void {
         super.measure(width, height, displayMetrics);
         this.selectedDayPaint.textSize = this.dayPaint.textSize;
     }

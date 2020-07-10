@@ -91,11 +91,11 @@ export function comLightningkiteKhrysalisViewsViewStringToDebugString(this_: Vie
     const thing = this_;
     
     if (thing instanceof ViewStringRaw) {
-        return thing._string
+        return thing.string
     } else if (thing instanceof ViewStringResource) {
         return thing.resource.toString()
     } else if (thing instanceof ViewStringTemplate) {
-        return comLightningkiteKhrysalisViewsViewStringToDebugString(thing.template) + "(" + thing._arguments.map((it) => (() => {if (checkIsInterface<ViewString>(it, "ComLightningkiteKhrysalisViewsViewString")) return comLightningkiteKhrysalisViewsViewStringToDebugString(it); else return `${it}`;})()).join(", ") + ")"
+        return comLightningkiteKhrysalisViewsViewStringToDebugString(thing.template) + "(" + thing.arguments.map((it) => (() => {if (checkIsInterface<ViewString>(it, "ComLightningkiteKhrysalisViewsViewString")) return comLightningkiteKhrysalisViewsViewStringToDebugString(it); else return `${it}`;})()).join(", ") + ")"
     } else if (thing instanceof ViewStringList) {
         return thing.parts.map((it) => comLightningkiteKhrysalisViewsViewStringToDebugString(it)).join(thing.separator)
     } else if (thing instanceof ViewStringComplex) {

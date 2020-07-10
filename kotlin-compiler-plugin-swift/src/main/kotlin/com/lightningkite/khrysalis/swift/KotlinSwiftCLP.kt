@@ -143,7 +143,10 @@ class KotlinSwiftExtension(
 
 
         for (file in files) {
-            if (!file.virtualFilePath.endsWith(".shared.kt") && !file.virtualFilePath.endsWith(".actual.kt")) continue
+            if (!file.virtualFilePath.endsWith(".shared.kt")) {
+                collector?.report(CompilerMessageSeverity.INFO, "Skipping $file")
+                continue
+            }
             try {
                 val outputFile = output
                     .resolve(file.virtualFilePath.removePrefix(translator.commonPath))

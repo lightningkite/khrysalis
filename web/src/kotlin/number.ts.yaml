@@ -780,6 +780,21 @@
     pattern: new Range(~this~, ~0~)
     imports:
       Range: khrysalis/dist/Kotlin
+- id: kotlin.ranges.until
+  type: call
+  actualReceiver: kotlin.Number
+  infix: true
+  template:
+    pattern: (new NumberRange(~this~, ~0~ - 1))
+    imports:
+      NumberRange: khrysalis/dist/Kotlin
+- id: kotlin.ranges.until
+  type: call
+  actualReceiver: kotlin.Number
+  template:
+    pattern: new NumberRange(~this~, ~0~ - 1)
+    imports:
+      NumberRange: khrysalis/dist/Kotlin
 
 
 # Math.X

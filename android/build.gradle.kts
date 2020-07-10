@@ -30,9 +30,6 @@ apply(plugin = "com.lightningkite.khrysalis")
 configure<KhrysalisPluginExtension> {
     projectName = "Khrysalis"
     organizationName = "Lightning Kite"
-    swiftConversion = {
-        imports = listOf("RxSwift", "RxRelay")
-    }
 }
 
 group = "com.lightningkite.khrysalis"

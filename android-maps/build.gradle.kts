@@ -1,7 +1,6 @@
 import com.lightningkite.khrysalis.KhrysalisSettings
 import com.lightningkite.khrysalis.ios.convertResourcesToIos
 import com.lightningkite.khrysalis.ios.layout.convertLayoutsToSwift
-import com.lightningkite.khrysalis.ios.swift.convertKotlinToSwift
 import com.lightningkite.khrysalis.gradle.KhrysalisPluginExtension
 import com.lightningkite.khrysalis.ios.layout.mapViews
 
@@ -34,9 +33,6 @@ apply(plugin = "com.lightningkite.khrysalis")
 configure<KhrysalisPluginExtension> {
     projectName = "KhrysalisMaps"
     organizationName = "Lightning Kite"
-    swiftConversion = {
-        imports = listOf("RxSwift", "RxRelay")
-    }
     overrideIosFolder = "../ios-maps"
     overrideWebFolder = "../web-maps"
 }

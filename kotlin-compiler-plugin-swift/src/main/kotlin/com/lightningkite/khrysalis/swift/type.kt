@@ -67,28 +67,28 @@ fun SwiftTranslator.registerType() {
         val baseClass = t.constructor.declarationDescriptor as? ClassDescriptor
         -BasicType(t)
         t.arguments
-            .mapIndexedNotNull { index, it ->
-                if (it.type.constructor.declarationDescriptor is TypeParameterDescriptor) return@mapIndexedNotNull null
-                val swiftExactly = it.type.annotations.find {
+            .mapIndexedNotNull { index, arg ->
+                if (arg.type.constructor.declarationDescriptor is TypeParameterDescriptor) return@mapIndexedNotNull null
+                val swiftExactly = arg.type.annotations.find {
                     it.fqName?.asString()?.endsWith("swiftExactly") == true
-                }?.allValueArguments?.entries?.first()?.value?.value as? String
-                val swiftDescendsFrom = it.type.annotations.find {
+                }?.allValueArguments?.entries?.let { it.firstOrNull()?.value?.value as? String ?: "T" }
+                val swiftDescendsFrom = arg.type.annotations.find {
                     it.fqName?.asString()?.endsWith("swiftDescendsFrom") == true
-                }?.allValueArguments?.entries?.first()?.value?.value as? String
+                }?.allValueArguments?.entries?.let { it.firstOrNull()?.value?.value as? String ?: "T" }
                 when {
                     swiftExactly != null -> {
-                        listOf(swiftExactly, ": ", it.type)
+                        listOf(swiftExactly, ": ", arg.type)
                     }
                     swiftDescendsFrom != null -> {
-                        listOf(swiftDescendsFrom, " == ", it.type)
+                        listOf(swiftDescendsFrom, " == ", arg.type)
                     }
                     else -> {
                         val name = baseClass?.declaredTypeParameters?.get(index)?.name?.asString()
-                        val c = it.type.constructor.declarationDescriptor as? ClassDescriptor
+                        val c = arg.type.constructor.declarationDescriptor as? ClassDescriptor
                         if (c?.isFinalOrEnum == false) {
-                            listOf(name, ": ", it.type)
+                            listOf(name, ": ", arg.type)
                         } else {
-                            listOf(name, " == ", it.type)
+                            listOf(name, " == ", arg.type)
                         }
                     }
                 }

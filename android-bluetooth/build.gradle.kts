@@ -1,7 +1,6 @@
 import com.lightningkite.khrysalis.KhrysalisSettings
 import com.lightningkite.khrysalis.ios.convertResourcesToIos
 import com.lightningkite.khrysalis.ios.layout.convertLayoutsToSwift
-import com.lightningkite.khrysalis.ios.swift.convertKotlinToSwift
 
 buildscript {
     val kotlin_version = "1.3.50"
@@ -97,19 +96,3 @@ KhrysalisSettings.verbose = true
 
 val androidBase = project.projectDir
 val iosBase = project.projectDir.resolve("../ios-bluetooth/KhrysalisBluetooth")
-
-tasks.create("khrysalisConvertKotlinToSwift") {
-    this.group = "build"
-    doLast {
-        println("Started on $androidBase")
-        convertKotlinToSwift(
-            androidBase,
-            iosBase,
-            clean = true,
-            setup = {
-                this.imports += listOf("Khrysalis")
-            }
-        )
-        println("Finished")
-    }
-}

@@ -95,40 +95,40 @@ export class MonthCVD extends CustomViewDelegate {
     
     
     
-    public labelFontSp: number;
+    public labelFontSp: GFloat;
     
-    public dayFontSp: number;
+    public dayFontSp: GFloat;
     
-    public internalPaddingDp: number;
+    public internalPaddingDp: GFloat;
     
-    public dayCellMarginDp: number;
+    public dayCellMarginDp: GFloat;
     
-    private internalPadding: number;
+    private internalPadding: GFloat;
     
-    private dayLabelHeight: number;
+    private dayLabelHeight: GFloat;
     
-    private dayCellHeight: number;
+    private dayCellHeight: GFloat;
     
-    private dayCellWidth: number;
+    private dayCellWidth: GFloat;
     
-    private dayCellMargin: number;
+    private dayCellMargin: GFloat;
     
     
-    private _currentOffset: number;
+    private _currentOffset: GFloat;
     
     //! Declares com.lightningkite.khrysalis.views.MonthCVD.currentOffset
-    public get currentOffset(): number {
+    public get currentOffset(): GFloat {
         return this._currentOffset;
     }
-    public set currentOffset(value: number) {
+    public set currentOffset(value: GFloat) {
         this._currentOffset = value;
-        const temp282 = this.customView;
-        if(temp282 !== null) customViewInvalidate(temp282);
+        const temp281 = this.customView;
+        if(temp281 !== null) customViewInvalidate(temp281);
     }
     
-    private dragStartX: number;
+    private dragStartX: GFloat;
     
-    private lastOffset: number;
+    private lastOffset: GFloat;
     
     private lastOffsetTime: number;
     
@@ -159,7 +159,7 @@ export class MonthCVD extends CustomViewDelegate {
     private readonly calcMonth: DateAlone;
     
     
-    public dayAtPixel(x: number, y: number, existing: (DateAlone | null) = null): (DateAlone | null) {
+    public dayAtPixel(x: GFloat, y: GFloat, existing: (DateAlone | null) = null): (DateAlone | null) {
         if (y < this.dayLabelHeight) return null;
         //        val columnRaw = (x / dayCellWidth - (dayCellWidth + currentOffset) * 7).toInt()
         const columnRawBeforeDrag = x / this.dayCellWidth;
@@ -188,7 +188,7 @@ export class MonthCVD extends CustomViewDelegate {
         , Date.prototype.getDate, Date.prototype.setDate, row * 7 + column);
     }
     
-    public measure(width: number, height: number, displayMetrics: DisplayMetrics): void {
+    public measure(width: GFloat, height: GFloat, displayMetrics: DisplayMetrics): void {
         this.internalPadding = displayMetrics.density * this.internalPaddingDp;
         this.dayCellMargin = displayMetrics.density * this.dayCellMarginDp;
         this.labelPaint.textSize = this.labelFontSp * displayMetrics.scaledDensity;
@@ -201,7 +201,7 @@ export class MonthCVD extends CustomViewDelegate {
     private readonly calcMonthB: DateAlone;
     
     
-    public draw(canvas: CanvasRenderingContext2D, width: number, height: number, displayMetrics: DisplayMetrics): void {
+    public draw(canvas: CanvasRenderingContext2D, width: GFloat, height: GFloat, displayMetrics: DisplayMetrics): void {
         this.measure(width, height, displayMetrics);
         if (this.currentOffset > 0) {
             //draw past month and current month
@@ -223,7 +223,7 @@ export class MonthCVD extends CustomViewDelegate {
     
     private readonly rectForReuseB: RectF;
     
-    public drawMonth(canvas: CanvasRenderingContext2D, xOffset: number, width: number, month: DateAlone, displayMetrics: DisplayMetrics): void {
+    public drawMonth(canvas: CanvasRenderingContext2D, xOffset: GFloat, width: GFloat, month: DateAlone, displayMetrics: DisplayMetrics): void {
         for (const day of new NumberRange(1, 7)) {
             const col = day - 1;
             
@@ -260,17 +260,17 @@ export class MonthCVD extends CustomViewDelegate {
     
     public isTap: boolean;
     
-    public dragStartY: number;
+    public dragStartY: GFloat;
     
     public onTap(day: DateAlone): void {}
     
     public onTouchDownDate(day: DateAlone): boolean { return false; }
-    public onTouchDown(id: number, x: number, y: number, width: number, height: number): boolean {
+    public onTouchDown(id: number, x: GFloat, y: GFloat, width: GFloat, height: GFloat): boolean {
         const day = this.dayAtPixel(x, y, undefined);
         
-        let temp_395;
-        if ((temp_395 = day) !== null) { 
-            if (this.onTouchDownDate(temp_395)) {
+        let temp_394;
+        if ((temp_394 = day) !== null) { 
+            if (this.onTouchDownDate(temp_394)) {
                 return true;
             }
         }
@@ -284,7 +284,7 @@ export class MonthCVD extends CustomViewDelegate {
     }
     
     public onTouchMoveDate(day: DateAlone): boolean { return false; }
-    public onTouchMove(id: number, x: number, y: number, width: number, height: number): boolean {
+    public onTouchMove(id: number, x: GFloat, y: GFloat, width: GFloat, height: GFloat): boolean {
         if (this.draggingId === id) {
             this.lastOffset = this.currentOffset;
             this.lastOffsetTime = Date.now();
@@ -295,21 +295,21 @@ export class MonthCVD extends CustomViewDelegate {
                 }
             }
         } else {
-            let temp_418;
-            if ((temp_418 = this.dayAtPixel(x, y, undefined)) !== null) { 
-                return this.onTouchMoveDate(temp_418);
+            let temp_417;
+            if ((temp_417 = this.dayAtPixel(x, y, undefined)) !== null) { 
+                return this.onTouchMoveDate(temp_417);
             }
         }
         return true;
     }
     
     public onTouchUpDate(day: DateAlone): boolean { return false; }
-    public onTouchUp(id: number, x: number, y: number, width: number, height: number): boolean {
+    public onTouchUp(id: number, x: GFloat, y: GFloat, width: GFloat, height: GFloat): boolean {
         if (this.draggingId === id) {
             if (this.isTap) {
-                let temp_421;
-                if ((temp_421 = this.dayAtPixel(x, y, undefined)) !== null) { 
-                    this.onTap(temp_421);
+                let temp_420;
+                if ((temp_420 = this.dayAtPixel(x, y, undefined)) !== null) { 
+                    this.onTap(temp_420);
                 }
             } else if (this.dragEnabled) {
                 const weighted = this.currentOffset + (this.currentOffset - this.lastOffset) * 200 / (Date.now() - this.lastOffsetTime);
@@ -328,20 +328,20 @@ export class MonthCVD extends CustomViewDelegate {
             }
             this.draggingId = this.DRAGGING_NONE;
         } else {
-            let temp_440;
-            if ((temp_440 = this.dayAtPixel(x, y, undefined)) !== null) { 
-                return this.onTouchUpDate(temp_440);
+            let temp_439;
+            if ((temp_439 = this.dayAtPixel(x, y, undefined)) !== null) { 
+                return this.onTouchUpDate(temp_439);
             }
         }
         return true;
     }
     
     
-    public sizeThatFitsWidth(width: number, height: number): number {
+    public sizeThatFitsWidth(width: GFloat, height: GFloat): GFloat {
         return this.dayLabelHeight * 28;
     }
     
-    public sizeThatFitsHeight(width: number, height: number): number {
+    public sizeThatFitsHeight(width: GFloat, height: GFloat): GFloat {
         return width * 6 / 7 + this.dayLabelHeight;
     }
 }
@@ -373,13 +373,13 @@ export class CalendarDrawing {
     }
     
     dayBackground(canvas: CanvasRenderingContext2D, inner: RectF, paint: Paint): void {
-        const temp457 = canvas;
-        temp457.beginPath(); temp457.arc(inner.centerX(), inner.centerY(), Math.min(inner.width() / 2, inner.height() / 2), 0, Math.PI * 2); paint.complete(temp457);
+        const temp456 = canvas;
+        temp456.beginPath(); temp456.arc(inner.centerX(), inner.centerY(), Math.min(inner.width() / 2, inner.height() / 2), 0, Math.PI * 2); paint.complete(temp456);
     }
     
     dayBackgroundStart(canvas: CanvasRenderingContext2D, inner: RectF, outer: RectF, paint: Paint): void {
-        const temp468 = canvas;
-        temp468.beginPath(); temp468.arc(inner.centerX(), inner.centerY(), Math.min(inner.width() / 2, inner.height() / 2), 0, Math.PI * 2); paint.complete(temp468);
+        const temp467 = canvas;
+        temp467.beginPath(); temp467.arc(inner.centerX(), inner.centerY(), Math.min(inner.width() / 2, inner.height() / 2), 0, Math.PI * 2); paint.complete(temp467);
         paint.render(canvas, pathFromLTRB(outer.centerX(), inner.top, outer.right, inner.bottom));
     }
     
@@ -388,8 +388,8 @@ export class CalendarDrawing {
     }
     
     dayBackgroundEnd(canvas: CanvasRenderingContext2D, inner: RectF, outer: RectF, paint: Paint): void {
-        const temp491 = canvas;
-        temp491.beginPath(); temp491.arc(inner.centerX(), inner.centerY(), Math.min(inner.width() / 2, inner.height() / 2), 0, Math.PI * 2); paint.complete(temp491);
+        const temp490 = canvas;
+        temp490.beginPath(); temp490.arc(inner.centerX(), inner.centerY(), Math.min(inner.width() / 2, inner.height() / 2), 0, Math.PI * 2); paint.complete(temp490);
         paint.render(canvas, pathFromLTRB(outer.left, inner.top, outer.centerX(), inner.bottom));
     }
 }
