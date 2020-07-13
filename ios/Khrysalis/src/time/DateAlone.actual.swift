@@ -150,8 +150,8 @@ public extension DateAlone {
         self.day = newDays
     }
     private func addMonths(_ months: Int){
-        let yearsMod = (months + month - 1).floorDiv(12)
-        month = (months + month - 1).floorMod(12) + 1
+        let yearsMod = (months + month - 1).floorDiv(other: 12)
+        month = (months + month - 1).floorMod(other: 12) + 1
         year += yearsMod
     }
     private func cap(){
@@ -177,7 +177,7 @@ public extension DateAlone {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.dateFormat = "yyyy-MM-dd"
-        return formatter.string(from: dateFrom(self, TimeAlone.noon))
+        return formatter.string(from: dateFrom(dateAlone: self, timeAlone: TimeAlone.noon))
     }
 
     //--- DateAlone.setDayOfMonth(Int)
@@ -266,14 +266,14 @@ public extension DateAlone {
         let format = DateFormatter.dateFormat(fromTemplate: template, options: 0, locale: Locale.current)
         let formatter = DateFormatter()
         formatter.dateFormat = format
-        return formatter.string(from: dateFrom(self, TimeAlone.noon))
+        return formatter.string(from: dateFrom(dateAlone: self, timeAlone: TimeAlone.noon))
     }
 }
 
 public extension DateAlone {
     var safeDayOfWeek: Int {
         get {
-            return dateFrom(self, TimeAlone.noon).dayOfWeek
+            return dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).dayOfWeek
         }
     }
 
@@ -281,35 +281,35 @@ public extension DateAlone {
     //--- DateAlone.setMonthOfYear(Int)
     //--- DateAlone.setYearAd(Int)
     //--- DateAlone.setDayOfWeek(Int)
-    func safeSetDayOfWeek(_ value: Int) -> DateAlone { return set(dateFrom(self, TimeAlone.noon).dayOfWeek(value)) }
-    func safeSetDayOfMonth(_ value: Int) -> DateAlone { return set(dateFrom(self, TimeAlone.noon).dayOfMonth(value)) }
-    func safeSetMonthOfYear(_ value: Int) -> DateAlone { return set(dateFrom(self, TimeAlone.noon).monthOfYear(value)) }
-    func safeSetYearAd(_ value: Int) -> DateAlone { return set(dateFrom(self, TimeAlone.noon).yearAd(value)) }
+    func safeSetDayOfWeek(_ value: Int) -> DateAlone { return set(date: dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).dayOfWeek(value: value)) }
+    func safeSetDayOfMonth(_ value: Int) -> DateAlone { return set(date: dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).dayOfMonth(value: value)) }
+    func safeSetMonthOfYear(_ value: Int) -> DateAlone { return set(date: dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).monthOfYear(value: value)) }
+    func safeSetYearAd(_ value: Int) -> DateAlone { return set(date: dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).yearAd(value: value)) }
 
     //--- DateAlone.setAddDayOfWeek(Int)
     //--- DateAlone.setAddDayOfMonth(Int)
     //--- DateAlone.setAddMonthOfYear(Int)
     //--- DateAlone.setAddYearAd(Int)
-    func safeSetAddDayOfWeek(_ value: Int) -> DateAlone { return set(dateFrom(self, TimeAlone.noon).addDayOfWeek(value)) }
-    func safeSetAddDayOfMonth(_ value: Int) -> DateAlone { return set(dateFrom(self, TimeAlone.noon).addDayOfMonth(value)) }
-    func safeSetAddMonthOfYear(_ value: Int) -> DateAlone { return set(dateFrom(self, TimeAlone.noon).addMonthOfYear(value)) }
-    func safeSetAddYearAd(_ value: Int) -> DateAlone { return set(dateFrom(self, TimeAlone.noon).addYearAd(value)) }
+    func safeSetAddDayOfWeek(_ value: Int) -> DateAlone { return set(date: dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).addDayOfWeek(value: value)) }
+    func safeSetAddDayOfMonth(_ value: Int) -> DateAlone { return set(date: dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).addDayOfMonth(value: value)) }
+    func safeSetAddMonthOfYear(_ value: Int) -> DateAlone { return set(date: dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).addMonthOfYear(value: value)) }
+    func safeSetAddYearAd(_ value: Int) -> DateAlone { return set(date: dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).addYearAd(value: value)) }
 
     //--- DateAlone.dayOfMonth(Int)
     //--- DateAlone.monthOfYear(Int)
     //--- DateAlone.yearAd(Int)
     //--- DateAlone.dayOfWeek(Int)
-    func safeDayOfWeek(_ value: Int) -> DateAlone { return dateFrom(self, TimeAlone.noon).dayOfWeek(value).dateAlone }
-    func safeDayOfMonth(_ value: Int) -> DateAlone { return dateFrom(self, TimeAlone.noon).dayOfMonth(value).dateAlone }
-    func safeMonthOfYear(_ value: Int) -> DateAlone { return dateFrom(self, TimeAlone.noon).monthOfYear(value).dateAlone }
-    func safeYearAd(_ value: Int) -> DateAlone { return dateFrom(self, TimeAlone.noon).yearAd(value).dateAlone }
+    func safeDayOfWeek(_ value: Int) -> DateAlone { return dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).dayOfWeek(value: value).dateAlone }
+    func safeDayOfMonth(_ value: Int) -> DateAlone { return dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).dayOfMonth(value: value).dateAlone }
+    func safeMonthOfYear(_ value: Int) -> DateAlone { return dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).monthOfYear(value: value).dateAlone }
+    func safeYearAd(_ value: Int) -> DateAlone { return dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).yearAd(value: value).dateAlone }
 
     //--- DateAlone.addDayOfWeek(Int)
     //--- DateAlone.addDayOfMonth(Int)
     //--- DateAlone.addMonthOfYear(Int)
     //--- DateAlone.addYearAd(Int)
-    func safeAddDayOfWeek(_ value: Int) -> DateAlone { return dateFrom(self, TimeAlone.noon).addDayOfWeek(value).dateAlone }
-    func safeAddDayOfMonth(_ value: Int) -> DateAlone { return dateFrom(self, TimeAlone.noon).addDayOfMonth(value).dateAlone }
-    func safeAddMonthOfYear(_ value: Int) -> DateAlone { return dateFrom(self, TimeAlone.noon).addMonthOfYear(value).dateAlone }
-    func safeAddYearAd(_ value: Int) -> DateAlone { return dateFrom(self, TimeAlone.noon).addYearAd(value).dateAlone }
+    func safeAddDayOfWeek(_ value: Int) -> DateAlone { return dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).addDayOfWeek(value: value).dateAlone }
+    func safeAddDayOfMonth(_ value: Int) -> DateAlone { return dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).addDayOfMonth(value: value).dateAlone }
+    func safeAddMonthOfYear(_ value: Int) -> DateAlone { return dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).addMonthOfYear(value: value).dateAlone }
+    func safeAddYearAd(_ value: Int) -> DateAlone { return dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).addYearAd(value: value).dateAlone }
 }

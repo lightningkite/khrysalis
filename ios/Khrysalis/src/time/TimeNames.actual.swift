@@ -3,51 +3,42 @@ import Foundation
 
 
 //--- TimeNames.{
-public enum TimeNames {
-    private static var formatter = DateFormatter()
+public class TimeNames {
+    
+    public static let INSTANCE = TimeNames()
+    
+    private var formatter = DateFormatter()
     
     //--- TimeNames.shortMonthNames
-    public static var shortMonthNames = formatter.shortMonthSymbols!
+    public lazy var shortMonthNames = formatter.shortMonthSymbols!
     
     //--- TimeNames.monthNames
-    public static var monthNames = formatter.monthSymbols!
+    public lazy var monthNames = formatter.monthSymbols!
     
     //--- TimeNames.shortWeekdayNames
-    public static var shortWeekdayNames = formatter.shortWeekdaySymbols!
+    public  lazy var shortWeekdayNames = formatter.shortWeekdaySymbols!
     
     //--- TimeNames.weekdayNames
-    public static var weekdayNames = formatter.weekdaySymbols!
+    public  lazy var weekdayNames = formatter.weekdaySymbols!
     
     //--- TimeNames.shortMonthName(Int)
-    public static func shortMonthName(_ oneIndexedPosition: Int) -> String {
+    public func shortMonthName(oneIndexedPosition: Int) -> String {
         return shortMonthNames[oneIndexedPosition - 1]
-    }
-    public static func shortMonthName(oneIndexedPosition: Int) -> String {
-        return shortMonthName(oneIndexedPosition)
     }
     
     //--- TimeNames.monthName(Int)
-    public static func monthName(_ oneIndexedPosition: Int) -> String {
+    public func monthName(oneIndexedPosition: Int) -> String {
         return monthNames[oneIndexedPosition - 1]
-    }
-    public static func monthName(oneIndexedPosition: Int) -> String {
-        return monthName(oneIndexedPosition)
     }
     
     //--- TimeNames.shortWeekdayName(Int)
-    public static func shortWeekdayName(_ oneIndexedPosition: Int) -> String {
+    public func shortWeekdayName(oneIndexedPosition: Int) -> String {
         return shortWeekdayNames[oneIndexedPosition - 1]
-    }
-    public static func shortWeekdayName(oneIndexedPosition: Int) -> String {
-        return shortWeekdayName(oneIndexedPosition)
     }
     
     //--- TimeNames.weekdayName(Int)
-    public static func weekdayName(_ oneIndexedPosition: Int) -> String {
+    public func weekdayName(oneIndexedPosition: Int) -> String {
         return weekdayNames[oneIndexedPosition - 1]
-    }
-    public static func weekdayName(oneIndexedPosition: Int) -> String {
-        return weekdayName(oneIndexedPosition)
     }
     
     //--- TimeNames.}

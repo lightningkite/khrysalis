@@ -3,13 +3,13 @@
 // Package: com.lightningkite.khrysalis
 import Foundation
 
-public class Video : KEquatable, KHashable, KStringable {
+public class Video {
     public init() {
     }
 }
 public class VideoReference : Video, KDataClass {
-    public var uri: Uri
-    override public init(uri: Uri) {
+    public var uri: URL
+    public init(uri: URL) {
         self.uri = uri
         super.init()
     }
@@ -18,11 +18,11 @@ public class VideoReference : Video, KDataClass {
     }
     public static func == (lhs: VideoReference, rhs: VideoReference) -> Bool { return lhs.uri == rhs.uri }
     public var description: String { return "VideoReference(uri = \(self.uri))" }
-    public func copy(uri: Uri? = nil) -> VideoReference { return VideoReference(uri: uri ?? self.uri) }
+    public func copy(uri: URL? = nil) -> VideoReference { return VideoReference(uri: uri ?? self.uri) }
 }
 public class VideoRemoteUrl : Video, KDataClass {
     public var url: String
-    override public init(url: String) {
+    public init(url: String) {
         self.url = url
         super.init()
     }
@@ -37,7 +37,7 @@ public class VideoRemoteUrl : Video, KDataClass {
 public extension String {
     func asVideo() -> Video { return VideoRemoteUrl(url: self) }
 }
-public extension Uri {
+public extension URL {
     func asVideo() -> Video { return VideoReference(uri: self) }
 }
 

@@ -157,7 +157,7 @@ public class RVTypeHandler {
         if type < typeCount {
             handler = handlers[ type ]
         }
-        let event = StandardObservableProperty<Any>(handler.defaultValue)
+        let event = StandardObservableProperty<Any>(underlyingValue: handler.defaultValue)
         let subview = handler.handler(event)
         return (subview, event)
     }
@@ -336,7 +336,7 @@ class BoundDataSource<T, VIEW: UIView>: NSObject, UITableViewDataSource, UITable
         }
         cell.selectionStyle = .none
         if cell.obs == nil {
-            let obs = StandardObservableProperty(defaultValue)
+            let obs = StandardObservableProperty(underlyingValue: defaultValue)
             cell.obs = obs
             let new = makeView(obs)
             cell.contentView.addSubview(new)
@@ -407,7 +407,7 @@ class BoundMultiDataSourceSameType<T>: NSObject, UITableViewDataSource, UITableV
         }
         cell.selectionStyle = .none
         if cell.obs == nil {
-            let obs = StandardObservableProperty(defaultValue)
+            let obs = StandardObservableProperty(underlyingValue: defaultValue)
             cell.obs = obs
             let new = makeView(typeIndex, obs)
             cell.contentView.addSubview(new)

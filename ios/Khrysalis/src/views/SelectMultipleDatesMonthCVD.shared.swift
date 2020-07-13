@@ -2,6 +2,7 @@
 // File: views/SelectMultipleDatesMonthCVD.shared.kt
 // Package: com.lightningkite.khrysalis.views
 import Foundation
+import CoreGraphics
 
 public class SelectMultipleDatesMonthCVD : MonthCVD {
     override public init() {
@@ -14,7 +15,7 @@ public class SelectMultipleDatesMonthCVD : MonthCVD {
         if let it = (self.dates.value.firstOrNull()) { 
             self.currentMonthObs.value = it.dayOfMonth(value: 1)
         }
-        self.dates.onChange.subscribeBy(onNext:  { (value: Set<DateAlone>) -> Void in self?.invalidate() }).forever()
+        self.dates.onChange.subscribeBy(onNext:  { [weak self] (value: Set<DateAlone>) -> Void in self?.invalidate() }).forever()
     }
     
     override public func generateAccessibilityView() -> View? { return nil }
@@ -31,7 +32,7 @@ public class SelectMultipleDatesMonthCVD : MonthCVD {
     }
     
     public let drawDay_dateAlone: DateAlone
-    override public func drawDay(canvas: Canvas, showingMonth: DateAlone, day: DateAlone, displayMetrics: DisplayMetrics, outer: RectF, inner: RectF) -> Void {
+    override public func drawDay(canvas: Canvas, showingMonth: DateAlone, day: DateAlone, displayMetrics: DisplayMetrics, outer: CGRect, inner: CGRect) -> Void {
         if self.dates.value.contains(day) {
             let leftDate = self.drawDay_dateAlone.set(other: day).setAddDayOfMonth(value: -1)
             let left = self.dates.value.contains(leftDate)

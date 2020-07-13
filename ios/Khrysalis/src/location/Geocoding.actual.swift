@@ -27,7 +27,7 @@ public extension ViewDependency {
 
 //--- translate
 private func translate(mark: CLPlacemark) -> GeoAddress {
-    return GeoAddress(mark.location?.coordinate.toKhrysalis(), mark.name, mark.street, mark.subLocality, mark.locality, mark.subAdministrativeArea, mark.administrativeArea, mark.country, mark.postalCode)
+    return GeoAddress(coordinate: mark.location?.coordinate.toKhrysalis(), name: mark.name, street: mark.street, subLocality: mark.subLocality, locality: mark.locality, subAdminArea: mark.subAdministrativeArea, adminArea: mark.administrativeArea, countryName: mark.country, postalCode: mark.postalCode)
 }
 
 private extension CLPlacemark {

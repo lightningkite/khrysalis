@@ -3,13 +3,13 @@
 // Package: com.lightningkite.khrysalis
 import Foundation
 
-public class Image : KEquatable, KHashable, KStringable {
+public class Image {
     public init() {
     }
 }
 public class ImageReference : Image, KDataClass {
-    public var uri: Uri
-    override public init(uri: Uri) {
+    public var uri: URL
+    public init(uri: URL) {
         self.uri = uri
         super.init()
     }
@@ -18,11 +18,11 @@ public class ImageReference : Image, KDataClass {
     }
     public static func == (lhs: ImageReference, rhs: ImageReference) -> Bool { return lhs.uri == rhs.uri }
     public var description: String { return "ImageReference(uri = \(self.uri))" }
-    public func copy(uri: Uri? = nil) -> ImageReference { return ImageReference(uri: uri ?? self.uri) }
+    public func copy(uri: URL? = nil) -> ImageReference { return ImageReference(uri: uri ?? self.uri) }
 }
 public class ImageBitmap : Image, KDataClass {
     public var bitmap: Bitmap
-    override public init(bitmap: Bitmap) {
+    public init(bitmap: Bitmap) {
         self.bitmap = bitmap
         super.init()
     }
@@ -35,7 +35,7 @@ public class ImageBitmap : Image, KDataClass {
 }
 public class ImageRaw : Image, KDataClass {
     public var raw: Data
-    override public init(raw: Data) {
+    public init(raw: Data) {
         self.raw = raw
         super.init()
     }
@@ -48,7 +48,7 @@ public class ImageRaw : Image, KDataClass {
 }
 public class ImageRemoteUrl : Image, KDataClass {
     public var url: String
-    override public init(url: String) {
+    public init(url: String) {
         self.url = url
         super.init()
     }
@@ -63,7 +63,7 @@ public class ImageRemoteUrl : Image, KDataClass {
 public extension String {
     func asImage() -> Image { return ImageRemoteUrl(url: self) }
 }
-public extension Uri {
+public extension URL {
     func asImage() -> Image { return ImageReference(uri: self) }
 }
 public extension Bitmap {

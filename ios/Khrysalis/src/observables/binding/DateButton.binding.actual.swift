@@ -48,7 +48,7 @@ public extension DateButton {
     func bindDateAlone(_ observable: MutableObservableProperty<DateAlone>) -> Void {
         observable.subscribeBy { ( value) in
             if self.date.dateAlone != value {
-                self.date = dateFrom(value, Date().timeAlone)
+                self.date = dateFrom(dateAlone: value, timeAlone: Date().timeAlone)
             }
         }.until(self.removed)
         self.onDateEntered.subscribeBy { value in
@@ -69,7 +69,7 @@ public extension TimeButton {
         self.minuteInterval = Int(minuteInterval)
         observable.subscribeBy { ( value) in
             if self.date.timeAlone != value {
-                self.date = dateFrom(Date().dateAlone, value)
+                self.date = dateFrom(dateAlone: Date().dateAlone, timeAlone: value)
             }
         }.until(self.removed)
         self.onDateEntered.subscribeBy { value in

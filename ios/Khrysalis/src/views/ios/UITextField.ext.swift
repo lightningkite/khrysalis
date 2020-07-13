@@ -57,7 +57,7 @@ public extension UITextField {
             }
         }
         
-        view.onLayoutSubviews.startWith(view).addWeak(layer) { [unowned bold, unowned light] layer, view in
+        view.onLayoutSubviews.startWith(view).addWeak(referenceA: layer) { [unowned bold, unowned light] layer, view in
             layer.frame = view.bounds
             bold.frame.origin.x = 0
             bold.frame.origin.y = layer.bounds.height - 2

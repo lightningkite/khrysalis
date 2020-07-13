@@ -81,7 +81,7 @@ extension CALayer : CALayerToImage {
             previous.dispose()
         }
         if let view = view {
-            let close = view.onLayoutSubviews.startWith(view).addWeak(self) { this, view in
+            let close = view.onLayoutSubviews.startWith(view).addWeak(referenceA: self) { this, view in
                 this.resize(view.bounds)
             }
             CALayer.matchingExtension.set(self, close)
@@ -112,7 +112,7 @@ extension CALayer : CALayerToImage {
             return cornerRadius
         }
         set(value) {
-            self.onResize.startWith(self.bounds).addWeak(self) { (self, bounds) in
+            self.onResize.startWith(self.bounds).addWeak(referenceA: self) { (self, bounds) in
                 self.cornerRadius = min(min(value, bounds.size.width/2), bounds.size.height/2)
             }
         }

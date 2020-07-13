@@ -197,7 +197,7 @@ public extension Canvas {
 
 //--- Canvas.drawTextCentered(String, CGFloat, CGFloat, Paint)
 public extension Canvas {
-    func drawTextCentered(_ text: String, _ centerX: CGFloat, _ centerY: CGFloat, _ paint: Paint) {
+    func drawTextCentered(text: String,  centerX: CGFloat,  centerY: CGFloat,  paint: Paint) {
         drawText(text, centerX, centerY, .center, paint)
     }
 }

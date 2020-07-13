@@ -23,7 +23,7 @@ public extension UICollectionView {
     func bind<T>(
     _ data: ObservableProperty<[T]>,
     _ defaultValue: T,
-    _ showIndex:MutableObservableProperty<Int> = StandardObservableProperty(0),
+    _ showIndex:MutableObservableProperty<Int> = StandardObservableProperty(underlyingValue: 0),
     _ makeView: @escaping (ObservableProperty<T>) -> UIView
     ){
         bind(data: data, defaultValue: defaultValue, spacing: 0, makeView: makeView)
@@ -35,7 +35,7 @@ public extension UICollectionView {
     func bind<T>(
     data: ObservableProperty<[T]>,
     defaultValue: T,
-    showIndex:MutableObservableProperty<Int> = StandardObservableProperty(0),
+    showIndex:MutableObservableProperty<Int> = StandardObservableProperty(underlyingValue: 0),
     makeView: @escaping (ObservableProperty<T>) -> UIView
     ){
         bind(data, defaultValue, showIndex, makeView)
@@ -201,7 +201,7 @@ class CollectionBoundDataSource<T>: NSObject, UICollectionViewDataSource, UIColl
         let cell: CustomUICollectionViewCell = collectionView.dequeueReusableCell(withReuseIdentifier: "main-cell", for: indexPath) as! CustomUICollectionViewCell
         cell.spacing = self.spacing
         if cell.obs == nil {
-            let obs = StandardObservableProperty(defaultValue)
+            let obs = StandardObservableProperty(underlyingValue: defaultValue)
             cell.obs = obs
             let new = makeView(obs)
             cell.contentView.addSubview(new)

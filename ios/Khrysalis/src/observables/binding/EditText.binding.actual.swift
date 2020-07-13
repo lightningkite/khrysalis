@@ -63,7 +63,7 @@ public extension UITextField {
         observable.subscribeBy { ( value) in
             let currentValue = Int(self.textString) ?? 0
             if currentValue != Int(value) {
-                self.textString = value.toString()
+                self.textString = String(value)
                 self.superview?.setNeedsLayout()
             }
         }.until(self.removed)
@@ -88,7 +88,7 @@ public extension UITextField {
         observable.subscribeBy { ( value) in
             let currentValue = Double(self.textString) ?? 0
             if currentValue != Double(value) {
-                self.textString = value.toString()
+                self.textString = String(value)
                 self.superview?.setNeedsLayout()
             }
         }.until(self.removed)

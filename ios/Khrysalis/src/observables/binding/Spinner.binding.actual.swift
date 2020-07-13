@@ -17,7 +17,7 @@ public extension Dropdown {
         }.until(self.removed)
         self.selectedView = makeView(selected)
         selected.subscribeBy { value in
-            var index = Int(options.value.indexOf(value))
+            var index = options.value.index(of: value) ?? -1
             if index != -1 {
                 self.pickerView.selectRow(index, inComponent: 0, animated: false)
             }
@@ -62,7 +62,7 @@ class PickerBoundDataSource<T, VIEW: UIView>: NSObject, UIPickerViewDataSource, 
 
     func pickerView(_ pickerView: UIPickerView, viewForRow row: Int, forComponent component: Int, reusing view: UIView?) -> UIView {
         let v = view ?? {
-            let obs = StandardObservableProperty(selected.value)
+            let obs = StandardObservableProperty(underlyingValue: selected.value)
             let new = makeView(obs)
             ext.set(new, obs)
             return new

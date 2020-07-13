@@ -10,7 +10,7 @@ public extension View {
         if let existing = View.lifecycleExtension.get(self) {
             return existing
         }
-        let prop = StandardObservableProperty(true)
+        let prop = StandardObservableProperty(underlyingValue: true)
         View.lifecycleExtension.set(self, prop)
         prop.value = window != nil
         return prop
@@ -35,7 +35,7 @@ public extension View {
 //--- T.untilOff(Lifecycle)
 public extension Disposable {
     func untilOff(_ lifecycle: Lifecycle) -> Self {
-        lifecycle.closeWhenOff(self)
+        lifecycle.closeWhenOff(closeable: self)
         return self
     }
     func untilOff(lifecycle: Lifecycle) -> Self {

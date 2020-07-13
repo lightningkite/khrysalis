@@ -2,8 +2,9 @@
 // File: views/geometry/PolygonF.shared.kt
 // Package: com.lightningkite.khrysalis.views.geometry
 import Foundation
+import CoreGraphics
 
-public class PolygonF : KDataClass, KEquatable, KHashable, KStringable {
+public class PolygonF : KDataClass {
     public var points: Array<CGPoint>
     public init(points: Array<CGPoint>) {
         self.points = points
@@ -17,10 +18,10 @@ public class PolygonF : KDataClass, KEquatable, KHashable, KStringable {
     
     public func contains(point: CGPoint) -> Bool {
         var inside = false
-        let big = 1000
+        let big: CGFloat = 1000
         for index in ((0..<self.points.count - 2)){
-            let a = self.points[index]
-            let b = self.points[index + 1]
+            var a = self.points[index]
+            var b = self.points[index + 1]
             let denom = -(big - point.x) * (b.y - a.y)
             if denom == 0 { continue }
             let ua = ((big - point.x) * (a.y - point.y)) / denom

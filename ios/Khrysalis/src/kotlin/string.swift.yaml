@@ -22,7 +22,7 @@
 - id: kotlin.text.trim
   type: call
   arguments: []
-  template: "~this~.trimmingCharacters(in: .whitespaceAndNewlines)"
+  template: "~this~.trimmingCharacters(in: .whitespacesAndNewlines)"
 - id: kotlin.text.padEnd
   type: call
   template: "~this~.padding(toLength: ~0~, withPad: ~1~, startingAtIndex: 0)"
@@ -35,12 +35,15 @@
 - id: kotlin.text.isNotEmpty
   type: call
   template: (!~this~.isEmpty)
+- id: kotlin.text.isBlank
+  type: call
+  template: "~this~.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty"
 - id: kotlin.text.isNotBlank
   type: call
-  template: "~this~.trimmingCharacters(in: CharacterSet.whitespaces).isEmpty"
+  template: "!~this~.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty"
 - id: kotlin.text.isNullOrBlank
   type: call
-  template: "(~this~?.trimmingCharacters(in: CharacterSet.whitespaces).isEmpty ?? true)"
+  template: "(~this~?.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty ?? true)"
 - id: kotlin.text.orEmpty
   type: call
   template: (~this~ ?? "")
@@ -114,24 +117,37 @@
 # String Builder
 - id: kotlin.text.StringBuilder
   type: type
-  requiresMutable: true
-  template: String
+  template: Box<String>
 - id: kotlin.text.StringBuilder
   type: call
-  template: '""'
+  template: 'Box("")'
 - id: kotlin.text.StringBuilder.append
   type: call
-  template: ~this~.append(~0~)
+  template: ~this~.value.append(~0~)
 - id: java.lang.StringBuilder.append
   type: call
-  template: ~this~.append(~0~)
+  template: ~this~.value.append(~0~)
 - id: kotlin.text.appendln
   type: call
-  template: ~this~.append(~0~ + "\n")
+  template: ~this~.value.append(~0~ + "\n")
 - id: kotlin.text.appendln
   type: call
   arguments: []
-  template: ~this~.append("\n")
+  template: ~this~.value.append("\n")
+- id: kotlin.text.StringBuilder.toString
+  type: call
+  template: ~this~.value
+- id: kotlin.Any.toString
+  type: call
+  actualReceiver: kotlin.text.StringBuilder
+  template: ~this~.value
+- id: java.lang.StringBuilder.toString
+  type: call
+  template: ~this~.value
+- id: kotlin.Any.toString
+  type: call
+  actualReceiver: java.lang.StringBuilder
+  template: ~this~.value
 
 # Converting to Numbers
 

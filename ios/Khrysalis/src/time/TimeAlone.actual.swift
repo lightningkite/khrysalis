@@ -124,7 +124,7 @@ public extension TimeAlone {
         let formatter = DateFormatter()
         formatter.locale = Locale(identifier: "en_US_POSIX")
         formatter.dateFormat = "HH:mm:ss"
-        return formatter.string(from: dateFrom(DateAlone.now(), self))
+        return formatter.string(from: dateFrom(dateAlone: DateAlone.now(), timeAlone: self))
     }
     
     //--- TimeAlone.minus(TimeAlone)

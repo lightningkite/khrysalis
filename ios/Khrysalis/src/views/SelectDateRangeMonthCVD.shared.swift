@@ -2,6 +2,7 @@
 // File: views/SelectDateRangeMonthCVD.shared.kt
 // Package: com.lightningkite.khrysalis.views
 import Foundation
+import CoreGraphics
 
 public class SelectDateRangeMonthCVD : MonthCVD {
     override public init() {
@@ -16,8 +17,8 @@ public class SelectDateRangeMonthCVD : MonthCVD {
         if let it = (self.start.value) { 
             self.currentMonthObs.value = it.dayOfMonth(value: 1)
         }
-        self.start.onChange.subscribeBy(onNext:  { (value: DateAlone) -> Void in self?.invalidate() }).forever()
-        self.endInclusive.subscribeBy(onNext:  { (value: DateAlone) -> Void in self?.invalidate() }).forever()
+        self.start.onChange.subscribeBy(onNext:  { [weak self] (value: DateAlone?) -> Void in self?.invalidate() }).forever()
+        self.endInclusive.subscribeBy(onNext:  { [weak self] (value: DateAlone?) -> Void in self?.invalidate() }).forever()
     }
     
     override public func generateAccessibilityView() -> View? { return nil }
@@ -36,7 +37,7 @@ public class SelectDateRangeMonthCVD : MonthCVD {
     }
     
     public let drawDay_dateAlone: DateAlone
-    override public func drawDay(canvas: Canvas, showingMonth: DateAlone, day: DateAlone, displayMetrics: DisplayMetrics, outer: RectF, inner: RectF) -> Void {
+    override public func drawDay(canvas: Canvas, showingMonth: DateAlone, day: DateAlone, displayMetrics: DisplayMetrics, outer: CGRect, inner: CGRect) -> Void {
         if day == self.start.value && (day == self.endInclusive.value || self.endInclusive.value == nil){
             CalendarDrawing.INSTANCE.dayBackground(canvas: canvas, inner: inner, paint: self.selectedPaint)
             CalendarDrawing.INSTANCE.day(canvas: canvas, month: showingMonth, date: day, inner: inner, paint: self.selectedDayPaint)
@@ -58,7 +59,7 @@ public class SelectDateRangeMonthCVD : MonthCVD {
     private var startedDraggingOn: DateAlone?
     
     override public func onTap(day: DateAlone) -> Void {
-        if self.start.value != nil, self.start.value == self.endInclusive.value, day.comparable > self.start.value!!.comparable {
+        if self.start.value != nil, self.start.value == self.endInclusive.value, day.comparable > self.start.value!.comparable {
             self.endInclusive.value = day
         } else {
             self.start.value = day
@@ -86,7 +87,7 @@ public class SelectDateRangeMonthCVD : MonthCVD {
             self.draggingStart = false
         } else if day == startValue{
             self.draggingStart = true
-        } else if day.comparable > endInclusiveValue!!.comparable && startValue == endInclusiveValue{
+        } else if day.comparable > endInclusiveValue!.comparable && startValue == endInclusiveValue{
             self.endInclusive.value = day
             self.draggingStart = false
         } else {
@@ -101,12 +102,12 @@ public class SelectDateRangeMonthCVD : MonthCVD {
         let startValue = self.start.value
         let endInclusiveValue = self.endInclusive.value
         if startValue == nil || endInclusiveValue == nil{
-        } else if self.draggingStart && day.comparable > endInclusiveValue!!.comparable{
+        } else if self.draggingStart && day.comparable > endInclusiveValue!.comparable{
             self.start.value = self.endInclusive.value
             self.endInclusive.value = day
             self.draggingStart = false
             return true
-        } else if !self.draggingStart && day.comparable < startValue!!.comparable{
+        } else if !self.draggingStart && day.comparable < startValue!.comparable{
             self.endInclusive.value = self.start.value
             self.start.value = day
             self.draggingStart = true

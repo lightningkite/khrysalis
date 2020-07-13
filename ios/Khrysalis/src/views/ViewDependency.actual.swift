@@ -94,7 +94,7 @@ public class ViewDependency: NSObject {
             })
         ]
         if UIApplication.shared.canOpenURL(URL(string: "comgooglemaps://")!) {
-            options.add(("Google Maps", {
+            options.append(("Google Maps", {
                 var url = "string: comgooglemaps://?center=\(coordinate.latitude),\(coordinate.longitude)"
                 if let zoom = zoom {
                     url += "&zoom=\(zoom)"
@@ -200,10 +200,10 @@ public class ViewDependency: NSObject {
                     layer.addSublayer(normalLayer)
                 }
             }
-            layer.onResize.startWith(layer.bounds).addWeak(checkedLayer) { (checkedLayer, bounds) in
+            layer.onResize.startWith(layer.bounds).addWeak(referenceA: checkedLayer) { (checkedLayer, bounds) in
                 checkedLayer.frame = bounds
             }
-            layer.onResize.startWith(layer.bounds).addWeak(normalLayer) { (normalLayer, bounds) in
+            layer.onResize.startWith(layer.bounds).addWeak(referenceA: normalLayer) { (normalLayer, bounds) in
                 normalLayer.frame = bounds
             }
 
@@ -311,7 +311,7 @@ public class ViewDependency: NSObject {
                     remaining -= 1
                     print("Assets remaining: \(remaining)")
                     if let url = url {
-                        result.add(url)
+                        result.append(url)
                     } else {
                         //... dunno how to handle error
                     }

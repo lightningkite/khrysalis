@@ -42,7 +42,7 @@ open class KhrysalisViewController: UIViewController, UINavigationControllerDele
         self.view.addSubview(bottom)
         backgroundLayerBottom = bottom
         
-        let m = main.generate(ViewDependency(self))
+        let m = main.generate(dependency: ViewDependency(self))
         innerView = m
         self.view.addSubview(innerView)
         
@@ -53,7 +53,7 @@ open class KhrysalisViewController: UIViewController, UINavigationControllerDele
                 }
             }
             var lastOccurrance = Date()
-            KhrysalisViewController.refreshBackgroundColorEvent.addWeak(self) { (self, value) in
+            KhrysalisViewController.refreshBackgroundColorEvent.addWeak(referenceA: self) { (self, value) in
                 let now = Date()
                 if now.timeIntervalSince(lastOccurrance) > 1 {
                     lastOccurrance = now
@@ -62,7 +62,7 @@ open class KhrysalisViewController: UIViewController, UINavigationControllerDele
             }
         }
         
-        showDialogEvent.addWeak(self){ (this, request) in
+        showDialogEvent.addWeak(referenceA: self){ (this, request) in
             let dep = ViewDependency(self)
             let message = request.string.get(dependency: dep)
             let alert = UIAlertController(title: "", message: message, preferredStyle: .alert)

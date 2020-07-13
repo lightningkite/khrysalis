@@ -9,7 +9,7 @@ import Foundation
 import UIKit
 
 public extension UIView {
-    static var fullScreenSafeInsetsObs: MutableObservableProperty<UIEdgeInsets> = StandardObservableProperty(.zero)
+    static var fullScreenSafeInsetsObs: MutableObservableProperty<UIEdgeInsets> = StandardObservableProperty(underlyingValue: .zero)
     private static let consumesExtension: ExtensionProperty<UIView, (UIEdgeInsets)->UIEdgeInsets> = ExtensionProperty()
     func findMySafeInsets() -> UIEdgeInsets {
         if let superview = superview {

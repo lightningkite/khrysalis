@@ -3,7 +3,7 @@
 // Package: com.lightningkite.khrysalis.views
 import Foundation
 
-public class FormValidationError : KEquatable, KHashable, KStringable {
+public class FormValidationError {
     public var field: UntypedFormField
     public var string: ViewString
     public init(field: UntypedFormField, string: ViewString) {
@@ -28,7 +28,7 @@ public protocol UntypedFormField {
 public class FormField<T> : UntypedFormField {
     public var name: ViewString
     public var observable: MutableObservableProperty<T>
-    public var validation: @escaping  (UntypedFormField) -> ViewString?
+    public var validation:  (UntypedFormField) -> ViewString?
     public init(name: ViewString, observable: MutableObservableProperty<T>, validation: @escaping  (UntypedFormField) -> ViewString?) {
         self.name = name
         self.observable = observable
@@ -48,16 +48,16 @@ public class FormField<T> : UntypedFormField {
     }
 }
 
-public class Form : KEquatable, KHashable, KStringable {
+public class Form {
     public init() {
         self.fields = []
     }
     
     
-    public class Companion : KEquatable, KHashable, KStringable {
+    public class Companion {
         private init() {
-            self.xIsRequired = ViewStringRaw(string: "%1\$s is required.")
-            self.xMustMatchY = ViewStringRaw(string: "%1\$s must match %2\$s.")
+            self.xIsRequired = ViewStringRaw(string: "%1$s is required.")
+            self.xMustMatchY = ViewStringRaw(string: "%1$s must match %2$s.")
         }
         public static let INSTANCE = Companion()
         
@@ -69,7 +69,7 @@ public class Form : KEquatable, KHashable, KStringable {
     
     public func field<T>(name: ViewString, defaultValue: T, validation: @escaping  (FormField<T>) -> ViewString?) -> FormField<T> {
         let obs = StandardObservableProperty(underlyingValue: defaultValue)
-        let field = FormField(name: name, observable: obs, validation: { (untypedField: UntypedFormField) -> ViewString in validation(untypedField as! FormField<T>) })
+        let field = FormField(name: name, observable: obs, validation: { (untypedField: UntypedFormField) -> ViewString? in validation(untypedField as! FormField<T>) })
         self.fields.append(field)
         return field
     }
@@ -77,7 +77,7 @@ public class Form : KEquatable, KHashable, KStringable {
     public func field<T>(name: StringResource, defaultValue: T, validation: @escaping  (FormField<T>) -> ViewString?) -> FormField<T> { return self.field(name: ViewStringResource(resource: name), defaultValue: defaultValue, validation: validation) }
     
     public func fieldFromProperty<T>(name: ViewString, property: MutableObservableProperty<T>, validation: @escaping  (FormField<T>) -> ViewString?) -> FormField<T> {
-        let field = FormField(name: name, observable: property, validation: { (untypedField: UntypedFormField) -> ViewString in validation(untypedField as! FormField<T>) })
+        let field = FormField(name: name, observable: property, validation: { (untypedField: UntypedFormField) -> ViewString? in validation(untypedField as! FormField<T>) })
         self.fields.append(field)
         return field
     }
@@ -85,7 +85,7 @@ public class Form : KEquatable, KHashable, KStringable {
     public func fieldFromProperty<T>(name: StringResource, property: MutableObservableProperty<T>, validation: @escaping  (FormField<T>) -> ViewString?) -> FormField<T> { return self.fieldFromProperty(name: ViewStringResource(resource: name), property: property, validation: validation) }
     
     public func check() -> Array<FormValidationError> {
-        return self.fields.compactMap({ (it: UntypedFormField) -> FormValidationError in 
+        return self.fields.compactMap({ (it: UntypedFormField) -> FormValidationError? in 
                 let result = self.checkField(field: it)
                 if let result = result {
                     return FormValidationError(field: it, string: result)
@@ -113,7 +113,7 @@ public class Form : KEquatable, KHashable, KStringable {
 
 public extension FormField where T == String {
     func required() -> ViewString? {
-        if self.observable.value.isBlank() {
+        if self.observable.value.trimmingCharacters(in: .whitespacesAndNewlines).isEmpty {
             return ViewStringTemplate(template: Form.Companion.INSTANCE.xIsRequired, arguments: [self.name])
         } else {
             return nil
@@ -152,7 +152,7 @@ public extension ViewString {
 }
 
 
-public extension FormField {
+public extension FormField where T: Equatable {
     func matches(other: FormField<T>) -> ViewString? {
         if self.observable.value != other.observable.value {
             return ViewStringTemplate(template: Form.Companion.INSTANCE.xMustMatchY, arguments: [self.name, other.name])

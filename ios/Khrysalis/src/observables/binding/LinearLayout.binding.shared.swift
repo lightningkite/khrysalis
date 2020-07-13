@@ -3,7 +3,7 @@
 // Package: com.lightningkite.khrysalis.observables.binding
 import Foundation
 
-private class LinearLayoutBoundSubview<T> : KEquatable, KHashable, KStringable {
+private class LinearLayoutBoundSubview<T> {
     public var view: View
     public var property: StandardObservableProperty<T>
     public init(view: View, property: StandardObservableProperty<T>) {
@@ -15,21 +15,21 @@ private class LinearLayoutBoundSubview<T> : KEquatable, KHashable, KStringable {
 public extension LinearLayout {
     func bind<T>(data: ObservableProperty<Array<T>>, defaultValue: T, makeView: @escaping  (ObservableProperty<T>) -> View) -> Void {
         var existingViews: Array<LinearLayoutBoundSubview<T>> = []
-        data.subscribeBy(onNext: { (value: Array<Any>) -> Void in 
+        data.subscribeBy(onNext: { (value: Array<T>) -> Void in 
                 //Fix view count
                 let excessViews = existingViews.count - value.count
                 if excessViews > 0 {
                     //remove views
                     for iter in ((1...excessViews)){
                         let old = existingViews.remove(at: (existingViews.count - 1))
-                        self.removeView(p0: old.view)
+                        self.removeView(old.view)
                     }
                 } else { if existingViews.count < value.count {
                         //add views
                         for iter in ((1...(-excessViews))){
                             let prop = StandardObservableProperty(underlyingValue: defaultValue)
                             let view = makeView(prop)
-                            self.addView(p0: view, p1: self.params(gravity: AlignPair.Companion.INSTANCE.centerFill))
+                            self.addView(view, self.params(gravity: AlignPair.Companion.INSTANCE.centerFill))
                             existingViews.append(LinearLayoutBoundSubview(view: view, property: prop))
                         }
                 } }
@@ -46,21 +46,21 @@ public extension LinearLayout {
 public extension LinearLayout {
     func bindHorizontal<T>(data: ObservableProperty<Array<T>>, defaultValue: T, makeView: @escaping  (ObservableProperty<T>) -> View) -> Void {
         var existingViews: Array<LinearLayoutBoundSubview<T>> = []
-        data.subscribeBy(onNext: { (value: Array<Any>) -> Void in 
+        data.subscribeBy(onNext: { (value: Array<T>) -> Void in 
                 //Fix view count
                 let excessViews = existingViews.count - value.count
                 if excessViews > 0 {
                     //remove views
                     for iter in ((1...excessViews)){
                         let old = existingViews.remove(at: (existingViews.count - 1))
-                        self.removeView(p0: old.view)
+                        self.removeView(old.view)
                     }
                 } else { if existingViews.count < value.count {
                         //add views
                         for iter in ((1...(-excessViews))){
                             let prop = StandardObservableProperty(underlyingValue: defaultValue)
                             let view = makeView(prop)
-                            self.addView(p0: view, p1: self.params(gravity: AlignPair.Companion.INSTANCE.center))
+                            self.addView(view, self.params(gravity: AlignPair.Companion.INSTANCE.center))
                             existingViews.append(LinearLayoutBoundSubview(view: view, property: prop))
                         }
                 } }

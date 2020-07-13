@@ -51,7 +51,7 @@ public class CustomView: FrameLayout {
         guard let ctx = UIGraphicsGetCurrentContext() else { return }
 //        ctx.clear(rect)
         ctx.scale(1/scaleInformation.density, 1/scaleInformation.density)
-        delegate?.draw(ctx, (rect.size.width) * scaleInformation.density, (rect.size.height) * scaleInformation.density, scaleInformation)
+        delegate?.draw(canvas: ctx, width: (rect.size.width) * scaleInformation.density, height: (rect.size.height) * scaleInformation.density, displayMetrics: scaleInformation)
     }
     
     private var touchIds = Dictionary<UITouch, Int>()
@@ -74,8 +74,8 @@ public class CustomView: FrameLayout {
     override public func sizeThatFits(_ size: CGSize) -> CGSize {
         if let delegate = delegate {
             return CGSize(
-                width: CGFloat(delegate.sizeThatFitsWidth((size.width), (size.height))),
-                height: CGFloat(delegate.sizeThatFitsHeight((size.width), (size.height)))
+                width: CGFloat(delegate.sizeThatFitsWidth(width: (size.width), height: (size.height))),
+                height: CGFloat(delegate.sizeThatFitsHeight(width: (size.width), height: (size.height)))
             )
         } else {
             return super.sizeThatFits(size)
@@ -91,30 +91,30 @@ public class CustomView: FrameLayout {
                 currentTouchId += 1
                 touchIds[touch] = id
                 let _ = delegate?.onTouchDown(
-                    id,
-                    (loc.x) * scaleInformation.density,
-                    (loc.y) * scaleInformation.density,
-                    (frame.size.width) * scaleInformation.density,
-                    (frame.size.height) * scaleInformation.density
+                    id: id,
+                    x: (loc.x) * scaleInformation.density,
+                    y: (loc.y) * scaleInformation.density,
+                    width: (frame.size.width) * scaleInformation.density,
+                    height: (frame.size.height) * scaleInformation.density
                 )
             case .moved:
                 if let id = touchIds[touch] {
                     let _ = delegate?.onTouchMove(
-                        id,
-                        (loc.x) * scaleInformation.density,
-                        (loc.y) * scaleInformation.density,
-                        (frame.size.width) * scaleInformation.density,
-                        (frame.size.height) * scaleInformation.density
+                        id: id,
+                        x: (loc.x) * scaleInformation.density,
+                        y: (loc.y) * scaleInformation.density,
+                        width: (frame.size.width) * scaleInformation.density,
+                        height: (frame.size.height) * scaleInformation.density
                     )
                 }
             case .ended:
                 if let id = touchIds[touch] {
                     let _ = delegate?.onTouchUp(
-                        id,
-                        (loc.x) * scaleInformation.density,
-                        (loc.y) * scaleInformation.density,
-                        (frame.size.width) * scaleInformation.density,
-                        (frame.size.height) * scaleInformation.density
+                        id: id,
+                        x: (loc.x) * scaleInformation.density,
+                        y: (loc.y) * scaleInformation.density,
+                        width: (frame.size.width) * scaleInformation.density,
+                        height: (frame.size.height) * scaleInformation.density
                     )
                 }
                 touchIds.removeValue(forKey: touch)

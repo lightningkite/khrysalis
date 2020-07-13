@@ -3,12 +3,12 @@
 // Package: com.lightningkite.khrysalis.observables
 import Foundation
 
-public class MutableObservableProperty<T> : ObservableProperty<Any> {
-    override protected init() {
+public class MutableObservableProperty<T> : ObservableProperty<T> {
+    override public init() {
         super.init()
     }
     
-    override public var value: T
-    public func update() -> Void 
+    override public var value: T { get { TODO() } set { TODO() } }
+    public func update() -> Void { TODO() }
 }
 

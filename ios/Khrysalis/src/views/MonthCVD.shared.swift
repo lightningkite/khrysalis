@@ -2,6 +2,7 @@
 // File: views/MonthCVD.shared.kt
 // Package: com.lightningkite.khrysalis.views
 import Foundation
+import CoreGraphics
 
 public class MonthCVD : CustomViewDelegate {
     override public init() {
@@ -32,7 +33,7 @@ public class MonthCVD : CustomViewDelegate {
         self.isTap = false
         self.dragStartY = 0
         super.init()
-        self.currentMonthObs.subscribeBy(onNext:  { (value: DateAlone) -> Void in self?.postInvalidate() }).forever()
+        self.currentMonthObs.subscribeBy(onNext:  { [weak self] (value: DateAlone) -> Void in self?.postInvalidate() }).forever()
         self.labelPaint.isAntiAlias = true
         self.labelPaint.style = Paint.Style.FILL
         self.labelPaint.color = 0xFF808080.asColor()
@@ -40,7 +41,7 @@ public class MonthCVD : CustomViewDelegate {
         self.dayPaint.style = Paint.Style.FILL
         self.dayPaint.color = 0xFF202020.asColor()
         animationFrame.subscribeBy(onNext: { (timePassed: Float) -> Void in if self.draggingId == self.DRAGGING_NONE, self.currentOffset != 0 {
-                    var newOffset = self.currentOffset * max(0, (1 - 8 * timePassed))
+                    var newOffset: CGFloat = self.currentOffset * max(0, (1 - 8 * CGFloat(timePassed)))
                     let min = 0.001
                     if newOffset > min {
                         newOffset = newOffset - min
@@ -163,38 +164,38 @@ public class MonthCVD : CustomViewDelegate {
     }
     
     private var drawDate: DateAlone
-    private let rectForReuse: RectF
-    private let rectForReuseB: RectF
+    private var rectForReuse: CGRect
+    private var rectForReuseB: CGRect
     public func drawMonth(canvas: Canvas, xOffset: CGFloat, width: CGFloat, month: DateAlone, displayMetrics: DisplayMetrics) -> Void {
-        for day in ((Int(1)...Int(7))){
+        for day in ((1...7)){
             let col = day - 1
-            self.rectForReuse.set(p0: xOffset + Float(col) * self.dayCellWidth - 0.01, p1: -0.01, p2: xOffset + (Float(col) + 1) * self.dayCellWidth + 0.01, p3: self.dayLabelHeight + 0.01)
-            self.rectForReuseB.set(p0: self.rectForReuse)
-            self.rectForReuse.inset(p0: self.internalPadding, p1: self.internalPadding)
+            self.rectForReuse.set(xOffset + CGFloat(col) * self.dayCellWidth - 0.01, -0.01, xOffset + (CGFloat(col) + 1) * self.dayCellWidth + 0.01, self.dayLabelHeight + 0.01)
+            self.rectForReuseB.set(self.rectForReuse)
+            self.rectForReuse.inset(self.internalPadding, self.internalPadding)
             self.drawLabel(canvas: canvas, dayOfWeek: day, displayMetrics: displayMetrics, outer: self.rectForReuse, inner: self.rectForReuseB)
         }
-        for row in ((Int(0)...Int(5))){
-            for col in ((Int(0)...Int(6))){
+        for row in ((0...5)){
+            for col in ((0...6)){
                 let day = self.dayAt(month: month, row: row, column: col, existing: self.drawDate)
-                self.rectForReuse.set(p0: xOffset + Float(col) * self.dayCellWidth - 0.01, p1: self.dayLabelHeight + Float(row) * self.dayCellHeight - 0.01, p2: xOffset + (Float(col) + 1) * self.dayCellWidth + 0.01, p3: self.dayLabelHeight + (Float(row) + 1) * self.dayCellHeight + 0.01)
+                self.rectForReuse.set(xOffset + CGFloat(col) * self.dayCellWidth - 0.01, self.dayLabelHeight + CGFloat(row) * self.dayCellHeight - 0.01, xOffset + (CGFloat(col) + 1) * self.dayCellWidth + 0.01, self.dayLabelHeight + (CGFloat(row) + 1) * self.dayCellHeight + 0.01)
                 if self.rectForReuse.left > width {
                     continue
                 }
                 if self.rectForReuse.right < 0 {
                     continue
                 }
-                self.rectForReuseB.set(p0: self.rectForReuse)
-                self.rectForReuse.inset(p0: self.dayCellMargin, p1: self.dayCellMargin)
+                self.rectForReuseB.set(self.rectForReuse)
+                self.rectForReuse.inset(self.dayCellMargin, self.dayCellMargin)
                 self.drawDay(canvas: canvas, showingMonth: month, day: day, displayMetrics: displayMetrics, outer: self.rectForReuseB, inner: self.rectForReuse)
             }
         }
     }
     
-    public func drawLabel(canvas: Canvas, dayOfWeek: Int, displayMetrics: DisplayMetrics, outer: RectF, inner: RectF) -> Void {
+    public func drawLabel(canvas: Canvas, dayOfWeek: Int, displayMetrics: DisplayMetrics, outer: CGRect, inner: CGRect) -> Void {
         CalendarDrawing.INSTANCE.label(canvas: canvas, dayOfWeek: dayOfWeek, inner: inner, paint: self.labelPaint)
     }
     
-    public func drawDay(canvas: Canvas, showingMonth: DateAlone, day: DateAlone, displayMetrics: DisplayMetrics, outer: RectF, inner: RectF) -> Void {
+    public func drawDay(canvas: Canvas, showingMonth: DateAlone, day: DateAlone, displayMetrics: DisplayMetrics, outer: CGRect, inner: CGRect) -> Void {
         CalendarDrawing.INSTANCE.day(canvas: canvas, month: showingMonth, date: day, inner: outer, paint: self.dayPaint)
     }
     
@@ -246,7 +247,7 @@ public class MonthCVD : CustomViewDelegate {
                     self.onTap(day: it)
                 }
             } else { if self.dragEnabled {
-                    let weighted = self.currentOffset + (self.currentOffset - self.lastOffset) * 200 / Float((System.currentTimeMillis() - self.lastOffsetTime))
+                    let weighted = self.currentOffset + (self.currentOffset - self.lastOffset) * 200 / CGFloat((System.currentTimeMillis() - self.lastOffsetTime))
                     if weighted > 0.5 {
                         //shift right one
                         self.currentMonthObs.value.setAddMonthOfYear(value: -1)
@@ -278,12 +279,12 @@ public class MonthCVD : CustomViewDelegate {
     }
 }
 
-public class CalendarDrawing : KEquatable, KHashable, KStringable {
+public class CalendarDrawing {
     private init() {
     }
     public static let INSTANCE = CalendarDrawing()
     
-    public func day(canvas: Canvas, month: DateAlone, date: DateAlone, inner: RectF, paint: Paint) -> Void {
+    public func day(canvas: Canvas, month: DateAlone, date: DateAlone, inner: CGRect, paint: Paint) -> Void {
         if date.month == month.month, date.year == month.year {
             canvas.drawTextCentered(text: String(describing: date.day), centerX: inner.centerX(), centerY: inner.centerY(), paint: paint)
         } else {
@@ -295,27 +296,27 @@ public class CalendarDrawing : KEquatable, KHashable, KStringable {
         }
     }
     
-    public func label(canvas: Canvas, dayOfWeek: Int, inner: RectF, paint: Paint) -> Void {
+    public func label(canvas: Canvas, dayOfWeek: Int, inner: CGRect, paint: Paint) -> Void {
         let text = TimeNames.INSTANCE.shortWeekdayName(oneIndexedPosition: dayOfWeek)
         canvas.drawTextCentered(text: text, centerX: inner.centerX(), centerY: inner.centerY(), paint: paint)
     }
     
-    public func dayBackground(canvas: Canvas, inner: RectF, paint: Paint) -> Void {
-        canvas.drawCircle(p0: inner.centerX(), p1: inner.centerY(), p2: min(inner.width() / 2, inner.height() / 2), p3: paint)
+    public func dayBackground(canvas: Canvas, inner: CGRect, paint: Paint) -> Void {
+        canvas.drawCircle(inner.centerX(), inner.centerY(), min(inner.width() / 2, inner.height() / 2), paint)
     }
     
-    public func dayBackgroundStart(canvas: Canvas, inner: RectF, outer: RectF, paint: Paint) -> Void {
-        canvas.drawCircle(p0: inner.centerX(), p1: inner.centerY(), p2: min(inner.width() / 2, inner.height() / 2), p3: paint)
-        canvas.drawRect(p0: outer.centerX(), p1: inner.top, p2: outer.right, p3: inner.bottom, p4: paint)
+    public func dayBackgroundStart(canvas: Canvas, inner: CGRect, outer: CGRect, paint: Paint) -> Void {
+        canvas.drawCircle(inner.centerX(), inner.centerY(), min(inner.width() / 2, inner.height() / 2), paint)
+        canvas.drawRect(outer.centerX(), inner.top, outer.right, inner.bottom, paint)
     }
     
-    public func dayBackgroundMid(canvas: Canvas, inner: RectF, outer: RectF, paint: Paint) -> Void {
-        canvas.drawRect(p0: outer.left, p1: inner.top, p2: outer.right, p3: inner.bottom, p4: paint)
+    public func dayBackgroundMid(canvas: Canvas, inner: CGRect, outer: CGRect, paint: Paint) -> Void {
+        canvas.drawRect(outer.left, inner.top, outer.right, inner.bottom, paint)
     }
     
-    public func dayBackgroundEnd(canvas: Canvas, inner: RectF, outer: RectF, paint: Paint) -> Void {
-        canvas.drawCircle(p0: inner.centerX(), p1: inner.centerY(), p2: min(inner.width() / 2, inner.height() / 2), p3: paint)
-        canvas.drawRect(p0: outer.left, p1: inner.top, p2: outer.centerX(), p3: inner.bottom, p4: paint)
+    public func dayBackgroundEnd(canvas: Canvas, inner: CGRect, outer: CGRect, paint: Paint) -> Void {
+        canvas.drawCircle(inner.centerX(), inner.centerY(), min(inner.width() / 2, inner.height() / 2), paint)
+        canvas.drawRect(outer.left, inner.top, outer.centerX(), inner.bottom, paint)
     }
 }
 
