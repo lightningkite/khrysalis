@@ -20,6 +20,9 @@ annotation class swiftMustBeClass
 @Target(AnnotationTarget.PROPERTY)
 annotation class unowned
 
+@Target(AnnotationTarget.VALUE_PARAMETER)
+annotation class modifies
+
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.SOURCE)
 annotation class unownedSelf

@@ -3,6 +3,7 @@
 // Package: com.lightningkite.khrysalis.views
 import RxSwift
 import Foundation
+import CoreGraphics
 
 public class CustomViewDelegate {
     public init() {

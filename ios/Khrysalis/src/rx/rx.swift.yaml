@@ -109,7 +109,7 @@
 #- id: io.reactivex.Observable.create
 #  type: call
 #  template:
-#    pattern: new Observable(~0~)
+#    pattern: Observable(~0~)
 #    imports:
 #      Observable: rxjs
 #
@@ -117,7 +117,7 @@
 #  type: call
 #  hasExplicitTypeArguments: true
 #  template:
-#    pattern: new Observable<~T0~>(~0~)
+#    pattern: Observable<~T0~>(~0~)
 #    imports:
 #      Observable: rxjs
 #
@@ -218,17 +218,17 @@
 #    imports:
 #      Observer: rxjs
 #
-#- id: io.reactivex.Observer.onNext
-#  type: call
-#  template: ~this~.next(~0~)
-#
-#- id: io.reactivex.Observer.onError
-#  type: call
-#  template: ~this~.error(~0~)
-#
-#- id: io.reactivex.Observer.onComplete
-#  type: call
-#  template: ~this~.complete()
+- id: io.reactivex.Observer.onNext
+  type: call
+  template: ~this~.onNext(~0~)
+
+- id: io.reactivex.Observer.onError
+  type: call
+  template: ~this~.onError(~0~)
+
+- id: io.reactivex.Observer.onComplete
+  type: call
+  template: ~this~.onComplete()
 #
 ## ObservableEmitter
 #- id: io.reactivex.ObservableEmitter
@@ -303,7 +303,7 @@
 #- id: io.reactivex.Single.create
 #  type: call
 #  template:
-#    pattern: new Observable(~0~)
+#    pattern: Observable(~0~)
 #    imports:
 #      Observable: rxjs
 #
@@ -311,7 +311,7 @@
 #  type: call
 #  hasExplicitTypeArguments: true
 #  template:
-#    pattern: new Observable<~T0~>(~0~)
+#    pattern: Observable<~T0~>(~0~)
 #    imports:
 #      Observable: rxjs
 #
@@ -396,17 +396,14 @@
   type: type
   template:
     pattern: Subject<~T0~>
-    imports:
-      - RxRelay
+    imports: [RxSwift]
 - id: io.reactivex.subjects.PublishSubject
   type: type
   template:
-    pattern: Subject<~T0~>
-    imports:
-      - RxRelay
+    pattern: PublishSubject<~T0~>
+    imports: [RxSwift]
 - id: io.reactivex.subjects.PublishSubject.create
   type: call
   template:
-    pattern: new Subject()
-    imports:
-      - RxRelay
+    pattern: PublishSubject()
+    imports: [RxSwift]

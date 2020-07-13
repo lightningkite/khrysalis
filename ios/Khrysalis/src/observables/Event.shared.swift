@@ -3,11 +3,10 @@
 // Package: com.lightningkite.khrysalis.observables
 import RxSwift
 import Foundation
-import RxRelay
 
 public typealias Event<Element> = Observable<Element>
 
 public typealias InvokableEvent<Element> = Subject<Element>
 
-public typealias StandardEvent<Element> = Subject<Element>
+public typealias StandardEvent<Element> = PublishSubject<Element>
 

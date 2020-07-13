@@ -78,31 +78,31 @@ public class GeoAddress : Codable, KDataClass {
     public func copy(coordinate: GeoCoordinate?? = .some(nil), name: String?? = .some(nil), street: String?? = .some(nil), subLocality: String?? = .some(nil), locality: String?? = .some(nil), subAdminArea: String?? = .some(nil), adminArea: String?? = .some(nil), countryName: String?? = .some(nil), postalCode: String?? = .some(nil)) -> GeoAddress { return GeoAddress(coordinate: invertOptional(coordinate) ?? self.coordinate, name: invertOptional(name) ?? self.name, street: invertOptional(street) ?? self.street, subLocality: invertOptional(subLocality) ?? self.subLocality, locality: invertOptional(locality) ?? self.locality, subAdminArea: invertOptional(subAdminArea) ?? self.subAdminArea, adminArea: invertOptional(adminArea) ?? self.adminArea, countryName: invertOptional(countryName) ?? self.countryName, postalCode: invertOptional(postalCode) ?? self.postalCode) }
     
     public func oneLine(withCountry: Bool = false, withZip: Bool = false) -> String {
-        let builder = ""
+        let builder = Box("")
         if let it = (self.street) { 
-            builder.append(it)
+            builder.value.append(it)
         }
         if let it = (self.locality) { 
-            builder.append(" ")
-            builder.append(it)
+            builder.value.append(" ")
+            builder.value.append(it)
         }
         if let it = (self.adminArea) { 
-            builder.append(", ")
-            builder.append(it)
+            builder.value.append(", ")
+            builder.value.append(it)
         }
         if withCountry {
             if let it = (self.adminArea) { 
-                builder.append(" ")
-                builder.append(it)
+                builder.value.append(" ")
+                builder.value.append(it)
             }
         }
         if withZip {
             if let it = (self.postalCode) { 
-                builder.append(" ")
-                builder.append(it)
+                builder.value.append(" ")
+                builder.value.append(it)
             }
         }
-        return String(describing: builder).trimmingCharacters(in: .whitespaceAndNewlines)
+        return builder.value.trimmingCharacters(in: .whitespacesAndNewlines)
     }
 }
 

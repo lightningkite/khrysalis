@@ -5,7 +5,7 @@ import android.graphics.PointF
 data class PolygonF(val points: List<PointF>){
     fun contains(point: PointF): Boolean {
         var inside = false
-        val big = 1000f
+        val big: GFloat = 1000f
         for(index in 0 until points.size - 2){
             val a = points[index]
             val b = points[index + 1]

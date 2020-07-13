@@ -37,12 +37,12 @@ fun KotlinType.isPrimitive() = getJetTypeFqName(false) in primitiveTypes
 data class BasicType(val type: KotlinType)
 data class CompleteReflectableType(val type: KotlinType)
 data class KtUserTypeBasic(val type: KtUserType)
-data class SwiftExtensionStart(val forDescriptor: CallableDescriptor)
+data class SwiftExtensionStart(val forDescriptor: CallableDescriptor, val typeParams: KtTypeParameterList?)
 
 val partOfParameterLocal = ThreadLocal<Boolean>()
 var partOfParameter: Boolean
     get() = partOfParameterLocal.get()
-    set(value){
+    set(value) {
         partOfParameterLocal.set(value)
     }
 
@@ -68,27 +68,59 @@ fun SwiftTranslator.registerType() {
         -BasicType(t)
         t.arguments
             .mapIndexedNotNull { index, arg ->
-                if (arg.type.constructor.declarationDescriptor is TypeParameterDescriptor) return@mapIndexedNotNull null
-                val swiftExactly = arg.type.annotations.find {
-                    it.fqName?.asString()?.endsWith("swiftExactly") == true
-                }?.allValueArguments?.entries?.let { it.firstOrNull()?.value?.value as? String ?: "T" }
-                val swiftDescendsFrom = arg.type.annotations.find {
-                    it.fqName?.asString()?.endsWith("swiftDescendsFrom") == true
-                }?.allValueArguments?.entries?.let { it.firstOrNull()?.value?.value as? String ?: "T" }
-                when {
-                    swiftExactly != null -> {
-                        listOf(swiftExactly, ": ", arg.type)
+                if (arg.type.isTypeParameter()) {
+                    val x = (arg.type.constructor.declarationDescriptor as? TypeParameterDescriptor)?.name?.asString()
+                    val match = typedRule.typeParams?.parameters?.find { it.name == x }?.extendsBound
+                        ?: return@mapIndexedNotNull null
+                    val type = match
+                    if (type.resolvedType?.constructor?.declarationDescriptor is TypeParameterDescriptor) return@mapIndexedNotNull null
+                    val swiftExactly = type.annotations.flatMap { it.entries }.find {
+                        it.typeReference?.text?.endsWith("swiftExactly") == true
+                    }?.valueArguments?.let { it.firstOrNull()?.getArgumentExpression()?.text?.trim('"') ?: "T" }
+                    val swiftDescendsFrom = type.annotations.flatMap { it.entries }.find {
+                        it.typeReference?.text?.endsWith("swiftDescendsFrom") == true
+                    }?.valueArguments?.let { it.firstOrNull()?.getArgumentExpression()?.text?.trim('"') ?: "T" }
+                    when {
+                        swiftExactly != null -> {
+                            listOf(swiftExactly, " == ", type)
+                        }
+                        swiftDescendsFrom != null -> {
+                            listOf(swiftDescendsFrom, " : ", type)
+                        }
+                        else -> {
+                            val name = x ?: baseClass?.declaredTypeParameters?.get(index)?.name?.asString()
+                            val c = type.resolvedType?.constructor?.declarationDescriptor as? ClassDescriptor
+                            if (c?.isFinalOrEnum == false) {
+                                listOf(name, ": ", type)
+                            } else {
+                                listOf(name, " == ", type)
+                            }
+                        }
                     }
-                    swiftDescendsFrom != null -> {
-                        listOf(swiftDescendsFrom, " == ", arg.type)
-                    }
-                    else -> {
-                        val name = baseClass?.declaredTypeParameters?.get(index)?.name?.asString()
-                        val c = arg.type.constructor.declarationDescriptor as? ClassDescriptor
-                        if (c?.isFinalOrEnum == false) {
-                            listOf(name, ": ", arg.type)
-                        } else {
-                            listOf(name, " == ", arg.type)
+                } else {
+                    val type = arg.type
+                    if (type.constructor.declarationDescriptor is TypeParameterDescriptor) return@mapIndexedNotNull null
+                    val swiftExactly = type.annotations.find {
+                        it.fqName?.asString()?.endsWith("swiftExactly") == true
+                    }?.allValueArguments?.entries?.let { it.firstOrNull()?.value?.value as? String ?: "T" }
+                    val swiftDescendsFrom = type.annotations.find {
+                        it.fqName?.asString()?.endsWith("swiftDescendsFrom") == true
+                    }?.allValueArguments?.entries?.let { it.firstOrNull()?.value?.value as? String ?: "T" }
+                    when {
+                        swiftExactly != null -> {
+                            listOf(swiftExactly, " == ", type)
+                        }
+                        swiftDescendsFrom != null -> {
+                            listOf(swiftDescendsFrom, ": ", type)
+                        }
+                        else -> {
+                            val name = baseClass?.declaredTypeParameters?.get(index)?.name?.asString()
+                            val c = type.constructor.declarationDescriptor as? ClassDescriptor
+                            if (c?.isFinalOrEnum == false) {
+                                listOf(name, ": ", type)
+                            } else {
+                                listOf(name, " == ", type)
+                            }
                         }
                     }
                 }
@@ -152,6 +184,9 @@ fun SwiftTranslator.registerType() {
             else -> {
                 println("What is this? ${desc?.let { it::class.qualifiedName }}")
             }
+        }
+        if (typedRule.isMarkedNullable) {
+            -'?'
         }
     }
 

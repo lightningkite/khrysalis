@@ -1,4 +1,7 @@
 ---
 - id: android.graphics.PointF
   type: type
-  template: CGPoint
+  requiresMutable: true
+  template:
+    pattern: CGPoint
+    imports: [CoreGraphics]

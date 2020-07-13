@@ -12,7 +12,7 @@ public class TransformedMutableObservableProperty<A, B> : MutableObservablePrope
         self.basedOn = basedOn
         self.read = read
         self.write = write
-        self.onChange = self.basedOn.onChange.map(p0: { (it: Any) -> Any in self.read(it) })
+        self._onChange = self.basedOn.onChange.map({ (it: A) -> B in self.read(it) })
         super.init()
     }
     
@@ -28,19 +28,22 @@ public class TransformedMutableObservableProperty<A, B> : MutableObservablePrope
             self.basedOn.value = self.write(value)
         }
     }
-    override public let onChange: Observable<B>
+    public var _onChange: Observable<B>
+    override public var onChange: Observable<B> {
+        get { return _onChange }
+    }
 }
 
 
 public extension MutableObservableProperty {
     func transformed<B>(read: @escaping  (T) -> B, write: @escaping  (B) -> T) -> MutableObservableProperty<B> {
-        return TransformedMutableObservableProperty(basedOn: self, read: read, write: write)
+        return (TransformedMutableObservableProperty(basedOn: self as MutableObservableProperty<T>, read: read as (T) -> B, write: write as (B) -> T) as TransformedMutableObservableProperty<T, B>)
     }
 }
 
 public extension MutableObservableProperty {
     func map<B>(read: @escaping  (T) -> B, write: @escaping  (B) -> T) -> MutableObservableProperty<B> {
-        return TransformedMutableObservableProperty(basedOn: self, read: read, write: write)
+        return (TransformedMutableObservableProperty(basedOn: self as MutableObservableProperty<T>, read: read as (T) -> B, write: write as (B) -> T) as TransformedMutableObservableProperty<T, B>)
     }
 }
 

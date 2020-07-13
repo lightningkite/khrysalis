@@ -5,16 +5,17 @@ import RxSwift
 import Foundation
 
 public class EventToObservableProperty<T> : ObservableProperty<T> {
-    public var value: T
+    private var _value: T
+    override public var value: T { get { return self.value } set(value) { self.value = value } }
     public var wrapped: Observable<T>
     public init(value: T, wrapped: Observable<T>) {
-        self.value = value
+        self._value = value
         self.wrapped = wrapped
         super.init()
     }
     
     override public var onChange: Observable<T> {
-        get { return self.wrapped.map(p0: { (it: Any) -> Any in 
+        get { return self.wrapped.map({ (it: T) -> T in 
                     self.value = it
                     return it
         }) }
@@ -22,13 +23,13 @@ public class EventToObservableProperty<T> : ObservableProperty<T> {
 }
 public extension Observable {
     func asObservableProperty(defaultValue: Element) -> ObservableProperty<Element> {
-        return EventToObservableProperty(value: defaultValue, wrapped: self.map(p0: { (it: Any) -> Any in it }))
+        return (EventToObservableProperty(value: defaultValue as Element, wrapped: self.map({ (it: Element) -> Element in it }) as Observable<Element>) as EventToObservableProperty<Element>)
     }
 }
 
 public extension Observable {
     func asObservablePropertyDefaultNull() -> ObservableProperty<Element?> {
-        return EventToObservableProperty(value: nil, wrapped: self.map(p0: { (it: Any) -> Any in it }))
+        return (EventToObservableProperty(value: nil as Element?, wrapped: self.map({ (it: Element) -> Element in it }) as Observable<Element?>) as EventToObservableProperty<Element?>)
     }
 }
 

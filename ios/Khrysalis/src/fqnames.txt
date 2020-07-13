@@ -59,6 +59,7 @@ com.lightningkite.khrysalis.SomeEnum
 com.lightningkite.khrysalis.escaping
 com.lightningkite.khrysalis.swiftMustBeClass
 com.lightningkite.khrysalis.unowned
+com.lightningkite.khrysalis.modifies
 com.lightningkite.khrysalis.unownedSelf
 com.lightningkite.khrysalis.weakSelf
 com.lightningkite.khrysalis.swiftExactly
@@ -174,7 +175,6 @@ com.lightningkite.khrysalis.observables.onChangeNN
 com.lightningkite.khrysalis.observables.subscribeBy
 com.lightningkite.khrysalis.observables.includes
 com.lightningkite.khrysalis.observables.ObservableProperty
-com.lightningkite.khrysalis.observables.addAndRunWeak
 com.lightningkite.khrysalis.observables.ObservableStack
 com.lightningkite.khrysalis.observables.ReferenceObservableProperty
 com.lightningkite.khrysalis.observables.StandardObservableProperty
@@ -184,6 +184,7 @@ com.lightningkite.khrysalis.observables.map
 com.lightningkite.khrysalis.observables.TransformedMutableObservableProperty2
 com.lightningkite.khrysalis.observables.mapWithExisting
 com.lightningkite.khrysalis.observables.TransformedObservableProperty
+com.lightningkite.khrysalis.observables.addAndRunWeak
 com.lightningkite.khrysalis.observables.WriteAddedObservableProperty
 com.lightningkite.khrysalis.observables.withWrite
 com.lightningkite.khrysalis.observables.binding.bind

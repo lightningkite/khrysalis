@@ -8,8 +8,8 @@ public class Video {
     }
 }
 public class VideoReference : Video, KDataClass {
-    public var uri: Uri
-    public init(uri: Uri) {
+    public var uri: URL
+    public init(uri: URL) {
         self.uri = uri
         super.init()
     }
@@ -18,7 +18,7 @@ public class VideoReference : Video, KDataClass {
     }
     public static func == (lhs: VideoReference, rhs: VideoReference) -> Bool { return lhs.uri == rhs.uri }
     public var description: String { return "VideoReference(uri = \(self.uri))" }
-    public func copy(uri: Uri? = nil) -> VideoReference { return VideoReference(uri: uri ?? self.uri) }
+    public func copy(uri: URL? = nil) -> VideoReference { return VideoReference(uri: uri ?? self.uri) }
 }
 public class VideoRemoteUrl : Video, KDataClass {
     public var url: String
@@ -37,7 +37,7 @@ public class VideoRemoteUrl : Video, KDataClass {
 public extension String {
     func asVideo() -> Video { return VideoRemoteUrl(url: self) }
 }
-public extension Uri {
+public extension URL {
     func asVideo() -> Video { return VideoReference(uri: self) }
 }
 

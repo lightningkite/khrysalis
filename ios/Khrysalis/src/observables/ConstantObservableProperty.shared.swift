@@ -8,11 +8,14 @@ public class ConstantObservableProperty<T> : ObservableProperty<T> {
     public var underlyingValue: T
     public init(underlyingValue: T) {
         self.underlyingValue = underlyingValue
-        self.onChange = Observable.never()
+        self._onChange = Observable.never()
         super.init()
     }
     
-    override public let onChange: Observable<T>
+    public var _onChange: Observable<T>
+    override public var onChange: Observable<T> {
+        get { return _onChange }
+    }
     override public var value: T {
         get { return self.underlyingValue }
     }

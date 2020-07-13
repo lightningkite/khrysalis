@@ -5,13 +5,13 @@ import Foundation
 
 public protocol EntryPoint {
     
-    func handleDeepLink(schema: String, host: String, path: String, params: Dictionary<String, String>) -> void 
+    func handleDeepLink(schema: String, host: String, path: String, params: Dictionary<String, String>) -> Void 
     func onBackPressed() -> Bool 
     var mainStack: ObservableStack<ViewGenerator>? { get }
     
 }
 public extension EntryPoint {
-    func handleDeepLink(schema: String, host: String, path: String, params: Dictionary<String, String>) -> void {
+    func handleDeepLink(schema: String, host: String, path: String, params: Dictionary<String, String>) -> Void {
         print("Empty handler; \(schema)://\(host)/\(path)/\(params)")
     }
     func onBackPressed() -> Bool { return false }

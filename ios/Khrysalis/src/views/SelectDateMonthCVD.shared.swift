@@ -2,6 +2,7 @@
 // File: views/SelectDateMonthCVD.shared.kt
 // Package: com.lightningkite.khrysalis.views
 import Foundation
+import CoreGraphics
 
 public class SelectDateMonthCVD : MonthCVD {
     override public init() {
@@ -12,7 +13,7 @@ public class SelectDateMonthCVD : MonthCVD {
         if let it = (self.selected.value) { 
             self.currentMonthObs.value = it.dayOfMonth(value: 1)
         }
-        self.selected.onChange.subscribeBy(onNext:  { (value: DateAlone) -> Void in self?.invalidate() }).forever()
+        self.selected.onChange.subscribeBy(onNext:  { [weak self] (value: DateAlone?) -> Void in self?.invalidate() }).forever()
     }
     
     override public func generateAccessibilityView() -> View? { return nil }
@@ -24,7 +25,7 @@ public class SelectDateMonthCVD : MonthCVD {
     public let selectedDayPaint: Paint
     public let selectedPaint: Paint
     
-    override public func drawDay(canvas: Canvas, showingMonth: DateAlone, day: DateAlone, displayMetrics: DisplayMetrics, outer: RectF, inner: RectF) -> Void {
+    override public func drawDay(canvas: Canvas, showingMonth: DateAlone, day: DateAlone, displayMetrics: DisplayMetrics, outer: CGRect, inner: CGRect) -> Void {
         if day == self.selected.value{
             CalendarDrawing.INSTANCE.dayBackground(canvas: canvas, inner: inner, paint: self.selectedPaint)
             CalendarDrawing.INSTANCE.day(canvas: canvas, month: showingMonth, date: day, inner: inner, paint: self.selectedDayPaint)

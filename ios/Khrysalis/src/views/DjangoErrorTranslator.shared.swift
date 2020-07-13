@@ -14,7 +14,7 @@ public class DjangoErrorTranslator {
     }
     
     
-    public func handleNode(builder: String, node: Any?) -> Void {
+    public func handleNode(builder: Box<String>, node: Any?) -> Void {
         if node == nil { return }
         if let node = node as? Dictionary<Any, Any>{
             for (key, value) in node {
@@ -27,7 +27,7 @@ public class DjangoErrorTranslator {
         } else if let node = node as? String{
             //Rough check for human-readability - sentences start with uppercase and will have spaces
             if (!node.isEmpty), node[0].isUpperCase(), (node.indexOf(" ") != -1) {
-                builder.append(node + "\n")
+                builder.value.append(node + "\n")
             }
         }
     }
@@ -43,9 +43,9 @@ public class DjangoErrorTranslator {
             case 4:
             let errorJson = error?.fromJsonStringUntyped()
             if let errorJson = errorJson {
-                let builder = ""
+                let builder = Box("")
                 self.handleNode(builder: builder, node: errorJson)
-                resultError = ViewStringRaw(string: String(describing: builder))
+                resultError = ViewStringRaw(string: builder.value)
             } else {
                 resultError = ViewStringRaw(string: error ?? "")
             }
@@ -62,7 +62,7 @@ public class DjangoErrorTranslator {
     }
     
     public func wrap<T>(callback: @escaping  (T?, ViewString?) -> Void) -> (Int, T?, String?) -> Void {
-        return { (code: Int, result: Any, error: String) -> Void in callback(result, self.parseError(code: code, error: error)) }
+        return { (code: Int, result: T?, error: String) -> Void in callback(result, self.parseError(code: code, error: error)) }
     }
     
     public func wrapNoResponse(callback: @escaping  (ViewString?) -> Void) -> (Int, String?) -> Void {

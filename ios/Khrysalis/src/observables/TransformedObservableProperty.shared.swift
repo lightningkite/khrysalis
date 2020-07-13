@@ -10,7 +10,7 @@ public class TransformedObservableProperty<A, B> : ObservableProperty<B> {
     public init(basedOn: ObservableProperty<A>, read: @escaping  (A) -> B) {
         self.basedOn = basedOn
         self.read = read
-        self.onChange = self.basedOn.onChange.map(p0: { (it: Any) -> Any in self.read(it) })
+        self._onChange = self.basedOn.onChange.map({ (it: A) -> B in self.read(it) })
         super.init()
     }
     
@@ -19,18 +19,21 @@ public class TransformedObservableProperty<A, B> : ObservableProperty<B> {
             return self.read(self.basedOn.value)
         }
     }
-    override public let onChange: Observable<B>
+    public var _onChange: Observable<B>
+    override public var onChange: Observable<B> {
+        get { return _onChange }
+    }
 }
 
 public extension ObservableProperty {
     func transformed<B>(read: @escaping  (T) -> B) -> ObservableProperty<B> {
-        return TransformedObservableProperty(basedOn: self, read: read)
+        return (TransformedObservableProperty(basedOn: self as ObservableProperty<T>, read: read as (T) -> B) as TransformedObservableProperty<T, B>)
     }
 }
 
 public extension ObservableProperty {
     func map<B>(read: @escaping  (T) -> B) -> ObservableProperty<B> {
-        return TransformedObservableProperty(basedOn: self, read: read)
+        return (TransformedObservableProperty(basedOn: self as ObservableProperty<T>, read: read as (T) -> B) as TransformedObservableProperty<T, B>)
     }
 }
 

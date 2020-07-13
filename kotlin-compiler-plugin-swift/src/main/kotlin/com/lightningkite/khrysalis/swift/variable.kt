@@ -1,17 +1,17 @@
 package com.lightningkite.khrysalis.swift
 
+import com.lightningkite.khrysalis.util.AnalysisExtensions
 import com.lightningkite.khrysalis.util.forEachBetween
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
-import org.jetbrains.kotlin.descriptors.ClassDescriptor
-import org.jetbrains.kotlin.descriptors.ClassKind
-import org.jetbrains.kotlin.descriptors.FunctionDescriptor
-import org.jetbrains.kotlin.descriptors.PropertyDescriptor
+import org.jetbrains.kotlin.descriptors.*
+import org.jetbrains.kotlin.descriptors.impl.SyntheticFieldDescriptor
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
 import org.jetbrains.kotlin.psi.synthetics.SyntheticClassOrObjectDescriptor
+import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
 import org.jetbrains.kotlin.synthetic.SyntheticJavaPropertyDescriptor
 import org.jetbrains.kotlin.types.KotlinType
 import java.util.concurrent.atomic.AtomicInteger
@@ -35,6 +35,14 @@ data class VirtualSet(
     val value: Any,
     val dispatchReceiver: String?
 )
+
+val PropertyDescriptor.hasSwiftBacking: Boolean get(){
+    return hasSwiftOverride || ((this.getter?.isDefault == false || this.setter?.isDefault == false) && this.backingField != null && this.extensionReceiverParameter == null)
+}
+val PropertyDescriptor.hasSwiftOverride: Boolean get(){
+    return overriddenDescriptors
+        .any { (it.containingDeclaration as? ClassDescriptor)?.kind != ClassKind.INTERFACE }
+}
 
 fun SwiftTranslator.registerVariable() {
 
@@ -110,14 +118,36 @@ fun SwiftTranslator.registerVariable() {
         }
     )
 
+    //Weak
+    handle<KtProperty>(
+        condition = { ((typedRule.delegateExpression as? KtCallExpression)?.calleeExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget?.fqNameOrNull()?.asString() == "com.lightningkite.khrysalis.weak" },
+        priority = 15
+    ) {
+        -"weak "
+        if (typedRule.isMember || (typedRule.isTopLevel && !typedRule.isExtensionDeclaration())) {
+            -(typedRule.visibilityModifier() ?: "public")
+            -" "
+        }
+        -"var "
+        -typedRule.nameIdentifier
+        typedRule.typeReference?.let {
+            -": "
+            -it
+        } ?: run {
+            if (typedRule.isMember || typedRule.initializer == null) {
+                -": "
+                -typedRule.resolvedProperty?.type
+            }
+        }
+        typedRule.delegateExpression?.let {
+            -" = "
+            -(it as KtCallExpression).valueArguments.first().getArgumentExpression()
+        }
+    }
     //Plain
     handle<KtProperty> {
-        if (typedRule.isMember) {
-            if (typedRule.resolvedProperty?.overriddenDescriptors
-                    ?.any { (it.containingDeclaration as? ClassDescriptor)?.kind != ClassKind.INTERFACE } == true
-            ) {
-                -"override "
-            }
+        if(typedRule.annotationEntries.any { it.typeReference?.text?.endsWith("weak") == true }){
+            -"weak "
         }
         if (typedRule.isMember || (typedRule.isTopLevel && !typedRule.isExtensionDeclaration())) {
             -(typedRule.visibilityModifier() ?: "public")
@@ -150,12 +180,10 @@ fun SwiftTranslator.registerVariable() {
     //Virtual
     handle<KtProperty>(
         condition = { typedRule.initializer == null && typedRule.getter != null },
-        priority = 10,
+        priority = 15,
         action = {
             if (typedRule.isMember) {
-                if (typedRule.resolvedProperty?.overriddenDescriptors
-                        ?.any { (it.containingDeclaration as? ClassDescriptor)?.kind != ClassKind.INTERFACE } == true
-                ) {
+                if (typedRule.resolvedProperty?.hasSwiftOverride == true) {
                     -"override "
                 }
             }
@@ -180,7 +208,7 @@ fun SwiftTranslator.registerVariable() {
     )
     //Partial
     handle<KtProperty>(
-        condition = { typedRule.initializer != null && (typedRule.getter != null || typedRule.setter != null) },
+        condition = { typedRule.resolvedProperty?.hasSwiftBacking == true },
         priority = 10,
         action = {
             if (typedRule.isMember || (typedRule.isTopLevel && !typedRule.isExtensionDeclaration())) {
@@ -205,6 +233,11 @@ fun SwiftTranslator.registerVariable() {
                 }
             }
             -"\n"
+            if (typedRule.isMember) {
+                if (typedRule.resolvedProperty?.hasSwiftOverride == true) {
+                    -"override "
+                }
+            }
             if (typedRule.isMember || (typedRule.isTopLevel && !typedRule.isExtensionDeclaration())) {
                 -(typedRule.visibilityModifier() ?: "public")
                 -" "
@@ -227,13 +260,15 @@ fun SwiftTranslator.registerVariable() {
                 -" }"
                 -"\n"
             }
-            typedRule.setter?.let {
-                -it
-            } ?: run {
-                -"set(value) { _"
-                -typedRule.nameIdentifier
-                -" = value }"
-                -"\n"
+            if(typedRule.isVar || typedRule.resolvedProperty?.type?.requiresMutable() == true) {
+                typedRule.setter?.let {
+                    -it
+                } ?: run {
+                    -"set(value) { _"
+                    -typedRule.nameIdentifier
+                    -" = value }"
+                    -"\n"
+                }
             }
             -"}"
         }
@@ -251,7 +286,7 @@ fun SwiftTranslator.registerVariable() {
                 -(typedRule.visibilityModifier() ?: "public")
                 -" "
             }
-            -SwiftExtensionStart(typedRule.resolvedProperty!!)
+            -SwiftExtensionStart(typedRule.resolvedProperty!!, typedRule.typeParameterList)
             -'\n'
             doSuper()
             -"\n}"

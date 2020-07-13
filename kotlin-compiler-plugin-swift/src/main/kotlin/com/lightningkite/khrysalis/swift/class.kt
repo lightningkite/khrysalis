@@ -136,13 +136,35 @@ fun SwiftTranslator.registerClass() {
         writeClassHeader(typedRule)
         -" {\n"
         typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEach {
-
-            -(it.visibilityModifier() ?: "public")
-            -" var "
-            -it.nameIdentifier
-            it.typeReference?.let {
-                -": "
-                -it
+            if (it.resolvedPrimaryConstructorParameter?.hasSwiftOverride == true) {
+                -"private var _"
+                -it.nameIdentifier
+                it.typeReference?.let {
+                    -": "
+                    -it
+                }
+                -"\n"
+                -"override "
+                -(it.visibilityModifier() ?: "public")
+                -" var "
+                -it.nameIdentifier
+                it.typeReference?.let {
+                    -": "
+                    -it
+                }
+                -" { get { return self."
+                -it.nameIdentifier
+                -" } set(value) { self."
+                -it.nameIdentifier
+                -" = value } }"
+            } else {
+                -(it.visibilityModifier() ?: "public")
+                -" var "
+                -it.nameIdentifier
+                it.typeReference?.let {
+                    -": "
+                    -it
+                }
             }
             -"\n"
         }
@@ -160,7 +182,6 @@ fun SwiftTranslator.registerClass() {
             val sc = s.unsubstitutedPrimaryConstructor ?: return@run
             val cc = c.unsubstitutedPrimaryConstructor ?: return@run
             if (sc.valueParameters.size != cc.valueParameters.size) return@run
-            println("Matching up $sc against $cc")
             if (sc.valueParameters.zip(cc.valueParameters).all {
                     it.first.name.asString() == it.second.name.asString()
                             && it.first.type.getJetTypeFqName(false) == it.second.type.getJetTypeFqName(false)
@@ -204,7 +225,12 @@ fun SwiftTranslator.registerClass() {
         typedRule.primaryConstructor?.let { cons ->
             cons.valueParameters.asSequence().filter { it.hasValOrVar() }.forEach {
                 -"self."
-                -it.nameIdentifier
+                if (it.resolvedPrimaryConstructorParameter?.hasSwiftOverride == true) {
+                    -'_'
+                    -it.nameIdentifier
+                } else {
+                    -it.nameIdentifier
+                }
                 -" = "
                 -it.nameIdentifier
                 -"\n"
@@ -216,6 +242,9 @@ fun SwiftTranslator.registerClass() {
                 is KtProperty -> {
                     it.initializer?.let { init ->
                         -"self."
+                        if(it.resolvedProperty?.hasSwiftBacking == true) {
+                            -'_'
+                        }
                         -it.nameIdentifier
                         -" = "
                         -init

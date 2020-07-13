@@ -4,68 +4,68 @@
 import Foundation
 
 public func captureWeak<Z : AnyObject>(capture: Z, lambda: @escaping  (Z) -> Void) -> () -> Void {
-    let captured: 
+    weak var captured: Z? = capture
     return { () -> Void in 
         let actualCaptured = captured
         if actualCaptured == nil {
             return
         }
-        lambda(actualCaptured!!)
+        lambda(actualCaptured!)
     }
 }
 
 public func captureWeak<Z : AnyObject, A>(capture: Z, lambda: @escaping  (Z, A) -> Void) -> (A) -> Void {
-    let captured: 
-    return { (a: Any) -> Void in 
+    weak var captured: Z? = capture
+    return { (a: A) -> Void in 
         let actualCaptured = captured
         if actualCaptured == nil {
             return
         }
-        lambda(actualCaptured!!, a)
+        lambda(actualCaptured!, a)
     }
 }
 
 public func captureWeak<Z : AnyObject, A, B>(capture: Z, lambda: @escaping  (Z, A, B) -> Void) -> (A, B) -> Void {
-    let captured: 
-    return { (a: Any, b: Any) -> Void in 
+    weak var captured: Z? = capture
+    return { (a: A, b: B) -> Void in 
         let actualCaptured = captured
         if actualCaptured == nil {
             return
         }
-        lambda(actualCaptured!!, a, b)
+        lambda(actualCaptured!, a, b)
     }
 }
 
 public func captureWeak<Z : AnyObject, A, B, C>(capture: Z, lambda: @escaping  (Z, A, B, C) -> Void) -> (A, B, C) -> Void {
-    let captured: 
-    return { (a: Any, b: Any, c: Any) -> Void in 
+    weak var captured: Z? = capture
+    return { (a: A, b: B, c: C) -> Void in 
         let actualCaptured = captured
         if actualCaptured == nil {
             return
         }
-        lambda(actualCaptured!!, a, b, c)
+        lambda(actualCaptured!, a, b, c)
     }
 }
 
 public func captureWeak<Z : AnyObject, A, B, C, D>(capture: Z, lambda: @escaping  (Z, A, B, C, D) -> Void) -> (A, B, C, D) -> Void {
-    let captured: 
-    return { (a: Any, b: Any, c: Any, d: Any) -> Void in 
+    weak var captured: Z? = capture
+    return { (a: A, b: B, c: C, d: D) -> Void in 
         let actualCaptured = captured
         if actualCaptured == nil {
             return
         }
-        lambda(actualCaptured!!, a, b, c, d)
+        lambda(actualCaptured!, a, b, c, d)
     }
 }
 
 public func captureWeak<Z : AnyObject, A, B, C, D, E>(capture: Z, lambda: @escaping  (Z, A, B, C, D, E) -> Void) -> (A, B, C, D, E) -> Void {
-    let captured: 
-    return { (a: Any, b: Any, c: Any, d: Any, e: Any) -> Void in 
+    weak var captured: Z? = capture
+    return { (a: A, b: B, c: C, d: D, e: E) -> Void in 
         let actualCaptured = captured
         if actualCaptured == nil {
             return
         }
-        lambda(actualCaptured!!, a, b, c, d, e)
+        lambda(actualCaptured!, a, b, c, d, e)
     }
 }
 

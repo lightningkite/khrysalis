@@ -9,6 +9,7 @@ import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
 import org.jetbrains.kotlin.types.KotlinType
+import org.jetbrains.kotlin.types.typeUtil.isTypeParameter
 import org.jetbrains.kotlin.types.typeUtil.supertypes
 import java.io.File
 import java.util.*
@@ -101,8 +102,8 @@ class Replacements() {
 
     fun requiresMutable(type: KotlinType): Boolean = (sequenceOf(type) + type.supertypes().asSequence())
         .any { t -> types[t.getJetTypeFqName(false)]?.find { it.passes(t) }?.requiresMutable == true }
-    fun getType(type: KotlinType): TypeReplacement? = types[type.getJetTypeFqName(false)]?.find { it.passes(type) }
-    fun getTypeRef(type: KotlinType): TypeRefReplacement? =
+    fun getType(type: KotlinType): TypeReplacement? = if(type.isTypeParameter()) null else types[type.getJetTypeFqName(false)]?.find { it.passes(type) }
+    fun getTypeRef(type: KotlinType): TypeRefReplacement? = if(type.isTypeParameter()) null else
         typeRefs[type.getJetTypeFqName(false)]?.find { it.passes(type) }
 
     fun getTypeRef(type: DeclarationDescriptor): TypeRefReplacement? =

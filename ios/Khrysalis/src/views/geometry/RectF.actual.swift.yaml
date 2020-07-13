@@ -1,0 +1,7 @@
+---
+- id: android.graphics.RectF
+  type: type
+  requiresMutable: true
+  template:
+      pattern: CGRect
+      imports: [CoreGraphics]

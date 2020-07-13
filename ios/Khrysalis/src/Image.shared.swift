@@ -8,8 +8,8 @@ public class Image {
     }
 }
 public class ImageReference : Image, KDataClass {
-    public var uri: Uri
-    public init(uri: Uri) {
+    public var uri: URL
+    public init(uri: URL) {
         self.uri = uri
         super.init()
     }
@@ -18,7 +18,7 @@ public class ImageReference : Image, KDataClass {
     }
     public static func == (lhs: ImageReference, rhs: ImageReference) -> Bool { return lhs.uri == rhs.uri }
     public var description: String { return "ImageReference(uri = \(self.uri))" }
-    public func copy(uri: Uri? = nil) -> ImageReference { return ImageReference(uri: uri ?? self.uri) }
+    public func copy(uri: URL? = nil) -> ImageReference { return ImageReference(uri: uri ?? self.uri) }
 }
 public class ImageBitmap : Image, KDataClass {
     public var bitmap: Bitmap
@@ -63,7 +63,7 @@ public class ImageRemoteUrl : Image, KDataClass {
 public extension String {
     func asImage() -> Image { return ImageRemoteUrl(url: self) }
 }
-public extension Uri {
+public extension URL {
     func asImage() -> Image { return ImageReference(uri: self) }
 }
 public extension Bitmap {
