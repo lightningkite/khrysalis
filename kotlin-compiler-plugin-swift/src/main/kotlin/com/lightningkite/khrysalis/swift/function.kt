@@ -5,10 +5,17 @@ import com.lightningkite.khrysalis.util.walkTopDown
 import org.jetbrains.kotlin.com.intellij.psi.PsiComment
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
+import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
 import org.jetbrains.kotlin.psi2ir.findFirstFunction
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
+import org.jetbrains.kotlin.types.typeUtil.contains
+import org.jetbrains.kotlin.types.typeUtil.isTypeParameter
+import com.lightningkite.khrysalis.generic.PartialTranslatorByType
+import org.jetbrains.kotlin.synthetic.hasJavaOriginInHierarchy
+
+val noArgNames = setOf<String>(/*"value", "other"*/)
 
 val FunctionDescriptor.swiftNameOverridden: String?
     get() = this.annotations
@@ -49,6 +56,7 @@ data class VirtualFunction(
 )
 
 fun SwiftTranslator.registerFunction() {
+
     handle<VirtualFunction> {
         -"func "
         -typedRule.name
@@ -99,7 +107,7 @@ fun SwiftTranslator.registerFunction() {
                 valueParameters = typedRule.valueParameters,
                 returnType = typedRule.typeReference
                     ?: typedRule.bodyExpression?.takeUnless { it is KtBlockExpression }?.resolvedExpressionTypeInfo?.type
-                    ?: "void",
+                    ?: "Void",
                 body = null
             )
             -mainDecl
@@ -119,7 +127,7 @@ fun SwiftTranslator.registerFunction() {
     handle<KtNamedFunction>(
         condition = {
             typedRule.receiverTypeReference != null
-                && typedRule.resolvedFunction?.worksAsSwiftConstraint() == true
+                    && typedRule.resolvedFunction?.worksAsSwiftConstraint() == true
                     && typedRule.containingClassOrObject == null
         },
         priority = 10,
@@ -129,7 +137,7 @@ fun SwiftTranslator.registerFunction() {
                 -(typedRule.visibilityModifier() ?: "public")
                 -" "
             }
-            -SwiftExtensionStart(typedRule.resolvedFunction!!)
+            -SwiftExtensionStart(typedRule.resolvedFunction!!, typedRule.typeParameterList)
             -'\n'
             doSuper()
             -"\n}"
@@ -164,12 +172,12 @@ fun SwiftTranslator.registerFunction() {
                 returnType = typedRule.typeReference
                     ?: typedRule.bodyExpression?.takeUnless { it is KtBlockExpression }?.resolvedExpressionTypeInfo?.type
                     ?: "Void",
-                body = typedRule.bodyExpression
+                body = typedRule.bodyExpression ?: "{ TODO() }"
             )
         }
         if (typedRule.receiverTypeReference != null &&
             (typedRule.resolvedFunction?.worksAsSwiftConstraint() != true ||
-            typedRule.containingClassOrObject != null)
+                    typedRule.containingClassOrObject != null)
         ) {
             withReceiverScope(resolved!!) { rName ->
                 emit(rName)
@@ -180,10 +188,18 @@ fun SwiftTranslator.registerFunction() {
     }
 
     handle<KtParameter> {
+        if (typedRule.name in noArgNames) {
+            -"_ "
+        }
         -typedRule.nameIdentifier
         typedRule.typeReference?.let {
             -": "
+            if (typedRule.resolvedValueParameter?.annotations?.any { it.fqName?.asString() == "com.lightningkite.khrysalis.modifies" } == true) {
+                -"inout "
+            }
+            partOfParameter = true
             -it
+            partOfParameter = false
         }
         typedRule.defaultValue?.let {
             -" = "
@@ -197,10 +213,29 @@ fun SwiftTranslator.registerFunction() {
         action = {
             -typedRule.nameIdentifier
             -": "
+            partOfParameter = true
             -typedRule.typeReference
+            partOfParameter = false
             -"..."
         }
     )
+
+    fun PartialTranslatorByType<SwiftFileEmitter, Unit, Any>.ContextByType<*>.maybeWrapCall(
+        call: ResolvedCall<out CallableDescriptor>,
+        action: () -> Unit
+    ) {
+        val explicitTypeArgs = call.call.typeArgumentList != null
+
+        if (explicitTypeArgs && call.resultingDescriptor.original.returnType?.contains { it.isTypeParameter() } == true) {
+            -'('
+            action()
+            -" as "
+            -call.resultingDescriptor.returnType
+            -')'
+        } else {
+            action()
+        }
+    }
 
     //Normal calls
     handle<KtDotQualifiedExpression>(
@@ -213,12 +248,14 @@ fun SwiftTranslator.registerFunction() {
             val nre = callExp.calleeExpression as KtNameReferenceExpression
             val f = callExp.resolvedCall!!.candidateDescriptor as FunctionDescriptor
 
-            -nre
-            -ArgumentsList(
-                on = f,
-                resolvedCall = callExp.resolvedCall!!,
-                prependArguments = listOf(typedRule.receiverExpression)
-            )
+            maybeWrapCall(callExp.resolvedCall!!) {
+                -nre
+                -ArgumentsList(
+                    on = f,
+                    resolvedCall = callExp.resolvedCall!!,
+                    prependArguments = listOf(typedRule.receiverExpression)
+                )
+            }
         }
     )
 
@@ -239,12 +276,14 @@ fun SwiftTranslator.registerFunction() {
             -"if let $rec = ("
             -typedRule.receiverExpression
             -") {\n"
-            -nre
-            -ArgumentsList(
-                on = f,
-                resolvedCall = callExp.resolvedCall!!,
-                prependArguments = listOf(rec)
-            )
+            maybeWrapCall(callExp.resolvedCall!!) {
+                -nre
+                -ArgumentsList(
+                    on = f,
+                    resolvedCall = callExp.resolvedCall!!,
+                    prependArguments = listOf(rec)
+                )
+            }
             -"\n}"
             if (typedRule.actuallyCouldBeExpression) {
                 -"}"
@@ -259,14 +298,16 @@ fun SwiftTranslator.registerFunction() {
         val nre = typedRule.calleeExpression as KtNameReferenceExpression
         val f = nre.resolvedReferenceTarget as FunctionDescriptor
 
-        -nre
-        //-typedRule.typeArgumentList
-        //The tricky part: these *must* be implied
-        -ArgumentsList(
-            on = f,
-            resolvedCall = typedRule.resolvedCall!!,
-            prependArguments = listOf()
-        )
+        maybeWrapCall(typedRule.resolvedCall!!) {
+            -nre
+            //-typedRule.typeArgumentList
+            //The tricky part: these *must* be implied
+            -ArgumentsList(
+                on = f,
+                resolvedCall = typedRule.resolvedCall!!,
+                prependArguments = listOf()
+            )
+        }
     }
 
     handle<KtNameReferenceExpression>(
@@ -284,19 +325,21 @@ fun SwiftTranslator.registerFunction() {
         action = {
             val f = typedRule.operationReference.resolvedReferenceTarget as FunctionDescriptor
             val doubleReceiver = f.dispatchReceiverParameter != null && f.extensionReceiverParameter != null
-            if (doubleReceiver) {
-                -typedRule.getTsReceiver()
-                -"."
-            } else if (f.dispatchReceiverParameter != null) {
-                -typedRule.left
-                -"."
+            maybeWrapCall(typedRule.resolvedCall!!) {
+                if (doubleReceiver) {
+                    -typedRule.getTsReceiver()
+                    -"."
+                } else if (f.dispatchReceiverParameter != null) {
+                    -typedRule.left
+                    -"."
+                }
+                -(f.swiftNameOverridden ?: typedRule.operationReference.text)
+                -ArgumentsList(
+                    on = f,
+                    resolvedCall = typedRule.resolvedCall!!,
+                    prependArguments = if (f.extensionReceiverParameter != null) listOf(typedRule.left!!) else listOf()
+                )
             }
-            -(f.swiftNameOverridden ?: typedRule.operationReference.text)
-            -ArgumentsList(
-                on = f,
-                resolvedCall = typedRule.resolvedCall!!,
-                prependArguments = if (f.extensionReceiverParameter != null) listOf(typedRule.left!!) else listOf()
-            )
         }
     )
 
@@ -429,6 +472,7 @@ fun SwiftTranslator.registerFunction() {
 
     //Regular calls
     handle<ArgumentsList> {
+        val explicitTypeArgs = typedRule.resolvedCall.call.typeArgumentList != null
         -'('
         var first = true
         for (item in typedRule.prependArguments) {
@@ -442,18 +486,29 @@ fun SwiftTranslator.registerFunction() {
         typedRule.resolvedCall.valueArguments.entries
             .filter { it.value.arguments.isNotEmpty() }
             .sortedBy { it.key.index }
-            .forEach {
+            .forEach { entry ->
                 if (first) {
                     first = false
                 } else {
                     -", "
                 }
-                it.key.name.takeUnless { it.isSpecial }?.let {
-                    -it.asString()
-                    -": "
+                if (!typedRule.on.hasJavaOriginInHierarchy()) {
+                    entry.key.name.takeUnless { it.isSpecial || it.asString() in noArgNames }?.let {
+                        -it.asString()
+                        -": "
+                    }
                 }
-                it.value.arguments.forEachBetween(
-                    forItem = { -it.getArgumentExpression() },
+                entry.value.arguments.forEachBetween(
+                    forItem = {
+                        if (entry.key.annotations.any { it.fqName?.asString() == "com.lightningkite.khrysalis.modifies" }) {
+                            -"&"
+                        }
+                        -it.getArgumentExpression()
+                        if (explicitTypeArgs && entry.key.original.type.contains { it.isTypeParameter() }) {
+                            -" as "
+                            -entry.key.type
+                        }
+                    },
                     between = { -", " }
                 )
             }

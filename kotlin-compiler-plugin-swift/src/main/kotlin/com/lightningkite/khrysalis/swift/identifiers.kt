@@ -24,7 +24,7 @@ fun SwiftTranslator.registerIdentifiers(){
     handle<KtNameReferenceExpression>(
         condition = {
             val resolved = typedRule.resolvedReferenceTarget ?: return@handle false
-            resolved is ClassDescriptor && resolved.isCompanionObject && typedRule.text == "Companion"
+            resolved is ClassDescriptor && resolved.isCompanionObject && typedRule.text == "Companion" && resolved.kind != ClassKind.ENUM_CLASS
         },
         priority = 1013,
         action = {
@@ -60,7 +60,7 @@ fun SwiftTranslator.registerIdentifiers(){
             resolved is ClassDescriptor
                     && typedRule.resolvedUsedAsExpression == true
                     && resolved.kind != ClassKind.ENUM_ENTRY
-
+                    && resolved.kind != ClassKind.ENUM_CLASS
         },
         priority = 1011,
         action = {

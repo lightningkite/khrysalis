@@ -11,6 +11,7 @@ import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
 import org.jetbrains.kotlin.psi2ir.findFirstFunction
+import org.jetbrains.kotlin.resolve.calls.tower.isSynthesized
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
 import org.jetbrains.kotlin.resolve.descriptorUtil.getSuperClassNotAny
 import org.jetbrains.kotlin.resolve.scopes.DescriptorKindFilter
@@ -24,6 +25,13 @@ import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.reflect.jvm.internal.impl.types.KotlinType
 
+fun FunctionDescriptor.callsForSwiftInterface(on: ClassDescriptor?): Boolean {
+    val immediate = this.containingDeclaration == on
+    val overriddenDescriptors = this.overriddenDescriptors
+        .filter{ it.kind == CallableMemberDescriptor.Kind.DECLARATION }
+        .filter{ it.containingDeclaration.fqNameOrNull()?.asString()?.startsWith("kotlin.") == false }
+    return immediate && overriddenDescriptors.isNotEmpty() == true
+}
 
 fun SwiftTranslator.registerClass() {
 
@@ -37,11 +45,15 @@ fun SwiftTranslator.registerClass() {
         -typedRule.typeParameterList
         typedRule.superTypeListEntries
             .mapNotNull { it as? KtSuperTypeCallEntry }
-            .map { it.resolvedCall?.getReturnType() }
+            .map {
+                it.calleeExpression?.typeReference
+            }
             .plus(
                 typedRule.superTypeListEntries
                     .mapNotNull { it as? KtSuperTypeEntry }
-                    .map { it.typeReference }
+                    .map {
+                        listOf(it.typeReference)
+                    }
             )
             .let {
                 if (on is KtClass && on.isData()) {
@@ -55,25 +67,19 @@ fun SwiftTranslator.registerClass() {
             }
             .let {
                 val over = on.resolvedClass?.findFirstFunction("equals") { it.valueParameters.size == 1 && it.valueParameters[0].type.getJetTypeFqName(false) == "kotlin.Any" }
-                val immediate = over?.containingDeclaration == on.resolvedClass
-                val anyOtherExists = over?.overriddenDescriptors?.any { it.containingDeclaration.fqNameOrNull()?.asString() != "kotlin.Any" } == true
-                if (immediate && !anyOtherExists) {
+                if (over?.callsForSwiftInterface(on.resolvedClass) == true) {
                     it + listOf("KEquatable")
                 } else it
             }
             .let {
                 val over = on.resolvedClass?.findFirstFunction("hashCode") { it.valueParameters.size == 0 }
-                val immediate = over?.containingDeclaration == on.resolvedClass
-                val anyOtherExists = over?.overriddenDescriptors?.any { it.containingDeclaration.fqNameOrNull()?.asString() != "kotlin.Any" } == true
-                if (immediate && !anyOtherExists) {
+                if (over?.callsForSwiftInterface(on.resolvedClass) == true) {
                     it + listOf("KHashable")
                 } else it
             }
             .let {
                 val over = on.resolvedClass?.findFirstFunction("toString") { it.valueParameters.size == 0 }
-                val immediate = over?.containingDeclaration == on.resolvedClass
-                val anyOtherExists = over?.overriddenDescriptors?.any { it.containingDeclaration.fqNameOrNull()?.asString() != "kotlin.Any" } == true
-                if (immediate && !anyOtherExists) {
+                if (over?.callsForSwiftInterface(on.resolvedClass) == true) {
                     it + listOf("KStringable")
                 } else it
             }
@@ -130,13 +136,35 @@ fun SwiftTranslator.registerClass() {
         writeClassHeader(typedRule)
         -" {\n"
         typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEach {
-
-            -(it.visibilityModifier() ?: "public")
-            -" var "
-            -it.nameIdentifier
-            it.typeReference?.let {
-                -": "
-                -it
+            if (it.resolvedPrimaryConstructorParameter?.hasSwiftOverride == true) {
+                -"private var _"
+                -it.nameIdentifier
+                it.typeReference?.let {
+                    -": "
+                    -it
+                }
+                -"\n"
+                -"override "
+                -(it.visibilityModifier() ?: "public")
+                -" var "
+                -it.nameIdentifier
+                it.typeReference?.let {
+                    -": "
+                    -it
+                }
+                -" { get { return self."
+                -it.nameIdentifier
+                -" } set(value) { self."
+                -it.nameIdentifier
+                -" = value } }"
+            } else {
+                -(it.visibilityModifier() ?: "public")
+                -" var "
+                -it.nameIdentifier
+                it.typeReference?.let {
+                    -": "
+                    -it
+                }
             }
             -"\n"
         }
@@ -151,7 +179,7 @@ fun SwiftTranslator.registerClass() {
         run {
             val c = typedRule.resolvedClass ?: return@run
             val s = c.getSuperClassNotAny() ?: return@run
-            val sc = c.unsubstitutedPrimaryConstructor ?: return@run
+            val sc = s.unsubstitutedPrimaryConstructor ?: return@run
             val cc = c.unsubstitutedPrimaryConstructor ?: return@run
             if (sc.valueParameters.size != cc.valueParameters.size) return@run
             if (sc.valueParameters.zip(cc.valueParameters).all {
@@ -163,12 +191,11 @@ fun SwiftTranslator.registerClass() {
         }
         if (typedRule.isEnum()) {
             -"private"
-        } else if (typedRule.hasModifier(KtTokens.ABSTRACT_KEYWORD)) {
-            -"protected"
         } else {
             -(typedRule.primaryConstructor?.visibilityModifier() ?: "public")
         }
         -" init("
+        partOfParameter = true
         typedRule.primaryConstructor?.let { cons ->
             (if (typedRule.isEnum()) {
                 listOf("name: String") + cons.valueParameters
@@ -187,6 +214,7 @@ fun SwiftTranslator.registerClass() {
                 -"parentThis: $parentClassName"
             } else Unit
         }
+        partOfParameter = false
         -") {\n"
         if (typedRule.isEnum()) {
             -"self.name = name;\n"
@@ -197,7 +225,12 @@ fun SwiftTranslator.registerClass() {
         typedRule.primaryConstructor?.let { cons ->
             cons.valueParameters.asSequence().filter { it.hasValOrVar() }.forEach {
                 -"self."
-                -it.nameIdentifier
+                if (it.resolvedPrimaryConstructorParameter?.hasSwiftOverride == true) {
+                    -'_'
+                    -it.nameIdentifier
+                } else {
+                    -it.nameIdentifier
+                }
                 -" = "
                 -it.nameIdentifier
                 -"\n"
@@ -209,6 +242,9 @@ fun SwiftTranslator.registerClass() {
                 is KtProperty -> {
                     it.initializer?.let { init ->
                         -"self."
+                        if(it.resolvedProperty?.hasSwiftBacking == true) {
+                            -'_'
+                        }
                         -it.nameIdentifier
                         -" = "
                         -init

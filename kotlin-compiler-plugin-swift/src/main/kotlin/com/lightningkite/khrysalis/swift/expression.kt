@@ -5,6 +5,7 @@ import org.jetbrains.kotlin.descriptors.PropertyDescriptor
 import org.jetbrains.kotlin.js.translate.callTranslator.getReturnType
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.KtBinaryExpression
+import org.jetbrains.kotlin.psi.KtPostfixExpression
 import org.jetbrains.kotlin.psi.KtSafeQualifiedExpression
 import org.jetbrains.kotlin.types.isNullable
 
@@ -34,4 +35,12 @@ fun SwiftTranslator.registerExpression() {
             -typedRule.selectorExpression
         }
     }
+    handle<KtPostfixExpression>(
+        condition = { typedRule.operationToken == KtTokens.EXCLEXCL },
+        priority = 10000,
+        action = {
+            -typedRule.baseExpression
+            -"!"
+        }
+    )
 }

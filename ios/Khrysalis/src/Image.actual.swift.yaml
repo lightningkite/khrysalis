@@ -1,0 +1,4 @@
+---
+- id: android.net.Uri
+  type: type
+  template: URL

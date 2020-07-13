@@ -10,8 +10,14 @@ fun SwiftTranslator.registerLambda() {
         action = {
             val resolved = typedRule.resolvedFunction!!
             withReceiverScope(resolved) { name ->
-                -typedRule.typeParameterList
-                -"{ ("
+                partOfParameter = true
+                -"{ "
+                if(typedRule.resolvedFunction?.annotations?.any { it.fqName?.asString() == "com.lightningkite.khrysalis.weakSelf" } == true) {
+                    -"[weak self] "
+                } else if(typedRule.resolvedFunction?.annotations?.any { it.fqName?.asString() == "com.lightningkite.khrysalis.unownedSelf" } == true) {
+                    -"[unowned self] "
+                }
+                -"("
                 -name
                 typedRule.valueParameters.takeUnless { it.isEmpty() }?.forEach {
                     -", "
@@ -22,6 +28,7 @@ fun SwiftTranslator.registerLambda() {
                     }
                 }
                 -") in "
+                partOfParameter = false
                 when (typedRule.bodyExpression?.statements?.size) {
                     null, 0 -> {-' '}
                     1 -> {
@@ -42,15 +49,20 @@ fun SwiftTranslator.registerLambda() {
     handle<KtFunctionLiteral> {
         val resolved = typedRule.resolvedFunction
         -"{ "
+        if(typedRule.resolvedFunction?.annotations?.any { it.fqName?.asString() == "com.lightningkite.khrysalis.weakSelf" } == true) {
+            -"[weak self] "
+        } else if(typedRule.resolvedFunction?.annotations?.any { it.fqName?.asString() == "com.lightningkite.khrysalis.unownedSelf" } == true) {
+            -"[unowned self] "
+        }
         resolved?.valueParameters?.let {
             -'('
             it.forEachBetween(
                 forItem = {
                     -it.name.asString()
                     -": "
-                    it.type.partOfParameter = true
+                    partOfParameter = true
                     -it.type
-                    it.type.partOfParameter = false
+                    partOfParameter = false
                 },
                 between = { -", " }
             )

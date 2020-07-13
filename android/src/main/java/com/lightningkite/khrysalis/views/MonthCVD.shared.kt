@@ -15,6 +15,7 @@ import com.lightningkite.khrysalis.rx.until
 import com.lightningkite.khrysalis.time.*
 import com.lightningkite.khrysalis.views.draw.drawTextCentered
 import com.lightningkite.khrysalis.views.geometry.GFloat
+import com.lightningkite.khrysalis.views.geometry.toGFloat
 import io.reactivex.rxkotlin.subscribeBy
 import java.util.*
 import kotlin.math.absoluteValue
@@ -91,7 +92,7 @@ open class MonthCVD : CustomViewDelegate() {
         this.dayPaint.color = 0xFF202020.asColor()
         animationFrame.subscribeBy { timePassed ->
             if (this.draggingId == DRAGGING_NONE && this.currentOffset != 0f) {
-                var newOffset = this.currentOffset * max(0f, (1f - 8f * timePassed))
+                var newOffset: GFloat = this.currentOffset * max(0f, (1f - 8f * timePassed.toGFloat()))
                 val min = 0.001f
                 when {
                     newOffset > min -> newOffset -= min
@@ -185,26 +186,26 @@ open class MonthCVD : CustomViewDelegate() {
     private val rectForReuse: RectF = RectF()
     private val rectForReuseB: RectF = RectF()
     open fun drawMonth(canvas: Canvas, xOffset: GFloat, width: GFloat, month: DateAlone, displayMetrics: DisplayMetrics) {
-        for (day in 1.toInt()..7.toInt()) {
+        for (day in 1..7) {
             val col = day - 1
             rectForReuse.set(
-                xOffset + col.toFloat() * dayCellWidth - 0.01f,
+                xOffset + col.toGFloat() * dayCellWidth - 0.01f,
                 -0.01f,
-                xOffset + (col.toFloat() + 1) * dayCellWidth + 0.01f,
+                xOffset + (col.toGFloat() + 1) * dayCellWidth + 0.01f,
                 dayLabelHeight + 0.01f
             )
             rectForReuseB.set(rectForReuse)
             rectForReuse.inset(internalPadding, internalPadding)
             drawLabel(canvas, day, displayMetrics, rectForReuse, rectForReuseB)
         }
-        for (row in 0.toInt()..5.toInt()) {
-            for (col in 0.toInt()..6.toInt()) {
+        for (row in 0..5) {
+            for (col in 0..6) {
                 val day = dayAt(month, row, col, drawDate)
                 rectForReuse.set(
-                    xOffset + col.toFloat() * dayCellWidth - 0.01f,
-                    dayLabelHeight + row.toFloat() * dayCellHeight - 0.01f,
-                    xOffset + (col.toFloat() + 1) * dayCellWidth + 0.01f,
-                    dayLabelHeight + (row.toFloat() + 1) * dayCellHeight + 0.01f
+                    xOffset + col.toGFloat() * dayCellWidth - 0.01f,
+                    dayLabelHeight + row.toGFloat() * dayCellHeight - 0.01f,
+                    xOffset + (col.toGFloat() + 1) * dayCellWidth + 0.01f,
+                    dayLabelHeight + (row.toGFloat() + 1) * dayCellHeight + 0.01f
                 )
                 if (rectForReuse.left > width) {
                     continue
@@ -293,7 +294,7 @@ open class MonthCVD : CustomViewDelegate() {
                 }
             } else if (dragEnabled) {
                 val weighted =
-                    currentOffset + (currentOffset - lastOffset) * 200f / (System.currentTimeMillis() - lastOffsetTime).toFloat()
+                    currentOffset + (currentOffset - lastOffset) * 200f / (System.currentTimeMillis() - lastOffsetTime).toGFloat()
                 if (weighted > 0.5f) {
                     //shift right one
                     currentMonthObs.value.setAddMonthOfYear(-1)
