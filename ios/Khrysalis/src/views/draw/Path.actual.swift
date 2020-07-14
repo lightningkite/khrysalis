@@ -82,9 +82,9 @@ public extension Path {
         let ay = start.y
         let bx = end.x
         let by = end.y
-        
+
         x_rot *= CGFloat.pi/180
-        
+
         rx = abs(rx)
         ry = abs(ry)
 

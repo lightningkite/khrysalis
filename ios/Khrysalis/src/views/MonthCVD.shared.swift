@@ -4,34 +4,60 @@
 import Foundation
 import CoreGraphics
 
-public class MonthCVD : CustomViewDelegate {
+open class MonthCVD : CustomViewDelegate {
     override public init() {
-        self.currentMonthObs = StandardObservableProperty(underlyingValue: Date().dateAlone.setDayOfMonth(value: 1))
-        self.dragEnabled = true
-        self.labelFontSp = 12
-        self.dayFontSp = 16
-        self.internalPaddingDp = 8
-        self.dayCellMarginDp = 8
-        self.internalPadding = 0
-        self.dayLabelHeight = 0
-        self.dayCellHeight = 0
-        self.dayCellWidth = 0
-        self.dayCellMargin = 0
-        self._currentOffset = 0
-        self.dragStartX = 0
-        self.lastOffset = 0
-        self.lastOffsetTime = 0
-        self.DRAGGING_NONE = -1
-        self.draggingId = DRAGGING_NONE
-        self.labelPaint = Paint()
-        self.dayPaint = Paint()
-        self.calcMonth = DateAlone(year: 1, month: 1, day: 1)
-        self.calcMonthB = DateAlone(year: 0, month: 0, day: 0)
-        self.drawDate = DateAlone(year: 1, month: 1, day: 1)
-        self.rectForReuse = RectF()
-        self.rectForReuseB = RectF()
-        self.isTap = false
-        self.dragStartY = 0
+        let currentMonthObs: MutableObservableProperty<DateAlone> = StandardObservableProperty(underlyingValue: Date().dateAlone.setDayOfMonth(value: 1))
+        self.currentMonthObs = currentMonthObs
+        let dragEnabled: Bool = true
+        self.dragEnabled = dragEnabled
+        let labelFontSp: CGFloat = 12
+        self.labelFontSp = labelFontSp
+        let dayFontSp: CGFloat = 16
+        self.dayFontSp = dayFontSp
+        let internalPaddingDp: CGFloat = 8
+        self.internalPaddingDp = internalPaddingDp
+        let dayCellMarginDp: CGFloat = 8
+        self.dayCellMarginDp = dayCellMarginDp
+        let internalPadding: CGFloat = 0
+        self.internalPadding = internalPadding
+        let dayLabelHeight: CGFloat = 0
+        self.dayLabelHeight = dayLabelHeight
+        let dayCellHeight: CGFloat = 0
+        self.dayCellHeight = dayCellHeight
+        let dayCellWidth: CGFloat = 0
+        self.dayCellWidth = dayCellWidth
+        let dayCellMargin: CGFloat = 0
+        self.dayCellMargin = dayCellMargin
+        let _currentOffset: CGFloat = 0
+        self._currentOffset = _currentOffset
+        let dragStartX: CGFloat = 0
+        self.dragStartX = dragStartX
+        let lastOffset: CGFloat = 0
+        self.lastOffset = lastOffset
+        let lastOffsetTime: Int64 = 0
+        self.lastOffsetTime = lastOffsetTime
+        let DRAGGING_NONE: Int = -1
+        self.DRAGGING_NONE = DRAGGING_NONE
+        let draggingId: Int = DRAGGING_NONE
+        self.draggingId = draggingId
+        let labelPaint: Paint = Paint()
+        self.labelPaint = labelPaint
+        let dayPaint: Paint = Paint()
+        self.dayPaint = dayPaint
+        let calcMonth: DateAlone = DateAlone(year: 1, month: 1, day: 1)
+        self.calcMonth = calcMonth
+        let calcMonthB: DateAlone = DateAlone(year: 0, month: 0, day: 0)
+        self.calcMonthB = calcMonthB
+        let drawDate: DateAlone = DateAlone(year: 1, month: 1, day: 1)
+        self.drawDate = drawDate
+        let rectForReuse: CGRect = RectF()
+        self.rectForReuse = rectForReuse
+        let rectForReuseB: CGRect = RectF()
+        self.rectForReuseB = rectForReuseB
+        let isTap: Bool = false
+        self.isTap = isTap
+        let dragStartY: CGFloat = 0
+        self.dragStartY = dragStartY
         super.init()
         self.currentMonthObs.subscribeBy(onNext:  { [weak self] (value: DateAlone) -> Void in self?.postInvalidate() }).forever()
         self.labelPaint.isAntiAlias = true
@@ -40,7 +66,7 @@ public class MonthCVD : CustomViewDelegate {
         self.dayPaint.isAntiAlias = true
         self.dayPaint.style = Paint.Style.FILL
         self.dayPaint.color = 0xFF202020.asColor()
-        animationFrame.subscribeBy(onNext: { (timePassed: Float) -> Void in if self.draggingId == self.DRAGGING_NONE, self.currentOffset != 0 {
+        animationFrame.subscribeBy(onNext: { (timePassed: CGFloat) -> Void in if self.draggingId == self.DRAGGING_NONE, self.currentOffset != 0 {
                     var newOffset: CGFloat = self.currentOffset * max(0, (1 - 8 * CGFloat(timePassed)))
                     let min: CGFloat = 0.001
                     if newOffset > min {
@@ -131,7 +157,7 @@ public class MonthCVD : CustomViewDelegate {
         return existing.set(other: month).setDayOfMonth(value: 1).setDayOfWeek(value: 1).setAddDayOfMonth(value: row * 7 + column)
     }
     
-    public func measure(width: CGFloat, height: CGFloat, displayMetrics: DisplayMetrics) -> Void {
+    open func measure(width: CGFloat, height: CGFloat, displayMetrics: DisplayMetrics) -> Void {
         self.internalPadding = displayMetrics.density * self.internalPaddingDp
         self.dayCellMargin = displayMetrics.density * self.dayCellMarginDp
         self.labelPaint.textSize = self.labelFontSp * displayMetrics.scaledDensity
@@ -162,7 +188,7 @@ public class MonthCVD : CustomViewDelegate {
     private var drawDate: DateAlone
     private var rectForReuse: CGRect
     private var rectForReuseB: CGRect
-    public func drawMonth(canvas: Canvas, xOffset: CGFloat, width: CGFloat, month: DateAlone, displayMetrics: DisplayMetrics) -> Void {
+    open func drawMonth(canvas: Canvas, xOffset: CGFloat, width: CGFloat, month: DateAlone, displayMetrics: DisplayMetrics) -> Void {
         for day in ((1...7)){
             let col = day - 1
             self.rectForReuse.set(xOffset + CGFloat(col) * self.dayCellWidth - 0.01, -0.01, xOffset + (CGFloat(col) + 1) * self.dayCellWidth + 0.01, self.dayLabelHeight + 0.01)
@@ -187,19 +213,19 @@ public class MonthCVD : CustomViewDelegate {
         }
     }
     
-    public func drawLabel(canvas: Canvas, dayOfWeek: Int, displayMetrics: DisplayMetrics, outer: CGRect, inner: CGRect) -> Void {
+    open func drawLabel(canvas: Canvas, dayOfWeek: Int, displayMetrics: DisplayMetrics, outer: CGRect, inner: CGRect) -> Void {
         CalendarDrawing.INSTANCE.label(canvas: canvas, dayOfWeek: dayOfWeek, inner: inner, paint: self.labelPaint)
     }
     
-    public func drawDay(canvas: Canvas, showingMonth: DateAlone, day: DateAlone, displayMetrics: DisplayMetrics, outer: CGRect, inner: CGRect) -> Void {
+    open func drawDay(canvas: Canvas, showingMonth: DateAlone, day: DateAlone, displayMetrics: DisplayMetrics, outer: CGRect, inner: CGRect) -> Void {
         CalendarDrawing.INSTANCE.day(canvas: canvas, month: showingMonth, date: day, inner: outer, paint: self.dayPaint)
     }
     
     public var isTap: Bool
     public var dragStartY: CGFloat
-    public func onTap(day: DateAlone) -> Void {}
+    open func onTap(day: DateAlone) -> Void {}
     
-    public func onTouchDown(day: DateAlone) -> Bool { return false }
+    open func onTouchDown(day: DateAlone) -> Bool { return false }
     override public func onTouchDown(id: Int, x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat) -> Bool {
         let day = self.dayAtPixel(x: x, y: y)
         if let it = (day) { 
@@ -216,7 +242,7 @@ public class MonthCVD : CustomViewDelegate {
         return true
     }
     
-    public func onTouchMove(day: DateAlone) -> Bool { return false }
+    open func onTouchMove(day: DateAlone) -> Bool { return false }
     override public func onTouchMove(id: Int, x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat) -> Bool {
         if self.draggingId == id {
             self.lastOffset = self.currentOffset
@@ -235,7 +261,7 @@ public class MonthCVD : CustomViewDelegate {
         return true
     }
     
-    public func onTouchUp(day: DateAlone) -> Bool { return false }
+    open func onTouchUp(day: DateAlone) -> Bool { return false }
     override public func onTouchUp(id: Int, x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat) -> Bool {
         if self.draggingId == id {
             if self.isTap {

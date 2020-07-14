@@ -21,7 +21,7 @@ fun convertDrawableXmls(
         .sortedBy { it.name }
         .map { it to XmlNode.read(it, mapOf()) }
         .forEach { (file, it) ->
-            val name = file.nameWithoutExtension.camelCase()
+            val name = file.nameWithoutExtension
             val outputFile = swiftFolder.resolve("drawable").resolve(name + "Drawable.swift")
             println("$file -> $outputFile")
             try {

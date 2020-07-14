@@ -3,13 +3,13 @@
 // Package: com.lightningkite.khrysalis.views
 import Foundation
 
-public class ViewGenerator {
+open class ViewGenerator {
     public init() {
     }
     
-    public var title: String { get { TODO() } }
+    open var title: String { get { TODO() } }
     
-    public func generate(dependency: ViewDependency) -> View { TODO() }
+    open func generate(dependency: ViewDependency) -> View { TODO() }
     
     public class Default : ViewGenerator {
         override public init() {

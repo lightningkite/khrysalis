@@ -6,7 +6,7 @@ import Foundation
 
 public class EventToObservableProperty<T> : ObservableProperty<T> {
     private var _value: T
-    override public var value: T { get { return self.value } set(value) { self.value = value } }
+    override public var value: T { get { return self._value } set(value) { self._value = value } }
     public var wrapped: Observable<T>
     public init(value: T, wrapped: Observable<T>) {
         self._value = value

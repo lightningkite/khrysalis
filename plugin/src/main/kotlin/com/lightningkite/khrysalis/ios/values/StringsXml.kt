@@ -42,6 +42,6 @@ fun Map<String, String>.writeXMLStrings(out: Appendable) {
             .replace("\\'", "'")
             .replace("\\$", "$")
             .replace(Regex("\n *"), " ")
-        out.appendln("    static let ${key.camelCase()} = NSLocalizedString(\"$fixedString\", comment: \"$key\")")
+        out.appendln("static let ${key} = NSLocalizedString(\"$fixedString\", comment: \"$key\")")
     }
 }

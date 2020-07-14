@@ -1,6 +1,6 @@
 //Stub file made with Khrysalis 2 (by Lightning Kite)
 import Foundation
-
+import CoreGraphics
 
 //--- delay(Long, ()->Unit)
 public func delay(_ milliseconds: Int64, _ action: @escaping () -> Void) -> Void {
@@ -20,8 +20,8 @@ public func post(_ action: @escaping () -> Void) -> Void {
 }
 
 //--- animationFrame
-public let animationFrame: StandardEvent<Float> = {
-    let temp = StandardEvent<Float>()
+public let animationFrame: StandardEvent<CGFloat> = {
+    let temp = StandardEvent<CGFloat>()
     frame()
     return temp
 }()
@@ -30,7 +30,7 @@ private func frame(){
     let start = Date()
     delay(15){
         let end = Date()
-        animationFrame.invokeAll(Float(end.timeIntervalSince(start)))
+        animationFrame.invokeAll(CGFloat(end.timeIntervalSince(start)))
         frame()
     }
 }

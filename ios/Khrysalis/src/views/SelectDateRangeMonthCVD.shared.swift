@@ -4,15 +4,22 @@
 import Foundation
 import CoreGraphics
 
-public class SelectDateRangeMonthCVD : MonthCVD {
+open class SelectDateRangeMonthCVD : MonthCVD {
     override public init() {
-        self.draggingStart = true
-        self.start = StandardObservableProperty(underlyingValue: nil)
-        self.endInclusive = StandardObservableProperty(underlyingValue: nil)
-        self.selectedDayPaint = Paint()
-        self.selectedPaint = Paint()
-        self.drawDay_dateAlone = DateAlone(year: 0, month: 0, day: 0)
-        self.startedDraggingOn = nil
+        let draggingStart: Bool = true
+        self.draggingStart = draggingStart
+        let start: MutableObservableProperty<DateAlone?> = StandardObservableProperty(underlyingValue: nil)
+        self.start = start
+        let endInclusive: MutableObservableProperty<DateAlone?> = StandardObservableProperty(underlyingValue: nil)
+        self.endInclusive = endInclusive
+        let selectedDayPaint: Paint = Paint()
+        self.selectedDayPaint = selectedDayPaint
+        let selectedPaint: Paint = Paint()
+        self.selectedPaint = selectedPaint
+        let drawDay_dateAlone: DateAlone = DateAlone(year: 0, month: 0, day: 0)
+        self.drawDay_dateAlone = drawDay_dateAlone
+        let startedDraggingOn: DateAlone? = nil
+        self.startedDraggingOn = startedDraggingOn
         super.init()
         if let it = (self.start.value) { 
             self.currentMonthObs.value = it.dayOfMonth(value: 1)

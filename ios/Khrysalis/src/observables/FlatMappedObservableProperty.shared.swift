@@ -33,7 +33,8 @@ public class MutableFlatMappedObservableProperty<A, B> : MutableObservableProper
     public init(basedOn: ObservableProperty<A>, transformation: @escaping  (A) -> MutableObservableProperty<B>) {
         self.basedOn = basedOn
         self.transformation = transformation
-        self.lastProperty = nil
+        let lastProperty: MutableObservableProperty<B>? = nil
+        self.lastProperty = lastProperty
         super.init()
     }
     

@@ -7,7 +7,7 @@ import Foundation
 public class StandardObservableProperty<T> : MutableObservableProperty<T> {
     public var underlyingValue: T
     private var _onChange: Subject<T>
-    override public var onChange: Subject<T> { get { return self.onChange } set(value) { self.onChange = value } }
+    override public var onChange: Subject<T> { get { return self._onChange } set(value) { self._onChange = value } }
     public init(underlyingValue: T, onChange: Subject<T> = PublishSubject()) {
         self.underlyingValue = underlyingValue
         self._onChange = onChange

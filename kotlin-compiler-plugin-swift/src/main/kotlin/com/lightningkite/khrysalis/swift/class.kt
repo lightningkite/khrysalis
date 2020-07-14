@@ -1,9 +1,7 @@
 package com.lightningkite.khrysalis.swift
 
 import com.lightningkite.khrysalis.generic.PartialTranslatorByType
-import com.lightningkite.khrysalis.util.allOverridden
 import com.lightningkite.khrysalis.util.forEachBetween
-import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.js.translate.callTranslator.getReturnType
@@ -11,21 +9,13 @@ import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
 import org.jetbrains.kotlin.psi2ir.findFirstFunction
-import org.jetbrains.kotlin.resolve.calls.tower.isSynthesized
 import org.jetbrains.kotlin.resolve.calls.util.FakeCallableDescriptorForObject
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
 import org.jetbrains.kotlin.resolve.descriptorUtil.getSuperClassNotAny
-import org.jetbrains.kotlin.resolve.scopes.DescriptorKindFilter
 import org.jetbrains.kotlin.resolve.scopes.receivers.ClassValueReceiver
-import org.jetbrains.kotlin.types.FlexibleType
-import org.jetbrains.kotlin.types.SimpleType
-import org.jetbrains.kotlin.types.WrappedType
 import org.jetbrains.kotlin.types.isNullable
-import org.jetbrains.kotlin.types.typeUtil.nullability
-import org.jetbrains.kotlin.types.typeUtil.supertypes
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.reflect.jvm.internal.impl.types.KotlinType
 
 fun FunctionDescriptor.callsForSwiftInterface(on: ClassDescriptor?): Boolean {
     val immediate = this.containingDeclaration == on
@@ -33,6 +23,12 @@ fun FunctionDescriptor.callsForSwiftInterface(on: ClassDescriptor?): Boolean {
         .filter { it.kind == CallableMemberDescriptor.Kind.DECLARATION }
         .filter { it.containingDeclaration.fqNameOrNull()?.asString()?.startsWith("kotlin.") == false }
     return immediate && overriddenDescriptors.isNotEmpty() == true
+}
+
+fun KtModifierListOwner.swiftVisibility(): Any? = when {
+    this.hasModifier(KtTokens.ABSTRACT_KEYWORD) ||
+    this.hasModifier(KtTokens.OPEN_KEYWORD) -> "open"
+    else -> this.visibilityModifier()
 }
 
 fun SwiftTranslator.registerClass() {
@@ -126,7 +122,7 @@ fun SwiftTranslator.registerClass() {
         condition = { typedRule.isInterface() },
         priority = 100
     ) {
-        -(typedRule.visibilityModifier() ?: "public")
+        -(typedRule.swiftVisibility() ?: "public")
         -" protocol "
         -swiftTopLevelNameElement(typedRule)
         typedRule.typeParameterList?.let {
@@ -146,7 +142,7 @@ fun SwiftTranslator.registerClass() {
         -typedRule.body
         -"}\n"
         if (typedRule.body?.hasPostActions() == true) {
-            -(typedRule.visibilityModifier() ?: "public")
+            -(typedRule.swiftVisibility() ?: "public")
             -" extension "
             -swiftTopLevelNameElement(typedRule)
             -" {"
@@ -157,7 +153,7 @@ fun SwiftTranslator.registerClass() {
     }
 
     handle<KtClass> {
-        -(typedRule.visibilityModifier() ?: "public")
+        -(typedRule.swiftVisibility() ?: "public")
         -' '
         writeClassHeader(typedRule)
         -" {\n"
@@ -171,20 +167,20 @@ fun SwiftTranslator.registerClass() {
                 }
                 -"\n"
                 -"override "
-                -(it.visibilityModifier() ?: "public")
+                -(it.swiftVisibility() ?: "public")
                 -" var "
                 -it.nameIdentifier
                 it.typeReference?.let {
                     -": "
                     -it
                 }
-                -" { get { return self."
+                -" { get { return self._"
                 -it.nameIdentifier
-                -" } set(value) { self."
+                -" } set(value) { self._"
                 -it.nameIdentifier
                 -" = value } }"
             } else {
-                -(it.visibilityModifier() ?: "public")
+                -(it.swiftVisibility() ?: "public")
                 -" var "
                 -it.nameIdentifier
                 it.typeReference?.let {
@@ -218,7 +214,7 @@ fun SwiftTranslator.registerClass() {
         if (typedRule.isEnum()) {
             -"private"
         } else {
-            -(typedRule.primaryConstructor?.visibilityModifier() ?: "public")
+            -(typedRule.primaryConstructor?.swiftVisibility() ?: "public")
         }
         -" init("
         partOfParameter = true
@@ -268,13 +264,20 @@ fun SwiftTranslator.registerClass() {
             when (it) {
                 is KtProperty -> {
                     it.initializer?.let { init ->
+                        -"let "
+                        -it.nameIdentifier
+                        -": "
+                        -(it.typeReference ?: it.resolvedProperty?.type ?: it.resolvedVariable?.type)
+                        -" = "
+                        -init
+                        -"\n"
                         -"self."
                         if (it.resolvedProperty?.hasSwiftBacking == true) {
                             -'_'
                         }
                         -it.nameIdentifier
                         -" = "
-                        -init
+                        -it.nameIdentifier
                         -"\n"
                     }
                 }
@@ -571,7 +574,7 @@ fun SwiftTranslator.registerClass() {
     }
 
     handle<KtObjectDeclaration> {
-        -(typedRule.visibilityModifier() ?: "public")
+        -(typedRule.swiftVisibility() ?: "public")
         -' '
         writeClassHeader(typedRule)
         -" {\n"
@@ -634,7 +637,7 @@ fun SwiftTranslator.registerClass() {
         condition = { typedRule.isSimpleEnum() },
         priority = 10,
         action = {
-            -(typedRule.visibilityModifier() ?: "public")
+            -(typedRule.swiftVisibility() ?: "public")
             -" enum "
             -swiftTopLevelNameElement(typedRule)
             -": CaseIterable {\n"
@@ -736,7 +739,7 @@ fun SwiftTranslator.registerClass() {
     }
 
     handle<KtSecondaryConstructor> {
-        -(typedRule.visibilityModifier() ?: "public")
+        -(typedRule.swiftVisibility() ?: "public")
         -" convenience init("
         typedRule.valueParameters.forEachBetween(
             forItem = { -it },

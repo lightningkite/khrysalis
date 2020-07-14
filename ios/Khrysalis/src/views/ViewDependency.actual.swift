@@ -159,24 +159,24 @@ public class ViewDependency: NSObject {
         url: String,
         width: Int? = nil,
         height: Int? = nil,
-        onResult: @escaping (Drawable?)->Void
+        callback: @escaping (Drawable?)->Void
     ) {
-        downloadDrawable(url, width, height, onResult)
+        downloadDrawable(url, width, height, callback)
     }
     public func downloadDrawable(
         _ url: String,
         _ width: Int? = nil,
         _ height: Int? = nil,
-        _ onResult: @escaping (Drawable?)->Void
+        _ callback: @escaping (Drawable?)->Void
     ) {
         Alamofire.request(url).responseImage(imageScale: 1) { response in
             if var image = response.value {
 //                if let width = width, let height = height {
 //                    image = image.af_imageAspectScaled(toFit: CGSize(width: width, height: height))
 //                }
-                onResult({ _ in CAImageLayer(image) })
+                callback({ _ in CAImageLayer(image) })
             } else {
-                onResult(nil)
+                callback(nil)
             }
         }
     }
@@ -241,21 +241,21 @@ public class ViewDependency: NSObject {
     }
 
     //--- ViewDependency.requestImageGallery((URL)->Unit)
-    public func requestImageGallery(onResult: @escaping (URL) -> Void) {
+    public func requestImageGallery(callback: @escaping (URL) -> Void) {
         if PHPhotoLibrary.authorizationStatus() == .authorized {
-            self.requestImageGalleryRaw(onResult: onResult)
+            self.requestImageGalleryRaw(callback: callback)
         } else {
             PHPhotoLibrary.requestAuthorization {_ in
                 DispatchQueue.main.async {
-                    self.requestImageGalleryRaw(onResult: onResult)
+                    self.requestImageGalleryRaw(callback: callback)
                 }
             }
         }
     }
-    private func requestImageGalleryRaw(onResult: @escaping (URL) -> Void) {
+    private func requestImageGalleryRaw(callback: @escaping (URL) -> Void) {
         if UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum){
             let imageDelegate = self.imageDelegate
-            imageDelegate.onImagePicked = onResult
+            imageDelegate.onImagePicked = callback
             imageDelegate.prepareGallery()
             self.parentViewController.present(imageDelegate.imagePicker, animated: true, completion: nil)
         }
@@ -291,18 +291,18 @@ public class ViewDependency: NSObject {
     }
 
     //--- ViewDependency.requestImagesGallery((List<URL>)->Unit)
-    public func requestImagesGallery(_ onResult: @escaping (Array<URL>) -> Void) -> Void {
+    public func requestImagesGallery(callback: @escaping (Array<URL>) -> Void) -> Void {
         if PHPhotoLibrary.authorizationStatus() == .authorized {
-            self.requestImagesGalleryRaw(onResult: onResult)
+            self.requestImagesGalleryRaw(callback: callback)
         } else {
             PHPhotoLibrary.requestAuthorization {_ in
                 DispatchQueue.main.async {
-                    self.requestImagesGalleryRaw(onResult: onResult)
+                    self.requestImagesGalleryRaw(callback: callback)
                 }
             }
         }
     }
-    private func requestImagesGalleryRaw(onResult: @escaping (Array<URL>) -> Void) {
+    private func requestImagesGalleryRaw(callback: @escaping (Array<URL>) -> Void) {
         let pickerController = DKImagePickerController()
         pickerController.assetType = .allPhotos
         pickerController.didSelectAssets = { (assets: [DKAsset]) in
@@ -313,7 +313,7 @@ public class ViewDependency: NSObject {
             var remaining = assets.count
             print("Assets remaining: \(remaining)")
             for item in assets {
-                getUrl(editedImage: nil, originalImage: nil, asset: item.originalAsset, onResult: { url in
+                getUrl(editedImage: nil, originalImage: nil, asset: item.originalAsset, callback: { url in
                     remaining -= 1
                     print("Assets remaining: \(remaining)")
                     if let url = url {
@@ -323,7 +323,7 @@ public class ViewDependency: NSObject {
                     }
                     if remaining == 0 {
                         print("Finish")
-                        onResult(result)
+                        callback(result)
                     }
                 })
             }
@@ -337,7 +337,7 @@ public class ViewDependency: NSObject {
 //                var remaining = assets.count
 //                print("Assets remaining: \(remaining)")
 //                for item in assets {
-//                    getUrl(editedImage: nil, originalImage: nil, asset: item, onResult: { url in
+//                    getUrl(editedImage: nil, originalImage: nil, asset: item, callback: { url in
 //                        remaining -= 1
 //                        print("Assets remaining: \(remaining)")
 //                        if let url = url {
@@ -347,7 +347,7 @@ public class ViewDependency: NSObject {
 //                        }
 //                        if remaining == 0 {
 //                            print("Finish")
-//                            onResult(result)
+//                            callback(result)
 //                            imagePicker.dismiss(animated: true, completion: nil)
 //                        }
 //                    })
@@ -358,17 +358,17 @@ public class ViewDependency: NSObject {
     }
 
     //--- ViewDependency.requestImageCamera((URL)->Unit)
-    public func requestImageCamera(front:Bool = false, onResult: @escaping (URL) -> Void) {
+    public func requestImageCamera(front:Bool = false, callback: @escaping (URL) -> Void) {
         DispatchQueue.main.async {
             if AVCaptureDevice.authorizationStatus(for: .video) == .authorized {
                 AVCaptureDevice.requestAccess(for: .video) { granted in
                     DispatchQueue.main.async {
                         if granted {
                             if PHPhotoLibrary.authorizationStatus() == .authorized {
-                                self.requestImageCameraRaw(front:front, onResult: onResult)
+                                self.requestImageCameraRaw(front:front, callback: callback)
                             } else {
                                 PHPhotoLibrary.requestAuthorization {_ in
-                                    self.requestImageCameraRaw(front:front, onResult: onResult)
+                                    self.requestImageCameraRaw(front:front, callback: callback)
                                 }
                             }
                         }
@@ -379,10 +379,10 @@ public class ViewDependency: NSObject {
                     DispatchQueue.main.async {
                         if granted {
                             if PHPhotoLibrary.authorizationStatus() == .authorized {
-                                self.requestImageCameraRaw(front:front, onResult: onResult)
+                                self.requestImageCameraRaw(front:front, callback: callback)
                             } else {
                                 PHPhotoLibrary.requestAuthorization {_ in
-                                    self.requestImageCameraRaw(front:front, onResult: onResult)
+                                    self.requestImageCameraRaw(front:front, callback: callback)
                                 }
                             }
                         }
@@ -391,11 +391,11 @@ public class ViewDependency: NSObject {
             }
         }
     }
-    private func requestImageCameraRaw(front:Bool, onResult: @escaping (URL) -> Void) {
+    private func requestImageCameraRaw(front:Bool, callback: @escaping (URL) -> Void) {
         DispatchQueue.main.async {
             if UIImagePickerController.isSourceTypeAvailable(.camera){
                 let imageDelegate = self.imageDelegate
-                imageDelegate.onImagePicked = onResult
+                imageDelegate.onImagePicked = callback
                 imageDelegate.prepareCamera(front: front)
                 self.parentViewController.present(imageDelegate.imagePicker, animated: true, completion: nil)
             }
@@ -460,7 +460,7 @@ private class ImageDelegate : NSObject, UIImagePickerControllerDelegate, UINavig
             }
         }
         
-        getUrl(editedImage: info[.editedImage] as? UIImage, originalImage: info[.originalImage] as? UIImage, asset: info[.phAsset] as? PHAsset, onResult: { url in
+        getUrl(editedImage: info[.editedImage] as? UIImage, originalImage: info[.originalImage] as? UIImage, asset: info[.phAsset] as? PHAsset, callback: { url in
             if let url = url {
                 DispatchQueue.main.async {
                     picker.dismiss(animated: true, completion: {
@@ -473,28 +473,28 @@ private class ImageDelegate : NSObject, UIImagePickerControllerDelegate, UINavig
     }
 }
 
-fileprivate func getUrl(editedImage: UIImage?, originalImage: UIImage?, asset: PHAsset?, onResult: @escaping (URL?)->Void) {
+fileprivate func getUrl(editedImage: UIImage?, originalImage: UIImage?, asset: PHAsset?, callback: @escaping (URL?)->Void) {
     if let editedImage = editedImage {
         if let url = editedImage.saveTemp() {
             print("Image retrieved using save due to edit")
-            onResult(url)
+            callback(url)
         } else {
             print("Image retrieval failed")
-            onResult(nil)
+            callback(nil)
         }
     } else if let asset = asset {
         asset.getURL(completionHandler: { url in
             if let url = url {
                 print("Image retrieved using asset")
-                onResult(url)
+                callback(url)
             } else {
                 //That failed, let's just save the image
                 if let originalImage = originalImage, let url = originalImage.saveTemp() {
                     print("Image retrieved using save as backup")
-                    onResult(url)
+                    callback(url)
                 } else {
                     print("Image retrieval failed")
-                    onResult(nil)
+                    callback(nil)
                 }
             }
         })
@@ -502,10 +502,10 @@ fileprivate func getUrl(editedImage: UIImage?, originalImage: UIImage?, asset: P
         //That failed, let's just save the image
         if let originalImage = originalImage, let url = originalImage.saveTemp() {
             print("Image retrieved using save as backup")
-            onResult(url)
+            callback(url)
         } else {
             print("Image retrieval failed")
-            onResult(nil)
+            callback(nil)
         }
     }
 }

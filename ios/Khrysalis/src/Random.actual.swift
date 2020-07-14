@@ -6,6 +6,10 @@ import Foundation
 public class Random {
     
     var twister: MersenneTwister
+
+    public class Default: Random {
+        public static let INSTANCE = Default()
+    }
     
     //--- Random.Primary Constructor
     public init(seed: Int64) {
@@ -15,20 +19,10 @@ public class Random {
     private init() {
         twister = MersenneTwister()
     }
-    
-    //--- Random.Companion.{
-    
-    //--- Random.Companion.Default
-    public static let Default: Random = Random()
-    
-    //--- Random.Companion.}
-    
+
     //--- Random.nextInt()
     public func nextInt() -> Int {
         return Int.random(in: Int.min...Int.max, using: &twister)
-    }
-    static public func nextInt() -> Int {
-        return Int.random(in: Int.min...Int.max)
     }
     
     //--- Random.nextInt(Int)
@@ -36,12 +30,6 @@ public class Random {
         return Int.random(in: 0...until, using: &twister)
     }
     public func nextInt(until: Int) -> Int {
-        return nextInt(until)
-    }
-    static public func nextInt(_ until: Int) -> Int {
-        return Int.random(in: 0...until)
-    }
-    static public func nextInt(until: Int) -> Int {
         return nextInt(until)
     }
     
@@ -52,19 +40,10 @@ public class Random {
     public func nextInt(from: Int, until: Int) -> Int {
         return nextInt(from, until)
     }
-    static public func nextInt(_ from: Int, _ until: Int) -> Int {
-        return Int.random(in: from...until)
-    }
-    static public func nextInt(from: Int, until: Int) -> Int {
-        return nextInt(from, until)
-    }
     
     //--- Random.nextLong()
     public func nextLong() -> Int64 {
         return Int64.random(in: Int64.min...Int64.max, using: &twister)
-    }
-    static public func nextLong() -> Int64 {
-        return Int64.random(in: Int64.min...Int64.max)
     }
     
     //--- Random.nextLong(Long)
@@ -72,12 +51,6 @@ public class Random {
         return Int64.random(in: 0...until, using: &twister)
     }
     public func nextLong(until: Int64) -> Int64 {
-        return nextLong(until)
-    }
-    static public func nextLong(_ until: Int64) -> Int64 {
-        return Int64.random(in: 0...until)
-    }
-    static public func nextLong(until: Int64) -> Int64 {
         return nextLong(until)
     }
 
@@ -88,27 +61,15 @@ public class Random {
     public func nextLong(from: Int64, until: Int64) -> Int64 {
         return nextLong(from, until)
     }
-    static public func nextLong(_ from: Int64, _ until: Int64) -> Int64 {
-        return Int64.random(in: from...until)
-    }
-    static public func nextLong(from: Int64, until: Int64) -> Int64 {
-        return nextLong(from, until)
-    }
 
     //--- Random.nextBoolean()
     public func nextBoolean() -> Bool {
         return Bool.random(using: &twister)
     }
-    static public func nextBoolean() -> Bool {
-        return Bool.random()
-    }
 
     //--- Random.nextDouble()
     public func nextDouble() -> Double {
         return Double.random(in: 0.0..<1.0, using: &twister)
-    }
-    static public func nextDouble() -> Double {
-        return Double.random(in: 0.0..<1.0)
     }
 
     //--- Random.nextDouble(Double)
@@ -116,12 +77,6 @@ public class Random {
         return Double.random(in: 0.0..<until, using: &twister)
     }
     public func nextDouble(until: Double) -> Double {
-        return nextDouble(until)
-    }
-    static public func nextDouble(_ until: Double) -> Double {
-        return Double.random(in: 0.0..<until)
-    }
-    static public func nextDouble(until: Double) -> Double {
         return nextDouble(until)
     }
 
@@ -132,19 +87,10 @@ public class Random {
     public func nextDouble(from: Double, until: Double) -> Double {
         return nextDouble(from, until)
     }
-    static public func nextDouble(_ from: Double, _ until: Double) -> Double {
-        return Double.random(in: from..<until)
-    }
-    static public func nextDouble(from: Double, until: Double) -> Double {
-        return nextDouble(from, until)
-    }
 
     //--- Random.nextFloat()
     public func nextFloat() -> Float {
         return Float.random(in: 0..<1, using: &twister)
-    }
-    static public func nextFloat() -> Float {
-        return Float.random(in: 0..<1)
     }
 
     //--- Random.nextFloat(Float)
@@ -154,24 +100,12 @@ public class Random {
     public func nextFloat(until: Float) -> Float {
         return nextFloat(until)
     }
-    static public func nextFloat(_ until: Float) -> Float {
-        return Float.random(in: 0..<until)
-    }
-    static public func nextFloat(until: Float) -> Float {
-        return nextFloat(until)
-    }
 
     //--- Random.nextFloat(Float, Float)
     public func nextFloat(_ from: Float, _ until: Float) -> Float {
         return Float.random(in: from..<until, using: &twister)
     }
     public func nextFloat(from: Float, until: Float) -> Float {
-        return nextFloat(from, until)
-    }
-    static public func nextFloat(_ from: Float, _ until: Float) -> Float {
-        return Float.random(in: from..<until)
-    }
-    static public func nextFloat(from: Float, until: Float) -> Float {
         return nextFloat(from, until)
     }
 

@@ -32,7 +32,12 @@ fun SwiftTranslator.registerLiterals() {
                 -typedRule.text.trim('\'')
                 -'"'
             }
-            KtStubElementTypes.FLOAT_CONSTANT -> -typedRule.text.removeSuffix("F").removeSuffix("f")
+            KtStubElementTypes.FLOAT_CONSTANT -> {
+                if(typedRule.text.startsWith('.')){
+                    -'0'
+                }
+                -typedRule.text.removeSuffix("F").removeSuffix("f")
+            }
             else -> doSuper()
         }
     }

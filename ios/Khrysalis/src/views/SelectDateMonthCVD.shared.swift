@@ -4,11 +4,14 @@
 import Foundation
 import CoreGraphics
 
-public class SelectDateMonthCVD : MonthCVD {
+open class SelectDateMonthCVD : MonthCVD {
     override public init() {
-        self.selected = StandardObservableProperty(underlyingValue: nil)
-        self.selectedDayPaint = Paint()
-        self.selectedPaint = Paint()
+        let selected: MutableObservableProperty<DateAlone?> = StandardObservableProperty(underlyingValue: nil)
+        self.selected = selected
+        let selectedDayPaint: Paint = Paint()
+        self.selectedDayPaint = selectedDayPaint
+        let selectedPaint: Paint = Paint()
+        self.selectedPaint = selectedPaint
         super.init()
         if let it = (self.selected.value) { 
             self.currentMonthObs.value = it.dayOfMonth(value: 1)

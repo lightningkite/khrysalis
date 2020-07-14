@@ -28,6 +28,9 @@
   type: type
   template: SomeEnum
 
+- id: kotlin.Unit
+  type: get
+  template: ()
 
 - id: kotlin.io.println
   type: call

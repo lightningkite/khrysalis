@@ -12,7 +12,8 @@ public class TransformedMutableObservableProperty<A, B> : MutableObservablePrope
         self.basedOn = basedOn
         self.read = read
         self.write = write
-        self._onChange = basedOn.onChange.map({ (it: A) -> B in read(it) })
+        let onChange: Observable<B> = basedOn.onChange.map({ (it: A) -> B in read(it) })
+        self._onChange = onChange
         super.init()
     }
     

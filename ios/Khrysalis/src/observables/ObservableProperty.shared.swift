@@ -4,12 +4,12 @@
 import RxSwift
 import Foundation
 
-public class ObservableProperty<T> {
+open class ObservableProperty<T> {
     public init() {
     }
     
-    public var value: T { get { TODO() } }
-    public var onChange: Observable<T> { get { TODO() } }
+    open var value: T { get { TODO() } }
+    open var onChange: Observable<T> { get { TODO() } }
 }
 
 

@@ -8,17 +8,17 @@
 import UIKit
 
 public extension UIScrollView {
-    func scrollTo(_ x: Int32, _ y: Int32) {
+    func scrollTo(_ x: Int, _ y: Int) {
         self.setContentOffset(CGPoint(x: CGFloat(x), y: CGFloat(y)), animated: false)
     }
-    func smoothScrollTo(_ x: Int32, _ y: Int32) {
+    func smoothScrollTo(_ x: Int, _ y: Int) {
         self.setContentOffset(CGPoint(x: CGFloat(x), y: CGFloat(y)), animated: true)
     }
-    var scrollX: Int32 {
-        return Int32(self.contentOffset.x)
+    var scrollX: Int {
+        return Int(self.contentOffset.x)
     }
-    var scrollY: Int32 {
-        return Int32(self.contentOffset.y)
+    var scrollY: Int {
+        return Int(self.contentOffset.y)
     }
     func scrollToBottom(){
         let bottomOffset = CGPoint(x: 0, y: self.contentSize.height - self.bounds.size.height)

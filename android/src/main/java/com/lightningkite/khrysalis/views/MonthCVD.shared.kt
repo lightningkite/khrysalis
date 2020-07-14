@@ -90,7 +90,7 @@ open class MonthCVD : CustomViewDelegate() {
         this.dayPaint.isAntiAlias = true
         this.dayPaint.style = Paint.Style.FILL
         this.dayPaint.color = 0xFF202020.asColor()
-        animationFrame.subscribeBy { timePassed ->
+        animationFrame.subscribeBy { timePassed: GFloat ->
             if (this.draggingId == DRAGGING_NONE && this.currentOffset != 0f) {
                 var newOffset: GFloat = this.currentOffset * max(0f, (1f - 8f * timePassed.toGFloat()))
                 val min: GFloat = 0.001f

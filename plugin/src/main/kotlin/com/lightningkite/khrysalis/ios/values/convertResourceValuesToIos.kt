@@ -35,10 +35,6 @@ fun convertResourceValuesToIos(
             appendln("")
             appendln("public enum R {")
 
-            appendln("static let transparent = UIColor.clear")
-            appendln("static let black = UIColor.black")
-            appendln("static let white = UIColor.white")
-
             appendln("public enum drawable {}")
 
             appendln("public enum string {")
@@ -51,6 +47,10 @@ fun convertResourceValuesToIos(
             appendln("}")
 
             appendln("public enum color {")
+
+            appendln("static let transparent = UIColor.clear")
+            appendln("static let black = UIColor.black")
+            appendln("static let white = UIColor.white")
             File(androidResourcesFolder, "values/colors.xml").translateXMLColors(this)
             File(androidResourcesFolder, "color").walkTopDown()
                 .filter { it.extension == "xml" }

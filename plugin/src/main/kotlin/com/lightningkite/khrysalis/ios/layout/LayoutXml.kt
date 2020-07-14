@@ -34,7 +34,7 @@ fun File.translateLayoutXml(styles: Styles, converter: LayoutConverter = LayoutC
         appendln("")
         appendln("    public unowned var xmlRoot: UIView!")
 
-        appendln("    public func setup(_ dependency: ViewDependency) -> UIView {")
+        appendln("    public func setup(dependency: ViewDependency) -> UIView {")
         append("        let view = ")
         conversion.construct(root)
         appendln()

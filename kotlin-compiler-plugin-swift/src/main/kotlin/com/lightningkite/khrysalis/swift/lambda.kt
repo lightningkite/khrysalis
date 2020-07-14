@@ -56,12 +56,12 @@ fun SwiftTranslator.registerLambda() {
         }
         resolved?.valueParameters?.let {
             -'('
-            it.forEachBetween(
-                forItem = {
+            it.withIndex().forEachBetween(
+                forItem = { (index, it) ->
                     -it.name.asString()
                     -": "
                     partOfParameter = true
-                    -it.type
+                    -(typedRule.valueParameters.getOrNull(index)?.typeReference ?: it.type)
                     partOfParameter = false
                 },
                 between = { -", " }

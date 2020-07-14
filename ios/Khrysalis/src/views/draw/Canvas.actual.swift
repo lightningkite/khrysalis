@@ -168,7 +168,7 @@ public extension Canvas {
     func save(){
         self.saveGState()
     }
-    
+
     func restore(){
         self.restoreGState()
     }
@@ -240,7 +240,7 @@ public extension Canvas {
             self.draw(cg, in: CGRect(x: CGFloat(left), y: CGFloat(top), width: CGFloat(cg.width), height: CGFloat(cg.height)))
         }
     }
-    
+
     func drawBitmap(_ bitmap: UIImage, _ left: CGFloat, _ top: CGFloat, _ right: CGFloat, _ bottom: CGFloat) {
         if let cg = bitmap.cgImage {
             self.draw(cg, in: CGRect(x: CGFloat(left), y: CGFloat(top), width: CGFloat(right-left), height: CGFloat(bottom-top)))

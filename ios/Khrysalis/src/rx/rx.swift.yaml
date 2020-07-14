@@ -33,6 +33,11 @@
 #  template: ~this~.subscribe(~onNext~, ~onError~, ~onComplete~)
 #
 ## Operators
+- id: io.reactivex.Observable.delay
+  type: call
+  template:
+    pattern: ~this~.delay(RxTimeInterval(~0~ / 1000))
+    imports: [RxSwift]
 #- id: io.reactivex.Observable.map
 #  type: call
 #  template:
@@ -245,14 +250,14 @@
 - id: io.reactivex.Single
   type: type
   template:
-    pattern: Observable<~T0~>
+    pattern: Single<~T0~>
     imports:
       - RxSwift
 
 - id: io.reactivex.Single
   type: typeRef
   template:
-    pattern: Observable
+    pattern: Single
     imports:
       - RxSwift
 
@@ -271,6 +276,11 @@
 #  template: ~this~.subscribe(~onNext~, ~onError~, ~onComplete~)
 #
 ## Operators for Single
+- id: io.reactivex.Single.delay
+  type: call
+  template:
+    pattern: '~this~.delay(.milliseconds(~0~ / 1000), scheduler: MainScheduler.instance)'
+    imports: [RxSwift]
 #- id: io.reactivex.Single.map
 #  type: call
 #  template:

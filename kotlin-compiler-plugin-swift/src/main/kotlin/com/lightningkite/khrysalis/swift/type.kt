@@ -1,19 +1,13 @@
 package com.lightningkite.khrysalis.swift
 
-import com.lightningkite.khrysalis.generic.PartialTranslatorByType
 import com.lightningkite.khrysalis.util.forEachBetween
 import org.jetbrains.kotlin.builtins.functions.FunctionClassDescriptor
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
-import org.jetbrains.kotlin.psi.psiUtil.getTextWithLocation
-import org.jetbrains.kotlin.psi.psiUtil.isPrivate
-import org.jetbrains.kotlin.psi.psiUtil.visibilityModifier
-import org.jetbrains.kotlin.psi.psiUtil.visibilityModifierTypeOrDefault
 import org.jetbrains.kotlin.types.*
 import org.jetbrains.kotlin.types.typeUtil.*
-import java.util.*
 
 private val primitiveTypes = setOf(
     "kotlin.Byte",
@@ -137,7 +131,7 @@ fun SwiftTranslator.registerType() {
     }
 
     handle<KtTypeAlias> {
-        -(typedRule.visibilityModifier() ?: "public")
+        -(typedRule.swiftVisibility() ?: "public")
         -" typealias "
         -typedRule.nameIdentifier
         -typedRule.typeParameterList

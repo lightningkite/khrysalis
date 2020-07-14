@@ -15,27 +15,27 @@ fun File.translateXMLColors(out: Appendable) {
         .filter { it.allAttributes["name"] !in ignored }
         .forEach {
             val raw = it.element.textContent
-            val name = (it.allAttributes["name"] ?: "noname").camelCase()
+            val name = (it.allAttributes["name"] ?: "noname")
             val color = when{
                 raw.startsWith("@color/") -> {
                     val colorName = raw.removePrefix("@color/")
-                    "R.color.${colorName.camelCase()}"
+                    "R.color.${colorName}"
                 }
                 raw.startsWith("@android:color/") -> {
                     val colorName = raw.removePrefix("@android:color/")
-                    "R.color.${colorName.camelCase()}"
+                    "R.color.${colorName}"
                 }
                 raw.startsWith("#") -> {
                     raw.hashColorToUIColor()
                 }
                 else -> "UIColor.black"
             }
-            out.appendln("    static let $name: UIColor = $color")
+            out.appendln("static let $name: UIColor = $color")
         }
 }
 
 fun File.translateXmlColorSet(out: Appendable) {
-    out.appendln("    static func ${nameWithoutExtension.camelCase()}(_ state: UIControl.State) -> UIColor {")
+    out.appendln("static func ${nameWithoutExtension}(_ state: UIControl.State) -> UIColor {")
     XmlNode.read(this, mapOf())
         .children
         .asSequence()
@@ -60,13 +60,13 @@ fun File.translateXmlColorSet(out: Appendable) {
             }
 
             if(conditions.isEmpty()) {
-                out.appendln("        return ${subnode.attributeAsSwiftColor("android:color")}")
+                out.appendln("return ${subnode.attributeAsSwiftColor("android:color")}")
             } else {
-                out.appendln("        if ${conditions.joinToString(" && ")} {")
-                out.appendln("            return ${subnode.attributeAsSwiftColor("android:color")}")
-                out.appendln("        }")
+                out.appendln("if ${conditions.joinToString(" && ")} {")
+                out.appendln("return ${subnode.attributeAsSwiftColor("android:color")}")
+                out.appendln("}")
             }
         }
-    out.appendln("        return UIColor.white")
-    out.appendln("    }")
+    out.appendln("return UIColor.white")
+    out.appendln("}")
 }

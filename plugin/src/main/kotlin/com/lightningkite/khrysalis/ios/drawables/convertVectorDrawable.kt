@@ -93,7 +93,6 @@ fun convertVectorDrawable(name: String, node: XmlNode, out: Appendable) {
 }
 
 private fun Appendable.pathDataToSwift(pathData: String) {
-    println("Adding path data")
     fun Double.scaleX(): String = "$this * scaleX"
     fun Double.scaleY(): String = "$this * scaleY"
     var referenceX: Double = 0.0

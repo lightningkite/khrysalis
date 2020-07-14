@@ -2,13 +2,10 @@ package com.lightningkite.khrysalis.swift
 
 import com.lightningkite.khrysalis.util.forEachBetween
 import com.lightningkite.khrysalis.util.walkTopDown
-import org.jetbrains.kotlin.com.intellij.psi.PsiComment
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
-import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
-import org.jetbrains.kotlin.psi2ir.findFirstFunction
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
 import org.jetbrains.kotlin.types.typeUtil.contains
 import org.jetbrains.kotlin.types.typeUtil.isTypeParameter
@@ -134,7 +131,7 @@ fun SwiftTranslator.registerFunction() {
         action = {
             val isMember = typedRule.containingClassOrObject != null
             if (isMember || typedRule.isTopLevel) {
-                -(typedRule.visibilityModifier() ?: "public")
+                -(typedRule.swiftVisibility() ?: "public")
                 -" "
             }
             -SwiftExtensionStart(typedRule.resolvedFunction!!, typedRule.typeParameterList)
@@ -153,7 +150,7 @@ fun SwiftTranslator.registerFunction() {
             }
         }
         if (isMember || (typedRule.isTopLevel && !typedRule.isExtensionDeclaration())) {
-            -(typedRule.visibilityModifier() ?: "public")
+            -(typedRule.swiftVisibility() ?: "public")
             -' '
         }
         val resolved = typedRule.resolvedFunction

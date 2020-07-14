@@ -1,11 +1,8 @@
 package com.lightningkite.khrysalis.swift
 
-import com.lightningkite.khrysalis.util.AnalysisExtensions
-import com.lightningkite.khrysalis.util.forEachBetween
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.descriptors.*
-import org.jetbrains.kotlin.descriptors.impl.SyntheticFieldDescriptor
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
@@ -103,7 +100,7 @@ fun SwiftTranslator.registerVariable() {
                 }
             }
             if (typedRule.isMember || (typedRule.isTopLevel && !typedRule.isExtensionDeclaration())) {
-                -(typedRule.visibilityModifier() ?: "public")
+                -(typedRule.swiftVisibility() ?: "public")
                 -" "
             }
             -"var "
@@ -125,7 +122,7 @@ fun SwiftTranslator.registerVariable() {
     ) {
         -"weak "
         if (typedRule.isMember || (typedRule.isTopLevel && !typedRule.isExtensionDeclaration())) {
-            -(typedRule.visibilityModifier() ?: "public")
+            -(typedRule.swiftVisibility() ?: "public")
             -" "
         }
         -"var "
@@ -150,7 +147,7 @@ fun SwiftTranslator.registerVariable() {
             -"weak "
         }
         if (typedRule.isMember || (typedRule.isTopLevel && !typedRule.isExtensionDeclaration())) {
-            -(typedRule.visibilityModifier() ?: "public")
+            -(typedRule.swiftVisibility() ?: "public")
             -" "
         }
         if (typedRule.isVar || (typedRule.resolvedProperty?.type?.requiresMutable()
@@ -188,7 +185,7 @@ fun SwiftTranslator.registerVariable() {
                 }
             }
             if (typedRule.isMember || (typedRule.isTopLevel && !typedRule.isExtensionDeclaration())) {
-                -(typedRule.visibilityModifier() ?: "public")
+                -(typedRule.swiftVisibility() ?: "public")
                 -" "
             }
             -"var "
@@ -212,7 +209,7 @@ fun SwiftTranslator.registerVariable() {
         priority = 10,
         action = {
             if (typedRule.isMember || (typedRule.isTopLevel && !typedRule.isExtensionDeclaration())) {
-                -(typedRule.visibilityModifier() ?: "public")
+                -(typedRule.swiftVisibility() ?: "public")
                 -" "
             }
             -"var _"
@@ -239,7 +236,7 @@ fun SwiftTranslator.registerVariable() {
                 }
             }
             if (typedRule.isMember || (typedRule.isTopLevel && !typedRule.isExtensionDeclaration())) {
-                -(typedRule.visibilityModifier() ?: "public")
+                -(typedRule.swiftVisibility() ?: "public")
                 -" "
             }
             -"var "
@@ -283,7 +280,7 @@ fun SwiftTranslator.registerVariable() {
         priority = 100,
         action = {
             if (typedRule.isMember || typedRule.isTopLevel) {
-                -(typedRule.visibilityModifier() ?: "public")
+                -(typedRule.swiftVisibility() ?: "public")
                 -" "
             }
             -SwiftExtensionStart(typedRule.resolvedProperty!!, typedRule.typeParameterList)
@@ -301,7 +298,7 @@ fun SwiftTranslator.registerVariable() {
         action = {
             withReceiverScope(typedRule.resolvedProperty!!) {
                 if (typedRule.isMember || typedRule.isTopLevel) {
-                    -(typedRule.visibilityModifier() ?: "public")
+                    -(typedRule.swiftVisibility() ?: "public")
                     -" "
                 }
                 -VirtualFunction(
@@ -315,7 +312,7 @@ fun SwiftTranslator.registerVariable() {
                 -"\n"
                 if (typedRule.setter != null) {
                     if (typedRule.isMember || typedRule.isTopLevel) {
-                        -(typedRule.visibilityModifier() ?: "public")
+                        -(typedRule.swiftVisibility() ?: "public")
                         -" "
                     }
                     -VirtualFunction(

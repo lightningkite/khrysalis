@@ -5,23 +5,26 @@ import RxSwift
 import Foundation
 import CoreGraphics
 
-public class CustomViewDelegate {
+open class CustomViewDelegate {
     public init() {
-        self.customView = nil
-        self.toDispose = []
-        self._removed = nil
+        let customView: CustomView? = nil
+        self.customView = customView
+        let toDispose: Array<Disposable> = []
+        self.toDispose = toDispose
+        let _removed: DisposeCondition? = nil
+        self._removed = _removed
         self._removed = DisposeCondition(call: { (it: Disposable) -> Void in self.toDispose.append(it) })
     }
     
     public var customView: CustomView?
-    public func generateAccessibilityView() -> View? { TODO() }
-    public func draw(canvas: Canvas, width: CGFloat, height: CGFloat, displayMetrics: DisplayMetrics) -> Void { TODO() }
-    public func onTouchDown(id: Int, x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat) -> Bool { return false }
-    public func onTouchMove(id: Int, x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat) -> Bool { return false }
-    public func onTouchCancelled(id: Int, x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat) -> Bool { return false }
-    public func onTouchUp(id: Int, x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat) -> Bool { return false }
-    public func sizeThatFitsWidth(width: CGFloat, height: CGFloat) -> CGFloat { return width }
-    public func sizeThatFitsHeight(width: CGFloat, height: CGFloat) -> CGFloat { return height }
+    open func generateAccessibilityView() -> View? { TODO() }
+    open func draw(canvas: Canvas, width: CGFloat, height: CGFloat, displayMetrics: DisplayMetrics) -> Void { TODO() }
+    open func onTouchDown(id: Int, x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat) -> Bool { return false }
+    open func onTouchMove(id: Int, x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat) -> Bool { return false }
+    open func onTouchCancelled(id: Int, x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat) -> Bool { return false }
+    open func onTouchUp(id: Int, x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat) -> Bool { return false }
+    open func sizeThatFitsWidth(width: CGFloat, height: CGFloat) -> CGFloat { return width }
+    open func sizeThatFitsHeight(width: CGFloat, height: CGFloat) -> CGFloat { return height }
     
     public func invalidate() -> Void { self.customView?.invalidate() }
     public func postInvalidate() -> Void { self.customView?.postInvalidate() }

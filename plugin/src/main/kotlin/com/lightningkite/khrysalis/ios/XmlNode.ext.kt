@@ -8,7 +8,7 @@ import com.lightningkite.khrysalis.utils.hashColorToUIColor
 fun XmlNode.attributeAsSwiftString(key: String): String? {
     val raw = allAttributes[key] ?: return null
     return when {
-        raw.startsWith("@string/") -> "R.string.${raw.removePrefix("@string/").camelCase()}"
+        raw.startsWith("@string/") -> "R.string.${raw.removePrefix("@string/")}"
         else -> "\"$raw\""
     }
 }
@@ -16,14 +16,14 @@ fun XmlNode.attributeAsSwiftString(key: String): String? {
 fun XmlNode.attributeAsSwiftDimension(key: String): String? {
     val raw = allAttributes[key] ?: return null
     return when {
-        raw.startsWith("@dimen/") -> "R.dimen.${raw.removePrefix("@dimen/").camelCase()}"
+        raw.startsWith("@dimen/") -> "R.dimen.${raw.removePrefix("@dimen/")}"
         else -> raw.filter { it.isDigit() || it == '.' || it == '-' }.toIntOrNull()?.toString()
     }
 }
 fun XmlNode.attributeAsSwiftDrawable(key: String): String? {
     val raw = allAttributes[key] ?: return null
     return when {
-        raw.startsWith("@drawable/") -> "R.drawable.${raw.removePrefix("@drawable/").camelCase()}"
+        raw.startsWith("@drawable/") -> "R.drawable.${raw.removePrefix("@drawable/")}"
         else -> null
     }
 }
@@ -44,11 +44,11 @@ fun XmlNode.attributeAsSwiftColor(key: String): String? {
     return when {
         raw.startsWith("@color/") -> {
             val colorName = raw.removePrefix("@color/")
-            "R.color.${colorName.camelCase()}"
+            "R.color.${colorName}"
         }
         raw.startsWith("@android:color/") -> {
             val colorName = raw.removePrefix("@android:color/")
-            "R.color.${colorName.camelCase()}"
+            "R.color.${colorName}"
         }
         raw.startsWith("#") -> {
             raw.hashColorToUIColor()

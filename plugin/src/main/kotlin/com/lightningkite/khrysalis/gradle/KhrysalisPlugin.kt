@@ -17,8 +17,10 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.Exec
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import com.lightningkite.khrysalis.web.layout.convertLayoutsToHtmlXmlClasses
+import org.apache.tools.ant.taskdefs.condition.Os
 import org.gradle.api.Task
 import java.io.File
+import java.util.*
 
 open class KhrysalisPluginExtension {
     open var organizationName: String = "Organization"
@@ -42,8 +44,10 @@ open class KhrysalisPluginExtension {
 
 class KhrysalisPlugin : Plugin<Project> {
     override fun apply(target: Project) {
+        val isMac = Os.isFamily(Os.FAMILY_MAC)
         val project = target
         val ext = project.extensions.create<KhrysalisPluginExtension>("khrysalis", KhrysalisPluginExtension::class.java)
+
         fun extension() = ext
         fun projectName() = extension().projectName ?: project.name.takeUnless { it == "app" || it == "android" }
         ?: project.rootProject.name
@@ -53,12 +57,19 @@ class KhrysalisPlugin : Plugin<Project> {
         fun iosBase() = project.projectDir.resolve(ext.overrideIosFolder ?: "../ios")
         fun iosFolder() = iosBase().resolve(projectName())
         fun packageName() =
-            project.extensions.findByName("android")?.groovyObject?.getPropertyAsObject("defaultConfig")?.getProperty("applicationId") as? String ?: "unknown.packagename"
+            project.extensions.findByName("android")?.groovyObject?.getPropertyAsObject("defaultConfig")
+                ?.getProperty("applicationId") as? String ?: "unknown.packagename"
+
         fun androidSdkDirectory() =
             project.extensions.findByName("android")?.groovyObject?.getProperty("sdkDirectory") as? File
+
         fun sdkLevel() =
-            (project.extensions.findByName("android")?.groovyObject?.getProperty("buildToolsVersion") as? String)?.substringBefore('.')
-                ?: (project.extensions.findByName("android")?.groovyObject?.getProperty("compileSdkVersion") as? String)?.substringBefore('.')
+            (project.extensions.findByName("android")?.groovyObject?.getProperty("buildToolsVersion") as? String)?.substringBefore(
+                '.'
+            )
+                ?: (project.extensions.findByName("android")?.groovyObject?.getProperty("compileSdkVersion") as? String)?.substringBefore(
+                    '.'
+                )
 
         project.afterEvaluate {
             println("Determined your package to be ${packageName()}")
@@ -102,13 +113,17 @@ class KhrysalisPlugin : Plugin<Project> {
                     projectName = projectName()
                 )
             }
-            task.finalizedBy("khrysalisIosPodInstall")
+            if (isMac) {
+                task.finalizedBy("khrysalisIosPodInstall")
+            }
         }
-        project.tasks.create("khrysalisIosPodInstall", Exec::class.java) { task ->
-            task.group = "ios"
-            task.commandLine = listOf("pod", "install")
-            task.doFirst {
-                task.workingDir = iosBase()
+        if (isMac) {
+            project.tasks.create("khrysalisIosPodInstall", Exec::class.java) { task ->
+                task.group = "ios"
+                task.commandLine = listOf("pod", "install")
+                task.doFirst {
+                    task.workingDir = iosBase()
+                }
             }
         }
         project.tasks.create("khrysalisConvertKotlinToSwift") { task ->
@@ -116,17 +131,18 @@ class KhrysalisPlugin : Plugin<Project> {
             task.dependsOn("generateReleaseResources", "generateDebugResources")
             task.doFirst {
                 val androidJar = androidSdkDirectory()!!.resolve("platforms/android-${sdkLevel()}/android.jar")
-                val libraries = sequenceOf(androidJar) + project.configurations.getByName("debugCompileClasspath").files.mapNotNull {
-                    when(it.extension){
-                        "aar" -> project.zipTree(it)
-                            .matching {
-                                it.include("classes.jar")
-                            }
-                            .asSequence()
-                            .firstOrNull()
-                        else -> it
-                    }
-                }.asSequence()
+                val libraries =
+                    sequenceOf(androidJar) + project.configurations.getByName("debugCompileClasspath").files.mapNotNull {
+                        when (it.extension) {
+                            "aar" -> project.zipTree(it)
+                                .matching {
+                                    it.include("classes.jar")
+                                }
+                                .asSequence()
+                                .firstOrNull()
+                            else -> it
+                        }
+                    }.asSequence()
                 val originalTask = project.tasks.getByName("compileDebugKotlin") as KotlinCompile
                 val files = originalTask.source.toList().asSequence()
                 println("All files: ${files.joinToString("\n")}")
@@ -137,7 +153,21 @@ class KhrysalisPlugin : Plugin<Project> {
                     files = files,
                     pluginCache = project.buildDir.resolve("khrysalis-kcp"),
                     buildCache = project.buildDir.resolve("testBuild"),
-                    dependencies = sequenceOf(iosBase().resolve("Pods")),
+                    dependencies = if(isMac)
+                        sequenceOf(iosBase().resolve("Pods"))
+                    else run {
+                        val localProperties = Properties().apply {
+                            val f = project.rootProject.file("local.properties")
+                            if(f.exists()){
+                                load(f.inputStream())
+                            }
+                        }
+                        (localProperties.getProperty("khrysalis.nonmacmanifest") ?: "")
+                            .splitToSequence(File.pathSeparatorChar)
+                            .filter { it.isNotBlank() }
+                            .map { File(it) }
+                            .filter { it.exists() }
+                    },
                     output = iosFolder().resolve("src")
                 )
             }
@@ -170,13 +200,17 @@ class KhrysalisPlugin : Plugin<Project> {
             task.dependsOn("khrysalisConvertKotlinToSwift")
             task.dependsOn("khrysalisConvertLayoutsToSwift")
             task.dependsOn("khrysalisConvertResourcesToIos")
-            task.finalizedBy("khrysalisIosUpdateFiles")
+            if (isMac) {
+                task.finalizedBy("khrysalisIosUpdateFiles")
+            }
         }
-        project.tasks.create("khrysalisIosUpdateFiles", Exec::class.java) { task ->
-            task.group = "ios"
-            task.commandLine = listOf("python3", "updateFiles.py")
-            task.doFirst {
-                task.workingDir = iosBase()
+        if (isMac) {
+            project.tasks.create("khrysalisIosUpdateFiles", Exec::class.java) { task ->
+                task.group = "ios"
+                task.commandLine = listOf("python3", "updateFiles.py")
+                task.doFirst {
+                    task.workingDir = iosBase()
+                }
             }
         }
 
@@ -230,17 +264,18 @@ class KhrysalisPlugin : Plugin<Project> {
             task.dependsOn("generateReleaseResources", "generateDebugResources")
             task.doFirst {
                 val androidJar = androidSdkDirectory()!!.resolve("platforms/android-${sdkLevel()}/android.jar")
-                val libraries = sequenceOf(androidJar) + project.configurations.getByName("debugCompileClasspath").files.mapNotNull {
-                    when(it.extension){
-                        "aar" -> project.zipTree(it)
-                            .matching {
-                                it.include("classes.jar")
-                            }
-                            .asSequence()
-                            .firstOrNull()
-                        else -> it
-                    }
-                }.asSequence()
+                val libraries =
+                    sequenceOf(androidJar) + project.configurations.getByName("debugCompileClasspath").files.mapNotNull {
+                        when (it.extension) {
+                            "aar" -> project.zipTree(it)
+                                .matching {
+                                    it.include("classes.jar")
+                                }
+                                .asSequence()
+                                .firstOrNull()
+                            else -> it
+                        }
+                    }.asSequence()
                 val originalTask = project.tasks.getByName("compileDebugKotlin") as KotlinCompile
                 val files = originalTask.source.toList().asSequence()
                 println("All files: ${files.joinToString("\n")}")

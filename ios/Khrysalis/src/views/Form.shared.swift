@@ -33,7 +33,8 @@ public class FormField<T> : UntypedFormField {
         self.name = name
         self.observable = observable
         self.validation = validation
-        self.error = StandardObservableProperty(underlyingValue: nil)
+        let error: StandardObservableProperty<ViewString?> = StandardObservableProperty(underlyingValue: nil)
+        self.error = error
     }
     
     public let error: StandardObservableProperty<ViewString?>
@@ -50,7 +51,8 @@ public class FormField<T> : UntypedFormField {
 
 public class Form {
     public init() {
-        self.fields = []
+        let fields: Array<UntypedFormField> = []
+        self.fields = fields
     }
     
     

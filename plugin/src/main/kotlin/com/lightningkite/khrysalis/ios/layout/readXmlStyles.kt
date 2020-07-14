@@ -6,7 +6,10 @@ import java.io.File
 private data class IntermediateStyle(val parent: String? = null, val parts: Map<String, String> = mapOf())
 
 fun File.readXMLStyles(): Map<String, Map<String, String>> {
-    if(!this.exists()) return mapOf()
+    if(!this.exists()) {
+        println("WARNING: Could not find styles file at '${this}'!")
+        return mapOf()
+    }
     return XmlNode.read(this, mapOf())
         .children
         .asSequence()
