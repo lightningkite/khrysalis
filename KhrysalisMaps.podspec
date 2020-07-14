@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = "KhrysalisMaps"
-  s.version = "0.1.0"
+  s.version = "0.2.0"
   s.summary = "Maps for Khrysalis"
   s.description = "Shared code for maps using Khrysalis.  This is the iOS portion."
   s.homepage = "https://github.com/lightningkite/khrysalis"

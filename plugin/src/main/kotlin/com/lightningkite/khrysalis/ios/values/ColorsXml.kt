@@ -19,11 +19,11 @@ fun File.translateXMLColors(out: Appendable) {
             val color = when{
                 raw.startsWith("@color/") -> {
                     val colorName = raw.removePrefix("@color/")
-                    "ResourcesColors.${colorName.camelCase()}"
+                    "R.color.${colorName.camelCase()}"
                 }
                 raw.startsWith("@android:color/") -> {
                     val colorName = raw.removePrefix("@android:color/")
-                    "ResourcesColors.${colorName.camelCase()}"
+                    "R.color.${colorName.camelCase()}"
                 }
                 raw.startsWith("#") -> {
                     raw.hashColorToUIColor()

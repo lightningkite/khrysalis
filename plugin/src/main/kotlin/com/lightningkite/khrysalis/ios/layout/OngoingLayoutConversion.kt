@@ -75,7 +75,7 @@ fun Appendable.setToColor(node: XmlNode, key: String, controlView: String = "vie
     return when {
         raw.startsWith("@color/") || raw.startsWith("@android:color/") -> {
             val colorName = raw.removePrefix("@color/").removePrefix("@android:color/")
-            appendln("applyColor($controlView, ResourcesColors.${colorName.camelCase()}) { c in")
+            appendln("applyColor($controlView, R.color.${colorName.camelCase()}) { c in")
             write("c")
             appendln("}")
             true

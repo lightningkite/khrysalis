@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = "Khrysalis"
-  s.version = "0.1.0"
+  s.version = "0.2.0"
   s.summary = "Standard library for code translated from Kotlin to Swift"
   s.description = "The Khrysalis Gradle plugin translates code from Kotlin to Swift, but in order to do so, a set of libraries must be present on both sides.  This is the iOS portion."
   s.homepage = "https://github.com/lightningkite/khrysalis"

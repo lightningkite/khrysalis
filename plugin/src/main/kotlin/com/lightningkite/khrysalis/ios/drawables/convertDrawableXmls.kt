@@ -37,7 +37,7 @@ fun convertDrawableXmls(
                     writer.appendln("import UIKit")
                     writer.appendln("import Khrysalis")
                     writer.appendln("")
-                    writer.appendln("extension ResourcesDrawables {")
+                    writer.appendln("extension R.drawable {")
                     writer.appendln("")
                     convertDrawableXml(name, it, writer)
                     writer.appendln("")

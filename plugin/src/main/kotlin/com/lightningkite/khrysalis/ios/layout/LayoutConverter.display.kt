@@ -68,7 +68,7 @@ val LayoutConverter.Companion.displayViews
                 if(!setToColor(node, "android:indeterminateTint") {
                     appendln("view.color = $it")
                 }) {
-                    appendln("view.color = ResourcesColors.colorPrimary")
+                    appendln("view.color = R.color.colorPrimary")
                 }
             },
             ViewType("ImageView", "UIImageView", "View") { node ->

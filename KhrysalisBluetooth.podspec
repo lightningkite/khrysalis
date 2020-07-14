@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name = "KhrysalisBluetooth"
-  s.version = "0.1.0"
+  s.version = "0.2.0"
   s.summary = "Bluetooth for Khrysalis"
   s.description = "Shared code for bluetooth using Khrysalis.  This is the iOS portion."
   s.homepage = "https://github.com/lightningkite/khrysalis"

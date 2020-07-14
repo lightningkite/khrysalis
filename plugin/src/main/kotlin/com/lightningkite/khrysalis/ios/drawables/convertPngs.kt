@@ -62,7 +62,7 @@ fun convertPngs(
             writer.appendln("import UIKit")
             writer.appendln("import Khrysalis")
             writer.appendln("")
-            writer.appendln("extension ResourcesDrawables {")
+            writer.appendln("extension R.drawable {")
             writer.appendln("")
             pngNames.forEach { pngName ->
                 val typeName = pngName.camelCase()
