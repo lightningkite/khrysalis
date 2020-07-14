@@ -31,3 +31,4 @@ public class LocationResult : KDataClass {
     public func copy(coordinate: GeoCoordinate? = nil, accuracyMeters: Double? = nil, altitudeMeters: Double? = nil, altitudeAccuracyMeters: Double? = nil, headingFromNorth: Double? = nil, speedMetersPerSecond: Double? = nil) -> LocationResult { return LocationResult(coordinate: coordinate ?? self.coordinate, accuracyMeters: accuracyMeters ?? self.accuracyMeters, altitudeMeters: altitudeMeters ?? self.altitudeMeters, altitudeAccuracyMeters: altitudeAccuracyMeters ?? self.altitudeAccuracyMeters, headingFromNorth: headingFromNorth ?? self.headingFromNorth, speedMetersPerSecond: speedMetersPerSecond ?? self.speedMetersPerSecond) }
 }
 
+

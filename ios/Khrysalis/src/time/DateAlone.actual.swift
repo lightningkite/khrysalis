@@ -57,31 +57,45 @@ public class DateAlone: Equatable, Hashable, Codable {
 
     //Start Companion
 
-    static public func now() -> DateAlone {
-        return Date().dateAlone
-    }
-    static public var farPast = DateAlone(-99999, 1, 1)
-    static public var farFuture = DateAlone(99999, 12, 31)
+    public class Companion {
+        static public let INSTANCE = Companion()
 
-    static public func iso(string: String) -> DateAlone? {
-        if let year = Int(string.substringBefore("-", "")),
-            let month = Int(string.substringAfter("-", "").substringBefore("-", "")),
-            let day = Int(string.substringAfter("-", "").substringAfter("-", ""))
-        {
-            return DateAlone(year, month, day)
+        public func now() -> DateAlone {
+            return Date().dateAlone
         }
-        return nil
-    }
-    static public func iso(_ string: String) -> DateAlone? {
-        return iso(string: string)
+        public var farPast = DateAlone(-99999, 1, 1)
+        public var farFuture = DateAlone(99999, 12, 31)
+
+        public func iso(string: String) -> DateAlone? {
+            if let year = Int(string.substringBefore("-", "")),
+                let month = Int(string.substringAfter("-", "").substringBefore("-", "")),
+                let day = Int(string.substringAfter("-", "").substringAfter("-", ""))
+            {
+                return DateAlone(year, month, day)
+            }
+            return nil
+        }
+        public func iso(_ string: String) -> DateAlone? {
+            return iso(string: string)
+        }
+
+        public func fromMonthInEra(monthInEra: Int) -> DateAlone {
+            return DateAlone(year: ( monthInEra - 1 ) / 12, month: ( monthInEra - 1 ) % 12 + 1, day: 1)
+        }
+        public func fromMonthInEra(_ monthInEra: Int) -> DateAlone {
+            return fromMonthInEra(monthInEra: monthInEra)
+        }
     }
 
-    static public func fromMonthInEra(monthInEra: Int) -> DateAlone {
-        return DateAlone(year: ( monthInEra - 1 ) / 12, month: ( monthInEra - 1 ) % 12 + 1, day: 1)
-    }
-    static public func fromMonthInEra(_ monthInEra: Int) -> DateAlone {
-        return fromMonthInEra(monthInEra: monthInEra)
-    }
+    static public func now() -> DateAlone { return Companion.INSTANCE.now() }
+    static public var farPast: DateAlone { return Companion.INSTANCE.farPast }
+    static public var farFuture: DateAlone { return Companion.INSTANCE.farFuture }
+
+    static public func iso(string: String) -> DateAlone? { return Companion.INSTANCE.iso(string: string) }
+    static public func iso(_ string: String) -> DateAlone? { return iso(string: string) }
+
+    static public func fromMonthInEra(monthInEra: Int) -> DateAlone { return Companion.INSTANCE.fromMonthInEra(monthInEra: monthInEra) }
+    static public func fromMonthInEra(_ monthInEra: Int) -> DateAlone { return fromMonthInEra(monthInEra: monthInEra) }
     //End Companion
 
     public var monthInEra: Int {
@@ -184,22 +198,22 @@ public extension DateAlone {
     //--- DateAlone.setMonthOfYear(Int)
     //--- DateAlone.setYearAd(Int)
     //--- DateAlone.setDayOfWeek(Int)
-    func setDayOfWeek(_ value: Int) -> DateAlone {
+    func setDayOfWeek(value: Int) -> DateAlone {
         self.addDays(value - dayOfWeek)
         correct()
         return self
     }
-    func setDayOfMonth(_ value: Int) -> DateAlone {
+    func setDayOfMonth(value: Int) -> DateAlone {
         self.day = value
         correct()
         return self
     }
-    func setMonthOfYear(_ value: Int) -> DateAlone {
+    func setMonthOfYear(value: Int) -> DateAlone {
         self.month = value
         correct()
         return self
     }
-    func setYearAd(_ value: Int) -> DateAlone {
+    func setYearAd(value: Int) -> DateAlone {
         self.year = value
         correct()
         return self
@@ -209,47 +223,47 @@ public extension DateAlone {
     //--- DateAlone.setAddDayOfMonth(Int)
     //--- DateAlone.setAddMonthOfYear(Int)
     //--- DateAlone.setAddYearAd(Int)
-    func setAddDayOfWeek(_ value: Int) -> DateAlone { addDays(value); return self }
-    func setAddDayOfMonth(_ value: Int) -> DateAlone { addDays(value); return self }
-    func setAddMonthOfYear(_ value: Int) -> DateAlone { addMonths(value); cap(); return self }
-    func setAddYearAd(_ value: Int) -> DateAlone { year += value; cap(); return self }
+    func setAddDayOfWeek(value: Int) -> DateAlone { addDays(value); return self }
+    func setAddDayOfMonth(value: Int) -> DateAlone { addDays(value); return self }
+    func setAddMonthOfYear(value: Int) -> DateAlone { addMonths(value); cap(); return self }
+    func setAddYearAd(value: Int) -> DateAlone { year += value; cap(); return self }
 
     //--- DateAlone.dayOfMonth(Int)
     //--- DateAlone.monthOfYear(Int)
     //--- DateAlone.yearAd(Int)
     //--- DateAlone.dayOfWeek(Int)
-    func dayOfWeek(_ value: Int) -> DateAlone {
-        return copy().setDayOfWeek(value)
+    func dayOfWeek(value: Int) -> DateAlone {
+        return copy().setDayOfWeek(value: value)
     }
-    func dayOfMonth(_ value: Int) -> DateAlone {
-        return copy().setDayOfMonth(value)
+    func dayOfMonth(value: Int) -> DateAlone {
+        return copy().setDayOfMonth(value: value)
     }
-    func monthOfYear(_ value: Int) -> DateAlone {
-        return copy().setMonthOfYear(value)
+    func monthOfYear(value: Int) -> DateAlone {
+        return copy().setMonthOfYear(value: value)
     }
-    func yearAd(_ value: Int) -> DateAlone {
-        return copy().setYearAd(value)
+    func yearAd(value: Int) -> DateAlone {
+        return copy().setYearAd(value: value)
     }
 
     //--- DateAlone.addDayOfWeek(Int)
     //--- DateAlone.addDayOfMonth(Int)
     //--- DateAlone.addMonthOfYear(Int)
     //--- DateAlone.addYearAd(Int)
-    func addDayOfWeek(_ value: Int) -> DateAlone {
-        return copy().setAddDayOfWeek(value)
+    func addDayOfWeek(value: Int) -> DateAlone {
+        return copy().setAddDayOfWeek(value: value)
     }
-    func addDayOfMonth(_ value: Int) -> DateAlone {
-        return copy().setAddDayOfMonth(value)
+    func addDayOfMonth(value: Int) -> DateAlone {
+        return copy().setAddDayOfMonth(value: value)
     }
-    func addMonthOfYear(_ value: Int) -> DateAlone {
-        return copy().setAddMonthOfYear(value)
+    func addMonthOfYear(value: Int) -> DateAlone {
+        return copy().setAddMonthOfYear(value: value)
     }
-    func addYearAd(_ value: Int) -> DateAlone {
-        return copy().setAddYearAd(value)
+    func addYearAd(value: Int) -> DateAlone {
+        return copy().setAddYearAd(value: value)
     }
 
     //--- DateAlone.formatYearless(ClockPartSize)
-    func formatYearless(_ partSize: ClockPartSize) -> String {
+    func formatYearless(partSize: ClockPartSize) -> String {
         var template = "EEEEdMMM"
         switch partSize {
         case .Full:
@@ -281,35 +295,35 @@ public extension DateAlone {
     //--- DateAlone.setMonthOfYear(Int)
     //--- DateAlone.setYearAd(Int)
     //--- DateAlone.setDayOfWeek(Int)
-    func safeSetDayOfWeek(_ value: Int) -> DateAlone { return set(date: dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).dayOfWeek(value: value)) }
-    func safeSetDayOfMonth(_ value: Int) -> DateAlone { return set(date: dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).dayOfMonth(value: value)) }
-    func safeSetMonthOfYear(_ value: Int) -> DateAlone { return set(date: dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).monthOfYear(value: value)) }
-    func safeSetYearAd(_ value: Int) -> DateAlone { return set(date: dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).yearAd(value: value)) }
+    func safeSetDayOfWeek(value: Int) -> DateAlone { return set(date: dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).dayOfWeek(value: value)) }
+    func safeSetDayOfMonth(value: Int) -> DateAlone { return set(date: dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).dayOfMonth(value: value)) }
+    func safeSetMonthOfYear(value: Int) -> DateAlone { return set(date: dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).monthOfYear(value: value)) }
+    func safeSetYearAd(value: Int) -> DateAlone { return set(date: dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).yearAd(value: value)) }
 
     //--- DateAlone.setAddDayOfWeek(Int)
     //--- DateAlone.setAddDayOfMonth(Int)
     //--- DateAlone.setAddMonthOfYear(Int)
     //--- DateAlone.setAddYearAd(Int)
-    func safeSetAddDayOfWeek(_ value: Int) -> DateAlone { return set(date: dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).addDayOfWeek(value: value)) }
-    func safeSetAddDayOfMonth(_ value: Int) -> DateAlone { return set(date: dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).addDayOfMonth(value: value)) }
-    func safeSetAddMonthOfYear(_ value: Int) -> DateAlone { return set(date: dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).addMonthOfYear(value: value)) }
-    func safeSetAddYearAd(_ value: Int) -> DateAlone { return set(date: dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).addYearAd(value: value)) }
+    func safeSetAddDayOfWeek(value: Int) -> DateAlone { return set(date: dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).addDayOfWeek(value: value)) }
+    func safeSetAddDayOfMonth(value: Int) -> DateAlone { return set(date: dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).addDayOfMonth(value: value)) }
+    func safeSetAddMonthOfYear(value: Int) -> DateAlone { return set(date: dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).addMonthOfYear(value: value)) }
+    func safeSetAddYearAd(value: Int) -> DateAlone { return set(date: dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).addYearAd(value: value)) }
 
     //--- DateAlone.dayOfMonth(Int)
     //--- DateAlone.monthOfYear(Int)
     //--- DateAlone.yearAd(Int)
     //--- DateAlone.dayOfWeek(Int)
-    func safeDayOfWeek(_ value: Int) -> DateAlone { return dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).dayOfWeek(value: value).dateAlone }
-    func safeDayOfMonth(_ value: Int) -> DateAlone { return dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).dayOfMonth(value: value).dateAlone }
-    func safeMonthOfYear(_ value: Int) -> DateAlone { return dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).monthOfYear(value: value).dateAlone }
-    func safeYearAd(_ value: Int) -> DateAlone { return dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).yearAd(value: value).dateAlone }
+    func safeDayOfWeek(value: Int) -> DateAlone { return dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).dayOfWeek(value: value).dateAlone }
+    func safeDayOfMonth(value: Int) -> DateAlone { return dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).dayOfMonth(value: value).dateAlone }
+    func safeMonthOfYear(value: Int) -> DateAlone { return dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).monthOfYear(value: value).dateAlone }
+    func safeYearAd(value: Int) -> DateAlone { return dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).yearAd(value: value).dateAlone }
 
     //--- DateAlone.addDayOfWeek(Int)
     //--- DateAlone.addDayOfMonth(Int)
     //--- DateAlone.addMonthOfYear(Int)
     //--- DateAlone.addYearAd(Int)
-    func safeAddDayOfWeek(_ value: Int) -> DateAlone { return dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).addDayOfWeek(value: value).dateAlone }
-    func safeAddDayOfMonth(_ value: Int) -> DateAlone { return dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).addDayOfMonth(value: value).dateAlone }
-    func safeAddMonthOfYear(_ value: Int) -> DateAlone { return dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).addMonthOfYear(value: value).dateAlone }
-    func safeAddYearAd(_ value: Int) -> DateAlone { return dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).addYearAd(value: value).dateAlone }
+    func safeAddDayOfWeek(value: Int) -> DateAlone { return dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).addDayOfWeek(value: value).dateAlone }
+    func safeAddDayOfMonth(value: Int) -> DateAlone { return dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).addDayOfMonth(value: value).dateAlone }
+    func safeAddMonthOfYear(value: Int) -> DateAlone { return dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).addMonthOfYear(value: value).dateAlone }
+    func safeAddYearAd(value: Int) -> DateAlone { return dateFrom(dateAlone: self, timeAlone: TimeAlone.noon).addYearAd(value: value).dateAlone }
 }

@@ -69,3 +69,4 @@ public func captureWeak<Z : AnyObject, A, B, C, D, E>(capture: Z, lambda: @escap
     }
 }
 
+

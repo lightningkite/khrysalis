@@ -36,3 +36,4 @@ public class GeoCoordinate : Codable, KDataClass {
     public func copy(latitude: Double? = nil, longitude: Double? = nil) -> GeoCoordinate { return GeoCoordinate(latitude: latitude ?? self.latitude, longitude: longitude ?? self.longitude) }
 }
 
+

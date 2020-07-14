@@ -25,3 +25,4 @@ public extension TimeAlone {
     func format(clockPartSize: ClockPartSize) -> String { return dateFrom(dateAlone: Date().dateAlone, timeAlone: self).format(dateStyle: ClockPartSize.None, timeStyle: clockPartSize) }
 }
 
+

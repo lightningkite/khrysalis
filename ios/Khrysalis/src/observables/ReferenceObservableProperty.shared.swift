@@ -30,3 +30,4 @@ public class ReferenceObservableProperty<T> : MutableObservableProperty<T> {
     }
 }
 
+

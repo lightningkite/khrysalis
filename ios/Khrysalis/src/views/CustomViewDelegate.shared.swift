@@ -9,7 +9,8 @@ public class CustomViewDelegate {
     public init() {
         self.customView = nil
         self.toDispose = []
-        self.removed = DisposeCondition(call: { (it: Disposable) -> Void in self.toDispose.append(it) })
+        self._removed = nil
+        self._removed = DisposeCondition(call: { (it: Disposable) -> Void in self.toDispose.append(it) })
     }
     
     public var customView: CustomView?
@@ -26,11 +27,16 @@ public class CustomViewDelegate {
     public func postInvalidate() -> Void { self.customView?.postInvalidate() }
     
     public var toDispose: Array<Disposable>
-    public let removed: DisposeCondition
+    private var _removed: DisposeCondition?
+    public var removed: DisposeCondition {
+        get { return self._removed! }
+    }
+    
     public func dispose() -> Void {
         for item in (self.toDispose){
             item.dispose()
         }
     }
 }
+
 

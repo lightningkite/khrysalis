@@ -24,7 +24,11 @@ abstract class CustomViewDelegate {
     fun postInvalidate() { customView?.postInvalidate() }
 
     val toDispose: ArrayList<Disposable> = ArrayList()
-    val removed: DisposeCondition = DisposeCondition { it -> toDispose.add(it) }
+    private var _removed: DisposeCondition? = null
+    val removed: DisposeCondition get() = _removed!!
+    init {
+        _removed = DisposeCondition { it -> toDispose.add(it) }
+    }
     fun dispose() {
         for(item in toDispose){
             item.dispose()

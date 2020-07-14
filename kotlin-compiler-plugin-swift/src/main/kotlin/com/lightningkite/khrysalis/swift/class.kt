@@ -12,9 +12,11 @@ import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
 import org.jetbrains.kotlin.psi2ir.findFirstFunction
 import org.jetbrains.kotlin.resolve.calls.tower.isSynthesized
+import org.jetbrains.kotlin.resolve.calls.util.FakeCallableDescriptorForObject
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
 import org.jetbrains.kotlin.resolve.descriptorUtil.getSuperClassNotAny
 import org.jetbrains.kotlin.resolve.scopes.DescriptorKindFilter
+import org.jetbrains.kotlin.resolve.scopes.receivers.ClassValueReceiver
 import org.jetbrains.kotlin.types.FlexibleType
 import org.jetbrains.kotlin.types.SimpleType
 import org.jetbrains.kotlin.types.WrappedType
@@ -28,20 +30,19 @@ import kotlin.reflect.jvm.internal.impl.types.KotlinType
 fun FunctionDescriptor.callsForSwiftInterface(on: ClassDescriptor?): Boolean {
     val immediate = this.containingDeclaration == on
     val overriddenDescriptors = this.overriddenDescriptors
-        .filter{ it.kind == CallableMemberDescriptor.Kind.DECLARATION }
-        .filter{ it.containingDeclaration.fqNameOrNull()?.asString()?.startsWith("kotlin.") == false }
+        .filter { it.kind == CallableMemberDescriptor.Kind.DECLARATION }
+        .filter { it.containingDeclaration.fqNameOrNull()?.asString()?.startsWith("kotlin.") == false }
     return immediate && overriddenDescriptors.isNotEmpty() == true
 }
 
 fun SwiftTranslator.registerClass() {
 
     fun PartialTranslatorByType<SwiftFileEmitter, Unit, Any>.ContextByType<*>.writeClassHeader(
-        on: KtClassOrObject,
-        defaultName: String = "Companion"
+        on: KtClassOrObject
     ) {
         val typedRule = on
         -"class "
-        -(on.nameIdentifier ?: defaultName)
+        -swiftTopLevelNameElement(on)
         -typedRule.typeParameterList
         typedRule.superTypeListEntries
             .mapNotNull { it as? KtSuperTypeCallEntry }
@@ -66,7 +67,9 @@ fun SwiftTranslator.registerClass() {
                 } else it
             }
             .let {
-                val over = on.resolvedClass?.findFirstFunction("equals") { it.valueParameters.size == 1 && it.valueParameters[0].type.getJetTypeFqName(false) == "kotlin.Any" }
+                val over = on.resolvedClass?.findFirstFunction("equals") {
+                    it.valueParameters.size == 1 && it.valueParameters[0].type.getJetTypeFqName(false) == "kotlin.Any"
+                }
                 if (over?.callsForSwiftInterface(on.resolvedClass) == true) {
                     it + listOf("KEquatable")
                 } else it
@@ -97,12 +100,35 @@ fun SwiftTranslator.registerClass() {
     }
 
     handle<KtClass>(
+        condition = { typedRule.resolvedClass?.swiftTopLevelMessedUp == true },
+        priority = 1000,
+        action = {
+            this.noReuse = true
+            typedRule.containingKtFile.after.add {
+                doSuper()
+                -"\n"
+            }
+        }
+    )
+    handle<KtObjectDeclaration>(
+        condition = { typedRule.resolvedClass?.swiftTopLevelMessedUp == true },
+        priority = 1000,
+        action = {
+            this.noReuse = true
+            typedRule.containingKtFile.after.add {
+                doSuper()
+                -"\n"
+            }
+        }
+    )
+
+    handle<KtClass>(
         condition = { typedRule.isInterface() },
         priority = 100
     ) {
         -(typedRule.visibilityModifier() ?: "public")
         -" protocol "
-        -typedRule.nameIdentifier
+        -swiftTopLevelNameElement(typedRule)
         typedRule.typeParameterList?.let {
             //TODO
             //This is possible using 4 entries per interface:
@@ -122,7 +148,7 @@ fun SwiftTranslator.registerClass() {
         if (typedRule.body?.hasPostActions() == true) {
             -(typedRule.visibilityModifier() ?: "public")
             -" extension "
-            -typedRule.nameIdentifier
+            -swiftTopLevelNameElement(typedRule)
             -" {"
             typedRule.body?.runPostActions()
             -"\n}"
@@ -237,12 +263,13 @@ fun SwiftTranslator.registerClass() {
             }
         }
         //Then, in order, variable initializers
+        suppressReceiverAddition = true
         typedRule.body?.children?.forEach {
             when (it) {
                 is KtProperty -> {
                     it.initializer?.let { init ->
                         -"self."
-                        if(it.resolvedProperty?.hasSwiftBacking == true) {
+                        if (it.resolvedProperty?.hasSwiftBacking == true) {
                             -'_'
                         }
                         -it.nameIdentifier
@@ -253,6 +280,7 @@ fun SwiftTranslator.registerClass() {
                 }
             }
         }
+        suppressReceiverAddition = false
         //Then super
         typedRule.superTypeListEntries.mapNotNull { it as? KtSuperTypeCallEntry }.takeUnless { it.isEmpty() }
             ?.firstOrNull()?.let {
@@ -418,9 +446,9 @@ fun SwiftTranslator.registerClass() {
             //Generate equals() if not present
             if (typedRule.body?.declarations?.any { it is FunctionDescriptor && (it as KtDeclaration).name == "equals" && it.valueParameters.size == 1 } != true) {
                 -"public static func == (lhs: "
-                -typedRule.nameIdentifier
+                -swiftTopLevelNameElement(typedRule)
                 -", rhs: "
-                -typedRule.nameIdentifier
+                -swiftTopLevelNameElement(typedRule)
                 -") -> Bool { return "
                 typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEachBetween(
                     forItem = { param ->
@@ -453,7 +481,7 @@ fun SwiftTranslator.registerClass() {
             if (typedRule.body?.declarations?.any { it is FunctionDescriptor && (it as KtDeclaration).name == "toString" && it.valueParameters.isEmpty() } != true) {
                 -"public var description: String { return "
                 -'"'
-                -typedRule.nameIdentifier
+                -swiftTopLevelNameElement(typedRule)
                 -'('
                 typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEachBetween(
                     forItem = {
@@ -486,10 +514,10 @@ fun SwiftTranslator.registerClass() {
                 between = { -", " }
             )
             -") -> "
-            -typedRule.nameIdentifier
+            -swiftTopLevelNameElement(typedRule)
             -typedRule.typeParameterList
             -" { return "
-            -typedRule.nameIdentifier
+            -swiftTopLevelNameElement(typedRule)
             -"("
             typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEachBetween(
                 forItem = {
@@ -515,11 +543,11 @@ fun SwiftTranslator.registerClass() {
 
         if (typedRule.isEnum()) {
             -"private static let _values: Array<"
-            -typedRule.nameIdentifier
+            -swiftTopLevelNameElement(typedRule)
             -"> = ["
             typedRule.body?.enumEntries?.forEachBetween(
                 forItem = {
-                    -typedRule.nameIdentifier
+                    -swiftTopLevelNameElement(typedRule)
                     -'.'
                     -it.nameIdentifier
                 },
@@ -527,7 +555,7 @@ fun SwiftTranslator.registerClass() {
             )
             -"]\n"
             -"public static func values() -> Array<"
-            -typedRule.nameIdentifier
+            -swiftTopLevelNameElement(typedRule)
             -"> { return _values }\n"
             -"public let name: String;\n"
 
@@ -582,7 +610,7 @@ fun SwiftTranslator.registerClass() {
             }
         -"}\n"
         -"public static let INSTANCE = "
-        -(typedRule.nameIdentifier ?: "Companion")
+        -swiftTopLevelNameElement(typedRule)
         -"()\n"
         -typedRule.body
         -"}"
@@ -608,7 +636,7 @@ fun SwiftTranslator.registerClass() {
         action = {
             -(typedRule.visibilityModifier() ?: "public")
             -" enum "
-            -typedRule.nameIdentifier
+            -swiftTopLevelNameElement(typedRule)
             -": CaseIterable {\n"
             for (entry in typedRule.body?.enumEntries ?: listOf()) {
                 -"case "
@@ -628,7 +656,7 @@ fun SwiftTranslator.registerClass() {
     )
     handle<KtEnumEntry> {
         -"public class "
-        -typedRule.nameIdentifier
+        -swiftTopLevelNameElement(typedRule)
         -"Type: "
         -typedRule
             .parentOfType<KtClassBody>()
@@ -655,29 +683,30 @@ fun SwiftTranslator.registerClass() {
         -"name: \""
         -typedRule.nameIdentifier
         -"\""
-        typedRule.initializerList?.initializers?.firstOrNull()?.resolvedCall?.valueArguments?.entries?.sortedBy { it.key.index }?.forEach {
-            val args = it.value.arguments
-            when (args.size) {
-                0 -> {
-                }
-                1 -> {
-                    -", "
-                    -it.key.name.asString()
-                    -": "
-                    -args[0].getArgumentExpression()
-                }
-                else -> {
-                    -", "
-                    -it.key.name.asString()
-                    -": ["
-                    args.forEachBetween(
-                        forItem = { -it.getArgumentExpression() },
-                        between = { -", " }
-                    )
-                    -"]"
+        typedRule.initializerList?.initializers?.firstOrNull()?.resolvedCall?.valueArguments?.entries?.sortedBy { it.key.index }
+            ?.forEach {
+                val args = it.value.arguments
+                when (args.size) {
+                    0 -> {
+                    }
+                    1 -> {
+                        -", "
+                        -it.key.name.asString()
+                        -": "
+                        -args[0].getArgumentExpression()
+                    }
+                    else -> {
+                        -", "
+                        -it.key.name.asString()
+                        -": ["
+                        args.forEachBetween(
+                            forItem = { -it.getArgumentExpression() },
+                            between = { -", " }
+                        )
+                        -"]"
+                    }
                 }
             }
-        }
         -");\n"
         //Then anon initializers
         typedRule.body?.children?.forEach {
@@ -700,9 +729,9 @@ fun SwiftTranslator.registerClass() {
 
         -typedRule.body
         -"}\npublic static let "
-        -typedRule.nameIdentifier
+        -swiftTopLevelNameElement(typedRule)
         -" = "
-        -typedRule.nameIdentifier
+        -swiftTopLevelNameElement(typedRule)
         -"Type()"
     }
 
@@ -755,6 +784,105 @@ fun SwiftTranslator.registerClass() {
         -typedRule.bodyExpression?.allChildren?.toList()?.drop(1)?.dropLast(1)
         -"}"
     }
+
+    handle<KtNameReferenceExpression>(
+        condition = {
+            val call = typedRule.resolvedCall ?: return@handle false
+            if (call.resultingDescriptor !is FakeCallableDescriptorForObject) return@handle false
+            (call.getReturnType().constructor.declarationDescriptor as? ClassDescriptor)?.kind != ClassKind.ENUM_CLASS
+        },
+        priority = 1000,
+        action = {
+            doSuper()
+            -".INSTANCE"
+        }
+    )
+    handle<KtDotQualifiedExpression>(
+        condition = {
+            val p = (typedRule.parent as? KtDotQualifiedExpression) ?: return@handle false
+            if (p.receiverExpression != typedRule) return@handle false
+            val rec = p.resolvedCall?.dispatchReceiver as? ClassValueReceiver ?: return@handle false
+            (rec.type.constructor.declarationDescriptor as? ClassDescriptor)?.kind != ClassKind.ENUM_ENTRY
+        },
+        priority = 100_000,
+        action = {
+            val p = typedRule.parent as KtDotQualifiedExpression
+            val r = p.resolvedCall!!.dispatchReceiver as ClassValueReceiver
+            val actual = r.type.constructor.declarationDescriptor
+            val written = r.classQualifier.descriptor
+            doSuper()
+            if (actual?.swiftTopLevelMessedUp != true && actual != written) {
+                -"."
+                -actual?.name?.asString()
+            }
+            -".INSTANCE"
+        }
+    )
+    handle<KtNameReferenceExpression>(
+        condition = {
+            val p = (typedRule.parent as? KtDotQualifiedExpression) ?: return@handle false
+            if (p.receiverExpression != typedRule) return@handle false
+            val rec = p.resolvedCall?.dispatchReceiver as? ClassValueReceiver ?: return@handle false
+            (rec.type.constructor.declarationDescriptor as? ClassDescriptor)?.kind != ClassKind.ENUM_ENTRY
+        },
+        priority = 100_000,
+        action = {
+            val p = typedRule.parent as KtDotQualifiedExpression
+            val r = p.resolvedCall!!.dispatchReceiver as ClassValueReceiver
+            val actual = r.type.constructor.declarationDescriptor
+            val written = r.classQualifier.descriptor
+            doSuper()
+            if (actual?.swiftTopLevelMessedUp != true && actual != written) {
+                -"."
+                -actual?.name?.asString()
+            }
+            -".INSTANCE"
+        }
+    )
+
+    handle<KtDotQualifiedExpression>(
+        condition = {
+            val descriptor =
+                (typedRule.selectorExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget as? ClassDescriptor
+                    ?: return@handle false
+            descriptor.swiftTopLevelMessedUp
+        },
+        priority = 900,
+        action = {
+            val nameRef = typedRule.selectorExpression as KtNameReferenceExpression
+            val descriptor = nameRef.resolvedReferenceTarget as ClassDescriptor
+            -descriptor.swiftTopLevelName
+
+            run instanceBlock@{
+                val call = typedRule.resolvedCall ?: return@instanceBlock
+                if (call.resultingDescriptor !is FakeCallableDescriptorForObject) return@instanceBlock
+                if ((call.getReturnType().constructor.declarationDescriptor as? ClassDescriptor)?.kind != ClassKind.ENUM_CLASS) {
+                    -".INSTANCE"
+                }
+            }
+        }
+    )
+    handle<KtDotQualifiedExpression>(
+        condition = {
+            val descriptor =
+                (((typedRule.selectorExpression as? KtCallExpression)?.calleeExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget as? ConstructorDescriptor)?.constructedClass
+                    ?: return@handle false
+            descriptor.swiftTopLevelMessedUp
+        },
+        priority = 900,
+        action = {
+            val callExp = typedRule.selectorExpression as KtCallExpression
+            val constructor =
+                (callExp.calleeExpression as KtNameReferenceExpression).resolvedReferenceTarget as ConstructorDescriptor
+            val descriptor = constructor.constructedClass
+            -descriptor.swiftTopLevelName
+            -ArgumentsList(
+                on = constructor,
+                resolvedCall = callExp.resolvedCall!!
+            )
+        }
+    )
+
 }
 
 private val KtParameter.jsonName: String

@@ -1,0 +1,6 @@
+- id: com.lightningkite.khrysalis.JsonList
+  type: type
+  template: NSArray
+- id: com.lightningkite.khrysalis.JsonMap
+  type: type
+  template: NSDictionary

@@ -106,3 +106,4 @@ public class GeoAddress : Codable, KDataClass {
     }
 }
 
+

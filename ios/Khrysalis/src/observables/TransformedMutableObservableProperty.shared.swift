@@ -12,7 +12,7 @@ public class TransformedMutableObservableProperty<A, B> : MutableObservablePrope
         self.basedOn = basedOn
         self.read = read
         self.write = write
-        self._onChange = self.basedOn.onChange.map({ (it: A) -> B in self.read(it) })
+        self._onChange = basedOn.onChange.map({ (it: A) -> B in read(it) })
         super.init()
     }
     
@@ -46,4 +46,5 @@ public extension MutableObservableProperty {
         return (TransformedMutableObservableProperty(basedOn: self as MutableObservableProperty<T>, read: read as (T) -> B, write: write as (B) -> T) as TransformedMutableObservableProperty<T, B>)
     }
 }
+
 

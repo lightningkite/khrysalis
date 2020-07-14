@@ -25,3 +25,4 @@ public func showDialog(message: ViewString) -> Void {
     showDialog(request: DialogRequest(string: message))
 }
 
+

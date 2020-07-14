@@ -56,27 +56,38 @@ public class TimeAlone: Equatable, Hashable, Codable {
     }
     
     //Start Companion
-    
-    static public func now() -> TimeAlone {
-        return Date().timeAlone
-    }
-    
-    static public func iso(string: String) -> TimeAlone? {
-        if let hour = Int(string.substringBefore(":", "")),
-            let minute = Int(string.substringAfter(":", "").substringBefore(":"))
-        {
-            let second = Int(string.substringAfter(":", "").substringAfter(":", ""))
-            return TimeAlone(hour: hour, minute: minute, second: second ?? 0)
+    public class Companion {
+        static public let INSTANCE = Companion()
+
+        public func now() -> TimeAlone {
+            return Date().timeAlone
         }
-        return nil
+
+        public func iso(string: String) -> TimeAlone? {
+            if let hour = Int(string.substringBefore(":", "")),
+                let minute = Int(string.substringAfter(":", "").substringBefore(":"))
+            {
+                let second = Int(string.substringAfter(":", "").substringAfter(":", ""))
+                return TimeAlone(hour: hour, minute: minute, second: second ?? 0)
+            }
+            return nil
+        }
+        public func iso(_ string: String) -> TimeAlone? {
+            return iso(string: string)
+        }
+        public var min = TimeAlone(0, 0, 0)
+        public var midnight = TimeAlone(0, 0, 0)
+        public var noon = TimeAlone(12, 0, 0)
+        public var max = TimeAlone(23, 59, 59)
     }
-    static public func iso(_ string: String) -> TimeAlone? {
-        return iso(string: string)
-    }
-    static public var min = TimeAlone(0, 0, 0)
-    static public var midnight = min
-    static public var noon = TimeAlone(12, 0, 0)
-    static public var max = TimeAlone(23, 59, 59)
+    static public func now() -> TimeAlone { return Companion.INSTANCE.now() }
+
+    static public func iso(string: String) -> TimeAlone? { return Companion.INSTANCE.iso(string: string) }
+    static public func iso(_ string: String) -> TimeAlone? { return iso(string: string) }
+    static public var min: TimeAlone { return Companion.INSTANCE.min }
+    static public var midnight: TimeAlone { return Companion.INSTANCE.midnight }
+    static public var noon: TimeAlone { return Companion.INSTANCE.noon }
+    static public var max: TimeAlone { return Companion.INSTANCE.max }
     //End Companion
     
     public var comparable: Int {

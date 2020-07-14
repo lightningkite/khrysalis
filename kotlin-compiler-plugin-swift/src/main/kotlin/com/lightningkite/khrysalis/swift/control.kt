@@ -336,12 +336,12 @@ fun SwiftTranslator.registerControl() {
                                         -" = "
                                         -expr
                                         -" as? "
-                                        -it.typeReference!!.resolvedType!!
+                                        -it.typeReference
                                     }
                                     else -> {
                                         -expr
                                         -" is "
-                                        -it.typeReference!!.resolvedType!!
+                                        -it.typeReference
                                     }
                                 }
                             }
@@ -364,7 +364,7 @@ fun SwiftTranslator.registerControl() {
                                     is KtWhenConditionIsPattern -> {
                                         -subjExpr()
                                         -" is "
-                                        -it.typeReference!!.resolvedType!!
+                                        -it.typeReference
                                     }
                                 }
                             },

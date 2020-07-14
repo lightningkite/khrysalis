@@ -21,3 +21,4 @@ public class ConstantObservableProperty<T> : ObservableProperty<T> {
     }
 }
 
+

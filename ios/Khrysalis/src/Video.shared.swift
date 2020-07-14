@@ -41,3 +41,4 @@ public extension URL {
     func asVideo() -> Video { return VideoReference(uri: self) }
 }
 
+

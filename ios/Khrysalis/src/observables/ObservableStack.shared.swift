@@ -12,17 +12,7 @@ public class ObservableStack<T : AnyObject> : ObservableProperty<Array<T>> {
     }
     
     
-    public class Companion {
-        private init() {
-        }
-        public static let INSTANCE = Companion()
-        
-        public func withFirst<T : AnyObject>(value: T) -> ObservableStack<T> {
-            let result = (ObservableStack() as ObservableStack<T>)
-            result.reset(t: value)
-            return result
-        }
-    }
+    
     
     public var _onChange: PublishSubject<Array<T>>
     override public var onChange: PublishSubject<Array<T>> {
@@ -97,6 +87,18 @@ public class ObservableStack<T : AnyObject> : ObservableProperty<Array<T>> {
         self.stack.removeAll()
         self.stack.append(t)
         self.onChange.onNext(self.stack)
+    }
+}
+
+public class ObservableStackCompanion {
+    private init() {
+    }
+    public static let INSTANCE = ObservableStackCompanion()
+    
+    public func withFirst<T : AnyObject>(value: T) -> ObservableStack<T> {
+        let result = (ObservableStack() as ObservableStack<T>)
+        result.reset(t: value)
+        return result
     }
 }
 

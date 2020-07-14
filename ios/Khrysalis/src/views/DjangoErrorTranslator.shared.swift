@@ -16,17 +16,17 @@ public class DjangoErrorTranslator {
     
     public func handleNode(builder: Box<String>, node: Any?) -> Void {
         if node == nil { return }
-        if let node = node as? Dictionary<Any, Any>{
+        if let node = node as? NSDictionary{
             for (key, value) in node {
                 self.handleNode(builder: builder, node: value)
             }
-        } else if let node = node as? Array<Any>{
+        } else if let node = node as? NSArray{
             for value in (node){
                 self.handleNode(builder: builder, node: value)
             }
         } else if let node = node as? String{
             //Rough check for human-readability - sentences start with uppercase and will have spaces
-            if (!node.isEmpty), node[0].isUpperCase(), (node.indexOf(" ") != -1) {
+            if (!node.isEmpty), node[0].isUppercase, (node.indexOf(" ") != -1) {
                 builder.value.append(node + "\n")
             }
         }
@@ -62,12 +62,13 @@ public class DjangoErrorTranslator {
     }
     
     public func wrap<T>(callback: @escaping  (T?, ViewString?) -> Void) -> (Int, T?, String?) -> Void {
-        return { (code: Int, result: T?, error: String) -> Void in callback(result, self.parseError(code: code, error: error)) }
+        return { (code: Int, result: T?, error: String?) -> Void in callback(result, self.parseError(code: code, error: error)) }
     }
     
     public func wrapNoResponse(callback: @escaping  (ViewString?) -> Void) -> (Int, String?) -> Void {
-        return { (code: Int, error: String) -> Void in callback(self.parseError(code: code, error: error)) }
+        return { (code: Int, error: String?) -> Void in callback(self.parseError(code: code, error: error)) }
     }
     
 }
+
 

@@ -11,3 +11,4 @@ public enum ClockPartSize: CaseIterable {
     case Full
 }
 
+

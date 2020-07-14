@@ -70,3 +70,4 @@ public extension Bitmap {
     func asImage() -> Image { return ImageBitmap(bitmap: self) }
 }
 
+

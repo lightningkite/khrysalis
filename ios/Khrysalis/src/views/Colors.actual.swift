@@ -47,6 +47,6 @@ public extension ColorValue {
     }
     
     func colorAlpha(desiredAlpha: Int) -> UIColor {
-        return withAlphaComponent(CGFloat(amount)/255)
+        return withAlphaComponent(CGFloat(desiredAlpha)/255)
     }
 }

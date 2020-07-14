@@ -3,6 +3,12 @@ package com.lightningkite.khrysalis.swift
 import com.lightningkite.khrysalis.swift.replacements.TemplatePart
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
+import java.util.*
+import kotlin.collections.ArrayList
+
+private val weakAfter = WeakHashMap<KtFile, ArrayList<()->Unit>>()
+val KtFile.after: MutableList<()->Unit>
+    get() = weakAfter.getOrPut(this) { ArrayList() }
 
 fun SwiftTranslator.registerFile() {
     handle<KtFile> {
@@ -16,5 +22,7 @@ fun SwiftTranslator.registerFile() {
         typedRule.allChildren.dropWhile { it !is KtDeclaration }.forEach {
             -it
         }
+        -"\n"
+        typedRule.after.forEach { it() }
     }
 }

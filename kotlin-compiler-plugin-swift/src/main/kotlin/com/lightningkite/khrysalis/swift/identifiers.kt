@@ -23,53 +23,6 @@ fun SwiftTranslator.registerIdentifiers(){
     )
     handle<KtNameReferenceExpression>(
         condition = {
-            val resolved = typedRule.resolvedReferenceTarget ?: return@handle false
-            resolved is ClassDescriptor && resolved.isCompanionObject && typedRule.text == "Companion" && resolved.kind != ClassKind.ENUM_CLASS
-        },
-        priority = 1013,
-        action = {
-            -typedRule.resolvedReferenceTarget!!.containingDeclaration?.name?.identifier
-            -".Companion.INSTANCE"
-        }
-    )
-    handle<KtNameReferenceExpression>(
-        condition = {
-            val resolved = typedRule.resolvedReferenceTarget ?: return@handle false
-            resolved is ClassDescriptor && resolved.isCompanionObject
-        },
-        priority = 1012,
-        action = {
-            -typedRule.getIdentifier()
-            -".Companion.INSTANCE"
-        }
-    )
-    handle<KtNameReferenceExpression>(
-        condition = {
-            //Use .INSTANCE in all cases EXCEPT pointing to another type
-
-            // Condition: I am not a receiver pointing to another type
-            val parent = typedRule.parent as? KtDotQualifiedExpression
-            if(parent?.receiverExpression == typedRule) {
-                val next = (parent.selectorExpression as? KtQualifiedExpression)?.selectorExpression as? KtNameReferenceExpression ?: parent.selectorExpression as? KtNameReferenceExpression
-                if(next?.resolvedReferenceTarget is ClassDescriptor){
-                    return@handle false
-                }
-            }
-            // Condition: I refer to a type
-            val resolved = typedRule.resolvedReferenceTarget ?: return@handle false
-            resolved is ClassDescriptor
-                    && typedRule.resolvedUsedAsExpression == true
-                    && resolved.kind != ClassKind.ENUM_ENTRY
-                    && resolved.kind != ClassKind.ENUM_CLASS
-        },
-        priority = 1011,
-        action = {
-            -typedRule.getIdentifier()
-            -".INSTANCE"
-        }
-    )
-    handle<KtNameReferenceExpression>(
-        condition = {
             typedRule.resolvedUsedAsExpression == true
                     && replacements.getGet(typedRule.resolvedReferenceTarget ?: return@handle false) != null
                     || replacements.getGet(typedRule.resolvedShortReferenceToCompanionObject ?: return@handle false) != null

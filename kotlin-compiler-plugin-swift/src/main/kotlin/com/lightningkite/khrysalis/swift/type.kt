@@ -41,7 +41,7 @@ data class SwiftExtensionStart(val forDescriptor: CallableDescriptor, val typePa
 
 val partOfParameterLocal = ThreadLocal<Boolean>()
 var partOfParameter: Boolean
-    get() = partOfParameterLocal.get()
+    get() = partOfParameterLocal.get() ?: false
     set(value) {
         partOfParameterLocal.set(value)
     }
@@ -152,9 +152,12 @@ fun SwiftTranslator.registerType() {
                     -"@escaping "
                 }
                 -'('
-                typedRule.arguments.dropLast(1).forEachIndexed { index, typeProjection ->
-                    -typeProjection
-                }
+                typedRule.arguments.dropLast(1).forEachBetween(
+                    forItem = { typeProjection ->
+                        -typeProjection
+                    },
+                    between = { -", " }
+                )
                 -") -> "
                 -typedRule.arguments.last()
             }
@@ -351,6 +354,9 @@ fun SwiftTranslator.registerType() {
                 typeParameter = { typeParametersByName[it.name] ?: "undefined" },
                 typeParameterByIndex = { type.arguments.getOrNull(it.index) ?: "undefined" }
             )
+            if(type.isMarkedNullable){
+                -'?'
+            }
         }
     )
 

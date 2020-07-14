@@ -19,6 +19,12 @@
 - id: kotlin.text.toUpperCase
   type: call
   template: ~this~.uppercased()
+- id: kotlin.text.isLowerCase
+  type: call
+  template: ~this~.isLowercase
+- id: kotlin.text.isUpperCase
+  type: call
+  template: ~this~.isUppercase
 - id: kotlin.text.trim
   type: call
   arguments: []

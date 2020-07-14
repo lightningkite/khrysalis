@@ -76,3 +76,4 @@ public extension ObservableProperty where T == Bool {
 
 public let appInForeground = StandardObservableProperty(underlyingValue: false)
 
+

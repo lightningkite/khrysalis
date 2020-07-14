@@ -93,7 +93,7 @@ open class MonthCVD : CustomViewDelegate() {
         animationFrame.subscribeBy { timePassed ->
             if (this.draggingId == DRAGGING_NONE && this.currentOffset != 0f) {
                 var newOffset: GFloat = this.currentOffset * max(0f, (1f - 8f * timePassed.toGFloat()))
-                val min = 0.001f
+                val min: GFloat = 0.001f
                 when {
                     newOffset > min -> newOffset -= min
                     newOffset < -min -> newOffset += min

@@ -12,3 +12,4 @@ public class MutableObservableProperty<T> : ObservableProperty<T> {
     public func update() -> Void { TODO() }
 }
 
+

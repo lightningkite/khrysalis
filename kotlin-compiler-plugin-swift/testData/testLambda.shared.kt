@@ -47,6 +47,10 @@ private fun lambdaMain(){
         }
     }
 
+    val takesNullable = label@ { a: String? ->
+        println(a ?: "NO")
+    }
+
     val view: View = View()
     view.setOnClickListener {
         println("Hello!  I am $it")

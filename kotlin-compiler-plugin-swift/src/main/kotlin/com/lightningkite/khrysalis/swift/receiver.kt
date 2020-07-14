@@ -6,6 +6,12 @@ import org.jetbrains.kotlin.psi.psiUtil.containingClass
 import org.jetbrains.kotlin.resolve.calls.model.VariableAsFunctionResolvedCall
 import org.jetbrains.kotlin.resolve.calls.resolvedCallUtil.getImplicitReceiverValue
 
+private val suppressReceiverAdditionLocal = ThreadLocal<Boolean>()
+var suppressReceiverAddition: Boolean
+    get() = suppressReceiverAdditionLocal.get() ?: false
+    set(value) {
+        suppressReceiverAdditionLocal.set(value)
+    }
 fun SwiftTranslator.registerReceiver() {
 
     //Prepend 'this'
@@ -15,7 +21,7 @@ fun SwiftTranslator.registerReceiver() {
             when(resolved){
                 is VariableAsFunctionResolvedCall -> resolved.variableCall.getImplicitReceiverValue() != null
                 else -> resolved.getImplicitReceiverValue() != null
-            }
+            } && !suppressReceiverAddition
         },
         priority = 99,
         action = {
@@ -34,11 +40,15 @@ fun SwiftTranslator.registerReceiver() {
             return@handle resolved.getImplicitReceiverValue() != null
                     && targetDescriptor.isCompanionObject
                     && targetDescriptor != typedRule.containingClass()?.resolvedClass
+                    && !suppressReceiverAddition
         },
         priority = 100,
         action = {
-            -typedRule.containingClass()?.nameIdentifier
-            -".Companion.INSTANCE."
+            val resolved = typedRule.resolvedCall!!
+            val targetDescriptor =
+                resolved.dispatchReceiver?.type?.constructor?.declarationDescriptor as ClassDescriptor
+            -targetDescriptor.swiftTopLevelName
+            -".INSTANCE."
             -typedRule.getIdentifier()
         }
     )

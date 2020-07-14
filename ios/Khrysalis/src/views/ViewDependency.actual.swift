@@ -16,12 +16,18 @@ public class ViewDependency: NSObject {
         self.parentViewController = parentViewController
     }
     //--- ViewDependency.getString(StringResource)
-    public func getString(_ reference: StringResource) -> String {
-        return reference
+    public func getString(_ resource: StringResource) -> String {
+        return resource
+    }
+    public func getString(resource: StringResource) -> String {
+        return resource
     }
     //--- ViewDependency.getColor(ColorResource)
-    public func getColor(_ reference: ColorResource) -> UIColor {
-        return reference
+    public func getColor(_ resource: ColorResource) -> UIColor {
+        return resource
+    }
+    public func getColor(resource: ColorResource) -> UIColor {
+        return resource
     }
     //--- ViewDependency.displayMetrics
     public var displayMetrics: DisplayMetrics {

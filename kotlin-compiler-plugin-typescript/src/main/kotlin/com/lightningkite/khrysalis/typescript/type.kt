@@ -79,11 +79,15 @@ fun TypescriptTranslator.registerType() {
         when (val desc = typedRule.constructor.declarationDescriptor) {
             is FunctionClassDescriptor -> {
                 -'('
-                typedRule.arguments.dropLast(1).forEachIndexed { index, typeProjection ->
-                    -('a' + index)
-                    -": "
-                    -typeProjection
-                }
+                typedRule.arguments.dropLast(1).withIndex().forEachBetween(
+                    forItem = { (index, typeProjection) ->
+                        -('a' + index)
+                        -": "
+                        -typeProjection
+                        -", "
+                    },
+                    between = { -", " }
+                )
                 -") => "
                 -typedRule.arguments.last()
             }

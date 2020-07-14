@@ -12,7 +12,7 @@ public class TransformedMutableObservableProperty2<A, B> : MutableObservableProp
         self.basedOn = basedOn
         self.read = read
         self.write = write
-        self._onChange = self.basedOn.onChange.map({ (it: A) -> B in self.read(it) })
+        self._onChange = basedOn.onChange.map({ (it: A) -> B in read(it) })
         super.init()
     }
     
@@ -36,7 +36,8 @@ public class TransformedMutableObservableProperty2<A, B> : MutableObservableProp
 
 public extension MutableObservableProperty {
     func mapWithExisting<B>(read: @escaping  (T) -> B, write: @escaping  (T, B) -> T) -> MutableObservableProperty<B> {
-        return (TransformedMutableObservableProperty2(basedOn: self as MutableObservableProperty<T>, read: read as (T) -> B, write: write as (TB) -> T) as TransformedMutableObservableProperty2<T, B>)
+        return (TransformedMutableObservableProperty2(basedOn: self as MutableObservableProperty<T>, read: read as (T) -> B, write: write as (T, B) -> T) as TransformedMutableObservableProperty2<T, B>)
     }
 }
+
 

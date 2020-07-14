@@ -16,3 +16,4 @@ public extension DateAlone {
     func format(clockPartSize: ClockPartSize) -> String { return dateFrom(dateAlone: self, timeAlone: TimeAlone.Companion.INSTANCE.noon).format(dateStyle: clockPartSize, timeStyle: ClockPartSize.None) }
 }
 
+

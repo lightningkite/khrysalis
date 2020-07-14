@@ -300,11 +300,28 @@ fun SwiftTranslator.registerFunction() {
 
         maybeWrapCall(typedRule.resolvedCall!!) {
             -nre
-            //-typedRule.typeArgumentList
-            //The tricky part: these *must* be implied
             -ArgumentsList(
                 on = f,
                 resolvedCall = typedRule.resolvedCall!!,
+                prependArguments = listOf()
+            )
+        }
+    }
+
+    handle<KtDotQualifiedExpression>(
+        condition = { (typedRule.selectorExpression as? KtCallExpression)?.resolvedCall?.resultingDescriptor is FunctionDescriptor },
+        priority = 1
+    ) {
+        val call = typedRule.selectorExpression as KtCallExpression
+        val resolvedCall = call.resolvedCall!!
+
+        maybeWrapCall(resolvedCall) {
+            -typedRule.receiverExpression
+            -'.'
+            -call.calleeExpression
+            -ArgumentsList(
+                on = resolvedCall.resultingDescriptor as FunctionDescriptor,
+                resolvedCall = resolvedCall,
                 prependArguments = listOf()
             )
         }
@@ -493,7 +510,7 @@ fun SwiftTranslator.registerFunction() {
                     -", "
                 }
                 if (!typedRule.on.hasJavaOriginInHierarchy()) {
-                    entry.key.name.takeUnless { it.isSpecial || it.asString() in noArgNames }?.let {
+                    entry.key.name.takeUnless { it.isSpecial || it.asString().let { it in noArgNames || (it.startsWith('p') && it.drop(1).all { it.isDigit() } ) } }?.let {
                         -it.asString()
                         -": "
                     }

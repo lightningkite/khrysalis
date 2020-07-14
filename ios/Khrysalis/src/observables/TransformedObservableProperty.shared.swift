@@ -10,7 +10,7 @@ public class TransformedObservableProperty<A, B> : ObservableProperty<B> {
     public init(basedOn: ObservableProperty<A>, read: @escaping  (A) -> B) {
         self.basedOn = basedOn
         self.read = read
-        self._onChange = self.basedOn.onChange.map({ (it: A) -> B in self.read(it) })
+        self._onChange = basedOn.onChange.map({ (it: A) -> B in read(it) })
         super.init()
     }
     
@@ -36,4 +36,5 @@ public extension ObservableProperty {
         return (TransformedObservableProperty(basedOn: self as ObservableProperty<T>, read: read as (T) -> B) as TransformedObservableProperty<T, B>)
     }
 }
+
 

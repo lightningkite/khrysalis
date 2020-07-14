@@ -22,7 +22,7 @@ public class MonthCVD : CustomViewDelegate {
         self.lastOffset = 0
         self.lastOffsetTime = 0
         self.DRAGGING_NONE = -1
-        self.draggingId = self.DRAGGING_NONE
+        self.draggingId = DRAGGING_NONE
         self.labelPaint = Paint()
         self.dayPaint = Paint()
         self.calcMonth = DateAlone(year: 1, month: 1, day: 1)
@@ -42,7 +42,7 @@ public class MonthCVD : CustomViewDelegate {
         self.dayPaint.color = 0xFF202020.asColor()
         animationFrame.subscribeBy(onNext: { (timePassed: Float) -> Void in if self.draggingId == self.DRAGGING_NONE, self.currentOffset != 0 {
                     var newOffset: CGFloat = self.currentOffset * max(0, (1 - 8 * CGFloat(timePassed)))
-                    let min = 0.001
+                    let min: CGFloat = 0.001
                     if newOffset > min {
                         newOffset = newOffset - min
                     } else if newOffset < -min {
@@ -128,11 +128,7 @@ public class MonthCVD : CustomViewDelegate {
     }
     
     public func dayAt(month: DateAlone, row: Int, column: Int, existing: DateAlone = DateAlone(year: 0, month: 0, day: 0)) -> DateAlone {
-        return existing
-        .set(other: month)
-        .setDayOfMonth(value: 1)
-        .setDayOfWeek(value: 1)
-        .setAddDayOfMonth(value: row * 7 + column)
+        return existing.set(other: month).setDayOfMonth(value: 1).setDayOfWeek(value: 1).setAddDayOfMonth(value: row * 7 + column)
     }
     
     public func measure(width: CGFloat, height: CGFloat, displayMetrics: DisplayMetrics) -> Void {
@@ -319,5 +315,6 @@ public class CalendarDrawing {
         canvas.drawRect(outer.left, inner.top, outer.centerX(), inner.bottom, paint)
     }
 }
+
 
 
