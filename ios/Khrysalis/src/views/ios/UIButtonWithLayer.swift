@@ -66,7 +66,7 @@ open class UIButtonWithLayer: UIButton {
                 result.height = max(result.height, iconLayer.frame.size.height)
             }
         }
-        if let title = self.titleLabel?.text, title.trimmingCharacters(in: .whitespaces).isEmpty, let labelSize = titleLabel?.sizeThatFits(size) {
+        if let title = self.titleLabel?.text, !title.trimmingCharacters(in: .whitespaces).isEmpty, let labelSize = titleLabel?.sizeThatFits(size) {
             if isHorizontal {
                 result.width += labelSize.width
             } else {
