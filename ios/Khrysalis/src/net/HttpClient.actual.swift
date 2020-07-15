@@ -8,6 +8,8 @@ import Starscream
 
 //--- HttpClient.{
 public enum HttpClient {
+    
+    static public let INSTANCE = Self.self
 
     //--- HttpClient.ioScheduler
     public static var ioScheduler: Scheduler? = Schedulers.io()
@@ -367,7 +369,7 @@ public enum HttpClient {
     }
 
     //--- HttpClient.webSocket(String)
-    static func webSocket(_ url: String) -> Observable<ConnectedWebSocket> {
+    static public func webSocket(_ url: String) -> Observable<ConnectedWebSocket> {
         return Observable.using({ () -> ConnectedWebSocket in
             var out = ConnectedWebSocket(url: url)
             var request = URLRequest(url: URL(string: url)!)
@@ -378,7 +380,7 @@ public enum HttpClient {
             return out
         }, observableFactory: { $0.ownConnection })
     }
-    static func webSocket(url: String) -> Observable<ConnectedWebSocket> {
+    static public func webSocket(url: String) -> Observable<ConnectedWebSocket> {
         return webSocket(url)
     }
 

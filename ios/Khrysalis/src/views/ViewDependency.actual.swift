@@ -10,6 +10,7 @@ import DKImagePickerController
 
 
 //--- ViewDependency
+public typealias ActivityAccess = ViewDependency
 public class ViewDependency: NSObject {
     public unowned let parentViewController: UIViewController
     public init(_ parentViewController: UIViewController){
