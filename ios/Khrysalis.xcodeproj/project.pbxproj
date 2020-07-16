@@ -185,6 +185,7 @@
 		7CECA43324BCE79700C5A0AE /* String.extensions.actual.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CECA38624BCE79700C5A0AE /* String.extensions.actual.swift */; };
 		7CECA43424BCE79700C5A0AE /* delay.actual.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CECA38724BCE79700C5A0AE /* delay.actual.swift */; };
 		7CECA43524BCE79700C5A0AE /* Preferences.actual.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CECA38824BCE79700C5A0AE /* Preferences.actual.swift */; };
+		7CECA54D24C0EE1E00C5A0AE /* Matrix.actual.swift in Sources */ = {isa = PBXBuildFile; fileRef = 7CECA54C24C0EE1E00C5A0AE /* Matrix.actual.swift */; };
 		FBF03959EF07A62058F04C40 /* libPods-KhrysalisTests.a in Frameworks */ = {isa = PBXBuildFile; fileRef = 9B70BB512F95B07C77779AD7 /* libPods-KhrysalisTests.a */; };
 /* End PBXBuildFile section */
 
@@ -405,6 +406,7 @@
 		7CECA38724BCE79700C5A0AE /* delay.actual.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = delay.actual.swift; sourceTree = "<group>"; };
 		7CECA38824BCE79700C5A0AE /* Preferences.actual.swift */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.swift; path = Preferences.actual.swift; sourceTree = "<group>"; };
 		7CECA38924BCE79700C5A0AE /* fqnames.txt */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = text; path = fqnames.txt; sourceTree = "<group>"; };
+		7CECA54C24C0EE1E00C5A0AE /* Matrix.actual.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Matrix.actual.swift; sourceTree = "<group>"; };
 		9B70BB512F95B07C77779AD7 /* libPods-KhrysalisTests.a */ = {isa = PBXFileReference; explicitFileType = archive.ar; includeInIndex = 0; path = "libPods-KhrysalisTests.a"; sourceTree = BUILT_PRODUCTS_DIR; };
 		CA4E7DD701799277BF915081 /* Pods-KhrysalisTests.debug.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KhrysalisTests.debug.xcconfig"; path = "Pods/Target Support Files/Pods-KhrysalisTests/Pods-KhrysalisTests.debug.xcconfig"; sourceTree = "<group>"; };
 		CDB666FED9439CFEAB1EBEC8 /* Pods-KhrysalisTests.release.xcconfig */ = {isa = PBXFileReference; includeInIndex = 1; lastKnownFileType = text.xcconfig; name = "Pods-KhrysalisTests.release.xcconfig"; path = "Pods/Target Support Files/Pods-KhrysalisTests/Pods-KhrysalisTests.release.xcconfig"; sourceTree = "<group>"; };
@@ -759,6 +761,7 @@
 				7CECA37024BCE79700C5A0AE /* PointF.actual.swift.yml */,
 				7CECA37124BCE79700C5A0AE /* Matrix.actual.swift.yml */,
 				7CECA37224BCE79700C5A0AE /* Align.ext.swift */,
+				7CECA54C24C0EE1E00C5A0AE /* Matrix.actual.swift */,
 			);
 			path = geometry;
 			sourceTree = "<group>";
@@ -1097,6 +1100,7 @@
 				7CECA42F24BCE79700C5A0AE /* RxActual.actual.swift in Sources */,
 				7CECA38A24BCE79700C5A0AE /* Image.actual.swift in Sources */,
 				7CECA3A024BCE79700C5A0AE /* Lifecycle.shared.swift in Sources */,
+				7CECA54D24C0EE1E00C5A0AE /* Matrix.actual.swift in Sources */,
 				7CECA3B824BCE79700C5A0AE /* ImageView.binding.actual.swift in Sources */,
 				7CECA3EB24BCE79700C5A0AE /* ClosureSleeve.swift in Sources */,
 				7CECA3E224BCE79700C5A0AE /* Video.shared.swift in Sources */,
