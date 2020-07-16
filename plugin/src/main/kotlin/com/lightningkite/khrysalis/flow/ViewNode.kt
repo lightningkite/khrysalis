@@ -315,8 +315,18 @@ class ViewNode(
             }
         }
         node.allAttributes["tools:listitem"]?.let {
-            val file = xml.parentFile.resolve(it.removePrefix("@layout/").plus(".xml"))
-            gather(XmlNode.read(file, styles), xml, styles, parentPath)
+            val p = it.removePrefix("@layout/")
+            if(p.startsWith("component")){
+                val file = xml.parentFile.resolve(p.plus(".xml"))
+                gather(XmlNode.read(file, styles), xml, styles, parentPath)
+            } else {
+                operations.add(
+                    ViewStackOp.Push(
+                        stack = null,
+                        viewName = it.removePrefix("@layout/").camelCase().capitalize()
+                    )
+                )
+            }
         }
         node.children.forEach { gather(it, xml, styles, parentPath) }
     }
