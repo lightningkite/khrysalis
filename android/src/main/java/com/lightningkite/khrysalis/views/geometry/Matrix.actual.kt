@@ -11,3 +11,6 @@ fun Matrix.mapPoint(point: PointF): PointF {
 }
 
 fun Matrix.inverted(): Matrix = Matrix().also { this.invert(it) }
+fun Matrix.setInvert(other: Matrix) {
+    other.invert(this)
+}

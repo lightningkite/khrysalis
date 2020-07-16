@@ -10,9 +10,15 @@
   type: call
   template: ~0~.applying(~this~)
 
+#- id: android.graphics.Matrix.invert()
+
 - id: com.lightningkite.khrysalis.views.geometry.inverted
   type: call
   template: ~this~.inverted()
+
+- id: com.lightningkite.khrysalis.views.geometry.setInvert
+  type: call
+  template: '~this~.set(~0~.inverted())'
 
 #- id: android.graphics.Matrix.reset
 #- id: android.graphics.Matrix.set
