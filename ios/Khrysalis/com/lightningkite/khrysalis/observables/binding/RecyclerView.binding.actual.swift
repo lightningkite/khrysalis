@@ -280,6 +280,17 @@ class CustomUITableViewCell: UITableViewCell {
             child.layoutSubviews()
         }
     }
+    override public func setNeedsLayout() {
+        super.setNeedsLayout()
+        var current = self.superview
+        while current != nil && !(current is UITableView) {
+            current = current?.superview
+        }
+        if let current = current as? UITableView {
+            current.beginUpdates()
+            current.endUpdates()
+        }
+    }
 }
 
 protocol HasAtEnd {

@@ -10,7 +10,7 @@ public extension UILabel {
             if self.textString != value {
                 self.textString = value
             }
-            self.superview?.setNeedsLayout()
+            self.notifyParentSizeChanged()
         }.until(self.removed)
     }
     func bindString(observable: ObservableProperty<String>) -> Void {
@@ -26,7 +26,7 @@ public extension UITextView {
             if self.textString != value {
                 self.textString = value
             }
-            self.superview?.setNeedsLayout()
+            self.notifyParentSizeChanged()
         }.until(self.removed)
     }
 }
@@ -39,7 +39,7 @@ public extension UITextField {
             if self.textString != value {
                 self.textString = value
             }
-            self.superview?.setNeedsLayout()
+            self.notifyParentSizeChanged()
         }.until(self.removed)
     }
 }
@@ -52,7 +52,7 @@ public extension UIButton {
             if self.title(for: .normal) != value {
                 self.textString = value
             }
-            self.superview?.setNeedsLayout()
+            self.notifyParentSizeChanged()
         }.until(self.removed)
     }
 }
@@ -69,7 +69,7 @@ public extension UILabel {
             } else {
                 self.text = nil
             }
-            self.superview?.setNeedsLayout()
+            self.notifyParentSizeChanged()
         }.until(self.removed)
     }
     func bindStringRes(observable: ObservableProperty<StringResource?>) -> Void {
@@ -90,7 +90,7 @@ public extension UITextView {
             } else {
                 self.text = nil
             }
-            self.superview?.setNeedsLayout()
+            self.notifyParentSizeChanged()
         }.until(self.removed)
     }
 }
@@ -108,7 +108,7 @@ public extension UITextField {
             } else {
                 self.text = nil
             }
-            self.superview?.setNeedsLayout()
+            self.notifyParentSizeChanged()
         }.until(self.removed)
     }
 }
@@ -125,7 +125,7 @@ public extension UIButton {
             } else {
                 self.textString = ""
             }
-            self.superview?.setNeedsLayout()
+            self.notifyParentSizeChanged()
         }.until(self.removed)
     }
 }
@@ -138,7 +138,7 @@ public extension UILabel {
             if self.textString != textValue {
                 self.textString = textValue
             }
-            self.superview?.setNeedsLayout()
+            self.notifyParentSizeChanged()
         }.until(self.removed)
     }
     func bindText<T>(observable: ObservableProperty<T>, transform: @escaping (T) -> String) -> Void {

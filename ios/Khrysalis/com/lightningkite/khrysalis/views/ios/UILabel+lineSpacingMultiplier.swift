@@ -44,7 +44,10 @@ extension UILabel {
             return Int32(self.numberOfLines)
         }
         set(newLineCount){
-            self.numberOfLines = Int(newLineCount)
+            if self.numberOfLines != Int(newLineCount) {
+                self.numberOfLines = Int(newLineCount)
+                self.notifyParentSizeChanged()
+            }
         }
     }
 }

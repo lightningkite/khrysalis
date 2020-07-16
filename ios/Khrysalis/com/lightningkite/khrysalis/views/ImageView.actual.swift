@@ -13,11 +13,11 @@ import Alamofire
 public extension UIImageView {
     func setImageResource(_ drawableMaker: (UIView?)->CALayer) {
         self.image = drawableMaker(self).toImage()
-        self.superview?.setNeedsLayout()
+        self.notifyParentSizeChanged()
     }
     func setImageBitmap(_ bitmap: UIImage) {
         self.image = bitmap
-        self.superview?.setNeedsLayout()
+        self.notifyParentSizeChanged()
     }
 }
 

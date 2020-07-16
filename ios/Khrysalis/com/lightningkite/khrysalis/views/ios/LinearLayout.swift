@@ -118,7 +118,7 @@ open class LinearLayout: UIView {
     
     override open func setNeedsLayout() {
         super.setNeedsLayout()
-        superview?.setNeedsLayout()
+        self.notifyParentSizeChanged()
     }
     
     
