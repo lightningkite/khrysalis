@@ -25,7 +25,7 @@ fun SeekBar.bind(
     observable.subscribeBy { value ->
         if (!suppress) {
             suppress = true
-            this.progress = value + start
+            this.progress = value - start
             suppress = false
         }
     }.until(this@bind.removed)

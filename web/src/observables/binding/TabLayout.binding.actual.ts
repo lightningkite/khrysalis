@@ -7,7 +7,56 @@ import {MutableObservableProperty} from '../MutableObservableProperty.shared'
 import {v4} from "uuid";
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>com.google.android.material.tabs.TabLayout
-export function comGoogleAndroidMaterialTabsTabLayoutBind(this_: HTMLDivElement, tabs: Array<string>, selected: MutableObservableProperty<number>, allowReselect: boolean = false): void {
+export function comGoogleAndroidMaterialTabsTabLayoutBind<T>(this_: HTMLDivElement, tabs: Array<T>, selected: MutableObservableProperty<T>, allowReselect: boolean = false, toString: (a: T)=>string): void {
+
+    this_.innerHTML = "";
+
+    const myName = v4();
+
+    const selectedIndicator = document.createElement("div");
+    selectedIndicator.classList.add("khrysalis-tab-indicator");
+    this_.appendChild(selectedIndicator);
+
+    const tabList = document.createElement("div");
+    tabList.classList.add("khrysalis-tab-list");
+    this_.appendChild(tabList);
+
+    let index = 0;
+    for (const tab of tabs) {
+        const myIndex = index;
+        const tabElement = document.createElement("label");
+        tabElement.innerText = toString(tab);
+        tabElement.classList.add("khrysalis-tab");
+        tabElement.htmlFor = myName + myIndex.toString();
+        tabList.appendChild(tabElement);
+        const radio = document.createElement("input");
+        radio.type = "radio";
+        radio.id = myName + myIndex.toString();
+        radio.name = myName;
+        radio.onchange = (ev) => {
+            const item = tabs[myIndex]
+            if(allowReselect || selected.value !== item) {
+                selected.value = item;
+            }
+        }
+        tabList.appendChild(radio);
+        index++;
+    }
+
+    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(selected, undefined, undefined, (item) => {
+        const index = tabs.indexOf(item);
+        (tabList.children.item(index * 2 + 1) as HTMLInputElement).checked = true;
+        const tab = tabList.children.item(index * 2) as HTMLElement;
+        selectedIndicator.style.left = tab.offsetLeft.toString() + "px";
+        selectedIndicator.style.width = tab.offsetWidth.toString() + "px";
+    }), getAndroidViewViewRemoved(this_));
+}
+
+//! Declares com.lightningkite.khrysalis.observables.binding.bind>com.google.android.material.tabs.TabLayout
+export function tabLayoutBindIndex(this_: HTMLDivElement, tabs: Array<string>, selected: MutableObservableProperty<number>, allowReselect: boolean = false): void {
+
+    this_.innerHTML = "";
+
     const myName = v4();
 
     const selectedIndicator = document.createElement("div");
