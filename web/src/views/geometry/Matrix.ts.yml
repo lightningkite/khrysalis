@@ -5,8 +5,36 @@
 
 - id: com.lightningkite.khrysalis.views.geometry.mapPoint
   type: call
-  template: ~0~.matrixTransform(~this~)
+  template:
+    pattern: new PointF(~0~.transformPoint(~this~))
+    imports:
+      PointF: khrysalis/dist/views/geometry/PointF.actual.ts
 
 - id: com.lightningkite.khrysalis.views.geometry.inverted
   type: call
   template: ~this~.inverse()
+
+- id: android.graphics.Matrix.reset
+  type: call
+  template:
+    pattern: matrixReset(~0~)
+    imports:
+      matrixReset: khrysalis/dist/views/geometry/Matrix.actual.ts
+- id: android.graphics.Matrix.set
+  type: call
+  template:
+    pattern: matrixSet(~0~, ~1~)
+    imports:
+      matrixSet: khrysalis/dist/views/geometry/Matrix.actual.ts
+- id: android.graphics.Matrix.postTranslate
+  type: call
+  template: '~this~.translateSelf(~0~, ~1~)'
+- id: android.graphics.Matrix.postScale
+  type: call
+  template: '~this~.scaleSelf(~0~, ~1~)'
+- id: android.graphics.Matrix.postRotate
+  type: call
+  template: '~this~.rotateSelf(~0~)'
+- id: android.graphics.Matrix.postConcat
+  type: call
+  template: '~this~.multiplySelf(~0~)'

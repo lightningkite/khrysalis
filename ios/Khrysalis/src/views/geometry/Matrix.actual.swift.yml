@@ -1,6 +1,7 @@
 ---
 - id: android.graphics.Matrix
   type: type
+  requiresMutable: true
   template:
     pattern: CGAffineTransform
     imports: [CoreGraphics]
@@ -12,3 +13,18 @@
 - id: com.lightningkite.khrysalis.views.geometry.inverted
   type: call
   template: ~this~.inverted()
+
+#- id: android.graphics.Matrix.reset
+#- id: android.graphics.Matrix.set
+- id: android.graphics.Matrix.postTranslate
+  type: call
+  template: '~this~.apply(CGAffineTransform.translatedBy, ~0~, ~1~)'
+- id: android.graphics.Matrix.postScale
+  type: call
+  template: '~this~.apply(CGAffineTransform.scaledBy, ~0~, ~1~)'
+- id: android.graphics.Matrix.postRotate
+  type: call
+  template: '~this~.apply(CGAffineTransform.rotated, ~0~ * .pi / 180)'
+- id: android.graphics.Matrix.postConcat
+  type: call
+  template: '~this~.apply(CGAffineTransform.concatenating, ~0~)'
