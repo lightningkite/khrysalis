@@ -9,6 +9,11 @@
   requiresMutable: true
   template: Dictionary<~T0~, ~T1~>
 
+- id: java.util.HashMap
+  type: type
+  requiresMutable: true
+  template: Dictionary<~T0~, ~T1~>
+
 - id: kotlin.collections.MutableMap
   type: type
   requiresMutable: true
@@ -53,6 +58,17 @@
   template: "Dictionary()"
 
 ## Usage
+- id: kotlin.collections.Map.get
+  type: call
+  template: ~this~[~0~]
+- id: kotlin.collections.MutableMap.put
+  type: call
+  usedAsExpression: false
+  template: ~this~[~0~] = ~1~
+- id: kotlin.collections.set
+  type: call
+  receiver: kotlin.collections.MutableMap
+  template: ~this~[~0~] = ~1~
 
 - id: kotlin.collections.component1
   type: call

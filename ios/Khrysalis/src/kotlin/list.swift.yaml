@@ -41,6 +41,10 @@
   type: type
   requiresMutable: true
   template: Array<~T0~>
+- id: java.util.ArrayList
+  type: type
+  requiresMutable: true
+  template: Array<~T0~>
 - id: kotlin.collections.ArrayList
   type: typeRef
   template: Array

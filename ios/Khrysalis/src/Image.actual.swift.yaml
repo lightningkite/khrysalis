@@ -2,3 +2,6 @@
 - id: android.net.Uri
   type: type
   template: URL
+- id: com.lightningkite.khrysalis.Uri
+  type: type
+  template: URL

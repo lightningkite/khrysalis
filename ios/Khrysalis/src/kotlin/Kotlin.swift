@@ -177,7 +177,12 @@ public extension String {
     subscript(i: Int) -> Character {
         return self[index(startIndex, offsetBy: Int(i))]
     }
-    
+
+    func getOrNull(index: Int) -> Character? {
+        if index >= count { return nil }
+        return self[index]
+    }
+
     func substring(_ startIndex: Int, _ endIndex: Int? = nil) -> String {
         let s = self.index(self.startIndex, offsetBy: Int(startIndex))
         let e = self.index(self.startIndex, offsetBy: Int(endIndex ?? self.count))
@@ -194,56 +199,55 @@ public extension String {
         return self.replacingOccurrences(of: target, with: withString)
     }
 
-    func removePrefix(_ string: String) -> String {
-        if starts(with: string) {
-            return substring(string.count)
+    func removePrefix(prefix: String) -> String {
+        if starts(with: prefix) {
+            return substring(prefix.count)
         } else {
             return self
         }
     }
     
-    func removeSuffix(_ string: String) -> String {
-        if hasSuffix(string) {
-            return substring(0, self.count - string.count)
+    func removeSuffix(suffix: String) -> String {
+        if hasSuffix(suffix) {
+            return substring(0, self.count - suffix.count)
         } else {
             return self
         }
     }
     
-    func substringBefore(_ string: String, _ defaultTo: String? = nil) -> String {
-        let index = self.indexOf(string)
+    func substringBefore(delimiter: String, missingDelimiterValue: String? = nil) -> String {
+        let index = self.indexOf(delimiter)
         if index != -1 {
             return substring(0, index)
         } else {
-            return defaultTo ?? self
+            return missingDelimiterValue ?? self
         }
     }
     
-    func substringAfter(_ string: String, _ defaultTo: String? = nil) -> String {
-        let index = self.indexOf(string)
-        let array = [1,2,3,4]
+    func substringAfter(delimiter: String, missingDelimiterValue: String? = nil) -> String {
+        let index = self.indexOf(delimiter)
         if index != -1 {
-            return substring(index + string.count)
+            return substring(index + delimiter.count)
         } else {
-            return defaultTo ?? self
+            return missingDelimiterValue ?? self
         }
     }
     
-    func substringBeforeLast(_ string: String, _ defaultTo: String? = nil) -> String {
-        let index = self.lastIndexOf(string)
+    func substringBeforeLast(delimiter: String, missingDelimiterValue: String? = nil) -> String {
+        let index = self.lastIndexOf(delimiter)
         if index != -1 {
             return substring(0, index)
         } else {
-            return defaultTo ?? self
+            return missingDelimiterValue ?? self
         }
     }
     
-    func substringAfterLast(_ string: String, _ defaultTo: String? = nil) -> String {
-        let index = self.lastIndexOf(string)
+    func substringAfterLast(delimiter: String, missingDelimiterValue: String? = nil) -> String {
+        let index = self.lastIndexOf(delimiter)
         if index != -1 {
-            return substring(index + string.count)
+            return substring(index + delimiter.count)
         } else {
-            return defaultTo ?? self
+            return missingDelimiterValue ?? self
         }
     }
     

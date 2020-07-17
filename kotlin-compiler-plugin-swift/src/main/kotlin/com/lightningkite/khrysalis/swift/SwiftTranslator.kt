@@ -58,7 +58,7 @@ class SwiftTranslator(
     private val ignoreSmartcast = ArrayList<HashSet<ValueDescriptor>>()
     fun beginSmartcastBlock() = ignoreSmartcast.add(HashSet())
     fun endSmartcastBlock() = ignoreSmartcast.removeAt(ignoreSmartcast.lastIndex)
-    fun ignoreSmartcast(v: ValueDescriptor) = ignoreSmartcast.last().add(v)
+    fun ignoreSmartcast(v: ValueDescriptor) = ignoreSmartcast.lastOrNull()?.add(v)
     fun isSmartcastIgnored(v: ValueDescriptor?) = v != null && ignoreSmartcast.any { it.contains(v) }
 
     val _receiverStack = ArrayList<ReceiverAssignment>()

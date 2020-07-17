@@ -29,10 +29,10 @@ public extension UISegmentedControl {
             selected?.value = tabs[self?.selectedSegmentIndex ?? 0]
         })
         selected.subscribeBy { value in
-            self.selectedSegmentIndex = tabs.index(of: value)
+            self.selectedSegmentIndex = tabs.firstIndex(of: value) ?? 0
         }.until(self.removed)
     }
-    func bind(tabs: Array<String>, selected: MutableObservableProperty<Int>) -> Void {
-        return bind(tabs, selected)
+    func bind<T: Equatable>(tabs: Array<T>, selected: MutableObservableProperty<T>, toString: @escaping (T)->String) -> Void {
+        return bind(tabs, selected, toString)
     }
 }

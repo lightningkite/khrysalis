@@ -1,6 +1,7 @@
 package com.lightningkite.khrysalis.swift
 
 import com.lightningkite.khrysalis.generic.PartialTranslatorByType
+import com.lightningkite.khrysalis.swift.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.forEachBetween
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
@@ -54,11 +55,13 @@ fun SwiftTranslator.registerClass() {
             )
             .let {
                 if (on is KtClass && on.isData()) {
+                    out.addImport(TemplatePart.Import("Khrysalis"))
                     it + listOf("KDataClass")
                 } else it
             }
             .let {
                 if (on is KtClass && on.isEnum()) {
+                    out.addImport(TemplatePart.Import("Khrysalis"))
                     it + listOf("KEnum")
                 } else it
             }
@@ -67,18 +70,21 @@ fun SwiftTranslator.registerClass() {
                     it.valueParameters.size == 1 && it.valueParameters[0].type.getJetTypeFqName(false) == "kotlin.Any"
                 }
                 if (over?.callsForSwiftInterface(on.resolvedClass) == true) {
+                    out.addImport(TemplatePart.Import("Khrysalis"))
                     it + listOf("KEquatable")
                 } else it
             }
             .let {
                 val over = on.resolvedClass?.findFirstFunction("hashCode") { it.valueParameters.size == 0 }
                 if (over?.callsForSwiftInterface(on.resolvedClass) == true) {
+                    out.addImport(TemplatePart.Import("Khrysalis"))
                     it + listOf("KHashable")
                 } else it
             }
             .let {
                 val over = on.resolvedClass?.findFirstFunction("toString") { it.valueParameters.size == 0 }
                 if (over?.callsForSwiftInterface(on.resolvedClass) == true) {
+                    out.addImport(TemplatePart.Import("Khrysalis"))
                     it + listOf("KStringable")
                 } else it
             }
@@ -518,7 +524,14 @@ fun SwiftTranslator.registerClass() {
             )
             -") -> "
             -swiftTopLevelNameElement(typedRule)
-            -typedRule.typeParameterList
+            typedRule.typeParameterList?.let {
+                -'<'
+                it.parameters.forEachBetween(
+                    forItem = { -it.name },
+                    between = { -", " }
+                )
+                -'>'
+            }
             -" { return "
             -swiftTopLevelNameElement(typedRule)
             -"("
@@ -747,8 +760,8 @@ fun SwiftTranslator.registerClass() {
         )
         -") {\n"
         -"self.init("
-        val dg = typedRule.getDelegationCallOrNull()
-        val resSuper = dg?.resolvedCall
+        val dg = typedRule.getDelegationCall()
+        val resSuper = dg.resolvedCall
         if (resSuper != null) {
             var first = true
             resSuper.valueArguments.entries.sortedBy { it.key.index }.forEach {

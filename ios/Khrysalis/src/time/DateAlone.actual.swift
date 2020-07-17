@@ -18,9 +18,9 @@ public class DateAlone: Equatable, Hashable, Codable {
 
     required public init(from decoder: Decoder) throws {
         let string: String = try decoder.singleValueContainer().decode(String.self)
-        year = Int(string.substringBefore("-"))!
-        month = Int(string.substringAfter("-").substringBefore("-"))!
-        day = Int(string.substringAfterLast("-"))!
+        year = Int(string.substringBefore(delimiter: "-"))!
+        month = Int(string.substringAfter(delimiter: "-").substringBefore(delimiter: "-"))!
+        day = Int(string.substringAfterLast(delimiter: "-"))!
     }
 
     public func encode(to encoder: Encoder) throws {
@@ -67,9 +67,9 @@ public class DateAlone: Equatable, Hashable, Codable {
         public var farFuture = DateAlone(99999, 12, 31)
 
         public func iso(string: String) -> DateAlone? {
-            if let year = Int(string.substringBefore("-", "")),
-                let month = Int(string.substringAfter("-", "").substringBefore("-", "")),
-                let day = Int(string.substringAfter("-", "").substringAfter("-", ""))
+            if let year = Int(string.substringBefore(delimiter: "-", missingDelimiterValue: "")),
+                let month = Int(string.substringAfter(delimiter: "-", missingDelimiterValue: "").substringBefore(delimiter: "-", missingDelimiterValue: "")),
+                let day = Int(string.substringAfter(delimiter: "-", missingDelimiterValue: "").substringAfter(delimiter: "-", missingDelimiterValue: ""))
             {
                 return DateAlone(year, month, day)
             }

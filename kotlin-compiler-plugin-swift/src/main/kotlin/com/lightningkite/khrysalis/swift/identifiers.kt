@@ -64,6 +64,27 @@ fun SwiftTranslator.registerIdentifiers(){
             }
         }
     )
+    handle<KtDotQualifiedExpression>(
+        condition = {
+            typedRule.resolvedSmartcast != null && typedRule.selectorExpression is KtNameReferenceExpression
+        },
+        priority = 4000,
+        action = {
+            val sel = typedRule.selectorExpression as KtNameReferenceExpression
+            val before = (sel.resolvedReferenceTarget as? ValueDescriptor)?.type
+            val now = typedRule.resolvedSmartcast!!.defaultType
+            if(before?.getJetTypeFqName(true) == now?.getJetTypeFqName(true) && now?.isMarkedNullable == false){
+                doSuper()
+                -'!'
+            } else {
+                -'('
+                doSuper()
+                -" as! "
+                -now
+                -')'
+            }
+        }
+    )
 }
 
 fun String.safeSwiftIdentifier(): String = when(this){

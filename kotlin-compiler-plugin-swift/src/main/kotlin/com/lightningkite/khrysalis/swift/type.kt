@@ -243,8 +243,8 @@ fun SwiftTranslator.registerType() {
                 .associate { (index, item) -> declaredParams[index].name.asString() to item }
             emitTemplate(
                 template = rule.template,
-                typeParameter = { typeParametersByName[it.name] ?: "undefined" },
-                typeParameterByIndex = { typedRule.typeArguments.getOrNull(it.index) ?: "undefined" }
+                typeParameter = { typeParametersByName[it.name] ?: "nil" },
+                typeParameterByIndex = { typedRule.typeArguments.getOrNull(it.index) ?: "nil" }
             )
         }
     )
@@ -345,8 +345,8 @@ fun SwiftTranslator.registerType() {
                 .associate { (index, item) -> baseType.parameters[index].name.asString() to item }
             emitTemplate(
                 template = rule.template,
-                typeParameter = { typeParametersByName[it.name] ?: "undefined" },
-                typeParameterByIndex = { type.arguments.getOrNull(it.index) ?: "undefined" }
+                typeParameter = { typeParametersByName[it.name] ?: "nil" },
+                typeParameterByIndex = { type.arguments.getOrNull(it.index) ?: "nil" }
             )
             if(type.isMarkedNullable){
                 -'?'

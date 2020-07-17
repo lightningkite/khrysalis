@@ -93,6 +93,14 @@
   type: call
   template: ~this~[~0~]
 
+- id: kotlin.text.firstOrNull
+  type: call
+  template: '~this~.getOrNull(index: 0)'
+
+- id: kotlin.text.first
+  type: call
+  template: ~this~[0]
+
 - id: kotlin.Any.toString
   type: call
   template: 'String(describing: ~this~)'

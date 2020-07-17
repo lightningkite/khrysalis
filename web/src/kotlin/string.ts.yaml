@@ -71,6 +71,18 @@
   type: call
   template: ~this~[~0~]
 
+- id: kotlin.text.getOrNull
+  type: call
+  template: (~this~[~0~] ?? null)
+
+- id: kotlin.text.firstOrNull
+  type: call
+  template: (~this~[0] ?? null)
+
+- id: kotlin.text.first
+  type: call
+  template: ~this~[0]
+
 
 # CharSequence
 - id: kotlin.CharSequence.equals

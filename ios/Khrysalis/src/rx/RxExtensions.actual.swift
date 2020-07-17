@@ -31,6 +31,9 @@ extension Observable where Observable.Element: OptionalConvertible {
 //--- Observable<Element>.mapNotNull((Element)->Destination?)
 public extension Observable {
     func mapNotNull<Destination>(_ transform: @escaping (Element) -> Destination?) -> Observable<Destination> {
+        return mapNotNull(transform: transform)
+    }
+    func mapNotNull<Destination>(transform: @escaping (Element) -> Destination?) -> Observable<Destination> {
         return self.flatMap { (it: Element) -> Observable<Destination> in
             if let result: Destination = transform(it) {
                 return Observable<Destination>.just(result)

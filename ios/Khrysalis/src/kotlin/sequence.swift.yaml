@@ -115,10 +115,7 @@
 
 - id: kotlin.sequences.any
   type: call
-  template:
-    pattern: iterSome(~this~, ~0~)
-    imports:
-      iterSome: some from iterable-operator
+  template: '(~this~.first(where: ~0~) != nil)'
 
 - id: kotlin.sequences.all
   type: call

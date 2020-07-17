@@ -10,6 +10,12 @@ private typealias MyThing = TypesThing
 private typealias MyList<T> = List<T>
 private typealias ListOfThings = MyList<MyThing>
 
+private class TypesConstructorTest(
+){
+    val x = HashMap<String, Long>()
+
+}
+
 private fun typesMain(){
     val x: Int = 0
     val y: TypesMyInt = 0

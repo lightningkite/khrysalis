@@ -24,9 +24,9 @@ data class OngoingLayoutConversion(
             val id = node.allAttributes["android:id"]?.removePrefix("@id/")?.removePrefix("@+id/")?.camelCase()
             if (id != null) {
                 sublayouts[id] = className
-                append("$id.setup(dependency)")
+                append("$id.setup(dependency: dependency)")
             } else {
-                append("$className().setup(dependency)")
+                append("$className().setup(dependency: dependency)")
             }
         } else if (node.name in converter.skipTypes) {
             construct(node.children.first())
@@ -52,7 +52,7 @@ data class OngoingLayoutConversion(
             val id = node.attributes["android:id"]?.removePrefix("@id/")?.removePrefix("@+id/")?.camelCase()
             appendln("{ () -> UIView in ")
             appendln("let subxml = $className()")
-            appendln("let view = subxml.setup(dependency)")
+            appendln("let view = subxml.setup(dependency: dependency)")
             if(id != null){
                 bindings[id] = className
                 appendln("self.${id}_raw = subxml")

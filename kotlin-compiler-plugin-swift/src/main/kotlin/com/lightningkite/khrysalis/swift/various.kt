@@ -25,7 +25,7 @@ val ResolvedCall<out CallableDescriptor>.template_parameter
                 it.value.arguments.map { it.getArgumentExpression() }.withBetween(", ")
             else
                 it.value.arguments.firstOrNull()?.getArgumentExpression()
-        } ?: "undefined"
+        } ?: "nil"
     }
 val ResolvedCall<out CallableDescriptor>.template_typeParameter get() = { n: TemplatePart.TypeParameter -> this.typeArguments.entries.find { it.key.name.asString() == n.name }?.value }
 val ResolvedCall<out CallableDescriptor>.template_parameterByIndex
@@ -35,6 +35,6 @@ val ResolvedCall<out CallableDescriptor>.template_parameterByIndex
                 it.value.arguments.map { it.getArgumentExpression() }.withBetween(", ")
             else
                 it.value.arguments.firstOrNull()?.getArgumentExpression()
-        } ?: "undefined"
+        } ?: "nil"
     }
 val ResolvedCall<out CallableDescriptor>.template_typeParameterByIndex get() = { n: TemplatePart.TypeParameterByIndex -> this.typeArguments.entries.find { it.key.index == n.index }?.value }

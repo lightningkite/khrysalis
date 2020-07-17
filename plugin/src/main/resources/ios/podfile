@@ -5,6 +5,4 @@ use_modular_headers!
 
 target 'Khrysalis Product Name' do
     pod 'Khrysalis', :path => '~/StudioProjects/khrysalis/Khrysalis.podspec'
-    pod 'KhrysalisMaps', :path => '~/StudioProjects/khrysalis/KhrysalisMaps.podspec'
-    pod 'KhrysalisBluetooth', :path => '~/StudioProjects/khrysalis/KhrysalisBluetooth.podspec'
 end

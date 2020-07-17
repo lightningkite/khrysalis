@@ -129,7 +129,7 @@ fun AndroidLayoutFile.toTypescript(
     for(variant in variants.sortedDescending()) {
         when(variant.firstOrNull()){
             'w' -> {
-                val w = variant.substring(1).toInt()
+                val w = variant.substring(1).filter { it.isDigit() }.toInt()
                 out.appendln("if (window.innerWidth > $w) return htmlFor${variant.camelCase()}")
             }
         }

@@ -19,9 +19,9 @@ public class TimeAlone: Equatable, Hashable, Codable {
     
     required public init(from decoder: Decoder) throws {
         let string: String = try decoder.singleValueContainer().decode(String.self)
-        hour = Int(string.substringBefore(":"))!
-        minute = Int(string.substringAfter(":").substringBefore(":"))!
-        second = Int(string.substringAfterLast(":"))!
+        hour = Int(string.substringBefore(delimiter: ":"))!
+        minute = Int(string.substringAfter(delimiter: ":").substringBefore(delimiter: ":"))!
+        second = Int(string.substringAfterLast(delimiter: ":"))!
     }
     
     public func encode(to encoder: Encoder) throws {
@@ -64,10 +64,10 @@ public class TimeAlone: Equatable, Hashable, Codable {
         }
 
         public func iso(string: String) -> TimeAlone? {
-            if let hour = Int(string.substringBefore(":", "")),
-                let minute = Int(string.substringAfter(":", "").substringBefore(":"))
+            if let hour = Int(string.substringBefore(delimiter: ":", missingDelimiterValue: "")),
+                let minute = Int(string.substringAfter(delimiter: ":", missingDelimiterValue: "").substringBefore(delimiter: ":"))
             {
-                let second = Int(string.substringAfter(":", "").substringAfter(":", ""))
+                let second = Int(string.substringAfter(delimiter: ":", missingDelimiterValue: "").substringAfter(delimiter: ":", missingDelimiterValue: ""))
                 return TimeAlone(hour: hour, minute: minute, second: second ?? 0)
             }
             return nil

@@ -112,7 +112,7 @@ class KotlinSwiftExtension(
         //Load manifests
         dependencies.asSequence()
             .flatMap { it.walkTopDown() }
-            .filter { it.name == "fqnames.txt" }
+            .filter { it.name.endsWith("fqnames.txt", true) }
             .forEach {
                 val lines = it.readLines().filter { it.isNotBlank() }
                 val name = lines.first()

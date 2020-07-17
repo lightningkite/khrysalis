@@ -15,6 +15,7 @@ class SwiftFileEmitter(val translator: SwiftTranslator, val file: KtFile) : Appe
     private val imports = HashSet<TemplatePart.Import>()
     init {
         imports.add(TemplatePart.Import("Foundation"))
+        imports.add(TemplatePart.Import("Khrysalis"))
     }
     val importedFqs = HashSet<String>()
     var fileEndingActions = ArrayList<() -> Unit>()
@@ -29,7 +30,9 @@ class SwiftFileEmitter(val translator: SwiftTranslator, val file: KtFile) : Appe
         writer.appendln("// File: $relPath")
         writer.appendln("// Package: ${file.packageFqName.asString()}")
         for(imp in imports){
-            writer.appendln("import ${imp.module}")
+            if(imp.module != translator.projectName) {
+                writer.appendln("import ${imp.module}")
+            }
         }
         writer.appendln()
 
