@@ -3,7 +3,8 @@ package com.test
 private data class CollectionsCustomEq(val value: Int)
 
 private fun collectionsTest(){
-    val list = listOf(1, 2, 3)
+    var list = listOf(1, 2, 3)
+    list += 4
     println(list[0])
 
     val pair: Pair<Int, String> = 3 to "Three"
@@ -19,6 +20,7 @@ private fun collectionsTest(){
     }
 
     val mutableList: MutableList<Int> = ArrayList()
+    mutableList += 4
     mutableList.add(1)
     mutableList.add(2)
     mutableList.add(0, 2)
@@ -46,6 +48,16 @@ private fun collectionsTest(){
         .filter { it % 2 == 0 }
         .sorted()
         .forEach {
+            println("Got $it")
+        }
+
+    val maybeSeq = if(x == 0) sequenceOf(1, 2, 3) else null
+
+    maybeSeq
+        ?.map { it + 1 }
+        ?.filter { it % 2 == 0 }
+        ?.sorted()
+        ?.forEach {
             println("Got $it")
         }
 

@@ -37,9 +37,6 @@ fun SwiftTranslator.registerSpecialLet() {
     }
 
     handle<SafeLetChain> {
-        if(typedRule.outermost.actuallyCouldBeExpression){
-            runWithTypeHeader(typedRule.outermost)
-        }
         typedRule.entries.forEachBetween(
             forItem = { (basis, lambda) ->
                 -"if let "
@@ -59,19 +56,30 @@ fun SwiftTranslator.registerSpecialLet() {
                 -"\n}"
             } else {
                 -" else {\n"
-                if(typedRule.outermost.actuallyCouldBeExpression){
-                    -"return "
-                }
                 -it
                 -"\n}"
             }
-        } ?: run {
-            if(typedRule.outermost.actuallyCouldBeExpression){
-                -"else { return nil }"
-            }
         }
-        if(typedRule.outermost.actuallyCouldBeExpression){
-            -"\n}"
+    }
+
+    handle<SafeLetChain>(
+        condition = { typedRule.outermost.actuallyCouldBeExpression },
+        priority = 10
+    ) {
+        typedRule.entries.forEachBetween(
+            forItem = { (basis, lambda) ->
+                -basis
+                -".map { ("
+                -(lambda.valueParameters.firstOrNull()?.name ?: "it")
+                -") in \n"
+                -lambda.bodyExpression
+                -"\n}"
+            },
+            between = { -" ?? " }
+        )
+        typedRule.default?.let {
+            -" ?? "
+            -it
         }
     }
 

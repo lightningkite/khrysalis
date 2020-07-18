@@ -4,6 +4,7 @@ import Foundation
 
 //--- Preferences.{
 public enum Preferences {
+    static public let INSTANCE = Self.self
     
     //--- Preferences.sharedPreferences
     

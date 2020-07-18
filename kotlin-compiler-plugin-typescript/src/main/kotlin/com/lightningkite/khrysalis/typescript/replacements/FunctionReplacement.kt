@@ -49,7 +49,7 @@ data class FunctionReplacement(
         if (arguments != null) {
             if (this.arguments.size != descriptor.original.valueParameters.size) return false
             if (!this.arguments.zip(descriptor.original.valueParameters)
-                    .all { (a, p) -> a == "*" || p.type.getJetTypeFqName(false) == a }
+                    .all { (a, p) -> a == "*" || p.type.getJetTypeFqName(false) == a || p.name.asString() == a }
             ) return false
         }
         if (this.comparatorType != null) {

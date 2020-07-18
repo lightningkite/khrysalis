@@ -6,6 +6,12 @@
     pattern: CGAffineTransform
     imports: [CoreGraphics]
 
+- id: android.graphics.Matrix
+  type: call
+  template:
+    pattern: CGAffineTransform()
+    imports: [CoreGraphics]
+
 - id: com.lightningkite.khrysalis.views.geometry.mapPoint
   type: call
   template: ~0~.applying(~this~)

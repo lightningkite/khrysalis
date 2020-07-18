@@ -92,6 +92,13 @@ public extension Encodable {
     }
 }
 
+public func kotlinAnyToJsonString(_ value: Encodable) -> String {
+    return value.toJsonString()
+}
+public func kotlinAnyToJsonData(_ value: Encodable) -> Data {
+    return value.toJsonData()
+}
+
 //--- String.fromJsonString()
 //--- String.fromJsonStringUntyped()
 public extension String {

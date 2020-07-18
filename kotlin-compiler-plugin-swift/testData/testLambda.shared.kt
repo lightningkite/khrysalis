@@ -20,6 +20,9 @@ private fun lambdaMain(){
     theAnswer.let {
         println(it)
     }
+    theAnswer.let { _ ->
+        println("I don't care.")
+    }
     32.let {
     }
     32.let {

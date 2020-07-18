@@ -203,7 +203,9 @@ interface AnalysisExtensions {
 
     fun KtExpression.isSimple(): Boolean = when (this) {
         is KtNameReferenceExpression -> (this@isSimple.resolvedReferenceTarget as? PropertyDescriptor)?.let {
-            it.delegateField == null && it.getter == null && !it.isVar
+            it.delegateField == null && it.getter == null && !it.isVar && it.containingDeclaration !is ClassDescriptor
+        } ?: (this@isSimple.resolvedReferenceTarget as? VariableDescriptor)?.let {
+            !it.isVar && it.containingDeclaration !is ClassDescriptor
         } ?: false
         is KtConstantExpression,
         is KtThisExpression -> true
@@ -224,7 +226,7 @@ interface AnalysisExtensions {
         if (exp is KtStatementExpression) {
             return false
         }
-        if(exp.resolvedExpressionTypeInfo?.type?.getJetTypeFqName(false) == "kotlin.Nothing") return false
+        if(exp !is KtConstantExpression && exp.resolvedExpressionTypeInfo?.type?.getJetTypeFqName(false) == "kotlin.Nothing") return false
         var parentControlBody: KtContainerNodeForControlStructureBody? =
             exp.parent as? KtContainerNodeForControlStructureBody
         (exp.parent as? KtBlockExpression)?.let {
@@ -234,21 +236,22 @@ interface AnalysisExtensions {
             (it.parent as? KtFunctionLiteral)?.let {
                 return determineNotStatementLambda(it)
             }
-//                if((it.parent as? KtFunctionLiteral)?.resolvedExpectedReturnType?.getJetTypeFqName(false)?.let { it in dontReturnTypes} == true) {
-//                    return false
-//                }
             //Check if control is expression
             parentControlBody = it.parent as? KtContainerNodeForControlStructureBody ?: return false
         }
-        parentControlBody?.let {
-            (it.parent as? KtIfExpression)?.let {
-                return it.actuallyCouldBeExpression
-            }
-            (it.parent as? KtWhenExpression)?.let {
-                return it.actuallyCouldBeExpression
-            }
-            return false
-        }
+        parentControlBody?.let { return determineNotStatementControlBody(it) }
         return true
+    }
+    fun determineNotStatementControlBody(it: KtContainerNodeForControlStructureBody): Boolean {
+        (it.parent as? KtIfExpression)?.let {
+            return it.actuallyCouldBeExpression
+        }
+        (it.parent as? KtWhenExpression)?.let {
+            return it.actuallyCouldBeExpression
+        }
+        (it.parent as? KtTryExpression)?.let {
+            return it.actuallyCouldBeExpression
+        }
+        return false
     }
 }

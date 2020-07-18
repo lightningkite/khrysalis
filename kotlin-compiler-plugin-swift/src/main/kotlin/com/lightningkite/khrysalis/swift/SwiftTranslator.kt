@@ -143,6 +143,8 @@ class SwiftTranslator(
         registerOperators()
         registerReceiver()
         registerSpecialLet()
+        registerQualified()
+        registerException()
     }
 
 

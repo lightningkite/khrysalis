@@ -3,6 +3,7 @@ package com.lightningkite.khrysalis.swift
 import com.lightningkite.khrysalis.generic.PartialTranslatorByType
 import com.lightningkite.khrysalis.swift.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.forEachBetween
+import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.js.translate.callTranslator.getReturnType
@@ -144,6 +145,12 @@ fun SwiftTranslator.registerClass() {
             //- Every time something using XBox<T> is typecast, `use x.boxed`
             throw IllegalStateException("Converting a generic interface is not possible at the moment due to Swift crap. See code for potential solution, yet unimplemented due to complexity.")
         }
+        -": "
+        listOf("AnyObject").plus(typedRule.superTypeListEntries.map { it.typeReference })
+            .forEachBetween(
+                forItem = { -it },
+                between = { -", " }
+            )
         -" {\n"
         -typedRule.body
         -"}\n"
@@ -249,6 +256,7 @@ fun SwiftTranslator.registerClass() {
         } else if (typedRule.isInner()) {
             -"self.parentThis = parentThis;\n"
         }
+
         //Parameter assignment first
         typedRule.primaryConstructor?.let { cons ->
             cons.valueParameters.asSequence().filter { it.hasValOrVar() }.forEach {
@@ -264,27 +272,79 @@ fun SwiftTranslator.registerClass() {
                 -"\n"
             }
         }
+
+        //If used by future initializers directly, create inbetween.
+        val usedInInits = listOfNotNull(
+            typedRule.primaryConstructor?.valueParameters?.map { it.defaultValue },
+            typedRule.body?.children?.mapNotNull { (it as? KtProperty)?.initializer }
+        )
+            .asSequence()
+            .flatMap { it.asSequence() }
+            .filterNotNull()
+            .flatMap {
+                val matches = HashSet<PropertyDescriptor>()
+                fun check(it: PsiElement) {
+                    if(it is KtNameReferenceExpression) {
+                        val prop = it.resolvedReferenceTarget as? PropertyDescriptor ?: return
+                        if(prop.containingDeclaration == typedRule.resolvedClass){
+                            matches.add(prop)
+                        }
+                    }
+                    if(it !is KtFunctionLiteral){
+                        it.allChildren.forEach { check(it) }
+                    }
+                }
+                check(it)
+                matches.asSequence()
+            }
+            .toSet()
+
+        //If uses self capture, delay and mark with !
+        val postSuper = ArrayList<()->Unit>()
+
         //Then, in order, variable initializers
         suppressReceiverAddition = true
         typedRule.body?.children?.forEach {
             when (it) {
                 is KtProperty -> {
                     it.initializer?.let { init ->
-                        -"let "
-                        -it.nameIdentifier
-                        -": "
-                        -(it.typeReference ?: it.resolvedProperty?.type ?: it.resolvedVariable?.type)
-                        -" = "
-                        -init
-                        -"\n"
-                        -"self."
-                        if (it.resolvedProperty?.hasSwiftBacking == true) {
-                            -'_'
+                        if(capturesSelf(init, typedRule.resolvedClass)){
+                            postSuper += {
+                                -"self."
+                                if (it.resolvedProperty?.hasSwiftBacking == true) {
+                                    -'_'
+                                }
+                                -it.nameIdentifier
+                                -" = "
+                                -init
+                                -"\n"
+                            }
+                        } else if(it.resolvedProperty in usedInInits) {
+                            -"let "
+                            -it.nameIdentifier
+                            -": "
+                            -(it.typeReference ?: it.resolvedProperty?.type ?: it.resolvedVariable?.type)
+                            -" = "
+                            -init
+                            -"\n"
+                            -"self."
+                            if (it.resolvedProperty?.hasSwiftBacking == true) {
+                                -'_'
+                            }
+                            -it.nameIdentifier
+                            -" = "
+                            -it.nameIdentifier
+                            -"\n"
+                        } else {
+                            -"self."
+                            if (it.resolvedProperty?.hasSwiftBacking == true) {
+                                -'_'
+                            }
+                            -it.nameIdentifier
+                            -" = "
+                            -init
+                            -"\n"
                         }
-                        -it.nameIdentifier
-                        -" = "
-                        -it.nameIdentifier
-                        -"\n"
                     }
                 }
             }
@@ -332,6 +392,8 @@ fun SwiftTranslator.registerClass() {
                 }
                 -")\n"
             }
+        -"//Necessary properties should be initialized now\n"
+        postSuper.forEach { it() }
         //Then, in order, anon initializers
         typedRule.body?.children?.forEach {
             when (it) {
@@ -653,14 +715,18 @@ fun SwiftTranslator.registerClass() {
             -(typedRule.swiftVisibility() ?: "public")
             -" enum "
             -swiftTopLevelNameElement(typedRule)
-            -": CaseIterable {\n"
+            -": String, KEnum, StringEnum, CaseIterable {\n"
             for (entry in typedRule.body?.enumEntries ?: listOf()) {
                 -"case "
                 -entry.nameIdentifier
                 -"\n"
             }
             -typedRule.body
-            -"}"
+            -"\npublic init(from decoder: Decoder) throws {"
+            -"\n    self = try Self(rawValue: decoder.singleValueContainer().decode(RawValue.self)) ?? ."
+            -typedRule.body?.enumEntries?.first()?.name
+            -"\n}"
+            -"\n}"
         }
     )
     handle<KtEnumEntry>(
@@ -856,6 +922,28 @@ fun SwiftTranslator.registerClass() {
         }
     )
 
+    handle<KtNameReferenceExpression>(
+        condition = {
+            val descriptor =
+                typedRule.resolvedReferenceTarget as? ClassDescriptor
+                    ?: return@handle false
+            descriptor.swiftTopLevelMessedUp
+        },
+        priority = 900,
+        action = {
+            val nameRef = typedRule
+            val descriptor = nameRef.resolvedReferenceTarget as ClassDescriptor
+            -descriptor.swiftTopLevelName
+
+            run instanceBlock@{
+                val call = typedRule.resolvedCall ?: return@instanceBlock
+                if (call.resultingDescriptor !is FakeCallableDescriptorForObject) return@instanceBlock
+                if ((call.getReturnType().constructor.declarationDescriptor as? ClassDescriptor)?.kind != ClassKind.ENUM_CLASS) {
+                    -".INSTANCE"
+                }
+            }
+        }
+    )
     handle<KtDotQualifiedExpression>(
         condition = {
             val descriptor =

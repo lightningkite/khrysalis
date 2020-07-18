@@ -18,7 +18,7 @@ public extension ViewFlipper {
             self.displayedChild = value ? 1 : 0
         }.until(self.removed)
     }
-    func bindLoading(loading: MutableObservableProperty<Bool>, color: ColorResource? = nil) -> Void {
+    func bindLoading(loading: ObservableProperty<Bool>, color: ColorResource? = nil) -> Void {
         return bindLoading(loading)
     }
 }

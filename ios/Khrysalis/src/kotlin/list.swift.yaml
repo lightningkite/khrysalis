@@ -49,11 +49,45 @@
   type: typeRef
   template: Array
 
+- id: kotlin.collections.plus
+  type: call
+  receiver: kotlin.collections.Iterable
+  infix: true
+  template: ~this~ + ~0~
+- id: kotlin.collections.plus
+  type: call
+  receiver: kotlin.collections.Iterable
+  template: (~this~ + ~0~)
+- id: kotlin.collections.plusAssign
+  type: call
+  receiver: kotlin.collections.MutableCollection
+  template: ~this~.append(~0~)
+
+- id: kotlin.collections.plus
+  type: call
+  receiver: kotlin.collections.Collection
+  infix: true
+  template: ~this~ + ~0~
+- id: kotlin.collections.plus
+  type: call
+  receiver: kotlin.collections.Collection
+  template: (~this~ + ~0~)
+
 - id: kotlin.collections.ArrayList
   type: call
   arguments: []
   template: "[]"
 - id: kotlin.collections.ArrayList
+  type: call
+  arguments: []
+  hasExplicitTypeArguments: true
+  template: "[] as Array<~T0~>"
+
+- id: java.util.ArrayList
+  type: call
+  arguments: []
+  template: "[]"
+- id: java.util.ArrayList
   type: call
   arguments: []
   hasExplicitTypeArguments: true
@@ -109,18 +143,18 @@
 - id: kotlin.collections.MutableCollection.addAll
   actualReceiver: kotlin.collections.MutableList
   type: call
-  arguments: [kotlin.Int]
+  arguments: [kotlin.Int, '*']
   template: "~this~.insert(contentsOf: ~1~, at: ~0~)"
 
 # Extensions
 - id: kotlin.collections.indexOfFirst
   type: call
   actualReceiver: kotlin.collections.List
-  template: ~this~.firstIndex(~0~)
+  template: '(~this~.firstIndex(where: ~0~) ?? -1)'
 - id: kotlin.collections.indexOfLast
   type: call
   actualReceiver: kotlin.collections.List
-  template: ~this~.lastIndex(~0~)
+  template: '(~this~.lastIndex(where: ~0~) ?? -1)'
 - id: kotlin.collections.first
   type: call
   actualReceiver: kotlin.collections.List

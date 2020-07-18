@@ -10,14 +10,18 @@ import Foundation
 import UIKit
 
 public protocol CompoundButton: AnyObject {
-    func addOnCheckChanged(_ item: @escaping (Bool) -> Void)
-    var isOn: Bool { get set }
+    func setOnCheckedChangeListener(_ item: @escaping (CompoundButton, Bool) -> Void)
+    var isChecked: Bool { get set }
 }
 
 extension UISwitch : CompoundButton {
-    public func addOnCheckChanged(_ item: @escaping (Bool) -> Void) {
+    public var isChecked: Bool {
+        get { return isOn }
+        set(value) { isOn = value }
+    }
+    public func setOnCheckedChangeListener(_ item: @escaping (CompoundButton, Bool) -> Void) {
         self.addAction(for: .valueChanged, id: "onCheckChanged", action: {
-            item(self.isOn)
+            item(self, self.isChecked)
         })
     }
 }

@@ -10,6 +10,7 @@ import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.lexer.KtSingleValueToken
 import org.jetbrains.kotlin.psi.KtBinaryExpression
 import org.jetbrains.kotlin.psi.KtExpression
+import org.jetbrains.kotlin.resolve.calls.callResolverUtil.isInfixCall
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
 import org.jetbrains.kotlin.types.KotlinType
 import org.jetbrains.kotlin.types.typeUtil.supertypes
@@ -35,7 +36,7 @@ data class FunctionReplacement(
                 (if (receiver != null) 2 else 0) +
                 (if (arguments != null) 4 else 0) +
                 (if (comparatorType != null) 8 else 0) +
-                (if(usedAsExpression != null) 8 else 0) +
+                (if (usedAsExpression != null) 8 else 0) +
                 (typeArgumentRequirements?.size?.times(32) ?: 0)
 
     fun passes(
@@ -43,14 +44,19 @@ data class FunctionReplacement(
         call: ResolvedCall<out CallableDescriptor>,
         descriptor: CallableDescriptor
     ): Boolean {
+        if(infix != null){
+            if(infix != call.call.callElement is KtBinaryExpression) return false
+        }
         val hasExplicitTypeArguments = call.call.typeArgumentList != null
         if (this.hasExplicitTypeArguments != null && this.hasExplicitTypeArguments != hasExplicitTypeArguments) return false
         if (receiver != null && receiver != descriptor.extensionReceiverParameter?.type?.getJetTypeFqName(false)) return false
         if (arguments != null) {
             if (this.arguments.size != descriptor.original.valueParameters.size) return false
             if (!this.arguments.zip(descriptor.original.valueParameters)
-                    .all { (a, p) -> a == "*" || p.type.getJetTypeFqName(false) == a }
-            ) return false
+                    .all { (a, p) -> a == "*" || p.type.getJetTypeFqName(false) == a || p.name.asString() == a }
+            ) {
+                return false
+            }
         }
         if (this.comparatorType != null) {
             val comparatorType =

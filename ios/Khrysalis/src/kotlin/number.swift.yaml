@@ -370,44 +370,97 @@
 
 - id: kotlin.Byte.inc
   type: call
-  template: (~this~ += 1)
+  usedAsExpression: false
+  template: ~this~ += 1
 - id: kotlin.Short.inc
   type: call
-  template: (~this~ += 1)
+  usedAsExpression: false
+  template: ~this~ += 1
 - id: kotlin.Int.inc
   type: call
-  template: (~this~ += 1)
+  usedAsExpression: false
+  template: ~this~ += 1
 - id: kotlin.Long.inc
   type: call
-  template: (~this~ += 1)
+  usedAsExpression: false
+  template: ~this~ += 1
 - id: kotlin.Float.inc
   type: call
-  template: (~this~ += 1)
+  usedAsExpression: false
+  template: ~this~ += 1
 - id: kotlin.Double.inc
   type: call
-  template: (~this~ += 1)
+  usedAsExpression: false
+  template: ~this~ += 1
 
 # Decrement
 
 - id: kotlin.Byte.dec
   type: call
-  template: (~this~ -= 1)
+  usedAsExpression: false
+  template: ~this~ -= 1
 - id: kotlin.Short.dec
   type: call
-  template: (~this~ -= 1)
+  usedAsExpression: false
+  template: ~this~ -= 1
 - id: kotlin.Int.dec
   type: call
-  template: (~this~ -= 1)
+  usedAsExpression: false
+  template: ~this~ -= 1
 - id: kotlin.Long.dec
   type: call
-  template: (~this~ -= 1)
+  usedAsExpression: false
+  template: ~this~ -= 1
 - id: kotlin.Float.dec
   type: call
-  template: (~this~ -= 1)
+  usedAsExpression: false
+  template: ~this~ -= 1
 - id: kotlin.Double.dec
   type: call
-  template: (~this~ -= 1)
-  
+  usedAsExpression: false
+  template: ~this~ -= 1
+
+# Increment
+
+- id: kotlin.Byte.inc
+  type: call
+  template: ~this~.postInc()
+- id: kotlin.Short.inc
+  type: call
+  template: ~this~.postInc()
+- id: kotlin.Int.inc
+  type: call
+  template: ~this~.postInc()
+- id: kotlin.Long.inc
+  type: call
+  template: ~this~.postInc()
+- id: kotlin.Float.inc
+  type: call
+  template: ~this~.postInc()
+- id: kotlin.Double.inc
+  type: call
+  template: ~this~.postInc()
+
+# Decrement
+
+- id: kotlin.Byte.dec
+  type: call
+  template: ~this~.postDec()
+- id: kotlin.Short.dec
+  type: call
+  template: ~this~.postDec()
+- id: kotlin.Int.dec
+  type: call
+  template: ~this~.postDec()
+- id: kotlin.Long.dec
+  type: call
+  template: ~this~.postDec()
+- id: kotlin.Float.dec
+  type: call
+  template: ~this~.postDec()
+- id: kotlin.Double.dec
+  type: call
+  template: ~this~.postDec()
 # Bitwise Operators
   
 # Not
@@ -639,22 +692,40 @@
 
 - id: kotlin.Byte.compareTo
   type: call
+  infix: true
   template: ~this~ ~operatorToken~ ~0~
 - id: kotlin.Short.compareTo
   type: call
+  infix: true
   template: ~this~ ~operatorToken~ ~0~
 - id: kotlin.Int.compareTo
   type: call
+  infix: true
   template: ~this~ ~operatorToken~ ~0~
 - id: kotlin.Long.compareTo
   type: call
+  infix: true
   template: ~this~ ~operatorToken~ ~0~
 - id: kotlin.Float.compareTo
   type: call
+  infix: true
   template: ~this~ ~operatorToken~ ~0~
 - id: kotlin.Double.compareTo
   type: call
+  infix: true
   template: ~this~ ~operatorToken~ ~0~
+- id: kotlin.Char.compareTo
+  type: call
+  infix: true
+  template: ~this~ ~operatorToken~ ~0~
+- id: kotlin.String.compareTo
+  type: call
+  infix: true
+  template: ~this~ ~operatorToken~ ~0~
+- id: kotlin.Comparable.compareTo
+  type: call
+  infix: false
+  template: ~this~.compareTo(~0~)
   
   
 # toByte

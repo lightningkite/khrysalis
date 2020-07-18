@@ -18,8 +18,8 @@ public func applyColor(_ view: UIView?, _ colorSet: @escaping (_ state: UIContro
             to(colorSet(state))
         })
     } else if let self = view as? CompoundButton {
-        self.addOnCheckChanged({ isOn in
-            to(colorSet(isOn ? .selected : .normal))
+        self.setOnCheckedChangeListener({ (_, isChecked) in
+            to(colorSet(isChecked ? .selected : .normal))
         })
     }
     to(colorSet(.normal))

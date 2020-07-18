@@ -69,6 +69,9 @@
   type: call
   receiver: kotlin.collections.MutableMap
   template: ~this~[~0~] = ~1~
+- id: kotlin.collections.MutableMap.remove
+  type: call
+  template: '~this~.removeValue(forKey: ~0~)'
 
 - id: kotlin.collections.component1
   type: call

@@ -75,6 +75,38 @@ public extension Sequence {
         }
         return current
     }
+    func distinctBy<U: Hashable>(selector: (Iterator.Element)->U) -> [Iterator.Element] {
+        var seen: [U: Bool] = [:]
+        return self.filter { seen.updateValue(true, forKey: selector($0)) == nil }
+    }
+}
+
+public func Comparator<T>(function: @escaping (T, T)->Int) -> Comparator {
+    return { (a: Any, b: Any) in
+        if let a = a as? T {
+            if let b = b as? T {
+                let num = function(a, b)
+                if num > 0 {
+                    return .orderedDescending
+                } else if num < 0 {
+                    return .orderedAscending
+                } else {
+                    return .orderedSame
+                }
+            } else {
+                return .orderedDescending
+            }
+        } else {
+            return .orderedAscending
+        }
+    }
+}
+
+public extension Sequence where Iterator.Element: Hashable {
+    func distinct() -> [Iterator.Element] {
+        var seen: [Iterator.Element: Bool] = [:]
+        return self.filter { seen.updateValue(true, forKey: $0) == nil }
+    }
 }
 
 public extension Array {
@@ -123,6 +155,9 @@ public extension Array {
 }
 
 public extension Array where Element: Equatable {
+    mutating func remove(element: Element) {
+        remove(element)
+    }
     mutating func remove(_ element: Element) {
         let index = self.firstIndex(where: { sub in
             sub == element
@@ -173,6 +208,51 @@ public extension Collection {
     }
 }
 
+public extension SignedInteger {
+    mutating func postInc() -> Self {
+        let result = self
+        self += 1
+        return result
+    }
+    mutating func postDec() -> Self {
+        let result = self
+        self -= 1
+        return result
+    }
+    mutating func preInc() -> Self {
+        self += 1
+        return self
+    }
+    mutating func preDec() -> Self {
+        self -= 1
+        return self
+    }
+}
+
+public extension Comparable {
+    func compareTo(_ other: Self) -> Int {
+        if self > other {
+            return ComparisonResult.orderedDescending.rawValue
+        } else if self == other {
+            return ComparisonResult.orderedSame.rawValue
+        } else {
+            return ComparisonResult.orderedAscending.rawValue
+        }
+    }
+}
+
+public extension Dictionary {
+    mutating func getOrPut(key: Key, defaultValue: ()->Value) -> Value {
+        if let value = self[key] {
+            return value
+        } else {
+            let newValue = defaultValue()
+            self[key] = newValue
+            return newValue
+        }
+    }
+}
+
 public extension String {
     subscript(i: Int) -> Character {
         return self[index(startIndex, offsetBy: Int(i))]
@@ -216,7 +296,7 @@ public extension String {
     }
     
     func substringBefore(delimiter: String, missingDelimiterValue: String? = nil) -> String {
-        let index = self.indexOf(delimiter)
+        let index = self.indexOf(string: delimiter)
         if index != -1 {
             return substring(0, index)
         } else {
@@ -225,7 +305,7 @@ public extension String {
     }
     
     func substringAfter(delimiter: String, missingDelimiterValue: String? = nil) -> String {
-        let index = self.indexOf(delimiter)
+        let index = self.indexOf(string: delimiter)
         if index != -1 {
             return substring(index + delimiter.count)
         } else {
@@ -234,7 +314,7 @@ public extension String {
     }
     
     func substringBeforeLast(delimiter: String, missingDelimiterValue: String? = nil) -> String {
-        let index = self.lastIndexOf(delimiter)
+        let index = self.lastIndexOf(string: delimiter)
         if index != -1 {
             return substring(0, index)
         } else {
@@ -243,7 +323,7 @@ public extension String {
     }
     
     func substringAfterLast(delimiter: String, missingDelimiterValue: String? = nil) -> String {
-        let index = self.lastIndexOf(delimiter)
+        let index = self.lastIndexOf(string: delimiter)
         if index != -1 {
             return substring(index + delimiter.count)
         } else {
@@ -259,7 +339,7 @@ public extension String {
 
 
 public extension StringProtocol {
-    func indexOf(_ string: Self, _ startIndex: Int = 0, _ ignoreCase: Bool = true) -> Int {
+    func indexOf(string: Self, startIndex: Int = 0, ignoreCase: Bool = true) -> Int {
         var options: String.CompareOptions = [.literal]
         if ignoreCase {
             options = [.literal, .caseInsensitive]
@@ -271,7 +351,7 @@ public extension StringProtocol {
         }
     }
     
-    func lastIndexOf(_ string: Self, _ startIndex: Int = 0, _ ignoreCase: Bool = true) -> Int {
+    func lastIndexOf(string: Self, startIndex: Int = 0, ignoreCase: Bool = true) -> Int {
         var options: String.CompareOptions = [.literal, .backwards]
         if ignoreCase {
             options = [.literal, .caseInsensitive, .backwards]
@@ -281,7 +361,29 @@ public extension StringProtocol {
         } else {
             return -1
         }
-        
+    }
+    func indexOfAny(chars: Array<Character>, startIndex: Int = 0, ignoreCase: Bool = true) -> Int {
+        var options: String.CompareOptions = [.literal]
+        if ignoreCase {
+            options = [.literal, .caseInsensitive]
+        }
+        if let index = rangeOfCharacter(from: CharacterSet(chars.flatMap { $0.unicodeScalars }), options: options)?.lowerBound {
+            return Int(distance(from: self.startIndex, to: index))
+        } else {
+            return -1
+        }
+    }
+
+    func lastIndexOfAny(chars: Array<Character>, startIndex: Int = 0, ignoreCase: Bool = true) -> Int {
+        var options: String.CompareOptions = [.literal, .backwards]
+        if ignoreCase {
+            options = [.literal, .caseInsensitive, .backwards]
+        }
+        if let index = rangeOfCharacter(from: CharacterSet(chars.flatMap { $0.unicodeScalars }), options: options)?.lowerBound {
+            return Int(distance(from: self.startIndex, to: index))
+        } else {
+            return -1
+        }
     }
 }
 
@@ -302,6 +404,7 @@ public class Exception: Error {
 
 public class IllegalStateException: Exception {}
 public class IllegalArgumentException: Exception {}
+public class NoSuchElementException: Exception {}
 
 public extension Error {
     func printStackTrace(){

@@ -78,3 +78,7 @@ fun <K, V, V2> Map<K, V>.mapValuesToValues(mapper: (V)->V2): Map<K, V2> {
 }
 
 val Throwable.localizedDescription: String get() = this.localizedMessage ?: this::class.java.simpleName
+
+fun fatalError(reason: String = ""): Nothing {
+    throw Error(reason)
+}

@@ -29,6 +29,10 @@
   type: call
   arguments: []
   template: "~this~.trimmingCharacters(in: .whitespacesAndNewlines)"
+- id: kotlin.text.trimIndent
+  type: call
+  arguments: []
+  template: "~this~.trimmingCharacters(in: .whitespacesAndNewlines)" #TODO: This could be more accurate
 - id: kotlin.text.padEnd
   type: call
   template: "~this~.padding(toLength: ~0~, withPad: ~1~, startingAtIndex: 0)"
@@ -64,13 +68,17 @@
   template: "~this~.ends(with: ~0~)"
 - id: kotlin.text.split
   type: call
-  template: ~this~.split(~*~)
+  template: '~this~.split(separator: ~*~)'
 - id: kotlin.text.lines
   type: call
-  template: ~this~.split('\n')
+  template: '~this~.split(separator: "\n")'
 - id: kotlin.text.contains
   type: call
-  template: (~this~.indexOf(~0~) != -1)
+  template: '(~this~.indexOf(string: ~0~) != -1)'
+- id: kotlin.text.contains
+  type: call
+  suppliedArguments: [string, ignoreCase]
+  template: '(~this~.indexOf(string: ~0~, ignoreCase: ~ignoreCase~) != -1)'
 
 # Characters
 
@@ -126,7 +134,7 @@
   template: NSRegularExpression
 - id: kotlin.text.Regex
   type: call
-  template: "NSRegularExpression(pattern: ~0~, options: [])"
+  template: "(try! NSRegularExpression(pattern: ~0~, options: []))"
 
 # String Builder
 - id: kotlin.text.StringBuilder

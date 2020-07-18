@@ -23,6 +23,17 @@ fun SwiftTranslator.registerLiterals() {
             doSuper()
         }
     }
+    handle<KtStringTemplateExpression>(
+        condition = {
+            val f = typedRule.firstChild
+            f is LeafPsiElement && f.textLength == 3
+        },
+        priority = 100
+    ) {
+        -"\"\"\"\n"
+        -typedRule.entries
+        -"\n\"\"\""
+    }
 
     handle<KtConstantExpression> {
         when(typedRule.node.elementType){

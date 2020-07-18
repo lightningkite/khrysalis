@@ -4,6 +4,7 @@ import KeychainAccess
 
 //--- SecurePreferences.{
 public enum SecurePreferences {
+    static public let INSTANCE = Self.self
     
     public static var keychain = Keychain(service: (Bundle.main.bundleIdentifier ?? "com.lightningkite.khrysalis.unknownApp") + ".securePreferences")
     

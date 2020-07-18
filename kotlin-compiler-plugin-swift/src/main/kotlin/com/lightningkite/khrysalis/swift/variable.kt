@@ -1,13 +1,20 @@
 package com.lightningkite.khrysalis.swift
 
+import com.lightningkite.khrysalis.swift.replacements.Template
+import com.lightningkite.khrysalis.swift.replacements.TemplatePart
+import com.lightningkite.khrysalis.util.AnalysisExtensions
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
+import org.jetbrains.kotlin.js.translate.callTranslator.getReturnType
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
 import org.jetbrains.kotlin.psi.synthetics.SyntheticClassOrObjectDescriptor
+import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
+import org.jetbrains.kotlin.resolve.calls.model.VariableAsFunctionResolvedCall
+import org.jetbrains.kotlin.resolve.calls.resolvedCallUtil.getImplicitReceiverValue
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
 import org.jetbrains.kotlin.synthetic.SyntheticJavaPropertyDescriptor
 import org.jetbrains.kotlin.types.KotlinType
@@ -33,12 +40,45 @@ data class VirtualSet(
     val dispatchReceiver: String?
 )
 
-val PropertyDescriptor.hasSwiftBacking: Boolean get(){
-    return hasSwiftOverride || ((this.getter?.isDefault == false || this.setter?.isDefault == false) && this.backingField != null && this.extensionReceiverParameter == null)
-}
-val PropertyDescriptor.hasSwiftOverride: Boolean get(){
-    return overriddenDescriptors
-        .any { (it.containingDeclaration as? ClassDescriptor)?.kind != ClassKind.INTERFACE }
+val PropertyDescriptor.hasSwiftBacking: Boolean
+    get() {
+        return hasSwiftOverride || ((this.getter?.isDefault == false || this.setter?.isDefault == false) && this.backingField != null && this.extensionReceiverParameter == null)
+    }
+val PropertyDescriptor.hasSwiftOverride: Boolean
+    get() {
+        return overriddenDescriptors
+            .any { (it.containingDeclaration as? ClassDescriptor)?.kind != ClassKind.INTERFACE }
+    }
+
+
+fun AnalysisExtensions.capturesSelf(it: PsiElement?, containingDeclaration: ClassDescriptor?, immediate: Boolean = true): Boolean {
+    if(it == null) return false
+    if(it is KtLambdaExpression){
+        return it.allChildren.any { capturesSelf(it, containingDeclaration, false) }
+    }
+    if(it is KtExpression) {
+        var hasThis = false
+        val resolved: CallableDescriptor?
+        if (it is KtThisExpression) {
+            hasThis = true
+            resolved = (it.parent as? KtExpression)?.resolvedCall?.candidateDescriptor
+        } else {
+            resolved = it.resolvedCall?.candidateDescriptor
+            hasThis = when (val r = it.resolvedCall) {
+                is VariableAsFunctionResolvedCall -> r.variableCall.getImplicitReceiverValue() != null
+                else -> r?.getImplicitReceiverValue() != null
+            }
+        }
+        if (hasThis) {
+            if (resolved is PropertyDescriptor) {
+                val safe = immediate && resolved.getter?.isDefault != false && resolved.overriddenDescriptors.isEmpty()
+                return !safe
+            } else {
+                return true
+            }
+        }
+    }
+    return it.allChildren.any { capturesSelf(it, containingDeclaration, immediate) }
 }
 
 fun SwiftTranslator.registerVariable() {
@@ -117,7 +157,10 @@ fun SwiftTranslator.registerVariable() {
 
     //Weak
     handle<KtProperty>(
-        condition = { ((typedRule.delegateExpression as? KtCallExpression)?.calleeExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget?.fqNameOrNull()?.asString() == "com.lightningkite.khrysalis.weak" },
+        condition = {
+            ((typedRule.delegateExpression as? KtCallExpression)?.calleeExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget?.fqNameOrNull()
+                ?.asString() == "com.lightningkite.khrysalis.weak"
+        },
         priority = 15
     ) {
         -"weak "
@@ -143,14 +186,15 @@ fun SwiftTranslator.registerVariable() {
     }
     //Plain
     handle<KtProperty> {
-        if(typedRule.annotationEntries.any { it.typeReference?.text?.endsWith("weak") == true }){
+        if (typedRule.annotationEntries.any { it.typeReference?.text?.endsWith("weak") == true }) {
             -"weak "
         }
         if (typedRule.isMember || (typedRule.isTopLevel && !typedRule.isExtensionDeclaration())) {
             -(typedRule.swiftVisibility() ?: "public")
             -" "
         }
-        if (typedRule.isVar || (typedRule.resolvedProperty?.type?.requiresMutable()
+        val isLateInit = typedRule.hasModifier(KtTokens.LATEINIT_KEYWORD) || (typedRule.isMember && capturesSelf(typedRule.initializer, typedRule.containingClassOrObject?.resolvedClass))
+        if (isLateInit || typedRule.isVar || (typedRule.resolvedProperty?.type?.requiresMutable()
                 ?: typedRule.resolvedVariable?.type?.requiresMutable()) == true
         ) {
             -"var "
@@ -158,13 +202,17 @@ fun SwiftTranslator.registerVariable() {
             -"let "
         }
         -typedRule.nameIdentifier
-        typedRule.typeReference?.let {
+        val type = typedRule.typeReference ?: if (typedRule.isMember || typedRule.initializer == null) {
+            typedRule.resolvedProperty?.type
+        } else null
+        type?.let {
             -": "
-            -it
-        } ?: run {
-            if (typedRule.isMember || typedRule.initializer == null) {
-                -": "
-                -typedRule.resolvedProperty?.type
+            if(isLateInit){
+                -'('
+                -it
+                -")!"
+            } else {
+                -it
             }
         }
         if (!typedRule.isMember) {
@@ -257,7 +305,7 @@ fun SwiftTranslator.registerVariable() {
                 -" }"
                 -"\n"
             }
-            if(typedRule.isVar || typedRule.resolvedProperty?.type?.requiresMutable() == true) {
+            if (typedRule.isVar || typedRule.resolvedProperty?.type?.requiresMutable() == true) {
                 typedRule.setter?.let {
                     -it
                 } ?: run {
@@ -283,7 +331,11 @@ fun SwiftTranslator.registerVariable() {
                 -(typedRule.swiftVisibility() ?: "public")
                 -" "
             }
-            -SwiftExtensionStart(typedRule.resolvedProperty!!, typedRule.typeParameterList)
+            -SwiftExtensionStart(
+                typedRule.resolvedProperty!!,
+                typedRule.receiverTypeReference,
+                typedRule.typeParameterList
+            )
             -'\n'
             doSuper()
             -"\n}"
@@ -388,20 +440,39 @@ fun SwiftTranslator.registerVariable() {
         priority = 10_000,
         action = {
             val rule = replacements.getGet(typedRule.property, typedRule.receiverType)!!
-            if (typedRule.safe) {
-                -"run { (_it) in \n"
-                -"if let _it == nil { return null }\nreturn "
+
+            val templateIsThisDot = rule.template.parts.getOrNull(0) is TemplatePart.Receiver && rule.template.parts.getOrNull(1).let { it is TemplatePart.Text && it.string.startsWith('.') }
+            val needsSafe = typedRule.safe && when(val c = (typedRule.receiver as? KtExpression)?.resolvedCall?.candidateDescriptor){
+                is FunctionDescriptor -> c.returnType?.isMarkedNullable == true
+                is ValueDescriptor -> c.type.isMarkedNullable
+                else -> true
+            }
+            val needsWrap = needsSafe && !templateIsThisDot
+
+            val rec: Any = if (needsWrap) {
+                val rec = "temp${uniqueNumber.getAndIncrement()}"
+                -typedRule.receiver
+                if(typedRule.expr.resolvedCall!!.getReturnType().isMarkedNullable){
+                    -".flatMap { $rec in "
+                } else {
+                    -".map { $rec in "
+                }
+                rec
+            } else {
+                typedRule.receiver
             }
             emitTemplate(
                 requiresWrapping = typedRule.expr.actuallyCouldBeExpression,
-                template = rule.template,
-                receiver = (if (typedRule.safe) "_it" else typedRule.receiver),
+                template = if(templateIsThisDot && needsSafe)
+                    Template(parts = rule.template.parts.toMutableList().apply {
+                        this[1] = (this[1] as TemplatePart.Text).let { it.copy("?" + it.string) }
+                    })
+                else rule.template,
+                receiver = rec,
                 dispatchReceiver = typedRule.expr.getTsReceiver()
             )
-            if (typedRule.safe) {
-                -"\n})("
-                -typedRule.receiver
-                -')'
+            if (needsWrap) {
+                -"}"
             }
         }
     )
@@ -411,28 +482,42 @@ fun SwiftTranslator.registerVariable() {
         },
         priority = 1000,
         action = {
-            if (typedRule.safe) {
-                -"run { (_it) in \n"
-                -"if let _it == nil { return null }\nreturn "
+            val needsSafe = typedRule.safe && when(val c = (typedRule.receiver as? KtExpression)?.resolvedCall?.candidateDescriptor){
+                is FunctionDescriptor -> c.returnType?.isMarkedNullable == true
+                is ValueDescriptor -> c.type.isMarkedNullable
+                else -> true
             }
+            val rec: Any = if(needsSafe){
+                val rec = "temp${uniqueNumber.getAndIncrement()}"
+                -typedRule.receiver
+                if(typedRule.property.type.isMarkedNullable){
+                    -".flatMap { $rec in "
+                } else {
+                    -".map { $rec in "
+                }
+                rec
+            } else typedRule.receiver
             if (typedRule.property.dispatchReceiverParameter != null) {
                 -typedRule.expr.getTsReceiver()
                 -"."
             }
             -typedRule.property.tsFunctionGetName
             -'('
-            -(if (typedRule.safe) "_it" else typedRule.receiver)
+            -rec
             -')'
-            if (typedRule.safe) {
-                -"\n})("
-                -typedRule.receiver
-                -')'
+            if (needsSafe) {
+                -" }"
             }
         }
     )
     handle<VirtualGet> {
         -typedRule.receiver
-        if (typedRule.safe) {
+        val needsSafe = typedRule.safe && when(val c = (typedRule.receiver as? KtExpression)?.resolvedCall?.candidateDescriptor){
+            is FunctionDescriptor -> c.returnType?.isMarkedNullable == true
+            is ValueDescriptor -> c.type.isMarkedNullable
+            else -> true
+        }
+        if (needsSafe) {
             -"?."
         } else {
             -"."
@@ -517,7 +602,7 @@ fun SwiftTranslator.registerVariable() {
             }
             -typedRule.property.tsFunctionSetName
             -'('
-            -(if (typedRule.safe) run{
+            -(if (typedRule.safe) run {
                 -"if let"
                 val n = "temp${uniqueNumber.getAndIncrement()}"
                 -n

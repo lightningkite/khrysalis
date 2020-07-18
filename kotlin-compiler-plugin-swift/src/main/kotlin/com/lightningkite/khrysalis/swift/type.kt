@@ -31,7 +31,7 @@ fun KotlinType.isPrimitive() = getJetTypeFqName(false) in primitiveTypes
 data class BasicType(val type: KotlinType)
 data class CompleteReflectableType(val type: KotlinType)
 data class KtUserTypeBasic(val type: KtUserType)
-data class SwiftExtensionStart(val forDescriptor: CallableDescriptor, val typeParams: KtTypeParameterList?)
+data class SwiftExtensionStart(val forDescriptor: CallableDescriptor, val receiver: KtTypeReference?, val typeParams: KtTypeParameterList?)
 
 val partOfParameterLocal = ThreadLocal<Boolean>()
 var partOfParameter: Boolean
@@ -59,7 +59,7 @@ fun SwiftTranslator.registerType() {
         -"extension "
         val t = typedRule.forDescriptor.extensionReceiverParameter!!.type
         val baseClass = t.constructor.declarationDescriptor as? ClassDescriptor
-        -BasicType(t)
+        -typedRule.receiver?.typeElement?.let { it as? KtUserType }?.let { KtUserTypeBasic(it) } ?: BasicType(t)
         t.arguments
             .mapIndexedNotNull { index, arg ->
                 if (arg.type.isTypeParameter()) {
@@ -158,12 +158,12 @@ fun SwiftTranslator.registerType() {
             is ClassDescriptor -> {
                 var current: ClassDescriptor = desc
                 val items = arrayListOf(current)
-                while (true) {
+                while (!current.swiftTopLevelMessedUp) {
                     current = current.containingDeclaration as? ClassDescriptor ?: break
                     items += current
                 }
                 items.asReversed().forEachBetween(
-                    forItem = { -it.name.asString() },
+                    forItem = { -it.swiftTopLevelName },
                     between = { -'.' }
                 )
                 typedRule.arguments.takeUnless { it.isEmpty() }?.let {
@@ -246,6 +246,20 @@ fun SwiftTranslator.registerType() {
                 typeParameter = { typeParametersByName[it.name] ?: "nil" },
                 typeParameterByIndex = { typedRule.typeArguments.getOrNull(it.index) ?: "nil" }
             )
+        }
+    )
+
+    handle<KtUserType>(
+        condition = {
+            val reference = typedRule.referenceExpression ?: return@handle false
+            val type = reference.resolvedReferenceTarget ?: return@handle false
+            type is ClassDescriptor && type.swiftTopLevelMessedUp
+        },
+        priority = 100,
+        action = {
+            val reference = typedRule.referenceExpression!!
+            val type = reference.resolvedReferenceTarget as ClassDescriptor
+            -type.swiftTopLevelName
         }
     )
 

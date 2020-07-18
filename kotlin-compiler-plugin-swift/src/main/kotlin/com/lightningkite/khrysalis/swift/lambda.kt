@@ -58,7 +58,11 @@ fun SwiftTranslator.registerLambda() {
             -'('
             it.withIndex().forEachBetween(
                 forItem = { (index, it) ->
-                    -it.name.asString()
+                    if(it.name.isSpecial){
+                        -'_'
+                    } else {
+                        -it.name.asString()
+                    }
                     -": "
                     partOfParameter = true
                     -(typedRule.valueParameters.getOrNull(index)?.typeReference ?: it.type)

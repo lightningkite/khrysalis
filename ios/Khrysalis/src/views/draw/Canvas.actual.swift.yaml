@@ -1,0 +1,4 @@
+---
+- id: android.graphics.Canvas.concat
+  type: call
+  template: ~this~.concatenate(~0~)

@@ -25,10 +25,39 @@
   type: type
   requiresMutable: true
   template: Array<Double>
+- id: kotlin.CharArray
+  type: type
+  requiresMutable: true
+  template: Array<Character>
 - id: kotlin.Array
   type: type
   requiresMutable: true
   template: Array<~T0~>
+
+- id: kotlin.byteArrayOf
+  type: call
+  template: '([~*~] as Array<Int8>)'
+- id: kotlin.shortArrayOf
+  type: call
+  template: '([~*~] as Array<Int16>)'
+- id: kotlin.intArrayOf
+  type: call
+  template: '([~*~] as Array<Int>)'
+- id: kotlin.longArrayOf
+  type: call
+  template: '([~*~] as Array<Int64>)'
+- id: kotlin.floatArrayOf
+  type: call
+  template: '([~*~] as Array<Float>)'
+- id: kotlin.doubleArrayOf
+  type: call
+  template: '([~*~] as Array<Double>)'
+- id: kotlin.charArrayOf
+  type: call
+  template: '([~*~] as Array<Character>)'
+- id: kotlin.arrayOf
+  type: call
+  template: '([~*~] as Array<~T0~>)'
 
 - id: kotlin.ByteArray
   type: typeRef

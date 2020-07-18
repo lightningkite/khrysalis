@@ -26,7 +26,7 @@ public class DjangoErrorTranslator {
             }
         } else if let node = node as? String{
             //Rough check for human-readability - sentences start with uppercase and will have spaces
-            if (!node.isEmpty), node[0].isUppercase, (node.indexOf(" ") != -1) {
+            if (!node.isEmpty), node[0].isUppercase, (node.indexOf(string: " ") != -1) {
                 builder.value.append(node + "\n")
             }
         }

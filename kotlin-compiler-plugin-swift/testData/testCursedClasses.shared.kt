@@ -9,7 +9,7 @@ private class CursedA {
             println(x)
             println(B.x)
         }
-        class C<T> {
+        open class C<T> {
             companion object {
                 val x: Int = 0
                 fun test(){
@@ -34,6 +34,22 @@ private class CursedA {
                 }
             }
         }
+    }
+}
+
+private class CursedL<T>(val x: Int = 0): CursedA.B.C<T>() {
+    var y: Int = x
+    val z: Int = y
+    val ohno: Int get() = 2
+    val a: Int = ohno
+    val b: Int = 2.plus(ohno.plus(3))
+    val c: Int = 2.plus(this.ohno.plus(3))
+    val d2: CursedA.B.C.D = d
+    val d3 = d
+    val selfCapture = { this.x }
+    val selfCapture2 = { x }
+    companion object {
+        val x: Int = 0
     }
 }
 
@@ -64,4 +80,5 @@ private fun cursedmain(){
     CursedA.B.C.D.JK()
     println(CursedA.B.C)
     println(CursedA.B)
+    println(CursedL.x)
 }

@@ -63,12 +63,13 @@ fun ifAndWhenMain() {
     }
 
     val ifAsExpression = if (thing2 != null) thing2 else 0
+    val ifAsExpression4 = if (thing2 != null && thing == 0) thing2 else 0
     val ifAsExpression2 = if (thing2 != null) {
         println("Hi!")
         thing2
     } else {
         println("SAD")
-        0
+        null
     }
 
     val ifAsExpression3 = listOf(1, 2, 3).map {
@@ -134,6 +135,14 @@ fun ifAndWhenMain() {
         }
         else -> {
             println("is something else")
+        }
+    }
+    when (thing) {
+        0 -> println("is zero")
+        1 -> println("is one")
+        2 -> {
+            println("is two")
+            println("which is magical")
         }
     }
 

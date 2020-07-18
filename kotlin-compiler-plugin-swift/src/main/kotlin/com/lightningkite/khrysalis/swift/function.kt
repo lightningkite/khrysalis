@@ -10,6 +10,11 @@ import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
 import org.jetbrains.kotlin.types.typeUtil.contains
 import org.jetbrains.kotlin.types.typeUtil.isTypeParameter
 import com.lightningkite.khrysalis.generic.PartialTranslatorByType
+import com.lightningkite.khrysalis.swift.replacements.Template
+import com.lightningkite.khrysalis.swift.replacements.TemplatePart
+import org.jetbrains.kotlin.com.intellij.psi.PsiElement
+import org.jetbrains.kotlin.js.translate.callTranslator.getReturnType
+import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.synthetic.hasJavaOriginInHierarchy
 
 val noArgNames = setOf<String>(/*"value", "other"*/)
@@ -71,6 +76,9 @@ fun SwiftTranslator.registerFunction() {
             between = { -", " }
         )
         -')'
+        if(typedRule.resolvedFunction?.annotations?.findAnnotation(FqName("kotlin.jvm.Throws")) != null) {
+            -" throws"
+        }
         -" -> "
         -typedRule.returnType
         -' '
@@ -134,7 +142,7 @@ fun SwiftTranslator.registerFunction() {
                 -(typedRule.swiftVisibility() ?: "public")
                 -" "
             }
-            -SwiftExtensionStart(typedRule.resolvedFunction!!, typedRule.typeParameterList)
+            -SwiftExtensionStart(typedRule.resolvedFunction!!, typedRule.receiverTypeReference, typedRule.typeParameterList)
             -'\n'
             doSuper()
             -"\n}"
@@ -222,15 +230,42 @@ fun SwiftTranslator.registerFunction() {
         action: () -> Unit
     ) {
         val explicitTypeArgs = call.call.typeArgumentList != null
+        val needsTry = call.candidateDescriptor.annotations.hasAnnotation(FqName("kotlin.jvm.Throws"))
+        val needsExplicitReturn = explicitTypeArgs && call.resultingDescriptor.original.returnType?.contains { it.isTypeParameter() } == true
+        val isExpression = (call.call.callElement as? KtExpression)?.actuallyCouldBeExpression == true
 
-        if (explicitTypeArgs && call.resultingDescriptor.original.returnType?.contains { it.isTypeParameter() } == true) {
+        if (needsExplicitReturn) {
             -'('
-            action()
+        }
+        if(needsTry){
+            val caught = run {
+                var base: PsiElement? = call.call.callElement
+                while(base != null) {
+                    if(base is KtTryExpression)
+                        return@run true
+                    base = base.parent
+                }
+                return@run false
+            }
+            if(isExpression) {
+                -"("
+            }
+            if(useOptionalThrows){
+                -"try? "
+            } else if(caught) {
+                -"try "
+            } else {
+                -"try! "
+            }
+        }
+        action()
+        if(needsTry && isExpression){
+            -")"
+        }
+        if (needsExplicitReturn) {
             -" as "
             -call.resultingDescriptor.returnType
             -')'
-        } else {
-            action()
         }
     }
 
@@ -266,13 +301,28 @@ fun SwiftTranslator.registerFunction() {
             val nre = callExp.calleeExpression as KtNameReferenceExpression
             val f = callExp.resolvedCall!!.candidateDescriptor as FunctionDescriptor
 
-            if (typedRule.actuallyCouldBeExpression) {
-                -"run {"
+            val needsSafe = when(val c = typedRule.receiverExpression.resolvedCall?.candidateDescriptor){
+                is FunctionDescriptor -> c.returnType?.isMarkedNullable == true
+                is ValueDescriptor -> c.type.isMarkedNullable
+                else -> true
             }
-            val rec = "temp${uniqueNumber.getAndIncrement()}"
-            -"if let $rec = ("
-            -typedRule.receiverExpression
-            -") {\n"
+
+            val rec: Any = if(needsSafe){
+                val rec = "temp${uniqueNumber.getAndIncrement()}"
+                if (typedRule.actuallyCouldBeExpression) {
+                    -typedRule.receiverExpression
+                    if(callExp.resolvedCall!!.getReturnType().isMarkedNullable){
+                        -".flatMap { $rec in "
+                    } else {
+                        -".map { $rec in "
+                    }
+                } else {
+                    -"if let $rec = ("
+                    -typedRule.receiverExpression
+                    -") {\n"
+                }
+                rec
+            } else typedRule.receiverExpression
             maybeWrapCall(callExp.resolvedCall!!) {
                 -nre
                 -ArgumentsList(
@@ -281,9 +331,8 @@ fun SwiftTranslator.registerFunction() {
                     prependArguments = listOf(rec)
                 )
             }
-            -"\n}"
-            if (typedRule.actuallyCouldBeExpression) {
-                -"}"
+            if(needsSafe) {
+                -"\n}"
             }
         }
     )
@@ -424,16 +473,37 @@ fun SwiftTranslator.registerFunction() {
             val resolvedCall = callExp.resolvedCall!!
             val rule = replacements.getCall(this@registerFunction, resolvedCall)!!
 
-            if (typedRule.actuallyCouldBeExpression) {
-                -"run {"
+            val templateIsThisDot = rule.template.parts.getOrNull(0) is TemplatePart.Receiver && rule.template.parts.getOrNull(1).let { it is TemplatePart.Text && it.string.startsWith('.') }
+            val needsSafe = when(val c = typedRule.receiverExpression.resolvedCall?.candidateDescriptor){
+                is FunctionDescriptor -> c.returnType?.isMarkedNullable == true
+                is ValueDescriptor -> c.type.isMarkedNullable
+                else -> true
             }
-            val rec = "temp${uniqueNumber.getAndIncrement()}"
-            -"if let $rec = ("
-            -typedRule.receiverExpression
-            -") {\n"
+            val needsWrap = needsSafe && !templateIsThisDot
+
+            val rec: Any = if(needsWrap){
+                val rec = "temp${uniqueNumber.getAndIncrement()}"
+                if (typedRule.actuallyCouldBeExpression) {
+                    -typedRule.receiverExpression
+                    if(resolvedCall.getReturnType().isMarkedNullable){
+                        -".flatMap { $rec in "
+                    } else {
+                        -".map { $rec in "
+                    }
+                } else {
+                    -"if let $rec = ("
+                    -typedRule.receiverExpression
+                    -") {\n"
+                }
+                rec
+            } else typedRule.receiverExpression
             emitTemplate(
                 requiresWrapping = typedRule.actuallyCouldBeExpression,
-                template = rule.template,
+                template = if(templateIsThisDot && needsSafe)
+                    Template(parts = rule.template.parts.toMutableList().apply {
+                        this[1] = (this[1] as TemplatePart.Text).let { it.copy("?" + it.string) }
+                    })
+                else rule.template,
                 receiver = rec,
                 dispatchReceiver = nre.getTsReceiver(),
                 extensionReceiver = typedRule.receiverExpression,
@@ -448,9 +518,8 @@ fun SwiftTranslator.registerFunction() {
                 parameterByIndex = resolvedCall.template_parameterByIndex,
                 typeParameterByIndex = resolvedCall.template_typeParameterByIndex
             )
-            -"\n}"
-            if (typedRule.actuallyCouldBeExpression) {
-                -"}"
+            if(needsWrap) {
+                -"\n}"
             }
         }
     )
@@ -487,46 +556,51 @@ fun SwiftTranslator.registerFunction() {
     //Regular calls
     handle<ArgumentsList> {
         val explicitTypeArgs = typedRule.resolvedCall.call.typeArgumentList != null
-        -'('
-        var first = true
-        for (item in typedRule.prependArguments) {
-            if (first) {
-                first = false
-            } else {
-                -", "
-            }
-            -item
-        }
-        typedRule.resolvedCall.valueArguments.entries
-            .filter { it.value.arguments.isNotEmpty() }
+        val parenArguments = typedRule.prependArguments.plus(typedRule.resolvedCall.valueArguments.entries
+            .filter { it.value.arguments.isNotEmpty() && it.value.arguments.none { it.isExternal() && it is LambdaArgument } }
             .sortedBy { it.key.index }
-            .forEach { entry ->
-                if (first) {
-                    first = false
-                } else {
-                    -", "
-                }
+            .map { entry ->
+                val out = ArrayList<Any?>()
                 if (!typedRule.on.hasJavaOriginInHierarchy()) {
                     entry.key.name.takeUnless { it.isSpecial || it.asString().let { it in noArgNames || (it.startsWith('p') && it.drop(1).all { it.isDigit() } ) } }?.let {
-                        -it.asString()
-                        -": "
+                        out += it.asString()
+                        out += ": "
                     }
                 }
                 entry.value.arguments.forEachBetween(
                     forItem = {
                         if (entry.key.annotations.any { it.fqName?.asString() == "com.lightningkite.khrysalis.modifies" }) {
-                            -"&"
+                            out += "&"
                         }
-                        -it.getArgumentExpression()
+                        out += it.getArgumentExpression()
                         if (explicitTypeArgs && entry.key.original.type.contains { it.isTypeParameter() }) {
-                            -" as "
-                            -entry.key.type
+                            out += " as "
+                            out += entry.key.type
                         }
                     },
-                    between = { -", " }
+                    between = { out += ", " }
                 )
+                out
+            })
+            .takeUnless { it.isEmpty() }
+
+        parenArguments?.let {
+            -'('
+            it.forEachBetween(
+                forItem = { -it },
+                between = { -", " }
+            )
+            -')'
+        }
+        val lambdaArg = typedRule.resolvedCall.valueArguments.entries
+            .firstOrNull { it.value.arguments.isNotEmpty() && it.value.arguments.any { it.isExternal() && it is LambdaArgument } }
+        lambdaArg
+            ?.let {
+                -it.value.arguments[0].getArgumentExpression()
             }
-        -')'
+        if(lambdaArg == null && parenArguments == null){
+            -"()"
+        }
     }
 }
 

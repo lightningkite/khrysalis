@@ -14,6 +14,9 @@
 
 
 # Extensions
+- id: kotlin.collections.asSequence
+  type: call
+  template: ~this~.lazy
 - id: kotlin.sequences.asSequence
   type: call
   template: ~this~.lazy
@@ -46,22 +49,28 @@
   type: call
   template: "~this~.forEach(~0~)"
 
-- id: kotlin.sequences.filter
-  type: call
-  template: "~this~.filter(~0~)"
 - id: kotlin.sequences.map
   type: call
   template: "~this~.map(~0~)"
 - id: kotlin.sequences.mapIndexed
   type: call
-  template: ~this~ #TODO
+  template:
+    pattern: "~this~.map { indexAndItem -> ~L0~ }"
+    lambdaTransforms:
+      0: ["indexAndItem.0", "indexAndItem.1"]
 - id: kotlin.sequences.flatMap
   type: call
   template: "~this~.flatMap(~0~)"
 
+- id: kotlin.sequences.filter
+  type: call
+  template: "~this~.filter(~0~)"
 - id: kotlin.sequences.filterIndexed
   type: call
-  template: ~this~ #TODO
+  template:
+    pattern: "~this~.filter { indexAndItem -> ~L0~ }"
+    lambdaTransforms:
+      0: ["indexAndItem.0", "indexAndItem.1"]
 - id: kotlin.sequences.filterNot
   type: call
   template: "~this~.filter({ x in !~0~(x) })"
@@ -73,7 +82,10 @@
   template: "~this~.compactMap(~0~)"
 - id: kotlin.sequences.mapIndexedNotNull
   type: call
-  template: ~this~ #TODO
+  template:
+    pattern: "~this~.compactMap { indexAndItem -> ~L0~ }"
+    lambdaTransforms:
+      0: ["indexAndItem.0", "indexAndItem.1"]
 - id: kotlin.sequences.chunked
   type: call
   template: ~this~ #TODO
@@ -83,10 +95,16 @@
   template: ~this~.sorted()
 - id: kotlin.sequences.sortedBy
   type: call
-  template: ~this~ #TODO
+  template: '~this~.sorted(by: { (a, b) in ~0~(a) < ~0~(b) })'
 - id: kotlin.sequences.sortedByDescending
   type: call
-  template: ~this~ #TODO
+  template: '~this~.sorted(by: { (a, b) in ~0~(a) > ~0~(b) })'
+- id: kotlin.sequences.sortedWith
+  type: call
+  template: '~this~.sorted(by: { (a, b) in ~0~(a, b) == .orderedAscending })'
+- id: kotlin.sequences.sortedWithDescending
+  type: call
+  template: '~this~.sorted(by: { (a, b) in ~0~(a, b) == .orderedDescending })'
 
 - id: kotlin.sequences.associate
   type: call
@@ -103,11 +121,19 @@
   type: call
   template: "Array(~this~)"
 
+- id: kotlin.sequences.toArrayList
+  type: call
+  template: "Array(~this~)"
+
 - id: kotlin.sequences.toSet
   type: call
   template: "Set(~this~)"
 
 - id: kotlin.sequences.toMutableSet
+  type: call
+  template: "Set(~this~)"
+
+- id: kotlin.sequences.toHashSet
   type: call
   template: "Set(~this~)"
 

@@ -3,6 +3,10 @@
   type: type
   template: DOMMatrix
 
+- id: android.graphics.Matrix
+  type: call
+  template: new DOMMatrix()
+
 - id: com.lightningkite.khrysalis.views.geometry.mapPoint
   type: call
   template:

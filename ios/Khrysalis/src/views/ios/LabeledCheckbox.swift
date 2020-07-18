@@ -15,16 +15,15 @@ public class LabeledCheckbox : LinearLayout, CompoundButton {
     public let checkView: UILabel = UILabel(frame: .zero)
     public let labelView: UILabel = UILabel(frame: .zero)
     public var onCheckChanged: (Bool) -> Void = { _ in }
-    public func addOnCheckChanged(_ item: @escaping (Bool) -> Void) {
+    public func setOnCheckedChangeListener(_ item: @escaping (CompoundButton, Bool) -> Void) {
         let prev = onCheckChanged
         onCheckChanged = { it in
-            prev(it)
-            item(it)
+            item(self, it)
         }
     }
-    public var isOn: Bool = false {
+    public var isChecked: Bool = false {
         didSet {
-            if isOn {
+            if isChecked {
                 UIView.animate(withDuration: 0.25, animations: { [checkView] in
                     checkView.transform = CGAffineTransform(scaleX: 1, y: 1)
                 })
@@ -33,7 +32,7 @@ public class LabeledCheckbox : LinearLayout, CompoundButton {
                     checkView.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
                 })
             }
-            onCheckChanged(isOn)
+            onCheckChanged(isChecked)
         }
     }
     
@@ -88,7 +87,7 @@ public class LabeledCheckbox : LinearLayout, CompoundButton {
 
         let tapRecognizer = UITapGestureRecognizer().addAction(until: removed) { [weak self] in
             if let self = self {
-                self.isOn = !self.isOn
+                self.isChecked = !self.isChecked
             }
         }
         self.addGestureRecognizer(tapRecognizer)

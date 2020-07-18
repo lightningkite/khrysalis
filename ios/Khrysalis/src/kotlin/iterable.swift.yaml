@@ -72,10 +72,16 @@
   template: ~this~.sorted()
 - id: kotlin.collections.sortedBy
   type: call
-  template: ~this~ #TODO
+  template: '~this~.sorted(by: { (a, b) in ~0~(a) < ~0~(b) })'
 - id: kotlin.collections.sortedByDescending
   type: call
-  template: ~this~ #TODO
+  template: '~this~.sorted(by: { (a, b) in ~0~(a) > ~0~(b) })'
+- id: kotlin.collections.sortedWith
+  type: call
+  template: '~this~.sorted(by: { (a, b) in ~0~(a, b) == .orderedAscending })'
+- id: kotlin.collections.sortedWithDescending
+  type: call
+  template: '~this~.sorted(by: { (a, b) in ~0~(a, b) == .orderedDescending })'
 
 - id: kotlin.collections.associate
   type: call
@@ -92,11 +98,19 @@
   type: call
   template: "Array(~this~)"
 
+- id: kotlin.collections.toArrayList
+  type: call
+  template: "Array(~this~)"
+
 - id: kotlin.collections.toSet
   type: call
   template: "Set(~this~)"
 
 - id: kotlin.collections.toMutableSet
+  type: call
+  template: "Set(~this~)"
+
+- id: kotlin.collections.toHashSet
   type: call
   template: "Set(~this~)"
 

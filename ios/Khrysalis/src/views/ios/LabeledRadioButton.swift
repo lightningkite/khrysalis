@@ -15,19 +15,18 @@ public class LabeledRadioButton : LinearLayout, CompoundButton {
     public let checkView: UIView = UIView(frame: .zero)
     public let labelView: UILabel = UILabel(frame: .zero)
     public var onCheckChanged: (Bool) -> Void = { _ in }
-    public func addOnCheckChanged(_ item: @escaping (Bool) -> Void) {
+    public func setOnCheckedChangeListener(_ item: @escaping (CompoundButton, Bool) -> Void) {
         let prev = onCheckChanged
         onCheckChanged = { it in
-            prev(it)
-            item(it)
+            item(self, it)
         }
     }
-    public var isOn: Bool = false {
+    public var isChecked: Bool = false {
         didSet {
             UIView.animate(withDuration: 0.25, animations: { [weak self] in
                 self?.resize()
             })
-            onCheckChanged(isOn)
+            onCheckChanged(isChecked)
         }
     }
     
@@ -77,7 +76,7 @@ public class LabeledRadioButton : LinearLayout, CompoundButton {
 
         let tapRecognizer = UITapGestureRecognizer().addAction(until: removed) { [weak self] in
             if let self = self {
-                self.isOn = !self.isOn
+                self.isChecked = !self.isChecked
             }
         }
         self.addGestureRecognizer(tapRecognizer)
@@ -89,7 +88,7 @@ public class LabeledRadioButton : LinearLayout, CompoundButton {
     }
 
     func resize(){
-        if isOn {
+        if isChecked {
             checkView.frame = checkViewContainer.bounds.insetBy(dx: 4, dy: 4)
             checkView.layer.cornerRadius = checkView.frame.size.width / 2
         } else {

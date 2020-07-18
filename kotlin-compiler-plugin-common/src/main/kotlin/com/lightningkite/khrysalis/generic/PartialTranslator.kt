@@ -44,9 +44,6 @@ abstract class PartialTranslator<OUT : Any, RESULT, IN : Any, IDENTIFIER> {
             if (result == 0) {
                 result = this.uuid.compareTo(other.uuid)
             }
-            if (result == 0 && this !== other) {
-                println("RUCK")
-            }
             return result
         }
     }

@@ -18,10 +18,10 @@
     imports:
       - RxSwift
 #
-- id: io.reactivex.Observable.subscribe
-  type: call
-  arguments: [io.reactivex.Observer]
-  template: ~this~.subscribe(~0~)
+#- id: io.reactivex.Observable.subscribe
+#  type: call
+#  arguments: [io.reactivex.Observer]
+#  template: ~this~.subscribe(~0~)
 
 - id: io.reactivex.Observable.subscribe
   type: call
@@ -261,10 +261,10 @@
     imports:
       - RxSwift
 
-- id: io.reactivex.Single.subscribe
-  type: call
-  arguments: [io.reactivex.Observer]
-  template: ~this~.subscribe(~0~)
+#- id: io.reactivex.Single.subscribe
+#  type: call
+#  arguments: [io.reactivex.Observer]
+#  template: ~this~.subscribe(~0~)
 
 - id: io.reactivex.Single.subscribe
   type: call
@@ -280,6 +280,12 @@
   type: call
   template:
     pattern: '~this~.delay(.milliseconds(Int(~0~) / 1000), scheduler: MainScheduler.instance)'
+    imports: [RxSwift]
+
+- id: io.reactivex.Single.zip
+  type: call
+  template:
+    pattern: '~this~.zip(~0~, resultSelector: ~1~)'
     imports: [RxSwift]
 #- id: io.reactivex.Single.map
 #  type: call

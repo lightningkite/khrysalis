@@ -1,0 +1,7 @@
+---
+- id: com.lightningkite.khrysalis.views.setTextColorResource
+  type: call
+  template: ~this~.textColor = ~0~
+- id: android.widget.TextView.setTextColor
+  type: call
+  template: ~this~.textColor = ~0~

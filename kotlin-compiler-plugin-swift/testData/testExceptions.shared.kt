@@ -1,6 +1,7 @@
 package com.test
 
-private fun failableAction(state: Boolean = true) {
+@Throws(IllegalStateException::class, IllegalArgumentException::class)
+private fun failableAction(state: Boolean = true): Int {
     if (state) {
         throw IllegalStateException("Reasons")
     } else {
@@ -32,4 +33,11 @@ private fun exceptionTest() {
         e.printStackTrace()
         false
     }
+    val value2 = try {
+        failableAction()
+    } catch (e: Exception) {
+        null
+    }
+
+    val frickYou = failableAction(true)
 }

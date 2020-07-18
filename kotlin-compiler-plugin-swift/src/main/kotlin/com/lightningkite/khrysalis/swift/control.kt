@@ -3,9 +3,11 @@ package com.lightningkite.khrysalis.swift
 import com.lightningkite.khrysalis.util.forEachBetween
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
 import org.jetbrains.kotlin.descriptors.ValueDescriptor
+import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
+import org.jetbrains.kotlin.psi.psiUtil.getTextWithLocation
 
 data class IfCondition(val expression: KtExpression)
 
@@ -40,7 +42,7 @@ fun SwiftTranslator.registerControl() {
     handle<IfCondition>(
         condition = {
             val exp = typedRule.expression as? KtBinaryExpression ?: return@handle false
-            exp.operationToken == KtTokens.EXCLEQ && exp.left is KtNameReferenceExpression && exp.right!!.text == "null"
+            exp.operationToken == KtTokens.EXCLEQ && exp.left.let { it is KtNameReferenceExpression && it.isSimple() } && exp.right!!.text == "null"
         },
         priority = 10,
         action = {
@@ -57,7 +59,7 @@ fun SwiftTranslator.registerControl() {
     handle<IfCondition>(
         condition = {
             val exp = typedRule.expression as? KtBinaryExpression ?: return@handle false
-            exp.operationToken == KtTokens.EXCLEQ && exp.right is KtNameReferenceExpression && exp.left!!.text == "null"
+            exp.operationToken == KtTokens.EXCLEQ && exp.right.let { it is KtNameReferenceExpression && it.isSimple() } && exp.left!!.text == "null"
         },
         priority = 10,
         action = {
@@ -74,7 +76,7 @@ fun SwiftTranslator.registerControl() {
     handle<IfCondition>(
         condition = {
             val exp = typedRule.expression as? KtIsExpression ?: return@handle false
-            exp.leftHandSide is KtNameReferenceExpression
+            exp.leftHandSide is KtNameReferenceExpression && exp.leftHandSide.isSimple()
         },
         priority = 10,
         action = {
@@ -90,16 +92,16 @@ fun SwiftTranslator.registerControl() {
         }
     )
 
-    handle<IfCondition> {
-        -typedRule.expression
-    }
-
-    handle<KtBinaryExpression>(
-        condition = { typedRule.operationToken == KtTokens.ANDAND && typedRule.parentOfType<KtIfExpression>()?.condition == typedRule },
+    handle<IfCondition>(
+        condition = {
+            val bin = typedRule.expression as? KtBinaryExpression ?: return@handle false
+            bin.operationToken == KtTokens.ANDAND
+        },
         priority = 100,
         action = {
+            val bin = typedRule.expression as KtBinaryExpression
             val elements = ArrayList<KtExpression>()
-            var current: KtExpression = typedRule
+            var current: KtExpression = bin
             while (current is KtBinaryExpression && current.operationToken == KtTokens.ANDAND) {
                 elements.add(current.right!!)
                 current = current.left!!
@@ -116,6 +118,10 @@ fun SwiftTranslator.registerControl() {
             )
         }
     )
+
+    handle<IfCondition> {
+        -typedRule.expression
+    }
 
     handle<KtIfExpression> {
         beginSmartcastBlock()
@@ -235,6 +241,9 @@ fun SwiftTranslator.registerControl() {
             -"\nbreak\n"
             endSmartcastBlock()
         }
+        if(typedRule.entries.none { it.isElse }) {
+            -"default: break\n"
+        }
         -"}\n"
         if (typedRule.actuallyCouldBeExpression) {
             -"}"
@@ -328,7 +337,7 @@ fun SwiftTranslator.registerControl() {
                             is KtWhenConditionIsPattern -> {
                                 val expr = subjExpr()
                                 when {
-                                    expr is KtNameReferenceExpression -> {
+                                    expr is KtNameReferenceExpression && expr.isSimple() -> {
                                         val vd = expr.resolvedReferenceTarget as? ValueDescriptor
                                         vd?.let { ignoreSmartcast(it) }
                                         -"let "
