@@ -1,6 +1,7 @@
 package com.lightningkite.khrysalis.swift
 
 import com.lightningkite.khrysalis.util.forEachBetween
+import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.*
 
 fun SwiftTranslator.registerLambda() {
@@ -82,7 +83,9 @@ fun SwiftTranslator.registerLambda() {
                 -"()"
             }
         }
-        resolved?.returnType?.let {
+        resolved?.annotations?.findAnnotation(FqName("com.lightningkite.khrysalis.swiftReturnType"))?.allValueArguments?.entries?.first()?.value?.value?.let {
+            -" -> $it"
+        } ?: resolved?.returnType?.let {
             - " -> "
             -it
         }

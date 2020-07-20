@@ -35,4 +35,10 @@ public extension NSRegularExpression {
         }
         return nil
     }
+
+    public func split(input: String) -> Array<String> {
+        let matches = self.matches(in: input, range: NSRange(0..<input.utf16.count))
+        let ranges = [input.startIndex..<input.startIndex] + matches.map{Range($0.range, in: input)!} + [input.endIndex..<input.endIndex]
+        return (0...matches.count).map {String(input[ranges[$0].upperBound..<ranges[$0+1].lowerBound])}
+    }
 }

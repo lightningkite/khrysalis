@@ -68,10 +68,15 @@
   template: "~this~.ends(with: ~0~)"
 - id: kotlin.text.split
   type: call
-  template: '~this~.split(separator: ~*~)'
+  template: '~this~.split(separator: ~*~).map { String($0) }'
+- id: kotlin.text.split
+  type: call
+  arguments: [kotlin.text.Regex, kotlin.Int]
+  suppliedArguments: [regex]
+  template: '~0~.split(input: ~this~)'
 - id: kotlin.text.lines
   type: call
-  template: '~this~.split(separator: "\n")'
+  template: '~this~.split(separator: "\n").map { String($0) }'
 - id: kotlin.text.contains
   type: call
   template: '(~this~.indexOf(string: ~0~) != -1)'

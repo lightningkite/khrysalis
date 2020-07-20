@@ -1,0 +1,6 @@
+---
+- id: android.util.Base64.decode
+  type: call
+  template:
+    pattern: 'Data(base64Encoded: ~0~)!'
+    imports: [Foundation]

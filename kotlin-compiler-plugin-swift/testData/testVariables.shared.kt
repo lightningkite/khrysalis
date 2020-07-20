@@ -201,10 +201,12 @@ private fun variableTestNullable(){
     val instance = variableMaybeInstance
     instance?.memberReal = -1
     println(instance?.memberReal)
+    println(instance?.memberReal?.toString())
     instance?.memberVirtual = -2
     println(instance?.memberVirtual)
     instance?.memberHybrid = -3
     println(instance?.memberHybrid)
     instance?.extensionProperty = -4
     println(instance?.extensionProperty)
+    val notNull = variableMaybeInstance ?: return
 }

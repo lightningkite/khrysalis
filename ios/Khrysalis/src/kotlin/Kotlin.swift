@@ -79,6 +79,22 @@ public extension Sequence {
         var seen: [U: Bool] = [:]
         return self.filter { seen.updateValue(true, forKey: selector($0)) == nil }
     }
+    func chunked(_ size: Int) -> Array<Array<Element>> { return chunked(size: size) }
+    func chunked(size: Int) -> Array<Array<Element>> {
+        var output = Array<Array<Element>>()
+        var current = Array<Element>()
+        for item in self {
+            current.append(item)
+            if current.count >= size {
+                output.append(current)
+                current = Array()
+            }
+        }
+        if !current.isEmpty {
+            output.append(current)
+        }
+        return output
+    }
 }
 
 public func Comparator<T>(function: @escaping (T, T)->Int) -> Comparator {
@@ -110,23 +126,6 @@ public extension Sequence where Iterator.Element: Hashable {
 }
 
 public extension Array {
-    func chunked(_ count: Int) -> Array<Array<Element>> {
-        var output = Array<Array<Element>>()
-        var chunkIndex = 0
-        while chunkIndex < count {
-            var subset = Array<Element>()
-            for inChunkIndex in 0..<count {
-                let index = chunkIndex + inChunkIndex
-                if index >= count {
-                    break
-                }
-                subset.append(self[index])
-            }
-            output.append(subset)
-            chunkIndex += count
-        }
-        return output
-    }
     
     func forEachIndexed(_ action: (_ index:Int, Element) -> Void){
         for index in 0..<self.count{
@@ -268,8 +267,8 @@ public extension String {
         let e = self.index(self.startIndex, offsetBy: Int(endIndex ?? self.count))
         return String(self[s..<e])
     }
-    func substring(_ startIndex: Int) -> String {
-        return substring(startIndex, self.count)
+    func substring(startIndex: Int, endIndex: Int? = nil) -> String {
+        return substring(startIndex, endIndex)
     }
     func contains(_ string: String) -> Bool {
         if string.isEmpty { return true }

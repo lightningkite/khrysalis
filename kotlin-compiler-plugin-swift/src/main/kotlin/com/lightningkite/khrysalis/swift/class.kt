@@ -29,7 +29,7 @@ fun FunctionDescriptor.callsForSwiftInterface(on: ClassDescriptor?): Boolean {
 
 fun KtModifierListOwner.swiftVisibility(): Any? = when {
     this.hasModifier(KtTokens.ABSTRACT_KEYWORD) ||
-    this.hasModifier(KtTokens.OPEN_KEYWORD) -> "open"
+            this.hasModifier(KtTokens.OPEN_KEYWORD) -> "open"
     else -> this.visibilityModifier()
 }
 
@@ -224,194 +224,7 @@ fun SwiftTranslator.registerClass() {
                 -"override "
             }
         }
-        if (typedRule.isEnum()) {
-            -"private"
-        } else {
-            -(typedRule.primaryConstructor?.swiftVisibility() ?: "public")
-        }
-        -" init("
-        partOfParameter = true
-        typedRule.primaryConstructor?.let { cons ->
-            (if (typedRule.isEnum()) {
-                listOf("name: String") + cons.valueParameters
-            } else if (typedRule.isInner()) {
-                listOf("parentThis: $parentClassName") + cons.valueParameters
-            } else {
-                cons.valueParameters
-            }).forEachBetween(
-                forItem = { -it },
-                between = { -", " }
-            )
-        } ?: run {
-            if (typedRule.isEnum()) {
-                -"name: String"
-            } else if (typedRule.isInner()) {
-                -"parentThis: $parentClassName"
-            } else Unit
-        }
-        partOfParameter = false
-        -") {\n"
-        if (typedRule.isEnum()) {
-            -"self.name = name;\n"
-        } else if (typedRule.isInner()) {
-            -"self.parentThis = parentThis;\n"
-        }
-
-        //Parameter assignment first
-        typedRule.primaryConstructor?.let { cons ->
-            cons.valueParameters.asSequence().filter { it.hasValOrVar() }.forEach {
-                -"self."
-                if (it.resolvedPrimaryConstructorParameter?.hasSwiftOverride == true) {
-                    -'_'
-                    -it.nameIdentifier
-                } else {
-                    -it.nameIdentifier
-                }
-                -" = "
-                -it.nameIdentifier
-                -"\n"
-            }
-        }
-
-        //If used by future initializers directly, create inbetween.
-        val usedInInits = listOfNotNull(
-            typedRule.primaryConstructor?.valueParameters?.map { it.defaultValue },
-            typedRule.body?.children?.mapNotNull { (it as? KtProperty)?.initializer }
-        )
-            .asSequence()
-            .flatMap { it.asSequence() }
-            .filterNotNull()
-            .flatMap {
-                val matches = HashSet<PropertyDescriptor>()
-                fun check(it: PsiElement) {
-                    if(it is KtNameReferenceExpression) {
-                        val prop = it.resolvedReferenceTarget as? PropertyDescriptor ?: return
-                        if(prop.containingDeclaration == typedRule.resolvedClass){
-                            matches.add(prop)
-                        }
-                    }
-                    if(it !is KtFunctionLiteral){
-                        it.allChildren.forEach { check(it) }
-                    }
-                }
-                check(it)
-                matches.asSequence()
-            }
-            .toSet()
-
-        //If uses self capture, delay and mark with !
-        val postSuper = ArrayList<()->Unit>()
-
-        //Then, in order, variable initializers
-        suppressReceiverAddition = true
-        typedRule.body?.children?.forEach {
-            when (it) {
-                is KtProperty -> {
-                    it.initializer?.let { init ->
-                        if(capturesSelf(init, typedRule.resolvedClass)){
-                            postSuper += {
-                                -"self."
-                                if (it.resolvedProperty?.hasSwiftBacking == true) {
-                                    -'_'
-                                }
-                                -it.nameIdentifier
-                                -" = "
-                                -init
-                                -"\n"
-                            }
-                        } else if(it.resolvedProperty in usedInInits) {
-                            -"let "
-                            -it.nameIdentifier
-                            -": "
-                            -(it.typeReference ?: it.resolvedProperty?.type ?: it.resolvedVariable?.type)
-                            -" = "
-                            -init
-                            -"\n"
-                            -"self."
-                            if (it.resolvedProperty?.hasSwiftBacking == true) {
-                                -'_'
-                            }
-                            -it.nameIdentifier
-                            -" = "
-                            -it.nameIdentifier
-                            -"\n"
-                        } else {
-                            -"self."
-                            if (it.resolvedProperty?.hasSwiftBacking == true) {
-                                -'_'
-                            }
-                            -it.nameIdentifier
-                            -" = "
-                            -init
-                            -"\n"
-                        }
-                    }
-                }
-            }
-        }
-        suppressReceiverAddition = false
-        //Then super
-        typedRule.superTypeListEntries.mapNotNull { it as? KtSuperTypeCallEntry }.takeUnless { it.isEmpty() }
-            ?.firstOrNull()?.let {
-                -"super.init("
-                var first = true
-                if (typedRule.isEnum()) {
-                    first = false
-                    -"name: String"
-                }
-                it.resolvedCall?.valueArguments?.entries?.sortedBy { it.key.index }?.forEach {
-                    val args = it.value.arguments
-                    when (args.size) {
-                        0 -> {
-                        }
-                        1 -> {
-                            if (first) {
-                                first = false
-                            } else {
-                                -", "
-                            }
-                            -it.key.name.asString()
-                            -": "
-                            -args[0].getArgumentExpression()
-                        }
-                        else -> {
-                            if (first) {
-                                first = false
-                            } else {
-                                -", "
-                            }
-                            -it.key.name.asString()
-                            -": ["
-                            args.forEachBetween(
-                                forItem = { -it.getArgumentExpression() },
-                                between = { -", " }
-                            )
-                            -"]"
-                        }
-                    }
-                }
-                -")\n"
-            }
-        -"//Necessary properties should be initialized now\n"
-        postSuper.forEach { it() }
-        //Then, in order, anon initializers
-        typedRule.body?.children?.forEach {
-            when (it) {
-                is KtAnonymousInitializer -> {
-                    val b = it.body
-                    if (b is KtBlockExpression) {
-                        b.statements.forEach {
-                            -it
-                            -"\n"
-                        }
-                    } else {
-                        -b
-                        -"\n"
-                    }
-                }
-            }
-        }
-        -"}\n"
+        handleConstructor(this, parentClassName, this@registerClass)
 
         if (typedRule.superTypeListEntries
                 .mapNotNull { it as? KtSuperTypeEntry }
@@ -653,40 +466,7 @@ fun SwiftTranslator.registerClass() {
         -' '
         writeClassHeader(typedRule)
         -" {\n"
-        -"private init() {\n"
-        //Then, in order, variable initializers and anon initializers
-        typedRule.body?.children?.forEach {
-            when (it) {
-                is KtProperty -> {
-                    it.initializer?.let { init ->
-                        -"self."
-                        -it.nameIdentifier
-                        -" = "
-                        -init
-                        -"\n"
-                    }
-                }
-                is KtAnonymousInitializer -> {
-                    val b = it.body
-                    if (b is KtBlockExpression) {
-                        b.statements.forEach {
-                            -it
-                            -"\n"
-                        }
-                    } else {
-                        -b
-                        -"\n"
-                    }
-                }
-            }
-        }
-        typedRule.superTypeListEntries.mapNotNull { it as? KtSuperTypeCallEntry }.takeUnless { it.isEmpty() }
-            ?.firstOrNull()?.let {
-                -"super"
-                -it.valueArgumentList
-                -"\n"
-            }
-        -"}\n"
+        handleConstructor(this, null, this@registerClass)
         -"public static let INSTANCE = "
         -swiftTopLevelNameElement(typedRule)
         -"()\n"
@@ -707,9 +487,9 @@ fun SwiftTranslator.registerClass() {
         //TODO
     }
 
-    //Simple enum
+    //Enums
     handle<KtClass>(
-        condition = { typedRule.isSimpleEnum() },
+        condition = { typedRule.isEnum() },
         priority = 10,
         action = {
             -(typedRule.swiftVisibility() ?: "public")
@@ -721,101 +501,98 @@ fun SwiftTranslator.registerClass() {
                 -entry.nameIdentifier
                 -"\n"
             }
-            -typedRule.body
             -"\npublic init(from decoder: Decoder) throws {"
             -"\n    self = try Self(rawValue: decoder.singleValueContainer().decode(RawValue.self)) ?? ."
             -typedRule.body?.enumEntries?.first()?.name
-            -"\n}"
-            -"\n}"
-        }
-    )
-    handle<KtEnumEntry>(
-        condition = {
-            typedRule.containingClass()?.isSimpleEnum() == true
-        },
-        priority = 1,
-        action = {}
-    )
-    handle<KtEnumEntry> {
-        -"public class "
-        -swiftTopLevelNameElement(typedRule)
-        -"Type: "
-        -typedRule
-            .parentOfType<KtClassBody>()
-            ?.parentOfType<KtClass>()
-            ?.nameIdentifier
-        -"{\n"
-        -"public init() {\n"
-        //Then variable initializers
-        typedRule.body?.children?.forEach {
-            when (it) {
-                is KtProperty -> {
-                    it.initializer?.let { init ->
-                        -"self."
-                        -it.nameIdentifier
-                        -" = "
-                        -init
-                        -";\n"
+            -"\n}\n"
+            //Constructor properties
+            typedRule.primaryConstructorParameters
+                .filter { it.hasValOrVar() }
+                .forEach { prop ->
+                    -(prop.swiftVisibility() ?: "public")
+                    -" var "
+                    -prop.nameIdentifier
+                    -": "
+                    -prop.typeReference
+                    -" {\n"
+                    -"switch self {\n"
+                    for (entry in typedRule.body?.enumEntries ?: listOf()) {
+                        -"case ."
+                        -entry.nameIdentifier
+                        -":\n"
+                        -entry.initializerList?.initializers
+                            ?.find { it is KtSuperTypeCallEntry }
+                            ?.resolvedCall?.valueArguments?.entries
+                            ?.find { it.key.name.asString() == prop.name }
+                            ?.value
+                            ?.arguments
+                            ?.firstOrNull()
+                            ?.let {
+                                -"return "
+                                -it
+                            } ?: -"TODO()"
+                        -"\n"
                     }
+                    -"@unknown default:\n"
+                    -"TODO()\n"
+                    -"}\n"
+                    -"}\n"
                 }
-            }
-        }
-        -"super.init"
-        -'('
-        -"name: \""
-        -typedRule.nameIdentifier
-        -"\""
-        typedRule.initializerList?.initializers?.firstOrNull()?.resolvedCall?.valueArguments?.entries?.sortedBy { it.key.index }
-            ?.forEach {
-                val args = it.value.arguments
-                when (args.size) {
-                    0 -> {
-                    }
-                    1 -> {
-                        -", "
-                        -it.key.name.asString()
-                        -": "
-                        -args[0].getArgumentExpression()
-                    }
-                    else -> {
-                        -", "
-                        -it.key.name.asString()
-                        -": ["
-                        args.forEachBetween(
-                            forItem = { -it.getArgumentExpression() },
-                            between = { -", " }
-                        )
-                        -"]"
-                    }
-                }
-            }
-        -");\n"
-        //Then anon initializers
-        typedRule.body?.children?.forEach {
-            when (it) {
-                is KtAnonymousInitializer -> {
-                    val b = it.body
-                    if (b is KtBlockExpression) {
-                        b.statements.forEach {
-                            -it
-                            -";\n"
+            //Functions
+            typedRule.body
+                ?.functions
+                ?.forEach { func ->
+                    -VirtualFunction(
+                        name = func.name!!,
+                        resolvedFunction = func.resolvedFunction,
+                        typeParameters = func.typeParameters,
+                        valueParameters = func.valueParameters,
+                        returnType = func.typeReference ?: func.resolvedFunction?.returnType ?: "Void",
+                        body = if (func.hasModifier(KtTokens.OPEN_KEYWORD) || func.hasModifier(KtTokens.ABSTRACT_KEYWORD)) {
+                            {->
+                                -"{ \nswitch self {\n"
+                                typedRule.body?.enumEntries?.mapNotNull { entry ->
+                                    val matching = entry.body?.functions?.find { it.name == func.name } ?: return@mapNotNull null
+                                    return@mapNotNull entry to matching
+                                }?.forEach { (entry, matching) ->
+                                    -"case ."
+                                    -entry.nameIdentifier
+                                    -":\n"
+                                    when(val body = matching.bodyExpression){
+                                        is KtBlockExpression -> {
+                                            -body.allChildren.drop(1).toList().dropLast(1)
+                                        }
+                                        else -> {
+                                            -"return "
+                                            -body
+                                        }
+                                    }
+                                    -"\n"
+                                }
+                                -"default:\n"
+                                when(val body = func.bodyExpression){
+                                    is KtBlockExpression -> {
+                                        -body.allChildren.drop(1).toList().dropLast(1)
+                                    }
+                                    null -> -"TODO()"
+                                    else -> {
+                                        -"return "
+                                        -body
+                                    }
+                                }
+                                -"\n}\n}\n"
+                            }
                         }
-                    } else {
-                        -b
-                        -";\n"
-                    }
+                        else func.bodyExpression as Any
+                    )
+                    -"\n"
                 }
-            }
+            //Open properties
+            //Abstract properties
+            //Closed properties
+            -"}\n"
         }
-        -"}\n"
-
-        -typedRule.body
-        -"}\npublic static let "
-        -swiftTopLevelNameElement(typedRule)
-        -" = "
-        -swiftTopLevelNameElement(typedRule)
-        -"Type()"
-    }
+    )
 
     handle<KtSecondaryConstructor> {
         -(typedRule.swiftVisibility() ?: "public")
@@ -987,6 +764,191 @@ fun SwiftTranslator.registerClass() {
         }
     )
 
+}
+
+private fun <T : KtClassOrObject> handleConstructor(
+    contextByType: PartialTranslatorByType<SwiftFileEmitter, Unit, Any>.ContextByType<T>,
+    parentClassName: Any?,
+    swiftTranslator: SwiftTranslator
+) = with(swiftTranslator) {
+    with(contextByType) {
+        val isInner = (typedRule as? KtClass)?.isInner() == true
+        val isEnum = (typedRule as? KtClass)?.isEnum() == true
+        -(contextByType.typedRule.primaryConstructor?.swiftVisibility() ?: "public")
+        -" init("
+        partOfParameter = true
+        contextByType.typedRule.primaryConstructor?.let { cons ->
+            (if (isInner) {
+                listOf(listOf("parentThis: ", parentClassName)) + cons.valueParameters
+            } else {
+                cons.valueParameters
+            }).forEachBetween(
+                forItem = { -it },
+                between = { -", " }
+            )
+        } ?: contextByType.run {
+            if (isInner) {
+                -"parentThis: "
+                -parentClassName
+            } else Unit
+        }
+        partOfParameter = false
+        -") {\n"
+        if (isInner) {
+            -"self.parentThis = parentThis;\n"
+        }
+
+        //Parameter assignment first
+        contextByType.typedRule.primaryConstructor?.let { cons ->
+            cons.valueParameters.asSequence().filter { it.hasValOrVar() }.forEach {
+                -"self."
+                if (it.resolvedPrimaryConstructorParameter?.hasSwiftOverride == true) {
+                    -'_'
+                    -it.nameIdentifier
+                } else {
+                    -it.nameIdentifier
+                }
+                -" = "
+                -it.nameIdentifier
+                -"\n"
+            }
+        }
+
+        //If used by future initializers directly, create inbetween.
+        val usedInInits = listOfNotNull(
+            contextByType.typedRule.primaryConstructor?.valueParameters?.map { it.defaultValue },
+            contextByType.typedRule.body?.children?.mapNotNull { (it as? KtProperty)?.initializer }
+        )
+            .asSequence()
+            .flatMap { it.asSequence() }
+            .filterNotNull()
+            .flatMap {
+                val matches = HashSet<PropertyDescriptor>()
+                fun check(it: PsiElement) {
+                    if (it is KtNameReferenceExpression) {
+                        val prop = it.resolvedReferenceTarget as? PropertyDescriptor ?: return
+                        if (prop.containingDeclaration == contextByType.typedRule.resolvedClass) {
+                            matches.add(prop)
+                        }
+                    }
+                    if (it !is KtFunctionLiteral) {
+                        it.allChildren.forEach { check(it) }
+                    }
+                }
+                check(it)
+                matches.asSequence()
+            }
+            .toSet()
+
+        //If uses self capture, delay and mark with !
+        val postSuper = ArrayList<() -> Unit>()
+
+        //Then, in order, variable initializers
+        suppressReceiverAddition = true
+        contextByType.typedRule.body?.children?.forEach {
+            when (it) {
+                is KtProperty -> {
+                    it.initializer?.let { init ->
+                        if (swiftTranslator.capturesSelf(init, contextByType.typedRule.resolvedClass)) {
+                            postSuper += {
+                                -"self."
+                                if (it.resolvedProperty?.hasSwiftBacking == true) {
+                                    -'_'
+                                }
+                                -it.nameIdentifier
+                                -" = "
+                                -init
+                                -"\n"
+                            }
+                        } else if (it.resolvedProperty in usedInInits) {
+                            -"let "
+                            -it.nameIdentifier
+                            -": "
+                            -(it.typeReference ?: it.resolvedProperty?.type ?: it.resolvedVariable?.type)
+                            -" = "
+                            -init
+                            -"\n"
+                            -"self."
+                            if (it.resolvedProperty?.hasSwiftBacking == true) {
+                                -'_'
+                            }
+                            -it.nameIdentifier
+                            -" = "
+                            -it.nameIdentifier
+                            -"\n"
+                        } else {
+                            -"self."
+                            if (it.resolvedProperty?.hasSwiftBacking == true) {
+                                -'_'
+                            }
+                            -it.nameIdentifier
+                            -" = "
+                            -init
+                            -"\n"
+                        }
+                    }
+                }
+            }
+        }
+        suppressReceiverAddition = false
+        //Then super
+        val superEntries =
+            (typedRule as? KtEnumEntry)?.initializerList?.initializers?.mapNotNull { it as? KtSuperTypeCallEntry }
+                ?: contextByType.typedRule.superTypeListEntries.mapNotNull { it as? KtSuperTypeCallEntry }
+        superEntries
+            .takeUnless { it.isEmpty() }
+            ?.firstOrNull()?.let {
+                -"super.init("
+                it.resolvedCall?.valueArguments?.entries
+                    ?.sortedBy { it.key.index }
+                    ?.filter { it.value.arguments.isNotEmpty() }
+                    ?.forEachBetween(
+                        forItem = {
+                            val args = it.value.arguments
+                            when (args.size) {
+                                0 -> {
+                                }
+                                1 -> {
+                                    -it.key.name.asString()
+                                    -": "
+                                    -args[0].getArgumentExpression()
+                                }
+                                else -> {
+                                    -it.key.name.asString()
+                                    -": ["
+                                    args.forEachBetween(
+                                        forItem = { -it.getArgumentExpression() },
+                                        between = { -", " }
+                                    )
+                                    -"]"
+                                }
+                            }
+                        },
+                        between = { -", " }
+                    )
+                -")\n"
+            }
+        -"//Necessary properties should be initialized now\n"
+        postSuper.forEach { it() }
+        //Then, in order, anon initializers
+        contextByType.typedRule.body?.children?.forEach {
+            when (it) {
+                is KtAnonymousInitializer -> {
+                    val b = it.body
+                    if (b is KtBlockExpression) {
+                        b.statements.forEach {
+                            -it
+                            -"\n"
+                        }
+                    } else {
+                        -b
+                        -"\n"
+                    }
+                }
+            }
+        }
+        -"}\n"
+    }
 }
 
 private val KtParameter.jsonName: String

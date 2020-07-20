@@ -101,6 +101,11 @@ private fun functionMain(){
     instance.genericExtensionFunction(8)
     val x: Int? = functionResolve()
     val y = functionResolve<String>()
+
+    val regex = Regex("[,.]")
+    "asdf.sdf,asdf".split(regex).forEach {
+        println(it)
+    }
 }
 
 private val functionAnotherThing = 2

@@ -86,9 +86,6 @@
     pattern: "~this~.compactMap { indexAndItem -> ~L0~ }"
     lambdaTransforms:
       0: ["indexAndItem.0", "indexAndItem.1"]
-- id: kotlin.sequences.chunked
-  type: call
-  template: ~this~ #TODO
 
 - id: kotlin.sequences.sorted
   type: call

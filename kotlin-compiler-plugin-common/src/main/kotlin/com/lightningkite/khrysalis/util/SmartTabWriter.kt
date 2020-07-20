@@ -22,6 +22,8 @@ class SmartTabWriter(val base: Appendable, val spaces: Int = 4): Appendable {
         justStartedLine = true
     }
 
+    val addIndentChars = setOf('.', '?')
+
     override fun append(contents: CharSequence): Appendable = append(contents, 0, contents.length)
 
     override fun append(contents: CharSequence, startIndex: Int, endIndexExclusive: Int): Appendable {
@@ -51,6 +53,9 @@ class SmartTabWriter(val base: Appendable, val spaces: Int = 4): Appendable {
                     if(c.isWhitespace() && justStartedLine) {
                         currentStart = index + 1
                     } else {
+                        if(justStartedLine && c in addIndentChars){
+                            currentLine.append(tabString)
+                        }
                         justStartedLine = false
                     }
                     currentEnd = index + 1
@@ -80,6 +85,9 @@ class SmartTabWriter(val base: Appendable, val spaces: Int = 4): Appendable {
                 if(c.isWhitespace() && justStartedLine) {
                     //skip
                 } else {
+                    if(justStartedLine && c in addIndentChars){
+                        currentLine.append(tabString)
+                    }
                     justStartedLine = false
                     currentLine.append(c)
                 }

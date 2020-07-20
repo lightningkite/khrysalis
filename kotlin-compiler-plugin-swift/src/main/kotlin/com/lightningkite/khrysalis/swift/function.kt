@@ -13,7 +13,10 @@ import com.lightningkite.khrysalis.generic.PartialTranslatorByType
 import com.lightningkite.khrysalis.swift.replacements.Template
 import com.lightningkite.khrysalis.swift.replacements.TemplatePart
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
+import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
+import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.js.translate.callTranslator.getReturnType
+import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.synthetic.hasJavaOriginInHierarchy
 
@@ -56,6 +59,7 @@ data class VirtualFunction(
     val returnType: Any,
     val body: Any?
 )
+
 
 fun SwiftTranslator.registerFunction() {
 
@@ -300,39 +304,15 @@ fun SwiftTranslator.registerFunction() {
             val callExp = typedRule.selectorExpression as KtCallExpression
             val nre = callExp.calleeExpression as KtNameReferenceExpression
             val f = callExp.resolvedCall!!.candidateDescriptor as FunctionDescriptor
-
-            val needsSafe = when(val c = typedRule.receiverExpression.resolvedCall?.candidateDescriptor){
-                is FunctionDescriptor -> c.returnType?.isMarkedNullable == true
-                is ValueDescriptor -> c.type.isMarkedNullable
-                else -> true
-            }
-
-            val rec: Any = if(needsSafe){
-                val rec = "temp${uniqueNumber.getAndIncrement()}"
-                if (typedRule.actuallyCouldBeExpression) {
-                    -typedRule.receiverExpression
-                    if(callExp.resolvedCall!!.getReturnType().isMarkedNullable){
-                        -".flatMap { $rec in "
-                    } else {
-                        -".map { $rec in "
-                    }
-                } else {
-                    -"if let $rec = ("
-                    -typedRule.receiverExpression
-                    -") {\n"
+            nullWrapAction(this@registerFunction, typedRule){ rec, mode ->
+                maybeWrapCall(callExp.resolvedCall!!) {
+                    -nre
+                    -ArgumentsList(
+                        on = f,
+                        resolvedCall = callExp.resolvedCall!!,
+                        prependArguments = listOf(rec)
+                    )
                 }
-                rec
-            } else typedRule.receiverExpression
-            maybeWrapCall(callExp.resolvedCall!!) {
-                -nre
-                -ArgumentsList(
-                    on = f,
-                    resolvedCall = callExp.resolvedCall!!,
-                    prependArguments = listOf(rec)
-                )
-            }
-            if(needsSafe) {
-                -"\n}"
             }
         }
     )
@@ -363,6 +343,7 @@ fun SwiftTranslator.registerFunction() {
 
         maybeWrapCall(resolvedCall) {
             -typedRule.receiverExpression
+            insertNewlineBeforeAccess()
             -'.'
             -call.calleeExpression
             -ArgumentsList(
@@ -370,6 +351,31 @@ fun SwiftTranslator.registerFunction() {
                 resolvedCall = resolvedCall,
                 prependArguments = listOf()
             )
+        }
+    }
+
+    handle<KtSafeQualifiedExpression>(
+        condition = { (typedRule.selectorExpression as? KtCallExpression)?.resolvedCall?.resultingDescriptor is FunctionDescriptor },
+        priority = 1
+    ) {
+        val call = typedRule.selectorExpression as KtCallExpression
+        val resolvedCall = call.resolvedCall!!
+
+        nullWrapAction(this@registerFunction, typedRule){ rec, mode ->
+            maybeWrapCall(resolvedCall) {
+                -typedRule.receiverExpression
+                if(mode == AccessMode.QUEST_DOT) {
+                    -'?'
+                }
+                insertNewlineBeforeAccess()
+                -'.'
+                -call.calleeExpression
+                -ArgumentsList(
+                    on = resolvedCall.resultingDescriptor as FunctionDescriptor,
+                    resolvedCall = resolvedCall,
+                    prependArguments = listOf()
+                )
+            }
         }
     }
 
@@ -441,11 +447,12 @@ fun SwiftTranslator.registerFunction() {
             val nre = callExp.calleeExpression as KtNameReferenceExpression
             val resolvedCall = callExp.resolvedCall!!
             val rule = replacements.getCall(this@registerFunction, resolvedCall)!!
+            val templateIsThisDot = rule.template.parts.getOrNull(0) is TemplatePart.Receiver && rule.template.parts.getOrNull(1).let { it is TemplatePart.Text && it.string.startsWith('.') }
 
             emitTemplate(
                 requiresWrapping = typedRule.actuallyCouldBeExpression,
                 template = rule.template,
-                receiver = typedRule.receiverExpression,
+                receiver = if(hasNewlineBeforeAccess(typedRule) && templateIsThisDot) listOf(typedRule.receiverExpression, "\n") else typedRule.receiverExpression,
                 dispatchReceiver = nre.getTsReceiver(),
                 extensionReceiver = typedRule.receiverExpression,
                 allParameters = ArrayList<Any?>().apply {
@@ -473,53 +480,28 @@ fun SwiftTranslator.registerFunction() {
             val resolvedCall = callExp.resolvedCall!!
             val rule = replacements.getCall(this@registerFunction, resolvedCall)!!
 
-            val templateIsThisDot = rule.template.parts.getOrNull(0) is TemplatePart.Receiver && rule.template.parts.getOrNull(1).let { it is TemplatePart.Text && it.string.startsWith('.') }
-            val needsSafe = when(val c = typedRule.receiverExpression.resolvedCall?.candidateDescriptor){
-                is FunctionDescriptor -> c.returnType?.isMarkedNullable == true
-                is ValueDescriptor -> c.type.isMarkedNullable
-                else -> true
-            }
-            val needsWrap = needsSafe && !templateIsThisDot
-
-            val rec: Any = if(needsWrap){
-                val rec = "temp${uniqueNumber.getAndIncrement()}"
-                if (typedRule.actuallyCouldBeExpression) {
-                    -typedRule.receiverExpression
-                    if(resolvedCall.getReturnType().isMarkedNullable){
-                        -".flatMap { $rec in "
-                    } else {
-                        -".map { $rec in "
-                    }
-                } else {
-                    -"if let $rec = ("
-                    -typedRule.receiverExpression
-                    -") {\n"
-                }
-                rec
-            } else typedRule.receiverExpression
-            emitTemplate(
-                requiresWrapping = typedRule.actuallyCouldBeExpression,
-                template = if(templateIsThisDot && needsSafe)
-                    Template(parts = rule.template.parts.toMutableList().apply {
-                        this[1] = (this[1] as TemplatePart.Text).let { it.copy("?" + it.string) }
-                    })
-                else rule.template,
-                receiver = rec,
-                dispatchReceiver = nre.getTsReceiver(),
-                extensionReceiver = typedRule.receiverExpression,
-                allParameters = ArrayList<Any?>().apply {
-                    callExp.valueArguments.forEachBetween(
-                        forItem = { add(it) },
-                        between = { add(", ") }
-                    )
-                },
-                parameter = resolvedCall.template_parameter,
-                typeParameter = resolvedCall.template_typeParameter,
-                parameterByIndex = resolvedCall.template_parameterByIndex,
-                typeParameterByIndex = resolvedCall.template_typeParameterByIndex
-            )
-            if(needsWrap) {
-                -"\n}"
+            nullWrapAction(this@registerFunction, typedRule){ rec, mode ->
+                emitTemplate(
+                    requiresWrapping = typedRule.actuallyCouldBeExpression,
+                    template = if(mode == AccessMode.QUEST_DOT)
+                        Template(parts = rule.template.parts.toMutableList().apply {
+                            this[1] = (this[1] as TemplatePart.Text).let { it.copy("?" + (if(hasNewlineBeforeAccess(typedRule)) "\n" else "") + it.string) }
+                        })
+                    else rule.template,
+                    receiver = if(hasNewlineBeforeAccess(typedRule) && mode == AccessMode.PLAIN_DOT) listOf(rec, "\n") else rec,
+                    dispatchReceiver = nre.getTsReceiver(),
+                    extensionReceiver = typedRule.receiverExpression,
+                    allParameters = ArrayList<Any?>().apply {
+                        callExp.valueArguments.forEachBetween(
+                            forItem = { add(it) },
+                            between = { add(", ") }
+                        )
+                    },
+                    parameter = resolvedCall.template_parameter,
+                    typeParameter = resolvedCall.template_typeParameter,
+                    parameterByIndex = resolvedCall.template_parameterByIndex,
+                    typeParameterByIndex = resolvedCall.template_typeParameterByIndex
+                )
             }
         }
     )
@@ -567,7 +549,9 @@ fun SwiftTranslator.registerFunction() {
                         out += ": "
                     }
                 }
-                entry.value.arguments.forEachBetween(
+                typedRule.replacements[entry.key]?.let {
+                    out += it
+                } ?: entry.value.arguments.forEachBetween(
                     forItem = {
                         if (entry.key.annotations.any { it.fqName?.asString() == "com.lightningkite.khrysalis.modifies" }) {
                             out += "&"
@@ -607,7 +591,8 @@ fun SwiftTranslator.registerFunction() {
 data class ArgumentsList(
     val on: FunctionDescriptor,
     val resolvedCall: ResolvedCall<out CallableDescriptor>,
-    val prependArguments: List<Any> = listOf()
+    val prependArguments: List<Any> = listOf(),
+    val replacements: Map<ValueParameterDescriptor, Any?> = mapOf()
 ) {
 
 }

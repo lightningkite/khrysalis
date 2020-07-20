@@ -63,9 +63,6 @@
 - id: kotlin.collections.mapIndexedNotNull
   type: call
   template: ~this~ #TODO
-- id: kotlin.collections.chunked
-  type: call
-  template: ~this~ #TODO
 
 - id: kotlin.collections.sorted
   type: call

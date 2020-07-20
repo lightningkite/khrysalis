@@ -27,11 +27,14 @@ fun SwiftTranslator.registerExpression() {
         }
         if(plainRt?.isNullable() == false) {
             -typedRule.receiverExpression
+            insertNewlineBeforeAccess()
             -'.'
             -typedRule.selectorExpression
         } else {
             -typedRule.receiverExpression
-            -"?."
+            -"?"
+            insertNewlineBeforeAccess()
+            -"."
             -typedRule.selectorExpression
         }
     }

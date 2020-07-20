@@ -941,27 +941,27 @@
 - id: kotlin.ranges.coerceIn
   type: call
   arguments: [kotlin.Byte, kotlin.Byte]
-  template: min(max(~this~, ~0~), ~1~)
+  template: Swift.min(Swift.max(~this~, ~0~), ~1~)
 - id: kotlin.ranges.coerceIn
   type: call
   arguments: [kotlin.Short, kotlin.Short]
-  template: min(max(~this~, ~0~), ~1~)
+  template: Swift.min(Swift.max(~this~, ~0~), ~1~)
 - id: kotlin.ranges.coerceIn
   type: call
   arguments: [kotlin.Int, kotlin.Int]
-  template: min(max(~this~, ~0~), ~1~)
+  template: Swift.min(Swift.max(~this~, ~0~), ~1~)
 - id: kotlin.ranges.coerceIn
   type: call
   arguments: [kotlin.Long, kotlin.Long]
-  template: min(max(~this~, ~0~), ~1~)
+  template: Swift.min(Swift.max(~this~, ~0~), ~1~)
 - id: kotlin.ranges.coerceIn
   type: call
   arguments: [kotlin.Float, kotlin.Float]
-  template: min(max(~this~, ~0~), ~1~)
+  template: Swift.min(Swift.max(~this~, ~0~), ~1~)
 - id: kotlin.ranges.coerceIn
   type: call
   arguments: [kotlin.Double, kotlin.Double]
-  template: min(max(~this~, ~0~), ~1~)
+  template: Swift.min(Swift.max(~this~, ~0~), ~1~)
 
 
 # RangeTo

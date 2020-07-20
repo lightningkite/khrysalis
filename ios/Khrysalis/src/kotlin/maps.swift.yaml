@@ -58,6 +58,9 @@
   template: "Dictionary()"
 
 ## Usage
+- id: kotlin.collections.Map.size
+  type: get
+  template: ~this~.count
 - id: kotlin.collections.Map.get
   type: call
   template: ~this~[~0~]

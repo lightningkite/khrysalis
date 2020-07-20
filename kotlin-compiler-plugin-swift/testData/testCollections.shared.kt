@@ -1,6 +1,8 @@
 package com.test
 
 private data class CollectionsCustomEq(val value: Int)
+private data class CollectionBox<T>(val value: T)
+private data class CollectionMutBox<T>(var value: T)
 
 private fun collectionsTest(){
     var list = listOf(1, 2, 3)
@@ -34,10 +36,20 @@ private fun collectionsTest(){
     arrayList.add(1)
     arrayList.add(2)
     arrayList.add(0, 2)
+    arrayList.addAll(2, listOf(1, 2))
+    arrayList.addAll(listOf(1, 2))
+    arrayList += 99
+    arrayList += listOf(99)
     arrayList[x + 1] += 4
     arrayList[0] += 4
     println(arrayList[0])
     println(arrayList.size)
+
+    val arrayListBox = CollectionBox(arrayList)
+    arrayListBox.value += 2
+
+    val listBox = CollectionMutBox(listOf(1, 2, 3))
+    arrayListBox.value += 4
 
     println(listOf("a", "b", "c").joinToString())
     println(listOf("a", "b", "c").joinToString("|"))
@@ -52,6 +64,15 @@ private fun collectionsTest(){
         }
 
     val maybeSeq = if(x == 0) sequenceOf(1, 2, 3) else null
+
+    maybeSeq
+        ?.map { it + 1 }
+        ?.filter { it % 2 == 0 }
+        ?.sorted()
+        ?.toList()
+        ?.forEach {
+            println("Got $it")
+        }
 
     maybeSeq
         ?.map { it + 1 }

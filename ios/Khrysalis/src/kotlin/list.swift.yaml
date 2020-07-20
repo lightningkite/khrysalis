@@ -52,26 +52,86 @@
 - id: kotlin.collections.plus
   type: call
   receiver: kotlin.collections.Iterable
+  arguments: [kotlin.collections.Iterable]
   infix: true
-  template: ~this~ + ~0~
+  template: '~this~ + ~0~'
 - id: kotlin.collections.plus
   type: call
   receiver: kotlin.collections.Iterable
-  template: (~this~ + ~0~)
+  arguments: [kotlin.collections.Iterable]
+  template: '(~this~ + ~0~)'
 - id: kotlin.collections.plusAssign
   type: call
   receiver: kotlin.collections.MutableCollection
-  template: ~this~.append(~0~)
+  arguments: [kotlin.collections.Iterable]
+  template: '~this~.append(contentsOf: ~0~)'
+- id: kotlin.collections.plus
+  type: call
+  receiver: kotlin.collections.Collection
+  arguments: [kotlin.collections.Iterable]
+  infix: true
+  template: '~this~ + ~0~'
+- id: kotlin.collections.plus
+  type: call
+  receiver: kotlin.collections.Collection
+  arguments: [kotlin.collections.Iterable]
+  template: '(~this~ + ~0~)'
 
 - id: kotlin.collections.plus
   type: call
-  receiver: kotlin.collections.Collection
+  receiver: kotlin.collections.Iterable
+  arguments: [kotlin.collections.Sequence]
   infix: true
-  template: ~this~ + ~0~
+  template: '~this~ + ~0~'
+- id: kotlin.collections.plus
+  type: call
+  receiver: kotlin.collections.Iterable
+  arguments: [kotlin.collections.Sequence]
+  template: '(~this~ + ~0~)'
+- id: kotlin.collections.plusAssign
+  type: call
+  receiver: kotlin.collections.MutableCollection
+  arguments: [kotlin.collections.Sequence]
+  template: '~this~.append(contentsOf: ~0~)'
 - id: kotlin.collections.plus
   type: call
   receiver: kotlin.collections.Collection
-  template: (~this~ + ~0~)
+  arguments: [kotlin.collections.Sequence]
+  infix: true
+  template: '~this~ + ~0~'
+- id: kotlin.collections.plus
+  type: call
+  receiver: kotlin.collections.Collection
+  arguments: [kotlin.collections.Sequence]
+  template: '(~this~ + ~0~)'
+
+- id: kotlin.collections.plus
+  type: call
+  receiver: kotlin.collections.Iterable
+  suppliedArguments: [element]
+  infix: true
+  template: '~this~ + [~0~]'
+- id: kotlin.collections.plus
+  type: call
+  receiver: kotlin.collections.Iterable
+  suppliedArguments: [element]
+  template: '(~this~ + [~0~])'
+- id: kotlin.collections.plusAssign
+  type: call
+  receiver: kotlin.collections.MutableCollection
+  suppliedArguments: [element]
+  template: '~this~.append(~0~)'
+- id: kotlin.collections.plus
+  type: call
+  receiver: kotlin.collections.Collection
+  suppliedArguments: [element]
+  infix: true
+  template: '~this~ + [~0~]'
+- id: kotlin.collections.plus
+  type: call
+  receiver: kotlin.collections.Collection
+  suppliedArguments: [element]
+  template: '(~this~ + [~0~])'
 
 - id: kotlin.collections.ArrayList
   type: call
@@ -140,7 +200,7 @@
   actualReceiver: kotlin.collections.MutableList
   type: call
   template: "~this~.insert(contentsOf: ~0~, at: ~this~.count - 1)"
-- id: kotlin.collections.MutableCollection.addAll
+- id: kotlin.collections.MutableList.addAll
   actualReceiver: kotlin.collections.MutableList
   type: call
   arguments: [kotlin.Int, '*']

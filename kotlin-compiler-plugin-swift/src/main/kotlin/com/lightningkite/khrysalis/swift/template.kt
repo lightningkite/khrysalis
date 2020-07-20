@@ -123,13 +123,13 @@ fun <T : Any> PartialTranslatorByType<SwiftFileEmitter, Unit, Any>.ContextByType
     }
 }
 
-class DeDupEmitter(analysis: AnalysisExtensions): AnalysisExtensions by analysis {
+class DeDupEmitter(val swift: SwiftTranslator) {
     val deduplicated = HashMap<Any, String>()
     val toEmit = ArrayList<Any>()
     fun deduplicate(item: Any) {
         if (when (item) {
                 is String -> item.all { it.isLetterOrDigit() }
-                is KtExpression -> item.isSimple()
+                is KtExpression -> with(swift) { item.isSimple() }
                 else -> false
             }
         ) return
@@ -159,12 +159,17 @@ class DeDupEmitter(analysis: AnalysisExtensions): AnalysisExtensions by analysis
             toEmit.count { it == key } > 1
         }
 
-    fun finish(parentEmit: (Any) -> Unit) {
+    fun finish(parentEmit: (Any) -> Unit) = with(swift){
         val used = deduplicated.filterKeys { key ->
             toEmit.count { it == key } > 1
         }
         for ((item, name) in used) {
-            parentEmit("let ")
+//            println("Deduping ${(item as? KtExpression)?.text ?: item.toString()}, which is of type ${(item as? KtExpression)?.resolvedExpressionTypeInfo?.type}")
+            if((item as? KtExpression)?.resolvedExpressionTypeInfo?.type?.requiresMutable() == true){
+                parentEmit("var ")
+            } else {
+                parentEmit("let ")
+            }
             parentEmit(name)
             parentEmit(" = ")
             parentEmit(item)
@@ -174,6 +179,12 @@ class DeDupEmitter(analysis: AnalysisExtensions): AnalysisExtensions by analysis
             used[item]?.let { name ->
                 parentEmit(name)
             } ?: parentEmit(item)
+        }
+        for ((item, name) in used.filter { (it.key as? KtExpression)?.resolvedExpressionTypeInfo?.type?.requiresMutable() == true } ) {
+            parentEmit(item)
+            parentEmit(" = ")
+            parentEmit(name)
+            parentEmit("\n")
         }
     }
 }

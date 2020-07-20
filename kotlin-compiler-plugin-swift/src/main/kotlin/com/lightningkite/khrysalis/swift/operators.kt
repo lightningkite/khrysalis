@@ -4,11 +4,14 @@ import com.lightningkite.khrysalis.util.forEachBetween
 import org.jetbrains.kotlin.com.intellij.psi.tree.IElementType
 import org.jetbrains.kotlin.descriptors.CallableDescriptor
 import org.jetbrains.kotlin.descriptors.FunctionDescriptor
+import org.jetbrains.kotlin.descriptors.ValueParameterDescriptor
 import org.jetbrains.kotlin.lexer.KtSingleValueToken
 import org.jetbrains.kotlin.lexer.KtToken
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
+import org.jetbrains.kotlin.psi.psiUtil.getTextWithLocation
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
+import org.jetbrains.kotlin.resolve.calls.model.ResolvedValueArgument
 
 //class TestThing(){
 //    operator fun dec
@@ -129,7 +132,10 @@ fun SwiftTranslator.registerOperators() {
         -ArgumentsList(
             on = f,
             resolvedCall = typedRule.resolvedCall!!,
-            prependArguments = if (doubleReceiver) listOf(typedRule.arrayExpression) else listOf()
+            prependArguments = if (doubleReceiver) listOf(typedRule.arrayExpression) else listOf(),
+            replacements = (
+                typedRule.indexExpressions.mapIndexed { index, exp -> typedRule.functionDescriptor.valueParameters.get(index).let { it to exp } }.associate { it }
+            )
         )
     }
     handle<VirtualArrayGet>(
@@ -196,11 +202,15 @@ fun SwiftTranslator.registerOperators() {
                 }
             }
             val tempIndexes = arrayAccess.indexExpressions.map {
-                val tempName = "index${uniqueNumber.getAndIncrement()}"
-                -"let $tempName = "
-                -it
-                -"\n"
-                tempName
+                if(it.isSimple()){
+                    it
+                } else {
+                    val tempName = "index${uniqueNumber.getAndIncrement()}"
+                    -"let $tempName = "
+                    -it
+                    -"\n"
+                    tempName
+                }
             }
 
             val right: Any = if (typedRule.operationToken == KtTokens.EQ) typedRule.right!! else ValueOperator(
@@ -230,7 +240,10 @@ fun SwiftTranslator.registerOperators() {
             -ArgumentsList(
                 on = setFunction,
                 resolvedCall = arrayAccess.resolvedIndexedLvalueSet!!,
-                prependArguments = if (doubleReceiver) listOf(arrayAccess.arrayExpression!!) else listOf()
+                prependArguments = if (doubleReceiver) listOf(arrayAccess.arrayExpression!!) else listOf(),
+                replacements = (
+                        tempIndexes.mapIndexed { index, exp -> setFunction.valueParameters[index].let { it to exp } }.associate { it }
+                        ) + (arrayAccess.resolvedIndexedLvalueSet?.resultingDescriptor?.valueParameters?.lastOrNull()?.let { mapOf(it to right) } ?: mapOf())
             )
             if (needsClose) {
                 -"\n"
@@ -410,10 +423,7 @@ fun SwiftTranslator.registerOperators() {
         action = {
             -typedRule.left
             -' '
-            -when (val t = typedRule.operationToken) {
-                is KtSingleValueToken -> t.value
-                else -> null
-            }
+            -operatorsByName[typedRule.functionDescriptor.name.asString()]?.swiftToken
             -' '
             -typedRule.right
         }
@@ -422,11 +432,10 @@ fun SwiftTranslator.registerOperators() {
         condition = {
             typedRule.operationReference.getReferencedNameElementType() != KtTokens.IDENTIFIER
                     && typedRule.operationReference.getReferencedNameElementType() != KtTokens.EQ
-                    && typedRule.operationReference.resolvedReferenceTarget != null
+                    && typedRule.operationReference.resolvedReferenceTarget is FunctionDescriptor
         },
         priority = 10,
         action = {
-            val token = operatorsByName[(typedRule.operationReference.resolvedReferenceTarget as FunctionDescriptor).name.asString()]
             if (typedRule.resolvedVariableReassignment == true) {
                 -typedRule.left
                 -" = "
@@ -436,7 +445,7 @@ fun SwiftTranslator.registerOperators() {
                 right = typedRule.right!!,
                 functionDescriptor = typedRule.operationReference.resolvedReferenceTarget as FunctionDescriptor,
                 dispatchReceiver = typedRule.getTsReceiver(),
-                operationToken = token?.kotlinToken ?: typedRule.operationToken,
+                operationToken = typedRule.operationToken,
                 resolvedCall = typedRule.resolvedCall
             )
         })

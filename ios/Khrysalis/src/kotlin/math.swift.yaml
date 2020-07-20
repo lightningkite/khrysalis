@@ -2,63 +2,63 @@
 - id: kotlin.math.min
   type: call
   arguments: [kotlin.Byte, kotlin.Byte]
-  template: min(~0~, ~1~)
+  template: Swift.min(~0~, ~1~)
 
 - id: kotlin.math.min
   type: call
   arguments: [kotlin.Short, kotlin.Short]
-  template: min(~0~, ~1~)
+  template: Swift.min(~0~, ~1~)
 
 - id: kotlin.math.min
   type: call
   arguments: [kotlin.Int, kotlin.Int]
-  template: min(~0~, ~1~)
+  template: Swift.min(~0~, ~1~)
 
 - id: kotlin.math.min
   type: call
   arguments: [kotlin.Long, kotlin.Long]
-  template: min(~0~, ~1~)
+  template: Swift.min(~0~, ~1~)
 
 - id: kotlin.math.min
   type: call
   arguments: [kotlin.Float, kotlin.Float]
-  template: min(~0~, ~1~)
+  template: Swift.min(~0~, ~1~)
 
 - id: kotlin.math.min
   type: call
   arguments: [kotlin.Double, kotlin.Double]
-  template: min(~0~, ~1~)
+  template: Swift.min(~0~, ~1~)
 
 
 - id: kotlin.math.max
   type: call
   arguments: [kotlin.Byte, kotlin.Byte]
-  template: max(~0~, ~1~)
+  template: Swift.max(~0~, ~1~)
 
 - id: kotlin.math.max
   type: call
   arguments: [kotlin.Short, kotlin.Short]
-  template: max(~0~, ~1~)
+  template: Swift.max(~0~, ~1~)
 
 - id: kotlin.math.max
   type: call
   arguments: [kotlin.Int, kotlin.Int]
-  template: max(~0~, ~1~)
+  template: Swift.max(~0~, ~1~)
 
 - id: kotlin.math.max
   type: call
   arguments: [kotlin.Long, kotlin.Long]
-  template: max(~0~, ~1~)
+  template: Swift.max(~0~, ~1~)
 
 - id: kotlin.math.max
   type: call
   arguments: [kotlin.Float, kotlin.Float]
-  template: max(~0~, ~1~)
+  template: Swift.max(~0~, ~1~)
 
 - id: kotlin.math.max
   type: call
   arguments: [kotlin.Double, kotlin.Double]
-  template: max(~0~, ~1~)
+  template: Swift.max(~0~, ~1~)
 
 
 - id: kotlin.math.abs
