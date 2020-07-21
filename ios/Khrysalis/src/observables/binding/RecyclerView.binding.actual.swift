@@ -287,8 +287,14 @@ class CustomUITableViewCell: UITableViewCell {
             current = current?.superview
         }
         if let current = current as? UITableView {
-            current.beginUpdates()
-            current.endUpdates()
+            if let dataSource = current.dataSource,
+                dataSource.tableView(current, numberOfRowsInSection: 0) == current.numberOfRows(inSection: 0)
+            {
+                current.beginUpdates()
+                current.endUpdates()
+            } else {
+                current.reloadData()
+            }
         }
     }
 }

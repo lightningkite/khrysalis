@@ -74,10 +74,10 @@ fun convertVectorDrawable(name: String, node: XmlNode, out: Appendable) {
                     pathDataToSwift(pathData)
                     appendln("        sublayer.path = path")
                 }
-                setToColor(subnode, "android:fillColor") {
+                setToColor(subnode, "android:fillColor") { it, s ->
                     appendln("        sublayer.fillColor = $it.cgColor")
                 }
-                setToColor(subnode, "android:strokeColor") {
+                setToColor(subnode, "android:strokeColor") { it, s ->
                     appendln("        sublayer.strokeColor = $it.cgColor")
                 }
                 appendln("        return sublayer")
@@ -186,10 +186,13 @@ private fun Appendable.pathDataToSwift(pathData: String) {
                     val control2Y = arguments.unshift() + offsetY()
                     val destX = arguments.unshift() + offsetX()
                     val destY = arguments.unshift() + offsetY()
-                    val c1x = referenceX - (referenceX - previousC2X)
-                    val c1y = referenceY - (referenceY - previousC2Y)
+                    val c1x = referenceX - (previousC2X - referenceX)
+                    val c1y = referenceY - (previousC2Y - referenceY)
+                    previousC2X = control2X
+                    previousC2Y = control2Y
                     referenceX = destX
                     referenceY = destY
+//                    appendln("        //Calculated from previous control point $previousC2X and $previousC2Y mirrored around ")
                     appendln("        path.addCurve(to: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}), control1: CGPoint(x: ${c1x.scaleX()}, y: ${c1y.scaleY()}), control2: CGPoint(x: ${control2X.scaleX()}, y: ${control2Y.scaleY()}))")
                 }
                 'a' -> {
@@ -200,6 +203,8 @@ private fun Appendable.pathDataToSwift(pathData: String) {
                     val sweepFlag = arguments.unshift()
                     val destX = arguments.unshift() + offsetX()
                     val destY = arguments.unshift() + offsetY()
+                    referenceX = destX
+                    referenceY = destY
                     appendln("        path.arcTo(radius: CGSize(width: ${radiusX.scaleX()}, height: ${radiusY.scaleY()}), rotation: ${xAxisRotation}, largeArcFlag: ${largeArcFlag > 0.5}, sweepFlag: ${sweepFlag > 0.5}, end: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}))")
                 }
                 else -> throw IllegalStateException("Non-legal command ${instruction}")

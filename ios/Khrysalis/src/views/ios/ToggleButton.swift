@@ -11,10 +11,15 @@ import UIKit
 
 
 public class ToggleButton: UIButtonWithLayer, CompoundButton {
-    public var onCheckChanged: (Bool) -> Void = { _ in }
+    public var onCheckChanged: (CompoundButton, Bool) -> Void = { (_, _) in }
     public func setOnCheckedChangeListener(_ item: @escaping (CompoundButton, Bool) -> Void) {
-        let prev = onCheckChanged
-        onCheckChanged = { it in
+        onCheckChanged = item
+    }
+    public var onCheckChangedOther: (CompoundButton, Bool) -> Void = { (_, _) in }
+    public func addOnCheckedChangeListener(_ item: @escaping (CompoundButton, Bool) -> Void) {
+        let prev = onCheckChangedOther
+        onCheckChangedOther = { (self, it) in
+            prev(self, it)
             item(self, it)
         }
     }
@@ -35,7 +40,8 @@ public class ToggleButton: UIButtonWithLayer, CompoundButton {
         didSet {
             self.isSelected = isChecked
             syncText()
-            onCheckChanged(isChecked)
+            onCheckChanged(self, isChecked)
+            onCheckChangedOther(self, isChecked)
         }
     }
     

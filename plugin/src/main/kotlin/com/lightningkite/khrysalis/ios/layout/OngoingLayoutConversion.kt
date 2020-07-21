@@ -70,18 +70,18 @@ data class OngoingLayoutConversion(
 }
 
 
-fun Appendable.setToColor(node: XmlNode, key: String, controlView: String = "view", write: (color: String) -> Unit): Boolean {
+fun Appendable.setToColor(node: XmlNode, key: String, controlView: String = "view", write: (color: String, state: String) -> Unit): Boolean {
     val raw = node.allAttributes[key] ?: return false
     return when {
         raw.startsWith("@color/") || raw.startsWith("@android:color/") -> {
             val colorName = raw.removePrefix("@color/").removePrefix("@android:color/")
-            appendln("applyColor($controlView, R.color.${colorName}) { c in")
-            write("c")
+            appendln("applyColor($controlView, R.color.${colorName}) { (c, s) in")
+            write("c", "s")
             appendln("}")
             true
         }
         raw.startsWith("#") -> {
-            write(raw.hashColorToUIColor())
+            write(raw.hashColorToUIColor(), ".normal")
             true
         }
         else -> {

@@ -160,7 +160,7 @@ open class LinearLayout: UIView {
             }
             let subMaximumsA = makeSize(
                 primary: size[orientation] - result[orientation] - combined.total(orientation),
-                secondary: size[orientation.other] - combined.total(orientation.other)
+                secondary: size[orientation.other] - combined.total(orientation.other) - padding.total(orientation.other)
             )
             let subMaximums = CGSize(
                 width: max(
@@ -207,7 +207,7 @@ open class LinearLayout: UIView {
             let combined = params.combined
             let subMaximumsA = makeSize(
                 primary: remainingArea * params.weight / weightTotal,
-                secondary: size[orientation.other] - combined.total(orientation.other)
+                secondary: size[orientation.other] - combined.total(orientation.other) - padding.total(orientation.other)
             )
             let subMaximums = CGSize(
                 width: max(
@@ -282,19 +282,20 @@ open class LinearLayout: UIView {
             let shift: CGFloat
             let secondarySize: CGFloat
             let gravityComponent: Align = params.gravity[orientation.other]
+            let secondaryCap = size[orientation.other] - combined.total(orientation.other) - padding.total(orientation.other)
             switch gravityComponent {
             case .start:
                 shift = combined.start(orientation.other) + padding.start(orientation.other)
-                secondarySize = viewSize[orientation.other]
+                secondarySize = min(viewSize[orientation.other], secondaryCap)
             case .center:
                 shift = (size[orientation.other] - viewSize[orientation.other] - padding.total(orientation.other)) / 2 - combined.start(orientation.other) + combined.end(orientation.other) + padding.start(orientation.other)
-                secondarySize = viewSize[orientation.other]
+                secondarySize = min(viewSize[orientation.other], secondaryCap)
             case .end:
                 shift = size[orientation.other] - viewSize[orientation.other] - combined.end(orientation.other) - padding.end(orientation.other)
-                secondarySize = viewSize[orientation.other]
+                secondarySize = min(viewSize[orientation.other], secondaryCap)
             case .fill:
                 shift = combined.start(orientation.other) + padding.start(orientation.other)
-                secondarySize = size[orientation.other] - combined.total(orientation.other) - padding.total(orientation.other)
+                secondarySize = secondaryCap
             }
             
             subview.frame = CGRect(

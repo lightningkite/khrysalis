@@ -8,20 +8,20 @@ val LayoutConverter.Companion.buttonViews
         viewTypes = ViewType.mapOf(
 
             ViewType("SeekBar", "UISlider", "View") { node ->
-                setToColor(node, key = "android:progressTint") {
+                setToColor(node, key = "android:progressTint") { it, s ->
                     appendln("view.minimumTrackTintColor = $it")
                     appendln("view.maximumTrackTintColor = $it")
                 }
-                setToColor(node, key = "android:thumbTint") {
+                setToColor(node, key = "android:thumbTint") { it, s ->
                     appendln("view.thumbTintColor = $it")
                 }
             },
             ViewType("com.lightningkite.khrysalis.views.android.ColorRatingBar", "UIRatingBar", "RatingBar") { node ->
-                setToColor(node, key = "app:empty_color") {
+                setToColor(node, key = "app:empty_color") { it, s ->
                     appendln("view.settings.emptyColor = $it")
                     appendln("view.settings.emptyBorderColor = $it")
                 }
-                setToColor(node, key = "app:progress_color") {
+                setToColor(node, key = "app:progress_color") { it, s ->
                     appendln("view.settings.filledColor = $it")
                     appendln("view.settings.filledBorderColor = $it")
                 }
@@ -122,8 +122,8 @@ val LayoutConverter.Companion.buttonViews
                 node.attributeAsSwiftString("android:text")?.let { text ->
                     appendln("view.textString = $text")
                 }
-                setToColor(node, "android:textColor") {
-                    appendln("view.setTitleColor($it, for: .normal)")
+                setToColor(node, "android:textColor") { it, s ->
+                    appendln("view.setTitleColor($it, for: $s)")
                 }
 
                 node.allAttributes["android:gravity"]
@@ -147,6 +147,9 @@ val LayoutConverter.Companion.buttonViews
                 }
                 node.attributeAsSwiftDimension("android:drawablePadding")?.let { text ->
                     appendln("view.iconPadding = $text")
+                }
+                setToColor(node, "android:drawableTint") { it, s ->
+                    appendln("view.iconTint = $it")
                 }
                 node.attributeAsSwiftLayer("android:drawableLeft", "view")?.let { text ->
                     appendln("view.iconPosition = .left")

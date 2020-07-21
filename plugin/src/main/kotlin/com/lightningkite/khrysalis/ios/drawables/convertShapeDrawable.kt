@@ -35,14 +35,14 @@ fun convertShapeDrawable(name: String, node: XmlNode, out: Appendable) {
                     appendln("    layer.path = CGPath(ellipseIn: CGRect(x: 0, y: 0, width: $width, height: $height), transform: nil)")
                     node.children.find { it.name == "stroke" }?.let {
                         appendln("    layer.borderWidth = ${it.attributeAsSwiftDimension("android:width") ?: "0"}")
-                        setToColor(it, "android:color") {
+                        setToColor(it, "android:color") { it, s ->
                             appendln(
                                 "    layer.strokeColor = $it.cgColor"
                             )
                         }
                     }
                     node.children.find { it.name == "solid" }?.let {
-                        setToColor(it, "android:color") {
+                        setToColor(it, "android:color") { it, s ->
                             appendln(
                                 "    layer.fillColor = $it.cgColor"
                             )
@@ -62,14 +62,14 @@ fun convertShapeDrawable(name: String, node: XmlNode, out: Appendable) {
                 appendln("    let layer = $className()")
                 node.children.find { it.name == "stroke" }?.let {
                     appendln("    layer.borderWidth = ${it.attributeAsSwiftDimension("android:width") ?: "0"}")
-                    setToColor(it, "android:color") {
+                    setToColor(it, "android:color") { it, s ->
                         appendln(
                             "    layer.borderColor = $it.cgColor"
                         )
                     }
                 }
                 node.children.find { it.name == "solid" }?.let {
-                    setToColor(it, "android:color") {
+                    setToColor(it, "android:color") { it, s ->
                         appendln(
                             "    layer.backgroundColor = $it.cgColor"
                         )

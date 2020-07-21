@@ -10,23 +10,29 @@ import UIKit
 
 
 public class LabeledRadioButton : LinearLayout, CompoundButton {
-    
-    public let checkViewContainer: UIView = UIView(frame: .zero)
-    public let checkView: UIView = UIView(frame: .zero)
-    public let labelView: UILabel = UILabel(frame: .zero)
-    public var onCheckChanged: (Bool) -> Void = { _ in }
+    public var onCheckChanged: (CompoundButton, Bool) -> Void = { (_, _) in }
     public func setOnCheckedChangeListener(_ item: @escaping (CompoundButton, Bool) -> Void) {
-        let prev = onCheckChanged
-        onCheckChanged = { it in
+        onCheckChanged = item
+    }
+    public var onCheckChangedOther: (CompoundButton, Bool) -> Void = { (_, _) in }
+    public func addOnCheckedChangeListener(_ item: @escaping (CompoundButton, Bool) -> Void) {
+        let prev = onCheckChangedOther
+        onCheckChangedOther = { (self, it) in
+            prev(self, it)
             item(self, it)
         }
     }
+
+    public let checkViewContainer: UIView = UIView(frame: .zero)
+    public let checkView: UIView = UIView(frame: .zero)
+    public let labelView: UILabel = UILabel(frame: .zero)
     public var isChecked: Bool = false {
         didSet {
             UIView.animate(withDuration: 0.25, animations: { [weak self] in
                 self?.resize()
             })
-            onCheckChanged(isChecked)
+            onCheckChanged(self, isChecked)
+            onCheckChangedOther(self, isChecked)
         }
     }
     

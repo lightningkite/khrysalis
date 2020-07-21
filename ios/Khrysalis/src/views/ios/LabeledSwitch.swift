@@ -13,6 +13,9 @@ public class LabeledSwitch : LinearLayout, CompoundButton {
     public func setOnCheckedChangeListener(_ item: @escaping (CompoundButton, Bool) -> Void) {
         switchView.setOnCheckedChangeListener(item)
     }
+    public func addOnCheckedChangeListener(_ item: @escaping (CompoundButton, Bool) -> Void) {
+        switchView.addOnCheckedChangeListener(item)
+    }
     public var isChecked: Bool {
         get { return switchView.isOn }
         set(value) {

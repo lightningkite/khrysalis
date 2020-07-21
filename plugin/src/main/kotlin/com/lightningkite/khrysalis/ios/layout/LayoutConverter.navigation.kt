@@ -28,7 +28,7 @@ val LayoutConverter.Companion.navigationViews
 //                }
 //                setToColor(node, "app:tabRippleColor") {
 //                }
-                if(!setToColor(node, "app:tabTextColor"){
+                if(!setToColor(node, "app:tabTextColor"){ it, s ->
                         appendln(
                             """view.setTitleTextAttributes(
                 [NSAttributedString.Key.foregroundColor: $it], 
@@ -76,9 +76,9 @@ val LayoutConverter.Companion.navigationViews
                     else -> appendln("view.separatorStyle = .none")
                 }
 
-                setToColor(node, "app:dividerColor"){
+                setToColor(node, "app:dividerColor"){ it, s ->
                     appendln("view.separatorColor = $it")
-                } || setToColor(node, "dividerColor"){
+                } || setToColor(node, "dividerColor"){ it, s ->
                     appendln("view.separatorColor = $it")
                 }
                 (node.attributeAsSwiftDimension("app:dividerSize") ?: node.attributeAsSwiftDimension("dividerSize"))?.let {
@@ -92,10 +92,10 @@ val LayoutConverter.Companion.navigationViews
                 }
             },
             ViewType("com.rd.PageIndicatorView", "UIPageControl", "View") { node ->
-                setToColor(node, "app:piv_selectedColor"){
+                setToColor(node, "app:piv_selectedColor"){ it, s ->
                     appendln("view.currentPageIndicatorTintColor = $it")
                 }
-                setToColor(node, "app:piv_unselectedColor"){
+                setToColor(node, "app:piv_unselectedColor"){ it, s ->
                     appendln("view.pageIndicatorTintColor = $it")
                 }
             },

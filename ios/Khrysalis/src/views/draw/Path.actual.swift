@@ -55,90 +55,71 @@ public extension Path {
 }
 
 //--- Canvas.drawArc
+private extension CGFloat {
+    var squared: CGFloat { return self * self }
+}
 public extension Path {
-    private func sqr(_ value: CGFloat) -> CGFloat {
-        return value * value
-    }
-    private func svgAngle(_ ux: CGFloat, _ uy: CGFloat, _ vx: CGFloat, _ vy: CGFloat) -> CGFloat {
-        let dot = ux * vx + uy * vy
-        let len = sqrt(sqr(vx-ux) + sqr(vy-uy))
-        var angle = acos(max(-1, min(1, dot/len)))
-        if (ux*vy - uy*vx) < 0 {
-          angle = -angle
-        }
-        return angle
-    }
     func arcTo(radius: CGSize, rotation: CGFloat, largeArcFlag: Bool, sweepFlag: Bool, end: CGPoint) {
         arcTo(radius, rotation, largeArcFlag, sweepFlag, end)
     }
     func arcTo(_ radius: CGSize, _ rotation: CGFloat, _ largeArcFlag: Bool, _ sweepFlag: Bool, _ end: CGPoint) {
         let start = self.currentPoint
-        var rx = radius.width
-        var ry = radius.height
-        var x_rot = rotation
-        let large = largeArcFlag
-        let sweep = sweepFlag
-        let ax = start.x
-        let ay = start.y
-        let bx = end.x
-        let by = end.y
-
-        x_rot *= CGFloat.pi/180
-
-        rx = abs(rx)
-        ry = abs(ry)
-
-        let dx2 = (ax - bx) / 2
-        let dy2 = (ay - by) / 2
-        let x1p =  cos(x_rot)*dx2 + sin(x_rot)*dy2
-        let y1p = -sin(x_rot)*dx2 + cos(x_rot)*dy2
-
-        var rxs = rx * rx
-        var rys = ry * ry
-        let x1ps = x1p * x1p
-        let y1ps = y1p * y1p
-        // check if the radius is too small `pq < 0`, when `dq > rxs * rys` (see below)
-        // cr is the ratio (dq : rxs * rys)
-        let cr = x1ps/rxs + y1ps/rys
-        var s: CGFloat = 1
-        if (cr > 1) {
-          //scale up rX,rY equally so cr == 1
-          s = sqrt(cr)
-          rx = s * rx
-          ry = s * ry
-          rxs = rx * rx
-          rys = ry * ry
+        if radius.width == 0 || radius.height == 0 {
+            addLine(to: end)
+            return
         }
-        let dq = (rxs * y1ps + rys * x1ps)
-        let pq = (rxs*rys - dq) / dq
-        var q = sqrt( max(0,pq) ) //use Max to account for CGFloat precision
-        if large == sweep {
-          q = -q
-        }
-        let cxp = q * rx * y1p / ry
-        let cyp = -q * ry * x1p / rx
+        let rotationRadians = (rotation * CGFloat.pi/180).truncatingRemainder(dividingBy: CGFloat.pi * 2)
+        let cosRotation = cos(rotationRadians)
+        let sinRotation = sin(rotationRadians)
 
-        //(F.6.5.3)
-        let cx = cos(x_rot)*cxp - sin(x_rot)*cyp + (ax + bx)/2
-        let cy = sin(x_rot)*cxp + cos(x_rot)*cyp + (ay + by)/2
+        // Calculate arc center
+        let p1 = CGPoint(
+            x: cosRotation * (start.x - end.x) / 2 + sinRotation * (start.y - end.y) / 2,
+            y: -sinRotation * (start.x - end.x) / 2 + cosRotation * (start.y - end.y) / 2
+        )
+        let delta = p1.x.squared / radius.width.squared + p1.y.squared / radius.height.squared
+        let transformedRadius = delta <= 1.0 ? radius : CGSize(width: radius.width * sqrt(delta), height: radius.height * sqrt(delta))
+        let center = ({ () -> CGPoint in
+            let numerator = transformedRadius.width.squared * transformedRadius.height.squared - transformedRadius.width.squared * p1.y.squared - transformedRadius.height.squared * p1.x.squared
+            let denom = transformedRadius.width.squared * p1.y.squared + transformedRadius.height.squared * p1.x.squared
+            let lhs = denom == 0 ? 0 : (largeArcFlag == sweepFlag ? -1 : 1) * sqrt(numerator / denom)
+            let cxp = lhs * transformedRadius.width * p1.y / transformedRadius.height
+            let cyp = lhs * -transformedRadius.height * p1.x / transformedRadius.width
+            let c = CGPoint(
+                x: cosRotation * cxp - sinRotation * cyp + (start.x + end.x) / 2,
+                y: sinRotation * cxp + cosRotation * cyp + (start.y + end.y) / 2
+            )
 
-        //(F.6.5.5)
-        var theta = svgAngle( 1,0, (x1p-cxp) / rx, (y1p - cyp)/ry )
-        //(F.6.5.6)
-        var delta = svgAngle(
-          (x1p - cxp)/rx, (y1p - cyp)/ry,
-          (-x1p - cxp)/rx, (-y1p-cyp)/ry)
-        delta = delta.truncatingRemainder(dividingBy: CGFloat.pi * 2)
-        if (!sweep) {
-          delta -= 2 * CGFloat.pi
+            return c
+        })()
+
+        // Transform ellipse into unit circle and calculate angles
+        var transform = CGAffineTransform(scaleX: 1/transformedRadius.width, y: 1/transformedRadius.height)
+        transform = transform.rotated(by: -rotationRadians)
+        transform = transform.translatedBy(x: -center.x, y: -center.y)
+        let transformedStart = start.applying(transform)
+        let transformedEnd = end.applying(transform)
+        let startAngle = atan2(transformedStart.y, transformedStart.x)
+        let endAngle = atan2(transformedEnd.y, transformedEnd.x)
+        var deltaAngle = endAngle - startAngle
+        if sweepFlag {
+            if deltaAngle < 0 {
+                deltaAngle += 2 * .pi
+            }
+        } else {
+            if deltaAngle > 0 {
+                deltaAngle -= 2 * .pi
+            }
         }
 
+        // Draw
+        let reversedTransform = transform.inverted()
         self.addRelativeArc(
-            center: CGPoint(x: cx, y: cy),
-            radius: max(rx, ry),
-            startAngle: theta,
-            delta: delta,
-            transform: CGAffineTransform(rotationAngle: x_rot)
+            center: .zero,
+            radius: 1,
+            startAngle: startAngle,
+            delta: deltaAngle,
+            transform: reversedTransform
         )
     }
 }

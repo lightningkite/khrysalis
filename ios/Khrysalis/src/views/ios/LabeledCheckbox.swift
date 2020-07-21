@@ -10,17 +10,22 @@ import UIKit
 
 
 public class LabeledCheckbox : LinearLayout, CompoundButton {
+    public var onCheckChanged: (CompoundButton, Bool) -> Void = { (_, _) in }
+    public func setOnCheckedChangeListener(_ item: @escaping (CompoundButton, Bool) -> Void) {
+        onCheckChanged = item
+    }
+    public var onCheckChangedOther: (CompoundButton, Bool) -> Void = { (_, _) in }
+    public func addOnCheckedChangeListener(_ item: @escaping (CompoundButton, Bool) -> Void) {
+        let prev = onCheckChangedOther
+        onCheckChangedOther = { (self, it) in
+            prev(self, it)
+            item(self, it)
+        }
+    }
 
     public let checkViewContainer: UIView = UIView(frame: .zero)
     public let checkView: UILabel = UILabel(frame: .zero)
     public let labelView: UILabel = UILabel(frame: .zero)
-    public var onCheckChanged: (Bool) -> Void = { _ in }
-    public func setOnCheckedChangeListener(_ item: @escaping (CompoundButton, Bool) -> Void) {
-        let prev = onCheckChanged
-        onCheckChanged = { it in
-            item(self, it)
-        }
-    }
     public var isChecked: Bool = false {
         didSet {
             if isChecked {
@@ -32,7 +37,8 @@ public class LabeledCheckbox : LinearLayout, CompoundButton {
                     checkView.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
                 })
             }
-            onCheckChanged(isChecked)
+            onCheckChanged(self, isChecked)
+            onCheckChangedOther(self, isChecked)
         }
     }
     

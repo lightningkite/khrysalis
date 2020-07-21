@@ -28,7 +28,7 @@ val LayoutConverter.Companion.displayViews
                             appendln("}")
                         }
                         raw.startsWith("@color/") || raw.startsWith("@android:color/") -> {
-                            setToColor(node, "android:background") {
+                            setToColor(node, "android:background") { it, s ->
                                 appendln("view.backgroundColor = $it")
                             }
                         }
@@ -65,7 +65,7 @@ val LayoutConverter.Companion.displayViews
             ViewType("Space", "UIView", "View") {},
             ViewType("ProgressBar", "UIActivityIndicatorView", "View") { node ->
                 appendln("view.startAnimating()")
-                if(!setToColor(node, "android:indeterminateTint") {
+                if(!setToColor(node, "android:indeterminateTint") { it, s ->
                     appendln("view.color = $it")
                 }) {
                     appendln("view.color = R.color.colorPrimary")
@@ -156,7 +156,7 @@ internal fun OngoingLayoutConversion.handleCommonText(node: XmlNode, viewHandle:
     appendln("$viewHandle.numberOfLines = ${lines ?: 0}")
 
 
-    setToColor(node, "android:textColor", controlView ?: checkView ?: viewHandle) {
+    setToColor(node, "android:textColor", controlView ?: checkView ?: viewHandle) { it, s ->
         appendln("$viewHandle.textColor = $it")
     }
     node.allAttributes["android:gravity"]?.let {
