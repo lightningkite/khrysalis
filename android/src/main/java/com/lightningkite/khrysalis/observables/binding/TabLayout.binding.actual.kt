@@ -3,6 +3,7 @@ package com.lightningkite.khrysalis.observables.binding
 import com.google.android.material.tabs.TabLayout
 import com.lightningkite.khrysalis.Equatable
 import com.lightningkite.khrysalis.JsName
+import com.lightningkite.khrysalis.Hashable
 import com.lightningkite.khrysalis.observables.*
 import com.lightningkite.khrysalis.rx.removed
 import com.lightningkite.khrysalis.rx.until
@@ -20,7 +21,7 @@ import com.lightningkite.khrysalis.rx.until
 fun TabLayout.bind(
     tabs: List<String>,
     selected: MutableObservableProperty<Int>,
-    allowReselect:Boolean = false
+    allowReselect: Boolean = false
 ) {
     this.removeAllTabs()
     for (tab in tabs) {

@@ -103,7 +103,11 @@ open class FrameLayout: UIView {
         for subview in subviews {
             guard subview.includeInLayout, let params = subviewsWithParams[subview] else { continue }
             let combined = params.combined
-            let viewMeasured = subview.sizeThatFits(size)
+            let paddedSize = CGSize(
+                width: size.width - padding.total(.x) - combined.total(.x),
+                height: size.height - padding.total(.y) - combined.total(.y)
+            )
+            let viewMeasured = subview.sizeThatFits(paddedSize)
             let viewSize = CGSize(
                 width: max(
                     params.minimumSize.width,
@@ -123,7 +127,7 @@ open class FrameLayout: UIView {
     
     override open func setNeedsLayout() {
         super.setNeedsLayout()
-        superview?.setNeedsLayout()
+        self.notifyParentSizeChanged()
     }
     
     override public func layoutSubviews() {
@@ -132,7 +136,12 @@ open class FrameLayout: UIView {
         let size = self.bounds.size
         for subview in subviews {
             guard subview.includeInLayout, let params = subviewsWithParams[subview] else { continue }
-            let viewMeasured = subview.sizeThatFits(size)
+            let combined = params.combined
+            let paddedSize = CGSize(
+                width: size.width - padding.total(.x) - combined.total(.x),
+                height: size.height - padding.total(.y) - combined.total(.y)
+            )
+            let viewMeasured = subview.sizeThatFits(paddedSize)
             let viewSize = CGSize(
                 width: max(
                     params.minimumSize.width,
@@ -144,7 +153,6 @@ open class FrameLayout: UIView {
                 )
             )
             var clickBounds = CGRect.zero
-            let combined = params.combined
             func handleDimension(dimen: Dimension) {
                 switch params.gravity[dimen] {
                     case .start:

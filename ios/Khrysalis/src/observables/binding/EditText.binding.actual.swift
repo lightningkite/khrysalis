@@ -11,7 +11,7 @@ public extension UITextField {
             if self.textString != value {
                 self.textString = value
             }
-            self.superview?.setNeedsLayout()
+            self.notifyParentSizeChanged()
         }.until(self.removed)
         addAction(for: UITextField.Event.editingChanged) { [weak self] in
             if observable.value != self?.textString {
@@ -41,7 +41,7 @@ public extension UITextView {
             if self.textString != value {
                 self.textString = value
             }
-            self.superview?.setNeedsLayout()
+            self.notifyParentSizeChanged()
         }.until(self.removed)
         let delegate = LambdaDelegate { text in
             if observable.value != text {
@@ -64,7 +64,7 @@ public extension UITextField {
             let currentValue = Int(self.textString) ?? 0
             if currentValue != Int(value) {
                 self.textString = String(value)
-                self.superview?.setNeedsLayout()
+                self.notifyParentSizeChanged()
             }
         }.until(self.removed)
         addAction(for: UITextField.Event.editingChanged) { [weak self] in
@@ -89,7 +89,7 @@ public extension UITextField {
             let currentValue = Double(self.textString) ?? 0
             if currentValue != Double(value) {
                 self.textString = String(value)
-                self.superview?.setNeedsLayout()
+                self.notifyParentSizeChanged()
             }
         }.until(self.removed)
         addAction(for: UITextField.Event.editingChanged) { [weak self] in

@@ -18,7 +18,29 @@ public extension UIView {
         }
         set(value) {
             UIView.isIncludedExt.set(self, value)
-            self.superview?.setNeedsLayout()
+            self.notifyParentSizeChanged()
+        }
+    }
+    
+    func notifyParentSizeChanged() {
+        if let p = self.superview {
+            p.setNeedsLayout()
+            var current = p
+            while
+                !(current is LinearLayout) &&
+                    !(current is FrameLayout) &&
+                    !(current is UIScrollView)
+            {
+                if let su = current.superview {
+                    current = su
+                    if let cell = current as? UITableViewCell {
+                        cell.setNeedsLayout()
+                        break
+                    }
+                } else {
+                    break
+                }
+            }
         }
     }
 }

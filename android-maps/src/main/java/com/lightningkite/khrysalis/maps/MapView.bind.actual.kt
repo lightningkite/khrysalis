@@ -3,12 +3,14 @@ package com.lightningkite.khrysalis.maps
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.MapView
+import com.google.android.gms.maps.model.MapStyleOptions
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
 import com.lightningkite.khrysalis.location.GeoCoordinate
 import com.lightningkite.khrysalis.observables.MutableObservableProperty
 import com.lightningkite.khrysalis.observables.ObservableProperty
 import com.lightningkite.khrysalis.observables.addAndRunWeak
+import com.lightningkite.khrysalis.observables.subscribeBy
 import com.lightningkite.khrysalis.rx.addWeak
 import com.lightningkite.khrysalis.rx.removed
 import com.lightningkite.khrysalis.rx.until
@@ -38,13 +40,17 @@ fun MapView.bindView(
     dependency: ViewDependency,
     position: ObservableProperty<GeoCoordinate?>,
     zoomLevel: Float = 15f,
-    animate: Boolean = true
+    animate: Boolean = true,
+    style: String? = null
 ) {
     bind(dependency)
     getMapAsync { map ->
+        if (style != null) {
+            map.setMapStyle(MapStyleOptions(style))
+        }
         var marker: Marker? = null
         @Suppress("NAME_SHADOWING")
-        position.addAndRunWeak(this) { view, value ->
+        position.subscribeBy { value ->
             if (value != null) {
                 val newMarker = marker ?: map.addMarker(MarkerOptions().draggable(true).position(value.toMaps()))
                 newMarker.position = value.toMaps()
@@ -58,7 +64,7 @@ fun MapView.bindView(
                 marker?.remove()
                 marker = null
             }
-        }
+        }.until(this.removed)
     }
 }
 
@@ -67,15 +73,19 @@ fun MapView.bindSelect(
     dependency: ViewDependency,
     position: MutableObservableProperty<GeoCoordinate?>,
     zoomLevel: Float = 15f,
-    animate: Boolean = true
+    animate: Boolean = true,
+    style: String? = null
 ) {
     bind(dependency)
     getMapAsync { map ->
+        if (style != null) {
+            map.setMapStyle(MapStyleOptions(style))
+        }
         var suppress: Boolean = false
         var suppressAnimation: Boolean = false
         var marker: Marker? = null
         @Suppress("NAME_SHADOWING")
-        position.addAndRunWeak(this) { view, value ->
+        position.subscribeBy { value ->
             if (!suppress) {
                 suppress = true
                 if (value != null) {
@@ -95,7 +105,7 @@ fun MapView.bindSelect(
                 }
                 suppress = false
             }
-        }
+        }.until(this.removed)
 
         map.setOnMapLongClickListener { coord ->
             suppressAnimation = true

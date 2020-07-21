@@ -33,7 +33,7 @@ open class SwapView: UIView {
     
     override open func setNeedsLayout() {
         super.setNeedsLayout()
-        superview?.setNeedsLayout()
+        self.notifyParentSizeChanged()
     }
     
     override public func layoutSubviews() {
