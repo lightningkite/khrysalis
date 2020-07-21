@@ -341,6 +341,7 @@ public extension String {
 
 public extension StringProtocol {
     func indexOf(string: Self, startIndex: Int = 0, ignoreCase: Bool = true) -> Int {
+        if string.isEmpty { return 0 }
         var options: String.CompareOptions = [.literal]
         if ignoreCase {
             options = [.literal, .caseInsensitive]
@@ -353,6 +354,7 @@ public extension StringProtocol {
     }
     
     func lastIndexOf(string: Self, startIndex: Int = 0, ignoreCase: Bool = true) -> Int {
+        if string.isEmpty { return 0 }
         var options: String.CompareOptions = [.literal, .backwards]
         if ignoreCase {
             options = [.literal, .caseInsensitive, .backwards]
