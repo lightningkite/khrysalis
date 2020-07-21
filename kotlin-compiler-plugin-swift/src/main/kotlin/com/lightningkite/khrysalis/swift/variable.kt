@@ -19,6 +19,7 @@ import org.jetbrains.kotlin.resolve.calls.resolvedCallUtil.getImplicitReceiverVa
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
 import org.jetbrains.kotlin.synthetic.SyntheticJavaPropertyDescriptor
 import org.jetbrains.kotlin.types.KotlinType
+import org.jetbrains.kotlin.types.isNullable
 import java.util.concurrent.atomic.AtomicInteger
 
 val uniqueNumber = AtomicInteger(0)
@@ -55,7 +56,7 @@ val PropertyDescriptor.hasSwiftOverride: Boolean
 fun AnalysisExtensions.capturesSelf(
     it: PsiElement?,
     containingDeclaration: ClassDescriptor?,
-    immediate: Boolean = true
+    immediate: Boolean = false
 ): Boolean {
     if (it == null) return false
     if (it is KtLambdaExpression) {
@@ -246,7 +247,7 @@ fun SwiftTranslator.registerVariable() {
         } else null
         type?.let {
             -": "
-            if (isLateInit) {
+            if (isLateInit && typedRule.resolvedProperty?.type?.isNullable() == false) {
                 -'('
                 -it
                 -")!"

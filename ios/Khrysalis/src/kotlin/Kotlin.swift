@@ -263,6 +263,8 @@ public extension String {
     }
 
     func substring(_ startIndex: Int, _ endIndex: Int? = nil) -> String {
+        if startIndex > self.count { return "" }
+        if let endIndex = endIndex, startIndex >= endIndex { return "" }
         let s = self.index(self.startIndex, offsetBy: Int(startIndex))
         let e = self.index(self.startIndex, offsetBy: Int(endIndex ?? self.count))
         return String(self[s..<e])
@@ -343,7 +345,7 @@ public extension StringProtocol {
         if ignoreCase {
             options = [.literal, .caseInsensitive]
         }
-        if let index = range(of: string, options: options)?.lowerBound {
+        if let index = range(of: string, options: options, range: self.index(self.startIndex, offsetBy: startIndex)..<self.endIndex)?.lowerBound {
             return Int(distance(from: self.startIndex, to: index))
         } else {
             return -1
@@ -355,7 +357,7 @@ public extension StringProtocol {
         if ignoreCase {
             options = [.literal, .caseInsensitive, .backwards]
         }
-        if let index = range(of: string, options: options)?.lowerBound {
+        if let index = range(of: string, options: options, range: self.index(self.startIndex, offsetBy: startIndex)..<self.endIndex)?.lowerBound {
             return Int(distance(from: self.startIndex, to: index))
         } else {
             return -1
@@ -366,7 +368,7 @@ public extension StringProtocol {
         if ignoreCase {
             options = [.literal, .caseInsensitive]
         }
-        if let index = rangeOfCharacter(from: CharacterSet(chars.flatMap { $0.unicodeScalars }), options: options)?.lowerBound {
+        if let index = rangeOfCharacter(from: CharacterSet(chars.flatMap { $0.unicodeScalars }), options: options, range: self.index(self.startIndex, offsetBy: startIndex)..<self.endIndex)?.lowerBound {
             return Int(distance(from: self.startIndex, to: index))
         } else {
             return -1
@@ -378,7 +380,7 @@ public extension StringProtocol {
         if ignoreCase {
             options = [.literal, .caseInsensitive, .backwards]
         }
-        if let index = rangeOfCharacter(from: CharacterSet(chars.flatMap { $0.unicodeScalars }), options: options)?.lowerBound {
+        if let index = rangeOfCharacter(from: CharacterSet(chars.flatMap { $0.unicodeScalars }), options: options, range: self.index(self.startIndex, offsetBy: startIndex)..<self.endIndex)?.lowerBound {
             return Int(distance(from: self.startIndex, to: index))
         } else {
             return -1

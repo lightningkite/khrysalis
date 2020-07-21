@@ -28,15 +28,15 @@
 
 #- id: android.graphics.Matrix.reset
 #- id: android.graphics.Matrix.set
-- id: android.graphics.Matrix.postTranslate
+- id: android.graphics.Matrix.preTranslate
   type: call
   template: '~this~.apply(CGAffineTransform.translatedBy, ~0~, ~1~)'
-- id: android.graphics.Matrix.postScale
+- id: android.graphics.Matrix.preScale
   type: call
   template: '~this~.apply(CGAffineTransform.scaledBy, ~0~, ~1~)'
-- id: android.graphics.Matrix.postRotate
+- id: android.graphics.Matrix.preRotate
   type: call
   template: '~this~.apply(CGAffineTransform.rotated, ~0~ * .pi / 180)'
-- id: android.graphics.Matrix.postConcat
+- id: android.graphics.Matrix.preConcat
   type: call
   template: '~this~.apply(CGAffineTransform.concatenating, ~0~)'

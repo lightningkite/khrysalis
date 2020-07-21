@@ -2,7 +2,7 @@ import Foundation
 
 public extension AlignPair {
     convenience init(_ horizontal: Align, _ vertical: Align) {
-        self.init(horizontal, vertical)
+        self.init(horizontal: horizontal, vertical: vertical)
     }
 
     static var center: AlignPair { return AlignPair.Companion.INSTANCE.center }
