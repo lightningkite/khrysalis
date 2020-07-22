@@ -140,10 +140,6 @@ class KotlinTypescriptExtension(
                 }
             }
 
-//        println("Equivalents for kotlin.collections.joinToString>kotlin.collections.Iterable: ${translator.replacements.functions.entries.joinToString("\n"){
-//            "${it.key} -> ${it.value.joinToString("\n") { "    $it" }}"
-//        }}")
-
         for (file in files) {
             if (!file.virtualFilePath.endsWith(".shared.kt") && !file.virtualFilePath.endsWith(".actual.kt")) continue
             try {
@@ -166,6 +162,15 @@ class KotlinTypescriptExtension(
                     CompilerMessageSeverity.ERROR,
                     StringWriter().also { t.printStackTrace(PrintWriter(it)) }.buffer.toString()
                 )
+            }
+        }
+
+        output.resolve("../build/manifest.txt").also { it.parentFile.mkdirs() }.bufferedWriter().use {
+            for(entry in translator.declarations.local){
+                it.appendln("${entry.key} = ${entry.value}")
+            }
+            for(entry in translator.declarations.node){
+                it.appendln("${entry.key} = ${entry.value}")
             }
         }
 

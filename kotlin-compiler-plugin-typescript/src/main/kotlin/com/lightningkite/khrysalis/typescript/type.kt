@@ -227,7 +227,7 @@ fun TypescriptTranslator.registerType() {
     }
 
     handle<KtFunctionType> {
-        -"("
+        -"(("
         var currentNameChar = 'a'
         listOfNotNull(typedRule.receiverTypeReference?.let { null to it }).plus(typedRule.parameters.map { it.nameIdentifier to it.typeReference }).forEachBetween(
             forItem = {
@@ -246,6 +246,7 @@ fun TypescriptTranslator.registerType() {
         )
         -") => "
         -typedRule.returnTypeReference
+        -")"
     }
 
     handle<KtTypeProjection> {

@@ -324,9 +324,7 @@ fun TypescriptTranslator.registerFunction() {
         val nre = typedRule.calleeExpression as KtNameReferenceExpression
         val f = nre.resolvedReferenceTarget as FunctionDescriptor
         if (f is ConstructorDescriptor) {
-//            if (f.constructedClass.let { it.tsTopLevelMessedUp || it.containingDeclaration !is ClassDescriptor }) {
-//                out.addImport(f.constructedClass, f.constructedClass.tsTopLevelName)
-//            }
+            out.addImport(f.constructedClass)
         } else {
             out.addImport(f, f.tsName)
         }

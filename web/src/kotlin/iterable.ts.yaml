@@ -138,15 +138,24 @@
 - id: kotlin.collections.sortedBy
   type: call
   template:
-    pattern: iterToArray(~this~).sort((a, b) => ~0~(a).compareTo(~0~(b)))
+    pattern: iterToArray(~this~).sort((a, b) => safeCompare(~0~(a), ~0~(b)))
     imports:
       iterToArray: toArray from iterable-operator
+      safeCompare: khrysalis/dist/kotlin/Comparable
 - id: kotlin.collections.sortedByDescending
   type: call
   template:
-    pattern: iterToArray(~this~).sort((a, b) => -~0~(a).compareTo(~0~(b)))
+    pattern: iterToArray(~this~).sort((a, b) => -safeCompare(~0~(a), ~0~(b)))
     imports:
       iterToArray: toArray from iterable-operator
+      safeCompare: khrysalis/dist/kotlin/Comparable
+- id: kotlin.collections.sortedWith
+  type: call
+  template:
+    pattern: iterToArray(~this~).sort(~0~)
+    imports:
+      iterToArray: toArray from iterable-operator
+      safeCompare: khrysalis/dist/kotlin/Comparable
 
 - id: kotlin.collections.associate
   type: call

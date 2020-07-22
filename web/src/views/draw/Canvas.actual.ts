@@ -32,6 +32,10 @@ export function androidGraphicsCanvasDrawBitmap(this_: CanvasRenderingContext2D,
     this_.drawImage(bitmap, left, top, right - left, bottom - top);
 }
 
+export function applyMatrixToCanvas(canvas: CanvasRenderingContext2D, matrix: DOMMatrix) {
+    canvas.transform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.e, matrix.f)
+}
+
 
 /*
 

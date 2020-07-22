@@ -2,6 +2,7 @@
 // File: collection.actual.kt
 // Package: com.lightningkite.khrysalis
 import {Comparable, also} from './Kotlin'
+import {safeCompare} from "./kotlin/Comparable";
 
 //! Declares kotlin.collections.binarySearch>kotlin.collections.List
 export function kotlinCollectionsListBinarySearch<T>(
@@ -40,7 +41,7 @@ export function kotlinCollectionsListBinarySearchBy<T, K extends Comparable<K>>(
         self,
         fromIndex,
         toIndex,
-        (x) => (key).compareTo(selector(x))
+        (x) => safeCompare(key, selector(x))
     )
 }
 
@@ -107,7 +108,7 @@ export function kotlinCollectionsListBinaryForEach<T, K extends Comparable<K>>(t
 
         const itemK = this.selector(item);
 
-        if(itemK === null || itemK.compareTo(upper)) break;
+        if(itemK === null || safeCompare(item, upper)) break;
 
         this.action(item);
         index++;

@@ -98,11 +98,11 @@ fun TypescriptTranslator.registerClass() {
                 when (it) {
                     is PropertyDescriptor -> {
                         -"public get "
-                        -it.name.asString()
+                        -it.name.asString().safeJsIdentifier()
                         it.typeParameters.takeUnless { it.isEmpty() }?.let {
                             -'<'
                             it.forEachBetween(
-                                forItem = { -it.name.asString() /*TODO: Type Argument Limits*/ },
+                                forItem = { -it.name.asString().safeJsIdentifier() /*TODO: Type Argument Limits*/ },
                                 between = { -", " }
                             )
                             -'>'
@@ -116,11 +116,11 @@ fun TypescriptTranslator.registerClass() {
 
                         if (it.isVar) {
                             -"public set "
-                            -it.name.asString()
+                            -it.name.asString().safeJsIdentifier()
                             it.typeParameters.takeUnless { it.isEmpty() }?.let {
                                 -'<'
                                 it.forEachBetween(
-                                    forItem = { -it.name.asString() /*TODO: Type Argument Limits*/ },
+                                    forItem = { -it.name.asString().safeJsIdentifier() /*TODO: Type Argument Limits*/ },
                                     between = { -", " }
                                 )
                                 -'>'
@@ -135,11 +135,11 @@ fun TypescriptTranslator.registerClass() {
                     }
                     is FunctionDescriptor -> {
                         -"public "
-                        -it.name.asString()
+                        -it.name.asString().safeJsIdentifier()
                         it.typeParameters.takeUnless { it.isEmpty() }?.let {
                             -'<'
                             it.forEachBetween(
-                                forItem = { -it.name.asString() /*TODO: Type Argument Limits*/ },
+                                forItem = { -it.name.asString().safeJsIdentifier() /*TODO: Type Argument Limits*/ },
                                 between = { -", " }
                             )
                             -'>'
@@ -147,7 +147,7 @@ fun TypescriptTranslator.registerClass() {
                         -"("
                         it.valueParameters.forEachBetween(
                             forItem = {
-                                -it.name.asString()
+                                -it.name.asString().safeJsIdentifier()
                                 -": "
                                 -it.type
                             },
@@ -161,7 +161,7 @@ fun TypescriptTranslator.registerClass() {
                         -"(this"
                         it.valueParameters.forEach {
                             -", "
-                            -it.name.asString()
+                            -it.name.asString().safeJsIdentifier()
                         }
                         -"); }\n"
                     }
@@ -773,7 +773,16 @@ fun TypescriptTranslator.registerClass() {
             typedRule.getDelegationCall().let {
                 -parent.name.asString()
                 -it.typeArgumentList
-                -it.valueArgumentList
+                val withComments = it.valueArgumentList?.withComments() ?: listOf()
+                -ArgumentsList(
+                    on = it.resolvedCall!!.candidateDescriptor as FunctionDescriptor,
+                    resolvedCall = it.resolvedCall,
+                    prependArguments = listOf(),
+                    orderedArguments = withComments.filter { !it.first.isNamed() }
+                        .map { it.first.getArgumentExpression()!! to it.second },
+                    namedArguments = withComments.filter { it.first.isNamed() },
+                    lambdaArgument = null
+                )
                 -";\n"
             }
             val b = typedRule.bodyExpression
@@ -822,5 +831,5 @@ val ConstructorDescriptor.tsConstructorName: String?
         ?.value
         ?.value
         ?.toString() ?: ("constructor" + this.valueParameters.joinToString("") {
-        it.type.getJetTypeFqName(false).split('.').joinToString("").filter { it.isLetter() }
+        it.type.getJetTypeFqName(true).split('.', ',', '<', '>').map { it.filter { it.isLetterOrDigit() } }.filter { it.firstOrNull()?.isLowerCase() == false }.joinToString("")
     })

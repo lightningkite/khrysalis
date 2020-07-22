@@ -12,7 +12,7 @@
   template:
     pattern: new PointF(~0~.transformPoint(~this~))
     imports:
-      PointF: khrysalis/dist/views/geometry/PointF.actual.ts
+      PointF: khrysalis/dist/views/geometry/PointF.actual
 
 - id: com.lightningkite.khrysalis.views.geometry.inverted
   type: call
@@ -27,13 +27,13 @@
   template:
     pattern: matrixReset(~0~)
     imports:
-      matrixReset: khrysalis/dist/views/geometry/Matrix.actual.ts
+      matrixReset: khrysalis/dist/views/geometry/Matrix.actual
 - id: android.graphics.Matrix.set
   type: call
   template:
     pattern: matrixSet(~0~, ~1~)
     imports:
-      matrixSet: khrysalis/dist/views/geometry/Matrix.actual.ts
+      matrixSet: khrysalis/dist/views/geometry/Matrix.actual
 - id: android.graphics.Matrix.preTranslate
   type: call
   template: '~this~.translateSelf(~0~, ~1~)'

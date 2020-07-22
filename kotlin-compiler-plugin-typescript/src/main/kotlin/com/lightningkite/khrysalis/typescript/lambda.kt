@@ -14,8 +14,18 @@ import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 import org.jetbrains.kotlin.types.FlexibleType
 import org.jetbrains.kotlin.types.SimpleType
 import org.jetbrains.kotlin.types.WrappedType
+import org.jetbrains.kotlin.lexer.KtTokens
 
 fun TypescriptTranslator.registerLambda() {
+    handle<KtLambdaExpression>(
+        condition = { (typedRule.parent as? KtBinaryExpression)?.operationToken == KtTokens.ELVIS },
+        priority = 1,
+        action = {
+            -'('
+            doSuper()
+            -')'
+        }
+    )
     handle<KtFunctionLiteral>(
         condition = { typedRule.resolvedFunction?.extensionReceiverParameter != null },
         priority = 100,
@@ -106,167 +116,4 @@ fun TypescriptTranslator.registerLambda() {
     }
 
 
-
-//    handle<KtDotQualifiedExpression>(
-//        condition = {
-//            val result = ((typedRule.selectorExpression as? KtCallExpression)?.resolvedCall?.candidateDescriptor is FunctionInvokeDescriptor)
-//            println("KDQE ${typedRule.text} = " + (typedRule.selectorExpression as? KtCallExpression)?.resolvedCall?.candidateDescriptor + " therefore " + result)
-//            result
-//        },
-//        priority = 30_001,
-//        action = {
-//            println("WTFFFF therefore true")
-//            -"/*TRIGGERED LAMBDA CALL DQ*/"
-//            val callExp = typedRule.selectorExpression as KtCallExpression
-//            val nre = callExp.calleeExpression as KtNameReferenceExpression
-//            val type = nre.resolvedExpressionTypeInfo!!.type!!
-//            val receiverType = type.getReceiverTypeFromFunctionType()
-//
-//            if (receiverType == null) {
-//                -typedRule.receiverExpression
-//                -"."
-//            }
-//            -nre
-//            -'('
-//            var first = false
-//            fun comma() {
-//                if (first) {
-//                    first = false; return
-//                }
-//                -", "
-//            }
-//            if (receiverType != null) {
-//                comma()
-//                -typedRule.receiverExpression
-//            }
-//            for (arg in callExp.valueArguments) {
-//                comma()
-//                -arg.getArgumentExpression()
-//            }
-//            callExp.lambdaArguments.forEach {
-//                comma()
-//                -it.getArgumentExpression()
-//            }
-//            -')'
-//        }
-//    )
-//
-//    handle<KtSafeQualifiedExpression>(
-//        condition = {
-//            (typedRule.selectorExpression as? KtCallExpression)?.resolvedCall?.candidateDescriptor is FunctionInvokeDescriptor
-//        },
-//        priority = 30_002,
-//        action = {
-//            -"/*TRIGGERED LAMBDA CALL*/"
-//            val callExp = typedRule.selectorExpression as KtCallExpression
-//            val nre = callExp.calleeExpression as KtNameReferenceExpression
-//            val type = nre.resolvedExpressionTypeInfo!!.type!!
-//            val receiverType = type.getReceiverTypeFromFunctionType()
-//
-//            -"((_it)=>{\n"
-//            -"if(_it === null) return null;\nreturn "
-//            if (receiverType == null) {
-//                -"_it"
-//                -"."
-//            }
-//            -nre
-//            -'('
-//            var first = false
-//            fun comma() {
-//                if (first) {
-//                    first = false; return
-//                }
-//                -", "
-//            }
-//            if (receiverType != null) {
-//                comma()
-//                -"_it"
-//            }
-//            for (arg in callExp.valueArguments) {
-//                comma()
-//                -arg.getArgumentExpression()
-//            }
-//            callExp.lambdaArguments.forEach {
-//                comma()
-//                -it.getArgumentExpression()
-//            }
-//            -')'
-//            -"\n})("
-//            -typedRule.receiverExpression
-//            -')'
-//        }
-//    )
-//
-//    handle<KtSafeQualifiedExpression>(
-//        condition = {
-//            (typedRule.selectorExpression as? KtCallExpression)?.resolvedCall?.candidateDescriptor is FunctionInvokeDescriptor && typedRule.actuallyCouldBeExpression
-//        },
-//        priority = 30_003,
-//        action = {
-//            -"/*TRIGGERED LAMBDA CALL*/"
-//            val callExp = typedRule.selectorExpression as KtCallExpression
-//            val nre = callExp.calleeExpression as KtNameReferenceExpression
-//            val type = nre.resolvedExpressionTypeInfo!!.type!!
-//            val receiverType = type.getReceiverTypeFromFunctionType()
-//
-//            val tempName = "temp${uniqueNumber.getAndIncrement()}"
-//            -"const $tempName = "
-//            -typedRule.receiverExpression
-//            -";\nif($tempName !== null) "
-//            if (receiverType == null) {
-//                -tempName
-//                -"."
-//            }
-//            -nre
-//            -'('
-//            var first = false
-//            fun comma() {
-//                if (first) {
-//                    first = false; return
-//                }
-//                -", "
-//            }
-//            if (receiverType != null) {
-//                comma()
-//                -tempName
-//            }
-//            for (arg in callExp.valueArguments) {
-//                comma()
-//                -arg.getArgumentExpression()
-//            }
-//            callExp.lambdaArguments.forEach {
-//                comma()
-//                -it.getArgumentExpression()
-//            }
-//            -')'
-//        }
-//    )
-//
-//    handle<KtCallExpression>(
-//        condition = {
-//            typedRule.resolvedCall?.candidateDescriptor is FunctionInvokeDescriptor
-//        },
-//        priority = 30_000
-//    ) {
-//        -"/*TRIGGERED LAMBDA CALL*/"
-//        val nre = typedRule.calleeExpression as KtNameReferenceExpression
-//        -nre
-//        -'('
-//        var first = false
-//        fun comma() {
-//            if (first) {
-//                first = false; return
-//            }
-//            -", "
-//        }
-//        for (arg in typedRule.valueArguments) {
-//            comma()
-//            -arg.getArgumentExpression()
-//        }
-//        typedRule.lambdaArguments.forEach {
-//            comma()
-//            -it.getArgumentExpression()
-//        }
-//        -')'
-//    }
 }

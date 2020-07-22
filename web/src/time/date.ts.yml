@@ -282,7 +282,7 @@
 
 - id: java.util.Date.equals
   type: call
-  template: ~other~ instanceof Date && ~this~.getTime() === ~other~.getTime()
+  template: (~0~ instanceof Date && ~this~.getTime() === ~0~.getTime())
 
 - id: java.util.Date.hashCode
   type: call

@@ -34,6 +34,12 @@
 - id: androidx.recyclerview.widget.RecyclerView
   type: type
   template: HTMLDivElement
+- id: androidx.recyclerview.widget.RecyclerView.smoothScrollToPosition
+  type: type
+  template: '~this~.children.item(~0~).scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest"})'
+- id: androidx.recyclerview.widget.RecyclerView.scrollToPosition
+  type: type
+  template: '~this~.children.item(~0~).scrollIntoView({ behavior: "auto", block: "nearest", inline: "nearest"})'
 
 # android.widget.SeekBar
 - id: android.widget.SeekBar

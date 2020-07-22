@@ -479,7 +479,7 @@ fun TypescriptTranslator.registerVariable() {
         } else {
             -"."
         }
-        -typedRule.property.name.asString()
+        -typedRule.property.name.asString().safeJsIdentifier()
     }
     handle<KtDotQualifiedExpression>(
         condition = { ((typedRule.selectorExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget as? PropertyDescriptor) != null },
@@ -616,7 +616,7 @@ fun TypescriptTranslator.registerVariable() {
 
         -tempName
         -"."
-        -typedRule.property.name.asString()
+        -typedRule.property.name.asString().safeJsIdentifier()
         -" = "
         -typedRule.value
     }

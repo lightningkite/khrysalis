@@ -329,6 +329,13 @@
     imports:
       of: rxjs as rxOf
 
+- id: io.reactivex.Single.error
+  type: call
+  template:
+    pattern: rxThrowError(~*~)
+    imports:
+      rxThrowError: throwError from rxjs
+
 - id: io.reactivex.Single.doOnSubscribe
   type: call
   template:

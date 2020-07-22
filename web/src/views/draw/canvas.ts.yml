@@ -121,3 +121,10 @@
 - id: android.graphics.Canvas.rotate
   type: call
   template: ~this~.rotate(~0~ * Math.PI / 180)
+
+- id: android.graphics.Canvas.concat
+  type: call
+  template:
+    pattern: applyMatrixToCanvas(~this~, ~0~)
+    imports:
+      applyMatrixToCanvas: khrysalis/dist/views/draw/Canvas.actual

@@ -594,24 +594,37 @@
 
 
 # Comparisons
-
 - id: kotlin.Byte.compareTo
   type: call
+  infix: true
   template: ~this~ ~operatorToken~ ~0~
 - id: kotlin.Short.compareTo
   type: call
+  infix: true
   template: ~this~ ~operatorToken~ ~0~
 - id: kotlin.Int.compareTo
   type: call
+  infix: true
   template: ~this~ ~operatorToken~ ~0~
 - id: kotlin.Long.compareTo
   type: call
+  infix: true
   template: ~this~ ~operatorToken~ ~0~
 - id: kotlin.Float.compareTo
   type: call
+  infix: true
   template: ~this~ ~operatorToken~ ~0~
 - id: kotlin.Double.compareTo
   type: call
+  infix: true
+  template: ~this~ ~operatorToken~ ~0~
+- id: kotlin.Char.compareTo
+  type: call
+  infix: true
+  template: ~this~ ~operatorToken~ ~0~
+- id: kotlin.String.compareTo
+  type: call
+  infix: true
   template: ~this~ ~operatorToken~ ~0~
   
   

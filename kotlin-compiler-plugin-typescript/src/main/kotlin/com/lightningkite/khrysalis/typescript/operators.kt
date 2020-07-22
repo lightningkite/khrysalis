@@ -334,7 +334,7 @@ fun TypescriptTranslator.registerOperators() {
             -left
             -"."
         }
-        -(typedRule.functionDescriptor.tsNameOverridden ?: typedRule.functionDescriptor.name.asString())
+        -(typedRule.functionDescriptor.tsNameOverridden ?: typedRule.functionDescriptor.name.asString().safeJsIdentifier())
         -ArgumentsList(
             on = typedRule.functionDescriptor,
             resolvedCall = typedRule.resolvedCall,
@@ -400,7 +400,7 @@ fun TypescriptTranslator.registerOperators() {
                 -typedRule.baseExpression
                 -"."
             }
-            -(f.tsNameOverridden ?: f.name.asString())
+            -(f.tsNameOverridden ?: f.name.asString().safeJsIdentifier())
             -ArgumentsList(
                 on = f,
                 resolvedCall = typedRule.resolvedCall,

@@ -8,6 +8,13 @@
   type: call
   template: "[~*~]"
 
+- id: kotlin.sequences.asSequence
+  type: call
+  template: ~this~
+- id: kotlin.collections.asSequence
+  type: call
+  template: ~this~
+
 # Extensions
 
 - id: kotlin.sequences.drop
@@ -139,15 +146,24 @@
 - id: kotlin.sequences.sortedBy
   type: call
   template:
-    pattern: iterToArray(~this~).sort((a, b) => ~0~(a).compareTo(~0~(b)))
+    pattern: iterToArray(~this~).sort((a, b) => safeCompare(~0~(a), ~0~(b)))
     imports:
       iterToArray: toArray from iterable-operator
+      safeCompare: khrysalis/dist/kotlin/Comparable
 - id: kotlin.sequences.sortedByDescending
   type: call
   template:
-    pattern: iterToArray(~this~).sort((a, b) => -~0~(a).compareTo(~0~(b)))
+    pattern: iterToArray(~this~).sort((a, b) => -safeCompare(~0~(a), ~0~(b)))
     imports:
       iterToArray: toArray from iterable-operator
+      safeCompare: khrysalis/dist/kotlin/Comparable
+- id: kotlin.sequences.sortedWith
+  type: call
+  template:
+    pattern: iterToArray(~this~).sort(~0~)
+    imports:
+      iterToArray: toArray from iterable-operator
+      safeCompare: khrysalis/dist/kotlin/Comparable
 
 - id: kotlin.sequences.associate
   type: call

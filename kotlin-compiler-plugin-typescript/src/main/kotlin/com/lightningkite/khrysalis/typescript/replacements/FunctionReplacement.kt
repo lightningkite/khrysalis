@@ -43,6 +43,9 @@ data class FunctionReplacement(
         call: ResolvedCall<out CallableDescriptor>,
         descriptor: CallableDescriptor
     ): Boolean {
+        if(infix != null){
+            if(infix != call.call.callElement is KtBinaryExpression) return false
+        }
         val hasExplicitTypeArguments = call.call.typeArgumentList != null
         if (this.hasExplicitTypeArguments != null && this.hasExplicitTypeArguments != hasExplicitTypeArguments) return false
         if (receiver != null && receiver != descriptor.extensionReceiverParameter?.type?.getJetTypeFqName(false)) return false

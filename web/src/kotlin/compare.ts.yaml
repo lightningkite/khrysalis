@@ -1,0 +1,17 @@
+---
+
+- id: kotlin.Comparator.compare
+  type: call
+  template: ~this~(~0~, ~1~)
+
+- id: java.util.Comparator.compare
+  type: call
+  template: ~this~(~0~, ~1~)
+
+- id: kotlin.Comparable.compareTo
+  type: call
+  infix: false
+  template:
+    pattern: safeCompare(~this~, ~0~)
+    imports:
+      safeCompare: khrysalis/dist/kotlin/Comparable

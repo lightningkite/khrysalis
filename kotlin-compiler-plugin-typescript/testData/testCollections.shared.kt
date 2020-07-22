@@ -80,4 +80,10 @@ fun test(){
     println(HashMap<CustomEq, String>())
 
     println(ArrayList<Int>())
+
+    val myMap = HashMap<Int, Int>()
+    myMap[1] = 2
+    myMap.put(2, 3)
+    myMap[0]
+    myMap.getOrPut(3) { 4 }
 }

@@ -22,9 +22,9 @@ val ResolvedCall<out CallableDescriptor>.template_parameter
     get() = { n: TemplatePart.Parameter ->
         this.valueArguments.entries.find { it.key.name.asString() == n.name }?.let {
             if (it.key.isVararg)
-                it.value.arguments.map { it.getArgumentExpression() }.withBetween(", ")
+                it.value.arguments.map { it.getArgumentExpression() }.withBetween(", ") as Any?
             else
-                it.value.arguments.firstOrNull()?.getArgumentExpression()
+                it.value.arguments.firstOrNull()?.getArgumentExpression() as Any?
         } ?: "undefined"
     }
 val ResolvedCall<out CallableDescriptor>.template_typeParameter get() = { n: TemplatePart.TypeParameter -> this.typeArguments.entries.find { it.key.name.asString() == n.name }?.value }
@@ -32,9 +32,9 @@ val ResolvedCall<out CallableDescriptor>.template_parameterByIndex
     get() = { n: TemplatePart.ParameterByIndex ->
         this.valueArguments.entries.find { it.key.index == n.index }?.let {
             if (it.key.isVararg)
-                it.value.arguments.map { it.getArgumentExpression() }.withBetween(", ")
+                it.value.arguments.map { it.getArgumentExpression() }.withBetween(", ") as Any?
             else
-                it.value.arguments.firstOrNull()?.getArgumentExpression()
+                it.value.arguments.firstOrNull()?.getArgumentExpression() as Any?
         } ?: "undefined"
     }
 val ResolvedCall<out CallableDescriptor>.template_typeParameterByIndex get() = { n: TemplatePart.TypeParameterByIndex -> this.typeArguments.entries.find { it.key.index == n.index }?.value }

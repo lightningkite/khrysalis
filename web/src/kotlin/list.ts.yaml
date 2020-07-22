@@ -5,15 +5,15 @@
 - id: kotlin.collections.listOf
   type: call
   hasExplicitTypeArguments: true
-  template: "[~*~] as Array<~T0~>"
+  template: "([~*~] as Array<~T0~>)"
 - id: kotlin.collections.mutableListOf
   type: call
   hasExplicitTypeArguments: true
-  template: "[~*~] as Array<~T0~>"
+  template: "([~*~] as Array<~T0~>)"
 - id: kotlin.collections.arrayListOf
   type: call
   hasExplicitTypeArguments: true
-  template: "[~*~] as Array<~T0~>"
+  template: "([~*~] as Array<~T0~>)"
 - id: kotlin.collections.listOf
   type: call
   template: "[~*~]"
@@ -55,7 +55,7 @@
   type: call
   arguments: []
   hasExplicitTypeArguments: true
-  template: "[] as Array<~T0~>"
+  template: "([] as Array<~T0~>)"
   
 # List Operations
 - id: kotlin.collections.Collection.contains
@@ -79,6 +79,15 @@
   type: get
   actualReceiver: kotlin.collections.List
   template: ~this~.length
+- id: kotlin.collections.plus
+  receiver: kotlin.collections.Collection
+  arguments: [kotlin.collections.Iterable]
+  type: call
+  template: ~this~.concat(~0~)
+- id: kotlin.collections.plus
+  receiver: kotlin.collections.Collection
+  type: call
+  template: ~this~.concat([~0~])
 
 # Mutable List Operations
 - id: kotlin.collections.MutableCollection.add
@@ -125,6 +134,15 @@
   type: call
   arguments: [kotlin.Int]
   template: ~this~.splice(~0~, 0, ...~1~)
+- id: kotlin.collections.plusAssign
+  receiver: kotlin.collections.MutableCollection
+  arguments: [kotlin.collections.Iterable]
+  type: call
+  template: ~this~.push(...~0~)
+- id: kotlin.collections.plusAssign
+  receiver: kotlin.collections.MutableCollection
+  type: call
+  template: ~this~.push(~0~)
   
 # TODO: Could do removeAll
 
@@ -252,11 +270,21 @@
 - id: kotlin.collections.sortedBy
   type: call
   actualReceiver: kotlin.collections.List
-  template: ~this~.slice().sort((a, b) => ~0~(a).compareTo(~0~(b)))
+  template:
+    pattern: ~this~.slice().sort((a, b) => ~0~(a).compareTo(~0~(b)))
+    imports:
+      safeCompare: khrysalis/dist/kotlin/Comparable
 - id: kotlin.collections.sortedByDescending
   type: call
   actualReceiver: kotlin.collections.List
-  template: ~this~.slice().sort((a, b) => -~0~(a).compareTo(~0~(b)))
+  template:
+    pattern: ~this~.slice().sort((a, b) => -~0~(a).compareTo(~0~(b)))
+    imports:
+      safeCompare: khrysalis/dist/kotlin/Comparable
+- id: kotlin.collections.sortedWith
+  type: call
+  actualReceiver: kotlin.collections.List
+  template: ~this~.slice().sort(~0~)
 
 - id: kotlin.collections.associate
   type: call

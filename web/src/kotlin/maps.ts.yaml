@@ -143,3 +143,20 @@
 - id: kotlin.collections.Map.entries
   type: get
   template: ~this~.entries()
+
+# Gets
+- id: kotlin.collections.Map.get
+  type: call
+  template: ~this~.get(~0~)
+
+# Mutable
+- id: kotlin.collections.MutableMap.put
+  type: call
+  template: ~this~.set(~0~, ~1~)
+- id: kotlin.collections.MutableMap.remove
+  type: call
+  template: ~this~.delete(~0~)
+- id: kotlin.collections.set
+  type: call
+  receiver: kotlin.collections.MutableMap
+  template: ~this~.set(~0~, ~1~)
