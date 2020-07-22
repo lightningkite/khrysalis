@@ -3,6 +3,7 @@ package com.lightningkite.khrysalis.web.layout.values
 import com.lightningkite.khrysalis.utils.XmlNode
 import com.lightningkite.khrysalis.utils.camelCase
 import java.io.File
+import com.lightningkite.khrysalis.typescript.safeJsIdentifier
 
 fun getXmlStrings(file: File): Map<String, String>{
     return XmlNode.read(file, mapOf())
@@ -20,7 +21,7 @@ fun translateXmlStringsToTypescript(file: File, out: Appendable){
     out.appendln("export class ResourcesStrings {")
     getXmlStrings(file)
         .forEach { (name, value) ->
-            out.appendln("    static $name: string = \"${value.replace("\n", "\\n").replace("\t", "\\t")}\";")
+            out.appendln("    static ${name.safeJsIdentifier()}: string = \"${value.replace("\n", "\\n").replace("\t", "\\t")}\";")
         }
     out.appendln("}")
 }

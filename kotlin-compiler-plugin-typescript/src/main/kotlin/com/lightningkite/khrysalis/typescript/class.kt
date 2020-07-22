@@ -30,7 +30,7 @@ fun TypescriptTranslator.registerClass() {
         typedRule.superTypeListEntries.mapNotNull { it as? KtSuperTypeCallEntry }.takeUnless { it.isEmpty() }?.let {
             -" extends "
             it.forEachBetween(
-                forItem = { -it.resolvedCall?.getReturnType() },
+                forItem = { -it.calleeExpression.typeReference },
                 between = { -", " }
             )
         }
@@ -770,7 +770,7 @@ fun TypescriptTranslator.registerClass() {
             -"let "
             -outName
             -" = new "
-            typedRule.getDelegationCallOrNull()?.let {
+            typedRule.getDelegationCall().let {
                 -parent.name.asString()
                 -it.typeArgumentList
                 -it.valueArgumentList
@@ -821,6 +821,6 @@ val ConstructorDescriptor.tsConstructorName: String?
         ?.firstOrNull()
         ?.value
         ?.value
-        ?.toString() ?: ("constructor" + this.valueParameters.joinToString {
+        ?.toString() ?: ("constructor" + this.valueParameters.joinToString("") {
         it.type.getJetTypeFqName(false).split('.').joinToString("").filter { it.isLetter() }
     })

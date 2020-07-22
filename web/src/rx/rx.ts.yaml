@@ -185,6 +185,13 @@
       rxOf: of from rxjs
       rxConcat: concat from rxjs
 
+- id: io.reactivex.Observable.concat
+  type: call
+  template:
+    pattern: rxConcat(~*~)
+    imports:
+      rxConcat: concat from rxjs
+
 - id: io.reactivex.Observable.replay
   type: call
   template:

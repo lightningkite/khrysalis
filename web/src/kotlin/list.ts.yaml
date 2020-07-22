@@ -41,6 +41,12 @@
 - id: kotlin.collections.ArrayList
   type: typeRef
   template: Array
+- id: java.util.ArrayList
+  type: type
+  template: Array<~T0~>
+- id: java.util.ArrayList
+  type: typeRef
+  template: Array
 - id: kotlin.collections.ArrayList
   type: call
   arguments: []
@@ -86,7 +92,8 @@
 - id: kotlin.collections.MutableList.set
   type: call
   template: ~this~[~0~] = ~1~
-- id: kotlin.collections.MutableList.remove
+- id: kotlin.collections.MutableCollection.remove
+  actualReceiver: kotlin.collections.MutableList
   type: call
   template:
     pattern: listRemoveItem(~this~, ~0~)

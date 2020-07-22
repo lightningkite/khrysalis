@@ -34,15 +34,15 @@
     pattern: matrixSet(~0~, ~1~)
     imports:
       matrixSet: khrysalis/dist/views/geometry/Matrix.actual.ts
-- id: android.graphics.Matrix.postTranslate
+- id: android.graphics.Matrix.preTranslate
   type: call
   template: '~this~.translateSelf(~0~, ~1~)'
-- id: android.graphics.Matrix.postScale
+- id: android.graphics.Matrix.preScale
   type: call
   template: '~this~.scaleSelf(~0~, ~1~)'
-- id: android.graphics.Matrix.postRotate
+- id: android.graphics.Matrix.preRotate
   type: call
   template: '~this~.rotateSelf(~0~)'
-- id: android.graphics.Matrix.postConcat
+- id: android.graphics.Matrix.preConcat
   type: call
   template: '~this~.multiplySelf(~0~)'

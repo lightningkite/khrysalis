@@ -18,7 +18,9 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
     if (dedup && requireWrapping) {
         -"(()=>{"
     }
-    emitter.finish { -it }
+    emitter.finish(dedup && requireWrapping) {
+        -it
+    }
     if (dedup && requireWrapping) {
         -"})()"
     }
@@ -61,7 +63,8 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
                             else -> continue@loop
                         }
                         if (item is KtLambdaExpression) {
-                            part.paramMap.zip(item.valueParameters.map { it.name }.takeUnless { it.isEmpty() } ?: listOf("it")).forEach {
+                            part.paramMap.zip(item.valueParameters.map { it.name }.takeUnless { it.isEmpty() }
+                                ?: listOf("it")).forEach {
                                 -"const "
                                 -it.second
                                 -" = "
@@ -77,7 +80,7 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
                             }, between = {
                                 -", "
                             })
-                            - ")"
+                            -")"
                         }
                         -"\n"
                     }
@@ -118,12 +121,13 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
             is TemplatePart.TypeParameter -> -typeParameter(part)
             is TemplatePart.TypeParameterByIndex -> -typeParameterByIndex(part)
             is TemplatePart.Import -> out.addImport(part)
-            is TemplatePart.LambdaParameterContents -> { }
+            is TemplatePart.LambdaParameterContents -> {
+            }
         }
     }
 }
 
-class DeDupEmitter(analysis: AnalysisExtensions): AnalysisExtensions by analysis {
+class DeDupEmitter(analysis: AnalysisExtensions) : AnalysisExtensions by analysis {
     val deduplicated = HashMap<Any, String>()
     val toEmit = ArrayList<Any>()
     fun deduplicate(item: Any) {
@@ -159,7 +163,7 @@ class DeDupEmitter(analysis: AnalysisExtensions): AnalysisExtensions by analysis
             toEmit.count { it == key } > 1
         }
 
-    fun finish(parentEmit: (Any) -> Unit) {
+    fun finish(wrapping: Boolean, parentEmit: (Any) -> Unit) {
         val used = deduplicated.filterKeys { key ->
             toEmit.count { it == key } > 1
         }
@@ -169,6 +173,9 @@ class DeDupEmitter(analysis: AnalysisExtensions): AnalysisExtensions by analysis
             parentEmit(" = ")
             parentEmit(item)
             parentEmit(";\n")
+        }
+        if(wrapping) {
+            parentEmit("return ")
         }
         for (item in toEmit) {
             used[item]?.let { name ->

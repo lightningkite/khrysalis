@@ -233,6 +233,37 @@ fun TypescriptTranslator.registerVariable() {
             }
         }
     }
+    //Local with guard return
+    handle<KtProperty>(
+        condition = {
+            typedRule.isLocal && (typedRule.initializer as? KtBinaryExpression)?.let {
+                it.operationToken == KtTokens.ELVIS && (it.right is KtReturnExpression || it.right is KtContinueExpression || it.right is KtBreakExpression)
+            } == true
+        },
+        priority = 50,
+        action = {
+            if (typedRule.isVar) {
+                -"let "
+            } else {
+                -"const "
+            }
+            -typedRule.nameIdentifier
+            val type = typedRule.typeReference
+            type?.let {
+                -": "
+                -it
+                -" | null"
+            }
+            val elvis = typedRule.initializer as KtBinaryExpression
+            -" = "
+            -elvis.left
+            -"\nif(!"
+            -typedRule.nameIdentifier
+            -") { "
+            -elvis.right
+            -" }"
+        }
+    )
 
     //extension getter/setter
     handle<KtPropertyAccessor>(

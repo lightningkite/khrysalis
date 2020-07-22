@@ -48,6 +48,20 @@
     imports:
       setViewVisibility: khrysalis/dist/views/View.ext.actual
 
+- id: android.view.View.getVisibility
+  type: call
+  template:
+    pattern: getViewVisibility(~this~)
+    imports:
+      getViewVisibility: khrysalis/dist/views/View.ext.actual
+
+- id: android.view.View.setVisibility
+  type: call
+  template:
+    pattern: setViewVisibility(~this~, ~value~)
+    imports:
+      setViewVisibility: khrysalis/dist/views/View.ext.actual
+
 - id: android.view.View.rotation
   type: set
   template: ~this~.style.transform = `rotate(${~this~})`

@@ -7,15 +7,17 @@ import java.io.File
 import java.lang.Appendable
 
 
-fun translateXmlColorsToCss(file: File, out: Appendable) {
+fun translateXmlColorsToCss(file: File, out: Appendable): List<String> {
     val ignored = setOf("white", "black", "transparent")
     if(!useScssVariables) out.appendln("* {")
+    val result = ArrayList<String>()
     XmlNode.read(file, mapOf())
         .children
         .asSequence()
         .filter { it.name == "color" }
         .filter { it.allAttributes["name"] !in ignored }
         .associate {
+            result.add(it.allAttributes["name"] ?: "noname")
             val color = it.element.textContent.asCssColor() ?: "#000"
             val name = (it.allAttributes["name"] ?: "noname").kabobCase()
             name to color
@@ -36,9 +38,10 @@ fun translateXmlColorsToCss(file: File, out: Appendable) {
             }
         }
     if(!useScssVariables) out.appendln("}")
+    return result
 }
 
-fun translateXmlColorSetToCss(file: File, out: Appendable) {
+fun translateXmlColorSetToCss(file: File, out: Appendable): String {
     val name = file.nameWithoutExtension.kabobCase()
     out.appendln("/*$name*/")
     XmlNode.read(file, mapOf()).children.forEach { subnode ->
@@ -69,4 +72,5 @@ fun translateXmlColorSetToCss(file: File, out: Appendable) {
             out.appendln("}")
         }
     }
+    return file.nameWithoutExtension
 }

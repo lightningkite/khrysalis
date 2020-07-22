@@ -33,6 +33,9 @@
     pattern: setViewText(~this~, ~0~)
     imports:
       setViewText: khrysalis/dist/views/ViewWithText.ext.actual
+- id: android.widget.TextView.setTextColor
+  type: call
+  template: ~this~.style.color = ~0~
 - id: com.lightningkite.khrysalis.views.setTextColorResource
   type: call
   template: ~this~.style.color = ~0~

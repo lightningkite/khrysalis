@@ -112,6 +112,12 @@ fun TypescriptTranslator.registerType() {
                     -'>'
                 }
             }
+            is TypeParameterDescriptor -> {
+                -desc.name.asString()
+            }
+            else -> {
+                println("What is this? ${desc?.let { it::class.qualifiedName }}")
+            }
         }
     }
 

@@ -8,6 +8,7 @@ import com.lightningkite.khrysalis.util.*
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
+import org.jetbrains.kotlin.synthetic.SyntheticJavaPropertyDescriptor
 import org.jetbrains.kotlin.types.KotlinType
 import org.jetbrains.kotlin.types.typeUtil.isTypeParameter
 import org.jetbrains.kotlin.types.typeUtil.supertypes
@@ -62,6 +63,15 @@ class Replacements() {
         gets[propertyDescriptor.simpleFqName]?.find { it.passes(propertyDescriptor, receiverType) }
             ?: gets[propertyDescriptor.simplerFqName]?.find { it.passes(propertyDescriptor, receiverType) }
             ?: propertyDescriptor.overriddenDescriptors.asSequence().map { getGet(it, receiverType) }.firstOrNull()
+            ?: (propertyDescriptor as? SyntheticJavaPropertyDescriptor)?.getMethod?.let {
+                val accessName = it.name.asString()
+                val propName = propertyDescriptor.name.asString()
+                val all = sequenceOf(it) + it.allOverridden()
+                all.mapNotNull {
+                    gets[it.simpleFqName.replace(accessName, propName)]?.find { it.passes(propertyDescriptor, receiverType) }
+                        ?: gets[it.simplerFqName.replace(accessName, propName)]?.find { it.passes(propertyDescriptor, receiverType) }
+                }.firstOrNull()
+            }
 
     fun getGet(objectDescriptor: DeclarationDescriptor): GetReplacement? =
         gets[objectDescriptor.simpleFqName]?.firstOrNull()
@@ -70,6 +80,15 @@ class Replacements() {
         sets[propertyDescriptor.simpleFqName]?.find { it.passes(propertyDescriptor, receiverType) }
             ?: sets[propertyDescriptor.simplerFqName]?.find { it.passes(propertyDescriptor, receiverType) }
             ?: propertyDescriptor.overriddenDescriptors.asSequence().map { getSet(it, receiverType) }.firstOrNull()
+            ?: (propertyDescriptor as? SyntheticJavaPropertyDescriptor)?.setMethod?.let {
+                val accessName = it.name.asString()
+                val propName = propertyDescriptor.name.asString()
+                val all = sequenceOf(it) + it.allOverridden()
+                all.mapNotNull {
+                    sets[it.simpleFqName.replace(accessName, propName)]?.find { it.passes(propertyDescriptor, receiverType) }
+                        ?: sets[it.simplerFqName.replace(accessName, propName)]?.find { it.passes(propertyDescriptor, receiverType) }
+                }.firstOrNull()
+            }
 
     fun getType(type: DeclarationDescriptor): TypeReplacement? =
         types[type.simpleFqName]?.find { it.passes(type) }
