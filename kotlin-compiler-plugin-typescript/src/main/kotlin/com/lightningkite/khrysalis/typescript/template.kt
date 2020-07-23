@@ -48,7 +48,8 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
 ) {
     dedup(requiresWrapping) {
         val templateIsThisDot = template.parts.getOrNull(0) is TemplatePart.Receiver &&
-                template.parts.getOrNull(1).let { it is TemplatePart.Text && it.string.startsWith('.') }
+                template.parts.getOrNull(1).let { it is TemplatePart.Text && it.string.startsWith('.') } &&
+                template.parts.none { (it as? TemplatePart.Text)?.string?.contains("=") ?: false }
         val altTemplate = if(ensureReceiverNotNull && templateIsThisDot){
             Template(parts = template.parts.toMutableList().apply {
                 this[1] = (this[1] as TemplatePart.Text).let { it.copy("?" + it.string) }
@@ -78,14 +79,21 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
                             else -> continue@loop
                         }
                         if (item is KtLambdaExpression) {
-                            part.paramMap.zip(item.valueParameters.map { it.name }.takeUnless { it.isEmpty() }
-                                ?: listOf("it")).forEach {
-                                -"const "
-                                -it.second
-                                -" = "
-                                onParts(it.first)
-                                -";\n"
-                            }
+                            part.paramMap
+                                .zip(
+                                    item.valueParameters
+                                        .map { it.name }
+                                        .takeUnless { it.isEmpty() }
+                                        ?: listOf("it")
+                                )
+                                .filter { it.second != "_" }
+                                .forEach {
+                                    -"const "
+                                    -it.second
+                                    -" = "
+                                    onParts(it.first)
+                                    -";\n"
+                                }
                             -item.bodyExpression
                         } else {
                             -item

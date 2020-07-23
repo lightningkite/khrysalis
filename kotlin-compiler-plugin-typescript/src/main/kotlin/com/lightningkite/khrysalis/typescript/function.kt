@@ -2,6 +2,7 @@ package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.typescript.manifest.declaresPrefix
 import com.lightningkite.khrysalis.util.forEachBetween
+import com.lightningkite.khrysalis.util.fqNamesToCheck
 import com.lightningkite.khrysalis.util.simpleFqName
 import org.jetbrains.kotlin.builtins.functions.FunctionInvokeDescriptor
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
@@ -14,6 +15,7 @@ import org.jetbrains.kotlin.psi.psiUtil.*
 import org.jetbrains.kotlin.resolve.calls.components.hasDefaultValue
 import org.jetbrains.kotlin.resolve.calls.components.isVararg
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
+import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
 import org.jetbrains.kotlin.resolve.source.KotlinSourceElement
 
 //TODO: Local function edgecase - the meaning of 'this' changes
@@ -265,6 +267,8 @@ fun TypescriptTranslator.registerFunction() {
             val nre = callExp.calleeExpression as KtNameReferenceExpression
             val f = callExp.resolvedCall!!.candidateDescriptor as FunctionDescriptor
             out.addImport(f, f.tsName)
+
+            -"/*invoke*/"
 
             val prop = nre.resolvedReferenceTarget as? ValueDescriptor
             if(prop != null){

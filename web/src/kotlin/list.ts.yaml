@@ -117,7 +117,11 @@
       listRemoveAll: khrysalis/dist/KotlinCollections
 - id: kotlin.collections.MutableList.removeAt
   type: call
+  usedAsExpression: false
   template: ~this~.splice(~0~, 1)
+- id: kotlin.collections.MutableList.removeAt
+  type: call
+  template: ~this~.splice(~0~, 1)[0]
 - id: kotlin.collections.MutableCollection.clear
   actualReceiver: kotlin.collections.MutableList
   type: call

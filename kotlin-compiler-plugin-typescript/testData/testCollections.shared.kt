@@ -41,6 +41,10 @@ fun test(){
     println(listOf("a", "b", "c").joinToString("|"))
     println(listOf("a", "b", "c").joinToString("|"){ it + "j" })
 
+    val nested = ArrayList<ArrayList<Int>>()
+    nested.add(ArrayList())
+    nested[0].add(0)
+
     sequenceOf(1, 2, 3)
         .map { it + 1 }
         .filter { it % 2 == 0 }

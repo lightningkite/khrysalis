@@ -17,6 +17,12 @@
 - id: kotlin.DoubleArray
   type: type
   template: Array<number>
+- id: kotlin.CharArray
+  type: type
+  template: Array<string>
+- id: kotlin.BooleanArray
+  type: type
+  template: Array<boolean>
 - id: kotlin.Array
   type: type
   template: Array<~T0~>
@@ -39,9 +45,43 @@
 - id: kotlin.DoubleArray
   type: typeRef
   template: Array
+- id: kotlin.CharArray
+  type: typeRef
+  template: Array
+- id: kotlin.BooleanArray
+  type: typeRef
+  template: Array
 - id: kotlin.Array
   type: typeRef
   template: Array
+
+- id: kotlin.byteArrayOf
+  type: call
+  template: new Int8Array([~*~])
+- id: kotlin.shortArrayOf
+  type: call
+  template: ([~*~] as Array<number>)
+- id: kotlin.intArrayOf
+  type: call
+  template: ([~*~] as Array<number>)
+- id: kotlin.longArrayOf
+  type: call
+  template: ([~*~] as Array<number>)
+- id: kotlin.floatArrayOf
+  type: call
+  template: ([~*~] as Array<number>)
+- id: kotlin.doubleArrayOf
+  type: call
+  template: ([~*~] as Array<number>)
+- id: kotlin.charArrayOf
+  type: call
+  template: ([~*~] as Array<string>)
+- id: kotlin.booleanArrayOf
+  type: call
+  template: ([~*~] as Array<boolean>)
+- id: kotlin.arrayOf
+  type: call
+  template: ([~*~] as Array<~T0~>)
 
 # Size
 - id: array.size

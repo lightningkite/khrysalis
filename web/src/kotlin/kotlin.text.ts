@@ -99,3 +99,19 @@ export class StringBuilder {
     value: string = ""
     toString(): string { return this.value }
 }
+
+//! Declares kotlin.text.indexOfAny
+export function kotlinCharSequenceIndexOfAny(c: string, set: Array<string>, start: number, caseSensitive: boolean): number {
+    if(caseSensitive){
+        c = c.toLowerCase();
+        set = set.map((x)=>x.toLowerCase());
+    }
+    let lowest = c.length;
+    for(const s of set){
+        const result = c.indexOf(s, start);
+        if(result != -1 && result < lowest) {
+            lowest = result;
+        }
+    }
+    return lowest == c.length ? -1 : lowest;
+}

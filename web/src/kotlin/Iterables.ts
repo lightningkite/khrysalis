@@ -82,7 +82,12 @@ export function kotlinCollectionsIterableJoinToString<T>(
 }
 
 //! Declares kotlin.collections.distinctBy
-export function kotlinCollectionsIterableDistinctBy<T, D>(iter: Iterable<T>, selector: (t: T)=>D): Iterable<T> {
+export function kotlinCollectionsIterableDistinctBy<T, D>(iter: Iterable<T>, selector: (t: T)=>D): Array<T> {
+    const seen = new EqualOverrideSet<D>()
+    return new Array(...filter(iter, (e) => setAddCausedChange<D>(seen, selector(e))))
+}
+//! Declares kotlin.sequences.distinctBy
+export function kotlinSequencesSequenceDistinctBy<T, D>(iter: Iterable<T>, selector: (t: T)=>D): Iterable<T> {
     const seen = new EqualOverrideSet<D>()
     return filter(iter, (e) => setAddCausedChange<D>(seen, selector(e)))
 }

@@ -104,7 +104,3 @@ fun main(){
 }
 
 val anotherThing = 2
-
-fun testRepl(data: Data) {
-    println(data.size)
-}

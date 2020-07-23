@@ -8,6 +8,9 @@ import com.lightningkite.khrysalis.util.*
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
+import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
+import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
+import org.jetbrains.kotlin.synthetic.SamAdapterExtensionFunctionDescriptor
 import org.jetbrains.kotlin.synthetic.SyntheticJavaPropertyDescriptor
 import org.jetbrains.kotlin.types.KotlinType
 import java.io.File
@@ -28,8 +31,12 @@ class Replacements() {
         descriptor: CallableDescriptor = call.candidateDescriptor,
         alreadyChecked: HashSet<CallableDescriptor> = HashSet()
     ): FunctionReplacement? {
-        if(!alreadyChecked.add(descriptor)) return null
-        val result = descriptor.fqNamesToCheck
+        val actualDescriptor = (descriptor as? SamAdapterExtensionFunctionDescriptor)?.baseDescriptorForSynthetic ?: descriptor
+        if(!alreadyChecked.add(actualDescriptor)) return null
+        if(actualDescriptor.fqNameSafe.asString().contains("zip")) {
+            println("Looking for ${actualDescriptor.fqNamesToCheck.joinToString()}")
+        }
+        val result = actualDescriptor.fqNamesToCheck
             .flatMap {
                 functions[it]?.asSequence() ?: sequenceOf()
             }
@@ -37,9 +44,9 @@ class Replacements() {
                 it.passes(
                     analysis = analysis,
                     call = call,
-                    descriptor = descriptor
+                    descriptor = actualDescriptor
                 )
-            } ?: (descriptor as? CallableMemberDescriptor)?.allOverridden()
+            } ?: (actualDescriptor as? CallableMemberDescriptor)?.allOverridden()
                 ?.map {
                     getCall(
                         analysis = analysis,
