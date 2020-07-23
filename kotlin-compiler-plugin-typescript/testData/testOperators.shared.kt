@@ -58,6 +58,21 @@ fun main() {
     println(1.div(x))
     println(1.rem(x))
 
+    x += if(x > 1) 1 else 0
+
+    //Null calls
+    val maybeNumber: Int? = if(x > 1) x else null
+    x?.plus(2)
+    println(x?.plus(2))
+    x?.minus(2)
+    println(x?.minus(2))
+    x?.times(2)
+    println(x?.times(2))
+    x?.div(2)
+    println(x?.div(2))
+    x?.rem(2)
+    println(x?.rem(2))
+
     //Assign operators
     x += 1
     x -= 1

@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.typescript
 
+import com.lightningkite.khrysalis.generic.PartialTranslatorByType
 import com.lightningkite.khrysalis.generic.line
 import com.lightningkite.khrysalis.util.simpleFqName
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
@@ -55,5 +56,40 @@ fun TypescriptTranslator.registerReceiver() {
 
     handle<KtThisExpression> {
         -typedRule.getTsReceiver()
+    }
+}
+
+
+inline fun PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByType<*>.nullWrapAction(
+    swiftTranslator: TypescriptTranslator,
+    receiver: Any?,
+    skip: Boolean,
+    isExpression: Boolean,
+    action: (Any?) -> Unit
+) = with(swiftTranslator) {
+    if(receiver == null || skip) {
+        action(receiver)
+        return
+    }
+    if(isExpression){
+        -"(()=>{\n"
+    }
+    val r = receiver
+    val tempName = if (r is String || (r as? KtExpression)?.isSimple() == true) {
+        -"if("
+        -r
+        -" !== null) {\n"
+        r
+    } else {
+        val n = "temp${uniqueNumber.getAndIncrement()}"
+        -"const $n = "
+        -receiver
+        -";\nif($n !== null) {\n"
+        n
+    }
+    action(tempName)
+    -"\n}"
+    if(isExpression){
+        -" else { return null }\n})()"
     }
 }

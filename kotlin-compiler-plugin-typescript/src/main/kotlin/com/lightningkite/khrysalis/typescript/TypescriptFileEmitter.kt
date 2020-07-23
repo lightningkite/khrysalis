@@ -2,6 +2,7 @@ package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.SmartTabWriter
+import com.lightningkite.khrysalis.util.fqNamesToCheck
 import com.lightningkite.khrysalis.util.simpleFqName
 import com.lightningkite.khrysalis.util.simplerFqName
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
@@ -78,14 +79,12 @@ class TypescriptFileEmitter(val translator: TypescriptTranslator, val file: KtFi
             else -> decl
         }
         val name = overrideName ?: useDecl.name.asString()
-        val fq = useDecl.simpleFqName
-        val fq2 = useDecl.simplerFqName
-        val n = "$fq TS $name"
+        val n = "${useDecl.simpleFqName} TS $name"
         if (importedFqs.contains(n))
             return
         importedFqs.add(n)
-        if(!addImportFromFq(fq, name)){
-            addImportFromFq(fq2, name)
+        useDecl.fqNamesToCheck.firstOrNull {
+            addImportFromFq(it, name)
         }
     }
 

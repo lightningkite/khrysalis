@@ -21,10 +21,22 @@ private val primitiveTypes = setOf(
     "kotlin.String",
     "kotlin.Boolean"
 )
+val arrayTypes = listOf(
+    "kotlin.ByteArray",
+    "kotlin.ShortArray",
+    "kotlin.IntArray",
+    "kotlin.LongArray",
+    "kotlin.FloatArray",
+    "kotlin.DoubleArray",
+    "kotlin.Array"
+)
 fun KotlinType.cannotSatisfy(stringRequirement: String): Boolean = !satisfies(stringRequirement)
 fun KotlinType.satisfies(stringRequirement: String): Boolean {
     if(stringRequirement == "primitive") {
         return this.getJetTypeFqName(false) in primitiveTypes
+    }
+    if(stringRequirement == "array"){
+        return this.getJetTypeFqName(false) in arrayTypes
     }
     if(this.getJetTypeFqName(true) == stringRequirement) return true
     if(this.getJetTypeFqName(false) == stringRequirement) return true

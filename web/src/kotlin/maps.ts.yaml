@@ -8,6 +8,10 @@
   type: type
   template: Map<~T0~, ~T1~>
 
+- id: java.util.HashMap
+  type: type
+  template: Map<~T0~, ~T1~>
+
 - id: kotlin.collections.MutableMap
   type: type
   template: Map<~T0~, ~T1~>
@@ -114,6 +118,34 @@
       EqualOverrideMap: khrysalis/dist/KotlinCollections
 
 - id: kotlin.collections.HashMap
+  type: call
+  template:
+    pattern: "new EqualOverrideMap()"
+    imports:
+      EqualOverrideMap: khrysalis/dist/KotlinCollections
+
+- id: java.util.HashMap
+  type: call
+  hasExplicitTypeArguments: true
+  typeArgumentRequirements:
+    0: primitive
+  template: new Map<~T0~, ~T1~>()
+
+- id: java.util.HashMap
+  type: call
+  typeArgumentRequirements:
+    0: primitive
+  template: new Map()
+
+- id: java.util.HashMap
+  type: call
+  hasExplicitTypeArguments: true
+  template:
+    pattern: "new EqualOverrideMap<~T0~, ~T1~>()"
+    imports:
+      EqualOverrideMap: khrysalis/dist/KotlinCollections
+
+- id: java.util.HashMap
   type: call
   template:
     pattern: "new EqualOverrideMap()"

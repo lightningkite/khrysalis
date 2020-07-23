@@ -5,6 +5,10 @@
   type: type
   template: HTMLImageElement
 
+- id: de.hdodenhof.circleimageview.CircleImageView
+  type: type
+  template: HTMLImageElement
+
 - id: android.widget.ImageView
   type: call
   template: (document.createElement('img') as HTMLImageElement)

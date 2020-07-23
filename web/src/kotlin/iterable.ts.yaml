@@ -184,6 +184,13 @@
     imports:
       iterToArray: toArray from iterable-operator
 
+- id: kotlin.collections.distinct
+  type: call
+  template:
+    pattern: "new EqualOverrideSet(~this~)"
+    imports:
+      EqualOverrideSet: khrysalis/dist/KotlinCollections
+
 - id: kotlin.collections.toSet
   type: call
   template:
@@ -197,6 +204,20 @@
     pattern: "new EqualOverrideSet(~this~)"
     imports:
       EqualOverrideSet: khrysalis/dist/KotlinCollections
+
+- id: kotlin.collections.toHashSet
+  type: call
+  template:
+    pattern: "new EqualOverrideSet(~this~)"
+    imports:
+      EqualOverrideSet: khrysalis/dist/KotlinCollections
+
+- id: kotlin.collections.distinct
+  type: call
+  typeArgumentRequirements:
+    0: primitive
+  template:
+    pattern: new Set(~this~)
 
 - id: kotlin.collections.toSet
   type: call
@@ -206,6 +227,13 @@
     pattern: new Set(~this~)
 
 - id: kotlin.collections.toMutableSet
+  type: call
+  typeArgumentRequirements:
+    0: primitive
+  template:
+    pattern: new Set(~this~)
+
+- id: kotlin.collections.toHashSet
   type: call
   typeArgumentRequirements:
     0: primitive
@@ -213,6 +241,13 @@
     pattern: new Set(~this~)
 
 # TODO: groupBy
+
+- id: kotlin.collections.find
+  type: call
+  template:
+    pattern: iterFind(~this~, ~0~)
+    imports:
+      iterFind: find from iterable-operator
 
 - id: kotlin.collections.any
   type: call

@@ -3,6 +3,10 @@
   type: type
   template: Path2D
 
+- id: android.graphics.Path
+  type: call
+  template: new Path2D()
+
 # fun Path.moveTo(x: Float, y: Float)
 - id: android.graphics.Path.moveTo
   type: call

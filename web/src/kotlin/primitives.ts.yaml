@@ -62,6 +62,10 @@
   type: type
   template: any
 
+- id: com.lightningkite.khrysalis.fatalError
+  type: call
+  template: throw ~0~
+
 # Primitive Equality
 
 - id: kotlin.Byte.equals

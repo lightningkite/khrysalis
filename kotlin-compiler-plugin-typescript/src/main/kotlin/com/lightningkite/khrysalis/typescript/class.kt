@@ -520,7 +520,14 @@ fun TypescriptTranslator.registerClass() {
                 },
                 between = { -", " }
             )
-            -") { return new "
+            -"): "
+            -typedRule.nameIdentifier
+            typedRule.typeParameterList?.parameters?.let {
+                -'<'
+                it.forEachBetween(forItem = { -it.name }, between = { -", " })
+                -'>'
+            }
+            -" { return new "
             -typedRule.nameIdentifier
             -"("
             typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEachBetween(
@@ -762,7 +769,7 @@ fun TypescriptTranslator.registerClass() {
         -(typedRule.visibilityModifier() ?: "public")
         -" static "
         -resolved.tsConstructorName
-        -typedRule.typeParameterList
+        -typedRule.containingClass()!!.typeParameterList
         -typedRule.valueParameterList
         -" {\n"
         val parent = typedRule.parentOfType<KtClassBody>()!!.parentOfType<KtClass>()!!.resolvedClass!!
@@ -772,7 +779,11 @@ fun TypescriptTranslator.registerClass() {
             -" = new "
             typedRule.getDelegationCall().let {
                 -parent.name.asString()
-                -it.typeArgumentList
+                typedRule.containingClass()!!.typeParameterList?.parameters?.let {
+                    -'<'
+                    it.forEachBetween(forItem = { -it.name }, between = { -", " })
+                    -'>'
+                }
                 val withComments = it.valueArgumentList?.withComments() ?: listOf()
                 -ArgumentsList(
                     on = it.resolvedCall!!.candidateDescriptor as FunctionDescriptor,

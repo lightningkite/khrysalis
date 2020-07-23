@@ -5,7 +5,11 @@ import com.lightningkite.khrysalis.typescript.replacements.Template
 import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.AnalysisExtensions
 import com.lightningkite.khrysalis.util.forEachBetween
+import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
+import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
+import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
+import org.jetbrains.kotlin.psi.psiUtil.allChildren
 
 
 fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByType<T>.dedup(
@@ -14,25 +18,26 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
 ) {
     val emitter = DeDupEmitter(this.partialTranslator as TypescriptTranslator)
     action(emitter)
-    val dedup = emitter.dedupNecessary
-    if (dedup && requireWrapping) {
-        -"(()=>{"
+    val wraps = emitter.dedupNecessary && requireWrapping
+    if (wraps) {
+        -"(()=>{\n"
     }
-    emitter.finish(dedup && requireWrapping) {
+    emitter.finish(wraps) {
         -it
     }
-    if (dedup && requireWrapping) {
-        -"})()"
+    if (wraps) {
+        -"\n})()"
     }
 }
 
 fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByType<T>.emitTemplate(
     requiresWrapping: Boolean,
+    ensureReceiverNotNull: Boolean = false,
     template: Template,
     prefix: Any? = null,
-    receiver: Any? = null,
-    dispatchReceiver: Any? = receiver,
-    extensionReceiver: Any? = receiver,
+    dispatchReceiver: Any? = null,
+    extensionReceiver: Any? = null,
+    receiver: Any? = extensionReceiver ?: dispatchReceiver,
     value: Any? = null,
     allParameters: Any? = null,
     operatorToken: Any? = null,
@@ -42,6 +47,16 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
     typeParameterByIndex: (TemplatePart.TypeParameterByIndex) -> Any? = { null }
 ) {
     dedup(requiresWrapping) {
+        val templateIsThisDot = template.parts.getOrNull(0) is TemplatePart.Receiver &&
+                template.parts.getOrNull(1).let { it is TemplatePart.Text && it.string.startsWith('.') }
+        val altTemplate = if(ensureReceiverNotNull && templateIsThisDot){
+            Template(parts = template.parts.toMutableList().apply {
+                this[1] = (this[1] as TemplatePart.Text).let { it.copy("?" + it.string) }
+            })
+        } else null
+        if(ensureReceiverNotNull && altTemplate == null){
+            ensureNotNull(extensionReceiver ?: receiver)
+        }
         -prefix
         fun onParts(list: List<TemplatePart>) {
             loop@ for (part in list) {
@@ -90,7 +105,7 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
                 }
             }
         }
-        onParts(template.parts)
+        onParts(altTemplate?.parts ?: template.parts)
     }
 }
 
@@ -129,8 +144,10 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
 
 class DeDupEmitter(analysis: AnalysisExtensions) : AnalysisExtensions by analysis {
     val deduplicated = HashMap<Any, String>()
+    val checkNotNull = HashSet<String>()
     val toEmit = ArrayList<Any>()
     fun deduplicate(item: Any) {
+        if(deduplicated.containsKey(item)) return
         if (when (item) {
                 is String -> item.all { it.isLetterOrDigit() }
                 is KtExpression -> item.isSimple()
@@ -157,15 +174,21 @@ class DeDupEmitter(analysis: AnalysisExtensions) : AnalysisExtensions by analysi
         toEmit.add(this)
     }
 
+    fun ensureNotNull(item: Any?){
+        if(item == null) return
+        val name = deduplicated.getOrPut(item) { "temp${uniqueNumber.getAndIncrement()}" }
+        checkNotNull.add(name)
+    }
+
     val dedupNecessary: Boolean
         get() = deduplicated.any {
             val key = it.key
             toEmit.count { it == key } > 1
-        }
+        } || checkNotNull.isNotEmpty()
 
     fun finish(wrapping: Boolean, parentEmit: (Any) -> Unit) {
-        val used = deduplicated.filterKeys { key ->
-            toEmit.count { it == key } > 1
+        val used = deduplicated.filter { (key, value) ->
+            toEmit.count { it == key } > 1 || value in checkNotNull
         }
         for ((item, name) in used) {
             parentEmit("const ")
@@ -173,6 +196,17 @@ class DeDupEmitter(analysis: AnalysisExtensions) : AnalysisExtensions by analysi
             parentEmit(" = ")
             parentEmit(item)
             parentEmit(";\n")
+            if(name in checkNotNull){
+                if(wrapping){
+                    parentEmit("if(")
+                    parentEmit(name)
+                    parentEmit(" === null) { return null }\n")
+                } else {
+                    parentEmit("if(")
+                    parentEmit(name)
+                    parentEmit(" !== null) { \n")
+                }
+            }
         }
         if(wrapping) {
             parentEmit("return ")
@@ -182,5 +216,24 @@ class DeDupEmitter(analysis: AnalysisExtensions) : AnalysisExtensions by analysi
                 parentEmit(name)
             } ?: parentEmit(item)
         }
+        if(!wrapping) {
+            repeat(checkNotNull.size){
+                parentEmit("\n}")
+            }
+        }
+    }
+}
+
+fun hasNewlineBeforeAccess(typedRule: KtQualifiedExpression): Boolean {
+    return typedRule.allChildren
+        .find { it is LeafPsiElement && (it.elementType == KtTokens.DOT || it.elementType == KtTokens.SAFE_ACCESS) }
+        ?.prevSibling
+        ?.let { it as? PsiWhiteSpace }
+        ?.textContains('\n') == true
+}
+
+fun <T : KtQualifiedExpression> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByType<T>.insertNewlineBeforeAccess() {
+    if (hasNewlineBeforeAccess(typedRule)) {
+        -"\n"
     }
 }

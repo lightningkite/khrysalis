@@ -4,19 +4,19 @@
   template: Int8Array
 - id: kotlin.ShortArray
   type: type
-  template: Int16Array
+  template: Array<number>
 - id: kotlin.IntArray
   type: type
-  template: Int32Array
+  template: Array<number>
 - id: kotlin.LongArray
   type: type
-  template: BigInt64Array
+  template: Array<number>
 - id: kotlin.FloatArray
   type: type
-  template: Float32Array
+  template: Array<number>
 - id: kotlin.DoubleArray
   type: type
-  template: Float64Array
+  template: Array<number>
 - id: kotlin.Array
   type: type
   template: Array<~T0~>
@@ -26,42 +26,35 @@
   template: Int8Array
 - id: kotlin.ShortArray
   type: typeRef
-  template: Int16Array
+  template: Array
 - id: kotlin.IntArray
   type: typeRef
-  template: Int32Array
+  template: Array
 - id: kotlin.LongArray
   type: typeRef
-  template: BigInt64Array
+  template: Array
 - id: kotlin.FloatArray
   type: typeRef
-  template: Float32Array
+  template: Array
 - id: kotlin.DoubleArray
   type: typeRef
-  template: Float64Array
+  template: Array
 - id: kotlin.Array
   type: typeRef
   template: Array
 
 # Size
-- id: kotlin.ByteArray.size
+- id: array.size
   type: get
   template: ~this~.length
-- id: kotlin.ShortArray.size
-  type: get
-  template: ~this~.length
-- id: kotlin.IntArray.size
-  type: get
-  template: ~this~.length
-- id: kotlin.LongArray.size
-  type: get
-  template: ~this~.length
-- id: kotlin.FloatArray.size
-  type: get
-  template: ~this~.length
-- id: kotlin.DoubleArray.size
-  type: get
-  template: ~this~.length
-- id: kotlin.Array.size
-  type: get
-  template: ~this~.length
+- id: array.toList
+  type: call
+  template: ~this~
+
+- id: kotlin.collections.joinToString
+  type: call
+  actualReceiver: array
+  template:
+    pattern: kotlinCollectionsIterableJoinToString(~this~, ~separator~, ~prefix~, ~postfix~, ~limit~, ~truncated~, ~transform~)
+    imports:
+      kotlinCollectionsIterableJoinToString: khrysalis/dist/kotlin/Iterables

@@ -50,6 +50,11 @@ export function kotlinStringSubstringAfterLast(s: string, delimeter: string, def
     }
 }
 
+//! Declares kotlin.text.trimIndent
+export function kotlinStringTrimIndent(c: string): string {
+    return c.split('\n').map((x)=>x.trim()).join("")
+}
+
 //! Declares kotlin.text.isWhitespace
 export function kotlinCharIsWhitespace(c: string): boolean {
     switch(c){

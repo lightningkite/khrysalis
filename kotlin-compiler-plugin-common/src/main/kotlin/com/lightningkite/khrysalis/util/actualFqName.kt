@@ -19,6 +19,10 @@ val DeclarationDescriptor.simpleFqName: String get() = when{
     }
     this is FunctionDescriptor && this.extensionReceiverParameter != null -> this.fqNameSafe.asString() + (this.extensionReceiverParameter?.type?.getJetTypeFqName(true)?.let { ">$it" } ?: "")
     this is PropertyDescriptor && this.extensionReceiverParameter != null -> this.fqNameSafe.asString() + (this.extensionReceiverParameter?.type?.getJetTypeFqName(true)?.let { ">$it" } ?: "")
-    else -> this.fqNameSafe.asString()
+    else -> this.fqNameSafe.asString().substringBefore(".<")
 }
 val DeclarationDescriptor.simplerFqName: String get() = this.fqNameSafe.asString()
+val DeclarationDescriptor.fqNamesToCheck: Sequence<String> get() = sequenceOf(
+    simpleFqName,
+    simplerFqName
+).plus(arrayTypes.asSequence().mapNotNull { if(this.fqNameSafe.asString().startsWith(it)) "array" + this.fqNameSafe.asString().removePrefix(it) else null })

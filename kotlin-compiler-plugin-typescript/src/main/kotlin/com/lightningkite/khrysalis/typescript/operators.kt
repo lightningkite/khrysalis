@@ -6,6 +6,7 @@ import org.jetbrains.kotlin.com.intellij.psi.tree.IElementType
 import org.jetbrains.kotlin.descriptors.CallableDescriptor
 import org.jetbrains.kotlin.descriptors.FunctionDescriptor
 import org.jetbrains.kotlin.descriptors.PropertyDescriptor
+import org.jetbrains.kotlin.descriptors.ValueDescriptor
 import org.jetbrains.kotlin.lexer.KtSingleValueToken
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
@@ -169,16 +170,16 @@ fun TypescriptTranslator.registerOperators() {
 
             val reuseIdentifiers = typedRule.operationToken != KtTokens.EQ
 
-            val tempArray: Any = if(reuseIdentifiers && !arrayAccess.arrayExpression!!.isSimple()) {
+            val tempArray: Any = if (reuseIdentifiers && !arrayAccess.arrayExpression!!.isSimple()) {
                 val t = "array${uniqueNumber.getAndIncrement()}"
                 -"const $t = "
                 -arrayAccess.arrayExpression
                 -";\n"
                 t
             } else arrayAccess.arrayExpression!!
-            val tempIndexes = if(reuseIdentifiers) {
+            val tempIndexes = if (reuseIdentifiers) {
                 arrayAccess.indexExpressions.map {
-                    if(it.isSimple()) {
+                    if (it.isSimple()) {
                         it
                     } else {
                         val t = "index${uniqueNumber.getAndIncrement()}"
@@ -289,29 +290,29 @@ fun TypescriptTranslator.registerOperators() {
         -")"
     }
     handle<ValueOperator>(
-        condition = { typedRule.operationToken == KtTokens.EQEQ && (typedRule.left as? KtConstantExpression)?.text == "null"  },
-        priority = 20
+        condition = { typedRule.operationToken == KtTokens.EQEQ && (typedRule.left as? KtConstantExpression)?.text == "null" },
+        priority = 200_000
     ) {
         -typedRule.right
         -" === null"
     }
     handle<ValueOperator>(
         condition = { typedRule.operationToken == KtTokens.EXCLEQ && (typedRule.left as? KtConstantExpression)?.text == "null" },
-        priority = 21
+        priority = 210_000
     ) {
         -typedRule.right
         -" !== null"
     }
     handle<ValueOperator>(
-        condition = { typedRule.operationToken == KtTokens.EQEQ && (typedRule.right as? KtConstantExpression)?.text == "null"  },
-        priority = 22
+        condition = { typedRule.operationToken == KtTokens.EQEQ && (typedRule.right as? KtConstantExpression)?.text == "null" },
+        priority = 220_000
     ) {
         -typedRule.left
         -" === null"
     }
     handle<ValueOperator>(
         condition = { typedRule.operationToken == KtTokens.EXCLEQ && (typedRule.right as? KtConstantExpression)?.text == "null" },
-        priority = 23
+        priority = 230_000
     ) {
         -typedRule.left
         -" !== null"
@@ -334,7 +335,8 @@ fun TypescriptTranslator.registerOperators() {
             -left
             -"."
         }
-        -(typedRule.functionDescriptor.tsNameOverridden ?: typedRule.functionDescriptor.name.asString().safeJsIdentifier())
+        -(typedRule.functionDescriptor.tsNameOverridden ?: typedRule.functionDescriptor.name.asString()
+            .safeJsIdentifier())
         -ArgumentsList(
             on = typedRule.functionDescriptor,
             resolvedCall = typedRule.resolvedCall,
@@ -382,7 +384,7 @@ fun TypescriptTranslator.registerOperators() {
                 requiresWrapping = typedRule.actuallyCouldBeExpression,
                 template = rule.template,
                 receiver = typedRule.baseExpression,
-                dispatchReceiver = if(f.candidateDescriptor.extensionReceiverParameter != null) typedRule.getTsReceiver() else typedRule.baseExpression
+                dispatchReceiver = if (f.candidateDescriptor.extensionReceiverParameter != null) typedRule.getTsReceiver() else typedRule.baseExpression
             )
         }
     )
@@ -408,6 +410,134 @@ fun TypescriptTranslator.registerOperators() {
                 orderedArguments = listOf(),
                 namedArguments = listOf(),
                 lambdaArgument = null
+            )
+        }
+    )
+
+    handle<KtPostfixExpression>(
+        condition = {
+            replacements.getCall(this@registerOperators, typedRule.resolvedCall ?: return@handle false) != null
+        },
+        priority = 10_000,
+        action = {
+            val f = typedRule.resolvedCall!!
+            val rule = replacements.getCall(this@registerOperators, f)!!
+
+            emitTemplate(
+                requiresWrapping = typedRule.actuallyCouldBeExpression,
+                template = rule.template,
+                receiver = typedRule.baseExpression,
+                dispatchReceiver = if (f.candidateDescriptor.extensionReceiverParameter != null) typedRule.getTsReceiver() else typedRule.baseExpression
+            )
+        }
+    )
+
+    handle<KtPostfixExpression>(
+        condition = { typedRule.operationReference.resolvedReferenceTarget != null },
+        priority = 1_000,
+        action = {
+            val f = typedRule.operationReference.resolvedReferenceTarget as FunctionDescriptor
+            val doubleReceiver = f.dispatchReceiverParameter != null && f.extensionReceiverParameter != null
+            if (doubleReceiver) {
+                -typedRule.getTsReceiver()
+                -"."
+            } else if (f.dispatchReceiverParameter != null) {
+                -typedRule.baseExpression
+                -"."
+            }
+            -(f.tsNameOverridden ?: f.name.asString().safeJsIdentifier())
+            -ArgumentsList(
+                on = f,
+                resolvedCall = typedRule.resolvedCall,
+                prependArguments = if (f.extensionReceiverParameter != null) listOf(typedRule.baseExpression!!) else listOf(),
+                orderedArguments = listOf(),
+                namedArguments = listOf(),
+                lambdaArgument = null
+            )
+        }
+    )
+
+    handle<KtPostfixExpression>(
+        condition = {
+            val sel = (typedRule.baseExpression as? KtQualifiedExpression)?.selectorExpression as? KtNameReferenceExpression
+                    ?: typedRule.baseExpression as? KtNameReferenceExpression
+                    ?: return@handle false
+            typedRule.resolvedVariableReassignment == true && sel.resolvedReferenceTarget is ValueDescriptor
+        },
+        priority = 200_000,
+        action = {
+            val qual = typedRule.baseExpression as? KtQualifiedExpression
+            val sel = qual?.selectorExpression as? KtNameReferenceExpression
+                ?: typedRule.baseExpression as KtNameReferenceExpression
+            val prop = sel.resolvedReferenceTarget as ValueDescriptor
+            -VirtualSet(
+                receiver = qual?.receiverExpression,
+                nameReferenceExpression = sel,
+                property = prop,
+                receiverType = sel.resolvedExpressionTypeInfo?.type,
+                expr = typedRule,
+                safe = qual is KtSafeQualifiedExpression,
+                value = ValueOperator(
+                    left = VirtualGet(
+                        receiver = qual?.receiverExpression,
+                        nameReferenceExpression = sel,
+                        property = prop,
+                        receiverType = sel.resolvedExpressionTypeInfo?.type,
+                        expr = typedRule,
+                        safe = qual is KtSafeQualifiedExpression
+                    ),
+                    right = "1",
+                    functionDescriptor = typedRule.resolvedCall!!.candidateDescriptor as FunctionDescriptor,
+                    dispatchReceiver = typedRule.getTsReceiver(),
+                    operationToken = when(typedRule.operationToken) {
+                        KtTokens.PLUSPLUS -> KtTokens.PLUS
+                        KtTokens.MINUSMINUS -> KtTokens.MINUS
+                        else -> KtTokens.PLUS
+                    },
+                    resolvedCall = typedRule.resolvedCall
+                )
+            )
+        }
+    )
+    handle<KtPrefixExpression>(
+        condition = {
+            val sel = (typedRule.baseExpression as? KtQualifiedExpression)?.selectorExpression as? KtNameReferenceExpression
+                    ?: typedRule.baseExpression as? KtNameReferenceExpression
+                    ?: return@handle false
+            typedRule.resolvedVariableReassignment == true && sel.resolvedReferenceTarget is ValueDescriptor
+        },
+        priority = 200_000,
+        action = {
+            val qual = typedRule.baseExpression as? KtQualifiedExpression
+            val sel = qual?.selectorExpression as? KtNameReferenceExpression
+                ?: typedRule.baseExpression as KtNameReferenceExpression
+            val prop = sel.resolvedReferenceTarget as ValueDescriptor
+            -VirtualSet(
+                receiver = qual?.receiverExpression,
+                nameReferenceExpression = sel,
+                property = prop,
+                receiverType = sel.resolvedExpressionTypeInfo?.type,
+                expr = typedRule,
+                safe = qual is KtSafeQualifiedExpression,
+                value = ValueOperator(
+                    left = VirtualGet(
+                        receiver = qual?.receiverExpression,
+                        nameReferenceExpression = sel,
+                        property = prop,
+                        receiverType = sel.resolvedExpressionTypeInfo?.type,
+                        expr = typedRule,
+                        safe = qual is KtSafeQualifiedExpression
+                    ),
+                    right = "1",
+                    functionDescriptor = typedRule.resolvedCall!!.candidateDescriptor as FunctionDescriptor,
+                    dispatchReceiver = typedRule.getTsReceiver(),
+                    operationToken = when(typedRule.operationToken) {
+                        KtTokens.PLUSPLUS -> KtTokens.PLUS
+                        KtTokens.MINUSMINUS -> KtTokens.MINUS
+                        else -> KtTokens.PLUS
+                    },
+                    resolvedCall = typedRule.resolvedCall
+                )
             )
         }
     )

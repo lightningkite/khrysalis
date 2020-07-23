@@ -515,7 +515,8 @@ fileprivate func getUrl(editedImage: UIImage?, originalImage: UIImage?, asset: P
 extension UIImage {
     
     func saveTemp() -> URL? {
-        let tempDirectoryUrl = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("temp-khrysalis-photos")
+        let id = UUID().uuidString
+        let tempDirectoryUrl = URL(fileURLWithPath: NSTemporaryDirectory()).appendingPathComponent("temp-khrysalis-photos-\(id)")
         guard let url2 = self.save(at: tempDirectoryUrl) else {
             return nil
         }

@@ -364,7 +364,49 @@
   type: call
   infix: true
   template: +~this~
-  
+
+
+
+# Inc
+- id: kotlin.Byte.inc
+  type: call
+  template: ~this~ + 1
+- id: kotlin.Short.inc
+  type: call
+  template: ~this~ + 1
+- id: kotlin.Int.inc
+  type: call
+  template: ~this~ + 1
+- id: kotlin.Long.inc
+  type: call
+  template: ~this~ + 1
+- id: kotlin.Float.inc
+  type: call
+  template: ~this~ + 1
+- id: kotlin.Double.inc
+  type: call
+  template: ~this~ + 1
+
+# Dec
+- id: kotlin.Byte.dec
+  type: call
+  template: ~this~ + 1
+- id: kotlin.Short.dec
+  type: call
+  template: ~this~ + 1
+- id: kotlin.Int.dec
+  type: call
+  template: ~this~ + 1
+- id: kotlin.Long.dec
+  type: call
+  template: ~this~ + 1
+- id: kotlin.Float.dec
+  type: call
+  template: ~this~ + 1
+- id: kotlin.Double.dec
+  type: call
+  template: ~this~ + 1
+
   
 # Bitwise Operators
   

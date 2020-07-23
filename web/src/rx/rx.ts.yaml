@@ -54,6 +54,28 @@
     imports:
       rxFilter: filter from rxjs/operators
 
+- id: io.reactivex.Observable.distinct
+  type: call
+  template:
+    pattern: ~this~.pipe(rxDistinct(~0~))
+    imports:
+      rxDistinct: distinct from rxjs/operators
+
+- id: io.reactivex.Observable.distinctUntilChanged
+  type: call
+  arguments: []
+  template:
+    pattern: ~this~.pipe(rxDistinctUntilChanged())
+    imports:
+      rxDistinctUntilChanged: distinctUntilChanged from rxjs/operators
+
+- id: io.reactivex.Observable.distinctUntilChanged
+  type: call
+  template:
+    pattern: ~this~.pipe(rxDistinctUntilChanged(~0~))
+    imports:
+      rxDistinctUntilChanged: distinctUntilChanged from rxjs/operators
+
 - id: io.reactivex.Observable.mapNotNull
   type: call
   template:
@@ -148,6 +170,10 @@
     pattern: rxNEVER
     imports:
       rxNEVER: NEVER from rxjs
+
+- id: io.reactivex.Observable.observeOn
+  type: call
+  template: ~this~
 
 - id: io.reactivex.Observable.doFinally
   type: call
@@ -263,6 +289,10 @@
     imports:
       Observable: rxjs
 
+- id: io.reactivex.Single.observeOn
+  type: call
+  template: ~this~
+
 - id: io.reactivex.Single.subscribe
   type: call
   arguments: [io.reactivex.Observer]
@@ -275,9 +305,16 @@
 - id: io.reactivex.rxkotlin.subscribeBy
   type: call
   receiver: io.reactivex.Single
-  template: ~this~.subscribe(~onNext~, ~onError~, ~onComplete~)
+  template: ~this~.subscribe(~onSuccess~, ~onError~)
 
 # Operators for Single
+- id: io.reactivex.Single.cache
+  type: call
+  template:
+    pattern: ~this~.pipe(rxShareReplay(1))
+    imports:
+      rxShareReplay: shareReplay from rxjs/operators
+
 - id: io.reactivex.Single.map
   type: call
   template:

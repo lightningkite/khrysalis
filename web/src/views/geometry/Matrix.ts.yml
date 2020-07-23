@@ -10,7 +10,7 @@
 - id: com.lightningkite.khrysalis.views.geometry.mapPoint
   type: call
   template:
-    pattern: new PointF(~0~.transformPoint(~this~))
+    pattern: new PointF(~this~.transformPoint(~0~))
     imports:
       PointF: khrysalis/dist/views/geometry/PointF.actual
 

@@ -8,7 +8,23 @@
   type: call
   template: ~this~(~0~, ~1~)
 
+- id: kotlin.Comparator
+  type: call
+  template: ~0~
+
+- id: java.util.Comparator
+  type: call
+  template: ~0~
+
 - id: kotlin.Comparable.compareTo
+  type: call
+  infix: false
+  template:
+    pattern: safeCompare(~this~, ~0~)
+    imports:
+      safeCompare: khrysalis/dist/kotlin/Comparable
+
+- id: java.util.Comparable.compareTo
   type: call
   infix: false
   template:

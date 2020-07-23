@@ -158,13 +158,13 @@
 - id: kotlin.text.removePrefix
   type: call
   template:
-    pattern: kotlinStringSubstringAfter(~this~, ~0~)
+    pattern: kotlinStringSubstringAfter(~this~, ~0~, undefined)
     imports:
       kotlinStringSubstringAfter: khrysalis/dist/kotlin/kotlin.text
 - id: kotlin.text.removeSuffix
   type: call
   template:
-    pattern: kotlinStringSubstringBeforeLast(~this~, ~0~)
+    pattern: kotlinStringSubstringBeforeLast(~this~, ~0~, undefined)
     imports:
       kotlinStringSubstringBeforeLast: khrysalis/dist/kotlin/kotlin.text
 - id: kotlin.text.replace
@@ -236,37 +236,37 @@
 - id: kotlin.text.toByteOrNull
   type: call
   template:
-    pattern: parseIntOrNull(~0~)
+    pattern: parseIntOrNull(~this~)
     imports:
       parseIntOrNull: khrysalis/dist/Kotlin
 - id: kotlin.text.toShortOrNull
   type: call
   template:
-    pattern: parseIntOrNull(~0~)
+    pattern: parseIntOrNull(~this~)
     imports:
       parseIntOrNull: khrysalis/dist/Kotlin
 - id: kotlin.text.toIntOrNull
   type: call
   template:
-    pattern: parseIntOrNull(~0~)
+    pattern: parseIntOrNull(~this~)
     imports:
       parseIntOrNull: khrysalis/dist/Kotlin
 - id: kotlin.text.toLongOrNull
   type: call
   template:
-    pattern: parseIntOrNull(~0~)
+    pattern: parseIntOrNull(~this~)
     imports:
       parseIntOrNull: khrysalis/dist/Kotlin
 - id: kotlin.text.toFloatOrNull
   type: call
   template:
-    pattern: parseFloatOrNull(~0~)
+    pattern: parseFloatOrNull(~this~)
     imports:
       parseFloatOrNull: khrysalis/dist/Kotlin
 - id: kotlin.text.toDoubleOrNull
   type: call
   template:
-    pattern: parseFloatOrNull(~0~)
+    pattern: parseFloatOrNull(~this~)
     imports:
       parseFloatOrNull: khrysalis/dist/Kotlin
 

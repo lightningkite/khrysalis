@@ -1,7 +1,7 @@
 package com.lightningkite.khrysalis.typescript.replacements
 
 sealed class TemplatePart {
-    class Text(val string: String) : TemplatePart() {
+    data class Text(val string: String) : TemplatePart() {
         override fun toString(): String = string
     }
     object Receiver : TemplatePart() { override fun toString() = "~this~" }

@@ -2,6 +2,7 @@ package com.test.variables
 
 import com.test.magicVariable
 import kotlin.math.absoluteValue
+import com.test.codable.Box
 
 private var fileReal: Int = 0
 var topLevelReal: Int = 0
@@ -38,6 +39,11 @@ class TestClass {
         }
     val memberLambda: (Int)->Unit = {
         println(it)
+    }
+    val box = Box("HI", 0)
+    init {
+        box.item = 3
+        this.box.item = 3
     }
     fun memberUsage(){
 
@@ -174,6 +180,7 @@ var TestObject.extensionProperty: Int
         this@extensionProperty.objectReal = value
     }
 
+var maybeInstance: TestClass? = null
 fun test(){
     val instance = TestClass()
     fileReal += 1
@@ -182,11 +189,61 @@ fun test(){
     println(instance.extensionProperty)
     println(magicVariable)
     magicVariable = 9001.absoluteValue.plus(4)
-}
 
-var maybeInstance: TestClass? = null
-fun testNullable(){
-    maybeInstance?.memberReal = -1
+    var local = 0
+    local = 1
+    local += 1
+    local++
+    println(local)
+
+    topLevelReal = 1
+    topLevelReal += 1
+    topLevelReal++
+    println(topLevelReal)
+
+    topLevelVirtual = 1
+    topLevelVirtual += 1
+    topLevelVirtual++
+    println(topLevelVirtual)
+
+    topLevelHybrid = 1
+    topLevelHybrid += 1
+    topLevelHybrid++
+    println(topLevelHybrid)
+
+    magicVariable = 1
+    magicVariable += 1
+    magicVariable++
+    println(magicVariable)
+
+    instance.memberLambda(1)
+
+    instance.memberReal = 1
+    instance.memberReal += 1
+    instance.memberReal++
+    println(instance.memberReal)
+
+    instance.memberVirtual = -2
+    instance.memberVirtual += -2
+    instance.memberVirtual++
+    println(instance.memberVirtual)
+
+    instance.memberHybrid = -3
+    instance.memberHybrid += -3
+    instance.memberHybrid++
+    println(instance.memberHybrid)
+
+    instance.extensionProperty = -4
+    instance.extensionProperty += -4
+    instance.extensionProperty++
+    println(instance.extensionProperty)
+
+    instance.box.item = -4
+    instance.box.item += -4
+    instance.box.item++
+    println(instance.box.item)
+
+    maybeInstance?.memberReal = 1
     println(maybeInstance?.memberReal)
     maybeInstance?.memberVirtual = -2
     println(maybeInstance?.memberVirtual)
@@ -194,13 +251,14 @@ fun testNullable(){
     println(maybeInstance?.memberHybrid)
     maybeInstance?.extensionProperty = -4
     println(maybeInstance?.extensionProperty)
-    val instance = maybeInstance
-    instance?.memberReal = -1
-    println(instance?.memberReal)
-    instance?.memberVirtual = -2
-    println(instance?.memberVirtual)
-    instance?.memberHybrid = -3
-    println(instance?.memberHybrid)
-    instance?.extensionProperty = -4
-    println(instance?.extensionProperty)
+
+    val maybeInstance2 = maybeInstance
+    maybeInstance2?.memberReal = 1
+    println(maybeInstance2?.memberReal)
+    maybeInstance2?.memberVirtual = -2
+    println(maybeInstance2?.memberVirtual)
+    maybeInstance2?.memberHybrid = -3
+    println(maybeInstance2?.memberHybrid)
+    maybeInstance2?.extensionProperty = -4
+    println(maybeInstance2?.extensionProperty)
 }

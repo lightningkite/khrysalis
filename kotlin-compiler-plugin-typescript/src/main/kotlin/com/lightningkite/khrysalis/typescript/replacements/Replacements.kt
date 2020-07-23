@@ -29,21 +29,17 @@ class Replacements() {
         alreadyChecked: HashSet<CallableDescriptor> = HashSet()
     ): FunctionReplacement? {
         if(!alreadyChecked.add(descriptor)) return null
-        val result =  functions[descriptor.simpleFqName.substringBefore(".<")]?.find {
-            it.passes(
-                analysis = analysis,
-                call = call,
-                descriptor = descriptor
-            )
-        }
-            ?: functions[descriptor.simplerFqName.substringBefore(".<")]?.find {
+        val result = descriptor.fqNamesToCheck
+            .flatMap {
+                functions[it]?.asSequence() ?: sequenceOf()
+            }
+            .find {
                 it.passes(
                     analysis = analysis,
                     call = call,
                     descriptor = descriptor
                 )
-            }
-            ?: (descriptor as? CallableMemberDescriptor)?.allOverridden()
+            } ?: (descriptor as? CallableMemberDescriptor)?.allOverridden()
                 ?.map {
                     getCall(
                         analysis = analysis,
@@ -57,9 +53,13 @@ class Replacements() {
     }
 
     fun getGet(propertyDescriptor: PropertyDescriptor, receiverType: KotlinType? = null): GetReplacement? =
-        gets[propertyDescriptor.simpleFqName]?.find { it.passes(propertyDescriptor, receiverType) }
-            ?: gets[propertyDescriptor.simplerFqName]?.find { it.passes(propertyDescriptor, receiverType) }
-            ?: propertyDescriptor.overriddenDescriptors.asSequence().map { getGet(it, receiverType) }.firstOrNull()
+        propertyDescriptor.fqNamesToCheck
+            .flatMap {
+                gets[it]?.asSequence() ?: sequenceOf()
+            }
+            .find {
+                it.passes(propertyDescriptor, receiverType)
+            } ?: propertyDescriptor.overriddenDescriptors.asSequence().map { getGet(it, receiverType) }.firstOrNull()
             ?: (propertyDescriptor as? SyntheticJavaPropertyDescriptor)?.getMethod?.let {
                 val accessName = it.name.asString()
                 val propName = propertyDescriptor.name.asString()
@@ -74,9 +74,14 @@ class Replacements() {
         gets[objectDescriptor.simpleFqName]?.firstOrNull()
 
     fun getSet(propertyDescriptor: PropertyDescriptor, receiverType: KotlinType? = null): SetReplacement? {
-        return sets[propertyDescriptor.simpleFqName]?.find { it.passes(propertyDescriptor, receiverType) }
-            ?: sets[propertyDescriptor.simplerFqName]?.find { it.passes(propertyDescriptor, receiverType) }
-            ?: propertyDescriptor.overriddenDescriptors.asSequence().map { getSet(it, receiverType) }.firstOrNull()
+        return propertyDescriptor.fqNamesToCheck
+            .flatMap {
+                sets[it]?.asSequence() ?: sequenceOf()
+            }
+            .find {
+                it.passes(propertyDescriptor, receiverType)
+            } ?:
+             propertyDescriptor.overriddenDescriptors.asSequence().map { getSet(it, receiverType) }.firstOrNull()
             ?: (propertyDescriptor as? SyntheticJavaPropertyDescriptor)?.setMethod?.let {
                 val accessName = it.name.asString()
                 val propName = propertyDescriptor.name.asString()
@@ -89,16 +94,26 @@ class Replacements() {
     }
 
     fun getType(type: DeclarationDescriptor): TypeReplacement? =
-        types[type.simpleFqName]?.find { it.passes(type) }
-            ?: types[type.simplerFqName]?.find { it.passes(type) }
+        type.fqNamesToCheck
+            .flatMap {
+                types[it]?.asSequence() ?: sequenceOf()
+            }
+            .find {
+                it.passes(type)
+            }
 
     fun getType(type: KotlinType): TypeReplacement? = types[type.getJetTypeFqName(false)]?.find { it.passes(type) }
     fun getTypeRef(type: KotlinType): TypeRefReplacement? =
         typeRefs[type.getJetTypeFqName(false)]?.find { it.passes(type) }
 
     fun getTypeRef(type: DeclarationDescriptor): TypeRefReplacement? =
-        typeRefs[type.simpleFqName]?.find { it.passes(type) }
-            ?: typeRefs[type.simplerFqName]?.find { it.passes(type) }
+        type.fqNamesToCheck
+            .flatMap {
+                typeRefs[it]?.asSequence() ?: sequenceOf()
+            }
+            .find {
+                it.passes(type)
+            }
 
     companion object {
         val mapper: ObjectMapper = ObjectMapper(YAMLFactory())

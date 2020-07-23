@@ -7,8 +7,16 @@ export class PointF {
     x: number = 0.0;
     y: number = 0.0;
 
-    constructor(x: number = 0, y: number = 0) {
-        this.x = x;
-        this.y = y;
+    constructor(data: DOMPointInit | DOMPoint)
+    constructor(x: number, y: number)
+    constructor()
+    constructor(x?: (number | DOMPointInit | DOMPoint), y?: number) {
+        if(y){
+            this.x = x as number;
+            this.y = y;
+        } else if(x){
+            this.x = (x as DOMPointInit).x
+            this.y = (x as DOMPointInit).y
+        }
     }
 }

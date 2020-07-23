@@ -78,6 +78,10 @@
 #  type: call
 #  template:
 
+- id: android.view.View.requestFocus
+  type: call
+  template: ~this~.focus()
+
 - id: android.view.View.invalidate
   type: call
   template: ~this~ /* Invalidate.  Not needed in JS. */

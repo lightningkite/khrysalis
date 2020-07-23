@@ -8,12 +8,15 @@ import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
+import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.descriptors.DeclarationDescriptor
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
+import org.jetbrains.kotlin.psi.psiUtil.containingClass
 import org.jetbrains.kotlin.psi.psiUtil.getTextWithLocation
 import org.jetbrains.kotlin.resolve.BindingContext
+import org.jetbrains.kotlin.resolve.calls.resolvedCallUtil.getImplicitReceiverValue
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 import org.jetbrains.kotlin.resolve.scopes.receivers.ExtensionReceiver
 import java.util.*
@@ -66,7 +69,7 @@ class TypescriptTranslator(
         action(tsName)
         _receiverStack.remove(newItem)
     }
-    fun KtExpression.getTsReceiver(): String? {
+    fun KtExpression.getTsReceiver(): Any? {
         val dr = this.resolvedCall?.dispatchReceiver ?: this.resolvedCall?.extensionReceiver ?: run {
             return null
         }
@@ -76,13 +79,30 @@ class TypescriptTranslator(
             dr.type.constructor.declarationDescriptor
         }
         val entry = receiverStack.lastOrNull { it.declaration == target }
-        return entry?.tsName ?: "this"
+        return entry?.tsName ?: run {
+            val targetDescriptor = dr.type.constructor.declarationDescriptor as? ClassDescriptor
+                    ?: return "this"
+            if(targetDescriptor.isCompanionObject
+                    && targetDescriptor != this.containingClass()?.resolvedClass) {
+                return listOf(this.containingClass()?.nameIdentifier, ".Companion.INSTANCE")
+            } else {
+                return "this"
+            }
+        }
     }
 
-    fun KtThisExpression.getTsReceiver(): String? {
+    fun KtThisExpression.getTsReceiver(): Any? {
         val target = this.instanceReference.resolvedReferenceTarget
         val entry = receiverStack.lastOrNull { it.declaration == target }
-        return entry?.tsName ?: "this"
+        return entry?.tsName ?: run {
+            val targetDescriptor = target as? ClassDescriptor ?: return "this"
+            if(targetDescriptor.isCompanionObject
+                && targetDescriptor != this.containingClass()?.resolvedClass) {
+                return listOf(this.containingClass()?.nameIdentifier, ".Companion.INSTANCE")
+            } else {
+                return "this"
+            }
+        }
     }
 
     override fun emitFinalDefault(identifier: Class<*>, rule: Any, out: TypescriptFileEmitter) {
