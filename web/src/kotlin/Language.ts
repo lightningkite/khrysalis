@@ -49,7 +49,7 @@ export function hashAnything(item: any): number {
 }
 
 export function safeEq(left: any, right: any): boolean {
-    if(typeof left === "object") {
+    if(left !== null && (typeof left) === "object") {
         return left.equals(right)
     } else {
         return left === right

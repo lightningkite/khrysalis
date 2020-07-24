@@ -32,6 +32,8 @@ open class Weird(a: Int = 0, b: String, val c: Double, var d: Long): TestInterfa
     }
 }
 
+class Box<T>(val value: T)
+
 class SubWeird(a: Int, b: String, c: Double, d: Long): Weird(a, b, c, d) {
     override fun test() {
         super.test()
@@ -45,5 +47,7 @@ fun main(){
             get() = outsideInfo
     }
     val ugh = Weird(2)
+    val box1 = Box(88)
+    val box2 = Box<Int>(88)
     Random.nextInt()
 }

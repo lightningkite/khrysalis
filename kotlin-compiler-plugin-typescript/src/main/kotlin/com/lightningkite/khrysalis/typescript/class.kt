@@ -365,63 +365,66 @@ fun TypescriptTranslator.registerClass() {
         ) {
             //Generate codable constructor
             out.addImport("khrysalis/dist/net/jsonParsing", "parse", "parseJsonTyped")
-            -"public static fromJson"
-            -typedRule.typeParameterList
-            -"(obj: any"
-            typedRule.typeParameters.forEach {
-                -", "
-                -it.name
-                -": any"
-            }
-            -"): "
-            -typedRule.nameIdentifier
-            -typedRule.typeParameterList
-            -" { return new "
-            -typedRule.nameIdentifier
-            -"(\n"
-            //TODO: Use annotation for json
-            typedRule.primaryConstructor?.valueParameters?.forEachBetween(
-                forItem = {
-                    if (it.hasValOrVar()) {
-                        val type = it.typeReference?.resolvedType ?: run {
+
+            if(!typedRule.isEnum()){
+                -"public static fromJson"
+                -typedRule.typeParameterList
+                -"(obj: any"
+                typedRule.typeParameters.forEach {
+                    -", "
+                    -it.name
+                    -": any"
+                }
+                -"): "
+                -typedRule.nameIdentifier
+                -typedRule.typeParameterList
+                -" { return new "
+                -typedRule.nameIdentifier
+                -"(\n"
+                //TODO: Use annotation for json
+                typedRule.primaryConstructor?.valueParameters?.forEachBetween(
+                    forItem = {
+                        if (it.hasValOrVar()) {
+                            val type = it.typeReference?.resolvedType ?: run {
+                                -"obj[\""
+                                -it.jsonName
+                                -"\"]"
+                                return@forEachBetween
+                            }
+
+                            -"parseJsonTyped("
                             -"obj[\""
                             -it.jsonName
-                            -"\"]"
-                            return@forEachBetween
+                            -"\"], "
+                            (type.constructor.declarationDescriptor as? TypeParameterDescriptor)?.let {
+                                -it.name.asString()
+                            } ?: -CompleteReflectableType(type)
+                            -") as "
+                            -type
+                        } else {
+                            -"undefined"
                         }
-
-                        -"parseJsonTyped("
-                        -"obj[\""
-                        -it.jsonName
-                        -"\"], "
-                        (type.constructor.declarationDescriptor as? TypeParameterDescriptor)?.let {
-                            -it.name.asString()
-                        } ?: -CompleteReflectableType(type)
-                        -") as "
-                        -type
-                    } else {
-                        -"undefined"
+                    },
+                    between = {
+                        -", \n"
                     }
-                },
-                between = {
-                    -", \n"
-                }
-            )
-            -"\n) }\n"
+                )
+                -"\n) }\n"
 
-            //Generate toJson()
-            -"public toJson(): object { return {\n"
-            typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEachBetween(
-                forItem = {
-                    -it.jsonName
-                    -": this."
-                    -it.jsonName
-                },
-                between = {
-                    -", \n"
-                }
-            )
-            -"\n} }\n"
+                //Generate toJSON()
+                -"public toJSON(): object { return {\n"
+                typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEachBetween(
+                    forItem = {
+                        -it.jsonName
+                        -": this."
+                        -it.jsonName
+                    },
+                    between = {
+                        -", \n"
+                    }
+                )
+                -"\n} }\n"
+            }
         }
 
         if (typedRule.isData()) {
@@ -436,6 +439,7 @@ fun TypescriptTranslator.registerClass() {
                     replacements.functions[typeName + ".hashCode"]?.firstOrNull()?.let {
                         emitTemplate(
                             requiresWrapping = true,
+                            type = "number",
                             template = it.template,
                             receiver = listOf("this.", param.nameIdentifier)
                         )
@@ -469,6 +473,7 @@ fun TypescriptTranslator.registerClass() {
                     replacements.functions[typeName + ".equals"]?.firstOrNull()?.let {
                         emitTemplate(
                             requiresWrapping = true,
+                            type = "boolean",
                             template = it.template,
                             receiver = listOf("this.", param.nameIdentifier),
                             allParameters = listOf("other.", param.nameIdentifier),
@@ -569,6 +574,9 @@ fun TypescriptTranslator.registerClass() {
             -" as any)[name]; }\n"
 
             -"public toString(): string { return this.name }\n"
+
+            //Generate toJSON()
+            -"public toJSON(): string { return this.name }\n"
         }
 
         -"}"
@@ -779,20 +787,10 @@ fun TypescriptTranslator.registerClass() {
             -" = new "
             typedRule.getDelegationCall().let {
                 -parent.name.asString()
-                typedRule.containingClass()!!.typeParameterList?.parameters?.let {
-                    -'<'
-                    it.forEachBetween(forItem = { -it.name }, between = { -", " })
-                    -'>'
-                }
-                val withComments = it.valueArgumentList?.withComments() ?: listOf()
                 -ArgumentsList(
                     on = it.resolvedCall!!.candidateDescriptor as FunctionDescriptor,
-                    resolvedCall = it.resolvedCall,
-                    prependArguments = listOf(),
-                    orderedArguments = withComments.filter { !it.first.isNamed() }
-                        .map { it.first.getArgumentExpression()!! to it.second },
-                    namedArguments = withComments.filter { it.first.isNamed() },
-                    lambdaArgument = null
+                    resolvedCall = it.resolvedCall!!,
+                    prependArguments = listOf()
                 )
                 -";\n"
             }

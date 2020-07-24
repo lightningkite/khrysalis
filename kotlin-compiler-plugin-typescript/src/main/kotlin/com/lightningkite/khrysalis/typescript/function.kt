@@ -8,6 +8,7 @@ import org.jetbrains.kotlin.builtins.functions.FunctionInvokeDescriptor
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.com.intellij.psi.PsiComment
 import org.jetbrains.kotlin.descriptors.*
+import org.jetbrains.kotlin.ir.expressions.typeParametersCount
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
@@ -268,8 +269,6 @@ fun TypescriptTranslator.registerFunction() {
             val f = callExp.resolvedCall!!.candidateDescriptor as FunctionDescriptor
             out.addImport(f, f.tsName)
 
-            -"/*invoke*/"
-
             val prop = nre.resolvedReferenceTarget as? ValueDescriptor
             if(prop != null){
                 -VirtualGet(
@@ -283,14 +282,9 @@ fun TypescriptTranslator.registerFunction() {
             } else {
                 -nre
             }
-            val withComments = callExp.valueArgumentList?.withComments() ?: listOf()
             -ArgumentsList(
                 on = f,
-                resolvedCall = callExp.resolvedCall,
-                orderedArguments = withComments.filter { !it.first.isNamed() }
-                    .map { it.first.getArgumentExpression()!! to it.second },
-                namedArguments = withComments.filter { it.first.isNamed() },
-                lambdaArgument = callExp.lambdaArguments.firstOrNull()
+                resolvedCall = callExp.resolvedCall!!
             )
         }
     )
@@ -308,23 +302,17 @@ fun TypescriptTranslator.registerFunction() {
             out.addImport(f, f.tsName)
 
             -nre
-            val withComments = callExp.valueArgumentList?.withComments() ?: listOf()
             -ArgumentsList(
                 on = f,
-                resolvedCall = callExp.resolvedCall,
-                prependArguments = listOf(typedRule.receiverExpression),
-                orderedArguments = withComments.filter { !it.first.isNamed() }
-                    .map { it.first.getArgumentExpression()!! to it.second },
-                namedArguments = withComments.filter { it.first.isNamed() },
-                lambdaArgument = callExp.lambdaArguments.firstOrNull()
+                resolvedCall = callExp.resolvedCall!!,
+                prependArguments = listOf(typedRule.receiverExpression)
             )
         }
     )
 
     handle<KtSafeQualifiedExpression>(
         condition = {
-            typedRule.actuallyCouldBeExpression &&
-                    ((typedRule.selectorExpression as? KtCallExpression)?.resolvedCall?.candidateDescriptor as? FunctionDescriptor)?.extensionReceiverParameter != null
+            ((typedRule.selectorExpression as? KtCallExpression)?.resolvedCall?.candidateDescriptor as? FunctionDescriptor)?.extensionReceiverParameter != null
         },
         priority = 1002,
         action = {
@@ -333,51 +321,20 @@ fun TypescriptTranslator.registerFunction() {
             val f = callExp.resolvedCall!!.candidateDescriptor as FunctionDescriptor
             out.addImport(f, f.tsName)
 
-            -"((_it)=>{\n"
-            -"if(_it === null) return null;\nreturn "
-            -nre
-            val withComments = callExp.valueArgumentList?.withComments() ?: listOf()
-            -ArgumentsList(
-                on = f,
-                resolvedCall = callExp.resolvedCall,
-                prependArguments = listOf("_it"),
-                orderedArguments = withComments.filter { !it.first.isNamed() }
-                    .map { it.first.getArgumentExpression()!! to it.second },
-                namedArguments = withComments.filter { it.first.isNamed() },
-                lambdaArgument = callExp.lambdaArguments.firstOrNull()
-            )
-            -"\n})("
-            -typedRule.receiverExpression
-            -')'
-        }
-    )
-
-    handle<KtSafeQualifiedExpression>(
-        condition = {
-            ((typedRule.selectorExpression as? KtCallExpression)?.resolvedCall?.candidateDescriptor as? FunctionDescriptor)?.extensionReceiverParameter != null
-        },
-        priority = 1001,
-        action = {
-            val callExp = typedRule.selectorExpression as KtCallExpression
-            val nre = callExp.calleeExpression as KtNameReferenceExpression
-            val f = nre.resolvedReferenceTarget as FunctionDescriptor
-            out.addImport(f, f.tsName)
-
-            val tempName = "temp${uniqueNumber.getAndIncrement()}"
-            -"const $tempName = "
-            -typedRule.receiverExpression
-            -";\nif($tempName !== null) "
-            -nre
-            val withComments = callExp.valueArgumentList?.withComments() ?: listOf()
-            -ArgumentsList(
-                on = f,
-                resolvedCall = callExp.resolvedCall,
-                prependArguments = listOf(tempName),
-                orderedArguments = withComments.filter { !it.first.isNamed() }
-                    .map { it.first.getArgumentExpression()!! to it.second },
-                namedArguments = withComments.filter { it.first.isNamed() },
-                lambdaArgument = callExp.lambdaArguments.firstOrNull()
-            )
+            nullWrapAction(
+                swiftTranslator = this@registerFunction,
+                receiver = typedRule.receiverExpression,
+                skip = false,
+                type = typedRule.resolvedExpressionTypeInfo?.type,
+                isExpression = typedRule.actuallyCouldBeExpression
+            ){ rec ->
+                -nre
+                -ArgumentsList(
+                    on = f,
+                    resolvedCall = callExp.resolvedCall!!,
+                    prependArguments = listOf(rec ?: "")
+                )
+            }
         }
     )
 
@@ -385,7 +342,6 @@ fun TypescriptTranslator.registerFunction() {
         condition = { (typedRule.calleeExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget is FunctionDescriptor },
         priority = 1
     ) {
-        val withComments = typedRule.valueArgumentList?.withComments() ?: listOf()
         val nre = typedRule.calleeExpression as KtNameReferenceExpression
         val f = nre.resolvedReferenceTarget as FunctionDescriptor
         if (f is ConstructorDescriptor) {
@@ -394,15 +350,9 @@ fun TypescriptTranslator.registerFunction() {
             out.addImport(f, f.tsName)
         }
         -nre
-        -typedRule.typeArgumentList
         -ArgumentsList(
             on = f,
-            resolvedCall = typedRule.resolvedCall,
-            prependArguments = listOf(),
-            orderedArguments = withComments.filter { !it.first.isNamed() }
-                .map { it.first.getArgumentExpression()!! to it.second },
-            namedArguments = withComments.filter { it.first.isNamed() },
-            lambdaArgument = typedRule.lambdaArguments.firstOrNull()
+            resolvedCall = typedRule.resolvedCall!!
         )
     }
 
@@ -432,11 +382,8 @@ fun TypescriptTranslator.registerFunction() {
             -(f.tsNameOverridden ?: typedRule.operationReference.text)
             -ArgumentsList(
                 on = f,
-                resolvedCall = typedRule.resolvedCall,
-                prependArguments = if (f.extensionReceiverParameter != null) listOf(typedRule.left!!) else listOf(),
-                orderedArguments = listOf(typedRule.right!! to null),
-                namedArguments = listOf(),
-                lambdaArgument = null
+                resolvedCall = typedRule.resolvedCall!!,
+                prependArguments = if (f.extensionReceiverParameter != null) listOf(typedRule.left!!) else listOf()
             )
         }
     )
@@ -452,6 +399,7 @@ fun TypescriptTranslator.registerFunction() {
 
             emitTemplate(
                 requiresWrapping = typedRule.actuallyCouldBeExpression,
+                type = typedRule.resolvedExpressionTypeInfo?.type,
                 template = rule.template,
                 receiver = typedRule.left,
                 dispatchReceiver = typedRule.operationReference.getTsReceiver() ?: typedRule.left,
@@ -479,6 +427,7 @@ fun TypescriptTranslator.registerFunction() {
 
             emitTemplate(
                 requiresWrapping = typedRule.actuallyCouldBeExpression,
+                type = typedRule.resolvedExpressionTypeInfo?.type,
                 template = rule.template,
                 receiver = typedRule.receiverExpression,
                 dispatchReceiver = nre.getTsReceiver(),
@@ -510,6 +459,7 @@ fun TypescriptTranslator.registerFunction() {
 
             emitTemplate(
                 requiresWrapping = typedRule.actuallyCouldBeExpression,
+                type = typedRule.resolvedExpressionTypeInfo?.type,
                 ensureReceiverNotNull = true,
                 template = rule.template,
                 receiver = typedRule.receiverExpression,
@@ -541,6 +491,7 @@ fun TypescriptTranslator.registerFunction() {
 
             emitTemplate(
                 requiresWrapping = typedRule.actuallyCouldBeExpression,
+                type = typedRule.resolvedExpressionTypeInfo?.type,
                 template = rule.template,
                 receiver = nre.getTsReceiver(),
                 dispatchReceiver = nre.getTsReceiver(),
@@ -559,6 +510,16 @@ fun TypescriptTranslator.registerFunction() {
     )
 
     handle<ArgumentsList> {
+        if(typedRule.on.typeParametersCount > 0){
+            -'<'
+            typedRule.resolvedCall.typeArguments.entries
+                .sortedBy { it.key.index }
+                .forEachBetween(
+                    forItem = { -(typedRule.resolvedCall.call.typeArguments.getOrNull(it.key.index) ?: it.value) },
+                    between = { -", " }
+                )
+            -'>'
+        }
         -'('
         var first = true
         for (item in typedRule.prependArguments) {
@@ -569,43 +530,29 @@ fun TypescriptTranslator.registerFunction() {
             }
             -item
         }
-        typedRule.on.typeParameters.filter { it.isReified }.forEach {
+        typedRule.resolvedCall.typeArguments.filter { it.key.isReified }.values.forEach {
             if (first) {
                 first = false
             } else {
                 -", "
             }
-            -typedRule.resolvedCall?.typeArguments?.get(it)?.let { CompleteReflectableType(it) }
+            -CompleteReflectableType(it)
         }
-        var currentOrderedIndex = 0
-        val parameters = typedRule.on.valueParameters
-        parameters.forEachIndexed { index, valueParam ->
+        typedRule.resolvedCall.valueArguments.entries.sortedBy { it.key.index }.forEach { (valueParam, value) ->
             if (first) {
                 first = false
             } else {
                 -", "
             }
-            fun emitParam(v: Pair<Any, PsiComment?>) {
-                -v.first
-                v.second?.let {
-                    -"/*"
-                    -it.text.removePrefix("//").removePrefix("/*").removeSuffix("*/")
-                    -"*/"
-                }
-            }
-            if (currentOrderedIndex < typedRule.orderedArguments.size) {
-                val v = typedRule.orderedArguments[currentOrderedIndex++]
-                emitParam(v)
-            } else {
-                val v =
-                    typedRule.namedArguments.find { it.first.getArgumentName()!!.text == valueParam.name.identifier }
-                if (v == null) {
-                    if (index == parameters.lastIndex && typedRule.lambdaArgument != null) {
-                        -typedRule.lambdaArgument!!.getLambdaExpression()
-                    } else {
-                        -"undefined"
-                    }
-                } else emitParam(v.first.getArgumentExpression()!! to v.second)
+            typedRule.replacements[valueParam]?.let {
+                -it
+            } ?: value.arguments.takeUnless { it.isEmpty() }?.let {
+                it.forEachBetween(
+                    forItem = { -(it.getArgumentExpression() ?: "undefined") },
+                    between = { -", " }
+                )
+            } ?: run {
+                -"undefined"
             }
         }
         for (item in typedRule.appendArguments) {
@@ -620,40 +567,10 @@ fun TypescriptTranslator.registerFunction() {
     }
 }
 
-fun KtValueArgumentList.withComments(): List<Pair<KtValueArgument, PsiComment?>> {
-    val result = ArrayList<Pair<KtValueArgument, PsiComment?>>()
-    var lastArg: KtValueArgument? = null
-    var lastComment: PsiComment? = null
-    for (item in allChildren) {
-        when (item) {
-            is KtValueArgument -> {
-                if (lastArg != null) {
-                    result.add(lastArg to lastComment)
-                }
-                lastComment = null
-                lastArg = item
-            }
-            is PsiComment -> {
-                if (lastArg != null) {
-                    lastComment = item
-                }
-            }
-        }
-    }
-    if (lastArg != null) {
-        result.add(lastArg to lastComment)
-    }
-    return result
-}
-
 data class ArgumentsList(
     val on: FunctionDescriptor,
-    val resolvedCall: ResolvedCall<out CallableDescriptor>? = null,
+    val resolvedCall: ResolvedCall<out CallableDescriptor>,
     val prependArguments: List<Any> = listOf(),
     val appendArguments: List<Any> = listOf(),
-    val orderedArguments: List<Pair<Any, PsiComment?>> = listOf(),
-    val namedArguments: List<Pair<KtValueArgument, PsiComment?>> = listOf(),
-    val lambdaArgument: KtLambdaArgument? = null
-) {
-
-}
+    val replacements: Map<ValueParameterDescriptor, Any?> = mapOf()
+)

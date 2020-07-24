@@ -65,6 +65,7 @@ inline fun PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByTy
     receiver: Any?,
     skip: Boolean,
     isExpression: Boolean,
+    type: Any? = null,
     action: (Any?) -> Unit
 ) = with(swiftTranslator) {
     if(receiver == null || skip) {
@@ -72,7 +73,12 @@ inline fun PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByTy
         return
     }
     if(isExpression){
-        -"(()=>{\n"
+        -"(()"
+        if(type != null){
+            -": "
+            -type
+        }
+        -" => {\n"
     }
     val r = receiver
     val tempName = if (r is String || (r as? KtExpression)?.isSimple() == true) {

@@ -3,6 +3,7 @@
       "outDir": "./dist",
       "rootDir": "./src",
       "noImplicitAny": true,
+      "strictNullChecks": true,
       "declaration": true,
       "sourceMap": true,
       "module": "commonjs",

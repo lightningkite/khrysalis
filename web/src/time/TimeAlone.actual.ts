@@ -2,8 +2,7 @@
 // File: time/TimeAlone.actual.kt
 // Package: com.lightningkite.khrysalis.time
 import { TimeInterval } from './TimeInterval.actual'
-import { dateFrom, getJavaUtilDateDateAlone, getJavaUtilDateTimeAlone } from './Date.actual'
-import { kotlinStringSubstringAfter, kotlinStringSubstringBefore } from './../kotlin/kotlin.text'
+import {  getJavaUtilDateTimeAlone } from './Date.actual'
 import {parseIntOrNull} from "../Kotlin";
 
 //! Declares com.lightningkite.khrysalis.time.TimeAlone
@@ -26,7 +25,10 @@ export class TimeAlone {
     public equals(other: any): boolean { return other instanceof TimeAlone && this.hour === other.hour && this.minute === other.minute && this.second === other.second }
     public toString(): string { return `TimeAlone(hour = ${this.hour}, minute = ${this.minute}, second = ${this.second})` }
     public copy(hour: number = this.hour, minute: number = this.minute, second: number = this.second) { return new TimeAlone(hour, minute, second); }
-    
+
+    public toJSON(): any {
+        return comLightningkiteKhrysalisTimeTimeAloneIso8601(this)
+    }
     public static Companion = class Companion {
         private constructor() {
             this.min = new TimeAlone(0, 0, 0);
@@ -36,7 +38,7 @@ export class TimeAlone {
         }
         public static INSTANCE = new Companion();
         
-        public now(): TimeAlone{ return getJavaUtilDateTimeAlone(Date.constructor()); }
+        public now(): TimeAlone{ return getJavaUtilDateTimeAlone(new Date()); }
         public iso(string: string): (TimeAlone | null){
             const parts = string.split(':');
             const hour = parseIntOrNull(parts[0]);

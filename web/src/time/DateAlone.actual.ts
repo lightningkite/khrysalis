@@ -28,6 +28,10 @@ export class DateAlone {
     public equals(other: any): boolean { return other instanceof DateAlone && this.year === other.year && this.month === other.month && this.day === other.day }
     public toString(): string { return `DateAlone(year = ${this.year}, month = ${this.month}, day = ${this.day})` }
     public copy(year: number = this.year, month: number = this.month, day: number = this.day) { return new DateAlone(year, month, day); }
+
+    public toJSON(): any {
+        return comLightningkiteKhrysalisTimeDateAloneIso8601(this)
+    }
     
     public static Companion = class Companion {
         private constructor() {
@@ -36,7 +40,7 @@ export class DateAlone {
         }
         public static INSTANCE = new Companion();
         
-        public now(): DateAlone{ return getJavaUtilDateDateAlone(Date.constructor()); }
+        public now(): DateAlone{ return getJavaUtilDateDateAlone(new Date()); }
         public readonly farPast = new DateAlone(-99999, 1, 1);
         
         public readonly farFuture = new DateAlone(99999, 12, 31);

@@ -7,7 +7,7 @@ import { Subject } from 'rxjs'
 
 //! Declares com.lightningkite.khrysalis.views.lastDialog
 export const _lastDialog = new StandardObservableProperty<(DialogRequest | null)>(null, undefined);
-export function getLastDialog(): StandardObservableProperty<DialogRequest> { return _lastDialog; }
+export function getLastDialog(): StandardObservableProperty<(DialogRequest | null)> { return _lastDialog; }
 
 //! Declares com.lightningkite.khrysalis.views.showDialogEvent
 export const _showDialogEvent: Subject<DialogRequest> = new Subject();

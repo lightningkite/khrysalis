@@ -20,18 +20,21 @@
 
 - id: com.lightningkite.khrysalis.views.geometry.setInvert
   type: call
-  template: ~this~.inverse()
+  template:
+    pattern: matrixSet(~this~, ~0~.inverse())
+    imports:
+      matrixSet: khrysalis/dist/views/geometry/Matrix.actual
 
 - id: android.graphics.Matrix.reset
   type: call
   template:
-    pattern: matrixReset(~0~)
+    pattern: matrixReset(~this~)
     imports:
       matrixReset: khrysalis/dist/views/geometry/Matrix.actual
 - id: android.graphics.Matrix.set
   type: call
   template:
-    pattern: matrixSet(~0~, ~1~)
+    pattern: matrixSet(~this~, ~0~)
     imports:
       matrixSet: khrysalis/dist/views/geometry/Matrix.actual
 - id: android.graphics.Matrix.preTranslate

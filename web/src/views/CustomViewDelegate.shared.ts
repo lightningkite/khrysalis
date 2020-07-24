@@ -12,7 +12,7 @@ export abstract class CustomViewDelegate {
         this.customView = null;
         this.toDispose = [];
         this._removed = null;
-        this._removed = new DisposeCondition((it) => {
+        this._removed = new DisposeCondition((it: SubscriptionLike): void => {
                 this.toDispose.push(it)
         });
     }

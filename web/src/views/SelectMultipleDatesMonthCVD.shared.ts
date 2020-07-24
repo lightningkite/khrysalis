@@ -6,6 +6,7 @@ import { EqualOverrideSet, iterFirstOrNull } from '../KotlinCollections'
 import { CalendarDrawing, MonthCVD } from './MonthCVD.shared'
 import { Paint } from './draw/Paint.actual'
 import { comLightningkiteKhrysalisTimeDateAloneSet } from '../time/DateAlone.shared'
+import { SubscriptionLike } from 'rxjs'
 import { DateAlone } from '../time/DateAlone.actual'
 import { copyDateAloneMod, dateAloneModRelative } from '../time/Date.actual'
 import { safeEq } from '../Kotlin'
@@ -18,14 +19,14 @@ import { ioReactivexDisposablesDisposableForever } from '../rx/DisposeCondition.
 export class SelectMultipleDatesMonthCVD extends MonthCVD {
     public constructor() {
         super();
-        this.dates = new StandardObservableProperty(new EqualOverrideSet([]), undefined);
+        this.dates = new StandardObservableProperty<Set<DateAlone>>(new EqualOverrideSet([]), undefined);
         this.selectedDayPaint = new Paint();
         this.selectedPaint = new Paint();
         let temp_376;
         if ((temp_376 = iterFirstOrNull(this.dates.value)) !== null) { 
             this.currentMonthObs.value = copyDateAloneMod(temp_376, Date.prototype.setDate, 1);
         };
-        ioReactivexDisposablesDisposableForever(this.dates.onChange.subscribe( (value) => {
+        ioReactivexDisposablesDisposableForever<SubscriptionLike>(this.dates.onChange.subscribe( (value: (Set<DateAlone> | null)): void => {
                     this?.invalidate()
         }, undefined, undefined));
         this.drawDay_dateAlone = new DateAlone(0, 0, 0);
@@ -79,25 +80,25 @@ export class SelectMultipleDatesMonthCVD extends MonthCVD {
     }
     
     public onTap(day: DateAlone): void {
-        this.adding = (!iterSome(this.dates.value, (it) => safeEq(day, it)));
+        this.adding = (!iterSome(this.dates.value, (it: DateAlone): boolean => safeEq(day, it)));
         this.onTouchMoveDate(day);
     }
     
     public adding: boolean;
     
     public onTouchDownDate(day: DateAlone): boolean {
-        this.adding = (!iterSome(this.dates.value, (it) => safeEq(day, it)));
+        this.adding = (!iterSome(this.dates.value, (it: DateAlone): boolean => safeEq(day, it)));
         this.onTouchMoveDate(day);
         return true;
     }
     
     public onTouchMoveDate(day: DateAlone): boolean {
         if (this.adding) {
-            if ((!iterSome(this.dates.value, (it) => safeEq(day, it)))) {
+            if ((!iterSome(this.dates.value, (it: DateAlone): boolean => safeEq(day, it)))) {
                 this.dates.value = new EqualOverrideSet([...this.dates.value, day]);
             }
         } else {
-            this.dates.value = new EqualOverrideSet(iterToArray(iterFilter(this.dates.value, (it) => !safeEq(it, day))));
+            this.dates.value = new EqualOverrideSet(iterToArray(iterFilter(this.dates.value, (it: DateAlone): boolean => !safeEq(it, day))));
         }
         return true;
     }

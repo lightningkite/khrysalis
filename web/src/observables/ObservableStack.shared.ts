@@ -33,7 +33,7 @@ export class ObservableStack<T extends object> extends ObservableProperty<Array<
     }
     
     public swap(t: T): void {
-        this.stack.splice((this.stack.length - 1), 1);
+        this.stack.splice((this.stack.length - 1), 1)[0];
         this.stack.push(t);
         this.onChange.next(this.stack);
     }
@@ -42,7 +42,7 @@ export class ObservableStack<T extends object> extends ObservableProperty<Array<
         if (this.stack.length <= 1) {
             return false;
         }
-        this.stack.splice((this.stack.length - 1), 1);
+        this.stack.splice((this.stack.length - 1), 1)[0];
         this.onChange.next(this.stack);
         return true;
     }
@@ -51,7 +51,7 @@ export class ObservableStack<T extends object> extends ObservableProperty<Array<
         if (this.stack.length === 0) {
             return false;
         }
-        this.stack.splice((this.stack.length - 1), 1);
+        this.stack.splice((this.stack.length - 1), 1)[0];
         this.onChange.next(this.stack);
         return true;
     }
@@ -61,7 +61,7 @@ export class ObservableStack<T extends object> extends ObservableProperty<Array<
         
         for (const i of new NumberRange(0, (this.stack.length - 1))) {
             if (found) {
-                this.stack.splice((this.stack.length - 1), 1);
+                this.stack.splice((this.stack.length - 1), 1)[0];
             } else if (this.stack[i] === t) {
                 found = true;
             }
@@ -74,7 +74,7 @@ export class ObservableStack<T extends object> extends ObservableProperty<Array<
         
         for (const i of new NumberRange(0, (this.stack.length - 1))) {
             if (found) {
-                this.stack.splice((this.stack.length - 1), 1);
+                this.stack.splice((this.stack.length - 1), 1)[0];
             } else if (predicate(this.stack[i])) {
                 found = true;
             }

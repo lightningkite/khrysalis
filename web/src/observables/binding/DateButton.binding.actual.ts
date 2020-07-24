@@ -33,7 +33,7 @@ export function comLightningkiteKhrysalisViewsAndroidTimeButtonBind(this_: HTMLI
 //! Declares com.lightningkite.khrysalis.observables.binding.bindDateAlone>com.lightningkite.khrysalis.views.android.DateButton
 export function comLightningkiteKhrysalisViewsAndroidDateButtonBindDateAlone(this_: HTMLInputElement, date: MutableObservableProperty<DateAlone>): void {
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(date, undefined, undefined, (it) => {
-        this_.valueAsDate = dateFrom(it, getJavaUtilDateTimeAlone(Date.constructor()), undefined)
+        this_.valueAsDate = dateFrom(it, getJavaUtilDateTimeAlone(new Date()), undefined)
     }), getAndroidViewViewRemoved(this_));
     this_.onchange = (e) => {
         date.value = getJavaUtilDateDateAlone(this_.valueAsDate);
@@ -44,7 +44,7 @@ export function comLightningkiteKhrysalisViewsAndroidDateButtonBindDateAlone(thi
 //! Declares com.lightningkite.khrysalis.observables.binding.bindTimeAlone>com.lightningkite.khrysalis.views.android.TimeButton
 export function comLightningkiteKhrysalisViewsAndroidTimeButtonBindTimeAlone(this_: HTMLInputElement, date: MutableObservableProperty<TimeAlone>, minuteInterval: number = 1): void {
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(date, undefined, undefined, (it) => {
-        this_.valueAsDate = dateFrom(getJavaUtilDateDateAlone(Date.constructor()), it, undefined)
+        this_.valueAsDate = dateFrom(getJavaUtilDateDateAlone(new Date()), it, undefined)
     }), getAndroidViewViewRemoved(this_));
     this_.onchange = (e) => {
         date.value = getJavaUtilDateTimeAlone(this_.valueAsDate);

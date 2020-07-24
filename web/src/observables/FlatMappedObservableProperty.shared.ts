@@ -21,7 +21,7 @@ export class FlatMappedObservableProperty<A, B> extends ObservableProperty<B> {
     public get value(): B { return this.transformation(this.basedOn.value).value; }
     
     //! Declares com.lightningkite.khrysalis.observables.FlatMappedObservableProperty.onChange
-    public get onChange(): Observable<B> { return getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this.basedOn).pipe(rxSwitchMap((it) => getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this.transformation(it)))).pipe(rxSkip(0)); }
+    public get onChange(): Observable<B> { return getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this.basedOn).pipe(rxSwitchMap((it: (any | null)): Observable<(any | null)> => getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this.transformation(it)))).pipe(rxSkip(0)); }
     
 }
 
@@ -52,7 +52,7 @@ export class MutableFlatMappedObservableProperty<A, B> extends MutableObservable
     
     
     //! Declares com.lightningkite.khrysalis.observables.MutableFlatMappedObservableProperty.onChange
-    public get onChange(): Observable<B> { return getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this.basedOn).pipe(rxSwitchMap( (it: A) => {
+    public get onChange(): Observable<B> { return getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this.basedOn).pipe(rxSwitchMap( (it: A): Observable<(any | null)> => {
                     const prop = this.transformation(it);
                     
                     this.lastProperty = prop;

@@ -41,7 +41,13 @@ fun TypescriptTranslator.registerSpecialLet() {
 
     handle<SafeLetChain> {
         if(typedRule.outermost.actuallyCouldBeExpression){
-            -"(()=>{\n"
+            -"(()"
+            val type = typedRule.outermost.resolvedExpressionTypeInfo?.type
+            if(type != null){
+                -": "
+                -type
+            }
+            -" => {\n"
         }
         val temp = "temp_${uniqueNumber.getAndIncrement()}"
         -"let $temp;\n"
@@ -135,53 +141,4 @@ fun TypescriptTranslator.registerSpecialLet() {
         )
     }
 
-//    handle<KtSafeQualifiedExpression>(
-//        condition = {
-//            typedRule.isSafeLetDirect() && typedRule.specialLetSituation()
-//        },
-//        priority = 20_000
-//    ) {
-//        val callExpression = typedRule.selectorExpression as KtCallExpression
-//        if(typedRule.receiverExpression.isSimple()) {
-//            -"if("
-//            -typedRule.receiverExpression
-//            -" !== null) {\nconst "
-//            val lambda = callExpression.lambdaArguments.first().getLambdaExpression()!!
-//            -(lambda.valueParameters.firstOrNull()?.nameIdentifier ?: "it")
-//            -" = "
-//            -typedRule.receiverExpression
-//            -";\n"
-//            -"\n}"
-//        } else {
-//            val temp = "temp_${uniqueNumber.getAndIncrement()}"
-//            -"const $temp = "
-//            -typedRule.receiverExpression
-//            -";\nif($temp !== null) {\nconst "
-//            val lambda = callExpression.lambdaArguments.first().getLambdaExpression()!!
-//            -(lambda.valueParameters.firstOrNull()?.nameIdentifier ?: "it")
-//            -" = $temp;\n"
-//            -lambda.bodyExpression
-//            -"\n}"
-//        }
-//    }
-//    handle<KtCallExpression>(
-//        condition = {
-//            if(!typedRule.specialLetSituationEnd()) return@handle false
-//            typedRule.isRunDirect()
-//        },
-//        priority = 20_000
-//    ) {
-//        -typedRule.lambdaArguments.first().getLambdaExpression()!!.bodyExpression
-//    }
-//    handle<KtBinaryExpression>(
-//        condition = {
-//            typedRule.isSafeLetChain()
-//        },
-//        priority = 20_000
-//    ) {
-//        -typedRule.left
-//        -" else {\n"
-//        -typedRule.right
-//        -"\n}"
-//    }
 }

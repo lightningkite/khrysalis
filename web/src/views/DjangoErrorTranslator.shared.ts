@@ -21,7 +21,7 @@ export class DjangoErrorTranslator {
     
     public handleNode(builder: StringBuilder, node: (any | null)): void {
         if (node === null) return;
-        if (checkIsInterface<Map<any, any>>(node, "KotlinCollectionsMap")){
+        if (checkIsInterface<Map<(any | null), (any | null)>>(node, "KotlinCollectionsMap")){
             for (const toDestructure of node) {
                 const key = toDestructure[0]
                 const value = toDestructure[1]
@@ -29,7 +29,7 @@ export class DjangoErrorTranslator {
                 this.handleNode(builder, value)
                 
             }
-        } else if (checkIsInterface<Array<any>>(node, "KotlinCollectionsList")){
+        } else if (checkIsInterface<Array<(any | null)>>(node, "KotlinCollectionsList")){
             for (const value of node) {
                 this.handleNode(builder, value);
             }
@@ -53,10 +53,11 @@ export class DjangoErrorTranslator {
             
             break;
             case 4:
-            const errorJson = ((_it)=>{
-                    if(_it === null) return null;
-                    return kotlinStringFromJsonStringUntyped(_it)
-            })(error);
+            const errorJson = ((): (any | null) => {
+                    if(error !== null) {
+                        kotlinStringFromJsonStringUntyped(error)
+                    } else { return null }
+            })();
             
             if (errorJson !== null) {
                 const builder = new StringBuilder();
@@ -79,13 +80,13 @@ export class DjangoErrorTranslator {
     }
     
     public wrap<T>(callback:  ((result: (T | null), error: (ViewString | null)) => void)): ((code: number, result: (T | null), error: (string | null)) => void) {
-        return (code, result, error) => {
+        return (code: number, result: (any | null), error: (string | null)): void => {
             callback(result, this.parseError(code, error))
         };
     }
     
     public wrapNoResponse(callback:  ((error: (ViewString | null)) => void)): ((code: number, error: (string | null)) => void) {
-        return (code, error) => {
+        return (code: number, error: (string | null)): void => {
             callback(this.parseError(code, error))
         };
     }

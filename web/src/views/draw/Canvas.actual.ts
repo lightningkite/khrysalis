@@ -28,6 +28,7 @@ export function androidGraphicsCanvasDrawText(this_: CanvasRenderingContext2D, t
     paint.text(this_, text, x, y)
 }
 
+//! Declares com.lightningkite.khrysalis.views.draw.drawBitmap
 export function androidGraphicsCanvasDrawBitmap(this_: CanvasRenderingContext2D, bitmap: ImageBitmap, left: number, top: number, right: number, bottom: number): void{
     this_.drawImage(bitmap, left, top, right - left, bottom - top);
 }

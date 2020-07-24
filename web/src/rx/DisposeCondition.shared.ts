@@ -16,11 +16,11 @@ export class DisposeCondition {
 export function comLightningkiteKhrysalisRxDisposeConditionAnd(this_: DisposeCondition, other: DisposeCondition): DisposeCondition { return andAllDisposeConditions([this_, other]); }
 
 //! Declares com.lightningkite.khrysalis.rx.andAllDisposeConditions
-export function andAllDisposeConditions(list: Array<DisposeCondition>): DisposeCondition { return new DisposeCondition((it) => {
+export function andAllDisposeConditions(list: Array<DisposeCondition>): DisposeCondition { return new DisposeCondition((it: SubscriptionLike): void => {
             let disposalsLeft = list.length;
             
             for (const item of list) {
-                item.call(new DisposableLambda(() => {
+                item.call(new DisposableLambda((): void => {
                             disposalsLeft = disposalsLeft - 1;
                             if (disposalsLeft === 0) it.unsubscribe();
                 }));
@@ -28,7 +28,7 @@ export function andAllDisposeConditions(list: Array<DisposeCondition>): DisposeC
 }); }
 
 //! Declares com.lightningkite.khrysalis.rx.or>com.lightningkite.khrysalis.rx.DisposeCondition
-export function comLightningkiteKhrysalisRxDisposeConditionOr(this_: DisposeCondition, other: DisposeCondition): DisposeCondition { return new DisposeCondition((it) => {
+export function comLightningkiteKhrysalisRxDisposeConditionOr(this_: DisposeCondition, other: DisposeCondition): DisposeCondition { return new DisposeCondition((it: SubscriptionLike): void => {
             this_.call(it);; other.call(it);
 }); }
 

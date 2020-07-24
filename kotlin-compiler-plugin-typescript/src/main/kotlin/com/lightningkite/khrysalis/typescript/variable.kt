@@ -322,12 +322,14 @@ fun TypescriptTranslator.registerVariable() {
                 -(typedRule.property.typeReference
                     ?: typedRule.property.resolvedProperty!!.type)
                 -" "
-                typedRule.bodyExpression?.let {
+                val body = typedRule.bodyExpression
+                if (body is KtBlockExpression) {
+                    -body
+                } else {
                     -"{ return "
-                    -it
+                    -body
                     -"; }"
                 }
-                -typedRule.bodyBlockExpression
                 -"\n"
             }
         }
@@ -355,7 +357,14 @@ fun TypescriptTranslator.registerVariable() {
                 -": "
                 -(typedRule.property.typeReference ?: typedRule.property.resolvedProperty!!.type)
                 -") "
-                -typedRule.bodyBlockExpression
+                val body = typedRule.bodyExpression
+                if (body is KtBlockExpression) {
+                    -body
+                } else {
+                    -"{ return "
+                    -body
+                    -"; }"
+                }
                 -"\n"
             }
         }
@@ -482,6 +491,7 @@ fun TypescriptTranslator.registerVariable() {
             val rule = replacements.getGet(typedRule.property as PropertyDescriptor, typedRule.receiverType)!!
             emitTemplate(
                 requiresWrapping = typedRule.expr.actuallyCouldBeExpression,
+                type = typedRule.expr.resolvedExpressionTypeInfo?.type,
                 ensureReceiverNotNull = typedRule.safe,
                 template = rule.template,
                 dispatchReceiver = typedRule.dispatchReceiver(this@registerVariable),
@@ -502,6 +512,7 @@ fun TypescriptTranslator.registerVariable() {
                 receiver = typedRule.extensionReceiver(this@registerVariable),
                 isExpression = typedRule.expr.actuallyCouldBeExpression,
                 skip = !typedRule.safe,
+                type = typedRule.expr.resolvedExpressionTypeInfo?.type,
                 action = { receiver ->
                     val d = typedRule.dispatchReceiver(this@registerVariable)
                     if (d != null) {
@@ -519,6 +530,9 @@ fun TypescriptTranslator.registerVariable() {
         }
     )
     handle<VirtualGet> {
+        if(typedRule.safe){
+            -"("
+        }
         val rec = typedRule.extensionReceiver(this@registerVariable) ?: typedRule.dispatchReceiver(this@registerVariable)
         if (rec != null) {
             -rec
@@ -529,6 +543,9 @@ fun TypescriptTranslator.registerVariable() {
             }
         }
         -typedRule.nameReferenceExpression.getIdentifier()
+        if(typedRule.safe){
+            -" ?? null)"
+        }
     }
     handle<KtDotQualifiedExpression>(
         condition = { ((typedRule.selectorExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget as? ValueDescriptor) != null },
@@ -593,6 +610,7 @@ fun TypescriptTranslator.registerVariable() {
                 receiver = typedRule.extensionReceiver(this@registerVariable),
                 isExpression = false,
                 skip = !typedRule.safe,
+                type = typedRule.expr.resolvedExpressionTypeInfo?.type,
                 action = { receiver ->
                     if (typedRule.property.dispatchReceiverParameter != null) {
                         -typedRule.dispatchReceiver(this@registerVariable)
@@ -619,6 +637,7 @@ fun TypescriptTranslator.registerVariable() {
             val rule = replacements.getSet(typedRule.property as PropertyDescriptor)!!
             emitTemplate(
                 requiresWrapping = false,
+                type = typedRule.expr.resolvedExpressionTypeInfo?.type,
                 ensureReceiverNotNull = typedRule.safe,
                 template = rule.template,
                 extensionReceiver = typedRule.extensionReceiver(this@registerVariable),
@@ -633,6 +652,7 @@ fun TypescriptTranslator.registerVariable() {
             receiver = typedRule.extensionReceiver(this@registerVariable) ?: typedRule.dispatchReceiver(this@registerVariable),
             isExpression = false,
             skip = !typedRule.safe,
+            type = typedRule.expr.resolvedExpressionTypeInfo?.type,
             action = { rec ->
                 if (rec != null) {
                     -rec

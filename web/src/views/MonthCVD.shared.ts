@@ -15,6 +15,7 @@ import { dateAloneMod, dateAloneModRelative } from '../time/Date.actual'
 import { Paint } from './draw/Paint.actual'
 import { TimeNames } from '../time/TimeNames.actual'
 import { comLightningkiteKhrysalisTimeDateAloneSet } from '../time/DateAlone.shared'
+import { SubscriptionLike } from 'rxjs'
 import { DateAlone } from '../time/DateAlone.actual'
 import { applyAlphaToColor, numberToColor } from './Colors.actual'
 import { customViewInvalidate } from './CustomView.actual'
@@ -26,9 +27,9 @@ import { comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy } fro
 export class MonthCVD extends CustomViewDelegate {
     public constructor() {
         super();
-        this.currentMonthObs = new StandardObservableProperty(dateAloneMod(getJavaUtilDateDateAlone(new Date()), Date.prototype.setDate, 1), undefined);
+        this.currentMonthObs = new StandardObservableProperty<DateAlone>(dateAloneMod(getJavaUtilDateDateAlone(new Date()), Date.prototype.setDate, 1), undefined);
         this.dragEnabled = true;
-        ioReactivexDisposablesDisposableForever(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(this.currentMonthObs, undefined, undefined, (value) => {
+        ioReactivexDisposablesDisposableForever<SubscriptionLike>(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy<DateAlone>(this.currentMonthObs, undefined, undefined,  (value: DateAlone): void => {
                     this?.postInvalidate()
         }));
         this.labelFontSp = 12;
@@ -54,7 +55,7 @@ export class MonthCVD extends CustomViewDelegate {
         this.dayPaint.isAntiAlias = true;
         this.dayPaint.style = Paint.Style.FILL;
         this.dayPaint.color = numberToColor(0xFF202020);
-        ioReactivexDisposablesDisposableUntil(getAnimationFrame().subscribe((timePassed: number) => {
+        ioReactivexDisposablesDisposableUntil<SubscriptionLike>(getAnimationFrame().subscribe((timePassed: number): void => {
                     if (this.draggingId === this.DRAGGING_NONE && !(this.currentOffset === 0)) {
                         let newOffset: number = this.currentOffset * Math.max(0, (1 - 8 * timePassed));
                         

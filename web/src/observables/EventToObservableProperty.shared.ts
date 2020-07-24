@@ -16,7 +16,7 @@ export class EventToObservableProperty<T> extends ObservableProperty<T> {
     }
     
     //! Declares com.lightningkite.khrysalis.observables.EventToObservableProperty.onChange
-    public get onChange(): Observable<T> { return this.wrapped.pipe(rxMap((it) => {
+    public get onChange(): Observable<T> { return this.wrapped.pipe(rxMap((it: (any | null)): (any | null) => {
                     this.value = it;
                     return it;
     })); }
@@ -24,12 +24,12 @@ export class EventToObservableProperty<T> extends ObservableProperty<T> {
 }
 //! Declares com.lightningkite.khrysalis.observables.asObservableProperty>io.reactivex.Observable<kotlin.Any>
 export function ioReactivexObservableAsObservableProperty<Element>(this_: Observable< Element>, defaultValue: Element): ObservableProperty<Element> {
-    return new EventToObservableProperty<Element>(defaultValue, this_.pipe(rxMap((it) => it)));
+    return new EventToObservableProperty<Element>(defaultValue, this_.pipe(rxMap((it: (any | null)): (any | null) => it)));
 }
 
 //! Declares com.lightningkite.khrysalis.observables.asObservablePropertyDefaultNull>io.reactivex.Observable<kotlin.Any>
 export function ioReactivexObservableAsObservablePropertyDefaultNull<Element>(this_: Observable< Element>): ObservableProperty<(Element | null)> {
-    return new EventToObservableProperty<(Element | null)>(null, this_.pipe(rxMap((it) => it)));
+    return new EventToObservableProperty<(Element | null)>(null, this_.pipe(rxMap((it: (any | null)): (any | null) => it)));
 }
 
 

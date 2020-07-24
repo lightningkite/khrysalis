@@ -3,6 +3,7 @@
 // Package: com.lightningkite.khrysalis.net
 import {from, Observable, using} from 'rxjs'
 import {ConnectedWebSocket} from "./ConnectedWebSocket.actual";
+import {HttpBody} from "./HttpBody.actual";
 
 //! Declares com.lightningkite.khrysalis.net.HttpClient
 export class HttpClient {
@@ -18,13 +19,17 @@ export class HttpClient {
         url: string,
         method: string = HttpClient.INSTANCE.GET,
         headers: Map<string, string> = new Map([]),
-        body: (BodyInit | null) = null
+        body: (HttpBody | null) = null
     ): Observable<Response> {
+        let h = new Array(...headers.entries());
+        if(body != null){
+            h.push(["Content-Type", body.type]);
+        }
         return from(fetch(url, {
-            body: body,
+            body: body.data,
             cache: "no-cache",
             credentials: "omit",
-            headers: Object.fromEntries(headers),
+            headers: h,
             method: method
         }))
     }

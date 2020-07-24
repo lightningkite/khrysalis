@@ -2,7 +2,7 @@
 
 
 - id: kotlin.sequences.Sequence
-  type: call
+  type: type
   template: Iterable<~T0~>
 - id: kotlin.sequences.sequenceOf
   type: call

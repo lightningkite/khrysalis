@@ -123,7 +123,7 @@ export function getJavaUtilDateTimeAlone(this_: Date): TimeAlone {
 }
 
 //! Declares com.lightningkite.khrysalis.time.dateFrom
-export function dateFrom(dateAlone: DateAlone, timeAlone: TimeAlone, existing: Date = Date.constructor()): Date {
+export function dateFrom(dateAlone: DateAlone, timeAlone: TimeAlone, existing: Date = new Date()): Date {
     return javaUtilDateSet(existing, dateAlone, timeAlone);
 }
 

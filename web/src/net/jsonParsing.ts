@@ -1,3 +1,7 @@
+import {find} from "iterable-operator";
+import {TimeAlone} from "../time/TimeAlone.actual";
+import {DateAlone} from "../time/DateAlone.actual";
+
 export function parse(item: any, asType: Array<any>): any {
     const mainType = asType[0];
     switch (mainType) {
@@ -21,7 +25,19 @@ export function parse(item: any, asType: Array<any>): any {
                 }
             }
             return map;
+        case Date:
+            return Date.parse(item as string)
+        case DateAlone:
+            return DateAlone.Companion.INSTANCE.iso(item as string)
+        case TimeAlone:
+            return TimeAlone.Companion.INSTANCE.iso(item as string)
         default:
-            return mainType.fromJson(item, ...asType.slice(1))
+            if(mainType.fromJson){
+                return mainType.fromJson(item, ...asType.slice(1))
+            } else if(mainType.values){
+                return find(mainType.values(), (x) => x.name.toLowerCase() == (item as string).toLowerCase())
+            } else {
+                throw `Not sure how to parse something of type ${mainType} - 'fromJson' is missing!`
+            }
     }
 }

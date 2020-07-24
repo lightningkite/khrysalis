@@ -8,7 +8,7 @@ class TestClass {
         action()
     }
     fun testRec(action: Int.()->Unit){
-        2.action()
+        action(2)
     }
 }
 

@@ -1,3 +1,15 @@
 - id: com.lightningkite.khrysalis.net.HttpBody
   type: type
   template: BodyInit
+
+- id: com.lightningkite.khrysalis.net.HttpResponse
+  type: type
+  template: Response
+
+- id: okhttp3.RequestBody
+  type: type
+  template: BodyInit
+
+- id: okhttp3.HttpResponse
+  type: type
+  template: Response

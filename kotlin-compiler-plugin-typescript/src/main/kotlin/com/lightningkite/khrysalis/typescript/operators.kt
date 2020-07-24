@@ -7,6 +7,7 @@ import org.jetbrains.kotlin.descriptors.CallableDescriptor
 import org.jetbrains.kotlin.descriptors.FunctionDescriptor
 import org.jetbrains.kotlin.descriptors.PropertyDescriptor
 import org.jetbrains.kotlin.descriptors.ValueDescriptor
+import org.jetbrains.kotlin.js.translate.callTranslator.getReturnType
 import org.jetbrains.kotlin.lexer.KtSingleValueToken
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
@@ -63,11 +64,11 @@ fun TypescriptTranslator.registerOperators() {
         -(f.tsNameOverridden ?: "get")
         -ArgumentsList(
             on = f,
-            resolvedCall = typedRule.resolvedCall,
+            resolvedCall = typedRule.resolvedCall!!,
             prependArguments = if (doubleReceiver) listOf(typedRule.arrayExpression) else listOf(),
-            orderedArguments = typedRule.indexExpressions.map { it to null },
-            namedArguments = listOf(),
-            lambdaArgument = null
+            replacements = (
+                typedRule.indexExpressions.mapIndexed { index, exp -> typedRule.functionDescriptor.valueParameters.get(index).let { it to exp } }.associate { it }
+            )
         )
     }
     handle<VirtualArrayGet>(
@@ -81,6 +82,7 @@ fun TypescriptTranslator.registerOperators() {
 
             emitTemplate(
                 requiresWrapping = true,
+                type = typedRule.resolvedCall?.getReturnType(),
                 template = rule.template,
                 receiver = typedRule.arrayExpression,
                 dispatchReceiver = typedRule.dispatchReceiver,
@@ -148,11 +150,11 @@ fun TypescriptTranslator.registerOperators() {
             -(setFunction.tsNameOverridden ?: "set")
             -ArgumentsList(
                 on = setFunction,
-                resolvedCall = typedRule.resolvedCall,
+                resolvedCall = arrayAccess.resolvedIndexedLvalueSet!!,
                 prependArguments = if (doubleReceiver) listOf(arrayAccess.arrayExpression!!) else listOf(),
-                orderedArguments = tempIndexes.map { it to null } + (right to null),
-                namedArguments = listOf(),
-                lambdaArgument = null
+                replacements = (
+                        tempIndexes.mapIndexed { index, exp -> setFunction.valueParameters[index].let { it to exp } }.associate { it }
+                        ) + (arrayAccess.resolvedIndexedLvalueSet?.resultingDescriptor?.valueParameters?.lastOrNull()?.let { mapOf(it to right) } ?: mapOf())
             )
         }
     )
@@ -210,6 +212,7 @@ fun TypescriptTranslator.registerOperators() {
             val rule = replacements.getCall(this@registerOperators, resolvedCall)!!
             emitTemplate(
                 requiresWrapping = typedRule.actuallyCouldBeExpression,
+                type = typedRule.resolvedExpressionTypeInfo?.type,
                 template = rule.template,
                 receiver = tempArray,
                 dispatchReceiver = arrayAccess.getTsReceiver(),
@@ -249,6 +252,7 @@ fun TypescriptTranslator.registerOperators() {
 
             emitTemplate(
                 requiresWrapping = true,
+                type = typedRule.resolvedCall?.getReturnType(),
                 template = rule.template,
                 receiver = left,
                 dispatchReceiver = typedRule.dispatchReceiver,
@@ -339,11 +343,8 @@ fun TypescriptTranslator.registerOperators() {
             .safeJsIdentifier())
         -ArgumentsList(
             on = typedRule.functionDescriptor,
-            resolvedCall = typedRule.resolvedCall,
-            prependArguments = if (typedRule.functionDescriptor.extensionReceiverParameter != null) listOf(left) else listOf(),
-            orderedArguments = listOf(right to null),
-            namedArguments = listOf(),
-            lambdaArgument = null
+            resolvedCall = typedRule.resolvedCall!!,
+            prependArguments = if (typedRule.functionDescriptor.extensionReceiverParameter != null) listOf(left) else listOf()
         )
         if (typedRule.operationToken == KtTokens.NOT_IN || typedRule.operationToken == KtTokens.EXCLEQ) {
             -")"
@@ -382,6 +383,7 @@ fun TypescriptTranslator.registerOperators() {
 
             emitTemplate(
                 requiresWrapping = typedRule.actuallyCouldBeExpression,
+                type = typedRule.resolvedExpressionTypeInfo?.type,
                 template = rule.template,
                 receiver = typedRule.baseExpression,
                 dispatchReceiver = if (f.candidateDescriptor.extensionReceiverParameter != null) typedRule.getTsReceiver() else typedRule.baseExpression
@@ -405,11 +407,8 @@ fun TypescriptTranslator.registerOperators() {
             -(f.tsNameOverridden ?: f.name.asString().safeJsIdentifier())
             -ArgumentsList(
                 on = f,
-                resolvedCall = typedRule.resolvedCall,
-                prependArguments = if (f.extensionReceiverParameter != null) listOf(typedRule.baseExpression!!) else listOf(),
-                orderedArguments = listOf(),
-                namedArguments = listOf(),
-                lambdaArgument = null
+                resolvedCall = typedRule.resolvedCall!!,
+                prependArguments = if (f.extensionReceiverParameter != null) listOf(typedRule.baseExpression!!) else listOf()
             )
         }
     )
@@ -425,6 +424,7 @@ fun TypescriptTranslator.registerOperators() {
 
             emitTemplate(
                 requiresWrapping = typedRule.actuallyCouldBeExpression,
+                type = typedRule.resolvedExpressionTypeInfo?.type,
                 template = rule.template,
                 receiver = typedRule.baseExpression,
                 dispatchReceiver = if (f.candidateDescriptor.extensionReceiverParameter != null) typedRule.getTsReceiver() else typedRule.baseExpression
@@ -448,11 +448,8 @@ fun TypescriptTranslator.registerOperators() {
             -(f.tsNameOverridden ?: f.name.asString().safeJsIdentifier())
             -ArgumentsList(
                 on = f,
-                resolvedCall = typedRule.resolvedCall,
-                prependArguments = if (f.extensionReceiverParameter != null) listOf(typedRule.baseExpression!!) else listOf(),
-                orderedArguments = listOf(),
-                namedArguments = listOf(),
-                lambdaArgument = null
+                resolvedCall = typedRule.resolvedCall!!,
+                prependArguments = if (f.extensionReceiverParameter != null) listOf(typedRule.baseExpression!!) else listOf()
             )
         }
     )

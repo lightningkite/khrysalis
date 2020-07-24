@@ -46,7 +46,7 @@ export class ViewStringTemplate implements ViewString {
     public get(dependency: Window): string {
         const templateResolved = this.template.get(dependency);
         
-        const fixedArguments = this._arguments.map((it) => (tryCastInterface<ViewString>(it, "ComLightningkiteKhrysalisViewsViewString"))?.get(dependency) ?? it);
+        const fixedArguments = this._arguments.map((it: any): any => (tryCastInterface<ViewString>(it, "ComLightningkiteKhrysalisViewsViewString"))?.get(dependency) ?? it);
         
         return vsprintf(templateResolved, fixedArguments);
     }
@@ -74,7 +74,7 @@ export class ViewStringList implements ViewString {
     }
     
     public get(dependency: Window): string {
-        return this.parts.map((it) => it.get(dependency)).join(this.separator);
+        return this.parts.map((it: ViewString): string => it.get(dependency)).join(this.separator);
     }
 }
 
@@ -95,9 +95,9 @@ export function comLightningkiteKhrysalisViewsViewStringToDebugString(this_: Vie
     } else if (thing instanceof ViewStringResource) {
         return thing.resource.toString()
     } else if (thing instanceof ViewStringTemplate) {
-        return comLightningkiteKhrysalisViewsViewStringToDebugString(thing.template) + "(" + thing._arguments.map((it) => (() => {if (checkIsInterface<ViewString>(it, "ComLightningkiteKhrysalisViewsViewString")) return comLightningkiteKhrysalisViewsViewStringToDebugString(it); else return `${it}`;})()).join(", ") + ")"
+        return comLightningkiteKhrysalisViewsViewStringToDebugString(thing.template) + "(" + thing._arguments.map((it: any): string => ((): string => {if (checkIsInterface<ViewString>(it, "ComLightningkiteKhrysalisViewsViewString")) return comLightningkiteKhrysalisViewsViewStringToDebugString(it); else return `${it}`;})()).join(", ") + ")"
     } else if (thing instanceof ViewStringList) {
-        return thing.parts.map((it) => comLightningkiteKhrysalisViewsViewStringToDebugString(it)).join(thing.separator)
+        return thing.parts.map((it: ViewString): string => comLightningkiteKhrysalisViewsViewStringToDebugString(it)).join(thing.separator)
     } else if (thing instanceof ViewStringComplex) {
         return `<Complex string ${thing}>`
     } else  {

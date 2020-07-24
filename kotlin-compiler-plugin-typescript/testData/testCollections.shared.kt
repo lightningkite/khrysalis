@@ -45,6 +45,8 @@ fun test(){
     nested.add(ArrayList())
     nested[0].add(0)
 
+    val seq: Sequence<Int> = sequenceOf(1, 2, 3)
+
     sequenceOf(1, 2, 3)
         .map { it + 1 }
         .filter { it % 2 == 0 }

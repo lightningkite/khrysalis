@@ -1,0 +1,9 @@
+---
+- id: android.util.Base64.decode
+  type: call
+  template:
+    pattern: 'Int8Array.from(atob(~0~), (c)=>c.charCodeAt(0))'
+- id: android.util.Base64.encode
+  type: call
+  template:
+    pattern: 'btoa(String.fromCharCode.apply(null, ~0~))'

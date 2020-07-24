@@ -31,15 +31,15 @@ export class GeoAddress implements Codable {
         this.postalCode = postalCode;
     }
     public static fromJson(obj: any): GeoAddress { return new GeoAddress(
-            parseJsonTyped(obj["coordinate"], [GeoCoordinate]) as GeoCoordinate, 
-            parseJsonTyped(obj["name"], [String]) as string, 
-            parseJsonTyped(obj["street"], [String]) as string, 
-            parseJsonTyped(obj["subLocality"], [String]) as string, 
-            parseJsonTyped(obj["locality"], [String]) as string, 
-            parseJsonTyped(obj["subAdminArea"], [String]) as string, 
-            parseJsonTyped(obj["adminArea"], [String]) as string, 
-            parseJsonTyped(obj["countryName"], [String]) as string, 
-            parseJsonTyped(obj["postalCode"], [String]) as string
+            parseJsonTyped(obj["coordinate"], [GeoCoordinate]) as (GeoCoordinate | null), 
+            parseJsonTyped(obj["name"], [String]) as (string | null), 
+            parseJsonTyped(obj["street"], [String]) as (string | null), 
+            parseJsonTyped(obj["subLocality"], [String]) as (string | null), 
+            parseJsonTyped(obj["locality"], [String]) as (string | null), 
+            parseJsonTyped(obj["subAdminArea"], [String]) as (string | null), 
+            parseJsonTyped(obj["adminArea"], [String]) as (string | null), 
+            parseJsonTyped(obj["countryName"], [String]) as (string | null), 
+            parseJsonTyped(obj["postalCode"], [String]) as (string | null)
     ) }
     public toJson(): object { return {
             coordinate: this.coordinate, 

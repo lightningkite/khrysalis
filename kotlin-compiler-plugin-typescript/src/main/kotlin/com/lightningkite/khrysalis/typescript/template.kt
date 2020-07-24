@@ -14,13 +14,19 @@ import org.jetbrains.kotlin.psi.psiUtil.allChildren
 
 fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByType<T>.dedup(
     requireWrapping: Boolean = false,
+    type: Any? = null,
     action: DeDupEmitter.() -> Unit
 ) {
     val emitter = DeDupEmitter(this.partialTranslator as TypescriptTranslator)
     action(emitter)
     val wraps = emitter.dedupNecessary && requireWrapping
     if (wraps) {
-        -"(()=>{\n"
+        -"(()"
+        if(type != null){
+            -": "
+            -type
+        }
+        -" => {\n"
     }
     emitter.finish(wraps) {
         -it
@@ -32,6 +38,7 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
 
 fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByType<T>.emitTemplate(
     requiresWrapping: Boolean,
+    type: Any? = null,
     ensureReceiverNotNull: Boolean = false,
     template: Template,
     prefix: Any? = null,
@@ -46,15 +53,17 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
     parameterByIndex: (TemplatePart.ParameterByIndex) -> Any? = { value },
     typeParameterByIndex: (TemplatePart.TypeParameterByIndex) -> Any? = { null }
 ) {
-    dedup(requiresWrapping) {
-        val templateIsThisDot = template.parts.getOrNull(0) is TemplatePart.Receiver &&
-                template.parts.getOrNull(1).let { it is TemplatePart.Text && it.string.startsWith('.') } &&
-                template.parts.none { (it as? TemplatePart.Text)?.string?.contains("=") ?: false }
-        val altTemplate = if(ensureReceiverNotNull && templateIsThisDot){
-            Template(parts = template.parts.toMutableList().apply {
-                this[1] = (this[1] as TemplatePart.Text).let { it.copy("?" + it.string) }
-            })
-        } else null
+    dedup(requiresWrapping, type) {
+//        val templateIsThisDot = template.parts.getOrNull(0) is TemplatePart.Receiver &&
+//                template.parts.getOrNull(1).let { it is TemplatePart.Text && it.string.startsWith('.') } &&
+//                template.parts.none { (it as? TemplatePart.Text)?.string?.contains("=") ?: false }
+//        val altTemplate = if(ensureReceiverNotNull && templateIsThisDot){
+//            Template(parts = template.parts.toMutableList().apply {
+//                this[1] = (this[1] as TemplatePart.Text).let { it.copy("?" + it.string) }
+//            })
+//        } else null
+        val templateIsThisDot = false
+        val altTemplate: Template? = null
         if(ensureReceiverNotNull && altTemplate == null){
             ensureNotNull(extensionReceiver ?: receiver)
         }

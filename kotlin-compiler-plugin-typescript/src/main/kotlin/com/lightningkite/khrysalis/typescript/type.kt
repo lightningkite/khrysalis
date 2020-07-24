@@ -76,6 +76,9 @@ fun TypescriptTranslator.registerType() {
     }
 
     handle<KotlinType> {
+        if(typedRule.isNullable()) {
+            -"("
+        }
         when (val desc = typedRule.constructor.declarationDescriptor) {
             is FunctionClassDescriptor -> {
                 -'('
@@ -118,6 +121,9 @@ fun TypescriptTranslator.registerType() {
             else -> {
                 println("What is this? ${desc?.let { it::class.qualifiedName }}")
             }
+        }
+        if(typedRule.isNullable()) {
+            -" | null)"
         }
     }
 
@@ -276,6 +282,9 @@ fun TypescriptTranslator.registerType() {
         },
         priority = 10_000,
         action = {
+            if(typedRule.isNullable()) {
+                -"("
+            }
             val type = typedRule
             val rule = replacements.getType(type)!!
             val baseType = type.constructor
@@ -286,6 +295,9 @@ fun TypescriptTranslator.registerType() {
                 typeParameter = { typeParametersByName[it.name] ?: "undefined" },
                 typeParameterByIndex = { type.arguments.getOrNull(it.index) ?: "undefined" }
             )
+            if(typedRule.isNullable()) {
+                -" | null)"
+            }
         }
     )
 

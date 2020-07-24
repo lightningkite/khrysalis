@@ -15,6 +15,7 @@ import org.jetbrains.kotlin.types.FlexibleType
 import org.jetbrains.kotlin.types.SimpleType
 import org.jetbrains.kotlin.types.WrappedType
 import org.jetbrains.kotlin.lexer.KtTokens
+import org.jetbrains.kotlin.name.FqName
 
 fun TypescriptTranslator.registerLambda() {
     handle<KtLambdaExpression>(
@@ -26,79 +27,142 @@ fun TypescriptTranslator.registerLambda() {
             -')'
         }
     )
-    handle<KtFunctionLiteral>(
-        condition = { typedRule.resolvedFunction?.extensionReceiverParameter != null },
-        priority = 100,
-        action = {
-            val resolved = typedRule.resolvedFunction!!
-            withReceiverScope(resolved, "this_") { name ->
-                -typedRule.typeParameterList
+
+    handle<KtFunctionLiteral> {
+        val resolved = typedRule.resolvedFunction!!
+        fun write(rec: Any? = null) {
+            resolved.valueParameters.let {
                 -'('
-                -name
-                typedRule.valueParameters.takeUnless { it.isEmpty() }?.forEach {
-                    -", "
-                    -it
-                } ?: run {
-                    if (resolved.valueParameters.size == 1) {
-                        -", it"
-                    }
+                if (rec != null) {
+                    -rec
+                    -": "
+                    -resolved.extensionReceiverParameter?.type
+                    if (it.isNotEmpty()) -", "
                 }
-                -") => "
-                when (typedRule.bodyExpression?.statements?.size) {
-                    null, 0 -> -"{}"
-                    1 -> {
-                        val s = typedRule.bodyExpression!!.statements.first()
-                        if(s!!.actuallyCouldBeExpression){
-                            -s
+                it.withIndex().forEachBetween(
+                    forItem = { (index, it) ->
+                        if (it.name.isSpecial) {
+                            -'_'
                         } else {
-                            -"{\n"
-                            -s
-                            -"\n}"
+                            -it.name.asString()
                         }
-                    }
-                    else -> {
+                        -": "
+                        -(typedRule.valueParameters.getOrNull(index)?.typeReference ?: it.type)
+                    },
+                    between = { -", " }
+                )
+                -')'
+            }
+            resolved.annotations.findAnnotation(FqName("com.lightningkite.khrysalis.tsReturnType"))?.allValueArguments?.entries?.first()?.value?.value?.let {
+                -": $it"
+            } ?: resolved.returnType?.let {
+                -": "
+                -it
+            }
+            -" => "
+            when (typedRule.bodyExpression?.statements?.size) {
+                null, 0 -> {
+                    -"{}"
+                }
+                1 -> {
+                    val s = typedRule.bodyExpression!!.statements.first()
+                    if(s!!.actuallyCouldBeExpression){
+                        -s
+                    } else {
                         -"{\n"
-                        -typedRule.bodyExpression
+                        -s
                         -"\n}"
                     }
                 }
-            }
-        }
-    )
-    handle<KtFunctionLiteral> {
-        val resolved = typedRule.resolvedFunction
-        -typedRule.typeParameterList
-        typedRule.valueParameterList?.let {
-            -'('
-            -it
-            -')'
-        } ?: run {
-            if (resolved?.valueParameters?.size == 1) {
-                -"(it)"
-            } else {
-                -"()"
-            }
-        }
-        -" => "
-        when (typedRule.bodyExpression?.statements?.size) {
-            null, 0 -> -"{}"
-            1 -> {
-                val s = typedRule.bodyExpression!!.statements.first()
-                if(s!!.actuallyCouldBeExpression){
-                    -s
-                } else {
+                else -> {
                     -"{\n"
-                    -s
+                    -typedRule.bodyExpression
                     -"\n}"
                 }
             }
-            else -> {
-                -"{\n"
-                -typedRule.bodyExpression
-                -"\n}"
+        }
+
+        if (resolved.extensionReceiverParameter != null) {
+            withReceiverScope(resolved) { name ->
+                write(name)
             }
+        } else {
+            write(null)
         }
     }
+//    handle<KtFunctionLiteral>(
+//        condition = { typedRule.resolvedFunction?.extensionReceiverParameter != null },
+//        priority = 100,
+//        action = {
+//            val resolved = typedRule.resolvedFunction!!
+//            withReceiverScope(resolved, "this_") { name ->
+//                -typedRule.typeParameterList
+//                -'('
+//                -name
+//                typedRule.valueParameters.takeUnless { it.isEmpty() }?.forEach {
+//                    -", "
+//                    -it
+//                } ?: run {
+//                    if (resolved.valueParameters.size == 1) {
+//                        -", it"
+//                    }
+//                }
+//                -") => "
+//                when (typedRule.bodyExpression?.statements?.size) {
+//                    null, 0 -> -"{}"
+//                    1 -> {
+//                        val s = typedRule.bodyExpression!!.statements.first()
+//                        if(s!!.actuallyCouldBeExpression){
+//                            -s
+//                        } else {
+//                            -"{\n"
+//                            -s
+//                            -"\n}"
+//                        }
+//                    }
+//                    else -> {
+//                        -"{\n"
+//                        -typedRule.bodyExpression
+//                        -"\n}"
+//                    }
+//                }
+//            }
+//        }
+//    )
+//    handle<KtFunctionLiteral> {
+//        val resolved = typedRule.resolvedFunction
+//        -typedRule.typeParameterList
+//        typedRule.valueParameterList?.let {
+//            -'('
+//            -it
+//            -')'
+//        } ?: run {
+//            if (resolved?.valueParameters?.size == 1) {
+//                -"(it)"
+//            } else {
+//                -"()"
+//            }
+//        }
+//        -" => "
+//        when (typedRule.bodyExpression?.statements?.size) {
+//            null, 0 -> -"{}"
+//            1 -> {
+//                val s = typedRule.bodyExpression!!.statements.first()
+//                if(s!!.actuallyCouldBeExpression){
+//                    -s
+//                } else {
+//                    -"{\n"
+//                    -s
+//                    -"\n}"
+//                }
+//            }
+//            else -> {
+//                -"{\n"
+//                -typedRule.bodyExpression
+//                -"\n}"
+//            }
+//        }
+//    }
 
     handle<KtLabeledExpression>(
         condition = { typedRule.baseExpression is KtLambdaExpression },

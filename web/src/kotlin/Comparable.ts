@@ -4,7 +4,7 @@ import {Comparable} from "../Kotlin";
 export type Comparator<T> = (lhs: T, rhs: T)=>number
 
 export function safeCompare(left: any, right: any): number {
-    if(typeof left === "object") {
+    if(typeof left === "object" && !(left instanceof Date)) {
         return (left as Comparable<any>).compareTo(right)
     } else {
         if(left < right)

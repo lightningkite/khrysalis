@@ -21,7 +21,7 @@ fun varargFunction(vararg numbers: Int){
 }
 
 class TestClass {
-    val member: Int? = 0
+    var member: Int? = null
     fun memberFunction(a: Int = 2, b: Int = 3, c: Int = 4){
         println("Hello from TestClass!")
     }
@@ -89,6 +89,7 @@ fun main(){
     topLevelGenericFunction(2)
     varargFunction(1, 2, 3, 4, 5)
     val instance = TestClass()
+    instance.member = 2
     instance.memberFunction()
     instance.memberFunction(a = 1)
     instance.memberFunction(b = 1)

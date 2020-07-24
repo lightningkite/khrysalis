@@ -4,6 +4,7 @@
 import { DisplayMetrics } from './DisplayMetrics.actual'
 import { CalendarDrawing, MonthCVD } from './MonthCVD.shared'
 import { Paint } from './draw/Paint.actual'
+import { SubscriptionLike } from 'rxjs'
 import { MutableObservableProperty } from '../observables/MutableObservableProperty.shared'
 import { DateAlone } from '../time/DateAlone.actual'
 import { safeEq } from '../Kotlin'
@@ -18,16 +19,16 @@ export class SelectDateRangeMonthCVD extends MonthCVD {
     public constructor() {
         super();
         this.draggingStart = true;
-        this.start = new StandardObservableProperty(null, undefined);
-        this.endInclusive = new StandardObservableProperty(null, undefined);
+        this.start = new StandardObservableProperty<(DateAlone | null)>(null, undefined);
+        this.endInclusive = new StandardObservableProperty<(DateAlone | null)>(null, undefined);
         let temp_360;
         if ((temp_360 = this.start.value) !== null) { 
             this.currentMonthObs.value = copyDateAloneMod(temp_360, Date.prototype.setDate, 1);
         };
-        ioReactivexDisposablesDisposableForever(this.start.onChange.subscribe( (value) => {
+        ioReactivexDisposablesDisposableForever<SubscriptionLike>(this.start.onChange.subscribe( (value: (DateAlone | null)): void => {
                     this?.invalidate()
         }, undefined, undefined));
-        ioReactivexDisposablesDisposableForever(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(this.endInclusive, undefined, undefined, (value) => {
+        ioReactivexDisposablesDisposableForever<SubscriptionLike>(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy<(DateAlone | null)>(this.endInclusive, undefined, undefined,  (value: (DateAlone | null)): void => {
                     this?.invalidate()
         }));
         this.selectedDayPaint = new Paint();
@@ -68,7 +69,7 @@ export class SelectDateRangeMonthCVD extends MonthCVD {
         } else if (safeEq(day, this.endInclusive.value)){
             CalendarDrawing.INSTANCE.dayBackgroundEnd(canvas, inner, outer, this.selectedPaint);
             CalendarDrawing.INSTANCE.day(canvas, showingMonth, day, inner, this.selectedDayPaint);
-        } else if (day.comparable > (this.start.value?.comparable ?? 2147483647) && day.comparable < (this.endInclusive.value?.comparable ?? -2147483648)){
+        } else if (day.comparable > ((this.start.value?.comparable ?? null) ?? 2147483647) && day.comparable < ((this.endInclusive.value?.comparable ?? null) ?? -2147483648)){
             CalendarDrawing.INSTANCE.dayBackgroundMid(canvas, inner, outer, this.selectedPaint);
             CalendarDrawing.INSTANCE.day(canvas, showingMonth, day, inner, this.selectedDayPaint);
         } else {

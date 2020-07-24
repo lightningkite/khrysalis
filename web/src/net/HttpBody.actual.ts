@@ -24,7 +24,7 @@ export class HttpBodyPart {
 
 
 //! Declares com.lightningkite.khrysalis.net.toJsonHttpBody
-export function comLightningkiteKhrysalisCodableToJsonHttpBody(this_: Codable): HttpBody {
+export function kotlinAnyToJsonHttpBody(this_: Codable): HttpBody {
     return new HttpBody(JSON.stringify(this), HttpMediaTypes.INSTANCE.JSON);
 }
 

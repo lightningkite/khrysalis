@@ -43,7 +43,7 @@ export class FormField<T> implements UntypedFormField {
         this.name = name;
         this.observable = observable;
         this.validation = validation;
-        this.error = new StandardObservableProperty(null, undefined);
+        this.error = new StandardObservableProperty<(ViewString | null)>(null, undefined);
     }
     
     public readonly error: StandardObservableProperty<(ViewString | null)>;
@@ -72,27 +72,27 @@ export class Form {
     
     
     public field<T>(name: ViewString, defaultValue: T, validation:  ((a: FormField<T>) => (ViewString | null))): FormField<T> {
-        const obs = new StandardObservableProperty(defaultValue, undefined);
+        const obs = new StandardObservableProperty<(any | null)>(defaultValue, undefined);
         
-        const field = new FormField(name, obs, (untypedField) => validation(untypedField as FormField<T>));
+        const field = new FormField<(any | null)>(name, obs, (untypedField: UntypedFormField): (ViewString | null) => validation(untypedField as FormField<T>));
         
         this.fields.push(field);
         return field;
     }
     
-    public fieldRes<T>(name: string, defaultValue: T, validation:  ((a: FormField<T>) => (ViewString | null))): FormField<T> { return this.field(new ViewStringResource(name), defaultValue, validation); }
+    public fieldRes<T>(name: string, defaultValue: T, validation:  ((a: FormField<T>) => (ViewString | null))): FormField<T> { return this.field<(any | null)>(new ViewStringResource(name), defaultValue, validation); }
     
     public fieldFromProperty<T>(name: ViewString, property: MutableObservableProperty<T>, validation:  ((a: FormField<T>) => (ViewString | null))): FormField<T> {
-        const field = new FormField(name, property, (untypedField) => validation(untypedField as FormField<T>));
+        const field = new FormField<(any | null)>(name, property, (untypedField: UntypedFormField): (ViewString | null) => validation(untypedField as FormField<T>));
         
         this.fields.push(field);
         return field;
     }
     
-    public fieldFromPropertyRes<T>(name: string, property: MutableObservableProperty<T>, validation:  ((a: FormField<T>) => (ViewString | null))): FormField<T> { return this.fieldFromProperty(new ViewStringResource(name), property, validation); }
+    public fieldFromPropertyRes<T>(name: string, property: MutableObservableProperty<T>, validation:  ((a: FormField<T>) => (ViewString | null))): FormField<T> { return this.fieldFromProperty<(any | null)>(new ViewStringResource(name), property, validation); }
     
     public check(): Array<FormValidationError> {
-        return listFilterNotNull(this.fields.map((it) => {
+        return listFilterNotNull(this.fields.map((it: UntypedFormField): (FormValidationError | null) => {
                     const result = this.checkField(it);
                     
                     if (result !== null) {
@@ -107,7 +107,7 @@ export class Form {
         const errors = this.check();
         
         if (errors.length !== 0) {
-            showDialogAlert(kotlinCollectionsListJoinToViewString(errors.map((it) => it._string), undefined));
+            showDialogAlert(kotlinCollectionsListJoinToViewString(errors.map((it: FormValidationError): ViewString => it._string), undefined));
         } else {
             action();
         }

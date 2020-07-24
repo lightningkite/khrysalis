@@ -40,6 +40,21 @@
     imports:
       rxMap: map from rxjs/operators
 
+- id: io.reactivex.Observable.retry
+  type: call
+  template:
+    pattern: ~this~.pipe(rxRetry(~0~))
+    imports:
+      retry: rxjs/operators as rxRetry
+
+- id: io.reactivex.Observable.retry
+  type: call
+  arguments: []
+  template:
+    pattern: ~this~.pipe(rxRetry())
+    imports:
+      retry: rxjs/operators as rxRetry
+
 - id: io.reactivex.Observable.delay
   type: call
   template:
@@ -302,6 +317,14 @@
   type: call
   template: ~this~.subscribe(~0~, ~1~)
 
+- id: io.reactivex.Single.subscribe
+  type: call
+  arguments: [io.reactivex.functions.BiConsumer]
+  template:
+    pattern: ~this~.subscribe(new SingleObserver(~0~))
+    imports:
+      SingleObserver: khrysalis/dist/rx/RxActual.actual
+
 - id: io.reactivex.rxkotlin.subscribeBy
   type: call
   receiver: io.reactivex.Single
@@ -321,6 +344,21 @@
     pattern: ~this~.pipe(rxMap(~0~))
     imports:
       map: rxjs/operators as rxMap
+
+- id: io.reactivex.Single.retry
+  type: call
+  template:
+    pattern: ~this~.pipe(rxRetry(~0~))
+    imports:
+      retry: rxjs/operators as rxRetry
+
+- id: io.reactivex.Single.retry
+  type: call
+  arguments: []
+  template:
+    pattern: ~this~.pipe(rxRetry())
+    imports:
+      retry: rxjs/operators as rxRetry
 
 - id: io.reactivex.Single.delay
   type: call
@@ -369,9 +407,10 @@
 - id: io.reactivex.Single.zip
   type: call
   template:
-    pattern: rxZip(~0~, ~1~)
+    pattern: rxZip(~0~).pipe(rxMap(~1~))
     imports:
       rxZip: zip from rxjs
+      rxMap: map from rxjs/operators
 
 - id: io.reactivex.Single.error
   type: call
