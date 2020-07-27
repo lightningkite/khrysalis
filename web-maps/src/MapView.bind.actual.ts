@@ -18,13 +18,13 @@ declare global {
     }
 }
 
-let configureMap: (m: Map) => void = () => {
+let configureMap: (m: Map, style: string | null) => void = () => {
 };
 
 /**
  * Set up a map source.
  * MapBox example:
- * (map) => {
+ * (map, styleString) => {
  *     tileLayer(
  *         `https://api.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token=${accessToken}`,
  *         {
@@ -34,7 +34,7 @@ let configureMap: (m: Map) => void = () => {
  *     ).addTo(map);
  * }
  */
-export function setMapConfiguration(source: (m: Map) => void) {
+export function setMapConfiguration(source: (m: Map, style: string | null) => void) {
     configureMap = source;
 }
 
@@ -47,15 +47,15 @@ export function getMapAsync(this_: HTMLDivElement, action: (a: Map) => void) {
 }
 
 //! Declares com.lightningkite.khrysalis.maps.bind>com.google.android.gms.maps.MapView
-export function comGoogleAndroidGmsMapsMapViewBind(this_: HTMLDivElement, dependency: Window): void {
+export function comGoogleAndroidGmsMapsMapViewBind(this_: HTMLDivElement, dependency: Window, style: string | null): void {
     const map = makeMap(this_);
-    configureMap(map);
+    configureMap(map, style);
     this_[mapSymbol] = map;
 }
 
 //! Declares com.lightningkite.khrysalis.maps.bindView>com.google.android.gms.maps.MapView
-export function comGoogleAndroidGmsMapsMapViewBindView(this_: HTMLDivElement, dependency: Window, position: ObservableProperty<(GeoCoordinate | null)>, zoomLevel: number = 15, animate: boolean = true): void {
-    comGoogleAndroidGmsMapsMapViewBind(this_, dependency);
+export function comGoogleAndroidGmsMapsMapViewBindView(this_: HTMLDivElement, dependency: Window, position: ObservableProperty<(GeoCoordinate | null)>, zoomLevel: number = 15, animate: boolean = true, style: string | null = null): void {
+    comGoogleAndroidGmsMapsMapViewBind(this_, dependency, style);
     const map = this_[mapSymbol];
     let first = true;
     let marker: Marker | null = null;
@@ -66,12 +66,13 @@ export function comGoogleAndroidGmsMapsMapViewBindView(this_: HTMLDivElement, de
             first = false;
             if(!marker){
                 marker = makeMarker(p);
+                map.addLayer(marker);
             } else {
                 marker.setLatLng(p);
             }
         } else {
             if(marker) {
-                marker.removeFrom(map);
+                map.removeLayer(marker);
                 marker = null;
             }
         }
@@ -80,14 +81,14 @@ export function comGoogleAndroidGmsMapsMapViewBindView(this_: HTMLDivElement, de
 
 
 //! Declares com.lightningkite.khrysalis.maps.bindSelect>com.google.android.gms.maps.MapView
-export function comGoogleAndroidGmsMapsMapViewBindSelect(this_: HTMLDivElement, dependency: Window, position: MutableObservableProperty<(GeoCoordinate | null)>, zoomLevel: number = 15, animate: boolean = true): void {
-    comGoogleAndroidGmsMapsMapViewBind(this_, dependency);
+export function comGoogleAndroidGmsMapsMapViewBindSelect(this_: HTMLDivElement, dependency: Window, position: MutableObservableProperty<(GeoCoordinate | null)>, zoomLevel: number = 15, animate: boolean = true, style: string | null = null): void {
+    comGoogleAndroidGmsMapsMapViewBind(this_, dependency, style);
     const map = this_[mapSymbol];
     let first = true;
     let marker: Marker | null = null;
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(position, undefined, undefined, (g: GeoCoordinate | null)=>{
-        const currentPos = marker.getLatLng();
-        if(currentPos.lng == g?.longitude && currentPos.lng == g?.latitude)
+        const currentPos = marker?.getLatLng();
+        if(currentPos?.lng == g?.longitude && currentPos?.lng == g?.latitude) return
         if(g){
             const p: [number, number] = [g.latitude, g.longitude];
             map.setView(p, zoomLevel, { animate: animate && !first });
@@ -95,15 +96,18 @@ export function comGoogleAndroidGmsMapsMapViewBindSelect(this_: HTMLDivElement, 
             if(!marker){
                 marker = makeMarker(p, { draggable: true });
                 marker.on("drag", (e)=>{
-                    const raw = marker.getLatLng()
-                    position.value = new GeoCoordinate(raw.lat, raw.lng);
+                    if(marker){
+                        const raw = marker.getLatLng()
+                        position.value = new GeoCoordinate(raw.lat, raw.lng);
+                    }
                 })
+                map.addLayer(marker);
             } else {
                 marker.setLatLng(p);
             }
         } else {
             if(marker) {
-                marker.removeFrom(map);
+                map.removeLayer(marker);
                 marker = null;
             }
         }

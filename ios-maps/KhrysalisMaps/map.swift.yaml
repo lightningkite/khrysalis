@@ -1,50 +1,44 @@
 ---
 - id: com.google.android.gms.maps.MapView
   type: type
-  template: HTMLDivElement
+  template:
+    pattern: MKMapView
+    imports: [MapKit]
 
 - id: com.google.android.gms.maps.MapView.getMapAsync
   type: call
-  template:
-    pattern: getMapAsync(~this~, ~0~)
-    imports:
-      getMapAsync: khrysalis-maps/dist/MapView.bind.actual
-
-- id: com.google.android.gms.maps.MapView.getMapAsync
-  type: call
-  template:
-    pattern: getMapAsync(~this~, ~0~)
-    imports:
-      getMapAsync: khrysalis-maps/dist/MapView.bind.actual
+  template: (~0~)(this)
 
 - id: com.google.android.gms.maps.GoogleMap
   type: type
   template:
-    pattern: LeafletMap
-    imports:
-      LeafletMap: Map from leaflet
+    pattern: MKMapView
+    imports: [MapKit]
 
 # getCameraPosition
 
 - id: com.google.android.gms.maps.GoogleMap.getCameraPosition
   type: call
-  template: ~this~
+  template: ~this~.camera
 - id: com.google.android.gms.maps.GoogleMap.cameraPosition
   type: get
-  template: ~this~
+  template: ~this~.camera
 
+- id: com.google.android.gms.maps.model.CameraPosition
+  type: type
+  template: MKMapCamera
 - id: com.google.android.gms.maps.model.CameraPosition.target
   type: get
-  template: ~this~.getCenter()
+  template: ~this~.centerCoordinate
 - id: com.google.android.gms.maps.model.CameraPosition.zoom
   type: get
-  template: ~this~.getZoom()
+  template: ~this~.zoom
 - id: com.google.android.gms.maps.model.CameraPosition.tilt
   type: get
-  template: '0'
+  template: ~this~.pitch
 - id: com.google.android.gms.maps.model.CameraPosition.bearing
   type: get
-  template: '0'
+  template: ~this~.heading
 
 # getMaxZoomLevel
 - id: com.google.android.gms.maps.GoogleMap.getMaxZoomLevel

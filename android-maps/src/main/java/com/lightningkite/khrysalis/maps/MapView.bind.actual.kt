@@ -11,12 +11,14 @@ import com.lightningkite.khrysalis.observables.MutableObservableProperty
 import com.lightningkite.khrysalis.observables.ObservableProperty
 import com.lightningkite.khrysalis.observables.addAndRunWeak
 import com.lightningkite.khrysalis.observables.subscribeBy
+import com.lightningkite.khrysalis.rx.DisposableLambda
 import com.lightningkite.khrysalis.rx.addWeak
 import com.lightningkite.khrysalis.rx.removed
 import com.lightningkite.khrysalis.rx.until
+import com.lightningkite.khrysalis.unownedSelf
 import com.lightningkite.khrysalis.views.ViewDependency
 
-fun MapView.bind(dependency: ViewDependency) {
+fun MapView.bind(dependency: ViewDependency, style: String? = null) {
     this.onCreate(dependency.savedInstanceState)
     this.onResume()
     dependency.onResume.subscribe { value ->
@@ -34,6 +36,15 @@ fun MapView.bind(dependency: ViewDependency) {
     dependency.onDestroy.subscribe { value ->
         this.onDestroy()
     }.until(removed)
+    this.removed.call(DisposableLambda @unownedSelf {
+        this.onPause()
+        this.onDestroy()
+    })
+    if (style != null) {
+        getMapAsync { map ->
+            map.setMapStyle(MapStyleOptions(style))
+        }
+    }
 }
 
 fun MapView.bindView(
@@ -43,11 +54,8 @@ fun MapView.bindView(
     animate: Boolean = true,
     style: String? = null
 ) {
-    bind(dependency)
+    bind(dependency, style)
     getMapAsync { map ->
-        if (style != null) {
-            map.setMapStyle(MapStyleOptions(style))
-        }
         var marker: Marker? = null
         @Suppress("NAME_SHADOWING")
         position.subscribeBy { value ->

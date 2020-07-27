@@ -1,0 +1,60 @@
+PODS:
+  - Alamofire (4.9.0)
+  - AlamofireImage (3.5.2):
+    - Alamofire (~> 4.8)
+  - Cosmos (19.0.3)
+  - Crashlytics (3.14.0):
+    - Fabric (~> 1.10.2)
+  - Fabric (1.10.2)
+  - KeychainAccess (3.2.0)
+  - Kwift (0.1.0):
+    - Alamofire
+    - AlamofireImage
+    - Cosmos (~> 19.0)
+    - Crashlytics
+    - Fabric
+    - KeychainAccess
+    - QVRWeekView
+    - "UITextView+Placeholder"
+  - QVRWeekView (0.13.3)
+  - "UITextView+Placeholder (1.3.3)"
+
+DEPENDENCIES:
+  - Kwift (from `~/StudioProjects/kwift/kwift.podspec`)
+  - QVRWeekView (from `https://github.com/Quivr/iOS-Week-View.git`)
+
+SPEC REPOS:
+  trunk:
+    - Alamofire
+    - AlamofireImage
+    - Cosmos
+    - Crashlytics
+    - Fabric
+    - KeychainAccess
+    - "UITextView+Placeholder"
+
+EXTERNAL SOURCES:
+  Kwift:
+    :path: "~/StudioProjects/kwift/kwift.podspec"
+  QVRWeekView:
+    :git: https://github.com/Quivr/iOS-Week-View.git
+
+CHECKOUT OPTIONS:
+  QVRWeekView:
+    :commit: 964b7cbbf106979f0538eebdb8c07c64883eccbc
+    :git: https://github.com/Quivr/iOS-Week-View.git
+
+SPEC CHECKSUMS:
+  Alamofire: afc3e7c6db61476cb45cdd23fed06bad03bbc321
+  AlamofireImage: 63cfe3baf1370be6c498149687cf6db3e3b00999
+  Cosmos: a6fb17284281fa12cf4c85c2efecd440a215ec44
+  Crashlytics: 540b7e5f5da5a042647227a5e3ac51d85eed06df
+  Fabric: 706c8b8098fff96c33c0db69cbf81f9c551d0d74
+  KeychainAccess: 3b1bf8a77eb4c6ea1ce9404c292e48f948954c6b
+  Kwift: deaa5256f18aad6645e97f9c874c3eeded4452a1
+  QVRWeekView: d3941741f5c5b324a097d30d4ea8f4c9a2c2c59c
+  "UITextView+Placeholder": c407b27599ea23cca425946fee3cf1db5d547008
+
+PODFILE CHECKSUM: 2a20a3bb6b22b88d78295163748337a727e20a57
+
+COCOAPODS: 1.8.1

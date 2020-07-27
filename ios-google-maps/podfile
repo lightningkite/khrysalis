@@ -4,5 +4,4 @@ use_modular_headers!
 
 target 'KhrysalisMaps' do
     pod 'Khrysalis', :path => '~/StudioProjects/khrysalis/khrysalis.podspec'
-    pod 'GoogleMaps'
 end
