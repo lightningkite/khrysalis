@@ -11,3 +11,21 @@
   template:
     pattern: 'UIImage(data: ~0~)'
     imports: [UIKit]
+- id: com.lightningkite.khrysalis.Uri
+  type: type
+  template: URL
+
+- id: android.graphics.BitmapFactory.decodeByteArray
+  type: call
+  template:
+    pattern: 'UIImage(data: ~0~)'
+    imports: [UIKit]
+- id: com.lightningkite.khrysalis.Uri
+  type: type
+  template: URL
+
+- id: android.graphics.BitmapFactory.decodeByteArray
+  type: call
+  template:
+    pattern: 'UIImage(data: ~0~)'
+    imports: [UIKit]

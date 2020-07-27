@@ -252,6 +252,96 @@ public extension Dictionary {
     }
 }
 
+public extension SignedInteger {
+    mutating func postInc() -> Self {
+        let result = self
+        self += 1
+        return result
+    }
+    mutating func postDec() -> Self {
+        let result = self
+        self -= 1
+        return result
+    }
+    mutating func preInc() -> Self {
+        self += 1
+        return self
+    }
+    mutating func preDec() -> Self {
+        self -= 1
+        return self
+    }
+}
+
+public extension Comparable {
+    func compareTo(_ other: Self) -> Int {
+        if self > other {
+            return ComparisonResult.orderedDescending.rawValue
+        } else if self == other {
+            return ComparisonResult.orderedSame.rawValue
+        } else {
+            return ComparisonResult.orderedAscending.rawValue
+        }
+    }
+}
+
+public extension Dictionary {
+    mutating func getOrPut(key: Key, defaultValue: ()->Value) -> Value {
+        if let value = self[key] {
+            return value
+        } else {
+            let newValue = defaultValue()
+            self[key] = newValue
+            return newValue
+        }
+    }
+}
+
+public extension SignedInteger {
+    mutating func postInc() -> Self {
+        let result = self
+        self += 1
+        return result
+    }
+    mutating func postDec() -> Self {
+        let result = self
+        self -= 1
+        return result
+    }
+    mutating func preInc() -> Self {
+        self += 1
+        return self
+    }
+    mutating func preDec() -> Self {
+        self -= 1
+        return self
+    }
+}
+
+public extension Comparable {
+    func compareTo(_ other: Self) -> Int {
+        if self > other {
+            return ComparisonResult.orderedDescending.rawValue
+        } else if self == other {
+            return ComparisonResult.orderedSame.rawValue
+        } else {
+            return ComparisonResult.orderedAscending.rawValue
+        }
+    }
+}
+
+public extension Dictionary {
+    mutating func getOrPut(key: Key, defaultValue: ()->Value) -> Value {
+        if let value = self[key] {
+            return value
+        } else {
+            let newValue = defaultValue()
+            self[key] = newValue
+            return newValue
+        }
+    }
+}
+
 public extension String {
     subscript(i: Int) -> Character {
         return self[index(startIndex, offsetBy: Int(i))]

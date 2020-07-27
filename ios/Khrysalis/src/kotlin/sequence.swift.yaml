@@ -122,6 +122,14 @@
   type: call
   template: "Array(~this~)"
 
+- id: kotlin.sequences.toArrayList
+  type: call
+  template: "Array(~this~)"
+
+- id: kotlin.sequences.toArrayList
+  type: call
+  template: "Array(~this~)"
+
 - id: kotlin.sequences.toSet
   type: call
   template: "Set(~this~)"
