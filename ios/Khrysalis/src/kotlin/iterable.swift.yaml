@@ -99,11 +99,27 @@
   type: call
   template: "Array(~this~)"
 
+- id: kotlin.collections.toArrayList
+  type: call
+  template: "Array(~this~)"
+
+- id: kotlin.collections.toArrayList
+  type: call
+  template: "Array(~this~)"
+
 - id: kotlin.collections.toSet
   type: call
   template: "Set(~this~)"
 
 - id: kotlin.collections.toMutableSet
+  type: call
+  template: "Set(~this~)"
+
+- id: kotlin.collections.toHashSet
+  type: call
+  template: "Set(~this~)"
+
+- id: kotlin.collections.toHashSet
   type: call
   template: "Set(~this~)"
 
