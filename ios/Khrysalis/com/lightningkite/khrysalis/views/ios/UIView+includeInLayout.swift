@@ -33,8 +33,8 @@ public extension UIView {
             {
                 if let su = current.superview {
                     current = su
-                    if let cell = current as? UITableViewCell {
-                        cell.setNeedsLayout()
+                    if let cell = current as? CustomUITableViewCell {
+                        cell.refreshSize()
                         break
                     }
                 } else {
