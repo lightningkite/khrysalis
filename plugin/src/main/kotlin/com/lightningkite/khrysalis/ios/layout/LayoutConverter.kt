@@ -1,10 +1,13 @@
 package com.lightningkite.khrysalis.ios.layout
 
+import com.lightningkite.khrysalis.swift.replacements.Replacements
+
 data class LayoutConverter(
     val imports: Set<String> = setOf("UIKit", "Khrysalis"),
     val viewTypes: Map<String, ViewType> = mapOf(),
     val skipTypes: List<String> = listOf()
 ) {
+    val replacements = Replacements()
     constructor(vararg others: LayoutConverter):this(
         imports = others.fold(setOf()) { current, other -> current + other.imports },
         viewTypes = others.fold(mapOf()) { current, other -> current + other.viewTypes },

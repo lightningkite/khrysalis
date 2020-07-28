@@ -62,6 +62,13 @@
     imports:
       delay: rxjs/operators as rxDelay
 
+- id: io.reactivex.Observable.debounce
+  type: call
+  template:
+    pattern: ~this~.pipe(rxDebounceTime(~0~))
+    imports:
+      debounceTime: rxjs/operators as rxDebounceTime
+
 - id: io.reactivex.Observable.filter
   type: call
   template:

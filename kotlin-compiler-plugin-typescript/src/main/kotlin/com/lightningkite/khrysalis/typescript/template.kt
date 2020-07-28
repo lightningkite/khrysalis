@@ -5,6 +5,7 @@ import com.lightningkite.khrysalis.typescript.replacements.Template
 import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.AnalysisExtensions
 import com.lightningkite.khrysalis.util.forEachBetween
+import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.lexer.KtTokens
@@ -15,9 +16,15 @@ import org.jetbrains.kotlin.psi.psiUtil.allChildren
 fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByType<T>.dedup(
     requireWrapping: Boolean = false,
     type: Any? = null,
+    cannotDedup: Boolean = false,
     action: DeDupEmitter.() -> Unit
 ) {
     val emitter = DeDupEmitter(this.partialTranslator as TypescriptTranslator)
+    if(cannotDedup){
+        action(emitter)
+        -emitter.toEmit
+        return
+    }
     action(emitter)
     val wraps = emitter.dedupNecessary && requireWrapping
     if (wraps) {
@@ -68,7 +75,30 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
             ensureNotNull(extensionReceiver ?: receiver)
         }
         -prefix
-        fun onParts(list: List<TemplatePart>) {
+        fun onParts(list: List<TemplatePart>, overridden: Map<String, Any?> = mapOf()) {
+            fun getRaw(part: TemplatePart): String? = when (part) {
+                is TemplatePart.Text -> part.string
+                TemplatePart.Receiver -> receiver
+                TemplatePart.DispatchReceiver -> dispatchReceiver
+                TemplatePart.ExtensionReceiver -> extensionReceiver
+                TemplatePart.Value -> value
+                TemplatePart.AllParameters -> allParameters
+                TemplatePart.OperatorToken -> operatorToken
+                is TemplatePart.Parameter -> parameter(part)
+                is TemplatePart.TypeParameter -> typeParameter(part)
+                is TemplatePart.LambdaParameterContents -> null
+                is TemplatePart.ParameterByIndex -> parameterByIndex(part)
+                is TemplatePart.TypeParameterByIndex -> typeParameterByIndex(part)
+                is TemplatePart.Import -> null
+                is TemplatePart.Switch -> null
+                is TemplatePart.Split -> null
+            }?.let {
+                when (it) {
+                    is PsiElement -> it.text
+                    is String -> it
+                    else -> null
+                }
+            }
             loop@ for (part in list) {
                 when (part) {
                     is TemplatePart.Text -> -part.string
@@ -100,7 +130,7 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
                                     -"const "
                                     -it.second
                                     -" = "
-                                    onParts(it.first)
+                                    onParts(it.first.parts)
                                     -";\n"
                                 }
                             -item.bodyExpression
@@ -108,7 +138,7 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
                             -item
                             -"("
                             part.paramMap.forEachBetween(forItem = {
-                                onParts(it)
+                                onParts(it.parts)
                             }, between = {
                                 -", "
                             })
@@ -119,6 +149,24 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
                     is TemplatePart.TypeParameter -> -typeParameter(part)
                     is TemplatePart.TypeParameterByIndex -> -typeParameterByIndex(part)
                     is TemplatePart.Import -> out.addImport(part)
+                    is TemplatePart.Split -> {
+                        getRaw(part.on)?.let {
+                            part.before?.let { onParts(listOf(it), overridden) }
+                            it.splitToSequence(part.by)
+                                .forEachBetween(
+                                    forItem = {
+                                        onParts(part.each.parts, overridden + (part.name to it))
+                                    },
+                                    between = { part.between?.let { onParts(listOf(it), overridden) } }
+                                )
+                            part.after?.let { onParts(listOf(it), overridden) }
+                        }
+                    }
+                    is TemplatePart.Switch -> {
+                        (part.cases[getRaw(part.on)?.trim()] ?: part.cases["default"])?.let {
+                            onParts(it.parts, overridden + (part.name to it))
+                        }
+                    }
                 }
             }
         }
@@ -139,24 +187,23 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
     parameterByIndex: (TemplatePart.ParameterByIndex) -> Any? = { value },
     typeParameterByIndex: (TemplatePart.TypeParameterByIndex) -> Any? = { null }
 ) {
-    for (part in template.parts) {
-        when (part) {
-            is TemplatePart.Text -> -part.string
-            TemplatePart.Receiver -> -receiver
-            TemplatePart.DispatchReceiver -> -dispatchReceiver
-            TemplatePart.ExtensionReceiver -> -extensionReceiver
-            TemplatePart.Value -> -value
-            TemplatePart.AllParameters -> -allParameters
-            TemplatePart.OperatorToken -> -operatorToken
-            is TemplatePart.Parameter -> -parameter(part)
-            is TemplatePart.ParameterByIndex -> -parameterByIndex(part)
-            is TemplatePart.TypeParameter -> -typeParameter(part)
-            is TemplatePart.TypeParameterByIndex -> -typeParameterByIndex(part)
-            is TemplatePart.Import -> out.addImport(part)
-            is TemplatePart.LambdaParameterContents -> {
-            }
-        }
-    }
+    emitTemplate(
+        requiresWrapping = false,
+        type = null,
+        ensureReceiverNotNull = false,
+        template = template,
+        prefix = null,
+        dispatchReceiver = dispatchReceiver,
+        extensionReceiver = extensionReceiver,
+        receiver = receiver,
+        value = value,
+        allParameters = allParameters,
+        operatorToken = operatorToken,
+        parameter = parameter,
+        typeParameter = typeParameter,
+        parameterByIndex = parameterByIndex,
+        typeParameterByIndex = typeParameterByIndex
+    )
 }
 
 class DeDupEmitter(analysis: AnalysisExtensions) : AnalysisExtensions by analysis {

@@ -18,7 +18,7 @@ sealed class TemplatePart {
     }
     data class LambdaParameterContents(
         val pointer: TemplatePartIsParameter,
-        val paramMap: List<List<TemplatePart>>
+        val paramMap: List<Template>
     ) : TemplatePart() {
         override fun toString(): String = when(pointer){
             is ParameterByIndex -> "~L${pointer.index}~"
@@ -42,5 +42,27 @@ sealed class TemplatePart {
         }
     }
 
+    data class Switch(
+        val on: TemplatePart,
+        val name: String = "i",
+        val cases: Map<String, Template>
+    ): TemplatePart() {
+        override fun toString(): String {
+            return "<switch on $on>${cases.entries.joinToString("\n", "\n", "\n"){ "${it.key} -> ${it.value}" }}</split>"
+        }
+    }
+    data class Split(
+        val on: TemplatePart,
+        val name: String = "i",
+        val by: String,
+        val before: TemplatePart? = null,
+        val between: TemplatePart? = null,
+        val after: TemplatePart? = null,
+        val each: Template
+    ): TemplatePart() {
+        override fun toString(): String {
+            return "${before ?: ""}<split on $on by $by with $each between $between>${after ?: ""}"
+        }
+    }
     interface TemplatePartIsParameter
 }

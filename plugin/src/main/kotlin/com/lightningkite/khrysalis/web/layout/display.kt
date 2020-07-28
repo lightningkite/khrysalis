@@ -69,6 +69,10 @@ internal fun HtmlTranslator.display() {
         out.classes += "khrysalis-tabs"
     }
 
+    element.handle("com.google.android.gms.maps.MapView"){
+        out.name = "div"
+    }
+
     attribute.handle("android:src", condition = { out.name == "image" }) {
         val value = rule.value
         when {

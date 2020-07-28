@@ -7,5 +7,6 @@ val LayoutConverter.Companion.normal
         LayoutConverter.displayViews,
         LayoutConverter.layoutViews,
         LayoutConverter.navigationViews,
+        LayoutConverter.mapViews,
         LayoutConverter.textInputViews
     )

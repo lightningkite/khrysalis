@@ -32,6 +32,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
     JsonSubTypes.Type(
         CastRule::class,
         name = "cast"
+    ),
+    JsonSubTypes.Type(
+        AttributeReplacement::class,
+        name = "attribute"
     )
 )
 interface ReplacementRule : Comparable<ReplacementRule> {

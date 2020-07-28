@@ -4,18 +4,18 @@
 import { GeoCoordinate } from './GeoCoordinate.shared'
 import { GeoAddress } from './GeoAddress.shared'
 import { post } from '../delay.actual'
+import {Observable, of} from "rxjs";
 
 let geoMethod = (
     this_Geocode: Window,
     coordinate: GeoCoordinate | string,
-    onResult: (a: Array<GeoAddress>) => void
-
-) => { onResult([]) }
+    maxResults: number = 1
+): Observable<Array<GeoAddress>> => of([])
 export function setGeocodingMethod(method: (
     this_Geocode: Window,
     coordinate: GeoCoordinate | string,
-    onResult: (a: Array<GeoAddress>) => void
-)=>void) {
+    maxResults: number
+)=>Observable<Array<GeoAddress>>) {
     geoMethod = method
 }
 
@@ -23,8 +23,8 @@ export function setGeocodingMethod(method: (
 export function comLightningkiteKhrysalisAndroidActivityAccessGeocode(
     this_Geocode: Window,
     coordinate: GeoCoordinate | string,
-    onResult: (a: Array<GeoAddress>) => void
-){
-    geoMethod(this_Geocode, coordinate, onResult)
+    maxResults: number = 1
+): Observable<Array<GeoAddress>> {
+    return geoMethod(this_Geocode, coordinate)
 }
 

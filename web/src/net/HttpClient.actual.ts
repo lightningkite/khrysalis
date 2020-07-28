@@ -22,11 +22,11 @@ export class HttpClient {
         body: (HttpBody | null) = null
     ): Observable<Response> {
         let h = new Array(...headers.entries());
-        if(body != null){
+        if(body !== null){
             h.push(["Content-Type", body.type]);
         }
         return from(fetch(url, {
-            body: body.data,
+            body: body?.data,
             cache: "no-cache",
             credentials: "omit",
             headers: h,

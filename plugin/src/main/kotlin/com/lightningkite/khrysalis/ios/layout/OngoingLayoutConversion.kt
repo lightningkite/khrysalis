@@ -45,28 +45,6 @@ data class OngoingLayoutConversion(
         }
     }
 
-    /*
-    fun write(node: XmlNode) {
-        if (node.name == "include") {
-            val className = node.attributes["layout"]!!.removePrefix("@layout/").camelCase().capitalize().plus("Xml")
-            val id = node.attributes["android:id"]?.removePrefix("@id/")?.removePrefix("@+id/")?.camelCase()
-            appendln("{ () -> UIView in ")
-            appendln("let subxml = $className()")
-            appendln("let view = subxml.setup(dependency: dependency)")
-            if(id != null){
-                bindings[id] = className
-                appendln("self.${id}_raw = subxml")
-            }
-            appendln("return view")
-            appendln("}()")
-        } else if (node.name in converter.skipTypes) {
-            for (child in node.children) {
-                write(child)
-            }
-        } else {
-            (converter.viewTypes[node.name] ?: ViewType.default(node)).write(this, node)
-        }
-    }*/
 }
 
 

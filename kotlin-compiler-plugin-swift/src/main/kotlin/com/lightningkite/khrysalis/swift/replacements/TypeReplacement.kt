@@ -13,7 +13,12 @@ data class TypeReplacement(
     val typeArgumentRequirements: Map<Int, String>? = null,
     val requiresMutable: Boolean = false,
     val template: Template,
-    val constraintTemplate: Template? = null
+    val constraintTemplate: Template? = null,
+    val xmlDefer: List<String> = listOf(),
+    val xmlInit: String? = null,
+    val xmlCreate: String? = null,
+    val xmlAddChild: Template? = null,
+    val xmlSkip: Boolean = false
 ) : ReplacementRule {
     override val priority: Int
         get() = typeArgumentRequirements?.size ?: 0

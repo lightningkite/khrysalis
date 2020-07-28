@@ -28,6 +28,10 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
     JsonSubTypes.Type(
         TypeRefReplacement::class,
         name = "typeRef"
+    ),
+    JsonSubTypes.Type(
+        AttributeReplacement::class,
+        name = "attribute"
     )
 )
 interface ReplacementRule : Comparable<ReplacementRule> {

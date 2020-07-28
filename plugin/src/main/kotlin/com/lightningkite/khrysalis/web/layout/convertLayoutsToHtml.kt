@@ -15,7 +15,11 @@ import com.lightningkite.khrysalis.web.layout.values.getXmlStrings
 import com.lightningkite.khrysalis.web.layout.values.translateXmlColorSetToCss
 import com.lightningkite.khrysalis.web.layout.values.translateXmlColorsToCss
 import com.lightningkite.khrysalis.web.layout.values.translateXmlDimensionsToCss
+import org.jetbrains.kotlin.analyzer.AnalysisResult
+import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import java.io.File
+import java.io.PrintWriter
+import java.io.StringWriter
 import java.lang.StringBuilder
 
 fun convertLayoutsToHtml(
@@ -60,11 +64,24 @@ fun convertLayoutsToHtml(
             }.associate { it }
         ).also { println(it) }
     )
+
+    //Load equivalents
+    webFolder.walkTopDown()
+        .filter {
+            it.name.endsWith(".ts.yaml") || it.name.endsWith(".ts.yml")
+        }
+        .forEach { actualFile ->
+            try {
+                converter.replacements += actualFile
+            } catch (t: Throwable) {
+                println("Failed to parse equivalents for $actualFile:")
+            }
+        }
+
     androidMainFolder.resolve("res").listFiles()!!
         .asSequence()
         .filter { it.name.contains("layout") }
         .forEach { folder ->
-
             folder.walkTopDown()
                 .filter { it.extension == "xml" }
                 .forEach { item ->

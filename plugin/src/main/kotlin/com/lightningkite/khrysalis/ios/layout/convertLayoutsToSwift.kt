@@ -18,6 +18,19 @@ fun convertLayoutsToSwift(
         mkdirs()
     }
 
+    //Load equivalents
+    iosFolder.parentFile.walkTopDown()
+        .filter {
+            it.name.endsWith(".ts.yaml") || it.name.endsWith(".ts.yml")
+        }
+        .forEach { actualFile ->
+            try {
+                converter.replacements += actualFile
+            } catch (t: Throwable) {
+                println("Failed to parse equivalents for $actualFile:")
+            }
+        }
+
     androidFolder.resolve("src/main/res/layout").walkTopDown()
         .filter { it.extension == "xml" }
         .forEach { item ->

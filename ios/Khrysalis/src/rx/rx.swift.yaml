@@ -38,6 +38,11 @@
   template:
     pattern: '~this~.delay(.milliseconds(Int(~0~) / 1000), scheduler: MainScheduler.instance)'
     imports: [RxSwift]
+- id: io.reactivex.Observable.debounce
+  type: call
+  template:
+    pattern: '~this~.debounce(.milliseconds(Int(~0~) / 1000), scheduler: MainScheduler.instance)'
+    imports: [RxSwift]
 - id: io.reactivex.Observable.distinctUntilChanged
   type: call
   arguments: []

@@ -19,6 +19,7 @@ import kotlin.collections.HashMap
 import kotlin.collections.HashSet
 
 class Replacements() {
+    val attributes: HashMap<String, TreeSet<AttributeReplacement>> = HashMap()
     val functions: HashMap<String, TreeSet<FunctionReplacement>> = HashMap()
     val gets: HashMap<String, TreeSet<GetReplacement>> = HashMap()
     val sets: HashMap<String, TreeSet<SetReplacement>> = HashMap()
@@ -136,6 +137,7 @@ class Replacements() {
             is SetReplacement -> sets.getOrPut(item.id) { TreeSet() }.add(item)
             is TypeReplacement -> types.getOrPut(item.id) { TreeSet() }.add(item)
             is TypeRefReplacement -> typeRefs.getOrPut(item.id) { TreeSet() }.add(item)
+            is AttributeReplacement -> attributes.getOrPut(item.id) { TreeSet() }.add(item)
         }
     }
 

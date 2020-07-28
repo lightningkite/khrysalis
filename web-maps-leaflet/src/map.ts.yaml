@@ -1,0 +1,132 @@
+---
+- id: com.google.android.gms.maps.MapView
+  type: type
+  template: HTMLDivElement
+
+- id: com.google.android.gms.maps.MapView.getMapAsync
+  type: call
+  template:
+    pattern: getMapAsync(~this~, ~0~)
+    imports:
+      getMapAsync: khrysalis-maps/dist/MapView.bind.actual
+
+- id: com.google.android.gms.maps.MapView.getMapAsync
+  type: call
+  template:
+    pattern: getMapAsync(~this~, ~0~)
+    imports:
+      getMapAsync: khrysalis-maps/dist/MapView.bind.actual
+
+- id: com.google.android.gms.maps.GoogleMap
+  type: type
+  template:
+    pattern: LeafletMap
+    imports:
+      LeafletMap: Map from leaflet
+
+# getCameraPosition
+
+- id: com.google.android.gms.maps.GoogleMap.getCameraPosition
+  type: call
+  template: ~this~
+- id: com.google.android.gms.maps.GoogleMap.cameraPosition
+  type: get
+  template: ~this~
+
+- id: com.google.android.gms.maps.model.CameraPosition.target
+  type: get
+  template: ~this~.getCenter()
+- id: com.google.android.gms.maps.model.CameraPosition.zoom
+  type: get
+  template: ~this~.getZoom()
+- id: com.google.android.gms.maps.model.CameraPosition.tilt
+  type: get
+  template: '0'
+- id: com.google.android.gms.maps.model.CameraPosition.bearing
+  type: get
+  template: '0'
+
+# getMaxZoomLevel
+- id: com.google.android.gms.maps.GoogleMap.getMaxZoomLevel
+  type: call
+  template: ~this~.getMaxZoom()
+- id: com.google.android.gms.maps.GoogleMap.maxZoomLevel
+  type: get
+  template: ~this~.getMaxZoom()
+
+# getMinZoomLevel
+- id: com.google.android.gms.maps.GoogleMap.getMinZoomLevel
+  type: call
+  template: ~this~.getMinZoom()
+- id: com.google.android.gms.maps.GoogleMap.minZoomLevel
+  type: get
+  template: ~this~.getMinZoom()
+
+# LatLng
+- id: com.google.android.gms.maps.model.LatLng
+  type: type
+  template:
+    pattern: LatLng
+    imports:
+      LatLng: leaflet
+
+# CameraUpdate
+- id: com.google.android.gms.maps.CameraUpdate
+  type: type
+  template:
+    pattern: [LatLngExpression, number]
+    imports:
+      LatLngExpression: leaflet
+      ZoomPanOptions: leaflet
+
+# moveCamera
+- id: com.google.android.gms.maps.GoogleMap.moveCamera
+  type: call
+  template: ~this~.setView(...~0~)
+
+# animateCamera
+- id: com.google.android.gms.maps.GoogleMap.animateCamera
+  type: call
+  template: '~this~.setView(...~0~.concat([{ animate: true }]))'
+
+# animateCamera
+# animateCamera
+# stopAnimation
+# getMapType
+# setMapType
+# isMyLocationEnabled
+# setMyLocationEnabled
+# getProjection
+
+# setOnCameraMoveStartedListener
+- id: com.google.android.gms.maps.GoogleMap.setOnCameraMoveStartedListener
+  type: call
+  template:
+    pattern: '~this~.on("movestart", (_ev) => { ~L0~ })'
+    lambdaTransforms:
+      0: ["0"]
+# setOnCameraMoveListener
+- id: com.google.android.gms.maps.GoogleMap.setOnCameraMoveListener
+  type: call
+  template:
+    pattern: '~this~.on("move", (_ev) => { ~L0~ })'
+# setOnCameraIdleListener
+- id: com.google.android.gms.maps.GoogleMap.setOnCameraIdleListener
+  type: call
+  template:
+    pattern: '~this~.on("moveend", (_ev) => { ~L0~ })'
+# setOnMapClickListener
+- id: com.google.android.gms.maps.GoogleMap.setOnMapClickListener
+  type: call
+  template:
+    pattern: '~this~.on("click", (_ev) => { ~L0~ })'
+    lambdaTransforms:
+      0: ["_ev.latlng"]
+# setOnMapLongClickListener
+- id: com.google.android.gms.maps.GoogleMap.setOnMapLongClickListener
+  type: call
+  template:
+    pattern: '~this~.on("contextmenu", (_ev) => { ~L0~ })'
+    lambdaTransforms:
+      0: ["_ev.latlng"]
+

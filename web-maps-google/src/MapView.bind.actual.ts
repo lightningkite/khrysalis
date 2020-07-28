@@ -4,52 +4,30 @@
 import {MutableObservableProperty} from 'khrysalis/dist/observables/MutableObservableProperty.shared'
 import {GeoCoordinate} from 'khrysalis/dist/location/GeoCoordinate.shared'
 import {ObservableProperty} from 'khrysalis/dist/observables/ObservableProperty.shared'
-import {LeafletMouseEvent, map as makeMap, Map, marker as makeMarker, Marker} from 'leaflet'
+import {} from "googlemaps"
 import {
     getAndroidViewViewRemoved,
     ioReactivexDisposablesDisposableUntil
 } from "khrysalis/dist/rx/DisposeCondition.actual";
 import {comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy} from "khrysalis/dist/observables/ObservableProperty.ext.shared";
+import {customViewInvalidate} from "khrysalis/dist/views/CustomView.actual";
+import Marker = google.maps.Marker;
+import LatLngLiteral = google.maps.LatLngLiteral;
+import {comGoogleAndroidGmsMapsModelLatLngToKhrysalis} from "./LatLng.ext";
 
 const mapSymbol = Symbol("mapSymbol");
 declare global {
     interface HTMLDivElement {
-        [mapSymbol]: Map;
-    }
-}
-
-let configureMap: (m: Map, style: string | null) => void = () => {
-};
-
-/**
- * Set up a map source.
- * MapBox example:
- * (map, styleString) => {
- *     tileLayer(
- *         `https://api.tiles.mapbox.com/v4/mapbox.streets/{z}/{x}/{y}.png?access_token=${accessToken}`,
- *         {
- *             attribution: `Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors, <a href="https://creativecommons.org/licenses/by-sa/2.0/">CC-BY-SA</a>, Imagery © <a href="https://www.mapbox.com/">Mapbox</a>`,
- *             maxZoom: 18
- *         }
- *     ).addTo(map);
- * }
- */
-export function setMapConfiguration(source: (m: Map, style: string | null) => void) {
-    configureMap = source;
-}
-
-//! Declares com.google.android.gms.maps.MapView.getMapAsync
-export function getMapAsync(this_: HTMLDivElement, action: (a: Map) => void) {
-    const m = this_[mapSymbol];
-    if (m) {
-        action(m);
+        [mapSymbol]: google.maps.Map;
     }
 }
 
 //! Declares com.lightningkite.khrysalis.maps.bind>com.google.android.gms.maps.MapView
 export function comGoogleAndroidGmsMapsMapViewBind(this_: HTMLDivElement, dependency: Window, style: string | null): void {
-    const map = makeMap(this_);
-    configureMap(map, style);
+    const map = new google.maps.Map(this_, {
+        center: { lat: 0, lng: 0 },
+        zoom: 2
+    });
     this_[mapSymbol] = map;
 }
 
@@ -61,18 +39,26 @@ export function comGoogleAndroidGmsMapsMapViewBindView(this_: HTMLDivElement, de
     let marker: Marker | null = null;
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(position, undefined, undefined, (g: GeoCoordinate | null)=>{
         if(g){
-            const p: [number, number] = [g.latitude, g.longitude];
-            map.setView(p, zoomLevel, { animate: animate && !first });
+            const p: LatLngLiteral = { lat: g.latitude, lng: g.longitude };
+            if(animate && !first){
+                map.panTo(p);
+                map.setZoom(zoomLevel);
+            } else {
+                map.setCenter(p);
+                map.setZoom(zoomLevel);
+            }
             first = false;
             if(!marker){
-                marker = makeMarker(p);
-                map.addLayer(marker);
+                marker = new Marker({
+                    position: p,
+                    map: map
+                });
             } else {
-                marker.setLatLng(p);
+                marker.setPosition(p);
             }
         } else {
             if(marker) {
-                map.removeLayer(marker);
+                marker.setMap(null);
                 marker = null;
             }
         }
@@ -87,35 +73,40 @@ export function comGoogleAndroidGmsMapsMapViewBindSelect(this_: HTMLDivElement, 
     let first = true;
     let marker: Marker | null = null;
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(position, undefined, undefined, (g: GeoCoordinate | null)=>{
-        const currentPos = marker?.getLatLng();
-        if(currentPos?.lng == g?.longitude && currentPos?.lng == g?.latitude) return
         if(g){
-            const p: [number, number] = [g.latitude, g.longitude];
-            map.setView(p, zoomLevel, { animate: animate && !first });
+            const p: LatLngLiteral = { lat: g.latitude, lng: g.longitude };
+            if(animate && !first){
+                map.panTo(p);
+                map.setZoom(zoomLevel);
+            } else {
+                map.setCenter(p);
+                map.setZoom(zoomLevel);
+            }
             first = false;
             if(!marker){
-                marker = makeMarker(p, { draggable: true });
-                marker.on("drag", (e)=>{
-                    if(marker){
-                        const raw = marker.getLatLng()
-                        position.value = new GeoCoordinate(raw.lat, raw.lng);
+                marker = new Marker({
+                    position: p,
+                    map: map,
+                    draggable: true
+                });
+                marker.addListener("dragend", ()=>{
+                    const pos = marker?.getPosition()
+                    if(pos){
+                        position.value = comGoogleAndroidGmsMapsModelLatLngToKhrysalis(pos);
                     }
                 })
-                map.addLayer(marker);
             } else {
-                marker.setLatLng(p);
+                marker.setPosition(p);
             }
         } else {
             if(marker) {
-                map.removeLayer(marker);
+                marker.setMap(null);
                 marker = null;
             }
         }
     }), getAndroidViewViewRemoved(this_));
-    map.on('click', (e: LeafletMouseEvent)=>{
-        if(!marker){
-            position.value = new GeoCoordinate(e.latlng.lat, e.latlng.lng);
-        }
-    })
+    map.addListener("click", (ev)=>{
+        position.value = comGoogleAndroidGmsMapsModelLatLngToKhrysalis(ev.latLng)
+    });
 }
 
