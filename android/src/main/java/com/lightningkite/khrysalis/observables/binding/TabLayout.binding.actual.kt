@@ -97,3 +97,65 @@ fun <T: Equatable> TabLayout.bind(
     })
 }
 
+
+
+/**
+ *
+ * Binds the tabs as well as the selected tab to the data provided.
+ * tabs is the title of each tab and it will create a tab for each of them.
+ * selected is the tab number that will be selected. User selecting a tab
+ * will update selected, as well modifying selected will manifest in the tabs.
+ *
+ */
+
+@JsName("tabLayoutBindObservable")
+fun <T : Hashable> TabLayout.bind(
+    options: ObservableProperty<List<T>>,
+    selected: MutableObservableProperty<T>,
+    allowReselect: Boolean = false,
+    toString: (T) -> String
+) {
+    val map = HashMap<T, TabLayout.Tab>()
+    val reverse = HashMap<TabLayout.Tab, T>()
+    options.subscribeBy { tabs ->
+        this.removeAllTabs()
+        map.clear()
+        for (tab in tabs) {
+            val actual = newTab().setText(toString(tab))
+            map[tab] = actual
+            reverse[actual] = tab
+            addTab(actual)
+        }
+    }.until(this.removed)
+
+    selected.subscribeBy { value ->
+        map[value]?.select()
+    }.until(this.removed)
+    this.addOnTabSelectedListener(object : TabLayout.BaseOnTabSelectedListener<TabLayout.Tab> {
+
+        var suppress = false
+
+        override fun onTabReselected(p0: TabLayout.Tab) {
+            if (!suppress && allowReselect) {
+                suppress = true
+                val value = reverse[p0]
+                if (value != null)
+                    selected.value = value
+                suppress = false
+            }
+        }
+
+        override fun onTabUnselected(p0: TabLayout.Tab) {}
+
+        override fun onTabSelected(p0: TabLayout.Tab) {
+            if (!suppress) {
+                suppress = true
+                val value = reverse[p0]
+                if (value != null && selected.value != value)
+                    selected.value = value
+                suppress = false
+            }
+        }
+    })
+}
+
