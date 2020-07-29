@@ -59,5 +59,16 @@ enum class ViewTransition(
     }, exitPop = { view ->
         view.animate()
             .alpha(0f)
-    })
+    }),
+    NONE(
+        enterPush = { view ->
+            view.animate()
+        }, exitPush = { view ->
+            view.animate()
+        }, enterPop = { view ->
+            view.animate()
+        }, exitPop = { view ->
+            view.animate()
+        }
+    )
 }

@@ -1,5 +1,4 @@
 import com.lightningkite.khrysalis.gradle.KhrysalisPluginExtension
-import com.lightningkite.khrysalis.ios.layout.mapViews
 
 buildscript {
     val kotlin_version = "1.3.50"
@@ -84,7 +83,6 @@ dependencies {
     api("com.squareup.picasso:picasso:2.71828")
     api("com.romandanylyk:pageindicatorview:1.0.3")
     api("com.theartofdev.edmodo:android-image-cropper:2.7.0")
-    api("com.github.marcoscgdev:Android-Week-View:1.2.7")
     api("io.reactivex.rxjava2:rxkotlin:2.4.0")
     api("io.reactivex.rxjava2:rxandroid:2.1.1")
 }
