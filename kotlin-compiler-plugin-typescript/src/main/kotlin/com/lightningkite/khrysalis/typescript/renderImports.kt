@@ -23,6 +23,10 @@ fun renderImports(projectName: String?, relPath: String, imports: Collection<Tem
             writer.append(" from '")
             writer.append(usePath)
             writer.appendln("'")
+        } else if (parts.size == 1 && parts.first().identifier == "") {
+            writer.append("import {} from '")
+            writer.append(usePath)
+            writer.appendln("'")
         } else {
             writer.append("import { ")
             writer.append(parts.sortedBy { it.asName ?: it.identifier }.joinToString(", ") {

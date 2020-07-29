@@ -20,9 +20,9 @@
 - id: com.google.android.gms.maps.GoogleMap
   type: type
   template:
-    pattern: LeafletMap
+    pattern: google.maps.Map
     imports:
-      LeafletMap: Map from leaflet
+      '': googlemaps
 
 # getCameraPosition
 
@@ -66,28 +66,31 @@
 - id: com.google.android.gms.maps.model.LatLng
   type: type
   template:
-    pattern: LatLng
+    pattern: google.maps.LatLng
     imports:
-      LatLng: leaflet
+      '': googlemaps
 
 # CameraUpdate
 - id: com.google.android.gms.maps.CameraUpdate
   type: type
   template:
-    pattern: [LatLngExpression, number]
+    pattern: [google.maps.LatLngLiteral, number]
     imports:
-      LatLngExpression: leaflet
-      ZoomPanOptions: leaflet
+      '': googlemaps
 
 # moveCamera
 - id: com.google.android.gms.maps.GoogleMap.moveCamera
   type: call
-  template: ~this~.setView(...~0~)
+  template:
+                map.panTo(~0~[0]);
+                map.setZoom(~0~[1]);
 
 # animateCamera
 - id: com.google.android.gms.maps.GoogleMap.animateCamera
   type: call
-  template: '~this~.setView(...~0~.concat([{ animate: true }]))'
+  template:
+                map.setCenter(~0~[0]);
+                map.setZoom(~0~[1]);
 
 # animateCamera
 # animateCamera
@@ -102,31 +105,30 @@
 - id: com.google.android.gms.maps.GoogleMap.setOnCameraMoveStartedListener
   type: call
   template:
-    pattern: '~this~.on("movestart", (_ev) => { ~L0~ })'
+    pattern: '~this~.addListener("dragstart", (_ev) => { ~L0~ })'
     lambdaTransforms:
       0: ["0"]
 # setOnCameraMoveListener
 - id: com.google.android.gms.maps.GoogleMap.setOnCameraMoveListener
   type: call
   template:
-    pattern: '~this~.on("move", (_ev) => { ~L0~ })'
+    pattern: '~this~.addListener("bounds_changed", (_ev) => { ~L0~ })'
 # setOnCameraIdleListener
 - id: com.google.android.gms.maps.GoogleMap.setOnCameraIdleListener
   type: call
   template:
-    pattern: '~this~.on("moveend", (_ev) => { ~L0~ })'
+    pattern: '~this~.addListener("dragend", (_ev) => { ~L0~ })'
 # setOnMapClickListener
 - id: com.google.android.gms.maps.GoogleMap.setOnMapClickListener
   type: call
   template:
-    pattern: '~this~.on("click", (_ev) => { ~L0~ })'
+    pattern: '~this~.addListener("click", (_ev) => { ~L0~ })'
     lambdaTransforms:
-      0: ["_ev.latlng"]
+      0: ["_ev.latLng"]
 # setOnMapLongClickListener
 - id: com.google.android.gms.maps.GoogleMap.setOnMapLongClickListener
   type: call
   template:
-    pattern: '~this~.on("contextmenu", (_ev) => { ~L0~ })'
+    pattern: '~this~.addListener("rightclick", (_ev) => { ~L0~ })'
     lambdaTransforms:
-      0: ["_ev.latlng"]
-
+      0: ["_ev.latLng"]

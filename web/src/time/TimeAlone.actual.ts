@@ -83,7 +83,7 @@ export class TimeAlone {
 
 //! Declares com.lightningkite.khrysalis.time.iso8601
 export function comLightningkiteKhrysalisTimeTimeAloneIso8601(this_: TimeAlone): string{
-    return `${this.hour.toString().padStart(2, "0")}:${this.minute.toString().padStart(2, "0")}:${this.second.toString().padStart(2, "0")}`
+    return `${this_.hour.toString().padStart(2, "0")}:${this_.minute.toString().padStart(2, "0")}:${this_.second.toString().padStart(2, "0")}`
 }
 
 //! Declares com.lightningkite.khrysalis.time.minus

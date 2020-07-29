@@ -37,16 +37,14 @@ class ResultNode(
     fun emitHtml(out: Appendable) {
 
         out.append("<$name ")
-        if (classes.isNotEmpty() || subtreeId != null) {
-            out.append("class=\"")
-            classes.forEachBetween(
-                forItem = { value ->
-                    out.append(value)
-                },
-                between = { out.append(" ") }
-            )
-            out.append("\"")
-        }
+        out.append("class=\"")
+        (classes + "khr").forEachBetween(
+            forItem = { value ->
+                out.append(value)
+            },
+            between = { out.append(" ") }
+        )
+        out.append("\"")
         if (style.isNotEmpty()) {
             out.append("style=\"")
             style.entries.forEachBetween(

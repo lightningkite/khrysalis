@@ -11,9 +11,10 @@ import {
 } from "khrysalis/dist/rx/DisposeCondition.actual";
 import {comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy} from "khrysalis/dist/observables/ObservableProperty.ext.shared";
 import {customViewInvalidate} from "khrysalis/dist/views/CustomView.actual";
-import Marker = google.maps.Marker;
-import LatLngLiteral = google.maps.LatLngLiteral;
-import {comGoogleAndroidGmsMapsModelLatLngToKhrysalis} from "./LatLng.ext";
+import {
+    comGoogleAndroidGmsMapsModelLatLngToKhrysalis,
+    comLightningkiteKhrysalisLocationGeoCoordinateToMaps
+} from "./LatLng.ext";
 
 const mapSymbol = Symbol("mapSymbol");
 declare global {
@@ -26,7 +27,8 @@ declare global {
 export function comGoogleAndroidGmsMapsMapViewBind(this_: HTMLDivElement, dependency: Window, style: string | null): void {
     const map = new google.maps.Map(this_, {
         center: { lat: 0, lng: 0 },
-        zoom: 2
+        zoom: 2,
+        styles: [] //?
     });
     this_[mapSymbol] = map;
 }
@@ -36,10 +38,10 @@ export function comGoogleAndroidGmsMapsMapViewBindView(this_: HTMLDivElement, de
     comGoogleAndroidGmsMapsMapViewBind(this_, dependency, style);
     const map = this_[mapSymbol];
     let first = true;
-    let marker: Marker | null = null;
+    let marker: google.maps.Marker | null = null;
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(position, undefined, undefined, (g: GeoCoordinate | null)=>{
         if(g){
-            const p: LatLngLiteral = { lat: g.latitude, lng: g.longitude };
+            const p: google.maps.LatLng = comLightningkiteKhrysalisLocationGeoCoordinateToMaps(g);
             if(animate && !first){
                 map.panTo(p);
                 map.setZoom(zoomLevel);
@@ -49,7 +51,7 @@ export function comGoogleAndroidGmsMapsMapViewBindView(this_: HTMLDivElement, de
             }
             first = false;
             if(!marker){
-                marker = new Marker({
+                marker = new google.maps.Marker({
                     position: p,
                     map: map
                 });
@@ -71,10 +73,10 @@ export function comGoogleAndroidGmsMapsMapViewBindSelect(this_: HTMLDivElement, 
     comGoogleAndroidGmsMapsMapViewBind(this_, dependency, style);
     const map = this_[mapSymbol];
     let first = true;
-    let marker: Marker | null = null;
+    let marker: google.maps.Marker | null = null;
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(position, undefined, undefined, (g: GeoCoordinate | null)=>{
         if(g){
-            const p: LatLngLiteral = { lat: g.latitude, lng: g.longitude };
+            const p: google.maps.LatLng = comLightningkiteKhrysalisLocationGeoCoordinateToMaps(g);
             if(animate && !first){
                 map.panTo(p);
                 map.setZoom(zoomLevel);
@@ -84,7 +86,7 @@ export function comGoogleAndroidGmsMapsMapViewBindSelect(this_: HTMLDivElement, 
             }
             first = false;
             if(!marker){
-                marker = new Marker({
+                marker = new google.maps.Marker({
                     position: p,
                     map: map,
                     draggable: true

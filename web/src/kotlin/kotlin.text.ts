@@ -11,7 +11,7 @@ export function kotlinCharSequenceIsBlank(s: string | null): boolean {
 }
 
 //! Declares kotlin.text.substringBefore
-export function kotlinStringSubstringBefore(s: string, delimeter: string, defaultResult: string): string {
+export function kotlinStringSubstringBefore(s: string, delimeter: string, defaultResult: string = s): string {
     const pos = s.indexOf(delimeter);
     if(pos == -1) {
         return defaultResult
@@ -21,7 +21,7 @@ export function kotlinStringSubstringBefore(s: string, delimeter: string, defaul
 }
 
 //! Declares kotlin.text.substringAfter
-export function kotlinStringSubstringAfter(s: string, delimeter: string, defaultResult: string): string {
+export function kotlinStringSubstringAfter(s: string, delimeter: string, defaultResult: string = s): string {
     const pos = s.indexOf(delimeter);
     if(pos == -1) {
         return defaultResult
@@ -31,7 +31,7 @@ export function kotlinStringSubstringAfter(s: string, delimeter: string, default
 }
 
 //! Declares kotlin.text.substringBeforeLast
-export function kotlinStringSubstringBeforeLast(s: string, delimeter: string, defaultResult: string): string {
+export function kotlinStringSubstringBeforeLast(s: string, delimeter: string, defaultResult: string = s): string {
     const pos = s.lastIndexOf(delimeter);
     if(pos == -1) {
         return defaultResult
@@ -41,7 +41,7 @@ export function kotlinStringSubstringBeforeLast(s: string, delimeter: string, de
 }
 
 //! Declares kotlin.text.substringAfterLast
-export function kotlinStringSubstringAfterLast(s: string, delimeter: string, defaultResult: string): string {
+export function kotlinStringSubstringAfterLast(s: string, delimeter: string, defaultResult: string = s): string {
     const pos = s.lastIndexOf(delimeter);
     if(pos == -1) {
         return defaultResult

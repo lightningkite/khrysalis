@@ -102,7 +102,7 @@ export function comLightningkiteKhrysalisTimeDateAloneAddDayOfWeek(this_: DateAl
 
 //! Declares com.lightningkite.khrysalis.time.iso8601
 export function comLightningkiteKhrysalisTimeDateAloneIso8601(this_: DateAlone): string{
-    return `${this.year.toString().padStart(4, "0")}-${this.month.toString().padStart(2, "0")}-${this.day.toString().padStart(2, "0")}`
+    return `${this_.year.toString().padStart(4, "0")}-${this_.month.toString().padStart(2, "0")}-${this_.day.toString().padStart(2, "0")}`
 }
 
 //! Declares com.lightningkite.khrysalis.time.formatYearless

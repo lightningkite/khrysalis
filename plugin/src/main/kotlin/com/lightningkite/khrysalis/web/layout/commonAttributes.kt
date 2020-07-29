@@ -80,7 +80,7 @@ internal fun HtmlTranslator.commonAttributes() {
         out.text.style["display"] = "flex"
         out.text.style["flex-direction"] = direction
         out.text.style["align-items"] = "center"
-        val image = ResultNode("image")
+        val image = ResultNode("img")
 
         val value = rule.value
         var imageUrl: File? = null

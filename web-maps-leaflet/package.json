@@ -1,5 +1,5 @@
 {
-  "name": "khrysalis-maps",
+  "name": "khrysalis-maps-leaflet",
   "version": "0.1.0",
   "description": "",
   "main": "Kotlin.js",

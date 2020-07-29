@@ -24,7 +24,7 @@ internal fun HtmlTranslator.display() {
         out.classes += "khrysalis-page-indicator"
     }
     element.handle("ImageView") {
-        out.name = "image"
+        out.name = "img"
         when(rule.allAttributes["android:scaleType"]){
             null -> {
                 out.style["object-fit"] = "contain"
@@ -59,7 +59,7 @@ internal fun HtmlTranslator.display() {
     }
     element.handle("ImageButton") {
         out.name = "button"
-        val imageChild = ResultNode("image")
+        val imageChild = ResultNode("img")
         element.translate("ImageView", rule, imageChild)
         out.contentNodes.add(imageChild)
     }
@@ -73,7 +73,7 @@ internal fun HtmlTranslator.display() {
         out.name = "div"
     }
 
-    attribute.handle("android:src", condition = { out.name == "image" }) {
+    attribute.handle("android:src", condition = { out.name == "img" }) {
         val value = rule.value
         when {
             value.startsWith("@") -> {
