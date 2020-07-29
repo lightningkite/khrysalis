@@ -42,6 +42,7 @@ public extension UILabel {
         }
         set(value) {
             textString = value
+            notifyParentSizeChanged()
         }
     }
     var textString: String {
@@ -54,6 +55,7 @@ public extension UILabel {
                 toSet = toSet.uppercased()
             }
             self.attributedText = NSAttributedString(string: toSet, attributes: [.kern: letterSpacing * font.pointSize])
+            notifyParentSizeChanged()
         }
     }
 
