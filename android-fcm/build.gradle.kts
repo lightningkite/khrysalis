@@ -3,7 +3,7 @@ import com.lightningkite.khrysalis.ios.convertResourcesToIos
 import com.lightningkite.khrysalis.ios.layout.convertLayoutsToSwift
 
 buildscript {
-    val kotlin_version = "1.3.50"
+    val kotlin_version = "1.3.72"
     repositories {
         google()
         jcenter()
@@ -61,7 +61,7 @@ android {
     }
 }
 
-val kotlin_version = "1.3.50"
+val kotlin_version = "1.3.72"
 dependencies {
     api(project(":android"))
     testImplementation("junit:junit:4.12")
@@ -69,7 +69,7 @@ dependencies {
     androidTestImplementation("com.android.support.test.espresso:espresso-core:3.0.2")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version")
     implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version")
-    api("com.google.firebase:firebase-messaging:20.1.0")
+    api("com.google.firebase:firebase-messaging:20.2.4")
 }
 
 tasks.create("sourceJar", Jar::class) {

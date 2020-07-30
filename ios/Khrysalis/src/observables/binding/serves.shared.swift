@@ -8,13 +8,13 @@ public extension MutableObservableProperty {
         
         var suppress = false
         
-        other.observable.addWeak(referenceA: whilePresent, listener: { (ignored: Any, value: T) -> Void in if !suppress {
+        other.observable.addWeak(referenceA: whilePresent, listener: { (ignored: Any, value: T) -> Void in if (!suppress) {
                     suppress = true
                     self.value = value
                     suppress = false
         } })
         
-        self.onChange.addWeak(referenceA: whilePresent, listener: { (ignored: Any, value: T) -> Void in if !suppress {
+        self.onChange.addWeak(referenceA: whilePresent, listener: { (ignored: Any, value: T) -> Void in if (!suppress) {
                     suppress = true
                     other.value = value
                     suppress = false
@@ -27,17 +27,17 @@ public extension MutableObservableProperty {
         
         var suppress = false
         
-        other.observable.subscribeBy(onNext: { (value: T) -> Void in if !suppress {
+        other.observable.subscribe(onNext: { (value: T) -> Void in if (!suppress) {
                     suppress = true
                     self.value = value
                     suppress = false
-        } }).until(condition: until)
+        } }, onError: nil, onCompleted: nil).until(condition: until)
         
-        self.onChange.subscribeBy(onNext: { (value: T) -> Void in if !suppress {
+        self.onChange.subscribe(onNext: { (value: T) -> Void in if (!suppress) {
                     suppress = true
                     other.value = value
                     suppress = false
-        } }).until(condition: until)
+        } }, onError: nil, onCompleted: nil).until(condition: until)
     }
 }
 

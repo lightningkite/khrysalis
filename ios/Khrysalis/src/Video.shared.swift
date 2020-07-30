@@ -5,6 +5,7 @@ import Foundation
 
 public class Video {
     public init() {
+        //Necessary properties should be initialized now
     }
 }
 public class VideoReference : Video, KDataClass {
@@ -12,6 +13,7 @@ public class VideoReference : Video, KDataClass {
     public init(uri: URL) {
         self.uri = uri
         super.init()
+        //Necessary properties should be initialized now
     }
     public func hash(into hasher: inout Hasher) {
         hasher.combine(uri)
@@ -25,6 +27,7 @@ public class VideoRemoteUrl : Video, KDataClass {
     public init(url: String) {
         self.url = url
         super.init()
+        //Necessary properties should be initialized now
     }
     public func hash(into hasher: inout Hasher) {
         hasher.combine(url)

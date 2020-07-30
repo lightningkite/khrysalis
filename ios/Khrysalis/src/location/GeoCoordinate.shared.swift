@@ -9,6 +9,7 @@ public class GeoCoordinate : Codable, KDataClass {
     public init(latitude: Double, longitude: Double) {
         self.latitude = latitude
         self.longitude = longitude
+        //Necessary properties should be initialized now
     }
     required public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)

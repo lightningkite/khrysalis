@@ -6,17 +6,15 @@ import CoreGraphics
 
 open class SelectDateMonthCVD : MonthCVD {
     override public init() {
-        let selected: MutableObservableProperty<DateAlone?> = StandardObservableProperty(underlyingValue: nil)
-        self.selected = selected
-        let selectedDayPaint: Paint = Paint()
-        self.selectedDayPaint = selectedDayPaint
-        let selectedPaint: Paint = Paint()
-        self.selectedPaint = selectedPaint
+        self.selected = StandardObservableProperty(underlyingValue: nil)
+        self.selectedDayPaint = Paint()
+        self.selectedPaint = Paint()
         super.init()
+        //Necessary properties should be initialized now
         if let it = (self.selected.value) { 
             self.currentMonthObs.value = it.dayOfMonth(value: 1)
         }
-        self.selected.onChange.subscribeBy(onNext:  { [weak self] (value: DateAlone?) -> Void in self?.invalidate() }).forever()
+        self.selected.onChange.subscribe(onNext:  { [weak self] (value: DateAlone?) -> Void in self?.invalidate() }, onError: nil, onCompleted: nil).forever()
     }
     
     override public func generateAccessibilityView() -> View? { return nil }

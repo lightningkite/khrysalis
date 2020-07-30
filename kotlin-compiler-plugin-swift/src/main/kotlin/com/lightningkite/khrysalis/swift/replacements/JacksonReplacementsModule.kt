@@ -29,9 +29,9 @@ class JacksonReplacementsModule() : SimpleModule() {
                                 on = Template.partFromString(it["on"].textValue()),
                                 name = it["name"]?.textValue() ?: "i",
                                 by = it["by"].textValue(),
-                                before = Template.partFromString(it["before"].textValue()),
-                                between = Template.partFromString(it["between"].textValue()),
-                                after = Template.partFromString(it["after"].textValue()),
+                                before = it["before"]?.textValue()?.let { Template.partFromString(it) },
+                                between = it["between"]?.textValue()?.let { Template.partFromString(it) },
+                                after = it["after"]?.textValue()?.let { Template.partFromString(it) },
                                 each = it["each"].traverse().readValueAs(Template::class.java)
                             )) + imports)
                         }

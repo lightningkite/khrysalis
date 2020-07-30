@@ -13,6 +13,7 @@ public class ReferenceObservableProperty<T> : MutableObservableProperty<T> {
         self.set = set
         self.event = event
         super.init()
+        //Necessary properties should be initialized now
     }
     
     

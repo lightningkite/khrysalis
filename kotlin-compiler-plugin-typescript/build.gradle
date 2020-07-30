@@ -26,11 +26,11 @@ repositories {
 }
 
 dependencies {
-    implementation "org.jetbrains.kotlin:kotlin-stdlib-jdk8"
+    implementation "org.jetbrains.kotlin:kotlin-stdlib"
     compileOnly "org.jetbrains.kotlin:kotlin-compiler-embeddable"
     testImplementation("junit:junit:4.12")
     testImplementation("org.jetbrains.kotlin:kotlin-compiler-embeddable")
-    api(project(":kotlin-compiler-plugin-common"))
+    api(project(path: ":kotlin-compiler-plugin-common", configuration: "default"))
 }
 
 shadowJar {

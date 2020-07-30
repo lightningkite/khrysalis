@@ -7,12 +7,10 @@ import CoreGraphics
 
 open class CustomViewDelegate {
     public init() {
-        let customView: CustomView? = nil
-        self.customView = customView
-        let toDispose: Array<Disposable> = []
-        self.toDispose = toDispose
-        let _removed: DisposeCondition? = nil
-        self._removed = _removed
+        self.customView = nil
+        self.toDispose = []
+        self._removed = nil
+        //Necessary properties should be initialized now
         self._removed = DisposeCondition(call: { (it: Disposable) -> Void in self.toDispose.append(it) })
     }
     

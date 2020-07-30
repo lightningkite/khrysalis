@@ -92,6 +92,8 @@ class KotlinSwiftExtension(
         files: Collection<KtFile>
     ): AnalysisResult? {
 
+        collector?.report(CompilerMessageSeverity.INFO, "Files: ${files.joinToString { it.virtualFilePath }}")
+
         collector?.report(CompilerMessageSeverity.INFO, "Completed analysis for ${projectName}.")
         val ctx = bindingTrace.bindingContext
         val translator = SwiftTranslator(

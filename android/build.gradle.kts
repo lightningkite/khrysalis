@@ -2,7 +2,7 @@ import com.lightningkite.khrysalis.gradle.KhrysalisPluginExtension
 import com.lightningkite.khrysalis.ios.layout.mapViews
 
 buildscript {
-    val kotlin_version = "1.3.50"
+    val kotlin_version = "1.3.72"
     repositories {
         google()
         jcenter()
@@ -61,7 +61,7 @@ android {
     }
 }
 
-val kotlin_version = "1.3.50"
+val kotlin_version = "1.3.72"
 dependencies {
     testImplementation("junit:junit:4.12")
     androidTestImplementation("androidx.test:runner:1.2.0")

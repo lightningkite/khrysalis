@@ -6,59 +6,35 @@ import CoreGraphics
 
 open class MonthCVD : CustomViewDelegate {
     override public init() {
-        let currentMonthObs: MutableObservableProperty<DateAlone> = StandardObservableProperty(underlyingValue: Date().dateAlone.setDayOfMonth(value: 1))
-        self.currentMonthObs = currentMonthObs
-        let dragEnabled: Bool = true
-        self.dragEnabled = dragEnabled
-        let labelFontSp: CGFloat = 12
-        self.labelFontSp = labelFontSp
-        let dayFontSp: CGFloat = 16
-        self.dayFontSp = dayFontSp
-        let internalPaddingDp: CGFloat = 8
-        self.internalPaddingDp = internalPaddingDp
-        let dayCellMarginDp: CGFloat = 8
-        self.dayCellMarginDp = dayCellMarginDp
-        let internalPadding: CGFloat = 0
-        self.internalPadding = internalPadding
-        let dayLabelHeight: CGFloat = 0
-        self.dayLabelHeight = dayLabelHeight
-        let dayCellHeight: CGFloat = 0
-        self.dayCellHeight = dayCellHeight
-        let dayCellWidth: CGFloat = 0
-        self.dayCellWidth = dayCellWidth
-        let dayCellMargin: CGFloat = 0
-        self.dayCellMargin = dayCellMargin
-        let _currentOffset: CGFloat = 0
-        self._currentOffset = _currentOffset
-        let dragStartX: CGFloat = 0
-        self.dragStartX = dragStartX
-        let lastOffset: CGFloat = 0
-        self.lastOffset = lastOffset
-        let lastOffsetTime: Int64 = 0
-        self.lastOffsetTime = lastOffsetTime
-        let DRAGGING_NONE: Int = -1
+        self.currentMonthObs = StandardObservableProperty(underlyingValue: Date().dateAlone.setDayOfMonth(value: 1))
+        self.dragEnabled = true
+        self.labelFontSp = 12
+        self.dayFontSp = 16
+        self.internalPaddingDp = 8
+        self.dayCellMarginDp = 8
+        self.internalPadding = 0
+        self.dayLabelHeight = 0
+        self.dayCellHeight = 0
+        self.dayCellWidth = 0
+        self.dayCellMargin = 0
+        self._currentOffset = 0
+        self.dragStartX = 0
+        self.lastOffset = 0
+        self.lastOffsetTime = 0
+        let DRAGGING_NONE: Int = (-1)
         self.DRAGGING_NONE = DRAGGING_NONE
-        let draggingId: Int = DRAGGING_NONE
-        self.draggingId = draggingId
-        let labelPaint: Paint = Paint()
-        self.labelPaint = labelPaint
-        let dayPaint: Paint = Paint()
-        self.dayPaint = dayPaint
-        let calcMonth: DateAlone = DateAlone(year: 1, month: 1, day: 1)
-        self.calcMonth = calcMonth
-        let calcMonthB: DateAlone = DateAlone(year: 0, month: 0, day: 0)
-        self.calcMonthB = calcMonthB
-        let drawDate: DateAlone = DateAlone(year: 1, month: 1, day: 1)
-        self.drawDate = drawDate
-        let rectForReuse: CGRect = RectF()
-        self.rectForReuse = rectForReuse
-        let rectForReuseB: CGRect = RectF()
-        self.rectForReuseB = rectForReuseB
-        let isTap: Bool = false
-        self.isTap = isTap
-        let dragStartY: CGFloat = 0
-        self.dragStartY = dragStartY
+        self.labelPaint = Paint()
+        self.dayPaint = Paint()
+        self.calcMonth = DateAlone(year: 1, month: 1, day: 1)
+        self.calcMonthB = DateAlone(year: 0, month: 0, day: 0)
+        self.drawDate = DateAlone(year: 1, month: 1, day: 1)
+        self.rectForReuse = RectF()
+        self.rectForReuseB = RectF()
+        self.isTap = false
+        self.dragStartY = 0
         super.init()
+        //Necessary properties should be initialized now
+        self.draggingId = self.DRAGGING_NONE
         self.currentMonthObs.subscribeBy(onNext:  { [weak self] (value: DateAlone) -> Void in self?.postInvalidate() }).forever()
         self.labelPaint.isAntiAlias = true
         self.labelPaint.style = Paint.Style.FILL
@@ -66,18 +42,18 @@ open class MonthCVD : CustomViewDelegate {
         self.dayPaint.isAntiAlias = true
         self.dayPaint.style = Paint.Style.FILL
         self.dayPaint.color = 0xFF202020.asColor()
-        animationFrame.subscribeBy(onNext: { (timePassed: CGFloat) -> Void in if self.draggingId == self.DRAGGING_NONE, self.currentOffset != 0 {
-                    var newOffset: CGFloat = self.currentOffset * max(0, (1 - 8 * CGFloat(timePassed)))
+        animationFrame.subscribe(onNext: { (timePassed: CGFloat) -> Void in if self.draggingId == self.DRAGGING_NONE, self.currentOffset != 0 {
+                    var newOffset: CGFloat = self.currentOffset * Swift.max(0, (1 - 8 * CGFloat(timePassed)))
                     let min: CGFloat = 0.001
                     if newOffset > min {
                         newOffset = newOffset - min
-                    } else if newOffset < -min {
+                    } else if newOffset < (-min) {
                         newOffset = newOffset + min
                     } else  {
                         newOffset = 0
                     }
                     self.currentOffset = newOffset
-        } }).until(condition: self.removed)
+        } }, onError: nil, onCompleted: nil).until(condition: self.removed)
     }
     
     override public func generateAccessibilityView() -> View? { return nil }
@@ -118,7 +94,7 @@ open class MonthCVD : CustomViewDelegate {
     private var lastOffset: CGFloat
     private var lastOffsetTime: Int64
     private let DRAGGING_NONE: Int
-    private var draggingId: Int
+    private var draggingId: (Int)!
     
     public func animateNextMonth() -> Void {
         self.currentMonthObs.value.setAddMonthOfYear(value: 1)
@@ -127,9 +103,9 @@ open class MonthCVD : CustomViewDelegate {
     }
     
     public func animatePreviousMonth() -> Void {
-        self.currentMonthObs.value.setAddMonthOfYear(value: -1)
+        self.currentMonthObs.value.setAddMonthOfYear(value: (-1))
         self.currentMonthObs.update()
-        self.currentOffset = -1
+        self.currentOffset = (-1)
     }
     
     public let labelPaint: Paint
@@ -154,7 +130,11 @@ open class MonthCVD : CustomViewDelegate {
     }
     
     public func dayAt(month: DateAlone, row: Int, column: Int, existing: DateAlone = DateAlone(year: 0, month: 0, day: 0)) -> DateAlone {
-        return existing.set(other: month).setDayOfMonth(value: 1).setDayOfWeek(value: 1).setAddDayOfMonth(value: row * 7 + column)
+        return existing
+            .set(other: month)
+            .setDayOfMonth(value: 1)
+            .setDayOfWeek(value: 1)
+            .setAddDayOfMonth(value: row * 7 + column)
     }
     
     open func measure(width: CGFloat, height: CGFloat, displayMetrics: DisplayMetrics) -> Void {
@@ -173,7 +153,7 @@ open class MonthCVD : CustomViewDelegate {
         self.measure(width: width, height: height, displayMetrics: displayMetrics)
         if self.currentOffset > 0 {
             //draw past month and current month
-            self.drawMonth(canvas: canvas, xOffset: (self.currentOffset - 1) * width, width: width, month: self.calcMonthB.set(other: self.currentMonth).setAddMonthOfYear(value: -1), displayMetrics: displayMetrics)
+            self.drawMonth(canvas: canvas, xOffset: (self.currentOffset - 1) * width, width: width, month: self.calcMonthB.set(other: self.currentMonth).setAddMonthOfYear(value: (-1)), displayMetrics: displayMetrics)
             self.drawMonth(canvas: canvas, xOffset: self.currentOffset * width, width: width, month: self.currentMonth, displayMetrics: displayMetrics)
         } else { if self.currentOffset < 0 {
                 //draw future month and current month
@@ -191,7 +171,7 @@ open class MonthCVD : CustomViewDelegate {
     open func drawMonth(canvas: Canvas, xOffset: CGFloat, width: CGFloat, month: DateAlone, displayMetrics: DisplayMetrics) -> Void {
         for day in ((1...7)){
             let col = day - 1
-            self.rectForReuse.set(xOffset + CGFloat(col) * self.dayCellWidth - 0.01, -0.01, xOffset + (CGFloat(col) + 1) * self.dayCellWidth + 0.01, self.dayLabelHeight + 0.01)
+            self.rectForReuse.set(xOffset + CGFloat(col) * self.dayCellWidth - 0.01, (-0.01), xOffset + (CGFloat(col) + 1) * self.dayCellWidth + 0.01, self.dayLabelHeight + 0.01)
             self.rectForReuseB.set(self.rectForReuse)
             self.rectForReuse.inset(self.internalPadding, self.internalPadding)
             self.drawLabel(canvas: canvas, dayOfWeek: day, displayMetrics: displayMetrics, outer: self.rectForReuse, inner: self.rectForReuseB)
@@ -236,7 +216,7 @@ open class MonthCVD : CustomViewDelegate {
         self.dragStartX = x / width
         self.dragStartY = y / height
         self.draggingId = id
-        self.lastOffsetTime = System.currentTimeMillis()
+        self.lastOffsetTime = ((Int64) (NSDate().timeIntervalSince1970 * 1000.0))
         self.isTap = true
         
         return true
@@ -246,7 +226,7 @@ open class MonthCVD : CustomViewDelegate {
     override public func onTouchMove(id: Int, x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat) -> Bool {
         if self.draggingId == id {
             self.lastOffset = self.currentOffset
-            self.lastOffsetTime = System.currentTimeMillis()
+            self.lastOffsetTime = ((Int64) (NSDate().timeIntervalSince1970 * 1000.0))
             if self.dragEnabled {
                 self.currentOffset = (x / width) - self.dragStartX
                 if abs((x / width - self.dragStartX)) > 0.05 || abs((y / height - self.dragStartY)) > 0.05 {
@@ -269,13 +249,13 @@ open class MonthCVD : CustomViewDelegate {
                     self.onTap(day: it)
                 }
             } else { if self.dragEnabled {
-                    let weighted = self.currentOffset + (self.currentOffset - self.lastOffset) * 200 / CGFloat((System.currentTimeMillis() - self.lastOffsetTime))
+                    let weighted = self.currentOffset + (self.currentOffset - self.lastOffset) * 200 / CGFloat((((Int64) (NSDate().timeIntervalSince1970 * 1000.0)) - self.lastOffsetTime))
                     if weighted > 0.5 {
                         //shift right one
-                        self.currentMonthObs.value.setAddMonthOfYear(value: -1)
+                        self.currentMonthObs.value.setAddMonthOfYear(value: (-1))
                         self.currentMonthObs.update()
                         self.currentOffset = self.currentOffset - 1
-                    } else { if weighted < -0.5 {
+                    } else { if weighted < (-0.5) {
                             //shift left one
                             self.currentMonthObs.value.setAddMonthOfYear(value: 1)
                             self.currentMonthObs.update()
@@ -302,7 +282,8 @@ open class MonthCVD : CustomViewDelegate {
 }
 
 public class CalendarDrawing {
-    private init() {
+    public init() {
+        //Necessary properties should be initialized now
     }
     public static let INSTANCE = CalendarDrawing()
     
@@ -324,11 +305,11 @@ public class CalendarDrawing {
     }
     
     public func dayBackground(canvas: Canvas, inner: CGRect, paint: Paint) -> Void {
-        canvas.drawCircle(inner.centerX(), inner.centerY(), min(inner.width() / 2, inner.height() / 2), paint)
+        canvas.drawCircle(inner.centerX(), inner.centerY(), Swift.min(inner.width() / 2, inner.height() / 2), paint)
     }
     
     public func dayBackgroundStart(canvas: Canvas, inner: CGRect, outer: CGRect, paint: Paint) -> Void {
-        canvas.drawCircle(inner.centerX(), inner.centerY(), min(inner.width() / 2, inner.height() / 2), paint)
+        canvas.drawCircle(inner.centerX(), inner.centerY(), Swift.min(inner.width() / 2, inner.height() / 2), paint)
         canvas.drawRect(outer.centerX(), inner.top, outer.right, inner.bottom, paint)
     }
     
@@ -337,7 +318,7 @@ public class CalendarDrawing {
     }
     
     public func dayBackgroundEnd(canvas: Canvas, inner: CGRect, outer: CGRect, paint: Paint) -> Void {
-        canvas.drawCircle(inner.centerX(), inner.centerY(), min(inner.width() / 2, inner.height() / 2), paint)
+        canvas.drawCircle(inner.centerX(), inner.centerY(), Swift.min(inner.width() / 2, inner.height() / 2), paint)
         canvas.drawRect(outer.left, inner.top, outer.centerX(), inner.bottom, paint)
     }
 }

@@ -5,6 +5,7 @@ import Foundation
 
 open class ViewGenerator {
     public init() {
+        //Necessary properties should be initialized now
     }
     
     open var title: String { get { TODO() } }
@@ -14,6 +15,7 @@ open class ViewGenerator {
     public class Default : ViewGenerator {
         override public init() {
             super.init()
+            //Necessary properties should be initialized now
         }
         
         override public var title: String {

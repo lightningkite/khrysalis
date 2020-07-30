@@ -23,6 +23,7 @@ public class GeoAddress : Codable, KDataClass {
         self.adminArea = adminArea
         self.countryName = countryName
         self.postalCode = postalCode
+        //Necessary properties should be initialized now
     }
     required public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)

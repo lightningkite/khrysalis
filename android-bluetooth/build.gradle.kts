@@ -3,7 +3,7 @@ import com.lightningkite.khrysalis.ios.convertResourcesToIos
 import com.lightningkite.khrysalis.ios.layout.convertLayoutsToSwift
 
 buildscript {
-    val kotlin_version = "1.3.50"
+    val kotlin_version = "1.3.72"
     repositories {
         google()
         jcenter()
@@ -61,7 +61,7 @@ android {
     }
 }
 
-val kotlin_version = "1.3.50"
+val kotlin_version = "1.3.72"
 dependencies {
     api(project(":android"))
 //    implementation("com.lightningkite.khrysalis:android:0.1.0")

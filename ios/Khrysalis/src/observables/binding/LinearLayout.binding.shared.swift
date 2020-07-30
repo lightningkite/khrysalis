@@ -9,6 +9,7 @@ private class LinearLayoutBoundSubview<T> {
     public init(view: View, property: StandardObservableProperty<T>) {
         self.view = view
         self.property = property
+        //Necessary properties should be initialized now
     }
 }
 
@@ -26,7 +27,7 @@ public extension LinearLayout {
                     }
                 } else { if existingViews.count < value.count {
                         //add views
-                        for iter in ((1...(-excessViews))){
+                        for iter in ((1...((-excessViews)))){
                             let prop = StandardObservableProperty(underlyingValue: defaultValue)
                             let view = makeView(prop)
                             self.addView(view, self.params(gravity: AlignPair.Companion.INSTANCE.centerFill))
@@ -57,7 +58,7 @@ public extension LinearLayout {
                     }
                 } else { if existingViews.count < value.count {
                         //add views
-                        for iter in ((1...(-excessViews))){
+                        for iter in ((1...((-excessViews)))){
                             let prop = StandardObservableProperty(underlyingValue: defaultValue)
                             let view = makeView(prop)
                             self.addView(view, self.params(gravity: AlignPair.Companion.INSTANCE.center))

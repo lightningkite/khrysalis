@@ -21,7 +21,7 @@ public extension ObservableProperty {
 }
 
 public extension ObservableProperty {
-    func subscribeBy(onError: @escaping  (Error) -> Void = { (it: Error) -> Void in it.printStackTrace() }, onComplete: @escaping  () -> Void = { () -> Void in  }, onNext: @escaping  (T) -> Void = { (it: T) -> Void in  }) -> Disposable { return self.observable.subscribeBy(onError: onError, onComplete: onComplete, onNext: { (boxed: T) -> Void in onNext(boxed) }) }
+    func subscribeBy(onError: @escaping  (Error) -> Void = { (it: Error) -> Void in it.printStackTrace() }, onComplete: @escaping  () -> Void = { () -> Void in  }, onNext: @escaping  (T) -> Void = { (it: T) -> Void in  }) -> Disposable { return self.observable.subscribe(onNext: { (boxed: T) -> Void in onNext(boxed) }, onError: onError, onCompleted: onComplete) }
 }
 
 public func includes<E>(collection: MutableObservableProperty<Set<E>>, element: E) -> MutableObservableProperty<Bool> {

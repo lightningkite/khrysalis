@@ -6,11 +6,10 @@ import Foundation
 
 public class ObservableStack<T : AnyObject> : ObservableProperty<Array<T>> {
     override public init() {
-        let onChange: PublishSubject<Array<T>> = PublishSubject()
-        self._onChange = onChange
-        let stack: Array<T> = [] as Array<T>
-        self.stack = stack
+        self._onChange = PublishSubject()
+        self.stack = [] as Array<T>
         super.init()
+        //Necessary properties should be initialized now
     }
     
     
@@ -93,7 +92,8 @@ public class ObservableStack<T : AnyObject> : ObservableProperty<Array<T>> {
 }
 
 public class ObservableStackCompanion {
-    private init() {
+    public init() {
+        //Necessary properties should be initialized now
     }
     public static let INSTANCE = ObservableStackCompanion()
     

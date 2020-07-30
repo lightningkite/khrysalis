@@ -9,10 +9,11 @@ public class FormValidationError {
     public init(field: UntypedFormField, string: ViewString) {
         self.field = field
         self.string = string
+        //Necessary properties should be initialized now
     }
 }
 
-public protocol UntypedFormField {
+public protocol UntypedFormField: AnyObject {
     
     var name: ViewString { get }
     
@@ -33,8 +34,8 @@ public class FormField<T> : UntypedFormField {
         self.name = name
         self.observable = observable
         self.validation = validation
-        let error: StandardObservableProperty<ViewString?> = StandardObservableProperty(underlyingValue: nil)
-        self.error = error
+        self.error = StandardObservableProperty(underlyingValue: nil)
+        //Necessary properties should be initialized now
     }
     
     public let error: StandardObservableProperty<ViewString?>
@@ -51,15 +52,16 @@ public class FormField<T> : UntypedFormField {
 
 public class Form {
     public init() {
-        let fields: Array<UntypedFormField> = []
-        self.fields = fields
+        self.fields = []
+        //Necessary properties should be initialized now
     }
     
     
     public class Companion {
-        private init() {
+        public init() {
             self.xIsRequired = ViewStringRaw(string: "%1$s is required.")
             self.xMustMatchY = ViewStringRaw(string: "%1$s must match %2$s.")
+            //Necessary properties should be initialized now
         }
         public static let INSTANCE = Companion()
         
@@ -135,7 +137,7 @@ public extension FormField {
 
 public extension FormField where T == Bool {
     func notFalse() -> ViewString? {
-        if !self.observable.value {
+        if (!self.observable.value) {
             return ViewStringTemplate(template: Form.Companion.INSTANCE.xIsRequired, arguments: [self.name])
         } else {
             return nil

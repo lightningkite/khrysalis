@@ -6,21 +6,17 @@ import CoreGraphics
 
 open class SelectMultipleDatesMonthCVD : MonthCVD {
     override public init() {
-        let dates: StandardObservableProperty<Set<DateAlone>> = StandardObservableProperty(underlyingValue: Set([]))
-        self.dates = dates
-        let selectedDayPaint: Paint = Paint()
-        self.selectedDayPaint = selectedDayPaint
-        let selectedPaint: Paint = Paint()
-        self.selectedPaint = selectedPaint
-        let drawDay_dateAlone: DateAlone = DateAlone(year: 0, month: 0, day: 0)
-        self.drawDay_dateAlone = drawDay_dateAlone
-        let adding: Bool = false
-        self.adding = adding
+        self.dates = StandardObservableProperty(underlyingValue: Set([]))
+        self.selectedDayPaint = Paint()
+        self.selectedPaint = Paint()
+        self.drawDay_dateAlone = DateAlone(year: 0, month: 0, day: 0)
+        self.adding = false
         super.init()
+        //Necessary properties should be initialized now
         if let it = (self.dates.value.firstOrNull()) { 
             self.currentMonthObs.value = it.dayOfMonth(value: 1)
         }
-        self.dates.onChange.subscribeBy(onNext:  { [weak self] (value: Set<DateAlone>) -> Void in self?.invalidate() }).forever()
+        self.dates.onChange.subscribe(onNext:  { [weak self] (value: Set<DateAlone>) -> Void in self?.invalidate() }, onError: nil, onCompleted: nil).forever()
     }
     
     override public func generateAccessibilityView() -> View? { return nil }
@@ -39,18 +35,18 @@ open class SelectMultipleDatesMonthCVD : MonthCVD {
     public let drawDay_dateAlone: DateAlone
     override public func drawDay(canvas: Canvas, showingMonth: DateAlone, day: DateAlone, displayMetrics: DisplayMetrics, outer: CGRect, inner: CGRect) -> Void {
         if self.dates.value.contains(day) {
-            let leftDate = self.drawDay_dateAlone.set(other: day).setAddDayOfMonth(value: -1)
+            let leftDate = self.drawDay_dateAlone.set(other: day).setAddDayOfMonth(value: (-1))
             let left = self.dates.value.contains(leftDate)
             let rightDate = self.drawDay_dateAlone.set(other: day).setAddDayOfMonth(value: 1)
             let right = self.dates.value.contains(rightDate)
             
-            if !left && !right{
+            if (!left), (!right){
                 CalendarDrawing.INSTANCE.dayBackground(canvas: canvas, inner: inner, paint: self.selectedPaint)
-            } else if !left && right{
+            } else if (!left), right{
                 CalendarDrawing.INSTANCE.dayBackgroundStart(canvas: canvas, inner: inner, outer: outer, paint: self.selectedPaint)
-            } else if left && !right{
+            } else if left, (!right){
                 CalendarDrawing.INSTANCE.dayBackgroundEnd(canvas: canvas, inner: inner, outer: outer, paint: self.selectedPaint)
-            } else if left && right{
+            } else if left, right{
                 CalendarDrawing.INSTANCE.dayBackgroundMid(canvas: canvas, inner: inner, outer: outer, paint: self.selectedPaint)
             } else {
                 CalendarDrawing.INSTANCE.dayBackground(canvas: canvas, inner: inner, paint: self.selectedPaint)

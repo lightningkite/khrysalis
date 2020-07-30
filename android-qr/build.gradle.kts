@@ -60,7 +60,7 @@ android {
     }
 }
 
-val kotlin_version = "1.3.50"
+val kotlin_version = "1.3.72"
 dependencies {
     api(project(":android"))
 //    implementation("com.lightningkite.khrysalis:android:0.1.0")

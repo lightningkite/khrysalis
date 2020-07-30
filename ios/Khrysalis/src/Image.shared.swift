@@ -5,6 +5,7 @@ import Foundation
 
 public class Image {
     public init() {
+        //Necessary properties should be initialized now
     }
 }
 public class ImageReference : Image, KDataClass {
@@ -12,6 +13,7 @@ public class ImageReference : Image, KDataClass {
     public init(uri: URL) {
         self.uri = uri
         super.init()
+        //Necessary properties should be initialized now
     }
     public func hash(into hasher: inout Hasher) {
         hasher.combine(uri)
@@ -25,6 +27,7 @@ public class ImageBitmap : Image, KDataClass {
     public init(bitmap: Bitmap) {
         self.bitmap = bitmap
         super.init()
+        //Necessary properties should be initialized now
     }
     public func hash(into hasher: inout Hasher) {
         hasher.combine(bitmap)
@@ -38,6 +41,7 @@ public class ImageRaw : Image, KDataClass {
     public init(raw: Data) {
         self.raw = raw
         super.init()
+        //Necessary properties should be initialized now
     }
     public func hash(into hasher: inout Hasher) {
         hasher.combine(raw)
@@ -51,6 +55,7 @@ public class ImageRemoteUrl : Image, KDataClass {
     public init(url: String) {
         self.url = url
         super.init()
+        //Necessary properties should be initialized now
     }
     public func hash(into hasher: inout Hasher) {
         hasher.combine(url)

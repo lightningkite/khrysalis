@@ -6,6 +6,7 @@ import Foundation
 
 open class ObservableProperty<T> {
     public init() {
+        //Necessary properties should be initialized now
     }
     
     open var value: T { get { TODO() } }

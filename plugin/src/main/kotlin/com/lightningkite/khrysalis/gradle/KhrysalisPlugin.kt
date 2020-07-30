@@ -19,6 +19,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import com.lightningkite.khrysalis.web.layout.convertLayoutsToHtmlXmlClasses
 import org.apache.tools.ant.taskdefs.condition.Os
 import org.gradle.api.Task
+import org.gradle.api.tasks.SourceTask
+import org.gradle.api.tasks.compile.JavaCompile
 import java.io.File
 import java.util.*
 
@@ -128,22 +130,10 @@ class KhrysalisPlugin : Plugin<Project> {
         }
         project.tasks.create("khrysalisConvertKotlinToSwift") { task ->
             task.group = "ios"
-            task.dependsOn("generateReleaseResources", "generateDebugResources")
+            task.dependsOn("compileDebugKotlin")
             task.doFirst {
-                val androidJar = androidSdkDirectory()!!.resolve("platforms/android-${sdkLevel()}/android.jar")
-                val libraries =
-                    sequenceOf(androidJar) + project.configurations.getByName("debugCompileClasspath").files.mapNotNull {
-                        when (it.extension) {
-                            "aar" -> project.zipTree(it)
-                                .matching {
-                                    it.include("classes.jar")
-                                }
-                                .asSequence()
-                                .firstOrNull()
-                            else -> it
-                        }
-                    }.asSequence()
                 val originalTask = project.tasks.getByName("compileDebugKotlin") as KotlinCompile
+                val libraries = originalTask.classpath.asSequence()
                 val files = originalTask.source.toList().asSequence()
                 println("All files: ${files.joinToString("\n")}")
                 println("All libraries: ${libraries.joinToString("\n")}")
@@ -261,22 +251,10 @@ class KhrysalisPlugin : Plugin<Project> {
         }
         project.tasks.create("khrysalisConvertKotlinToTypescript") { task ->
             task.group = "web"
-            task.dependsOn("generateReleaseResources", "generateDebugResources")
+            task.dependsOn("compileDebugKotlin")
             task.doFirst {
-                val androidJar = androidSdkDirectory()!!.resolve("platforms/android-${sdkLevel()}/android.jar")
-                val libraries =
-                    sequenceOf(androidJar) + project.configurations.getByName("debugCompileClasspath").files.mapNotNull {
-                        when (it.extension) {
-                            "aar" -> project.zipTree(it)
-                                .matching {
-                                    it.include("classes.jar")
-                                }
-                                .asSequence()
-                                .firstOrNull()
-                            else -> it
-                        }
-                    }.asSequence()
                 val originalTask = project.tasks.getByName("compileDebugKotlin") as KotlinCompile
+                val libraries = originalTask.classpath.asSequence()
                 val files = originalTask.source.toList().asSequence()
                 println("All files: ${files.joinToString("\n")}")
                 println("All libraries: ${libraries.joinToString("\n")}")

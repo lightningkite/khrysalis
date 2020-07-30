@@ -11,6 +11,7 @@ public class WriteAddedObservableProperty<A> : MutableObservableProperty<A> {
         self.basedOn = basedOn
         self.onWrite = onWrite
         super.init()
+        //Necessary properties should be initialized now
     }
     
     override public var value: A {

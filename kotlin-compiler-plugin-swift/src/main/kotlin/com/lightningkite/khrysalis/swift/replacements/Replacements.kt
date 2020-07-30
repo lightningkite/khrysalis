@@ -33,7 +33,7 @@ class Replacements() {
         descriptor: CallableDescriptor = call.candidateDescriptor,
         alreadyChecked: HashSet<CallableDescriptor> = HashSet()
     ): FunctionReplacement? {
-        if(!alreadyChecked.add(descriptor)) return null
+        if (!alreadyChecked.add(descriptor)) return null
         val result = descriptor.fqNamesToCheck
             .flatMap {
                 functions[it]?.asSequence() ?: sequenceOf()
@@ -70,8 +70,18 @@ class Replacements() {
             val propName = propertyDescriptor.name.asString()
             val all = sequenceOf(it) + it.allOverridden()
             all.mapNotNull {
-                gets[it.simpleFqName.replace(accessName, propName)]?.find { it.passes(propertyDescriptor, receiverType) }
-                    ?: gets[it.simplerFqName.replace(accessName, propName)]?.find { it.passes(propertyDescriptor, receiverType) }
+                gets[it.simpleFqName.replace(accessName, propName)]?.find {
+                    it.passes(
+                        propertyDescriptor,
+                        receiverType
+                    )
+                }
+                    ?: gets[it.simplerFqName.replace(accessName, propName)]?.find {
+                        it.passes(
+                            propertyDescriptor,
+                            receiverType
+                        )
+                    }
             }.firstOrNull()
         }
 
@@ -85,15 +95,24 @@ class Replacements() {
             }
             .find {
                 it.passes(propertyDescriptor, receiverType)
-            } ?:
-        propertyDescriptor.overriddenDescriptors.asSequence().map { getSet(it, receiverType) }.firstOrNull()
+            } ?: propertyDescriptor.overriddenDescriptors.asSequence().map { getSet(it, receiverType) }.firstOrNull()
         ?: (propertyDescriptor as? SyntheticJavaPropertyDescriptor)?.setMethod?.let {
             val accessName = it.name.asString()
             val propName = propertyDescriptor.name.asString()
             val all = sequenceOf(it) + it.allOverridden()
             all.mapNotNull {
-                sets[it.simpleFqName.replace(accessName, propName)]?.find { it.passes(propertyDescriptor, receiverType) }
-                    ?: sets[it.simplerFqName.replace(accessName, propName)]?.find { it.passes(propertyDescriptor, receiverType) }
+                sets[it.simpleFqName.replace(accessName, propName)]?.find {
+                    it.passes(
+                        propertyDescriptor,
+                        receiverType
+                    )
+                }
+                    ?: sets[it.simplerFqName.replace(accessName, propName)]?.find {
+                        it.passes(
+                            propertyDescriptor,
+                            receiverType
+                        )
+                    }
             }.firstOrNull()
         }
     }
@@ -107,7 +126,11 @@ class Replacements() {
                 it.passes(type)
             }
 
-    fun getType(type: KotlinType): TypeReplacement? = types[type.getJetTypeFqName(false)]?.find { it.passes(type) }
+    fun getType(type: KotlinType): TypeReplacement? =
+        if (type.constructor.declarationDescriptor is TypeParameterDescriptor) null else types[type.getJetTypeFqName(
+            false
+        )]?.find { it.passes(type) }
+
     fun getTypeRef(type: KotlinType): TypeRefReplacement? =
         typeRefs[type.getJetTypeFqName(false)]?.find { it.passes(type) }
 
@@ -119,24 +142,26 @@ class Replacements() {
             .find {
                 it.passes(type)
             }
+
     fun getImplicitCast(from: KotlinType, to: KotlinType): CastRule? {
         casts[from.getJetTypeFqName(false) + "->" + to.getJetTypeFqName(false)]
             ?.find { it.passes(from, to) }
             ?.let { return it }
         val detailedPossibilities = from.supertypes().filter { it.supertypes().contains(to) }
-        for(d in detailedPossibilities){
+        for (d in detailedPossibilities) {
             casts[d.getJetTypeFqName(false) + "->" + to.getJetTypeFqName(false)]
                 ?.find { it.passes(d, to) }
                 ?.let { return it }
         }
         return null
     }
+
     fun getExplicitCast(from: KotlinType, to: KotlinType): CastRule? {
         casts[from.getJetTypeFqName(false) + "->" + to.getJetTypeFqName(false)]
             ?.find { it.passes(from, to) }
             ?.let { return it }
         val detailedPossibilities = to.supertypes().filter { it.supertypes().contains(from) }
-        for(d in detailedPossibilities){
+        for (d in detailedPossibilities) {
             casts[d.getJetTypeFqName(false) + "->" + to.getJetTypeFqName(false)]
                 ?.find { it.passes(from, d) }
                 ?.let { return it }

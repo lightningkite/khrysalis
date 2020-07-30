@@ -12,6 +12,7 @@ public class StandardObservableProperty<T> : MutableObservableProperty<T> {
         self.underlyingValue = underlyingValue
         self._onChange = onChange
         super.init()
+        //Necessary properties should be initialized now
     }
     
     override public var value: T {

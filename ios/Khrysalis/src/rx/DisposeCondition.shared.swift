@@ -8,6 +8,7 @@ public class DisposeCondition {
     public var call:  (Disposable) -> Void
     public init(call: @escaping  (Disposable) -> Void) {
         self.call = call
+        //Necessary properties should be initialized now
     }
 }
 

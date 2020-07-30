@@ -6,25 +6,19 @@ import CoreGraphics
 
 open class SelectDateRangeMonthCVD : MonthCVD {
     override public init() {
-        let draggingStart: Bool = true
-        self.draggingStart = draggingStart
-        let start: MutableObservableProperty<DateAlone?> = StandardObservableProperty(underlyingValue: nil)
-        self.start = start
-        let endInclusive: MutableObservableProperty<DateAlone?> = StandardObservableProperty(underlyingValue: nil)
-        self.endInclusive = endInclusive
-        let selectedDayPaint: Paint = Paint()
-        self.selectedDayPaint = selectedDayPaint
-        let selectedPaint: Paint = Paint()
-        self.selectedPaint = selectedPaint
-        let drawDay_dateAlone: DateAlone = DateAlone(year: 0, month: 0, day: 0)
-        self.drawDay_dateAlone = drawDay_dateAlone
-        let startedDraggingOn: DateAlone? = nil
-        self.startedDraggingOn = startedDraggingOn
+        self.draggingStart = true
+        self.start = StandardObservableProperty(underlyingValue: nil)
+        self.endInclusive = StandardObservableProperty(underlyingValue: nil)
+        self.selectedDayPaint = Paint()
+        self.selectedPaint = Paint()
+        self.drawDay_dateAlone = DateAlone(year: 0, month: 0, day: 0)
+        self.startedDraggingOn = nil
         super.init()
+        //Necessary properties should be initialized now
         if let it = (self.start.value) { 
             self.currentMonthObs.value = it.dayOfMonth(value: 1)
         }
-        self.start.onChange.subscribeBy(onNext:  { [weak self] (value: DateAlone?) -> Void in self?.invalidate() }).forever()
+        self.start.onChange.subscribe(onNext:  { [weak self] (value: DateAlone?) -> Void in self?.invalidate() }, onError: nil, onCompleted: nil).forever()
         self.endInclusive.subscribeBy(onNext:  { [weak self] (value: DateAlone?) -> Void in self?.invalidate() }).forever()
     }
     
@@ -45,7 +39,7 @@ open class SelectDateRangeMonthCVD : MonthCVD {
     
     public let drawDay_dateAlone: DateAlone
     override public func drawDay(canvas: Canvas, showingMonth: DateAlone, day: DateAlone, displayMetrics: DisplayMetrics, outer: CGRect, inner: CGRect) -> Void {
-        if day == self.start.value && (day == self.endInclusive.value || self.endInclusive.value == nil){
+        if day == self.start.value, (day == self.endInclusive.value || self.endInclusive.value == nil){
             CalendarDrawing.INSTANCE.dayBackground(canvas: canvas, inner: inner, paint: self.selectedPaint)
             CalendarDrawing.INSTANCE.day(canvas: canvas, month: showingMonth, date: day, inner: inner, paint: self.selectedDayPaint)
         } else if day == self.start.value{
@@ -54,7 +48,7 @@ open class SelectDateRangeMonthCVD : MonthCVD {
         } else if day == self.endInclusive.value{
             CalendarDrawing.INSTANCE.dayBackgroundEnd(canvas: canvas, inner: inner, outer: outer, paint: self.selectedPaint)
             CalendarDrawing.INSTANCE.day(canvas: canvas, month: showingMonth, date: day, inner: inner, paint: self.selectedDayPaint)
-        } else if day.comparable > (self.start.value?.comparable ?? Int.max) && day.comparable < (self.endInclusive.value?.comparable ?? Int.min){
+        } else if day.comparable > (self.start.value?.comparable ?? Int.max), day.comparable < (self.endInclusive.value?.comparable ?? Int.min){
             CalendarDrawing.INSTANCE.dayBackgroundMid(canvas: canvas, inner: inner, outer: outer, paint: self.selectedPaint)
             CalendarDrawing.INSTANCE.day(canvas: canvas, month: showingMonth, date: day, inner: inner, paint: self.selectedDayPaint)
         } else {
@@ -94,7 +88,7 @@ open class SelectDateRangeMonthCVD : MonthCVD {
             self.draggingStart = false
         } else if day == startValue{
             self.draggingStart = true
-        } else if day.comparable > endInclusiveValue!.comparable && startValue == endInclusiveValue{
+        } else if day.comparable > endInclusiveValue!.comparable, startValue == endInclusiveValue{
             self.endInclusive.value = day
             self.draggingStart = false
         } else {
@@ -109,12 +103,12 @@ open class SelectDateRangeMonthCVD : MonthCVD {
         let startValue = self.start.value
         let endInclusiveValue = self.endInclusive.value
         if startValue == nil || endInclusiveValue == nil{
-        } else if self.draggingStart && day.comparable > endInclusiveValue!.comparable{
+        } else if self.draggingStart, day.comparable > endInclusiveValue!.comparable{
             self.start.value = self.endInclusive.value
             self.endInclusive.value = day
             self.draggingStart = false
             return true
-        } else if !self.draggingStart && day.comparable < startValue!.comparable{
+        } else if (!self.draggingStart), day.comparable < startValue!.comparable{
             self.endInclusive.value = self.start.value
             self.start.value = day
             self.draggingStart = true

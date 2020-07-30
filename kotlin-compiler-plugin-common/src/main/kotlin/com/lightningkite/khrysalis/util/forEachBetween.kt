@@ -1,7 +1,6 @@
 package com.lightningkite.khrysalis.util
 
 import java.util.concurrent.*
-import kotlin.streams.asStream
 
 inline fun <T> Iterable<T>.forEachBetween(
     forItem: (T) -> Unit,

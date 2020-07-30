@@ -16,7 +16,7 @@ data class TypeReplacement(
     val constraintTemplate: Template? = null,
     val xmlDefer: List<String> = listOf(),
     val xmlInit: String? = null,
-    val xmlCreate: String? = null,
+    val xmlSetup: String? = null,
     val xmlAddChild: Template? = null,
     val xmlSkip: Boolean = false
 ) : ReplacementRule {

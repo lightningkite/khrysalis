@@ -13,6 +13,7 @@ public class DialogRequest {
     public init(string: ViewString, confirmation: (() -> Void)? = nil) {
         self.string = string
         self.confirmation = confirmation
+        //Necessary properties should be initialized now
     }
 }
 

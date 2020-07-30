@@ -32,9 +32,10 @@ class Replacements() {
         descriptor: CallableDescriptor = call.candidateDescriptor,
         alreadyChecked: HashSet<CallableDescriptor> = HashSet()
     ): FunctionReplacement? {
-        val actualDescriptor = (descriptor as? SamAdapterExtensionFunctionDescriptor)?.baseDescriptorForSynthetic ?: descriptor
-        if(!alreadyChecked.add(actualDescriptor)) return null
-        if(actualDescriptor.fqNameSafe.asString().contains("zip")) {
+        val actualDescriptor =
+            (descriptor as? SamAdapterExtensionFunctionDescriptor)?.baseDescriptorForSynthetic ?: descriptor
+        if (!alreadyChecked.add(actualDescriptor)) return null
+        if (actualDescriptor.fqNameSafe.asString().contains("zip")) {
             println("Looking for ${actualDescriptor.fqNamesToCheck.joinToString()}")
         }
         val result = actualDescriptor.fqNamesToCheck
@@ -48,15 +49,15 @@ class Replacements() {
                     descriptor = actualDescriptor
                 )
             } ?: (actualDescriptor as? CallableMemberDescriptor)?.allOverridden()
-                ?.map {
-                    getCall(
-                        analysis = analysis,
-                        call = call,
-                        descriptor = it,
-                        alreadyChecked = alreadyChecked
-                    )
-                }
-                ?.firstOrNull()
+            ?.map {
+                getCall(
+                    analysis = analysis,
+                    call = call,
+                    descriptor = it,
+                    alreadyChecked = alreadyChecked
+                )
+            }
+            ?.firstOrNull()
         return result
     }
 
@@ -68,15 +69,25 @@ class Replacements() {
             .find {
                 it.passes(propertyDescriptor, receiverType)
             } ?: propertyDescriptor.overriddenDescriptors.asSequence().map { getGet(it, receiverType) }.firstOrNull()
-            ?: (propertyDescriptor as? SyntheticJavaPropertyDescriptor)?.getMethod?.let {
-                val accessName = it.name.asString()
-                val propName = propertyDescriptor.name.asString()
-                val all = sequenceOf(it) + it.allOverridden()
-                all.mapNotNull {
-                    gets[it.simpleFqName.replace(accessName, propName)]?.find { it.passes(propertyDescriptor, receiverType) }
-                        ?: gets[it.simplerFqName.replace(accessName, propName)]?.find { it.passes(propertyDescriptor, receiverType) }
-                }.firstOrNull()
-            }
+        ?: (propertyDescriptor as? SyntheticJavaPropertyDescriptor)?.getMethod?.let {
+            val accessName = it.name.asString()
+            val propName = propertyDescriptor.name.asString()
+            val all = sequenceOf(it) + it.allOverridden()
+            all.mapNotNull {
+                gets[it.simpleFqName.replace(accessName, propName)]?.find {
+                    it.passes(
+                        propertyDescriptor,
+                        receiverType
+                    )
+                }
+                    ?: gets[it.simplerFqName.replace(accessName, propName)]?.find {
+                        it.passes(
+                            propertyDescriptor,
+                            receiverType
+                        )
+                    }
+            }.firstOrNull()
+        }
 
     fun getGet(objectDescriptor: DeclarationDescriptor): GetReplacement? =
         gets[objectDescriptor.simpleFqName]?.firstOrNull()
@@ -88,17 +99,26 @@ class Replacements() {
             }
             .find {
                 it.passes(propertyDescriptor, receiverType)
-            } ?:
-             propertyDescriptor.overriddenDescriptors.asSequence().map { getSet(it, receiverType) }.firstOrNull()
-            ?: (propertyDescriptor as? SyntheticJavaPropertyDescriptor)?.setMethod?.let {
-                val accessName = it.name.asString()
-                val propName = propertyDescriptor.name.asString()
-                val all = sequenceOf(it) + it.allOverridden()
-                all.mapNotNull {
-                    sets[it.simpleFqName.replace(accessName, propName)]?.find { it.passes(propertyDescriptor, receiverType) }
-                        ?: sets[it.simplerFqName.replace(accessName, propName)]?.find { it.passes(propertyDescriptor, receiverType) }
-                }.firstOrNull()
-            }
+            } ?: propertyDescriptor.overriddenDescriptors.asSequence().map { getSet(it, receiverType) }.firstOrNull()
+        ?: (propertyDescriptor as? SyntheticJavaPropertyDescriptor)?.setMethod?.let {
+            val accessName = it.name.asString()
+            val propName = propertyDescriptor.name.asString()
+            val all = sequenceOf(it) + it.allOverridden()
+            all.mapNotNull {
+                sets[it.simpleFqName.replace(accessName, propName)]?.find {
+                    it.passes(
+                        propertyDescriptor,
+                        receiverType
+                    )
+                }
+                    ?: sets[it.simplerFqName.replace(accessName, propName)]?.find {
+                        it.passes(
+                            propertyDescriptor,
+                            receiverType
+                        )
+                    }
+            }.firstOrNull()
+        }
     }
 
     fun getType(type: DeclarationDescriptor): TypeReplacement? =
@@ -110,7 +130,10 @@ class Replacements() {
                 it.passes(type)
             }
 
-    fun getType(type: KotlinType): TypeReplacement? = types[type.getJetTypeFqName(false)]?.find { it.passes(type) }
+    fun getType(type: KotlinType): TypeReplacement? =
+        if (type.constructor.declarationDescriptor is TypeParameterDescriptor) null else types[type.getJetTypeFqName(
+            false
+        )]?.find { it.passes(type) }
     fun getTypeRef(type: KotlinType): TypeRefReplacement? =
         typeRefs[type.getJetTypeFqName(false)]?.find { it.passes(type) }
 

@@ -49,55 +49,57 @@
   template:
     split:
       on: ~value~
+      by: '|'
       name: i0
-      switch:
-        on: ~i0~
-        cases:
-          'textCapCharacters':
-            ~this~.autocapitalizationType = .allCharacters
-          'textCapWords':
-            ~this~.autocapitalizationType = .words
-          'textCapSentences':
-            ~this~.autocapitalizationType = .sentences
-          'textAutoCorrect':
-            ~this~.autocorrectionType = .yes
-          'textAutoComplete':
-            ~this~.autocorrectionType = .yes
-          'textNoSuggestions':
-            ~this~.spellCheckingType = .no
-          'textUri':
-            ~this~.keyboardType = .URL
-            ~this~.textContentType = .URL
-          'textEmailAddress':
-            ~this~.textContentType = .emailAddress
-            ~this~.keyboardType = .emailAddress
-          'textPersonName':
-            ~this~.textContentType = .name
-          'textPostalAddress':
-            ~this~.textContentType = .fullStreetAddress
-          'textPassword':
-            ~this~.textContentType = .password
-            ~this~.isSecureTextEntry = true
-          'textVisiblePassword':
-            ~this~.textContentType = .password
-          'number':
-            ~this~.keyboardType = .numberPad
-            ~this~.addDismissButton()
-          'numberSigned':
-            ~this~.keyboardType = .numbersAndPunctuation
-            ~this~.addDismissButton()
-          'numberDecimal':
-            ~this~.keyboardType = .decimalPad
-            ~this~.addDismissButton()
-          'numberPassword':
-            ~this~.keyboardType = .numberPad
-            ~this~.addDismissButton()
-            ~this~.textContentType = .password
-            ~this~.isSecureTextEntry = true
-          'phone':
-            ~this~.keyboardType = .phonePad
-            ~this~.addDismissButton()
-            ~this~.textContentType = .telephoneNumber
+      each:
+        switch:
+          on: ~i0~
+          cases:
+            'textCapCharacters':
+              ~this~.autocapitalizationType = .allCharacters
+            'textCapWords':
+              ~this~.autocapitalizationType = .words
+            'textCapSentences':
+              ~this~.autocapitalizationType = .sentences
+            'textAutoCorrect':
+              ~this~.autocorrectionType = .yes
+            'textAutoComplete':
+              ~this~.autocorrectionType = .yes
+            'textNoSuggestions':
+              ~this~.spellCheckingType = .no
+            'textUri':
+              ~this~.keyboardType = .URL
+              ~this~.textContentType = .URL
+            'textEmailAddress':
+              ~this~.textContentType = .emailAddress
+              ~this~.keyboardType = .emailAddress
+            'textPersonName':
+              ~this~.textContentType = .name
+            'textPostalAddress':
+              ~this~.textContentType = .fullStreetAddress
+            'textPassword':
+              ~this~.textContentType = .password
+              ~this~.isSecureTextEntry = true
+            'textVisiblePassword':
+              ~this~.textContentType = .password
+            'number':
+              ~this~.keyboardType = .numberPad
+              ~this~.addDismissButton()
+            'numberSigned':
+              ~this~.keyboardType = .numbersAndPunctuation
+              ~this~.addDismissButton()
+            'numberDecimal':
+              ~this~.keyboardType = .decimalPad
+              ~this~.addDismissButton()
+            'numberPassword':
+              ~this~.keyboardType = .numberPad
+              ~this~.addDismissButton()
+              ~this~.textContentType = .password
+              ~this~.isSecureTextEntry = true
+            'phone':
+              ~this~.keyboardType = .phonePad
+              ~this~.addDismissButton()
+              ~this~.textContentType = .telephoneNumber
 
 - id: com.google.android.material.tabs.TabLayout
   type: type
@@ -159,6 +161,7 @@
   template:
     split:
       on: ~value~
+      by: '|'
       name: v
       each:
         switch:

@@ -11,6 +11,7 @@ public class FlatMappedObservableProperty<A, B> : ObservableProperty<B> {
         self.basedOn = basedOn
         self.transformation = transformation
         super.init()
+        //Necessary properties should be initialized now
     }
     
     override public var value: B {
@@ -33,9 +34,9 @@ public class MutableFlatMappedObservableProperty<A, B> : MutableObservableProper
     public init(basedOn: ObservableProperty<A>, transformation: @escaping  (A) -> MutableObservableProperty<B>) {
         self.basedOn = basedOn
         self.transformation = transformation
-        let lastProperty: MutableObservableProperty<B>? = nil
-        self.lastProperty = lastProperty
+        self.lastProperty = nil
         super.init()
+        //Necessary properties should be initialized now
     }
     
     override public var value: B {
@@ -48,7 +49,7 @@ public class MutableFlatMappedObservableProperty<A, B> : MutableObservableProper
     public var lastProperty: MutableObservableProperty<B>?
     
     override public var onChange: Observable<B> {
-        get { return self.basedOn.observable.switchMap( { (it: A) -> Observable<B> in 
+        get { return self.basedOn.observable.switchMap( { (it: A) -> Observable<Box<B>> in 
                     let prop = self.transformation(it)
                     self.lastProperty = prop
                     return prop.observable

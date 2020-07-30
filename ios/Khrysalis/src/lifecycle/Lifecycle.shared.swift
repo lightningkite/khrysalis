@@ -16,10 +16,10 @@ public extension ObservableProperty where T == Bool {
             `open`(target)
         }
         self.addAndRunWeak(referenceA: target, listener: { (target: A, value: Bool) -> Void in 
-                if lastValue, !value {
+                if lastValue, (!value) {
                     close(target)
                 }
-                if !lastValue, value {
+                if (!lastValue), value {
                     `open`(target)
                 }
                 lastValue = value
@@ -32,15 +32,15 @@ public extension ObservableProperty where T == Bool {
         if self.value {
             `open`()
         }
-        let everlasting = self.observableNN.subscribeBy(onNext: { (value: Bool) -> Void in 
-                if lastValue, !value {
+        let everlasting = self.observableNN.subscribe(onNext: { (value: Bool) -> Void in 
+                if lastValue, (!value) {
                     close()
                 }
-                if !lastValue, value {
+                if (!lastValue), value {
                     `open`()
                 }
                 lastValue = value
-        })
+        }, onError: nil, onCompleted: nil)
     }
 }
 
@@ -53,6 +53,7 @@ private class OnceObservableProperty : ObservableProperty<Bool> {
     public init(basedOn: ObservableProperty<Bool>) {
         self.basedOn = basedOn
         super.init()
+        //Necessary properties should be initialized now
     }
     
     override public var value: Bool {
@@ -67,10 +68,10 @@ private class OnceObservableProperty : ObservableProperty<Bool> {
 public extension ObservableProperty where T == Bool {
     func closeWhenOff(closeable: Disposable) -> Void {
         var listener: Disposable? = nil
-        listener = self.observableNN.subscribe({ (it: Bool) -> Void in if !it {
+        listener = self.observableNN.subscribe(onNext: { (it: Bool) -> Void in if (!it) {
                     closeable.dispose()
                     listener?.dispose()
-        } })
+        } }, onError: nil, onCompleted: nil)
     }
 }
 

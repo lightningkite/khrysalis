@@ -72,6 +72,7 @@ com.lightningkite.khrysalis.weak
 com.lightningkite.khrysalis.nullOf
 com.lightningkite.khrysalis.mapValuesToValues
 com.lightningkite.khrysalis.localizedDescription
+com.lightningkite.khrysalis.fatalError
 com.lightningkite.khrysalis.Uri
 com.lightningkite.khrysalis.JsName
 com.lightningkite.khrysalis.Video
@@ -211,6 +212,7 @@ com.lightningkite.khrysalis.observables.binding.RVTypeHandler
 com.lightningkite.khrysalis.observables.binding.bindMulti
 com.lightningkite.khrysalis.observables.binding.bindRefresh
 com.lightningkite.khrysalis.observables.binding.bindStack
+com.lightningkite.khrysalis.observables.binding.bindList
 com.lightningkite.khrysalis.observables.binding.bindStringRes
 com.lightningkite.khrysalis.observables.binding.bindText
 com.lightningkite.khrysalis.observables.binding.bindOnString
@@ -396,6 +398,7 @@ com.lightningkite.khrysalis.views.geometry.GFloat
 com.lightningkite.khrysalis.views.geometry.toGFloat
 com.lightningkite.khrysalis.views.geometry.mapPoint
 com.lightningkite.khrysalis.views.geometry.inverted
+com.lightningkite.khrysalis.views.geometry.setInvert
 com.lightningkite.khrysalis.views.geometry.PolygonF
 com.lightningkite.khrysalis.views.SafePaddingFlags
 com.lightningkite.khrysalis.views.safeInsets

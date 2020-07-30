@@ -8,9 +8,9 @@ public class ConstantObservableProperty<T> : ObservableProperty<T> {
     public var underlyingValue: T
     public init(underlyingValue: T) {
         self.underlyingValue = underlyingValue
-        let onChange: Observable<T> = Observable.never()
-        self._onChange = onChange
+        self._onChange = Observable.never()
         super.init()
+        //Necessary properties should be initialized now
     }
     
     public var _onChange: Observable<T>

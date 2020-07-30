@@ -10,9 +10,9 @@ public class TransformedObservableProperty<A, B> : ObservableProperty<B> {
     public init(basedOn: ObservableProperty<A>, read: @escaping  (A) -> B) {
         self.basedOn = basedOn
         self.read = read
-        let onChange: Observable<B> = basedOn.onChange.map({ (it: A) -> B in read(it) })
-        self._onChange = onChange
         super.init()
+        //Necessary properties should be initialized now
+        self._onChange = self.basedOn.onChange.map({ (it: A) -> B in self.read(it) })
     }
     
     override public var value: B {

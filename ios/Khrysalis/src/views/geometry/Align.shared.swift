@@ -3,14 +3,17 @@
 // Package: com.lightningkite.khrysalis.views.geometry
 import Foundation
 
-public enum Align: CaseIterable {
+public enum Align: String, KEnum, StringEnum, CaseIterable {
     case start
     case center
     case end
     case fill
     
-    
+    public init(from decoder: Decoder) throws {
+        self = try Self(rawValue: decoder.singleValueContainer().decode(RawValue.self)) ?? .start
+    }
 }
+
 
 public class AlignPair : KDataClass {
     public var horizontal: Align
@@ -18,6 +21,7 @@ public class AlignPair : KDataClass {
     public init(horizontal: Align, vertical: Align) {
         self.horizontal = horizontal
         self.vertical = vertical
+        //Necessary properties should be initialized now
     }
     public func hash(into hasher: inout Hasher) {
         hasher.combine(horizontal)
@@ -29,7 +33,7 @@ public class AlignPair : KDataClass {
     
     
     public class Companion {
-        private init() {
+        public init() {
             self.center = AlignPair(horizontal: Align.center, vertical: Align.center)
             self.fill = AlignPair(horizontal: Align.fill, vertical: Align.fill)
             self.topLeft = AlignPair(horizontal: Align.start, vertical: Align.start)
@@ -48,6 +52,7 @@ public class AlignPair : KDataClass {
             self.bottomCenter = AlignPair(horizontal: Align.center, vertical: Align.end)
             self.bottomFill = AlignPair(horizontal: Align.fill, vertical: Align.end)
             self.bottomRight = AlignPair(horizontal: Align.end, vertical: Align.end)
+            //Necessary properties should be initialized now
         }
         public static let INSTANCE = Companion()
         

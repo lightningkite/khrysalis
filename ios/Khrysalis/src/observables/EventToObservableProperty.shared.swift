@@ -12,6 +12,7 @@ public class EventToObservableProperty<T> : ObservableProperty<T> {
         self._value = value
         self.wrapped = wrapped
         super.init()
+        //Necessary properties should be initialized now
     }
     
     override public var onChange: Observable<T> {

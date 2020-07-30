@@ -3,7 +3,7 @@
 // Package: com.lightningkite.khrysalis.views
 import Foundation
 
-public protocol ViewString {
+public protocol ViewString: AnyObject {
     
     func get(dependency: ViewDependency) -> String 
 }
@@ -13,6 +13,7 @@ public class ViewStringRaw : ViewString {
     public var string: String
     public init(string: String) {
         self.string = string
+        //Necessary properties should be initialized now
     }
     
     public func get(dependency: ViewDependency) -> String { return self.string }
@@ -22,6 +23,7 @@ public class ViewStringResource : ViewString {
     public var resource: StringResource
     public init(resource: StringResource) {
         self.resource = resource
+        //Necessary properties should be initialized now
     }
     
     public func get(dependency: ViewDependency) -> String { return dependency.getString(resource: self.resource) }
@@ -33,6 +35,7 @@ public class ViewStringTemplate : ViewString {
     public init(template: ViewString, arguments: Array<Any>) {
         self.template = template
         self.arguments = arguments
+        //Necessary properties should be initialized now
     }
     
     public func get(dependency: ViewDependency) -> String {
@@ -46,6 +49,7 @@ public class ViewStringComplex : ViewString {
     public var getter:  (ViewDependency) -> String
     public init(getter: @escaping  (ViewDependency) -> String) {
         self.getter = getter
+        //Necessary properties should be initialized now
     }
     
     public func get(dependency: ViewDependency) -> String { return self.getter(dependency) }
@@ -57,6 +61,7 @@ public class ViewStringList : ViewString {
     public init(parts: Array<ViewString>, separator: String = "\n") {
         self.parts = parts
         self.separator = separator
+        //Necessary properties should be initialized now
     }
     
     public func get(dependency: ViewDependency) -> String {

@@ -5,7 +5,7 @@ import com.lightningkite.khrysalis.gradle.KhrysalisPluginExtension
 import com.lightningkite.khrysalis.ios.layout.mapViews
 
 buildscript {
-    val kotlin_version = "1.3.50"
+    val kotlin_version = "1.3.72"
     repositories {
         google()
         jcenter()
@@ -71,7 +71,7 @@ android {
     }
 }
 
-val kotlin_version = "1.3.50"
+val kotlin_version = "1.3.72"
 dependencies {
     api(project(":android", "default"))
 //    implementation("com.lightningkite.khrysalis:android:0.1.0")
@@ -81,7 +81,7 @@ dependencies {
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version")
     implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version")
     api("com.google.android.gms:play-services-maps:17.0.0")
-    compile("com.google.android.libraries.places:places:2.3.0")
+    api("com.google.android.libraries.places:places:2.3.0")
     api("io.reactivex.rxjava2:rxkotlin:2.4.0")
     api("io.reactivex.rxjava2:rxandroid:2.1.1")
 

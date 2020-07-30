@@ -3,7 +3,7 @@
 // Package: com.lightningkite.khrysalis.views
 import Foundation
 
-public protocol EntryPoint {
+public protocol EntryPoint: AnyObject {
     
     func handleDeepLink(schema: String, host: String, path: String, params: Dictionary<String, String>) -> Void 
     func onBackPressed() -> Bool 

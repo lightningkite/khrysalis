@@ -13,13 +13,16 @@ public class CombineObservableProperty<T, A, B> : ObservableProperty<T> {
         self.observableB = observableB
         self.combiner = combiner
         super.init()
+        //Necessary properties should be initialized now
     }
     
     override public var value: T {
         get { return self.combiner(self.observableA.value, self.observableB.value) }
     }
     override public var onChange: Observable<T> {
-        get { return self.observableA.onChange.startWith(self.observableA.value).combineLatest(observable: self.observableB.onChange.startWith(self.observableB.value), function: { (a: A, b: B) -> T in self.combiner(a, b) }).skip(1) }
+        get { return self.observableA.onChange.startWith(self.observableA.value)
+                .combineLatest(observable: self.observableB.onChange.startWith(self.observableB.value), function: { (a: A, b: B) -> T in self.combiner(a, b) })
+            .skip(1) }
     }
 }
 

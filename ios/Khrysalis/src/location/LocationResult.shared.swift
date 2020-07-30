@@ -17,6 +17,7 @@ public class LocationResult : KDataClass {
         self.altitudeAccuracyMeters = altitudeAccuracyMeters
         self.headingFromNorth = headingFromNorth
         self.speedMetersPerSecond = speedMetersPerSecond
+        //Necessary properties should be initialized now
     }
     public func hash(into hasher: inout Hasher) {
         hasher.combine(coordinate)

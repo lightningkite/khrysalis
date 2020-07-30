@@ -66,7 +66,8 @@ version = '0.1.0'
 
 dependencies {
     api gradleApi()
-    api "org.jetbrains.kotlin:kotlin-stdlib-jdk8:${kotlinVersion}"
+    api "org.jetbrains.kotlin:kotlin-stdlib"
+    compileOnly "org.jetbrains.kotlin:kotlin-compiler-embeddable"
     api group: 'org.antlr', name: 'antlr4-runtime', version: '4.5'
 //    api "org.jetbrains.kotlin:kotlin-gradle-plugin:${rootProject.kotlinVersion}"
     antlr "org.antlr:antlr4:4.5.3" // use ANTLR version 4
@@ -77,8 +78,8 @@ dependencies {
     api "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.+"
     api "net.jodah:xsylum:0.1.0"
     testImplementation("junit:junit:4.12")
-    api(project(":kotlin-compiler-plugin-typescript"))
-    api(project(":kotlin-compiler-plugin-swift"))
+    api(project(path: ":kotlin-compiler-plugin-typescript", configuration: "default"))
+    api(project(path: ":kotlin-compiler-plugin-swift", configuration: "default"))
 
     def aetherVersion = "1.0.0.v20140518"
     def mavenVersion = "3.1.0"

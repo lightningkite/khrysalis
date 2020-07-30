@@ -2,8 +2,8 @@ package com.lightningkite.khrysalis.ios.layout
 
 import com.lightningkite.khrysalis.generic.SmartTabWriter
 import com.lightningkite.khrysalis.swift.replacements.TemplatePart
-import org.jetbrains.kotlin.psi.KtFile
 import java.io.BufferedWriter
+import java.util.*
 
 class SwiftLayoutEmitter(val translator: SwiftLayoutTranslator, val name: String) : Appendable {
     val stringBuilder = StringBuilder()

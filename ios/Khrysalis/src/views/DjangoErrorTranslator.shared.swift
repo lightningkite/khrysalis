@@ -11,6 +11,7 @@ public class DjangoErrorTranslator {
         self.connectivityErrorResource = connectivityErrorResource
         self.serverErrorResource = serverErrorResource
         self.otherErrorResource = otherErrorResource
+        //Necessary properties should be initialized now
     }
     
     
