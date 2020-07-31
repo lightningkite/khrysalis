@@ -1,0 +1,22 @@
+{
+    "compilerOptions": {
+      "outDir": "./dist",
+      "rootDir": "./src",
+      "noImplicitAny": true,
+      "strictNullChecks": true,
+      "declaration": true,
+      "sourceMap": true,
+      "module": "commonjs",
+      "lib": ["es2019", "es7", "es6", "dom"],
+      "target": "es6",
+      "allowJs": true,
+      "esModuleInterop": true,
+      "typeRoots": ["./node_modules/**/"],
+      "baseUrl": "./src",
+      "paths": {
+        "*": [ "node_modules/@types/*", "*"],
+        "rxjs": ["node_modules/rxjs"],
+        "rxjs/*": ["node_modules/rxjs/*"]
+      }
+    }
+  }

@@ -12,7 +12,9 @@ import com.lightningkite.khrysalis.observables.StandardObservableProperty
 
 object Notifications {
     var notificationToken = StandardObservableProperty<String?>(null)
-    fun configure() {
+    @Deprecated("Use 'request' instead", ReplaceWith("this.request"))
+    fun configure() = request()
+    fun request() {
         if (Build.VERSION.SDK_INT >= 26) {
             (HttpClient.appContext.getSystemService(Context.NOTIFICATION_SERVICE) as NotificationManager).createNotificationChannel(
                 NotificationChannel(HttpClient.appContext.getString(R.string.default_notification_channel_id), "Default", NotificationManager.IMPORTANCE_DEFAULT)

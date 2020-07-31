@@ -12,13 +12,17 @@ import FirebaseMessaging
 import Khrysalis
 
 
-public enum Notifications {
-    static public var notificationToken = StandardObservableProperty<String?>(nil)
-    static public func configure(){
+public class Notifications {
+    static public let INSTANCE = Notifications()
+    public var notificationToken = StandardObservableProperty<String?>(nil)
+    public func request(){
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge], completionHandler: { (success, error) in
             if success {
                 Notifications.notificationToken.value = Messaging.messaging().fcmToken
             }
         })
+    }
+    public func configure(){
+        request()
     }
 }
