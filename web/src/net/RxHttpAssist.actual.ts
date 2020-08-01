@@ -23,13 +23,23 @@ export function ioReactivexSingleReadJson<T>(this_: Observable<Response>, T: Arr
     return this_.pipe(
         switchMap((it) => {
             if (it.ok) {
-                return from(it.json());
+                return okhttp3ResponseReadJson<T>(it, T);
             } else {
                 throw new HttpResponseException(it, undefined);
             }
-        }),
-        rxMap((it) => {
-            return parse(it, T)
+        })
+    );
+}
+
+//! Declares com.lightningkite.khrysalis.net.readJsonDebug
+export function ioReactivexSingleReadJsonDebug<T>(this_: Observable<Response>, T: Array<any>): Observable<T> {
+    return this_.pipe(
+        switchMap((it) => {
+            if (it.ok) {
+                return okhttp3ResponseReadJsonDebug<T>(it, T);
+            } else {
+                throw new HttpResponseException(it, undefined);
+            }
         })
     );
 }
@@ -39,7 +49,7 @@ export function ioReactivexSingleReadText(this_: Observable<Response>): Observab
     return this_.pipe(
         switchMap((it) => {
             if (it.ok) {
-                return from(it.text())
+                return okhttp3ResponseReadText(it);
             } else {
                 throw new HttpResponseException(it, undefined);
             }
@@ -52,11 +62,36 @@ export function ioReactivexSingleReadData(this_: Observable<Response>): Observab
     return this_.pipe(
         switchMap((it) => {
             if (it.ok) {
-                return from(it.arrayBuffer())
+                return okhttp3ResponseReadData(it);
             } else {
                 throw new HttpResponseException(it, undefined);
             }
-        }),
+        })
+    );
+}
+
+//! Declares com.lightningkite.khrysalis.net.readJson
+export function okhttp3ResponseReadJson<T>(this_: Response, T: Array<any>): Observable<T> {
+    return from(this_.json()).pipe(rxMap((it) => {
+        return parse(it, T)
+    }));
+}
+
+//! Declares com.lightningkite.khrysalis.net.readJsonDebug
+export function okhttp3ResponseReadJsonDebug<T>(this_: Response, T: Array<any>): Observable<T> {
+    return from(this_.json()).pipe(rxMap((it) => {
+        return parse(it, T)
+    }));
+}
+
+//! Declares com.lightningkite.khrysalis.net.readText
+export function okhttp3ResponseReadText(this_: Response): Observable<String> {
+    return from(this_.text());
+}
+
+//! Declares com.lightningkite.khrysalis.net.readData
+export function okhttp3ResponseReadData(this_: Response): Observable<Int8Array> {
+    return from(this_.arrayBuffer()).pipe(
         rxMap((it) => new Int8Array(it))
     );
 }

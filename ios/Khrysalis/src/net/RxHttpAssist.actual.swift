@@ -26,40 +26,50 @@ extension Single where Element == HttpResponse, Trait == SingleTrait {
 extension PrimitiveSequence where Element == HttpResponse, Trait == SingleTrait {
     //--- Single<@swiftExactly("Element")HttpResponse>.readJson()
     public func readJson<T: Codable>() -> Single<T> {
-        return self.map{ (it) in
+        return self.flatMap { (it) in
             if it.isSuccessful {
                 return it.readJson()
             } else {
-                throw HttpResponseException(it)
+                Single.error(HttpResponseException(it))
+            }
+        }
+    }
+    //--- Single<@swiftExactly("Element")HttpResponse>.readJsonDebug()
+    public func readJsonDebug<T: Codable>() -> Single<T> {
+        return self.flatMap { (it) in
+            if it.isSuccessful {
+                return it.readJsonDebug()
+            } else {
+                Single.error(HttpResponseException(it))
             }
         }
     }
     public func readJson<T: Codable>(_ type: T.Type) -> Single<T> {
-        return self.map{ (it) in
+        return self.flatMap { (it) in
             if it.isSuccessful {
                 return it.readJson()
             } else {
-                throw HttpResponseException(it)
+                Single.error(HttpResponseException(it))
             }
         }
     }
     //--- Single<@swiftExactly("Element")HttpResponse>.readText()
     public func readText() -> Single<String> {
-        return self.map{ (it) in
+        return self.flatMap { (it) in
             if it.isSuccessful {
                 return String(data: it.data, encoding: .utf8)!
             } else {
-                throw HttpResponseException(it)
+                Single.error(HttpResponseException(it))
             }
         }
     }
     //--- Single<@swiftExactly("Element")HttpResponse>.readData()
     public func readData() -> Single<Data> {
-        return self.map{ (it) in
+        return self.flatMap { (it) in
             if it.isSuccessful {
                 return it.data
             } else {
-                throw HttpResponseException(it)
+                Single.error(HttpResponseException(it))
             }
         }
     }

@@ -25,6 +25,10 @@ annotation class modifies
 
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.SOURCE)
+annotation class SwiftName(val name: String)
+
+@Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.SOURCE)
 annotation class unownedSelf
 
 @Target(AnnotationTarget.FUNCTION)

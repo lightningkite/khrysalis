@@ -31,14 +31,34 @@ public struct HttpResponse {
 
 
     //--- HttpResponse.readText()
-    func readText() -> String {
-        return String(data: data, encoding: .utf8)!
+    func readText() -> Single<String> {
+        return Single.of(String(data: data, encoding: .utf8)!)
+    }
+
+
+    //--- HttpResponse.readData()
+    func readData() -> Single<Data> {
+        return Single.of(data)
     }
     
 
     //--- HttpResponse.readJson()
-    func readJson<T: Codable>() -> T {
-        return try! T.fromJsonData(data)
+    func readJson<T: Codable>() -> Single<T> {
+        do {
+            return Single.of(try T.fromJsonData(data))
+        } catch (error) {
+            return Single.error(error)
+        }
+    }
+
+    //--- HttpResponse.readJsonDebug()
+    func readJsonDebug<T: Codable>() -> Single<T> {
+        do {
+            print("Got response \(String(data: data, encoding: .utf8)!)")
+            return Single.of(try T.fromJsonData(data))
+        } catch (error) {
+            return Single.error(error)
+        }
     }
     
 

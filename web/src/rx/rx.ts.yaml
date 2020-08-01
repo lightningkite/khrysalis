@@ -121,6 +121,25 @@
       rxMap: map from rxjs/operators
       rxCombineLatest: combineLatest from rxjs
 
+- id: com.lightningkite.khrysalis.rx.combineLatest
+  type: call
+  receiver: kotlin.collections.List
+  arguments: []
+  template:
+    pattern: rxCombineLatest(~this~)
+    imports:
+      rxMap: map from rxjs/operators
+      rxCombineLatest: combineLatest from rxjs
+
+- id: com.lightningkite.khrysalis.rx.combineLatest
+  type: call
+  receiver: kotlin.collections.List
+  template:
+    pattern: rxCombineLatest(~this~, ~0~)
+    imports:
+      rxMap: map from rxjs/operators
+      rxCombineLatest: combineLatest from rxjs
+
 - id: io.reactivex.Observable.skip
   type: call
   template:

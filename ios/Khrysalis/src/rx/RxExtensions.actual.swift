@@ -28,6 +28,16 @@ extension Observable where Observable.Element: OptionalConvertible {
     }
 }
 
+//--- List<Observable<IN>>.combineLatest((List<IN>)->OUT)
+extension Array where Element: Observable {
+    func combineLatest<OUT>(combine: @escaping (Array<Element.Element>)->OUT) -> Observable<OUT> {
+        return Observable.combineLatest(self, resultSelector: combine)
+    }
+    func combineLatest<OUT>() -> Observable<Array<Element.Element>> {
+        return Observable.combineLatest(self)
+    }
+}
+
 //--- Observable<Element>.mapNotNull((Element)->Destination?)
 public extension Observable {
     func mapNotNull<Destination>(_ transform: @escaping (Element) -> Destination?) -> Observable<Destination> {
