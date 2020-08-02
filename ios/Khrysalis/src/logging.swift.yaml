@@ -1,0 +1,20 @@
+---
+
+- id: android.util.Log.v
+  call: call
+  template: 'print("    \(~0~): \(~1~)")'
+- id: android.util.Log.d
+  call: call
+  template: 'print("    \(~0~): \(~1~)")'
+- id: android.util.Log.i
+  call: call
+  template: 'print("  ℹ \(~0~): \(~1~)")'
+- id: android.util.Log.w
+  call: call
+  template: 'print("  ⚠ \(~0~): \(~1~)")'
+- id: android.util.Log.e
+  call: call
+  template: 'print("  ❌ \(~0~): \(~1~)")'
+- id: android.util.Log.wtf
+  call: call
+  template: 'print("  💀 \(~0~): \(~1~)")'

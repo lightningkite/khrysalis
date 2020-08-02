@@ -1,0 +1,20 @@
+---
+
+- id: android.util.Log.v
+  call: call
+  template: 'console.log(`\(~0~): \(~1~)`)'
+- id: android.util.Log.d
+  call: call
+  template: 'console.debug(`\(~0~): \(~1~)`)'
+- id: android.util.Log.i
+  call: call
+  template: 'console.info(`\(~0~): \(~1~)`)'
+- id: android.util.Log.w
+  call: call
+  template: 'console.warn(`\(~0~): \(~1~)`)'
+- id: android.util.Log.e
+  call: call
+  template: 'console.error(`\(~0~): \(~1~)`)'
+- id: android.util.Log.wtf
+  call: call
+  template: 'console.error(`\(~0~): \(~1~)`)'

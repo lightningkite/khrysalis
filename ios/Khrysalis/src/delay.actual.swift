@@ -20,8 +20,8 @@ public func post(_ action: @escaping () -> Void) -> Void {
 }
 
 //--- animationFrame
-public let animationFrame: StandardEvent<CGFloat> = {
-    let temp = StandardEvent<CGFloat>()
+public let animationFrame: PublishSubject<CGFloat> = {
+    let temp = PublishSubject<CGFloat>()
     frame()
     return temp
 }()
@@ -34,3 +34,9 @@ private func frame(){
         frame()
     }
 }
+
+//--- _applicationIsActive
+public let _applicationIsActive = PublishSubject<Bool>()
+public let applicationIsActive = applicationIsActiveEvent
+     .debounce(0.1, scheduler: MainScheduler.instance)
+     .asObservableProperty(true)
