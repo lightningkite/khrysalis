@@ -31,7 +31,7 @@ export class PolygonF {
             
             const denom = (-(big - point.x)) * (b.y - a.y);
             
-            if (denom === 0) continue;
+            if (denom === 0) { continue }
             const ua = ((big - point.x) * (a.y - point.y)) / denom;
             
             const ub = ((b.x - a.x) * (a.y - point.y) - (b.y - a.y) * (a.x - point.x)) / denom;

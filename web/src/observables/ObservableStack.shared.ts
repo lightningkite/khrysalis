@@ -10,7 +10,7 @@ export class ObservableStack<T extends object> extends ObservableProperty<Array<
     public constructor() {
         super();
         this.onChange = new Subject();
-        this.stack = ([] as Array<any>);
+        this.stack = ([] as Array<T>);
     }
     
     
@@ -62,9 +62,9 @@ export class ObservableStack<T extends object> extends ObservableProperty<Array<
         for (const i of new NumberRange(0, (this.stack.length - 1))) {
             if (found) {
                 this.stack.splice((this.stack.length - 1), 1)[0];
-            } else if (this.stack[i] === t) {
-                found = true;
-            }
+            } else { if (this.stack[i] === t) {
+                    found = true;
+            } }
         }
         this.onChange.next(this.stack);
     }
@@ -75,9 +75,9 @@ export class ObservableStack<T extends object> extends ObservableProperty<Array<
         for (const i of new NumberRange(0, (this.stack.length - 1))) {
             if (found) {
                 this.stack.splice((this.stack.length - 1), 1)[0];
-            } else if (predicate(this.stack[i])) {
-                found = true;
-            }
+            } else { if (predicate(this.stack[i])) {
+                    found = true;
+            } }
         }
         this.onChange.next(this.stack);
     }

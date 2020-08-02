@@ -18,6 +18,9 @@
 
 ## Creation
 
+- id: kotlin.collections.toMap
+  type: call
+  template: "new Map<~T0~, ~T1~>(~0~)"
 - id: kotlin.collections.mapOf
   type: call
   typeArgumentRequirements:

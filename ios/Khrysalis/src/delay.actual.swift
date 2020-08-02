@@ -39,4 +39,5 @@ private func frame(){
 public let _applicationIsActive = PublishSubject<Bool>()
 public let applicationIsActive = applicationIsActiveEvent
      .debounce(0.1, scheduler: MainScheduler.instance)
+     .distinctUntilChanged()
      .asObservableProperty(true)

@@ -21,9 +21,9 @@ export class SelectDateRangeMonthCVD extends MonthCVD {
         this.draggingStart = true;
         this.start = new StandardObservableProperty<(DateAlone | null)>(null, undefined);
         this.endInclusive = new StandardObservableProperty<(DateAlone | null)>(null, undefined);
-        let temp_360;
-        if ((temp_360 = this.start.value) !== null) { 
-            this.currentMonthObs.value = copyDateAloneMod(temp_360, Date.prototype.setDate, 1);
+        let temp_369;
+        if ((temp_369 = this.start.value) !== null) { 
+            this.currentMonthObs.value = copyDateAloneMod(temp_369, Date.prototype.setDate, 1);
         };
         ioReactivexDisposablesDisposableForever<SubscriptionLike>(this.start.onChange.subscribe( (value: (DateAlone | null)): void => {
                     this?.invalidate()

@@ -22,7 +22,7 @@ export function andAllDisposeConditions(list: Array<DisposeCondition>): DisposeC
             for (const item of list) {
                 item.call(new DisposableLambda((): void => {
                             disposalsLeft = disposalsLeft - 1;
-                            if (disposalsLeft === 0) it.unsubscribe();
+                            if (disposalsLeft === 0) { it.unsubscribe() }
                 }));
             }
 }); }

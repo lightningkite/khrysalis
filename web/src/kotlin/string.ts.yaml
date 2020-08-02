@@ -140,7 +140,7 @@
 - id: kotlin.text.isNotBlank
   type: call
   template:
-    pattern: !kotlinCharSequenceIsBlank(~this~)
+    pattern: '!kotlinCharSequenceIsBlank(~this~)'
     imports:
       kotlinCharSequenceIsBlank: khrysalis/dist/kotlin/kotlin.text
 - id: kotlin.text.isNullOrBlank

@@ -84,6 +84,10 @@ public extension Observable {
     func doOnNext(_ action: @escaping (Element) throws -> Void) throws -> Observable<Element> {
         return self.do(onNext: action)
     }
+    //--- Observable.doOnTerminate(()->Unit)
+    func doOnNext(_ action: @escaping () throws -> Void) throws -> Observable<Element> {
+        return self.do(onTerminate: action)
+    }
 
     //--- Observable.Companion.{ (overwritten on flow generation)
     

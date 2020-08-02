@@ -95,7 +95,7 @@ export function comLightningkiteKhrysalisViewsViewStringToDebugString(this_: Vie
     } else if (thing instanceof ViewStringResource) {
         return thing.resource.toString()
     } else if (thing instanceof ViewStringTemplate) {
-        return comLightningkiteKhrysalisViewsViewStringToDebugString(thing.template) + "(" + thing._arguments.map((it: any): string => ((): string => {if (checkIsInterface<ViewString>(it, "ComLightningkiteKhrysalisViewsViewString")) return comLightningkiteKhrysalisViewsViewStringToDebugString(it); else return `${it}`;})()).join(", ") + ")"
+        return comLightningkiteKhrysalisViewsViewStringToDebugString(thing.template) + "(" + thing._arguments.map((it: any): string => ((): string => {if (checkIsInterface<ViewString>(it, "ComLightningkiteKhrysalisViewsViewString")) { return comLightningkiteKhrysalisViewsViewStringToDebugString(it) } else { return `${it}` }})()).join(", ") + ")"
     } else if (thing instanceof ViewStringList) {
         return thing.parts.map((it: ViewString): string => comLightningkiteKhrysalisViewsViewStringToDebugString(it)).join(thing.separator)
     } else if (thing instanceof ViewStringComplex) {

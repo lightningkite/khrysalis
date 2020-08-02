@@ -54,6 +54,32 @@
   template:
     pattern: '~this~.distinctUntilChanged(~0~)'
     imports: [RxSwift]
+
+
+- id: io.reactivex.ObservableSource
+  type: type
+  template:
+    pattern: Observable<~T0~>
+    imports: [RxSwift]
+- id: io.reactivex.SingleSource
+  type: type
+  template:f
+    pattern: Observable<~T0~>
+    imports: [RxSwift]
+
+
+- id: io.reactivex.Observable.fromIterable
+  type: call
+  template:
+    pattern: Observable.from(~0~)
+    imports: [RxSwift]
+
+- id: io.reactivex.Observable.publish
+  type: call
+  template:
+    pattern: ~this~.publish()
+    imports: [RxSwift]
+
 #- id: io.reactivex.Observable.map
 #  type: call
 #  template:

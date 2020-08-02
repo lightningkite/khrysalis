@@ -27,6 +27,7 @@ val animationFrame: PublishSubject<GFloat> = PublishSubject.create()
 private val applicationIsActiveEvent = PublishSubject.create<Boolean>()
 val applicationIsActive: ObservableProperty<Boolean> = applicationIsActiveEvent
     .debounce(100L, TimeUnit.MILLISECONDS)
+    .distinctUntilChanged()
     .asObservableProperty(true)
 
 @PlatformSpecific fun applicationIsActiveStartup(application: Application){

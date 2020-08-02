@@ -45,4 +45,9 @@ fun main(){
     val b = 23f
     val c = 23
     val d = 23.0
+
+    val unit: Unit = Unit
+    val returnsUnit: ()->Unit = label@{
+        return@label Unit
+    }
 }

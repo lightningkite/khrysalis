@@ -6,7 +6,7 @@ import com.lightningkite.khrysalis.Preferences
 import com.lightningkite.khrysalis.applicationIsActiveStartup
 import com.lightningkite.khrysalis.net.HttpClient
 
-class KhrysalisApplication: Application() {
+open class KhrysalisApplication: Application() {
     companion object {
         fun setup(application: Application){
             HttpClient.appContext = application

@@ -17,7 +17,7 @@ export class GeoCoordinate implements Codable {
             parseJsonTyped(obj["latitude"], [Number]) as number, 
             parseJsonTyped(obj["longitude"], [Number]) as number
     ) }
-    public toJson(): object { return {
+    public toJSON(): object { return {
             latitude: this.latitude, 
             longitude: this.longitude
     } }
