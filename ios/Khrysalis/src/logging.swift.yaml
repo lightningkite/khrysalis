@@ -18,3 +18,53 @@
 - id: android.util.Log.wtf
   call: call
   template: 'print("  💀 \(~0~): \(~1~)")'
+
+- id: android.util.Log.v
+  call: call
+  arguments: [kotlin.String, kotlin.String, kotlin.Throwable]
+  template: 'print("    \(~0~): \(~1~): \(~2~.localizedDescription)")'
+- id: android.util.Log.d
+  call: call
+  arguments: [kotlin.String, kotlin.String, kotlin.Throwable]
+  template: 'print("    \(~0~): \(~1~): \(~2~.localizedDescription)")'
+- id: android.util.Log.i
+  call: call
+  arguments: [kotlin.String, kotlin.String, kotlin.Throwable]
+  template: 'print("  ℹ \(~0~): \(~1~): \(~2~.localizedDescription)")'
+- id: android.util.Log.w
+  call: call
+  arguments: [kotlin.String, kotlin.String, kotlin.Throwable]
+  template: 'print("  ⚠ \(~0~): \(~1~): \(~2~.localizedDescription)")'
+- id: android.util.Log.e
+  call: call
+  arguments: [kotlin.String, kotlin.String, kotlin.Throwable]
+  template: 'print("  ❌ \(~0~): \(~1~): \(~2~.localizedDescription)")'
+- id: android.util.Log.wtf
+  call: call
+  arguments: [kotlin.String, kotlin.String, kotlin.Throwable]
+  template: 'print("  💀 \(~0~): \(~1~): \(~2~.localizedDescription)")'
+
+- id: android.util.Log.v
+  call: call
+  arguments: [kotlin.String, kotlin.Throwable]
+  template: 'print("    \(~0~): \(~1~.localizedDescription)")'
+- id: android.util.Log.d
+  call: call
+  arguments: [kotlin.String, kotlin.Throwable]
+  template: 'print("    \(~0~): \(~1~.localizedDescription)")'
+- id: android.util.Log.i
+  call: call
+  arguments: [kotlin.String, kotlin.Throwable]
+  template: 'print("  ℹ \(~0~): \(~1~.localizedDescription)")'
+- id: android.util.Log.w
+  call: call
+  arguments: [kotlin.String, kotlin.Throwable]
+  template: 'print("  ⚠ \(~0~): \(~1~.localizedDescription)")'
+- id: android.util.Log.e
+  call: call
+  arguments: [kotlin.String, kotlin.Throwable]
+  template: 'print("  ❌ \(~0~): \(~1~.localizedDescription)")'
+- id: android.util.Log.wtf
+  call: call
+  arguments: [kotlin.String, kotlin.Throwable]
+  template: 'print("  💀 \(~0~): \(~1~.localizedDescription)")'
