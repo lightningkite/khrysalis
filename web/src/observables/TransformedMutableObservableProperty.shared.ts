@@ -15,7 +15,7 @@ export class TransformedMutableObservableProperty<A, B> extends MutableObservabl
         this.basedOn = basedOn;
         this.read = read;
         this.write = write;
-        this.onChange = this.basedOn.onChange.pipe(rxMap((it: (any | null)): (any | null) => this.read(it)));
+        this.onChange = this.basedOn.onChange.pipe(rxMap((it: (A | null)): (B | null) => this.read(it)));
     }
     
     public update(): void {

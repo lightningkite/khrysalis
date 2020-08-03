@@ -41,7 +41,7 @@ export class GeoAddress implements Codable {
             parseJsonTyped(obj["countryName"], [String]) as (string | null), 
             parseJsonTyped(obj["postalCode"], [String]) as (string | null)
     ) }
-    public toJson(): object { return {
+    public toJSON(): object { return {
             coordinate: this.coordinate, 
             name: this.name, 
             street: this.street, 

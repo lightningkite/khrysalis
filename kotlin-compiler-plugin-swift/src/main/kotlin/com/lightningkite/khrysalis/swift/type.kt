@@ -46,7 +46,7 @@ fun KotlinType.worksAsSwiftConstraint(): Boolean {
         is WrappedType -> false
         is SimpleType -> true
         is FlexibleType -> false //could work later?
-    }
+    } && this.arguments.all { it.type.arguments.isEmpty() }
 }
 
 fun CallableDescriptor.worksAsSwiftConstraint(): Boolean {
@@ -69,10 +69,10 @@ fun SwiftTranslator.registerType() {
                     val type = match
                     if (type.resolvedType?.constructor?.declarationDescriptor is TypeParameterDescriptor) return@mapIndexedNotNull null
                     val swiftExactly = type.annotations.flatMap { it.entries }.find {
-                        it.typeReference?.text?.endsWith("swiftExactly") == true
+                        it.typeReference?.text?.endsWith("SwiftExactly") == true
                     }?.valueArguments?.let { it.firstOrNull()?.getArgumentExpression()?.text?.trim('"') ?: "T" }
                     val swiftDescendsFrom = type.annotations.flatMap { it.entries }.find {
-                        it.typeReference?.text?.endsWith("swiftDescendsFrom") == true
+                        it.typeReference?.text?.endsWith("SwiftDescendsFrom") == true
                     }?.valueArguments?.let { it.firstOrNull()?.getArgumentExpression()?.text?.trim('"') ?: "T" }
                     when {
                         swiftExactly != null -> {
@@ -95,10 +95,10 @@ fun SwiftTranslator.registerType() {
                     val type = arg.type
                     if (type.constructor.declarationDescriptor is TypeParameterDescriptor) return@mapIndexedNotNull null
                     val swiftExactly = type.annotations.find {
-                        it.fqName?.asString()?.endsWith("swiftExactly") == true
+                        it.fqName?.asString()?.endsWith("SwiftExactly") == true
                     }?.allValueArguments?.entries?.let { it.firstOrNull()?.value?.value as? String ?: "T" }
                     val swiftDescendsFrom = type.annotations.find {
-                        it.fqName?.asString()?.endsWith("swiftDescendsFrom") == true
+                        it.fqName?.asString()?.endsWith("SwiftDescendsFrom") == true
                     }?.allValueArguments?.entries?.let { it.firstOrNull()?.value?.value as? String ?: "T" }
                     when {
                         swiftExactly != null -> {
@@ -142,7 +142,7 @@ fun SwiftTranslator.registerType() {
     handle<KotlinType> {
         when (val desc = typedRule.constructor.declarationDescriptor) {
             is FunctionClassDescriptor -> {
-                if (partOfParameter && typedRule.annotations.any { it.fqName?.asString() == "com.lightningkite.khrysalis.escaping" }) {
+                if (partOfParameter && typedRule.annotations.any { it.fqName?.asString() == "com.lightningkite.khrysalis.Escaping" }) {
                     -"@escaping "
                 }
                 -'('

@@ -696,6 +696,7 @@ fun TypescriptTranslator.registerClass() {
         -typedRule.nameIdentifier
         -" = new "
         writeClassHeader(typedRule)
+        -typedRule.parentOfType<KtClassBody>()?.parentOfType<KtClass>()?.nameIdentifier
         -" {\n"
         writeInterfaceMarkers(typedRule)
         -"public constructor() {\n"
@@ -707,8 +708,10 @@ fun TypescriptTranslator.registerClass() {
             -'"'
             Unit
         })
-        (typedRule.initializerList?.initializers?.firstOrNull() as? KtSuperTypeCallEntry)?.valueArguments?.forEach {
-            args.add { -it }
+        (typedRule.initializerList?.initializers?.firstOrNull() as? KtSuperTypeCallEntry)?.resolvedCall?.valueArguments?.forEach {
+            args.add { -(it.value.arguments.firstOrNull()?.getArgumentExpression() ?: "undefined") }
+        } ?: (typedRule.initializerList?.initializers?.firstOrNull() as? KtSuperTypeCallEntry)?.valueArguments?.forEach {
+            args.add { -it.getArgumentExpression() }
         }
         args.forEachBetween(
             forItem = { it() },
@@ -762,8 +765,10 @@ fun TypescriptTranslator.registerClass() {
             -'"'
             Unit
         })
-        (typedRule.initializerList?.initializers?.firstOrNull() as? KtSuperTypeCallEntry)?.valueArguments?.forEach {
-            args.add { -it }
+        (typedRule.initializerList?.initializers?.firstOrNull() as? KtSuperTypeCallEntry)?.resolvedCall?.valueArguments?.forEach {
+            args.add { -(it.value.arguments.firstOrNull()?.getArgumentExpression() ?: "undefined") }
+        } ?: (typedRule.initializerList?.initializers?.firstOrNull() as? KtSuperTypeCallEntry)?.valueArguments?.forEach {
+            args.add { -it.getArgumentExpression() }
         }
         args.forEachBetween(
             forItem = { it() },

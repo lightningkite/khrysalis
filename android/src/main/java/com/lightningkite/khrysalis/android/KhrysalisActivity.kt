@@ -21,7 +21,7 @@ import io.reactivex.rxkotlin.subscribeBy
  *
  * Created by jivie on 10/12/15.
  */
-abstract class KhrysalisActivity : AccessibleActivity() {
+abstract class KhrysalisActivity(val changeToTheme: Int? = null) : AccessibleActivity() {
 
     abstract val main: ViewGenerator
     lateinit var view: View
@@ -53,6 +53,7 @@ abstract class KhrysalisActivity : AccessibleActivity() {
                 .create()
                 .show()
         }
+        changeToTheme?.let { setTheme(it) }
         setContentView(view)
     }
 

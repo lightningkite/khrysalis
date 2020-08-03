@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.ios.values
 
+import com.lightningkite.khrysalis.swift.safeSwiftIdentifier
 import com.lightningkite.khrysalis.utils.XmlNode
 import com.lightningkite.khrysalis.utils.camelCase
 import java.io.File
@@ -21,9 +22,9 @@ fun File.readXMLDimen(): Map<String, String> {
 fun Map<String, String>.writeXMLDimen(out: Appendable) {
     for ((key, value) in this@writeXMLDimen.entries) {
         if (key.contains("programmatic", true)) {
-            out.appendln("static var ${key}: CGFloat = $value")
+            out.appendln("static var ${key.safeSwiftIdentifier()}: CGFloat = $value")
         } else {
-            out.appendln("static let ${key}: CGFloat = $value")
+            out.appendln("static let ${key.safeSwiftIdentifier()}: CGFloat = $value")
         }
     }
 }

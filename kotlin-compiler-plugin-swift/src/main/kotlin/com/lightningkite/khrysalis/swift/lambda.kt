@@ -1,17 +1,24 @@
 package com.lightningkite.khrysalis.swift
 
 import com.lightningkite.khrysalis.util.forEachBetween
+import org.jetbrains.kotlin.builtins.getReturnTypeFromFunctionType
+import org.jetbrains.kotlin.builtins.getValueParameterTypesFromFunctionType
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.*
 
 fun SwiftTranslator.registerLambda() {
     handle<KtFunctionLiteral> {
         val resolved = typedRule.resolvedFunction!!
+        val reet = typedRule.resolvedExpectedExpressionType
+            ?: (typedRule.parent as? KtLambdaExpression)?.resolvedExpectedExpressionType
+            ?: ((typedRule.parent as? KtLambdaExpression)?.parent as? KtParameter)?.resolvedValueParameter?.type
+        val betterParameterTypes = reet?.getValueParameterTypesFromFunctionType()?.map { it.type }
+        val betterReturnType = reet?.getReturnTypeFromFunctionType()
         fun write(rec: Any? = null) {
             -"{ "
-            if (typedRule.resolvedFunction?.annotations?.any { it.fqName?.asString() == "com.lightningkite.khrysalis.weakSelf" } == true) {
+            if (typedRule.resolvedFunction?.annotations?.any { it.fqName?.asString() == "com.lightningkite.khrysalis.WeakSelf" } == true) {
                 -"[weak self] "
-            } else if (typedRule.resolvedFunction?.annotations?.any { it.fqName?.asString() == "com.lightningkite.khrysalis.unownedSelf" } == true) {
+            } else if (typedRule.resolvedFunction?.annotations?.any { it.fqName?.asString() == "com.lightningkite.khrysalis.UnownedSelf" } == true) {
                 -"[unowned self] "
             }
             resolved.valueParameters.let {
@@ -33,16 +40,16 @@ fun SwiftTranslator.registerLambda() {
                         }
                         -": "
                         partOfParameter = true
-                        -(typedRule.valueParameters.getOrNull(index)?.typeReference ?: it.type)
+                        -(typedRule.valueParameters.getOrNull(index)?.typeReference ?: betterParameterTypes?.getOrNull(index) ?: it.type)
                         partOfParameter = false
                     },
                     between = { -", " }
                 )
                 -')'
             }
-            resolved.annotations.findAnnotation(FqName("com.lightningkite.khrysalis.swiftReturnType"))?.allValueArguments?.entries?.first()?.value?.value?.let {
+            resolved.annotations.findAnnotation(FqName("com.lightningkite.khrysalis.SwiftReturnType"))?.allValueArguments?.entries?.first()?.value?.value?.let {
                 -" -> $it"
-            } ?: resolved.returnType?.let {
+            } ?: (betterReturnType ?: resolved.returnType)?.let {
                 -" -> "
                 -it
             }

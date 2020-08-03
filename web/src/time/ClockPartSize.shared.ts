@@ -17,5 +17,6 @@ export class ClockPartSize {
     public readonly name: string;
     public static valueOf(name: string): ClockPartSize { return (ClockPartSize as any)[name]; }
     public toString(): string { return this.name }
+    public toJSON(): string { return this.name }
 }
 

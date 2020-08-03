@@ -1,5 +1,7 @@
 package com.lightningkite.khrysalis.observables.binding
 
+import android.content.Context
+import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.AdapterView
@@ -7,6 +9,7 @@ import android.widget.BaseAdapter
 import android.widget.Spinner
 import android.widget.TextView
 import com.lightningkite.khrysalis.JsName
+import com.lightningkite.khrysalis.PlatformSpecific
 import com.lightningkite.khrysalis.observables.*
 import com.lightningkite.khrysalis.rx.removed
 import com.lightningkite.khrysalis.rx.until
@@ -72,6 +75,8 @@ fun <T> Spinner.bind(
     }
 }
 
+@PlatformSpecific var khrysalisSpinnerRow: Int = android.R.layout.simple_spinner_item
+
 @JsName("spinnerBind")
 fun <T> Spinner.bind(
     options: ObservableProperty<List<T>>,
@@ -91,10 +96,11 @@ fun <T> Spinner.bind(
                 val event = StandardObservableProperty<T>(
                     options.value.getOrNull(position) ?: selected.value
                 )
-                val subview = TextView(context)
+                val subview = LayoutInflater.from(this@bind.context).inflate(khrysalisSpinnerRow, parent, false)
                 val padding = (context.resources.displayMetrics.density * 8).toInt()
                 subview.setPadding(padding,padding,padding,padding)
-                subview.bindString(event.map(toString))
+                val textView = subview.findViewById<TextView>(android.R.id.text1)
+                textView.bindString(event.map(toString))
                 subview.tag = event
                 return subview
             }

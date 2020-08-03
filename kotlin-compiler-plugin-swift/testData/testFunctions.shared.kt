@@ -106,6 +106,10 @@ private fun functionMain(){
     "asdf.sdf,asdf".split(regex).forEach {
         println(it)
     }
+
+    instance.apply {
+        this.memberFunction()
+    }
 }
 
 private val functionAnotherThing = 2

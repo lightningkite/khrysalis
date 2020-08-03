@@ -36,4 +36,6 @@ private fun typesMain(){
     val b = 23f
     val c = 23
     val d = 23.0
+
+    val unit: Unit = Unit
 }

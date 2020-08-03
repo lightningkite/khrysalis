@@ -123,9 +123,9 @@ export class MonthCVD extends CustomViewDelegate {
     }
     public set currentOffset(value: number) {
         this._currentOffset = value;
-        const temp207 = this.customView;
-        if(temp207 !== null) { 
-            customViewInvalidate(temp207)
+        const temp216 = this.customView;
+        if(temp216 !== null) { 
+            customViewInvalidate(temp216)
         };
     }
     
@@ -163,7 +163,7 @@ export class MonthCVD extends CustomViewDelegate {
     
     
     public dayAtPixel(x: number, y: number, existing: (DateAlone | null) = null): (DateAlone | null) {
-        if (y < this.dayLabelHeight) return null;
+        if (y < this.dayLabelHeight) { return null }
         //        val columnRaw = (x / dayCellWidth - (dayCellWidth + currentOffset) * 7).toInt()
         const columnRawBeforeDrag = x / this.dayCellWidth;
         
@@ -177,8 +177,8 @@ export class MonthCVD extends CustomViewDelegate {
         
         const row = Math.floor(((y - this.dayLabelHeight) / this.dayCellHeight));
         
-        if (row < 0 || row > 5) return null;
-        if (column < 0 || column > 6) return null;
+        if (row < 0 || row > 5) { return null }
+        if (column < 0 || column > 6) { return null }
         return this.dayAt(dateAloneModRelative(comLightningkiteKhrysalisTimeDateAloneSet(this.calcMonth, this.currentMonth), Date.prototype.getMonth, Date.prototype.setMonth, monthOffset), row, column, existing ?? new DateAlone(0, 0, 0));
     }
     
@@ -210,14 +210,14 @@ export class MonthCVD extends CustomViewDelegate {
             //draw past month and current month
             this.drawMonth(canvas, (this.currentOffset - 1) * width, width, dateAloneModRelative(comLightningkiteKhrysalisTimeDateAloneSet(this.calcMonthB, this.currentMonth), Date.prototype.getMonth, Date.prototype.setMonth, (-1)), displayMetrics);
             this.drawMonth(canvas, this.currentOffset * width, width, this.currentMonth, displayMetrics);
-        } else if (this.currentOffset < 0) {
-            //draw future month and current month
-            this.drawMonth(canvas, (this.currentOffset + 1) * width, width, dateAloneModRelative(comLightningkiteKhrysalisTimeDateAloneSet(this.calcMonthB, this.currentMonth), Date.prototype.getMonth, Date.prototype.setMonth, 1), displayMetrics);
-            this.drawMonth(canvas, this.currentOffset * width, width, this.currentMonth, displayMetrics);
-        } else {
-            //Nice, it's exactly zero.  We can just draw one.
-            this.drawMonth(canvas, this.currentOffset * width, width, this.currentMonth, displayMetrics);
-        }
+        } else { if (this.currentOffset < 0) {
+                //draw future month and current month
+                this.drawMonth(canvas, (this.currentOffset + 1) * width, width, dateAloneModRelative(comLightningkiteKhrysalisTimeDateAloneSet(this.calcMonthB, this.currentMonth), Date.prototype.getMonth, Date.prototype.setMonth, 1), displayMetrics);
+                this.drawMonth(canvas, this.currentOffset * width, width, this.currentMonth, displayMetrics);
+            } else {
+                //Nice, it's exactly zero.  We can just draw one.
+                this.drawMonth(canvas, this.currentOffset * width, width, this.currentMonth, displayMetrics);
+        } }
     }
     
     private drawDate: DateAlone;
@@ -271,9 +271,9 @@ export class MonthCVD extends CustomViewDelegate {
     public onTouchDown(id: number, x: number, y: number, width: number, height: number): boolean {
         const day = this.dayAtPixel(x, y, undefined);
         
-        let temp_283;
-        if ((temp_283 = day) !== null) { 
-            if (this.onTouchDownDate(temp_283)) {
+        let temp_292;
+        if ((temp_292 = day) !== null) { 
+            if (this.onTouchDownDate(temp_292)) {
                 return true;
             }
         }
@@ -298,9 +298,9 @@ export class MonthCVD extends CustomViewDelegate {
                 }
             }
         } else {
-            let temp_295;
-            if ((temp_295 = this.dayAtPixel(x, y, undefined)) !== null) { 
-                return this.onTouchMoveDate(temp_295);
+            let temp_304;
+            if ((temp_304 = this.dayAtPixel(x, y, undefined)) !== null) { 
+                return this.onTouchMoveDate(temp_304);
             }
         }
         return true;
@@ -310,30 +310,30 @@ export class MonthCVD extends CustomViewDelegate {
     public onTouchUp(id: number, x: number, y: number, width: number, height: number): boolean {
         if (this.draggingId === id) {
             if (this.isTap) {
-                let temp_297;
-                if ((temp_297 = this.dayAtPixel(x, y, undefined)) !== null) { 
-                    this.onTap(temp_297);
+                let temp_306;
+                if ((temp_306 = this.dayAtPixel(x, y, undefined)) !== null) { 
+                    this.onTap(temp_306);
                 }
-            } else if (this.dragEnabled) {
-                const weighted = this.currentOffset + (this.currentOffset - this.lastOffset) * 200 / (Date.now() - this.lastOffsetTime);
-                
-                if (weighted > 0.5) {
-                    //shift right one
-                    dateAloneModRelative(this.currentMonthObs.value, Date.prototype.getMonth, Date.prototype.setMonth, (-1));
-                    this.currentMonthObs.update();
-                    this.currentOffset = this.currentOffset - 1;
-                } else if (weighted < (-0.5)) {
-                    //shift left one
-                    dateAloneModRelative(this.currentMonthObs.value, Date.prototype.getMonth, Date.prototype.setMonth, 1);
-                    this.currentMonthObs.update();
-                    this.currentOffset = this.currentOffset + 1;
-                }
-            }
+            } else { if (this.dragEnabled) {
+                    const weighted = this.currentOffset + (this.currentOffset - this.lastOffset) * 200 / (Date.now() - this.lastOffsetTime);
+                    
+                    if (weighted > 0.5) {
+                        //shift right one
+                        dateAloneModRelative(this.currentMonthObs.value, Date.prototype.getMonth, Date.prototype.setMonth, (-1));
+                        this.currentMonthObs.update();
+                        this.currentOffset = this.currentOffset - 1;
+                    } else { if (weighted < (-0.5)) {
+                            //shift left one
+                            dateAloneModRelative(this.currentMonthObs.value, Date.prototype.getMonth, Date.prototype.setMonth, 1);
+                            this.currentMonthObs.update();
+                            this.currentOffset = this.currentOffset + 1;
+                    } }
+            } }
             this.draggingId = this.DRAGGING_NONE;
         } else {
-            let temp_314;
-            if ((temp_314 = this.dayAtPixel(x, y, undefined)) !== null) { 
-                return this.onTouchUpDate(temp_314);
+            let temp_323;
+            if ((temp_323 = this.dayAtPixel(x, y, undefined)) !== null) { 
+                return this.onTouchUpDate(temp_323);
             }
         }
         return true;

@@ -136,7 +136,7 @@
 - id: android.view.View.setOnLongClickListener
   type: call
   template:
-    pattern: ~this~.oncontextmenu = (_ev) => { _ev.preventDefault(); ~L0~})
+    pattern: ~this~.oncontextmenu = (_ev) => { _ev.preventDefault(); ~L0~}
     lambdaTransforms:
       0: ["_ev.target as HTMLElement"]
 
@@ -150,6 +150,13 @@
 - id: com.lightningkite.khrysalis.views.onLongClick
   type: call
   template:
-    pattern: ~this~.oncontextmenu = (_ev) => { _ev.preventDefault(); ~L0~})
+    pattern: ~this~.oncontextmenu = (_ev) => { _ev.preventDefault(); ~L0~}
     lambdaTransforms:
       0: ["_ev.target as HTMLElement"]
+
+- id: android.view.View.isEnabled
+  type: get
+  template: (!~this~.disabled)
+- id: android.view.View.isEnabled
+  type: set
+  template: ~this~.disabled = !(~0~)

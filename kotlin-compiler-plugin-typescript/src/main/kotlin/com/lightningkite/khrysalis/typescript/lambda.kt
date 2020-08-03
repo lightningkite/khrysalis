@@ -1,14 +1,15 @@
 package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.generic.line
+import com.lightningkite.khrysalis.util.AnalysisExtensions
 import com.lightningkite.khrysalis.util.forEachBetween
 import com.lightningkite.khrysalis.util.simpleFqName
+import org.jetbrains.kotlin.builtins.*
 import org.jetbrains.kotlin.builtins.functions.FunctionInvokeDescriptor
-import org.jetbrains.kotlin.builtins.getReceiverTypeFromFunctionType
-import org.jetbrains.kotlin.builtins.isFunctionType
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.descriptors.ConstructorDescriptor
 import org.jetbrains.kotlin.descriptors.FunctionDescriptor
+import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 import org.jetbrains.kotlin.types.FlexibleType
@@ -16,6 +17,8 @@ import org.jetbrains.kotlin.types.SimpleType
 import org.jetbrains.kotlin.types.WrappedType
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.name.FqName
+import org.jetbrains.kotlin.types.isNullable
+import org.jetbrains.kotlin.types.typeUtil.isNullableNothing
 
 fun TypescriptTranslator.registerLambda() {
     handle<KtLambdaExpression>(
@@ -30,6 +33,11 @@ fun TypescriptTranslator.registerLambda() {
 
     handle<KtFunctionLiteral> {
         val resolved = typedRule.resolvedFunction!!
+        val reet = typedRule.resolvedExpectedExpressionType
+            ?: (typedRule.parent as? KtLambdaExpression)?.resolvedExpectedExpressionType
+            ?: ((typedRule.parent as? KtLambdaExpression)?.parent as? KtParameter)?.resolvedValueParameter?.type
+        val betterParameterTypes = reet?.getValueParameterTypesFromFunctionType()?.map { it.type }
+        val betterReturnType = reet?.getReturnTypeFromFunctionType()
         fun write(rec: Any? = null) {
             resolved.valueParameters.let {
                 -'('
@@ -43,11 +51,12 @@ fun TypescriptTranslator.registerLambda() {
                     forItem = { (index, it) ->
                         if (it.name.isSpecial) {
                             -'_'
+                            -index.toString()
                         } else {
                             -it.name.asString()
                         }
                         -": "
-                        -(typedRule.valueParameters.getOrNull(index)?.typeReference ?: it.type)
+                        -(typedRule.valueParameters.getOrNull(index)?.typeReference ?: betterParameterTypes?.getOrNull(index) ?: it.type)
                     },
                     between = { -", " }
                 )
@@ -55,7 +64,7 @@ fun TypescriptTranslator.registerLambda() {
             }
             resolved.annotations.findAnnotation(FqName("com.lightningkite.khrysalis.tsReturnType"))?.allValueArguments?.entries?.first()?.value?.value?.let {
                 -": $it"
-            } ?: resolved.returnType?.let {
+            } ?: (betterReturnType ?: resolved.returnType)?.let {
                 -": "
                 -it
             }
@@ -66,7 +75,7 @@ fun TypescriptTranslator.registerLambda() {
                 }
                 1 -> {
                     val s = typedRule.bodyExpression!!.statements.first()
-                    if(s!!.actuallyCouldBeExpression){
+                    if (s!!.actuallyCouldBeExpression && (resolved.returnType?.getJetTypeFqName(false) !in AnalysisExtensions.dontReturnTypes || resolved.returnType?.isNullableNothing() == true)) {
                         -s
                     } else {
                         -"{\n"
@@ -90,79 +99,6 @@ fun TypescriptTranslator.registerLambda() {
             write(null)
         }
     }
-//    handle<KtFunctionLiteral>(
-//        condition = { typedRule.resolvedFunction?.extensionReceiverParameter != null },
-//        priority = 100,
-//        action = {
-//            val resolved = typedRule.resolvedFunction!!
-//            withReceiverScope(resolved, "this_") { name ->
-//                -typedRule.typeParameterList
-//                -'('
-//                -name
-//                typedRule.valueParameters.takeUnless { it.isEmpty() }?.forEach {
-//                    -", "
-//                    -it
-//                } ?: run {
-//                    if (resolved.valueParameters.size == 1) {
-//                        -", it"
-//                    }
-//                }
-//                -") => "
-//                when (typedRule.bodyExpression?.statements?.size) {
-//                    null, 0 -> -"{}"
-//                    1 -> {
-//                        val s = typedRule.bodyExpression!!.statements.first()
-//                        if(s!!.actuallyCouldBeExpression){
-//                            -s
-//                        } else {
-//                            -"{\n"
-//                            -s
-//                            -"\n}"
-//                        }
-//                    }
-//                    else -> {
-//                        -"{\n"
-//                        -typedRule.bodyExpression
-//                        -"\n}"
-//                    }
-//                }
-//            }
-//        }
-//    )
-//    handle<KtFunctionLiteral> {
-//        val resolved = typedRule.resolvedFunction
-//        -typedRule.typeParameterList
-//        typedRule.valueParameterList?.let {
-//            -'('
-//            -it
-//            -')'
-//        } ?: run {
-//            if (resolved?.valueParameters?.size == 1) {
-//                -"(it)"
-//            } else {
-//                -"()"
-//            }
-//        }
-//        -" => "
-//        when (typedRule.bodyExpression?.statements?.size) {
-//            null, 0 -> -"{}"
-//            1 -> {
-//                val s = typedRule.bodyExpression!!.statements.first()
-//                if(s!!.actuallyCouldBeExpression){
-//                    -s
-//                } else {
-//                    -"{\n"
-//                    -s
-//                    -"\n}"
-//                }
-//            }
-//            else -> {
-//                -"{\n"
-//                -typedRule.bodyExpression
-//                -"\n}"
-//            }
-//        }
-//    }
 
     handle<KtLabeledExpression>(
         condition = { typedRule.baseExpression is KtLambdaExpression },

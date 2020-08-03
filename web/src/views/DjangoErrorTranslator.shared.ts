@@ -20,7 +20,7 @@ export class DjangoErrorTranslator {
     
     
     public handleNode(builder: StringBuilder, node: (any | null)): void {
-        if (node === null) return;
+        if (node === null) { return }
         if (checkIsInterface<Map<(any | null), (any | null)>>(node, "KotlinCollectionsMap")){
             for (const toDestructure of node) {
                 const key = toDestructure[0]
@@ -80,7 +80,7 @@ export class DjangoErrorTranslator {
     }
     
     public wrap<T>(callback:  ((result: (T | null), error: (ViewString | null)) => void)): ((code: number, result: (T | null), error: (string | null)) => void) {
-        return (code: number, result: (any | null), error: (string | null)): void => {
+        return (code: number, result: (T | null), error: (string | null)): void => {
             callback(result, this.parseError(code, error))
         };
     }

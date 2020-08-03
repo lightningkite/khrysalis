@@ -4,6 +4,19 @@
 # Observables
 
 
+- id: io.reactivex.ObservableSource
+  type: type
+  template:
+    pattern: ObservableInput<~T0~>
+    imports:
+      ObservableInput: rxjs
+- id: io.reactivex.SingleSource
+  type: type
+  template:
+    pattern: ObservableInput<~T0~>
+    imports:
+      ObservableInput: rxjs
+
 - id: io.reactivex.Observable
   type: type
   template:
@@ -121,6 +134,25 @@
       rxMap: map from rxjs/operators
       rxCombineLatest: combineLatest from rxjs
 
+- id: com.lightningkite.khrysalis.rx.combineLatest
+  type: call
+  receiver: kotlin.collections.List
+  arguments: []
+  template:
+    pattern: rxCombineLatest(~this~)
+    imports:
+      rxMap: map from rxjs/operators
+      rxCombineLatest: combineLatest from rxjs
+
+- id: com.lightningkite.khrysalis.rx.combineLatest
+  type: call
+  receiver: kotlin.collections.List
+  template:
+    pattern: rxCombineLatest(~this~).pipe(rxMap(~0~))
+    imports:
+      rxMap: map from rxjs/operators
+      rxCombineLatest: combineLatest from rxjs
+
 - id: io.reactivex.Observable.skip
   type: call
   template:
@@ -164,6 +196,13 @@
     pattern: new Observable<~T0~>(~0~)
     imports:
       Observable: rxjs
+
+- id: io.reactivex.Observable.fromIterable
+  type: call
+  template:
+    pattern: rxFrom(~0~)
+    imports:
+      rxFrom: from from rxjs
 
 - id: io.reactivex.Observable.just
   type: call
@@ -225,6 +264,13 @@
     imports:
       rxTap: tap from rxjs/operators
 
+- id: io.reactivex.Observable.doOnTerminate
+  type: call
+  template:
+    pattern: ~this~.pipe(rxTap(undefined, ~0~, ~0~))
+    imports:
+      tap: rxjs/operators as rxTap
+
 - id: io.reactivex.Observable.startWith
   type: call
   template:
@@ -246,6 +292,13 @@
     pattern: ~this~.pipe(rxPublishReplay(~0~))
     imports:
       rxPublishReplay: publishReplay from rxjs/operators
+
+- id: io.reactivex.Observable.publish
+  type: call
+  template:
+    pattern: ~this~.pipe(rxPublish())
+    imports:
+      rxPublish: publish from rxjs/operators
 
 - id: io.reactivex.observables.ConnectableObservable.refCount
   type: call
@@ -443,7 +496,7 @@
 - id: io.reactivex.Single.doOnError
   type: call
   template:
-    pattern: rxTap(undefined, ~0~)(ud~this~)
+    pattern: ~this~.pipe(rxTap(undefined, ~0~))
     imports:
       tap: rxjs/operators as rxTap
 
@@ -451,6 +504,13 @@
   type: call
   template:
     pattern: ~this~.pipe(rxTap(~0~))
+    imports:
+      tap: rxjs/operators as rxTap
+
+- id: io.reactivex.Single.doOnTerminate
+  type: call
+  template:
+    pattern: ~this~.pipe(rxTap(~0~, ~0~))
     imports:
       tap: rxjs/operators as rxTap
 

@@ -19,6 +19,7 @@ export class Align {
     public readonly name: string;
     public static valueOf(name: string): Align { return (Align as any)[name]; }
     public toString(): string { return this.name }
+    public toJSON(): string { return this.name }
 }
 
 //! Declares com.lightningkite.khrysalis.views.geometry.AlignPair
