@@ -1,6 +1,7 @@
 //Stub file made with Khrysalis 2 (by Lightning Kite)
 import Foundation
 import CoreGraphics
+import RxSwift
 
 //--- delay(Long, ()->Unit)
 public func delay(_ milliseconds: Int64, _ action: @escaping () -> Void) -> Void {
@@ -20,8 +21,8 @@ public func post(_ action: @escaping () -> Void) -> Void {
 }
 
 //--- animationFrame
-public let animationFrame: StandardEvent<CGFloat> = {
-    let temp = StandardEvent<CGFloat>()
+public let animationFrame: PublishSubject<CGFloat> = {
+    let temp = PublishSubject<CGFloat>()
     frame()
     return temp
 }()
@@ -34,3 +35,10 @@ private func frame(){
         frame()
     }
 }
+
+//--- _applicationIsActive
+public let applicationIsActiveEvent = PublishSubject<Bool>()
+public let applicationIsActive = applicationIsActiveEvent
+    .debounce(.milliseconds(100), scheduler: MainScheduler.instance)
+     .distinctUntilChanged()
+    .asObservableProperty(defaultValue: true)

@@ -60,6 +60,7 @@ com.lightningkite.khrysalis.escaping
 com.lightningkite.khrysalis.swiftMustBeClass
 com.lightningkite.khrysalis.unowned
 com.lightningkite.khrysalis.modifies
+com.lightningkite.khrysalis.SwiftName
 com.lightningkite.khrysalis.unownedSelf
 com.lightningkite.khrysalis.weakSelf
 com.lightningkite.khrysalis.swiftExactly
@@ -102,6 +103,9 @@ com.lightningkite.khrysalis.binaryForEach
 com.lightningkite.khrysalis.delay
 com.lightningkite.khrysalis.post
 com.lightningkite.khrysalis.animationFrame
+com.lightningkite.khrysalis.applicationIsActiveEvent
+com.lightningkite.khrysalis.applicationIsActive
+com.lightningkite.khrysalis.applicationIsActiveStartup
 com.lightningkite.khrysalis.lifecycle.ViewLifecycleListener
 com.lightningkite.khrysalis.lifecycle.forThisAndAllChildrenRecursive
 com.lightningkite.khrysalis.lifecycle.lifecycle
@@ -144,16 +148,18 @@ com.lightningkite.khrysalis.net.HttpResponse
 com.lightningkite.khrysalis.net.code
 com.lightningkite.khrysalis.net.headers
 com.lightningkite.khrysalis.net.readText
+com.lightningkite.khrysalis.net.readData
 com.lightningkite.khrysalis.net.readJson
+com.lightningkite.khrysalis.net.readJsonDebug
 com.lightningkite.khrysalis.net.HttpResponseException
 com.lightningkite.khrysalis.net.HttpReadResponseException
 com.lightningkite.khrysalis.net.unsuccessfulAsError
-com.lightningkite.khrysalis.net.readData
-com.lightningkite.khrysalis.net.readHttpException
 com.lightningkite.khrysalis.net.WebSocketFrame
 com.lightningkite.khrysalis.observables.Closeable
 com.lightningkite.khrysalis.observables.Close
 com.lightningkite.khrysalis.observables
+com.lightningkite.khrysalis.observables.CombineManyObservableProperty
+com.lightningkite.khrysalis.observables.combined
 com.lightningkite.khrysalis.observables.CombineObservableProperty
 com.lightningkite.khrysalis.observables.combine
 com.lightningkite.khrysalis.observables.ConstantObservableProperty
@@ -211,6 +217,7 @@ com.lightningkite.khrysalis.observables.binding.reverseDirection
 com.lightningkite.khrysalis.observables.binding.RVTypeHandler
 com.lightningkite.khrysalis.observables.binding.bindMulti
 com.lightningkite.khrysalis.observables.binding.bindRefresh
+com.lightningkite.khrysalis.observables.binding.khrysalisSpinnerRow
 com.lightningkite.khrysalis.observables.binding.bindStack
 com.lightningkite.khrysalis.observables.binding.bindList
 com.lightningkite.khrysalis.observables.binding.bindStringRes

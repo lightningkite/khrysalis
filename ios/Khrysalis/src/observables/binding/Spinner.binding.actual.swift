@@ -27,16 +27,33 @@ public extension Dropdown {
         return bind(options, selected, makeView)
     }
     func bind<T: Equatable>(_ options: ObservableProperty<Array<T>>, _ selected: MutableObservableProperty<T>, _ toString: @escaping (T) -> String = { "\($0)" } ) -> Void {
-//        bind(options, selected) { obs in
-            TODO() //Make label
-//        }
+        let boundDataSource = PickerBoundDataSourceString(data: options, selected: selected, toString: toString)
+        self.dataSource = boundDataSource
+        self.delegate = boundDataSource
+        retain(as: "boundDataSource", item: boundDataSource, until: removed)
+
+        options.subscribeBy { value in
+            self.pickerView.reloadAllComponents()
+        }.until(self.removed)
+        self.selectedView = Dropdown.defaultRow(selected.map(read: toString))
+        selected.subscribeBy { value in
+            var index = options.value.index(of: value) ?? -1
+            if index != -1 {
+                self.pickerView.selectRow(index, inComponent: 0, animated: false)
+            }
+        }.until(self.removed)
     }
     func bind<T: Equatable>(options: ObservableProperty<Array<T>>, selected: MutableObservableProperty<T>, toString: @escaping (T) -> String = { "\($0)" } ) -> Void {
         return bind(options, selected, toString)
     }
+
+    static var defaultRow: (_ obs: ObservableProperty<String>)->View = { obs in
+        let l = UILabel(frame: .zero)
+        l.bindString(obs)
+        return l
+    }
 }
 
-//TODO: Check potential memory leak
 class PickerBoundDataSource<T, VIEW: UIView>: NSObject, UIPickerViewDataSource, UIPickerViewDelegate {
     var data: ObservableProperty<[T]>
     var selected: MutableObservableProperty<T>
@@ -72,6 +89,40 @@ class PickerBoundDataSource<T, VIEW: UIView>: NSObject, UIPickerViewDataSource, 
             obs.value = value
         }
         return v
+    }
+
+    func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {
+        selected.value = data.value[row]
+    }
+
+}
+
+
+class PickerBoundDataSourceString<T>: NSObject, UIPickerViewDataSource, UIPickerViewDelegate {
+    var data: ObservableProperty<[T]>
+    var selected: MutableObservableProperty<T>
+    let toString: (T) -> String
+
+    private var ext = ExtensionProperty<UIView, MutableObservableProperty<T>>()
+
+    init(data: ObservableProperty<[T]>, selected: MutableObservableProperty<T>, toString: @escaping (T) -> String) {
+        self.data = data
+        self.selected = selected
+        self.toString = toString
+        super.init()
+    }
+
+    func numberOfComponents(in pickerView: UIPickerView) -> Int {
+        return 1
+    }
+
+    func pickerView(_ pickerView: UIPickerView, numberOfRowsInComponent component: Int) -> Int {
+        let options = data.value
+        return options.count
+    }
+
+    func pickerView(_ pickerView: UIPickerView, titleForRow row: Int, forComponent component: Int) -> String? {
+        return toString(data.value[row])
     }
 
     func pickerView(_ pickerView: UIPickerView, didSelectRow row: Int, inComponent component: Int) {

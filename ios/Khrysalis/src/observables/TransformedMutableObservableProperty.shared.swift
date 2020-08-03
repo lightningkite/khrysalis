@@ -29,7 +29,7 @@ public class TransformedMutableObservableProperty<A, B> : MutableObservablePrope
             self.basedOn.value = self.write(value)
         }
     }
-    public var _onChange: Observable<B>
+    public var _onChange: (Observable<B>)!
     override public var onChange: Observable<B> {
         get { return _onChange }
     }

@@ -1,38 +1,12 @@
 import Foundation
-//--- HttpReadResponseException.{
-//--- HttpReadResponseException.Primary Constructor
-//--- HttpReadResponseException.}
-//--- HttpResponseException.{
-public enum HttpResponseExceptions: Error {
-    case Exception(response: HttpResponse, cause: Error? = nil)
-    case ReadException(response: HttpResponse, text: String, cause: Error? = nil)
 
-    //--- HttpResponseException.Primary Constructor
-    //--- HttpResponseException.}
-}
-
-func HttpResponseException(_ response: HttpResponse, _ cause: Error? = nil) -> HttpResponseExceptions {
-    return HttpResponseExceptions.Exception(response: response, cause: cause)
-}
-func HttpReadResponseException(_ response: HttpResponse, _ text: String, _ cause: Error? = nil) -> HttpResponseExceptions {
-    return HttpResponseExceptions.Exception(response: response, cause: cause)
-}
-func HttpResponseException(response: HttpResponse, cause: Error? = nil) -> HttpResponseExceptions {
-    return HttpResponseExceptions.Exception(response: response, cause: cause)
-}
-func HttpReadResponseException(response: HttpResponse, text: String, cause: Error? = nil) -> HttpResponseExceptions {
-    return HttpResponseExceptions.Exception(response: response, cause: cause)
-}
-
-private func thingThatThrowsError() throws {
-    
-}
-private func test(){
-    do {
-        try thingThatThrowsError()
-    } catch HttpResponseExceptions.Exception(let response, let cause) {
-        
-    } catch {
-        
+public class HttpResponseException : Exception {
+    public let response: HttpResponse
+    public init (_ response: HttpResponse, _ cause: Exception? = nil) {
+        self.response = response
+        super.init("Got response \(response.code)", cause)
+    }
+    public convenience init (response: HttpResponse, cause: Exception? = nil) {
+        self.init(response, cause)
     }
 }
