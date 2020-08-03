@@ -173,7 +173,7 @@ fun SwiftTranslator.registerFunction() {
             -VirtualFunction(
                 name = resolved?.swiftNameOverridden ?: typedRule.nameIdentifier!!,
                 resolvedFunction = resolved,
-                typeParameters = typedRule.typeParameters.filter { it.name !in typesUsedInReceiver },
+                typeParameters = typedRule.typeParameters.filter { it.name !in typesUsedInReceiver || resolved?.worksAsSwiftConstraint() == false },
                 valueParameters = (rName?.let { rName ->
                     listOf(listOf("_ ", rName, ": ", resolved!!.extensionReceiverParameter!!.type))
                 } ?: listOf())
@@ -203,7 +203,7 @@ fun SwiftTranslator.registerFunction() {
         -typedRule.nameIdentifier
         typedRule.typeReference?.let {
             -": "
-            if (typedRule.resolvedValueParameter?.annotations?.any { it.fqName?.asString() == "com.lightningkite.khrysalis.modifies" } == true) {
+            if (typedRule.resolvedValueParameter?.annotations?.any { it.fqName?.asString() == "com.lightningkite.khrysalis.Modifies" } == true) {
                 -"inout "
             }
             partOfParameter = true
@@ -553,7 +553,7 @@ fun SwiftTranslator.registerFunction() {
                     out += it
                 } ?: entry.value.arguments.forEachBetween(
                     forItem = {
-                        if (entry.key.annotations.any { it.fqName?.asString() == "com.lightningkite.khrysalis.modifies" }) {
+                        if (entry.key.annotations.any { it.fqName?.asString() == "com.lightningkite.khrysalis.Modifies" }) {
                             out += "&"
                         }
                         out += it.getArgumentExpression()

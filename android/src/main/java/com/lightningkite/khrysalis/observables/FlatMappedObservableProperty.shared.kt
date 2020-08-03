@@ -32,7 +32,7 @@ class MutableFlatMappedObservableProperty<A, B>(
     var lastProperty: MutableObservableProperty<B>? = null
 
     override val onChange: Observable<Box<B>>
-        get() = basedOn.observable.switchMap @swiftReturnType("Observable<Box<B>>") label@{ it: Box<A> ->
+        get() = basedOn.observable.switchMap label@{ it: Box<A> ->
             val prop = this.transformation(it.value)
             this.lastProperty = prop
             return@label prop.observable

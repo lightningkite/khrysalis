@@ -63,8 +63,8 @@
     imports: [RxSwift]
 - id: io.reactivex.SingleSource
   type: type
-  template:f
-    pattern: Observable<~T0~>
+  template:
+    pattern: Single<~T0~>
     imports: [RxSwift]
 
 

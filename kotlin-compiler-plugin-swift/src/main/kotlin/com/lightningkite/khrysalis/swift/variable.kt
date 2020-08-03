@@ -296,6 +296,10 @@ fun SwiftTranslator.registerVariable() {
         condition = { typedRule.resolvedProperty?.hasSwiftBacking == true },
         priority = 10,
         action = {
+            val isLateInit = typedRule.hasModifier(KtTokens.LATEINIT_KEYWORD) || (typedRule.isMember && capturesSelf(
+                typedRule.initializer,
+                typedRule.containingClassOrObject?.resolvedClass
+            ))
             if (typedRule.isMember || (typedRule.isTopLevel && !typedRule.isExtensionDeclaration())) {
                 -(typedRule.swiftVisibility() ?: "public")
                 -" "
@@ -304,7 +308,13 @@ fun SwiftTranslator.registerVariable() {
             -typedRule.nameIdentifier
             typedRule.typeReference?.let {
                 -": "
-                -it
+                if (isLateInit && typedRule.resolvedProperty?.type?.isNullable() == false) {
+                    -'('
+                    -it
+                    -")!"
+                } else {
+                    -it
+                }
             } ?: run {
                 if (typedRule.isMember || typedRule.initializer == null) {
                     -": "

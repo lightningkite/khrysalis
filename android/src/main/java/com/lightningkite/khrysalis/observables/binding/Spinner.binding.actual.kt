@@ -96,7 +96,7 @@ fun <T> Spinner.bind(
                 val event = StandardObservableProperty<T>(
                     options.value.getOrNull(position) ?: selected.value
                 )
-                val subview = LayoutInflater.from(this@bind.context).inflate(khrysalisSpinnerRow, parent)
+                val subview = LayoutInflater.from(this@bind.context).inflate(khrysalisSpinnerRow, parent, false)
                 val padding = (context.resources.displayMetrics.density * 8).toInt()
                 subview.setPadding(padding,padding,padding,padding)
                 val textView = subview.findViewById<TextView>(android.R.id.text1)

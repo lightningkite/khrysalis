@@ -26,6 +26,6 @@ fun <IN, OUT> List<ObservableProperty<IN>>.combined(
 }
 
 
-fun <IN> List<ObservableProperty<IN>>.combined(): ObservableProperty<List<IN>> {
+fun <T> List<ObservableProperty<T>>.combined(): ObservableProperty<List<T>> {
     return CombineManyObservableProperty(this)
 }

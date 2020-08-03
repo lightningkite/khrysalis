@@ -12,16 +12,24 @@ typealias Equatable = Any
 typealias SomeEnum = Enum<*>
 
 @Target(AnnotationTarget.TYPE)
-annotation class escaping
+annotation class Escaping
+@Deprecated("Capitalize the name please!")
+typealias escaping = Escaping
 
 @Target(AnnotationTarget.CLASS)
-annotation class swiftMustBeClass
+annotation class SwiftMustBeClass
+@Deprecated("Capitalize the name please!")
+typealias swiftMustBeClass = SwiftMustBeClass
 
 @Target(AnnotationTarget.PROPERTY)
-annotation class unowned
+annotation class Unowned
+@Deprecated("Capitalize the name please!")
+typealias unowned = Unowned
 
 @Target(AnnotationTarget.VALUE_PARAMETER)
-annotation class modifies
+annotation class Modifies
+@Deprecated("Capitalize the name please!")
+typealias modifies = Modifies
 
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.SOURCE)
@@ -29,24 +37,38 @@ annotation class SwiftName(val name: String)
 
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.SOURCE)
-annotation class unownedSelf
+annotation class UnownedSelf
+@Deprecated("Capitalize the name please!")
+typealias unownedSelf = UnownedSelf
 
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.SOURCE)
-annotation class weakSelf
+annotation class WeakSelf
+@Deprecated("Capitalize the name please!")
+typealias weakSelf = WeakSelf
 
 @Target(AnnotationTarget.TYPE)
-annotation class swiftExactly(val parameterName: String = "default")
+annotation class SwiftExactly(val parameterName: String = "default")
+@Deprecated("Capitalize the name please!")
+typealias swiftExactly = SwiftExactly
 
 @Target(AnnotationTarget.TYPE)
-annotation class swiftDescendsFrom(val parameterName: String = "default")
+annotation class SwiftDescendsFrom(val parameterName: String = "default")
+@Deprecated("Capitalize the name please!")
+typealias swiftDescendsFrom = SwiftDescendsFrom
 
 @Target(AnnotationTarget.FUNCTION)
-annotation class discardableResult
+annotation class DiscardableResult
+@Deprecated("Capitalize the name please!")
+typealias discardableResult = DiscardableResult
 
 @Target(AnnotationTarget.FUNCTION, AnnotationTarget.EXPRESSION)
 @Retention(AnnotationRetention.SOURCE)
-annotation class swiftReturnType(val text: String)
+annotation class SwiftReturnType(val text: String)
+@Deprecated("Capitalize the name please!")
+typealias swiftReturnType = SwiftReturnType
+
+annotation class SwiftExtensionWhere(val text: String)
 
 @Target(
     AnnotationTarget.CLASS,

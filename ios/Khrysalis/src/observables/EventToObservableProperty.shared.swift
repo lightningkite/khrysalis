@@ -30,7 +30,7 @@ public extension Observable {
 
 public extension Observable {
     func asObservablePropertyDefaultNull() -> ObservableProperty<Element?> {
-        return (EventToObservableProperty(value: nil as Element?, wrapped: self.map({ (it: Element) -> Element in it }) as Observable<Element?>) as EventToObservableProperty<Element?>)
+        return (EventToObservableProperty(value: nil as Element?, wrapped: self.map({ (it: Element) -> Element? in it }) as Observable<Element?>) as EventToObservableProperty<Element?>)
     }
 }
 

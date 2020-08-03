@@ -49,7 +49,7 @@ public class MutableFlatMappedObservableProperty<A, B> : MutableObservableProper
     public var lastProperty: MutableObservableProperty<B>?
     
     override public var onChange: Observable<B> {
-        get { return self.basedOn.observable.switchMap( { (it: A) -> Observable<Box<B>> in 
+        get { return self.basedOn.observable.switchMap({ (it: A) -> Observable<B> in 
                     let prop = self.transformation(it)
                     self.lastProperty = prop
                     return prop.observable

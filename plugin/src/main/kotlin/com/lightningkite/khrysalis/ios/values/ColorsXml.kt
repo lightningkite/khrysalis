@@ -2,6 +2,7 @@ package com.lightningkite.khrysalis.ios.values
 
 import com.lightningkite.khrysalis.utils.*
 import com.lightningkite.khrysalis.ios.*
+import com.lightningkite.khrysalis.swift.safeSwiftIdentifier
 import java.io.File
 import java.lang.Appendable
 
@@ -15,7 +16,7 @@ fun File.translateXMLColors(out: Appendable) {
         .filter { it.allAttributes["name"] !in ignored }
         .forEach {
             val raw = it.element.textContent
-            val name = (it.allAttributes["name"] ?: "noname")
+            val name = (it.allAttributes["name"] ?: "noname").safeSwiftIdentifier()
             val color = when{
                 raw.startsWith("@color/") -> {
                     val colorName = raw.removePrefix("@color/")
@@ -35,7 +36,7 @@ fun File.translateXMLColors(out: Appendable) {
 }
 
 fun File.translateXmlColorSet(out: Appendable) {
-    out.appendln("static func ${nameWithoutExtension}(_ state: UIControl.State) -> UIColor {")
+    out.appendln("static func ${nameWithoutExtension.safeSwiftIdentifier()}(_ state: UIControl.State) -> UIColor {")
     XmlNode.read(this, mapOf())
         .children
         .asSequence()

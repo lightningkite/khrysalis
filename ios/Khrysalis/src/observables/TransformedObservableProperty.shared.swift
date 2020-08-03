@@ -20,7 +20,7 @@ public class TransformedObservableProperty<A, B> : ObservableProperty<B> {
             return self.read(self.basedOn.value)
         }
     }
-    public var _onChange: Observable<B>
+    public var _onChange: (Observable<B>)!
     override public var onChange: Observable<B> {
         get { return _onChange }
     }

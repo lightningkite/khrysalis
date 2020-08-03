@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.ios.values
 
+import com.lightningkite.khrysalis.swift.safeSwiftIdentifier
 import com.lightningkite.khrysalis.utils.XmlNode
 import com.lightningkite.khrysalis.utils.camelCase
 import java.io.File
@@ -42,6 +43,6 @@ fun Map<String, String>.writeXMLStrings(out: Appendable) {
             .replace("\\'", "'")
             .replace("\\$", "$")
             .replace(Regex("\n *"), " ")
-        out.appendln("static let ${key} = NSLocalizedString(\"$fixedString\", comment: \"$key\")")
+        out.appendln("static let ${key.safeSwiftIdentifier()} = NSLocalizedString(\"$fixedString\", comment: \"$key\")")
     }
 }
