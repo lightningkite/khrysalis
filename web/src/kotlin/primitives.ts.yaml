@@ -18,6 +18,12 @@
 - id: com.lightningkite.khrysalis.AnyEquatable
   type: type
   template: any
+- id: com.lightningkite.khrysalis.IsHashable
+  type: type
+  template: any
+- id: com.lightningkite.khrysalis.IsEquatable
+  type: type
+  template: any
 - id: com.lightningkite.khrysalis.Hashable
   type: type
   template: object
@@ -25,6 +31,18 @@
   type: type
   template: object
 - id: com.lightningkite.khrysalis.SomeEnum
+  type: type
+  template: any
+- id: com.lightningkite.khrysalis.Codable
+  type: type
+  template: any
+- id: com.lightningkite.khrysalis.IsCodable
+  type: type
+  template: any
+- id: com.lightningkite.khrysalis.IsCodableAndHashable
+  type: type
+  template: any
+- id: com.lightningkite.khrysalis.IsCodableAndEquatable
   type: type
   template: any
 

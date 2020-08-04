@@ -10,7 +10,13 @@ val skippedExtensions = setOf(
     "com.lightningkite.khrysalis.AnyObject",
     "com.lightningkite.khrysalis.AnyHashable",
     "com.lightningkite.khrysalis.Hashable",
-    "com.lightningkite.khrysalis.Equatable"
+    "com.lightningkite.khrysalis.Equatable",
+    "com.lightningkite.khrysalis.IsHashable",
+    "com.lightningkite.khrysalis.IsEquatable",
+    "com.lightningkite.khrysalis.Codable",
+    "com.lightningkite.khrysalis.IsCodable",
+    "com.lightningkite.khrysalis.IsCodableAndEquatable",
+    "com.lightningkite.khrysalis.IsCodableAndHashable"
 //    "com.lightningkite.khrysalis.SomeEnum"
 )
 

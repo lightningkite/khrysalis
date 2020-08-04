@@ -107,7 +107,7 @@ fun TypescriptTranslator.registerFunction() {
                 resolvedFunction = typedRule.resolvedFunction,
                 typeParameters = typedRule.typeParameters,
                 valueParameters = (typedRule.typeParameters.filter { it.hasModifier(KtTokens.REIFIED_KEYWORD) }
-                    .map { listOf(it.name, ": any") })
+                    .map { listOf(it.name, ": Array<any>") })
                     .plus(typedRule.valueParameters),
                 returnType = typedRule.typeReference
                     ?: typedRule.bodyExpression?.takeUnless { it is KtBlockExpression }?.resolvedExpressionTypeInfo?.type
@@ -166,7 +166,7 @@ fun TypescriptTranslator.registerFunction() {
                     listOf(listOf(rName, ": ", it))
                 } ?: listOf())
                     .plus(typedRule.typeParameters.filter { it.hasModifier(KtTokens.REIFIED_KEYWORD) }
-                        .map { listOf(it.name, ": any") })
+                        .map { listOf(it.name, ": Array<any>") })
                     .plus(typedRule.valueParameters),
                 returnType = typedRule.typeReference
                     ?: typedRule.bodyExpression?.takeUnless { it is KtBlockExpression }?.resolvedExpressionTypeInfo?.type

@@ -93,6 +93,9 @@ inline fun PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByTy
         -";\nif($n !== null) {\n"
         n
     }
+    if(isExpression){
+        -"return "
+    }
     action(tempName)
     -"\n}"
     if(isExpression){
