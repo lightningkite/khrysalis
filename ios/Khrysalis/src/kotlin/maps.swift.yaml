@@ -39,6 +39,10 @@
   type: call
   template: "Dictionary(uniqueKeysWithValues: [~*~])"
 
+- id: kotlin.collections.toMap
+  type: call
+  template: "Dictionary(uniqueKeysWithValues: ~this~)"
+
 - id: kotlin.collections.hashMapOf
   type: call
   hasExplicitTypeArguments: true
@@ -64,6 +68,9 @@
 - id: kotlin.collections.Map.get
   type: call
   template: ~this~[~0~]
+- id: kotlin.collections.Map.containsKey
+  type: call
+  template: '(~this~.index(forKey: ~0~) != nil)'
 - id: kotlin.collections.MutableMap.put
   type: call
   usedAsExpression: false

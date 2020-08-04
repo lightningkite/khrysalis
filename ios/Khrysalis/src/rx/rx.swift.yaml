@@ -49,6 +49,12 @@
   template:
     pattern: '~this~.distinctUntilChanged()'
     imports: [RxSwift]
+- id: io.reactivex.Observable.distinct
+  type: call
+  arguments: []
+  template:
+    pattern: '~this~.distinct()'
+    imports: [RxSwift]
 - id: io.reactivex.Observable.distinctUntilChanged
   type: call
   template:
@@ -123,6 +129,12 @@
 #    imports:
 #      rxMap: map from rxjs/operators
 #      rxCombineLatest: combineLatest from rxjs
+#
+- id: com.lightningkite.khrysalis.rx.zip
+  type: call
+  template:
+    pattern: Single.zip(~this~)
+    imports: [RxSwift]
 #
 #- id: io.reactivex.Observable.skip
 #  type: call

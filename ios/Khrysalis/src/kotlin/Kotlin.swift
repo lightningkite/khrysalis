@@ -97,7 +97,7 @@ public extension Sequence {
     }
 }
 
-public func Comparator<T>(function: @escaping (T, T)->Int) -> Comparator {
+public func makeComparator<T>(function: @escaping (T, T)->Int) -> Comparator {
     return { (a: Any, b: Any) in
         if let a = a as? T {
             if let b = b as? T {

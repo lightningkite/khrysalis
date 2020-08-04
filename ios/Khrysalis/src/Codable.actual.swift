@@ -83,7 +83,7 @@ public extension Encodable {
         return string.substring(1, string.count - 1).data(using: .utf8)!
     }
     func toJsonString(coder: JSONEncoder = encoder) -> String {
-        let data = try toJsonData(coder: coder)
+        let data = toJsonData(coder: coder)
         if let stringRep = String(data: data, encoding: .utf8) {
             return stringRep
         } else {
@@ -92,11 +92,19 @@ public extension Encodable {
     }
 }
 
-public func kotlinAnyToJsonString(_ value: Encodable) -> String {
-    return value.toJsonString()
+public func kotlinAnyToJsonString(_ value: Any) -> String {
+    if let value = value as? Encodable {
+        return value.toJsonString()
+    } else {
+        return PrimitiveCodableBox(value).toJsonString()
+    }
 }
-public func kotlinAnyToJsonData(_ value: Encodable) -> Data {
-    return value.toJsonData()
+public func kotlinAnyToJsonData(_ value: Any) -> Data {
+    if let value = value as? Encodable {
+        return value.toJsonData()
+    } else {
+        return PrimitiveCodableBox(value).toJsonData()
+    }
 }
 
 //--- String.fromJsonString()
@@ -140,6 +148,62 @@ public extension Decodable {
             return try fromJsonData(data, coder: coder)
         } else {
             throw Exception("Couldn't turn the string into data")
+        }
+    }
+}
+
+public struct PrimitiveCodableBox: Codable {
+    public var value: Any?
+    public init(_ value: Any?) {
+        self.value = value
+    }
+    
+    struct StringKey: CodingKey {
+        var stringValue: String
+        
+        init(stringValue: String) {
+            self.stringValue = stringValue
+        }
+        
+        var intValue: Int? = nil
+        
+        init?(intValue: Int) {
+            self.stringValue = String(intValue)
+        }
+        
+    }
+    
+    public init(from decoder: Decoder) throws {
+        do {
+            let values = try decoder.singleValueContainer()
+            do { self.init(try values.decode(Int8.self)) } catch {
+            do { self.init(try values.decode(Int16.self)) } catch {
+            do { self.init(try values.decode(Int32.self)) } catch {
+            do { self.init(try values.decode(Int64.self)) } catch {
+            do { self.init(try values.decode(UInt8.self)) } catch {
+            do { self.init(try values.decode(UInt16.self)) } catch {
+            do { self.init(try values.decode(UInt32.self)) } catch {
+            do { self.init(try values.decode(UInt64.self)) } catch {
+            do { self.init(try values.decode(Float.self)) } catch {
+            do { self.init(try values.decode(Double.self)) } catch {
+            do { self.init(try values.decode(Int.self)) } catch {
+            do { self.init(try values.decode(Bool.self)) } catch {
+            do { self.init(try values.decode(String.self)) } catch {
+            do { self.init(try values.decode(Array<PrimitiveCodableBox>.self)) } catch {
+            do { self.init(try values.decode(Dictionary<String, PrimitiveCodableBox>.self)) } catch {
+            self.init(nil)
+                }}}}}}}}}}}}}}}} catch {
+           self.init(nil)
+           }
+    }
+    
+    
+    public func encode(to encoder: Encoder) throws {
+        if let v = self.value as? Codable {
+            try v.encode(to: encoder)
+        } else {
+            var svc = encoder.singleValueContainer()
+            try svc.encodeNil()
         }
     }
 }

@@ -4,3 +4,12 @@
 - id: com.lightningkite.khrysalis.JsonMap
   type: type
   template: NSDictionary
+- id: com.lightningkite.khrysalis.IsCodable
+  type: type
+  template: Codable
+- id: com.lightningkite.khrysalis.IsCodableAndHashable
+  type: type
+  template: Codable & Hashable
+- id: com.lightningkite.khrysalis.IsCodableAndEquatable
+  type: type
+  template: Codable & Equatable
