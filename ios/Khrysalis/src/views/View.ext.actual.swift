@@ -6,6 +6,8 @@ public typealias View = UIView
 
 //--- View.backgroundDrawable
 public extension View {
+    static var appForegroundColor: UIColor? = nil
+    static var appAccentColor: UIColor? = nil
     var backgroundDrawable: Drawable? {
         set(value){
             if let value = value {

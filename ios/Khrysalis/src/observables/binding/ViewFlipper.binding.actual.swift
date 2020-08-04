@@ -8,7 +8,7 @@ public extension ViewFlipper {
     func bindLoading(_ loading: ObservableProperty<Bool>, _ color: ColorResource? = nil) -> Void {
         if subviews.count == 1 {
             let new = UIActivityIndicatorView(frame: .zero)
-            if let color = color {
+            if let color = color ?? ViewFlipper.defaultLoadingColor ?? UIView.appAccentColor {
                 new.color = color
             }
             new.startAnimating()
@@ -21,4 +21,5 @@ public extension ViewFlipper {
     func bindLoading(loading: ObservableProperty<Bool>, color: ColorResource? = nil) -> Void {
         return bindLoading(loading)
     }
+    static var defaultLoadingColor: UIColor? = nil
 }

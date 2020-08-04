@@ -185,9 +185,7 @@ open class LinearLayout: UIView {
             )
             measurements[subview] = viewSize
             result[orientation] += combined.start(orientation)
-            if params.weight == 0 {
-                result[orientation] += viewSize[orientation]
-            }
+            result[orientation] += viewSize[orientation]
             result[orientation] += combined.end(orientation)
             
             result[orientation.other] = max(
@@ -237,6 +235,9 @@ open class LinearLayout: UIView {
                     combined.total(orientation.other) +
                     padding.total(orientation.other)
             )
+            if includingWeighted {
+                result[orientation] += viewSize[orientation]
+            }
         }
         
         return result
