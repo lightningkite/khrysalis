@@ -12,8 +12,6 @@ ios/Khrysalis.xcworkspace
 *.apk
 *.class
 
-**/dist/**
-
 plugin/out
 **/node_modules
 
