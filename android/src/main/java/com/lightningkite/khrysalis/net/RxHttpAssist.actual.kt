@@ -3,16 +3,13 @@ package com.lightningkite.khrysalis.net
 import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.fasterxml.jackson.module.kotlin.readValue
-import com.lightningkite.khrysalis.Codable
-import com.lightningkite.khrysalis.IsCodable
-import com.lightningkite.khrysalis.PlatformSpecific
+import com.lightningkite.khrysalis.*
 import com.lightningkite.khrysalis.bytes.Data
-import com.lightningkite.khrysalis.swiftExactly
 import io.reactivex.Observable
 import io.reactivex.Single
 import java.lang.reflect.ParameterizedType
 
-fun Single<@swiftExactly("Element") HttpResponse>.unsuccessfulAsError(): Single<HttpResponse> {
+fun Single<@SwiftExactly("Element") HttpResponse>.unsuccessfulAsError(): Single<HttpResponse> {
     return this.map { it ->
         if(it.isSuccessful){
             return@map it
@@ -23,7 +20,7 @@ fun Single<@swiftExactly("Element") HttpResponse>.unsuccessfulAsError(): Single<
 }
 
 
-inline fun <reified T> Single<@swiftExactly("Element") HttpResponse>.readJson(): Single<T> {
+inline fun <reified T> Single<@SwiftExactly("Element") HttpResponse>.readJson(): Single<T> {
     val type = jacksonTypeRef<T>()
     return this.flatMap { it ->
         if(it.isSuccessful){
@@ -33,7 +30,7 @@ inline fun <reified T> Single<@swiftExactly("Element") HttpResponse>.readJson():
         }
     }
 }
-inline fun <reified T> Single<@swiftExactly("Element") HttpResponse>.readJsonDebug(): Single<T> {
+inline fun <reified T> Single<@SwiftExactly("Element") HttpResponse>.readJsonDebug(): Single<T> {
     val type = jacksonTypeRef<T>()
     return this.flatMap { it ->
         if(it.isSuccessful){
@@ -43,7 +40,7 @@ inline fun <reified T> Single<@swiftExactly("Element") HttpResponse>.readJsonDeb
         }
     }
 }
-fun Single<@swiftExactly("Element") HttpResponse>.readText(): Single<String> {
+fun Single<@SwiftExactly("Element") HttpResponse>.readText(): Single<String> {
     return this.flatMap { it ->
         if(it.isSuccessful){
             it.readText()
@@ -52,7 +49,7 @@ fun Single<@swiftExactly("Element") HttpResponse>.readText(): Single<String> {
         }
     }
 }
-fun Single<@swiftExactly("Element") HttpResponse>.readData(): Single<Data> {
+fun Single<@SwiftExactly("Element") HttpResponse>.readData(): Single<Data> {
     return this.flatMap { it ->
         if(it.isSuccessful){
             it.readData()

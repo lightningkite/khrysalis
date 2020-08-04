@@ -2,12 +2,11 @@ package com.lightningkite.khrysalis.rx
 
 import android.view.View
 import androidx.recyclerview.widget.RecyclerView
-import com.lightningkite.khrysalis.escaping
+import com.lightningkite.khrysalis.Escaping
 import com.lightningkite.khrysalis.observables.Closeable
-import com.lightningkite.khrysalis.swiftDescendsFrom
 import io.reactivex.disposables.Disposable
 
-class DisposeCondition(val call: @escaping() (Disposable) -> Unit)
+class DisposeCondition(val call: @Escaping() (Disposable) -> Unit)
 
 infix fun DisposeCondition.and(other: DisposeCondition): DisposeCondition =
     andAllDisposeConditions(listOf(this, other))

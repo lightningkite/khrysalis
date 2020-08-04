@@ -1,8 +1,8 @@
 package com.lightningkite.khrysalis.observables
 
 import com.lightningkite.khrysalis.Box
+import com.lightningkite.khrysalis.SwiftExactly
 import com.lightningkite.khrysalis.boxWrap
-import com.lightningkite.khrysalis.swiftExactly
 import io.reactivex.Observable
 
 class EventToObservableProperty<T>(override var value: T, val wrapped: Observable<Box<T>>): ObservableProperty<T>() {
@@ -11,11 +11,11 @@ class EventToObservableProperty<T>(override var value: T, val wrapped: Observabl
         return@map it
     }
 }
-fun <Element> Observable<@swiftExactly("Element") Element>.asObservableProperty(defaultValue: Element): ObservableProperty<Element> {
+fun <Element> Observable<@SwiftExactly("Element") Element>.asObservableProperty(defaultValue: Element): ObservableProperty<Element> {
     return EventToObservableProperty<Element>(defaultValue, this.map { it -> boxWrap(it) })
 }
 
-fun <Element> Observable<@swiftExactly("Element") Element>.asObservablePropertyDefaultNull(): ObservableProperty<Element?> {
+fun <Element> Observable<@SwiftExactly("Element") Element>.asObservablePropertyDefaultNull(): ObservableProperty<Element?> {
     return EventToObservableProperty<Element?>(null, this.map { it -> boxWrap(it) })
 }
 

@@ -14,9 +14,9 @@ val <T> ObservableProperty<T>.onChangeNN: Observable<T> get() = onChange.map { i
 
 @CheckReturnValue
 inline fun <T> ObservableProperty<T>.subscribeBy(
-    noinline onError: @escaping() (Throwable) -> Unit = { it -> it.printStackTrace() },
-    noinline onComplete: @escaping() () -> Unit = {},
-    crossinline onNext: @escaping() (T) -> Unit = { it -> }
+    noinline onError: @Escaping() (Throwable) -> Unit = { it -> it.printStackTrace() },
+    noinline onComplete: @Escaping() () -> Unit = {},
+    crossinline onNext: @Escaping() (T) -> Unit = { it -> }
 ): Disposable = this.observable.subscribeBy(
     onError = onError,
     onComplete = onComplete,

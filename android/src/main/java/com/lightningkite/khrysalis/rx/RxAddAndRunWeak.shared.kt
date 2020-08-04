@@ -2,7 +2,7 @@ package com.lightningkite.khrysalis.rx
 
 import android.view.View
 import com.lightningkite.khrysalis.AnyObject
-import com.lightningkite.khrysalis.escaping
+import com.lightningkite.khrysalis.Escaping
 import com.lightningkite.khrysalis.weak
 import io.reactivex.Observable
 import io.reactivex.disposables.Disposable
@@ -18,7 +18,7 @@ fun Disposable.solvePrivateDisposal(items: List<Any>) {
 }
 
 @Deprecated("Just use RX stuff")
-fun <Element: Any> Observable<Element>.add(listener: @escaping() (Element) -> Boolean): Disposable {
+fun <Element: Any> Observable<Element>.add(listener: @Escaping() (Element) -> Boolean): Disposable {
     var disposable: Disposable? = null
     val disp = this.subscribeBy(onNext = { item ->
         if (listener(item)) {
@@ -30,7 +30,7 @@ fun <Element: Any> Observable<Element>.add(listener: @escaping() (Element) -> Bo
 }
 
 @Deprecated("Just use RX disposal stuff")
-fun <A: AnyObject, Element: Any> Observable<Element>.addWeak(referenceA: A, listener: @escaping() (A, Element) -> Unit): Disposable {
+fun <A: AnyObject, Element: Any> Observable<Element>.addWeak(referenceA: A, listener: @Escaping() (A, Element) -> Unit): Disposable {
     var disposable: Disposable? = null
     val weakA: A? by weak(referenceA)
     val disp = this.subscribeBy(onNext = { item ->
@@ -47,7 +47,7 @@ fun <A: AnyObject, Element: Any> Observable<Element>.addWeak(referenceA: A, list
 }
 
 @Deprecated("Just use RX disposal stuff")
-fun <A: AnyObject, B: AnyObject, Element: Any> Observable<Element>.addWeak(referenceA: A, referenceB: B, listener: @escaping() (A, B, Element) -> Unit): Disposable {
+fun <A: AnyObject, B: AnyObject, Element: Any> Observable<Element>.addWeak(referenceA: A, referenceB: B, listener: @Escaping() (A, B, Element) -> Unit): Disposable {
     var disposable: Disposable? = null
     val weakA: A? by weak(referenceA)
     val weakB: B? by weak(referenceB)
@@ -67,7 +67,7 @@ fun <A: AnyObject, B: AnyObject, Element: Any> Observable<Element>.addWeak(refer
 
 
 @Deprecated("Just use RX disposal stuff")
-fun <A: AnyObject, B: AnyObject, C: AnyObject, Element: Any> Observable<Element>.addWeak(referenceA: A, referenceB: B, referenceC: C, listener: @escaping() (A, B, C, Element) -> Unit): Disposable {
+fun <A: AnyObject, B: AnyObject, C: AnyObject, Element: Any> Observable<Element>.addWeak(referenceA: A, referenceB: B, referenceC: C, listener: @Escaping() (A, B, C, Element) -> Unit): Disposable {
     var disposable: Disposable? = null
     val weakA: A? by weak(referenceA)
     val weakB: B? by weak(referenceB)

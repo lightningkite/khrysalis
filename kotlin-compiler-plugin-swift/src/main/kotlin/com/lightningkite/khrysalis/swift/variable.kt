@@ -10,6 +10,7 @@ import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.js.translate.callTranslator.getReturnType
 import org.jetbrains.kotlin.lexer.KtToken
 import org.jetbrains.kotlin.lexer.KtTokens
+import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
 import org.jetbrains.kotlin.psi.synthetics.SyntheticClassOrObjectDescriptor
@@ -234,6 +235,9 @@ fun SwiftTranslator.registerVariable() {
             typedRule.initializer,
             typedRule.containingClassOrObject?.resolvedClass
         ))
+        if(typedRule.annotationEntries.any { it.resolvedAnnotation?.fqName?.asString()?.equals("com.lightningkite.khrysalis.Unowned", true) == true }) {
+            -"unowned "
+        }
         if (isLateInit || typedRule.isVar || (typedRule.resolvedProperty?.type?.requiresMutable()
                 ?: typedRule.resolvedVariable?.type?.requiresMutable()) == true
         ) {
@@ -303,6 +307,9 @@ fun SwiftTranslator.registerVariable() {
             if (typedRule.isMember || (typedRule.isTopLevel && !typedRule.isExtensionDeclaration())) {
                 -(typedRule.swiftVisibility() ?: "public")
                 -" "
+            }
+            if(typedRule.annotationEntries.any { it.resolvedAnnotation?.fqName?.asString()?.equals("com.lightningkite.khrysalis.Unowned", true) == true }) {
+                -"unowned "
             }
             -"var _"
             -typedRule.nameIdentifier

@@ -68,7 +68,10 @@ fun SwiftTranslator.registerSpecialLet() {
     ) {
         typedRule.entries.forEachBetween(
             forItem = { (basis, lambda) ->
+                val basisMode = (basis as? KtQualifiedExpression)?.let { getAccessMode(this@registerSpecialLet, it) } ?: AccessMode.PLAIN_DOT
+                if(!basisMode.resultAllowsOptionalOp) -"("
                 -basis
+                if(!basisMode.resultAllowsOptionalOp) -")"
                 -".map { ("
                 -(lambda.valueParameters.firstOrNull()?.name ?: "it")
                 -") in \n"

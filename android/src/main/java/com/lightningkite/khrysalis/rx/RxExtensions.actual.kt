@@ -26,6 +26,9 @@ fun <IN : Any, OUT : Any> List<Observable<IN>>.combineLatest(
 fun <IN : Any> List<Observable<IN>>.combineLatest(): Observable<List<IN>>
         = Observable.combineLatest(this) { stupidArray: Array<Any?> -> stupidArray.toList() as List<IN>}
 
+fun <IN : Any> List<Single<IN>>.zip(): Single<List<IN>>
+        = Single.zip(this) { stupidArray: Array<Any?> -> stupidArray.toList() as List<IN>}
+
 fun <Element> Observable<Box<Element>>.filterNotNull(): Observable<Element> =
     this.filter { it.value != null }.map { it.value }
 

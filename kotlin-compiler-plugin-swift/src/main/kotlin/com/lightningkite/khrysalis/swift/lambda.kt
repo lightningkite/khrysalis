@@ -16,19 +16,23 @@ fun SwiftTranslator.registerLambda() {
         val betterReturnType = reet?.getReturnTypeFromFunctionType()
         fun write(rec: Any? = null) {
             -"{ "
-            if (typedRule.resolvedFunction?.annotations?.any { it.fqName?.asString() == "com.lightningkite.khrysalis.WeakSelf" } == true) {
+            if (typedRule.resolvedFunction?.annotations?.let {
+                    it.hasAnnotation(FqName("com.lightningkite.khrysalis.WeakSelf")) || it.hasAnnotation(FqName("com.lightningkite.khrysalis.weakSelf"))
+                } == true) {
                 -"[weak self] "
-            } else if (typedRule.resolvedFunction?.annotations?.any { it.fqName?.asString() == "com.lightningkite.khrysalis.UnownedSelf" } == true) {
+            } else if (typedRule.resolvedFunction?.annotations?.let {
+                    it.hasAnnotation(FqName("com.lightningkite.khrysalis.UnownedSelf")) || it.hasAnnotation(FqName("com.lightningkite.khrysalis.unownedSelf"))
+                } == true) {
                 -"[unowned self] "
             }
             resolved.valueParameters.let {
                 -'('
                 if (rec != null) {
                     -rec
-                    -": "
-                    partOfParameter = true
-                    -resolved.extensionReceiverParameter?.type
-                    partOfParameter = false
+//                    -": "
+//                    writingParameter = true
+//                    -resolved.extensionReceiverParameter?.type
+//                    writingParameter = false
                     if (it.isNotEmpty()) -", "
                 }
                 it.withIndex().forEachBetween(
@@ -38,18 +42,24 @@ fun SwiftTranslator.registerLambda() {
                         } else {
                             -it.name.asString()
                         }
-                        -": "
-                        partOfParameter = true
-                        -(typedRule.valueParameters.getOrNull(index)?.typeReference ?: betterParameterTypes?.getOrNull(index) ?: it.type)
-                        partOfParameter = false
+                        writingParameter = true
+//                        -(typedRule.valueParameters.getOrNull(index)?.typeReference ?: betterParameterTypes?.getOrNull(index) ?: it.type)
+                        (typedRule.valueParameters.getOrNull(index)?.typeReference)?.let {
+                            -": "
+                            -it
+                        }
+                        writingParameter = false
                     },
                     between = { -", " }
                 )
                 -')'
             }
-            resolved.annotations.findAnnotation(FqName("com.lightningkite.khrysalis.SwiftReturnType"))?.allValueArguments?.entries?.first()?.value?.value?.let {
-                -" -> $it"
-            } ?: (betterReturnType ?: resolved.returnType)?.let {
+            (
+                    resolved.annotations.findAnnotation(FqName("com.lightningkite.khrysalis.SwiftReturnType"))
+                        ?: resolved.annotations.findAnnotation(FqName("com.lightningkite.khrysalis.swiftReturnType"))
+                    )?.allValueArguments?.entries?.first()?.value?.value?.let {
+                    -" -> $it"
+                } ?: (betterReturnType ?: resolved.returnType)?.let {
                 -" -> "
                 -it
             }

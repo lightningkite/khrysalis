@@ -1,12 +1,12 @@
 package com.lightningkite.khrysalis.observables
 
 import com.lightningkite.khrysalis.Box
-import com.lightningkite.khrysalis.escaping
+import com.lightningkite.khrysalis.Escaping
 import io.reactivex.Observable
 
 class WriteAddedObservableProperty<A>(
     val basedOn: ObservableProperty<A>,
-    val onWrite: @escaping() (A) -> Unit
+    val onWrite: @Escaping() (A) -> Unit
 ) : MutableObservableProperty<A>() {
     override var value: A
         get() = basedOn.value
@@ -20,7 +20,7 @@ class WriteAddedObservableProperty<A>(
 }
 
 fun <T> ObservableProperty<T>.withWrite(
-    onWrite: @escaping() (T) -> Unit
+    onWrite: @Escaping() (T) -> Unit
 ): MutableObservableProperty<T> {
     return WriteAddedObservableProperty<T>(this, onWrite)
 }

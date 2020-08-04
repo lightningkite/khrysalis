@@ -1,13 +1,12 @@
 package com.lightningkite.khrysalis.observables
 
 import com.lightningkite.khrysalis.Box
-import com.lightningkite.khrysalis.escaping
-import com.lightningkite.khrysalis.swiftReturnType
+import com.lightningkite.khrysalis.Escaping
 import io.reactivex.Observable
 
 class FlatMappedObservableProperty<A, B>(
     val basedOn: ObservableProperty<A>,
-    val transformation: @escaping() (A) -> ObservableProperty<B>
+    val transformation: @Escaping() (A) -> ObservableProperty<B>
 ) : ObservableProperty<B>() {
     override val value: B
         get() = transformation(basedOn.value).value
@@ -15,13 +14,13 @@ class FlatMappedObservableProperty<A, B>(
         get() = basedOn.observable.switchMap { it -> this.transformation(it.value).observable }.skip(1)
 }
 
-fun <T, B> ObservableProperty<T>.flatMap(transformation: @escaping() (T) -> ObservableProperty<B>): FlatMappedObservableProperty<T, B> {
+fun <T, B> ObservableProperty<T>.flatMap(transformation: @Escaping() (T) -> ObservableProperty<B>): FlatMappedObservableProperty<T, B> {
     return FlatMappedObservableProperty<T, B>(this, transformation)
 }
 
 class MutableFlatMappedObservableProperty<A, B>(
     val basedOn: ObservableProperty<A>,
-    val transformation: @escaping() (A) -> MutableObservableProperty<B>
+    val transformation: @Escaping() (A) -> MutableObservableProperty<B>
 ) : MutableObservableProperty<B>() {
     override var value: B
         get() = transformation(basedOn.value).value
@@ -43,6 +42,6 @@ class MutableFlatMappedObservableProperty<A, B>(
     }
 }
 
-fun <T, B> ObservableProperty<T>.flatMapMutable(transformation: @escaping() (T) -> MutableObservableProperty<B>): MutableFlatMappedObservableProperty<T, B> {
+fun <T, B> ObservableProperty<T>.flatMapMutable(transformation: @Escaping() (T) -> MutableObservableProperty<B>): MutableFlatMappedObservableProperty<T, B> {
     return MutableFlatMappedObservableProperty<T, B>(this, transformation)
 }

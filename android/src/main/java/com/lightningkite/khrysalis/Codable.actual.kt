@@ -5,6 +5,8 @@ import com.lightningkite.khrysalis.net.HttpClient
 
 interface Codable
 typealias IsCodable = Any
+typealias IsCodableAndHashable = Any
+typealias IsCodableAndEquatable = Any
 typealias JsonList = List<*>
 typealias JsonMap = Map<*, *>
 

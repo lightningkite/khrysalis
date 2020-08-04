@@ -7,8 +7,8 @@ import android.view.ViewGroup.LayoutParams.WRAP_CONTENT
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+import com.lightningkite.khrysalis.Escaping
 import com.lightningkite.khrysalis.JsName
-import com.lightningkite.khrysalis.escaping
 import com.lightningkite.khrysalis.observables.*
 import com.lightningkite.khrysalis.rx.removed
 import com.lightningkite.khrysalis.rx.until
@@ -104,7 +104,7 @@ class RVTypeHandler(val viewDependency: ViewDependency) {
     class Handler(
         val type: KClass<*>,
         val defaultValue: Any,
-        val handler: @escaping() (ObservableProperty<Any>)->View
+        val handler: @Escaping() (ObservableProperty<Any>)->View
     )
     internal var typeCount: Int = 0
         private set
@@ -117,7 +117,7 @@ class RVTypeHandler(val viewDependency: ViewDependency) {
         }
     )
 
-    fun handle(type: KClass<*>, defaultValue: Any, action: @escaping() (ObservableProperty<Any>)->View ) {
+    fun handle(type: KClass<*>, defaultValue: Any, action: @Escaping() (ObservableProperty<Any>)->View ) {
         handlers += Handler(
             type = type,
             defaultValue = defaultValue,
@@ -125,7 +125,7 @@ class RVTypeHandler(val viewDependency: ViewDependency) {
         )
         typeCount++
     }
-    inline fun <reified T: Any> handle(defaultValue: T, noinline action: @escaping() (ObservableProperty<T>)->View ) {
+    inline fun <reified T: Any> handle(defaultValue: T, noinline action: @Escaping() (ObservableProperty<T>)->View ) {
         handle(T::class, defaultValue) { obs ->
             action(obs.map { it as T })
         }

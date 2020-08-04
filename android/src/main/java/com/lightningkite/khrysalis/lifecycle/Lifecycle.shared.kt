@@ -11,12 +11,12 @@ import io.reactivex.rxkotlin.subscribeBy
 typealias Lifecycle = ObservableProperty<Boolean>
 
 @Deprecated("Just use RX disposal stuff")
-infix fun ObservableProperty<@swiftExactly Boolean>.and(other: ObservableProperty<@swiftExactly Boolean>): Lifecycle = this.combine(other) { a, b -> a && b }
+infix fun ObservableProperty<@SwiftExactly Boolean>.and(other: ObservableProperty<@SwiftExactly Boolean>): Lifecycle = this.combine(other) { a, b -> a && b }
 @Deprecated("Just use RX disposal stuff")
-fun <A: AnyObject> ObservableProperty<@swiftExactly Boolean>.openCloseBinding(
+fun <A: AnyObject> ObservableProperty<@SwiftExactly Boolean>.openCloseBinding(
     target: A,
-    open: @escaping() (A)->Unit,
-    close: @escaping() (A)->Unit
+    open: @Escaping() (A)->Unit,
+    close: @Escaping() (A)->Unit
 ) {
     var lastValue = this.value
     if(this.value){
@@ -32,9 +32,9 @@ fun <A: AnyObject> ObservableProperty<@swiftExactly Boolean>.openCloseBinding(
         lastValue = value
     }
 }
-fun ObservableProperty<@swiftExactly Boolean>.openCloseBinding(
-    open: @escaping() ()->Unit,
-    close: @escaping() ()->Unit
+fun ObservableProperty<@SwiftExactly Boolean>.openCloseBinding(
+    open: @Escaping() ()->Unit,
+    close: @Escaping() ()->Unit
 ) {
     var lastValue = this.value
     if(this.value){
@@ -52,7 +52,7 @@ fun ObservableProperty<@swiftExactly Boolean>.openCloseBinding(
 }
 
 @Deprecated("Just use RX disposal stuff")
-fun ObservableProperty<@swiftExactly Boolean>.once(): ObservableProperty<Boolean> = OnceObservableProperty(this)
+fun ObservableProperty<@SwiftExactly Boolean>.once(): ObservableProperty<Boolean> = OnceObservableProperty(this)
 
 @Deprecated("Just use RX disposal stuff")
 private class OnceObservableProperty(val basedOn: ObservableProperty<Boolean>): ObservableProperty<Boolean>() {
@@ -64,7 +64,7 @@ private class OnceObservableProperty(val basedOn: ObservableProperty<Boolean>): 
 }
 
 @Deprecated("Just use RX disposal stuff")
-fun ObservableProperty<@swiftExactly Boolean>.closeWhenOff(closeable: Disposable) {
+fun ObservableProperty<@SwiftExactly Boolean>.closeWhenOff(closeable: Disposable) {
     var listener: Disposable? = null
     listener = this.observableNN.subscribe { it ->
         if(!it) {

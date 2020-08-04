@@ -1,13 +1,13 @@
 package com.lightningkite.khrysalis.observables
 
 import com.lightningkite.khrysalis.Box
+import com.lightningkite.khrysalis.Escaping
 import com.lightningkite.khrysalis.boxWrap
-import com.lightningkite.khrysalis.escaping
 import io.reactivex.Observable
 
 class TransformedObservableProperty<A, B>(
     val basedOn: ObservableProperty<A>,
-    val read: @escaping() (A) -> B
+    val read: @Escaping() (A) -> B
 ) : ObservableProperty<B>() {
     override val value: B
         get() {
@@ -21,10 +21,10 @@ class TransformedObservableProperty<A, B>(
     "com.lightningkite.khrysalis.observables.map"
 )
 )
-fun <T, B> ObservableProperty<T>.transformed(read: @escaping() (T) -> B): ObservableProperty<B> {
+fun <T, B> ObservableProperty<T>.transformed(read: @Escaping() (T) -> B): ObservableProperty<B> {
     return TransformedObservableProperty<T, B>(this, read)
 }
 
-fun <T, B> ObservableProperty<T>.map(read: @escaping() (T) -> B): ObservableProperty<B> {
+fun <T, B> ObservableProperty<T>.map(read: @Escaping() (T) -> B): ObservableProperty<B> {
     return TransformedObservableProperty<T, B>(this, read)
 }

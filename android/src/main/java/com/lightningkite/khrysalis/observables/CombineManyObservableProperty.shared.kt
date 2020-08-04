@@ -1,9 +1,6 @@
 package com.lightningkite.khrysalis.observables
 
-import com.lightningkite.khrysalis.Box
-import com.lightningkite.khrysalis.JsName
-import com.lightningkite.khrysalis.boxWrap
-import com.lightningkite.khrysalis.escaping
+import com.lightningkite.khrysalis.*
 import com.lightningkite.khrysalis.rx.combineLatest
 import io.reactivex.Observable
 
@@ -20,7 +17,7 @@ class CombineManyObservableProperty<IN>(
 
 @JsName("combinedAndMap")
 fun <IN, OUT> List<ObservableProperty<IN>>.combined(
-    combiner: @escaping() (List<IN>) -> OUT
+    combiner: @Escaping() (List<IN>) -> OUT
 ): ObservableProperty<OUT> {
     return CombineManyObservableProperty(this).map(combiner)
 }

@@ -1,9 +1,6 @@
 package com.lightningkite.khrysalis.views
 
-import com.lightningkite.khrysalis.AnyEquatable
-import com.lightningkite.khrysalis.Equatable
-import com.lightningkite.khrysalis.JsName
-import com.lightningkite.khrysalis.escaping
+import com.lightningkite.khrysalis.*
 import com.lightningkite.khrysalis.observables.MutableObservableProperty
 import com.lightningkite.khrysalis.observables.StandardObservableProperty
 import com.lightningkite.khrysalis.views.StringResource
@@ -24,7 +21,7 @@ interface UntypedFormField {
 class FormField<T>(
     override val name: ViewString,
     val observable: MutableObservableProperty<T>,
-    override val validation: @escaping() (UntypedFormField) -> ViewString?
+    override val validation: @Escaping() (UntypedFormField) -> ViewString?
 ) : UntypedFormField {
     override val error: StandardObservableProperty<ViewString?> = StandardObservableProperty(null)
     var value: T
@@ -48,7 +45,7 @@ class Form {
     fun <T> field(
         name: ViewString,
         defaultValue: T,
-        validation: @escaping() (FormField<T>) -> ViewString?
+        validation: @Escaping() (FormField<T>) -> ViewString?
     ): FormField<T> {
         val obs = StandardObservableProperty(defaultValue)
         val field = FormField(
@@ -66,13 +63,13 @@ class Form {
     fun <T> field(
         name: StringResource,
         defaultValue: T,
-        validation: @escaping() (FormField<T>) -> ViewString?
+        validation: @Escaping() (FormField<T>) -> ViewString?
     ): FormField<T> = field(ViewStringResource(name), defaultValue, validation)
 
     fun <T> fieldFromProperty(
         name: ViewString,
         property: MutableObservableProperty<T>,
-        validation: @escaping() (FormField<T>) -> ViewString?
+        validation: @Escaping() (FormField<T>) -> ViewString?
     ): FormField<T> {
         val field = FormField(
             name = name,
@@ -89,7 +86,7 @@ class Form {
     fun <T> fieldFromProperty(
         name: StringResource,
         property: MutableObservableProperty<T>,
-        validation: @escaping() (FormField<T>) -> ViewString?
+        validation: @Escaping() (FormField<T>) -> ViewString?
     ): FormField<T> = fieldFromProperty(ViewStringResource(name), property, validation)
 
     fun check(): List<FormValidationError> {

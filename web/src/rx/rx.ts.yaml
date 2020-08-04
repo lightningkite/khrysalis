@@ -472,6 +472,13 @@
       rxZip: zip from rxjs
       rxMap: map from rxjs/operators
 
+- id: com.lightningkite.khrysalis.rx.zip
+  type: call
+  template:
+    pattern: rxZip(~this~)
+    imports:
+      rxZip: zip from rxjs
+
 - id: io.reactivex.Single.error
   type: call
   template:

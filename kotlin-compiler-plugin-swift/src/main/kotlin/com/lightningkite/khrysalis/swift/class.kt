@@ -172,7 +172,11 @@ fun SwiftTranslator.registerClass() {
         -" {\n"
         typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEach {
             if (it.resolvedPrimaryConstructorParameter?.hasSwiftOverride == true) {
-                -"private var _"
+                -"private "
+                if(it.annotationEntries.any { it.resolvedAnnotation?.fqName?.asString()?.equals("com.lightningkite.khrysalis.Unowned", true) == true }) {
+                    -"unowned "
+                }
+                -"var _"
                 -it.nameIdentifier
                 it.typeReference?.let {
                     -": "
@@ -194,6 +198,9 @@ fun SwiftTranslator.registerClass() {
                 -" = value } }"
             } else {
                 -(it.swiftVisibility() ?: "public")
+                if(it.annotationEntries.any { it.resolvedAnnotation?.fqName?.asString()?.equals("com.lightningkite.khrysalis.Unowned", true) == true }) {
+                    -" unowned"
+                }
                 -" var "
                 -it.nameIdentifier
                 it.typeReference?.let {
@@ -432,27 +439,6 @@ fun SwiftTranslator.registerClass() {
 
         -typedRule.body
 
-        if (typedRule.isEnum()) {
-            -"private static let _values: Array<"
-            -swiftTopLevelNameElement(typedRule)
-            -"> = ["
-            typedRule.body?.enumEntries?.forEachBetween(
-                forItem = {
-                    -swiftTopLevelNameElement(typedRule)
-                    -'.'
-                    -it.nameIdentifier
-                },
-                between = { -", " }
-            )
-            -"]\n"
-            -"public static func values() -> Array<"
-            -swiftTopLevelNameElement(typedRule)
-            -"> { return _values }\n"
-            -"public let name: String;\n"
-
-            -"public func toString() -> String { return self.name }\n"
-        }
-
         -"}"
         typedRule.runPostActions()
     }
@@ -509,33 +495,48 @@ fun SwiftTranslator.registerClass() {
             typedRule.primaryConstructorParameters
                 .filter { it.hasValOrVar() }
                 .forEach { prop ->
+                    -"private static let "
+                    -prop.nameIdentifier
+                    -"Values: Dictionary<"
+                    -swiftTopLevelNameElement(typedRule)
+                    -", "
+                    -prop.typeReference
+                    -"> = [\n"
+                    typedRule.body?.enumEntries?.forEachBetween(
+                        forItem = { entry ->
+                            -"."
+                            -entry.nameIdentifier
+                            -": "
+                            -entry.initializerList?.initializers
+                                ?.find { it is KtSuperTypeCallEntry }
+                                ?.resolvedCall?.valueArguments?.entries
+                                ?.find { it.key.name.asString() == prop.name }
+                                ?.let {
+                                    it.value.arguments.firstOrNull()?.let {
+                                        -it.getArgumentExpression()
+                                    } ?: -prop.defaultValue
+                                } ?: -"TODO()"
+                        },
+                        between = { -",\n"}
+                    )
+                    -"\n]\n"
                     -(prop.swiftVisibility() ?: "public")
                     -" var "
                     -prop.nameIdentifier
                     -": "
                     -prop.typeReference
                     -" {\n"
-                    -"switch self {\n"
-                    for (entry in typedRule.body?.enumEntries ?: listOf()) {
-                        -"case ."
-                        -entry.nameIdentifier
-                        -":\n"
-                        -entry.initializerList?.initializers
-                            ?.find { it is KtSuperTypeCallEntry }
-                            ?.resolvedCall?.valueArguments?.entries
-                            ?.find { it.key.name.asString() == prop.name }
-                            ?.value
-                            ?.arguments
-                            ?.firstOrNull()
-                            ?.let {
-                                -"return "
-                                -it
-                            } ?: -"TODO()"
-                        -"\n"
-                    }
-                    -"@unknown default:\n"
-                    -"TODO()\n"
-                    -"}\n"
+                    -"return "
+                    -swiftTopLevelNameElement(typedRule)
+                    -"."
+                    -prop.nameIdentifier
+                    -"Values[self] ?? "
+                    -swiftTopLevelNameElement(typedRule)
+                    -"."
+                    -prop.nameIdentifier
+                    -"Values[."
+                    -typedRule.body?.enumEntries?.firstOrNull()?.name
+                    -"]!\n"
                     -"}\n"
                 }
             //Functions
@@ -590,6 +591,11 @@ fun SwiftTranslator.registerClass() {
             //Open properties
             //Abstract properties
             //Closed properties
+
+            typedRule.body?.children?.filter { it is KtObjectDeclaration }?.forEach {
+                -it
+            }
+
             -"}\n"
         }
     )
@@ -663,7 +669,7 @@ fun SwiftTranslator.registerClass() {
             val rec = p.resolvedCall?.dispatchReceiver as? ClassValueReceiver ?: return@handle false
             (rec.type.constructor.declarationDescriptor as? ClassDescriptor)?.kind != ClassKind.ENUM_ENTRY
         },
-        priority = 100_000,
+        priority = 1_000,
         action = {
             val p = typedRule.parent as KtDotQualifiedExpression
             val r = p.resolvedCall!!.dispatchReceiver as ClassValueReceiver
@@ -684,7 +690,7 @@ fun SwiftTranslator.registerClass() {
             val rec = p.resolvedCall?.dispatchReceiver as? ClassValueReceiver ?: return@handle false
             (rec.type.constructor.declarationDescriptor as? ClassDescriptor)?.kind != ClassKind.ENUM_ENTRY
         },
-        priority = 100_000,
+        priority = 1_000,
         action = {
             val p = typedRule.parent as KtDotQualifiedExpression
             val r = p.resolvedCall!!.dispatchReceiver as ClassValueReceiver
@@ -776,7 +782,7 @@ private fun <T : KtClassOrObject> handleConstructor(
         val isEnum = (typedRule as? KtClass)?.isEnum() == true
         -(contextByType.typedRule.primaryConstructor?.swiftVisibility() ?: "public")
         -" init("
-        partOfParameter = true
+        writingParameter = true
         contextByType.typedRule.primaryConstructor?.let { cons ->
             (if (isInner) {
                 listOf(listOf("parentThis: ", parentClassName)) + cons.valueParameters
@@ -792,7 +798,7 @@ private fun <T : KtClassOrObject> handleConstructor(
                 -parentClassName
             } else Unit
         }
-        partOfParameter = false
+        writingParameter = false
         -") {\n"
         if (isInner) {
             -"self.parentThis = parentThis;\n"

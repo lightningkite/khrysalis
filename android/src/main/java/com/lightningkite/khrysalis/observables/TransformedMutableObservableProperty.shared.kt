@@ -1,14 +1,14 @@
 package com.lightningkite.khrysalis.observables
 
 import com.lightningkite.khrysalis.Box
+import com.lightningkite.khrysalis.Escaping
 import com.lightningkite.khrysalis.boxWrap
-import com.lightningkite.khrysalis.escaping
 import io.reactivex.Observable
 
 class TransformedMutableObservableProperty<A, B>(
     val basedOn: MutableObservableProperty<A>,
-    val read: @escaping() (A) -> B,
-    val write: @escaping() (B) -> A
+    val read: @Escaping() (A) -> B,
+    val write: @Escaping() (B) -> A
 ) : MutableObservableProperty<B>() {
     override fun update() {
         basedOn.update()
@@ -31,15 +31,15 @@ class TransformedMutableObservableProperty<A, B>(
 )
 )
 fun <T, B> MutableObservableProperty<T>.transformed(
-    read: @escaping() (T) -> B,
-    write: @escaping() (B) -> T
+    read: @Escaping() (T) -> B,
+    write: @Escaping() (B) -> T
 ): MutableObservableProperty<B> {
     return TransformedMutableObservableProperty<T, B>(this, read, write)
 }
 
 fun <T, B> MutableObservableProperty<T>.map(
-    read: @escaping() (T) -> B,
-    write: @escaping() (B) -> T
+    read: @Escaping() (T) -> B,
+    write: @Escaping() (B) -> T
 ): MutableObservableProperty<B> {
     return TransformedMutableObservableProperty<T, B>(this, read, write)
 }
