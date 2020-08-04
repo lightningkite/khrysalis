@@ -377,7 +377,11 @@ fun TypescriptTranslator.registerClass() {
                 }
                 -"): "
                 -typedRule.nameIdentifier
-                -typedRule.typeParameterList
+                typedRule.typeParameterList?.parameters?.let {
+                    -'<'
+                    it.forEachBetween(forItem = { -it.name }, between = { -", " })
+                    -'>'
+                }
                 -" { return new "
                 -typedRule.nameIdentifier
                 -"(\n"

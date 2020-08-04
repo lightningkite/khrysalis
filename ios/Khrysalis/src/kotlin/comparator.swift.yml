@@ -6,6 +6,14 @@
   type: type
   template: Comparator
 
+- id: kotlin.Comparator
+  type: call
+  template: 'makeComparator(function: ~0~ as (~T0~, ~T0~)->Int)'
+
+- id: java.util.Comparator
+  type: call
+  template: 'makeComparator(function: ~0~ as (~T0~, ~T0~)->Int)'
+
 - id: kotlin.Comparator.compare
   type: call
   template: ~this~(~0~, ~1~).rawValue

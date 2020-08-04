@@ -24,6 +24,12 @@
 - id: com.lightningkite.khrysalis.Equatable
   type: type
   template: Equatable
+- id: com.lightningkite.khrysalis.IsHashable
+  type: type
+  template: Hashable
+- id: com.lightningkite.khrysalis.IsEquatable
+  type: type
+  template: Equatable
 - id: com.lightningkite.khrysalis.SomeEnum
   type: type
   template: SomeEnum

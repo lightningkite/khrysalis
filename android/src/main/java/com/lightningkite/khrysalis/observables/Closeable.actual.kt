@@ -1,6 +1,6 @@
 package com.lightningkite.khrysalis.observables
 
-import com.lightningkite.khrysalis.escaping
+import com.lightningkite.khrysalis.Escaping
 import io.reactivex.disposables.Disposable
 
 interface Closeable: Disposable {
@@ -15,7 +15,7 @@ interface Closeable: Disposable {
     fun close()
 }
 
-class Close(val closer: @escaping() () -> Unit): Closeable {
+class Close(val closer: @Escaping() () -> Unit): Closeable {
     var disposed: Boolean = false
     override fun isDisposed(): Boolean {
         return disposed

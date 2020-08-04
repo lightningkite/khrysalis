@@ -26,7 +26,7 @@ class ViewStringTemplate(val template: ViewString, val arguments: List<Any>) : V
     }
 }
 
-class ViewStringComplex(val getter: @escaping() (ViewDependency) -> String) : ViewString {
+class ViewStringComplex(val getter: @Escaping() (ViewDependency) -> String) : ViewString {
     override fun get(dependency: ViewDependency): String = getter(dependency)
 }
 
@@ -36,7 +36,7 @@ class ViewStringList(val parts: List<ViewString>, val separator: String = "\n"):
     }
 }
 
-fun List<@swiftExactly("Element") ViewString>.joinToViewString(separator: String = "\n"): ViewString {
+fun List<@SwiftExactly("Element") ViewString>.joinToViewString(separator: String = "\n"): ViewString {
     if(this.size == 1){
         return this.first()
     }

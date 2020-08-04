@@ -467,10 +467,17 @@
 - id: io.reactivex.Single.zip
   type: call
   template:
-    pattern: rxZip(~0~).pipe(rxMap(~1~))
+    pattern: rxZip(...~0~).pipe(rxMap(~1~))
     imports:
       rxZip: zip from rxjs
       rxMap: map from rxjs/operators
+
+- id: com.lightningkite.khrysalis.rx.zip
+  type: call
+  template:
+    pattern: rxZip(...~this~)
+    imports:
+      rxZip: zip from rxjs
 
 - id: io.reactivex.Single.error
   type: call

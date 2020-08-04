@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.ios.layout
 
+import com.lightningkite.khrysalis.swift.safeSwiftIdentifier
 import com.lightningkite.khrysalis.utils.XmlNode
 import com.lightningkite.khrysalis.utils.camelCase
 import java.io.File
@@ -44,13 +45,13 @@ fun File.translateLayoutXml(styles: Styles, converter: LayoutConverter = LayoutC
         appendln("    }")
         appendln("    ")
         conversion.sublayouts.entries.forEach {
-            appendln("public let ${it.key}: ${it.value} = ${it.value}()")
+            appendln("public let ${it.key.safeSwiftIdentifier()}: ${it.value} = ${it.value}()")
         }
         conversion.delegateBindings.entries.forEach {
-            appendln("public unowned var ${it.key}Delegate: ${it.value}!")
+            appendln("public unowned var ${(it.key + "Delegate").safeSwiftIdentifier()}: ${it.value}!")
         }
         conversion.bindings.entries.forEach {
-            appendln("public unowned var ${it.key}: ${it.value}!")
+            appendln("public unowned var ${it.key.safeSwiftIdentifier()}: ${it.value}!")
         }
         appendln("    ")
         appendln("}")

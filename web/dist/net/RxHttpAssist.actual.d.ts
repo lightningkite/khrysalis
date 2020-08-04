@@ -1,0 +1,11 @@
+import { Observable } from 'rxjs';
+export declare function ioReactivexSingleUnsuccessfulAsError(this_: Observable<Response>): Observable<Response>;
+export declare function ioReactivexSingleReadJson<T>(this_: Observable<Response>, T: Array<any>): Observable<T>;
+export declare function ioReactivexSingleReadJsonDebug<T>(this_: Observable<Response>, T: Array<any>): Observable<T>;
+export declare function ioReactivexSingleReadText(this_: Observable<Response>): Observable<String>;
+export declare function ioReactivexSingleReadData(this_: Observable<Response>): Observable<Int8Array>;
+export declare function okhttp3ResponseReadJson<T>(this_: Response, T: Array<any>): Observable<T>;
+export declare function okhttp3ResponseReadJsonDebug<T>(this_: Response, T: Array<any>): Observable<T>;
+export declare function okhttp3ResponseReadText(this_: Response): Observable<String>;
+export declare function okhttp3ResponseReadData(this_: Response): Observable<Int8Array>;
+export declare function ioReactivexSingleReadHttpException<Element>(this_: Observable<Element>): Observable<Element>;

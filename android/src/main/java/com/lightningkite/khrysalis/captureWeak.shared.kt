@@ -1,11 +1,10 @@
 package com.lightningkite.khrysalis
 
 import com.lightningkite.khrysalis.AnyObject
-import com.lightningkite.khrysalis.escaping
 import com.lightningkite.khrysalis.weak
 
 
-fun <Z : AnyObject> captureWeak(capture: Z, lambda: @escaping() (Z) -> Unit): () -> Unit {
+fun <Z : AnyObject> captureWeak(capture: Z, lambda: @Escaping() (Z) -> Unit): () -> Unit {
     val captured: Z? by weak(capture)
     return label@{ ->
         val actualCaptured = captured
@@ -16,7 +15,7 @@ fun <Z : AnyObject> captureWeak(capture: Z, lambda: @escaping() (Z) -> Unit): ()
     }
 }
 
-fun <Z : AnyObject, A> captureWeak(capture: Z, lambda: @escaping() (Z, A) -> Unit): (A) -> Unit {
+fun <Z : AnyObject, A> captureWeak(capture: Z, lambda: @Escaping() (Z, A) -> Unit): (A) -> Unit {
     val captured: Z? by weak(capture)
     return label@{ a ->
         val actualCaptured = captured
@@ -27,7 +26,7 @@ fun <Z : AnyObject, A> captureWeak(capture: Z, lambda: @escaping() (Z, A) -> Uni
     }
 }
 
-fun <Z : AnyObject, A, B> captureWeak(capture: Z, lambda: @escaping() (Z, A, B) -> Unit): (A, B) -> Unit {
+fun <Z : AnyObject, A, B> captureWeak(capture: Z, lambda: @Escaping() (Z, A, B) -> Unit): (A, B) -> Unit {
     val captured: Z? by weak(capture)
     return label@{ a, b ->
         val actualCaptured = captured
@@ -38,7 +37,7 @@ fun <Z : AnyObject, A, B> captureWeak(capture: Z, lambda: @escaping() (Z, A, B) 
     }
 }
 
-fun <Z : AnyObject, A, B, C> captureWeak(capture: Z, lambda: @escaping() (Z, A, B, C) -> Unit): (A, B, C) -> Unit {
+fun <Z : AnyObject, A, B, C> captureWeak(capture: Z, lambda: @Escaping() (Z, A, B, C) -> Unit): (A, B, C) -> Unit {
     val captured: Z? by weak(capture)
     return label@{ a, b, c ->
         val actualCaptured = captured
@@ -51,7 +50,7 @@ fun <Z : AnyObject, A, B, C> captureWeak(capture: Z, lambda: @escaping() (Z, A, 
 
 fun <Z : AnyObject, A, B, C, D> captureWeak(
     capture: Z,
-    lambda: @escaping() (Z, A, B, C, D) -> Unit
+    lambda: @Escaping() (Z, A, B, C, D) -> Unit
 ): (A, B, C, D) -> Unit {
     val captured: Z? by weak(capture)
     return label@{ a, b, c, d ->
@@ -65,7 +64,7 @@ fun <Z : AnyObject, A, B, C, D> captureWeak(
 
 fun <Z : AnyObject, A, B, C, D, E> captureWeak(
     capture: Z,
-    lambda: @escaping() (Z, A, B, C, D, E) -> Unit
+    lambda: @Escaping() (Z, A, B, C, D, E) -> Unit
 ): (A, B, C, D, E) -> Unit {
     val captured: Z? by weak(capture)
     return label@{ a, b, c, d, e ->

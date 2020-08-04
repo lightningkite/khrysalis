@@ -3,8 +3,8 @@
 // Package: com.lightningkite.khrysalis.observables
 import { skip as rxSkip, switchMap as rxSwitchMap } from 'rxjs/operators'
 import { ObservableProperty } from './ObservableProperty.shared'
+import { Observable, ObservableInput } from 'rxjs'
 import { getComLightningkiteKhrysalisObservablesObservablePropertyObservable } from './ObservableProperty.ext.shared'
-import { Observable } from 'rxjs'
 import { MutableObservableProperty } from './MutableObservableProperty.shared'
 
 //! Declares com.lightningkite.khrysalis.observables.FlatMappedObservableProperty
@@ -21,7 +21,7 @@ export class FlatMappedObservableProperty<A, B> extends ObservableProperty<B> {
     public get value(): B { return this.transformation(this.basedOn.value).value; }
     
     //! Declares com.lightningkite.khrysalis.observables.FlatMappedObservableProperty.onChange
-    public get onChange(): Observable<B> { return getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this.basedOn).pipe(rxSwitchMap((it: (A | null)): Observable<(B | null)> => getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this.transformation(it)))).pipe(rxSkip(0)); }
+    public get onChange(): Observable<B> { return getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this.basedOn).pipe(rxSwitchMap((it: (A | null)): (ObservableInput<((B | null) | null)> | null) => getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this.transformation(it)))).pipe(rxSkip(0)); }
     
 }
 
@@ -52,7 +52,7 @@ export class MutableFlatMappedObservableProperty<A, B> extends MutableObservable
     
     
     //! Declares com.lightningkite.khrysalis.observables.MutableFlatMappedObservableProperty.onChange
-    public get onChange(): Observable<B> { return getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this.basedOn).pipe(rxSwitchMap( (it: A): Observable<(B | null)> => {
+    public get onChange(): Observable<B> { return getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this.basedOn).pipe(rxSwitchMap((it: A): (ObservableInput<((B | null) | null)> | null) => {
                     const prop = this.transformation(it);
                     
                     this.lastProperty = prop;

@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.ios.layout
 
+import com.lightningkite.khrysalis.swift.safeSwiftIdentifier
 import com.lightningkite.khrysalis.utils.XmlNode
 import com.lightningkite.khrysalis.utils.camelCase
 import com.lightningkite.khrysalis.utils.hashColorToUIColor
@@ -24,7 +25,7 @@ data class OngoingLayoutConversion(
             val id = node.allAttributes["android:id"]?.removePrefix("@id/")?.removePrefix("@+id/")?.camelCase()
             if (id != null) {
                 sublayouts[id] = className
-                append("$id.setup(dependency: dependency)")
+                append("${id.safeSwiftIdentifier()}.setup(dependency: dependency)")
             } else {
                 append("$className().setup(dependency: dependency)")
             }

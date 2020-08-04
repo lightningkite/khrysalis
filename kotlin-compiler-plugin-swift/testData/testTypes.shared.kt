@@ -38,4 +38,5 @@ private fun typesMain(){
     val d = 23.0
 
     val unit: Unit = Unit
+    val unitArmy = otherList.map { Unit }
 }

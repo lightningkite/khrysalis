@@ -155,13 +155,18 @@ fun TypescriptTranslator.registerType() {
     }
 
     handle<CompleteReflectableType> {
-        -"["
-        -BasicType(typedRule.type)
-        typedRule.type.arguments.forEach {
-            -", "
-            -CompleteReflectableType(it.type)
+        val desc = typedRule.type.constructor.declarationDescriptor
+        if(desc is TypeParameterDescriptor) {
+            -desc.name.asString()
+        } else {
+            -"["
+            -BasicType(typedRule.type)
+            typedRule.type.arguments.forEach {
+                -", "
+                -CompleteReflectableType(it.type)
+            }
+            -"]"
         }
-        -"]"
     }
 
     handle<KtNullableType> {

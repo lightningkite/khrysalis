@@ -84,11 +84,15 @@ public class LabeledCheckbox : LinearLayout, CompoundButton {
         ))
 
         checkView.text = "✓"
+        
+        post {
+            self.checkView.textColor = self.labelView.textColor
+            self.checkViewContainer.layer.borderColor = self.checkView.textColor.cgColor
+        }
         checkView.transform = CGAffineTransform(scaleX: 0.01, y: 0.01)
         checkView.textAlignment = .center
 
         checkViewContainer.layer.borderWidth = 1
-        checkViewContainer.layer.borderColor = checkView.textColor.cgColor
         checkViewContainer.layer.cornerRadius = 2
 
         let tapRecognizer = UITapGestureRecognizer().addAction(until: removed) { [weak self] in

@@ -2,7 +2,7 @@ package com.lightningkite.khrysalis.observables.binding
 
 import android.view.View
 import android.widget.LinearLayout
-import com.lightningkite.khrysalis.escaping
+import com.lightningkite.khrysalis.Escaping
 import com.lightningkite.khrysalis.observables.*
 import com.lightningkite.khrysalis.rx.removed
 import com.lightningkite.khrysalis.rx.until
@@ -34,7 +34,7 @@ private class LinearLayoutBoundSubview<T>(val view: View, val property: Standard
 fun <T> LinearLayout.bind(
     data: ObservableProperty<List<T>>,
     defaultValue: T,
-    makeView: @escaping() (ObservableProperty<T>) -> View
+    makeView: @Escaping() (ObservableProperty<T>) -> View
 ) {
     val existingViews: ArrayList<LinearLayoutBoundSubview<T>> = ArrayList()
     data.subscribeBy { value ->
@@ -86,7 +86,7 @@ fun <T> LinearLayout.bind(
 fun <T> LinearLayout.bindHorizontal(
     data: ObservableProperty<List<T>>,
     defaultValue: T,
-    makeView: @escaping() (ObservableProperty<T>) -> View
+    makeView: @Escaping() (ObservableProperty<T>) -> View
 ) {
     val existingViews: ArrayList<LinearLayoutBoundSubview<T>> = ArrayList()
     data.subscribeBy { value ->

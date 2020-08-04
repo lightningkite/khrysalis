@@ -17,11 +17,8 @@ import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.ser.std.StdSerializer
 import com.fasterxml.jackson.databind.util.StdDateFormat
 import com.fasterxml.jackson.module.kotlin.KotlinModule
-import com.lightningkite.khrysalis.Image
-import com.lightningkite.khrysalis.PlatformSpecific
+import com.lightningkite.khrysalis.*
 import com.lightningkite.khrysalis.bytes.Data
-import com.lightningkite.khrysalis.escaping
-import com.lightningkite.khrysalis.loadImage
 import com.lightningkite.khrysalis.time.TimeAlone
 import com.lightningkite.khrysalis.time.DateAlone
 import com.lightningkite.khrysalis.time.iso8601
@@ -219,7 +216,7 @@ object HttpClient {
         method: String,
         headers: Map<String, String>,
         body: Any? = null,
-        crossinline onResult: @escaping() (code: Int, result: T?, error: String?) -> Unit
+        crossinline onResult: @Escaping() (code: Int, result: T?, error: String?) -> Unit
     ) {
         println("Sending $method request to $url with headers $headers")
         val request = Request.Builder()
@@ -272,7 +269,7 @@ object HttpClient {
         method: String,
         headers: Map<String, String>,
         body: Any? = null,
-        crossinline onResult: @escaping() (code: Int, result: String?, error: String?) -> Unit
+        crossinline onResult: @Escaping() (code: Int, result: String?, error: String?) -> Unit
     ) {
         println("Sending $method request to $url with headers $headers")
         val request = Request.Builder()
@@ -315,7 +312,7 @@ object HttpClient {
         method: String,
         headers: Map<String, String>,
         body: Any? = null,
-        crossinline onResult: @escaping() (code: Int, error: String?) -> Unit
+        crossinline onResult: @Escaping() (code: Int, error: String?) -> Unit
     ) {
         println("Sending $method request to $url with headers $headers")
         val request = Request.Builder()
@@ -361,7 +358,7 @@ object HttpClient {
         image: Image,
         maxSize: Long = 10_000_000,
         additionalFields: Map<String, String> = mapOf(),
-        crossinline onResult: @escaping() (code: Int, error: String?) -> Unit
+        crossinline onResult: @Escaping() (code: Int, error: String?) -> Unit
     ) {
         loadImage(image) { rawImage ->
             if (rawImage == null) {
@@ -441,7 +438,7 @@ object HttpClient {
         image: Image,
         maxSize: Long = 10_000_000,
         additionalFields: Map<String, String> = mapOf(),
-        crossinline onResult: @escaping() (code: Int, result: T?, error: String?) -> Unit
+        crossinline onResult: @Escaping() (code: Int, result: T?, error: String?) -> Unit
     ) {
         loadImage(image) { rawImage ->
             if (rawImage == null) {

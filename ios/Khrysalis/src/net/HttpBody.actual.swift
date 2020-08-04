@@ -22,6 +22,12 @@ public extension Encodable {
         return HttpBody(mediaType: HttpMediaTypes.JSON, data: self.toJsonData())
     }
 }
+public func kotlinAnyToJsonHttpBody(_ value: Any) -> HttpBody {
+    return HttpBody(mediaType: HttpMediaTypes.JSON, data: kotlinAnyToJsonData(value))
+}
+public func kotlinAnyToJsonHttpBody(_ value: Encodable) -> HttpBody {
+    return HttpBody(mediaType: HttpMediaTypes.JSON, data: value.toJsonData())
+}
 
 //--- Data.toHttpBody(HttpMediaType)
 public extension Data {

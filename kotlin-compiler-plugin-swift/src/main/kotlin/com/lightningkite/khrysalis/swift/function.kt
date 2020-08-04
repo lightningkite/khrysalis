@@ -13,10 +13,6 @@ import com.lightningkite.khrysalis.generic.PartialTranslatorByType
 import com.lightningkite.khrysalis.swift.replacements.Template
 import com.lightningkite.khrysalis.swift.replacements.TemplatePart
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
-import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
-import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
-import org.jetbrains.kotlin.js.translate.callTranslator.getReturnType
-import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.synthetic.hasJavaOriginInHierarchy
 
@@ -203,12 +199,14 @@ fun SwiftTranslator.registerFunction() {
         -typedRule.nameIdentifier
         typedRule.typeReference?.let {
             -": "
-            if (typedRule.resolvedValueParameter?.annotations?.any { it.fqName?.asString() == "com.lightningkite.khrysalis.Modifies" } == true) {
+            if (typedRule.resolvedValueParameter?.annotations?.let {
+                    it.hasAnnotation(FqName("com.lightningkite.khrysalis.Modifies")) || it.hasAnnotation(FqName("com.lightningkite.khrysalis.modifies"))
+                } == true) {
                 -"inout "
             }
-            partOfParameter = true
+            writingParameter = true
             -it
-            partOfParameter = false
+            writingParameter = false
         }
         typedRule.defaultValue?.let {
             -" = "
@@ -222,9 +220,9 @@ fun SwiftTranslator.registerFunction() {
         action = {
             -typedRule.nameIdentifier
             -": "
-            partOfParameter = true
+            writingParameter = true
             -typedRule.typeReference
-            partOfParameter = false
+            writingParameter = false
             -"..."
         }
     )
@@ -553,7 +551,7 @@ fun SwiftTranslator.registerFunction() {
                     out += it
                 } ?: entry.value.arguments.forEachBetween(
                     forItem = {
-                        if (entry.key.annotations.any { it.fqName?.asString() == "com.lightningkite.khrysalis.Modifies" }) {
+                        if (entry.key.annotations.hasAnnotation(FqName("com.lightningkite.khrysalis.Modifies")) || entry.key.annotations.hasAnnotation(FqName("com.lightningkite.khrysalis.modifies"))) {
                             out += "&"
                         }
                         out += it.getArgumentExpression()

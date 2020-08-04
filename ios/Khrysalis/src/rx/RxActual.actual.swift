@@ -77,15 +77,15 @@ public extension Observable {
         return self.do(onCompleted: action)
     }
     //--- Observable.doOnError((Throwable)->Unit)
-    func doOnComplete(_ action: @escaping (Error) throws -> Void) -> Observable<Element> {
+    func doOnError(_ action: @escaping (Error) throws -> Void) -> Observable<Element> {
         return self.do(onError: action)
     }
     //--- Observable.doOnNext((T)->Unit)
-    func doOnNext(_ action: @escaping (Element) throws -> Void) throws -> Observable<Element> {
+    func doOnNext(_ action: @escaping (Element) throws -> Void) -> Observable<Element> {
         return self.do(onNext: action)
     }
     //--- Observable.doOnTerminate(()->Unit)
-    func doOnNext(_ action: @escaping () -> Void) throws -> Observable<Element> {
+    func doOnTerminate(_ action: @escaping () -> Void) -> Observable<Element> {
         return self.do(onDispose: action)
     }
 
@@ -300,5 +300,91 @@ public extension BehaviorSubject {
 public extension PublishSubject {
     static func create() -> PublishSubject<Element> {
         return PublishSubject()
+    }
+}
+
+//
+//  distinct.swift
+//  RxSwiftExt
+//
+//  Created by Segii Shulga on 5/4/16.
+//  Copyright © 2017 RxSwift Community. All rights reserved.
+//  Copyright (c) 2016-latest RxSwiftCommunity https://github.com/RxSwiftCommunity
+//
+//  Permission is hereby granted, free of charge, to any person obtaining a copy
+//  of this software and associated documentation files (the "Software"), to deal
+//  in the Software without restriction, including without limitation the rights
+//  to use, copy, modify, merge, publish, distribute, sublicense, and/or sell
+//  copies of the Software, and to permit persons to whom the Software is
+//  furnished to do so, subject to the following conditions:
+//
+//  The above copyright notice and this permission notice shall be included in
+//  all copies or substantial portions of the Software.
+//
+//  THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
+//  IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
+//  FITNESS FOR A PARTICULAR PURPOSE AND NONINFRINGEMENT. IN NO EVENT SHALL THE
+//  AUTHORS OR COPYRIGHT HOLDERS BE LIABLE FOR ANY CLAIM, DAMAGES OR OTHER
+//  LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
+//  OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN
+//  THE SOFTWARE.
+//
+
+extension Observable {
+    /**
+     Suppress duplicate items emitted by an Observable
+     - seealso: [distinct operator on reactivex.io](http://reactivex.io/documentation/operators/distinct.html)
+     - parameter predicate: predicate determines whether element distinct
+
+     - returns: An observable sequence only containing the distinct contiguous elements, based on predicate, from the source sequence.
+     */
+    public func distinct(_ predicate: @escaping (Element) throws -> Bool) -> Observable<Element> {
+        var cache = [Element]()
+        return flatMap { element -> Observable<Element> in
+            if try cache.contains(where: predicate) {
+                return Observable<Element>.empty()
+            } else {
+                cache.append(element)
+                return Observable<Element>.just(element)
+            }
+        }
+    }
+}
+
+extension Observable where Element: Hashable {
+    /**
+     Suppress duplicate items emitted by an Observable
+     - seealso: [distinct operator on reactivex.io](http://reactivex.io/documentation/operators/distinct.html)
+     - returns: An observable sequence only containing the distinct contiguous elements, based on equality operator, from the source sequence.
+     */
+    public func distinct() -> Observable<Element> {
+        var cache = Set<Element>()
+        return flatMap { element -> Observable<Element> in
+            if cache.contains(element) {
+                return Observable<Element>.empty()
+            } else {
+                cache.insert(element)
+                return Observable<Element>.just(element)
+            }
+        }
+    }
+}
+
+extension Observable where Element: Equatable {
+    /**
+     Suppress duplicate items emitted by an Observable
+     - seealso: [distinct operator on reactivex.io](http://reactivex.io/documentation/operators/distinct.html)
+     - returns: An observable sequence only containing the distinct contiguous elements, based on equality operator, from the source sequence.
+     */
+    public func distinct() -> Observable<Element> {
+        var cache = [Element]()
+        return flatMap { element -> Observable<Element> in
+            if cache.contains(element) {
+                return Observable<Element>.empty()
+            } else {
+                cache.append(element)
+                return Observable<Element>.just(element)
+            }
+        }
     }
 }

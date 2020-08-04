@@ -241,9 +241,9 @@ private fun generateFile(
             val things = (viewNode.totalRequires(viewNodeMap).sortedBy { it.name })
             things.forEachIndexed { index, it ->
                 if (it.type.contains("VG") || it.type.contains("ViewGenerator")) {
-                    line("@unowned val $it" + (if (index == things.lastIndex) "" else ","))
+                    line("@Unowned val $it" + (if (index == things.lastIndex) "" else ","))
                 } else if (it.type.contains("->") || it.type.contains("-]")) {
-                    line("val ${it.name}: @escaping() ${it.kotlinType}" + (if (it.default != null) " = " + it.default else "") + (if (index == things.lastIndex) "" else ","))
+                    line("val ${it.name}: @Escaping() ${it.kotlinType}" + (if (it.default != null) " = " + it.default else "") + (if (index == things.lastIndex) "" else ","))
                 } else {
                     line("val $it" + (if (index == things.lastIndex) "" else ","))
                 }

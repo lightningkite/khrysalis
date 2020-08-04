@@ -5,7 +5,7 @@ import android.view.ViewParent
 import android.widget.AbsListView
 import android.widget.AdapterView
 import androidx.recyclerview.widget.RecyclerView
-import com.lightningkite.khrysalis.escaping
+import com.lightningkite.khrysalis.Escaping
 import io.reactivex.disposables.Disposable
 
 val View.removed: DisposeCondition
@@ -32,7 +32,7 @@ private fun ViewParent.recyclingParent(): View? = this as? RecyclerView
     ?: this.parent?.recyclingParent()
 
 
-class DisposableLambda(val lambda: @escaping() () -> Unit) : Disposable {
+class DisposableLambda(val lambda: @Escaping() () -> Unit) : Disposable {
     var disposed: Boolean = false
     override fun isDisposed(): Boolean {
         return disposed

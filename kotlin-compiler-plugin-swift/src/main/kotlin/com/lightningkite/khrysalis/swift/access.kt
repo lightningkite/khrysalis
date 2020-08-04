@@ -55,7 +55,7 @@ fun getAccessMode(swiftTranslator: SwiftTranslator, rule: KtQualifiedExpression)
         ).let { it is TemplatePart.Text && it.string.startsWith('.') }
     val receiverAccessMode =
         (rule.receiverExpression as? KtQualifiedExpression)?.let { getAccessMode(swiftTranslator, it) }
-    val receiverAllowsOptionalAction = receiverAccessMode?.resultAllowsOptionalOp != false
+    val receiverAllowsOptionalAction = receiverAccessMode?.resultAllowsOptionalOp ?: true
 
     return if (templateIsThisDot || ruleTemplate == null) {
         if (receiverAllowsOptionalAction || getDirectlyNullable(swiftTranslator, rule.receiverExpression)) {

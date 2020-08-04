@@ -2,6 +2,7 @@ package com.lightningkite.khrysalis.ios.layout
 
 import com.lightningkite.khrysalis.utils.*
 import com.lightningkite.khrysalis.ios.*
+import com.lightningkite.khrysalis.swift.safeSwiftIdentifier
 import kotlin.math.PI
 
 val LayoutConverter.Companion.displayViews
@@ -10,7 +11,7 @@ val LayoutConverter.Companion.displayViews
             ViewType("View", "UIView") { node ->
                 node.allAttributes["android:id"]?.let { raw ->
                     val name = raw.removePrefix("@+id/").removePrefix("@id/").camelCase()
-                    appendln("self.$name = view")
+                    appendln("self.${name.safeSwiftIdentifier()} = view")
                     bindings[name] =
                         converter.viewTypes[node.name]?.iosName ?: (node.name.substringAfterLast('.'))
                 }
@@ -111,7 +112,7 @@ val LayoutConverter.Companion.displayViews
                         val name = raw.removePrefix("@+id/").removePrefix("@id/").camelCase().substringAfterLast('.')
                         appendln("let dg = $name()")
                         appendln("view.delegate = dg")
-                        appendln("self.${id}Delegate = dg")
+                        appendln("self.${(id + "Delegate").safeSwiftIdentifier()} = dg")
                         delegateBindings[id] = name
                     }
                 }

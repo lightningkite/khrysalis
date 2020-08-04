@@ -12,7 +12,7 @@ import io.reactivex.rxkotlin.subscribeBy
 @discardableResult
 fun <A : AnyObject, T> ObservableProperty<T>.addAndRunWeak(
     referenceA: A,
-    listener: @escaping() (A, T) -> Unit
+    listener: @Escaping() (A, T) -> Unit
 ): Disposable = observable.addWeak(
     referenceA = referenceA,
     listener = { a, value ->
@@ -28,7 +28,7 @@ fun <A : AnyObject, T> ObservableProperty<T>.addAndRunWeak(
 fun <A : AnyObject, B : AnyObject, T> ObservableProperty<T>.addAndRunWeak(
     referenceA: A,
     referenceB: B,
-    listener: @escaping() (A, B, T) -> Unit
+    listener: @Escaping() (A, B, T) -> Unit
 ): Disposable = observable.addWeak(
     referenceA = referenceA,
     referenceB = referenceB,
@@ -47,7 +47,7 @@ fun <A : AnyObject, B : AnyObject, C : AnyObject, T> ObservableProperty<T>.addAn
     referenceA: A,
     referenceB: B,
     referenceC: C,
-    listener: @escaping() (A, B, C, T) -> Unit
+    listener: @Escaping() (A, B, C, T) -> Unit
 ): Disposable = observable.addWeak(
     referenceA = referenceA,
     referenceB = referenceB,

@@ -1,9 +1,7 @@
 package com.lightningkite.khrysalis.observables.binding
 
 import com.google.android.material.tabs.TabLayout
-import com.lightningkite.khrysalis.Equatable
-import com.lightningkite.khrysalis.JsName
-import com.lightningkite.khrysalis.Hashable
+import com.lightningkite.khrysalis.*
 import com.lightningkite.khrysalis.observables.*
 import com.lightningkite.khrysalis.rx.removed
 import com.lightningkite.khrysalis.rx.until
@@ -56,7 +54,7 @@ fun TabLayout.bind(
 }
 
 
-fun <T: Equatable> TabLayout.bind(
+fun <T: AnyEquatable> TabLayout.bind(
     tabs: List<T>,
     selected: MutableObservableProperty<T>,
     allowReselect:Boolean = false,
@@ -109,7 +107,7 @@ fun <T: Equatable> TabLayout.bind(
  */
 
 @JsName("tabLayoutBindObservable")
-fun <T : Hashable> TabLayout.bind(
+fun <T : AnyHashable> TabLayout.bind(
     options: ObservableProperty<List<T>>,
     selected: MutableObservableProperty<T>,
     allowReselect: Boolean = false,

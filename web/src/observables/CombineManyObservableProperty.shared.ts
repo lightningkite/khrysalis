@@ -30,7 +30,7 @@ export function combinedAndMap<IN, OUT>(this_: Array<ObservableProperty<IN>>, co
 
 
 //! Declares com.lightningkite.khrysalis.observables.combined>kotlin.collections.List<com.lightningkite.khrysalis.observables.ObservableProperty>
-export function kotlinCollectionsListCombined<IN>(this_: Array<ObservableProperty<IN>>): ObservableProperty<Array<IN>> {
-    return new CombineManyObservableProperty<(IN | null)>(this_);
+export function kotlinCollectionsListCombined<T>(this_: Array<ObservableProperty<T>>): ObservableProperty<Array<T>> {
+    return new CombineManyObservableProperty<(T | null)>(this_);
 }
 

@@ -78,8 +78,7 @@ fun TypescriptTranslator.registerIdentifiers(){
     )
     handle<KtNameReferenceExpression>(
         condition = {
-            typedRule.resolvedUsedAsExpression == true
-                    && replacements.getGet(typedRule.resolvedReferenceTarget ?: return@handle false) != null
+            replacements.getGet(typedRule.resolvedReferenceTarget ?: return@handle false) != null
                     || replacements.getGet(typedRule.resolvedShortReferenceToCompanionObject ?: return@handle false) != null
         },
         priority = 10_011,

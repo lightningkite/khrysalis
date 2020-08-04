@@ -52,7 +52,7 @@ class DjangoErrorTranslator(
     }
 
     fun <T> wrap(
-        callback: @escaping() (result: T?, error: ViewString?)->Unit
+        callback: @Escaping() (result: T?, error: ViewString?)->Unit
     ): (code: Int, result: T?, error: String?)->Unit {
         return { code, result, error ->
             callback(result, this.parseError(code, error))
@@ -60,7 +60,7 @@ class DjangoErrorTranslator(
     }
 
     fun wrapNoResponse(
-        callback: @escaping() (error: ViewString?)->Unit
+        callback: @Escaping() (error: ViewString?)->Unit
     ): (code: Int, error: String?)->Unit {
         return { code, error ->
             callback(this.parseError(code, error))

@@ -6,6 +6,8 @@ public typealias View = UIView
 
 //--- View.backgroundDrawable
 public extension View {
+    static var appForegroundColor: UIColor? = nil
+    static var appAccentColor: UIColor? = nil
     var backgroundDrawable: Drawable? {
         set(value){
             if let value = value {
@@ -92,8 +94,11 @@ public extension View {
             return backgroundDrawable
         }
     }
-    func setBackgroundColorResource(_ colorResource: ColorResource) {
-        backgroundColor = colorResource
+    func setBackgroundColorResource(_ color: ColorResource) {
+        backgroundColor = color
+    }
+    func setBackgroundColorResource(color: ColorResource) {
+        backgroundColor = color
     }
 }
 
@@ -101,6 +106,26 @@ public extension View {
 //--- View.onClick(Long, ()->Unit)
 //--- View.onLongClick(()->Unit)
 public extension UIView {
+    @objc func setOnClickListener(_ action: @escaping (UIView)->Void) {
+        self.isUserInteractionEnabled = true
+        let recognizer = UITapGestureRecognizer().addAction(until: removed) { [weak self] in
+            if let self = self { action(self) }
+        }
+        retain(as: "onClickRecognizer", item: recognizer, until: removed)
+        self.addGestureRecognizer(recognizer)
+    }
+    @objc func setOnLongClickListener(_ action: @escaping (UIView)->Bool) {
+        self.isUserInteractionEnabled = true
+        let recognizer = UILongPressGestureRecognizer()
+        recognizer.addAction(until: removed) { [unowned recognizer, weak self] in
+            if recognizer.state == .ended, let self = self {
+                let _ = action(self)
+            }
+        }
+        retain(as: "onLongClickRecognizer", item: recognizer, until: removed)
+        self.addGestureRecognizer(recognizer)
+    }
+
     @objc func onClick(action: @escaping ()->Void) {
         onClick(disabledMilliseconds: 500, action: action)
     }

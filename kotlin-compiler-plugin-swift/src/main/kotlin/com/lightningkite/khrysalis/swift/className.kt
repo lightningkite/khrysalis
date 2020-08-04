@@ -14,11 +14,7 @@ val DeclarationDescriptor.swiftTopLevelMessedUp: Boolean
     }
 
 private val DeclarationDescriptor.swiftNameByAnnotation: String?
-    get() = (this.annotations.findAnnotation(
-        FqName.fromSegments(
-            listOf("com", "lightningkite", "khrysalis", "SwiftName")
-        )
-    )?.allValueArguments?.entries?.firstOrNull()?.value?.value as? String)
+    get() = (this.annotations.findAnnotation(FqName("com.lightningkite.khrysalis.SwiftName"))?.allValueArguments?.entries?.firstOrNull()?.value?.value as? String)
 val DeclarationDescriptor.swiftTopLevelNameRaw: String
     get() = swiftNameByAnnotation ?: (containingDeclaration as? ClassDescriptor)?.let {
         it.swiftTopLevelNameRaw + this.name.asString()
