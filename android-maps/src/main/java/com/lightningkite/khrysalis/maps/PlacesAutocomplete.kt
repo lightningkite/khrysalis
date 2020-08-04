@@ -11,15 +11,19 @@ import com.google.android.libraries.places.api.net.FetchPlaceRequest
 import com.google.android.libraries.places.api.net.FetchPlaceResponse
 import com.google.android.libraries.places.api.net.FindAutocompletePredictionsRequest
 import com.lightningkite.khrysalis.observables.ObservableProperty
+import com.lightningkite.khrysalis.observables.observableNN
 import com.lightningkite.khrysalis.observables.subscribeBy
+import com.lightningkite.khrysalis.post
 import com.lightningkite.khrysalis.rx.DisposeCondition
 import com.lightningkite.khrysalis.rx.forever
 import com.lightningkite.khrysalis.rx.until
 import com.lightningkite.khrysalis.views.ViewDependency
 import io.reactivex.Observable
 import io.reactivex.Single
+import io.reactivex.rxkotlin.subscribeBy
 import io.reactivex.subjects.PublishSubject
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 class PlacesAutocomplete(dependency: ViewDependency) {
     private val client = Places.createClient(dependency.context)
@@ -56,31 +60,44 @@ class PlacesAutocomplete(dependency: ViewDependency) {
                     .addOnSuccessListener { results ->
                         working = false
                         cachedRequest = results.autocompletePredictions
-                        emitter.onSuccess(cachedRequest)
+                        post {
+                            emitter.onSuccess(cachedRequest)
+                        }
                     }
                     .addOnFailureListener {
                         working = false
-                        emitter.onError(it)
+                        post {
+                            emitter.onError(it)
+                        }
                     }
             }
         }
     }
 
-    fun request(query: ObservableProperty<String>, disposeCondition:DisposeCondition, filter: TypeFilter? = null): Observable<List<AutocompletePrediction>> {
+    fun request(
+        query: ObservableProperty<String>,
+        disposeCondition: DisposeCondition,
+        filter: TypeFilter? = null
+    ): Observable<List<AutocompletePrediction>> {
         val subject = PublishSubject.create<List<AutocompletePrediction>>()
-        query.subscribeBy { query ->
-            if (!working) {
-                working = true
-                client.findAutocompletePredictions(buildRequest(query, filter))
-                    .addOnSuccessListener { results ->
-                        working = false
-                        subject.onNext(results.autocompletePredictions)
-                    }
-                    .addOnFailureListener {
-                        working = false
-                    }
-            }
-        }.until(disposeCondition)
+        query
+            .observableNN
+            .debounce(750L, TimeUnit.MILLISECONDS)
+            .subscribeBy { query ->
+                if (!working) {
+                    working = true
+                    client.findAutocompletePredictions(buildRequest(query, filter))
+                        .addOnSuccessListener { results ->
+                            working = false
+                            post {
+                                subject.onNext(results.autocompletePredictions)
+                            }
+                        }
+                        .addOnFailureListener {
+                            working = false
+                        }
+                }
+            }.until(disposeCondition)
 
         return subject
     }
@@ -94,12 +111,16 @@ class PlacesAutocomplete(dependency: ViewDependency) {
             client.fetchPlace(request)
                 .addOnSuccessListener { response ->
                     token = null
-                    emitter.onSuccess(response.place)
+                    post {
+                        emitter.onSuccess(response.place)
+                    }
                     working = false
                 }
                 .addOnFailureListener { exception ->
                     token = null
-                    emitter.onError(exception)
+                    post {
+                        emitter.onError(exception)
+                    }
                     working = false
                 }
         }
