@@ -10,6 +10,7 @@ import com.lightningkite.khrysalis.observables.StandardObservableProperty
 import com.lightningkite.khrysalis.observables.asObservableProperty
 import com.lightningkite.khrysalis.observables.map
 import com.lightningkite.khrysalis.views.geometry.GFloat
+import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.PublishSubject
 import java.util.concurrent.TimeUnit
 
@@ -26,7 +27,7 @@ val animationFrame: PublishSubject<GFloat> = PublishSubject.create()
 
 private val applicationIsActiveEvent = PublishSubject.create<Boolean>()
 val applicationIsActive: ObservableProperty<Boolean> = applicationIsActiveEvent
-    .debounce(100L, TimeUnit.MILLISECONDS)
+    .debounce(100L, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
     .distinctUntilChanged()
     .asObservableProperty(true)
 

@@ -8,17 +8,23 @@ function listenForDialogs() {
         next(value) {
             const top = document.createElement("div");
             top.classList.add("resp-sharing-dialog-back");
-            const dialog = document.createElement("dialog");
+            top.classList.add("khr");
+            // const dialog = document.createElement("dialog");
+            const dialog = document.createElement("div");
             dialog.classList.add("khrysalis-dialog-front");
+            dialog.classList.add("khr");
             const message = document.createElement("p");
             message.classList.add("khrysalis-dialog-message");
+            message.classList.add("khr");
             ViewWithText_ext_actual_1.setViewText(message, value._string.get(window));
             dialog.appendChild(message);
             const buttons = document.createElement("div");
             buttons.classList.add("khrysalis-dialog-buttons");
+            buttons.classList.add("khr");
             if (value.confirmation) {
                 const cancel = document.createElement("button");
                 cancel.classList.add("khrysalis-dialog-cancel");
+                cancel.classList.add("khr");
                 cancel.textContent = "Cancel";
                 cancel.onclick = (e) => {
                     e.preventDefault();
@@ -28,6 +34,7 @@ function listenForDialogs() {
             }
             const ok = document.createElement("button");
             ok.classList.add("khrysalis-dialog-ok");
+            ok.classList.add("khr");
             ok.textContent = "OK";
             ok.onclick = (e) => {
                 e.preventDefault();

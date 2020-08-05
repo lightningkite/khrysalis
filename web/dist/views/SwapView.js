@@ -24,7 +24,16 @@ function swapViewSwap(view, to, animation) {
         current.style.animation = `${animationOut} 0.25s`;
         //animate in
         if (to) {
-            to.style.animation = `${animation}-in 0.25s 0.25s`; //Delay seems to make this work right
+            const animationIn = `${animation}-in`;
+            let animInHandler;
+            animInHandler = (ev) => {
+                if (ev.animationName === animationIn) {
+                    to.onanimationend = null;
+                    to.style.removeProperty("animation");
+                }
+            };
+            to.addEventListener("animationend", animInHandler);
+            to.style.animation = `${animationIn} 0.25s 0.25s`; //Delay seems to make this work right
             view.appendChild(to);
         }
         else {

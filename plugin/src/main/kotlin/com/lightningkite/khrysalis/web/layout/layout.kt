@@ -174,8 +174,14 @@ internal fun HtmlTranslator.layout() {
     }
     element.handle("ScrollView") {
         out.classes.add("khrysalis-scroll-view")
-        out.style["overflow-y"] = "scroll";
+        out.style["overflow-y"] = "auto";
         out.style["overflow-x"] = "hidden";
+        defer("FrameLayout")
+    }
+    element.handle("HorizontalScrollView") {
+        out.classes.add("khrysalis-scroll-view")
+        out.style["overflow-y"] = "hidden";
+        out.style["overflow-x"] = "auto";
         defer("FrameLayout")
     }
     element.handle("ViewFlipper") {

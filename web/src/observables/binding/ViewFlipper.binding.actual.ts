@@ -12,7 +12,8 @@ export function androidWidgetViewFlipperBindLoading(this_: HTMLDivElement, loadi
     const mainChild = this_.firstElementChild as HTMLElement;
     const loadingChild = this_.children.item(1) as HTMLElement ?? (()=>{
         const newElement = document.createElement("progress") as HTMLProgressElement;
-        newElement.classList.add("khrysalis-flipper-progress")
+        newElement.classList.add("khrysalis-flipper-progress");
+        newElement.classList.add("khr");
         this_.appendChild(newElement);
         return newElement;
     })()
@@ -28,25 +29,37 @@ export function androidWidgetViewFlipperBindLoading(this_: HTMLDivElement, loadi
             hiddenView = loadingChild;
         }
 
-        currentView.style.animation = "none";
-        hiddenView.style.animation = "none";
+        currentView.style.removeProperty("animation");
+        hiddenView.style.removeProperty("animation");
+        currentView.style.removeProperty("visibility");
+        hiddenView.style.removeProperty("visibility");
+
+        const viewOut = hiddenView
+        const viewIn = currentView
 
         //animate out
         const animationOut = `${animation}-out`;
         let animOutHandler: (ev: AnimationEvent) => void;
         animOutHandler = (ev: AnimationEvent) => {
             if (ev.animationName === animationOut) {
-                (ev.target as HTMLElement).onanimationend = null;
-                (ev.target as HTMLElement).style.visibility = "hidden";
+                viewOut.onanimationend = null;
+                viewOut.style.visibility = "hidden";
             }
         };
-        hiddenView.onanimationend = animOutHandler;
-        hiddenView.style.animation = `${animationOut} 0.25s`;
+        viewOut.onanimationend = animOutHandler;
+        viewOut.style.animation = `${animationOut} 0.25s`;
 
         //animate in
         const animationIn = `${animation}-in`;
-        currentView.style.visibility = "visible";
-        currentView.style.animation = `${animationIn} 0.25s`;
+        let animInHandler: (ev: AnimationEvent) => void;
+        animInHandler = (ev: AnimationEvent) => {
+            if (ev.animationName === animationIn) {
+                viewIn.onanimationend = null;
+                viewIn.style.removeProperty("animation");
+            }
+        };
+        viewIn.onanimationend = animInHandler;
+        viewIn.style.animation = `${animationIn} 0.25s`;
 
     }), getAndroidViewViewRemoved(this_))
 
@@ -57,6 +70,5 @@ export function androidWidgetViewFlipperBindLoading(this_: HTMLDivElement, loadi
         currentView = mainChild;
         hiddenView = loadingChild;
     }
-    currentView.style.visibility = "visible";
     hiddenView.style.visibility = "hidden";
 }

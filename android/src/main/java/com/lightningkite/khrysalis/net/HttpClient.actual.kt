@@ -169,7 +169,7 @@ object HttpClient {
             },
             { it.ownConnection },
             { it.onComplete() }
-        )
+        ).threadCorrectly()
     }
 
 

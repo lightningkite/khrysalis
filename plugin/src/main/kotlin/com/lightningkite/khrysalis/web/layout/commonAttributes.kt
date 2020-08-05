@@ -96,18 +96,18 @@ internal fun HtmlTranslator.commonAttributes() {
             }
             else -> {}
         }
-        rule.parent.allAttributes["android:drawableTint"]?.let { tint ->
-            image.style["mask-image"] = "url(" + image.attributes["src"] + ")"
-            image.style["mask-repeat"] = "no-repeat"
-            image.style["mask-size"] = "100%"
-            imageUrl?.let{ imageUrl ->
-                val pair = measureImage(imageUrl)
-                image.style["width"] = pair.first
-                image.style["height"] = pair.second
-            }
-            image.name = "div"
-            tint.asCssColor()?.let { image.style["background-color"] = it }
-        }
+//        rule.parent.allAttributes["android:drawableTint"]?.let { tint ->
+//            image.style["mask-image"] = "url(" + image.attributes["src"] + ")"
+//            image.style["mask-repeat"] = "no-repeat"
+//            image.style["mask-size"] = "100%"
+//            imageUrl?.let{ imageUrl ->
+//                val pair = measureImage(imageUrl)
+//                image.style["width"] = pair.first
+//                image.style["height"] = pair.second
+//            }
+//            image.name = "div"
+//            tint.asCssColor()?.let { image.style["background-color"] = it }
+//        }
 
         rule.parent.allAttributes["android:drawablePadding"]?.asCssDimension()?.let { amount ->
             val side = when(direction){

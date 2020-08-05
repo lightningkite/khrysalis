@@ -89,17 +89,17 @@ internal fun HtmlTranslator.display() {
             }
         }
     }
-    attribute.handle("android:tint") {
-        val value = rule.value
-        out.style["mask-image"] = "url(" + out.attributes["src"] + ")"
-        out.style["mask-repeat"] = "no-repeat"
-        out.style["mask-size"] = "100%"
-        out.name = "div"
-        out.attributes["src"]?.let { File(outFolder.resolve("src"), it) }?.let { imageUrl ->
-            val pair = measureImage(imageUrl)
-            out.style["width"] = pair.first
-            out.style["height"] = pair.second
-        }
-        value.asCssColor()?.let { out.style["background-color"] = it }
-    }
+//    attribute.handle("android:tint") {
+//        val value = rule.value
+//        out.style["mask-image"] = "url(" + out.attributes["src"] + ")"
+//        out.style["mask-repeat"] = "no-repeat"
+//        out.style["mask-size"] = "100%"
+//        out.name = "div"
+//        out.attributes["src"]?.let { File(outFolder.resolve("src"), it) }?.let { imageUrl ->
+//            val pair = measureImage(imageUrl)
+//            out.style["width"] = pair.first
+//            out.style["height"] = pair.second
+//        }
+//        value.asCssColor()?.let { out.style["background-color"] = it }
+//    }
 }
