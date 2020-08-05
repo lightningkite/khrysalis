@@ -19,13 +19,21 @@ import com.lightningkite.khrysalis.unownedSelf
 import com.lightningkite.khrysalis.views.ViewDependency
 
 fun MapView.bind(dependency: ViewDependency, style: String? = null) {
+    var resumed = true
+    var destroyed = false
     this.onCreate(dependency.savedInstanceState)
     this.onResume()
     dependency.onResume.subscribe { value ->
-        this.onResume()
+        if(!resumed){
+            resumed = true
+            this.onResume()
+        }
     }.until(removed)
     dependency.onPause.subscribe { value ->
-        this.onPause()
+        if(resumed){
+            resumed = false
+            this.onPause()
+        }
     }.until(removed)
     dependency.onSaveInstanceState.subscribe { value ->
         this.onSaveInstanceState(value)
@@ -34,11 +42,20 @@ fun MapView.bind(dependency: ViewDependency, style: String? = null) {
         this.onLowMemory()
     }.until(removed)
     dependency.onDestroy.subscribe { value ->
-        this.onDestroy()
+        if(!destroyed){
+            destroyed = true
+            this.onDestroy()
+        }
     }.until(removed)
-    this.removed.call(DisposableLambda @unownedSelf {
-        this.onPause()
-        this.onDestroy()
+    this.removed.call(DisposableLambda  {
+        if(resumed){
+            resumed = false
+            this.onPause()
+        }
+        if(!destroyed) {
+            destroyed = true
+            this.onDestroy()
+        }
     })
     if (style != null) {
         getMapAsync { map ->
