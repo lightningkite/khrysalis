@@ -52,6 +52,7 @@ com.test
 android.view.View
 android.view
 com.test.Example
+com.test.JsonProperty
 com.lightningkite.khrysalis.bytes.Data
 com.lightningkite.khrysalis.bytes
 com.test.annotationsLambda
