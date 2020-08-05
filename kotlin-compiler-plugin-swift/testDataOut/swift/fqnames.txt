@@ -66,6 +66,7 @@ com.test.ClassesSubWeird
 com.test.classesMain
 com.test.CodablePoint
 com.test.CodableBox
+com.test.CodableEnum
 com.test.CollectionsCustomEq
 com.test.CollectionBox
 com.test.CollectionMutBox

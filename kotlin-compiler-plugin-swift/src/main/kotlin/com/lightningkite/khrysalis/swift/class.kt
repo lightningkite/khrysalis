@@ -487,6 +487,15 @@ fun SwiftTranslator.registerClass() {
             for (entry in typedRule.body?.enumEntries ?: listOf()) {
                 -"case "
                 -entry.nameIdentifier
+                (entry.annotationEntries
+                    .mapNotNull {it.resolvedAnnotation}
+                    .find { it.fqName?.asString()?.endsWith("JsonProperty") == true }
+                    ?.allValueArguments?.get(Name.identifier("value"))
+                    ?.value as? String
+                )?.let {
+                    -" = "
+                    - "\"$it\""
+                }
                 -"\n"
             }
             -"\npublic init(from decoder: Decoder) throws {"
