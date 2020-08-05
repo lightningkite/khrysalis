@@ -25,31 +25,5 @@ fun post(action: () -> Unit) {
 
 val animationFrame: PublishSubject<GFloat> = PublishSubject.create()
 
-private val applicationIsActiveEvent = PublishSubject.create<Boolean>()
-val applicationIsActive: ObservableProperty<Boolean> = applicationIsActiveEvent
-    .debounce(100L, TimeUnit.MILLISECONDS, AndroidSchedulers.mainThread())
-    .distinctUntilChanged()
-    .asObservableProperty(true)
-
-@PlatformSpecific fun applicationIsActiveStartup(application: Application){
-    var activeCount = 0
-    application.registerActivityLifecycleCallbacks(object: Application.ActivityLifecycleCallbacks {
-        override fun onActivityResumed(activity: Activity) {
-            if(activeCount == 0){
-                applicationIsActiveEvent.onNext(true)
-            }
-            activeCount++
-        }
-        override fun onActivityPaused(activity: Activity) {
-            activeCount--
-            if(activeCount == 0){
-                applicationIsActiveEvent.onNext(false)
-            }
-        }
-        override fun onActivityStarted(activity: Activity) {}
-        override fun onActivityDestroyed(activity: Activity) {}
-        override fun onActivitySaveInstanceState(activity: Activity, outState: Bundle) {}
-        override fun onActivityStopped(activity: Activity) {}
-        override fun onActivityCreated(activity: Activity, savedInstanceState: Bundle?) {}
-    })
-}
+@Deprecated("Moved", ReplaceWith("ApplicationAccess.foreground", "com.lightningkite.khrysalis.ApplicationAccess"))
+val applicationIsActive: ObservableProperty<Boolean> get() = ApplicationAccess.foreground

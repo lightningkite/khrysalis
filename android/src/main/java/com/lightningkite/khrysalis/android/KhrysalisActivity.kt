@@ -2,17 +2,27 @@ package com.lightningkite.khrysalis.android
 
 import android.animation.ValueAnimator
 import android.app.AlertDialog
+import android.content.Context
 import android.content.Intent
+import android.graphics.Rect
 import android.net.Uri
 import android.os.Bundle
+import android.util.Log
+import android.view.FocusFinder
 import android.view.View
 import android.view.ViewGroup
+import android.view.ViewTreeObserver
+import android.view.inputmethod.InputMethodManager
+import com.lightningkite.khrysalis.ApplicationAccess
 import com.lightningkite.khrysalis.views.EntryPoint
 import com.lightningkite.khrysalis.views.ViewGenerator
 import com.lightningkite.khrysalis.views.showDialogEvent
 import com.lightningkite.khrysalis.R
 import com.lightningkite.khrysalis.animationFrame
+import com.lightningkite.khrysalis.delay
 import com.lightningkite.khrysalis.lifecycle.appInForeground
+import com.lightningkite.khrysalis.observables.onChangeNN
+import com.lightningkite.khrysalis.views.displayMetrics
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
 
@@ -25,7 +35,7 @@ abstract class KhrysalisActivity(val changeToTheme: Int? = null) : AccessibleAct
 
     abstract val main: ViewGenerator
     lateinit var view: View
-    private var showDialogEventCloser:Disposable? = null
+    private var showDialogEventCloser: Disposable? = null
     private var animator: ValueAnimator? = null
 
     open fun handleDeepLink(schema: String, host: String, path: String, params: Map<String, String>) {
@@ -54,6 +64,7 @@ abstract class KhrysalisActivity(val changeToTheme: Int? = null) : AccessibleAct
                 .show()
         }
         changeToTheme?.let { setTheme(it) }
+
         setContentView(view)
     }
 
@@ -62,9 +73,24 @@ abstract class KhrysalisActivity(val changeToTheme: Int? = null) : AccessibleAct
         super.onDestroy()
     }
 
+    private var suppressKeyboardChange = false
+    private var keyboardSubscriber: Disposable? = null
+    private val keyboardTreeObs: ViewTreeObserver.OnGlobalLayoutListener = ViewTreeObserver.OnGlobalLayoutListener {
+        val keyboardHeight = view.rootView.height - view.height
+        Log.v("KhrysalisActivity", "Keyboard height is now $keyboardHeight")
+        suppressKeyboardChange = true
+        if(keyboardHeight.toFloat() > displayMetrics.heightPixels * 0.15f){
+            ApplicationAccess.softInputActive.value = true
+        } else {
+            delay(30L){
+                ApplicationAccess.softInputActive.value = false
+            }
+        }
+        suppressKeyboardChange = false
+    }
+
     override fun onResume() {
         super.onResume()
-        appInForeground.value = true
 
         animator = ValueAnimator().apply {
             setIntValues(0, 100)
@@ -79,24 +105,47 @@ abstract class KhrysalisActivity(val changeToTheme: Int? = null) : AccessibleAct
             }
             start()
         }
+
+        view.viewTreeObserver.addOnGlobalLayoutListener(keyboardTreeObs)
+        keyboardSubscriber = ApplicationAccess.softInputActive.onChangeNN.subscribe {
+            if (!suppressKeyboardChange) {
+                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                if (it) {
+                    if (currentFocus == null) {
+                        FocusFinder.getInstance().findNextFocus(view as ViewGroup, view, 0)
+                    }
+                    currentFocus?.let {
+                        imm.showSoftInput(view, 0)
+                    }
+                } else {
+                    imm.hideSoftInputFromWindow(view.windowToken, 0)
+                }
+            }
+        }
     }
 
     override fun onPause() {
-        appInForeground.value = false
+        view.viewTreeObserver.removeOnGlobalLayoutListener(keyboardTreeObs)
+        keyboardSubscriber?.dispose()
+        keyboardSubscriber = null
         animator?.pause()
         animator = null
         super.onPause()
     }
 
-    protected open fun handleNewIntent(intent: Intent){
-        println("Got new intent with extras: ${intent.extras?.keySet()?.associate { key -> key to intent.extras?.get(key) }}")
+    protected open fun handleNewIntent(intent: Intent) {
+        println(
+            "Got new intent with extras: ${intent.extras?.keySet()
+                ?.associate { key -> key to intent.extras?.get(key) }}"
+        )
         intent.data?.let { uri ->
             handleDeepLink(uri)
         }
-        intent.extras?.getString("deepLink")?.let{ Uri.parse(it) }?.let {
+        intent.extras?.getString("deepLink")?.let { Uri.parse(it) }?.let {
             handleDeepLink(it)
         }
     }
+
     protected fun handleDeepLink(uri: Uri) {
         handleDeepLink(
             uri.scheme ?: "",
@@ -107,6 +156,7 @@ abstract class KhrysalisActivity(val changeToTheme: Int? = null) : AccessibleAct
             }.associate { it }
         )
     }
+
     override fun onNewIntent(intent: Intent) {
         handleNewIntent(intent)
         super.onNewIntent(intent)
@@ -114,11 +164,11 @@ abstract class KhrysalisActivity(val changeToTheme: Int? = null) : AccessibleAct
 
     override fun onBackPressed() {
         val toClose = view.findCloseOrBack()
-        if(toClose != null){
+        if (toClose != null) {
             toClose.performClick()
         } else {
             val main = main
-            if (main !is EntryPoint || !main.onBackPressed() && main.mainStack?.pop() != true){
+            if (main !is EntryPoint || !main.onBackPressed() && main.mainStack?.pop() != true) {
                 super.onBackPressed()
             }
         }

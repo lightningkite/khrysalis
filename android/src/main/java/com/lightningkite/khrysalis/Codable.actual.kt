@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis
 
+import com.fasterxml.jackson.core.type.TypeReference
 import com.fasterxml.jackson.module.kotlin.jacksonTypeRef
 import com.lightningkite.khrysalis.net.HttpClient
 
@@ -17,6 +18,23 @@ fun IsCodable?.toJsonString(): String {
 inline fun <reified T: IsCodable> String.fromJsonString(): T? {
     return try {
         HttpClient.mapper.readValue(this, jacksonTypeRef<T>())
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
+}
+
+fun <T: IsCodable> String.fromJsonString(type: TypeReference<T>): T? {
+    return try {
+        HttpClient.mapper.readValue(this, type)
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null
+    }
+}
+fun <T: IsCodable> String.fromJsonString(clazz: Class<T>): T? {
+    return try {
+        HttpClient.mapper.readValue(this, clazz)
     } catch (e: Exception) {
         e.printStackTrace()
         null
