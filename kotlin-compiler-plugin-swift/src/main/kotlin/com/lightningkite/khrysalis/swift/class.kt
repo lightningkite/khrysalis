@@ -2,12 +2,14 @@ package com.lightningkite.khrysalis.swift
 
 import com.lightningkite.khrysalis.generic.PartialTranslatorByType
 import com.lightningkite.khrysalis.swift.replacements.TemplatePart
+import com.lightningkite.khrysalis.util.AnalysisExtensions
 import com.lightningkite.khrysalis.util.forEachBetween
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.js.translate.callTranslator.getReturnType
 import org.jetbrains.kotlin.lexer.KtTokens
+import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
 import org.jetbrains.kotlin.psi2ir.findFirstFunction
@@ -291,7 +293,7 @@ fun SwiftTranslator.registerClass() {
             -'\n'
             -"enum CodingKeys: String, CodingKey {\n"
             typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEach {
-                val jsonName = it.jsonName
+                val jsonName = it.jsonName(this@registerClass)
                 -"case "
                 -it.nameIdentifier
                 -" = \"${jsonName}\"\n"
@@ -957,16 +959,14 @@ private fun <T : KtClassOrObject> handleConstructor(
     }
 }
 
-private val KtParameter.jsonName: String
-    get() = this.annotations
-        .flatMap { it.entries }
-        .find { it.typeReference?.text?.substringAfterLast('.')?.substringBefore('(') == "JsonProperty" }
-        ?.valueArguments
-        ?.firstOrNull()
-        ?.getArgumentExpression()
-        ?.text
-        ?.trim('"')
-        ?: this.name ?: "x"
+private fun KtParameter.jsonName(analysisExtensions: AnalysisExtensions): String = with(analysisExtensions) {
+    annotationEntries
+        .mapNotNull { it.resolvedAnnotation }
+        .find { it.fqName?.asString()?.endsWith("JsonProperty") == true }
+        ?.allValueArguments?.get(Name.identifier("value"))
+        ?.value as? String
+        ?: name ?: "x"
+}
 private val weakKtClassPostActions = WeakHashMap<KtElement, ArrayList<() -> Unit>>()
 fun KtElement.runPostActions() {
     weakKtClassPostActions.remove(this)?.forEach { it() }

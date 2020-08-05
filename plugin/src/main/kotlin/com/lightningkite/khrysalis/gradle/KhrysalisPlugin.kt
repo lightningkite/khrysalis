@@ -143,20 +143,20 @@ class KhrysalisPlugin : Plugin<Project> {
                     files = files,
                     pluginCache = project.buildDir.resolve("khrysalis-kcp"),
                     buildCache = project.buildDir.resolve("testBuild"),
-                    dependencies = if(isMac)
-                        sequenceOf(iosBase().resolve("Pods"))
-                    else run {
+                    dependencies = run {
                         val localProperties = Properties().apply {
                             val f = project.rootProject.file("local.properties")
                             if(f.exists()){
                                 load(f.inputStream())
                             }
                         }
-                        (localProperties.getProperty("khrysalis.nonmacmanifest") ?: "")
+                        (localProperties.getProperty("khrysalis.iospods") ?:
+                        localProperties.getProperty("khrysalis.nonmacmanifest") ?: "")
                             .splitToSequence(File.pathSeparatorChar)
                             .filter { it.isNotBlank() }
                             .map { File(it) }
                             .filter { it.exists() }
+                            .plus(sequenceOf(iosBase().resolve("Pods")))
                     },
                     output = iosFolder().resolve("src")
                 )
