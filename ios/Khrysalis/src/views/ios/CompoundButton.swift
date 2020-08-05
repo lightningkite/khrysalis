@@ -31,3 +31,6 @@ extension UISwitch : CompoundButton {
         })
     }
 }
+public protocol HasLabelView {
+    var labelView: UILabel { get }
+}

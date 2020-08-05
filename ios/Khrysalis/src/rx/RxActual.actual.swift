@@ -103,7 +103,7 @@ public extension Observable {
     static func just(_ items: Element...) -> Observable<Element> {
         return Observable<Element>.from(items)
     }
-
+    
     //--- Observable.Companion.empty()
 
     //--- Observable.Companion.} (overwritten on flow generation)

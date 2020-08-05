@@ -9,7 +9,7 @@
 import UIKit
 
 
-public class LabeledRadioButton : LinearLayout, CompoundButton {
+public class LabeledRadioButton : LinearLayout, CompoundButton, HasLabelView {
     public var onCheckChanged: (CompoundButton, Bool) -> Void = { (_, _) in }
     public func setOnCheckedChangeListener(_ item: @escaping (CompoundButton, Bool) -> Void) {
         onCheckChanged = item

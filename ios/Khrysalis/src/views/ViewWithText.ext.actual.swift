@@ -199,3 +199,42 @@ public extension UIButton {
         }
     }
 }
+
+public extension HasLabelView where Self: UIView {
+    var letterSpacing: CGFloat {
+        get{
+            return viewLetterSpacing.get(self) ?? defaultLetterSpacing
+        }
+        set(value){
+            viewLetterSpacing.set(self, value)
+            let current = textString
+            textString = current
+        }
+    }
+    var textAllCaps: Bool {
+        get{
+            return viewAllCaps.get(self) ?? false
+        }
+        set(value){
+            viewAllCaps.set(self, value)
+            let current = textString
+            textString = current
+        }
+    }
+    var textResource: String {
+        get {
+            return self.labelView.textResource
+        }
+        set(value) {
+            self.labelView.textString = value
+        }
+    }
+    var textString: String {
+        get {
+            return self.labelView.textString
+        }
+        set(value) {
+            self.labelView.textString = value
+        }
+    }
+}

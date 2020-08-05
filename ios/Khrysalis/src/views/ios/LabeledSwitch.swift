@@ -9,7 +9,7 @@
 import UIKit
 
 
-public class LabeledSwitch : LinearLayout, CompoundButton {
+public class LabeledSwitch : LinearLayout, CompoundButton, HasLabelView {
     public func setOnCheckedChangeListener(_ item: @escaping (CompoundButton, Bool) -> Void) {
         switchView.setOnCheckedChangeListener(item)
     }

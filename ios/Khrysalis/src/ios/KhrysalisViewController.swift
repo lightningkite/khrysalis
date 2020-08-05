@@ -17,6 +17,7 @@ open class KhrysalisViewController: UIViewController, UINavigationControllerDele
         self.main = main
         super.init(nibName: nil, bundle: nil)
     }
+    
     required public init?(coder: NSCoder) {
         self.main = ViewGenerator.Default()
         super.init(coder: coder)
@@ -264,10 +265,10 @@ open class KhrysalisViewController: UIViewController, UINavigationControllerDele
                     self.keyboardHeight = keyboardHeight
                     self.layout()
                 },
-                completion: { _ in
-                    suppressIsActive = true
+                completion: { [weak self] _ in
+                    self?.suppressIsActive = true
                     ApplicationAccess.INSTANCE.softInputActive.value = true
-                    suppressIsActive = false
+                    self?.suppressIsActive = false
                 }
             )
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
@@ -293,10 +294,10 @@ open class KhrysalisViewController: UIViewController, UINavigationControllerDele
                     self.keyboardHeight = 0
                     self.layout()
                 },
-                completion: { _ in
-                    suppressIsActive = true
+                completion: { [weak self] _ in
+                    self?.suppressIsActive = true
                     ApplicationAccess.INSTANCE.softInputActive.value = true
-                    suppressIsActive = false
+                    self?.suppressIsActive = false
                 }
             )
         }

@@ -1,15 +1,19 @@
 import UIKit
+import RxSwift
 
 public class ApplicationAccess {
     public static let INSTANCE = ApplicationAccess()
 
     //--- _applicationIsActive
     public let applicationIsActiveEvent = PublishSubject<Bool>()
-    public let foreground = applicationIsActiveEvent
+    public let foreground: ObservableProperty<Bool>
+    
+    init() {
+        foreground = applicationIsActiveEvent
         .debounce(.milliseconds(100), scheduler: MainScheduler.instance)
-         .distinctUntilChanged()
+        .distinctUntilChanged()
         .asObservableProperty(defaultValue: true)
-
-    public let softInputActive = StandardObservableProperty<Boolean>(false)
-    //ApplicationAccess.INSTANCE.softInputActive
+    }
+    
+    public let softInputActive = StandardObservableProperty<Bool>(underlyingValue: false)
 }
