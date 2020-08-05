@@ -18,3 +18,10 @@ package com.test.annot
     AnnotationTarget.FILE
 )
 annotation class Example(val x: Int)
+
+@Target(
+    AnnotationTarget.PROPERTY,
+    AnnotationTarget.PROPERTY_GETTER,
+    AnnotationTarget.FIELD
+)
+annotation class JsonProperty(val value: String)

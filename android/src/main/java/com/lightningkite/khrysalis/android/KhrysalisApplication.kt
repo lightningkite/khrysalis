@@ -2,8 +2,8 @@ package com.lightningkite.khrysalis.android
 
 import android.app.Application
 import androidx.preference.PreferenceManager
+import com.lightningkite.khrysalis.ApplicationAccess
 import com.lightningkite.khrysalis.Preferences
-import com.lightningkite.khrysalis.applicationIsActiveStartup
 import com.lightningkite.khrysalis.net.HttpClient
 
 open class KhrysalisApplication: Application() {
@@ -11,7 +11,7 @@ open class KhrysalisApplication: Application() {
         fun setup(application: Application){
             HttpClient.appContext = application
             Preferences.sharedPreferences = PreferenceManager.getDefaultSharedPreferences(application)
-            applicationIsActiveStartup(application)
+            ApplicationAccess.applicationIsActiveStartup(application)
         }
     }
 

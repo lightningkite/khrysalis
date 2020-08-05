@@ -36,9 +36,6 @@ private func frame(){
     }
 }
 
-//--- _applicationIsActive
-public let applicationIsActiveEvent = PublishSubject<Bool>()
-public let applicationIsActive = applicationIsActiveEvent
-    .debounce(.milliseconds(100), scheduler: MainScheduler.instance)
-     .distinctUntilChanged()
-    .asObservableProperty(defaultValue: true)
+public var applicationIsActive: ObservableProperty<Bool> {
+    return ApplicationAccess.INSTANCE.foreground
+}

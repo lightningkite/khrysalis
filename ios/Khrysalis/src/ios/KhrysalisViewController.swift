@@ -82,6 +82,15 @@ open class KhrysalisViewController: UIViewController, UINavigationControllerDele
         }
         
         hideKeyboardWhenTappedAround()
+
+        //Potential future feature: open/close keyboard by setting property
+//         ApplicationAccess.INSTANCE.softInputActive.subscribeBy { it in
+//             if it {
+//                 resignAllFirstResponders()
+//             } else {
+//                 resignAllFirstResponders()
+//             }
+//         }
     }
     
     private var first = true
@@ -234,7 +243,8 @@ open class KhrysalisViewController: UIViewController, UINavigationControllerDele
             object: self.view.window
         )
     }
-    
+
+    var suppressIsActive = false
     
     /// Method's notified when the keyboard is about to be shown or change its size.
     ///
@@ -253,6 +263,11 @@ open class KhrysalisViewController: UIViewController, UINavigationControllerDele
                 animations: {
                     self.keyboardHeight = keyboardHeight
                     self.layout()
+                },
+                completion: { _ in
+                    suppressIsActive = true
+                    ApplicationAccess.INSTANCE.softInputActive.value = true
+                    suppressIsActive = false
                 }
             )
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
@@ -277,7 +292,12 @@ open class KhrysalisViewController: UIViewController, UINavigationControllerDele
                 animations: {
                     self.keyboardHeight = 0
                     self.layout()
-            }
+                },
+                completion: { _ in
+                    suppressIsActive = true
+                    ApplicationAccess.INSTANCE.softInputActive.value = true
+                    suppressIsActive = false
+                }
             )
         }
     }

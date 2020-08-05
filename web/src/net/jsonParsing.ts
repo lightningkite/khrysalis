@@ -34,8 +34,8 @@ export function parse(item: any, asType: Array<any>): any {
         default:
             if(mainType.fromJson){
                 return mainType.fromJson(item, ...asType.slice(1))
-            } else if(mainType.values){
-                return find(mainType.values(), (x) => x.name.toLowerCase() == (item as string).toLowerCase())
+            } else if(mainType._values){
+                return find(mainType._values, (x) => x.jsonName.toLowerCase() == (item as string).toLowerCase())
             } else {
                 throw `Not sure how to parse something of type ${mainType} - 'fromJson' is missing!`
             }

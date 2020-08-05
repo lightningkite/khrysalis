@@ -2,6 +2,7 @@ package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.generic.PartialTranslatorByType
 import com.lightningkite.khrysalis.typescript.manifest.declaresPrefix
+import com.lightningkite.khrysalis.util.AnalysisExtensions
 import com.lightningkite.khrysalis.util.allOverridden
 import com.lightningkite.khrysalis.util.forEachBetween
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
@@ -9,6 +10,7 @@ import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.js.translate.callTranslator.getReturnType
 import org.jetbrains.kotlin.lexer.KtTokens
+import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
 import org.jetbrains.kotlin.resolve.scopes.DescriptorKindFilter
@@ -286,7 +288,7 @@ fun TypescriptTranslator.registerClass() {
         -" constructor("
         typedRule.primaryConstructor?.let { cons ->
             (if (typedRule.isEnum()) {
-                listOf("name: string") + cons.valueParameters
+                listOf("name: string, jsonName: string") + cons.valueParameters
             } else if (typedRule.isInner()) {
                 listOf("parentThis: $parentClassName") + cons.valueParameters
             } else {
@@ -297,7 +299,7 @@ fun TypescriptTranslator.registerClass() {
             )
         } ?: run {
             if (typedRule.isEnum()) {
-                -"name: string"
+                -"name: string, jsonName: string"
             } else if (typedRule.isInner()) {
                 -"parentThis: $parentClassName"
             } else Unit
@@ -307,7 +309,7 @@ fun TypescriptTranslator.registerClass() {
             ?.firstOrNull()?.let {
                 -"super("
                 if (typedRule.isEnum()) {
-                    listOf("name: string") + it.valueArguments
+                    listOf("name: string, jsonName: string") + it.valueArguments
                 } else {
                     it.valueArguments
                 }.forEachBetween(
@@ -318,6 +320,7 @@ fun TypescriptTranslator.registerClass() {
             }
         if (typedRule.isEnum()) {
             -"this.name = name;\n"
+            -"this.jsonName = jsonName;\n"
         } else if (typedRule.isInner()) {
             -"this.parentThis = parentThis;\n"
         }
@@ -391,14 +394,14 @@ fun TypescriptTranslator.registerClass() {
                         if (it.hasValOrVar()) {
                             val type = it.typeReference?.resolvedType ?: run {
                                 -"obj[\""
-                                -it.jsonName
+                                -it.jsonName(this@registerClass)
                                 -"\"]"
                                 return@forEachBetween
                             }
 
                             -"parseJsonTyped("
                             -"obj[\""
-                            -it.jsonName
+                            -it.jsonName(this@registerClass)
                             -"\"], "
                             (type.constructor.declarationDescriptor as? TypeParameterDescriptor)?.let {
                                 -it.name.asString()
@@ -419,9 +422,9 @@ fun TypescriptTranslator.registerClass() {
                 -"public toJSON(): object { return {\n"
                 typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEachBetween(
                     forItem = {
-                        -it.jsonName
+                        -it.jsonName(this@registerClass)
                         -": this."
-                        -it.jsonName
+                        -it.nameIdentifier
                     },
                     between = {
                         -", \n"
@@ -564,12 +567,14 @@ fun TypescriptTranslator.registerClass() {
                 between = { -", " }
             )
             -"];\n"
+
             -"public static values(): Array<"
             -typedRule.nameIdentifier
             -"> { return "
             -typedRule.nameIdentifier
             -"._values; }\n"
             -"public readonly name: string;\n"
+            -"public readonly jsonName: string;\n"
 
             -"public static valueOf(name: string): "
             -typedRule.nameIdentifier
@@ -580,7 +585,7 @@ fun TypescriptTranslator.registerClass() {
             -"public toString(): string { return this.name }\n"
 
             //Generate toJSON()
-            -"public toJSON(): string { return this.name }\n"
+            -"public toJSON(): string { return this.jsonName }\n"
         }
 
         -"}"
@@ -766,6 +771,8 @@ fun TypescriptTranslator.registerClass() {
         val args = arrayListOf({ ->
             -'"'
             -typedRule.nameIdentifier
+            -"\", \""
+            -typedRule.jsonName(this@registerClass)
             -'"'
             Unit
         })
@@ -817,16 +824,22 @@ fun TypescriptTranslator.registerClass() {
     }
 }
 
-private val KtParameter.jsonName: String
-    get() = this.annotations
-        .flatMap { it.entries }
-        .find { it.typeReference?.text?.substringAfterLast('.')?.substringBefore('(') == "JsonProperty" }
-        ?.valueArguments
-        ?.firstOrNull()
-        ?.getArgumentExpression()
-        ?.text
-        ?.trim('"')
-        ?: this.name ?: "x"
+fun KtParameter.jsonName(analysisExtensions: AnalysisExtensions): String = with(analysisExtensions) {
+    annotationEntries
+        .mapNotNull { it.resolvedAnnotation }
+        .find { it.fqName?.asString()?.endsWith("JsonProperty") == true }
+        ?.allValueArguments?.get(Name.identifier("value"))
+        ?.value as? String
+        ?: name ?: "x"
+}
+fun KtEnumEntry.jsonName(analysisExtensions: AnalysisExtensions): String = with(analysisExtensions) {
+    annotationEntries
+        .mapNotNull { it.resolvedAnnotation }
+        .find { it.fqName?.asString()?.endsWith("JsonProperty") == true }
+        ?.allValueArguments?.get(Name.identifier("value"))
+        ?.value as? String
+        ?: name ?: "x"
+}
 private val weakKtClassPostActions = WeakHashMap<KtElement, ArrayList<() -> Unit>>()
 fun KtElement.runPostActions() {
     weakKtClassPostActions.remove(this)?.forEach { it() }
