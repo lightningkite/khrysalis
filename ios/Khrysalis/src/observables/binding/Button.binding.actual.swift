@@ -22,6 +22,25 @@ public extension UIButton {
     func bindActive(observable: ObservableProperty<Bool>, activeColorResource: ColorResource? = nil, inactiveColorResource: ColorResource? = nil) -> Void {
         return bindActive(observable, activeColorResource, inactiveColorResource)
     }
+    
+    
+    func bindActive(_ observable: ObservableProperty<Bool>, _ activeColorResource: DrawableResource? = nil, _ inactiveColorResource: DrawableResource? = nil) -> Void {
+        observable.subscribeBy { ( value) in
+            self.isUserInteractionEnabled = value
+            if value {
+                if let drawable = activeColorResource {
+                    self.backgroundDrawable = drawable
+                }
+            }else{
+                if let drawable = inactiveColorResource{
+                    self.backgroundDrawable = drawable
+                }
+            }
+        }.until(self.removed)
+    }
+    func bindActive(observable: ObservableProperty<Bool>, activeColorResource: DrawableResource? = nil, inactiveColorResource: DrawableResource? = nil) -> Void {
+        return bindActive(observable, activeColorResource, inactiveColorResource)
+    }
 }
 
 

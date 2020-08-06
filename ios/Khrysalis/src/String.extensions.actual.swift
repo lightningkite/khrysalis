@@ -76,4 +76,8 @@ public extension String {
     func format(_ arguments: Any...) -> String {
         return formatList(arguments)
     }
+    
+    func format(args: Any...) -> String {
+        return formatList(args)
+    }
 }

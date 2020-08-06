@@ -14,6 +14,7 @@ import Khrysalis
 
 public class Notifications {
     static public let INSTANCE = Notifications()
+
     public var notificationToken = StandardObservableProperty<String?>(nil)
     public func request(firebaseAppName: String? = nil){
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge], completionHandler: { (success, error) in
