@@ -157,7 +157,7 @@ fun SwiftTranslator.registerControl() {
             }
         }
         if (typedRule.actuallyCouldBeExpression && typedRule.parent !is KtContainerNodeForControlStructureBody) {
-            -"}"
+            -"\n}"
         }
         endSmartcastBlock()
     }
@@ -246,7 +246,7 @@ fun SwiftTranslator.registerControl() {
         }
         -"}\n"
         if (typedRule.actuallyCouldBeExpression) {
-            -"}"
+            -"\n}"
         }
     }
 
@@ -276,6 +276,7 @@ fun SwiftTranslator.registerControl() {
                     )
                 }
                 if (it.expression is KtBlockExpression) {
+                    -' '
                     -it.expression
                 } else {
                     -" {\n"
@@ -293,7 +294,7 @@ fun SwiftTranslator.registerControl() {
         )
 
         if (typedRule.actuallyCouldBeExpression) {
-            -"}"
+            -"\n}"
         }
     }
 
@@ -384,6 +385,7 @@ fun SwiftTranslator.registerControl() {
                     }
                 }
                 if (it.expression is KtBlockExpression) {
+                    -' '
                     -it.expression
                 } else {
                     -" {\n"
@@ -401,7 +403,7 @@ fun SwiftTranslator.registerControl() {
         )
 
         if (typedRule.actuallyCouldBeExpression) {
-            -"}"
+            -"\n}"
         }
     }
 

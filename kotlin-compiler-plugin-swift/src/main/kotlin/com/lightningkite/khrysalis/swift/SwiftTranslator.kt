@@ -227,17 +227,17 @@ class SwiftTranslator(
                     -"run {"
                     -" () -> "
                     -type
-                    -" in "
+                    -" in \n"
                 } ?: run {
-                -"run { "
+                -"run { \n"
             }
         } else if (type != null) {
             -"run {"
             -" () -> "
             -type
-            -" in "
+            -" in \n"
         } else {
-            -"run { /*!*/ "
+            -"run { /*!*/ \n"
         }
     }
 }

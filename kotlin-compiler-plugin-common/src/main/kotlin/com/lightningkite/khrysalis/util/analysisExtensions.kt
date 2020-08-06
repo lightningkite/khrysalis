@@ -237,6 +237,7 @@ interface AnalysisExtensions {
                 return determineNotStatementLambda(it)
             }
             //Check if control is expression
+            if(it.parent is KtWhenEntry) return determineNotStatement(it.parent!!.parent as KtExpression)
             parentControlBody = it.parent as? KtContainerNodeForControlStructureBody ?: return false
         }
         parentControlBody?.let { return determineNotStatementControlBody(it) }
