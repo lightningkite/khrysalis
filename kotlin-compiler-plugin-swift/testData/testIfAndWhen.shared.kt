@@ -145,12 +145,32 @@ fun ifAndWhenMain() {
             println("which is magical")
         }
     }
+    val whenAsExpression1 = when (thing) {
+        0 -> "is zero"
+        1 -> "is one"
+        2 -> {
+            "which is magical"
+        }
+    }
 
     //When on conditions
     when {
         thing == 1 -> println("thing is one")
         thing2 != null -> println("thing2 is not null")
         else -> println("else")
+    }
+    val whenAsExpression2 = when {
+        thing == 1 -> "thing is one"
+        thing2 != null -> "thing2 is not null"
+        else -> "else"
+    }
+    val whenAsExpression3 = when {
+        thing == 1 -> {
+            thing2?.let { "heyyy" }
+        }
+        thing == 0 -> { "asdf" }
+        thing2 != null -> thing2?.let { "heyyy" }
+        else -> null
     }
 
     //when on subject advanced

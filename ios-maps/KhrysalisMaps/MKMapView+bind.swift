@@ -66,7 +66,7 @@ public extension MKMapView {
             }
         }
         self.onClick {
-            dependency.openMap(coordinate: position.value ?? GeoCoordinate(39.161913, -142.788386))
+            dependency.openMap(coordinate: position.value ?? GeoCoordinate(latitude: 39.161913, longitude: -142.788386))
         }
     }
     

@@ -14,12 +14,3 @@
   type: call
   actualReceiver: android.widget.Button
   template: '~this~.setTitleColor(~0~, for: .normal)'
-
-- id: com.lightningkite.khrysalis.views.setTextColorResource
-  type: call
-  actualReceiver: android.widget.Button
-  template: '~this~.setTitleColor(~0~, for: .normal)'
-- id: android.widget.TextView.setTextColor
-  type: call
-  actualReceiver: android.widget.Button
-  template: '~this~.setTitleColor(~0~, for: .normal)'

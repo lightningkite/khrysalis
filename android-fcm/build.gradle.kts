@@ -1,6 +1,5 @@
-import com.lightningkite.khrysalis.KhrysalisSettings
-import com.lightningkite.khrysalis.ios.convertResourcesToIos
-import com.lightningkite.khrysalis.ios.layout.convertLayoutsToSwift
+import com.lightningkite.khrysalis.gradle.KhrysalisPluginExtension
+import com.lightningkite.khrysalis.ios.layout.mapViews
 
 buildscript {
     val kotlin_version = "1.3.72"
@@ -25,6 +24,15 @@ plugins {
     id("kotlin-android")
     id("kotlin-android-extensions")
     id("digital.wup.android-maven-publish") version "3.6.2"
+}
+
+apply(plugin = "com.lightningkite.khrysalis")
+
+configure<KhrysalisPluginExtension> {
+    projectName = "KhrysalisFCM"
+    organizationName = "Lightning Kite"
+    overrideIosFolder = project.projectDir.resolve("../ios-fcm").toString()
+    overrideWebFolder = project.projectDir.resolve("../web-fcm").toString()
 }
 
 group = "com.lightningkite.khrysalis"
@@ -89,8 +97,3 @@ publishing {
         }
     }
 }
-
-KhrysalisSettings.verbose = true
-
-val androidBase = project.projectDir
-val iosBase = project.projectDir.resolve("../ios-fcm/KhrysalisFCM")
