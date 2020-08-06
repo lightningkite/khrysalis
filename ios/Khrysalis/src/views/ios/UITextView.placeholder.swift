@@ -18,6 +18,7 @@ public extension UITextView {
             text = value
         }
     }
+    
     var attributedPlaceholder: NSAttributedString {
         get {
             return NSAttributedString(string: text)
@@ -71,16 +72,18 @@ public extension UITextView {
             }
         }
 
-        view.onLayoutSubviews.startWith(view).addWeak(referenceA: layer) { [unowned bold, unowned light] layer, view in
-            layer.frame = view.bounds
-            bold.frame.origin.x = 0
-            bold.frame.origin.y = layer.bounds.height - 2
-            bold.bounds.size.width = layer.bounds.width
-            bold.bounds.size.height = 2
-            light.frame.origin.x = 0
-            light.frame.origin.y = layer.bounds.height - 1
-            light.bounds.size.width = layer.bounds.width
-            light.bounds.size.height = 1
+        view.onLayoutSubviews.startWith(view).addWeak(referenceA: layer) { [weak bold, weak light] layer, view in
+            if let bold = bold, let light = light {
+                layer.frame = view.bounds
+                bold.frame.origin.x = 0
+                bold.frame.origin.y = layer.bounds.height - 2
+                bold.bounds.size.width = layer.bounds.width
+                bold.bounds.size.height = 2
+                light.frame.origin.x = 0
+                light.frame.origin.y = layer.bounds.height - 1
+                light.bounds.size.width = layer.bounds.width
+                light.bounds.size.height = 1
+            }
         }
 
         return layer
