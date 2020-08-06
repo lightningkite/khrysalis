@@ -92,20 +92,19 @@ public extension Encodable {
     }
 }
 
-public func kotlinAnyToJsonString(_ value: Any) -> String {
-    if let value = value as? Encodable {
-        return value.toJsonString()
-    } else {
-        return PrimitiveCodableBox(value).toJsonString()
-    }
+public func kotlinAnyToJsonString(_ value: Encodable) -> String {
+    return value.toJsonString()
 }
-public func kotlinAnyToJsonData(_ value: Any) -> Data {
-    if let value = value as? Encodable {
-        return value.toJsonData()
-    } else {
-        return PrimitiveCodableBox(value).toJsonData()
-    }
+public func kotlinAnyToJsonData(_ value: Encodable) -> Data {
+    return value.toJsonData()
 }
+public func kotlinAnyToJsonString(_ value: Dictionary<String, Any>) -> String {
+    return PrimitiveCodableBox(value).toJsonString()
+}
+public func kotlinAnyToJsonData(_ value: Dictionary<String, Any>) -> Data {
+    return PrimitiveCodableBox(value).toJsonData()
+}
+
 
 //--- String.fromJsonString()
 //--- String.fromJsonStringUntyped()
