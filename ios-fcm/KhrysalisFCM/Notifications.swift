@@ -14,11 +14,11 @@ import Khrysalis
 
 public class Notifications {
     static public let INSTANCE = Notifications()
-    public var notificationToken = StandardObservableProperty<String?>(nil)
+    public var notificationToken = StandardObservableProperty<String?>(underlyingValue: nil)
     public func request(){
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge], completionHandler: { (success, error) in
             if success {
-                Notifications.notificationToken.value = Messaging.messaging().fcmToken
+                self.notificationToken.value = Messaging.messaging().fcmToken
             }
         })
     }
