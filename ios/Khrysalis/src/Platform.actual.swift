@@ -4,6 +4,8 @@ import Foundation
 
 //--- Platform.{
 public enum Platform: StringEnum {
+    public static let Companion = Self.self
+    public static let INSTANCE = Self.self
     case iOS, Android, Web
     public static let current = Platform.iOS
 

@@ -60,7 +60,11 @@
   template:
     pattern: '~this~.distinctUntilChanged(~0~)'
     imports: [RxSwift]
-
+- id: io.reactivex.Observable.onErrorResumeNext
+  type: call
+  template:
+    pattern: '~this~.catchError(~0~)'
+    imports: [RxSwift]
 
 - id: io.reactivex.ObservableSource
   type: type

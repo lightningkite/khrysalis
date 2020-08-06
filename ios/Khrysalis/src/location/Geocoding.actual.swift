@@ -1,6 +1,7 @@
 //Stub file made with Khrysalis 2 (by Lightning Kite)
 import Foundation
 import CoreLocation
+import RxSwift
 
 public extension ViewDependency {
 
@@ -22,6 +23,33 @@ public extension ViewDependency {
         CLGeocoder().geocodeAddressString(address){ marks, error in
             onResult(marks?.map { translate(mark: $0) } ?? [])
         }
+    }
+    
+    func geocode(_ address:String, _ maxResults:Int = 1) -> Single<Array<GeoAddress>> {
+        return geocode(address:address, maxResults: maxResults)
+    }
+    
+    func geocode(address:String, maxResults:Int = 1) -> Single<Array<GeoAddress>> {
+        if address.isEmpty {
+            return Single.just(Array())
+        }
+        return Single.create ({(emitter: SingleEmitter<Array<GeoAddress>>)in
+            CLGeocoder().geocodeAddressString(address){ marks, error in
+                emitter.onSuccess(marks?.map { translate(mark: $0) } ?? [])
+            }
+        })
+    }
+    
+    func geocode(_ coordinate: GeoCoordinate) -> Single<Array<GeoAddress>> {
+        return geocode(coordinate:coordinate)
+    }
+    
+    func geocode(coordinate: GeoCoordinate) -> Single<Array<GeoAddress>> {
+        return Single.create ({(emitter: SingleEmitter<Array<GeoAddress>>)in
+            CLGeocoder().reverseGeocodeLocation(CLLocation(latitude: coordinate.latitude, longitude: coordinate.longitude)){ marks, error in
+                emitter.onSuccess(marks?.map { translate(mark: $0) } ?? [])
+            }
+        })
     }
 }
 

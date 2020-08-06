@@ -175,6 +175,14 @@ public extension UIButton {
             textString = current
         }
     }
+    @objc var text: String {
+        get {
+            return title(for: .normal) ?? ""
+        }
+        set(value) {
+            textString = value
+        }
+    }
     @objc var textResource: String {
         get {
             return title(for: .normal) ?? ""
@@ -219,6 +227,14 @@ public extension HasLabelView where Self: UIView {
             viewAllCaps.set(self, value)
             let current = textString
             textString = current
+        }
+    }
+    var text: String {
+        get {
+            return self.labelView.textResource
+        }
+        set(value) {
+            self.labelView.textString = value
         }
     }
     var textResource: String {

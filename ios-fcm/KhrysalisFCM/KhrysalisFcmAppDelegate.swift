@@ -39,10 +39,12 @@ open class KhrysalisFcmAppDelegate: KhrysalisAppDelegate, UNUserNotificationCent
             var shouldShow: ForegroundNotificationHandlerResult = .UNHANDLED
             if let entryPoint = self.viewController?.main as? ForegroundNotificationHandler {
                 let info = notification.request.content.userInfo
-                shouldShow = entryPoint.handleNotificationInForeground(map: info
-                    .filter { it in it.key is String && it.value is String }
-                    .mapKeys { it in it as! String }
-                    .mapValues { it in it as! String }
+                shouldShow = entryPoint.handleNotificationInForeground(map:
+                    Dictionary(uniqueKeysWithValues:
+                        info
+                            .filter { it in it.key is String && it.value is String }
+                            .map { ($0.key as! String, $0.value as! String) }
+                    )
                 )
             }
             print("Notification was: \(shouldShow)")
@@ -84,6 +86,6 @@ open class KhrysalisFcmAppDelegate: KhrysalisAppDelegate, UNUserNotificationCent
     }
 
     public func messaging(_ messaging: Messaging, didReceiveRegistrationToken fcmToken: String) {
-        Notifications.notificationToken.value = fcmToken
+        Notifications.INSTANCE.notificationToken.value = fcmToken
     }
 }

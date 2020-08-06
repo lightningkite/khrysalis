@@ -29,7 +29,7 @@ var lastLocation: LocationCache? = nil
 
 public extension ViewDependency {
     //--- ViewDependency.requestLocation(Double, Double, (LocationResult?,String?)->Unit)
-    func requestLocation(_ accuracyBetterThanMeters: Double, _ timeoutInSeconds: Double, _ onResult: @escaping (LocationResult?, String?) -> Void) -> Void {
+    func requestLocation(_ accuracyBetterThanMeters: Double = 10.0, _ timeoutInSeconds: Double = 100.0, _ onResult: @escaping (LocationResult?, String?) -> Void) -> Void {
         let singleTime = SingleTime()
         
         let manager = CLLocationManager()
@@ -51,7 +51,7 @@ public extension ViewDependency {
             }
         }
     }
-    func requestLocation(accuracyBetterThanMeters: Double, timeoutInSeconds: Double, onResult: @escaping (LocationResult?, String?) -> Void) -> Void {
+    func requestLocation(accuracyBetterThanMeters: Double = 10.0, timeoutInSeconds: Double = 100.0, onResult: @escaping (LocationResult?, String?) -> Void) -> Void {
         return requestLocation(accuracyBetterThanMeters, timeoutInSeconds, onResult)
     }
     

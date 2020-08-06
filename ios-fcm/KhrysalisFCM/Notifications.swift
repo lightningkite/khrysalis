@@ -14,14 +14,16 @@ import Khrysalis
 
 public class Notifications {
     static public let INSTANCE = Notifications()
-    public var notificationToken = StandardObservableProperty<String?>(nil)
+
+    public var notificationToken = StandardObservableProperty<String?>(underlyingValue: nil)
     public func request(firebaseAppName: String? = nil){
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge], completionHandler: { (success, error) in
             if success {
-                if let firebaseAppName = firebaseAppName {
-                    Notifications.notificationToken.value = Messaging.messaging(FirebaseApp.app(name: firebaseAppName)).fcmToken
+                if let firebaseAppName = firebaseAppName, let app = FirebaseApp.app(name: firebaseAppName) {
+                    FirebaseApp.configure(options: app.options)
+                    Notifications.INSTANCE.notificationToken.value = Messaging.messaging().fcmToken
                 } else {
-                    Notifications.notificationToken.value = Messaging.messaging().fcmToken
+                    Notifications.INSTANCE.notificationToken.value = Messaging.messaging().fcmToken
                 }
             }
         })
