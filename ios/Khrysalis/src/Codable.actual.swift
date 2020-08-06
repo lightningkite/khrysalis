@@ -201,6 +201,11 @@ public struct PrimitiveCodableBox: Codable {
     public func encode(to encoder: Encoder) throws {
         if let v = self.value as? Codable {
             try v.encode(to: encoder)
+        } else if let v = self.value as? Dictionary<String, Any?> {
+            var container = encoder.container(keyedBy: StringKey.self)
+            for (key, value) in v {
+                try container.encode(PrimitiveCodableBox(value), forKey: StringKey(stringValue: key))
+            }
         } else {
             var svc = encoder.singleValueContainer()
             try svc.encodeNil()
