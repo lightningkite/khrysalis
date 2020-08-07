@@ -219,7 +219,7 @@
 - id: kotlin.collections.MutableCollection.addAll
   actualReceiver: kotlin.collections.MutableList
   type: call
-  template: "~this~.insert(contentsOf: ~0~, at: max(0, ~this~.count - 1))"
+  template: "~this~.insert(contentsOf: ~0~, at: ~this~.count)"
 - id: kotlin.collections.MutableList.addAll
   actualReceiver: kotlin.collections.MutableList
   type: call

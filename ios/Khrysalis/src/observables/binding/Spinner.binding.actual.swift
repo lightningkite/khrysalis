@@ -49,6 +49,7 @@ public extension Dropdown {
 
     static var defaultRow: (_ obs: ObservableProperty<String>)->View = { obs in
         let l = UILabel(frame: .zero)
+        l.textColor = UIView.appForegroundColor
         l.bindString(obs)
         return l
     }
