@@ -11,13 +11,13 @@ public enum HttpClient {
     
     static public let INSTANCE = Self.self
 
-    //--- HttpClient.ioScheduler
+//--- HttpClient.ioScheduler
     public static var ioScheduler: Scheduler? = Schedulers.io()
     
     //--- HttpClient.responseScheduler
-    public static var responseScheduler: Scheduler? = AndroidSchedulers.mainThread()
+    public static var responseScheduler: Scheduler? = MainScheduler.instance
     //--- HttpClient.Single<T>.threadCorrectly()
-    //--- HttpClient.Observable<T>.threadCorrectly()
+//--- HttpClient.Observable<T>.threadCorrectly()
     
     //--- HttpClient.immediateMode
     public static var immediateMode: Bool = false

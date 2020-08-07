@@ -78,7 +78,7 @@ public extension UIView {
     }
     
     //--- View.invalidate
-    func invalidate(){
+    func invalidate() {
         setNeedsDisplay()
     }
 }

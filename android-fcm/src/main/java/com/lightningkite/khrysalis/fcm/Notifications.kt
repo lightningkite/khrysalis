@@ -4,10 +4,8 @@ import android.app.NotificationChannel
 import android.app.NotificationManager
 import android.content.Context
 import android.os.Build
-import androidx.core.app.NotificationManagerCompat
 import com.google.firebase.FirebaseApp
 import com.google.firebase.iid.FirebaseInstanceId
-import com.lightningkite.khrysalis.fcm.R
 import com.lightningkite.khrysalis.net.HttpClient
 import com.lightningkite.khrysalis.observables.StandardObservableProperty
 

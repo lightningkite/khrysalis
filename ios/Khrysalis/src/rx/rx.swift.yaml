@@ -90,6 +90,18 @@
     pattern: ~this~.publish()
     imports: [RxSwift]
 
+- id: io.reactivex.subjects.Subject.hasObservers
+  type: call
+  template:
+    pattern: ~this~.hasObservers
+    imports: [RxSwift]
+
+- id: io.reactivex.Observable.interval
+  type: call
+  template:
+    pattern: "Observable.interval(RxTimeInterval.milliseconds(Int(~0~)), scheduler: ~2~)"
+    imports: [RxSwift]
+
 #- id: io.reactivex.Observable.map
 #  type: call
 #  template:

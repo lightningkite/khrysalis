@@ -173,6 +173,8 @@ public extension Subject {
     //--- Subject.} (overwritten on flow generation)
 }
 
+private let placeholderDisposable = DisposableLambda {}
+
 //--- Single.{
 public extension PrimitiveSequenceType where Trait == SingleTrait {
 
@@ -200,8 +202,8 @@ public extension PrimitiveSequenceType where Trait == SingleTrait {
     }
 
     //--- Single.doOnSubscribe(()->Unit)
-    func doOnSubscribe(_ action: @escaping () -> Void) -> Single<Element> {
-        return self.do(onSubscribe: action)
+    func doOnSubscribe(_ action: @escaping (Disposable) -> Void) -> Single<Element> {
+        return self.do(onSubscribe: { action(placeholderDisposable) })
     }
 
     //--- Single.doFinally(()->Unit)
@@ -261,7 +263,7 @@ public class SingleEmitter<Element> {
 }
 
 //--- Scheduler
-public typealias Scheduler = RxSwift.ImmediateSchedulerType
+public typealias Scheduler = RxSwift.SchedulerType
 
 //--- Schedulers.{ (overwritten on flow generation)
 public enum Schedulers {
