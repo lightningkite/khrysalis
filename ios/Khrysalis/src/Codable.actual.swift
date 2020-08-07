@@ -104,6 +104,24 @@ public func kotlinAnyToJsonString(_ value: Dictionary<String, Any>) -> String {
 public func kotlinAnyToJsonData(_ value: Dictionary<String, Any>) -> Data {
     return PrimitiveCodableBox(value).toJsonData()
 }
+public func kotlinAnyToJsonString(_ value: Dictionary<String, Any?>) -> String {
+    return PrimitiveCodableBox(value).toJsonString()
+}
+public func kotlinAnyToJsonData(_ value: Dictionary<String, Any?>) -> Data {
+    return PrimitiveCodableBox(value).toJsonData()
+}
+public func kotlinAnyToJsonString(_ value: Dictionary<String, Codable>) -> String {
+    return PrimitiveCodableBox(value).toJsonString()
+}
+public func kotlinAnyToJsonData(_ value: Dictionary<String, Codable>) -> Data {
+    return PrimitiveCodableBox(value).toJsonData()
+}
+public func kotlinAnyToJsonString(_ value: Dictionary<String, Codable?>) -> String {
+    return PrimitiveCodableBox(value).toJsonString()
+}
+public func kotlinAnyToJsonData(_ value: Dictionary<String, Codable?>) -> Data {
+    return PrimitiveCodableBox(value).toJsonData()
+}
 
 
 //--- String.fromJsonString()

@@ -25,6 +25,18 @@ public extension Encodable {
 public func kotlinAnyToJsonHttpBody(_ value: Encodable) -> HttpBody {
     return HttpBody(mediaType: HttpMediaTypes.JSON, data: kotlinAnyToJsonData(value))
 }
+public func kotlinAnyToJsonHttpBody(_ value: Dictionary<String, Any>) -> HttpBody {
+    return HttpBody(mediaType: HttpMediaTypes.JSON, data: kotlinAnyToJsonData(value))
+}
+public func kotlinAnyToJsonHttpBody(_ value: Dictionary<String, Any?>) -> HttpBody {
+    return HttpBody(mediaType: HttpMediaTypes.JSON, data: kotlinAnyToJsonData(value))
+}
+public func kotlinAnyToJsonHttpBody(_ value: Dictionary<String, Codable>) -> HttpBody {
+    return HttpBody(mediaType: HttpMediaTypes.JSON, data: kotlinAnyToJsonData(value))
+}
+public func kotlinAnyToJsonHttpBody(_ value: Dictionary<String, Codable?>) -> HttpBody {
+    return HttpBody(mediaType: HttpMediaTypes.JSON, data: kotlinAnyToJsonData(value))
+}
 
 //--- Data.toHttpBody(HttpMediaType)
 public extension Data {
