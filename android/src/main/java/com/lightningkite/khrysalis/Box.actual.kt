@@ -9,6 +9,10 @@ package com.lightningkite.khrysalis
         @Suppress("UNCHECKED_CAST")
         fun <T> wrap(value: T): Box<T> = if(value == null) NullRepBox as Box<T> else Box(value)
     }
+
+    override fun toString(): String {
+        return "Box($value)"
+    }
 }
 
 fun <T> boxWrap(value: T): Box<T> {

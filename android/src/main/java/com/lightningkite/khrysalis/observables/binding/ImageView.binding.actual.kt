@@ -20,7 +20,10 @@ import com.lightningkite.khrysalis.views.loadVideoThumbnail
  * and a direct bitmap. It will handle all cases and load the image.
  *
  */
-@Deprecated("Use the one in the 'views' package instead.", ReplaceWith("this.loadImage(image)", "com.lightningkite.khrysalis.views.loadImage"))
+@Deprecated(
+    "Use the one in the 'views' package instead.",
+    ReplaceWith("this.loadImage(image)", "com.lightningkite.khrysalis.views.loadImage")
+)
 fun ImageView.loadImage(image: Image?) = loadImageAlt(image)
 
 
@@ -33,14 +36,14 @@ fun ImageView.loadImage(image: Image?) = loadImageAlt(image)
  *
  */
 fun ImageView.bindImage(image: ObservableProperty<Image?>) {
-    post {
-        image.subscribeBy { it ->
-            this.loadImage(it)
-        }.until(this.removed)
-    }
+    image.subscribeBy { it ->
+        post {
+            this.loadImageAlt(it)
+        }
+    }.until(this.removed)
 }
 
-fun ImageView.bindVideoThumbnail(video:ObservableProperty<Video?>){
+fun ImageView.bindVideoThumbnail(video: ObservableProperty<Video?>) {
     video.subscribeBy {
         this.loadVideoThumbnail(it)
     }.until(removed)
