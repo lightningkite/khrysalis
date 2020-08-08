@@ -6,6 +6,7 @@ package com.lightningkite.khrysalis
     companion object {
         private val NullRep = object {}
         private val NullRepBox = Box<Any?>(NullRep)
+//        private val string: String = "".toUpperCase()
         @Suppress("UNCHECKED_CAST")
         fun <T> wrap(value: T): Box<T> = if(value == null) NullRepBox as Box<T> else Box(value)
     }

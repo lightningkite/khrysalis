@@ -81,8 +81,8 @@ val LayoutConverter.Companion.buttonViews
             ViewType("ToggleButton", "ToggleButton", "Button", handlesPadding = true) { node ->
                 node.attributeAsSwiftString("android:textOff")?.let { text ->
                     if (node.attributeAsBoolean("android:textAllCaps") == true) {
-                        appendln("view.textOff = $text.toUpperCase()")
-                        appendln("view.setTitle($text.toUpperCase(), for: .normal)")
+                        appendln("view.textOff = $text.uppercased()")
+                        appendln("view.setTitle($text.uppercased(), for: .normal)")
                     } else {
                         appendln("view.textOff = $text")
                         appendln("view.setTitle($text, for: .normal)")
@@ -90,7 +90,7 @@ val LayoutConverter.Companion.buttonViews
                 }
                 node.attributeAsSwiftString("android:textOn")?.let { text ->
                     if (node.attributeAsBoolean("android:textAllCaps") == true) {
-                        appendln("view.textOn = $text.toUpperCase()")
+                        appendln("view.textOn = $text.uppercased()")
                     } else {
                         appendln("view.textOn = $text")
                     }
