@@ -202,29 +202,29 @@ open class FrameLayout: UIView {
         return nil
     }
     var debugDraw = LayoutSettings.debugDraw
-    override open func draw(_ rect: CGRect) {
-        super.draw(rect)
-        if debugDraw {
-            let ctx = UIGraphicsGetCurrentContext()
-            ctx?.saveGState()
-            ctx?.clear(rect)
-            for (key, value) in childBounds {
-                ctx?.setLineWidth(2)
-                ctx?.setFillColor(UIColor.clear.cgColor)
-                if key === lastHit {
-                    ctx?.setStrokeColor(UIColor.green.cgColor)
-                } else {
-                    ctx?.setStrokeColor(UIColor.blue.cgColor)
-                }
-                UIBezierPath(rect: value.insetBy(dx: 1, dy: 1)).stroke()
-            }
-            if let lastPoint = lastPoint {
-                ctx?.setLineWidth(2)
-                ctx?.setFillColor(UIColor.clear.cgColor)
-                ctx?.setStrokeColor(UIColor.red.cgColor)
-                UIBezierPath(ovalIn: CGRect(x: lastPoint.x, y: lastPoint.y, width: 1, height: 1)).stroke()
-            }
-            ctx?.restoreGState()
-        }
-    }
+//    override open func draw(_ rect: CGRect) {
+//        super.draw(rect)
+//        if debugDraw {
+//            let ctx = UIGraphicsGetCurrentContext()
+//            ctx?.saveGState()
+//            ctx?.clear(rect)
+//            for (key, value) in childBounds {
+//                ctx?.setLineWidth(2)
+//                ctx?.setFillColor(UIColor.clear.cgColor)
+//                if key === lastHit {
+//                    ctx?.setStrokeColor(UIColor.green.cgColor)
+//                } else {
+//                    ctx?.setStrokeColor(UIColor.blue.cgColor)
+//                }
+//                UIBezierPath(rect: value.insetBy(dx: 1, dy: 1)).stroke()
+//            }
+//            if let lastPoint = lastPoint {
+//                ctx?.setLineWidth(2)
+//                ctx?.setFillColor(UIColor.clear.cgColor)
+//                ctx?.setStrokeColor(UIColor.red.cgColor)
+//                UIBezierPath(ovalIn: CGRect(x: lastPoint.x, y: lastPoint.y, width: 1, height: 1)).stroke()
+//            }
+//            ctx?.restoreGState()
+//        }
+//    }
 }
