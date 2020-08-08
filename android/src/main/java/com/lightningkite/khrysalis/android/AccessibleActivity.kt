@@ -58,12 +58,6 @@ abstract class AccessibleActivity : AppCompatActivity(), ActivityAccess {
         onLowMemory.onNext(Unit)
     }
 
-    override val onBackPressed = ArrayList<() -> Boolean>()
-    override fun onBackPressed() {
-        if (!onBackPressed.reversed().any { it.invoke() }) {
-            super.onBackPressed()
-        }
-    }
     override fun onDestroy() {
         onDestroy.onNext(Unit)
         super.onDestroy()
@@ -89,6 +83,10 @@ abstract class AccessibleActivity : AppCompatActivity(), ActivityAccess {
         onActivityResult.onNext(Triple(requestCode, resultCode, data))
         returns[requestCode]?.invoke(resultCode, data)
         returns.remove(requestCode)
+    }
+
+    override fun performBackPress() {
+        this.onBackPressed()
     }
 
     /**

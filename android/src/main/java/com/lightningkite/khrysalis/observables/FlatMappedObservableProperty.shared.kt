@@ -14,6 +14,10 @@ class FlatMappedObservableProperty<A, B>(
         get() = basedOn.observable.switchMap { it -> this.transformation(it.value).observable }.skip(1)
 }
 
+fun <T, B> ObservableProperty<T>.switchMap(transformation: @Escaping() (T) -> ObservableProperty<B>): FlatMappedObservableProperty<T, B> {
+    return FlatMappedObservableProperty<T, B>(this, transformation)
+}
+
 fun <T, B> ObservableProperty<T>.flatMap(transformation: @Escaping() (T) -> ObservableProperty<B>): FlatMappedObservableProperty<T, B> {
     return FlatMappedObservableProperty<T, B>(this, transformation)
 }
@@ -40,6 +44,10 @@ class MutableFlatMappedObservableProperty<A, B>(
     override fun update() {
         lastProperty?.update()
     }
+}
+
+fun <T, B> ObservableProperty<T>.switchMapMutable(transformation: @Escaping() (T) -> MutableObservableProperty<B>): MutableFlatMappedObservableProperty<T, B> {
+    return MutableFlatMappedObservableProperty<T, B>(this, transformation)
 }
 
 fun <T, B> ObservableProperty<T>.flatMapMutable(transformation: @Escaping() (T) -> MutableObservableProperty<B>): MutableFlatMappedObservableProperty<T, B> {

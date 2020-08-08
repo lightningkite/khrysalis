@@ -14,15 +14,12 @@ import android.view.ViewGroup
 import android.view.ViewTreeObserver
 import android.view.inputmethod.InputMethodManager
 import com.lightningkite.khrysalis.ApplicationAccess
-import com.lightningkite.khrysalis.views.EntryPoint
-import com.lightningkite.khrysalis.views.ViewGenerator
-import com.lightningkite.khrysalis.views.showDialogEvent
 import com.lightningkite.khrysalis.R
 import com.lightningkite.khrysalis.animationFrame
 import com.lightningkite.khrysalis.delay
 import com.lightningkite.khrysalis.lifecycle.appInForeground
 import com.lightningkite.khrysalis.observables.onChangeNN
-import com.lightningkite.khrysalis.views.displayMetrics
+import com.lightningkite.khrysalis.views.*
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
 
@@ -168,7 +165,7 @@ abstract class KhrysalisActivity(val changeToTheme: Int? = null) : AccessibleAct
             toClose.performClick()
         } else {
             val main = main
-            if (main !is EntryPoint || !main.onBackPressed() && main.mainStack?.pop() != true) {
+            if (main !is HasBackAction || !main.onBackPressed()) {
                 super.onBackPressed()
             }
         }

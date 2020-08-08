@@ -4,6 +4,7 @@ import com.lightningkite.khrysalis.AnyObject
 import com.lightningkite.khrysalis.Box
 import com.lightningkite.khrysalis.JsName
 import com.lightningkite.khrysalis.boxWrap
+import com.lightningkite.khrysalis.views.HasBackAction
 import io.reactivex.subjects.PublishSubject
 
 class ObservableStack<T : AnyObject> : ObservableProperty<List<T>>() {
@@ -51,6 +52,18 @@ class ObservableStack<T : AnyObject> : ObservableProperty<List<T>>() {
         stack.removeAt(stack.lastIndex)
         onChange.onNext(boxWrap(stack))
         return true
+    }
+
+    fun backPressPop(): Boolean {
+        val last = stack.lastOrNull()
+        if(last is HasBackAction && last.onBackPressed()) return true
+        return pop()
+    }
+
+    fun backPressDismiss(): Boolean {
+        val last = stack.lastOrNull()
+        if(last is HasBackAction && last.onBackPressed()) return true
+        return dismiss()
     }
 
     fun popTo(t: T) {

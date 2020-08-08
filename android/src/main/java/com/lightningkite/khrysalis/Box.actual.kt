@@ -14,6 +14,15 @@ package com.lightningkite.khrysalis
     override fun toString(): String {
         return "Box($value)"
     }
+
+    override fun equals(other: Any?): Boolean {
+        if(other is Box<*>) return value == other.value
+        return value == other
+    }
+
+    override fun hashCode(): Int {
+        return value.hashCode()
+    }
 }
 
 fun <T> boxWrap(value: T): Box<T> {

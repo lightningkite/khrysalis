@@ -5,6 +5,7 @@ import android.content.Context
 import android.content.Intent
 import android.os.Bundle
 import com.lightningkite.khrysalis.observables.Event
+import io.reactivex.subjects.Subject
 
 /**
  * An interface for accessing activities in a decentralized way, where multiple listeners can listen
@@ -18,22 +19,15 @@ interface ActivityAccess {
     val context: Context
     val savedInstanceState: Bundle?
 
-    val onResume: Event<Unit>
-    val onPause: Event<Unit>
-    val onSaveInstanceState: Event<Bundle>
-    val onLowMemory: Event<Unit>
-    val onDestroy: Event<Unit>
-    val onActivityResult: Event<Triple<Int, Int, Intent?>>
-    val onNewIntent: Event<Intent>
+    val onResume: Subject<Unit>
+    val onPause: Subject<Unit>
+    val onSaveInstanceState: Subject<Bundle>
+    val onLowMemory: Subject<Unit>
+    val onDestroy: Subject<Unit>
+    val onActivityResult: Subject<Triple<Int, Int, Intent?>>
+    val onNewIntent: Subject<Intent>
 
-    /**
-     * When the back button is pressed, the lambdas in the list are invoked in reverse order until
-     * one of the lambdas returns true, indicating that the button press has been handled.
-     *
-     * It is suggested that one add a lambda to the top of the list upon creation of a view that
-     * needs its back button handled, and then to remove that lambda when the view goes away.
-     */
-    val onBackPressed: MutableList<() -> Boolean>
+    fun performBackPress()
 
     fun prepareOnResult(
         presetCode: Int = (Math.random() * Short.MAX_VALUE).toInt(),
