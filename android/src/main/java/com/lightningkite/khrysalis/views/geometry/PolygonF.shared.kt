@@ -1,22 +1,24 @@
 package com.lightningkite.khrysalis.views.geometry
 
 import android.graphics.PointF
+import com.lightningkite.khrysalis.views.geometry.Geometry
 
 data class PolygonF(val points: List<PointF>){
     fun contains(point: PointF): Boolean {
-        var inside = false
-        val big: GFloat = 1000f
-        for(index in 0 until points.size - 2){
-            val a = points[index]
-            val b = points[index + 1]
-            val denom = - (big - point.x) * (b.y - a.y)
-            if(denom == 0f) continue
-            val ua = ((big - point.x) * (a.y - point.y)) / denom
-            val ub = ((b.x - a.x) * (a.y - point.y) - (b.y - a.y) * (a.x - point.x)) / denom
-            if(ua >= 0.0f && ua <= 1.0f && ub >= 0.0f && ub <= 1.0f) {
-                inside = !inside
-            }
+        val intersections = this.points.indices.count {
+            val a = points[it]
+            val b = points[(it + 1) % points.size]
+            Geometry.rayIntersectsLine(
+                rayX = point.x,
+                rayY = point.y,
+                rayToX = point.x + 100f,
+                rayToY = point.y,
+                lineX1 = a.x,
+                lineY1 = a.y,
+                lineX2 = b.x,
+                lineY2 = b.y
+            )
         }
-        return inside
+        return intersections % 2 == 1
     }
 }

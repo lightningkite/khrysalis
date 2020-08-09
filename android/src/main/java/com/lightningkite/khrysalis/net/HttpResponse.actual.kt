@@ -22,14 +22,17 @@ val HttpResponse.isSuccessful: Boolean get() = true
 */
 val HttpResponse.headers: Map<String, String> get() = this.headers().toMultimap().mapValues { it.value.joinToString(";") }
 
+fun HttpResponse.discard() {
+    body()!!.close()
+}
 fun HttpResponse.readText(): Single<String> {
     return with(HttpClient){
-        Single.create<String> { em -> em.onSuccess(body()!!.string()) }.threadCorrectly()
+        Single.create<String> { em -> em.onSuccess(body()!!.use { it.string() }) }.threadCorrectly()
     }
 }
 fun HttpResponse.readData(): Single<Data> {
     return with(HttpClient){
-        Single.create<Data> { em -> em.onSuccess(body()!!.bytes()) }.threadCorrectly()
+        Single.create<Data> { em -> em.onSuccess(body()!!.use { it.bytes() }) }.threadCorrectly()
     }
 }
 
@@ -39,7 +42,7 @@ inline fun <reified T> HttpResponse.readJson(): Single<T> = readJson(jacksonType
     return with(HttpClient){
         Single.create<T> { em: SingleEmitter<T> ->
             try {
-                val result: T = HttpClient.mapper.readValue<T>(body()!!.byteStream(), typeToken)
+                val result: T = HttpClient.mapper.readValue<T>(body()!!.use { it.byteStream() }, typeToken)
                 em.onSuccess(result)
             } catch(e: Throwable){
                 em.onError(e)
@@ -54,7 +57,7 @@ inline fun <reified T> HttpResponse.readJsonDebug(): Single<T> = readJson(jackso
     return with(HttpClient){
         Single.create<T> { em: SingleEmitter<T> ->
             try {
-                val data = body()!!.string()
+                val data = body()!!.use { it.string() }
                 Log.d("HttpResponse", "Got '$data'")
                 val result: T = HttpClient.mapper.readValue<T>(data, typeToken)
                 em.onSuccess(result)
