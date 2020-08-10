@@ -14,7 +14,7 @@ open class SelectDateMonthCVD : MonthCVD {
         if let it = (self.selected.value) { 
             self.currentMonthObs.value = it.dayOfMonth(value: 1)
         }
-        self.selected.onChange.subscribe(onNext:  { [weak self] (value: DateAlone?) -> Void in self?.invalidate() }, onError: nil, onCompleted: nil).forever()
+        self.selected.onChange.subscribe(onNext:  { [weak self] (value) -> Void in self?.invalidate() }, onError: nil, onCompleted: nil).forever()
     }
     
     override public func generateAccessibilityView() -> View? { return nil }
@@ -27,10 +27,10 @@ open class SelectDateMonthCVD : MonthCVD {
     public let selectedPaint: Paint
     
     override public func drawDay(canvas: Canvas, showingMonth: DateAlone, day: DateAlone, displayMetrics: DisplayMetrics, outer: CGRect, inner: CGRect) -> Void {
-        if day == self.selected.value{
+        if day == self.selected.value {
             CalendarDrawing.INSTANCE.dayBackground(canvas: canvas, inner: inner, paint: self.selectedPaint)
             CalendarDrawing.INSTANCE.day(canvas: canvas, month: showingMonth, date: day, inner: inner, paint: self.selectedDayPaint)
-        } else {
+        } else  {
             CalendarDrawing.INSTANCE.day(canvas: canvas, month: showingMonth, date: day, inner: inner, paint: self.dayPaint)
         }
     }

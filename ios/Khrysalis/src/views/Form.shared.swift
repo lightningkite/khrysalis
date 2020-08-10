@@ -73,7 +73,7 @@ public class Form {
     
     public func field<T>(name: ViewString, defaultValue: T, validation: @escaping  (FormField<T>) -> ViewString?) -> FormField<T> {
         let obs = StandardObservableProperty(underlyingValue: defaultValue)
-        let field = FormField(name: name, observable: obs, validation: { (untypedField: UntypedFormField) -> ViewString? in validation(untypedField as! FormField<T>) })
+        let field = FormField(name: name, observable: obs, validation: { (untypedField) -> ViewString? in validation(untypedField as! FormField<T>) })
         self.fields.append(field)
         return field
     }
@@ -81,7 +81,7 @@ public class Form {
     public func field<T>(name: StringResource, defaultValue: T, validation: @escaping  (FormField<T>) -> ViewString?) -> FormField<T> { return self.field(name: ViewStringResource(resource: name), defaultValue: defaultValue, validation: validation) }
     
     public func fieldFromProperty<T>(name: ViewString, property: MutableObservableProperty<T>, validation: @escaping  (FormField<T>) -> ViewString?) -> FormField<T> {
-        let field = FormField(name: name, observable: property, validation: { (untypedField: UntypedFormField) -> ViewString? in validation(untypedField as! FormField<T>) })
+        let field = FormField(name: name, observable: property, validation: { (untypedField) -> ViewString? in validation(untypedField as! FormField<T>) })
         self.fields.append(field)
         return field
     }
@@ -89,7 +89,7 @@ public class Form {
     public func fieldFromProperty<T>(name: StringResource, property: MutableObservableProperty<T>, validation: @escaping  (FormField<T>) -> ViewString?) -> FormField<T> { return self.fieldFromProperty(name: ViewStringResource(resource: name), property: property, validation: validation) }
     
     public func check() -> Array<FormValidationError> {
-        return self.fields.compactMap({ (it: UntypedFormField) -> FormValidationError? in 
+        return self.fields.compactMap({ (it) -> FormValidationError? in 
                 let result = self.checkField(field: it)
                 if let result = result {
                     return FormValidationError(field: it, string: result)
@@ -102,7 +102,7 @@ public class Form {
     public func runOrDialog(action: () -> Void) -> Void {
         let errors = self.check()
         if (!errors.isEmpty) {
-            showDialog(message: errors.map({ (it: FormValidationError) -> ViewString in it.string }).joinToViewString())
+            showDialog(message: errors.map({ (it) -> ViewString in it.string }).joinToViewString())
         } else {
             action()
         }

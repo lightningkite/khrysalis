@@ -56,6 +56,18 @@ public class ObservableStack<T : AnyObject> : ObservableProperty<Array<T>> {
         return true
     }
     
+    public func backPressPop() -> Bool {
+        let last = self.stack.last
+        if let last = last as? HasBackAction, last.onBackPressed() { return true }
+        return self.pop()
+    }
+    
+    public func backPressDismiss() -> Bool {
+        let last = self.stack.last
+        if let last = last as? HasBackAction, last.onBackPressed() { return true }
+        return self.dismiss()
+    }
+    
     public func popTo(t: T) -> Void {
         var found = false
         for i in ((0...(self.stack.count - 1))){

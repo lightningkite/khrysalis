@@ -16,7 +16,7 @@ public extension DisposeCondition {
     func and(other: DisposeCondition) -> DisposeCondition { return andAllDisposeConditions(list: [self, other]) }
 }
 
-public func andAllDisposeConditions(list: Array<DisposeCondition>) -> DisposeCondition { return DisposeCondition(call: { (it: Disposable) -> Void in 
+public func andAllDisposeConditions(list: Array<DisposeCondition>) -> DisposeCondition { return DisposeCondition(call: { (it) -> Void in 
             var disposalsLeft = list.count
             for item in (list){
                 item.call(DisposableLambda(lambda: { () -> Void in 
@@ -27,7 +27,7 @@ public func andAllDisposeConditions(list: Array<DisposeCondition>) -> DisposeCon
 }) }
 
 public extension DisposeCondition {
-    func or(other: DisposeCondition) -> DisposeCondition { return DisposeCondition(call: { (it: Disposable) -> Void in 
+    func or(other: DisposeCondition) -> DisposeCondition { return DisposeCondition(call: { (it) -> Void in 
                 self.call(it); other.call(it)
     }) }
 }

@@ -18,8 +18,8 @@ open class SelectDateRangeMonthCVD : MonthCVD {
         if let it = (self.start.value) { 
             self.currentMonthObs.value = it.dayOfMonth(value: 1)
         }
-        self.start.onChange.subscribe(onNext:  { [weak self] (value: DateAlone?) -> Void in self?.invalidate() }, onError: nil, onCompleted: nil).forever()
-        self.endInclusive.subscribeBy(onNext:  { [weak self] (value: DateAlone?) -> Void in self?.invalidate() }).forever()
+        self.start.onChange.subscribe(onNext:  { [weak self] (value) -> Void in self?.invalidate() }, onError: nil, onCompleted: nil).forever()
+        self.endInclusive.subscribeBy(onNext:  { [weak self] (value) -> Void in self?.invalidate() }).forever()
     }
     
     override public func generateAccessibilityView() -> View? { return nil }
@@ -39,19 +39,19 @@ open class SelectDateRangeMonthCVD : MonthCVD {
     
     public let drawDay_dateAlone: DateAlone
     override public func drawDay(canvas: Canvas, showingMonth: DateAlone, day: DateAlone, displayMetrics: DisplayMetrics, outer: CGRect, inner: CGRect) -> Void {
-        if day == self.start.value, (day == self.endInclusive.value || self.endInclusive.value == nil){
+        if day == self.start.value, (day == self.endInclusive.value || self.endInclusive.value == nil) {
             CalendarDrawing.INSTANCE.dayBackground(canvas: canvas, inner: inner, paint: self.selectedPaint)
             CalendarDrawing.INSTANCE.day(canvas: canvas, month: showingMonth, date: day, inner: inner, paint: self.selectedDayPaint)
-        } else if day == self.start.value{
+        } else if day == self.start.value {
             CalendarDrawing.INSTANCE.dayBackgroundStart(canvas: canvas, inner: inner, outer: outer, paint: self.selectedPaint)
             CalendarDrawing.INSTANCE.day(canvas: canvas, month: showingMonth, date: day, inner: inner, paint: self.selectedDayPaint)
-        } else if day == self.endInclusive.value{
+        } else if day == self.endInclusive.value {
             CalendarDrawing.INSTANCE.dayBackgroundEnd(canvas: canvas, inner: inner, outer: outer, paint: self.selectedPaint)
             CalendarDrawing.INSTANCE.day(canvas: canvas, month: showingMonth, date: day, inner: inner, paint: self.selectedDayPaint)
-        } else if day.comparable > (self.start.value?.comparable ?? Int.max), day.comparable < (self.endInclusive.value?.comparable ?? Int.min){
+        } else if day.comparable > (self.start.value?.comparable ?? Int.max), day.comparable < (self.endInclusive.value?.comparable ?? Int.min) {
             CalendarDrawing.INSTANCE.dayBackgroundMid(canvas: canvas, inner: inner, outer: outer, paint: self.selectedPaint)
             CalendarDrawing.INSTANCE.day(canvas: canvas, month: showingMonth, date: day, inner: inner, paint: self.selectedDayPaint)
-        } else {
+        } else  {
             CalendarDrawing.INSTANCE.day(canvas: canvas, month: showingMonth, date: day, inner: inner, paint: self.dayPaint)
         }
     }
@@ -80,18 +80,18 @@ open class SelectDateRangeMonthCVD : MonthCVD {
         let startValue = self.start.value
         let endInclusiveValue = self.endInclusive.value
         
-        if startValue == nil || endInclusiveValue == nil{
+        if startValue == nil || endInclusiveValue == nil {
             self.start.value = day
             self.endInclusive.value = day
             self.draggingStart = false
-        } else if day == endInclusiveValue{
+        } else if day == endInclusiveValue {
             self.draggingStart = false
-        } else if day == startValue{
+        } else if day == startValue {
             self.draggingStart = true
-        } else if day.comparable > endInclusiveValue!.comparable, startValue == endInclusiveValue{
+        } else if day.comparable > endInclusiveValue!.comparable, startValue == endInclusiveValue {
             self.endInclusive.value = day
             self.draggingStart = false
-        } else {
+        } else  {
             self.start.value = day
             self.endInclusive.value = day
             self.draggingStart = false
@@ -102,13 +102,13 @@ open class SelectDateRangeMonthCVD : MonthCVD {
     override public func onTouchMove(day: DateAlone) -> Bool {
         let startValue = self.start.value
         let endInclusiveValue = self.endInclusive.value
-        if startValue == nil || endInclusiveValue == nil{
-        } else if self.draggingStart, day.comparable > endInclusiveValue!.comparable{
+        if startValue == nil || endInclusiveValue == nil {
+        } else if self.draggingStart, day.comparable > endInclusiveValue!.comparable {
             self.start.value = self.endInclusive.value
             self.endInclusive.value = day
             self.draggingStart = false
             return true
-        } else if (!self.draggingStart), day.comparable < startValue!.comparable{
+        } else if (!self.draggingStart), day.comparable < startValue!.comparable {
             self.endInclusive.value = self.start.value
             self.start.value = day
             self.draggingStart = true

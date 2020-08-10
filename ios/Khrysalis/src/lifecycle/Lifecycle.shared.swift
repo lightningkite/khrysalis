@@ -7,7 +7,7 @@ import Foundation
 public typealias Lifecycle = ObservableProperty<Bool>
 
 public extension ObservableProperty where T == Bool {
-    func and(other: ObservableProperty< Bool>) -> Lifecycle { return self.combine(other: other, combiner: { (a: Bool, b: Bool) -> Bool in a && b }) }
+    func and(other: ObservableProperty< Bool>) -> Lifecycle { return self.combine(other: other, combiner: { (a, b) -> Bool in a && b }) }
 }
 public extension ObservableProperty where T == Bool {
     func openCloseBinding<A : AnyObject>(target: A, `open`: @escaping  (A) -> Void, close: @escaping  (A) -> Void) -> Void {
@@ -15,7 +15,7 @@ public extension ObservableProperty where T == Bool {
         if self.value {
             `open`(target)
         }
-        self.addAndRunWeak(referenceA: target, listener: { (target: A, value: Bool) -> Void in 
+        self.addAndRunWeak(referenceA: target, listener: { (target, value) -> Void in 
                 if lastValue, (!value) {
                     close(target)
                 }
@@ -32,7 +32,7 @@ public extension ObservableProperty where T == Bool {
         if self.value {
             `open`()
         }
-        let everlasting = self.observableNN.subscribe(onNext: { (value: Bool) -> Void in 
+        let everlasting = self.observableNN.subscribe(onNext: { (value) -> Void in 
                 if lastValue, (!value) {
                     close()
                 }
@@ -68,7 +68,7 @@ private class OnceObservableProperty : ObservableProperty<Bool> {
 public extension ObservableProperty where T == Bool {
     func closeWhenOff(closeable: Disposable) -> Void {
         var listener: Disposable? = nil
-        listener = self.observableNN.subscribe(onNext: { (it: Bool) -> Void in if (!it) {
+        listener = self.observableNN.subscribe(onNext: { (it) -> Void in if (!it) {
                     closeable.dispose()
                     listener?.dispose()
         } }, onError: nil, onCompleted: nil)

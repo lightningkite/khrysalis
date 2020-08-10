@@ -8,7 +8,12 @@ open class ViewGenerator {
         //Necessary properties should be initialized now
     }
     
-    open var title: String { get { TODO() } }
+    open var title: String {
+        get { return "" }
+    }
+    open var titleString: ViewString {
+        get { return ViewStringRaw(string: self.title) }
+    }
     
     open func generate(dependency: ViewDependency) -> View { TODO() }
     
@@ -18,12 +23,7 @@ open class ViewGenerator {
             //Necessary properties should be initialized now
         }
         
-        override public var title: String {
-            get { return "Empty" }
-        }
-        
         override public func generate(dependency: ViewDependency) -> View { return newEmptyView(dependency: dependency) }
-        
     }
 }
 

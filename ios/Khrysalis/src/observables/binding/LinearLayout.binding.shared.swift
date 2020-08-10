@@ -16,7 +16,7 @@ private class LinearLayoutBoundSubview<T> {
 public extension LinearLayout {
     func bind<T>(data: ObservableProperty<Array<T>>, defaultValue: T, makeView: @escaping  (ObservableProperty<T>) -> View) -> Void {
         var existingViews: Array<LinearLayoutBoundSubview<T>> = []
-        data.subscribeBy(onNext: { (value: Array<T>) -> Void in 
+        data.subscribeBy(onNext: { (value) -> Void in 
                 //Fix view count
                 let excessViews = existingViews.count - value.count
                 if excessViews > 0 {
@@ -47,7 +47,7 @@ public extension LinearLayout {
 public extension LinearLayout {
     func bindHorizontal<T>(data: ObservableProperty<Array<T>>, defaultValue: T, makeView: @escaping  (ObservableProperty<T>) -> View) -> Void {
         var existingViews: Array<LinearLayoutBoundSubview<T>> = []
-        data.subscribeBy(onNext: { (value: Array<T>) -> Void in 
+        data.subscribeBy(onNext: { (value) -> Void in 
                 //Fix view count
                 let excessViews = existingViews.count - value.count
                 if excessViews > 0 {

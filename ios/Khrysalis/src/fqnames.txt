@@ -21,11 +21,14 @@ com.fasterxml.jackson.module.kotlin.KotlinNamesAnnotationIntrospector
 com.fasterxml.jackson.module.kotlin.KotlinValueInstantiator
 com.fasterxml.jackson.module.kotlin.KotlinInstantiators
 com.fasterxml.jackson.module.kotlin.erasedType
+com.lightningkite.khrysalis.ApplicationAccess
+com.lightningkite.khrysalis
 com.lightningkite.khrysalis.Box
 com.lightningkite.khrysalis.boxWrap
-com.lightningkite.khrysalis
 com.lightningkite.khrysalis.Codable
 com.lightningkite.khrysalis.IsCodable
+com.lightningkite.khrysalis.IsCodableAndHashable
+com.lightningkite.khrysalis.IsCodableAndEquatable
 com.lightningkite.khrysalis.JsonList
 com.lightningkite.khrysalis.JsonMap
 com.lightningkite.khrysalis.toJsonString
@@ -39,6 +42,10 @@ com.lightningkite.khrysalis.ImageBitmap
 com.lightningkite.khrysalis.ImageRaw
 com.lightningkite.khrysalis.ImageRemoteUrl
 com.lightningkite.khrysalis.asImage
+com.lightningkite.khrysalis.LogInterface
+com.lightningkite.khrysalis.AndroidLog
+com.lightningkite.khrysalis.SystemOutLog
+com.lightningkite.khrysalis.Log
 com.lightningkite.khrysalis.PI
 com.lightningkite.khrysalis.floorMod
 com.lightningkite.khrysalis.floorDiv
@@ -53,6 +60,8 @@ com.lightningkite.khrysalis.formatList
 com.lightningkite.khrysalis.AnyObject
 com.lightningkite.khrysalis.AnyEquatable
 com.lightningkite.khrysalis.AnyHashable
+com.lightningkite.khrysalis.IsEquatable
+com.lightningkite.khrysalis.IsHashable
 com.lightningkite.khrysalis.Hashable
 com.lightningkite.khrysalis.Equatable
 com.lightningkite.khrysalis.SomeEnum
@@ -114,9 +123,7 @@ com.lightningkite.khrysalis.binaryForEach
 com.lightningkite.khrysalis.delay
 com.lightningkite.khrysalis.post
 com.lightningkite.khrysalis.animationFrame
-com.lightningkite.khrysalis.applicationIsActiveEvent
 com.lightningkite.khrysalis.applicationIsActive
-com.lightningkite.khrysalis.applicationIsActiveStartup
 com.lightningkite.khrysalis.lifecycle.ViewLifecycleListener
 com.lightningkite.khrysalis.lifecycle.forThisAndAllChildrenRecursive
 com.lightningkite.khrysalis.lifecycle.lifecycle
@@ -158,6 +165,7 @@ com.lightningkite.khrysalis.net.HttpMediaTypes
 com.lightningkite.khrysalis.net.HttpResponse
 com.lightningkite.khrysalis.net.code
 com.lightningkite.khrysalis.net.headers
+com.lightningkite.khrysalis.net.discard
 com.lightningkite.khrysalis.net.readText
 com.lightningkite.khrysalis.net.readData
 com.lightningkite.khrysalis.net.readJson
@@ -174,6 +182,9 @@ com.lightningkite.khrysalis.observables.combined
 com.lightningkite.khrysalis.observables.CombineObservableProperty
 com.lightningkite.khrysalis.observables.combine
 com.lightningkite.khrysalis.observables.ConstantObservableProperty
+com.lightningkite.khrysalis.observables.RxTransformationOnlyObservableProperty
+com.lightningkite.khrysalis.observables.distinctUntilChanged
+com.lightningkite.khrysalis.observables.plusRx
 com.lightningkite.khrysalis.observables.invokeAll
 com.lightningkite.khrysalis.observables.Event
 com.lightningkite.khrysalis.observables.InvokableEvent
@@ -183,8 +194,10 @@ com.lightningkite.khrysalis.observables.EventToObservableProperty
 com.lightningkite.khrysalis.observables.asObservableProperty
 com.lightningkite.khrysalis.observables.asObservablePropertyDefaultNull
 com.lightningkite.khrysalis.observables.FlatMappedObservableProperty
+com.lightningkite.khrysalis.observables.switchMap
 com.lightningkite.khrysalis.observables.flatMap
 com.lightningkite.khrysalis.observables.MutableFlatMappedObservableProperty
+com.lightningkite.khrysalis.observables.switchMapMutable
 com.lightningkite.khrysalis.observables.flatMapMutable
 com.lightningkite.khrysalis.observables.MutableObservableProperty
 com.lightningkite.khrysalis.observables.observable
@@ -192,9 +205,12 @@ com.lightningkite.khrysalis.observables.observableNN
 com.lightningkite.khrysalis.observables.onChangeNN
 com.lightningkite.khrysalis.observables.subscribeBy
 com.lightningkite.khrysalis.observables.includes
+com.lightningkite.khrysalis.observables.whileActive
 com.lightningkite.khrysalis.observables.ObservableProperty
 com.lightningkite.khrysalis.observables.ObservableStack
 com.lightningkite.khrysalis.observables.ReferenceObservableProperty
+com.lightningkite.khrysalis.observables.SharingObservableProperty
+com.lightningkite.khrysalis.observables.share
 com.lightningkite.khrysalis.observables.StandardObservableProperty
 com.lightningkite.khrysalis.observables.TransformedMutableObservableProperty
 com.lightningkite.khrysalis.observables.transformed
@@ -206,6 +222,7 @@ com.lightningkite.khrysalis.observables.addAndRunWeak
 com.lightningkite.khrysalis.observables.WriteAddedObservableProperty
 com.lightningkite.khrysalis.observables.withWrite
 com.lightningkite.khrysalis.observables.binding.bind
+com.lightningkite.khrysalis.observables.binding.bindList
 com.lightningkite.khrysalis.observables.binding
 com.lightningkite.khrysalis.observables.binding.bindActive
 com.lightningkite.khrysalis.observables.binding.bindSelect
@@ -230,7 +247,6 @@ com.lightningkite.khrysalis.observables.binding.bindMulti
 com.lightningkite.khrysalis.observables.binding.bindRefresh
 com.lightningkite.khrysalis.observables.binding.khrysalisSpinnerRow
 com.lightningkite.khrysalis.observables.binding.bindStack
-com.lightningkite.khrysalis.observables.binding.bindList
 com.lightningkite.khrysalis.observables.binding.bindStringRes
 com.lightningkite.khrysalis.observables.binding.bindText
 com.lightningkite.khrysalis.observables.binding.bindOnString
@@ -256,6 +272,7 @@ com.lightningkite.khrysalis.rx.solvePrivateDisposal
 com.lightningkite.khrysalis.rx.add
 com.lightningkite.khrysalis.rx.addWeak
 com.lightningkite.khrysalis.rx.combineLatest
+com.lightningkite.khrysalis.rx.zip
 com.lightningkite.khrysalis.rx.filterNotNull
 com.lightningkite.khrysalis.rx.mapNotNull
 com.lightningkite.khrysalis.rx.working
@@ -335,6 +352,7 @@ com.lightningkite.khrysalis.views.notNull
 com.lightningkite.khrysalis.views.notFalse
 com.lightningkite.khrysalis.views.unless
 com.lightningkite.khrysalis.views.matches
+com.lightningkite.khrysalis.views.HasBackAction
 com.lightningkite.khrysalis.views.loadImage
 com.lightningkite.khrysalis.views.loadImageAlt
 com.lightningkite.khrysalis.views.loadVideoThumbnail
@@ -414,6 +432,7 @@ com.lightningkite.khrysalis.views.geometry.AlignPair
 com.lightningkite.khrysalis.views.geometry
 com.lightningkite.khrysalis.views.geometry.GFloat
 com.lightningkite.khrysalis.views.geometry.toGFloat
+com.lightningkite.khrysalis.views.geometry.Geometry
 com.lightningkite.khrysalis.views.geometry.mapPoint
 com.lightningkite.khrysalis.views.geometry.inverted
 com.lightningkite.khrysalis.views.geometry.setInvert

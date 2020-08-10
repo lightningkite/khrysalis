@@ -16,7 +16,7 @@ public class EventToObservableProperty<T> : ObservableProperty<T> {
     }
     
     override public var onChange: Observable<T> {
-        get { return self.wrapped.map({ (it: T) -> T in 
+        get { return self.wrapped.map({ (it) -> T in 
                     self.value = it
                     return it
         }) }
@@ -24,13 +24,13 @@ public class EventToObservableProperty<T> : ObservableProperty<T> {
 }
 public extension Observable {
     func asObservableProperty(defaultValue: Element) -> ObservableProperty<Element> {
-        return (EventToObservableProperty(value: defaultValue as Element, wrapped: self.map({ (it: Element) -> Element in it }) as Observable<Element>) as EventToObservableProperty<Element>)
+        return (EventToObservableProperty(value: defaultValue as Element, wrapped: self.map({ (it) -> Element in it }) as Observable<Element>) as EventToObservableProperty<Element>)
     }
 }
 
 public extension Observable {
     func asObservablePropertyDefaultNull() -> ObservableProperty<Element?> {
-        return (EventToObservableProperty(value: nil as Element?, wrapped: self.map({ (it: Element) -> Element? in it }) as Observable<Element?>) as EventToObservableProperty<Element?>)
+        return (EventToObservableProperty(value: nil as Element?, wrapped: self.map({ (it) -> Element? in it }) as Observable<Element?>) as EventToObservableProperty<Element?>)
     }
 }
 

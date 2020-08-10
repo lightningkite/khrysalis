@@ -40,7 +40,7 @@ public class ViewStringTemplate : ViewString {
     
     public func get(dependency: ViewDependency) -> String {
         let templateResolved = self.template.get(dependency: dependency)
-        let fixedArguments = self.arguments.map({ (it: Any) -> Any in (it as? ViewString)?.get(dependency: dependency) ?? it })
+        let fixedArguments = self.arguments.map({ (it) -> Any in (it as? ViewString)?.get(dependency: dependency) ?? it })
         return templateResolved.formatList(arguments: fixedArguments)
     }
 }
@@ -65,7 +65,7 @@ public class ViewStringList : ViewString {
     }
     
     public func get(dependency: ViewDependency) -> String {
-        return self.parts.map({ (it: ViewString) -> String in it.get(dependency: dependency) }).joined(separator: self.separator)
+        return self.parts.map({ (it) -> String in it.get(dependency: dependency) }).joined(separator: self.separator)
     }
 }
 
@@ -86,9 +86,11 @@ public extension ViewString {
         } else if let thing = thing as? ViewStringResource {
             return String(describing: thing.resource)
         } else if let thing = thing as? ViewStringTemplate {
-            return thing.template.toDebugString() + "(" + thing.arguments.map({ (it: Any) -> String in run { () -> String in if let it = it as? ViewString { return it.toDebugString() } else { return "\(it)" }} }).joined(separator: ", ") + ")"
+            return thing.template.toDebugString() + "(" + thing.arguments.map({ (it) -> String in run { () -> String in 
+                            if let it = it as? ViewString { return it.toDebugString() } else { return "\(it)" }
+            } }).joined(separator: ", ") + ")"
         } else if let thing = thing as? ViewStringList {
-            return thing.parts.map({ (it: ViewString) -> String in it.toDebugString() }).joined(separator: thing.separator)
+            return thing.parts.map({ (it) -> String in it.toDebugString() }).joined(separator: thing.separator)
         } else if let thing = thing as? ViewStringComplex {
             return "<Complex string \(thing)>"
         } else  {

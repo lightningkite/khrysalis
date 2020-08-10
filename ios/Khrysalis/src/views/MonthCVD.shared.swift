@@ -35,7 +35,7 @@ open class MonthCVD : CustomViewDelegate {
         super.init()
         //Necessary properties should be initialized now
         self.draggingId = self.DRAGGING_NONE
-        self.currentMonthObs.subscribeBy(onNext:  { [weak self] (value: DateAlone) -> Void in self?.postInvalidate() }).forever()
+        self.currentMonthObs.subscribeBy(onNext:  { [weak self] (value) -> Void in self?.postInvalidate() }).forever()
         self.labelPaint.isAntiAlias = true
         self.labelPaint.style = Paint.Style.FILL
         self.labelPaint.color = 0xFF808080.asColor()

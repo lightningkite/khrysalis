@@ -11,25 +11,38 @@ public extension ObservableProperty {
 }
 public extension ObservableProperty {
     var observableNN: Observable<T> {
-        get { return self.onChange.startWith(self.value).map({ (it: T) -> T in it }) }
+        get { return self.onChange.startWith(self.value).map({ (it) -> T in it }) }
     }
 }
 public extension ObservableProperty {
     var onChangeNN: Observable<T> {
-        get { return self.onChange.map({ (it: T) -> T in it }) }
+        get { return self.onChange.map({ (it) -> T in it }) }
     }
 }
 
 public extension ObservableProperty {
-    func subscribeBy(onError: @escaping  (Error) -> Void = { (it: Error) -> Void in it.printStackTrace() }, onComplete: @escaping  () -> Void = { () -> Void in  }, onNext: @escaping  (T) -> Void = { (it: T) -> Void in  }) -> Disposable { return self.observable.subscribe(onNext: { (boxed: T) -> Void in onNext(boxed) }, onError: onError, onCompleted: onComplete) }
+    func subscribeBy(onError: @escaping  (Error) -> Void = { (it) -> Void in it.printStackTrace() }, onComplete: @escaping  () -> Void = { () -> Void in  }, onNext: @escaping  (T) -> Void = { (it) -> Void in  }) -> Disposable { return self.observable.subscribe(onNext: { (boxed) -> Void in onNext(boxed) }, onError: onError, onCompleted: onComplete) }
 }
 
 public func includes<E>(collection: MutableObservableProperty<Set<E>>, element: E) -> MutableObservableProperty<Bool> {
-    return collection.map(read: { (it: Set<E>) -> Bool in it.contains(element) }).withWrite(onWrite: { (it: Bool) -> Void in if it {
+    return collection.map(read: { (it) -> Bool in it.contains(element) }).withWrite(onWrite: { (it) -> Void in if it {
                 collection.value = collection.value.union([element])
             } else {
                 collection.value = collection.value.subtracting([element])
     } })
 }
 
+public extension ObservableProperty where T == Bool {
+    func whileActive(action: () -> Disposable) -> Disposable {
+        var current: Disposable? = nil
+        return self.subscribeBy(onNext: { (it) -> Void in if it {
+                    if current == nil {
+                        current = action()
+                    }
+                } else {
+                    current?.dispose()
+                    current = nil
+        } })
+    }
+}
 

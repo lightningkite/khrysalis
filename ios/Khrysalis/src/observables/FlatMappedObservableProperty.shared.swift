@@ -18,7 +18,13 @@ public class FlatMappedObservableProperty<A, B> : ObservableProperty<B> {
         get { return self.transformation(self.basedOn.value).value }
     }
     override public var onChange: Observable<B> {
-        get { return self.basedOn.observable.switchMap({ (it: A) -> Observable<B> in self.transformation(it).observable }).skip(1) }
+        get { return self.basedOn.observable.switchMap({ (it) -> Observable<B> in self.transformation(it).observable }).skip(1) }
+    }
+}
+
+public extension ObservableProperty {
+    func switchMap<B>(transformation: @escaping  (T) -> ObservableProperty<B>) -> FlatMappedObservableProperty<T, B> {
+        return (FlatMappedObservableProperty(basedOn: self as ObservableProperty<T>, transformation: transformation as (T) -> ObservableProperty<B>) as FlatMappedObservableProperty<T, B>)
     }
 }
 
@@ -58,6 +64,12 @@ public class MutableFlatMappedObservableProperty<A, B> : MutableObservableProper
     
     override public func update() -> Void {
         self.lastProperty?.update()
+    }
+}
+
+public extension ObservableProperty {
+    func switchMapMutable<B>(transformation: @escaping  (T) -> MutableObservableProperty<B>) -> MutableFlatMappedObservableProperty<T, B> {
+        return (MutableFlatMappedObservableProperty(basedOn: self as ObservableProperty<T>, transformation: transformation as (T) -> MutableObservableProperty<B>) as MutableFlatMappedObservableProperty<T, B>)
     }
 }
 

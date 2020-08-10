@@ -8,8 +8,8 @@ Pod::Spec.new do |s|
   s.license = "GPL"
   s.author = { "Captain" => "joseph@lightningkite.com" }
   s.platform = :ios, "11.0"
-  s.source = { :git => "https://github.com/lightningkite/khrysalis.git", :tag => "#{s.version}" }
-  s.source_files =  "ios/Khrysalis/**/*.{swift,swift.yml,swift.yaml}" # path to your classes. You can drag them into their own folder.
+  s.source = { :git => "https://github.com/lightningkite/khrysalis.git", :tag => "#{s.version}", :submodules => true }
+  s.source_files =  "ios/Khrysalis/**/*.{swift,swift.yml,swift.yaml}"
 
   s.pod_target_xcconfig = { "DEFINES_MODULE" => "YES" }
 
@@ -25,7 +25,20 @@ Pod::Spec.new do |s|
   s.dependency "RxSwift"
   s.dependency "RxRelay"
   s.dependency "Starscream"
-  s.dependency "DKImagePickerController/Core"
-  s.dependency "DKImagePickerController/ImageDataManager"
-  s.dependency "DKImagePickerController/Resource"
+
+  s.subspec 'Core' do |core|
+    core.source_files =  "ios/Khrysalis/src/**/*.{swift,swift.yml,swift.yaml}"
+  end
+  s.subspec 'Images' do |images|
+    images.source_files =  "ios/Khrysalis/srcImages/**/*.{swift,swift.yml,swift.yaml}"
+    images.dependency "DKImagePickerController/Core"
+    images.dependency "DKImagePickerController/ImageDataManager"
+    images.dependency "DKImagePickerController/Resource"
+  end
+  s.subspec 'Calendar' do |calendar|
+    calendar.source_files =  "ios/Khrysalis/srcCalendar/**/*.{swift,swift.yml,swift.yaml}"
+    calendar.dependency "DKImagePickerController/Core"
+    calendar.dependency "DKImagePickerController/ImageDataManager"
+    calendar.dependency "DKImagePickerController/Resource"
+  end
 end

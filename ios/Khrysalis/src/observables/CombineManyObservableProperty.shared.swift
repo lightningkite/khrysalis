@@ -13,19 +13,19 @@ public class CombineManyObservableProperty<IN> : ObservableProperty<Array<IN>> {
     }
     
     override public var value: Array<IN> {
-        get { return self.observables.map({ (it: ObservableProperty<IN>) -> IN in it.value }) }
+        get { return self.observables.map({ (it) -> IN in it.value }) }
     }
     override public var onChange: Observable<Array<IN>> {
-        get { return kotlinCollectionsListCombineLatest(self.observables.map({ (it: ObservableProperty<IN>) -> Observable<IN> in it.observable }), combine: { (items: Array<IN>) -> Array<IN> in items.map({ (it: IN) -> IN in it }) }).skip(1) }
+        get { return kotlinCollectionsListCombineLatest(self.observables.map({ (it) -> Observable<IN> in it.observable }), combine: { (items) -> Array<IN> in items.map({ (it) -> IN in it }) }).skip(1) }
     }
 }
 
-public func kotlinCollectionsListCombined<IN, OUT>(_ this: Array<ObservableProperty<IN>>, combiner: @escaping  (Array<IN>) -> OUT) -> ObservableProperty<OUT> {
+func kotlinCollectionsListCombined<IN, OUT>(_ this: Array<ObservableProperty<IN>>, combiner: @escaping  (Array<IN>) -> OUT) -> ObservableProperty<OUT> {
     return CombineManyObservableProperty(observables: this).map(read: combiner)
 }
 
 
-public func kotlinCollectionsListCombined<T>(_ this: Array<ObservableProperty<T>>) -> ObservableProperty<Array<T>> {
+func kotlinCollectionsListCombined<T>(_ this: Array<ObservableProperty<T>>) -> ObservableProperty<Array<T>> {
     return CombineManyObservableProperty(observables: this)
 }
 

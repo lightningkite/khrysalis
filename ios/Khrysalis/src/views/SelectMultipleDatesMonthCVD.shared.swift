@@ -16,7 +16,7 @@ open class SelectMultipleDatesMonthCVD : MonthCVD {
         if let it = (self.dates.value.firstOrNull()) { 
             self.currentMonthObs.value = it.dayOfMonth(value: 1)
         }
-        self.dates.onChange.subscribe(onNext:  { [weak self] (value: Set<DateAlone>) -> Void in self?.invalidate() }, onError: nil, onCompleted: nil).forever()
+        self.dates.onChange.subscribe(onNext:  { [weak self] (value) -> Void in self?.invalidate() }, onError: nil, onCompleted: nil).forever()
     }
     
     override public func generateAccessibilityView() -> View? { return nil }
@@ -40,15 +40,15 @@ open class SelectMultipleDatesMonthCVD : MonthCVD {
             let rightDate = self.drawDay_dateAlone.set(other: day).setAddDayOfMonth(value: 1)
             let right = self.dates.value.contains(rightDate)
             
-            if (!left), (!right){
+            if (!left), (!right) {
                 CalendarDrawing.INSTANCE.dayBackground(canvas: canvas, inner: inner, paint: self.selectedPaint)
-            } else if (!left), right{
+            } else if (!left), right {
                 CalendarDrawing.INSTANCE.dayBackgroundStart(canvas: canvas, inner: inner, outer: outer, paint: self.selectedPaint)
-            } else if left, (!right){
+            } else if left, (!right) {
                 CalendarDrawing.INSTANCE.dayBackgroundEnd(canvas: canvas, inner: inner, outer: outer, paint: self.selectedPaint)
-            } else if left, right{
+            } else if left, right {
                 CalendarDrawing.INSTANCE.dayBackgroundMid(canvas: canvas, inner: inner, outer: outer, paint: self.selectedPaint)
-            } else {
+            } else  {
                 CalendarDrawing.INSTANCE.dayBackground(canvas: canvas, inner: inner, paint: self.selectedPaint)
             }
             CalendarDrawing.INSTANCE.day(canvas: canvas, month: showingMonth, date: day, inner: inner, paint: self.selectedDayPaint)
@@ -58,24 +58,24 @@ open class SelectMultipleDatesMonthCVD : MonthCVD {
     }
     
     override public func onTap(day: DateAlone) -> Void {
-        self.adding = self.dates.value.allSatisfy({ !{ (it: DateAlone) -> Bool in day == it }($0) })
+        self.adding = self.dates.value.allSatisfy({ !{ (it) -> Bool in day == it }($0) })
         self.onTouchMove(day: day)
     }
     
     public var adding: Bool
     override public func onTouchDown(day: DateAlone) -> Bool {
-        self.adding = self.dates.value.allSatisfy({ !{ (it: DateAlone) -> Bool in day == it }($0) })
+        self.adding = self.dates.value.allSatisfy({ !{ (it) -> Bool in day == it }($0) })
         self.onTouchMove(day: day)
         return true
     }
     
     override public func onTouchMove(day: DateAlone) -> Bool {
         if self.adding {
-            if self.dates.value.allSatisfy({ !{ (it: DateAlone) -> Bool in day == it }($0) }) {
+            if self.dates.value.allSatisfy({ !{ (it) -> Bool in day == it }($0) }) {
                 self.dates.value = self.dates.value.union([day])
             }
         } else {
-            self.dates.value = Set(self.dates.value.filter({ (it: DateAlone) -> Bool in it != day }))
+            self.dates.value = Set(self.dates.value.filter({ (it) -> Bool in it != day }))
         }
         return true
     }

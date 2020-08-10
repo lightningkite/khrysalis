@@ -12,7 +12,7 @@ public class TransformedObservableProperty<A, B> : ObservableProperty<B> {
         self.read = read
         super.init()
         //Necessary properties should be initialized now
-        self._onChange = self.basedOn.onChange.map({ (it: A) -> B in self.read(it) })
+        self._onChange = self.basedOn.onChange.map({ (it) -> B in self.read(it) })
     }
     
     override public var value: B {

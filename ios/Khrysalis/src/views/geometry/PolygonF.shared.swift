@@ -18,20 +18,13 @@ public class PolygonF : KDataClass {
     public func copy(points: Array<CGPoint>? = nil) -> PolygonF { return PolygonF(points: points ?? self.points) }
     
     public func contains(point: CGPoint) -> Bool {
-        var inside = false
-        let big: CGFloat = 1000
-        for index in ((0..<self.points.count - 2)){
-            var a = self.points[index]
-            var b = self.points[index + 1]
-            let denom = (-(big - point.x)) * (b.y - a.y)
-            if denom == 0 { continue }
-            let ua = ((big - point.x) * (a.y - point.y)) / denom
-            let ub = ((b.x - a.x) * (a.y - point.y) - (b.y - a.y) * (a.x - point.x)) / denom
-            if ua >= 0.0, ua <= 1.0, ub >= 0.0, ub <= 1.0 {
-                inside = (!inside)
-            }
-        }
-        return inside
+        let intersections = self.points.indices.count(predicate: { (it) -> Bool in 
+                var a = self.points[it]
+                var b = self.points[(it + 1) % self.points.count]
+                return Geometry.INSTANCE.rayIntersectsLine(rayX: point.x, rayY: point.y, rayToX: point.x + 100, rayToY: point.y, lineX1: a.x, lineY1: a.y, lineX2: b.x, lineY2: b.y)
+        })
+        return intersections % 2 == 1
     }
 }
+
 
