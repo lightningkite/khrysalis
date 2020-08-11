@@ -12,7 +12,7 @@ import Khrysalis
 
 public extension MKMapCamera {
     var zoom: Float {
-        return Float(10_000 / self.centerCoordinateDistance) //ugh... this needs to be actually accurate
+        return 15 //ugh... this needs to be actually accurate
     }
 }
 
