@@ -11,10 +11,12 @@ public class GeoCoordinate : Codable, KDataClass {
         self.longitude = longitude
         //Necessary properties should be initialized now
     }
-    required public init(from decoder: Decoder) throws {
+    convenience required public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        latitude = try values.decodeDouble(forKey: .latitude)
-        longitude = try values.decodeDouble(forKey: .longitude)
+        self.init(
+            latitude: try values.decodeDouble(forKey: .latitude),
+            longitude: try values.decodeDouble(forKey: .longitude)
+        )
     }
     
     enum CodingKeys: String, CodingKey {

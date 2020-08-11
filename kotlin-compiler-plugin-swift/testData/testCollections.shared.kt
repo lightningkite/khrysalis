@@ -113,4 +113,8 @@ private fun collectionsTest(){
     println(HashMap<CollectionsCustomEq, String>())
 
     println(ArrayList<Int>())
+
+    for((key, value) in mapOf(1 to 2, 3 to 4)){
+        println("$key: $value")
+    }
 }

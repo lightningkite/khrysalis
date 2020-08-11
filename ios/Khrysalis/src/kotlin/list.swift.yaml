@@ -5,18 +5,25 @@
 - id: kotlin.collections.listOf
   type: call
   hasExplicitTypeArguments: true
-  template: "[~*~] as Array<~T0~>"
+  template: "([~*~] as Array<~T0~>)"
+- id: kotlin.collections.listOfNotNull
+  type: call
+  hasExplicitTypeArguments: true
+  template: "([~*~].compactMap({ $0 }) as Array<~T0~>)"
 - id: kotlin.collections.mutableListOf
   type: call
   hasExplicitTypeArguments: true
-  template: "[~*~] as Array<~T0~>"
+  template: "([~*~] as Array<~T0~>)"
 - id: kotlin.collections.arrayListOf
   type: call
   hasExplicitTypeArguments: true
-  template: "[~*~] as Array<~T0~>"
+  template: "([~*~] as Array<~T0~>)"
 - id: kotlin.collections.listOf
   type: call
   template: "[~*~]"
+- id: kotlin.collections.listOfNotNull
+  type: call
+  template: "[~*~].compactMap({ $0 })"
 - id: kotlin.collections.mutableListOf
   type: call
   template: "[~*~]"
@@ -172,7 +179,7 @@
   arguments: []
   hasExplicitTypeArguments: true
   template: "[] as Array<~T0~>"
-  
+
 # List Operations
 - id: kotlin.collections.List.indexOf
   type: call
@@ -263,7 +270,7 @@
   type: call
   actualReceiver: kotlin.collections.List
   template: "(~this~.count == 1 ? ~this~[0] : nil)"
-  
+
 - id: kotlin.collections.drop
   type: call
   actualReceiver: kotlin.collections.List
@@ -276,8 +283,8 @@
   type: call
   actualReceiver: kotlin.collections.List
   template: "Array(~this~.drop(while: ~0~))"
-#- id: kotlin.collections.dropLastWhile
-  
+  #- id: kotlin.collections.dropLastWhile
+
 - id: kotlin.collections.take
   type: call
   actualReceiver: kotlin.collections.List
@@ -295,7 +302,10 @@
 - id: kotlin.collections.filterIndexed
   type: call
   actualReceiver: kotlin.collections.List
-  template: ~this~ #TODO
+  template:
+    pattern: '~this~.enumerated().filter { (_it) in ~L0~ }'
+    lambdaTransforms:
+      0: ["_it.offset", "_it.element"]
 - id: kotlin.collections.filterNot
   type: call
   actualReceiver: kotlin.collections.List
@@ -308,26 +318,21 @@
 - id: kotlin.collections.sortBy
   type: call
   actualReceiver: kotlin.collections.List
-  template: ~this~ #TODO
+  template: '~this~.sort(by: deferComparison(~0~))'
 - id: kotlin.collections.sortByDescending
   type: call
   actualReceiver: kotlin.collections.List
-  template: ~this~ #TODO
-- id: kotlin.collections.sortedBy
-  type: call
-  actualReceiver: kotlin.collections.List
-  template: ~this~ #TODO
-- id: kotlin.collections.sortedByDescending
-  type: call
-  actualReceiver: kotlin.collections.List
-  template: ~this~ #TODO
+  template: '~this~.sort(by: deferComparisonDescending(~0~))'
 
 # TODO: groupBy
 
 - id: kotlin.collections.mapIndexed
   type: call
   actualReceiver: kotlin.collections.List
-  template: ~this~ #TODO
+  template:
+    pattern: '~this~.enumerated().map { (_it) in ~L0~ }'
+    lambdaTransforms:
+      0: ["_it.offset", "_it.element"]
 - id: kotlin.collections.mapNotNull
   type: call
   actualReceiver: kotlin.collections.List
@@ -335,6 +340,9 @@
 - id: kotlin.collections.mapIndexedNotNull
   type: call
   actualReceiver: kotlin.collections.List
-  template: ~this~ #TODO
+  template:
+    pattern: '~this~.enumerated().compactMap { (_it) in ~L0~ }'
+    lambdaTransforms:
+      0: ["_it.offset", "_it.element"]
 
 # TODO: Fold, max, min, reduce, scan

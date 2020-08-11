@@ -6,6 +6,13 @@
   type: call
   hasExplicitTypeArguments: true
   template: "([~*~] as Array<~T0~>)"
+- id: kotlin.collections.listOfNotNull
+  type: call
+  hasExplicitTypeArguments: true
+  template:
+    pattern: listFilterNotNull([~*~]) as Array<~T0~>
+    imports:
+      listFilterNotNull: khrysalis/dist/KotlinCollections
 - id: kotlin.collections.mutableListOf
   type: call
   hasExplicitTypeArguments: true
@@ -17,6 +24,12 @@
 - id: kotlin.collections.listOf
   type: call
   template: "[~*~]"
+- id: kotlin.collections.listOfNotNull
+  type: call
+  template:
+    pattern: listFilterNotNull([~*~])
+    imports:
+      listFilterNotNull: khrysalis/dist/KotlinCollections
 - id: kotlin.collections.mutableListOf
   type: call
   template: "[~*~]"

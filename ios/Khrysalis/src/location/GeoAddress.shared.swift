@@ -25,17 +25,19 @@ public class GeoAddress : Codable, KDataClass {
         self.postalCode = postalCode
         //Necessary properties should be initialized now
     }
-    required public init(from decoder: Decoder) throws {
+    convenience required public init(from decoder: Decoder) throws {
         let values = try decoder.container(keyedBy: CodingKeys.self)
-        coordinate = try values.decodeIfPresent(GeoCoordinate?.self, forKey: .coordinate) ?? nil
-        name = try values.decodeIfPresent(String?.self, forKey: .name) ?? nil
-        street = try values.decodeIfPresent(String?.self, forKey: .street) ?? nil
-        subLocality = try values.decodeIfPresent(String?.self, forKey: .subLocality) ?? nil
-        locality = try values.decodeIfPresent(String?.self, forKey: .locality) ?? nil
-        subAdminArea = try values.decodeIfPresent(String?.self, forKey: .subAdminArea) ?? nil
-        adminArea = try values.decodeIfPresent(String?.self, forKey: .adminArea) ?? nil
-        countryName = try values.decodeIfPresent(String?.self, forKey: .countryName) ?? nil
-        postalCode = try values.decodeIfPresent(String?.self, forKey: .postalCode) ?? nil
+        self.init(
+            coordinate: try values.decodeIfPresent(GeoCoordinate?.self, forKey: .coordinate) ?? nil,
+            name: try values.decodeIfPresent(String?.self, forKey: .name) ?? nil,
+            street: try values.decodeIfPresent(String?.self, forKey: .street) ?? nil,
+            subLocality: try values.decodeIfPresent(String?.self, forKey: .subLocality) ?? nil,
+            locality: try values.decodeIfPresent(String?.self, forKey: .locality) ?? nil,
+            subAdminArea: try values.decodeIfPresent(String?.self, forKey: .subAdminArea) ?? nil,
+            adminArea: try values.decodeIfPresent(String?.self, forKey: .adminArea) ?? nil,
+            countryName: try values.decodeIfPresent(String?.self, forKey: .countryName) ?? nil,
+            postalCode: try values.decodeIfPresent(String?.self, forKey: .postalCode) ?? nil
+        )
     }
     
     enum CodingKeys: String, CodingKey {

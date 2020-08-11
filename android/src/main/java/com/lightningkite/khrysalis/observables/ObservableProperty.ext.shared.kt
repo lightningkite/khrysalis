@@ -37,7 +37,7 @@ fun <E> includes(collection: MutableObservableProperty<Set<E>>, element: E): Mut
     }
 }
 
-fun ObservableProperty<Boolean>.whileActive(action: () -> Disposable): Disposable {
+fun ObservableProperty<Boolean>.whileActive(action: @Escaping() () -> Disposable): Disposable {
     var current: Disposable? = null
     return this.subscribeBy {
         if (it) {

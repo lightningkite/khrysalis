@@ -16,7 +16,7 @@ object Geometry {
         if (denom == 0f) return false
         val lineRatio: GFloat = ((rayToX - rayX) * (lineY1 - rayY) - (rayToY - rayY) * (lineX1 - rayX)) / denom
         val rayRatio: GFloat = ((lineX2 - lineX1) * (lineY1 - rayY) - (lineY2 - lineY1) * (lineX1 - rayX)) / denom
-        return lineRatio in 0.0f..1.0f && rayRatio > 0f
+        return lineRatio >= 0.0f && lineRatio <= 1.0f && rayRatio > 0f
 
     }
 }

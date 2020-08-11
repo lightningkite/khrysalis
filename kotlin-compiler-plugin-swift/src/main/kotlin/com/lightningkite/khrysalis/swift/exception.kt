@@ -54,6 +54,10 @@ fun SwiftTranslator.registerException() {
             -typedRule.catchParameter?.nameIdentifier
             -" as "
             -typedRule.catchParameter?.typeReference
+            typedRule.catchParameter?.typeReference?.resolvedType?.let { replacements.getType(it) }?.errorCondition?.let {
+                -" where "
+                emitTemplate(it, receiver = typedRule.catchParameter?.nameIdentifier)
+            }
         }
         -" "
         -typedRule.catchBody

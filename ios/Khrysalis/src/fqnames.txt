@@ -341,6 +341,7 @@ com.lightningkite.khrysalis.views.colorAlpha
 com.lightningkite.khrysalis.views.CustomView
 com.lightningkite.khrysalis.views.CustomViewDelegate
 com.lightningkite.khrysalis.views.DjangoErrorTranslator
+com.lightningkite.khrysalis.views.setOnDoneClick
 com.lightningkite.khrysalis.views.newEmptyView
 com.lightningkite.khrysalis.views.EntryPoint
 com.lightningkite.khrysalis.views.FormValidationError

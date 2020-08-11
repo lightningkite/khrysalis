@@ -273,7 +273,7 @@ fun TypescriptTranslator.registerVariable() {
     handle<KtProperty>(
         condition = {
             typedRule.isLocal && (typedRule.initializer as? KtBinaryExpression)?.let {
-                it.operationToken == KtTokens.ELVIS && (it.right is KtReturnExpression || it.right is KtContinueExpression || it.right is KtBreakExpression)
+                it.operationToken == KtTokens.ELVIS && (it.right is KtReturnExpression || it.right is KtContinueExpression || it.right is KtBreakExpression || it.right is KtThrowExpression)
             } == true
         },
         priority = 50,

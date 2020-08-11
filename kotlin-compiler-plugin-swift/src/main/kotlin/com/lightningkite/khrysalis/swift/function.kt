@@ -157,7 +157,7 @@ fun SwiftTranslator.registerFunction() {
                 -"override "
             }
         }
-        if (isMember || (typedRule.isTopLevel && !typedRule.isExtensionDeclaration())) {
+        if (isMember || (typedRule.isTopLevel && !(typedRule.isExtensionDeclaration() && typedRule.resolvedFunction?.worksAsSwiftConstraint() == true))) {
             -(typedRule.swiftVisibility() ?: "public")
             -' '
         }

@@ -347,11 +347,19 @@ fun SwiftTranslator.registerControl() {
                                         -expr
                                         -" as? "
                                         -it.typeReference
+                                        it.typeReference?.resolvedType?.let { replacements.getType(it) }?.errorCondition?.let {
+                                            -", "
+                                            emitTemplate(it, receiver = subjExpr())
+                                        }
                                     }
                                     else -> {
                                         -expr
                                         -" is "
                                         -it.typeReference
+                                        it.typeReference?.resolvedType?.let { replacements.getType(it) }?.errorCondition?.let {
+                                            -", "
+                                            emitTemplate(it, receiver = subjExpr())
+                                        }
                                     }
                                 }
                             }
@@ -375,6 +383,10 @@ fun SwiftTranslator.registerControl() {
                                         -subjExpr()
                                         -" is "
                                         -it.typeReference
+                                        it.typeReference?.resolvedType?.let { replacements.getType(it) }?.errorCondition?.let {
+                                            -" && "
+                                            emitTemplate(it, receiver = subjExpr())
+                                        }
                                     }
                                 }
                             },
@@ -412,19 +424,34 @@ fun SwiftTranslator.registerControl() {
         priority = 100,
         action = {
             val destructuringDeclaration = typedRule.loopParameter?.destructuringDeclaration!!
-            -"for ("
-            destructuringDeclaration.entries.forEachBetween(
-                forItem = {
-                    -(it.name ?: "_")
-                },
-                between = {
-                    -", "
-                }
-            )
-            -") in "
+            -"for _it in "
             -typedRule.loopRange
-            -" "
-            -typedRule.body
+            typedRule.body?.let {
+                -"{\n"
+                for((index, entry) in destructuringDeclaration.entries.withIndex()){
+                    -"let "
+                    -entry.nameIdentifier
+                    -" = "
+                    val call = entry.resolvedComponentResolvedCall!!
+                    val replacement = replacements.getCall(analysis = this@registerControl, call = call)
+                    if(replacement != null){
+                        emitTemplate(
+                            requiresWrapping = true,
+                            receiver = "_it",
+                            template = replacement.template
+                        )
+                    } else {
+                        -"_it.component${index + 1}()"
+                    }
+                    -"\n"
+                }
+                if (it is KtBlockExpression) {
+                    -it.allChildren.toList().drop(1).dropLast(1)
+                } else {
+                    -it
+                }
+                -"\n}"
+            }
         }
     )
 
@@ -434,7 +461,15 @@ fun SwiftTranslator.registerControl() {
         -" in ("
         -typedRule.loopRange
         -")"
-        -typedRule.body
+        typedRule.body?.let {
+            if (it is KtBlockExpression) {
+                -it
+            } else {
+                -"{ "
+                -it
+                -" }"
+            }
+        }
     }
 
     handle<KtLabeledExpression> {
@@ -452,12 +487,28 @@ fun SwiftTranslator.registerControl() {
         -"while "
         -typedRule.condition
         -" "
-        -typedRule.body
+        typedRule.body?.let {
+            if (it is KtBlockExpression) {
+                -it
+            } else {
+                -"{ "
+                -it
+                -" }"
+            }
+        }
     }
 
     handle<KtDoWhileExpression> {
         -"repeat "
-        -typedRule.body
+        typedRule.body?.let {
+            if (it is KtBlockExpression) {
+                -it
+            } else {
+                -"{ "
+                -it
+                -" }"
+            }
+        }
         -" while("
         -typedRule.condition
         -")"

@@ -105,4 +105,25 @@ extension UITextField {
             return true
         }
     }
+
+    public func setOnDoneClick(action: @escaping ()->Void) {
+        let dg = LambdaDelegate(action: action)
+        retain(item: dg, until: self.removed)
+        delegate = dg
+    }
+    public class LambdaDelegate: NSObject, UITextFieldDelegate {
+        public let action: ()->Void
+        public init(action: @escaping ()->Void){
+            self.action = action
+        }
+
+        public func textFieldDidBeginEditing(_ textField: UITextField) {
+//            textField.scrollToMe()
+        }
+
+        public func textFieldShouldReturn(_ textField: UITextField) -> Bool {
+            action()
+            return true
+        }
+    }
 }

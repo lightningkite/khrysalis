@@ -175,7 +175,10 @@ fun SwiftTranslator.registerClass() {
         typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEach {
             if (it.resolvedPrimaryConstructorParameter?.hasSwiftOverride == true) {
                 -"private "
-                if(it.annotationEntries.any { it.resolvedAnnotation?.fqName?.asString()?.equals("com.lightningkite.khrysalis.Unowned", true) == true }) {
+                if (it.annotationEntries.any {
+                        it.resolvedAnnotation?.fqName?.asString()
+                            ?.equals("com.lightningkite.khrysalis.Unowned", true) == true
+                    }) {
                     -"unowned "
                 }
                 -"var _"
@@ -200,7 +203,10 @@ fun SwiftTranslator.registerClass() {
                 -" = value } }"
             } else {
                 -(it.swiftVisibility() ?: "public")
-                if(it.annotationEntries.any { it.resolvedAnnotation?.fqName?.asString()?.equals("com.lightningkite.khrysalis.Unowned", true) == true }) {
+                if (it.annotationEntries.any {
+                        it.resolvedAnnotation?.fqName?.asString()
+                            ?.equals("com.lightningkite.khrysalis.Unowned", true) == true
+                    }) {
                     -" unowned"
                 }
                 -" var "
@@ -239,39 +245,40 @@ fun SwiftTranslator.registerClass() {
                 .mapNotNull { it as? KtSuperTypeEntry }
                 .any { it.typeReference?.resolvedType?.getJetTypeFqName(false) == "com.lightningkite.khrysalis.Codable" }
         ) {
-            -"required public init(from decoder: Decoder) throws {\n"
+            -"convenience required public init(from decoder: Decoder) throws {\n"
             -"let values = try decoder.container(keyedBy: CodingKeys.self)\n"
-            typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEach {
+            -"self.init(\n"
+            typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEachBetween(forItem = {
                 if (it.typeReference?.resolvedType?.getJetTypeFqName(false) == "kotlin.Double") {
                     it.defaultValue?.let { default ->
                         -it.nameIdentifier
-                        -" = try values.decodeDoubleIfPresent(forKey: ."
+                        -": try values.decodeDoubleIfPresent(forKey: ."
                         -it.nameIdentifier
                         -") ?? "
                         -default
                     } ?: run {
                         -it.nameIdentifier
-                        -" = try values.decodeDouble(forKey: ."
+                        -": try values.decodeDouble(forKey: ."
                         -it.nameIdentifier
                         -")"
                     }
                 } else if (it.typeReference?.resolvedType?.getJetTypeFqName(false) == "kotlin.Double?") {
                     it.defaultValue?.let { default ->
                         -it.nameIdentifier
-                        -" = try values.decodeDoubleIfPresent(forKey: ."
+                        -": try values.decodeDoubleIfPresent(forKey: ."
                         -it.nameIdentifier
                         -") ?? "
                         -default
                     } ?: run {
                         -it.nameIdentifier
-                        -" = try values.decodeDoubleIfPresent(forKey: ."
+                        -": try values.decodeDoubleIfPresent(forKey: ."
                         -it.nameIdentifier
                         -")"
                     }
                 } else {
                     it.defaultValue?.let { default ->
                         -it.nameIdentifier
-                        -" = try values.decodeIfPresent("
+                        -": try values.decodeIfPresent("
                         -it.typeReference
                         -".self, forKey: ."
                         -it.nameIdentifier
@@ -279,18 +286,15 @@ fun SwiftTranslator.registerClass() {
                         -default
                     } ?: run {
                         -it.nameIdentifier
-                        -" = try values.decode("
+                        -": try values.decode("
                         -it.typeReference
                         -".self, forKey: ."
                         -it.nameIdentifier
                         -")"
                     }
                 }
-                -"\n"
-            }
-
-            -"}\n"
-            -'\n'
+            }, between = { -",\n" })
+            -"\n)\n}\n\n"
             -"enum CodingKeys: String, CodingKey {\n"
             typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEach {
                 val jsonName = it.jsonName(this@registerClass)
@@ -488,14 +492,14 @@ fun SwiftTranslator.registerClass() {
                 -"case "
                 -entry.nameIdentifier
                 (entry.annotationEntries
-                    .mapNotNull {it.resolvedAnnotation}
+                    .mapNotNull { it.resolvedAnnotation }
                     .find { it.fqName?.asString()?.endsWith("JsonProperty") == true }
                     ?.allValueArguments?.get(Name.identifier("value"))
                     ?.value as? String
-                )?.let {
-                    -" = "
-                    - "\"$it\""
-                }
+                        )?.let {
+                        -" = "
+                        -"\"$it\""
+                    }
                 -"\n"
             }
             -"\npublic init(from decoder: Decoder) throws {"
@@ -528,7 +532,7 @@ fun SwiftTranslator.registerClass() {
                                     } ?: -prop.defaultValue
                                 } ?: -"TODO()"
                         },
-                        between = { -",\n"}
+                        between = { -",\n" }
                     )
                     -"\n]\n"
                     -(prop.swiftVisibility() ?: "public")
@@ -561,16 +565,17 @@ fun SwiftTranslator.registerClass() {
                         valueParameters = func.valueParameters,
                         returnType = func.typeReference ?: func.resolvedFunction?.returnType ?: "Void",
                         body = if (func.hasModifier(KtTokens.OPEN_KEYWORD) || func.hasModifier(KtTokens.ABSTRACT_KEYWORD)) {
-                            {->
+                            { ->
                                 -"{ \nswitch self {\n"
                                 typedRule.body?.enumEntries?.mapNotNull { entry ->
-                                    val matching = entry.body?.functions?.find { it.name == func.name } ?: return@mapNotNull null
+                                    val matching =
+                                        entry.body?.functions?.find { it.name == func.name } ?: return@mapNotNull null
                                     return@mapNotNull entry to matching
                                 }?.forEach { (entry, matching) ->
                                     -"case ."
                                     -entry.nameIdentifier
                                     -":\n"
-                                    when(val body = matching.bodyExpression){
+                                    when (val body = matching.bodyExpression) {
                                         is KtBlockExpression -> {
                                             -body.allChildren.drop(1).toList().dropLast(1)
                                         }
@@ -582,7 +587,7 @@ fun SwiftTranslator.registerClass() {
                                     -"\n"
                                 }
                                 -"default:\n"
-                                when(val body = func.bodyExpression){
+                                when (val body = func.bodyExpression) {
                                     is KtBlockExpression -> {
                                         -body.allChildren.drop(1).toList().dropLast(1)
                                     }
@@ -594,8 +599,7 @@ fun SwiftTranslator.registerClass() {
                                 }
                                 -"\n}\n}\n"
                             }
-                        }
-                        else func.bodyExpression as Any
+                        } else func.bodyExpression as Any
                     )
                     -"\n"
                 }
@@ -976,6 +980,7 @@ private fun KtParameter.jsonName(analysisExtensions: AnalysisExtensions): String
         ?.value as? String
         ?: name ?: "x"
 }
+
 private val weakKtClassPostActions = WeakHashMap<KtElement, ArrayList<() -> Unit>>()
 fun KtElement.runPostActions() {
     weakKtClassPostActions.remove(this)?.forEach { it() }

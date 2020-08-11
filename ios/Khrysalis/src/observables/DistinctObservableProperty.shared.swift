@@ -23,7 +23,7 @@ public class RxTransformationOnlyObservableProperty<T> : ObservableProperty<T> {
     }
 }
 
-public extension ObservableProperty {
+public extension ObservableProperty where T: Equatable {
     func distinctUntilChanged() -> ObservableProperty<T> { return self.plusRx(operator: { (it) -> Observable<T> in it.startWith(self.value).distinctUntilChanged().skip(1) }) }
 }
 

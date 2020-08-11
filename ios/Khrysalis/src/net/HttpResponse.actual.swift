@@ -31,6 +31,11 @@ public struct HttpResponse {
     }
 
 
+    //--- HttpResponse.discard()
+    public func discard() -> Void {
+        //Do nothing - in iOS, the data is already read
+    }
+
     //--- HttpResponse.readText()
     public func readText() -> Single<String> {
         return Single.just(String(data: data, encoding: .utf8)!)

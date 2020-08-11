@@ -937,82 +937,25 @@
   type: get
   template: Double.nan
 
-# Coerce
-- id: kotlin.ranges.coerceIn
-  type: call
-  arguments: [kotlin.Byte, kotlin.Byte]
-  template: Swift.min(Swift.max(~this~, ~0~), ~1~)
-- id: kotlin.ranges.coerceIn
-  type: call
-  arguments: [kotlin.Short, kotlin.Short]
-  template: Swift.min(Swift.max(~this~, ~0~), ~1~)
-- id: kotlin.ranges.coerceIn
-  type: call
-  arguments: [kotlin.Int, kotlin.Int]
-  template: Swift.min(Swift.max(~this~, ~0~), ~1~)
-- id: kotlin.ranges.coerceIn
-  type: call
-  arguments: [kotlin.Long, kotlin.Long]
-  template: Swift.min(Swift.max(~this~, ~0~), ~1~)
-- id: kotlin.ranges.coerceIn
-  type: call
-  arguments: [kotlin.Float, kotlin.Float]
-  template: Swift.min(Swift.max(~this~, ~0~), ~1~)
-- id: kotlin.ranges.coerceIn
-  type: call
-  arguments: [kotlin.Double, kotlin.Double]
-  template: Swift.min(Swift.max(~this~, ~0~), ~1~)
 
 
 # RangeTo
 
 - id: kotlin.Byte.rangeTo
   type: call
-  infix: true
   template: (~this~...~0~)
 - id: kotlin.Short.rangeTo
   type: call
-  infix: true
   template: (~this~...~0~)
 - id: kotlin.Int.rangeTo
   type: call
-  infix: true
   template: (~this~...~0~)
 - id: kotlin.Long.rangeTo
   type: call
-  infix: true
   template: (~this~...~0~)
-- id: kotlin.Float.rangeTo
+- id: kotlin.ranges.rangeTo
   type: call
-  infix: true
-  template: (~this~...~0~)
-- id: kotlin.Double.rangeTo
-  type: call
-  infix: true
   template: (~this~...~0~)
 - id: kotlin.ranges.until
   type: call
-  infix: true
   template: (~this~..<~0~)
-
-- id: kotlin.Byte.rangeTo
-  type: call
-  template: ~this~...~0~
-- id: kotlin.Short.rangeTo
-  type: call
-  template: ~this~...~0~
-- id: kotlin.Int.rangeTo
-  type: call
-  template: ~this~...~0~
-- id: kotlin.Long.rangeTo
-  type: call
-  template: ~this~...~0~
-- id: kotlin.Float.rangeTo
-  type: call
-  template: ~this~...~0~
-- id: kotlin.Double.rangeTo
-  type: call
-  template: ~this~...~0~
-- id: kotlin.ranges.until
-  type: call
-  template: ~this~..<~0~

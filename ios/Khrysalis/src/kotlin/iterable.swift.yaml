@@ -38,47 +38,63 @@
 - id: kotlin.collections.filter
   type: call
   template: "~this~.filter(~0~)"
-- id: kotlin.collections.map
-  type: call
-  template: "~this~.map(~0~)"
-- id: kotlin.collections.mapIndexed
-  type: call
-  template: ~this~ #TODO
-- id: kotlin.collections.flatMap
-  type: call
-  template: "~this~.flatMap(~0~)"
 
 - id: kotlin.collections.filterIndexed
   type: call
-  template: ~this~ #TODO
+  template:
+    pattern: '~this~.enumerated().filter { (_it) in ~L0~ }'
+    lambdaTransforms:
+      0: ["_it.offset", "_it.element"]
 - id: kotlin.collections.filterNot
   type: call
   template: "~this~.filter({ x in !~0~(x) })"
 - id: kotlin.collections.filterNotNull
   type: call
   template: "~this~.compactMap({$0})"
+- id: kotlin.collections.map
+  type: call
+  template: "~this~.map(~0~)"
+- id: kotlin.collections.mapIndexed
+  type: call
+  template:
+    pattern: '~this~.enumerated().map { (_it) in ~L0~ }'
+    lambdaTransforms:
+      0: ["_it.offset", "_it.element"]
+- id: kotlin.collections.flatMap
+  type: call
+  template: "~this~.flatMap(~0~)"
 - id: kotlin.collections.mapNotNull
   type: call
   template: "~this~.compactMap(~0~)"
 - id: kotlin.collections.mapIndexedNotNull
   type: call
-  template: ~this~ #TODO
+  template:
+    pattern: '~this~.enumerated().compactMap { (_it) in ~L0~ }'
+    lambdaTransforms:
+      0: ["_it.offset", "_it.element"]
 
 - id: kotlin.collections.sorted
   type: call
   template: ~this~.sorted()
 - id: kotlin.collections.sortedBy
   type: call
-  template: '~this~.sorted(by: { (a, b) in ~0~(a) < ~0~(b) })'
+  template: '~this~.sorted(by: deferComparison(~0~))'
 - id: kotlin.collections.sortedByDescending
   type: call
-  template: '~this~.sorted(by: { (a, b) in ~0~(a) > ~0~(b) })'
+  template: '~this~.sorted(by: deferComparisonDescending(~0~))'
 - id: kotlin.collections.sortedWith
   type: call
   template: '~this~.sorted(by: { (a, b) in ~0~(a, b) == .orderedAscending })'
 - id: kotlin.collections.sortedWithDescending
   type: call
   template: '~this~.sorted(by: { (a, b) in ~0~(a, b) == .orderedDescending })'
+
+- id: kotlin.collections.minBy
+  type: call
+  template: '~this~.min(by: deferComparison(~0~))'
+- id: kotlin.collections.maxBy
+  type: call
+  template: '~this~.max(by: deferComparison(~0~))'
 
 - id: kotlin.collections.associate
   type: call

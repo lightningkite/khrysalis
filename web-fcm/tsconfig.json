@@ -3,6 +3,8 @@
       "outDir": "./dist",
       "rootDir": "./src",
       "noImplicitAny": true,
+      "noImplicitReturns": true,
+      "noImplicitThis": true,
       "strictNullChecks": true,
       "declaration": true,
       "sourceMap": true,

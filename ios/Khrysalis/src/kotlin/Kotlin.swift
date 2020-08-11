@@ -48,6 +48,47 @@ public func takeUnless<T>(_ value: T?, _ condition: (T)->Bool)->T? {
     return nil
 }
 
+public struct Pair<A, B> {
+    public let first: A
+    public let second: B
+    public init(first: A, second: B) {
+        self.first = first
+        self.second = second
+    }
+    public init(_ first: A, _ second: B) {
+        self.first = first
+        self.second = second
+    }
+    public func toTuple() -> (A, B) { return (first, second) }
+}
+
+extension Pair: Encodable where A: Encodable, B: Encodable { }
+extension Pair: Decodable where A: Decodable, B: Decodable { }
+extension Pair: Equatable where A: Equatable, B: Equatable { }
+extension Pair: Hashable where A: Hashable, B: Hashable { }
+
+public struct Triple<A, B, C> {
+    public let first: A
+    public let second: B
+    public let third: C
+    public init(first: A, second: B, third: C) {
+        self.first = first
+        self.second = second
+        self.third = third
+    }
+    public init(_ first: A, _ second: B, _ third: C) {
+        self.first = first
+        self.second = second
+        self.third = third
+    }
+    public func toTuple() -> (A, B, C) { return (first, second, third) }
+}
+
+extension Triple: Encodable where A: Encodable, B: Encodable, C: Encodable { }
+extension Triple: Decodable where A: Decodable, B: Decodable, C: Decodable { }
+extension Triple: Equatable where A: Equatable, B: Equatable, C: Equatable { }
+extension Triple: Hashable where A: Hashable, B: Hashable, C: Hashable { }
+
 public extension Sequence {
     func first() -> Element {
         for item in self {
@@ -126,6 +167,11 @@ public extension Sequence where Iterator.Element: Hashable {
 }
 
 public extension Array {
+
+    func getOrNull(index: Int) -> Element? {
+        if index >= count { return nil }
+        return self[index]
+    }
     
     func forEachIndexed(_ action: (_ index:Int, Element) -> Void){
         for index in 0..<self.count{
@@ -177,18 +223,28 @@ public extension Array where Element: Equatable {
     }
 }
 
+
+public func deferComparison<T, C: Comparable>(_ get: @escaping (T) -> C?) -> (T, T) -> Bool {
+    return { (a, b) in
+        guard let va = get(a) else { return true }
+        guard let vb = get(b) else { return false }
+        return va < vb
+    }
+}
+public func deferComparisonDescending<T, C: Comparable>(_ get: @escaping (T) -> C?) -> (T, T) -> Bool {
+    return { (a, b) in
+        guard let va = get(a) else { return false }
+        guard let vb = get(b) else { return true }
+        return va > vb
+    }
+}
+
 public extension Collection {
     func find(_ predicate: (Element) -> Bool) -> Element? {
         return first(where: predicate)
     }
     static func +(first: Self, second: Element) -> Array<Element> {
         return first + [second]
-    }
-    func sortedBy<T: Comparable>(get: (Element) -> T) -> Array<Element> {
-        return self.sorted(by: { get($0) < get($1) })
-    }
-    func sortedByDescending<T: Comparable>(get: (Element) -> T) -> Array<Element> {
-        return self.sorted(by: { get($0) > get($1) })
     }
     func joinToString(_ separator: String, _ conversion: (Element)->String) -> String {
         return self.map(conversion).joined(separator: separator)
@@ -240,6 +296,12 @@ public extension Comparable {
     }
 }
 
+public func dictionaryOf<A, B>(_ contents: Pair<A, B>...) -> Dictionary<A, B> {
+    return Dictionary(contents.map { $0.toTuple() }, uniquingKeysWith: { (_, a) in a })
+}
+public func dictionaryFrom<A, B>(_ contents: Array<Pair<A, B>>) -> Dictionary<A, B> {
+    return Dictionary(contents.map { $0.toTuple() }, uniquingKeysWith: { (_, a) in a })
+}
 public extension Dictionary {
     mutating func getOrPut(key: Key, defaultValue: ()->Value) -> Value {
         if let value = self[key] {

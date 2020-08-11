@@ -18,8 +18,12 @@ public class DjangoErrorTranslator {
     public func handleNode(builder: Box<String>, node: Any?) -> Void {
         if node == nil { return }
         if let node = node as? NSDictionary {
-            for (key, value) in node {
+            for _it in node{
+                let key = _it.key
+                let value = _it.value
+                
                 self.handleNode(builder: builder, node: value)
+                
             }
         } else if let node = node as? NSArray {
             for value in (node){

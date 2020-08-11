@@ -14,6 +14,7 @@ data class TypeReplacement(
     val requiresMutable: Boolean = false,
     val template: Template,
     val typeArgumentNames: List<String>? = null,
+    val errorCondition: Template? = null,
     val constraintTemplate: Template? = null,
     val constraintTemplates: List<Template>? = null,
     val xmlDefer: List<String> = listOf(),

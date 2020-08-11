@@ -57,7 +57,7 @@ val PropertyDescriptor.hasSwiftOverride: Boolean
 fun AnalysisExtensions.capturesSelf(
     it: PsiElement?,
     containingDeclaration: ClassDescriptor?,
-    immediate: Boolean = false
+    immediate: Boolean = true
 ): Boolean {
     if (it == null) return false
     if (it is KtLambdaExpression) {
@@ -78,7 +78,7 @@ fun AnalysisExtensions.capturesSelf(
         }
         if (hasThis) {
             if (resolved is PropertyDescriptor) {
-                val safe = immediate && resolved.getter?.isDefault != false && resolved.overriddenDescriptors.isEmpty()
+                val safe = immediate && containingDeclaration?.unsubstitutedPrimaryConstructor?.valueParameters?.any { it.name.asString() == resolved.name.asString() } == true
                 return !safe
             } else {
                 return true
@@ -166,7 +166,7 @@ fun SwiftTranslator.registerVariable() {
     handle<KtProperty>(
         condition = {
             typedRule.isLocal && (typedRule.initializer as? KtBinaryExpression)?.let {
-                it.operationToken == KtTokens.ELVIS && (it.right is KtReturnExpression || it.right is KtContinueExpression || it.right is KtBreakExpression)
+                it.operationToken == KtTokens.ELVIS && (it.right is KtReturnExpression || it.right is KtContinueExpression || it.right is KtBreakExpression || it.right is KtThrowExpression)
             } == true
         },
         priority = 50,

@@ -2,6 +2,7 @@ package com.lightningkite.khrysalis.observables
 
 import com.lightningkite.khrysalis.Box
 import com.lightningkite.khrysalis.Escaping
+import com.lightningkite.khrysalis.SwiftExtensionWhere
 import io.reactivex.Observable
 
 class RxTransformationOnlyObservableProperty<T>(
@@ -14,6 +15,7 @@ class RxTransformationOnlyObservableProperty<T>(
     override val onChange: Observable<Box<T>> get() = operator(basedOn.onChange)
 }
 
+@SwiftExtensionWhere("T: Equatable")
 fun <T> ObservableProperty<T>.distinctUntilChanged(): ObservableProperty<T> = plusRx { it.startWith(Box.wrap(value)).distinctUntilChanged().skip(1) }
 
 fun <T> ObservableProperty<T>.plusRx(operator: @Escaping() (Observable<Box<T>>) -> Observable<Box<T>>): ObservableProperty<T> {

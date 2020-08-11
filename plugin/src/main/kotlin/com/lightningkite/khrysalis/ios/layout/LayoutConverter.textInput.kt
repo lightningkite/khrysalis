@@ -37,6 +37,16 @@ val LayoutConverter.Companion.textInputViews
                     val hintColor = node.attributeAsSwiftColor("android:textColorHint") ?: "nil"
                     appendln("view.backgroundLayer = view.underlineLayer(boldColor: $boldColor, hintColor: $hintColor)")
                 }
+                node.allAttributes["android:imeOptions"]?.split("|")?.forEach {
+                    appendln("view.returnKeyType = .${when(it){
+                        "actionSend" -> "send"
+                        "actionDone" -> "done"
+                        "actionGo" -> "go"
+                        "actionNext" -> "next"
+                        "actionSearch" -> "search"
+                        else -> "default"
+                    }}")
+                }
                 node.allAttributes["android:inputType"]?.let { type ->
                     appendln("view.autocapitalizationType = .none")
                     for (part in type.split('|')) {

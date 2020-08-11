@@ -1,63 +1,11 @@
 ---
-- id: kotlin.math.min
-  type: call
-  arguments: [kotlin.Byte, kotlin.Byte]
-  template: Swift.min(~0~, ~1~)
 
 - id: kotlin.math.min
   type: call
-  arguments: [kotlin.Short, kotlin.Short]
   template: Swift.min(~0~, ~1~)
 
-- id: kotlin.math.min
-  type: call
-  arguments: [kotlin.Int, kotlin.Int]
-  template: Swift.min(~0~, ~1~)
-
-- id: kotlin.math.min
-  type: call
-  arguments: [kotlin.Long, kotlin.Long]
-  template: Swift.min(~0~, ~1~)
-
-- id: kotlin.math.min
-  type: call
-  arguments: [kotlin.Float, kotlin.Float]
-  template: Swift.min(~0~, ~1~)
-
-- id: kotlin.math.min
-  type: call
-  arguments: [kotlin.Double, kotlin.Double]
-  template: Swift.min(~0~, ~1~)
-
-
 - id: kotlin.math.max
   type: call
-  arguments: [kotlin.Byte, kotlin.Byte]
-  template: Swift.max(~0~, ~1~)
-
-- id: kotlin.math.max
-  type: call
-  arguments: [kotlin.Short, kotlin.Short]
-  template: Swift.max(~0~, ~1~)
-
-- id: kotlin.math.max
-  type: call
-  arguments: [kotlin.Int, kotlin.Int]
-  template: Swift.max(~0~, ~1~)
-
-- id: kotlin.math.max
-  type: call
-  arguments: [kotlin.Long, kotlin.Long]
-  template: Swift.max(~0~, ~1~)
-
-- id: kotlin.math.max
-  type: call
-  arguments: [kotlin.Float, kotlin.Float]
-  template: Swift.max(~0~, ~1~)
-
-- id: kotlin.math.max
-  type: call
-  arguments: [kotlin.Double, kotlin.Double]
   template: Swift.max(~0~, ~1~)
 
 
@@ -83,5 +31,40 @@
   type: call
   template: atan(~0~)
 - id: kotlin.math.sqrt
+  type: call
+  template: sqrt(~0~)
+
+
+- id: java.lang.Math.min
+  type: call
+  template: Swift.min(~0~, ~1~)
+
+- id: java.lang.Math.max
+  type: call
+  template: Swift.max(~0~, ~1~)
+
+
+- id: java.lang.Math.abs
+  type: call
+  template: abs(~0~)
+- id: java.lang.Math.sin
+  type: call
+  template: sin(~0~)
+- id: java.lang.Math.cos
+  type: call
+  template: cos(~0~)
+- id: java.lang.Math.tan
+  type: call
+  template: tan(~0~)
+- id: java.lang.Math.asin
+  type: call
+  template: asin(~0~)
+- id: java.lang.Math.acos
+  type: call
+  template: acos(~0~)
+- id: java.lang.Math.atan
+  type: call
+  template: atan(~0~)
+- id: java.lang.Math.sqrt
   type: call
   template: sqrt(~0~)

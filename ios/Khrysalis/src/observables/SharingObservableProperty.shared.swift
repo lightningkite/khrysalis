@@ -10,10 +10,10 @@ public class SharingObservableProperty<T> : ObservableProperty<T> {
     public init(basedOn: ObservableProperty<T>, startAsListening: Bool = false) {
         self.basedOn = basedOn
         self.startAsListening = startAsListening
+        self.cachedValue = basedOn.value
+        self.isListening = startAsListening
         super.init()
         //Necessary properties should be initialized now
-        self.cachedValue = self.basedOn.value
-        self.isListening = self.startAsListening
         self._onChange = self.basedOn.onChange
             .doOnNext({ (it) -> Void in self.cachedValue = it })
             .doOnSubscribe({ (it) -> Void in self.isListening = true })
@@ -22,7 +22,7 @@ public class SharingObservableProperty<T> : ObservableProperty<T> {
     }
     
     public var cachedValue: T
-    public var isListening: (Bool)!
+    public var isListening: Bool
     override public var value: T {
         get { return self.isListening ? self.cachedValue : self.basedOn.value }
     }

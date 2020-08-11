@@ -19,9 +19,11 @@ public class Notifications {
     public func request(firebaseAppName: String? = nil){
         UNUserNotificationCenter.current().requestAuthorization(options: [.alert, .sound, .badge], completionHandler: { (success, error) in
             if success {
-                if let firebaseAppName = firebaseAppName, let app = FirebaseApp.app(name: firebaseAppName) {
-                    FirebaseApp.configure(options: app.options)
-                    Notifications.INSTANCE.notificationToken.value = Messaging.messaging().fcmToken
+                if let firebaseAppName = firebaseAppName, let app = FirebaseApp.app(name: firebaseAppName), let current = FirebaseApp.app() {
+                    current.delete { (x) in
+                        FirebaseApp.configure(options: app.options)
+                        Notifications.INSTANCE.notificationToken.value = Messaging.messaging().fcmToken
+                    }
                 } else {
                     Notifications.INSTANCE.notificationToken.value = Messaging.messaging().fcmToken
                 }

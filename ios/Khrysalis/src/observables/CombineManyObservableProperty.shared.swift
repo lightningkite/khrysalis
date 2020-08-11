@@ -20,12 +20,12 @@ public class CombineManyObservableProperty<IN> : ObservableProperty<Array<IN>> {
     }
 }
 
-func kotlinCollectionsListCombined<IN, OUT>(_ this: Array<ObservableProperty<IN>>, combiner: @escaping  (Array<IN>) -> OUT) -> ObservableProperty<OUT> {
+public func kotlinCollectionsListCombined<IN, OUT>(_ this: Array<ObservableProperty<IN>>, combiner: @escaping  (Array<IN>) -> OUT) -> ObservableProperty<OUT> {
     return CombineManyObservableProperty(observables: this).map(read: combiner)
 }
 
 
-func kotlinCollectionsListCombined<T>(_ this: Array<ObservableProperty<T>>) -> ObservableProperty<Array<T>> {
+public func kotlinCollectionsListCombined<T>(_ this: Array<ObservableProperty<T>>) -> ObservableProperty<Array<T>> {
     return CombineManyObservableProperty(observables: this)
 }
 

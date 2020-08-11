@@ -130,4 +130,6 @@ private fun operatorMain() {
     val choices = listOf(1, 2, 3, 4)
     println(5 in choices)
     println(5 !in choices)
+
+    println(32.0 in 15.0..48.0)
 }

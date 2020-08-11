@@ -26,30 +26,30 @@
   typeArgumentRequirements:
     0: primitive
   hasExplicitTypeArguments: true
-  template: "Dictionary<~T0~, ~T1~>(uniqueKeysWithValues: [~*~])"
+  template: "dictionaryOf(~*~) as Dictionary<~T0~, ~T1~>"
 - id: kotlin.collections.mapOf
   type: call
-  template: "Dictionary(uniqueKeysWithValues: [~*~])"
+  template: "dictionaryOf(~*~)"
 
 - id: kotlin.collections.mutableMapOf
   type: call
   hasExplicitTypeArguments: true
-  template: "Dictionary<~T0~, ~T1~>(uniqueKeysWithValues: [~*~])"
+  template: "dictionaryOf(~*~) as Dictionary<~T0~, ~T1~>"
 - id: kotlin.collections.mutableMapOf
   type: call
-  template: "Dictionary(uniqueKeysWithValues: [~*~])"
+  template: "dictionaryOf(~*~)"
 
 - id: kotlin.collections.toMap
   type: call
-  template: "Dictionary(uniqueKeysWithValues: ~this~)"
+  template: "dictionaryFrom(~this~)"
 
 - id: kotlin.collections.hashMapOf
   type: call
   hasExplicitTypeArguments: true
-  template: "Dictionary<~T0~, ~T1~>(uniqueKeysWithValues: [~*~])"
+  template: "dictionaryOf(~*~) as Dictionary<~T0~, ~T1~>"
 - id: kotlin.collections.hashMapOf
   type: call
-  template: "Dictionary(uniqueKeysWithValues: [~*~])"
+  template: "dictionaryOf(~*~)"
 
 
 - id: kotlin.collections.HashMap
@@ -85,12 +85,10 @@
 
 - id: kotlin.collections.component1
   type: call
-  receiver: Map.Entry
   template: ~this~.key
 
 - id: kotlin.collections.component2
   type: call
-  receiver: Map.Entry
   template: ~this~.value
 
 - id: kotlin.collections.Map.entries

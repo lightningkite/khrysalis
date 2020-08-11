@@ -7,19 +7,15 @@
 //
 
 import Foundation
-import MapKit
+import GoogleMaps
 import Khrysalis
 
-public extension MKMapCamera {
-    var zoom: Float {
-        return Float(10_000 / self.centerCoordinateDistance) //ugh... this needs to be actually accurate
-    }
-}
-
-public extension MKMapView {
+public extension GMSMapView {
 
     func bind(dependency: ViewDependency, style: String? = nil) {
-        //Not sure how to style MKMapView?
+        if let style = style {
+            self.mapStyle = try? GMSMapStyle(jsonString: style)
+        }
     }
 
     func bindView(
@@ -29,45 +25,24 @@ public extension MKMapView {
         animate: Bool = true,
         style: String? = nil
     ) {
-        bindView(dependency, position, zoomLevel, animate)
-    }
-    func bindView(
-        _ dependency: ViewDependency,
-        _ position: ObservableProperty<GeoCoordinate?>,
-        _ zoomLevel: Float = 15,
-        _ animate: Bool = true,
-        _ style: String? = nil
-    ) {
         self.bind(dependency: dependency, style: style)
-        var annotation: MKPointAnnotation? = nil
-        position.addAndRunWeak(self) { (self, value) in
+        var marker: GMSMarker? = nil
+        position.subscribeBy { value in
             if let value = value {
-                let point = annotation ?? {
-                    let new = MKPointAnnotation()
-                    new.coordinate = value.toIos()
-                    self.addAnnotation(new)
-                    return new
-                }()
-                let view = self.view(for: point)
-                view?.isDraggable = true
-                point.coordinate = value.toIos()
-                annotation = point
-                self.setCenter(value.toIos(), animated: true)
-                
-                let location = CLLocationCoordinate2D(latitude: value.latitude, longitude: value.longitude)
-                let region = MKCoordinateRegion( center: location, latitudinalMeters: CLLocationDistance(exactly: (22 - zoomLevel) * 100)!, longitudinalMeters: CLLocationDistance(exactly: (22 - zoomLevel) * 100)!)
-                self.setRegion(self.regionThatFits(region), animated: animate)
-                
-            } else {
-                if let point = annotation {
-                    self.removeAnnotation(point)
+                let newMarker = marker ?? GMSMarker(position: value.toIos())
+                newMarker.map = self
+                newMarker.position = value.toIos()
+                marker = newMarker
+                if animate {
+                    self.animate(to: GMSCameraPosition(target: newMarker.position, zoom: zoomLevel))
+                } else {
+                    self.camera = GMSCameraPosition(target: newMarker.position, zoom: zoomLevel)
                 }
-                annotation = nil
+            } else {
+                marker?.map = nil
+                marker = nil
             }
-        }
-        self.onClick {
-            dependency.openMap(coordinate: position.value ?? GeoCoordinate(39.161913, -142.788386))
-        }
+        }.until(self.removed)
     }
     
     func bindSelect(
@@ -77,84 +52,129 @@ public extension MKMapView {
         animate: Bool = true,
         style: String? = nil
     ) {
-        bindSelect(dependency, position, zoomLevel, animate)
-    }
-    func bindSelect(
-        _ dependency: ViewDependency,
-        _ position: MutableObservableProperty<GeoCoordinate?>,
-        _ zoomLevel: Float = 15,
-        _ animate: Bool = true,
-        _ style: String? = nil
-    ) {
         self.bind(dependency: dependency, style: style)
-        let delegate = SelectDelegate(position)
-        var annotation: MKPointAnnotation? = nil
-        position.addAndRunWeak(self) { [unowned delegate] (self, value) in
+        var marker: GMSMarker? = nil
+        var suppress: Bool = false
+        var suppressAnimation: Bool = false
+        position.subscribeBy { value in
+            guard !suppress else { return }
+            suppress = true
             if let value = value {
-                if !delegate.suppress {
-                    delegate.suppress = true
-                    let point = annotation ?? {
-                        let new = MKPointAnnotation()
-                        new.coordinate = value.toIos()
-                        self.addAnnotation(new)
-                        return new
-                    }()
-                    let view = self.view(for: point)
-                    view?.isDraggable = true
-                    point.coordinate = value.toIos()
-                    annotation = point
-                    delegate.suppress = false
-                    if !delegate.suppressAnimation {
-                        self.setCenter(value.toIos(), animated: true)
-                        let location = CLLocationCoordinate2D(latitude: value.latitude, longitude: value.longitude)
-                        let region = MKCoordinateRegion( center: location, latitudinalMeters: CLLocationDistance(exactly: (22 - zoomLevel)*100)!, longitudinalMeters: CLLocationDistance(exactly: (22 - zoomLevel)*100)!)
-                        self.setRegion(self.regionThatFits(region), animated: true)
-                    }
+                let newMarker = marker ?? GMSMarker(position: value.toIos())
+                newMarker.map = self
+                newMarker.position = value.toIos()
+                marker = newMarker
+                if animate && !suppressAnimation {
+                    self.animate(to: GMSCameraPosition(target: newMarker.position, zoom: zoomLevel))
+                } else {
+                    self.camera = GMSCameraPosition(target: newMarker.position, zoom: zoomLevel)
                 }
             } else {
-                if let point = annotation {
-                    self.removeAnnotation(point)
-                }
-                annotation = nil
+                marker?.map = nil
+                marker = nil
+            }
+            suppress = false
+        }.until(self.removed)
+        
+        let dg = LambdaDelegate()
+        self.retain(item: dg, until: self.removed)
+        dg.didTapAtCoordinate = { map, coord in
+            suppressAnimation = true
+            position.value = coord.toKhrysalis()
+            suppressAnimation = false
+        }
+        dg.didEndDraggingMarker = { map, marker in
+            if (!suppress) {
+                suppress = true
+                position.value = marker.position.toKhrysalis()
+                suppress = false
             }
         }
-        self.delegate = delegate
-        self.retain(as: "delegate", item: delegate, until: removed)
-        
-        onLongClickWithGR { [weak self, unowned delegate] gr in
-            guard let self = self else { return }
-//            let coords = self.convert(gr.locationInView(self), toCoo(in: : self)
-            let coords = self.convert(gr.location(in: self), toCoordinateFrom: self)
-            delegate.suppressAnimation = true
-            position.value = coords.toKhrysalis()
-            delegate.suppressAnimation = false
-        }
+        self.delegate = dg
     }
     
-    private class SelectDelegate : NSObject, MKMapViewDelegate {
+    class LambdaDelegate: NSObject, GMSMapViewDelegate {
         
-        var suppress = false
-        var suppressAnimation = false
-        
-        let position: MutableObservableProperty<GeoCoordinate?>
-        init(_ position: MutableObservableProperty<GeoCoordinate?>){
-            self.position = position
+        public override init(){}
+
+        public var willMove:  (GMSMapView, Bool) -> Void = { _, _ in }
+        public func mapView(_ map: GMSMapView, willMove: Bool) -> Void {
+            self.willMove(map, willMove)
         }
-        
-        func mapView(_ mapView: MKMapView, annotationView view: MKAnnotationView, didChange newState: MKAnnotationView.DragState, fromOldState oldState: MKAnnotationView.DragState) {
-            switch newState {
-            case .starting:
-                view.dragState = .dragging
-            case .ending, .canceling:
-                if let coordinate = (view.annotation as? MKPointAnnotation)?.coordinate, !suppress {
-                    suppress = true
-                    position.value = coordinate.toKhrysalis()
-                    suppress = false
-                }
-                view.dragState = .none
-            default: break
-            }
+
+        public var didChangeCameraPosition:  (GMSMapView, GMSCameraPosition) -> Void = { _, _ in }
+        public func mapView(_ map: GMSMapView, didChange didChangeCameraPosition: GMSCameraPosition) -> Void {
+            self.didChangeCameraPosition(map, didChangeCameraPosition)
+        }
+
+        public var idleAtCameraPosition:  (GMSMapView, GMSCameraPosition) -> Void = { _, _ in }
+        public func mapView(_ map: GMSMapView, idleAt idleAtCameraPosition: GMSCameraPosition) -> Void {
+            self.idleAtCameraPosition(map, idleAtCameraPosition)
+        }
+
+        public var didTapAtCoordinate:  (GMSMapView, CLLocationCoordinate2D) -> Void = { _, _ in }
+        public func mapView(_ map: GMSMapView, didTapAt didTapAtCoordinate: CLLocationCoordinate2D) -> Void {
+            self.didTapAtCoordinate(map, didTapAtCoordinate)
+        }
+
+        public var didLongPressAtCoordinate:  (GMSMapView, CLLocationCoordinate2D) -> Void = { _, _ in }
+        public func mapView(_ map: GMSMapView, didLongPressAt didLongPressAtCoordinate: CLLocationCoordinate2D) -> Void {
+            self.didLongPressAtCoordinate(map, didLongPressAtCoordinate)
+        }
+
+        public var didTapMarker:  (GMSMapView, GMSMarker) -> Bool = { _, _ in true }
+        public func mapView(_ map: GMSMapView, didTap didTapMarker: GMSMarker) -> Bool {
+            return self.didTapMarker(map, didTapMarker)
+        }
+
+        public var didTapInfoWindowOfMarker: (GMSMapView, GMSMarker) -> Void = { _, _ in }
+        public func mapView(_ map: GMSMapView, didTapInfoWindowOf didTapInfoWindowOfMarker:GMSMarker) -> Void {
+            self.didTapInfoWindowOfMarker(map, didTapInfoWindowOfMarker)
+        }
+
+        public var didLongPressInfoWindowOfMarker: (GMSMapView, GMSMarker) -> Void = { _, _ in }
+        public func mapView(_ map: GMSMapView, didLongPressInfoWindowOf didLongPressInfoWindowOfMarker:GMSMarker) -> Void {
+            self.didLongPressInfoWindowOfMarker(map, didLongPressInfoWindowOfMarker)
+        }
+
+        public var didTapOverlay:  (GMSMapView, GMSOverlay) -> Void = { _, _ in }
+        public func mapView(_ map: GMSMapView, didTap didTapOverlay: GMSOverlay) -> Void {
+            self.didTapOverlay(map, didTapOverlay)
+        }
+
+        public var markerInfoWindow:  (GMSMapView, GMSMarker) -> UIView? = { _, _ in nil }
+        public func mapView(_ map: GMSMapView, markerInfoWindow: GMSMarker) -> UIView? {
+            self.markerInfoWindow(map, markerInfoWindow)
+        }
+
+        public var markerInfoContents:  (GMSMapView, GMSMarker) -> UIView? = { _, _ in nil }
+        public func mapView(_ map: GMSMapView, markerInfoContents: GMSMarker) -> UIView? {
+            self.markerInfoContents(map, markerInfoContents)
+        }
+
+        public var didCloseInfoWindowOfMarker:  (GMSMapView, GMSMarker) -> Void = { _, _ in }
+        public func mapView(_ map: GMSMapView, didCloseInfoWindowOf didCloseInfoWindowOfMarker: GMSMarker) -> Void {
+            self.didCloseInfoWindowOfMarker(map, didCloseInfoWindowOfMarker)
+        }
+
+        public var didBeginDraggingMarker:  (GMSMapView, GMSMarker) -> Void = { _, _ in }
+        public func mapView(_ map: GMSMapView, didBeginDragging didBeginDraggingMarker: GMSMarker) -> Void {
+            self.didBeginDraggingMarker(map, didBeginDraggingMarker)
+        }
+
+        public var didEndDraggingMarker:  (GMSMapView, GMSMarker) -> Void = { _, _ in }
+        public func mapView(_ map: GMSMapView, didEndDragging didEndDraggingMarker: GMSMarker) -> Void {
+            self.didEndDraggingMarker(map, didEndDraggingMarker)
+        }
+
+        public var didDragMarker:  (GMSMapView, GMSMarker) -> Void = { _, _ in }
+        public func mapView(_ map: GMSMapView, didDrag didDragMarker: GMSMarker) -> Void {
+            self.didDragMarker(map, didDragMarker)
+        }
+
+        public var didTapMyLocation:  (GMSMapView, CLLocationCoordinate2D) -> Void = { _, _ in }
+        public func mapView(_ map :GMSMapView, didTapMyLocation: CLLocationCoordinate2D) -> Void {
+            self.didTapMyLocation(map, didTapMyLocation)
         }
     }
-    
 }

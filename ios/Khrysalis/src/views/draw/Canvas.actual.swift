@@ -235,15 +235,16 @@ public extension Canvas {
 
 //--- Canvas.drawBitmap(Bitmap, CGFloat, CGFloat, CGFloat, CGFloat)
 public extension Canvas {
+
+    //We draw this upside-down to compensate for the reversed coordinate system
+
     func drawBitmap(_ bitmap: UIImage, _ left: CGFloat, _ top: CGFloat) {
-        if let cg = bitmap.cgImage {
-            self.draw(cg, in: CGRect(x: CGFloat(left), y: CGFloat(top), width: CGFloat(cg.width), height: CGFloat(cg.height)))
-        }
+        let bounds = CGRect(x: left, y: top, width: bitmap.size.width, height: bitmap.size.height)
+        bitmap.draw(in: bounds)
     }
 
     func drawBitmap(bitmap: UIImage, left: CGFloat, top: CGFloat, right: CGFloat, bottom: CGFloat) {
-        if let cg = bitmap.cgImage {
-            self.draw(cg, in: CGRect(x: CGFloat(left), y: CGFloat(top), width: CGFloat(right-left), height: CGFloat(bottom-top)))
-        }
+        let bounds = CGRect(x: left, y: top, width: right-left, height: bottom-top)
+        bitmap.draw(in: bounds)
     }
 }

@@ -33,7 +33,7 @@ public func includes<E>(collection: MutableObservableProperty<Set<E>>, element: 
 }
 
 public extension ObservableProperty where T == Bool {
-    func whileActive(action: () -> Disposable) -> Disposable {
+    func whileActive(action: @escaping  () -> Disposable) -> Disposable {
         var current: Disposable? = nil
         return self.subscribeBy(onNext: { (it) -> Void in if it {
                     if current == nil {
