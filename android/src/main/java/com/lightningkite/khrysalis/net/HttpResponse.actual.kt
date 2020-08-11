@@ -22,8 +22,13 @@ val HttpResponse.isSuccessful: Boolean get() = true
 */
 val HttpResponse.headers: Map<String, String> get() = this.headers().toMultimap().mapValues { it.value.joinToString(";") }
 
-fun HttpResponse.discard() {
-    body()!!.close()
+fun HttpResponse.discard(): Single<Unit> {
+    return with(HttpClient){
+        Single.create<Unit> { em ->
+            body()!!.close()
+            em.onSuccess(Unit)
+        }.threadCorrectly()
+    }
 }
 fun HttpResponse.readText(): Single<String> {
     return with(HttpClient){
