@@ -2,6 +2,7 @@ package com.lightningkite.khrysalis.swift
 
 import com.lightningkite.khrysalis.util.forEachBetween
 import org.jetbrains.kotlin.psi.*
+import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
 
 data class SafeLetChain(
     val outermost: KtExpression,
@@ -114,10 +115,13 @@ fun SwiftTranslator.registerSpecialLet() {
         var current = typedRule
         outer@ while (true) {
             (current.right as? KtSafeQualifiedExpression)?.let { r ->
-                entries.add(
-                    r.receiverExpression to (r.selectorExpression as KtCallExpression).lambdaArguments.first()
-                        .getLambdaExpression()!!
-                )
+                val s = r.selectorExpression as? KtCallExpression
+                if(s != null && s.resolvedCall?.resultingDescriptor?.fqNameOrNull()?.asString() == "kotlin.let") {
+                    entries.add(
+                        r.receiverExpression to (r.selectorExpression as KtCallExpression).lambdaArguments.first()
+                            .getLambdaExpression()!!
+                    )
+                }
             }
             when (val l = current.left) {
                 is KtSafeQualifiedExpression -> {
