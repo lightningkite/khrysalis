@@ -21,7 +21,7 @@ fun Single<@SwiftExactly("Element") HttpResponse>.unsuccessfulAsError(): Single<
 
 
 fun Single<@SwiftExactly("Element") HttpResponse>.discard(): Single<Unit> {
-    return this.map { it.discard() }
+    return this.flatMap { it.discard() }
 }
 inline fun <reified T> Single<@SwiftExactly("Element") HttpResponse>.readJson(): Single<T> {
     val type = jacksonTypeRef<T>()
