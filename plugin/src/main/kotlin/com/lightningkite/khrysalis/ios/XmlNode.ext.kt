@@ -17,7 +17,7 @@ fun XmlNode.attributeAsSwiftDimension(key: String): String? {
     val raw = allAttributes[key] ?: return null
     return when {
         raw.startsWith("@dimen/") -> "R.dimen.${raw.removePrefix("@dimen/")}"
-        else -> raw.filter { it.isDigit() || it == '.' || it == '-' }.toIntOrNull()?.toString()
+        else -> raw.filter { it.isDigit() || it == '.' || it == '-' }.toDoubleOrNull()?.toString()
     }
 }
 fun XmlNode.attributeAsSwiftDrawable(key: String): String? {

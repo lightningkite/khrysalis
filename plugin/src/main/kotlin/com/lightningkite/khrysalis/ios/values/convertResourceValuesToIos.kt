@@ -20,7 +20,7 @@ fun convertResourceValuesToIos(
             .apply { parentFile.mkdirs() }
             .writeTextIfDifferent(it.value.writeXMLStringsTranslation(stringBase, it.key))
     }
-
+    iosResourcesSwiftFolder.mkdirs()
     File(iosResourcesSwiftFolder, "R.swift").bufferedWriter().use { out ->
         with(SmartTabWriter(out)) {
             appendln("//")

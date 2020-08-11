@@ -76,6 +76,7 @@ fun convertDrawableXml(name: String, node: XmlNode, out: Appendable) {
             node,
             out
         )
+        else -> out.appendln("// WARNING: Could not convert drawable of type ${node.name.toLowerCase()}")
     }
 }
 

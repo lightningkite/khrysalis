@@ -9,19 +9,23 @@ import java.lang.Appendable
 fun convertLayerListDrawable(name: String, node: XmlNode, out: Appendable) {
     println("Writing layer-list $name")
     with(out) {
-        val after = ArrayList<()->Unit>()
+        val after = ArrayList<() -> Unit>()
 
         appendln("static func $name(_ view: UIView? = nil) -> CALayer {")
         appendln("    let layer = CALayer()")
         for (subnode in node.children) {
             appendln("    layer.addSublayer({")
-            if(subnode.allAttributes.containsKey("android:drawable")){
+            if (subnode.allAttributes.containsKey("android:drawable")) {
                 appendln(
-                    "        let sublayer = ${subnode.attributeAsSwiftLayer("android:drawable", "view") ?: "CALayer() /* Unknown */"}"
+                    "        let sublayer = ${subnode.attributeAsSwiftLayer(
+                        "android:drawable",
+                        "view"
+                    ) ?: "CALayer() /* Unknown */"}"
                 )
             } else {
                 val subname = name + "Part" + (after.size + 1)
                 after.add {
+                    appendln("// writing $subname")
                     convertDrawableXml(subname, subnode.children.first(), out)
                 }
                 appendln(
@@ -37,18 +41,24 @@ fun convertLayerListDrawable(name: String, node: XmlNode, out: Appendable) {
             appendln("        layer.bounds.size = layer.bounds.size.expand(sublayer.bounds.size)")
             appendln("        layer.onResize.startWith(layer.bounds).addWeak(sublayer) { (sublayer, bounds) in ")
             appendln("             var subBounds = bounds ")
-            subnode.attributeAsSwiftDimension("android:top")?.let {
+            val paddingSubnode = subnode.children.firstOrNull()
+                ?.children?.find { it.name == "padding" }
+            (subnode.attributeAsSwiftDimension("android:top")
+                ?: paddingSubnode?.attributeAsSwiftDimension("android:top"))?.let {
                 appendln("             subBounds.origin.y += $it")
                 appendln("             subBounds.size.height -= $it")
             }
-            subnode.attributeAsSwiftDimension("android:left")?.let {
+            (subnode.attributeAsSwiftDimension("android:left")
+                ?: paddingSubnode?.attributeAsSwiftDimension("android:left"))?.let {
                 appendln("             subBounds.origin.x += $it")
                 appendln("             subBounds.size.width -= $it")
             }
-            subnode.attributeAsSwiftDimension("android:right")?.let {
+            (subnode.attributeAsSwiftDimension("android:right")
+                ?: paddingSubnode?.attributeAsSwiftDimension("android:right"))?.let {
                 appendln("             subBounds.size.width -= $it")
             }
-            subnode.attributeAsSwiftDimension("android:botton")?.let {
+            (subnode.attributeAsSwiftDimension("android:botton")
+                ?: paddingSubnode?.attributeAsSwiftDimension("android:botton"))?.let {
                 appendln("             subBounds.size.height -= $it")
             }
             appendln("             sublayer.frame = subBounds ")

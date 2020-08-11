@@ -55,7 +55,7 @@ fun convertShapeDrawable(name: String, node: XmlNode, out: Appendable) {
                 }
             }
         }
-        "rectangle" -> {
+        else -> {
             val className = if (node.children.any { it.name == "gradient" }) "CAGradientLayer" else "CALayer"
             with(out) {
                 appendln("static func $name(_ view: UIView? = nil) -> $className {")
