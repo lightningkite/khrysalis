@@ -88,6 +88,15 @@ public extension Observable {
     func doOnTerminate(_ action: @escaping () -> Void) -> Observable<Element> {
         return self.do(onDispose: action)
     }
+    
+    //--- Observable.doOnSubscribe(()->Unit)
+    func doOnSubscribe(_ action: @escaping (Disposable) -> Void) -> Observable<Element> {
+        return self.do(onSubscribe: { action(placeholderDisposable) })
+    }
+    //--- Observable.doOnDispose(()->Unit)
+    func doOnDispose(_ action: @escaping () -> Void) -> Observable<Element> {
+        return self.do(onDispose: action)
+    }
 
     //--- Observable.Companion.{ (overwritten on flow generation)
     
