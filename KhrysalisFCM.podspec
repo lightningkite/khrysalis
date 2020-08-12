@@ -17,7 +17,7 @@ Pod::Spec.new do |s|
   s.swift_version = '5.0'
   s.xcconfig = { 'SWIFT_VERSION' => '5.0' }
   # Dependency on Khrysalis not representable at the moment
-  s.dependency "Khrysalis"
+  s.dependency "Khrysalis/Core"
   s.dependency "Firebase/Analytics"
   s.dependency "Firebase/Messaging"
 end

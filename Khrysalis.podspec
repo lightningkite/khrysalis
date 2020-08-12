@@ -41,4 +41,7 @@ Pod::Spec.new do |s|
     calendar.dependency "DKImagePickerController/ImageDataManager"
     calendar.dependency "DKImagePickerController/Resource"
   end
+  s.subspec 'Location' do |location|
+    location.source_files =  "ios/Khrysalis/srcLocation/**/*.{swift,swift.yml,swift.yaml}"
+  end
 end
