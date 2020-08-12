@@ -87,7 +87,7 @@ val LayoutConverter.Companion.navigationViews
                 (node.attributeAsSwiftDimension("app:dividerHorizontalPadding") ?: node.attributeAsSwiftDimension("dividerHorizontalPadding") ?: "0").let {
                     appendln("view.separatorInset = UIEdgeInsets(top: 0, left: $it, bottom: 0, right: $it)")
                 }
-                if(node.allAttributes["android:background"] == null){
+                if(node.allAttributes["android:background"]?.substringBefore('/')?.contains("color") != true){
                     appendln("view.backgroundColor = UIColor.clear")
                 }
             },

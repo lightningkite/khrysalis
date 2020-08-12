@@ -74,11 +74,16 @@ fun convertVectorDrawable(name: String, node: XmlNode, out: Appendable) {
                     pathDataToSwift(pathData)
                     appendln("        sublayer.path = path")
                 }
-                setToColor(subnode, "android:fillColor") { it, s ->
+                if(!setToColor(subnode, "android:fillColor") { it, s ->
                     appendln("        sublayer.fillColor = $it.cgColor")
+                }) {
+                    appendln("        sublayer.fillColor = nil")
                 }
                 setToColor(subnode, "android:strokeColor") { it, s ->
                     appendln("        sublayer.strokeColor = $it.cgColor")
+                }
+                subnode.attributeAsDouble("android:strokeWidth")?.let {
+                    appendln("        sublayer.lineWidth = ${it} * scaleX")
                 }
                 appendln("        return sublayer")
                 appendln("    }())")

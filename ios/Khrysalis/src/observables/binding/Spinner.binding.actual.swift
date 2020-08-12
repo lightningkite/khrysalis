@@ -48,10 +48,12 @@ public extension Dropdown {
     }
 
     static var defaultRow: (_ obs: ObservableProperty<String>)->View = { obs in
+        let frame = FrameLayout(frame: .zero)
         let l = UILabel(frame: .zero)
         l.textColor = UIView.appForegroundColor
         l.bindString(obs)
-        return l
+        frame.addSubview(l, FrameLayout.LayoutParams(margin: UIEdgeInsets(top: 8, left: 8, bottom: 8, right: 8), gravity: AlignPair.fillFill))
+        return frame
     }
 }
 
