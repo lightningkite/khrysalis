@@ -9,7 +9,7 @@ Pod::Spec.new do |s|
   s.author = { "Captain" => "joseph@lightningkite.com" }
   s.platform = :ios, "11.0"
   s.source = { :git => "https://github.com/lightningkite/khrysalis.git", :tag => "#{s.version}" }
-  s.source_files =  "ios-google-maps/KhrysalisGoogleMaps/**/*.swift" # path to your classes. You can drag them into their own folder.
+  s.source_files =  "ios-google-maps/KhrysalisMaps/**/*.swift" # path to your classes. You can drag them into their own folder.
 
   s.pod_target_xcconfig = { "DEFINES_MODULE" => "YES" }
 
