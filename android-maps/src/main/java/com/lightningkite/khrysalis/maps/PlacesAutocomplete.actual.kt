@@ -43,7 +43,7 @@ class PlacesAutocomplete(dependency: ViewDependency) {
             token = AutocompleteSessionToken.newInstance()
         }
         return FindAutocompletePredictionsRequest.builder()
-            .setCountry("us")
+            .setCountry("US")
             .setSessionToken(token)
             .setTypeFilter(filter)
             .setQuery(query)
@@ -103,6 +103,7 @@ class PlacesAutocomplete(dependency: ViewDependency) {
     }
 
     fun details(id: String, details: List<Place.Field>? = null): Single<Place> {
+        Place.Field.ADDRESS
         return Single.create { emitter ->
             working = true
             val request = FetchPlaceRequest.builder(id, details ?: detailFields)
