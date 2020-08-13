@@ -49,11 +49,20 @@ public extension ViewDependency {
     func requestVideoGallery(_ callback: (URL) -> Void) -> Void {
         TODO()
     }
+    func requestVideoGallery(callback: (URL) -> Void) -> Void {
+        TODO()
+    }
+
 
     //--- ViewDependency.requestVideosGallery((List<URL>)->Unit)
     func requestVideosGallery(_ callback: (Array<URL>) -> Void) -> Void {
         TODO()
     }
+    
+    func requestVideosGallery(callback: (Array<URL>) -> Void) -> Void {
+        TODO()
+    }
+
 
     //--- ViewDependency.requestVideoCamera(Boolean, (URL)->Unit)
     func requestVideoCamera(_ front: Bool, _ callback: (URL) -> Void) -> Void {
@@ -67,10 +76,19 @@ public extension ViewDependency {
     func requestMediasGallery(_ callback: (Array<URL>) -> Void) -> Void {
         TODO()
     }
+    
+    func requestMediasGallery(callback: (Array<URL>) -> Void) -> Void {
+        TODO()
+    }
     //--- ViewDependency.requestMediaGallery((URL)->Unit)
     func requestMediaGallery(_ callback: (URL) -> Void) -> Void {
         TODO()
     }
+    
+    func requestMediaGallery(callback: (URL) -> Void) -> Void {
+        TODO()
+    }
+
 
     //--- ViewDependency.requestImagesGallery((List<URL>)->Unit)
     public func requestImagesGallery(callback: @escaping (Array<URL>) -> Void) -> Void {
