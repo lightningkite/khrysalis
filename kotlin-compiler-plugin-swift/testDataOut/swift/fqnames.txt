@@ -62,6 +62,7 @@ com.test.test
 com.test.ClassesTestInterface
 com.test.ClassesDataClassThing
 com.test.ClassesWeird
+com.test.ClassesComplexInit
 com.test.ClassesSubWeird
 com.test.classesMain
 com.test.CodablePoint

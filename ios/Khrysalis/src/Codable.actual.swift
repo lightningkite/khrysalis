@@ -133,16 +133,27 @@ public extension String {
     }
     func fromJsonString<T>() -> T? where T : Decodable {
         if let data = self.data(using: .utf8) {
-            if let result = try? decoder.decode(T.self, from: data) {
+            var err: Error? = nil
+            do {
+                let result = try decoder.decode(T.self, from: data)
                 return result
+            } catch {
+                err = error
             }
             let dataString = String(data: data, encoding: .utf8)!
             let fixedData = ("[" + dataString + "]").data(using: .utf8)!
-            if let result = try? decoder.decode(Array<T>.self, from: fixedData) {
+            do {
+                let result = try decoder.decode(Array<T>.self, from: fixedData)
                 return result[0]
+            } catch {
+                err = error
+            }
+            if let err = err {
+                print("Error decoding JSON into \(T.self): \(err)")
             }
             return nil
         }
+        print("Error reading JSON into UTF8")
         return nil
     }
 }

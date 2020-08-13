@@ -44,6 +44,19 @@ private open class ClassesWeird(a: Int = 0, b: String, val c: Double, var d: Lon
     }
 }
 
+private open class ClassesComplexInit(val x: Int = 0) {
+    val y = x
+    val z = 0
+    val a = this.x
+    val b = run { this.y }
+    val c = run { this.x }
+    val d = 43 + run { this.x }
+    val e = (43 + x)
+    val f = (43 + x).let {
+        it + this.z
+    }
+}
+
 private class ClassesSubWeird(a: Int, b: String, c: Double, d: Long): ClassesWeird(a, b, c, d) {
     override fun test() {
         super.test()
