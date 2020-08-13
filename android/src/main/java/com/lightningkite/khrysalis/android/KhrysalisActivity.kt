@@ -18,6 +18,7 @@ import com.lightningkite.khrysalis.R
 import com.lightningkite.khrysalis.animationFrame
 import com.lightningkite.khrysalis.delay
 import com.lightningkite.khrysalis.lifecycle.appInForeground
+import com.lightningkite.khrysalis.observables.observableNN
 import com.lightningkite.khrysalis.observables.onChangeNN
 import com.lightningkite.khrysalis.views.*
 import io.reactivex.disposables.Disposable
@@ -75,15 +76,17 @@ abstract class KhrysalisActivity(val changeToTheme: Int? = null) : AccessibleAct
     private val keyboardTreeObs: ViewTreeObserver.OnGlobalLayoutListener = ViewTreeObserver.OnGlobalLayoutListener {
         val keyboardHeight = view.rootView.height - view.height
         Log.v("KhrysalisActivity", "Keyboard height is now $keyboardHeight")
-        suppressKeyboardChange = true
-        if(keyboardHeight.toFloat() > displayMetrics.heightPixels * 0.15f){
+        if (keyboardHeight.toFloat() > displayMetrics.heightPixels * 0.15f) {
+            suppressKeyboardChange = true
             ApplicationAccess.softInputActive.value = true
+            suppressKeyboardChange = false
         } else {
-            delay(30L){
+            delay(30L) {
+                suppressKeyboardChange = true
                 ApplicationAccess.softInputActive.value = false
+                suppressKeyboardChange = false
             }
         }
-        suppressKeyboardChange = false
     }
 
     override fun onResume() {
@@ -104,18 +107,20 @@ abstract class KhrysalisActivity(val changeToTheme: Int? = null) : AccessibleAct
         }
 
         view.viewTreeObserver.addOnGlobalLayoutListener(keyboardTreeObs)
-        keyboardSubscriber = ApplicationAccess.softInputActive.onChangeNN.subscribe {
+        keyboardSubscriber = ApplicationAccess.softInputActive.observableNN.subscribe {
             if (!suppressKeyboardChange) {
-                val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-                if (it) {
-                    if (currentFocus == null) {
-                        FocusFinder.getInstance().findNextFocus(view as ViewGroup, view, 0)
+                view.post {
+                    val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                    if (it) {
+                        if (currentFocus == null) {
+                            FocusFinder.getInstance().findNextFocus(view as ViewGroup, view, 0)
+                        }
+                        currentFocus?.let {
+                            imm.showSoftInput(it, 0)
+                        }
+                    } else {
+                        imm.hideSoftInputFromWindow(view.windowToken, 0)
                     }
-                    currentFocus?.let {
-                        imm.showSoftInput(view, 0)
-                    }
-                } else {
-                    imm.hideSoftInputFromWindow(view.windowToken, 0)
                 }
             }
         }
