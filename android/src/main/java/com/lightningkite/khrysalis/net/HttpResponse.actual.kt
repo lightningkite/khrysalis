@@ -47,7 +47,9 @@ inline fun <reified T> HttpResponse.readJson(): Single<T> = readJson(jacksonType
     return with(HttpClient){
         Single.create<T> { em: SingleEmitter<T> ->
             try {
-                val result: T = HttpClient.mapper.readValue<T>(body()!!.use { it.byteStream() }, typeToken)
+                val result: T = body()!!.use {
+                    HttpClient.mapper.readValue<T>(it.byteStream(), typeToken)
+                }
                 em.onSuccess(result)
             } catch(e: Throwable){
                 em.onError(e)
