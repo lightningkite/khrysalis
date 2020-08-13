@@ -1,5 +1,7 @@
 package com.lightningkite.khrysalis.qr
 
+import android.content.Context
+import android.util.AttributeSet
 import android.view.SurfaceHolder
 import android.view.SurfaceView
 import com.google.android.gms.vision.CameraSource
@@ -14,7 +16,15 @@ import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.subjects.PublishSubject
 import java.io.IOException
 
-fun SurfaceView.bindBarcodeScan(dependency: ViewDependency): Observable<String> {
+class BarcodeScannerView : SurfaceView {
+    constructor(context: Context) : super(context) {}
+
+    constructor(context: Context, attrs: AttributeSet) : super(context, attrs) {}
+
+    constructor(context: Context, attrs: AttributeSet, defStyleAttr: Int) : super(context, attrs, defStyleAttr) {}
+}
+
+fun BarcodeScannerView.bindBarcodeScan(dependency: ViewDependency): Observable<String> {
     val out = PublishSubject.create<String>()
     dependency.requestPermission(android.Manifest.permission.CAMERA) {
         if (it) {

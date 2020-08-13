@@ -394,9 +394,13 @@ public extension String {
         }
     }
     
-    func remove(_ string:String) -> String{
+    func remove(_ sequence:String) -> String{
         let temp = self
-        return temp.replacingOccurrences(of: string, with:"")
+        return temp.replacingOccurrences(of: sequence, with:"")
+    }
+    
+    func remove(sequence:String) -> String{
+        return remove(sequence)
     }
 }
 

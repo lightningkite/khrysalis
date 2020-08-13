@@ -63,6 +63,7 @@ val LayoutConverter.Companion.displayViews
                     appendln("view.safeInsetsBoth(align: ${alignFill(it)})")
                 }
             },
+            ViewType("com.lightningkite.khrysalis.qr.BarcodeScannerView", "BarcodeScannerView", "View"){},
             ViewType("Space", "UIView", "View") {},
             ViewType("ProgressBar", "UIActivityIndicatorView", "View") { node ->
                 appendln("view.startAnimating()")
