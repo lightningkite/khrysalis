@@ -312,6 +312,12 @@ public extension Dictionary {
             return newValue
         }
     }
+    
+    func minus(key:Key) -> Dictionary {
+        var temp = self
+        temp.removeValue(forKey: key)
+        return temp
+    }
 }
 
 public extension String {

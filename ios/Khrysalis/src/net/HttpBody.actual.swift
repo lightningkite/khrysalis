@@ -70,6 +70,10 @@ public extension Bitmap {
 
 //--- multipartFormBody(HttpBodyPart)
 public func multipartFormBody(_ parts: HttpBodyPart...) -> HttpBody {
+    return multipartFormBody(parts: parts)
+}
+
+public func multipartFormBody(parts:Array<HttpBodyPart>) -> HttpBody {
     var body = Data()
     let boundary = "-------\(arc4random())-\(arc4random())--"
     for part in parts {
@@ -90,6 +94,14 @@ public func multipartFormBody(_ parts: HttpBodyPart...) -> HttpBody {
     }
     body.append((boundary + "\r\n").data(using: .utf8)!)
     return HttpBody(mediaType: "multipart/formdata; boundary=\(boundary)", data: body)
+}
+
+public func multipartFormBody(_ parts: Array<HttpBodyPart>) -> HttpBody {
+    return multipartFormBody(parts: parts)
+}
+
+public func multipartFormBody(parts: HttpBodyPart...) -> HttpBody {
+    return multipartFormBody(parts: parts)
 }
 
 //--- multipartFormFilePart(String, String)

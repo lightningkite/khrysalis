@@ -153,6 +153,21 @@ public extension TimeAlone {
         let result = (left.hour * 60 * 60 + left.minute * 60 + left.second) + (right.hour * 60 * 60 + right.minute * 60 + right.second)
         return TimeAlone(result / 60 / 60,  result / 60 % 60, result % 60)
     }
+    
+    
+    func minus(rhs: TimeAlone) -> TimeAlone{
+        let result = self.hour * 60 * 60 + self.minute * 60 + self.second + rhs.hour * 60 * 60 + rhs.minute * 60 + rhs.second
+        if result < 0{
+            return TimeAlone(0,0,0)
+        }else{
+            return TimeAlone(result / 60 / 60, result / 60 % 60, result % 60)
+        }
+    }
+    
+    func plus(rhs:TimeAlone) -> TimeAlone{
+        let result = (self.hour * 60 * 60 + self.minute * 60 + self.second) + (rhs.hour * 60 * 60 + rhs.minute * 60 + rhs.second)
+        return TimeAlone(result / 60 / 60,  result / 60 % 60, result % 60)
+    }
 
     //--- TimeAlone.minus(TimeInterval)
     static func - (left: TimeAlone, right: TimeInterval) -> TimeAlone{
@@ -169,5 +184,18 @@ public extension TimeAlone {
         let result = (left.hour * 60 * 60 + left.minute * 60 + left.second) + Int(right)
         return TimeAlone(result / 60 / 60,  result / 60 % 60, result % 60)
     }
-
+    
+    func plus(rhs:TimeInterval) -> TimeAlone{
+        let result = (self.hour * 60 * 60 + self.minute * 60 + self.second) + Int(rhs)
+        return TimeAlone(result / 60 / 60,  result / 60 % 60, result % 60)
+    }
+    
+    func minus(rhs:TimeInterval) -> TimeAlone{
+        let result = self.hour * 60 * 60 + self.minute * 60 + self.second - Int(rhs)
+        if result < 0{
+            return TimeAlone(0,0,0)
+        }else{
+            return TimeAlone(result / 60 / 60, result / 60 % 60, result % 60)
+        }
+    }
 }
