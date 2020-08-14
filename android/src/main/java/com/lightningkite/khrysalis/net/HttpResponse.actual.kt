@@ -52,7 +52,7 @@ inline fun <reified T> HttpResponse.readJson(): Single<T> = readJson(jacksonType
                 }
                 em.onSuccess(result)
             } catch(e: Throwable){
-                em.onError(e)
+                em.tryOnError(e)
             }
         }.threadCorrectly<T>()
     }
@@ -69,7 +69,7 @@ inline fun <reified T> HttpResponse.readJsonDebug(): Single<T> = readJson(jackso
                 val result: T = HttpClient.mapper.readValue<T>(data, typeToken)
                 em.onSuccess(result)
             } catch(e: Throwable){
-                em.onError(e)
+                em.tryOnError(e)
             }
         }.threadCorrectly<T>()
     }

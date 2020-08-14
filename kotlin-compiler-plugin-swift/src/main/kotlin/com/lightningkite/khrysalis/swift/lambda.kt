@@ -4,6 +4,7 @@ import com.lightningkite.khrysalis.util.forEachBetween
 import org.jetbrains.kotlin.builtins.getReturnTypeFromFunctionType
 import org.jetbrains.kotlin.builtins.getValueParameterTypesFromFunctionType
 import org.jetbrains.kotlin.name.FqName
+import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.psi.*
 
 fun SwiftTranslator.registerLambda() {
@@ -16,14 +17,29 @@ fun SwiftTranslator.registerLambda() {
         val betterReturnType = reet?.getReturnTypeFromFunctionType()
         fun write(rec: Any? = null) {
             -"{ "
+            val captures = ArrayList<String>()
             if (typedRule.resolvedFunction?.annotations?.let {
                     it.hasAnnotation(FqName("com.lightningkite.khrysalis.WeakSelf")) || it.hasAnnotation(FqName("com.lightningkite.khrysalis.weakSelf"))
                 } == true) {
-                -"[weak self] "
+                captures.add("weak self")
             } else if (typedRule.resolvedFunction?.annotations?.let {
                     it.hasAnnotation(FqName("com.lightningkite.khrysalis.UnownedSelf")) || it.hasAnnotation(FqName("com.lightningkite.khrysalis.unownedSelf"))
                 } == true) {
-                -"[unowned self] "
+                captures.add("unowned self")
+            }
+            typedRule.resolvedFunction?.annotations?.findAnnotation(FqName("com.lightningkite.khrysalis.CaptureUnowned"))?.allValueArguments?.get(Name.identifier("keys"))?.value?.let { it as? Array<String> }?.let {
+                captures.addAll(it.map { "unowned $it" })
+            }
+            typedRule.resolvedFunction?.annotations?.findAnnotation(FqName("com.lightningkite.khrysalis.CaptureWeak"))?.allValueArguments?.get(Name.identifier("keys"))?.value?.let { it as? Array<String> }?.let {
+                captures.addAll(it.map { "weak $it" })
+            }
+            if(captures.isNotEmpty()){
+                -'['
+                captures.forEachBetween(
+                    forItem = { -it },
+                    between = { -", " }
+                )
+                -"] "
             }
             resolved.valueParameters.let {
                 -'('

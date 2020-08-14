@@ -66,7 +66,7 @@ fun ViewDependency.geocode(
                 emitter.onSuccess(Geocoder(context)
                     .getFromLocationName(address, maxResults).map { it -> it.toKhrysalis() })
             } catch (e: Exception) {
-                emitter.onError(e)
+                emitter.tryOnError(e)
             }
         }.start()
     }.observeOn(AndroidSchedulers.mainThread())
@@ -86,7 +86,7 @@ fun ViewDependency.geocode(
                     .getFromLocation(coordinate.latitude, coordinate.longitude, maxResults).map { it -> it.toKhrysalis() })
 
             } catch (e: Exception) {
-                emitter.onError(e)
+                emitter.tryOnError(e)
             }
         }.start()
     }.observeOn(AndroidSchedulers.mainThread())

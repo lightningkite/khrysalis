@@ -26,7 +26,13 @@ extension Single where Element == HttpResponse, Trait == SingleTrait {
 extension PrimitiveSequence where Element == HttpResponse, Trait == SingleTrait {
     //--- Single<@swiftExactly("Element")HttpResponse>.discard()
     public func discard() -> Single<Void> {
-        return self.map { (it) in it.discard() }
+        return self.flatMap { (it) in
+            if it.isSuccessful {
+                return it.discard()
+            } else {
+                return Single.error(HttpResponseException(it))
+            }
+        }
     }
     //--- Single<@swiftExactly("Element")HttpResponse>.readJson()
     public func readJson<T: Codable>() -> Single<T> {

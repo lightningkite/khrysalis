@@ -78,6 +78,8 @@ com.lightningkite.khrysalis.UnownedSelf
 com.lightningkite.khrysalis.unownedSelf
 com.lightningkite.khrysalis.WeakSelf
 com.lightningkite.khrysalis.weakSelf
+com.lightningkite.khrysalis.CaptureUnowned
+com.lightningkite.khrysalis.CaptureWeak
 com.lightningkite.khrysalis.SwiftExactly
 com.lightningkite.khrysalis.swiftExactly
 com.lightningkite.khrysalis.SwiftDescendsFrom

@@ -147,7 +147,7 @@ object HttpClient {
                 println("Response from $method request to $url with headers $headers: ${response.code()}")
                 emitter.onSuccess(response)
             } catch(e:Exception) {
-                emitter.onError(e)
+                emitter.tryOnError(e)
             }
         }.threadCorrectly()
     }

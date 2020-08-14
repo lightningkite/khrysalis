@@ -12,7 +12,6 @@ public class TransformedObservableProperty<A, B> : ObservableProperty<B> {
         self.read = read
         super.init()
         //Necessary properties should be initialized now
-        self._onChange = self.basedOn.onChange.map({ (it) -> B in self.read(it) })
     }
     
     override public var value: B {
@@ -20,9 +19,11 @@ public class TransformedObservableProperty<A, B> : ObservableProperty<B> {
             return self.read(self.basedOn.value)
         }
     }
-    public var _onChange: (Observable<B>)!
     override public var onChange: Observable<B> {
-        get { return _onChange }
+        get {
+            let readCopy = self.read
+            return self.basedOn.onChange.map({ (it) -> B in readCopy(it) })
+        }
     }
 }
 

@@ -14,7 +14,6 @@ public class TransformedMutableObservableProperty2<A, B> : MutableObservableProp
         self.write = write
         super.init()
         //Necessary properties should be initialized now
-        self._onChange = self.basedOn.onChange.map({ (it) -> B in self.read(it) })
     }
     
     override public func update() -> Void {
@@ -29,9 +28,11 @@ public class TransformedMutableObservableProperty2<A, B> : MutableObservableProp
             self.basedOn.value = self.write(self.basedOn.value, value)
         }
     }
-    public var _onChange: (Observable<B>)!
     override public var onChange: Observable<B> {
-        get { return _onChange }
+        get {
+            let readCopy = self.read
+            return self.basedOn.onChange.map({ (it) -> B in readCopy(it) })
+        }
     }
 }
 

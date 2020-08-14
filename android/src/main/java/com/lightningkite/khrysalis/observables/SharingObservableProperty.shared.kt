@@ -1,6 +1,7 @@
 package com.lightningkite.khrysalis.observables
 
 import com.lightningkite.khrysalis.Box
+import com.lightningkite.khrysalis.WeakSelf
 import io.reactivex.Observable
 
 class SharingObservableProperty<T>(
@@ -13,9 +14,9 @@ class SharingObservableProperty<T>(
         get() = if (isListening) cachedValue else basedOn.value
 
     override val onChange: Observable<Box<T>> = basedOn.onChange
-        .doOnNext { cachedValue = it.value }
-        .doOnSubscribe { isListening = true }
-        .doOnDispose { isListening = false }
+        .doOnNext @WeakSelf { this?.cachedValue = it.value }
+        .doOnSubscribe @WeakSelf { this?.isListening = true }
+        .doOnDispose @WeakSelf { this?.isListening = false }
         .share()
 }
 

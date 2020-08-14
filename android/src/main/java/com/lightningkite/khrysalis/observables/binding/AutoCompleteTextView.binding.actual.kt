@@ -83,17 +83,21 @@ fun <T> AutoCompleteTextView.bindList(
     toString: (T) -> String,
     onItemSelected: (T) -> Unit
 ) {
+    var lastPublishedResults: List<T> = listOf()
     this.setAdapter(object : BaseAdapter(), Filterable {
         init {
             options.subscribeBy {
-                notifyDataSetChanged()
+                post {
+                    lastPublishedResults = it.toList()
+                    notifyDataSetChanged()
+                }
             }.until(removed)
         }
 
         override fun getFilter(): Filter = object : Filter() {
             override fun performFiltering(p0: CharSequence?): FilterResults = FilterResults().apply {
-                this.values = options.value
-                this.count = options.value.size
+                this.values = lastPublishedResults
+                this.count = lastPublishedResults.size
             }
 
             @Suppress("UNCHECKED_CAST")
@@ -121,7 +125,7 @@ fun <T> AutoCompleteTextView.bindList(
                 val size = (context.resources.displayMetrics.density * 8).toInt()
                 setPadding(size, size, size, size)
             }
-            view.text = options.value.getOrNull(position)?.let(toString)
+            view.text = lastPublishedResults.getOrNull(position)?.let(toString)
             return view
         }
 
@@ -130,6 +134,6 @@ fun <T> AutoCompleteTextView.bindList(
         override fun getCount(): Int = options.value.size
     })
     this.setOnItemClickListener { adapterView, view, index, id ->
-        options.value.getOrNull(index)?.let(onItemSelected)
+        lastPublishedResults.getOrNull(index)?.let(onItemSelected)
     }
 }

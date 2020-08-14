@@ -11,7 +11,7 @@ import java.lang.reflect.ParameterizedType
 
 fun Single<@SwiftExactly("Element") HttpResponse>.unsuccessfulAsError(): Single<HttpResponse> {
     return this.map { it ->
-        if(it.isSuccessful){
+        if (it.isSuccessful) {
             return@map it
         } else {
             throw HttpResponseException(it)
@@ -21,40 +21,50 @@ fun Single<@SwiftExactly("Element") HttpResponse>.unsuccessfulAsError(): Single<
 
 
 fun Single<@SwiftExactly("Element") HttpResponse>.discard(): Single<Unit> {
-    return this.flatMap { it.discard() }
+    return this.flatMap {
+        if (it.isSuccessful) {
+            it.discard()
+        } else {
+            Single.error<Unit>(HttpResponseException(it)) as Single<Unit>
+        }
+    }
 }
+
 inline fun <reified T> Single<@SwiftExactly("Element") HttpResponse>.readJson(): Single<T> {
     val type = jacksonTypeRef<T>()
     return this.flatMap { it ->
-        if(it.isSuccessful){
+        if (it.isSuccessful) {
             it.readJson<T>(type)
         } else {
             Single.error<T>(HttpResponseException(it)) as Single<T>
         }
     }
 }
+
 inline fun <reified T> Single<@SwiftExactly("Element") HttpResponse>.readJsonDebug(): Single<T> {
     val type = jacksonTypeRef<T>()
     return this.flatMap { it ->
-        if(it.isSuccessful){
+        if (it.isSuccessful) {
             it.readJsonDebug<T>(type)
         } else {
             Single.error<T>(HttpResponseException(it)) as Single<T>
         }
     }
 }
+
 fun Single<@SwiftExactly("Element") HttpResponse>.readText(): Single<String> {
     return this.flatMap { it ->
-        if(it.isSuccessful){
+        if (it.isSuccessful) {
             it.readText()
         } else {
             Single.error<String>(HttpResponseException(it))
         }
     }
 }
+
 fun Single<@SwiftExactly("Element") HttpResponse>.readData(): Single<Data> {
     return this.flatMap { it ->
-        if(it.isSuccessful){
+        if (it.isSuccessful) {
             it.readData()
         } else {
             Single.error<Data>(HttpResponseException(it))

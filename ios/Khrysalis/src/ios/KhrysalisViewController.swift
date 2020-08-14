@@ -84,15 +84,17 @@ open class KhrysalisViewController: UIViewController, UINavigationControllerDele
         
         hideKeyboardWhenTappedAround()
 
-        //Potential future feature: open/close keyboard by setting property
-//         ApplicationAccess.INSTANCE.softInputActive.subscribeBy { it in
-//             if it {
-//                 resignAllFirstResponders()
-//             } else {
-//                 resignAllFirstResponders()
-//             }
-//         }
+         ApplicationAccess.INSTANCE.softInputActive.subscribeBy { it in
+            guard !self.suppressKeyboardUpdate else { return }
+             if it {
+                self.view.findNextFocus()?.becomeFirstResponder()
+             } else {
+                self.resignAllFirstResponders()
+             }
+        }.forever()
     }
+    
+    private var suppressKeyboardUpdate: Bool = false
     
     private var first = true
     public func refreshBackingColor() {
@@ -259,6 +261,15 @@ open class KhrysalisViewController: UIViewController, UINavigationControllerDele
             let keyboardAnimationDuration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? NSNumber
         {
             let keyboardHeight = keyboardFrameValue.cgRectValue.height
+            if keyboardHeight > 20 {
+                post {
+                    self.suppressKeyboardUpdate = true
+                    if !ApplicationAccess.INSTANCE.softInputActive.value {
+                        ApplicationAccess.INSTANCE.softInputActive.value = true
+                    }
+                    self.suppressKeyboardUpdate = false
+                }
+            }
             UIView.animate(
                 withDuration: keyboardAnimationDuration.doubleValue,
                 animations: {
@@ -266,9 +277,6 @@ open class KhrysalisViewController: UIViewController, UINavigationControllerDele
                     self.layout()
                 },
                 completion: { [weak self] _ in
-                    self?.suppressIsActive = true
-                    ApplicationAccess.INSTANCE.softInputActive.value = true
-                    self?.suppressIsActive = false
                 }
             )
             DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
@@ -288,6 +296,11 @@ open class KhrysalisViewController: UIViewController, UINavigationControllerDele
             let userInfo = notification.userInfo,
             let animationDuration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? NSNumber
         {
+            post {
+                self.suppressKeyboardUpdate = true
+                ApplicationAccess.INSTANCE.softInputActive.value = false
+                self.suppressKeyboardUpdate = false
+            }
             UIView.animate(
                 withDuration: animationDuration.doubleValue,
                 animations: {
@@ -295,9 +308,6 @@ open class KhrysalisViewController: UIViewController, UINavigationControllerDele
                     self.layout()
                 },
                 completion: { [weak self] _ in
-                    self?.suppressIsActive = true
-                    ApplicationAccess.INSTANCE.softInputActive.value = true
-                    self?.suppressIsActive = false
                 }
             )
         }

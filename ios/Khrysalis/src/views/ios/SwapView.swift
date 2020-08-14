@@ -49,6 +49,8 @@ open class SwapView: UIView {
     public override func didAddSubview(_ subview: UIView) {
         subview.refreshLifecycle()
     }
+    
+    private var hiding = false
 
     private func updateAnimations(){
         for view in subviews {
@@ -119,8 +121,9 @@ open class SwapView: UIView {
             updateAnimations()
         }
         if let new = to {
-            if visibility == View.GONE {
+            if self.hiding {
                 visibility = View.VISIBLE
+                alpha = 1
                 print("Am I in layout? \(includeInLayout)")
                 setNeedsLayout()
                 UIView.animate(withDuration: 0.25, animations: {
@@ -175,12 +178,15 @@ open class SwapView: UIView {
         } else {
             current = nil
             print("Am I in layout? \(includeInLayout)")
-            UIView.animate(withDuration: 0.25, animations: {
-                self.alpha = 0
-            }, completion: { _ in
-                print("My bounds are now \(self.frame)")
-                self.visibility = View.GONE
-            })
+            hiding = true
+            //This has gotta stick
+            print("My bounds are now \(self.frame)")
+            if self.hiding {
+                self.visibility = View.INVISIBLE
+            } else {
+                self.alpha = 1
+                self.visibility = View.VISIBLE
+            }
         }
     }
     

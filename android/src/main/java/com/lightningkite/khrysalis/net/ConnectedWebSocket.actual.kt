@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.net
 
+import android.util.Log
 import com.lightningkite.khrysalis.PlatformSpecific
 import io.reactivex.Observable
 import io.reactivex.Observer
@@ -27,8 +28,13 @@ class ConnectedWebSocket(val url: String) : WebSocketListener(),
     @PlatformSpecific
     override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
         println("Socket to $url failed with $t.")
-        ownConnection.onError(t)
-        _read.onError(t)
+        try {
+            ownConnection.onError(t)
+            _read.onError(t)
+        } catch(e:Exception){
+            Log.e("ConnectedWebSocket", "Failed to deliver error")
+            e.printStackTrace()
+        }
     }
 
     @PlatformSpecific

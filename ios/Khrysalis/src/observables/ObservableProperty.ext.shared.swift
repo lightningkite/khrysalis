@@ -6,12 +6,16 @@ import Foundation
 
 public extension ObservableProperty {
     var observable: Observable<T> {
-        get { return self.onChange.startWith(self.value) }
+        get { return Observable.concat(Observable.create({ (it) -> Void in 
+                        it.onNext(self.value); it.onComplete()
+        }), self.onChange) }
     }
 }
 public extension ObservableProperty {
     var observableNN: Observable<T> {
-        get { return self.onChange.startWith(self.value).map({ (it) -> T in it }) }
+        get { return Observable.concat(Observable.create({ (it) -> Void in 
+                        it.onNext(self.value); it.onComplete()
+        }), self.onChange).map({ (it) -> T in it }) }
     }
 }
 public extension ObservableProperty {

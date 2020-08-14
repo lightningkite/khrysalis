@@ -13,7 +13,10 @@ class TransformedObservableProperty<A, B>(
         get() {
             return read(basedOn.value)
         }
-    override val onChange: Observable<Box<B>> = basedOn.onChange.map { it -> boxWrap(read(it.value)) }
+    override val onChange: Observable<Box<B>> get() {
+        val readCopy = read
+        return basedOn.onChange.map { it -> boxWrap(readCopy(it.value)) }
+    }
 }
 
 @Deprecated("Use 'map' instead", ReplaceWith(

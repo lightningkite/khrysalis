@@ -104,6 +104,7 @@ public extension Observable {
     static func create(_ action: @escaping (ObservableEmitter<Element>) -> Void) -> Observable<Element> {
         return Observable.create { (it: AnyObserver<Element>) in
             let emitter = ObservableEmitter(basedOn: it)
+            action(emitter)
             return emitter.disposable ?? Disposables.create { }
         }
     }

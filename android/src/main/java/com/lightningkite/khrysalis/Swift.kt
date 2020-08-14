@@ -49,6 +49,14 @@ annotation class WeakSelf
 @Deprecated("Capitalize the name please!", ReplaceWith("WeakSelf", "com.lightningkite.khrysalis.WeakSelf"))
 typealias weakSelf = WeakSelf
 
+@Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.SOURCE)
+annotation class CaptureUnowned(vararg val keys: String)
+
+@Target(AnnotationTarget.FUNCTION)
+@Retention(AnnotationRetention.SOURCE)
+annotation class CaptureWeak(vararg val keys: String)
+
 @Target(AnnotationTarget.TYPE)
 annotation class SwiftExactly(val parameterName: String = "default")
 @Deprecated("Capitalize the name please!", ReplaceWith("SwiftExactly", "com.lightningkite.khrysalis.SwiftExactly"))

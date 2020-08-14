@@ -32,8 +32,9 @@ public struct HttpResponse {
 
 
     //--- HttpResponse.discard()
-    public func discard() -> Void {
+    public func discard() -> Single<Void> {
         //Do nothing - in iOS, the data is already read
+        return Single.just(())
     }
 
     //--- HttpResponse.readText()

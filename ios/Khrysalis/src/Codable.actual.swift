@@ -138,6 +138,7 @@ public extension String {
                 let result = try decoder.decode(T.self, from: data)
                 return result
             } catch {
+                //Check error here
                 err = error
             }
             let dataString = String(data: data, encoding: .utf8)!

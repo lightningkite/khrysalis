@@ -15,9 +15,9 @@ public class SharingObservableProperty<T> : ObservableProperty<T> {
         super.init()
         //Necessary properties should be initialized now
         self._onChange = self.basedOn.onChange
-            .doOnNext({ (it) -> Void in self.cachedValue = it })
-            .doOnSubscribe({ (it) -> Void in self.isListening = true })
-            .doOnDispose({ () -> Void in self.isListening = false })
+            .doOnNext( { [weak self] (it) -> Void in self?.cachedValue = it })
+            .doOnSubscribe( { [weak self] (it) -> Void in self?.isListening = true })
+            .doOnDispose( { [weak self] () -> Void in self?.isListening = false })
             .share()
     }
     

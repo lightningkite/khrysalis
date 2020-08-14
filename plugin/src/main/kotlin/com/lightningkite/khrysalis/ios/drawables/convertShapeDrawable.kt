@@ -27,6 +27,9 @@ fun convertShapeDrawable(name: String, node: XmlNode, out: Appendable) {
                     appendln("    gradient.colors = " + colors.joinToString(", ", "[", "]") { "$it.cgColor" })
                     val angle = it.attributeAsInt("android:angle") ?: 0
                     appendln("    gradient.setGradientAngle(degrees: $angle)")
+                    appendln("    gradient.onResize.subscribeBy { [weak mask] (rect) in ")
+                    appendln("        mask?.path = CGPath(ellipseIn: rect, transform: nil)")
+                    appendln("    }")
                     appendln("    return gradient")
                     appendln("}")
                 } ?: run {
@@ -34,7 +37,7 @@ fun convertShapeDrawable(name: String, node: XmlNode, out: Appendable) {
                     appendln("    let layer = CAShapeLayer()")
                     appendln("    layer.path = CGPath(ellipseIn: CGRect(x: 0, y: 0, width: $width, height: $height), transform: nil)")
                     node.children.find { it.name == "stroke" }?.let {
-                        appendln("    layer.borderWidth = ${it.attributeAsSwiftDimension("android:width") ?: "0"}")
+                        appendln("    layer.lineWidth = ${it.attributeAsSwiftDimension("android:width") ?: "0"}")
                         setToColor(it, "android:color") { it, s ->
                             appendln(
                                 "    layer.strokeColor = $it.cgColor"
@@ -47,9 +50,12 @@ fun convertShapeDrawable(name: String, node: XmlNode, out: Appendable) {
                                 "    layer.fillColor = $it.cgColor"
                             )
                         }
+                    } ?: run {
+                        appendln("    layer.fillColor = nil")
                     }
-                    appendln("    layer.bounds.size = CGSize(width: $width, height: $height)")
-                    appendln("    layer.scaleOverResize = true")
+                    appendln("    layer.onResize.subscribeBy { [weak layer] (rect) in ")
+                    appendln("        layer?.path = CGPath(ellipseIn: rect, transform: nil)")
+                    appendln("    }")
                     appendln("    return layer")
                     appendln("}")
                 }
@@ -74,6 +80,15 @@ fun convertShapeDrawable(name: String, node: XmlNode, out: Appendable) {
                             "    layer.backgroundColor = $it.cgColor"
                         )
                     }
+                } ?: node.children.find { it.name == "gradient" }?.let {
+                    val colors = listOfNotNull(
+                        it.attributeAsSwiftColor("android:startColor"),
+                        it.attributeAsSwiftColor("android:centerColor"),
+                        it.attributeAsSwiftColor("android:endColor")
+                    )
+                    appendln("    layer.colors = " + colors.joinToString(", ", "[", "]") { "$it.cgColor" })
+                    val angle = it.attributeAsInt("android:angle") ?: 0
+                    appendln("    layer.setGradientAngle(degrees: $angle)")
                 }
                 node.children.find { it.name == "corners" }?.let { corners ->
                     corners.attributeAsSwiftDimension("android:radius")?.let {
@@ -98,16 +113,6 @@ fun convertShapeDrawable(name: String, node: XmlNode, out: Appendable) {
                             appendln("]")
                         }
                     }
-                }
-                node.children.find { it.name == "gradient" }?.let {
-                    val colors = listOfNotNull(
-                        it.attributeAsSwiftColor("android:startColor"),
-                        it.attributeAsSwiftColor("android:centerColor"),
-                        it.attributeAsSwiftColor("android:endColor")
-                    )
-                    appendln("    layer.colors = " + colors.joinToString(", ", "[", "]") { "$it.cgColor" })
-                    val angle = it.attributeAsInt("android:angle") ?: 0
-                    appendln("    layer.setGradientAngle(degrees: $angle)")
                 }
                 appendln("    layer.bounds.size = CGSize(width: 100, height: 100)")
                 appendln("    return layer")

@@ -12,6 +12,10 @@
   type: type
   requiresMutable: true
   template: Set<~T0~>
+- id: java.util.HashSet
+  type: type
+  requiresMutable: true
+  template: Set<~T0~>
 
 ## Creation
 - id: kotlin.collections.HashSet
@@ -50,11 +54,20 @@
 
 ## Operations
 
-- id: kotlin.collections.Set.add
+- id: kotlin.collections.MutableSet.add
   type: call
   template: '~this~.insert(~0~).inserted'
 
-- id: kotlin.collections.Set.add
+- id: kotlin.collections.MutableSet.add
+  type: call
+  usedAsExpression: false
+  template: '~this~.insert(~0~)'
+
+- id: java.util.HashSet.add
+  type: call
+  template: '~this~.insert(~0~).inserted'
+
+- id: java.util.HashSet.add
   type: call
   usedAsExpression: false
   template: '~this~.insert(~0~)'

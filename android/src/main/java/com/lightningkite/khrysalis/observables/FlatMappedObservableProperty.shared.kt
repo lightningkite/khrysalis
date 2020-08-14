@@ -2,6 +2,7 @@ package com.lightningkite.khrysalis.observables
 
 import com.lightningkite.khrysalis.Box
 import com.lightningkite.khrysalis.Escaping
+import com.lightningkite.khrysalis.WeakSelf
 import io.reactivex.Observable
 
 class FlatMappedObservableProperty<A, B>(
@@ -11,7 +12,10 @@ class FlatMappedObservableProperty<A, B>(
     override val value: B
         get() = transformation(basedOn.value).value
     override val onChange: Observable<Box<B>>
-        get() = basedOn.observable.switchMap { it -> this.transformation(it.value).observable }.skip(1)
+        get() {
+            val transformCopy = transformation
+            return basedOn.observable.switchMap { it -> transformCopy(it.value).observable }.skip(1)
+        }
 }
 
 fun <T, B> ObservableProperty<T>.switchMap(transformation: @Escaping() (T) -> ObservableProperty<B>): FlatMappedObservableProperty<T, B> {
@@ -35,11 +39,14 @@ class MutableFlatMappedObservableProperty<A, B>(
     var lastProperty: MutableObservableProperty<B>? = null
 
     override val onChange: Observable<Box<B>>
-        get() = basedOn.observable.switchMap label@{ it: Box<A> ->
-            val prop = this.transformation(it.value)
-            this.lastProperty = prop
-            return@label prop.observable
-        }.skip(1)
+        get() {
+            val transformCopy = transformation
+            return basedOn.observable.switchMap @WeakSelf() { it: Box<A> ->
+                val prop = transformCopy(it.value)
+                this?.lastProperty = prop
+                prop.observable
+            }.skip(1)
+        }
 
     override fun update() {
         lastProperty?.update()

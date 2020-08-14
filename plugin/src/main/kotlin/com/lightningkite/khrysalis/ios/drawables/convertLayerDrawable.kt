@@ -61,7 +61,7 @@ fun convertLayerListDrawable(name: String, node: XmlNode, out: Appendable) {
                 ?: paddingSubnode?.attributeAsSwiftDimension("android:botton"))?.let {
                 appendln("             subBounds.size.height -= $it")
             }
-            appendln("             sublayer.frame = subBounds ")
+            appendln("             sublayer.resize(subBounds) ")
             appendln("        }")
             appendln("        return sublayer")
             appendln("    }())")

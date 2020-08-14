@@ -18,7 +18,10 @@ public class FlatMappedObservableProperty<A, B> : ObservableProperty<B> {
         get { return self.transformation(self.basedOn.value).value }
     }
     override public var onChange: Observable<B> {
-        get { return self.basedOn.observable.switchMap({ (it) -> Observable<B> in self.transformation(it).observable }).skip(1) }
+        get {
+            let transformCopy = self.transformation
+            return self.basedOn.observable.switchMap({ (it) -> Observable<B> in transformCopy(it).observable }).skip(1)
+        }
     }
 }
 
@@ -55,11 +58,14 @@ public class MutableFlatMappedObservableProperty<A, B> : MutableObservableProper
     public var lastProperty: MutableObservableProperty<B>?
     
     override public var onChange: Observable<B> {
-        get { return self.basedOn.observable.switchMap({ (it: A) -> Observable<B> in 
-                    let prop = self.transformation(it)
-                    self.lastProperty = prop
+        get {
+            let transformCopy = self.transformation
+            return self.basedOn.observable.switchMap( { [weak self] (it: A) -> Observable<B> in 
+                    let prop = transformCopy(it)
+                    self?.lastProperty = prop
                     return prop.observable
-        }).skip(1) }
+            }).skip(1)
+        }
     }
     
     override public func update() -> Void {
