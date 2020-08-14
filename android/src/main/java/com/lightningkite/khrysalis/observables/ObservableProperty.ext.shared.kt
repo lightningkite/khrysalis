@@ -9,8 +9,8 @@ import io.reactivex.annotations.SchedulerSupport
 import io.reactivex.disposables.Disposable
 import io.reactivex.rxkotlin.subscribeBy
 
-val <T> ObservableProperty<T>.observable: Observable<Box<T>> get() = onChange.startWith { it.onNext(boxWrap(value)) }
-val <T> ObservableProperty<T>.observableNN: Observable<T> get() = onChange.startWith { it.onNext(boxWrap(value)) }.map { it -> it.value }
+val <T> ObservableProperty<T>.observable: Observable<Box<T>> get() = onChange.startWith { it.onNext(boxWrap(value)); it.onComplete() }
+val <T> ObservableProperty<T>.observableNN: Observable<T> get() = onChange.startWith { it.onNext(boxWrap(value)); it.onComplete() }.map { it -> it.value }
 val <T> ObservableProperty<T>.onChangeNN: Observable<T> get() = onChange.map { it -> it.value }
 
 @CheckReturnValue
