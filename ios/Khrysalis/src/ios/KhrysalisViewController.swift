@@ -296,7 +296,7 @@ open class KhrysalisViewController: UIViewController, UINavigationControllerDele
             let userInfo = notification.userInfo,
             let animationDuration = userInfo[UIResponder.keyboardAnimationDurationUserInfoKey] as? NSNumber
         {
-            post {
+            DispatchQueue.main.asyncAfter(deadline: .now() + 0.1) {
                 self.suppressKeyboardUpdate = true
                 ApplicationAccess.INSTANCE.softInputActive.value = false
                 self.suppressKeyboardUpdate = false
