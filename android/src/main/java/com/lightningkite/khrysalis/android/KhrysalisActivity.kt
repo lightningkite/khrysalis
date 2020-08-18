@@ -107,13 +107,13 @@ abstract class KhrysalisActivity(val changeToTheme: Int? = null) : AccessibleAct
         }
 
         view.viewTreeObserver.addOnGlobalLayoutListener(keyboardTreeObs)
-        keyboardSubscriber = ApplicationAccess.softInputActive.observableNN.subscribe {
+        keyboardSubscriber = ApplicationAccess.softInputActive.onChangeNN.subscribe {
             if (!suppressKeyboardChange) {
                 view.post {
                     val imm = getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
                     if (it) {
                         if (currentFocus == null) {
-                            FocusFinder.getInstance().findNextFocus(view as ViewGroup, view, 0)
+                            FocusFinder.getInstance().findNextFocus(view as ViewGroup, view, View.FOCUS_DOWN)
                         }
                         currentFocus?.let {
                             imm.showSoftInput(it, 0)

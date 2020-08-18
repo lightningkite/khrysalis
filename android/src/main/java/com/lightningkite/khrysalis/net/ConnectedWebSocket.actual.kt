@@ -2,6 +2,7 @@ package com.lightningkite.khrysalis.net
 
 import android.util.Log
 import com.lightningkite.khrysalis.PlatformSpecific
+import com.lightningkite.khrysalis.post
 import io.reactivex.Observable
 import io.reactivex.Observer
 import io.reactivex.disposables.Disposable
@@ -18,42 +19,66 @@ class ConnectedWebSocket(val url: String) : WebSocketListener(),
         PublishSubject.create<WebSocketFrame>()
     val ownConnection =
         PublishSubject.create<ConnectedWebSocket>()
-    val read: Observable<WebSocketFrame> = HttpClient.run { _read.threadCorrectly() }
+    val read: Observable<WebSocketFrame> = _read
+    var justStarted = false
+
     @PlatformSpecific
     override fun onOpen(webSocket: WebSocket, response: Response) {
-        println("Socket to $url opened successfully.")
-        ownConnection.onNext(this)
+        justStarted = true
+        post {
+            println("Socket to $url opened successfully.")
+            ownConnection.onNext(this)
+            post {
+                justStarted = false
+            }
+        }
     }
 
     @PlatformSpecific
     override fun onFailure(webSocket: WebSocket, t: Throwable, response: Response?) {
-        println("Socket to $url failed with $t.")
-        try {
-            ownConnection.onError(t)
-            _read.onError(t)
-        } catch(e:Exception){
-            Log.e("ConnectedWebSocket", "Failed to deliver error")
-            e.printStackTrace()
+        post {
+            try {
+                println("Socket to $url failed with $t.")
+                ownConnection.onError(t)
+                _read.onError(t)
+            } catch (e: Exception) {
+                Log.e("ConnectedWebSocket", "Failed to deliver error")
+                e.printStackTrace()
+            }
         }
     }
 
     @PlatformSpecific
     override fun onClosing(webSocket: WebSocket, code: Int, reason: String) {
-        println("Socket to $url closing.")
-        ownConnection.onComplete()
-        _read.onComplete()
+        post {
+            println("Socket to $url closing.")
+            ownConnection.onComplete()
+            _read.onComplete()
+        }
     }
 
     @PlatformSpecific
     override fun onMessage(webSocket: WebSocket, text: String) {
-        println("Socket to $url got message '$text'.")
-        _read.onNext(WebSocketFrame(text = text))
+        //TODO: You can measure the jank of an Android application by the number of nested posts.  There's TWO here.  EWW.
+        post {
+            if(justStarted){
+                post {
+                    println("Socket to $url got message '$text'.")
+                    _read.onNext(WebSocketFrame(text = text))
+                }
+            } else {
+                println("Socket to $url got message '$text'.")
+                _read.onNext(WebSocketFrame(text = text))
+            }
+        }
     }
 
     @PlatformSpecific
     override fun onMessage(webSocket: WebSocket, bytes: ByteString) {
-        println("Socket to $url got binary message of length ${bytes.size()}.")
-        _read.onNext(WebSocketFrame(binary = bytes.toByteArray()))
+        post {
+            println("Socket to $url got binary message of length ${bytes.size()}.")
+            _read.onNext(WebSocketFrame(binary = bytes.toByteArray()))
+        }
     }
 
     @PlatformSpecific
