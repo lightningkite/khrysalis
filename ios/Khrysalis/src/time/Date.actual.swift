@@ -25,10 +25,10 @@ public extension Date {
         }
     }
 
-    func before(other: Date) -> Bool {
+    func before(_ other: Date) -> Bool {
         return self.time < other.time
     }
-    func after(other: Date) -> Bool {
+    func after(_ other: Date) -> Bool {
         return self.time > other.time
     }
     

@@ -33,7 +33,11 @@ fun KotlinType.isPrimitive() = getJetTypeFqName(false) in primitiveTypes
 data class BasicType(val type: KotlinType)
 data class CompleteReflectableType(val type: KotlinType)
 data class KtUserTypeBasic(val type: KtUserType)
-data class SwiftExtensionStart(val forDescriptor: CallableDescriptor, val receiver: KtTypeReference?, val typeParams: KtTypeParameterList?)
+data class SwiftExtensionStart(
+    val forDescriptor: CallableDescriptor,
+    val receiver: KtTypeReference?,
+    val typeParams: KtTypeParameterList?
+)
 
 val partOfParameterLocal = ThreadLocal<Boolean>()
 var writingParameter: Boolean
@@ -71,13 +75,14 @@ fun SwiftTranslator.registerType() {
         val t = typedRule.forDescriptor.extensionReceiverParameter!!.type
         val baseClass = t.constructor.declarationDescriptor as? ClassDescriptor
         -typedRule.receiver?.typeElement?.let { it as? KtUserType }?.let { KtUserTypeBasic(it) } ?: BasicType(t)
-        typedRule.forDescriptor.annotations.findAnnotation(FqName("com.lightningkite.khrysalis.SwiftExtensionWhere"))?.let {
-            val value = it.allValueArguments[Name.identifier("text")]!!.value as String
-            if(value.isNotBlank()) {
-                -" where "
-                -value
-            }
-        } ?: t.arguments
+        typedRule.forDescriptor.annotations.findAnnotation(FqName("com.lightningkite.khrysalis.SwiftExtensionWhere"))
+            ?.let {
+                val value = it.allValueArguments[Name.identifier("text")]!!.value as String
+                if (value.isNotBlank()) {
+                    -" where "
+                    -value
+                }
+            } ?: t.arguments
             .mapIndexedNotNull { index, arg ->
                 if (arg.type.isTypeParameter()) {
                     val x = (arg.type.constructor.declarationDescriptor as? TypeParameterDescriptor)?.name?.asString()
@@ -89,14 +94,18 @@ fun SwiftTranslator.registerType() {
                         it.typeReference?.text?.endsWith("SwiftExactly", true) == true
                     }?.valueArguments?.let {
                         it.firstOrNull()?.getArgumentExpression()?.text?.trim('"')
-                            ?: knownTypeParameterNames[typedRule.forDescriptor.extensionReceiverParameter?.type?.getJetTypeFqName(false)]?.getOrNull(index)
+                            ?: knownTypeParameterNames[typedRule.forDescriptor.extensionReceiverParameter?.type?.getJetTypeFqName(
+                                false
+                            )]?.getOrNull(index)
                             ?: "T"
                     }
                     val swiftDescendsFrom = type.annotations.flatMap { it.entries }.find {
                         it.typeReference?.text?.endsWith("SwiftDescendsFrom", true) == true
                     }?.valueArguments?.let {
                         it.firstOrNull()?.getArgumentExpression()?.text?.trim('"')
-                            ?: knownTypeParameterNames[typedRule.forDescriptor.extensionReceiverParameter?.type?.getJetTypeFqName(false)]?.getOrNull(index)
+                            ?: knownTypeParameterNames[typedRule.forDescriptor.extensionReceiverParameter?.type?.getJetTypeFqName(
+                                false
+                            )]?.getOrNull(index)
                             ?: "T"
                     }
                     when {
@@ -123,14 +132,18 @@ fun SwiftTranslator.registerType() {
                         it.fqName?.asString()?.endsWith("SwiftExactly", true) == true
                     }?.allValueArguments?.entries?.let {
                         it.firstOrNull()?.value?.value as? String
-                            ?: knownTypeParameterNames[typedRule.forDescriptor.extensionReceiverParameter?.type?.getJetTypeFqName(false)]?.getOrNull(index)
+                            ?: knownTypeParameterNames[typedRule.forDescriptor.extensionReceiverParameter?.type?.getJetTypeFqName(
+                                false
+                            )]?.getOrNull(index)
                             ?: "T"
                     }
                     val swiftDescendsFrom = type.annotations.find {
                         it.fqName?.asString()?.endsWith("SwiftDescendsFrom", true) == true
                     }?.allValueArguments?.entries?.let {
                         it.firstOrNull()?.value?.value as? String
-                            ?: knownTypeParameterNames[typedRule.forDescriptor.extensionReceiverParameter?.type?.getJetTypeFqName(false)]?.getOrNull(index)
+                            ?: knownTypeParameterNames[typedRule.forDescriptor.extensionReceiverParameter?.type?.getJetTypeFqName(
+                                false
+                            )]?.getOrNull(index)
                             ?: "T"
                     }
                     when {
@@ -141,8 +154,11 @@ fun SwiftTranslator.registerType() {
                             listOf(swiftDescendsFrom, ": ", type)
                         }
                         else -> {
-                            val name = knownTypeParameterNames[typedRule.forDescriptor.extensionReceiverParameter?.type?.getJetTypeFqName(false)]?.getOrNull(index)
-                                ?: baseClass?.declaredTypeParameters?.get(index)?.name?.asString()
+                            val name =
+                                knownTypeParameterNames[typedRule.forDescriptor.extensionReceiverParameter?.type?.getJetTypeFqName(
+                                    false
+                                )]?.getOrNull(index)
+                                    ?: baseClass?.declaredTypeParameters?.get(index)?.name?.asString()
                             val c = type.constructor.declarationDescriptor as? ClassDescriptor
                             if (c?.isFinalOrEnum == false) {
                                 listOf(name, ": ", type)
@@ -176,6 +192,9 @@ fun SwiftTranslator.registerType() {
     handle<KotlinType> {
         when (val desc = typedRule.constructor.declarationDescriptor) {
             is FunctionClassDescriptor -> {
+                if (typedRule.isMarkedNullable) {
+                    -'('
+                }
                 if (writingParameter && typedRule.annotations.let {
                         it.hasAnnotation(FqName("com.lightningkite.khrysalis.Escaping")) || it.hasAnnotation(FqName("com.lightningkite.khrysalis.escaping"))
                     }) {
@@ -190,6 +209,9 @@ fun SwiftTranslator.registerType() {
                 )
                 -") -> "
                 -typedRule.arguments.last()
+                if (typedRule.isMarkedNullable) {
+                    -')'
+                }
             }
             is ClassDescriptor -> {
                 var current: ClassDescriptor = desc
@@ -351,7 +373,10 @@ fun SwiftTranslator.registerType() {
     handle<KtTypeReference>(
         condition = {
             writingParameter && typedRule.annotationEntries
-                .any { it.resolvedAnnotation?.fqName?.asString()?.equals("com.lightningkite.khrysalis.escaping", true) == true}
+                .any {
+                    it.resolvedAnnotation?.fqName?.asString()
+                        ?.equals("com.lightningkite.khrysalis.escaping", true) == true
+                }
                     && typedRule.parentOfType<KtParameter>() != null
         },
         priority = 10,
@@ -398,7 +423,7 @@ fun SwiftTranslator.registerType() {
                 typeParameter = { typeParametersByName[it.name] ?: "nil" },
                 typeParameterByIndex = { type.arguments.getOrNull(it.index) ?: "nil" }
             )
-            if(type.isMarkedNullable){
+            if (type.isMarkedNullable) {
                 -'?'
             }
         }

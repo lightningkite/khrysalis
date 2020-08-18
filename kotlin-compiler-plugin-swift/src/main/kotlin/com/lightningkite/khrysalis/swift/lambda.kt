@@ -13,8 +13,8 @@ fun SwiftTranslator.registerLambda() {
         val reet = typedRule.resolvedExpectedExpressionType
             ?: (typedRule.parent as? KtLambdaExpression)?.resolvedExpectedExpressionType
             ?: ((typedRule.parent as? KtLambdaExpression)?.parent as? KtParameter)?.resolvedValueParameter?.type
-        val betterParameterTypes = reet?.getValueParameterTypesFromFunctionType()?.map { it.type }
-        val betterReturnType = reet?.getReturnTypeFromFunctionType()
+//        val betterParameterTypes = reet?.getValueParameterTypesFromFunctionType()?.map { it.type }
+        val betterReturnType = try { reet?.getReturnTypeFromFunctionType() } catch(e: Exception) { null }
         fun write(rec: Any? = null) {
             -"{ "
             val captures = ArrayList<String>()
