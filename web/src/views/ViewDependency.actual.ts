@@ -207,7 +207,7 @@ export function comLightningkiteKhrysalisAndroidActivityAccessShare(this_: Windo
     topLevel.onclick = (e) => {
         document.body.removeChild(topLevel);
     };
-    document.body.appendChild(tempDiv.firstChild);
+    document.body.appendChild(topLevel);
 }
 
 //! Declares com.lightningkite.khrysalis.views.openMap>com.lightningkite.khrysalis.android.ActivityAccess
@@ -248,7 +248,7 @@ export function comLightningkiteKhrysalisAndroidActivityAccessRequestImagesGalle
         const fList = f.files;
         if (fList) {
             for (let i = 0; i < fList.length; i++) {
-                files.push(fList.item(i));
+                files.push(fList.item(i) as File);
             }
         }
         callback(files)
@@ -262,9 +262,11 @@ export function comLightningkiteKhrysalisAndroidActivityAccessRequestImageGaller
     f.type = "file";
     f.accept = "image/*";
     f.onchange = (e) => {
-        const file = f.files[0];
-        if (file) {
-            callback(file);
+        if(f.files){
+            const file = f.files[0];
+            if (file) {
+                callback(file);
+            }
         }
     };
     f.click();
@@ -277,9 +279,11 @@ export function comLightningkiteKhrysalisAndroidActivityAccessRequestImageCamera
     f.accept = "image/*";
     (f as any).capture = front ? "user" : "environment";
     f.onchange = (e) => {
-        const file = f.files[0];
-        if (file) {
-            callback(file);
+        if(f.files) {
+            const file = f.files[0];
+            if (file) {
+                callback(file);
+            }
         }
     };
     f.click();

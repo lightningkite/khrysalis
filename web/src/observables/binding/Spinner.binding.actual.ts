@@ -31,7 +31,7 @@ export function spinnerBindAdvanced<T>(this_: HTMLSelectElement, options: Observ
             }
         } else if (diff < 0) {
             for(let i = 0; i < -diff; i++){
-                const opt = this_.options.item(this_.options.length-1);
+                const opt = this_.options.item(this_.options.length-1) as HTMLOptionElement;
                 triggerDetatchEvent(opt);
                 this_.options.remove(this_.options.length-1);
                 observables.pop();
@@ -58,7 +58,7 @@ export function spinnerBindAdvanced<T>(this_: HTMLSelectElement, options: Observ
 
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>android.widget.Spinner
-export function spinnerBind<T>(this_: HTMLSelectElement, options: ObservableProperty<Array<T>>, selected: MutableObservableProperty<T>, toString: (a: T)=>string = (x)=>x?.toString() ?? "null"): void {
+export function spinnerBind<T>(this_: HTMLSelectElement, options: ObservableProperty<Array<T>>, selected: MutableObservableProperty<T>, toString: (a: T)=>string = (x)=> `${x}`): void {
     const observables = options.value.map((x) => {
         return new StandardObservableProperty(x)
     })
@@ -79,7 +79,7 @@ export function spinnerBind<T>(this_: HTMLSelectElement, options: ObservableProp
         } else if (diff < 0) {
             for(let i = 0; i < -diff; i++){
                 const opt = this_.options.item(this_.options.length-1);
-                triggerDetatchEvent(opt);
+                triggerDetatchEvent(opt as HTMLOptionElement);
                 this_.options.remove(this_.options.length-1);
                 observables.pop();
             }

@@ -19,7 +19,7 @@ class ImageReference extends Image {
     hashCode() {
         var _a, _b;
         let hash = 17;
-        hash = (_b = 31 * hash + ((_a = this.uri) === null || _a === void 0 ? void 0 : _a.hashCode())) !== null && _b !== void 0 ? _b : 0;
+        hash = 31 * hash + ((_b = (_a = this.uri) === null || _a === void 0 ? void 0 : _a.hashCode()) !== null && _b !== void 0 ? _b : 0);
         return hash;
     }
     equals(other) { return other instanceof ImageReference && this.uri === other.uri; }
@@ -36,7 +36,7 @@ class ImageImageBitmap extends Image {
     hashCode() {
         var _a, _b;
         let hash = 17;
-        hash = (_b = 31 * hash + ((_a = this.bitmap) === null || _a === void 0 ? void 0 : _a.hashCode())) !== null && _b !== void 0 ? _b : 0;
+        hash = 31 * hash + ((_b = (_a = this.bitmap) === null || _a === void 0 ? void 0 : _a.hashCode()) !== null && _b !== void 0 ? _b : 0);
         return hash;
     }
     equals(other) { return other instanceof ImageImageBitmap && Kotlin_1.safeEq(this.bitmap, other.bitmap); }
@@ -53,7 +53,7 @@ class ImageRaw extends Image {
     hashCode() {
         var _a, _b;
         let hash = 17;
-        hash = (_b = 31 * hash + ((_a = this.raw) === null || _a === void 0 ? void 0 : _a.hashCode())) !== null && _b !== void 0 ? _b : 0;
+        hash = 31 * hash + ((_b = (_a = this.raw) === null || _a === void 0 ? void 0 : _a.hashCode()) !== null && _b !== void 0 ? _b : 0);
         return hash;
     }
     equals(other) { return other instanceof ImageRaw && Kotlin_1.safeEq(this.raw, other.raw); }

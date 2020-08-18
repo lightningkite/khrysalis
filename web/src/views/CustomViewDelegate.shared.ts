@@ -28,13 +28,13 @@ export abstract class CustomViewDelegate {
     public sizeThatFitsWidth(width: number, height: number): number { return width; }
     public sizeThatFitsHeight(width: number, height: number): number { return height; }
     
-    public invalidate(): void { const temp190 = this.customView;
-        if(temp190 !== null) { 
-            customViewInvalidate(temp190)
+    public invalidate(): void { const temp204 = this.customView;
+        if(temp204 !== null) { 
+            customViewInvalidate(temp204)
     }; }
-    public postInvalidate(): void { const temp191 = this.customView;
-        if(temp191 !== null) { 
-            customViewInvalidate(temp191)
+    public postInvalidate(): void { const temp205 = this.customView;
+        if(temp205 !== null) { 
+            customViewInvalidate(temp205)
     }; }
     
     public readonly toDispose: Array<SubscriptionLike>;

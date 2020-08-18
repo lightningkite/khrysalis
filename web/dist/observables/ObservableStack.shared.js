@@ -4,8 +4,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // File: observables/ObservableStack.shared.kt
 // Package: com.lightningkite.khrysalis.observables
 const ObservableProperty_shared_1 = require("./ObservableProperty.shared");
-const rxjs_1 = require("rxjs");
 const Kotlin_1 = require("../Kotlin");
+const rxjs_1 = require("rxjs");
 //! Declares com.lightningkite.khrysalis.observables.ObservableStack
 class ObservableStack extends ObservableProperty_shared_1.ObservableProperty {
     constructor() {
@@ -41,6 +41,28 @@ class ObservableStack extends ObservableProperty_shared_1.ObservableProperty {
         this.stack.splice((this.stack.length - 1), 1)[0];
         this.onChange.next(this.stack);
         return true;
+    }
+    backPressPop() {
+        const last = (() => {
+            var _a;
+            const temp148 = this.stack;
+            return ((_a = temp148[temp148.length - 1]) !== null && _a !== void 0 ? _a : null);
+        })();
+        if (Kotlin_1.checkIsInterface(last, "ComLightningkiteKhrysalisViewsHasBackAction") && last.onBackPressed()) {
+            return true;
+        }
+        return this.pop();
+    }
+    backPressDismiss() {
+        const last = (() => {
+            var _a;
+            const temp149 = this.stack;
+            return ((_a = temp149[temp149.length - 1]) !== null && _a !== void 0 ? _a : null);
+        })();
+        if (Kotlin_1.checkIsInterface(last, "ComLightningkiteKhrysalisViewsHasBackAction") && last.onBackPressed()) {
+            return true;
+        }
+        return this.dismiss();
     }
     popTo(t) {
         let found = false;

@@ -301,8 +301,7 @@
   receiver: com.lightningkite.khrysalis.time.DateAlone
   template:
     pattern: |
-      copyDateAloneMod(~this~, function(newDay: number){
-        this as Date
+      copyDateAloneMod(~this~, function(this: Date, newDay: number){
         const diff = newDay - this.getDay();
         d.setDate(d.getDate() + diff);
       }, ~0~)
@@ -373,8 +372,7 @@
   receiver: com.lightningkite.khrysalis.time.DateAlone
   template:
     pattern: |
-      dateAloneMod(~this~, function(newDay: number){
-        this as Date
+      dateAloneMod(~this~, function(this: Date, newDay: number){
         const diff = newDay - this.getDay();
         this.setDate(this.getDate() + diff);
       }, ~0~)

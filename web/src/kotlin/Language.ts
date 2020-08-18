@@ -22,10 +22,11 @@ export class IllegalStateException extends Exception {}
 //! Declares java.lang.NoSuchElementException
 export class NoSuchElementException extends Exception {}
 
-export function hashString(item: string): number {
+export function hashString(item: string | null): number {
+    if(item == null) return 0
     let hash = 0, i, chr;
-    for (i = 0; i < this.length; i++) {
-        chr = this.charCodeAt(i);
+    for (i = 0; i < item.length; i++) {
+        chr = item.charCodeAt(i);
         hash = ((hash << 5) - hash) + chr;
         hash |= 0; // Convert to 32bit integer
     }

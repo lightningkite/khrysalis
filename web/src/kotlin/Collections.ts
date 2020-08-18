@@ -1,4 +1,4 @@
-import {hashAnything, safeEq} from "./Language";
+import {Exception, hashAnything, safeEq} from "./Language";
 import {filter, flatten, map} from "iterable-operator";
 import {kotlinCollectionsIterableJoinToString} from "./Iterables";
 
@@ -40,9 +40,17 @@ function getFullIter<T>(iter: Iterable<T>): IterableIterator<T> {
         }, next(args: any): IteratorResult<T, any> {
             return iterator.next(args);
         }, return(value: any): IteratorResult<T, any> {
-            return iterator.return(value);
+            if(iterator.return){
+                return iterator.return(value);
+            } else {
+                throw new Exception("Function not implemented in parent", undefined)
+            }
         }, throw(e: any): IteratorResult<T, any> {
-            return iterator.throw(e);
+            if(iterator.throw){
+                return iterator.throw(e);
+            } else {
+                throw new Exception("Function not implemented in parent", undefined)
+            }
         }
     }
 }
@@ -56,7 +64,7 @@ export class EqualOverrideSet<T extends Object> implements Set<T> {
         equaler: (k1: T, k2: T) => boolean = (k1, k2) => safeEq(k1, k2)
     ) {
         this.map = new EqualOverrideMap<T, T>(
-            map(items, (x) => [x, x]),
+            items ? map(items, (x) => [x, x]): [],
             hasher,
             equaler
         );
@@ -157,7 +165,7 @@ export class EqualOverrideMap<K extends Object, V> implements Map<K, V> {
     }
 
     private getMaybeListForHash(hash: number): Array<[K, V]> | null {
-        return this.internalEntries.get(hash)
+        return this.internalEntries.get(hash) ?? null
     }
 
     private getEntryFromList(list: Array<[K, V]>, key: K): [K, V] | null {
@@ -181,10 +189,10 @@ export class EqualOverrideMap<K extends Object, V> implements Map<K, V> {
         return this;
     }
 
-    get(key: K): V | null {
+    get(key: K): V | undefined {
         const list = this.getListForHash(this.hasher(key));
         const entry = this.getEntryFromList(list, key);
-        if (entry == null) return null;
+        if (entry == null) return undefined;
         return entry[1];
     }
 
@@ -303,7 +311,7 @@ Object.defineProperty(Array.prototype, "equals", {
 });
 
 export function listFilterNotNull<T>(array: Array<T | null>): Array<T> {
-    return array.filter((it: T | null) => it !== null)
+    return array.filter((it: T | null) => it !== null) as Array<T>
 }
 
 export function iterableFilterNotNull<T>(iterable: Iterable<T | null>): Iterable<T> {
@@ -352,6 +360,14 @@ export function iterLastOrNull<T>(iterable: Iterable<T>): (T | null) {
     return result;
 }
 
+export function iterCount<T>(iterable: Iterable<T>, func: (a: T)=>boolean): number {
+    let count = 0;
+    for (const item of iterable) {
+        if(func(item)) count++;
+    }
+    return count;
+}
+
 export function setAddCausedChange<T>(set: Set<T>, item: T): boolean {
     if (set.has(item)) return false;
     set.add(item);
@@ -361,7 +377,7 @@ export function setAddCausedChange<T>(set: Set<T>, item: T): boolean {
 //! Declares kotlin.collections.getOrPut
 export function kotlinCollectionsMutableMapGetOrPut<K, V>(map: Map<K, V>, key: K, valueGenerator: () => V): V {
     if (map.has(key)) {
-        return map.get(key)
+        return map.get(key) as V
     } else {
         const newValue = valueGenerator();
         map.set(key, newValue);

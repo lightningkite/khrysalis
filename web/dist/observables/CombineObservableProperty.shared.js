@@ -17,7 +17,10 @@ class CombineObservableProperty extends ObservableProperty_shared_1.ObservablePr
     //! Declares com.lightningkite.khrysalis.observables.CombineObservableProperty.value
     get value() { return this.combiner(this.observableA.value, this.observableB.value); }
     //! Declares com.lightningkite.khrysalis.observables.CombineObservableProperty.onChange
-    get onChange() { return rxjs_1.combineLatest([rxjs_1.concat(rxjs_1.of(this.observableA.value), this.observableA.onChange), rxjs_1.concat(rxjs_1.of(this.observableB.value), this.observableB.onChange)]).pipe(operators_1.map(x => ((a, b) => this.combiner(a, b))(x[0], x[1]))).pipe(operators_1.skip(0)); }
+    get onChange() {
+        const combinerCopy = this.combiner;
+        return rxjs_1.combineLatest([rxjs_1.concat(rxjs_1.of(this.observableA.value), this.observableA.onChange), rxjs_1.concat(rxjs_1.of(this.observableB.value), this.observableB.onChange)]).pipe(operators_1.map(x => ((a, b) => combinerCopy(a, b))(x[0], x[1]))).pipe(operators_1.skip(0));
+    }
 }
 exports.CombineObservableProperty = CombineObservableProperty;
 //! Declares com.lightningkite.khrysalis.observables.combine>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>

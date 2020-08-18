@@ -45,11 +45,14 @@ export function customViewSetDelegate(view: HTMLCanvasElement, delegate: CustomV
         const ctx = view.getContext("2d");
         view.width = view.offsetWidth;
         view.height = view.offsetHeight;
-        if(view.width > 2 && view.height > 2){
+        if(ctx && view.width > 2 && view.height > 2){
             delegate.draw(ctx, view.width, view.height, DisplayMetrics.INSTANCE);
         }
     } else {
-        view.parentElement?.appendChild(delegate.generateAccessibilityView());
+        const gen = delegate.generateAccessibilityView();
+        if(gen){
+            view.parentElement?.appendChild(gen);
+        }
     }
     view[customViewDelegateSymbol] = delegate;
 
@@ -57,13 +60,13 @@ export function customViewSetDelegate(view: HTMLCanvasElement, delegate: CustomV
         view[customViewConfiguredSymbol] = true;
         getAndroidViewViewRemoved(view).call(new DisposableLambda(()=>{
             view[customViewDelegateSymbol]?.dispose();
-            view[customViewDelegateSymbol] = null;
+            view[customViewDelegateSymbol] = undefined;
         }))
 
         const p = view.parentElement;
-        const adjWidth = !view.style.width && !(p.style.flexDirection == "column" && view.style.alignSelf == "stretch");
-        const adjHeight = !view.style.height && !(p.style.flexDirection == "row" && view.style.alignSelf == "stretch");
         if(p){
+            const adjWidth = !view.style.width && !(p.style.flexDirection == "column" && view.style.alignSelf == "stretch");
+            const adjHeight = !view.style.height && !(p.style.flexDirection == "row" && view.style.alignSelf == "stretch");
             const obs = new ResizeObserver(function callback(){
                 if(adjWidth){
                     view.style.width = delegate.sizeThatFitsWidth(p.scrollWidth, p.scrollHeight).toString() + "px";
@@ -88,7 +91,7 @@ export function customViewInvalidate(view: HTMLCanvasElement) {
         const ctx = view.getContext("2d");
         view.width = view.offsetWidth;
         view.height = view.offsetHeight;
-        if(view.width > 2 && view.height > 2){
+        if(ctx && view.width > 2 && view.height > 2){
             ctx.clearRect(0, 0, view.width, view.height);
             delegate.draw(ctx, view.width, view.height, DisplayMetrics.INSTANCE);
         }

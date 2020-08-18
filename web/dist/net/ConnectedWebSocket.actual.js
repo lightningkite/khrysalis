@@ -45,12 +45,12 @@ class ConnectedWebSocket {
     }
     complete() {
         var _a;
-        (_a = this.underlyingSocket) === null || _a === void 0 ? void 0 : _a.close(1000, null);
+        (_a = this.underlyingSocket) === null || _a === void 0 ? void 0 : _a.close(1000, undefined);
         this.closed = true;
     }
     next(t) {
-        var _a;
-        this.underlyingSocket.send((_a = t.text) !== null && _a !== void 0 ? _a : t.binary.buffer);
+        var _a, _b;
+        (_a = this.underlyingSocket) === null || _a === void 0 ? void 0 : _a.send((_b = t.text) !== null && _b !== void 0 ? _b : t.binary.buffer);
     }
     error(e) {
         var _a;

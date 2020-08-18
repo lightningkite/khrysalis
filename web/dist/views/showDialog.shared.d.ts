@@ -1,7 +1,7 @@
 import { ViewString } from './Strings.shared';
 import { StandardObservableProperty } from '../observables/StandardObservableProperty.shared';
 import { Subject } from 'rxjs';
-export declare const _lastDialog: StandardObservableProperty<DialogRequest>;
+export declare const _lastDialog: StandardObservableProperty<DialogRequest | null>;
 export declare function getLastDialog(): StandardObservableProperty<(DialogRequest | null)>;
 export declare const _showDialogEvent: Subject<DialogRequest>;
 export declare function getShowDialogEvent(): Subject<DialogRequest>;

@@ -6,4 +6,4 @@ export declare function comLightningkiteKhrysalisAndroidActivityAccessOpenMap(th
 export declare function comLightningkiteKhrysalisAndroidActivityAccessOpenEvent(this_: Window, title: string, description: string, location: string, start: Date, end: Date): void;
 export declare function comLightningkiteKhrysalisAndroidActivityAccessRequestImagesGallery(this_: Window, callback: (a: Array<File>) => void): void;
 export declare function comLightningkiteKhrysalisAndroidActivityAccessRequestImageGallery(this_: Window, callback: (a: File) => void): void;
-export declare function comLightningkiteKhrysalisAndroidActivityAccessRequestImageCamera(this_: Window, front: boolean, callback: (a: File) => void): void;
+export declare function comLightningkiteKhrysalisAndroidActivityAccessRequestImageCamera(this_: Window, front: boolean | undefined, callback: (a: File) => void): void;

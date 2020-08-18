@@ -8,7 +8,7 @@ export declare class TransformedMutableObservableProperty<A, B> extends MutableO
     update(): void;
     get value(): B;
     set value(value: B);
-    readonly onChange: Observable<B>;
+    get onChange(): Observable<B>;
 }
 export declare function comLightningkiteKhrysalisObservablesMutableObservablePropertyTransformed<T, B>(this_: MutableObservableProperty<T>, read: ((a: T) => B), write: ((a: B) => T)): MutableObservableProperty<B>;
 export declare function comLightningkiteKhrysalisObservablesMutableObservablePropertyMap<T, B>(this_: MutableObservableProperty<T>, read: ((a: T) => B), write: ((a: B) => T)): MutableObservableProperty<B>;

@@ -164,13 +164,13 @@
 # TODO: Could do removeAll
 
 # Extensions
-- id: kotlin.collections.indicies
+- id: kotlin.collections.indices
   type: get
   actualReceiver: kotlin.collections.List
   template:
-    pattern: range(0, ~this~.length-1)
+    pattern: iterRange(0, ~this~.length-1)
     imports:
-      range: iterable-operator
+      iterRange: range from iterable-operator
 - id: kotlin.collections.indexOfFirst
   type: call
   actualReceiver: kotlin.collections.List

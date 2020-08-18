@@ -62,7 +62,7 @@ function kotlinCollectionsIterableSingleOrNull(iter) {
 }
 exports.kotlinCollectionsIterableSingleOrNull = kotlinCollectionsIterableSingleOrNull;
 //! Declares kotlin.collections.joinToString
-function kotlinCollectionsIterableJoinToString(iter, separator = ", ", prefix = "", postfix = "", limit, truncated = "...", transform = (x) => x.toString()) {
+function kotlinCollectionsIterableJoinToString(iter, separator = ", ", prefix = "", postfix = "", limit, truncated = "...", transform = (x) => `${x}`) {
     let result = prefix;
     let count = 0;
     for (const item of iter) {

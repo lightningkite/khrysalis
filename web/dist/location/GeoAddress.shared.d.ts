@@ -1,7 +1,5 @@
 import { GeoCoordinate } from './GeoCoordinate.shared';
-import { Codable } from '../Codable.actual';
-export declare class GeoAddress implements Codable {
-    static implementsInterfaceComLightningkiteKhrysalisCodable: boolean;
+export declare class GeoAddress {
     readonly coordinate: (GeoCoordinate | null);
     readonly name: (string | null);
     readonly street: (string | null);

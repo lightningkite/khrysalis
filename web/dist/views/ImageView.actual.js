@@ -17,7 +17,10 @@ function androidWidgetImageViewLoadImage(this_, image) {
         else if (image instanceof Image_shared_1.ImageReference) {
             const reader = new FileReader();
             reader.onload = (e) => {
-                this_.src = e.target.result;
+                const reader = e.target;
+                if (reader !== null) {
+                    this_.src = reader.result;
+                }
             };
             reader.readAsDataURL(image.uri);
         }
@@ -25,8 +28,10 @@ function androidWidgetImageViewLoadImage(this_, image) {
             canvasElement.width = image.bitmap.width;
             canvasElement.height = image.bitmap.height;
             const ctx = canvasElement.getContext("2d");
-            ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-            ctx.drawImage(image.bitmap, 0, 0);
+            if (ctx) {
+                ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+                ctx.drawImage(image.bitmap, 0, 0);
+            }
             canvasElement.toBlob((blob) => {
                 const url = URL.createObjectURL(blob);
                 this_.src = url;

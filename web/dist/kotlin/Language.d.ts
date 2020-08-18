@@ -9,7 +9,7 @@ export declare class IllegalStateException extends Exception {
 }
 export declare class NoSuchElementException extends Exception {
 }
-export declare function hashString(item: string): number;
+export declare function hashString(item: string | null): number;
 export declare function hashAnything(item: any): number;
 export declare function safeEq(left: any, right: any): boolean;
 export declare function checkReified<T>(item: any, fullType: Array<any>): item is T;

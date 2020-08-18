@@ -2,11 +2,9 @@
 // File: location/GeoCoordinate.shared.kt
 // Package: com.lightningkite.khrysalis.location
 import { parse as parseJsonTyped } from '../net/jsonParsing'
-import { Codable } from '../Codable.actual'
 
 //! Declares com.lightningkite.khrysalis.location.GeoCoordinate
-export class GeoCoordinate implements Codable {
-    public static implementsInterfaceComLightningkiteKhrysalisCodable = true;
+export class GeoCoordinate {
     public readonly latitude: number;
     public readonly longitude: number;
     public constructor(latitude: number, longitude: number) {

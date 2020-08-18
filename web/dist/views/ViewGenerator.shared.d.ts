@@ -1,12 +1,13 @@
+import { ViewString } from './Strings.shared';
 export declare abstract class ViewGenerator {
     protected constructor();
-    abstract readonly title: string;
+    get title(): string;
+    get titleString(): ViewString;
     abstract generate(dependency: Window): HTMLElement;
 }
 export declare namespace ViewGenerator {
     class Default extends ViewGenerator {
         constructor();
-        get title(): string;
         generate(dependency: Window): HTMLElement;
     }
 }

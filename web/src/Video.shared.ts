@@ -17,7 +17,7 @@ export class VideoReference extends Video {
     }
     public hashCode(): number {
         let hash = 17;
-        hash = 31 * hash + this.uri?.hashCode() ?? 0;
+        hash = 31 * hash + (this.uri?.hashCode() ?? 0);
         return hash;
     }
     public equals(other: any): boolean { return other instanceof VideoReference && this.uri === other.uri }

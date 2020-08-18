@@ -15,8 +15,8 @@ export class PointF {
             this.x = x as number;
             this.y = y;
         } else if(x){
-            this.x = (x as DOMPointInit).x
-            this.y = (x as DOMPointInit).y
+            this.x = (x as DOMPointInit).x ?? 0
+            this.y = (x as DOMPointInit).y ?? 0
         }
     }
 }

@@ -12,7 +12,7 @@ export declare class TimeAlone {
     static Companion: {
         new (): {
             now(): TimeAlone;
-            iso(string: string): TimeAlone;
+            iso(string: string): TimeAlone | null;
             readonly min: TimeAlone;
             readonly midnight: TimeAlone;
             readonly noon: TimeAlone;
@@ -20,7 +20,7 @@ export declare class TimeAlone {
         };
         INSTANCE: {
             now(): TimeAlone;
-            iso(string: string): TimeAlone;
+            iso(string: string): TimeAlone | null;
             readonly min: TimeAlone;
             readonly midnight: TimeAlone;
             readonly noon: TimeAlone;

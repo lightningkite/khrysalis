@@ -74,10 +74,10 @@ export function comLightningkiteKhrysalisViewsAndroidDateButtonBindDateAlone(thi
     this_.onchange = (e) => {
         if(suppress) return;
         suppress = true;
-        try {
-            const d = DateAlone.Companion.INSTANCE.iso(this_.value);
+        const d = DateAlone.Companion.INSTANCE.iso(this_.value);
+        if(d){
             date.value = d;
-        } catch(e){
+        } else {
             console.warn("Failed to parse " + this_.value)
             console.warn(e);
         }
@@ -98,10 +98,10 @@ export function comLightningkiteKhrysalisViewsAndroidTimeButtonBindTimeAlone(thi
     this_.onchange = (e) => {
         if(suppress) return;
         suppress = true;
-        try {
-            const d = TimeAlone.Companion.INSTANCE.iso(this_.value);
+        const d = TimeAlone.Companion.INSTANCE.iso(this_.value);
+        if(d){
             date.value = d;
-        } catch(e){
+        } else {
             console.warn("Failed to parse " + this_.value)
             console.warn(e);
         }

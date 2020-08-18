@@ -16,7 +16,7 @@ class RxTransformationOnlyObservableProperty<T>(
 }
 
 @SwiftExtensionWhere("T: Equatable")
-fun <T> ObservableProperty<T>.distinctUntilChanged(): ObservableProperty<T> = plusRx { it.startWith(Box.wrap(value)).distinctUntilChanged().skip(1) }
+fun <T> ObservableProperty<T>.distinctUntilChanged(): ObservableProperty<T> = this.plusRx { it.startWith(Box.wrap(value)).distinctUntilChanged().skip(1) }
 
 fun <T> ObservableProperty<T>.plusRx(operator: @Escaping() (Observable<Box<T>>) -> Observable<Box<T>>): ObservableProperty<T> {
     return RxTransformationOnlyObservableProperty<T>(this, operator)

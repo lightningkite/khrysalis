@@ -43,15 +43,25 @@ function getFullIter(iter) {
         }, next(args) {
             return iterator.next(args);
         }, return(value) {
-            return iterator.return(value);
+            if (iterator.return) {
+                return iterator.return(value);
+            }
+            else {
+                throw new Language_1.Exception("Function not implemented in parent", undefined);
+            }
         }, throw(e) {
-            return iterator.throw(e);
+            if (iterator.throw) {
+                return iterator.throw(e);
+            }
+            else {
+                throw new Language_1.Exception("Function not implemented in parent", undefined);
+            }
         }
     };
 }
 class EqualOverrideSet {
     constructor(items, hasher = (k) => Language_1.hashAnything(k), equaler = (k1, k2) => Language_1.safeEq(k1, k2)) {
-        this.map = new EqualOverrideMap(iterable_operator_1.map(items, (x) => [x, x]), hasher, equaler);
+        this.map = new EqualOverrideMap(items ? iterable_operator_1.map(items, (x) => [x, x]) : [], hasher, equaler);
     }
     add(element) {
         this.map.set(element, element);
@@ -121,7 +131,8 @@ class EqualOverrideMap {
         return e;
     }
     getMaybeListForHash(hash) {
-        return this.internalEntries.get(hash);
+        var _a;
+        return (_a = this.internalEntries.get(hash)) !== null && _a !== void 0 ? _a : null;
     }
     getEntryFromList(list, key) {
         for (const entry of list) {
@@ -147,7 +158,7 @@ class EqualOverrideMap {
         const list = this.getListForHash(this.hasher(key));
         const entry = this.getEntryFromList(list, key);
         if (entry == null)
-            return null;
+            return undefined;
         return entry[1];
     }
     has(key) {
@@ -282,6 +293,15 @@ function iterLastOrNull(iterable) {
     return result;
 }
 exports.iterLastOrNull = iterLastOrNull;
+function iterCount(iterable, func) {
+    let count = 0;
+    for (const item of iterable) {
+        if (func(item))
+            count++;
+    }
+    return count;
+}
+exports.iterCount = iterCount;
 function setAddCausedChange(set, item) {
     if (set.has(item))
         return false;

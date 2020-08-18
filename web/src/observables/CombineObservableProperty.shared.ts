@@ -21,12 +21,16 @@ export class CombineObservableProperty<T, A, B> extends ObservableProperty<T> {
     public get value(): T { return this.combiner(this.observableA.value, this.observableB.value); }
     
     //! Declares com.lightningkite.khrysalis.observables.CombineObservableProperty.onChange
-    public get onChange(): Observable<T> { return rxCombineLatest([rxConcat(rxOf(this.observableA.value), this.observableA.onChange), rxConcat(rxOf(this.observableB.value), this.observableB.onChange)]).pipe(rxMap(x => ((a: A, b: B): (T | null) => this.combiner(a, b))(x[0], x[1]))).pipe(rxSkip(0)); }
+    public get onChange(): Observable<T> {
+        const combinerCopy = this.combiner;
+        
+        return rxCombineLatest([rxConcat(rxOf(this.observableA.value), this.observableA.onChange), rxConcat(rxOf(this.observableB.value), this.observableB.onChange)]).pipe(rxMap(x => ( (a: A, b: B): T => combinerCopy(a, b))(x[0], x[1]))).pipe(rxSkip(0));
+    }
     
 }
 
 //! Declares com.lightningkite.khrysalis.observables.combine>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
 export function comLightningkiteKhrysalisObservablesObservablePropertyCombine<T, B, C>(this_: ObservableProperty<T>, other: ObservableProperty<B>, combiner:  ((a: T, b: B) => C)): ObservableProperty<C> {
-    return new CombineObservableProperty<(C | null), (T | null), (B | null)>(this_, other, combiner);
+    return new CombineObservableProperty<C, T, B>(this_, other, combiner);
 }
 

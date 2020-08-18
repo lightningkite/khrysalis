@@ -7,7 +7,7 @@ import {comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy} from 
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>android.widget.AutoCompleteTextView
 export function androidWidgetAutoCompleteTextViewBind<T>(this_: HTMLInputElement, options: ObservableProperty<Array<T>>, toString: (a: T) => string, onItemSelected: (a: T) => void): void {
-    const container = this_.parentElement;
+    const container = this_.parentElement as HTMLElement;
     let selectionView: HTMLDivElement | null = null;
 
     function removeOptions(){

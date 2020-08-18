@@ -7,6 +7,7 @@ export declare class Align {
     private static _values;
     static values(): Array<Align>;
     readonly name: string;
+    readonly jsonName: string;
     static valueOf(name: string): Align;
     toString(): string;
     toJSON(): string;

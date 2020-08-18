@@ -14,14 +14,14 @@ export declare class DateAlone {
             now(): DateAlone;
             readonly farPast: DateAlone;
             readonly farFuture: DateAlone;
-            iso(string: string): DateAlone;
+            iso(string: string): DateAlone | null;
             fromMonthInEra(monthInEra: number): DateAlone;
         };
         INSTANCE: {
             now(): DateAlone;
             readonly farPast: DateAlone;
             readonly farFuture: DateAlone;
-            iso(string: string): DateAlone;
+            iso(string: string): DateAlone | null;
             fromMonthInEra(monthInEra: number): DateAlone;
         };
     };

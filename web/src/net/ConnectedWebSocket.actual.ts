@@ -48,12 +48,12 @@ export class ConnectedWebSocket implements Observer<WebSocketFrame>, Unsubscriba
     closed: boolean = false;
     
     public complete() {
-        this.underlyingSocket?.close(1000, null);
+        this.underlyingSocket?.close(1000, undefined);
         this.closed = true;
     }
     
     public next(t: WebSocketFrame) {
-        this.underlyingSocket.send(t.text ?? t.binary.buffer)
+        this.underlyingSocket?.send(t.text ?? (t.binary as Int8Array).buffer)
     }
     
     public error(e: any) {

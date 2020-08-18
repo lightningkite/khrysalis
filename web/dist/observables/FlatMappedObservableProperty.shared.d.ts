@@ -8,6 +8,7 @@ export declare class FlatMappedObservableProperty<A, B> extends ObservableProper
     get value(): B;
     get onChange(): Observable<B>;
 }
+export declare function comLightningkiteKhrysalisObservablesObservablePropertySwitchMap<T, B>(this_: ObservableProperty<T>, transformation: ((a: T) => ObservableProperty<B>)): FlatMappedObservableProperty<T, B>;
 export declare function comLightningkiteKhrysalisObservablesObservablePropertyFlatMap<T, B>(this_: ObservableProperty<T>, transformation: ((a: T) => ObservableProperty<B>)): FlatMappedObservableProperty<T, B>;
 export declare class MutableFlatMappedObservableProperty<A, B> extends MutableObservableProperty<B> {
     readonly basedOn: ObservableProperty<A>;
@@ -19,4 +20,5 @@ export declare class MutableFlatMappedObservableProperty<A, B> extends MutableOb
     get onChange(): Observable<B>;
     update(): void;
 }
+export declare function comLightningkiteKhrysalisObservablesObservablePropertySwitchMapMutable<T, B>(this_: ObservableProperty<T>, transformation: ((a: T) => MutableObservableProperty<B>)): MutableFlatMappedObservableProperty<T, B>;
 export declare function comLightningkiteKhrysalisObservablesObservablePropertyFlatMapMutable<T, B>(this_: ObservableProperty<T>, transformation: ((a: T) => MutableObservableProperty<B>)): MutableFlatMappedObservableProperty<T, B>;

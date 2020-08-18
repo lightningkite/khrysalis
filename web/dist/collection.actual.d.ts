@@ -1,6 +1,6 @@
 import { Comparable } from './Kotlin';
-export declare function kotlinCollectionsListBinarySearch<T>(self: Array<T>, fromIndex: number, toIndex: number, comparison: (a: T) => number): number;
-export declare function kotlinCollectionsListBinarySearchBy<T, K extends Comparable<K>>(self: Array<T>, key: K | null, fromIndex: number, toIndex: number, selector: (a: T) => (K | null)): number;
+export declare function kotlinCollectionsListBinarySearch<T>(self: Array<T>, fromIndex: number | undefined, toIndex: number | undefined, comparison: (a: T) => number): number;
+export declare function kotlinCollectionsListBinarySearchBy<T, K extends Comparable<K>>(self: Array<T>, key: K | null, fromIndex: number | undefined, toIndex: number | undefined, selector: (a: T) => (K | null)): number;
 export declare function kotlinCollectionsListWithoutIndex<T>(this_WithoutIndex: Array<T>, index: number): Array<T>;
 export declare function kotlinCollectionsIterableSumByLong<T>(this_SumByLong: Iterable<T>, selector: (a: T) => number): number;
 export declare function kotlinCollectionsMutableListBinaryInsertBy<T, K extends Comparable<K>>(this_BinaryInsertBy: Array<T>, item: T, selector: (a: T) => (K | null)): void;

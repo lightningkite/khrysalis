@@ -19,16 +19,16 @@ class CustomViewDelegate {
     sizeThatFitsWidth(width, height) { return width; }
     sizeThatFitsHeight(width, height) { return height; }
     invalidate() {
-        const temp190 = this.customView;
-        if (temp190 !== null) {
-            CustomView_actual_1.customViewInvalidate(temp190);
+        const temp204 = this.customView;
+        if (temp204 !== null) {
+            CustomView_actual_1.customViewInvalidate(temp204);
         }
         ;
     }
     postInvalidate() {
-        const temp191 = this.customView;
-        if (temp191 !== null) {
-            CustomView_actual_1.customViewInvalidate(temp191);
+        const temp205 = this.customView;
+        if (temp205 !== null) {
+            CustomView_actual_1.customViewInvalidate(temp205);
         }
         ;
     }

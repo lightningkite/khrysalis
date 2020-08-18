@@ -15,7 +15,6 @@ export class TransformedMutableObservableProperty<A, B> extends MutableObservabl
         this.basedOn = basedOn;
         this.read = read;
         this.write = write;
-        this.onChange = this.basedOn.onChange.pipe(rxMap((it: (A | null)): ((B | null) | null) => this.read(it)));
     }
     
     public update(): void {
@@ -30,7 +29,12 @@ export class TransformedMutableObservableProperty<A, B> extends MutableObservabl
         this.basedOn.value = this.write(value);
     }
     
-    public readonly onChange: Observable<B>;
+    //! Declares com.lightningkite.khrysalis.observables.TransformedMutableObservableProperty.onChange
+    public get onChange(): Observable<B> {
+        const readCopy = this.read;
+        
+        return this.basedOn.onChange.pipe(rxMap((it: A): B => readCopy(it)));
+    }
     
 }
 

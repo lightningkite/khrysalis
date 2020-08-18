@@ -22,7 +22,7 @@ export class LocationResult {
     }
     public hashCode(): number {
         let hash = 17;
-        hash = 31 * hash + this.coordinate?.hashCode() ?? 0;
+        hash = 31 * hash + (this.coordinate?.hashCode() ?? 0);
         hash = 31 * hash + Math.floor(this.accuracyMeters);
         hash = 31 * hash + Math.floor(this.altitudeMeters);
         hash = 31 * hash + Math.floor(this.altitudeAccuracyMeters);

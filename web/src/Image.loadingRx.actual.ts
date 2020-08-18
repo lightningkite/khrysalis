@@ -23,6 +23,8 @@ export function comLightningkiteKhrysalisImageLoad(this_: Image): Observable<Ima
                     return rxFrom(fetch(this_.url))
                         .pipe(flatMap((x) => { return x.blob() }))
                         .pipe(flatMap((x) => { return createImageBitmap(x); }))
+                } else {
+                    return throwError(new Exception("This shouldn't be possible - got an image object of an unknown type.", null))
                 }
             })()
         } catch (_e) {

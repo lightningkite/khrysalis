@@ -250,6 +250,20 @@
     imports:
       rxTap: tap from rxjs/operators
 
+- id: io.reactivex.Observable.doOnSubscribe
+  type: call
+  template:
+    pattern: ~this~.pipe(rxDoOnSubscribe(~0~))
+    imports:
+      rxDoOnSubscribe: doOnSubscribe from khrysalis/dist/rx/RxActual.actual
+
+- id: io.reactivex.Observable.doOnDispose
+  type: call
+  template:
+    pattern: ~this~.pipe(rxDoOnDispose(~0~))
+    imports:
+      rxDoOnDispose: doOnDispose from khrysalis/dist/rx/RxActual.actual
+
 - id: io.reactivex.Observable.doOnError
   type: call
   template:
@@ -300,6 +314,13 @@
     imports:
       rxPublish: publish from rxjs/operators
 
+- id: io.reactivex.Observable.share
+  type: call
+  template:
+    pattern: ~this~.pipe(rxShare())
+    imports:
+      rxShare: share from rxjs/operators
+
 - id: io.reactivex.observables.ConnectableObservable.refCount
   type: call
   template:
@@ -335,6 +356,18 @@
   template: ~this~.error(~0~)
 
 - id: io.reactivex.Observer.onComplete
+  type: call
+  template: ~this~.complete()
+
+- id: io.reactivex.Emitter.onNext
+  type: call
+  template: ~this~.next(~0~)
+
+- id: io.reactivex.Emitter.onError
+  type: call
+  template: ~this~.error(~0~)
+
+- id: io.reactivex.Emitter.onComplete
   type: call
   template: ~this~.complete()
 

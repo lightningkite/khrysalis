@@ -37,8 +37,8 @@ function parse(item, asType) {
             if (mainType.fromJson) {
                 return mainType.fromJson(item, ...asType.slice(1));
             }
-            else if (mainType.values) {
-                return iterable_operator_1.find(mainType.values(), (x) => x.name.toLowerCase() == item.toLowerCase());
+            else if (mainType._values) {
+                return iterable_operator_1.find(mainType._values, (x) => x.jsonName.toLowerCase() == item.toLowerCase());
             }
             else {
                 throw `Not sure how to parse something of type ${mainType} - 'fromJson' is missing!`;

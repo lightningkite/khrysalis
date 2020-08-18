@@ -13,6 +13,10 @@ class HttpClient {
         this.PUT = "PUT";
         this.PATCH = "PATCH";
         this.DELETE = "DELETE";
+        //--- HttpClient.ioScheduler
+        this.ioScheduler = null;
+        //--- HttpClient.responseScheduler
+        this.responseScheduler = null;
     }
     call(url, method = HttpClient.INSTANCE.GET, headers = new Map([]), body = null) {
         let h = new Array(...headers.entries());

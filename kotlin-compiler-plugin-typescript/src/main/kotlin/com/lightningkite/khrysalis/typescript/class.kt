@@ -457,9 +457,9 @@ fun TypescriptTranslator.registerClass() {
                             -param.nameIdentifier
                             -")"
                         } else {
-                            -"this."
+                            -"(this."
                             -param.nameIdentifier
-                            -"?.hashCode() ?? 0"
+                            -"?.hashCode() ?? 0)"
                         }
                     }
                     -";\n"

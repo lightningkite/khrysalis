@@ -21,8 +21,17 @@ export class FlatMappedObservableProperty<A, B> extends ObservableProperty<B> {
     public get value(): B { return this.transformation(this.basedOn.value).value; }
     
     //! Declares com.lightningkite.khrysalis.observables.FlatMappedObservableProperty.onChange
-    public get onChange(): Observable<B> { return getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this.basedOn).pipe(rxSwitchMap((it: (A | null)): (ObservableInput<((B | null) | null)> | null) => getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this.transformation(it)))).pipe(rxSkip(0)); }
+    public get onChange(): Observable<B> {
+        const transformCopy = this.transformation;
+        
+        return getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this.basedOn).pipe(rxSwitchMap((it: A): ObservableInput<B> => getComLightningkiteKhrysalisObservablesObservablePropertyObservable(transformCopy(it)))).pipe(rxSkip(0));
+    }
     
+}
+
+//! Declares com.lightningkite.khrysalis.observables.switchMap>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
+export function comLightningkiteKhrysalisObservablesObservablePropertySwitchMap<T, B>(this_: ObservableProperty<T>, transformation:  ((a: T) => ObservableProperty<B>)): FlatMappedObservableProperty<T, B> {
+    return new FlatMappedObservableProperty<T, B>(this_, transformation);
 }
 
 //! Declares com.lightningkite.khrysalis.observables.flatMap>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
@@ -52,17 +61,28 @@ export class MutableFlatMappedObservableProperty<A, B> extends MutableObservable
     
     
     //! Declares com.lightningkite.khrysalis.observables.MutableFlatMappedObservableProperty.onChange
-    public get onChange(): Observable<B> { return getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this.basedOn).pipe(rxSwitchMap((it: A): (ObservableInput<((B | null) | null)> | null) => {
-                    const prop = this.transformation(it);
+    public get onChange(): Observable<B> {
+        const transformCopy = this.transformation;
+        
+        return getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this.basedOn).pipe(rxSwitchMap( (it: A): ObservableInput<B> => {
+                    const prop = transformCopy(it);
                     
-                    this.lastProperty = prop;
+                    if(this !== null) {
+                        this.lastProperty = prop
+                    };
                     return getComLightningkiteKhrysalisObservablesObservablePropertyObservable(prop);
-    })).pipe(rxSkip(0)); }
+        })).pipe(rxSkip(0));
+    }
     
     
     public update(): void {
         this.lastProperty?.update();
     }
+}
+
+//! Declares com.lightningkite.khrysalis.observables.switchMapMutable>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
+export function comLightningkiteKhrysalisObservablesObservablePropertySwitchMapMutable<T, B>(this_: ObservableProperty<T>, transformation:  ((a: T) => MutableObservableProperty<B>)): MutableFlatMappedObservableProperty<T, B> {
+    return new MutableFlatMappedObservableProperty<T, B>(this_, transformation);
 }
 
 //! Declares com.lightningkite.khrysalis.observables.flatMapMutable>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>

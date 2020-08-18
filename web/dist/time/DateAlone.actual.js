@@ -73,7 +73,7 @@ function comLightningkiteKhrysalisTimeDateAloneSetDayOfWeek(this_, value) {
     this_.year = usableDate.getFullYear();
     this_.month = usableDate.getMonth();
     this_.day = usableDate.getDate();
-    return this;
+    return this_;
 }
 exports.comLightningkiteKhrysalisTimeDateAloneSetDayOfWeek = comLightningkiteKhrysalisTimeDateAloneSetDayOfWeek;
 //! Declares com.lightningkite.khrysalis.time.setAddDayOfWeek
@@ -82,7 +82,7 @@ function comLightningkiteKhrysalisTimeDateAloneSetAddDayOfWeek(this_, value) {
     this_.year = usableDate.getFullYear();
     this_.month = usableDate.getMonth();
     this_.day = usableDate.getDate();
-    return this;
+    return this_;
 }
 exports.comLightningkiteKhrysalisTimeDateAloneSetAddDayOfWeek = comLightningkiteKhrysalisTimeDateAloneSetAddDayOfWeek;
 //! Declares com.lightningkite.khrysalis.time.dayOfWeek

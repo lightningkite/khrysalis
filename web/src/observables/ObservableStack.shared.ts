@@ -2,8 +2,9 @@
 // File: observables/ObservableStack.shared.kt
 // Package: com.lightningkite.khrysalis.observables
 import { ObservableProperty } from './ObservableProperty.shared'
+import { NumberRange, checkIsInterface } from '../Kotlin'
+import { HasBackAction } from '../views/HasBackAction.shared'
 import { Subject } from 'rxjs'
-import { NumberRange } from '../Kotlin'
 
 //! Declares com.lightningkite.khrysalis.observables.ObservableStack
 export class ObservableStack<T extends object> extends ObservableProperty<Array<T>> {
@@ -54,6 +55,26 @@ export class ObservableStack<T extends object> extends ObservableProperty<Array<
         this.stack.splice((this.stack.length - 1), 1)[0];
         this.onChange.next(this.stack);
         return true;
+    }
+    
+    public backPressPop(): boolean {
+        const last = ((): (T | null) => {
+                const temp148 = this.stack;
+                return (temp148[temp148.length - 1] ?? null)
+        })();
+        
+        if (checkIsInterface<HasBackAction>(last, "ComLightningkiteKhrysalisViewsHasBackAction") && last.onBackPressed()) { return true }
+        return this.pop();
+    }
+    
+    public backPressDismiss(): boolean {
+        const last = ((): (T | null) => {
+                const temp149 = this.stack;
+                return (temp149[temp149.length - 1] ?? null)
+        })();
+        
+        if (checkIsInterface<HasBackAction>(last, "ComLightningkiteKhrysalisViewsHasBackAction") && last.onBackPressed()) { return true }
+        return this.dismiss();
     }
     
     public popTo(t: T): void {

@@ -25,7 +25,7 @@ export class HttpBodyPart {
 
 //! Declares com.lightningkite.khrysalis.net.toJsonHttpBody
 export function kotlinAnyToJsonHttpBody(this_: Codable): HttpBody {
-    return new HttpBody(JSON.stringify(this), HttpMediaTypes.INSTANCE.JSON);
+    return new HttpBody(JSON.stringify(this_), HttpMediaTypes.INSTANCE.JSON);
 }
 
 //! Declares com.lightningkite.khrysalis.net.toHttpBody
@@ -49,9 +49,9 @@ export function multipartFormBody(...parts: HttpBodyPart[]): HttpBody {
     const data = new FormData();
     for(const part of parts){
         if(part.body != null){
-            data.append(part.name, part.body, part.filename);
+            data.append(part.name, part.body, part.filename ?? "file");
         } else {
-            data.append(part.name, part.value);
+            data.append(part.name, part.value as string);
         }
     }
     return new HttpBody(
@@ -64,10 +64,10 @@ export function multipartFormFilePart(name: string, valueOrFilename?: string, bo
     const result = new HttpBodyPart();
     result.name = name;
     if(body){
-        result.filename = valueOrFilename;
+        result.filename = valueOrFilename ?? null;
         result.body = body;
     } else {
-        result.value = valueOrFilename;
+        result.value = valueOrFilename ?? null;
     }
     return result;
 }

@@ -34,12 +34,15 @@ function customViewSetDelegate(view, delegate) {
         const ctx = view.getContext("2d");
         view.width = view.offsetWidth;
         view.height = view.offsetHeight;
-        if (view.width > 2 && view.height > 2) {
+        if (ctx && view.width > 2 && view.height > 2) {
             delegate.draw(ctx, view.width, view.height, DisplayMetrics_actual_1.DisplayMetrics.INSTANCE);
         }
     }
     else {
-        (_b = view.parentElement) === null || _b === void 0 ? void 0 : _b.appendChild(delegate.generateAccessibilityView());
+        const gen = delegate.generateAccessibilityView();
+        if (gen) {
+            (_b = view.parentElement) === null || _b === void 0 ? void 0 : _b.appendChild(gen);
+        }
     }
     view[customViewDelegateSymbol] = delegate;
     if (!view[customViewConfiguredSymbol]) {
@@ -47,12 +50,12 @@ function customViewSetDelegate(view, delegate) {
         DisposeCondition_actual_1.getAndroidViewViewRemoved(view).call(new DisposeCondition_actual_1.DisposableLambda(() => {
             var _a;
             (_a = view[customViewDelegateSymbol]) === null || _a === void 0 ? void 0 : _a.dispose();
-            view[customViewDelegateSymbol] = null;
+            view[customViewDelegateSymbol] = undefined;
         }));
         const p = view.parentElement;
-        const adjWidth = !view.style.width && !(p.style.flexDirection == "column" && view.style.alignSelf == "stretch");
-        const adjHeight = !view.style.height && !(p.style.flexDirection == "row" && view.style.alignSelf == "stretch");
         if (p) {
+            const adjWidth = !view.style.width && !(p.style.flexDirection == "column" && view.style.alignSelf == "stretch");
+            const adjHeight = !view.style.height && !(p.style.flexDirection == "row" && view.style.alignSelf == "stretch");
             const obs = new ResizeObserver(function callback() {
                 if (adjWidth) {
                     view.style.width = delegate.sizeThatFitsWidth(p.scrollWidth, p.scrollHeight).toString() + "px";
@@ -78,7 +81,7 @@ function customViewInvalidate(view) {
         const ctx = view.getContext("2d");
         view.width = view.offsetWidth;
         view.height = view.offsetHeight;
-        if (view.width > 2 && view.height > 2) {
+        if (ctx && view.width > 2 && view.height > 2) {
             ctx.clearRect(0, 0, view.width, view.height);
             delegate.draw(ctx, view.width, view.height, DisplayMetrics_actual_1.DisplayMetrics.INSTANCE);
         }

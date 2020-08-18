@@ -48,7 +48,7 @@ function swapViewSwap(view, to, animation) {
         view.style.visibility = "hidden";
         console.log("Hiding myself... I'm shy");
     }
-    view[previousViewSymbol] = to;
+    view[previousViewSymbol] = to !== null && to !== void 0 ? to : undefined;
 }
 exports.swapViewSwap = swapViewSwap;
 //# sourceMappingURL=SwapView.js.map

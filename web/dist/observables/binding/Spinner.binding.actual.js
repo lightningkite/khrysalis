@@ -50,7 +50,7 @@ function spinnerBindAdvanced(this_, options, selected, makeView) {
 }
 exports.spinnerBindAdvanced = spinnerBindAdvanced;
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>android.widget.Spinner
-function spinnerBind(this_, options, selected, toString = (x) => { var _a; return (_a = x === null || x === void 0 ? void 0 : x.toString()) !== null && _a !== void 0 ? _a : "null"; }) {
+function spinnerBind(this_, options, selected, toString = (x) => `${x}`) {
     const observables = options.value.map((x) => {
         return new StandardObservableProperty_shared_1.StandardObservableProperty(x);
     });

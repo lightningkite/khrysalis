@@ -18,7 +18,7 @@ class LocationResult {
     hashCode() {
         var _a, _b;
         let hash = 17;
-        hash = (_b = 31 * hash + ((_a = this.coordinate) === null || _a === void 0 ? void 0 : _a.hashCode())) !== null && _b !== void 0 ? _b : 0;
+        hash = 31 * hash + ((_b = (_a = this.coordinate) === null || _a === void 0 ? void 0 : _a.hashCode()) !== null && _b !== void 0 ? _b : 0);
         hash = 31 * hash + Math.floor(this.accuracyMeters);
         hash = 31 * hash + Math.floor(this.altitudeMeters);
         hash = 31 * hash + Math.floor(this.altitudeAccuracyMeters);

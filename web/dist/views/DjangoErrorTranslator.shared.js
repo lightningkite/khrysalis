@@ -51,7 +51,7 @@ class DjangoErrorTranslator {
             case 4:
                 const errorJson = (() => {
                     if (error !== null) {
-                        Codable_actual_1.kotlinStringFromJsonStringUntyped(error);
+                        return Codable_actual_1.kotlinStringFromJsonStringUntyped(error);
                     }
                     else {
                         return null;

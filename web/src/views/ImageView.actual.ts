@@ -16,15 +16,20 @@ export function androidWidgetImageViewLoadImage(this_: HTMLImageElement, image: 
         } else if (image instanceof ImageReference) {
             const reader = new FileReader();
             reader.onload = (e) => {
-                this_.src = e.target.result as string;
+                const reader = e.target;
+                if(reader !== null){
+                    this_.src = reader.result as string;
+                }
             }
             reader.readAsDataURL(image.uri)
         } else if (image instanceof ImageImageBitmap) {
             canvasElement.width = image.bitmap.width;
             canvasElement.height = image.bitmap.height;
             const ctx = canvasElement.getContext("2d");
-            ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
-            ctx.drawImage(image.bitmap, 0, 0);
+            if(ctx){
+                ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+                ctx.drawImage(image.bitmap, 0, 0);
+            }
             canvasElement.toBlob((blob)=>{
                 const url = URL.createObjectURL(blob);
                 this_.src = url;

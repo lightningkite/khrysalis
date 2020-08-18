@@ -13,7 +13,6 @@ export class TransformedObservableProperty<A, B> extends ObservableProperty<B> {
         super();
         this.basedOn = basedOn;
         this.read = read;
-        this.onChange = this.basedOn.onChange.pipe(rxMap((it: (A | null)): ((B | null) | null) => this.read(it)));
     }
     
     //! Declares com.lightningkite.khrysalis.observables.TransformedObservableProperty.value
@@ -21,7 +20,12 @@ export class TransformedObservableProperty<A, B> extends ObservableProperty<B> {
         return this.read(this.basedOn.value);
     }
     
-    public readonly onChange: Observable<B>;
+    //! Declares com.lightningkite.khrysalis.observables.TransformedObservableProperty.onChange
+    public get onChange(): Observable<B> {
+        const readCopy = this.read;
+        
+        return this.basedOn.onChange.pipe(rxMap((it: A): B => readCopy(it)));
+    }
     
 }
 

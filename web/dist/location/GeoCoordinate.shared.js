@@ -30,5 +30,4 @@ class GeoCoordinate {
     copy(latitude = this.latitude, longitude = this.longitude) { return new GeoCoordinate(latitude, longitude); }
 }
 exports.GeoCoordinate = GeoCoordinate;
-GeoCoordinate.implementsInterfaceComLightningkiteKhrysalisCodable = true;
 //# sourceMappingURL=GeoCoordinate.shared.js.map

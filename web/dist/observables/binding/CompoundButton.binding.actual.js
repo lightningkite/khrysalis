@@ -5,20 +5,21 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // Package: com.lightningkite.khrysalis.observables.binding
 const ObservableProperty_ext_shared_1 = require("../ObservableProperty.ext.shared");
 const DisposeCondition_actual_1 = require("../../rx/DisposeCondition.actual");
+const Language_1 = require("../../kotlin/Language");
 //! Declares com.lightningkite.khrysalis.observables.binding.bindSelect>android.widget.CompoundButton
 function androidWidgetCompoundButtonBindSelect(this_, value, observable) {
     DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (it) => {
-        const shouldBeChecked = it.equals(value);
+        const shouldBeChecked = Language_1.safeEq(it, value);
         if (!(this_.checked === shouldBeChecked)) {
             this_.checked = shouldBeChecked;
         }
     }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
     this_.onchange = ((ev) => {
         const isChecked = this_.checked;
-        if (isChecked && !(observable.value.equals(value))) {
+        if (isChecked && !(Language_1.safeEq(observable.value, value))) {
             observable.value = value;
         }
-        else if (!isChecked && observable.value.equals(value)) {
+        else if (!isChecked && Language_1.safeEq(observable.value, value)) {
             this_.checked = true;
         }
     });
@@ -27,17 +28,17 @@ exports.androidWidgetCompoundButtonBindSelect = androidWidgetCompoundButtonBindS
 //! Declares com.lightningkite.khrysalis.observables.binding.bindSelectNullable>android.widget.CompoundButton
 function androidWidgetCompoundButtonBindSelectNullable(this_, value, observable) {
     DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (it) => {
-        const shouldBeChecked = it.equals(value);
+        const shouldBeChecked = Language_1.safeEq(it, value);
         if (!(this_.checked === shouldBeChecked)) {
             this_.checked = shouldBeChecked;
         }
     }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
     this_.onchange = ((ev) => {
         const isChecked = this_.checked;
-        if (isChecked && !(observable.value.equals(value))) {
+        if (isChecked && !(Language_1.safeEq(observable.value, value))) {
             observable.value = value;
         }
-        else if (!isChecked && observable.value.equals(value)) {
+        else if (!isChecked && Language_1.safeEq(observable.value, value)) {
             observable.value = null;
         }
     });
@@ -49,7 +50,7 @@ function androidWidgetCompoundButtonBindSelectInvert(this_, value, observable) {
     DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (it) => {
         if (!suppress) {
             suppress = true;
-            const shouldBeChecked = it.equals(value) || it.equals(null);
+            const shouldBeChecked = Language_1.safeEq(it, value) || Language_1.safeEq(it, null);
             if (!(this_.checked === shouldBeChecked)) {
                 this_.checked = shouldBeChecked;
             }
@@ -60,11 +61,11 @@ function androidWidgetCompoundButtonBindSelectInvert(this_, value, observable) {
         const isChecked = this_.checked;
         if (!suppress) {
             suppress = true;
-            if (!isChecked && observable.value.equals(value)) {
+            if (!isChecked && Language_1.safeEq(observable.value, value)) {
                 observable.value = null;
                 this_.checked = true;
             }
-            else if (!(observable.value.equals(value))) {
+            else if (!(Language_1.safeEq(observable.value, value))) {
                 observable.value = value;
                 this_.checked = true;
             }

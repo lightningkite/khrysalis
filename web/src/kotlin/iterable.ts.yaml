@@ -7,6 +7,13 @@
 
 # Extensions
 
+- id: kotlin.collections.count
+  type: call
+  template:
+    pattern: iterCount(~this~, ~0~)
+    imports:
+      iterCount: khrysalis/dist/kotlin/Collections
+
 - id: kotlin.collections.drop
   type: call
   template:

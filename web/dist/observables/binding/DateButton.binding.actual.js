@@ -80,11 +80,11 @@ function comLightningkiteKhrysalisViewsAndroidDateButtonBindDateAlone(this_, dat
         if (suppress)
             return;
         suppress = true;
-        try {
-            const d = DateAlone_actual_1.DateAlone.Companion.INSTANCE.iso(this_.value);
+        const d = DateAlone_actual_1.DateAlone.Companion.INSTANCE.iso(this_.value);
+        if (d) {
             date.value = d;
         }
-        catch (e) {
+        else {
             console.warn("Failed to parse " + this_.value);
             console.warn(e);
         }
@@ -106,11 +106,11 @@ function comLightningkiteKhrysalisViewsAndroidTimeButtonBindTimeAlone(this_, dat
         if (suppress)
             return;
         suppress = true;
-        try {
-            const d = TimeAlone_actual_1.TimeAlone.Companion.INSTANCE.iso(this_.value);
+        const d = TimeAlone_actual_1.TimeAlone.Companion.INSTANCE.iso(this_.value);
+        if (d) {
             date.value = d;
         }
-        catch (e) {
+        else {
             console.warn("Failed to parse " + this_.value);
             console.warn(e);
         }

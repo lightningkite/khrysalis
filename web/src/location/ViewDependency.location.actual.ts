@@ -16,10 +16,10 @@ export function comLightningkiteKhrysalisAndroidActivityAccessRequestLocation(
         (position) => onResult(new LocationResult(
             new GeoCoordinate(position.coords.latitude, position.coords.longitude),
             position.coords.accuracy,
-            position.coords.altitude,
-            position.coords.altitudeAccuracy,
-            position.coords.heading,
-            position.coords.speed
+            position.coords.altitude ?? undefined,
+            position.coords.altitudeAccuracy ?? undefined,
+            position.coords.heading ?? undefined,
+            position.coords.speed ?? undefined
         ), null),
         (err) => onResult(null, err.message),
         {
@@ -41,10 +41,10 @@ export function comLightningkiteKhrysalisAndroidActivityAccessRequestLocationCac
         (position) => onResult(new LocationResult(
             new GeoCoordinate(position.coords.latitude, position.coords.longitude),
             position.coords.accuracy,
-            position.coords.altitude,
-            position.coords.altitudeAccuracy,
-            position.coords.heading,
-            position.coords.speed
+            position.coords.altitude ?? undefined,
+            position.coords.altitudeAccuracy ?? undefined,
+            position.coords.heading ?? undefined,
+            position.coords.speed ?? undefined
         ), null),
         (err) => onResult(null, err.message),
         {

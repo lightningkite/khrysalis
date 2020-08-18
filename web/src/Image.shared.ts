@@ -17,7 +17,7 @@ export class ImageReference extends Image {
     }
     public hashCode(): number {
         let hash = 17;
-        hash = 31 * hash + this.uri?.hashCode() ?? 0;
+        hash = 31 * hash + (this.uri?.hashCode() ?? 0);
         return hash;
     }
     public equals(other: any): boolean { return other instanceof ImageReference && this.uri === other.uri }
@@ -33,7 +33,7 @@ export class ImageImageBitmap extends Image {
     }
     public hashCode(): number {
         let hash = 17;
-        hash = 31 * hash + this.bitmap?.hashCode() ?? 0;
+        hash = 31 * hash + (this.bitmap?.hashCode() ?? 0);
         return hash;
     }
     public equals(other: any): boolean { return other instanceof ImageImageBitmap && safeEq(this.bitmap, other.bitmap) }
@@ -49,7 +49,7 @@ export class ImageRaw extends Image {
     }
     public hashCode(): number {
         let hash = 17;
-        hash = 31 * hash + this.raw?.hashCode() ?? 0;
+        hash = 31 * hash + (this.raw?.hashCode() ?? 0);
         return hash;
     }
     public equals(other: any): boolean { return other instanceof ImageRaw && safeEq(this.raw, other.raw) }

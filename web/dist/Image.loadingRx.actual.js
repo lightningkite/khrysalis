@@ -4,6 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // File: Image.loadingRx.actual.kt
 // Package: com.lightningkite.khrysalis
 const Image_shared_1 = require("./Image.shared");
+const Kotlin_1 = require("./Kotlin");
 const rxjs_1 = require("rxjs");
 const operators_1 = require("rxjs/operators");
 //! Declares com.lightningkite.khrysalis.load>com.lightningkite.khrysalis.Image
@@ -24,6 +25,9 @@ function comLightningkiteKhrysalisImageLoad(this_) {
                     return rxjs_1.from(fetch(this_.url))
                         .pipe(operators_1.flatMap((x) => { return x.blob(); }))
                         .pipe(operators_1.flatMap((x) => { return createImageBitmap(x); }));
+                }
+                else {
+                    return rxjs_1.throwError(new Kotlin_1.Exception("This shouldn't be possible - got an image object of an unknown type.", null));
                 }
             })();
         }

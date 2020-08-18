@@ -130,11 +130,13 @@ function androidxRecyclerviewWidgetRecyclerViewBindRefresh(this_, loading, refre
             refresh();
         };
         DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(loading, undefined, undefined, (x) => {
-            if (x) {
-                actualRefreshButton.classList.add("khrysalis-refresh-button-loading");
-            }
-            else {
-                actualRefreshButton.classList.remove("khrysalis-refresh-button-loading");
+            if (actualRefreshButton) {
+                if (x) {
+                    actualRefreshButton.classList.add("khrysalis-refresh-button-loading");
+                }
+                else {
+                    actualRefreshButton.classList.remove("khrysalis-refresh-button-loading");
+                }
             }
         }), DisposeCondition_actual_1.getAndroidViewViewRemoved(actualRefreshButton));
     }

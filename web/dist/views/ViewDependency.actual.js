@@ -194,7 +194,7 @@ function comLightningkiteKhrysalisAndroidActivityAccessShare(this_, shareTitle, 
     topLevel.onclick = (e) => {
         document.body.removeChild(topLevel);
     };
-    document.body.appendChild(tempDiv.firstChild);
+    document.body.appendChild(topLevel);
 }
 exports.comLightningkiteKhrysalisAndroidActivityAccessShare = comLightningkiteKhrysalisAndroidActivityAccessShare;
 //! Declares com.lightningkite.khrysalis.views.openMap>com.lightningkite.khrysalis.android.ActivityAccess
@@ -248,9 +248,11 @@ function comLightningkiteKhrysalisAndroidActivityAccessRequestImageGallery(this_
     f.type = "file";
     f.accept = "image/*";
     f.onchange = (e) => {
-        const file = f.files[0];
-        if (file) {
-            callback(file);
+        if (f.files) {
+            const file = f.files[0];
+            if (file) {
+                callback(file);
+            }
         }
     };
     f.click();
@@ -263,9 +265,11 @@ function comLightningkiteKhrysalisAndroidActivityAccessRequestImageCamera(this_,
     f.accept = "image/*";
     f.capture = front ? "user" : "environment";
     f.onchange = (e) => {
-        const file = f.files[0];
-        if (file) {
-            callback(file);
+        if (f.files) {
+            const file = f.files[0];
+            if (file) {
+                callback(file);
+            }
         }
     };
     f.click();

@@ -5,21 +5,23 @@ import { safeEq } from '../../Kotlin'
 
 //! Declares com.lightningkite.khrysalis.views.geometry.Align
 export class Align {
-    private constructor(name: string) {
+    private constructor(name: string, jsonName: string) {
         this.name = name;
+        this.jsonName = jsonName;
     }
     
-    public static start = new Align("start");
-    public static center = new Align("center");
-    public static end = new Align("end");
-    public static fill = new Align("fill");
+    public static start = new Align("start", "start");
+    public static center = new Align("center", "center");
+    public static end = new Align("end", "end");
+    public static fill = new Align("fill", "fill");
     
     private static _values: Array<Align> = [Align.start, Align.center, Align.end, Align.fill];
     public static values(): Array<Align> { return Align._values; }
     public readonly name: string;
+    public readonly jsonName: string;
     public static valueOf(name: string): Align { return (Align as any)[name]; }
     public toString(): string { return this.name }
-    public toJSON(): string { return this.name }
+    public toJSON(): string { return this.jsonName }
 }
 
 //! Declares com.lightningkite.khrysalis.views.geometry.AlignPair
@@ -32,8 +34,8 @@ export class AlignPair {
     }
     public hashCode(): number {
         let hash = 17;
-        hash = 31 * hash + this.horizontal?.hashCode() ?? 0;
-        hash = 31 * hash + this.vertical?.hashCode() ?? 0;
+        hash = 31 * hash + (this.horizontal?.hashCode() ?? 0);
+        hash = 31 * hash + (this.vertical?.hashCode() ?? 0);
         return hash;
     }
     public equals(other: any): boolean { return other instanceof AlignPair && safeEq(this.horizontal, other.horizontal) && safeEq(this.vertical, other.vertical) }

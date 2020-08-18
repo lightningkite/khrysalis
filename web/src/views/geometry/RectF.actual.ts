@@ -32,10 +32,10 @@ export class RectF {
             this.top = left.top;
             this.left = left.left;
         } else {
-            this.right = right;
-            this.bottom = bottom;
-            this.top = top;
-            this.left = left;
+            this.right = right as number;
+            this.bottom = bottom as number;
+            this.top = top as number;
+            this.left = left as number;
         }
     }
     centerX(): number { return (this.left + this.right) / 2 }

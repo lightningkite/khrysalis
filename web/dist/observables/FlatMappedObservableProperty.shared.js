@@ -17,9 +17,17 @@ class FlatMappedObservableProperty extends ObservableProperty_shared_1.Observabl
     //! Declares com.lightningkite.khrysalis.observables.FlatMappedObservableProperty.value
     get value() { return this.transformation(this.basedOn.value).value; }
     //! Declares com.lightningkite.khrysalis.observables.FlatMappedObservableProperty.onChange
-    get onChange() { return ObservableProperty_ext_shared_1.getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this.basedOn).pipe(operators_1.switchMap((it) => ObservableProperty_ext_shared_1.getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this.transformation(it)))).pipe(operators_1.skip(0)); }
+    get onChange() {
+        const transformCopy = this.transformation;
+        return ObservableProperty_ext_shared_1.getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this.basedOn).pipe(operators_1.switchMap((it) => ObservableProperty_ext_shared_1.getComLightningkiteKhrysalisObservablesObservablePropertyObservable(transformCopy(it)))).pipe(operators_1.skip(0));
+    }
 }
 exports.FlatMappedObservableProperty = FlatMappedObservableProperty;
+//! Declares com.lightningkite.khrysalis.observables.switchMap>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
+function comLightningkiteKhrysalisObservablesObservablePropertySwitchMap(this_, transformation) {
+    return new FlatMappedObservableProperty(this_, transformation);
+}
+exports.comLightningkiteKhrysalisObservablesObservablePropertySwitchMap = comLightningkiteKhrysalisObservablesObservablePropertySwitchMap;
 //! Declares com.lightningkite.khrysalis.observables.flatMap>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
 function comLightningkiteKhrysalisObservablesObservablePropertyFlatMap(this_, transformation) {
     return new FlatMappedObservableProperty(this_, transformation);
@@ -40,9 +48,13 @@ class MutableFlatMappedObservableProperty extends MutableObservableProperty_shar
     }
     //! Declares com.lightningkite.khrysalis.observables.MutableFlatMappedObservableProperty.onChange
     get onChange() {
+        const transformCopy = this.transformation;
         return ObservableProperty_ext_shared_1.getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this.basedOn).pipe(operators_1.switchMap((it) => {
-            const prop = this.transformation(it);
-            this.lastProperty = prop;
+            const prop = transformCopy(it);
+            if (this !== null) {
+                this.lastProperty = prop;
+            }
+            ;
             return ObservableProperty_ext_shared_1.getComLightningkiteKhrysalisObservablesObservablePropertyObservable(prop);
         })).pipe(operators_1.skip(0));
     }
@@ -52,6 +64,11 @@ class MutableFlatMappedObservableProperty extends MutableObservableProperty_shar
     }
 }
 exports.MutableFlatMappedObservableProperty = MutableFlatMappedObservableProperty;
+//! Declares com.lightningkite.khrysalis.observables.switchMapMutable>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
+function comLightningkiteKhrysalisObservablesObservablePropertySwitchMapMutable(this_, transformation) {
+    return new MutableFlatMappedObservableProperty(this_, transformation);
+}
+exports.comLightningkiteKhrysalisObservablesObservablePropertySwitchMapMutable = comLightningkiteKhrysalisObservablesObservablePropertySwitchMapMutable;
 //! Declares com.lightningkite.khrysalis.observables.flatMapMutable>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
 function comLightningkiteKhrysalisObservablesObservablePropertyFlatMapMutable(this_, transformation) {
     return new MutableFlatMappedObservableProperty(this_, transformation);

@@ -17,9 +17,9 @@ class SelectMultipleDatesMonthCVD extends MonthCVD_shared_1.MonthCVD {
         this.dates = new StandardObservableProperty_shared_1.StandardObservableProperty(new KotlinCollections_1.EqualOverrideSet([]), undefined);
         this.selectedDayPaint = new Paint_actual_1.Paint();
         this.selectedPaint = new Paint_actual_1.Paint();
-        let temp_385;
-        if ((temp_385 = KotlinCollections_1.iterFirstOrNull(this.dates.value)) !== null) {
-            this.currentMonthObs.value = Date_actual_1.copyDateAloneMod(temp_385, Date.prototype.setDate, 1);
+        let temp_399;
+        if ((temp_399 = KotlinCollections_1.iterFirstOrNull(this.dates.value)) !== null) {
+            this.currentMonthObs.value = Date_actual_1.copyDateAloneMod(temp_399, Date.prototype.setDate, 1);
         }
         ;
         DisposeCondition_actual_1.ioReactivexDisposablesDisposableForever(this.dates.onChange.subscribe((value) => {

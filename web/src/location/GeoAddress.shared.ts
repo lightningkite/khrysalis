@@ -5,11 +5,9 @@ import { hashString, safeEq } from '../Kotlin'
 import { StringBuilder } from '../kotlin/kotlin.text'
 import { GeoCoordinate } from './GeoCoordinate.shared'
 import { parse as parseJsonTyped } from '../net/jsonParsing'
-import { Codable } from '../Codable.actual'
 
 //! Declares com.lightningkite.khrysalis.location.GeoAddress
-export class GeoAddress implements Codable {
-    public static implementsInterfaceComLightningkiteKhrysalisCodable = true;
+export class GeoAddress {
     public readonly coordinate: (GeoCoordinate | null);
     public readonly name: (string | null);
     public readonly street: (string | null);
@@ -54,7 +52,7 @@ export class GeoAddress implements Codable {
     } }
     public hashCode(): number {
         let hash = 17;
-        hash = 31 * hash + this.coordinate?.hashCode() ?? 0;
+        hash = 31 * hash + (this.coordinate?.hashCode() ?? 0);
         hash = 31 * hash + hashString(this.name);
         hash = 31 * hash + hashString(this.street);
         hash = 31 * hash + hashString(this.subLocality);

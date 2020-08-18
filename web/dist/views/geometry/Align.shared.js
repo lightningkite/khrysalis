@@ -6,19 +6,20 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Kotlin_1 = require("../../Kotlin");
 //! Declares com.lightningkite.khrysalis.views.geometry.Align
 class Align {
-    constructor(name) {
+    constructor(name, jsonName) {
         this.name = name;
+        this.jsonName = jsonName;
     }
     static values() { return Align._values; }
     static valueOf(name) { return Align[name]; }
     toString() { return this.name; }
-    toJSON() { return this.name; }
+    toJSON() { return this.jsonName; }
 }
 exports.Align = Align;
-Align.start = new Align("start");
-Align.center = new Align("center");
-Align.end = new Align("end");
-Align.fill = new Align("fill");
+Align.start = new Align("start", "start");
+Align.center = new Align("center", "center");
+Align.end = new Align("end", "end");
+Align.fill = new Align("fill", "fill");
 Align._values = [Align.start, Align.center, Align.end, Align.fill];
 //! Declares com.lightningkite.khrysalis.views.geometry.AlignPair
 class AlignPair {
@@ -29,8 +30,8 @@ class AlignPair {
     hashCode() {
         var _a, _b, _c, _d;
         let hash = 17;
-        hash = (_b = 31 * hash + ((_a = this.horizontal) === null || _a === void 0 ? void 0 : _a.hashCode())) !== null && _b !== void 0 ? _b : 0;
-        hash = (_d = 31 * hash + ((_c = this.vertical) === null || _c === void 0 ? void 0 : _c.hashCode())) !== null && _d !== void 0 ? _d : 0;
+        hash = 31 * hash + ((_b = (_a = this.horizontal) === null || _a === void 0 ? void 0 : _a.hashCode()) !== null && _b !== void 0 ? _b : 0);
+        hash = 31 * hash + ((_d = (_c = this.vertical) === null || _c === void 0 ? void 0 : _c.hashCode()) !== null && _d !== void 0 ? _d : 0);
         return hash;
     }
     equals(other) { return other instanceof AlignPair && Kotlin_1.safeEq(this.horizontal, other.horizontal) && Kotlin_1.safeEq(this.vertical, other.vertical); }

@@ -26,7 +26,7 @@ export declare class EqualOverrideMap<K extends Object, V> implements Map<K, V> 
     private getMaybeListForHash;
     private getEntryFromList;
     set(key: K, value: V): this;
-    get(key: K): V | null;
+    get(key: K): V | undefined;
     has(key: K): boolean;
     keys(): IterableIterator<K>;
     delete(key: K): boolean;
@@ -59,5 +59,6 @@ export declare function listRemoveFirst<T>(array: Array<T>, predicate: (a: T) =>
 export declare function listRemoveItem<T>(array: Array<T>, item: T): void;
 export declare function iterFirstOrNull<T>(iterable: Iterable<T>): (T | null);
 export declare function iterLastOrNull<T>(iterable: Iterable<T>): (T | null);
+export declare function iterCount<T>(iterable: Iterable<T>, func: (a: T) => boolean): number;
 export declare function setAddCausedChange<T>(set: Set<T>, item: T): boolean;
 export declare function kotlinCollectionsMutableMapGetOrPut<K, V>(map: Map<K, V>, key: K, valueGenerator: () => V): V;

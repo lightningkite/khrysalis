@@ -16,21 +16,21 @@ export class CombineManyObservableProperty<IN> extends ObservableProperty<Array<
     }
     
     //! Declares com.lightningkite.khrysalis.observables.CombineManyObservableProperty.value
-    public get value(): Array<IN> { return this.observables.map((it: ObservableProperty<(IN | null)>): (IN | null) => it.value); }
+    public get value(): Array<IN> { return this.observables.map((it: ObservableProperty<IN>): IN => it.value); }
     
     //! Declares com.lightningkite.khrysalis.observables.CombineManyObservableProperty.onChange
-    public get onChange(): Observable<Array<IN>> { return rxCombineLatest(this.observables.map((it: ObservableProperty<(IN | null)>): Observable<(IN | null)> => getComLightningkiteKhrysalisObservablesObservablePropertyObservable(it))).pipe(rxMap((items: Array<(IN | null)>): Array<(IN | null)> => items.map((it: (IN | null)): (IN | null) => it))).pipe(rxSkip(0)); }
+    public get onChange(): Observable<Array<IN>> { return rxCombineLatest(this.observables.map((it: ObservableProperty<IN>): Observable<IN> => getComLightningkiteKhrysalisObservablesObservablePropertyObservable(it))).pipe(rxMap((items: Array<IN>): Array<IN> => items.map((it: IN): IN => it))).pipe(rxSkip(0)); }
     
 }
 
 //! Declares com.lightningkite.khrysalis.observables.combined>kotlin.collections.List<com.lightningkite.khrysalis.observables.ObservableProperty>
 export function combinedAndMap<IN, OUT>(this_: Array<ObservableProperty<IN>>, combiner:  ((a: Array<IN>) => OUT)): ObservableProperty<OUT> {
-    return comLightningkiteKhrysalisObservablesObservablePropertyMap<Array<(IN | null)>, (OUT | null)>(new CombineManyObservableProperty<(IN | null)>(this_), combiner);
+    return comLightningkiteKhrysalisObservablesObservablePropertyMap<Array<IN>, OUT>(new CombineManyObservableProperty<IN>(this_), combiner);
 }
 
 
 //! Declares com.lightningkite.khrysalis.observables.combined>kotlin.collections.List<com.lightningkite.khrysalis.observables.ObservableProperty>
 export function kotlinCollectionsListCombined<T>(this_: Array<ObservableProperty<T>>): ObservableProperty<Array<T>> {
-    return new CombineManyObservableProperty<(T | null)>(this_);
+    return new CombineManyObservableProperty<T>(this_);
 }
 

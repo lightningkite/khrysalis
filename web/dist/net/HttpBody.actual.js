@@ -15,7 +15,7 @@ class HttpBodyPart {
 exports.HttpBodyPart = HttpBodyPart;
 //! Declares com.lightningkite.khrysalis.net.toJsonHttpBody
 function kotlinAnyToJsonHttpBody(this_) {
-    return new HttpBody(JSON.stringify(this), HttpMediaType_actual_1.HttpMediaTypes.INSTANCE.JSON);
+    return new HttpBody(JSON.stringify(this_), HttpMediaType_actual_1.HttpMediaTypes.INSTANCE.JSON);
 }
 exports.kotlinAnyToJsonHttpBody = kotlinAnyToJsonHttpBody;
 //! Declares com.lightningkite.khrysalis.net.toHttpBody
@@ -35,10 +35,11 @@ exports.kotlinStringToHttpBody = kotlinStringToHttpBody;
 // }
 //! Declares com.lightningkite.khrysalis.net.multipartFormBody
 function multipartFormBody(...parts) {
+    var _a;
     const data = new FormData();
     for (const part of parts) {
         if (part.body != null) {
-            data.append(part.name, part.body, part.filename);
+            data.append(part.name, part.body, (_a = part.filename) !== null && _a !== void 0 ? _a : "file");
         }
         else {
             data.append(part.name, part.value);
@@ -52,11 +53,11 @@ function multipartFormFilePart(name, valueOrFilename, body) {
     const result = new HttpBodyPart();
     result.name = name;
     if (body) {
-        result.filename = valueOrFilename;
+        result.filename = valueOrFilename !== null && valueOrFilename !== void 0 ? valueOrFilename : null;
         result.body = body;
     }
     else {
-        result.value = valueOrFilename;
+        result.value = valueOrFilename !== null && valueOrFilename !== void 0 ? valueOrFilename : null;
     }
     return result;
 }

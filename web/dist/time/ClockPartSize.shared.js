@@ -5,19 +5,20 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 //! Declares com.lightningkite.khrysalis.time.ClockPartSize
 class ClockPartSize {
-    constructor(name) {
+    constructor(name, jsonName) {
         this.name = name;
+        this.jsonName = jsonName;
     }
     static values() { return ClockPartSize._values; }
     static valueOf(name) { return ClockPartSize[name]; }
     toString() { return this.name; }
-    toJSON() { return this.name; }
+    toJSON() { return this.jsonName; }
 }
 exports.ClockPartSize = ClockPartSize;
-ClockPartSize.None = new ClockPartSize("None");
-ClockPartSize.Short = new ClockPartSize("Short");
-ClockPartSize.Medium = new ClockPartSize("Medium");
-ClockPartSize.Long = new ClockPartSize("Long");
-ClockPartSize.Full = new ClockPartSize("Full");
+ClockPartSize.None = new ClockPartSize("None", "None");
+ClockPartSize.Short = new ClockPartSize("Short", "Short");
+ClockPartSize.Medium = new ClockPartSize("Medium", "Medium");
+ClockPartSize.Long = new ClockPartSize("Long", "Long");
+ClockPartSize.Full = new ClockPartSize("Full", "Full");
 ClockPartSize._values = [ClockPartSize.None, ClockPartSize.Short, ClockPartSize.Medium, ClockPartSize.Long, ClockPartSize.Full];
 //# sourceMappingURL=ClockPartSize.shared.js.map

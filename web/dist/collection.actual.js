@@ -37,14 +37,14 @@ exports.kotlinCollectionsListWithoutIndex = kotlinCollectionsListWithoutIndex;
 function kotlinCollectionsIterableSumByLong(this_SumByLong, selector) {
     let sum = 0;
     for (const element of this_SumByLong) {
-        sum = sum + this.selector(element);
+        sum = sum + selector(element);
     }
     return sum;
 }
 exports.kotlinCollectionsIterableSumByLong = kotlinCollectionsIterableSumByLong;
 //! Declares com.lightningkite.khrysalis.binaryInsertBy>kotlin.collections.MutableList
 function kotlinCollectionsMutableListBinaryInsertBy(this_BinaryInsertBy, item, selector) {
-    const index = kotlinCollectionsListBinarySearchBy(this_BinaryInsertBy, this.selector(item), undefined, undefined, selector);
+    const index = kotlinCollectionsListBinarySearchBy(this_BinaryInsertBy, selector(item), undefined, undefined, selector);
     if (index < 0) {
         this_BinaryInsertBy.splice(-index - 1, 0, item);
     }
@@ -55,7 +55,7 @@ function kotlinCollectionsMutableListBinaryInsertBy(this_BinaryInsertBy, item, s
 exports.kotlinCollectionsMutableListBinaryInsertBy = kotlinCollectionsMutableListBinaryInsertBy;
 //! Declares com.lightningkite.khrysalis.binaryInsertByDistinct>kotlin.collections.MutableList
 function kotlinCollectionsMutableListBinaryInsertByDistinct(this_BinaryInsertByDistinct, item, selector) {
-    const index = kotlinCollectionsListBinarySearchBy(this_BinaryInsertByDistinct, this.selector(item), undefined, undefined, selector);
+    const index = kotlinCollectionsListBinarySearchBy(this_BinaryInsertByDistinct, selector(item), undefined, undefined, selector);
     if (index < 0) {
         this_BinaryInsertByDistinct.splice(-index - 1, 0, item);
         return true;
@@ -84,10 +84,10 @@ function kotlinCollectionsListBinaryForEach(this_BinaryForEach, lower, upper, se
     }
     while (index < this_BinaryForEach.size) {
         const item = this_BinaryForEach[index];
-        const itemK = this.selector(item);
+        const itemK = selector(item);
         if (itemK === null || Comparable_1.safeCompare(item, upper))
             break;
-        this.action(item);
+        action(item);
         index++;
     }
 }

@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 //! Declares android.graphics.PointF
 class PointF {
     constructor(x, y) {
+        var _a, _b;
         this.x = 0.0;
         this.y = 0.0;
         if (y) {
@@ -13,8 +14,8 @@ class PointF {
             this.y = y;
         }
         else if (x) {
-            this.x = x.x;
-            this.y = x.y;
+            this.x = (_a = x.x) !== null && _a !== void 0 ? _a : 0;
+            this.y = (_b = x.y) !== null && _b !== void 0 ? _b : 0;
         }
     }
 }

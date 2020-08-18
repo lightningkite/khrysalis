@@ -39,7 +39,7 @@ class GeoAddress {
     hashCode() {
         var _a, _b;
         let hash = 17;
-        hash = (_b = 31 * hash + ((_a = this.coordinate) === null || _a === void 0 ? void 0 : _a.hashCode())) !== null && _b !== void 0 ? _b : 0;
+        hash = 31 * hash + ((_b = (_a = this.coordinate) === null || _a === void 0 ? void 0 : _a.hashCode()) !== null && _b !== void 0 ? _b : 0);
         hash = 31 * hash + Kotlin_1.hashString(this.name);
         hash = 31 * hash + Kotlin_1.hashString(this.street);
         hash = 31 * hash + Kotlin_1.hashString(this.subLocality);
@@ -87,5 +87,4 @@ class GeoAddress {
     }
 }
 exports.GeoAddress = GeoAddress;
-GeoAddress.implementsInterfaceComLightningkiteKhrysalisCodable = true;
 //# sourceMappingURL=GeoAddress.shared.js.map

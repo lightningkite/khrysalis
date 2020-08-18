@@ -63,7 +63,7 @@ export function kotlinCollectionsIterableJoinToString<T>(
     postfix: string = "",
     limit?: number,
     truncated: string = "...",
-    transform: (t: T) => string = (x) => x.toString()
+    transform: (t: T) => string = (x) => `${x}`
 ): string {
     let result = prefix;
     let count = 0;

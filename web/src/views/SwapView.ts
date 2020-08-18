@@ -52,5 +52,5 @@ export function swapViewSwap(view: HTMLDivElement, to: HTMLElement | null, anima
         view.style.visibility = "hidden";
         console.log("Hiding myself... I'm shy")
     }
-    view[previousViewSymbol] = to;
+    view[previousViewSymbol] = to ?? undefined;
 }

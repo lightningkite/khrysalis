@@ -2,13 +2,12 @@
 // File: views/Form.shared.kt
 // Package: com.lightningkite.khrysalis.views
 import { ViewString, ViewStringRaw, ViewStringResource, ViewStringTemplate, kotlinCollectionsListJoinToViewString } from './Strings.shared'
-import { map as iterMap, toArray as iterToArray } from 'iterable-operator'
-import { iterableFilterNotNull } from '../KotlinCollections'
-import { MutableObservableProperty } from '../observables/MutableObservableProperty.shared'
 import { safeEq } from '../Kotlin'
 import { showDialogAlert } from './showDialog.shared'
 import { kotlinCharSequenceIsBlank } from '../kotlin/kotlin.text'
 import { StandardObservableProperty } from '../observables/StandardObservableProperty.shared'
+import { listFilterNotNull } from '../KotlinCollections'
+import { MutableObservableProperty } from '../observables/MutableObservableProperty.shared'
 
 //! Declares com.lightningkite.khrysalis.views.FormValidationError
 export class FormValidationError {
@@ -73,35 +72,35 @@ export class Form {
     
     
     public field<T>(name: ViewString, defaultValue: T, validation:  ((a: FormField<T>) => (ViewString | null))): FormField<T> {
-        const obs = new StandardObservableProperty<(T | null)>(defaultValue, undefined);
+        const obs = new StandardObservableProperty<T>(defaultValue, undefined);
         
-        const field = new FormField<(T | null)>(name, obs, (untypedField: UntypedFormField): (ViewString | null) => validation(untypedField as FormField<T>));
+        const field = new FormField<T>(name, obs, (untypedField: UntypedFormField): (ViewString | null) => validation(untypedField as FormField<T>));
         
         this.fields.push(field);
         return field;
     }
     
-    public fieldRes<T>(name: string, defaultValue: T, validation:  ((a: FormField<T>) => (ViewString | null))): FormField<T> { return this.field<(T | null)>(new ViewStringResource(name), defaultValue, validation); }
+    public fieldRes<T>(name: string, defaultValue: T, validation:  ((a: FormField<T>) => (ViewString | null))): FormField<T> { return this.field<T>(new ViewStringResource(name), defaultValue, validation); }
     
     public fieldFromProperty<T>(name: ViewString, property: MutableObservableProperty<T>, validation:  ((a: FormField<T>) => (ViewString | null))): FormField<T> {
-        const field = new FormField<(T | null)>(name, property, (untypedField: UntypedFormField): (ViewString | null) => validation(untypedField as FormField<T>));
+        const field = new FormField<T>(name, property, (untypedField: UntypedFormField): (ViewString | null) => validation(untypedField as FormField<T>));
         
         this.fields.push(field);
         return field;
     }
     
-    public fieldFromPropertyRes<T>(name: string, property: MutableObservableProperty<T>, validation:  ((a: FormField<T>) => (ViewString | null))): FormField<T> { return this.fieldFromProperty<(T | null)>(new ViewStringResource(name), property, validation); }
+    public fieldFromPropertyRes<T>(name: string, property: MutableObservableProperty<T>, validation:  ((a: FormField<T>) => (ViewString | null))): FormField<T> { return this.fieldFromProperty<T>(new ViewStringResource(name), property, validation); }
     
     public check(): Array<FormValidationError> {
-        return iterToArray(iterableFilterNotNull(iterMap(this.fields, (it: UntypedFormField): (FormValidationError | null) => {
-                        const result = this.checkField(it);
-                        
-                        if (result !== null) {
-                            return new FormValidationError(it, result);
-                        } else {
-                            return null;
-                        }
-        })));
+        return listFilterNotNull(this.fields.map((it: UntypedFormField): (FormValidationError | null) => {
+                    const result = this.checkField(it);
+                    
+                    if (result !== null) {
+                        return new FormValidationError(it, result);
+                    } else {
+                        return null;
+                    }
+        }));
     }
     
     public runOrDialog(action: (() => void)): void {

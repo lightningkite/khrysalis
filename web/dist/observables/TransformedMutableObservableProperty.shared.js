@@ -9,7 +9,6 @@ class TransformedMutableObservableProperty extends MutableObservableProperty_sha
         this.basedOn = basedOn;
         this.read = read;
         this.write = write;
-        this.onChange = this.basedOn.onChange.pipe(operators_1.map((it) => this.read(it)));
     }
     update() {
         this.basedOn.update();
@@ -20,6 +19,11 @@ class TransformedMutableObservableProperty extends MutableObservableProperty_sha
     }
     set value(value) {
         this.basedOn.value = this.write(value);
+    }
+    //! Declares com.lightningkite.khrysalis.observables.TransformedMutableObservableProperty.onChange
+    get onChange() {
+        const readCopy = this.read;
+        return this.basedOn.onChange.pipe(operators_1.map((it) => readCopy(it)));
     }
 }
 exports.TransformedMutableObservableProperty = TransformedMutableObservableProperty;

@@ -29,9 +29,11 @@ class NoSuchElementException extends Exception {
 }
 exports.NoSuchElementException = NoSuchElementException;
 function hashString(item) {
+    if (item == null)
+        return 0;
     let hash = 0, i, chr;
-    for (i = 0; i < this.length; i++) {
-        chr = this.charCodeAt(i);
+    for (i = 0; i < item.length; i++) {
+        chr = item.charCodeAt(i);
         hash = ((hash << 5) - hash) + chr;
         hash |= 0; // Convert to 32bit integer
     }

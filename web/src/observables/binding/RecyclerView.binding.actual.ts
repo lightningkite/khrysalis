@@ -132,10 +132,10 @@ export function androidxRecyclerviewWidgetRecyclerViewBindMulti<T>(this_: HTMLDi
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindRefresh>androidx.recyclerview.widget.RecyclerView
 export function androidxRecyclerviewWidgetRecyclerViewBindRefresh(this_: HTMLDivElement, loading: ObservableProperty<boolean>, refresh: () => void): void {
-    const actualRefreshView = this_.parentElement;
+    const actualRefreshView = this_.parentElement as HTMLElement;
     let actualRefreshButton: HTMLElement | null = null;
     for (let i = 0; i < actualRefreshView.children.length; i++) {
-        const view = actualRefreshView.children.item(i);
+        const view = actualRefreshView.children.item(i) as Element;
         if (view.classList.contains("khrysalis-refresh-button")) {
             actualRefreshButton = view as HTMLElement;
         }
@@ -145,10 +145,12 @@ export function androidxRecyclerviewWidgetRecyclerViewBindRefresh(this_: HTMLDiv
             refresh();
         };
         ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(loading, undefined, undefined, (x) => {
-            if (x) {
-                actualRefreshButton.classList.add("khrysalis-refresh-button-loading")
-            } else {
-                actualRefreshButton.classList.remove("khrysalis-refresh-button-loading")
+            if(actualRefreshButton){
+                if (x) {
+                    actualRefreshButton.classList.add("khrysalis-refresh-button-loading")
+                } else {
+                    actualRefreshButton.classList.remove("khrysalis-refresh-button-loading")
+                }
             }
         }), getAndroidViewViewRemoved(actualRefreshButton))
     }

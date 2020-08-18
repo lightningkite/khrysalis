@@ -18,7 +18,7 @@ export function replaceViewWithId(base: HTMLElement, withElement: () => HTMLElem
     const existing = findViewById(base, id);
     if (existing) {
         const newElement = withElement();
-        newElement.setAttribute('style', newElement.getAttribute('style') + '; ' + existing.getAttribute('style'))
-        existing.parentNode.replaceChild(newElement, existing);
+        newElement.setAttribute('style', newElement.getAttribute('style') + '; ' + existing.getAttribute('style'));
+        (existing.parentNode as Node).replaceChild(newElement, existing);
     }
 }

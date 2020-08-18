@@ -9,6 +9,8 @@ export declare class ObservableStack<T extends object> extends ObservablePropert
     swap(t: T): void;
     pop(): boolean;
     dismiss(): boolean;
+    backPressPop(): boolean;
+    backPressDismiss(): boolean;
     popTo(t: T): void;
     popToPredicate(predicate: ((a: T) => boolean)): void;
     root(): void;

@@ -55,14 +55,14 @@ export function kotlinCollectionsIterableSumByLong<T>(this_SumByLong: Iterable<T
     let sum: number = 0;
 
     for (const element of this_SumByLong) {
-        sum = sum + this.selector(element);
+        sum = sum + selector(element);
     }
     return sum;
 }
 
 //! Declares com.lightningkite.khrysalis.binaryInsertBy>kotlin.collections.MutableList
 export function kotlinCollectionsMutableListBinaryInsertBy<T, K extends Comparable<K>>(this_BinaryInsertBy: Array<T>, item: T, selector: (a: T) => (K | null)) {
-    const index = kotlinCollectionsListBinarySearchBy(this_BinaryInsertBy, this.selector(item), undefined, undefined, selector);
+    const index = kotlinCollectionsListBinarySearchBy(this_BinaryInsertBy, selector(item), undefined, undefined, selector);
 
     if (index < 0) {
         this_BinaryInsertBy.splice(-index - 1, 0, item);
@@ -73,7 +73,7 @@ export function kotlinCollectionsMutableListBinaryInsertBy<T, K extends Comparab
 
 //! Declares com.lightningkite.khrysalis.binaryInsertByDistinct>kotlin.collections.MutableList
 export function kotlinCollectionsMutableListBinaryInsertByDistinct<T, K extends Comparable<K>>(this_BinaryInsertByDistinct: Array<T>, item: T, selector: (a: T) => (K | null)): Boolean {
-    const index = kotlinCollectionsListBinarySearchBy(this_BinaryInsertByDistinct, this.selector(item), undefined, undefined, selector);
+    const index = kotlinCollectionsListBinarySearchBy(this_BinaryInsertByDistinct, selector(item), undefined, undefined, selector);
 
     if (index < 0) {
         this_BinaryInsertByDistinct.splice(-index - 1, 0, item);
@@ -106,11 +106,11 @@ export function kotlinCollectionsListBinaryForEach<T, K extends Comparable<K>>(t
     while (index < this_BinaryForEach.size) {
         const item = this_BinaryForEach[index];
 
-        const itemK = this.selector(item);
+        const itemK = selector(item);
 
         if(itemK === null || safeCompare(item, upper)) break;
 
-        this.action(item);
+        action(item);
         index++;
     }
 }

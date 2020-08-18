@@ -68,7 +68,7 @@ export function androidWidgetRatingBarBind(this_: HTMLDivElement, stars: number,
     }
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (rating)=>{
         for(let i = 0; i < stars; i++){
-            const e = this_.children.item(i);
+            const e = this_.children.item(i) as Element;
             if(Math.round(i + 1) <= Math.round(rating)){
                 e.classList.add("khrysalis-rating-bar-star-on");
             } else {

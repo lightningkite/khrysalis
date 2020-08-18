@@ -4,11 +4,12 @@
 import {comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy} from '../ObservableProperty.ext.shared'
 import {getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil} from '../../rx/DisposeCondition.actual'
 import {MutableObservableProperty} from '../MutableObservableProperty.shared'
+import {safeEq} from "../../kotlin/Language";
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindSelect>android.widget.CompoundButton
 export function androidWidgetCompoundButtonBindSelect<T>(this_: HTMLInputElement, value: T, observable: MutableObservableProperty<T>): void {
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (it) => {
-        const shouldBeChecked = it.equals(value);
+        const shouldBeChecked = safeEq(it,value);
 
         if (!(this_.checked === shouldBeChecked)) {
             this_.checked = shouldBeChecked;
@@ -16,9 +17,9 @@ export function androidWidgetCompoundButtonBindSelect<T>(this_: HTMLInputElement
     }), getAndroidViewViewRemoved(this_));
     this_.onchange = ((ev) => {
         const isChecked = this_.checked;
-        if (isChecked && !(observable.value.equals(value))) {
+        if (isChecked && !(safeEq(observable.value, value))) {
             observable.value = value;
-        } else if (!isChecked && observable.value.equals(value)) {
+        } else if (!isChecked && safeEq(observable.value, value)) {
             this_.checked = true;
         }
     });
@@ -28,7 +29,7 @@ export function androidWidgetCompoundButtonBindSelect<T>(this_: HTMLInputElement
 //! Declares com.lightningkite.khrysalis.observables.binding.bindSelectNullable>android.widget.CompoundButton
 export function androidWidgetCompoundButtonBindSelectNullable<T>(this_: HTMLInputElement, value: T, observable: MutableObservableProperty<(T | null)>): void {
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (it) => {
-        const shouldBeChecked = it.equals(value);
+        const shouldBeChecked = safeEq(it, value);
 
         if (!(this_.checked === shouldBeChecked)) {
             this_.checked = shouldBeChecked;
@@ -36,9 +37,9 @@ export function androidWidgetCompoundButtonBindSelectNullable<T>(this_: HTMLInpu
     }), getAndroidViewViewRemoved(this_));
     this_.onchange = ((ev) => {
         const isChecked = this_.checked;
-        if (isChecked && !(observable.value.equals(value))) {
+        if (isChecked && !(safeEq(observable.value, value))) {
             observable.value = value;
-        } else if (!isChecked && observable.value.equals(value)) {
+        } else if (!isChecked && safeEq(observable.value, value)) {
             observable.value = null;
         }
     });
@@ -52,7 +53,7 @@ export function androidWidgetCompoundButtonBindSelectInvert<T>(this_: HTMLInputE
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (it) => {
         if (!suppress) {
             suppress = true;
-            const shouldBeChecked = it.equals(value) || it.equals(null);
+            const shouldBeChecked = safeEq(it, value) || safeEq(it, null);
 
             if (!(this_.checked === shouldBeChecked)) {
                 this_.checked = shouldBeChecked;
@@ -64,10 +65,10 @@ export function androidWidgetCompoundButtonBindSelectInvert<T>(this_: HTMLInputE
         const isChecked = this_.checked;
         if (!suppress) {
             suppress = true;
-            if (!isChecked && observable.value.equals(value)) {
+            if (!isChecked && safeEq(observable.value, value)) {
                 observable.value = null;
                 this_.checked = true;
-            } else if (!(observable.value.equals(value))) {
+            } else if (!(safeEq(observable.value, value))) {
                 observable.value = value;
                 this_.checked = true;
             }

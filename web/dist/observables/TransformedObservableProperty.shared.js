@@ -11,11 +11,15 @@ class TransformedObservableProperty extends ObservableProperty_shared_1.Observab
         super();
         this.basedOn = basedOn;
         this.read = read;
-        this.onChange = this.basedOn.onChange.pipe(operators_1.map((it) => this.read(it)));
     }
     //! Declares com.lightningkite.khrysalis.observables.TransformedObservableProperty.value
     get value() {
         return this.read(this.basedOn.value);
+    }
+    //! Declares com.lightningkite.khrysalis.observables.TransformedObservableProperty.onChange
+    get onChange() {
+        const readCopy = this.read;
+        return this.basedOn.onChange.pipe(operators_1.map((it) => readCopy(it)));
     }
 }
 exports.TransformedObservableProperty = TransformedObservableProperty;
