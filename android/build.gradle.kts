@@ -1,5 +1,4 @@
 import com.lightningkite.khrysalis.gradle.KhrysalisPluginExtension
-import com.lightningkite.khrysalis.ios.layout.mapViews
 
 buildscript {
     val kotlin_version = "1.3.72"

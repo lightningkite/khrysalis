@@ -4,6 +4,7 @@ import android.app.Activity
 import android.content.Context
 import android.content.ContextWrapper
 import android.view.View
+import android.view.ViewGroup
 
 val Context.activity: Activity?
     get() {
@@ -13,3 +14,7 @@ val Context.activity: Activity?
             else -> null
         }
     }
+
+fun View.removeFromParent() {
+    (parent as ViewGroup).removeView(this)
+}
