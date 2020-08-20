@@ -69,6 +69,15 @@
   arguments: []
   hasExplicitTypeArguments: true
   template: "([] as Array<~T0~>)"
+- id: java.util.ArrayList
+  type: call
+  arguments: []
+  template: "[]"
+- id: java.util.ArrayList
+  type: call
+  arguments: []
+  hasExplicitTypeArguments: true
+  template: "([] as Array<~T0~>)"
   
 # List Operations
 - id: kotlin.collections.Collection.contains
@@ -78,6 +87,9 @@
 - id: kotlin.collections.List.get
   type: call
   template: ~this~[~0~]
+- id: kotlin.collections.getOrNull
+  type: call
+  template: (~this~[~0~] ?? null)
 - id: kotlin.collecitons.List.subList
   type: call
   template: ~this~.slice(~0~, ~1~)
@@ -275,11 +287,11 @@
 - id: kotlin.collections.sortBy
   type: call
   actualReceiver: kotlin.collections.List
-  template: ~this~.sort((a, b) => ~0~(a).compareTo(~0~(b)))
+  template: ~this~.sort((a, b) => safeCompare(~0~(a), ~0~(b)))
 - id: kotlin.collections.sortByDescending
   type: call
   actualReceiver: kotlin.collections.List
-  template: ~this~.sort((a, b) => -~0~(a).compareTo(~0~(b)))
+  template: ~this~.sort((a, b) => -safeCompare(~0~(a), ~0~(b)))
 - id: kotlin.collections.sorted
   type: call
   actualReceiver: kotlin.collections.List
@@ -288,14 +300,14 @@
   type: call
   actualReceiver: kotlin.collections.List
   template:
-    pattern: ~this~.slice().sort((a, b) => ~0~(a).compareTo(~0~(b)))
+    pattern: ~this~.slice().sort((a, b) => safeCompare(~0~(a), ~0~(b)))
     imports:
       safeCompare: khrysalis/dist/kotlin/Comparable
 - id: kotlin.collections.sortedByDescending
   type: call
   actualReceiver: kotlin.collections.List
   template:
-    pattern: ~this~.slice().sort((a, b) => -~0~(a).compareTo(~0~(b)))
+    pattern: ~this~.slice().sort((a, b) => -safeCompare(~0~(a), ~0~(b)))
     imports:
       safeCompare: khrysalis/dist/kotlin/Comparable
 - id: kotlin.collections.sortedWith
@@ -326,7 +338,10 @@
 - id: kotlin.collections.mapIndexed
   type: call
   actualReceiver: kotlin.collections.List
-  template: ~this~.map(~0~)
+  template:
+    pattern: ~this~.map((_v, _i) => { ~L0~ })
+    lambdaTransforms:
+      0: ["_i", "_v"]
 - id: kotlin.collections.mapNotNull
   type: call
   template:
@@ -337,9 +352,11 @@
   type: call
   actualReceiver: kotlin.collections.List
   template:
-    pattern: ~this~.map(~0~).filter((x) => x !== null)
+    pattern: ~this~.map((_v, _i) => { ~L0~ }).filter((x) => x !== null)
     imports:
       listFilterNotNull: khrysalis/dist/KotlinCollections
+    lambdaTransforms:
+      0: ["_i", "_v"]
 
 - id: kotlin.collections.any
   type: call

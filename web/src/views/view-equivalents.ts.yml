@@ -36,10 +36,16 @@
   template: HTMLDivElement
 - id: androidx.recyclerview.widget.RecyclerView.smoothScrollToPosition
   type: call
-  template: '~this~.children.item(~0~).scrollIntoView({ behavior: "smooth", block: "nearest", inline: "nearest"})'
+  template:
+    pattern: 'scrollChildIntoView(~this~, ~0~, { behavior: "smooth", block: "nearest", inline: "nearest"})'
+    imports:
+      scrollChildIntoView: khrysalis/dist/views/RecyclerView.actual
 - id: androidx.recyclerview.widget.RecyclerView.scrollToPosition
   type: call
-  template: '~this~.children.item(~0~).scrollIntoView({ behavior: "auto", block: "nearest", inline: "nearest"})'
+  template:
+    pattern: 'scrollChildIntoView(~this~, ~0~, { behavior: "auto", block: "nearest", inline: "nearest"})'
+    imports:
+      scrollChildIntoView: khrysalis/dist/views/RecyclerView.actual
 
 # android.widget.SeekBar
 - id: android.widget.SeekBar

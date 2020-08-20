@@ -28,10 +28,9 @@ class AlignPair {
         this.vertical = vertical;
     }
     hashCode() {
-        var _a, _b, _c, _d;
         let hash = 17;
-        hash = 31 * hash + ((_b = (_a = this.horizontal) === null || _a === void 0 ? void 0 : _a.hashCode()) !== null && _b !== void 0 ? _b : 0);
-        hash = 31 * hash + ((_d = (_c = this.vertical) === null || _c === void 0 ? void 0 : _c.hashCode()) !== null && _d !== void 0 ? _d : 0);
+        hash = 31 * hash + Kotlin_1.hashAnything(this.horizontal);
+        hash = 31 * hash + Kotlin_1.hashAnything(this.vertical);
         return hash;
     }
     equals(other) { return other instanceof AlignPair && Kotlin_1.safeEq(this.horizontal, other.horizontal) && Kotlin_1.safeEq(this.vertical, other.vertical); }

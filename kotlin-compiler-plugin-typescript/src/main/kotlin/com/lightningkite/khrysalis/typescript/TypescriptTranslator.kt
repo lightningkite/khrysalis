@@ -10,13 +10,12 @@ import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.descriptors.DeclarationDescriptor
+import org.jetbrains.kotlin.descriptors.ValueDescriptor
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
 import org.jetbrains.kotlin.psi.psiUtil.containingClass
-import org.jetbrains.kotlin.psi.psiUtil.getTextWithLocation
 import org.jetbrains.kotlin.resolve.BindingContext
-import org.jetbrains.kotlin.resolve.calls.resolvedCallUtil.getImplicitReceiverValue
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 import org.jetbrains.kotlin.resolve.scopes.receivers.ExtensionReceiver
 import java.util.*
@@ -38,16 +37,11 @@ class TypescriptTranslator(
 
     data class ReceiverAssignment(val declaration: DeclarationDescriptor, val tsName: String)
 
-    val _identifierScopes = HashMap<String, ArrayList<String>>()
-    val identifierScopes: Map<String, List<String>> get() = _identifierScopes
-    inline fun withName(ktName: String, tsName: String, action: (String)->Unit){
-        val list = _identifierScopes.getOrPut(ktName){ ArrayList() }
-        list.add(tsName)
+    val identifierMappings = HashMap<DeclarationDescriptor, String>()
+    inline fun withName(ktName: DeclarationDescriptor, tsName: String, action: (String)->Unit){
+        identifierMappings[ktName] = tsName
         action(tsName)
-        list.removeAt(list.lastIndex)
-        if(list.isEmpty()) {
-            _identifierScopes.remove(ktName)
-        }
+        identifierMappings.remove(ktName)
     }
 
     val _receiverStack = ArrayList<ReceiverAssignment>()
@@ -202,25 +196,28 @@ class TypescriptTranslator(
             && !this.isSafeLetDirect()
             && ((this as? KtBinaryExpression)?.isSafeLetChain() != true)
 
-    override fun determineNotStatementLambda(it: KtFunctionLiteral): Boolean {
-        if(!super.determineNotStatementLambda(it)) {
+    inline fun <reified T> PsiElement.parentIfType(): T? = parent as? T
+    override fun determineMaybeExpressionLambda(it: KtFunctionLiteral): Boolean {
+        if(!super.determineMaybeExpressionLambda(it)) {
             return false
         }
         if(it
-                .parentOfType<KtLambdaExpression>()
-                ?.parentOfType<KtLambdaArgument>()
-                ?.parentOfType<KtCallExpression>()
+                .parentIfType<KtLambdaExpression>()
+                ?.let {
+                    it.parentIfType<KtLambdaArgument>() ?: it.parentIfType<KtAnnotatedExpression>()?.parentIfType<KtLambdaArgument>()
+                }
+                ?.parentIfType<KtCallExpression>()
                 ?.let {
                     if((it.parent as? KtExpression)?.let {
-                            it.isSafeLetDirect() && !determineNotStatement(it)
+                            it.isSafeLetDirect() && !determineMaybeExpression(it)
                         } == true){
                         return false
                     }
-                    it.parentOfType<KtBinaryExpression>()
-                        ?: it.parentOfType<KtQualifiedExpression>()
-                            ?.parentOfType<KtBinaryExpression>()
+                    it.parentIfType<KtBinaryExpression>()
+                        ?: it.parentIfType<KtQualifiedExpression>()
+                            ?.parentIfType<KtBinaryExpression>()
                 }
-                ?.let { it.isSafeLetChain() && !determineNotStatement(it.safeLetChainRoot()) } == true
+                ?.let { it.isSafeLetChain() && !determineMaybeExpression(it.safeLetChainRoot()) } == true
         ){
             return false
         }

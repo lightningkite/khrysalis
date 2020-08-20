@@ -15,10 +15,12 @@
 
 - id: com.lightningkite.khrysalis.views.textResource
   type: set
+  actualReceiver: android.widget.EditText
   template: ~this~.value = ~0~
 
 - id: com.lightningkite.khrysalis.views.textString
   type: set
+  actualReceiver: android.widget.EditText
   template: ~this~.value = ~0~
 
 - id: android.widget.TextView.text
@@ -28,15 +30,13 @@
 
 - id: android.widget.EditText.text
   type: get
+  actualReceiver: android.widget.EditText
   template: ~this~.value
 
 - id: android.widget.EditText.setText
   type: call
+  actualReceiver: android.widget.EditText
   template: ~this~.value = ~0~
-
-- id: com.lightningkite.khrysalis.views.textString
-  type: get
-  template: ~this~.value
 
 - id: android.widget.TextView.text
   type: get

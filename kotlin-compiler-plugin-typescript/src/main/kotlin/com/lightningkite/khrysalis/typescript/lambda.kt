@@ -36,8 +36,8 @@ fun TypescriptTranslator.registerLambda() {
         val reet = typedRule.resolvedExpectedExpressionType
             ?: (typedRule.parent as? KtLambdaExpression)?.resolvedExpectedExpressionType
             ?: ((typedRule.parent as? KtLambdaExpression)?.parent as? KtParameter)?.resolvedValueParameter?.type
-        val betterParameterTypes = reet?.getValueParameterTypesFromFunctionType()?.map { it.type }
-        val betterReturnType = reet?.getReturnTypeFromFunctionType()
+        val betterParameterTypes = try { reet?.getValueParameterTypesFromFunctionType()?.map { it.type } } catch(e: Exception) { null }
+        val betterReturnType = try { reet?.getReturnTypeFromFunctionType() } catch(e: Exception) { null }
         fun write(rec: Any? = null) {
             resolved.valueParameters.let {
                 -'('
@@ -53,7 +53,7 @@ fun TypescriptTranslator.registerLambda() {
                             -'_'
                             -index.toString()
                         } else {
-                            -it.name.asString()
+                            -it.name.asString().safeJsIdentifier()
                         }
                         -": "
                         -(typedRule.valueParameters.getOrNull(index)?.typeReference ?: betterParameterTypes?.getOrNull(index) ?: it.type)
@@ -75,11 +75,11 @@ fun TypescriptTranslator.registerLambda() {
                 }
                 1 -> {
                     val s = typedRule.bodyExpression!!.statements.first()
-                    if (s!!.actuallyCouldBeExpression && (resolved.returnType?.getJetTypeFqName(false) !in AnalysisExtensions.dontReturnTypes || resolved.returnType?.isNullableNothing() == true)) {
+                    if (s!!.actuallyCouldBeExpression && resolved.returnType?.getJetTypeFqName(false) !in AnalysisExtensions.dontReturnTypes && resolved.returnType?.isNullableNothing() != true) {
                         -s
                     } else {
                         -"{\n"
-                        -s
+                        -typedRule.bodyExpression
                         -"\n}"
                     }
                 }

@@ -80,7 +80,7 @@ function recyclerViewBindMultiType(this_, viewDependency, data, typeHandlerSetup
 exports.recyclerViewBindMultiType = recyclerViewBindMultiType;
 //! Declares com.lightningkite.khrysalis.observables.binding.bindMulti>androidx.recyclerview.widget.RecyclerView
 function androidxRecyclerviewWidgetRecyclerViewBindMulti(this_, data, defaultValue, determineType, makeView) {
-    let existingViews = [];
+    let existingViews = new Map();
     DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(data, undefined, undefined, (value) => {
         var _a, _b, _c;
         //Place views
@@ -88,10 +88,10 @@ function androidxRecyclerviewWidgetRecyclerViewBindMulti(this_, data, defaultVal
         while (this_.firstElementChild) {
             this_.firstElementChild.remove();
         }
-        existingViews = [];
+        existingViews = new Map();
         for (const item of value) {
             const type = determineType(item);
-            const view = (_b = (_a = unusedViews[type]) === null || _a === void 0 ? void 0 : _a.pop()) !== null && _b !== void 0 ? _b : (() => {
+            const view = (_b = (_a = unusedViews.get(type)) === null || _a === void 0 ? void 0 : _a.pop()) !== null && _b !== void 0 ? _b : (() => {
                 const obs = new StandardObservableProperty_shared_1.StandardObservableProperty(item);
                 return [obs, makeView(type, obs)];
             })();
@@ -103,12 +103,12 @@ function androidxRecyclerviewWidgetRecyclerViewBindMulti(this_, data, defaultVal
                 view[1].style.height = "100%";
             }
             this_.appendChild(view[1]);
-            const sublist = (_c = existingViews[type]) !== null && _c !== void 0 ? _c : [];
+            const sublist = (_c = existingViews.get(type)) !== null && _c !== void 0 ? _c : [];
             sublist.push(view);
-            existingViews[type] = sublist;
+            existingViews.set(type, sublist);
         }
-        for (const parts of unusedViews) {
-            for (const part of parts) {
+        for (const entry of unusedViews) {
+            for (const part of entry[1]) {
                 viewAttached_1.triggerDetatchEvent(part[1]);
             }
         }

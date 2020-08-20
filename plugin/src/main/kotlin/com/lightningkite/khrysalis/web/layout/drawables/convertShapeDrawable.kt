@@ -18,8 +18,8 @@ fun convertShapeDrawable(webDrawablesFolder: File, currentDrawable: String, sele
                     it.attributeAsCssColor("android:centerColor"),
                     it.attributeAsCssColor("android:endColor")
                 )
-                val angle = it.attributeAsInt("android:angle") ?: 0
-                out.appendln("background-image: linear-gradient(${angle}deg, ${colors.joinToString()})")
+                val angle = it.attributeAsInt("android:angle")?.toInt() ?: 0
+                out.appendln("background-image: linear-gradient(${angle-90}deg, ${colors.joinToString()})")
             } ?: run {
                 node.children.find { it.name == "solid" }?.let {
                     val color = it.attributeAsCssColor("android:color")
@@ -42,8 +42,8 @@ fun convertShapeDrawable(webDrawablesFolder: File, currentDrawable: String, sele
                     it.attributeAsCssColor("android:centerColor"),
                     it.attributeAsCssColor("android:endColor")
                 )
-                val angle = it.attributeAsInt("android:angle") ?: 0
-                out.appendln("background-image: linear-gradient(${angle}deg, ${colors.joinToString()})")
+                val angle = it.attributeAsInt("android:angle")?.toInt() ?: 0
+                out.appendln("background-image: linear-gradient(${angle-90}deg, ${colors.joinToString()})")
             } ?: run {
                 node.children.find { it.name == "solid" }?.let {
                     val color = it.attributeAsCssColor("android:color")

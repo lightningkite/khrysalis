@@ -27,7 +27,9 @@ export namespace ViewGenerator {
             super();
         }
         
-        public generate(dependency: Window): HTMLElement { return newEmptyView(dependency); }
+        public generate(dependency: Window): HTMLElement { 
+            return newEmptyView(dependency); 
+        }
     }
 }
 

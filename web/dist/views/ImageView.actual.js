@@ -5,6 +5,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // Package: com.lightningkite.khrysalis.views
 const Image_shared_1 = require("../Image.shared");
 const delay_actual_1 = require("../delay.actual");
+const View_ext_actual_1 = require("./View.ext.actual");
 //! Declares com.lightningkite.khrysalis.observables.binding.loadImage>android.widget.ImageView
 //! Declares com.lightningkite.khrysalis.views.loadImage>android.widget.ImageView
 let canvasElement = document.createElement("canvas");
@@ -40,7 +41,21 @@ function androidWidgetImageViewLoadImage(this_, image) {
         else if (image instanceof Image_shared_1.ImageRemoteUrl) {
             this_.src = image.url;
         }
+        else if (image instanceof Image_shared_1.ImageResource) {
+            imageViewSetImageResource(this_, image.resource);
+        }
     });
 }
 exports.androidWidgetImageViewLoadImage = androidWidgetImageViewLoadImage;
+function imageViewSetImageResource(this_, resource) {
+    let path = resource.filePath;
+    if (path) {
+        this_.src = path;
+    }
+    else {
+        //Not perfect, because it replaces the background.
+        View_ext_actual_1.setViewBackgroundClass(this_, resource.cssClass);
+    }
+}
+exports.imageViewSetImageResource = imageViewSetImageResource;
 //# sourceMappingURL=ImageView.actual.js.map

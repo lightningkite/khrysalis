@@ -8,11 +8,11 @@ const WriteAddedObservableProperty_shared_1 = require("./WriteAddedObservablePro
 const KotlinCollections_1 = require("../KotlinCollections");
 const TransformedObservableProperty_shared_1 = require("./TransformedObservableProperty.shared");
 const operators_1 = require("rxjs/operators");
+const Language_1 = require("../kotlin/Language");
 //! Declares com.lightningkite.khrysalis.observables.observable>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
 function getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this_) {
     return rxjs_1.concat(new rxjs_1.Observable((it) => {
         it.next(this_.value);
-        ;
         it.complete();
     }), this_.onChange);
 }
@@ -21,7 +21,6 @@ exports.getComLightningkiteKhrysalisObservablesObservablePropertyObservable = ge
 function getComLightningkiteKhrysalisObservablesObservablePropertyObservableNN(this_) {
     return rxjs_1.concat(new rxjs_1.Observable((it) => {
         it.next(this_.value);
-        ;
         it.complete();
     }), this_.onChange).pipe(operators_1.map((it) => it));
 }
@@ -31,7 +30,7 @@ function getComLightningkiteKhrysalisObservablesObservablePropertyOnChangeNN(thi
 exports.getComLightningkiteKhrysalisObservablesObservablePropertyOnChangeNN = getComLightningkiteKhrysalisObservablesObservablePropertyOnChangeNN;
 //! Declares com.lightningkite.khrysalis.observables.subscribeBy>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
 function comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(this_, onError = (it) => {
-    it.printStackTrace();
+    Language_1.printStackTrace(it);
 }, onComplete = () => { }, onNext = (it) => { }) {
     return getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this_).subscribe((boxed) => {
         onNext(boxed);
@@ -60,9 +59,9 @@ function comLightningkiteKhrysalisObservablesObservablePropertyWhileActive(this_
             }
         }
         else {
-            const temp121 = current;
-            if (temp121 !== null) {
-                temp121.unsubscribe();
+            const temp66 = current;
+            if (temp66 !== null) {
+                temp66.unsubscribe();
             }
             ;
             current = null;

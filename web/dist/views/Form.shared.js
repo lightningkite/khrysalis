@@ -46,13 +46,17 @@ class Form {
         this.fields.push(field);
         return field;
     }
-    fieldRes(name, defaultValue, validation) { return this.field(new Strings_shared_1.ViewStringResource(name), defaultValue, validation); }
+    fieldRes(name, defaultValue, validation) {
+        return this.field(new Strings_shared_1.ViewStringResource(name), defaultValue, validation);
+    }
     fieldFromProperty(name, property, validation) {
         const field = new FormField(name, property, (untypedField) => validation(untypedField));
         this.fields.push(field);
         return field;
     }
-    fieldFromPropertyRes(name, property, validation) { return this.fieldFromProperty(new Strings_shared_1.ViewStringResource(name), property, validation); }
+    fieldFromPropertyRes(name, property, validation) {
+        return this.fieldFromProperty(new Strings_shared_1.ViewStringResource(name), property, validation);
+    }
     check() {
         return KotlinCollections_1.listFilterNotNull(this.fields.map((it) => {
             const result = this.checkField(it);

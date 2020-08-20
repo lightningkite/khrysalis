@@ -10,6 +10,6 @@ import {
 
 export function mainWithFcm(rootVg: ViewGenerator, fcmPublicKey: string): void {
     main(rootVg);
-    Notifications.INSTANCE.handler = tryCastInterface<ForegroundNotificationHandler>(this.handler, "ForegroundNotificationHandler");
+    Notifications.INSTANCE.handler = tryCastInterface<ForegroundNotificationHandler>(rootVg, "ForegroundNotificationHandler");
     Notifications.INSTANCE.fcmPublicKey = fcmPublicKey;
 }

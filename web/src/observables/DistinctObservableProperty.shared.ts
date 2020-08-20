@@ -25,7 +25,9 @@ export class RxTransformationOnlyObservableProperty<T> extends ObservablePropert
 }
 
 //! Declares com.lightningkite.khrysalis.observables.distinctUntilChanged>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
-export function comLightningkiteKhrysalisObservablesObservablePropertyDistinctUntilChanged<T>(this_: ObservableProperty<T>): ObservableProperty<T> { return comLightningkiteKhrysalisObservablesObservablePropertyPlusRx<T>(this_, (it: Observable<T>): Observable<T> => rxConcat(rxOf(this_.value), it).pipe(rxDistinctUntilChanged()).pipe(rxSkip(0))); }
+export function comLightningkiteKhrysalisObservablesObservablePropertyDistinctUntilChanged<T>(this_: ObservableProperty<T>): ObservableProperty<T> { 
+    return comLightningkiteKhrysalisObservablesObservablePropertyPlusRx<T>(this_, (it: Observable<T>): Observable<T> => rxConcat(rxOf(this_.value), it).pipe(rxDistinctUntilChanged()).pipe(rxSkip(0))); 
+}
 
 //! Declares com.lightningkite.khrysalis.observables.plusRx>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
 export function comLightningkiteKhrysalisObservablesObservablePropertyPlusRx<T>(this_: ObservableProperty<T>, operator:  ((a: Observable<T>) => Observable<T>)): ObservableProperty<T> {

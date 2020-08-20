@@ -4,6 +4,8 @@
 import {from, Observable, SchedulerLike, using} from 'rxjs'
 import {ConnectedWebSocket} from "./ConnectedWebSocket.actual";
 import {HttpBody} from "./HttpBody.actual";
+import {Exception} from "../kotlin/Language";
+import {timeout} from "rxjs/operators";
 
 //! Declares com.lightningkite.khrysalis.net.HttpClient
 export class HttpClient {
@@ -21,6 +23,8 @@ export class HttpClient {
     //--- HttpClient.responseScheduler
     public responseScheduler: SchedulerLike | null = null
 
+    public timeout: number = 15_000;
+
     call(
         url: string,
         method: string = HttpClient.INSTANCE.GET,
@@ -37,7 +41,7 @@ export class HttpClient {
             credentials: "omit",
             headers: h,
             method: method
-        }))
+        })).pipe(timeout(this.timeout))
     }
     
     webSocket(url: string): Observable<ConnectedWebSocket>{

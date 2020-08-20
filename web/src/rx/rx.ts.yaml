@@ -68,6 +68,13 @@
     imports:
       retry: rxjs/operators as rxRetry
 
+- id: io.reactivex.Observable.retryWhen
+  type: call
+  template:
+    pattern: ~this~.pipe(rxRetryWhenAlt(~0~))
+    imports:
+      rxRetryWhenAlt: khrysalis/dist/rx/RxActual.actual
+
 - id: io.reactivex.Observable.delay
   type: call
   template:
@@ -181,6 +188,13 @@
 - id: io.reactivex.Observable.scheduleOn
   type: call
   template: ~this~
+
+- id: io.reactivex.Observable.interval
+  type: call
+  template:
+    pattern: rxInterval(~0~)
+    imports:
+      rxInterval: interval from rxjs
 
 - id: io.reactivex.Observable.create
   type: call
@@ -602,6 +616,9 @@
     pattern: Subject<~T0~>
     imports:
       Subject: rxjs
+- id: io.reactivex.subjects.Subject.hasObservers
+  type: call
+  template: (~this~.observers.length > 0)
 - id: io.reactivex.subjects.PublishSubject
   type: type
   template:

@@ -16,6 +16,7 @@ interface PayloadNotification extends NotificationOptions {
     title: string
 }
 
+//! Declares com.lightningkite.khrysalis.fcm.Notifications
 export class Notifications {
     static INSTANCE = new Notifications();
     notificationToken = new StandardObservableProperty<string|null>(null);

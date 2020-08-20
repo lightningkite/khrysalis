@@ -4,14 +4,33 @@
 import {ObservableProperty} from '../ObservableProperty.shared'
 import {getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil} from "../../rx/DisposeCondition.actual";
 import {comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy} from "../ObservableProperty.ext.shared";
+import {comLightningkiteKhrysalisObservablesObservablePropertyMap} from "../TransformedObservableProperty.shared";
+import {comLightningkiteKhrysalisObservablesObservablePropertyCombine} from "../CombineObservableProperty.shared";
+import {StandardObservableProperty} from "../StandardObservableProperty.shared";
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>android.widget.AutoCompleteTextView
 export function androidWidgetAutoCompleteTextViewBind<T>(this_: HTMLInputElement, options: ObservableProperty<Array<T>>, toString: (a: T) => string, onItemSelected: (a: T) => void): void {
+    let query = new StandardObservableProperty("")
+    this_.addEventListener("change", ()=>{
+        query.value = this_.value;
+    });
+    androidWidgetAutoCompleteTextViewBindList(
+        this_,
+        comLightningkiteKhrysalisObservablesObservablePropertyCombine(
+            options,
+            query,
+            (options, query) => options.filter((x) => toString(x).toLowerCase().indexOf(query.toLowerCase()) != -1)
+        ),
+        toString,
+        onItemSelected
+    );
+}
+//! Declares com.lightningkite.khrysalis.observables.binding.bindList>android.widget.AutoCompleteTextView
+export function androidWidgetAutoCompleteTextViewBindList<T>(this_: HTMLInputElement, options: ObservableProperty<Array<T>>, toString: (a: T) => string, onItemSelected: (a: T) => void): void {
     const container = this_.parentElement as HTMLElement;
     let selectionView: HTMLDivElement | null = null;
 
     function removeOptions(){
-        console.log("Removing");
         if (selectionView) {
             container.removeChild(selectionView);
             selectionView = null;
@@ -19,13 +38,10 @@ export function androidWidgetAutoCompleteTextViewBind<T>(this_: HTMLInputElement
     }
     let lastCancel = Date.now();
     function removeOptionsCancel(){
-        console.log("Cancel removal");
         lastCancel = Date.now();
     }
     function removeOptionsTenative(){
-        console.log("Tenative removal set");
         window.setTimeout(()=>{
-            console.log(`Remove? Diff is ${Date.now() - lastCancel}`)
             if(Date.now() - lastCancel > 150){
                 removeOptions();
             }
@@ -33,12 +49,10 @@ export function androidWidgetAutoCompleteTextViewBind<T>(this_: HTMLInputElement
     }
     function showOptions(query: string, options: Array<T>) {
         removeOptions();
-        console.log("Showing Options");
         const newSelectionView = document.createElement("div");
         newSelectionView.tabIndex = -1;
         newSelectionView.classList.add("khrysalis-autocomplete-options")
-        const matchingOptions = options.filter((x) => toString(x).toLowerCase().indexOf(query.toLowerCase()) != -1)
-        for(const option of matchingOptions) {
+        for(const option of options) {
             const optionView = document.createElement("button");
             optionView.tabIndex = 0;
             optionView.classList.add("khrysalis-autocomplete-option")

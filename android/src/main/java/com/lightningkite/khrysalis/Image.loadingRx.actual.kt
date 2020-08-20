@@ -2,19 +2,12 @@ package com.lightningkite.khrysalis
 
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
-import android.net.Uri
-import android.provider.MediaStore
+import android.graphics.Canvas
+import android.graphics.drawable.BitmapDrawable
 import com.lightningkite.khrysalis.net.HttpClient
 import com.lightningkite.khrysalis.net.unsuccessfulAsError
 import io.reactivex.Single
-import okhttp3.Call
-import okhttp3.Callback
-import okhttp3.Request
-import okhttp3.Response
-import java.io.IOException
-import java.io.InputStream
 import kotlin.math.max
-import kotlin.math.min
 
 
 /**
@@ -29,6 +22,22 @@ fun Image.load(): Single<Bitmap> {
             is ImageReference -> load()
             is ImageBitmap -> Single.just(this.bitmap)
             is ImageRemoteUrl -> load()
+            is ImageResource -> {
+                val drawable = HttpClient.appContext.resources.getDrawable(resource)
+                if(drawable is BitmapDrawable){
+                    Single.just(drawable.bitmap)
+                } else {
+                    val bitmap = Bitmap.createBitmap(
+                        drawable.intrinsicWidth,
+                        drawable.intrinsicHeight,
+                        Bitmap.Config.ARGB_8888
+                    )
+                    val canvas = Canvas(bitmap)
+                    drawable.setBounds(0, 0, canvas.width, canvas.height)
+                    drawable.draw(canvas)
+                    Single.just(bitmap)
+                }
+            }
         }
     } catch (e: Exception) {
         Single.error(e)

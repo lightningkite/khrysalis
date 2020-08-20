@@ -12,23 +12,35 @@ class CustomViewDelegate {
             this.toDispose.push(it);
         });
     }
-    onTouchDown(id, x, y, width, height) { return false; }
-    onTouchMove(id, x, y, width, height) { return false; }
-    onTouchCancelled(id, x, y, width, height) { return false; }
-    onTouchUp(id, x, y, width, height) { return false; }
-    sizeThatFitsWidth(width, height) { return width; }
-    sizeThatFitsHeight(width, height) { return height; }
+    onTouchDown(id, x, y, width, height) {
+        return false;
+    }
+    onTouchMove(id, x, y, width, height) {
+        return false;
+    }
+    onTouchCancelled(id, x, y, width, height) {
+        return false;
+    }
+    onTouchUp(id, x, y, width, height) {
+        return false;
+    }
+    sizeThatFitsWidth(width, height) {
+        return width;
+    }
+    sizeThatFitsHeight(width, height) {
+        return height;
+    }
     invalidate() {
-        const temp204 = this.customView;
-        if (temp204 !== null) {
-            CustomView_actual_1.customViewInvalidate(temp204);
+        const temp149 = this.customView;
+        if (temp149 !== null) {
+            CustomView_actual_1.customViewInvalidate(temp149);
         }
         ;
     }
     postInvalidate() {
-        const temp205 = this.customView;
-        if (temp205 !== null) {
-            CustomView_actual_1.customViewInvalidate(temp205);
+        const temp150 = this.customView;
+        if (temp150 !== null) {
+            CustomView_actual_1.customViewInvalidate(temp150);
         }
         ;
     }

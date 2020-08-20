@@ -10,6 +10,7 @@ export declare class HttpClient {
     readonly DELETE = "DELETE";
     ioScheduler: SchedulerLike | null;
     responseScheduler: SchedulerLike | null;
+    timeout: number;
     call(url: string, method?: string, headers?: Map<string, string>, body?: (HttpBody | null)): Observable<Response>;
     webSocket(url: string): Observable<ConnectedWebSocket>;
 }

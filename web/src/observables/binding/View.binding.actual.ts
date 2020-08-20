@@ -10,7 +10,7 @@ import { SubscriptionLike } from 'rxjs'
 //! Declares com.lightningkite.khrysalis.observables.binding.bindVisible>android.view.View
 export function androidViewViewBindVisible(this_: HTMLElement, observable: ObservableProperty<boolean>): void {
     ioReactivexDisposablesDisposableUntil<SubscriptionLike>(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy<boolean>(observable, undefined, undefined, (value: boolean): void => {
-                setViewVisibility(this_, value ? "visible" : "invisible")
+                setViewVisibility(this_, value ? "visible" : "invisible");
     }), getAndroidViewViewRemoved(this_));
 }
 
@@ -18,7 +18,7 @@ export function androidViewViewBindVisible(this_: HTMLElement, observable: Obser
 //! Declares com.lightningkite.khrysalis.observables.binding.bindExists>android.view.View
 export function androidViewViewBindExists(this_: HTMLElement, observable: ObservableProperty<boolean>): void {
     ioReactivexDisposablesDisposableUntil<SubscriptionLike>(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy<boolean>(observable, undefined, undefined, (value: boolean): void => {
-                setViewVisibility(this_, value ? "visible" : "gone")
+                setViewVisibility(this_, value ? "visible" : "gone");
     }), getAndroidViewViewRemoved(this_));
 }
 

@@ -2,8 +2,11 @@ package com.lightningkite.khrysalis.web.layout.drawables
 
 import com.lightningkite.khrysalis.utils.XmlNode
 import com.lightningkite.khrysalis.utils.attributeAsDouble
+import com.lightningkite.khrysalis.utils.kabobCase
 import com.lightningkite.khrysalis.web.attributeAsCssColor
 import com.lightningkite.khrysalis.web.layout.HtmlTranslator
+import com.lightningkite.khrysalis.web.layout.WebResources
+import com.lightningkite.khrysalis.web.useScssVariables
 import java.io.File
 import java.net.URLEncoder
 
@@ -12,8 +15,32 @@ fun convertVectorDrawable(
     currentDrawable: String,
     selectors: String,
     node: XmlNode,
-    out: Appendable
+    out: Appendable,
+    resources: WebResources
 ) {
+    fun String.asCssColor(): String? {
+        val value = this
+        return when {
+            value.startsWith("@") -> {
+                val name = value.substringAfter('/')
+                resources.colors[name]?.rawValue ?: "#FFF"
+            }
+            value.startsWith("#") -> {
+                when (value.length - 1) {
+                    3 -> "#" + value[1].toString().repeat(2) + value[2].toString().repeat(2) + value[3].toString()
+                        .repeat(2)
+                    4 -> "#" + value[2].toString().repeat(2) + value[3].toString().repeat(2) + value[4].toString()
+                        .repeat(2) + value[1].toString().repeat(2)
+                    6 -> value
+                    8 -> "#" + value.drop(3).take(6) + value.drop(1).take(2)
+                    else -> "#000000"
+                }
+            }
+            else -> "black"
+        }
+    }
+    fun XmlNode.attributeAsCssColor(key: String): String? = allAttributes[key]?.asCssColor()
+
     val file = webDrawablesFolder.resolve("$currentDrawable.svg")
     file.printWriter().use { svgOut ->
         val width = node.attributeAsDouble("android:width") ?: 0.0

@@ -1,9 +1,7 @@
 package com.lightningkite.khrysalis.typescript
 
-import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.forEachBetween
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
-import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
@@ -12,7 +10,7 @@ fun TypescriptTranslator.registerControl() {
 
     handle<KtBlockExpression> {
         val lastStatement = typedRule.statements.lastOrNull()
-        typedRule.allChildren.forEach {
+        typedRule.allChildren.filter { it.text != ";" }.forEach {
             if (it === lastStatement && it.actuallyCouldBeExpression) {
                 -"return "
             }
@@ -31,7 +29,9 @@ fun TypescriptTranslator.registerControl() {
             -typedRule.expression
         } else {
             -"{\n"
-            -"return "
+            if (typedRule.expression?.actuallyCouldBeExpression == true) {
+                -"return "
+            }
             -typedRule.expression
             -"\n}\n"
         }
@@ -41,11 +41,11 @@ fun TypescriptTranslator.registerControl() {
         if (typedRule.actuallyCouldBeExpression && typedRule.parent !is KtContainerNodeForControlStructureBody) {
             -"(()"
             val type = typedRule.resolvedExpressionTypeInfo?.type
-            if(type != null){
+            if (type != null) {
                 -": "
                 -type
             }
-            -" => {"
+            -" => {\n"
         }
         -"if ("
         -typedRule.condition
@@ -76,15 +76,23 @@ fun TypescriptTranslator.registerControl() {
             }
         }
         if (typedRule.actuallyCouldBeExpression && typedRule.parent !is KtContainerNodeForControlStructureBody) {
-            -"})()"
+            -"\n})()"
         }
     }
 
     handle<KtIfExpression>(
         condition = {
             typedRule.actuallyCouldBeExpression &&
-                    typedRule.then.let { it != null && it !is KtBlockExpression && it !is KtStatementExpression && !it.textContains('?') } &&
-                    typedRule.`else`.let { it != null && it !is KtBlockExpression && it !is KtStatementExpression && !it.textContains('?') }
+                    typedRule.then.let {
+                        it != null && it !is KtBlockExpression && it !is KtStatementExpression && !it.textContains(
+                            '?'
+                        )
+                    } &&
+                    typedRule.`else`.let {
+                        it != null && it !is KtBlockExpression && it !is KtStatementExpression && !it.textContains(
+                            '?'
+                        )
+                    }
         },
         priority = 1,
         action = {
@@ -96,11 +104,11 @@ fun TypescriptTranslator.registerControl() {
         }
     )
 
-    handle<KtTryExpression>{
+    handle<KtTryExpression> {
         if (typedRule.actuallyCouldBeExpression && typedRule.parent !is KtContainerNodeForControlStructureBody) {
             -"(()"
             val type = typedRule.resolvedExpressionTypeInfo?.type
-            if(type != null){
+            if (type != null) {
                 -": "
                 -type
             }
@@ -109,9 +117,9 @@ fun TypescriptTranslator.registerControl() {
         }
 
         -typedRule.allChildren.takeWhile { it !is KtCatchClause }
-        if(typedRule.catchClauses.size == 1){
+        if (typedRule.catchClauses.size == 1) {
             -typedRule.catchClauses.first()
-        } else if(typedRule.catchClauses.isNotEmpty()) {
+        } else if (typedRule.catchClauses.isNotEmpty()) {
             -"catch (e) {\n"
             typedRule.catchClauses.forEachBetween(
                 forItem = { catchClause ->
@@ -129,15 +137,13 @@ fun TypescriptTranslator.registerControl() {
                             .dropWhile { it is PsiWhiteSpace }
                             .dropLastWhile { it is PsiWhiteSpace }
                         children.forEachIndexed { index, it ->
-                            if (typedRule.actuallyCouldBeExpression) {
-                                if (index == children.lastIndex) {
-                                    -"return "
-                                }
+                            if (index == children.lastIndex && typedRule.actuallyCouldBeExpression && it is KtExpression && it.actuallyCouldBeExpression) {
+                                -"return "
                             }
                             -it
                         }
                     } else {
-                        if (typedRule.actuallyCouldBeExpression) {
+                        if (typedRule.actuallyCouldBeExpression && b?.actuallyCouldBeExpression == true) {
                             -"return "
                         }
                         -b
@@ -155,13 +161,13 @@ fun TypescriptTranslator.registerControl() {
         }
     }
 
-    handle<KtCatchClause>{
+    handle<KtCatchClause> {
         val expr = (typedRule.parent as KtTryExpression).actuallyCouldBeExpression
         -"catch (_"
         -(typedRule.catchParameter?.nameIdentifier ?: "e")
         -") { let "
         -(typedRule.catchParameter?.nameIdentifier ?: "e")
-        - " = _"
+        -" = _"
         -(typedRule.catchParameter?.nameIdentifier ?: "e")
         -" as "
         -typedRule.catchParameter!!.typeReference
@@ -175,7 +181,7 @@ fun TypescriptTranslator.registerControl() {
                 .dropLastWhile { it is PsiWhiteSpace }
             children.forEachIndexed { index, it ->
                 if (expr) {
-                    if (index == children.lastIndex) {
+                    if (index == children.lastIndex && it is KtExpression && it.actuallyCouldBeExpression) {
                         -"return "
                     }
                 }
@@ -200,11 +206,11 @@ fun TypescriptTranslator.registerControl() {
         if (typedRule.actuallyCouldBeExpression) {
             -"(()"
             val type = typedRule.resolvedExpressionTypeInfo?.type
-            if(type != null){
+            if (type != null) {
                 -": "
                 -type
             }
-            -" => {"
+            -" => {\n"
         }
         val subj = typedRule.subjectExpression
         if (subj is KtProperty) {
@@ -219,6 +225,7 @@ fun TypescriptTranslator.registerControl() {
         }
         -") {\n"
         typedRule.entries.forEach { entry ->
+            var hasAbsoluteBreak = false
             entry.conditions.forEach { con ->
                 -"case "
                 -con
@@ -234,24 +241,46 @@ fun TypescriptTranslator.registerControl() {
                     ?.dropWhile { it is PsiWhiteSpace }
                     ?.dropLastWhile { it is PsiWhiteSpace }
                 children?.forEachIndexed { index, it ->
-                    if (typedRule.actuallyCouldBeExpression) {
-                        if (index == children.lastIndex) {
-                            -"return "
-                        }
+                    if (index == children.lastIndex && typedRule.actuallyCouldBeExpression && it is KtExpression && it.actuallyCouldBeExpression) {
+                        hasAbsoluteBreak = true
+                        -"return "
+                    }
+                    if (
+                        it is KtBreakExpression ||
+                        it is KtContinueExpression ||
+                        it is KtReturnExpression ||
+                        it is KtThrowExpression ||
+                        (it is KtCallExpression && it.resolvedReferenceTarget?.fqNameSafe?.asString() == "com.lightningkite.khrysalis.fatalError")
+                    ) {
+                        hasAbsoluteBreak = true
                     }
                     -it
                 }
             } else {
-                if (typedRule.actuallyCouldBeExpression) {
+                val it = entry.expression
+                if (typedRule.actuallyCouldBeExpression && it is KtExpression && it.actuallyCouldBeExpression) {
+                    hasAbsoluteBreak = true
                     -"return "
                 }
-                -entry.expression
+                if (
+                    it is KtBreakExpression ||
+                    it is KtContinueExpression ||
+                    it is KtReturnExpression ||
+                    it is KtThrowExpression ||
+                    (it is KtCallExpression && it.resolvedReferenceTarget?.fqNameSafe?.asString() == "com.lightningkite.khrysalis.fatalError")
+                ) {
+                    hasAbsoluteBreak = true
+                }
+                -it
             }
-            -"\nbreak;\n"
+            if (!hasAbsoluteBreak) {
+                -"\nbreak;"
+            }
+            -"\n"
         }
         -"}\n"
         if (typedRule.actuallyCouldBeExpression) {
-            -"})()"
+            -"\n})()"
         }
     }
 
@@ -262,11 +291,11 @@ fun TypescriptTranslator.registerControl() {
         if (typedRule.actuallyCouldBeExpression) {
             -"(()"
             val type = typedRule.resolvedExpressionTypeInfo?.type
-            if(type != null){
+            if (type != null) {
                 -": "
                 -type
             }
-            -" => {"
+            -" => {\n"
         }
         -typedRule.entries.forEachBetween(
             forItem = { it ->
@@ -282,14 +311,18 @@ fun TypescriptTranslator.registerControl() {
                     )
                     -")"
                 }
-                if (it.expression is KtBlockExpression) {
-                    -it.expression
-                } else {
-                    -" {\n"
-                    if (typedRule.actuallyCouldBeExpression) {
+                val expr = it.expression
+                if (expr is KtBlockExpression) {
+                    if (typedRule.actuallyCouldBeExpression && expr.actuallyCouldBeExpression) {
                         -"return "
                     }
-                    -it.expression
+                    -expr
+                } else {
+                    -" {\n"
+                    if (typedRule.actuallyCouldBeExpression && expr is KtExpression && expr.actuallyCouldBeExpression) {
+                        -"return "
+                    }
+                    -expr
                     -"\n}"
                 }
             },
@@ -299,7 +332,7 @@ fun TypescriptTranslator.registerControl() {
         )
 
         if (typedRule.actuallyCouldBeExpression) {
-            -"})()"
+            -"\n})()"
         }
     }
 
@@ -310,11 +343,11 @@ fun TypescriptTranslator.registerControl() {
         if (typedRule.actuallyCouldBeExpression) {
             -"(()"
             val type = typedRule.resolvedExpressionTypeInfo?.type
-            if(type != null){
+            if (type != null) {
                 -": "
                 -type
             }
-            -" => {"
+            -" => {\n"
         }
         val subj = typedRule.subjectExpression
         if (subj is KtProperty) {
@@ -360,14 +393,18 @@ fun TypescriptTranslator.registerControl() {
                     )
                     -")"
                 }
-                if (it.expression is KtBlockExpression) {
-                    -it.expression
-                } else {
-                    -" {\n"
-                    if (typedRule.actuallyCouldBeExpression) {
+                val expr = it.expression
+                if (expr is KtBlockExpression) {
+                    if (typedRule.actuallyCouldBeExpression && expr.actuallyCouldBeExpression) {
                         -"return "
                     }
-                    -it.expression
+                    -expr
+                } else {
+                    -" {\n"
+                    if (typedRule.actuallyCouldBeExpression && expr is KtExpression && expr.actuallyCouldBeExpression) {
+                        -"return "
+                    }
+                    -expr
                     -"\n}"
                 }
             },
@@ -377,7 +414,7 @@ fun TypescriptTranslator.registerControl() {
         )
 
         if (typedRule.actuallyCouldBeExpression) {
-            -"})()"
+            -"\n})()"
         }
     }
 

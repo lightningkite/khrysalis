@@ -45,8 +45,8 @@ class ObservableStack extends ObservableProperty_shared_1.ObservableProperty {
     backPressPop() {
         const last = (() => {
             var _a;
-            const temp148 = this.stack;
-            return ((_a = temp148[temp148.length - 1]) !== null && _a !== void 0 ? _a : null);
+            const temp93 = this.stack;
+            return ((_a = temp93[temp93.length - 1]) !== null && _a !== void 0 ? _a : null);
         })();
         if (Kotlin_1.checkIsInterface(last, "ComLightningkiteKhrysalisViewsHasBackAction") && last.onBackPressed()) {
             return true;
@@ -56,8 +56,8 @@ class ObservableStack extends ObservableProperty_shared_1.ObservableProperty {
     backPressDismiss() {
         const last = (() => {
             var _a;
-            const temp149 = this.stack;
-            return ((_a = temp149[temp149.length - 1]) !== null && _a !== void 0 ? _a : null);
+            const temp94 = this.stack;
+            return ((_a = temp94[temp94.length - 1]) !== null && _a !== void 0 ? _a : null);
         })();
         if (Kotlin_1.checkIsInterface(last, "ComLightningkiteKhrysalisViewsHasBackAction") && last.onBackPressed()) {
             return true;

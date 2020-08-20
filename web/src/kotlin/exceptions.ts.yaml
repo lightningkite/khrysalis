@@ -24,6 +24,13 @@
     imports:
       NoSuchElementException: khrysalis/dist/Kotlin
 
+- id: kotlin.Throwable.printStackTrace
+  type: call
+  template:
+    pattern: printStackTrace(~this~)
+    imports:
+      printStackTrace: khrysalis/dist/kotlin/Language
+
 - id: kotlin.Exception
   type: call
   template:

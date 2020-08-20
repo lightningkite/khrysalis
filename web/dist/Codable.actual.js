@@ -7,7 +7,7 @@ exports.JsonList = Array;
 exports.JsonMap = Map;
 //! Declares com.lightningkite.khrysalis.toJsonString>kotlin.Any
 function kotlinAnyToJsonString(this_) {
-    return JSON.stringify(this_);
+    return jsonParsing_1.stringify(this_);
 }
 exports.kotlinAnyToJsonString = kotlinAnyToJsonString;
 //! Declares com.lightningkite.khrysalis.fromJsonString>kotlin.String
@@ -17,7 +17,7 @@ function kotlinStringFromJsonString(this_, T) {
 exports.kotlinStringFromJsonString = kotlinStringFromJsonString;
 //! Declares com.lightningkite.khrysalis.fromJsonStringUntyped>kotlin.String
 function kotlinStringFromJsonStringUntyped(this_) {
-    return JSON.parse(this_);
+    return jsonParsing_1.parseUntyped(this_);
 }
 exports.kotlinStringFromJsonStringUntyped = kotlinStringFromJsonStringUntyped;
 //# sourceMappingURL=Codable.actual.js.map

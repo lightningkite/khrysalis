@@ -7,6 +7,22 @@
   type: call
   template: new Date()
 
+- id: java.util.Date.time
+  type: get
+  template: ~this~.getTime()
+
+- id: java.util.Date.getTime
+  type: call
+  template: ~this~.getTime()
+
+- id: java.util.Date.after
+  type: call
+  template: (~this~ > ~0~)
+
+- id: java.util.Date.before
+  type: call
+  template: (~this~ < ~0~)
+
 - id: com.lightningkite.khrysalis.time.dayOfWeek
   type: get
   template: (~this~.getDay() + 1)

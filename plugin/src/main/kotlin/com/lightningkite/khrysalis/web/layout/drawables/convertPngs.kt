@@ -2,6 +2,7 @@ package com.lightningkite.khrysalis.web.layout.drawables
 
 import com.lightningkite.khrysalis.utils.kabobCase
 import com.lightningkite.khrysalis.web.layout.HtmlTranslator
+import com.lightningkite.khrysalis.web.layout.WebResources
 import java.io.File
 import java.lang.Appendable
 import kotlin.math.absoluteValue
@@ -18,7 +19,8 @@ private val dpis = listOf(
 fun convertPngs(
     css: Appendable,
     androidResourcesFolder: File,
-    webDrawablesFolder: File
+    webDrawablesFolder: File,
+    resources: WebResources
 ) {
     val pngNames = (androidResourcesFolder.listFiles() ?: arrayOf())
         .asSequence()
@@ -29,6 +31,7 @@ fun convertPngs(
         .distinct()
         .toList()
         .sortedBy { it }
+
 
     pngNames.forEach { pngName ->
         val matching = (androidResourcesFolder.listFiles() ?: arrayOf())
@@ -57,46 +60,11 @@ fun convertPngs(
             matching.minBy { (it.key - 2).absoluteValue }?.let { (key, file) ->
                 val destFile = webDrawablesFolder.resolve(file.nameWithoutExtension.kabobCase() + ".png")
                 file.copyTo(destFile)
+                resources.drawables[pngName] = WebResources.Drawable(cssName, "images/${destFile.name}")
                 appendln(".drawable-${cssName} {")
                 appendln("background-image: url(\"images/${destFile.name}\");")
                 appendln("}")
             }
         })
-
-//        css.append(buildString {
-//            val cssName = pngName.kabobCase()
-//            appendln("/* ${cssName} */")
-//            matching.forEachIndexed { index, (size, file) ->
-//                val destFile = webDrawablesFolder.resolve(file.nameWithoutExtension + "-" + size + ".png")
-//                file.copyTo(destFile)
-//                fun writeImageCss() {
-//                    appendln(".drawable-${cssName} {")
-//                    appendln("background-image: url(\"images/${destFile.name}\");")
-//                    appendln("}")
-//                }
-//                appendln()
-//                if (0 == index) {
-//                    if (matching.lastIndex == index) {
-//                        //Only one image
-//                        writeImageCss()
-//                    } else {
-//                        //First of set of images
-//                        appendln("@media only (max-resolution: ${(dpis[size] + dpis[matching[index + 1].key]) / 2}dpi) {")
-//                        writeImageCss()
-//                        appendln("}")
-//                    }
-//                } else if (matching.lastIndex == index) {
-//                    //Last of set of images
-//                    appendln("@media only (min-resolution: ${(dpis[size] + dpis[matching[index - 1].key]) / 2}dpi) {")
-//                    writeImageCss()
-//                    appendln("}")
-//                } else {
-//                    //Middle image
-//                    appendln("@media only (min-resolution: ${(dpis[size] + dpis[matching[index - 1].key]) / 2}dpi and max-resolution: ${(dpis[size] + dpis[matching[index + 1].key]) / 2}dpi) {")
-//                    writeImageCss()
-//                    appendln("}")
-//                }
-//            }
-//        })
     }
 }

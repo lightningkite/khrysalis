@@ -11,9 +11,9 @@ class SelectDateMonthCVD extends MonthCVD_shared_1.MonthCVD {
     constructor() {
         super();
         this.selected = new StandardObservableProperty_shared_1.StandardObservableProperty(null, undefined);
-        let temp_380;
-        if ((temp_380 = this.selected.value) !== null) {
-            this.currentMonthObs.value = Date_actual_1.copyDateAloneMod(temp_380, Date.prototype.setDate, 1);
+        const it_325 = this.selected.value;
+        if (it_325 !== null) {
+            this.currentMonthObs.value = Date_actual_1.copyDateAloneMod(it_325, Date.prototype.setDate, 1);
         }
         ;
         DisposeCondition_actual_1.ioReactivexDisposablesDisposableForever(this.selected.onChange.subscribe((value) => {
@@ -22,7 +22,9 @@ class SelectDateMonthCVD extends MonthCVD_shared_1.MonthCVD {
         this.selectedDayPaint = new Paint_actual_1.Paint();
         this.selectedPaint = new Paint_actual_1.Paint();
     }
-    generateAccessibilityView() { return null; }
+    generateAccessibilityView() {
+        return null;
+    }
     drawDay(canvas, showingMonth, day, displayMetrics, outer, inner) {
         if (Kotlin_1.safeEq(day, this.selected.value)) {
             MonthCVD_shared_1.CalendarDrawing.INSTANCE.dayBackground(canvas, inner, this.selectedPaint);

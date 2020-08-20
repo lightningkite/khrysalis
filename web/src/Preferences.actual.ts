@@ -20,7 +20,11 @@ export class Preferences {
     get<T extends IsCodable>(T: any, key: string): (T | null){
         const thing = window.localStorage[key];
         if(thing === null || thing === undefined) return null;
-        return kotlinStringFromJsonString(thing, T);
+        try {
+            return kotlinStringFromJsonString(thing, T);
+        } catch(e) {
+            return null;
+        }
     }
     
     clear(): void{

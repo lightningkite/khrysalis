@@ -3,7 +3,7 @@
 // Package: com.lightningkite.khrysalis
 import { Exception } from './Kotlin'
 import { HttpClient } from './net/HttpClient.actual'
-import {parse} from "./net/jsonParsing";
+import {parse, parseUntyped, stringify} from "./net/jsonParsing";
 
 //! Declares com.lightningkite.khrysalis.Codable
 export interface Codable {
@@ -24,7 +24,7 @@ export let JsonMap = Map;
 
 //! Declares com.lightningkite.khrysalis.toJsonString>kotlin.Any
 export function kotlinAnyToJsonString(this_: (IsCodable | null)): string{
-    return JSON.stringify(this_);
+    return stringify(this_);
 }
 
 //! Declares com.lightningkite.khrysalis.fromJsonString>kotlin.String
@@ -34,7 +34,5 @@ export function kotlinStringFromJsonString<T extends IsCodable>(this_: string, T
 
 //! Declares com.lightningkite.khrysalis.fromJsonStringUntyped>kotlin.String
 export function kotlinStringFromJsonStringUntyped(this_: string): (IsCodable | null){
-    return JSON.parse(this_)
+    return parseUntyped(this_)
 }
-
-

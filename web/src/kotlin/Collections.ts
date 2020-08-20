@@ -1,6 +1,7 @@
 import {Exception, hashAnything, safeEq} from "./Language";
 import {filter, flatten, map} from "iterable-operator";
 import {kotlinCollectionsIterableJoinToString} from "./Iterables";
+import {safeCompare} from "./Comparable";
 
 export function mapForKeyType<K, V>(type: any): Map<K, V> {
     switch (type) {
@@ -9,10 +10,10 @@ export function mapForKeyType<K, V>(type: any): Map<K, V> {
         case Boolean:
             return new Map();
         default:
-            if (type.prototype.equals === Object.prototype.equals) {
-                return new Map();
-            } else {
+            if (type.prototype.equals) {
                 return new EqualOverrideMap();
+            } else {
+                return new Map();
             }
     }
 }
@@ -24,10 +25,10 @@ export function setForType<V>(type: any): Set<V> {
         case Boolean:
             return new Set();
         default:
-            if (type.prototype.equals === Object.prototype.equals) {
-                return new Set();
-            } else {
+            if (type.prototype.equals) {
                 return new EqualOverrideSet();
+            } else {
+                return new Set();
             }
     }
 }
@@ -383,4 +384,30 @@ export function kotlinCollectionsMutableMapGetOrPut<K, V>(map: Map<K, V>, key: K
         map.set(key, newValue);
         return newValue
     }
+}
+
+export function iterMaxBy<T, V>(iter: Iterable<T>, selector: (t: T)=>V): T | null {
+    let result: T | null = null;
+    let best: V | null = null;
+    for(const item of iter){
+        const sel = selector(item);
+        if(safeCompare(sel, best) > 0) {
+            result = item;
+            best = sel;
+        }
+    }
+    return result;
+}
+
+export function iterMinBy<T, V>(iter: Iterable<T>, selector: (t: T)=>V): T | null {
+    let result: T | null = null;
+    let best: V | null = null;
+    for(const item of iter){
+        const sel = selector(item);
+        if(safeCompare(sel, best) < 0) {
+            result = item;
+            best = sel;
+        }
+    }
+    return result;
 }

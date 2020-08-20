@@ -16,7 +16,7 @@
   template: ~0~
 
 - id: com.lightningkite.khrysalis.views.displayMetrics
-  type: call
+  type: get
   template:
     pattern: DisplayMetrics.INSTANCE
     imports:

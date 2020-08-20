@@ -13,7 +13,7 @@ export abstract class CustomViewDelegate {
         this.toDispose = [];
         this._removed = null;
         this._removed = new DisposeCondition((it: SubscriptionLike): void => {
-                this.toDispose.push(it)
+                this.toDispose.push(it);
         });
     }
     
@@ -21,20 +21,32 @@ export abstract class CustomViewDelegate {
     
     public abstract generateAccessibilityView(): (HTMLElement | null) 
     public abstract draw(canvas: CanvasRenderingContext2D, width: number, height: number, displayMetrics: DisplayMetrics): void 
-    public onTouchDown(id: number, x: number, y: number, width: number, height: number): boolean { return false; }
-    public onTouchMove(id: number, x: number, y: number, width: number, height: number): boolean { return false; }
-    public onTouchCancelled(id: number, x: number, y: number, width: number, height: number): boolean { return false; }
-    public onTouchUp(id: number, x: number, y: number, width: number, height: number): boolean { return false; }
-    public sizeThatFitsWidth(width: number, height: number): number { return width; }
-    public sizeThatFitsHeight(width: number, height: number): number { return height; }
+    public onTouchDown(id: number, x: number, y: number, width: number, height: number): boolean { 
+        return false; 
+    }
+    public onTouchMove(id: number, x: number, y: number, width: number, height: number): boolean { 
+        return false; 
+    }
+    public onTouchCancelled(id: number, x: number, y: number, width: number, height: number): boolean { 
+        return false; 
+    }
+    public onTouchUp(id: number, x: number, y: number, width: number, height: number): boolean { 
+        return false; 
+    }
+    public sizeThatFitsWidth(width: number, height: number): number { 
+        return width; 
+    }
+    public sizeThatFitsHeight(width: number, height: number): number { 
+        return height; 
+    }
     
-    public invalidate(): void { const temp204 = this.customView;
-        if(temp204 !== null) { 
-            customViewInvalidate(temp204)
+    public invalidate(): void { const temp149 = this.customView;
+        if(temp149 !== null) { 
+            customViewInvalidate(temp149)
     }; }
-    public postInvalidate(): void { const temp205 = this.customView;
-        if(temp205 !== null) { 
-            customViewInvalidate(temp205)
+    public postInvalidate(): void { const temp150 = this.customView;
+        if(temp150 !== null) { 
+            customViewInvalidate(temp150)
     }; }
     
     public readonly toDispose: Array<SubscriptionLike>;

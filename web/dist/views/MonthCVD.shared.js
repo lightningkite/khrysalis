@@ -74,7 +74,9 @@ class MonthCVD extends CustomViewDelegate_shared_1.CustomViewDelegate {
         this.isTap = false;
         this.dragStartY = 0;
     }
-    generateAccessibilityView() { return null; }
+    generateAccessibilityView() {
+        return null;
+    }
     //! Declares com.lightningkite.khrysalis.views.MonthCVD.currentMonth
     get currentMonth() { return this.currentMonthObs.value; }
     set currentMonth(value) {
@@ -86,9 +88,9 @@ class MonthCVD extends CustomViewDelegate_shared_1.CustomViewDelegate {
     }
     set currentOffset(value) {
         this._currentOffset = value;
-        const temp230 = this.customView;
-        if (temp230 !== null) {
-            CustomView_actual_1.customViewInvalidate(temp230);
+        const temp175 = this.customView;
+        if (temp175 !== null) {
+            CustomView_actual_1.customViewInvalidate(temp175);
         }
         ;
     }
@@ -186,12 +188,14 @@ class MonthCVD extends CustomViewDelegate_shared_1.CustomViewDelegate {
         CalendarDrawing.INSTANCE.day(canvas, showingMonth, day, outer, this.dayPaint);
     }
     onTap(day) { }
-    onTouchDownDate(day) { return false; }
+    onTouchDownDate(day) {
+        return false;
+    }
     onTouchDown(id, x, y, width, height) {
         const day = this.dayAtPixel(x, y, undefined);
-        let temp_306;
-        if ((temp_306 = day) !== null) {
-            if (this.onTouchDownDate(temp_306)) {
+        const it_251 = day;
+        if (it_251 !== null) {
+            if (this.onTouchDownDate(it_251)) {
                 return true;
             }
         }
@@ -202,7 +206,9 @@ class MonthCVD extends CustomViewDelegate_shared_1.CustomViewDelegate {
         this.isTap = true;
         return true;
     }
-    onTouchMoveDate(day) { return false; }
+    onTouchMoveDate(day) {
+        return false;
+    }
     onTouchMove(id, x, y, width, height) {
         if (this.draggingId === id) {
             this.lastOffset = this.currentOffset;
@@ -215,20 +221,22 @@ class MonthCVD extends CustomViewDelegate_shared_1.CustomViewDelegate {
             }
         }
         else {
-            let temp_318;
-            if ((temp_318 = this.dayAtPixel(x, y, undefined)) !== null) {
-                return this.onTouchMoveDate(temp_318);
+            const it_263 = this.dayAtPixel(x, y, undefined);
+            if (it_263 !== null) {
+                return this.onTouchMoveDate(it_263);
             }
         }
         return true;
     }
-    onTouchUpDate(day) { return false; }
+    onTouchUpDate(day) {
+        return false;
+    }
     onTouchUp(id, x, y, width, height) {
         if (this.draggingId === id) {
             if (this.isTap) {
-                let temp_320;
-                if ((temp_320 = this.dayAtPixel(x, y, undefined)) !== null) {
-                    this.onTap(temp_320);
+                const it_265 = this.dayAtPixel(x, y, undefined);
+                if (it_265 !== null) {
+                    this.onTap(it_265);
                 }
             }
             else {
@@ -253,9 +261,9 @@ class MonthCVD extends CustomViewDelegate_shared_1.CustomViewDelegate {
             this.draggingId = this.DRAGGING_NONE;
         }
         else {
-            let temp_337;
-            if ((temp_337 = this.dayAtPixel(x, y, undefined)) !== null) {
-                return this.onTouchUpDate(temp_337);
+            const it_282 = this.dayAtPixel(x, y, undefined);
+            if (it_282 !== null) {
+                return this.onTouchUpDate(it_282);
             }
         }
         return true;

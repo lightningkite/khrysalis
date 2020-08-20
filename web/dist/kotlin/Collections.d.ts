@@ -62,3 +62,5 @@ export declare function iterLastOrNull<T>(iterable: Iterable<T>): (T | null);
 export declare function iterCount<T>(iterable: Iterable<T>, func: (a: T) => boolean): number;
 export declare function setAddCausedChange<T>(set: Set<T>, item: T): boolean;
 export declare function kotlinCollectionsMutableMapGetOrPut<K, V>(map: Map<K, V>, key: K, valueGenerator: () => V): V;
+export declare function iterMaxBy<T, V>(iter: Iterable<T>, selector: (t: T) => V): T | null;
+export declare function iterMinBy<T, V>(iter: Iterable<T>, selector: (t: T) => V): T | null;

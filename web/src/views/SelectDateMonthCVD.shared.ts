@@ -10,6 +10,7 @@ import { DateAlone } from '../time/DateAlone.actual'
 import { safeEq } from '../Kotlin'
 import { copyDateAloneMod } from '../time/Date.actual'
 import { StandardObservableProperty } from '../observables/StandardObservableProperty.shared'
+import { runOrNull } from '../kotlin/Language'
 import { RectF } from './geometry/RectF.actual'
 import { ioReactivexDisposablesDisposableForever } from '../rx/DisposeCondition.actual'
 
@@ -18,18 +19,20 @@ export class SelectDateMonthCVD extends MonthCVD {
     public constructor() {
         super();
         this.selected = new StandardObservableProperty<(DateAlone | null)>(null, undefined);
-        let temp_380;
-        if ((temp_380 = this.selected.value) !== null) { 
-            this.currentMonthObs.value = copyDateAloneMod(temp_380, Date.prototype.setDate, 1);
+        const it_325 = this.selected.value;
+        if (it_325 !== null) { 
+            this.currentMonthObs.value = copyDateAloneMod(it_325, Date.prototype.setDate, 1);
         };
         ioReactivexDisposablesDisposableForever<SubscriptionLike>(this.selected.onChange.subscribe( (value: (DateAlone | null)): void => {
-                    this?.invalidate()
+                    this?.invalidate();
         }, undefined, undefined));
         this.selectedDayPaint = new Paint();
         this.selectedPaint = new Paint();
     }
     
-    public generateAccessibilityView(): (HTMLElement | null) { return null; }
+    public generateAccessibilityView(): (HTMLElement | null) { 
+        return null; 
+    }
     
     public selected: MutableObservableProperty<(DateAlone | null)>;
     

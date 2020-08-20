@@ -14,6 +14,7 @@ import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
 import org.jetbrains.kotlin.resolve.scopes.DescriptorKindFilter
+import org.jetbrains.kotlin.types.isNullable
 import org.jetbrains.kotlin.types.typeUtil.supertypes
 import java.util.*
 import kotlin.collections.ArrayList
@@ -439,29 +440,11 @@ fun TypescriptTranslator.registerClass() {
             if (typedRule.body?.declarations?.any { it is FunctionDescriptor && (it as KtDeclaration).name == "hashCode" && it.valueParameters.isEmpty() } != true) {
                 -"public hashCode(): number {\nlet hash = 17;\n"
                 typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEach { param ->
-                    val rawType = param.typeReference?.resolvedType
-                        ?: throw IllegalArgumentException("No type reference available to generate hashCode() function")
-                    val typeName = param.typeReference?.resolvedType?.getJetTypeFqName(false)
                     -"hash = 31 * hash + "
-                    replacements.functions[typeName + ".hashCode"]?.firstOrNull()?.let {
-                        emitTemplate(
-                            requiresWrapping = true,
-                            type = "number",
-                            template = it.template,
-                            receiver = listOf("this.", param.nameIdentifier)
-                        )
-                    } ?: run {
-                        if (rawType.constructor.declarationDescriptor is TypeParameterDescriptor) {
-                            out.addImport("khrysalis/dist/Kotlin", "hashAnything")
-                            -"hashAnything(this."
-                            -param.nameIdentifier
-                            -")"
-                        } else {
-                            -"(this."
-                            -param.nameIdentifier
-                            -"?.hashCode() ?? 0)"
-                        }
-                    }
+                    out.addImport("khrysalis/dist/Kotlin", "hashAnything")
+                    -"hashAnything(this."
+                    -param.nameIdentifier
+                    -")"
                     -";\n"
                 }
 
@@ -474,28 +457,13 @@ fun TypescriptTranslator.registerClass() {
                 -typedRule.nameIdentifier
                 typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEach { param ->
                     -" && "
-                    val rawType = param.typeReference?.resolvedType
-                        ?: throw IllegalArgumentException("No type reference available to generate hashCode() function")
-                    val typeName = param.typeReference?.resolvedType?.getJetTypeFqName(false)
-                    replacements.functions[typeName + ".equals"]?.firstOrNull()?.let {
-                        emitTemplate(
-                            requiresWrapping = true,
-                            type = "boolean",
-                            template = it.template,
-                            receiver = listOf("this.", param.nameIdentifier),
-                            allParameters = listOf("other.", param.nameIdentifier),
-                            parameter = { listOf("other.", param.nameIdentifier) },
-                            parameterByIndex = { listOf("other.", param.nameIdentifier) }
-                        )
-                    } ?: run {
-                        out.addImport("khrysalis/dist/Kotlin", "safeEq")
-                        -"safeEq(this."
-                        -param.nameIdentifier
-                        -", "
-                        -"other."
-                        -param.nameIdentifier
-                        -")"
-                    }
+                    out.addImport("khrysalis/dist/Kotlin", "safeEq")
+                    -"safeEq(this."
+                    -param.nameIdentifier
+                    -", "
+                    -"other."
+                    -param.nameIdentifier
+                    -")"
                 }
                 -" }\n"
             }
@@ -714,6 +682,8 @@ fun TypescriptTranslator.registerClass() {
         val args = arrayListOf({ ->
             -'"'
             -typedRule.nameIdentifier
+            -"\", \""
+            -typedRule.jsonName(this@registerClass)
             -'"'
             Unit
         })
@@ -776,8 +746,10 @@ fun TypescriptTranslator.registerClass() {
             -'"'
             Unit
         })
-        (typedRule.initializerList?.initializers?.firstOrNull() as? KtSuperTypeCallEntry)?.resolvedCall?.valueArguments?.forEach {
-            args.add { -(it.value.arguments.firstOrNull()?.getArgumentExpression() ?: "undefined") }
+        (typedRule.initializerList?.initializers?.firstOrNull() as? KtSuperTypeCallEntry)?.resolvedCall?.valueArguments?.entries?.sortedBy { it.key.index }?.forEach {
+            args.add {
+                -(it.value.arguments.firstOrNull()?.getArgumentExpression() ?: "undefined")
+            }
         } ?: (typedRule.initializerList?.initializers?.firstOrNull() as? KtSuperTypeCallEntry)?.valueArguments?.forEach {
             args.add { -it.getArgumentExpression() }
         }

@@ -19,6 +19,8 @@ function comLightningkiteKhrysalisTimeTimeAloneSet(this_, other) {
 }
 exports.comLightningkiteKhrysalisTimeTimeAloneSet = comLightningkiteKhrysalisTimeTimeAloneSet;
 //! Declares com.lightningkite.khrysalis.time.format>com.lightningkite.khrysalis.time.TimeAlone
-function comLightningkiteKhrysalisTimeTimeAloneFormat(this_, clockPartSize) { return Date_actual_1.javaUtilDateFormat(Date_actual_1.dateFrom(Date_actual_1.getJavaUtilDateDateAlone(new Date()), this_, undefined), ClockPartSize_shared_1.ClockPartSize.None, clockPartSize); }
+function comLightningkiteKhrysalisTimeTimeAloneFormat(this_, clockPartSize) {
+    return Date_actual_1.javaUtilDateFormat(Date_actual_1.dateFrom(Date_actual_1.getJavaUtilDateDateAlone(new Date()), this_, undefined), ClockPartSize_shared_1.ClockPartSize.None, clockPartSize);
+}
 exports.comLightningkiteKhrysalisTimeTimeAloneFormat = comLightningkiteKhrysalisTimeTimeAloneFormat;
 //# sourceMappingURL=TimeAlone.shared.js.map

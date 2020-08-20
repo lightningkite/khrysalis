@@ -272,19 +272,19 @@
 
 - id: kotlin.text.toByte
   type: call
-  template: parseInt(~0~)
+  template: parseInt(~this~)
 - id: kotlin.text.toShort
   type: call
-  template: parseInt(~0~)
+  template: parseInt(~this~)
 - id: kotlin.text.toInt
   type: call
-  template: parseInt(~0~)
+  template: parseInt(~this~)
 - id: kotlin.text.toLong
   type: call
-  template: parseInt(~0~)
+  template: parseInt(~this~)
 - id: kotlin.text.toFloat
   type: call
-  template: parseFloat(~0~)
+  template: parseFloat(~this~)
 - id: kotlin.text.toDouble
   type: call
-  template: parseFloat(~0~)
+  template: parseFloat(~this~)

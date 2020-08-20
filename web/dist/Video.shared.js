@@ -17,12 +17,11 @@ class VideoReference extends Video {
         this.uri = uri;
     }
     hashCode() {
-        var _a, _b;
         let hash = 17;
-        hash = 31 * hash + ((_b = (_a = this.uri) === null || _a === void 0 ? void 0 : _a.hashCode()) !== null && _b !== void 0 ? _b : 0);
+        hash = 31 * hash + Kotlin_1.hashAnything(this.uri);
         return hash;
     }
-    equals(other) { return other instanceof VideoReference && this.uri === other.uri; }
+    equals(other) { return other instanceof VideoReference && Kotlin_1.safeEq(this.uri, other.uri); }
     toString() { return `VideoReference(uri = ${this.uri})`; }
     copy(uri = this.uri) { return new VideoReference(uri); }
 }
@@ -35,18 +34,22 @@ class VideoRemoteUrl extends Video {
     }
     hashCode() {
         let hash = 17;
-        hash = 31 * hash + Kotlin_1.hashString(this.url);
+        hash = 31 * hash + Kotlin_1.hashAnything(this.url);
         return hash;
     }
-    equals(other) { return other instanceof VideoRemoteUrl && this.url === other.url; }
+    equals(other) { return other instanceof VideoRemoteUrl && Kotlin_1.safeEq(this.url, other.url); }
     toString() { return `VideoRemoteUrl(url = ${this.url})`; }
     copy(url = this.url) { return new VideoRemoteUrl(url); }
 }
 exports.VideoRemoteUrl = VideoRemoteUrl;
 //! Declares com.lightningkite.khrysalis.asVideo>kotlin.String
-function kotlinStringAsVideo(this_) { return new VideoRemoteUrl(this_); }
+function kotlinStringAsVideo(this_) {
+    return new VideoRemoteUrl(this_);
+}
 exports.kotlinStringAsVideo = kotlinStringAsVideo;
 //! Declares com.lightningkite.khrysalis.asVideo>android.net.Uri
-function androidNetUriAsVideo(this_) { return new VideoReference(this_); }
+function androidNetUriAsVideo(this_) {
+    return new VideoReference(this_);
+}
 exports.androidNetUriAsVideo = androidNetUriAsVideo;
 //# sourceMappingURL=Video.shared.js.map

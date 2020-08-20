@@ -213,16 +213,16 @@ interface AnalysisExtensions {
     }
 
     val KtExpression.actuallyCouldBeExpression: Boolean
-        get() = determineNotStatement(this)
-    fun determineNotStatementLambda(it: KtFunctionLiteral): Boolean{
+        get() = determineMaybeExpression(this)
+    fun determineMaybeExpressionLambda(it: KtFunctionLiteral): Boolean{
         it.resolvedExpectedReturnType?.let { expected ->
             if (expected !is TypeUtils.SpecialType) {
                 return expected.getJetTypeFqName(false) !in dontReturnTypes
             }
         }
-        return false
+        return true
     }
-    fun determineNotStatement(exp: KtExpression): Boolean {
+    fun determineMaybeExpression(exp: KtExpression): Boolean {
         if (exp is KtStatementExpression) {
             return false
         }
@@ -234,16 +234,16 @@ interface AnalysisExtensions {
                 return false
             }
             (it.parent as? KtFunctionLiteral)?.let {
-                return determineNotStatementLambda(it)
+                return determineMaybeExpressionLambda(it)
             }
             //Check if control is expression
-            if(it.parent is KtWhenEntry) return determineNotStatement(it.parent!!.parent as KtExpression)
+            if(it.parent is KtWhenEntry) return determineMaybeExpression(it.parent!!.parent as KtExpression)
             parentControlBody = it.parent as? KtContainerNodeForControlStructureBody ?: return false
         }
-        parentControlBody?.let { return determineNotStatementControlBody(it) }
+        parentControlBody?.let { return determineMaybeExpressionControl(it) }
         return true
     }
-    fun determineNotStatementControlBody(it: KtContainerNodeForControlStructureBody): Boolean {
+    fun determineMaybeExpressionControl(it: KtContainerNodeForControlStructureBody): Boolean {
         (it.parent as? KtIfExpression)?.let {
             return it.actuallyCouldBeExpression
         }

@@ -26,6 +26,18 @@ function comLightningkiteKhrysalisImageLoad(this_) {
                         .pipe(operators_1.flatMap((x) => { return x.blob(); }))
                         .pipe(operators_1.flatMap((x) => { return createImageBitmap(x); }));
                 }
+                else if (this_ instanceof Image_shared_1.ImageResource) {
+                    let path = this_.resource.filePath;
+                    if (path) {
+                        return rxjs_1.from(fetch(path))
+                            .pipe(operators_1.flatMap((x) => { return x.blob(); }))
+                            .pipe(operators_1.flatMap((x) => { return createImageBitmap(x); }));
+                    }
+                    else {
+                        // TODO
+                        return rxjs_1.throwError(new Kotlin_1.Exception("Not able to load a resource that's not an SVG or PNG.", null));
+                    }
+                }
                 else {
                     return rxjs_1.throwError(new Kotlin_1.Exception("This shouldn't be possible - got an image object of an unknown type.", null));
                 }

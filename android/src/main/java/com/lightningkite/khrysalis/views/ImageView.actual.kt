@@ -36,6 +36,7 @@ fun ImageView.loadImage(image: Image?) {
                         Picasso.get().load(image.url).resize(this.width * 2, this.height * 2).centerInside().into(this)
                     }
                 }
+                is ImageResource -> this.setImageResource(image.resource)
             }
         }
         if (image == null) {

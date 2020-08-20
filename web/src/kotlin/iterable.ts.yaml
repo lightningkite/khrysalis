@@ -14,6 +14,12 @@
     imports:
       iterCount: khrysalis/dist/kotlin/Collections
 
+- id: kotlin.collections.reversed
+  type: call
+  template:
+    pattern: iterToArray(~this~).reverse()
+    imports:
+      iterToArray: toArray from iterable-operator
 - id: kotlin.collections.drop
   type: call
   template:
@@ -78,10 +84,12 @@
 - id: kotlin.collections.mapIndexed
   type: call
   template:
-    pattern: iterToArray(iterMap(~this~, ~0~))
+    pattern: iterToArray(iterMap(~this~, (_v, _i) => { ~L0~ }))
     imports:
       iterToArray: toArray from iterable-operator
       iterMap: map from iterable-operator
+    lambdaTransforms:
+      0: ["_i", "_v"]
 - id: kotlin.collections.flatMap
   type: call
   template:
@@ -123,11 +131,13 @@
 - id: kotlin.collections.mapIndexedNotNull
   type: call
   template:
-    pattern: iterToArray(iterableFilterNotNull(iterMap(~this~, ~0~)))
+    pattern: iterToArray(iterableFilterNotNull(iterMap(~this~, (_v, _i) => { ~L0~ })))
     imports:
       iterToArray: toArray from iterable-operator
       iterMap: map from iterable-operator
       iterableFilterNotNull: khrysalis/dist/KotlinCollections
+    lambdaTransforms:
+      0: ["_i", "_v"]
 - id: kotlin.collections.chunked
   type: call
   template:
@@ -194,7 +204,7 @@
 - id: kotlin.collections.distinct
   type: call
   template:
-    pattern: "new EqualOverrideSet(~this~)"
+    pattern: "[...new EqualOverrideSet(~this~)]"
     imports:
       EqualOverrideSet: khrysalis/dist/KotlinCollections
 
@@ -311,3 +321,31 @@
     pattern: iterLastOrNull(~this~)
     imports:
       iterLastOrNull: khrysalis/dist/KotlinCollections
+
+- id: kotlin.collections.maxBy
+  type: call
+  template:
+    pattern: iterMaxBy(~this~, ~0~)
+    imports:
+      iterMaxBy: khrysalis/dist/kotlin/Collections
+
+- id: kotlin.collections.minBy
+  type: call
+  template:
+    pattern: iterMinBy(~this~, ~0~)
+    imports:
+      iterMinBy: khrysalis/dist/kotlin/Collections
+
+- id: kotlin.collections.max
+  type: call
+  template:
+    pattern: iterMaxBy(~this~, (x)=>x)
+    imports:
+      iterMaxBy: khrysalis/dist/kotlin/Collections
+
+- id: kotlin.collections.min
+  type: call
+  template:
+    pattern: iterMinBy(~this~, (x)=>x)
+    imports:
+      iterMinBy: khrysalis/dist/kotlin/Collections

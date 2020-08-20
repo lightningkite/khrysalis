@@ -96,11 +96,17 @@
 
 - id: android.view.View.setBackgroundResource
   type: call
-  template: ~this~.style.background = ~0~
+  template:
+    pattern: setViewBackgroundClass(~this~, ~0~.cssClass)
+    imports:
+      setViewBackgroundClass: khrysalis/dist/views/View.ext.actual
 
 - id: com.lightningkite.khrysalis.views.backgroundResource
   type: set
-  template: ~this~.style.background = ~0~
+  template:
+    pattern: setViewBackgroundClass(~this~, ~0~.cssClass)
+    imports:
+      setViewBackgroundClass: khrysalis/dist/views/View.ext.actual
 
 - id: com.lightningkite.khrysalis.views.setBackgroundColorResource
   type: call

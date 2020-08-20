@@ -41,6 +41,7 @@ com.lightningkite.khrysalis.ImageReference
 com.lightningkite.khrysalis.ImageBitmap
 com.lightningkite.khrysalis.ImageRaw
 com.lightningkite.khrysalis.ImageRemoteUrl
+com.lightningkite.khrysalis.ImageResource
 com.lightningkite.khrysalis.asImage
 com.lightningkite.khrysalis.LogInterface
 com.lightningkite.khrysalis.AndroidLog

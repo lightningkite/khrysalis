@@ -18,7 +18,12 @@ class Preferences {
         const thing = window.localStorage[key];
         if (thing === null || thing === undefined)
             return null;
-        return Codable_actual_1.kotlinStringFromJsonString(thing, T);
+        try {
+            return Codable_actual_1.kotlinStringFromJsonString(thing, T);
+        }
+        catch (e) {
+            return null;
+        }
     }
     clear() {
         window.localStorage.clear();

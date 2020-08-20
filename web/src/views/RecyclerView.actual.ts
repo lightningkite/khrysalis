@@ -1,4 +1,5 @@
+import {tryCastClass} from "../kotlin/Language";
 
-function test(e: HTMLDivElement) {
-    e
+export function scrollChildIntoView(e: HTMLDivElement, index: number, options: ScrollIntoViewOptions) {
+    tryCastClass<HTMLElement>(e.children.item(index), HTMLElement)?.scrollIntoView(options)
 }

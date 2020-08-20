@@ -21,7 +21,9 @@ exports.ViewGenerator = ViewGenerator;
         constructor() {
             super();
         }
-        generate(dependency) { return EmptyView_actual_1.newEmptyView(dependency); }
+        generate(dependency) {
+            return EmptyView_actual_1.newEmptyView(dependency);
+        }
     }
     ViewGenerator.Default = Default;
 })(ViewGenerator = exports.ViewGenerator || (exports.ViewGenerator = {}));

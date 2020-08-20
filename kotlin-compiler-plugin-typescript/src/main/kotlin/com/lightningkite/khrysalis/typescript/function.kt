@@ -59,7 +59,8 @@ data class VirtualFunction(
     val typeParameters: List<Any>,
     val valueParameters: List<Any>,
     val returnType: Any,
-    val body: KtExpression?
+    val body: KtExpression?,
+    val arrowStyle: Boolean = false
 )
 
 fun TypescriptTranslator.registerFunction() {
@@ -90,9 +91,45 @@ fun TypescriptTranslator.registerFunction() {
                 -body
             }
             else -> {
-                -"{ return "
+                -"{ \nreturn "
                 -body
-                -"; }"
+                -"; \n}"
+            }
+        }
+
+    }
+    handle<VirtualFunction>(condition = { typedRule.arrowStyle }, priority = 1) {
+        -"const "
+        -typedRule.name
+        -" = "
+        typedRule.typeParameters.takeUnless { it.isEmpty() }?.let {
+            -'<'
+            it.forEachBetween(
+                forItem = { -it },
+                between = { -", " }
+            )
+            -'>'
+        }
+        -'('
+        typedRule.valueParameters.forEachBetween(
+            forItem = { -it },
+            between = { -", " }
+        )
+        -')'
+        -": "
+        -typedRule.returnType
+        -" => "
+        val body = typedRule.body
+        when (body) {
+            null -> {
+            }
+            is KtBlockExpression -> {
+                -body
+            }
+            else -> {
+                -"{ \nreturn "
+                -body
+                -"; \n}"
             }
         }
 
@@ -155,7 +192,9 @@ fun TypescriptTranslator.registerFunction() {
                 -"$declaresPrefix${typedRule.simpleFqName}\n"
                 -"export "
             }
-            -"function "
+            if(typedRule.isTopLevel() ){
+                -"function "
+            }
         }
         fun emit(rName: String? = null) {
             -VirtualFunction(
@@ -171,7 +210,8 @@ fun TypescriptTranslator.registerFunction() {
                 returnType = typedRule.typeReference
                     ?: typedRule.bodyExpression?.takeUnless { it is KtBlockExpression }?.resolvedExpressionTypeInfo?.type
                     ?: "void",
-                body = typedRule.bodyExpression
+                body = typedRule.bodyExpression,
+                arrowStyle = !(typedRule.isTopLevel || isMember)
             )
         }
         typedRule.receiverTypeReference?.let {
@@ -290,6 +330,29 @@ fun TypescriptTranslator.registerFunction() {
     )
 
     //Normal calls
+
+    //Implicit receiver
+    handle<KtCallExpression>(
+        condition = {
+            (typedRule.resolvedCall?.candidateDescriptor as? FunctionDescriptor)?.extensionReceiverParameter != null
+        },
+        priority = 1000
+    ) {
+        val nre = typedRule.calleeExpression as KtNameReferenceExpression
+        val f = nre.resolvedReferenceTarget as FunctionDescriptor
+        if (f is ConstructorDescriptor) {
+            out.addImport(f.constructedClass)
+        } else {
+            out.addImport(f, f.tsName)
+        }
+        -f.tsName
+        -ArgumentsList(
+            on = f,
+            resolvedCall = typedRule.resolvedCall!!,
+            prependArguments = listOf(typedRule.getTsReceiver()!!)
+        )
+    }
+
     handle<KtDotQualifiedExpression>(
         condition = {
             ((typedRule.selectorExpression as? KtCallExpression)?.resolvedCall?.candidateDescriptor as? FunctionDescriptor)?.extensionReceiverParameter != null

@@ -21,22 +21,22 @@ export class DjangoErrorTranslator {
     
     public handleNode(builder: StringBuilder, node: (any | null)): void {
         if (node === null) { return }
-        if (checkIsInterface<Map<(any | null), (any | null)>>(node, "KotlinCollectionsMap")){
-            for (const toDestructure of node) {
+        if (checkIsInterface<Map<(any | null), (any | null)>>(node!, "KotlinCollectionsMap")){
+            for (const toDestructure of (node as Map<(any | null), (any | null)>)) {
                 const key = toDestructure[0]
                 const value = toDestructure[1]
                 
                 this.handleNode(builder, value)
                 
             }
-        } else if (checkIsInterface<Array<(any | null)>>(node, "KotlinCollectionsList")){
-            for (const value of node) {
+        } else if (checkIsInterface<Array<(any | null)>>(node!, "KotlinCollectionsList")){
+            for (const value of (node as Array<(any | null)>)) {
                 this.handleNode(builder, value);
             }
-        } else if (typeof (node) == "string"){
+        } else if (typeof (node!) == "string"){
             //Rough check for human-readability - sentences start with uppercase and will have spaces
-            if (node !== "" && kotlinCharIsUpperCase(node[0]) && (node.indexOf(" ") != -1)) {
-                builder.value += node + '\n';
+            if ((node as string) !== "" && kotlinCharIsUpperCase((node as string)[0]) && ((node as string).indexOf(" ") != -1)) {
+                builder.value += (node as string) + '\n';
             }
         }
     }
@@ -81,13 +81,13 @@ export class DjangoErrorTranslator {
     
     public wrap<T>(callback:  ((result: (T | null), error: (ViewString | null)) => void)): ((code: number, result: (T | null), error: (string | null)) => void) {
         return (code: number, result: (T | null), error: (string | null)): void => {
-            callback(result, this.parseError(code, error))
+            callback(result, this.parseError(code, error));
         };
     }
     
     public wrapNoResponse(callback:  ((error: (ViewString | null)) => void)): ((code: number, error: (string | null)) => void) {
         return (code: number, error: (string | null)): void => {
-            callback(this.parseError(code, error))
+            callback(this.parseError(code, error));
         };
     }
     

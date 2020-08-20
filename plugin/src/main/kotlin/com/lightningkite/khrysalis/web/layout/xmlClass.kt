@@ -4,6 +4,7 @@ import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.lightningkite.khrysalis.android.layout.AndroidLayoutFile
 import com.lightningkite.khrysalis.generic.SmartTabWriter
+import com.lightningkite.khrysalis.log
 import com.lightningkite.khrysalis.typescript.DeclarationManifest
 import com.lightningkite.khrysalis.typescript.renderImports
 import com.lightningkite.khrysalis.typescript.replacements.Replacements
@@ -19,6 +20,7 @@ fun convertLayoutsToHtmlXmlClasses(
     baseTypescriptFolder: File,
     outputFolder: File
 ) {
+    log("Creating layout classes")
     outputFolder.mkdirs()
     val declarationManifest = DeclarationManifest.load(
         baseTypescriptFolder.parentFile.walkTopDown() + sequenceOf(baseTypescriptFolder),
@@ -61,6 +63,7 @@ fun AndroidLayoutFile.toTypescript(
     replacements: Replacements,
     out: Appendable
 ) {
+    log("Creating ${name}Xml.ts...")
     fun String.toTsType(): String {
         return (replacements.types[this]?.firstOrNull()
             ?: replacements.types["android.widget.$this"]?.firstOrNull()

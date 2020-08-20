@@ -13,10 +13,13 @@ export class DisposeCondition {
 }
 
 //! Declares com.lightningkite.khrysalis.rx.and>com.lightningkite.khrysalis.rx.DisposeCondition
-export function comLightningkiteKhrysalisRxDisposeConditionAnd(this_: DisposeCondition, other: DisposeCondition): DisposeCondition { return andAllDisposeConditions([this_, other]); }
+export function comLightningkiteKhrysalisRxDisposeConditionAnd(this_: DisposeCondition, other: DisposeCondition): DisposeCondition { 
+    return andAllDisposeConditions([this_, other]); 
+}
 
 //! Declares com.lightningkite.khrysalis.rx.andAllDisposeConditions
-export function andAllDisposeConditions(list: Array<DisposeCondition>): DisposeCondition { return new DisposeCondition((it: SubscriptionLike): void => {
+export function andAllDisposeConditions(list: Array<DisposeCondition>): DisposeCondition { 
+    return new DisposeCondition((it: SubscriptionLike): void => {
             let disposalsLeft = list.length;
             
             for (const item of list) {
@@ -25,10 +28,13 @@ export function andAllDisposeConditions(list: Array<DisposeCondition>): DisposeC
                             if (disposalsLeft === 0) { it.unsubscribe() }
                 }));
             }
-}); }
+    }); 
+}
 
 //! Declares com.lightningkite.khrysalis.rx.or>com.lightningkite.khrysalis.rx.DisposeCondition
-export function comLightningkiteKhrysalisRxDisposeConditionOr(this_: DisposeCondition, other: DisposeCondition): DisposeCondition { return new DisposeCondition((it: SubscriptionLike): void => {
-            this_.call(it);; other.call(it);
-}); }
+export function comLightningkiteKhrysalisRxDisposeConditionOr(this_: DisposeCondition, other: DisposeCondition): DisposeCondition { 
+    return new DisposeCondition((it: SubscriptionLike): void => {
+            this_.call(it); other.call(it);
+    }); 
+}
 

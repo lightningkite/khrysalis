@@ -12,6 +12,7 @@ import { copyDateAloneMod, dateAloneModRelative } from '../time/Date.actual'
 import { safeEq } from '../Kotlin'
 import { filter as iterFilter, some as iterSome, toArray as iterToArray } from 'iterable-operator'
 import { StandardObservableProperty } from '../observables/StandardObservableProperty.shared'
+import { runOrNull } from '../kotlin/Language'
 import { RectF } from './geometry/RectF.actual'
 import { ioReactivexDisposablesDisposableForever } from '../rx/DisposeCondition.actual'
 
@@ -22,18 +23,20 @@ export class SelectMultipleDatesMonthCVD extends MonthCVD {
         this.dates = new StandardObservableProperty<Set<DateAlone>>(new EqualOverrideSet([]), undefined);
         this.selectedDayPaint = new Paint();
         this.selectedPaint = new Paint();
-        let temp_399;
-        if ((temp_399 = iterFirstOrNull(this.dates.value)) !== null) { 
-            this.currentMonthObs.value = copyDateAloneMod(temp_399, Date.prototype.setDate, 1);
+        const it_344 = iterFirstOrNull(this.dates.value);
+        if (it_344 !== null) { 
+            this.currentMonthObs.value = copyDateAloneMod(it_344, Date.prototype.setDate, 1);
         };
         ioReactivexDisposablesDisposableForever<SubscriptionLike>(this.dates.onChange.subscribe( (value: Set<DateAlone>): void => {
-                    this?.invalidate()
+                    this?.invalidate();
         }, undefined, undefined));
         this.drawDay_dateAlone = new DateAlone(0, 0, 0);
         this.adding = false;
     }
     
-    public generateAccessibilityView(): (HTMLElement | null) { return null; }
+    public generateAccessibilityView(): (HTMLElement | null) { 
+        return null; 
+    }
     
     public readonly dates: StandardObservableProperty<Set<DateAlone>>;
     

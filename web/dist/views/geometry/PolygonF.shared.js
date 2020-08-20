@@ -13,9 +13,8 @@ class PolygonF {
         this.points = points;
     }
     hashCode() {
-        var _a, _b;
         let hash = 17;
-        hash = 31 * hash + ((_b = (_a = this.points) === null || _a === void 0 ? void 0 : _a.hashCode()) !== null && _b !== void 0 ? _b : 0);
+        hash = 31 * hash + Kotlin_1.hashAnything(this.points);
         return hash;
     }
     equals(other) { return other instanceof PolygonF && Kotlin_1.safeEq(this.points, other.points); }

@@ -48,6 +48,10 @@ function setViewVisibility(this_, value) {
             this_.style.visibility = "hidden";
             break;
     }
+    const p = this_.parentElement;
+    if (p && p.classList.contains("khrysalis-box")) {
+        setViewVisibility(p, value);
+    }
 }
 exports.setViewVisibility = setViewVisibility;
 function findView(view, predicate) {
@@ -60,4 +64,14 @@ function findView(view, predicate) {
     return null;
 }
 exports.findView = findView;
+const backgroundClassSymbol = Symbol("backgroundCssClass");
+function setViewBackgroundClass(view, cssClass) {
+    const existing = view[backgroundClassSymbol];
+    if (existing) {
+        view.classList.remove(existing);
+    }
+    view[backgroundClassSymbol] = cssClass;
+    view.classList.add(cssClass);
+}
+exports.setViewBackgroundClass = setViewBackgroundClass;
 //# sourceMappingURL=View.ext.actual.js.map

@@ -13,3 +13,14 @@
 - id: okhttp3.HttpResponse
   type: type
   template: Response
+
+- id: okhttp3.HttpResponse
+  type: type
+  template: Response
+
+- id: java.net.SocketTimeoutException
+  type: type
+  template:
+    pattern: TimeoutError
+    imports:
+      TimeoutError: rxjs

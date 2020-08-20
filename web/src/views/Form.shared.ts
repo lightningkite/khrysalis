@@ -80,7 +80,9 @@ export class Form {
         return field;
     }
     
-    public fieldRes<T>(name: string, defaultValue: T, validation:  ((a: FormField<T>) => (ViewString | null))): FormField<T> { return this.field<T>(new ViewStringResource(name), defaultValue, validation); }
+    public fieldRes<T>(name: string, defaultValue: T, validation:  ((a: FormField<T>) => (ViewString | null))): FormField<T> { 
+        return this.field<T>(new ViewStringResource(name), defaultValue, validation); 
+    }
     
     public fieldFromProperty<T>(name: ViewString, property: MutableObservableProperty<T>, validation:  ((a: FormField<T>) => (ViewString | null))): FormField<T> {
         const field = new FormField<T>(name, property, (untypedField: UntypedFormField): (ViewString | null) => validation(untypedField as FormField<T>));
@@ -89,14 +91,16 @@ export class Form {
         return field;
     }
     
-    public fieldFromPropertyRes<T>(name: string, property: MutableObservableProperty<T>, validation:  ((a: FormField<T>) => (ViewString | null))): FormField<T> { return this.fieldFromProperty<T>(new ViewStringResource(name), property, validation); }
+    public fieldFromPropertyRes<T>(name: string, property: MutableObservableProperty<T>, validation:  ((a: FormField<T>) => (ViewString | null))): FormField<T> { 
+        return this.fieldFromProperty<T>(new ViewStringResource(name), property, validation); 
+    }
     
     public check(): Array<FormValidationError> {
         return listFilterNotNull(this.fields.map((it: UntypedFormField): (FormValidationError | null) => {
                     const result = this.checkField(it);
                     
                     if (result !== null) {
-                        return new FormValidationError(it, result);
+                        return new FormValidationError(it, result!);
                     } else {
                         return null;
                     }

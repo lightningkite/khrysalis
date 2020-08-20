@@ -19,15 +19,15 @@ export class SharingObservableProperty<T> extends ObservableProperty<T> {
         this.onChange = this.basedOn.onChange.pipe(rxTap( (it: T): void => {
                     if(this !== null) {
                         this.cachedValue = it
-                    }
+                    };
         })).pipe(rxDoOnSubscribe( (it: SubscriptionLike): void => {
                     if(this !== null) {
                         this.isListening = true
-                    }
+                    };
         })).pipe(rxDoOnDispose( (): void => {
                     if(this !== null) {
                         this.isListening = false
-                    }
+                    };
         })).pipe(rxShare());
     }
     

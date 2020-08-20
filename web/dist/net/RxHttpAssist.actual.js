@@ -19,6 +19,18 @@ function ioReactivexSingleUnsuccessfulAsError(this_) {
     }));
 }
 exports.ioReactivexSingleUnsuccessfulAsError = ioReactivexSingleUnsuccessfulAsError;
+//! Declares com.lightningkite.khrysalis.net.discard
+function ioReactivexSingleDiscard(this_) {
+    return this_.pipe(operators_1.switchMap((it) => {
+        if (it.ok) {
+            return okhttp3ResponseDiscard(it);
+        }
+        else {
+            throw new HttpResponseError_actual_1.HttpResponseException(it, undefined);
+        }
+    }));
+}
+exports.ioReactivexSingleDiscard = ioReactivexSingleDiscard;
 //! Declares com.lightningkite.khrysalis.net.readJson
 function ioReactivexSingleReadJson(this_, T) {
     return this_.pipe(operators_1.switchMap((it) => {
@@ -81,6 +93,11 @@ function okhttp3ResponseReadJsonDebug(this_, T) {
     }));
 }
 exports.okhttp3ResponseReadJsonDebug = okhttp3ResponseReadJsonDebug;
+//! Declares com.lightningkite.khrysalis.net.discard
+function okhttp3ResponseDiscard(this_) {
+    return rxjs_1.from(this_.text()).pipe(operators_1.map((x) => { }));
+}
+exports.okhttp3ResponseDiscard = okhttp3ResponseDiscard;
 //! Declares com.lightningkite.khrysalis.net.readText
 function okhttp3ResponseReadText(this_) {
     return rxjs_1.from(this_.text());

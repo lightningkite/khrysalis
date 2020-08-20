@@ -16,19 +16,19 @@ function parse(item, asType) {
         case Map:
             let asObj = item;
             let map = new Map();
-            if (asType[1] === String) {
-                for (const key in Object.keys(asObj)) {
+            if (asType[1][0] === String) {
+                for (const key of Object.keys(asObj)) {
                     map.set(key, parse(asObj[key], asType[2]));
                 }
             }
             else {
-                for (const key in Object.keys(asObj)) {
+                for (const key of Object.keys(asObj)) {
                     map.set(parse(key, asType[1]), parse(asObj[key], asType[2]));
                 }
             }
             return map;
         case Date:
-            return Date.parse(item);
+            return new Date(item);
         case DateAlone_actual_1.DateAlone:
             return DateAlone_actual_1.DateAlone.Companion.INSTANCE.iso(item);
         case TimeAlone_actual_1.TimeAlone:
@@ -46,4 +46,29 @@ function parse(item, asType) {
     }
 }
 exports.parse = parse;
+function stringify(item) {
+    if (item instanceof Map) {
+        return stringify(Object.fromEntries(item));
+    }
+    return JSON.stringify(item, function (key, value) {
+        if (value instanceof Map) {
+            return Object.fromEntries(value);
+        }
+        else {
+            return value;
+        }
+    });
+}
+exports.stringify = stringify;
+function parseUntyped(json) {
+    return JSON.parse(json, function (key, value) {
+        if (typeof value === 'object' && value !== null) {
+            return new Map(Object.entries(value));
+        }
+        else {
+            return value;
+        }
+    });
+}
+exports.parseUntyped = parseUntyped;
 //# sourceMappingURL=jsonParsing.js.map

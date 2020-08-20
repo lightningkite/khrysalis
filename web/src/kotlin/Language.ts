@@ -4,26 +4,38 @@
 //! Declares java.lang.Exception
 export class Exception extends Error {
     cause: any;
+
     constructor(message: string, cause: any) {
         super(message);
         this.cause = cause;
     }
-    printStackTrace(){
-        console.error(`${this.name}: ${this.message}\n${this.stack}`);
+}
+
+export function printStackTrace(something: any){
+    if(something instanceof Error) {
+        console.error(`${something.name}: ${something.message}\n${something.stack}`);
+    } else {
+        console.error(`Raw error: ${something}`)
     }
 }
+
 //! Declares kotlin.IllegalArgumentException
 //! Declares java.lang.IllegalArgumentException
-export class IllegalArgumentException extends Exception {}
+export class IllegalArgumentException extends Exception {
+}
+
 //! Declares kotlin.IllegalStateException
 //! Declares java.lang.IllegalStateException
-export class IllegalStateException extends Exception {}
+export class IllegalStateException extends Exception {
+}
+
 //! Declares kotlin.NoSuchElementException
 //! Declares java.lang.NoSuchElementException
-export class NoSuchElementException extends Exception {}
+export class NoSuchElementException extends Exception {
+}
 
 export function hashString(item: string | null): number {
-    if(item == null) return 0
+    if (item == null) return 0
     let hash = 0, i, chr;
     for (i = 0; i < item.length; i++) {
         chr = item.charCodeAt(i);
@@ -34,10 +46,14 @@ export function hashString(item: string | null): number {
 }
 
 export function hashAnything(item: any): number {
-    if(item === null || item === undefined) return 0;
-    switch(typeof item){
+    if (item === null || item === undefined) return 0;
+    switch (typeof item) {
         case "object":
-            return item.hashCode();
+            if(item.hashCode){
+                return item.hashCode();
+            } else {
+                return 0;
+            }
         case "number":
             return Math.floor(item);
         case "string":
@@ -50,7 +66,7 @@ export function hashAnything(item: any): number {
 }
 
 export function safeEq(left: any, right: any): boolean {
-    if(left !== null && (typeof left) === "object") {
+    if (left !== null && (typeof left) === "object" && left.equals) {
         return left.equals(right)
     } else {
         return left === right
@@ -59,7 +75,7 @@ export function safeEq(left: any, right: any): boolean {
 
 export function checkReified<T>(item: any, fullType: Array<any>): item is T {
     const type = fullType[0];
-    switch(type){
+    switch (type) {
         case String:
             return typeof item === "string";
         case Number:
@@ -103,54 +119,40 @@ export function tryCastClass<T>(item: any, erasedType: any): T | null {
     }
 }
 
+export function runOrNull<T, R>(on: T | null, action: (t: T) => R): R | null {
+    if (on !== null) {
+        return action(on);
+    } else {
+        return null;
+    }
+}
+
 export function also<T>(item: T, action: (a: T) => void): T {
     action(item);
     return item;
 }
 
 export function takeIf<T>(item: T, action: (a: T) => boolean): T | null {
-    if(action(item)) return item;
+    if (action(item)) return item;
     else return null;
 }
 
 export function takeUnless<T>(item: T, action: (a: T) => boolean): T | null {
-    if(!action(item)) return item;
+    if (!action(item)) return item;
     else return null;
 }
 
 export function parseIntOrNull(s: string): number | null {
     const r = parseInt(s);
-    if(isNaN(r)) return null;
+    if (isNaN(r)) return null;
     return r;
 }
+
 export function parseFloatOrNull(s: string): number | null {
     const r = parseFloat(s);
-    if(isNaN(r)) return null;
+    if (isNaN(r)) return null;
     return r;
 }
-
-declare global {
-    export interface Object {
-        hashCode(): number
-
-        equals(other: any): boolean
-    }
-}
-
-Object.defineProperty(Object.prototype, "hashCode", {
-    value: function (): number {
-        const existing = (this as any)["__randomizedHash"];
-        if(existing) return existing;
-        const r = Math.random() * 1000000;
-        (this as any)["__randomizedHash"] = r;
-        return r
-    }
-})
-Object.defineProperty(Object.prototype, "equals", {
-    value: function (other: any): boolean {
-        return this == other
-    }
-})
 
 export interface Comparable<T> {
     compareTo(other: T): number
@@ -159,8 +161,10 @@ export interface Comparable<T> {
 declare global {
     interface Number extends Comparable<Number> {
     }
+
     interface String extends Comparable<String> {
     }
+
     interface Boolean extends Comparable<Boolean> {
     }
 }
@@ -202,7 +206,7 @@ class NumberRangeIterator implements Iterator<number> {
     }
 
     next(): IteratorResult<number> {
-        if(this.endInclusive < this.start) return { done: true, value: undefined }
+        if (this.endInclusive < this.start) return {done: true, value: undefined}
         const result = {done: this.start > this.endInclusive, value: this.start};
         this.start++;
         return result

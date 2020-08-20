@@ -37,50 +37,49 @@ class GeoAddress {
         };
     }
     hashCode() {
-        var _a, _b;
         let hash = 17;
-        hash = 31 * hash + ((_b = (_a = this.coordinate) === null || _a === void 0 ? void 0 : _a.hashCode()) !== null && _b !== void 0 ? _b : 0);
-        hash = 31 * hash + Kotlin_1.hashString(this.name);
-        hash = 31 * hash + Kotlin_1.hashString(this.street);
-        hash = 31 * hash + Kotlin_1.hashString(this.subLocality);
-        hash = 31 * hash + Kotlin_1.hashString(this.locality);
-        hash = 31 * hash + Kotlin_1.hashString(this.subAdminArea);
-        hash = 31 * hash + Kotlin_1.hashString(this.adminArea);
-        hash = 31 * hash + Kotlin_1.hashString(this.countryName);
-        hash = 31 * hash + Kotlin_1.hashString(this.postalCode);
+        hash = 31 * hash + Kotlin_1.hashAnything(this.coordinate);
+        hash = 31 * hash + Kotlin_1.hashAnything(this.name);
+        hash = 31 * hash + Kotlin_1.hashAnything(this.street);
+        hash = 31 * hash + Kotlin_1.hashAnything(this.subLocality);
+        hash = 31 * hash + Kotlin_1.hashAnything(this.locality);
+        hash = 31 * hash + Kotlin_1.hashAnything(this.subAdminArea);
+        hash = 31 * hash + Kotlin_1.hashAnything(this.adminArea);
+        hash = 31 * hash + Kotlin_1.hashAnything(this.countryName);
+        hash = 31 * hash + Kotlin_1.hashAnything(this.postalCode);
         return hash;
     }
-    equals(other) { return other instanceof GeoAddress && Kotlin_1.safeEq(this.coordinate, other.coordinate) && this.name === other.name && this.street === other.street && this.subLocality === other.subLocality && this.locality === other.locality && this.subAdminArea === other.subAdminArea && this.adminArea === other.adminArea && this.countryName === other.countryName && this.postalCode === other.postalCode; }
+    equals(other) { return other instanceof GeoAddress && Kotlin_1.safeEq(this.coordinate, other.coordinate) && Kotlin_1.safeEq(this.name, other.name) && Kotlin_1.safeEq(this.street, other.street) && Kotlin_1.safeEq(this.subLocality, other.subLocality) && Kotlin_1.safeEq(this.locality, other.locality) && Kotlin_1.safeEq(this.subAdminArea, other.subAdminArea) && Kotlin_1.safeEq(this.adminArea, other.adminArea) && Kotlin_1.safeEq(this.countryName, other.countryName) && Kotlin_1.safeEq(this.postalCode, other.postalCode); }
     toString() { return `GeoAddress(coordinate = ${this.coordinate}, name = ${this.name}, street = ${this.street}, subLocality = ${this.subLocality}, locality = ${this.locality}, subAdminArea = ${this.subAdminArea}, adminArea = ${this.adminArea}, countryName = ${this.countryName}, postalCode = ${this.postalCode})`; }
     copy(coordinate = this.coordinate, name = this.name, street = this.street, subLocality = this.subLocality, locality = this.locality, subAdminArea = this.subAdminArea, adminArea = this.adminArea, countryName = this.countryName, postalCode = this.postalCode) { return new GeoAddress(coordinate, name, street, subLocality, locality, subAdminArea, adminArea, countryName, postalCode); }
     oneLine(withCountry = false, withZip = false) {
         const builder = new kotlin_text_1.StringBuilder();
-        let temp_43;
-        if ((temp_43 = this.street) !== null) {
-            builder.value += temp_43;
+        const it_9 = this.street;
+        if (it_9 !== null) {
+            builder.value += it_9;
         }
-        let temp_44;
-        if ((temp_44 = this.locality) !== null) {
+        const it_10 = this.locality;
+        if (it_10 !== null) {
             builder.value += ' ';
-            builder.value += temp_44;
+            builder.value += it_10;
         }
-        let temp_45;
-        if ((temp_45 = this.adminArea) !== null) {
+        const it_11 = this.adminArea;
+        if (it_11 !== null) {
             builder.value += ", ";
-            builder.value += temp_45;
+            builder.value += it_11;
         }
         if (withCountry) {
-            let temp_47;
-            if ((temp_47 = this.adminArea) !== null) {
+            const it_13 = this.adminArea;
+            if (it_13 !== null) {
                 builder.value += ' ';
-                builder.value += temp_47;
+                builder.value += it_13;
             }
         }
         if (withZip) {
-            let temp_48;
-            if ((temp_48 = this.postalCode) !== null) {
+            const it_14 = this.postalCode;
+            if (it_14 !== null) {
                 builder.value += ' ';
-                builder.value += temp_48;
+                builder.value += it_14;
             }
         }
         return builder.toString().trim();

@@ -20,6 +20,7 @@ import { DateAlone } from '../time/DateAlone.actual'
 import { applyAlphaToColor, numberToColor } from './Colors.actual'
 import { customViewInvalidate } from './CustomView.actual'
 import { RectF } from './geometry/RectF.actual'
+import { runOrNull } from '../kotlin/Language'
 import { pathFromLTRB } from './draw/Path.actual'
 import { comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy } from '../observables/ObservableProperty.ext.shared'
 
@@ -30,7 +31,7 @@ export class MonthCVD extends CustomViewDelegate {
         this.currentMonthObs = new StandardObservableProperty<DateAlone>(dateAloneMod(getJavaUtilDateDateAlone(new Date()), Date.prototype.setDate, 1), undefined);
         this.dragEnabled = true;
         ioReactivexDisposablesDisposableForever<SubscriptionLike>(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy<DateAlone>(this.currentMonthObs, undefined, undefined,  (value: DateAlone): void => {
-                    this?.postInvalidate()
+                    this?.postInvalidate();
         }));
         this.labelFontSp = 12;
         this.dayFontSp = 16;
@@ -80,7 +81,9 @@ export class MonthCVD extends CustomViewDelegate {
         this.dragStartY = 0;
     }
     
-    public generateAccessibilityView(): (HTMLElement | null) { return null; }
+    public generateAccessibilityView(): (HTMLElement | null) { 
+        return null; 
+    }
     
     public readonly currentMonthObs: MutableObservableProperty<DateAlone>;
     
@@ -123,9 +126,9 @@ export class MonthCVD extends CustomViewDelegate {
     }
     public set currentOffset(value: number) {
         this._currentOffset = value;
-        const temp230 = this.customView;
-        if(temp230 !== null) { 
-            customViewInvalidate(temp230)
+        const temp175 = this.customView;
+        if(temp175 !== null) { 
+            customViewInvalidate(temp175)
         };
     }
     
@@ -266,13 +269,15 @@ export class MonthCVD extends CustomViewDelegate {
     
     public onTap(day: DateAlone): void {}
     
-    public onTouchDownDate(day: DateAlone): boolean { return false; }
+    public onTouchDownDate(day: DateAlone): boolean { 
+        return false; 
+    }
     public onTouchDown(id: number, x: number, y: number, width: number, height: number): boolean {
         const day = this.dayAtPixel(x, y, undefined);
         
-        let temp_306;
-        if ((temp_306 = day) !== null) { 
-            if (this.onTouchDownDate(temp_306)) {
+        const it_251 = day;
+        if (it_251 !== null) { 
+            if (this.onTouchDownDate(it_251)) {
                 return true;
             }
         }
@@ -285,7 +290,9 @@ export class MonthCVD extends CustomViewDelegate {
         return true;
     }
     
-    public onTouchMoveDate(day: DateAlone): boolean { return false; }
+    public onTouchMoveDate(day: DateAlone): boolean { 
+        return false; 
+    }
     public onTouchMove(id: number, x: number, y: number, width: number, height: number): boolean {
         if (this.draggingId === id) {
             this.lastOffset = this.currentOffset;
@@ -297,21 +304,23 @@ export class MonthCVD extends CustomViewDelegate {
                 }
             }
         } else {
-            let temp_318;
-            if ((temp_318 = this.dayAtPixel(x, y, undefined)) !== null) { 
-                return this.onTouchMoveDate(temp_318);
+            const it_263 = this.dayAtPixel(x, y, undefined);
+            if (it_263 !== null) { 
+                return this.onTouchMoveDate(it_263);
             }
         }
         return true;
     }
     
-    public onTouchUpDate(day: DateAlone): boolean { return false; }
+    public onTouchUpDate(day: DateAlone): boolean { 
+        return false; 
+    }
     public onTouchUp(id: number, x: number, y: number, width: number, height: number): boolean {
         if (this.draggingId === id) {
             if (this.isTap) {
-                let temp_320;
-                if ((temp_320 = this.dayAtPixel(x, y, undefined)) !== null) { 
-                    this.onTap(temp_320);
+                const it_265 = this.dayAtPixel(x, y, undefined);
+                if (it_265 !== null) { 
+                    this.onTap(it_265);
                 }
             } else { if (this.dragEnabled) {
                     const weighted = this.currentOffset + (this.currentOffset - this.lastOffset) * 200 / (Date.now() - this.lastOffsetTime);
@@ -330,9 +339,9 @@ export class MonthCVD extends CustomViewDelegate {
             } }
             this.draggingId = this.DRAGGING_NONE;
         } else {
-            let temp_337;
-            if ((temp_337 = this.dayAtPixel(x, y, undefined)) !== null) { 
-                return this.onTouchUpDate(temp_337);
+            const it_282 = this.dayAtPixel(x, y, undefined);
+            if (it_282 !== null) { 
+                return this.onTouchUpDate(it_282);
             }
         }
         return true;

@@ -18,14 +18,17 @@ class SharingObservableProperty extends ObservableProperty_shared_1.ObservablePr
             if (this !== null) {
                 this.cachedValue = it;
             }
+            ;
         })).pipe(RxActual_actual_1.doOnSubscribe((it) => {
             if (this !== null) {
                 this.isListening = true;
             }
+            ;
         })).pipe(RxActual_actual_1.doOnDispose(() => {
             if (this !== null) {
                 this.isListening = false;
             }
+            ;
         })).pipe(operators_1.share());
     }
     //! Declares com.lightningkite.khrysalis.observables.SharingObservableProperty.value

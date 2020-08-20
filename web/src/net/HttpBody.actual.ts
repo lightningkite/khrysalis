@@ -3,6 +3,7 @@
 // Package: com.lightningkite.khrysalis.net
 import {Codable, kotlinAnyToJsonString} from '../Codable.actual'
 import {HttpMediaType, HttpMediaTypes} from './HttpMediaType.actual'
+import {stringify} from "./jsonParsing";
 
 //! Declares com.lightningkite.khrysalis.net.HttpBody
 export class HttpBody {
@@ -25,7 +26,7 @@ export class HttpBodyPart {
 
 //! Declares com.lightningkite.khrysalis.net.toJsonHttpBody
 export function kotlinAnyToJsonHttpBody(this_: Codable): HttpBody {
-    return new HttpBody(JSON.stringify(this_), HttpMediaTypes.INSTANCE.JSON);
+    return new HttpBody(stringify(this_), HttpMediaTypes.INSTANCE.JSON);
 }
 
 //! Declares com.lightningkite.khrysalis.net.toHttpBody

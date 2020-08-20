@@ -107,10 +107,11 @@ fun main() {
         println("Did the thing")
     }
 
+    //Safe let
     thing2?.let {
         println("It's a $it")
         thing2?.let {
-            println("ANOTHER")
+            println("ANOTHER: $it")
         }
     } ?: thing2?.let {
         println("It's a $it")
@@ -118,6 +119,7 @@ fun main() {
         println("Dunno what it is")
     }
 
+    //Safe let single
     thing2?.let {
         if (subfunction3() == 0) {
             println("Hiii")
@@ -132,23 +134,36 @@ fun main() {
             println("is two")
             println("which is magical")
         }
-        else -> {
-            println("is something else")
-        }
+        else -> throw IllegalArgumentException("NO!")
+    }
+
+    //When on subject as expression
+    fun calcInverted() = when (thing) {
+        0 -> 2
+        1 -> 1
+        2 -> 0
+        else -> throw IllegalArgumentException("NO!")
     }
 
     //When on conditions
     when {
         thing == 1 -> println("thing is one")
         thing2 != null -> println("thing2 is not null")
-        else -> println("else")
+        else -> throw IllegalArgumentException("NO!")
+    }
+
+    //When on conditions as expression
+    fun calcWeird() = when {
+        thing == 1 -> 0
+        thing2 != null -> 3
+        else -> throw IllegalArgumentException("NO!")
     }
 
     //when on subject advanced
     when (thing2) {
         0 -> println("is zero")
         null -> println("is null")
-        else -> println("is something")
+        else -> throw IllegalArgumentException("NO!")
     }
 
     //when on subject typed
@@ -157,6 +172,6 @@ fun main() {
         is String -> println("Found string " + thing3)
         is Int -> println("Found int ${thing3}")
         null -> println("Found null")
-        else -> println("Found something else")
+        else -> throw IllegalArgumentException("NO!")
     }
 }

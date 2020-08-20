@@ -3,6 +3,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Language_1 = require("./Language");
 const iterable_operator_1 = require("iterable-operator");
 const Iterables_1 = require("./Iterables");
+const Comparable_1 = require("./Comparable");
 function mapForKeyType(type) {
     switch (type) {
         case Number:
@@ -10,11 +11,11 @@ function mapForKeyType(type) {
         case Boolean:
             return new Map();
         default:
-            if (type.prototype.equals === Object.prototype.equals) {
-                return new Map();
+            if (type.prototype.equals) {
+                return new EqualOverrideMap();
             }
             else {
-                return new EqualOverrideMap();
+                return new Map();
             }
     }
 }
@@ -26,11 +27,11 @@ function setForType(type) {
         case Boolean:
             return new Set();
         default:
-            if (type.prototype.equals === Object.prototype.equals) {
-                return new Set();
+            if (type.prototype.equals) {
+                return new EqualOverrideSet();
             }
             else {
-                return new EqualOverrideSet();
+                return new Set();
             }
     }
 }
@@ -321,4 +322,30 @@ function kotlinCollectionsMutableMapGetOrPut(map, key, valueGenerator) {
     }
 }
 exports.kotlinCollectionsMutableMapGetOrPut = kotlinCollectionsMutableMapGetOrPut;
+function iterMaxBy(iter, selector) {
+    let result = null;
+    let best = null;
+    for (const item of iter) {
+        const sel = selector(item);
+        if (Comparable_1.safeCompare(sel, best) > 0) {
+            result = item;
+            best = sel;
+        }
+    }
+    return result;
+}
+exports.iterMaxBy = iterMaxBy;
+function iterMinBy(iter, selector) {
+    let result = null;
+    let best = null;
+    for (const item of iter) {
+        const sel = selector(item);
+        if (Comparable_1.safeCompare(sel, best) < 0) {
+            result = item;
+            best = sel;
+        }
+    }
+    return result;
+}
+exports.iterMinBy = iterMinBy;
 //# sourceMappingURL=Collections.js.map

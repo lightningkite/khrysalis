@@ -1,3 +1,4 @@
+import { DrawableResource } from './views/DrawableResource';
 export declare class Image {
     constructor();
 }
@@ -33,6 +34,15 @@ export declare class ImageRemoteUrl extends Image {
     toString(): string;
     copy(url?: string): ImageRemoteUrl;
 }
+export declare class ImageResource extends Image {
+    readonly resource: DrawableResource;
+    constructor(resource: DrawableResource);
+    hashCode(): number;
+    equals(other: any): boolean;
+    toString(): string;
+    copy(resource?: DrawableResource): ImageResource;
+}
 export declare function kotlinStringAsImage(this_: string): Image;
 export declare function androidNetUriAsImage(this_: File): Image;
 export declare function androidGraphicsBitmapAsImage(this_: ImageBitmap): Image;
+export declare function kotlinIntAsImage(this_: DrawableResource): Image;

@@ -3,11 +3,12 @@ package com.lightningkite.khrysalis.web.layout.drawables
 import com.lightningkite.khrysalis.utils.XmlNode
 import com.lightningkite.khrysalis.utils.attributeAsBoolean
 import com.lightningkite.khrysalis.web.layout.HtmlTranslator
+import com.lightningkite.khrysalis.web.layout.WebResources
 import java.io.File
 import java.lang.Appendable
 
 
-fun convertSelectorDrawable(webDrawablesFolder: File, currentDrawable: String, selectors: String, node: XmlNode, out: Appendable) {
+fun convertSelectorDrawable(webDrawablesFolder: File, currentDrawable: String, selectors: String, node: XmlNode, out: Appendable, resources: WebResources) {
     node.children.forEach { subnode ->
         var conditions = ""
         subnode.attributeAsBoolean("android:state_enabled")?.let {
@@ -36,7 +37,7 @@ fun convertSelectorDrawable(webDrawablesFolder: File, currentDrawable: String, s
             out.appendln("}")
         } ?: run {
             subnode.children.firstOrNull()?.let {
-                convertDrawableXml(webDrawablesFolder, currentDrawable, selectors + conditions, it, out)
+                convertDrawableXml(webDrawablesFolder, currentDrawable, selectors + conditions, it, out, resources)
             }
         }
     }

@@ -95,7 +95,7 @@ export function recyclerViewBindMultiType(this_: HTMLDivElement, viewDependency:
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindMulti>androidx.recyclerview.widget.RecyclerView
 export function androidxRecyclerviewWidgetRecyclerViewBindMulti<T>(this_: HTMLDivElement, data: ObservableProperty<Array<T>>, defaultValue: T, determineType: (a: T) => number, makeView: (a: number, b: ObservableProperty<T>) => HTMLElement): void {
-    let existingViews: Array<Array<[StandardObservableProperty<T>, HTMLElement]>> = [];
+    let existingViews: Map<number, Array<[StandardObservableProperty<T>, HTMLElement]>> = new Map();
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(data, undefined, undefined, (value) => {
 
         //Place views
@@ -103,10 +103,10 @@ export function androidxRecyclerviewWidgetRecyclerViewBindMulti<T>(this_: HTMLDi
         while (this_.firstElementChild) {
             this_.firstElementChild.remove();
         }
-        existingViews = [];
+        existingViews = new Map();
         for (const item of value) {
             const type = determineType(item);
-            const view = unusedViews[type]?.pop() ?? (() => {
+            const view = unusedViews.get(type)?.pop() ?? (() => {
                 const obs = new StandardObservableProperty(item);
                 return [obs, makeView(type, obs)] as [StandardObservableProperty<T>, HTMLElement];
             })()
@@ -117,12 +117,12 @@ export function androidxRecyclerviewWidgetRecyclerViewBindMulti<T>(this_: HTMLDi
                 view[1].style.height = "100%";
             }
             this_.appendChild(view[1]);
-            const sublist = existingViews[type] ?? [];
+            const sublist = existingViews.get(type) ?? [];
             sublist.push(view);
-            existingViews[type] = sublist;
+            existingViews.set(type, sublist);
         }
-        for (const parts of unusedViews) {
-            for (const part of parts) {
+        for (const entry of unusedViews) {
+            for (const part of entry[1]) {
                 triggerDetatchEvent(part[1]);
             }
         }

@@ -5,6 +5,7 @@ import org.jetbrains.kotlin.codegen.AccessorForCompanionObjectInstanceFieldDescr
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.contracts.parsing.isInvocationKindEnum
 import org.jetbrains.kotlin.descriptors.*
+import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.getTextWithLocation
@@ -20,10 +21,10 @@ fun TypescriptTranslator.registerIdentifiers(){
 //        }
 //    }
     handle<KtNameReferenceExpression>(
-        condition = { identifierScopes.containsKey(typedRule.text) && (typedRule.parent as? KtQualifiedExpression)?.let { it.selectorExpression == typedRule } != true },
+        condition = { typedRule.resolvedReferenceTarget?.let { identifierMappings.containsKey(it) } == true },
         priority = 100_000,
         action = {
-            -identifierScopes[typedRule.text]!!.last()
+            -identifierMappings[typedRule.resolvedReferenceTarget!!]!!
         }
     )
     handle<KtNameReferenceExpression>(
@@ -114,6 +115,49 @@ fun TypescriptTranslator.registerIdentifiers(){
         priority = 1,
         action = {
             -typedRule.text.safeJsIdentifier()
+        }
+    )
+
+    //smartcast
+    handle<KtNameReferenceExpression>(
+        condition = {
+            typedRule.resolvedSmartcast != null
+        },
+        priority = 4000,
+        action = {
+            val before = (typedRule.resolvedReferenceTarget as? ValueDescriptor)?.type
+            val now = typedRule.resolvedSmartcast!!.defaultType
+            if(before?.getJetTypeFqName(true) == now?.getJetTypeFqName(true) && now?.isMarkedNullable == false){
+                doSuper()
+                -'!'
+            } else {
+                -'('
+                doSuper()
+                -" as "
+                -now
+                -')'
+            }
+        }
+    )
+    handle<KtDotQualifiedExpression>(
+        condition = {
+            typedRule.resolvedSmartcast != null && typedRule.selectorExpression is KtNameReferenceExpression
+        },
+        priority = 4000,
+        action = {
+            val sel = typedRule.selectorExpression as KtNameReferenceExpression
+            val before = (sel.resolvedReferenceTarget as? ValueDescriptor)?.type
+            val now = typedRule.resolvedSmartcast!!.defaultType
+            if(before?.getJetTypeFqName(true) == now?.getJetTypeFqName(true) && now?.isMarkedNullable == false){
+                doSuper()
+                -'!'
+            } else {
+                -'('
+                doSuper()
+                -" as "
+                -now
+                -')'
+            }
         }
     )
 }

@@ -13,6 +13,9 @@
   type: call
   template: (document.createElement('img') as HTMLImageElement)
 
-- id: android.widget.ImageView.setImageBitmap
+- id: android.widget.ImageView.setImageResource
   type: call
-  template: x # TODO
+  template:
+    pattern: imageViewSetImageResource(~this~, ~0~)
+    imports:
+      imageViewSetImageResource: khrysalis/dist/views/ImageView.actual

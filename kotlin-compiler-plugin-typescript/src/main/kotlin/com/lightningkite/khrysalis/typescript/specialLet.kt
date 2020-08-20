@@ -39,29 +39,88 @@ fun TypescriptTranslator.registerSpecialLet() {
         return false
     }
 
+//    handle<SafeLetChain> {
+//        if(typedRule.outermost.actuallyCouldBeExpression){
+//            -"(()"
+//            val type = typedRule.outermost.resolvedExpressionTypeInfo?.type
+//            if(type != null){
+//                -": "
+//                -type
+//            }
+//            -" => {\n"
+//        }
+//        val temp = "temp_${uniqueNumber.getAndIncrement()}"
+//        -"let $temp;\n"
+//        typedRule.entries.forEachBetween(
+//            forItem = { (basis, lambda) ->
+//                -"if (($temp = "
+//                -basis
+//                -") !== null) { \n"
+//                withName(lambda.valueParameters.firstOrNull()?.name ?: "it", temp) {
+//                    -lambda.bodyExpression
+//                }
+//                -"\n}"
+//            },
+//            between = { -" else " }
+//        )
+//        typedRule.default?.let {
+//            if (it.isRunDirect()) {
+//                -" else {\n"
+//                -(it as KtCallExpression).lambdaArguments.first().getLambdaExpression()!!.bodyExpression
+//                -"\n}"
+//            } else {
+//                -" else {\n"
+//                if(typedRule.outermost.actuallyCouldBeExpression){
+//                    -"return "
+//                }
+//                -it
+//                -"\n}"
+//            }
+//        } ?: run {
+//            if(typedRule.outermost.actuallyCouldBeExpression){
+//                -" else { return null }"
+//            }
+//        }
+//        if(typedRule.outermost.actuallyCouldBeExpression){
+//            -"\n})()"
+//        }
+//    }
+
     handle<SafeLetChain> {
-        if(typedRule.outermost.actuallyCouldBeExpression){
+        if (typedRule.outermost.actuallyCouldBeExpression) {
             -"(()"
             val type = typedRule.outermost.resolvedExpressionTypeInfo?.type
-            if(type != null){
+            if (type != null) {
                 -": "
                 -type
             }
             -" => {\n"
         }
-        val temp = "temp_${uniqueNumber.getAndIncrement()}"
-        -"let $temp;\n"
+        out.addImport("khrysalis/dist/kotlin/Language", "runOrNull")
         typedRule.entries.forEachBetween(
             forItem = { (basis, lambda) ->
-                -"if (($temp = "
-                -basis
-                -") !== null) { \n"
-                withName(lambda.valueParameters.firstOrNull()?.name ?: "it", temp) {
+                val desc = lambda.functionLiteral.resolvedFunction?.valueParameters?.firstOrNull()
+                if(desc != null){
+                    val varName = (lambda.valueParameters.firstOrNull()?.name ?: "it") + "_${uniqueNumber.getAndIncrement()}"
+                    -"const $varName = "
+                    -basis
+                    -";\n"
+                    -"if ($varName !== null) { \n"
+                    withName(desc, varName) {
+                        -lambda.bodyExpression
+                    }
+                    -"\n}"
+                } else {
+                    val varName = (lambda.valueParameters.firstOrNull()?.name ?: "it")
+                    -"const $varName = "
+                    -basis
+                    -";\n"
+                    -"if ($varName !== null) { \n"
                     -lambda.bodyExpression
+                    -"\n}"
                 }
-                -"\n}"
             },
-            between = { -" else " }
+            between = { -" else {\n" }
         )
         typedRule.default?.let {
             if (it.isRunDirect()) {
@@ -70,18 +129,21 @@ fun TypescriptTranslator.registerSpecialLet() {
                 -"\n}"
             } else {
                 -" else {\n"
-                if(typedRule.outermost.actuallyCouldBeExpression){
+                if (typedRule.outermost.actuallyCouldBeExpression) {
                     -"return "
                 }
                 -it
                 -"\n}"
             }
         } ?: run {
-            if(typedRule.outermost.actuallyCouldBeExpression){
+            if (typedRule.outermost.actuallyCouldBeExpression) {
                 -" else { return null }"
             }
         }
-        if(typedRule.outermost.actuallyCouldBeExpression){
+        (2..typedRule.entries.size).forEach {
+            -"\n}"
+        }
+        if (typedRule.outermost.actuallyCouldBeExpression) {
             -"\n})()"
         }
     }

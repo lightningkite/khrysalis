@@ -26,12 +26,13 @@ export function androidViewViewOnLongClick(this_: HTMLElement, action: () => voi
 }
 
 export function getViewVisibility(this_: HTMLElement): string {
-    if(this_.hidden) return "gone";
-    if(this_.style.visibility === "hidden") return "invisible";
+    if (this_.hidden) return "gone";
+    if (this_.style.visibility === "hidden") return "invisible";
     return "visible";
 }
+
 export function setViewVisibility(this_: HTMLElement, value: string) {
-    switch(value) {
+    switch (value) {
         case "gone":
             this_.hidden = true;
             this_.style.visibility = "visible";
@@ -45,11 +46,33 @@ export function setViewVisibility(this_: HTMLElement, value: string) {
             this_.style.visibility = "hidden";
             break;
     }
+    const p = this_.parentElement;
+    if(p && p.classList.contains("khrysalis-box")) {
+        setViewVisibility(p, value);
+    }
 }
-export function findView(view: HTMLElement, predicate: (e: HTMLElement)=>boolean): HTMLElement | null {
-    for(let i = 0; i < view.children.length; i++){
+
+export function findView(view: HTMLElement, predicate: (e: HTMLElement) => boolean): HTMLElement | null {
+    for (let i = 0; i < view.children.length; i++) {
         const child = view.children.item(i);
-        if(child instanceof HTMLElement && predicate(child)) { return child; }
+        if (child instanceof HTMLElement && predicate(child)) {
+            return child;
+        }
     }
     return null;
+}
+
+const backgroundClassSymbol = Symbol("backgroundCssClass");
+declare global {
+    interface HTMLElement {
+        [backgroundClassSymbol]: string | undefined
+    }
+}
+export function setViewBackgroundClass(view: HTMLElement, cssClass: string) {
+    const existing = view[backgroundClassSymbol];
+    if(existing){
+        view.classList.remove(existing);
+    }
+    view[backgroundClassSymbol] = cssClass;
+    view.classList.add(cssClass);
 }

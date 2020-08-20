@@ -10,7 +10,9 @@ class ViewStringRaw {
     constructor(_string) {
         this._string = _string;
     }
-    get(dependency) { return this._string; }
+    get(dependency) {
+        return this._string;
+    }
 }
 exports.ViewStringRaw = ViewStringRaw;
 ViewStringRaw.implementsInterfaceComLightningkiteKhrysalisViewsViewString = true;
@@ -19,7 +21,9 @@ class ViewStringResource {
     constructor(resource) {
         this.resource = resource;
     }
-    get(dependency) { return this.resource; }
+    get(dependency) {
+        return this.resource;
+    }
 }
 exports.ViewStringResource = ViewStringResource;
 ViewStringResource.implementsInterfaceComLightningkiteKhrysalisViewsViewString = true;
@@ -42,7 +46,9 @@ class ViewStringComplex {
     constructor(getter) {
         this.getter = getter;
     }
-    get(dependency) { return this.getter(dependency); }
+    get(dependency) {
+        return this.getter(dependency);
+    }
 }
 exports.ViewStringComplex = ViewStringComplex;
 ViewStringComplex.implementsInterfaceComLightningkiteKhrysalisViewsViewString = true;
@@ -76,12 +82,14 @@ function comLightningkiteKhrysalisViewsViewStringToDebugString(this_) {
         return thing.resource.toString();
     }
     else if (thing instanceof ViewStringTemplate) {
-        return comLightningkiteKhrysalisViewsViewStringToDebugString(thing.template) + "(" + thing._arguments.map((it) => (() => { if (Kotlin_1.checkIsInterface(it, "ComLightningkiteKhrysalisViewsViewString")) {
-            return comLightningkiteKhrysalisViewsViewStringToDebugString(it);
-        }
-        else {
-            return `${it}`;
-        } })()).join(", ") + ")";
+        return comLightningkiteKhrysalisViewsViewStringToDebugString(thing.template) + "(" + thing._arguments.map((it) => (() => {
+            if (Kotlin_1.checkIsInterface(it, "ComLightningkiteKhrysalisViewsViewString")) {
+                return comLightningkiteKhrysalisViewsViewStringToDebugString(it);
+            }
+            else {
+                return `${it}`;
+            }
+        })()).join(", ") + ")";
     }
     else if (thing instanceof ViewStringList) {
         return thing.parts.map((it) => comLightningkiteKhrysalisViewsViewStringToDebugString(it)).join(thing.separator);

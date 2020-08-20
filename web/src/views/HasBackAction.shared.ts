@@ -8,5 +8,7 @@ export interface HasBackAction {
     onBackPressed(): boolean 
 }
 export namespace HasBackActionDefaults {
-    export function onBackPressed(this_: HasBackAction): boolean { return false; }
+    export function onBackPressed(this_: HasBackAction): boolean { 
+        return false; 
+    }
 }

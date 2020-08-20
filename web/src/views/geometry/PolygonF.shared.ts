@@ -3,7 +3,7 @@
 // Package: com.lightningkite.khrysalis.views.geometry
 import { iterCount } from '../../kotlin/Collections'
 import { PointF } from './PointF.actual'
-import { safeEq } from '../../Kotlin'
+import { hashAnything, safeEq } from '../../Kotlin'
 import { range as iterRange } from 'iterable-operator'
 import { Geometry } from './Geometry.shared'
 
@@ -15,7 +15,7 @@ export class PolygonF {
     }
     public hashCode(): number {
         let hash = 17;
-        hash = 31 * hash + (this.points?.hashCode() ?? 0);
+        hash = 31 * hash + hashAnything(this.points);
         return hash;
     }
     public equals(other: any): boolean { return other instanceof PolygonF && safeEq(this.points, other.points) }

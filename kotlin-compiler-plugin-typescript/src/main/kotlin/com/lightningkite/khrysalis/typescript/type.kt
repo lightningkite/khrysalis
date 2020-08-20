@@ -81,18 +81,19 @@ fun TypescriptTranslator.registerType() {
         }
         when (val desc = typedRule.constructor.declarationDescriptor) {
             is FunctionClassDescriptor -> {
+                if(typedRule.isMarkedNullable) -"("
                 -'('
                 typedRule.arguments.dropLast(1).withIndex().forEachBetween(
                     forItem = { (index, typeProjection) ->
                         -('a' + index)
                         -": "
                         -typeProjection
-                        -", "
                     },
                     between = { -", " }
                 )
                 -") => "
                 -typedRule.arguments.last()
+                if(typedRule.isMarkedNullable) -")"
             }
             is ClassDescriptor -> {
                 var current: ClassDescriptor = desc

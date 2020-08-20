@@ -2,12 +2,22 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const DisposeCondition_actual_1 = require("../../rx/DisposeCondition.actual");
 const ObservableProperty_ext_shared_1 = require("../ObservableProperty.ext.shared");
+const CombineObservableProperty_shared_1 = require("../CombineObservableProperty.shared");
+const StandardObservableProperty_shared_1 = require("../StandardObservableProperty.shared");
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>android.widget.AutoCompleteTextView
 function androidWidgetAutoCompleteTextViewBind(this_, options, toString, onItemSelected) {
+    let query = new StandardObservableProperty_shared_1.StandardObservableProperty("");
+    this_.addEventListener("change", () => {
+        query.value = this_.value;
+    });
+    androidWidgetAutoCompleteTextViewBindList(this_, CombineObservableProperty_shared_1.comLightningkiteKhrysalisObservablesObservablePropertyCombine(options, query, (options, query) => options.filter((x) => toString(x).toLowerCase().indexOf(query.toLowerCase()) != -1)), toString, onItemSelected);
+}
+exports.androidWidgetAutoCompleteTextViewBind = androidWidgetAutoCompleteTextViewBind;
+//! Declares com.lightningkite.khrysalis.observables.binding.bindList>android.widget.AutoCompleteTextView
+function androidWidgetAutoCompleteTextViewBindList(this_, options, toString, onItemSelected) {
     const container = this_.parentElement;
     let selectionView = null;
     function removeOptions() {
-        console.log("Removing");
         if (selectionView) {
             container.removeChild(selectionView);
             selectionView = null;
@@ -15,13 +25,10 @@ function androidWidgetAutoCompleteTextViewBind(this_, options, toString, onItemS
     }
     let lastCancel = Date.now();
     function removeOptionsCancel() {
-        console.log("Cancel removal");
         lastCancel = Date.now();
     }
     function removeOptionsTenative() {
-        console.log("Tenative removal set");
         window.setTimeout(() => {
-            console.log(`Remove? Diff is ${Date.now() - lastCancel}`);
             if (Date.now() - lastCancel > 150) {
                 removeOptions();
             }
@@ -29,12 +36,10 @@ function androidWidgetAutoCompleteTextViewBind(this_, options, toString, onItemS
     }
     function showOptions(query, options) {
         removeOptions();
-        console.log("Showing Options");
         const newSelectionView = document.createElement("div");
         newSelectionView.tabIndex = -1;
         newSelectionView.classList.add("khrysalis-autocomplete-options");
-        const matchingOptions = options.filter((x) => toString(x).toLowerCase().indexOf(query.toLowerCase()) != -1);
-        for (const option of matchingOptions) {
+        for (const option of options) {
             const optionView = document.createElement("button");
             optionView.tabIndex = 0;
             optionView.classList.add("khrysalis-autocomplete-option");
@@ -102,5 +107,5 @@ function androidWidgetAutoCompleteTextViewBind(this_, options, toString, onItemS
         }
     }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
 }
-exports.androidWidgetAutoCompleteTextViewBind = androidWidgetAutoCompleteTextViewBind;
+exports.androidWidgetAutoCompleteTextViewBindList = androidWidgetAutoCompleteTextViewBindList;
 //# sourceMappingURL=AutoCompleteTextView.binding.actual.js.map

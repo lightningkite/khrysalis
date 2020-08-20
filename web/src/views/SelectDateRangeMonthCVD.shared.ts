@@ -10,6 +10,7 @@ import { DateAlone } from '../time/DateAlone.actual'
 import { safeEq } from '../Kotlin'
 import { copyDateAloneMod } from '../time/Date.actual'
 import { StandardObservableProperty } from '../observables/StandardObservableProperty.shared'
+import { runOrNull } from '../kotlin/Language'
 import { RectF } from './geometry/RectF.actual'
 import { comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy } from '../observables/ObservableProperty.ext.shared'
 import { ioReactivexDisposablesDisposableForever } from '../rx/DisposeCondition.actual'
@@ -21,15 +22,15 @@ export class SelectDateRangeMonthCVD extends MonthCVD {
         this.draggingStart = true;
         this.start = new StandardObservableProperty<(DateAlone | null)>(null, undefined);
         this.endInclusive = new StandardObservableProperty<(DateAlone | null)>(null, undefined);
-        let temp_383;
-        if ((temp_383 = this.start.value) !== null) { 
-            this.currentMonthObs.value = copyDateAloneMod(temp_383, Date.prototype.setDate, 1);
+        const it_328 = this.start.value;
+        if (it_328 !== null) { 
+            this.currentMonthObs.value = copyDateAloneMod(it_328, Date.prototype.setDate, 1);
         };
         ioReactivexDisposablesDisposableForever<SubscriptionLike>(this.start.onChange.subscribe( (value: (DateAlone | null)): void => {
-                    this?.invalidate()
+                    this?.invalidate();
         }, undefined, undefined));
         ioReactivexDisposablesDisposableForever<SubscriptionLike>(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy<(DateAlone | null)>(this.endInclusive, undefined, undefined,  (value: (DateAlone | null)): void => {
-                    this?.invalidate()
+                    this?.invalidate();
         }));
         this.selectedDayPaint = new Paint();
         this.selectedPaint = new Paint();
@@ -37,7 +38,9 @@ export class SelectDateRangeMonthCVD extends MonthCVD {
         this.startedDraggingOn = null;
     }
     
-    public generateAccessibilityView(): (HTMLElement | null) { return null; }
+    public generateAccessibilityView(): (HTMLElement | null) { 
+        return null; 
+    }
     
     public draggingStart: boolean;
     

@@ -8,15 +8,16 @@ import { EqualOverrideSet } from '../KotlinCollections'
 import { comLightningkiteKhrysalisObservablesObservablePropertyMap } from './TransformedObservableProperty.shared'
 import { map as rxMap } from 'rxjs/operators'
 import { MutableObservableProperty } from './MutableObservableProperty.shared'
+import {printStackTrace} from "../kotlin/Language";
 
 //! Declares com.lightningkite.khrysalis.observables.observable>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
 export function getComLightningkiteKhrysalisObservablesObservablePropertyObservable<T>(this_: ObservableProperty<T>): Observable<T> { return rxConcat(new Observable((it: Observer<T>): void => {
-                it.next(this_.value);; it.complete();
+                it.next(this_.value); it.complete();
 }), this_.onChange); }
 
 //! Declares com.lightningkite.khrysalis.observables.observableNN>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
 export function getComLightningkiteKhrysalisObservablesObservablePropertyObservableNN<T>(this_: ObservableProperty<T>): Observable<T> { return rxConcat(new Observable((it: Observer<T>): void => {
-                it.next(this_.value);; it.complete();
+                it.next(this_.value); it.complete();
 }), this_.onChange).pipe(rxMap((it: T): T => it)); }
 
 //! Declares com.lightningkite.khrysalis.observables.onChangeNN>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
@@ -25,10 +26,12 @@ export function getComLightningkiteKhrysalisObservablesObservablePropertyOnChang
 
 //! Declares com.lightningkite.khrysalis.observables.subscribeBy>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
 export function comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy<T>(this_: ObservableProperty<T>, onError:  ((a: any) => void) = (it: any): void => {
-        it.printStackTrace()
-}, onComplete:  (() => void) = (): void => {}, onNext:  ((a: T) => void) = (it: T): void => {}): SubscriptionLike { return getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this_).subscribe((boxed: T): void => {
-            onNext(boxed)
-}, onError, onComplete); }
+    printStackTrace(it);
+}, onComplete:  (() => void) = (): void => {}, onNext:  ((a: T) => void) = (it: T): void => {}): SubscriptionLike { 
+    return getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this_).subscribe((boxed: T): void => {
+            onNext(boxed);
+    }, onError, onComplete); 
+}
 
 //! Declares com.lightningkite.khrysalis.observables.includes
 export function includes<E>(collection: MutableObservableProperty<Set<E>>, element: E): MutableObservableProperty<boolean> {
@@ -51,9 +54,9 @@ export function comLightningkiteKhrysalisObservablesObservablePropertyWhileActiv
                     current = action();
                 }
             } else {
-                const temp121 = current;
-                if(temp121 !== null) { 
-                    temp121.unsubscribe()
+                const temp66 = current;
+                if(temp66 !== null) { 
+                    temp66.unsubscribe()
                 };
                 current = null;
             }

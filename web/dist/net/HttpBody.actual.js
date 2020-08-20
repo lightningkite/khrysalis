@@ -1,6 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const HttpMediaType_actual_1 = require("./HttpMediaType.actual");
+const jsonParsing_1 = require("./jsonParsing");
 //! Declares com.lightningkite.khrysalis.net.HttpBody
 class HttpBody {
     constructor(data, type) {
@@ -15,7 +16,7 @@ class HttpBodyPart {
 exports.HttpBodyPart = HttpBodyPart;
 //! Declares com.lightningkite.khrysalis.net.toJsonHttpBody
 function kotlinAnyToJsonHttpBody(this_) {
-    return new HttpBody(JSON.stringify(this_), HttpMediaType_actual_1.HttpMediaTypes.INSTANCE.JSON);
+    return new HttpBody(jsonParsing_1.stringify(this_), HttpMediaType_actual_1.HttpMediaTypes.INSTANCE.JSON);
 }
 exports.kotlinAnyToJsonHttpBody = kotlinAnyToJsonHttpBody;
 //! Declares com.lightningkite.khrysalis.net.toHttpBody

@@ -2,6 +2,7 @@ package com.lightningkite.khrysalis.web.layout.drawables
 
 import com.lightningkite.khrysalis.utils.*
 import com.lightningkite.khrysalis.web.layout.HtmlTranslator
+import com.lightningkite.khrysalis.web.layout.WebResources
 import java.io.File
 import java.lang.Appendable
 import java.lang.Exception
@@ -10,7 +11,8 @@ import java.lang.Exception
 fun convertDrawableXmls(
     css: Appendable,
     androidResourcesFolder: File,
-    webDrawablesFolder: File
+    webDrawablesFolder: File,
+    resources: WebResources
 ) {
     androidResourcesFolder.listFiles()!!
         .asSequence()
@@ -24,10 +26,18 @@ fun convertDrawableXmls(
         .map { it to XmlNode.read(it, mapOf()) }
         .forEach { (file, it) ->
             try {
-                val cssName = file.nameWithoutExtension.kabobCase()
+                val originalName = file.nameWithoutExtension
+                val cssName = originalName.kabobCase()
+                if(it.name.toLowerCase() == "vector") {
+                    val svgFile = webDrawablesFolder.resolve("$cssName.svg")
+                    resources.drawables[file.nameWithoutExtension] = WebResources.Drawable(cssName, "images/${svgFile.name}")
+                } else {
+                    resources.drawables[file.nameWithoutExtension] = WebResources.Drawable(cssName)
+                }
+
                 css.appendln("/* ${cssName} */")
                 css.append(buildString {
-                    convertDrawableXml(webDrawablesFolder, cssName, ".drawable-${cssName}", it, this)
+                    convertDrawableXml(webDrawablesFolder, cssName, ".drawable-${cssName}", it, this, resources)
                 })
             } catch (e: Exception) {
                 e.printStackTrace()
@@ -40,7 +50,8 @@ fun convertDrawableXml(
     currentDrawable: String,
     selectors: String,
     node: XmlNode,
-    out: Appendable
+    out: Appendable,
+    resources: WebResources
 ) {
     when (node.name.toLowerCase()) {
         "selector" -> convertSelectorDrawable(
@@ -48,7 +59,8 @@ fun convertDrawableXml(
             currentDrawable,
             selectors,
             node,
-            out
+            out,
+            resources
         )
         "shape" -> convertShapeDrawable(
             webDrawablesFolder,
@@ -69,7 +81,8 @@ fun convertDrawableXml(
             currentDrawable,
             selectors,
             node,
-            out
+            out,
+            resources
         )
         "bitmap" -> convertBitmapDrawable(
             webDrawablesFolder,

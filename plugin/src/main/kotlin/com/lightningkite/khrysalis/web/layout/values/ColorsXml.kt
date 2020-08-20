@@ -2,12 +2,13 @@ package com.lightningkite.khrysalis.web.layout.values
 
 import com.lightningkite.khrysalis.utils.*
 import com.lightningkite.khrysalis.web.asCssColor
+import com.lightningkite.khrysalis.web.layout.WebResources
 import com.lightningkite.khrysalis.web.useScssVariables
 import java.io.File
 import java.lang.Appendable
 
 
-fun translateXmlColorsToCss(file: File, out: Appendable): List<String> {
+fun translateXmlColorsToCss(file: File, out: Appendable, resources: WebResources) {
     val ignored = setOf("white", "black", "transparent")
     if(!useScssVariables) out.appendln("* {")
     val result = ArrayList<String>()
@@ -19,7 +20,7 @@ fun translateXmlColorsToCss(file: File, out: Appendable): List<String> {
         .associate {
             result.add(it.allAttributes["name"] ?: "noname")
             val color = it.element.textContent.asCssColor() ?: "#000"
-            val name = (it.allAttributes["name"] ?: "noname").kabobCase()
+            val name = (it.allAttributes["name"] ?: "noname")
             name to color
         }
         .let { map ->
@@ -31,19 +32,21 @@ fun translateXmlColorsToCss(file: File, out: Appendable): List<String> {
             map.entries.sortedBy { (key, value) -> determineValue(value) }
         }
         .forEach { (name, color) ->
+            val kabobName = name.kabobCase()
             if(useScssVariables){
-                out.appendln("\$color-$name: $color;")
+                out.appendln("\$color-$kabobName: $color;")
             } else {
-                out.appendln("--color-$name: $color;")
+                resources.colors[name] = WebResources.Color("--color-$kabobName", color)
+                out.appendln("--color-$kabobName: $color;")
             }
         }
     if(!useScssVariables) out.appendln("}")
-    return result
 }
 
-fun translateXmlColorSetToCss(file: File, out: Appendable): String {
+fun translateXmlColorSetToCss(file: File, out: Appendable, resources: WebResources) {
     val name = file.nameWithoutExtension.kabobCase()
     out.appendln("/*$name*/")
+    var lastColor: String? = null
     XmlNode.read(file, mapOf()).children.forEach { subnode ->
         var conditions = ""
         subnode.attributeAsBoolean("android:state_enabled")?.let {
@@ -69,8 +72,9 @@ fun translateXmlColorSetToCss(file: File, out: Appendable): String {
                 out.appendln("$conditions {")
             }
             out.appendln("--color-$name: $color;")
+            lastColor = color
             out.appendln("}")
         }
     }
-    return file.nameWithoutExtension
+    resources.colors[file.nameWithoutExtension] = WebResources.Color("-color-$name", lastColor ?: "#FFF")
 }

@@ -15,9 +15,9 @@ class SelectDateRangeMonthCVD extends MonthCVD_shared_1.MonthCVD {
         this.draggingStart = true;
         this.start = new StandardObservableProperty_shared_1.StandardObservableProperty(null, undefined);
         this.endInclusive = new StandardObservableProperty_shared_1.StandardObservableProperty(null, undefined);
-        let temp_383;
-        if ((temp_383 = this.start.value) !== null) {
-            this.currentMonthObs.value = Date_actual_1.copyDateAloneMod(temp_383, Date.prototype.setDate, 1);
+        const it_328 = this.start.value;
+        if (it_328 !== null) {
+            this.currentMonthObs.value = Date_actual_1.copyDateAloneMod(it_328, Date.prototype.setDate, 1);
         }
         ;
         DisposeCondition_actual_1.ioReactivexDisposablesDisposableForever(this.start.onChange.subscribe((value) => {
@@ -31,7 +31,9 @@ class SelectDateRangeMonthCVD extends MonthCVD_shared_1.MonthCVD {
         this.drawDay_dateAlone = new DateAlone_actual_1.DateAlone(0, 0, 0);
         this.startedDraggingOn = null;
     }
-    generateAccessibilityView() { return null; }
+    generateAccessibilityView() {
+        return null;
+    }
     measure(width, height, displayMetrics) {
         super.measure(width, height, displayMetrics);
         this.selectedDayPaint.textSize = this.dayPaint.textSize;

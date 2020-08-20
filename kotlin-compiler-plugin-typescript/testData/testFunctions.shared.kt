@@ -58,6 +58,8 @@ class TestClass {
         } ?: 0
         memberFunction()
         this.memberFunction()
+        extensionFunction()
+        this.extensionFunction()
     }
 }
 

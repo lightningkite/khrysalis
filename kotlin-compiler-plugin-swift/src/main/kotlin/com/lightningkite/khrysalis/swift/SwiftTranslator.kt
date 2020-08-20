@@ -4,9 +4,7 @@ import com.lightningkite.khrysalis.generic.PartialTranslatorByType
 import com.lightningkite.khrysalis.generic.TranslatorInterface
 import com.lightningkite.khrysalis.swift.replacements.Replacements
 import com.lightningkite.khrysalis.util.AnalysisExtensions
-import com.lightningkite.khrysalis.util.forEachBetween
 import com.lightningkite.khrysalis.util.walkTopDown
-import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
@@ -17,14 +15,10 @@ import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
-import org.jetbrains.kotlin.psi.psiUtil.getTextWithLocation
 import org.jetbrains.kotlin.resolve.BindingContext
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 import org.jetbrains.kotlin.resolve.scopes.receivers.ExtensionReceiver
-import org.jetbrains.kotlin.types.FlexibleType
 import org.jetbrains.kotlin.types.KotlinType
-import org.jetbrains.kotlin.types.SimpleType
-import org.jetbrains.kotlin.types.WrappedType
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -180,25 +174,26 @@ class SwiftTranslator(
         return this
     }
 
-    override fun determineNotStatementLambda(it: KtFunctionLiteral): Boolean {
-        if (!super.determineNotStatementLambda(it)) {
+    inline fun <reified T> PsiElement.parentIfType(): T? = parent as? T
+    override fun determineMaybeExpressionLambda(it: KtFunctionLiteral): Boolean {
+        if (!super.determineMaybeExpressionLambda(it)) {
             return false
         }
         if (it
-                .parentOfType<KtLambdaExpression>()
-                ?.parentOfType<KtLambdaArgument>()
-                ?.parentOfType<KtCallExpression>()
+                .parentIfType<KtLambdaExpression>()
+                ?.parentIfType<KtLambdaArgument>()
+                ?.parentIfType<KtCallExpression>()
                 ?.let {
                     if ((it.parent as? KtExpression)?.let {
-                            it.isSafeLetDirect() && !determineNotStatement(it)
+                            it.isSafeLetDirect() && !determineMaybeExpression(it)
                         } == true) {
                         return false
                     }
-                    it.parentOfType<KtBinaryExpression>()
-                        ?: it.parentOfType<KtQualifiedExpression>()
-                            ?.parentOfType<KtBinaryExpression>()
+                    it.parentIfType<KtBinaryExpression>()
+                        ?: it.parentIfType<KtQualifiedExpression>()
+                            ?.parentIfType<KtBinaryExpression>()
                 }
-                ?.let { it.isSafeLetChain() && !determineNotStatement(it.safeLetChainRoot()) } == true
+                ?.let { it.isSafeLetChain() && !determineMaybeExpression(it.safeLetChainRoot()) } == true
         ) {
             return false
         }

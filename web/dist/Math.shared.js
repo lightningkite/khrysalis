@@ -4,7 +4,9 @@
 // Package: com.lightningkite.khrysalis
 Object.defineProperty(exports, "__esModule", { value: true });
 //! Declares com.lightningkite.khrysalis.floorMod>kotlin.Int
-function kotlinIntFloorMod(this_, other) { return (this_ % other + other) % other; }
+function kotlinIntFloorMod(this_, other) {
+    return (this_ % other + other) % other;
+}
 exports.kotlinIntFloorMod = kotlinIntFloorMod;
 //! Declares com.lightningkite.khrysalis.floorDiv>kotlin.Int
 function kotlinIntFloorDiv(this_, other) {
@@ -17,7 +19,9 @@ function kotlinIntFloorDiv(this_, other) {
 }
 exports.kotlinIntFloorDiv = kotlinIntFloorDiv;
 //! Declares com.lightningkite.khrysalis.floorMod>kotlin.Float
-function kotlinFloatFloorMod(this_, other) { return (this_ % other + other) % other; }
+function kotlinFloatFloorMod(this_, other) {
+    return (this_ % other + other) % other;
+}
 exports.kotlinFloatFloorMod = kotlinFloatFloorMod;
 //! Declares com.lightningkite.khrysalis.floorDiv>kotlin.Float
 function kotlinFloatFloorDiv(this_, other) {
@@ -30,7 +34,9 @@ function kotlinFloatFloorDiv(this_, other) {
 }
 exports.kotlinFloatFloorDiv = kotlinFloatFloorDiv;
 //! Declares com.lightningkite.khrysalis.floorMod>kotlin.Double
-function kotlinDoubleFloorMod(this_, other) { return (this_ % other + other) % other; }
+function kotlinDoubleFloorMod(this_, other) {
+    return (this_ % other + other) % other;
+}
 exports.kotlinDoubleFloorMod = kotlinDoubleFloorMod;
 //! Declares com.lightningkite.khrysalis.floorDiv>kotlin.Double
 function kotlinDoubleFloorDiv(this_, other) {

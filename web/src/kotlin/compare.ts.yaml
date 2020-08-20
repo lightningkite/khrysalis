@@ -31,3 +31,25 @@
     pattern: safeCompare(~this~, ~0~)
     imports:
       safeCompare: khrysalis/dist/kotlin/Comparable
+
+# Coerce
+- id: kotlin.ranges.coerceIn
+  type: call
+  template:
+    pattern: cCoerce(~this~, ~0~, ~1~)
+    imports:
+      cCoerce: khrysalis/dist/kotlin/Comparable
+
+- id: kotlin.ranges.coerceAtMost
+  type: call
+  template:
+    pattern: cMin(~this~, ~0~)
+    imports:
+      cMin: khrysalis/dist/kotlin/Comparable
+
+- id: kotlin.ranges.coerceAtLeast
+  type: call
+  template:
+    pattern: cMax(~this~, ~0~)
+    imports:
+      cMax: khrysalis/dist/kotlin/Comparable

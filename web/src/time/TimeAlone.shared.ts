@@ -23,5 +23,7 @@ export function comLightningkiteKhrysalisTimeTimeAloneSet(this_: TimeAlone, othe
 
 
 //! Declares com.lightningkite.khrysalis.time.format>com.lightningkite.khrysalis.time.TimeAlone
-export function comLightningkiteKhrysalisTimeTimeAloneFormat(this_: TimeAlone, clockPartSize: ClockPartSize): string { return javaUtilDateFormat(dateFrom(getJavaUtilDateDateAlone(new Date()), this_, undefined), ClockPartSize.None, clockPartSize); }
+export function comLightningkiteKhrysalisTimeTimeAloneFormat(this_: TimeAlone, clockPartSize: ClockPartSize): string { 
+    return javaUtilDateFormat(dateFrom(getJavaUtilDateDateAlone(new Date()), this_, undefined), ClockPartSize.None, clockPartSize); 
+}
 

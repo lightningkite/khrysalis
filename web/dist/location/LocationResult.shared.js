@@ -16,17 +16,16 @@ class LocationResult {
         this.speedMetersPerSecond = speedMetersPerSecond;
     }
     hashCode() {
-        var _a, _b;
         let hash = 17;
-        hash = 31 * hash + ((_b = (_a = this.coordinate) === null || _a === void 0 ? void 0 : _a.hashCode()) !== null && _b !== void 0 ? _b : 0);
-        hash = 31 * hash + Math.floor(this.accuracyMeters);
-        hash = 31 * hash + Math.floor(this.altitudeMeters);
-        hash = 31 * hash + Math.floor(this.altitudeAccuracyMeters);
-        hash = 31 * hash + Math.floor(this.headingFromNorth);
-        hash = 31 * hash + Math.floor(this.speedMetersPerSecond);
+        hash = 31 * hash + Kotlin_1.hashAnything(this.coordinate);
+        hash = 31 * hash + Kotlin_1.hashAnything(this.accuracyMeters);
+        hash = 31 * hash + Kotlin_1.hashAnything(this.altitudeMeters);
+        hash = 31 * hash + Kotlin_1.hashAnything(this.altitudeAccuracyMeters);
+        hash = 31 * hash + Kotlin_1.hashAnything(this.headingFromNorth);
+        hash = 31 * hash + Kotlin_1.hashAnything(this.speedMetersPerSecond);
         return hash;
     }
-    equals(other) { return other instanceof LocationResult && Kotlin_1.safeEq(this.coordinate, other.coordinate) && this.accuracyMeters === other.accuracyMeters && this.altitudeMeters === other.altitudeMeters && this.altitudeAccuracyMeters === other.altitudeAccuracyMeters && this.headingFromNorth === other.headingFromNorth && this.speedMetersPerSecond === other.speedMetersPerSecond; }
+    equals(other) { return other instanceof LocationResult && Kotlin_1.safeEq(this.coordinate, other.coordinate) && Kotlin_1.safeEq(this.accuracyMeters, other.accuracyMeters) && Kotlin_1.safeEq(this.altitudeMeters, other.altitudeMeters) && Kotlin_1.safeEq(this.altitudeAccuracyMeters, other.altitudeAccuracyMeters) && Kotlin_1.safeEq(this.headingFromNorth, other.headingFromNorth) && Kotlin_1.safeEq(this.speedMetersPerSecond, other.speedMetersPerSecond); }
     toString() { return `LocationResult(coordinate = ${this.coordinate}, accuracyMeters = ${this.accuracyMeters}, altitudeMeters = ${this.altitudeMeters}, altitudeAccuracyMeters = ${this.altitudeAccuracyMeters}, headingFromNorth = ${this.headingFromNorth}, speedMetersPerSecond = ${this.speedMetersPerSecond})`; }
     copy(coordinate = this.coordinate, accuracyMeters = this.accuracyMeters, altitudeMeters = this.altitudeMeters, altitudeAccuracyMeters = this.altitudeAccuracyMeters, headingFromNorth = this.headingFromNorth, speedMetersPerSecond = this.speedMetersPerSecond) { return new LocationResult(coordinate, accuracyMeters, altitudeMeters, altitudeAccuracyMeters, headingFromNorth, speedMetersPerSecond); }
 }

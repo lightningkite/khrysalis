@@ -5,6 +5,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // Package: com.lightningkite.khrysalis.net
 const rxjs_1 = require("rxjs");
 const ConnectedWebSocket_actual_1 = require("./ConnectedWebSocket.actual");
+const operators_1 = require("rxjs/operators");
 //! Declares com.lightningkite.khrysalis.net.HttpClient
 class HttpClient {
     constructor() {
@@ -17,6 +18,7 @@ class HttpClient {
         this.ioScheduler = null;
         //--- HttpClient.responseScheduler
         this.responseScheduler = null;
+        this.timeout = 15000;
     }
     call(url, method = HttpClient.INSTANCE.GET, headers = new Map([]), body = null) {
         let h = new Array(...headers.entries());
@@ -29,7 +31,7 @@ class HttpClient {
             credentials: "omit",
             headers: h,
             method: method
-        }));
+        })).pipe(operators_1.timeout(this.timeout));
     }
     webSocket(url) {
         return rxjs_1.using(() => {

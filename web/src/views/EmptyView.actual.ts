@@ -3,5 +3,7 @@
 // Package: com.lightningkite.khrysalis.views
 
 //! Declares com.lightningkite.khrysalis.views.newEmptyView
-export function newEmptyView(dependency: Window): HTMLElement { return document.createElement('div'); }
+export function newEmptyView(dependency: Window): HTMLElement { 
+    return document.createElement('div'); 
+}
 

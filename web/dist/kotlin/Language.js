@@ -8,11 +8,17 @@ class Exception extends Error {
         super(message);
         this.cause = cause;
     }
-    printStackTrace() {
-        console.error(`${this.name}: ${this.message}\n${this.stack}`);
-    }
 }
 exports.Exception = Exception;
+function printStackTrace(something) {
+    if (something instanceof Error) {
+        console.error(`${something.name}: ${something.message}\n${something.stack}`);
+    }
+    else {
+        console.error(`Raw error: ${something}`);
+    }
+}
+exports.printStackTrace = printStackTrace;
 //! Declares kotlin.IllegalArgumentException
 //! Declares java.lang.IllegalArgumentException
 class IllegalArgumentException extends Exception {
@@ -45,7 +51,12 @@ function hashAnything(item) {
         return 0;
     switch (typeof item) {
         case "object":
-            return item.hashCode();
+            if (item.hashCode) {
+                return item.hashCode();
+            }
+            else {
+                return 0;
+            }
         case "number":
             return Math.floor(item);
         case "string":
@@ -58,7 +69,7 @@ function hashAnything(item) {
 }
 exports.hashAnything = hashAnything;
 function safeEq(left, right) {
-    if (left !== null && (typeof left) === "object") {
+    if (left !== null && (typeof left) === "object" && left.equals) {
         return left.equals(right);
     }
     else {
@@ -115,6 +126,15 @@ function tryCastClass(item, erasedType) {
     }
 }
 exports.tryCastClass = tryCastClass;
+function runOrNull(on, action) {
+    if (on !== null) {
+        return action(on);
+    }
+    else {
+        return null;
+    }
+}
+exports.runOrNull = runOrNull;
 function also(item, action) {
     action(item);
     return item;
@@ -148,21 +168,6 @@ function parseFloatOrNull(s) {
     return r;
 }
 exports.parseFloatOrNull = parseFloatOrNull;
-Object.defineProperty(Object.prototype, "hashCode", {
-    value: function () {
-        const existing = this["__randomizedHash"];
-        if (existing)
-            return existing;
-        const r = Math.random() * 1000000;
-        this["__randomizedHash"] = r;
-        return r;
-    }
-});
-Object.defineProperty(Object.prototype, "equals", {
-    value: function (other) {
-        return this == other;
-    }
-});
 Object.defineProperty(Number.prototype, "implementsInterfaceKotlinComparable", { value: true });
 Object.defineProperty(String.prototype, "implementsInterfaceKotlinComparable", { value: true });
 Object.defineProperty(Boolean.prototype, "implementsInterfaceKotlinComparable", { value: true });

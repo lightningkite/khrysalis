@@ -32,7 +32,6 @@ class DeclarationManifest(
     }
 
     fun load(files: Sequence<File>, local: File){
-        println("Files: ${files.joinToString()}")
         files
             .flatMap { it.walkTopDown() }
             .filter {
