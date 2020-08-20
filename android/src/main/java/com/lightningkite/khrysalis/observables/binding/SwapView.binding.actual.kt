@@ -9,6 +9,7 @@ import com.lightningkite.khrysalis.rx.until
 import com.lightningkite.khrysalis.views.ViewDependency
 import com.lightningkite.khrysalis.views.android.SwapView
 import com.lightningkite.khrysalis.views.ViewGenerator
+import com.lightningkite.khrysalis.views.android.ViewTransition
 
 
 /**
@@ -79,9 +80,86 @@ fun SwapView.bindStack(dependency: ViewDependency, obs: ObservableStack<ViewGene
             currentStackSize = newStackSize
         }
     }.until(this.removed)
-
 }
 
+fun SwapView.bindStackWithAnimation(dependency: ViewDependency, obs: ObservableStack<Pair<ViewGenerator, ViewTransition>>) {
+    var currentData = obs.stack.lastOrNull()
+    var currentStackSize = obs.stack.size
+    var currentView = currentData?.first?.generate(dependency) ?: View(context)
+    addView(
+        currentView, FrameLayout.LayoutParams(
+            ViewGroup.LayoutParams.MATCH_PARENT,
+            ViewGroup.LayoutParams.MATCH_PARENT
+        )
+    )
+    obs.subscribeBy { datas ->
+        if (currentData == datas.lastOrNull()) return@subscribeBy
+
+        val oldView = currentView
+        val oldStackSize = currentStackSize
+
+        var newView = obs.stack.lastOrNull()?.first?.generate(dependency)
+        if (newView == null) {
+            newView = View(context)
+            visibility = View.GONE
+        } else {
+            visibility = View.VISIBLE
+        }
+
+        val newStackSize = datas.size
+
+        post {
+            addView(
+                newView, FrameLayout.LayoutParams(
+                    ViewGroup.LayoutParams.MATCH_PARENT,
+                    ViewGroup.LayoutParams.MATCH_PARENT
+                )
+            )
+            when {
+                oldStackSize == 0 -> {
+                    currentData?.second?.enterPush?.invoke(newView)?.start()
+                    currentData?.second?.exitPush?.invoke(oldView)?.setListener(object : android.animation.AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: android.animation.Animator?) {
+                            this@bindStackWithAnimation.removeView(oldView)
+                        }
+                    })?.start()
+                }
+                oldStackSize > newStackSize -> {
+                    datas.lastOrNull()?.second?.enterPop?.invoke(newView)?.start()
+                    datas.lastOrNull()?.second?.exitPop?.invoke(oldView)?.setListener(object : android.animation.AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: android.animation.Animator?) {
+                            this@bindStackWithAnimation.removeView(oldView)
+                        }
+                    })?.start()
+                }
+                oldStackSize < newStackSize -> {
+                    currentData?.second?.enterPush?.invoke(newView)?.start()
+                    currentData?.second?.exitPush?.invoke(oldView)?.setListener(object : android.animation.AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: android.animation.Animator?) {
+                            this@bindStackWithAnimation.removeView(oldView)
+                        }
+                    })?.start()
+                }
+                else -> {
+                    currentData?.second?.enterPush?.invoke(newView)?.start()
+                    currentData?.second?.exitPush?.invoke(oldView)?.setListener(object : android.animation.AnimatorListenerAdapter() {
+                        override fun onAnimationEnd(animation: android.animation.Animator?) {
+                            this@bindStackWithAnimation.removeView(oldView)
+                        }
+                    })?.start()
+                }
+            }
+
+            currentData = datas.lastOrNull()
+            currentView = newView
+            currentStackSize = newStackSize
+        }
+    }.until(this.removed)
+}
+
+//fun SwapView.bind(dependency: ViewDependency, obs: Observable<Pair<ViewGenerator, Transition>>) {
+//
+//}
 /**
  *
  * Binds the view in the swap view to the top ViewGenerator in the ObservableStack.
