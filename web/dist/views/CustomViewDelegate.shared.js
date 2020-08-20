@@ -24,6 +24,9 @@ class CustomViewDelegate {
     onTouchUp(id, x, y, width, height) {
         return false;
     }
+    onWheel(delta) {
+        return false;
+    }
     sizeThatFitsWidth(width, height) {
         return width;
     }
@@ -31,16 +34,16 @@ class CustomViewDelegate {
         return height;
     }
     invalidate() {
-        const temp149 = this.customView;
-        if (temp149 !== null) {
-            CustomView_actual_1.customViewInvalidate(temp149);
+        const temp155 = this.customView;
+        if (temp155 !== null) {
+            CustomView_actual_1.customViewInvalidate(temp155);
         }
         ;
     }
     postInvalidate() {
-        const temp150 = this.customView;
-        if (temp150 !== null) {
-            CustomView_actual_1.customViewInvalidate(temp150);
+        const temp156 = this.customView;
+        if (temp156 !== null) {
+            CustomView_actual_1.customViewInvalidate(temp156);
         }
         ;
     }

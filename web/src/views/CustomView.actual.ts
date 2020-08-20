@@ -21,24 +21,45 @@ export function customViewSetDelegate(view: HTMLCanvasElement, delegate: CustomV
     view[customViewDelegateSymbol]?.dispose();
     delegate.customView = view;
 
+    let lastEndHandled = -1;
     view.style.touchAction = "none";
     view.onpointerdown = (e) => {
+        lastEndHandled = -1;
         const b = view.getBoundingClientRect();
-        delegate.onTouchDown(e.pointerId, e.pageX - b.x, e.pageY - b.y, view.width, view.height);
+        const result = delegate.onTouchDown(e.pointerId, e.pageX - b.x, e.pageY - b.y, view.width, view.height);
+        if(result) e.preventDefault();
     }
     view.onpointermove = (e) => {
         if(e.buttons > 0){
             const b = view.getBoundingClientRect();
-            delegate.onTouchMove(e.pointerId, e.pageX - b.x, e.pageY - b.y, view.width, view.height);
+            const result = delegate.onTouchMove(e.pointerId, e.pageX - b.x, e.pageY - b.y, view.width, view.height);
+            if(result) e.preventDefault();
         }
     }
     view.onpointercancel = (e) => {
+        if(e.pointerId == lastEndHandled) { return }
+        lastEndHandled = e.pointerId;
         const b = view.getBoundingClientRect();
-        delegate.onTouchCancelled(e.pointerId, e.pageX - b.x, e.pageY - b.y, view.width, view.height);
+        const result = delegate.onTouchCancelled(e.pointerId, e.pageX - b.x, e.pageY - b.y, view.width, view.height);
+        if(result) e.preventDefault();
+    }
+    view.onpointerleave = (e) => {
+        if(e.pointerId == lastEndHandled) { return }
+        lastEndHandled = e.pointerId;
+        const b = view.getBoundingClientRect();
+        const result = delegate.onTouchCancelled(e.pointerId, e.pageX - b.x, e.pageY - b.y, view.width, view.height);
+        if(result) e.preventDefault();
     }
     view.onpointerup = (e) => {
+        if(e.pointerId == lastEndHandled) { return }
+        lastEndHandled = e.pointerId;
         const b = view.getBoundingClientRect();
-        delegate.onTouchUp(e.pointerId, e.pageX - b.x, e.pageY - b.y, view.width, view.height);
+        const result = delegate.onTouchUp(e.pointerId, e.pageX - b.x, e.pageY - b.y, view.width, view.height);
+        if(result) e.preventDefault();
+    }
+    view.onwheel = (e) => {
+        const result = delegate.onWheel(e.deltaY);
+        if(result) e.preventDefault();
     }
 
     if(view.getContext){

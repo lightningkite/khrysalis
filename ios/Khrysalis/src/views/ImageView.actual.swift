@@ -95,9 +95,6 @@ public extension UIImageView {
             if let url = URL(string: image.url) {
                 af_setImageProgress(withURL: url, placeholderImage: nil, imageTransition: .noTransition, runImageTransitionIfCached: false, completion: nil)
             }
-        case let image as ImageResource:
-            self.image = image.resource(self).toImage()
-            self.notifyParentSizeChanged()
         default:
             break
         }

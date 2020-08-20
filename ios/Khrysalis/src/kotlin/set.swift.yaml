@@ -72,11 +72,7 @@
   usedAsExpression: false
   template: '~this~.insert(~0~)'
 
-- id: kotlin.collections.MutableSet.remove
-  type: call
-  template: ~this~.remove(~0~)
-
-- id: java.util.HashSet.remove
+- id: kotlin.collections.Set.remove
   type: call
   template: ~this~.remove(~0~)
 

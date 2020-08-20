@@ -17,6 +17,7 @@ abstract class CustomViewDelegate {
     open fun onTouchMove(id: Int, x: GFloat, y: GFloat, width: GFloat, height: GFloat): Boolean = false
     open fun onTouchCancelled(id: Int, x: GFloat, y: GFloat, width: GFloat, height: GFloat): Boolean = false
     open fun onTouchUp(id: Int, x: GFloat, y: GFloat, width: GFloat, height: GFloat): Boolean = false
+    open fun onWheel(delta: Float): Boolean = false
     open fun sizeThatFitsWidth(width: GFloat, height: GFloat): GFloat = width
     open fun sizeThatFitsHeight(width: GFloat, height: GFloat): GFloat = height
 

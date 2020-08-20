@@ -1,6 +1,6 @@
 import { ViewString } from './Strings.shared';
-import { StandardObservableProperty } from '../observables/StandardObservableProperty.shared';
 import { MutableObservableProperty } from '../observables/MutableObservableProperty.shared';
+import { StandardObservableProperty } from '../observables/StandardObservableProperty.shared';
 export declare class FormValidationError {
     readonly field: UntypedFormField;
     readonly _string: ViewString;

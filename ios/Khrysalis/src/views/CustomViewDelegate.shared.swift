@@ -21,6 +21,7 @@ open class CustomViewDelegate {
     open func onTouchMove(id: Int, x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat) -> Bool { return false }
     open func onTouchCancelled(id: Int, x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat) -> Bool { return false }
     open func onTouchUp(id: Int, x: CGFloat, y: CGFloat, width: CGFloat, height: CGFloat) -> Bool { return false }
+    open func onWheel(delta: Float) -> Bool { return false }
     open func sizeThatFitsWidth(width: CGFloat, height: CGFloat) -> CGFloat { return width }
     open func sizeThatFitsHeight(width: CGFloat, height: CGFloat) -> CGFloat { return height }
     

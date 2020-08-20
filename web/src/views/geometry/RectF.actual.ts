@@ -21,10 +21,30 @@ class RectF {
 
 //! Declares android.graphics.RectF
 export class RectF {
-    right: number = 0.0;
-    bottom: number = 0.0;
-    top: number = 0.0;
-    left: number = 0.0;
+    right: number;
+    bottom: number;
+    top: number;
+    left: number;
+    public constructor(left?: number | RectF, top?: number, right?: number, bottom?: number) {
+        if(left !== undefined){
+            if(left instanceof RectF){
+                this.right = left.right;
+                this.bottom = left.bottom;
+                this.top = left.top;
+                this.left = left.left;
+            } else {
+                this.right = right as number;
+                this.bottom = bottom as number;
+                this.top = top as number;
+                this.left = left as number;
+            }
+        } else {
+            this.right = 0;
+            this.bottom = 0;
+            this.top = 0;
+            this.left = 0;
+        }
+    }
     set(left: number | RectF, top?: number, right?: number, bottom?: number) {
         if(left instanceof RectF){
             this.right = left.right;

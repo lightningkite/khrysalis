@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const ObservableProperty_ext_shared_1 = require("../ObservableProperty.ext.shared");
 const DisposeCondition_actual_1 = require("../../rx/DisposeCondition.actual");
 const StandardObservableProperty_shared_1 = require("../StandardObservableProperty.shared");
+const Language_1 = require("../../kotlin/Language");
 const viewAttached_1 = require("../../views/viewAttached");
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>android.widget.Spinner
 function spinnerBindAdvanced(this_, options, selected, makeView) {
@@ -36,10 +37,10 @@ function spinnerBindAdvanced(this_, options, selected, makeView) {
         for (let i = 0; i < options.length; i++) {
             observables[i].value = options[i];
         }
-        this_.selectedIndex = options.indexOf(selected.value);
+        this_.selectedIndex = options.findIndex((x) => Language_1.safeEq(selected.value, x));
     }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
     DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(selected, undefined, undefined, (sel) => {
-        this_.selectedIndex = options.value.indexOf(sel);
+        this_.selectedIndex = options.value.findIndex((x) => Language_1.safeEq(sel, x));
     }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
     this_.oninput = (ev) => {
         const sel = options.value[this_.selectedIndex];
@@ -80,10 +81,10 @@ function spinnerBind(this_, options, selected, toString = (x) => `${x}`) {
         for (let i = 0; i < options.length; i++) {
             observables[i].value = options[i];
         }
-        this_.selectedIndex = options.indexOf(selected.value);
+        this_.selectedIndex = options.findIndex((x) => Language_1.safeEq(selected.value, x));
     }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
     DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(selected, undefined, undefined, (sel) => {
-        this_.selectedIndex = options.value.indexOf(sel);
+        this_.selectedIndex = options.value.findIndex((x) => Language_1.safeEq(sel, x));
     }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
     this_.oninput = (ev) => {
         const sel = options.value[this_.selectedIndex];

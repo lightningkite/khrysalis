@@ -5,10 +5,10 @@ import { Observable, Observer, SubscriptionLike, concat as rxConcat } from 'rxjs
 import { comLightningkiteKhrysalisObservablesObservablePropertyWithWrite } from './WriteAddedObservableProperty.shared'
 import { ObservableProperty } from './ObservableProperty.shared'
 import { EqualOverrideSet } from '../KotlinCollections'
+import { printStackTrace } from '../kotlin/Language'
 import { comLightningkiteKhrysalisObservablesObservablePropertyMap } from './TransformedObservableProperty.shared'
 import { map as rxMap } from 'rxjs/operators'
 import { MutableObservableProperty } from './MutableObservableProperty.shared'
-import {printStackTrace} from "../kotlin/Language";
 
 //! Declares com.lightningkite.khrysalis.observables.observable>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
 export function getComLightningkiteKhrysalisObservablesObservablePropertyObservable<T>(this_: ObservableProperty<T>): Observable<T> { return rxConcat(new Observable((it: Observer<T>): void => {
@@ -26,7 +26,7 @@ export function getComLightningkiteKhrysalisObservablesObservablePropertyOnChang
 
 //! Declares com.lightningkite.khrysalis.observables.subscribeBy>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
 export function comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy<T>(this_: ObservableProperty<T>, onError:  ((a: any) => void) = (it: any): void => {
-    printStackTrace(it);
+        printStackTrace(it);
 }, onComplete:  (() => void) = (): void => {}, onNext:  ((a: T) => void) = (it: T): void => {}): SubscriptionLike { 
     return getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this_).subscribe((boxed: T): void => {
             onNext(boxed);
@@ -54,9 +54,9 @@ export function comLightningkiteKhrysalisObservablesObservablePropertyWhileActiv
                     current = action();
                 }
             } else {
-                const temp66 = current;
-                if(temp66 !== null) { 
-                    temp66.unsubscribe()
+                const temp72 = current;
+                if(temp72 !== null) { 
+                    temp72.unsubscribe()
                 };
                 current = null;
             }

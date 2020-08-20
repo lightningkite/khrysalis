@@ -6,7 +6,7 @@ function androidWidgetViewFlipperBindLoading(this_, loading, color = null) {
     var _a;
     const mainChild = this_.firstElementChild;
     const loadingChild = (_a = this_.children.item(1)) !== null && _a !== void 0 ? _a : (() => {
-        const newElement = document.createElement("progress");
+        const newElement = document.createElement("div");
         newElement.classList.add("khrysalis-flipper-progress");
         newElement.classList.add("khr");
         this_.appendChild(newElement);
@@ -24,34 +24,37 @@ function androidWidgetViewFlipperBindLoading(this_, loading, color = null) {
             currentView = mainChild;
             hiddenView = loadingChild;
         }
-        currentView.style.removeProperty("animation");
-        hiddenView.style.removeProperty("animation");
-        currentView.style.removeProperty("visibility");
-        hiddenView.style.removeProperty("visibility");
+        // currentView.style.removeProperty("animation");
+        // hiddenView.style.removeProperty("animation");
+        // currentView.style.removeProperty("visibility");
+        // hiddenView.style.removeProperty("visibility");
         const viewOut = hiddenView;
         const viewIn = currentView;
-        //animate out
-        const animationOut = `${animation}-out`;
-        let animOutHandler;
-        animOutHandler = (ev) => {
-            if (ev.animationName === animationOut) {
-                viewOut.onanimationend = null;
-                viewOut.style.visibility = "hidden";
-            }
-        };
-        viewOut.onanimationend = animOutHandler;
-        viewOut.style.animation = `${animationOut} 0.25s`;
-        //animate in
-        const animationIn = `${animation}-in`;
-        let animInHandler;
-        animInHandler = (ev) => {
-            if (ev.animationName === animationIn) {
-                viewIn.onanimationend = null;
-                viewIn.style.removeProperty("animation");
-            }
-        };
-        viewIn.onanimationend = animInHandler;
-        viewIn.style.animation = `${animationIn} 0.25s`;
+        viewOut.style.visibility = "hidden";
+        viewIn.style.visibility = "visible";
+        // //animate out
+        // const animationOut = `${animation}-out`;
+        // let animOutHandler: (ev: AnimationEvent) => void;
+        // animOutHandler = (ev: AnimationEvent) => {
+        //     if (ev.animationName === animationOut) {
+        //         viewOut.onanimationend = null;
+        //         viewOut.style.visibility = "hidden";
+        //     }
+        // };
+        // viewOut.onanimationend = animOutHandler;
+        // viewOut.style.animation = `${animationOut} 0.25s`;
+        //
+        // //animate in
+        // const animationIn = `${animation}-in`;
+        // let animInHandler: (ev: AnimationEvent) => void;
+        // animInHandler = (ev: AnimationEvent) => {
+        //     if (ev.animationName === animationIn) {
+        //         viewIn.onanimationend = null;
+        //         viewIn.style.removeProperty("animation");
+        //     }
+        // };
+        // viewIn.onanimationend = animInHandler;
+        // viewIn.style.animation = `${animationIn} 0.25s`;
     }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
     if (loading.value) {
         hiddenView = mainChild;

@@ -3,6 +3,7 @@
 // File: views/ViewWithText.ext.actual.kt
 // Package: com.lightningkite.khrysalis.views
 Object.defineProperty(exports, "__esModule", { value: true });
+const iterable_operator_1 = require("iterable-operator");
 const entityMap = {
     '&': '&amp;',
     '<': '&lt;',
@@ -20,7 +21,32 @@ function escapeHtml(s) {
     });
 }
 function setViewText(view, text) {
-    view.innerHTML = escapeHtml(text);
+    if (view instanceof HTMLInputElement) {
+        const labels = view.labels;
+        if (labels) {
+            for (const index of iterable_operator_1.range(0, labels.length)) {
+                const labelView = labels.item(index);
+                for (const index of iterable_operator_1.range(0, labelView.childNodes.length)) {
+                    const subview = labelView.childNodes.item(index);
+                    if (subview instanceof HTMLElement && subview.classList.contains("khrysalis-label")) {
+                        setViewText(subview, text);
+                    }
+                }
+            }
+        }
+        const p = view.parentElement;
+        if (p) {
+            for (const index of iterable_operator_1.range(0, p.childNodes.length)) {
+                const subview = p.childNodes.item(index);
+                if (subview instanceof HTMLElement && subview.classList.contains("khrysalis-label")) {
+                    setViewText(subview, text);
+                }
+            }
+        }
+    }
+    else {
+        view.innerHTML = escapeHtml(text);
+    }
 }
 exports.setViewText = setViewText;
 //# sourceMappingURL=ViewWithText.ext.actual.js.map

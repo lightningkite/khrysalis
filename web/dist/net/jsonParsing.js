@@ -4,6 +4,8 @@ const iterable_operator_1 = require("iterable-operator");
 const TimeAlone_actual_1 = require("../time/TimeAlone.actual");
 const DateAlone_actual_1 = require("../time/DateAlone.actual");
 function parse(item, asType) {
+    if (item === null || item === undefined)
+        return item;
     const mainType = asType[0];
     switch (mainType) {
         case null:

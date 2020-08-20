@@ -4,11 +4,12 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // File: views/Form.shared.kt
 // Package: com.lightningkite.khrysalis.views
 const Strings_shared_1 = require("./Strings.shared");
+const iterable_operator_1 = require("iterable-operator");
+const KotlinCollections_1 = require("../KotlinCollections");
 const Kotlin_1 = require("../Kotlin");
 const showDialog_shared_1 = require("./showDialog.shared");
 const kotlin_text_1 = require("../kotlin/kotlin.text");
 const StandardObservableProperty_shared_1 = require("../observables/StandardObservableProperty.shared");
-const KotlinCollections_1 = require("../KotlinCollections");
 //! Declares com.lightningkite.khrysalis.views.FormValidationError
 class FormValidationError {
     constructor(field, _string) {
@@ -58,7 +59,7 @@ class Form {
         return this.fieldFromProperty(new Strings_shared_1.ViewStringResource(name), property, validation);
     }
     check() {
-        return KotlinCollections_1.listFilterNotNull(this.fields.map((it) => {
+        return iterable_operator_1.toArray(KotlinCollections_1.iterableFilterNotNull(iterable_operator_1.map(this.fields, (it) => {
             const result = this.checkField(it);
             if (result !== null) {
                 return new FormValidationError(it, result);
@@ -66,7 +67,7 @@ class Form {
             else {
                 return null;
             }
-        }));
+        })));
     }
     runOrDialog(action) {
         const errors = this.check();

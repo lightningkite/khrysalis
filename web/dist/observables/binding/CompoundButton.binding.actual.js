@@ -6,8 +6,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const ObservableProperty_ext_shared_1 = require("../ObservableProperty.ext.shared");
 const DisposeCondition_actual_1 = require("../../rx/DisposeCondition.actual");
 const Language_1 = require("../../kotlin/Language");
+let runtimeGeneratedId = 0;
+function fixInput(i) {
+    const p = i.parentElement;
+    if (p instanceof HTMLLabelElement) {
+        let gen = `runtime_gen_${runtimeGeneratedId++}`;
+        i.id = gen;
+        p.htmlFor = gen;
+    }
+}
 //! Declares com.lightningkite.khrysalis.observables.binding.bindSelect>android.widget.CompoundButton
 function androidWidgetCompoundButtonBindSelect(this_, value, observable) {
+    fixInput(this_);
     DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (it) => {
         const shouldBeChecked = Language_1.safeEq(it, value);
         if (!(this_.checked === shouldBeChecked)) {
@@ -27,6 +37,7 @@ function androidWidgetCompoundButtonBindSelect(this_, value, observable) {
 exports.androidWidgetCompoundButtonBindSelect = androidWidgetCompoundButtonBindSelect;
 //! Declares com.lightningkite.khrysalis.observables.binding.bindSelectNullable>android.widget.CompoundButton
 function androidWidgetCompoundButtonBindSelectNullable(this_, value, observable) {
+    fixInput(this_);
     DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (it) => {
         const shouldBeChecked = Language_1.safeEq(it, value);
         if (!(this_.checked === shouldBeChecked)) {
@@ -46,6 +57,7 @@ function androidWidgetCompoundButtonBindSelectNullable(this_, value, observable)
 exports.androidWidgetCompoundButtonBindSelectNullable = androidWidgetCompoundButtonBindSelectNullable;
 //! Declares com.lightningkite.khrysalis.observables.binding.bindSelectInvert>android.widget.CompoundButton
 function androidWidgetCompoundButtonBindSelectInvert(this_, value, observable) {
+    fixInput(this_);
     let suppress = false;
     DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (it) => {
         if (!suppress) {
@@ -76,6 +88,7 @@ function androidWidgetCompoundButtonBindSelectInvert(this_, value, observable) {
 exports.androidWidgetCompoundButtonBindSelectInvert = androidWidgetCompoundButtonBindSelectInvert;
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>android.widget.CompoundButton
 function androidWidgetCompoundButtonBind(this_, observable) {
+    fixInput(this_);
     DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (it) => {
         if (!(it === this_.checked)) {
             this_.checked = it;

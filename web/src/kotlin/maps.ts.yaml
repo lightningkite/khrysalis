@@ -20,7 +20,7 @@
 
 - id: kotlin.collections.toMap
   type: call
-  template: "new Map<~T0~, ~T1~>(~0~)"
+  template: "new Map<~T0~, ~T1~>(~this~)"
 - id: kotlin.collections.mapOf
   type: call
   typeArgumentRequirements:

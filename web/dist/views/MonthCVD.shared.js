@@ -88,9 +88,9 @@ class MonthCVD extends CustomViewDelegate_shared_1.CustomViewDelegate {
     }
     set currentOffset(value) {
         this._currentOffset = value;
-        const temp175 = this.customView;
-        if (temp175 !== null) {
-            CustomView_actual_1.customViewInvalidate(temp175);
+        const temp181 = this.customView;
+        if (temp181 !== null) {
+            CustomView_actual_1.customViewInvalidate(temp181);
         }
         ;
     }
@@ -193,9 +193,9 @@ class MonthCVD extends CustomViewDelegate_shared_1.CustomViewDelegate {
     }
     onTouchDown(id, x, y, width, height) {
         const day = this.dayAtPixel(x, y, undefined);
-        const it_251 = day;
-        if (it_251 !== null) {
-            if (this.onTouchDownDate(it_251)) {
+        const it_257 = day;
+        if (it_257 !== null) {
+            if (this.onTouchDownDate(it_257)) {
                 return true;
             }
         }
@@ -221,9 +221,9 @@ class MonthCVD extends CustomViewDelegate_shared_1.CustomViewDelegate {
             }
         }
         else {
-            const it_263 = this.dayAtPixel(x, y, undefined);
-            if (it_263 !== null) {
-                return this.onTouchMoveDate(it_263);
+            const it_269 = this.dayAtPixel(x, y, undefined);
+            if (it_269 !== null) {
+                return this.onTouchMoveDate(it_269);
             }
         }
         return true;
@@ -234,9 +234,9 @@ class MonthCVD extends CustomViewDelegate_shared_1.CustomViewDelegate {
     onTouchUp(id, x, y, width, height) {
         if (this.draggingId === id) {
             if (this.isTap) {
-                const it_265 = this.dayAtPixel(x, y, undefined);
-                if (it_265 !== null) {
-                    this.onTap(it_265);
+                const it_271 = this.dayAtPixel(x, y, undefined);
+                if (it_271 !== null) {
+                    this.onTap(it_271);
                 }
             }
             else {
@@ -261,9 +261,9 @@ class MonthCVD extends CustomViewDelegate_shared_1.CustomViewDelegate {
             this.draggingId = this.DRAGGING_NONE;
         }
         else {
-            const it_282 = this.dayAtPixel(x, y, undefined);
-            if (it_282 !== null) {
-                return this.onTouchUpDate(it_282);
+            const it_288 = this.dayAtPixel(x, y, undefined);
+            if (it_288 !== null) {
+                return this.onTouchUpDate(it_288);
             }
         }
         return true;

@@ -3,6 +3,7 @@ import {TimeAlone} from "../time/TimeAlone.actual";
 import {DateAlone} from "../time/DateAlone.actual";
 
 export function parse(item: any, asType: Array<any>): any {
+    if(item === null || item === undefined) return item;
     const mainType = asType[0];
     switch (mainType) {
         case null:

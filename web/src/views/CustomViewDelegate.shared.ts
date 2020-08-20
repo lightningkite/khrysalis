@@ -33,6 +33,9 @@ export abstract class CustomViewDelegate {
     public onTouchUp(id: number, x: number, y: number, width: number, height: number): boolean { 
         return false; 
     }
+    public onWheel(delta: number): boolean { 
+        return false; 
+    }
     public sizeThatFitsWidth(width: number, height: number): number { 
         return width; 
     }
@@ -40,13 +43,13 @@ export abstract class CustomViewDelegate {
         return height; 
     }
     
-    public invalidate(): void { const temp149 = this.customView;
-        if(temp149 !== null) { 
-            customViewInvalidate(temp149)
+    public invalidate(): void { const temp155 = this.customView;
+        if(temp155 !== null) { 
+            customViewInvalidate(temp155)
     }; }
-    public postInvalidate(): void { const temp150 = this.customView;
-        if(temp150 !== null) { 
-            customViewInvalidate(temp150)
+    public postInvalidate(): void { const temp156 = this.customView;
+        if(temp156 !== null) { 
+            customViewInvalidate(temp156)
     }; }
     
     public readonly toDispose: Array<SubscriptionLike>;

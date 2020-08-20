@@ -18,13 +18,6 @@ public extension Image {
             return Single.just(self.bitmap)
         case let self as ImageRemoteUrl:
             return HttpClient.call(url: self.url).unsuccessfulAsError().map { UIImage(data: $0.data)! }
-        case let self as ImageResource:
-            let res: DrawableResource = self.resource
-            let layer = res(nil)
-            if let img = layer.toImage() {
-                return Single.just(img)
-            }
-            return Single.error(IllegalArgumentException("Could not convert resource to image."))
         default:
             return Single.error(IllegalArgumentException("Unknown image type \(self)"))
         }

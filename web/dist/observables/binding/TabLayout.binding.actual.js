@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const ObservableProperty_ext_shared_1 = require("../ObservableProperty.ext.shared");
 const DisposeCondition_actual_1 = require("../../rx/DisposeCondition.actual");
 const uuid_1 = require("uuid");
+const Language_1 = require("../../kotlin/Language");
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>com.google.android.material.tabs.TabLayout
 function comGoogleAndroidMaterialTabsTabLayoutBind(this_, tabs, selected, allowReselect = false, toString) {
     this_.innerHTML = "";
@@ -38,7 +39,7 @@ function comGoogleAndroidMaterialTabsTabLayoutBind(this_, tabs, selected, allowR
         index++;
     }
     DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(selected, undefined, undefined, (item) => {
-        const index = tabs.indexOf(item);
+        const index = tabs.findIndex((x) => Language_1.safeEq(item, x));
         tabList.children.item(index * 2 + 1).checked = true;
         const tab = tabList.children.item(index * 2);
         selectedIndicator.style.left = tab.offsetLeft.toString() + "px";

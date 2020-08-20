@@ -47,7 +47,7 @@ export function setViewVisibility(this_: HTMLElement, value: string) {
             break;
     }
     const p = this_.parentElement;
-    if(p && p.classList.contains("khrysalis-box")) {
+    if(p && (p.classList.contains("khrysalis-box") || p.classList.contains("khrc"))) {
         setViewVisibility(p, value);
     }
 }

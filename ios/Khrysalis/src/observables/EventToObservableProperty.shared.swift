@@ -16,12 +16,16 @@ public class EventToObservableProperty<T> : ObservableProperty<T> {
     }
     
     override public var onChange: Observable<T> {
-        get { return self.wrapped.map({ (it) -> T in 
-                    self.value = it
-                    return it
-        }) }
+        get { return Observable.concat(self.wrapped.map({ (it) -> T in 
+                        self.value = it
+                        return it
+                }).doOnError({ (it) -> Void in 
+                        print("  ❌ \("EventToObservableProperty"): \("Oh boy, you done screwed up.  The following stack trace is from an Observable that had an error that was converted to an ObservableProperty, which has a contract to never error.  The currently held value is '\(self.value)")")
+                        it.printStackTrace()
+        }).catchError { _ in Observable.never() }, Observable.never()) }
     }
 }
+
 public extension Observable {
     func asObservableProperty(defaultValue: Element) -> ObservableProperty<Element> {
         return (EventToObservableProperty(value: defaultValue as Element, wrapped: self.map({ (it) -> Element in it }) as Observable<Element>) as EventToObservableProperty<Element>)

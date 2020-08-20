@@ -19,9 +19,9 @@ export class SelectDateMonthCVD extends MonthCVD {
     public constructor() {
         super();
         this.selected = new StandardObservableProperty<(DateAlone | null)>(null, undefined);
-        const it_325 = this.selected.value;
-        if (it_325 !== null) { 
-            this.currentMonthObs.value = copyDateAloneMod(it_325, Date.prototype.setDate, 1);
+        const it_331 = this.selected.value;
+        if (it_331 !== null) { 
+            this.currentMonthObs.value = copyDateAloneMod(it_331, Date.prototype.setDate, 1);
         };
         ioReactivexDisposablesDisposableForever<SubscriptionLike>(this.selected.onChange.subscribe( (value: (DateAlone | null)): void => {
                     this?.invalidate();

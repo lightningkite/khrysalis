@@ -38,7 +38,7 @@ internal fun HtmlTranslator.commonAttributes() {
         }
     }
     attribute.handle("android:text") {
-        if(out.other["textAdded"] == true) return@handle
+        if (out.other["textAdded"] == true) return@handle
         out.other["textAdded"] = true
         val value = rule.value
         out.text.contentNodes.add(
@@ -47,6 +47,15 @@ internal fun HtmlTranslator.commonAttributes() {
                 else -> value.replace("\\n", "\n").replace("\\t", "\t")
             }
         )
+    }
+    attribute.handle("android:hint") {
+        if (out.other["hintAdded"] == true) return@handle
+        out.other["hintAdded"] = true
+        val value = rule.value
+        out.text.attributes["placeholder"] = when {
+            value.startsWith("@") -> strings[value.substringAfter('/')] ?: "missing text"
+            else -> value.replace("\\n", "\n").replace("\\t", "\t")
+        }
     }
     attribute.handle("android:textOn") {
         defer("android:text")
@@ -76,25 +85,31 @@ internal fun HtmlTranslator.commonAttributes() {
         out.text.style["text-transform"] = if (value == "true") "uppercase" else "none"
     }
 
-    fun PartialTranslator<ResultNode, Unit, XmlNode.Attribute, String>.Context.handleDrawable(direction: String, after: Boolean){
-        out.text.style["display"] = "flex"
-        out.text.style["flex-direction"] = direction
-        out.text.style["align-items"] = "center"
+    fun PartialTranslator<ResultNode, Unit, XmlNode.Attribute, String>.Context.handleDrawable(
+        direction: String,
+        after: Boolean
+    ) {
+        out.containerNode.style["display"] = "flex"
+        out.containerNode.style["flex-direction"] = direction
+        out.containerNode.style["align-items"] = "center"
         val image = ResultNode("img")
+        image.style["flex-grow"] = "0"
 
         val value = rule.value
         var imageUrl: File? = null
         when {
             value.startsWith("@") -> {
                 val path = value.substringAfter('/')
-                outFolder.resolve("src/images").walkTopDown().find { it.nameWithoutExtension == path.kabobCase() }?.let {
-                    imageUrl = it
-                    image.attributes["src"] = imageUrl!!.toRelativeString(outFolder.resolve("src"))
-                } ?: run {
+                outFolder.resolve("src/images").walkTopDown().find { it.nameWithoutExtension == path.kabobCase() }
+                    ?.let {
+                        imageUrl = it
+                        image.attributes["src"] = imageUrl!!.toRelativeString(outFolder.resolve("src"))
+                    } ?: run {
                     println("WARNING: Failed to find $path in ${outFolder}/src/images")
                 }
             }
-            else -> {}
+            else -> {
+            }
         }
 //        rule.parent.allAttributes["android:drawableTint"]?.let { tint ->
 //            image.style["mask-image"] = "url(" + image.attributes["src"] + ")"
@@ -110,9 +125,9 @@ internal fun HtmlTranslator.commonAttributes() {
 //        }
 
         rule.parent.allAttributes["android:drawablePadding"]?.asCssDimension()?.let { amount ->
-            val side = when(direction){
-                "column" -> if(after) "top" else "bottom"
-                "row" -> if(after) "left" else "right"
+            val side = when (direction) {
+                "column" -> if (after) "top" else "bottom"
+                "row" -> if (after) "left" else "right"
                 else -> "left"
             }
             image.style["margin-$side"] = amount
@@ -121,7 +136,7 @@ internal fun HtmlTranslator.commonAttributes() {
         val ruleName = rule.parent.name
         out.containerNode.postProcess.add {
             println("Adding image to $ruleName which is a ${name}")
-            if(after){
+            if (after) {
                 contentNodes.add(image)
             } else {
                 contentNodes.add(0, image)

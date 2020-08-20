@@ -20,11 +20,27 @@ class RectF {
  */
 //! Declares android.graphics.RectF
 class RectF {
-    constructor() {
-        this.right = 0.0;
-        this.bottom = 0.0;
-        this.top = 0.0;
-        this.left = 0.0;
+    constructor(left, top, right, bottom) {
+        if (left !== undefined) {
+            if (left instanceof RectF) {
+                this.right = left.right;
+                this.bottom = left.bottom;
+                this.top = left.top;
+                this.left = left.left;
+            }
+            else {
+                this.right = right;
+                this.bottom = bottom;
+                this.top = top;
+                this.left = left;
+            }
+        }
+        else {
+            this.right = 0;
+            this.bottom = 0;
+            this.top = 0;
+            this.left = 0;
+        }
     }
     set(left, top, right, bottom) {
         if (left instanceof RectF) {

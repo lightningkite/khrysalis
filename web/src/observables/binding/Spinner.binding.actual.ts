@@ -8,7 +8,7 @@ import {
 } from '../../rx/DisposeCondition.actual'
 import {ObservableProperty} from '../ObservableProperty.shared'
 import {StandardObservableProperty} from '../StandardObservableProperty.shared'
-import {IllegalStateException, tryCastClass} from 'Kotlin'
+import {IllegalStateException, safeEq, tryCastClass} from '../../kotlin/Language'
 import {MutableObservableProperty} from '../MutableObservableProperty.shared'
 import {triggerDetatchEvent} from "../../views/viewAttached";
 
@@ -40,11 +40,11 @@ export function spinnerBindAdvanced<T>(this_: HTMLSelectElement, options: Observ
         for(let i = 0; i < options.length; i++){
             observables[i].value = options[i]
         }
-        this_.selectedIndex = options.indexOf(selected.value);
+        this_.selectedIndex = options.findIndex((x)=>safeEq(selected.value, x));
     }), vRemoved(this_));
 
     until(subBy(selected, undefined, undefined, (sel)=>{
-        this_.selectedIndex = options.value.indexOf(sel);
+        this_.selectedIndex = options.value.findIndex((x)=>safeEq(sel, x));
     }), vRemoved(this_));
 
     this_.oninput = (ev)=> {
@@ -87,11 +87,11 @@ export function spinnerBind<T>(this_: HTMLSelectElement, options: ObservableProp
         for(let i = 0; i < options.length; i++){
             observables[i].value = options[i]
         }
-        this_.selectedIndex = options.indexOf(selected.value);
+        this_.selectedIndex = options.findIndex((x)=>safeEq(selected.value, x));
     }), vRemoved(this_));
 
     until(subBy(selected, undefined, undefined, (sel)=>{
-        this_.selectedIndex = options.value.indexOf(sel);
+        this_.selectedIndex = options.value.findIndex((x)=>safeEq(sel, x));
     }), vRemoved(this_));
 
     this_.oninput = (ev)=> {

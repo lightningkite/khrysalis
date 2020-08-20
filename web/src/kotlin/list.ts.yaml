@@ -81,9 +81,12 @@
   
 # List Operations
 - id: kotlin.collections.Collection.contains
-  actualReceiver: kotlin.collections.List
   type: call
-  template: (~this~.indexOf(~0~) != -1)
+  actualReceiver: kotlin.collections.List
+  template:
+    pattern: ~this~.some((x) => safeEq(~0~, x))
+    imports:
+      safeEq: khrysalis/dist/kotlin/Language
 - id: kotlin.collections.List.get
   type: call
   template: ~this~[~0~]

@@ -6,9 +6,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const rxjs_1 = require("rxjs");
 const WriteAddedObservableProperty_shared_1 = require("./WriteAddedObservableProperty.shared");
 const KotlinCollections_1 = require("../KotlinCollections");
+const Language_1 = require("../kotlin/Language");
 const TransformedObservableProperty_shared_1 = require("./TransformedObservableProperty.shared");
 const operators_1 = require("rxjs/operators");
-const Language_1 = require("../kotlin/Language");
 //! Declares com.lightningkite.khrysalis.observables.observable>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
 function getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this_) {
     return rxjs_1.concat(new rxjs_1.Observable((it) => {
@@ -59,9 +59,9 @@ function comLightningkiteKhrysalisObservablesObservablePropertyWhileActive(this_
             }
         }
         else {
-            const temp66 = current;
-            if (temp66 !== null) {
-                temp66.unsubscribe();
+            const temp72 = current;
+            if (temp72 !== null) {
+                temp72.unsubscribe();
             }
             ;
             current = null;

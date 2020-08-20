@@ -3,6 +3,7 @@ export declare class RectF {
     bottom: number;
     top: number;
     left: number;
+    constructor(left?: number | RectF, top?: number, right?: number, bottom?: number);
     set(left: number | RectF, top?: number, right?: number, bottom?: number): void;
     centerX(): number;
     centerY(): number;

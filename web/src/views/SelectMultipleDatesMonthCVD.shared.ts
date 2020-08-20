@@ -23,9 +23,9 @@ export class SelectMultipleDatesMonthCVD extends MonthCVD {
         this.dates = new StandardObservableProperty<Set<DateAlone>>(new EqualOverrideSet([]), undefined);
         this.selectedDayPaint = new Paint();
         this.selectedPaint = new Paint();
-        const it_344 = iterFirstOrNull(this.dates.value);
-        if (it_344 !== null) { 
-            this.currentMonthObs.value = copyDateAloneMod(it_344, Date.prototype.setDate, 1);
+        const it_350 = iterFirstOrNull(this.dates.value);
+        if (it_350 !== null) { 
+            this.currentMonthObs.value = copyDateAloneMod(it_350, Date.prototype.setDate, 1);
         };
         ioReactivexDisposablesDisposableForever<SubscriptionLike>(this.dates.onChange.subscribe( (value: Set<DateAlone>): void => {
                     this?.invalidate();

@@ -5,6 +5,7 @@ import {comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy} from 
 import {getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil} from '../../rx/DisposeCondition.actual'
 import {MutableObservableProperty} from '../MutableObservableProperty.shared'
 import {v4} from "uuid";
+import {safeEq} from "../../kotlin/Language";
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>com.google.android.material.tabs.TabLayout
 export function comGoogleAndroidMaterialTabsTabLayoutBind<T>(this_: HTMLDivElement, tabs: Array<T>, selected: MutableObservableProperty<T>, allowReselect: boolean = false, toString: (a: T)=>string): void {
@@ -44,7 +45,7 @@ export function comGoogleAndroidMaterialTabsTabLayoutBind<T>(this_: HTMLDivEleme
     }
 
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(selected, undefined, undefined, (item) => {
-        const index = tabs.indexOf(item);
+        const index = tabs.findIndex((x)=>safeEq(item, x));
         (tabList.children.item(index * 2 + 1) as HTMLInputElement).checked = true;
         const tab = tabList.children.item(index * 2) as HTMLElement;
         selectedIndicator.style.left = tab.offsetLeft.toString() + "px";

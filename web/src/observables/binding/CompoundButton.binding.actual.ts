@@ -6,8 +6,19 @@ import {getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil} from '
 import {MutableObservableProperty} from '../MutableObservableProperty.shared'
 import {safeEq} from "../../kotlin/Language";
 
+let runtimeGeneratedId: number = 0;
+function fixInput(i: HTMLInputElement){
+    const p = i.parentElement;
+    if(p instanceof HTMLLabelElement) {
+        let gen = `runtime_gen_${runtimeGeneratedId++}`;
+        i.id = gen;
+        p.htmlFor = gen;
+    }
+}
+
 //! Declares com.lightningkite.khrysalis.observables.binding.bindSelect>android.widget.CompoundButton
 export function androidWidgetCompoundButtonBindSelect<T>(this_: HTMLInputElement, value: T, observable: MutableObservableProperty<T>): void {
+    fixInput(this_);
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (it) => {
         const shouldBeChecked = safeEq(it,value);
 
@@ -28,6 +39,7 @@ export function androidWidgetCompoundButtonBindSelect<T>(this_: HTMLInputElement
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindSelectNullable>android.widget.CompoundButton
 export function androidWidgetCompoundButtonBindSelectNullable<T>(this_: HTMLInputElement, value: T, observable: MutableObservableProperty<(T | null)>): void {
+    fixInput(this_);
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (it) => {
         const shouldBeChecked = safeEq(it, value);
 
@@ -48,6 +60,7 @@ export function androidWidgetCompoundButtonBindSelectNullable<T>(this_: HTMLInpu
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindSelectInvert>android.widget.CompoundButton
 export function androidWidgetCompoundButtonBindSelectInvert<T>(this_: HTMLInputElement, value: T, observable: MutableObservableProperty<(T | null)>): void {
+    fixInput(this_);
     let suppress = false;
 
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (it) => {
@@ -79,6 +92,7 @@ export function androidWidgetCompoundButtonBindSelectInvert<T>(this_: HTMLInputE
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>android.widget.CompoundButton
 export function androidWidgetCompoundButtonBind(this_: HTMLInputElement, observable: MutableObservableProperty<boolean>): void {
+    fixInput(this_);
     ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (it) => {
         if (!(it === this_.checked)) {
             this_.checked = it;

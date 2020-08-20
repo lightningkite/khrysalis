@@ -3,6 +3,8 @@
 // Package: com.lightningkite.khrysalis.views
 
 
+import {range} from "iterable-operator";
+
 const entityMap: Record<string, string> = {
     '&': '&amp;',
     '<': '&lt;',
@@ -21,5 +23,29 @@ function escapeHtml (s: string) {
     });
 }
 export function setViewText(view: HTMLElement, text: string) {
-    view.innerHTML = escapeHtml(text)
+    if(view instanceof HTMLInputElement){
+        const labels = view.labels;
+        if(labels){
+            for(const index of range(0, labels.length)) {
+                const labelView = labels.item(index);
+                for(const index of range(0, labelView.childNodes.length)) {
+                    const subview = labelView.childNodes.item(index);
+                    if(subview instanceof HTMLElement && subview.classList.contains("khrysalis-label")) {
+                        setViewText(subview, text);
+                    }
+                }
+            }
+        }
+        const p = view.parentElement;
+        if(p){
+            for(const index of range(0, p.childNodes.length)) {
+                const subview = p.childNodes.item(index);
+                if(subview instanceof HTMLElement && subview.classList.contains("khrysalis-label")) {
+                    setViewText(subview, text);
+                }
+            }
+        }
+    } else {
+        view.innerHTML = escapeHtml(text)
+    }
 }

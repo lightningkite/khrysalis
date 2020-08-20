@@ -250,6 +250,7 @@ com.lightningkite.khrysalis.observables.binding.bindMulti
 com.lightningkite.khrysalis.observables.binding.bindRefresh
 com.lightningkite.khrysalis.observables.binding.khrysalisSpinnerRow
 com.lightningkite.khrysalis.observables.binding.bindStack
+com.lightningkite.khrysalis.observables.binding.bindStackWithAnimation
 com.lightningkite.khrysalis.observables.binding.bindStringRes
 com.lightningkite.khrysalis.observables.binding.bindText
 com.lightningkite.khrysalis.observables.binding.bindOnString
@@ -423,7 +424,10 @@ com.lightningkite.khrysalis.views.android.TimeButton
 com.lightningkite.khrysalis.views.android.timeSelectorDialog
 com.lightningkite.khrysalis.views.android.VerticalRecyclerView
 com.lightningkite.khrysalis.views.android.startIntent
+com.lightningkite.khrysalis.views.android.TransitionAnimation
+com.lightningkite.khrysalis.views.android.ViewTransition
 com.lightningkite.khrysalis.views.android.activity
+com.lightningkite.khrysalis.views.android.removeFromParent
 com.lightningkite.khrysalis.views.draw.drawTextCentered
 com.lightningkite.khrysalis.views.draw.drawText
 com.lightningkite.khrysalis.views.draw.tempRect
