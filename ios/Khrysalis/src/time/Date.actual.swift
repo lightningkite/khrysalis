@@ -230,8 +230,14 @@ public extension Date {
     
 
     //--- Date.minus(TimeInterval)
+    func minus(interval:TimeInterval)->Date{
+        return Date(time - interval.milliseconds)
+    }
 
     //--- Date.plus(TimeInterval)
+    func plus(interval:TimeInterval)->Date{
+        return Date(time + interval.milliseconds)
+    }
 }
 
 //--- DateAlone.set(Date)

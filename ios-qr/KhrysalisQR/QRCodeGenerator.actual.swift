@@ -31,7 +31,7 @@ import Khrysalis
 //}
 
 
-func generateBarCode(text:String, width:Int = 200, height:Int = 200) -> Single<Image>{
+public func generateBarCode(text:String, width:Int = 200, height:Int = 200) -> Single<Image>{
     
     let data = text.data(using: .isoLatin1)
     guard let filter = CIFilter(name: "CICode128BarcodeGenerator") else {

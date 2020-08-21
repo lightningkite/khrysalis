@@ -1,4 +1,4 @@
-KhrysalisMaps
-com.lightningkite.khrysalis.maps.bind
-com.lightningkite.khrysalis.maps.bindView
-com.lightningkite.khrysalis.maps.bindSelect
+KhrysalisQR
+com.lightningkite.khrysalis.qr.generateBarCode
+com.lightningkite.khrysalis.qr.BarcodeScannerView
+com.lightningkite.khrysalis.qr.bindBarcodeScan
