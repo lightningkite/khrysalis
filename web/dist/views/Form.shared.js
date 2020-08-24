@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // File: views/Form.shared.kt
 // Package: com.lightningkite.khrysalis.views
 const Strings_shared_1 = require("./Strings.shared");
-const iterable_operator_1 = require("iterable-operator");
+const lazyOp_1 = require("../kotlin/lazyOp");
 const KotlinCollections_1 = require("../KotlinCollections");
 const Kotlin_1 = require("../Kotlin");
 const showDialog_shared_1 = require("./showDialog.shared");
@@ -59,7 +59,7 @@ class Form {
         return this.fieldFromProperty(new Strings_shared_1.ViewStringResource(name), property, validation);
     }
     check() {
-        return iterable_operator_1.toArray(KotlinCollections_1.iterableFilterNotNull(iterable_operator_1.map(this.fields, (it) => {
+        return lazyOp_1.toArray(KotlinCollections_1.iterableFilterNotNull(lazyOp_1.map(this.fields, (it) => {
             const result = this.checkField(it);
             if (result !== null) {
                 return new FormValidationError(it, result);

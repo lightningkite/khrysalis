@@ -25,7 +25,7 @@ internal fun HtmlTranslator.display() {
     }
     element.handle("ImageView") {
         out.name = "img"
-        when(rule.allAttributes["android:scaleType"]){
+        when (rule.allAttributes["android:scaleType"]) {
             null -> {
                 out.style["object-fit"] = "contain"
             }
@@ -59,28 +59,34 @@ internal fun HtmlTranslator.display() {
     }
     element.handle("ImageButton") {
         out.name = "button"
+        out.classes.add("khrysalis-single-item-container")
         val imageChild = ResultNode("img")
-        element.translate("ImageView", rule, imageChild)
         out.contentNodes.add(imageChild)
     }
 
-    element.handle("com.google.android.material.tabs.TabLayout"){
+    element.handle("com.google.android.material.tabs.TabLayout") {
         out.name = "div"
         out.classes += "khrysalis-tabs"
     }
 
-    element.handle("com.google.android.gms.maps.MapView"){
+    element.handle("com.google.android.gms.maps.MapView") {
         out.name = "div"
     }
 
-    attribute.handle("android:src", condition = { out.name == "img" }) {
+    attribute.handle("android:src") {
+        val target = if (out.name == "img") out
+        else out.contentNodes
+            .asSequence()
+            .mapNotNull { it as? ResultNode }
+            .find { it.name == "img" }
+            ?: return@handle
         val value = rule.value
         when {
             value.startsWith("@") -> {
                 val path = value.substringAfter('/')
                 outFolder.resolve("src/images").walkTopDown().find { it.nameWithoutExtension == path.kabobCase() }
                     ?.let {
-                        out.attributes["src"] = it.toRelativeString(outFolder.resolve("src"))
+                        target.attributes["src"] = it.toRelativeString(outFolder.resolve("src"))
                     } ?: run {
                     println("WARNING: Failed to find $path in ${this@display.outFolder}/src/images")
                 }

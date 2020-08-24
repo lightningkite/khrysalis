@@ -60,9 +60,9 @@ fun convertPngs(
             matching.minBy { (it.key - 2).absoluteValue }?.let { (key, file) ->
                 val destFile = webDrawablesFolder.resolve(file.nameWithoutExtension.kabobCase() + ".png")
                 file.copyTo(destFile)
-                resources.drawables[pngName] = WebResources.Drawable(cssName, "images/${destFile.name}")
+                resources.drawables[pngName] = WebResources.Drawable(cssName, "./images/${destFile.name}")
                 appendln(".drawable-${cssName} {")
-                appendln("background-image: url(\"images/${destFile.name}\");")
+                appendln("background-image: url(\"./images/${destFile.name}\");")
                 appendln("}")
             }
         })

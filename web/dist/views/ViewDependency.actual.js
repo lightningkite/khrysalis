@@ -197,6 +197,11 @@ function comLightningkiteKhrysalisAndroidActivityAccessShare(this_, shareTitle, 
     document.body.appendChild(topLevel);
 }
 exports.comLightningkiteKhrysalisAndroidActivityAccessShare = comLightningkiteKhrysalisAndroidActivityAccessShare;
+//! Declares com.lightningkite.khrysalis.views.getColor
+function comLightningkiteKhrysalisAndroidActivityAccessGetColor(this_, variableName) {
+    return this_.getComputedStyle(this_.document.body).getPropertyValue(variableName);
+}
+exports.comLightningkiteKhrysalisAndroidActivityAccessGetColor = comLightningkiteKhrysalisAndroidActivityAccessGetColor;
 //! Declares com.lightningkite.khrysalis.views.openMap>com.lightningkite.khrysalis.android.ActivityAccess
 function comLightningkiteKhrysalisAndroidActivityAccessOpenMap(this_, coordinate, label = null, zoom = null) {
     let url = label ?

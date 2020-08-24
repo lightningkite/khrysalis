@@ -5,6 +5,7 @@ import { skip as rxSkip, switchMap as rxSwitchMap } from 'rxjs/operators'
 import { ObservableProperty } from './ObservableProperty.shared'
 import { Observable, ObservableInput } from 'rxjs'
 import { getComLightningkiteKhrysalisObservablesObservablePropertyObservable } from './ObservableProperty.ext.shared'
+import { ConstantObservableProperty } from './ConstantObservableProperty.shared'
 import { MutableObservableProperty } from './MutableObservableProperty.shared'
 
 //! Declares com.lightningkite.khrysalis.observables.FlatMappedObservableProperty
@@ -37,6 +38,20 @@ export function comLightningkiteKhrysalisObservablesObservablePropertySwitchMap<
 //! Declares com.lightningkite.khrysalis.observables.flatMap>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
 export function comLightningkiteKhrysalisObservablesObservablePropertyFlatMap<T, B>(this_: ObservableProperty<T>, transformation:  ((a: T) => ObservableProperty<B>)): FlatMappedObservableProperty<T, B> {
     return new FlatMappedObservableProperty<T, B>(this_, transformation);
+}
+
+//! Declares com.lightningkite.khrysalis.observables.switchMapNotNull>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
+export function comLightningkiteKhrysalisObservablesObservablePropertySwitchMapNotNull<T extends any, B extends any>(this_: ObservableProperty<(T | null)>, transformation:  ((a: T) => ObservableProperty<(B | null)>)): FlatMappedObservableProperty<(T | null), (B | null)> {
+    return new FlatMappedObservableProperty<(T | null), (B | null)>(this_, (item: (T | null)): ObservableProperty<(B | null)> => ((): ObservableProperty<(B | null)> => {
+                if (item !== null) { return transformation(item!) } else { return new ConstantObservableProperty<(B | null)>(null) }
+    })());
+}
+
+//! Declares com.lightningkite.khrysalis.observables.flatMapNotNull>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
+export function comLightningkiteKhrysalisObservablesObservablePropertyFlatMapNotNull<T extends any, B extends any>(this_: ObservableProperty<(T | null)>, transformation:  ((a: T) => ObservableProperty<(B | null)>)): FlatMappedObservableProperty<(T | null), (B | null)> {
+    return new FlatMappedObservableProperty<(T | null), (B | null)>(this_, (item: (T | null)): ObservableProperty<(B | null)> => ((): ObservableProperty<(B | null)> => {
+                if (item !== null) { return transformation(item!) } else { return new ConstantObservableProperty<(B | null)>(null) }
+    })());
 }
 
 //! Declares com.lightningkite.khrysalis.observables.MutableFlatMappedObservableProperty

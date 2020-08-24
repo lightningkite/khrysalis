@@ -31,7 +31,7 @@ class DisplayMetrics {
      *
      */
     get density() {
-        return 0.6;
+        return 1;
     }
     /**
      * A scaling factor for fonts displayed on the display.  This is the same

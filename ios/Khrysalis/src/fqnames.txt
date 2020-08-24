@@ -199,6 +199,8 @@ com.lightningkite.khrysalis.observables.asObservablePropertyDefaultNull
 com.lightningkite.khrysalis.observables.FlatMappedObservableProperty
 com.lightningkite.khrysalis.observables.switchMap
 com.lightningkite.khrysalis.observables.flatMap
+com.lightningkite.khrysalis.observables.switchMapNotNull
+com.lightningkite.khrysalis.observables.flatMapNotNull
 com.lightningkite.khrysalis.observables.MutableFlatMappedObservableProperty
 com.lightningkite.khrysalis.observables.switchMapMutable
 com.lightningkite.khrysalis.observables.flatMapMutable

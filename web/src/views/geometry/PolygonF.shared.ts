@@ -3,8 +3,7 @@
 // Package: com.lightningkite.khrysalis.views.geometry
 import { iterCount } from '../../kotlin/Collections'
 import { PointF } from './PointF.actual'
-import { hashAnything, safeEq } from '../../Kotlin'
-import { range as iterRange } from 'iterable-operator'
+import { NumberRange, hashAnything, safeEq } from '../../Kotlin'
 import { Geometry } from './Geometry.shared'
 
 //! Declares com.lightningkite.khrysalis.views.geometry.PolygonF
@@ -23,7 +22,7 @@ export class PolygonF {
     public copy(points: Array<PointF> = this.points): PolygonF { return new PolygonF(points); }
     
     public contains(point: PointF): boolean {
-        const intersections = iterCount(iterRange(0, this.points.length-1), (it: number): boolean => {
+        const intersections = iterCount(new NumberRange(0, this.points.length-1), (it: number): boolean => {
                 const a = this.points[it];
                 
                 const b = this.points[(it + 1) % this.points.length];

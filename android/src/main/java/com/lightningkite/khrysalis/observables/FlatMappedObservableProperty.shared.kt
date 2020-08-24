@@ -26,6 +26,20 @@ fun <T, B> ObservableProperty<T>.flatMap(transformation: @Escaping() (T) -> Obse
     return FlatMappedObservableProperty<T, B>(this, transformation)
 }
 
+fun <T: Any, B: Any> ObservableProperty<T?>.switchMapNotNull(transformation: @Escaping() (T) -> ObservableProperty<B?>): FlatMappedObservableProperty<T?, B?> {
+    return FlatMappedObservableProperty<T?, B?>(this) { item ->
+        if(item != null) return@FlatMappedObservableProperty transformation(item)
+        else return@FlatMappedObservableProperty ConstantObservableProperty<B?>(null)
+    }
+}
+
+fun <T: Any, B: Any> ObservableProperty<T?>.flatMapNotNull(transformation: @Escaping() (T) -> ObservableProperty<B?>): FlatMappedObservableProperty<T?, B?> {
+    return FlatMappedObservableProperty<T?, B?>(this) { item ->
+        if(item != null) return@FlatMappedObservableProperty transformation(item)
+        else return@FlatMappedObservableProperty ConstantObservableProperty<B?>(null)
+    }
+}
+
 class MutableFlatMappedObservableProperty<A, B>(
     val basedOn: ObservableProperty<A>,
     val transformation: @Escaping() (A) -> MutableObservableProperty<B>

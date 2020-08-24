@@ -88,17 +88,31 @@ fun convertVectorDrawable(
                     svgOut.appendln("<path d='${subnode.directAttributes["android:pathData"]}' fill='url(#grad${index})'/>")
                 } ?: run {
 
-                svgOut.appendln(
-                    "<path d='${subnode.directAttributes["android:pathData"]}' fill='${subnode.attributeAsCssColor(
-                        "android:fillColor"
-                    )}'/>"
-                )
+                svgOut.appendln("<path d='${subnode.directAttributes["android:pathData"]}' ")
+                subnode.attributeAsCssColor(
+                    "android:fillColor"
+                )?.let {
+                    svgOut.appendln("fill='$it'")
+                } ?: run {
+                    svgOut.appendln("fill='none'")
+                }
+                subnode.attributeAsCssColor(
+                    "android:strokeColor"
+                )?.let {
+                    svgOut.appendln("stroke='$it'")
+                }
+                subnode.attributeAsDouble(
+                    "android:strokeWidth"
+                )?.let {
+                    svgOut.appendln("stroke-width='$it'")
+                }
+                svgOut.appendln("/>")
             }
         }
         svgOut.appendln("</svg>")
     }
 
     out.appendln("$selectors {")
-    out.appendln("background-image: url(\"images/${file.name}\")")
+    out.appendln("background-image: url(\"./images/${file.name}\")")
     out.appendln("}")
 }

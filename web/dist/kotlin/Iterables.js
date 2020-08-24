@@ -2,10 +2,8 @@
 // Kotlin iterables
 Object.defineProperty(exports, "__esModule", { value: true });
 const Language_1 = require("./Language");
-const iterable_operator_1 = require("iterable-operator");
+const lazyOp_1 = require("./lazyOp");
 const Collections_1 = require("./Collections");
-function test() {
-}
 //! Declares kotlin.collections.firstOrNull>kotlin.collections.Iterable
 function kotlinCollectionsIterableFirstOrNull(iter) {
     const item = iter[Symbol.iterator]().next();
@@ -82,13 +80,13 @@ exports.kotlinCollectionsIterableJoinToString = kotlinCollectionsIterableJoinToS
 //! Declares kotlin.collections.distinctBy
 function kotlinCollectionsIterableDistinctBy(iter, selector) {
     const seen = new Collections_1.EqualOverrideSet();
-    return new Array(...iterable_operator_1.filter(iter, (e) => Collections_1.setAddCausedChange(seen, selector(e))));
+    return new Array(...lazyOp_1.filter(iter, (e) => Collections_1.setAddCausedChange(seen, selector(e))));
 }
 exports.kotlinCollectionsIterableDistinctBy = kotlinCollectionsIterableDistinctBy;
 //! Declares kotlin.sequences.distinctBy
 function kotlinSequencesSequenceDistinctBy(iter, selector) {
     const seen = new Collections_1.EqualOverrideSet();
-    return iterable_operator_1.filter(iter, (e) => Collections_1.setAddCausedChange(seen, selector(e)));
+    return lazyOp_1.filter(iter, (e) => Collections_1.setAddCausedChange(seen, selector(e)));
 }
 exports.kotlinSequencesSequenceDistinctBy = kotlinSequencesSequenceDistinctBy;
 //# sourceMappingURL=Iterables.js.map

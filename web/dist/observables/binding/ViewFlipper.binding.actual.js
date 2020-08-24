@@ -30,8 +30,8 @@ function androidWidgetViewFlipperBindLoading(this_, loading, color = null) {
         // hiddenView.style.removeProperty("visibility");
         const viewOut = hiddenView;
         const viewIn = currentView;
-        viewOut.style.visibility = "hidden";
-        viewIn.style.visibility = "visible";
+        viewOut.style.setProperty("visibility", "hidden", "important");
+        viewIn.style.removeProperty("visibility");
         // //animate out
         // const animationOut = `${animation}-out`;
         // let animOutHandler: (ev: AnimationEvent) => void;
@@ -64,7 +64,7 @@ function androidWidgetViewFlipperBindLoading(this_, loading, color = null) {
         currentView = mainChild;
         hiddenView = loadingChild;
     }
-    hiddenView.style.visibility = "hidden";
+    hiddenView.style.setProperty("visibility", "hidden", "important");
 }
 exports.androidWidgetViewFlipperBindLoading = androidWidgetViewFlipperBindLoading;
 //# sourceMappingURL=ViewFlipper.binding.actual.js.map

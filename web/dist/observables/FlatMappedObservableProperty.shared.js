@@ -6,6 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const operators_1 = require("rxjs/operators");
 const ObservableProperty_shared_1 = require("./ObservableProperty.shared");
 const ObservableProperty_ext_shared_1 = require("./ObservableProperty.ext.shared");
+const ConstantObservableProperty_shared_1 = require("./ConstantObservableProperty.shared");
 const MutableObservableProperty_shared_1 = require("./MutableObservableProperty.shared");
 //! Declares com.lightningkite.khrysalis.observables.FlatMappedObservableProperty
 class FlatMappedObservableProperty extends ObservableProperty_shared_1.ObservableProperty {
@@ -33,6 +34,30 @@ function comLightningkiteKhrysalisObservablesObservablePropertyFlatMap(this_, tr
     return new FlatMappedObservableProperty(this_, transformation);
 }
 exports.comLightningkiteKhrysalisObservablesObservablePropertyFlatMap = comLightningkiteKhrysalisObservablesObservablePropertyFlatMap;
+//! Declares com.lightningkite.khrysalis.observables.switchMapNotNull>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
+function comLightningkiteKhrysalisObservablesObservablePropertySwitchMapNotNull(this_, transformation) {
+    return new FlatMappedObservableProperty(this_, (item) => (() => {
+        if (item !== null) {
+            return transformation(item);
+        }
+        else {
+            return new ConstantObservableProperty_shared_1.ConstantObservableProperty(null);
+        }
+    })());
+}
+exports.comLightningkiteKhrysalisObservablesObservablePropertySwitchMapNotNull = comLightningkiteKhrysalisObservablesObservablePropertySwitchMapNotNull;
+//! Declares com.lightningkite.khrysalis.observables.flatMapNotNull>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
+function comLightningkiteKhrysalisObservablesObservablePropertyFlatMapNotNull(this_, transformation) {
+    return new FlatMappedObservableProperty(this_, (item) => (() => {
+        if (item !== null) {
+            return transformation(item);
+        }
+        else {
+            return new ConstantObservableProperty_shared_1.ConstantObservableProperty(null);
+        }
+    })());
+}
+exports.comLightningkiteKhrysalisObservablesObservablePropertyFlatMapNotNull = comLightningkiteKhrysalisObservablesObservablePropertyFlatMapNotNull;
 //! Declares com.lightningkite.khrysalis.observables.MutableFlatMappedObservableProperty
 class MutableFlatMappedObservableProperty extends MutableObservableProperty_shared_1.MutableObservableProperty {
     constructor(basedOn, transformation) {

@@ -37,6 +37,22 @@ public extension ObservableProperty {
     }
 }
 
+public extension ObservableProperty where T: Any {
+    func switchMapNotNull<B : Any>(transformation: @escaping  (T) -> ObservableProperty<B?>) -> FlatMappedObservableProperty<T?, B?> {
+        return (FlatMappedObservableProperty(basedOn: self as ObservableProperty<T?>, transformation: { (item) -> ObservableProperty<B?> in run { () -> ObservableProperty<B?> in 
+                        if let item = item { return transformation(item) } else { return (ConstantObservableProperty(underlyingValue: nil as B?) as ConstantObservableProperty<B?>) }
+        } } as (T?) -> ObservableProperty<B?>) as FlatMappedObservableProperty<T?, B?>)
+    }
+}
+
+public extension ObservableProperty where T: Any {
+    func flatMapNotNull<B : Any>(transformation: @escaping  (T) -> ObservableProperty<B?>) -> FlatMappedObservableProperty<T?, B?> {
+        return (FlatMappedObservableProperty(basedOn: self as ObservableProperty<T?>, transformation: { (item) -> ObservableProperty<B?> in run { () -> ObservableProperty<B?> in 
+                        if let item = item { return transformation(item) } else { return (ConstantObservableProperty(underlyingValue: nil as B?) as ConstantObservableProperty<B?>) }
+        } } as (T?) -> ObservableProperty<B?>) as FlatMappedObservableProperty<T?, B?>)
+    }
+}
+
 public class MutableFlatMappedObservableProperty<A, B> : MutableObservableProperty<B> {
     public var basedOn: ObservableProperty<A>
     public var transformation:  (A) -> MutableObservableProperty<B>

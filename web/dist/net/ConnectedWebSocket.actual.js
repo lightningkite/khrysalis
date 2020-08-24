@@ -25,12 +25,24 @@ class ConnectedWebSocket {
             parent.ownConnection.next(this);
         });
         newSocket.addEventListener("error", (event) => {
-            parent.ownConnection.error(event);
-            parent.read.error(event);
+            if (!closed) {
+                this.closed = true;
+                parent.ownConnection.error(event);
+                parent.read.error(event);
+            }
         });
         newSocket.addEventListener("close", (event) => {
-            parent.ownConnection.complete();
-            parent.read.complete();
+            if (!closed) {
+                this.closed = true;
+                if (event.code == 1000) {
+                    parent.ownConnection.complete();
+                    parent.read.complete();
+                }
+                else {
+                    parent.ownConnection.error(event);
+                    parent.read.error(event);
+                }
+            }
         });
         newSocket.addEventListener("message", (event) => {
             const d = event.data;
@@ -54,8 +66,12 @@ class ConnectedWebSocket {
     }
     error(e) {
         var _a;
-        (_a = this.underlyingSocket) === null || _a === void 0 ? void 0 : _a.close(1011, e.message);
-        this.closed = true;
+        if (!closed) {
+            this.ownConnection.error(e);
+            this.read.error(e);
+            (_a = this.underlyingSocket) === null || _a === void 0 ? void 0 : _a.close(3000, e.message);
+            this.closed = true;
+        }
     }
     unsubscribe() {
         this.complete();

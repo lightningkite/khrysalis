@@ -1,5 +1,5 @@
 import {Exception, hashAnything, safeEq} from "./Language";
-import {filter, flatten, map} from "iterable-operator";
+import {filter, flatten, map} from "./lazyOp";
 import {kotlinCollectionsIterableJoinToString} from "./Iterables";
 import {safeCompare} from "./Comparable";
 
@@ -391,7 +391,7 @@ export function iterMaxBy<T, V>(iter: Iterable<T>, selector: (t: T)=>V): T | nul
     let best: V | null = null;
     for(const item of iter){
         const sel = selector(item);
-        if(safeCompare(sel, best) > 0) {
+        if(best === null || safeCompare(sel, best) > 0) {
             result = item;
             best = sel;
         }
@@ -404,7 +404,7 @@ export function iterMinBy<T, V>(iter: Iterable<T>, selector: (t: T)=>V): T | nul
     let best: V | null = null;
     for(const item of iter){
         const sel = selector(item);
-        if(safeCompare(sel, best) < 0) {
+        if(best === null || safeCompare(sel, best) < 0) {
             result = item;
             best = sel;
         }

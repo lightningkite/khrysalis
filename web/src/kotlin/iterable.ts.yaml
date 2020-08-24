@@ -19,29 +19,29 @@
   template:
     pattern: iterToArray(~this~).reverse()
     imports:
-      iterToArray: toArray from iterable-operator
+      iterToArray: toArray from khrysalis/dist/kotlin/lazyOp
 - id: kotlin.collections.drop
   type: call
   template:
     pattern: iterToArray(iterDrop(~this~, ~0~))
     imports:
-      iterToArray: toArray from iterable-operator
-      iterFilter: filter from iterable-operator
-      iterDrop: drop from iterable-operator
+      iterToArray: toArray from khrysalis/dist/kotlin/lazyOp
+      iterFilter: filter from khrysalis/dist/kotlin/lazyOp
+      iterDrop: drop from khrysalis/dist/kotlin/lazyOp
 - id: kotlin.collections.dropLast
   type: call
   template:
     pattern: iterToArray(iterDrop(~this~, ~0~))
     imports:
-      iterToArray: toArray from iterable-operator
-      iterDropRight: dropRight from iterable-operator
+      iterToArray: toArray from khrysalis/dist/kotlin/lazyOp
+      iterDropRight: dropRight from khrysalis/dist/kotlin/lazyOp
 - id: kotlin.collections.dropWhile
   type: call
   template:
     pattern: iterToArray(iterDropUntil(~this~, (x) => { !~0~(x) }))
     imports:
-      iterToArray: toArray from iterable-operator
-      iterDropUntil: dropUntil from iterable-operator
+      iterToArray: toArray from khrysalis/dist/kotlin/lazyOp
+      iterDropUntil: dropUntil from khrysalis/dist/kotlin/lazyOp
 #- id: kotlin.collections.dropLastWhile
 
 - id: kotlin.collections.take
@@ -49,22 +49,22 @@
   template:
     pattern: iterToArray(iterTake(~this~, ~0~))
     imports:
-      iterToArray: toArray from iterable-operator
-      iterTake: take from iterable-operator
+      iterToArray: toArray from khrysalis/dist/kotlin/lazyOp
+      iterTake: take from khrysalis/dist/kotlin/lazyOp
 - id: kotlin.collections.takeLast
   type: call
   template:
     pattern: iterToArray(iterTake(~this~, ~0~))
     imports:
-      iterToArray: toArray from iterable-operator
-      iterTakeRight: takeRight from iterable-operator
+      iterToArray: toArray from khrysalis/dist/kotlin/lazyOp
+      iterTakeRight: takeRight from khrysalis/dist/kotlin/lazyOp
 - id: kotlin.collections.takeWhile
   type: call
   template:
     pattern: iterToArray(iterTakeUntil(~this~, (x) => { !~0~(x) }))
     imports:
-      iterToArray: toArray from iterable-operator
-      iterTakeUntil: takeUntil from iterable-operator
+      iterToArray: toArray from khrysalis/dist/kotlin/lazyOp
+      iterTakeUntil: takeUntil from khrysalis/dist/kotlin/lazyOp
 #- id: kotlin.collections.takeLastWhile
 
 - id: kotlin.collections.filter
@@ -72,22 +72,22 @@
   template:
     pattern: iterToArray(iterFilter(~this~, ~0~))
     imports:
-      iterToArray: toArray from iterable-operator
-      iterFilter: filter from iterable-operator
+      iterToArray: toArray from khrysalis/dist/kotlin/lazyOp
+      iterFilter: filter from khrysalis/dist/kotlin/lazyOp
 - id: kotlin.collections.map
   type: call
   template:
     pattern: iterToArray(iterMap(~this~, ~0~))
     imports:
-      iterToArray: toArray from iterable-operator
-      iterMap: map from iterable-operator
+      iterToArray: toArray from khrysalis/dist/kotlin/lazyOp
+      iterMap: map from khrysalis/dist/kotlin/lazyOp
 - id: kotlin.collections.mapIndexed
   type: call
   template:
     pattern: iterToArray(iterMap(~this~, (_v, _i) => { ~L0~ }))
     imports:
-      iterToArray: toArray from iterable-operator
-      iterMap: map from iterable-operator
+      iterToArray: toArray from khrysalis/dist/kotlin/lazyOp
+      iterMap: map from khrysalis/dist/kotlin/lazyOp
     lambdaTransforms:
       0: ["_i", "_v"]
 - id: kotlin.collections.flatMap
@@ -95,46 +95,46 @@
   template:
     pattern: iterToArray(iterFlatten(iterMap(~this~, ~0~)))
     imports:
-      iterToArray: toArray from iterable-operator
-      iterMap: map from iterable-operator
-      iterFlatten: flatten from iterable-operator
+      iterToArray: toArray from khrysalis/dist/kotlin/lazyOp
+      iterMap: map from khrysalis/dist/kotlin/lazyOp
+      iterFlatten: flatten from khrysalis/dist/kotlin/lazyOp
 
 - id: kotlin.collections.filterIndexed
   type: call
   template:
     pattern: iterToArray(iterFilter(~this~, ~0~))
     imports:
-      iterToArray: toArray from iterable-operator
-      iterFilter: filter from iterable-operator
+      iterToArray: toArray from khrysalis/dist/kotlin/lazyOp
+      iterFilter: filter from khrysalis/dist/kotlin/lazyOp
 - id: kotlin.collections.filterNot
   type: call
   template:
     pattern: iterToArray(iterFilter(~this~, (x)=>{ !~0~(x) ))
     imports:
-      iterToArray: toArray from iterable-operator
-      iterFilter: filter from iterable-operator
+      iterToArray: toArray from khrysalis/dist/kotlin/lazyOp
+      iterFilter: filter from khrysalis/dist/kotlin/lazyOp
 - id: kotlin.collections.filterNotNull
   type: call
   template:
     pattern: iterToArray(iterableFilterNotNull(~this~))
     imports:
-      iterToArray: toArray from iterable-operator
+      iterToArray: toArray from khrysalis/dist/kotlin/lazyOp
       iterableFilterNotNull: khrysalis/dist/KotlinCollections
 - id: kotlin.collections.mapNotNull
   type: call
   template:
     pattern: iterToArray(iterableFilterNotNull(iterMap(~this~, ~0~)))
     imports:
-      iterToArray: toArray from iterable-operator
-      iterMap: map from iterable-operator
+      iterToArray: toArray from khrysalis/dist/kotlin/lazyOp
+      iterMap: map from khrysalis/dist/kotlin/lazyOp
       iterableFilterNotNull: khrysalis/dist/KotlinCollections
 - id: kotlin.collections.mapIndexedNotNull
   type: call
   template:
     pattern: iterToArray(iterableFilterNotNull(iterMap(~this~, (_v, _i) => { ~L0~ })))
     imports:
-      iterToArray: toArray from iterable-operator
-      iterMap: map from iterable-operator
+      iterToArray: toArray from khrysalis/dist/kotlin/lazyOp
+      iterMap: map from khrysalis/dist/kotlin/lazyOp
       iterableFilterNotNull: khrysalis/dist/KotlinCollections
     lambdaTransforms:
       0: ["_i", "_v"]
@@ -143,35 +143,35 @@
   template:
     pattern: iterToArray(iterChunk(~this~, ~0~))
     imports:
-      iterToArray: toArray from iterable-operator
-      iterChunk: chunk from iterable-operator
+      iterToArray: toArray from khrysalis/dist/kotlin/lazyOp
+      iterChunk: chunk from khrysalis/dist/kotlin/lazyOp
 
 - id: kotlin.collections.sorted
   type: call
   template:
     pattern: iterToArray(~this~).sort()
     imports:
-      iterToArray: toArray from iterable-operator
+      iterToArray: toArray from khrysalis/dist/kotlin/lazyOp
 - id: kotlin.collections.sortedBy
   type: call
   template:
     pattern: iterToArray(~this~).sort((a, b) => safeCompare(~0~(a), ~0~(b)))
     imports:
-      iterToArray: toArray from iterable-operator
+      iterToArray: toArray from khrysalis/dist/kotlin/lazyOp
       safeCompare: khrysalis/dist/kotlin/Comparable
 - id: kotlin.collections.sortedByDescending
   type: call
   template:
     pattern: iterToArray(~this~).sort((a, b) => -safeCompare(~0~(a), ~0~(b)))
     imports:
-      iterToArray: toArray from iterable-operator
+      iterToArray: toArray from khrysalis/dist/kotlin/lazyOp
       safeCompare: khrysalis/dist/kotlin/Comparable
 - id: kotlin.collections.sortedWith
   type: call
   template:
     pattern: iterToArray(~this~).sort(~0~)
     imports:
-      iterToArray: toArray from iterable-operator
+      iterToArray: toArray from khrysalis/dist/kotlin/lazyOp
       safeCompare: khrysalis/dist/kotlin/Comparable
 
 - id: kotlin.collections.associate
@@ -179,27 +179,27 @@
   template:
     pattern: new Map(iterMap(~this~, ~0~))
     imports:
-      iterToArray: toArray from iterable-operator
+      iterToArray: toArray from khrysalis/dist/kotlin/lazyOp
 - id: kotlin.collections.associateBy
   type: call
   template:
     pattern: new Map(iterMap(~this~, (_x)=>{ [~0~(_x), _x] }))
     imports:
-      iterToArray: toArray from iterable-operator
+      iterToArray: toArray from khrysalis/dist/kotlin/lazyOp
 
 - id: kotlin.collections.toList
   type: call
   template:
     pattern: iterToArray(~this~)
     imports:
-      iterToArray: toArray from iterable-operator
+      iterToArray: toArray from khrysalis/dist/kotlin/lazyOp
 
 - id: kotlin.collections.toMutableList
   type: call
   template:
     pattern: iterToArray(~this~)
     imports:
-      iterToArray: toArray from iterable-operator
+      iterToArray: toArray from khrysalis/dist/kotlin/lazyOp
 
 - id: kotlin.collections.distinct
   type: call
@@ -264,28 +264,28 @@
   template:
     pattern: iterFind(~this~, ~0~)
     imports:
-      iterFind: find from iterable-operator
+      iterFind: find from khrysalis/dist/kotlin/lazyOp
 
 - id: kotlin.collections.any
   type: call
   template:
     pattern: iterSome(~this~, ~0~)
     imports:
-      iterSome: some from iterable-operator
+      iterSome: some from khrysalis/dist/kotlin/lazyOp
 
 - id: kotlin.collections.all
   type: call
   template:
     pattern: iterEvery(~this~, ~0~)
     imports:
-      iterEvery: every from iterable-operator
+      iterEvery: every from khrysalis/dist/kotlin/lazyOp
 
 - id: kotlin.collections.none
   type: call
   template:
     pattern: (!iterSome(~this~, ~0~))
     imports:
-      iterSome: some from iterable-operator
+      iterSome: some from khrysalis/dist/kotlin/lazyOp
 
 - id: kotlin.collections.forEach
   type: call
@@ -299,7 +299,7 @@
   template:
     pattern: iterFirst(~this~)
     imports:
-      iterFirst: first from iterable-operator
+      iterFirst: first from khrysalis/dist/kotlin/lazyOp
 
 - id: kotlin.collections.firstOrNull
   type: call
@@ -313,7 +313,7 @@
   template:
     pattern: iterLast(~this~)
     imports:
-      iterLast: last from iterable-operator
+      iterLast: last from khrysalis/dist/kotlin/lazyOp
 
 - id: kotlin.collections.lastOrNull
   type: call

@@ -32,7 +32,7 @@ export class DisplayMetrics {
      *
      */
     public get density(): number {
-        return 0.6;
+        return 1;
     }
 
     /**

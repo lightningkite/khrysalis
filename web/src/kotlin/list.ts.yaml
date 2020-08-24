@@ -183,9 +183,9 @@
   type: get
   actualReceiver: kotlin.collections.List
   template:
-    pattern: iterRange(0, ~this~.length-1)
+    pattern: new NumberRange(0, ~this~.length-1)
     imports:
-      iterRange: range from iterable-operator
+      NumberRange: khrysalis/dist/Kotlin
 - id: kotlin.collections.indexOfFirst
   type: call
   actualReceiver: kotlin.collections.List

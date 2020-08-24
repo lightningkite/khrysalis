@@ -1,11 +1,8 @@
 // Kotlin iterables
 
 import {IllegalArgumentException} from "./Language";
-import {filter, map} from 'iterable-operator'
+import {filter, map} from './lazyOp'
 import {EqualOverrideSet, setAddCausedChange} from "./Collections";
-
-function test() {
-}
 
 //! Declares kotlin.collections.firstOrNull>kotlin.collections.Iterable
 export function kotlinCollectionsIterableFirstOrNull<T>(iter: Iterable<T>): T | null {

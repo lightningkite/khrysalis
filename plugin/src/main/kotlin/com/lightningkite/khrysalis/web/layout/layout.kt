@@ -143,29 +143,31 @@ internal fun HtmlTranslator.layout() {
                 ?: parentGravityString?.let { verticalGravity(it) }
                 ?: Gravity.START_LOCAL).alignDirection
 
-            if (index == 0)
-                container.style["position"] = "relative"
-            else
-                container.style["position"] = "absolute"
-            if (vert == AlignDirection.CENTER && horz == AlignDirection.CENTER) {
-                container.style["transform"] = "translateX(-50%) translateY(-50%)"
-                container.style["left"] = "50%"
-                container.style["top"] = "50%"
+            val relativeSizing = rule.allAttributes["android:layout_width"] == "wrap_content" || rule.allAttributes["android:layout_height"] == "wrap_content"
+            if (index == 0 && relativeSizing) {
+                //Do nothing - things are placed relative to this anyways
             } else {
-                when (horz) {
-                    AlignDirection.START -> container.style["left"] = "0"
-                    AlignDirection.END -> container.style["right"] = "0"
-                    AlignDirection.CENTER -> {
-                        container.style["transform"] = "translateX(-50%)"
-                        container.style["left"] = "50%"
+                container.style["position"] = if(index == 0) "relative" else "absolute"
+                if (vert == AlignDirection.CENTER && horz == AlignDirection.CENTER) {
+                    container.style["transform"] = "translateX(-50%) translateY(-50%)"
+                    container.style["left"] = "50%"
+                    container.style["top"] = "50%"
+                } else {
+                    when (horz) {
+                        AlignDirection.START -> container.style["left"] = "0"
+                        AlignDirection.END -> container.style["right"] = "0"
+                        AlignDirection.CENTER -> {
+                            container.style["transform"] = "translateX(-50%)"
+                            container.style["left"] = "50%"
+                        }
                     }
-                }
-                when (vert) {
-                    AlignDirection.START -> container.style["top"] = "0"
-                    AlignDirection.END -> container.style["bottom"] = "0"
-                    AlignDirection.CENTER -> {
-                        container.style["transform"] = "translateY(-50%)"
-                        container.style["top"] = "50%"
+                    when (vert) {
+                        AlignDirection.START -> container.style["top"] = "0"
+                        AlignDirection.END -> container.style["bottom"] = "0"
+                        AlignDirection.CENTER -> {
+                            container.style["transform"] = "translateY(-50%)"
+                            container.style["top"] = "50%"
+                        }
                     }
                 }
             }

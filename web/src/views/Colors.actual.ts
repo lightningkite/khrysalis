@@ -9,7 +9,7 @@ export function numberToColor(this_: number): string {
 }
 
 export function applyAlphaToColor(this_: string, desiredAlpha: number): string {
-    const withoutAlpha = this_.slice(0, 6);
-    return `#${withoutAlpha}${desiredAlpha.toString(16).padStart(2, "0")}`;
+    const withoutAlpha = this_.slice(0, 7); //Include #
+    return `${withoutAlpha}${desiredAlpha.toString(16).padStart(2, "0")}`;
 }
 

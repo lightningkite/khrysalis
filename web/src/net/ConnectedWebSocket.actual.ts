@@ -24,12 +24,23 @@ export class ConnectedWebSocket implements Observer<WebSocketFrame>, Unsubscriba
             parent.ownConnection.next(this);
         });
         newSocket.addEventListener("error", (event)=>{
-            parent.ownConnection.error(event);
-            parent.read.error(event);
+            if(!closed) {
+                this.closed = true;
+                parent.ownConnection.error(event);
+                parent.read.error(event);
+            }
         });
         newSocket.addEventListener("close", (event)=>{
-            parent.ownConnection.complete();
-            parent.read.complete();
+            if(!closed) {
+                this.closed = true;
+                if (event.code == 1000) {
+                    parent.ownConnection.complete();
+                    parent.read.complete();
+                } else {
+                    parent.ownConnection.error(event);
+                    parent.read.error(event);
+                }
+            }
         });
         newSocket.addEventListener("message", (event: MessageEvent)=>{
             const d = event.data;
@@ -57,8 +68,12 @@ export class ConnectedWebSocket implements Observer<WebSocketFrame>, Unsubscriba
     }
     
     public error(e: any) {
-        this.underlyingSocket?.close(1011, e.message);
-        this.closed = true;
+        if(!closed){
+            this.ownConnection.error(e);
+            this.read.error(e);
+            this.underlyingSocket?.close(3000, e.message);
+            this.closed = true;
+        }
     }
 
     public unsubscribe() {

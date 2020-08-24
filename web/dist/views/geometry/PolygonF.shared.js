@@ -5,7 +5,6 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // Package: com.lightningkite.khrysalis.views.geometry
 const Collections_1 = require("../../kotlin/Collections");
 const Kotlin_1 = require("../../Kotlin");
-const iterable_operator_1 = require("iterable-operator");
 const Geometry_shared_1 = require("./Geometry.shared");
 //! Declares com.lightningkite.khrysalis.views.geometry.PolygonF
 class PolygonF {
@@ -21,7 +20,7 @@ class PolygonF {
     toString() { return `PolygonF(points = ${this.points})`; }
     copy(points = this.points) { return new PolygonF(points); }
     contains(point) {
-        const intersections = Collections_1.iterCount(iterable_operator_1.range(0, this.points.length - 1), (it) => {
+        const intersections = Collections_1.iterCount(new Kotlin_1.NumberRange(0, this.points.length - 1), (it) => {
             const a = this.points[it];
             const b = this.points[(it + 1) % this.points.length];
             return Geometry_shared_1.Geometry.INSTANCE.rayIntersectsLine(point.x, point.y, point.x + 100, point.y, a.x, a.y, b.x, b.y);

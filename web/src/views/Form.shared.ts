@@ -2,7 +2,7 @@
 // File: views/Form.shared.kt
 // Package: com.lightningkite.khrysalis.views
 import { ViewString, ViewStringRaw, ViewStringResource, ViewStringTemplate, kotlinCollectionsListJoinToViewString } from './Strings.shared'
-import { map as iterMap, toArray as iterToArray } from 'iterable-operator'
+import { map as iterMap, toArray as iterToArray } from '../kotlin/lazyOp'
 import { iterableFilterNotNull } from '../KotlinCollections'
 import { MutableObservableProperty } from '../observables/MutableObservableProperty.shared'
 import { safeEq } from '../Kotlin'

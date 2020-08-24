@@ -62,22 +62,17 @@ fun convertShapeDrawable(webDrawablesFolder: File, currentDrawable: String, sele
                 corners.directAttributes["android:radius"]?.asCssDimension()?.let {
                     out.appendln("border-radius: $it;")
                 } ?: run {
-                    out.append("border-radius: ")
                     corners.directAttributes["android:topLeftRadius"]?.asCssDimension()?.let {
-                        out.append(it)
-                        out.append(' ')
+                        out.appendln("border-top-left-radius: $it;")
                     }
                     corners.directAttributes["android:topRightRadius"]?.asCssDimension()?.let {
-                        out.append(it)
-                        out.append(' ')
+                        out.appendln("border-top-right-radius: $it;")
                     }
                     corners.directAttributes["android:bottomRightRadius"]?.asCssDimension()?.let {
-                        out.append(it)
-                        out.append(' ')
+                        out.appendln("border-bottom-right-radius: $it;")
                     }
                     corners.directAttributes["android:bottomLeftRadius"]?.asCssDimension()?.let {
-                        out.append(it)
-                        out.append(' ')
+                        out.appendln("border-bottom-left-radius: $it;")
                     }
                     out.appendln(";")
                 }

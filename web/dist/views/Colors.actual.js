@@ -10,8 +10,8 @@ function numberToColor(this_) {
 }
 exports.numberToColor = numberToColor;
 function applyAlphaToColor(this_, desiredAlpha) {
-    const withoutAlpha = this_.slice(0, 6);
-    return `#${withoutAlpha}${desiredAlpha.toString(16).padStart(2, "0")}`;
+    const withoutAlpha = this_.slice(0, 7); //Include #
+    return `${withoutAlpha}${desiredAlpha.toString(16).padStart(2, "0")}`;
 }
 exports.applyAlphaToColor = applyAlphaToColor;
 //# sourceMappingURL=Colors.actual.js.map

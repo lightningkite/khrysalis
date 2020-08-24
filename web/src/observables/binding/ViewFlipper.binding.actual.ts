@@ -37,8 +37,8 @@ export function androidWidgetViewFlipperBindLoading(this_: HTMLDivElement, loadi
         const viewOut = hiddenView
         const viewIn = currentView
 
-        viewOut.style.visibility = "hidden";
-        viewIn.style.visibility = "visible";
+        viewOut.style.setProperty("visibility", "hidden", "important");
+        viewIn.style.removeProperty("visibility");
 
         // //animate out
         // const animationOut = `${animation}-out`;
@@ -73,5 +73,5 @@ export function androidWidgetViewFlipperBindLoading(this_: HTMLDivElement, loadi
         currentView = mainChild;
         hiddenView = loadingChild;
     }
-    hiddenView.style.visibility = "hidden";
+    hiddenView.style.setProperty("visibility", "hidden", "important");
 }

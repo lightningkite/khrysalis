@@ -4,6 +4,7 @@
 // Package: com.lightningkite.khrysalis.views
 Object.defineProperty(exports, "__esModule", { value: true });
 //! Declares com.lightningkite.khrysalis.views.onClick>android.view.View
+const iterable_operator_1 = require("iterable-operator");
 function androidViewViewOnClick(this_, disabledMilliseconds = 500, action) {
     let lastActivated = Date.now();
     this_.onclick = (_ev) => {
@@ -64,13 +65,15 @@ function findView(view, predicate) {
     return null;
 }
 exports.findView = findView;
-const backgroundClassSymbol = Symbol("backgroundCssClass");
 function setViewBackgroundClass(view, cssClass) {
-    const existing = view[backgroundClassSymbol];
-    if (existing) {
-        view.classList.remove(existing);
+    let existing = [];
+    for (const i of iterable_operator_1.range(0, view.classList.length - 1)) {
+        const item = view.classList.item(i);
+        if (item && item.startsWith("drawable-")) {
+            existing.push(item);
+        }
     }
-    view[backgroundClassSymbol] = cssClass;
+    view.classList.remove(...existing);
     view.classList.add(cssClass);
 }
 exports.setViewBackgroundClass = setViewBackgroundClass;

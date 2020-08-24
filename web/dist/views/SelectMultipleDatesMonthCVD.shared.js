@@ -3,11 +3,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const KotlinCollections_1 = require("../KotlinCollections");
 const MonthCVD_shared_1 = require("./MonthCVD.shared");
 const Paint_actual_1 = require("./draw/Paint.actual");
+const lazyOp_1 = require("../kotlin/lazyOp");
 const DateAlone_shared_1 = require("../time/DateAlone.shared");
 const DateAlone_actual_1 = require("../time/DateAlone.actual");
 const Date_actual_1 = require("../time/Date.actual");
 const Kotlin_1 = require("../Kotlin");
-const iterable_operator_1 = require("iterable-operator");
 const StandardObservableProperty_shared_1 = require("../observables/StandardObservableProperty.shared");
 const DisposeCondition_actual_1 = require("../rx/DisposeCondition.actual");
 //! Declares com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD
@@ -63,22 +63,22 @@ class SelectMultipleDatesMonthCVD extends MonthCVD_shared_1.MonthCVD {
         }
     }
     onTap(day) {
-        this.adding = (!iterable_operator_1.some(this.dates.value, (it) => Kotlin_1.safeEq(day, it)));
+        this.adding = (!lazyOp_1.some(this.dates.value, (it) => Kotlin_1.safeEq(day, it)));
         this.onTouchMoveDate(day);
     }
     onTouchDownDate(day) {
-        this.adding = (!iterable_operator_1.some(this.dates.value, (it) => Kotlin_1.safeEq(day, it)));
+        this.adding = (!lazyOp_1.some(this.dates.value, (it) => Kotlin_1.safeEq(day, it)));
         this.onTouchMoveDate(day);
         return true;
     }
     onTouchMoveDate(day) {
         if (this.adding) {
-            if ((!iterable_operator_1.some(this.dates.value, (it) => Kotlin_1.safeEq(day, it)))) {
+            if ((!lazyOp_1.some(this.dates.value, (it) => Kotlin_1.safeEq(day, it)))) {
                 this.dates.value = new KotlinCollections_1.EqualOverrideSet([...this.dates.value, day]);
             }
         }
         else {
-            this.dates.value = new KotlinCollections_1.EqualOverrideSet(iterable_operator_1.toArray(iterable_operator_1.filter(this.dates.value, (it) => !Kotlin_1.safeEq(it, day))));
+            this.dates.value = new KotlinCollections_1.EqualOverrideSet(lazyOp_1.toArray(lazyOp_1.filter(this.dates.value, (it) => !Kotlin_1.safeEq(it, day))));
         }
         return true;
     }

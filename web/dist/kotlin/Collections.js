@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 const Language_1 = require("./Language");
-const iterable_operator_1 = require("iterable-operator");
+const lazyOp_1 = require("./lazyOp");
 const Iterables_1 = require("./Iterables");
 const Comparable_1 = require("./Comparable");
 function mapForKeyType(type) {
@@ -62,7 +62,7 @@ function getFullIter(iter) {
 }
 class EqualOverrideSet {
     constructor(items, hasher = (k) => Language_1.hashAnything(k), equaler = (k1, k2) => Language_1.safeEq(k1, k2)) {
-        this.map = new EqualOverrideMap(items ? iterable_operator_1.map(items, (x) => [x, x]) : [], hasher, equaler);
+        this.map = new EqualOverrideMap(items ? lazyOp_1.map(items, (x) => [x, x]) : [], hasher, equaler);
     }
     add(element) {
         this.map.set(element, element);
@@ -168,7 +168,7 @@ class EqualOverrideMap {
         return entry != null;
     }
     keys() {
-        return getFullIter(iterable_operator_1.map(iterable_operator_1.flatten(this.internalEntries.values()), (x) => x[0]));
+        return getFullIter(lazyOp_1.map(lazyOp_1.flatten(this.internalEntries.values()), (x) => x[0]));
     }
     delete(key) {
         const list = this.getMaybeListForHash(this.hasher(key));
@@ -186,10 +186,10 @@ class EqualOverrideMap {
         return false;
     }
     values() {
-        return getFullIter(iterable_operator_1.map(iterable_operator_1.flatten(this.internalEntries.values()), (x) => x[1]));
+        return getFullIter(lazyOp_1.map(lazyOp_1.flatten(this.internalEntries.values()), (x) => x[1]));
     }
     entries() {
-        return getFullIter(iterable_operator_1.flatten(this.internalEntries.values()));
+        return getFullIter(lazyOp_1.flatten(this.internalEntries.values()));
     }
     clear() {
         this.internalEntries = new Map();
@@ -199,7 +199,7 @@ class EqualOverrideMap {
         return Iterables_1.kotlinCollectionsIterableJoinToString(this.entries(), ", ", "[", "]", undefined, undefined, (x) => `${x[0]}: ${x[1]}`);
     }
     [Symbol.iterator]() {
-        const flattened = iterable_operator_1.flatten(this.internalEntries.values())[Symbol.iterator]();
+        const flattened = lazyOp_1.flatten(this.internalEntries.values())[Symbol.iterator]();
         flattened[Symbol.iterator] = function x() {
             return this;
         };
@@ -246,7 +246,7 @@ function listFilterNotNull(array) {
 }
 exports.listFilterNotNull = listFilterNotNull;
 function iterableFilterNotNull(iterable) {
-    return iterable_operator_1.filter(iterable, (x) => x != null);
+    return lazyOp_1.filter(iterable, (x) => x != null);
 }
 exports.iterableFilterNotNull = iterableFilterNotNull;
 function listRemoveAll(array, predicate) {
@@ -327,7 +327,7 @@ function iterMaxBy(iter, selector) {
     let best = null;
     for (const item of iter) {
         const sel = selector(item);
-        if (Comparable_1.safeCompare(sel, best) > 0) {
+        if (best === null || Comparable_1.safeCompare(sel, best) > 0) {
             result = item;
             best = sel;
         }
@@ -340,7 +340,7 @@ function iterMinBy(iter, selector) {
     let best = null;
     for (const item of iter) {
         const sel = selector(item);
-        if (Comparable_1.safeCompare(sel, best) < 0) {
+        if (best === null || Comparable_1.safeCompare(sel, best) < 0) {
             result = item;
             best = sel;
         }

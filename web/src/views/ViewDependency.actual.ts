@@ -210,6 +210,11 @@ export function comLightningkiteKhrysalisAndroidActivityAccessShare(this_: Windo
     document.body.appendChild(topLevel);
 }
 
+//! Declares com.lightningkite.khrysalis.views.getColor
+export function comLightningkiteKhrysalisAndroidActivityAccessGetColor(this_: Window, variableName: string): string {
+    return this_.getComputedStyle(this_.document.body).getPropertyValue(variableName);
+}
+
 //! Declares com.lightningkite.khrysalis.views.openMap>com.lightningkite.khrysalis.android.ActivityAccess
 export function comLightningkiteKhrysalisAndroidActivityAccessOpenMap(this_: Window, coordinate: GeoCoordinate, label: (string | null) = null, zoom: (number | null) = null): void {
     let url = label ?

@@ -26,7 +26,9 @@ export class Notifications {
         Notification.requestPermission().then((x)=>{
             if(x == "granted"){
                 const messaging = firebase.messaging(firebase.app());
-                messaging.usePublicVapidKey(this.fcmPublicKey as string);
+                if(this.fcmPublicKey) {
+                    messaging.usePublicVapidKey(this.fcmPublicKey as string);
+                }
                 messaging.getToken().then((value) => {
                     Notifications.INSTANCE.notificationToken.value = value;
                 }).catch((err) => {
