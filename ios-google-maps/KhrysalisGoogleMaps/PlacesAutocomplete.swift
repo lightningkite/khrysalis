@@ -12,7 +12,7 @@ import GooglePlaces
 import RxSwift
 
 
-class PlacesAutocomplete{
+public class PlacesAutocomplete{
     private var placesClient: GMSPlacesClient = GMSPlacesClient.shared()
     var token:GMSAutocompleteSessionToken? = nil
     private var working = false
@@ -25,8 +25,12 @@ class PlacesAutocomplete{
         GMSPlaceField.formattedAddress
         
     ]
+    
+    public init (dependency:ViewDependency){
+        
+    }
 
-    func request(query: String, filter: GMSPlacesAutocompleteTypeFilter? = nil) -> Single<Array<GMSAutocompletePrediction>> {
+    public func request(query: String, filter: GMSPlacesAutocompleteTypeFilter? = nil) -> Single<Array<GMSAutocompletePrediction>> {
         return Single<Array<GMSAutocompletePrediction>>.create({ emitter in
             if self.working{
                 emitter.onSuccess(self.cachedRequest)
@@ -59,7 +63,7 @@ class PlacesAutocomplete{
         })
     }
     
-    func request(
+    public func request(
         query: ObservableProperty<String>,
         disposeCondition: DisposeCondition,
         filter: GMSPlacesAutocompleteTypeFilter? = nil
@@ -100,7 +104,7 @@ class PlacesAutocomplete{
     }
     
     
-    func details(id: String, details: Array<GMSPlaceField>? = nil) -> Single<GMSPlace> {
+    public func details(id: String, details: Array<GMSPlaceField>? = nil) -> Single<GMSPlace> {
         return Single<GMSPlace>.create({emitter in
             self.working = true
             var detailValue = UInt(0)

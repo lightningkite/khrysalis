@@ -221,6 +221,9 @@ public extension Array where Element: Equatable {
         copy.remove(element)
         return copy
     }
+    func minus(element: Element) -> Array<Element> {
+        return self.minus(element)
+    }
 }
 
 
