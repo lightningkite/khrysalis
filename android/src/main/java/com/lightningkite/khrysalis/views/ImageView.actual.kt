@@ -3,13 +3,11 @@ package com.lightningkite.khrysalis.views
 import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.media.MediaMetadataRetriever
-import android.provider.MediaStore
-import android.util.Size
 import android.widget.ImageView
+import androidx.exifinterface.media.ExifInterface
 import com.lightningkite.khrysalis.*
 import com.lightningkite.khrysalis.net.HttpClient
 import com.squareup.picasso.Picasso
-import java.io.IOException
 
 
 /**
@@ -24,12 +22,11 @@ fun ImageView.loadImage(image: Image?) {
         image?.let { image ->
             when (image) {
                 is ImageRaw -> this.setImageBitmap(BitmapFactory.decodeByteArray(image.raw, 0, image.raw.size))
-                is ImageReference -> this.setImageBitmap(
-                    MediaStore.Images.Media.getBitmap(
-                        HttpClient.appContext.contentResolver,
-                        image.uri
-                    )
-                )
+                is ImageReference -> {
+                    if (this.width > 0 && this.height > 0) {
+                        Picasso.get().load(image.uri).resize(this.width * 2, this.height * 2).centerInside().into(this)
+                    }
+                }
                 is ImageBitmap -> this.setImageBitmap(image.bitmap)
                 is ImageRemoteUrl -> {
                     if (image.url.isNotBlank() && this.width > 0 && this.height > 0) {
