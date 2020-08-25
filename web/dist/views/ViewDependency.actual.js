@@ -199,7 +199,7 @@ function comLightningkiteKhrysalisAndroidActivityAccessShare(this_, shareTitle, 
 exports.comLightningkiteKhrysalisAndroidActivityAccessShare = comLightningkiteKhrysalisAndroidActivityAccessShare;
 //! Declares com.lightningkite.khrysalis.views.getColor
 function comLightningkiteKhrysalisAndroidActivityAccessGetColor(this_, variableName) {
-    return this_.getComputedStyle(this_.document.body).getPropertyValue(variableName);
+    return this_.getComputedStyle(this_.document.body).getPropertyValue(variableName).trim();
 }
 exports.comLightningkiteKhrysalisAndroidActivityAccessGetColor = comLightningkiteKhrysalisAndroidActivityAccessGetColor;
 //! Declares com.lightningkite.khrysalis.views.openMap>com.lightningkite.khrysalis.android.ActivityAccess
