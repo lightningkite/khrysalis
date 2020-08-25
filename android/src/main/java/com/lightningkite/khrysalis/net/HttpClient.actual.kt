@@ -30,7 +30,9 @@ import io.reactivex.schedulers.Schedulers
 import okhttp3.*
 import java.io.ByteArrayOutputStream
 import java.io.IOException
+import java.time.Duration
 import java.util.*
+import java.util.concurrent.TimeUnit
 
 @SuppressLint("StaticFieldLeak")
 object HttpClient {
@@ -143,6 +145,48 @@ object HttpClient {
         return Single.create<HttpResponse> { emitter ->
             try {
                 println("Sending $method request to $url with headers $headers")
+                val response = client.newCall(request).execute()
+                println("Response from $method request to $url with headers $headers: ${response.code()}")
+                emitter.onSuccess(response)
+            } catch(e:Exception) {
+                emitter.tryOnError(e)
+            }
+        }.threadCorrectly()
+    }
+
+    fun call(
+        url: String,
+        method: String = HttpClient.GET,
+        headers: Map<String, String> = mapOf(),
+        body: HttpBody? = null,
+        callTimeout:Long? = null,
+        writeTimeout:Long? = null,
+        readTimeout:Long? = null,
+        connectTimeout:Long?= null
+        ): Single<HttpResponse> {
+        val request = Request.Builder()
+            .url(url)
+            .method(method, body)
+            .headers(Headers.of(headers))
+            .addHeader("Accept-Language", Locale.getDefault().language)
+            .build()
+        return Single.create<HttpResponse> { emitter ->
+            try {
+                println("Sending $method request to $url with headers $headers")
+                val clientBuilder = client.newBuilder()
+                if (callTimeout != null) {
+                    clientBuilder.callTimeout(callTimeout, TimeUnit.SECONDS)
+                }
+                if(writeTimeout != null){
+                    clientBuilder.writeTimeout(writeTimeout, TimeUnit.SECONDS)
+                }
+                if(readTimeout != null) {
+                    clientBuilder.readTimeout(readTimeout, TimeUnit.SECONDS)
+                }
+                if(connectTimeout != null) {
+                    clientBuilder.connectTimeout(connectTimeout, TimeUnit.SECONDS)
+                }
+                val client = clientBuilder.build()
                 val response = client.newCall(request).execute()
                 println("Response from $method request to $url with headers $headers: ${response.code()}")
                 emitter.onSuccess(response)
