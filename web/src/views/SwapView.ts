@@ -13,9 +13,14 @@ export function swapViewSwap(view: HTMLDivElement, to: HTMLElement | null, anima
         to.style.width = "100%";
         to.style.height = "100%";
     }
-    view.hidden = false;
     const current = view[previousViewSymbol];
-    if(to === current) return;
+    if(to === current) {
+        if(!to) {
+            view.hidden = true;
+            view.innerHTML = "";
+        }
+        return;
+    }
     if (current) {
         //animate out
         const animationOut = `${animation}-out`
@@ -30,6 +35,7 @@ export function swapViewSwap(view: HTMLDivElement, to: HTMLElement | null, anima
 
         //animate in
         if (to) {
+            view.hidden = false;
             const animationIn = `${animation}-in`
             let animInHandler: (ev: AnimationEvent) => void;
             animInHandler = (ev) => {
@@ -45,6 +51,7 @@ export function swapViewSwap(view: HTMLDivElement, to: HTMLElement | null, anima
         }
     } else if (to) {
         view.appendChild(to);
+        view.hidden = false;
     } else {
         view.hidden = true;
         view.innerHTML = "";

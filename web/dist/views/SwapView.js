@@ -7,10 +7,14 @@ function swapViewSwap(view, to, animation) {
         to.style.width = "100%";
         to.style.height = "100%";
     }
-    view.hidden = false;
     const current = view[previousViewSymbol];
-    if (to === current)
+    if (to === current) {
+        if (!to) {
+            view.hidden = true;
+            view.innerHTML = "";
+        }
         return;
+    }
     if (current) {
         //animate out
         const animationOut = `${animation}-out`;
@@ -24,6 +28,7 @@ function swapViewSwap(view, to, animation) {
         current.style.animation = `${animationOut} 0.25s`;
         //animate in
         if (to) {
+            view.hidden = false;
             const animationIn = `${animation}-in`;
             let animInHandler;
             animInHandler = (ev) => {
@@ -41,6 +46,7 @@ function swapViewSwap(view, to, animation) {
     }
     else if (to) {
         view.appendChild(to);
+        view.hidden = false;
     }
     else {
         view.hidden = true;
