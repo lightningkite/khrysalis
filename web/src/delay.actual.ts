@@ -4,6 +4,7 @@
 import {Observable, Subject} from 'rxjs'
 import {ObservableProperty} from "./observables/ObservableProperty.shared";
 import {ConstantObservableProperty} from "./observables/ConstantObservableProperty.shared";
+import {ApplicationAccess} from "./ApplicationAccess.actual";
 
 //! Declares com.lightningkite.khrysalis.delay
 export function delay(milliseconds: number, action: () => void) {
@@ -35,6 +36,8 @@ export function getAnimationFrame(): Subject<number> {
         _animationFrame.next(delta);
         if(_animationFrame.observers.length > 0){
             requestAnimationFrame(callback);
+        } else {
+            active = false;
         }
     });
     return _animationFrame;
@@ -42,6 +45,6 @@ export function getAnimationFrame(): Subject<number> {
 
 //! Declares com.lightningkite.khrysalis.applicationIsActive
 export function getApplicationIsActive(): ObservableProperty<boolean> {
-    return new ConstantObservableProperty(true);
+    return ApplicationAccess.INSTANCE.foreground;
 }
 

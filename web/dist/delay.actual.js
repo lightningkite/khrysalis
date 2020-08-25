@@ -4,7 +4,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // File: delay.actual.kt
 // Package: com.lightningkite.khrysalis
 const rxjs_1 = require("rxjs");
-const ConstantObservableProperty_shared_1 = require("./observables/ConstantObservableProperty.shared");
+const ApplicationAccess_actual_1 = require("./ApplicationAccess.actual");
 //! Declares com.lightningkite.khrysalis.delay
 function delay(milliseconds, action) {
     if (milliseconds === 0) {
@@ -38,13 +38,16 @@ function getAnimationFrame() {
         if (exports._animationFrame.observers.length > 0) {
             requestAnimationFrame(callback);
         }
+        else {
+            active = false;
+        }
     });
     return exports._animationFrame;
 }
 exports.getAnimationFrame = getAnimationFrame;
 //! Declares com.lightningkite.khrysalis.applicationIsActive
 function getApplicationIsActive() {
-    return new ConstantObservableProperty_shared_1.ConstantObservableProperty(true);
+    return ApplicationAccess_actual_1.ApplicationAccess.INSTANCE.foreground;
 }
 exports.getApplicationIsActive = getApplicationIsActive;
 //# sourceMappingURL=delay.actual.js.map
