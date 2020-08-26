@@ -80,7 +80,7 @@ dependencies {
     api("com.squareup.okhttp3:okhttp:3.12.0")
     api("de.hdodenhof:circleimageview:2.2.0")
     api("br.com.simplepass:loading-button-android:1.14.0")
-    api("com.squareup.picasso:picasso:2.71828")
+    implementation("com.github.bumptech.glide:glide:4.11.0")
     api("com.romandanylyk:pageindicatorview:1.0.3")
     api("com.theartofdev.edmodo:android-image-cropper:2.7.0")
     api("io.reactivex.rxjava2:rxkotlin:2.4.0")

@@ -15,15 +15,10 @@ import android.provider.CalendarContract
 import android.provider.MediaStore
 import android.util.DisplayMetrics
 import androidx.core.content.FileProvider
-import com.lightningkite.khrysalis.Image
-import com.lightningkite.khrysalis.ImageReference
-import com.lightningkite.khrysalis.ImageRemoteUrl
-import com.lightningkite.khrysalis.Uri
+import com.lightningkite.khrysalis.*
 import com.lightningkite.khrysalis.android.ActivityAccess
 import com.lightningkite.khrysalis.location.GeoCoordinate
 import com.lightningkite.khrysalis.views.android.startIntent
-import com.squareup.picasso.Picasso
-import com.squareup.picasso.Target
 import java.io.File
 import java.util.*
 
@@ -337,23 +332,7 @@ fun ViewDependency.downloadDrawable(
     height: Int? = null,
     onResult: (Drawable?) -> Unit
 ) {
-    Picasso.get()
-        .load(url)
-        .let {
-            if (width == null || height == null) it
-            else it.resize(width.coerceAtLeast(100), height.coerceAtLeast(100)).centerCrop()
-        }
-        .into(object : Target {
-            override fun onPrepareLoad(placeHolderDrawable: Drawable?) {}
-
-            override fun onBitmapFailed(e: Exception?, errorDrawable: Drawable?) {
-                onResult(null)
-            }
-
-            override fun onBitmapLoaded(bitmap: Bitmap?, from: Picasso.LoadedFrom?) {
-                onResult(BitmapDrawable(bitmap))
-            }
-        })
+    fatalError("deprecated")
 }
 
 @Deprecated("")

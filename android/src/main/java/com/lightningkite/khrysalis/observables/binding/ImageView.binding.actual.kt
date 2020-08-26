@@ -5,7 +5,6 @@ import android.provider.MediaStore
 import android.widget.ImageView
 import com.lightningkite.khrysalis.net.HttpClient
 import com.lightningkite.khrysalis.*
-import com.squareup.picasso.Picasso
 import com.lightningkite.khrysalis.observables.*
 import com.lightningkite.khrysalis.rx.removed
 import com.lightningkite.khrysalis.rx.until
