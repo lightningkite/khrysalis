@@ -85,6 +85,7 @@ dependencies {
     api("com.theartofdev.edmodo:android-image-cropper:2.7.0")
     api("io.reactivex.rxjava2:rxkotlin:2.4.0")
     api("io.reactivex.rxjava2:rxandroid:2.1.1")
+    api("com.google.android.exoplayer:exoplayer:2.11.8")
 }
 
 tasks.create("sourceJar", Jar::class) {
