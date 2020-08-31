@@ -86,6 +86,11 @@ public extension UICollectionView {
             delegate.setAtEnd(action: action)
         }
     }
+    
+    
+    func whenScrolledToEnd(_ action: @escaping ()->Void) {
+        whenScrolledToEnd(action:action)
+    }
 
     func whenScrolled(action: @escaping (_ index: Int)->Void) {
         if var delegate = delegate as? HasAtPosition {
