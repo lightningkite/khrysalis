@@ -116,14 +116,18 @@ fun <T : AnyHashable> TabLayout.bind(
     val map = HashMap<T, TabLayout.Tab>()
     val reverse = HashMap<TabLayout.Tab, T>()
     options.subscribeBy { tabs ->
+        val temp = selected.value
+        var tabSelected = false
         this.removeAllTabs()
         map.clear()
         for (tab in tabs) {
             val actual = newTab().setText(toString(tab))
             map[tab] = actual
             reverse[actual] = tab
-            addTab(actual)
+            if (temp == tab) tabSelected = true
+            addTab(actual, temp == tab)
         }
+        if (!tabSelected) map.entries.firstOrNull()?.value?.select()
     }.until(this.removed)
 
     selected.subscribeBy { value ->

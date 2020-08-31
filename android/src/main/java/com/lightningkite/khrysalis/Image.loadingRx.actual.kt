@@ -4,6 +4,14 @@ import android.graphics.Bitmap
 import android.graphics.BitmapFactory
 import android.graphics.Canvas
 import android.graphics.drawable.BitmapDrawable
+import android.graphics.drawable.Drawable
+import com.bumptech.glide.Glide
+import com.bumptech.glide.request.Request
+import com.bumptech.glide.request.target.CustomTarget
+import com.bumptech.glide.request.target.SimpleTarget
+import com.bumptech.glide.request.target.SizeReadyCallback
+import com.bumptech.glide.request.target.Target
+import com.bumptech.glide.request.transition.Transition
 import com.lightningkite.khrysalis.net.HttpClient
 import com.lightningkite.khrysalis.net.unsuccessfulAsError
 import io.reactivex.Single
@@ -24,7 +32,7 @@ fun Image.load(): Single<Bitmap> {
             is ImageRemoteUrl -> load()
             is ImageResource -> {
                 val drawable = HttpClient.appContext.resources.getDrawable(resource)
-                if(drawable is BitmapDrawable){
+                if (drawable is BitmapDrawable) {
                     Single.just(drawable.bitmap)
                 } else {
                     val bitmap = Bitmap.createBitmap(
@@ -50,29 +58,23 @@ fun Image.load(): Single<Bitmap> {
  *
  */
 private fun ImageReference.load(maxDimension: Int = 2048): Single<Bitmap> {
-    try {
-        val finalOpts = BitmapFactory.Options()
-        HttpClient.appContext.contentResolver.openInputStream(uri)?.use {
-            val sizeOpts = BitmapFactory.Options().apply { inJustDecodeBounds = true }
-            BitmapFactory.decodeStream(it, null, sizeOpts)?.apply {
-                finalOpts.inSampleSize = max(
-                    sizeOpts.outWidth.toDouble().div(maxDimension).let { Math.ceil(it) }.toInt(),
-                    sizeOpts.outHeight.toDouble().div(maxDimension).let { Math.ceil(it) }.toInt()
-                ).coerceAtLeast(1)
-            }
-            Unit
-        }
-            ?: return Single.error(IllegalStateException("Could not find file '$uri'."))
-        HttpClient.appContext.contentResolver.openInputStream(uri)?.use {
-            return Single.just(
-                BitmapFactory.decodeStream(it, null, finalOpts) ?: return Single.error(
-                    IllegalStateException("File '$uri' could not be parsed, got null.  Tried with options $finalOpts")
-                )
-            )
-        }
-            ?: return Single.error(IllegalStateException("Could not find file '$uri', but found it earlier. Huh?"))
-    } catch (e: Exception) {
-        return Single.error(e)
+    return Single.create { emitter ->
+        Glide.with(HttpClient.appContext)
+            .asBitmap()
+            .load(this.uri)
+            .into(object : CustomTarget<Bitmap>() {
+                override fun onLoadCleared(placeholder: Drawable?) {
+                    emitter.onError(Exception("Failed to load drawable"))
+                }
+
+                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    emitter.onSuccess(resource)
+                }
+
+                override fun onLoadFailed(errorDrawable: Drawable?) {
+                    emitter.onError(Exception())
+                }
+            })
     }
 }
 
@@ -82,13 +84,23 @@ private fun ImageReference.load(maxDimension: Int = 2048): Single<Bitmap> {
  *
  */
 private fun ImageRemoteUrl.load(): Single<Bitmap> {
-    return HttpClient.call(url, HttpClient.GET, mapOf())
-        .unsuccessfulAsError()
-        .map { response ->
-            response.body()?.use {
-                it.byteStream().use {
-                    BitmapFactory.decodeStream(it)
+    return Single.create { emitter ->
+
+        Glide.with(HttpClient.appContext)
+            .asBitmap()
+            .load(this.url)
+            .into(object : CustomTarget<Bitmap>() {
+                override fun onLoadCleared(placeholder: Drawable?) {
+                    emitter.onError(Exception("Failed to load drawable"))
                 }
-            }
-        }
+
+                override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                    emitter.onSuccess(resource)
+                }
+
+                override fun onLoadFailed(errorDrawable: Drawable?) {
+                    emitter.onError(Exception())
+                }
+            })
+    }
 }
