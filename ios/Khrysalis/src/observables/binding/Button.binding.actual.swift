@@ -49,7 +49,7 @@ public extension UIButton {
 
 //--- Button.bindActive(ObservableProperty<Boolean>, Drawable, Drawable)
 public extension UIButton {
-    func bindActive(_ observable: ObservableProperty<Bool>, _ activeBackground: @escaping Drawable, _ inactiveBackground: @escaping Drawable) -> Void {
+    func bindActive(_ observable: ObservableProperty<Bool>, _ activeBackground: Drawable, _ inactiveBackground: Drawable) -> Void {
         observable.subscribeBy { ( value) in
             self.isUserInteractionEnabled = value
             if value {
@@ -59,7 +59,7 @@ public extension UIButton {
             }
         }.until(self.removed)
     }
-    func bindActive(observable: ObservableProperty<Bool>, activeBackground: @escaping Drawable, inactiveBackground: @escaping Drawable) -> Void {
+    func bindActive(observable: ObservableProperty<Bool>, activeBackground: Drawable, inactiveBackground: Drawable) -> Void {
         return bindActive(observable, activeBackground, inactiveBackground)
     }
 }

@@ -108,6 +108,8 @@ com.lightningkite.khrysalis.android
 com.lightningkite.khrysalis.android.ActivityAccess
 com.lightningkite.khrysalis.android.KhrysalisActivity
 com.lightningkite.khrysalis.android.KhrysalisApplication
+com.lightningkite.khrysalis.android.contains
+com.lightningkite.khrysalis.android.runKeyboardUpdate
 com.lightningkite.khrysalis.bytes.buffer
 com.lightningkite.khrysalis.bytes.data
 com.lightningkite.khrysalis.bytes.getUtf8

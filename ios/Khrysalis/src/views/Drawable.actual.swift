@@ -11,4 +11,20 @@ import UIKit
 import AlamofireImage
 import Alamofire
 
-public typealias Drawable = (View?)->CALayer
+public class Drawable: Equatable, Hashable {
+    
+    public init(_ f: @escaping (View?)->CALayer) {
+        self.makeLayer = f
+    }
+    
+    public static func == (lhs: Drawable, rhs: Drawable) -> Bool {
+        return lhs.id == rhs.id
+    }
+    
+    public let id: Int64 = Random.Default.INSTANCE.nextLong()
+    public let makeLayer: (View?)->CALayer
+    
+    public func hash(into hasher: inout Hasher) {
+        hasher.combine(id)
+    }
+}

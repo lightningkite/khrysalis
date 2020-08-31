@@ -14,7 +14,7 @@ fun convertShapeDrawable(name: String, node: XmlNode, out: Appendable) {
             val height = 100.0
             with(out) {
                 node.children.find { it.name == "gradient" }?.let {
-                    appendln("static func $name(_ view: UIView? = nil) -> CAGradientLayer {")
+                    appendln("static let $name: Drawable = Drawable { (view: UIView?) -> CALayer in ")
                     appendln("    let mask = CAShapeLayer()")
                     appendln("    mask.path = CGPath(ellipseIn: CGRect(x: 0, y: 0, width: $width, height: $height), transform: nil)")
                     appendln("    let gradient = CAGradientLayer()")
@@ -64,7 +64,7 @@ fun convertShapeDrawable(name: String, node: XmlNode, out: Appendable) {
         else -> {
             val className = if (node.children.any { it.name == "gradient" }) "CAGradientLayer" else "CALayer"
             with(out) {
-                appendln("static func $name(_ view: UIView? = nil) -> $className {")
+                appendln("static let $name: Drawable = Drawable { (view: UIView?) -> CALayer in ")
                 appendln("    let layer = $className()")
                 node.children.find { it.name == "stroke" }?.let {
                     appendln("    layer.borderWidth = ${it.attributeAsSwiftDimension("android:width") ?: "0"}")

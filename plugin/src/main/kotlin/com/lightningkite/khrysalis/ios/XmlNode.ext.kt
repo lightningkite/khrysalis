@@ -27,7 +27,7 @@ fun XmlNode.attributeAsSwiftDrawable(key: String): String? {
         else -> null
     }
 }
-fun XmlNode.attributeAsSwiftLayer(key: String, forView: String = "nil"): String? = attributeAsSwiftDrawable(key)?.plus("($forView)")
+fun XmlNode.attributeAsSwiftLayer(key: String, forView: String = "nil"): String? = attributeAsSwiftDrawable(key)?.plus(".makeLayer($forView)")
 
 fun XmlNode.attributeAsSwiftImage(key: String): String? {
     val raw = allAttributes[key] ?: return null

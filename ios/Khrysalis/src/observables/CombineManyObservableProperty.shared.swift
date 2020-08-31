@@ -16,16 +16,16 @@ public class CombineManyObservableProperty<IN> : ObservableProperty<Array<IN>> {
         get { return self.observables.map({ (it) -> IN in it.value }) }
     }
     override public var onChange: Observable<Array<IN>> {
-        get { return kotlinCollectionsListCombineLatest(self.observables.map({ (it) -> Observable<IN> in it.observable }), combine: { (items) -> Array<IN> in items.map({ (it) -> IN in it }) }).skip(1) }
+        get { return xListCombineLatest(self.observables.map({ (it) -> Observable<IN> in it.observable }), combine: { (items) -> Array<IN> in items.map({ (it) -> IN in it }) }).skip(1) }
     }
 }
 
-public func kotlinCollectionsListCombined<IN, OUT>(_ this: Array<ObservableProperty<IN>>, combiner: @escaping  (Array<IN>) -> OUT) -> ObservableProperty<OUT> {
+public func xListCombined<IN, OUT>(_ this: Array<ObservableProperty<IN>>, combiner: @escaping  (Array<IN>) -> OUT) -> ObservableProperty<OUT> {
     return CombineManyObservableProperty(observables: this).map(read: combiner)
 }
 
 
-public func kotlinCollectionsListCombined<T>(_ this: Array<ObservableProperty<T>>) -> ObservableProperty<Array<T>> {
+public func xListCombined<T>(_ this: Array<ObservableProperty<T>>) -> ObservableProperty<Array<T>> {
     return CombineManyObservableProperty(observables: this)
 }
 

@@ -9,7 +9,7 @@ import java.lang.Appendable
 fun convertBitmapDrawable(name: String, node: XmlNode, out: Appendable) {
     println("Writing bitmap $name")
     with(out) {
-        appendln("static func $name(_ view: UIView? = nil) -> CALayer {")
+        appendln("static let $name: Drawable = Drawable { (view: UIView?) -> CALayer in ")
         appendln("    let layer = CALayer()")
         setToColor(node, "android:tint"){ it, s ->
             appendln("    layer.backgroundColor = $it.cgColor")

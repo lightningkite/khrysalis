@@ -3,6 +3,7 @@ package com.lightningkite.khrysalis.observables.binding
 import android.view.View
 import android.view.ViewGroup
 import android.widget.FrameLayout
+import com.lightningkite.khrysalis.android.runKeyboardUpdate
 import com.lightningkite.khrysalis.observables.*
 import com.lightningkite.khrysalis.rx.removed
 import com.lightningkite.khrysalis.rx.until
@@ -55,22 +56,22 @@ fun SwapView.bindStack(dependency: ViewDependency, obs: ObservableStack<ViewGene
                 oldStackSize == 0 -> {
                     oldView.animate().alpha(0f)
                     newView.alpha = 0f
-                    newView.animate().alpha(1f)
+                    newView.animate().alpha(1f).withEndAction { runKeyboardUpdate(dependency, newView) }
                 }
                 oldStackSize > newStackSize -> {
                     oldView.animate().translationX(width.toFloat())
                     newView.translationX = -width.toFloat()
-                    newView.animate().translationX(0f)
+                    newView.animate().translationX(0f).withEndAction { runKeyboardUpdate(dependency, newView) }
                 }
                 oldStackSize < newStackSize -> {
                     oldView.animate().translationX(-width.toFloat())
                     newView.translationX = width.toFloat()
-                    newView.animate().translationX(0f)
+                    newView.animate().translationX(0f).withEndAction { runKeyboardUpdate(dependency, newView) }
                 }
                 else -> {
                     oldView.animate().alpha(0f)
                     newView.alpha = 0f
-                    newView.animate().alpha(1f)
+                    newView.animate().alpha(1f).withEndAction { runKeyboardUpdate(dependency, newView) }
                 }
             }
             oldView.animate().withEndAction { removeView(oldView) }

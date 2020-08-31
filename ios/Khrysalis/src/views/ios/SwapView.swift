@@ -78,7 +78,8 @@ open class SwapView: UIView {
             )
         }
     }
-    open func swap(to: UIView?, animation: Animation){
+    open func swap(dependency: ViewDependency, to: UIView?, animation: Animation){
+        let previousView = current
         if let old = current {
             let goal: AnimationGoal
             if to == nil {
@@ -188,6 +189,7 @@ open class SwapView: UIView {
                 self.visibility = View.VISIBLE
             }
         }
+        dependency.runKeyboardUpdate(root: to, discardingRoot: previousView)
     }
     
     weak var lastHit: View?

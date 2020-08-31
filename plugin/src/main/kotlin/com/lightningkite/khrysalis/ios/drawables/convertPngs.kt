@@ -66,7 +66,7 @@ fun convertPngs(
             writer.appendln("")
             pngNames.forEach { pngName ->
                 val typeName = pngName
-                writer.appendln("static func $typeName(_ view: UIView? = nil) -> CAImageLayer { return CAImageLayer(UIImage(named: \"$pngName\")) }")
+                writer.appendln("static let $typeName: Drawable = Drawable { (view: UIView?) -> CALayer in CAImageLayer(UIImage(named: \"$pngName\")) }")
             }
             writer.appendln("")
             writer.appendln("}")

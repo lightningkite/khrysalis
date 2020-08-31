@@ -29,13 +29,13 @@ extension Observable where Observable.Element: OptionalConvertible {
 }
 
 //--- List<Observable<IN>>.combineLatest((List<IN>)->OUT)
-func kotlinCollectionsListCombineLatest<IN, OUT>(
+func xListCombineLatest<IN, OUT>(
     _ self: Array<Observable<IN>>,
     combine: @escaping (Array<IN>) -> OUT
 ) -> Observable<OUT> {
     return Observable.combineLatest(self, resultSelector: combine)
 }
-func kotlinCollectionsListCombineLatest<IN>(
+func xListCombineLatest<IN>(
     _ self: Array<Observable<IN>>
 ) -> Observable<Array<IN>> {
     return Observable.combineLatest(self)

@@ -18,9 +18,9 @@ public extension SwapView {
                 }
                 lastCount = value.count
                 if let newView = value.last?.generate(dependency: dependency) {
-                    self.swap(to: newView, animation: animation)
+                    self.swap(dependency: dependency, to: newView, animation: animation)
                 } else {
-                    self.swap(to: nil, animation: animation)
+                    self.swap(dependency: dependency, to: nil, animation: animation)
                 }
             })
         }.until(self.removed)

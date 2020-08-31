@@ -52,7 +52,7 @@ fun KotlinType.worksAsSwiftConstraint(): Boolean {
         is WrappedType -> false
         is SimpleType -> true
         is FlexibleType -> false //could work later?
-    } && this.arguments.all { it.type.arguments.isEmpty() }
+    } && this.arguments.all { it.type.arguments.isEmpty() && !(it.type.constructor.declarationDescriptor is TypeParameterDescriptor && it.type.isMarkedNullable) }
 }
 
 fun CallableDescriptor.worksAsSwiftConstraint(): Boolean {

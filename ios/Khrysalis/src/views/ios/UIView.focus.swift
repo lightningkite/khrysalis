@@ -13,9 +13,9 @@ import UIKit
 
 public extension UIView {
     
-    private func findNextChildFocus(afterIndex: Int = 0) -> UIView? {
-        var index = afterIndex + 1
-        while index < subviews.count {
+    private func findNextChildFocus(startingAtIndex: Int = 0) -> UIView? {
+        var index = startingAtIndex
+        while index < subviews.count - 1 {
             let sub = subviews[index]
             if sub is UITextField {
                 return sub
@@ -29,23 +29,27 @@ public extension UIView {
         return nil
     }
 
-    private func findNextParentFocus(afterIndex: Int = 0) -> UIView? {
-        if let child = findNextChildFocus(afterIndex: afterIndex) {
+    private func findNextParentFocus(startingAtIndex: Int = 0) -> UIView? {
+        if let child = findNextChildFocus(startingAtIndex: startingAtIndex) {
             return child
         }
 
         if let superview = superview {
             let myIndex = superview.subviews.firstIndex(of: self) ?? -1
-            return superview.findNextParentFocus(afterIndex: myIndex)
+            return superview.findNextParentFocus(startingAtIndex: myIndex + 1)
         }
 
         return nil
+    }
+    
+    func findFirstFocus() -> UIView? {
+        return findNextChildFocus()
     }
 
     func findNextFocus(afterIndex: Int = 0) -> UIView? {
         if let superview = superview {
             let myIndex = superview.subviews.firstIndex(of: self) ?? -1
-            return superview.findNextParentFocus(afterIndex: myIndex)
+            return superview.findNextParentFocus(startingAtIndex: myIndex + 1)
         }
 
         return nil

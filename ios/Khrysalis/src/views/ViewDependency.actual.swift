@@ -146,7 +146,7 @@ public class ViewDependency: NSObject {
 //                if let width = width, let height = height {
 //                    image = image.af_imageAspectScaled(toFit: CGSize(width: width, height: height))
 //                }
-                callback({ _ in CAImageLayer(image) })
+                callback(Drawable { _ in CAImageLayer(image) })
             } else {
                 callback(nil)
             }
@@ -155,20 +155,20 @@ public class ViewDependency: NSObject {
 
     //--- ViewDependency.checkedDrawable(Drawable, Drawable)
     public func checkedDrawable(
-        checked: @escaping Drawable,
-        normal: @escaping Drawable
+        checked: Drawable,
+        normal: Drawable
     ) -> Drawable {
         return checkedDrawable(checked, normal)
     }
     public func checkedDrawable(
-        _ checked: @escaping Drawable,
-        _ normal: @escaping Drawable
+        _ checked: Drawable,
+        _ normal: Drawable
     ) -> Drawable {
-        return { view in
+        return Drawable { view in
             let layer = CALayer()
 
-            let checkedLayer = checked(view)
-            let normalLayer = normal(view)
+            let checkedLayer = checked.makeLayer(view)
+            let normalLayer = normal.makeLayer(view)
 
             layer.addOnStateChange(view) { [unowned layer] state in
                 layer.sublayers?.forEach { $0.removeFromSuperlayer() }
@@ -190,12 +190,12 @@ public class ViewDependency: NSObject {
     }
 
     //--- ViewDependency.setSizeDrawable(Drawable, Int, Int)
-    public func setSizeDrawable(drawable: @escaping Drawable, width: Int, height: Int) -> Drawable {
+    public func setSizeDrawable(drawable: Drawable, width: Int, height: Int) -> Drawable {
         return setSizeDrawable(drawable, width, height)
     }
-    public func setSizeDrawable(_ drawable: @escaping Drawable, _ width: Int, _ height: Int) -> Drawable {
-        return { view in
-            let existing = drawable(view)
+    public func setSizeDrawable(_ drawable: Drawable, _ width: Int, _ height: Int) -> Drawable {
+        return Drawable { view in
+            let existing = drawable.makeLayer(view)
             existing.resize(CGRect(x: 0, y: 0, width: width, height: height))
             return existing
         }

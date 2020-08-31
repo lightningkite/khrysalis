@@ -7,21 +7,21 @@ public extension UIButtonWithLayer {
     var compoundDrawable: Drawable? {
         get {
             if let iconLayer = iconLayer {
-                return { _ in iconLayer }
+                return Drawable { _ in iconLayer }
             } else {
                 return nil
             }
         }
         set(value) {
             if let value = value {
-                iconLayer = value(self)
+                iconLayer = value.makeLayer(self)
             } else {
                 iconLayer = nil
             }
         }
     }
     
-    func setImageResource(_ image: @escaping DrawableResource ) {
+    func setImageResource(_ image: DrawableResource ) {
         self.compoundDrawable = image
         self.notifyParentSizeChanged()
     }

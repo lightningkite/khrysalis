@@ -783,6 +783,7 @@ val PropertyDescriptor.tsFunctionGetName: String?
             .type
             .getJetTypeFqName(false)
             .split('.')
+            .dropWhile { it.firstOrNull()?.isUpperCase() != true }
             .joinToString("") { it.capitalize() }
             .plus(this.name.identifier.capitalize())
         else -> when (this.containingDeclaration) {
@@ -800,6 +801,7 @@ val PropertyDescriptor.tsFunctionSetName: String?
             .type
             .getJetTypeFqName(false)
             .split('.')
+            .dropWhile { it.firstOrNull()?.isUpperCase() != true }
             .joinToString("") { it.capitalize() }
             .plus(this.name.identifier.capitalize())
         else -> when (this.containingDeclaration) {

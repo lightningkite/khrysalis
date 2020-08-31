@@ -12,6 +12,35 @@ import UIKit
 
 // MARK: - Extensions to make view controller keyboard-aware.
 // Move these to a separate file if you want
+
+public extension ViewDependency {
+    func runKeyboardUpdate(root: UIView? = nil, discardingRoot: UIView? = nil) {
+        let currentFocus = UIResponder.current as? UIView
+        var dismissOld = false
+        if let currentFocus = currentFocus {
+            if let discardingRoot = discardingRoot, discardingRoot.contains(currentFocus) {
+                //We're discarding the focus
+                dismissOld = true
+            }
+        }
+        if let root = root, let keyboardView = root.findFirstFocus() {
+            keyboardView.requestFocus()
+            dismissOld = false
+        }
+        if dismissOld {
+            self.parentViewController.view.endEditing(true)
+        }
+    }
+}
+
+private extension UIView {
+    func contains(other: UIView?) -> Bool {
+        if self === other { return true }
+        guard let other = other else { return false }
+        return self.contains(other: other.superview)
+    }
+}
+
 public extension UIView {
     var firstResponder: UIView? {
         guard !isFirstResponder else { return self }

@@ -29,7 +29,7 @@ fun convertVectorDrawable(name: String, node: XmlNode, out: Appendable) {
     val height = node.attributeAsDouble("android:height") ?: 0.0
 
     with(out) {
-        appendln("static func $name(_ view: UIView? = nil) -> CALayer {")
+        appendln("static let $name: Drawable = Drawable { (view: UIView?) -> CALayer in ")
         appendln("    let scaleX: CGFloat = CGFloat(${node.attributeAsSwiftDimension("android:width") ?: "10"}) / ${node.attributeAsDouble("android:viewportWidth") ?: "10"}")
         appendln("    let scaleY: CGFloat = CGFloat(${node.attributeAsSwiftDimension("android:height") ?: "10"}) / ${node.attributeAsDouble("android:viewportHeight") ?: "10"}")
         appendln("    let layer = CALayer()")

@@ -11,14 +11,14 @@ public extension View {
     var backgroundDrawable: Drawable? {
         set(value){
             if let value = value {
-                backgroundLayer = value(self)
+                backgroundLayer = value.makeLayer(self)
             } else {
                 backgroundLayer = nil
             }
         }
         get {
             if let backgroundLayer = backgroundLayer {
-                return { _ in backgroundLayer }
+                return Drawable { _ in backgroundLayer }
             } else {
                 return nil
             }
