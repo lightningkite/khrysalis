@@ -16,6 +16,16 @@ interface PayloadNotification extends NotificationOptions {
     title: string
 }
 
+function checkNotificationPromise() {
+    try {
+        Notification.requestPermission().then();
+    } catch(e) {
+        return false;
+    }
+
+    return true;
+}
+
 //! Declares com.lightningkite.khrysalis.fcm.Notifications
 export class Notifications {
     static INSTANCE = new Notifications();
@@ -23,7 +33,7 @@ export class Notifications {
     handler: ForegroundNotificationHandler | null = null
     fcmPublicKey?: string
     request(firebaseAppName?: string){
-        Notification.requestPermission().then((x)=>{
+        let onResult = (x: NotificationPermission)=>{
             if(x == "granted"){
                 const messaging = firebase.messaging(firebase.app());
                 if(this.fcmPublicKey) {
@@ -56,6 +66,11 @@ export class Notifications {
                     }
                 });
             }
-        });
+        }
+        if(checkNotificationPromise()){
+            Notification.requestPermission().then(onResult);
+        } else {
+            Notification.requestPermission(onResult);
+        }
     }
 }

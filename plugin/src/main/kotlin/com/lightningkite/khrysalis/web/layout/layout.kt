@@ -7,12 +7,20 @@ import com.lightningkite.khrysalis.web.attributeAsCssDimension
 
 internal fun HtmlTranslator.layout() {
 
-    fun handleCommonLayoutStuff(rule: XmlNode, child: ResultNode, container: ResultNode) {
+    fun handleCommonLayoutStuff(
+        rule: XmlNode,
+        child: ResultNode,
+        container: ResultNode,
+        skipMatchWidth: Boolean = false,
+        skipMatchHeight: Boolean = false
+    ) {
         rule.allAttributes["android:layout_width"]?.let { value ->
             when (value) {
                 "match_parent" -> {
-                    child.style["width"] = "100%"
-                    container.style["width"] = "100%"
+                    if (!skipMatchWidth) {
+                        child.style["width"] = "100%"
+                        container.style["width"] = "100%"
+                    }
                 }
                 "wrap_content" -> {
                 }
@@ -30,8 +38,10 @@ internal fun HtmlTranslator.layout() {
         rule.allAttributes["android:layout_height"]?.let { value ->
             when (value) {
                 "match_parent" -> {
-                    child.style["height"] = "100%"
-                    container.style["height"] = "100%"
+                    if (!skipMatchHeight) {
+                        child.style["height"] = "100%"
+                        container.style["height"] = "100%"
+                    }
                 }
                 "wrap_content" -> {
                 }
@@ -107,34 +117,51 @@ internal fun HtmlTranslator.layout() {
             child.parent = container
             element.translate(subrule, child)
             container.contentNodes += child
-            handleCommonLayoutStuff(subrule, child, container)
-            (subrule.allAttributes["android:layout_gravity"])?.let { value ->
-                if (isVertical) horizontalGravity(value) else verticalGravity(value)
-            }
-                ?.alignDirection
-                ?.let {
-                    container.style["align-self"] = when (it) {
-                        AlignDirection.START -> "flex-start"
-                        AlignDirection.END -> "flex-end"
-                        AlignDirection.CENTER -> "center"
-                    }
+            val useAlignStretch = if (isVertical)
+                subrule.allAttributes["android:layout_width"] == "match_parent"
+            else
+                subrule.allAttributes["android:layout_height"] == "match_parent"
+            if (useAlignStretch) {
+                container.style["align-self"] = "stretch"
+            } else {
+                (subrule.allAttributes["android:layout_gravity"])?.let { value ->
+                    if (isVertical) horizontalGravity(value) else verticalGravity(value)
                 }
-
+                    ?.alignDirection
+                    ?.let {
+                        container.style["align-self"] = when (it) {
+                            AlignDirection.START -> "flex-start"
+                            AlignDirection.END -> "flex-end"
+                            AlignDirection.CENTER -> "center"
+                        }
+                    }
+            }
+            handleCommonLayoutStuff(
+                rule = subrule,
+                child = child,
+                container = container,
+                skipMatchWidth = useAlignStretch,
+                skipMatchHeight = useAlignStretch
+            )
             container
         })
     }
     element.handle("FrameLayout") {
-        out.style["position"] = "relative"
+        out.classes.add("khrysalis-box")
+        val supercontainer = ResultNode()
+        out.primary = supercontainer
+        supercontainer.parent = out
+        out.contentNodes.add(supercontainer)
+        supercontainer.style["position"] = "relative"
         val parentGravityString = rule.allAttributes["android:gravity"]
-        out.contentNodes.addAll(rule.children.mapIndexed { index, subrule ->
+        supercontainer.contentNodes.addAll(rule.children.mapIndexed { index, subrule ->
             val container = ResultNode("div")
             container.classes.add("khrysalis-box")
-            container.parent = out
+            container.parent = supercontainer
             val child = ResultNode()
             child.parent = container
             element.translate(subrule, child)
             container.contentNodes += child
-            handleCommonLayoutStuff(subrule, child, container)
             val childGravityString = subrule.allAttributes["android:layout_gravity"]
             val horz = (childGravityString?.let { horizontalGravity(it) }
                 ?: parentGravityString?.let { horizontalGravity(it) }
@@ -143,11 +170,20 @@ internal fun HtmlTranslator.layout() {
                 ?: parentGravityString?.let { verticalGravity(it) }
                 ?: Gravity.START_LOCAL).alignDirection
 
-            val relativeSizing = rule.allAttributes["android:layout_width"] == "wrap_content" || rule.allAttributes["android:layout_height"] == "wrap_content"
+            val relativeSizing =
+                rule.allAttributes["android:layout_width"] == "wrap_content" || rule.allAttributes["android:layout_height"] == "wrap_content"
             if (index == 0 && relativeSizing) {
                 //Do nothing - things are placed relative to this anyways
+                handleCommonLayoutStuff(
+                    subrule,
+                    child,
+                    container,
+                    skipMatchWidth = rule.allAttributes["android:layout_width"] == "wrap_content",
+                    skipMatchHeight = rule.allAttributes["android:layout_height"] == "wrap_content"
+                )
             } else {
-                container.style["position"] = if(index == 0) "relative" else "absolute"
+                handleCommonLayoutStuff(subrule, child, container)
+                container.style["position"] = "absolute"
                 if (vert == AlignDirection.CENTER && horz == AlignDirection.CENTER) {
                     container.style["transform"] = "translateX(-50%) translateY(-50%)"
                     container.style["left"] = "50%"
@@ -190,12 +226,12 @@ internal fun HtmlTranslator.layout() {
         out.classes.add("khrysalis-view-flipper")
         defer("FrameLayout")
     }
-    element.handle("com.lightningkite.khrysalis.views.android.SwapView"){
+    element.handle("com.lightningkite.khrysalis.views.android.SwapView") {
         out.name = "div"
         out.classes += "khrysalis-swap"
     }
 
-    element.handle("androidx.viewpager.widget.ViewPager"){
+    element.handle("androidx.viewpager.widget.ViewPager") {
         out.name = "div"
         out.classes += "khrysalis-pager"
         out.contentNodes += ResultNode("div").apply {
@@ -250,24 +286,24 @@ internal fun HtmlTranslator.layout() {
     }
 
     attribute.handle("android:padding") {
-        rule.value.asCssDimension()?.let { out.style["padding"] = it }
+        rule.value.asCssDimension()?.let { out.containerNode.style["padding"] = it }
     }
     attribute.handle("android:paddingLeft") {
-        rule.value.asCssDimension()?.let { out.style["padding-left"] = it }
+        rule.value.asCssDimension()?.let { out.containerNode.style["padding-left"] = it }
     }
     attribute.handle("android:paddingRight") {
-        rule.value.asCssDimension()?.let { out.style["padding-right"] = it }
+        rule.value.asCssDimension()?.let { out.containerNode.style["padding-right"] = it }
     }
     attribute.handle("android:paddingStart") {
-        rule.value.asCssDimension()?.let { out.style["padding-left"] = it }
+        rule.value.asCssDimension()?.let { out.containerNode.style["padding-left"] = it }
     }
     attribute.handle("android:paddingEnd") {
-        rule.value.asCssDimension()?.let { out.style["padding-right"] = it }
+        rule.value.asCssDimension()?.let { out.containerNode.style["padding-right"] = it }
     }
     attribute.handle("android:paddingTop") {
-        rule.value.asCssDimension()?.let { out.style["padding-top"] = it }
+        rule.value.asCssDimension()?.let { out.containerNode.style["padding-top"] = it }
     }
     attribute.handle("android:paddingBottom") {
-        rule.value.asCssDimension()?.let { out.style["padding-bottom"] = it }
+        rule.value.asCssDimension()?.let { out.containerNode.style["padding-bottom"] = it }
     }
 }

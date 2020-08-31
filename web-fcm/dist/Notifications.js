@@ -6,6 +6,15 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const StandardObservableProperty_shared_1 = require("khrysalis/dist/observables/StandardObservableProperty.shared");
 const firebase_1 = __importDefault(require("firebase"));
 const ForegroundNotificationHandler_shared_1 = require("./ForegroundNotificationHandler.shared");
+function checkNotificationPromise() {
+    try {
+        Notification.requestPermission().then();
+    }
+    catch (e) {
+        return false;
+    }
+    return true;
+}
 //! Declares com.lightningkite.khrysalis.fcm.Notifications
 class Notifications {
     constructor() {
@@ -13,7 +22,7 @@ class Notifications {
         this.handler = null;
     }
     request(firebaseAppName) {
-        Notification.requestPermission().then((x) => {
+        let onResult = (x) => {
             if (x == "granted") {
                 const messaging = firebase_1.default.messaging(firebase_1.default.app());
                 if (this.fcmPublicKey) {
@@ -47,7 +56,13 @@ class Notifications {
                     }
                 });
             }
-        });
+        };
+        if (checkNotificationPromise()) {
+            Notification.requestPermission().then(onResult);
+        }
+        else {
+            Notification.requestPermission(onResult);
+        }
     }
 }
 exports.Notifications = Notifications;
