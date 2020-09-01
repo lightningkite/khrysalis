@@ -8,6 +8,7 @@ import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory
 import com.google.android.exoplayer2.util.Util
 import com.lightningkite.khrysalis.*
 import com.lightningkite.khrysalis.observables.ObservableProperty
+import com.lightningkite.khrysalis.observables.observable
 import com.lightningkite.khrysalis.observables.observableNN
 import com.lightningkite.khrysalis.observables.subscribeBy
 import com.lightningkite.khrysalis.rx.removed
@@ -23,10 +24,16 @@ fun PlayerView.bind(video: ObservableProperty<Video?>) {
     bindVideoToView(this, video)
 }
 
-fun bindVideoToView(view:PlayerView, video: ObservableProperty<Video?>){
+private fun bindVideoToView(view:PlayerView, video: ObservableProperty<Video?>){
     val player: SimpleExoPlayer = SimpleExoPlayer.Builder(view.context).build()
     view.player = player
-    video.observableNN.doOnDispose { player.release() }.subscribe { video ->
+    video.observable.doOnDispose { player.release() }.subscribe { videoBox ->
+        val video = videoBox.value
+        if(video == null) {
+            player.stop()
+            player.clearVideoSurface()
+            return@subscribe
+        }
         when (video) {
             is VideoReference -> {
                 val agent = Util.getUserAgent(view.context, view.context.getString(R.string.app_name))
@@ -54,10 +61,16 @@ fun PlayerView.bindAndStart(video: ObservableProperty<Video?>) {
     bindVideoToViewAndStart(this, video)
 }
 
-fun bindVideoToViewAndStart(view:PlayerView, video:ObservableProperty<Video?>){
+private fun bindVideoToViewAndStart(view:PlayerView, video:ObservableProperty<Video?>){
     val player: SimpleExoPlayer = SimpleExoPlayer.Builder(view.context).build()
     view.player = player
-    video.observableNN.doOnDispose { player.release() }.subscribe { video ->
+    video.observable.doOnDispose { player.release() }.subscribe { videoBox ->
+        val video = videoBox.value
+        if(video == null) {
+            player.stop()
+            player.clearVideoSurface()
+            return@subscribe
+        }
         when (video) {
             is VideoReference -> {
                 val agent = Util.getUserAgent(view.context, view.context.getString(R.string.app_name))

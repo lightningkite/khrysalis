@@ -1,5 +1,19 @@
 # To Do List
 
+## Short Term
+
+- [X] Android Video Thumbnail Generation Async
+- [ ] iOS Video Player
+    - [ ] Layout
+    - [ ] Binding
+- [ ] iOS Google Places Autocomplete
+- [ ] iOS Horizontal Progress Bar
+- [ ] iOS Video Thumbnail Generation
+- [ ] iOS Image toHttpBody
+- [ ] iOS Uri toHttpBody
+
+## Long Term
+
 These are the upcoming objectives for development:
 
 ## Documentation

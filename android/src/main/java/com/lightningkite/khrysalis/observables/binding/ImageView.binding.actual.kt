@@ -8,23 +8,8 @@ import com.lightningkite.khrysalis.*
 import com.lightningkite.khrysalis.observables.*
 import com.lightningkite.khrysalis.rx.removed
 import com.lightningkite.khrysalis.rx.until
-import com.lightningkite.khrysalis.views.loadImageAlt
+import com.lightningkite.khrysalis.views.loadImage
 import com.lightningkite.khrysalis.views.loadVideoThumbnail
-
-
-/**
- *
- * Loads the image into the imageview the function is called on.
- * An image can be from multiple sources, such as the web, an android image reference,
- * and a direct bitmap. It will handle all cases and load the image.
- *
- */
-@Deprecated(
-    "Use the one in the 'views' package instead.",
-    ReplaceWith("this.loadImage(image)", "com.lightningkite.khrysalis.views.loadImage")
-)
-fun ImageView.loadImage(image: Image?) = loadImageAlt(image)
-
 
 /**
  *
@@ -37,13 +22,15 @@ fun ImageView.loadImage(image: Image?) = loadImageAlt(image)
 fun ImageView.bindImage(image: ObservableProperty<Image?>) {
     image.subscribeBy { it ->
         post {
-            this.loadImageAlt(it)
+            this.loadImage(it)
         }
     }.until(this.removed)
 }
 
 fun ImageView.bindVideoThumbnail(video: ObservableProperty<Video?>) {
     video.subscribeBy {
-        this.loadVideoThumbnail(it)
+        post {
+            this.loadVideoThumbnail(it)
+        }
     }.until(removed)
 }

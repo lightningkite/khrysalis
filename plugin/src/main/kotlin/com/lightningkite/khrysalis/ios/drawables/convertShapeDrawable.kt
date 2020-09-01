@@ -33,7 +33,7 @@ fun convertShapeDrawable(name: String, node: XmlNode, out: Appendable) {
                     appendln("    return gradient")
                     appendln("}")
                 } ?: run {
-                    appendln("static func $name(_ view: UIView? = nil) -> CAShapeLayer {")
+                    appendln("static let $name: Drawable = Drawable { (view: UIView?) -> CALayer in ")
                     appendln("    let layer = CAShapeLayer()")
                     appendln("    layer.path = CGPath(ellipseIn: CGRect(x: 0, y: 0, width: $width, height: $height), transform: nil)")
                     node.children.find { it.name == "stroke" }?.let {
