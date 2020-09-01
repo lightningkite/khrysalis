@@ -411,8 +411,24 @@ public extension String {
     func remove(sequence:String) -> String{
         return remove(sequence)
     }
+    
+    func drop(n:Int) -> String{
+        if n >= self.count{
+            return ""
+        } else{
+            return substring(startIndex:n)
+        }
+    }
+    func drop(_ n: Int) -> String{
+        return drop(n:n)
+    }
 }
 
+public extension Character{
+    func isDigit()->Bool{
+        return self.isNumber
+    }
+}
 
 public extension StringProtocol {
     func indexOf(string: Self, startIndex: Int = 0, ignoreCase: Bool = true) -> Int {
@@ -518,3 +534,5 @@ public class WeakReference<T: AnyObject> {
         return item
     }
 }
+
+

@@ -5,7 +5,7 @@ import UIKit
 
 //--- TabLayout.bind(List<String>, MutableObservableProperty<Int>)
 public extension UISegmentedControl {
-    func bind(_ tabs: Array<String>, _ selected: MutableObservableProperty<Int>) -> Void {
+    func bind(_ tabs: Array<String>, _ selected: MutableObservableProperty<Int>, _ allowReselect:Bool = false) -> Void {
         self.removeAllSegments()
         for entry in tabs {
             self.insertSegment(withTitle: entry, at: self.numberOfSegments, animated: false)
@@ -17,10 +17,10 @@ public extension UISegmentedControl {
             self.selectedSegmentIndex = Int(value)
         }.until(self.removed)
     }
-    func bind(tabs: Array<String>, selected: MutableObservableProperty<Int>) -> Void {
+    func bind(tabs: Array<String>, selected: MutableObservableProperty<Int>, allowReselect:Bool = false) -> Void {
         return bind(tabs, selected)
     }
-    func bind<T: Equatable>(_ tabs: Array<T>, _ selected: MutableObservableProperty<T>, _ toString: @escaping (T)->String) -> Void {
+    func bind<T: Equatable>(_ tabs: Array<T>, _ selected: MutableObservableProperty<T>, _ allowReselect:Bool = false, _ toString: @escaping (T)->String) -> Void {
         self.removeAllSegments()
         for entry in tabs {
             self.insertSegment(withTitle: toString(entry), at: self.numberOfSegments, animated: false)
@@ -32,7 +32,27 @@ public extension UISegmentedControl {
             self.selectedSegmentIndex = tabs.firstIndex(of: value) ?? 0
         }.until(self.removed)
     }
-    func bind<T: Equatable>(tabs: Array<T>, selected: MutableObservableProperty<T>, toString: @escaping (T)->String) -> Void {
-        return bind(tabs, selected, toString)
+    func bind<T: Equatable>(tabs: Array<T>, selected: MutableObservableProperty<T>, allowReselect:Bool = false, toString: @escaping (T)->String) -> Void {
+        return bind(tabs, selected, allowReselect, toString)
+    }
+    
+    func bind<T:Equatable>(options:ObservableProperty<Array<T>>, selected: MutableObservableProperty<T>, allowReselect:Bool = false, toString: @escaping (T)->String) -> Void{
+        options.subscribeBy(
+            onNext:{tabs in
+                self.removeAllSegments()
+                for entry in tabs {
+                    self.insertSegment(withTitle: toString(entry), at: self.numberOfSegments, animated: false)
+                }
+                self.addAction(for: .valueChanged, action: { [weak self, weak selected] in
+                    selected?.value = tabs[self?.selectedSegmentIndex ?? 0]
+                })
+                selected.subscribeBy { value in
+                    self.selectedSegmentIndex = tabs.firstIndex(of: value) ?? 0
+                }.until(self.removed)
+        }).until(self.removed)
+    }
+    
+    func bind<T:Equatable>(_ options:ObservableProperty<Array<T>>, _ selected: MutableObservableProperty<T>, _ allowReselect:Bool = false, _ toString: @escaping (T)->String) -> Void{
+        bind(options:options, selected:selected, allowReselect: allowReselect, toString: toString)
     }
 }

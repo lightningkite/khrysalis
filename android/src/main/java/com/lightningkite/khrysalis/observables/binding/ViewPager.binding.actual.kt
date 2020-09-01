@@ -58,7 +58,7 @@ fun <T> ViewPager.bind(
  *
  */
 fun <T> ViewPager.bind(
-    items: ObservableProperty<List<T>>,
+    data: ObservableProperty<List<T>>,
     defaultValue: T,
     showIndex: MutableObservableProperty<Int> = StandardObservableProperty(0),
     makeView: (ObservableProperty<T>)->View
@@ -67,10 +67,10 @@ fun <T> ViewPager.bind(
 
         override fun isViewFromObject(p0: View, p1: Any): Boolean = p1 == p0
 
-        override fun getCount(): Int = items.value.size
+        override fun getCount(): Int = data.value.size
 
         override fun instantiateItem(container: ViewGroup, position: Int): Any {
-            val view = makeView(items.map { it.getOrElse(position){ defaultValue } })
+            val view = makeView(data.map { it.getOrElse(position){ defaultValue } })
             container.addView(view)
             return view
         }
@@ -80,7 +80,7 @@ fun <T> ViewPager.bind(
         }
     }
 
-    items.subscribeBy { list ->
+    data.subscribeBy { list ->
         adapter!!.notifyDataSetChanged()
         this.currentItem
     }.until(this.removed)

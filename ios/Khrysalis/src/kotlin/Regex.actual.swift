@@ -42,3 +42,10 @@ public extension NSRegularExpression {
         return (0...matches.count).map {String(input[ranges[$0].upperBound..<ranges[$0+1].lowerBound])}
     }
 }
+
+public extension String {
+    func matches(regex:NSRegularExpression)->Bool{
+        let result = regex.matchEntire(self)
+        return result != nil
+    }
+}

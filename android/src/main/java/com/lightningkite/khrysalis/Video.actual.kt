@@ -30,7 +30,7 @@ fun Video.thumbnail(timeMs: Long = 2000L, size: PointF? = null): Single<ImageBit
                 em.onSuccess(
                     ImageBitmap(
                         mMMR.getScaledFrameAtTime(
-                            timeMs * 1000L,
+                            timeMs ,
                             MediaMetadataRetriever.OPTION_CLOSEST_SYNC,
                             size.x.toInt(),
                             size.y.toInt()
@@ -38,7 +38,7 @@ fun Video.thumbnail(timeMs: Long = 2000L, size: PointF? = null): Single<ImageBit
                     )
                 )
             } else {
-                em.onSuccess(ImageBitmap(mMMR.getFrameAtTime(timeMs * 1000L)))
+                em.onSuccess(ImageBitmap(mMMR.getFrameAtTime(timeMs)))
             }
         } catch (e: Exception) {
             em.onError(e)
