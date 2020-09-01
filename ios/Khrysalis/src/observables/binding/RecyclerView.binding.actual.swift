@@ -6,6 +6,10 @@ import UIKit
 //--- RecyclerView.whenScrolledToEnd(()->Unit)
 public extension UITableView {
     func whenScrolledToEnd(_ action: @escaping () -> Void) -> Void {
+        whenScrolledToEnd(action:action)
+    }
+    
+    func whenScrolledToEnd(action: @escaping () -> Void) -> Void{
         if let delegate = delegate as? HasAtEnd {
             delegate.setAtEnd(action: action)
         }
