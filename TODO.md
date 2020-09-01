@@ -3,12 +3,12 @@
 ## Short Term
 
 - [X] Android Video Thumbnail Generation Async
-- [ ] iOS Video Player
-    - [ ] Layout
-    - [ ] Binding
+- [X] iOS Video Player
+    - [X] Layout
+    - [X] Binding
+- [X] iOS Video Thumbnail Generation
 - [ ] iOS Google Places Autocomplete
 - [ ] iOS Horizontal Progress Bar
-- [ ] iOS Video Thumbnail Generation
 - [ ] iOS Image toHttpBody
 - [ ] iOS Uri toHttpBody
 
