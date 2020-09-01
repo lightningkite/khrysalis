@@ -258,13 +258,8 @@ fun ViewDependency.requestVideoCamera(
             intent.putExtra(MediaStore.EXTRA_OUTPUT, file)
             //TODO:Test this on an older device. This works on newest, but we need to make sure it works/doesn't crash a newer one.
             if (front) {
-//                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP_MR1) {
-
                 intent.putExtra("android.intent.extras.LENS_FACING_FRONT", 1)
-//                }else{
                 intent.putExtra("android.intent.extras.CAMERA_FACING", 1)
-
-//                }
                 intent.putExtra("android.intent.extra.USE_FRONT_CAMERA", true)
             }
             startIntent(intent) { code, result ->

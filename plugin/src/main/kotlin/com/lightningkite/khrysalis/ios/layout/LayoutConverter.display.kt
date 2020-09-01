@@ -89,6 +89,8 @@ val LayoutConverter.Companion.displayViews
 //                "view.transform = CGAffineTransform(rotationAngle: ${it * PI / 180.0}"
 //            }
             },
+            ViewType("com.lightningkite.khrysalis.views.VideoPlayer", "UIVideoView", "View") { node ->
+            },
             ViewType("de.hdodenhof.circleimageview.CircleImageView", "UIImageView", "ImageView") { node ->
 
                 appendln("view.addOnLayoutSubviews { [weak view] in")

@@ -22,89 +22,107 @@ public extension ViewDependency {
         return new
     }
 
-    //--- ViewDependency.requestImageGallery((URL)->Unit)
-    public func requestImageGallery(callback: @escaping (URL) -> Void) {
+    private func withLibraryPermission(action: @escaping ()->Void) {
         if PHPhotoLibrary.authorizationStatus() == .authorized {
-            self.requestImageGalleryRaw(callback: callback)
+            action()
         } else {
             PHPhotoLibrary.requestAuthorization {_ in
                 DispatchQueue.main.async {
-                    self.requestImageGalleryRaw(callback: callback)
+                    action()
                 }
             }
         }
     }
-    private func requestImageGalleryRaw(callback: @escaping (URL) -> Void) {
-        if UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum){
-            let imageDelegate = self.imageDelegate
-            imageDelegate.onImagePicked = callback
-            imageDelegate.prepareGallery()
-            self.parentViewController.present(imageDelegate.imagePicker, animated: true, completion: nil)
+    //--- ViewDependency.requestImageGallery((URL)->Unit)
+    func requestImageGallery(callback: @escaping (URL) -> Void) {
+        withLibraryPermission {if UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum){
+                let imageDelegate = self.imageDelegate
+                imageDelegate.forImages()
+                imageDelegate.onImagePicked = callback
+                imageDelegate.prepareGallery()
+                self.parentViewController.present(imageDelegate.imagePicker, animated: true, completion: nil)
+            }
         }
     }
-
-    //--- ViewDependency.requestImageCamera(Boolean, (URL)->Unit)
-
+    
     //--- ViewDependency.requestVideoGallery((URL)->Unit)
-    func requestVideoGallery(_ callback: (URL) -> Void) -> Void {
-        TODO()
-    }
-    func requestVideoGallery(callback: (URL) -> Void) -> Void {
-        TODO()
+    func requestVideoGallery(callback: @escaping (URL) -> Void) -> Void {
+        withLibraryPermission {if UIImagePickerController.isSourceTypeAvailable(.savedPhotosAlbum){
+                let imageDelegate = self.imageDelegate
+                imageDelegate.forVideo()
+                imageDelegate.onImagePicked = callback
+                imageDelegate.prepareGallery()
+                self.parentViewController.present(imageDelegate.imagePicker, animated: true, completion: nil)
+            }
+        }
     }
 
 
     //--- ViewDependency.requestVideosGallery((List<URL>)->Unit)
-    func requestVideosGallery(_ callback: (Array<URL>) -> Void) -> Void {
-        TODO()
-    }
-    
-    func requestVideosGallery(callback: (Array<URL>) -> Void) -> Void {
-        TODO()
+    func requestVideosGallery(callback: @escaping (Array<URL>) -> Void) -> Void {
+        if PHPhotoLibrary.authorizationStatus() == .authorized {
+            self.requestImagesGalleryRaw(type: .allVideos, callback: callback)
+        } else {
+            PHPhotoLibrary.requestAuthorization {_ in
+                DispatchQueue.main.async {
+                    self.requestImagesGalleryRaw(type: .allVideos, callback: callback)
+                }
+            }
+        }
     }
 
 
     //--- ViewDependency.requestVideoCamera(Boolean, (URL)->Unit)
-    func requestVideoCamera(_ front: Bool, _ callback: (URL) -> Void) -> Void {
-        TODO()
-    }
-    func requestVideoCamera(front: Bool, callback: (URL) -> Void) -> Void {
-        return requestVideoCamera(front, callback)
+    func requestVideoCamera(front: Bool = false, callback: @escaping (URL) -> Void) -> Void {
+        withCameraPermission {
+            DispatchQueue.main.async {
+                if UIImagePickerController.isSourceTypeAvailable(.camera){
+                    if(UIImagePickerController.availableMediaTypes(for: .camera)?.contains("public.movie") == true) {
+                        let imageDelegate = self.imageDelegate
+                        imageDelegate.onImagePicked = callback
+                        imageDelegate.forVideo()
+                        imageDelegate.prepareCamera(front: front)
+                        self.parentViewController.present(imageDelegate.imagePicker, animated: true, completion: nil)
+                    }
+                }
+            }
+        }
     }
 
     //--- ViewDependency.requestMediasGallery((List<URL>)->Unit)
-    func requestMediasGallery(_ callback: (Array<URL>) -> Void) -> Void {
-        TODO()
+    func requestMediasGallery(callback: @escaping (Array<URL>) -> Void) -> Void {
+        if PHPhotoLibrary.authorizationStatus() == .authorized {
+            self.requestImagesGalleryRaw(type: .allAssets, callback: callback)
+        } else {
+            PHPhotoLibrary.requestAuthorization {_ in
+                DispatchQueue.main.async {
+                    self.requestImagesGalleryRaw(type: .allAssets, callback: callback)
+                }
+            }
+        }
     }
     
-    func requestMediasGallery(callback: (Array<URL>) -> Void) -> Void {
-        TODO()
-    }
     //--- ViewDependency.requestMediaGallery((URL)->Unit)
-    func requestMediaGallery(_ callback: (URL) -> Void) -> Void {
-        TODO()
-    }
-    
-    func requestMediaGallery(callback: (URL) -> Void) -> Void {
-        TODO()
+    func requestMediaGallery(callback: @escaping (URL) -> Void) -> Void {
+        
     }
 
 
     //--- ViewDependency.requestImagesGallery((List<URL>)->Unit)
     public func requestImagesGallery(callback: @escaping (Array<URL>) -> Void) -> Void {
         if PHPhotoLibrary.authorizationStatus() == .authorized {
-            self.requestImagesGalleryRaw(callback: callback)
+            self.requestImagesGalleryRaw(type: .allPhotos, callback: callback)
         } else {
             PHPhotoLibrary.requestAuthorization {_ in
                 DispatchQueue.main.async {
-                    self.requestImagesGalleryRaw(callback: callback)
+                    self.requestImagesGalleryRaw(type: .allPhotos, callback: callback)
                 }
             }
         }
     }
-    private func requestImagesGalleryRaw(callback: @escaping (Array<URL>) -> Void) {
+    private func requestImagesGalleryRaw(type: DKImagePickerControllerAssetType, callback: @escaping (Array<URL>) -> Void) {
         let pickerController = DKImagePickerController()
-        pickerController.assetType = .allPhotos
+        pickerController.assetType = type
         pickerController.didSelectAssets = { (assets: [DKAsset]) in
             print("didSelectAssets")
             print(assets)
@@ -113,7 +131,7 @@ public extension ViewDependency {
             var remaining = assets.count
             print("Assets remaining: \(remaining)")
             for item in assets {
-                getUrl(editedImage: nil, originalImage: nil, asset: item.originalAsset, callback: { url in
+                item.originalAsset!.getUrl { url in
                     remaining -= 1
                     print("Assets remaining: \(remaining)")
                     if let url = url {
@@ -125,7 +143,7 @@ public extension ViewDependency {
                         print("Finish")
                         callback(result)
                     }
-                })
+                }
             }
         }
         self.parentViewController.present(pickerController, animated: true){}
@@ -133,16 +151,31 @@ public extension ViewDependency {
 
     //--- ViewDependency.requestImageCamera((URL)->Unit)
     public func requestImageCamera(front:Bool = false, callback: @escaping (URL) -> Void) {
+        withCameraPermission {
+            DispatchQueue.main.async {
+                if UIImagePickerController.isSourceTypeAvailable(.camera){
+                    if(UIImagePickerController.availableMediaTypes(for: .camera)?.contains("public.image") == true) {
+                        let imageDelegate = self.imageDelegate
+                        imageDelegate.onImagePicked = callback
+                        imageDelegate.forImages()
+                        imageDelegate.prepareCamera(front: front)
+                        self.parentViewController.present(imageDelegate.imagePicker, animated: true, completion: nil)
+                    }
+                }
+            }
+        }
+    }
+    private func withCameraPermission(action: @escaping ()->Void) {
         DispatchQueue.main.async {
             if AVCaptureDevice.authorizationStatus(for: .video) == .authorized {
                 AVCaptureDevice.requestAccess(for: .video) { granted in
                     DispatchQueue.main.async {
                         if granted {
                             if PHPhotoLibrary.authorizationStatus() == .authorized {
-                                self.requestImageCameraRaw(front:front, callback: callback)
+                                action()
                             } else {
                                 PHPhotoLibrary.requestAuthorization {_ in
-                                    self.requestImageCameraRaw(front:front, callback: callback)
+                                    action()
                                 }
                             }
                         }
@@ -153,10 +186,10 @@ public extension ViewDependency {
                     DispatchQueue.main.async {
                         if granted {
                             if PHPhotoLibrary.authorizationStatus() == .authorized {
-                                self.requestImageCameraRaw(front:front, callback: callback)
+                                    action()
                             } else {
                                 PHPhotoLibrary.requestAuthorization {_ in
-                                    self.requestImageCameraRaw(front:front, callback: callback)
+                                    action()
                                 }
                             }
                         }
@@ -165,16 +198,7 @@ public extension ViewDependency {
             }
         }
     }
-    private func requestImageCameraRaw(front:Bool, callback: @escaping (URL) -> Void) {
-        DispatchQueue.main.async {
-            if UIImagePickerController.isSourceTypeAvailable(.camera){
-                let imageDelegate = self.imageDelegate
-                imageDelegate.onImagePicked = callback
-                imageDelegate.prepareCamera(front: front)
-                self.parentViewController.present(imageDelegate.imagePicker, animated: true, completion: nil)
-            }
-        }
-    }
+    
 }
 
 //--- Image helpers
@@ -183,6 +207,16 @@ private class ImageDelegate : NSObject, UIImagePickerControllerDelegate, UINavig
 
     var imagePicker = UIImagePickerController()
     var onImagePicked: ((URL)->Void)? = nil
+    
+    func forVideo(){
+        imagePicker.mediaTypes = ["public.movie"]
+    }
+    func forImages(){
+        imagePicker.mediaTypes = ["public.image"]
+    }
+    func forAll(){
+        imagePicker.mediaTypes = ["public.image", "public.movie"]
+    }
 
     func prepareGallery(){
         imagePicker.delegate = self
@@ -193,7 +227,11 @@ private class ImageDelegate : NSObject, UIImagePickerControllerDelegate, UINavig
     func prepareCamera(front:Bool){
         imagePicker.delegate = self
         imagePicker.sourceType = .camera
-        imagePicker.cameraCaptureMode = .photo
+        if imagePicker.mediaTypes.contains("public.image") {
+            imagePicker.cameraCaptureMode = .photo
+        } else {
+            imagePicker.cameraCaptureMode = .video
+        }
         if front{
             imagePicker.cameraDevice = .front
         }else{
@@ -202,19 +240,9 @@ private class ImageDelegate : NSObject, UIImagePickerControllerDelegate, UINavig
         imagePicker.allowsEditing = false
     }
 
-//    @objc public func handleResult(image: UIImage, didFinishSavingWithError error: NSError?, contextInfo: UnsafeMutableRawPointer?) {
-//        if error == nil {
-//            imagePicker.dismiss(animated: true, completion: {
-//                image.file
-////                self.onImagePicked?(URL(fileURLWithPath: path, isDirectory: false))
-//                self.onImagePicked = nil
-//            })
-//        }
-//    }
-
     public func imagePickerController(_ picker: UIImagePickerController, didFinishPickingMediaWithInfo info: [UIImagePickerController.InfoKey : Any]) {
         if #available(iOS 11.0, *) {
-            if let image = info[.imageURL] as? URL {
+            if let image = info[.imageURL] as? URL ?? info[.mediaURL] as? URL {
                 print("Image retrieved directly using .imageURL")
                 DispatchQueue.main.async {
                     picker.dismiss(animated: true, completion: {
@@ -225,53 +253,62 @@ private class ImageDelegate : NSObject, UIImagePickerControllerDelegate, UINavig
                 return
             }
         }
-        
-        getUrl(editedImage: info[.editedImage] as? UIImage, originalImage: info[.originalImage] as? UIImage, asset: info[.phAsset] as? PHAsset, callback: { url in
-            if let url = url {
-                DispatchQueue.main.async {
+        if let asset = info[.phAsset] as? PHAsset {
+            asset.getUrl { url in
+                if let url = url {
+                    DispatchQueue.main.async {
+                        picker.dismiss(animated: true, completion: {
+                            self.onImagePicked?(url)
+                            self.onImagePicked = nil
+                        })
+                    }
+                } else {
                     picker.dismiss(animated: true, completion: {
-                        self.onImagePicked?(url)
                         self.onImagePicked = nil
                     })
                 }
             }
-        })
+        } else if let originalImage = info[.originalImage] as? UIImage, let url = originalImage.saveTemp() {
+            print("Image retrieved using save as backup")
+            picker.dismiss(animated: true, completion: {
+                self.onImagePicked?(url)
+                self.onImagePicked = nil
+            })
+        } else {
+            picker.dismiss(animated: true, completion: {
+                self.onImagePicked = nil
+            })
+        }
     }
 }
 
-fileprivate func getUrl(editedImage: UIImage?, originalImage: UIImage?, asset: PHAsset?, callback: @escaping (URL?)->Void) {
-    if let editedImage = editedImage {
-        if let url = editedImage.saveTemp() {
-            print("Image retrieved using save due to edit")
-            callback(url)
-        } else {
-            print("Image retrieval failed")
-            callback(nil)
-        }
-    } else if let asset = asset {
-        asset.getURL(completionHandler: { url in
-            if let url = url {
-                print("Image retrieved using asset")
-                callback(url)
-            } else {
-                //That failed, let's just save the image
-                if let originalImage = originalImage, let url = originalImage.saveTemp() {
-                    print("Image retrieved using save as backup")
-                    callback(url)
-                } else {
-                    print("Image retrieval failed")
-                    callback(nil)
-                }
+fileprivate extension PHAsset {
+    func getUrl(completionHandler: @escaping (URL?)->Void) {
+        if self.mediaType == .image {
+            let options: PHContentEditingInputRequestOptions = PHContentEditingInputRequestOptions()
+            options.canHandleAdjustmentData = {(adjustmeta: PHAdjustmentData) -> Bool in
+                return true
             }
-        })
-    } else {
-        //That failed, let's just save the image
-        if let originalImage = originalImage, let url = originalImage.saveTemp() {
-            print("Image retrieved using save as backup")
-            callback(url)
-        } else {
-            print("Image retrieval failed")
-            callback(nil)
+            self.requestContentEditingInput(with: options, completionHandler: {(contentEditingInput: PHContentEditingInput?, info: [AnyHashable : Any]) -> Void in
+                DispatchQueue.main.async {
+                    completionHandler(contentEditingInput!.fullSizeImageURL as URL?)
+                }
+            })
+        } else if self.mediaType == .video {
+            let options: PHVideoRequestOptions = PHVideoRequestOptions()
+            options.version = .original
+            PHImageManager.default().requestAVAsset(forVideo: self, options: options, resultHandler: {(asset: AVAsset?, audioMix: AVAudioMix?, info: [AnyHashable : Any]?) -> Void in
+                if let urlAsset = asset as? AVURLAsset {
+                    let localVideoUrl: URL = urlAsset.url as URL
+                    DispatchQueue.main.async {
+                        completionHandler(localVideoUrl)
+                    }
+                } else {
+                    DispatchQueue.main.async {
+                        completionHandler(nil)
+                    }
+                }
+            })
         }
     }
 }

@@ -99,6 +99,7 @@ com.lightningkite.khrysalis.localizedDescription
 com.lightningkite.khrysalis.fatalError
 com.lightningkite.khrysalis.Uri
 com.lightningkite.khrysalis.JsName
+com.lightningkite.khrysalis.thumbnail
 com.lightningkite.khrysalis.Video
 com.lightningkite.khrysalis.VideoReference
 com.lightningkite.khrysalis.VideoRemoteUrl
@@ -109,6 +110,7 @@ com.lightningkite.khrysalis.android.ActivityAccess
 com.lightningkite.khrysalis.android.KhrysalisActivity
 com.lightningkite.khrysalis.android.KhrysalisApplication
 com.lightningkite.khrysalis.android.contains
+com.lightningkite.khrysalis.android.usesKeyboard
 com.lightningkite.khrysalis.android.runKeyboardUpdate
 com.lightningkite.khrysalis.bytes.buffer
 com.lightningkite.khrysalis.bytes.data
@@ -240,7 +242,6 @@ com.lightningkite.khrysalis.observables.binding.bindTimeAlone
 com.lightningkite.khrysalis.observables.binding.bindString
 com.lightningkite.khrysalis.observables.binding.bindInteger
 com.lightningkite.khrysalis.observables.binding.bindDouble
-com.lightningkite.khrysalis.observables.binding.loadImage
 com.lightningkite.khrysalis.observables.binding.bindImage
 com.lightningkite.khrysalis.observables.binding.bindVideoThumbnail
 com.lightningkite.khrysalis.observables.binding.LinearLayoutBoundSubview
@@ -260,7 +261,9 @@ com.lightningkite.khrysalis.observables.binding.bindText
 com.lightningkite.khrysalis.observables.binding.bindOnString
 com.lightningkite.khrysalis.observables.binding.bindOffString
 com.lightningkite.khrysalis.observables.binding.bindOnOffString
+com.lightningkite.khrysalis.observables.binding.bindVideoToView
 com.lightningkite.khrysalis.observables.binding.bindAndStart
+com.lightningkite.khrysalis.observables.binding.bindVideoToViewAndStart
 com.lightningkite.khrysalis.observables.binding.bindVisible
 com.lightningkite.khrysalis.observables.binding.bindExists
 com.lightningkite.khrysalis.observables.binding.bindLoading
@@ -350,6 +353,8 @@ com.lightningkite.khrysalis.views.CustomView
 com.lightningkite.khrysalis.views.CustomViewDelegate
 com.lightningkite.khrysalis.views.DjangoErrorTranslator
 com.lightningkite.khrysalis.views.setOnDoneClick
+com.lightningkite.khrysalis.views.View_focusAtStartup
+com.lightningkite.khrysalis.views.focusAtStartup
 com.lightningkite.khrysalis.views.newEmptyView
 com.lightningkite.khrysalis.views.EntryPoint
 com.lightningkite.khrysalis.views.FormValidationError
@@ -363,9 +368,7 @@ com.lightningkite.khrysalis.views.unless
 com.lightningkite.khrysalis.views.matches
 com.lightningkite.khrysalis.views.HasBackAction
 com.lightningkite.khrysalis.views.loadImage
-com.lightningkite.khrysalis.views.loadImageAlt
 com.lightningkite.khrysalis.views.loadVideoThumbnail
-com.lightningkite.khrysalis.views.retrieveVideoFrameFromVideo
 com.lightningkite.khrysalis.views.params
 com.lightningkite.khrysalis.views.MonthCVD
 com.lightningkite.khrysalis.views.CalendarDrawing
