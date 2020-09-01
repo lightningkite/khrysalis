@@ -5,6 +5,7 @@ import com.lightningkite.khrysalis.typescript.DeclarationManifest
 import com.lightningkite.khrysalis.typescript.renderImports
 import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
 import com.lightningkite.khrysalis.utils.XmlNode
+import com.lightningkite.khrysalis.utils.attributeAsBoolean
 import com.lightningkite.khrysalis.utils.attributeAsEdgeFlagsKotlin
 import com.lightningkite.khrysalis.utils.camelCase
 import java.io.File
@@ -98,6 +99,14 @@ data class AndroidLayoutFile(
                                 resourceId = raw.removePrefix("@+id/").removePrefix("@id/")
                             )
                         )
+                        node.attributeAsBoolean("tools:focusAtStartup")?.let { value ->
+                            emitCurse.add(
+                                AndroidAction(
+                                    name,
+                                    "focusAtStartup = $value"
+                                )
+                            )
+                        }
                         node.attributeAsEdgeFlagsKotlin("tools:systemEdges")?.let {
                             emitCurse.add(
                                 AndroidAction(

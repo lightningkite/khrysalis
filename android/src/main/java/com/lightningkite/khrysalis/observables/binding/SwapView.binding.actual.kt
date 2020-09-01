@@ -56,22 +56,22 @@ fun SwapView.bindStack(dependency: ViewDependency, obs: ObservableStack<ViewGene
                 oldStackSize == 0 -> {
                     oldView.animate().alpha(0f)
                     newView.alpha = 0f
-                    newView.animate().alpha(1f).withEndAction { runKeyboardUpdate(dependency, newView) }
+                    newView.animate().alpha(1f)
                 }
                 oldStackSize > newStackSize -> {
                     oldView.animate().translationX(width.toFloat())
                     newView.translationX = -width.toFloat()
-                    newView.animate().translationX(0f).withEndAction { runKeyboardUpdate(dependency, newView) }
+                    newView.animate().translationX(0f)
                 }
                 oldStackSize < newStackSize -> {
                     oldView.animate().translationX(-width.toFloat())
                     newView.translationX = width.toFloat()
-                    newView.animate().translationX(0f).withEndAction { runKeyboardUpdate(dependency, newView) }
+                    newView.animate().translationX(0f)
                 }
                 else -> {
                     oldView.animate().alpha(0f)
                     newView.alpha = 0f
-                    newView.animate().alpha(1f).withEndAction { runKeyboardUpdate(dependency, newView) }
+                    newView.animate().alpha(1f)
                 }
             }
             oldView.animate().withEndAction { removeView(oldView) }
@@ -79,6 +79,10 @@ fun SwapView.bindStack(dependency: ViewDependency, obs: ObservableStack<ViewGene
             currentData = datas.lastOrNull()
             currentView = newView
             currentStackSize = newStackSize
+
+            post {
+                runKeyboardUpdate(dependency, newView, oldView)
+            }
         }
     }.until(this.removed)
 }
