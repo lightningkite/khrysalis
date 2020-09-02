@@ -27,4 +27,13 @@ public class Drawable: Equatable, Hashable {
     public func hash(into hasher: inout Hasher) {
         hasher.combine(id)
     }
+    
+    public func makeView(parent: UIView? = nil) -> UIView {
+        let layer = makeLayer(parent)
+        let view = UIView(frame: layer.bounds)
+        view.clipsToBounds = true
+        layer.frame = view.bounds
+        view.layer.addSublayer(layer)
+        return view
+    }
 }

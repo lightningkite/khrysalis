@@ -169,6 +169,10 @@ com.lightningkite.khrysalis.net.multipartFormFilePart
 com.lightningkite.khrysalis.net.HttpClient
 com.lightningkite.khrysalis.net.HttpMediaType
 com.lightningkite.khrysalis.net.HttpMediaTypes
+com.lightningkite.khrysalis.net.HttpPhase
+com.lightningkite.khrysalis.net.HttpProgress
+com.lightningkite.khrysalis.net.HttpOptions
+com.lightningkite.khrysalis.net.HttpCacheMode
 com.lightningkite.khrysalis.net.HttpResponse
 com.lightningkite.khrysalis.net.code
 com.lightningkite.khrysalis.net.headers
@@ -422,6 +426,7 @@ com.lightningkite.khrysalis.views.android.ColorRatingBar
 com.lightningkite.khrysalis.views.android
 com.lightningkite.khrysalis.views.android.DateButton
 com.lightningkite.khrysalis.views.android.dateSelectorDialog
+com.lightningkite.khrysalis.views.android.HorizontalProgressBar
 com.lightningkite.khrysalis.views.android.MultilineEditText
 com.lightningkite.khrysalis.views.android.PreviewVariedFlipper
 com.lightningkite.khrysalis.views.android.SegmentedControl

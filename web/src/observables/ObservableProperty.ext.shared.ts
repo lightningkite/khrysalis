@@ -54,9 +54,9 @@ export function comLightningkiteKhrysalisObservablesObservablePropertyWhileActiv
                     current = action();
                 }
             } else {
-                const temp72 = current;
-                if(temp72 !== null) { 
-                    temp72.unsubscribe()
+                const temp84 = current;
+                if(temp84 !== null) { 
+                    temp84.unsubscribe()
                 };
                 current = null;
             }

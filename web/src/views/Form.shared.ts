@@ -2,13 +2,12 @@
 // File: views/Form.shared.kt
 // Package: com.lightningkite.khrysalis.views
 import { ViewString, ViewStringRaw, ViewStringResource, ViewStringTemplate, kotlinCollectionsListJoinToViewString } from './Strings.shared'
-import { map as iterMap, toArray as iterToArray } from '../kotlin/lazyOp'
-import { iterableFilterNotNull } from '../KotlinCollections'
-import { MutableObservableProperty } from '../observables/MutableObservableProperty.shared'
 import { safeEq } from '../Kotlin'
 import { showDialogAlert } from './showDialog.shared'
 import { kotlinCharSequenceIsBlank } from '../kotlin/kotlin.text'
 import { StandardObservableProperty } from '../observables/StandardObservableProperty.shared'
+import { listFilterNotNull } from '../KotlinCollections'
+import { MutableObservableProperty } from '../observables/MutableObservableProperty.shared'
 
 //! Declares com.lightningkite.khrysalis.views.FormValidationError
 export class FormValidationError {
@@ -97,15 +96,15 @@ export class Form {
     }
     
     public check(): Array<FormValidationError> {
-        return iterToArray(iterableFilterNotNull(iterMap(this.fields, (it: UntypedFormField): (FormValidationError | null) => {
-                        const result = this.checkField(it);
-                        
-                        if (result !== null) {
-                            return new FormValidationError(it, result!);
-                        } else {
-                            return null;
-                        }
-        })));
+        return listFilterNotNull(this.fields.map((it: UntypedFormField): (FormValidationError | null) => {
+                    const result = this.checkField(it);
+                    
+                    if (result !== null) {
+                        return new FormValidationError(it, result!);
+                    } else {
+                        return null;
+                    }
+        }));
     }
     
     public runOrDialog(action: (() => void)): void {

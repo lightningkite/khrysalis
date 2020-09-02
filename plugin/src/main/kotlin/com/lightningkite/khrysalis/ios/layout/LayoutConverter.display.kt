@@ -18,8 +18,8 @@ val LayoutConverter.Companion.displayViews
                 node.allAttributes["android:background"]?.let { raw ->
                     when {
                         raw.startsWith("@drawable/") -> {
-                            node.attributeAsSwiftLayer("android:background", "view")!!.let {
-                                appendln("view.backgroundLayer = $it")
+                            node.attributeAsSwiftDrawable("android:background")!!.let {
+                                appendln("view.backgroundDrawable = $it")
                             }
                         }
                         raw.startsWith("@mipmap/") -> {

@@ -126,9 +126,9 @@ export class MonthCVD extends CustomViewDelegate {
     }
     public set currentOffset(value: number) {
         this._currentOffset = value;
-        const temp181 = this.customView;
-        if(temp181 !== null) { 
-            customViewInvalidate(temp181)
+        const temp196 = this.customView;
+        if(temp196 !== null) { 
+            customViewInvalidate(temp196)
         };
     }
     
@@ -275,9 +275,9 @@ export class MonthCVD extends CustomViewDelegate {
     public onTouchDown(id: number, x: number, y: number, width: number, height: number): boolean {
         const day = this.dayAtPixel(x, y, undefined);
         
-        const it_257 = day;
-        if (it_257 !== null) { 
-            if (this.onTouchDownDate(it_257)) {
+        const it_272 = day;
+        if (it_272 !== null) { 
+            if (this.onTouchDownDate(it_272)) {
                 return true;
             }
         }
@@ -304,9 +304,9 @@ export class MonthCVD extends CustomViewDelegate {
                 }
             }
         } else {
-            const it_269 = this.dayAtPixel(x, y, undefined);
-            if (it_269 !== null) { 
-                return this.onTouchMoveDate(it_269);
+            const it_284 = this.dayAtPixel(x, y, undefined);
+            if (it_284 !== null) { 
+                return this.onTouchMoveDate(it_284);
             }
         }
         return true;
@@ -318,9 +318,9 @@ export class MonthCVD extends CustomViewDelegate {
     public onTouchUp(id: number, x: number, y: number, width: number, height: number): boolean {
         if (this.draggingId === id) {
             if (this.isTap) {
-                const it_271 = this.dayAtPixel(x, y, undefined);
-                if (it_271 !== null) { 
-                    this.onTap(it_271);
+                const it_286 = this.dayAtPixel(x, y, undefined);
+                if (it_286 !== null) { 
+                    this.onTap(it_286);
                 }
             } else { if (this.dragEnabled) {
                     const weighted = this.currentOffset + (this.currentOffset - this.lastOffset) * 200 / (Date.now() - this.lastOffsetTime);
@@ -339,9 +339,9 @@ export class MonthCVD extends CustomViewDelegate {
             } }
             this.draggingId = this.DRAGGING_NONE;
         } else {
-            const it_288 = this.dayAtPixel(x, y, undefined);
-            if (it_288 !== null) { 
-                return this.onTouchUpDate(it_288);
+            const it_303 = this.dayAtPixel(x, y, undefined);
+            if (it_303 !== null) { 
+                return this.onTouchUpDate(it_303);
             }
         }
         return true;

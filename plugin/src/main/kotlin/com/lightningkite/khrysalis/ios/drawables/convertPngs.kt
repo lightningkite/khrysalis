@@ -15,12 +15,20 @@ fun convertPngs(
     assetsFolder: File,
     swiftFolder: File
 ) {
+    val xmlNames = (resourcesFolder.listFiles() ?: arrayOf())
+        .asSequence()
+        .filter { it.name.startsWith("drawable") }
+        .flatMap { it.walkTopDown() }
+        .filter { it.extension == "xml" }
+        .map { it.nameWithoutExtension }
+        .toSet()
     val pngNames = (resourcesFolder.listFiles() ?: arrayOf())
         .asSequence()
         .filter { it.name.startsWith("drawable") }
         .flatMap { it.walkTopDown() }
         .filter { it.extension == "png" }
         .map { it.nameWithoutExtension }
+        .filter { it !in xmlNames }
         .distinct()
         .toList()
         .sortedBy { it }

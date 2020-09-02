@@ -43,13 +43,13 @@ export abstract class CustomViewDelegate {
         return height; 
     }
     
-    public invalidate(): void { const temp155 = this.customView;
-        if(temp155 !== null) { 
-            customViewInvalidate(temp155)
+    public invalidate(): void { const temp167 = this.customView;
+        if(temp167 !== null) { 
+            customViewInvalidate(temp167)
     }; }
-    public postInvalidate(): void { const temp156 = this.customView;
-        if(temp156 !== null) { 
-            customViewInvalidate(temp156)
+    public postInvalidate(): void { const temp168 = this.customView;
+        if(temp168 !== null) { 
+            customViewInvalidate(temp168)
     }; }
     
     public readonly toDispose: Array<SubscriptionLike>;

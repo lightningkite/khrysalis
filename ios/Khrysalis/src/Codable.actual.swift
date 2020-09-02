@@ -92,34 +92,34 @@ public extension Encodable {
     }
 }
 
-public func kotlinAnyToJsonString(_ value: Encodable) -> String {
+public func xAnyToJsonString(_ value: Encodable) -> String {
     return value.toJsonString()
 }
-public func kotlinAnyToJsonData(_ value: Encodable) -> Data {
+public func xAnyToJsonData(_ value: Encodable) -> Data {
     return value.toJsonData()
 }
-public func kotlinAnyToJsonString(_ value: Dictionary<String, Any>) -> String {
+public func xAnyToJsonString(_ value: Dictionary<String, Any>) -> String {
     return PrimitiveCodableBox(value).toJsonString()
 }
-public func kotlinAnyToJsonData(_ value: Dictionary<String, Any>) -> Data {
+public func xAnyToJsonData(_ value: Dictionary<String, Any>) -> Data {
     return PrimitiveCodableBox(value).toJsonData()
 }
-public func kotlinAnyToJsonString(_ value: Dictionary<String, Any?>) -> String {
+public func xAnyToJsonString(_ value: Dictionary<String, Any?>) -> String {
     return PrimitiveCodableBox(value).toJsonString()
 }
-public func kotlinAnyToJsonData(_ value: Dictionary<String, Any?>) -> Data {
+public func xAnyToJsonData(_ value: Dictionary<String, Any?>) -> Data {
     return PrimitiveCodableBox(value).toJsonData()
 }
-public func kotlinAnyToJsonString(_ value: Dictionary<String, Codable>) -> String {
+public func xAnyToJsonString(_ value: Dictionary<String, Codable>) -> String {
     return PrimitiveCodableBox(value).toJsonString()
 }
-public func kotlinAnyToJsonData(_ value: Dictionary<String, Codable>) -> Data {
+public func xAnyToJsonData(_ value: Dictionary<String, Codable>) -> Data {
     return PrimitiveCodableBox(value).toJsonData()
 }
-public func kotlinAnyToJsonString(_ value: Dictionary<String, Codable?>) -> String {
+public func xAnyToJsonString(_ value: Dictionary<String, Codable?>) -> String {
     return PrimitiveCodableBox(value).toJsonString()
 }
-public func kotlinAnyToJsonData(_ value: Dictionary<String, Codable?>) -> Data {
+public func xAnyToJsonData(_ value: Dictionary<String, Codable?>) -> Data {
     return PrimitiveCodableBox(value).toJsonData()
 }
 

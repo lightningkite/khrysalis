@@ -111,7 +111,7 @@
 - id: io.reactivex.Observable.interval
   type: call
   template:
-    pattern: "Observable.interval(RxTimeInterval.milliseconds(Int(~0~)), scheduler: ~2~)"
+    pattern: "Observable<Int64>.interval(RxTimeInterval.milliseconds(Int(~0~)), scheduler: ~2~)"
     imports: [RxSwift]
 
 #- id: io.reactivex.Observable.map

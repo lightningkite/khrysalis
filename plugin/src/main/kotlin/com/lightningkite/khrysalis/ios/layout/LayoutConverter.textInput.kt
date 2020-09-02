@@ -10,19 +10,25 @@ val LayoutConverter.Companion.textInputViews
                 //Purposefully empty
                 appendln("view.addDismissButton()")
             },
-            ViewType("AutoCompleteTextView", "UIAutoCompleteTextField", "EditText", handlesPadding = true) { node ->},
-            ViewType("EditText", "UITextField", "View", handlesPadding = true) { node ->
+            ViewType("AutoCompleteTextView", "UIAutoCompleteTextFieldPadded", "EditText", handlesPadding = true) { node ->},
+            ViewType("EditText", "UITextFieldPadded", "View", handlesPadding = true) { node ->
                 val defaultPadding = node.attributeAsSwiftDimension("android:padding") ?: 0
                 val paddingTop = (node.attributeAsSwiftDimension("android:paddingTop") ?: defaultPadding)
                 val paddingLeft = (node.attributeAsSwiftDimension("android:paddingLeft") ?: defaultPadding)
                 val paddingBottom = (node.attributeAsSwiftDimension("android:paddingBottom") ?: defaultPadding)
                 val paddingRight = (node.attributeAsSwiftDimension("android:paddingRight") ?: defaultPadding)
+                appendln("view.padding = UIEdgeInsets(top: $paddingTop, left: $paddingLeft, bottom: $paddingBottom, right: $paddingRight)")
 
-                if (paddingLeft != 0) {
-                    appendln("view.setLeftPaddingPoints($paddingLeft)")
+                node.attributeAsSwiftDrawable("android:drawableLeft")?.let {
+                    appendln("view.leftView = $it.makeView()")
+                    appendln("view.leftViewMode = .always")
                 }
-                if (paddingRight != 0) {
-                    appendln("view.setRightPaddingPoints($paddingRight)")
+                node.attributeAsSwiftDrawable("android:drawableRight")?.let {
+                    appendln("view.rightView = $it.makeView()")
+                    appendln("view.rightViewMode = .always")
+                }
+                node.attributeAsSwiftDimension("android:compoundPadding")?.let {
+                    appendln("view.compoundPadding = $it")
                 }
 
                 node.attributeAsSwiftString("android:hint")?.let { text ->

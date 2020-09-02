@@ -27,12 +27,11 @@ public extension UITextView {
             text = value.string
         }
     }
-    func setLeftPaddingPoints(_ amount:CGFloat){
-        self.textContainerInset.left = amount
+    var padding: UIEdgeInsets {
+        get { return self.textContainerInset }
+        set(value) { self.textContainerInset = value }
     }
-    func setRightPaddingPoints(_ amount:CGFloat) {
-        self.textContainerInset.right = amount
-    }
+    
     var numberOfLines: Int {
         get { return 0 }
         set(value) { }

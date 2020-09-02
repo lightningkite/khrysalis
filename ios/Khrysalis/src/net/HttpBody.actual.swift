@@ -24,19 +24,19 @@ public extension Encodable {
     }
 }
 public func xAnyToJsonHttpBody(_ value: Encodable) -> HttpBody {
-    return HttpBody(mediaType: HttpMediaTypes.JSON, data: kotlinAnyToJsonData(value))
+    return HttpBody(mediaType: HttpMediaTypes.JSON, data: xAnyToJsonData(value))
 }
 public func xAnyToJsonHttpBody(_ value: Dictionary<String, Any>) -> HttpBody {
-    return HttpBody(mediaType: HttpMediaTypes.JSON, data: kotlinAnyToJsonData(value))
+    return HttpBody(mediaType: HttpMediaTypes.JSON, data: xAnyToJsonData(value))
 }
 public func xAnyToJsonHttpBody(_ value: Dictionary<String, Any?>) -> HttpBody {
-    return HttpBody(mediaType: HttpMediaTypes.JSON, data: kotlinAnyToJsonData(value))
+    return HttpBody(mediaType: HttpMediaTypes.JSON, data: xAnyToJsonData(value))
 }
 public func xAnyToJsonHttpBody(_ value: Dictionary<String, Codable>) -> HttpBody {
-    return HttpBody(mediaType: HttpMediaTypes.JSON, data: kotlinAnyToJsonData(value))
+    return HttpBody(mediaType: HttpMediaTypes.JSON, data: xAnyToJsonData(value))
 }
 public func xAnyToJsonHttpBody(_ value: Dictionary<String, Codable?>) -> HttpBody {
-    return HttpBody(mediaType: HttpMediaTypes.JSON, data: kotlinAnyToJsonData(value))
+    return HttpBody(mediaType: HttpMediaTypes.JSON, data: xAnyToJsonData(value))
 }
 
 //--- Data.toHttpBody(HttpMediaType)

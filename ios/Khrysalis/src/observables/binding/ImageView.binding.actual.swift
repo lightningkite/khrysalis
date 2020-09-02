@@ -18,7 +18,7 @@ public extension UIImageView {
     }
     func bindVideoThumbnail(video: ObservableProperty<Video?>) -> Void {
         video.subscribeBy { it in
-//            self.loadVideoThumbnail(video: it)
+            self.loadVideoThumbnail(video: it)
         }.until(self.removed)
     }
 }
