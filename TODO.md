@@ -7,10 +7,13 @@
     - [X] Layout
     - [X] Binding
 - [X] iOS Video Thumbnail Generation
-- [ ] iOS Google Places Autocomplete
-- [ ] iOS Horizontal Progress Bar
-- [ ] iOS Image toHttpBody
-- [ ] iOS Uri toHttpBody
+- [X] iOS list groupBy
+- [X] iOS string filter
+- [ ] iOS Google Places Autocomplete (Brady)
+- [X] iOS Horizontal Progress Bar
+- [X] iOS Image toHttpBody
+- [X] iOS Uri toHttpBody
+- [ ] Http call with progress?
 
 ## Long Term
 
@@ -48,3 +51,25 @@ These are the upcoming objectives for development:
 - [ ] Shorter names for JS extensions
 - [ ] Use YAML replacements in more Swift situations and remove more library parts
 - [ ] Look into using the various Rx UI libraries on each platform
+
+# Known issues
+
+- [ ] iOS string isNullOrEmpty
+- [ ] `-=` operator issue
+
+        onDelete = {
+            this.invitations.value -= observable.value
+        }
+        produces
+        onDelete: { () -> Void in let temp869 = self.invitations
+                        temp869.value = self.invitations.value.minus(self.invitations.value, element: observable.value) }
+        which gives an error “too many arguments” because of self.invitations.value being in minus function.
+        I changed it to
+        onDelete = {
+            this.invitations.value = this.invitations.value.minus(element = observable.value)
+        }
+        and it produced
+        onDelete: { () -> Void in self.invitations.value = self.invitations.value.minus(element: observable.value) }
+        which didn’t produce any errors
+
+- [ ] Static imports are not supported

@@ -114,6 +114,8 @@ private fun collectionsTest(){
 
     println(ArrayList<Int>())
 
+    listOf(1, 2, 3, 4, 5).groupBy { it % 2 }
+
     for((key, value) in mapOf(1 to 2, 3 to 4)){
         println("$key: $value")
     }

@@ -143,7 +143,9 @@
   type: call
   template: "Set(~this~)"
 
-# TODO: groupBy
+- id: kotlin.collections.groupBy
+  type: call
+  template: "Dictionary(grouping: ~this~, by: ~0~)"
 
 - id: kotlin.collections.any
   type: call

@@ -72,6 +72,14 @@ val LayoutConverter.Companion.displayViews
                     appendln("view.color = R.color.colorPrimary")
                 }
             },
+            ViewType("com.lightningkite.khrysalis.views.android.HorizontalProgressBar", "UIProgressView", "View") { node ->
+                appendln("view.progressViewStyle = .bar")
+                if(!setToColor(node, "android:progressTint") { it, s ->
+                    appendln("view.progressTintColor = $it")
+                }) {
+                    appendln("view.progressTintColor = R.color.colorPrimary")
+                }
+            },
             ViewType("ImageView", "UIImageView", "View") { node ->
                 node.attributeAsSwiftImage("android:src")?.let { text ->
                     appendln("view.image = $text")

@@ -1,9 +1,10 @@
 import Foundation
+import RxSwift
 
 //--- HttpBody
 public struct HttpBody {
-    let mediaType: String
-    let data: Data
+    public let mediaType: String
+    public let data: Data
     public init(mediaType: String, data: Data){
         self.mediaType = mediaType
         self.data = data
@@ -58,13 +59,99 @@ public extension String {
     }
 }
 
-//--- Bitmap.toHttpBody(Long)
-public extension Bitmap {
-    func toHttpBody(_ maxBytes: Int64) -> HttpBody {
-        TODO()
+//--- Uri.toHttpBody()
+public extension URL {
+    func toHttpBody() -> Single<HttpBody> {
+        return Single.create { (em) in
+            URLSession.shared.dataTask(with: self, completionHandler: { data, response, error in
+                DispatchQueue.main.async {
+                    if let response = response as? HTTPURLResponse {
+                        if response.statusCode / 100 == 2, let data = data {
+                            let mediaType = response.mimeType ?? "application/octet-stream"
+                            em.onSuccess(HttpBody(mediaType: mediaType, data: data))
+                        } else if let error = error {
+                            em.onError(error)
+                        } else {
+                            em.onError(HttpResponseException(response: HttpResponse(response: response, data: data ?? Data())))
+                        }
+                    } else if let response = response {
+                        if let data = data {
+                            let mediaType = response.mimeType ?? "application/octet-stream"
+                            em.onSuccess(HttpBody(mediaType: mediaType, data: data))
+                        } else if let error = error {
+                            em.onError(error)
+                        } else {
+                            em.onError(IllegalStateException("Conversion to HttpBody failed for an unknown reason"))
+                        }
+                    } else {
+                        em.onError(IllegalStateException("Conversion to HttpBody failed for an unknown reason"))
+                    }
+                }
+            }).resume()
+        }
     }
-    func toHttpBody(maxBytes: Int64) -> HttpBody {
-        return toHttpBody(maxBytes)
+}
+
+//--- Image.toHttpBody
+fileprivate extension UIImage {
+    func resize(maxDimension: Int32) -> UIImage? {
+        var newSize = CGSize.zero
+        if self.size.width > self.size.height {
+            newSize.width = CGFloat(maxDimension)
+            newSize.height = CGFloat(maxDimension) * (self.size.height / self.size.width)
+        } else {
+            newSize.height = CGFloat(maxDimension)
+            newSize.width = CGFloat(maxDimension) * (self.size.width / self.size.height)
+        }
+        UIGraphicsBeginImageContextWithOptions(
+            /* size: */ newSize,
+            /* opaque: */ false,
+            /* scale: */ 1
+        )
+        defer { UIGraphicsEndImageContext() }
+
+        self.draw(in: CGRect(origin: .zero, size: newSize))
+        return UIGraphicsGetImageFromCurrentImageContext()
+    }
+}
+public extension Image {
+    func toHttpBody(maxDimension: Int32 = 2048) -> Single<HttpBody> {
+        return self.load().flatMap { bmp in
+            return Single.create { (em: SingleEmitter<HttpBody>) in
+                let small = bmp.size.width * bmp.scale <= CGFloat(maxDimension) && bmp.size.height * bmp.scale <= CGFloat(maxDimension) ? bmp : bmp.resize(maxDimension: maxDimension)
+                if let rep = small?.pngData() {
+                    em.onSuccess(HttpBody(mediaType: "image/png", data: rep))
+                } else {
+                    em.onError(IllegalArgumentException("Could not turn image into a PNG."))
+                }
+            }
+        }
+    }
+    func toHttpBodyRaw() -> Single<HttpBody> {
+        switch(self){
+        case let self as ImageRaw:
+            return Single.just(HttpBody(mediaType: "image/*", data: self.raw))
+        case let self as ImageBitmap:
+            return Single.create { (em: SingleEmitter<HttpBody>) in
+                if let rep = self.bitmap.pngData() {
+                    em.onSuccess(HttpBody(mediaType: "image/png", data: rep))
+                } else {
+                    em.onError(IllegalArgumentException("Could not turn image into a PNG."))
+                }
+            }
+        case let self as ImageResource:
+            return self.load().flatMap { ImageBitmap(bitmap: $0).toHttpBodyRaw() }
+        case let self as ImageReference:
+            return self.uri.toHttpBody()
+        case let self as ImageRemoteUrl:
+            if let url = URL(string: self.url) {
+                return url.toHttpBody()
+            } else {
+                return Single.error(IllegalArgumentException("Invalid URL \(self.url)"))
+            }
+        default:
+            return Single.error(IllegalArgumentException("Unhandled image type \(self)"))
+        }
     }
 }
 
