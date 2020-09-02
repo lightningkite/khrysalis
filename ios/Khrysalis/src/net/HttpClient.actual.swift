@@ -84,6 +84,57 @@ public enum HttpClient {
         return call(url, method, headers, body)
     }
     
+    
+    //--- HttpClient.call(String, String, Map<String,String>, HttpBody? )
+    public static func call(_ url: String, _ method: String = "GET", _ headers: Dictionary<String, String> = [:], _ body: HttpBody? = nil, _ callTimeout:Int64? = nil, _ writeTimeout:Int64? = nil, _ readTimeout:Int64?=nil,_ connectTimeout:Int64?=nil) -> Single<HttpResponse> {
+          print("HttpClient: Sending \(method) request to \(url) with headers \(headers)")
+          let urlObj = URL(string: url)!
+          var single = Single.create { (emitter: SingleEmitter<HttpResponse>) in
+              let completionHandler = { (data:Data?, response:URLResponse?, error:Error?) in
+                  if let casted = response as? HTTPURLResponse, let data = data {
+                      print("HttpClient: Response from \(method) request to \(url) with headers \(headers): \(casted.statusCode)")
+                      emitter.onSuccess(HttpResponse(response: casted, data: data))
+                  } else {
+                      print("HttpClient: ERROR!  Response is not URLResponse")
+                      emitter.onError(IllegalStateException("Response is not URLResponse"))
+                  }
+              }
+
+              let sessionConfig = URLSessionConfiguration.default
+              sessionConfig.requestCachePolicy = .reloadIgnoringLocalCacheData
+              sessionConfig.httpShouldSetCookies = false
+              let session = URLSession(configuration: sessionConfig)
+              var request = URLRequest(url: urlObj, cachePolicy: URLRequest.CachePolicy.reloadIgnoringCacheData, timeoutInterval: 15.0)
+              if headers["Accept"] == nil {
+                  request.setValue("application/json", forHTTPHeaderField: "Accept")
+              }
+              for (key, value) in headers {
+                  request.setValue(value, forHTTPHeaderField: key)
+              }
+              request.httpMethod = method
+
+              if let body = body {
+                  request.setValue(body.mediaType, forHTTPHeaderField: "Content-Type")
+                  session.uploadTask(with: request, from: body.data, completionHandler: completionHandler).resume()
+              } else {
+                  session.dataTask(with: request, completionHandler: completionHandler).resume()
+              }
+          }
+          if let io = ioScheduler {
+              single = single.subscribeOn(io)
+          }
+          if let resp = responseScheduler {
+              single = single.observeOn(resp)
+          }
+          return single
+      }
+      public static func call(url: String, method: String = "GET", headers: Dictionary<String, String> = [:], body: HttpBody? = nil, callTimeout:Int64? = nil, writeTimeout:Int64? = nil, readTimeout:Int64?=nil,connectTimeout:Int64?=nil) -> Single<HttpResponse> {
+          return call(url, method, headers, body, callTimeout, writeTimeout, readTimeout, connectTimeout)
+      }
+      
+    
+    
+    
     //--- HttpClient.call(String, String, Map<String,String>, Any? ,  @escaping()(code:Int,result:T?,error:String?)->Unit)
     public static func call<T: Decodable>(_ url: String, _ method: String = GET, _ headers: Dictionary<String, String> = [:], _ body: Encodable? = nil, _ onResult: @escaping (_ code: Int, _ result: T?, _ error: String?) -> Void) -> Void {
         print("HttpClient: Sending \(method) request to \(url) with headers \(headers)")
