@@ -66,12 +66,28 @@
   template:
     pattern: '~this~.catchError(~0~)'
     imports: [RxSwift]
+- id: io.reactivex.Single.onErrorResumeNext
+  type: call
+  template:
+    pattern: '~this~.catchError(~0~)'
+    imports: [RxSwift]
 - id: io.reactivex.Observable.onErrorReturnItem
   type: call
   template:
     pattern: '~this~.catchError { _ in Observable.just(~0~) }'
     imports: [RxSwift]
+- id: io.reactivex.Single.onErrorReturnItem
+  type: call
+  template:
+    pattern: '~this~.catchError { _ in Single.just(~0~) }'
+    imports: [RxSwift]
 - id: io.reactivex.Observable.onErrorResumeNext
+  type: call
+  arguments: [io.reactivex.ObservableSource]
+  template:
+    pattern: '~this~.catchError { _ in ~0~ }'
+    imports: [RxSwift]
+- id: io.reactivex.Single.onErrorResumeNext
   type: call
   arguments: [io.reactivex.ObservableSource]
   template:
