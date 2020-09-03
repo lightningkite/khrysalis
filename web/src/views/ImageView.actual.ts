@@ -11,7 +11,6 @@ import {xVideoThumbnail} from "../Video.actual";
 
 //! Declares com.lightningkite.khrysalis.observables.binding.loadImage>android.widget.ImageView
 //! Declares com.lightningkite.khrysalis.views.loadImage>android.widget.ImageView
-let canvasElement = document.createElement("canvas");
 export function xImageViewLoadImage(this_: HTMLImageElement, image: (Image | null)) {
     post(() => {
         if (image instanceof ImageRaw) {
@@ -27,6 +26,7 @@ export function xImageViewLoadImage(this_: HTMLImageElement, image: (Image | nul
             }
             reader.readAsDataURL(image.uri)
         } else if (image instanceof ImageImageBitmap) {
+            let canvasElement = document.createElement("canvas");
             canvasElement.width = image.bitmap.width;
             canvasElement.height = image.bitmap.height;
             const ctx = canvasElement.getContext("2d");

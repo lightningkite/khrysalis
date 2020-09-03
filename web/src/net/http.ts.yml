@@ -1,22 +1,18 @@
-- id: com.lightningkite.khrysalis.net.HttpBody
+- id: okhttp3.RequestBody
   type: type
-  template: BodyInit
+  template:
+    pattern: HttpBody
+    imports:
+      HttpBody: khrysalis/dist/net/HttpBody.actual
 
 - id: com.lightningkite.khrysalis.net.HttpResponse
   type: type
   template: Response
 
-- id: okhttp3.RequestBody
-  type: type
-  template: BodyInit
-
 - id: okhttp3.HttpResponse
   type: type
   template: Response
 
-- id: okhttp3.HttpResponse
-  type: type
-  template: Response
 
 - id: java.net.SocketTimeoutException
   type: type

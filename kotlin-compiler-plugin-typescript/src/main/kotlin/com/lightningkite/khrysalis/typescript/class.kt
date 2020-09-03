@@ -90,8 +90,14 @@ fun TypescriptTranslator.registerClass() {
             ?.forEach {
                 fun writeDefaultObj() {
                     val toOverrideParent = when (it) {
-                        is PropertyDescriptor -> it.allOverridden().first().containingDeclaration as ClassDescriptor
-                        is FunctionDescriptor -> it.allOverridden().first().containingDeclaration as ClassDescriptor
+                        is PropertyDescriptor -> it.allOverridden()
+                            .filter { (it.containingDeclaration as? ClassDescriptor)?.kind == ClassKind.INTERFACE }
+                            .filter { it.overriddenDescriptors.isEmpty() }
+                            .first().containingDeclaration as ClassDescriptor
+                        is FunctionDescriptor -> it.allOverridden()
+                            .filter { (it.containingDeclaration as? ClassDescriptor)?.kind == ClassKind.INTERFACE }
+                            .filter { it.overriddenDescriptors.isEmpty() }
+                            .first().containingDeclaration as ClassDescriptor
                         else -> return
                     }
                     -BasicType(toOverrideParent.defaultType)

@@ -4,11 +4,17 @@
 import {Codable, xAnyToJsonString} from '../Codable.actual'
 import {HttpMediaType, HttpMediaTypes} from './HttpMediaType.actual'
 import {stringify} from "./jsonParsing";
+import {Observable} from "rxjs";
+import {Image, ImageImageBitmap} from "../Image.shared";
+import {xImageLoad} from "../Image.loadingRx.actual";
+import {flatMap, map} from "rxjs/operators";
+import {Exception} from "../kotlin/Language";
 
 //! Declares com.lightningkite.khrysalis.net.HttpBody
 export class HttpBody {
     data: BodyInit;
     type: HttpMediaType;
+
     constructor(data: BodyInit, type: HttpMediaType) {
         this.data = data;
         this.type = type;
@@ -40,16 +46,57 @@ export function xStringToHttpBody(this_: string, mediaType: HttpMediaType = Http
 }
 
 //! Declares com.lightningkite.khrysalis.net.toHttpBody
-//TODO: Figure out when we have bitmaps
-// export function xBitmapToHttpBody(this_: Bitmap, maxBytes: number = 10_000_000): HttpBody{
-//
-// }
+export function xUriToHttpBody(this_: File): HttpBody {
+    return new HttpBody(
+        this_,
+        this_.type
+    )
+}
+
+//! Declares com.lightningkite.khrysalis.net.toHttpBody
+export function xImageToHttpBody(this_: Image, maxDimension: number = 2048): Observable<HttpBody> {
+    return xImageLoad(this_).pipe(
+        flatMap((x) => resize(x, maxDimension)),
+        map((x) => new HttpBody(x, "image/png"))
+    )
+}
+
+function resize(image: ImageBitmap, maxDimension: number = 2048): Observable<Blob> {
+    return new Observable((em) => {
+        try {
+            let canvasElement = document.createElement("canvas");
+            const wide = image.width > image.height;
+            const tooBig = image.width > maxDimension || image.height > maxDimension;
+            canvasElement.width = !tooBig ? image.width : (
+                wide ? maxDimension : image.width / image.height * maxDimension
+            );
+            canvasElement.height = !tooBig ? image.height : (
+                wide ? image.height / image.width * maxDimension : maxDimension
+            );
+            const ctx = canvasElement.getContext("2d");
+            if (ctx) {
+                ctx.clearRect(0, 0, canvasElement.width, canvasElement.height);
+                ctx.drawImage(image, 0, 0);
+            }
+            canvasElement.toBlob((x) => {
+                if (x) {
+                    em.next(x);
+                    em.complete();
+                } else {
+                    em.error(new Exception("", undefined))
+                }
+            });
+        } catch (e) {
+            em.error(e)
+        }
+    });
+}
 
 //! Declares com.lightningkite.khrysalis.net.multipartFormBody
 export function multipartFormBody(...parts: HttpBodyPart[]): HttpBody {
     const data = new FormData();
-    for(const part of parts){
-        if(part.body != null){
+    for (const part of parts) {
+        if (part.body != null) {
             data.append(part.name, part.body, part.filename ?? "file");
         } else {
             data.append(part.name, part.value as string);
@@ -60,11 +107,12 @@ export function multipartFormBody(...parts: HttpBodyPart[]): HttpBody {
         HttpMediaTypes.INSTANCE.MULTIPART_FORM_DATA
     );
 }
+
 //! Declares com.lightningkite.khrysalis.net.multipartFormFilePart
 export function multipartFormFilePart(name: string, valueOrFilename?: string, body?: Blob): HttpBodyPart {
     const result = new HttpBodyPart();
     result.name = name;
-    if(body){
+    if (body) {
         result.filename = valueOrFilename ?? null;
         result.body = body;
     } else {

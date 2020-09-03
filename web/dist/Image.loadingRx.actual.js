@@ -39,7 +39,7 @@ function xImageLoad(this_) {
                     }
                 }
                 else {
-                    return rxjs_1.throwError(new Kotlin_1.Exception("This shouldn't be possible - got an image object of an unknown type.", null));
+                    return rxjs_1.throwError(new Kotlin_1.Exception("This shouldn't be possible - got an image object of an unknown type " + this_, null));
                 }
             })();
         }

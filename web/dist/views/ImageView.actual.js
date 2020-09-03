@@ -9,7 +9,6 @@ const View_ext_actual_1 = require("./View.ext.actual");
 const Video_actual_1 = require("../Video.actual");
 //! Declares com.lightningkite.khrysalis.observables.binding.loadImage>android.widget.ImageView
 //! Declares com.lightningkite.khrysalis.views.loadImage>android.widget.ImageView
-let canvasElement = document.createElement("canvas");
 function xImageViewLoadImage(this_, image) {
     delay_actual_1.post(() => {
         if (image instanceof Image_shared_1.ImageRaw) {
@@ -27,6 +26,7 @@ function xImageViewLoadImage(this_, image) {
             reader.readAsDataURL(image.uri);
         }
         else if (image instanceof Image_shared_1.ImageImageBitmap) {
+            let canvasElement = document.createElement("canvas");
             canvasElement.width = image.bitmap.width;
             canvasElement.height = image.bitmap.height;
             const ctx = canvasElement.getContext("2d");

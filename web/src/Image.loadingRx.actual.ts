@@ -34,7 +34,7 @@ export function xImageLoad(this_: Image): Observable<ImageBitmap> {
                         return throwError(new Exception("Not able to load a resource that's not an SVG or PNG.", null))
                     }
                 } else {
-                    return throwError(new Exception("This shouldn't be possible - got an image object of an unknown type.", null))
+                    return throwError(new Exception("This shouldn't be possible - got an image object of an unknown type " + this_, null))
                 }
             })()
         } catch (_e) {
