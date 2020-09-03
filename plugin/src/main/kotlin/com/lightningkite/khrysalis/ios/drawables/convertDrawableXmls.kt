@@ -76,7 +76,10 @@ fun convertDrawableXml(name: String, node: XmlNode, out: Appendable) {
             node,
             out
         )
-        else -> out.appendln("// WARNING: Could not convert drawable of type ${node.name.toLowerCase()}")
+        else -> {
+            out.appendln("// WARNING: Could not convert drawable of type ${node.name.toLowerCase()}")
+            out.appendln("static let $name: Drawable = Drawable { (view: UIView?) -> CALayer in CALayer() }")
+        }
     }
 }
 
