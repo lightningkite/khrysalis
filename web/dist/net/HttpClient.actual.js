@@ -6,6 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const rxjs_1 = require("rxjs");
 const ConnectedWebSocket_actual_1 = require("./ConnectedWebSocket.actual");
 const operators_1 = require("rxjs/operators");
+const HttpModels_shared_1 = require("./HttpModels.shared");
+const EventToObservableProperty_shared_1 = require("../observables/EventToObservableProperty.shared");
 //! Declares com.lightningkite.khrysalis.net.HttpClient
 class HttpClient {
     constructor() {
@@ -18,20 +20,122 @@ class HttpClient {
         this.ioScheduler = null;
         //--- HttpClient.responseScheduler
         this.responseScheduler = null;
-        this.timeout = 15000;
+        this.defaultOptions = new HttpModels_shared_1.HttpOptions();
     }
-    call(url, method = HttpClient.INSTANCE.GET, headers = new Map([]), body = null) {
+    call(url, method = HttpClient.INSTANCE.GET, headers = new Map([]), body = null, options = this.defaultOptions) {
+        var _a, _b, _c, _d;
         let h = new Array(...headers.entries());
         if (body !== null) {
             h.push(["Content-Type", body.type]);
         }
+        let cacheString = "default";
+        switch (options.cacheMode) {
+            case HttpModels_shared_1.HttpCacheMode.Default:
+                cacheString = "default";
+                break;
+            case HttpModels_shared_1.HttpCacheMode.NoStore:
+                cacheString = "no-store";
+                break;
+            case HttpModels_shared_1.HttpCacheMode.Reload:
+                cacheString = "reload";
+                break;
+            case HttpModels_shared_1.HttpCacheMode.NoCache:
+                cacheString = "no-cache";
+                break;
+            case HttpModels_shared_1.HttpCacheMode.ForceCache:
+                cacheString = "force-cache";
+                break;
+            case HttpModels_shared_1.HttpCacheMode.OnlyIfCached:
+                cacheString = "only-if-cached";
+                break;
+        }
         return rxjs_1.from(fetch(url, {
             body: body === null || body === void 0 ? void 0 : body.data,
-            cache: "no-cache",
+            cache: cacheString,
             credentials: "omit",
             headers: h,
             method: method
-        })).pipe(operators_1.timeout(this.timeout));
+        })).pipe(operators_1.timeout((_a = options.callTimeout) !== null && _a !== void 0 ? _a : (((_b = options.connectTimeout) !== null && _b !== void 0 ? _b : 5000) + ((_c = options.readTimeout) !== null && _c !== void 0 ? _c : 5000) + ((_d = options.writeTimeout) !== null && _d !== void 0 ? _d : 5000))));
+    }
+    callWithProgress(url, method = HttpClient.INSTANCE.GET, headers = new Map([]), body = null, options = this.defaultOptions) {
+        var _a, _b, _c, _d;
+        let h = new Array(...headers.entries());
+        if (body !== null) {
+            h.push(["Content-Type", body.type]);
+        }
+        let cacheString = "default";
+        switch (options.cacheMode) {
+            case HttpModels_shared_1.HttpCacheMode.Default:
+                cacheString = "default";
+                break;
+            case HttpModels_shared_1.HttpCacheMode.NoStore:
+                cacheString = "no-store";
+                break;
+            case HttpModels_shared_1.HttpCacheMode.Reload:
+                cacheString = "reload";
+                break;
+            case HttpModels_shared_1.HttpCacheMode.NoCache:
+                cacheString = "no-cache";
+                break;
+            case HttpModels_shared_1.HttpCacheMode.ForceCache:
+                cacheString = "force-cache";
+                break;
+            case HttpModels_shared_1.HttpCacheMode.OnlyIfCached:
+                cacheString = "only-if-cached";
+                break;
+        }
+        let progSubj = new rxjs_1.Subject();
+        let obsResp = rxjs_1.from(fetch(url, {
+            body: body === null || body === void 0 ? void 0 : body.data,
+            cache: cacheString,
+            credentials: "omit",
+            headers: h,
+            method: method
+        })).pipe(operators_1.timeout((_a = options.callTimeout) !== null && _a !== void 0 ? _a : (((_b = options.connectTimeout) !== null && _b !== void 0 ? _b : 5000) + ((_c = options.readTimeout) !== null && _c !== void 0 ? _c : 5000) + ((_d = options.writeTimeout) !== null && _d !== void 0 ? _d : 5000)))).pipe(operators_1.map((response) => {
+            const contentEncoding = response.headers.get('content-encoding');
+            const contentLengthStr = response.headers.get(contentEncoding ? 'x-file-size' : 'content-length');
+            const contentLength = contentLengthStr ? parseInt(contentLengthStr) : null;
+            const existingBody = response.body;
+            if (existingBody) {
+                const newReader = existingBody.getReader();
+                let loadedBytes = 0;
+                return new Response(new ReadableStream({
+                    start(controller) {
+                        read();
+                        function read() {
+                            newReader.read().then(({ done, value }) => {
+                                if (done) {
+                                    //on progress complete
+                                    progSubj.next(new HttpModels_shared_1.HttpProgress(HttpModels_shared_1.HttpPhase.Read, 1));
+                                    controller.close();
+                                    return;
+                                }
+                                if (value) {
+                                    loadedBytes += value.byteLength;
+                                    //on progress
+                                    if (contentLength) {
+                                        progSubj.next(new HttpModels_shared_1.HttpProgress(HttpModels_shared_1.HttpPhase.Read, loadedBytes / contentLength));
+                                    }
+                                    else {
+                                        progSubj.next(new HttpModels_shared_1.HttpProgress(HttpModels_shared_1.HttpPhase.Read, approximateCompletion(loadedBytes)));
+                                    }
+                                    controller.enqueue(value);
+                                }
+                                read();
+                            }).catch(error => {
+                                console.error(error);
+                                controller.error(error);
+                            });
+                        }
+                    }
+                }), response);
+            }
+            else {
+                return new Response(null, response);
+            }
+        }));
+        let progObs = EventToObservableProperty_shared_1.xObservableAsObservableProperty(progSubj, HttpModels_shared_1.HttpProgress.Companion.INSTANCE.connecting);
+        return [progObs, obsResp];
     }
     webSocket(url) {
         return rxjs_1.using(() => {
@@ -43,4 +147,7 @@ class HttpClient {
 }
 exports.HttpClient = HttpClient;
 HttpClient.INSTANCE = new HttpClient();
+function approximateCompletion(x) {
+    return 1 - 1 / (x * 10000 + 1);
+}
 //# sourceMappingURL=HttpClient.actual.js.map

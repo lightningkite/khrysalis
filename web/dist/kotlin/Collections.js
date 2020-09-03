@@ -78,7 +78,7 @@ class EqualOverrideSet {
         return this.map.has(element);
     }
     toString() {
-        return Iterables_1.kotlinCollectionsIterableJoinToString(this.keys(), ", ", "[", "]", undefined, undefined, (x) => `${x}`);
+        return Iterables_1.xIterableJoinToString(this.keys(), ", ", "[", "]", undefined, undefined, (x) => `${x}`);
     }
     values() {
         return this.map.keys()[Symbol.iterator]();
@@ -196,7 +196,7 @@ class EqualOverrideMap {
         this.size = 0;
     }
     toString() {
-        return Iterables_1.kotlinCollectionsIterableJoinToString(this.entries(), ", ", "[", "]", undefined, undefined, (x) => `${x[0]}: ${x[1]}`);
+        return Iterables_1.xIterableJoinToString(this.entries(), ", ", "[", "]", undefined, undefined, (x) => `${x[0]}: ${x[1]}`);
     }
     [Symbol.iterator]() {
         const flattened = lazyOp_1.flatten(this.internalEntries.values())[Symbol.iterator]();
@@ -311,7 +311,7 @@ function setAddCausedChange(set, item) {
 }
 exports.setAddCausedChange = setAddCausedChange;
 //! Declares kotlin.collections.getOrPut
-function kotlinCollectionsMutableMapGetOrPut(map, key, valueGenerator) {
+function xMutableMapGetOrPut(map, key, valueGenerator) {
     if (map.has(key)) {
         return map.get(key);
     }
@@ -321,7 +321,7 @@ function kotlinCollectionsMutableMapGetOrPut(map, key, valueGenerator) {
         return newValue;
     }
 }
-exports.kotlinCollectionsMutableMapGetOrPut = kotlinCollectionsMutableMapGetOrPut;
+exports.xMutableMapGetOrPut = xMutableMapGetOrPut;
 function iterMaxBy(iter, selector) {
     let result = null;
     let best = null;

@@ -20,6 +20,7 @@ data class HttpProgress(
         HttpPhase.Waiting -> 0.65f
         HttpPhase.Read -> 0.7f + 0.3f * ratio
         HttpPhase.Done -> 1f
+        else -> 0f
     }
     companion object {
         val connecting: HttpProgress = HttpProgress(HttpPhase.Connect, 0f)

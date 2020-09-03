@@ -13,18 +13,18 @@ class TimeInterval {
 }
 exports.TimeInterval = TimeInterval;
 //! Declares com.lightningkite.khrysalis.time.milliseconds
-function kotlinIntMilliseconds(this_) { return new TimeInterval(this_); }
-exports.kotlinIntMilliseconds = kotlinIntMilliseconds;
+function xIntMilliseconds(this_) { return new TimeInterval(this_); }
+exports.xIntMilliseconds = xIntMilliseconds;
 //! Declares com.lightningkite.khrysalis.time.seconds
-function kotlinIntSeconds(this_) { return new TimeInterval(this_ * 1000); }
-exports.kotlinIntSeconds = kotlinIntSeconds;
+function xIntSeconds(this_) { return new TimeInterval(this_ * 1000); }
+exports.xIntSeconds = xIntSeconds;
 //! Declares com.lightningkite.khrysalis.time.minutes
-function kotlinIntMinutes(this_) { return new TimeInterval(this_ * 60 * 1000); }
-exports.kotlinIntMinutes = kotlinIntMinutes;
+function xIntMinutes(this_) { return new TimeInterval(this_ * 60 * 1000); }
+exports.xIntMinutes = xIntMinutes;
 //! Declares com.lightningkite.khrysalis.time.hours
-function kotlinIntHours(this_) { return new TimeInterval(this_ * 60 * 60 * 1000); }
-exports.kotlinIntHours = kotlinIntHours;
+function xIntHours(this_) { return new TimeInterval(this_ * 60 * 60 * 1000); }
+exports.xIntHours = xIntHours;
 //! Declares com.lightningkite.khrysalis.time.days
-function kotlinIntDays(this_) { return new TimeInterval(this_ * 24 * 60 * 60 * 1000); }
-exports.kotlinIntDays = kotlinIntDays;
+function xIntDays(this_) { return new TimeInterval(this_ * 24 * 60 * 60 * 1000); }
+exports.xIntDays = xIntDays;
 //# sourceMappingURL=TimeInterval.actual.js.map

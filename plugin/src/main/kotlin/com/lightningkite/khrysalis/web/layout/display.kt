@@ -73,6 +73,14 @@ internal fun HtmlTranslator.display() {
         out.name = "div"
     }
 
+    element.handle("com.lightningkite.khrysalis.views.VideoPlayer") {
+        out.name = "video"
+    }
+
+    element.handle("com.lightningkite.khrysalis.views.android.HorizontalProgressBar") {
+        out.name = "progress"
+    }
+
     attribute.handle("android:src") {
         val target = if (out.name == "img") out
         else out.contentNodes

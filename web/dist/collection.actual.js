@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Kotlin_1 = require("./Kotlin");
 const Comparable_1 = require("./kotlin/Comparable");
 //! Declares kotlin.collections.binarySearch>kotlin.collections.List
-function kotlinCollectionsListBinarySearch(self, fromIndex = 0, toIndex = self.length, comparison) {
+function xListBinarySearch(self, fromIndex = 0, toIndex = self.length, comparison) {
     let low = fromIndex;
     let high = toIndex - 1;
     while (low <= high) {
@@ -22,29 +22,29 @@ function kotlinCollectionsListBinarySearch(self, fromIndex = 0, toIndex = self.l
     }
     return -(low + 1); // key not found
 }
-exports.kotlinCollectionsListBinarySearch = kotlinCollectionsListBinarySearch;
+exports.xListBinarySearch = xListBinarySearch;
 //! Declares kotlin.collections.binarySearchBy>kotlin.collections.List
-function kotlinCollectionsListBinarySearchBy(self, key, fromIndex = 0, toIndex = self.length, selector) {
-    return kotlinCollectionsListBinarySearch(self, fromIndex, toIndex, (x) => Comparable_1.safeCompare(key, selector(x)));
+function xListBinarySearchBy(self, key, fromIndex = 0, toIndex = self.length, selector) {
+    return xListBinarySearch(self, fromIndex, toIndex, (x) => Comparable_1.safeCompare(key, selector(x)));
 }
-exports.kotlinCollectionsListBinarySearchBy = kotlinCollectionsListBinarySearchBy;
+exports.xListBinarySearchBy = xListBinarySearchBy;
 //! Declares com.lightningkite.khrysalis.withoutIndex>kotlin.collections.List
-function kotlinCollectionsListWithoutIndex(this_WithoutIndex, index) {
+function xListWithoutIndex(this_WithoutIndex, index) {
     return Kotlin_1.also(Array.from(this_WithoutIndex), (this_) => this_.splice(index, 1));
 }
-exports.kotlinCollectionsListWithoutIndex = kotlinCollectionsListWithoutIndex;
+exports.xListWithoutIndex = xListWithoutIndex;
 //! Declares com.lightningkite.khrysalis.sumByLong>kotlin.collections.Iterable
-function kotlinCollectionsIterableSumByLong(this_SumByLong, selector) {
+function xIterableSumByLong(this_SumByLong, selector) {
     let sum = 0;
     for (const element of this_SumByLong) {
         sum = sum + selector(element);
     }
     return sum;
 }
-exports.kotlinCollectionsIterableSumByLong = kotlinCollectionsIterableSumByLong;
+exports.xIterableSumByLong = xIterableSumByLong;
 //! Declares com.lightningkite.khrysalis.binaryInsertBy>kotlin.collections.MutableList
-function kotlinCollectionsMutableListBinaryInsertBy(this_BinaryInsertBy, item, selector) {
-    const index = kotlinCollectionsListBinarySearchBy(this_BinaryInsertBy, selector(item), undefined, undefined, selector);
+function xMutableListBinaryInsertBy(this_BinaryInsertBy, item, selector) {
+    const index = xListBinarySearchBy(this_BinaryInsertBy, selector(item), undefined, undefined, selector);
     if (index < 0) {
         this_BinaryInsertBy.splice(-index - 1, 0, item);
     }
@@ -52,10 +52,10 @@ function kotlinCollectionsMutableListBinaryInsertBy(this_BinaryInsertBy, item, s
         this_BinaryInsertBy.splice(index, 0, item);
     }
 }
-exports.kotlinCollectionsMutableListBinaryInsertBy = kotlinCollectionsMutableListBinaryInsertBy;
+exports.xMutableListBinaryInsertBy = xMutableListBinaryInsertBy;
 //! Declares com.lightningkite.khrysalis.binaryInsertByDistinct>kotlin.collections.MutableList
-function kotlinCollectionsMutableListBinaryInsertByDistinct(this_BinaryInsertByDistinct, item, selector) {
-    const index = kotlinCollectionsListBinarySearchBy(this_BinaryInsertByDistinct, selector(item), undefined, undefined, selector);
+function xMutableListBinaryInsertByDistinct(this_BinaryInsertByDistinct, item, selector) {
+    const index = xListBinarySearchBy(this_BinaryInsertByDistinct, selector(item), undefined, undefined, selector);
     if (index < 0) {
         this_BinaryInsertByDistinct.splice(-index - 1, 0, item);
         return true;
@@ -64,10 +64,10 @@ function kotlinCollectionsMutableListBinaryInsertByDistinct(this_BinaryInsertByD
         return false;
     }
 }
-exports.kotlinCollectionsMutableListBinaryInsertByDistinct = kotlinCollectionsMutableListBinaryInsertByDistinct;
+exports.xMutableListBinaryInsertByDistinct = xMutableListBinaryInsertByDistinct;
 //! Declares com.lightningkite.khrysalis.binaryFind>kotlin.collections.List
-function kotlinCollectionsListBinaryFind(this_BinaryFind, key, selector) {
-    const index = kotlinCollectionsListBinarySearchBy(this_BinaryFind, key, undefined, undefined, selector);
+function xListBinaryFind(this_BinaryFind, key, selector) {
+    const index = xListBinarySearchBy(this_BinaryFind, key, undefined, undefined, selector);
     if (index >= 0) {
         return this_BinaryFind[index];
     }
@@ -75,10 +75,10 @@ function kotlinCollectionsListBinaryFind(this_BinaryFind, key, selector) {
         return null;
     }
 }
-exports.kotlinCollectionsListBinaryFind = kotlinCollectionsListBinaryFind;
+exports.xListBinaryFind = xListBinaryFind;
 //! Declares com.lightningkite.khrysalis.binaryForEach>kotlin.collections.List
-function kotlinCollectionsListBinaryForEach(this_BinaryForEach, lower, upper, selector, action) {
-    let index = kotlinCollectionsListBinarySearchBy(this_BinaryForEach, lower, undefined, undefined, selector);
+function xListBinaryForEach(this_BinaryForEach, lower, upper, selector, action) {
+    let index = xListBinarySearchBy(this_BinaryForEach, lower, undefined, undefined, selector);
     if (index < 0) {
         index = -index - 1;
     }
@@ -91,5 +91,5 @@ function kotlinCollectionsListBinaryForEach(this_BinaryForEach, lower, upper, se
         index++;
     }
 }
-exports.kotlinCollectionsListBinaryForEach = kotlinCollectionsListBinaryForEach;
+exports.xListBinaryForEach = xListBinaryForEach;
 //# sourceMappingURL=collection.actual.js.map

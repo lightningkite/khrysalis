@@ -34,16 +34,16 @@ class CustomViewDelegate {
         return height;
     }
     invalidate() {
-        const temp155 = this.customView;
-        if (temp155 !== null) {
-            CustomView_actual_1.customViewInvalidate(temp155);
+        const temp159 = this.customView;
+        if (temp159 !== null) {
+            CustomView_actual_1.customViewInvalidate(temp159);
         }
         ;
     }
     postInvalidate() {
-        const temp156 = this.customView;
-        if (temp156 !== null) {
-            CustomView_actual_1.customViewInvalidate(temp156);
+        const temp160 = this.customView;
+        if (temp160 !== null) {
+            CustomView_actual_1.customViewInvalidate(temp160);
         }
         ;
     }

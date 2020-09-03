@@ -33,7 +33,7 @@ function getMapAsync(this_, action) {
 }
 exports.getMapAsync = getMapAsync;
 //! Declares com.lightningkite.khrysalis.maps.bind>com.google.android.gms.maps.MapView
-function comGoogleAndroidGmsMapsMapViewBind(this_, dependency, style) {
+function xMapViewBind(this_, dependency, style) {
     const map = leaflet_1.map(this_);
     map.setView([0, 0], 1);
     configureMap(map, style);
@@ -47,14 +47,14 @@ function comGoogleAndroidGmsMapsMapViewBind(this_, dependency, style) {
     });
     obs.observe(this_);
 }
-exports.comGoogleAndroidGmsMapsMapViewBind = comGoogleAndroidGmsMapsMapViewBind;
+exports.xMapViewBind = xMapViewBind;
 //! Declares com.lightningkite.khrysalis.maps.bindView>com.google.android.gms.maps.MapView
-function comGoogleAndroidGmsMapsMapViewBindView(this_, dependency, position, zoomLevel = 15, animate = true, style = null) {
-    comGoogleAndroidGmsMapsMapViewBind(this_, dependency, style);
+function xMapViewBindView(this_, dependency, position, zoomLevel = 15, animate = true, style = null) {
+    xMapViewBind(this_, dependency, style);
     const map = this_[mapSymbol];
     let first = true;
     let marker = null;
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(position, undefined, undefined, (g) => {
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(position, undefined, undefined, (g) => {
         if (g) {
             const p = [g.latitude, g.longitude];
             map.setView(p, zoomLevel, { animate: animate && !first });
@@ -73,16 +73,16 @@ function comGoogleAndroidGmsMapsMapViewBindView(this_, dependency, position, zoo
                 marker = null;
             }
         }
-    }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
+    }), DisposeCondition_actual_1.xViewRemovedGet(this_));
 }
-exports.comGoogleAndroidGmsMapsMapViewBindView = comGoogleAndroidGmsMapsMapViewBindView;
+exports.xMapViewBindView = xMapViewBindView;
 //! Declares com.lightningkite.khrysalis.maps.bindSelect>com.google.android.gms.maps.MapView
-function comGoogleAndroidGmsMapsMapViewBindSelect(this_, dependency, position, zoomLevel = 15, animate = true, style = null) {
-    comGoogleAndroidGmsMapsMapViewBind(this_, dependency, style);
+function xMapViewBindSelect(this_, dependency, position, zoomLevel = 15, animate = true, style = null) {
+    xMapViewBind(this_, dependency, style);
     const map = this_[mapSymbol];
     let first = true;
     let marker = null;
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(position, undefined, undefined, (g) => {
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(position, undefined, undefined, (g) => {
         const currentPos = marker === null || marker === void 0 ? void 0 : marker.getLatLng();
         if ((currentPos === null || currentPos === void 0 ? void 0 : currentPos.lng) == (g === null || g === void 0 ? void 0 : g.longitude) && (currentPos === null || currentPos === void 0 ? void 0 : currentPos.lng) == (g === null || g === void 0 ? void 0 : g.latitude))
             return;
@@ -110,12 +110,12 @@ function comGoogleAndroidGmsMapsMapViewBindSelect(this_, dependency, position, z
                 marker = null;
             }
         }
-    }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
+    }), DisposeCondition_actual_1.xViewRemovedGet(this_));
     map.on('click', (e) => {
         if (!marker) {
             position.value = new GeoCoordinate_shared_1.GeoCoordinate(e.latlng.lat, e.latlng.lng);
         }
     });
 }
-exports.comGoogleAndroidGmsMapsMapViewBindSelect = comGoogleAndroidGmsMapsMapViewBindSelect;
+exports.xMapViewBindSelect = xMapViewBindSelect;
 //# sourceMappingURL=MapView.bind.actual.js.map

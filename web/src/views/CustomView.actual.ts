@@ -4,7 +4,7 @@
 
 import {CustomViewDelegate} from "./CustomViewDelegate.shared";
 import {DisplayMetrics} from "./DisplayMetrics.actual";
-import {DisposableLambda, getAndroidViewViewRemoved} from "../rx/DisposeCondition.actual";
+import {DisposableLambda, xViewRemovedGet} from "../rx/DisposeCondition.actual";
 import {tryCastClass} from "../Kotlin";
 
 const customViewDelegateSymbol = Symbol("customViewDelegateSymbol");
@@ -79,7 +79,7 @@ export function customViewSetDelegate(view: HTMLCanvasElement, delegate: CustomV
 
     if(!view[customViewConfiguredSymbol]){
         view[customViewConfiguredSymbol] = true;
-        getAndroidViewViewRemoved(view).call(new DisposableLambda(()=>{
+        xViewRemovedGet(view).call(new DisposableLambda(()=>{
             view[customViewDelegateSymbol]?.dispose();
             view[customViewDelegateSymbol] = undefined;
         }))

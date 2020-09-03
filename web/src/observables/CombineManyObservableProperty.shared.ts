@@ -3,9 +3,9 @@
 // Package: com.lightningkite.khrysalis.observables
 import { map as rxMap, skip as rxSkip } from 'rxjs/operators'
 import { ObservableProperty } from './ObservableProperty.shared'
-import { getComLightningkiteKhrysalisObservablesObservablePropertyObservable } from './ObservableProperty.ext.shared'
-import { comLightningkiteKhrysalisObservablesObservablePropertyMap } from './TransformedObservableProperty.shared'
+import { xObservablePropertyMap } from './TransformedObservableProperty.shared'
 import { Observable, combineLatest as rxCombineLatest } from 'rxjs'
+import { xObservablePropertyObservableGet } from './ObservableProperty.ext.shared'
 
 //! Declares com.lightningkite.khrysalis.observables.CombineManyObservableProperty
 export class CombineManyObservableProperty<IN> extends ObservableProperty<Array<IN>> {
@@ -19,18 +19,18 @@ export class CombineManyObservableProperty<IN> extends ObservableProperty<Array<
     public get value(): Array<IN> { return this.observables.map((it: ObservableProperty<IN>): IN => it.value); }
     
     //! Declares com.lightningkite.khrysalis.observables.CombineManyObservableProperty.onChange
-    public get onChange(): Observable<Array<IN>> { return rxCombineLatest(this.observables.map((it: ObservableProperty<IN>): Observable<IN> => getComLightningkiteKhrysalisObservablesObservablePropertyObservable(it))).pipe(rxMap((items: Array<IN>): Array<IN> => items.map((it: IN): IN => it))).pipe(rxSkip(0)); }
+    public get onChange(): Observable<Array<IN>> { return rxCombineLatest(this.observables.map((it: ObservableProperty<IN>): Observable<IN> => xObservablePropertyObservableGet(it))).pipe(rxMap((items: Array<IN>): Array<IN> => items.map((it: IN): IN => it))).pipe(rxSkip(0)); }
     
 }
 
 //! Declares com.lightningkite.khrysalis.observables.combined>kotlin.collections.List<com.lightningkite.khrysalis.observables.ObservableProperty>
 export function combinedAndMap<IN, OUT>(this_: Array<ObservableProperty<IN>>, combiner:  ((a: Array<IN>) => OUT)): ObservableProperty<OUT> {
-    return comLightningkiteKhrysalisObservablesObservablePropertyMap<Array<IN>, OUT>(new CombineManyObservableProperty<IN>(this_), combiner);
+    return xObservablePropertyMap<Array<IN>, OUT>(new CombineManyObservableProperty<IN>(this_), combiner);
 }
 
 
 //! Declares com.lightningkite.khrysalis.observables.combined>kotlin.collections.List<com.lightningkite.khrysalis.observables.ObservableProperty>
-export function kotlinCollectionsListCombined<T>(this_: Array<ObservableProperty<T>>): ObservableProperty<Array<T>> {
+export function xListCombined<T>(this_: Array<ObservableProperty<T>>): ObservableProperty<Array<T>> {
     return new CombineManyObservableProperty<T>(this_);
 }
 

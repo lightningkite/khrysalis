@@ -13,7 +13,7 @@ function spinnerBindAdvanced(this_, options, selected, makeView) {
     const observables = options.value.map((x) => {
         return new StandardObservableProperty_shared_1.StandardObservableProperty(x);
     });
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(options, undefined, undefined, (options) => {
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(options, undefined, undefined, (options) => {
         //correct number of options
         const diff = options.length - this_.options.length;
         if (diff > 0) {
@@ -38,10 +38,10 @@ function spinnerBindAdvanced(this_, options, selected, makeView) {
             observables[i].value = options[i];
         }
         this_.selectedIndex = options.findIndex((x) => Language_1.safeEq(selected.value, x));
-    }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(selected, undefined, undefined, (sel) => {
+    }), DisposeCondition_actual_1.xViewRemovedGet(this_));
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(selected, undefined, undefined, (sel) => {
         this_.selectedIndex = options.value.findIndex((x) => Language_1.safeEq(sel, x));
-    }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
+    }), DisposeCondition_actual_1.xViewRemovedGet(this_));
     this_.oninput = (ev) => {
         const sel = options.value[this_.selectedIndex];
         if (sel !== undefined) {
@@ -55,7 +55,7 @@ function spinnerBind(this_, options, selected, toString = (x) => `${x}`) {
     const observables = options.value.map((x) => {
         return new StandardObservableProperty_shared_1.StandardObservableProperty(x);
     });
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(options, undefined, undefined, (options) => {
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(options, undefined, undefined, (options) => {
         //correct number of options
         const diff = options.length - this_.options.length;
         if (diff > 0) {
@@ -63,9 +63,9 @@ function spinnerBind(this_, options, selected, toString = (x) => `${x}`) {
                 const newOpt = document.createElement("option");
                 newOpt.value = (options.length - 1 - diff + i).toString();
                 const newObs = new StandardObservableProperty_shared_1.StandardObservableProperty(options[options.length - diff + i]);
-                DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(newObs, undefined, undefined, (x) => {
+                DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(newObs, undefined, undefined, (x) => {
                     newOpt.innerText = toString(x);
-                }), DisposeCondition_actual_1.getAndroidViewViewRemoved(newOpt));
+                }), DisposeCondition_actual_1.xViewRemovedGet(newOpt));
                 this_.options.add(newOpt);
                 observables.push(newObs);
             }
@@ -82,10 +82,10 @@ function spinnerBind(this_, options, selected, toString = (x) => `${x}`) {
             observables[i].value = options[i];
         }
         this_.selectedIndex = options.findIndex((x) => Language_1.safeEq(selected.value, x));
-    }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(selected, undefined, undefined, (sel) => {
+    }), DisposeCondition_actual_1.xViewRemovedGet(this_));
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(selected, undefined, undefined, (sel) => {
         this_.selectedIndex = options.value.findIndex((x) => Language_1.safeEq(sel, x));
-    }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
+    }), DisposeCondition_actual_1.xViewRemovedGet(this_));
     this_.oninput = (ev) => {
         const sel = options.value[this_.selectedIndex];
         if (sel !== undefined) {

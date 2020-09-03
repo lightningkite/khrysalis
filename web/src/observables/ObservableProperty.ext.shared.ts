@@ -2,40 +2,40 @@
 // File: observables/ObservableProperty.ext.shared.kt
 // Package: com.lightningkite.khrysalis.observables
 import { Observable, Observer, SubscriptionLike, concat as rxConcat } from 'rxjs'
-import { comLightningkiteKhrysalisObservablesObservablePropertyWithWrite } from './WriteAddedObservableProperty.shared'
 import { ObservableProperty } from './ObservableProperty.shared'
+import { xObservablePropertyMap } from './TransformedObservableProperty.shared'
 import { EqualOverrideSet } from '../KotlinCollections'
 import { printStackTrace } from '../kotlin/Language'
-import { comLightningkiteKhrysalisObservablesObservablePropertyMap } from './TransformedObservableProperty.shared'
 import { map as rxMap } from 'rxjs/operators'
 import { MutableObservableProperty } from './MutableObservableProperty.shared'
+import { xObservablePropertyWithWrite } from './WriteAddedObservableProperty.shared'
 
 //! Declares com.lightningkite.khrysalis.observables.observable>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
-export function getComLightningkiteKhrysalisObservablesObservablePropertyObservable<T>(this_: ObservableProperty<T>): Observable<T> { return rxConcat(new Observable((it: Observer<T>): void => {
+export function xObservablePropertyObservableGet<T>(this_: ObservableProperty<T>): Observable<T> { return rxConcat(new Observable((it: Observer<T>): void => {
                 it.next(this_.value); it.complete();
 }), this_.onChange); }
 
 //! Declares com.lightningkite.khrysalis.observables.observableNN>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
-export function getComLightningkiteKhrysalisObservablesObservablePropertyObservableNN<T>(this_: ObservableProperty<T>): Observable<T> { return rxConcat(new Observable((it: Observer<T>): void => {
+export function xObservablePropertyObservableNNGet<T>(this_: ObservableProperty<T>): Observable<T> { return rxConcat(new Observable((it: Observer<T>): void => {
                 it.next(this_.value); it.complete();
 }), this_.onChange).pipe(rxMap((it: T): T => it)); }
 
 //! Declares com.lightningkite.khrysalis.observables.onChangeNN>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
-export function getComLightningkiteKhrysalisObservablesObservablePropertyOnChangeNN<T>(this_: ObservableProperty<T>): Observable<T> { return this_.onChange.pipe(rxMap((it: T): T => it)); }
+export function xObservablePropertyOnChangeNNGet<T>(this_: ObservableProperty<T>): Observable<T> { return this_.onChange.pipe(rxMap((it: T): T => it)); }
 
 
 //! Declares com.lightningkite.khrysalis.observables.subscribeBy>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
-export function comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy<T>(this_: ObservableProperty<T>, onError:  ((a: any) => void) = (it: any): void => {
+export function xObservablePropertySubscribeBy<T>(this_: ObservableProperty<T>, onError:  ((a: any) => void) = (it: any): void => {
         printStackTrace(it);
 }, onComplete:  (() => void) = (): void => {}, onNext:  ((a: T) => void) = (it: T): void => {}): SubscriptionLike { 
-    return getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this_).subscribe((boxed: T): void => {
+    return xObservablePropertyObservableGet(this_).subscribe((boxed: T): void => {
             onNext(boxed);
     }, onError, onComplete); 
 }
 
 //! Declares com.lightningkite.khrysalis.observables.includes
 export function includes<E>(collection: MutableObservableProperty<Set<E>>, element: E): MutableObservableProperty<boolean> {
-    return comLightningkiteKhrysalisObservablesObservablePropertyWithWrite<boolean>(comLightningkiteKhrysalisObservablesObservablePropertyMap<Set<E>, boolean>(collection, (it: Set<E>): boolean => it.has(element)), (it: boolean): void => {
+    return xObservablePropertyWithWrite<boolean>(xObservablePropertyMap<Set<E>, boolean>(collection, (it: Set<E>): boolean => it.has(element)), (it: boolean): void => {
             if (it) {
                 collection.value = new EqualOverrideSet([...collection.value, element]);
             } else {
@@ -45,18 +45,18 @@ export function includes<E>(collection: MutableObservableProperty<Set<E>>, eleme
 }
 
 //! Declares com.lightningkite.khrysalis.observables.whileActive>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Boolean>
-export function comLightningkiteKhrysalisObservablesObservablePropertyWhileActive(this_: ObservableProperty<boolean>, action:  (() => SubscriptionLike)): SubscriptionLike {
+export function xObservablePropertyWhileActive(this_: ObservableProperty<boolean>, action:  (() => SubscriptionLike)): SubscriptionLike {
     let current: (SubscriptionLike | null) = null;
     
-    return comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy<boolean>(this_, undefined, undefined, (it: boolean): void => {
+    return xObservablePropertySubscribeBy<boolean>(this_, undefined, undefined, (it: boolean): void => {
             if (it) {
                 if (current === null) {
                     current = action();
                 }
             } else {
-                const temp84 = current;
-                if(temp84 !== null) { 
-                    temp84.unsubscribe()
+                const temp76 = current;
+                if(temp76 !== null) { 
+                    temp76.unsubscribe()
                 };
                 current = null;
             }

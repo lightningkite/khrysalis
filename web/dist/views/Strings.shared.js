@@ -65,15 +65,15 @@ class ViewStringList {
 exports.ViewStringList = ViewStringList;
 ViewStringList.implementsInterfaceComLightningkiteKhrysalisViewsViewString = true;
 //! Declares com.lightningkite.khrysalis.views.joinToViewString>kotlin.collections.List<com.lightningkite.khrysalis.views.ViewString>
-function kotlinCollectionsListJoinToViewString(this_, separator = `\n`) {
+function xListJoinToViewString(this_, separator = `\n`) {
     if (this_.length === 1) {
         return this_[0];
     }
     return new ViewStringList(this_, separator);
 }
-exports.kotlinCollectionsListJoinToViewString = kotlinCollectionsListJoinToViewString;
+exports.xListJoinToViewString = xListJoinToViewString;
 //! Declares com.lightningkite.khrysalis.views.toDebugString>com.lightningkite.khrysalis.views.ViewString
-function comLightningkiteKhrysalisViewsViewStringToDebugString(this_) {
+function xViewStringToDebugString(this_) {
     const thing = this_;
     if (thing instanceof ViewStringRaw) {
         return thing._string;
@@ -82,9 +82,9 @@ function comLightningkiteKhrysalisViewsViewStringToDebugString(this_) {
         return thing.resource.toString();
     }
     else if (thing instanceof ViewStringTemplate) {
-        return comLightningkiteKhrysalisViewsViewStringToDebugString(thing.template) + "(" + thing._arguments.map((it) => (() => {
+        return xViewStringToDebugString(thing.template) + "(" + thing._arguments.map((it) => (() => {
             if (Kotlin_1.checkIsInterface(it, "ComLightningkiteKhrysalisViewsViewString")) {
-                return comLightningkiteKhrysalisViewsViewStringToDebugString(it);
+                return xViewStringToDebugString(it);
             }
             else {
                 return `${it}`;
@@ -92,7 +92,7 @@ function comLightningkiteKhrysalisViewsViewStringToDebugString(this_) {
         })()).join(", ") + ")";
     }
     else if (thing instanceof ViewStringList) {
-        return thing.parts.map((it) => comLightningkiteKhrysalisViewsViewStringToDebugString(it)).join(thing.separator);
+        return thing.parts.map((it) => xViewStringToDebugString(it)).join(thing.separator);
     }
     else if (thing instanceof ViewStringComplex) {
         return `<Complex string ${thing}>`;
@@ -101,5 +101,5 @@ function comLightningkiteKhrysalisViewsViewStringToDebugString(this_) {
         return "Unknown";
     }
 }
-exports.comLightningkiteKhrysalisViewsViewStringToDebugString = comLightningkiteKhrysalisViewsViewStringToDebugString;
+exports.xViewStringToDebugString = xViewStringToDebugString;
 //# sourceMappingURL=Strings.shared.js.map

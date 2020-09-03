@@ -6,14 +6,14 @@ import { CalendarDrawing, MonthCVD } from './MonthCVD.shared'
 import { Paint } from './draw/Paint.actual'
 import { SubscriptionLike } from 'rxjs'
 import { MutableObservableProperty } from '../observables/MutableObservableProperty.shared'
+import { xObservablePropertySubscribeBy } from '../observables/ObservableProperty.ext.shared'
 import { DateAlone } from '../time/DateAlone.actual'
 import { safeEq } from '../Kotlin'
 import { copyDateAloneMod } from '../time/Date.actual'
 import { StandardObservableProperty } from '../observables/StandardObservableProperty.shared'
 import { runOrNull } from '../kotlin/Language'
 import { RectF } from './geometry/RectF.actual'
-import { comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy } from '../observables/ObservableProperty.ext.shared'
-import { ioReactivexDisposablesDisposableForever } from '../rx/DisposeCondition.actual'
+import { xDisposableForever } from '../rx/DisposeCondition.actual'
 
 //! Declares com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD
 export class SelectDateRangeMonthCVD extends MonthCVD {
@@ -22,14 +22,14 @@ export class SelectDateRangeMonthCVD extends MonthCVD {
         this.draggingStart = true;
         this.start = new StandardObservableProperty<(DateAlone | null)>(null, undefined);
         this.endInclusive = new StandardObservableProperty<(DateAlone | null)>(null, undefined);
-        const it_349 = this.start.value;
-        if (it_349 !== null) { 
-            this.currentMonthObs.value = copyDateAloneMod(it_349, Date.prototype.setDate, 1);
+        const it_341 = this.start.value;
+        if (it_341 !== null) { 
+            this.currentMonthObs.value = copyDateAloneMod(it_341, Date.prototype.setDate, 1);
         };
-        ioReactivexDisposablesDisposableForever<SubscriptionLike>(this.start.onChange.subscribe( (value: (DateAlone | null)): void => {
+        xDisposableForever<SubscriptionLike>(this.start.onChange.subscribe( (value: (DateAlone | null)): void => {
                     this?.invalidate();
         }, undefined, undefined));
-        ioReactivexDisposablesDisposableForever<SubscriptionLike>(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy<(DateAlone | null)>(this.endInclusive, undefined, undefined,  (value: (DateAlone | null)): void => {
+        xDisposableForever<SubscriptionLike>(xObservablePropertySubscribeBy<(DateAlone | null)>(this.endInclusive, undefined, undefined,  (value: (DateAlone | null)): void => {
                     this?.invalidate();
         }));
         this.selectedDayPaint = new Paint();

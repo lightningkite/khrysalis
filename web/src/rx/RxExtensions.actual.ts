@@ -7,12 +7,12 @@ import { doOnSubscribe } from '../Kotlin'
 import { Observable} from 'rxjs'
 import { post } from '../delay.actual'
 //! Declares com.lightningkite.khrysalis.rx.working
-export function ioReactivexSingleWorking<Element extends any>(this_Working: Observable<Element>, observable: MutableObservableProperty<Boolean>): Observable<Element>{
+export function xSingleWorking<Element extends any>(this_Working: Observable<Element>, observable: MutableObservableProperty<Boolean>): Observable<Element>{
     return rxFinalize(() => post(() => observable.value = false))(doOnSubscribe(this_Working, (it) => post(() => observable.value = true))) as Observable<Element>;
 }
 
 //! Declares com.lightningkite.khrysalis.rx.mapNotNull
-export function ioReactivexObservableMapNotNull<A, B>(this_: Observable<A>, transform: (a: A)=>(B | null)): Observable<B> {
+export function xObservableMapNotNull<A, B>(this_: Observable<A>, transform: (a: A)=>(B | null)): Observable<B> {
     return this_.pipe(
         rxMap(transform),
         rxFilter((a)=> a !== null && a !== undefined)

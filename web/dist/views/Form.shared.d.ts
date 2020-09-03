@@ -42,8 +42,8 @@ export declare namespace Form {
         xMustMatchY: ViewString;
     }
 }
-export declare function comLightningkiteKhrysalisViewsFormFieldRequired(this_: FormField<string>): (ViewString | null);
-export declare function comLightningkiteKhrysalisViewsFormFieldNotNull<T>(this_: FormField<T>): (ViewString | null);
-export declare function comLightningkiteKhrysalisViewsFormFieldNotFalse(this_: FormField<boolean>): (ViewString | null);
-export declare function comLightningkiteKhrysalisViewsViewStringUnless(this_: ViewString, condition: boolean): (ViewString | null);
-export declare function comLightningkiteKhrysalisViewsFormFieldMatches<T extends any>(this_: FormField<T>, other: FormField<T>): (ViewString | null);
+export declare function xFormFieldRequired(this_: FormField<string>): (ViewString | null);
+export declare function xFormFieldNotNull<T>(this_: FormField<T>): (ViewString | null);
+export declare function xFormFieldNotFalse(this_: FormField<boolean>): (ViewString | null);
+export declare function xViewStringUnless(this_: ViewString, condition: boolean): (ViewString | null);
+export declare function xFormFieldMatches<T extends any>(this_: FormField<T>, other: FormField<T>): (ViewString | null);

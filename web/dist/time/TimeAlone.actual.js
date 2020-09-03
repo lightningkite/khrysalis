@@ -25,7 +25,7 @@ class TimeAlone {
     toString() { return `TimeAlone(hour = ${this.hour}, minute = ${this.minute}, second = ${this.second})`; }
     copy(hour = this.hour, minute = this.minute, second = this.second) { return new TimeAlone(hour, minute, second); }
     toJSON() {
-        return comLightningkiteKhrysalisTimeTimeAloneIso8601(this);
+        return xTimeAloneIso8601(this);
     }
     //! Declares com.lightningkite.khrysalis.time.TimeAlone.comparable
     get comparable() { return this.hour * 60 * 60 + this.minute * 60 + this.second; }
@@ -56,7 +56,7 @@ TimeAlone.Companion = (_a = class Companion {
             this.noon = new TimeAlone(12, 0, 0);
             this.max = new TimeAlone(23, 59, 59);
         }
-        now() { return Date_actual_1.getJavaUtilDateTimeAlone(new Date()); }
+        now() { return Date_actual_1.xDateTimeAloneGet(new Date()); }
         iso(string) {
             const parts = string.split(':');
             const hour = Kotlin_1.parseIntOrNull(parts[0]);
@@ -74,12 +74,12 @@ TimeAlone.Companion = (_a = class Companion {
     _a.INSTANCE = new _a(),
     _a);
 //! Declares com.lightningkite.khrysalis.time.iso8601
-function comLightningkiteKhrysalisTimeTimeAloneIso8601(this_) {
+function xTimeAloneIso8601(this_) {
     return `${this_.hour.toString().padStart(2, "0")}:${this_.minute.toString().padStart(2, "0")}:${this_.second.toString().padStart(2, "0")}`;
 }
-exports.comLightningkiteKhrysalisTimeTimeAloneIso8601 = comLightningkiteKhrysalisTimeTimeAloneIso8601;
+exports.xTimeAloneIso8601 = xTimeAloneIso8601;
 //! Declares com.lightningkite.khrysalis.time.minus
-function comLightningkiteKhrysalisTimeTimeAloneMinus(this_, rhs) {
+function xTimeAloneMinus(this_, rhs) {
     let offset = 0;
     if (rhs instanceof TimeAlone) {
         offset = (rhs.hour * 60 * 60 + rhs.minute * 60 + rhs.second);
@@ -97,9 +97,9 @@ function comLightningkiteKhrysalisTimeTimeAloneMinus(this_, rhs) {
         }
     })();
 }
-exports.comLightningkiteKhrysalisTimeTimeAloneMinus = comLightningkiteKhrysalisTimeTimeAloneMinus;
+exports.xTimeAloneMinus = xTimeAloneMinus;
 //! Declares com.lightningkite.khrysalis.time.plus
-function comLightningkiteKhrysalisTimeTimeAlonePlus(this_, rhs) {
+function xTimeAlonePlus(this_, rhs) {
     let offset = 0;
     if (rhs instanceof TimeAlone) {
         offset = (rhs.hour * 60 * 60 + rhs.minute * 60 + rhs.second);
@@ -110,5 +110,5 @@ function comLightningkiteKhrysalisTimeTimeAlonePlus(this_, rhs) {
     const result = (this_.hour * 60 * 60 + this_.minute * 60 + this_.second) + offset;
     return new TimeAlone(Math.floor(result / 60 / 60), Math.floor(result / 60 % 60), Math.floor(result % 60));
 }
-exports.comLightningkiteKhrysalisTimeTimeAlonePlus = comLightningkiteKhrysalisTimeTimeAlonePlus;
+exports.xTimeAlonePlus = xTimeAlonePlus;
 //# sourceMappingURL=TimeAlone.actual.js.map

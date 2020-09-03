@@ -23,7 +23,7 @@ declare global {
  */
 export declare function setMapConfiguration(source: (m: Map, style: string | null) => void): void;
 export declare function getMapAsync(this_: HTMLDivElement, action: (a: Map) => void): void;
-export declare function comGoogleAndroidGmsMapsMapViewBind(this_: HTMLDivElement, dependency: Window, style: string | null): void;
-export declare function comGoogleAndroidGmsMapsMapViewBindView(this_: HTMLDivElement, dependency: Window, position: ObservableProperty<(GeoCoordinate | null)>, zoomLevel?: number, animate?: boolean, style?: string | null): void;
-export declare function comGoogleAndroidGmsMapsMapViewBindSelect(this_: HTMLDivElement, dependency: Window, position: MutableObservableProperty<(GeoCoordinate | null)>, zoomLevel?: number, animate?: boolean, style?: string | null): void;
+export declare function xMapViewBind(this_: HTMLDivElement, dependency: Window, style: string | null): void;
+export declare function xMapViewBindView(this_: HTMLDivElement, dependency: Window, position: ObservableProperty<(GeoCoordinate | null)>, zoomLevel?: number, animate?: boolean, style?: string | null): void;
+export declare function xMapViewBindSelect(this_: HTMLDivElement, dependency: Window, position: MutableObservableProperty<(GeoCoordinate | null)>, zoomLevel?: number, animate?: boolean, style?: string | null): void;
 export {};

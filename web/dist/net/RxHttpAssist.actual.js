@@ -8,7 +8,7 @@ const rxjs_1 = require("rxjs");
 const operators_1 = require("rxjs/operators");
 const jsonParsing_1 = require("./jsonParsing");
 //! Declares com.lightningkite.khrysalis.net.unsuccessfulAsError
-function ioReactivexSingleUnsuccessfulAsError(this_) {
+function xSingleUnsuccessfulAsError(this_) {
     return this_.pipe(operators_1.map((it) => {
         if (it.ok) {
             return it;
@@ -18,98 +18,98 @@ function ioReactivexSingleUnsuccessfulAsError(this_) {
         }
     }));
 }
-exports.ioReactivexSingleUnsuccessfulAsError = ioReactivexSingleUnsuccessfulAsError;
+exports.xSingleUnsuccessfulAsError = xSingleUnsuccessfulAsError;
 //! Declares com.lightningkite.khrysalis.net.discard
-function ioReactivexSingleDiscard(this_) {
+function xSingleDiscard(this_) {
     return this_.pipe(operators_1.switchMap((it) => {
         if (it.ok) {
-            return okhttp3ResponseDiscard(it);
+            return xResponseDiscard(it);
         }
         else {
             throw new HttpResponseError_actual_1.HttpResponseException(it, undefined);
         }
     }));
 }
-exports.ioReactivexSingleDiscard = ioReactivexSingleDiscard;
+exports.xSingleDiscard = xSingleDiscard;
 //! Declares com.lightningkite.khrysalis.net.readJson
-function ioReactivexSingleReadJson(this_, T) {
+function xSingleReadJson(this_, T) {
     return this_.pipe(operators_1.switchMap((it) => {
         if (it.ok) {
-            return okhttp3ResponseReadJson(it, T);
+            return xResponseReadJson(it, T);
         }
         else {
             throw new HttpResponseError_actual_1.HttpResponseException(it, undefined);
         }
     }));
 }
-exports.ioReactivexSingleReadJson = ioReactivexSingleReadJson;
+exports.xSingleReadJson = xSingleReadJson;
 //! Declares com.lightningkite.khrysalis.net.readJsonDebug
-function ioReactivexSingleReadJsonDebug(this_, T) {
+function xSingleReadJsonDebug(this_, T) {
     return this_.pipe(operators_1.switchMap((it) => {
         if (it.ok) {
-            return okhttp3ResponseReadJsonDebug(it, T);
+            return xResponseReadJsonDebug(it, T);
         }
         else {
             throw new HttpResponseError_actual_1.HttpResponseException(it, undefined);
         }
     }));
 }
-exports.ioReactivexSingleReadJsonDebug = ioReactivexSingleReadJsonDebug;
+exports.xSingleReadJsonDebug = xSingleReadJsonDebug;
 //! Declares com.lightningkite.khrysalis.net.readText
-function ioReactivexSingleReadText(this_) {
+function xSingleReadText(this_) {
     return this_.pipe(operators_1.switchMap((it) => {
         if (it.ok) {
-            return okhttp3ResponseReadText(it);
+            return xResponseReadText(it);
         }
         else {
             throw new HttpResponseError_actual_1.HttpResponseException(it, undefined);
         }
     }));
 }
-exports.ioReactivexSingleReadText = ioReactivexSingleReadText;
+exports.xSingleReadText = xSingleReadText;
 //! Declares com.lightningkite.khrysalis.net.readData
-function ioReactivexSingleReadData(this_) {
+function xSingleReadData(this_) {
     return this_.pipe(operators_1.switchMap((it) => {
         if (it.ok) {
-            return okhttp3ResponseReadData(it);
+            return xResponseReadData(it);
         }
         else {
             throw new HttpResponseError_actual_1.HttpResponseException(it, undefined);
         }
     }));
 }
-exports.ioReactivexSingleReadData = ioReactivexSingleReadData;
+exports.xSingleReadData = xSingleReadData;
 //! Declares com.lightningkite.khrysalis.net.readJson
-function okhttp3ResponseReadJson(this_, T) {
+function xResponseReadJson(this_, T) {
     return rxjs_1.from(this_.json()).pipe(operators_1.map((it) => {
         return jsonParsing_1.parse(it, T);
     }));
 }
-exports.okhttp3ResponseReadJson = okhttp3ResponseReadJson;
+exports.xResponseReadJson = xResponseReadJson;
 //! Declares com.lightningkite.khrysalis.net.readJsonDebug
-function okhttp3ResponseReadJsonDebug(this_, T) {
+function xResponseReadJsonDebug(this_, T) {
     return rxjs_1.from(this_.json()).pipe(operators_1.map((it) => {
         return jsonParsing_1.parse(it, T);
     }));
 }
-exports.okhttp3ResponseReadJsonDebug = okhttp3ResponseReadJsonDebug;
+exports.xResponseReadJsonDebug = xResponseReadJsonDebug;
 //! Declares com.lightningkite.khrysalis.net.discard
-function okhttp3ResponseDiscard(this_) {
+function xResponseDiscard(this_) {
     return rxjs_1.from(this_.text()).pipe(operators_1.map((x) => { }));
 }
-exports.okhttp3ResponseDiscard = okhttp3ResponseDiscard;
+exports.xResponseDiscard = xResponseDiscard;
 //! Declares com.lightningkite.khrysalis.net.readText
-function okhttp3ResponseReadText(this_) {
+function xResponseReadText(this_) {
     return rxjs_1.from(this_.text());
 }
-exports.okhttp3ResponseReadText = okhttp3ResponseReadText;
+exports.xResponseReadText = xResponseReadText;
 //! Declares com.lightningkite.khrysalis.net.readData
-function okhttp3ResponseReadData(this_) {
+function xResponseReadData(this_) {
     return rxjs_1.from(this_.arrayBuffer()).pipe(operators_1.map((it) => new Int8Array(it)));
 }
-exports.okhttp3ResponseReadData = okhttp3ResponseReadData;
+exports.xResponseReadData = xResponseReadData;
 //! Declares com.lightningkite.khrysalis.net.readHttpException
-function ioReactivexSingleReadHttpException(this_) {
+function xSingleReadHttpException(this_) {
     return this_.pipe(operators_1.catchError((err) => {
         if (err instanceof HttpResponseError_actual_1.HttpResponseException) {
             return rxjs_1.from(err.response.text())
@@ -122,5 +122,5 @@ function ioReactivexSingleReadHttpException(this_) {
         }
     }));
 }
-exports.ioReactivexSingleReadHttpException = ioReactivexSingleReadHttpException;
+exports.xSingleReadHttpException = xSingleReadHttpException;
 //# sourceMappingURL=RxHttpAssist.actual.js.map

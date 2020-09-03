@@ -15,23 +15,23 @@ class HttpBodyPart {
 }
 exports.HttpBodyPart = HttpBodyPart;
 //! Declares com.lightningkite.khrysalis.net.toJsonHttpBody
-function kotlinAnyToJsonHttpBody(this_) {
+function xAnyToJsonHttpBody(this_) {
     return new HttpBody(jsonParsing_1.stringify(this_), HttpMediaType_actual_1.HttpMediaTypes.INSTANCE.JSON);
 }
-exports.kotlinAnyToJsonHttpBody = kotlinAnyToJsonHttpBody;
+exports.xAnyToJsonHttpBody = xAnyToJsonHttpBody;
 //! Declares com.lightningkite.khrysalis.net.toHttpBody
-function kotlinByteArrayToHttpBody(this_, mediaType) {
+function xByteArrayToHttpBody(this_, mediaType) {
     return new HttpBody(this_, mediaType);
 }
-exports.kotlinByteArrayToHttpBody = kotlinByteArrayToHttpBody;
+exports.xByteArrayToHttpBody = xByteArrayToHttpBody;
 //! Declares com.lightningkite.khrysalis.net.toHttpBody
-function kotlinStringToHttpBody(this_, mediaType = HttpMediaType_actual_1.HttpMediaTypes.INSTANCE.TEXT) {
+function xStringToHttpBody(this_, mediaType = HttpMediaType_actual_1.HttpMediaTypes.INSTANCE.TEXT) {
     return new HttpBody(this_, mediaType);
 }
-exports.kotlinStringToHttpBody = kotlinStringToHttpBody;
+exports.xStringToHttpBody = xStringToHttpBody;
 //! Declares com.lightningkite.khrysalis.net.toHttpBody
 //TODO: Figure out when we have bitmaps
-// export function androidGraphicsBitmapToHttpBody(this_: Bitmap, maxBytes: number = 10_000_000): HttpBody{
+// export function xBitmapToHttpBody(this_: Bitmap, maxBytes: number = 10_000_000): HttpBody{
 //
 // }
 //! Declares com.lightningkite.khrysalis.net.multipartFormBody

@@ -6,17 +6,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const kotlin_text_1 = require("./kotlin/kotlin.text");
 const kotlin_text_2 = require("./kotlin/kotlin.text");
 //! Declares com.lightningkite.khrysalis.humanify>kotlin.String
-function kotlinStringHumanify(this_Humanify) {
+function xStringHumanify(this_Humanify) {
     if (this_Humanify === "")
         return "";
     return this_Humanify[0].toUpperCase() + this_Humanify.replace(".", " - ").replace(new RegExp("[A-Z]"), (result) => " " + result).replace('_', ' ').trim();
 }
-exports.kotlinStringHumanify = kotlinStringHumanify;
+exports.xStringHumanify = xStringHumanify;
 //! Declares com.lightningkite.khrysalis.toSnakeCase>kotlin.String
-function kotlinStringToSnakeCase(this_ToSnakeCase) {
+function xStringToSnakeCase(this_ToSnakeCase) {
     const builder = new kotlin_text_1.StringBuilder();
     for (const char of this_ToSnakeCase) {
-        if (kotlin_text_2.kotlinCharIsUpperCase(char)) {
+        if (kotlin_text_2.xCharIsUpperCase(char)) {
             builder.value += '_';
             builder.value += char.toLowerCase();
         }
@@ -27,5 +27,5 @@ function kotlinStringToSnakeCase(this_ToSnakeCase) {
     }
     return builder.toString().trim();
 }
-exports.kotlinStringToSnakeCase = kotlinStringToSnakeCase;
+exports.xStringToSnakeCase = xStringToSnakeCase;
 //# sourceMappingURL=String.extensions.actual.js.map

@@ -15,13 +15,13 @@ export class TimeInterval {
 }
 
 //! Declares com.lightningkite.khrysalis.time.milliseconds
-export function kotlinIntMilliseconds(this_: number): TimeInterval{ return new TimeInterval(this_); }
+export function xIntMilliseconds(this_: number): TimeInterval{ return new TimeInterval(this_); }
 //! Declares com.lightningkite.khrysalis.time.seconds
-export function kotlinIntSeconds(this_: number): TimeInterval{ return new TimeInterval(this_ * 1000); }
+export function xIntSeconds(this_: number): TimeInterval{ return new TimeInterval(this_ * 1000); }
 //! Declares com.lightningkite.khrysalis.time.minutes
-export function kotlinIntMinutes(this_: number): TimeInterval{ return new TimeInterval(this_ * 60 * 1000); }
+export function xIntMinutes(this_: number): TimeInterval{ return new TimeInterval(this_ * 60 * 1000); }
 //! Declares com.lightningkite.khrysalis.time.hours
-export function kotlinIntHours(this_: number): TimeInterval{ return new TimeInterval(this_ * 60 * 60 * 1000); }
+export function xIntHours(this_: number): TimeInterval{ return new TimeInterval(this_ * 60 * 60 * 1000); }
 //! Declares com.lightningkite.khrysalis.time.days
-export function kotlinIntDays(this_: number): TimeInterval{ return new TimeInterval(this_ * 24 * 60 * 60 * 1000); }
+export function xIntDays(this_: number): TimeInterval{ return new TimeInterval(this_ * 24 * 60 * 60 * 1000); }
 

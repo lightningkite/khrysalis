@@ -1,19 +1,19 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 //! Declares kotlin.text.isBlank
-function kotlinCharSequenceIsBlank(s) {
+function xCharSequenceIsBlank(s) {
     if (s == null)
         return true;
     for (const c of s) {
-        if (!kotlinCharIsWhitespace(c)) {
+        if (!xCharIsWhitespace(c)) {
             return false;
         }
     }
     return true;
 }
-exports.kotlinCharSequenceIsBlank = kotlinCharSequenceIsBlank;
+exports.xCharSequenceIsBlank = xCharSequenceIsBlank;
 //! Declares kotlin.text.substringBefore
-function kotlinStringSubstringBefore(s, delimeter, defaultResult = s) {
+function xStringSubstringBefore(s, delimeter, defaultResult = s) {
     const pos = s.indexOf(delimeter);
     if (pos == -1) {
         return defaultResult;
@@ -22,9 +22,9 @@ function kotlinStringSubstringBefore(s, delimeter, defaultResult = s) {
         return s.substring(0, pos);
     }
 }
-exports.kotlinStringSubstringBefore = kotlinStringSubstringBefore;
+exports.xStringSubstringBefore = xStringSubstringBefore;
 //! Declares kotlin.text.substringAfter
-function kotlinStringSubstringAfter(s, delimeter, defaultResult = s) {
+function xStringSubstringAfter(s, delimeter, defaultResult = s) {
     const pos = s.indexOf(delimeter);
     if (pos == -1) {
         return defaultResult;
@@ -33,9 +33,9 @@ function kotlinStringSubstringAfter(s, delimeter, defaultResult = s) {
         return s.substring(pos + delimeter.length);
     }
 }
-exports.kotlinStringSubstringAfter = kotlinStringSubstringAfter;
+exports.xStringSubstringAfter = xStringSubstringAfter;
 //! Declares kotlin.text.substringBeforeLast
-function kotlinStringSubstringBeforeLast(s, delimeter, defaultResult = s) {
+function xStringSubstringBeforeLast(s, delimeter, defaultResult = s) {
     const pos = s.lastIndexOf(delimeter);
     if (pos == -1) {
         return defaultResult;
@@ -44,9 +44,9 @@ function kotlinStringSubstringBeforeLast(s, delimeter, defaultResult = s) {
         return s.substring(0, pos);
     }
 }
-exports.kotlinStringSubstringBeforeLast = kotlinStringSubstringBeforeLast;
+exports.xStringSubstringBeforeLast = xStringSubstringBeforeLast;
 //! Declares kotlin.text.substringAfterLast
-function kotlinStringSubstringAfterLast(s, delimeter, defaultResult = s) {
+function xStringSubstringAfterLast(s, delimeter, defaultResult = s) {
     const pos = s.lastIndexOf(delimeter);
     if (pos == -1) {
         return defaultResult;
@@ -55,14 +55,14 @@ function kotlinStringSubstringAfterLast(s, delimeter, defaultResult = s) {
         return s.substring(pos + delimeter.length);
     }
 }
-exports.kotlinStringSubstringAfterLast = kotlinStringSubstringAfterLast;
+exports.xStringSubstringAfterLast = xStringSubstringAfterLast;
 //! Declares kotlin.text.trimIndent
-function kotlinStringTrimIndent(c) {
+function xStringTrimIndent(c) {
     return c.split('\n').map((x) => x.trim()).join("");
 }
-exports.kotlinStringTrimIndent = kotlinStringTrimIndent;
+exports.xStringTrimIndent = xStringTrimIndent;
 //! Declares kotlin.text.isWhitespace
-function kotlinCharIsWhitespace(c) {
+function xCharIsWhitespace(c) {
     switch (c) {
         case " ":
         case "\n":
@@ -73,32 +73,32 @@ function kotlinCharIsWhitespace(c) {
             return false;
     }
 }
-exports.kotlinCharIsWhitespace = kotlinCharIsWhitespace;
+exports.xCharIsWhitespace = xCharIsWhitespace;
 //! Declares kotlin.text.isUpperCase
-function kotlinCharIsUpperCase(c) {
+function xCharIsUpperCase(c) {
     return c.toUpperCase() === c;
 }
-exports.kotlinCharIsUpperCase = kotlinCharIsUpperCase;
+exports.xCharIsUpperCase = xCharIsUpperCase;
 //! Declares kotlin.text.isLowerCase
-function kotlinCharIsLowerCase(c) {
+function xCharIsLowerCase(c) {
     return c.toLowerCase() === c;
 }
-exports.kotlinCharIsLowerCase = kotlinCharIsLowerCase;
+exports.xCharIsLowerCase = xCharIsLowerCase;
 //! Declares kotlin.text.isLetter
-function kotlinCharIsLetter(c) {
+function xCharIsLetter(c) {
     return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z');
 }
-exports.kotlinCharIsLetter = kotlinCharIsLetter;
+exports.xCharIsLetter = xCharIsLetter;
 //! Declares kotlin.text.isDigit
-function kotlinCharIsDigit(c) {
+function xCharIsDigit(c) {
     return c >= '0' && c <= '9';
 }
-exports.kotlinCharIsDigit = kotlinCharIsDigit;
+exports.xCharIsDigit = xCharIsDigit;
 //! Declares kotlin.text.isLetterOrDigit
-function kotlinCharIsLetterOrDigit(c) {
-    return kotlinCharIsLetter(c) || kotlinCharIsDigit(c);
+function xCharIsLetterOrDigit(c) {
+    return xCharIsLetter(c) || xCharIsDigit(c);
 }
-exports.kotlinCharIsLetterOrDigit = kotlinCharIsLetterOrDigit;
+exports.xCharIsLetterOrDigit = xCharIsLetterOrDigit;
 //! Declares kotlin.text.StringBuilder
 //! Declares java.lang.StringBuilder
 class StringBuilder {
@@ -109,7 +109,7 @@ class StringBuilder {
 }
 exports.StringBuilder = StringBuilder;
 //! Declares kotlin.text.indexOfAny
-function kotlinCharSequenceIndexOfAny(c, set, start, caseSensitive) {
+function xCharSequenceIndexOfAny(c, set, start, caseSensitive) {
     if (caseSensitive) {
         c = c.toLowerCase();
         set = set.map((x) => x.toLowerCase());
@@ -123,5 +123,5 @@ function kotlinCharSequenceIndexOfAny(c, set, start, caseSensitive) {
     }
     return lowest == c.length ? -1 : lowest;
 }
-exports.kotlinCharSequenceIndexOfAny = kotlinCharSequenceIndexOfAny;
+exports.xCharSequenceIndexOfAny = xCharSequenceIndexOfAny;
 //# sourceMappingURL=kotlin.text.js.map

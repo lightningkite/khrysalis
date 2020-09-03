@@ -6,7 +6,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const GeoCoordinate_shared_1 = require("./GeoCoordinate.shared");
 const LocationResult_shared_1 = require("./LocationResult.shared");
 //! Declares com.lightningkite.khrysalis.location.requestLocation
-function comLightningkiteKhrysalisAndroidActivityAccessRequestLocation(this_RequestLocation, accuracyBetterThanMeters = 10.0, timeoutInSeconds = 100.0, onResult) {
+function xActivityAccessRequestLocation(this_RequestLocation, accuracyBetterThanMeters = 10.0, timeoutInSeconds = 100.0, onResult) {
     navigator.geolocation.getCurrentPosition((position) => {
         var _a, _b, _c, _d;
         return onResult(new LocationResult_shared_1.LocationResult(new GeoCoordinate_shared_1.GeoCoordinate(position.coords.latitude, position.coords.longitude), position.coords.accuracy, (_a = position.coords.altitude) !== null && _a !== void 0 ? _a : undefined, (_b = position.coords.altitudeAccuracy) !== null && _b !== void 0 ? _b : undefined, (_c = position.coords.heading) !== null && _c !== void 0 ? _c : undefined, (_d = position.coords.speed) !== null && _d !== void 0 ? _d : undefined), null);
@@ -16,9 +16,9 @@ function comLightningkiteKhrysalisAndroidActivityAccessRequestLocation(this_Requ
         enableHighAccuracy: accuracyBetterThanMeters <= 100
     });
 }
-exports.comLightningkiteKhrysalisAndroidActivityAccessRequestLocation = comLightningkiteKhrysalisAndroidActivityAccessRequestLocation;
+exports.xActivityAccessRequestLocation = xActivityAccessRequestLocation;
 //! Declares com.lightningkite.khrysalis.location.requestLocationCached
-function comLightningkiteKhrysalisAndroidActivityAccessRequestLocationCached(this_RequestLocationCached, accuracyBetterThanMeters = 10.0, timeoutInSeconds = 100.0, onResult) {
+function xActivityAccessRequestLocationCached(this_RequestLocationCached, accuracyBetterThanMeters = 10.0, timeoutInSeconds = 100.0, onResult) {
     navigator.geolocation.getCurrentPosition((position) => {
         var _a, _b, _c, _d;
         return onResult(new LocationResult_shared_1.LocationResult(new GeoCoordinate_shared_1.GeoCoordinate(position.coords.latitude, position.coords.longitude), position.coords.accuracy, (_a = position.coords.altitude) !== null && _a !== void 0 ? _a : undefined, (_b = position.coords.altitudeAccuracy) !== null && _b !== void 0 ? _b : undefined, (_c = position.coords.heading) !== null && _c !== void 0 ? _c : undefined, (_d = position.coords.speed) !== null && _d !== void 0 ? _d : undefined), null);
@@ -28,5 +28,5 @@ function comLightningkiteKhrysalisAndroidActivityAccessRequestLocationCached(thi
         enableHighAccuracy: accuracyBetterThanMeters <= 100
     });
 }
-exports.comLightningkiteKhrysalisAndroidActivityAccessRequestLocationCached = comLightningkiteKhrysalisAndroidActivityAccessRequestLocationCached;
+exports.xActivityAccessRequestLocationCached = xActivityAccessRequestLocationCached;
 //# sourceMappingURL=ViewDependency.location.actual.js.map

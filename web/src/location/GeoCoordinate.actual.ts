@@ -14,7 +14,7 @@
 import { GeoCoordinate } from './GeoCoordinate.shared'
 
 //! Declares com.lightningkite.khrysalis.location.distanceToMiles
-export function comLightningkiteKhrysalisLocationGeoCoordinateDistanceToMiles(this_: GeoCoordinate, other: GeoCoordinate): number{
+export function xGeoCoordinateDistanceToMiles(this_: GeoCoordinate, other: GeoCoordinate): number{
     if ((this_.latitude == other.latitude) && (this_.longitude == other.longitude)) {
         return 0;
     }

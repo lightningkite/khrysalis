@@ -36,9 +36,9 @@ function setupMapBox(accessToken) {
         }), operators_1.map((json) => {
             return json.features.map((x) => {
                 const extractedContext = new Map(x.context.map((y) => {
-                    return [kotlin_text_1.kotlinStringSubstringBefore(y.id, ".", undefined), y.text];
+                    return [kotlin_text_1.xStringSubstringBefore(y.id, ".", undefined), y.text];
                 }));
-                extractedContext.set(kotlin_text_1.kotlinStringSubstringBefore(x.id, ".", undefined), x.text);
+                extractedContext.set(kotlin_text_1.xStringSubstringBefore(x.id, ".", undefined), x.text);
                 return new GeoAddress_shared_1.GeoAddress(
                 /*coordinate*/ new GeoCoordinate_shared_1.GeoCoordinate(x.center[1], x.center[0]), 
                 /*name*/ x.matching_place_name, 

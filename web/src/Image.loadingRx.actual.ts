@@ -3,13 +3,13 @@
 // Package: com.lightningkite.khrysalis
 import {Image, ImageImageBitmap, ImageRaw, ImageReference, ImageRemoteUrl, ImageResource} from './Image.shared'
 import {Exception} from './Kotlin'
-import {ioReactivexSingleUnsuccessfulAsError} from './net/RxHttpAssist.actual'
+import {xSingleUnsuccessfulAsError} from './net/RxHttpAssist.actual'
 import {Observable, of as rxOf, from as rxFrom, throwError} from 'rxjs'
 import {IllegalStateException, also} from 'Kotlin'
 import {flatMap, map, map as rxMap} from 'rxjs/operators'
 
 //! Declares com.lightningkite.khrysalis.load>com.lightningkite.khrysalis.Image
-export function comLightningkiteKhrysalisImageLoad(this_: Image): Observable<ImageBitmap> {
+export function xImageLoad(this_: Image): Observable<ImageBitmap> {
     return (() => {
         try {
             return (() => {

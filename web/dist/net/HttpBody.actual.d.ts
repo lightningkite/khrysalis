@@ -11,8 +11,8 @@ export declare class HttpBodyPart {
     filename: string | null;
     body: Blob;
 }
-export declare function kotlinAnyToJsonHttpBody(this_: Codable): HttpBody;
-export declare function kotlinByteArrayToHttpBody(this_: ArrayBuffer, mediaType: HttpMediaType): HttpBody;
-export declare function kotlinStringToHttpBody(this_: string, mediaType?: HttpMediaType): HttpBody;
+export declare function xAnyToJsonHttpBody(this_: Codable): HttpBody;
+export declare function xByteArrayToHttpBody(this_: ArrayBuffer, mediaType: HttpMediaType): HttpBody;
+export declare function xStringToHttpBody(this_: string, mediaType?: HttpMediaType): HttpBody;
 export declare function multipartFormBody(...parts: HttpBodyPart[]): HttpBody;
 export declare function multipartFormFilePart(name: string, valueOrFilename?: string, body?: Blob): HttpBodyPart;

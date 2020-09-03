@@ -6,16 +6,16 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const DisposeCondition_actual_1 = require("../../rx/DisposeCondition.actual");
 const ObservableProperty_ext_shared_1 = require("../ObservableProperty.ext.shared");
 //! Declares com.lightningkite.khrysalis.observables.binding.serves>com.lightningkite.khrysalis.observables.MutableObservableProperty<kotlin.Any>
-function comLightningkiteKhrysalisObservablesMutableObservablePropertyServes(this_, until, other) {
+function xMutableObservablePropertyServes(this_, until, other) {
     let suppress = false;
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.getComLightningkiteKhrysalisObservablesObservablePropertyObservable(other).subscribe((value) => {
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertyObservableGet(other).subscribe((value) => {
         if (!suppress) {
             suppress = true;
             this_.value = value;
             suppress = false;
         }
     }, undefined, undefined), until);
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(this_.onChange.subscribe((value) => {
+    DisposeCondition_actual_1.xDisposableUntil(this_.onChange.subscribe((value) => {
         if (!suppress) {
             suppress = true;
             other.value = value;
@@ -23,5 +23,5 @@ function comLightningkiteKhrysalisObservablesMutableObservablePropertyServes(thi
         }
     }, undefined, undefined), until);
 }
-exports.comLightningkiteKhrysalisObservablesMutableObservablePropertyServes = comLightningkiteKhrysalisObservablesMutableObservablePropertyServes;
+exports.xMutableObservablePropertyServes = xMutableObservablePropertyServes;
 //# sourceMappingURL=serves.shared.js.map

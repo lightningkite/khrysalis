@@ -5,7 +5,7 @@ const ObservableProperty_ext_shared_1 = require("khrysalis/dist/observables/Obse
 const LatLng_ext_1 = require("./LatLng.ext");
 const mapSymbol = Symbol("mapSymbol");
 //! Declares com.lightningkite.khrysalis.maps.bind>com.google.android.gms.maps.MapView
-function comGoogleAndroidGmsMapsMapViewBind(this_, dependency, style) {
+function xMapViewBind(this_, dependency, style) {
     const map = new google.maps.Map(this_, {
         center: { lat: 0, lng: 0 },
         zoom: 2,
@@ -13,16 +13,16 @@ function comGoogleAndroidGmsMapsMapViewBind(this_, dependency, style) {
     });
     this_[mapSymbol] = map;
 }
-exports.comGoogleAndroidGmsMapsMapViewBind = comGoogleAndroidGmsMapsMapViewBind;
+exports.xMapViewBind = xMapViewBind;
 //! Declares com.lightningkite.khrysalis.maps.bindView>com.google.android.gms.maps.MapView
-function comGoogleAndroidGmsMapsMapViewBindView(this_, dependency, position, zoomLevel = 15, animate = true, style = null) {
-    comGoogleAndroidGmsMapsMapViewBind(this_, dependency, style);
+function xMapViewBindView(this_, dependency, position, zoomLevel = 15, animate = true, style = null) {
+    xMapViewBind(this_, dependency, style);
     const map = this_[mapSymbol];
     let first = true;
     let marker = null;
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(position, undefined, undefined, (g) => {
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(position, undefined, undefined, (g) => {
         if (g) {
-            const p = LatLng_ext_1.comLightningkiteKhrysalisLocationGeoCoordinateToMaps(g);
+            const p = LatLng_ext_1.xGeoCoordinateToMaps(g);
             if (animate && !first) {
                 map.panTo(p);
                 map.setZoom(zoomLevel);
@@ -48,18 +48,18 @@ function comGoogleAndroidGmsMapsMapViewBindView(this_, dependency, position, zoo
                 marker = null;
             }
         }
-    }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
+    }), DisposeCondition_actual_1.xViewRemovedGet(this_));
 }
-exports.comGoogleAndroidGmsMapsMapViewBindView = comGoogleAndroidGmsMapsMapViewBindView;
+exports.xMapViewBindView = xMapViewBindView;
 //! Declares com.lightningkite.khrysalis.maps.bindSelect>com.google.android.gms.maps.MapView
-function comGoogleAndroidGmsMapsMapViewBindSelect(this_, dependency, position, zoomLevel = 15, animate = true, style = null) {
-    comGoogleAndroidGmsMapsMapViewBind(this_, dependency, style);
+function xMapViewBindSelect(this_, dependency, position, zoomLevel = 15, animate = true, style = null) {
+    xMapViewBind(this_, dependency, style);
     const map = this_[mapSymbol];
     let first = true;
     let marker = null;
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(position, undefined, undefined, (g) => {
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(position, undefined, undefined, (g) => {
         if (g) {
-            const p = LatLng_ext_1.comLightningkiteKhrysalisLocationGeoCoordinateToMaps(g);
+            const p = LatLng_ext_1.xGeoCoordinateToMaps(g);
             if (animate && !first) {
                 map.panTo(p);
                 map.setZoom(zoomLevel);
@@ -78,7 +78,7 @@ function comGoogleAndroidGmsMapsMapViewBindSelect(this_, dependency, position, z
                 marker.addListener("dragend", () => {
                     const pos = marker === null || marker === void 0 ? void 0 : marker.getPosition();
                     if (pos) {
-                        position.value = LatLng_ext_1.comGoogleAndroidGmsMapsModelLatLngToKhrysalis(pos);
+                        position.value = LatLng_ext_1.xLatLngToKhrysalis(pos);
                     }
                 });
             }
@@ -92,10 +92,10 @@ function comGoogleAndroidGmsMapsMapViewBindSelect(this_, dependency, position, z
                 marker = null;
             }
         }
-    }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
+    }), DisposeCondition_actual_1.xViewRemovedGet(this_));
     map.addListener("click", (ev) => {
-        position.value = LatLng_ext_1.comGoogleAndroidGmsMapsModelLatLngToKhrysalis(ev.latLng);
+        position.value = LatLng_ext_1.xLatLngToKhrysalis(ev.latLng);
     });
 }
-exports.comGoogleAndroidGmsMapsMapViewBindSelect = comGoogleAndroidGmsMapsMapViewBindSelect;
+exports.xMapViewBindSelect = xMapViewBindSelect;
 //# sourceMappingURL=MapView.bind.actual.js.map

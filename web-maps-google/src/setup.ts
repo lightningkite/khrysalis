@@ -4,11 +4,11 @@ import {setGeocodingMethod} from "khrysalis/dist/location/Geocoding.actual"
 import {bindCallback, from, Observable, of} from "rxjs";
 import { HttpClient} from "khrysalis/dist/net/HttpClient.actual"
 import {flatMap, map} from "rxjs/operators";
-import { kotlinStringSubstringBefore } from "khrysalis/dist/kotlin/kotlin.text"
+import { xStringSubstringBefore } from "khrysalis/dist/kotlin/kotlin.text"
 import {} from "googlemaps";
 import {
-    comGoogleAndroidGmsMapsModelLatLngToKhrysalis,
-    comLightningkiteKhrysalisLocationGeoCoordinateToMaps
+    xLatLngToKhrysalis,
+    xGeoCoordinateToMaps
 } from "./LatLng.ext";
 
 export function setupGoogleMaps(){
@@ -21,7 +21,7 @@ export function setupGoogleMaps(){
         let args;
         if(coordinate instanceof GeoCoordinate){
             args = {
-                location: comLightningkiteKhrysalisLocationGeoCoordinateToMaps(coordinate)
+                location: xGeoCoordinateToMaps(coordinate)
             }
         } else {
             args = {
@@ -32,7 +32,7 @@ export function setupGoogleMaps(){
         return bound(args).pipe(map((a)=>{
             return a[0].map((x)=>{
                 return new GeoAddress(
-                    comGoogleAndroidGmsMapsModelLatLngToKhrysalis(x.geometry.bounds.getCenter()),
+                    xLatLngToKhrysalis(x.geometry.bounds.getCenter()),
                     null,
                     x.address_components.find((x)=> x.types.indexOf("street_address") != -1 )?.short_name,
                     x.address_components.find((x)=> x.types.indexOf("sublocality") != -1 )?.short_name,

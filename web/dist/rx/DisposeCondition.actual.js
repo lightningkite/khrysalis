@@ -6,14 +6,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const DisposeCondition_shared_1 = require("./DisposeCondition.shared");
 const viewAttached_1 = require("../views/viewAttached");
 //! Declares com.lightningkite.khrysalis.rx.removed
-function getAndroidViewViewRemoved(this_Removed) {
+function xViewRemovedGet(this_Removed) {
     return new DisposeCondition_shared_1.DisposeCondition((a) => {
         viewAttached_1.addDetatchEvent(this_Removed, (_) => {
             a.unsubscribe();
         });
     });
 }
-exports.getAndroidViewViewRemoved = getAndroidViewViewRemoved;
+exports.xViewRemovedGet = xViewRemovedGet;
 //! Declares com.lightningkite.khrysalis.rx.DisposableLambda
 class DisposableLambda {
     constructor(lambda) {
@@ -30,14 +30,14 @@ class DisposableLambda {
 }
 exports.DisposableLambda = DisposableLambda;
 //! Declares com.lightningkite.khrysalis.rx.forever
-function ioReactivexDisposablesDisposableForever(this_Forever) {
+function xDisposableForever(this_Forever) {
     return this_Forever;
 }
-exports.ioReactivexDisposablesDisposableForever = ioReactivexDisposablesDisposableForever;
+exports.xDisposableForever = xDisposableForever;
 //! Declares com.lightningkite.khrysalis.rx.until
-function ioReactivexDisposablesDisposableUntil(this_Until, condition) {
+function xDisposableUntil(this_Until, condition) {
     condition.call(this_Until);
     return this_Until;
 }
-exports.ioReactivexDisposablesDisposableUntil = ioReactivexDisposablesDisposableUntil;
+exports.xDisposableUntil = xDisposableUntil;
 //# sourceMappingURL=DisposeCondition.actual.js.map

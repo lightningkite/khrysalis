@@ -6,10 +6,10 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const DisposeCondition_actual_1 = require("../../rx/DisposeCondition.actual");
 const ObservableProperty_ext_shared_1 = require("../ObservableProperty.ext.shared");
 //! Declares com.lightningkite.khrysalis.observables.binding.bindActive>android.widget.Button
-function androidWidgetButtonBindActive(this_, observable, activeColorResource = null, inactiveColorResource = null) {
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (x) => {
+function xButtonBindActive(this_, observable, activeColorResource = null, inactiveColorResource = null) {
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(observable, undefined, undefined, (x) => {
         this_.disabled = !x;
-    }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
+    }), DisposeCondition_actual_1.xViewRemovedGet(this_));
 }
-exports.androidWidgetButtonBindActive = androidWidgetButtonBindActive;
+exports.xButtonBindActive = xButtonBindActive;
 //# sourceMappingURL=Button.binding.actual.js.map

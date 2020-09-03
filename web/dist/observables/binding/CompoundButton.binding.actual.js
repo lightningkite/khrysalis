@@ -16,14 +16,14 @@ function fixInput(i) {
     }
 }
 //! Declares com.lightningkite.khrysalis.observables.binding.bindSelect>android.widget.CompoundButton
-function androidWidgetCompoundButtonBindSelect(this_, value, observable) {
+function xCompoundButtonBindSelect(this_, value, observable) {
     fixInput(this_);
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (it) => {
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(observable, undefined, undefined, (it) => {
         const shouldBeChecked = Language_1.safeEq(it, value);
         if (!(this_.checked === shouldBeChecked)) {
             this_.checked = shouldBeChecked;
         }
-    }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
+    }), DisposeCondition_actual_1.xViewRemovedGet(this_));
     this_.onchange = ((ev) => {
         const isChecked = this_.checked;
         if (isChecked && !(Language_1.safeEq(observable.value, value))) {
@@ -34,16 +34,16 @@ function androidWidgetCompoundButtonBindSelect(this_, value, observable) {
         }
     });
 }
-exports.androidWidgetCompoundButtonBindSelect = androidWidgetCompoundButtonBindSelect;
+exports.xCompoundButtonBindSelect = xCompoundButtonBindSelect;
 //! Declares com.lightningkite.khrysalis.observables.binding.bindSelectNullable>android.widget.CompoundButton
-function androidWidgetCompoundButtonBindSelectNullable(this_, value, observable) {
+function xCompoundButtonBindSelectNullable(this_, value, observable) {
     fixInput(this_);
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (it) => {
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(observable, undefined, undefined, (it) => {
         const shouldBeChecked = Language_1.safeEq(it, value);
         if (!(this_.checked === shouldBeChecked)) {
             this_.checked = shouldBeChecked;
         }
-    }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
+    }), DisposeCondition_actual_1.xViewRemovedGet(this_));
     this_.onchange = ((ev) => {
         const isChecked = this_.checked;
         if (isChecked && !(Language_1.safeEq(observable.value, value))) {
@@ -54,12 +54,12 @@ function androidWidgetCompoundButtonBindSelectNullable(this_, value, observable)
         }
     });
 }
-exports.androidWidgetCompoundButtonBindSelectNullable = androidWidgetCompoundButtonBindSelectNullable;
+exports.xCompoundButtonBindSelectNullable = xCompoundButtonBindSelectNullable;
 //! Declares com.lightningkite.khrysalis.observables.binding.bindSelectInvert>android.widget.CompoundButton
-function androidWidgetCompoundButtonBindSelectInvert(this_, value, observable) {
+function xCompoundButtonBindSelectInvert(this_, value, observable) {
     fixInput(this_);
     let suppress = false;
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (it) => {
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(observable, undefined, undefined, (it) => {
         if (!suppress) {
             suppress = true;
             const shouldBeChecked = Language_1.safeEq(it, value) || Language_1.safeEq(it, null);
@@ -68,7 +68,7 @@ function androidWidgetCompoundButtonBindSelectInvert(this_, value, observable) {
             }
             suppress = false;
         }
-    }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
+    }), DisposeCondition_actual_1.xViewRemovedGet(this_));
     this_.onchange = ((ev) => {
         const isChecked = this_.checked;
         if (!suppress) {
@@ -85,15 +85,15 @@ function androidWidgetCompoundButtonBindSelectInvert(this_, value, observable) {
         }
     });
 }
-exports.androidWidgetCompoundButtonBindSelectInvert = androidWidgetCompoundButtonBindSelectInvert;
+exports.xCompoundButtonBindSelectInvert = xCompoundButtonBindSelectInvert;
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>android.widget.CompoundButton
-function androidWidgetCompoundButtonBind(this_, observable) {
+function xCompoundButtonBind(this_, observable) {
     fixInput(this_);
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (it) => {
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(observable, undefined, undefined, (it) => {
         if (!(it === this_.checked)) {
             this_.checked = it;
         }
-    }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
+    }), DisposeCondition_actual_1.xViewRemovedGet(this_));
     this_.onchange = ((ev) => {
         const isChecked = this_.checked;
         if (!(observable.value === isChecked)) {
@@ -101,5 +101,5 @@ function androidWidgetCompoundButtonBind(this_, observable) {
         }
     });
 }
-exports.androidWidgetCompoundButtonBind = androidWidgetCompoundButtonBind;
+exports.xCompoundButtonBind = xCompoundButtonBind;
 //# sourceMappingURL=CompoundButton.binding.actual.js.map

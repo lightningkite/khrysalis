@@ -1,1 +1,1 @@
-export declare function androidWidgetEditTextSetOnDoneClick(editText: HTMLInputElement, action: () => void): void;
+export declare function xEditTextSetOnDoneClick(editText: HTMLInputElement, action: () => void): void;

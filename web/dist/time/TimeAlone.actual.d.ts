@@ -33,6 +33,6 @@ export declare class TimeAlone {
     get hoursInDay(): number;
     set hoursInDay(value: number);
 }
-export declare function comLightningkiteKhrysalisTimeTimeAloneIso8601(this_: TimeAlone): string;
-export declare function comLightningkiteKhrysalisTimeTimeAloneMinus(this_: TimeAlone, rhs: TimeAlone | TimeInterval): TimeAlone;
-export declare function comLightningkiteKhrysalisTimeTimeAlonePlus(this_: TimeAlone, rhs: TimeAlone | TimeInterval): TimeAlone;
+export declare function xTimeAloneIso8601(this_: TimeAlone): string;
+export declare function xTimeAloneMinus(this_: TimeAlone, rhs: TimeAlone | TimeInterval): TimeAlone;
+export declare function xTimeAlonePlus(this_: TimeAlone, rhs: TimeAlone | TimeInterval): TimeAlone;

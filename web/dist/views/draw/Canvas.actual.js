@@ -2,14 +2,14 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const Align_shared_1 = require("../geometry/Align.shared");
 //! Declares com.lightningkite.khrysalis.views.draw.drawTextCentered>android.graphics.Canvas
-function androidGraphicsCanvasDrawTextCentered(this_, text, centerX, centerY, paint) {
+function xCanvasDrawTextCentered(this_, text, centerX, centerY, paint) {
     this_.textBaseline = "middle";
     this_.textAlign = "center";
     paint.text(this_, text, centerX, centerY);
 }
-exports.androidGraphicsCanvasDrawTextCentered = androidGraphicsCanvasDrawTextCentered;
+exports.xCanvasDrawTextCentered = xCanvasDrawTextCentered;
 //! Declares com.lightningkite.khrysalis.views.draw.drawText>android.graphics.Canvas
-function androidGraphicsCanvasDrawText(this_, text, x, y, gravity, paint) {
+function xCanvasDrawText(this_, text, x, y, gravity, paint) {
     switch (gravity.vertical) {
         case Align_shared_1.Align.start:
             this_.textBaseline = "top";
@@ -25,12 +25,12 @@ function androidGraphicsCanvasDrawText(this_, text, x, y, gravity, paint) {
     this_.textAlign = "center";
     paint.text(this_, text, x, y);
 }
-exports.androidGraphicsCanvasDrawText = androidGraphicsCanvasDrawText;
+exports.xCanvasDrawText = xCanvasDrawText;
 //! Declares com.lightningkite.khrysalis.views.draw.drawBitmap
-function androidGraphicsCanvasDrawBitmap(this_, bitmap, left, top, right, bottom) {
+function xCanvasDrawBitmap(this_, bitmap, left, top, right, bottom) {
     this_.drawImage(bitmap, left, top, right - left, bottom - top);
 }
-exports.androidGraphicsCanvasDrawBitmap = androidGraphicsCanvasDrawBitmap;
+exports.xCanvasDrawBitmap = xCanvasDrawBitmap;
 function applyMatrixToCanvas(canvas, matrix) {
     canvas.transform(matrix.a, matrix.b, matrix.c, matrix.d, matrix.e, matrix.f);
 }

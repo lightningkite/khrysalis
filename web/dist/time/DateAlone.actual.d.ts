@@ -29,9 +29,9 @@ export declare class DateAlone {
     get comparable(): number;
     get dayOfWeek(): number;
 }
-export declare function comLightningkiteKhrysalisTimeDateAloneSetDayOfWeek(this_: DateAlone, value: number): DateAlone;
-export declare function comLightningkiteKhrysalisTimeDateAloneSetAddDayOfWeek(this_: DateAlone, value: number): DateAlone;
-export declare function comLightningkiteKhrysalisTimeDateAloneDayOfWeek(this_: DateAlone, value: number): DateAlone;
-export declare function comLightningkiteKhrysalisTimeDateAloneAddDayOfWeek(this_: DateAlone, value: number): DateAlone;
-export declare function comLightningkiteKhrysalisTimeDateAloneIso8601(this_: DateAlone): string;
-export declare function comLightningkiteKhrysalisTimeDateAloneFormatYearless(this_: DateAlone, clockPartSize: ClockPartSize): string;
+export declare function xDateAloneSetDayOfWeek(this_: DateAlone, value: number): DateAlone;
+export declare function xDateAloneSetAddDayOfWeek(this_: DateAlone, value: number): DateAlone;
+export declare function xDateAloneDayOfWeek(this_: DateAlone, value: number): DateAlone;
+export declare function xDateAloneAddDayOfWeek(this_: DateAlone, value: number): DateAlone;
+export declare function xDateAloneIso8601(this_: DateAlone): string;
+export declare function xDateAloneFormatYearless(this_: DateAlone, clockPartSize: ClockPartSize): string;

@@ -4,12 +4,12 @@
 // Package: com.lightningkite.khrysalis
 Object.defineProperty(exports, "__esModule", { value: true });
 //! Declares com.lightningkite.khrysalis.floorMod>kotlin.Int
-function kotlinIntFloorMod(this_, other) {
+function xIntFloorMod(this_, other) {
     return (this_ % other + other) % other;
 }
-exports.kotlinIntFloorMod = kotlinIntFloorMod;
+exports.xIntFloorMod = xIntFloorMod;
 //! Declares com.lightningkite.khrysalis.floorDiv>kotlin.Int
-function kotlinIntFloorDiv(this_, other) {
+function xIntFloorDiv(this_, other) {
     if (this_ < 0) {
         return this_ / other - 1;
     }
@@ -17,14 +17,14 @@ function kotlinIntFloorDiv(this_, other) {
         return this_ / other;
     }
 }
-exports.kotlinIntFloorDiv = kotlinIntFloorDiv;
+exports.xIntFloorDiv = xIntFloorDiv;
 //! Declares com.lightningkite.khrysalis.floorMod>kotlin.Float
-function kotlinFloatFloorMod(this_, other) {
+function xFloatFloorMod(this_, other) {
     return (this_ % other + other) % other;
 }
-exports.kotlinFloatFloorMod = kotlinFloatFloorMod;
+exports.xFloatFloorMod = xFloatFloorMod;
 //! Declares com.lightningkite.khrysalis.floorDiv>kotlin.Float
-function kotlinFloatFloorDiv(this_, other) {
+function xFloatFloorDiv(this_, other) {
     if (this_ < 0) {
         return this_ / other - 1;
     }
@@ -32,14 +32,14 @@ function kotlinFloatFloorDiv(this_, other) {
         return this_ / other;
     }
 }
-exports.kotlinFloatFloorDiv = kotlinFloatFloorDiv;
+exports.xFloatFloorDiv = xFloatFloorDiv;
 //! Declares com.lightningkite.khrysalis.floorMod>kotlin.Double
-function kotlinDoubleFloorMod(this_, other) {
+function xDoubleFloorMod(this_, other) {
     return (this_ % other + other) % other;
 }
-exports.kotlinDoubleFloorMod = kotlinDoubleFloorMod;
+exports.xDoubleFloorMod = xDoubleFloorMod;
 //! Declares com.lightningkite.khrysalis.floorDiv>kotlin.Double
-function kotlinDoubleFloorDiv(this_, other) {
+function xDoubleFloorDiv(this_, other) {
     if (this_ < 0) {
         return this_ / other - 1;
     }
@@ -47,5 +47,5 @@ function kotlinDoubleFloorDiv(this_, other) {
         return this_ / other;
     }
 }
-exports.kotlinDoubleFloorDiv = kotlinDoubleFloorDiv;
+exports.xDoubleFloorDiv = xDoubleFloorDiv;
 //# sourceMappingURL=Math.shared.js.map

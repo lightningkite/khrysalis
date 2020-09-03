@@ -2,21 +2,21 @@
 // File: observables/binding/AutoCompleteTextView.binding.actual.kt
 // Package: com.lightningkite.khrysalis.observables.binding
 import {ObservableProperty} from '../ObservableProperty.shared'
-import {getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil} from "../../rx/DisposeCondition.actual";
-import {comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy} from "../ObservableProperty.ext.shared";
-import {comLightningkiteKhrysalisObservablesObservablePropertyMap} from "../TransformedObservableProperty.shared";
-import {comLightningkiteKhrysalisObservablesObservablePropertyCombine} from "../CombineObservableProperty.shared";
+import {xViewRemovedGet, xDisposableUntil} from "../../rx/DisposeCondition.actual";
+import {xObservablePropertySubscribeBy} from "../ObservableProperty.ext.shared";
+import {xObservablePropertyMap} from "../TransformedObservableProperty.shared";
+import {xObservablePropertyCombine} from "../CombineObservableProperty.shared";
 import {StandardObservableProperty} from "../StandardObservableProperty.shared";
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>android.widget.AutoCompleteTextView
-export function androidWidgetAutoCompleteTextViewBind<T>(this_: HTMLInputElement, options: ObservableProperty<Array<T>>, toString: (a: T) => string, onItemSelected: (a: T) => void): void {
+export function xAutoCompleteTextViewBind<T>(this_: HTMLInputElement, options: ObservableProperty<Array<T>>, toString: (a: T) => string, onItemSelected: (a: T) => void): void {
     let query = new StandardObservableProperty("")
     this_.addEventListener("change", ()=>{
         query.value = this_.value;
     });
-    androidWidgetAutoCompleteTextViewBindList(
+    xAutoCompleteTextViewBindList(
         this_,
-        comLightningkiteKhrysalisObservablesObservablePropertyCombine(
+        xObservablePropertyCombine(
             options,
             query,
             (options, query) => options.filter((x) => toString(x).toLowerCase().indexOf(query.toLowerCase()) != -1)
@@ -26,7 +26,7 @@ export function androidWidgetAutoCompleteTextViewBind<T>(this_: HTMLInputElement
     );
 }
 //! Declares com.lightningkite.khrysalis.observables.binding.bindList>android.widget.AutoCompleteTextView
-export function androidWidgetAutoCompleteTextViewBindList<T>(this_: HTMLInputElement, options: ObservableProperty<Array<T>>, toString: (a: T) => string, onItemSelected: (a: T) => void): void {
+export function xAutoCompleteTextViewBindList<T>(this_: HTMLInputElement, options: ObservableProperty<Array<T>>, toString: (a: T) => string, onItemSelected: (a: T) => void): void {
     const container = this_.parentElement as HTMLElement;
     let selectionView: HTMLDivElement | null = null;
 
@@ -113,9 +113,9 @@ export function androidWidgetAutoCompleteTextViewBindList<T>(this_: HTMLInputEle
             break;
         }
     })
-    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(options, undefined, undefined, (x)=>{
+    xDisposableUntil(xObservablePropertySubscribeBy(options, undefined, undefined, (x)=>{
         if(this_ === document.activeElement){
             showOptions(this_.value, x);
         }
-    }), getAndroidViewViewRemoved(this_))
+    }), xViewRemovedGet(this_))
 }

@@ -2,35 +2,35 @@
 // File: views/MonthCVD.shared.kt
 // Package: com.lightningkite.khrysalis.views
 import { DisplayMetrics } from './DisplayMetrics.actual'
+import { xDateDateAloneGet } from '../time/Date.actual'
 import { getAnimationFrame } from '../delay.actual'
-import { androidGraphicsCanvasDrawTextCentered } from './draw/Canvas.actual'
+import { xDateAloneSet } from '../time/DateAlone.shared'
 import { MutableObservableProperty } from '../observables/MutableObservableProperty.shared'
-import { getJavaUtilDateDateAlone } from '../time/Date.actual'
 import { NumberRange } from '../Kotlin'
+import { xObservablePropertySubscribeBy } from '../observables/ObservableProperty.ext.shared'
 import { CustomViewDelegate } from './CustomViewDelegate.shared'
+import { xIntFloorDiv, xIntFloorMod } from '../Math.shared'
 import { StandardObservableProperty } from '../observables/StandardObservableProperty.shared'
-import { kotlinIntFloorDiv, kotlinIntFloorMod } from '../Math.shared'
-import { ioReactivexDisposablesDisposableForever, ioReactivexDisposablesDisposableUntil } from '../rx/DisposeCondition.actual'
+import { xDisposableForever, xDisposableUntil } from '../rx/DisposeCondition.actual'
 import { dateAloneMod, dateAloneModRelative } from '../time/Date.actual'
 import { Paint } from './draw/Paint.actual'
 import { TimeNames } from '../time/TimeNames.actual'
-import { comLightningkiteKhrysalisTimeDateAloneSet } from '../time/DateAlone.shared'
 import { SubscriptionLike } from 'rxjs'
 import { DateAlone } from '../time/DateAlone.actual'
+import { xCanvasDrawTextCentered } from './draw/Canvas.actual'
 import { applyAlphaToColor, numberToColor } from './Colors.actual'
 import { customViewInvalidate } from './CustomView.actual'
 import { RectF } from './geometry/RectF.actual'
 import { runOrNull } from '../kotlin/Language'
 import { pathFromLTRB } from './draw/Path.actual'
-import { comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy } from '../observables/ObservableProperty.ext.shared'
 
 //! Declares com.lightningkite.khrysalis.views.MonthCVD
 export class MonthCVD extends CustomViewDelegate {
     public constructor() {
         super();
-        this.currentMonthObs = new StandardObservableProperty<DateAlone>(dateAloneMod(getJavaUtilDateDateAlone(new Date()), Date.prototype.setDate, 1), undefined);
+        this.currentMonthObs = new StandardObservableProperty<DateAlone>(dateAloneMod(xDateDateAloneGet(new Date()), Date.prototype.setDate, 1), undefined);
         this.dragEnabled = true;
-        ioReactivexDisposablesDisposableForever<SubscriptionLike>(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy<DateAlone>(this.currentMonthObs, undefined, undefined,  (value: DateAlone): void => {
+        xDisposableForever<SubscriptionLike>(xObservablePropertySubscribeBy<DateAlone>(this.currentMonthObs, undefined, undefined,  (value: DateAlone): void => {
                     this?.postInvalidate();
         }));
         this.labelFontSp = 12;
@@ -56,7 +56,7 @@ export class MonthCVD extends CustomViewDelegate {
         this.dayPaint.isAntiAlias = true;
         this.dayPaint.style = Paint.Style.FILL;
         this.dayPaint.color = numberToColor(0xFF202020);
-        ioReactivexDisposablesDisposableUntil<SubscriptionLike>(getAnimationFrame().subscribe((timePassed: number): void => {
+        xDisposableUntil<SubscriptionLike>(getAnimationFrame().subscribe((timePassed: number): void => {
                     if (this.draggingId === this.DRAGGING_NONE && !(this.currentOffset === 0)) {
                         let newOffset: number = this.currentOffset * Math.max(0, (1 - 8 * timePassed));
                         
@@ -126,9 +126,9 @@ export class MonthCVD extends CustomViewDelegate {
     }
     public set currentOffset(value: number) {
         this._currentOffset = value;
-        const temp196 = this.customView;
-        if(temp196 !== null) { 
-            customViewInvalidate(temp196)
+        const temp188 = this.customView;
+        if(temp188 !== null) { 
+            customViewInvalidate(temp188)
         };
     }
     
@@ -174,19 +174,19 @@ export class MonthCVD extends CustomViewDelegate {
         
         const columnRaw = Math.floor((columnDrag + columnRawBeforeDrag));
         
-        const column = kotlinIntFloorMod(columnRaw, 7);
+        const column = xIntFloorMod(columnRaw, 7);
         
-        const monthOffset = kotlinIntFloorDiv(columnRaw, 7);
+        const monthOffset = xIntFloorDiv(columnRaw, 7);
         
         const row = Math.floor(((y - this.dayLabelHeight) / this.dayCellHeight));
         
         if (row < 0 || row > 5) { return null }
         if (column < 0 || column > 6) { return null }
-        return this.dayAt(dateAloneModRelative(comLightningkiteKhrysalisTimeDateAloneSet(this.calcMonth, this.currentMonth), Date.prototype.getMonth, Date.prototype.setMonth, monthOffset), row, column, existing ?? new DateAlone(0, 0, 0));
+        return this.dayAt(dateAloneModRelative(xDateAloneSet(this.calcMonth, this.currentMonth), Date.prototype.getMonth, Date.prototype.setMonth, monthOffset), row, column, existing ?? new DateAlone(0, 0, 0));
     }
     
     public dayAt(month: DateAlone, row: number, column: number, existing: DateAlone = new DateAlone(0, 0, 0)): DateAlone {
-        return dateAloneModRelative(dateAloneMod(dateAloneMod(comLightningkiteKhrysalisTimeDateAloneSet(existing, month), Date.prototype.setDate, 1), function(this: Date, newDay: number){
+        return dateAloneModRelative(dateAloneMod(dateAloneMod(xDateAloneSet(existing, month), Date.prototype.setDate, 1), function(this: Date, newDay: number){
                     const diff = newDay - this.getDay();
                     this.setDate(this.getDate() + diff);
             }, 1)
@@ -210,11 +210,11 @@ export class MonthCVD extends CustomViewDelegate {
         this.measure(width, height, displayMetrics);
         if (this.currentOffset > 0) {
             //draw past month and current month
-            this.drawMonth(canvas, (this.currentOffset - 1) * width, width, dateAloneModRelative(comLightningkiteKhrysalisTimeDateAloneSet(this.calcMonthB, this.currentMonth), Date.prototype.getMonth, Date.prototype.setMonth, (-1)), displayMetrics);
+            this.drawMonth(canvas, (this.currentOffset - 1) * width, width, dateAloneModRelative(xDateAloneSet(this.calcMonthB, this.currentMonth), Date.prototype.getMonth, Date.prototype.setMonth, (-1)), displayMetrics);
             this.drawMonth(canvas, this.currentOffset * width, width, this.currentMonth, displayMetrics);
         } else { if (this.currentOffset < 0) {
                 //draw future month and current month
-                this.drawMonth(canvas, (this.currentOffset + 1) * width, width, dateAloneModRelative(comLightningkiteKhrysalisTimeDateAloneSet(this.calcMonthB, this.currentMonth), Date.prototype.getMonth, Date.prototype.setMonth, 1), displayMetrics);
+                this.drawMonth(canvas, (this.currentOffset + 1) * width, width, dateAloneModRelative(xDateAloneSet(this.calcMonthB, this.currentMonth), Date.prototype.getMonth, Date.prototype.setMonth, 1), displayMetrics);
                 this.drawMonth(canvas, this.currentOffset * width, width, this.currentMonth, displayMetrics);
             } else {
                 //Nice, it's exactly zero.  We can just draw one.
@@ -275,9 +275,9 @@ export class MonthCVD extends CustomViewDelegate {
     public onTouchDown(id: number, x: number, y: number, width: number, height: number): boolean {
         const day = this.dayAtPixel(x, y, undefined);
         
-        const it_272 = day;
-        if (it_272 !== null) { 
-            if (this.onTouchDownDate(it_272)) {
+        const it_264 = day;
+        if (it_264 !== null) { 
+            if (this.onTouchDownDate(it_264)) {
                 return true;
             }
         }
@@ -304,9 +304,9 @@ export class MonthCVD extends CustomViewDelegate {
                 }
             }
         } else {
-            const it_284 = this.dayAtPixel(x, y, undefined);
-            if (it_284 !== null) { 
-                return this.onTouchMoveDate(it_284);
+            const it_276 = this.dayAtPixel(x, y, undefined);
+            if (it_276 !== null) { 
+                return this.onTouchMoveDate(it_276);
             }
         }
         return true;
@@ -318,9 +318,9 @@ export class MonthCVD extends CustomViewDelegate {
     public onTouchUp(id: number, x: number, y: number, width: number, height: number): boolean {
         if (this.draggingId === id) {
             if (this.isTap) {
-                const it_286 = this.dayAtPixel(x, y, undefined);
-                if (it_286 !== null) { 
-                    this.onTap(it_286);
+                const it_278 = this.dayAtPixel(x, y, undefined);
+                if (it_278 !== null) { 
+                    this.onTap(it_278);
                 }
             } else { if (this.dragEnabled) {
                     const weighted = this.currentOffset + (this.currentOffset - this.lastOffset) * 200 / (Date.now() - this.lastOffsetTime);
@@ -339,9 +339,9 @@ export class MonthCVD extends CustomViewDelegate {
             } }
             this.draggingId = this.DRAGGING_NONE;
         } else {
-            const it_303 = this.dayAtPixel(x, y, undefined);
-            if (it_303 !== null) { 
-                return this.onTouchUpDate(it_303);
+            const it_295 = this.dayAtPixel(x, y, undefined);
+            if (it_295 !== null) { 
+                return this.onTouchUpDate(it_295);
             }
         }
         return true;
@@ -365,14 +365,14 @@ export class CalendarDrawing {
     
     day(canvas: CanvasRenderingContext2D, month: DateAlone, date: DateAlone, inner: RectF, paint: Paint): void {
         if (date.month === month.month && date.year === month.year) {
-            androidGraphicsCanvasDrawTextCentered(canvas, date.day.toString(), inner.centerX(), inner.centerY(), paint);
+            xCanvasDrawTextCentered(canvas, date.day.toString(), inner.centerX(), inner.centerY(), paint);
         } else {
             const originalColor = paint.color;
             
             let myPaint = paint;
             
             myPaint.color = applyAlphaToColor(paint.color, 64);
-            androidGraphicsCanvasDrawTextCentered(canvas, date.day.toString(), inner.centerX(), inner.centerY(), myPaint);
+            xCanvasDrawTextCentered(canvas, date.day.toString(), inner.centerX(), inner.centerY(), myPaint);
             myPaint.color = originalColor;
         }
     }
@@ -380,7 +380,7 @@ export class CalendarDrawing {
     label(canvas: CanvasRenderingContext2D, dayOfWeek: number, inner: RectF, paint: Paint): void {
         const text = TimeNames.INSTANCE.shortWeekdayName(dayOfWeek);
         
-        androidGraphicsCanvasDrawTextCentered(canvas, text, inner.centerX(), inner.centerY(), paint);
+        xCanvasDrawTextCentered(canvas, text, inner.centerX(), inner.centerY(), paint);
     }
     
     dayBackground(canvas: CanvasRenderingContext2D, inner: RectF, paint: Paint): void {

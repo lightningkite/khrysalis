@@ -5,6 +5,16 @@
   type: type
   template: HTMLProgressElement
 
+# com.lightningkite.khrysalis.views.VideoPlayer
+- id: com.lightningkite.khrysalis.views.VideoPlayer
+  type: type
+  template: HTMLVideoElement
+
+# com.lightningkite.khrysalis.views.android.HorizontalProgressBar
+- id: com.lightningkite.khrysalis.views.android.HorizontalProgressBar
+  type: type
+  template: HTMLProgressElement
+
 # android.widget.ImageView
 - id: android.widget.ImageView
   type: type

@@ -91,19 +91,19 @@ export class ImageResource extends Image {
 }
 
 //! Declares com.lightningkite.khrysalis.asImage>kotlin.String
-export function kotlinStringAsImage(this_: string): Image { 
+export function xStringAsImage(this_: string): Image { 
     return new ImageRemoteUrl(this_); 
 }
 //! Declares com.lightningkite.khrysalis.asImage>android.net.Uri
-export function androidNetUriAsImage(this_: File): Image { 
+export function xUriAsImage(this_: File): Image { 
     return new ImageReference(this_); 
 }
 //! Declares com.lightningkite.khrysalis.asImage>android.graphics.Bitmap
-export function androidGraphicsBitmapAsImage(this_: ImageBitmap): Image { 
+export function xBitmapAsImage(this_: ImageBitmap): Image { 
     return new ImageImageBitmap(this_); 
 }
 //! Declares com.lightningkite.khrysalis.asImage>kotlin.Int
-export function kotlinIntAsImage(this_: DrawableResource): Image { 
+export function xIntAsImage(this_: DrawableResource): Image { 
     return new ImageResource(this_); 
 }
 

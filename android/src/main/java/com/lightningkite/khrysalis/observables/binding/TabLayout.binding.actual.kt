@@ -15,7 +15,7 @@ import com.lightningkite.khrysalis.rx.until
  *
  */
 
-@JsName("tabLayoutBindIndex")
+@JsName("xTabLayoutBindIndex")
 fun TabLayout.bind(
     tabs: List<String>,
     selected: MutableObservableProperty<Int>,

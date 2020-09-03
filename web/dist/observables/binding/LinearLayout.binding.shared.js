@@ -18,9 +18,9 @@ class LinearLayoutBoundSubview {
     }
 }
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>android.widget.LinearLayout
-function androidWidgetLinearLayoutBind(this_, data, defaultValue, makeView) {
+function xLinearLayoutBind(this_, data, defaultValue, makeView) {
     const existingViews = [];
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(data, undefined, undefined, (value) => {
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(data, undefined, undefined, (value) => {
         //Fix view count
         const excessViews = existingViews.length - value.length;
         if (excessViews > 0) {
@@ -36,7 +36,7 @@ function androidWidgetLinearLayoutBind(this_, data, defaultValue, makeView) {
             for (const iter of new Kotlin_1.NumberRange(1, (-excessViews))) {
                 const prop = new StandardObservableProperty_shared_1.StandardObservableProperty(defaultValue, undefined);
                 const view = makeView(prop);
-                this_.appendChild(LinearLayout_actual_1.androidWidgetLinearLayoutParams(this_, undefined, undefined, undefined, undefined, undefined, undefined, Align_shared_1.AlignPair.Companion.INSTANCE.centerFill, undefined)(view));
+                this_.appendChild(LinearLayout_actual_1.xLinearLayoutParams(this_, undefined, undefined, undefined, undefined, undefined, undefined, Align_shared_1.AlignPair.Companion.INSTANCE.centerFill, undefined)(view));
                 existingViews.push(new LinearLayoutBoundSubview(view, prop));
             }
         }
@@ -44,7 +44,7 @@ function androidWidgetLinearLayoutBind(this_, data, defaultValue, makeView) {
         for (const index of new Kotlin_1.NumberRange(0, value.length - 1)) {
             existingViews[index].property.value = value[index];
         }
-    }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
+    }), DisposeCondition_actual_1.xViewRemovedGet(this_));
 }
-exports.androidWidgetLinearLayoutBind = androidWidgetLinearLayoutBind;
+exports.xLinearLayoutBind = xLinearLayoutBind;
 //# sourceMappingURL=LinearLayout.binding.shared.js.map

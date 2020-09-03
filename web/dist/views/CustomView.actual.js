@@ -80,7 +80,7 @@ function customViewSetDelegate(view, delegate) {
     view[customViewDelegateSymbol] = delegate;
     if (!view[customViewConfiguredSymbol]) {
         view[customViewConfiguredSymbol] = true;
-        DisposeCondition_actual_1.getAndroidViewViewRemoved(view).call(new DisposeCondition_actual_1.DisposableLambda(() => {
+        DisposeCondition_actual_1.xViewRemovedGet(view).call(new DisposeCondition_actual_1.DisposableLambda(() => {
             var _a;
             (_a = view[customViewDelegateSymbol]) === null || _a === void 0 ? void 0 : _a.dispose();
             view[customViewDelegateSymbol] = undefined;

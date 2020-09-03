@@ -6,19 +6,19 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const ObservableProperty_ext_shared_1 = require("../ObservableProperty.ext.shared");
 const DisposeCondition_actual_1 = require("../../rx/DisposeCondition.actual");
 //! Declares com.lightningkite.khrysalis.observables.binding.bindInt>android.widget.ProgressBar
-function androidWidgetProgressBarBindInt(this_, observable) {
+function xProgressBarBindInt(this_, observable) {
     this_.max = 100;
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
         this_.value = value;
-    }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
+    }), DisposeCondition_actual_1.xViewRemovedGet(this_));
 }
-exports.androidWidgetProgressBarBindInt = androidWidgetProgressBarBindInt;
+exports.xProgressBarBindInt = xProgressBarBindInt;
 //! Declares com.lightningkite.khrysalis.observables.binding.bindFloat>android.widget.ProgressBar
-function androidWidgetProgressBarBindFloat(this_, observable) {
+function xProgressBarBindFloat(this_, observable) {
     this_.max = 100;
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
         this_.value = Math.floor((Math.min(Math.max(value, 0.0), 1.0) * 100));
-    }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
+    }), DisposeCondition_actual_1.xViewRemovedGet(this_));
 }
-exports.androidWidgetProgressBarBindFloat = androidWidgetProgressBarBindFloat;
+exports.xProgressBarBindFloat = xProgressBarBindFloat;
 //# sourceMappingURL=ProgressBar.binding.actual.js.map

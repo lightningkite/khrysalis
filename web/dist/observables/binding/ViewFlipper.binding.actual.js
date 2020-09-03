@@ -2,7 +2,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const DisposeCondition_actual_1 = require("../../rx/DisposeCondition.actual");
 //! Declares com.lightningkite.khrysalis.observables.binding.bindLoading>android.widget.ViewFlipper
-function androidWidgetViewFlipperBindLoading(this_, loading, color = null) {
+function xViewFlipperBindLoading(this_, loading, color = null) {
     var _a;
     const mainChild = this_.firstElementChild;
     const loadingChild = (_a = this_.children.item(1)) !== null && _a !== void 0 ? _a : (() => {
@@ -15,7 +15,7 @@ function androidWidgetViewFlipperBindLoading(this_, loading, color = null) {
     const animation = "khrysalis-animate-fade";
     let currentView = mainChild;
     let hiddenView = loadingChild;
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(loading.onChange.subscribe((e) => {
+    DisposeCondition_actual_1.xDisposableUntil(loading.onChange.subscribe((e) => {
         if (e) {
             hiddenView = mainChild;
             currentView = loadingChild;
@@ -55,7 +55,7 @@ function androidWidgetViewFlipperBindLoading(this_, loading, color = null) {
         // };
         // viewIn.onanimationend = animInHandler;
         // viewIn.style.animation = `${animationIn} 0.25s`;
-    }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
+    }), DisposeCondition_actual_1.xViewRemovedGet(this_));
     if (loading.value) {
         hiddenView = mainChild;
         currentView = loadingChild;
@@ -66,5 +66,5 @@ function androidWidgetViewFlipperBindLoading(this_, loading, color = null) {
     }
     hiddenView.style.setProperty("visibility", "hidden", "important");
 }
-exports.androidWidgetViewFlipperBindLoading = androidWidgetViewFlipperBindLoading;
+exports.xViewFlipperBindLoading = xViewFlipperBindLoading;
 //# sourceMappingURL=ViewFlipper.binding.actual.js.map

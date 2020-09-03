@@ -5,9 +5,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // Package: com.lightningkite.khrysalis.views
 const Strings_shared_1 = require("./Strings.shared");
 const kotlin_text_1 = require("../kotlin/kotlin.text");
-const kotlin_text_2 = require("../kotlin/kotlin.text");
-const Codable_actual_1 = require("../Codable.actual");
 const Kotlin_1 = require("../Kotlin");
+const Codable_actual_1 = require("../Codable.actual");
+const kotlin_text_2 = require("../kotlin/kotlin.text");
 //! Declares com.lightningkite.khrysalis.views.DjangoErrorTranslator
 class DjangoErrorTranslator {
     constructor(connectivityErrorResource, serverErrorResource, otherErrorResource) {
@@ -33,7 +33,7 @@ class DjangoErrorTranslator {
         }
         else if (typeof (node) == "string") {
             //Rough check for human-readability - sentences start with uppercase and will have spaces
-            if (node !== "" && kotlin_text_2.kotlinCharIsUpperCase(node[0]) && (node.indexOf(" ") != -1)) {
+            if (node !== "" && kotlin_text_2.xCharIsUpperCase(node[0]) && (node.indexOf(" ") != -1)) {
                 builder.value += node + '\n';
             }
         }
@@ -51,7 +51,7 @@ class DjangoErrorTranslator {
             case 4:
                 const errorJson = (() => {
                     if (error !== null) {
-                        return Codable_actual_1.kotlinStringFromJsonStringUntyped(error);
+                        return Codable_actual_1.xStringFromJsonStringUntyped(error);
                     }
                     else {
                         return null;

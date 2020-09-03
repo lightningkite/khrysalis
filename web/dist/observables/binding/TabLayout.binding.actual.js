@@ -8,7 +8,7 @@ const DisposeCondition_actual_1 = require("../../rx/DisposeCondition.actual");
 const uuid_1 = require("uuid");
 const Language_1 = require("../../kotlin/Language");
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>com.google.android.material.tabs.TabLayout
-function comGoogleAndroidMaterialTabsTabLayoutBind(this_, tabs, selected, allowReselect = false, toString) {
+function xTabLayoutBind(this_, tabs, selected, allowReselect = false, toString) {
     this_.innerHTML = "";
     const myName = uuid_1.v4();
     const selectedIndicator = document.createElement("div");
@@ -38,17 +38,17 @@ function comGoogleAndroidMaterialTabsTabLayoutBind(this_, tabs, selected, allowR
         tabList.appendChild(radio);
         index++;
     }
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(selected, undefined, undefined, (item) => {
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(selected, undefined, undefined, (item) => {
         const index = tabs.findIndex((x) => Language_1.safeEq(item, x));
         tabList.children.item(index * 2 + 1).checked = true;
         const tab = tabList.children.item(index * 2);
         selectedIndicator.style.left = tab.offsetLeft.toString() + "px";
         selectedIndicator.style.width = tab.offsetWidth.toString() + "px";
-    }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
+    }), DisposeCondition_actual_1.xViewRemovedGet(this_));
 }
-exports.comGoogleAndroidMaterialTabsTabLayoutBind = comGoogleAndroidMaterialTabsTabLayoutBind;
+exports.xTabLayoutBind = xTabLayoutBind;
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>com.google.android.material.tabs.TabLayout
-function tabLayoutBindIndex(this_, tabs, selected, allowReselect = false) {
+function xTabLayoutBindIndex(this_, tabs, selected, allowReselect = false) {
     this_.innerHTML = "";
     const myName = uuid_1.v4();
     const selectedIndicator = document.createElement("div");
@@ -77,12 +77,12 @@ function tabLayoutBindIndex(this_, tabs, selected, allowReselect = false) {
         tabList.appendChild(radio);
         index++;
     }
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(selected, undefined, undefined, (index) => {
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(selected, undefined, undefined, (index) => {
         tabList.children.item(index * 2 + 1).checked = true;
         const tab = tabList.children.item(index * 2);
         selectedIndicator.style.left = tab.offsetLeft.toString() + "px";
         selectedIndicator.style.width = tab.offsetWidth.toString() + "px";
-    }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
+    }), DisposeCondition_actual_1.xViewRemovedGet(this_));
 }
-exports.tabLayoutBindIndex = tabLayoutBindIndex;
+exports.xTabLayoutBindIndex = xTabLayoutBindIndex;
 //# sourceMappingURL=TabLayout.binding.actual.js.map

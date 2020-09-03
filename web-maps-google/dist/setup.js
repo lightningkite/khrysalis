@@ -12,7 +12,7 @@ function setupGoogleMaps() {
         let args;
         if (coordinate instanceof GeoCoordinate_shared_1.GeoCoordinate) {
             args = {
-                location: LatLng_ext_1.comLightningkiteKhrysalisLocationGeoCoordinateToMaps(coordinate)
+                location: LatLng_ext_1.xGeoCoordinateToMaps(coordinate)
             };
         }
         else {
@@ -24,7 +24,7 @@ function setupGoogleMaps() {
         return bound(args).pipe(operators_1.map((a) => {
             return a[0].map((x) => {
                 var _a, _b, _c, _d, _e, _f, _g;
-                return new GeoAddress_shared_1.GeoAddress(LatLng_ext_1.comGoogleAndroidGmsMapsModelLatLngToKhrysalis(x.geometry.bounds.getCenter()), null, (_a = x.address_components.find((x) => x.types.indexOf("street_address") != -1)) === null || _a === void 0 ? void 0 : _a.short_name, (_b = x.address_components.find((x) => x.types.indexOf("sublocality") != -1)) === null || _b === void 0 ? void 0 : _b.short_name, (_c = x.address_components.find((x) => x.types.indexOf("locality") != -1)) === null || _c === void 0 ? void 0 : _c.short_name, (_d = x.address_components.find((x) => x.types.indexOf("administrative_area_level_2") != -1)) === null || _d === void 0 ? void 0 : _d.short_name, (_e = x.address_components.find((x) => x.types.indexOf("administrative_area_level_1") != -1)) === null || _e === void 0 ? void 0 : _e.short_name, (_f = x.address_components.find((x) => x.types.indexOf("country") != -1)) === null || _f === void 0 ? void 0 : _f.short_name, (_g = x.address_components.find((x) => x.types.indexOf("postal_code") != -1)) === null || _g === void 0 ? void 0 : _g.short_name);
+                return new GeoAddress_shared_1.GeoAddress(LatLng_ext_1.xLatLngToKhrysalis(x.geometry.bounds.getCenter()), null, (_a = x.address_components.find((x) => x.types.indexOf("street_address") != -1)) === null || _a === void 0 ? void 0 : _a.short_name, (_b = x.address_components.find((x) => x.types.indexOf("sublocality") != -1)) === null || _b === void 0 ? void 0 : _b.short_name, (_c = x.address_components.find((x) => x.types.indexOf("locality") != -1)) === null || _c === void 0 ? void 0 : _c.short_name, (_d = x.address_components.find((x) => x.types.indexOf("administrative_area_level_2") != -1)) === null || _d === void 0 ? void 0 : _d.short_name, (_e = x.address_components.find((x) => x.types.indexOf("administrative_area_level_1") != -1)) === null || _e === void 0 ? void 0 : _e.short_name, (_f = x.address_components.find((x) => x.types.indexOf("country") != -1)) === null || _f === void 0 ? void 0 : _f.short_name, (_g = x.address_components.find((x) => x.types.indexOf("postal_code") != -1)) === null || _g === void 0 ? void 0 : _g.short_name);
             });
         }));
     });

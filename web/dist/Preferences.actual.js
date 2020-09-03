@@ -9,7 +9,7 @@ class Preferences {
     constructor() {
     }
     set(T, key, value) {
-        window.localStorage[key] = Codable_actual_1.kotlinAnyToJsonString(value);
+        window.localStorage[key] = Codable_actual_1.xAnyToJsonString(value);
     }
     remove(key) {
         delete window.localStorage[key];
@@ -19,7 +19,7 @@ class Preferences {
         if (thing === null || thing === undefined)
             return null;
         try {
-            return Codable_actual_1.kotlinStringFromJsonString(thing, T);
+            return Codable_actual_1.xStringFromJsonString(thing, T);
         }
         catch (e) {
             return null;

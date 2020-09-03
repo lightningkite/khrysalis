@@ -3,7 +3,7 @@ import UIKit
 import RxSwift
 
 public extension Video {
-    func thumbnail(timeMs: Int64 = 2000, size: CGPoint? = nil) -> Single<ImageBitmap> {
+    func thumbnail(timeMs: Int64 = 2000, size: CGPoint? = nil) -> Single<Image> {
         return Single.create { (em: SingleEmitter<ImageBitmap>) in
             let vid: AVAsset
             switch self {

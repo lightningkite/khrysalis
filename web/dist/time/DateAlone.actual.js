@@ -27,7 +27,7 @@ class DateAlone {
     toString() { return `DateAlone(year = ${this.year}, month = ${this.month}, day = ${this.day})`; }
     copy(year = this.year, month = this.month, day = this.day) { return new DateAlone(year, month, day); }
     toJSON() {
-        return comLightningkiteKhrysalisTimeDateAloneIso8601(this);
+        return xDateAloneIso8601(this);
     }
     //! Declares com.lightningkite.khrysalis.time.DateAlone.monthInEra
     get monthInEra() { return this.year * 12 + this.month; }
@@ -47,7 +47,7 @@ DateAlone.Companion = (_a = class Companion {
             this.farPast = new DateAlone(-99999, 1, 1);
             this.farFuture = new DateAlone(99999, 12, 31);
         }
-        now() { return Date_actual_1.getJavaUtilDateDateAlone(new Date()); }
+        now() { return Date_actual_1.xDateDateAloneGet(new Date()); }
         iso(string) {
             const parts = string.split('-');
             const year = Kotlin_1.parseIntOrNull(parts[0]);
@@ -68,40 +68,40 @@ DateAlone.Companion = (_a = class Companion {
     _a.INSTANCE = new _a(),
     _a);
 //! Declares com.lightningkite.khrysalis.time.setDayOfWeek
-function comLightningkiteKhrysalisTimeDateAloneSetDayOfWeek(this_, value) {
+function xDateAloneSetDayOfWeek(this_, value) {
     usableDate.setFullYear(this_.year, this_.month, this_.day);
     this_.year = usableDate.getFullYear();
     this_.month = usableDate.getMonth();
     this_.day = usableDate.getDate();
     return this_;
 }
-exports.comLightningkiteKhrysalisTimeDateAloneSetDayOfWeek = comLightningkiteKhrysalisTimeDateAloneSetDayOfWeek;
+exports.xDateAloneSetDayOfWeek = xDateAloneSetDayOfWeek;
 //! Declares com.lightningkite.khrysalis.time.setAddDayOfWeek
-function comLightningkiteKhrysalisTimeDateAloneSetAddDayOfWeek(this_, value) {
+function xDateAloneSetAddDayOfWeek(this_, value) {
     usableDate.setFullYear(this_.year, this_.month, this_.day + value);
     this_.year = usableDate.getFullYear();
     this_.month = usableDate.getMonth();
     this_.day = usableDate.getDate();
     return this_;
 }
-exports.comLightningkiteKhrysalisTimeDateAloneSetAddDayOfWeek = comLightningkiteKhrysalisTimeDateAloneSetAddDayOfWeek;
+exports.xDateAloneSetAddDayOfWeek = xDateAloneSetAddDayOfWeek;
 //! Declares com.lightningkite.khrysalis.time.dayOfWeek
-function comLightningkiteKhrysalisTimeDateAloneDayOfWeek(this_, value) {
-    return comLightningkiteKhrysalisTimeDateAloneSetDayOfWeek(this_.copy(), value);
+function xDateAloneDayOfWeek(this_, value) {
+    return xDateAloneSetDayOfWeek(this_.copy(), value);
 }
-exports.comLightningkiteKhrysalisTimeDateAloneDayOfWeek = comLightningkiteKhrysalisTimeDateAloneDayOfWeek;
+exports.xDateAloneDayOfWeek = xDateAloneDayOfWeek;
 //! Declares com.lightningkite.khrysalis.time.addDayOfWeek
-function comLightningkiteKhrysalisTimeDateAloneAddDayOfWeek(this_, value) {
-    return comLightningkiteKhrysalisTimeDateAloneSetAddDayOfWeek(this_.copy(), value);
+function xDateAloneAddDayOfWeek(this_, value) {
+    return xDateAloneSetAddDayOfWeek(this_.copy(), value);
 }
-exports.comLightningkiteKhrysalisTimeDateAloneAddDayOfWeek = comLightningkiteKhrysalisTimeDateAloneAddDayOfWeek;
+exports.xDateAloneAddDayOfWeek = xDateAloneAddDayOfWeek;
 //! Declares com.lightningkite.khrysalis.time.iso8601
-function comLightningkiteKhrysalisTimeDateAloneIso8601(this_) {
+function xDateAloneIso8601(this_) {
     return `${this_.year.toString().padStart(4, "0")}-${this_.month.toString().padStart(2, "0")}-${this_.day.toString().padStart(2, "0")}`;
 }
-exports.comLightningkiteKhrysalisTimeDateAloneIso8601 = comLightningkiteKhrysalisTimeDateAloneIso8601;
+exports.xDateAloneIso8601 = xDateAloneIso8601;
 //! Declares com.lightningkite.khrysalis.time.formatYearless
-function comLightningkiteKhrysalisTimeDateAloneFormatYearless(this_, clockPartSize) {
+function xDateAloneFormatYearless(this_, clockPartSize) {
     let dateFormat = {};
     switch (clockPartSize) {
         case ClockPartSize_shared_1.ClockPartSize.None:
@@ -127,5 +127,5 @@ function comLightningkiteKhrysalisTimeDateAloneFormatYearless(this_, clockPartSi
     }
     return Date_actual_1.dateFrom(this_, TimeAlone_actual_1.TimeAlone.Companion.INSTANCE.noon, usableDate).toLocaleString(undefined, dateFormat);
 }
-exports.comLightningkiteKhrysalisTimeDateAloneFormatYearless = comLightningkiteKhrysalisTimeDateAloneFormatYearless;
+exports.xDateAloneFormatYearless = xDateAloneFormatYearless;
 //# sourceMappingURL=DateAlone.actual.js.map

@@ -1,1 +1,1 @@
-{"version":3,"file":"Event.actual.js","sourceRoot":"","sources":["../../src/observables/Event.actual.ts"],"names":[],"mappings":";;AAKA,gGAAgG;AAChG,SAAgB,4BAA4B,CAAU,KAAwB,EAAE,KAAc;IAC1F,OAAO,KAAK,CAAC,IAAI,CAAC,KAAK,CAAC,CAAC;AAC7B,CAAC;AAFD,oEAEC"}
+{"version":3,"file":"Event.actual.js","sourceRoot":"","sources":["../../src/observables/Event.actual.ts"],"names":[],"mappings":";;AAKA,gGAAgG;AAChG,SAAgB,kBAAkB,CAAU,KAAwB,EAAE,KAAc;IAChF,OAAO,KAAK,CAAC,IAAI,CAAC,KAAK,CAAC,CAAC;AAC7B,CAAC;AAFD,gDAEC"}

@@ -6,7 +6,7 @@ import {also} from 'Kotlin'
 import {ClockPartSize} from './ClockPartSize.shared'
 
 //! Declares com.lightningkite.khrysalis.time.plus
-export function javaUtilDatePlus(this_: Date, interval: TimeInterval): Date {
+export function xDatePlus(this_: Date, interval: TimeInterval): Date {
     let newDate = new Date();
     newDate.setTime(this_.getTime() + interval.milliseconds);
     return newDate;
@@ -14,7 +14,7 @@ export function javaUtilDatePlus(this_: Date, interval: TimeInterval): Date {
 
 
 //! Declares com.lightningkite.khrysalis.time.minus
-export function javaUtilDateMinus(this_: Date, interval: TimeInterval): Date {
+export function xDateMinus(this_: Date, interval: TimeInterval): Date {
     let newDate = new Date();
     newDate.setTime(this_.getTime() - interval.milliseconds);
     return newDate;
@@ -44,34 +44,34 @@ export function dateModRelative(on: Date, getter: () => number, action: Function
 
 let tempDate = new Date();
 export function copyDateAloneMod(on: DateAlone, action: Function, ...params: Array<any>): DateAlone {
-    javaUtilDateSet(tempDate, on);
+    xDateSet(tempDate, on);
     action.call(tempDate, ...params);
-    return getJavaUtilDateDateAlone(tempDate);
+    return xDateDateAloneGet(tempDate);
 }
 
 export function dateAloneMod(on: DateAlone, action: Function, ...params: Array<any>): DateAlone {
-    javaUtilDateSet(tempDate, on);
+    xDateSet(tempDate, on);
     action.call(tempDate, ...params);
-    comLightningkiteKhrysalisTimeDateAloneSet(on, tempDate);
+    xDateAloneSet(on, tempDate);
     return on;
 }
 
 export function copyDateAloneModRelative(on: DateAlone, getter: () => number, action: Function, num: number): DateAlone {
-    javaUtilDateSet(tempDate, on);
+    xDateSet(tempDate, on);
     action.call(tempDate, getter.call(tempDate) + num);
-    return getJavaUtilDateDateAlone(tempDate);
+    return xDateDateAloneGet(tempDate);
 }
 
 export function dateAloneModRelative(on: DateAlone, getter: () => number, action: Function, num: number): DateAlone {
-    javaUtilDateSet(tempDate, on);
+    xDateSet(tempDate, on);
     action.call(tempDate, getter.call(tempDate) + num);
-    comLightningkiteKhrysalisTimeDateAloneSet(on, tempDate);
+    xDateAloneSet(on, tempDate);
     return on;
 }
 
 
 //! Declares com.lightningkite.khrysalis.time.set
-export function javaUtilDateSet(this_: Date, ...things: Array<any>): Date {
+export function xDateSet(this_: Date, ...things: Array<any>): Date {
     for (const item of things) {
         if (item instanceof DateAlone) {
             this_.setFullYear(item.year);
@@ -89,7 +89,7 @@ export function javaUtilDateSet(this_: Date, ...things: Array<any>): Date {
 }
 
 //! Declares com.lightningkite.khrysalis.time.set
-export function comLightningkiteKhrysalisTimeDateAloneSet(this_: DateAlone, date: Date): DateAlone {
+export function xDateAloneSet(this_: DateAlone, date: Date): DateAlone {
     this_.year = date.getFullYear()
     this_.month = date.getMonth() + 1
     this_.day = date.getDate()
@@ -97,7 +97,7 @@ export function comLightningkiteKhrysalisTimeDateAloneSet(this_: DateAlone, date
 }
 
 //! Declares com.lightningkite.khrysalis.time.set
-export function comLightningkiteKhrysalisTimeTimeAloneSet(this_: TimeAlone, date: Date): TimeAlone {
+export function xTimeAloneSet(this_: TimeAlone, date: Date): TimeAlone {
     this_.hour = date.getHours()
     this_.minute = date.getMinutes()
     this_.second = date.getSeconds()
@@ -105,7 +105,7 @@ export function comLightningkiteKhrysalisTimeTimeAloneSet(this_: TimeAlone, date
 }
 
 //! Declares com.lightningkite.khrysalis.time.dateAlone
-export function getJavaUtilDateDateAlone(this_: Date): DateAlone {
+export function xDateDateAloneGet(this_: Date): DateAlone {
     return new DateAlone(
         this_.getFullYear(),
         this_.getMonth() + 1,
@@ -114,7 +114,7 @@ export function getJavaUtilDateDateAlone(this_: Date): DateAlone {
 }
 
 //! Declares com.lightningkite.khrysalis.time.timeAlone
-export function getJavaUtilDateTimeAlone(this_: Date): TimeAlone {
+export function xDateTimeAloneGet(this_: Date): TimeAlone {
     return new TimeAlone(
         this_.getHours(),
         this_.getMinutes(),
@@ -124,7 +124,7 @@ export function getJavaUtilDateTimeAlone(this_: Date): TimeAlone {
 
 //! Declares com.lightningkite.khrysalis.time.dateFrom
 export function dateFrom(dateAlone: DateAlone, timeAlone: TimeAlone, existing: Date = new Date()): Date {
-    return javaUtilDateSet(existing, dateAlone, timeAlone);
+    return xDateSet(existing, dateAlone, timeAlone);
 }
 
 //! Declares com.lightningkite.khrysalis.time.dateFromIso
@@ -133,7 +133,7 @@ export function dateFromIso(iso8601: string): (Date | null) {
 }
 
 //! Declares com.lightningkite.khrysalis.time.format>java.util.Date
-export function javaUtilDateFormat(this_: Date, dateStyle: ClockPartSize, timeStyle: ClockPartSize): string {
+export function xDateFormat(this_: Date, dateStyle: ClockPartSize, timeStyle: ClockPartSize): string {
 
     let dateFormat: Intl.DateTimeFormatOptions = {}
 

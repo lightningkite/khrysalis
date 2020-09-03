@@ -17,5 +17,5 @@ export declare class VideoRemoteUrl extends Video {
     toString(): string;
     copy(url?: string): VideoRemoteUrl;
 }
-export declare function kotlinStringAsVideo(this_: string): Video;
-export declare function androidNetUriAsVideo(this_: File): Video;
+export declare function xStringAsVideo(this_: string): Video;
+export declare function xUriAsVideo(this_: File): Video;

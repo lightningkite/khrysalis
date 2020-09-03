@@ -8,27 +8,27 @@ const DisposeCondition_actual_1 = require("../../rx/DisposeCondition.actual");
 const View_ext_actual_1 = require("../../views/View.ext.actual");
 const ViewWithText_ext_actual_1 = require("../../views/ViewWithText.ext.actual");
 //! Declares com.lightningkite.khrysalis.observables.binding.bindString>android.widget.TextView
-function androidWidgetTextViewBindString(this_, observable) {
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
+function xTextViewBindString(this_, observable) {
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
         ViewWithText_ext_actual_1.setViewText(this_, value);
-    }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
+    }), DisposeCondition_actual_1.xViewRemovedGet(this_));
 }
-exports.androidWidgetTextViewBindString = androidWidgetTextViewBindString;
+exports.xTextViewBindString = xTextViewBindString;
 //! Declares com.lightningkite.khrysalis.observables.binding.bindStringRes>android.widget.TextView
-function androidWidgetTextViewBindStringRes(this_, observable) {
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
+function xTextViewBindStringRes(this_, observable) {
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
         View_ext_actual_1.setViewVisibility(this_, value === null ? "gone" : "visible");
         if (value !== null) {
             ViewWithText_ext_actual_1.setViewText(this_, value);
         }
-    }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
+    }), DisposeCondition_actual_1.xViewRemovedGet(this_));
 }
-exports.androidWidgetTextViewBindStringRes = androidWidgetTextViewBindStringRes;
+exports.xTextViewBindStringRes = xTextViewBindStringRes;
 //! Declares com.lightningkite.khrysalis.observables.binding.bindText>android.widget.TextView
-function androidWidgetTextViewBindText(this_, observable, transform) {
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
+function xTextViewBindText(this_, observable, transform) {
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
         ViewWithText_ext_actual_1.setViewText(this_, transform(value));
-    }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
+    }), DisposeCondition_actual_1.xViewRemovedGet(this_));
 }
-exports.androidWidgetTextViewBindText = androidWidgetTextViewBindText;
+exports.xTextViewBindText = xTextViewBindText;
 //# sourceMappingURL=TextView.binding.actual.js.map

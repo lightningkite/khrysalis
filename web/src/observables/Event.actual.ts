@@ -4,7 +4,7 @@
 import { Observer } from 'rxjs'
 
 //! Declares com.lightningkite.khrysalis.observables.invokeAll>io.reactivex.Observer<kotlin.Any>
-export function ioReactivexObserverInvokeAll<Element>(this_: Observer<Element>, value: Element): void { 
+export function xObserverInvokeAll<Element>(this_: Observer<Element>, value: Element): void { 
     return this_.next(value); 
 }
 

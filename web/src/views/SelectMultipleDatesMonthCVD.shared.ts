@@ -6,7 +6,7 @@ import { EqualOverrideSet, iterFirstOrNull } from '../KotlinCollections'
 import { CalendarDrawing, MonthCVD } from './MonthCVD.shared'
 import { Paint } from './draw/Paint.actual'
 import { filter as iterFilter, some as iterSome, toArray as iterToArray } from '../kotlin/lazyOp'
-import { comLightningkiteKhrysalisTimeDateAloneSet } from '../time/DateAlone.shared'
+import { xDateAloneSet } from '../time/DateAlone.shared'
 import { SubscriptionLike } from 'rxjs'
 import { DateAlone } from '../time/DateAlone.actual'
 import { copyDateAloneMod, dateAloneModRelative } from '../time/Date.actual'
@@ -14,7 +14,7 @@ import { safeEq } from '../Kotlin'
 import { StandardObservableProperty } from '../observables/StandardObservableProperty.shared'
 import { runOrNull } from '../kotlin/Language'
 import { RectF } from './geometry/RectF.actual'
-import { ioReactivexDisposablesDisposableForever } from '../rx/DisposeCondition.actual'
+import { xDisposableForever } from '../rx/DisposeCondition.actual'
 
 //! Declares com.lightningkite.khrysalis.views.SelectMultipleDatesMonthCVD
 export class SelectMultipleDatesMonthCVD extends MonthCVD {
@@ -23,11 +23,11 @@ export class SelectMultipleDatesMonthCVD extends MonthCVD {
         this.dates = new StandardObservableProperty<Set<DateAlone>>(new EqualOverrideSet([]), undefined);
         this.selectedDayPaint = new Paint();
         this.selectedPaint = new Paint();
-        const it_365 = iterFirstOrNull(this.dates.value);
-        if (it_365 !== null) { 
-            this.currentMonthObs.value = copyDateAloneMod(it_365, Date.prototype.setDate, 1);
+        const it_357 = iterFirstOrNull(this.dates.value);
+        if (it_357 !== null) { 
+            this.currentMonthObs.value = copyDateAloneMod(it_357, Date.prototype.setDate, 1);
         };
-        ioReactivexDisposablesDisposableForever<SubscriptionLike>(this.dates.onChange.subscribe( (value: Set<DateAlone>): void => {
+        xDisposableForever<SubscriptionLike>(this.dates.onChange.subscribe( (value: Set<DateAlone>): void => {
                     this?.invalidate();
         }, undefined, undefined));
         this.drawDay_dateAlone = new DateAlone(0, 0, 0);
@@ -56,11 +56,11 @@ export class SelectMultipleDatesMonthCVD extends MonthCVD {
     
     public drawDay(canvas: CanvasRenderingContext2D, showingMonth: DateAlone, day: DateAlone, displayMetrics: DisplayMetrics, outer: RectF, inner: RectF): void {
         if (this.dates.value.has(day)) {
-            const leftDate = dateAloneModRelative(comLightningkiteKhrysalisTimeDateAloneSet(this.drawDay_dateAlone, day), Date.prototype.getDate, Date.prototype.setDate, (-1));
+            const leftDate = dateAloneModRelative(xDateAloneSet(this.drawDay_dateAlone, day), Date.prototype.getDate, Date.prototype.setDate, (-1));
             
             const left = this.dates.value.has(leftDate);
             
-            const rightDate = dateAloneModRelative(comLightningkiteKhrysalisTimeDateAloneSet(this.drawDay_dateAlone, day), Date.prototype.getDate, Date.prototype.setDate, 1);
+            const rightDate = dateAloneModRelative(xDateAloneSet(this.drawDay_dateAlone, day), Date.prototype.getDate, Date.prototype.setDate, 1);
             
             const right = this.dates.value.has(rightDate);
             

@@ -8,10 +8,10 @@ export declare class FlatMappedObservableProperty<A, B> extends ObservableProper
     get value(): B;
     get onChange(): Observable<B>;
 }
-export declare function comLightningkiteKhrysalisObservablesObservablePropertySwitchMap<T, B>(this_: ObservableProperty<T>, transformation: ((a: T) => ObservableProperty<B>)): FlatMappedObservableProperty<T, B>;
-export declare function comLightningkiteKhrysalisObservablesObservablePropertyFlatMap<T, B>(this_: ObservableProperty<T>, transformation: ((a: T) => ObservableProperty<B>)): FlatMappedObservableProperty<T, B>;
-export declare function comLightningkiteKhrysalisObservablesObservablePropertySwitchMapNotNull<T extends any, B extends any>(this_: ObservableProperty<(T | null)>, transformation: ((a: T) => ObservableProperty<(B | null)>)): FlatMappedObservableProperty<(T | null), (B | null)>;
-export declare function comLightningkiteKhrysalisObservablesObservablePropertyFlatMapNotNull<T extends any, B extends any>(this_: ObservableProperty<(T | null)>, transformation: ((a: T) => ObservableProperty<(B | null)>)): FlatMappedObservableProperty<(T | null), (B | null)>;
+export declare function xObservablePropertySwitchMap<T, B>(this_: ObservableProperty<T>, transformation: ((a: T) => ObservableProperty<B>)): FlatMappedObservableProperty<T, B>;
+export declare function xObservablePropertyFlatMap<T, B>(this_: ObservableProperty<T>, transformation: ((a: T) => ObservableProperty<B>)): FlatMappedObservableProperty<T, B>;
+export declare function xObservablePropertySwitchMapNotNull<T extends any, B extends any>(this_: ObservableProperty<(T | null)>, transformation: ((a: T) => ObservableProperty<(B | null)>)): FlatMappedObservableProperty<(T | null), (B | null)>;
+export declare function xObservablePropertyFlatMapNotNull<T extends any, B extends any>(this_: ObservableProperty<(T | null)>, transformation: ((a: T) => ObservableProperty<(B | null)>)): FlatMappedObservableProperty<(T | null), (B | null)>;
 export declare class MutableFlatMappedObservableProperty<A, B> extends MutableObservableProperty<B> {
     readonly basedOn: ObservableProperty<A>;
     readonly transformation: ((a: A) => MutableObservableProperty<B>);
@@ -22,5 +22,5 @@ export declare class MutableFlatMappedObservableProperty<A, B> extends MutableOb
     get onChange(): Observable<B>;
     update(): void;
 }
-export declare function comLightningkiteKhrysalisObservablesObservablePropertySwitchMapMutable<T, B>(this_: ObservableProperty<T>, transformation: ((a: T) => MutableObservableProperty<B>)): MutableFlatMappedObservableProperty<T, B>;
-export declare function comLightningkiteKhrysalisObservablesObservablePropertyFlatMapMutable<T, B>(this_: ObservableProperty<T>, transformation: ((a: T) => MutableObservableProperty<B>)): MutableFlatMappedObservableProperty<T, B>;
+export declare function xObservablePropertySwitchMapMutable<T, B>(this_: ObservableProperty<T>, transformation: ((a: T) => MutableObservableProperty<B>)): MutableFlatMappedObservableProperty<T, B>;
+export declare function xObservablePropertyFlatMapMutable<T, B>(this_: ObservableProperty<T>, transformation: ((a: T) => MutableObservableProperty<B>)): MutableFlatMappedObservableProperty<T, B>;

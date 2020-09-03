@@ -6,7 +6,7 @@ import { SubscriptionLike } from 'rxjs'
 import {addDetatchEvent} from "../views/viewAttached";
 
 //! Declares com.lightningkite.khrysalis.rx.removed
-export function getAndroidViewViewRemoved(this_Removed: HTMLElement): DisposeCondition {
+export function xViewRemovedGet(this_Removed: HTMLElement): DisposeCondition {
     return new DisposeCondition((a)=>{
         addDetatchEvent(this_Removed, (_)=>{
             a.unsubscribe();
@@ -33,12 +33,12 @@ export class DisposableLambda implements SubscriptionLike {
 
 
 //! Declares com.lightningkite.khrysalis.rx.forever
-export function ioReactivexDisposablesDisposableForever<Self extends SubscriptionLike>(this_Forever: Self): Self{
+export function xDisposableForever<Self extends SubscriptionLike>(this_Forever: Self): Self{
     return this_Forever;
 }
 
 //! Declares com.lightningkite.khrysalis.rx.until
-export function ioReactivexDisposablesDisposableUntil<Self extends SubscriptionLike>(this_Until: Self, condition: DisposeCondition): Self{
+export function xDisposableUntil<Self extends SubscriptionLike>(this_Until: Self, condition: DisposeCondition): Self{
     condition.call(this_Until);
     return this_Until;
 }

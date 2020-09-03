@@ -24,13 +24,13 @@ class TransformedObservableProperty extends ObservableProperty_shared_1.Observab
 }
 exports.TransformedObservableProperty = TransformedObservableProperty;
 //! Declares com.lightningkite.khrysalis.observables.transformed>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
-function comLightningkiteKhrysalisObservablesObservablePropertyTransformed(this_, read) {
+function xObservablePropertyTransformed(this_, read) {
     return new TransformedObservableProperty(this_, read);
 }
-exports.comLightningkiteKhrysalisObservablesObservablePropertyTransformed = comLightningkiteKhrysalisObservablesObservablePropertyTransformed;
+exports.xObservablePropertyTransformed = xObservablePropertyTransformed;
 //! Declares com.lightningkite.khrysalis.observables.map>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
-function comLightningkiteKhrysalisObservablesObservablePropertyMap(this_, read) {
+function xObservablePropertyMap(this_, read) {
     return new TransformedObservableProperty(this_, read);
 }
-exports.comLightningkiteKhrysalisObservablesObservablePropertyMap = comLightningkiteKhrysalisObservablesObservablePropertyMap;
+exports.xObservablePropertyMap = xObservablePropertyMap;
 //# sourceMappingURL=TransformedObservableProperty.shared.js.map

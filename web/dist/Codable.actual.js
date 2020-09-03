@@ -6,18 +6,18 @@ exports.JsonList = Array;
 //! Declares com.lightningkite.khrysalis.JsonMap
 exports.JsonMap = Map;
 //! Declares com.lightningkite.khrysalis.toJsonString>kotlin.Any
-function kotlinAnyToJsonString(this_) {
+function xAnyToJsonString(this_) {
     return jsonParsing_1.stringify(this_);
 }
-exports.kotlinAnyToJsonString = kotlinAnyToJsonString;
+exports.xAnyToJsonString = xAnyToJsonString;
 //! Declares com.lightningkite.khrysalis.fromJsonString>kotlin.String
-function kotlinStringFromJsonString(this_, T) {
+function xStringFromJsonString(this_, T) {
     return jsonParsing_1.parse(JSON.parse(this_), T);
 }
-exports.kotlinStringFromJsonString = kotlinStringFromJsonString;
+exports.xStringFromJsonString = xStringFromJsonString;
 //! Declares com.lightningkite.khrysalis.fromJsonStringUntyped>kotlin.String
-function kotlinStringFromJsonStringUntyped(this_) {
+function xStringFromJsonStringUntyped(this_) {
     return jsonParsing_1.parseUntyped(this_);
 }
-exports.kotlinStringFromJsonStringUntyped = kotlinStringFromJsonStringUntyped;
+exports.xStringFromJsonStringUntyped = xStringFromJsonStringUntyped;
 //# sourceMappingURL=Codable.actual.js.map

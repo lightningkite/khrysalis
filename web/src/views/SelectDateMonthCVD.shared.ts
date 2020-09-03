@@ -12,18 +12,18 @@ import { copyDateAloneMod } from '../time/Date.actual'
 import { StandardObservableProperty } from '../observables/StandardObservableProperty.shared'
 import { runOrNull } from '../kotlin/Language'
 import { RectF } from './geometry/RectF.actual'
-import { ioReactivexDisposablesDisposableForever } from '../rx/DisposeCondition.actual'
+import { xDisposableForever } from '../rx/DisposeCondition.actual'
 
 //! Declares com.lightningkite.khrysalis.views.SelectDateMonthCVD
 export class SelectDateMonthCVD extends MonthCVD {
     public constructor() {
         super();
         this.selected = new StandardObservableProperty<(DateAlone | null)>(null, undefined);
-        const it_346 = this.selected.value;
-        if (it_346 !== null) { 
-            this.currentMonthObs.value = copyDateAloneMod(it_346, Date.prototype.setDate, 1);
+        const it_338 = this.selected.value;
+        if (it_338 !== null) { 
+            this.currentMonthObs.value = copyDateAloneMod(it_338, Date.prototype.setDate, 1);
         };
-        ioReactivexDisposablesDisposableForever<SubscriptionLike>(this.selected.onChange.subscribe( (value: (DateAlone | null)): void => {
+        xDisposableForever<SubscriptionLike>(this.selected.onChange.subscribe( (value: (DateAlone | null)): void => {
                     this?.invalidate();
         }, undefined, undefined));
         this.selectedDayPaint = new Paint();

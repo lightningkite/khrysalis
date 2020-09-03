@@ -42,11 +42,11 @@ export class VideoRemoteUrl extends Video {
 }
 
 //! Declares com.lightningkite.khrysalis.asVideo>kotlin.String
-export function kotlinStringAsVideo(this_: string): Video { 
+export function xStringAsVideo(this_: string): Video { 
     return new VideoRemoteUrl(this_); 
 }
 //! Declares com.lightningkite.khrysalis.asVideo>android.net.Uri
-export function androidNetUriAsVideo(this_: File): Video { 
+export function xUriAsVideo(this_: File): Video { 
     return new VideoReference(this_); 
 }
 

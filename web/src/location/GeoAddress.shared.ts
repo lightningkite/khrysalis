@@ -71,32 +71,32 @@ export class GeoAddress {
     public oneLine(withCountry: boolean = false, withZip: boolean = false): string {
         const builder = new StringBuilder();
         
-        const it_17 = this.street;
-        if (it_17 !== null) { 
-            builder.value += it_17;
+        const it_9 = this.street;
+        if (it_9 !== null) { 
+            builder.value += it_9;
         }
-        const it_18 = this.locality;
-        if (it_18 !== null) { 
+        const it_10 = this.locality;
+        if (it_10 !== null) { 
             builder.value += ' ';
-            builder.value += it_18;
+            builder.value += it_10;
         }
-        const it_19 = this.adminArea;
-        if (it_19 !== null) { 
+        const it_11 = this.adminArea;
+        if (it_11 !== null) { 
             builder.value += ", ";
-            builder.value += it_19;
+            builder.value += it_11;
         }
         if (withCountry) {
-            const it_21 = this.adminArea;
-            if (it_21 !== null) { 
+            const it_13 = this.adminArea;
+            if (it_13 !== null) { 
                 builder.value += ' ';
-                builder.value += it_21;
+                builder.value += it_13;
             }
         }
         if (withZip) {
-            const it_22 = this.postalCode;
-            if (it_22 !== null) { 
+            const it_14 = this.postalCode;
+            if (it_14 !== null) { 
                 builder.value += ' ';
-                builder.value += it_22;
+                builder.value += it_14;
             }
         }
         return builder.toString().trim();

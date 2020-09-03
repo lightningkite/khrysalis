@@ -23,7 +23,7 @@ export namespace CloseableDefaults {
 //! Declares com.lightningkite.khrysalis.observables.Close
 export class Close implements Closeable {
     public static implementsInterfaceComLightningkiteKhrysalisObservablesCloseable = true;
-    public static implementsInterfaceIoReactivexDisposablesDisposable = true;
+    public static implementsInterfaceIoReactivexDisposable = true;
     public readonly closer:  (() => void);
     public constructor(closer:  (() => void)) {
         this.closer = closer;

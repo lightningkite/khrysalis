@@ -5,7 +5,7 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // Package: com.lightningkite.khrysalis.views
 const Align_shared_1 = require("./geometry/Align.shared");
 //! Declares com.lightningkite.khrysalis.views.params>android.widget.LinearLayout
-function androidWidgetLinearLayoutParams(this_, sizeX = 0, sizeY = 0, marginStart = 0, marginEnd = 0, marginTop = 0, marginBottom = 0, gravity = Align_shared_1.AlignPair.Companion.INSTANCE.center, weight = 0) {
+function xLinearLayoutParams(this_, sizeX = 0, sizeY = 0, marginStart = 0, marginEnd = 0, marginTop = 0, marginBottom = 0, gravity = Align_shared_1.AlignPair.Companion.INSTANCE.center, weight = 0) {
     return (v) => {
         if (sizeX != 0) {
             v.style.width = `${sizeX}px`;
@@ -53,5 +53,5 @@ function androidWidgetLinearLayoutParams(this_, sizeX = 0, sizeY = 0, marginStar
         return v;
     };
 }
-exports.androidWidgetLinearLayoutParams = androidWidgetLinearLayoutParams;
+exports.xLinearLayoutParams = xLinearLayoutParams;
 //# sourceMappingURL=LinearLayout.actual.js.map

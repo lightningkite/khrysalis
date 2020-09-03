@@ -104,7 +104,7 @@ fun TypescriptTranslator.registerType() {
                 }
                 out.addImport(current)
                 items.asReversed().forEachBetween(
-                    forItem = { -it.name.asString() },
+                    forItem = { -it.name.asString().safeJsIdentifier() },
                     between = { -'.' }
                 )
                 typedRule.arguments.takeUnless { it.isEmpty() }?.let {
@@ -117,7 +117,7 @@ fun TypescriptTranslator.registerType() {
                 }
             }
             is TypeParameterDescriptor -> {
-                -desc.name.asString()
+                -desc.name.asString().safeJsIdentifier()
             }
             else -> {
                 println("What is this? ${desc?.let { it::class.qualifiedName }}")
@@ -142,12 +142,12 @@ fun TypescriptTranslator.registerType() {
                 }
                 out.addImport(current)
                 items.asReversed().forEachBetween(
-                    forItem = { -it.name.asString() },
+                    forItem = { -it.name.asString().safeJsIdentifier() },
                     between = { -'.' }
                 )
             }
             is TypeParameterDescriptor -> {
-                -desc.name.asString()
+                -desc.name.asString().safeJsIdentifier()
             }
             else -> {
                 -"/*${desc::class.java}*/"
@@ -158,7 +158,7 @@ fun TypescriptTranslator.registerType() {
     handle<CompleteReflectableType> {
         val desc = typedRule.type.constructor.declarationDescriptor
         if(desc is TypeParameterDescriptor) {
-            -desc.name.asString()
+            -desc.name.asString().safeJsIdentifier()
         } else {
             -"["
             -BasicType(typedRule.type)

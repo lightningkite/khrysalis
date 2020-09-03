@@ -7,10 +7,10 @@ import {parse} from "./jsonParsing";
 
 
 //! Declares com.lightningkite.khrysalis.net.code
-export function getOkhttp3ResponseCode(this_: Response): number { return this_.status; }
+export function xResponseCodeGet(this_: Response): number { return this_.status; }
 
 //! Declares com.lightningkite.khrysalis.net.headers
-export function getOkhttp3ResponseHeaders(this_: Response): Map<string, string> {
+export function xResponseHeadersGet(this_: Response): Map<string, string> {
     let map = new Map<string, string>();
     this_.headers.forEach((value, key) => {
         const existing = map.get(key);

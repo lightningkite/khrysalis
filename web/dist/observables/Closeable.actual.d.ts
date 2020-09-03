@@ -9,7 +9,7 @@ export declare namespace CloseableDefaults {
 }
 export declare class Close implements Closeable {
     static implementsInterfaceComLightningkiteKhrysalisObservablesCloseable: boolean;
-    static implementsInterfaceIoReactivexDisposablesDisposable: boolean;
+    static implementsInterfaceIoReactivexDisposable: boolean;
     readonly closer: (() => void);
     constructor(closer: (() => void));
     disposed: boolean;

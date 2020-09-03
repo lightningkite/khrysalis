@@ -85,7 +85,7 @@ export class ViewStringList implements ViewString {
 }
 
 //! Declares com.lightningkite.khrysalis.views.joinToViewString>kotlin.collections.List<com.lightningkite.khrysalis.views.ViewString>
-export function kotlinCollectionsListJoinToViewString(this_: Array< ViewString>, separator: string = `\n`): ViewString {
+export function xListJoinToViewString(this_: Array< ViewString>, separator: string = `\n`): ViewString {
     if (this_.length === 1) {
         return this_[0];
     }
@@ -93,7 +93,7 @@ export function kotlinCollectionsListJoinToViewString(this_: Array< ViewString>,
 }
 
 //! Declares com.lightningkite.khrysalis.views.toDebugString>com.lightningkite.khrysalis.views.ViewString
-export function comLightningkiteKhrysalisViewsViewStringToDebugString(this_: ViewString): string {
+export function xViewStringToDebugString(this_: ViewString): string {
     const thing = this_;
     
     if (thing instanceof ViewStringRaw) {
@@ -101,11 +101,11 @@ export function comLightningkiteKhrysalisViewsViewStringToDebugString(this_: Vie
     } else if (thing instanceof ViewStringResource) {
         return (thing as ViewStringResource).resource.toString()
     } else if (thing instanceof ViewStringTemplate) {
-        return comLightningkiteKhrysalisViewsViewStringToDebugString((thing as ViewStringTemplate).template) + "(" + (thing as ViewStringTemplate)._arguments.map((it: any): string => ((): string => {
-                        if (checkIsInterface<ViewString>(it, "ComLightningkiteKhrysalisViewsViewString")) { return comLightningkiteKhrysalisViewsViewStringToDebugString((it as ViewString)) } else { return `${it}` }
+        return xViewStringToDebugString((thing as ViewStringTemplate).template) + "(" + (thing as ViewStringTemplate)._arguments.map((it: any): string => ((): string => {
+                        if (checkIsInterface<ViewString>(it, "ComLightningkiteKhrysalisViewsViewString")) { return xViewStringToDebugString((it as ViewString)) } else { return `${it}` }
         })()).join(", ") + ")"
     } else if (thing instanceof ViewStringList) {
-        return (thing as ViewStringList).parts.map((it: ViewString): string => comLightningkiteKhrysalisViewsViewStringToDebugString(it)).join((thing as ViewStringList).separator)
+        return (thing as ViewStringList).parts.map((it: ViewString): string => xViewStringToDebugString(it)).join((thing as ViewStringList).separator)
     } else if (thing instanceof ViewStringComplex) {
         return `<Complex string ${thing}>`
     } else  {

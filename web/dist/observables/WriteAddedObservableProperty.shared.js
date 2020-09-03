@@ -21,8 +21,8 @@ class WriteAddedObservableProperty extends MutableObservableProperty_shared_1.Mu
 }
 exports.WriteAddedObservableProperty = WriteAddedObservableProperty;
 //! Declares com.lightningkite.khrysalis.observables.withWrite>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
-function comLightningkiteKhrysalisObservablesObservablePropertyWithWrite(this_, onWrite) {
+function xObservablePropertyWithWrite(this_, onWrite) {
     return new WriteAddedObservableProperty(this_, onWrite);
 }
-exports.comLightningkiteKhrysalisObservablesObservablePropertyWithWrite = comLightningkiteKhrysalisObservablesObservablePropertyWithWrite;
+exports.xObservablePropertyWithWrite = xObservablePropertyWithWrite;
 //# sourceMappingURL=WriteAddedObservableProperty.shared.js.map

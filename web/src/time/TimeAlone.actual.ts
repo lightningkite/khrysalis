@@ -2,7 +2,7 @@
 // File: time/TimeAlone.actual.kt
 // Package: com.lightningkite.khrysalis.time
 import { TimeInterval } from './TimeInterval.actual'
-import {  getJavaUtilDateTimeAlone } from './Date.actual'
+import {  xDateTimeAloneGet } from './Date.actual'
 import {parseIntOrNull} from "../Kotlin";
 
 //! Declares com.lightningkite.khrysalis.time.TimeAlone
@@ -27,7 +27,7 @@ export class TimeAlone {
     public copy(hour: number = this.hour, minute: number = this.minute, second: number = this.second) { return new TimeAlone(hour, minute, second); }
 
     public toJSON(): any {
-        return comLightningkiteKhrysalisTimeTimeAloneIso8601(this)
+        return xTimeAloneIso8601(this)
     }
     public static Companion = class Companion {
         private constructor() {
@@ -38,7 +38,7 @@ export class TimeAlone {
         }
         public static INSTANCE = new Companion();
         
-        public now(): TimeAlone{ return getJavaUtilDateTimeAlone(new Date()); }
+        public now(): TimeAlone{ return xDateTimeAloneGet(new Date()); }
         public iso(string: string): (TimeAlone | null){
             const parts = string.split(':');
             const hour = parseIntOrNull(parts[0]);
@@ -82,12 +82,12 @@ export class TimeAlone {
 }
 
 //! Declares com.lightningkite.khrysalis.time.iso8601
-export function comLightningkiteKhrysalisTimeTimeAloneIso8601(this_: TimeAlone): string{
+export function xTimeAloneIso8601(this_: TimeAlone): string{
     return `${this_.hour.toString().padStart(2, "0")}:${this_.minute.toString().padStart(2, "0")}:${this_.second.toString().padStart(2, "0")}`
 }
 
 //! Declares com.lightningkite.khrysalis.time.minus
-export function comLightningkiteKhrysalisTimeTimeAloneMinus(this_: TimeAlone, rhs: TimeAlone | TimeInterval): TimeAlone{
+export function xTimeAloneMinus(this_: TimeAlone, rhs: TimeAlone | TimeInterval): TimeAlone{
     let offset = 0;
     if(rhs instanceof TimeAlone){
         offset = (rhs.hour * 60 * 60 + rhs.minute * 60 + rhs.second);
@@ -104,7 +104,7 @@ export function comLightningkiteKhrysalisTimeTimeAloneMinus(this_: TimeAlone, rh
 }
 
 //! Declares com.lightningkite.khrysalis.time.plus
-export function comLightningkiteKhrysalisTimeTimeAlonePlus(this_: TimeAlone, rhs: TimeAlone | TimeInterval): TimeAlone{
+export function xTimeAlonePlus(this_: TimeAlone, rhs: TimeAlone | TimeInterval): TimeAlone{
     let offset = 0;
     if(rhs instanceof TimeAlone){
         offset = (rhs.hour * 60 * 60 + rhs.minute * 60 + rhs.second);

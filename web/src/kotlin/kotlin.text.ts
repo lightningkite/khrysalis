@@ -1,9 +1,9 @@
 
 //! Declares kotlin.text.isBlank
-export function kotlinCharSequenceIsBlank(s: string | null): boolean {
+export function xCharSequenceIsBlank(s: string | null): boolean {
     if(s == null) return true;
     for(const c of s) {
-        if(!kotlinCharIsWhitespace(c)){
+        if(!xCharIsWhitespace(c)){
             return false
         }
     }
@@ -11,7 +11,7 @@ export function kotlinCharSequenceIsBlank(s: string | null): boolean {
 }
 
 //! Declares kotlin.text.substringBefore
-export function kotlinStringSubstringBefore(s: string, delimeter: string, defaultResult: string = s): string {
+export function xStringSubstringBefore(s: string, delimeter: string, defaultResult: string = s): string {
     const pos = s.indexOf(delimeter);
     if(pos == -1) {
         return defaultResult
@@ -21,7 +21,7 @@ export function kotlinStringSubstringBefore(s: string, delimeter: string, defaul
 }
 
 //! Declares kotlin.text.substringAfter
-export function kotlinStringSubstringAfter(s: string, delimeter: string, defaultResult: string = s): string {
+export function xStringSubstringAfter(s: string, delimeter: string, defaultResult: string = s): string {
     const pos = s.indexOf(delimeter);
     if(pos == -1) {
         return defaultResult
@@ -31,7 +31,7 @@ export function kotlinStringSubstringAfter(s: string, delimeter: string, default
 }
 
 //! Declares kotlin.text.substringBeforeLast
-export function kotlinStringSubstringBeforeLast(s: string, delimeter: string, defaultResult: string = s): string {
+export function xStringSubstringBeforeLast(s: string, delimeter: string, defaultResult: string = s): string {
     const pos = s.lastIndexOf(delimeter);
     if(pos == -1) {
         return defaultResult
@@ -41,7 +41,7 @@ export function kotlinStringSubstringBeforeLast(s: string, delimeter: string, de
 }
 
 //! Declares kotlin.text.substringAfterLast
-export function kotlinStringSubstringAfterLast(s: string, delimeter: string, defaultResult: string = s): string {
+export function xStringSubstringAfterLast(s: string, delimeter: string, defaultResult: string = s): string {
     const pos = s.lastIndexOf(delimeter);
     if(pos == -1) {
         return defaultResult
@@ -51,12 +51,12 @@ export function kotlinStringSubstringAfterLast(s: string, delimeter: string, def
 }
 
 //! Declares kotlin.text.trimIndent
-export function kotlinStringTrimIndent(c: string): string {
+export function xStringTrimIndent(c: string): string {
     return c.split('\n').map((x)=>x.trim()).join("")
 }
 
 //! Declares kotlin.text.isWhitespace
-export function kotlinCharIsWhitespace(c: string): boolean {
+export function xCharIsWhitespace(c: string): boolean {
     switch(c){
         case " ":
         case "\n":
@@ -69,28 +69,28 @@ export function kotlinCharIsWhitespace(c: string): boolean {
 }
 
 //! Declares kotlin.text.isUpperCase
-export function kotlinCharIsUpperCase(c: string): boolean {
+export function xCharIsUpperCase(c: string): boolean {
     return c.toUpperCase() === c
 }
 
 //! Declares kotlin.text.isLowerCase
-export function kotlinCharIsLowerCase(c: string): boolean {
+export function xCharIsLowerCase(c: string): boolean {
     return c.toLowerCase() === c
 }
 
 //! Declares kotlin.text.isLetter
-export function kotlinCharIsLetter(c: string): boolean {
+export function xCharIsLetter(c: string): boolean {
     return (c >= 'a' && c <= 'z') || (c >= 'A' && c <= 'Z')
 }
 
 //! Declares kotlin.text.isDigit
-export function kotlinCharIsDigit(c: string): boolean {
+export function xCharIsDigit(c: string): boolean {
     return c >= '0' && c <= '9'
 }
 
 //! Declares kotlin.text.isLetterOrDigit
-export function kotlinCharIsLetterOrDigit(c: string): boolean {
-    return kotlinCharIsLetter(c) || kotlinCharIsDigit(c)
+export function xCharIsLetterOrDigit(c: string): boolean {
+    return xCharIsLetter(c) || xCharIsDigit(c)
 }
 
 //! Declares kotlin.text.StringBuilder
@@ -101,7 +101,7 @@ export class StringBuilder {
 }
 
 //! Declares kotlin.text.indexOfAny
-export function kotlinCharSequenceIndexOfAny(c: string, set: Array<string>, start: number, caseSensitive: boolean): number {
+export function xCharSequenceIndexOfAny(c: string, set: Array<string>, start: number, caseSensitive: boolean): number {
     if(caseSensitive){
         c = c.toLowerCase();
         set = set.map((x)=>x.toLowerCase());

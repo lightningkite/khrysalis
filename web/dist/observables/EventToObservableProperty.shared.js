@@ -27,13 +27,13 @@ class EventToObservableProperty extends ObservableProperty_shared_1.ObservablePr
 }
 exports.EventToObservableProperty = EventToObservableProperty;
 //! Declares com.lightningkite.khrysalis.observables.asObservableProperty>io.reactivex.Observable<kotlin.Any>
-function ioReactivexObservableAsObservableProperty(this_, defaultValue) {
+function xObservableAsObservableProperty(this_, defaultValue) {
     return new EventToObservableProperty(defaultValue, this_.pipe(operators_1.map((it) => it)));
 }
-exports.ioReactivexObservableAsObservableProperty = ioReactivexObservableAsObservableProperty;
+exports.xObservableAsObservableProperty = xObservableAsObservableProperty;
 //! Declares com.lightningkite.khrysalis.observables.asObservablePropertyDefaultNull>io.reactivex.Observable<kotlin.Any>
-function ioReactivexObservableAsObservablePropertyDefaultNull(this_) {
+function xObservableAsObservablePropertyDefaultNull(this_) {
     return new EventToObservableProperty(null, this_.pipe(operators_1.map((it) => it)));
 }
-exports.ioReactivexObservableAsObservablePropertyDefaultNull = ioReactivexObservableAsObservablePropertyDefaultNull;
+exports.xObservableAsObservablePropertyDefaultNull = xObservableAsObservablePropertyDefaultNull;
 //# sourceMappingURL=EventToObservableProperty.shared.js.map

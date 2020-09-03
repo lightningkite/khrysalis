@@ -4,10 +4,10 @@
 // Package: com.lightningkite.khrysalis.net
 Object.defineProperty(exports, "__esModule", { value: true });
 //! Declares com.lightningkite.khrysalis.net.code
-function getOkhttp3ResponseCode(this_) { return this_.status; }
-exports.getOkhttp3ResponseCode = getOkhttp3ResponseCode;
+function xResponseCodeGet(this_) { return this_.status; }
+exports.xResponseCodeGet = xResponseCodeGet;
 //! Declares com.lightningkite.khrysalis.net.headers
-function getOkhttp3ResponseHeaders(this_) {
+function xResponseHeadersGet(this_) {
     let map = new Map();
     this_.headers.forEach((value, key) => {
         const existing = map.get(key);
@@ -20,5 +20,5 @@ function getOkhttp3ResponseHeaders(this_) {
     });
     return map;
 }
-exports.getOkhttp3ResponseHeaders = getOkhttp3ResponseHeaders;
+exports.xResponseHeadersGet = xResponseHeadersGet;
 //# sourceMappingURL=HttpResponse.actual.js.map

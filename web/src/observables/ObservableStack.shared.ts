@@ -59,8 +59,8 @@ export class ObservableStack<T extends object> extends ObservableProperty<Array<
     
     public backPressPop(): boolean {
         const last = ((): (T | null) => {
-                const temp111 = this.stack;
-                return (temp111[temp111.length - 1] ?? null)
+                const temp103 = this.stack;
+                return (temp103[temp103.length - 1] ?? null)
         })();
         
         if (checkIsInterface<HasBackAction>(last, "ComLightningkiteKhrysalisViewsHasBackAction") && (last as HasBackAction).onBackPressed()) { return true }
@@ -69,8 +69,8 @@ export class ObservableStack<T extends object> extends ObservableProperty<Array<
     
     public backPressDismiss(): boolean {
         const last = ((): (T | null) => {
-                const temp112 = this.stack;
-                return (temp112[temp112.length - 1] ?? null)
+                const temp104 = this.stack;
+                return (temp104[temp104.length - 1] ?? null)
         })();
         
         if (checkIsInterface<HasBackAction>(last, "ComLightningkiteKhrysalisViewsHasBackAction") && (last as HasBackAction).onBackPressed()) { return true }

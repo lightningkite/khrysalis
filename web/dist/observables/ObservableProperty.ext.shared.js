@@ -4,42 +4,42 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // File: observables/ObservableProperty.ext.shared.kt
 // Package: com.lightningkite.khrysalis.observables
 const rxjs_1 = require("rxjs");
-const WriteAddedObservableProperty_shared_1 = require("./WriteAddedObservableProperty.shared");
+const TransformedObservableProperty_shared_1 = require("./TransformedObservableProperty.shared");
 const KotlinCollections_1 = require("../KotlinCollections");
 const Language_1 = require("../kotlin/Language");
-const TransformedObservableProperty_shared_1 = require("./TransformedObservableProperty.shared");
 const operators_1 = require("rxjs/operators");
+const WriteAddedObservableProperty_shared_1 = require("./WriteAddedObservableProperty.shared");
 //! Declares com.lightningkite.khrysalis.observables.observable>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
-function getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this_) {
+function xObservablePropertyObservableGet(this_) {
     return rxjs_1.concat(new rxjs_1.Observable((it) => {
         it.next(this_.value);
         it.complete();
     }), this_.onChange);
 }
-exports.getComLightningkiteKhrysalisObservablesObservablePropertyObservable = getComLightningkiteKhrysalisObservablesObservablePropertyObservable;
+exports.xObservablePropertyObservableGet = xObservablePropertyObservableGet;
 //! Declares com.lightningkite.khrysalis.observables.observableNN>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
-function getComLightningkiteKhrysalisObservablesObservablePropertyObservableNN(this_) {
+function xObservablePropertyObservableNNGet(this_) {
     return rxjs_1.concat(new rxjs_1.Observable((it) => {
         it.next(this_.value);
         it.complete();
     }), this_.onChange).pipe(operators_1.map((it) => it));
 }
-exports.getComLightningkiteKhrysalisObservablesObservablePropertyObservableNN = getComLightningkiteKhrysalisObservablesObservablePropertyObservableNN;
+exports.xObservablePropertyObservableNNGet = xObservablePropertyObservableNNGet;
 //! Declares com.lightningkite.khrysalis.observables.onChangeNN>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
-function getComLightningkiteKhrysalisObservablesObservablePropertyOnChangeNN(this_) { return this_.onChange.pipe(operators_1.map((it) => it)); }
-exports.getComLightningkiteKhrysalisObservablesObservablePropertyOnChangeNN = getComLightningkiteKhrysalisObservablesObservablePropertyOnChangeNN;
+function xObservablePropertyOnChangeNNGet(this_) { return this_.onChange.pipe(operators_1.map((it) => it)); }
+exports.xObservablePropertyOnChangeNNGet = xObservablePropertyOnChangeNNGet;
 //! Declares com.lightningkite.khrysalis.observables.subscribeBy>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
-function comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(this_, onError = (it) => {
+function xObservablePropertySubscribeBy(this_, onError = (it) => {
     Language_1.printStackTrace(it);
 }, onComplete = () => { }, onNext = (it) => { }) {
-    return getComLightningkiteKhrysalisObservablesObservablePropertyObservable(this_).subscribe((boxed) => {
+    return xObservablePropertyObservableGet(this_).subscribe((boxed) => {
         onNext(boxed);
     }, onError, onComplete);
 }
-exports.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy = comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy;
+exports.xObservablePropertySubscribeBy = xObservablePropertySubscribeBy;
 //! Declares com.lightningkite.khrysalis.observables.includes
 function includes(collection, element) {
-    return WriteAddedObservableProperty_shared_1.comLightningkiteKhrysalisObservablesObservablePropertyWithWrite(TransformedObservableProperty_shared_1.comLightningkiteKhrysalisObservablesObservablePropertyMap(collection, (it) => it.has(element)), (it) => {
+    return WriteAddedObservableProperty_shared_1.xObservablePropertyWithWrite(TransformedObservableProperty_shared_1.xObservablePropertyMap(collection, (it) => it.has(element)), (it) => {
         if (it) {
             collection.value = new KotlinCollections_1.EqualOverrideSet([...collection.value, element]);
         }
@@ -50,23 +50,23 @@ function includes(collection, element) {
 }
 exports.includes = includes;
 //! Declares com.lightningkite.khrysalis.observables.whileActive>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Boolean>
-function comLightningkiteKhrysalisObservablesObservablePropertyWhileActive(this_, action) {
+function xObservablePropertyWhileActive(this_, action) {
     let current = null;
-    return comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(this_, undefined, undefined, (it) => {
+    return xObservablePropertySubscribeBy(this_, undefined, undefined, (it) => {
         if (it) {
             if (current === null) {
                 current = action();
             }
         }
         else {
-            const temp72 = current;
-            if (temp72 !== null) {
-                temp72.unsubscribe();
+            const temp76 = current;
+            if (temp76 !== null) {
+                temp76.unsubscribe();
             }
             ;
             current = null;
         }
     });
 }
-exports.comLightningkiteKhrysalisObservablesObservablePropertyWhileActive = comLightningkiteKhrysalisObservablesObservablePropertyWhileActive;
+exports.xObservablePropertyWhileActive = xObservablePropertyWhileActive;
 //# sourceMappingURL=ObservableProperty.ext.shared.js.map

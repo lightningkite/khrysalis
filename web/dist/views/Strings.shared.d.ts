@@ -33,5 +33,5 @@ export declare class ViewStringList implements ViewString {
     constructor(parts: Array<ViewString>, separator?: string);
     get(dependency: Window): string;
 }
-export declare function kotlinCollectionsListJoinToViewString(this_: Array<ViewString>, separator?: string): ViewString;
-export declare function comLightningkiteKhrysalisViewsViewStringToDebugString(this_: ViewString): string;
+export declare function xListJoinToViewString(this_: Array<ViewString>, separator?: string): ViewString;
+export declare function xViewStringToDebugString(this_: ViewString): string;

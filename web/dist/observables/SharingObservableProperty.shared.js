@@ -36,8 +36,8 @@ class SharingObservableProperty extends ObservableProperty_shared_1.ObservablePr
 }
 exports.SharingObservableProperty = SharingObservableProperty;
 //! Declares com.lightningkite.khrysalis.observables.share>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
-function comLightningkiteKhrysalisObservablesObservablePropertyShare(this_, startAsListening = false) {
+function xObservablePropertyShare(this_, startAsListening = false) {
     return new SharingObservableProperty(this_, startAsListening);
 }
-exports.comLightningkiteKhrysalisObservablesObservablePropertyShare = comLightningkiteKhrysalisObservablesObservablePropertyShare;
+exports.xObservablePropertyShare = xObservablePropertyShare;
 //# sourceMappingURL=SharingObservableProperty.shared.js.map

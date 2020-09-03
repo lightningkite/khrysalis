@@ -6,9 +6,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const Strings_shared_1 = require("./Strings.shared");
 const lazyOp_1 = require("../kotlin/lazyOp");
 const KotlinCollections_1 = require("../KotlinCollections");
+const kotlin_text_1 = require("../kotlin/kotlin.text");
 const Kotlin_1 = require("../Kotlin");
 const showDialog_shared_1 = require("./showDialog.shared");
-const kotlin_text_1 = require("../kotlin/kotlin.text");
 const StandardObservableProperty_shared_1 = require("../observables/StandardObservableProperty.shared");
 //! Declares com.lightningkite.khrysalis.views.FormValidationError
 class FormValidationError {
@@ -72,7 +72,7 @@ class Form {
     runOrDialog(action) {
         const errors = this.check();
         if (errors.length !== 0) {
-            showDialog_shared_1.showDialogAlert(Strings_shared_1.kotlinCollectionsListJoinToViewString(errors.map((it) => it._string), undefined));
+            showDialog_shared_1.showDialogAlert(Strings_shared_1.xListJoinToViewString(errors.map((it) => it._string), undefined));
         }
         else {
             action();
@@ -97,17 +97,17 @@ exports.Form = Form;
     Form.Companion = Companion;
 })(Form = exports.Form || (exports.Form = {}));
 //! Declares com.lightningkite.khrysalis.views.required>com.lightningkite.khrysalis.views.FormField<kotlin.String>
-function comLightningkiteKhrysalisViewsFormFieldRequired(this_) {
-    if (kotlin_text_1.kotlinCharSequenceIsBlank(this_.observable.value)) {
+function xFormFieldRequired(this_) {
+    if (kotlin_text_1.xCharSequenceIsBlank(this_.observable.value)) {
         return new Strings_shared_1.ViewStringTemplate(Form.Companion.INSTANCE.xIsRequired, [this_.name]);
     }
     else {
         return null;
     }
 }
-exports.comLightningkiteKhrysalisViewsFormFieldRequired = comLightningkiteKhrysalisViewsFormFieldRequired;
+exports.xFormFieldRequired = xFormFieldRequired;
 //! Declares com.lightningkite.khrysalis.views.notNull>com.lightningkite.khrysalis.views.FormField<kotlin.Any>
-function comLightningkiteKhrysalisViewsFormFieldNotNull(this_) {
+function xFormFieldNotNull(this_) {
     if (this_.observable.value === null) {
         return new Strings_shared_1.ViewStringTemplate(Form.Companion.INSTANCE.xIsRequired, [this_.name]);
     }
@@ -115,9 +115,9 @@ function comLightningkiteKhrysalisViewsFormFieldNotNull(this_) {
         return null;
     }
 }
-exports.comLightningkiteKhrysalisViewsFormFieldNotNull = comLightningkiteKhrysalisViewsFormFieldNotNull;
+exports.xFormFieldNotNull = xFormFieldNotNull;
 //! Declares com.lightningkite.khrysalis.views.notFalse>com.lightningkite.khrysalis.views.FormField<kotlin.Boolean>
-function comLightningkiteKhrysalisViewsFormFieldNotFalse(this_) {
+function xFormFieldNotFalse(this_) {
     if ((!this_.observable.value)) {
         return new Strings_shared_1.ViewStringTemplate(Form.Companion.INSTANCE.xIsRequired, [this_.name]);
     }
@@ -125,9 +125,9 @@ function comLightningkiteKhrysalisViewsFormFieldNotFalse(this_) {
         return null;
     }
 }
-exports.comLightningkiteKhrysalisViewsFormFieldNotFalse = comLightningkiteKhrysalisViewsFormFieldNotFalse;
+exports.xFormFieldNotFalse = xFormFieldNotFalse;
 //! Declares com.lightningkite.khrysalis.views.unless>com.lightningkite.khrysalis.views.ViewString
-function comLightningkiteKhrysalisViewsViewStringUnless(this_, condition) {
+function xViewStringUnless(this_, condition) {
     if (condition) {
         return null;
     }
@@ -135,9 +135,9 @@ function comLightningkiteKhrysalisViewsViewStringUnless(this_, condition) {
         return this_;
     }
 }
-exports.comLightningkiteKhrysalisViewsViewStringUnless = comLightningkiteKhrysalisViewsViewStringUnless;
+exports.xViewStringUnless = xViewStringUnless;
 //! Declares com.lightningkite.khrysalis.views.matches>com.lightningkite.khrysalis.views.FormField<kotlin.Any>
-function comLightningkiteKhrysalisViewsFormFieldMatches(this_, other) {
+function xFormFieldMatches(this_, other) {
     if (!Kotlin_1.safeEq(this_.observable.value, other.observable.value)) {
         return new Strings_shared_1.ViewStringTemplate(Form.Companion.INSTANCE.xMustMatchY, [this_.name, other.name]);
     }
@@ -145,7 +145,7 @@ function comLightningkiteKhrysalisViewsFormFieldMatches(this_, other) {
         return null;
     }
 }
-exports.comLightningkiteKhrysalisViewsFormFieldMatches = comLightningkiteKhrysalisViewsFormFieldMatches;
+exports.xFormFieldMatches = xFormFieldMatches;
 //object test {
 //    val form = Form()
 //

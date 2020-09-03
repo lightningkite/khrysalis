@@ -20,7 +20,7 @@ export function setGeocodingMethod(method: (
 }
 
 //! Declares com.lightningkite.khrysalis.location.geocode
-export function comLightningkiteKhrysalisAndroidActivityAccessGeocode(
+export function xActivityAccessGeocode(
     this_Geocode: Window,
     coordinate: GeoCoordinate | string,
     maxResults: number = 1

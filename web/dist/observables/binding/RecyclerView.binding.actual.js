@@ -10,20 +10,20 @@ const Kotlin_1 = require("../../Kotlin");
 const LinearLayout_binding_shared_1 = require("./LinearLayout.binding.shared");
 const viewAttached_1 = require("../../views/viewAttached");
 //! Declares com.lightningkite.khrysalis.observables.binding.whenScrolledToEnd>androidx.recyclerview.widget.RecyclerView
-function androidxRecyclerviewWidgetRecyclerViewWhenScrolledToEnd(this_, action) {
+function xRecyclerViewWhenScrolledToEnd(this_, action) {
     this_.addEventListener("scroll", (ev) => {
         if (this_.scrollTop >= this_.scrollHeight - this_.offsetHeight - 10) {
             action();
         }
     });
 }
-exports.androidxRecyclerviewWidgetRecyclerViewWhenScrolledToEnd = androidxRecyclerviewWidgetRecyclerViewWhenScrolledToEnd;
+exports.xRecyclerViewWhenScrolledToEnd = xRecyclerViewWhenScrolledToEnd;
 //! Declares com.lightningkite.khrysalis.observables.binding.reverseDirection>androidx.recyclerview.widget.RecyclerView
-function getAndroidxRecyclerviewWidgetRecyclerViewReverseDirection(this_) {
+function xRecyclerViewReverseDirectionGet(this_) {
     return this_.style.flexDirection.endsWith("reverse");
 }
-exports.getAndroidxRecyclerviewWidgetRecyclerViewReverseDirection = getAndroidxRecyclerviewWidgetRecyclerViewReverseDirection;
-function setAndroidxRecyclerviewWidgetRecyclerViewReverseDirection(this_, value) {
+exports.xRecyclerViewReverseDirectionGet = xRecyclerViewReverseDirectionGet;
+function xRecyclerViewReverseDirectionSet(this_, value) {
     const existing = this_.style.flexDirection;
     if (existing.startsWith("row")) {
         if (value) {
@@ -43,12 +43,12 @@ function setAndroidxRecyclerviewWidgetRecyclerViewReverseDirection(this_, value)
     }
     return;
 }
-exports.setAndroidxRecyclerviewWidgetRecyclerViewReverseDirection = setAndroidxRecyclerviewWidgetRecyclerViewReverseDirection;
+exports.xRecyclerViewReverseDirectionSet = xRecyclerViewReverseDirectionSet;
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>androidx.recyclerview.widget.RecyclerView
-function androidxRecyclerviewWidgetRecyclerViewBind(this_, data, defaultValue, makeView) {
-    LinearLayout_binding_shared_1.androidWidgetLinearLayoutBind(this_, data, defaultValue, makeView);
+function xRecyclerViewBind(this_, data, defaultValue, makeView) {
+    LinearLayout_binding_shared_1.xLinearLayoutBind(this_, data, defaultValue, makeView);
 }
-exports.androidxRecyclerviewWidgetRecyclerViewBind = androidxRecyclerviewWidgetRecyclerViewBind;
+exports.xRecyclerViewBind = xRecyclerViewBind;
 class RVTypeHandler {
     constructor() {
         this.handlers = [];
@@ -67,7 +67,7 @@ exports.RVTypeHandler = RVTypeHandler;
 function recyclerViewBindMultiType(this_, viewDependency, data, typeHandlerSetup) {
     const h = new RVTypeHandler();
     typeHandlerSetup(h);
-    androidxRecyclerviewWidgetRecyclerViewBindMulti(this_, data, null, (x) => h.handlers.findIndex((handler) => Kotlin_1.checkReified(x, handler.type)), (type, prop) => {
+    xRecyclerViewBindMulti(this_, data, null, (x) => h.handlers.findIndex((handler) => Kotlin_1.checkReified(x, handler.type)), (type, prop) => {
         const handler = h.handlers[type];
         if (handler) {
             return handler.action(prop);
@@ -79,9 +79,9 @@ function recyclerViewBindMultiType(this_, viewDependency, data, typeHandlerSetup
 }
 exports.recyclerViewBindMultiType = recyclerViewBindMultiType;
 //! Declares com.lightningkite.khrysalis.observables.binding.bindMulti>androidx.recyclerview.widget.RecyclerView
-function androidxRecyclerviewWidgetRecyclerViewBindMulti(this_, data, defaultValue, determineType, makeView) {
+function xRecyclerViewBindMulti(this_, data, defaultValue, determineType, makeView) {
     let existingViews = new Map();
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(data, undefined, undefined, (value) => {
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(data, undefined, undefined, (value) => {
         var _a, _b, _c;
         //Place views
         const unusedViews = existingViews;
@@ -112,11 +112,11 @@ function androidxRecyclerviewWidgetRecyclerViewBindMulti(this_, data, defaultVal
                 viewAttached_1.triggerDetatchEvent(part[1]);
             }
         }
-    }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
+    }), DisposeCondition_actual_1.xViewRemovedGet(this_));
 }
-exports.androidxRecyclerviewWidgetRecyclerViewBindMulti = androidxRecyclerviewWidgetRecyclerViewBindMulti;
+exports.xRecyclerViewBindMulti = xRecyclerViewBindMulti;
 //! Declares com.lightningkite.khrysalis.observables.binding.bindRefresh>androidx.recyclerview.widget.RecyclerView
-function androidxRecyclerviewWidgetRecyclerViewBindRefresh(this_, loading, refresh) {
+function xRecyclerViewBindRefresh(this_, loading, refresh) {
     const actualRefreshView = this_.parentElement;
     let actualRefreshButton = null;
     for (let i = 0; i < actualRefreshView.children.length; i++) {
@@ -129,7 +129,7 @@ function androidxRecyclerviewWidgetRecyclerViewBindRefresh(this_, loading, refre
         actualRefreshButton.onclick = (x) => {
             refresh();
         };
-        DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(loading, undefined, undefined, (x) => {
+        DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(loading, undefined, undefined, (x) => {
             if (actualRefreshButton) {
                 if (x) {
                     actualRefreshButton.classList.add("khrysalis-refresh-button-loading");
@@ -138,8 +138,8 @@ function androidxRecyclerviewWidgetRecyclerViewBindRefresh(this_, loading, refre
                     actualRefreshButton.classList.remove("khrysalis-refresh-button-loading");
                 }
             }
-        }), DisposeCondition_actual_1.getAndroidViewViewRemoved(actualRefreshButton));
+        }), DisposeCondition_actual_1.xViewRemovedGet(actualRefreshButton));
     }
 }
-exports.androidxRecyclerviewWidgetRecyclerViewBindRefresh = androidxRecyclerviewWidgetRecyclerViewBindRefresh;
+exports.xRecyclerViewBindRefresh = xRecyclerViewBindRefresh;
 //# sourceMappingURL=RecyclerView.binding.actual.js.map

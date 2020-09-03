@@ -1,6 +1,6 @@
 import {Exception, hashAnything, safeEq} from "./Language";
 import {filter, flatten, map} from "./lazyOp";
-import {kotlinCollectionsIterableJoinToString} from "./Iterables";
+import {xIterableJoinToString} from "./Iterables";
 import {safeCompare} from "./Comparable";
 
 export function mapForKeyType<K, V>(type: any): Map<K, V> {
@@ -89,7 +89,7 @@ export class EqualOverrideSet<T extends Object> implements Set<T> {
     }
 
     toString(): string {
-        return kotlinCollectionsIterableJoinToString(
+        return xIterableJoinToString(
             this.keys(),
             ", ",
             "[",
@@ -236,7 +236,7 @@ export class EqualOverrideMap<K extends Object, V> implements Map<K, V> {
     }
 
     toString(): string {
-        return kotlinCollectionsIterableJoinToString(
+        return xIterableJoinToString(
             this.entries(),
             ", ",
             "[",
@@ -376,7 +376,7 @@ export function setAddCausedChange<T>(set: Set<T>, item: T): boolean {
 }
 
 //! Declares kotlin.collections.getOrPut
-export function kotlinCollectionsMutableMapGetOrPut<K, V>(map: Map<K, V>, key: K, valueGenerator: () => V): V {
+export function xMutableMapGetOrPut<K, V>(map: Map<K, V>, key: K, valueGenerator: () => V): V {
     if (map.has(key)) {
         return map.get(key) as V
     } else {

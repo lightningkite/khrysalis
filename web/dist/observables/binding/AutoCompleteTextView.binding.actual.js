@@ -5,16 +5,16 @@ const ObservableProperty_ext_shared_1 = require("../ObservableProperty.ext.share
 const CombineObservableProperty_shared_1 = require("../CombineObservableProperty.shared");
 const StandardObservableProperty_shared_1 = require("../StandardObservableProperty.shared");
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>android.widget.AutoCompleteTextView
-function androidWidgetAutoCompleteTextViewBind(this_, options, toString, onItemSelected) {
+function xAutoCompleteTextViewBind(this_, options, toString, onItemSelected) {
     let query = new StandardObservableProperty_shared_1.StandardObservableProperty("");
     this_.addEventListener("change", () => {
         query.value = this_.value;
     });
-    androidWidgetAutoCompleteTextViewBindList(this_, CombineObservableProperty_shared_1.comLightningkiteKhrysalisObservablesObservablePropertyCombine(options, query, (options, query) => options.filter((x) => toString(x).toLowerCase().indexOf(query.toLowerCase()) != -1)), toString, onItemSelected);
+    xAutoCompleteTextViewBindList(this_, CombineObservableProperty_shared_1.xObservablePropertyCombine(options, query, (options, query) => options.filter((x) => toString(x).toLowerCase().indexOf(query.toLowerCase()) != -1)), toString, onItemSelected);
 }
-exports.androidWidgetAutoCompleteTextViewBind = androidWidgetAutoCompleteTextViewBind;
+exports.xAutoCompleteTextViewBind = xAutoCompleteTextViewBind;
 //! Declares com.lightningkite.khrysalis.observables.binding.bindList>android.widget.AutoCompleteTextView
-function androidWidgetAutoCompleteTextViewBindList(this_, options, toString, onItemSelected) {
+function xAutoCompleteTextViewBindList(this_, options, toString, onItemSelected) {
     const container = this_.parentElement;
     let selectionView = null;
     function removeOptions() {
@@ -101,11 +101,11 @@ function androidWidgetAutoCompleteTextViewBindList(this_, options, toString, onI
                 break;
         }
     });
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(options, undefined, undefined, (x) => {
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(options, undefined, undefined, (x) => {
         if (this_ === document.activeElement) {
             showOptions(this_.value, x);
         }
-    }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
+    }), DisposeCondition_actual_1.xViewRemovedGet(this_));
 }
-exports.androidWidgetAutoCompleteTextViewBindList = androidWidgetAutoCompleteTextViewBindList;
+exports.xAutoCompleteTextViewBindList = xAutoCompleteTextViewBindList;
 //# sourceMappingURL=AutoCompleteTextView.binding.actual.js.map

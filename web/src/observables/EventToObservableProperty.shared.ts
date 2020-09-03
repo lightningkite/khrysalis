@@ -28,12 +28,12 @@ export class EventToObservableProperty<T> extends ObservableProperty<T> {
 }
 
 //! Declares com.lightningkite.khrysalis.observables.asObservableProperty>io.reactivex.Observable<kotlin.Any>
-export function ioReactivexObservableAsObservableProperty<Element>(this_: Observable< Element>, defaultValue: Element): ObservableProperty<Element> {
+export function xObservableAsObservableProperty<Element>(this_: Observable< Element>, defaultValue: Element): ObservableProperty<Element> {
     return new EventToObservableProperty<Element>(defaultValue, this_.pipe(rxMap((it: Element): Element => it)));
 }
 
 //! Declares com.lightningkite.khrysalis.observables.asObservablePropertyDefaultNull>io.reactivex.Observable<kotlin.Any>
-export function ioReactivexObservableAsObservablePropertyDefaultNull<Element>(this_: Observable< Element>): ObservableProperty<(Element | null)> {
+export function xObservableAsObservablePropertyDefaultNull<Element>(this_: Observable< Element>): ObservableProperty<(Element | null)> {
     return new EventToObservableProperty<(Element | null)>(null, this_.pipe(rxMap((it: Element): (Element | null) => it)));
 }
 

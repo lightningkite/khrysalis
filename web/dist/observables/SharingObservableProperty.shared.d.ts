@@ -9,4 +9,4 @@ export declare class SharingObservableProperty<T> extends ObservableProperty<T> 
     get value(): T;
     readonly onChange: Observable<T>;
 }
-export declare function comLightningkiteKhrysalisObservablesObservablePropertyShare<T>(this_: ObservableProperty<T>, startAsListening?: boolean): SharingObservableProperty<T>;
+export declare function xObservablePropertyShare<T>(this_: ObservableProperty<T>, startAsListening?: boolean): SharingObservableProperty<T>;

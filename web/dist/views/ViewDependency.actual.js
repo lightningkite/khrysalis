@@ -59,7 +59,7 @@ function listenForDialogs() {
 }
 exports.listenForDialogs = listenForDialogs;
 //! Declares com.lightningkite.khrysalis.views.share>com.lightningkite.khrysalis.android.ActivityAccess
-function comLightningkiteKhrysalisAndroidActivityAccessShare(this_, shareTitle, message = null, url = null, image = null) {
+function xActivityAccessShare(this_, shareTitle, message = null, url = null, image = null) {
     const escapedTitle = encodeURIComponent(shareTitle);
     const escapedUrl = url ? encodeURIComponent(url) : null;
     const escapedMessage = message ? encodeURIComponent(message) : null;
@@ -196,23 +196,23 @@ function comLightningkiteKhrysalisAndroidActivityAccessShare(this_, shareTitle, 
     };
     document.body.appendChild(topLevel);
 }
-exports.comLightningkiteKhrysalisAndroidActivityAccessShare = comLightningkiteKhrysalisAndroidActivityAccessShare;
+exports.xActivityAccessShare = xActivityAccessShare;
 //! Declares com.lightningkite.khrysalis.views.getColor
-function comLightningkiteKhrysalisAndroidActivityAccessGetColor(this_, variableName) {
+function xActivityAccessGetColor(this_, variableName) {
     return this_.getComputedStyle(this_.document.body).getPropertyValue(variableName).trim();
 }
-exports.comLightningkiteKhrysalisAndroidActivityAccessGetColor = comLightningkiteKhrysalisAndroidActivityAccessGetColor;
+exports.xActivityAccessGetColor = xActivityAccessGetColor;
 //! Declares com.lightningkite.khrysalis.views.openMap>com.lightningkite.khrysalis.android.ActivityAccess
-function comLightningkiteKhrysalisAndroidActivityAccessOpenMap(this_, coordinate, label = null, zoom = null) {
+function xActivityAccessOpenMap(this_, coordinate, label = null, zoom = null) {
     let url = label ?
         `https://www.google.com/maps/search/?api=1&query=${coordinate.latitude},${coordinate.longitude}` //TODO: Use label when it is supported
         :
             `https://www.google.com/maps/search/?api=1&query=${coordinate.latitude},${coordinate.longitude}`;
     window.open(url, "_blank");
 }
-exports.comLightningkiteKhrysalisAndroidActivityAccessOpenMap = comLightningkiteKhrysalisAndroidActivityAccessOpenMap;
+exports.xActivityAccessOpenMap = xActivityAccessOpenMap;
 //! Declares com.lightningkite.khrysalis.views.openEvent>com.lightningkite.khrysalis.android.ActivityAccess
-function comLightningkiteKhrysalisAndroidActivityAccessOpenEvent(this_, title, description, location, start, end) {
+function xActivityAccessOpenEvent(this_, title, description, location, start, end) {
     let calText = "BEGIN:VCALENDAR\nVERSION:2.0\nCALSCALE:GREGORIAN\nPRODID:adamgibbons/ics\nMETHOD:PUBLISH\nBEGIN:VEVENT\n";
     calText += "UID:" + uuid_1.v4() + "\n";
     calText += "SUMMARY:" + title + "\n";
@@ -227,48 +227,74 @@ function comLightningkiteKhrysalisAndroidActivityAccessOpenEvent(this_, title, d
     a.download = "event.ics";
     a.click();
 }
-exports.comLightningkiteKhrysalisAndroidActivityAccessOpenEvent = comLightningkiteKhrysalisAndroidActivityAccessOpenEvent;
+exports.xActivityAccessOpenEvent = xActivityAccessOpenEvent;
 //! Declares com.lightningkite.khrysalis.views.requestImagesGallery>com.lightningkite.khrysalis.android.ActivityAccess
-function comLightningkiteKhrysalisAndroidActivityAccessRequestImagesGallery(this_, callback) {
-    const f = document.createElement("input");
-    f.type = "file";
-    f.multiple = true;
-    f.accept = "image/*";
-    f.onchange = (e) => {
-        const files = [];
-        const fList = f.files;
-        if (fList) {
-            for (let i = 0; i < fList.length; i++) {
-                files.push(fList.item(i));
-            }
-        }
-        callback(files);
-    };
-    f.click();
+function xActivityAccessRequestImagesGallery(this_, callback) {
+    openFileMulti("image/*", callback);
 }
-exports.comLightningkiteKhrysalisAndroidActivityAccessRequestImagesGallery = comLightningkiteKhrysalisAndroidActivityAccessRequestImagesGallery;
+exports.xActivityAccessRequestImagesGallery = xActivityAccessRequestImagesGallery;
 //! Declares com.lightningkite.khrysalis.views.requestImageGallery>com.lightningkite.khrysalis.android.ActivityAccess
-function comLightningkiteKhrysalisAndroidActivityAccessRequestImageGallery(this_, callback) {
-    const f = document.createElement("input");
-    f.type = "file";
-    f.accept = "image/*";
-    f.onchange = (e) => {
-        if (f.files) {
-            const file = f.files[0];
-            if (file) {
-                callback(file);
-            }
-        }
-    };
-    f.click();
+function xActivityAccessRequestImageGallery(this_, callback) {
+    openFile("image/*", null, callback);
 }
-exports.comLightningkiteKhrysalisAndroidActivityAccessRequestImageGallery = comLightningkiteKhrysalisAndroidActivityAccessRequestImageGallery;
+exports.xActivityAccessRequestImageGallery = xActivityAccessRequestImageGallery;
 //! Declares com.lightningkite.khrysalis.views.requestImageCamera>com.lightningkite.khrysalis.android.ActivityAccess
-function comLightningkiteKhrysalisAndroidActivityAccessRequestImageCamera(this_, front = false, callback) {
+function xActivityAccessRequestImageCamera(this_, front = false, callback) {
+    openFile("image/*", front, callback);
+}
+exports.xActivityAccessRequestImageCamera = xActivityAccessRequestImageCamera;
+//! Declares com.lightningkite.khrysalis.views.requestVideosGallery>com.lightningkite.khrysalis.android.ActivityAccess
+function xActivityAccessRequestVideosGallery(this_, callback) {
+    openFileMulti("video/*", callback);
+}
+exports.xActivityAccessRequestVideosGallery = xActivityAccessRequestVideosGallery;
+//! Declares com.lightningkite.khrysalis.views.requestVideoGallery>com.lightningkite.khrysalis.android.ActivityAccess
+function xActivityAccessRequestVideoGallery(this_, callback) {
+    openFile("video/*", null, callback);
+}
+exports.xActivityAccessRequestVideoGallery = xActivityAccessRequestVideoGallery;
+//! Declares com.lightningkite.khrysalis.views.requestVideoCamera>com.lightningkite.khrysalis.android.ActivityAccess
+function xActivityAccessRequestVideoCamera(this_, front = false, callback) {
+    openFile("video/*", front, callback);
+}
+exports.xActivityAccessRequestVideoCamera = xActivityAccessRequestVideoCamera;
+//! Declares com.lightningkite.khrysalis.views.requestMediasGallery>com.lightningkite.khrysalis.android.ActivityAccess
+function xActivityAccessRequestMediasGallery(this_, callback) {
+    openFileMulti("video/*,image/*", callback);
+}
+exports.xActivityAccessRequestMediasGallery = xActivityAccessRequestMediasGallery;
+//! Declares com.lightningkite.khrysalis.views.requestMediaGallery>com.lightningkite.khrysalis.android.ActivityAccess
+function xActivityAccessRequestMediaGallery(this_, callback) {
+    openFile("video/*,image/*", null, callback);
+}
+exports.xActivityAccessRequestMediaGallery = xActivityAccessRequestMediaGallery;
+function openFileMulti(type, callback) {
     const f = document.createElement("input");
     f.type = "file";
-    f.accept = "image/*";
-    f.capture = front ? "user" : "environment";
+    f.accept = type;
+    f.multiple = true;
+    f.onchange = (e) => {
+        if (f.files) {
+            const files = [];
+            const fList = f.files;
+            if (fList) {
+                for (let i = 0; i < fList.length; i++) {
+                    files.push(fList.item(i));
+                }
+            }
+            callback(files);
+        }
+    };
+    f.click();
+}
+function openFile(type, capture = null, callback) {
+    const f = document.createElement("input");
+    f.type = "file";
+    f.accept = type;
+    f.multiple = false;
+    if (capture) {
+        f.capture = capture ? "user" : "environment";
+    }
     f.onchange = (e) => {
         if (f.files) {
             const file = f.files[0];
@@ -279,5 +305,4 @@ function comLightningkiteKhrysalisAndroidActivityAccessRequestImageCamera(this_,
     };
     f.click();
 }
-exports.comLightningkiteKhrysalisAndroidActivityAccessRequestImageCamera = comLightningkiteKhrysalisAndroidActivityAccessRequestImageCamera;
 //# sourceMappingURL=ViewDependency.actual.js.map

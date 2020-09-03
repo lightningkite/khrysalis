@@ -8,12 +8,21 @@ const DisposeCondition_actual_1 = require("../../rx/DisposeCondition.actual");
 const ImageView_actual_1 = require("../../views/ImageView.actual");
 const delay_actual_1 = require("../../delay.actual");
 //! Declares com.lightningkite.khrysalis.observables.binding.bindImage
-function androidWidgetImageViewBindImage(this_, image) {
+function xImageViewBindImage(this_, image) {
     delay_actual_1.post(() => {
-        DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(image, undefined, undefined, (it) => {
-            ImageView_actual_1.androidWidgetImageViewLoadImage(this_, it);
-        }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
+        DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(image, undefined, undefined, (it) => {
+            ImageView_actual_1.xImageViewLoadImage(this_, it);
+        }), DisposeCondition_actual_1.xViewRemovedGet(this_));
     });
 }
-exports.androidWidgetImageViewBindImage = androidWidgetImageViewBindImage;
+exports.xImageViewBindImage = xImageViewBindImage;
+//! Declares com.lightningkite.khrysalis.observables.binding.bindVideoThumbnail
+function xImageViewBindVideoThumbnail(this_, image) {
+    delay_actual_1.post(() => {
+        DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(image, undefined, undefined, (it) => {
+            ImageView_actual_1.xImageViewLoadVideoThumbnail(this_, it);
+        }), DisposeCondition_actual_1.xViewRemovedGet(this_));
+    });
+}
+exports.xImageViewBindVideoThumbnail = xImageViewBindVideoThumbnail;
 //# sourceMappingURL=ImageView.binding.actual.js.map

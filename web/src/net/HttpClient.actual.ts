@@ -8,7 +8,7 @@ import {Exception} from "../kotlin/Language";
 import {map, timeout} from "rxjs/operators";
 import {HttpCacheMode, HttpOptions, HttpPhase, HttpProgress} from "./HttpModels.shared";
 import {ObservableProperty} from "../observables/ObservableProperty.shared";
-import {ioReactivexObservableAsObservableProperty} from "../observables/EventToObservableProperty.shared";
+import {xObservableAsObservableProperty} from "../observables/EventToObservableProperty.shared";
 
 //! Declares com.lightningkite.khrysalis.net.HttpClient
 export class HttpClient {
@@ -159,7 +159,7 @@ export class HttpClient {
                 );
             }
         }))
-        let progObs = ioReactivexObservableAsObservableProperty(progSubj, HttpProgress.Companion.INSTANCE.connecting);
+        let progObs = xObservableAsObservableProperty(progSubj, HttpProgress.Companion.INSTANCE.connecting);
         return [progObs, obsResp];
     }
     

@@ -1,30 +1,30 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
-const delay_actual_1 = require("../delay.actual");
-const Canvas_actual_1 = require("./draw/Canvas.actual");
 const Date_actual_1 = require("../time/Date.actual");
+const delay_actual_1 = require("../delay.actual");
+const DateAlone_shared_1 = require("../time/DateAlone.shared");
 const Kotlin_1 = require("../Kotlin");
+const ObservableProperty_ext_shared_1 = require("../observables/ObservableProperty.ext.shared");
 const CustomViewDelegate_shared_1 = require("./CustomViewDelegate.shared");
-const StandardObservableProperty_shared_1 = require("../observables/StandardObservableProperty.shared");
 const Math_shared_1 = require("../Math.shared");
+const StandardObservableProperty_shared_1 = require("../observables/StandardObservableProperty.shared");
 const DisposeCondition_actual_1 = require("../rx/DisposeCondition.actual");
 const Date_actual_2 = require("../time/Date.actual");
 const Paint_actual_1 = require("./draw/Paint.actual");
 const TimeNames_actual_1 = require("../time/TimeNames.actual");
-const DateAlone_shared_1 = require("../time/DateAlone.shared");
 const DateAlone_actual_1 = require("../time/DateAlone.actual");
+const Canvas_actual_1 = require("./draw/Canvas.actual");
 const Colors_actual_1 = require("./Colors.actual");
 const CustomView_actual_1 = require("./CustomView.actual");
 const RectF_actual_1 = require("./geometry/RectF.actual");
 const Path_actual_1 = require("./draw/Path.actual");
-const ObservableProperty_ext_shared_1 = require("../observables/ObservableProperty.ext.shared");
 //! Declares com.lightningkite.khrysalis.views.MonthCVD
 class MonthCVD extends CustomViewDelegate_shared_1.CustomViewDelegate {
     constructor() {
         super();
-        this.currentMonthObs = new StandardObservableProperty_shared_1.StandardObservableProperty(Date_actual_2.dateAloneMod(Date_actual_1.getJavaUtilDateDateAlone(new Date()), Date.prototype.setDate, 1), undefined);
+        this.currentMonthObs = new StandardObservableProperty_shared_1.StandardObservableProperty(Date_actual_2.dateAloneMod(Date_actual_1.xDateDateAloneGet(new Date()), Date.prototype.setDate, 1), undefined);
         this.dragEnabled = true;
-        DisposeCondition_actual_1.ioReactivexDisposablesDisposableForever(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(this.currentMonthObs, undefined, undefined, (value) => {
+        DisposeCondition_actual_1.xDisposableForever(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(this.currentMonthObs, undefined, undefined, (value) => {
             this === null || this === void 0 ? void 0 : this.postInvalidate();
         }));
         this.labelFontSp = 12;
@@ -50,7 +50,7 @@ class MonthCVD extends CustomViewDelegate_shared_1.CustomViewDelegate {
         this.dayPaint.isAntiAlias = true;
         this.dayPaint.style = Paint_actual_1.Paint.Style.FILL;
         this.dayPaint.color = Colors_actual_1.numberToColor(0xFF202020);
-        DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(delay_actual_1.getAnimationFrame().subscribe((timePassed) => {
+        DisposeCondition_actual_1.xDisposableUntil(delay_actual_1.getAnimationFrame().subscribe((timePassed) => {
             if (this.draggingId === this.DRAGGING_NONE && !(this.currentOffset === 0)) {
                 let newOffset = this.currentOffset * Math.max(0, (1 - 8 * timePassed));
                 const min = 0.001;
@@ -88,9 +88,9 @@ class MonthCVD extends CustomViewDelegate_shared_1.CustomViewDelegate {
     }
     set currentOffset(value) {
         this._currentOffset = value;
-        const temp181 = this.customView;
-        if (temp181 !== null) {
-            CustomView_actual_1.customViewInvalidate(temp181);
+        const temp188 = this.customView;
+        if (temp188 !== null) {
+            CustomView_actual_1.customViewInvalidate(temp188);
         }
         ;
     }
@@ -112,8 +112,8 @@ class MonthCVD extends CustomViewDelegate_shared_1.CustomViewDelegate {
         const columnRawBeforeDrag = x / this.dayCellWidth;
         const columnDrag = this.currentOffset * 7;
         const columnRaw = Math.floor((columnDrag + columnRawBeforeDrag));
-        const column = Math_shared_1.kotlinIntFloorMod(columnRaw, 7);
-        const monthOffset = Math_shared_1.kotlinIntFloorDiv(columnRaw, 7);
+        const column = Math_shared_1.xIntFloorMod(columnRaw, 7);
+        const monthOffset = Math_shared_1.xIntFloorDiv(columnRaw, 7);
         const row = Math.floor(((y - this.dayLabelHeight) / this.dayCellHeight));
         if (row < 0 || row > 5) {
             return null;
@@ -121,10 +121,10 @@ class MonthCVD extends CustomViewDelegate_shared_1.CustomViewDelegate {
         if (column < 0 || column > 6) {
             return null;
         }
-        return this.dayAt(Date_actual_2.dateAloneModRelative(DateAlone_shared_1.comLightningkiteKhrysalisTimeDateAloneSet(this.calcMonth, this.currentMonth), Date.prototype.getMonth, Date.prototype.setMonth, monthOffset), row, column, existing !== null && existing !== void 0 ? existing : new DateAlone_actual_1.DateAlone(0, 0, 0));
+        return this.dayAt(Date_actual_2.dateAloneModRelative(DateAlone_shared_1.xDateAloneSet(this.calcMonth, this.currentMonth), Date.prototype.getMonth, Date.prototype.setMonth, monthOffset), row, column, existing !== null && existing !== void 0 ? existing : new DateAlone_actual_1.DateAlone(0, 0, 0));
     }
     dayAt(month, row, column, existing = new DateAlone_actual_1.DateAlone(0, 0, 0)) {
-        return Date_actual_2.dateAloneModRelative(Date_actual_2.dateAloneMod(Date_actual_2.dateAloneMod(DateAlone_shared_1.comLightningkiteKhrysalisTimeDateAloneSet(existing, month), Date.prototype.setDate, 1), function (newDay) {
+        return Date_actual_2.dateAloneModRelative(Date_actual_2.dateAloneMod(Date_actual_2.dateAloneMod(DateAlone_shared_1.xDateAloneSet(existing, month), Date.prototype.setDate, 1), function (newDay) {
             const diff = newDay - this.getDay();
             this.setDate(this.getDate() + diff);
         }, 1), Date.prototype.getDate, Date.prototype.setDate, row * 7 + column);
@@ -142,13 +142,13 @@ class MonthCVD extends CustomViewDelegate_shared_1.CustomViewDelegate {
         this.measure(width, height, displayMetrics);
         if (this.currentOffset > 0) {
             //draw past month and current month
-            this.drawMonth(canvas, (this.currentOffset - 1) * width, width, Date_actual_2.dateAloneModRelative(DateAlone_shared_1.comLightningkiteKhrysalisTimeDateAloneSet(this.calcMonthB, this.currentMonth), Date.prototype.getMonth, Date.prototype.setMonth, (-1)), displayMetrics);
+            this.drawMonth(canvas, (this.currentOffset - 1) * width, width, Date_actual_2.dateAloneModRelative(DateAlone_shared_1.xDateAloneSet(this.calcMonthB, this.currentMonth), Date.prototype.getMonth, Date.prototype.setMonth, (-1)), displayMetrics);
             this.drawMonth(canvas, this.currentOffset * width, width, this.currentMonth, displayMetrics);
         }
         else {
             if (this.currentOffset < 0) {
                 //draw future month and current month
-                this.drawMonth(canvas, (this.currentOffset + 1) * width, width, Date_actual_2.dateAloneModRelative(DateAlone_shared_1.comLightningkiteKhrysalisTimeDateAloneSet(this.calcMonthB, this.currentMonth), Date.prototype.getMonth, Date.prototype.setMonth, 1), displayMetrics);
+                this.drawMonth(canvas, (this.currentOffset + 1) * width, width, Date_actual_2.dateAloneModRelative(DateAlone_shared_1.xDateAloneSet(this.calcMonthB, this.currentMonth), Date.prototype.getMonth, Date.prototype.setMonth, 1), displayMetrics);
                 this.drawMonth(canvas, this.currentOffset * width, width, this.currentMonth, displayMetrics);
             }
             else {
@@ -193,9 +193,9 @@ class MonthCVD extends CustomViewDelegate_shared_1.CustomViewDelegate {
     }
     onTouchDown(id, x, y, width, height) {
         const day = this.dayAtPixel(x, y, undefined);
-        const it_257 = day;
-        if (it_257 !== null) {
-            if (this.onTouchDownDate(it_257)) {
+        const it_264 = day;
+        if (it_264 !== null) {
+            if (this.onTouchDownDate(it_264)) {
                 return true;
             }
         }
@@ -221,9 +221,9 @@ class MonthCVD extends CustomViewDelegate_shared_1.CustomViewDelegate {
             }
         }
         else {
-            const it_269 = this.dayAtPixel(x, y, undefined);
-            if (it_269 !== null) {
-                return this.onTouchMoveDate(it_269);
+            const it_276 = this.dayAtPixel(x, y, undefined);
+            if (it_276 !== null) {
+                return this.onTouchMoveDate(it_276);
             }
         }
         return true;
@@ -234,9 +234,9 @@ class MonthCVD extends CustomViewDelegate_shared_1.CustomViewDelegate {
     onTouchUp(id, x, y, width, height) {
         if (this.draggingId === id) {
             if (this.isTap) {
-                const it_271 = this.dayAtPixel(x, y, undefined);
-                if (it_271 !== null) {
-                    this.onTap(it_271);
+                const it_278 = this.dayAtPixel(x, y, undefined);
+                if (it_278 !== null) {
+                    this.onTap(it_278);
                 }
             }
             else {
@@ -261,9 +261,9 @@ class MonthCVD extends CustomViewDelegate_shared_1.CustomViewDelegate {
             this.draggingId = this.DRAGGING_NONE;
         }
         else {
-            const it_288 = this.dayAtPixel(x, y, undefined);
-            if (it_288 !== null) {
-                return this.onTouchUpDate(it_288);
+            const it_295 = this.dayAtPixel(x, y, undefined);
+            if (it_295 !== null) {
+                return this.onTouchUpDate(it_295);
             }
         }
         return true;
@@ -282,19 +282,19 @@ class CalendarDrawing {
     }
     day(canvas, month, date, inner, paint) {
         if (date.month === month.month && date.year === month.year) {
-            Canvas_actual_1.androidGraphicsCanvasDrawTextCentered(canvas, date.day.toString(), inner.centerX(), inner.centerY(), paint);
+            Canvas_actual_1.xCanvasDrawTextCentered(canvas, date.day.toString(), inner.centerX(), inner.centerY(), paint);
         }
         else {
             const originalColor = paint.color;
             let myPaint = paint;
             myPaint.color = Colors_actual_1.applyAlphaToColor(paint.color, 64);
-            Canvas_actual_1.androidGraphicsCanvasDrawTextCentered(canvas, date.day.toString(), inner.centerX(), inner.centerY(), myPaint);
+            Canvas_actual_1.xCanvasDrawTextCentered(canvas, date.day.toString(), inner.centerX(), inner.centerY(), myPaint);
             myPaint.color = originalColor;
         }
     }
     label(canvas, dayOfWeek, inner, paint) {
         const text = TimeNames_actual_1.TimeNames.INSTANCE.shortWeekdayName(dayOfWeek);
-        Canvas_actual_1.androidGraphicsCanvasDrawTextCentered(canvas, text, inner.centerX(), inner.centerY(), paint);
+        Canvas_actual_1.xCanvasDrawTextCentered(canvas, text, inner.centerX(), inner.centerY(), paint);
     }
     dayBackground(canvas, inner, paint) {
         canvas.beginPath();

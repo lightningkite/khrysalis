@@ -1,7 +1,7 @@
 "use strict";
 Object.defineProperty(exports, "__esModule", { value: true });
 //! Declares com.lightningkite.khrysalis.location.distanceToMiles
-function comLightningkiteKhrysalisLocationGeoCoordinateDistanceToMiles(this_, other) {
+function xGeoCoordinateDistanceToMiles(this_, other) {
     if ((this_.latitude == other.latitude) && (this_.longitude == other.longitude)) {
         return 0;
     }
@@ -20,5 +20,5 @@ function comLightningkiteKhrysalisLocationGeoCoordinateDistanceToMiles(this_, ot
         return dist;
     }
 }
-exports.comLightningkiteKhrysalisLocationGeoCoordinateDistanceToMiles = comLightningkiteKhrysalisLocationGeoCoordinateDistanceToMiles;
+exports.xGeoCoordinateDistanceToMiles = xGeoCoordinateDistanceToMiles;
 //# sourceMappingURL=GeoCoordinate.actual.js.map

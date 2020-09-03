@@ -6,7 +6,7 @@ import { Range, tryCastClass } from '../Kotlin'
 import { LocationResult } from './LocationResult.shared'
 
 //! Declares com.lightningkite.khrysalis.location.requestLocation
-export function comLightningkiteKhrysalisAndroidActivityAccessRequestLocation(
+export function xActivityAccessRequestLocation(
     this_RequestLocation: Window,
     accuracyBetterThanMeters: number = 10.0,
     timeoutInSeconds: number = 100.0,
@@ -31,7 +31,7 @@ export function comLightningkiteKhrysalisAndroidActivityAccessRequestLocation(
 }
 
 //! Declares com.lightningkite.khrysalis.location.requestLocationCached
-export function comLightningkiteKhrysalisAndroidActivityAccessRequestLocationCached(
+export function xActivityAccessRequestLocationCached(
     this_RequestLocationCached: Window,
     accuracyBetterThanMeters: number = 10.0,
     timeoutInSeconds: number = 100.0,

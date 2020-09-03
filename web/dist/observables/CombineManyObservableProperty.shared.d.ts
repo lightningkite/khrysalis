@@ -7,4 +7,4 @@ export declare class CombineManyObservableProperty<IN> extends ObservablePropert
     get onChange(): Observable<Array<IN>>;
 }
 export declare function combinedAndMap<IN, OUT>(this_: Array<ObservableProperty<IN>>, combiner: ((a: Array<IN>) => OUT)): ObservableProperty<OUT>;
-export declare function kotlinCollectionsListCombined<T>(this_: Array<ObservableProperty<T>>): ObservableProperty<Array<T>>;
+export declare function xListCombined<T>(this_: Array<ObservableProperty<T>>): ObservableProperty<Array<T>>;

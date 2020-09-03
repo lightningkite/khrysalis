@@ -15,7 +15,7 @@ import com.lightningkite.khrysalis.rx.until
  * Any changes to the observable will change the current page. AS well updating the pager will update the observable.
  *
  */
-@JsName("androidxViewpagerWidgetViewPagerBindStatic")
+@JsName("xViewPagerBindStatic")
 fun <T> ViewPager.bind(
     items: List<T>,
     showIndex: MutableObservableProperty<Int> = StandardObservableProperty(0),

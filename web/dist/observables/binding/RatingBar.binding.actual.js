@@ -6,8 +6,8 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const ObservableProperty_ext_shared_1 = require("../ObservableProperty.ext.shared");
 const DisposeCondition_actual_1 = require("../../rx/DisposeCondition.actual");
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>android.widget.RatingBar
-function ratingBarBindMutable(this_, stars, observable) {
-    androidWidgetRatingBarBind(this_, stars, observable);
+function xRatingBarBindMutable(this_, stars, observable) {
+    xRatingBarBind(this_, stars, observable);
     const input = document.createElement("input");
     input.type = "range";
     input.min = "1";
@@ -15,13 +15,13 @@ function ratingBarBindMutable(this_, stars, observable) {
     input.style.display = "none";
     this_.appendChild(input);
     let suppress = false;
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
         if (!suppress) {
             suppress = true;
             input.valueAsNumber = (value);
             suppress = false;
         }
-    }), DisposeCondition_actual_1.getAndroidViewViewRemoved(input));
+    }), DisposeCondition_actual_1.xViewRemovedGet(input));
     input.oninput = (e) => {
         if (!suppress) {
             suppress = true;
@@ -54,15 +54,15 @@ function ratingBarBindMutable(this_, stars, observable) {
         };
     }
 }
-exports.ratingBarBindMutable = ratingBarBindMutable;
+exports.xRatingBarBindMutable = xRatingBarBindMutable;
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>android.widget.RatingBar
-function androidWidgetRatingBarBind(this_, stars, observable) {
+function xRatingBarBind(this_, stars, observable) {
     for (let i = 0; i < stars; i++) {
         const e = document.createElement("div");
         e.classList.add("khrysalis-rating-bar-star");
         this_.appendChild(e);
     }
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (rating) => {
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(observable, undefined, undefined, (rating) => {
         for (let i = 0; i < stars; i++) {
             const e = this_.children.item(i);
             if (Math.round(i + 1) <= Math.round(rating)) {
@@ -72,17 +72,17 @@ function androidWidgetRatingBarBind(this_, stars, observable) {
                 e.classList.remove("khrysalis-rating-bar-star-on");
             }
         }
-    }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
+    }), DisposeCondition_actual_1.xViewRemovedGet(this_));
 }
-exports.androidWidgetRatingBarBind = androidWidgetRatingBarBind;
+exports.xRatingBarBind = xRatingBarBind;
 //! Declares com.lightningkite.khrysalis.observables.binding.bindFloat>android.widget.RatingBar
-function ratingBarBindFloatMutable(this_, stars, observable) {
-    ratingBarBindMutable(this_, stars, observable);
+function xRatingBarBindFloatMutable(this_, stars, observable) {
+    xRatingBarBindMutable(this_, stars, observable);
 }
-exports.ratingBarBindFloatMutable = ratingBarBindFloatMutable;
+exports.xRatingBarBindFloatMutable = xRatingBarBindFloatMutable;
 //! Declares com.lightningkite.khrysalis.observables.binding.bindFloat>android.widget.RatingBar
-function androidWidgetRatingBarBindFloat(this_, stars, observable) {
-    androidWidgetRatingBarBind(this_, stars, observable);
+function xRatingBarBindFloat(this_, stars, observable) {
+    xRatingBarBind(this_, stars, observable);
 }
-exports.androidWidgetRatingBarBindFloat = androidWidgetRatingBarBindFloat;
+exports.xRatingBarBindFloat = xRatingBarBindFloat;
 //# sourceMappingURL=RatingBar.binding.actual.js.map

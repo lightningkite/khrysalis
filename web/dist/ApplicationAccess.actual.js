@@ -6,7 +6,7 @@ const WriteAddedObservableProperty_shared_1 = require("./observables/WriteAddedO
 class ApplicationAccess {
     constructor() {
         this.foreground = new ConstantObservableProperty_shared_1.ConstantObservableProperty(true);
-        this.softInputActive = WriteAddedObservableProperty_shared_1.comLightningkiteKhrysalisObservablesObservablePropertyWithWrite(new ConstantObservableProperty_shared_1.ConstantObservableProperty(false), (x) => { });
+        this.softInputActive = WriteAddedObservableProperty_shared_1.xObservablePropertyWithWrite(new ConstantObservableProperty_shared_1.ConstantObservableProperty(false), (x) => { });
     }
 }
 exports.ApplicationAccess = ApplicationAccess;

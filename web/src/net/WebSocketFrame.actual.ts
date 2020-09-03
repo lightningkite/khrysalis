@@ -14,9 +14,9 @@ export class WebSocketFrame {
     
     public toString(): string {
         return this.text ?? ((): (string | null) => {
-                const it_28 = this.binary;
-                if (it_28 !== null) { 
-                    return `<Binary data length ${it_28.length}`;
+                const it_20 = this.binary;
+                if (it_20 !== null) { 
+                    return `<Binary data length ${it_20.length}`;
                 } else { return null }
         })() ?? "<Empty Frame>";
     }

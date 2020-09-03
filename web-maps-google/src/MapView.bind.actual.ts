@@ -6,14 +6,14 @@ import {GeoCoordinate} from 'khrysalis/dist/location/GeoCoordinate.shared'
 import {ObservableProperty} from 'khrysalis/dist/observables/ObservableProperty.shared'
 import {} from "googlemaps"
 import {
-    getAndroidViewViewRemoved,
-    ioReactivexDisposablesDisposableUntil
+    xViewRemovedGet,
+    xDisposableUntil
 } from "khrysalis/dist/rx/DisposeCondition.actual";
-import {comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy} from "khrysalis/dist/observables/ObservableProperty.ext.shared";
+import {xObservablePropertySubscribeBy} from "khrysalis/dist/observables/ObservableProperty.ext.shared";
 import {customViewInvalidate} from "khrysalis/dist/views/CustomView.actual";
 import {
-    comGoogleAndroidGmsMapsModelLatLngToKhrysalis,
-    comLightningkiteKhrysalisLocationGeoCoordinateToMaps
+    xLatLngToKhrysalis,
+    xGeoCoordinateToMaps
 } from "./LatLng.ext";
 
 const mapSymbol = Symbol("mapSymbol");
@@ -24,7 +24,7 @@ declare global {
 }
 
 //! Declares com.lightningkite.khrysalis.maps.bind>com.google.android.gms.maps.MapView
-export function comGoogleAndroidGmsMapsMapViewBind(this_: HTMLDivElement, dependency: Window, style: string | null): void {
+export function xMapViewBind(this_: HTMLDivElement, dependency: Window, style: string | null): void {
     const map = new google.maps.Map(this_, {
         center: { lat: 0, lng: 0 },
         zoom: 2,
@@ -34,14 +34,14 @@ export function comGoogleAndroidGmsMapsMapViewBind(this_: HTMLDivElement, depend
 }
 
 //! Declares com.lightningkite.khrysalis.maps.bindView>com.google.android.gms.maps.MapView
-export function comGoogleAndroidGmsMapsMapViewBindView(this_: HTMLDivElement, dependency: Window, position: ObservableProperty<(GeoCoordinate | null)>, zoomLevel: number = 15, animate: boolean = true, style: string | null = null): void {
-    comGoogleAndroidGmsMapsMapViewBind(this_, dependency, style);
+export function xMapViewBindView(this_: HTMLDivElement, dependency: Window, position: ObservableProperty<(GeoCoordinate | null)>, zoomLevel: number = 15, animate: boolean = true, style: string | null = null): void {
+    xMapViewBind(this_, dependency, style);
     const map = this_[mapSymbol];
     let first = true;
     let marker: google.maps.Marker | null = null;
-    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(position, undefined, undefined, (g: GeoCoordinate | null)=>{
+    xDisposableUntil(xObservablePropertySubscribeBy(position, undefined, undefined, (g: GeoCoordinate | null)=>{
         if(g){
-            const p: google.maps.LatLng = comLightningkiteKhrysalisLocationGeoCoordinateToMaps(g);
+            const p: google.maps.LatLng = xGeoCoordinateToMaps(g);
             if(animate && !first){
                 map.panTo(p);
                 map.setZoom(zoomLevel);
@@ -64,19 +64,19 @@ export function comGoogleAndroidGmsMapsMapViewBindView(this_: HTMLDivElement, de
                 marker = null;
             }
         }
-    }), getAndroidViewViewRemoved(this_));
+    }), xViewRemovedGet(this_));
 }
 
 
 //! Declares com.lightningkite.khrysalis.maps.bindSelect>com.google.android.gms.maps.MapView
-export function comGoogleAndroidGmsMapsMapViewBindSelect(this_: HTMLDivElement, dependency: Window, position: MutableObservableProperty<(GeoCoordinate | null)>, zoomLevel: number = 15, animate: boolean = true, style: string | null = null): void {
-    comGoogleAndroidGmsMapsMapViewBind(this_, dependency, style);
+export function xMapViewBindSelect(this_: HTMLDivElement, dependency: Window, position: MutableObservableProperty<(GeoCoordinate | null)>, zoomLevel: number = 15, animate: boolean = true, style: string | null = null): void {
+    xMapViewBind(this_, dependency, style);
     const map = this_[mapSymbol];
     let first = true;
     let marker: google.maps.Marker | null = null;
-    ioReactivexDisposablesDisposableUntil(comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(position, undefined, undefined, (g: GeoCoordinate | null)=>{
+    xDisposableUntil(xObservablePropertySubscribeBy(position, undefined, undefined, (g: GeoCoordinate | null)=>{
         if(g){
-            const p: google.maps.LatLng = comLightningkiteKhrysalisLocationGeoCoordinateToMaps(g);
+            const p: google.maps.LatLng = xGeoCoordinateToMaps(g);
             if(animate && !first){
                 map.panTo(p);
                 map.setZoom(zoomLevel);
@@ -94,7 +94,7 @@ export function comGoogleAndroidGmsMapsMapViewBindSelect(this_: HTMLDivElement, 
                 marker.addListener("dragend", ()=>{
                     const pos = marker?.getPosition()
                     if(pos){
-                        position.value = comGoogleAndroidGmsMapsModelLatLngToKhrysalis(pos);
+                        position.value = xLatLngToKhrysalis(pos);
                     }
                 })
             } else {
@@ -106,9 +106,9 @@ export function comGoogleAndroidGmsMapsMapViewBindSelect(this_: HTMLDivElement, 
                 marker = null;
             }
         }
-    }), getAndroidViewViewRemoved(this_));
+    }), xViewRemovedGet(this_));
     map.addListener("click", (ev)=>{
-        position.value = comGoogleAndroidGmsMapsModelLatLngToKhrysalis(ev.latLng)
+        position.value = xLatLngToKhrysalis(ev.latLng)
     });
 }
 

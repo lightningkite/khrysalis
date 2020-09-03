@@ -42,7 +42,7 @@ export declare class ImageResource extends Image {
     toString(): string;
     copy(resource?: DrawableResource): ImageResource;
 }
-export declare function kotlinStringAsImage(this_: string): Image;
-export declare function androidNetUriAsImage(this_: File): Image;
-export declare function androidGraphicsBitmapAsImage(this_: ImageBitmap): Image;
-export declare function kotlinIntAsImage(this_: DrawableResource): Image;
+export declare function xStringAsImage(this_: string): Image;
+export declare function xUriAsImage(this_: File): Image;
+export declare function xBitmapAsImage(this_: ImageBitmap): Image;
+export declare function xIntAsImage(this_: DrawableResource): Image;

@@ -5,9 +5,9 @@ Object.defineProperty(exports, "__esModule", { value: true });
 // Package: com.lightningkite.khrysalis.observables
 const operators_1 = require("rxjs/operators");
 const ObservableProperty_shared_1 = require("./ObservableProperty.shared");
-const ObservableProperty_ext_shared_1 = require("./ObservableProperty.ext.shared");
 const TransformedObservableProperty_shared_1 = require("./TransformedObservableProperty.shared");
 const rxjs_1 = require("rxjs");
+const ObservableProperty_ext_shared_1 = require("./ObservableProperty.ext.shared");
 //! Declares com.lightningkite.khrysalis.observables.CombineManyObservableProperty
 class CombineManyObservableProperty extends ObservableProperty_shared_1.ObservableProperty {
     constructor(observables) {
@@ -17,17 +17,17 @@ class CombineManyObservableProperty extends ObservableProperty_shared_1.Observab
     //! Declares com.lightningkite.khrysalis.observables.CombineManyObservableProperty.value
     get value() { return this.observables.map((it) => it.value); }
     //! Declares com.lightningkite.khrysalis.observables.CombineManyObservableProperty.onChange
-    get onChange() { return rxjs_1.combineLatest(this.observables.map((it) => ObservableProperty_ext_shared_1.getComLightningkiteKhrysalisObservablesObservablePropertyObservable(it))).pipe(operators_1.map((items) => items.map((it) => it))).pipe(operators_1.skip(0)); }
+    get onChange() { return rxjs_1.combineLatest(this.observables.map((it) => ObservableProperty_ext_shared_1.xObservablePropertyObservableGet(it))).pipe(operators_1.map((items) => items.map((it) => it))).pipe(operators_1.skip(0)); }
 }
 exports.CombineManyObservableProperty = CombineManyObservableProperty;
 //! Declares com.lightningkite.khrysalis.observables.combined>kotlin.collections.List<com.lightningkite.khrysalis.observables.ObservableProperty>
 function combinedAndMap(this_, combiner) {
-    return TransformedObservableProperty_shared_1.comLightningkiteKhrysalisObservablesObservablePropertyMap(new CombineManyObservableProperty(this_), combiner);
+    return TransformedObservableProperty_shared_1.xObservablePropertyMap(new CombineManyObservableProperty(this_), combiner);
 }
 exports.combinedAndMap = combinedAndMap;
 //! Declares com.lightningkite.khrysalis.observables.combined>kotlin.collections.List<com.lightningkite.khrysalis.observables.ObservableProperty>
-function kotlinCollectionsListCombined(this_) {
+function xListCombined(this_) {
     return new CombineManyObservableProperty(this_);
 }
-exports.kotlinCollectionsListCombined = kotlinCollectionsListCombined;
+exports.xListCombined = xListCombined;
 //# sourceMappingURL=CombineManyObservableProperty.shared.js.map

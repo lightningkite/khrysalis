@@ -5,16 +5,16 @@ const Language_1 = require("./Language");
 const lazyOp_1 = require("./lazyOp");
 const Collections_1 = require("./Collections");
 //! Declares kotlin.collections.firstOrNull>kotlin.collections.Iterable
-function kotlinCollectionsIterableFirstOrNull(iter) {
+function xIterableFirstOrNull(iter) {
     const item = iter[Symbol.iterator]().next();
     if (item.done)
         return null;
     else
         return item.value;
 }
-exports.kotlinCollectionsIterableFirstOrNull = kotlinCollectionsIterableFirstOrNull;
+exports.xIterableFirstOrNull = xIterableFirstOrNull;
 //! Declares kotlin.collections.lastOrNull>kotlin.collections.Iterable
-function kotlinCollectionsIterableLastOrNull(iterable) {
+function xIterableLastOrNull(iterable) {
     const iter = iterable[Symbol.iterator]();
     let out = iter.next();
     let lastItem = null;
@@ -24,25 +24,25 @@ function kotlinCollectionsIterableLastOrNull(iterable) {
     }
     return lastItem;
 }
-exports.kotlinCollectionsIterableLastOrNull = kotlinCollectionsIterableLastOrNull;
+exports.xIterableLastOrNull = xIterableLastOrNull;
 //! Declares kotlin.collections.first>kotlin.collections.Iterable
-function kotlinCollectionsIterableFirst(iter) {
-    const r = kotlinCollectionsIterableFirstOrNull(iter);
+function xIterableFirst(iter) {
+    const r = xIterableFirstOrNull(iter);
     if (r == null)
         throw new Language_1.IllegalArgumentException("Iterable is empty", null);
     return r;
 }
-exports.kotlinCollectionsIterableFirst = kotlinCollectionsIterableFirst;
+exports.xIterableFirst = xIterableFirst;
 //! Declares kotlin.collections.last>kotlin.collections.Iterable
-function kotlinCollectionsIterableLast(iterable) {
-    const r = kotlinCollectionsIterableLastOrNull(iterable);
+function xIterableLast(iterable) {
+    const r = xIterableLastOrNull(iterable);
     if (r == null)
         throw new Language_1.IllegalArgumentException("Iterable is empty", null);
     return r;
 }
-exports.kotlinCollectionsIterableLast = kotlinCollectionsIterableLast;
+exports.xIterableLast = xIterableLast;
 //! Declares kotlin.collections.single>kotlin.collections.Iterable
-function kotlinCollectionsIterableSingle(iter) {
+function xIterableSingle(iter) {
     const iterator = iter[Symbol.iterator]();
     const item = iterator.next();
     if (item.done || !iterator.next().done)
@@ -50,17 +50,17 @@ function kotlinCollectionsIterableSingle(iter) {
     else
         return item.value;
 }
-exports.kotlinCollectionsIterableSingle = kotlinCollectionsIterableSingle;
+exports.xIterableSingle = xIterableSingle;
 //! Declares kotlin.collections.singleOrNull>kotlin.collections.Iterable
-function kotlinCollectionsIterableSingleOrNull(iter) {
-    const r = kotlinCollectionsIterableSingle(iter);
+function xIterableSingleOrNull(iter) {
+    const r = xIterableSingle(iter);
     if (r == null)
         throw new Language_1.IllegalArgumentException("Iterable is empty", null);
     return r;
 }
-exports.kotlinCollectionsIterableSingleOrNull = kotlinCollectionsIterableSingleOrNull;
+exports.xIterableSingleOrNull = xIterableSingleOrNull;
 //! Declares kotlin.collections.joinToString
-function kotlinCollectionsIterableJoinToString(iter, separator = ", ", prefix = "", postfix = "", limit, truncated = "...", transform = (x) => `${x}`) {
+function xIterableJoinToString(iter, separator = ", ", prefix = "", postfix = "", limit, truncated = "...", transform = (x) => `${x}`) {
     let result = prefix;
     let count = 0;
     for (const item of iter) {
@@ -76,17 +76,17 @@ function kotlinCollectionsIterableJoinToString(iter, separator = ", ", prefix = 
     }
     return result + postfix;
 }
-exports.kotlinCollectionsIterableJoinToString = kotlinCollectionsIterableJoinToString;
+exports.xIterableJoinToString = xIterableJoinToString;
 //! Declares kotlin.collections.distinctBy
-function kotlinCollectionsIterableDistinctBy(iter, selector) {
+function xIterableDistinctBy(iter, selector) {
     const seen = new Collections_1.EqualOverrideSet();
     return new Array(...lazyOp_1.filter(iter, (e) => Collections_1.setAddCausedChange(seen, selector(e))));
 }
-exports.kotlinCollectionsIterableDistinctBy = kotlinCollectionsIterableDistinctBy;
+exports.xIterableDistinctBy = xIterableDistinctBy;
 //! Declares kotlin.sequences.distinctBy
-function kotlinSequencesSequenceDistinctBy(iter, selector) {
+function xSequenceDistinctBy(iter, selector) {
     const seen = new Collections_1.EqualOverrideSet();
     return lazyOp_1.filter(iter, (e) => Collections_1.setAddCausedChange(seen, selector(e)));
 }
-exports.kotlinSequencesSequenceDistinctBy = kotlinSequencesSequenceDistinctBy;
+exports.xSequenceDistinctBy = xSequenceDistinctBy;
 //# sourceMappingURL=Iterables.js.map

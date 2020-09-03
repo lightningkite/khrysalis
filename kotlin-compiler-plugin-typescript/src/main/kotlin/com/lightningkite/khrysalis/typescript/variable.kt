@@ -759,26 +759,28 @@ fun TypescriptTranslator.registerVariable() {
 }
 
 val PropertyDescriptor.tsFunctionGetName: String?
-    get() = if (this is SyntheticJavaPropertyDescriptor) null else if (extensionReceiverParameter != null) "get" + extensionReceiverParameter!!
+    get() = if (this is SyntheticJavaPropertyDescriptor) null else if (extensionReceiverParameter != null) "x" + extensionReceiverParameter!!
         .value
         .type
         .getJetTypeFqName(false)
         .split('.')
+        .dropWhile { it.firstOrNull()?.isUpperCase() != true }
         .joinToString("") { it.capitalize() } +
-            this.name.identifier.capitalize()
+            this.name.identifier.capitalize() + "Get"
     else when (this.containingDeclaration) {
         is ClassDescriptor -> null
         is SyntheticClassOrObjectDescriptor -> null
         else -> if (this.accessors.all { it.isDefault } && this.visibility.name == "private") null else "get" + this.name.identifier.capitalize()
     }
 val PropertyDescriptor.tsFunctionSetName: String?
-    get() = if (this is SyntheticJavaPropertyDescriptor) null else if (extensionReceiverParameter != null) "set" + extensionReceiverParameter!!
+    get() = if (this is SyntheticJavaPropertyDescriptor) null else if (extensionReceiverParameter != null) "x" + extensionReceiverParameter!!
         .value
         .type
         .getJetTypeFqName(false)
         .split('.')
+        .dropWhile { it.firstOrNull()?.isUpperCase() != true }
         .joinToString("") { it.capitalize() } +
-            this.name.identifier.capitalize()
+            this.name.identifier.capitalize() + "Set"
     else when (this.containingDeclaration) {
         is ClassDescriptor -> null
         is SyntheticClassOrObjectDescriptor -> null

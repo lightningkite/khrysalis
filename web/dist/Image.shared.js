@@ -91,23 +91,23 @@ class ImageResource extends Image {
 }
 exports.ImageResource = ImageResource;
 //! Declares com.lightningkite.khrysalis.asImage>kotlin.String
-function kotlinStringAsImage(this_) {
+function xStringAsImage(this_) {
     return new ImageRemoteUrl(this_);
 }
-exports.kotlinStringAsImage = kotlinStringAsImage;
+exports.xStringAsImage = xStringAsImage;
 //! Declares com.lightningkite.khrysalis.asImage>android.net.Uri
-function androidNetUriAsImage(this_) {
+function xUriAsImage(this_) {
     return new ImageReference(this_);
 }
-exports.androidNetUriAsImage = androidNetUriAsImage;
+exports.xUriAsImage = xUriAsImage;
 //! Declares com.lightningkite.khrysalis.asImage>android.graphics.Bitmap
-function androidGraphicsBitmapAsImage(this_) {
+function xBitmapAsImage(this_) {
     return new ImageImageBitmap(this_);
 }
-exports.androidGraphicsBitmapAsImage = androidGraphicsBitmapAsImage;
+exports.xBitmapAsImage = xBitmapAsImage;
 //! Declares com.lightningkite.khrysalis.asImage>kotlin.Int
-function kotlinIntAsImage(this_) {
+function xIntAsImage(this_) {
     return new ImageResource(this_);
 }
-exports.kotlinIntAsImage = kotlinIntAsImage;
+exports.xIntAsImage = xIntAsImage;
 //# sourceMappingURL=Image.shared.js.map

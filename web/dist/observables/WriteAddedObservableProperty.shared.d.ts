@@ -10,4 +10,4 @@ export declare class WriteAddedObservableProperty<A> extends MutableObservablePr
     get onChange(): Observable<A>;
     update(): void;
 }
-export declare function comLightningkiteKhrysalisObservablesObservablePropertyWithWrite<T>(this_: ObservableProperty<T>, onWrite: ((a: T) => void)): MutableObservableProperty<T>;
+export declare function xObservablePropertyWithWrite<T>(this_: ObservableProperty<T>, onWrite: ((a: T) => void)): MutableObservableProperty<T>;

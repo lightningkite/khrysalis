@@ -3,13 +3,13 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const GeoCoordinate_shared_1 = require("khrysalis/dist/location/GeoCoordinate.shared");
 const leaflet_1 = require("leaflet");
 //! Declares com.lightningkite.khrysalis.maps.toMaps
-function comGoogleAndroidGmsMapsModelLatLngToMaps(this_) {
+function xLatLngToMaps(this_) {
     return new GeoCoordinate_shared_1.GeoCoordinate(this_.lat, this_.lng);
 }
-exports.comGoogleAndroidGmsMapsModelLatLngToMaps = comGoogleAndroidGmsMapsModelLatLngToMaps;
+exports.xLatLngToMaps = xLatLngToMaps;
 //! Declares com.lightningkite.khrysalis.maps.toKhrysalis
-function comLightningkiteKhrysalisLocationGeoCoordinateToKhrysalis(this_) {
+function xGeoCoordinateToKhrysalis(this_) {
     return new leaflet_1.LatLng(this_.latitude, this_.longitude);
 }
-exports.comLightningkiteKhrysalisLocationGeoCoordinateToKhrysalis = comLightningkiteKhrysalisLocationGeoCoordinateToKhrysalis;
+exports.xGeoCoordinateToKhrysalis = xGeoCoordinateToKhrysalis;
 //# sourceMappingURL=LatLng.ext.js.map

@@ -28,8 +28,8 @@ class TransformedMutableObservableProperty2 extends MutableObservableProperty_sh
 }
 exports.TransformedMutableObservableProperty2 = TransformedMutableObservableProperty2;
 //! Declares com.lightningkite.khrysalis.observables.mapWithExisting>com.lightningkite.khrysalis.observables.MutableObservableProperty<kotlin.Any>
-function comLightningkiteKhrysalisObservablesMutableObservablePropertyMapWithExisting(this_, read, write) {
+function xMutableObservablePropertyMapWithExisting(this_, read, write) {
     return new TransformedMutableObservableProperty2(this_, read, write);
 }
-exports.comLightningkiteKhrysalisObservablesMutableObservablePropertyMapWithExisting = comLightningkiteKhrysalisObservablesMutableObservablePropertyMapWithExisting;
+exports.xMutableObservablePropertyMapWithExisting = xMutableObservablePropertyMapWithExisting;
 //# sourceMappingURL=TransformedMutableObservableProperty2.shared.js.map

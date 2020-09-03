@@ -7,9 +7,9 @@ const ObservableProperty_ext_shared_1 = require("../ObservableProperty.ext.share
 const DisposeCondition_actual_1 = require("../../rx/DisposeCondition.actual");
 const SwapView_1 = require("../../views/SwapView");
 //! Declares com.lightningkite.khrysalis.observables.binding.bindStack>com.lightningkite.khrysalis.views.android.SwapView
-function comLightningkiteKhrysalisViewsAndroidSwapViewBindStack(this_, dependency, obs) {
+function xSwapViewBindStack(this_, dependency, obs) {
     let previousStackSize = obs.value.length;
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(obs, undefined, undefined, (stack) => {
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(obs, undefined, undefined, (stack) => {
         var _a;
         const newStackSize = stack.length;
         let animation = "khrysalis-animate-fade";
@@ -23,7 +23,7 @@ function comLightningkiteKhrysalisViewsAndroidSwapViewBindStack(this_, dependenc
         const newVG = (_a = stack[stack.length - 1]) !== null && _a !== void 0 ? _a : null;
         const newView = newVG === null || newVG === void 0 ? void 0 : newVG.generate(window);
         SwapView_1.swapViewSwap(this_, newView, animation);
-    }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
+    }), DisposeCondition_actual_1.xViewRemovedGet(this_));
 }
-exports.comLightningkiteKhrysalisViewsAndroidSwapViewBindStack = comLightningkiteKhrysalisViewsAndroidSwapViewBindStack;
+exports.xSwapViewBindStack = xSwapViewBindStack;
 //# sourceMappingURL=SwapView.binding.actual.js.map

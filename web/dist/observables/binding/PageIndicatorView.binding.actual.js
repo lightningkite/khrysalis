@@ -6,14 +6,14 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const ObservableProperty_ext_shared_1 = require("../ObservableProperty.ext.shared");
 const DisposeCondition_actual_1 = require("../../rx/DisposeCondition.actual");
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>com.rd.PageIndicatorView
-function comRdPageIndicatorViewBind(this_, count = 0, selected) {
+function xPageIndicatorViewBind(this_, count = 0, selected) {
     for (let i = 0; i < count; i++) {
         const e = document.createElement("div");
         e.classList.add("khrysalis-page-indicator-dot");
         this_.appendChild(e);
     }
     let previouslyActive = this_.firstElementChild;
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(selected, undefined, undefined, (page) => {
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(selected, undefined, undefined, (page) => {
         if (previouslyActive) {
             previouslyActive.classList.remove("khrysalis-page-indicator-dot-active");
         }
@@ -22,13 +22,13 @@ function comRdPageIndicatorViewBind(this_, count = 0, selected) {
             e.classList.add("khrysalis-page-indicator-dot-active");
         }
         previouslyActive = e;
-    }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
+    }), DisposeCondition_actual_1.xViewRemovedGet(this_));
 }
-exports.comRdPageIndicatorViewBind = comRdPageIndicatorViewBind;
+exports.xPageIndicatorViewBind = xPageIndicatorViewBind;
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>com.rd.PageIndicatorView
-function comRdPageIndicatorViewBindDynamic(this_, count, selected) {
+function xPageIndicatorViewBindDynamic(this_, count, selected) {
     let previouslyActive = this_.firstElementChild;
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(count, undefined, undefined, (count) => {
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(count, undefined, undefined, (count) => {
         this_.innerHTML = "";
         for (let i = 0; i < count; i++) {
             const e = document.createElement("div");
@@ -39,8 +39,8 @@ function comRdPageIndicatorViewBindDynamic(this_, count, selected) {
             }
             this_.appendChild(e);
         }
-    }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(selected, undefined, undefined, (page) => {
+    }), DisposeCondition_actual_1.xViewRemovedGet(this_));
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(selected, undefined, undefined, (page) => {
         if (previouslyActive) {
             previouslyActive.classList.remove("khrysalis-page-indicator-dot-active");
         }
@@ -49,7 +49,7 @@ function comRdPageIndicatorViewBindDynamic(this_, count, selected) {
             e.classList.add("khrysalis-page-indicator-dot-active");
         }
         previouslyActive = e;
-    }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
+    }), DisposeCondition_actual_1.xViewRemovedGet(this_));
 }
-exports.comRdPageIndicatorViewBindDynamic = comRdPageIndicatorViewBindDynamic;
+exports.xPageIndicatorViewBindDynamic = xPageIndicatorViewBindDynamic;
 //# sourceMappingURL=PageIndicatorView.binding.actual.js.map

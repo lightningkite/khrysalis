@@ -3,9 +3,9 @@
 // Package: com.lightningkite.khrysalis.views
 import { ViewString, ViewStringRaw, ViewStringResource } from './Strings.shared'
 import { StringBuilder } from '../kotlin/kotlin.text'
-import { kotlinCharIsUpperCase } from '../kotlin/kotlin.text'
-import { kotlinStringFromJsonStringUntyped } from '../Codable.actual'
 import { checkIsInterface } from '../Kotlin'
+import { xStringFromJsonStringUntyped } from '../Codable.actual'
+import { xCharIsUpperCase } from '../kotlin/kotlin.text'
 
 //! Declares com.lightningkite.khrysalis.views.DjangoErrorTranslator
 export class DjangoErrorTranslator {
@@ -35,7 +35,7 @@ export class DjangoErrorTranslator {
             }
         } else if (typeof (node!) == "string"){
             //Rough check for human-readability - sentences start with uppercase and will have spaces
-            if ((node as string) !== "" && kotlinCharIsUpperCase((node as string)[0]) && ((node as string).indexOf(" ") != -1)) {
+            if ((node as string) !== "" && xCharIsUpperCase((node as string)[0]) && ((node as string).indexOf(" ") != -1)) {
                 builder.value += (node as string) + '\n';
             }
         }
@@ -55,7 +55,7 @@ export class DjangoErrorTranslator {
             case 4:
             const errorJson = ((): (any | null) => {
                     if(error !== null) {
-                        return kotlinStringFromJsonStringUntyped(error)
+                        return xStringFromJsonStringUntyped(error)
                     } else { return null }
             })();
             

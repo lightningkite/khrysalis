@@ -78,7 +78,7 @@ class TypescriptFileEmitter(val translator: TypescriptTranslator, val file: KtFi
             is ClassDescriptor -> if(decl.isCompanionObject) decl.containingDeclaration else decl
             else -> decl
         }
-        val name = overrideName ?: useDecl.name.asString()
+        val name = overrideName ?: useDecl.name.asString().safeJsIdentifier()
         val n = "${useDecl.simpleFqName} TS $name"
         if (importedFqs.contains(n))
             return

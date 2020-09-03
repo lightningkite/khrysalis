@@ -2,11 +2,11 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 const MonthCVD_shared_1 = require("./MonthCVD.shared");
 const Paint_actual_1 = require("./draw/Paint.actual");
+const ObservableProperty_ext_shared_1 = require("../observables/ObservableProperty.ext.shared");
 const DateAlone_actual_1 = require("../time/DateAlone.actual");
 const Kotlin_1 = require("../Kotlin");
 const Date_actual_1 = require("../time/Date.actual");
 const StandardObservableProperty_shared_1 = require("../observables/StandardObservableProperty.shared");
-const ObservableProperty_ext_shared_1 = require("../observables/ObservableProperty.ext.shared");
 const DisposeCondition_actual_1 = require("../rx/DisposeCondition.actual");
 //! Declares com.lightningkite.khrysalis.views.SelectDateRangeMonthCVD
 class SelectDateRangeMonthCVD extends MonthCVD_shared_1.MonthCVD {
@@ -15,15 +15,15 @@ class SelectDateRangeMonthCVD extends MonthCVD_shared_1.MonthCVD {
         this.draggingStart = true;
         this.start = new StandardObservableProperty_shared_1.StandardObservableProperty(null, undefined);
         this.endInclusive = new StandardObservableProperty_shared_1.StandardObservableProperty(null, undefined);
-        const it_334 = this.start.value;
-        if (it_334 !== null) {
-            this.currentMonthObs.value = Date_actual_1.copyDateAloneMod(it_334, Date.prototype.setDate, 1);
+        const it_341 = this.start.value;
+        if (it_341 !== null) {
+            this.currentMonthObs.value = Date_actual_1.copyDateAloneMod(it_341, Date.prototype.setDate, 1);
         }
         ;
-        DisposeCondition_actual_1.ioReactivexDisposablesDisposableForever(this.start.onChange.subscribe((value) => {
+        DisposeCondition_actual_1.xDisposableForever(this.start.onChange.subscribe((value) => {
             this === null || this === void 0 ? void 0 : this.invalidate();
         }, undefined, undefined));
-        DisposeCondition_actual_1.ioReactivexDisposablesDisposableForever(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(this.endInclusive, undefined, undefined, (value) => {
+        DisposeCondition_actual_1.xDisposableForever(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(this.endInclusive, undefined, undefined, (value) => {
             this === null || this === void 0 ? void 0 : this.invalidate();
         }));
         this.selectedDayPaint = new Paint_actual_1.Paint();

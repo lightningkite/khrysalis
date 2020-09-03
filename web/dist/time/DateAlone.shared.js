@@ -7,16 +7,16 @@ const TimeAlone_actual_1 = require("./TimeAlone.actual");
 const Date_actual_1 = require("./Date.actual");
 const ClockPartSize_shared_1 = require("./ClockPartSize.shared");
 //! Declares com.lightningkite.khrysalis.time.set>com.lightningkite.khrysalis.time.DateAlone
-function comLightningkiteKhrysalisTimeDateAloneSet(this_, other) {
+function xDateAloneSet(this_, other) {
     this_.year = other.year;
     this_.month = other.month;
     this_.day = other.day;
     return this_;
 }
-exports.comLightningkiteKhrysalisTimeDateAloneSet = comLightningkiteKhrysalisTimeDateAloneSet;
+exports.xDateAloneSet = xDateAloneSet;
 //! Declares com.lightningkite.khrysalis.time.format>com.lightningkite.khrysalis.time.DateAlone
-function comLightningkiteKhrysalisTimeDateAloneFormat(this_, clockPartSize) {
-    return Date_actual_1.javaUtilDateFormat(Date_actual_1.dateFrom(this_, TimeAlone_actual_1.TimeAlone.Companion.INSTANCE.noon, undefined), clockPartSize, ClockPartSize_shared_1.ClockPartSize.None);
+function xDateAloneFormat(this_, clockPartSize) {
+    return Date_actual_1.xDateFormat(Date_actual_1.dateFrom(this_, TimeAlone_actual_1.TimeAlone.Companion.INSTANCE.noon, undefined), clockPartSize, ClockPartSize_shared_1.ClockPartSize.None);
 }
-exports.comLightningkiteKhrysalisTimeDateAloneFormat = comLightningkiteKhrysalisTimeDateAloneFormat;
+exports.xDateAloneFormat = xDateAloneFormat;
 //# sourceMappingURL=DateAlone.shared.js.map

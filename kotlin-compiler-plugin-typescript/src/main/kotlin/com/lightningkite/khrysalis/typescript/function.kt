@@ -39,7 +39,8 @@ val FunctionDescriptor.tsNameOverridden: String?
             .type
             .getJetTypeFqName(false)
             .split('.')
-            .joinToString("") { it.capitalize() }.decapitalize() +
+            .dropWhile { it.firstOrNull()?.isUpperCase() != true }
+            .joinToString("") { it.capitalize() }.let{ "x$it" } +
                 this.name.identifier.capitalize()
     } else this.overriddenDescriptors.asSequence().mapNotNull { it.tsNameOverridden }.firstOrNull()
 

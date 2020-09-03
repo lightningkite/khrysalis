@@ -24,8 +24,8 @@ class CombineObservableProperty extends ObservableProperty_shared_1.ObservablePr
 }
 exports.CombineObservableProperty = CombineObservableProperty;
 //! Declares com.lightningkite.khrysalis.observables.combine>com.lightningkite.khrysalis.observables.ObservableProperty<kotlin.Any>
-function comLightningkiteKhrysalisObservablesObservablePropertyCombine(this_, other, combiner) {
+function xObservablePropertyCombine(this_, other, combiner) {
     return new CombineObservableProperty(this_, other, combiner);
 }
-exports.comLightningkiteKhrysalisObservablesObservablePropertyCombine = comLightningkiteKhrysalisObservablesObservablePropertyCombine;
+exports.xObservablePropertyCombine = xObservablePropertyCombine;
 //# sourceMappingURL=CombineObservableProperty.shared.js.map

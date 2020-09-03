@@ -43,13 +43,13 @@ class VideoRemoteUrl extends Video {
 }
 exports.VideoRemoteUrl = VideoRemoteUrl;
 //! Declares com.lightningkite.khrysalis.asVideo>kotlin.String
-function kotlinStringAsVideo(this_) {
+function xStringAsVideo(this_) {
     return new VideoRemoteUrl(this_);
 }
-exports.kotlinStringAsVideo = kotlinStringAsVideo;
+exports.xStringAsVideo = xStringAsVideo;
 //! Declares com.lightningkite.khrysalis.asVideo>android.net.Uri
-function androidNetUriAsVideo(this_) {
+function xUriAsVideo(this_) {
     return new VideoReference(this_);
 }
-exports.androidNetUriAsVideo = androidNetUriAsVideo;
+exports.xUriAsVideo = xUriAsVideo;
 //# sourceMappingURL=Video.shared.js.map

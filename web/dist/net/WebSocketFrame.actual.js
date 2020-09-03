@@ -9,9 +9,9 @@ class WebSocketFrame {
     toString() {
         var _a, _b;
         return (_b = (_a = this.text) !== null && _a !== void 0 ? _a : (() => {
-            const it_16 = this.binary;
-            if (it_16 !== null) {
-                return `<Binary data length ${it_16.length}`;
+            const it_20 = this.binary;
+            if (it_20 !== null) {
+                return `<Binary data length ${it_20.length}`;
             }
             else {
                 return null;

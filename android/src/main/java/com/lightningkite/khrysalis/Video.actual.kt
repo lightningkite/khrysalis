@@ -11,8 +11,8 @@ import io.reactivex.Single
 import io.reactivex.android.schedulers.AndroidSchedulers
 import io.reactivex.schedulers.Schedulers
 
-fun Video.thumbnail(timeMs: Long = 2000L, size: PointF? = null): Single<ImageBitmap> {
-    return Single.create<ImageBitmap> { em ->
+fun Video.thumbnail(timeMs: Long = 2000L, size: PointF? = null): Single<Image> {
+    return Single.create<Image> { em ->
         try {
             val mMMR = when (this) {
                 is VideoReference -> {

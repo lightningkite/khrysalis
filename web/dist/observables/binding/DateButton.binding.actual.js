@@ -9,16 +9,16 @@ const DisposeCondition_actual_1 = require("../../rx/DisposeCondition.actual");
 const TimeAlone_actual_1 = require("../../time/TimeAlone.actual");
 const DateAlone_actual_1 = require("../../time/DateAlone.actual");
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>com.lightningkite.khrysalis.views.android.DateButton
-function comLightningkiteKhrysalisViewsAndroidDateButtonBind(this_, date) {
+function xDateButtonBind(this_, date) {
     let suppress = false;
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(date, undefined, undefined, (it) => {
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(date, undefined, undefined, (it) => {
         if (suppress)
             return;
         suppress = true;
-        const ta = Date_actual_1.getJavaUtilDateDateAlone(it);
-        this_.value = DateAlone_actual_1.comLightningkiteKhrysalisTimeDateAloneIso8601(ta);
+        const ta = Date_actual_1.xDateDateAloneGet(it);
+        this_.value = DateAlone_actual_1.xDateAloneIso8601(ta);
         suppress = false;
-    }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
+    }), DisposeCondition_actual_1.xViewRemovedGet(this_));
     this_.onchange = (e) => {
         if (suppress)
             return;
@@ -26,7 +26,7 @@ function comLightningkiteKhrysalisViewsAndroidDateButtonBind(this_, date) {
         try {
             const d = DateAlone_actual_1.DateAlone.Companion.INSTANCE.iso(this_.value);
             const current = date.value;
-            Date_actual_1.javaUtilDateSet(current, d);
+            Date_actual_1.xDateSet(current, d);
             date.value = current;
         }
         catch (e) {
@@ -36,18 +36,18 @@ function comLightningkiteKhrysalisViewsAndroidDateButtonBind(this_, date) {
         suppress = false;
     };
 }
-exports.comLightningkiteKhrysalisViewsAndroidDateButtonBind = comLightningkiteKhrysalisViewsAndroidDateButtonBind;
+exports.xDateButtonBind = xDateButtonBind;
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>com.lightningkite.khrysalis.views.android.TimeButton
-function comLightningkiteKhrysalisViewsAndroidTimeButtonBind(this_, date, minuteInterval = 1) {
+function xTimeButtonBind(this_, date, minuteInterval = 1) {
     let suppress = false;
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(date, undefined, undefined, (it) => {
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(date, undefined, undefined, (it) => {
         if (suppress)
             return;
         suppress = true;
-        const ta = Date_actual_1.getJavaUtilDateTimeAlone(it);
-        this_.value = TimeAlone_actual_1.comLightningkiteKhrysalisTimeTimeAloneIso8601(ta);
+        const ta = Date_actual_1.xDateTimeAloneGet(it);
+        this_.value = TimeAlone_actual_1.xTimeAloneIso8601(ta);
         suppress = false;
-    }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
+    }), DisposeCondition_actual_1.xViewRemovedGet(this_));
     this_.onchange = (e) => {
         if (suppress)
             return;
@@ -55,7 +55,7 @@ function comLightningkiteKhrysalisViewsAndroidTimeButtonBind(this_, date, minute
         try {
             const d = TimeAlone_actual_1.TimeAlone.Companion.INSTANCE.iso(this_.value);
             const current = date.value;
-            Date_actual_1.javaUtilDateSet(current, d);
+            Date_actual_1.xDateSet(current, d);
             date.value = current;
         }
         catch (e) {
@@ -65,17 +65,17 @@ function comLightningkiteKhrysalisViewsAndroidTimeButtonBind(this_, date, minute
         suppress = false;
     };
 }
-exports.comLightningkiteKhrysalisViewsAndroidTimeButtonBind = comLightningkiteKhrysalisViewsAndroidTimeButtonBind;
+exports.xTimeButtonBind = xTimeButtonBind;
 //! Declares com.lightningkite.khrysalis.observables.binding.bindDateAlone>com.lightningkite.khrysalis.views.android.DateButton
-function comLightningkiteKhrysalisViewsAndroidDateButtonBindDateAlone(this_, date) {
+function xDateButtonBindDateAlone(this_, date) {
     let suppress = false;
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(date, undefined, undefined, (it) => {
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(date, undefined, undefined, (it) => {
         if (suppress)
             return;
         suppress = true;
-        this_.value = DateAlone_actual_1.comLightningkiteKhrysalisTimeDateAloneIso8601(it);
+        this_.value = DateAlone_actual_1.xDateAloneIso8601(it);
         suppress = false;
-    }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
+    }), DisposeCondition_actual_1.xViewRemovedGet(this_));
     this_.onchange = (e) => {
         if (suppress)
             return;
@@ -91,17 +91,17 @@ function comLightningkiteKhrysalisViewsAndroidDateButtonBindDateAlone(this_, dat
         suppress = false;
     };
 }
-exports.comLightningkiteKhrysalisViewsAndroidDateButtonBindDateAlone = comLightningkiteKhrysalisViewsAndroidDateButtonBindDateAlone;
+exports.xDateButtonBindDateAlone = xDateButtonBindDateAlone;
 //! Declares com.lightningkite.khrysalis.observables.binding.bindTimeAlone>com.lightningkite.khrysalis.views.android.TimeButton
-function comLightningkiteKhrysalisViewsAndroidTimeButtonBindTimeAlone(this_, date, minuteInterval = 1) {
+function xTimeButtonBindTimeAlone(this_, date, minuteInterval = 1) {
     let suppress = false;
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(date, undefined, undefined, (it) => {
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(date, undefined, undefined, (it) => {
         if (suppress)
             return;
         suppress = true;
-        this_.value = TimeAlone_actual_1.comLightningkiteKhrysalisTimeTimeAloneIso8601(it);
+        this_.value = TimeAlone_actual_1.xTimeAloneIso8601(it);
         suppress = false;
-    }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
+    }), DisposeCondition_actual_1.xViewRemovedGet(this_));
     this_.onchange = (e) => {
         if (suppress)
             return;
@@ -117,5 +117,5 @@ function comLightningkiteKhrysalisViewsAndroidTimeButtonBindTimeAlone(this_, dat
         suppress = false;
     };
 }
-exports.comLightningkiteKhrysalisViewsAndroidTimeButtonBindTimeAlone = comLightningkiteKhrysalisViewsAndroidTimeButtonBindTimeAlone;
+exports.xTimeButtonBindTimeAlone = xTimeButtonBindTimeAlone;
 //# sourceMappingURL=DateButton.binding.actual.js.map

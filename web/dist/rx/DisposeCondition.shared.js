@@ -12,10 +12,10 @@ class DisposeCondition {
 }
 exports.DisposeCondition = DisposeCondition;
 //! Declares com.lightningkite.khrysalis.rx.and>com.lightningkite.khrysalis.rx.DisposeCondition
-function comLightningkiteKhrysalisRxDisposeConditionAnd(this_, other) {
+function xDisposeConditionAnd(this_, other) {
     return andAllDisposeConditions([this_, other]);
 }
-exports.comLightningkiteKhrysalisRxDisposeConditionAnd = comLightningkiteKhrysalisRxDisposeConditionAnd;
+exports.xDisposeConditionAnd = xDisposeConditionAnd;
 //! Declares com.lightningkite.khrysalis.rx.andAllDisposeConditions
 function andAllDisposeConditions(list) {
     return new DisposeCondition((it) => {
@@ -32,11 +32,11 @@ function andAllDisposeConditions(list) {
 }
 exports.andAllDisposeConditions = andAllDisposeConditions;
 //! Declares com.lightningkite.khrysalis.rx.or>com.lightningkite.khrysalis.rx.DisposeCondition
-function comLightningkiteKhrysalisRxDisposeConditionOr(this_, other) {
+function xDisposeConditionOr(this_, other) {
     return new DisposeCondition((it) => {
         this_.call(it);
         other.call(it);
     });
 }
-exports.comLightningkiteKhrysalisRxDisposeConditionOr = comLightningkiteKhrysalisRxDisposeConditionOr;
+exports.xDisposeConditionOr = xDisposeConditionOr;
 //# sourceMappingURL=DisposeCondition.shared.js.map

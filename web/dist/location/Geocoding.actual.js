@@ -7,8 +7,8 @@ function setGeocodingMethod(method) {
 }
 exports.setGeocodingMethod = setGeocodingMethod;
 //! Declares com.lightningkite.khrysalis.location.geocode
-function comLightningkiteKhrysalisAndroidActivityAccessGeocode(this_Geocode, coordinate, maxResults = 1) {
+function xActivityAccessGeocode(this_Geocode, coordinate, maxResults = 1) {
     return geoMethod(this_Geocode, coordinate);
 }
-exports.comLightningkiteKhrysalisAndroidActivityAccessGeocode = comLightningkiteKhrysalisAndroidActivityAccessGeocode;
+exports.xActivityAccessGeocode = xActivityAccessGeocode;
 //# sourceMappingURL=Geocoding.actual.js.map

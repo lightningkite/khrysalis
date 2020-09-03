@@ -18,7 +18,7 @@ import com.lightningkite.khrysalis.rx.until
  *
  */
 
-@JsName("ratingBarBindMutable")
+@JsName("xRatingBarBindMutable")
 fun RatingBar.bind(
     stars: Int,
     observable: MutableObservableProperty<Int>
@@ -86,7 +86,7 @@ fun RatingBar.bind(
  *
  */
 
-@JsName("ratingBarBindFloatMutable")
+@JsName("xRatingBarBindFloatMutable")
 fun RatingBar.bindFloat(
     stars: Int,
     observable: MutableObservableProperty<Float>

@@ -11,12 +11,12 @@ class SelectDateMonthCVD extends MonthCVD_shared_1.MonthCVD {
     constructor() {
         super();
         this.selected = new StandardObservableProperty_shared_1.StandardObservableProperty(null, undefined);
-        const it_331 = this.selected.value;
-        if (it_331 !== null) {
-            this.currentMonthObs.value = Date_actual_1.copyDateAloneMod(it_331, Date.prototype.setDate, 1);
+        const it_338 = this.selected.value;
+        if (it_338 !== null) {
+            this.currentMonthObs.value = Date_actual_1.copyDateAloneMod(it_338, Date.prototype.setDate, 1);
         }
         ;
-        DisposeCondition_actual_1.ioReactivexDisposablesDisposableForever(this.selected.onChange.subscribe((value) => {
+        DisposeCondition_actual_1.xDisposableForever(this.selected.onChange.subscribe((value) => {
             this === null || this === void 0 ? void 0 : this.invalidate();
         }, undefined, undefined));
         this.selectedDayPaint = new Paint_actual_1.Paint();

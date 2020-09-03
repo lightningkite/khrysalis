@@ -7,13 +7,13 @@ const operators_1 = require("rxjs/operators");
 const Kotlin_1 = require("../Kotlin");
 const delay_actual_1 = require("../delay.actual");
 //! Declares com.lightningkite.khrysalis.rx.working
-function ioReactivexSingleWorking(this_Working, observable) {
+function xSingleWorking(this_Working, observable) {
     return operators_1.finalize(() => delay_actual_1.post(() => observable.value = false))(Kotlin_1.doOnSubscribe(this_Working, (it) => delay_actual_1.post(() => observable.value = true)));
 }
-exports.ioReactivexSingleWorking = ioReactivexSingleWorking;
+exports.xSingleWorking = xSingleWorking;
 //! Declares com.lightningkite.khrysalis.rx.mapNotNull
-function ioReactivexObservableMapNotNull(this_, transform) {
+function xObservableMapNotNull(this_, transform) {
     return this_.pipe(operators_1.map(transform), operators_1.filter((a) => a !== null && a !== undefined));
 }
-exports.ioReactivexObservableMapNotNull = ioReactivexObservableMapNotNull;
+exports.xObservableMapNotNull = xObservableMapNotNull;
 //# sourceMappingURL=RxExtensions.actual.js.map

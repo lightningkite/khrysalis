@@ -4,7 +4,7 @@ import {setGeocodingMethod} from "khrysalis/dist/location/Geocoding.actual"
 import {from, Observable, of} from "rxjs";
 import { HttpClient} from "khrysalis/dist/net/HttpClient.actual"
 import {flatMap, map} from "rxjs/operators";
-import { kotlinStringSubstringBefore } from "khrysalis/dist/kotlin/kotlin.text"
+import { xStringSubstringBefore } from "khrysalis/dist/kotlin/kotlin.text"
 import {setMapConfiguration} from "./MapView.bind.actual";
 import {tileLayer} from "leaflet";
 
@@ -50,9 +50,9 @@ export function setupMapBox(accessToken: string){
             map((json: any) => {
                 return (json.features as Array<any>).map((x) => {
                     const extractedContext: Map<string, string> = new Map((x.context as Array<any>).map((y) => {
-                        return [kotlinStringSubstringBefore(y.id, ".", undefined), y.text as string]
+                        return [xStringSubstringBefore(y.id, ".", undefined), y.text as string]
                     }));
-                    extractedContext.set(kotlinStringSubstringBefore(x.id, ".", undefined), x.text as string)
+                    extractedContext.set(xStringSubstringBefore(x.id, ".", undefined), x.text as string)
                     return new GeoAddress(
                         /*coordinate*/ new GeoCoordinate(x.center[1], x.center[0]),
                         /*name*/ x.matching_place_name,

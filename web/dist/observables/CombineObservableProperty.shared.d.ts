@@ -8,4 +8,4 @@ export declare class CombineObservableProperty<T, A, B> extends ObservableProper
     get value(): T;
     get onChange(): Observable<T>;
 }
-export declare function comLightningkiteKhrysalisObservablesObservablePropertyCombine<T, B, C>(this_: ObservableProperty<T>, other: ObservableProperty<B>, combiner: ((a: T, b: B) => C)): ObservableProperty<C>;
+export declare function xObservablePropertyCombine<T, B, C>(this_: ObservableProperty<T>, other: ObservableProperty<B>, combiner: ((a: T, b: B) => C)): ObservableProperty<C>;

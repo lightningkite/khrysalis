@@ -7,5 +7,5 @@ export declare class TransformedObservableProperty<A, B> extends ObservablePrope
     get value(): B;
     get onChange(): Observable<B>;
 }
-export declare function comLightningkiteKhrysalisObservablesObservablePropertyTransformed<T, B>(this_: ObservableProperty<T>, read: ((a: T) => B)): ObservableProperty<B>;
-export declare function comLightningkiteKhrysalisObservablesObservablePropertyMap<T, B>(this_: ObservableProperty<T>, read: ((a: T) => B)): ObservableProperty<B>;
+export declare function xObservablePropertyTransformed<T, B>(this_: ObservableProperty<T>, read: ((a: T) => B)): ObservableProperty<B>;
+export declare function xObservablePropertyMap<T, B>(this_: ObservableProperty<T>, read: ((a: T) => B)): ObservableProperty<B>;

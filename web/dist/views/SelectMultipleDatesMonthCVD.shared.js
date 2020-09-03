@@ -17,12 +17,12 @@ class SelectMultipleDatesMonthCVD extends MonthCVD_shared_1.MonthCVD {
         this.dates = new StandardObservableProperty_shared_1.StandardObservableProperty(new KotlinCollections_1.EqualOverrideSet([]), undefined);
         this.selectedDayPaint = new Paint_actual_1.Paint();
         this.selectedPaint = new Paint_actual_1.Paint();
-        const it_350 = KotlinCollections_1.iterFirstOrNull(this.dates.value);
-        if (it_350 !== null) {
-            this.currentMonthObs.value = Date_actual_1.copyDateAloneMod(it_350, Date.prototype.setDate, 1);
+        const it_357 = KotlinCollections_1.iterFirstOrNull(this.dates.value);
+        if (it_357 !== null) {
+            this.currentMonthObs.value = Date_actual_1.copyDateAloneMod(it_357, Date.prototype.setDate, 1);
         }
         ;
-        DisposeCondition_actual_1.ioReactivexDisposablesDisposableForever(this.dates.onChange.subscribe((value) => {
+        DisposeCondition_actual_1.xDisposableForever(this.dates.onChange.subscribe((value) => {
             this === null || this === void 0 ? void 0 : this.invalidate();
         }, undefined, undefined));
         this.drawDay_dateAlone = new DateAlone_actual_1.DateAlone(0, 0, 0);
@@ -37,9 +37,9 @@ class SelectMultipleDatesMonthCVD extends MonthCVD_shared_1.MonthCVD {
     }
     drawDay(canvas, showingMonth, day, displayMetrics, outer, inner) {
         if (this.dates.value.has(day)) {
-            const leftDate = Date_actual_1.dateAloneModRelative(DateAlone_shared_1.comLightningkiteKhrysalisTimeDateAloneSet(this.drawDay_dateAlone, day), Date.prototype.getDate, Date.prototype.setDate, (-1));
+            const leftDate = Date_actual_1.dateAloneModRelative(DateAlone_shared_1.xDateAloneSet(this.drawDay_dateAlone, day), Date.prototype.getDate, Date.prototype.setDate, (-1));
             const left = this.dates.value.has(leftDate);
-            const rightDate = Date_actual_1.dateAloneModRelative(DateAlone_shared_1.comLightningkiteKhrysalisTimeDateAloneSet(this.drawDay_dateAlone, day), Date.prototype.getDate, Date.prototype.setDate, 1);
+            const rightDate = Date_actual_1.dateAloneModRelative(DateAlone_shared_1.xDateAloneSet(this.drawDay_dateAlone, day), Date.prototype.getDate, Date.prototype.setDate, 1);
             const right = this.dates.value.has(rightDate);
             if ((!left) && (!right)) {
                 MonthCVD_shared_1.CalendarDrawing.INSTANCE.dayBackground(canvas, inner, this.selectedPaint);

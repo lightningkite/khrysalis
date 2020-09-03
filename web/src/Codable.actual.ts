@@ -23,16 +23,16 @@ export let JsonMap = Map;
 
 
 //! Declares com.lightningkite.khrysalis.toJsonString>kotlin.Any
-export function kotlinAnyToJsonString(this_: (IsCodable | null)): string{
+export function xAnyToJsonString(this_: (IsCodable | null)): string{
     return stringify(this_);
 }
 
 //! Declares com.lightningkite.khrysalis.fromJsonString>kotlin.String
-export function kotlinStringFromJsonString<T extends IsCodable>(this_: string, T: any): (T | null){
+export function xStringFromJsonString<T extends IsCodable>(this_: string, T: any): (T | null){
     return parse(JSON.parse(this_), T)
 }
 
 //! Declares com.lightningkite.khrysalis.fromJsonStringUntyped>kotlin.String
-export function kotlinStringFromJsonStringUntyped(this_: string): (IsCodable | null){
+export function xStringFromJsonStringUntyped(this_: string): (IsCodable | null){
     return parseUntyped(this_)
 }

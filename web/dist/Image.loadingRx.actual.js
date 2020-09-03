@@ -8,7 +8,7 @@ const Kotlin_1 = require("./Kotlin");
 const rxjs_1 = require("rxjs");
 const operators_1 = require("rxjs/operators");
 //! Declares com.lightningkite.khrysalis.load>com.lightningkite.khrysalis.Image
-function comLightningkiteKhrysalisImageLoad(this_) {
+function xImageLoad(this_) {
     return (() => {
         try {
             return (() => {
@@ -49,5 +49,5 @@ function comLightningkiteKhrysalisImageLoad(this_) {
         }
     })();
 }
-exports.comLightningkiteKhrysalisImageLoad = comLightningkiteKhrysalisImageLoad;
+exports.xImageLoad = xImageLoad;
 //# sourceMappingURL=Image.loadingRx.actual.js.map

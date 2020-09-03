@@ -7,7 +7,7 @@ import {catchError, map as rxMap, switchMap} from 'rxjs/operators'
 import {parse} from "./jsonParsing";
 
 //! Declares com.lightningkite.khrysalis.net.unsuccessfulAsError
-export function ioReactivexSingleUnsuccessfulAsError(this_: Observable<Response>): Observable<Response> {
+export function xSingleUnsuccessfulAsError(this_: Observable<Response>): Observable<Response> {
     return this_.pipe(rxMap((it) => {
         if (it.ok) {
             return it;
@@ -19,11 +19,11 @@ export function ioReactivexSingleUnsuccessfulAsError(this_: Observable<Response>
 
 
 //! Declares com.lightningkite.khrysalis.net.discard
-export function ioReactivexSingleDiscard(this_: Observable<Response>): Observable<void> {
+export function xSingleDiscard(this_: Observable<Response>): Observable<void> {
     return this_.pipe(
         switchMap((it) => {
             if (it.ok) {
-                return okhttp3ResponseDiscard(it);
+                return xResponseDiscard(it);
             } else {
                 throw new HttpResponseException(it, undefined);
             }
@@ -32,11 +32,11 @@ export function ioReactivexSingleDiscard(this_: Observable<Response>): Observabl
 }
 
 //! Declares com.lightningkite.khrysalis.net.readJson
-export function ioReactivexSingleReadJson<T>(this_: Observable<Response>, T: Array<any>): Observable<T> {
+export function xSingleReadJson<T>(this_: Observable<Response>, T: Array<any>): Observable<T> {
     return this_.pipe(
         switchMap((it) => {
             if (it.ok) {
-                return okhttp3ResponseReadJson<T>(it, T);
+                return xResponseReadJson<T>(it, T);
             } else {
                 throw new HttpResponseException(it, undefined);
             }
@@ -45,11 +45,11 @@ export function ioReactivexSingleReadJson<T>(this_: Observable<Response>, T: Arr
 }
 
 //! Declares com.lightningkite.khrysalis.net.readJsonDebug
-export function ioReactivexSingleReadJsonDebug<T>(this_: Observable<Response>, T: Array<any>): Observable<T> {
+export function xSingleReadJsonDebug<T>(this_: Observable<Response>, T: Array<any>): Observable<T> {
     return this_.pipe(
         switchMap((it) => {
             if (it.ok) {
-                return okhttp3ResponseReadJsonDebug<T>(it, T);
+                return xResponseReadJsonDebug<T>(it, T);
             } else {
                 throw new HttpResponseException(it, undefined);
             }
@@ -58,11 +58,11 @@ export function ioReactivexSingleReadJsonDebug<T>(this_: Observable<Response>, T
 }
 
 //! Declares com.lightningkite.khrysalis.net.readText
-export function ioReactivexSingleReadText(this_: Observable<Response>): Observable<String> {
+export function xSingleReadText(this_: Observable<Response>): Observable<String> {
     return this_.pipe(
         switchMap((it) => {
             if (it.ok) {
-                return okhttp3ResponseReadText(it);
+                return xResponseReadText(it);
             } else {
                 throw new HttpResponseException(it, undefined);
             }
@@ -71,11 +71,11 @@ export function ioReactivexSingleReadText(this_: Observable<Response>): Observab
 }
 
 //! Declares com.lightningkite.khrysalis.net.readData
-export function ioReactivexSingleReadData(this_: Observable<Response>): Observable<Int8Array> {
+export function xSingleReadData(this_: Observable<Response>): Observable<Int8Array> {
     return this_.pipe(
         switchMap((it) => {
             if (it.ok) {
-                return okhttp3ResponseReadData(it);
+                return xResponseReadData(it);
             } else {
                 throw new HttpResponseException(it, undefined);
             }
@@ -84,31 +84,31 @@ export function ioReactivexSingleReadData(this_: Observable<Response>): Observab
 }
 
 //! Declares com.lightningkite.khrysalis.net.readJson
-export function okhttp3ResponseReadJson<T>(this_: Response, T: Array<any>): Observable<T> {
+export function xResponseReadJson<T>(this_: Response, T: Array<any>): Observable<T> {
     return from(this_.json()).pipe(rxMap((it) => {
         return parse(it, T)
     }));
 }
 
 //! Declares com.lightningkite.khrysalis.net.readJsonDebug
-export function okhttp3ResponseReadJsonDebug<T>(this_: Response, T: Array<any>): Observable<T> {
+export function xResponseReadJsonDebug<T>(this_: Response, T: Array<any>): Observable<T> {
     return from(this_.json()).pipe(rxMap((it) => {
         return parse(it, T)
     }));
 }
 
 //! Declares com.lightningkite.khrysalis.net.discard
-export function okhttp3ResponseDiscard(this_: Response): Observable<void> {
+export function xResponseDiscard(this_: Response): Observable<void> {
     return from(this_.text()).pipe(rxMap((x)=>{}));
 }
 
 //! Declares com.lightningkite.khrysalis.net.readText
-export function okhttp3ResponseReadText(this_: Response): Observable<String> {
+export function xResponseReadText(this_: Response): Observable<String> {
     return from(this_.text());
 }
 
 //! Declares com.lightningkite.khrysalis.net.readData
-export function okhttp3ResponseReadData(this_: Response): Observable<Int8Array> {
+export function xResponseReadData(this_: Response): Observable<Int8Array> {
     return from(this_.arrayBuffer()).pipe(
         rxMap((it) => new Int8Array(it))
     );
@@ -116,7 +116,7 @@ export function okhttp3ResponseReadData(this_: Response): Observable<Int8Array> 
 
 
 //! Declares com.lightningkite.khrysalis.net.readHttpException
-export function ioReactivexSingleReadHttpException<Element>(this_: Observable<Element>): Observable<Element> {
+export function xSingleReadHttpException<Element>(this_: Observable<Element>): Observable<Element> {
     return this_.pipe(catchError((err) => {
         if (err instanceof HttpResponseException) {
             return from(err.response.text())

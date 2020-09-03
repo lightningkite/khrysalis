@@ -31,5 +31,5 @@ class Close {
 }
 exports.Close = Close;
 Close.implementsInterfaceComLightningkiteKhrysalisObservablesCloseable = true;
-Close.implementsInterfaceIoReactivexDisposablesDisposable = true;
+Close.implementsInterfaceIoReactivexDisposable = true;
 //# sourceMappingURL=Closeable.actual.js.map

@@ -6,17 +6,17 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const ObservableProperty_ext_shared_1 = require("../ObservableProperty.ext.shared");
 const DisposeCondition_actual_1 = require("../../rx/DisposeCondition.actual");
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>android.widget.SeekBar
-function androidWidgetSeekBarBind(this_, start, endInclusive, observable) {
+function xSeekBarBind(this_, start, endInclusive, observable) {
     this_.min = start.toString();
     this_.max = endInclusive.toString();
     let suppress = false;
-    DisposeCondition_actual_1.ioReactivexDisposablesDisposableUntil(ObservableProperty_ext_shared_1.comLightningkiteKhrysalisObservablesObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(observable, undefined, undefined, (value) => {
         if (!suppress) {
             suppress = true;
             this_.valueAsNumber = (value);
             suppress = false;
         }
-    }), DisposeCondition_actual_1.getAndroidViewViewRemoved(this_));
+    }), DisposeCondition_actual_1.xViewRemovedGet(this_));
     this_.oninput = (e) => {
         if (!suppress) {
             suppress = true;
@@ -25,5 +25,5 @@ function androidWidgetSeekBarBind(this_, start, endInclusive, observable) {
         }
     };
 }
-exports.androidWidgetSeekBarBind = androidWidgetSeekBarBind;
+exports.xSeekBarBind = xSeekBarBind;
 //# sourceMappingURL=SeekBar.binding.actual.js.map

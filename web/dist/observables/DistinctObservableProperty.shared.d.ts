@@ -7,5 +7,5 @@ export declare class RxTransformationOnlyObservableProperty<T> extends Observabl
     get value(): T;
     get onChange(): Observable<T>;
 }
-export declare function comLightningkiteKhrysalisObservablesObservablePropertyDistinctUntilChanged<T>(this_: ObservableProperty<T>): ObservableProperty<T>;
-export declare function comLightningkiteKhrysalisObservablesObservablePropertyPlusRx<T>(this_: ObservableProperty<T>, operator: ((a: Observable<T>) => Observable<T>)): ObservableProperty<T>;
+export declare function xObservablePropertyDistinctUntilChanged<T>(this_: ObservableProperty<T>): ObservableProperty<T>;
+export declare function xObservablePropertyPlusRx<T>(this_: ObservableProperty<T>, operator: ((a: Observable<T>) => Observable<T>)): ObservableProperty<T>;

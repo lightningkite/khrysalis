@@ -5,7 +5,7 @@ import {Align, AlignPair} from './geometry/Align.shared'
 import {also} from 'Kotlin'
 
 //! Declares com.lightningkite.khrysalis.views.params>android.widget.LinearLayout
-export function androidWidgetLinearLayoutParams(
+export function xLinearLayoutParams(
     this_: HTMLDivElement,
     sizeX: number = 0,
     sizeY: number = 0,

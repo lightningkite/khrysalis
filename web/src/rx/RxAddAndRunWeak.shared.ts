@@ -2,19 +2,19 @@
 // File: rx/RxAddAndRunWeak.shared.kt
 // Package: com.lightningkite.khrysalis.rx
 import { Observable, SubscriptionLike } from 'rxjs'
-import { getAndroidViewViewRemoved, ioReactivexDisposablesDisposableUntil } from './DisposeCondition.actual'
+import { xViewRemovedGet, xDisposableUntil } from './DisposeCondition.actual'
 
 //! Declares com.lightningkite.khrysalis.rx.solvePrivateDisposal
-// export function ioReactivexDisposablesDisposableSolvePrivateDisposal(this_: SubscriptionLike, items: Array<any>): void{
+// export function xDisposableSolvePrivateDisposal(this_: SubscriptionLike, items: Array<any>): void{
 //     for (const item of items) {
 //         if(item instanceof View){
-//             ioReactivexDisposablesDisposableUntil(this_, getAndroidViewViewRemoved(item));
+//             xDisposableUntil(this_, xViewRemovedGet(item));
 //         }
 //     }
 // }
 
 //! Declares com.lightningkite.khrysalis.rx.add
-export function ioReactivexObservableAdd<Element extends any>(this_: Observable<Element>, listener:  (a: Element) => Boolean): SubscriptionLike{
+export function xObservableAdd<Element extends any>(this_: Observable<Element>, listener:  (a: Element) => Boolean): SubscriptionLike{
     let disposable: (SubscriptionLike | null) = null;
     
     const disp = this_.subscribe((item) => {
@@ -29,7 +29,7 @@ export function ioReactivexObservableAdd<Element extends any>(this_: Observable<
 }
 
 //! Declares com.lightningkite.khrysalis.rx.addWeak
-// export function ioReactivexObservableAddWeak<A extends object, Element extends any>(this_: Observable<Element>, referenceA: A, listener:  (a: A, b: Element) => void): SubscriptionLike{
+// export function xObservableAddWeak<A extends object, Element extends any>(this_: Observable<Element>, referenceA: A, listener:  (a: A, b: Element) => void): SubscriptionLike{
 //     let disposable: (SubscriptionLike | null) = null;
 //
 //     const weakA: (A | null);
@@ -46,12 +46,12 @@ export function ioReactivexObservableAdd<Element extends any>(this_: Observable<
 //     }, undefined, undefined);
 //
 //     disposable = disp;
-//     ioReactivexDisposablesDisposableSolvePrivateDisposal(disp, [referenceA]);
+//     xDisposableSolvePrivateDisposal(disp, [referenceA]);
 //     return disp;
 // }
 
 //! Declares com.lightningkite.khrysalis.rx.addWeak
-// export function ioReactivexObservableAddWeak<A extends object, B extends object, Element extends any>(this_: Observable<Element>, referenceA: A, referenceB: B, listener:  (a: A, b: B, c: Element) => void): SubscriptionLike{
+// export function xObservableAddWeak<A extends object, B extends object, Element extends any>(this_: Observable<Element>, referenceA: A, referenceB: B, listener:  (a: A, b: B, c: Element) => void): SubscriptionLike{
 //     let disposable: (SubscriptionLike | null) = null;
 //
 //     const weakA: (A | null);
@@ -72,13 +72,13 @@ export function ioReactivexObservableAdd<Element extends any>(this_: Observable<
 //     }, undefined, undefined);
 //
 //     disposable = disp;
-//     ioReactivexDisposablesDisposableSolvePrivateDisposal(disp, [referenceA, referenceB]);
+//     xDisposableSolvePrivateDisposal(disp, [referenceA, referenceB]);
 //     return disp;
 // }
 
 
 //! Declares com.lightningkite.khrysalis.rx.addWeak
-// export function ioReactivexObservableAddWeak<A extends object, B extends object, C extends object, Element extends any>(this_: Observable<Element>, referenceA: A, referenceB: B, referenceC: C, listener:  (a: A, b: B, c: C, d: Element) => void): SubscriptionLike{
+// export function xObservableAddWeak<A extends object, B extends object, C extends object, Element extends any>(this_: Observable<Element>, referenceA: A, referenceB: B, referenceC: C, listener:  (a: A, b: B, c: C, d: Element) => void): SubscriptionLike{
 //     let disposable: (SubscriptionLike | null) = null;
 //
 //     const weakA: (A | null);
@@ -102,7 +102,7 @@ export function ioReactivexObservableAdd<Element extends any>(this_: Observable<
 //             }
 //     }, undefined, undefined);
 //
-//     ioReactivexDisposablesDisposableSolvePrivateDisposal(disp, [referenceA, referenceB, referenceC]);
+//     xDisposableSolvePrivateDisposal(disp, [referenceA, referenceB, referenceC]);
 //     disposable = disp;
 //     return disp;
 // }

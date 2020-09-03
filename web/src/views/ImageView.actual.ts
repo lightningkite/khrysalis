@@ -5,12 +5,14 @@ import {Image, ImageImageBitmap, ImageRaw, ImageReference, ImageRemoteUrl, Image
 import {post} from "../delay.actual";
 import {setViewBackgroundClass} from "./View.ext.actual";
 import {DrawableResource} from "./DrawableResource";
+import {Video} from "../Video.shared";
+import {xVideoThumbnail} from "../Video.actual";
 
 
 //! Declares com.lightningkite.khrysalis.observables.binding.loadImage>android.widget.ImageView
 //! Declares com.lightningkite.khrysalis.views.loadImage>android.widget.ImageView
 let canvasElement = document.createElement("canvas");
-export function androidWidgetImageViewLoadImage(this_: HTMLImageElement, image: (Image | null)) {
+export function xImageViewLoadImage(this_: HTMLImageElement, image: (Image | null)) {
     post(() => {
         if (image instanceof ImageRaw) {
             const url = URL.createObjectURL(new Blob([image.raw]));
@@ -51,5 +53,16 @@ export function imageViewSetImageResource(this_: HTMLImageElement, resource: Dra
     } else {
         //Not perfect, because it replaces the background.
         setViewBackgroundClass(this_, resource.cssClass);
+    }
+}
+
+//! Declares com.lightningkite.khrysalis.observables.binding.loadVideoThumbnail>android.widget.ImageView
+//! Declares com.lightningkite.khrysalis.views.loadVideoThumbnail>android.widget.ImageView
+export function xImageViewLoadVideoThumbnail(this_: HTMLImageElement, video: Video | null) {
+    if(video !== null){
+        this_.src = "";
+        xVideoThumbnail(video).subscribe((x)=>{
+            xImageViewLoadImage(this_, x);
+        });
     }
 }

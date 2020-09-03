@@ -9,9 +9,9 @@ import {v4 as randomUuidV4} from 'uuid'
 import {_showDialogEvent, showDialog} from "./showDialog.shared";
 import {setViewText} from "./ViewWithText.ext.actual";
 
-export function listenForDialogs(){
+export function listenForDialogs() {
     _showDialogEvent.subscribe({
-        next(value){
+        next(value) {
             const top = document.createElement("div");
             top.classList.add("resp-sharing-dialog-back");
             top.classList.add("khr");
@@ -30,12 +30,12 @@ export function listenForDialogs(){
             buttons.classList.add("khrysalis-dialog-buttons")
             buttons.classList.add("khr")
 
-            if(value.confirmation){
+            if (value.confirmation) {
                 const cancel = document.createElement("button");
                 cancel.classList.add("khrysalis-dialog-cancel");
                 cancel.classList.add("khr");
                 cancel.textContent = "Cancel";
-                cancel.onclick = (e)=>{
+                cancel.onclick = (e) => {
                     e.preventDefault();
                     document.body.removeChild(top);
                 }
@@ -46,9 +46,9 @@ export function listenForDialogs(){
             ok.classList.add("khrysalis-dialog-ok");
             ok.classList.add("khr");
             ok.textContent = "OK";
-            ok.onclick = (e)=>{
+            ok.onclick = (e) => {
                 e.preventDefault();
-                if(value.confirmation){
+                if (value.confirmation) {
                     value.confirmation();
                 }
                 document.body.removeChild(top);
@@ -71,7 +71,7 @@ export function listenForDialogs(){
 }
 
 //! Declares com.lightningkite.khrysalis.views.share>com.lightningkite.khrysalis.android.ActivityAccess
-export function comLightningkiteKhrysalisAndroidActivityAccessShare(this_: Window, shareTitle: string, message: (string | null) = null, url: (string | null) = null, image: (Image | null) = null): void {
+export function xActivityAccessShare(this_: Window, shareTitle: string, message: (string | null) = null, url: (string | null) = null, image: (Image | null) = null): void {
     const escapedTitle = encodeURIComponent(shareTitle);
     const escapedUrl = url ? encodeURIComponent(url) : null;
     const escapedMessage = message ? encodeURIComponent(message) : null;
@@ -211,12 +211,12 @@ export function comLightningkiteKhrysalisAndroidActivityAccessShare(this_: Windo
 }
 
 //! Declares com.lightningkite.khrysalis.views.getColor
-export function comLightningkiteKhrysalisAndroidActivityAccessGetColor(this_: Window, variableName: string): string {
+export function xActivityAccessGetColor(this_: Window, variableName: string): string {
     return this_.getComputedStyle(this_.document.body).getPropertyValue(variableName).trim();
 }
 
 //! Declares com.lightningkite.khrysalis.views.openMap>com.lightningkite.khrysalis.android.ActivityAccess
-export function comLightningkiteKhrysalisAndroidActivityAccessOpenMap(this_: Window, coordinate: GeoCoordinate, label: (string | null) = null, zoom: (number | null) = null): void {
+export function xActivityAccessOpenMap(this_: Window, coordinate: GeoCoordinate, label: (string | null) = null, zoom: (number | null) = null): void {
     let url = label ?
         `https://www.google.com/maps/search/?api=1&query=${coordinate.latitude},${coordinate.longitude}` //TODO: Use label when it is supported
         :
@@ -226,7 +226,7 @@ export function comLightningkiteKhrysalisAndroidActivityAccessOpenMap(this_: Win
 }
 
 //! Declares com.lightningkite.khrysalis.views.openEvent>com.lightningkite.khrysalis.android.ActivityAccess
-export function comLightningkiteKhrysalisAndroidActivityAccessOpenEvent(this_: Window, title: string, description: string, location: string, start: Date, end: Date): void {
+export function xActivityAccessOpenEvent(this_: Window, title: string, description: string, location: string, start: Date, end: Date): void {
     let calText = "BEGIN:VCALENDAR\nVERSION:2.0\nCALSCALE:GREGORIAN\nPRODID:adamgibbons/ics\nMETHOD:PUBLISH\nBEGIN:VEVENT\n";
     calText += "UID:" + randomUuidV4() + "\n";
     calText += "SUMMARY:" + title + "\n";
@@ -243,48 +243,74 @@ export function comLightningkiteKhrysalisAndroidActivityAccessOpenEvent(this_: W
 }
 
 //! Declares com.lightningkite.khrysalis.views.requestImagesGallery>com.lightningkite.khrysalis.android.ActivityAccess
-export function comLightningkiteKhrysalisAndroidActivityAccessRequestImagesGallery(this_: Window, callback: (a: Array<File>) => void): void {
-    const f = document.createElement("input") as HTMLInputElement;
-    f.type = "file";
-    f.multiple = true;
-    f.accept = "image/*";
-    f.onchange = (e) => {
-        const files: Array<File> = [];
-        const fList = f.files;
-        if (fList) {
-            for (let i = 0; i < fList.length; i++) {
-                files.push(fList.item(i) as File);
-            }
-        }
-        callback(files)
-    };
-    f.click();
+export function xActivityAccessRequestImagesGallery(this_: Window, callback: (a: Array<File>) => void): void {
+    openFileMulti("image/*", callback);
 }
 
 //! Declares com.lightningkite.khrysalis.views.requestImageGallery>com.lightningkite.khrysalis.android.ActivityAccess
-export function comLightningkiteKhrysalisAndroidActivityAccessRequestImageGallery(this_: Window, callback: (a: File) => void): void {
+export function xActivityAccessRequestImageGallery(this_: Window, callback: (a: File) => void): void {
+    openFile("image/*", null, callback);
+}
+
+//! Declares com.lightningkite.khrysalis.views.requestImageCamera>com.lightningkite.khrysalis.android.ActivityAccess
+export function xActivityAccessRequestImageCamera(this_: Window, front: boolean = false, callback: (a: File) => void): void {
+    openFile("image/*", front, callback);
+}
+
+//! Declares com.lightningkite.khrysalis.views.requestVideosGallery>com.lightningkite.khrysalis.android.ActivityAccess
+export function xActivityAccessRequestVideosGallery(this_: Window, callback: (a: Array<File>) => void): void {
+    openFileMulti("video/*", callback);
+}
+
+//! Declares com.lightningkite.khrysalis.views.requestVideoGallery>com.lightningkite.khrysalis.android.ActivityAccess
+export function xActivityAccessRequestVideoGallery(this_: Window, callback: (a: File) => void): void {
+    openFile("video/*", null, callback);
+}
+
+//! Declares com.lightningkite.khrysalis.views.requestVideoCamera>com.lightningkite.khrysalis.android.ActivityAccess
+export function xActivityAccessRequestVideoCamera(this_: Window, front: boolean = false, callback: (a: File) => void): void {
+    openFile("video/*", front, callback);
+}
+
+//! Declares com.lightningkite.khrysalis.views.requestMediasGallery>com.lightningkite.khrysalis.android.ActivityAccess
+export function xActivityAccessRequestMediasGallery(this_: Window, callback: (a: Array<File>) => void): void {
+    openFileMulti("video/*,image/*", callback);
+}
+
+//! Declares com.lightningkite.khrysalis.views.requestMediaGallery>com.lightningkite.khrysalis.android.ActivityAccess
+export function xActivityAccessRequestMediaGallery(this_: Window, callback: (a: File) => void): void {
+    openFile("video/*,image/*", null, callback);
+}
+
+function openFileMulti(type: string, callback: (a: Array<File>) => void) {
     const f = document.createElement("input") as HTMLInputElement;
     f.type = "file";
-    f.accept = "image/*";
+    f.accept = type;
+    f.multiple = true;
     f.onchange = (e) => {
-        if(f.files){
-            const file = f.files[0];
-            if (file) {
-                callback(file);
+        if (f.files) {
+            const files: Array<File> = [];
+            const fList = f.files;
+            if (fList) {
+                for (let i = 0; i < fList.length; i++) {
+                    files.push(fList.item(i) as File);
+                }
             }
+            callback(files)
         }
     };
     f.click();
 }
-
-//! Declares com.lightningkite.khrysalis.views.requestImageCamera>com.lightningkite.khrysalis.android.ActivityAccess
-export function comLightningkiteKhrysalisAndroidActivityAccessRequestImageCamera(this_: Window, front: boolean = false, callback: (a: File) => void): void {
+function openFile(type: string, capture: boolean | null = null, callback: (a: File) => void) {
     const f = document.createElement("input") as HTMLInputElement;
     f.type = "file";
-    f.accept = "image/*";
-    (f as any).capture = front ? "user" : "environment";
+    f.accept = type;
+    f.multiple = false;
+    if (capture) {
+        (f as any).capture = capture ? "user" : "environment";
+    }
     f.onchange = (e) => {
-        if(f.files) {
+        if (f.files) {
             const file = f.files[0];
             if (file) {
                 callback(file);

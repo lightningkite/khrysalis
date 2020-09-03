@@ -13,7 +13,7 @@ export class DisposeCondition {
 }
 
 //! Declares com.lightningkite.khrysalis.rx.and>com.lightningkite.khrysalis.rx.DisposeCondition
-export function comLightningkiteKhrysalisRxDisposeConditionAnd(this_: DisposeCondition, other: DisposeCondition): DisposeCondition { 
+export function xDisposeConditionAnd(this_: DisposeCondition, other: DisposeCondition): DisposeCondition { 
     return andAllDisposeConditions([this_, other]); 
 }
 
@@ -32,7 +32,7 @@ export function andAllDisposeConditions(list: Array<DisposeCondition>): DisposeC
 }
 
 //! Declares com.lightningkite.khrysalis.rx.or>com.lightningkite.khrysalis.rx.DisposeCondition
-export function comLightningkiteKhrysalisRxDisposeConditionOr(this_: DisposeCondition, other: DisposeCondition): DisposeCondition { 
+export function xDisposeConditionOr(this_: DisposeCondition, other: DisposeCondition): DisposeCondition { 
     return new DisposeCondition((it: SubscriptionLike): void => {
             this_.call(it); other.call(it);
     }); 
