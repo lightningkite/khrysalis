@@ -42,7 +42,7 @@ fun String.toHttpBody(mediaType: HttpMediaType = HttpMediaTypes.TEXT): HttpBody 
 
 fun Image.toHttpBody(maxDimension: Int = 2048): Single<HttpBody> = Single.create { em ->
     val glide = Glide.with(HttpClient.appContext).asBitmap()
-    val task = when(this){
+    val task = when (this) {
         is ImageReference -> glide.load(this.uri)
         is ImageBitmap -> glide.load(this.bitmap)
         is ImageRaw -> glide.load(this.raw)
@@ -72,15 +72,16 @@ fun Image.toHttpBody(maxDimension: Int = 2048): Single<HttpBody> = Single.create
             }
 
         })
-        .into(object: CustomTarget<Bitmap>(){
-        override fun onLoadCleared(placeholder: Drawable?) {}
-        override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
-            em.onSuccess(resource.toHttpBody())
-        }
-        override fun onLoadFailed(errorDrawable: Drawable?) {
-            em.onError(Exception())
-        }
-    })
+        .into(object : CustomTarget<Bitmap>() {
+            override fun onLoadCleared(placeholder: Drawable?) {}
+            override fun onResourceReady(resource: Bitmap, transition: Transition<in Bitmap>?) {
+                em.onSuccess(resource.toHttpBody())
+            }
+
+            override fun onLoadFailed(errorDrawable: Drawable?) {
+                em.onError(Exception())
+            }
+        })
 }
 
 fun Bitmap.toHttpBody(maxBytes: Long = 10_000_000): HttpBody {
@@ -99,9 +100,9 @@ fun Bitmap.toHttpBody(maxBytes: Long = 10_000_000): HttpBody {
     return RequestBody.create(HttpMediaTypes.JPEG, data)
 }
 
-fun Uri.toHttpBody(): HttpBody {
+fun Uri.toHttpBody(): Single<HttpBody> {
     val type = HttpMediaTypes.fromString(HttpClient.appContext.contentResolver.getType(this) ?: "*/*")
-    return object : RequestBody() {
+    return Single.just<HttpBody>(object : RequestBody() {
         override fun contentType(): MediaType = type
 
         override fun writeTo(sink: BufferedSink) {
@@ -111,8 +112,7 @@ fun Uri.toHttpBody(): HttpBody {
                 }
             } ?: throw IllegalStateException("URI (${this@toHttpBody}) could not be opened")
         }
-
-    }
+    })
 }
 
 fun multipartFormBody(vararg parts: HttpBodyPart): HttpBody {

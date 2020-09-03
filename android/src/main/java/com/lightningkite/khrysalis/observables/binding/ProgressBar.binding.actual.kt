@@ -14,6 +14,15 @@ fun ProgressBar.bindInt(
         this.progress = value
     }.until(this@bindInt.removed)
 }
+
+fun ProgressBar.bindLong(
+    observable: ObservableProperty<Long>
+){
+    observable.subscribeBy { value ->
+        this.progress = value.toInt()
+    }.until(this@bindLong.removed)
+}
+
 fun ProgressBar.bindFloat(
     observable: ObservableProperty<Float>
 ){

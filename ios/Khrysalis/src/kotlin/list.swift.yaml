@@ -295,7 +295,7 @@
 - id: kotlin.collections.dropLast
   type: call
   actualReceiver: kotlin.collections.List
-  template: "Array(~this~.dropLast(0, -~0~))"
+  template: "Array(~this~.dropLast(~0~))"
 - id: kotlin.collections.dropWhile
   type: call
   actualReceiver: kotlin.collections.List
