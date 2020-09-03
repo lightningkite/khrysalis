@@ -31,6 +31,7 @@ internal fun createPrototypeViewGenerators(
     val files = File(resourcesFolder, "layout").walkTopDown()
         .filter { it.extension == "xml" }
         .filter { !it.name.contains("component") }
+        .filter { !it.name.startsWith("android_") }
 
     //Gather graph information
     files.forEach { item ->

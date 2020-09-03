@@ -29,6 +29,7 @@ fun createFlowDocumentation(
     val nodes = HashMap<String, ViewNode>()
     val files = File(resourcesFolder, "layout").walkTopDown()
         .filter { it.extension == "xml" }
+        .filter { !it.name.startsWith("android_") }
         .filter { !it.name.contains("component") }
 
     //Gather graph information

@@ -316,7 +316,7 @@ class ViewNode(
         }
         node.allAttributes["tools:listitem"]?.let {
             val p = it.removePrefix("@layout/")
-            if(p.startsWith("component")){
+            if(p.startsWith("component") || p.startsWith("android_")){
                 val file = xml.parentFile.resolve(p.plus(".xml"))
                 gather(XmlNode.read(file, styles), xml, styles, parentPath)
             } else {

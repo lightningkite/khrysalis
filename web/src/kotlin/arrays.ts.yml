@@ -95,6 +95,6 @@
   type: call
   actualReceiver: array
   template:
-    pattern: kotlinCollectionsIterableJoinToString(~this~, ~separator~, ~prefix~, ~postfix~, ~limit~, ~truncated~, ~transform~)
+    pattern: xIterableJoinToString(~this~, ~separator~, ~prefix~, ~postfix~, ~limit~, ~truncated~, ~transform~)
     imports:
-      kotlinCollectionsIterableJoinToString: khrysalis/dist/kotlin/Iterables
+      xIterableJoinToString: khrysalis/dist/kotlin/Iterables

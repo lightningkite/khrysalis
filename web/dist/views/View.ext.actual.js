@@ -5,7 +5,7 @@
 Object.defineProperty(exports, "__esModule", { value: true });
 //! Declares com.lightningkite.khrysalis.views.onClick>android.view.View
 const iterable_operator_1 = require("iterable-operator");
-function androidViewViewOnClick(this_, disabledMilliseconds = 500, action) {
+function xViewOnClick(this_, disabledMilliseconds = 500, action) {
     let lastActivated = Date.now();
     this_.onclick = (_ev) => {
         _ev.stopPropagation();
@@ -16,16 +16,16 @@ function androidViewViewOnClick(this_, disabledMilliseconds = 500, action) {
         }
     };
 }
-exports.androidViewViewOnClick = androidViewViewOnClick;
+exports.xViewOnClick = xViewOnClick;
 //! Declares com.lightningkite.khrysalis.views.onLongClick>android.view.View
-function androidViewViewOnLongClick(this_, action) {
+function xOnLongClick(this_, action) {
     this_.oncontextmenu = (_ev) => {
         _ev.stopPropagation();
         const it = _ev.target;
         action();
     };
 }
-exports.androidViewViewOnLongClick = androidViewViewOnLongClick;
+exports.xOnLongClick = xOnLongClick;
 function getViewVisibility(this_) {
     if (this_.hidden)
         return "gone";

@@ -82,6 +82,7 @@ fun convertLayoutsToHtml(
     androidMainFolder.resolve("res").listFiles()!!
         .asSequence()
         .filter { it.name.contains("layout") }
+        .filter { !it.name.startsWith("android_") }
         .forEach { folder ->
             folder.walkTopDown()
                 .filter { it.extension == "xml" }

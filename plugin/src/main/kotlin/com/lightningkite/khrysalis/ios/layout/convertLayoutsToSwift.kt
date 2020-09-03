@@ -33,6 +33,7 @@ fun convertLayoutsToSwift(
 
     androidFolder.resolve("src/main/res/layout").walkTopDown()
         .filter { it.extension == "xml" }
+        .filter { !it.name.startsWith("android_") }
         .forEach { item ->
             log(item.toString())
             val output = item.translateLayoutXml(styles, converter).retabSwift()

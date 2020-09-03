@@ -76,6 +76,7 @@ internal fun HtmlTranslator.display() {
     element.handle("com.lightningkite.khrysalis.views.VideoPlayer") {
         out.name = "video"
         out.attributes["controls"] = "true"
+        out.attributes["crossorigin"] = "anonymous"
     }
 
     element.handle("com.lightningkite.khrysalis.views.android.HorizontalProgressBar") {

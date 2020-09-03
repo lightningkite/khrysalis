@@ -5,7 +5,7 @@
 //! Declares com.lightningkite.khrysalis.views.onClick>android.view.View
 import {range} from "iterable-operator";
 
-export function androidViewViewOnClick(this_: HTMLElement, disabledMilliseconds: number = 500, action: () => void): void {
+export function xViewOnClick(this_: HTMLElement, disabledMilliseconds: number = 500, action: () => void): void {
     let lastActivated = Date.now();
 
     this_.onclick = (_ev) => {
@@ -19,7 +19,7 @@ export function androidViewViewOnClick(this_: HTMLElement, disabledMilliseconds:
 }
 
 //! Declares com.lightningkite.khrysalis.views.onLongClick>android.view.View
-export function androidViewViewOnLongClick(this_: HTMLElement, action: () => void): void {
+export function xOnLongClick(this_: HTMLElement, action: () => void): void {
     this_.oncontextmenu = (_ev) => {
         _ev.stopPropagation();
         const it = _ev.target as HTMLElement;

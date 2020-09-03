@@ -140,15 +140,15 @@
 - id: kotlin.text.isNotBlank
   type: call
   template:
-    pattern: '!kotlinCharSequenceIsBlank(~this~)'
+    pattern: '!xCharSequenceIsBlank(~this~)'
     imports:
-      kotlinCharSequenceIsBlank: khrysalis/dist/kotlin/kotlin.text
+      xCharSequenceIsBlank: khrysalis/dist/kotlin/kotlin.text
 - id: kotlin.text.isNullOrBlank
   type: call
   template:
-    pattern: kotlinCharSequenceIsBlank(~this~)
+    pattern: xCharSequenceIsBlank(~this~)
     imports:
-      kotlinCharSequenceIsBlank: khrysalis/dist/kotlin/kotlin.text
+      xCharSequenceIsBlank: khrysalis/dist/kotlin/kotlin.text
 - id: kotlin.text.orEmpty
   type: call
   template: (~this~ ?? "")
@@ -158,15 +158,15 @@
 - id: kotlin.text.removePrefix
   type: call
   template:
-    pattern: kotlinStringSubstringAfter(~this~, ~0~, undefined)
+    pattern: xStringSubstringAfter(~this~, ~0~, undefined)
     imports:
-      kotlinStringSubstringAfter: khrysalis/dist/kotlin/kotlin.text
+      xStringSubstringAfter: khrysalis/dist/kotlin/kotlin.text
 - id: kotlin.text.removeSuffix
   type: call
   template:
-    pattern: kotlinStringSubstringBeforeLast(~this~, ~0~, undefined)
+    pattern: xStringSubstringBeforeLast(~this~, ~0~, undefined)
     imports:
-      kotlinStringSubstringBeforeLast: khrysalis/dist/kotlin/kotlin.text
+      xStringSubstringBeforeLast: khrysalis/dist/kotlin/kotlin.text
 - id: kotlin.text.replace
   type: call
   template: ~this~.replace(~0~, ~1~)
