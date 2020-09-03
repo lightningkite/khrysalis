@@ -9,11 +9,18 @@ import Foundation
 import UIKit
 
 public extension UIProgressView{
-    func bindInt(observable:ObservableProperty<Int64>){
+    func bindInt(observable:ObservableProperty<Int>){
         observable.subscribeBy{value in
             self.progress = Float(value / 100)
         }.until(self.removed)
     }
+    
+    func bindLong(observable:ObservableProperty<Int64>){
+        observable.subscribeBy{value in
+            self.progress = Float(value / 100)
+        }.until(self.removed)
+    }
+    
     
     func bindFloat(observable:ObservableProperty<Float>){
         observable.subscribeBy{value in

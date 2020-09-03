@@ -4,7 +4,7 @@ import RxSwift
 
 public extension Video {
     func thumbnail(timeMs: Int64 = 2000, size: CGPoint? = nil) -> Single<Image> {
-        return Single.create { (em: SingleEmitter<ImageBitmap>) in
+        return Single.create { (em: SingleEmitter<Image>) in
             let vid: AVAsset
             switch self {
             case let self as VideoRemoteUrl:

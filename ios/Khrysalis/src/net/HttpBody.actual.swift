@@ -94,7 +94,7 @@ public extension URL {
 
 //--- Image.toHttpBody
 fileprivate extension UIImage {
-    func resize(maxDimension: Int32) -> UIImage? {
+    func resize(maxDimension: Int) -> UIImage? {
         var newSize = CGSize.zero
         if self.size.width > self.size.height {
             newSize.width = CGFloat(maxDimension)
@@ -115,7 +115,7 @@ fileprivate extension UIImage {
     }
 }
 public extension Image {
-    func toHttpBody(maxDimension: Int32 = 2048) -> Single<HttpBody> {
+    func toHttpBody(maxDimension: Int = 2048) -> Single<HttpBody> {
         return self.load().flatMap { bmp in
             return Single.create { (em: SingleEmitter<HttpBody>) in
                 let small = bmp.size.width * bmp.scale <= CGFloat(maxDimension) && bmp.size.height * bmp.scale <= CGFloat(maxDimension) ? bmp : bmp.resize(maxDimension: maxDimension)
