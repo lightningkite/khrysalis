@@ -36,12 +36,28 @@ public enum HttpClient {
 
     //--- HttpClient.DELETE
     public static let DELETE: String = "DELETE"
+    
+    
+    //--- CleanUrl
+    //--- Encodes the url as needed such as replace a space with %20 in a query param.
+    //--- URL(string) does not encode a url, and will crash if a space exists in the query params or some other 'invalid' character
+    //--- Probably should be expanded to encode more parts of the url
+    public static func cleanURL(_ url:String)->String{
+        if url.contains("?"){
+            let front = url.substringBefore(delimiter: "?")
+            let back = url.substringAfter(delimiter: "?")
+            return "\(front)?\(back.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? back)"
+        }else{
+            return url
+        }
+    }
 
     //--- HttpClient.call(String, String, Map<String,String>, HttpBody? )
     public static var defaultOptions = HttpOptions()
     public static func call(url: String, method: String = "GET", headers: Dictionary<String, String> = [:], body: HttpBody? = nil, options: HttpOptions = HttpClient.defaultOptions) -> Single<HttpResponse> {
         print("HttpClient: Sending \(method) request to \(url) with headers \(headers)")
-        let urlObj = URL(string: url)!
+        print(cleanURL(url))
+        let urlObj = URL(string: cleanURL(url))!
         var single = Single.create { (emitter: SingleEmitter<HttpResponse>) in
             let completionHandler = { (data:Data?, response:URLResponse?, error:Error?) in
                 if let casted = response as? HTTPURLResponse, let data = data {
@@ -112,7 +128,7 @@ public enum HttpClient {
     public static func callWithProgress(url: String, method: String = "GET", headers: Dictionary<String, String> = [:], body: HttpBody? = nil, options: HttpOptions = HttpClient.defaultOptions) -> Pair<ObservableProperty<HttpProgress>, Single<HttpResponse>> {
         print("HttpClient: Sending \(method) request to \(url) with headers \(headers)")
         let toHold: Box<Array<Any>> = Box([])
-        let urlObj = URL(string: url)!
+        let urlObj = URL(string: cleanURL(url))!
         let progSubj = PublishSubject<HttpProgress>()
         var progObs: Observable<HttpProgress> = progSubj
         var single = Single.create { (emitter: SingleEmitter<HttpResponse>) in
@@ -200,7 +216,7 @@ public enum HttpClient {
     //--- HttpClient.call(String, String, Map<String,String>, Any? ,  @escaping()(code:Int,result:T?,error:String?)->Unit)
     public static func call<T: Decodable>(_ url: String, _ method: String = GET, _ headers: Dictionary<String, String> = [:], _ body: Encodable? = nil, _ onResult: @escaping (_ code: Int, _ result: T?, _ error: String?) -> Void) -> Void {
         print("HttpClient: Sending \(method) request to \(url) with headers \(headers)")
-        let urlObj = URL(string: url)!
+        let urlObj = URL(string: cleanURL(url))!
 
         let completionHandler = { (data:Data?, response:URLResponse?, error:Error?) in
             DispatchQueue.main.async {
@@ -254,7 +270,7 @@ public enum HttpClient {
     //--- HttpClient.callRaw(String, String, Map<String,String>, Any? ,  @escaping()(code:Int,result:String?,error:String?)->Unit)
     public static func callRaw(_ url: String, _ method: String = GET, _ headers: Dictionary<String, String> = [:], _ body: Encodable? = nil, _ onResult: @escaping (_ code: Int, _ result: String?, _ error: String?) -> Void) -> Void {
         print("HttpClient: Sending \(method) request to \(url) with headers \(headers)")
-        let urlObj = URL(string: url)!
+        let urlObj = URL(string: cleanURL(url))!
 
         let completionHandler = { (data:Data?, response:URLResponse?, error:Error?) in
             DispatchQueue.main.async {
@@ -301,7 +317,7 @@ public enum HttpClient {
     //--- HttpClient.callWithoutResult(String, String, Map<String,String>, Any? ,  @escaping()(code:Int,error:String?)->Unit)
     public static func callWithoutResult(_ url: String, _ method: String = GET, _ headers: Dictionary<String, String> = [:], _ body: Encodable? = nil, _ onResult: @escaping (_ code: Int, _ error: String?) -> Void) -> Void {
         print("HttpClient: Sending \(method) request to \(url) with headers \(headers)")
-        let urlObj = URL(string: url)!
+        let urlObj = URL(string: cleanURL(url))!
 
         let completionHandler = { (data:Data?, response:URLResponse?, error:Error?) in
             DispatchQueue.main.async {
@@ -485,7 +501,7 @@ public enum HttpClient {
     static public func webSocket(_ url: String) -> Observable<ConnectedWebSocket> {
         return Observable.using({ () -> ConnectedWebSocket in
             var out = ConnectedWebSocket(url: url)
-            var request = URLRequest(url: URL(string: url)!)
+            var request = URLRequest(url: URL(string: cleanURL(url))!)
             let socket = WebSocket(request: request)
             socket.delegate = out
             out.underlyingSocket = socket

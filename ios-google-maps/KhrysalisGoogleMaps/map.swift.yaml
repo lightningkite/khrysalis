@@ -124,3 +124,19 @@
     lambdaTransforms:
       0: ["_ev.latlng"]
 
+# Places AutoComplete
+- id: com.google.android.libraries.places.api.model.AutocompletePrediction.placeId
+  type: get
+  template: '~this~.placeID'
+- id: com.google.android.libraries.places.api.model.AutocompletePrediction.getFullText
+  type: call
+  template: '~this~.attributedFullText'
+- id: com.google.android.libraries.places.api.model.AutocompletePrediction.getSecondaryText
+  type: call
+  template: '~this~.attributedPrimaryText'
+- id: com.google.android.libraries.places.api.model.AutocompletePrediction.getPrimaryText
+  type: call
+  template: '~this~.attributedSecondaryText'
+- id: com.google.android.libraries.places.api.model.AutocompletePrediction.distanceMeters
+  type: get
+  template: '~this~.distanceMeters?.intValue'

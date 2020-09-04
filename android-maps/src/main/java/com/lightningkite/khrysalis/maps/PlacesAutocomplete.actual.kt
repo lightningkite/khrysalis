@@ -127,3 +127,6 @@ class PlacesAutocomplete(dependency: ViewDependency) {
         }
     }
 }
+
+val AutocompletePrediction.types:List<String>
+    get() = this.placeTypes.map { it.name }
