@@ -49,7 +49,7 @@ class KotlinSwiftCLP : CommandLineProcessor {
             KEY_PROJECT_NAME_NAME,
             "Name of the NPM project",
             "Name of the NPM project, specifically for handling equivalent imports correctly.",
-            required = false
+            required = true
         )
     )
 
@@ -70,7 +70,7 @@ class KotlinSwiftCR : ComponentRegistrar {
         AnalysisHandlerExtension.registerExtension(
             project,
             KotlinSwiftExtension(
-                configuration[KotlinSwiftCLP.KEY_PROJECT_NAME],
+                configuration[KotlinSwiftCLP.KEY_PROJECT_NAME]!!,
                 configuration[KotlinSwiftCLP.KEY_SWIFT_DEPENDENCIES] ?: listOf(),
                 configuration[KotlinSwiftCLP.KEY_OUTPUT_DIRECTORY]!!,
                 configuration[CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY]
@@ -80,7 +80,7 @@ class KotlinSwiftCR : ComponentRegistrar {
 }
 
 class KotlinSwiftExtension(
-    val projectName: String? = null,
+    val projectName: String,
     val dependencies: List<File>,
     val output: File,
     val collector: MessageCollector?
@@ -173,7 +173,7 @@ class KotlinSwiftExtension(
         }
         collector?.report(CompilerMessageSeverity.INFO, "Writing manifest file...")
         output.resolve("fqnames.txt").bufferedWriter().use {
-            sequenceOf(projectName ?: "Module").plus(
+            sequenceOf(projectName).plus(
                 files.asSequence()
                     .flatMap { f ->
                         f.declarations.asSequence()
