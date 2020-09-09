@@ -20,7 +20,7 @@ import com.lightningkite.khrysalis.views.android.ViewTransition
  *
  */
 
-fun SwapView.bindStack(dependency: ViewDependency, obs: ObservableStack<ViewGenerator>) {
+fun <T: ViewGenerator>SwapView.bindStack(dependency: ViewDependency, obs: ObservableStack<T>) {
     var currentData = obs.stack.lastOrNull()
     var currentStackSize = obs.stack.size
     var currentView = currentData?.generate(dependency) ?: View(context)
