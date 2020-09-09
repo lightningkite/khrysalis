@@ -82,7 +82,7 @@ public extension Path {
         let center = ({ () -> CGPoint in
             let numerator = transformedRadius.width.squared * transformedRadius.height.squared - transformedRadius.width.squared * p1.y.squared - transformedRadius.height.squared * p1.x.squared
             let denom = transformedRadius.width.squared * p1.y.squared + transformedRadius.height.squared * p1.x.squared
-            let lhs = denom == 0 ? 0 : (largeArcFlag == sweepFlag ? -1 : 1) * sqrt(numerator / denom)
+            let lhs = denom == 0 ? 0 : (largeArcFlag == sweepFlag ? -1 : 1) * sqrt(max(numerator, 0) / denom)
             let cxp = lhs * transformedRadius.width * p1.y / transformedRadius.height
             let cyp = lhs * -transformedRadius.height * p1.x / transformedRadius.width
             let c = CGPoint(
