@@ -25,7 +25,34 @@ extension UIView {
 }
 
 extension UISegmentedControl {
+    public func materialTabStyle(color: UIColor) {
+        if #available(iOS 13.0, *) {
+            selectedSegmentTintColor = .clear
+        }
+        tintColor = .clear
+        backgroundColor = .clear
+        
+        let imageBounds = CGRect(x: 0, y: 0, width: 1, height: 1)
+        UIGraphicsBeginImageContextWithOptions(imageBounds.size, false, 1)
+        UIColor.clear.setFill()
+        UIRectFill(imageBounds)
+        let clearImage = UIGraphicsGetImageFromCurrentImageContext()
+        UIGraphicsEndImageContext()
+        
+        setBackgroundImage(clearImage, for: .normal, barMetrics: .default)
+        setBackgroundImage(clearImage, for: .selected, barMetrics: .default)
+        setBackgroundImage(clearImage, for: .highlighted, barMetrics: .default)
+        setBackgroundImage(clearImage, for: [.highlighted, .selected], barMetrics: .default)
+        setDividerImage(clearImage, forLeftSegmentState: .normal, rightSegmentState: .normal, barMetrics: .default)
 
+        
+        
+        setBackgroundImage(clearImage, for: .normal, barMetrics: UIBarMetrics.default)
+        setBackgroundImage(clearImage, for: .focused, barMetrics: UIBarMetrics.default)
+        setBackgroundImage(clearImage, for: .highlighted, barMetrics: UIBarMetrics.default)
+        setBackgroundImage(clearImage, for: .selected, barMetrics: UIBarMetrics.default)
+        addIndicator(color: color)
+    }
     public func getSegment(index: Int) -> UIView? {
         let title = self.titleForSegment(at: index)
         for s in subviews {

@@ -6,10 +6,7 @@ import com.lightningkite.khrysalis.ios.*
 val LayoutConverter.Companion.navigationViews
     get() = LayoutConverter(
         viewTypes = ViewType.mapOf(
-            ViewType("com.google.android.material.tabs.TabLayout", "UISegmentedControl", "View") { node ->
-                appendln("view.tintColor = .clear")
-                appendln("view.backgroundColor = .clear")
-
+            ViewType("com.google.android.material.tabs.TabLayout", "UISegmentedControlSquare", "View") { node ->
                 node.allAttributes["app:tabMode"]?.let {
                     when (it) {
                         "scrollable" -> appendln("view.apportionsSegmentWidthsByContent = true")
@@ -41,7 +38,7 @@ val LayoutConverter.Companion.navigationViews
                 for: .normal
                 )"""
                         )
-                        appendln("view.addIndicator(color: $it)")
+                        appendln("view.materialTabStyle(color: $it)")
                 }) {
                     val it = "UIColor.black"
                     appendln(
@@ -56,7 +53,7 @@ val LayoutConverter.Companion.navigationViews
                 for: .normal
                 )"""
                     )
-                    appendln("view.addIndicator(color: $it)")
+                    appendln("view.materialTabStyle(color: $it)")
                 }
             },
             ViewType(
