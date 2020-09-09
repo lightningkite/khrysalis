@@ -7,26 +7,10 @@
 //
 
 import UIKit
+import UITextView_Placeholder
 
 
 public extension UITextView {
-    var placeholder: String {
-        get {
-            return text
-        }
-        set(value) {
-            text = value
-        }
-    }
-    
-    var attributedPlaceholder: NSAttributedString {
-        get {
-            return NSAttributedString(string: text)
-        }
-        set(value) {
-            text = value.string
-        }
-    }
     var padding: UIEdgeInsets {
         get { return self.textContainerInset }
         set(value) { self.textContainerInset = value }
