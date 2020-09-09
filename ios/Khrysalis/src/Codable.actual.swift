@@ -164,20 +164,52 @@ public extension String {
 
 public extension Decodable {
     static func fromJsonData(_ data: Data, coder: JSONDecoder = decoder) throws -> Self {
-        if let result = try? coder.decode(Self.self, from: data) {
+        var err: Error? = nil
+        do {
+            let result = try decoder.decode(Self.self, from: data)
             return result
+        } catch {
+            //Check error here
+            err = error
         }
         let dataString = String(data: data, encoding: .utf8)!
         let fixedData = ("[" + dataString + "]").data(using: .utf8)!
-        let result = try coder.decode(Array<Self>.self, from: fixedData)
-        return result[0]
+        do {
+            let result = try decoder.decode(Array<Self>.self, from: fixedData)
+            return result[0]
+        } catch {
+            err = error
+        }
+        if let err = err {
+            print("Error decoding JSON into \(Self.self): \(err)")
+        }
+        throw err ?? IllegalStateException()
     }
     static func fromJsonString(_ string: String, coder: JSONDecoder = decoder) throws -> Self {
         if let data = string.data(using: .utf8) {
-            return try fromJsonData(data, coder: coder)
-        } else {
-            throw Exception("Couldn't turn the string into data")
+            var err: Error? = nil
+            do {
+                let result = try decoder.decode(Self.self, from: data)
+                return result
+            } catch {
+                //Check error here
+                err = error
+            }
+            let dataString = String(data: data, encoding: .utf8)!
+            let fixedData = ("[" + dataString + "]").data(using: .utf8)!
+            do {
+                let result = try decoder.decode(Array<Self>.self, from: fixedData)
+                return result[0]
+            } catch {
+                err = error
+            }
+            if let err = err {
+                print("Error decoding JSON into \(Self.self): \(err)")
+            }
+            throw err ?? IllegalStateException()
         }
+        print("Error reading JSON into UTF8")
+        throw IllegalArgumentException()
     }
 }
 
