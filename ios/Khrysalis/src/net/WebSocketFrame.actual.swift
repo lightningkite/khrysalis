@@ -7,7 +7,7 @@ import RxRelay
 
 
 
-public class WebSocketFrame {
+public class WebSocketFrame: KStringable {
     
     public var binary: Data? 
     public var text: String? 

@@ -14,7 +14,7 @@ import Foundation
 //--- DateAlone.comparable
 //--- DateAlone.dayOfWeek
 //--- DateAlone.}
-public class DateAlone: Equatable, Hashable, Codable {
+public class DateAlone: Equatable, Hashable, Codable, KStringable {
 
     required public init(from decoder: Decoder) throws {
         let string: String = try decoder.singleValueContainer().decode(String.self)

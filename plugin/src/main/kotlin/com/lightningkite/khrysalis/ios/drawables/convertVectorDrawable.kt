@@ -219,4 +219,7 @@ private fun Appendable.pathDataToSwift(pathData: String) {
         stringIndex = nextLetterIndex
         if (nextLetterIndex == pathData.length) break
     }
+    if(pathData.endsWith('z', true)) {
+        appendln("        path.closeSubpath()")
+    }
 }

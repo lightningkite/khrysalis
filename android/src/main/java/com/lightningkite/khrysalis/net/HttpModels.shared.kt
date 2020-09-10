@@ -38,10 +38,16 @@ data class HttpOptions(
 )
 
 enum class HttpCacheMode {
+    /** Use fresh cache matches, use conditional request for stale cache matches, and a full request if not present in cache **/
     Default,
+    /** Force full call and don't store the result **/
     NoStore,
+    /** Force full call, but store the result **/
     Reload,
+    /** Verify with server that the cached copy is correct **/
     NoCache,
+    /** Use literally any cached data even if it's out of date, if missing make call **/
     ForceCache,
+    /** Use literally any cached data even if it's out of date, error if not present **/
     OnlyIfCached
 }

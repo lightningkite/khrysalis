@@ -7,13 +7,27 @@ import org.jetbrains.kotlin.psi.stubs.elements.KtStubElementTypes
 
 fun SwiftTranslator.registerLiterals() {
     handle<KtSimpleNameStringTemplateEntry> {
+        val markedNull = typedRule.expression?.resolvedExpressionTypeInfo?.type?.isMarkedNullable == true
         -"\\("
+        if(markedNull){
+            -"("
+        }
         -typedRule.expression
+        if(markedNull) {
+            -").toString()"
+        }
         -")"
     }
     handle<KtBlockStringTemplateEntry> {
+        val markedNull = typedRule.expression?.resolvedExpressionTypeInfo?.type?.isMarkedNullable == true
         -"\\("
+        if(markedNull){
+            -"("
+        }
         -typedRule.expression
+        if(markedNull) {
+            -").toString()"
+        }
         -")"
     }
     handle<KtEscapeStringTemplateEntry> {
