@@ -26,6 +26,7 @@ extension UIView {
 
 extension UISegmentedControl {
     public func materialTabStyle(color: UIColor) {
+        
         if #available(iOS 13.0, *) {
             selectedSegmentTintColor = .clear
         }
@@ -51,9 +52,12 @@ extension UISegmentedControl {
         setBackgroundImage(clearImage, for: .focused, barMetrics: UIBarMetrics.default)
         setBackgroundImage(clearImage, for: .highlighted, barMetrics: UIBarMetrics.default)
         setBackgroundImage(clearImage, for: .selected, barMetrics: UIBarMetrics.default)
-        addIndicator(color: color)
+        
+        delay(milliseconds: 16) {
+            self.addIndicator(color: color)
+        }
     }
-    public func getSegment(index: Int) -> UIView? {
+    func getSegment(index: Int) -> UIView? {
         let title = self.titleForSegment(at: index)
         for s in subviews {
             if (s.find { ($0 as? UILabel)?.text == title }) != nil {
@@ -70,12 +74,13 @@ extension UISegmentedControl {
         addSubview(buttonBar)
 
         let getNewBounds: ()->CGRect = { [weak self, weak buttonBar] in
+            guard let self = self else { return .zero }
+            let selectedSegmentIndex = min(max(self.selectedSegmentIndex, 0), self.numberOfSegments - 1)
             guard
-                let self = self,
-                self.numberOfSegments > 0, self.selectedSegmentIndex >= 0,
-                self.selectedSegmentIndex < self.numberOfSegments,
-                let segment = self.getSegment(index: self.selectedSegmentIndex)
-                else { return CGRect.zero }
+                let segment = self.getSegment(index: selectedSegmentIndex)
+                else {
+                return CGRect.zero
+            }
             let newBounds = CGRect(
                 x: segment.frame.origin.x,
                 y: self.bounds.size.height - size,
@@ -86,7 +91,8 @@ extension UISegmentedControl {
             return newBounds
         }
 
-        buttonBar.frame = getNewBounds()
+        let newBounds = getNewBounds()
+        buttonBar.frame = newBounds
 
         var midAnimation = false
 
@@ -103,7 +109,7 @@ extension UISegmentedControl {
             }
         }
 
-        self.addAction(for: .valueChanged, action: { [weak self, weak buttonBar] in
+        self.addAction(for: .allEvents, action: { [weak self, weak buttonBar] in
             guard let buttonBar = buttonBar else { return }
             let newBounds = getNewBounds()
             if newBounds != buttonBar.frame {

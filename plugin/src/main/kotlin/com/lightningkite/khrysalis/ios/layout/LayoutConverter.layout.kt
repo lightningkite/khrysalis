@@ -7,7 +7,7 @@ val LayoutConverter.Companion.layoutViews
     get() = LayoutConverter(
         viewTypes = ViewType.mapOf(
             ViewType("com.lightningkite.khrysalis.views.android.SwapView", "SwapView", "View") { node -> },
-            ViewType("androidx.core.widget.NestedScrollView", "UIScrollView", "ScrollView") { node -> },
+            ViewType("androidx.core.widget.NestedScrollView", "ScrollViewVertical", "ScrollView") { node -> },
             ViewType("ScrollView", "ScrollViewVertical", "View") { node ->
                 node.attributeAsBoolean("android:fillViewport")?.let {
                     appendln("view.fillViewport = $it")

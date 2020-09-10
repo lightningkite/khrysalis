@@ -43,13 +43,15 @@ public extension UISegmentedControl {
                 for entry in tabs {
                     self.insertSegment(withTitle: toString(entry), at: self.numberOfSegments, animated: false)
                 }
-                self.addAction(for: .valueChanged, action: { [weak self, weak selected] in
-                    selected?.value = tabs[self?.selectedSegmentIndex ?? 0]
-                })
-                selected.subscribeBy { value in
-                    self.selectedSegmentIndex = tabs.firstIndex(of: value) ?? 0
-                }.until(self.removed)
         }).until(self.removed)
+        self.addAction(for: .valueChanged, action: { [weak self, weak selected] in
+            if let i = self?.selectedSegmentIndex, i >= 0, i < options.value.count {
+                selected?.value = options.value[i]
+            }
+        })
+        selected.subscribeBy { value in
+            self.selectedSegmentIndex = options.value.firstIndex(of: value) ?? 0
+        }.until(self.removed)
     }
     
     func bind<T:Equatable>(_ options:ObservableProperty<Array<T>>, _ selected: MutableObservableProperty<T>, _ allowReselect:Bool = false, _ toString: @escaping (T)->String) -> Void{
