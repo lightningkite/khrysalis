@@ -34,11 +34,10 @@ import Khrysalis
 public func generateBarCode(text:String, width:Int = 200, height:Int = 200) -> Single<Image>{
     
     let data = text.data(using: .isoLatin1)
-    guard let filter = CIFilter(name: "CICode128BarcodeGenerator") else {
+    guard let filter = CIFilter(name: "CIQRCodeGenerator") else {
         return Single.error(Exception("Could not generate a barcode."))
     }
     filter.setValue(data, forKey: "inputMessage")
-    filter.setValue(7.0, forKey:"inputQuietSpace")
     guard var ciImage = filter.outputImage else {
         return Single.error(Exception("Could not generate a barcode."))
     }
