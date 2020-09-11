@@ -87,7 +87,6 @@ extension UISegmentedControl {
                 width: segment.frame.size.width,
                 height: size
             )
-            print("New bounds \(newBounds)")
             return newBounds
         }
 
