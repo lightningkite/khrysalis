@@ -16,6 +16,16 @@ public extension UIImageView {
     func bindImage(image: ObservableProperty<Image?>) -> Void {
         return bindImage(image)
     }
+    
+    func bindImage(_ image: ObservableProperty<Image>) -> Void {
+        image.subscribeBy { it in
+            self.loadImage(it)
+        }.until(self.removed)
+    }
+    func bindImage(image: ObservableProperty<Image>) -> Void {
+        return bindImage(image)
+    }
+    
     func bindVideoThumbnail(video: ObservableProperty<Video?>) -> Void {
         video.subscribeBy { it in
             self.loadVideoThumbnail(video: it)

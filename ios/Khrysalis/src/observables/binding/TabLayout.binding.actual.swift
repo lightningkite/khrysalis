@@ -10,9 +10,16 @@ public extension UISegmentedControl {
         for entry in tabs {
             self.insertSegment(withTitle: entry, at: self.numberOfSegments, animated: false)
         }
-        self.addAction(for: .valueChanged, action: { [weak self, weak selected] in
-            selected?.value = Int(self?.selectedSegmentIndex ?? 0)
-        })
+        if allowReselect{
+            //TODO: Make this properly allow reselect. I tried changes .valueChanged to .touchUpInside like they recommend online but it was unsuccessful.
+            self.addAction(for: .valueChanged, action: { [weak self, weak selected] in
+                selected?.value = Int(self?.selectedSegmentIndex ?? 0)
+            })
+        }else{
+            self.addAction(for: .valueChanged, action: { [weak self, weak selected] in
+                selected?.value = Int(self?.selectedSegmentIndex ?? 0)
+            })
+        }
         selected.subscribeBy { value in
             self.selectedSegmentIndex = Int(value)
         }.until(self.removed)
@@ -25,9 +32,16 @@ public extension UISegmentedControl {
         for entry in tabs {
             self.insertSegment(withTitle: toString(entry), at: self.numberOfSegments, animated: false)
         }
-        self.addAction(for: .valueChanged, action: { [weak self, weak selected] in
-            selected?.value = tabs[self?.selectedSegmentIndex ?? 0]
-        })
+        if allowReselect {
+            //TODO: Make this properly allow reselect. I tried changes .valueChanged to .touchUpInside like they recommend online but it was unsuccessful.
+            self.addAction(for: .valueChanged, action: { [weak self, weak selected] in
+                selected?.value = tabs[self?.selectedSegmentIndex ?? 0]
+            })
+        }else{
+            self.addAction(for: .valueChanged, action: { [weak self, weak selected] in
+                selected?.value = tabs[self?.selectedSegmentIndex ?? 0]
+            })
+        }
         selected.subscribeBy { value in
             self.selectedSegmentIndex = tabs.firstIndex(of: value) ?? 0
         }.until(self.removed)
@@ -44,11 +58,20 @@ public extension UISegmentedControl {
                     self.insertSegment(withTitle: toString(entry), at: self.numberOfSegments, animated: false)
                 }
         }).until(self.removed)
-        self.addAction(for: .valueChanged, action: { [weak self, weak selected] in
-            if let i = self?.selectedSegmentIndex, i >= 0, i < options.value.count {
-                selected?.value = options.value[i]
-            }
-        })
+        if allowReselect {
+            //TODO: Make this properly allow reselect. I tried changes .valueChanged to .touchUpInside like they recommend online but it was unsuccessful.
+            self.addAction(for: .valueChanged, action: { [weak self, weak selected] in
+                if let i = self?.selectedSegmentIndex, i >= 0, i < options.value.count {
+                    selected?.value = options.value[i]
+                }
+            })
+        } else{
+            self.addAction(for: .valueChanged, action: { [weak self, weak selected] in
+                if let i = self?.selectedSegmentIndex, i >= 0, i < options.value.count {
+                    selected?.value = options.value[i]
+                }
+            })
+        }
         selected.subscribeBy { value in
             self.selectedSegmentIndex = options.value.firstIndex(of: value) ?? 0
         }.until(self.removed)

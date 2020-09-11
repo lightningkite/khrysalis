@@ -132,7 +132,7 @@ public class DateAlone: Equatable, Hashable, Codable, KStringable {
         self.init(year: year, month: month, day: day)
     }
 
-    func toString() -> String {
+    public func toString() -> String {
         return "\(year)-\(month)-\(day)"
     }
 }

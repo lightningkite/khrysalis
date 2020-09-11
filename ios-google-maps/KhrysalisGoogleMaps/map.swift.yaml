@@ -125,6 +125,9 @@
       0: ["_ev.latlng"]
 
 # Places AutoComplete
+- id: com.google.android.libraries.places.api.model.Place
+  type: type
+  template: GMSPlace
 - id: com.google.android.libraries.places.api.model.AutocompletePrediction.placeId
   type: get
   template: '~this~.placeID'
@@ -140,3 +143,11 @@
 - id: com.google.android.libraries.places.api.model.AutocompletePrediction.distanceMeters
   type: get
   template: '~this~.distanceMeters?.intValue'
+
+
+# SpannableString
+
+- id: kotlin.Any.toString
+  type: call
+  actualReceiver: android.text.SpannableString
+  template: ~this~.string
