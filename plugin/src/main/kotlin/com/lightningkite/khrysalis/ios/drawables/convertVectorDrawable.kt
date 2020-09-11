@@ -30,8 +30,20 @@ fun convertVectorDrawable(name: String, node: XmlNode, out: Appendable) {
 
     with(out) {
         appendln("static let $name: Drawable = Drawable { (view: UIView?) -> CALayer in ")
-        appendln("    let scaleX: CGFloat = CGFloat(${node.attributeAsSwiftDimension("android:width") ?: "10"}) / ${node.attributeAsDouble("android:viewportWidth") ?: "10"}")
-        appendln("    let scaleY: CGFloat = CGFloat(${node.attributeAsSwiftDimension("android:height") ?: "10"}) / ${node.attributeAsDouble("android:viewportHeight") ?: "10"}")
+        appendln(
+            "    let scaleX: CGFloat = CGFloat(${node.attributeAsSwiftDimension("android:width") ?: "10"}) / ${
+                node.attributeAsDouble(
+                    "android:viewportWidth"
+                ) ?: "10"
+            }"
+        )
+        appendln(
+            "    let scaleY: CGFloat = CGFloat(${node.attributeAsSwiftDimension("android:height") ?: "10"}) / ${
+                node.attributeAsDouble(
+                    "android:viewportHeight"
+                ) ?: "10"
+            }"
+        )
         appendln("    let layer = CALayer()")
         node.children.filter { it.name == "path" }.forEach { subnode ->
             subnode.children
@@ -41,6 +53,12 @@ fun convertVectorDrawable(name: String, node: XmlNode, out: Appendable) {
 
                     appendln("    layer.addSublayer({")
                     appendln("        let mask = CAShapeLayer()")
+                    subnode.allAttributes["android:fillType"]?.let {
+                        when (it) {
+                            "evenOdd" -> appendln("        mask.fillRule = .evenOdd")
+                            else -> {}
+                        }
+                    }
                     subnode.allAttributes["android:pathData"]?.let { pathData ->
                         appendln("        let path = CGMutablePath()")
                         pathDataToSwift(pathData)
@@ -50,12 +68,12 @@ fun convertVectorDrawable(name: String, node: XmlNode, out: Appendable) {
                     appendln("        gradient.mask = mask")
                     gradientNode.attributeAsDouble("android:startX")?.let { x ->
                         gradientNode.attributeAsDouble("android:startY")?.let { y ->
-                            appendln("        gradient.startPoint = CGPoint(x: ${x/width}, y: ${y/height})")
+                            appendln("        gradient.startPoint = CGPoint(x: ${x / width}, y: ${y / height})")
                         }
                     }
                     gradientNode.attributeAsDouble("android:endX")?.let { x ->
                         gradientNode.attributeAsDouble("android:endY")?.let { y ->
-                            appendln("        gradient.endPoint = CGPoint(x: ${x/width}, y: ${y/height})")
+                            appendln("        gradient.endPoint = CGPoint(x: ${x / width}, y: ${y / height})")
                         }
                     }
                     val colors = gradientNode.children.filter { it.name == "item" }.mapNotNull {
@@ -69,14 +87,20 @@ fun convertVectorDrawable(name: String, node: XmlNode, out: Appendable) {
                 } ?: run {
                 appendln("    layer.addSublayer({")
                 appendln("        let sublayer = CAShapeLayer()")
+                subnode.allAttributes["android:fillType"]?.let {
+                    when (it) {
+                        "evenOdd" -> appendln("        sublayer.fillRule = .evenOdd")
+                        else -> {}
+                    }
+                }
                 subnode.allAttributes["android:pathData"]?.let { pathData ->
                     appendln("        let path = CGMutablePath()")
                     pathDataToSwift(pathData)
                     appendln("        sublayer.path = path")
                 }
-                if(!setToColor(subnode, "android:fillColor") { it, s ->
-                    appendln("        sublayer.fillColor = $it.cgColor")
-                }) {
+                if (!setToColor(subnode, "android:fillColor") { it, s ->
+                        appendln("        sublayer.fillColor = $it.cgColor")
+                    }) {
                     appendln("        sublayer.fillColor = nil")
                 }
                 setToColor(subnode, "android:strokeColor") { it, s ->
@@ -219,7 +243,7 @@ private fun Appendable.pathDataToSwift(pathData: String) {
         stringIndex = nextLetterIndex
         if (nextLetterIndex == pathData.length) break
     }
-    if(pathData.endsWith('z', true)) {
+    if (pathData.endsWith('z', true)) {
         appendln("        path.closeSubpath()")
     }
 }
