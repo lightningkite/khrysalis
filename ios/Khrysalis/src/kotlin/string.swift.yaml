@@ -130,7 +130,7 @@
 
 - id: kotlin.Any.toString
   type: call
-  template: 'String(describing: ~this~)'
+  template: 'String(kotlin: ~this~)'
 
 # CharSequence
 - id: kotlin.CharSequence.plus

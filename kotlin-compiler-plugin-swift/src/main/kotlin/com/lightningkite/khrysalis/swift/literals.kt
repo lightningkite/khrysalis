@@ -10,11 +10,11 @@ fun SwiftTranslator.registerLiterals() {
         val markedNull = typedRule.expression?.resolvedExpressionTypeInfo?.type?.isMarkedNullable == true
         -"\\("
         if(markedNull){
-            -"("
+            -"String(kotlin: "
         }
         -typedRule.expression
         if(markedNull) {
-            -").toString()"
+            -")"
         }
         -")"
     }
@@ -22,11 +22,11 @@ fun SwiftTranslator.registerLiterals() {
         val markedNull = typedRule.expression?.resolvedExpressionTypeInfo?.type?.isMarkedNullable == true
         -"\\("
         if(markedNull){
-            -"("
+            -"String(kotlin: "
         }
         -typedRule.expression
         if(markedNull) {
-            -").toString()"
+            -")"
         }
         -")"
     }

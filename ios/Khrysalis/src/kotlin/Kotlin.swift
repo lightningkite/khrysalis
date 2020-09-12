@@ -48,6 +48,16 @@ public func takeUnless<T>(_ value: T?, _ condition: (T)->Bool)->T? {
     return nil
 }
 
+public extension String {
+    init(kotlin: Any) {
+        if let opt = kotlin as? OptionalProtocol {
+            self.init(kotlin: opt.finalValue)
+        } else {
+            self.init(describing: kotlin)
+        }
+    }
+}
+
 public struct Pair<A, B> {
     public let first: A
     public let second: B

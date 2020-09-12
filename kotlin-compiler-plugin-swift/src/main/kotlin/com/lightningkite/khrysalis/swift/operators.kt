@@ -70,7 +70,6 @@ fun SwiftTranslator.registerOperators() {
         priority = 10
     ) {
         doSuper()
-        1 until 20
         val opName = typedRule.resolvedFunction?.name?.asString()
         val (_, isBinary, operator) = operatorsByName[opName]!!
         val useStatic = true
@@ -409,7 +408,7 @@ fun SwiftTranslator.registerOperators() {
         -ArgumentsList(
             on = typedRule.functionDescriptor,
             resolvedCall = typedRule.resolvedCall!!,
-            prependArguments = if (typedRule.functionDescriptor.extensionReceiverParameter != null) listOf(left) else listOf()
+            prependArguments = if (doubleReceiver) listOf(left) else listOf()
         )
         if (typedRule.operationToken == KtTokens.NOT_IN || typedRule.operationToken == KtTokens.EXCLEQ) {
             -")"

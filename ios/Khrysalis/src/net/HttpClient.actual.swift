@@ -46,7 +46,11 @@ public enum HttpClient {
         if url.contains("?"){
             let front = url.substringBefore(delimiter: "?")
             let back = url.substringAfter(delimiter: "?")
-            return "\(front)?\(back.addingPercentEncoding(withAllowedCharacters: .urlQueryAllowed) ?? back)"
+            let backParts = back.split(separator: "&")
+            let fixedBack = backParts.joinToString("&") {
+                $0.addingPercentEncoding(withAllowedCharacters: CharacterSet.urlQueryAllowed.union( CharacterSet(charactersIn: "%"))) ?? String($0)
+            }
+            return "\(front)?\(fixedBack)"
         }else{
             return url
         }
@@ -61,7 +65,7 @@ public enum HttpClient {
         var single = Single.create { (emitter: SingleEmitter<HttpResponse>) in
             let completionHandler = { (data:Data?, response:URLResponse?, error:Error?) in
                 if let casted = response as? HTTPURLResponse, let data = data {
-                    print("HttpClient: Response from \(method) request to \(url) with headers \(headers): \(casted.statusCode)")
+                    print("HttpClient: Response from \(method) request to \(urlObj) with headers \(headers): \(casted.statusCode)")
                     emitter.onSuccess(HttpResponse(response: casted, data: data))
                 } else {
                     print("HttpClient: ERROR!  Response is not URLResponse")

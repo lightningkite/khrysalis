@@ -8,16 +8,6 @@
 
 import Foundation
 
-public extension Optional {
-    func toString() -> String {
-        if let self = self {
-            return String(describing: self)
-        } else {
-            return "null"
-        }
-    }
-}
-
 public protocol OptionalProtocol {
     var finalValue: Any { get }
 }

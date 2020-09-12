@@ -124,6 +124,7 @@ open class SwapView: UIView {
         if let new = to {
             if self.hiding {
                 visibility = View.VISIBLE
+                self.hiding = false
                 alpha = 1
                 print("Am I in layout? \(includeInLayout)")
                 setNeedsLayout()
