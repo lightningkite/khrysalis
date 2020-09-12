@@ -1,5 +1,8 @@
 package com.lightningkite.khrysalis.ios.layout
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
+import com.lightningkite.khrysalis.android.layout.AndroidLayoutFile
 import com.lightningkite.khrysalis.log
 import com.lightningkite.khrysalis.ios.swift.retabSwift
 import com.lightningkite.khrysalis.utils.camelCase
@@ -31,14 +34,16 @@ fun convertLayoutsToSwift(
             }
         }
 
-    androidFolder.resolve("src/main/res/layout").walkTopDown()
-        .filter { it.extension == "xml" }
-        .filter { !it.name.startsWith("android_") }
-        .forEach { item ->
-            log(item.toString())
-            val output = item.translateLayoutXml(styles, converter).retabSwift()
-            iosFolder.resolve("swiftResources/layouts").resolve(item.nameWithoutExtension.camelCase().capitalize() + "Xml.swift").also{
-                it.parentFile.mkdirs()
-            }.writeTextIfDifferent(output)
-        }
+    val androidFiles = jacksonObjectMapper().readValue<Map<String, AndroidLayoutFile>>(
+        androidFolder.resolve("build/layout/summary.json")
+    )
+
+    for((name, layout) in androidFiles){
+        log("Converting layout ${layout.fileName}.xml")
+        val file = androidFolder.resolve("src/main/res/layout/${layout.fileName}.xml")
+        val output = file.translateLayoutXml(layout, styles, converter).retabSwift()
+        iosFolder.resolve("swiftResources/layouts").resolve(file.nameWithoutExtension.camelCase().capitalize() + "Xml.swift").also{
+            it.parentFile.mkdirs()
+        }.writeTextIfDifferent(output)
+    }
 }

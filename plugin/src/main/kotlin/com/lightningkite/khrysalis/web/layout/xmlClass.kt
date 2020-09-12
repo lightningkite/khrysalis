@@ -110,21 +110,21 @@ fun AndroidLayoutFile.toTypescript(
     out.appendln("xmlRoot!: HTMLElement;")
     bindings.values.forEach {
         if(it.optional){
-            out.appendln(it.run { "${name.safeJsIdentifier()}?: ${type.toTsType()};" })
+            out.appendln(it.run { "${name.safeJsIdentifier()}: ${type.toTsType()} | null;" })
         } else {
             out.appendln(it.run { "${name.safeJsIdentifier()}!: ${type.toTsType()};" })
         }
     }
     delegateBindings.values.forEach {
         if(it.optional){
-            out.appendln(it.run { "${name}Delegate?: ${type.toTsType()};" })
+            out.appendln(it.run { "${name}Delegate: ${type.toTsType()} | null;" })
         } else {
             out.appendln(it.run { "${name}Delegate!: ${type.toTsType()};" })
         }
     }
     sublayouts.values.forEach {
         if(it.optional){
-            out.appendln(it.run { "${name.safeJsIdentifier()}?: ${layoutXmlClass};" })
+            out.appendln(it.run { "${name.safeJsIdentifier()}: ${layoutXmlClass} | null;" })
         } else {
             out.appendln(it.run { "${name.safeJsIdentifier()}!: ${layoutXmlClass};" })
         }

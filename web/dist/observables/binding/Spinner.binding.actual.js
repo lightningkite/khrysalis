@@ -8,6 +8,7 @@ const DisposeCondition_actual_1 = require("../../rx/DisposeCondition.actual");
 const StandardObservableProperty_shared_1 = require("../StandardObservableProperty.shared");
 const Language_1 = require("../../kotlin/Language");
 const viewAttached_1 = require("../../views/viewAttached");
+const FlatMappedObservableProperty_shared_1 = require("../FlatMappedObservableProperty.shared");
 //! Declares com.lightningkite.khrysalis.observables.binding.bind>android.widget.Spinner
 function spinnerBindAdvanced(this_, options, selected, makeView) {
     const observables = options.value.map((x) => {
@@ -94,4 +95,48 @@ function spinnerBind(this_, options, selected, toString = (x) => `${x}`) {
     };
 }
 exports.spinnerBind = spinnerBind;
+//! Declares com.lightningkite.khrysalis.observables.binding.bindString>android.widget.Spinner
+function spinnerBindString(this_, options, selected, toString) {
+    const observables = options.value.map((x) => {
+        return new StandardObservableProperty_shared_1.StandardObservableProperty(x);
+    });
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(options, undefined, undefined, (options) => {
+        //correct number of options
+        const diff = options.length - this_.options.length;
+        if (diff > 0) {
+            for (let i = 0; i < diff; i++) {
+                const newOpt = document.createElement("option");
+                newOpt.value = (options.length - 1 - diff + i).toString();
+                const newObs = new StandardObservableProperty_shared_1.StandardObservableProperty(options[options.length - diff + i]);
+                DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(FlatMappedObservableProperty_shared_1.xObservablePropertyFlatMap(newObs, toString), undefined, undefined, (x) => {
+                    newOpt.innerText = x;
+                }), DisposeCondition_actual_1.xViewRemovedGet(newOpt));
+                this_.options.add(newOpt);
+                observables.push(newObs);
+            }
+        }
+        else if (diff < 0) {
+            for (let i = 0; i < -diff; i++) {
+                const opt = this_.options.item(this_.options.length - 1);
+                viewAttached_1.triggerDetatchEvent(opt);
+                this_.options.remove(this_.options.length - 1);
+                observables.pop();
+            }
+        }
+        for (let i = 0; i < options.length; i++) {
+            observables[i].value = options[i];
+        }
+        this_.selectedIndex = options.findIndex((x) => Language_1.safeEq(selected.value, x));
+    }), DisposeCondition_actual_1.xViewRemovedGet(this_));
+    DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(selected, undefined, undefined, (sel) => {
+        this_.selectedIndex = options.value.findIndex((x) => Language_1.safeEq(sel, x));
+    }), DisposeCondition_actual_1.xViewRemovedGet(this_));
+    this_.oninput = (ev) => {
+        const sel = options.value[this_.selectedIndex];
+        if (sel !== undefined) {
+            selected.value = sel;
+        }
+    };
+}
+exports.spinnerBindString = spinnerBindString;
 //# sourceMappingURL=Spinner.binding.actual.js.map

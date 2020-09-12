@@ -114,7 +114,7 @@ fun convertLayoutsToHtml(
 
             appendln("export namespace color {")
             resources.colors.entries.sortedBy { it.key }.forEach {
-                appendln("export const ${it.key}: string = \"${it.value.cssName}\";")
+                appendln("export const ${it.key}: string = \"var(${it.value.cssName})\";")
             }
             appendln("}")
 

@@ -278,6 +278,13 @@ function listRemoveItem(array, item) {
     listRemoveFirst(array, (x) => Language_1.safeEq(item, x));
 }
 exports.listRemoveItem = listRemoveItem;
+//! Declares kotlin.collections.minus
+function xIterableMinus(this_, item) {
+    let array = [...this_];
+    listRemoveFirst(array, (x) => Language_1.safeEq(item, x));
+    return array;
+}
+exports.xIterableMinus = xIterableMinus;
 function iterFirstOrNull(iterable) {
     const it = iterable[Symbol.iterator]();
     const result = it.next();

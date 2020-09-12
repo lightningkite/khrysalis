@@ -1,6 +1,10 @@
 package com.lightningkite.khrysalis.ios.layout
 
+import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
+import com.fasterxml.jackson.module.kotlin.readValue
+import com.lightningkite.khrysalis.android.layout.AndroidLayoutFile
 import com.lightningkite.khrysalis.swift.safeSwiftIdentifier
+import com.lightningkite.khrysalis.typescript.safeJsIdentifier
 import com.lightningkite.khrysalis.utils.XmlNode
 import com.lightningkite.khrysalis.utils.camelCase
 import java.io.File
@@ -8,7 +12,7 @@ import java.lang.StringBuilder
 
 typealias Styles = Map<String, Map<String, String>>
 
-fun File.translateLayoutXml(styles: Styles, converter: LayoutConverter = LayoutConverter.normal): String {
+fun File.translateLayoutXml(android: AndroidLayoutFile, styles: Styles, converter: LayoutConverter = LayoutConverter.normal): String {
 
     val appendable = StringBuilder()
     val conversion = OngoingLayoutConversion(
@@ -44,14 +48,25 @@ fun File.translateLayoutXml(styles: Styles, converter: LayoutConverter = LayoutC
         appendln("        return view")
         appendln("    }")
         appendln("    ")
-        conversion.sublayouts.entries.forEach {
-            appendln("public let ${it.key.safeSwiftIdentifier()}: ${it.value} = ${it.value}()")
+        android.bindings.values.forEach {
+            val type = conversion.bindings[it.name] ?: converter.viewTypes[it.type]?.iosName
+            if(it.optional){
+                appendln("public unowned var ${it.name.safeSwiftIdentifier()}: ${type}? = nil")
+            } else {
+                appendln("public unowned var ${it.name.safeSwiftIdentifier()}: ${type}!")
+            }
         }
-        conversion.delegateBindings.entries.forEach {
-            appendln("public unowned var ${(it.key + "Delegate").safeSwiftIdentifier()}: ${it.value}!")
+        android.delegateBindings.values.forEach {
+            val type = conversion.delegateBindings[it.name]
+            if(it.optional){
+                appendln("public unowned var ${(it.name + "Delegate").safeSwiftIdentifier()}: ${type}? = nil")
+            } else {
+                appendln("public unowned var ${(it.name + "Delegate").safeSwiftIdentifier()}: ${type}!")
+            }
         }
-        conversion.bindings.entries.forEach {
-            appendln("public unowned var ${it.key.safeSwiftIdentifier()}: ${it.value}!")
+        android.sublayouts.values.forEach {
+            val type = conversion.sublayouts[it.name] ?: it.layoutXmlClass
+            appendln("public let ${it.name.safeSwiftIdentifier()}: ${type} = ${type}()")
         }
         appendln("    ")
         appendln("}")

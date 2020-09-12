@@ -57,6 +57,7 @@ export declare function iterableFilterNotNull<T>(iterable: Iterable<T | null>): 
 export declare function listRemoveAll<T>(array: Array<T>, predicate: (a: T) => boolean): void;
 export declare function listRemoveFirst<T>(array: Array<T>, predicate: (a: T) => boolean): void;
 export declare function listRemoveItem<T>(array: Array<T>, item: T): void;
+export declare function xIterableMinus<T>(this_: Iterable<T>, item: T): Array<T>;
 export declare function iterFirstOrNull<T>(iterable: Iterable<T>): (T | null);
 export declare function iterLastOrNull<T>(iterable: Iterable<T>): (T | null);
 export declare function iterCount<T>(iterable: Iterable<T>, func: (a: T) => boolean): number;

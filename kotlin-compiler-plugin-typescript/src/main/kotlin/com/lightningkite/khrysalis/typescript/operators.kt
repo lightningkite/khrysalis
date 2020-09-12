@@ -335,12 +335,14 @@ fun TypescriptTranslator.registerOperators() {
         if (doubleReceiver) {
             -typedRule.dispatchReceiver
             -"."
-        } else if (typedRule.dispatchReceiver != null) {
+        } else if (typedRule.functionDescriptor.dispatchReceiverParameter != null) {
             -left
             -"."
         }
-        -(typedRule.functionDescriptor.tsNameOverridden ?: typedRule.functionDescriptor.name.asString()
-            .safeJsIdentifier())
+        val funcName = typedRule.functionDescriptor.tsNameOverridden ?: typedRule.functionDescriptor.name.asString()
+            .safeJsIdentifier()
+        this.out.addImport(typedRule.functionDescriptor, funcName)
+        -funcName
         -ArgumentsList(
             on = typedRule.functionDescriptor,
             resolvedCall = typedRule.resolvedCall!!,
