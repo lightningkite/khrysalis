@@ -37,7 +37,15 @@ exports.range = iterable_operator_1.range;
 exports.consume = iterable_operator_1.consume;
 exports.each = iterable_operator_1.each;
 exports.every = iterable_operator_1.every;
-exports.find = iterable_operator_1.find;
+function find(iter, predicate) {
+    for (const item of iter) {
+        if (predicate(item)) {
+            return item;
+        }
+    }
+    return null;
+}
+exports.find = find;
 exports.first = iterable_operator_1.first;
 exports.includes = iterable_operator_1.includes;
 exports.match = iterable_operator_1.match;

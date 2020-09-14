@@ -82,7 +82,14 @@ export let range = rawRange
 export let consume = rawConsume
 export let each = rawEach
 export let every = rawEvery
-export let find = rawFind
+export function find<T>(iter: Iterable<T>, predicate: (item: T)=>boolean): T | null {
+    for(const item of iter){
+        if(predicate(item)){
+            return item;
+        }
+    }
+    return null;
+}
 export let first = rawFirst
 export let includes = rawIncludes
 export let match = rawMatch

@@ -1,4 +1,4 @@
-import { countdown as rawCountdown, countup as rawCountup, range as rawRange, consume as rawConsume, each as rawEach, every as rawEvery, find as rawFind, first as rawFirst, includes as rawIncludes, match as rawMatch, reduce as rawReduce, some as rawSome, last as rawLast, toArray as rawToArray, toSet as rawToSet } from "iterable-operator";
+import { countdown as rawCountdown, countup as rawCountup, range as rawRange, consume as rawConsume, each as rawEach, every as rawEvery, first as rawFirst, includes as rawIncludes, match as rawMatch, reduce as rawReduce, some as rawSome, last as rawLast, toArray as rawToArray, toSet as rawToSet } from "iterable-operator";
 export declare let chunkBy: <T>(iterable: Iterable<T>, fn: (element: T, index: number) => boolean) => Iterable<T[]>;
 export declare let chunk: <T>(iterable: Iterable<T>, size: number) => Iterable<T[]>;
 export declare let concat: <T1, T2>(iterable1: Iterable<T1>, iterable2: Iterable<T2>) => Iterable<T1 | T2>;
@@ -28,7 +28,7 @@ export declare let range: typeof rawRange;
 export declare let consume: typeof rawConsume;
 export declare let each: typeof rawEach;
 export declare let every: typeof rawEvery;
-export declare let find: typeof rawFind;
+export declare function find<T>(iter: Iterable<T>, predicate: (item: T) => boolean): T | null;
 export declare let first: typeof rawFirst;
 export declare let includes: typeof rawIncludes;
 export declare let match: typeof rawMatch;
