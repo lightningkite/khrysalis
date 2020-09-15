@@ -9,8 +9,8 @@ public func newRadialGradient(
     centerX: CGFloat,
     centerY: CGFloat,
     radius: CGFloat,
-    colors: List<UIColor>,
-    stops: List<GFloat>,
+    colors: Array<UIColor>,
+    stops: Array<CGFloat>,
     tile: Shader.TileMode
 ) -> ShaderValue {
     return { context in
@@ -18,11 +18,11 @@ public func newRadialGradient(
             CGGradient(
                 colorsSpace: CGColorSpaceCreateDeviceRGB(),
                 colors: colors.map { $0.cgColor } as CFArray,
-                locations: positions.map { CGFloat($0) }
+                locations: stops.map { CGFloat($0) }
             )!,
-            startCenter: CGPoint(x: CGFloat(x0), y: CGFloat(y0)),
-            startRadius: 0
-            endCenter: CGPoint(x: CGFloat(x0), y: CGFloat(y0)),
+            startCenter: CGPoint(x: CGFloat(centerX), y: CGFloat(centerY)),
+            startRadius: 0,
+            endCenter: CGPoint(x: CGFloat(centerX), y: CGFloat(centerY)),
             endRadius: radius,
             options: []
         )

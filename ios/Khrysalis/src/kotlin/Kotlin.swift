@@ -316,6 +316,19 @@ public func dictionaryFrom<A, B>(_ contents: Array<Pair<A, B>>) -> Dictionary<A,
     return Dictionary(contents.map { $0.toTuple() }, uniquingKeysWith: { (_, a) in a })
 }
 public extension Dictionary {
+    
+    mutating func putAll(from: Dictionary<Key, Value>) {
+        for (key, value) in from {
+            self[key] = value
+        }
+    }
+    
+    static func +(lhs: Self, rhs: Self) -> Self {
+        var copy = lhs
+        copy.putAll(from: rhs)
+        return copy
+    }
+    
     mutating func getOrPut(key: Key, defaultValue: ()->Value) -> Value {
         if let value = self[key] {
             return value
