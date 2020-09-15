@@ -65,3 +65,5 @@ export declare function setAddCausedChange<T>(set: Set<T>, item: T): boolean;
 export declare function xMutableMapGetOrPut<K, V>(map: Map<K, V>, key: K, valueGenerator: () => V): V;
 export declare function iterMaxBy<T, V>(iter: Iterable<T>, selector: (t: T) => V): T | null;
 export declare function iterMinBy<T, V>(iter: Iterable<T>, selector: (t: T) => V): T | null;
+export declare function xMapPlus<K, V>(lhs: Map<K, V>, rhs: Map<K, V>): Map<K, V>;
+export declare function xMapPutAll<K, V>(map: Map<K, V>, other: Map<K, V>): void;

@@ -4,6 +4,7 @@ import com.lightningkite.khrysalis.generic.PartialTranslator
 import com.lightningkite.khrysalis.generic.PartialTranslatorByType
 import com.lightningkite.khrysalis.generic.line
 import com.lightningkite.khrysalis.typescript.manifest.declaresPrefix
+import com.lightningkite.khrysalis.typescript.replacements.Template
 import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.forEachBetween
 import org.jetbrains.kotlin.builtins.functions.FunctionClassDescriptor
@@ -330,8 +331,22 @@ fun TypescriptTranslator.registerType() {
             val type = typedRule.type
             val rule = replacements.getType(type)!!
             val baseType = type.constructor
+            val parts = ArrayList<TemplatePart>()
+            label@for(part in rule.template.parts) {
+                when(part){
+                    is TemplatePart.Text -> {
+                        if(part.string.contains('<')) {
+                            parts.add(TemplatePart.Text(part.string.substringBefore('<')))
+                            break@label
+                        } else {
+                            parts.add(part)
+                        }
+                    }
+                    else -> parts.add(part)
+                }
+            }
             emitTemplate(
-                template = rule.template
+                template = Template(parts)
             )
         }
     )

@@ -417,3 +417,17 @@ export function iterMinBy<T, V>(iter: Iterable<T>, selector: (t: T)=>V): T | nul
     }
     return result;
 }
+
+//! Declares kotlin.collections.plus
+export function xMapPlus<K, V>(lhs: Map<K, V>, rhs: Map<K, V>): Map<K, V> {
+    const newMap: Map<K, V> = lhs instanceof EqualOverrideMap ? new EqualOverrideMap() : new Map();
+    xMapPutAll(newMap, lhs)
+    xMapPutAll(newMap, rhs)
+    return newMap;
+}
+//! Declares kotlin.collections.putAll
+export function xMapPutAll<K, V>(map: Map<K, V>, other: Map<K, V>) {
+    for(let [key, value] of other){
+        map.set(key, value);
+    }
+}

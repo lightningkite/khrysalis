@@ -20,6 +20,7 @@ var Shader;
     let TileMode;
     (function (TileMode) {
         TileMode[TileMode["REPEAT"] = 0] = "REPEAT";
+        TileMode[TileMode["CLAMP"] = 1] = "CLAMP";
     })(TileMode = Shader.TileMode || (Shader.TileMode = {}));
 })(Shader = exports.Shader || (exports.Shader = {}));
 //# sourceMappingURL=LinearGradient.actual.js.map

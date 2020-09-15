@@ -3,6 +3,8 @@
 // Package: com.lightningkite.khrysalis.views.draw
 
 //! Declares com.lightningkite.khrysalis.views.draw.newRadialGradient
+import {CanvasGradientMaker, Shader} from "./LinearGradient.actual";
+
 export function newRadialGradient(
     centerX: number,
     centerY: number,
@@ -19,12 +21,3 @@ export function newRadialGradient(
         return g;
     }
 }
-
-//! Declares android.graphics.Shader
-export namespace Shader {
-    export enum TileMode {
-        REPEAT
-    }
-}
-
-export type CanvasGradientMaker = (context: CanvasRenderingContext2D) => CanvasGradient

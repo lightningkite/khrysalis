@@ -8,7 +8,7 @@ import {ObservableStack} from '../ObservableStack.shared'
 import {swapViewSwap} from "../../views/SwapView";
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindStack>com.lightningkite.khrysalis.views.android.SwapView
-export function xSwapViewBindStack(this_: HTMLDivElement, dependency: Window, obs: ObservableStack<ViewGenerator>): void {
+export function xSwapViewBindStack<T extends ViewGenerator>(this_: HTMLDivElement, dependency: Window, obs: ObservableStack<T>): void {
     let previousStackSize = obs.value.length;
     xDisposableUntil(xObservablePropertySubscribeBy(obs, undefined, undefined, (stack) => {
         const newStackSize = stack.length;
@@ -20,7 +20,7 @@ export function xSwapViewBindStack(this_: HTMLDivElement, dependency: Window, ob
         }
         previousStackSize = newStackSize;
         const newVG = stack[stack.length - 1] ?? null;
-        const newView = newVG?.generate(window);
+        const newView = newVG?.generate(window) ?? null;
         swapViewSwap(this_, newView, animation);
     }), xViewRemovedGet(this_));
 }

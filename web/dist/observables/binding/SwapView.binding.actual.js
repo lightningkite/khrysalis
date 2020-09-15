@@ -10,7 +10,7 @@ const SwapView_1 = require("../../views/SwapView");
 function xSwapViewBindStack(this_, dependency, obs) {
     let previousStackSize = obs.value.length;
     DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(obs, undefined, undefined, (stack) => {
-        var _a;
+        var _a, _b;
         const newStackSize = stack.length;
         let animation = "khrysalis-animate-fade";
         if (newStackSize > previousStackSize) {
@@ -21,7 +21,7 @@ function xSwapViewBindStack(this_, dependency, obs) {
         }
         previousStackSize = newStackSize;
         const newVG = (_a = stack[stack.length - 1]) !== null && _a !== void 0 ? _a : null;
-        const newView = newVG === null || newVG === void 0 ? void 0 : newVG.generate(window);
+        const newView = (_b = newVG === null || newVG === void 0 ? void 0 : newVG.generate(window)) !== null && _b !== void 0 ? _b : null;
         SwapView_1.swapViewSwap(this_, newView, animation);
     }), DisposeCondition_actual_1.xViewRemovedGet(this_));
 }

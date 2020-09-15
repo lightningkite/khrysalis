@@ -24,7 +24,7 @@ export function newLinearGradient(
 //! Declares android.graphics.Shader
 export namespace Shader {
     export enum TileMode {
-        REPEAT
+        REPEAT, CLAMP
     }
 }
 

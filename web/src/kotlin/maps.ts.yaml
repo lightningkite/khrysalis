@@ -16,6 +16,22 @@
   type: type
   template: Map<~T0~, ~T1~>
 
+- id: kotlin.collections.Map
+  type: typeRef
+  template: Map
+
+- id: kotlin.collections.HashMap
+  type: typeRef
+  template: Map
+
+- id: java.util.HashMap
+  type: typeRef
+  template: Map
+
+- id: kotlin.collections.MutableMap
+  type: typeRef
+  template: Map
+
 ## Creation
 
 - id: kotlin.collections.toMap
@@ -191,6 +207,12 @@
 - id: kotlin.collections.MutableMap.put
   type: call
   template: ~this~.set(~0~, ~1~)
+- id: kotlin.collections.MutableMap.putAll
+  type: call
+  template:
+    pattern: xMapPutAll(~this~, ~0~)
+    imports:
+      xMapPutAll: khrysalis/dist/kotlin/Collections
 - id: kotlin.collections.MutableMap.remove
   type: call
   template: ~this~.delete(~0~)

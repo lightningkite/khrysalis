@@ -355,4 +355,19 @@ function iterMinBy(iter, selector) {
     return result;
 }
 exports.iterMinBy = iterMinBy;
+//! Declares kotlin.collections.plus
+function xMapPlus(lhs, rhs) {
+    const newMap = lhs instanceof EqualOverrideMap ? new EqualOverrideMap() : new Map();
+    xMapPutAll(newMap, lhs);
+    xMapPutAll(newMap, rhs);
+    return newMap;
+}
+exports.xMapPlus = xMapPlus;
+//! Declares kotlin.collections.putAll
+function xMapPutAll(map, other) {
+    for (let [key, value] of other) {
+        map.set(key, value);
+    }
+}
+exports.xMapPutAll = xMapPutAll;
 //# sourceMappingURL=Collections.js.map
