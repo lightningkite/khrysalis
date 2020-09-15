@@ -29,6 +29,7 @@ open class KhrysalisViewController: UIViewController, UINavigationControllerDele
     weak var innerView: UIView!
     
     public var defaultBackgroundColor: UIColor = .white
+    public var overrideBottomBackgroundColor: UIColor? = nil
     public var forceDefaultBackgroundColor: Bool = false
     public var drawOverSystemWindows: Bool = false
     
@@ -39,7 +40,7 @@ open class KhrysalisViewController: UIViewController, UINavigationControllerDele
         self.view.backgroundColor = defaultBackgroundColor
         
         let bottom = UIView(frame: .zero)
-        bottom.backgroundColor = defaultBackgroundColor
+        bottom.backgroundColor = overrideBottomBackgroundColor ?? defaultBackgroundColor
         self.view.addSubview(bottom)
         backgroundLayerBottom = bottom
         
