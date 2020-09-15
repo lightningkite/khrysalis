@@ -180,7 +180,7 @@ public func multipartFormBody(parts:Array<HttpBodyPart>) -> HttpBody {
         }
     }
     body.append((boundary + "\r\n").data(using: .utf8)!)
-    return HttpBody(mediaType: "multipart/formdata; boundary=\(boundary)", data: body)
+    return HttpBody(mediaType: "multipart/form-data; boundary=\(boundary)", data: body)
 }
 
 public func multipartFormBody(_ parts: Array<HttpBodyPart>) -> HttpBody {
