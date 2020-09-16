@@ -162,24 +162,27 @@ public func multipartFormBody(_ parts: HttpBodyPart...) -> HttpBody {
 
 public func multipartFormBody(parts:Array<HttpBodyPart>) -> HttpBody {
     var body = Data()
-    let boundary = "-------\(arc4random())-\(arc4random())--"
+    var stringBody = ""
+    func emitText(_ string: String){
+        stringBody += string
+        body.append(string.data(using: .utf8)!)
+    }
+    let boundary = "\(arc4random())-\(arc4random())--"
     for part in parts {
-        body.append((boundary + "\r\n").data(using: .utf8)!)
+        emitText("\r\n--" + boundary + "\r\n")
         switch part {
         case .file(let name, let filename, let subBody):
-            body.append("Content-Disposition: form-data; name=\"\(name)\"; filename=\"\(filename)\"\r\n".data(using: .utf8)!)
-            body.append("Content-Type: \(subBody.mediaType)\r\n".data(using: .utf8)!)
-            body.append("\r\n".data(using: .utf8)!)
+            emitText("Content-Disposition: form-data; name=\"\(name)\"; filename=\"\(filename ?? "file")\"\r\n")
+            emitText("Content-Type: \(subBody.mediaType)\r\n\r\n")
             body.append(subBody.data)
-            body.append("\r\n".data(using: .utf8)!)
+            stringBody += "<binary data>"
         case .value(let name, let value):
-            body.append("Content-Disposition: form-data; name=\"\(name)\"\r\n".data(using: .utf8)!)
-            body.append("\r\n".data(using: .utf8)!)
-            body.append(value.data(using: .utf8)!)
-            body.append("\r\n".data(using: .utf8)!)
+            emitText("Content-Disposition: form-data; name=\"\(name)\"\r\n\r\n")
+            emitText(value)
         }
     }
-    body.append((boundary + "\r\n").data(using: .utf8)!)
+    emitText("\r\n--" + boundary + "\r\n")
+    print("Made multipart: \(stringBody)")
     return HttpBody(mediaType: "multipart/form-data; boundary=\(boundary)", data: body)
 }
 
