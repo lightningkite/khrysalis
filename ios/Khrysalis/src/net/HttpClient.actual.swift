@@ -88,12 +88,25 @@ public enum HttpClient {
             case .OnlyIfCached:
                 cachePolicy = .returnCacheDataDontLoad
             }
-
+            
+            var totalTimeout = options.callTimeout ?? 0
+            if let c = options.connectTimeout, let w = options.writeTimeout, let r = options.readTimeout {
+                if c == 0 || w == 0 || r == 0 {
+                    totalTimeout = 0
+                } else {
+                    totalTimeout = c + w + r
+                }
+            }
+            let totalTimeoutInterval = totalTimeout == 0 ? 60.0 * 15.0 : TimeInterval(totalTimeout / 1000)
+            
             let sessionConfig = URLSessionConfiguration.default
-            sessionConfig.requestCachePolicy = .reloadIgnoringLocalCacheData
+            sessionConfig.requestCachePolicy = cachePolicy
+            sessionConfig.timeoutIntervalForResource = totalTimeoutInterval
+            sessionConfig.timeoutIntervalForRequest = totalTimeoutInterval
             sessionConfig.httpShouldSetCookies = false
             let session = URLSession(configuration: sessionConfig)
-            var request = URLRequest(url: urlObj, cachePolicy: URLRequest.CachePolicy.reloadIgnoringCacheData, timeoutInterval: 15.0)
+            var request = URLRequest(url: urlObj, cachePolicy: URLRequest.CachePolicy.reloadIgnoringCacheData, timeoutInterval: totalTimeoutInterval)
+            
             if headers["Accept"] == nil {
                 request.setValue("application/json", forHTTPHeaderField: "Accept")
             }
@@ -162,12 +175,24 @@ public enum HttpClient {
             case .OnlyIfCached:
                 cachePolicy = .returnCacheDataDontLoad
             }
-
+            
+            var totalTimeout = options.callTimeout ?? 0
+            if let c = options.connectTimeout, let w = options.writeTimeout, let r = options.readTimeout {
+                if c == 0 || w == 0 || r == 0 {
+                    totalTimeout = 0
+                } else {
+                    totalTimeout = c + w + r
+                }
+            }
+            let totalTimeoutInterval = totalTimeout == 0 ? 60.0 * 15.0 : TimeInterval(totalTimeout / 1000)
+            
             let sessionConfig = URLSessionConfiguration.default
-            sessionConfig.requestCachePolicy = .reloadIgnoringLocalCacheData
+            sessionConfig.requestCachePolicy = cachePolicy
+            sessionConfig.timeoutIntervalForResource = totalTimeoutInterval
+            sessionConfig.timeoutIntervalForRequest = totalTimeoutInterval
             sessionConfig.httpShouldSetCookies = false
             let session = URLSession(configuration: sessionConfig)
-            var request = URLRequest(url: urlObj, cachePolicy: URLRequest.CachePolicy.reloadIgnoringCacheData, timeoutInterval: 15.0)
+            var request = URLRequest(url: urlObj, cachePolicy: URLRequest.CachePolicy.reloadIgnoringCacheData, timeoutInterval: totalTimeoutInterval)
             if headers["Accept"] == nil {
                 request.setValue("application/json", forHTTPHeaderField: "Accept")
             }
