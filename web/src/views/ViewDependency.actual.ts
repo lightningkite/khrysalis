@@ -212,7 +212,8 @@ export function xActivityAccessShare(this_: Window, shareTitle: string, message:
 
 //! Declares com.lightningkite.khrysalis.views.getColor
 export function xActivityAccessGetColor(this_: Window, variableName: string): string {
-    return this_.getComputedStyle(this_.document.body).getPropertyValue(variableName).trim();
+    if(!variableName.startsWith("var(")) return variableName;
+    return this_.getComputedStyle(this_.document.body).getPropertyValue(variableName.slice(4, variableName.length-1)).trim();
 }
 
 //! Declares com.lightningkite.khrysalis.views.openMap>com.lightningkite.khrysalis.android.ActivityAccess

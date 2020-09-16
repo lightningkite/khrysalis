@@ -199,7 +199,9 @@ function xActivityAccessShare(this_, shareTitle, message = null, url = null, ima
 exports.xActivityAccessShare = xActivityAccessShare;
 //! Declares com.lightningkite.khrysalis.views.getColor
 function xActivityAccessGetColor(this_, variableName) {
-    return this_.getComputedStyle(this_.document.body).getPropertyValue(variableName).trim();
+    if (!variableName.startsWith("var("))
+        return variableName;
+    return this_.getComputedStyle(this_.document.body).getPropertyValue(variableName.slice(4, variableName.length - 1)).trim();
 }
 exports.xActivityAccessGetColor = xActivityAccessGetColor;
 //! Declares com.lightningkite.khrysalis.views.openMap>com.lightningkite.khrysalis.android.ActivityAccess

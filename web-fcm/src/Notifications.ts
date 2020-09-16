@@ -1,17 +1,20 @@
 import {StandardObservableProperty} from "khrysalis/dist/observables/StandardObservableProperty.shared";
 import {ViewGenerator} from "khrysalis/dist/views/ViewGenerator.shared";
-import firebase from "firebase";
+import * as firebase from "firebase/app";
+import "firebase/messaging"
 import {tryCastInterface} from "khrysalis/dist/kotlin/Language";
 import {
     ForegroundNotificationHandler,
     ForegroundNotificationHandlerResult
 } from "./ForegroundNotificationHandler.shared";
+import MessagePayload = firebase.messaging.MessagePayload;
 
 
 interface Payload {
     data: Record<string, string>
     notification: PayloadNotification
 }
+
 interface PayloadNotification extends NotificationOptions {
     title: string
 }
@@ -19,7 +22,7 @@ interface PayloadNotification extends NotificationOptions {
 function checkNotificationPromise() {
     try {
         Notification.requestPermission().then();
-    } catch(e) {
+    } catch (e) {
         return false;
     }
 
@@ -29,29 +32,35 @@ function checkNotificationPromise() {
 //! Declares com.lightningkite.khrysalis.fcm.Notifications
 export class Notifications {
     static INSTANCE = new Notifications();
-    notificationToken = new StandardObservableProperty<string|null>(null);
+    notificationToken = new StandardObservableProperty<string | null>(null);
     handler: ForegroundNotificationHandler | null = null
     fcmPublicKey?: string
-    request(firebaseAppName?: string){
-        let onResult = (x: NotificationPermission)=>{
-            if(x == "granted"){
+    additionalMessageListener: (payload: Payload | MessagePayload) => void = () => {
+    }
+    serviceWorkerLocation?: string
+
+    request(firebaseAppName?: string) {
+        let onResult = (x: NotificationPermission) => {
+            if (x == "granted") {
                 const messaging = firebase.messaging(firebase.app());
-                if(this.fcmPublicKey) {
-                    messaging.usePublicVapidKey(this.fcmPublicKey as string);
+
+                let getToken = (serviceWorkerRegistration?: ServiceWorkerRegistration) => {
+                    return messaging.getToken({
+                        vapidKey: this.fcmPublicKey,
+                        serviceWorkerRegistration: serviceWorkerRegistration
+                    })
                 }
-                messaging.getToken().then((value) => {
-                    Notifications.INSTANCE.notificationToken.value = value;
-                }).catch((err) => {
-                    console.warn('Unable to retrieve refreshed token ', err);
-                });
-                messaging.onTokenRefresh(() => {
-                    messaging.getToken().then((value) => {
+
+                (this.serviceWorkerLocation ? navigator.serviceWorker.register(this.serviceWorkerLocation)
+                    .then((x) => getToken(x)) : getToken())
+                    .then((value) => {
                         Notifications.INSTANCE.notificationToken.value = value;
-                    }).catch((err) => {
+                    })
+                    .catch((err) => {
                         console.warn('Unable to retrieve refreshed token ', err);
                     });
-                });
                 messaging.onMessage((payload: Payload) => {
+                    this.additionalMessageListener(payload);
                     let data: Map<string, string>;
                     let payData = payload.data;
                     if (payData) {
@@ -67,7 +76,7 @@ export class Notifications {
                 });
             }
         }
-        if(checkNotificationPromise()){
+        if (checkNotificationPromise()) {
             Notification.requestPermission().then(onResult);
         } else {
             Notification.requestPermission(onResult);

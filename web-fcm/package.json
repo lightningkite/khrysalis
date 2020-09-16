@@ -14,7 +14,7 @@
     "uuid": "^8.1.0",
     "@types/uuid": "^8.0.0",
     "iterable-operator": "^0.10.3",
-    "firebase": "^7.17.1"
+    "firebase": "^7.20.0"
   },
   "peerDependencies": {
     "khrysalis": "file:../web"
