@@ -12,6 +12,8 @@ public extension UITableView {
     func whenScrolledToEnd(action: @escaping () -> Void) -> Void{
         if let delegate = delegate as? HasAtEnd {
             delegate.setAtEnd(action: action)
+        } else {
+            fatalError("You must give the view a delegate implementing the HasAtEnd protocol first.  You can do so using a 'bind'.")
         }
     }
 }
