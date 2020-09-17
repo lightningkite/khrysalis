@@ -141,16 +141,14 @@ public class ViewDependency: NSObject {
         _ height: Int? = nil,
         _ callback: @escaping (Drawable?)->Void
     ) {
-        Alamofire.request(url).responseImage(imageScale: 1) { response in
-            if var image = response.value {
-//                if let width = width, let height = height {
-//                    image = image.af_imageAspectScaled(toFit: CGSize(width: width, height: height))
-//                }
-                callback(Drawable { _ in CAImageLayer(image) })
-            } else {
+        HttpClient.call(url: url)
+            .readData()
+            .subscribeBy({ (e) in
                 callback(nil)
-            }
-        }
+            }, { (image) in
+                callback(Drawable { _ in CAImageLayer(UIImage(data: image)) })
+            })
+            .forever()
     }
 
     //--- ViewDependency.checkedDrawable(Drawable, Drawable)

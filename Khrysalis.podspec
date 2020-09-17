@@ -14,13 +14,13 @@ Pod::Spec.new do |s|
   s.pod_target_xcconfig = { "DEFINES_MODULE" => "YES" }
 
   s.requires_arc = true
-  s.swift_version = '5.0'
-  s.xcconfig = { 'SWIFT_VERSION' => '5.0' }
-  s.dependency "Alamofire", "~> 4.9.1"
-  s.dependency "AlamofireImage", "~> 3.6.0"
+  s.swift_version = '5.3'
+  s.xcconfig = { 'SWIFT_VERSION' => '5.3' }
+  s.dependency "Alamofire"
+  s.dependency "AlamofireImage"
   s.dependency "KeychainAccess"
   s.dependency "UITextView+Placeholder"
-  s.dependency "Cosmos", "~> 19.0"
+  s.dependency "Cosmos"
   s.dependency "SearchTextField"
   s.dependency "RxSwift"
   s.dependency "RxRelay"

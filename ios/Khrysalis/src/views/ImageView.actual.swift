@@ -33,7 +33,7 @@ public extension UIImageView {
         placeholderImage: UIImage? = nil,
         imageTransition: ImageTransition = .noTransition,
         runImageTransitionIfCached: Bool = false,
-        completion: ((DataResponse<UIImage>) -> Void)? = nil
+        completion: (() -> Void)? = nil
         ) {
         post {
             self.image = nil
@@ -75,7 +75,7 @@ public extension UIImageView {
                         print("ERROR LOADING IMAGE: \(error.localizedDescription)")
                     }
                     weakAIV?.removeFromSuperview()
-                    completion?(result)
+                    completion?()
             }
             )
         }
@@ -85,7 +85,7 @@ public extension UIImageView {
         switch(image){
         case let image as ImageReference:
             if let url = URL(string: image.uri.absoluteString) {
-                af_setImageProgress(withURL: url, placeholderImage: nil, imageTransition: .noTransition, runImageTransitionIfCached: false, completion: nil)
+                af_setImageProgress(withURL: url, placeholderImage: nil, imageTransition: ImageTransition.noTransition, runImageTransitionIfCached: false, completion: nil)
             }
         case let image as ImageBitmap:
             self.image = image.bitmap
@@ -93,7 +93,7 @@ public extension UIImageView {
             break
         case let image as ImageRemoteUrl:
             if let url = URL(string: image.url) {
-                af_setImageProgress(withURL: url, placeholderImage: nil, imageTransition: .noTransition, runImageTransitionIfCached: false, completion: nil)
+                af_setImageProgress(withURL: url, placeholderImage: nil, imageTransition: ImageTransition.noTransition, runImageTransitionIfCached: false, completion: nil)
             }
         default:
             break

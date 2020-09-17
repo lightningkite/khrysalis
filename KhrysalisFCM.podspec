@@ -14,8 +14,8 @@ Pod::Spec.new do |s|
   s.pod_target_xcconfig = { "DEFINES_MODULE" => "YES" }
 
   s.requires_arc = true
-  s.swift_version = '5.0'
-  s.xcconfig = { 'SWIFT_VERSION' => '5.0' }
+  s.swift_version = '5.3'
+  s.xcconfig = { 'SWIFT_VERSION' => '5.3' }
   # Dependency on Khrysalis not representable at the moment
   s.dependency "Khrysalis/Core"
   s.dependency "Firebase/Analytics"
