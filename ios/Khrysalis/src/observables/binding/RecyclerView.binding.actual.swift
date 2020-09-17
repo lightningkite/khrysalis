@@ -36,6 +36,8 @@ public extension UITableView {
                 }
                 delegate.reversedDirection = value
                 self.reloadData()
+            } else {
+                fatalError("You must give the view a delegate implementing the HasAtEnd protocol first.  You can do so using a 'bind'.")
             }
         }
     }
@@ -51,11 +53,13 @@ public extension UITableView {
         retain(as: "boundDataSource", item: boundDataSource, until: removed)
 
         self.rowHeight = UITableView.automaticDimension
+//        self.rowHeight = 100
 
         var previouslyEmpty = data.value.isEmpty
         data.subscribeBy { value in
             let emptyNow = data.value.isEmpty
             self.reloadData()
+            self.layoutIfNeeded()
             if previouslyEmpty && !emptyNow {
                 self.scrollToRow(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
             }
@@ -190,6 +194,7 @@ public extension UITableView {
         data.subscribeBy { value in
             let emptyNow = data.value.isEmpty
             self.reloadData()
+            self.layoutIfNeeded()
             if previouslyEmpty && !emptyNow {
                 self.scrollToRow(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
             }
@@ -216,6 +221,7 @@ public extension UITableView {
         data.subscribeBy { value in
             let emptyNow = data.value.isEmpty
             self.reloadData()
+            self.layoutIfNeeded()
             if previouslyEmpty && !emptyNow {
                 self.scrollToRow(at: IndexPath(item: 0, section: 0), at: .top, animated: true)
             }
