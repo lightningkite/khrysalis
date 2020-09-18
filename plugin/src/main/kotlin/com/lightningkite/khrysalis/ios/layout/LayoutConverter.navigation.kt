@@ -62,8 +62,11 @@ val LayoutConverter.Companion.navigationViews
                 "FrameLayout"
             ) {},
             ViewType("androidx.recyclerview.widget.RecyclerView", "UICollectionView", "View",
-                iosConstructor = "UICollectionView(frame: .zero, collectionViewLayout: UICollectionView.ReversibleFlowLayout())") {
+                iosConstructor = "UICollectionView(frame: .zero, collectionViewLayout: UICollectionView.ReversibleFlowLayout())") { node ->
 //                appendln("view.separatorStyle = .none")
+                if(node.allAttributes["android:background"]?.substringBefore('/')?.contains("color") != true){
+                    appendln("view.backgroundColor = UIColor.clear")
+                }
             },
             ViewType("com.lightningkite.khrysalis.views.android.VerticalRecyclerView", "UICollectionView", "androidx.recyclerview.widget.RecyclerView",
                 iosConstructor = "UICollectionView(frame: .zero, collectionViewLayout: UICollectionView.ReversibleFlowLayout())") { node ->
@@ -86,9 +89,6 @@ val LayoutConverter.Companion.navigationViews
 //                (node.attributeAsSwiftDimension("app:dividerHorizontalPadding") ?: node.attributeAsSwiftDimension("dividerHorizontalPadding") ?: "0").let {
 //                    appendln("view.separatorInset = UIEdgeInsets(top: 0, left: $it, bottom: 0, right: $it)")
 //                }
-                if(node.allAttributes["android:background"]?.substringBefore('/')?.contains("color") != true){
-                    appendln("view.backgroundColor = UIColor.clear")
-                }
             },
             ViewType("com.rd.PageIndicatorView", "UIPageControl", "View") { node ->
                 setToColor(node, "app:piv_selectedColor"){ it, s ->

@@ -252,7 +252,8 @@ class GeneralCollectionDelegate<T>: NSObject, UICollectionViewDelegate, UICollec
         post {
             cell.refreshLifecycle()
         }
-//        cell.layoutIfNeeded()
+        cell.layoutIfNeeded()
+        cell.bounds.size = cell.systemLayoutSizeFitting(collectionView.bounds.size, withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel)
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -262,8 +263,18 @@ class GeneralCollectionDelegate<T>: NSObject, UICollectionViewDelegate, UICollec
         if let obs = (cell as? SizedUICollectionViewCell)?.obs as? MutableObservableProperty<T> {
             obs.value = getItem(indexPath.row)
         }
-        if(indexPath.row >= itemCount - 1){
+        if(indexPath.row >= itemCount - 1 && itemCount > 1){
+            print("Triggered end with \(indexPath.row) size \(itemCount)")
             atEnd()
+        }
+        if let cell = cell as? SizedUICollectionViewCell {
+            cell.resizeEnabled = true
+        }
+    }
+    func collectionView(_ collectionView: UICollectionView, didEndDisplaying cell: UICollectionViewCell, forItemAt indexPath: IndexPath) {
+        
+        if let cell = cell as? SizedUICollectionViewCell {
+            cell.resizeEnabled = false
         }
     }
     func scrollViewDidEndDecelerating(_ scrollView: UIScrollView) {
@@ -313,7 +324,23 @@ class SizedUICollectionViewCell: UICollectionViewCell {
         }
         return outSize
     }
-    
+    var resizeEnabled = false
+    public func refreshSize() {
+        guard resizeEnabled else { return }
+        var current = self.superview
+        while current != nil && !(current is UICollectionView) {
+            current = current?.superview
+        }
+        if let current = current as? UICollectionView {
+            if let dataSource = current.dataSource,
+                dataSource.collectionView(current, numberOfItemsInSection: 0) == current.numberOfItems(inSection: 0)
+            {
+                current.performBatchUpdates({}, completion: nil)
+            } else {
+                current.reloadData()
+            }
+        }
+    }
 //    override func systemLayoutSizeFitting(_ targetSize: CGSize, withHorizontalFittingPriority horizontalFittingPriority: UILayoutPriority, verticalFittingPriority: UILayoutPriority) -> CGSize {
 //        var outSize = isVertical ? super.systemLayoutSizeFitting(CGSize(width: targetSize.width, height: .greatestFiniteMagnitude), withHorizontalFittingPriority: .required, verticalFittingPriority: .fittingSizeLevel) : super.systemLayoutSizeFitting(targetSize, withHorizontalFittingPriority: horizontalFittingPriority, verticalFittingPriority: verticalFittingPriority)
 //        for child in contentView.subviews {
@@ -391,7 +418,7 @@ public extension UICollectionView {
 
         public override func layoutAttributesForItem(at indexPath: IndexPath) -> UICollectionViewLayoutAttributes? {
             guard reversed else {
-                return layoutAttributesForItem(at: indexPath)
+                return super.layoutAttributesForItem(at: indexPath)
             }
             let attributeCell = UICollectionViewLayoutAttributes(forCellWith: indexPath)
 
