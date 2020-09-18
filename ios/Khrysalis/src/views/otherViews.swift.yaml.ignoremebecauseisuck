@@ -147,13 +147,13 @@
 
 - id: androidx.recyclerview.widget.RecyclerView
   type: type
-  template: UITableView
+  template: UICollectionView
   xmlDefer: [android.view.View]
   xmlSetup: ~this~.backgroundColor = UIColor.clear
 
 - id: com.lightningkite.khrysalis.views.android.VerticalRecyclerView
   type: type
-  template: UITableView
+  template: UICollectionView
   xmlDefer: [androidx.recyclerview.widget.RecyclerView]
 
 - id: com.lightningkite.khrysalis.views.android.VerticalRecyclerView.dividerPositions

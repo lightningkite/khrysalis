@@ -61,29 +61,31 @@ val LayoutConverter.Companion.navigationViews
                 "PreviewVariedFlipper",
                 "FrameLayout"
             ) {},
-            ViewType("androidx.recyclerview.widget.RecyclerView", "UITableView", "View") {
-                appendln("view.separatorStyle = .none")
+            ViewType("androidx.recyclerview.widget.RecyclerView", "UICollectionView", "View",
+                iosConstructor = "UICollectionView(frame: .zero, collectionViewLayout: UICollectionView.ReversibleFlowLayout())") {
+//                appendln("view.separatorStyle = .none")
             },
-            ViewType("com.lightningkite.khrysalis.views.android.VerticalRecyclerView", "UITableView", "androidx.recyclerview.widget.RecyclerView") { node ->
-                val pos = (node.allAttributes.get("app:dividerPositions")?.split('|') ?: node.allAttributes.get("dividerPositions")?.split('|')) ?: listOf()
-                when{
-                    pos.contains("start") -> appendln("//Separator position 'start' not supported yet")
-                    pos.contains("between") -> appendln("view.separatorStyle = .singleLine")
-                    pos.contains("end") -> appendln("//Separator position 'end' not supported yet")
-                    else -> appendln("view.separatorStyle = .none")
-                }
-
-                setToColor(node, "app:dividerColor"){ it, s ->
-                    appendln("view.separatorColor = $it")
-                } || setToColor(node, "dividerColor"){ it, s ->
-                    appendln("view.separatorColor = $it")
-                }
-                (node.attributeAsSwiftDimension("app:dividerSize") ?: node.attributeAsSwiftDimension("dividerSize"))?.let {
-                    appendln("//It is not possible to have a different divider size currently, though requested.")
-                }
-                (node.attributeAsSwiftDimension("app:dividerHorizontalPadding") ?: node.attributeAsSwiftDimension("dividerHorizontalPadding") ?: "0").let {
-                    appendln("view.separatorInset = UIEdgeInsets(top: 0, left: $it, bottom: 0, right: $it)")
-                }
+            ViewType("com.lightningkite.khrysalis.views.android.VerticalRecyclerView", "UICollectionView", "androidx.recyclerview.widget.RecyclerView",
+                iosConstructor = "UICollectionView(frame: .zero, collectionViewLayout: UICollectionView.ReversibleFlowLayout())") { node ->
+//                val pos = (node.allAttributes.get("app:dividerPositions")?.split('|') ?: node.allAttributes.get("dividerPositions")?.split('|')) ?: listOf()
+//                when{
+//                    pos.contains("start") -> appendln("//Separator position 'start' not supported yet")
+//                    pos.contains("between") -> appendln("view.separatorStyle = .singleLine")
+//                    pos.contains("end") -> appendln("//Separator position 'end' not supported yet")
+//                    else -> appendln("view.separatorStyle = .none")
+//                }
+//
+//                setToColor(node, "app:dividerColor"){ it, s ->
+//                    appendln("view.separatorColor = $it")
+//                } || setToColor(node, "dividerColor"){ it, s ->
+//                    appendln("view.separatorColor = $it")
+//                }
+//                (node.attributeAsSwiftDimension("app:dividerSize") ?: node.attributeAsSwiftDimension("dividerSize"))?.let {
+//                    appendln("//It is not possible to have a different divider size currently, though requested.")
+//                }
+//                (node.attributeAsSwiftDimension("app:dividerHorizontalPadding") ?: node.attributeAsSwiftDimension("dividerHorizontalPadding") ?: "0").let {
+//                    appendln("view.separatorInset = UIEdgeInsets(top: 0, left: $it, bottom: 0, right: $it)")
+//                }
                 if(node.allAttributes["android:background"]?.substringBefore('/')?.contains("color") != true){
                     appendln("view.backgroundColor = UIColor.clear")
                 }

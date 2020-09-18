@@ -5,7 +5,11 @@ import UIKit
 
 //--- ViewPager.bind(List<T>, MutableObservableProperty<Int>, (T)->View)
 public extension UICollectionView {
-    func bind<T>(_ items: Array<T>, _ showIndex: MutableObservableProperty<Int>, _ makeView: @escaping (T) -> View) -> Void {
+    func bind<T>(
+        items: Array<T>,
+        showIndex: MutableObservableProperty<Int>,
+        makeView: @escaping (T) -> View
+    ) -> Void {
         bind(
             count: items.count,
             spacing: 0,
@@ -13,37 +17,21 @@ public extension UICollectionView {
                 makeView(items[index])
             }
         )
-        bindIndex(showIndex)
+        bindIndex(index: showIndex)
     }
-    func bind<T>(items: Array<T>, showIndex: MutableObservableProperty<Int>, makeView: @escaping (T) -> View) -> Void {
-        return bind(items, showIndex, makeView)
-    }
+    
     
     //--- ViewPager.bind(ObservableProperty<List<T>>, T, MutableObservableProperty<Int>, (ObservableProperty<T>)->View)
     func bind<T>(
-    _ data: ObservableProperty<[T]>,
-    _ defaultValue: T,
-    _ showIndex:MutableObservableProperty<Int> = StandardObservableProperty(underlyingValue: 0),
-    _ makeView: @escaping (ObservableProperty<T>) -> UIView
+        data: ObservableProperty<[T]>,
+        defaultValue: T,
+        showIndex:MutableObservableProperty<Int> = StandardObservableProperty(underlyingValue: 0),
+        makeView: @escaping (ObservableProperty<T>) -> UIView
     ){
         bind(data: data, defaultValue: defaultValue, spacing: 0, makeView: makeView)
-        bindIndex(showIndex)
-    }
-    
-    
-    //--- ViewPager.bind(ObservableProperty<List<T>>, T, MutableObservableProperty<Int>, (ObservableProperty<T>)->View)
-    func bind<T>(
-    data: ObservableProperty<[T]>,
-    defaultValue: T,
-    showIndex:MutableObservableProperty<Int> = StandardObservableProperty(underlyingValue: 0),
-    makeView: @escaping (ObservableProperty<T>) -> UIView
-    ){
-        bind(data, defaultValue, showIndex, makeView)
+        bindIndex(index: showIndex)
     }
 
-    func bindRefresh(_ loading: ObservableProperty<Bool>, _ onRefresh: @escaping () -> Void) {
-        return bindRefresh(loading: loading, onRefresh: onRefresh)
-    }
     func bindRefresh(loading: ObservableProperty<Bool>, onRefresh: @escaping () -> Void) {
         let control = UIRefreshControl()
         control.addAction(for: .valueChanged, action: onRefresh)
@@ -52,25 +40,25 @@ public extension UICollectionView {
         } else {
             addSubview(control)
         }
-        loading.subscribeBy { (value) in
+        loading.subscribeBy(onNext:  { (value) in
             if value {
                 control.beginRefreshing()
             } else {
                 control.endRefreshing()
             }
-        }.until(control.removed)
+        }).until(control.removed)
     }
 
     var currentIndex: Int? {
         return self.indexPathForItem(at: CGPoint(x: self.contentOffset.x + self.bounds.size.width / 2, y: self.contentOffset.y + self.bounds.size.height / 2))?.row
     }
 
-    func bindIndex(_ index: MutableObservableProperty<Int>){
+    func bindIndex(index: MutableObservableProperty<Int>){
         var suppress = false
-        index.subscribeBy { value in
+        index.subscribeBy(onNext:  { value in
             guard !suppress else { return }
             self.scrollToItem(at: IndexPath(row: Int(value), section: 0), at: .centeredHorizontally, animated: true)
-        }.until(self.removed)
+        }).until(self.removed)
         DispatchQueue.main.asyncAfter(deadline: .now() + 0.1, execute: {
             self.scrollToItem(at: IndexPath(row: Int(index.value), section: 0), at: .centeredHorizontally, animated: false)
         })
@@ -79,17 +67,6 @@ public extension UICollectionView {
             index?.value = newIndex
             suppress = false
         }
-    }
-
-    func whenScrolledToEnd(action: @escaping ()->Void) {
-        if let delegate = delegate as? HasAtEnd {
-            delegate.setAtEnd(action: action)
-        }
-    }
-    
-    
-    func whenScrolledToEnd(_ action: @escaping ()->Void) {
-        whenScrolledToEnd(action:action)
     }
 
     func whenScrolled(action: @escaping (_ index: Int)->Void) {
@@ -113,7 +90,7 @@ public extension UICollectionView {
         retain(as: "boundDataSource", item: boundDataSource, until: removed)
 
         var previouslyEmpty = data.value.isEmpty
-        data.subscribeBy { value in
+        data.subscribeBy(onNext:  { value in
             let emptyNow = data.value.isEmpty
             self.reloadData()
             if previouslyEmpty && !emptyNow {
@@ -129,7 +106,7 @@ public extension UICollectionView {
                 self.scrollToItem(at: IndexPath(item: 0, section: 0), at: at, animated: true)
             }
             previouslyEmpty = emptyNow
-        }.until(self.removed)
+        }).until(self.removed)
     }
 
     func bind(

@@ -25,22 +25,22 @@ public extension UIView {
     func notifyParentSizeChanged() {
         if let p = self.superview {
             p.setNeedsLayout()
-            var current = p
-            while
-                !(current is LinearLayout) &&
-                    !(current is FrameLayout) &&
-                    !(current is UIScrollView)
-            {
-                if let su = current.superview {
-                    current = su
-                    if let cell = current as? CustomUITableViewCell {
-                        cell.refreshSize()
-                        break
-                    }
-                } else {
-                    break
-                }
-            }
+//             var current = p
+//             while
+//                 !(current is LinearLayout) &&
+//                     !(current is FrameLayout) &&
+//                     !(current is UIScrollView)
+//             {
+//                 if let su = current.superview {
+//                     current = su
+//                     if let cell = current as? CustomUITableViewCell {
+//                         cell.refreshSize()
+//                         break
+//                     }
+//                 } else {
+//                     break
+//                 }
+//             }
         }
     }
 }
