@@ -18,6 +18,7 @@ public extension UICollectionView {
         post {
             if let layout = self.collectionViewLayout as? ReversibleFlowLayout {
                 layout.estimatedItemSize = CGSize(width: self.bounds.size.width - self.contentInset.left - self.contentInset.right, height: 100)
+                layout.itemSize = UICollectionViewFlowLayout.automaticSize
             }
         }
     }
@@ -245,11 +246,13 @@ class GeneralCollectionDelegate<T>: NSObject, UICollectionViewDelegate, UICollec
         }
         if let obs = cell.obs as? MutableObservableProperty<T> {
             obs.value = item
+        } else {
+            fatalError("Could not find cell property")
         }
         post {
             cell.refreshLifecycle()
         }
-        cell.layoutIfNeeded()
+//        cell.layoutIfNeeded()
         return cell
     }
     func collectionView(_ collectionView: UICollectionView, numberOfItemsInSection section: Int) -> Int {
@@ -304,9 +307,9 @@ class SizedUICollectionViewCell: UICollectionViewCell {
         outSize.width = max(outSize.width, 20)
         outSize.height = max(outSize.height, 20)
         if isVertical {
-            outSize.width = min(outSize.width, size.width)
+            outSize.width = size.width
         } else {
-            outSize.height = min(outSize.height, size.height)
+            outSize.height = size.height
         }
         return outSize
     }
