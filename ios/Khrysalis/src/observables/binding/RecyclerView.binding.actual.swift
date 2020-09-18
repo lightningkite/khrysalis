@@ -6,36 +6,40 @@ import UIKit
 //--- RecyclerView.whenScrolledToEnd(()->Unit)
 public extension UICollectionView {
     func whenScrolledToEnd(action: @escaping () -> Void) -> Void{
-        if let delegate = delegate as? HasAtEnd {
-            delegate.setAtEnd(action: action)
-        } else {
-            fatalError("You must give the view a delegate implementing the HasAtEnd protocol first.  You can do so using a 'bind'.")
+        post{
+            if let delegate = self.delegate as? HasAtEnd {
+                delegate.setAtEnd(action: action)
+            } else {
+                fatalError("You must give the view a delegate implementing the HasAtEnd protocol first.  You can do so using a 'bind'.")
+            }
         }
     }
 
     //--- RecyclerView.bind(ObservableProperty<List<T>>, T, (ObservableProperty<T>)->View)
     private func setupVertical() {
-        post {
+        self.addOnLayoutSubviews {
             if let layout = self.collectionViewLayout as? ReversibleFlowLayout {
-                layout.estimatedItemSize = CGSize(width: self.bounds.size.width - self.contentInset.left - self.contentInset.right, height: 100)
+                layout.estimatedItemSize = CGSize(width: self.bounds.size.width - self.contentInset.left - self.contentInset.right, height: 50)
                 layout.itemSize = UICollectionViewFlowLayout.automaticSize
             }
         }
     }
     func bind<T>(data: ObservableProperty<Array<T>>, defaultValue: T, makeView: @escaping (ObservableProperty<T>) -> View) -> Void {
-        let dg = GeneralCollectionDelegate(
-            itemCount: data.value.count,
-            getItem: { data.value[$0] },
-            makeView: { (obs, _) in makeView(obs) }
-        )
-        self.retain(as: "delegate", item: dg, until: self.removed)
-        self.delegate = dg
-        self.dataSource = dg
-        data.subscribeBy { it in
-            dg.itemCount = it.count
-            self.reloadData()
-        }.until(self.removed)
-        setupVertical()
+        post {
+            let dg = GeneralCollectionDelegate(
+                itemCount: data.value.count,
+                getItem: { data.value[$0] },
+                makeView: { (obs, _) in makeView(obs) }
+            )
+            self.retain(as: "delegate", item: dg, until: self.removed)
+            self.delegate = dg
+            self.dataSource = dg
+            data.subscribeBy { it in
+                dg.itemCount = it.count
+                self.reloadData()
+            }.until(self.removed)
+            self.setupVertical()
+        }
     }
 
 
@@ -43,39 +47,43 @@ public extension UICollectionView {
     func bindMulti(viewDependency: ViewDependency, data: ObservableProperty<Array<Any>>, typeHandlerSetup: (RVTypeHandler) -> Void) -> Void {
         let handler = RVTypeHandler(viewDependency)
         typeHandlerSetup(handler)
-        
-        let dg = GeneralCollectionDelegate(
-            itemCount: data.value.count,
-            getItem: { data.value[$0] },
-            makeView: { (obs, type) in handler.make(type: type, property: obs) },
-            getType: { handler.type(item: $0) }
-        )
-        self.retain(as: "delegate", item: dg, until: self.removed)
-        self.delegate = dg
-        self.dataSource = dg
-        data.subscribeBy { it in
-            dg.itemCount = it.count
-            self.reloadData()
-        }.until(self.removed)
-        setupVertical()
+        post {
+            
+            let dg = GeneralCollectionDelegate(
+                itemCount: data.value.count,
+                getItem: { data.value[$0] },
+                makeView: { (obs, type) in handler.make(type: type, property: obs) },
+                getType: { handler.type(item: $0) }
+            )
+            self.retain(as: "delegate", item: dg, until: self.removed)
+            self.delegate = dg
+            self.dataSource = dg
+            data.subscribeBy { it in
+                dg.itemCount = it.count
+                self.reloadData()
+            }.until(self.removed)
+            self.setupVertical()
+        }
     }
 
     //--- RecyclerView.bindMulti(ObservableProperty<List<T>>, T, (T)->Int, (Int,ObservableProperty<T>)->View)
     func bindMulti<T>(data: ObservableProperty<Array<T>>, defaultValue: T, determineType: @escaping (T) -> Int, makeView: @escaping (Int, ObservableProperty<T>) -> View) -> Void {
-        let dg = GeneralCollectionDelegate(
-            itemCount: data.value.count,
-            getItem: { data.value[$0] },
-            makeView: { (obs, type) in makeView(type, obs) },
-            getType: determineType
-        )
-        self.retain(as: "delegate", item: dg, until: self.removed)
-        self.delegate = dg
-        self.dataSource = dg
-        data.subscribeBy { it in
-            dg.itemCount = it.count
-            self.reloadData()
-        }.until(self.removed)
-        setupVertical()
+        post {
+            let dg = GeneralCollectionDelegate(
+                itemCount: data.value.count,
+                getItem: { data.value[$0] },
+                makeView: { (obs, type) in makeView(type, obs) },
+                getType: determineType
+            )
+            self.retain(as: "delegate", item: dg, until: self.removed)
+            self.delegate = dg
+            self.dataSource = dg
+            data.subscribeBy { it in
+                dg.itemCount = it.count
+                self.reloadData()
+            }.until(self.removed)
+            self.setupVertical()
+        }
     }
 
     //--- RecyclerView.bindRefresh(ObservableProperty<Boolean>, ()->Unit)
@@ -335,7 +343,9 @@ class SizedUICollectionViewCell: UICollectionViewCell {
             if let dataSource = current.dataSource,
                 dataSource.collectionView(current, numberOfItemsInSection: 0) == current.numberOfItems(inSection: 0)
             {
-                current.performBatchUpdates({}, completion: nil)
+//                UIView.performWithoutAnimation {
+                    current.performBatchUpdates({}, completion: nil)
+//                }
             } else {
                 current.reloadData()
             }
