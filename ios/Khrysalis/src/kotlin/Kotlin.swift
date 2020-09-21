@@ -328,6 +328,12 @@ public extension Dictionary {
         copy.putAll(from: rhs)
         return copy
     }
+
+    func plus(map: Self) -> Self {
+        var copy = self
+        copy.putAll(from: map)
+        return copy
+    }
     
     mutating func getOrPut(key: Key, defaultValue: ()->Value) -> Value {
         if let value = self[key] {
