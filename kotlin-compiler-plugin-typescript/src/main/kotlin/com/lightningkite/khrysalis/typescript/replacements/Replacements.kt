@@ -35,9 +35,6 @@ class Replacements() {
         val actualDescriptor =
             (descriptor as? SamAdapterExtensionFunctionDescriptor)?.baseDescriptorForSynthetic ?: descriptor
         if (!alreadyChecked.add(actualDescriptor)) return null
-        if (actualDescriptor.fqNameSafe.asString().contains("zip")) {
-            println("Looking for ${actualDescriptor.fqNamesToCheck.joinToString()}")
-        }
         val result = actualDescriptor.fqNamesToCheck
             .flatMap {
                 functions[it]?.asSequence() ?: sequenceOf()

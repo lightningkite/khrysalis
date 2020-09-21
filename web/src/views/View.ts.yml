@@ -70,6 +70,11 @@
   type: set
   template: ~this~.style.opacity = `${~0~}`
 
+- id: android.view.View.alpha
+  type: set
+  actualReceiver: android.widget.CompoundButton
+  template: ~this~.parentElement!.style.opacity = `${~0~}`
+
 #- id: android.view.View.scrollTo
 #  type: call
 #  template:

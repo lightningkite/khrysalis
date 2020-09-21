@@ -4,20 +4,51 @@ const DisposeCondition_actual_1 = require("khrysalis/dist/rx/DisposeCondition.ac
 const ObservableProperty_ext_shared_1 = require("khrysalis/dist/observables/ObservableProperty.ext.shared");
 const LatLng_ext_1 = require("./LatLng.ext");
 const mapSymbol = Symbol("mapSymbol");
-//! Declares com.lightningkite.khrysalis.maps.bind>com.google.android.gms.maps.MapView
-function xMapViewBind(this_, dependency, style) {
-    const map = new google.maps.Map(this_, {
+let floatingMapDivs = [];
+function aquireMap() {
+    const alreadyExisting = floatingMapDivs.pop();
+    if (alreadyExisting) {
+        console.log("Reusing an existing google map");
+        return alreadyExisting;
+    }
+    const newDiv = document.createElement("div");
+    newDiv.style.width = "100%";
+    newDiv.style.height = "100%";
+    newDiv.style.position = "absolute";
+    newDiv.style.left = "0px";
+    newDiv.style.top = "0px";
+    console.log("Created a new google map; this will cost money");
+    const map = new google.maps.Map(newDiv, {
         center: { lat: 0, lng: 0 },
         zoom: 2,
         styles: [] //?
     });
-    this_[mapSymbol] = map;
+    return { div: newDiv, map: map };
+}
+exports.aquireMap = aquireMap;
+function retireMap(element) {
+    floatingMapDivs.push(element);
+}
+exports.retireMap = retireMap;
+//! Declares com.lightningkite.khrysalis.maps.bind>com.google.android.gms.maps.MapView
+function xMapViewBind(this_, dependency, style) {
+    const map = aquireMap();
+    map.map.setOptions({
+        center: { lat: 0, lng: 0 },
+        zoom: 2,
+        styles: style ? JSON.parse(style) : []
+    });
+    this_.appendChild(map.div);
+    DisposeCondition_actual_1.xViewRemovedGet(this_).call(new DisposeCondition_actual_1.DisposableLambda(() => {
+        this_.removeChild(map.div);
+        retireMap(map);
+    }));
 }
 exports.xMapViewBind = xMapViewBind;
 //! Declares com.lightningkite.khrysalis.maps.bindView>com.google.android.gms.maps.MapView
 function xMapViewBindView(this_, dependency, position, zoomLevel = 15, animate = true, style = null) {
     xMapViewBind(this_, dependency, style);
-    const map = this_[mapSymbol];
+    const map = this_[mapSymbol].map;
     let first = true;
     let marker = null;
     DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(position, undefined, undefined, (g) => {
@@ -54,7 +85,7 @@ exports.xMapViewBindView = xMapViewBindView;
 //! Declares com.lightningkite.khrysalis.maps.bindSelect>com.google.android.gms.maps.MapView
 function xMapViewBindSelect(this_, dependency, position, zoomLevel = 15, animate = true, style = null) {
     xMapViewBind(this_, dependency, style);
-    const map = this_[mapSymbol];
+    const map = this_[mapSymbol].map;
     let first = true;
     let marker = null;
     DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(position, undefined, undefined, (g) => {

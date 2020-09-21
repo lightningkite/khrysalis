@@ -7,7 +7,7 @@ import {ObservableProperty} from 'khrysalis/dist/observables/ObservableProperty.
 import {} from "googlemaps"
 import {
     xViewRemovedGet,
-    xDisposableUntil
+    xDisposableUntil, DisposableLambda
 } from "khrysalis/dist/rx/DisposeCondition.actual";
 import {xObservablePropertySubscribeBy} from "khrysalis/dist/observables/ObservableProperty.ext.shared";
 import {customViewInvalidate} from "khrysalis/dist/views/CustomView.actual";
@@ -19,24 +19,59 @@ import {
 const mapSymbol = Symbol("mapSymbol");
 declare global {
     interface HTMLDivElement {
-        [mapSymbol]: google.maps.Map;
+        [mapSymbol]: ReusableMap;
     }
 }
 
-//! Declares com.lightningkite.khrysalis.maps.bind>com.google.android.gms.maps.MapView
-export function xMapViewBind(this_: HTMLDivElement, dependency: Window, style: string | null): void {
-    const map = new google.maps.Map(this_, {
+export interface ReusableMap {
+    div: HTMLDivElement;
+    map: google.maps.Map
+}
+
+let floatingMapDivs: Array<ReusableMap> = [];
+export function aquireMap(): ReusableMap {
+    const alreadyExisting = floatingMapDivs.pop()
+    if(alreadyExisting){
+        console.log("Reusing an existing google map")
+        return alreadyExisting
+    }
+    const newDiv = document.createElement("div")
+    newDiv.style.width = "100%"
+    newDiv.style.height = "100%"
+    newDiv.style.position = "absolute"
+    newDiv.style.left = "0px"
+    newDiv.style.top = "0px"
+    console.log("Created a new google map; this will cost money")
+    const map = new google.maps.Map(newDiv, {
         center: { lat: 0, lng: 0 },
         zoom: 2,
         styles: [] //?
     });
-    this_[mapSymbol] = map;
+    return { div: newDiv, map: map };
+}
+export function retireMap(element: ReusableMap){
+    floatingMapDivs.push(element);
+}
+
+//! Declares com.lightningkite.khrysalis.maps.bind>com.google.android.gms.maps.MapView
+export function xMapViewBind(this_: HTMLDivElement, dependency: Window, style: string | null): void {
+    const map = aquireMap();
+    map.map.setOptions({
+        center: { lat: 0, lng: 0 },
+        zoom: 2,
+        styles: style ? JSON.parse(style) : []
+    })
+    this_.appendChild(map.div);
+    xViewRemovedGet(this_).call(new DisposableLambda(()=>{
+        this_.removeChild(map.div);
+        retireMap(map);
+    }));
 }
 
 //! Declares com.lightningkite.khrysalis.maps.bindView>com.google.android.gms.maps.MapView
 export function xMapViewBindView(this_: HTMLDivElement, dependency: Window, position: ObservableProperty<(GeoCoordinate | null)>, zoomLevel: number = 15, animate: boolean = true, style: string | null = null): void {
     xMapViewBind(this_, dependency, style);
-    const map = this_[mapSymbol];
+    const map = this_[mapSymbol].map;
     let first = true;
     let marker: google.maps.Marker | null = null;
     xDisposableUntil(xObservablePropertySubscribeBy(position, undefined, undefined, (g: GeoCoordinate | null)=>{
@@ -71,7 +106,7 @@ export function xMapViewBindView(this_: HTMLDivElement, dependency: Window, posi
 //! Declares com.lightningkite.khrysalis.maps.bindSelect>com.google.android.gms.maps.MapView
 export function xMapViewBindSelect(this_: HTMLDivElement, dependency: Window, position: MutableObservableProperty<(GeoCoordinate | null)>, zoomLevel: number = 15, animate: boolean = true, style: string | null = null): void {
     xMapViewBind(this_, dependency, style);
-    const map = this_[mapSymbol];
+    const map = this_[mapSymbol].map;
     let first = true;
     let marker: google.maps.Marker | null = null;
     xDisposableUntil(xObservablePropertySubscribeBy(position, undefined, undefined, (g: GeoCoordinate | null)=>{

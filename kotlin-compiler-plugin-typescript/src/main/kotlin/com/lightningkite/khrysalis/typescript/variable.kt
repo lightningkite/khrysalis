@@ -630,11 +630,11 @@ fun TypescriptTranslator.registerVariable() {
     )
     handle<VirtualSet>(
         condition = {
-            replacements.getSet(typedRule.property as? PropertyDescriptor ?: return@handle false) != null
+            replacements.getSet(typedRule.property as? PropertyDescriptor ?: return@handle false, typedRule.receiverType) != null
         },
         priority = 10_000,
         action = {
-            val rule = replacements.getSet(typedRule.property as PropertyDescriptor)!!
+            val rule = replacements.getSet(typedRule.property as PropertyDescriptor, typedRule.receiverType)!!
             emitTemplate(
                 requiresWrapping = false,
                 type = typedRule.expr.resolvedExpressionTypeInfo?.type,
@@ -732,7 +732,7 @@ fun TypescriptTranslator.registerVariable() {
             -VirtualSet(
                 property = leftProp,
                 nameReferenceExpression = left,
-                receiverType = null,
+                receiverType = typedRule.left?.resolvedExpressionTypeInfo?.type,
                 expr = typedRule,
                 safe = false,
                 value = if (typedRule.operationToken == KtTokens.EQ) {
