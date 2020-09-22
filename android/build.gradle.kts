@@ -61,10 +61,11 @@ android {
 }
 
 val kotlin_version = "1.3.72"
+
 dependencies {
     testImplementation("junit:junit:4.12")
-    androidTestImplementation("androidx.test:runner:1.2.0")
-    androidTestImplementation("com.android.support.test.espresso:espresso-core:3.0.2")
+    androidTestImplementation("androidx.test:runner:1.3.0")
+    androidTestImplementation("androidx.test.espresso:espresso-core:3.3.0")
     implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk7:$kotlin_version")
     implementation("org.jetbrains.kotlin:kotlin-reflect:$kotlin_version")
     implementation("com.wdullaer:materialdatetimepicker:4.2.3")
@@ -72,7 +73,7 @@ dependencies {
     api("androidx.appcompat:appcompat:1.1.0")
     api("com.google.android.material:material:1.1.0")
     api("androidx.preference:preference-ktx:1.1.1")
-    api("com.android.support.constraint:constraint-layout:1.1.3")
+    api("androidx.constraintlayout:constraintlayout:1.1.3")
     api("androidx.recyclerview:recyclerview:1.1.0")
     api("com.fasterxml.jackson.core:jackson-core:2.9.9")
     api("com.fasterxml.jackson.core:jackson-annotations:2.9.7")
