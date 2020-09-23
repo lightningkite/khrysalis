@@ -1,7 +1,0 @@
-KhrysalisFCM
-com.lightningkite.khrysalis.fcm.FirebaseMessagingActivity
-com.lightningkite.khrysalis.fcm
-com.lightningkite.khrysalis.fcm.ForegroundNotificationHandler
-com.lightningkite.khrysalis.fcm.ForegroundNotificationHandlerResult
-com.lightningkite.khrysalis.fcm.MyFirebaseMessagingService
-com.lightningkite.khrysalis.fcm.Notifications

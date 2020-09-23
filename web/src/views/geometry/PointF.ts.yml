@@ -1,8 +1,0 @@
----
-- id: android.graphics.PointF
-  type: call
-  arguments: [kotlin.Float, kotlin.Float]
-  template: new PointF(~0~, ~1~)
-- id: android.graphics.PointF
-  type: call
-  template: new PointF()

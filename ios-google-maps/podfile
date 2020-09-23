@@ -1,7 +1,0 @@
-
-platform :ios, '11.0'
-use_modular_headers!
-
-target 'KhrysalisGoogleMaps' do
-    pod 'Khrysalis', :path => '~/StudioProjects/khrysalis/khrysalis.podspec'
-end

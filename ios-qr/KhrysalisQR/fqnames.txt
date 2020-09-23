@@ -1,4 +1,0 @@
-KhrysalisQR
-com.lightningkite.khrysalis.qr.generateBarCode
-com.lightningkite.khrysalis.qr.BarcodeScannerView
-com.lightningkite.khrysalis.qr.bindBarcodeScan

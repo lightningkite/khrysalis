@@ -1,3 +1,0 @@
-- id: com.lightningkite.khrysalis.time.TimeInterval
-  type: call
-  template: TimeInterval(~0~ / 1000)

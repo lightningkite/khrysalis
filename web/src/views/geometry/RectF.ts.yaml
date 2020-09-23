@@ -1,8 +1,0 @@
----
-
-- id: android.graphics.RectF
-  type: call
-  template:
-    pattern: new RectF(~*~)
-    imports:
-      RectF: khrysalis/dist/views/geometry/RectF.actual

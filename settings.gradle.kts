@@ -10,11 +10,6 @@ pluginManagement {
 rootProject.name = "khrysalis"
 
 include(":plugin")
-include(":android")
-include(":android-maps")
-include(":android-fcm")
-include(":android-bluetooth")
-include(":android-qr")
 include("kotlin-compiler-plugin-common")
 include("kotlin-compiler-plugin-swift")
 include("kotlin-compiler-plugin-typescript")

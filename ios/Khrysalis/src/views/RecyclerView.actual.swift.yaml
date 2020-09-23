@@ -1,7 +1,0 @@
----
-- id: androidx.recyclerview.widget.RecyclerView.smoothScrollToPosition
-  type: call
-  template: '~this~.scrollToItem(at: IndexPath(item: ~0~, section: 0), at: [], animated: true)'
-- id: androidx.recyclerview.widget.RecyclerView.scrollToPosition
-  type: call
-  template: '~this~.scrollToItem(at: IndexPath(item: ~0~, section: 0), at: [], animated: false)'

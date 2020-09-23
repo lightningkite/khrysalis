@@ -1,7 +1,0 @@
-- id: com.lightningkite.khrysalis.views.StringResource
-  type: type
-  template: string
-
-- id: com.lightningkite.khrysalis.views.ColorResource
-  type: type
-  template: string
