@@ -9,6 +9,14 @@
   type: call
   template: document.createElement('div')
 
+- id: android.widget.Space
+  type: type
+  template: HTMLElement
+
+- id: android.widget.Space
+  type: call
+  template: document.createElement('div')
+
 - id: android.view.View.VISIBLE
   type: get
   template: "\"visible\""

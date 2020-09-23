@@ -4,6 +4,7 @@ import com.lightningkite.khrysalis.utils.*
 import com.lightningkite.khrysalis.ios.*
 import com.lightningkite.khrysalis.ios.layout.setToColor
 import java.lang.IllegalStateException
+import java.util.*
 
 fun <E> MutableList<E>.unshift(): E {
     return removeAt(0)
@@ -134,11 +135,25 @@ private fun Appendable.pathDataToSwift(pathData: String) {
         if (nextLetterIndex == -1) nextLetterIndex = pathData.length
 
         val rawInstruction: Char = pathData[stringIndex]
-        val arguments: MutableList<Double> = pathData
-            .substring(stringIndex + 1, nextLetterIndex)
-            .split(spaceOrComma)
-            .mapNotNull { it.toDoubleOrNull() }
-            .toMutableList()
+        val arguments = ArrayList<Double>()
+        val currentNumber = StringBuilder()
+        for(c in pathData.substring(stringIndex + 1, nextLetterIndex)){
+            when(c){
+                ' ', ',', '-' -> {
+                    if(currentNumber.length > 0){
+                        arguments.add(currentNumber.toString().toDouble())
+                        currentNumber.setLength(0)
+                    }
+                    if(c == '-'){
+                        currentNumber.append('-')
+                    }
+                }
+                in '0'..'9', '.' -> currentNumber.append(c)
+            }
+        }
+        if(currentNumber.length > 0){
+            arguments.add(currentNumber.toString().toDouble())
+        }
 
         val instruction = rawInstruction.toLowerCase()
         val isAbsolute: Boolean = rawInstruction.isUpperCase()
