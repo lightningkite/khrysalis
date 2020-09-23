@@ -6,6 +6,6 @@ val LayoutConverter.Companion.qrViews
     get() = LayoutConverter(
         imports = setOf("KhrysalisQR"),
         viewTypes = ViewType.mapOf(
-            ViewType("com.lightningkite.khrysalis.qr.BarcodeScannerView", "BarcodeScannerView", "View"){}
+            ViewType("com.lightningkite.butterfly.qr.BarcodeScannerView", "BarcodeScannerView", "View"){}
         )
     )

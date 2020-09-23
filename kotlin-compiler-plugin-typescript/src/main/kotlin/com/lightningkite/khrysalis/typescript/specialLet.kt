@@ -96,7 +96,7 @@ fun TypescriptTranslator.registerSpecialLet() {
             }
             -" => {\n"
         }
-        out.addImport("khrysalis/dist/kotlin/Language", "runOrNull")
+        out.addImport("butterfly/dist/kotlin/Language", "runOrNull")
         typedRule.entries.forEachBetween(
             forItem = { (basis, lambda) ->
                 val desc = lambda.functionLiteral.resolvedFunction?.valueParameters?.firstOrNull()

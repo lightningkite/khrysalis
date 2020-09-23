@@ -15,12 +15,12 @@ package com.klypme.shared.vg
 //--- Imports
 import android.widget.*
 import android.view.*
-import com.lightningkite.khrysalis.actual.*
-import com.lightningkite.khrysalis.shared.*
-import com.lightningkite.khrysalis.views.actual.*
-import com.lightningkite.khrysalis.views.shared.*
-import com.lightningkite.khrysalis.observables.actual.*
-import com.lightningkite.khrysalis.observables.shared.*
+import com.lightningkite.butterfly.actual.*
+import com.lightningkite.butterfly.shared.*
+import com.lightningkite.butterfly.views.actual.*
+import com.lightningkite.butterfly.views.shared.*
+import com.lightningkite.butterfly.observables.actual.*
+import com.lightningkite.butterfly.observables.shared.*
 import com.klypme.R
 import com.klypme.layouts.*
 

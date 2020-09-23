@@ -31,7 +31,7 @@ class KotlinTypescriptCLP : CommandLineProcessor {
         val KEY_PROJECT_NAME = CompilerConfigurationKey.create<String>(KEY_PROJECT_NAME_NAME)
         const val KEY_OUTPUT_DIRECTORY_NAME = "outputDirectory"
         val KEY_OUTPUT_DIRECTORY = CompilerConfigurationKey.create<File>(KEY_OUTPUT_DIRECTORY_NAME)
-        const val PLUGIN_ID = "com.lightningkite.khrysalis.typescript"
+        const val PLUGIN_ID = "com.lightningkite.butterfly.typescript"
     }
 
     override val pluginId: String get() = PLUGIN_ID

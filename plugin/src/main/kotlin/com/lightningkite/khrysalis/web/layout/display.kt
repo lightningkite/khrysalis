@@ -73,13 +73,13 @@ internal fun HtmlTranslator.display() {
         out.name = "div"
     }
 
-    element.handle("com.lightningkite.khrysalis.views.VideoPlayer") {
+    element.handle("com.lightningkite.butterfly.views.VideoPlayer") {
         out.name = "video"
         out.attributes["controls"] = "true"
         out.attributes["crossorigin"] = "anonymous"
     }
 
-    element.handle("com.lightningkite.khrysalis.views.android.HorizontalProgressBar") {
+    element.handle("com.lightningkite.butterfly.views.android.HorizontalProgressBar") {
         out.name = "progress"
     }
 

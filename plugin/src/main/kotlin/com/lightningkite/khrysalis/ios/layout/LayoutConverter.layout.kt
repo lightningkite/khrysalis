@@ -6,7 +6,7 @@ import com.lightningkite.khrysalis.ios.*
 val LayoutConverter.Companion.layoutViews
     get() = LayoutConverter(
         viewTypes = ViewType.mapOf(
-            ViewType("com.lightningkite.khrysalis.views.android.SwapView", "SwapView", "View") { node -> },
+            ViewType("com.lightningkite.butterfly.views.android.SwapView", "SwapView", "View") { node -> },
             ViewType("androidx.core.widget.NestedScrollView", "ScrollViewVertical", "ScrollView") { node -> },
             ViewType("ScrollView", "ScrollViewVertical", "View") { node ->
                 node.attributeAsBoolean("android:fillViewport")?.let {

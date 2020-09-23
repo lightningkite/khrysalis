@@ -19,18 +19,18 @@ fun SwiftTranslator.registerLambda() {
             -"{ "
             val captures = ArrayList<String>()
             if (typedRule.resolvedFunction?.annotations?.let {
-                    it.hasAnnotation(FqName("com.lightningkite.khrysalis.WeakSelf")) || it.hasAnnotation(FqName("com.lightningkite.khrysalis.weakSelf"))
+                    it.hasAnnotation(FqName("com.lightningkite.butterfly.WeakSelf")) || it.hasAnnotation(FqName("com.lightningkite.butterfly.weakSelf"))
                 } == true) {
                 captures.add("weak self")
             } else if (typedRule.resolvedFunction?.annotations?.let {
-                    it.hasAnnotation(FqName("com.lightningkite.khrysalis.UnownedSelf")) || it.hasAnnotation(FqName("com.lightningkite.khrysalis.unownedSelf"))
+                    it.hasAnnotation(FqName("com.lightningkite.butterfly.UnownedSelf")) || it.hasAnnotation(FqName("com.lightningkite.butterfly.unownedSelf"))
                 } == true) {
                 captures.add("unowned self")
             }
-            typedRule.resolvedFunction?.annotations?.findAnnotation(FqName("com.lightningkite.khrysalis.CaptureUnowned"))?.allValueArguments?.get(Name.identifier("keys"))?.value?.let { it as? Array<String> }?.let {
+            typedRule.resolvedFunction?.annotations?.findAnnotation(FqName("com.lightningkite.butterfly.CaptureUnowned"))?.allValueArguments?.get(Name.identifier("keys"))?.value?.let { it as? Array<String> }?.let {
                 captures.addAll(it.map { "unowned $it" })
             }
-            typedRule.resolvedFunction?.annotations?.findAnnotation(FqName("com.lightningkite.khrysalis.CaptureWeak"))?.allValueArguments?.get(Name.identifier("keys"))?.value?.let { it as? Array<String> }?.let {
+            typedRule.resolvedFunction?.annotations?.findAnnotation(FqName("com.lightningkite.butterfly.CaptureWeak"))?.allValueArguments?.get(Name.identifier("keys"))?.value?.let { it as? Array<String> }?.let {
                 captures.addAll(it.map { "weak $it" })
             }
             if(captures.isNotEmpty()){
@@ -71,8 +71,8 @@ fun SwiftTranslator.registerLambda() {
                 -')'
             }
             (
-                    resolved.annotations.findAnnotation(FqName("com.lightningkite.khrysalis.SwiftReturnType"))
-                        ?: resolved.annotations.findAnnotation(FqName("com.lightningkite.khrysalis.swiftReturnType"))
+                    resolved.annotations.findAnnotation(FqName("com.lightningkite.butterfly.SwiftReturnType"))
+                        ?: resolved.annotations.findAnnotation(FqName("com.lightningkite.butterfly.swiftReturnType"))
                     )?.allValueArguments?.entries?.first()?.value?.value?.let {
                     -" -> $it"
                 } ?: (betterReturnType ?: resolved.returnType)?.let {

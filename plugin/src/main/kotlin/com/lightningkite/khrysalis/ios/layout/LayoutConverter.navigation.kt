@@ -57,7 +57,7 @@ val LayoutConverter.Companion.navigationViews
                 }
             },
             ViewType(
-                "com.lightningkite.khrysalis.views.android.PreviewVariedFlipper",
+                "com.lightningkite.butterfly.views.android.PreviewVariedFlipper",
                 "PreviewVariedFlipper",
                 "FrameLayout"
             ) {},
@@ -68,7 +68,7 @@ val LayoutConverter.Companion.navigationViews
                     appendln("view.backgroundColor = UIColor.clear")
                 }
             },
-            ViewType("com.lightningkite.khrysalis.views.android.VerticalRecyclerView", "UICollectionView", "androidx.recyclerview.widget.RecyclerView",
+            ViewType("com.lightningkite.butterfly.views.android.VerticalRecyclerView", "UICollectionView", "androidx.recyclerview.widget.RecyclerView",
                 iosConstructor = "UICollectionView(frame: .zero, collectionViewLayout: UICollectionView.ReversibleFlowLayout())") { node ->
 //                val pos = (node.allAttributes.get("app:dividerPositions")?.split('|') ?: node.allAttributes.get("dividerPositions")?.split('|')) ?: listOf()
 //                when{

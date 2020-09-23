@@ -177,7 +177,7 @@ fun SwiftTranslator.registerClass() {
                 -"private "
                 if (it.annotationEntries.any {
                         it.resolvedAnnotation?.fqName?.asString()
-                            ?.equals("com.lightningkite.khrysalis.Unowned", true) == true
+                            ?.equals("com.lightningkite.butterfly.Unowned", true) == true
                     }) {
                     -"unowned "
                 }
@@ -205,7 +205,7 @@ fun SwiftTranslator.registerClass() {
                 -(it.swiftVisibility() ?: "public")
                 if (it.annotationEntries.any {
                         it.resolvedAnnotation?.fqName?.asString()
-                            ?.equals("com.lightningkite.khrysalis.Unowned", true) == true
+                            ?.equals("com.lightningkite.butterfly.Unowned", true) == true
                     }) {
                     -" unowned"
                 }
@@ -243,7 +243,7 @@ fun SwiftTranslator.registerClass() {
 
         if (typedRule.superTypeListEntries
                 .mapNotNull { it as? KtSuperTypeEntry }
-                .any { it.typeReference?.resolvedType?.getJetTypeFqName(false) == "com.lightningkite.khrysalis.Codable" }
+                .any { it.typeReference?.resolvedType?.getJetTypeFqName(false) == "com.lightningkite.butterfly.Codable" }
         ) {
             -"convenience required public init(from decoder: Decoder) throws {\n"
             -"let values = try decoder.container(keyedBy: CodingKeys.self)\n"

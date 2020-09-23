@@ -75,7 +75,7 @@ fun SwiftTranslator.registerType() {
         val t = typedRule.forDescriptor.extensionReceiverParameter!!.type
         val baseClass = t.constructor.declarationDescriptor as? ClassDescriptor
         -typedRule.receiver?.typeElement?.let { it as? KtUserType }?.let { KtUserTypeBasic(it) } ?: BasicType(t)
-        typedRule.forDescriptor.annotations.findAnnotation(FqName("com.lightningkite.khrysalis.SwiftExtensionWhere"))
+        typedRule.forDescriptor.annotations.findAnnotation(FqName("com.lightningkite.butterfly.SwiftExtensionWhere"))
             ?.let {
                 val value = it.allValueArguments[Name.identifier("text")]!!.value as String
                 if (value.isNotBlank()) {
@@ -196,7 +196,7 @@ fun SwiftTranslator.registerType() {
                     -'('
                 }
                 if (writingParameter && typedRule.annotations.let {
-                        it.hasAnnotation(FqName("com.lightningkite.khrysalis.Escaping")) || it.hasAnnotation(FqName("com.lightningkite.khrysalis.escaping"))
+                        it.hasAnnotation(FqName("com.lightningkite.butterfly.Escaping")) || it.hasAnnotation(FqName("com.lightningkite.butterfly.escaping"))
                     }) {
                     -"@escaping "
                 }
@@ -375,7 +375,7 @@ fun SwiftTranslator.registerType() {
             writingParameter && typedRule.annotationEntries
                 .any {
                     it.resolvedAnnotation?.fqName?.asString()
-                        ?.equals("com.lightningkite.khrysalis.escaping", true) == true
+                        ?.equals("com.lightningkite.butterfly.escaping", true) == true
                 }
                     && typedRule.parentOfType<KtParameter>() != null
         },

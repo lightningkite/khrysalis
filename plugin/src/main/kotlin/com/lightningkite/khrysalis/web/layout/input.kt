@@ -21,7 +21,7 @@ internal fun HtmlTranslator.input() {
         out.text = primary
     }
 
-    element.handle("com.lightningkite.khrysalis.views.android.MultilineEditText"){
+    element.handle("com.lightningkite.butterfly.views.android.MultilineEditText"){
         out.name = "div"
         out.classes += "khrc"
         val primary = ResultNode("textarea").apply{
@@ -33,7 +33,7 @@ internal fun HtmlTranslator.input() {
         out.text = primary
     }
 
-    element.handle("com.lightningkite.khrysalis.views.android.DateButton"){
+    element.handle("com.lightningkite.butterfly.views.android.DateButton"){
         out.name = "div"
         out.classes += "khrc"
         val primary = ResultNode("input").apply{
@@ -45,7 +45,7 @@ internal fun HtmlTranslator.input() {
         out.text = primary
     }
 
-    element.handle("com.lightningkite.khrysalis.views.android.TimeButton"){
+    element.handle("com.lightningkite.butterfly.views.android.TimeButton"){
         out.name = "div"
         out.classes += "khrc"
         val primary = ResultNode("input").apply{
@@ -69,7 +69,7 @@ internal fun HtmlTranslator.input() {
         out.name = "select"
     }
 
-    element.handle("com.lightningkite.khrysalis.views.android.ColorRatingBar"){
+    element.handle("com.lightningkite.butterfly.views.android.ColorRatingBar"){
         defer("android.widget.RatingBar")
     }
 

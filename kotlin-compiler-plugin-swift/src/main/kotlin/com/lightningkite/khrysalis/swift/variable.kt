@@ -197,7 +197,7 @@ fun SwiftTranslator.registerVariable() {
     handle<KtProperty>(
         condition = {
             ((typedRule.delegateExpression as? KtCallExpression)?.calleeExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget?.fqNameOrNull()
-                ?.asString() == "com.lightningkite.khrysalis.weak"
+                ?.asString() == "com.lightningkite.butterfly.weak"
         },
         priority = 15
     ) {
@@ -235,7 +235,7 @@ fun SwiftTranslator.registerVariable() {
             typedRule.initializer,
             typedRule.containingClassOrObject?.resolvedClass
         ))
-        if(typedRule.annotationEntries.any { it.resolvedAnnotation?.fqName?.asString()?.equals("com.lightningkite.khrysalis.Unowned", true) == true }) {
+        if(typedRule.annotationEntries.any { it.resolvedAnnotation?.fqName?.asString()?.equals("com.lightningkite.butterfly.Unowned", true) == true }) {
             -"unowned "
         }
         if (isLateInit || typedRule.isVar || (typedRule.resolvedProperty?.type?.requiresMutable()
@@ -308,7 +308,7 @@ fun SwiftTranslator.registerVariable() {
                 -(typedRule.swiftVisibility() ?: "public")
                 -" "
             }
-            if(typedRule.annotationEntries.any { it.resolvedAnnotation?.fqName?.asString()?.equals("com.lightningkite.khrysalis.Unowned", true) == true }) {
+            if(typedRule.annotationEntries.any { it.resolvedAnnotation?.fqName?.asString()?.equals("com.lightningkite.butterfly.Unowned", true) == true }) {
                 -"unowned "
             }
             -"var _"

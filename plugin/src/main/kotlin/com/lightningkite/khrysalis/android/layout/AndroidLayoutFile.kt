@@ -168,7 +168,7 @@ data class AndroidLayoutFile(
     |
     |import android.widget.*
     |import android.view.*
-    |import com.lightningkite.khrysalis.views.*
+    |import com.lightningkite.butterfly.views.*
     |import $applicationPackage.R
     |
     |class ${name}Xml {

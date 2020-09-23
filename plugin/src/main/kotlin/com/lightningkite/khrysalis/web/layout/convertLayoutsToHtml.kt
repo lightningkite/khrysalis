@@ -108,7 +108,7 @@ fun convertLayoutsToHtml(
     val whitespace = Regex("\\s+")
     stringsFile.bufferedWriter().use {
         with(SmartTabWriter(it)) {
-            appendln("import { DrawableResource } from 'khrysalis/dist/views/DrawableResource'")
+            appendln("import { DrawableResource } from 'butterfly/dist/views/DrawableResource'")
             appendln("//! Declares $packageName.R")
             appendln("export namespace R {")
 

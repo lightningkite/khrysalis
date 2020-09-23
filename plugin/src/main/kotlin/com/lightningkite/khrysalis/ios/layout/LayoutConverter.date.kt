@@ -6,9 +6,9 @@ import com.lightningkite.khrysalis.ios.*
 val LayoutConverter.Companion.dateViews
     get() = LayoutConverter(
         viewTypes = ViewType.mapOf(
-            ViewType("com.lightningkite.khrysalis.views.android.TimeButton", "TimeButton", "Button", handlesPadding = true) {},
-            ViewType("com.lightningkite.khrysalis.views.android.DateButton", "DateButton", "Button", handlesPadding = true) {},
-            ViewType("com.lightningkite.khrysalis.views.android.WeekView", "UIWeekView", "View") { node ->
+            ViewType("com.lightningkite.butterfly.views.android.TimeButton", "TimeButton", "Button", handlesPadding = true) {},
+            ViewType("com.lightningkite.butterfly.views.android.DateButton", "DateButton", "Button", handlesPadding = true) {},
+            ViewType("com.lightningkite.butterfly.views.android.WeekView", "UIWeekView", "View") { node ->
                 //TODO
             }
         )

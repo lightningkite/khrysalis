@@ -201,7 +201,7 @@ fun SwiftTranslator.registerFunction() {
         typedRule.typeReference?.let {
             -": "
             if (typedRule.resolvedValueParameter?.annotations?.let {
-                    it.hasAnnotation(FqName("com.lightningkite.khrysalis.Modifies")) || it.hasAnnotation(FqName("com.lightningkite.khrysalis.modifies"))
+                    it.hasAnnotation(FqName("com.lightningkite.butterfly.Modifies")) || it.hasAnnotation(FqName("com.lightningkite.butterfly.modifies"))
                 } == true) {
                 -"inout "
             }
@@ -552,7 +552,7 @@ fun SwiftTranslator.registerFunction() {
                     out += it
                 } ?: entry.value.arguments.forEachBetween(
                     forItem = {
-                        if (entry.key.annotations.hasAnnotation(FqName("com.lightningkite.khrysalis.Modifies")) || entry.key.annotations.hasAnnotation(FqName("com.lightningkite.khrysalis.modifies"))) {
+                        if (entry.key.annotations.hasAnnotation(FqName("com.lightningkite.butterfly.Modifies")) || entry.key.annotations.hasAnnotation(FqName("com.lightningkite.butterfly.modifies"))) {
                             out += "&"
                         }
                         out += it.getArgumentExpression()

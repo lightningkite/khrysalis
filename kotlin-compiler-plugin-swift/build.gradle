@@ -18,7 +18,7 @@ apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
 apply plugin: 'com.github.johnrengelman.shadow'
 
-group = "com.lightningkite.khrysalis"
+group = "com.lightningkite.butterfly"
 version = "0.1.0"
 
 repositories {

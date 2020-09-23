@@ -44,13 +44,13 @@ bintray {
 gradlePlugin {
     plugins {
         mirrorPlugin {
-            id = "com.lightningkite.khrysalis"
-            implementationClass = "com.lightningkite.khrysalis.gradle.KhrysalisPlugin"
+            id = "com.lightningkite.butterfly"
+            implementationClass = "com.lightningkite.butterfly.gradle.KhrysalisPlugin"
         }
     }
 }
 
-mainClassName = 'com.lightningkite.khrysalis.MainKt'
+mainClassName = 'com.lightningkite.butterfly.MainKt'
 
 repositories {
     mavenLocal()
@@ -60,7 +60,7 @@ repositories {
 
 }
 
-group = "com.lightningkite.khrysalis"
+group = "com.lightningkite.butterfly"
 version = '0.1.0'
 
 

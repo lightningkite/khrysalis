@@ -72,7 +72,7 @@ val LayoutConverter.Companion.displayViews
                     appendln("view.color = R.color.colorPrimary")
                 }
             },
-            ViewType("com.lightningkite.khrysalis.views.android.HorizontalProgressBar", "UIProgressView", "View") { node ->
+            ViewType("com.lightningkite.butterfly.views.android.HorizontalProgressBar", "UIProgressView", "View") { node ->
                 appendln("view.progressViewStyle = .bar")
                 if(!setToColor(node, "android:progressTint") { it, s ->
                     appendln("view.progressTintColor = $it")
@@ -97,7 +97,7 @@ val LayoutConverter.Companion.displayViews
 //                "view.transform = CGAffineTransform(rotationAngle: ${it * PI / 180.0}"
 //            }
             },
-            ViewType("com.lightningkite.khrysalis.views.VideoPlayer", "UIVideoView", "View") { node ->
+            ViewType("com.lightningkite.butterfly.views.VideoPlayer", "UIVideoView", "View") { node ->
             },
             ViewType("de.hdodenhof.circleimageview.CircleImageView", "UIImageView", "ImageView") { node ->
 
@@ -114,7 +114,7 @@ val LayoutConverter.Companion.displayViews
             ViewType("TextView", "UILabel", "View") { node ->
                 handleCommonText(node)
             },
-            ViewType("com.lightningkite.khrysalis.views.CustomView", "CustomView", "View") { node ->
+            ViewType("com.lightningkite.butterfly.views.CustomView", "CustomView", "View") { node ->
 
                 node.allAttributes["android:id"]?.let { raw ->
                     val id = raw.removePrefix("@+id/").removePrefix("@id/").camelCase()
@@ -129,7 +129,7 @@ val LayoutConverter.Companion.displayViews
             },
 
             ViewType(
-                "com.lightningkite.khrysalis.views.android.SelectableText",
+                "com.lightningkite.butterfly.views.android.SelectableText",
                 "SelectableText",
                 "TextView",
                 handlesPadding = true

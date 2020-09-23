@@ -226,7 +226,7 @@ internal fun HtmlTranslator.layout() {
         out.classes.add("khrysalis-view-flipper")
         defer("FrameLayout")
     }
-    element.handle("com.lightningkite.khrysalis.views.android.SwapView") {
+    element.handle("com.lightningkite.butterfly.views.android.SwapView") {
         out.name = "div"
         out.classes += "khrysalis-swap"
     }
@@ -250,14 +250,14 @@ internal fun HtmlTranslator.layout() {
         out.other["RadioGroupId"] = "radioGroup_${idNumber.getAndIncrement()}"
         defer("LinearLayout")
     }
-    element.handle("com.lightningkite.khrysalis.views.android.VerticalRecyclerView") {
+    element.handle("com.lightningkite.butterfly.views.android.VerticalRecyclerView") {
         defer("androidx.recyclerview.widget.RecyclerView")
     }
     element.handle("androidx.recyclerview.widget.RecyclerView") {
         out.classes += "khrysalis-recycler"
         out.style["flex-direction"] = "column"
     }
-    element.handle("com.lightningkite.khrysalis.views.CustomView") {
+    element.handle("com.lightningkite.butterfly.views.CustomView") {
         out.name = "canvas"
     }
     element.handle("androidx.swiperefreshlayout.widget.SwipeRefreshLayout") {
