@@ -44,13 +44,13 @@ bintray {
 gradlePlugin {
     plugins {
         mirrorPlugin {
-            id = "com.lightningkite.butterfly"
-            implementationClass = "com.lightningkite.butterfly.gradle.KhrysalisPlugin"
+            id = "com.lightningkite.khrysalis"
+            implementationClass = "com.lightningkite.khrysalis.gradle.KhrysalisPlugin"
         }
     }
 }
 
-mainClassName = 'com.lightningkite.butterfly.MainKt'
+mainClassName = 'com.lightningkite.khrysalis.MainKt'
 
 repositories {
     mavenLocal()
@@ -60,7 +60,7 @@ repositories {
 
 }
 
-group = "com.lightningkite.butterfly"
+group = "com.lightningkite.khrysalis"
 version = '0.1.0'
 
 
@@ -109,7 +109,7 @@ task insertTypescriptJar(type: Copy){
     into 'src/main/resources/compiler-plugins'
     rename '.*', 'typescript.jar'
 }
-tasks.jar.dependsOn("insertTypescriptJar")
+tasks.compileKotlin.dependsOn("insertTypescriptJar")
 
 task insertSwiftJar(type: Copy){
     dependsOn(":kotlin-compiler-plugin-swift:shadowJar")
@@ -119,7 +119,7 @@ task insertSwiftJar(type: Copy){
     into 'src/main/resources/compiler-plugins'
     rename '.*', 'swift.jar'
 }
-tasks.jar.dependsOn("insertSwiftJar")
+tasks.compileKotlin.dependsOn("insertSwiftJar")
 
 task sourceJar(type: Jar) {
     from sourceSets.main.allJava

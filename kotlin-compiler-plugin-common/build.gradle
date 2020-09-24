@@ -16,7 +16,7 @@ apply plugin: "kotlin"
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
 
-group = "com.lightningkite.butterfly"
+group = "com.lightningkite.khrysalis"
 version = "0.1.0"
 
 repositories {
