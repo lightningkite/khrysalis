@@ -57,8 +57,9 @@ internal fun createPrototypeViewGenerators(
         log(item.toString())
         val fileName = item.nameWithoutExtension.camelCase().capitalize()
         val node = nodes[fileName] ?: return@forEach
-        val targetFileName = fileName + "VG.shared.kt"
-        val targetFile = scannedDirectoryInfo[targetFileName] ?: outputFolder.resolve(targetFileName)
+        val targetFileName = fileName + "VG.kt"
+        val altTargetFileName = fileName + "VG.shared.kt"
+        val targetFile = scannedDirectoryInfo[targetFileName] ?: scannedDirectoryInfo[altTargetFileName] ?: outputFolder.resolve(targetFileName)
         createPrototypeVG(
             layoutInfo = layoutInfo,
             styles = styles,

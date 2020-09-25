@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.swift
 
+import com.lightningkite.khrysalis.determineTranslatable
 import org.jetbrains.kotlin.analyzer.AnalysisResult
 import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
@@ -100,8 +101,8 @@ class KotlinSwiftExtension(
             projectName = projectName,
             bindingContext = ctx,
             commonPath = files.asSequence()
+                .filter { determineTranslatable(it) }
                 .map { it.virtualFilePath }
-                .filter { it.endsWith(".shared.kt") }
                 .takeUnless { it.none() }
                 ?.reduce { acc, s -> acc.commonPrefixWith(s) }
                 ?.substringBeforeLast('/')
@@ -145,10 +146,7 @@ class KotlinSwiftExtension(
 
 
         for (file in files) {
-            if (!file.virtualFilePath.endsWith(".shared.kt")) {
-                collector?.report(CompilerMessageSeverity.INFO, "Skipping $file")
-                continue
-            }
+            if(!determineTranslatable(file)) continue
             try {
                 val outputFile = output
                     .resolve(file.virtualFilePath.removePrefix(translator.commonPath))
