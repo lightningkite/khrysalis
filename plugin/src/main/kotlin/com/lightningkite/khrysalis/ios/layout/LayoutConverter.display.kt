@@ -72,7 +72,7 @@ val LayoutConverter.Companion.displayViews
                     appendln("view.color = R.color.colorPrimary")
                 }
             },
-            ViewType("com.lightningkite.butterfly.views.android.HorizontalProgressBar", "UIProgressView", "View") { node ->
+            ViewType("com.lightningkite.butterfly.views.HorizontalProgressBar", "UIProgressView", "View") { node ->
                 appendln("view.progressViewStyle = .bar")
                 if(!setToColor(node, "android:progressTint") { it, s ->
                     appendln("view.progressTintColor = $it")
@@ -129,7 +129,7 @@ val LayoutConverter.Companion.displayViews
             },
 
             ViewType(
-                "com.lightningkite.butterfly.views.android.SelectableText",
+                "com.lightningkite.butterfly.views.SelectableText",
                 "SelectableText",
                 "TextView",
                 handlesPadding = true

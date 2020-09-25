@@ -79,7 +79,7 @@ internal fun HtmlTranslator.display() {
         out.attributes["crossorigin"] = "anonymous"
     }
 
-    element.handle("com.lightningkite.butterfly.views.android.HorizontalProgressBar") {
+    element.handle("com.lightningkite.butterfly.views.HorizontalProgressBar") {
         out.name = "progress"
     }
 

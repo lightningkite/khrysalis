@@ -16,7 +16,7 @@ val LayoutConverter.Companion.buttonViews
                     appendln("view.thumbTintColor = $it")
                 }
             },
-            ViewType("com.lightningkite.butterfly.views.android.ColorRatingBar", "UIRatingBar", "RatingBar") { node ->
+            ViewType("com.lightningkite.butterfly.views.ColorRatingBar", "UIRatingBar", "RatingBar") { node ->
                 setToColor(node, key = "app:empty_color") { it, s ->
                     appendln("view.settings.emptyColor = $it")
                     appendln("view.settings.emptyBorderColor = $it")
