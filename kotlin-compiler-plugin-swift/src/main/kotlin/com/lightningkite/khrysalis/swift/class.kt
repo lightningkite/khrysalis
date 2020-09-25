@@ -58,13 +58,13 @@ fun SwiftTranslator.registerClass() {
             )
             .let {
                 if (on is KtClass && on.isData()) {
-                    out.addImport(TemplatePart.Import("Khrysalis"))
+                    out.addImport(TemplatePart.Import("Butterfly"))
                     it + listOf("KDataClass")
                 } else it
             }
             .let {
                 if (on is KtClass && on.isEnum()) {
-                    out.addImport(TemplatePart.Import("Khrysalis"))
+                    out.addImport(TemplatePart.Import("Butterfly"))
                     it + listOf("KEnum")
                 } else it
             }
@@ -73,21 +73,21 @@ fun SwiftTranslator.registerClass() {
                     it.valueParameters.size == 1 && it.valueParameters[0].type.getJetTypeFqName(false) == "kotlin.Any"
                 }
                 if (over?.callsForSwiftInterface(on.resolvedClass) == true) {
-                    out.addImport(TemplatePart.Import("Khrysalis"))
+                    out.addImport(TemplatePart.Import("Butterfly"))
                     it + listOf("KEquatable")
                 } else it
             }
             .let {
                 val over = on.resolvedClass?.findFirstFunction("hashCode") { it.valueParameters.size == 0 }
                 if (over?.callsForSwiftInterface(on.resolvedClass) == true) {
-                    out.addImport(TemplatePart.Import("Khrysalis"))
+                    out.addImport(TemplatePart.Import("Butterfly"))
                     it + listOf("KHashable")
                 } else it
             }
             .let {
                 val over = on.resolvedClass?.findFirstFunction("toString") { it.valueParameters.size == 0 }
                 if (over?.callsForSwiftInterface(on.resolvedClass) == true) {
-                    out.addImport(TemplatePart.Import("Khrysalis"))
+                    out.addImport(TemplatePart.Import("Butterfly"))
                     it + listOf("KStringable")
                 } else it
             }

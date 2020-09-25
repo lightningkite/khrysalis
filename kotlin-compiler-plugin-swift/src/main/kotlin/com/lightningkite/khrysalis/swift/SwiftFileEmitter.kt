@@ -15,7 +15,7 @@ class SwiftFileEmitter(val translator: SwiftTranslator, val file: KtFile) : Appe
     private val imports = HashSet<TemplatePart.Import>()
     init {
         imports.add(TemplatePart.Import("Foundation"))
-        imports.add(TemplatePart.Import("Khrysalis"))
+        imports.add(TemplatePart.Import("Butterfly"))
     }
     val importedFqs = HashSet<String>()
     var fileEndingActions = ArrayList<() -> Unit>()
