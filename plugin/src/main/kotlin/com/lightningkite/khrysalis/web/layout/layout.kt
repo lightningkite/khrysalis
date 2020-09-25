@@ -257,7 +257,7 @@ internal fun HtmlTranslator.layout() {
         out.classes += "khrysalis-recycler"
         out.style["flex-direction"] = "column"
     }
-    element.handle("com.lightningkite.butterfly.views.CustomView") {
+    element.handle("com.lightningkite.butterfly.views.widget.CustomView") {
         out.name = "canvas"
     }
     element.handle("androidx.swiperefreshlayout.widget.SwipeRefreshLayout") {

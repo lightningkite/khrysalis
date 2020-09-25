@@ -118,7 +118,7 @@ class KotlinTypescriptExtension(
 
         //Create manifest of declarations within this module
         val map: Map<String, File> =
-            translator.run { generateFqToFileMap(files.filter { it.virtualFilePath.endsWith(".shared.kt") }, output) }
+            translator.run { generateFqToFileMap(files.filter { determineTranslatable(it) }, output) }
         translator.declarations.local.putAll(map)
 
         //Load equivalents

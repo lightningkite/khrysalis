@@ -114,7 +114,7 @@ val LayoutConverter.Companion.displayViews
             ViewType("TextView", "UILabel", "View") { node ->
                 handleCommonText(node)
             },
-            ViewType("com.lightningkite.butterfly.views.CustomView", "CustomView", "View") { node ->
+            ViewType("com.lightningkite.butterfly.views.widget.CustomView", "CustomView", "View") { node ->
 
                 node.allAttributes["android:id"]?.let { raw ->
                     val id = raw.removePrefix("@+id/").removePrefix("@id/").camelCase()
