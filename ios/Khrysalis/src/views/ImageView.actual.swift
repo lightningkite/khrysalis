@@ -87,6 +87,8 @@ public extension UIImageView {
             if let url = URL(string: image.uri.absoluteString) {
                 af_setImageProgress(withURL: url, placeholderImage: nil, imageTransition: ImageTransition.noTransition, runImageTransitionIfCached: false, completion: nil)
             }
+        case let image as ImageResource:
+            setImageResource(image.resource)
         case let image as ImageBitmap:
             self.image = image.bitmap
         case let image as ImageRaw:
