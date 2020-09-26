@@ -1,6 +1,6 @@
 :root {
     --color-foreground-fade: gray;
-    --color-foreground: black;
+    --color-foreground: #000000;
     --color-black: black;
     --color-white: white;
     --color-background-fade: #DDD;
@@ -30,6 +30,26 @@ body > * {
 .khr[hidden] {
     display: none !important;
 }
+
+::-webkit-scrollbar {
+    width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+    background: #8884;
+}
+
+/* Handle */
+::-webkit-scrollbar-thumb {
+    background: #888A;
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+    background: #888;
+}
+
 .khrc {
     display: flex;
     flex-direction: row;
@@ -37,6 +57,10 @@ body > * {
 .khrc > * {
     align-self: stretch;
     flex-grow: 1;
+}
+.khrc > input[type="radio"], .khrc > input[type="checkbox"] {
+    align-self: center;
+    flex-grow: 0;
 }
 .khrysalis-box {
     pointer-events: none;
@@ -60,7 +84,11 @@ input {
     background: none;
     border: none;
     color: var(--color-foreground);
-    border-bottom: 1px solid var(--color-foreground-fade, gray);
+}
+textarea {
+    background: none;
+    border: none;
+    color: var(--color-foreground);
 }
 select {
     color: var(--color-foreground);

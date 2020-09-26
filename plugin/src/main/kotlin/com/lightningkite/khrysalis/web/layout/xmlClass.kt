@@ -93,7 +93,7 @@ fun AndroidLayoutFile.toTypescript(
     out.appendln("// Created by Khrysalis XML Typescript")
     out.appendln("//")
     out.appendln("import { loadHtmlFromString, findViewById, getViewById, replaceViewWithId } from 'butterfly/dist/views/html'")
-    out.appendln("import { customViewSetDelegate } from 'butterfly/dist/views/CustomView.actual'")
+    out.appendln("import { customViewSetDelegate } from 'butterfly/dist/views/CustomView'")
     renderImports(projectName, file.relativeTo(base).path, imports, out)
     for(variant in variants) {
         out.append("import htmlFor")
