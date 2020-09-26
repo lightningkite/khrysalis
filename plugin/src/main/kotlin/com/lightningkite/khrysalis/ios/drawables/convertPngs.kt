@@ -68,7 +68,7 @@ fun convertPngs(
         val text = StringWriter().use { writer ->
             writer.appendln("//Automatically created by Khrysalis")
             writer.appendln("import UIKit")
-            writer.appendln("import Khrysalis")
+            writer.appendln("import Butterfly")
             writer.appendln("")
             writer.appendln("extension R.drawable {")
             writer.appendln("")

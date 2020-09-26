@@ -6,7 +6,7 @@ import com.lightningkite.khrysalis.ios.*
 val LayoutConverter.Companion.textInputViews
     get() = LayoutConverter(
         viewTypes = ViewType.mapOf(
-            ViewType("com.lightningkite.butterfly.views.MultilineEditText", "UITextView", "EditText", handlesPadding = true) { node ->
+            ViewType("com.lightningkite.butterfly.views.widget.MultilineEditText", "UITextView", "EditText", handlesPadding = true) { node ->
                 //Purposefully empty
                 appendln("view.addDismissButton()")
             },

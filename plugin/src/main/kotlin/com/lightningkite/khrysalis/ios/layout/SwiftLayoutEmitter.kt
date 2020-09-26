@@ -12,7 +12,7 @@ class SwiftLayoutEmitter(val translator: SwiftLayoutTranslator, val name: String
 
     init {
         imports.add(TemplatePart.Import("Foundation"))
-        imports.add(TemplatePart.Import("Khrysalis"))
+        imports.add(TemplatePart.Import("Butterfly"))
     }
 
     var fileEndingActions = ArrayList<() -> Unit>()
@@ -40,7 +40,7 @@ class SwiftLayoutEmitter(val translator: SwiftLayoutTranslator, val name: String
         appendln("")
         appendln("public unowned var xmlRoot: UIView!")
 
-        appendln("public func setup(dependency: ViewDependency) -> UIView {")
+        appendln("public func setup(dependency: ViewControllerAccess) -> UIView {")
         out.flush()
         writer.appendln(stringBuilder)
         appendln("xmlRoot = view")

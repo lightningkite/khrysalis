@@ -227,6 +227,7 @@ private fun generateFile(
         line("import android.widget.*")
         line("import android.view.*")
         line("import com.lightningkite.butterfly.*")
+        line("import com.lightningkite.butterfly.android.*")
         line("import com.lightningkite.butterfly.views.*")
         line("import com.lightningkite.butterfly.observables.*")
         line("import com.lightningkite.butterfly.observables.binding.*")
@@ -268,7 +269,7 @@ private fun generateFile(
                 .trim()}"""")
             line("")
             line("${CodeSection.sectionMarker} Generate Start ${CodeSection.overwriteMarker}")
-            line("""override fun generate(dependency: ViewDependency): View {""")
+            line("""override fun generate(dependency: ActivityAccess): View {""")
             tab {
                 line("val xml = ${viewName}Xml()")
                 line("val view = xml.setup(dependency)")

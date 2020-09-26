@@ -39,7 +39,7 @@ fun File.translateLayoutXml(android: AndroidLayoutFile, styles: Styles, converte
         appendln("")
         appendln("    public unowned var xmlRoot: UIView!")
 
-        appendln("    public func setup(dependency: ViewDependency) -> UIView {")
+        appendln("    public func setup(dependency: ViewControllerAccess) -> UIView {")
         append("        let view = ")
         conversion.construct(root)
         appendln()
