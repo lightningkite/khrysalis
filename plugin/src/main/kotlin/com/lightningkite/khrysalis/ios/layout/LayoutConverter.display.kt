@@ -54,7 +54,7 @@ val LayoutConverter.Companion.displayViews
                     appendln("view.transform = CGAffineTransform(rotationAngle: ${it * PI / 180.0})")
                 }
                 node.allAttributes["android:visibility"]?.let {
-                    appendln("view.visibility = View.${it.toUpperCase()}")
+                    appendln("view.visibility = UIView.${it.toUpperCase()}")
                 }
                 node.allAttributes["tools:systemEdges"]?.let {
                     appendln("view.safeInsets(align: ${alignFill(it)})")

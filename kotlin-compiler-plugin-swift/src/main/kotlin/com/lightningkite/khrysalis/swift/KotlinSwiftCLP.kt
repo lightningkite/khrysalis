@@ -126,6 +126,7 @@ class KotlinSwiftExtension(
 
         //Load equivalents
         dependencies.asSequence().plus(output)
+            .also { println("Looking for equivalents in ${it.joinToString()}") }
             .flatMap { it.walkTopDown() }
             .filter {
                 it.name.endsWith(".swift.yaml") || it.name.endsWith(".swift.yml")
