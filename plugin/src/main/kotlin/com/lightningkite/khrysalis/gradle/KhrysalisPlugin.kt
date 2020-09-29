@@ -6,6 +6,8 @@ import com.lightningkite.khrysalis.flow.createFlowDocumentation
 import com.lightningkite.khrysalis.flow.createPrototypeViewGenerators
 import com.lightningkite.khrysalis.ios.layout.*
 import com.lightningkite.khrysalis.ios.*
+import com.lightningkite.khrysalis.ios.layout2.AppleResourceLayoutConversion
+import com.lightningkite.khrysalis.ios.layout2.convertLayoutsToSwift2
 import com.lightningkite.khrysalis.ios.swift.*
 import com.lightningkite.khrysalis.utils.*
 import com.lightningkite.khrysalis.web.convertToTypescript
@@ -146,12 +148,12 @@ class KhrysalisPlugin : Plugin<Project> {
                     dependencies = run {
                         val localProperties = Properties().apply {
                             val f = project.rootProject.file("local.properties")
-                            if(f.exists()){
+                            if (f.exists()) {
                                 load(f.inputStream())
                             }
                         }
-                        (localProperties.getProperty("khrysalis.iospods") ?:
-                        localProperties.getProperty("khrysalis.nonmacmanifest") ?: "")
+                        (localProperties.getProperty("khrysalis.iospods")
+                            ?: localProperties.getProperty("khrysalis.nonmacmanifest") ?: "")
                             .splitToSequence(File.pathSeparatorChar)
                             .filter { it.isNotBlank() }
                             .map { File(it) }
@@ -166,6 +168,10 @@ class KhrysalisPlugin : Plugin<Project> {
             task.group = "ios"
             task.doLast {
 
+                convertResourcesToIos(
+                    androidFolder = androidBase(),
+                    iosFolder = iosFolder()
+                )
                 convertLayoutsToSwift(
                     androidFolder = androidBase(),
                     iosFolder = iosFolder(),
@@ -174,22 +180,33 @@ class KhrysalisPlugin : Plugin<Project> {
 
             }
         }
-        project.tasks.create("khrysalisConvertResourcesToIos") { task ->
+        project.tasks.create("khrysalisConvertLayoutsToSwift2") { task ->
             task.group = "ios"
             task.doLast {
-
-                convertResourcesToIos(
+                val localProperties = Properties().apply {
+                    val f = project.rootProject.file("local.properties")
+                    if (f.exists()) {
+                        load(f.inputStream())
+                    }
+                }
+                val eq = (localProperties.getProperty("khrysalis.iospods")
+                    ?: localProperties.getProperty("khrysalis.nonmacmanifest") ?: "")
+                    .splitToSequence(File.pathSeparatorChar)
+                    .filter { it.isNotBlank() }
+                    .map { File(it) }
+                    .filter { it.exists() }
+                    .plus(sequenceOf(iosBase().resolve("Pods")))
+                convertLayoutsToSwift2(
                     androidFolder = androidBase(),
-                    iosFolder = iosFolder()
+                    iosFolder = iosFolder(),
+                    equivalentsFolders = eq
                 )
-
             }
         }
         project.tasks.create("khrysalisIos") { task ->
             task.group = "ios"
             task.dependsOn("khrysalisConvertKotlinToSwift")
             task.dependsOn("khrysalisConvertLayoutsToSwift")
-            task.dependsOn("khrysalisConvertResourcesToIos")
             if (isMac) {
                 task.finalizedBy("khrysalisIosUpdateFiles")
             }

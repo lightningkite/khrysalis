@@ -93,6 +93,8 @@ class KotlinSwiftExtension(
         files: Collection<KtFile>
     ): AnalysisResult? {
 
+        output.mkdirs()
+
         collector?.report(CompilerMessageSeverity.INFO, "Files: ${files.joinToString { it.virtualFilePath }}")
 
         collector?.report(CompilerMessageSeverity.INFO, "Completed analysis for ${projectName}.")

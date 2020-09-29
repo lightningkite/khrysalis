@@ -12,6 +12,7 @@ import com.lightningkite.khrysalis.swift.replacements.xib.*
 import com.lightningkite.khrysalis.swift.safeSwiftIdentifier
 import com.lightningkite.khrysalis.utils.*
 import java.io.File
+import java.lang.IllegalStateException
 
 class AppleResourceLayoutConversion() {
     var styles: Styles = mapOf()
@@ -209,175 +210,6 @@ class AppleResourceLayoutConversion() {
         }
     }
 
-    fun resolve(key: String, on: Any?): Any? {
-        return when(on){
-            is XmlNode -> when(key){
-                "type", "name" -> on.name
-                "parent" -> on.parent
-                else -> on.attribute(key)
-            }
-            is XmlNode.Attribute -> when(key) {
-                "color" -> on.value.asIosColorSet()
-                "string" -> if(on.value.startsWith("@")) strings[on.value.substringAfter('/')] else on.value
-                "image" -> {
-                    val ref = on.value.substringAfter('/')
-                    if(images.containsKey(ref)) ref else ""
-                }
-                "font" -> on.value.substringAfter('/')
-                "dim", "dimension" -> (if(on.value.startsWith("@")) dimensions[on.value.substringAfter('/')] else on.value)?.filter { it.isDigit() || it == '-' || it == '.' }
-                "value" -> on.value
-                "node" -> on.parent
-                "parent" -> on.parent
-                "weightRatioToSmallest" -> {
-                    val smallest = on.parent.parent?.children?.mapNotNull { it.attributeAsDouble("android:layout_weight") }?.min() ?: 1.0
-                    val me = on.value.toDouble()
-                    (smallest / me)
-                }
-                "smallestWeightId" -> {
-                    val smallest = on.parent.parent?.children?.minBy { it.attributeAsDouble("android:layout_weight")?.takeIf { it > 0.0 } ?: 1000.0 }
-                    smallest?.tags?.get("xibId")
-                }
-                else -> null
-            }
-            is StateSelector<*> -> when(key){
-                "normal" -> on.normal
-                "selected" -> on.selected
-                "highlighted" -> on.highlighted
-                "disabled" -> on.disabled
-                "focused" -> on.focused
-                else -> resolve(key, on.normal)
-            }
-            is IosColor -> when(key){
-                "alpha" -> on.alpha
-                "red" -> on.red
-                "green" -> on.green
-                "blue" -> on.blue
-                "referenceTo" -> on.referenceTo
-                else -> null
-            }
-            else -> null
-        }
-    }
-
-    fun templateForElement(element: XmlNode, attr: XmlNode.Attribute? = null): (Template)->String {
-        return { t ->
-            t.parts.map {
-                when(it){
-                    is TemplatePart.Text -> it.string
-                    is TemplatePart.Parameter -> {
-                        val parts = it.name.split('.')
-                        var current: Any? = attr ?: element
-                        for(part in parts){
-                            current = resolve(part, current)
-                        }
-                        current?.toString() ?: ""
-                    }
-                    is TemplatePart.Value -> attr?.value ?: element.name
-                    else -> ""
-                }
-            }.joinToString("")
-        }
-    }
-
-    fun xibDocument(file: File, replacements: Replacements, styles: Styles): XibDocument {
-        val xml = XmlNode.read(file, styles)
-        val outletList = HashMap<String, XibView>()
-        val resources = HashMap<String, XibResource>()
-        val owner = XibOwner(
-            type = XibClassReference(name = file.name.camelCase() + "Xml"),
-            outlets = outletList
-        )
-        fun idPass(element: XmlNode) {
-            for(child in element.children){
-                element.tags["xibId"] = element.allAttributes["android:id"]?.substringAfter('/') ?: makeId()
-            }
-        }
-        idPass(xml)
-        fun translate(element: XmlNode, parent: XibView? = null): XibView {
-            val topTemplateResolver = templateForElement(element)
-            val view = XibView(id = element.tags["xibId"] ?: makeId())
-            val p = replacements.getViewRule(element)
-            view.type = p?.xibName ?: "view"
-            view.customClass = p?.xibCustomView
-            view.customModule = p?.xibCustomModule
-            p?.xibProperties?.let { view.properties += it.mapValues { it.value.resolve(topTemplateResolver) } }
-            p?.xibCustomProperties?.let { view.userDefinedRuntimeAttributes += it.mapValues { it.value.resolve(topTemplateResolver)} }
-            p?.xibAttributes?.let { view.attributes += it.mapValues { topTemplateResolver(it.value) } }
-            p?.xibConstraints?.let { view.constraints += it.map { it.resolve(topTemplateResolver) } }
-            for(att in element.parts) {
-                val attResolver = templateForElement(element, att)
-                val a = replacements.getAttrRuleSequence(
-                    att = att,
-                    resolver = attResolver
-                ).firstOrNull()
-
-                a?.xibProperties?.let {
-                    for((key, value) in it){
-                        view.properties[key] = value.resolve(attResolver, view.properties[key] ?: XibNode())
-                    }
-                }
-                a?.xibCustomProperties?.let {
-                    for((key, value) in it){
-                        view.userDefinedRuntimeAttributes[key] = value.resolve(attResolver, view.userDefinedRuntimeAttributes[key] ?: XibUDNode())
-                    }
-                }
-                a?.xibAttributes?.let {
-                    for((key, value) in it){
-                        view.attributes[key] = attResolver(value)
-                    }
-                }
-                a?.xibConstraints?.let {
-                    val resultsToMerge = it.map { it.resolve(attResolver) }
-                    view.constraints += resultsToMerge
-                }
-                a?.xibResources?.let {
-                    for(res in it){
-                        val resolved = res.resolve(attResolver)
-                        resources[resolved.name] = resolved
-                    }
-                }
-            }
-            for(child in element.children){
-                view.subviews.add(translate(child, view))
-            }
-            return view
-        }
-        val view = translate(xml)
-        return XibDocument(
-            owner = owner,
-            view = view,
-            resources = resources.values.toList()
-        )
-    }
-
-    fun Replacements.getViewRule(node: XmlNode): TypeReplacement? = (types[node.name]
-        ?: types["android.widget." + node.name]
-        ?: types["android.view." + node.name])?.firstOrNull()
-
-    fun Replacements.getAttrRuleSequence(att: XmlNode.Attribute, resolver: (Template)->String): Sequence<AttributeReplacement> {
-        val type: AttributeReplacement.AndroidXmlValueType = when {
-            att.value.startsWith("@drawable/") || att.value.startsWith("@android:drawable/") -> AttributeReplacement.AndroidXmlValueType.DRAWABLE
-            att.value.startsWith("@color/") || att.value.startsWith("@android:color/") -> AttributeReplacement.AndroidXmlValueType.COLOR
-            att.value.startsWith("@dimen/") || att.value.startsWith("@android:dimen/") || att.value.endsWith("p") -> AttributeReplacement.AndroidXmlValueType.DIMENSION
-            att.value == "false" || att.value == "true" -> AttributeReplacement.AndroidXmlValueType.BOOLEAN
-            att.value.all { it.isDigit() || it == '-' || it == '.' } -> AttributeReplacement.AndroidXmlValueType.NUMBER
-            else -> AttributeReplacement.AndroidXmlValueType.ENUM_OR_STRING
-        }
-        val isSet: Boolean = colors[att.value.removePrefix("@color/")]?.isSet == true
-        val isImage: Boolean = images.contains(att.value.substringAfter('/'))
-        val t = getViewRule(att.parent) ?: return sequenceOf()
-        return attributes[att.type.substringAfter(':')]
-            ?.asSequence()
-            ?.filter { it.on == null || it.on!! in t.xibRuleParents }
-            ?.filter { it.value == null || it.value == att.value }
-            ?.filter { it.valueType == null || it.valueType == type }
-            ?.filter { it.valueContains == null || att.value.contains(it.valueContains!!) }
-            ?.filter { it.isSet == null || it.isSet == isSet }
-            ?.filter { it.isImage == null || it.isImage == isImage }
-            ?.filter { it.filters.all { it.satisfied(resolver) } }
-            ?: sequenceOf()
-    }
-
     fun String.asIosColorSet(): Pair<String?, StateSelector<IosColor>>? {
         val raw = this
         return when{
@@ -465,6 +297,140 @@ class AppleResourceLayoutConversion() {
                 appendln("}")
 
                 appendln("}")
+            }
+        }
+    }
+
+    private inner class Resolver(): CanResolveValue {
+        val usedColors = HashSet<String>()
+        val usedImages = HashSet<String>()
+
+        override fun resolveFont(string: String): String {
+            return string.substringAfter('/')
+        }
+
+        override fun resolveDimension(string: String): String {
+            if(string.startsWith("@"))
+                return dimensions[string.substringAfter('/')] ?: "0"
+            else
+                return string
+        }
+
+        override fun resolveColor(string: String): Any {
+            if(string.startsWith("@")) {
+                val c = "color_" + string.substringAfter('/')
+                usedColors.add(c)
+                return c
+            } else
+                return IosColor.fromHashString(string)!!
+        }
+
+        override fun resolveString(string: String): String {
+            if(string.startsWith("@"))
+                return strings[string.substringAfter('/')]!!
+            else
+                return string
+        }
+
+        override fun resolveImage(string: String): String {
+            val i = string.substringAfter('/')
+            usedImages.add(i)
+            return i
+        }
+    }
+
+    fun xibDocument(
+        inputFile: File,
+        replacements: Replacements,
+        styles: Map<String, Map<String, String>>,
+        out: Appendable
+    ) {
+        val resolver = Resolver()
+        val rootNode = XmlNode.read(inputFile, styles)
+
+        val idsToStore = HashSet<String>()
+        fun idPass(node: XmlNode){
+            node.allAttributes["android:id"]?.substringAfter('/')?.let {
+                node.tags["id"] = it
+                idsToStore.add(it)
+            } ?: run {
+                node.tags["id"] = makeId()
+            }
+            for(child in node.children){
+                idPass(node)
+            }
+        }
+        idPass(rootNode)
+
+        val rootView = replacements.translate(resolver, rootNode)
+        out.appendln("""
+            <?xml version="1.0" encoding="UTF-8"?>
+            <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+                <device id="retina3_5" orientation="portrait" appearance="light"/>
+                <dependencies>
+                    <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
+                    <capability name="Safe area layout guides" minToolsVersion="9.0"/>
+                    <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+                </dependencies>
+                <objects>""")
+        out.appendln("""
+            <placeholder placeholderIdentifier="IBFilesOwner" id="-1" customClass="${inputFile.nameWithoutExtension.camelCase()}XML" customModuleProvider="target">
+            <connections>
+        """.trimIndent())
+        for(id in idsToStore){
+            out.appendln("""<outlet property="$id" destination="$id" id="${makeId()}"/>""")
+        }
+        out.appendln("""
+            </connections>
+            </placeholder>
+        """.trimIndent())
+        out.appendln("""
+            <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+        """.trimIndent())
+        rootView.write(out)
+        out.appendln("""
+                </objects>
+                <resources>
+        """.trimIndent())
+        for(c in resolver.usedColors){
+            out.appendln("""<named-color name="$c" />""")
+        }
+        for(i in resolver.usedImages){
+            out.appendln("""<image name="$i" />""")
+        }
+        out.appendln("""
+                </resources>
+            </document>
+        """.trimIndent())
+    }
+}
+
+fun AttHandler.invoke(resolver: CanResolveValue, attr: XmlNode.Attribute, view: PureXmlOut){
+    when(kind){
+        AttHandlerKind.Direct -> {
+            val followed = path!!.resolve(view)
+            this.constant?.let {
+                followed.put(AttKind.Raw, it, resolver)
+            } ?: run {
+                followed.put(asKind!!, attr.value, resolver)
+            }
+        }
+        AttHandlerKind.ValueMap -> {
+            attr.value
+                .splitToSequence('|')
+                .map { it.trim() }
+                .forEach {
+                    val instructions = this.mapValues!![it]
+                    if(instructions != null) {
+                        for((path, value) in instructions){
+                            path.resolve(view).put(AttKind.Raw, value, resolver)
+                        }
+                    }
+                }
+        }
+        AttHandlerKind.Multiple -> {
+            for(sub in multiple!!){
+                sub.invoke(resolver, attr, view)
             }
         }
     }

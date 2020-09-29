@@ -6,7 +6,6 @@ import com.lightningkite.khrysalis.android.layout.AndroidLayoutFile
 import com.lightningkite.khrysalis.ios.layout.readXMLStyles
 import com.lightningkite.khrysalis.log
 import com.lightningkite.khrysalis.swift.replacements.Replacements
-import com.lightningkite.khrysalis.swift.replacements.xib.XibDocument
 import com.lightningkite.khrysalis.util.SmartTabWriter
 import com.lightningkite.khrysalis.utils.camelCase
 import java.io.File
@@ -70,8 +69,9 @@ fun convertLayoutsToSwift2(
         swiftOutputFile.bufferedWriter().use { bw ->
             layout.toSwift(replacements, SmartTabWriter(bw))
         }
-        val xibDocument: XibDocument = converter.xibDocument(inputFile, replacements, styles)
-        xibOutputFile.writeText(xibDocument.toString())
+        xibOutputFile.bufferedWriter().use { bw ->
+            converter.xibDocument(inputFile, replacements, styles, bw)
+        }
     }
 }
 

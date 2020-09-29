@@ -1,8 +1,7 @@
 package com.lightningkite.khrysalis.swift.replacements
 
-import com.lightningkite.khrysalis.swift.replacements.xib.XibConstraintTemplate
-import com.lightningkite.khrysalis.swift.replacements.xib.XibNodeTemplate
-import com.lightningkite.khrysalis.swift.replacements.xib.XibUDNodeTemplate
+import com.fasterxml.jackson.annotation.JsonProperty
+import com.lightningkite.khrysalis.swift.replacements.xib.*
 import com.lightningkite.khrysalis.util.recursiveChildren
 import com.lightningkite.khrysalis.util.satisfies
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
@@ -21,17 +20,8 @@ data class TypeReplacement(
     val constraintTemplate: Template? = null,
     val constraintTemplates: List<Template>? = null,
 
-    val xibName: String? = null,
-    val xibCustomView: String? = null,
-    val xibCustomModule: String? = null,
-    val xibParents: List<String> = listOf(),
-    val xibCode: Template? = null,
-    val xibProperties: Map<String, XibNodeTemplate>? = null,
-    val xibCustomProperties: Map<String, XibUDNodeTemplate>? = null,
-    val xibAttributes: Map<String, Template>? = null,
-    val xibConstraints: List<XibConstraintTemplate>? = null
+    val xib: XibTranslation? = null
 ) : ReplacementRule {
-    val xibRuleParents: List<String> = xibParents + id
 
     override val priority: Int
         get() = typeArgumentRequirements?.size ?: 0
