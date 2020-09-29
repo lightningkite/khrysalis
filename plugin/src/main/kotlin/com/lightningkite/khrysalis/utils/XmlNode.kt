@@ -24,6 +24,8 @@ class XmlNode(
     override val type: String
         get() = element.nodeValue
 
+    fun attribute(key: String): Attribute? = allAttributes[key]?.let { Attribute(this, key, it) }
+
     val name get() = element.nodeName
     val allAttributes: Map<String, String> by lazy {
         if (!element.hasAttributes()) return@lazy mapOf<String, String>()
