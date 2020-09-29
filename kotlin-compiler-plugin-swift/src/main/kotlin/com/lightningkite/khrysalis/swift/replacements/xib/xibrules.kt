@@ -60,6 +60,20 @@ data class XibResource(
     }
 }
 
+data class XibResourceTemplate(
+    var type: String = "",
+    var name: Template = Template(listOf()),
+    val attributes: Map<String, Template> = mapOf()
+) {
+    fun resolve(resolver: (Template) -> String): XibResource {
+        return XibResource(
+            type = type,
+            name = resolver(name),
+            attributes = attributes.mapValues { resolver(it.value) }
+        )
+    }
+}
+
 data class XibOwner(
     var type: XibClassReference = XibClassReference(),
     val outlets: Map<String, XibView> = mapOf()

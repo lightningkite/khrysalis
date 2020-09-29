@@ -2,6 +2,7 @@ package com.lightningkite.khrysalis.swift.replacements
 
 import com.lightningkite.khrysalis.swift.replacements.xib.XibConstraintTemplate
 import com.lightningkite.khrysalis.swift.replacements.xib.XibNodeTemplate
+import com.lightningkite.khrysalis.swift.replacements.xib.XibResourceTemplate
 import com.lightningkite.khrysalis.swift.replacements.xib.XibUDNodeTemplate
 
 data class AttributeReplacement(
@@ -18,7 +19,8 @@ data class AttributeReplacement(
     val xibProperties: Map<String, XibNodeTemplate>? = null,
     val xibCustomProperties: Map<String, XibUDNodeTemplate>? = null,
     val xibAttributes: Map<String, Template>? = null,
-    val xibConstraints: List<XibConstraintTemplate>? = null
+    val xibConstraints: List<XibConstraintTemplate>? = null,
+    val xibResources: List<XibResourceTemplate>? = null
 ): ReplacementRule {
 
     enum class AndroidXmlValueType {

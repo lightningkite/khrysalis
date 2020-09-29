@@ -2,21 +2,16 @@ package com.lightningkite.khrysalis.ios.layout2
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.lightningkite.khrysalis.generic.SmartTabWriter
-import com.lightningkite.khrysalis.ios.drawables.*
 import com.lightningkite.khrysalis.ios.layout.Styles
 import com.lightningkite.khrysalis.ios.layout2.models.IosColor
 import com.lightningkite.khrysalis.ios.layout2.models.IosDrawable
 import com.lightningkite.khrysalis.ios.layout2.models.StateSelector
-import com.lightningkite.khrysalis.ios.layout2.models.SubstateAppendable
 import com.lightningkite.khrysalis.ios.values.*
 import com.lightningkite.khrysalis.swift.replacements.*
 import com.lightningkite.khrysalis.swift.replacements.xib.*
 import com.lightningkite.khrysalis.swift.safeSwiftIdentifier
 import com.lightningkite.khrysalis.utils.*
 import java.io.File
-import java.io.StringWriter
-import java.lang.Appendable
-import java.lang.Exception
 
 class AppleResourceLayoutConversion() {
     var styles: Styles = mapOf()
@@ -124,6 +119,41 @@ class AppleResourceLayoutConversion() {
         )
     }
 
+    fun writeColorAssets(
+        assetsFolder: File
+    ) {
+        assetsFolder.mkdirs()
+        val mapper = jacksonObjectMapper()
+        for((k, v) in this.colors){
+            for((vName, vValue) in v.variants) {
+                assetsFolder.resolve("color_$k$vName").apply { mkdirs() }.resolve("Contents.json").writeText(
+                    mapper.writeValueAsString(
+                        mapOf<String, Any?>(
+                            "colors" to listOf(
+                                mapOf(
+                                    "color" to mapOf(
+                                        "color-space" to "srgb",
+                                        "components" to mapOf(
+                                            "alpha" to vValue.alpha.toString(),
+                                            "red" to vValue.red.toString(),
+                                            "green" to vValue.green.toString(),
+                                            "blue" to vValue.blue.toString()
+                                        )
+                                    ),
+                                    "idiom" to "universal"
+                                )
+                            ),
+                            "info" to mapOf(
+                                "author" to "khrysalis",
+                                "version" to 1
+                            )
+                        )
+                    )
+                )
+            }
+        }
+    }
+
     fun getAndMovePngs(
         resourcesFolder: File,
         assetsFolder: File
@@ -183,6 +213,7 @@ class AppleResourceLayoutConversion() {
         return when(on){
             is XmlNode -> when(key){
                 "type", "name" -> on.name
+                "parent" -> on.parent
                 else -> on.attribute(key)
             }
             is XmlNode.Attribute -> when(key) {
@@ -197,6 +228,15 @@ class AppleResourceLayoutConversion() {
                 "value" -> on.value
                 "node" -> on.parent
                 "parent" -> on.parent
+                "weightRatioToSmallest" -> {
+                    val smallest = on.parent.parent?.children?.mapNotNull { it.attributeAsDouble("android:layout_weight") }?.min() ?: 1.0
+                    val me = on.value.toDouble()
+                    (smallest / me)
+                }
+                "smallestWeightId" -> {
+                    val smallest = on.parent.parent?.children?.minBy { it.attributeAsDouble("android:layout_weight")?.takeIf { it > 0.0 } ?: 1000.0 }
+                    smallest?.tags?.get("xibId")
+                }
                 else -> null
             }
             is StateSelector<*> -> when(key){
@@ -247,10 +287,16 @@ class AppleResourceLayoutConversion() {
             type = XibClassReference(name = file.name.camelCase() + "Xml"),
             outlets = outletList
         )
+        fun idPass(element: XmlNode) {
+            for(child in element.children){
+                element.tags["xibId"] = element.allAttributes["android:id"]?.substringAfter('/') ?: makeId()
+            }
+        }
+        idPass(xml)
         fun translate(element: XmlNode, parent: XibView? = null): XibView {
             val topTemplateResolver = templateForElement(element)
-            val view = XibView()
-            val p = replacements.getParentRule(element)
+            val view = XibView(id = element.tags["xibId"] ?: makeId())
+            val p = replacements.getViewRule(element)
             view.type = p?.xibName ?: "view"
             view.customClass = p?.xibCustomView
             view.customModule = p?.xibCustomModule
@@ -284,6 +330,12 @@ class AppleResourceLayoutConversion() {
                     val resultsToMerge = it.map { it.resolve(attResolver) }
                     view.constraints += resultsToMerge
                 }
+                a?.xibResources?.let {
+                    for(res in it){
+                        val resolved = res.resolve(attResolver)
+                        resources[resolved.name] = resolved
+                    }
+                }
             }
             for(child in element.children){
                 view.subviews.add(translate(child, view))
@@ -298,7 +350,7 @@ class AppleResourceLayoutConversion() {
         )
     }
 
-    fun Replacements.getParentRule(node: XmlNode): TypeReplacement? = (types[node.name]
+    fun Replacements.getViewRule(node: XmlNode): TypeReplacement? = (types[node.name]
         ?: types["android.widget." + node.name]
         ?: types["android.view." + node.name])?.firstOrNull()
 
@@ -313,10 +365,10 @@ class AppleResourceLayoutConversion() {
         }
         val isSet: Boolean = colors[att.value.removePrefix("@color/")]?.isSet == true
         val isImage: Boolean = images.contains(att.value.substringAfter('/'))
-        val t = getParentRule(att.parent) ?: return sequenceOf()
+        val t = getViewRule(att.parent) ?: return sequenceOf()
         return attributes[att.type.substringAfter(':')]
             ?.asSequence()
-            ?.filter { it.on == null || it.on == t.id }
+            ?.filter { it.on == null || it.on!! in t.xibRuleParents }
             ?.filter { it.value == null || it.value == att.value }
             ?.filter { it.valueType == null || it.valueType == type }
             ?.filter { it.valueContains == null || att.value.contains(it.valueContains!!) }
@@ -405,7 +457,7 @@ class AppleResourceLayoutConversion() {
                 appendln("static let white = UIColor.white")
                 for(entry in colors.entries){
                     if(entry.value.isSet){
-                        out.appendln("static let ${entry.key}: UIColor = ${entry.value.normal.toUIColor()}")
+                        out.appendln("static let ${entry.key}: UIColor = UIColor(named: \"color_${entry.key}\")")
                     } else {
                         out.appendln("static let ${entry.key}: StateSelector<UIColor> = StateSelector(normal: ${entry.value.normal}, highlighted: ${entry.value.highlighted ?: "nil"}, selected: ${entry.value.selected ?: "nil"}, disabled: ${entry.value.disabled ?: "nil"}, focused: ${entry.value.focused ?: "nil"})")
                     }

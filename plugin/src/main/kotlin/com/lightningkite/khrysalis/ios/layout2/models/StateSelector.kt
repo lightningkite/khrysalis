@@ -8,6 +8,13 @@ data class StateSelector<T>(
     val focused: T? = null
 ) {
     val isSet: Boolean get() = selected != null || highlighted != null || disabled != null || focused != null
+    val variants: Map<String, T> get() = listOf(
+        "" to normal,
+        "_selected" to selected,
+        "_highlighted" to highlighted,
+        "_disabled" to disabled,
+        "_focused" to focused
+    ).filter { it.second != null }.associate { it.first to it.second!! }
 
     operator fun get(state: IosState): T = when(state){
         IosState.Normal -> normal

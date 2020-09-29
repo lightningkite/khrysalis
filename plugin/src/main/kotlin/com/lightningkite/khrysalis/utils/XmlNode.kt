@@ -12,8 +12,11 @@ class XmlNode(
     val styles: Styles,
     val directory: File,
     val baseDirectoryAlt: File? = null,
-    val additionalAttributes: Map<String, String> = mapOf()
+    val additionalAttributes: Map<String, String> = mapOf(),
+    var parent: XmlNode? = null
 ): VirtualType {
+
+    val tags = HashMap<String, String>(0)
 
     class Attribute(val parent: XmlNode, override val type: String, val value: String): VirtualType {
         override val parts: Iterable<Any> get() = listOf(value)
@@ -79,13 +82,13 @@ class XmlNode(
                                 ?: throw IllegalArgumentException("Could not find file for layout $filename in $fileOptionA or $fileOptionB")
                             val node =
                                 read(file, styles)
-                            XmlNode(it, styles, directory, additionalAttributes = node.allAttributes)
+                            XmlNode(it, styles, directory, additionalAttributes = node.allAttributes, parent = this)
                         } catch(e:Exception){
                             e.printStackTrace()
-                            XmlNode(it, styles, directory)
+                            XmlNode(it, styles, directory, parent = this)
                         }
                     } else {
-                        XmlNode(it, styles, directory)
+                        XmlNode(it, styles, directory, parent = this)
                     }
                 }
                 .toList()

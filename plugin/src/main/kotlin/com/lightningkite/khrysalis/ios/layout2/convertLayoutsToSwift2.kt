@@ -49,6 +49,7 @@ fun convertLayoutsToSwift2(
         resourcesFolder = androidFolder.resolve("src/main/res"),
         assetsFolder = iosFolder.resolve("Assets.xcassets")
     )
+    converter.writeColorAssets(assetsFolder = iosFolder.resolve("Assets.xcassets"))
     converter.writeRFile(
         androidResourcesFolder = androidFolder.resolve("src/main/res"),
         baseFolderForLocalizations = iosFolder.resolve("localizations"),

@@ -24,13 +24,15 @@ data class TypeReplacement(
     val xibName: String? = null,
     val xibCustomView: String? = null,
     val xibCustomModule: String? = null,
-    val iosParent: String? = "UIView",
+    val xibParents: List<String> = listOf(),
     val xibCode: Template? = null,
     val xibProperties: Map<String, XibNodeTemplate>? = null,
     val xibCustomProperties: Map<String, XibUDNodeTemplate>? = null,
     val xibAttributes: Map<String, Template>? = null,
     val xibConstraints: List<XibConstraintTemplate>? = null
 ) : ReplacementRule {
+    val xibRuleParents: List<String> = xibParents + id
+
     override val priority: Int
         get() = typeArgumentRequirements?.size ?: 0
 
