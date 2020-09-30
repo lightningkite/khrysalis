@@ -399,8 +399,11 @@ class AppleResourceLayoutConversion() {
                 val c = "color_" + string.substringAfter('/')
                 usedColors.add(c)
                 return c
-            } else
+            } else if(string.startsWith("#")) {
                 return IosColor.fromHashString(string)!!
+            } else {
+                return IosColor()
+            }
         }
 
         override fun resolveString(string: String): String {
