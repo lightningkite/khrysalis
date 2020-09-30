@@ -85,9 +85,9 @@ data class AttPath(
 ) {
     constructor(string: String) : this(
         pathType = AttPathType.values().find { it.name.equals(string.substringBefore('/'), true) }!!,
-        name = string.substringAfter('/').substringBefore(':'),
-        type = string.substringAfter('/').substringAfter(':').substringBefore('/'),
-        then = string.substringAfter('/').substringAfter(':').substringAfter('/', "").takeUnless { it.isEmpty() }
+        name = string.substringAfter('/', "").substringBefore('/').substringBefore(':'),
+        type = string.substringAfter('/', "").substringBefore('/').substringAfter(':').substringBefore('/'),
+        then = string.substringAfter('/', "").substringAfter('/', "").takeUnless { it.isEmpty() }
             ?.let { AttPath(it) }
     )
 }
