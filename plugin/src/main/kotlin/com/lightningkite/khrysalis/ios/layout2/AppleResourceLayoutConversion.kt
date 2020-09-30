@@ -18,10 +18,12 @@ class AppleResourceLayoutConversion() {
     var styles: Styles = mapOf()
     val colors: MutableMap<String, StateSelector<IosColor>> = HashMap()
     val images: MutableMap<String, StateSelector<IosDrawable>> = HashMap()
+    val drawables: MutableSet<String> = HashSet()
     val strings: MutableMap<String, String> = HashMap()
     val dimensions: MutableMap<String, String> = HashMap()
 
     fun getStrings(file: File){
+        if(!file.exists()) return
         XmlNode.read(file, mapOf())
             .children
             .asSequence()
@@ -33,6 +35,7 @@ class AppleResourceLayoutConversion() {
 
 
     fun getDimensions(file: File) {
+        if(!file.exists()) return
         XmlNode.read(file, mapOf())
             .children
             .asSequence()
@@ -43,6 +46,7 @@ class AppleResourceLayoutConversion() {
     }
 
     fun getColors(file: File){
+        if(!file.exists()) return
         val ignored = setOf("white", "black", "transparent")
         val colorsToProcess = ArrayList<Pair<String, IosColor>>()
         XmlNode.read(file, mapOf())
@@ -79,6 +83,7 @@ class AppleResourceLayoutConversion() {
     }
 
     fun getStateColor(file: File) {
+        if(!file.exists()) return
         var normal: IosColor = IosColor.transparent
         var selected: IosColor? = null
         var highlighted: IosColor? = null
@@ -177,6 +182,9 @@ class AppleResourceLayoutConversion() {
             .toList()
             .sortedBy { it }
 
+        drawables.addAll(xmlNames)
+        drawables.addAll(pngNames)
+
         pngNames.forEach { pngName ->
             val matching = (resourcesFolder.listFiles() ?: arrayOf())
                 .asSequence()
@@ -260,6 +268,16 @@ class AppleResourceLayoutConversion() {
                 for(entry in images.entries){
                     appendln("static let ${entry.key}: Drawable = Drawable { (view: UIView?) -> CALayer in CAImageLayer(UIImage(named: \"${entry.key}.png\")) }")
                 }
+                appendln("static let allEntries: Dictionary<String, Drawable> = [")
+                var firstDrawable = true
+                drawables.forEachBetween(
+                    forItem =  { entry ->
+                        append("\"$entry\": $entry")
+                    },
+                    between = { appendln(",") }
+                )
+                appendln()
+                appendln("]")
                 appendln("}")
 
                 appendln("public enum string {")
@@ -291,7 +309,8 @@ class AppleResourceLayoutConversion() {
                     if(entry.value.isSet){
                         out.appendln("static let ${entry.key}: UIColor = UIColor(named: \"color_${entry.key}\")")
                     } else {
-                        out.appendln("static let ${entry.key}: StateSelector<UIColor> = StateSelector(normal: ${entry.value.normal}, highlighted: ${entry.value.highlighted ?: "nil"}, selected: ${entry.value.selected ?: "nil"}, disabled: ${entry.value.disabled ?: "nil"}, focused: ${entry.value.focused ?: "nil"})")
+                        out.appendln("static let ${entry.key}: UIColor = ${entry.value.normal}")
+                        out.appendln("static let ${entry.key}State: StateSelector<UIColor> = StateSelector(normal: ${entry.value.normal}, selected: ${entry.value.selected ?: "nil"}, disabled: ${entry.value.disabled ?: "nil"}, highlighted: ${entry.value.highlighted ?: "nil"}, focused: ${entry.value.focused ?: "nil"})")
                     }
                 }
                 appendln("}")
@@ -313,7 +332,7 @@ class AppleResourceLayoutConversion() {
             if(string.startsWith("@"))
                 return dimensions[string.substringAfter('/')] ?: "0"
             else
-                return string
+                return string.filter { it.isDigit() || it == '.' || it == '-' }
         }
 
         override fun resolveColor(string: String): Any {
@@ -357,7 +376,7 @@ class AppleResourceLayoutConversion() {
                 node.tags["id"] = makeId()
             }
             for(child in node.children){
-                idPass(node)
+                idPass(child)
             }
         }
         idPass(rootNode)
@@ -368,13 +387,15 @@ class AppleResourceLayoutConversion() {
             <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
                 <device id="retina3_5" orientation="portrait" appearance="light"/>
                 <dependencies>
+                    <deployment identifier="iOS"/>
                     <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
                     <capability name="Safe area layout guides" minToolsVersion="9.0"/>
                     <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+                    <capability name="System colors in document resources" minToolsVersion="11.0"/>
                 </dependencies>
-                <objects>""")
+                <objects>""".trimIndent())
         out.appendln("""
-            <placeholder placeholderIdentifier="IBFilesOwner" id="-1" customClass="${inputFile.nameWithoutExtension.camelCase()}XML" customModuleProvider="target">
+            <placeholder placeholderIdentifier="IBFilesOwner" id="-1" customClass="${inputFile.nameWithoutExtension.camelCase().capitalize()}Xml" customModuleProvider="target">
             <connections>
         """.trimIndent())
         for(id in idsToStore){
@@ -399,7 +420,7 @@ class AppleResourceLayoutConversion() {
             out.appendln("""<image name="$i" />""")
         }
         out.appendln("""
-                </resources>
+            </resources>
             </document>
         """.trimIndent())
     }
@@ -410,7 +431,7 @@ fun AttHandler.invoke(resolver: CanResolveValue, attr: XmlNode.Attribute, view: 
         AttHandlerKind.Direct -> {
             val followed = path!!.resolve(view)
             this.constant?.let {
-                followed.put(AttKind.Raw, it, resolver)
+                followed.put(asKind ?: AttKind.Raw, it, resolver)
             } ?: run {
                 followed.put(asKind!!, attr.value, resolver)
             }
@@ -423,7 +444,7 @@ fun AttHandler.invoke(resolver: CanResolveValue, attr: XmlNode.Attribute, view: 
                     val instructions = this.mapValues!![it]
                     if(instructions != null) {
                         for((path, value) in instructions){
-                            path.resolve(view).put(AttKind.Raw, value, resolver)
+                            path.resolve(view).put(value.type, value.value, resolver)
                         }
                     }
                 }

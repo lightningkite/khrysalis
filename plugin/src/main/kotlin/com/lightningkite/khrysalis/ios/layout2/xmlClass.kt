@@ -72,6 +72,7 @@ fun AndroidLayoutFile.toSwift(
     out.appendln("// ${name}Xml.swift")
     out.appendln("// Created by Khrysalis XML Swift")
     out.appendln("//")
+    out.appendln("import Butterfly")
     out.appendln("import UIKit")
     for(import in imports.distinct()){
         out.appendln("import ${import.module}")
@@ -97,7 +98,7 @@ fun AndroidLayoutFile.toSwift(
     }
     out.appendln("    public func setup(dependency: ViewControllerAccess) -> UIView {")
     out.appendln("        let bundle = Bundle(for: type(of: self))")
-    out.appendln("        let nib = UINib(nibName: \"$name\", bundle: bundle)")
+    out.appendln("        let nib = UINib(nibName: \"$fileName\", bundle: bundle)")
     out.appendln("        let view = nib.instantiate(withOwner: self, options: nil)[0] as! UIView")
     out.appendln("        self.xmlRoot = view")
     out.appendln("        return view")

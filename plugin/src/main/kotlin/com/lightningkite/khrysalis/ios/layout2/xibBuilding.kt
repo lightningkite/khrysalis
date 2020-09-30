@@ -21,9 +21,11 @@ fun PureXmlOut.addStandardViewProperties() {
     attributes["opaque"] = "NO"
 }
 
-fun Replacements.typeReplacementsForName(name: String): List<TypeReplacement> = generateSequence(typeReplacementForName(name)) {
-      it.xib?.deferTo?.let { this.types[it]?.last() }
-}.toList()
+fun Replacements.typeReplacementsForName(name: String): List<TypeReplacement> =
+    generateSequence(typeReplacementForName(name)) {
+        it.xib?.deferTo?.let { this.types[it]?.last() }
+    }.toList()
+
 fun Replacements.typeReplacementForName(name: String): TypeReplacement? {
     return this.types["android.view.${name}"]?.last()
         ?: this.types["android.widget.${name}"]?.last()
@@ -32,21 +34,21 @@ fun Replacements.typeReplacementForName(name: String): TypeReplacement? {
 
 fun Replacements.translate(resolver: CanResolveValue, node: XmlNode): PureXmlOut {
     val rules = typeReplacementsForName(node.name)
-    if(rules.isEmpty()) return PureXmlOut("view").apply { addStandardViewProperties(); attributes["id"] = makeId() }
+    if (rules.isEmpty()) return PureXmlOut("view").apply { addStandardViewProperties(); attributes["id"] = makeId() }
     val out = PureXmlOut(rules.first().xib!!.name)
     out.attributes["id"] = node.tags["id"]!!
     out.addStandardViewProperties()
     rules.asSequence()
         .flatMap { it.xib?.defaults?.entries?.asSequence() ?: sequenceOf() }
-        .forEach { it.key.resolve(out).put(AttKind.Raw, it.value, resolver) }
-    for(a in node.parts) {
+        .forEach { it.key.resolve(out).put(it.value.type, it.value.value, resolver) }
+    for (a in node.parts) {
         val matching = rules.asSequence().map { it.xib?.attributes?.get(a.type) }.firstOrNull()
         matching?.invoke(resolver, a, out)
     }
-    for(child in node.children){
+    for (child in node.children) {
         out.getOrPutChild("subviews").children.add(translate(resolver, child))
     }
-    for(r in rules){
+    for (r in rules) {
         extraProcessingRules[r.id]?.invoke(resolver, node, out)
     }
     return out
@@ -57,8 +59,8 @@ sealed class AttPathDestination {
     abstract fun put(kind: AttKind, value: String, resolver: CanResolveValue)
 
     data class Property(override val out: PureXmlOut) : AttPathDestination() {
-        override fun put(kind: AttKind, value: String, resolver: CanResolveValue){
-            when(kind){
+        override fun put(kind: AttKind, value: String, resolver: CanResolveValue) {
+            when (kind) {
                 AttKind.Font -> {
                     val font = resolver.resolveFont(value)
                     out.attributes["name"] = font
@@ -72,7 +74,7 @@ sealed class AttPathDestination {
                 AttKind.Color -> {
                     out.name = "color"
                     out.attributes["key"] = "value"
-                    when(val item = resolver.resolveColor(value)) {
+                    when (val item = resolver.resolveColor(value)) {
                         is String -> {
                             out.attributes["name"] = item
                         }
@@ -96,22 +98,23 @@ sealed class AttPathDestination {
                     attributes["key"] = "value"
                     attributes["value"] = value
                 }
-                AttKind.String -> with(out) {
+                AttKind.Text -> with(out) {
                     name = "string"
                     attributes["key"] = "value"
                     attributes["value"] = resolver.resolveString(value)
                 }
-                AttKind.Boolean -> with(out) {
+                AttKind.Bool -> with(out) {
                     name = "boolean"
                     attributes["key"] = "value"
-                    attributes["value"] = if(value == "true") "YES" else "NO"
+                    attributes["value"] = if (value == "true") "YES" else "NO"
                 }
             }
         }
     }
+
     data class UserDefined(override val out: PureXmlOut) : AttPathDestination() {
-        override fun put(kind: AttKind, value: String, resolver: CanResolveValue){
-            when(kind){
+        override fun put(kind: AttKind, value: String, resolver: CanResolveValue) {
+            when (kind) {
                 AttKind.Font -> throw IllegalStateException("Cannot be applied to this position. kind: $kind")
                 AttKind.Dimension -> {
                     out.attributes["type"] = "number"
@@ -131,7 +134,7 @@ sealed class AttPathDestination {
                     out.attributes["type"] = "color"
                     out.children.add(PureXmlOut("color").apply {
                         attributes["key"] = "value"
-                        when(val item = resolver.resolveColor(value)) {
+                        when (val item = resolver.resolveColor(value)) {
                             is String -> {
                                 attributes["name"] = item
                             }
@@ -150,27 +153,28 @@ sealed class AttPathDestination {
                     out.attributes["type"] = "string"
                     out.attributes["value"] = value
                 }
-                AttKind.String -> {
+                AttKind.Text -> {
                     out.attributes["type"] = "string"
                     out.attributes["value"] = resolver.resolveString(value)
                 }
-                AttKind.Boolean -> {
+                AttKind.Bool -> {
                     out.attributes["type"] = "boolean"
-                    out.attributes["value"] = if(value == "true") "YES" else "NO"
+                    out.attributes["value"] = if (value == "true") "YES" else "NO"
                 }
             }
         }
     }
+
     data class Attribute(val set: (String) -> Unit) : AttPathDestination() {
-        override fun put(kind: AttKind, value: String, resolver: CanResolveValue){
-            when(kind){
+        override fun put(kind: AttKind, value: String, resolver: CanResolveValue) {
+            when (kind) {
                 AttKind.Color -> throw IllegalStateException("Cannot be applied to this position. kind: $kind")
                 AttKind.Dimension -> set(resolver.resolveDimension(value))
                 AttKind.Number -> set(value)
-                AttKind.Raw -> set(value)
-                AttKind.String -> set(resolver.resolveString(value))
+                AttKind.Raw -> if (value == "<id>") set(makeId()) else set(value)
+                AttKind.Text -> set(resolver.resolveString(value))
                 AttKind.Font -> set(resolver.resolveFont(value))
-                AttKind.Boolean -> if(value == "true") set("YES") else set("NO")
+                AttKind.Bool -> if (value == "true") set("YES") else set("NO")
             }
         }
     }

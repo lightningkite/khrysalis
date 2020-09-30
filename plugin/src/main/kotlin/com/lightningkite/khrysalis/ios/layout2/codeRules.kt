@@ -7,7 +7,6 @@ import com.lightningkite.khrysalis.swift.replacements.xib.AttPath
 import com.lightningkite.khrysalis.swift.replacements.xib.PureXmlOut
 import com.lightningkite.khrysalis.swift.replacements.xib.makeId
 import com.lightningkite.khrysalis.utils.XmlNode
-import com.lightningkite.khrysalis.utils.attributeAsGravityKotlin
 
 fun PureXmlOut.constrain(
     firstItem: String,
@@ -50,16 +49,18 @@ fun PureXmlOut.frameChildHorizontal(
     childNode: XmlNode,
     resolver: CanResolveValue
 ) {
-    val gravity = childNode.allAttributes["android:layout_gravity"]?.split('|')?.find { it in horizontalGravityWords.keys } ?: "start"
+    val gravity =
+        childNode.allAttributes["android:layout_gravity"]?.split('|')?.find { it in horizontalGravityWords.keys }
+            ?: "start"
     var startExact = false
     var endExact = false
     var useCenter = false
-    when(gravity){
+    when (gravity) {
         "start", "left" -> startExact = true
-        "end", "right" -> endExact = false
+        "end", "right" -> endExact = true
         "center_horizontal", "center" -> useCenter = true
     }
-    if(childNode.allAttributes["android:layout_width"] == "match_parent") {
+    if (childNode.allAttributes["android:layout_width"] == "match_parent") {
         startExact = true
         endExact = true
         useCenter = false
@@ -69,23 +70,30 @@ fun PureXmlOut.frameChildHorizontal(
         firstAttribute = "leading",
         secondItem = this.attributes["id"]!!,
         secondAttribute = "leadingMargin",
-        relation = if(startExact) null else "greaterThanOrEqual",
-        constant = resolver.resolveDimension(childNode.allAttributes["android:layout_marginStart"] ?: childNode.allAttributes["android:layout_marginLeft"] ?: "0dp")
+        relation = if (startExact) null else "greaterThanOrEqual",
+        constant = resolver.resolveDimension(
+            childNode.allAttributes["android:layout_marginStart"]
+                ?: childNode.allAttributes["android:layout_marginLeft"]
+                ?: childNode.allAttributes["android:layout_margin"] ?: "0dp"
+        )
     )
     constrain(
         secondItem = childNode.tags["id"]!!,
         secondAttribute = "trailing",
         firstItem = this.attributes["id"]!!,
         firstAttribute = "trailingMargin",
-        relation = if(endExact) null else "greaterThanOrEqual",
-        constant = resolver.resolveDimension(childNode.allAttributes["android:layout_marginEnd"] ?: childNode.allAttributes["android:layout_marginRight"] ?: "0dp")
+        relation = if (endExact) null else "greaterThanOrEqual",
+        constant = resolver.resolveDimension(
+            childNode.allAttributes["android:layout_marginEnd"] ?: childNode.allAttributes["android:layout_marginRight"]
+            ?: childNode.allAttributes["android:layout_margin"] ?: "0dp"
+        )
     )
-    if(useCenter){
+    if (useCenter) {
         constrain(
             firstItem = childNode.tags["id"]!!,
             firstAttribute = "centerX",
             secondItem = this.attributes["id"]!!,
-            secondAttribute = "centerXMargin"
+            secondAttribute = "centerX"
         )
     }
 }
@@ -94,42 +102,49 @@ fun PureXmlOut.frameChildVertical(
     childNode: XmlNode,
     resolver: CanResolveValue
 ) {
-    val gravity = childNode.allAttributes["android:layout_gravity"]?.split('|')?.find { it in verticalGravityWords.keys } ?: "top"
+    val gravity =
+        childNode.allAttributes["android:layout_gravity"]?.split('|')?.find { it in verticalGravityWords.keys } ?: "top"
     var startExact = false
     var endExact = false
     var useCenter = false
-    when(gravity){
+    when (gravity) {
         "top" -> startExact = true
-        "bottom" -> endExact = false
+        "bottom" -> endExact = true
         "center_vertical", "center" -> useCenter = true
     }
-    if(childNode.allAttributes["android:layout_height"] == "match_parent") {
+    if (childNode.allAttributes["android:layout_height"] == "match_parent") {
         startExact = true
         endExact = true
         useCenter = false
     }
     constrain(
         firstItem = childNode.tags["id"]!!,
-        firstAttribute = "leading",
+        firstAttribute = "top",
         secondItem = this.attributes["id"]!!,
-        secondAttribute = "leadingMargin",
-        relation = if(startExact) null else "greaterThanOrEqual",
-        constant = resolver.resolveDimension(childNode.allAttributes["android:layout_marginStart"] ?: childNode.allAttributes["android:layout_marginLeft"] ?: "0dp")
+        secondAttribute = "topMargin",
+        relation = if (startExact) null else "greaterThanOrEqual",
+        constant = resolver.resolveDimension(
+            childNode.allAttributes["android:layout_marginTop"] ?: childNode.allAttributes["android:layout_margin"]
+            ?: "0dp"
+        )
     )
     constrain(
         secondItem = childNode.tags["id"]!!,
-        secondAttribute = "trailing",
+        secondAttribute = "bottom",
         firstItem = this.attributes["id"]!!,
-        firstAttribute = "trailingMargin",
-        relation = if(endExact) null else "greaterThanOrEqual",
-        constant = resolver.resolveDimension(childNode.allAttributes["android:layout_marginEnd"] ?: childNode.allAttributes["android:layout_marginRight"] ?: "0dp")
+        firstAttribute = "bottomMargin",
+        relation = if (endExact) null else "greaterThanOrEqual",
+        constant = resolver.resolveDimension(
+            childNode.allAttributes["android:layout_marginBottom"] ?: childNode.allAttributes["android:layout_margin"]
+            ?: "0dp"
+        )
     )
-    if(useCenter){
+    if (useCenter) {
         constrain(
             firstItem = childNode.tags["id"]!!,
-            firstAttribute = "centerX",
+            firstAttribute = "centerY",
             secondItem = this.attributes["id"]!!,
-            secondAttribute = "centerXMargin"
+            secondAttribute = "centerY"
         )
     }
 }
@@ -138,14 +153,18 @@ fun PureXmlOut.handleSize(
     myNode: XmlNode,
     resolver: CanResolveValue
 ) {
-    when(val it = myNode.allAttributes["android:layout_width"]) {
-        "match_parent" -> {} //constraints already added by frameChildX
-        "wrap_content", null -> {} //no constraints needed
+    when (val it = myNode.allAttributes["android:layout_width"]) {
+        "match_parent" -> {
+        } //constraints already added by frameChildX
+        "wrap_content", null -> {
+        } //no constraints needed
         else -> constrainSelf("width", constant = resolver.resolveDimension(it))
     }
-    when(val it = myNode.allAttributes["android:layout_height"]) {
-        "match_parent" -> {} //constraints already added by frameChildX
-        "wrap_content", null -> {} //no constraints needed
+    when (val it = myNode.allAttributes["android:layout_height"]) {
+        "match_parent" -> {
+        } //constraints already added by frameChildX
+        "wrap_content", null -> {
+        } //no constraints needed
         else -> constrainSelf("height", constant = resolver.resolveDimension(it))
     }
     myNode.allAttributes["android:minWidth"]?.let {
@@ -158,25 +177,26 @@ fun PureXmlOut.handleSize(
 
 val extraProcessingRules: Map<String, CodeRule> = mapOf(
     "android.widget.LinearLayout" to { resolver, node, out ->
-        if(node.allAttributes["android:orientation"] == "vertical") {
-            for(child in node.children){
+        //TODO: Default gravity
+        if (node.allAttributes["android:orientation"] == "vertical") {
+            for (child in node.children) {
                 out.frameChildHorizontal(child, resolver)
             }
         } else {
-            for(child in node.children){
+            for (child in node.children) {
                 out.frameChildVertical(child, resolver)
             }
         }
 
-        val weightSizeAttr = if(node.allAttributes["android:orientation"] == "vertical") "height" else "width"
-        val firstWithWeight = node.children.find { (it.allAttributes["android:layout_gravity"] ?: "0") != "0" }
-        if(firstWithWeight != null) {
-            val firstWeight = firstWithWeight.allAttributes["android:layout_gravity"]!!.toDouble()
-            AttPath("userDefined/fills").resolve(out).put(AttKind.Boolean, "true", resolver)
+        val weightSizeAttr = if (node.allAttributes["android:orientation"] == "vertical") "height" else "width"
+        val firstWithWeight = node.children.find { it.allAttributes["android:layout_weight"] != null }
+        if (firstWithWeight != null) {
+            val firstWeight = firstWithWeight.allAttributes["android:layout_weight"]!!.toDouble()
+            AttPath("userDefined/fills").resolve(out).put(AttKind.Bool, "true", resolver)
 
-            for(child in node.children){
-                if(child == firstWithWeight) continue
-                val weight = child.allAttributes["android:layout_gravity"]?.toDouble() ?: continue
+            for (child in node.children) {
+                if (child == firstWithWeight) continue
+                val weight = child.allAttributes["android:layout_weight"]?.toDouble() ?: continue
                 val ratio = weight / firstWeight
                 out.constrain(
                     firstItem = child.tags["id"]!!,
@@ -190,12 +210,39 @@ val extraProcessingRules: Map<String, CodeRule> = mapOf(
         }
     },
     "android.widget.FrameLayout" to { resolver, node, out ->
-        for(child in node.children){
+        for (child in node.children) {
             out.frameChildHorizontal(child, resolver)
             out.frameChildVertical(child, resolver)
         }
     },
     "android.view.View" to { resolver, node, out ->
         out.handleSize(node, resolver)
+        
+        node.parent?.takeIf { it.name == "LinearLayout" }?.let { lin ->
+            if(lin.allAttributes["android:orientation"] == "vertical"){
+                val startMargin = resolver.resolveDimension(
+                    node.allAttributes["android:layout_marginTop"] ?: node.allAttributes["android:layout_margin"]
+                    ?: "0dp"
+                )
+                val endMargin = resolver.resolveDimension(
+                    node.allAttributes["android:layout_marginBottom"] ?: node.allAttributes["android:layout_margin"]
+                    ?: "0dp"
+                )
+                AttPath("userDefined/ssv_start").resolve(out).put(AttKind.Dimension, startMargin, resolver)
+                AttPath("userDefined/ssv_end").resolve(out).put(AttKind.Dimension, endMargin, resolver)
+            } else {
+                val startMargin = resolver.resolveDimension(
+                    node.allAttributes["android:layout_marginStart"]
+                        ?: node.allAttributes["android:layout_marginLeft"]
+                        ?: node.allAttributes["android:layout_margin"] ?: "0dp"
+                )
+                val endMargin = resolver.resolveDimension(
+                    node.allAttributes["android:layout_marginEnd"] ?: node.allAttributes["android:layout_marginRight"]
+                    ?: node.allAttributes["android:layout_margin"] ?: "0dp"
+                )
+                AttPath("userDefined/ssv_start").resolve(out).put(AttKind.Dimension, startMargin, resolver)
+                AttPath("userDefined/ssv_end").resolve(out).put(AttKind.Dimension, endMargin, resolver)
+            }
+        }
     }
 )

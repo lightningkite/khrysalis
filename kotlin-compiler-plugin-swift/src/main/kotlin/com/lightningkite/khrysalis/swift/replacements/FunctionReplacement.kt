@@ -28,6 +28,7 @@ data class FunctionReplacement(
     val typeArgumentRequirements: Map<Int, String>? = null,
     val template: Template
 ) : ReplacementRule {
+
     override val priority: Int
         get() = (if (suppliedArguments != null) 20 else 0) +
                 (if (infix != null) 1 else 0) +

@@ -180,11 +180,11 @@ class Replacements() {
 
     operator fun plusAssign(item: ReplacementRule) {
         when (item) {
-            is FunctionReplacement -> functions.getOrPut(item.id) { TreeSet() }.add(item)
-            is GetReplacement -> gets.getOrPut(item.id) { TreeSet() }.add(item)
-            is SetReplacement -> sets.getOrPut(item.id) { TreeSet() }.add(item)
-            is TypeReplacement -> types.getOrPut(item.id) { TreeSet() }.add(item)
-            is TypeRefReplacement -> typeRefs.getOrPut(item.id) { TreeSet() }.add(item)
+            is FunctionReplacement -> functions.getOrPut(item.id) { TreeSet() }.merge(item)
+            is GetReplacement -> gets.getOrPut(item.id) { TreeSet() }.merge(item)
+            is SetReplacement -> sets.getOrPut(item.id) { TreeSet() }.merge(item)
+            is TypeReplacement -> types.getOrPut(item.id) { TreeSet() }.merge(item)
+            is TypeRefReplacement -> typeRefs.getOrPut(item.id) { TreeSet() }.merge(item)
         }
     }
 

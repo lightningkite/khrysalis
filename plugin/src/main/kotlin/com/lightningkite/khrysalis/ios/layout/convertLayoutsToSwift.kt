@@ -31,6 +31,7 @@ fun convertLayoutsToSwift(
                 converter.replacements += actualFile
             } catch (t: Throwable) {
                 println("Failed to parse equivalents for $actualFile:")
+                t.printStackTrace()
             }
         }
 
