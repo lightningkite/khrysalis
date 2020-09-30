@@ -3,23 +3,25 @@ package com.lightningkite.khrysalis.ios.layout2
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.lightningkite.khrysalis.generic.SmartTabWriter
 import com.lightningkite.khrysalis.ios.drawables.convertDrawableXmls
-import com.lightningkite.khrysalis.ios.drawables.convertDrawablesToIos
 import com.lightningkite.khrysalis.ios.layout.Styles
 import com.lightningkite.khrysalis.ios.layout2.models.IosColor
 import com.lightningkite.khrysalis.ios.layout2.models.IosDrawable
 import com.lightningkite.khrysalis.ios.layout2.models.StateSelector
-import com.lightningkite.khrysalis.ios.values.*
-import com.lightningkite.khrysalis.swift.replacements.*
+import com.lightningkite.khrysalis.ios.values.readXMLStrings
+import com.lightningkite.khrysalis.ios.values.writeXMLStringsTranslation
+import com.lightningkite.khrysalis.swift.replacements.Replacements
 import com.lightningkite.khrysalis.swift.replacements.xib.*
 import com.lightningkite.khrysalis.swift.safeSwiftIdentifier
 import com.lightningkite.khrysalis.utils.*
+import org.mabb.fontverter.FontVerter
 import java.io.File
-import java.lang.IllegalStateException
+
 
 class AppleResourceLayoutConversion() {
     var styles: Styles = mapOf()
     val colors: MutableMap<String, StateSelector<IosColor>> = HashMap()
     val images: MutableMap<String, StateSelector<IosDrawable>> = HashMap()
+    val fonts: MutableMap<String, IosFont> = HashMap()
     val drawables: MutableSet<String> = HashSet()
     val strings: MutableMap<String, String> = HashMap()
     val dimensions: MutableMap<String, String> = HashMap()
@@ -35,6 +37,39 @@ class AppleResourceLayoutConversion() {
             }
     }
 
+    fun getFonts(folder: File){
+        if(!folder.isDirectory) return
+        println("Looking for fonts in ${folder}...")
+        //fonts themselves first
+        folder.listFiles()!!
+            .filter { it.extension.toLowerCase() == "otf" || it.extension.toLowerCase() == "ttf" }
+            .forEach { file ->
+                val font = FontVerter.readFont(file)
+                if(!font.isValid) {
+                    font.normalize()
+                }
+                val iosFont = IosFont(
+                    family = font.properties.family.filter { it in ' ' .. '~' },
+                    name = font.name.filter { it in '!' .. '~' },
+                    file = file
+                )
+                println("Found font $iosFont")
+                fonts[file.nameWithoutExtension] = iosFont
+            }
+        folder.listFiles()!!
+            .filter { it.extension.toLowerCase() == "xml" }
+            .forEach { file ->
+                println("Found font set $file")
+                val xml = XmlNode.read(file, mapOf())
+                xml.children
+                    .filter { it.name == "font" }
+                    .map { it.allAttributes["android:font"] }
+                    .forEach {
+                        val name = it!!.substringAfter('/')
+                        fonts[file.nameWithoutExtension] = fonts[name] ?: throw IllegalArgumentException("No font $name found")
+                    }
+            }
+    }
 
     fun getDimensions(file: File) {
         if(!file.exists()) return
@@ -143,9 +178,21 @@ class AppleResourceLayoutConversion() {
                                         "color-space" to "srgb",
                                         "components" to mapOf(
                                             "alpha" to vValue.alpha.toString(),
-                                            "red" to "0x" + vValue.red.times(255).toInt().toString(16).toUpperCase().padStart(2, '0'),
-                                            "green" to "0x" + vValue.green.times(255).toInt().toString(16).toUpperCase().padStart(2, '0'),
-                                            "blue" to "0x" + vValue.blue.times(255).toInt().toString(16).toUpperCase().padStart(2, '0')
+                                            "red" to "0x" + vValue.red.times(255).toInt().toString(16).toUpperCase()
+                                                .padStart(
+                                                    2,
+                                                    '0'
+                                                ),
+                                            "green" to "0x" + vValue.green.times(255).toInt().toString(16).toUpperCase()
+                                                .padStart(
+                                                    2,
+                                                    '0'
+                                                ),
+                                            "blue" to "0x" + vValue.blue.times(255).toInt().toString(16).toUpperCase()
+                                                .padStart(
+                                                    2,
+                                                    '0'
+                                                )
                                         )
                                     ),
                                     "idiom" to "universal"
@@ -283,7 +330,7 @@ class AppleResourceLayoutConversion() {
                 appendln("static let allEntries: Dictionary<String, Drawable> = [")
                 var firstDrawable = true
                 drawables.forEachBetween(
-                    forItem =  { entry ->
+                    forItem = { entry ->
                         append("\"$entry\": $entry")
                     },
                     between = { appendln(",") }
@@ -336,8 +383,8 @@ class AppleResourceLayoutConversion() {
         val usedColors = HashSet<String>()
         val usedImages = HashSet<String>()
 
-        override fun resolveFont(string: String): String {
-            return string.substringAfter('/')
+        override fun resolveFont(string: String): IosFont? {
+            return fonts[string.substringAfter('/')]
         }
 
         override fun resolveDimension(string: String): String {
@@ -394,7 +441,8 @@ class AppleResourceLayoutConversion() {
         idPass(rootNode)
 
         val rootView = replacements.translate(resolver, rootNode)
-        out.appendln("""
+        out.appendln(
+            """
             <?xml version="1.0" encoding="UTF-8"?>
             <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
                 <device id="retina3_5" orientation="portrait" appearance="light"/>
@@ -405,36 +453,49 @@ class AppleResourceLayoutConversion() {
                     <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
                     <capability name="System colors in document resources" minToolsVersion="11.0"/>
                 </dependencies>
-                <objects>""".trimIndent())
-        out.appendln("""
-            <placeholder placeholderIdentifier="IBFilesOwner" id="-1" customClass="${inputFile.nameWithoutExtension.camelCase().capitalize()}Xml" customModuleProvider="target">
+                <objects>""".trimIndent()
+        )
+        out.appendln(
+            """
+            <placeholder placeholderIdentifier="IBFilesOwner" id="-1" customClass="${
+                inputFile.nameWithoutExtension.camelCase().capitalize()
+            }Xml" customModuleProvider="target">
             <connections>
-        """.trimIndent())
+        """.trimIndent()
+        )
         for(id in idsToStore){
             out.appendln("""<outlet property="$id" destination="$id" id="${makeId()}"/>""")
         }
-        out.appendln("""
+        out.appendln(
+            """
             </connections>
             </placeholder>
-        """.trimIndent())
-        out.appendln("""
+        """.trimIndent()
+        )
+        out.appendln(
+            """
             <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        """.trimIndent())
+        """.trimIndent()
+        )
         rootView.write(out)
-        out.appendln("""
+        out.appendln(
+            """
                 </objects>
                 <resources>
-        """.trimIndent())
+        """.trimIndent()
+        )
         for(c in resolver.usedColors){
             out.appendln("""<namedColor name="$c" />""")
         }
         for(i in resolver.usedImages){
             out.appendln("""<image name="$i" />""")
         }
-        out.appendln("""
+        out.appendln(
+            """
             </resources>
             </document>
-        """.trimIndent())
+        """.trimIndent()
+        )
     }
 }
 
@@ -454,15 +515,15 @@ fun AttHandler.invoke(resolver: CanResolveValue, attr: XmlNode.Attribute, view: 
                 .map { it.trim() }
                 .forEach {
                     val instructions = this.mapValues!![it]
-                    if(instructions != null) {
-                        for((path, value) in instructions){
+                    if (instructions != null) {
+                        for ((path, value) in instructions) {
                             path.resolve(view).put(value.type, value.value, resolver)
                         }
                     }
                 }
         }
         AttHandlerKind.Multiple -> {
-            for(sub in multiple!!){
+            for (sub in multiple!!) {
                 sub.invoke(resolver, attr, view)
             }
         }

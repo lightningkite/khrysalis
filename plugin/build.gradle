@@ -77,6 +77,8 @@ dependencies {
     api "com.fasterxml.jackson.core:jackson-databind:2.9.+"
     api "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.+"
     api "net.jodah:xsylum:0.1.0"
+    // https://mvnrepository.com/artifact/net.mabboud.fontverter/FontVerter
+    implementation group: 'net.mabboud.fontverter', name: 'FontVerter', version: '1.2.22'
     testImplementation("junit:junit:4.12")
     api(project(path: ":kotlin-compiler-plugin-typescript", configuration: "default"))
     api(project(path: ":kotlin-compiler-plugin-swift", configuration: "default"))

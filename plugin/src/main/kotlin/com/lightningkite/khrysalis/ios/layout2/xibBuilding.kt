@@ -5,11 +5,13 @@ import com.lightningkite.khrysalis.swift.replacements.Replacements
 import com.lightningkite.khrysalis.swift.replacements.TypeReplacement
 import com.lightningkite.khrysalis.swift.replacements.xib.*
 import com.lightningkite.khrysalis.utils.XmlNode
+import java.io.File
 
 typealias CodeRule = (CanResolveValue, XmlNode, PureXmlOut) -> Unit
 
+data class IosFont(val family: String, val name: String, val file: File? = null)
 interface CanResolveValue {
-    fun resolveFont(string: String): String
+    fun resolveFont(string: String): IosFont?
     fun resolveDimension(string: String): String
     fun resolveColor(string: String): Any //IosColor or String
     fun resolveString(string: String): String
@@ -63,8 +65,8 @@ sealed class AttPathDestination {
             when (kind) {
                 AttKind.Font -> {
                     val font = resolver.resolveFont(value)
-                    out.attributes["name"] = font
-                    out.attributes["family"] = font
+                    font?.name?.let { out.attributes["name"] = it }
+                    font?.family?.let { out.attributes["family"] = it }
                 }
                 AttKind.Dimension -> with(out) {
                     name = "real"
@@ -172,7 +174,7 @@ sealed class AttPathDestination {
                 AttKind.Number -> set(value)
                 AttKind.Raw -> if (value == "<id>") set(makeId()) else set(value)
                 AttKind.Text -> set(resolver.resolveString(value))
-                AttKind.Font -> set(resolver.resolveFont(value))
+                AttKind.Font -> resolver.resolveFont(value)?.name?.let { set(it) }
                 AttKind.Bool -> if (value == "true") set("YES") else set("NO")
                 else -> throw IllegalStateException("Cannot be applied to this position. kind: $kind")
             }

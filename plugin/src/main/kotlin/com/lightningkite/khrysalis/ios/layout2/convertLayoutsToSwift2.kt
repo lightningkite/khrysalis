@@ -39,6 +39,7 @@ fun convertLayoutsToSwift2(
         }
 
     val converter = AppleResourceLayoutConversion()
+    converter.getFonts(androidFolder.resolve("src/main/res/font"))
     converter.getStrings(androidFolder.resolve("src/main/res/values/strings.xml"))
     converter.getDimensions(androidFolder.resolve("src/main/res/values/dimens.xml"))
     converter.getColors(androidFolder.resolve("src/main/res/values/colors.xml"))
