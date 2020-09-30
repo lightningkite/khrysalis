@@ -2,6 +2,8 @@ package com.lightningkite.khrysalis.ios.layout2
 
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.lightningkite.khrysalis.generic.SmartTabWriter
+import com.lightningkite.khrysalis.ios.drawables.convertDrawableXmls
+import com.lightningkite.khrysalis.ios.drawables.convertDrawablesToIos
 import com.lightningkite.khrysalis.ios.layout.Styles
 import com.lightningkite.khrysalis.ios.layout2.models.IosColor
 import com.lightningkite.khrysalis.ios.layout2.models.IosDrawable
@@ -132,7 +134,7 @@ class AppleResourceLayoutConversion() {
         val mapper = jacksonObjectMapper()
         for((k, v) in this.colors){
             for((vName, vValue) in v.variants) {
-                assetsFolder.resolve("color_$k$vName").apply { mkdirs() }.resolve("Contents.json").writeText(
+                assetsFolder.resolve("color_$k$vName.colorset").apply { mkdirs() }.resolve("Contents.json").writeText(
                     mapper.writeValueAsString(
                         mapOf<String, Any?>(
                             "colors" to listOf(
@@ -141,16 +143,16 @@ class AppleResourceLayoutConversion() {
                                         "color-space" to "srgb",
                                         "components" to mapOf(
                                             "alpha" to vValue.alpha.toString(),
-                                            "red" to vValue.red.toString(),
-                                            "green" to vValue.green.toString(),
-                                            "blue" to vValue.blue.toString()
+                                            "red" to "0x" + vValue.red.times(255).toInt().toString(16).toUpperCase().padStart(2, '0'),
+                                            "green" to "0x" + vValue.green.times(255).toInt().toString(16).toUpperCase().padStart(2, '0'),
+                                            "blue" to "0x" + vValue.blue.times(255).toInt().toString(16).toUpperCase().padStart(2, '0')
                                         )
                                     ),
                                     "idiom" to "universal"
                                 )
                             ),
                             "info" to mapOf(
-                                "author" to "khrysalis",
+                                "author" to "xcode",
                                 "version" to 1
                             )
                         )
@@ -158,6 +160,16 @@ class AppleResourceLayoutConversion() {
                 )
             }
         }
+    }
+
+    fun translateDrawables(
+        resourcesFolder: File,
+        swiftResourcesFolder: File
+    ) {
+        convertDrawableXmls(
+            resourcesFolder = resourcesFolder,
+            swiftFolder = swiftResourcesFolder
+        )
     }
 
     fun getAndMovePngs(
@@ -414,7 +426,7 @@ class AppleResourceLayoutConversion() {
                 <resources>
         """.trimIndent())
         for(c in resolver.usedColors){
-            out.appendln("""<named-color name="$c" />""")
+            out.appendln("""<namedColor name="$c" />""")
         }
         for(i in resolver.usedImages){
             out.appendln("""<image name="$i" />""")

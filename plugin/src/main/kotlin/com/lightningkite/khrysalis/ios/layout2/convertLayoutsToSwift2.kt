@@ -45,6 +45,10 @@ fun convertLayoutsToSwift2(
     androidFolder.resolve("src/main/res/color").listFiles()?.forEach {
         converter.getStateColor(it)
     }
+    converter.translateDrawables(
+        resourcesFolder = androidFolder.resolve("src/main/res"),
+        swiftResourcesFolder = iosFolder.resolve("swiftResources")
+    )
     converter.getAndMovePngs(
         resourcesFolder = androidFolder.resolve("src/main/res"),
         assetsFolder = iosFolder.resolve("Assets.xcassets")

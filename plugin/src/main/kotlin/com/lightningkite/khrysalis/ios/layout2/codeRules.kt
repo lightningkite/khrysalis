@@ -192,7 +192,6 @@ val extraProcessingRules: Map<String, CodeRule> = mapOf(
         val firstWithWeight = node.children.find { it.allAttributes["android:layout_weight"] != null }
         if (firstWithWeight != null) {
             val firstWeight = firstWithWeight.allAttributes["android:layout_weight"]!!.toDouble()
-            AttPath("userDefined/fills").resolve(out).put(AttKind.Bool, "true", resolver)
 
             for (child in node.children) {
                 if (child == firstWithWeight) continue
@@ -217,9 +216,26 @@ val extraProcessingRules: Map<String, CodeRule> = mapOf(
     },
     "android.view.View" to { resolver, node, out ->
         out.handleSize(node, resolver)
+
+        val backgroundValue = node.allAttributes["android:background"]
+        when {
+            backgroundValue == null -> {}
+            backgroundValue.startsWith("@draw") -> {
+                AttPath("userDefined/backgroundDrawableResource").resolve(out).put(AttKind.Raw, backgroundValue.substringAfter('/'), resolver)
+            }
+            backgroundValue.startsWith("@col") -> {
+                AttPath("property/backgroundColor:color").resolve(out).put(AttKind.Color, backgroundValue, resolver)
+            }
+            backgroundValue.startsWith("#") -> {
+                AttPath("property/backgroundColor:color").resolve(out).put(AttKind.Color, backgroundValue, resolver)
+            }
+        }
         
         node.parent?.takeIf { it.name == "LinearLayout" }?.let { lin ->
             if(lin.allAttributes["android:orientation"] == "vertical"){
+                if(node.allAttributes["android:layout_weight"] != null){
+                    out.attributes["verticalHuggingPriority"] = "5"
+                }
                 val startMargin = resolver.resolveDimension(
                     node.allAttributes["android:layout_marginTop"] ?: node.allAttributes["android:layout_margin"]
                     ?: "0dp"
@@ -231,6 +247,9 @@ val extraProcessingRules: Map<String, CodeRule> = mapOf(
                 AttPath("userDefined/ssv_start").resolve(out).put(AttKind.Dimension, startMargin, resolver)
                 AttPath("userDefined/ssv_end").resolve(out).put(AttKind.Dimension, endMargin, resolver)
             } else {
+                if(node.allAttributes["android:layout_weight"] != null){
+                    out.attributes["horizontalHuggingPriority"] = "5"
+                }
                 val startMargin = resolver.resolveDimension(
                     node.allAttributes["android:layout_marginStart"]
                         ?: node.allAttributes["android:layout_marginLeft"]

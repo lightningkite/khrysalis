@@ -13,26 +13,26 @@ data class IosColor(
             val numbersOnly = str.drop(1)
             return when (numbersOnly.length) {
                 3 -> IosColor(
-                    red = numbersOnly[0].toString().toInt(16) / 16f,
-                    green = numbersOnly[1].toString().toInt(16) / 16f,
-                    blue = numbersOnly[2].toString().toInt(16) / 16f
+                    red = numbersOnly[0].toString().toInt(16) / 15f,
+                    green = numbersOnly[1].toString().toInt(16) / 15f,
+                    blue = numbersOnly[2].toString().toInt(16) / 15f
                 )
                 4 -> IosColor(
-                    alpha = numbersOnly[0].toString().toInt(16) / 16f,
-                    red = numbersOnly[1].toString().toInt(16) / 16f,
-                    green = numbersOnly[2].toString().toInt(16) / 16f,
-                    blue = numbersOnly[3].toString().toInt(16) / 16f
+                    alpha = numbersOnly[0].toString().toInt(16) / 15f,
+                    red = numbersOnly[1].toString().toInt(16) / 15f,
+                    green = numbersOnly[2].toString().toInt(16) / 15f,
+                    blue = numbersOnly[3].toString().toInt(16) / 15f
                 )
                 6 -> IosColor(
-                    red = numbersOnly.substring(0, 2).toInt(16) / 16f,
-                    green = numbersOnly.substring(2, 4).toInt(16) / 16f,
-                    blue = numbersOnly.substring(4, 6).toInt(16) / 16f
+                    red = numbersOnly.substring(0, 2).toInt(16) / 255f,
+                    green = numbersOnly.substring(2, 4).toInt(16) / 255f,
+                    blue = numbersOnly.substring(4, 6).toInt(16) / 255f
                 )
                 8 -> IosColor(
-                    alpha = numbersOnly.substring(0, 2).toInt(16) / 16f,
-                    red = numbersOnly.substring(2, 4).toInt(16) / 16f,
-                    green = numbersOnly.substring(4, 6).toInt(16) / 16f,
-                    blue = numbersOnly.substring(6, 8).toInt(16) / 16f
+                    alpha = numbersOnly.substring(0, 2).toInt(16) / 255f,
+                    red = numbersOnly.substring(2, 4).toInt(16) / 255f,
+                    green = numbersOnly.substring(4, 6).toInt(16) / 255f,
+                    blue = numbersOnly.substring(6, 8).toInt(16) / 255f
                 )
                 else -> null
             }

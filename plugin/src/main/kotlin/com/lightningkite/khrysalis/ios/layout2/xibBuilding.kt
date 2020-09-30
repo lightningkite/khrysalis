@@ -73,7 +73,6 @@ sealed class AttPathDestination {
                 }
                 AttKind.Color -> {
                     out.name = "color"
-                    out.attributes["key"] = "value"
                     when (val item = resolver.resolveColor(value)) {
                         is String -> {
                             out.attributes["name"] = item
@@ -108,6 +107,7 @@ sealed class AttPathDestination {
                     attributes["key"] = "value"
                     attributes["value"] = if (value == "true") "YES" else "NO"
                 }
+                else -> throw IllegalStateException("Cannot be applied to this position. kind: $kind")
             }
         }
     }
@@ -115,7 +115,6 @@ sealed class AttPathDestination {
     data class UserDefined(override val out: PureXmlOut) : AttPathDestination() {
         override fun put(kind: AttKind, value: String, resolver: CanResolveValue) {
             when (kind) {
-                AttKind.Font -> throw IllegalStateException("Cannot be applied to this position. kind: $kind")
                 AttKind.Dimension -> {
                     out.attributes["type"] = "number"
                     out.children.add(PureXmlOut("real").apply {
@@ -161,6 +160,7 @@ sealed class AttPathDestination {
                     out.attributes["type"] = "boolean"
                     out.attributes["value"] = if (value == "true") "YES" else "NO"
                 }
+                else -> throw IllegalStateException("Cannot be applied to this position. kind: $kind")
             }
         }
     }
@@ -168,13 +168,13 @@ sealed class AttPathDestination {
     data class Attribute(val set: (String) -> Unit) : AttPathDestination() {
         override fun put(kind: AttKind, value: String, resolver: CanResolveValue) {
             when (kind) {
-                AttKind.Color -> throw IllegalStateException("Cannot be applied to this position. kind: $kind")
                 AttKind.Dimension -> set(resolver.resolveDimension(value))
                 AttKind.Number -> set(value)
                 AttKind.Raw -> if (value == "<id>") set(makeId()) else set(value)
                 AttKind.Text -> set(resolver.resolveString(value))
                 AttKind.Font -> set(resolver.resolveFont(value))
                 AttKind.Bool -> if (value == "true") set("YES") else set("NO")
+                else -> throw IllegalStateException("Cannot be applied to this position. kind: $kind")
             }
         }
     }
