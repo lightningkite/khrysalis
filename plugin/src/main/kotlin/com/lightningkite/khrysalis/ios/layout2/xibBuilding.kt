@@ -184,16 +184,16 @@ fun AttPath.resolve(from: PureXmlOut): AttPathDestination {
     var currentPath = this
     var currentNode: PureXmlOut = from
     while (true) {
-        val dest: AttPathDestination = when (this.pathType) {
+        val dest: AttPathDestination = when (currentPath.pathType) {
             AttPathType.Property -> AttPathDestination.Property(
-                from.getOrPutChildKeyed(
+                currentNode.getOrPutChildKeyed(
                     "key",
                     currentPath.name,
                     this.type
                 )
             )
             AttPathType.UserDefined -> AttPathDestination.UserDefined(
-                from.getOrPutChild("userDefinedRuntimeAttributes")
+                currentNode.getOrPutChild("userDefinedRuntimeAttributes")
                     .getOrPutChildKeyed("keyPath", currentPath.name, "userDefinedRuntimeAttribute")
             )
             AttPathType.Attribute -> AttPathDestination.Attribute { currentNode.attributes[currentPath.name] = it }
