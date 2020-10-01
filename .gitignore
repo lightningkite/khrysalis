@@ -12,6 +12,7 @@ ios/Khrysalis.xcworkspace
 *.apk
 *.class
 
+**/.DS_Store
 plugin/out
 **/node_modules
 
