@@ -59,6 +59,16 @@ function xIterableSingleOrNull(iter) {
     return r;
 }
 exports.xIterableSingleOrNull = xIterableSingleOrNull;
+//! Declares kotlin.collections.contains>kotlin.collections.Iterable
+function xIterableContains(iter, item) {
+    for (const x of iter) {
+        if (Language_1.safeEq(x, item)) {
+            return true;
+        }
+    }
+    return false;
+}
+exports.xIterableContains = xIterableContains;
 //! Declares kotlin.collections.joinToString
 function xIterableJoinToString(iter, separator = ", ", prefix = "", postfix = "", limit, truncated = "...", transform = (x) => `${x}`) {
     let result = prefix;

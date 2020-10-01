@@ -7,23 +7,39 @@ import {Image} from '../../Image.shared'
 import {ObservableProperty} from '../ObservableProperty.shared'
 import {xImageViewLoadImage, xImageViewLoadVideoThumbnail} from "../../views/ImageView.actual";
 import {post} from "../../delay.actual";
+import {NumberRange} from "../../kotlin/Language";
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindImage
-export function xImageViewBindImage(this_: HTMLImageElement, image: ObservableProperty<(Image | null)>) {
-    post(() => {
-        xDisposableUntil(xObservablePropertySubscribeBy(image, undefined, undefined, (it) => {
-            xImageViewLoadImage(this_, it)
-        }), xViewRemovedGet(this_))
-    });
+export function xImageViewBindImage(this_: HTMLElement, image: ObservableProperty<(Image | null)>) {
+    const img = findImageView(this_)
+    if (img) {
+        post(() => {
+            xDisposableUntil(xObservablePropertySubscribeBy(image, undefined, undefined, (it) => {
+                xImageViewLoadImage(img, it)
+            }), xViewRemovedGet(this_))
+        });
+    }
 }
-
 
 //! Declares com.lightningkite.khrysalis.observables.binding.bindVideoThumbnail
-export function xImageViewBindVideoThumbnail(this_: HTMLImageElement, image: ObservableProperty<(Image | null)>) {
-    post(() => {
-        xDisposableUntil(xObservablePropertySubscribeBy(image, undefined, undefined, (it) => {
-            xImageViewLoadVideoThumbnail(this_, it)
-        }), xViewRemovedGet(this_))
-    });
+export function xImageViewBindVideoThumbnail(this_: HTMLElement, image: ObservableProperty<(Image | null)>) {
+    const img = findImageView(this_)
+    if (img) {
+        post(() => {
+            xDisposableUntil(xObservablePropertySubscribeBy(image, undefined, undefined, (it) => {
+                xImageViewLoadVideoThumbnail(img, it)
+            }), xViewRemovedGet(this_))
+        });
+    }
 }
 
+function findImageView(element: HTMLElement): HTMLImageElement | null {
+    if (element instanceof HTMLImageElement) return element
+    for (const childIndex of new NumberRange(0, element.children.length - 1)) {
+        const child = element.children.item(childIndex)
+        if (child instanceof HTMLImageElement) {
+            return child
+        }
+    }
+    return null
+}

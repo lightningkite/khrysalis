@@ -103,9 +103,17 @@
   type: call
   template: ~this~ /* Invalidate.  Not needed in JS. */
 
+- id: android.view.View.background
+  type: set
+  template:
+    pattern: ~this~.style.background = "none"
+
 - id: android.view.View.setBackgroundColor
   type: call
-  template: ~this~.style.backgroundColor = ~0~
+  template:
+    pattern: ~this~.style.backgroundColor = numberToColor(~0~)
+    imports:
+      numberToColor: khrysalis/dist/views/Colors.actual
 
 - id: android.view.View.setBackgroundResource
   type: call

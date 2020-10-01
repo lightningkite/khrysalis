@@ -1,6 +1,6 @@
 // Kotlin iterables
 
-import {IllegalArgumentException} from "./Language";
+import {IllegalArgumentException, safeEq} from "./Language";
 import {filter, map} from './lazyOp'
 import {EqualOverrideSet, setAddCausedChange} from "./Collections";
 
@@ -50,6 +50,16 @@ export function xIterableSingleOrNull<T>(iter: Iterable<T>): T {
     const r = xIterableSingle(iter);
     if (r == null) throw new IllegalArgumentException("Iterable is empty", null);
     return r
+}
+
+//! Declares kotlin.collections.contains
+export function xIterableContains<T>(iter: Iterable<T>, item: T): boolean {
+    for(const x of iter){
+        if(safeEq(x, item)){
+            return true
+        }
+    }
+    return false
 }
 
 //! Declares kotlin.collections.joinToString

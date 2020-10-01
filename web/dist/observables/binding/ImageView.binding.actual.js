@@ -7,22 +7,40 @@ const ObservableProperty_ext_shared_1 = require("../ObservableProperty.ext.share
 const DisposeCondition_actual_1 = require("../../rx/DisposeCondition.actual");
 const ImageView_actual_1 = require("../../views/ImageView.actual");
 const delay_actual_1 = require("../../delay.actual");
+const Language_1 = require("../../kotlin/Language");
 //! Declares com.lightningkite.khrysalis.observables.binding.bindImage
 function xImageViewBindImage(this_, image) {
-    delay_actual_1.post(() => {
-        DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(image, undefined, undefined, (it) => {
-            ImageView_actual_1.xImageViewLoadImage(this_, it);
-        }), DisposeCondition_actual_1.xViewRemovedGet(this_));
-    });
+    const img = findImageView(this_);
+    if (img) {
+        delay_actual_1.post(() => {
+            DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(image, undefined, undefined, (it) => {
+                ImageView_actual_1.xImageViewLoadImage(img, it);
+            }), DisposeCondition_actual_1.xViewRemovedGet(this_));
+        });
+    }
 }
 exports.xImageViewBindImage = xImageViewBindImage;
 //! Declares com.lightningkite.khrysalis.observables.binding.bindVideoThumbnail
 function xImageViewBindVideoThumbnail(this_, image) {
-    delay_actual_1.post(() => {
-        DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(image, undefined, undefined, (it) => {
-            ImageView_actual_1.xImageViewLoadVideoThumbnail(this_, it);
-        }), DisposeCondition_actual_1.xViewRemovedGet(this_));
-    });
+    const img = findImageView(this_);
+    if (img) {
+        delay_actual_1.post(() => {
+            DisposeCondition_actual_1.xDisposableUntil(ObservableProperty_ext_shared_1.xObservablePropertySubscribeBy(image, undefined, undefined, (it) => {
+                ImageView_actual_1.xImageViewLoadVideoThumbnail(img, it);
+            }), DisposeCondition_actual_1.xViewRemovedGet(this_));
+        });
+    }
 }
 exports.xImageViewBindVideoThumbnail = xImageViewBindVideoThumbnail;
+function findImageView(element) {
+    if (element instanceof HTMLImageElement)
+        return element;
+    for (const childIndex of new Language_1.NumberRange(0, element.children.length - 1)) {
+        const child = element.children.item(childIndex);
+        if (child instanceof HTMLImageElement) {
+            return child;
+        }
+    }
+    return null;
+}
 //# sourceMappingURL=ImageView.binding.actual.js.map
