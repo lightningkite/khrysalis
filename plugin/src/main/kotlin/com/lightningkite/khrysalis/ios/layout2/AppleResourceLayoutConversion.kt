@@ -277,22 +277,6 @@ class AppleResourceLayoutConversion() {
         }
     }
 
-    fun String.asIosColorSet(): Pair<String?, StateSelector<IosColor>>? {
-        val raw = this
-        return when{
-            raw.startsWith("@color/") -> {
-                val colorName = raw.removePrefix("@color/")
-                colors[colorName]?.let { colorName to it }
-            }
-            raw.startsWith("@android:color/") -> {
-                val colorName = raw.removePrefix("@android:color/")
-                colors[colorName]?.let { colorName to it }
-            }
-            raw.startsWith("#") -> IosColor.fromHashString(raw)?.let { null to StateSelector(it) }
-            else -> null
-        }
-    }
-
     fun writeRFile(
         androidResourcesFolder: File,
         baseFolderForLocalizations: File,
@@ -402,7 +386,7 @@ class AppleResourceLayoutConversion() {
             } else if(string.startsWith("#")) {
                 return IosColor.fromHashString(string)!!
             } else {
-                return IosColor()
+                throw IllegalArgumentException("Could not resolve color '$string'.")
             }
         }
 

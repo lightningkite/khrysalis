@@ -42,10 +42,20 @@ fun Replacements.translate(resolver: CanResolveValue, node: XmlNode): PureXmlOut
     out.addStandardViewProperties()
     rules.asSequence()
         .flatMap { it.xib?.defaults?.entries?.asSequence() ?: sequenceOf() }
-        .forEach { it.key.resolve(out).put(it.value.type, it.value.value, resolver) }
+        .forEach {
+            try {
+                it.key.resolve(out).put(it.value.type, it.value.value, resolver)
+            } catch(e: Exception){
+                throw Exception("Error while processing default (${it.key} = ${it.value}) for ${node.name}:", e)
+            }
+        }
     for (a in node.parts) {
         val matching = rules.asSequence().map { it.xib?.attributes?.get(a.type) }.firstOrNull()
-        matching?.invoke(resolver, a, out)
+        try {
+            matching?.invoke(resolver, a, out)
+        } catch(e: Exception){
+            throw Exception("Error while processing rule ${a.type}:", e)
+        }
     }
     for (child in node.children) {
         out.getOrPutChild("subviews").children.add(translate(resolver, child))

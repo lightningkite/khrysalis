@@ -90,6 +90,10 @@ data class AttPath(
         then = string.substringAfter('/', "").substringAfter('/', "").takeUnless { it.isEmpty() }
             ?.let { AttPath(it) }
     )
+
+    override fun toString(): String {
+        return "$pathType/$name:$type" + if(then != null) "/$then" else ""
+    }
 }
 
 data class AttHandler(

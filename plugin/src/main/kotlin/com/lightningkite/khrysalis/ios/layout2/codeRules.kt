@@ -153,19 +153,29 @@ fun PureXmlOut.handleSize(
     myNode: XmlNode,
     resolver: CanResolveValue
 ) {
-    when (val it = myNode.allAttributes["android:layout_width"]) {
-        "match_parent" -> {
-        } //constraints already added by frameChildX
-        "wrap_content", null -> {
-        } //no constraints needed
-        else -> constrainSelf("width", constant = resolver.resolveDimension(it))
+    var skipHorizontal = false
+    var skipVertical = false
+    if(myNode.parent?.name == "LinearLayout" && myNode.allAttributes["android:layout_weight"] != null) {
+        val vertical = myNode.parent?.allAttributes?.get("android:orientation") == "vertical"
+        if(vertical) skipVertical = true else skipHorizontal = true
     }
-    when (val it = myNode.allAttributes["android:layout_height"]) {
-        "match_parent" -> {
-        } //constraints already added by frameChildX
-        "wrap_content", null -> {
-        } //no constraints needed
-        else -> constrainSelf("height", constant = resolver.resolveDimension(it))
+    if(!skipHorizontal) {
+        when (val it = myNode.allAttributes["android:layout_width"]) {
+            "match_parent" -> {
+            } //constraints already added by frameChildX
+            "wrap_content", null -> {
+            } //no constraints needed
+            else -> constrainSelf("width", constant = resolver.resolveDimension(it))
+        }
+    }
+    if(!skipVertical) {
+        when (val it = myNode.allAttributes["android:layout_height"]) {
+            "match_parent" -> {
+            } //constraints already added by frameChildX
+            "wrap_content", null -> {
+            } //no constraints needed
+            else -> constrainSelf("height", constant = resolver.resolveDimension(it))
+        }
     }
     myNode.allAttributes["android:minWidth"]?.let {
         constrainSelf("width", constant = resolver.resolveDimension(it))
