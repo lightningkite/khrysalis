@@ -3,12 +3,15 @@ package com.lightningkite.khrysalis.views
 
 import android.Manifest
 import android.app.Activity
+import android.app.DownloadManager
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.database.Cursor
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.StateListDrawable
+import android.os.Environment
 import android.provider.CalendarContract
 import android.provider.MediaStore
 import android.provider.OpenableColumns
@@ -294,6 +297,7 @@ fun ViewDependency.requestMediasGallery(
         }
     }
 }
+
 fun ViewDependency.requestMediaGallery(
     callback: (Uri) -> Unit
 ) {
@@ -320,9 +324,9 @@ fun ViewDependency.requestMediaGallery(
 
 fun ViewDependency.requestFile(
     callback: (Uri) -> Unit
-){
+) {
     requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE) {
-        if(it){
+        if (it) {
             val getIntent = Intent(Intent.ACTION_GET_CONTENT)
             getIntent.type = "*/*"
 
@@ -344,9 +348,9 @@ fun ViewDependency.requestFile(
 
 fun ViewDependency.requestFiles(
     callback: (List<Uri>) -> Unit
-){
+) {
     requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE) {
-        if(it){
+        if (it) {
             val getIntent = Intent(Intent.ACTION_GET_CONTENT)
             getIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
             getIntent.type = "*/*"
@@ -370,12 +374,12 @@ fun ViewDependency.requestFiles(
 
 fun ViewDependency.getMimeType(
     uri: Uri
-):String? {
+): String? {
     val cr = context.contentResolver
     return cr.getType(uri)
 }
 
-fun ViewDependency.getFileName(uri: Uri):String? {
+fun ViewDependency.getFileName(uri: Uri): String? {
     var result: String? = null
     if (uri.scheme.equals("content")) {
         val cursor: Cursor? = context.contentResolver.query(uri, null, null, null, null)
@@ -395,6 +399,20 @@ fun ViewDependency.getFileName(uri: Uri):String? {
         }
     }
     return result
+}
+
+fun ViewDependency.downloadFile(url: String) {
+    val uri: Uri = Uri.parse(url)
+    val fileName = url.substringAfterLast('/')
+
+    val downloadmanager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+    val request = DownloadManager.Request(uri)
+    request.setTitle(fileName)
+    request.setDescription("Downloading")
+    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+    request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
+
+    downloadmanager.enqueue(request)
 }
 
 @Deprecated("")
