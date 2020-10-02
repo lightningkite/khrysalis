@@ -25,7 +25,7 @@ import java.io.StringReader
 
 class AppleResourceLayoutConversion() {
     var styles: Styles = mapOf()
-    val colors: MutableMap<String, StateSelector<IosColor>> = HashMap()
+    val colors: MutableMap<String, StateSelector<IosColor>> = hashMapOf()
     val images: MutableMap<String, StateSelector<IosDrawable>> = HashMap()
     val vectors: MutableMap<String, StateSelector<IosDrawable>> = HashMap()
     val fonts: MutableMap<String, IosFont> = HashMap()
@@ -51,6 +51,7 @@ class AppleResourceLayoutConversion() {
         folder.listFiles()!!
             .filter { it.extension.toLowerCase() == "otf" || it.extension.toLowerCase() == "ttf" }
             .forEach { file ->
+
                 val font = FontVerter.readFont(file)
                 if (!font.isValid) {
                     font.normalize()
@@ -92,13 +93,11 @@ class AppleResourceLayoutConversion() {
 
     fun getColors(file: File) {
         if (!file.exists()) return
-        val ignored = setOf("white", "black", "transparent")
         val colorsToProcess = ArrayList<Pair<String, IosColor>>()
         XmlNode.read(file, mapOf())
             .children
             .asSequence()
             .filter { it.name == "color" }
-            .filter { it.allAttributes["name"] !in ignored }
             .forEach {
                 val raw = it.element.textContent
                 val name = (it.allAttributes["name"] ?: "noname").safeSwiftIdentifier()
@@ -313,7 +312,7 @@ class AppleResourceLayoutConversion() {
                         androidVectorToSvg(node, { value ->
                             when {
                                 value.startsWith("@") -> {
-                                    val found = colors[value.substringAfter('/')]!!.normal
+                                    val found = (colors[value.substringAfter('/')] ?: throw IllegalArgumentException("Could not find color '$value'")).normal
                                     found.webColor()
                                 }
                                 value.startsWith("#") -> {
@@ -440,9 +439,6 @@ class AppleResourceLayoutConversion() {
 
                 appendln("public enum color {")
 
-                appendln("static let transparent = UIColor.clear")
-                appendln("static let black = UIColor.black")
-                appendln("static let white = UIColor.white")
                 for (entry in colors.entries) {
                     if (entry.value.isSet) {
                         out.appendln("static let ${entry.key}: UIColor = UIColor(named: \"color_${entry.key}\")")

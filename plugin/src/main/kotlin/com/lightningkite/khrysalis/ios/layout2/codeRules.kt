@@ -324,6 +324,30 @@ val extraProcessingRules: Map<String, CodeRule> = mapOf(
                 )
             }
         }
+
+//        val startAttr = if (node.allAttributes["android:orientation"] == "vertical") "top" else "leading"
+//        val endAttr = if (node.allAttributes["android:orientation"] == "vertical") "bottom" else "trailing"
+//
+//        var prevAttr = startAttr + "Margin"
+//        var prevView = out.attributes["id"]!!
+//        for (child in node.children) {
+//            out.constrain(
+//                firstItem = child.tags["id"]!!,
+//                firstAttribute = startAttr,
+//                secondItem = prevView,
+//                secondAttribute = prevAttr,
+//                priority = "2"
+//            )
+//            prevView = child.tags["id"]!!
+//            prevAttr = endAttr
+//        }
+//        out.constrain(
+//            firstItem = prevView,
+//            firstAttribute = prevAttr,
+//            secondItem = out.attributes["id"]!!,
+//            secondAttribute = endAttr + "Margin",
+//            priority = "2"
+//        )
     },
     "android.widget.FrameLayout" to { replacements, resolver, node, out ->
         for (child in node.children) {
