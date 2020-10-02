@@ -13,21 +13,28 @@ import com.lightningkite.khrysalis.swift.replacements.Replacements
 import com.lightningkite.khrysalis.swift.replacements.xib.*
 import com.lightningkite.khrysalis.swift.safeSwiftIdentifier
 import com.lightningkite.khrysalis.utils.*
+import com.lightningkite.khrysalis.web.layout.drawables.androidVectorToSvg
+import org.apache.batik.transcoder.TranscoderInput
+import org.apache.batik.transcoder.TranscoderOutput
+import org.apache.batik.transcoder.image.JPEGTranscoder
+import org.apache.batik.transcoder.image.PNGTranscoder
 import org.mabb.fontverter.FontVerter
 import java.io.File
+import java.io.StringReader
 
 
 class AppleResourceLayoutConversion() {
     var styles: Styles = mapOf()
     val colors: MutableMap<String, StateSelector<IosColor>> = HashMap()
     val images: MutableMap<String, StateSelector<IosDrawable>> = HashMap()
+    val vectors: MutableMap<String, StateSelector<IosDrawable>> = HashMap()
     val fonts: MutableMap<String, IosFont> = HashMap()
     val drawables: MutableSet<String> = HashSet()
     val strings: MutableMap<String, String> = HashMap()
     val dimensions: MutableMap<String, String> = HashMap()
 
-    fun getStrings(file: File){
-        if(!file.exists()) return
+    fun getStrings(file: File) {
+        if (!file.exists()) return
         XmlNode.read(file, mapOf())
             .children
             .asSequence()
@@ -37,20 +44,20 @@ class AppleResourceLayoutConversion() {
             }
     }
 
-    fun getFonts(folder: File){
-        if(!folder.isDirectory) return
+    fun getFonts(folder: File) {
+        if (!folder.isDirectory) return
         println("Looking for fonts in ${folder}...")
         //fonts themselves first
         folder.listFiles()!!
             .filter { it.extension.toLowerCase() == "otf" || it.extension.toLowerCase() == "ttf" }
             .forEach { file ->
                 val font = FontVerter.readFont(file)
-                if(!font.isValid) {
+                if (!font.isValid) {
                     font.normalize()
                 }
                 val iosFont = IosFont(
-                    family = font.properties.family.filter { it in ' ' .. '~' },
-                    name = font.name.filter { it in '!' .. '~' },
+                    family = font.properties.family.filter { it in ' '..'~' },
+                    name = font.name.filter { it in '!'..'~' },
                     file = file
                 )
                 println("Found font $iosFont")
@@ -66,13 +73,14 @@ class AppleResourceLayoutConversion() {
                     .map { it.allAttributes["android:font"] }
                     .forEach {
                         val name = it!!.substringAfter('/')
-                        fonts[file.nameWithoutExtension] = fonts[name] ?: throw IllegalArgumentException("No font $name found")
+                        fonts[file.nameWithoutExtension] =
+                            fonts[name] ?: throw IllegalArgumentException("No font $name found")
                     }
             }
     }
 
     fun getDimensions(file: File) {
-        if(!file.exists()) return
+        if (!file.exists()) return
         XmlNode.read(file, mapOf())
             .children
             .asSequence()
@@ -82,8 +90,8 @@ class AppleResourceLayoutConversion() {
             }
     }
 
-    fun getColors(file: File){
-        if(!file.exists()) return
+    fun getColors(file: File) {
+        if (!file.exists()) return
         val ignored = setOf("white", "black", "transparent")
         val colorsToProcess = ArrayList<Pair<String, IosColor>>()
         XmlNode.read(file, mapOf())
@@ -94,7 +102,7 @@ class AppleResourceLayoutConversion() {
             .forEach {
                 val raw = it.element.textContent
                 val name = (it.allAttributes["name"] ?: "noname").safeSwiftIdentifier()
-                when{
+                when {
                     raw.startsWith("@color/") -> {
                         val colorName = raw.removePrefix("@color/")
                         colorsToProcess.add(name to IosColor(referenceTo = colorName))
@@ -106,10 +114,11 @@ class AppleResourceLayoutConversion() {
                     raw.startsWith("#") -> {
                         this.colors[name] = StateSelector(IosColor.fromHashString(raw)!!)
                     }
-                    else -> {}
+                    else -> {
+                    }
                 }
             }
-        while(colorsToProcess.isNotEmpty()){
+        while (colorsToProcess.isNotEmpty()) {
             val popped = colorsToProcess.removeAt(0)
             this.colors[popped.second.referenceTo!!]?.let {
                 this.colors[popped.first] = StateSelector(it.normal.copy(referenceTo = popped.second.referenceTo))
@@ -120,7 +129,7 @@ class AppleResourceLayoutConversion() {
     }
 
     fun getStateColor(file: File) {
-        if(!file.exists()) return
+        if (!file.exists()) return
         var normal: IosColor = IosColor.transparent
         var selected: IosColor? = null
         var highlighted: IosColor? = null
@@ -132,7 +141,7 @@ class AppleResourceLayoutConversion() {
             .filter { it.name == "item" }
             .forEach { subnode ->
                 val raw = subnode.allAttributes["android:color"] ?: ""
-                val c: IosColor? = when{
+                val c: IosColor? = when {
                     raw.startsWith("@color/") -> {
                         val colorName = raw.removePrefix("@color/")
                         colors[colorName]?.normal
@@ -167,8 +176,8 @@ class AppleResourceLayoutConversion() {
     ) {
         assetsFolder.mkdirs()
         val mapper = jacksonObjectMapper()
-        for((k, v) in this.colors){
-            for((vName, vValue) in v.variants) {
+        for ((k, v) in this.colors) {
+            for ((vName, vValue) in v.variants) {
                 assetsFolder.resolve("color_$k$vName.colorset").apply { mkdirs() }.resolve("Contents.json").writeText(
                     mapper.writeValueAsString(
                         mapOf<String, Any?>(
@@ -253,23 +262,21 @@ class AppleResourceLayoutConversion() {
 
             val one = matching.find { it.parent.contains("drawable-ldpi") || it.parent.contains("drawable-mdpi") }
             val two = matching.find { it.parent.contains("drawable-hdpi") || it.parent.contains("drawable-xhdpi") }
-            val three = matching.find { it.parent.contains("drawable-xxhdpi") || it.parent.contains("drawable-xxxhdpi") }
+            val three =
+                matching.find { it.parent.contains("drawable-xxhdpi") || it.parent.contains("drawable-xxxhdpi") }
 
             if (one == null && two == null && three == null) return@forEach
 
             val iosFolder = assetsFolder.resolve(pngName + ".imageset").apply { mkdirs() }
             jacksonObjectMapper().writeValue(
                 iosFolder.resolve("Contents.json"),
-                mapOf(
-                    "info" to mapOf("version" to 1, "author" to "xcode"),
-                    "images" to listOf(one, two, three).mapIndexed { index, file ->
-                        if (file == null) return@mapIndexed null
-                        mapOf("idiom" to "universal", "filename" to file.name, "scale" to "${index + 1}x")
-                    }.filterNotNull()
-                )
+                PngJsonContents(images = listOf(one, two, three).mapIndexed { index, file ->
+                    if (file == null) return@mapIndexed null
+                    PngJsonContents.Image(filename = file.name, scale = "${index + 1}x")
+                }.filterNotNull())
             )
             listOf(one, two, three).filterNotNull().forEach {
-                if(it.checksum() != iosFolder.resolve(it.name).checksum()) {
+                if (it.checksum() != iosFolder.resolve(it.name).checksum()) {
                     it.copyTo(iosFolder.resolve(it.name), overwrite = true)
                 }
             }
@@ -277,11 +284,96 @@ class AppleResourceLayoutConversion() {
         }
     }
 
+    data class SvgInfo(val width: Double, val height: Double, val asText: String)
+    data class PngJsonContents(
+        val info: Info = Info(),
+        val images: List<Image> = listOf()
+    ) {
+        data class Info(val version: Int = 1, val author: String = "xcode")
+        data class Image(val filename: String, val scale: String = "1x", val idiom: String = "universal")
+    }
+
+    fun getAndTranslateSvgs(
+        resourcesFolder: File,
+        assetsFolder: File
+    ) {
+        (resourcesFolder.listFiles() ?: arrayOf())
+            .asSequence()
+            .filter { it.name.startsWith("drawable") }
+            .flatMap { it.walkTopDown() }
+            .filter { it.extension == "xml" }
+            .map { it.nameWithoutExtension to XmlNode.read(it, mapOf()) }
+            .filter { it.second.name == "vector" }
+            .map {
+                val node = it.second
+                it.first to SvgInfo(
+                    width = node.attributeAsDouble("android:width") ?: 24.0,
+                    height = node.attributeAsDouble("android:height") ?: 24.0,
+                    asText = buildString {
+                        androidVectorToSvg(node, { value ->
+                            when {
+                                value.startsWith("@") -> {
+                                    val found = colors[value.substringAfter('/')]!!.normal
+                                    found.webColor()
+                                }
+                                value.startsWith("#") -> {
+                                    when (value.length - 1) {
+                                        3 -> "#" + value[1].toString().repeat(2) + value[2].toString()
+                                            .repeat(2) + value[3].toString()
+                                            .repeat(2)
+                                        4 -> "#" + value[2].toString().repeat(2) + value[3].toString()
+                                            .repeat(2) + value[4].toString().repeat(2)
+                                        6 -> value
+                                        8 -> "#" + value.drop(3).take(6)
+                                        else -> "#000000"
+                                    }
+                                }
+                                else -> {
+                                    throw IllegalArgumentException("Could not resolve color '$value'.")
+                                }
+                            }
+                        }, this)
+                    }
+                )
+            }
+            .forEach {
+                val iosFolder = assetsFolder.resolve(it.first + ".imageset").apply { mkdirs() }
+
+                jacksonObjectMapper().writeValue(
+                    iosFolder.resolve("Contents.json"),
+                    PngJsonContents(images = listOf(1, 2, 3)
+                        .mapNotNull { scale ->
+                            try {
+                                val t = PNGTranscoder()
+                                t.addTranscodingHint(
+                                    PNGTranscoder.KEY_WIDTH,
+                                    it.second.width.times(scale).toFloat()
+                                )
+                                t.addTranscodingHint(
+                                    PNGTranscoder.KEY_HEIGHT,
+                                    it.second.height.times(scale).toFloat()
+                                )
+                                val input = TranscoderInput(StringReader(it.second.asText))
+                                val outFile = iosFolder.resolve("${it.first}${scale}x.png")
+                                val output = TranscoderOutput(outFile.outputStream())
+                                t.transcode(input, output)
+                                PngJsonContents.Image(filename = outFile.name, scale = "${scale}x")
+                            } catch (e: Exception) {
+                                e.printStackTrace()
+                                null
+                            }
+                        }
+                    )
+                )
+                vectors[it.first] = StateSelector(IosDrawable(it.first))
+            }
+    }
+
     fun writeRFile(
         androidResourcesFolder: File,
         baseFolderForLocalizations: File,
         iosResourcesSwiftFolder: File
-    ){
+    ) {
         val stringBase = File(androidResourcesFolder, "values/strings.xml").readXMLStrings()
         val stringLocales = (androidResourcesFolder.listFiles() ?: arrayOf())
             .filter { it.name.startsWith("values-") }
@@ -308,8 +400,11 @@ class AppleResourceLayoutConversion() {
                 appendln("public enum R {")
 
                 appendln("public enum drawable {")
-                for(entry in images.entries){
+                for (entry in images.entries) {
                     appendln("static let ${entry.key}: Drawable = Drawable { (view: UIView?) -> CALayer in CAImageLayer(UIImage(named: \"${entry.key}.png\")) }")
+                }
+                for (entry in vectors.entries) {
+                    appendln("//Vector ${entry.key} is present as an image and as a drawable in a separate file")
                 }
                 appendln("static let allEntries: Dictionary<String, Drawable> = [")
                 var firstDrawable = true
@@ -324,7 +419,7 @@ class AppleResourceLayoutConversion() {
                 appendln("}")
 
                 appendln("public enum string {")
-                for((key, value) in strings.entries){
+                for ((key, value) in strings.entries) {
                     val fixedString = value
                         .replace("\\'", "'")
                         .replace("\\$", "$")
@@ -348,8 +443,8 @@ class AppleResourceLayoutConversion() {
                 appendln("static let transparent = UIColor.clear")
                 appendln("static let black = UIColor.black")
                 appendln("static let white = UIColor.white")
-                for(entry in colors.entries){
-                    if(entry.value.isSet){
+                for (entry in colors.entries) {
+                    if (entry.value.isSet) {
                         out.appendln("static let ${entry.key}: UIColor = UIColor(named: \"color_${entry.key}\")")
                     } else {
                         out.appendln("static let ${entry.key}: UIColor = ${entry.value.normal}")
@@ -363,7 +458,7 @@ class AppleResourceLayoutConversion() {
         }
     }
 
-    private inner class Resolver(): CanResolveValue {
+    private inner class Resolver() : CanResolveValue {
         val usedColors = HashSet<String>()
         val usedImages = HashSet<String>()
 
@@ -372,18 +467,18 @@ class AppleResourceLayoutConversion() {
         }
 
         override fun resolveDimension(string: String): String {
-            if(string.startsWith("@"))
+            if (string.startsWith("@"))
                 return dimensions[string.substringAfter('/')] ?: "0"
             else
                 return string.filter { it.isDigit() || it == '.' || it == '-' }
         }
 
         override fun resolveColor(string: String): Any {
-            if(string.startsWith("@")) {
+            if (string.startsWith("@")) {
                 val c = "color_" + string.substringAfter('/')
                 usedColors.add(c)
                 return c
-            } else if(string.startsWith("#")) {
+            } else if (string.startsWith("#")) {
                 return IosColor.fromHashString(string)!!
             } else {
                 throw IllegalArgumentException("Could not resolve color '$string'.")
@@ -391,16 +486,31 @@ class AppleResourceLayoutConversion() {
         }
 
         override fun resolveString(string: String): String {
-            if(string.startsWith("@"))
+            if (string.startsWith("@"))
                 return strings[string.substringAfter('/')]!!
             else
                 return string
         }
 
-        override fun resolveImage(string: String): String {
-            val i = string.substringAfter('/')
-            usedImages.add(i)
-            return i
+        override fun resolveImage(string: String): String? {
+            val ref = string.substringAfter('/')
+            if (images.containsKey(ref) || vectors.containsKey(ref)) {
+                usedImages.add(ref)
+                return ref
+            } else {
+                println("WARNING - Could not find image '$string'")
+                return null
+            }
+        }
+
+        override fun resolveDrawable(string: String): String? {
+            if (drawables.contains(string)) {
+                val i = string.substringAfter('/')
+//                usedImages.add(i)
+                return i
+            } else {
+                return null
+            }
         }
     }
 
@@ -414,14 +524,14 @@ class AppleResourceLayoutConversion() {
         val rootNode = XmlNode.read(inputFile, styles)
 
         val idsToStore = HashSet<String>()
-        fun idPass(node: XmlNode){
+        fun idPass(node: XmlNode) {
             node.allAttributes["android:id"]?.substringAfter('/')?.let {
                 node.tags["id"] = it
                 idsToStore.add(it)
             } ?: run {
                 node.tags["id"] = makeId()
             }
-            for(child in node.children){
+            for (child in node.children) {
                 idPass(child)
             }
         }
@@ -450,7 +560,7 @@ class AppleResourceLayoutConversion() {
             <connections>
         """.trimIndent()
         )
-        for(id in idsToStore){
+        for (id in idsToStore) {
             out.appendln("""<outlet property="$id" destination="$id" id="${makeId()}"/>""")
         }
         out.appendln(
@@ -471,10 +581,10 @@ class AppleResourceLayoutConversion() {
                 <resources>
         """.trimIndent()
         )
-        for(c in resolver.usedColors){
+        for (c in resolver.usedColors) {
             out.appendln("""<namedColor name="$c" />""")
         }
-        for(i in resolver.usedImages){
+        for (i in resolver.usedImages) {
             out.appendln("""<image name="$i" />""")
         }
         out.appendln(
@@ -486,8 +596,8 @@ class AppleResourceLayoutConversion() {
     }
 }
 
-fun AttHandler.invoke(resolver: CanResolveValue, attr: XmlNode.Attribute, view: PureXmlOut){
-    when(kind){
+fun AttHandler.invoke(resolver: CanResolveValue, attr: XmlNode.Attribute, view: PureXmlOut) {
+    when (kind) {
         AttHandlerKind.Direct -> {
             val followed = path!!.resolve(view)
             this.constant?.let {

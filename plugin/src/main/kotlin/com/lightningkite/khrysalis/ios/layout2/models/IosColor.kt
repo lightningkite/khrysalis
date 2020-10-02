@@ -1,5 +1,7 @@
 package com.lightningkite.khrysalis.ios.layout2.models
 
+private fun Float.to8Bit(): String = this.times(255).toInt().toString(16).padStart(2,'0')
+
 data class IosColor(
     val alpha: Float = 1f,
     val red: Float = 0f,
@@ -7,6 +9,10 @@ data class IosColor(
     val blue: Float = 0f,
     val referenceTo: String? = null
 ) {
+    fun webColor(): String {
+        //rgb, no alpha
+        return "#${red.to8Bit()}${green.to8Bit()}${blue.to8Bit()}"
+    }
     companion object {
         val transparent = IosColor(0f,0f,0f,0f)
         fun fromHashString(str: String): IosColor? {

@@ -15,7 +15,8 @@ interface CanResolveValue {
     fun resolveDimension(string: String): String
     fun resolveColor(string: String): Any //IosColor or String
     fun resolveString(string: String): String
-    fun resolveImage(string: String): String
+    fun resolveImage(string: String): String?
+    fun resolveDrawable(string: String): String?
 }
 
 fun PureXmlOut.addStandardViewProperties() {
@@ -186,6 +187,8 @@ sealed class AttPathDestination {
                 AttKind.Text -> set(resolver.resolveString(value))
                 AttKind.Font -> resolver.resolveFont(value)?.name?.let { set(it) }
                 AttKind.Bool -> if (value == "true") set("YES") else set("NO")
+                AttKind.Image -> resolver.resolveImage(value)?.let { set(it) }
+                AttKind.Drawable -> resolver.resolveDrawable(value)?.let { set(it) }
                 else -> throw IllegalStateException("Cannot be applied to this position. kind: $kind")
             }
         }

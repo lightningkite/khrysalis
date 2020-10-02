@@ -14,6 +14,7 @@ class XibBuildingKtTest {
         override fun resolveColor(string: String): Any = string
         override fun resolveString(string: String): String = string
         override fun resolveImage(string: String): String = string
+        override fun resolveDrawable(string: String): String? = string
     }
 
     @Test

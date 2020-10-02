@@ -119,7 +119,7 @@ enum class AttPathType {
 }
 
 enum class AttKind {
-    Font, Dimension, Color, Number, Raw, Text, Bool;
+    Font, Dimension, Color, Number, Raw, Text, Bool, Image, Drawable;
     companion object {
         fun parse(string: String): AttKind {
             return when(string.toLowerCase()){
@@ -130,6 +130,8 @@ enum class AttKind {
                 "raw", "direct" -> AttKind.Raw
                 "text", "string" -> AttKind.Text
                 "boolean", "bool" -> AttKind.Bool
+                "image" -> AttKind.Image
+                "drawable" -> AttKind.Drawable
                 else -> throw IllegalArgumentException("Unknown type $string")
             }
         }
