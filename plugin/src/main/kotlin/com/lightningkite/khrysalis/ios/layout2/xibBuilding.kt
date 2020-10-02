@@ -7,7 +7,7 @@ import com.lightningkite.khrysalis.swift.replacements.xib.*
 import com.lightningkite.khrysalis.utils.XmlNode
 import java.io.File
 
-typealias CodeRule = (CanResolveValue, XmlNode, PureXmlOut) -> Unit
+typealias CodeRule = (Replacements, CanResolveValue, XmlNode, PureXmlOut) -> Unit
 
 data class IosFont(val family: String, val name: String, val file: File? = null)
 interface CanResolveValue {
@@ -62,7 +62,7 @@ fun Replacements.translate(resolver: CanResolveValue, node: XmlNode): PureXmlOut
         out.getOrPutChild("subviews").children.add(translate(resolver, child))
     }
     for (r in rules) {
-        extraProcessingRules[r.id]?.invoke(resolver, node, out)
+        extraProcessingRules[r.id]?.invoke(this, resolver, node, out)
     }
     return out
 }

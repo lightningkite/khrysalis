@@ -2,6 +2,7 @@ package com.lightningkite.khrysalis.ios.layout2
 
 import com.lightningkite.khrysalis.ios.layout.horizontalGravityWords
 import com.lightningkite.khrysalis.ios.layout.verticalGravityWords
+import com.lightningkite.khrysalis.swift.replacements.Replacements
 import com.lightningkite.khrysalis.swift.replacements.xib.AttKind
 import com.lightningkite.khrysalis.swift.replacements.xib.AttPath
 import com.lightningkite.khrysalis.swift.replacements.xib.PureXmlOut
@@ -45,10 +46,76 @@ fun PureXmlOut.constrainSelf(
     })
 }
 
+fun Replacements.paddingUnhandled(type: String): Boolean {
+    return typeReplacementsForName(type)
+        .any { it.xib?.attributes?.get("android:padding") != null }
+}
+
+fun XmlNode.getLeftMargin(resolver: CanResolveValue, rules: Replacements): String {
+    val directMargin = resolver.resolveDimension(
+        allAttributes["android:layout_marginStart"]
+            ?: allAttributes["android:layout_marginLeft"]
+            ?: allAttributes["android:layout_margin"] ?: "0dp"
+    )
+    return if(rules.paddingUnhandled(name)){
+        val padding = resolver.resolveDimension(
+            allAttributes["android:paddingStart"]
+                ?: allAttributes["android:paddingLeft"]
+                ?: allAttributes["android:padding"] ?: "0dp"
+        )
+        (directMargin.toDouble() + padding.toDouble()).toString()
+    } else directMargin
+}
+
+fun XmlNode.getTopMargin(resolver: CanResolveValue, rules: Replacements): String {
+    val directMargin = resolver.resolveDimension(
+        allAttributes["android:layout_marginTop"]
+            ?: allAttributes["android:layout_margin"] ?: "0dp"
+    )
+    return if(rules.paddingUnhandled(name)){
+        val padding = resolver.resolveDimension(
+            allAttributes["android:paddingTop"]
+                ?: allAttributes["android:padding"] ?: "0dp"
+        )
+        (directMargin.toDouble() + padding.toDouble()).toString()
+    } else directMargin
+}
+
+fun XmlNode.getRightMargin(resolver: CanResolveValue, rules: Replacements): String {
+    val directMargin = resolver.resolveDimension(
+        allAttributes["android:layout_marginEnd"]
+            ?: allAttributes["android:layout_marginRight"]
+            ?: allAttributes["android:layout_margin"] ?: "0dp"
+    )
+    return if(rules.paddingUnhandled(name)){
+        val padding = resolver.resolveDimension(
+            allAttributes["android:paddingEnd"]
+                ?: allAttributes["android:paddingRight"]
+                ?: allAttributes["android:padding"] ?: "0dp"
+        )
+        (directMargin.toDouble() + padding.toDouble()).toString()
+    } else directMargin
+}
+
+fun XmlNode.getBottomMargin(resolver: CanResolveValue, rules: Replacements): String {
+    val directMargin = resolver.resolveDimension(
+        allAttributes["android:layout_marginBottom"]
+            ?: allAttributes["android:layout_margin"] ?: "0dp"
+    )
+    return if(rules.paddingUnhandled(name)){
+        val padding = resolver.resolveDimension(
+            allAttributes["android:paddingBottom"]
+                ?: allAttributes["android:padding"] ?: "0dp"
+        )
+        (directMargin.toDouble() + padding.toDouble()).toString()
+    } else directMargin
+}
+
 fun PureXmlOut.frameChildHorizontal(
     myNode: XmlNode,
     childNode: XmlNode,
-    resolver: CanResolveValue
+    resolver: CanResolveValue,
+    rules: Replacements
 ) {
     val gravity =
         (childNode.allAttributes["android:layout_gravity"] ?: myNode.allAttributes["android:gravity"])?.split('|')
@@ -73,11 +140,7 @@ fun PureXmlOut.frameChildHorizontal(
         secondItem = this.attributes["id"]!!,
         secondAttribute = "leadingMargin",
         relation = if (startExact) null else "greaterThanOrEqual",
-        constant = resolver.resolveDimension(
-            childNode.allAttributes["android:layout_marginStart"]
-                ?: childNode.allAttributes["android:layout_marginLeft"]
-                ?: childNode.allAttributes["android:layout_margin"] ?: "0dp"
-        )
+        constant = childNode.getLeftMargin(resolver, rules)
     )
     constrain(
         secondItem = childNode.tags["id"]!!,
@@ -85,10 +148,7 @@ fun PureXmlOut.frameChildHorizontal(
         firstItem = this.attributes["id"]!!,
         firstAttribute = "trailingMargin",
         relation = if (endExact) null else "greaterThanOrEqual",
-        constant = resolver.resolveDimension(
-            childNode.allAttributes["android:layout_marginEnd"] ?: childNode.allAttributes["android:layout_marginRight"]
-            ?: childNode.allAttributes["android:layout_margin"] ?: "0dp"
-        )
+        constant = childNode.getRightMargin(resolver, rules)
     )
     if (useCenter) {
         constrain(
@@ -103,7 +163,8 @@ fun PureXmlOut.frameChildHorizontal(
 fun PureXmlOut.frameChildVertical(
     myNode: XmlNode,
     childNode: XmlNode,
-    resolver: CanResolveValue
+    resolver: CanResolveValue,
+    rules: Replacements
 ) {
     val gravity =
         (childNode.allAttributes["android:layout_gravity"] ?: myNode.allAttributes["android:gravity"])?.split('|')
@@ -127,10 +188,7 @@ fun PureXmlOut.frameChildVertical(
         secondItem = this.attributes["id"]!!,
         secondAttribute = "topMargin",
         relation = if (startExact) null else "greaterThanOrEqual",
-        constant = resolver.resolveDimension(
-            childNode.allAttributes["android:layout_marginTop"] ?: childNode.allAttributes["android:layout_margin"]
-            ?: "0dp"
-        )
+        constant = childNode.getTopMargin(resolver, rules)
     )
     constrain(
         secondItem = childNode.tags["id"]!!,
@@ -138,10 +196,7 @@ fun PureXmlOut.frameChildVertical(
         firstItem = this.attributes["id"]!!,
         firstAttribute = "bottomMargin",
         relation = if (endExact) null else "greaterThanOrEqual",
-        constant = resolver.resolveDimension(
-            childNode.allAttributes["android:layout_marginBottom"] ?: childNode.allAttributes["android:layout_margin"]
-            ?: "0dp"
-        )
+        constant = childNode.getBottomMargin(resolver, rules)
     )
     if (useCenter) {
         constrain(
@@ -190,7 +245,7 @@ fun PureXmlOut.handleSize(
 }
 
 val extraProcessingRules: Map<String, CodeRule> = mapOf(
-    "android.widget.ScrollView" to label@{ resolver, node, out ->
+    "android.widget.ScrollView" to label@{ replacements, resolver, node, out ->
         val child = node.children.firstOrNull() ?: return@label
         out.constrain(
             firstItem = child.tags["id"]!!,
@@ -207,7 +262,7 @@ val extraProcessingRules: Map<String, CodeRule> = mapOf(
             priority = "900"
         )
     },
-    "android.widget.HorizontalScrollView" to label@{ resolver, node, out ->
+    "android.widget.HorizontalScrollView" to label@{ replacements, resolver, node, out ->
         val child = node.children.firstOrNull() ?: return@label
         out.constrain(
             firstItem = child.tags["id"]!!,
@@ -224,13 +279,13 @@ val extraProcessingRules: Map<String, CodeRule> = mapOf(
             priority = "900"
         )
     },
-    "android.widget.LinearLayout" to { resolver, node, out ->
+    "android.widget.LinearLayout" to { replacements, resolver, node, out ->
         val gravityAtt = node.allAttributes["android:gravity"] ?: ""
         if (node.allAttributes["android:orientation"] == "vertical") {
             for (child in node.children) {
-                out.frameChildHorizontal(node, child, resolver)
+                out.frameChildHorizontal(node, child, resolver, replacements)
             }
-            val alignmentString = when(gravityAtt.split('|').find { it in horizontalGravityWords }){
+            val alignmentString = when (gravityAtt.split('|').find { it in horizontalGravityWords }) {
                 "center", "center_vertical" -> "center"
                 "top" -> "start"
                 "bottom" -> "end"
@@ -239,9 +294,9 @@ val extraProcessingRules: Map<String, CodeRule> = mapOf(
             AttPath("userDefined/alignmentString").resolve(out).put(AttKind.Raw, alignmentString, resolver)
         } else {
             for (child in node.children) {
-                out.frameChildVertical(node, child, resolver)
+                out.frameChildVertical(node, child, resolver, replacements)
             }
-            val alignmentString = when(gravityAtt.split('|').find { it in horizontalGravityWords }){
+            val alignmentString = when (gravityAtt.split('|').find { it in horizontalGravityWords }) {
                 "center", "center_horizontal" -> "center"
                 "start", "left" -> "start"
                 "end", "right" -> "end"
@@ -270,13 +325,13 @@ val extraProcessingRules: Map<String, CodeRule> = mapOf(
             }
         }
     },
-    "android.widget.FrameLayout" to { resolver, node, out ->
+    "android.widget.FrameLayout" to { replacements, resolver, node, out ->
         for (child in node.children) {
-            out.frameChildHorizontal(node, child, resolver)
-            out.frameChildVertical(node, child, resolver)
+            out.frameChildHorizontal(node, child, resolver, replacements)
+            out.frameChildVertical(node, child, resolver, replacements)
         }
     },
-    "android.view.View" to { resolver, node, out ->
+    "android.view.View" to { replacements, resolver, node, out ->
         out.handleSize(node, resolver)
 
         val backgroundValue = node.allAttributes["android:background"]
@@ -300,31 +355,14 @@ val extraProcessingRules: Map<String, CodeRule> = mapOf(
                 if (node.allAttributes["android:layout_weight"] != null) {
                     out.attributes["verticalHuggingPriority"] = "5"
                 }
-                val startMargin = resolver.resolveDimension(
-                    node.allAttributes["android:layout_marginTop"] ?: node.allAttributes["android:layout_margin"]
-                    ?: "0dp"
-                )
-                val endMargin = resolver.resolveDimension(
-                    node.allAttributes["android:layout_marginBottom"] ?: node.allAttributes["android:layout_margin"]
-                    ?: "0dp"
-                )
-                AttPath("userDefined/ssv_start").resolve(out).put(AttKind.Dimension, startMargin, resolver)
-                AttPath("userDefined/ssv_end").resolve(out).put(AttKind.Dimension, endMargin, resolver)
+                AttPath("userDefined/ssv_start").resolve(out).put(AttKind.Dimension, node.getTopMargin(resolver, replacements), resolver)
+                AttPath("userDefined/ssv_end").resolve(out).put(AttKind.Dimension, node.getBottomMargin(resolver, replacements), resolver)
             } else {
                 if (node.allAttributes["android:layout_weight"] != null) {
                     out.attributes["horizontalHuggingPriority"] = "5"
                 }
-                val startMargin = resolver.resolveDimension(
-                    node.allAttributes["android:layout_marginStart"]
-                        ?: node.allAttributes["android:layout_marginLeft"]
-                        ?: node.allAttributes["android:layout_margin"] ?: "0dp"
-                )
-                val endMargin = resolver.resolveDimension(
-                    node.allAttributes["android:layout_marginEnd"] ?: node.allAttributes["android:layout_marginRight"]
-                    ?: node.allAttributes["android:layout_margin"] ?: "0dp"
-                )
-                AttPath("userDefined/ssv_start").resolve(out).put(AttKind.Dimension, startMargin, resolver)
-                AttPath("userDefined/ssv_end").resolve(out).put(AttKind.Dimension, endMargin, resolver)
+                AttPath("userDefined/ssv_start").resolve(out).put(AttKind.Dimension, node.getLeftMargin(resolver, replacements), resolver)
+                AttPath("userDefined/ssv_end").resolve(out).put(AttKind.Dimension, node.getRightMargin(resolver, replacements), resolver)
             }
         }
     }
