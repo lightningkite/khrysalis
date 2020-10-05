@@ -120,6 +120,11 @@ class SwiftTranslator(
 //        }
         super.translate(identifier, rule, out, afterPriority)
     }
+    override fun emitDefault(identifier: Class<*>, rule: Any, out: SwiftFileEmitter): Unit {
+        return identifier.superclass?.let {
+            translate(it, rule, out)
+        } ?: emitFinalDefault(identifier, rule, out)
+    }
 
     init {
 
