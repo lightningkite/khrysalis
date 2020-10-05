@@ -7,21 +7,31 @@ import AVKit
 import MapKit
 import EventKitUI
 import DKImagePickerController
-
+import MobileCoreServices
 
 //--- ViewDependency
 public extension ViewDependency {
     //--- ViewDependency image helpers
-    private static let delegateExtension = ExtensionProperty<ViewDependency, ImageDelegate>()
+    private static let imageDelegateExtension = ExtensionProperty<ViewDependency, ImageDelegate>()
+    private static let documentDelegateExtension = ExtensionProperty<ViewDependency, DocumentDelgate>()
     private var imageDelegate: ImageDelegate {
-        if let existing = ViewDependency.delegateExtension.get(self) {
+        if let existing = ViewDependency.imageDelegateExtension.get(self) {
             return existing
         }
         let new = ImageDelegate()
-        ViewDependency.delegateExtension.set(self, new)
+        ViewDependency.imageDelegateExtension.set(self, new)
         return new
     }
 
+    private var documentDelegate: DocumentDelgate {
+        if let existing = ViewDependency.documentDelegateExtension.get(self) {
+            return existing
+        }
+        let new = DocumentDelgate()
+        ViewDependency.documentDelegateExtension.set(self, new)
+        return new
+    }
+    
     private func withLibraryPermission(action: @escaping ()->Void) {
         if PHPhotoLibrary.authorizationStatus() == .authorized {
             action()
@@ -44,6 +54,7 @@ public extension ViewDependency {
             }
         }
     }
+    
     
     //--- ViewDependency.requestVideoGallery((URL)->Unit)
     func requestVideoGallery(callback: @escaping (URL) -> Void) -> Void {
@@ -104,9 +115,8 @@ public extension ViewDependency {
     
     //--- ViewDependency.requestMediaGallery((URL)->Unit)
     func requestMediaGallery(callback: @escaping (URL) -> Void) -> Void {
-        
-    }
 
+    }
 
     //--- ViewDependency.requestImagesGallery((List<URL>)->Unit)
     public func requestImagesGallery(callback: @escaping (Array<URL>) -> Void) -> Void {
@@ -165,6 +175,64 @@ public extension ViewDependency {
             }
         }
     }
+    
+   
+    public func getMimeType(uri:URL) -> String? {
+        let pathExtension = uri.pathExtension
+        if let uti = UTTypeCreatePreferredIdentifierForTag(kUTTagClassFilenameExtension, pathExtension as NSString, nil)?.takeRetainedValue() {
+            if let mimetype = UTTypeCopyPreferredTagWithClass(uti, kUTTagClassMIMEType)?.takeRetainedValue() {
+                return mimetype as String
+            }
+        }
+        return nil
+    }
+    
+    func requestFiles(callback: @escaping (Array<URL>) -> Void){
+        let docDelegate = self.documentDelegate
+        docDelegate.onDocumentsPicked = callback
+        docDelegate.prepareMenu()
+        self.parentViewController.present(docDelegate.documentPicker, animated: true, completion: nil)
+    }
+    
+    func requestFile(callback: @escaping (URL) -> Void){
+        let docDelegate = self.documentDelegate
+        docDelegate.onDocumentPicked = callback
+        docDelegate.prepareMenu()
+        self.parentViewController.present(docDelegate.documentPicker, animated: true, completion: nil)
+    }
+    
+    func getFileName(uri:URL) -> String? {
+        return uri.lastPathComponent
+    }
+    
+    func downloadFile(url:String){
+        let url = URL(string: url)!
+
+        let documentsUrl:URL? =  FileManager.default.urls(for: .documentDirectory, in: .userDomainMask).first
+        let destinationFileUrl = documentsUrl?.appendingPathComponent(getFileName(uri: url)!)
+        
+        let task = URLSession.shared.downloadTask(with: url) { localURL, urlResponse, error in
+            if let localTemp = localURL, let destination = destinationFileUrl{
+                do {
+                    try FileManager.default.copyItem(at: localTemp, to: destination)
+                    
+                    let alertDisapperTimeInSeconds = 2.0
+                    let alert = UIAlertController(title: nil, message: "Download Finished", preferredStyle: .actionSheet)
+                    DispatchQueue.main.sync {
+                        self.parentViewController.present(alert, animated: true)
+                    }
+                    DispatchQueue.main.asyncAfter(deadline: DispatchTime.now() + alertDisapperTimeInSeconds) {
+                        alert.dismiss(animated: true)
+                    }
+                } catch (let writeError) {
+                    print("Error creating a file \(destination) : \(writeError)")
+                }
+            }
+        }
+
+        task.resume()
+    }
+    
     private func withCameraPermission(action: @escaping ()->Void) {
         DispatchQueue.main.async {
             if AVCaptureDevice.authorizationStatus(for: .video) == .authorized {
@@ -198,8 +266,30 @@ public extension ViewDependency {
             }
         }
     }
-    
 }
+
+
+private class DocumentDelgate : NSObject, UIDocumentPickerDelegate, UINavigationControllerDelegate {
+    var documentPicker = UIDocumentPickerViewController(documentTypes: ["public.item"], in: .import)
+    var onDocumentsPicked: ((Array<URL>) -> Void)? = nil
+    var onDocumentPicked: ((URL) -> Void)? = nil
+    
+    func prepareMenu(){
+        documentPicker.delegate = self
+    }
+    
+    public func documentPicker(_ controller: UIDocumentPickerViewController, didPickDocumentsAt urls: [URL]) {
+        self.onDocumentsPicked?(urls)
+        if let first = urls.first{
+            self.onDocumentPicked?(first)
+        }
+    }
+    
+    public func documentPickerWasCancelled(_ controller: UIDocumentPickerViewController) {
+        controller.dismiss(animated: true, completion: nil)
+    }
+}
+
 
 //--- Image helpers
 

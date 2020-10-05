@@ -3,16 +3,18 @@ package com.lightningkite.khrysalis.views
 
 import android.Manifest
 import android.app.Activity
+import android.app.DownloadManager
+import android.content.Context
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
+import android.database.Cursor
 import android.graphics.drawable.Drawable
 import android.graphics.drawable.LayerDrawable
 import android.graphics.drawable.StateListDrawable
-import android.os.Build
+import android.os.Environment
 import android.provider.CalendarContract
 import android.provider.MediaStore
+import android.provider.OpenableColumns
 import android.util.DisplayMetrics
 import androidx.core.content.FileProvider
 import com.lightningkite.khrysalis.*
@@ -295,6 +297,7 @@ fun ViewDependency.requestMediasGallery(
         }
     }
 }
+
 fun ViewDependency.requestMediaGallery(
     callback: (Uri) -> Unit
 ) {
@@ -319,6 +322,98 @@ fun ViewDependency.requestMediaGallery(
     }
 }
 
+fun ViewDependency.requestFile(
+    callback: (Uri) -> Unit
+) {
+    requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE) {
+        if (it) {
+            val getIntent = Intent(Intent.ACTION_GET_CONTENT)
+            getIntent.type = "*/*"
+
+            val pickIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            pickIntent.type = "*/*"
+
+            val chooserIntent = Intent.createChooser(getIntent, "Select File")
+            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(pickIntent))
+
+            this.startIntent(chooserIntent) { code, result ->
+                val uri = result?.data
+                if (code == Activity.RESULT_OK && uri != null) {
+                    callback(uri)
+                }
+            }
+        }
+    }
+}
+
+fun ViewDependency.requestFiles(
+    callback: (List<Uri>) -> Unit
+) {
+    requestPermission(Manifest.permission.READ_EXTERNAL_STORAGE) {
+        if (it) {
+            val getIntent = Intent(Intent.ACTION_GET_CONTENT)
+            getIntent.putExtra(Intent.EXTRA_ALLOW_MULTIPLE, true)
+            getIntent.type = "*/*"
+
+            val pickIntent = Intent(Intent.ACTION_PICK, MediaStore.Images.Media.EXTERNAL_CONTENT_URI)
+            pickIntent.type = "*/*"
+
+            val chooserIntent = Intent.createChooser(getIntent, "Select Files")
+            chooserIntent.putExtra(Intent.EXTRA_INITIAL_INTENTS, arrayOf(pickIntent))
+
+            this.startIntent(chooserIntent) { code, result ->
+                if (code == Activity.RESULT_OK) {
+                    result?.clipData?.let { clipData ->
+                        callback((0 until clipData.itemCount).map { index -> clipData.getItemAt(index).uri })
+                    } ?: result?.data?.let { callback(listOf(it)) }
+                }
+            }
+        }
+    }
+}
+
+fun ViewDependency.getMimeType(
+    uri: Uri
+): String? {
+    val cr = context.contentResolver
+    return cr.getType(uri)
+}
+
+fun ViewDependency.getFileName(uri: Uri): String? {
+    var result: String? = null
+    if (uri.scheme.equals("content")) {
+        val cursor: Cursor? = context.contentResolver.query(uri, null, null, null, null)
+        try {
+            if (cursor != null && cursor.moveToFirst()) {
+                result = cursor.getString(cursor.getColumnIndex(OpenableColumns.DISPLAY_NAME))
+            }
+        } finally {
+            cursor!!.close()
+        }
+    }
+    if (result == null) {
+        result = uri.path
+        val cut = result!!.lastIndexOf('/')
+        if (cut != -1) {
+            result = result.substring(cut + 1)
+        }
+    }
+    return result
+}
+
+fun ViewDependency.downloadFile(url: String) {
+    val uri: Uri = Uri.parse(url)
+    val fileName = url.substringAfterLast('/')
+
+    val downloadmanager = context.getSystemService(Context.DOWNLOAD_SERVICE) as DownloadManager
+    val request = DownloadManager.Request(uri)
+    request.setTitle(fileName)
+    request.setDescription("Downloading")
+    request.setNotificationVisibility(DownloadManager.Request.VISIBILITY_VISIBLE_NOTIFY_COMPLETED)
+    request.setDestinationInExternalPublicDir(Environment.DIRECTORY_DOWNLOADS, fileName);
+
+    downloadmanager.enqueue(request)
+}
 
 @Deprecated("")
 fun ViewDependency.downloadDrawable(
