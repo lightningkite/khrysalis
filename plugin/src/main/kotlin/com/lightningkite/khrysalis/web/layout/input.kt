@@ -75,7 +75,7 @@ internal fun HtmlTranslator.input() {
 
     element.handle("android.widget.RatingBar"){
         out.name = "div"
-        out.classes += "khrysalis-rating-bar"
+        out.classes += "butterfly-rating-bar"
         out.style["display"] = "flex"
         out.style["flex-direction"] = "row"
         out.style["justify-content"] = "center"
@@ -83,23 +83,23 @@ internal fun HtmlTranslator.input() {
 
         when (rule.allAttributes["style"]) {
             "?android:attr/ratingBarStyle" -> {
-                out.classes += "khrysalis-rating-bar-big"
+                out.classes += "butterfly-rating-bar-big"
             }
             "?android:attr/ratingBarStyleIndicator" -> {
-                out.classes += "khrysalis-rating-bar-reg"
+                out.classes += "butterfly-rating-bar-reg"
             }
             "?android:attr/ratingBarStyleSmall" -> {
-                out.classes += "khrysalis-rating-bar-small"
+                out.classes += "butterfly-rating-bar-small"
             }
             else -> {
-                out.classes += "khrysalis-rating-bar-tiny"
+                out.classes += "butterfly-rating-bar-tiny"
             }
         }
     }
 
     element.handle("AutoCompleteTextView") {
         out.name = "div"
-        out.classes += "khrysalis-autocomplete"
+        out.classes += "butterfly-autocomplete"
         val i = ResultNode("input").apply {
             name = "input"
             attributes["type"] = "text"
@@ -142,7 +142,7 @@ internal fun HtmlTranslator.input() {
         out.contentNodes.add(input)
         val label = ResultNode("div").apply {
             style["flex-grow"] = "1"
-            classes.add("khrysalis-label")
+            classes.add("butterfly-label")
         }
         out.contentNodes.add(label)
         out.text = label
@@ -181,7 +181,7 @@ internal fun HtmlTranslator.input() {
         out.contentNodes.add(input)
         val label = ResultNode("div").apply {
             style["flex-grow"] = "1"
-            classes.add("khrysalis-label")
+            classes.add("butterfly-label")
         }
         out.contentNodes.add(label)
         out.text = label
@@ -218,7 +218,7 @@ internal fun HtmlTranslator.input() {
         out.contentNodes.add(input)
         val label = ResultNode("div").apply {
             style["flex-grow"] = "1"
-            classes.add("khrysalis-label")
+            classes.add("butterfly-label")
         }
         out.contentNodes.add(label)
         out.text = label
@@ -228,7 +228,7 @@ internal fun HtmlTranslator.input() {
     element.handle("Switch"){
         out.name = "label"
         out.classes += "khrc"
-        out.classes.add("khrysalis-switch")
+        out.classes.add("butterfly-switch")
         out.style["align-items"] = rule.allAttributes["android:gravity"]?.let { verticalGravity(it)?.alignDirection }?.let {
             when(it){
                 AlignDirection.START -> "flex-start"
@@ -245,7 +245,7 @@ internal fun HtmlTranslator.input() {
         }?.let { out.style["justify-content"] = it }
 
         val label = ResultNode("div")
-        label.classes.add("khrysalis-label")
+        label.classes.add("butterfly-label")
         out.text = label
         out.containerNode = label
         out.contentNodes.add(label)
@@ -260,12 +260,12 @@ internal fun HtmlTranslator.input() {
         })
 
         out.contentNodes.add(ResultNode("span").apply {
-            classes.add("khrysalis-switch-back")
+            classes.add("butterfly-switch-back")
             contentNodes.add(ResultNode("span").apply {
                 rule.allAttributes["android:thumbTint"]?.asCssColor()?.let {
                     style["background-color"] = it
                 }
-                classes.add("khrysalis-switch-front")
+                classes.add("butterfly-switch-front")
             })
         })
     }

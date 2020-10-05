@@ -37,6 +37,13 @@ internal fun HtmlTranslator.commonAttributes() {
             }
         }
     }
+    attribute.handle("android:alpha") {
+        out.style["opacity"] = rule.value
+    }
+    attribute.handle("android:elevation") {
+        val elevationAmount = rule.value.asCssDimension()
+        out.style["box-shadow"] = "0px $elevationAmount 5px 0px rgba(0,0,0,0.5)"
+    }
     attribute.handle("android:text") {
         if (out.other["textAdded"] == true) return@handle
         out.other["textAdded"] = true

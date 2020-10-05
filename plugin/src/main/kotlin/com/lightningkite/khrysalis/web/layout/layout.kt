@@ -111,7 +111,7 @@ internal fun HtmlTranslator.layout() {
             }
         out.contentNodes.addAll(rule.children.map { subrule ->
             val container = ResultNode("div")
-            container.classes.add("khrysalis-box")
+            container.classes.add("butterfly-box")
             container.parent = out
             val child = ResultNode()
             child.parent = container
@@ -147,7 +147,7 @@ internal fun HtmlTranslator.layout() {
         })
     }
     element.handle("FrameLayout") {
-        out.classes.add("khrysalis-box")
+        out.classes.add("butterfly-box")
         val supercontainer = ResultNode()
         out.primary = supercontainer
         supercontainer.parent = out
@@ -156,7 +156,7 @@ internal fun HtmlTranslator.layout() {
         val parentGravityString = rule.allAttributes["android:gravity"]
         supercontainer.contentNodes.addAll(rule.children.mapIndexed { index, subrule ->
             val container = ResultNode("div")
-            container.classes.add("khrysalis-box")
+            container.classes.add("butterfly-box")
             container.parent = supercontainer
             val child = ResultNode()
             child.parent = container
@@ -211,38 +211,38 @@ internal fun HtmlTranslator.layout() {
         })
     }
     element.handle("ScrollView") {
-        out.classes.add("khrysalis-scroll-view")
+        out.classes.add("butterfly-scroll-view")
         out.style["overflow-y"] = "auto";
         out.style["overflow-x"] = "hidden";
         defer("FrameLayout")
     }
     element.handle("HorizontalScrollView") {
-        out.classes.add("khrysalis-scroll-view")
+        out.classes.add("butterfly-scroll-view")
         out.style["overflow-y"] = "hidden";
         out.style["overflow-x"] = "auto";
         defer("FrameLayout")
     }
     element.handle("ViewFlipper") {
-        out.classes.add("khrysalis-view-flipper")
+        out.classes.add("butterfly-view-flipper")
         defer("FrameLayout")
     }
     element.handle("com.lightningkite.butterfly.views.widget.SwapView") {
         out.name = "div"
-        out.classes += "khrysalis-swap"
+        out.classes += "butterfly-swap"
     }
 
     element.handle("androidx.viewpager.widget.ViewPager") {
         out.name = "div"
-        out.classes += "khrysalis-pager"
+        out.classes += "butterfly-pager"
         out.contentNodes += ResultNode("div").apply {
-            classes += "khrysalis-pager-content"
+            classes += "butterfly-pager-content"
         }
         out.contentNodes += ResultNode("button").apply {
-            classes += "khrysalis-pager-left"
+            classes += "butterfly-pager-left"
             contentNodes.add("←")
         }
         out.contentNodes += ResultNode("button").apply {
-            classes += "khrysalis-pager-right"
+            classes += "butterfly-pager-right"
             contentNodes.add("→")
         }
     }
@@ -254,14 +254,14 @@ internal fun HtmlTranslator.layout() {
         defer("androidx.recyclerview.widget.RecyclerView")
     }
     element.handle("androidx.recyclerview.widget.RecyclerView") {
-        out.classes += "khrysalis-recycler"
+        out.classes += "butterfly-recycler"
         out.style["flex-direction"] = "column"
     }
     element.handle("com.lightningkite.butterfly.views.widget.CustomView") {
         out.name = "canvas"
     }
     element.handle("androidx.swiperefreshlayout.widget.SwipeRefreshLayout") {
-        out.classes += "khrysalis-refresh"
+        out.classes += "butterfly-refresh"
         out.contentNodes.addAll(rule.children.map {
             val child = ResultNode()
             child.parent = out
@@ -269,7 +269,7 @@ internal fun HtmlTranslator.layout() {
             child
         })
         out.contentNodes += ResultNode("button").apply {
-            classes += "khrysalis-refresh-button"
+            classes += "butterfly-refresh-button"
         }
     }
     element.handle("include") {

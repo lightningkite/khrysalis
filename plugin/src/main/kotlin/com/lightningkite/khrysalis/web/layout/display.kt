@@ -17,11 +17,11 @@ internal fun HtmlTranslator.display() {
     }
     element.handle("CompoundButton") {
         out.name = "button"
-        out.classes += "khrysalis-compound-off"
+        out.classes += "butterfly-compound-off"
     }
     element.handle("com.rd.PageIndicatorView") {
         out.name = "div"
-        out.classes += "khrysalis-page-indicator"
+        out.classes += "butterfly-page-indicator"
     }
     element.handle("ImageView") {
         out.name = "img"
@@ -59,14 +59,14 @@ internal fun HtmlTranslator.display() {
     }
     element.handle("ImageButton") {
         out.name = "button"
-        out.classes.add("khrysalis-single-item-container")
+        out.classes.add("butterfly-single-item-container")
         val imageChild = ResultNode("img")
         out.contentNodes.add(imageChild)
     }
 
     element.handle("com.google.android.material.tabs.TabLayout") {
         out.name = "div"
-        out.classes += "khrysalis-tabs"
+        out.classes += "butterfly-tabs"
     }
 
     element.handle("com.google.android.gms.maps.MapView") {

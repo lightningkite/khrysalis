@@ -62,16 +62,16 @@ body > * {
     align-self: center;
     flex-grow: 0;
 }
-.khrysalis-box {
+.butterfly-box {
     pointer-events: none;
     position: relative;
 }
-.khrysalis-box>* {
+.butterfly-box>* {
     pointer-events: auto;
     width: 100%;
     height: 100%;
 }
-.khrysalis-scroll-view > * {
+.butterfly-scroll-view > * {
     max-height: none;
 }
 button {
@@ -101,32 +101,32 @@ input:focus {
 button:hover {
     box-shadow: 0 2px 2px 0 rgba(0,0,0,0.24), 0 4px 8px 0 rgba(0,0,0,0.19);
 }
-.khrysalis-canvas-container {
+.butterfly-canvas-container {
     position: relative;
 }
-.khrysalis-canvas {
+.butterfly-canvas {
     position: absolute;
     width: 100%;
     height: 100%;
 }
-.khrysalis-switch {
+.butterfly-switch {
     display: flex;
     flex-direction: row;
 }
-.khrysalis-switch > div {
+.butterfly-switch > div {
     flex-grow: 1;
 }
-.khrysalis-switch > input {
+.butterfly-switch > input {
     display: none;
 }
-.khrysalis-switch-back {
+.butterfly-switch-back {
     position: relative;
     width: 40px;
     height: 24px;
     border-radius: 12px;
     background-color: var(--color-background-fade, gray);
 }
-.khrysalis-switch-front {
+.butterfly-switch-front {
     position: absolute;
     width: 20px;
     height: 20px;
@@ -138,44 +138,44 @@ button:hover {
     -webkit-transition: 0.2s;
     transition: 0.2s;
 }
-:checked ~ .khrysalis-switch-back > .khrysalis-switch-front {
+:checked ~ .butterfly-switch-back > .butterfly-switch-front {
     right: 2px;
 }
-.khrysalis-swap {
+.butterfly-swap {
     position: relative;
 }
-.khrysalis-flip {
+.butterfly-flip {
     position: relative;
 }
-.khrysalis-pager {
+.butterfly-pager {
     position: relative;
 }
-.khrysalis-pager-left {
+.butterfly-pager-left {
     position: absolute;
     left: 0;
     bottom: 0;
     font-size: 24px;
     padding: 4px;
 }
-.khrysalis-pager-right {
+.butterfly-pager-right {
     position: absolute;
     right: 0;
     bottom: 0;
     font-size: 24px;
     padding: 4px;
 }
-.khrysalis-pager-content {
+.butterfly-pager-content {
     position: absolute;
     left: 0;
     top: 0;
     width: 100%;
     height: 100%;
 }
-.khrysalis-compound-on {
+.butterfly-compound-on {
     background-color: var(--color-color-primary);
     color: white;
 }
-.khrysalis-compound-off {
+.butterfly-compound-off {
     background-color: transparent;
     color: var(--color-foreground);
 }
@@ -476,7 +476,7 @@ button:hover {
     background-color: #4B97D1;
 }
 
-@keyframes khrysalis-animate-push-in {
+@keyframes butterfly-animate-push-in {
     from {
         transform: translateX(100%);
     }
@@ -485,7 +485,7 @@ button:hover {
     }
 }
 
-@keyframes khrysalis-animate-push-out {
+@keyframes butterfly-animate-push-out {
     from {
         transform: translateX(0);
     }
@@ -494,7 +494,7 @@ button:hover {
     }
 }
 
-@keyframes khrysalis-animate-pop-in {
+@keyframes butterfly-animate-pop-in {
     from {
         transform: translateX(-100%);
     }
@@ -503,7 +503,7 @@ button:hover {
     }
 }
 
-@keyframes khrysalis-animate-pop-out {
+@keyframes butterfly-animate-pop-out {
     from {
         transform: translateX(0);
     }
@@ -512,7 +512,7 @@ button:hover {
     }
 }
 
-@keyframes khrysalis-animate-fade-in {
+@keyframes butterfly-animate-fade-in {
     from {
         opacity: 0;
     }
@@ -521,7 +521,7 @@ button:hover {
     }
 }
 
-@keyframes khrysalis-animate-fade-out {
+@keyframes butterfly-animate-fade-out {
     from {
         opacity: 1;
     }
@@ -530,11 +530,11 @@ button:hover {
     }
 }
 
-.khrysalis-page-indicator {
+.butterfly-page-indicator {
     display: flex;
     flex-direction: row;
 }
-.khrysalis-page-indicator-dot {
+.butterfly-page-indicator-dot {
     opacity: 0.5;
     border-color: var(--color-foreground);
     border-width: 2px;
@@ -544,7 +544,7 @@ button:hover {
     height: 12px;
     margin: 4px;
 }
-.khrysalis-page-indicator-dot.khrysalis-page-indicator-dot-active {
+.butterfly-page-indicator-dot.butterfly-page-indicator-dot-active {
     opacity: 1;
     background-color: var(--color-foreground);
     border-color: var(--color-foreground);
@@ -556,32 +556,32 @@ button:hover {
     margin: 4px;
 }
 
-.khrysalis-rating-bar-big > .khrysalis-rating-bar-star {
+.butterfly-rating-bar-big > .butterfly-rating-bar-star {
     width: 48px;
     height: 48px;
 }
-.khrysalis-rating-bar-reg > .khrysalis-rating-bar-star {
+.butterfly-rating-bar-reg > .butterfly-rating-bar-star {
     width: 32px;
     height: 32px;
 }
-.khrysalis-rating-bar-small > .khrysalis-rating-bar-star {
+.butterfly-rating-bar-small > .butterfly-rating-bar-star {
     width: 24px;
     height: 24px;
 }
-.khrysalis-rating-bar-tiny > .khrysalis-rating-bar-star {
+.butterfly-rating-bar-tiny > .butterfly-rating-bar-star {
     width: 16px;
     height: 16px;
 }
-.khrysalis-rating-bar-star {
+.butterfly-rating-bar-star {
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' height='24' viewBox='0 0 24 24' width='24'><polygon stroke='gray' stroke-width='1' fill='transparent' points='14.43,10 12,2 9.57,10 2,10 8.18,14.41 5.83,22 12,17.31 18.18,22 15.83,14.41 22,10'/></svg>");
     background-repeat: no-repeat;
     background-position: center;
     background-size: cover;
 }
-.khrysalis-rating-bar-star.khrysalis-rating-bar-star-on {
+.butterfly-rating-bar-star.butterfly-rating-bar-star-on {
     background-image: url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' height='24' viewBox='0 0 24 24' width='24'><polygon stroke='%23AA0' stroke-width='1' fill='yellow' points='14.43,10 12,2 9.57,10 2,10 8.18,14.41 5.83,22 12,17.31 18.18,22 15.83,14.41 22,10'/></svg>");
 }
-.khrysalis-flipper-progress {
+.butterfly-flipper-progress {
     position: absolute;
     left: 50%;
     top: 50%;
@@ -591,44 +591,44 @@ button:hover {
     border: 16px solid #f3f3f3; /* Light grey */
     border-top: 16px solid #3498db; /* Blue */
     border-radius: 50%;
-    animation: khrysalis-load-ring-center 2s linear infinite;
+    animation: butterfly-load-ring-center 2s linear infinite;
 }
-.khrysalis-recycler {
+.butterfly-recycler {
     display: flex;
     flex-direction: column;
     align-items: center;
     justify-content: flex-start;
     overflow-y: auto;
 }
-.khrysalis-single-item-container {
+.butterfly-single-item-container {
     display: flex;
     align-items: center;
     justify-content: center;
 }
-.khrysalis-tabs {
+.butterfly-tabs {
     display: flex;
     flex-direction: row;
     position: relative;
 }
-.khrysalis-tab-bar {
+.butterfly-tab-bar {
     display: flex;
     position: relative;
     flex-direction: row;
     height: min-content;
 }
-.khrysalis-tab {
+.butterfly-tab {
     padding: 8px;
     height: 100%;
 }
-.khrysalis-tab-list {
+.butterfly-tab-list {
     height: min-content;
     display: flex;
     flex-direction: row;
 }
-.khrysalis-tab-list input {
+.butterfly-tab-list input {
     display: none;
 }
-.khrysalis-tab-indicator {
+.butterfly-tab-indicator {
     position: absolute;
     height: 6px;
 
@@ -636,10 +636,10 @@ button:hover {
     background-color: var(--color-color-accent);
     transition: 0.25s;
 }
-.khrysalis-refresh {
+.butterfly-refresh {
     position: relative;
 }
-.khrysalis-refresh-button {
+.butterfly-refresh-button {
     box-sizing: border-box;
     position: absolute;
     background-color: var(--color-background-fade);
@@ -648,7 +648,7 @@ button:hover {
     right: 16px;
     top: 16px;
 }
-.khrysalis-refresh-button-loading {
+.butterfly-refresh-button-loading {
     box-sizing: border-box;
     display: block;
     position: absolute;
@@ -659,11 +659,11 @@ button:hover {
     border: 8px solid;
     border-radius: 50%;
     color: transparent;
-    animation: khrysalis-load-ring 1s cubic-bezier(0.5, 0, 0.5, 1) infinite;
+    animation: butterfly-load-ring 1s cubic-bezier(0.5, 0, 0.5, 1) infinite;
     border-color: var(--color-foreground-fade) transparent transparent transparent;
 }
 
-@keyframes khrysalis-load-ring {
+@keyframes butterfly-load-ring {
     0% {
         transform: rotate(0deg);
     }
@@ -671,7 +671,7 @@ button:hover {
         transform: rotate(360deg);
     }
 }
-@keyframes khrysalis-load-ring-center {
+@keyframes butterfly-load-ring-center {
     0% {
         transform: translateX(-50%) translateY(-50%) rotate(0deg);
     }
@@ -679,19 +679,19 @@ button:hover {
         transform: translateX(-50%) translateY(-50%) rotate(360deg);
     }
 }
-.khrysalis-autocomplete {
+.butterfly-autocomplete {
     overflow-x: visible;
     overflow-y: visible;
     position: relative;
     display: inline-block;
     height: min-content;
 }
-.khrysalis-autocomplete > input {
+.butterfly-autocomplete > input {
     width: 100%;
     height: 100%;
     border: none;
 }
-.khrysalis-autocomplete-options {
+.butterfly-autocomplete-options {
     position: fixed;
     display: flex;
     flex-direction: column;
@@ -704,37 +704,37 @@ button:hover {
     overflow-y: auto;
     z-index: 99;
 }
-.khrysalis-autocomplete-option {
+.butterfly-autocomplete-option {
     padding: 10px;
     width: 100%;
     cursor: pointer;
     background-color: var(--color-background);
     border-bottom: 1px solid var(--color-background-fade);
 }
-.khrysalis-autocomplete-option:focus {
+.butterfly-autocomplete-option:focus {
     background-color: var(--color-foreground-fade)
 }
-.khrysalis-dialog-front {
+.butterfly-dialog-front {
     background-color: var(--color-background);
     display: flex;
     flex-direction: column;
     padding: 16px;
 }
-.khrysalis-dialog-message {
+.butterfly-dialog-message {
     text-align: center;
     color: var(--color-foreground);
 }
-.khrysalis-dialog-buttons {
+.butterfly-dialog-buttons {
     display: flex;
     flex-direction: row;
 }
-.khrysalis-dialog-cancel {
+.butterfly-dialog-cancel {
     padding: 8px;
     margin: 8px;
     flex-grow: 1;
     color: var(--color-foreground);
 }
-.khrysalis-dialog-ok {
+.butterfly-dialog-ok {
     padding: 8px;
     margin: 8px;
     flex-grow: 1;

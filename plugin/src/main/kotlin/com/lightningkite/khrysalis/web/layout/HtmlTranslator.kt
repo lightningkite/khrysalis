@@ -21,7 +21,7 @@ class HtmlTranslator {
     inner class ElementTranslator : PartialTranslator<ResultNode, Unit, XmlNode, String>() {
         override fun getIdentifier(rule: XmlNode): String = rule.name
         override fun emitDefault(identifier: String, rule: XmlNode, out: ResultNode): Unit {
-            out.classes.add("khrysalis-" + rule.name.kabobCase())
+            out.classes.add("butterfly-" + rule.name.kabobCase())
         }
 
         override fun translate(identifier: String, rule: XmlNode, out: ResultNode, afterPriority: Int) {
