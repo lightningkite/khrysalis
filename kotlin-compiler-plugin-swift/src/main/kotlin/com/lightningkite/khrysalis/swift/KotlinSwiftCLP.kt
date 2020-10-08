@@ -155,7 +155,7 @@ class KotlinSwiftExtension(
                     .resolve(file.virtualFilePath.removePrefix(translator.commonPath))
                     .parentFile
                     .resolve(file.name.removeSuffix(".kt").plus(".swift"))
-//                if (outputFile.exists() && outputFile.useLines { it.first() } != SwiftFileEmitter.overwriteWarning) continue
+                if (outputFile.exists() && outputFile.useLines { it.first() } != SwiftFileEmitter.overwriteWarning) continue
                 collector?.report(CompilerMessageSeverity.INFO, "Translating $file to $outputFile")
                 outputFile.parentFile.mkdirs()
                 val out = SwiftFileEmitter(translator, file)

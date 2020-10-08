@@ -147,80 +147,94 @@ internal fun HtmlTranslator.layout() {
         })
     }
     element.handle("FrameLayout") {
-        out.classes.add("butterfly-box")
-        val supercontainer = ResultNode()
-        out.primary = supercontainer
-        supercontainer.parent = out
-        out.contentNodes.add(supercontainer)
-        supercontainer.style["position"] = "relative"
-        val parentGravityString = rule.allAttributes["android:gravity"]
-        supercontainer.contentNodes.addAll(rule.children.mapIndexed { index, subrule ->
-            val container = ResultNode("div")
-            container.classes.add("butterfly-box")
-            container.parent = supercontainer
+        out.classes.add("butterfly-frame")
+        out.contentNodes.addAll(rule.children.mapIndexed { index, subrule ->
             val child = ResultNode()
-            child.parent = container
+            child.parent = out
             element.translate(subrule, child)
-            container.contentNodes += child
             val childGravityString = subrule.allAttributes["android:layout_gravity"]
             val horz = (childGravityString?.let { horizontalGravity(it) }
-                ?: parentGravityString?.let { horizontalGravity(it) }
                 ?: Gravity.START_LOCAL).alignDirection
             val vert = (childGravityString?.let { verticalGravity(it) }
-                ?: parentGravityString?.let { verticalGravity(it) }
                 ?: Gravity.START_LOCAL).alignDirection
 
-            val relativeSizing =
-                rule.allAttributes["android:layout_width"] == "wrap_content" || rule.allAttributes["android:layout_height"] == "wrap_content"
-            if (index == 0 && relativeSizing) {
-                //Do nothing - things are placed relative to this anyways
-                handleCommonLayoutStuff(
-                    subrule,
-                    child,
-                    container,
-                    skipMatchWidth = rule.allAttributes["android:layout_width"] == "wrap_content",
-                    skipMatchHeight = rule.allAttributes["android:layout_height"] == "wrap_content"
-                )
-            } else {
-                handleCommonLayoutStuff(subrule, child, container)
-                container.style["position"] = "absolute"
-                if (vert == AlignDirection.CENTER && horz == AlignDirection.CENTER) {
-                    container.style["transform"] = "translateX(-50%) translateY(-50%)"
-                    container.style["left"] = "50%"
-                    container.style["top"] = "50%"
-                } else {
-                    when (horz) {
-                        AlignDirection.START -> container.style["left"] = "0"
-                        AlignDirection.END -> container.style["right"] = "0"
-                        AlignDirection.CENTER -> {
-                            container.style["transform"] = "translateX(-50%)"
-                            container.style["left"] = "50%"
-                        }
+            if (subrule.allAttributes["android:layout_width"] == "match_parent") {
+                child.style["justify-self"] = "stretch"
+            } else { child.style["justify-self"] = horz.name.toLowerCase() }
+            if (subrule.allAttributes["android:layout_height"] == "match_parent") {
+                child.style["align-self"] = "stretch"
+            } else { child.style["align-self"] = vert.name.toLowerCase() }
+            subrule.allAttributes["android:layout_width"]?.let { value ->
+                when (value) {
+                    "match_parent", "wrap_content" -> {
                     }
-                    when (vert) {
-                        AlignDirection.START -> container.style["top"] = "0"
-                        AlignDirection.END -> container.style["bottom"] = "0"
-                        AlignDirection.CENTER -> {
-                            container.style["transform"] = "translateY(-50%)"
-                            container.style["top"] = "50%"
-                        }
+                    else -> {
+                        val converted = value.asCssDimension() ?: "failedConversion"
+                        child.style["width"] = converted
                     }
                 }
             }
-            container
+            subrule.allAttributes["android:layout_height"]?.let { value ->
+                when (value) {
+                    "match_parent", "wrap_content" -> {
+                    }
+                    else -> {
+                        val converted = value.asCssDimension() ?: "failedConversion"
+                        child.style["height"] = converted
+                    }
+                }
+            }
+            subrule.attributeAsCssDimension("android:layout_margin")?.let { value ->
+                child.style["margin"] = value
+            }
+            subrule.attributeAsCssDimension("android:layout_marginLeft")?.let { value ->
+                child.style["margin-left"] = value
+            }
+            subrule.attributeAsCssDimension("android:layout_marginRight")?.let { value ->
+                child.style["margin-right"] = value
+            }
+            subrule.attributeAsCssDimension("android:layout_marginStart")?.let { value ->
+                child.style["margin-left"] = value
+            }
+            subrule.attributeAsCssDimension("android:layout_marginEnd")?.let { value ->
+                child.style["margin-right"] = value
+            }
+            subrule.attributeAsCssDimension("android:layout_marginTop")?.let { value ->
+                child.style["margin-top"] = value
+            }
+            subrule.attributeAsCssDimension("android:layout_marginBottom")?.let { value ->
+                child.style["margin-bottom"] = value
+            }
+            child
         })
     }
     element.handle("ScrollView") {
         out.classes.add("butterfly-scroll-view")
         out.style["overflow-y"] = "auto";
         out.style["overflow-x"] = "hidden";
-        defer("FrameLayout")
+        rule.children.firstOrNull()?.let { subrule ->
+            val child = ResultNode()
+            element.translate(subrule, child)
+            handleCommonLayoutStuff(subrule, child, out, skipMatchHeight = true)
+            if(rule.attributeAsBoolean("android:fillViewport") == true) {
+                child.style["min-height"] = "100%"
+            }
+            out.contentNodes.add(child)
+        }
     }
     element.handle("HorizontalScrollView") {
         out.classes.add("butterfly-scroll-view")
         out.style["overflow-y"] = "hidden";
         out.style["overflow-x"] = "auto";
-        defer("FrameLayout")
+        rule.children.firstOrNull()?.let { subrule ->
+            val child = ResultNode()
+            element.translate(subrule, child)
+            handleCommonLayoutStuff(subrule, child, out, skipMatchWidth = true)
+            if(rule.attributeAsBoolean("android:fillViewport") == true) {
+                child.style["min-width"] = "100%"
+            }
+            out.contentNodes.add(child)
+        }
     }
     element.handle("ViewFlipper") {
         out.classes.add("butterfly-view-flipper")
@@ -274,15 +288,6 @@ internal fun HtmlTranslator.layout() {
     }
     element.handle("include") {
         out.name = "div"
-        out.style["position"] = "relative"
-        rule.allAttributes["android:id"]?.removePrefix("@+id/")?.trim()?.let { it ->
-            out.attributes["id"] = "view_$it"
-            val stackDefault = rule.allAttributes["layout"]?.calcDest()
-            val stackDefaultJs = if (stackDefault != null) "'$stackDefault'" else "null"
-            out.contentNodes.add(ResultNode("script").apply {
-                contentNodes.add("""prototypeSwapViewSetup(document.getElementById('view_$it'), '$it', $stackDefaultJs)""")
-            })
-        }
     }
 
     attribute.handle("android:padding") {
