@@ -148,9 +148,14 @@ internal fun HtmlTranslator.layout() {
     }
     element.handle("FrameLayout") {
         out.classes.add("butterfly-frame")
+        if(!out.style.containsKey("z-index")) {
+            out.style["z-index"] = "0"
+        }
+        val startIndex = out.style["z-index"]?.toIntOrNull() ?: 0
         out.contentNodes.addAll(rule.children.mapIndexed { index, subrule ->
             val child = ResultNode()
             child.parent = out
+            child.style["z-index"] = index.plus(1 + startIndex).toString()
             element.translate(subrule, child)
             val childGravityString = subrule.allAttributes["android:layout_gravity"]
             val horz = (childGravityString?.let { horizontalGravity(it) }
