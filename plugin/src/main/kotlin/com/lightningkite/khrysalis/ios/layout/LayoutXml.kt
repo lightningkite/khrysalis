@@ -66,7 +66,11 @@ fun File.translateLayoutXml(android: AndroidLayoutFile, styles: Styles, converte
         }
         android.sublayouts.values.forEach {
             val type = conversion.sublayouts[it.name] ?: it.layoutXmlClass
-            appendln("public let ${it.name.safeSwiftIdentifier()}: ${type} = ${type}()")
+            if(it.optional){
+                appendln("public let ${it.name.safeSwiftIdentifier()}: ${type}? = ${type}()")
+            } else {
+                appendln("public let ${it.name.safeSwiftIdentifier()}: ${type} = ${type}()")
+            }
         }
         appendln("    ")
         appendln("}")
