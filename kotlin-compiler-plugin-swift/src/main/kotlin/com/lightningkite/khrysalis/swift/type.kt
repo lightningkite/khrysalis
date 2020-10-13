@@ -39,9 +39,9 @@ data class SwiftExtensionStart(
     val typeParams: KtTypeParameterList?
 )
 
-val partOfParameterLocal = ThreadLocal<Boolean>()
-var writingParameter: Boolean
-    get() = partOfParameterLocal.get() ?: false
+val partOfParameterLocal = ThreadLocal<Int>()
+var writingParameter: Int
+    get() = partOfParameterLocal.get() ?: 0
     set(value) {
         partOfParameterLocal.set(value)
     }
@@ -195,18 +195,20 @@ fun SwiftTranslator.registerType() {
                 if (typedRule.isMarkedNullable) {
                     -'('
                 }
-                if (writingParameter && typedRule.annotations.let {
+                if (writingParameter > 0 && typedRule.annotations.let {
                         it.hasAnnotation(FqName("com.lightningkite.butterfly.Escaping")) || it.hasAnnotation(FqName("com.lightningkite.butterfly.escaping"))
                     }) {
                     -"@escaping "
                 }
                 -'('
+                writingParameter++
                 typedRule.arguments.dropLast(1).forEachBetween(
                     forItem = { typeProjection ->
                         -typeProjection
                     },
                     between = { -", " }
                 )
+                writingParameter--
                 -") -> "
                 -typedRule.arguments.last()
                 if (typedRule.isMarkedNullable) {
@@ -359,6 +361,7 @@ fun SwiftTranslator.registerType() {
 
     handle<KtFunctionType> {
         -"("
+        writingParameter++
         listOfNotNull(typedRule.receiverTypeReference?.let { null to it }).plus(typedRule.parameters.map { it.nameIdentifier to it.typeReference })
             .forEachBetween(
                 forItem = {
@@ -366,13 +369,14 @@ fun SwiftTranslator.registerType() {
                 },
                 between = { -", " }
             )
+        writingParameter--
         -") -> "
         -typedRule.returnTypeReference
     }
 
     handle<KtTypeReference>(
         condition = {
-            writingParameter && typedRule.annotationEntries
+            writingParameter > 0 && typedRule.annotationEntries
                 .any {
                     it.resolvedAnnotation?.fqName?.asString()
                         ?.equals("com.lightningkite.butterfly.escaping", true) == true

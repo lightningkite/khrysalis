@@ -78,7 +78,8 @@ fun AnalysisExtensions.capturesSelf(
         }
         if (hasThis) {
             if (resolved is PropertyDescriptor) {
-                val safe = immediate && containingDeclaration?.unsubstitutedPrimaryConstructor?.valueParameters?.any { it.name.asString() == resolved.name.asString() } == true
+                val safe =
+                    immediate && containingDeclaration?.unsubstitutedPrimaryConstructor?.valueParameters?.any { it.name.asString() == resolved.name.asString() } == true
                 return !safe
             } else {
                 return true
@@ -93,7 +94,7 @@ fun SwiftTranslator.registerVariable() {
     //If we belong to an interface, skip the implementations
     handle<KtProperty>(
         condition = {
-            typedRule.parentOfType<KtClassBody>()?.parentOfType<KtClass>()?.isInterface() == true
+            typedRule.let { it.parent as? KtClassBody }?.let { it.parent as? KtClass }?.isInterface() == true
         },
         priority = 150,
         action = {
@@ -110,7 +111,6 @@ fun SwiftTranslator.registerVariable() {
             val tr = typedRule
             val resolved = tr.resolvedProperty ?: return@handle
             val ktClassBody = typedRule.parentOfType<KtClassBody>()!!
-            val ktClass = ktClassBody.parentOfType<KtClass>()!!
             if (typedRule.getter != null || typedRule.setter != null) {
                 ktClassBody.addPostAction {
                     -"\n"
@@ -235,7 +235,9 @@ fun SwiftTranslator.registerVariable() {
             typedRule.initializer,
             typedRule.containingClassOrObject?.resolvedClass
         ))
-        if(typedRule.annotationEntries.any { it.resolvedAnnotation?.fqName?.asString()?.equals("com.lightningkite.butterfly.Unowned", true) == true }) {
+        if (typedRule.annotationEntries.any {
+                it.resolvedAnnotation?.fqName?.asString()?.equals("com.lightningkite.butterfly.Unowned", true) == true
+            }) {
             -"unowned "
         }
         if (isLateInit || typedRule.isVar || (typedRule.resolvedProperty?.type?.requiresMutable()
@@ -308,7 +310,10 @@ fun SwiftTranslator.registerVariable() {
                 -(typedRule.swiftVisibility() ?: "public")
                 -" "
             }
-            if(typedRule.annotationEntries.any { it.resolvedAnnotation?.fqName?.asString()?.equals("com.lightningkite.butterfly.Unowned", true) == true }) {
+            if (typedRule.annotationEntries.any {
+                    it.resolvedAnnotation?.fqName?.asString()
+                        ?.equals("com.lightningkite.butterfly.Unowned", true) == true
+                }) {
                 -"unowned "
             }
             -"var _"
@@ -538,7 +543,7 @@ fun SwiftTranslator.registerVariable() {
             } else {
                 -"."
             }
-            -typedRule.property.name.asString()
+            -typedRule.property.name.asString().safeSwiftIdentifier()
         }
     }
     handle<KtDotQualifiedExpression>(

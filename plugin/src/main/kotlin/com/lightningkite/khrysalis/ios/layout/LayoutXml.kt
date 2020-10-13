@@ -53,7 +53,8 @@ fun File.translateLayoutXml(android: AndroidLayoutFile, styles: Styles, converte
             if(it.optional){
                 appendln("public unowned var ${it.name.safeSwiftIdentifier()}: ${type}? = nil")
             } else {
-                appendln("public unowned var ${it.name.safeSwiftIdentifier()}: ${type}!")
+                appendln("public unowned var ${"_".plus(it.name).safeSwiftIdentifier()}: ${type}!")
+                appendln("public var ${it.name.safeSwiftIdentifier()}: ${type} { get { return ${"_".plus(it.name).safeSwiftIdentifier()} } set(value){ ${"_".plus(it.name).safeSwiftIdentifier()} = value } }")
             }
         }
         android.delegateBindings.values.forEach {
@@ -61,7 +62,8 @@ fun File.translateLayoutXml(android: AndroidLayoutFile, styles: Styles, converte
             if(it.optional){
                 appendln("public unowned var ${(it.name + "Delegate").safeSwiftIdentifier()}: ${type}? = nil")
             } else {
-                appendln("public unowned var ${(it.name + "Delegate").safeSwiftIdentifier()}: ${type}!")
+                appendln("public unowned var ${"_".plus(it.name).plus("Delegate").safeSwiftIdentifier()}: ${type}!")
+                appendln("public var ${(it.name + "Delegate").safeSwiftIdentifier()}: ${type} { get { return ${"_".plus(it.name).plus("Delegate").safeSwiftIdentifier()} } set(value) { ${"_".plus(it.name).plus("Delegate").safeSwiftIdentifier()} = value } }")
             }
         }
         android.sublayouts.values.forEach {

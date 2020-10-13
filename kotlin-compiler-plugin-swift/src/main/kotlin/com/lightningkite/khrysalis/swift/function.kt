@@ -205,9 +205,9 @@ fun SwiftTranslator.registerFunction() {
                 } == true) {
                 -"inout "
             }
-            writingParameter = true
+            writingParameter++
             -it
-            writingParameter = false
+            writingParameter--
         }
         typedRule.defaultValue?.let {
             -" = "
@@ -221,9 +221,9 @@ fun SwiftTranslator.registerFunction() {
         action = {
             -typedRule.nameIdentifier
             -": "
-            writingParameter = true
+            writingParameter++
             -typedRule.typeReference
-            writingParameter = false
+            writingParameter--
             -"..."
         }
     )
@@ -544,7 +544,7 @@ fun SwiftTranslator.registerFunction() {
                 val out = ArrayList<Any?>()
                 if (!typedRule.on.hasJavaOriginInHierarchy()) {
                     entry.key.name.takeUnless { it.isSpecial || it.asString().let { it in noArgNames || (it.startsWith('p') && it.drop(1).all { it.isDigit() } ) } }?.let {
-                        out += it.asString()
+                        out += it.asString().safeSwiftIdentifier()
                         out += ": "
                     }
                 }

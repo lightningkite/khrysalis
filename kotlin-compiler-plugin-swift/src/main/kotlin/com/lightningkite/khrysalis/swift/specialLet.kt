@@ -41,7 +41,7 @@ fun SwiftTranslator.registerSpecialLet() {
         typedRule.entries.forEachBetween(
             forItem = { (basis, lambda) ->
                 -"if let "
-                -(lambda.valueParameters.firstOrNull()?.name ?: "it")
+                -(lambda.valueParameters.firstOrNull()?.name?.safeSwiftIdentifier() ?: "it")
                 -" = ("
                 -basis
                 -") { \n"

@@ -58,13 +58,13 @@ fun SwiftTranslator.registerLambda() {
                         } else {
                             -it.name.asString()
                         }
-                        writingParameter = true
+                        writingParameter++
 //                        -(typedRule.valueParameters.getOrNull(index)?.typeReference ?: betterParameterTypes?.getOrNull(index) ?: it.type)
                         (typedRule.valueParameters.getOrNull(index)?.typeReference)?.let {
                             -": "
                             -it
                         }
-                        writingParameter = false
+                        writingParameter--
                     },
                     between = { -", " }
                 )

@@ -797,7 +797,7 @@ private fun <T : KtClassOrObject> handleConstructor(
         val isEnum = (typedRule as? KtClass)?.isEnum() == true
         -(contextByType.typedRule.primaryConstructor?.swiftVisibility() ?: "public")
         -" init("
-        writingParameter = true
+        writingParameter++
         contextByType.typedRule.primaryConstructor?.let { cons ->
             (if (isInner) {
                 listOf(listOf("parentThis: ", parentClassName)) + cons.valueParameters
@@ -813,7 +813,7 @@ private fun <T : KtClassOrObject> handleConstructor(
                 -parentClassName
             } else Unit
         }
-        writingParameter = false
+        writingParameter--
         -") {\n"
         if (isInner) {
             -"self.parentThis = parentThis;\n"

@@ -54,7 +54,7 @@ fun SwiftTranslator.registerLiterals() {
             KtStubElementTypes.INTEGER_CONSTANT -> -typedRule.text.replace("_", "").removeSuffix("L").removeSuffix("l")
             KtStubElementTypes.CHARACTER_CONSTANT -> {
                 -'"'
-                -typedRule.text.trim('\'')
+                -typedRule.text.trim('\'').replace("\"", "\\\"")
                 -'"'
             }
             KtStubElementTypes.FLOAT_CONSTANT -> {
