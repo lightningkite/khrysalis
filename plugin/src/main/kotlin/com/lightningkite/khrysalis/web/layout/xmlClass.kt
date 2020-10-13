@@ -107,26 +107,26 @@ fun AndroidLayoutFile.toTypescript(
     out.appendln("import htmlForDefault from './$fileName.html'")
     out.appendln("//! Declares ${packageName}.layouts.${name}Xml")
     out.appendln("export class ${name}Xml {")
-    out.appendln("xmlRoot!: HTMLElement;")
+    out.appendln("xmlRoot!: HTMLElement")
     bindings.values.forEach {
         if(it.optional){
-            out.appendln(it.run { "${name.safeJsIdentifier()}: ${type.toTsType()} | null;" })
+            out.appendln(it.run { "${name.safeJsIdentifier()}: ${type.toTsType()} | null = null" })
         } else {
-            out.appendln(it.run { "${name.safeJsIdentifier()}!: ${type.toTsType()};" })
+            out.appendln(it.run { "${name.safeJsIdentifier()}!: ${type.toTsType()}" })
         }
     }
     delegateBindings.values.forEach {
         if(it.optional){
-            out.appendln(it.run { "${name}Delegate: ${type.toTsType()} | null;" })
+            out.appendln(it.run { "${name}Delegate: ${type.toTsType()} | null = null" })
         } else {
-            out.appendln(it.run { "${name}Delegate!: ${type.toTsType()};" })
+            out.appendln(it.run { "${name}Delegate!: ${type.toTsType()}" })
         }
     }
     sublayouts.values.forEach {
         if(it.optional){
-            out.appendln(it.run { "${name.safeJsIdentifier()}: ${layoutXmlClass} | null;" })
+            out.appendln(it.run { "${name.safeJsIdentifier()}: ${layoutXmlClass} | null = null" })
         } else {
-            out.appendln(it.run { "${name.safeJsIdentifier()}!: ${layoutXmlClass};" })
+            out.appendln(it.run { "${name.safeJsIdentifier()}!: ${layoutXmlClass}" })
         }
     }
     out.appendln("loadHtmlString(): string {")
@@ -138,16 +138,16 @@ fun AndroidLayoutFile.toTypescript(
             }
         }
     }
-    out.appendln("return htmlForDefault;")
+    out.appendln("return htmlForDefault")
     out.appendln("}")
     out.appendln("setup(dependency: Window): HTMLElement {")
-    out.appendln("const view = loadHtmlFromString(this.loadHtmlString());")
+    out.appendln("const view = loadHtmlFromString(this.loadHtmlString())")
     out.appendln("this.xmlRoot = view")
     bindings.values.forEach {
         if(it.optional){
-            out.appendln(it.run { "this.${name.safeJsIdentifier()} = findViewById<${type.toTsType()}>(view, \"$resourceId\");" })
+            out.appendln(it.run { "this.${name.safeJsIdentifier()} = findViewById<${type.toTsType()}>(view, \"$resourceId\")" })
         } else {
-            out.appendln(it.run { "this.${name.safeJsIdentifier()} = getViewById<${type.toTsType()}>(view, \"$resourceId\");" })
+            out.appendln(it.run { "this.${name.safeJsIdentifier()} = getViewById<${type.toTsType()}>(view, \"$resourceId\")" })
         }
     }
     delegateBindings.values.forEach {
@@ -155,9 +155,9 @@ fun AndroidLayoutFile.toTypescript(
     }
     sublayouts.values.forEach {
         out.appendln(it.run { "replaceViewWithId(view, ()=>{ " })
-        out.appendln(it.run { "this.${name.safeJsIdentifier()} = new $layoutXmlClass();" })
-        out.appendln(it.run { "return this.${name.safeJsIdentifier()}.setup(dependency);" })
-        out.appendln(it.run { "}, \"$resourceId\");" })
+        out.appendln(it.run { "this.${name.safeJsIdentifier()} = new $layoutXmlClass()" })
+        out.appendln(it.run { "return this.${name.safeJsIdentifier()}.setup(dependency)" })
+        out.appendln(it.run { "}, \"$resourceId\")" })
     }
     out.appendln("return view")
     out.appendln("}")
