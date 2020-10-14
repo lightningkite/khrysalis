@@ -15,6 +15,7 @@ data class TypeReplacement(
     val typeArgumentRequirements: Map<Int, String>? = null,
     val requiresMutable: Boolean = false,
     val template: Template,
+    @JsonProperty("protocol") val protocol: Boolean = false,
     var typeArgumentNames: List<String>? = null,
     var errorCondition: Template? = null,
     var constraintTemplate: Template? = null,

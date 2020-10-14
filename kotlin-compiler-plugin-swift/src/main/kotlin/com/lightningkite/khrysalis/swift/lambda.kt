@@ -45,10 +45,6 @@ fun SwiftTranslator.registerLambda() {
                 -'('
                 if (rec != null) {
                     -rec
-//                    -": "
-//                    writingParameter = true
-//                    -resolved.extensionReceiverParameter?.type
-//                    writingParameter = false
                     if (it.isNotEmpty()) -", "
                 }
                 it.withIndex().forEachBetween(
@@ -61,8 +57,10 @@ fun SwiftTranslator.registerLambda() {
                         writingParameter++
 //                        -(typedRule.valueParameters.getOrNull(index)?.typeReference ?: betterParameterTypes?.getOrNull(index) ?: it.type)
                         (typedRule.valueParameters.getOrNull(index)?.typeReference)?.let {
-                            -": "
-                            -it
+                            if(it.resolvedType?.let { replacements.getType(it)?.protocol } != true) {
+                                -": "
+                                -it
+                            }
                         }
                         writingParameter--
                     },
@@ -76,8 +74,10 @@ fun SwiftTranslator.registerLambda() {
                     )?.allValueArguments?.entries?.first()?.value?.value?.let {
                     -" -> $it"
                 } ?: (betterReturnType ?: resolved.returnType)?.let {
-                -" -> "
-                -it
+                if(replacements.getType(it)?.protocol != true) {
+                    -" -> "
+                    -it
+                }
             }
             -" in "
             when (typedRule.bodyExpression?.statements?.size) {
