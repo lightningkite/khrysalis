@@ -16,6 +16,15 @@ internal fun HtmlTranslator.input() {
             attributes["type"] = "text"
             style["font-size"] = "12pt"
         }
+        out.attributes["type"] = this.rule.allAttributes["android:inputType"]
+            ?.split('|')
+            ?.mapNotNull {
+                when(it){
+                    "textPassword" -> "password"
+                    else -> null
+                }
+            }
+            ?.firstOrNull() ?: "text"
         out.contentNodes.add(primary)
         out.primary = primary
         out.text = primary
@@ -269,4 +278,5 @@ internal fun HtmlTranslator.input() {
             })
         })
     }
+
 }
