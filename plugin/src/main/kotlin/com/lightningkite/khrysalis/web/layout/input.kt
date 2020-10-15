@@ -16,7 +16,7 @@ internal fun HtmlTranslator.input() {
             attributes["type"] = "text"
             style["font-size"] = "12pt"
         }
-        out.attributes["type"] = this.rule.allAttributes["android:inputType"]
+        primary.attributes["type"] = this.rule.allAttributes["android:inputType"]
             ?.split('|')
             ?.mapNotNull {
                 when(it){
