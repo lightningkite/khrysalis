@@ -1,8 +1,10 @@
 package com.lightningkite.khrysalis.swift
 
+import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.containingClass
+import org.jetbrains.kotlin.psi.psiUtil.getTextWithLocation
 import org.jetbrains.kotlin.resolve.calls.model.VariableAsFunctionResolvedCall
 import org.jetbrains.kotlin.resolve.calls.resolvedCallUtil.getImplicitReceiverValue
 
@@ -40,6 +42,7 @@ fun SwiftTranslator.registerReceiver() {
             return@handle resolved.getImplicitReceiverValue() != null
                     && targetDescriptor.isCompanionObject
                     && targetDescriptor != typedRule.containingClass()?.resolvedClass
+                    && targetDescriptor != typedRule.parentOfType<KtObjectDeclaration>()?.resolvedClass
                     && !suppressReceiverAddition
         },
         priority = 100,

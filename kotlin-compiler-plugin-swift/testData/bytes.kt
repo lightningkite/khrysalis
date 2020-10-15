@@ -1,2 +1,2 @@
-package com.lightningkite.khrysalis.bytes
+package com.lightningkite.butterfly.bytes
 typealias Data = ByteArray

@@ -151,6 +151,7 @@ fun ifAndWhenMain() {
         2 -> {
             "which is magical"
         }
+        else -> "eyyy"
     }
 
     //When on conditions

@@ -55,7 +55,8 @@ class KotlinSwiftBasicTest {
                 this.pluginOptions =
                     arrayOf(
                         "plugin:${KotlinSwiftCLP.PLUGIN_ID}:${KotlinSwiftCLP.KEY_DEPENDENCIES_NAME}=../ios/Khrysalis",
-                        "plugin:${KotlinSwiftCLP.PLUGIN_ID}:${KotlinSwiftCLP.KEY_OUTPUT_DIRECTORY_NAME}=testDataOut/swift"
+                        "plugin:${KotlinSwiftCLP.PLUGIN_ID}:${KotlinSwiftCLP.KEY_OUTPUT_DIRECTORY_NAME}=testDataOut/swift",
+                        "plugin:${KotlinSwiftCLP.PLUGIN_ID}:${KotlinSwiftCLP.KEY_PROJECT_NAME_NAME}=Yeet"
                     )
                 this.destinationAsFile = File("build/testBuild").also { it.deleteRecursively(); it.mkdirs() }
             }

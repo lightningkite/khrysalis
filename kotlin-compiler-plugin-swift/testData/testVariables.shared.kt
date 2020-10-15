@@ -116,6 +116,7 @@ private class VariableTestClass {
             set(value){
                 field = value + 1
             }
+        var fromOther: Int = companionReal + 1
     }
 }
 

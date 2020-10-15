@@ -1,4 +1,4 @@
-package com.lightningkite.khrysalis
+package com.lightningkite.butterfly
 
 import java.lang.ref.WeakReference
 import kotlin.reflect.KProperty
@@ -119,26 +119,3 @@ typealias IsCodableAndHashable = Any
 typealias IsCodableAndEquatable = Any
 typealias JsonList = List<*>
 typealias JsonMap = Map<*, *>
-
-fun IsCodable?.toJsonString(): String {
-    return HttpClient.mapper.writeValueAsString(this)
-}
-
-inline fun <reified T: IsCodable> String.fromJsonString(): T? {
-    return try {
-        HttpClient.mapper.readValue(this, jacksonTypeRef<T>())
-    } catch (e: Exception) {
-        e.printStackTrace()
-        null
-    }
-}
-
-fun String.fromJsonStringUntyped(): IsCodable? {
-    return try {
-        HttpClient.mapper.readValue(this, Any::class.java)
-    } catch (e: Exception) {
-        e.printStackTrace()
-        null
-    }
-}
-
