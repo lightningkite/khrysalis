@@ -188,6 +188,15 @@ fun TypescriptTranslator.registerClass() {
         -"interface "
         -typedRule.nameIdentifier
         -typedRule.typeParameterList
+        typedRule.superTypeListEntries.mapNotNull { it as? KtSuperTypeEntry }
+            .filter { it.typeReference?.resolvedType?.getJetTypeFqName(false) !in skippedExtensions }
+            .takeUnless { it.isEmpty() }?.let {
+                -" extends "
+                it.forEachBetween(
+                    forItem = { -it.typeReference },
+                    between = { -", " }
+                )
+            }
         -" {\n"
         -typedRule.body
         -"}\n"

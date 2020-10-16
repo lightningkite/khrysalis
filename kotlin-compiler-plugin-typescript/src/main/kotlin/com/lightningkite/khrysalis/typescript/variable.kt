@@ -80,7 +80,7 @@ fun TypescriptTranslator.registerVariable() {
     //If we belong to an interface, skip the implementations
     handle<KtProperty>(
         condition = {
-            typedRule.parentOfType<KtClassBody>()?.parentOfType<KtClass>()?.isInterface() == true
+            typedRule.let { it.parent as? KtClassBody }?.let { it.parent as? KtClass }?.isInterface() == true
         },
         priority = 150,
         action = {

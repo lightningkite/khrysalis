@@ -136,7 +136,9 @@ fun TypescriptTranslator.registerFunction() {
 
     }
     handle<KtNamedFunction>(
-        condition = { typedRule.parentOfType<KtClassBody>()?.parentOfType<KtClass>()?.isInterface() == true },
+        condition = {
+            typedRule.let { it.parent as? KtClassBody }?.let { it.parent as? KtClass }?.isInterface() == true
+        },
         priority = 100,
         action = {
             if (typedRule.receiverTypeReference != null) throw IllegalArgumentException("Receivers on interface methods aren't supported yet.")
