@@ -68,7 +68,28 @@ class XmlNode(
                 .map { att.item(it) }
                 .filter { it.nodeType == Node.ELEMENT_NODE }
                 .map {
-                    XmlNode(it, styles, directory, parent = this)
+                    if(it.nodeName == "include"){
+                        try {
+                            val filename = it.attributes
+                                ?.getNamedItem("layout")!!
+                                .nodeValue
+                                .removePrefix("@layout/")
+                                .plus(".xml")
+                            val fileOptionA = directory.resolve(filename)
+                            val fileOptionB = baseDirectoryAlt?.resolve(filename)
+                            val file = fileOptionA.takeIf { it.exists() }
+                                ?: fileOptionB?.takeIf { it.exists() }
+                                ?: throw IllegalArgumentException("Could not find file for layout $filename in $fileOptionA or $fileOptionB")
+                            val node =
+                                read(file, styles)
+                            XmlNode(it, styles, directory, additionalAttributes = node.allAttributes)
+                        } catch(e:Exception){
+                            e.printStackTrace()
+                            XmlNode(it, styles, directory)
+                        }
+                    } else {
+                        XmlNode(it, styles, directory)
+                    }
                 }
                 .toList()
         }
