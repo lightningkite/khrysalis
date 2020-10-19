@@ -48,7 +48,7 @@ val LayoutConverter.Companion.buttonViews
                     }
                 }
             },
-            ViewType("CheckBox", "LabeledCheckbox", "View")  { node ->
+            ViewType("CheckBox", "LabeledCheckbox", "VButton", handlesPadding = true)  { node ->
                 node.allAttributes["android:gravity"]?.split('|')?.forEach {
                     when(it){
                         "top" -> appendln("view.verticalAlign = .start")
@@ -56,9 +56,8 @@ val LayoutConverter.Companion.buttonViews
                         "center", "center_vertical" -> appendln("view.verticalAlign = .center")
                     }
                 }
-                handleCommonText(node, "view.labelView", checkView = "view")
             },
-            ViewType("RadioButton", "LabeledRadioButton", "View") { node ->
+            ViewType("RadioButton", "LabeledRadioButton", "VButton", handlesPadding = true) { node ->
                 node.allAttributes["android:gravity"]?.split('|')?.forEach {
                     when(it){
                         "top" -> appendln("view.verticalAlign = .start")
@@ -66,9 +65,8 @@ val LayoutConverter.Companion.buttonViews
                         "center", "center_vertical" -> appendln("view.verticalAlign = .center")
                     }
                 }
-                handleCommonText(node, "view.labelView", checkView = "view")
             },
-            ViewType("Switch", "LabeledSwitch", "View") { node ->
+            ViewType("Switch", "LabeledSwitch", "VButton", handlesPadding = true) { node ->
                 node.allAttributes["android:gravity"]?.split('|')?.forEach {
                     when(it){
                         "top" -> appendln("view.verticalAlign = .start")
@@ -76,7 +74,6 @@ val LayoutConverter.Companion.buttonViews
                         "center", "center_vertical" -> appendln("view.verticalAlign = .center")
                     }
                 }
-                handleCommonText(node, "view.labelView", controlView = "view.control")
             },
             ViewType("ToggleButton", "ToggleButton", "Button", handlesPadding = true) { node ->
                 node.attributeAsSwiftString("android:textOff")?.let { text ->
@@ -96,7 +93,7 @@ val LayoutConverter.Companion.buttonViews
                     }
                 }
             },
-            ViewType("Spinner", "Dropdown", "View", handlesPadding = true) { node ->
+            ViewType("Spinner", "Dropdown", "VButton", handlesPadding = true) { node ->
                 val defaultPadding = node.attributeAsSwiftDimension("android:padding") ?: 0
                 append("view.contentEdgeInsets = UIEdgeInsets(top: ")
                 append((node.attributeAsSwiftDimension("android:paddingTop") ?: defaultPadding).toString())
@@ -110,37 +107,7 @@ val LayoutConverter.Companion.buttonViews
             },
             ViewType("RadioGroup", "LinearLayout", "LinearLayout") {},
             ViewType("ImageButton", "UIButtonWithLayer", "Button", handlesPadding = true) { node -> },
-            ViewType("Button", "UIButtonWithLayer", "View", handlesPadding = true) { node ->
-                handleCommonText(node, "view.titleLabel?", controlView = "view")
-
-                node.attributeAsSwiftDimension("android:letterSpacing")?.let {
-                    appendln("view.letterSpacing = $it")
-                }
-                node.attributeAsBoolean("android:textAllCaps")?.let {
-                    appendln("view.textAllCaps = $it")
-                }
-                node.attributeAsSwiftString("android:text")?.let { text ->
-                    appendln("view.textString = $text")
-                }
-                setToColor(node, "android:textColor") { it, s ->
-                    appendln("view.setTitleColor($it, for: $s)")
-                }
-
-                node.allAttributes["android:gravity"]
-                    ?.split('|')
-                    ?.asSequence()
-                    ?.mapNotNull { horizontalGravityWords[it] }
-                    ?.firstOrNull()
-                    .let {
-                        val fixed = when (it) {
-                            ".start" -> ".left"
-                            ".center" -> ".center"
-                            ".end" -> ".right"
-                            else -> ".center"
-                        }
-                        appendln("view.contentHorizontalAlignment = $fixed")
-                    }
-
+            ViewType("Button", "UIButtonWithLayer", "VButton", handlesPadding = true) { node ->
 
                 node.allAttributes["android:gravity"]?.let { text ->
                     appendln("view.textGravity = ${align(null, null, text, "center")}")
@@ -171,6 +138,38 @@ val LayoutConverter.Companion.buttonViews
                     appendln("view.iconPosition = .top")
                     appendln("view.iconLayer = $text")
                 }
+            },
+            ViewType("VButton", "UIButton", "View", handlesPadding = true) { node ->
+                handleCommonText(node, "view.titleLabel?", controlView = "view")
+
+                node.attributeAsSwiftDimension("android:letterSpacing")?.let {
+                    appendln("view.letterSpacing = $it")
+                }
+                node.attributeAsBoolean("android:textAllCaps")?.let {
+                    appendln("view.textAllCaps = $it")
+                }
+                node.attributeAsSwiftString("android:text")?.let { text ->
+                    appendln("view.textString = $text")
+                }
+                setToColor(node, "android:textColor") { it, s ->
+                    appendln("view.setTitleColor($it, for: $s)")
+                }
+
+                node.allAttributes["android:gravity"]
+                    ?.split('|')
+                    ?.asSequence()
+                    ?.mapNotNull { horizontalGravityWords[it] }
+                    ?.firstOrNull()
+                    .let {
+                        val fixed = when (it) {
+                            ".start" -> ".left"
+                            ".center" -> ".center"
+                            ".end" -> ".right"
+                            else -> ".center"
+                        }
+                        appendln("view.contentHorizontalAlignment = $fixed")
+                    }
+
                 appendln(
                     "view.contentMode = ${when (node.allAttributes["android:scaleType"]) {
                         "fitXY" -> ".scaleToFill"
