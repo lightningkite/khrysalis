@@ -27,6 +27,7 @@ val FunctionDescriptor.swiftNameOverridden: String?
         ?.value
         ?.value
         ?.toString()?.safeSwiftIdentifier() ?: when {
+        this is ConstructorDescriptor && this.constructedClass.swiftTopLevelMessedUp -> this.constructedClass.swiftTopLevelName
         this.worksAsSwiftConstraint() && this.containingDeclaration !is ClassDescriptor -> null
         extensionReceiverParameter != null -> {
             extensionReceiverParameter!!

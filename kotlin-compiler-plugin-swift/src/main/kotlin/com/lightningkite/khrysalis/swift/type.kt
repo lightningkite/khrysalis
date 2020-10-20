@@ -320,6 +320,7 @@ fun SwiftTranslator.registerType() {
             val reference = typedRule.referenceExpression!!
             val type = reference.resolvedReferenceTarget as ClassDescriptor
             -type.swiftTopLevelName
+            -typedRule.typeArgumentList
         }
     )
 

@@ -84,7 +84,7 @@ class XmlNode(
                                 read(file, styles)
                             XmlNode(it, styles, directory, additionalAttributes = node.allAttributes)
                         } catch(e:Exception){
-                            e.printStackTrace()
+                            println("Couldn't find include file: ${e.message}")
                             XmlNode(it, styles, directory)
                         }
                     } else {
