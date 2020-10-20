@@ -215,6 +215,7 @@ private fun generateFile(
             }
         }
 
+        line("@file:SharedCode")
         line("//")
         line("// ${viewName}VG.swift")
         line("// Created by Khrysalis Prototype Generator")

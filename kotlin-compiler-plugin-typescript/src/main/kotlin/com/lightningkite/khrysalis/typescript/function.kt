@@ -17,6 +17,7 @@ import org.jetbrains.kotlin.resolve.calls.components.hasDefaultValue
 import org.jetbrains.kotlin.resolve.calls.components.isVararg
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
+import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 import org.jetbrains.kotlin.resolve.source.KotlinSourceElement
 
 //TODO: Local function edgecase - the meaning of 'this' changes
@@ -378,6 +379,49 @@ fun TypescriptTranslator.registerFunction() {
 
     handle<KtSafeQualifiedExpression>(
         condition = {
+            typedRule.selectorExpression is KtCallExpression
+                    && typedRule.actuallyCouldBeExpression
+                    && typedRule.parent !is KtSafeQualifiedExpression
+        },
+        priority = 100,
+        action = {
+            -'('
+            doSuper()
+            -" ?? null)"
+        }
+    )
+
+    handle<KtSafeQualifiedExpression>(
+        condition = {
+            typedRule.selectorExpression is KtCallExpression
+                    && typedRule.actuallyCouldBeExpression
+                    && typedRule.resolvedExpressionTypeInfo?.type?.constructor?.declarationDescriptor?.fqNameSafe?.asString() == "kotlin.Unit"
+            },
+        priority = 101,
+        action = {
+            val callExp = typedRule.selectorExpression as KtCallExpression
+            val nre = callExp.calleeExpression as KtNameReferenceExpression
+            val f = callExp.resolvedCall!!.candidateDescriptor as FunctionDescriptor
+            nullWrapAction(
+                swiftTranslator = this@registerFunction,
+                receiver = typedRule.receiverExpression,
+                skip = false,
+                type = typedRule.resolvedExpressionTypeInfo?.type,
+                isExpression = typedRule.actuallyCouldBeExpression
+            ){ rec ->
+                -rec
+                -'.'
+                -nre
+                -ArgumentsList(
+                    on = f,
+                    resolvedCall = callExp.resolvedCall!!
+                )
+            }
+        }
+    )
+
+    handle<KtSafeQualifiedExpression>(
+        condition = {
             ((typedRule.selectorExpression as? KtCallExpression)?.resolvedCall?.candidateDescriptor as? FunctionDescriptor)?.extensionReceiverParameter != null
         },
         priority = 1002,
@@ -614,11 +658,12 @@ fun TypescriptTranslator.registerFunction() {
                 -it
             } ?: value.arguments.takeUnless { it.isEmpty() }?.let {
                 it.forEachBetween(
-                    forItem = { -(it.getArgumentExpression() ?: "undefined") },
+                    forItem = { -(it.getArgumentExpression() ?: (if(valueParam.isVararg) "" else "undefined")) },
                     between = { -", " }
                 )
             } ?: run {
-                -"undefined"
+                if(!valueParam.isVararg)
+                    -"undefined"
             }
         }
         for (item in typedRule.appendArguments) {
