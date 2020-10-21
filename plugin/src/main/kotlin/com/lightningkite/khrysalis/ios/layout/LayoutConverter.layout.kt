@@ -74,9 +74,9 @@ val LayoutConverter.Companion.layoutViews
                         appendln("),")
 
                         append("size: CGSize(width: ")
-                        append(child.attributeAsSwiftDimension("android:layout_width") ?: "0")
+                        append(child.attributeAsSwiftDimension("android:layout_width") ?: "-1")
                         append(", height: ")
-                        append(child.attributeAsSwiftDimension("android:layout_height") ?: "0")
+                        append(child.attributeAsSwiftDimension("android:layout_height") ?: "-1")
                         appendln("),")
 
                         append(
@@ -141,9 +141,9 @@ val LayoutConverter.Companion.layoutViews
                     appendln("),")
 
                     append("size: CGSize(width: ")
-                    append(child.attributeAsSwiftDimension("android:layout_width") ?: "0")
+                    append(child.attributeAsSwiftDimension("android:layout_width") ?: "-1")
                     append(", height: ")
-                    append(child.attributeAsSwiftDimension("android:layout_height") ?: "0")
+                    append(child.attributeAsSwiftDimension("android:layout_height") ?: "-1")
                     appendln("),")
 
                     append(
