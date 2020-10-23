@@ -25,7 +25,7 @@ val LayoutConverter.Companion.navigationViews
 //                }
 //                setToColor(node, "app:tabRippleColor") {
 //                }
-                if(!setToColor(node, "app:tabTextColor"){ it, s ->
+                if (!setToColor(node, "app:tabTextColor") { it, s ->
                         appendln(
                             """view.setTitleTextAttributes(
                 [NSAttributedString.Key.foregroundColor: $it], 
@@ -39,7 +39,7 @@ val LayoutConverter.Companion.navigationViews
                 )"""
                         )
                         appendln("view.materialTabStyle(color: $it)")
-                }) {
+                    }) {
                     val it = "UIColor.black"
                     appendln(
                         """view.setTitleTextAttributes(
@@ -61,15 +61,40 @@ val LayoutConverter.Companion.navigationViews
                 "PreviewVariedFlipper",
                 "FrameLayout"
             ) {},
-            ViewType("androidx.recyclerview.widget.RecyclerView", "UICollectionView", "View",
-                iosConstructor = "UICollectionView(frame: .zero, collectionViewLayout: UICollectionView.ReversibleFlowLayout())") { node ->
+            ViewType(
+                "androidx.recyclerview.widget.RecyclerView", "UICollectionView", "View", handlesPadding = true,
+                iosConstructor = "UICollectionView(frame: .zero, collectionViewLayout: UICollectionView.ReversibleFlowLayout())"
+            ) { node ->
 //                appendln("view.separatorStyle = .none")
-                if(node.allAttributes["android:background"]?.substringBefore('/')?.contains("color") != true){
+                if (node.allAttributes["android:background"]?.substringBefore('/')?.contains("color") != true) {
                     appendln("view.backgroundColor = UIColor.clear")
                 }
+                val defaultPadding = node.attributeAsSwiftDimension("android:padding") ?: 0
+                appendln(
+                    "view.padding = ${
+                        uiEdgeInsets(
+                            (node.attributeAsSwiftDimension("android:paddingTop")
+                                ?: defaultPadding).toString(),
+                            (node.attributeAsSwiftDimension("android:paddingLeft")
+                                ?: node.attributeAsSwiftDimension("android:paddingStart")
+                                ?: defaultPadding).toString(),
+                            (node.attributeAsSwiftDimension("android:paddingBottom")
+                                ?: defaultPadding).toString(),
+                            (node.attributeAsSwiftDimension("android:paddingRight")
+                                ?: node.attributeAsSwiftDimension("android:paddingEnd")
+                                ?: defaultPadding).toString()
+                        )
+                    }"
+                )
+
             },
-            ViewType("com.lightningkite.butterfly.views.widget.VerticalRecyclerView", "UICollectionView", "androidx.recyclerview.widget.RecyclerView",
-                iosConstructor = "UICollectionView(frame: .zero, collectionViewLayout: UICollectionView.ReversibleFlowLayout())") { node ->
+            ViewType(
+                "com.lightningkite.butterfly.views.widget.VerticalRecyclerView",
+                "UICollectionView",
+                "androidx.recyclerview.widget.RecyclerView",
+                handlesPadding = true,
+                iosConstructor = "UICollectionView(frame: .zero, collectionViewLayout: UICollectionView.ReversibleFlowLayout())"
+            ) { node ->
 //                val pos = (node.allAttributes.get("app:dividerPositions")?.split('|') ?: node.allAttributes.get("dividerPositions")?.split('|')) ?: listOf()
 //                when{
 //                    pos.contains("start") -> appendln("//Separator position 'start' not supported yet")
@@ -91,10 +116,10 @@ val LayoutConverter.Companion.navigationViews
 //                }
             },
             ViewType("com.rd.PageIndicatorView", "UIPageControl", "View") { node ->
-                setToColor(node, "app:piv_selectedColor"){ it, s ->
+                setToColor(node, "app:piv_selectedColor") { it, s ->
                     appendln("view.currentPageIndicatorTintColor = $it")
                 }
-                setToColor(node, "app:piv_unselectedColor"){ it, s ->
+                setToColor(node, "app:piv_unselectedColor") { it, s ->
                     appendln("view.pageIndicatorTintColor = $it")
                 }
             },

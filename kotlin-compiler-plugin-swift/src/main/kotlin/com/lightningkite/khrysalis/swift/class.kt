@@ -17,6 +17,7 @@ import org.jetbrains.kotlin.resolve.calls.util.FakeCallableDescriptorForObject
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
 import org.jetbrains.kotlin.resolve.descriptorUtil.getSuperClassNotAny
 import org.jetbrains.kotlin.resolve.scopes.receivers.ClassValueReceiver
+import org.jetbrains.kotlin.synthetic.hasJavaOriginInHierarchy
 import org.jetbrains.kotlin.types.isNullable
 import java.util.*
 import kotlin.collections.ArrayList
@@ -920,6 +921,7 @@ private fun <T : KtClassOrObject> handleConstructor(
             .takeUnless { it.isEmpty() }
             ?.firstOrNull()?.let {
                 -"super.init("
+                val resolvedCall = it.resolvedCall
                 it.resolvedCall?.valueArguments?.entries
                     ?.sortedBy { it.key.index }
                     ?.filter { it.value.arguments.isNotEmpty() }
@@ -930,8 +932,12 @@ private fun <T : KtClassOrObject> handleConstructor(
                                 0 -> {
                                 }
                                 1 -> {
-                                    -it.key.name.asString()
-                                    -": "
+                                    if ((resolvedCall?.candidateDescriptor as? ConstructorDescriptor)?.hasJavaOriginInHierarchy() == true) {
+                                        it.key.name.takeUnless { it.isSpecial || it.asString().let { it in noArgNames || (it.startsWith('p') && it.drop(1).all { it.isDigit() } ) } }?.let {
+                                            -it.asString().safeSwiftIdentifier()
+                                            -": "
+                                        }
+                                    }
                                     -args[0].getArgumentExpression()
                                 }
                                 else -> {

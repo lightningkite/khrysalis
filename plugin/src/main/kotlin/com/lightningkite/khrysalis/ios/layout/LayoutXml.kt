@@ -51,18 +51,18 @@ fun File.translateLayoutXml(android: AndroidLayoutFile, styles: Styles, converte
         android.bindings.values.forEach {
             val type = conversion.bindings[it.name] ?: converter.viewTypes[it.type]?.iosName
             if(it.optional){
-                appendln("public unowned var ${it.name.safeSwiftIdentifier()}: ${type}? = nil")
+                appendln("public var ${it.name.safeSwiftIdentifier()}: ${type}? = nil")
             } else {
-                appendln("public unowned var ${"_".plus(it.name).safeSwiftIdentifier()}: ${type}!")
+                appendln("public var ${"_".plus(it.name).safeSwiftIdentifier()}: ${type}!")
                 appendln("public var ${it.name.safeSwiftIdentifier()}: ${type} { get { return ${"_".plus(it.name).safeSwiftIdentifier()} } set(value){ ${"_".plus(it.name).safeSwiftIdentifier()} = value } }")
             }
         }
         android.delegateBindings.values.forEach {
             val type = conversion.delegateBindings[it.name]
             if(it.optional){
-                appendln("public unowned var ${(it.name + "Delegate").safeSwiftIdentifier()}: ${type}? = nil")
+                appendln("public var ${(it.name + "Delegate").safeSwiftIdentifier()}: ${type}? = nil")
             } else {
-                appendln("public unowned var ${"_".plus(it.name).plus("Delegate").safeSwiftIdentifier()}: ${type}!")
+                appendln("public var ${"_".plus(it.name).plus("Delegate").safeSwiftIdentifier()}: ${type}!")
                 appendln("public var ${(it.name + "Delegate").safeSwiftIdentifier()}: ${type} { get { return ${"_".plus(it.name).plus("Delegate").safeSwiftIdentifier()} } set(value) { ${"_".plus(it.name).plus("Delegate").safeSwiftIdentifier()} = value } }")
             }
         }
