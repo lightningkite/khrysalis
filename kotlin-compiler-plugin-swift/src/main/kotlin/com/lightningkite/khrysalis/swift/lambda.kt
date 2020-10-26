@@ -6,6 +6,7 @@ import org.jetbrains.kotlin.builtins.getValueParameterTypesFromFunctionType
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.psi.*
+import org.jetbrains.kotlin.resolve.constants.StringValue
 
 fun SwiftTranslator.registerLambda() {
     handle<KtFunctionLiteral> {
@@ -14,26 +15,44 @@ fun SwiftTranslator.registerLambda() {
             ?: (typedRule.parent as? KtLambdaExpression)?.resolvedExpectedExpressionType
             ?: ((typedRule.parent as? KtLambdaExpression)?.parent as? KtParameter)?.resolvedValueParameter?.type
 //        val betterParameterTypes = reet?.getValueParameterTypesFromFunctionType()?.map { it.type }
-        val betterReturnType = try { reet?.getReturnTypeFromFunctionType() } catch(e: Exception) { null }
+        val annotations = (resolved.annotations + (typedRule
+            .let { it.parent as? KtLambdaExpression }
+            ?.let { it.parent as? KtAnnotatedExpression }
+            ?.let { it.annotationEntries.map { it.resolvedAnnotation } }
+            ?: listOf())).filterNotNull()
+        val betterReturnType = try {
+            reet?.getReturnTypeFromFunctionType()
+        } catch (e: Exception) {
+            null
+        }
+
         fun write(rec: Any? = null) {
             -"{ "
             val captures = ArrayList<String>()
-            if (typedRule.resolvedFunction?.annotations?.let {
-                    it.hasAnnotation(FqName("com.lightningkite.butterfly.WeakSelf")) || it.hasAnnotation(FqName("com.lightningkite.butterfly.weakSelf"))
-                } == true) {
+            if (annotations.any {
+                    it.fqName?.asString() == "com.lightningkite.butterfly.WeakSelf" || it.fqName?.asString() == "com.lightningkite.butterfly.weakSelf"
+                }) {
                 captures.add("weak self")
-            } else if (typedRule.resolvedFunction?.annotations?.let {
-                    it.hasAnnotation(FqName("com.lightningkite.butterfly.UnownedSelf")) || it.hasAnnotation(FqName("com.lightningkite.butterfly.unownedSelf"))
-                } == true) {
+            } else if (annotations.any {
+                    it.fqName?.asString() == "com.lightningkite.butterfly.UnownedSelf" || it.fqName?.asString() == "com.lightningkite.butterfly.unownedSelf"
+                }) {
                 captures.add("unowned self")
             }
-            typedRule.resolvedFunction?.annotations?.findAnnotation(FqName("com.lightningkite.butterfly.CaptureUnowned"))?.allValueArguments?.get(Name.identifier("keys"))?.value?.let { it as? Array<String> }?.let {
-                captures.addAll(it.map { "unowned $it" })
-            }
-            typedRule.resolvedFunction?.annotations?.findAnnotation(FqName("com.lightningkite.butterfly.CaptureWeak"))?.allValueArguments?.get(Name.identifier("keys"))?.value?.let { it as? Array<String> }?.let {
-                captures.addAll(it.map { "weak $it" })
-            }
-            if(captures.isNotEmpty()){
+            annotations.find { it.fqName?.asString() == "com.lightningkite.butterfly.CaptureUnowned" }
+                ?.allValueArguments?.get(
+                    Name.identifier("keys")
+                )
+                ?.value?.let { it as? ArrayList<StringValue> }?.forEach {
+                    captures.add("unowned ${it.value}" )
+                }
+            annotations.find { it.fqName?.asString() == "com.lightningkite.butterfly.CaptureWeak" }
+                ?.allValueArguments?.get(
+                    Name.identifier("keys")
+                )
+                ?.value?.let { it as? ArrayList<StringValue> }?.forEach {
+                    captures.add("weak ${it.value}" )
+                }
+            if (captures.isNotEmpty()) {
                 -'['
                 captures.forEachBetween(
                     forItem = { -it },
@@ -57,7 +76,7 @@ fun SwiftTranslator.registerLambda() {
                         writingParameter++
 //                        -(typedRule.valueParameters.getOrNull(index)?.typeReference ?: betterParameterTypes?.getOrNull(index) ?: it.type)
                         (typedRule.valueParameters.getOrNull(index)?.typeReference)?.let {
-                            if(it.resolvedType?.let { replacements.getType(it)?.protocol } != true) {
+                            if (it.resolvedType?.let { replacements.getType(it)?.protocol } != true) {
                                 -": "
                                 -it
                             }
@@ -74,7 +93,7 @@ fun SwiftTranslator.registerLambda() {
                     )?.allValueArguments?.entries?.first()?.value?.value?.let {
                     -" -> $it"
                 } ?: (betterReturnType ?: resolved.returnType)?.let {
-                if(replacements.getType(it)?.protocol != true) {
+                if (replacements.getType(it)?.protocol != true) {
                     -" -> "
                     -it
                 }
