@@ -92,7 +92,7 @@ fun AndroidLayoutFile.toTypescript(
     out.appendln("// ${name}Xml.ts")
     out.appendln("// Created by Khrysalis XML Typescript")
     out.appendln("//")
-    out.appendln("import { loadHtmlFromString, findViewById, getViewById, replaceViewWithId } from 'butterfly/dist/views/html'")
+    out.appendln("import { loadHtmlFromString, findViewById, getViewById, replaceViewWithId, startupAutoResize } from 'butterfly/dist/views/html'")
     out.appendln("import { customViewSetDelegate } from 'butterfly/dist/views/CustomView'")
     renderImports(projectName, file.relativeTo(base).path, imports, out)
     for(variant in variants) {
@@ -130,18 +130,24 @@ fun AndroidLayoutFile.toTypescript(
         }
     }
     out.appendln("loadHtmlString(): string {")
+    val sizeVariants = ArrayList<Int>()
     for(variant in variants.sortedDescending()) {
         when(variant.firstOrNull()){
             'w' -> {
                 val w = variant.substring(1).filter { it.isDigit() }.toInt()
+                sizeVariants.add(w)
                 out.appendln("if (window.innerWidth > $w) return htmlFor${variant.camelCase()}")
             }
         }
     }
+    sizeVariants.sortDescending()
     out.appendln("return htmlForDefault")
     out.appendln("}")
     out.appendln("setup(dependency: Window): HTMLElement {")
     out.appendln("const view = loadHtmlFromString(this.loadHtmlString())")
+    if(sizeVariants.isNotEmpty()) {
+        out.appendln("startupAutoResize(view, [${sizeVariants.joinToString()}])")
+    }
     out.appendln("this.xmlRoot = view")
     bindings.values.forEach {
         if(it.optional){

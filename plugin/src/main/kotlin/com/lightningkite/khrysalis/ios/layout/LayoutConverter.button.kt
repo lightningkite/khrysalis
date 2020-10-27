@@ -135,7 +135,7 @@ val LayoutConverter.Companion.buttonViews
                     appendln("view.iconLayer = $text")
                 }
                 node.attributeAsSwiftLayer("android:src", "view")?.let { text ->
-                    appendln("view.iconPosition = .top")
+                    appendln("view.iconPosition = .center")
                     appendln("view.iconLayer = $text")
                 }
             },

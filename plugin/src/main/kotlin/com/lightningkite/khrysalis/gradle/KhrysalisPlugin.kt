@@ -23,6 +23,7 @@ import org.apache.tools.ant.taskdefs.condition.Os
 import org.gradle.api.Task
 import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.compile.JavaCompile
+import org.jetbrains.kotlin.ir.backend.js.compile
 import java.io.File
 import java.util.*
 
@@ -132,9 +133,20 @@ class KhrysalisPlugin : Plugin<Project> {
         }
         project.tasks.create("khrysalisConvertKotlinToSwift") { task ->
             task.group = "ios"
-            task.dependsOn("compileDebugKotlin")
+            var compileTask: KotlinCompile? = null
+            project.afterEvaluate {
+                compileTask = project.tasks
+                    .asSequence()
+                    .filter { it.name.startsWith("compile") && it.name.endsWith("Kotlin") }
+                    .mapNotNull { it as? KotlinCompile }
+                    .minBy { it.name.length }
+                compileTask?.let {
+                    println("Conversion depends on ${it.name}")
+                    task.dependsOn(it)
+                }
+            }
             task.doFirst {
-                val originalTask = project.tasks.getByName("compileDebugKotlin") as KotlinCompile
+                val originalTask = compileTask ?: return@doFirst
                 val libraries = originalTask.classpath.asSequence()
                 val files = originalTask.source.toList().asSequence()
                 println("All files: ${files.joinToString("\n")}")
@@ -268,9 +280,19 @@ class KhrysalisPlugin : Plugin<Project> {
         }
         project.tasks.create("khrysalisConvertKotlinToTypescript") { task ->
             task.group = "web"
-            task.dependsOn("compileDebugKotlin")
+            var compileTask: KotlinCompile? = null
+            project.afterEvaluate {
+                compileTask = project.tasks
+                    .asSequence()
+                    .filter { it.name.startsWith("compile") && it.name.endsWith("Kotlin") }
+                    .mapNotNull { it as? KotlinCompile }
+                    .minBy { it.name.length }
+                compileTask?.let {
+                    task.dependsOn(it)
+                }
+            }
             task.doFirst {
-                val originalTask = project.tasks.getByName("compileDebugKotlin") as KotlinCompile
+                val originalTask = compileTask ?: return@doFirst
                 val libraries = originalTask.classpath.asSequence()
                 val files = originalTask.source.toList().asSequence()
                 println("All files: ${files.joinToString("\n")}")
