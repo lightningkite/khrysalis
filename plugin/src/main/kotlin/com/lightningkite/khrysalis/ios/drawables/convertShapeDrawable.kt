@@ -101,7 +101,8 @@ fun convertShapeDrawable(name: String, node: XmlNode, out: Appendable) {
                             ?: corners.attributeAsSwiftDimension("android:topRightRadius")
                         if (radius != null) {
                             appendln("    layer.cornerRadius = $radius")
-                            append("    layer.maskedCorners = [")
+                            appendln("    if #available(iOS 11.0, *) {")
+                            append("        layer.maskedCorners = [")
                             append(
                                 mapOf(
                                     "android:bottomLeftRadius" to ".layerMinXMaxYCorner",
@@ -111,6 +112,7 @@ fun convertShapeDrawable(name: String, node: XmlNode, out: Appendable) {
                                 ).filterKeys { corners.allAttributes.containsKey(it) }.values.joinToString()
                             )
                             appendln("]")
+                            appendln("    }")
                         }
                     }
                 }
