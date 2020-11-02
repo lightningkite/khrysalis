@@ -253,9 +253,11 @@ fun SwiftTranslator.registerClass() {
                 if (it.typeReference?.resolvedType?.getJetTypeFqName(false) == "kotlin.Double") {
                     it.defaultValue?.let { default ->
                         -it.nameIdentifier
-                        -": try values.decodeDoubleIfPresent(forKey: ."
+                        -": values.contains(."
                         -it.nameIdentifier
-                        -") ?? "
+                        -") ? try values.decodeDouble(forKey: ."
+                        -it.nameIdentifier
+                        -") : "
                         -default
                     } ?: run {
                         -it.nameIdentifier
@@ -266,24 +268,28 @@ fun SwiftTranslator.registerClass() {
                 } else if (it.typeReference?.resolvedType?.getJetTypeFqName(false) == "kotlin.Double?") {
                     it.defaultValue?.let { default ->
                         -it.nameIdentifier
-                        -": try values.decodeDoubleIfPresent(forKey: ."
+                        -": values.contains(."
                         -it.nameIdentifier
-                        -") ?? "
+                        -") ? try values.decodeDoubleOrNull(forKey: ."
+                        -it.nameIdentifier
+                        -") : "
                         -default
                     } ?: run {
                         -it.nameIdentifier
-                        -": try values.decodeDoubleIfPresent(forKey: ."
+                        -": try values.decodeDoubleOrNull(forKey: ."
                         -it.nameIdentifier
                         -")"
                     }
                 } else {
                     it.defaultValue?.let { default ->
                         -it.nameIdentifier
-                        -": try values.decodeIfPresent("
+                        -": values.contains(."
+                        -it.nameIdentifier
+                        -") ? try values.decode("
                         -it.typeReference
                         -".self, forKey: ."
                         -it.nameIdentifier
-                        -") ?? "
+                        -") : "
                         -default
                     } ?: run {
                         -it.nameIdentifier
