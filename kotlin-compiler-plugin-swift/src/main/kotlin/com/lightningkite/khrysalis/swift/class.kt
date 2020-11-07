@@ -251,34 +251,36 @@ fun SwiftTranslator.registerClass() {
             -"self.init(\n"
             typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEachBetween(forItem = {
                 if (it.typeReference?.resolvedType?.getJetTypeFqName(false) == "kotlin.Double") {
-                    it.defaultValue?.let { default ->
-                        -it.nameIdentifier
-                        -": values.contains(."
-                        -it.nameIdentifier
-                        -") ? try values.decodeDouble(forKey: ."
-                        -it.nameIdentifier
-                        -") : "
-                        -default
-                    } ?: run {
-                        -it.nameIdentifier
-                        -": try values.decodeDouble(forKey: ."
-                        -it.nameIdentifier
-                        -")"
-                    }
-                } else if (it.typeReference?.resolvedType?.getJetTypeFqName(false) == "kotlin.Double?") {
-                    it.defaultValue?.let { default ->
-                        -it.nameIdentifier
-                        -": values.contains(."
-                        -it.nameIdentifier
-                        -") ? try values.decodeDoubleOrNull(forKey: ."
-                        -it.nameIdentifier
-                        -") : "
-                        -default
-                    } ?: run {
-                        -it.nameIdentifier
-                        -": try values.decodeDoubleOrNull(forKey: ."
-                        -it.nameIdentifier
-                        -")"
+                    if(it.typeReference?.resolvedType?.isMarkedNullable == true){
+                        it.defaultValue?.let { default ->
+                            -it.nameIdentifier
+                            -": values.contains(."
+                            -it.nameIdentifier
+                            -") ? try values.decodeDoubleOrNull(forKey: ."
+                            -it.nameIdentifier
+                            -") : "
+                            -default
+                        } ?: run {
+                            -it.nameIdentifier
+                            -": try values.decodeDoubleOrNull(forKey: ."
+                            -it.nameIdentifier
+                            -")"
+                        }
+                    } else {
+                        it.defaultValue?.let { default ->
+                            -it.nameIdentifier
+                            -": values.contains(."
+                            -it.nameIdentifier
+                            -") ? try values.decodeDouble(forKey: ."
+                            -it.nameIdentifier
+                            -") : "
+                            -default
+                        } ?: run {
+                            -it.nameIdentifier
+                            -": try values.decodeDouble(forKey: ."
+                            -it.nameIdentifier
+                            -")"
+                        }
                     }
                 } else {
                     it.defaultValue?.let { default ->

@@ -45,6 +45,7 @@ fun TypescriptTranslator.registerReceiver() {
             return@handle resolved.getImplicitReceiverValue() != null
                     && targetDescriptor.isCompanionObject
                     && targetDescriptor != typedRule.containingClass()?.resolvedClass
+                    && targetDescriptor != typedRule.parentOfType<KtObjectDeclaration>()?.resolvedClass
         },
         priority = 100,
         action = {

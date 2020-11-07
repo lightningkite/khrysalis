@@ -143,10 +143,18 @@ class KhrysalisPlugin : Plugin<Project> {
                 compileTask?.let {
                     println("Conversion depends on ${it.name}")
                     task.dependsOn(it)
+                } ?: run {
+                    println("WARNING: Could find no compile*Kotlin tasks - tasks available: ${project.tasks.joinToString { it.name }}")
                 }
             }
             task.doFirst {
-                val originalTask = compileTask ?: return@doFirst
+                val originalTask = compileTask
+                    ?: project.tasks
+                        .asSequence()
+                        .filter { it.name.startsWith("compile") && it.name.endsWith("Kotlin") }
+                        .mapNotNull { it as? KotlinCompile }
+                        .minBy { it.name.length }
+                    ?: throw IllegalStateException("Could not find compile*Kotlin tasks - what's up with your project?")
                 val libraries = originalTask.classpath.asSequence()
                 val files = originalTask.source.toList().asSequence()
                 println("All files: ${files.joinToString("\n")}")
@@ -292,7 +300,13 @@ class KhrysalisPlugin : Plugin<Project> {
                 }
             }
             task.doFirst {
-                val originalTask = compileTask ?: return@doFirst
+                val originalTask = compileTask
+                    ?: project.tasks
+                        .asSequence()
+                        .filter { it.name.startsWith("compile") && it.name.endsWith("Kotlin") }
+                        .mapNotNull { it as? KotlinCompile }
+                        .minBy { it.name.length }
+                    ?: throw IllegalStateException("Could not find compile*Kotlin tasks - what's up with your project?")
                 val libraries = originalTask.classpath.asSequence()
                 val files = originalTask.source.toList().asSequence()
                 println("All files: ${files.joinToString("\n")}")

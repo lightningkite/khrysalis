@@ -1,7 +1,7 @@
 package com.test.functions
 
 import com.test.JsName
-import com.lightningkite.khrysalis.bytes.Data
+import com.lightningkite.butterfly.bytes.Data
 
 fun topLevelFunction(){
     println("Hello world!")

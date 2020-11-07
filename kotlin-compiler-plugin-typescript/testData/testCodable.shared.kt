@@ -1,6 +1,6 @@
 package com.test.codable
 
-import com.lightningkite.khrysalis.Codable
+import com.lightningkite.butterfly.Codable
 import com.test.annot.JsonProperty
 
 data class Point(@JsonProperty("x_better") val x: Double, val y: Double): Codable
