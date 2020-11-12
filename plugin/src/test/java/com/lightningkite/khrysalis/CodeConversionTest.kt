@@ -1,33 +1,28 @@
 package com.lightningkite.khrysalis
 
+import com.lightningkite.khrysalis.ios.swift.convertToSwift
 import org.junit.Test
 import java.io.File
 import java.net.URL
 
 class CodeConversionTest {
 
-//    @Test
-//    fun everything() {
-//        val kotlinFiles = File("./testData/shared")
-//        val swiftFiles = File("./testDataOutput/shared")
-//        val typescriptFiles = File("./testDataOutputTs/shared")
+    /**
+     * How do we set this up?
+     *
+     * What we want:
+     * - Full use of Butterfly, ideally
+     */
+
+    @Test
+    fun everything() {
+//        val kotlinFiles = File("./testData/kotlin")
+//        val swiftFiles = File("./testData/swift")
+//        val typescriptFiles = File("./testData/typescript")
 //
 //        val clean = false
 //
-////        val isMac = false
 //        val isMac = System.getProperty("os.name").toLowerCase().let { it.contains("osx") || it.contains("mac") }
-//
-//        if (isMac) {
-//            convertKotlinToSwiftByFolder(
-//                interfacesOut = File("./testDataOutput/interfaces.json").also { it.parentFile.mkdirs() },
-//                baseKotlin = File("./testData/shared"),
-//                baseSwift = File("./testDataOutput/shared").also { it.mkdirs() },
-//                clean = true,
-//                setup = {
-//                    this.imports = listOf()
-//                }
-//            )
-//        }
 //
 //        val standardLibraryCopy = File("build/temp/std-lib.jar").also { it.parentFile.mkdirs() }
 //        if (!standardLibraryCopy.exists()) {
@@ -38,6 +33,18 @@ class CodeConversionTest {
 //                        input.copyTo(out)
 //                    }
 //            }
+//        }
+//
+//        if (isMac) {
+//            convertToSwift(
+//                interfacesOut = File("./testDataOutput/interfaces.json").also { it.parentFile.mkdirs() },
+//                baseKotlin = File("./testData/shared"),
+//                baseSwift = File("./testDataOutput/shared").also { it.mkdirs() },
+//                clean = true,
+//                setup = {
+//                    this.imports = listOf()
+//                }
+//            )
 //        }
 //        convertToTypescript(
 //            projectName = null,
@@ -123,5 +130,5 @@ class CodeConversionTest {
 //            }
 //            throw Exception()
 //        }
-//    }
+    }
 }
