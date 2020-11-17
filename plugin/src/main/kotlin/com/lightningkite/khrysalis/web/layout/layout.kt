@@ -99,6 +99,7 @@ internal fun HtmlTranslator.layout() {
             subrule.allAttributes["android:layout_weight"]?.let { value ->
                 child.style["flex-grow"] = value
                 child.style["flex-shrink"] = value
+                child.style["flex-basis"] = "0"
             }
             child
         })
