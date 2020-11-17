@@ -31,12 +31,3 @@ tasks.create("clean", Delete::class.java) {
     delete(rootProject.buildDir)
 }
 
-idea {
-    module {
-        excludeDirs.add(file("ios"))
-        excludeDirs.add(file("ios-bluetooth"))
-        excludeDirs.add(file("ios-fcm"))
-        excludeDirs.add(file("ios-maps"))
-        excludeDirs.add(file("ios-qr"))
-    }
-}

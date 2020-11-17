@@ -6,7 +6,7 @@ import com.lightningkite.khrysalis.ios.*
 val LayoutConverter.Companion.layoutViews
     get() = LayoutConverter(
         viewTypes = ViewType.mapOf(
-            ViewType("com.lightningkite.khrysalis.views.android.SwapView", "SwapView", "View") { node -> },
+            ViewType("com.lightningkite.butterfly.views.widget.SwapView", "SwapView", "View") { node -> },
             ViewType("androidx.core.widget.NestedScrollView", "ScrollViewVertical", "ScrollView") { node -> },
             ViewType("ScrollView", "ScrollViewVertical", "View") { node ->
                 node.attributeAsBoolean("android:fillViewport")?.let {
@@ -74,9 +74,9 @@ val LayoutConverter.Companion.layoutViews
                         appendln("),")
 
                         append("size: CGSize(width: ")
-                        append(child.attributeAsSwiftDimension("android:layout_width") ?: "0")
+                        append(child.attributeAsSwiftDimension("android:layout_width") ?: "-1")
                         append(", height: ")
-                        append(child.attributeAsSwiftDimension("android:layout_height") ?: "0")
+                        append(child.attributeAsSwiftDimension("android:layout_height") ?: "-1")
                         appendln("),")
 
                         append(
@@ -141,9 +141,9 @@ val LayoutConverter.Companion.layoutViews
                     appendln("),")
 
                     append("size: CGSize(width: ")
-                    append(child.attributeAsSwiftDimension("android:layout_width") ?: "0")
+                    append(child.attributeAsSwiftDimension("android:layout_width") ?: "-1")
                     append(", height: ")
-                    append(child.attributeAsSwiftDimension("android:layout_height") ?: "0")
+                    append(child.attributeAsSwiftDimension("android:layout_height") ?: "-1")
                     appendln("),")
 
                     append(

@@ -1,7 +1,7 @@
 package com.test.functions
 
 import com.test.JsName
-import com.lightningkite.khrysalis.bytes.Data
+import com.lightningkite.butterfly.bytes.Data
 
 fun topLevelFunction(){
     println("Hello world!")
@@ -22,6 +22,9 @@ fun varargFunction(vararg numbers: Int){
 
 class TestClass {
     var member: Int? = null
+    fun chain(): TestClass {
+        return this
+    }
     fun memberFunction(a: Int = 2, b: Int = 3, c: Int = 4){
         println("Hello from TestClass!")
     }
@@ -61,6 +64,11 @@ class TestClass {
         extensionFunction()
         this.extensionFunction()
     }
+    fun memberVarargTestFunction(vararg values: Int) {
+        for(item in values){
+            println(item)
+        }
+    }
 }
 
 class TestClass2 {
@@ -80,6 +88,12 @@ fun TestClass.extensionFunction(str: String){
 }
 fun <T, E> T.genericExtensionFunction(element: E){
     println("Hello $element from $this!")
+}
+
+fun varargTestFunction(vararg values: Int) {
+    for(item in values){
+        println(item)
+    }
 }
 
 inline fun <reified T> resolve(): T? {
@@ -102,8 +116,44 @@ fun main(){
     instance.extensionFunction()
     instance.extensionFunction("asdf")
     instance.genericExtensionFunction(8)
+    instance.memberVarargTestFunction(1,2,3,4)
+    instance.memberVarargTestFunction()
+
+    val maybeInstance: TestClass? = if(instance.member == 2) instance else null
+    maybeInstance?.member = 2
+    maybeInstance?.chain()?.chain()?.chain()?.chain()
+    maybeInstance?.memberFunction()
+    maybeInstance?.memberFunction(a = 1)
+    maybeInstance?.memberFunction(b = 1)
+    maybeInstance?.memberFunction(c = 1)
+    maybeInstance?.memberFunction(c = 1, a = 2)
+    maybeInstance?.memberGenericFunction(32 /*comment*/)
+    maybeInstance?.testExtension()
+    maybeInstance?.extensionFunction()
+    maybeInstance?.extensionFunction("asdf")
+    maybeInstance?.genericExtensionFunction(8)
+    maybeInstance?.memberVarargTestFunction(1,2,3,4)
+    maybeInstance?.memberVarargTestFunction()
+
+    val result0 = maybeInstance?.chain()?.chain()?.chain()?.chain()
+    val result1 = maybeInstance?.member = 2
+    val result2 = maybeInstance?.memberFunction()
+    val result3 = maybeInstance?.memberFunction(a = 1)
+    val result4 = maybeInstance?.memberFunction(b = 1)
+    val result5 = maybeInstance?.memberFunction(c = 1)
+    val result6 = maybeInstance?.memberFunction(c = 1, a = 2)
+    val result7 = maybeInstance?.memberGenericFunction(32 /*comment*/)
+    val result8 = maybeInstance?.testExtension()
+    val result9 = maybeInstance?.extensionFunction()
+    val result10 = maybeInstance?.extensionFunction("asdf")
+    val result11 = maybeInstance?.genericExtensionFunction(8)
+    val result12 = maybeInstance?.memberVarargTestFunction(1,2,3,4)
+    val result13 = maybeInstance?.memberVarargTestFunction()
+
     val x: Int? = resolve()
     val y = resolve<String>()
+    varargTestFunction()
+    varargTestFunction(1, 2, 3, 4)
 }
 
 val anotherThing = 2

@@ -35,7 +35,7 @@ fun convertShapeDrawable(webDrawablesFolder: File, currentDrawable: String, sele
             }
             out.appendln("border-radius: 50%;")
         }
-        "rectangle" -> {
+        else -> {
             node.children.find { it.name == "gradient" }?.let {
                 val colors = listOfNotNull(
                     it.attributeAsCssColor("android:startColor"),

@@ -2,7 +2,7 @@ package com.test.types
 
 import com.test.classes.TestInterface
 import com.test.classes.Weird
-import com.lightningkite.khrysalis.*
+import com.lightningkite.butterfly.*
 
 typealias MyInteger = Int
 

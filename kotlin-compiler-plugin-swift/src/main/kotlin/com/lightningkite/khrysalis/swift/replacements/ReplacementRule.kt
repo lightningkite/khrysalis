@@ -2,6 +2,7 @@ package com.lightningkite.khrysalis.swift.replacements
 
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
+import java.util.*
 
 @JsonTypeInfo(
     use = JsonTypeInfo.Id.NAME,
@@ -32,10 +33,6 @@ import com.fasterxml.jackson.annotation.JsonTypeInfo
     JsonSubTypes.Type(
         CastRule::class,
         name = "cast"
-    ),
-    JsonSubTypes.Type(
-        AttributeReplacement::class,
-        name = "attribute"
     )
 )
 interface ReplacementRule : Comparable<ReplacementRule> {
@@ -47,4 +44,14 @@ interface ReplacementRule : Comparable<ReplacementRule> {
         }
         return result
     }
+    fun merge(other: ReplacementRule): Boolean {
+        return false
+    }
+}
+
+fun <E: ReplacementRule> TreeSet<E>.merge(item: E) {
+    for(existing in this){
+        if(existing.merge(item)) return
+    }
+    add(item)
 }

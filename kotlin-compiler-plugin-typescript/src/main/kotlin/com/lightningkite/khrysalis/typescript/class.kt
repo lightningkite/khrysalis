@@ -188,6 +188,15 @@ fun TypescriptTranslator.registerClass() {
         -"interface "
         -typedRule.nameIdentifier
         -typedRule.typeParameterList
+        typedRule.superTypeListEntries.mapNotNull { it as? KtSuperTypeEntry }
+            .filter { it.typeReference?.resolvedType?.getJetTypeFqName(false) !in skippedExtensions }
+            .takeUnless { it.isEmpty() }?.let {
+                -" extends "
+                it.forEachBetween(
+                    forItem = { -it.typeReference },
+                    between = { -", " }
+                )
+            }
         -" {\n"
         -typedRule.body
         -"}\n"
@@ -371,10 +380,10 @@ fun TypescriptTranslator.registerClass() {
 
         if (typedRule.superTypeListEntries
                 .mapNotNull { it as? KtSuperTypeEntry }
-                .any { it.typeReference?.resolvedType?.getJetTypeFqName(false) == "com.lightningkite.khrysalis.Codable" }
+                .any { it.typeReference?.resolvedType?.getJetTypeFqName(false) == "com.lightningkite.butterfly.Codable" }
         ) {
             //Generate codable constructor
-            out.addImport("khrysalis/dist/net/jsonParsing", "parse", "parseJsonTyped")
+            out.addImport("butterfly/dist/net/jsonParsing", "parse", "parseJsonTyped")
 
             if(!typedRule.isEnum()){
                 -"public static fromJson"
@@ -447,7 +456,7 @@ fun TypescriptTranslator.registerClass() {
                 -"public hashCode(): number {\nlet hash = 17;\n"
                 typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEach { param ->
                     -"hash = 31 * hash + "
-                    out.addImport("khrysalis/dist/Kotlin", "hashAnything")
+                    out.addImport("butterfly/dist/Kotlin", "hashAnything")
                     -"hashAnything(this."
                     -param.nameIdentifier
                     -")"
@@ -463,7 +472,7 @@ fun TypescriptTranslator.registerClass() {
                 -typedRule.nameIdentifier
                 typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEach { param ->
                     -" && "
-                    out.addImport("khrysalis/dist/Kotlin", "safeEq")
+                    out.addImport("butterfly/dist/Kotlin", "safeEq")
                     -"safeEq(this."
                     -param.nameIdentifier
                     -", "

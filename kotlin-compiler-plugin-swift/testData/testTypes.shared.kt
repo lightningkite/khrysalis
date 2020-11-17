@@ -1,6 +1,6 @@
 package com.test
 
-import com.lightningkite.khrysalis.*
+import com.lightningkite.butterfly.*
 
 private typealias TypesMyInt = Int
 

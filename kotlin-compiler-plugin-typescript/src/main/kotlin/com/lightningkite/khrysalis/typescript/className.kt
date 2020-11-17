@@ -7,16 +7,16 @@ import org.jetbrains.kotlin.psi.KtClassOrObject
 
 
 val skippedExtensions = setOf(
-    "com.lightningkite.khrysalis.AnyObject",
-    "com.lightningkite.khrysalis.AnyHashable",
-    "com.lightningkite.khrysalis.Hashable",
-    "com.lightningkite.khrysalis.Equatable",
-    "com.lightningkite.khrysalis.IsHashable",
-    "com.lightningkite.khrysalis.IsEquatable",
-    "com.lightningkite.khrysalis.Codable",
-    "com.lightningkite.khrysalis.IsCodable",
-    "com.lightningkite.khrysalis.IsCodableAndEquatable",
-    "com.lightningkite.khrysalis.IsCodableAndHashable"
+    "com.lightningkite.butterfly.AnyObject",
+    "com.lightningkite.butterfly.AnyHashable",
+    "com.lightningkite.butterfly.Hashable",
+    "com.lightningkite.butterfly.Equatable",
+    "com.lightningkite.butterfly.IsHashable",
+    "com.lightningkite.butterfly.IsEquatable",
+    "com.lightningkite.butterfly.Codable",
+    "com.lightningkite.butterfly.IsCodable",
+    "com.lightningkite.butterfly.IsCodableAndEquatable",
+    "com.lightningkite.butterfly.IsCodableAndHashable"
 //    "com.lightningkite.khrysalis.SomeEnum"
 )
 

@@ -41,7 +41,7 @@ fun SwiftTranslator.registerSpecialLet() {
         typedRule.entries.forEachBetween(
             forItem = { (basis, lambda) ->
                 -"if let "
-                -(lambda.valueParameters.firstOrNull()?.name ?: "it")
+                -(lambda.valueParameters.firstOrNull()?.name?.safeSwiftIdentifier() ?: "it")
                 -" = ("
                 -basis
                 -") { \n"
@@ -69,11 +69,16 @@ fun SwiftTranslator.registerSpecialLet() {
     ) {
         typedRule.entries.forEachBetween(
             forItem = { (basis, lambda) ->
-                val basisMode = (basis as? KtQualifiedExpression)?.let { getAccessMode(this@registerSpecialLet, it) } ?: AccessMode.PLAIN_DOT
-                if(!basisMode.resultAllowsOptionalOp) -"("
+                val basisMode = (basis as? KtQualifiedExpression)?.let { getAccessMode(this@registerSpecialLet, it) }
+                    ?: AccessMode.PLAIN_DOT
+                if (!basisMode.resultAllowsOptionalOp) -"("
                 -basis
-                if(!basisMode.resultAllowsOptionalOp) -")"
-                -".map { ("
+                if (!basisMode.resultAllowsOptionalOp) -")"
+                if (lambda.functionLiteral.resolvedFunction?.returnType?.isMarkedNullable == true) {
+                    -".flatMap { ("
+                } else {
+                    -".map { ("
+                }
                 -(lambda.valueParameters.firstOrNull()?.name ?: "it")
                 -") in \n"
                 -lambda.bodyExpression
@@ -116,7 +121,7 @@ fun SwiftTranslator.registerSpecialLet() {
         outer@ while (true) {
             (current.right as? KtSafeQualifiedExpression)?.let { r ->
                 val s = r.selectorExpression as? KtCallExpression
-                if(s != null && s.resolvedCall?.resultingDescriptor?.fqNameOrNull()?.asString() == "kotlin.let") {
+                if (s != null && s.resolvedCall?.resultingDescriptor?.fqNameOrNull()?.asString() == "kotlin.let") {
                     entries.add(
                         r.receiverExpression to (r.selectorExpression as KtCallExpression).lambdaArguments.first()
                             .getLambdaExpression()!!

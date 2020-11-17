@@ -140,6 +140,7 @@ fun String.safeSwiftIdentifier(): String = when(this){
     "throws",
     "true",
     "try" -> "`$this`"
+    "description" -> "myDescription"
     else -> this
 }
 /*

@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.swift
 
+import com.lightningkite.khrysalis.determineTranslatable
 import org.jetbrains.kotlin.analyzer.AnalysisResult
 import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
@@ -28,7 +29,7 @@ class KotlinSwiftCLP : CommandLineProcessor {
         val KEY_PROJECT_NAME = CompilerConfigurationKey.create<String>(KEY_PROJECT_NAME_NAME)
         const val KEY_OUTPUT_DIRECTORY_NAME = "outputDirectory"
         val KEY_OUTPUT_DIRECTORY = CompilerConfigurationKey.create<File>(KEY_OUTPUT_DIRECTORY_NAME)
-        const val PLUGIN_ID = "com.lightningkite.khrysalis.swift"
+        const val PLUGIN_ID = "com.lightningkite.butterfly.swift"
     }
 
     override val pluginId: String get() = PLUGIN_ID
@@ -92,6 +93,8 @@ class KotlinSwiftExtension(
         files: Collection<KtFile>
     ): AnalysisResult? {
 
+        output.mkdirs()
+
         collector?.report(CompilerMessageSeverity.INFO, "Files: ${files.joinToString { it.virtualFilePath }}")
 
         collector?.report(CompilerMessageSeverity.INFO, "Completed analysis for ${projectName}.")
@@ -100,8 +103,8 @@ class KotlinSwiftExtension(
             projectName = projectName,
             bindingContext = ctx,
             commonPath = files.asSequence()
+                .filter { determineTranslatable(it) }
                 .map { it.virtualFilePath }
-                .filter { it.endsWith(".shared.kt") }
                 .takeUnless { it.none() }
                 ?.reduce { acc, s -> acc.commonPrefixWith(s) }
                 ?.substringBeforeLast('/')
@@ -125,6 +128,7 @@ class KotlinSwiftExtension(
 
         //Load equivalents
         dependencies.asSequence().plus(output)
+            .also { println("Looking for equivalents in ${it.joinToString()}") }
             .flatMap { it.walkTopDown() }
             .filter {
                 it.name.endsWith(".swift.yaml") || it.name.endsWith(".swift.yml")
@@ -145,10 +149,7 @@ class KotlinSwiftExtension(
 
 
         for (file in files) {
-            if (!file.virtualFilePath.endsWith(".shared.kt")) {
-                collector?.report(CompilerMessageSeverity.INFO, "Skipping $file")
-                continue
-            }
+            if(!determineTranslatable(file)) continue
             try {
                 val outputFile = output
                     .resolve(file.virtualFilePath.removePrefix(translator.commonPath))

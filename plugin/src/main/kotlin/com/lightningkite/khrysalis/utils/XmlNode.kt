@@ -12,8 +12,11 @@ class XmlNode(
     val styles: Styles,
     val directory: File,
     val baseDirectoryAlt: File? = null,
-    val additionalAttributes: Map<String, String> = mapOf()
+    val additionalAttributes: Map<String, String> = mapOf(),
+    var parent: XmlNode? = null
 ): VirtualType {
+
+    val tags = HashMap<String, String>(0)
 
     class Attribute(val parent: XmlNode, override val type: String, val value: String): VirtualType {
         override val parts: Iterable<Any> get() = listOf(value)
@@ -23,6 +26,8 @@ class XmlNode(
         get() = allAttributes.entries.map { it -> Attribute(this, it.key, it.value) }
     override val type: String
         get() = element.nodeValue
+
+    fun attribute(key: String): Attribute? = allAttributes[key]?.let { Attribute(this, key, it) }
 
     val name get() = element.nodeName
     val allAttributes: Map<String, String> by lazy {
@@ -79,7 +84,7 @@ class XmlNode(
                                 read(file, styles)
                             XmlNode(it, styles, directory, additionalAttributes = node.allAttributes)
                         } catch(e:Exception){
-                            e.printStackTrace()
+                            println("Couldn't find include file: ${e.message}")
                             XmlNode(it, styles, directory)
                         }
                     } else {

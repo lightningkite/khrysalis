@@ -1,4 +1,4 @@
-package com.lightningkite.khrysalis
+package com.lightningkite.butterfly
 
 import java.lang.ref.WeakReference
 import kotlin.reflect.KProperty

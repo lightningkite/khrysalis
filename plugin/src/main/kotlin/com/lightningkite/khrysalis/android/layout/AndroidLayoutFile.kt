@@ -168,7 +168,9 @@ data class AndroidLayoutFile(
     |
     |import android.widget.*
     |import android.view.*
-    |import com.lightningkite.khrysalis.views.*
+    |import com.lightningkite.butterfly.views.widget.*
+    |import com.lightningkite.butterfly.views.*
+    |import com.lightningkite.butterfly.android.*
     |import $applicationPackage.R
     |
     |class ${name}Xml {
@@ -178,7 +180,7 @@ data class AndroidLayoutFile(
     |    ${sublayouts.values.joinToString("\n|    ") { it.declaration }}
     |    lateinit var xmlRoot: View
     |
-    |    fun setup(dependency: ViewDependency): View {
+    |    fun setup(dependency: ActivityAccess): View {
     |        val view = LayoutInflater.from(dependency.context).inflate(R.layout.$fileName, null, false)
     |        return setup(view)
     |    }

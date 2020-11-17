@@ -215,6 +215,7 @@ private fun generateFile(
             }
         }
 
+        line("@file:SharedCode")
         line("//")
         line("// ${viewName}VG.swift")
         line("// Created by Khrysalis Prototype Generator")
@@ -226,10 +227,11 @@ private fun generateFile(
         line("")
         line("import android.widget.*")
         line("import android.view.*")
-        line("import com.lightningkite.khrysalis.*")
-        line("import com.lightningkite.khrysalis.views.*")
-        line("import com.lightningkite.khrysalis.observables.*")
-        line("import com.lightningkite.khrysalis.observables.binding.*")
+        line("import com.lightningkite.butterfly.*")
+        line("import com.lightningkite.butterfly.android.*")
+        line("import com.lightningkite.butterfly.views.*")
+        line("import com.lightningkite.butterfly.observables.*")
+        line("import com.lightningkite.butterfly.observables.binding.*")
         line("import $applicationPackage.R")
         line("import $applicationPackage.layouts.*")
         line("")
@@ -268,7 +270,7 @@ private fun generateFile(
                 .trim()}"""")
             line("")
             line("${CodeSection.sectionMarker} Generate Start ${CodeSection.overwriteMarker}")
-            line("""override fun generate(dependency: ViewDependency): View {""")
+            line("""override fun generate(dependency: ActivityAccess): View {""")
             tab {
                 line("val xml = ${viewName}Xml()")
                 line("val view = xml.setup(dependency)")

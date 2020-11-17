@@ -1,3 +1,0 @@
-- id: android.view.View.setBackgroundResource
-  type: call
-  template: ~this~.backgroundDrawable = ~0~

@@ -21,6 +21,7 @@ class TypescriptFileEmitter(val translator: TypescriptTranslator, val file: KtFi
     val out = SmartTabWriter(stringBuilder)
     private val imports = HashMap<String, TemplatePart.Import>()
     val importedFqs = HashSet<String>()
+    val missedImports = HashSet<String>()
     var fileEndingActions = ArrayList<() -> Unit>()
 
     companion object {
@@ -32,8 +33,8 @@ class TypescriptFileEmitter(val translator: TypescriptTranslator, val file: KtFi
         val relPath = file.virtualFilePath.removePrefix(translator.commonPath)
         writer.appendln("// File: $relPath")
         writer.appendln("// Package: ${file.packageFqName.asString()}")
-//        importedFqs.forEach {
-//            writer.appendln("// FQImport: $it")
+//        missedImports.forEach {
+//            writer.appendln("// Couldn't find import for ${it}")
 //        }
         renderImports(translator.projectName, relPath, imports.values, writer)
         writer.appendln()
@@ -85,7 +86,7 @@ class TypescriptFileEmitter(val translator: TypescriptTranslator, val file: KtFi
         importedFqs.add(n)
         useDecl.fqNamesToCheck.firstOrNull {
             addImportFromFq(it, name)
-        }
+        } ?: missedImports.add(n)
     }
 
     fun addImport(part: TemplatePart.Import) {

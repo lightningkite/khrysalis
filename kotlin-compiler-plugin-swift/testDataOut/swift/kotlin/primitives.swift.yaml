@@ -9,22 +9,22 @@
 - id: kotlin.Any
   type: type
   template: Any
-- id: com.lightningkite.khrysalis.AnyObject
+- id: com.lightningkite.butterfly.AnyObject
   type: type
   template: AnyObject
-- id: com.lightningkite.khrysalis.AnyHashable
+- id: com.lightningkite.butterfly.AnyHashable
   type: type
   template: Hashable
-- id: com.lightningkite.khrysalis.AnyEquatable
+- id: com.lightningkite.butterfly.AnyEquatable
   type: type
   template: Equatable
-- id: com.lightningkite.khrysalis.Hashable
+- id: com.lightningkite.butterfly.Hashable
   type: type
   template: Hashable
-- id: com.lightningkite.khrysalis.Equatable
+- id: com.lightningkite.butterfly.Equatable
   type: type
   template: Equatable
-- id: com.lightningkite.khrysalis.SomeEnum
+- id: com.lightningkite.butterfly.SomeEnum
   type: type
   template: SomeEnum
 

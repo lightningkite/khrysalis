@@ -15,6 +15,9 @@ val LayoutConverter.Companion.displayViews
                     bindings[name] =
                         converter.viewTypes[node.name]?.iosName ?: (node.name.substringAfterLast('.'))
                 }
+                node.attributeAsBoolean("tools:focusAtStartup")?.let { raw ->
+                    appendln("view.focusAtStartup = $raw")
+                }
                 node.allAttributes["android:background"]?.let { raw ->
                     when {
                         raw.startsWith("@drawable/") -> {
@@ -51,7 +54,7 @@ val LayoutConverter.Companion.displayViews
                     appendln("view.transform = CGAffineTransform(rotationAngle: ${it * PI / 180.0})")
                 }
                 node.allAttributes["android:visibility"]?.let {
-                    appendln("view.visibility = View.${it.toUpperCase()}")
+                    appendln("view.visibility = UIView.${it.toUpperCase()}")
                 }
                 node.allAttributes["tools:systemEdges"]?.let {
                     appendln("view.safeInsets(align: ${alignFill(it)})")
@@ -72,7 +75,7 @@ val LayoutConverter.Companion.displayViews
                     appendln("view.color = R.color.colorPrimary")
                 }
             },
-            ViewType("com.lightningkite.khrysalis.views.android.HorizontalProgressBar", "UIProgressView", "View") { node ->
+            ViewType("com.lightningkite.butterfly.views.widget.HorizontalProgressBar", "UIProgressView", "View") { node ->
                 appendln("view.progressViewStyle = .bar")
                 if(!setToColor(node, "android:progressTint") { it, s ->
                     appendln("view.progressTintColor = $it")
@@ -97,7 +100,7 @@ val LayoutConverter.Companion.displayViews
 //                "view.transform = CGAffineTransform(rotationAngle: ${it * PI / 180.0}"
 //            }
             },
-            ViewType("com.lightningkite.khrysalis.views.VideoPlayer", "UIVideoView", "View") { node ->
+            ViewType("com.lightningkite.butterfly.views.widget.VideoPlayer", "UIVideoView", "View") { node ->
             },
             ViewType("de.hdodenhof.circleimageview.CircleImageView", "UIImageView", "ImageView") { node ->
 
@@ -114,7 +117,7 @@ val LayoutConverter.Companion.displayViews
             ViewType("TextView", "UILabel", "View") { node ->
                 handleCommonText(node)
             },
-            ViewType("com.lightningkite.khrysalis.views.CustomView", "CustomView", "View") { node ->
+            ViewType("com.lightningkite.butterfly.views.widget.CustomView", "CustomView", "View") { node ->
 
                 node.allAttributes["android:id"]?.let { raw ->
                     val id = raw.removePrefix("@+id/").removePrefix("@id/").camelCase()
@@ -129,7 +132,7 @@ val LayoutConverter.Companion.displayViews
             },
 
             ViewType(
-                "com.lightningkite.khrysalis.views.android.SelectableText",
+                "com.lightningkite.butterfly.views.widget.SelectableText",
                 "SelectableText",
                 "TextView",
                 handlesPadding = true

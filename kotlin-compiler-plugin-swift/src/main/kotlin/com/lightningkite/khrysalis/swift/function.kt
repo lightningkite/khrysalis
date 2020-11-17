@@ -27,6 +27,7 @@ val FunctionDescriptor.swiftNameOverridden: String?
         ?.value
         ?.value
         ?.toString()?.safeSwiftIdentifier() ?: when {
+        this is ConstructorDescriptor && this.constructedClass.swiftTopLevelMessedUp -> this.constructedClass.swiftTopLevelName
         this.worksAsSwiftConstraint() && this.containingDeclaration !is ClassDescriptor -> null
         extensionReceiverParameter != null -> {
             extensionReceiverParameter!!
@@ -102,7 +103,9 @@ fun SwiftTranslator.registerFunction() {
 
     }
     handle<KtNamedFunction>(
-        condition = { typedRule.parentOfType<KtClassBody>()?.parentOfType<KtClass>()?.isInterface() == true },
+        condition = {
+            typedRule.let { it.parent as? KtClassBody }?.let { it.parent as? KtClass }?.isInterface() == true
+        },
         priority = 100,
         action = {
             if (typedRule.receiverTypeReference != null) throw IllegalArgumentException("Receivers on interface methods aren't supported yet.")
@@ -201,13 +204,13 @@ fun SwiftTranslator.registerFunction() {
         typedRule.typeReference?.let {
             -": "
             if (typedRule.resolvedValueParameter?.annotations?.let {
-                    it.hasAnnotation(FqName("com.lightningkite.khrysalis.Modifies")) || it.hasAnnotation(FqName("com.lightningkite.khrysalis.modifies"))
+                    it.hasAnnotation(FqName("com.lightningkite.butterfly.Modifies")) || it.hasAnnotation(FqName("com.lightningkite.butterfly.modifies"))
                 } == true) {
                 -"inout "
             }
-            writingParameter = true
+            writingParameter++
             -it
-            writingParameter = false
+            writingParameter--
         }
         typedRule.defaultValue?.let {
             -" = "
@@ -221,9 +224,9 @@ fun SwiftTranslator.registerFunction() {
         action = {
             -typedRule.nameIdentifier
             -": "
-            writingParameter = true
+            writingParameter++
             -typedRule.typeReference
-            writingParameter = false
+            writingParameter--
             -"..."
         }
     )
@@ -544,7 +547,7 @@ fun SwiftTranslator.registerFunction() {
                 val out = ArrayList<Any?>()
                 if (!typedRule.on.hasJavaOriginInHierarchy()) {
                     entry.key.name.takeUnless { it.isSpecial || it.asString().let { it in noArgNames || (it.startsWith('p') && it.drop(1).all { it.isDigit() } ) } }?.let {
-                        out += it.asString()
+                        out += it.asString().safeSwiftIdentifier()
                         out += ": "
                     }
                 }
@@ -552,7 +555,7 @@ fun SwiftTranslator.registerFunction() {
                     out += it
                 } ?: entry.value.arguments.forEachBetween(
                     forItem = {
-                        if (entry.key.annotations.hasAnnotation(FqName("com.lightningkite.khrysalis.Modifies")) || entry.key.annotations.hasAnnotation(FqName("com.lightningkite.khrysalis.modifies"))) {
+                        if (entry.key.annotations.hasAnnotation(FqName("com.lightningkite.butterfly.Modifies")) || entry.key.annotations.hasAnnotation(FqName("com.lightningkite.butterfly.modifies"))) {
                             out += "&"
                         }
                         out += it.getArgumentExpression()

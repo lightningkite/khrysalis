@@ -39,9 +39,9 @@ data class SwiftExtensionStart(
     val typeParams: KtTypeParameterList?
 )
 
-val partOfParameterLocal = ThreadLocal<Boolean>()
-var writingParameter: Boolean
-    get() = partOfParameterLocal.get() ?: false
+val partOfParameterLocal = ThreadLocal<Int>()
+var writingParameter: Int
+    get() = partOfParameterLocal.get() ?: 0
     set(value) {
         partOfParameterLocal.set(value)
     }
@@ -75,7 +75,7 @@ fun SwiftTranslator.registerType() {
         val t = typedRule.forDescriptor.extensionReceiverParameter!!.type
         val baseClass = t.constructor.declarationDescriptor as? ClassDescriptor
         -typedRule.receiver?.typeElement?.let { it as? KtUserType }?.let { KtUserTypeBasic(it) } ?: BasicType(t)
-        typedRule.forDescriptor.annotations.findAnnotation(FqName("com.lightningkite.khrysalis.SwiftExtensionWhere"))
+        typedRule.forDescriptor.annotations.findAnnotation(FqName("com.lightningkite.butterfly.SwiftExtensionWhere"))
             ?.let {
                 val value = it.allValueArguments[Name.identifier("text")]!!.value as String
                 if (value.isNotBlank()) {
@@ -195,18 +195,20 @@ fun SwiftTranslator.registerType() {
                 if (typedRule.isMarkedNullable) {
                     -'('
                 }
-                if (writingParameter && typedRule.annotations.let {
-                        it.hasAnnotation(FqName("com.lightningkite.khrysalis.Escaping")) || it.hasAnnotation(FqName("com.lightningkite.khrysalis.escaping"))
+                if (writingParameter > 0 && typedRule.annotations.let {
+                        it.hasAnnotation(FqName("com.lightningkite.butterfly.Escaping")) || it.hasAnnotation(FqName("com.lightningkite.butterfly.escaping"))
                     }) {
                     -"@escaping "
                 }
                 -'('
+                writingParameter++
                 typedRule.arguments.dropLast(1).forEachBetween(
                     forItem = { typeProjection ->
                         -typeProjection
                     },
                     between = { -", " }
                 )
+                writingParameter--
                 -") -> "
                 -typedRule.arguments.last()
                 if (typedRule.isMarkedNullable) {
@@ -318,6 +320,7 @@ fun SwiftTranslator.registerType() {
             val reference = typedRule.referenceExpression!!
             val type = reference.resolvedReferenceTarget as ClassDescriptor
             -type.swiftTopLevelName
+            -typedRule.typeArgumentList
         }
     )
 
@@ -359,6 +362,7 @@ fun SwiftTranslator.registerType() {
 
     handle<KtFunctionType> {
         -"("
+        writingParameter++
         listOfNotNull(typedRule.receiverTypeReference?.let { null to it }).plus(typedRule.parameters.map { it.nameIdentifier to it.typeReference })
             .forEachBetween(
                 forItem = {
@@ -366,16 +370,17 @@ fun SwiftTranslator.registerType() {
                 },
                 between = { -", " }
             )
+        writingParameter--
         -") -> "
         -typedRule.returnTypeReference
     }
 
     handle<KtTypeReference>(
         condition = {
-            writingParameter && typedRule.annotationEntries
+            writingParameter > 0 && typedRule.annotationEntries
                 .any {
                     it.resolvedAnnotation?.fqName?.asString()
-                        ?.equals("com.lightningkite.khrysalis.escaping", true) == true
+                        ?.equals("com.lightningkite.butterfly.escaping", true) == true
                 }
                     && typedRule.parentOfType<KtParameter>() != null
         },

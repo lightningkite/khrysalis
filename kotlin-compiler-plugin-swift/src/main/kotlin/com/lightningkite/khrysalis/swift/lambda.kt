@@ -6,6 +6,7 @@ import org.jetbrains.kotlin.builtins.getValueParameterTypesFromFunctionType
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.psi.*
+import org.jetbrains.kotlin.resolve.constants.StringValue
 
 fun SwiftTranslator.registerLambda() {
     handle<KtFunctionLiteral> {
@@ -14,26 +15,44 @@ fun SwiftTranslator.registerLambda() {
             ?: (typedRule.parent as? KtLambdaExpression)?.resolvedExpectedExpressionType
             ?: ((typedRule.parent as? KtLambdaExpression)?.parent as? KtParameter)?.resolvedValueParameter?.type
 //        val betterParameterTypes = reet?.getValueParameterTypesFromFunctionType()?.map { it.type }
-        val betterReturnType = try { reet?.getReturnTypeFromFunctionType() } catch(e: Exception) { null }
+        val annotations = (resolved.annotations + (typedRule
+            .let { it.parent as? KtLambdaExpression }
+            ?.let { it.parent as? KtAnnotatedExpression }
+            ?.let { it.annotationEntries.map { it.resolvedAnnotation } }
+            ?: listOf())).filterNotNull()
+        val betterReturnType = try {
+            reet?.getReturnTypeFromFunctionType()
+        } catch (e: Exception) {
+            null
+        }
+
         fun write(rec: Any? = null) {
             -"{ "
             val captures = ArrayList<String>()
-            if (typedRule.resolvedFunction?.annotations?.let {
-                    it.hasAnnotation(FqName("com.lightningkite.khrysalis.WeakSelf")) || it.hasAnnotation(FqName("com.lightningkite.khrysalis.weakSelf"))
-                } == true) {
+            if (annotations.any {
+                    it.fqName?.asString() == "com.lightningkite.butterfly.WeakSelf" || it.fqName?.asString() == "com.lightningkite.butterfly.weakSelf"
+                }) {
                 captures.add("weak self")
-            } else if (typedRule.resolvedFunction?.annotations?.let {
-                    it.hasAnnotation(FqName("com.lightningkite.khrysalis.UnownedSelf")) || it.hasAnnotation(FqName("com.lightningkite.khrysalis.unownedSelf"))
-                } == true) {
+            } else if (annotations.any {
+                    it.fqName?.asString() == "com.lightningkite.butterfly.UnownedSelf" || it.fqName?.asString() == "com.lightningkite.butterfly.unownedSelf"
+                }) {
                 captures.add("unowned self")
             }
-            typedRule.resolvedFunction?.annotations?.findAnnotation(FqName("com.lightningkite.khrysalis.CaptureUnowned"))?.allValueArguments?.get(Name.identifier("keys"))?.value?.let { it as? Array<String> }?.let {
-                captures.addAll(it.map { "unowned $it" })
-            }
-            typedRule.resolvedFunction?.annotations?.findAnnotation(FqName("com.lightningkite.khrysalis.CaptureWeak"))?.allValueArguments?.get(Name.identifier("keys"))?.value?.let { it as? Array<String> }?.let {
-                captures.addAll(it.map { "weak $it" })
-            }
-            if(captures.isNotEmpty()){
+            annotations.find { it.fqName?.asString() == "com.lightningkite.butterfly.CaptureUnowned" }
+                ?.allValueArguments?.get(
+                    Name.identifier("keys")
+                )
+                ?.value?.let { it as? ArrayList<StringValue> }?.forEach {
+                    captures.add("unowned ${it.value}" )
+                }
+            annotations.find { it.fqName?.asString() == "com.lightningkite.butterfly.CaptureWeak" }
+                ?.allValueArguments?.get(
+                    Name.identifier("keys")
+                )
+                ?.value?.let { it as? ArrayList<StringValue> }?.forEach {
+                    captures.add("weak ${it.value}" )
+                }
+            if (captures.isNotEmpty()) {
                 -'['
                 captures.forEachBetween(
                     forItem = { -it },
@@ -45,10 +64,6 @@ fun SwiftTranslator.registerLambda() {
                 -'('
                 if (rec != null) {
                     -rec
-//                    -": "
-//                    writingParameter = true
-//                    -resolved.extensionReceiverParameter?.type
-//                    writingParameter = false
                     if (it.isNotEmpty()) -", "
                 }
                 it.withIndex().forEachBetween(
@@ -58,26 +73,30 @@ fun SwiftTranslator.registerLambda() {
                         } else {
                             -it.name.asString()
                         }
-                        writingParameter = true
+                        writingParameter++
 //                        -(typedRule.valueParameters.getOrNull(index)?.typeReference ?: betterParameterTypes?.getOrNull(index) ?: it.type)
                         (typedRule.valueParameters.getOrNull(index)?.typeReference)?.let {
-                            -": "
-                            -it
+                            if (it.resolvedType?.let { replacements.getType(it)?.protocol } != true) {
+                                -": "
+                                -it
+                            }
                         }
-                        writingParameter = false
+                        writingParameter--
                     },
                     between = { -", " }
                 )
                 -')'
             }
             (
-                    resolved.annotations.findAnnotation(FqName("com.lightningkite.khrysalis.SwiftReturnType"))
-                        ?: resolved.annotations.findAnnotation(FqName("com.lightningkite.khrysalis.swiftReturnType"))
+                    resolved.annotations.findAnnotation(FqName("com.lightningkite.butterfly.SwiftReturnType"))
+                        ?: resolved.annotations.findAnnotation(FqName("com.lightningkite.butterfly.swiftReturnType"))
                     )?.allValueArguments?.entries?.first()?.value?.value?.let {
                     -" -> $it"
                 } ?: (betterReturnType ?: resolved.returnType)?.let {
-                -" -> "
-                -it
+                if (replacements.getType(it)?.protocol != true) {
+                    -" -> "
+                    -it
+                }
             }
             -" in "
             when (typedRule.bodyExpression?.statements?.size) {

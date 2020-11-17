@@ -39,53 +39,6 @@ fun TypescriptTranslator.registerSpecialLet() {
         return false
     }
 
-//    handle<SafeLetChain> {
-//        if(typedRule.outermost.actuallyCouldBeExpression){
-//            -"(()"
-//            val type = typedRule.outermost.resolvedExpressionTypeInfo?.type
-//            if(type != null){
-//                -": "
-//                -type
-//            }
-//            -" => {\n"
-//        }
-//        val temp = "temp_${uniqueNumber.getAndIncrement()}"
-//        -"let $temp;\n"
-//        typedRule.entries.forEachBetween(
-//            forItem = { (basis, lambda) ->
-//                -"if (($temp = "
-//                -basis
-//                -") !== null) { \n"
-//                withName(lambda.valueParameters.firstOrNull()?.name ?: "it", temp) {
-//                    -lambda.bodyExpression
-//                }
-//                -"\n}"
-//            },
-//            between = { -" else " }
-//        )
-//        typedRule.default?.let {
-//            if (it.isRunDirect()) {
-//                -" else {\n"
-//                -(it as KtCallExpression).lambdaArguments.first().getLambdaExpression()!!.bodyExpression
-//                -"\n}"
-//            } else {
-//                -" else {\n"
-//                if(typedRule.outermost.actuallyCouldBeExpression){
-//                    -"return "
-//                }
-//                -it
-//                -"\n}"
-//            }
-//        } ?: run {
-//            if(typedRule.outermost.actuallyCouldBeExpression){
-//                -" else { return null }"
-//            }
-//        }
-//        if(typedRule.outermost.actuallyCouldBeExpression){
-//            -"\n})()"
-//        }
-//    }
-
     handle<SafeLetChain> {
         if (typedRule.outermost.actuallyCouldBeExpression) {
             -"(()"
@@ -96,7 +49,7 @@ fun TypescriptTranslator.registerSpecialLet() {
             }
             -" => {\n"
         }
-        out.addImport("khrysalis/dist/kotlin/Language", "runOrNull")
+        out.addImport("butterfly/dist/kotlin/Language", "runOrNull")
         typedRule.entries.forEachBetween(
             forItem = { (basis, lambda) ->
                 val desc = lambda.functionLiteral.resolvedFunction?.valueParameters?.firstOrNull()
@@ -150,7 +103,7 @@ fun TypescriptTranslator.registerSpecialLet() {
 
     handle<KtSafeQualifiedExpression>(
         condition = {
-            typedRule.isSafeLetDirect()
+            typedRule.isSafeLetDirect() && !typedRule.actuallyCouldBeExpression
         },
         priority = 20_000
     ) {
@@ -166,7 +119,7 @@ fun TypescriptTranslator.registerSpecialLet() {
 
     handle<KtBinaryExpression>(
         condition = {
-            typedRule.isSafeLetChain()
+            typedRule.isSafeLetChain() && !typedRule.actuallyCouldBeExpression
         },
         priority = 20_000
     ) {

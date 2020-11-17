@@ -8,6 +8,8 @@ import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
 import org.jetbrains.kotlin.psi.psiUtil.getTextWithLocation
+import org.jetbrains.kotlin.types.isNullable
+import org.jetbrains.kotlin.types.typeUtil.nullability
 
 data class IfCondition(val expression: KtExpression)
 
@@ -187,7 +189,7 @@ fun SwiftTranslator.registerControl() {
     handle<KtWhenExpression>(
         condition = {
             typedRule.subjectExpression != null && typedRule.entries.flatMap { it.conditions.toList() }
-                .all { it is KtWhenConditionWithExpression }
+                .all { it is KtWhenConditionWithExpression } && typedRule.subjectExpression?.resolvedExpressionTypeInfo?.type?.isNullable() == false
         },
         priority = 100
     ) {
@@ -225,7 +227,7 @@ fun SwiftTranslator.registerControl() {
                     ?.dropWhile { it is PsiWhiteSpace }
                     ?.dropLastWhile { it is PsiWhiteSpace }
                 children?.forEachIndexed { index, it ->
-                    if (typedRule.actuallyCouldBeExpression) {
+                    if (typedRule.actuallyCouldBeExpression && entry.expression!!.actuallyCouldBeExpression) {
                         if (index == children.lastIndex) {
                             -"return "
                         }

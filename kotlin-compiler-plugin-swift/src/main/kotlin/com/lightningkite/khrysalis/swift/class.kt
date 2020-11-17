@@ -17,6 +17,7 @@ import org.jetbrains.kotlin.resolve.calls.util.FakeCallableDescriptorForObject
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
 import org.jetbrains.kotlin.resolve.descriptorUtil.getSuperClassNotAny
 import org.jetbrains.kotlin.resolve.scopes.receivers.ClassValueReceiver
+import org.jetbrains.kotlin.synthetic.hasJavaOriginInHierarchy
 import org.jetbrains.kotlin.types.isNullable
 import java.util.*
 import kotlin.collections.ArrayList
@@ -58,13 +59,13 @@ fun SwiftTranslator.registerClass() {
             )
             .let {
                 if (on is KtClass && on.isData()) {
-                    out.addImport(TemplatePart.Import("Khrysalis"))
+                    out.addImport(TemplatePart.Import("Butterfly"))
                     it + listOf("KDataClass")
                 } else it
             }
             .let {
                 if (on is KtClass && on.isEnum()) {
-                    out.addImport(TemplatePart.Import("Khrysalis"))
+                    out.addImport(TemplatePart.Import("Butterfly"))
                     it + listOf("KEnum")
                 } else it
             }
@@ -73,21 +74,21 @@ fun SwiftTranslator.registerClass() {
                     it.valueParameters.size == 1 && it.valueParameters[0].type.getJetTypeFqName(false) == "kotlin.Any"
                 }
                 if (over?.callsForSwiftInterface(on.resolvedClass) == true) {
-                    out.addImport(TemplatePart.Import("Khrysalis"))
+                    out.addImport(TemplatePart.Import("Butterfly"))
                     it + listOf("KEquatable")
                 } else it
             }
             .let {
                 val over = on.resolvedClass?.findFirstFunction("hashCode") { it.valueParameters.size == 0 }
                 if (over?.callsForSwiftInterface(on.resolvedClass) == true) {
-                    out.addImport(TemplatePart.Import("Khrysalis"))
+                    out.addImport(TemplatePart.Import("Butterfly"))
                     it + listOf("KHashable")
                 } else it
             }
             .let {
                 val over = on.resolvedClass?.findFirstFunction("toString") { it.valueParameters.size == 0 }
                 if (over?.callsForSwiftInterface(on.resolvedClass) == true) {
-                    out.addImport(TemplatePart.Import("Khrysalis"))
+                    out.addImport(TemplatePart.Import("Butterfly"))
                     it + listOf("KStringable")
                 } else it
             }
@@ -177,7 +178,7 @@ fun SwiftTranslator.registerClass() {
                 -"private "
                 if (it.annotationEntries.any {
                         it.resolvedAnnotation?.fqName?.asString()
-                            ?.equals("com.lightningkite.khrysalis.Unowned", true) == true
+                            ?.equals("com.lightningkite.butterfly.Unowned", true) == true
                     }) {
                     -"unowned "
                 }
@@ -205,7 +206,7 @@ fun SwiftTranslator.registerClass() {
                 -(it.swiftVisibility() ?: "public")
                 if (it.annotationEntries.any {
                         it.resolvedAnnotation?.fqName?.asString()
-                            ?.equals("com.lightningkite.khrysalis.Unowned", true) == true
+                            ?.equals("com.lightningkite.butterfly.Unowned", true) == true
                     }) {
                     -" unowned"
                 }
@@ -243,46 +244,54 @@ fun SwiftTranslator.registerClass() {
 
         if (typedRule.superTypeListEntries
                 .mapNotNull { it as? KtSuperTypeEntry }
-                .any { it.typeReference?.resolvedType?.getJetTypeFqName(false) == "com.lightningkite.khrysalis.Codable" }
+                .any { it.typeReference?.resolvedType?.getJetTypeFqName(false) == "com.lightningkite.butterfly.Codable" }
         ) {
             -"convenience required public init(from decoder: Decoder) throws {\n"
             -"let values = try decoder.container(keyedBy: CodingKeys.self)\n"
             -"self.init(\n"
             typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEachBetween(forItem = {
                 if (it.typeReference?.resolvedType?.getJetTypeFqName(false) == "kotlin.Double") {
-                    it.defaultValue?.let { default ->
-                        -it.nameIdentifier
-                        -": try values.decodeDoubleIfPresent(forKey: ."
-                        -it.nameIdentifier
-                        -") ?? "
-                        -default
-                    } ?: run {
-                        -it.nameIdentifier
-                        -": try values.decodeDouble(forKey: ."
-                        -it.nameIdentifier
-                        -")"
-                    }
-                } else if (it.typeReference?.resolvedType?.getJetTypeFqName(false) == "kotlin.Double?") {
-                    it.defaultValue?.let { default ->
-                        -it.nameIdentifier
-                        -": try values.decodeDoubleIfPresent(forKey: ."
-                        -it.nameIdentifier
-                        -") ?? "
-                        -default
-                    } ?: run {
-                        -it.nameIdentifier
-                        -": try values.decodeDoubleIfPresent(forKey: ."
-                        -it.nameIdentifier
-                        -")"
+                    if(it.typeReference?.resolvedType?.isMarkedNullable == true){
+                        it.defaultValue?.let { default ->
+                            -it.nameIdentifier
+                            -": values.contains(."
+                            -it.nameIdentifier
+                            -") ? try values.decodeDoubleOrNull(forKey: ."
+                            -it.nameIdentifier
+                            -") : "
+                            -default
+                        } ?: run {
+                            -it.nameIdentifier
+                            -": try values.decodeDoubleOrNull(forKey: ."
+                            -it.nameIdentifier
+                            -")"
+                        }
+                    } else {
+                        it.defaultValue?.let { default ->
+                            -it.nameIdentifier
+                            -": values.contains(."
+                            -it.nameIdentifier
+                            -") ? try values.decodeDouble(forKey: ."
+                            -it.nameIdentifier
+                            -") : "
+                            -default
+                        } ?: run {
+                            -it.nameIdentifier
+                            -": try values.decodeDouble(forKey: ."
+                            -it.nameIdentifier
+                            -")"
+                        }
                     }
                 } else {
                     it.defaultValue?.let { default ->
                         -it.nameIdentifier
-                        -": try values.decodeIfPresent("
+                        -": values.contains(."
+                        -it.nameIdentifier
+                        -") ? try values.decode("
                         -it.typeReference
                         -".self, forKey: ."
                         -it.nameIdentifier
-                        -") ?? "
+                        -") : "
                         -default
                     } ?: run {
                         -it.nameIdentifier
@@ -797,7 +806,7 @@ private fun <T : KtClassOrObject> handleConstructor(
         val isEnum = (typedRule as? KtClass)?.isEnum() == true
         -(contextByType.typedRule.primaryConstructor?.swiftVisibility() ?: "public")
         -" init("
-        writingParameter = true
+        writingParameter++
         contextByType.typedRule.primaryConstructor?.let { cons ->
             (if (isInner) {
                 listOf(listOf("parentThis: ", parentClassName)) + cons.valueParameters
@@ -813,7 +822,7 @@ private fun <T : KtClassOrObject> handleConstructor(
                 -parentClassName
             } else Unit
         }
-        writingParameter = false
+        writingParameter--
         -") {\n"
         if (isInner) {
             -"self.parentThis = parentThis;\n"
@@ -920,6 +929,7 @@ private fun <T : KtClassOrObject> handleConstructor(
             .takeUnless { it.isEmpty() }
             ?.firstOrNull()?.let {
                 -"super.init("
+                val resolvedCall = it.resolvedCall
                 it.resolvedCall?.valueArguments?.entries
                     ?.sortedBy { it.key.index }
                     ?.filter { it.value.arguments.isNotEmpty() }
@@ -930,8 +940,12 @@ private fun <T : KtClassOrObject> handleConstructor(
                                 0 -> {
                                 }
                                 1 -> {
-                                    -it.key.name.asString()
-                                    -": "
+                                    if ((resolvedCall?.candidateDescriptor as? ConstructorDescriptor)?.hasJavaOriginInHierarchy() == true) {
+                                        it.key.name.takeUnless { it.isSpecial || it.asString().let { it in noArgNames || (it.startsWith('p') && it.drop(1).all { it.isDigit() } ) } }?.let {
+                                            -it.asString().safeSwiftIdentifier()
+                                            -": "
+                                        }
+                                    }
                                     -args[0].getArgumentExpression()
                                 }
                                 else -> {

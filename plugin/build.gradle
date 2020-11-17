@@ -21,6 +21,11 @@ apply plugin: 'application'
 apply plugin: 'maven-publish'
 apply plugin: 'com.jfrog.bintray'
 
+kotlin {
+    sourceCompatibility = JavaVersion.VERSION_1_8
+    targetCompatibility = JavaVersion.VERSION_1_8
+}
+
 bintray {
     user = System.getenv('BINTRAY_USER')
     key = System.getenv('BINTRAY_KEY')
@@ -77,6 +82,14 @@ dependencies {
     api "com.fasterxml.jackson.core:jackson-databind:2.9.+"
     api "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.+"
     api "net.jodah:xsylum:0.1.0"
+
+    // https://mvnrepository.com/artifact/org.apache.xmlgraphics/batik-transcoder
+    implementation group: 'org.apache.xmlgraphics', name: 'batik-transcoder', version: '1.13'
+    implementation group: 'org.apache.xmlgraphics', name: 'batik-codec', version: '1.13'
+
+    // https://mvnrepository.com/artifact/net.mabboud.fontverter/FontVerter
+    implementation group: 'net.mabboud.fontverter', name: 'FontVerter', version: '1.2.22'
+
     testImplementation("junit:junit:4.12")
     api(project(path: ":kotlin-compiler-plugin-typescript", configuration: "default"))
     api(project(path: ":kotlin-compiler-plugin-swift", configuration: "default"))
@@ -109,7 +122,7 @@ task insertTypescriptJar(type: Copy){
     into 'src/main/resources/compiler-plugins'
     rename '.*', 'typescript.jar'
 }
-tasks.jar.dependsOn("insertTypescriptJar")
+tasks.compileKotlin.dependsOn("insertTypescriptJar")
 
 task insertSwiftJar(type: Copy){
     dependsOn(":kotlin-compiler-plugin-swift:shadowJar")
@@ -119,7 +132,7 @@ task insertSwiftJar(type: Copy){
     into 'src/main/resources/compiler-plugins'
     rename '.*', 'swift.jar'
 }
-tasks.jar.dependsOn("insertSwiftJar")
+tasks.compileKotlin.dependsOn("insertSwiftJar")
 
 task sourceJar(type: Jar) {
     from sourceSets.main.allJava

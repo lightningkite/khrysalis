@@ -16,7 +16,7 @@ val LayoutConverter.Companion.buttonViews
                     appendln("view.thumbTintColor = $it")
                 }
             },
-            ViewType("com.lightningkite.khrysalis.views.android.ColorRatingBar", "UIRatingBar", "RatingBar") { node ->
+            ViewType("com.lightningkite.butterfly.views.widget.ColorRatingBar", "UIRatingBar", "RatingBar") { node ->
                 setToColor(node, key = "app:empty_color") { it, s ->
                     appendln("view.settings.emptyColor = $it")
                     appendln("view.settings.emptyBorderColor = $it")
@@ -48,7 +48,7 @@ val LayoutConverter.Companion.buttonViews
                     }
                 }
             },
-            ViewType("CheckBox", "LabeledCheckbox", "View")  { node ->
+            ViewType("CheckBox", "LabeledCheckbox", "VButton", handlesPadding = true)  { node ->
                 node.allAttributes["android:gravity"]?.split('|')?.forEach {
                     when(it){
                         "top" -> appendln("view.verticalAlign = .start")
@@ -56,9 +56,8 @@ val LayoutConverter.Companion.buttonViews
                         "center", "center_vertical" -> appendln("view.verticalAlign = .center")
                     }
                 }
-                handleCommonText(node, "view.labelView", checkView = "view")
             },
-            ViewType("RadioButton", "LabeledRadioButton", "View") { node ->
+            ViewType("RadioButton", "LabeledRadioButton", "VButton", handlesPadding = true) { node ->
                 node.allAttributes["android:gravity"]?.split('|')?.forEach {
                     when(it){
                         "top" -> appendln("view.verticalAlign = .start")
@@ -66,9 +65,8 @@ val LayoutConverter.Companion.buttonViews
                         "center", "center_vertical" -> appendln("view.verticalAlign = .center")
                     }
                 }
-                handleCommonText(node, "view.labelView", checkView = "view")
             },
-            ViewType("Switch", "LabeledSwitch", "View") { node ->
+            ViewType("Switch", "LabeledSwitch", "VButton", handlesPadding = true) { node ->
                 node.allAttributes["android:gravity"]?.split('|')?.forEach {
                     when(it){
                         "top" -> appendln("view.verticalAlign = .start")
@@ -76,7 +74,6 @@ val LayoutConverter.Companion.buttonViews
                         "center", "center_vertical" -> appendln("view.verticalAlign = .center")
                     }
                 }
-                handleCommonText(node, "view.labelView", controlView = "view.control")
             },
             ViewType("ToggleButton", "ToggleButton", "Button", handlesPadding = true) { node ->
                 node.attributeAsSwiftString("android:textOff")?.let { text ->
@@ -96,7 +93,7 @@ val LayoutConverter.Companion.buttonViews
                     }
                 }
             },
-            ViewType("Spinner", "Dropdown", "View", handlesPadding = true) { node ->
+            ViewType("Spinner", "Dropdown", "VButton", handlesPadding = true) { node ->
                 val defaultPadding = node.attributeAsSwiftDimension("android:padding") ?: 0
                 append("view.contentEdgeInsets = UIEdgeInsets(top: ")
                 append((node.attributeAsSwiftDimension("android:paddingTop") ?: defaultPadding).toString())
@@ -110,7 +107,39 @@ val LayoutConverter.Companion.buttonViews
             },
             ViewType("RadioGroup", "LinearLayout", "LinearLayout") {},
             ViewType("ImageButton", "UIButtonWithLayer", "Button", handlesPadding = true) { node -> },
-            ViewType("Button", "UIButtonWithLayer", "View", handlesPadding = true) { node ->
+            ViewType("Button", "UIButtonWithLayer", "VButton", handlesPadding = true) { node ->
+
+                node.allAttributes["android:gravity"]?.let { text ->
+                    appendln("view.textGravity = ${align(null, null, text, "center")}")
+                }
+                node.attributeAsSwiftDimension("android:drawablePadding")?.let { text ->
+                    appendln("view.iconPadding = $text")
+                }
+                setToColor(node, "android:drawableTint") { it, s ->
+                    appendln("view.iconTint = $it")
+                }
+                node.attributeAsSwiftLayer("android:drawableLeft", "view")?.let { text ->
+                    appendln("view.iconPosition = .left")
+                    appendln("view.iconLayer = $text")
+                }
+                node.attributeAsSwiftLayer("android:drawableTop", "view")?.let { text ->
+                    appendln("view.iconPosition = .top")
+                    appendln("view.iconLayer = $text")
+                }
+                node.attributeAsSwiftLayer("android:drawableRight", "view")?.let { text ->
+                    appendln("view.iconPosition = .right")
+                    appendln("view.iconLayer = $text")
+                }
+                node.attributeAsSwiftLayer("android:drawableBottom", "view")?.let { text ->
+                    appendln("view.iconPosition = .bottom")
+                    appendln("view.iconLayer = $text")
+                }
+                node.attributeAsSwiftLayer("android:src", "view")?.let { text ->
+                    appendln("view.iconPosition = .center")
+                    appendln("view.iconLayer = $text")
+                }
+            },
+            ViewType("VButton", "UIButton", "View", handlesPadding = true) { node ->
                 handleCommonText(node, "view.titleLabel?", controlView = "view")
 
                 node.attributeAsSwiftDimension("android:letterSpacing")?.let {
@@ -141,36 +170,6 @@ val LayoutConverter.Companion.buttonViews
                         appendln("view.contentHorizontalAlignment = $fixed")
                     }
 
-
-                node.allAttributes["android:gravity"]?.let { text ->
-                    appendln("view.textGravity = ${align(null, null, text, "center")}")
-                }
-                node.attributeAsSwiftDimension("android:drawablePadding")?.let { text ->
-                    appendln("view.iconPadding = $text")
-                }
-                setToColor(node, "android:drawableTint") { it, s ->
-                    appendln("view.iconTint = $it")
-                }
-                node.attributeAsSwiftLayer("android:drawableLeft", "view")?.let { text ->
-                    appendln("view.iconPosition = .left")
-                    appendln("view.iconLayer = $text")
-                }
-                node.attributeAsSwiftLayer("android:drawableTop", "view")?.let { text ->
-                    appendln("view.iconPosition = .top")
-                    appendln("view.iconLayer = $text")
-                }
-                node.attributeAsSwiftLayer("android:drawableRight", "view")?.let { text ->
-                    appendln("view.iconPosition = .right")
-                    appendln("view.iconLayer = $text")
-                }
-                node.attributeAsSwiftLayer("android:drawableBottom", "view")?.let { text ->
-                    appendln("view.iconPosition = .bottom")
-                    appendln("view.iconLayer = $text")
-                }
-                node.attributeAsSwiftLayer("android:src", "view")?.let { text ->
-                    appendln("view.iconPosition = .top")
-                    appendln("view.iconLayer = $text")
-                }
                 appendln(
                     "view.contentMode = ${when (node.allAttributes["android:scaleType"]) {
                         "fitXY" -> ".scaleToFill"

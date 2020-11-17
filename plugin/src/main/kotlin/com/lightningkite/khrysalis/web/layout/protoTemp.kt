@@ -8,7 +8,7 @@ fun String.calcDest(): String = this.trim().removePrefix("@layout/")
 
 fun HtmlTranslator.protoTemp() {
 
-    element.handle("com.lightningkite.khrysalis.views.android.SwapView") {
+    element.handle("com.lightningkite.butterfly.views.widget.SwapView") {
         out.name = "div"
         out.style["position"] = "relative"
         val stackDefault = rule.allAttributes["tools:stackDefault"]?.calcDest()

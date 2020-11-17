@@ -77,7 +77,7 @@ class TypescriptTranslator(
             val targetDescriptor = dr.type.constructor.declarationDescriptor as? ClassDescriptor
                     ?: return "this"
             if(targetDescriptor.isCompanionObject
-                    && targetDescriptor != this.containingClass()?.resolvedClass) {
+                    && targetDescriptor != this.parentOfType<KtObjectDeclaration>()?.resolvedClass) {
                 return listOf(this.containingClass()?.nameIdentifier, ".Companion.INSTANCE")
             } else {
                 return "this"
@@ -124,6 +124,11 @@ class TypescriptTranslator(
 //            out.append("/*${rule.resolvedUsedAsExpression}*/")
 //        }
         super.translate(identifier, rule, out, afterPriority)
+    }
+    override fun emitDefault(identifier: Class<*>, rule: Any, out: TypescriptFileEmitter): Unit {
+        return identifier.superclass?.let {
+            translate(it, rule, out)
+        } ?: emitFinalDefault(identifier, rule, out)
     }
 
     val terminalMap = mapOf(

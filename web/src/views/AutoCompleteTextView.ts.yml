@@ -1,7 +1,0 @@
----
-
-- id: android.widget.AutoCompleteTextView
-  type: type
-  template: HTMLInputElement
-
-#- id: android.widget.AutoCompleteTextView.

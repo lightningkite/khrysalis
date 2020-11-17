@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.typescript
 
+import com.lightningkite.khrysalis.determineTranslatable
 import com.lightningkite.khrysalis.typescript.manifest.generateFqToFileMap
 import org.jetbrains.kotlin.analyzer.AnalysisResult
 import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
@@ -31,7 +32,7 @@ class KotlinTypescriptCLP : CommandLineProcessor {
         val KEY_PROJECT_NAME = CompilerConfigurationKey.create<String>(KEY_PROJECT_NAME_NAME)
         const val KEY_OUTPUT_DIRECTORY_NAME = "outputDirectory"
         val KEY_OUTPUT_DIRECTORY = CompilerConfigurationKey.create<File>(KEY_OUTPUT_DIRECTORY_NAME)
-        const val PLUGIN_ID = "com.lightningkite.khrysalis.typescript"
+        const val PLUGIN_ID = "com.lightningkite.butterfly.typescript"
     }
 
     override val pluginId: String get() = PLUGIN_ID
@@ -101,8 +102,8 @@ class KotlinTypescriptExtension(
             projectName = projectName,
             bindingContext = ctx,
             commonPath = files.asSequence()
+                .filter { determineTranslatable(it) }
                 .map { it.virtualFilePath }
-                .filter { it.endsWith(".shared.kt") }
                 .takeUnless { it.none() }
                 ?.reduce { acc, s -> acc.commonPrefixWith(s) }
                 ?.substringBeforeLast('/')
@@ -117,7 +118,7 @@ class KotlinTypescriptExtension(
 
         //Create manifest of declarations within this module
         val map: Map<String, File> =
-            translator.run { generateFqToFileMap(files.filter { it.virtualFilePath.endsWith(".shared.kt") }, output) }
+            translator.run { generateFqToFileMap(files.filter { determineTranslatable(it) }, output) }
         translator.declarations.local.putAll(map)
 
         //Load equivalents
@@ -141,7 +142,7 @@ class KotlinTypescriptExtension(
             }
 
         for (file in files) {
-            if (!file.virtualFilePath.endsWith(".shared.kt") && !file.virtualFilePath.endsWith(".actual.kt")) continue
+            if(!determineTranslatable(file)) continue
             try {
                 val outputFile = output
                     .resolve(file.virtualFilePath.removePrefix(translator.commonPath))

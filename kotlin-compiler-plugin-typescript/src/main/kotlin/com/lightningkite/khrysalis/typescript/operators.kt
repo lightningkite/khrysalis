@@ -275,7 +275,7 @@ fun TypescriptTranslator.registerOperators() {
         condition = { typedRule.operationToken == KtTokens.EQEQ },
         priority = 20
     ) {
-        out.addImport("khrysalis/dist/Kotlin", "safeEq")
+        out.addImport("butterfly/dist/Kotlin", "safeEq")
         -"safeEq("
         -typedRule.left
         -", "
@@ -286,7 +286,7 @@ fun TypescriptTranslator.registerOperators() {
         condition = { typedRule.operationToken == KtTokens.EXCLEQ },
         priority = 20
     ) {
-        out.addImport("khrysalis/dist/Kotlin", "safeEq")
+        out.addImport("butterfly/dist/Kotlin", "safeEq")
         -"!safeEq("
         -typedRule.left
         -", "

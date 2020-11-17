@@ -2,7 +2,7 @@ package com.test
 
 import com.test.magicVariable
 import kotlin.math.absoluteValue
-import com.lightningkite.khrysalis.*
+import com.lightningkite.butterfly.*
 
 private val annotationsLambda: @escaping() ()->Unit = {}
 private fun annotationsLambdaUseTest(lambda: @Escaping() ()->Unit) {

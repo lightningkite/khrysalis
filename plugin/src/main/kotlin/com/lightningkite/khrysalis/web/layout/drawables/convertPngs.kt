@@ -63,6 +63,7 @@ fun convertPngs(
                 resources.drawables[pngName] = WebResources.Drawable(cssName, "./images/${destFile.name}")
                 appendln(".drawable-${cssName} {")
                 appendln("background-image: url(\"./images/${destFile.name}\");")
+                appendln("background-size: contain;")
                 appendln("}")
             }
         })

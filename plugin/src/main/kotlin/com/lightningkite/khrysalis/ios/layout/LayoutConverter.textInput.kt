@@ -6,8 +6,14 @@ import com.lightningkite.khrysalis.ios.*
 val LayoutConverter.Companion.textInputViews
     get() = LayoutConverter(
         viewTypes = ViewType.mapOf(
-            ViewType("com.lightningkite.khrysalis.views.android.MultilineEditText", "UITextView", "EditText", handlesPadding = true) { node ->
+            ViewType("com.lightningkite.butterfly.views.widget.MultilineEditText", "UITextView", "EditText", handlesPadding = true) { node ->
                 //Purposefully empty
+                node.attributeAsSwiftString("android:hint")?.let { text ->
+                    appendln("view.placeholder = $text")
+                }
+                node.attributeAsSwiftColor("android:textColorHint")?.let {
+                    appendln("view.placeholderColor = $it")
+                }
                 appendln("view.addDismissButton()")
             },
             ViewType("AutoCompleteTextView", "UIAutoCompleteTextFieldPadded", "EditText", handlesPadding = true) { node ->},
@@ -108,11 +114,11 @@ val LayoutConverter.Companion.textInputViews
                                 appendln("view.textContentType = .fullStreetAddress")
                             }
                             "textPassword", "textWebPassword" -> {
-                                appendln("view.textContentType = .password")
+                                appendln("if #available(iOS 11.0, *) { view.textContentType = .password }")
                                 appendln("view.isSecureTextEntry = true")
                             }
                             "textVisiblePassword" -> {
-                                appendln("view.textContentType = .password")
+                                appendln("if #available(iOS 11.0, *) { view.textContentType = .password }")
                             }
                             "textWebEditText" -> {
 
@@ -138,7 +144,7 @@ val LayoutConverter.Companion.textInputViews
                             "numberPassword" -> {
                                 appendln("view.keyboardType = .numberPad")
                                 appendln("view.addDismissButton()")
-                                appendln("view.textContentType = .password")
+                                appendln("if #available(iOS 11.0, *) { view.textContentType = .password }")
                                 appendln("view.isSecureTextEntry = true")
                             }
                             "phone" -> {
