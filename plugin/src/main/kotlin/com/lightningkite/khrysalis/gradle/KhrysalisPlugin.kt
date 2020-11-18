@@ -223,10 +223,33 @@ class KhrysalisPlugin : Plugin<Project> {
                 )
             }
         }
+        project.tasks.create("khrysalisUpdateIosVersion") { task ->
+            task.group = "ios"
+            task.doLast {
+                val versionName = project.extensions.findByName("android")?.groovyObject?.getPropertyAsObject("defaultConfig")
+                    ?.getProperty("versionName") as? String ?: throw IllegalStateException("Could not find versionName")
+                val versionCode = project.extensions.findByName("android")?.groovyObject?.getPropertyAsObject("defaultConfig")
+                    ?.getProperty("versionCode") as? Int ?: throw IllegalStateException("Could not find versionCode")
+                val projectFile = (iosBase().listFiles()?.toList()
+                    ?.find { it.name.endsWith("xcodeproj", true) }
+                    ?: throw IllegalStateException("Could not find projectFile at ${iosBase()}"))
+                    .resolve("project.pbxproj")
+                    .also {
+                        if(!it.exists()) {
+                            throw IllegalStateException("Could not find projectFile at ${it}")
+                        }
+                    }
+                projectFile.readText()
+                    .replace(Regex("CURRENT_PROJECT_VERSION = [0-9]+;"), "CURRENT_PROJECT_VERSION = $versionCode;")
+                    .replace(Regex("MARKETING_VERSION = [0-9.]+;"), "MARKETING_VERSION = $versionName;")
+                    .let { projectFile.writeText(it) }
+            }
+        }
         project.tasks.create("khrysalisIos") { task ->
             task.group = "ios"
             task.dependsOn("khrysalisConvertKotlinToSwift")
             task.dependsOn("khrysalisConvertLayoutsToSwift")
+            task.dependsOn("khrysalisUpdateIosVersion")
             if (isMac) {
                 task.finalizedBy("khrysalisIosUpdateFiles")
             }
@@ -286,7 +309,28 @@ class KhrysalisPlugin : Plugin<Project> {
                 )
             }
         }
+        project.tasks.create("khrysalisUpdateWebVersion") { task ->
+            task.group = "web"
+            task.doLast {
+                val versionName = project.extensions.findByName("android")?.groovyObject?.getPropertyAsObject("defaultConfig")
+                    ?.getProperty("versionName") as? String ?: throw IllegalStateException("Could not find versionName")
+                val versionCode = project.extensions.findByName("android")?.groovyObject?.getPropertyAsObject("defaultConfig")
+                    ?.getProperty("versionCode") as? Int ?: throw IllegalStateException("Could not find versionCode")
+                webBase().resolve("src/BuildConfig.ts").writeText("""
+                    //! Declares com.tresitgroup.android.tresit.BuildConfig
+                    export class BuildConfig {
+                        static INSTANCE = BuildConfig
+                        static VERSION_NAME: string = "$versionName"
+                        static VERSION_CODE: number = $versionCode
+                        static get DEBUG(): boolean {
+                            return (window as any).isDebugMode ?? false
+                        }
+                    }
+                """.trimIndent())
+            }
+        }
         project.tasks.create("khrysalisConvertKotlinToTypescript") { task ->
+            task.dependsOn("khrysalisUpdateWebVersion")
             task.group = "web"
             var compileTask: KotlinCompile? = null
             project.afterEvaluate {
