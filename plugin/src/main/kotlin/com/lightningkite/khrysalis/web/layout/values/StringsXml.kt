@@ -11,7 +11,7 @@ fun getXmlStrings(file: File): Map<String, String>{
         .asSequence()
         .filter { it.name == "string" }
         .associate {
-            (it.allAttributes["name"] ?: "noname") to it.element.textContent.replace("\\n", "\n").replace("\\t", "\t")
+            (it.allAttributes["name"] ?: "noname") to it.element.textContent.replace("\\n", "\n").replace("\\t", "\t").replace("\\'", "\'").replace("\\\"", "\"")
         }
 }
 
@@ -21,7 +21,7 @@ fun translateXmlStringsToTypescript(file: File, out: Appendable){
     out.appendln("export class ResourcesStrings {")
     getXmlStrings(file)
         .forEach { (name, value) ->
-            out.appendln("    static ${name.safeJsIdentifier()}: string = \"${value.replace("\n", "\\n").replace("\t", "\\t")}\";")
+            out.appendln("    static ${name.safeJsIdentifier()}: string = \"${value.replace("\n", "\\n").replace("\t", "\\t").replace("\'", "\\'").replace("\"", "\\\"")}\";")
         }
     out.appendln("}")
 }

@@ -11,9 +11,15 @@ fun TypescriptTranslator.registerLiterals() {
         condition = { typedRule.firstChild.text == "\"\"\"" },
         priority = 1,
         action = {
-            -'"'
-            -typedRule.entries
-            -'"'
+            if(typedRule.entries.all { it is KtLiteralStringTemplateEntry }) {
+                -'"'
+                -typedRule.entries
+                -'"'
+            } else {
+                -'`'
+                -typedRule.entries
+                -'`'
+            }
         }
     )
     handle<KtStringTemplateExpression> {
@@ -38,10 +44,6 @@ fun TypescriptTranslator.registerLiterals() {
     handle<KtLiteralStringTemplateEntry> {
         -typedRule.text.replace("\\", "\\\\").replace("\n", "\\n").replace("\"", "\\\"")
     }
-
-    """as\ndf sadf asd fa
-        asdfadsf
-    """.trimMargin()
 
     handle<KtConstantExpression> {
         when(typedRule.node.elementType){

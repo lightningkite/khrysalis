@@ -1,7 +1,7 @@
 package com.test.cursedclasses
 
-class A {
-    class B {
+interface A {
+    class B(val c: C = C()) {
         class C {
             companion object {
                 val x: Int = 0
@@ -36,7 +36,6 @@ fun main(){
     }
     val other = F.G()
 
-    A()
     A.B()
     A.B.C()
     A.B.C.D()

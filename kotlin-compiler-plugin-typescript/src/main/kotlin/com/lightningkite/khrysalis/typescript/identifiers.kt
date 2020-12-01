@@ -8,6 +8,7 @@ import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
+import org.jetbrains.kotlin.psi.psiUtil.getParentOfType
 import org.jetbrains.kotlin.psi.psiUtil.getTextWithLocation
 import org.jetbrains.kotlin.psi.synthetics.SyntheticClassOrObjectDescriptor
 import org.jetbrains.kotlin.resolve.lazy.descriptors.LazyClassDescriptor
@@ -95,12 +96,12 @@ fun TypescriptTranslator.registerIdentifiers(){
             val untypedTarget = typedRule.resolvedReferenceTarget
             val target = untypedTarget as? ClassDescriptor ?: (untypedTarget as? ConstructorDescriptor)?.constructedClass ?: return@handle false
             if((typedRule.parent as? KtQualifiedExpression)?.selectorExpression == this) return@handle false
-            val context = (typedRule.parentOfType<KtClassBody>()?.parent as? KtClassOrObject)?.resolvedClass ?: return@handle false
+            val context = typedRule.parentOfType<KtClassOrObject>()?.resolvedClass ?: return@handle false
             target.containingDeclaration == context
         },
         priority = 10,
         action = {
-            -(typedRule.parentOfType<KtClassBody>()?.parent as? KtClassOrObject)?.nameIdentifier
+            -(typedRule.parentOfType<KtClassOrObject>()?.nameIdentifier)
             -'.'
             -typedRule.getIdentifier()
         }

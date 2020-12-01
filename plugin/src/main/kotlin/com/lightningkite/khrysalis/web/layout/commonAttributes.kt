@@ -52,7 +52,7 @@ internal fun HtmlTranslator.commonAttributes() {
         out.text.contentNodes.add(
             when {
                 value.startsWith("@") -> strings[value.substringAfter('/')] ?: "missing text"
-                else -> value.replace("\\n", "\n").replace("\\t", "\t")
+                else -> value.replace("\\n", "\n").replace("\\t", "\t").replace("\\'", "\'").replace("\\\"", "\"")
             }
         )
     }
@@ -62,7 +62,7 @@ internal fun HtmlTranslator.commonAttributes() {
         val value = rule.value
         out.text.attributes["placeholder"] = when {
             value.startsWith("@") -> strings[value.substringAfter('/')] ?: "missing text"
-            else -> value.replace("\\n", "\n").replace("\\t", "\t")
+            else -> value.replace("\\n", "\n").replace("\\t", "\t").replace("\\'", "\'").replace("\\\"", "\"")
         }
     }
     attribute.handle("android:textOn") {
