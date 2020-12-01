@@ -172,13 +172,27 @@ class KhrysalisPlugin : Plugin<Project> {
                                 load(f.inputStream())
                             }
                         }
-                        (localProperties.getProperty("khrysalis.iospods")
+                        val pathRegex = Regex(":path => '([^']+)'")
+                        val home = System.getProperty("user.home")
+                        val localPodSpecRefs = iosBase()
+                            .resolve("Podfile")
+                            .takeIf { it.exists() }
+                            ?.readText()
+                            ?.let { pathRegex.findAll(it) }
+                            ?.map { it.groupValues[1] }
+                            ?.map { it.replace("~", home) }
+                            ?.map { File(it).parentFile }
+                            ?: sequenceOf()
+                        val allLocations = (localProperties.getProperty("khrysalis.iospods")
                             ?: localProperties.getProperty("khrysalis.nonmacmanifest") ?: "")
                             .splitToSequence(File.pathSeparatorChar)
                             .filter { it.isNotBlank() }
                             .map { File(it) }
                             .filter { it.exists() }
                             .plus(sequenceOf(iosBase().resolve("Pods")))
+                            .plus(localPodSpecRefs)
+                        println("Checking for equivalents at: ${allLocations.joinToString("\n")}")
+                        allLocations
                     },
                     output = iosFolder().resolve("src")
                 )
