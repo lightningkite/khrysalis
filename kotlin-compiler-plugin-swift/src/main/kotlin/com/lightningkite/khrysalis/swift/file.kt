@@ -23,6 +23,12 @@ fun SwiftTranslator.registerFile() {
             -it
         }
         -"\n"
-        typedRule.after.forEach { it() }
+        while(typedRule.after.isNotEmpty()){
+            val copy = typedRule.after.toList()
+            typedRule.after.clear()
+            for(item in copy){
+                item()
+            }
+        }
     }
 }

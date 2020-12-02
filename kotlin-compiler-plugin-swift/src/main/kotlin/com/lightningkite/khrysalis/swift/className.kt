@@ -10,7 +10,7 @@ import org.jetbrains.kotlin.psi.KtClassOrObject
 val DeclarationDescriptor.swiftTopLevelMessedUp: Boolean
     get() {
         val containing = (this.containingDeclaration as? ClassDescriptor) ?: return false
-        return containing.kind == ClassKind.INTERFACE || containing.declaredTypeParameters.isNotEmpty()
+        return containing.kind == ClassKind.INTERFACE || containing.declaredTypeParameters.isNotEmpty() || (this as? ClassDescriptor)?.kind == ClassKind.INTERFACE
     }
 
 private val DeclarationDescriptor.swiftNameByAnnotation: String?
