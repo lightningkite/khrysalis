@@ -278,7 +278,8 @@ fun SwiftTranslator.registerFunction() {
     //Normal calls
     handle<KtDotQualifiedExpression>(
         condition = {
-            ((typedRule.selectorExpression as? KtCallExpression)?.resolvedCall?.candidateDescriptor as? FunctionDescriptor)?.swiftNameOverridden != null
+            val desc = (typedRule.selectorExpression as? KtCallExpression)?.resolvedCall?.candidateDescriptor as? FunctionDescriptor ?: return@handle false
+            desc.swiftNameOverridden != null && !(desc is ConstructorDescriptor && desc.constructedClass.swiftTopLevelMessedUp)
         },
         priority = 1000,
         action = {
