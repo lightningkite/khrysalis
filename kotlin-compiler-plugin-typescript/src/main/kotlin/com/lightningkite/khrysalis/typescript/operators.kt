@@ -67,8 +67,12 @@ fun TypescriptTranslator.registerOperators() {
             resolvedCall = typedRule.resolvedCall!!,
             prependArguments = if (doubleReceiver) listOf(typedRule.arrayExpression) else listOf(),
             replacements = (
-                typedRule.indexExpressions.mapIndexed { index, exp -> typedRule.functionDescriptor.valueParameters.get(index).let { it to exp } }.associate { it }
-            )
+                    typedRule.indexExpressions.mapIndexed { index, exp ->
+                        typedRule.functionDescriptor.valueParameters.get(
+                            index
+                        ).let { it to exp }
+                    }.associate { it }
+                    )
         )
     }
     handle<VirtualArrayGet>(
@@ -153,8 +157,10 @@ fun TypescriptTranslator.registerOperators() {
                 resolvedCall = arrayAccess.resolvedIndexedLvalueSet!!,
                 prependArguments = if (doubleReceiver) listOf(arrayAccess.arrayExpression!!) else listOf(),
                 replacements = (
-                        tempIndexes.mapIndexed { index, exp -> setFunction.valueParameters[index].let { it to exp } }.associate { it }
-                        ) + (arrayAccess.resolvedIndexedLvalueSet?.resultingDescriptor?.valueParameters?.lastOrNull()?.let { mapOf(it to right) } ?: mapOf())
+                        tempIndexes.mapIndexed { index, exp -> setFunction.valueParameters[index].let { it to exp } }
+                            .associate { it }
+                        ) + (arrayAccess.resolvedIndexedLvalueSet?.resultingDescriptor?.valueParameters?.lastOrNull()
+                    ?.let { mapOf(it to right) } ?: mapOf())
             )
         }
     )
@@ -373,6 +379,26 @@ fun TypescriptTranslator.registerOperators() {
                 resolvedCall = typedRule.resolvedCall
             )
         })
+    handle<KtBinaryExpression>(
+        condition = {
+            typedRule.operationReference.getReferencedNameElementType() in setOf(
+                KtTokens.GT,
+                KtTokens.GTEQ,
+                KtTokens.LT,
+                KtTokens.LTEQ
+            )
+        },
+        priority = 1,
+        action = {
+            -typedRule.left
+            -".compareTo("
+            -typedRule.right
+            -") "
+            val t = typedRule.operationToken
+            if (t is KtSingleValueToken) -t.value
+            -" 0"
+        }
+    )
 
     handle<KtPrefixExpression>(
         condition = {
@@ -458,7 +484,8 @@ fun TypescriptTranslator.registerOperators() {
 
     handle<KtPostfixExpression>(
         condition = {
-            val sel = (typedRule.baseExpression as? KtQualifiedExpression)?.selectorExpression as? KtNameReferenceExpression
+            val sel =
+                (typedRule.baseExpression as? KtQualifiedExpression)?.selectorExpression as? KtNameReferenceExpression
                     ?: typedRule.baseExpression as? KtNameReferenceExpression
                     ?: return@handle false
             typedRule.resolvedVariableReassignment == true && sel.resolvedReferenceTarget is ValueDescriptor
@@ -488,7 +515,7 @@ fun TypescriptTranslator.registerOperators() {
                     right = "1",
                     functionDescriptor = typedRule.resolvedCall!!.candidateDescriptor as FunctionDescriptor,
                     dispatchReceiver = typedRule.getTsReceiver(),
-                    operationToken = when(typedRule.operationToken) {
+                    operationToken = when (typedRule.operationToken) {
                         KtTokens.PLUSPLUS -> KtTokens.PLUS
                         KtTokens.MINUSMINUS -> KtTokens.MINUS
                         else -> KtTokens.PLUS
@@ -500,7 +527,8 @@ fun TypescriptTranslator.registerOperators() {
     )
     handle<KtPrefixExpression>(
         condition = {
-            val sel = (typedRule.baseExpression as? KtQualifiedExpression)?.selectorExpression as? KtNameReferenceExpression
+            val sel =
+                (typedRule.baseExpression as? KtQualifiedExpression)?.selectorExpression as? KtNameReferenceExpression
                     ?: typedRule.baseExpression as? KtNameReferenceExpression
                     ?: return@handle false
             typedRule.resolvedVariableReassignment == true && sel.resolvedReferenceTarget is ValueDescriptor
@@ -530,7 +558,7 @@ fun TypescriptTranslator.registerOperators() {
                     right = "1",
                     functionDescriptor = typedRule.resolvedCall!!.candidateDescriptor as FunctionDescriptor,
                     dispatchReceiver = typedRule.getTsReceiver(),
-                    operationToken = when(typedRule.operationToken) {
+                    operationToken = when (typedRule.operationToken) {
                         KtTokens.PLUSPLUS -> KtTokens.PLUS
                         KtTokens.MINUSMINUS -> KtTokens.MINUS
                         else -> KtTokens.PLUS

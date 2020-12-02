@@ -940,7 +940,7 @@ private fun <T : KtClassOrObject> handleConstructor(
                                 0 -> {
                                 }
                                 1 -> {
-                                    if ((resolvedCall?.candidateDescriptor as? ConstructorDescriptor)?.hasJavaOriginInHierarchy() == true) {
+                                    if ((resolvedCall?.candidateDescriptor as? ConstructorDescriptor)?.hasJavaOriginInHierarchy() != true) {
                                         it.key.name.takeUnless { it.isSpecial || it.asString().let { it in noArgNames || (it.startsWith('p') && it.drop(1).all { it.isDigit() } ) } }?.let {
                                             -it.asString().safeSwiftIdentifier()
                                             -": "

@@ -307,6 +307,7 @@ fun SwiftTranslator.registerFunction() {
             val callExp = typedRule.selectorExpression as KtCallExpression
             val nre = callExp.calleeExpression as KtNameReferenceExpression
             val f = callExp.resolvedCall!!.candidateDescriptor as FunctionDescriptor
+            -"/*Null-wrap call*/"
             nullWrapAction(this@registerFunction, typedRule){ rec, mode ->
                 maybeWrapCall(callExp.resolvedCall!!) {
                     -nre

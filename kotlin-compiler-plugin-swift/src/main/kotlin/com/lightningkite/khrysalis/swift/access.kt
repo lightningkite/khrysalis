@@ -57,7 +57,7 @@ fun getAccessMode(swiftTranslator: SwiftTranslator, rule: KtQualifiedExpression)
         (rule.receiverExpression as? KtQualifiedExpression)?.let { getAccessMode(swiftTranslator, it) }
     val receiverAllowsOptionalAction = receiverAccessMode?.resultAllowsOptionalOp ?: true
 
-    return if (templateIsThisDot || ruleTemplate == null) {
+    return if (rule.selectorExpression?.resolvedCall?.candidateDescriptor?.let { it as? FunctionDescriptor}?.swiftNameOverridden == null && (templateIsThisDot || ruleTemplate == null)) {
         if (receiverAllowsOptionalAction || getDirectlyNullable(swiftTranslator, rule.receiverExpression)) {
             AccessMode.QUEST_DOT
         } else {
