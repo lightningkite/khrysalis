@@ -370,7 +370,7 @@ fun TypescriptTranslator.registerType() {
 
             when {
                 resolvedType.isInterface() -> {
-                    out.addImport("butterfly/dist/Kotlin", "tryCastInterface")
+                    out.addImport("butterfly-web/dist/Kotlin", "tryCastInterface")
                     -"tryCastInterface<"
                     -typedRule.right
                     -">("
@@ -380,7 +380,7 @@ fun TypescriptTranslator.registerType() {
                     -"\")"
                 }
                 resolvedType.isPrimitive() -> {
-                    out.addImport("butterfly/dist/Kotlin", "tryCastPrimitive")
+                    out.addImport("butterfly-web/dist/Kotlin", "tryCastPrimitive")
                     -"tryCastPrimitive<"
                     -typedRule.right
                     -">("
@@ -390,7 +390,7 @@ fun TypescriptTranslator.registerType() {
                     -"\")"
                 }
                 else -> {
-                    out.addImport("butterfly/dist/Kotlin", "tryCastClass")
+                    out.addImport("butterfly-web/dist/Kotlin", "tryCastClass")
                     -"tryCastClass<"
                     -typedRule.right
                     -">("
@@ -410,7 +410,7 @@ fun PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByType<*>.e
 ) {
     when {
         resolvedType.isInterface() -> {
-            out.addImport("butterfly/dist/Kotlin", "checkIsInterface")
+            out.addImport("butterfly-web/dist/Kotlin", "checkIsInterface")
             -"checkIsInterface<"
             -resolvedType
             -">("

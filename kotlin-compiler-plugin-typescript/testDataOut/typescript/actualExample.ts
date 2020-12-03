@@ -1,5 +1,5 @@
 
-import { hashString } from 'butterfly/dist/Kotlin'
+import { hashString } from 'butterfly-web/dist/Kotlin'
 
 function test(){
     hashString("Hello!")
