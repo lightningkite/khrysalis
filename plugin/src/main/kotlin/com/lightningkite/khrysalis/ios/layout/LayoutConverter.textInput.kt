@@ -164,6 +164,36 @@ val LayoutConverter.Companion.textInputViews
                         }
                     }
                 }
+                node.allAttributes["android:autofillHints"]?.let { type ->
+                    when(type){
+                        "creditCardNumber" -> appendln("view.textContentType = .creditCardNumber")
+                        "emailAddress" -> appendln("view.textContentType = .emailAddress")
+                        "name" -> appendln("view.textContentType = .name")
+//                        "newPassword" -> appendln("view.textContentType = .newPassword")
+//                        "newUsername" -> appendln("view.textContentType = .username")
+                        "password" -> appendln("view.textContentType = .password")
+                        "personName" -> appendln("view.textContentType = .name")
+                        "personFamilyName" -> appendln("view.textContentType = .familyName")
+                        "personGivenName" -> appendln("view.textContentType = .givenName")
+                        "personMiddleName" -> appendln("view.textContentType = .middleName")
+                        "personMiddleInitial" -> appendln("view.textContentType = .middleName")
+                        "personNamePrefix" -> appendln("view.textContentType = .namePrefix")
+                        "personNameSuffix" -> appendln("view.textContentType = .nameSuffix")
+                        "phone" -> appendln("view.textContentType = .telephoneNumber")
+                        "phoneNumber" -> appendln("view.textContentType = .telephoneNumber")
+                        "phoneNumberDevice" -> appendln("view.textContentType = .telephoneNumber")
+                        "postalAddress" -> appendln("view.textContentType = .streetAddressLine1")
+                        "addressCountry" -> appendln("view.textContentType = .countryName")
+                        "extendedAddress" -> appendln("view.textContentType = .streetAddressLine2")
+                        "extendedPostalCode" -> appendln("view.textContentType = .extendedPostalCode")
+                        "addressLocality" -> appendln("view.textContentType = .addressCity")
+                        "addressRegion" -> appendln("view.textContentType = .addressState")
+                        "streetAddress" -> appendln("view.textContentType = .streetAddressLine1")
+                        "postalCode" -> appendln("view.textContentType = .postalCode")
+                        "username" -> appendln("view.textContentType = .username")
+                        else -> {}
+                    }
+                }
                 handleCommonText(node, controlView = "view")
             }
         )
