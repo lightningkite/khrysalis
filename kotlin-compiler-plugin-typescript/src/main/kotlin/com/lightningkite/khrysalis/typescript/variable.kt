@@ -95,6 +95,7 @@ fun TypescriptTranslator.registerVariable() {
             val resolved = tr.resolvedProperty ?: return@handle
             val ktClassBody = typedRule.parentOfType<KtClassBody>()!!
             val ktClass = ktClassBody.parentOfType<KtClass>()!!
+            val resolvedClass = ktClass.resolvedClass ?: return@handle
             tr.getter?.let { getter ->
                 ktClassBody.addPostAction {
                     -"\nexport function "
@@ -107,7 +108,7 @@ fun TypescriptTranslator.registerVariable() {
                         )
                         -'>'
                     }
-                    withReceiverScope(resolved) { r ->
+                    withReceiverScope(resolvedClass) { r ->
                         -'('
                         -r
                         -": "
@@ -138,7 +139,7 @@ fun TypescriptTranslator.registerVariable() {
                         )
                         -'>'
                     }
-                    withReceiverScope(resolved) { r ->
+                    withReceiverScope(resolvedClass) { r ->
                         -'('
                         -r
                         -": "
