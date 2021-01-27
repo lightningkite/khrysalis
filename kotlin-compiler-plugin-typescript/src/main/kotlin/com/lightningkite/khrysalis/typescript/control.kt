@@ -55,7 +55,7 @@ fun TypescriptTranslator.registerControl() {
                 -it
             } else {
                 -"{ "
-                if (typedRule.actuallyCouldBeExpression && it.actuallyCouldBeExpression && typedRule.parent !is KtContainerNodeForControlStructureBody) {
+                if (typedRule.actuallyCouldBeExpression && it.actuallyCouldBeExpression) {
                     -"return "
                 }
                 -it
@@ -66,9 +66,11 @@ fun TypescriptTranslator.registerControl() {
             -" else "
             if (it is KtBlockExpression) {
                 -it
+            } else if(it is KtIfExpression) {
+                -it
             } else {
                 -"{ "
-                if (typedRule.actuallyCouldBeExpression && it.actuallyCouldBeExpression && typedRule.parent !is KtContainerNodeForControlStructureBody) {
+                if (typedRule.actuallyCouldBeExpression && it.actuallyCouldBeExpression) {
                     -"return "
                 }
                 -it

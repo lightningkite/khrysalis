@@ -193,7 +193,8 @@ class KhrysalisPlugin : Plugin<Project> {
                             .filter { it.isNotBlank() }
                             .map { File(it) }
                             .filter { it.exists() }
-                            .plus(sequenceOf(iosBase().resolve("Pods")))
+                            .plus(sequenceOf(iosBase()))
+                            .plus(sequenceOf(androidBase()))
                             .plus(localPodSpecRefs)
                         println("Checking for equivalents at: ${allLocations.joinToString("\n")}")
                         allLocations
