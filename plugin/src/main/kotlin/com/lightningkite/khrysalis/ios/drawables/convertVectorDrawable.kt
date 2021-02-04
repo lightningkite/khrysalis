@@ -57,7 +57,8 @@ fun convertVectorDrawable(name: String, node: XmlNode, out: Appendable) {
                     subnode.allAttributes["android:fillType"]?.let {
                         when (it) {
                             "evenOdd" -> appendln("        mask.fillRule = .evenOdd")
-                            else -> {}
+                            else -> {
+                            }
                         }
                     }
                     subnode.allAttributes["android:pathData"]?.let { pathData ->
@@ -91,7 +92,8 @@ fun convertVectorDrawable(name: String, node: XmlNode, out: Appendable) {
                 subnode.allAttributes["android:fillType"]?.let {
                     when (it) {
                         "evenOdd" -> appendln("        sublayer.fillRule = .evenOdd")
-                        else -> {}
+                        else -> {
+                        }
                     }
                 }
                 subnode.allAttributes["android:pathData"]?.let { pathData ->
@@ -137,21 +139,34 @@ private fun Appendable.pathDataToSwift(pathData: String) {
         val rawInstruction: Char = pathData[stringIndex]
         val arguments = ArrayList<Double>()
         val currentNumber = StringBuilder()
-        for(c in pathData.substring(stringIndex + 1, nextLetterIndex)){
-            when(c){
+        for (c in pathData.substring(stringIndex + 1, nextLetterIndex)) {
+            when (c) {
                 ' ', ',', '-' -> {
-                    if(currentNumber.length > 0){
+                    if (currentNumber.length > 0) {
                         arguments.add(currentNumber.toString().toDouble())
                         currentNumber.setLength(0)
                     }
-                    if(c == '-'){
+                    if (c == '-') {
                         currentNumber.append('-')
                     }
                 }
-                in '0'..'9', '.' -> currentNumber.append(c)
+                in '0'..'9' -> {
+                    currentNumber.append(c)
+                }
+                '.' -> {
+                    if (currentNumber.contains('.')) {
+                        if (currentNumber.length > 0) {
+                            arguments.add(currentNumber.toString().toDouble())
+                            currentNumber.setLength(0)
+                        }
+                        currentNumber.append(c)
+                    } else {
+                        currentNumber.append(c)
+                    }
+                }
             }
         }
-        if(currentNumber.length > 0){
+        if (currentNumber.length > 0) {
             arguments.add(currentNumber.toString().toDouble())
         }
 
@@ -171,11 +186,13 @@ private fun Appendable.pathDataToSwift(pathData: String) {
                     appendln("        path.move(to: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}))")
                 }
                 'l' -> {
-                    val destX = arguments.unshift() + offsetX()
-                    val destY = arguments.unshift() + offsetY()
-                    referenceX = destX
-                    referenceY = destY
-                    appendln("        path.addLine(to: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}))")
+                    while (arguments.size >= 2) {
+                        val destX = arguments.unshift() + offsetX()
+                        val destY = arguments.unshift() + offsetY()
+                        referenceX = destX
+                        referenceY = destY
+                        appendln("        path.addLine(to: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}))")
+                    }
                 }
                 'z' -> {
                     appendln("        path.closeSubpath()")
