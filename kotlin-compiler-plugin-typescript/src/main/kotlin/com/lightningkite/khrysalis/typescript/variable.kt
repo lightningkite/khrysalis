@@ -294,9 +294,9 @@ fun TypescriptTranslator.registerVariable() {
             val elvis = typedRule.initializer as KtBinaryExpression
             -" = "
             -elvis.left
-            -"\nif(!"
+            -"\nif("
             -typedRule.nameIdentifier
-            -") { "
+            -" === null) { "
             -elvis.right
             -" }"
         }
