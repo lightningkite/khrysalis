@@ -492,7 +492,7 @@ fun TypescriptTranslator.registerClass() {
                 typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEachBetween(
                     forItem = {
                         -it.nameIdentifier
-                        -" = \${this."
+                        -"=\${this."
                         -it.nameIdentifier
                         -"}"
                     },

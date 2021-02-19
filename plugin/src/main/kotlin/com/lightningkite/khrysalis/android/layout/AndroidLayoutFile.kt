@@ -78,6 +78,9 @@ data class AndroidLayoutFile(
             val emitCurse = ArrayList<AndroidAction>()
 
             fun addBindings(node: XmlNode) {
+                if(node.name == "com.google.android.material.tabs.TabItem") {
+                    return
+                }
                 node.allAttributes["android:id"]?.let { raw ->
                     val id = raw.removePrefix("@+id/").removePrefix("@id/")
                     val camelCasedId = id.camelCase()

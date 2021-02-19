@@ -19,6 +19,8 @@ import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 import org.jetbrains.kotlin.resolve.source.KotlinSourceElement
+import org.jetbrains.kotlin.types.typeUtil.makeNullable
+import org.jetbrains.kotlin.types.typeUtil.nullability
 
 //TODO: Local function edgecase - the meaning of 'this' changes
 
@@ -569,7 +571,7 @@ fun TypescriptTranslator.registerFunction() {
 
             emitTemplate(
                 requiresWrapping = typedRule.actuallyCouldBeExpression,
-                type = typedRule.resolvedExpressionTypeInfo?.type,
+                type = typedRule.resolvedExpressionTypeInfo?.type?.makeNullable(),
                 ensureReceiverNotNull = true,
                 template = rule.template,
                 receiver = typedRule.receiverExpression,

@@ -134,7 +134,7 @@ fun TypescriptTranslator.registerOperators() {
                     indexExpressions = tempIndexes,
                     functionDescriptor = arrayAccess.resolvedIndexedLvalueGet!!.resultingDescriptor,
                     dispatchReceiver = typedRule.getTsReceiver(),
-                    resolvedCall = arrayAccess.resolvedIndexedLvalueSet
+                    resolvedCall = arrayAccess.resolvedIndexedLvalueGet
                 ),
                 right = typedRule.right!!,
                 functionDescriptor = typedRule.operationReference.resolvedReferenceTarget as FunctionDescriptor,
@@ -177,6 +177,7 @@ fun TypescriptTranslator.registerOperators() {
             val resolvedCall = arrayAccess.resolvedIndexedLvalueSet!!
 
             val reuseIdentifiers = typedRule.operationToken != KtTokens.EQ
+            -"/*bin $reuseIdentifiers*/"
 
             val tempArray: Any = if (reuseIdentifiers && !arrayAccess.arrayExpression!!.isSimple()) {
                 val t = "array${uniqueNumber.getAndIncrement()}"
@@ -201,7 +202,7 @@ fun TypescriptTranslator.registerOperators() {
                 arrayAccess.indexExpressions
             }
 
-            val right: Any = if (reuseIdentifiers) ValueOperator(
+            val right: Any = if (typedRule.operationToken != KtTokens.EQ) ValueOperator(
                 left = VirtualArrayGet(
                     arrayExpression = tempArray,
                     indexExpressions = tempIndexes,
@@ -215,6 +216,9 @@ fun TypescriptTranslator.registerOperators() {
                 operationToken = typedRule.operationToken,
                 resolvedCall = typedRule.resolvedCall
             ) else typedRule.right!!
+            -"/* right is"
+            -right
+            -"*/"
             val rule = replacements.getCall(this@registerOperators, resolvedCall)!!
             emitTemplate(
                 requiresWrapping = typedRule.actuallyCouldBeExpression,
@@ -231,7 +235,10 @@ fun TypescriptTranslator.registerOperators() {
                 },
                 parameter = resolvedCall.template_parameter,
                 typeParameter = resolvedCall.template_typeParameter,
-                parameterByIndex = resolvedCall.template_parameterByIndex,
+                parameterByIndex = {
+                    if(it.index == arrayAccess.indexExpressions.size) right
+                    else resolvedCall.template_parameterByIndex(it)
+                },
                 typeParameterByIndex = resolvedCall.template_typeParameterByIndex
             )
         }

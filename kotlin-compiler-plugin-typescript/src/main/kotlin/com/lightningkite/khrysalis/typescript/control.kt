@@ -98,18 +98,27 @@ fun TypescriptTranslator.registerControl() {
         },
         priority = 1,
         action = {
+            val useParen = typedRule.parent is KtBinaryExpression
+            if(useParen){
+                -'('
+            }
             -typedRule.condition
             -" ? "
             -typedRule.then
             -" : "
             -typedRule.`else`
+            if(useParen){
+                -')'
+            }
         }
     )
 
     handle<KtTryExpression> {
-        if (typedRule.actuallyCouldBeExpression && typedRule.parent !is KtContainerNodeForControlStructureBody) {
+        val type = typedRule.resolvedExpressionTypeInfo?.type
+        val useFunctionWrapper = typedRule.actuallyCouldBeExpression && typedRule.parent !is KtContainerNodeForControlStructureBody && type != null
+        val hasFunctionWrapper = typedRule.actuallyCouldBeExpression && type != null
+        if (useFunctionWrapper) {
             -"(()"
-            val type = typedRule.resolvedExpressionTypeInfo?.type
             if (type != null) {
                 -": "
                 -type
@@ -139,13 +148,15 @@ fun TypescriptTranslator.registerControl() {
                             .dropWhile { it is PsiWhiteSpace }
                             .dropLastWhile { it is PsiWhiteSpace }
                         children.forEachIndexed { index, it ->
-                            if (index == children.lastIndex && typedRule.actuallyCouldBeExpression && it is KtExpression && it.actuallyCouldBeExpression) {
-                                -"return "
+                            if(index == children.lastIndex){
+                                if (hasFunctionWrapper && it is KtExpression && it.actuallyCouldBeExpression) {
+                                    -"return "
+                                }
                             }
                             -it
                         }
                     } else {
-                        if (typedRule.actuallyCouldBeExpression && b?.actuallyCouldBeExpression == true) {
+                        if (hasFunctionWrapper && b?.actuallyCouldBeExpression == true) {
                             -"return "
                         }
                         -b
@@ -164,7 +175,9 @@ fun TypescriptTranslator.registerControl() {
     }
 
     handle<KtCatchClause> {
-        val expr = (typedRule.parent as KtTryExpression).actuallyCouldBeExpression
+        val parentTry = (typedRule.parent as KtTryExpression)
+        val type = parentTry.resolvedExpressionTypeInfo?.type
+        val hasFunctionWrapper = (typedRule.parent as KtTryExpression).actuallyCouldBeExpression && type != null
         -"catch (_"
         -(typedRule.catchParameter?.nameIdentifier ?: "e")
         -") { let "
@@ -182,15 +195,15 @@ fun TypescriptTranslator.registerControl() {
                 .dropWhile { it is PsiWhiteSpace }
                 .dropLastWhile { it is PsiWhiteSpace }
             children.forEachIndexed { index, it ->
-                if (expr) {
-                    if (index == children.lastIndex && it is KtExpression && it.actuallyCouldBeExpression) {
+                if(index == children.lastIndex){
+                    if (hasFunctionWrapper && it is KtExpression && it.actuallyCouldBeExpression) {
                         -"return "
                     }
                 }
                 -it
             }
         } else {
-            if (expr) {
+            if (hasFunctionWrapper) {
                 -"return "
             }
             -b

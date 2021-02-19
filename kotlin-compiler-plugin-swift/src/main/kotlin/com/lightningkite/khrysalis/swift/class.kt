@@ -6,13 +6,13 @@ import com.lightningkite.khrysalis.util.AnalysisExtensions
 import com.lightningkite.khrysalis.util.forEachBetween
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.descriptors.*
+import org.jetbrains.kotlin.ir.util.findFirstFunction
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.js.translate.callTranslator.getReturnType
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
-import org.jetbrains.kotlin.psi2ir.findFirstFunction
 import org.jetbrains.kotlin.resolve.calls.util.FakeCallableDescriptorForObject
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
 import org.jetbrains.kotlin.resolve.descriptorUtil.getSuperClassNotAny
@@ -70,7 +70,7 @@ fun SwiftTranslator.registerClass() {
                 } else it
             }
             .let {
-                val over = on.resolvedClass?.findFirstFunction("equals") {
+                val over = on.resolvedClass?.unsubstitutedMemberScope?.findFirstFunction("equals") {
                     it.valueParameters.size == 1 && it.valueParameters[0].type.getJetTypeFqName(false) == "kotlin.Any"
                 }
                 if (over?.callsForSwiftInterface(on.resolvedClass) == true) {
@@ -79,14 +79,14 @@ fun SwiftTranslator.registerClass() {
                 } else it
             }
             .let {
-                val over = on.resolvedClass?.findFirstFunction("hashCode") { it.valueParameters.size == 0 }
+                val over = on.resolvedClass?.unsubstitutedMemberScope?.findFirstFunction("hashCode") { it.valueParameters.size == 0 }
                 if (over?.callsForSwiftInterface(on.resolvedClass) == true) {
                     out.addImport(TemplatePart.Import("Butterfly"))
                     it + listOf("KHashable")
                 } else it
             }
             .let {
-                val over = on.resolvedClass?.findFirstFunction("toString") { it.valueParameters.size == 0 }
+                val over = on.resolvedClass?.unsubstitutedMemberScope?.findFirstFunction("toString") { it.valueParameters.size == 0 }
                 if (over?.callsForSwiftInterface(on.resolvedClass) == true) {
                     out.addImport(TemplatePart.Import("Butterfly"))
                     it + listOf("KStringable")

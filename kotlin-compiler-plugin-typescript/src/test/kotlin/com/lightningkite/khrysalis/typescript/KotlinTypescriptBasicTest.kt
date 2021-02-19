@@ -1,8 +1,10 @@
 package com.lightningkite.khrysalis.typescript
 
+import com.lightningkite.khrysalis.kotlin.Libraries
 import org.jetbrains.kotlin.cli.common.arguments.K2JVMCompilerArguments
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageLocation
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
+import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSourceLocation
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.cli.jvm.K2JVMCompiler
 import org.jetbrains.kotlin.config.Services
@@ -17,16 +19,7 @@ class KotlinTypescriptBasicTest {
     @Test
     fun test() {
         println("Running in ${File(".").absolutePath}")
-        val standardLibraryCopy = File("build/temp/std-lib.jar").also { it.parentFile.mkdirs() }
-        if (!standardLibraryCopy.exists()) {
-            println("Downloading standard library...")
-            standardLibraryCopy.outputStream().use { out ->
-                URL("https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.3.72/kotlin-stdlib-1.3.72.jar").openStream()
-                    .use { input ->
-                        input.copyTo(out)
-                    }
-            }
-        }
+        val standardLibraryCopy = Libraries.getStandardLibrary()
         K2JVMCompiler().exec(
             messageCollector = object : MessageCollector {
                 override fun clear() {
@@ -40,7 +33,7 @@ class KotlinTypescriptBasicTest {
                 override fun report(
                     severity: CompilerMessageSeverity,
                     message: String,
-                    location: CompilerMessageLocation?
+                    location: CompilerMessageSourceLocation?
                 ) {
                     if (message.isNotBlank())
                         println(message + if(location != null) ": $location" else "")
@@ -49,13 +42,13 @@ class KotlinTypescriptBasicTest {
             },
             services = Services.EMPTY,
             arguments = K2JVMCompilerArguments().apply {
-                this.freeArgs = listOf("testData")
+                this.freeArgs = listOf("oldTestData")
                 this.classpathAsList = listOf(standardLibraryCopy)
                 this.pluginClasspaths = arrayOf("build/libs/kotlin-compiler-plugin-typescript-0.1.0.jar")
                 this.pluginOptions =
                     arrayOf(
-                        "plugin:${KotlinTypescriptCLP.PLUGIN_ID}:${KotlinTypescriptCLP.KEY_TS_DEPENDENCIES_NAME}=testDataOut",
-                        "plugin:${KotlinTypescriptCLP.PLUGIN_ID}:${KotlinTypescriptCLP.KEY_OUTPUT_DIRECTORY_NAME}=testDataOut/typescript"
+                        "plugin:${KotlinTypescriptCLP.PLUGIN_ID}:${KotlinTypescriptCLP.KEY_TS_DEPENDENCIES_NAME}=oldTestDataOut",
+                        "plugin:${KotlinTypescriptCLP.PLUGIN_ID}:${KotlinTypescriptCLP.KEY_OUTPUT_DIRECTORY_NAME}=oldTestDataOut/typescript"
                     )
                 this.destinationAsFile = File("build/testBuild").also { it.deleteRecursively(); it.mkdirs() }
             }

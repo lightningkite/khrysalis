@@ -59,9 +59,11 @@ class KotlinTypescriptCLP : CommandLineProcessor {
 
     override fun processOption(option: AbstractCliOption, value: String, configuration: CompilerConfiguration) =
         when (option.optionName) {
-            KEY_TS_DEPENDENCIES_NAME -> configuration.put(
-                KEY_TS_DEPENDENCIES,
-                value.trim('"').split(File.pathSeparatorChar).map { File(it) })
+            KEY_TS_DEPENDENCIES_NAME -> {
+                configuration.put(
+                    KEY_TS_DEPENDENCIES,
+                    value.trim('"').split(File.pathSeparatorChar).map { File(it) })
+            }
             KEY_OUTPUT_DIRECTORY_NAME -> configuration.put(KEY_OUTPUT_DIRECTORY, value.trim('"').let { File(it) })
             KEY_PROJECT_NAME_NAME -> configuration.put(KEY_PROJECT_NAME, value.trim('"'))
             else -> {
@@ -122,6 +124,7 @@ class KotlinTypescriptExtension(
         translator.declarations.local.putAll(map)
 
         //Load equivalents
+        println("dependencies $dependencies")
         dependencies.asSequence().plus(output)
             .flatMap { it.walkTopDown() }
             .filter {

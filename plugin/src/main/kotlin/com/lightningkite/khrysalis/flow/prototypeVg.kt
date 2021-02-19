@@ -121,13 +121,11 @@ private fun generateFile(
         fun handleNodeClick(
             node: XmlNode,
             view: String,
-            viewAccess: String
-        ) {
-            val actionName = (view.removePrefix("xml").replace(Regex("\\.[a-zA-Z]")) { result ->
-                result.value.drop(1).toUpperCase()
-            } + "Click").decapitalize()
-
-            fun makeAction(action: () -> Unit) {
+            viewAccess: String,
+            makeAction: (action: () -> Unit) -> Unit = { action ->
+                val actionName = (view.removePrefix("xml").replace(Regex("\\.[a-zA-Z]")) { result ->
+                    result.value.drop(1).toUpperCase()
+                } + "Click").decapitalize()
                 line("${viewAccess}onClick { this.$actionName() }")
                 actions += {
                     line("${CodeSection.sectionMarker} Action $actionName ${CodeSection.overwriteMarker}")
@@ -138,6 +136,8 @@ private fun generateFile(
                     line("}")
                 }
             }
+        ) {
+
             node.allAttributes["tools:print"]?.let {
                 println(it)
             }
@@ -244,7 +244,7 @@ private fun generateFile(
             things.forEachIndexed { index, it ->
                 if (it.type.contains("VG") || it.type.contains("ViewGenerator")) {
                     line("@Unowned val $it" + (if (index == things.lastIndex) "" else ","))
-                } else if (it.type.contains("->") || it.type.contains("-]")) {
+                } else if ((it.type.contains("->") || it.type.contains("-]")) && !it.type.endsWith('?')) {
                     line("val ${it.name}: @Escaping() ${it.kotlinType}" + (if (it.default != null) " = " + it.default else "") + (if (index == things.lastIndex) "" else ","))
                 } else {
                     line("val $it" + (if (index == things.lastIndex) "" else ","))
@@ -258,16 +258,21 @@ private fun generateFile(
             viewNode.provides.sortedBy { it.name }.filter { it.onPath == null }.forEach {
                 line("${CodeSection.sectionMarker} Provides ${it.name} ${CodeSection.overwriteMarker}")
                 line(
-                    """val ${it.name}: ${it.kotlinType} = ${it.construct(
-                        viewNode,
-                        viewNodeMap
-                    )}"""
+                    """val ${it.name}: ${it.kotlinType} = ${
+                        it.construct(
+                            viewNode,
+                            viewNodeMap
+                        )
+                    }"""
                 )
             }
             line("")
             line("${CodeSection.sectionMarker} Title ${CodeSection.overwriteMarker}")
-            line("""override val title: String get() = "${viewName.replace(Regex("[A-Z]")) { " " + it.value }
-                .trim()}"""")
+            line(
+                """override val title: String get() = "${
+                    viewName.replace(Regex("[A-Z]")) { " " + it.value }
+                        .trim()
+                }"""")
             line("")
             line("${CodeSection.sectionMarker} Generate Start ${CodeSection.overwriteMarker}")
             line("""override fun generate(dependency: ActivityAccess): View {""")
@@ -294,27 +299,105 @@ private fun generateFile(
                     val viewAccess = if (isOptional) "$view?." else "$view."
 
                     if (view?.contains("dummy", true) == true) {
+                        handleNodeClick(node, view, viewAccess){ action ->
+                            val actionName = (view.replace("dummy", "").removePrefix("xml").replace(Regex("\\.[a-zA-Z]")) { result ->
+                                result.value.drop(1).toUpperCase()
+                            } + "Action").decapitalize()
+                            actions += {
+                                line("${CodeSection.sectionMarker} Action $actionName ${CodeSection.overwriteMarker}")
+                                line("fun $actionName() {")
+                                tab {
+                                    action()
+                                }
+                                line("}")
+                            }
+                        }
                         return
                     }
-                    if (view != null) {
+                    if (node.name == "com.google.android.material.tabs.TabLayout" && node.children.isNotEmpty() && view !== null) {
                         line()
-                        line("${CodeSection.sectionMarker} Set Up ${view.replace("?", "")} ${CodeSection.overwriteMarker}")
+                        line(
+                            "${CodeSection.sectionMarker} Set Up ${
+                                view.replace(
+                                    "?",
+                                    ""
+                                )
+                            } ${CodeSection.overwriteMarker}"
+                        )
+                        line("${viewAccess}addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {")
+                        tab {
+                            line("override fun onTabSelected(tab: TabLayout.Tab) {")
+                            tab {
+                                line("when(tab.position) {")
+                                node.children
+                                    .filter { it.name == "com.google.android.material.tabs.TabItem" }
+                                    .forEachIndexed { index, child ->
+                                        val childId =
+                                            child.allAttributes["android:id"]?.removePrefix("@+id/")?.camelCase()
+                                                ?: index.toString()
+                                        handleNodeClick(child, "$view.$childId", "") { action ->
+                                            val actionName =
+                                                (view.removePrefix("xml").replace(Regex("\\.[a-zA-Z]")) { result ->
+                                                    result.value.drop(1).toUpperCase()
+                                                } + childId.capitalize()).decapitalize()
+                                            line(
+                                                "${CodeSection.sectionMarker} Action for ${
+                                                    view.replace(
+                                                        "?",
+                                                        ""
+                                                    )
+                                                }.$childId ${CodeSection.overwriteMarker}"
+                                            )
+                                            line("$index -> $actionName()")
+                                            actions += {
+                                                line("${CodeSection.sectionMarker} Action $actionName ${CodeSection.overwriteMarker}")
+                                                line("fun $actionName() {")
+                                                tab {
+                                                    action()
+                                                }
+                                                line("}")
+                                            }
+                                        }
+                                    }
+                                line("${CodeSection.sectionMarker} Action for ${view.replace("?", "")} Done")
+                                line("}")
+                            }
+                            line("}")
+                            line("override fun onTabUnselected(tab: TabLayout.Tab) {}")
+                            line("override fun onTabReselected(tab: TabLayout.Tab) = onTabSelected(tab)")
+                        }
+                        line("})")
+                        return
+                    } else if (view != null) {
+                        line()
+                        line(
+                            "${CodeSection.sectionMarker} Set Up ${
+                                view.replace(
+                                    "?",
+                                    ""
+                                )
+                            } ${CodeSection.overwriteMarker}"
+                        )
                         if (node.name == "com.google.android.gms.maps.MapView") {
                             line("${viewAccess}bind(dependency)")
                         }
                         node.allAttributes["tools:text"]?.let {
                             if (it.startsWith("@string")) {
                                 line(
-                                    """${viewAccess}bindStringRes(ConstantObservableProperty(R.string.${it.removePrefix(
-                                        "@string/"
-                                    )}))"""
+                                    """${viewAccess}bindStringRes(ConstantObservableProperty(R.string.${
+                                        it.removePrefix(
+                                            "@string/"
+                                        )
+                                    }))"""
                                 )
                             } else {
                                 line(
-                                    """${viewAccess}bindString(ConstantObservableProperty("${it.replace(
-                                        "$",
-                                        "\\$"
-                                    )}"))"""
+                                    """${viewAccess}bindString(ConstantObservableProperty("${
+                                        it.replace(
+                                            "$",
+                                            "\\$"
+                                        )
+                                    }"))"""
                                 )
                             }
                         }
@@ -342,7 +425,14 @@ private fun generateFile(
                                 line("defaultValue = 1,")
                                 line("makeView = label@ { observable ->")
                                 tab {
-                                    line("${CodeSection.sectionMarker} Make Subview For ${view.replace("?", "")} ${CodeSection.overwriteMarker}")
+                                    line(
+                                        "${CodeSection.sectionMarker} Make Subview For ${
+                                            view.replace(
+                                                "?",
+                                                ""
+                                            )
+                                        } ${CodeSection.overwriteMarker}"
+                                    )
                                     // If sublayout has a VG, use that instead of looping down the layout.
                                     if (otherViewNode != null) {
                                         line("val cellVg = ${makeView(otherViewNode, "stack", view)} ")
@@ -355,7 +445,14 @@ private fun generateFile(
                                         handleNode(subName, XmlNode.read(file, styles), "cellXml.")
                                         handleNodeClick(node, "cellXml.xmlRoot", "cellXml.xmlRoot.")
                                     }
-                                    line("${CodeSection.sectionMarker} End Make Subview For ${view.replace("?", "")} ${CodeSection.overwriteMarker}")
+                                    line(
+                                        "${CodeSection.sectionMarker} End Make Subview For ${
+                                            view.replace(
+                                                "?",
+                                                ""
+                                            )
+                                        } ${CodeSection.overwriteMarker}"
+                                    )
                                     line("return@label cellView")
                                 }
                                 line("}")
@@ -367,7 +464,10 @@ private fun generateFile(
                             node.allAttributes[ViewNode.attributeStackDefault]?.let stackDefault@{
                                 val otherViewNode =
                                     viewNodeMap[it.removePrefix("@layout/").camelCase().capitalize()]
-                                        ?: return@stackDefault
+                                        ?: run {
+                                            println("WARNING: Could not find view ${it.removePrefix("@layout/").camelCase().capitalize()} for default of stack ${stackName}")
+                                            return@stackDefault
+                                        }
                                 val makeView = makeView(otherViewNode, stackName, null)
                                 inits.add {
                                     line("${CodeSection.sectionMarker} Set Initial View for ${stackName} ${CodeSection.overwriteMarker}")

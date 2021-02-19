@@ -134,8 +134,6 @@ interface AnalysisExtensions {
         get() = bindingContext[BindingContext.IS_UNINITIALIZED, this]
     val PropertyDescriptor.resolvedMustBeLateinit: Boolean?
         get() = bindingContext[BindingContext.MUST_BE_LATEINIT, this]
-    val KtLambdaExpression.resolvedLambdaInvocations: org.jetbrains.kotlin.contracts.description.InvocationKind?
-        get() = bindingContext[BindingContext.LAMBDA_INVOCATIONS, this]
     val KtLambdaExpression.resolvedBlock: Boolean?
         get() = bindingContext[BindingContext.BLOCK, this]
     val KtClassOrObject.resolvedClass: ClassDescriptor?
@@ -238,6 +236,8 @@ interface AnalysisExtensions {
             }
             //Check if control is expression
             if(it.parent is KtWhenEntry) return determineMaybeExpression(it.parent!!.parent as KtExpression)
+            if(it.parent is KtTryExpression) return determineMaybeExpression(it.parent as KtExpression)
+            if(it.parent is KtCatchClause) return determineMaybeExpression(it.parent!!.parent as KtExpression)
             parentControlBody = it.parent as? KtContainerNodeForControlStructureBody ?: return false
         }
         parentControlBody?.let { return determineMaybeExpressionControl(it) }

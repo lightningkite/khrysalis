@@ -1,22 +1,5 @@
 # To Do List
 
-## Short Term
-
-- [X] Android Video Thumbnail Generation Async
-- [X] iOS Video Player
-    - [X] Layout
-    - [X] Binding
-- [X] iOS Video Thumbnail Generation
-- [X] iOS list groupBy
-- [X] iOS string filter
-- [ ] iOS Google Places Autocomplete (Brady)
-- [X] iOS Horizontal Progress Bar
-- [X] iOS Image toHttpBody
-- [X] iOS Uri toHttpBody
-- [ ] Http call with progress?
-
-## Long Term
-
 These are the upcoming objectives for development:
 
 ## Documentation
@@ -73,3 +56,31 @@ These are the upcoming objectives for development:
         which didn’t produce any errors
 
 - [ ] Static imports are not supported
+
+
+
+
+
+# Other Khrysalis Items
+
+- Quality
+  - Upload library to all platforms
+    - Maven, 4h
+    - Cocoapods, 4h
+    - NPM, 4h
+  - Unit test code translation, 20h
+  - Continuous integration with Code Coverage, 20h
+  - iOS storyboard UI, 40h
+  - Web - make lighter-weight, ?h
+  - Web Metadata, 5h
+  - Web Server-side rendering (?)
+  - Pure RX style using Rx library bindings
+  - Jetpack Compose / SwiftUI
+- Advertising
+  - Get website up and running
+    - Tutorials
+  - Advertise where the devs are
+  - Write blog post about language conversions
+  - Create open-source simple demo apps
+    - Life organizer app
+    - Bluetooth Cards app
