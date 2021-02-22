@@ -138,7 +138,7 @@ fun TypescriptTranslator.registerIdentifiers(){
                 -now
                 -')'
             } else {
-                -doSuper()
+                doSuper()
             }
         }
     )

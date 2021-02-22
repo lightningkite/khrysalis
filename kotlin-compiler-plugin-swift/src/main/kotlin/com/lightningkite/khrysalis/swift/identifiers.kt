@@ -54,12 +54,14 @@ fun SwiftTranslator.registerIdentifiers(){
             if(before?.getJetTypeFqName(true) == now?.getJetTypeFqName(true) && now?.isMarkedNullable == false){
                 doSuper()
                 -'!'
-            } else {
+            } else if(now != null) {
                 -'('
                 doSuper()
                 -" as! "
                 -now
                 -')'
+            } else {
+                doSuper()
             }
         }
     )
