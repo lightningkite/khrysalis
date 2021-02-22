@@ -153,6 +153,7 @@ class TypescriptTranslator(
         registerOperators()
         registerReceiver()
         registerSpecialLet()
+        registerJUnit()
 
         handle<LeafPsiElement>(condition = { typedRule.text in terminalMap.keys }, priority = 1) {
             out.append(terminalMap[typedRule.text])

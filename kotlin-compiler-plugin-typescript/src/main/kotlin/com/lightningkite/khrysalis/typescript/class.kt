@@ -404,7 +404,6 @@ fun TypescriptTranslator.registerClass() {
                 -" { return new "
                 -typedRule.nameIdentifier
                 -"(\n"
-                //TODO: Use annotation for json
                 typedRule.primaryConstructor?.valueParameters?.forEachBetween(
                     forItem = {
                         if (it.hasValOrVar()) {

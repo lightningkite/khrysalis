@@ -18,8 +18,16 @@ object Libraries {
         return standardLibraryCopy
     }
 
-    fun khrysalisAnnotations(): File {
-        return File(System.getenv("KHRYSALIS_META_LOCATION"))
-            .resolve("butterfly-android/butterfly-android/src/main/java/com/lightningkite/butterfly/KhrysalisAnnotations.kt")
-    }
+    val khrysalisAnnotations = File(System.getenv("KHRYSALIS_META_LOCATION"))
+        .resolve("butterfly-android/butterfly-android/src/main/java/com/lightningkite/butterfly/KhrysalisAnnotations.kt")
+    val junitStubs = File(System.getenv("KHRYSALIS_META_LOCATION"))
+        .resolve("khrysalis/kotlin-compiler-plugin-typescript/testData/junitStubs.kt")
+    val jacksonStubs = File(System.getenv("KHRYSALIS_META_LOCATION"))
+        .resolve("khrysalis/kotlin-compiler-plugin-typescript/testData/jacksonStubs.kt")
+
+    val testingStubs = listOf(
+        khrysalisAnnotations,
+        junitStubs,
+        jacksonStubs
+    )
 }

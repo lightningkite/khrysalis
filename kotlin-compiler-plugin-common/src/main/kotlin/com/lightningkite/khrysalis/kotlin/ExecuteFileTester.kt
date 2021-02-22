@@ -42,7 +42,7 @@ object ExecuteFileTester {
     fun kotlinCompile(
         sourceFile: File,
         libraries: Set<File> = setOf(Libraries.getStandardLibrary()),
-        additionalSources: List<File> = listOf(Libraries.khrysalisAnnotations()),
+        additionalSources: List<File> = Libraries.testingStubs,
         argumentsModification: K2JVMCompilerArguments.()->Unit,
         out: File = buildDir.resolve(sourceFile.nameWithoutExtension + ".jar")
     ) {
@@ -86,7 +86,7 @@ object ExecuteFileTester {
         sourceFile: File,
         clean: Boolean = false,
         libraries: Set<File> = setOf(Libraries.getStandardLibrary()),
-        additionalSources: List<File> = listOf(Libraries.khrysalisAnnotations())
+        additionalSources: List<File> = Libraries.testingStubs
     ): String = caching(sourceFile, clean) {
         val outFile = buildDir.resolve(sourceFile.nameWithoutExtension + ".jar")
         val ktName = sourceFile.name

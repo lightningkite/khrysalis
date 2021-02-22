@@ -34,7 +34,8 @@ class TranslationTest {
             arrayOf("testNulls.kt"),
             arrayOf("testOperators.kt"),
             arrayOf("testTypes.kt"),
-            arrayOf("testVariables.kt")
+            arrayOf("testVariables.kt"),
+            arrayOf("testUnitTesting.kt"),
         )
     }
 
