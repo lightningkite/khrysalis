@@ -78,7 +78,6 @@ dependencies {
     antlr "org.antlr:antlr4:4.5.3" // use ANTLR version 4
     // https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java
     api "org.apache.commons:commons-lang3:3.10"
-    api "me.eugeniomarletti.kotlin.metadata:kotlin-metadata:1.4.0"
     api "com.fasterxml.jackson.core:jackson-databind:2.9.+"
     api "com.fasterxml.jackson.module:jackson-module-kotlin:2.9.+"
     api "net.jodah:xsylum:0.1.0"
