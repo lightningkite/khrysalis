@@ -11,6 +11,7 @@ import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.getParentOfType
 import org.jetbrains.kotlin.psi.psiUtil.getTextWithLocation
 import org.jetbrains.kotlin.psi.synthetics.SyntheticClassOrObjectDescriptor
+import org.jetbrains.kotlin.resolve.calls.smartcasts.MultipleSmartCasts
 import org.jetbrains.kotlin.resolve.lazy.descriptors.LazyClassDescriptor
 
 fun TypescriptTranslator.registerIdentifiers(){
@@ -127,7 +128,7 @@ fun TypescriptTranslator.registerIdentifiers(){
         priority = 4000,
         action = {
             val before = (typedRule.resolvedReferenceTarget as? ValueDescriptor)?.type
-            val now = typedRule.resolvedSmartcast!!.defaultType
+            val now = typedRule.resolvedSmartcast!!.defaultType ?: (typedRule.resolvedSmartcast as? MultipleSmartCasts)?.map?.values?.firstOrNull()
             if(before?.getJetTypeFqName(true) == now?.getJetTypeFqName(true) && now?.isMarkedNullable == false){
                 doSuper()
                 -'!'

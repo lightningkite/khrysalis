@@ -5,6 +5,8 @@ import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
+import org.jetbrains.kotlin.psi.psiUtil.getTextWithLocation
+import org.jetbrains.kotlin.resolve.calls.smartcasts.MultipleSmartCasts
 
 fun SwiftTranslator.registerIdentifiers(){
 //    handle<PsiE> {
@@ -50,7 +52,7 @@ fun SwiftTranslator.registerIdentifiers(){
         priority = 4000,
         action = {
             val before = (typedRule.resolvedReferenceTarget as? ValueDescriptor)?.type
-            val now = typedRule.resolvedSmartcast!!.defaultType
+            val now = typedRule.resolvedSmartcast!!.defaultType ?: (typedRule.resolvedSmartcast as? MultipleSmartCasts)?.map?.values?.firstOrNull()
             if(before?.getJetTypeFqName(true) == now?.getJetTypeFqName(true) && now?.isMarkedNullable == false){
                 doSuper()
                 -'!'
@@ -73,7 +75,7 @@ fun SwiftTranslator.registerIdentifiers(){
         action = {
             val sel = typedRule.selectorExpression as KtNameReferenceExpression
             val before = (sel.resolvedReferenceTarget as? ValueDescriptor)?.type
-            val now = typedRule.resolvedSmartcast!!.defaultType
+            val now = typedRule.resolvedSmartcast!!.defaultType ?: (typedRule.resolvedSmartcast as? MultipleSmartCasts)?.map?.values?.firstOrNull()
             if(before?.getJetTypeFqName(true) == now?.getJetTypeFqName(true) && now?.isMarkedNullable == false){
                 doSuper()
                 -'!'

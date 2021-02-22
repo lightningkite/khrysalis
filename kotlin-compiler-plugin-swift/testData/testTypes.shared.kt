@@ -26,11 +26,15 @@ private fun typesMain(){
     println("Success")
 
     val unknownThing: Any? = "Hi"
+    var unknownThingMut: Any? = unknownThing
 
     if(unknownThing is Int){
         println("Hello!")
     }
     println(unknownThing as? Int)
+    if(unknownThingMut is String){
+        println(unknownThingMut + "asdf")
+    }
 
     val a = 23L
     val b = 23f
