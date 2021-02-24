@@ -40,6 +40,10 @@ typealias MyThing = Thing
 typealias MyList<T> = List<T>
 typealias ListOfThings = MyList<MyThing>
 
+fun notNullThing(thing: Any){
+    println(thing.toString())
+}
+
 fun main(){
     val x: Int = 0
     val y: MyInteger = 0
@@ -51,6 +55,10 @@ fun main(){
 
     val ugh = Weird(2)
     val unknownThing: Any? = ugh
+    var unknownThingMut: Any? = unknownThing
+    if(x < 0) {
+        unknownThingMut = 2
+    }
 
     if(unknownThing is TestInterface){
         println("Hello!")
@@ -66,6 +74,13 @@ fun main(){
         println("Hello!")
     }
     (unknownThing as? Int)?.let { println(it.toString() )}
+
+    if(unknownThingMut is String){
+        println(unknownThingMut + "asdf")
+    }
+    if(unknownThingMut != null){
+        notNullThing(unknownThingMut)
+    }
 
     val thingA: AnyObject = unknownThing!!
 

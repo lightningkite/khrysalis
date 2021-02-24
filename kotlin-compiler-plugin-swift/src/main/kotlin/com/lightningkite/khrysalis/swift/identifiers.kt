@@ -1,5 +1,7 @@
 package com.lightningkite.khrysalis.swift
 
+import com.lightningkite.khrysalis.util.fqNameWithTypeArgs
+import com.lightningkite.khrysalis.util.fqNameWithoutTypeArgs
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
@@ -53,7 +55,7 @@ fun SwiftTranslator.registerIdentifiers(){
         action = {
             val before = (typedRule.resolvedReferenceTarget as? ValueDescriptor)?.type
             val now = typedRule.resolvedSmartcast!!.defaultType ?: (typedRule.resolvedSmartcast as? MultipleSmartCasts)?.map?.values?.firstOrNull()
-            if(before?.getJetTypeFqName(true) == now?.getJetTypeFqName(true) && now?.isMarkedNullable == false){
+            if(before?.fqNameWithTypeArgs == now?.fqNameWithTypeArgs && now?.isMarkedNullable == false){
                 doSuper()
                 -'!'
             } else if(now != null) {
@@ -76,7 +78,7 @@ fun SwiftTranslator.registerIdentifiers(){
             val sel = typedRule.selectorExpression as KtNameReferenceExpression
             val before = (sel.resolvedReferenceTarget as? ValueDescriptor)?.type
             val now = typedRule.resolvedSmartcast!!.defaultType ?: (typedRule.resolvedSmartcast as? MultipleSmartCasts)?.map?.values?.firstOrNull()
-            if(before?.getJetTypeFqName(true) == now?.getJetTypeFqName(true) && now?.isMarkedNullable == false){
+            if(before?.fqNameWithTypeArgs == now?.fqNameWithTypeArgs && now?.isMarkedNullable == false){
                 doSuper()
                 -'!'
             } else {

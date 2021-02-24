@@ -1,9 +1,6 @@
 package com.lightningkite.khrysalis.swift.replacements
 
-import com.lightningkite.khrysalis.util.AnalysisExtensions
-import com.lightningkite.khrysalis.util.cannotSatisfy
-import com.lightningkite.khrysalis.util.satisfies
-import com.lightningkite.khrysalis.util.simpleFqName
+import com.lightningkite.khrysalis.util.*
 import org.jetbrains.kotlin.descriptors.CallableDescriptor
 import org.jetbrains.kotlin.descriptors.FunctionDescriptor
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
@@ -50,11 +47,11 @@ data class FunctionReplacement(
         }
         val hasExplicitTypeArguments = call.call.typeArgumentList != null
         if (this.hasExplicitTypeArguments != null && this.hasExplicitTypeArguments != hasExplicitTypeArguments) return false
-        if (receiver != null && receiver != descriptor.extensionReceiverParameter?.type?.getJetTypeFqName(false)) return false
+        if (receiver != null && receiver != descriptor.extensionReceiverParameter?.type?.fqNameWithoutTypeArgs) return false
         if (arguments != null) {
             if (this.arguments.size != descriptor.original.valueParameters.size) return false
             if (!this.arguments.zip(descriptor.original.valueParameters)
-                    .all { (a, p) -> a == "*" || p.type.getJetTypeFqName(false) == a || p.name.asString() == a }
+                    .all { (a, p) -> a == "*" || p.type.fqNameWithoutTypeArgs == a || p.name.asString() == a }
             ) {
                 return false
             }

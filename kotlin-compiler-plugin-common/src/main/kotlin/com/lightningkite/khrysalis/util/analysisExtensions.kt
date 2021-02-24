@@ -215,7 +215,7 @@ interface AnalysisExtensions {
     fun determineMaybeExpressionLambda(it: KtFunctionLiteral): Boolean{
         it.resolvedExpectedReturnType?.let { expected ->
             if (expected !is TypeUtils.SpecialType) {
-                return expected.getJetTypeFqName(false) !in dontReturnTypes
+                return expected.fqNameWithoutTypeArgs !in dontReturnTypes
             }
         }
         return true
@@ -224,7 +224,7 @@ interface AnalysisExtensions {
         if (exp is KtStatementExpression) {
             return false
         }
-        if(exp !is KtConstantExpression && exp.resolvedExpressionTypeInfo?.type?.getJetTypeFqName(false) == "kotlin.Nothing") return false
+        if(exp !is KtConstantExpression && exp.resolvedExpressionTypeInfo?.type?.fqNameWithoutTypeArgs == "kotlin.Nothing") return false
         var parentControlBody: KtContainerNodeForControlStructureBody? =
             exp.parent as? KtContainerNodeForControlStructureBody
         (exp.parent as? KtBlockExpression)?.let {

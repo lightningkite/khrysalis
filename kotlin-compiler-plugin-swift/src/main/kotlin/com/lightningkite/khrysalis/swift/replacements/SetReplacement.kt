@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.swift.replacements
 
+import com.lightningkite.khrysalis.util.fqNameWithoutTypeArgs
 import com.lightningkite.khrysalis.util.simpleFqName
 import org.jetbrains.kotlin.descriptors.PropertyDescriptor
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
@@ -20,11 +21,9 @@ data class SetReplacement(
         if(actualReceiver != null){
             if(receiverType == null) return false
             val allTypes = listOf(receiverType) + receiverType.supertypes()
-//            println("${decl.simpleFqName}, checking for $actualReceiver: ${allTypes.joinToString { it.getJetTypeFqName(false) }}")
-            if(allTypes.none { it.getJetTypeFqName(false) == actualReceiver }) return false
+//            println("${decl.simpleFqName}, checking for $actualReceiver: ${allTypes.joinToString { it.fqNameWithoutTypeArgs }}")
+            if(allTypes.none { it.fqNameWithoutTypeArgs == actualReceiver }) return false
         }
-        return (receiver == null || receiver == decl.extensionReceiverParameter?.type?.getJetTypeFqName(
-                    false
-                ))
+        return (receiver == null || receiver == decl.extensionReceiverParameter?.type?.fqNameWithoutTypeArgs)
     }
 }

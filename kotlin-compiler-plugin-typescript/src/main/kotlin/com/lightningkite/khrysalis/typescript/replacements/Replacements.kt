@@ -128,11 +128,9 @@ class Replacements() {
             }
 
     fun getType(type: KotlinType): TypeReplacement? =
-        if (type.constructor.declarationDescriptor is TypeParameterDescriptor) null else types[type.getJetTypeFqName(
-            false
-        )]?.find { it.passes(type) }
+        if (type.constructor.declarationDescriptor is TypeParameterDescriptor) null else types[type.fqNameWithoutTypeArgs]?.find { it.passes(type) }
     fun getTypeRef(type: KotlinType): TypeRefReplacement? =
-        typeRefs[type.getJetTypeFqName(false)]?.find { it.passes(type) }
+        typeRefs[type.fqNameWithoutTypeArgs]?.find { it.passes(type) }
 
     fun getTypeRef(type: DeclarationDescriptor): TypeRefReplacement? =
         type.fqNamesToCheck

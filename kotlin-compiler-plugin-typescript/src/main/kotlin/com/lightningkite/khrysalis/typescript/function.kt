@@ -2,6 +2,7 @@ package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.typescript.manifest.declaresPrefix
 import com.lightningkite.khrysalis.util.forEachBetween
+import com.lightningkite.khrysalis.util.fqNameWithoutTypeArgs
 import com.lightningkite.khrysalis.util.fqNamesToCheck
 import com.lightningkite.khrysalis.util.simpleFqName
 import org.jetbrains.kotlin.builtins.functions.FunctionInvokeDescriptor
@@ -40,7 +41,7 @@ val FunctionDescriptor.tsNameOverridden: String?
         extensionReceiverParameter!!
             .value
             .type
-            .getJetTypeFqName(false)
+            .fqNameWithoutTypeArgs
             .split('.')
             .dropWhile { it.firstOrNull()?.isUpperCase() != true }
             .joinToString("") { it.capitalize() }.let{ "x$it" } +

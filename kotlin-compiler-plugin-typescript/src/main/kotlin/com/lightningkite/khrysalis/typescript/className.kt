@@ -1,5 +1,7 @@
 package com.lightningkite.khrysalis.typescript
 
+import com.lightningkite.khrysalis.util.fqNameWithTypeArgs
+import com.lightningkite.khrysalis.util.fqNameWithoutTypeArgs
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.name.FqName
@@ -23,9 +25,7 @@ val skippedExtensions = setOf(
 fun MemberDescriptor.description(): String {
     return when (this) {
         is FunctionDescriptor -> this.name.identifier + this.valueParameters.joinToString {
-            it.type.getJetTypeFqName(
-                true
-            )
+            it.type.fqNameWithTypeArgs
         }
         is PropertyDescriptor -> this.name.identifier
         else -> return "???"

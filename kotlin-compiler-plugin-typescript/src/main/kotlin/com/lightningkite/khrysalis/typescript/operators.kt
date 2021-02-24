@@ -177,7 +177,6 @@ fun TypescriptTranslator.registerOperators() {
             val resolvedCall = arrayAccess.resolvedIndexedLvalueSet!!
 
             val reuseIdentifiers = typedRule.operationToken != KtTokens.EQ
-            -"/*bin $reuseIdentifiers*/"
 
             val tempArray: Any = if (reuseIdentifiers && !arrayAccess.arrayExpression!!.isSimple()) {
                 val t = "array${uniqueNumber.getAndIncrement()}"
@@ -216,9 +215,6 @@ fun TypescriptTranslator.registerOperators() {
                 operationToken = typedRule.operationToken,
                 resolvedCall = typedRule.resolvedCall
             ) else typedRule.right!!
-            -"/* right is"
-            -right
-            -"*/"
             val rule = replacements.getCall(this@registerOperators, resolvedCall)!!
             emitTemplate(
                 requiresWrapping = typedRule.actuallyCouldBeExpression,

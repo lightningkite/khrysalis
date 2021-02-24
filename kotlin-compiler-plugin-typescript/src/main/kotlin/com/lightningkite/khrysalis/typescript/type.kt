@@ -7,6 +7,7 @@ import com.lightningkite.khrysalis.typescript.manifest.declaresPrefix
 import com.lightningkite.khrysalis.typescript.replacements.Template
 import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.forEachBetween
+import com.lightningkite.khrysalis.util.fqNameWithoutTypeArgs
 import org.jetbrains.kotlin.builtins.functions.FunctionClassDescriptor
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
@@ -44,7 +45,7 @@ private val primitiveTypes = setOf(
     "kotlin.Any"
 )
 
-fun KotlinType.isPrimitive() = getJetTypeFqName(false) in primitiveTypes
+fun KotlinType.isPrimitive() = fqNameWithoutTypeArgs in primitiveTypes
 data class BasicType(val type: KotlinType)
 data class CompleteReflectableType(val type: KotlinType)
 data class KtUserTypeBasic(val type: KtUserType)
@@ -376,7 +377,7 @@ fun TypescriptTranslator.registerType() {
                     -">("
                     -typedRule.left
                     -", \""
-                    -resolvedType.getJetTypeFqName(false).split('.').joinToString("") { it.capitalize() }
+                    -resolvedType.fqNameWithoutTypeArgs.split('.').joinToString("") { it.capitalize() }
                     -"\")"
                 }
                 resolvedType.isPrimitive() -> {
@@ -416,7 +417,7 @@ fun PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByType<*>.e
             -">("
             -expression
             -", \""
-            -resolvedType.getJetTypeFqName(false).split('.').joinToString("") { it.capitalize() }
+            -resolvedType.fqNameWithoutTypeArgs.split('.').joinToString("") { it.capitalize() }
             -"\")"
         }
         resolvedType.isPrimitive() -> {

@@ -126,12 +126,10 @@ class Replacements() {
             }
 
     fun getType(type: KotlinType): TypeReplacement? =
-        if (type.constructor.declarationDescriptor is TypeParameterDescriptor) null else types[type.getJetTypeFqName(
-            false
-        )]?.find { it.passes(type) }
+        if (type.constructor.declarationDescriptor is TypeParameterDescriptor) null else types[type.fqNameWithoutTypeArgs]?.find { it.passes(type) }
 
     fun getTypeRef(type: KotlinType): TypeRefReplacement? =
-        typeRefs[type.getJetTypeFqName(false)]?.find { it.passes(type) }
+        typeRefs[type.fqNameWithoutTypeArgs]?.find { it.passes(type) }
 
     fun getTypeRef(type: DeclarationDescriptor): TypeRefReplacement? =
         type.fqNamesToCheck
@@ -143,12 +141,12 @@ class Replacements() {
             }
 
     fun getImplicitCast(from: KotlinType, to: KotlinType): CastRule? {
-        casts[from.getJetTypeFqName(false) + "->" + to.getJetTypeFqName(false)]
+        casts[from.fqNameWithoutTypeArgs + "->" + to.fqNameWithoutTypeArgs]
             ?.find { it.passes(from, to) }
             ?.let { return it }
         val detailedPossibilities = from.supertypes().filter { it.supertypes().contains(to) }
         for (d in detailedPossibilities) {
-            casts[d.getJetTypeFqName(false) + "->" + to.getJetTypeFqName(false)]
+            casts[d.fqNameWithoutTypeArgs + "->" + to.fqNameWithoutTypeArgs]
                 ?.find { it.passes(d, to) }
                 ?.let { return it }
         }
@@ -156,12 +154,12 @@ class Replacements() {
     }
 
     fun getExplicitCast(from: KotlinType, to: KotlinType): CastRule? {
-        casts[from.getJetTypeFqName(false) + "->" + to.getJetTypeFqName(false)]
+        casts[from.fqNameWithoutTypeArgs + "->" + to.fqNameWithoutTypeArgs]
             ?.find { it.passes(from, to) }
             ?.let { return it }
         val detailedPossibilities = to.supertypes().filter { it.supertypes().contains(from) }
         for (d in detailedPossibilities) {
-            casts[d.getJetTypeFqName(false) + "->" + to.getJetTypeFqName(false)]
+            casts[d.fqNameWithoutTypeArgs + "->" + to.fqNameWithoutTypeArgs]
                 ?.find { it.passes(from, d) }
                 ?.let { return it }
         }
@@ -169,7 +167,7 @@ class Replacements() {
     }
 
     fun requiresMutable(type: KotlinType): Boolean = (sequenceOf(type) + type.supertypes().asSequence())
-        .any { t -> types[t.getJetTypeFqName(false)]?.find { it.passes(t) }?.requiresMutable == true }
+        .any { t -> types[t.fqNameWithoutTypeArgs]?.find { it.passes(t) }?.requiresMutable == true }
 
     companion object {
         val mapper: ObjectMapper = ObjectMapper(YAMLFactory())

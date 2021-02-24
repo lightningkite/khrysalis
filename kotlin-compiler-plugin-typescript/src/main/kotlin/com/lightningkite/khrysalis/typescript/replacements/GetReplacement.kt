@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.typescript.replacements
 
+import com.lightningkite.khrysalis.util.fqNameWithoutTypeArgs
 import com.lightningkite.khrysalis.util.satisfies
 import com.lightningkite.khrysalis.util.simpleFqName
 import org.jetbrains.kotlin.descriptors.PropertyDescriptor
@@ -19,8 +20,6 @@ data class GetReplacement(
 
     fun passes(decl: PropertyDescriptor, receiverType: KotlinType?): Boolean {
         if (actualReceiver != null && receiverType?.satisfies(actualReceiver) != true) return false
-        return (receiver == null || receiver == decl.extensionReceiverParameter?.type?.getJetTypeFqName(
-                    false
-                ))
+        return (receiver == null || receiver == decl.extensionReceiverParameter?.type?.fqNameWithoutTypeArgs)
     }
 }

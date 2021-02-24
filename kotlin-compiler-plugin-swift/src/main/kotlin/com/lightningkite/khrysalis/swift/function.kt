@@ -12,6 +12,7 @@ import org.jetbrains.kotlin.types.typeUtil.isTypeParameter
 import com.lightningkite.khrysalis.generic.PartialTranslatorByType
 import com.lightningkite.khrysalis.swift.replacements.Template
 import com.lightningkite.khrysalis.swift.replacements.TemplatePart
+import com.lightningkite.khrysalis.util.fqNameWithoutTypeArgs
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.synthetic.hasJavaOriginInHierarchy
@@ -33,7 +34,7 @@ val FunctionDescriptor.swiftNameOverridden: String?
             extensionReceiverParameter!!
                 .value
                 .type
-                .getJetTypeFqName(false)
+                .fqNameWithoutTypeArgs
                 .split('.')
                 .dropWhile { it.firstOrNull()?.isUpperCase() != true }
                 .joinToString("") { it.capitalize() }.let{ "x$it" } +
@@ -307,7 +308,6 @@ fun SwiftTranslator.registerFunction() {
             val callExp = typedRule.selectorExpression as KtCallExpression
             val nre = callExp.calleeExpression as KtNameReferenceExpression
             val f = callExp.resolvedCall!!.candidateDescriptor as FunctionDescriptor
-            -"/*Null-wrap call*/"
             nullWrapAction(this@registerFunction, typedRule){ rec, mode ->
                 maybeWrapCall(callExp.resolvedCall!!) {
                     -nre

@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.typescript
 
+import com.lightningkite.khrysalis.util.fqNameWithTypeArgs
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.codegen.AccessorForCompanionObjectInstanceFieldDescriptor
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
@@ -129,7 +130,7 @@ fun TypescriptTranslator.registerIdentifiers(){
         action = {
             val before = (typedRule.resolvedReferenceTarget as? ValueDescriptor)?.type
             val now = typedRule.resolvedSmartcast!!.defaultType ?: (typedRule.resolvedSmartcast as? MultipleSmartCasts)?.map?.values?.firstOrNull()
-            if(before?.getJetTypeFqName(true) == now?.getJetTypeFqName(true) && now?.isMarkedNullable == false){
+            if(before?.fqNameWithTypeArgs == now?.fqNameWithTypeArgs && now?.isMarkedNullable == false){
                 doSuper()
                 -'!'
             } else if(now != null) {
@@ -151,8 +152,8 @@ fun TypescriptTranslator.registerIdentifiers(){
         action = {
             val sel = typedRule.selectorExpression as KtNameReferenceExpression
             val before = (sel.resolvedReferenceTarget as? ValueDescriptor)?.type
-            val now = typedRule.resolvedSmartcast!!.defaultType
-            if(before?.getJetTypeFqName(true) == now?.getJetTypeFqName(true) && now?.isMarkedNullable == false){
+            val now = typedRule.resolvedSmartcast!!.defaultType ?: (typedRule.resolvedSmartcast as? MultipleSmartCasts)?.map?.values?.firstOrNull()
+            if(before?.fqNameWithTypeArgs == now?.fqNameWithTypeArgs && now?.isMarkedNullable == false){
                 doSuper()
                 -'!'
             } else {

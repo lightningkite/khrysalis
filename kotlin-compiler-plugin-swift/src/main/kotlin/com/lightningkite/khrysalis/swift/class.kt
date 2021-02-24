@@ -4,6 +4,7 @@ import com.lightningkite.khrysalis.generic.PartialTranslatorByType
 import com.lightningkite.khrysalis.swift.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.AnalysisExtensions
 import com.lightningkite.khrysalis.util.forEachBetween
+import com.lightningkite.khrysalis.util.fqNameWithoutTypeArgs
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.ir.util.findFirstFunction
@@ -71,7 +72,7 @@ fun SwiftTranslator.registerClass() {
             }
             .let {
                 val over = on.resolvedClass?.unsubstitutedMemberScope?.findFirstFunction("equals") {
-                    it.valueParameters.size == 1 && it.valueParameters[0].type.getJetTypeFqName(false) == "kotlin.Any"
+                    it.valueParameters.size == 1 && it.valueParameters[0].type.fqNameWithoutTypeArgs == "kotlin.Any"
                 }
                 if (over?.callsForSwiftInterface(on.resolvedClass) == true) {
                     out.addImport(TemplatePart.Import("Butterfly"))
@@ -235,7 +236,7 @@ fun SwiftTranslator.registerClass() {
             if (sc.valueParameters.size != cc.valueParameters.size) return@run
             if (sc.valueParameters.zip(cc.valueParameters).all {
                     it.first.name.asString() == it.second.name.asString()
-                            && it.first.type.getJetTypeFqName(false) == it.second.type.getJetTypeFqName(false)
+                            && it.first.type.fqNameWithoutTypeArgs == it.second.type.fqNameWithoutTypeArgs
                 }) {
                 -"override "
             }
@@ -244,13 +245,13 @@ fun SwiftTranslator.registerClass() {
 
         if (typedRule.superTypeListEntries
                 .mapNotNull { it as? KtSuperTypeEntry }
-                .any { it.typeReference?.resolvedType?.getJetTypeFqName(false) == "com.lightningkite.butterfly.Codable" }
+                .any { it.typeReference?.resolvedType?.fqNameWithoutTypeArgs == "com.lightningkite.butterfly.Codable" }
         ) {
             -"convenience required public init(from decoder: Decoder) throws {\n"
             -"let values = try decoder.container(keyedBy: CodingKeys.self)\n"
             -"self.init(\n"
             typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEachBetween(forItem = {
-                if (it.typeReference?.resolvedType?.getJetTypeFqName(false) == "kotlin.Double") {
+                if (it.typeReference?.resolvedType?.fqNameWithoutTypeArgs == "kotlin.Double") {
                     if(it.typeReference?.resolvedType?.isMarkedNullable == true){
                         it.defaultValue?.let { default ->
                             -it.nameIdentifier
@@ -358,7 +359,7 @@ fun SwiftTranslator.registerClass() {
                 -") -> Bool { return "
                 typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEachBetween(
                     forItem = { param ->
-                        val typeName = param.typeReference?.resolvedType?.getJetTypeFqName(false)
+                        val typeName = param.typeReference?.resolvedType?.fqNameWithoutTypeArgs
                         replacements.functions[typeName + ".equals"]?.firstOrNull()?.let {
                             emitTemplate(
                                 requiresWrapping = true,

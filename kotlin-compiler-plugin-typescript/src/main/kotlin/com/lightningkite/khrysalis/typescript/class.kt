@@ -2,9 +2,7 @@ package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.generic.PartialTranslatorByType
 import com.lightningkite.khrysalis.typescript.manifest.declaresPrefix
-import com.lightningkite.khrysalis.util.AnalysisExtensions
-import com.lightningkite.khrysalis.util.allOverridden
-import com.lightningkite.khrysalis.util.forEachBetween
+import com.lightningkite.khrysalis.util.*
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
@@ -38,7 +36,7 @@ fun TypescriptTranslator.registerClass() {
             )
         }
         typedRule.superTypeListEntries.mapNotNull { it as? KtSuperTypeEntry }
-            .filter { it.typeReference?.resolvedType?.getJetTypeFqName(false) !in skippedExtensions }
+            .filter { it.typeReference?.resolvedType?.fqNameWithoutTypeArgs !in skippedExtensions }
             .takeUnless { it.isEmpty() }?.let {
                 -" implements "
                 it.forEachBetween(
@@ -52,10 +50,10 @@ fun TypescriptTranslator.registerClass() {
         val typedRule = on
         typedRule.superTypeListEntries
             .mapNotNull { it as? KtSuperTypeEntry }
-            .filter { it.typeReference?.resolvedType?.getJetTypeFqName(false) !in skippedExtensions }
+            .filter { it.typeReference?.resolvedType?.fqNameWithoutTypeArgs !in skippedExtensions }
             .mapNotNull { it.typeReference?.resolvedType }
             .flatMap { listOf(it) + it.supertypes() }
-            .map { it.getJetTypeFqName(false) }
+            .map { it.fqNameWithoutTypeArgs }
             .filter { it != "kotlin.Any" }
             .distinct()
             .takeUnless { it.isEmpty() }
@@ -189,7 +187,7 @@ fun TypescriptTranslator.registerClass() {
         -typedRule.nameIdentifier
         -typedRule.typeParameterList
         typedRule.superTypeListEntries.mapNotNull { it as? KtSuperTypeEntry }
-            .filter { it.typeReference?.resolvedType?.getJetTypeFqName(false) !in skippedExtensions }
+            .filter { it.typeReference?.resolvedType?.fqNameWithoutTypeArgs !in skippedExtensions }
             .takeUnless { it.isEmpty() }?.let {
                 -" extends "
                 it.forEachBetween(
@@ -380,7 +378,7 @@ fun TypescriptTranslator.registerClass() {
 
         if (typedRule.superTypeListEntries
                 .mapNotNull { it as? KtSuperTypeEntry }
-                .any { it.typeReference?.resolvedType?.getJetTypeFqName(false) == "com.lightningkite.butterfly.Codable" }
+                .any { it.typeReference?.resolvedType?.fqNameWithoutTypeArgs == "com.lightningkite.butterfly.Codable" }
         ) {
             //Generate codable constructor
             out.addImport("butterfly-web/dist/net/jsonParsing", "parse", "parseJsonTyped")
@@ -848,5 +846,5 @@ val ConstructorDescriptor.tsConstructorName: String?
         ?.value
         ?.value
         ?.toString() ?: ("constructor" + this.valueParameters.joinToString("") {
-        it.type.getJetTypeFqName(true).split('.', ',', '<', '>').map { it.filter { it.isLetterOrDigit() } }.filter { it.firstOrNull()?.isLowerCase() == false }.joinToString("")
+        it.type.fqNameWithTypeArgs.split('.', ',', '<', '>').map { it.filter { it.isLetterOrDigit() } }.filter { it.firstOrNull()?.isLowerCase() == false }.joinToString("")
     })

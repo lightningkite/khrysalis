@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.swift
 
+import com.lightningkite.khrysalis.util.fqNameWithoutTypeArgs
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.descriptors.FunctionDescriptor
 import org.jetbrains.kotlin.descriptors.PropertyDescriptor
@@ -49,7 +50,7 @@ fun SwiftTranslator.registerException() {
     )
     handle<KtCatchClause> {
         -"catch "
-        if(typedRule.catchParameter != null && typedRule.catchParameter?.typeReference?.resolvedType?.getJetTypeFqName(false) !in setOf("java.lang.Throwable", "kotlin.Throwable")) {
+        if(typedRule.catchParameter != null && typedRule.catchParameter?.typeReference?.resolvedType?.fqNameWithoutTypeArgs !in setOf("java.lang.Throwable", "kotlin.Throwable")) {
             -"let "
             -typedRule.catchParameter?.nameIdentifier
             -" as "

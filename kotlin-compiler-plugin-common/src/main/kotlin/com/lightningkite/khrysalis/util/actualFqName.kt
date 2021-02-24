@@ -17,8 +17,8 @@ val DeclarationDescriptor.simpleFqName: String get() = when{
         val result = getMethod.containingDeclaration.fqNameSafe.asString() + "." + this.fqNameSafe.asString()
         result
     }
-    this is FunctionDescriptor && this.extensionReceiverParameter != null -> this.fqNameSafe.asString() + (this.extensionReceiverParameter?.type?.getJetTypeFqName(true)?.let { ">$it" } ?: "")
-    this is PropertyDescriptor && this.extensionReceiverParameter != null -> this.fqNameSafe.asString() + (this.extensionReceiverParameter?.type?.getJetTypeFqName(true)?.let { ">$it" } ?: "")
+    this is FunctionDescriptor && this.extensionReceiverParameter != null -> this.fqNameSafe.asString() + (this.extensionReceiverParameter?.type?.fqNameWithTypeArgs?.let { ">$it" } ?: "")
+    this is PropertyDescriptor && this.extensionReceiverParameter != null -> this.fqNameSafe.asString() + (this.extensionReceiverParameter?.type?.fqNameWithTypeArgs?.let { ">$it" } ?: "")
     else -> this.fqNameSafe.asString().substringBefore(".<")
 }
 val DeclarationDescriptor.simplerFqName: String get() = this.fqNameSafe.asString()

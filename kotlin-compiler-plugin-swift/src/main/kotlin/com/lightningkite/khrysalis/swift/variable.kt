@@ -3,6 +3,7 @@ package com.lightningkite.khrysalis.swift
 import com.lightningkite.khrysalis.swift.replacements.Template
 import com.lightningkite.khrysalis.swift.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.AnalysisExtensions
+import com.lightningkite.khrysalis.util.fqNameWithoutTypeArgs
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.descriptors.*
@@ -786,7 +787,7 @@ val PropertyDescriptor.tsFunctionGetName: String?
         extensionReceiverParameter != null -> "get" + extensionReceiverParameter!!
             .value
             .type
-            .getJetTypeFqName(false)
+            .fqNameWithoutTypeArgs
             .split('.')
             .dropWhile { it.firstOrNull()?.isUpperCase() != true }
             .joinToString("") { it.capitalize() }
@@ -804,7 +805,7 @@ val PropertyDescriptor.tsFunctionSetName: String?
         extensionReceiverParameter != null -> "set" + extensionReceiverParameter!!
             .value
             .type
-            .getJetTypeFqName(false)
+            .fqNameWithoutTypeArgs
             .split('.')
             .dropWhile { it.firstOrNull()?.isUpperCase() != true }
             .joinToString("") { it.capitalize() }

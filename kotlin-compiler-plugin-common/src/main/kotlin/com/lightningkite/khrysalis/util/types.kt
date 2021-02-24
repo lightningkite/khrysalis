@@ -1,7 +1,10 @@
 package com.lightningkite.khrysalis.util
 
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
+import org.jetbrains.kotlin.resolve.calls.inference.CapturedTypeConstructor
+import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 import org.jetbrains.kotlin.types.KotlinType
+import org.jetbrains.kotlin.types.checker.NewCapturedTypeConstructor
 import org.jetbrains.kotlin.types.typeUtil.isBoolean
 import org.jetbrains.kotlin.types.typeUtil.isPrimitiveNumberType
 import org.jetbrains.kotlin.types.typeUtil.supertypes
@@ -30,19 +33,29 @@ val arrayTypes = listOf(
     "kotlin.DoubleArray",
     "kotlin.Array"
 )
+val KotlinType.fqNameWithoutTypeArgs: String get() =  try {
+    getJetTypeFqName(false)
+} catch(e: Exception){
+    "<err>"
+}
+val KotlinType.fqNameWithTypeArgs: String get() = try {
+    getJetTypeFqName(true)
+} catch(e: Exception){
+    "<err>"
+}
 fun KotlinType.cannotSatisfy(stringRequirement: String): Boolean = !satisfies(stringRequirement)
 fun KotlinType.satisfies(stringRequirement: String): Boolean {
     if(stringRequirement == "primitive") {
-        return this.getJetTypeFqName(false) in primitiveTypes
+        return this.fqNameWithoutTypeArgs in primitiveTypes
     }
     if(stringRequirement == "array"){
-        return this.getJetTypeFqName(false) in arrayTypes
+        return this.fqNameWithoutTypeArgs in arrayTypes
     }
-    if(this.getJetTypeFqName(true) == stringRequirement) return true
-    if(this.getJetTypeFqName(false) == stringRequirement) return true
+    if(this.fqNameWithTypeArgs == stringRequirement) return true
+    if(this.fqNameWithoutTypeArgs == stringRequirement) return true
     this.supertypes().forEach {
-        if(it.getJetTypeFqName(true) == stringRequirement) return true
-        if(it.getJetTypeFqName(false) == stringRequirement) return true
+        if(it.fqNameWithTypeArgs == stringRequirement) return true
+        if(it.fqNameWithoutTypeArgs == stringRequirement) return true
     }
     return false
 }

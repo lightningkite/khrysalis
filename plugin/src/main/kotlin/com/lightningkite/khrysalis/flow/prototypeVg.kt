@@ -300,9 +300,11 @@ private fun generateFile(
 
                     if (view?.contains("dummy", true) == true) {
                         handleNodeClick(node, view, viewAccess){ action ->
-                            val actionName = (view.replace("dummy", "").removePrefix("xml").replace(Regex("\\.[a-zA-Z]")) { result ->
-                                result.value.drop(1).toUpperCase()
-                            } + "Action").decapitalize()
+                            val p = view.replace("dummy", "").removePrefix("xml").replace(Regex("\\.[a-zA-Z]")) { result ->
+                                result.value[1].toUpperCase().toString()
+                            }
+                            if(p.isEmpty() || !p[0].isJavaIdentifierStart()) return@handleNodeClick
+                            val actionName = (p + "Action").decapitalize()
                             actions += {
                                 line("${CodeSection.sectionMarker} Action $actionName ${CodeSection.overwriteMarker}")
                                 line("fun $actionName() {")

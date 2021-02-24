@@ -3,6 +3,7 @@ package com.lightningkite.khrysalis.typescript
 import com.lightningkite.khrysalis.generic.line
 import com.lightningkite.khrysalis.util.AnalysisExtensions
 import com.lightningkite.khrysalis.util.forEachBetween
+import com.lightningkite.khrysalis.util.fqNameWithoutTypeArgs
 import com.lightningkite.khrysalis.util.simpleFqName
 import org.jetbrains.kotlin.builtins.*
 import org.jetbrains.kotlin.builtins.functions.FunctionInvokeDescriptor
@@ -75,7 +76,7 @@ fun TypescriptTranslator.registerLambda() {
                 }
                 1 -> {
                     val s = typedRule.bodyExpression!!.statements.first()
-                    if (s!!.actuallyCouldBeExpression && resolved.returnType?.getJetTypeFqName(false) !in AnalysisExtensions.dontReturnTypes && resolved.returnType?.isNullableNothing() != true) {
+                    if (s!!.actuallyCouldBeExpression && resolved.returnType?.fqNameWithoutTypeArgs !in AnalysisExtensions.dontReturnTypes && resolved.returnType?.isNullableNothing() != true) {
                         -s
                     } else {
                         -"{\n"

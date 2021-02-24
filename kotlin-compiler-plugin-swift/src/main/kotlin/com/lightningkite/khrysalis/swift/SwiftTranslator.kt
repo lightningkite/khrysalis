@@ -4,6 +4,8 @@ import com.lightningkite.khrysalis.generic.PartialTranslatorByType
 import com.lightningkite.khrysalis.generic.TranslatorInterface
 import com.lightningkite.khrysalis.swift.replacements.Replacements
 import com.lightningkite.khrysalis.util.AnalysisExtensions
+import com.lightningkite.khrysalis.util.fqNameWithTypeArgs
+import com.lightningkite.khrysalis.util.fqNameWithoutTypeArgs
 import com.lightningkite.khrysalis.util.walkTopDown
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
@@ -214,7 +216,7 @@ class SwiftTranslator(
         on: KtExpression
     ) {
         val type = on.resolvedExpressionTypeInfo?.type
-        if (type?.getJetTypeFqName(false) == "kotlin.Nothing") {
+        if (type?.fqNameWithoutTypeArgs == "kotlin.Nothing") {
             //find type via returns
             on.walkTopDown()
                 .mapNotNull { it as? KtReturnExpression }

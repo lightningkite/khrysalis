@@ -3,6 +3,7 @@ package com.lightningkite.khrysalis.typescript
 import com.lightningkite.khrysalis.typescript.manifest.declaresPrefix
 import com.lightningkite.khrysalis.util.AnalysisExtensions
 import com.lightningkite.khrysalis.util.forEachBetween
+import com.lightningkite.khrysalis.util.fqNameWithoutTypeArgs
 import com.lightningkite.khrysalis.util.simpleFqName
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
@@ -763,7 +764,7 @@ val PropertyDescriptor.tsFunctionGetName: String?
     get() = if (this is SyntheticJavaPropertyDescriptor) null else if (extensionReceiverParameter != null) "x" + extensionReceiverParameter!!
         .value
         .type
-        .getJetTypeFqName(false)
+        .fqNameWithoutTypeArgs
         .split('.')
         .dropWhile { it.firstOrNull()?.isUpperCase() != true }
         .joinToString("") { it.capitalize() } +
@@ -777,7 +778,7 @@ val PropertyDescriptor.tsFunctionSetName: String?
     get() = if (this is SyntheticJavaPropertyDescriptor) null else if (extensionReceiverParameter != null) "x" + extensionReceiverParameter!!
         .value
         .type
-        .getJetTypeFqName(false)
+        .fqNameWithoutTypeArgs
         .split('.')
         .dropWhile { it.firstOrNull()?.isUpperCase() != true }
         .joinToString("") { it.capitalize() } +
