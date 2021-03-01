@@ -272,10 +272,10 @@
   template: "Array(~this~.prefix(while: ~0~))"
 #- id: kotlin.collections.takeLastWhile
 
-- id: kotlin.collections.filterIndexed
-  type: call
-  actualReceiver: kotlin.collections.List
-  template: ~this~ #TODO
+#- id: kotlin.collections.filterIndexed
+#  type: call
+#  actualReceiver: kotlin.collections.List
+#  template: ~this~ #TODO
 - id: kotlin.collections.filterNot
   type: call
   actualReceiver: kotlin.collections.List
@@ -285,36 +285,36 @@
   actualReceiver: kotlin.collections.List
   template: '~this~.compactMap({ $0 })'
 
-- id: kotlin.collections.sortBy
-  type: call
-  actualReceiver: kotlin.collections.List
-  template: ~this~ #TODO
-- id: kotlin.collections.sortByDescending
-  type: call
-  actualReceiver: kotlin.collections.List
-  template: ~this~ #TODO
-- id: kotlin.collections.sortedBy
-  type: call
-  actualReceiver: kotlin.collections.List
-  template: ~this~ #TODO
-- id: kotlin.collections.sortedByDescending
-  type: call
-  actualReceiver: kotlin.collections.List
-  template: ~this~ #TODO
+#- id: kotlin.collections.sortBy
+#  type: call
+#  actualReceiver: kotlin.collections.List
+#  template: ~this~ #TODO
+#- id: kotlin.collections.sortByDescending
+#  type: call
+#  actualReceiver: kotlin.collections.List
+#  template: ~this~ #TODO
+#- id: kotlin.collections.sortedBy
+#  type: call
+#  actualReceiver: kotlin.collections.List
+#  template: ~this~ #TODO
+#- id: kotlin.collections.sortedByDescending
+#  type: call
+#  actualReceiver: kotlin.collections.List
+#  template: ~this~ #TODO
 
 # TODO: groupBy
 
-- id: kotlin.collections.mapIndexed
-  type: call
-  actualReceiver: kotlin.collections.List
-  template: ~this~ #TODO
+#- id: kotlin.collections.mapIndexed
+#  type: call
+#  actualReceiver: kotlin.collections.List
+#  template: ~this~ #TODO
 - id: kotlin.collections.mapNotNull
   type: call
   actualReceiver: kotlin.collections.List
   template: '~this~.compactMap(~0~)'
-- id: kotlin.collections.mapIndexedNotNull
-  type: call
-  actualReceiver: kotlin.collections.List
-  template: ~this~ #TODO
+#- id: kotlin.collections.mapIndexedNotNull
+#  type: call
+#  actualReceiver: kotlin.collections.List
+#  template: ~this~ #TODO
 
 # TODO: Fold, max, min, reduce, scan

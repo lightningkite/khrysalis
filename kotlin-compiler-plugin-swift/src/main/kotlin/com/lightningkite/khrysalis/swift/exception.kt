@@ -59,6 +59,9 @@ fun SwiftTranslator.registerException() {
                 -" where "
                 emitTemplate(it, receiver = typedRule.catchParameter?.nameIdentifier)
             }
+        } else {
+            -"let "
+            -typedRule.catchParameter?.nameIdentifier
         }
         -" "
         -typedRule.catchBody

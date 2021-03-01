@@ -107,6 +107,7 @@ com.test.MyThing
 com.test.MyList
 com.test.ListOfThings
 com.test.TypesConstructorTest
+com.test.myRun
 com.test.typesMain
 com.test.variableFileReal
 com.test.variableTopLevelReal

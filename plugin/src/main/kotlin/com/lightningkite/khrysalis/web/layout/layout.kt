@@ -231,6 +231,7 @@ internal fun HtmlTranslator.layout() {
         })
         out.contentNodes += ResultNode("button").apply {
             classes += "butterfly-refresh-button"
+            this.contentNodes.add("\u27F3")
         }
     }
     element.handle("include") {

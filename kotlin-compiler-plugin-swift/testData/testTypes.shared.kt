@@ -16,6 +16,10 @@ private class TypesConstructorTest(
 
 }
 
+fun <T> myRun(action: ()->T) {
+    return action()
+}
+
 private fun typesMain(){
     val x: Int = 0
     val y: TypesMyInt = 0
@@ -43,4 +47,9 @@ private fun typesMain(){
 
     val unit: Unit = Unit
     val unitArmy = otherList.map { Unit }
+
+    val functionTypeA: ()->Unit = {}
+    val functionTypeB: (Int)->Unit = { println(it) }
+    val functionTypeC: (Int)->Int = { it + 1 }
+    println(myRun<Int> { 82 })
 }

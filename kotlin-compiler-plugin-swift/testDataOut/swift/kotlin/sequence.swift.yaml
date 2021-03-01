@@ -52,16 +52,16 @@
 - id: kotlin.sequences.map
   type: call
   template: "~this~.map(~0~)"
-- id: kotlin.sequences.mapIndexed
-  type: call
-  template: ~this~ #TODO
+#- id: kotlin.sequences.mapIndexed
+#  type: call
+#  template: ~this~ #TODO
 - id: kotlin.sequences.flatMap
   type: call
   template: "~this~.flatMap(~0~)"
 
-- id: kotlin.sequences.filterIndexed
-  type: call
-  template: ~this~ #TODO
+#- id: kotlin.sequences.filterIndexed
+#  type: call
+#  template: ~this~ #TODO
 - id: kotlin.sequences.filterNot
   type: call
   template: "~this~.filter({ x in !~0~(x) })"
@@ -71,22 +71,22 @@
 - id: kotlin.sequences.mapNotNull
   type: call
   template: "~this~.compactMap(~0~)"
-- id: kotlin.sequences.mapIndexedNotNull
-  type: call
-  template: ~this~ #TODO
-- id: kotlin.sequences.chunked
-  type: call
-  template: ~this~ #TODO
+#- id: kotlin.sequences.mapIndexedNotNull
+#  type: call
+#  template: ~this~ #TODO
+#- id: kotlin.sequences.chunked
+#  type: call
+#  template: ~this~ #TODO
 
 - id: kotlin.sequences.sorted
   type: call
   template: ~this~.sorted()
-- id: kotlin.sequences.sortedBy
-  type: call
-  template: ~this~ #TODO
-- id: kotlin.sequences.sortedByDescending
-  type: call
-  template: ~this~ #TODO
+#- id: kotlin.sequences.sortedBy
+#  type: call
+#  template: ~this~ #TODO
+#- id: kotlin.sequences.sortedByDescending
+#  type: call
+#  template: ~this~ #TODO
 
 - id: kotlin.sequences.associate
   type: call
