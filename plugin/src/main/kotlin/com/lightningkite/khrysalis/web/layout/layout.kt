@@ -231,7 +231,9 @@ internal fun HtmlTranslator.layout() {
         })
         out.contentNodes += ResultNode("button").apply {
             classes += "butterfly-refresh-button"
-            this.contentNodes.add("\u27F3")
+            contentNodes += ResultNode("img").apply {
+                attributes["src"] = "images/ic-refresh.svg"
+            }
         }
     }
     element.handle("include") {
