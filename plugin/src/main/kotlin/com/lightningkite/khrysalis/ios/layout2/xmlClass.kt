@@ -72,7 +72,7 @@ fun AndroidLayoutFile.toSwift(
     out.appendln("// ${name}Xml.swift")
     out.appendln("// Created by Khrysalis XML Swift")
     out.appendln("//")
-    out.appendln("import Butterfly")
+    out.appendln("import LKButterfly")
     out.appendln("import UIKit")
     for(import in imports.distinct()){
         out.appendln("import ${import.module}")

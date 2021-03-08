@@ -30,7 +30,7 @@ fun convertResourceValuesToIos(
             appendln("")
             appendln("import Foundation")
             appendln("import UIKit")
-            appendln("import Butterfly")
+            appendln("import LKButterfly")
             appendln("")
             appendln("")
             appendln("public enum R {")

@@ -32,8 +32,6 @@ class TypescriptTranslator(
     val declarations: DeclarationManifest = DeclarationManifest()
 
     var stubMode: Boolean = false
-    @Deprecated("NO.  Go to your room.", ReplaceWith("this.declarations.node")) val kotlinFqNameToFile get() = declarations.node
-    @Deprecated("NO.  Go to your room.", ReplaceWith("this.declarations.local")) val kotlinFqNameToRelativeFile get() = declarations.local
 
     data class ReceiverAssignment(val declaration: DeclarationDescriptor, val tsName: String)
 

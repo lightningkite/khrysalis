@@ -32,11 +32,19 @@ class KotlinTypescriptCLP : CommandLineProcessor {
         val KEY_PROJECT_NAME = CompilerConfigurationKey.create<String>(KEY_PROJECT_NAME_NAME)
         const val KEY_OUTPUT_DIRECTORY_NAME = "outputDirectory"
         val KEY_OUTPUT_DIRECTORY = CompilerConfigurationKey.create<File>(KEY_OUTPUT_DIRECTORY_NAME)
+        const val KEY_INPUT_DIRECTORY_NAME = "inputDirectory"
+        val KEY_INPUT_DIRECTORY = CompilerConfigurationKey.create<File>(KEY_INPUT_DIRECTORY_NAME)
         const val PLUGIN_ID = "com.lightningkite.butterfly.typescript"
     }
 
     override val pluginId: String get() = PLUGIN_ID
     override val pluginOptions: Collection<AbstractCliOption> = listOf(
+        CliOption(
+            KEY_INPUT_DIRECTORY_NAME,
+            "A directory",
+            "Where files should be output, relatively. Defaults to the common root between translated files.",
+            required = false
+        ),
         CliOption(
             KEY_OUTPUT_DIRECTORY_NAME,
             "A directory",
@@ -64,6 +72,7 @@ class KotlinTypescriptCLP : CommandLineProcessor {
                     KEY_TS_DEPENDENCIES,
                     value.trim('"').split(File.pathSeparatorChar).map { File(it) })
             }
+            KEY_INPUT_DIRECTORY_NAME -> configuration.put(KEY_INPUT_DIRECTORY, value.trim('"').let { File(it) })
             KEY_OUTPUT_DIRECTORY_NAME -> configuration.put(KEY_OUTPUT_DIRECTORY, value.trim('"').let { File(it) })
             KEY_PROJECT_NAME_NAME -> configuration.put(KEY_PROJECT_NAME, value.trim('"'))
             else -> {
@@ -78,6 +87,7 @@ class KotlinTypescriptCR : ComponentRegistrar {
             KotlinTypescriptExtension(
                 configuration[KotlinTypescriptCLP.KEY_PROJECT_NAME],
                 configuration[KotlinTypescriptCLP.KEY_TS_DEPENDENCIES] ?: listOf(),
+                configuration[KotlinTypescriptCLP.KEY_INPUT_DIRECTORY],
                 configuration[KotlinTypescriptCLP.KEY_OUTPUT_DIRECTORY]!!,
                 configuration[CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY]
             )
@@ -88,6 +98,7 @@ class KotlinTypescriptCR : ComponentRegistrar {
 class KotlinTypescriptExtension(
     val projectName: String? = null,
     val dependencies: List<File>,
+    val input: File? = null,
     val output: File,
     val collector: MessageCollector?
 ) : AnalysisHandlerExtension {
@@ -96,14 +107,14 @@ class KotlinTypescriptExtension(
         module: ModuleDescriptor,
         bindingTrace: BindingTrace,
         files: Collection<KtFile>
-    ): AnalysisResult? {
+    ): AnalysisResult {
 
         collector?.report(CompilerMessageSeverity.INFO, "Completed analysis for ${projectName}.")
         val ctx = bindingTrace.bindingContext
         val translator = TypescriptTranslator(
             projectName = projectName,
             bindingContext = ctx,
-            commonPath = files.asSequence()
+            commonPath = input?.path ?: files.asSequence()
                 .filter { determineTranslatable(it) }
                 .map { it.virtualFilePath }
                 .takeUnless { it.none() }

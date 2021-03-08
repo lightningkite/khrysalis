@@ -29,11 +29,19 @@ class KotlinSwiftCLP : CommandLineProcessor {
         val KEY_PROJECT_NAME = CompilerConfigurationKey.create<String>(KEY_PROJECT_NAME_NAME)
         const val KEY_OUTPUT_DIRECTORY_NAME = "outputDirectory"
         val KEY_OUTPUT_DIRECTORY = CompilerConfigurationKey.create<File>(KEY_OUTPUT_DIRECTORY_NAME)
+        const val KEY_INPUT_DIRECTORY_NAME = "inputDirectory"
+        val KEY_INPUT_DIRECTORY = CompilerConfigurationKey.create<File>(KEY_INPUT_DIRECTORY_NAME)
         const val PLUGIN_ID = "com.lightningkite.butterfly.swift"
     }
 
     override val pluginId: String get() = PLUGIN_ID
     override val pluginOptions: Collection<AbstractCliOption> = listOf(
+        CliOption(
+            KEY_INPUT_DIRECTORY_NAME,
+            "A directory",
+            "Where files should be output, relatively. Defaults to the common root between translated files.",
+            required = false
+        ),
         CliOption(
             KEY_OUTPUT_DIRECTORY_NAME,
             "A directory",
@@ -59,6 +67,7 @@ class KotlinSwiftCLP : CommandLineProcessor {
             KEY_DEPENDENCIES_NAME -> configuration.put(
                 KEY_SWIFT_DEPENDENCIES,
                 value.trim('"').split(File.pathSeparatorChar).map { File(it) })
+            KEY_INPUT_DIRECTORY_NAME -> configuration.put(KEY_INPUT_DIRECTORY, value.trim('"').let { File(it) })
             KEY_OUTPUT_DIRECTORY_NAME -> configuration.put(KEY_OUTPUT_DIRECTORY, value.trim('"').let { File(it) })
             KEY_PROJECT_NAME_NAME -> configuration.put(KEY_PROJECT_NAME, value.trim('"'))
             else -> {
@@ -73,6 +82,7 @@ class KotlinSwiftCR : ComponentRegistrar {
             KotlinSwiftExtension(
                 configuration[KotlinSwiftCLP.KEY_PROJECT_NAME]!!,
                 configuration[KotlinSwiftCLP.KEY_SWIFT_DEPENDENCIES] ?: listOf(),
+                configuration[KotlinSwiftCLP.KEY_INPUT_DIRECTORY],
                 configuration[KotlinSwiftCLP.KEY_OUTPUT_DIRECTORY]!!,
                 configuration[CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY]
             )
@@ -83,6 +93,7 @@ class KotlinSwiftCR : ComponentRegistrar {
 class KotlinSwiftExtension(
     val projectName: String,
     val dependencies: List<File>,
+    val input: File?,
     val output: File,
     val collector: MessageCollector?
 ) : AnalysisHandlerExtension {
@@ -102,7 +113,7 @@ class KotlinSwiftExtension(
         val translator = SwiftTranslator(
             projectName = projectName,
             bindingContext = ctx,
-            commonPath = files.asSequence()
+            commonPath = input?.path ?: files.asSequence()
                 .filter { determineTranslatable(it) }
                 .map { it.virtualFilePath }
                 .takeUnless { it.none() }

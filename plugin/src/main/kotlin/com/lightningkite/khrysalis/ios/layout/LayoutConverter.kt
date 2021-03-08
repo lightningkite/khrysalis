@@ -3,7 +3,7 @@ package com.lightningkite.khrysalis.ios.layout
 import com.lightningkite.khrysalis.swift.replacements.Replacements
 
 data class LayoutConverter(
-    val imports: Set<String> = setOf("UIKit", "Butterfly"),
+    val imports: Set<String> = setOf("UIKit", "LKButterfly"),
     val viewTypes: Map<String, ViewType> = mapOf(),
     val skipTypes: List<String> = listOf()
 ) {

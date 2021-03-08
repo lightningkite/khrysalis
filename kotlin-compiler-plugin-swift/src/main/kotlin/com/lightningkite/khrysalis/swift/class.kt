@@ -60,13 +60,13 @@ fun SwiftTranslator.registerClass() {
             )
             .let {
                 if (on is KtClass && on.isData()) {
-                    out.addImport(TemplatePart.Import("Butterfly"))
+                    out.addImport(TemplatePart.Import("LKButterfly"))
                     it + listOf("KDataClass")
                 } else it
             }
             .let {
                 if (on is KtClass && on.isEnum()) {
-                    out.addImport(TemplatePart.Import("Butterfly"))
+                    out.addImport(TemplatePart.Import("LKButterfly"))
                     it + listOf("KEnum")
                 } else it
             }
@@ -75,21 +75,21 @@ fun SwiftTranslator.registerClass() {
                     it.valueParameters.size == 1 && it.valueParameters[0].type.fqNameWithoutTypeArgs == "kotlin.Any"
                 }
                 if (over?.callsForSwiftInterface(on.resolvedClass) == true) {
-                    out.addImport(TemplatePart.Import("Butterfly"))
+                    out.addImport(TemplatePart.Import("LKButterfly"))
                     it + listOf("KEquatable")
                 } else it
             }
             .let {
                 val over = on.resolvedClass?.unsubstitutedMemberScope?.findFirstFunction("hashCode") { it.valueParameters.size == 0 }
                 if (over?.callsForSwiftInterface(on.resolvedClass) == true) {
-                    out.addImport(TemplatePart.Import("Butterfly"))
+                    out.addImport(TemplatePart.Import("LKButterfly"))
                     it + listOf("KHashable")
                 } else it
             }
             .let {
                 val over = on.resolvedClass?.unsubstitutedMemberScope?.findFirstFunction("toString") { it.valueParameters.size == 0 }
                 if (over?.callsForSwiftInterface(on.resolvedClass) == true) {
-                    out.addImport(TemplatePart.Import("Butterfly"))
+                    out.addImport(TemplatePart.Import("LKButterfly"))
                     it + listOf("KStringable")
                 } else it
             }
