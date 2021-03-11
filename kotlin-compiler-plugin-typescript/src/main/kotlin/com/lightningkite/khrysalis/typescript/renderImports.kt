@@ -5,7 +5,7 @@ import java.io.File
 
 fun renderImports(projectName: String?, relPath: String, imports: Collection<TemplatePart.Import>, writer: Appendable){
     imports.distinctBy { it.asName ?: it.identifier }.groupBy { it.path }.forEach { (path, parts) ->
-        val usePath = projectName?.let { p ->
+        val usePath = (projectName?.let { p ->
             val prefix = "$p/dist/"
             if (path.startsWith(prefix, true)) {
                 val rel = "./".plus(File(path.drop(prefix.length)).absoluteFile.relativeTo(File(relPath).absoluteFile.parentFile).path)
@@ -16,7 +16,7 @@ fun renderImports(projectName: String?, relPath: String, imports: Collection<Tem
             } else {
                 path
             }
-        } ?: path
+        } ?: path).replace("\\", "/")
         if (parts.size == 1 && parts.first().identifier == TemplatePart.Import.WHOLE) {
             writer.append("import ")
             writer.append(parts.first().identifier)
