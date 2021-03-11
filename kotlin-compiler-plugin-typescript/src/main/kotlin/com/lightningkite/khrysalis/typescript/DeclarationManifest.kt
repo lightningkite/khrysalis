@@ -55,7 +55,7 @@ class DeclarationManifest(
                     }
                 } else {
                     val r = actualFile.absoluteFile.relativeTo(local.parentFile.resolve("node_modules").absoluteFile)
-                    val shiftedPath = File(r.path.replace("/src/", "/dist/"))
+                    val shiftedPath = File(r.path.replace('\\', '/').replace("/src/", "/dist/"))
                     for(decl in decls) {
                         this.node[decl] = shiftedPath
                     }
