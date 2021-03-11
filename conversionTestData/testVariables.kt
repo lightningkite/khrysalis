@@ -169,7 +169,7 @@ object TestObject {
         }
 }
 
-data class Box<T>(val description: String, var item: T): Codable
+data class Box<T: IsCodableAndHashable>(val description: String, var item: T): Codable
 
 class GenericTest<T> {
 }
@@ -239,21 +239,21 @@ fun main(){
     println(instance.box.item)
 
     maybeInstance?.memberReal = 1
-    println(maybeInstance?.memberReal)
+    println(maybeInstance?.memberReal ?: "nope")
     maybeInstance?.memberVirtual = -2
-    println(maybeInstance?.memberVirtual)
+    println(maybeInstance?.memberVirtual ?: "nope")
     maybeInstance?.memberHybrid = -3
-    println(maybeInstance?.memberHybrid)
+    println(maybeInstance?.memberHybrid ?: "nope")
     maybeInstance?.extensionProperty = -4
-    println(maybeInstance?.extensionProperty)
+    println(maybeInstance?.extensionProperty ?: "nope")
 
     val maybeInstance2 = maybeInstance
     maybeInstance2?.memberReal = 1
-    println(maybeInstance2?.memberReal)
+    println(maybeInstance2?.memberReal ?: "nope")
     maybeInstance2?.memberVirtual = -2
-    println(maybeInstance2?.memberVirtual)
+    println(maybeInstance2?.memberVirtual ?: "nope")
     maybeInstance2?.memberHybrid = -3
-    println(maybeInstance2?.memberHybrid)
+    println(maybeInstance2?.memberHybrid ?: "nope")
     maybeInstance2?.extensionProperty = -4
-    println(maybeInstance2?.extensionProperty)
+    println(maybeInstance2?.extensionProperty ?: "nope")
 }

@@ -2,6 +2,8 @@
 package com.test.exceptions
 
 import com.lightningkite.butterfly.*
+
+@Throws(IllegalStateException::class, IllegalArgumentException::class)
 fun failableAction(state: Boolean = true) {
     if (state) {
         throw IllegalStateException("Reasons")
@@ -13,7 +15,7 @@ fun failableAction(state: Boolean = true) {
 fun main() {
     try {
         failableAction()
-    } catch (e: Exception) {
+    } catch (e: Throwable) {
         println(e.message)
     }
 
@@ -23,15 +25,21 @@ fun main() {
         println("IllegalStateException was thrown")
     } catch (e: IllegalArgumentException) {
         println("IllegalArgumentException was thrown")
-    } catch (e: Exception) {
+    } catch (e: Throwable) {
         println("Something else was thrown")
     }
 
     val value = try {
         failableAction()
         true
-    } catch (e: Exception) {
+    } catch (e: Throwable) {
         println(e.message)
         false
     }
+    val value2 = try {
+        failableAction()
+    } catch (e: Throwable) {
+        null
+    }
+
 }

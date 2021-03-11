@@ -30,6 +30,7 @@ object ExecuteFileTester {
         val cacheFile =
             outCacheDir.resolve(
                 sourceFile.absolutePath.substringAfter("khrysalis").filter { it.isLetterOrDigit() } + ".out")
+        cacheFile.parentFile.mkdirs()
         if (!clean && cacheFile.exists() && cacheFile.useLines { it.first() == sourceFileChecksum }) {
             return cacheFile.readText().substringAfter('\n').trim()
         }

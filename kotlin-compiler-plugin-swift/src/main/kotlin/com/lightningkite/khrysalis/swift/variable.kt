@@ -5,17 +5,11 @@ import com.lightningkite.khrysalis.swift.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.AnalysisExtensions
 import com.lightningkite.khrysalis.util.fqNameWithoutTypeArgs
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
-import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.descriptors.*
-import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
-import org.jetbrains.kotlin.js.translate.callTranslator.getReturnType
-import org.jetbrains.kotlin.lexer.KtToken
 import org.jetbrains.kotlin.lexer.KtTokens
-import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
 import org.jetbrains.kotlin.psi.synthetics.SyntheticClassOrObjectDescriptor
-import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
 import org.jetbrains.kotlin.resolve.calls.model.VariableAsFunctionResolvedCall
 import org.jetbrains.kotlin.resolve.calls.resolvedCallUtil.getImplicitReceiverValue
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
@@ -407,7 +401,7 @@ fun SwiftTranslator.registerVariable() {
     //Extension Jank
     handle<KtProperty>(
         condition = {
-            typedRule.resolvedProperty?.tsFunctionGetName != null
+            typedRule.resolvedProperty?.swiftFunctionGetName != null
         },
         priority = 99,
         action = {
@@ -417,7 +411,7 @@ fun SwiftTranslator.registerVariable() {
                     -" "
                 }
                 -VirtualFunction(
-                    typedRule.resolvedProperty!!.tsFunctionGetName!!,
+                    typedRule.resolvedProperty!!.swiftFunctionGetName!!,
                     resolvedFunction = null,
                     typeParameters = typedRule.typeParameters,
                     valueParameters = listOfNotNull(typedRule.receiverTypeReference?.let { listOf("_ this: ", it) }),
@@ -431,7 +425,7 @@ fun SwiftTranslator.registerVariable() {
                         -" "
                     }
                     -VirtualFunction(
-                        typedRule.resolvedProperty!!.tsFunctionSetName!!,
+                        typedRule.resolvedProperty!!.swiftFunctionSetName!!,
                         resolvedFunction = null,
                         typeParameters = typedRule.typeParameters,
                         valueParameters = listOfNotNull(
@@ -520,7 +514,7 @@ fun SwiftTranslator.registerVariable() {
     )
     handle<VirtualGet>(
         condition = {
-            typedRule.property.tsFunctionGetName != null
+            typedRule.property.swiftFunctionGetName != null
         },
         priority = 1000,
         action = {
@@ -529,7 +523,7 @@ fun SwiftTranslator.registerVariable() {
                     -typedRule.expr.getTsReceiver()
                     -"."
                 }
-                -typedRule.property.tsFunctionGetName
+                -typedRule.property.swiftFunctionGetName
                 -'('
                 -rec
                 -')'
@@ -579,11 +573,11 @@ fun SwiftTranslator.registerVariable() {
     )
 
     handle<KtNameReferenceExpression>(
-        condition = { (typedRule.resolvedReferenceTarget as? PropertyDescriptor)?.tsFunctionGetName != null },
+        condition = { (typedRule.resolvedReferenceTarget as? PropertyDescriptor)?.swiftFunctionGetName != null },
         priority = 100,
         action = {
             val prop = typedRule.resolvedReferenceTarget as PropertyDescriptor
-            -prop.tsFunctionGetName
+            -prop.swiftFunctionGetName
             when {
                 prop.extensionReceiverParameter == null -> -"()"
                 else -> {
@@ -614,7 +608,7 @@ fun SwiftTranslator.registerVariable() {
     //Setter usage
     handle<VirtualSet>(
         condition = {
-            typedRule.property.tsFunctionSetName != null
+            typedRule.property.swiftFunctionSetName != null
         },
         priority = 1000,
         action = {
@@ -623,7 +617,7 @@ fun SwiftTranslator.registerVariable() {
                 -typedRule.dispatchReceiver
                 -"."
             }
-            -typedRule.property.tsFunctionSetName
+            -typedRule.property.swiftFunctionSetName
             -'('
             -(if (typedRule.safe) run {
                 -"if let"
@@ -674,7 +668,7 @@ fun SwiftTranslator.registerVariable() {
             val left = typedRule.left as? KtQualifiedExpression ?: return@handle false
             val nre = left.selectorExpression as? KtNameReferenceExpression ?: return@handle false
             val pd = nre.resolvedReferenceTarget as? PropertyDescriptor ?: return@handle false
-            typedRule.resolvedVariableReassignment == true
+            typedRule.resolvedVariableReassignment == true || typedRule.operationToken == KtTokens.EQ
         },
         priority = 50,
         action = {
@@ -694,14 +688,13 @@ fun SwiftTranslator.registerVariable() {
                     n
                 }
             }
-
             -VirtualSet(
                 receiver = rec,
                 property = leftProp,
                 receiverType = left.receiverExpression.resolvedExpressionTypeInfo?.type,
                 expr = typedRule,
                 dispatchReceiver = nre.getTsReceiver(),
-                safe = false,
+                safe = left is KtSafeQualifiedExpression,
                 value = if (typedRule.operationToken == KtTokens.EQ) {
                     typedRule.right!!
                 } else {
@@ -723,46 +716,47 @@ fun SwiftTranslator.registerVariable() {
             )
         }
     )
-    handle<KtBinaryExpression>(
-        condition = {
-            val left = typedRule.left as? KtNameReferenceExpression ?: return@handle false
-            (left.resolvedReferenceTarget as? PropertyDescriptor)?.tsFunctionSetName != null && typedRule.resolvedVariableReassignment == true
-        },
-        priority = 100,
-        action = {
-            val left = (typedRule.left as KtNameReferenceExpression)
-            val leftProp = left.resolvedReferenceTarget as PropertyDescriptor
-            -leftProp.tsFunctionSetName
-            when {
-                leftProp.extensionReceiverParameter == null -> {
-                    -'('
-                }
-                else -> {
-                    -'('
-                    -(left.getTsReceiver())
-                    -", "
-                }
-            }
-            if (typedRule.operationToken == KtTokens.EQ) {
-                -typedRule.right!!
-            } else {
-                -ValueOperator(
-                    left = typedRule.left!!,
-                    right = typedRule.right!!,
-                    functionDescriptor = typedRule.operationReference.resolvedReferenceTarget as FunctionDescriptor,
-                    dispatchReceiver = typedRule.getTsReceiver(),
-                    operationToken = typedRule.operationToken,
-                    resolvedCall = typedRule.resolvedCall
-                )
-            }
-            -')'
-        }
-    )
+//    handle<KtBinaryExpression>(
+//        condition = {
+//            val left = typedRule.left as? KtNameReferenceExpression ?: return@handle false
+//            val prop = left.resolvedReferenceTarget as? PropertyDescriptor ?: return@handle false
+//            prop.swiftFunctionSetName != null
+//        },
+//        priority = 100,
+//        action = {
+//            val left = (typedRule.left as KtNameReferenceExpression)
+//            val leftProp = left.resolvedReferenceTarget as PropertyDescriptor
+//            -leftProp.swiftFunctionSetName
+//            when {
+//                leftProp.extensionReceiverParameter == null -> {
+//                    -'('
+//                }
+//                else -> {
+//                    -'('
+//                    -(left.getTsReceiver())
+//                    -", "
+//                }
+//            }
+//            if (typedRule.operationToken == KtTokens.EQ) {
+//                -typedRule.right!!
+//            } else {
+//                -ValueOperator(
+//                    left = typedRule.left!!,
+//                    right = typedRule.right!!,
+//                    functionDescriptor = typedRule.operationReference.resolvedReferenceTarget as FunctionDescriptor,
+//                    dispatchReceiver = typedRule.getTsReceiver(),
+//                    operationToken = typedRule.operationToken,
+//                    resolvedCall = typedRule.resolvedCall
+//                )
+//            }
+//            -')'
+//        }
+//    )
     handle<KtBinaryExpression>(
         condition = {
             val left = typedRule.left as? KtNameReferenceExpression ?: return@handle false
             val pd = (left.resolvedReferenceTarget as? PropertyDescriptor) ?: return@handle false
-            replacements.getSet(pd) != null && typedRule.resolvedVariableReassignment == true
+            replacements.getSet(pd) != null && (typedRule.resolvedVariableReassignment == true || typedRule.operationToken == KtTokens.EQ)
         },
         priority = 10_000,
         action = {
@@ -780,7 +774,7 @@ fun SwiftTranslator.registerVariable() {
     )
 }
 
-val PropertyDescriptor.tsFunctionGetName: String?
+val PropertyDescriptor.swiftFunctionGetName: String?
     get() = when {
         this.worksAsSwiftConstraint() && this.containingDeclaration !is ClassDescriptor -> null
         this is SyntheticJavaPropertyDescriptor -> null
@@ -798,7 +792,7 @@ val PropertyDescriptor.tsFunctionGetName: String?
             else -> null
         }
     }
-val PropertyDescriptor.tsFunctionSetName: String?
+val PropertyDescriptor.swiftFunctionSetName: String?
     get() = when {
         this.worksAsSwiftConstraint() && this.containingDeclaration !is ClassDescriptor -> null
         this is SyntheticJavaPropertyDescriptor -> null

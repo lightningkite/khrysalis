@@ -7,7 +7,8 @@ fun main(){
     for(item in listOf(1, 2, 3, 4)) {
         println(item)
     }
-    for((key, value) in mapOf(1 to 2, 3 to 4).entries){
+    val map = mapOf(1 to 2, 3 to 4)
+    for((key, value) in map.entries.sortedBy { it.key }){
         println("$key: $value")
     }
     var i = 0

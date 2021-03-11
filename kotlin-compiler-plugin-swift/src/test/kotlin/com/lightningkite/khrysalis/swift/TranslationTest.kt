@@ -1,4 +1,4 @@
-package com.lightningkite.khrysalis.typescript
+package com.lightningkite.khrysalis.swift
 
 import com.lightningkite.khrysalis.kotlin.ExecuteFileTester
 import org.junit.Assert
@@ -24,7 +24,7 @@ class TranslationTest {
     fun test() {
         val it = File("../conversionTestData").resolve(file)
         val ktResult = ExecuteFileTester.kotlin(it, true)
-        val jsResult = ExecuteFileTester.tsTranslated(it)
+        val jsResult = ExecuteFileTester.swiftTranslated(it)
         Assert.assertEquals(ktResult, jsResult)
     }
 }

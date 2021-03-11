@@ -21,9 +21,9 @@ object Libraries {
     val khrysalisAnnotations = File(System.getenv("KHRYSALIS_META_LOCATION"))
         .resolve("butterfly-android/butterfly-android/src/main/java/com/lightningkite/butterfly/KhrysalisAnnotations.kt")
     val junitStubs = File(System.getenv("KHRYSALIS_META_LOCATION"))
-        .resolve("khrysalis/kotlin-compiler-plugin-typescript/testData/junitStubs.kt")
+        .resolve("khrysalis/conversionTestData/junitStubs.kt")
     val jacksonStubs = File(System.getenv("KHRYSALIS_META_LOCATION"))
-        .resolve("khrysalis/kotlin-compiler-plugin-typescript/testData/jacksonStubs.kt")
+        .resolve("khrysalis/conversionTestData/jacksonStubs.kt")
 
     val testingStubs = listOf(
         khrysalisAnnotations,

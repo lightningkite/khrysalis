@@ -1,4 +1,4 @@
-package com.lightningkite.khrysalis.typescript
+package com.lightningkite.khrysalis.swift
 
 import com.lightningkite.khrysalis.kotlin.ExecuteFileTester
 import org.junit.Assert
@@ -11,10 +11,16 @@ class PointedTest {
 
     @Test
     fun test() {
-        val it = File("../conversionTestData").resolve("testCollections.kt")
-        println(it.absolutePath)
+        val it = File("../conversionTestData").resolve("testOperators.kt")
         val ktResult = ExecuteFileTester.kotlin(it, true)
-        val jsResult = ExecuteFileTester.tsTranslated(it)
+        val jsResult = ExecuteFileTester.swiftTranslated(it)
         Assert.assertEquals(ktResult, jsResult)
     }
 }
+
+/*
+
+test[testEnums.kt]
+test[testTypes.kt]
+test[testOperators.kt]
+ */

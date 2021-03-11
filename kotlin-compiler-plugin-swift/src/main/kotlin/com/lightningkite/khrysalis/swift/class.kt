@@ -10,6 +10,7 @@ import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.ir.util.findFirstFunction
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.js.translate.callTranslator.getReturnType
+import org.jetbrains.kotlin.lexer.KtToken
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.psi.*
@@ -28,7 +29,7 @@ fun FunctionDescriptor.callsForSwiftInterface(on: ClassDescriptor?): Boolean {
     val overriddenDescriptors = this.overriddenDescriptors
         .filter { it.kind == CallableMemberDescriptor.Kind.DECLARATION }
         .filter { it.containingDeclaration.fqNameOrNull()?.asString()?.startsWith("kotlin.") == false }
-    return immediate && overriddenDescriptors.isNotEmpty() == true
+    return immediate && overriddenDescriptors.isEmpty() == true
 }
 
 fun KtModifierListOwner.swiftVisibility(): Any? = when {
@@ -71,24 +72,19 @@ fun SwiftTranslator.registerClass() {
                 } else it
             }
             .let {
-                val over = on.resolvedClass?.unsubstitutedMemberScope?.findFirstFunction("equals") {
-                    it.valueParameters.size == 1 && it.valueParameters[0].type.fqNameWithoutTypeArgs == "kotlin.Any"
-                }
-                if (over?.callsForSwiftInterface(on.resolvedClass) == true) {
+                if (on.body?.functions?.find { it.name == "equals" && it.valueParameters.size == 1 } != null) {
                     out.addImport(TemplatePart.Import("LKButterfly"))
                     it + listOf("KEquatable")
                 } else it
             }
             .let {
-                val over = on.resolvedClass?.unsubstitutedMemberScope?.findFirstFunction("hashCode") { it.valueParameters.size == 0 }
-                if (over?.callsForSwiftInterface(on.resolvedClass) == true) {
+                if (on.body?.functions?.find { it.name == "hashCode" && it.valueParameters.size == 0 } != null) {
                     out.addImport(TemplatePart.Import("LKButterfly"))
                     it + listOf("KHashable")
                 } else it
             }
             .let {
-                val over = on.resolvedClass?.unsubstitutedMemberScope?.findFirstFunction("toString") { it.valueParameters.size == 0 }
-                if (over?.callsForSwiftInterface(on.resolvedClass) == true) {
+                if (on.body?.functions?.find { it.name == "toString" && it.valueParameters.size == 0 } != null) {
                     out.addImport(TemplatePart.Import("LKButterfly"))
                     it + listOf("KStringable")
                 } else it
@@ -393,9 +389,9 @@ fun SwiftTranslator.registerClass() {
                 typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEachBetween(
                     forItem = {
                         -it.nameIdentifier
-                        -" = \\(self."
+                        -"=\\(String(kotlin: self."
                         -it.nameIdentifier
-                        -")"
+                        -"))"
                     },
                     between = { -", " }
                 )
@@ -412,7 +408,7 @@ fun SwiftTranslator.registerClass() {
                     -": "
                     -it.typeReference
                     -"? = "
-                    if (it.typeReference?.resolvedType?.isNullable() == true) {
+                    if (it.typeReference?.resolvedType?.isNullable() == true && it.typeReference?.resolvedType !is TypeParameterDescriptor) {
                         -".some(nil)"
                     } else {
                         -"nil"
@@ -437,7 +433,7 @@ fun SwiftTranslator.registerClass() {
                 forItem = {
                     -it.nameIdentifier
                     -": "
-                    if (it.typeReference?.resolvedType?.isNullable() == true) {
+                    if (it.typeReference?.resolvedType?.isNullable() == true && it.typeReference?.resolvedType !is TypeParameterDescriptor) {
                         -"invertOptional("
                         -it.nameIdentifier
                         -") ?? self."
@@ -486,7 +482,7 @@ fun SwiftTranslator.registerClass() {
     handle<KtClassInitializer> { /*skip*/ }
 
     handle<KtObjectLiteralExpression> {
-        //TODO
+        throw IllegalStateException("Object literals not supported in Swift!")
     }
 
     //Enums

@@ -98,7 +98,9 @@ fun TypescriptTranslator.registerOperators() {
                 },
                 parameter = resolvedCall.template_parameter,
                 typeParameter = resolvedCall.template_typeParameter,
-                parameterByIndex = resolvedCall.template_parameterByIndex,
+                parameterByIndex = {
+                   typedRule.indexExpressions.getOrNull(it.index) ?: resolvedCall.template_parameterByIndex(it)
+                },
                 typeParameterByIndex = resolvedCall.template_typeParameterByIndex
             )
         }
@@ -233,7 +235,7 @@ fun TypescriptTranslator.registerOperators() {
                 typeParameter = resolvedCall.template_typeParameter,
                 parameterByIndex = {
                     if(it.index == arrayAccess.indexExpressions.size) right
-                    else resolvedCall.template_parameterByIndex(it)
+                    else tempIndexes.getOrNull(it.index) ?: resolvedCall.template_parameterByIndex(it)
                 },
                 typeParameterByIndex = resolvedCall.template_typeParameterByIndex
             )

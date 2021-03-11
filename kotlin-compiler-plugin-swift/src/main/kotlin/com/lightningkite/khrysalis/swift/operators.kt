@@ -133,8 +133,12 @@ fun SwiftTranslator.registerOperators() {
             resolvedCall = typedRule.resolvedCall!!,
             prependArguments = if (doubleReceiver) listOf(typedRule.arrayExpression) else listOf(),
             replacements = (
-                typedRule.indexExpressions.mapIndexed { index, exp -> typedRule.functionDescriptor.valueParameters.get(index).let { it to exp } }.associate { it }
-            )
+                    typedRule.indexExpressions.mapIndexed { index, exp ->
+                        typedRule.functionDescriptor.valueParameters.get(
+                            index
+                        ).let { it to exp }
+                    }.associate { it }
+                    )
         )
     }
     handle<VirtualArrayGet>(
@@ -159,7 +163,9 @@ fun SwiftTranslator.registerOperators() {
                 },
                 parameter = resolvedCall.template_parameter,
                 typeParameter = resolvedCall.template_typeParameter,
-                parameterByIndex = resolvedCall.template_parameterByIndex,
+                parameterByIndex = {
+                    typedRule.indexExpressions.getOrNull(it.index) ?: resolvedCall.template_parameterByIndex(it)
+                },
                 typeParameterByIndex = resolvedCall.template_typeParameterByIndex
             )
         }
@@ -241,8 +247,10 @@ fun SwiftTranslator.registerOperators() {
                 resolvedCall = arrayAccess.resolvedIndexedLvalueSet!!,
                 prependArguments = if (doubleReceiver) listOf(arrayAccess.arrayExpression!!) else listOf(),
                 replacements = (
-                        tempIndexes.mapIndexed { index, exp -> setFunction.valueParameters[index].let { it to exp } }.associate { it }
-                        ) + (arrayAccess.resolvedIndexedLvalueSet?.resultingDescriptor?.valueParameters?.lastOrNull()?.let { mapOf(it to right) } ?: mapOf())
+                        tempIndexes.mapIndexed { index, exp -> setFunction.valueParameters[index].let { it to exp } }
+                            .associate { it }
+                        ) + (arrayAccess.resolvedIndexedLvalueSet?.resultingDescriptor?.valueParameters?.lastOrNull()
+                    ?.let { mapOf(it to right) } ?: mapOf())
             )
             if (needsClose) {
                 -"\n"
@@ -335,7 +343,10 @@ fun SwiftTranslator.registerOperators() {
                 },
                 parameter = resolvedCall.template_parameter,
                 typeParameter = resolvedCall.template_typeParameter,
-                parameterByIndex = resolvedCall.template_parameterByIndex,
+                parameterByIndex = {
+                    if(it.index == arrayAccess.indexExpressions.size) right
+                    else tempIndexes.getOrNull(it.index) ?: resolvedCall.template_parameterByIndex(it)
+                },
                 typeParameterByIndex = resolvedCall.template_typeParameterByIndex
             )
             if (needsClose) {
@@ -452,7 +463,7 @@ fun SwiftTranslator.registerOperators() {
         condition = {
             typedRule.operationReference.getReferencedNameElementType() == KtTokens.EQEQ
         },
-        priority = 100,
+        priority = 101,
         action = {
             -typedRule.left
             -" == "
@@ -462,7 +473,7 @@ fun SwiftTranslator.registerOperators() {
         condition = {
             typedRule.operationReference.getReferencedNameElementType() == KtTokens.EXCLEQ
         },
-        priority = 100,
+        priority = 102,
         action = {
             -typedRule.left
             -" != "

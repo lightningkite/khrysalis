@@ -1,6 +1,8 @@
 package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.util.forEachBetween
+import com.lightningkite.khrysalis.util.fqNameWithoutTypeArgs
+import com.lightningkite.khrysalis.util.satisfies
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
@@ -132,13 +134,19 @@ fun TypescriptTranslator.registerControl() {
             -typedRule.catchClauses.first()
         } else if (typedRule.catchClauses.isNotEmpty()) {
             -"catch (e) {\n"
+            var generalCatch = false
             typedRule.catchClauses.forEachBetween(
                 forItem = { catchClause ->
                     catchClause.catchParameter?.let { p ->
                         val t = catchClause.catchParameter!!.typeReference?.resolvedType ?: return@let
-                        -"if ("
-                        emitIsExpression("e", t)
-                        -") {\n"
+                        if(t.fqNameWithoutTypeArgs == "kotlin.Throwable"){
+                            generalCatch = true
+                            -"{\n"
+                        } else {
+                            -"if ("
+                            emitIsExpression("e", t)
+                            -") {\n"
+                        }
                     }
                     val b = catchClause.catchBody
                     if (b is KtBlockExpression) {
@@ -166,7 +174,11 @@ fun TypescriptTranslator.registerControl() {
                     -"\n} else "
                 }
             )
-            -"\n} else throw e;\n}"
+            if(generalCatch) {
+                -"\n}\n}"
+            } else {
+                -"\n} else throw e;\n}"
+            }
         }
 
         if (typedRule.actuallyCouldBeExpression && typedRule.parent !is KtContainerNodeForControlStructureBody) {

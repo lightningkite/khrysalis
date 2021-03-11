@@ -43,10 +43,6 @@ class SubWeird(a: Int, b: String, c: Double, d: Long): Weird(a, b, c, d) {
 
 fun main(){
     val outsideInfo: String = "Pulled in"
-    val instance = object: TestInterface {
-        override val interfaceValue: String
-            get() = outsideInfo
-    }
     val ugh = Weird(2)
     val box1 = Box(88)
     val box2 = Box<Int>(88)

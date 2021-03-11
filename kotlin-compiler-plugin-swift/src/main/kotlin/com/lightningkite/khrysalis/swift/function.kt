@@ -159,7 +159,13 @@ fun SwiftTranslator.registerFunction() {
             if (typedRule.resolvedFunction?.overriddenDescriptors
                     ?.any { (it.containingDeclaration as? ClassDescriptor)?.kind != ClassKind.INTERFACE } == true
             ) {
-                -"override "
+                when {
+                    typedRule.name == "equals" && typedRule.valueParameters.size == 1 ||
+                    typedRule.name == "hashCode" && typedRule.valueParameters.isEmpty() ||
+                    typedRule.name == "toString" && typedRule.valueParameters.isEmpty() -> {}
+                    else -> -"override "
+                }
+
             }
         }
         if (isMember || (typedRule.isTopLevel && !(typedRule.isExtensionDeclaration() && typedRule.resolvedFunction?.worksAsSwiftConstraint() == true))) {

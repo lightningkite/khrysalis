@@ -75,7 +75,7 @@ fun main() {
     }
 
     val ifAsExpression3 = listOf(1, 2, 3).map {
-        if(it % 2 === 0) return@map it else return@map it + 1
+        if(it % 2 == 0) return@map it else return@map it + 1
     }
 
     fun subfunction(): Int {
@@ -137,7 +137,7 @@ fun main() {
             println("is two")
             println("which is magical")
         }
-        else -> throw IllegalArgumentException("NO!")
+        else -> 999
     }
 
     //When on subject as expression
@@ -145,21 +145,38 @@ fun main() {
         0 -> 2
         1 -> 1
         2 -> 0
-        else -> throw IllegalArgumentException("NO!")
+        else -> 999
     }
 
     //When on conditions
     when {
         thing == 1 -> println("thing is one")
         thing2 != null -> println("thing2 is not null")
-        else -> throw IllegalArgumentException("NO!")
+        else -> println("nah")
     }
 
     //When on conditions as expression
     fun calcWeird() = when {
         thing == 1 -> 0
         thing2 != null -> 3
-        else -> throw IllegalArgumentException("NO!")
+        else -> 999
+    }
+
+    //TODO: Support in Swift
+//    //When with throw expression
+//    @Throws(IllegalStateException::class) fun calcWeirdThrows() = when {
+//        thing == 1 -> 0
+//        thing2 != null -> 3
+//        else -> throw IllegalArgumentException("NO!")
+//    }
+
+    //When with throw
+    @Throws(IllegalStateException::class) fun calcWeirdThrows(): Int {
+        when {
+            thing == 1 -> return 0
+            thing2 != null -> return 3
+            else -> throw IllegalArgumentException("NO!")
+        }
     }
 
     //when on subject advanced
@@ -170,7 +187,7 @@ fun main() {
     }
 
     //when on subject typed
-    var thing3: Any? = makeSomething()
+    val thing3: Any? = makeSomething()
     when (thing3) {
         is String -> println("Found string " + thing3)
         is Int -> println("Found int ${thing3}")

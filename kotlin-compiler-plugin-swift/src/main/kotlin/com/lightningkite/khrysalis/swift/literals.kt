@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.swift
 
+import com.lightningkite.khrysalis.util.satisfies
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
@@ -7,25 +8,25 @@ import org.jetbrains.kotlin.psi.stubs.elements.KtStubElementTypes
 
 fun SwiftTranslator.registerLiterals() {
     handle<KtSimpleNameStringTemplateEntry> {
-        val markedNull = typedRule.expression?.resolvedExpressionTypeInfo?.type?.isMarkedNullable == true
+        val stringWrap = typedRule.expression?.resolvedExpressionTypeInfo?.type?.satisfies("kotlin.String") == true
         -"\\("
-        if(markedNull){
+        if(stringWrap){
             -"String(kotlin: "
         }
         -typedRule.expression
-        if(markedNull) {
+        if(stringWrap) {
             -")"
         }
         -")"
     }
     handle<KtBlockStringTemplateEntry> {
-        val markedNull = typedRule.expression?.resolvedExpressionTypeInfo?.type?.isMarkedNullable == true
+        val stringWrap = typedRule.expression?.resolvedExpressionTypeInfo?.type?.satisfies("kotlin.String") == true
         -"\\("
-        if(markedNull){
+        if(stringWrap){
             -"String(kotlin: "
         }
         -typedRule.expression
-        if(markedNull) {
+        if(stringWrap) {
             -")"
         }
         -")"

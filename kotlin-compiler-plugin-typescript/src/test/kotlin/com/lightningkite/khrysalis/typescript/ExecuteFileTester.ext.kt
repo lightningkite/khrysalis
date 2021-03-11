@@ -16,6 +16,7 @@ val tsTestDir = File("./testOut")
 fun ExecuteFileTester.ts(sourceFile: File, clean: Boolean): String = caching(sourceFile, clean) {
     val mainFile = tsTestDir.resolve("src/index.ts")
     val outputFile = tsTestDir.resolve("build").resolve(sourceFile.nameWithoutExtension + ".out")
+    outputFile.parentFile.mkdirs()
 
     mainFile.writeText("import { main } from \"./${sourceFile.nameWithoutExtension}\"\nmain()")
     if (0 == ProcessBuilder()

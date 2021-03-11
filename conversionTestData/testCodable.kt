@@ -5,7 +5,7 @@ import com.lightningkite.butterfly.*
 import com.lightningkite.butterfly.Codable
 
 data class Point(val x: Double, val y: Double): Codable
-data class Box<T>(val description: String, var item: T): Codable
+data class Box<T: IsCodableAndHashable>(val description: String, var item: T): Codable
 enum class CodableEnum {
     A
 }
