@@ -172,11 +172,18 @@ fun SwiftTranslator.registerControl() {
         },
         priority = 1,
         action = {
+            val useParen = typedRule.parent is KtBinaryExpression
+            if(useParen){
+                -'('
+            }
             -typedRule.condition
             -" ? "
             -typedRule.then
             -" : "
             -typedRule.`else`
+            if(useParen){
+                -')'
+            }
         }
     )
 

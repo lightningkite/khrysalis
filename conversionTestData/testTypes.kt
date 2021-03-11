@@ -82,8 +82,6 @@ fun main(){
         notNullThing(unknownThingMut)
     }
 
-    val thingA: AnyObject = unknownThing!!
-
     val a = 23L
     val b = 23f
     val c = 23

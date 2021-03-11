@@ -8,7 +8,7 @@ enum class Suits {
 
 enum class AdvancedSuits(val black: Boolean) {
     SPADES(true){
-        override fun print(cardNum: Int){
+        override fun printSelf(cardNum: Int){
             println("♠$cardNum")
         }
     },
@@ -16,7 +16,7 @@ enum class AdvancedSuits(val black: Boolean) {
     DIAMONDS(false){},
     HEARTS(false){};
 
-    open fun print(cardNum: Int) {
+    open fun printSelf(cardNum: Int) {
         println("$this$cardNum")
     }
 }

@@ -19,8 +19,5 @@ class PointedTest {
 }
 
 /*
-
-test[testEnums.kt]
-test[testTypes.kt]
 test[testOperators.kt]
  */

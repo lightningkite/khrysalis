@@ -52,7 +52,9 @@ fun main() {
     println(2 <= x)
     println(2 != x)
     println(2 == x)
-    println(2 === x)
+    val objA = ExampleImmutableThing()
+    val objB = ExampleImmutableThing()
+    println(objA === objB)
 
     //Direct calls
     println(2.plus(x))
@@ -61,22 +63,17 @@ fun main() {
     println(2.div(x))
     println(2.rem(x))
 
-    x += if(x > 1) 2 else 0
+    x += if(x > 1) 2 else 0 //X
     println(x)
     x = 2
 
     //Null calls
     val maybeNumber: Int? = if(x > 1) x else null
-    x?.plus(2)
-    println(x?.plus(2))
-    x?.minus(2)
-    println(x?.minus(2))
-    x?.times(2)
-    println(x?.times(2))
-    x?.div(2)
-    println(x?.div(2))
-    x?.rem(2)
-    println(x?.rem(2))
+    println(maybeNumber?.plus(2) ?: "nada")
+    println(maybeNumber?.minus(2) ?: "nada")
+    println(maybeNumber?.times(2) ?: "nada")
+    println(maybeNumber?.div(2) ?: "nada")
+    println(maybeNumber?.rem(2) ?: "nada")
 
     //Assign operators
     x = 2
