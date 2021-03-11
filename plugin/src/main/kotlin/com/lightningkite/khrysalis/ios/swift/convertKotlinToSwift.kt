@@ -48,7 +48,7 @@ fun convertToSwift(
         arguments = K2JVMCompilerArguments().apply {
             this.freeArgs = files.filter { it.extension in setOf("kt", "java") }.map { it.absolutePath }.toList()
             this.classpathAsList = libraries.toList()
-            this.pluginClasspaths = pluginCache.resolve("swift.jar")
+            this.pluginClasspaths = pluginCache.resolve("swift.kjar")
                 .also { it.parentFile.mkdirs() }
                 .also {
                     copyFolderOutFromRes("compiler-plugins", it.parentFile)

@@ -1,0 +1,104 @@
+name: UnitTest
+
+on:
+  push:
+    branches: [ master ]
+
+jobs:
+  test_compiler_plugin_commom:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 8
+      - uses: eskatos/gradle-command-action@v1
+        with:
+          arguments: :kotlin-compiler-plugin-common:test
+          wrapper-cache-enabled: true
+          dependencies-cache-enabled: true
+          configuration-cache-enabled: true
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: test_results
+          path: kotlin-compiler-plugin-common/build/reports/tests/test/
+          retention-days: 10
+  test_compiler_plugin_swift:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 8
+      - uses: eskatos/gradle-command-action@v1
+        with:
+          arguments: :kotlin-compiler-plugin-swift:test
+          wrapper-cache-enabled: true
+          dependencies-cache-enabled: true
+          configuration-cache-enabled: true
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: test_results
+          path: kotlin-compiler-plugin-swift/build/reports/tests/test/
+          retention-days: 10
+  test_compiler_plugin_typescript:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 8
+      - uses: eskatos/gradle-command-action@v1
+        with:
+          arguments: :kotlin-compiler-plugin-typescript:test
+          wrapper-cache-enabled: true
+          dependencies-cache-enabled: true
+          configuration-cache-enabled: true
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: test_results
+          path: kotlin-compiler-plugin-typescript/build/reports/tests/test/
+          retention-days: 10
+  test_plugin:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 8
+      - uses: eskatos/gradle-command-action@v1
+        with:
+          arguments: :plugin:test
+          wrapper-cache-enabled: true
+          dependencies-cache-enabled: true
+          configuration-cache-enabled: true
+      - uses: actions/upload-artifact@v2
+        if: failure()
+        with:
+          name: test_results
+          path: plugin/build/reports/tests/test/
+          retention-days: 10
+  public-snapshot:
+    name: Publish SnapShot
+    needs: [test_compiler_plugin_commom, test_compiler_plugin_swift, test_compiler_plugin_typescript, test_plugin]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v1
+      - uses: actions/setup-java@v1
+        with:
+          java-version: 8
+      - uses: eskatos/gradle-command-action@v1
+        env:
+          CI: true
+          SIGNING_KEY: ${{ secrets.SIGNING_KEY }}
+          SIGNING_PASSWORD: ${{ secrets.SIGNING_PASSWORD }}
+          OSSRH_USERNAME: ${{ secrets.OSSRH_USERNAME }}
+          OSSRH_PASSWORD: ${{ secrets.OSSRH_PASSWORD }}
+        with:
+          arguments: :plugin:uploadSnapshot
+          wrapper-cache-enabled: true
+          dependencies-cache-enabled: true
+          configuration-cache-enabled: true
