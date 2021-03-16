@@ -1,6 +1,14 @@
 package com.lightningkite.khrysalis.swift
 
-import com.lightningkite.khrysalis.determineTranslatable
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
+import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.lightningkite.khrysalis.generic.KotlinTranspileCLP
+import com.lightningkite.khrysalis.generic.KotlinTranspileCR
+import com.lightningkite.khrysalis.generic.KotlinTranspileExtension
+import com.lightningkite.khrysalis.replacements.Replacements
+import com.lightningkite.khrysalis.swift.replacements.SwiftJacksonReplacementsModule
 import org.jetbrains.kotlin.analyzer.AnalysisResult
 import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
@@ -15,117 +23,75 @@ import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.config.CompilerConfigurationKey
 import org.jetbrains.kotlin.descriptors.ModuleDescriptor
 import org.jetbrains.kotlin.psi.*
+import org.jetbrains.kotlin.resolve.BindingContext
 import org.jetbrains.kotlin.resolve.BindingTrace
 import org.jetbrains.kotlin.resolve.jvm.extensions.AnalysisHandlerExtension
 import java.io.File
 import java.io.PrintWriter
 import java.io.StringWriter
 
-class KotlinSwiftCLP : CommandLineProcessor {
+class KotlinSwiftCLP : KotlinTranspileCLP() {
     companion object {
-        const val KEY_DEPENDENCIES_NAME = "swiftDependencies"
-        val KEY_SWIFT_DEPENDENCIES = CompilerConfigurationKey.create<List<File>>(KEY_DEPENDENCIES_NAME)
-        const val KEY_PROJECT_NAME_NAME = "projName"
-        val KEY_PROJECT_NAME = CompilerConfigurationKey.create<String>(KEY_PROJECT_NAME_NAME)
-        const val KEY_OUTPUT_DIRECTORY_NAME = "outputDirectory"
-        val KEY_OUTPUT_DIRECTORY = CompilerConfigurationKey.create<File>(KEY_OUTPUT_DIRECTORY_NAME)
-        const val KEY_INPUT_DIRECTORY_NAME = "inputDirectory"
-        val KEY_INPUT_DIRECTORY = CompilerConfigurationKey.create<File>(KEY_INPUT_DIRECTORY_NAME)
-        const val PLUGIN_ID = "com.lightningkite.butterfly.swift"
+        const val PLUGIN_ID = "com.lightningkite.khrysalis.swift"
     }
+    override val pluginId: String
+        get() = PLUGIN_ID
 
-    override val pluginId: String get() = PLUGIN_ID
-    override val pluginOptions: Collection<AbstractCliOption> = listOf(
-        CliOption(
-            KEY_INPUT_DIRECTORY_NAME,
-            "A directory",
-            "Where files should be output, relatively. Defaults to the common root between translated files.",
-            required = false
-        ),
-        CliOption(
-            KEY_OUTPUT_DIRECTORY_NAME,
-            "A directory",
-            "Where to store the output files.",
-            required = true
-        ),
-        CliOption(
-            KEY_DEPENDENCIES_NAME,
-            "A list of directories",
-            "Where to look for translational information.",
-            required = false
-        ),
-        CliOption(
-            KEY_PROJECT_NAME_NAME,
-            "Name of the NPM project",
-            "Name of the NPM project, specifically for handling equivalent imports correctly.",
-            required = true
-        )
-    )
-
-    override fun processOption(option: AbstractCliOption, value: String, configuration: CompilerConfiguration) =
-        when (option.optionName) {
-            KEY_DEPENDENCIES_NAME -> configuration.put(
-                KEY_SWIFT_DEPENDENCIES,
-                value.trim('"').split(File.pathSeparatorChar).map { File(it) })
-            KEY_INPUT_DIRECTORY_NAME -> configuration.put(KEY_INPUT_DIRECTORY, value.trim('"').let { File(it) })
-            KEY_OUTPUT_DIRECTORY_NAME -> configuration.put(KEY_OUTPUT_DIRECTORY, value.trim('"').let { File(it) })
-            KEY_PROJECT_NAME_NAME -> configuration.put(KEY_PROJECT_NAME, value.trim('"'))
-            else -> {
-            }
-        }
+    init {
+        println("My plugin ID is $pluginId")
+    }
 }
 
-class KotlinSwiftCR : ComponentRegistrar {
-    override fun registerProjectComponents(project: MockProject, configuration: CompilerConfiguration) {
-        AnalysisHandlerExtension.registerExtension(
-            project,
-            KotlinSwiftExtension(
-                configuration[KotlinSwiftCLP.KEY_PROJECT_NAME]!!,
-                configuration[KotlinSwiftCLP.KEY_SWIFT_DEPENDENCIES] ?: listOf(),
-                configuration[KotlinSwiftCLP.KEY_INPUT_DIRECTORY],
-                configuration[KotlinSwiftCLP.KEY_OUTPUT_DIRECTORY]!!,
-                configuration[CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY]
-            )
-        )
+class KotlinSwiftCR : KotlinTranspileCR() {
+    companion object {
+        val replacementMapper = ObjectMapper(YAMLFactory())
+        .registerModule(SwiftJacksonReplacementsModule())
+        .registerModule(KotlinModule())
+        .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
     }
+    override val replacementMapper: ObjectMapper
+        get() = Companion.replacementMapper
+    override val fileExtension: String
+        get() = "swift"
+
+    override fun makeExtension(
+        projectName: String,
+        dependencies: List<File>,
+        equivalents: Replacements,
+        input: File?,
+        outputDirectory: File,
+        collector: MessageCollector
+    ): AnalysisHandlerExtension = KotlinSwiftExtension(
+        projectName,
+        dependencies,
+        equivalents,
+        input,
+        outputDirectory,
+        collector
+    )
 }
 
 class KotlinSwiftExtension(
-    val projectName: String,
+    projectName: String,
     val dependencies: List<File>,
-    val input: File?,
-    val output: File,
-    val collector: MessageCollector?
-) : AnalysisHandlerExtension {
-    override fun analysisCompleted(
-        project: Project,
-        module: ModuleDescriptor,
-        bindingTrace: BindingTrace,
-        files: Collection<KtFile>
-    ): AnalysisResult? {
+    val replacements: Replacements,
+    input: File?,
+    outputDirectory: File,
+    collector: MessageCollector
+) : KotlinTranspileExtension(
+    projectName,
+    input,
+    outputDirectory,
+    collector
+) {
+    override val outputExtension: String
+        get() = "swift"
 
-        output.mkdirs()
+    lateinit var translator: SwiftTranslator
 
-        collector?.report(CompilerMessageSeverity.INFO, "Files: ${files.joinToString { it.virtualFilePath }}")
-
-        collector?.report(CompilerMessageSeverity.INFO, "Completed analysis for ${projectName}.")
-        val ctx = bindingTrace.bindingContext
-        val translator = SwiftTranslator(
-            projectName = projectName,
-            bindingContext = ctx,
-            commonPath = input?.path ?: files.asSequence()
-                .filter { determineTranslatable(it) }
-                .map { it.virtualFilePath }
-                .takeUnless { it.none() }
-                ?.reduce { acc, s -> acc.commonPrefixWith(s) }
-                ?.substringBeforeLast('/')
-                ?.plus('/')
-                ?.also { println("Common file path: $it") } ?: "",
-            collector = collector
-        )
-        println("Output: $output")
-
-        //Load manifests
+    override fun start(context: BindingContext, files: Collection<KtFile>) {
+        // Load manifests (AKA lists of FQ names in module)
+        translator = SwiftTranslator(projectName, commonPath, collector, replacements)
         dependencies.asSequence()
             .flatMap { it.walkTopDown() }
             .filter { it.name.endsWith("fqnames.txt", true) }
@@ -136,55 +102,22 @@ class KotlinSwiftExtension(
                     translator.fqToImport[it] = name
                 }
             }
+    }
 
-        //Load equivalents
-        dependencies.asSequence().plus(output)
-            .also { println("Looking for equivalents in ${it.joinToString()}") }
-            .flatMap { it.walkTopDown() }
-            .filter {
-                it.name.endsWith(".swift.yaml") || it.name.endsWith(".swift.yml")
-            }
-            .forEach { actualFile ->
-                try {
-                    collector?.report(CompilerMessageSeverity.INFO, "Reading equivalents from $actualFile...")
-                    translator.replacements += actualFile
-                } catch (t: Throwable) {
-                    collector?.report(CompilerMessageSeverity.ERROR, "Failed to parse equivalents for $actualFile:")
-                    collector?.report(
-                        CompilerMessageSeverity.ERROR,
-                        StringWriter().also { t.printStackTrace(PrintWriter(it)) }.buffer.toString()
-                    )
-                    return AnalysisResult.compilationError(ctx)
-                }
-            }
-
-
-        for (file in files) {
-            if(!determineTranslatable(file)) continue
-            try {
-                val outputFile = output
-                    .resolve(file.virtualFilePath.removePrefix(translator.commonPath))
-                    .parentFile
-                    .resolve(file.name.removeSuffix(".kt").plus(".swift"))
-                if (outputFile.exists() && outputFile.useLines { it.first() } != SwiftFileEmitter.overwriteWarning) continue
-                collector?.report(CompilerMessageSeverity.INFO, "Translating $file to $outputFile")
-                outputFile.parentFile.mkdirs()
-                val out = SwiftFileEmitter(translator, file)
-                translator.translate(file, out)
-                outputFile.bufferedWriter().use {
-                    out.write(it, file)
-                    it.flush()
-                }
-            } catch (t: Throwable) {
-                collector?.report(CompilerMessageSeverity.WARNING, "Failed to convert $file:")
-                collector?.report(
-                    CompilerMessageSeverity.ERROR,
-                    StringWriter().also { t.printStackTrace(PrintWriter(it)) }.buffer.toString()
-                )
-            }
+    override fun transpile(context: BindingContext, file: KtFile): CharSequence {
+        val out = SwiftFileEmitter(translator, file)
+        translator.translate(file, out)
+        val str = StringWriter()
+        str.buffered().use {
+            out.write(it, file)
+            it.flush()
         }
-        collector?.report(CompilerMessageSeverity.INFO, "Writing manifest file...")
-        output.resolve("fqnames.txt").bufferedWriter().use {
+        return str.buffer
+    }
+
+    override fun finish(context: BindingContext, files: Collection<KtFile>) {
+        // Write manifest (AKA list of FQ names in module)
+        outputDirectory.resolve("fqnames.txt").bufferedWriter().use {
             sequenceOf(projectName).plus(
                 files.asSequence()
                     .flatMap { f ->
@@ -199,7 +132,5 @@ class KotlinSwiftExtension(
                     it.appendln(line)
                 }
         }
-        collector?.report(CompilerMessageSeverity.INFO, "Completed translation.")
-        return AnalysisResult.Companion.success(ctx, module, false)
     }
 }

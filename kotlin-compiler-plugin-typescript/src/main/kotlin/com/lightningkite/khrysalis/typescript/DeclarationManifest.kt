@@ -1,19 +1,20 @@
 package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.typescript.manifest.declaresPrefix
-import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
+import com.lightningkite.khrysalis.replacements.TemplatePart
+import com.lightningkite.khrysalis.typescript.replacements.TypescriptImport
 import java.io.File
 
 class DeclarationManifest(
     val node: MutableMap<String, File> = HashMap(),
     val local: MutableMap<String, File> = HashMap()
 ) {
-    fun importLine(currentRelativeFile: File, fqName: String, name: String): TemplatePart.Import? {
+    fun importLine(currentRelativeFile: File, fqName: String, name: String): TypescriptImport? {
         return local[fqName]?.let { relFile ->
             if (currentRelativeFile == relFile) {
                 null
             } else {
-                TemplatePart.Import(
+                TypescriptImport(
                     path = "./"
                         .plus(
                             currentRelativeFile.parentFile?.let { p -> relFile.relativeTo(p).path } ?: relFile.path
@@ -27,7 +28,7 @@ class DeclarationManifest(
                 )
             }
         } ?: node[fqName]?.let {
-            TemplatePart.Import(it.path.removeSuffix(".ts"), name)
+            TypescriptImport(it.path.removeSuffix(".ts"), name)
         }
     }
 

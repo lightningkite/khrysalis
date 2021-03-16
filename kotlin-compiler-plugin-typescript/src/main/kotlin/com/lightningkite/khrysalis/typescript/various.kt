@@ -1,10 +1,11 @@
 package com.lightningkite.khrysalis.typescript
 
-import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
+import com.lightningkite.khrysalis.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.forEachBetween
 import org.jetbrains.kotlin.descriptors.CallableDescriptor
 import org.jetbrains.kotlin.resolve.calls.components.isVararg
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
+import com.lightningkite.khrysalis.analysis.*
 
 fun List<Any?>.withBetween(separator: Any?, start: Any? = null, end: Any? = null): List<Any?> {
     val list = ArrayList<Any?>(this.size * 2 - 1 + if (start != null) 1 else 0 + if (end != null) 1 else 0)

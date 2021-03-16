@@ -10,6 +10,7 @@ import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.types.isNullable
+import com.lightningkite.khrysalis.analysis.*
 
 private val useOptionalThrowsTL = ThreadLocal<Boolean>()
 var useOptionalThrows: Boolean

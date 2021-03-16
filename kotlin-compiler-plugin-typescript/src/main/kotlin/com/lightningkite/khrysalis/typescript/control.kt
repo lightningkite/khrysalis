@@ -7,6 +7,7 @@ import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
+import com.lightningkite.khrysalis.analysis.*
 
 fun TypescriptTranslator.registerControl() {
 
@@ -455,7 +456,7 @@ fun TypescriptTranslator.registerControl() {
             -") "
             -"{\n"
             destructuringDeclaration.entries.forEachIndexed { index, it ->
-                val rule = it.resolvedComponentResolvedCall?.let { replacements.getCall(this@registerControl, it) }
+                val rule = it.resolvedComponentResolvedCall?.let { replacements.getCall(it) }
                 if (rule != null) {
                     emitTemplate(
                         requiresWrapping = false,

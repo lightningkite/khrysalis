@@ -1,5 +1,7 @@
 package com.lightningkite.khrysalis.swift
 
+import com.lightningkite.khrysalis.analysis.*
+import com.lightningkite.khrysalis.*
 import com.lightningkite.khrysalis.util.forEachBetween
 import com.lightningkite.khrysalis.util.fqNameWithoutTypeArgs
 import org.jetbrains.kotlin.builtins.functions.FunctionClassDescriptor

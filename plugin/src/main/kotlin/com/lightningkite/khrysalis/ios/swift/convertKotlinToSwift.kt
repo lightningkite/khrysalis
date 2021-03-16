@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.ios.swift
 
+import com.lightningkite.khrysalis.generic.KotlinTranspileCLP
 import com.lightningkite.khrysalis.swift.KotlinSwiftCLP
 import com.lightningkite.khrysalis.utils.copyFolderOutFromRes
 import org.jetbrains.kotlin.cli.common.arguments.K2JVMCompilerArguments
@@ -46,9 +47,10 @@ fun convertToSwift(
         },
         services = Services.EMPTY,
         arguments = K2JVMCompilerArguments().apply {
+            this.useIR = true
             this.freeArgs = files.filter { it.extension in setOf("kt", "java") }.map { it.absolutePath }.toList()
             this.classpathAsList = libraries.toList()
-            this.pluginClasspaths = pluginCache.resolve("swift.kjar")
+            this.pluginClasspaths = pluginCache.resolve("swift.jar")
                 .also { it.parentFile.mkdirs() }
                 .also {
                     copyFolderOutFromRes("compiler-plugins", it.parentFile)
@@ -56,11 +58,12 @@ fun convertToSwift(
                 .let { arrayOf(it.path) }
             this.pluginOptions =
                 listOfNotNull(
-                    "plugin:${KotlinSwiftCLP.PLUGIN_ID}:${KotlinSwiftCLP.KEY_OUTPUT_DIRECTORY_NAME}=\"${output.path}\"",
-                    projectName?.let { "plugin:${KotlinSwiftCLP.PLUGIN_ID}:${KotlinSwiftCLP.KEY_PROJECT_NAME_NAME}=\"${it}\"" },
-                    "plugin:${KotlinSwiftCLP.PLUGIN_ID}:${KotlinSwiftCLP.KEY_DEPENDENCIES_NAME}=\"${dependencies.joinToString(File.pathSeparator)}\""
+                    "plugin:${KotlinSwiftCLP.PLUGIN_ID}:${KotlinTranspileCLP.KEY_OUTPUT_DIRECTORY_NAME}=\"${output.path}\"",
+                    projectName?.let { "plugin:${KotlinSwiftCLP.PLUGIN_ID}:${KotlinTranspileCLP.KEY_PROJECT_NAME_NAME}=\"${it}\"" },
+                    "plugin:${KotlinSwiftCLP.PLUGIN_ID}:${KotlinTranspileCLP.KEY_EQUIVALENTS_NAME}=\"${dependencies.joinToString(File.pathSeparator)}\""
                 ).toTypedArray()
             this.destinationAsFile = buildCache.also { it.mkdirs() }
+            println("${KotlinSwiftCLP.PLUGIN_ID} - ${this.pluginClasspaths?.joinToString()} - Options: ${this.pluginOptions?.joinToString()}")
         }
     )
     if (result.code != 0) {

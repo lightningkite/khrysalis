@@ -73,6 +73,7 @@ object ExecuteFileTester {
             },
             services = Services.EMPTY,
             arguments = K2JVMCompilerArguments().apply {
+                this.useIR = true
                 this.freeArgs = (listOf(sourceFile) + additionalSources).map { it.path }.also { println(it) }
                 this.classpathAsList = libraries.toList()
                 this.destinationAsFile = out

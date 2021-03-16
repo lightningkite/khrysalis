@@ -1,13 +1,12 @@
 package com.lightningkite.khrysalis.ios.layout2
 
 import com.lightningkite.khrysalis.ios.layout2.models.IosColor
-import com.lightningkite.khrysalis.swift.replacements.Replacements
-import com.lightningkite.khrysalis.swift.replacements.TypeReplacement
-import com.lightningkite.khrysalis.swift.replacements.xib.*
+import com.lightningkite.khrysalis.replacements.Replacements
+import com.lightningkite.khrysalis.replacements.TypeReplacement
 import com.lightningkite.khrysalis.utils.XmlNode
 import java.io.File
 
-typealias CodeRule = (Replacements, CanResolveValue, XmlNode, PureXmlOut) -> Unit
+typealias CodeRule = (XibRules, CanResolveValue, XmlNode, PureXmlOut) -> Unit
 
 data class IosFont(val family: String, val name: String, val file: File? = null)
 interface CanResolveValue {
@@ -24,25 +23,30 @@ fun PureXmlOut.addStandardViewProperties() {
     attributes["opaque"] = "NO"
 }
 
-fun Replacements.typeReplacementsForName(name: String): List<TypeReplacement> =
-    generateSequence(typeReplacementForName(name)) {
-        it.xib?.deferTo?.let { this.types[it]?.last() }
+fun XibRules.xibTranslationsForName(name: String): List<XibTranslation> =
+    generateSequence(xibTranslationForName(name)) {
+        it.deferTo?.let { xibTranslationForName(it) }
     }.toList()
 
-fun Replacements.typeReplacementForName(name: String): TypeReplacement? {
-    return this.types["android.view.${name}"]?.last()
-        ?: this.types["android.widget.${name}"]?.last()
-        ?: this.types[name]?.last()
+fun XibRules.typeReplacementForName(name: String): TypeReplacement? {
+    return this.replacements.types["android.view.${name}"]?.last()
+        ?: this.replacements.types["android.widget.${name}"]?.last()
+        ?: this.replacements.types[name]?.last()
+}
+fun XibRules.xibTranslationForName(name: String): XibTranslation? {
+    return this.rules["android.view.${name}"]
+        ?: this.rules["android.widget.${name}"]
+        ?: this.rules[name]
 }
 
-fun Replacements.translate(resolver: CanResolveValue, node: XmlNode): PureXmlOut {
-    val rules = typeReplacementsForName(node.name)
+fun XibRules.translate(resolver: CanResolveValue, node: XmlNode): PureXmlOut {
+    val rules = xibTranslationsForName(node.name)
     if (rules.isEmpty()) return PureXmlOut("view").apply { addStandardViewProperties(); attributes["id"] = makeId() }
-    val out = PureXmlOut(rules.first().xib!!.name)
+    val out = PureXmlOut(rules.first().name)
     out.attributes["id"] = node.tags["id"]!!
     out.addStandardViewProperties()
     rules.asSequence()
-        .flatMap { it.xib?.defaults?.entries?.asSequence() ?: sequenceOf() }
+        .flatMap { it.defaults.entries.asSequence() }
         .forEach {
             try {
                 it.key.resolve(out).put(it.value.type, it.value.value, resolver)
@@ -51,7 +55,7 @@ fun Replacements.translate(resolver: CanResolveValue, node: XmlNode): PureXmlOut
             }
         }
     for (a in node.parts) {
-        val matching = rules.asSequence().map { it.xib?.attributes?.get(a.type) }.firstOrNull()
+        val matching = rules.asSequence().map { it.attributes.get(a.type) }.firstOrNull()
         try {
             matching?.invoke(resolver, a, out)
         } catch(e: Exception){

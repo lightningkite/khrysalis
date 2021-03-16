@@ -12,6 +12,14 @@ internal fun HtmlTranslator.display() {
             out.style["text-align"] = "left"
         }
     }
+    element.handle("com.lightningkite.butterfly.views.widget.SelectableText") {
+        out.name = "div"
+        out.style["font-size"] = "12pt"
+        if (rule.allAttributes["android:gravity"] == null) {
+            out.style["text-align"] = "left"
+        }
+        out.style["user-select"] = "text"
+    }
     element.handle("Button") {
         out.name = "button"
     }

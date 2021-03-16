@@ -1,9 +1,9 @@
 package com.lightningkite.khrysalis.swift
 
-import com.lightningkite.khrysalis.swift.replacements.Template
-import com.lightningkite.khrysalis.swift.replacements.TemplatePart
-import com.lightningkite.khrysalis.util.AnalysisExtensions
-import com.lightningkite.khrysalis.util.fqNameWithoutTypeArgs
+import com.lightningkite.khrysalis.replacements.Template
+import com.lightningkite.khrysalis.replacements.TemplatePart
+import com.lightningkite.khrysalis.util.*
+import com.lightningkite.khrysalis.analysis.*
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.lexer.KtTokens
@@ -49,7 +49,7 @@ val PropertyDescriptor.hasSwiftOverride: Boolean
     }
 
 
-fun AnalysisExtensions.capturesSelf(
+fun SwiftTranslator.capturesSelf(
     it: PsiElement?,
     containingDeclaration: ClassDescriptor?,
     immediate: Boolean = true
@@ -502,7 +502,7 @@ fun SwiftTranslator.registerVariable() {
                 emitTemplate(
                     requiresWrapping = typedRule.expr.actuallyCouldBeExpression,
                     template = if (mode == AccessMode.QUEST_DOT)
-                        Template(parts = rule.template.parts.toMutableList().apply {
+                        rule.template.copy(parts = rule.template.parts.toMutableList().apply {
                             this[1] = (this[1] as TemplatePart.Text).let { it.copy("?" + it.string) }
                         })
                     else rule.template,

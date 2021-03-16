@@ -1,9 +1,8 @@
 package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.generic.*
-import com.lightningkite.khrysalis.typescript.replacements.Template
-import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
-import com.lightningkite.khrysalis.util.AnalysisExtensions
+import com.lightningkite.khrysalis.replacements.Template
+import com.lightningkite.khrysalis.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.forEachBetween
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
@@ -11,6 +10,8 @@ import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
+import com.lightningkite.khrysalis.analysis.*
+import com.lightningkite.khrysalis.typescript.replacements.TypescriptImport
 
 
 fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByType<T>.dedup(
@@ -19,7 +20,7 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
     cannotDedup: Boolean = false,
     action: DeDupEmitter.() -> Unit
 ) {
-    val emitter = DeDupEmitter(this.partialTranslator as TypescriptTranslator)
+    val emitter = DeDupEmitter()
     if(cannotDedup){
         action(emitter)
         -emitter.toEmit
@@ -60,6 +61,7 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
     parameterByIndex: (TemplatePart.ParameterByIndex) -> Any? = { value },
     typeParameterByIndex: (TemplatePart.TypeParameterByIndex) -> Any? = { null }
 ) {
+    template.imports.forEach { out.addImport(it) }
     dedup(requiresWrapping, type) {
 //        val templateIsThisDot = template.parts.getOrNull(0) is TemplatePart.Receiver &&
 //                template.parts.getOrNull(1).let { it is TemplatePart.Text && it.string.startsWith('.') } &&
@@ -89,9 +91,7 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
                 is TemplatePart.LambdaParameterContents -> null
                 is TemplatePart.ParameterByIndex -> parameterByIndex(part)
                 is TemplatePart.TypeParameterByIndex -> typeParameterByIndex(part)
-                is TemplatePart.Import -> null
-                is TemplatePart.Switch -> null
-                is TemplatePart.Split -> null
+                else -> null
             }?.let {
                 when (it) {
                     is PsiElement -> it.text
@@ -148,25 +148,6 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
                     }
                     is TemplatePart.TypeParameter -> -typeParameter(part)
                     is TemplatePart.TypeParameterByIndex -> -typeParameterByIndex(part)
-                    is TemplatePart.Import -> out.addImport(part)
-                    is TemplatePart.Split -> {
-                        getRaw(part.on)?.let {
-                            part.before?.let { onParts(listOf(it), overridden) }
-                            it.splitToSequence(part.by)
-                                .forEachBetween(
-                                    forItem = {
-                                        onParts(part.each.parts, overridden + (part.name to it))
-                                    },
-                                    between = { part.between?.let { onParts(listOf(it), overridden) } }
-                                )
-                            part.after?.let { onParts(listOf(it), overridden) }
-                        }
-                    }
-                    is TemplatePart.Switch -> {
-                        (part.cases[getRaw(part.on)?.trim()] ?: part.cases["default"])?.let {
-                            onParts(it.parts, overridden + (part.name to it))
-                        }
-                    }
                 }
             }
         }
@@ -206,7 +187,7 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
     )
 }
 
-class DeDupEmitter(analysis: AnalysisExtensions) : AnalysisExtensions by analysis {
+class DeDupEmitter() {
     val deduplicated = HashMap<Any, String>()
     val checkNotNull = HashSet<String>()
     val toEmit = ArrayList<Any>()

@@ -7,6 +7,7 @@ import org.jetbrains.kotlin.psi.psiUtil.containingClass
 import org.jetbrains.kotlin.psi.psiUtil.getTextWithLocation
 import org.jetbrains.kotlin.resolve.calls.model.VariableAsFunctionResolvedCall
 import org.jetbrains.kotlin.resolve.calls.resolvedCallUtil.getImplicitReceiverValue
+import com.lightningkite.khrysalis.analysis.*
 
 private val suppressReceiverAdditionLocal = ThreadLocal<Boolean>()
 var suppressReceiverAddition: Boolean

@@ -1,9 +1,10 @@
 package com.lightningkite.khrysalis.typescript
 
-import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
+import com.lightningkite.khrysalis.replacements.TemplatePart
+import com.lightningkite.khrysalis.typescript.replacements.TypescriptImport
 import java.io.File
 
-fun renderImports(projectName: String?, relPath: String, imports: Collection<TemplatePart.Import>, writer: Appendable){
+fun renderImports(projectName: String?, relPath: String, imports: Collection<TypescriptImport>, writer: Appendable){
     imports.distinctBy { it.asName ?: it.identifier }.groupBy { it.path }.forEach { (path, parts) ->
         val usePath = (projectName?.let { p ->
             val prefix = "$p/dist/"
@@ -17,7 +18,7 @@ fun renderImports(projectName: String?, relPath: String, imports: Collection<Tem
                 path
             }
         } ?: path).replace("\\", "/")
-        if (parts.size == 1 && parts.first().identifier == TemplatePart.Import.WHOLE) {
+        if (parts.size == 1 && parts.first().identifier == TypescriptImport.WHOLE) {
             writer.append("import ")
             writer.append(parts.first().identifier)
             writer.append(" from '")

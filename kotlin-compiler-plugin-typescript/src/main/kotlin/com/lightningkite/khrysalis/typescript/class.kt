@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.typescript
 
+import com.lightningkite.khrysalis.analysis.*
 import com.lightningkite.khrysalis.generic.PartialTranslatorByType
 import com.lightningkite.khrysalis.typescript.manifest.declaresPrefix
 import com.lightningkite.khrysalis.util.*
@@ -808,16 +809,16 @@ fun TypescriptTranslator.registerClass() {
     }
 }
 
-fun KtParameter.jsonName(analysisExtensions: AnalysisExtensions): String = with(analysisExtensions) {
-    annotationEntries
+fun KtParameter.jsonName(translator: TypescriptTranslator): String {
+    return annotationEntries
         .mapNotNull { it.resolvedAnnotation }
         .find { it.fqName?.asString()?.endsWith("JsonProperty") == true }
         ?.allValueArguments?.get(Name.identifier("value"))
         ?.value as? String
         ?: name ?: "x"
 }
-fun KtEnumEntry.jsonName(analysisExtensions: AnalysisExtensions): String = with(analysisExtensions) {
-    annotationEntries
+fun KtEnumEntry.jsonName(translator: TypescriptTranslator): String {
+    return annotationEntries
         .mapNotNull { it.resolvedAnnotation }
         .find { it.fqName?.asString()?.endsWith("JsonProperty") == true }
         ?.allValueArguments?.get(Name.identifier("value"))

@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.util
 
+import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.resolve.descriptorUtil.getSuperClassNotAny
 import org.jetbrains.kotlin.resolve.descriptorUtil.getSuperClassOrAny
@@ -26,3 +27,9 @@ fun FunctionDescriptor.allSuperVersions(): Sequence<FunctionDescriptor> =
     sequenceOf(this) + this.overriddenDescriptors.asSequence().flatMap { it.allSuperVersions() }
 fun CallableMemberDescriptor.allSuperVersions(): Sequence<CallableMemberDescriptor> =
     sequenceOf(this) + this.overriddenDescriptors.asSequence().flatMap { it.allSuperVersions() }
+
+
+inline fun <reified T> PsiElement.parentIfType(): T? = parent as? T
+inline fun <reified T : PsiElement> PsiElement.parentOfType(): T? = parentOfType(T::class.java)
+fun <T : PsiElement> PsiElement.parentOfType(type: Class<T>): T? =
+    if (type.isInstance(this.parent)) type.cast(this.parent) else this.parent?.parentOfType(type)

@@ -10,6 +10,7 @@ import org.jetbrains.kotlin.psi.psiUtil.allChildren
 import org.jetbrains.kotlin.psi.psiUtil.getTextWithLocation
 import org.jetbrains.kotlin.types.isNullable
 import org.jetbrains.kotlin.types.typeUtil.nullability
+import com.lightningkite.khrysalis.analysis.*
 
 data class IfCondition(val expression: KtExpression)
 
@@ -442,7 +443,7 @@ fun SwiftTranslator.registerControl() {
                     -entry.nameIdentifier
                     -" = "
                     val call = entry.resolvedComponentResolvedCall!!
-                    val replacement = replacements.getCall(analysis = this@registerControl, call = call)
+                    val replacement = replacements.getCall(call = call)
                     if(replacement != null){
                         emitTemplate(
                             requiresWrapping = true,

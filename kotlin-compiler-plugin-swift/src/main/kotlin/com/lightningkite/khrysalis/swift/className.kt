@@ -5,6 +5,7 @@ import org.jetbrains.kotlin.descriptors.ClassKind
 import org.jetbrains.kotlin.descriptors.DeclarationDescriptor
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtClassOrObject
+import com.lightningkite.khrysalis.analysis.*
 
 
 val DeclarationDescriptor.swiftTopLevelMessedUp: Boolean

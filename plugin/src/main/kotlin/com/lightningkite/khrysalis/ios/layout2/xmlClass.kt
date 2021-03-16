@@ -5,8 +5,10 @@ import com.fasterxml.jackson.module.kotlin.readValue
 import com.lightningkite.khrysalis.android.layout.AndroidLayoutFile
 import com.lightningkite.khrysalis.generic.SmartTabWriter
 import com.lightningkite.khrysalis.log
-import com.lightningkite.khrysalis.swift.replacements.Replacements
-import com.lightningkite.khrysalis.swift.replacements.TemplatePart
+import com.lightningkite.khrysalis.replacements.Replacements
+import com.lightningkite.khrysalis.replacements.TemplatePart
+import com.lightningkite.khrysalis.swift.KotlinSwiftCR
+import com.lightningkite.khrysalis.swift.replacements.SwiftImport
 import com.lightningkite.khrysalis.swift.safeSwiftIdentifier
 import com.lightningkite.khrysalis.utils.camelCase
 import java.io.File
@@ -17,7 +19,7 @@ fun convertLayoutsToSwiftXmlClasses(
     outputFolder: File
 ) {
     log("Creating layout classes")
-    val replacements = Replacements()
+    val replacements = Replacements(KotlinSwiftCR.replacementMapper)
     equivalentsFolders
         .flatMap { it.walkTopDown() }
         .filter { it.name.endsWith(".swift.yml") || it.name.endsWith(".swift.yaml") }
@@ -52,11 +54,11 @@ fun AndroidLayoutFile.toSwift(
             ?: replacements.types["android.view.$this"]?.firstOrNull()
                 )?.template?.parts?.joinToString("") { (it as? TemplatePart.Text)?.string ?: "" } ?: this.substringAfterLast('.')
     }
-    fun String.getImport(): TemplatePart.Import? {
+    fun String.getImport(): SwiftImport? {
         return (replacements.types[this]?.firstOrNull()
             ?: replacements.types["android.widget.$this"]?.firstOrNull()
             ?: replacements.types["android.view.$this"]?.firstOrNull()
-                )?.template?.find { it is TemplatePart.Import } as? TemplatePart.Import
+                )?.template?.imports?.firstOrNull() as? SwiftImport
     }
 
     val imports = listOf(

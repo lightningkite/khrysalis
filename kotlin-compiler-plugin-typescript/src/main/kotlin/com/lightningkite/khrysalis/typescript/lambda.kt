@@ -1,7 +1,6 @@
 package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.generic.line
-import com.lightningkite.khrysalis.util.AnalysisExtensions
 import com.lightningkite.khrysalis.util.forEachBetween
 import com.lightningkite.khrysalis.util.fqNameWithoutTypeArgs
 import com.lightningkite.khrysalis.util.simpleFqName
@@ -20,6 +19,7 @@ import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.types.isNullable
 import org.jetbrains.kotlin.types.typeUtil.isNullableNothing
+import com.lightningkite.khrysalis.analysis.*
 
 fun TypescriptTranslator.registerLambda() {
     handle<KtLambdaExpression>(
@@ -76,7 +76,7 @@ fun TypescriptTranslator.registerLambda() {
                 }
                 1 -> {
                     val s = typedRule.bodyExpression!!.statements.first()
-                    if (s!!.actuallyCouldBeExpression && resolved.returnType?.fqNameWithoutTypeArgs !in AnalysisExtensions.dontReturnTypes && resolved.returnType?.isNullableNothing() != true) {
+                    if (s!!.actuallyCouldBeExpression && resolved.returnType?.fqNameWithoutTypeArgs !in KotlinInfo.dontReturnTypes && resolved.returnType?.isNullableNothing() != true) {
                         -s
                     } else {
                         -"{\n"

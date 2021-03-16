@@ -1,9 +1,9 @@
 package com.lightningkite.khrysalis.typescript
 
+import com.lightningkite.khrysalis.analysis.*
 import com.lightningkite.khrysalis.generic.PartialTranslatorByType
 import com.lightningkite.khrysalis.generic.TranslatorInterface
-import com.lightningkite.khrysalis.typescript.replacements.Replacements
-import com.lightningkite.khrysalis.util.AnalysisExtensions
+import com.lightningkite.khrysalis.replacements.Replacements
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
@@ -23,11 +23,10 @@ import kotlin.collections.ArrayList
 
 class TypescriptTranslator(
     val projectName: String?,
-    override val bindingContext: BindingContext,
     val commonPath: String,
     val collector: MessageCollector? = null,
-    val replacements: Replacements = Replacements()
-) : PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>(), TranslatorInterface<TypescriptFileEmitter, Unit>, AnalysisExtensions {
+    val replacements: Replacements
+) : PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>(), TranslatorInterface<TypescriptFileEmitter, Unit> {
 
     val declarations: DeclarationManifest = DeclarationManifest()
 
@@ -158,39 +157,6 @@ class TypescriptTranslator(
         }
     }
 
-
-    fun KtExpression.isSafeLetDirect(): Boolean {
-        if (this !is KtSafeQualifiedExpression) return false
-        val callExpression = this.selectorExpression as? KtCallExpression ?: return false
-        if (callExpression.lambdaArguments.isEmpty()) return false
-        if ((callExpression.calleeExpression as? KtReferenceExpression)?.resolvedReferenceTarget?.fqNameSafe?.asString() != "kotlin.let") return false
-        return true
-    }
-
-    fun KtExpression.isRunDirect(): Boolean {
-        if (this !is KtCallExpression) return false
-        if (this.lambdaArguments.isEmpty()) return false
-        if ((this.calleeExpression as? KtReferenceExpression)?.resolvedReferenceTarget?.fqNameSafe?.asString() != "kotlin.run") return false
-        return true
-    }
-
-    fun KtBinaryExpression.isSafeLetChain(): Boolean {
-        if (this.operationToken != KtTokens.ELVIS) return false
-        if (this.left?.isSafeLetDirect() == true) return true
-        return (this.left as? KtBinaryExpression)?.isSafeLetChain() == true
-    }
-
-    fun KtBinaryExpression.safeLetChainRoot(): KtBinaryExpression {
-        (this.parent as? KtBinaryExpression)?.let { p ->
-            if (p.left == this) {
-                if (p.operationToken == KtTokens.ELVIS) {
-                    return p.safeLetChainRoot()
-                }
-            }
-        }
-        return this
-    }
-
     fun KtExpression.needsSemi(): Boolean = this !is KtDeclaration
             && this !is KtLoopExpression
             && this !is KtBlockExpression
@@ -200,32 +166,5 @@ class TypescriptTranslator(
             && !this.isSafeLetDirect()
             && ((this as? KtBinaryExpression)?.isSafeLetChain() != true)
 
-    inline fun <reified T> PsiElement.parentIfType(): T? = parent as? T
-    override fun determineMaybeExpressionLambda(it: KtFunctionLiteral): Boolean {
-        if(!super.determineMaybeExpressionLambda(it)) {
-            return false
-        }
-        if(it
-                .parentIfType<KtLambdaExpression>()
-                ?.let {
-                    it.parentIfType<KtLambdaArgument>() ?: it.parentIfType<KtAnnotatedExpression>()?.parentIfType<KtLambdaArgument>()
-                }
-                ?.parentIfType<KtCallExpression>()
-                ?.let {
-                    if((it.parent as? KtExpression)?.let {
-                            it.isSafeLetDirect() && !determineMaybeExpression(it)
-                        } == true){
-                        return false
-                    }
-                    it.parentIfType<KtBinaryExpression>()
-                        ?: it.parentIfType<KtQualifiedExpression>()
-                            ?.parentIfType<KtBinaryExpression>()
-                }
-                ?.let { it.isSafeLetChain() && !determineMaybeExpression(it.safeLetChainRoot()) } == true
-        ){
-            return false
-        }
-        return true
-    }
 }
 

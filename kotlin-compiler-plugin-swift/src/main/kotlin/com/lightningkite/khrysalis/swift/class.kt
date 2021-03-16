@@ -1,16 +1,13 @@
 package com.lightningkite.khrysalis.swift
 
 import com.lightningkite.khrysalis.generic.PartialTranslatorByType
-import com.lightningkite.khrysalis.swift.replacements.TemplatePart
-import com.lightningkite.khrysalis.util.AnalysisExtensions
+import com.lightningkite.khrysalis.analysis.*
+import com.lightningkite.khrysalis.swift.replacements.SwiftImport
 import com.lightningkite.khrysalis.util.forEachBetween
 import com.lightningkite.khrysalis.util.fqNameWithoutTypeArgs
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.descriptors.*
-import org.jetbrains.kotlin.ir.util.findFirstFunction
-import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.js.translate.callTranslator.getReturnType
-import org.jetbrains.kotlin.lexer.KtToken
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.psi.*
@@ -61,31 +58,31 @@ fun SwiftTranslator.registerClass() {
             )
             .let {
                 if (on is KtClass && on.isData()) {
-                    out.addImport(TemplatePart.Import("LKButterfly"))
+                    out.addImport(SwiftImport("LKButterfly"))
                     it + listOf("KDataClass")
                 } else it
             }
             .let {
                 if (on is KtClass && on.isEnum()) {
-                    out.addImport(TemplatePart.Import("LKButterfly"))
+                    out.addImport(SwiftImport("LKButterfly"))
                     it + listOf("KEnum")
                 } else it
             }
             .let {
                 if (on.body?.functions?.find { it.name == "equals" && it.valueParameters.size == 1 } != null) {
-                    out.addImport(TemplatePart.Import("LKButterfly"))
+                    out.addImport(SwiftImport("LKButterfly"))
                     it + listOf("KEquatable")
                 } else it
             }
             .let {
                 if (on.body?.functions?.find { it.name == "hashCode" && it.valueParameters.size == 0 } != null) {
-                    out.addImport(TemplatePart.Import("LKButterfly"))
+                    out.addImport(SwiftImport("LKButterfly"))
                     it + listOf("KHashable")
                 } else it
             }
             .let {
                 if (on.body?.functions?.find { it.name == "toString" && it.valueParameters.size == 0 } != null) {
-                    out.addImport(TemplatePart.Import("LKButterfly"))
+                    out.addImport(SwiftImport("LKButterfly"))
                     it + listOf("KStringable")
                 } else it
             }
@@ -303,7 +300,7 @@ fun SwiftTranslator.registerClass() {
             -"\n)\n}\n\n"
             -"enum CodingKeys: String, CodingKey {\n"
             typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEach {
-                val jsonName = it.jsonName(this@registerClass)
+                val jsonName = it.jsonName()
                 -"case "
                 -it.nameIdentifier
                 -" = \"${jsonName}\"\n"
@@ -983,8 +980,8 @@ private fun <T : KtClassOrObject> handleConstructor(
     }
 }
 
-private fun KtParameter.jsonName(analysisExtensions: AnalysisExtensions): String = with(analysisExtensions) {
-    annotationEntries
+private fun KtParameter.jsonName(): String {
+    return annotationEntries
         .mapNotNull { it.resolvedAnnotation }
         .find { it.fqName?.asString()?.endsWith("JsonProperty") == true }
         ?.allValueArguments?.get(Name.identifier("value"))

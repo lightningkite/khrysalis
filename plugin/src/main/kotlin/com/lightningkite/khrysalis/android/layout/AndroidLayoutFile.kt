@@ -3,7 +3,6 @@ package com.lightningkite.khrysalis.android.layout
 import com.lightningkite.khrysalis.ios.layout.Styles
 import com.lightningkite.khrysalis.typescript.DeclarationManifest
 import com.lightningkite.khrysalis.typescript.renderImports
-import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
 import com.lightningkite.khrysalis.utils.XmlNode
 import com.lightningkite.khrysalis.utils.attributeAsBoolean
 import com.lightningkite.khrysalis.utils.attributeAsEdgeFlagsKotlin

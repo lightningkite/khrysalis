@@ -2,10 +2,10 @@ package com.lightningkite.khrysalis.web.layout
 
 import com.lightningkite.khrysalis.generic.PartialTranslator
 import com.lightningkite.khrysalis.ios.layout.Styles
-import com.lightningkite.khrysalis.typescript.replacements.AttributeReplacement
-import com.lightningkite.khrysalis.typescript.replacements.Replacements
-import com.lightningkite.khrysalis.typescript.replacements.Template
-import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
+import com.lightningkite.khrysalis.replacements.Replacements
+import com.lightningkite.khrysalis.replacements.Template
+import com.lightningkite.khrysalis.replacements.TemplatePart
+import com.lightningkite.khrysalis.typescript.KotlinTypescriptCR
 import com.lightningkite.khrysalis.utils.*
 import com.lightningkite.khrysalis.web.asCssColor
 import java.io.File
@@ -16,7 +16,7 @@ class HtmlTranslator {
     var strings = mapOf<String, String>()
     var styles: Styles = mapOf()
     var outFolder: File = File(".")
-    val replacements = Replacements()
+    val replacements = Replacements(KotlinTypescriptCR.replacementMapper)
 
     inner class ElementTranslator : PartialTranslator<ResultNode, Unit, XmlNode, String>() {
         override fun getIdentifier(rule: XmlNode): String = rule.name
@@ -33,20 +33,6 @@ class HtmlTranslator {
     inner class AttributeTranslator : PartialTranslator<ResultNode, Unit, XmlNode.Attribute, String>() {
         override fun getIdentifier(rule: XmlNode.Attribute): String = rule.type
         override fun emitDefault(identifier: String, rule: XmlNode.Attribute, out: ResultNode) {
-            replacements.attributes[rule.type.substringAfter(':')]?.firstOrNull {
-                it.on == null || rule.parent.name == it.on
-            }?.let {
-                it.effects.forEach {
-                    val on = when (it.applyTo) {
-                        AttributeReplacement.ApplyTo.Main -> out
-                        AttributeReplacement.ApplyTo.Primary -> out.primary
-                        AttributeReplacement.ApplyTo.Text -> out.text
-                        AttributeReplacement.ApplyTo.ContainerNode -> out.containerNode
-                    }
-                    on.style += it.css.mapValues { it.value.use(rule.value) }
-                    on.attributes += it.attributes.mapValues { it.value.use(rule.value) }
-                }
-            }
         }
     }
 

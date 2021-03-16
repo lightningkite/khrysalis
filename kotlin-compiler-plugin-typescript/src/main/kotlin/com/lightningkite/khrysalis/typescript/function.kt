@@ -22,6 +22,7 @@ import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 import org.jetbrains.kotlin.resolve.source.KotlinSourceElement
 import org.jetbrains.kotlin.types.typeUtil.makeNullable
 import org.jetbrains.kotlin.types.typeUtil.nullability
+import com.lightningkite.khrysalis.analysis.*
 
 //TODO: Local function edgecase - the meaning of 'this' changes
 
@@ -503,12 +504,12 @@ fun TypescriptTranslator.registerFunction() {
     handle<KtBinaryExpression>(
         condition = {
             if (typedRule.operationReference.getIdentifier() == null) return@handle false
-            replacements.getCall(this@registerFunction, typedRule.resolvedCall ?: return@handle false) != null
+            replacements.getCall(typedRule.resolvedCall ?: return@handle false) != null
         },
         priority = 10_000,
         action = {
             val resolvedCall = typedRule.resolvedCall!!
-            val rule = replacements.getCall(this@registerFunction, resolvedCall)!!
+            val rule = replacements.getCall(resolvedCall)!!
 
             emitTemplate(
                 requiresWrapping = typedRule.actuallyCouldBeExpression,
@@ -529,14 +530,14 @@ fun TypescriptTranslator.registerFunction() {
     handle<KtDotQualifiedExpression>(
         condition = {
             val callExp = typedRule.selectorExpression as? KtCallExpression ?: return@handle false
-            replacements.getCall(this@registerFunction, callExp.resolvedCall ?: return@handle false) != null
+            replacements.getCall(callExp.resolvedCall ?: return@handle false) != null
         },
         priority = 10_000,
         action = {
             val callExp = typedRule.selectorExpression as KtCallExpression
             val nre = callExp.calleeExpression as KtNameReferenceExpression
             val resolvedCall = callExp.resolvedCall!!
-            val rule = replacements.getCall(this@registerFunction, resolvedCall)!!
+            val rule = replacements.getCall(resolvedCall)!!
 
             emitTemplate(
                 requiresWrapping = typedRule.actuallyCouldBeExpression,
@@ -561,14 +562,14 @@ fun TypescriptTranslator.registerFunction() {
     handle<KtSafeQualifiedExpression>(
         condition = {
             val callExp = typedRule.selectorExpression as? KtCallExpression ?: return@handle false
-            replacements.getCall(this@registerFunction, callExp.resolvedCall ?: return@handle false) != null
+            replacements.getCall(callExp.resolvedCall ?: return@handle false) != null
         },
         priority = 10_001,
         action = {
             val callExp = typedRule.selectorExpression as KtCallExpression
             val nre = callExp.calleeExpression as KtNameReferenceExpression
             val resolvedCall = callExp.resolvedCall!!
-            val rule = replacements.getCall(this@registerFunction, resolvedCall)!!
+            val rule = replacements.getCall(resolvedCall)!!
 
             emitTemplate(
                 requiresWrapping = typedRule.actuallyCouldBeExpression,
@@ -594,13 +595,13 @@ fun TypescriptTranslator.registerFunction() {
 
     handle<KtCallExpression>(
         condition = {
-            replacements.getCall(this@registerFunction, typedRule.resolvedCall ?: return@handle false) != null
+            replacements.getCall(typedRule.resolvedCall ?: return@handle false) != null
         },
         priority = 10_001,
         action = {
             val nre = typedRule.calleeExpression as KtNameReferenceExpression
             val resolvedCall = typedRule.resolvedCall!!
-            val rule = replacements.getCall(this@registerFunction, resolvedCall)!!
+            val rule = replacements.getCall(resolvedCall)!!
 
             emitTemplate(
                 requiresWrapping = typedRule.actuallyCouldBeExpression,

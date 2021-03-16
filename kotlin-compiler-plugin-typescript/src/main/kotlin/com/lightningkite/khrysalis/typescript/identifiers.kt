@@ -13,6 +13,7 @@ import org.jetbrains.kotlin.psi.psiUtil.getParentOfType
 import org.jetbrains.kotlin.psi.psiUtil.getTextWithLocation
 import org.jetbrains.kotlin.psi.synthetics.SyntheticClassOrObjectDescriptor
 import org.jetbrains.kotlin.resolve.calls.smartcasts.MultipleSmartCasts
+import com.lightningkite.khrysalis.analysis.*
 import org.jetbrains.kotlin.resolve.lazy.descriptors.LazyClassDescriptor
 
 fun TypescriptTranslator.registerIdentifiers(){

@@ -1,7 +1,7 @@
 package com.lightningkite.khrysalis.typescript
 
+import com.lightningkite.khrysalis.analysis.*
 import com.lightningkite.khrysalis.typescript.manifest.declaresPrefix
-import com.lightningkite.khrysalis.util.AnalysisExtensions
 import com.lightningkite.khrysalis.util.forEachBetween
 import com.lightningkite.khrysalis.util.fqNameWithoutTypeArgs
 import com.lightningkite.khrysalis.util.simpleFqName

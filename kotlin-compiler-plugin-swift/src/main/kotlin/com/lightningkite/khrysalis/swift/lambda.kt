@@ -7,6 +7,7 @@ import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.resolve.constants.StringValue
+import com.lightningkite.khrysalis.analysis.*
 
 fun SwiftTranslator.registerLambda() {
     handle<KtFunctionLiteral> {

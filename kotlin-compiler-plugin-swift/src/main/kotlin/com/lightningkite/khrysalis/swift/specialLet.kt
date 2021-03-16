@@ -1,14 +1,11 @@
 package com.lightningkite.khrysalis.swift
 
+import com.lightningkite.khrysalis.abstractions.SafeLetChain
 import com.lightningkite.khrysalis.util.forEachBetween
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
+import com.lightningkite.khrysalis.analysis.*
 
-data class SafeLetChain(
-    val outermost: KtExpression,
-    val entries: List<Pair<KtExpression, KtLambdaExpression>>,
-    val default: KtExpression?
-)
 
 fun SwiftTranslator.registerSpecialLet() {
 

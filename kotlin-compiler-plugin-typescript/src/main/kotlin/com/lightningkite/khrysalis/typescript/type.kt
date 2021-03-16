@@ -4,8 +4,8 @@ import com.lightningkite.khrysalis.generic.PartialTranslator
 import com.lightningkite.khrysalis.generic.PartialTranslatorByType
 import com.lightningkite.khrysalis.generic.line
 import com.lightningkite.khrysalis.typescript.manifest.declaresPrefix
-import com.lightningkite.khrysalis.typescript.replacements.Template
-import com.lightningkite.khrysalis.typescript.replacements.TemplatePart
+import com.lightningkite.khrysalis.replacements.Template
+import com.lightningkite.khrysalis.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.forEachBetween
 import com.lightningkite.khrysalis.util.fqNameWithoutTypeArgs
 import org.jetbrains.kotlin.builtins.functions.FunctionClassDescriptor
@@ -26,6 +26,7 @@ import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 import org.jetbrains.kotlin.types.*
 import org.jetbrains.kotlin.types.typeUtil.*
 import kotlin.text.Appendable
+import com.lightningkite.khrysalis.analysis.*
 
 private val primitiveTypes = setOf(
     "kotlin.Byte",
@@ -347,7 +348,7 @@ fun TypescriptTranslator.registerType() {
                 }
             }
             emitTemplate(
-                template = Template(parts)
+                template = rule.template.copy(parts=parts)
             )
         }
     )

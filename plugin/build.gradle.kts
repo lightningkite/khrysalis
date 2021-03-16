@@ -122,22 +122,22 @@ dependencies {
 
 tasks {
     val insertTypescriptJar by creating(Copy::class) {
-        dependsOn(":kotlin-compiler-plugin-typescript:jar")
+        dependsOn(":kotlin-compiler-plugin-typescript:shadowJar")
         from("../kotlin-compiler-plugin-typescript/build/libs") {
             include("*-all.jar")
         }
         into("src/main/resources/compiler-plugins")
-        rename(".*", "typescript.kjar")
+        rename(".*", "typescript.jar")
     }
     getByName("compileKotlin").dependsOn("insertTypescriptJar")
 
     val insertSwiftJar by creating(Copy::class) {
-        dependsOn(":kotlin-compiler-plugin-swift:jar")
+        dependsOn(":kotlin-compiler-plugin-swift:shadowJar")
         from("../kotlin-compiler-plugin-swift/build/libs") {
             include("*-all.jar")
         }
         into("src/main/resources/compiler-plugins")
-        rename(".*", "swift.kjar")
+        rename(".*", "swift.jar")
     }
     getByName("compileKotlin").dependsOn("insertSwiftJar")
 

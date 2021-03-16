@@ -10,12 +10,14 @@ import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
 import org.jetbrains.kotlin.types.typeUtil.contains
 import org.jetbrains.kotlin.types.typeUtil.isTypeParameter
 import com.lightningkite.khrysalis.generic.PartialTranslatorByType
-import com.lightningkite.khrysalis.swift.replacements.Template
-import com.lightningkite.khrysalis.swift.replacements.TemplatePart
+import com.lightningkite.khrysalis.replacements.Template
+import com.lightningkite.khrysalis.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.fqNameWithoutTypeArgs
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.synthetic.hasJavaOriginInHierarchy
+import com.lightningkite.khrysalis.analysis.*
+import com.lightningkite.khrysalis.util.*
 
 val noArgNames = setOf<String>(/*"value", "other"*/)
 
@@ -426,12 +428,12 @@ fun SwiftTranslator.registerFunction() {
     handle<KtBinaryExpression>(
         condition = {
             if (typedRule.operationReference.getIdentifier() == null) return@handle false
-            replacements.getCall(this@registerFunction, typedRule.resolvedCall ?: return@handle false) != null
+            replacements.getCall(typedRule.resolvedCall ?: return@handle false) != null
         },
         priority = 10_000,
         action = {
             val resolvedCall = typedRule.resolvedCall!!
-            val rule = replacements.getCall(this@registerFunction, resolvedCall)!!
+            val rule = replacements.getCall(resolvedCall)!!
 
             emitTemplate(
                 requiresWrapping = typedRule.actuallyCouldBeExpression,
@@ -449,14 +451,14 @@ fun SwiftTranslator.registerFunction() {
     handle<KtDotQualifiedExpression>(
         condition = {
             val callExp = typedRule.selectorExpression as? KtCallExpression ?: return@handle false
-            replacements.getCall(this@registerFunction, callExp.resolvedCall ?: return@handle false) != null
+            replacements.getCall(callExp.resolvedCall ?: return@handle false) != null
         },
         priority = 10_000,
         action = {
             val callExp = typedRule.selectorExpression as KtCallExpression
             val nre = callExp.calleeExpression as KtNameReferenceExpression
             val resolvedCall = callExp.resolvedCall!!
-            val rule = replacements.getCall(this@registerFunction, resolvedCall)!!
+            val rule = replacements.getCall(resolvedCall)!!
             val templateIsThisDot = rule.template.parts.getOrNull(0) is TemplatePart.Receiver && rule.template.parts.getOrNull(1).let { it is TemplatePart.Text && it.string.startsWith('.') }
 
             emitTemplate(
@@ -481,20 +483,20 @@ fun SwiftTranslator.registerFunction() {
     handle<KtSafeQualifiedExpression>(
         condition = {
             val callExp = typedRule.selectorExpression as? KtCallExpression ?: return@handle false
-            replacements.getCall(this@registerFunction, callExp.resolvedCall ?: return@handle false) != null
+            replacements.getCall(callExp.resolvedCall ?: return@handle false) != null
         },
         priority = 10_001,
         action = {
             val callExp = typedRule.selectorExpression as KtCallExpression
             val nre = callExp.calleeExpression as KtNameReferenceExpression
             val resolvedCall = callExp.resolvedCall!!
-            val rule = replacements.getCall(this@registerFunction, resolvedCall)!!
+            val rule = replacements.getCall(resolvedCall)!!
 
             nullWrapAction(this@registerFunction, typedRule){ rec, mode ->
                 emitTemplate(
                     requiresWrapping = typedRule.actuallyCouldBeExpression,
                     template = if(mode == AccessMode.QUEST_DOT)
-                        Template(parts = rule.template.parts.toMutableList().apply {
+                        rule.template.copy(parts = rule.template.parts.toMutableList().apply {
                             this[1] = (this[1] as TemplatePart.Text).let { it.copy("?" + (if(hasNewlineBeforeAccess(typedRule)) "\n" else "") + it.string) }
                         })
                     else rule.template,
@@ -518,13 +520,13 @@ fun SwiftTranslator.registerFunction() {
 
     handle<KtCallExpression>(
         condition = {
-            replacements.getCall(this@registerFunction, typedRule.resolvedCall ?: return@handle false) != null
+            replacements.getCall(typedRule.resolvedCall ?: return@handle false) != null
         },
         priority = 10_001,
         action = {
             val nre = typedRule.calleeExpression as KtNameReferenceExpression
             val resolvedCall = typedRule.resolvedCall!!
-            val rule = replacements.getCall(this@registerFunction, resolvedCall)!!
+            val rule = replacements.getCall(resolvedCall)!!
 
             emitTemplate(
                 requiresWrapping = typedRule.actuallyCouldBeExpression,

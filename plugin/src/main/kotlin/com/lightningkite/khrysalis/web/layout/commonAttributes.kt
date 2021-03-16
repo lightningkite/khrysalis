@@ -56,6 +56,11 @@ internal fun HtmlTranslator.commonAttributes() {
             }
         )
     }
+    attribute.handle("android:textStyle") {
+        rule.value.split('|').forEach {
+            out.text.classes.add("textStyle" + it.capitalize())
+        }
+    }
     attribute.handle("android:hint") {
         if (out.other["hintAdded"] == true) return@handle
         out.other["hintAdded"] = true

@@ -1,6 +1,6 @@
 package com.lightningkite.khrysalis.typescript
 
-import com.lightningkite.khrysalis.util.AnalysisExtensions
+import com.lightningkite.khrysalis.analysis.*
 import com.lightningkite.khrysalis.util.forEachBetween
 import org.jetbrains.kotlin.com.intellij.psi.tree.IElementType
 import org.jetbrains.kotlin.descriptors.CallableDescriptor
@@ -77,12 +77,12 @@ fun TypescriptTranslator.registerOperators() {
     }
     handle<VirtualArrayGet>(
         condition = {
-            replacements.getCall(this@registerOperators, typedRule.resolvedCall ?: return@handle false) != null
+            replacements.getCall(typedRule.resolvedCall ?: return@handle false) != null
         },
         priority = 10_001,
         action = {
             val resolvedCall = typedRule.resolvedCall!!
-            val rule = replacements.getCall(this@registerOperators, resolvedCall)!!
+            val rule = replacements.getCall(resolvedCall)!!
 
             emitTemplate(
                 requiresWrapping = true,
@@ -171,7 +171,7 @@ fun TypescriptTranslator.registerOperators() {
             val arrayAccess = typedRule.left as? KtArrayAccessExpression ?: return@handle false
             val f = arrayAccess.resolvedIndexedLvalueSet ?: return@handle false
             (typedRule.resolvedVariableReassignment == true || typedRule.operationToken == KtTokens.EQ)
-                    && replacements.getCall(this@registerOperators, f) != null
+                    && replacements.getCall(f) != null
         },
         priority = 20_002,
         action = {
@@ -217,7 +217,7 @@ fun TypescriptTranslator.registerOperators() {
                 operationToken = typedRule.operationToken,
                 resolvedCall = typedRule.resolvedCall
             ) else typedRule.right!!
-            val rule = replacements.getCall(this@registerOperators, resolvedCall)!!
+            val rule = replacements.getCall(resolvedCall)!!
             emitTemplate(
                 requiresWrapping = typedRule.actuallyCouldBeExpression,
                 type = typedRule.resolvedExpressionTypeInfo?.type,
@@ -245,12 +245,12 @@ fun TypescriptTranslator.registerOperators() {
     //Operator
     handle<ValueOperator>(
         condition = {
-            replacements.getCall(this@registerOperators, typedRule.resolvedCall ?: return@handle false) != null
+            replacements.getCall(typedRule.resolvedCall ?: return@handle false) != null
         },
         priority = 10_000,
         action = {
             val resolvedCall = typedRule.resolvedCall!!
-            val rule = replacements.getCall(this@registerOperators, resolvedCall)!!
+            val rule = replacements.getCall(resolvedCall)!!
 
             if (typedRule.operationToken == KtTokens.NOT_IN || typedRule.operationToken == KtTokens.EXCLEQ) {
                 -"!("
@@ -407,12 +407,12 @@ fun TypescriptTranslator.registerOperators() {
 
     handle<KtPrefixExpression>(
         condition = {
-            replacements.getCall(this@registerOperators, typedRule.resolvedCall ?: return@handle false) != null
+            replacements.getCall(typedRule.resolvedCall ?: return@handle false) != null
         },
         priority = 10_000,
         action = {
             val f = typedRule.resolvedCall!!
-            val rule = replacements.getCall(this@registerOperators, f)!!
+            val rule = replacements.getCall(f)!!
 
             emitTemplate(
                 requiresWrapping = typedRule.actuallyCouldBeExpression,
@@ -448,12 +448,12 @@ fun TypescriptTranslator.registerOperators() {
 
     handle<KtPostfixExpression>(
         condition = {
-            replacements.getCall(this@registerOperators, typedRule.resolvedCall ?: return@handle false) != null
+            replacements.getCall(typedRule.resolvedCall ?: return@handle false) != null
         },
         priority = 10_000,
         action = {
             val f = typedRule.resolvedCall!!
-            val rule = replacements.getCall(this@registerOperators, f)!!
+            val rule = replacements.getCall(f)!!
 
             emitTemplate(
                 requiresWrapping = typedRule.actuallyCouldBeExpression,

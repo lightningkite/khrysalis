@@ -1,8 +1,5 @@
 package com.lightningkite.khrysalis.ios.layout2
 
-import com.lightningkite.khrysalis.swift.replacements.xib.AttKind
-import com.lightningkite.khrysalis.swift.replacements.xib.AttPath
-import com.lightningkite.khrysalis.swift.replacements.xib.PureXmlOut
 import org.junit.Assert.*
 import org.junit.Test
 

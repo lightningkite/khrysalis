@@ -4,6 +4,7 @@ import org.jetbrains.kotlin.psi.KtDotQualifiedExpression
 import org.jetbrains.kotlin.psi.KtExpression
 import org.jetbrains.kotlin.psi.KtQualifiedExpression
 import org.jetbrains.kotlin.psi.KtSafeQualifiedExpression
+import com.lightningkite.khrysalis.analysis.*
 
 data class MultiSelectorExpression(
     val original: KtQualifiedExpression,

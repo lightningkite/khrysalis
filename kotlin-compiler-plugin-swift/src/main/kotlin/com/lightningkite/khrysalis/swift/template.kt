@@ -1,9 +1,10 @@
 package com.lightningkite.khrysalis.swift
 
 import com.lightningkite.khrysalis.generic.*
-import com.lightningkite.khrysalis.swift.replacements.Template
-import com.lightningkite.khrysalis.swift.replacements.TemplatePart
-import com.lightningkite.khrysalis.util.AnalysisExtensions
+import com.lightningkite.khrysalis.replacements.Template
+import com.lightningkite.khrysalis.replacements.TemplatePart
+import com.lightningkite.khrysalis.analysis.*
+import com.lightningkite.khrysalis.swift.replacements.SwiftImport
 import com.lightningkite.khrysalis.util.forEachBetween
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.psi.*
@@ -47,6 +48,7 @@ fun <T : Any> PartialTranslatorByType<SwiftFileEmitter, Unit, Any>.ContextByType
     parameterByIndex: (TemplatePart.ParameterByIndex) -> Any? = { value },
     typeParameterByIndex: (TemplatePart.TypeParameterByIndex) -> Any? = { null }
 ) {
+    template.imports.forEach { out.addImport(it as SwiftImport) }
     dedup(requiresWrapping, cannotDedup) {
         -prefix
         fun onParts(list: List<TemplatePart>, overridden: Map<String, Any?> = mapOf()) {
@@ -63,9 +65,7 @@ fun <T : Any> PartialTranslatorByType<SwiftFileEmitter, Unit, Any>.ContextByType
                 is TemplatePart.LambdaParameterContents -> null
                 is TemplatePart.ParameterByIndex -> parameterByIndex(part)
                 is TemplatePart.TypeParameterByIndex -> typeParameterByIndex(part)
-                is TemplatePart.Import -> null
-                is TemplatePart.Switch -> null
-                is TemplatePart.Split -> null
+                else -> { null }
             }?.let {
                 when (it) {
                     is PsiElement -> it.text
@@ -115,25 +115,6 @@ fun <T : Any> PartialTranslatorByType<SwiftFileEmitter, Unit, Any>.ContextByType
                     }
                     is TemplatePart.TypeParameter -> -typeParameter(part)
                     is TemplatePart.TypeParameterByIndex -> -typeParameterByIndex(part)
-                    is TemplatePart.Import -> out.addImport(part)
-                    is TemplatePart.Split -> {
-                        getRaw(part.on)?.let {
-                            part.before?.let { onParts(listOf(it), overridden) }
-                            it.splitToSequence(part.by)
-                                .forEachBetween(
-                                    forItem = {
-                                        onParts(part.each.parts, overridden + (part.name to it))
-                                    },
-                                    between = { part.between?.let { onParts(listOf(it), overridden) } }
-                                )
-                            part.after?.let { onParts(listOf(it), overridden) }
-                        }
-                    }
-                    is TemplatePart.Switch -> {
-                        (part.cases[getRaw(part.on)?.trim()] ?: part.cases["default"])?.let {
-                            onParts(it.parts, overridden + (part.name to it))
-                        }
-                    }
                 }
             }
         }

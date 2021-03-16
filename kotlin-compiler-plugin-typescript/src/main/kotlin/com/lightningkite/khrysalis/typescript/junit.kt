@@ -2,6 +2,7 @@ package com.lightningkite.khrysalis.typescript
 
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtClass
+import com.lightningkite.khrysalis.analysis.*
 
 
 fun TypescriptTranslator.registerJUnit() {

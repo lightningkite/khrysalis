@@ -1,6 +1,6 @@
 package com.lightningkite.khrysalis.swift
 
-import com.lightningkite.khrysalis.swift.replacements.TemplatePart
+import com.lightningkite.khrysalis.swift.replacements.SwiftImport
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
 import java.util.*
@@ -15,7 +15,7 @@ fun SwiftTranslator.registerFile() {
         typedRule.importDirectives.forEach {
             it.importedReference?.text?.let {
                 this@registerFile.fqToImport[it]?.let {
-                    out.addImport(TemplatePart.Import(it))
+                    out.addImport(SwiftImport(it))
                 }
             }
         }

@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.web
 
+import com.lightningkite.khrysalis.generic.KotlinTranspileCLP
 import com.lightningkite.khrysalis.typescript.KotlinTypescriptCLP
 import com.lightningkite.khrysalis.utils.copyFolderOutFromRes
 import org.jetbrains.kotlin.cli.common.arguments.K2JVMCompilerArguments
@@ -46,9 +47,10 @@ fun convertToTypescript(
         },
         services = Services.EMPTY,
         arguments = K2JVMCompilerArguments().apply {
+            this.useIR = true
             this.freeArgs = files.filter { it.extension in setOf("kt", "java") }.map { it.absolutePath }.toList()
             this.classpathAsList = libraries.toList()
-            this.pluginClasspaths = pluginCache.resolve("typescript.kjar")
+            this.pluginClasspaths = pluginCache.resolve("typescript.jar")
                 .also { it.parentFile.mkdirs() }
                 .also {
                     copyFolderOutFromRes("compiler-plugins", it.parentFile)
@@ -56,9 +58,9 @@ fun convertToTypescript(
                 .let { arrayOf(it.path) }
             this.pluginOptions =
                 listOfNotNull(
-                    "plugin:${KotlinTypescriptCLP.PLUGIN_ID}:${KotlinTypescriptCLP.KEY_OUTPUT_DIRECTORY_NAME}=\"${output.path}\"",
-                    projectName?.let { "plugin:${KotlinTypescriptCLP.PLUGIN_ID}:${KotlinTypescriptCLP.KEY_PROJECT_NAME_NAME}=\"${it}\"" },
-                    "plugin:${KotlinTypescriptCLP.PLUGIN_ID}:${KotlinTypescriptCLP.KEY_TS_DEPENDENCIES_NAME}=\"${dependencies.joinToString(File.pathSeparator)}\""
+                    "plugin:${KotlinTypescriptCLP.PLUGIN_ID}:${KotlinTranspileCLP.KEY_OUTPUT_DIRECTORY_NAME}=\"${output.path}\"",
+                    projectName?.let { "plugin:${KotlinTypescriptCLP.PLUGIN_ID}:${KotlinTranspileCLP.KEY_PROJECT_NAME_NAME}=\"${it}\"" },
+                    "plugin:${KotlinTypescriptCLP.PLUGIN_ID}:${KotlinTranspileCLP.KEY_EQUIVALENTS_NAME}=\"${dependencies.joinToString(File.pathSeparator)}\""
                 ).toTypedArray()
             this.destinationAsFile = buildCache.also { it.mkdirs() }
         }

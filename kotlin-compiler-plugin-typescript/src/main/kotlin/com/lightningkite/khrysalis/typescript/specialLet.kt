@@ -5,6 +5,7 @@ import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
+import com.lightningkite.khrysalis.analysis.*
 
 data class SafeLetChain(
     val outermost: KtExpression,

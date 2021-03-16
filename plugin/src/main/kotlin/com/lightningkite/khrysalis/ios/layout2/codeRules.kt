@@ -2,11 +2,6 @@ package com.lightningkite.khrysalis.ios.layout2
 
 import com.lightningkite.khrysalis.ios.layout.horizontalGravityWords
 import com.lightningkite.khrysalis.ios.layout.verticalGravityWords
-import com.lightningkite.khrysalis.swift.replacements.Replacements
-import com.lightningkite.khrysalis.swift.replacements.xib.AttKind
-import com.lightningkite.khrysalis.swift.replacements.xib.AttPath
-import com.lightningkite.khrysalis.swift.replacements.xib.PureXmlOut
-import com.lightningkite.khrysalis.swift.replacements.xib.makeId
 import com.lightningkite.khrysalis.utils.XmlNode
 
 fun PureXmlOut.constrain(
@@ -46,12 +41,12 @@ fun PureXmlOut.constrainSelf(
     })
 }
 
-fun Replacements.paddingUnhandled(type: String): Boolean {
-    return typeReplacementsForName(type)
-        .any { it.xib?.attributes?.get("android:padding") != null }
+fun XibRules.paddingUnhandled(type: String): Boolean {
+    return this.xibTranslationsForName(type)
+        .any { it.attributes.get("android:padding") != null }
 }
 
-fun XmlNode.getLeftMargin(resolver: CanResolveValue, rules: Replacements): String {
+fun XmlNode.getLeftMargin(resolver: CanResolveValue, rules: XibRules): String {
     val directMargin = resolver.resolveDimension(
         allAttributes["android:layout_marginStart"]
             ?: allAttributes["android:layout_marginLeft"]
@@ -67,7 +62,7 @@ fun XmlNode.getLeftMargin(resolver: CanResolveValue, rules: Replacements): Strin
     } else directMargin
 }
 
-fun XmlNode.getTopMargin(resolver: CanResolveValue, rules: Replacements): String {
+fun XmlNode.getTopMargin(resolver: CanResolveValue, rules: XibRules): String {
     val directMargin = resolver.resolveDimension(
         allAttributes["android:layout_marginTop"]
             ?: allAttributes["android:layout_margin"] ?: "0dp"
@@ -81,7 +76,7 @@ fun XmlNode.getTopMargin(resolver: CanResolveValue, rules: Replacements): String
     } else directMargin
 }
 
-fun XmlNode.getRightMargin(resolver: CanResolveValue, rules: Replacements): String {
+fun XmlNode.getRightMargin(resolver: CanResolveValue, rules: XibRules): String {
     val directMargin = resolver.resolveDimension(
         allAttributes["android:layout_marginEnd"]
             ?: allAttributes["android:layout_marginRight"]
@@ -97,7 +92,7 @@ fun XmlNode.getRightMargin(resolver: CanResolveValue, rules: Replacements): Stri
     } else directMargin
 }
 
-fun XmlNode.getBottomMargin(resolver: CanResolveValue, rules: Replacements): String {
+fun XmlNode.getBottomMargin(resolver: CanResolveValue, rules: XibRules): String {
     val directMargin = resolver.resolveDimension(
         allAttributes["android:layout_marginBottom"]
             ?: allAttributes["android:layout_margin"] ?: "0dp"
@@ -115,7 +110,7 @@ fun PureXmlOut.frameChildHorizontal(
     myNode: XmlNode,
     childNode: XmlNode,
     resolver: CanResolveValue,
-    rules: Replacements
+    rules: XibRules
 ) {
     val gravity =
         (childNode.allAttributes["android:layout_gravity"] ?: myNode.allAttributes["android:gravity"])?.split('|')
@@ -164,7 +159,7 @@ fun PureXmlOut.frameChildVertical(
     myNode: XmlNode,
     childNode: XmlNode,
     resolver: CanResolveValue,
-    rules: Replacements
+    rules: XibRules
 ) {
     val gravity =
         (childNode.allAttributes["android:layout_gravity"] ?: myNode.allAttributes["android:gravity"])?.split('|')

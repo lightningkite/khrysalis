@@ -4,8 +4,9 @@ import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
 import com.lightningkite.khrysalis.generic.PartialTranslatorByType
-import com.lightningkite.khrysalis.swift.replacements.Template
-import com.lightningkite.khrysalis.swift.replacements.TemplatePart
+import com.lightningkite.khrysalis.analysis.*
+import com.lightningkite.khrysalis.replacements.Template
+import com.lightningkite.khrysalis.replacements.TemplatePart
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.lexer.KtTokens
@@ -20,7 +21,7 @@ enum class AccessMode(val resultAllowsOptionalOp: Boolean, val usesDot: Boolean 
 
 fun getRuleTemplate(swiftTranslator: SwiftTranslator, rule: KtQualifiedExpression): Template? = with(swiftTranslator) {
     return when (val sel = rule.selectorExpression) {
-        is KtCallExpression -> replacements.getCall(swiftTranslator, sel.resolvedCall!!)?.template
+        is KtCallExpression -> replacements.getCall(sel.resolvedCall!!)?.template
         is KtNameReferenceExpression -> (sel.resolvedReferenceTarget as? PropertyDescriptor)?.let {
             replacements.getGet(it, rule.receiverExpression.resolvedExpressionTypeInfo?.type)
         }?.template

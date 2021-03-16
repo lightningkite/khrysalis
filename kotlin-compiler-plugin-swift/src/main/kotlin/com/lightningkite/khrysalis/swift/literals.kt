@@ -5,6 +5,7 @@ import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.stubs.elements.KtStubElementTypes
+import com.lightningkite.khrysalis.analysis.*
 
 fun SwiftTranslator.registerLiterals() {
     handle<KtSimpleNameStringTemplateEntry> {

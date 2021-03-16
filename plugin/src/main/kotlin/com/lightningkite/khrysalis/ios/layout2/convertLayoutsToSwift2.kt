@@ -1,11 +1,17 @@
 package com.lightningkite.khrysalis.ios.layout2
 
+import com.fasterxml.jackson.databind.DeserializationFeature
+import com.fasterxml.jackson.databind.ObjectMapper
+import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
+import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.jacksonObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.lightningkite.khrysalis.android.layout.AndroidLayoutFile
 import com.lightningkite.khrysalis.ios.layout.readXMLStyles
 import com.lightningkite.khrysalis.log
-import com.lightningkite.khrysalis.swift.replacements.Replacements
+import com.lightningkite.khrysalis.replacements.Replacements
+import com.lightningkite.khrysalis.swift.KotlinSwiftCR
+import com.lightningkite.khrysalis.swift.replacements.SwiftJacksonReplacementsModule
 import com.lightningkite.khrysalis.util.SmartTabWriter
 import com.lightningkite.khrysalis.utils.camelCase
 import java.io.File
@@ -23,7 +29,7 @@ fun convertLayoutsToSwift2(
     }
 
     //Load equivalents
-    val replacements = Replacements()
+    val replacements = Replacements(KotlinSwiftCR.replacementMapper)
     equivalentsFolders.plus(sequenceOf(iosFolder))
         .flatMap { it.walkTopDown() }
         .filter {
@@ -80,7 +86,7 @@ fun convertLayoutsToSwift2(
             layout.toSwift(replacements, SmartTabWriter(bw))
         }
         xibOutputFile.bufferedWriter().use { bw ->
-            converter.xibDocument(inputFile, replacements, styles, bw)
+            converter.xibDocument(inputFile, XibRules(mapOf(), replacements), styles, bw)
         }
     }
 }

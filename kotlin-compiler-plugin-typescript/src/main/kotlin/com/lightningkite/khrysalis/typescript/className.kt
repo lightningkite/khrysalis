@@ -6,6 +6,7 @@ import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.KtClassOrObject
+import com.lightningkite.khrysalis.analysis.*
 
 
 val skippedExtensions = setOf(

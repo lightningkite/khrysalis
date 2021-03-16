@@ -9,8 +9,7 @@ import com.lightningkite.khrysalis.ios.layout2.models.IosDrawable
 import com.lightningkite.khrysalis.ios.layout2.models.StateSelector
 import com.lightningkite.khrysalis.ios.values.readXMLStrings
 import com.lightningkite.khrysalis.ios.values.writeXMLStringsTranslation
-import com.lightningkite.khrysalis.swift.replacements.Replacements
-import com.lightningkite.khrysalis.swift.replacements.xib.*
+import com.lightningkite.khrysalis.replacements.Replacements
 import com.lightningkite.khrysalis.swift.safeSwiftIdentifier
 import com.lightningkite.khrysalis.utils.*
 import com.lightningkite.khrysalis.web.layout.drawables.androidVectorToSvg
@@ -512,7 +511,7 @@ class AppleResourceLayoutConversion() {
 
     fun xibDocument(
         inputFile: File,
-        replacements: Replacements,
+        xibRules: XibRules,
         styles: Map<String, Map<String, String>>,
         out: Appendable
     ) {
@@ -533,7 +532,7 @@ class AppleResourceLayoutConversion() {
         }
         idPass(rootNode)
 
-        val rootView = replacements.translate(resolver, rootNode)
+        val rootView = xibRules.translate(resolver, rootNode)
         out.appendln(
             """
             <?xml version="1.0" encoding="UTF-8"?>
