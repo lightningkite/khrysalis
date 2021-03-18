@@ -193,6 +193,7 @@ abstract class KotlinTranspileExtension(
 
         start(bindingTrace.bindingContext, files)
 
+        val outputFiles = HashSet<File>()
         for(file in filesToTranslate){
             try {
                 val outputFile = outputDirectory
@@ -206,6 +207,7 @@ abstract class KotlinTranspileExtension(
                 }
                 collector.report(CompilerMessageSeverity.LOGGING, "Translating ${file.virtualFilePath}.")
                 val output = transpile(bindingTrace.bindingContext, file)
+                outputFiles.add(outputFile)
                 if (existing != output)
                     outputFile.writeText(output.toString())
             } catch(e: Exception){
@@ -216,6 +218,7 @@ abstract class KotlinTranspileExtension(
         // Clean up old files
         outputDirectory.walkTopDown()
             .filter { it.extension == outputExtension }
+            .filter { it !in outputFiles }
             .filter { FileEmitter.canBeOverwritten(it) }
             .forEach { it.delete() }
 
