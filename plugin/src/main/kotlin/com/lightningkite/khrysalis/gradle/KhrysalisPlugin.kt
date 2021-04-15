@@ -29,6 +29,7 @@ import java.util.*
 
 open class KhrysalisPluginExtension {
     open var organizationName: String = "Organization"
+    open var layoutPackage: String? = null
     open var swiftLayoutConversion: LayoutConverter = LayoutConverter.normal
     open var htmlTranslator: HtmlTranslator = HtmlTranslator()
     open var projectName: String? = null
@@ -62,7 +63,7 @@ class KhrysalisPlugin : Plugin<Project> {
         fun iosBase() = project.projectDir.resolve(ext.overrideIosFolder ?: "../ios")
         fun iosFolder() = iosBase().resolve(projectName())
         fun packageName() =
-            project.extensions.findByName("android")?.groovyObject?.getPropertyAsObject("defaultConfig")
+            ext.layoutPackage ?: project.extensions.findByName("android")?.groovyObject?.getPropertyAsObject("defaultConfig")
                 ?.getProperty("applicationId") as? String ?: "unknown.packagename"
 
         fun androidSdkDirectory() =
@@ -92,7 +93,7 @@ class KhrysalisPlugin : Plugin<Project> {
             task.doLast {
                 createAndroidLayoutClasses(
                     androidFolder = androidBase(),
-                    applicationPackage = packageName()
+                    applicationPackage = ext.layoutPackage ?: packageName()
                 )
             }
         }
@@ -316,12 +317,12 @@ class KhrysalisPlugin : Plugin<Project> {
                 convertLayoutsToHtml(
                     androidMainFolder = androidBase().resolve("src/main"),
                     webFolder = webBase(),
-                    packageName = packageName(),
+                    packageName = ext.layoutPackage ?: packageName(),
                     converter = extension().htmlTranslator
                 )
                 convertLayoutsToHtmlXmlClasses(
                     projectName = projectName(),
-                    packageName = packageName(),
+                    packageName = ext.layoutPackage ?: packageName(),
                     androidLayoutsSummaryFile = androidBase().resolve("build/layout/summary.json"),
                     baseTypescriptFolder = webBase().resolve("src"),
                     outputFolder = webBase().resolve("src/layout")
@@ -401,7 +402,7 @@ class KhrysalisPlugin : Plugin<Project> {
 
                 createPrototypeViewGenerators(
                     androidFolder = androidBase(),
-                    applicationPackage = packageName()
+                    applicationPackage = ext.layoutPackage ?: packageName()
                 )
 
             }
