@@ -47,6 +47,7 @@ val LayoutConverter.Companion.textInputViews
                 if (node.allAttributes["android:background"] == null) {
                     val boldColor = node.attributeAsSwiftColor("android:textColor") ?: "UIColor.white"
                     val hintColor = node.attributeAsSwiftColor("android:textColorHint") ?: "nil"
+                    appendln("view.setBackgroundColor(.clear)")
                     appendln("view.backgroundLayer = view.underlineLayer(boldColor: $boldColor, hintColor: $hintColor)")
                 }
                 node.allAttributes["android:imeOptions"]?.split("|")?.forEach {

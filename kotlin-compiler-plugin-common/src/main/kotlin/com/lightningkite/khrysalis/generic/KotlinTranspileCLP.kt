@@ -200,6 +200,7 @@ abstract class KotlinTranspileExtension(
                     .resolve(file.virtualFilePath.removePrefix(commonPath))
                     .parentFile
                     .resolve(file.name.removeSuffix(".kt").plus(".$outputExtension"))
+                outputFile.parentFile.mkdirs()
                 val existing = outputFile.takeIf { it.exists() }?.readText()
                 if(existing != null && !FileEmitter.canBeOverwritten(existing)) {
                     collector.report(CompilerMessageSeverity.LOGGING, "Skipping ${file.virtualFilePath}.")
