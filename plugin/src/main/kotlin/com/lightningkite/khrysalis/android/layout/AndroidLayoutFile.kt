@@ -1,12 +1,7 @@
 package com.lightningkite.khrysalis.android.layout
 
 import com.lightningkite.khrysalis.ios.layout.Styles
-import com.lightningkite.khrysalis.typescript.DeclarationManifest
-import com.lightningkite.khrysalis.typescript.renderImports
-import com.lightningkite.khrysalis.utils.XmlNode
-import com.lightningkite.khrysalis.utils.attributeAsBoolean
-import com.lightningkite.khrysalis.utils.attributeAsEdgeFlagsKotlin
-import com.lightningkite.khrysalis.utils.camelCase
+import com.lightningkite.khrysalis.utils.*
 import java.io.File
 
 data class AndroidLayoutFile(
@@ -74,7 +69,7 @@ data class AndroidLayoutFile(
             val bindings = ArrayList<AndroidIdHook>()
             val delegateBindings = ArrayList<AndroidDelegateHook>()
             val sublayouts = ArrayList<AndroidSubLayout>()
-            val emitCurse = ArrayList<AndroidAction>()
+            val emitCurse = HashMap<String, AndroidAction>()
 
             fun addBindings(node: XmlNode) {
                 if(node.name == "com.google.android.material.tabs.TabItem") {
@@ -101,8 +96,38 @@ data class AndroidLayoutFile(
                                 resourceId = raw.removePrefix("@+id/").removePrefix("@id/")
                             )
                         )
+                        if(node.name == "Spinner") {
+                            val raw = node.allAttributes["android:textColor"]
+                            val colorText = when {
+                                raw == null -> "0xFF000000.asColor()"
+                                raw.startsWith("@color/") -> {
+                                    val colorName = raw.removePrefix("@color/")
+                                    "view.context.getColor(R.color.${colorName})"
+                                }
+                                raw.startsWith("@android:color/") -> {
+                                    val colorName = raw.removePrefix("@android:color/")
+                                    "view.context.getColor(R.color.${colorName})"
+                                }
+                                raw.startsWith("#") -> TODO("Frick you, make it a resource")
+                                else -> "0xFF000000.asColor()"
+                            }
+                            emitCurse["$name-color"] = (
+                                AndroidAction(
+                                    name,
+                                    "spinnerTextColor = $colorText"
+                                )
+                            )
+                            node.attributeAsDouble("android:textSize")?.let { textSize ->
+                                emitCurse["$name-size"] = (
+                                    AndroidAction(
+                                        name,
+                                        "spinnerTextSize = $textSize"
+                                    )
+                                )
+                            }
+                        }
                         node.attributeAsBoolean("tools:focusAtStartup")?.let { value ->
-                            emitCurse.add(
+                            emitCurse[name] = (
                                 AndroidAction(
                                     name,
                                     "focusAtStartup = $value"
@@ -110,7 +135,7 @@ data class AndroidLayoutFile(
                             )
                         }
                         node.attributeAsEdgeFlagsKotlin("tools:systemEdges")?.let {
-                            emitCurse.add(
+                            emitCurse[name] = (
                                 AndroidAction(
                                     name,
                                     "safeInsets($it)"
@@ -118,7 +143,7 @@ data class AndroidLayoutFile(
                             )
                         }
                         node.attributeAsEdgeFlagsKotlin("tools:systemEdgesSizing")?.let {
-                            emitCurse.add(
+                            emitCurse[name] = (
                                 AndroidAction(
                                     name,
                                     "safeInsetsSizing($it)"
@@ -126,7 +151,7 @@ data class AndroidLayoutFile(
                             )
                         }
                         node.attributeAsEdgeFlagsKotlin("tools:systemEdgesBoth")?.let {
-                            emitCurse.add(
+                            emitCurse[name] = (
                                 AndroidAction(
                                     name,
                                     "safeInsetsBoth($it)"
@@ -156,7 +181,7 @@ data class AndroidLayoutFile(
                 bindings = bindings.associateBy { it.name },
                 delegateBindings = delegateBindings.associateBy { it.name },
                 sublayouts = sublayouts.associateBy { it.name },
-                emitCurse = emitCurse.associateBy { it.name }
+                emitCurse = emitCurse
             )
         }
     }
