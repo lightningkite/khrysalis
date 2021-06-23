@@ -139,19 +139,30 @@ private fun Appendable.pathDataToSwift(pathData: String) {
         val rawInstruction: Char = pathData[stringIndex]
         val arguments = ArrayList<Double>()
         val currentNumber = StringBuilder()
-        for (c in pathData.substring(stringIndex + 1, nextLetterIndex)) {
+        val substring = pathData.substring(stringIndex + 1, nextLetterIndex)
+        var sawE = false
+        for (c in substring) {
             when (c) {
-                ' ', ',', '-' -> {
+                ' ', ',' -> {
                     if (currentNumber.length > 0) {
                         arguments.add(currentNumber.toString().toDouble())
                         currentNumber.setLength(0)
                     }
-                    if (c == '-') {
-                        currentNumber.append('-')
+                }
+                '-' -> {
+                    if (currentNumber.length > 0 && !sawE) {
+                        arguments.add(currentNumber.toString().toDouble())
+                        currentNumber.setLength(0)
                     }
+                    currentNumber.append('-')
                 }
                 in '0'..'9' -> {
                     currentNumber.append(c)
+                }
+                'e' -> {
+                    currentNumber.append(c)
+                    sawE = true
+                    continue
                 }
                 '.' -> {
                     if (currentNumber.contains('.')) {
@@ -165,6 +176,7 @@ private fun Appendable.pathDataToSwift(pathData: String) {
                     }
                 }
             }
+            sawE = false
         }
         if (currentNumber.length > 0) {
             arguments.add(currentNumber.toString().toDouble())
@@ -176,100 +188,104 @@ private fun Appendable.pathDataToSwift(pathData: String) {
         fun offsetY(): Double = if (isAbsolute) 0.0 else referenceY
         var updateReference = true
         appendln("        //$rawInstruction ${arguments.joinToString()}")
-        while (arguments.isNotEmpty()) {
-            when (instruction) {
-                'm' -> {
-                    val destX = arguments.unshift() + offsetX()
-                    val destY = arguments.unshift() + offsetY()
-                    referenceX = destX
-                    referenceY = destY
-                    appendln("        path.move(to: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}))")
-                }
-                'l' -> {
-                    while (arguments.size >= 2) {
+        try {
+            while (arguments.isNotEmpty()) {
+                when (instruction) {
+                    'm' -> {
                         val destX = arguments.unshift() + offsetX()
                         val destY = arguments.unshift() + offsetY()
                         referenceX = destX
                         referenceY = destY
-                        appendln("        path.addLine(to: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}))")
+                        appendln("        path.move(to: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}))")
                     }
-                }
-                'z' -> {
-                    appendln("        path.closeSubpath()")
-                }
-                'h' -> {
-                    updateReference = false
-                    referenceX =
-                        if (isAbsolute) arguments.unshift() else referenceX + arguments.unshift()
-                    appendln("        path.addLine(to: CGPoint(x: ${referenceX.scaleX()}, y: ${referenceY.scaleY()}))")
-                }
-                'v' -> {
-                    updateReference = false
-                    referenceY =
-                        if (isAbsolute) arguments.unshift() else referenceY + arguments.unshift()
-                    appendln("        path.addLine(to: CGPoint(x: ${referenceX.scaleX()}, y: ${referenceY.scaleY()}))")
-                }
-                'q' -> {
-                    val controlX = arguments.unshift() + offsetX()
-                    val controlY = arguments.unshift() + offsetY()
-                    val destX = arguments.unshift() + offsetX()
-                    val destY = arguments.unshift() + offsetY()
-                    previousC2X = controlX
-                    previousC2Y = controlY
-                    referenceX = destX
-                    referenceY = destY
-                    appendln("        path.addQuadCurve(to: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}), control: CGPoint(x: ${controlX.scaleX()}, y: ${controlY.scaleY()}))")
-                }
-                't' -> {
-                    val destX = arguments.unshift() + offsetX()
-                    val destY = arguments.unshift() + offsetY()
-                    val controlX = referenceX - (referenceX - previousC2X)
-                    val controlY = referenceY - (referenceY - previousC2Y)
-                    referenceX = destX
-                    referenceY = destY
-                    appendln("        path.addQuadCurve(to: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}), control: CGPoint(x: ${controlX.scaleX()}, y: ${controlY.scaleY()}))")
-                }
-                'c' -> {
-                    val control1X = arguments.unshift() + offsetX()
-                    val control1Y = arguments.unshift() + offsetY()
-                    val control2X = arguments.unshift() + offsetX()
-                    val control2Y = arguments.unshift() + offsetY()
-                    val destX = arguments.unshift() + offsetX()
-                    val destY = arguments.unshift() + offsetY()
-                    previousC2X = control2X
-                    previousC2Y = control2Y
-                    referenceX = destX
-                    referenceY = destY
-                    appendln("        path.addCurve(to: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}), control1: CGPoint(x: ${control1X.scaleX()}, y: ${control1Y.scaleY()}), control2: CGPoint(x: ${control2X.scaleX()}, y: ${control2Y.scaleY()}))")
-                }
-                's' -> {
-                    val control2X = arguments.unshift() + offsetX()
-                    val control2Y = arguments.unshift() + offsetY()
-                    val destX = arguments.unshift() + offsetX()
-                    val destY = arguments.unshift() + offsetY()
-                    val c1x = referenceX - (previousC2X - referenceX)
-                    val c1y = referenceY - (previousC2Y - referenceY)
-                    previousC2X = control2X
-                    previousC2Y = control2Y
-                    referenceX = destX
-                    referenceY = destY
+                    'l' -> {
+                        while (arguments.size >= 2) {
+                            val destX = arguments.unshift() + offsetX()
+                            val destY = arguments.unshift() + offsetY()
+                            referenceX = destX
+                            referenceY = destY
+                            appendln("        path.addLine(to: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}))")
+                        }
+                    }
+                    'z' -> {
+                        appendln("        path.closeSubpath()")
+                    }
+                    'h' -> {
+                        updateReference = false
+                        referenceX =
+                            if (isAbsolute) arguments.unshift() else referenceX + arguments.unshift()
+                        appendln("        path.addLine(to: CGPoint(x: ${referenceX.scaleX()}, y: ${referenceY.scaleY()}))")
+                    }
+                    'v' -> {
+                        updateReference = false
+                        referenceY =
+                            if (isAbsolute) arguments.unshift() else referenceY + arguments.unshift()
+                        appendln("        path.addLine(to: CGPoint(x: ${referenceX.scaleX()}, y: ${referenceY.scaleY()}))")
+                    }
+                    'q' -> {
+                        val controlX = arguments.unshift() + offsetX()
+                        val controlY = arguments.unshift() + offsetY()
+                        val destX = arguments.unshift() + offsetX()
+                        val destY = arguments.unshift() + offsetY()
+                        previousC2X = controlX
+                        previousC2Y = controlY
+                        referenceX = destX
+                        referenceY = destY
+                        appendln("        path.addQuadCurve(to: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}), control: CGPoint(x: ${controlX.scaleX()}, y: ${controlY.scaleY()}))")
+                    }
+                    't' -> {
+                        val destX = arguments.unshift() + offsetX()
+                        val destY = arguments.unshift() + offsetY()
+                        val controlX = referenceX - (referenceX - previousC2X)
+                        val controlY = referenceY - (referenceY - previousC2Y)
+                        referenceX = destX
+                        referenceY = destY
+                        appendln("        path.addQuadCurve(to: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}), control: CGPoint(x: ${controlX.scaleX()}, y: ${controlY.scaleY()}))")
+                    }
+                    'c' -> {
+                        val control1X = arguments.unshift() + offsetX()
+                        val control1Y = arguments.unshift() + offsetY()
+                        val control2X = arguments.unshift() + offsetX()
+                        val control2Y = arguments.unshift() + offsetY()
+                        val destX = arguments.unshift() + offsetX()
+                        val destY = arguments.unshift() + offsetY()
+                        previousC2X = control2X
+                        previousC2Y = control2Y
+                        referenceX = destX
+                        referenceY = destY
+                        appendln("        path.addCurve(to: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}), control1: CGPoint(x: ${control1X.scaleX()}, y: ${control1Y.scaleY()}), control2: CGPoint(x: ${control2X.scaleX()}, y: ${control2Y.scaleY()}))")
+                    }
+                    's' -> {
+                        val control2X = arguments.unshift() + offsetX()
+                        val control2Y = arguments.unshift() + offsetY()
+                        val destX = arguments.unshift() + offsetX()
+                        val destY = arguments.unshift() + offsetY()
+                        val c1x = referenceX - (previousC2X - referenceX)
+                        val c1y = referenceY - (previousC2Y - referenceY)
+                        previousC2X = control2X
+                        previousC2Y = control2Y
+                        referenceX = destX
+                        referenceY = destY
 //                    appendln("        //Calculated from previous control point $previousC2X and $previousC2Y mirrored around ")
-                    appendln("        path.addCurve(to: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}), control1: CGPoint(x: ${c1x.scaleX()}, y: ${c1y.scaleY()}), control2: CGPoint(x: ${control2X.scaleX()}, y: ${control2Y.scaleY()}))")
+                        appendln("        path.addCurve(to: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}), control1: CGPoint(x: ${c1x.scaleX()}, y: ${c1y.scaleY()}), control2: CGPoint(x: ${control2X.scaleX()}, y: ${control2Y.scaleY()}))")
+                    }
+                    'a' -> {
+                        val radiusX = arguments.unshift()
+                        val radiusY = arguments.unshift()
+                        val xAxisRotation = arguments.unshift()
+                        val largeArcFlag = arguments.unshift()
+                        val sweepFlag = arguments.unshift()
+                        val destX = arguments.unshift() + offsetX()
+                        val destY = arguments.unshift() + offsetY()
+                        referenceX = destX
+                        referenceY = destY
+                        appendln("        path.arcTo(radius: CGSize(width: ${radiusX.scaleX()}, height: ${radiusY.scaleY()}), rotation: ${xAxisRotation}, largeArcFlag: ${largeArcFlag > 0.5}, sweepFlag: ${sweepFlag > 0.5}, end: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}))")
+                    }
+                    else -> throw IllegalStateException("Non-legal command ${instruction}")
                 }
-                'a' -> {
-                    val radiusX = arguments.unshift()
-                    val radiusY = arguments.unshift()
-                    val xAxisRotation = arguments.unshift()
-                    val largeArcFlag = arguments.unshift()
-                    val sweepFlag = arguments.unshift()
-                    val destX = arguments.unshift() + offsetX()
-                    val destY = arguments.unshift() + offsetY()
-                    referenceX = destX
-                    referenceY = destY
-                    appendln("        path.arcTo(radius: CGSize(width: ${radiusX.scaleX()}, height: ${radiusY.scaleY()}), rotation: ${xAxisRotation}, largeArcFlag: ${largeArcFlag > 0.5}, sweepFlag: ${sweepFlag > 0.5}, end: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}))")
-                }
-                else -> throw IllegalStateException("Non-legal command ${instruction}")
             }
+        } catch(e:Exception){
+            throw Exception("Error at ${stringIndex}: '${substring}'", e)
         }
 
         stringIndex = nextLetterIndex

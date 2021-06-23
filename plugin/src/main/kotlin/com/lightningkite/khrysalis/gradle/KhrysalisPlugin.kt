@@ -31,6 +31,7 @@ open class KhrysalisPluginExtension {
     open var organizationName: String = "Organization"
     open var layoutPackage: String? = null
     open var swiftLayoutConversion: LayoutConverter = LayoutConverter.normal
+    open var swiftLayoutFolderOrder: List<String> = listOf("layout")
     open var htmlTranslator: HtmlTranslator = HtmlTranslator()
     open var projectName: String? = null
     open var overrideIosPackageName: String? = null
@@ -215,7 +216,8 @@ class KhrysalisPlugin : Plugin<Project> {
                 convertLayoutsToSwift(
                     androidFolder = androidBase(),
                     iosFolder = iosFolder(),
-                    converter = extension().swiftLayoutConversion
+                    converter = extension().swiftLayoutConversion,
+                    folderPreferenceOrder = extension().swiftLayoutFolderOrder
                 )
 
             }

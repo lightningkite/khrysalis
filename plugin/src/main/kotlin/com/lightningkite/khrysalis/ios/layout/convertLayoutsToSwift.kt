@@ -12,7 +12,8 @@ import java.io.File
 fun convertLayoutsToSwift(
     androidFolder: File,
     iosFolder: File,
-    converter: LayoutConverter = LayoutConverter.normal
+    converter: LayoutConverter = LayoutConverter.normal,
+    folderPreferenceOrder: List<String> = listOf("layout")
 ) {
 
     val styles = androidFolder.resolve("src/main/res/values/styles.xml").readXMLStyles()
@@ -41,7 +42,9 @@ fun convertLayoutsToSwift(
 
     for((name, layout) in androidFiles){
         log("Converting layout ${layout.fileName}.xml")
-        val file = androidFolder.resolve("src/main/res/layout/${layout.fileName}.xml")
+        val file = folderPreferenceOrder.asSequence()
+            .map { androidFolder.resolve("src/main/res/$it/${layout.fileName}.xml") }
+            .first { it.exists() }
         val output = file.translateLayoutXml(layout, styles, converter).retabSwift()
         iosFolder.resolve("swiftResources/layouts").resolve(file.nameWithoutExtension.camelCase().capitalize() + "Xml.swift").also{
             it.parentFile.mkdirs()

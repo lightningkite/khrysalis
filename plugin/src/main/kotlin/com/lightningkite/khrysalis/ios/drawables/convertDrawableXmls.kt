@@ -44,6 +44,7 @@ fun convertDrawableXmls(
                     writer.appendln("}")
                 }.toString())
             } catch (e: Exception) {
+                println("FAILED $file -> $outputFile")
                 e.printStackTrace()
             }
         }
