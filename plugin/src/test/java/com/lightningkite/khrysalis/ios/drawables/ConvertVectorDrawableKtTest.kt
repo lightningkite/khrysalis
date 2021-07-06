@@ -12,7 +12,8 @@ class ConvertVectorDrawableKtTest {
         out.mkdirs()
         val files = listOf(
             base.resolve("ic_bullet.xml"),
-            base.resolve("logo_text.xml")
+            base.resolve("logo_text.xml"),
+            base.resolve("ic_competition.xml"),
         )
         for(file in files){
             val result = StringBuilder()

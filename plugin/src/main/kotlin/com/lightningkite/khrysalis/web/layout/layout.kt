@@ -173,13 +173,16 @@ internal fun HtmlTranslator.layout() {
     }
     element.handle("ScrollView") {
         defer("FrameLayout")
+        out.classes.remove("butterfly-frame")
         out.classes.add("butterfly-scroll-view")
+        out.classes.add("vertical")
         out.style["overflow-y"] = "auto";
         out.style["overflow-x"] = "hidden";
     }
     element.handle("HorizontalScrollView") {
         defer("FrameLayout")
         out.classes.add("butterfly-scroll-view")
+        out.classes.add("horizontal")
         out.style["overflow-y"] = "hidden";
         out.style["overflow-x"] = "auto";
     }
