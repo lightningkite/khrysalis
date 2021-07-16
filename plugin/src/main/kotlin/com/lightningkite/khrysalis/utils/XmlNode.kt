@@ -10,8 +10,7 @@ import javax.xml.parsers.DocumentBuilderFactory
 class XmlNode(
     val element: Node,
     val styles: Styles,
-    val directory: File,
-    val baseDirectoryAlt: File? = null,
+    val resolve: (String) -> File?,
     val additionalAttributes: Map<String, String> = mapOf(),
     var parent: XmlNode? = null
 ): VirtualType {
@@ -75,20 +74,15 @@ class XmlNode(
                                 .nodeValue
                                 .removePrefix("@layout/")
                                 .plus(".xml")
-                            val fileOptionA = directory.resolve(filename)
-                            val fileOptionB = baseDirectoryAlt?.resolve(filename)
-                            val file = fileOptionA.takeIf { it.exists() }
-                                ?: fileOptionB?.takeIf { it.exists() }
-                                ?: throw IllegalArgumentException("Could not find file for layout $filename in $fileOptionA or $fileOptionB")
-                            val node =
-                                read(file, styles)
-                            XmlNode(it, styles, directory, additionalAttributes = node.allAttributes)
+                            val file = resolve(filename) ?: throw IllegalArgumentException("Could not find file for layout $filename")
+                            val node = read(file, styles, resolve)
+                            XmlNode(it, styles, resolve, additionalAttributes = node.allAttributes)
                         } catch(e:Exception){
                             println("Couldn't find include file: ${e.message}")
-                            XmlNode(it, styles, directory)
+                            XmlNode(it, styles, resolve)
                         }
                     } else {
-                        XmlNode(it, styles, directory)
+                        XmlNode(it, styles, resolve)
                     }
                 }
                 .toList()
@@ -97,9 +91,9 @@ class XmlNode(
 
 
     companion object {
-        fun read(file: File, styles: Styles, baseDirectoryAlt: File? = null): XmlNode {
+        fun read(file: File, styles: Styles, resolve: ((String)->File?)? = null): XmlNode {
             val document = DocumentBuilderFactory.newInstance().newDocumentBuilder().parse(file)
-            return XmlNode(document.documentElement, styles, file.parentFile, baseDirectoryAlt)
+            return XmlNode(document.documentElement, styles, resolve ?: {file.parentFile.resolve(it).takeIf { it.exists() }})
         }
     }
 }

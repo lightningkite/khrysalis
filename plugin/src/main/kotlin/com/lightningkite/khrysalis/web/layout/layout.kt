@@ -175,6 +175,9 @@ internal fun HtmlTranslator.layout() {
         defer("FrameLayout")
         out.classes.remove("butterfly-frame")
         out.classes.add("butterfly-scroll-view")
+        rule.attributeAsBoolean("android:fillViewport")?.let {
+            if(it) out.classes.add("fill-viewport")
+        }
         out.classes.add("vertical")
         out.style["overflow-y"] = "auto";
         out.style["overflow-x"] = "hidden";

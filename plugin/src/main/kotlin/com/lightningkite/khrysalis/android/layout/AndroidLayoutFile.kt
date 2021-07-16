@@ -8,6 +8,7 @@ data class AndroidLayoutFile(
     val name: String,
     val fileName: String,
     val variants: Set<String>,
+    val files: Set<File>,
     val bindings: Map<String, AndroidIdHook>,
     val delegateBindings: Map<String, AndroidDelegateHook>,
     val sublayouts: Map<String, AndroidSubLayout>,
@@ -19,6 +20,7 @@ data class AndroidLayoutFile(
                 name = iter.first().name,
                 fileName = iter.first().fileName,
                 variants = iter.flatMap { it.variants.asSequence() }.toSet(),
+                files = iter.flatMap { it.files }.toSet(),
                 bindings = run {
                     (iter.flatMap { it.bindings.asSequence() }.associate { it.toPair() }).mapValues { (key, value) ->
                         if (iter.all { it.bindings[key] != null }) value
@@ -59,12 +61,12 @@ data class AndroidLayoutFile(
             return folder.listFiles()!!.asSequence().filter { it.name.startsWith("layout") }
                 .map { it.resolve(filename) }
                 .filter { it.exists() }
-                .map { parse(folder.resolve("layout"), it, it.parentFile.name.substringAfter("layout-", ""), styles) }
+                .map { parse(null, it, it.parentFile.name.substringAfter("layout-", ""), styles) }
                 .let { combine(it) }
         }
 
-        fun parse(baseFolder: File, file: File, variant: String, styles: Styles): AndroidLayoutFile {
-            val node = XmlNode.read(file, styles, baseFolder)
+        fun parse(resolve: ((String)->File?)?, file: File, variant: String, styles: Styles): AndroidLayoutFile {
+            val node = XmlNode.read(file, styles, resolve)
             val fileName = file.nameWithoutExtension.camelCase().capitalize()
             val bindings = ArrayList<AndroidIdHook>()
             val delegateBindings = ArrayList<AndroidDelegateHook>()
@@ -178,6 +180,7 @@ data class AndroidLayoutFile(
                 name = fileName,
                 fileName = file.nameWithoutExtension,
                 variants = if(variant.isNotEmpty()) setOf(variant) else setOf(),
+                files = setOf(file),
                 bindings = bindings.associateBy { it.name },
                 delegateBindings = delegateBindings.associateBy { it.name },
                 sublayouts = sublayouts.associateBy { it.name },

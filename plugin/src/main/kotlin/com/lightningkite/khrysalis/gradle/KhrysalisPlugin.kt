@@ -216,8 +216,7 @@ class KhrysalisPlugin : Plugin<Project> {
                 convertLayoutsToSwift(
                     androidFolder = androidBase(),
                     iosFolder = iosFolder(),
-                    converter = extension().swiftLayoutConversion,
-                    folderPreferenceOrder = extension().swiftLayoutFolderOrder
+                    converter = extension().swiftLayoutConversion
                 )
 
             }

@@ -92,7 +92,7 @@ fun convertLayoutsToHtml(
 
                     val appendable = StringBuilder()
                     converter.styles = styles
-                    val root = XmlNode.read(item, styles, androidMainFolder.resolve("res/layout"))
+                    val root = XmlNode.read(item, styles)
                     log("Converting $item to HTML...")
                     converter.emitFile(root, appendable)
                     val output = appendable.toString()

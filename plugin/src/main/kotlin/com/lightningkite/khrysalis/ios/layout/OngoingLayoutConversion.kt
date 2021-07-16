@@ -8,7 +8,7 @@ import java.io.File
 
 data class OngoingLayoutConversion(
     val appendable: Appendable,
-    val layoutsDirectory: File,
+    val resourcesDirectory: File,
     val styles: Styles,
     val converter: LayoutConverter = LayoutConverter.normal,
     val bindings: HashMap<String, String> = HashMap(),
@@ -16,7 +16,7 @@ data class OngoingLayoutConversion(
     val sublayouts: HashMap<String, String> = HashMap()
 ) : Appendable by appendable {
 
-    val colorSets = layoutsDirectory.resolve("../color").listFiles()?.map { it.nameWithoutExtension }?.toSet() ?: setOf()
+    val colorSets = resourcesDirectory.resolve("color").listFiles()?.map { it.nameWithoutExtension }?.toSet() ?: setOf()
     var controlIndex: Int = 0
 
     fun construct(node: XmlNode) {
