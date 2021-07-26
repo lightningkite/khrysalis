@@ -107,16 +107,7 @@ internal fun HtmlTranslator.input() {
     }
 
     element.handle("AutoCompleteTextView") {
-        out.name = "div"
-        out.classes += "butterfly-autocomplete"
-        val i = ResultNode("input").apply {
-            name = "input"
-            attributes["type"] = "text"
-            style["font-size"] = "12pt"
-        }
-        out.contentNodes.add(i)
-        out.text = i
-        out.primary = i
+        defer("EditText")
     }
 
     element.handle("CheckBox"){
