@@ -6,7 +6,7 @@
   template: Int8
 - id: kotlin.Short
   type: type
-  template: Short8
+  template: Int16
 - id: kotlin.Int
   type: type
   template: Int
@@ -25,7 +25,7 @@
   template: Int8
 - id: kotlin.Short
   type: typeRef
-  template: Short8
+  template: Int16
 - id: kotlin.Int
   type: typeRef
   template: Int

@@ -295,6 +295,7 @@ fun SwiftTranslator.registerFunction() {
             val callExp = typedRule.selectorExpression as KtCallExpression
             val nre = callExp.calleeExpression as KtNameReferenceExpression
             val f = callExp.resolvedCall!!.candidateDescriptor as FunctionDescriptor
+            val desc = (typedRule.selectorExpression as? KtCallExpression)?.resolvedCall?.candidateDescriptor as? FunctionDescriptor
 
             maybeWrapCall(callExp.resolvedCall!!) {
                 -nre
@@ -406,11 +407,12 @@ fun SwiftTranslator.registerFunction() {
         action = {
             val f = typedRule.operationReference.resolvedReferenceTarget as FunctionDescriptor
             val doubleReceiver = f.dispatchReceiverParameter != null && f.extensionReceiverParameter != null
+            val swiftNameOverridden = f.swiftNameOverridden != null
             maybeWrapCall(typedRule.resolvedCall!!) {
                 if (doubleReceiver) {
                     -typedRule.getTsReceiver()
                     -"."
-                } else if (f.dispatchReceiverParameter != null) {
+                } else if (!swiftNameOverridden && (f.dispatchReceiverParameter != null || f.extensionReceiverParameter != null)) {
                     -typedRule.left
                     -"."
                 }
@@ -418,7 +420,7 @@ fun SwiftTranslator.registerFunction() {
                 -ArgumentsList(
                     on = f,
                     resolvedCall = typedRule.resolvedCall!!,
-                    prependArguments = if (f.extensionReceiverParameter != null) listOf(typedRule.left!!) else listOf()
+                    prependArguments = if (doubleReceiver || swiftNameOverridden) listOf(typedRule.left!!) else listOf()
                 )
             }
         }

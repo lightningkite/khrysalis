@@ -187,7 +187,12 @@ class KhrysalisPlugin : Plugin<Project> {
                                     .also { println("Found podfile paths: ${it.joinToString{ it.value }}") }
                                     .map { it.groupValues[1] }
                                     .map { it.replace("~", home) }
-                                    .map { File(file.parentFile, it).parentFile }
+                                    .map {
+                                        if(it.startsWith('/'))
+                                            File(it).parentFile
+                                        else
+                                            File(file.parentFile, it).parentFile
+                                    }
                             } ?: sequenceOf()
                         val allLocations = (localProperties.getProperty("khrysalis.iospods")
                             ?: localProperties.getProperty("khrysalis.nonmacmanifest") ?: "")

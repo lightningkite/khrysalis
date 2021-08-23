@@ -23,7 +23,7 @@ fun ExecuteFileTester.swift(sourceFile: File, clean: Boolean): String = caching(
 }
 
 fun ExecuteFileTester.swiftTranslated(file: File): String {
-    swiftTestDir.resolve("Sources/testOut").listFiles()!!.forEach { it.deleteRecursively() }
+    swiftTestDir.resolve("Sources/testOut").also { it.mkdirs() }.listFiles()!!.forEach { it.deleteRecursively() }
     return swift(compileToSwift(file), true)
 }
 

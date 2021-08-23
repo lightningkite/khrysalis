@@ -20,6 +20,8 @@ object Libraries {
 
     val khrysalisAnnotations = File(System.getenv("KHRYSALIS_META_LOCATION"))
         .resolve("butterfly-android/butterfly-android/src/main/java/com/lightningkite/butterfly/KhrysalisAnnotations.kt")
+    val gfloat = File(System.getenv("KHRYSALIS_META_LOCATION"))
+        .resolve("butterfly-android/butterfly-android/src/main/java/com/lightningkite/butterfly/views/geometry/GFloat.kt")
     val junitStubs = File(System.getenv("KHRYSALIS_META_LOCATION"))
         .resolve("khrysalis/conversionTestData/junitStubs.kt")
     val jacksonStubs = File(System.getenv("KHRYSALIS_META_LOCATION"))
@@ -28,6 +30,7 @@ object Libraries {
     val testingStubs = listOf(
         khrysalisAnnotations,
         junitStubs,
-        jacksonStubs
+        jacksonStubs,
+        gfloat,
     )
 }

@@ -94,6 +94,10 @@ fun TestClass.extensionFunction(str: String){
     println("From an extension with $str:")
     this.memberFunction()
 }
+infix fun TestClass.extensionFunctionInfix(str: String){
+    println("From an extension with $str:")
+    this.memberFunction()
+}
 fun <T, E> T.genericExtensionFunction(element: E){
     println("Hello $element from $this!")
 }
@@ -123,6 +127,7 @@ fun main(){
     instance.testExtension()
     instance.extensionFunction()
     instance.extensionFunction("asdf")
+    instance extensionFunctionInfix "asdf"
     instance.genericExtensionFunction(8)
     instance.memberVarargTestFunction(1,2,3,4)
     instance.memberVarargTestFunction()
