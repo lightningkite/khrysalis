@@ -1,0 +1,2 @@
+print("BEGIN PROGRAM")
+main()

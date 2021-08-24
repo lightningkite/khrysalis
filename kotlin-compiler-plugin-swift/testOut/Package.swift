@@ -20,9 +20,6 @@ let package = Package(
             dependencies: []),
         .target(
             name: "testOut",
-            dependencies: ["LKButterfly"]),
-        .testTarget(
-            name: "testOutTests",
-            dependencies: ["testOut"]),
+            dependencies: ["LKButterfly"])
     ]
 )

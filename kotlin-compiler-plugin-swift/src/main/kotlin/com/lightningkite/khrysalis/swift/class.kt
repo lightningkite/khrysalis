@@ -684,13 +684,13 @@ fun SwiftTranslator.registerClass() {
         condition = {
             val p = (typedRule.parent as? KtDotQualifiedExpression) ?: return@handle false
             if (p.receiverExpression != typedRule) return@handle false
-            val rec = p.resolvedCall?.dispatchReceiver as? ClassValueReceiver ?: return@handle false
+            val rec = p.resolvedCall?.let { it.dispatchReceiver ?: it.extensionReceiver } as? ClassValueReceiver ?: return@handle false
             (rec.type.constructor.declarationDescriptor as? ClassDescriptor)?.kind != ClassKind.ENUM_ENTRY
         },
         priority = 1_000,
         action = {
             val p = typedRule.parent as KtDotQualifiedExpression
-            val r = p.resolvedCall!!.dispatchReceiver as ClassValueReceiver
+            val r = p.resolvedCall!!.let { it.dispatchReceiver ?: it.extensionReceiver } as ClassValueReceiver
             val actual = r.type.constructor.declarationDescriptor
             val written = r.classQualifier.descriptor
             doSuper()
@@ -705,13 +705,13 @@ fun SwiftTranslator.registerClass() {
         condition = {
             val p = (typedRule.parent as? KtDotQualifiedExpression) ?: return@handle false
             if (p.receiverExpression != typedRule) return@handle false
-            val rec = p.resolvedCall?.dispatchReceiver as? ClassValueReceiver ?: return@handle false
+            val rec = p.resolvedCall?.let { it.dispatchReceiver ?: it.extensionReceiver } as? ClassValueReceiver ?: return@handle false
             (rec.type.constructor.declarationDescriptor as? ClassDescriptor)?.kind != ClassKind.ENUM_ENTRY
         },
         priority = 1_000,
         action = {
             val p = typedRule.parent as KtDotQualifiedExpression
-            val r = p.resolvedCall!!.dispatchReceiver as ClassValueReceiver
+            val r = p.resolvedCall!!.let { it.dispatchReceiver ?: it.extensionReceiver } as ClassValueReceiver
             val actual = r.type.constructor.declarationDescriptor
             val written = r.classQualifier.descriptor
             doSuper()
