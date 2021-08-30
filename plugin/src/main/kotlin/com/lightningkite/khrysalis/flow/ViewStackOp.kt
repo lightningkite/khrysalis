@@ -30,7 +30,12 @@ sealed class ViewStackOp {
     data class Swap(override val stack: String?, override val viewName: String) : ViewStackOp(){
         override val priority: Int = 2
     }
-    data class Embed(override val stack: String, override val viewName: String) : ViewStackOp(){
+    data class StartWith(override val stack: String, override val viewName: String) : ViewStackOp(){
+        override val priority: Int = 3
+    }
+    data class Embed(val replaceId: String, override val viewName: String) : ViewStackOp(){
+        override val stack: String?
+            get() = null
         override val priority: Int = 3
     }
 }

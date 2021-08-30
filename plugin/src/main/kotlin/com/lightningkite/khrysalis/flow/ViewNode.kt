@@ -59,6 +59,7 @@ class ViewNode(
         const val attributePopTo = "tools:popTo"
         const val attributeOnStack = "tools:onStack"
         const val attributeStackDefault = "tools:stackDefault"
+        const val attributeEmbed = "tools:embed"
         const val attributeStackId = "tools:stackId"
         const val attributeRequires = "tools:requires"
         const val attributeProvides = "tools:provides"
@@ -271,11 +272,19 @@ class ViewNode(
                 )
             }
         }
+        node.allAttributes[attributeEmbed]?.let {
+            operations.add(
+                ViewStackOp.Embed(
+                    replaceId = node.allAttributes["android:id"]!!.removePrefix("@+id/"),
+                    viewName = it.removePrefix("@layout/").camelCase().capitalize()
+                )
+            )
+        }
         node.allAttributes[attributeStackId]?.let { stackId ->
             provides.add(ViewVar(stackId, "ObservableStack[ViewGenerator]", "ObservableStack()"))
             node.allAttributes[attributeStackDefault]?.let {
                 operations.add(
-                    ViewStackOp.Embed(
+                    ViewStackOp.StartWith(
                         stack = stackId,
                         viewName = it.removePrefix("@layout/").camelCase().capitalize()
                     )
@@ -310,8 +319,18 @@ class ViewNode(
         }
         if (node.name == "include") {
             node.allAttributes["layout"]?.let {
-                val file = xml.parentFile.resolve(it.removePrefix("@layout/").plus(".xml"))
-                gather(XmlNode.read(file, styles), xml, styles, path)
+                val targetName = it.removePrefix("@layout/")
+                if(targetName.startsWith("component", true)) {
+                    val file = xml.parentFile.resolve(targetName.plus(".xml"))
+                    gather(XmlNode.read(file, styles), xml, styles, path)
+                } else {
+                    operations.add(
+                        ViewStackOp.Embed(
+                            replaceId = node.allAttributes["android:id"]!!.removePrefix("@+id/"),
+                            viewName = it.removePrefix("@layout/").camelCase().capitalize()
+                        )
+                    )
+                }
             }
         }
         node.allAttributes["tools:listitem"]?.let {

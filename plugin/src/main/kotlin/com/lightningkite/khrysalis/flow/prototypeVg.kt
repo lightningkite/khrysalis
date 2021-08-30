@@ -266,6 +266,15 @@ private fun generateFile(
                     }"""
                 )
             }
+            if (viewNode.operations.any { it is ViewStackOp.Embed }) {
+                for (op in viewNode.operations.mapNotNull { it as? ViewStackOp.Embed }) {
+                    line("")
+                    line("${CodeSection.sectionMarker} Embedded ${op.replaceId.camelCase()}Vg ${CodeSection.overwriteMarker}")
+                    val otherViewNode =
+                        viewNodeMap[op.viewName.removePrefix("@layout/").camelCase().capitalize()] ?: break
+                    line("val ${op.replaceId.camelCase()}Vg = ${makeView(otherViewNode, null, op.replaceId)}")
+                }
+            }
             line("")
             line("${CodeSection.sectionMarker} Title ${CodeSection.overwriteMarker}")
             line(
@@ -299,11 +308,12 @@ private fun generateFile(
                     val viewAccess = if (isOptional) "$view?." else "$view."
 
                     if (view?.contains("dummy", true) == true) {
-                        handleNodeClick(node, view, viewAccess){ action ->
-                            val p = view.replace("dummy", "").removePrefix("xml").replace(Regex("\\.[a-zA-Z]")) { result ->
-                                result.value[1].toUpperCase().toString()
-                            }
-                            if(p.isEmpty() || !p[0].isJavaIdentifierStart()) return@handleNodeClick
+                        handleNodeClick(node, view, viewAccess) { action ->
+                            val p =
+                                view.replace("dummy", "").removePrefix("xml").replace(Regex("\\.[a-zA-Z]")) { result ->
+                                    result.value[1].toUpperCase().toString()
+                                }
+                            if (p.isEmpty() || !p[0].isJavaIdentifierStart()) return@handleNodeClick
                             val actionName = (p + "Action").decapitalize()
                             actions += {
                                 line("${CodeSection.sectionMarker} Action $actionName ${CodeSection.overwriteMarker}")
@@ -417,6 +427,10 @@ private fun generateFile(
                                 }
                             }
                         }
+                        node.allAttributes["tools:embed"]?.let {
+                            val rawId = node.allAttributes["android:id"]?.removePrefix("@+id/") ?: return@let
+                            line("${viewAccess}replace(${rawId.camelCase()}Vg.generate(dependency))")
+                        }
                         node.allAttributes["tools:listitem"]?.let {
                             val subName = it.removePrefix("@layout/").camelCase().capitalize()
                             val xmlName = subName.plus("Xml")
@@ -467,7 +481,11 @@ private fun generateFile(
                                 val otherViewNode =
                                     viewNodeMap[it.removePrefix("@layout/").camelCase().capitalize()]
                                         ?: run {
-                                            println("WARNING: Could not find view ${it.removePrefix("@layout/").camelCase().capitalize()} for default of stack ${stackName}")
+                                            println(
+                                                "WARNING: Could not find view ${
+                                                    it.removePrefix("@layout/").camelCase().capitalize()
+                                                } for default of stack ${stackName}"
+                                            )
                                             return@stackDefault
                                         }
                                 val makeView = makeView(otherViewNode, stackName, null)
@@ -486,7 +504,7 @@ private fun generateFile(
 
                     if (node.name == "include") {
                         val id = node.allAttributes["android:id"]?.removePrefix("@+id/")?.camelCase()
-                        if (id != null) {
+                        if (id != null && id.startsWith("component", true)) {
                             node.allAttributes["layout"]?.let {
                                 val file = xml.parentFile.resolve(it.removePrefix("@layout/").plus(".xml"))
                                 handleNode(
@@ -494,6 +512,11 @@ private fun generateFile(
                                     node = XmlNode.read(file, styles),
                                     prefix = if (isOptional) "$prefix$id?." else "$prefix$id."
                                 )
+                            }
+                        } else {
+                            //embed
+                            node.allAttributes["android:id"]?.removePrefix("@+id/")?.let { rawId ->
+                                line("${viewAccess}replace(${rawId.camelCase()}Vg.generate(dependency))")
                             }
                         }
                     }

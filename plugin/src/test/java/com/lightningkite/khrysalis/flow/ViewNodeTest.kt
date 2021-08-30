@@ -9,8 +9,8 @@ class ViewNodeTest {
         val nodes = listOf(
             ViewNode("nodeA").apply {
                 this.provides.add(ViewVar("stack", "ObservableStack[ViewGenerator]"))
-                this.operations.add(ViewStackOp.Embed("stack", "nodeB"))
-                this.operations.add(ViewStackOp.Embed("stack", "nodeC"))
+                this.operations.add(ViewStackOp.StartWith("stack", "nodeB"))
+                this.operations.add(ViewStackOp.StartWith("stack", "nodeC"))
             },
             ViewNode("nodeB").apply {
                 this.requires.add(ViewVar("stack", "ObservableStack[ViewGenerator]"))
