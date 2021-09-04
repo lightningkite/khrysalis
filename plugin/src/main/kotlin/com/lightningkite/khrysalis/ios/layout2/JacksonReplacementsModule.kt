@@ -9,7 +9,7 @@ import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.node.ArrayNode
 import com.fasterxml.jackson.databind.node.ObjectNode
 
-class SwiftJacksonReplacementsModule() : SimpleModule() {
+class XibRulesModule() : SimpleModule() {
     init {
         addDeserializer(AttPath::class.java, object: StdDeserializer<AttPath>(AttPath::class.java) {
             override fun deserialize(p: JsonParser, ctxt: DeserializationContext): AttPath {

@@ -28,14 +28,14 @@ fun convertDrawableXmls(
             try {
                 val originalName = file.nameWithoutExtension
                 val cssName = "drawable-${originalName.kabobCase()}"
-                if(it.name.toLowerCase() == "vector") {
+                if (it.name.toLowerCase() == "vector") {
                     val svgFile = webDrawablesFolder.resolve("${originalName.kabobCase()}.svg")
                     resources.drawables[originalName] = WebResources.Drawable(cssName, "./images/${svgFile.name}")
                 } else {
                     resources.drawables[originalName] = WebResources.Drawable(cssName)
                 }
 
-                css.appendln("/* ${cssName} */")
+                css.appendLine("/* ${cssName} */")
                 css.append(buildString {
                     convertDrawableXml(webDrawablesFolder, originalName.kabobCase(), ".${cssName}", it, this, resources)
                 })

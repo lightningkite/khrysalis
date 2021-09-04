@@ -9,16 +9,16 @@ val LayoutConverter.Companion.navigationViews
             ViewType("com.google.android.material.tabs.TabLayout", "UISegmentedControlSquare", "View") { node ->
                 node.allAttributes["app:tabMode"]?.let {
                     when (it) {
-                        "scrollable" -> appendln("view.apportionsSegmentWidthsByContent = true")
-                        "fixed" -> appendln("view.apportionsSegmentWidthsByContent = false")
-                        else -> appendln("view.apportionsSegmentWidthsByContent = false")
+                        "scrollable" -> appendLine("view.apportionsSegmentWidthsByContent = true")
+                        "fixed" -> appendLine("view.apportionsSegmentWidthsByContent = false")
+                        else -> appendLine("view.apportionsSegmentWidthsByContent = false")
                     }
                 }
                 node.allAttributes["app:tabGravity"]?.let {
                     when (it) {
-                        "center" -> appendln("view.apportionsSegmentWidthsByContent = true")
-                        "fill" -> appendln("view.apportionsSegmentWidthsByContent = false")
-                        else -> appendln("view.apportionsSegmentWidthsByContent = false")
+                        "center" -> appendLine("view.apportionsSegmentWidthsByContent = true")
+                        "fill" -> appendLine("view.apportionsSegmentWidthsByContent = false")
+                        else -> appendLine("view.apportionsSegmentWidthsByContent = false")
                     }
                 }
 //                setToColor(node, "app:tabBackground") {
@@ -26,34 +26,34 @@ val LayoutConverter.Companion.navigationViews
 //                setToColor(node, "app:tabRippleColor") {
 //                }
                 if (!setToColor(node, "app:tabTextColor") { it, s ->
-                        appendln(
+                        appendLine(
                             """view.setTitleTextAttributes(
                 [NSAttributedString.Key.foregroundColor: $it], 
                 for: .selected
                 )"""
                         )
-                        appendln(
+                        appendLine(
                             """view.setTitleTextAttributes(
                 [NSAttributedString.Key.foregroundColor: $it], 
                 for: .normal
                 )"""
                         )
-                        appendln("view.materialTabStyle(color: $it)")
+                        appendLine("view.materialTabStyle(color: $it)")
                     }) {
                     val it = "UIColor.black"
-                    appendln(
+                    appendLine(
                         """view.setTitleTextAttributes(
                 [NSAttributedString.Key.foregroundColor: $it], 
                 for: .selected
                 )"""
                     )
-                    appendln(
+                    appendLine(
                         """view.setTitleTextAttributes(
                 [NSAttributedString.Key.foregroundColor: $it], 
                 for: .normal
                 )"""
                     )
-                    appendln("view.materialTabStyle(color: $it)")
+                    appendLine("view.materialTabStyle(color: $it)")
                 }
             },
             ViewType(
@@ -67,10 +67,10 @@ val LayoutConverter.Companion.navigationViews
             ) { node ->
 //                appendln("view.separatorStyle = .none")
                 if (node.allAttributes["android:background"]?.substringBefore('/')?.contains("color") != true) {
-                    appendln("view.backgroundColor = UIColor.clear")
+                    appendLine("view.backgroundColor = UIColor.clear")
                 }
                 val defaultPadding = node.attributeAsSwiftDimension("android:padding") ?: 0
-                appendln(
+                appendLine(
                     "view.padding = ${
                         uiEdgeInsets(
                             (node.attributeAsSwiftDimension("android:paddingTop")
@@ -117,10 +117,10 @@ val LayoutConverter.Companion.navigationViews
             },
             ViewType("com.rd.PageIndicatorView", "UIPageControl", "View") { node ->
                 setToColor(node, "app:piv_selectedColor") { it, s ->
-                    appendln("view.currentPageIndicatorTintColor = $it")
+                    appendLine("view.currentPageIndicatorTintColor = $it")
                 }
                 setToColor(node, "app:piv_unselectedColor") { it, s ->
-                    appendln("view.pageIndicatorTintColor = $it")
+                    appendLine("view.pageIndicatorTintColor = $it")
                 }
             },
             ViewType(
@@ -130,9 +130,9 @@ val LayoutConverter.Companion.navigationViews
                 iosConstructor = "UICollectionView(frame: .zero, collectionViewLayout: ViewPagerLayout())"
             ) { node ->
 
-                appendln("view.canCancelContentTouches = false")
-                appendln("view.showsHorizontalScrollIndicator = false")
-                appendln("view.backgroundColor = .clear")
+                appendLine("view.canCancelContentTouches = false")
+                appendLine("view.showsHorizontalScrollIndicator = false")
+                appendLine("view.backgroundColor = .clear")
             }
         ),
         skipTypes = listOf(

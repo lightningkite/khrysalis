@@ -8,7 +8,7 @@ import com.lightningkite.khrysalis.web.useScssVariables
 import java.io.File
 
 fun translateXmlDimensionsToCss(file: File, out: Appendable) {
-    if (!useScssVariables) out.appendln("* {")
+    if (!useScssVariables) out.appendLine("* {")
     XmlNode.read(file, mapOf())
         .children
         .asSequence()
@@ -28,10 +28,10 @@ fun translateXmlDimensionsToCss(file: File, out: Appendable) {
         }
         .forEach { (name, color) ->
             if (useScssVariables) {
-                out.appendln("\$dimen-$name: $color;")
+                out.appendLine("\$dimen-$name: $color;")
             } else {
-                out.appendln("--dimen-$name: $color;")
+                out.appendLine("--dimen-$name: $color;")
             }
         }
-    if (!useScssVariables) out.appendln("}")
+    if (!useScssVariables) out.appendLine("}")
 }

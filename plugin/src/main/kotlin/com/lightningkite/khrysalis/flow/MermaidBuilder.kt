@@ -6,15 +6,15 @@ class MermaidBuilder(val out: Appendable, vertical: Boolean) {
 
     init {
         if (vertical) {
-            out.appendln("graph LR;")
+            out.appendLine("graph LR;")
         } else {
-            out.appendln("graph TD;")
+            out.appendLine("graph TD;")
         }
     }
 
     data class NodeStyle(val fill: Int, val stroke: Int, val strokeWidth: String) {
         fun emit(out: Appendable, forKey: String) {
-            out.appendln("style $forKey fill:${fill.colorString()},stroke:${stroke.colorString()},stroke-width:$strokeWidth;")
+            out.appendLine("style $forKey fill:${fill.colorString()},stroke:${stroke.colorString()},stroke-width:$strokeWidth;")
         }
     }
 
@@ -38,10 +38,10 @@ class MermaidBuilder(val out: Appendable, vertical: Boolean) {
             out.append("linkStyle ")
             out.append(forIndex.toString())
             out.append(" stroke:${stroke.colorString()},stroke-width:$strokeWidth")
-            if(dashArray != null){
+            if (dashArray != null) {
                 out.append("stroke-dasharray:${dashArray.joinToString()}")
             }
-            out.appendln(';')
+            out.appendLine(';')
         }
     }
 
@@ -72,7 +72,7 @@ class MermaidBuilder(val out: Appendable, vertical: Boolean) {
     fun node(name: String, shape: NodeShape = NodeShape.RoundSquare, style: NodeStyle? = null): Int {
         val thisNodeIndex = nodeIndex++
         val thisNodeId = getShortIdentifier(thisNodeIndex)
-        out.appendln(shape.make(thisNodeId, name) + ";")
+        out.appendLine(shape.make(thisNodeId, name) + ";")
         style?.emit(out, thisNodeId)
         return thisNodeIndex
     }
@@ -85,15 +85,15 @@ class MermaidBuilder(val out: Appendable, vertical: Boolean) {
         style: LinkStyle? = null
     ): Int {
         val thisLinkIndex = linkIndex++
-        out.appendln(shape.make(getShortIdentifier(from), getShortIdentifier(to), content) + ";")
+        out.appendLine(shape.make(getShortIdentifier(from), getShortIdentifier(to), content) + ";")
         style?.emit(out, thisLinkIndex)
         return thisLinkIndex
     }
 
     inline fun <T> subgraph(name: String, actions: () -> T): T {
-        out.appendln("subgraph $name;")
+        out.appendLine("subgraph $name;")
         val result = actions()
-        out.appendln("end;")
+        out.appendLine("end;")
         return result
     }
 
@@ -106,7 +106,7 @@ class MermaidBuilder(val out: Appendable, vertical: Boolean) {
 
     inner class UsingType<T> {
         val ids = HashMap<T, Int>()
-        val atEnd = ArrayList<()->Unit>()
+        val atEnd = ArrayList<() -> Unit>()
 
         fun node(item: T, name: String, shape: NodeShape = NodeShape.RoundSquare, style: NodeStyle? = null): Int {
             ids[item]?.let { return it }
@@ -168,7 +168,7 @@ class MermaidBuilder(val out: Appendable, vertical: Boolean) {
                     shape = shape,
                     style = style
                 )
-                if(backShape != null) {
+                if (backShape != null) {
                     atEnd += {
                         link(
                             from = backNodeId,
@@ -216,7 +216,7 @@ class MermaidBuilder(val out: Appendable, vertical: Boolean) {
                         backShape = backShape,
                         backStyle = backStyle
                     )
-                    if(checked.add(link.toItem)){
+                    if (checked.add(link.toItem)) {
                         toCheck.add(link.toItem)
                     }
                 }
@@ -225,7 +225,7 @@ class MermaidBuilder(val out: Appendable, vertical: Boolean) {
     }
 
     fun <T> usingType(
-        action: UsingType<T>.()->Unit
+        action: UsingType<T>.() -> Unit
     ) {
         UsingType<T>().apply(action).atEnd.forEach { it() }
     }

@@ -69,14 +69,6 @@ repositories {
     google()
 }
 
-sourceSets.main {
-    java.srcDirs(
-        "../kotlin-compiler-plugin-swift/src/main/kotlin",
-        "../kotlin-compiler-plugin-typescript/src/main/kotlin",
-        "../kotlin-compiler-plugin-common/src/main/kotlin"
-    )
-}
-
 tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).all {
     kotlinOptions {
         jvmTarget = "1.8"
@@ -86,6 +78,9 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).all {
 dependencies {
     api(localGroovy())
     api(gradleApi())
+
+    implementation(project(":kotlin-compiler-plugin-typescript"))
+    implementation(project(":kotlin-compiler-plugin-swift"))
 
     api(group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version = kotlinVersion)
     api(group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin-api", version = kotlinVersion)

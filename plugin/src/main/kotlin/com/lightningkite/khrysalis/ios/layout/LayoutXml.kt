@@ -59,15 +59,15 @@ internal fun translateLayoutXml(
                     key == "land" -> Triple(it, "pickLayout { UIDevice.current.orientation.isLandscape }", 10000)
                     //layout-w960dp
                     key.startsWith('w') && key.endsWith("dp") -> {
-                        val size = key.substring(1, key.length-2).toInt()
+                        val size = key.substring(1, key.length - 2).toInt()
                         Triple(it, "pickLayout { UIScreen.main.bounds.width > $size }", size)
                     }
                     else -> Triple(it, "", -1)
                 }
             }.sortedBy { -it.third }.forEach { (file, condition, priority) ->
-                if(first) first = false
+                if (first) first = false
                 else append(" else ")
-                if(condition != null) {
+                if (condition != null) {
                     append("if ($condition) ")
                 }
                 appendln("{")
@@ -133,7 +133,7 @@ private fun Appendable.forFile(file: File, styles: Styles, conversion: OngoingLa
     conversion.construct(root)
     appendln()
     conversion.writeSetup(root)
-    appendln("        xmlRoot = view")
-    appendln("        for test in _layoutTests { dependency.pickLayout(view: view, passOrFail: test) }")
-    appendln("        return view")
+    appendLine("        xmlRoot = view")
+    appendLine("        for test in _layoutTests { dependency.pickLayout(view: view, passOrFail: test) }")
+    appendLine("        return view")
 }

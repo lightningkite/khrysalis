@@ -30,103 +30,104 @@ fun convertVectorDrawable(name: String, node: XmlNode, out: Appendable, debug: A
     val height = node.attributeAsDouble("android:height") ?: 0.0
 
     with(out) {
-        appendln("static let $name: Drawable = Drawable { (view: UIView?) -> CALayer in ")
-        appendln(
+        appendLine("static let $name: Drawable = Drawable { (view: UIView?) -> CALayer in ")
+        appendLine(
             "    let scaleX: CGFloat = CGFloat(${node.attributeAsSwiftDimension("android:width") ?: "10"}) / ${
                 node.attributeAsDouble(
                     "android:viewportWidth"
                 ) ?: "10"
             }"
         )
-        appendln(
+        appendLine(
             "    let scaleY: CGFloat = CGFloat(${node.attributeAsSwiftDimension("android:height") ?: "10"}) / ${
                 node.attributeAsDouble(
                     "android:viewportHeight"
                 ) ?: "10"
             }"
         )
-        debug?.appendln("""<?xml version="1.0" encoding="UTF-8"?>
-<!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
-<svg id="svg2" width="${node.allAttributes["android:width"]!!.filter{it.isDigit() || it == '.'}}" height="${node.allAttributes["android:height"]!!.filter{it.isDigit() || it == '.'}}" xmlns="http://www.w3.org/2000/svg">
-""")
-        appendln("    let layer = CALayer()")
+        debug?.appendLine("""<?xml version="1.0" encoding="UTF-8"?>
+    <!DOCTYPE svg PUBLIC "-//W3C//DTD SVG 1.1//EN" "http://www.w3.org/Graphics/SVG/1.1/DTD/svg11.dtd">
+    <svg id="svg2" width="${node.allAttributes["android:width"]!!.filter { it.isDigit() || it == '.' }}" height="${node.allAttributes["android:height"]!!.filter { it.isDigit() || it == '.' }}" xmlns="http://www.w3.org/2000/svg">
+    """
+        )
+        appendLine("    let layer = CALayer()")
         node.children.filter { it.name == "path" }.forEach { subnode ->
             subnode.children
                 .find { it.name == "aapt:attr" && it.allAttributes["name"] == "android:fillColor" }
                 ?.children?.find { it.name == "gradient" }
                 ?.let { gradientNode ->
-                    appendln("    layer.addSublayer({")
-                    appendln("        let mask = CAShapeLayer()")
+                    appendLine("    layer.addSublayer({")
+                    appendLine("        let mask = CAShapeLayer()")
                     subnode.allAttributes["android:fillType"]?.let {
                         when (it) {
-                            "evenOdd" -> appendln("        mask.fillRule = .evenOdd")
+                            "evenOdd" -> appendLine("        mask.fillRule = .evenOdd")
                             else -> {
                             }
                         }
                     }
                     subnode.allAttributes["android:pathData"]?.let { pathData ->
-                        appendln("        let path = CGMutablePath()")
+                        appendLine("        let path = CGMutablePath()")
                         pathDataToSwift(pathData)
-                        appendln("        mask.path = path")
+                        appendLine("        mask.path = path")
                     }
-                    appendln("        let gradient = CAGradientLayer()")
-                    appendln("        gradient.mask = mask")
+                    appendLine("        let gradient = CAGradientLayer()")
+                    appendLine("        gradient.mask = mask")
                     gradientNode.attributeAsDouble("android:startX")?.let { x ->
                         gradientNode.attributeAsDouble("android:startY")?.let { y ->
-                            appendln("        gradient.startPoint = CGPoint(x: ${x / width}, y: ${y / height})")
+                            appendLine("        gradient.startPoint = CGPoint(x: ${x / width}, y: ${y / height})")
                         }
                     }
                     gradientNode.attributeAsDouble("android:endX")?.let { x ->
                         gradientNode.attributeAsDouble("android:endY")?.let { y ->
-                            appendln("        gradient.endPoint = CGPoint(x: ${x / width}, y: ${y / height})")
+                            appendLine("        gradient.endPoint = CGPoint(x: ${x / width}, y: ${y / height})")
                         }
                     }
                     val colors = gradientNode.children.filter { it.name == "item" }.mapNotNull {
                         it.attributeAsSwiftColor("android:color")
                     }.joinToString(", ", "[", "]") { it + ".cgColor" }
-                    appendln("        gradient.colors = $colors")
-                    appendln("        gradient.frame = CGRect(x: 0, y: 0, width: $width, height: $height)")
-                    appendln("        return gradient")
-                    appendln("    }())")
+                    appendLine("        gradient.colors = $colors")
+                    appendLine("        gradient.frame = CGRect(x: 0, y: 0, width: $width, height: $height)")
+                    appendLine("        return gradient")
+                    appendLine("    }())")
 
                 } ?: run {
-                appendln("    layer.addSublayer({")
-                appendln("        let sublayer = CAShapeLayer()")
+                appendLine("    layer.addSublayer({")
+                appendLine("        let sublayer = CAShapeLayer()")
                 subnode.allAttributes["android:fillType"]?.let {
                     when (it) {
-                        "evenOdd" -> appendln("        sublayer.fillRule = .evenOdd")
+                        "evenOdd" -> appendLine("        sublayer.fillRule = .evenOdd")
                         else -> {
                         }
                     }
                 }
                 subnode.allAttributes["android:pathData"]?.let { pathData ->
-                    appendln("        let path = CGMutablePath()")
-                    debug?.appendln("""<path fill="red" opacity="0.5" d="${subnode.allAttributes["android:pathData"]}" />""")
+                    appendLine("        let path = CGMutablePath()")
+                    debug?.appendLine("""<path fill="red" opacity="0.5" d="${subnode.allAttributes["android:pathData"]}" />""")
                     debug?.append("""<path fill="blue" opacity="0.5" d="""")
                     pathDataToSwift(pathData, debug)
-                    debug?.appendln(""""/>""")
-                    appendln("        sublayer.path = path")
+                    debug?.appendLine(""""/>""")
+                    appendLine("        sublayer.path = path")
                 }
                 if (!setToColor(subnode, "android:fillColor") { it, s ->
-                        appendln("        sublayer.fillColor = $it.cgColor")
+                        appendLine("        sublayer.fillColor = $it.cgColor")
                     }) {
-                    appendln("        sublayer.fillColor = nil")
+                    appendLine("        sublayer.fillColor = nil")
                 }
                 setToColor(subnode, "android:strokeColor") { it, s ->
-                    appendln("        sublayer.strokeColor = $it.cgColor")
+                    appendLine("        sublayer.strokeColor = $it.cgColor")
                 }
                 subnode.attributeAsDouble("android:strokeWidth")?.let {
-                    appendln("        sublayer.lineWidth = ${it} * scaleX")
+                    appendLine("        sublayer.lineWidth = ${it} * scaleX")
                 }
-                appendln("        return sublayer")
-                appendln("    }())")
+                appendLine("        return sublayer")
+                appendLine("    }())")
             }
         }
-        debug?.appendln("""</svg>""")
-        appendln("    layer.bounds.size = CGSize(width: ${width}, height: ${height})")
-        appendln("    layer.scaleOverResize = true")
-        appendln("    return layer")
-        appendln("}")
+        debug?.appendLine("""</svg>""")
+        appendLine("    layer.bounds.size = CGSize(width: ${width}, height: ${height})")
+        appendLine("    layer.scaleOverResize = true")
+        appendLine("    return layer")
+        appendLine("}")
     }
 
 }
@@ -197,7 +198,7 @@ private fun Appendable.pathDataToSwift(pathData: String, debug: Appendable? = nu
         fun offsetX(): Double = if (isAbsolute) 0.0 else referenceX
         fun offsetY(): Double = if (isAbsolute) 0.0 else referenceY
         var updateReference = true
-        appendln("        //$rawInstruction ${arguments.joinToString()}")
+        appendLine("        //$rawInstruction ${arguments.joinToString()}")
         try {
             do {
                 when (instruction) {
@@ -206,7 +207,7 @@ private fun Appendable.pathDataToSwift(pathData: String, debug: Appendable? = nu
                         val destY = arguments.unshift() + offsetY()
                         referenceX = destX
                         referenceY = destY
-                        appendln("        path.move(to: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}))")
+                        appendLine("        path.move(to: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}))")
                         debug?.append("M $destX $destY ")
                         instruction = 'l'
                     }
@@ -215,12 +216,12 @@ private fun Appendable.pathDataToSwift(pathData: String, debug: Appendable? = nu
                         val destY = arguments.unshift() + offsetY()
                         referenceX = destX
                         referenceY = destY
-                        appendln("        path.addLine(to: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}))")
+                        appendLine("        path.addLine(to: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}))")
                         debug?.append("L $destX $destY ")
                     }
                     'z' -> {
                         debug?.append("Z ")
-                        appendln("        path.closeSubpath()")
+                        appendLine("        path.closeSubpath()")
                         referenceX = startX
                         referenceY = startY
                         firstSet = false
@@ -230,14 +231,14 @@ private fun Appendable.pathDataToSwift(pathData: String, debug: Appendable? = nu
                         referenceX =
                             if (isAbsolute) arguments.unshift() else referenceX + arguments.unshift()
                         debug?.append("H $referenceX ")
-                        appendln("        path.addLine(to: CGPoint(x: ${referenceX.scaleX()}, y: ${referenceY.scaleY()}))")
+                        appendLine("        path.addLine(to: CGPoint(x: ${referenceX.scaleX()}, y: ${referenceY.scaleY()}))")
                     }
                     'v' -> {
                         updateReference = false
                         referenceY =
                             if (isAbsolute) arguments.unshift() else referenceY + arguments.unshift()
                         debug?.append("V $referenceY ")
-                        appendln("        path.addLine(to: CGPoint(x: ${referenceX.scaleX()}, y: ${referenceY.scaleY()}))")
+                        appendLine("        path.addLine(to: CGPoint(x: ${referenceX.scaleX()}, y: ${referenceY.scaleY()}))")
                     }
                     'q' -> {
                         val controlX = arguments.unshift() + offsetX()
@@ -248,7 +249,7 @@ private fun Appendable.pathDataToSwift(pathData: String, debug: Appendable? = nu
                         previousC2Y = controlY
                         referenceX = destX
                         referenceY = destY
-                        appendln("        path.addQuadCurve(to: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}), control: CGPoint(x: ${controlX.scaleX()}, y: ${controlY.scaleY()}))")
+                        appendLine("        path.addQuadCurve(to: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}), control: CGPoint(x: ${controlX.scaleX()}, y: ${controlY.scaleY()}))")
                         debug?.append("V $controlX $controlY $destX $destY ")
                     }
                     't' -> {
@@ -258,7 +259,7 @@ private fun Appendable.pathDataToSwift(pathData: String, debug: Appendable? = nu
                         val controlY = referenceY - (referenceY - previousC2Y)
                         referenceX = destX
                         referenceY = destY
-                        appendln("        path.addQuadCurve(to: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}), control: CGPoint(x: ${controlX.scaleX()}, y: ${controlY.scaleY()}))")
+                        appendLine("        path.addQuadCurve(to: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}), control: CGPoint(x: ${controlX.scaleX()}, y: ${controlY.scaleY()}))")
                         debug?.append("V $controlX $controlY $destX $destY ")
                     }
                     'c' -> {
@@ -272,7 +273,7 @@ private fun Appendable.pathDataToSwift(pathData: String, debug: Appendable? = nu
                         previousC2Y = control2Y
                         referenceX = destX
                         referenceY = destY
-                        appendln("        path.addCurve(to: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}), control1: CGPoint(x: ${control1X.scaleX()}, y: ${control1Y.scaleY()}), control2: CGPoint(x: ${control2X.scaleX()}, y: ${control2Y.scaleY()}))")
+                        appendLine("        path.addCurve(to: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}), control1: CGPoint(x: ${control1X.scaleX()}, y: ${control1Y.scaleY()}), control2: CGPoint(x: ${control2X.scaleX()}, y: ${control2Y.scaleY()}))")
                         debug?.append("C $control1X $control1Y $control2X $control2Y $destX $destY ")
                     }
                     's' -> {
@@ -287,7 +288,7 @@ private fun Appendable.pathDataToSwift(pathData: String, debug: Appendable? = nu
                         referenceX = destX
                         referenceY = destY
 //                    appendln("        //Calculated from previous control point $previousC2X and $previousC2Y mirrored around ")
-                        appendln("        path.addCurve(to: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}), control1: CGPoint(x: ${c1x.scaleX()}, y: ${c1y.scaleY()}), control2: CGPoint(x: ${control2X.scaleX()}, y: ${control2Y.scaleY()}))")
+                        appendLine("        path.addCurve(to: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}), control1: CGPoint(x: ${c1x.scaleX()}, y: ${c1y.scaleY()}), control2: CGPoint(x: ${control2X.scaleX()}, y: ${control2Y.scaleY()}))")
                         debug?.append("C $c1x $c1y $control2X $control2Y $destX $destY ")
                     }
                     'a' -> {
@@ -300,18 +301,18 @@ private fun Appendable.pathDataToSwift(pathData: String, debug: Appendable? = nu
                         val destY = arguments.unshift() + offsetY()
                         referenceX = destX
                         referenceY = destY
-                        appendln("        path.arcTo(radius: CGSize(width: ${radiusX.scaleX()}, height: ${radiusY.scaleY()}), rotation: ${xAxisRotation}, largeArcFlag: ${largeArcFlag > 0.5}, sweepFlag: ${sweepFlag > 0.5}, end: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}))")
+                        appendLine("        path.arcTo(radius: CGSize(width: ${radiusX.scaleX()}, height: ${radiusY.scaleY()}), rotation: ${xAxisRotation}, largeArcFlag: ${largeArcFlag > 0.5}, sweepFlag: ${sweepFlag > 0.5}, end: CGPoint(x: ${destX.scaleX()}, y: ${destY.scaleY()}))")
                         debug?.append("C $radiusX $radiusY $xAxisRotation $largeArcFlag $sweepFlag $destX $destY ")
                     }
                     else -> throw IllegalStateException("Non-legal command ${instruction}")
                 }
-                if(!firstSet){
+                if (!firstSet) {
                     firstSet = true
                     startX = referenceX
                     startY = referenceY
                 }
-            } while(arguments.isNotEmpty())
-        } catch(e:Exception){
+            } while (arguments.isNotEmpty())
+        } catch (e: Exception) {
             throw Exception("Error at ${stringIndex}: '${substring}'", e)
         }
 

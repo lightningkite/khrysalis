@@ -11,29 +11,29 @@ val LayoutConverter.Companion.displayViews
             ViewType("View", "UIView") { node ->
                 node.allAttributes["android:id"]?.let { raw ->
                     val name = raw.removePrefix("@+id/").removePrefix("@id/").camelCase()
-                    appendln("self.${name.safeSwiftIdentifier()} = view")
+                    appendLine("self.${name.safeSwiftIdentifier()} = view")
                     bindings[name] =
                         converter.viewTypes[node.name]?.iosName ?: (node.name.substringAfterLast('.'))
                 }
                 node.attributeAsBoolean("tools:focusAtStartup")?.let { raw ->
-                    appendln("view.focusAtStartup = $raw")
+                    appendLine("view.focusAtStartup = $raw")
                 }
                 node.allAttributes["android:background"]?.let { raw ->
                     when {
                         raw.startsWith("@drawable/") -> {
                             node.attributeAsSwiftDrawable("android:background")!!.let {
-                                appendln("view.backgroundDrawable = $it")
+                                appendLine("view.backgroundDrawable = $it")
                             }
                         }
                         raw.startsWith("@mipmap/") -> {
                             val drawableName = raw.removePrefix("@mipmap/")
-                            appendln("if let image = UIImage(named: \"$drawableName\") {")
-                            appendln("view.backgroundColor = UIColor(patternImage: image)")
-                            appendln("}")
+                            appendLine("if let image = UIImage(named: \"$drawableName\") {")
+                            appendLine("view.backgroundColor = UIColor(patternImage: image)")
+                            appendLine("}")
                         }
                         raw.startsWith("@color/") || raw.startsWith("@android:color/") -> {
                             setToColor(node, "android:background") { it, s ->
-                                appendln("view.backgroundColor = $it")
+                                appendLine("view.backgroundColor = $it")
                             }
                         }
                         else -> {
@@ -41,60 +41,66 @@ val LayoutConverter.Companion.displayViews
                     }
                 }
                 node.attributeAsDouble("android:alpha")?.let {
-                    appendln("view.alpha = $it")
+                    appendLine("view.alpha = $it")
                 }
                 node.attributeAsSwiftDimension("android:elevation")?.let {
-                    appendln("view.layer.masksToBounds = false")
-                    appendln("view.layer.shadowColor = UIColor.black.cgColor")
-                    appendln("view.layer.shadowOffset = CGSize(width: 0, height: $it)")
-                    appendln("view.layer.shadowRadius = $it")
-                    appendln("view.layer.shadowOpacity = 0.24")
+                    appendLine("view.layer.masksToBounds = false")
+                    appendLine("view.layer.shadowColor = UIColor.black.cgColor")
+                    appendLine("view.layer.shadowOffset = CGSize(width: 0, height: $it)")
+                    appendLine("view.layer.shadowRadius = $it")
+                    appendLine("view.layer.shadowOpacity = 0.24")
                 }
                 node.attributeAsDouble("android:rotation")?.let {
-                    appendln("view.transform = CGAffineTransform(rotationAngle: ${it * PI / 180.0})")
+                    appendLine("view.transform = CGAffineTransform(rotationAngle: ${it * PI / 180.0})")
                 }
                 node.allAttributes["android:visibility"]?.let {
-                    appendln("view.visibility = UIView.${it.toUpperCase()}")
+                    appendLine("view.visibility = UIView.${it.toUpperCase()}")
                 }
                 node.allAttributes["tools:systemEdges"]?.let {
-                    appendln("view.safeInsets(align: ${alignFill(it)})")
+                    appendLine("view.safeInsets(align: ${alignFill(it)})")
                 }
                 node.allAttributes["tools:systemEdgesSizing"]?.let {
-                    appendln("view.safeInsetsSizing(align: ${alignFill(it)})")
+                    appendLine("view.safeInsetsSizing(align: ${alignFill(it)})")
                 }
                 node.allAttributes["tools:systemEdgesBoth"]?.let {
-                    appendln("view.safeInsetsBoth(align: ${alignFill(it)})")
+                    appendLine("view.safeInsetsBoth(align: ${alignFill(it)})")
                 }
             },
             ViewType("Space", "UIView", "View") {},
             ViewType("ProgressBar", "UIActivityIndicatorView", "View") { node ->
-                appendln("view.startAnimating()")
-                if(!setToColor(node, "android:indeterminateTint") { it, s ->
-                    appendln("view.color = $it")
-                }) {
-                    appendln("view.color = R.color.colorPrimary")
+                appendLine("view.startAnimating()")
+                if (!setToColor(node, "android:indeterminateTint") { it, s ->
+                        appendLine("view.color = $it")
+                    }) {
+                    appendLine("view.color = R.color.colorPrimary")
                 }
             },
-            ViewType("com.lightningkite.butterfly.views.widget.HorizontalProgressBar", "UIProgressView", "View") { node ->
-                appendln("view.progressViewStyle = .bar")
-                if(!setToColor(node, "android:progressTint") { it, s ->
-                    appendln("view.progressTintColor = $it")
-                }) {
-                    appendln("view.progressTintColor = R.color.colorPrimary")
+            ViewType(
+                "com.lightningkite.butterfly.views.widget.HorizontalProgressBar",
+                "UIProgressView",
+                "View"
+            ) { node ->
+                appendLine("view.progressViewStyle = .bar")
+                if (!setToColor(node, "android:progressTint") { it, s ->
+                        appendLine("view.progressTintColor = $it")
+                    }) {
+                    appendLine("view.progressTintColor = R.color.colorPrimary")
                 }
             },
             ViewType("ImageView", "UIImageView", "View") { node ->
                 node.attributeAsSwiftImage("android:src")?.let { text ->
-                    appendln("view.image = $text")
+                    appendLine("view.image = $text")
                 }
-                appendln("view.clipsToBounds = true")
-                appendln(
-                    "view.contentMode = ${when (node.allAttributes["android:scaleType"]) {
-                        "fitXY" -> ".scaleToFill"
-                        "centerCrop" -> ".scaleAspectFill"
-                        "centerInside" -> ".scaleAspectFit"
-                        else -> ".scaleAspectFit"
-                    }}"
+                appendLine("view.clipsToBounds = true")
+                appendLine(
+                    "view.contentMode = ${
+                        when (node.allAttributes["android:scaleType"]) {
+                            "fitXY" -> ".scaleToFill"
+                            "centerCrop" -> ".scaleAspectFill"
+                            "centerInside" -> ".scaleAspectFit"
+                            else -> ".scaleAspectFit"
+                        }
+                    }"
                 )
 //            node.attributeAsDouble("android:rotation")?.let{
 //                "view.transform = CGAffineTransform(rotationAngle: ${it * PI / 180.0}"
@@ -104,13 +110,13 @@ val LayoutConverter.Companion.displayViews
             },
             ViewType("de.hdodenhof.circleimageview.CircleImageView", "UIImageView", "ImageView") { node ->
 
-                appendln("view.addOnLayoutSubviews { [weak view] in")
-                appendln("if let view = view {")
-                appendln("    view.layer.cornerRadius = view.frame.size.width / 2;")
-                appendln("    view.contentMode = .scaleAspectFill")
-                appendln("}")
-                appendln("}")
-                appendln("view.clipsToBounds = true")
+                appendLine("view.addOnLayoutSubviews { [weak view] in")
+                appendLine("if let view = view {")
+                appendLine("    view.layer.cornerRadius = view.frame.size.width / 2;")
+                appendLine("    view.contentMode = .scaleAspectFill")
+                appendLine("}")
+                appendLine("}")
+                appendLine("view.clipsToBounds = true")
             },
 
 
@@ -123,9 +129,9 @@ val LayoutConverter.Companion.displayViews
                     val id = raw.removePrefix("@+id/").removePrefix("@id/").camelCase()
                     (node.allAttributes["app:delegateClass"] ?: node.allAttributes["delegateClass"])?.let { raw ->
                         val name = raw.removePrefix("@+id/").removePrefix("@id/").camelCase().substringAfterLast('.')
-                        appendln("let dg = $name()")
-                        appendln("view.delegate = dg")
-                        appendln("self.${(id + "Delegate").safeSwiftIdentifier()} = dg")
+                        appendLine("let dg = $name()")
+                        appendLine("view.delegate = dg")
+                        appendLine("self.${(id + "Delegate").safeSwiftIdentifier()} = dg")
                         delegateBindings[id] = name
                     }
                 }
@@ -143,35 +149,40 @@ val LayoutConverter.Companion.displayViews
     )
 
 
-internal fun OngoingLayoutConversion.handleCommonText(node: XmlNode, viewHandle: String = "view", controlView: String? = null, checkView: String? = null) {
+internal fun OngoingLayoutConversion.handleCommonText(
+    node: XmlNode,
+    viewHandle: String = "view",
+    controlView: String? = null,
+    checkView: String? = null
+) {
 
     val size = node.attributeAsSwiftDimension("android:textSize") ?: "12"
 
     val fontStylesFromFamily = listOfNotNull(
-        if(node.allAttributes["android:fontFamily"]?.contains("bold", true) == true) "bold" else null,
-        if(node.allAttributes["android:fontFamily"]?.contains("light", true) == true) "light" else null
+        if (node.allAttributes["android:fontFamily"]?.contains("bold", true) == true) "bold" else null,
+        if (node.allAttributes["android:fontFamily"]?.contains("light", true) == true) "light" else null
     )
     val fontStyles = (node.allAttributes["android:textStyle"]?.split('|') ?: listOf()) + fontStylesFromFamily
-    appendln("$viewHandle.font = UIFont.get(size: $size, style: [${fontStyles.joinToString { "\"$it\"" }}])")
+    appendLine("$viewHandle.font = UIFont.get(size: $size, style: [${fontStyles.joinToString { "\"$it\"" }}])")
 
     node.attributeAsSwiftDimension("android:letterSpacing")?.let {
-        appendln("$viewHandle.letterSpacing = $it")
+        appendLine("$viewHandle.letterSpacing = $it")
     }
     node.attributeAsBoolean("android:textAllCaps")?.let {
-        appendln("$viewHandle.textAllCaps = $it")
+        appendLine("$viewHandle.textAllCaps = $it")
     }
     node.attributeAsSwiftString("android:text")?.let { text ->
-        appendln("$viewHandle.textString = $text")
+        appendLine("$viewHandle.textString = $text")
     }
     node.attributeAsDouble("android:lineSpacingMultiplier")?.let { lineSpacingMultiplier ->
-        appendln("$viewHandle.lineSpacingMultiplier = $lineSpacingMultiplier")
+        appendLine("$viewHandle.lineSpacingMultiplier = $lineSpacingMultiplier")
     }
     val lines = node.attributeAsInt("android:maxLines")
-    appendln("$viewHandle.numberOfLines = ${lines ?: 0}")
+    appendLine("$viewHandle.numberOfLines = ${lines ?: 0}")
 
 
     setToColor(node, "android:textColor", controlView ?: checkView ?: viewHandle) { it, s ->
-        appendln("$viewHandle.textColor = $it")
+        appendLine("$viewHandle.textColor = $it")
     }
     node.allAttributes["android:gravity"]?.let {
         it.split('|')
@@ -185,7 +196,7 @@ internal fun OngoingLayoutConversion.handleCommonText(node: XmlNode, viewHandle:
                     ".end" -> ".right"
                     else -> ".left"
                 }
-                appendln("$viewHandle.textAlignment = $fixed")
+                appendLine("$viewHandle.textAlignment = $fixed")
             }
         it.split('|')
             .asSequence()
@@ -198,7 +209,7 @@ internal fun OngoingLayoutConversion.handleCommonText(node: XmlNode, viewHandle:
                     ".end" -> ".alignBaselines"
                     else -> ".none"
                 }
-                appendln("$viewHandle.baselineAdjustment = $fixed")
+                appendLine("$viewHandle.baselineAdjustment = $fixed")
             }
     }
 }

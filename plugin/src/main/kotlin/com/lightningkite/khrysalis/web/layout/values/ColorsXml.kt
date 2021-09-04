@@ -10,7 +10,7 @@ import java.lang.Appendable
 
 fun translateXmlColorsToCss(file: File, out: Appendable, resources: WebResources) {
     val ignored = setOf("white", "black", "transparent")
-    if(!useScssVariables) out.appendln("* {")
+    if (!useScssVariables) out.appendLine("* {")
     val result = ArrayList<String>()
     XmlNode.read(file, mapOf())
         .children
@@ -33,19 +33,19 @@ fun translateXmlColorsToCss(file: File, out: Appendable, resources: WebResources
         }
         .forEach { (name, color) ->
             val kabobName = name.kabobCase()
-            if(useScssVariables){
-                out.appendln("\$color-$kabobName: $color;")
+            if (useScssVariables) {
+                out.appendLine("\$color-$kabobName: $color;")
             } else {
                 resources.colors[name] = WebResources.Color("--color-$kabobName", color)
-                out.appendln("--color-$kabobName: $color;")
+                out.appendLine("--color-$kabobName: $color;")
             }
         }
-    if(!useScssVariables) out.appendln("}")
+    if (!useScssVariables) out.appendLine("}")
 }
 
 fun translateXmlColorSetToCss(file: File, out: Appendable, resources: WebResources) {
     val name = file.nameWithoutExtension.kabobCase()
-    out.appendln("/*$name*/")
+    out.appendLine("/*$name*/")
     var lastColor: String? = null
     XmlNode.read(file, mapOf()).children.forEach { subnode ->
         var conditions = ""
@@ -62,18 +62,18 @@ fun translateXmlColorSetToCss(file: File, out: Appendable, resources: WebResourc
             conditions += if (it) ":focus" else ":not(:focus)"
         }
         subnode.attributeAsBoolean("android:state_checked")?.let {
-            conditions += if(it) ":checked ~ *" else ":not(:checked) ~ *"
+            conditions += if (it) ":checked ~ *" else ":not(:checked) ~ *"
         }
         subnode.allAttributes["android:color"]?.let { raw ->
             val color = raw.asCssColor()
             if (conditions.isEmpty()) {
-                out.appendln("* {")
+                out.appendLine("* {")
             } else {
-                out.appendln("$conditions {")
+                out.appendLine("$conditions {")
             }
-            out.appendln("--color-$name: $color;")
+            out.appendLine("--color-$name: $color;")
             lastColor = color
-            out.appendln("}")
+            out.appendLine("}")
         }
     }
     resources.colors[file.nameWithoutExtension] = WebResources.Color("-color-$name", lastColor ?: "#FFF")

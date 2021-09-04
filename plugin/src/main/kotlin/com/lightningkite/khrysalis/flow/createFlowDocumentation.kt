@@ -38,7 +38,8 @@ fun createFlowDocumentation(
         val fileName = item.nameWithoutExtension.camelCase().capitalize()
         val node = ViewNode(fileName)
         node.gather(XmlNode.read(item, styles), item, styles)
-        nodes[fileName] = node
+        if(!node.name.startsWith("row", true))
+            nodes[fileName] = node
     }
 
     //Sort

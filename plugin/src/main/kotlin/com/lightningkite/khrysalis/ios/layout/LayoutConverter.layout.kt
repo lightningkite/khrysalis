@@ -10,26 +10,26 @@ val LayoutConverter.Companion.layoutViews
             ViewType("androidx.core.widget.NestedScrollView", "ScrollViewVertical", "ScrollView") { node -> },
             ViewType("ScrollView", "ScrollViewVertical", "View") { node ->
                 node.attributeAsBoolean("android:fillViewport")?.let {
-                    appendln("view.fillViewport = $it")
+                    appendLine("view.fillViewport = $it")
                 }
                 val child = node.children.first()
                 append("view.addSubview(")
                 construct(child)
-                appendln(") { view in ")
+                appendLine(") { view in ")
                 writeSetup(child)
-                appendln("}")
+                appendLine("}")
             },
 
             ViewType("HorizontalScrollView", "ScrollViewHorizontal", "View") { node ->
                 node.attributeAsBoolean("android:fillViewport")?.let {
-                    appendln("view.fillViewport = $it")
+                    appendLine("view.fillViewport = $it")
                 }
                 val child = node.children.first()
                 append("view.addSubview(")
                 construct(child)
-                appendln(") { view in ")
+                appendLine(") { view in ")
                 writeSetup(child)
-                appendln("}")
+                appendLine("}")
             },
             ViewType("LinearLayout", "LinearLayout", "View", handlesPadding = true) { node ->
                 val isHorizontal = when (node.allAttributes["android:orientation"]) {
@@ -37,7 +37,7 @@ val LayoutConverter.Companion.layoutViews
                     "vertical" -> false
                     else -> true
                 }
-                appendln("view.orientation = " + if (isHorizontal) ".x" else ".y")
+                appendLine("view.orientation = " + if (isHorizontal) ".x" else ".y")
 
                 val dividerStart = node.allAttributes["android:showDividers"]?.contains("beginning") ?: false
                 val dividerMiddle = node.allAttributes["android:showDividers"]?.contains("middle") ?: false
@@ -46,7 +46,7 @@ val LayoutConverter.Companion.layoutViews
                 setPadding(node)
 
                 val defaultGravity = node.allAttributes["android:gravity"]
-                appendln("view.gravity = ${align(null, null, defaultGravity)}")
+                appendLine("view.gravity = ${align(null, null, defaultGravity)}")
 
                 val dividerText = if (isHorizontal)
                     node.allAttributes["tools:iosDivider"]
@@ -58,36 +58,36 @@ val LayoutConverter.Companion.layoutViews
                 appendln()
 
                 if (dividerStart) {
-                    appendln(dividerText)
+                    appendLine(dividerText)
                 }
                 node.children.forEachBetween(
                     forItem = { child ->
-                        appendln("view.addSubview(")
+                        appendLine("view.addSubview(")
 
                         construct(child)
-                        appendln(",")
+                        appendLine(",")
 
                         append("minimumSize: CGSize(width: ")
                         append(child.attributeAsSwiftDimension("android:minWidth") ?: "0")
                         append(", height: ")
                         append(child.attributeAsSwiftDimension("android:minHeight") ?: "0")
-                        appendln("),")
+                        appendLine("),")
 
                         append("size: CGSize(width: ")
                         append(child.attributeAsSwiftDimension("android:layout_width") ?: "-1")
                         append(", height: ")
                         append(child.attributeAsSwiftDimension("android:layout_height") ?: "-1")
-                        appendln("),")
+                        appendLine("),")
 
                         append(
                             "margin: ${margins(child)}"
                         )
-                        appendln(",")
+                        appendLine(",")
 
                         append(
                             "padding: ${padding(child)}"
                         )
-                        appendln(",")
+                        appendLine(",")
 
                         append("gravity: ")
                         append(
@@ -97,25 +97,25 @@ val LayoutConverter.Companion.layoutViews
                                 gravityStrings = *arrayOf(child.allAttributes["android:layout_gravity"], defaultGravity)
                             )
                         )
-                        appendln(",")
+                        appendLine(",")
 
                         append("weight: ")
                         append(child.attributeAsDouble("android:layout_weight")?.toString() ?: "0")
                         appendln()
-                        appendln(") { view in ")
+                        appendLine(") { view in ")
                         writeSetup(child)
-                        appendln("}")
+                        appendLine("}")
                     },
                     between = {
                         appendln()
                         if (dividerMiddle) {
-                            appendln(dividerText)
+                            appendLine(dividerText)
                             appendln()
                         }
                     }
                 )
                 if (dividerEnd) {
-                    appendln(dividerText)
+                    appendLine(dividerText)
                 }
                 appendln()
             },
@@ -129,32 +129,32 @@ val LayoutConverter.Companion.layoutViews
                 val defaultGravity = node.allAttributes["android:gravity"]
 
                 node.children.forEach { child ->
-                    appendln("view.addSubview(")
+                    appendLine("view.addSubview(")
 
                     construct(child)
-                    appendln(",")
+                    appendLine(",")
 
                     append("minimumSize: CGSize(width: ")
                     append(child.attributeAsSwiftDimension("android:minWidth") ?: "0")
                     append(", height: ")
                     append(child.attributeAsSwiftDimension("android:minHeight") ?: "0")
-                    appendln("),")
+                    appendLine("),")
 
                     append("size: CGSize(width: ")
                     append(child.attributeAsSwiftDimension("android:layout_width") ?: "-1")
                     append(", height: ")
                     append(child.attributeAsSwiftDimension("android:layout_height") ?: "-1")
-                    appendln("),")
+                    appendLine("),")
 
                     append(
                         "margin: ${margins(child)}"
                     )
-                    appendln(",")
+                    appendLine(",")
 
                     append(
                         "padding: ${padding(child)}"
                     )
-                    appendln(",")
+                    appendLine(",")
 
                     append("gravity: ")
                     append(
@@ -165,9 +165,9 @@ val LayoutConverter.Companion.layoutViews
                         )
                     )
                     appendln()
-                    appendln(") { view in ")
+                    appendLine(") { view in ")
                     writeSetup(child)
-                    appendln("}")
+                    appendLine("}")
                     appendln()
 
                 }
@@ -177,19 +177,21 @@ val LayoutConverter.Companion.layoutViews
 
 private fun OngoingLayoutConversion.setPadding(node: XmlNode) {
     val defaultPadding = node.attributeAsSwiftDimension("android:padding") ?: 0
-    appendln(
-        "view.padding = ${uiEdgeInsets(
-            (node.attributeAsSwiftDimension("android:paddingTop")
-                ?: defaultPadding).toString(),
-            (node.attributeAsSwiftDimension("android:paddingLeft")
-                ?: node.attributeAsSwiftDimension("android:paddingStart")
-                ?: defaultPadding).toString(),
-            (node.attributeAsSwiftDimension("android:paddingBottom")
-                ?: defaultPadding).toString(),
-            (node.attributeAsSwiftDimension("android:paddingRight")
-                ?: node.attributeAsSwiftDimension("android:paddingEnd")
-                ?: defaultPadding).toString()
-        )}"
+    appendLine(
+        "view.padding = ${
+            uiEdgeInsets(
+                (node.attributeAsSwiftDimension("android:paddingTop")
+                    ?: defaultPadding).toString(),
+                (node.attributeAsSwiftDimension("android:paddingLeft")
+                    ?: node.attributeAsSwiftDimension("android:paddingStart")
+                    ?: defaultPadding).toString(),
+                (node.attributeAsSwiftDimension("android:paddingBottom")
+                    ?: defaultPadding).toString(),
+                (node.attributeAsSwiftDimension("android:paddingRight")
+                    ?: node.attributeAsSwiftDimension("android:paddingEnd")
+                    ?: defaultPadding).toString()
+            )
+        }"
     )
 }
 
@@ -213,28 +215,29 @@ fun align(width: String?, height: String?, vararg gravityStrings: String?): Stri
     }.firstOrNull() ?: ".top"
     return translatedVert + translatedHorz
 }
+
 fun alignFill(vararg gravityStrings: String?): String {
     val raw = gravityStrings.flatMap { it?.split("|") ?: listOf() }
     var gravity = 0
-    if(raw.contains("center"))
+    if (raw.contains("center"))
         gravity = gravity or SafePaddingFlags.ALL
-    if(raw.contains("all"))
+    if (raw.contains("all"))
         gravity = gravity or SafePaddingFlags.ALL
-    if(raw.contains("center_horizontal"))
+    if (raw.contains("center_horizontal"))
         gravity = gravity or SafePaddingFlags.LEFT or SafePaddingFlags.RIGHT
-    if(raw.contains("horizontal"))
+    if (raw.contains("horizontal"))
         gravity = gravity or SafePaddingFlags.LEFT or SafePaddingFlags.RIGHT
-    if(raw.contains("left"))
+    if (raw.contains("left"))
         gravity = gravity or SafePaddingFlags.LEFT
-    if(raw.contains("right"))
+    if (raw.contains("right"))
         gravity = gravity or SafePaddingFlags.RIGHT
-    if(raw.contains("center_vertical"))
+    if (raw.contains("center_vertical"))
         gravity = gravity or SafePaddingFlags.TOP or SafePaddingFlags.BOTTOM
-    if(raw.contains("vertical"))
+    if (raw.contains("vertical"))
         gravity = gravity or SafePaddingFlags.TOP or SafePaddingFlags.BOTTOM
-    if(raw.contains("top"))
+    if (raw.contains("top"))
         gravity = gravity or SafePaddingFlags.TOP
-    if(raw.contains("bottom"))
+    if (raw.contains("bottom"))
         gravity = gravity or SafePaddingFlags.BOTTOM
     return "." + when {
         gravity and SafePaddingFlags.TOP != 0 && gravity and SafePaddingFlags.BOTTOM != 0 -> "fill"
@@ -272,7 +275,7 @@ fun OngoingLayoutConversion.margins(child: XmlNode): String {
 }
 
 fun OngoingLayoutConversion.padding(child: XmlNode): String {
-    if(this.converter.viewTypes[child.name]?.handlesPadding != true) {
+    if (this.converter.viewTypes[child.name]?.handlesPadding != true) {
         val defaultPadding = child.attributeAsSwiftDimension("android:padding") ?: 0
         val top = (child.attributeAsSwiftDimension("android:paddingTop")
             ?: defaultPadding).toString()

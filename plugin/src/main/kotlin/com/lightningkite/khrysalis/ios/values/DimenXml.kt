@@ -22,9 +22,9 @@ fun File.readXMLDimen(): Map<String, String> {
 fun Map<String, String>.writeXMLDimen(out: Appendable) {
     for ((key, value) in this@writeXMLDimen.entries) {
         if (key.contains("programmatic", true)) {
-            out.appendln("static var ${key.safeSwiftIdentifier()}: CGFloat = $value")
+            out.appendLine("static var ${key.safeSwiftIdentifier()}: CGFloat = $value")
         } else {
-            out.appendln("static let ${key.safeSwiftIdentifier()}: CGFloat = $value")
+            out.appendLine("static let ${key.safeSwiftIdentifier()}: CGFloat = $value")
         }
     }
 }

@@ -244,9 +244,23 @@ val extraProcessingRules: Map<String, CodeRule> = mapOf(
         val child = node.children.firstOrNull() ?: return@label
         out.constrain(
             firstItem = child.tags["id"]!!,
+            firstAttribute = "top",
+            secondItem = out.attributes["id"]!!,
+            secondAttribute = "topMargin",
+            priority = "900"
+        )
+        out.constrain(
+            firstItem = child.tags["id"]!!,
             firstAttribute = "leading",
             secondItem = out.attributes["id"]!!,
             secondAttribute = "leadingMargin",
+            priority = "900"
+        )
+        out.constrain(
+            firstItem = child.tags["id"]!!,
+            firstAttribute = "centerX",
+            secondItem = out.attributes["id"]!!,
+            secondAttribute = "centerX",
             priority = "900"
         )
         out.constrain(
@@ -261,9 +275,23 @@ val extraProcessingRules: Map<String, CodeRule> = mapOf(
         val child = node.children.firstOrNull() ?: return@label
         out.constrain(
             firstItem = child.tags["id"]!!,
+            firstAttribute = "leading",
+            secondItem = out.attributes["id"]!!,
+            secondAttribute = "leadingMargin",
+            priority = "900"
+        )
+        out.constrain(
+            firstItem = child.tags["id"]!!,
             firstAttribute = "top",
             secondItem = out.attributes["id"]!!,
             secondAttribute = "topMargin",
+            priority = "900"
+        )
+        out.constrain(
+            firstItem = child.tags["id"]!!,
+            firstAttribute = "centerY",
+            secondItem = out.attributes["id"]!!,
+            secondAttribute = "centerY",
             priority = "900"
         )
         out.constrain(
@@ -275,30 +303,30 @@ val extraProcessingRules: Map<String, CodeRule> = mapOf(
         )
     },
     "android.widget.LinearLayout" to { replacements, resolver, node, out ->
-        val gravityAtt = node.allAttributes["android:gravity"] ?: ""
-        if (node.allAttributes["android:orientation"] == "vertical") {
-            for (child in node.children) {
-                out.frameChildHorizontal(node, child, resolver, replacements)
-            }
-            val alignmentString = when (gravityAtt.split('|').find { it in horizontalGravityWords }) {
-                "center", "center_vertical" -> "center"
-                "top" -> "start"
-                "bottom" -> "end"
-                else -> "start"
-            }
-            AttPath("userDefined/alignmentString").resolve(out).put(AttKind.Raw, alignmentString, resolver)
-        } else {
-            for (child in node.children) {
-                out.frameChildVertical(node, child, resolver, replacements)
-            }
-            val alignmentString = when (gravityAtt.split('|').find { it in horizontalGravityWords }) {
-                "center", "center_horizontal" -> "center"
-                "start", "left" -> "start"
-                "end", "right" -> "end"
-                else -> "start"
-            }
-            AttPath("userDefined/alignmentString").resolve(out).put(AttKind.Raw, alignmentString, resolver)
-        }
+//        val gravityAtt = node.allAttributes["android:gravity"] ?: ""
+//        if (node.allAttributes["android:orientation"] == "vertical") {
+//            for (child in node.children) {
+//                out.frameChildHorizontal(node, child, resolver, replacements)
+//            }
+//            val alignmentString = when (gravityAtt.split('|').find { it in horizontalGravityWords }) {
+//                "center", "center_vertical" -> "center"
+//                "top" -> "start"
+//                "bottom" -> "end"
+//                else -> "start"
+//            }
+//            AttPath("userDefined/alignmentString").resolve(out).put(AttKind.Raw, alignmentString, resolver)
+//        } else {
+//            for (child in node.children) {
+//                out.frameChildVertical(node, child, resolver, replacements)
+//            }
+//            val alignmentString = when (gravityAtt.split('|').find { it in horizontalGravityWords }) {
+//                "center", "center_horizontal" -> "center"
+//                "start", "left" -> "start"
+//                "end", "right" -> "end"
+//                else -> "start"
+//            }
+//            AttPath("userDefined/alignmentString").resolve(out).put(AttKind.Raw, alignmentString, resolver)
+//        }
 
         val weightSizeAttr = if (node.allAttributes["android:orientation"] == "vertical") "height" else "width"
         val firstWithWeight = node.children.find { it.allAttributes["android:layout_weight"] != null }
@@ -351,6 +379,7 @@ val extraProcessingRules: Map<String, CodeRule> = mapOf(
         }
     },
     "android.view.View" to { replacements, resolver, node, out ->
+        println("android.view.View on ${node.name}")
         out.handleSize(node, resolver)
 
         val backgroundValue = node.allAttributes["android:background"]

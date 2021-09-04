@@ -34,12 +34,12 @@ fun convertLayoutsToHtmlXmlClasses(
         .forEach {
             try {
                 replacements += it
-            } catch(e:Exception){
+            } catch (e: Exception) {
                 throw IllegalArgumentException("Could not parse $it", e)
             }
         }
     val layouts = jacksonObjectMapper().readValue<Map<String, AndroidLayoutFile>>(androidLayoutsSummaryFile)
-    for((name, layout) in layouts){
+    for ((name, layout) in layouts) {
         val outputFile = outputFolder.resolve(name.camelCase().plus("Xml.ts"))
         outputFile.bufferedWriter().use {
             val s = SmartTabWriter(it)
@@ -70,14 +70,19 @@ fun AndroidLayoutFile.toTypescript(
         return (replacements.types[this]?.firstOrNull()
             ?: replacements.types["android.widget.$this"]?.firstOrNull()
             ?: replacements.types["android.view.$this"]?.firstOrNull()
-                )?.template?.parts?.joinToString("") { (it as? TemplatePart.Text)?.string ?: "" } ?: this.substringAfterLast('.')
+                )?.template?.parts?.joinToString("") { (it as? TemplatePart.Text)?.string ?: "" }
+            ?: this.substringAfterLast('.')
     }
+
     fun String.getImport(): TypescriptImport? {
         return (replacements.types[this]?.firstOrNull()
             ?: replacements.types["android.widget.$this"]?.firstOrNull()
             ?: replacements.types["android.view.$this"]?.firstOrNull()
-                )?.template?.imports?.firstOrNull() as? TypescriptImport ?:
-            manifest.importLine(file.relativeTo(base), this, this.substringAfterLast('.'))
+                )?.template?.imports?.firstOrNull() as? TypescriptImport ?: manifest.importLine(
+            file.relativeTo(base),
+            this,
+            this.substringAfterLast('.')
+        )
     }
 
     val imports = listOf(
@@ -90,84 +95,84 @@ fun AndroidLayoutFile.toTypescript(
         sublayouts.map { TypescriptImport("./" + it.value.layoutXmlClass, it.value.layoutXmlClass) }
     ).flatten()
 
-    out.appendln("//")
-    out.appendln("// ${name}Xml.ts")
-    out.appendln("// Created by Khrysalis XML Typescript")
-    out.appendln("//")
-    out.appendln("import { loadHtmlFromString, findViewById, getViewById, replaceViewWithId, startupAutoResize } from 'butterfly-web/dist/views/html'")
-    out.appendln("import { customViewSetDelegate } from 'butterfly-web/dist/views/CustomView'")
+    out.appendLine("//")
+    out.appendLine("// ${name}Xml.ts")
+    out.appendLine("// Created by Khrysalis XML Typescript")
+    out.appendLine("//")
+    out.appendLine("import { loadHtmlFromString, findViewById, getViewById, replaceViewWithId, startupAutoResize } from 'butterfly-web/dist/views/html'")
+    out.appendLine("import { customViewSetDelegate } from 'butterfly-web/dist/views/CustomView'")
     renderImports(projectName, file.relativeTo(base).path, imports, out)
-    for(variant in variants) {
+    for (variant in variants) {
         out.append("import htmlFor")
         out.append(variant.camelCase())
         out.append(" from '../layout-")
         out.append(variant)
         out.append("/")
         out.append(this.fileName)
-        out.appendln(".html'")
+        out.appendLine(".html'")
     }
-    out.appendln("import htmlForDefault from './$fileName.html'")
-    out.appendln("//! Declares ${packageName}.layouts.${name}Xml")
-    out.appendln("export class ${name}Xml {")
-    out.appendln("xmlRoot!: HTMLElement")
+    out.appendLine("import htmlForDefault from './$fileName.html'")
+    out.appendLine("//! Declares ${packageName}.layouts.${name}Xml")
+    out.appendLine("export class ${name}Xml {")
+    out.appendLine("xmlRoot!: HTMLElement")
     bindings.values.forEach {
-        if(it.optional){
-            out.appendln(it.run { "${name.safeJsIdentifier()}: ${type.toTsType()} | null = null" })
+        if (it.optional) {
+            out.appendLine(it.run { "${name.safeJsIdentifier()}: ${type.toTsType()} | null = null" })
         } else {
-            out.appendln(it.run { "${name.safeJsIdentifier()}!: ${type.toTsType()}" })
+            out.appendLine(it.run { "${name.safeJsIdentifier()}!: ${type.toTsType()}" })
         }
     }
     delegateBindings.values.forEach {
-        if(it.optional){
-            out.appendln(it.run { "${name}Delegate: ${type.toTsType()} | null = null" })
+        if (it.optional) {
+            out.appendLine(it.run { "${name}Delegate: ${type.toTsType()} | null = null" })
         } else {
-            out.appendln(it.run { "${name}Delegate!: ${type.toTsType()}" })
+            out.appendLine(it.run { "${name}Delegate!: ${type.toTsType()}" })
         }
     }
     sublayouts.values.forEach {
-        if(it.optional){
-            out.appendln(it.run { "${name.safeJsIdentifier()}: ${layoutXmlClass} | null = null" })
+        if (it.optional) {
+            out.appendLine(it.run { "${name.safeJsIdentifier()}: ${layoutXmlClass} | null = null" })
         } else {
-            out.appendln(it.run { "${name.safeJsIdentifier()}!: ${layoutXmlClass}" })
+            out.appendLine(it.run { "${name.safeJsIdentifier()}!: ${layoutXmlClass}" })
         }
     }
-    out.appendln("loadHtmlString(): string {")
+    out.appendLine("loadHtmlString(): string {")
     val sizeVariants = ArrayList<Int>()
-    for(variant in variants.sortedDescending()) {
-        when(variant.firstOrNull()){
+    for (variant in variants.sortedDescending()) {
+        when (variant.firstOrNull()) {
             'w' -> {
                 val w = variant.substring(1).filter { it.isDigit() }.toInt()
                 sizeVariants.add(w)
-                out.appendln("if (window.innerWidth > $w) return htmlFor${variant.camelCase()}")
+                out.appendLine("if (window.innerWidth > $w) return htmlFor${variant.camelCase()}")
             }
         }
     }
     sizeVariants.sortDescending()
-    out.appendln("return htmlForDefault")
-    out.appendln("}")
-    out.appendln("setup(dependency: Window): HTMLElement {")
-    out.appendln("const view = loadHtmlFromString(this.loadHtmlString())")
-    if(sizeVariants.isNotEmpty()) {
-        out.appendln("startupAutoResize(view, [${sizeVariants.joinToString()}])")
+    out.appendLine("return htmlForDefault")
+    out.appendLine("}")
+    out.appendLine("setup(dependency: Window): HTMLElement {")
+    out.appendLine("const view = loadHtmlFromString(this.loadHtmlString())")
+    if (sizeVariants.isNotEmpty()) {
+        out.appendLine("startupAutoResize(view, [${sizeVariants.joinToString()}])")
     }
-    out.appendln("this.xmlRoot = view")
+    out.appendLine("this.xmlRoot = view")
     bindings.values.forEach {
-        if(it.optional){
-            out.appendln(it.run { "this.${name.safeJsIdentifier()} = findViewById<${type.toTsType()}>(view, \"$resourceId\")" })
+        if (it.optional) {
+            out.appendLine(it.run { "this.${name.safeJsIdentifier()} = findViewById<${type.toTsType()}>(view, \"$resourceId\")" })
         } else {
-            out.appendln(it.run { "this.${name.safeJsIdentifier()} = getViewById<${type.toTsType()}>(view, \"$resourceId\")" })
+            out.appendLine(it.run { "this.${name.safeJsIdentifier()} = getViewById<${type.toTsType()}>(view, \"$resourceId\")" })
         }
     }
     delegateBindings.values.forEach {
-        out.appendln("if(this.${it.name.safeJsIdentifier()}){ this.${it.name}Delegate = new ${it.type.toTsType()}(); customViewSetDelegate(this.${it.name.safeJsIdentifier()}, this.${it.name}Delegate); }")
+        out.appendLine("if(this.${it.name.safeJsIdentifier()}){ this.${it.name}Delegate = new ${it.type.toTsType()}(); customViewSetDelegate(this.${it.name.safeJsIdentifier()}, this.${it.name}Delegate); }")
     }
     sublayouts.values.forEach {
-        out.appendln(it.run { "replaceViewWithId(view, ()=>{ " })
-        out.appendln(it.run { "this.${name.safeJsIdentifier()} = new $layoutXmlClass()" })
-        out.appendln(it.run { "return this.${name.safeJsIdentifier()}.setup(dependency)" })
-        out.appendln(it.run { "}, \"$resourceId\")" })
+        out.appendLine(it.run { "replaceViewWithId(view, ()=>{ " })
+        out.appendLine(it.run { "this.${name.safeJsIdentifier()} = new $layoutXmlClass()" })
+        out.appendLine(it.run { "return this.${name.safeJsIdentifier()}.setup(dependency)" })
+        out.appendLine(it.run { "}, \"$resourceId\")" })
     }
-    out.appendln("return view")
-    out.appendln("}")
-    out.appendln("}")
+    out.appendLine("return view")
+    out.appendLine("}")
+    out.appendLine("}")
 }

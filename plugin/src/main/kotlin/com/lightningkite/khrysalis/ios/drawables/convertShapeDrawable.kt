@@ -14,69 +14,69 @@ fun convertShapeDrawable(name: String, node: XmlNode, out: Appendable) {
             val height = 100.0
             with(out) {
                 node.children.find { it.name == "gradient" }?.let {
-                    appendln("static let $name: Drawable = Drawable { (view: UIView?) -> CALayer in ")
-                    appendln("    let mask = CAShapeLayer()")
-                    appendln("    mask.path = CGPath(ellipseIn: CGRect(x: 0, y: 0, width: $width, height: $height), transform: nil)")
-                    appendln("    let gradient = CAGradientLayer()")
-                    appendln("    gradient.mask = mask")
+                    appendLine("static let $name: Drawable = Drawable { (view: UIView?) -> CALayer in ")
+                    appendLine("    let mask = CAShapeLayer()")
+                    appendLine("    mask.path = CGPath(ellipseIn: CGRect(x: 0, y: 0, width: $width, height: $height), transform: nil)")
+                    appendLine("    let gradient = CAGradientLayer()")
+                    appendLine("    gradient.mask = mask")
                     val colors = listOfNotNull(
                         it.attributeAsSwiftColor("android:startColor"),
                         it.attributeAsSwiftColor("android:centerColor"),
                         it.attributeAsSwiftColor("android:endColor")
                     )
-                    appendln("    gradient.colors = " + colors.joinToString(", ", "[", "]") { "$it.cgColor" })
+                    appendLine("    gradient.colors = " + colors.joinToString(", ", "[", "]") { "$it.cgColor" })
                     val angle = it.attributeAsInt("android:angle") ?: 0
-                    appendln("    gradient.setGradientAngle(degrees: $angle)")
-                    appendln("    gradient.onResize.subscribeBy { [weak mask] (rect) in ")
-                    appendln("        mask?.path = CGPath(ellipseIn: rect, transform: nil)")
-                    appendln("    }")
-                    appendln("    return gradient")
-                    appendln("}")
+                    appendLine("    gradient.setGradientAngle(degrees: $angle)")
+                    appendLine("    gradient.onResize.subscribeBy { [weak mask] (rect) in ")
+                    appendLine("        mask?.path = CGPath(ellipseIn: rect, transform: nil)")
+                    appendLine("    }")
+                    appendLine("    return gradient")
+                    appendLine("}")
                 } ?: run {
-                    appendln("static let $name: Drawable = Drawable { (view: UIView?) -> CALayer in ")
-                    appendln("    let layer = CAShapeLayer()")
-                    appendln("    layer.path = CGPath(ellipseIn: CGRect(x: 0, y: 0, width: $width, height: $height), transform: nil)")
+                    appendLine("static let $name: Drawable = Drawable { (view: UIView?) -> CALayer in ")
+                    appendLine("    let layer = CAShapeLayer()")
+                    appendLine("    layer.path = CGPath(ellipseIn: CGRect(x: 0, y: 0, width: $width, height: $height), transform: nil)")
                     node.children.find { it.name == "stroke" }?.let {
-                        appendln("    layer.lineWidth = ${it.attributeAsSwiftDimension("android:width") ?: "0"}")
+                        appendLine("    layer.lineWidth = ${it.attributeAsSwiftDimension("android:width") ?: "0"}")
                         setToColor(it, "android:color") { it, s ->
-                            appendln(
+                            appendLine(
                                 "    layer.strokeColor = $it.cgColor"
                             )
                         }
                     }
                     node.children.find { it.name == "solid" }?.let {
                         setToColor(it, "android:color") { it, s ->
-                            appendln(
+                            appendLine(
                                 "    layer.fillColor = $it.cgColor"
                             )
                         }
                     } ?: run {
-                        appendln("    layer.fillColor = nil")
+                        appendLine("    layer.fillColor = nil")
                     }
-                    appendln("    layer.onResize.subscribeBy { [weak layer] (rect) in ")
-                    appendln("        layer?.path = CGPath(ellipseIn: rect, transform: nil)")
-                    appendln("    }")
-                    appendln("    return layer")
-                    appendln("}")
+                    appendLine("    layer.onResize.subscribeBy { [weak layer] (rect) in ")
+                    appendLine("        layer?.path = CGPath(ellipseIn: rect, transform: nil)")
+                    appendLine("    }")
+                    appendLine("    return layer")
+                    appendLine("}")
                 }
             }
         }
         else -> {
             val className = if (node.children.any { it.name == "gradient" }) "CAGradientLayer" else "CALayer"
             with(out) {
-                appendln("static let $name: Drawable = Drawable { (view: UIView?) -> CALayer in ")
-                appendln("    let layer = $className()")
+                appendLine("static let $name: Drawable = Drawable { (view: UIView?) -> CALayer in ")
+                appendLine("    let layer = $className()")
                 node.children.find { it.name == "stroke" }?.let {
-                    appendln("    layer.borderWidth = ${it.attributeAsSwiftDimension("android:width") ?: "0"}")
+                    appendLine("    layer.borderWidth = ${it.attributeAsSwiftDimension("android:width") ?: "0"}")
                     setToColor(it, "android:color") { it, s ->
-                        appendln(
+                        appendLine(
                             "    layer.borderColor = $it.cgColor"
                         )
                     }
                 }
                 node.children.find { it.name == "solid" }?.let {
                     setToColor(it, "android:color") { it, s ->
-                        appendln(
+                        appendLine(
                             "    layer.backgroundColor = $it.cgColor"
                         )
                     }
@@ -86,22 +86,22 @@ fun convertShapeDrawable(name: String, node: XmlNode, out: Appendable) {
                         it.attributeAsSwiftColor("android:centerColor"),
                         it.attributeAsSwiftColor("android:endColor")
                     )
-                    appendln("    layer.colors = " + colors.joinToString(", ", "[", "]") { "$it.cgColor" })
+                    appendLine("    layer.colors = " + colors.joinToString(", ", "[", "]") { "$it.cgColor" })
                     val angle = it.attributeAsInt("android:angle") ?: 0
-                    appendln("    layer.setGradientAngle(degrees: $angle)")
+                    appendLine("    layer.setGradientAngle(degrees: $angle)")
                 }
                 node.children.find { it.name == "corners" }?.let { corners ->
                     corners.attributeAsSwiftDimension("android:radius")?.let {
-                        appendln("    layer.maxCornerRadius = $it")
-                        appendln("    layer.cornerRadius = $it")
+                        appendLine("    layer.maxCornerRadius = $it")
+                        appendLine("    layer.cornerRadius = $it")
                     } ?: run {
                         val radius = corners.attributeAsSwiftDimension("android:bottomLeftRadius")
                             ?: corners.attributeAsSwiftDimension("android:topLeftRadius")
                             ?: corners.attributeAsSwiftDimension("android:bottomRightRadius")
                             ?: corners.attributeAsSwiftDimension("android:topRightRadius")
                         if (radius != null) {
-                            appendln("    layer.cornerRadius = $radius")
-                            appendln("    if #available(iOS 11.0, *) {")
+                            appendLine("    layer.cornerRadius = $radius")
+                            appendLine("    if #available(iOS 11.0, *) {")
                             append("        layer.maskedCorners = [")
                             append(
                                 mapOf(
@@ -111,14 +111,14 @@ fun convertShapeDrawable(name: String, node: XmlNode, out: Appendable) {
                                     "android:topRightRadius" to ".layerMaxXMinYCorner"
                                 ).filterKeys { corners.allAttributes.containsKey(it) }.values.joinToString()
                             )
-                            appendln("]")
-                            appendln("    }")
+                            appendLine("]")
+                            appendLine("    }")
                         }
                     }
                 }
-                appendln("    layer.bounds.size = CGSize(width: 100, height: 100)")
-                appendln("    return layer")
-                appendln("}")
+                appendLine("    layer.bounds.size = CGSize(width: 100, height: 100)")
+                appendLine("    return layer")
+                appendLine("}")
             }
         }
     }

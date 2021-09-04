@@ -48,7 +48,7 @@ fun copyOutFromRes(folder: String, target: File, organization: String, organizat
                     if (!currentFile.exists()) {
                         currentFile.bufferedWriter().use { out ->
                             jarFile.getInputStream(jarEntry).bufferedReader().useLines { input ->
-                                input.forEach { out.appendln(it.applyReplacements()) }
+                                input.forEach { out.appendLine(it.applyReplacements()) }
                             }
                         }
                     }

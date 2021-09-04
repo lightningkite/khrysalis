@@ -9,12 +9,12 @@ val LayoutConverter.Companion.textInputViews
             ViewType("com.lightningkite.butterfly.views.widget.MultilineEditText", "UITextView", "EditText", handlesPadding = true) { node ->
                 //Purposefully empty
                 node.attributeAsSwiftString("android:hint")?.let { text ->
-                    appendln("view.placeholder = $text")
+                    appendLine("view.placeholder = $text")
                 }
                 node.attributeAsSwiftColor("android:textColorHint")?.let {
-                    appendln("view.placeholderColor = $it")
+                    appendLine("view.placeholderColor = $it")
                 }
-                appendln("view.addDismissButton()")
+                appendLine("view.addDismissButton()")
             },
             ViewType("AutoCompleteTextView", "UIAutoCompleteTextFieldPadded", "EditText", handlesPadding = true) { node ->},
             ViewType("EditText", "UITextFieldPadded", "View", handlesPadding = true) { node ->
@@ -23,45 +23,49 @@ val LayoutConverter.Companion.textInputViews
                 val paddingLeft = (node.attributeAsSwiftDimension("android:paddingLeft") ?: defaultPadding)
                 val paddingBottom = (node.attributeAsSwiftDimension("android:paddingBottom") ?: defaultPadding)
                 val paddingRight = (node.attributeAsSwiftDimension("android:paddingRight") ?: defaultPadding)
-                appendln("view.padding = UIEdgeInsets(top: $paddingTop, left: $paddingLeft, bottom: $paddingBottom, right: $paddingRight)")
+                appendLine("view.padding = UIEdgeInsets(top: $paddingTop, left: $paddingLeft, bottom: $paddingBottom, right: $paddingRight)")
 
                 node.attributeAsSwiftDrawable("android:drawableLeft")?.let {
-                    appendln("view.leftView = $it.makeView()")
-                    appendln("view.leftViewMode = .always")
+                    appendLine("view.leftView = $it.makeView()")
+                    appendLine("view.leftViewMode = .always")
                 }
                 node.attributeAsSwiftDrawable("android:drawableRight")?.let {
-                    appendln("view.rightView = $it.makeView()")
-                    appendln("view.rightViewMode = .always")
+                    appendLine("view.rightView = $it.makeView()")
+                    appendLine("view.rightViewMode = .always")
                 }
                 node.attributeAsSwiftDimension("android:compoundPadding")?.let {
-                    appendln("view.compoundPadding = $it")
+                    appendLine("view.compoundPadding = $it")
                 }
 
                 node.attributeAsSwiftString("android:hint")?.let { text ->
-                    if(!setToColor(node, "android:textColorHint"){ it, s ->
-                            appendln("view.attributedPlaceholder = $text.attributedWithColor($it)")
-                    }) {
-                        appendln("view.placeholder = $text")
+                    if (!setToColor(node, "android:textColorHint") { it, s ->
+                            appendLine("view.attributedPlaceholder = $text.attributedWithColor($it)")
+                        }) {
+                        appendLine("view.placeholder = $text")
                     }
                 }
                 if (node.allAttributes["android:background"] == null) {
                     val boldColor = node.attributeAsSwiftColor("android:textColor") ?: "UIColor.white"
                     val hintColor = node.attributeAsSwiftColor("android:textColorHint") ?: "nil"
-                    appendln("view.setBackgroundColor(.clear)")
-                    appendln("view.backgroundLayer = view.underlineLayer(boldColor: $boldColor, hintColor: $hintColor)")
+                    appendLine("view.setBackgroundColor(.clear)")
+                    appendLine("view.backgroundLayer = view.underlineLayer(boldColor: $boldColor, hintColor: $hintColor)")
                 }
                 node.allAttributes["android:imeOptions"]?.split("|")?.forEach {
-                    appendln("view.returnKeyType = .${when(it){
-                        "actionSend" -> "send"
-                        "actionDone" -> "done"
-                        "actionGo" -> "go"
-                        "actionNext" -> "next"
-                        "actionSearch" -> "search"
-                        else -> "default"
-                    }}")
+                    appendLine(
+                        "view.returnKeyType = .${
+                            when (it) {
+                                "actionSend" -> "send"
+                                "actionDone" -> "done"
+                                "actionGo" -> "go"
+                                "actionNext" -> "next"
+                                "actionSearch" -> "search"
+                                else -> "default"
+                            }
+                        }"
+                    )
                 }
                 node.allAttributes["android:inputType"]?.let { type ->
-                    appendln("view.autocapitalizationType = .none")
+                    appendLine("view.autocapitalizationType = .none")
                     for (part in type.split('|')) {
                         when (part) {
                             "none" -> {
@@ -71,33 +75,33 @@ val LayoutConverter.Companion.textInputViews
 
                             }
                             "textCapCharacters" -> {
-                                appendln("view.autocapitalizationType = .allCharacters")
+                                appendLine("view.autocapitalizationType = .allCharacters")
                             }
                             "textCapWords" -> {
-                                appendln("view.autocapitalizationType = .words")
+                                appendLine("view.autocapitalizationType = .words")
                             }
                             "textCapSentences" -> {
-                                appendln("view.autocapitalizationType = .sentences")
+                                appendLine("view.autocapitalizationType = .sentences")
                             }
                             "textAutoCorrect" -> {
-                                appendln("view.autocorrectionType = .yes")
+                                appendLine("view.autocorrectionType = .yes")
                             }
                             "textAutoComplete" -> {
-                                appendln("view.autocorrectionType = .yes")
+                                appendLine("view.autocorrectionType = .yes")
                             }
                             "textMultiLine", "textImeMultiLine" -> {
 
                             }
                             "textNoSuggestions" -> {
-                                appendln("view.spellCheckingType = .no")
+                                appendLine("view.spellCheckingType = .no")
                             }
                             "textUri" -> {
-                                appendln("view.keyboardType = .URL")
-                                appendln("view.textContentType = .URL")
+                                appendLine("view.keyboardType = .URL")
+                                appendLine("view.textContentType = .URL")
                             }
                             "textEmailAddress", "textWebEmailAddress" -> {
-                                appendln("view.textContentType = .emailAddress")
-                                appendln("view.keyboardType = .emailAddress")
+                                appendLine("view.textContentType = .emailAddress")
+                                appendLine("view.keyboardType = .emailAddress")
                             }
                             "textEmailSubject" -> {
 
@@ -109,17 +113,17 @@ val LayoutConverter.Companion.textInputViews
 
                             }
                             "textPersonName" -> {
-                                appendln("view.textContentType = .name")
+                                appendLine("view.textContentType = .name")
                             }
                             "textPostalAddress" -> {
-                                appendln("view.textContentType = .fullStreetAddress")
+                                appendLine("view.textContentType = .fullStreetAddress")
                             }
                             "textPassword", "textWebPassword" -> {
-                                appendln("if #available(iOS 11.0, *) { view.textContentType = .password }")
-                                appendln("view.isSecureTextEntry = true")
+                                appendLine("if #available(iOS 11.0, *) { view.textContentType = .password }")
+                                appendLine("view.isSecureTextEntry = true")
                             }
                             "textVisiblePassword" -> {
-                                appendln("if #available(iOS 11.0, *) { view.textContentType = .password }")
+                                appendLine("if #available(iOS 11.0, *) { view.textContentType = .password }")
                             }
                             "textWebEditText" -> {
 
@@ -131,27 +135,27 @@ val LayoutConverter.Companion.textInputViews
 
                             }
                             "number" -> {
-                                appendln("view.keyboardType = .numberPad")
-                                appendln("view.addDismissButton()")
+                                appendLine("view.keyboardType = .numberPad")
+                                appendLine("view.addDismissButton()")
                             }
                             "numberSigned" -> {
-                                appendln("view.keyboardType = .numbersAndPunctuation")
-                                appendln("view.addDismissButton()")
+                                appendLine("view.keyboardType = .numbersAndPunctuation")
+                                appendLine("view.addDismissButton()")
                             }
                             "numberDecimal" -> {
-                                appendln("view.keyboardType = .decimalPad")
-                                appendln("view.addDismissButton()")
+                                appendLine("view.keyboardType = .decimalPad")
+                                appendLine("view.addDismissButton()")
                             }
                             "numberPassword" -> {
-                                appendln("view.keyboardType = .numberPad")
-                                appendln("view.addDismissButton()")
-                                appendln("if #available(iOS 11.0, *) { view.textContentType = .password }")
-                                appendln("view.isSecureTextEntry = true")
+                                appendLine("view.keyboardType = .numberPad")
+                                appendLine("view.addDismissButton()")
+                                appendLine("if #available(iOS 11.0, *) { view.textContentType = .password }")
+                                appendLine("view.isSecureTextEntry = true")
                             }
                             "phone" -> {
-                                appendln("view.keyboardType = .phonePad")
-                                appendln("view.addDismissButton()")
-                                appendln("view.textContentType = .telephoneNumber")
+                                appendLine("view.keyboardType = .phonePad")
+                                appendLine("view.addDismissButton()")
+                                appendLine("view.textContentType = .telephoneNumber")
                             }
                             "datetime" -> {
 
@@ -166,33 +170,34 @@ val LayoutConverter.Companion.textInputViews
                     }
                 }
                 node.allAttributes["android:autofillHints"]?.let { type ->
-                    when(type){
-                        "creditCardNumber" -> appendln("view.textContentType = .creditCardNumber")
-                        "emailAddress" -> appendln("view.textContentType = .emailAddress")
-                        "name" -> appendln("view.textContentType = .name")
+                    when (type) {
+                        "creditCardNumber" -> appendLine("view.textContentType = .creditCardNumber")
+                        "emailAddress" -> appendLine("view.textContentType = .emailAddress")
+                        "name" -> appendLine("view.textContentType = .name")
 //                        "newPassword" -> appendln("view.textContentType = .newPassword")
 //                        "newUsername" -> appendln("view.textContentType = .username")
-                        "password" -> appendln("view.textContentType = .password")
-                        "personName" -> appendln("view.textContentType = .name")
-                        "personFamilyName" -> appendln("view.textContentType = .familyName")
-                        "personGivenName" -> appendln("view.textContentType = .givenName")
-                        "personMiddleName" -> appendln("view.textContentType = .middleName")
-                        "personMiddleInitial" -> appendln("view.textContentType = .middleName")
-                        "personNamePrefix" -> appendln("view.textContentType = .namePrefix")
-                        "personNameSuffix" -> appendln("view.textContentType = .nameSuffix")
-                        "phone" -> appendln("view.textContentType = .telephoneNumber")
-                        "phoneNumber" -> appendln("view.textContentType = .telephoneNumber")
-                        "phoneNumberDevice" -> appendln("view.textContentType = .telephoneNumber")
-                        "postalAddress" -> appendln("view.textContentType = .streetAddressLine1")
-                        "addressCountry" -> appendln("view.textContentType = .countryName")
-                        "extendedAddress" -> appendln("view.textContentType = .streetAddressLine2")
-                        "extendedPostalCode" -> appendln("view.textContentType = .extendedPostalCode")
-                        "addressLocality" -> appendln("view.textContentType = .addressCity")
-                        "addressRegion" -> appendln("view.textContentType = .addressState")
-                        "streetAddress" -> appendln("view.textContentType = .streetAddressLine1")
-                        "postalCode" -> appendln("view.textContentType = .postalCode")
-                        "username" -> appendln("view.textContentType = .username")
-                        else -> {}
+                        "password" -> appendLine("view.textContentType = .password")
+                        "personName" -> appendLine("view.textContentType = .name")
+                        "personFamilyName" -> appendLine("view.textContentType = .familyName")
+                        "personGivenName" -> appendLine("view.textContentType = .givenName")
+                        "personMiddleName" -> appendLine("view.textContentType = .middleName")
+                        "personMiddleInitial" -> appendLine("view.textContentType = .middleName")
+                        "personNamePrefix" -> appendLine("view.textContentType = .namePrefix")
+                        "personNameSuffix" -> appendLine("view.textContentType = .nameSuffix")
+                        "phone" -> appendLine("view.textContentType = .telephoneNumber")
+                        "phoneNumber" -> appendLine("view.textContentType = .telephoneNumber")
+                        "phoneNumberDevice" -> appendLine("view.textContentType = .telephoneNumber")
+                        "postalAddress" -> appendLine("view.textContentType = .streetAddressLine1")
+                        "addressCountry" -> appendLine("view.textContentType = .countryName")
+                        "extendedAddress" -> appendLine("view.textContentType = .streetAddressLine2")
+                        "extendedPostalCode" -> appendLine("view.textContentType = .extendedPostalCode")
+                        "addressLocality" -> appendLine("view.textContentType = .addressCity")
+                        "addressRegion" -> appendLine("view.textContentType = .addressState")
+                        "streetAddress" -> appendLine("view.textContentType = .streetAddressLine1")
+                        "postalCode" -> appendLine("view.textContentType = .postalCode")
+                        "username" -> appendLine("view.textContentType = .username")
+                        else -> {
+                        }
                     }
                 }
                 handleCommonText(node, controlView = "view")

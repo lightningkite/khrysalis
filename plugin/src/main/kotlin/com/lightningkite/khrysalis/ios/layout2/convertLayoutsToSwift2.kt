@@ -43,6 +43,21 @@ fun convertLayoutsToSwift2(
                 t.printStackTrace()
             }
         }
+    val xibRules = equivalentsFolders.plus(sequenceOf(iosFolder))
+        .flatMap { it.walkTopDown() }
+        .filter {
+            it.name.endsWith("xib.yaml") || it.name.endsWith("xib.yml")
+        }
+        .flatMap { actualFile ->
+            val replacementMapper = ObjectMapper(YAMLFactory())
+                .registerModule(XibRulesModule())
+                .registerModule(SwiftJacksonReplacementsModule())
+                .registerModule(KotlinModule())
+                .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
+            println(replacementMapper.readTree(actualFile))
+            replacementMapper.readValue<List<XibTranslation>>(actualFile)
+        }
+        .associateBy { it.id }
 
     val converter = AppleResourceLayoutConversion()
     converter.getFonts(androidFolder.resolve("src/main/res/font"))
@@ -74,9 +89,12 @@ fun convertLayoutsToSwift2(
     val androidFiles = jacksonObjectMapper().readValue<Map<String, AndroidLayoutFile>>(
         androidFolder.resolve("build/layout/summary.json")
     )
+    println("Layouts to convert: $androidFiles")
+    println("XIB rules: $xibRules")
 
     for((name, layout) in androidFiles){
         log("Converting layout ${layout.fileName}.xml")
+        println("Converting layout ${layout.fileName}.xml")
         val inputFile = androidFolder.resolve("src/main/res/layout/${layout.fileName}.xml")
         val swiftOutputFile = iosFolder.resolve("swiftResources/layouts")
             .resolve(layout.fileName.camelCase().capitalize() + "Xml.swift")
@@ -86,7 +104,7 @@ fun convertLayoutsToSwift2(
             layout.toSwift(replacements, SmartTabWriter(bw))
         }
         xibOutputFile.bufferedWriter().use { bw ->
-            converter.xibDocument(inputFile, XibRules(mapOf(), replacements), styles, bw)
+            converter.xibDocument(inputFile, XibRules(xibRules, replacements), styles, bw)
         }
     }
 }

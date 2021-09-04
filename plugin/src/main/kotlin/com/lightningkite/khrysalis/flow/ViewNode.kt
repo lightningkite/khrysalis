@@ -179,174 +179,179 @@ class ViewNode(
     }
 
     fun gather(node: XmlNode, xml: File, styles: Styles, parentPath: String? = "xml") {
-        val path = parentPath?.let { parentPath ->
-            node.allAttributes["android:id"]?.removePrefix("@+id/")?.camelCase()?.let {
-                parentPath + "." + it
+        try {
+            val path = parentPath?.let { parentPath ->
+                node.allAttributes["android:id"]?.removePrefix("@+id/")?.camelCase()?.let {
+                    parentPath + "." + it
+                }
             }
-        }
-        node.allAttributes[attributePush]?.let {
-            val onStack = node.allAttributes[attributeOnStack] ?: "stack"
-            operations.add(
-                ViewStackOp.Push(
-                    stack = onStack,
-                    viewName = it.removePrefix("@layout/").camelCase().capitalize()
-                )
-            )
-            requires.add(
-                ViewVar(
-                    name = onStack,
-                    type = "ObservableStack[ViewGenerator]",
-                    default = null
-                )
-            )
-        }
-        node.allAttributes[attributeSwap]?.let {
-            val onStack = node.allAttributes[attributeOnStack] ?: "stack"
-            operations.add(
-                ViewStackOp.Swap(
-                    stack = onStack,
-                    viewName = it.removePrefix("@layout/").camelCase().capitalize()
-                )
-            )
-            requires.add(
-                ViewVar(
-                    name = onStack,
-                    type = "ObservableStack[ViewGenerator]",
-                    default = null
-                )
-            )
-        }
-        node.allAttributes[attributeReset]?.let {
-            val onStack = node.allAttributes[attributeOnStack] ?: "stack"
-            operations.add(
-                ViewStackOp.Reset(
-                    stack = onStack,
-                    viewName = it.removePrefix("@layout/").camelCase().capitalize()
-                )
-            )
-            requires.add(
-                ViewVar(
-                    name = onStack,
-                    type = "ObservableStack[ViewGenerator]",
-                    default = null
-                )
-            )
-        }
-        node.allAttributes[attributePopTo]?.let {
-            val onStack = node.allAttributes[attributeOnStack] ?: "stack"
-            operations.add(
-                ViewStackOp.PopTo(
-                    stack = onStack,
-                    viewType = it.removePrefix("@layout/").camelCase().capitalize()
-                )
-            )
-            requires.add(
-                ViewVar(
-                    name = onStack,
-                    type = "ObservableStack[ViewGenerator]",
-                    default = null
-                )
-            )
-        }
-        node.allAttributes[attributePop]?.let {
-            (node.allAttributes[attributeOnStack]?.split(';') ?: listOf("stack")).map { it.trim() }.forEach {
-                operations.add(ViewStackOp.Pop(stack = it))
-                requires.add(
-                    ViewVar(
-                        name = it,
-                        type = "ObservableStack[ViewGenerator]",
-                        default = null
-                    )
-                )
-            }
-        }
-        node.allAttributes[attributeDismiss]?.let {
-            (node.allAttributes[attributeOnStack]?.split(';') ?: listOf("stack")).map { it.trim() }.forEach {
-                operations.add(ViewStackOp.Dismiss(stack = it))
-                requires.add(
-                    ViewVar(
-                        name = it,
-                        type = "ObservableStack[ViewGenerator]",
-                        default = null
-                    )
-                )
-            }
-        }
-        node.allAttributes[attributeEmbed]?.let {
-            operations.add(
-                ViewStackOp.Embed(
-                    replaceId = node.allAttributes["android:id"]!!.removePrefix("@+id/"),
-                    viewName = it.removePrefix("@layout/").camelCase().capitalize()
-                )
-            )
-        }
-        node.allAttributes[attributeStackId]?.let { stackId ->
-            provides.add(ViewVar(stackId, "ObservableStack[ViewGenerator]", "ObservableStack()"))
-            node.allAttributes[attributeStackDefault]?.let {
+            node.allAttributes[attributePush]?.let {
+                val onStack = node.allAttributes[attributeOnStack] ?: "stack"
                 operations.add(
-                    ViewStackOp.StartWith(
-                        stack = stackId,
+                    ViewStackOp.Push(
+                        stack = onStack,
+                        viewName = it.removePrefix("@layout/").camelCase().capitalize()
+                    )
+                )
+                requires.add(
+                    ViewVar(
+                        name = onStack,
+                        type = "ObservableStack[ViewGenerator]",
+                        default = null
+                    )
+                )
+            }
+            node.allAttributes[attributeSwap]?.let {
+                val onStack = node.allAttributes[attributeOnStack] ?: "stack"
+                operations.add(
+                    ViewStackOp.Swap(
+                        stack = onStack,
+                        viewName = it.removePrefix("@layout/").camelCase().capitalize()
+                    )
+                )
+                requires.add(
+                    ViewVar(
+                        name = onStack,
+                        type = "ObservableStack[ViewGenerator]",
+                        default = null
+                    )
+                )
+            }
+            node.allAttributes[attributeReset]?.let {
+                val onStack = node.allAttributes[attributeOnStack] ?: "stack"
+                operations.add(
+                    ViewStackOp.Reset(
+                        stack = onStack,
+                        viewName = it.removePrefix("@layout/").camelCase().capitalize()
+                    )
+                )
+                requires.add(
+                    ViewVar(
+                        name = onStack,
+                        type = "ObservableStack[ViewGenerator]",
+                        default = null
+                    )
+                )
+            }
+            node.allAttributes[attributePopTo]?.let {
+                val onStack = node.allAttributes[attributeOnStack] ?: "stack"
+                operations.add(
+                    ViewStackOp.PopTo(
+                        stack = onStack,
+                        viewType = it.removePrefix("@layout/").camelCase().capitalize()
+                    )
+                )
+                requires.add(
+                    ViewVar(
+                        name = onStack,
+                        type = "ObservableStack[ViewGenerator]",
+                        default = null
+                    )
+                )
+            }
+            node.allAttributes[attributePop]?.let {
+                (node.allAttributes[attributeOnStack]?.split(';') ?: listOf("stack")).map { it.trim() }.forEach {
+                    operations.add(ViewStackOp.Pop(stack = it))
+                    requires.add(
+                        ViewVar(
+                            name = it,
+                            type = "ObservableStack[ViewGenerator]",
+                            default = null
+                        )
+                    )
+                }
+            }
+            node.allAttributes[attributeDismiss]?.let {
+                (node.allAttributes[attributeOnStack]?.split(';') ?: listOf("stack")).map { it.trim() }.forEach {
+                    operations.add(ViewStackOp.Dismiss(stack = it))
+                    requires.add(
+                        ViewVar(
+                            name = it,
+                            type = "ObservableStack[ViewGenerator]",
+                            default = null
+                        )
+                    )
+                }
+            }
+            node.allAttributes[attributeEmbed]?.let {
+                operations.add(
+                    ViewStackOp.Embed(
+                        replaceId = node.allAttributes["android:id"]!!.removePrefix("@+id/"),
                         viewName = it.removePrefix("@layout/").camelCase().capitalize()
                     )
                 )
             }
-        }
-        node.allAttributes[attributeRequires]?.let {
-            it.split(';').filter { it.isNotBlank() }.forEach { unfixed ->
-                val it = unfixed.removePrefix("val ").removePrefix("var ").trim()
-                val newVar = ViewVar(
-                    name = it.substringBefore(':').trim(),
-                    type = it.substringAfter(':').substringBefore('=').trim(),
-                    default = it.substringAfter('=', "").takeUnless { it.isEmpty() }?.trim(),
-                    onPath = path
-                )
-                println("newVar: $newVar")
-                requires.add(newVar)
-            }
-        }
-        node.allAttributes[attributeProvides]?.let {
-            it.split(';').filter { it.isNotBlank() }.forEach { unfixed ->
-                val it = unfixed.removePrefix("val ").removePrefix("var ").trim()
-                provides.add(
-                    ViewVar(
-                        name = it.substringBefore(':').trim(),
-                        type = it.substringAfter(':').substringBefore('=').trim(),
-                        default = it.substringAfter('=', "").takeUnless { it.isEmpty() }?.trim(),
-                        onPath = path
-                    )
-                )
-            }
-        }
-        if (node.name == "include") {
-            node.allAttributes["layout"]?.let {
-                val targetName = it.removePrefix("@layout/")
-                if(targetName.startsWith("component", true)) {
-                    val file = xml.parentFile.resolve(targetName.plus(".xml"))
-                    gather(XmlNode.read(file, styles), xml, styles, path)
-                } else {
+            node.allAttributes[attributeStackId]?.let { stackId ->
+                provides.add(ViewVar(stackId, "ObservableStack[ViewGenerator]", "ObservableStack()"))
+                node.allAttributes[attributeStackDefault]?.let {
                     operations.add(
-                        ViewStackOp.Embed(
-                            replaceId = node.allAttributes["android:id"]!!.removePrefix("@+id/"),
+                        ViewStackOp.StartWith(
+                            stack = stackId,
                             viewName = it.removePrefix("@layout/").camelCase().capitalize()
                         )
                     )
                 }
             }
-        }
-        node.allAttributes["tools:listitem"]?.let {
-            val p = it.removePrefix("@layout/")
-            if(p.startsWith("component") || p.startsWith("android_")){
-                val file = xml.parentFile.resolve(p.plus(".xml"))
-                gather(XmlNode.read(file, styles), xml, styles, parentPath)
-            } else {
-                operations.add(
-                    ViewStackOp.Push(
-                        stack = null,
-                        viewName = it.removePrefix("@layout/").camelCase().capitalize()
+            node.allAttributes[attributeRequires]?.let {
+                it.split(';').filter { it.isNotBlank() }.forEach { unfixed ->
+                    val it = unfixed.removePrefix("val ").removePrefix("var ").trim()
+                    val newVar = ViewVar(
+                        name = it.substringBefore(':').trim(),
+                        type = it.substringAfter(':').substringBefore('=').trim(),
+                        default = it.substringAfter('=', "").takeUnless { it.isEmpty() }?.trim(),
+                        onPath = path
                     )
-                )
+                    println("newVar: $newVar")
+                    requires.add(newVar)
+                }
             }
+            node.allAttributes[attributeProvides]?.let {
+                it.split(';').filter { it.isNotBlank() }.forEach { unfixed ->
+                    val it = unfixed.removePrefix("val ").removePrefix("var ").trim()
+                    provides.add(
+                        ViewVar(
+                            name = it.substringBefore(':').trim(),
+                            type = it.substringAfter(':').substringBefore('=').trim(),
+                            default = it.substringAfter('=', "").takeUnless { it.isEmpty() }?.trim(),
+                            onPath = path
+                        )
+                    )
+                }
+            }
+            if (node.name == "include") {
+                node.allAttributes["layout"]?.let {
+                    val targetName = it.removePrefix("@layout/")
+                    if (targetName.startsWith("component", true)) {
+                        val file = xml.parentFile.resolve(targetName.plus(".xml"))
+                        gather(XmlNode.read(file, styles), xml, styles, path)
+                    } else {
+                        operations.add(
+                            ViewStackOp.Embed(
+                                replaceId = node.allAttributes["android:id"]!!.removePrefix("@+id/"),
+                                viewName = it.removePrefix("@layout/").camelCase().capitalize()
+                            )
+                        )
+                    }
+                }
+            }
+            node.allAttributes["tools:listitem"]?.let {
+                val p = it.removePrefix("@layout/")
+                if (p.startsWith("component") || p.startsWith("android_")) {
+                    val file = xml.parentFile.resolve(p.plus(".xml"))
+                    gather(XmlNode.read(file, styles), xml, styles, parentPath)
+                } else {
+                    operations.add(
+                        ViewStackOp.Push(
+                            stack = null,
+                            viewName = it.removePrefix("@layout/").camelCase().capitalize()
+                        )
+                    )
+                }
+            }
+            node.children.forEach { gather(it, xml, styles, parentPath) }
+        } catch(e: Exception) {
+            println("Failed to read $xml")
+            e.printStackTrace()
         }
-        node.children.forEach { gather(it, xml, styles, parentPath) }
     }
 }

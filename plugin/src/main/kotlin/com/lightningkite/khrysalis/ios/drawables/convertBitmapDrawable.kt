@@ -9,16 +9,16 @@ import java.lang.Appendable
 fun convertBitmapDrawable(name: String, node: XmlNode, out: Appendable) {
     println("Writing bitmap $name")
     with(out) {
-        appendln("static let $name: Drawable = Drawable { (view: UIView?) -> CALayer in ")
-        appendln("    let layer = CALayer()")
-        setToColor(node, "android:tint"){ it, s ->
-            appendln("    layer.backgroundColor = $it.cgColor")
+        appendLine("static let $name: Drawable = Drawable { (view: UIView?) -> CALayer in ")
+        appendLine("    let layer = CALayer()")
+        setToColor(node, "android:tint") { it, s ->
+            appendLine("    layer.backgroundColor = $it.cgColor")
         }
-        appendln("    let mask = ${node.attributeAsSwiftLayer("android:src", "view")}")
-        appendln("    layer.mask = mask")
-        appendln("    layer.bounds.size = mask.bounds.size")
-        appendln("    layer.onResize.startWith(layer.bounds).addWeak(mask) { (mask, bounds) in mask.frame = bounds }")
-        appendln("    return layer")
-        appendln("}")
+        appendLine("    let mask = ${node.attributeAsSwiftLayer("android:src", "view")}")
+        appendLine("    layer.mask = mask")
+        appendLine("    layer.bounds.size = mask.bounds.size")
+        appendLine("    layer.onResize.startWith(layer.bounds).addWeak(mask) { (mask, bounds) in mask.frame = bounds }")
+        appendLine("    return layer")
+        appendLine("}")
     }
 }

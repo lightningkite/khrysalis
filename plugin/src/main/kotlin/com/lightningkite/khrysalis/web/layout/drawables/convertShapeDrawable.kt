@@ -8,8 +8,14 @@ import java.io.File
 import java.lang.Appendable
 
 
-fun convertShapeDrawable(webDrawablesFolder: File, currentDrawable: String, selectors: String, node: XmlNode, out: Appendable) {
-    out.appendln("$selectors {")
+fun convertShapeDrawable(
+    webDrawablesFolder: File,
+    currentDrawable: String,
+    selectors: String,
+    node: XmlNode,
+    out: Appendable
+) {
+    out.appendLine("$selectors {")
     when (node.allAttributes["android:shape"]) {
         "oval" -> {
             node.children.find { it.name == "gradient" }?.let {
@@ -19,21 +25,21 @@ fun convertShapeDrawable(webDrawablesFolder: File, currentDrawable: String, sele
                     it.attributeAsCssColor("android:endColor")
                 )
                 val angle = it.attributeAsInt("android:angle")?.toInt() ?: 0
-                out.appendln("background-image: linear-gradient(${angle-90}deg, ${colors.joinToString()});")
+                out.appendLine("background-image: linear-gradient(${angle - 90}deg, ${colors.joinToString()});")
             } ?: run {
                 node.children.find { it.name == "solid" }?.let {
                     val color = it.attributeAsCssColor("android:color")
-                    out.appendln("background-color: $color;")
+                    out.appendLine("background-color: $color;")
                 }
             }
             node.children.find { it.name == "stroke" }?.let {
                 val color = it.attributeAsCssColor("android:color")
-                out.appendln("border-color: $color;")
+                out.appendLine("border-color: $color;")
                 val width = it.directAttributes["android:width"]?.asCssDimension()
-                out.appendln("border-width: $width;")
-                out.appendln("border-style: solid;")
+                out.appendLine("border-width: $width;")
+                out.appendLine("border-style: solid;")
             }
-            out.appendln("border-radius: 50%;")
+            out.appendLine("border-radius: 50%;")
         }
         else -> {
             node.children.find { it.name == "gradient" }?.let {
@@ -43,41 +49,41 @@ fun convertShapeDrawable(webDrawablesFolder: File, currentDrawable: String, sele
                     it.attributeAsCssColor("android:endColor")
                 )
                 val angle = it.attributeAsInt("android:angle")?.toInt() ?: 0
-                out.appendln("background-image: linear-gradient(${angle-90}deg, ${colors.joinToString()});")
+                out.appendLine("background-image: linear-gradient(${angle - 90}deg, ${colors.joinToString()});")
             } ?: run {
                 node.children.find { it.name == "solid" }?.let {
                     val color = it.attributeAsCssColor("android:color")
-                    out.appendln("background-color: $color;")
+                    out.appendLine("background-color: $color;")
                 }
             }
             node.children.find { it.name == "stroke" }?.let {
                 val color = it.attributeAsCssColor("android:color")
-                out.appendln("border-color: $color;")
+                out.appendLine("border-color: $color;")
                 val width = it.directAttributes["android:width"]?.asCssDimension()
-                out.appendln("border-width: $width;")
-                out.appendln("border-style: solid;")
+                out.appendLine("border-width: $width;")
+                out.appendLine("border-style: solid;")
             }
 
             node.children.find { it.name == "corners" }?.let { corners ->
                 corners.directAttributes["android:radius"]?.asCssDimension()?.let {
-                    out.appendln("border-radius: $it;")
+                    out.appendLine("border-radius: $it;")
                 } ?: run {
                     corners.directAttributes["android:topLeftRadius"]?.asCssDimension()?.let {
-                        out.appendln("border-top-left-radius: $it;")
+                        out.appendLine("border-top-left-radius: $it;")
                     }
                     corners.directAttributes["android:topRightRadius"]?.asCssDimension()?.let {
-                        out.appendln("border-top-right-radius: $it;")
+                        out.appendLine("border-top-right-radius: $it;")
                     }
                     corners.directAttributes["android:bottomRightRadius"]?.asCssDimension()?.let {
-                        out.appendln("border-bottom-right-radius: $it;")
+                        out.appendLine("border-bottom-right-radius: $it;")
                     }
                     corners.directAttributes["android:bottomLeftRadius"]?.asCssDimension()?.let {
-                        out.appendln("border-bottom-left-radius: $it;")
+                        out.appendLine("border-bottom-left-radius: $it;")
                     }
-                    out.appendln(";")
+                    out.appendLine(";")
                 }
             }
         }
     }
-    out.appendln("}")
+    out.appendLine("}")
 }

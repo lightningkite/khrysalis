@@ -38,11 +38,11 @@ fun Map<String, String>.writeXMLStringsTranslation(base: Map<String, String>, lo
 }
 
 fun Map<String, String>.writeXMLStrings(out: Appendable) {
-    for((key, value) in this@writeXMLStrings.entries){
+    for ((key, value) in this@writeXMLStrings.entries) {
         val fixedString = value
             .replace("\\'", "'")
             .replace("\\$", "$")
             .replace(Regex("\n *"), " ")
-        out.appendln("static let ${key.safeSwiftIdentifier()} = NSLocalizedString(\"$fixedString\", comment: \"$key\")")
+        out.appendLine("static let ${key.safeSwiftIdentifier()} = NSLocalizedString(\"$fixedString\", comment: \"$key\")")
     }
 }

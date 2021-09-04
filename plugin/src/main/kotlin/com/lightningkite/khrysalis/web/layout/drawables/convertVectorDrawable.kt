@@ -18,7 +18,7 @@ fun convertVectorDrawable(
     out: Appendable,
     resources: WebResources
 ) {
-    val colorResolver: String.()->String = label@{
+    val colorResolver: String.() -> String = label@{
         val value = this
         return@label when {
             value.startsWith("@") -> {
@@ -45,10 +45,10 @@ fun convertVectorDrawable(
         androidVectorToSvg(node, colorResolver, svgOut)
     }
 
-    out.appendln("$selectors {")
-    out.appendln("background-image: url(\"./images/${file.name}\");")
-    out.appendln("background-size: contain;")
-    out.appendln("}")
+    out.appendLine("$selectors {")
+    out.appendLine("background-image: url(\"./images/${file.name}\");")
+    out.appendLine("background-size: contain;")
+    out.appendLine("}")
 }
 
 fun androidVectorToSvg(
@@ -60,7 +60,7 @@ fun androidVectorToSvg(
     val height = node.attributeAsDouble("android:height") ?: 0.0
     val viewportWidth = node.attributeAsDouble("android:viewportWidth") ?: 0.0
     val viewportHeight = node.attributeAsDouble("android:viewportHeight") ?: 0.0
-    svgOut.appendln("<svg xmlns='http://www.w3.org/2000/svg' width='${width}' height='${height}' viewBox='0 0 $viewportWidth $viewportHeight'>")
+    svgOut.appendLine("<svg xmlns='http://www.w3.org/2000/svg' width='${width}' height='${height}' viewBox='0 0 $viewportWidth $viewportHeight'>")
     node.children
         .filter { it.name == "path" }
         .withIndex()
@@ -71,56 +71,56 @@ fun androidVectorToSvg(
         }
         .takeUnless { it.isEmpty() }
         ?.let {
-            svgOut.appendln("<defs>")
+            svgOut.appendLine("<defs>")
             it.forEach { (index, gradientNode) ->
                 val x1 = gradientNode.attributeAsDouble("android:startX")
                 val y1 = gradientNode.attributeAsDouble("android:startY")
                 val x2 = gradientNode.attributeAsDouble("android:endX")
                 val y2 = gradientNode.attributeAsDouble("android:endY")
-                svgOut.appendln("<linearGradient id='grad$index' x1='$x1' y1='$y1' x2='$x2' y2='$y2'>")
+                svgOut.appendLine("<linearGradient id='grad$index' x1='$x1' y1='$y1' x2='$x2' y2='$y2'>")
                 gradientNode.children.filter { it.name == "item" }.forEach {
                     val color = it.allAttributes.get("android:color")
                     val offset = (it.attributeAsDouble("android:offset") ?: 0.0) * 100
-                    svgOut.appendln("<stop offset='$offset%' style='stop-color: $color;'/>")
+                    svgOut.appendLine("<stop offset='$offset%' style='stop-color: $color;'/>")
                 }
                 gradientNode.allAttributes.get("android:startColor")?.let(colorResolver)?.let {
-                    svgOut.appendln("<stop offset='0%' style='stop-color: $it;'/>")
+                    svgOut.appendLine("<stop offset='0%' style='stop-color: $it;'/>")
                 }
                 gradientNode.allAttributes.get("android:endColor")?.let(colorResolver)?.let {
-                    svgOut.appendln("<stop offset='0%' style='stop-color: $it;'/>")
+                    svgOut.appendLine("<stop offset='0%' style='stop-color: $it;'/>")
                 }
-                svgOut.appendln("</linearGradient>")
+                svgOut.appendLine("</linearGradient>")
             }
-            svgOut.appendln("</defs>")
+            svgOut.appendLine("</defs>")
         }
     node.children.filter { it.name == "path" }.forEachIndexed { index, subnode ->
         subnode.children
             .find { it.name == "aapt:attr" && it.allAttributes["name"] == "android:fillColor" }
             ?.children?.find { it.name == "gradient" }
             ?.let { gradientNode ->
-                svgOut.appendln("<path d='${subnode.directAttributes["android:pathData"]}' fill='url(#grad${index})'/>")
+                svgOut.appendLine("<path d='${subnode.directAttributes["android:pathData"]}' fill='url(#grad${index})'/>")
             } ?: run {
 
-            svgOut.appendln("<path d='${subnode.directAttributes["android:pathData"]}' ")
+            svgOut.appendLine("<path d='${subnode.directAttributes["android:pathData"]}' ")
             subnode.allAttributes.get(
                 "android:fillColor"
             )?.let(colorResolver)?.let {
-                svgOut.appendln("fill='$it'")
+                svgOut.appendLine("fill='$it'")
             } ?: run {
-                svgOut.appendln("fill='none'")
+                svgOut.appendLine("fill='none'")
             }
             subnode.allAttributes.get(
                 "android:strokeColor"
             )?.let(colorResolver)?.let {
-                svgOut.appendln("stroke='$it'")
+                svgOut.appendLine("stroke='$it'")
             }
             subnode.attributeAsDouble(
                 "android:strokeWidth"
             )?.let {
-                svgOut.appendln("stroke-width='$it'")
+                svgOut.appendLine("stroke-width='$it'")
             }
-            svgOut.appendln("/>")
+            svgOut.appendLine("/>")
         }
     }
-    svgOut.appendln("</svg>")
+    svgOut.appendLine("</svg>")
 }

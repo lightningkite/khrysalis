@@ -41,7 +41,9 @@ fun XibRules.xibTranslationForName(name: String): XibTranslation? {
 
 fun XibRules.translate(resolver: CanResolveValue, node: XmlNode): PureXmlOut {
     val rules = xibTranslationsForName(node.name)
-    if (rules.isEmpty()) return PureXmlOut("view").apply { addStandardViewProperties(); attributes["id"] = makeId() }
+    if (rules.isEmpty()) {
+        return PureXmlOut("view").apply { addStandardViewProperties(); attributes["id"] = makeId() }
+    }
     val out = PureXmlOut(rules.first().name)
     out.attributes["id"] = node.tags["id"]!!
     out.addStandardViewProperties()
@@ -65,8 +67,10 @@ fun XibRules.translate(resolver: CanResolveValue, node: XmlNode): PureXmlOut {
     for (child in node.children) {
         out.getOrPutChild("subviews").children.add(translate(resolver, child))
     }
-    for (r in rules) {
-        extraProcessingRules[r.id]?.invoke(this, resolver, node, out)
+    rules.mapNotNull {
+        extraProcessingRules[it.id]
+    }.forEach {
+        it.invoke(this, resolver, node, out)
     }
     return out
 }

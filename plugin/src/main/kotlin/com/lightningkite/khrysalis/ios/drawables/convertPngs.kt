@@ -66,18 +66,18 @@ fun convertPngs(
 
     try {
         val text = StringWriter().use { writer ->
-            writer.appendln("//Automatically created by Khrysalis")
-            writer.appendln("import UIKit")
-            writer.appendln("import LKButterfly")
-            writer.appendln("")
-            writer.appendln("extension R.drawable {")
-            writer.appendln("")
+            writer.appendLine("//Automatically created by Khrysalis")
+            writer.appendLine("import UIKit")
+            writer.appendLine("import LKButterfly")
+            writer.appendLine("")
+            writer.appendLine("extension R.drawable {")
+            writer.appendLine("")
             pngNames.forEach { pngName ->
                 val typeName = pngName
-                writer.appendln("static let $typeName: Drawable = Drawable { (view: UIView?) -> CALayer in CAImageLayer(UIImage(named: \"$pngName\")) }")
+                writer.appendLine("static let $typeName: Drawable = Drawable { (view: UIView?) -> CALayer in CAImageLayer(UIImage(named: \"$pngName\")) }")
             }
-            writer.appendln("")
-            writer.appendln("}")
+            writer.appendLine("")
+            writer.appendLine("}")
         }.toString()
         swiftFolder.resolve("drawable").also { it.mkdirs() }.resolve("PNGs.swift").writeTextIfDifferent(text)
 

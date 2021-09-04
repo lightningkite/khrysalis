@@ -7,8 +7,8 @@ import java.io.File
 
 fun main() {
     convertLayoutsToSwift2(
-        androidFolder = File("/home/joseph/IdeaProjects/layout-tester-butterfly/android"),
-        iosFolder = File("/home/joseph/IdeaProjects/layout-tester-butterfly/ios/LayoutTesting"),
-        equivalentsFolders = sequenceOf(File("/home/joseph/IdeaProjects/khrysalis-meta/butterfly-ios"))
+        androidFolder = File("/home/jivie/Projects/khrysalis-template/android"),
+        iosFolder = File("/home/jivie/Projects/khrysalis-template/ios/ButterflyTemplate"),
+        equivalentsFolders = sequenceOf(File("/home/jivie/Projects/khrysalis-meta/butterfly-ios"))
     )
 }

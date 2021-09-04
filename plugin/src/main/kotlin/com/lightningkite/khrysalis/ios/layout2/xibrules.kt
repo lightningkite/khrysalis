@@ -50,16 +50,16 @@ class PureXmlOut(var name: String = "") {
             append(' ')
         }
         if (children.isEmpty()) {
-            appendln("/>")
+            appendLine("/>")
         } else {
-            appendln('>')
+            appendLine('>')
             for (child in children) {
                 child.write(to, tab + 1)
             }
             append("    ".repeat(tab))
             append("</")
             append(name)
-            appendln('>')
+            appendLine('>')
         }
     }
 }

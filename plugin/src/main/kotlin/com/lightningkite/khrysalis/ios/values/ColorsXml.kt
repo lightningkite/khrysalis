@@ -17,7 +17,7 @@ fun File.translateXMLColors(out: Appendable) {
         .forEach {
             val raw = it.element.textContent
             val name = (it.allAttributes["name"] ?: "noname").safeSwiftIdentifier()
-            val color = when{
+            val color = when {
                 raw.startsWith("@color/") -> {
                     val colorName = raw.removePrefix("@color/")
                     "R.color.${colorName}"
@@ -31,12 +31,12 @@ fun File.translateXMLColors(out: Appendable) {
                 }
                 else -> "UIColor.black"
             }
-            out.appendln("static let $name: UIColor = $color")
+            out.appendLine("static let $name: UIColor = $color")
         }
 }
 
 fun File.translateXmlColorSet(out: Appendable) {
-    out.appendln("static func ${nameWithoutExtension.safeSwiftIdentifier()}(_ state: UIControl.State) -> UIColor {")
+    out.appendLine("static func ${nameWithoutExtension.safeSwiftIdentifier()}(_ state: UIControl.State) -> UIColor {")
     XmlNode.read(this, mapOf())
         .children
         .asSequence()
@@ -45,29 +45,29 @@ fun File.translateXmlColorSet(out: Appendable) {
 
             val conditions = ArrayList<String>()
             subnode.attributeAsBoolean("android:state_enabled")?.let {
-                conditions += (if(it) "!" else "") + "state.contains(.disabled)"
+                conditions += (if (it) "!" else "") + "state.contains(.disabled)"
             }
             subnode.attributeAsBoolean("android:state_pressed")?.let {
-                conditions += (if(it) "" else "!") + "state.contains(.highlighted)"
+                conditions += (if (it) "" else "!") + "state.contains(.highlighted)"
             }
             subnode.attributeAsBoolean("android:state_selected")?.let {
-                conditions += (if(it) "" else "!") + "state.contains(.selected)"
+                conditions += (if (it) "" else "!") + "state.contains(.selected)"
             }
             subnode.attributeAsBoolean("android:state_focused")?.let {
-                conditions += (if(it) "" else "!") + "state.contains(.focused)"
+                conditions += (if (it) "" else "!") + "state.contains(.focused)"
             }
             subnode.attributeAsBoolean("android:state_checked")?.let {
-                conditions += (if(it) "" else "!") + "state.contains(.selected)"
+                conditions += (if (it) "" else "!") + "state.contains(.selected)"
             }
 
-            if(conditions.isEmpty()) {
-                out.appendln("return ${subnode.attributeAsSwiftColor("android:color")}")
+            if (conditions.isEmpty()) {
+                out.appendLine("return ${subnode.attributeAsSwiftColor("android:color")}")
             } else {
-                out.appendln("if ${conditions.joinToString(" && ")} {")
-                out.appendln("return ${subnode.attributeAsSwiftColor("android:color")}")
-                out.appendln("}")
+                out.appendLine("if ${conditions.joinToString(" && ")} {")
+                out.appendLine("return ${subnode.attributeAsSwiftColor("android:color")}")
+                out.appendLine("}")
             }
         }
-    out.appendln("return UIColor.white")
-    out.appendln("}")
+    out.appendLine("return UIColor.white")
+    out.appendLine("}")
 }

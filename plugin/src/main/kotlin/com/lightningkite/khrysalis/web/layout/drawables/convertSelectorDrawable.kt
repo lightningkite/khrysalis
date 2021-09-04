@@ -29,12 +29,12 @@ fun convertSelectorDrawable(webDrawablesFolder: File, currentDrawable: String, s
 
         subnode.allAttributes["android:drawable"]?.let {
             if (conditions.isEmpty()) {
-                out.appendln("$selectors {")
+                out.appendLine("$selectors {")
             } else {
-                out.appendln("$selectors$conditions {")
+                out.appendLine("$selectors$conditions {")
             }
-            out.appendln("@extend drawable-${it.substringAfter('/')}")
-            out.appendln("}")
+            out.appendLine("@extend drawable-${it.substringAfter('/')}")
+            out.appendLine("}")
         } ?: run {
             subnode.children.firstOrNull()?.let {
                 convertDrawableXml(webDrawablesFolder, currentDrawable, selectors + conditions, it, out, resources)

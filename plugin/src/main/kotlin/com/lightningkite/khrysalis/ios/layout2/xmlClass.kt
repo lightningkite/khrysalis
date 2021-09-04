@@ -26,12 +26,12 @@ fun convertLayoutsToSwiftXmlClasses(
         .forEach {
             try {
                 replacements += it
-            } catch(e:Exception){
+            } catch (e: Exception) {
                 throw IllegalArgumentException("Could not parse $it", e)
             }
         }
     val layouts = jacksonObjectMapper().readValue<Map<String, AndroidLayoutFile>>(androidLayoutsSummaryFile)
-    for((name, layout) in layouts){
+    for ((name, layout) in layouts) {
         val outputFile = outputFolder.resolve(name.camelCase().plus("Xml.swift"))
         outputFile.bufferedWriter().use {
             val s = SmartTabWriter(it)
@@ -52,8 +52,10 @@ fun AndroidLayoutFile.toSwift(
         return (replacements.types[this]?.firstOrNull()
             ?: replacements.types["android.widget.$this"]?.firstOrNull()
             ?: replacements.types["android.view.$this"]?.firstOrNull()
-                )?.template?.parts?.joinToString("") { (it as? TemplatePart.Text)?.string ?: "" } ?: this.substringAfterLast('.')
+                )?.template?.parts?.joinToString("") { (it as? TemplatePart.Text)?.string ?: "" }
+            ?: this.substringAfterLast('.')
     }
+
     fun String.getImport(): SwiftImport? {
         return (replacements.types[this]?.firstOrNull()
             ?: replacements.types["android.widget.$this"]?.firstOrNull()
@@ -70,41 +72,41 @@ fun AndroidLayoutFile.toSwift(
         }
     ).flatten()
 
-    out.appendln("//")
-    out.appendln("// ${name}Xml.swift")
-    out.appendln("// Created by Khrysalis XML Swift")
-    out.appendln("//")
-    out.appendln("import LKButterfly")
-    out.appendln("import UIKit")
-    for(import in imports.distinct()){
-        out.appendln("import ${import.module}")
+    out.appendLine("//")
+    out.appendLine("// ${name}Xml.swift")
+    out.appendLine("// Created by Khrysalis XML Swift")
+    out.appendLine("//")
+    out.appendLine("import LKButterfly")
+    out.appendLine("import UIKit")
+    for (import in imports.distinct()) {
+        out.appendLine("import ${import.module}")
     }
-    out.appendln("public class ${name}Xml: NSObject {")
-    out.appendln("public unowned var xmlRoot: UIView!")
+    out.appendLine("public class ${name}Xml: NSObject {")
+    out.appendLine("public unowned var xmlRoot: UIView!")
     sublayouts.entries.forEach {
-        out.appendln("public let ${it.key}: ${it.value} = ${it.value}()")
+        out.appendLine("public let ${it.key}: ${it.value} = ${it.value}()")
     }
     delegateBindings.values.forEach {
-        if(it.optional){
-            out.appendln("public unowned var ${it.name}Delegate: ${it.type.toSwiftType()}?")
+        if (it.optional) {
+            out.appendLine("public unowned var ${it.name}Delegate: ${it.type.toSwiftType()}?")
         } else {
-            out.appendln("public unowned var ${it.name}Delegate: ${it.type.toSwiftType()}!")
+            out.appendLine("public unowned var ${it.name}Delegate: ${it.type.toSwiftType()}!")
         }
     }
     bindings.values.forEach {
-        if(it.optional){
-            out.appendln("@IBOutlet public unowned var ${it.name.safeSwiftIdentifier()}: ${it.type.toSwiftType()}? = nil")
+        if (it.optional) {
+            out.appendLine("@IBOutlet public unowned var ${it.name.safeSwiftIdentifier()}: ${it.type.toSwiftType()}? = nil")
         } else {
-            out.appendln("@IBOutlet public unowned var ${it.name.safeSwiftIdentifier()}: ${it.type.toSwiftType()}!")
+            out.appendLine("@IBOutlet public unowned var ${it.name.safeSwiftIdentifier()}: ${it.type.toSwiftType()}!")
         }
     }
-    out.appendln("    public func setup(dependency: ViewControllerAccess) -> UIView {")
-    out.appendln("        let bundle = Bundle(for: type(of: self))")
-    out.appendln("        let nib = UINib(nibName: \"$fileName\", bundle: bundle)")
-    out.appendln("        let view = nib.instantiate(withOwner: self, options: nil)[0] as! UIView")
-    out.appendln("        self.xmlRoot = view")
-    out.appendln("        return view")
-    out.appendln("    }")
-    out.appendln("    ")
-    out.appendln("}")
+    out.appendLine("    public func setup(dependency: ViewControllerAccess) -> UIView {")
+    out.appendLine("        let bundle = Bundle(for: type(of: self))")
+    out.appendLine("        let nib = UINib(nibName: \"$fileName\", bundle: bundle)")
+    out.appendLine("        let view = nib.instantiate(withOwner: self, options: nil)[0] as! UIView")
+    out.appendLine("        self.xmlRoot = view")
+    out.appendLine("        return view")
+    out.appendLine("    }")
+    out.appendLine("    ")
+    out.appendLine("}")
 }

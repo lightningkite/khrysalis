@@ -15,7 +15,7 @@ data class ViewType(
             return viewTypes.associate { it.androidName to it }
         }
 
-//        val bindings = HashMap<String, String>()
+        //        val bindings = HashMap<String, String>()
 //
 //        val skipTypes = HashSet<String>()
 //        val registry = HashMap<String, ViewType>()
@@ -61,10 +61,10 @@ data class ViewType(
     }
 
     fun write(appendable: OngoingLayoutConversion, node: XmlNode) {
-        appendable.appendln("{ () -> $iosName in ")
-        appendable.appendln("let view = $iosConstructor")
+        appendable.appendLine("{ () -> $iosName in ")
+        appendable.appendLine("let view = $iosConstructor")
         writeConfiguration(appendable, node)
-        appendable.appendln("return view")
-        appendable.appendln("}()")
+        appendable.appendLine("return view")
+        appendable.appendLine("}()")
     }
 }

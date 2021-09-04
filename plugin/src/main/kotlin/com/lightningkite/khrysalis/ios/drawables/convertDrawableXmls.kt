@@ -33,15 +33,15 @@ fun convertDrawableXmls(
                     }
                 }
                 outputFile.writeText(StringWriter().use { writer ->
-                    writer.appendln("//Automatically created by Khrysalis")
-                    writer.appendln("import UIKit")
-                    writer.appendln("import LKButterfly")
-                    writer.appendln("")
-                    writer.appendln("extension R.drawable {")
-                    writer.appendln("")
+                    writer.appendLine("//Automatically created by Khrysalis")
+                    writer.appendLine("import UIKit")
+                    writer.appendLine("import LKButterfly")
+                    writer.appendLine("")
+                    writer.appendLine("extension R.drawable {")
+                    writer.appendLine("")
                     convertDrawableXml(name, it, writer)
-                    writer.appendln("")
-                    writer.appendln("}")
+                    writer.appendLine("")
+                    writer.appendLine("}")
                 }.toString())
             } catch (e: Exception) {
                 println("FAILED $file -> $outputFile")
@@ -78,8 +78,8 @@ fun convertDrawableXml(name: String, node: XmlNode, out: Appendable) {
             out
         )
         else -> {
-            out.appendln("// WARNING: Could not convert drawable of type ${node.name.toLowerCase()}")
-            out.appendln("static let $name: Drawable = Drawable { (view: UIView?) -> CALayer in CALayer() }")
+            out.appendLine("// WARNING: Could not convert drawable of type ${node.name.toLowerCase()}")
+            out.appendLine("static let $name: Drawable = Drawable { (view: UIView?) -> CALayer in CALayer() }")
         }
     }
 }

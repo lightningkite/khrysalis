@@ -50,18 +50,27 @@ class AppleResourceLayoutConversion() {
         folder.listFiles()!!
             .filter { it.extension.toLowerCase() == "otf" || it.extension.toLowerCase() == "ttf" }
             .forEach { file ->
-
-                val font = FontVerter.readFont(file)
-                if (!font.isValid) {
-                    font.normalize()
+                try {
+                    val font = FontVerter.readFont(file)
+                    if (!font.isValid) {
+                        font.normalize()
+                    }
+                    val iosFont = IosFont(
+                        family = font.properties.family.filter { it in ' '..'~' },
+                        name = font.name.filter { it in '!'..'~' },
+                        file = file
+                    )
+                    println("Found font $iosFont")
+                    fonts[file.nameWithoutExtension] = iosFont
+                } catch(e: Exception) {
+                    println("Font read failed for $file")
+                    e.printStackTrace()
+                    fonts[file.nameWithoutExtension] = IosFont(
+                        family = file.nameWithoutExtension,
+                        name = file.nameWithoutExtension,
+                        file = file
+                    )
                 }
-                val iosFont = IosFont(
-                    family = font.properties.family.filter { it in ' '..'~' },
-                    name = font.name.filter { it in '!'..'~' },
-                    file = file
-                )
-                println("Found font $iosFont")
-                fonts[file.nameWithoutExtension] = iosFont
             }
         folder.listFiles()!!
             .filter { it.extension.toLowerCase() == "xml" }
@@ -311,7 +320,8 @@ class AppleResourceLayoutConversion() {
                         androidVectorToSvg(node, { value ->
                             when {
                                 value.startsWith("@") -> {
-                                    val found = (colors[value.substringAfter('/')] ?: throw IllegalArgumentException("Could not find color '$value'")).normal
+                                    val found = (colors[value.substringAfter('/')]
+                                        ?: throw IllegalArgumentException("Could not find color '$value'")).normal
                                     found.webColor()
                                 }
                                 value.startsWith("#") -> {
@@ -385,70 +395,70 @@ class AppleResourceLayoutConversion() {
         iosResourcesSwiftFolder.mkdirs()
         File(iosResourcesSwiftFolder, "R.swift").bufferedWriter().use { out ->
             with(SmartTabWriter(out)) {
-                appendln("//")
-                appendln("// R.swift")
-                appendln("// Created by Khrysalis")
-                appendln("//")
-                appendln("")
-                appendln("import Foundation")
-                appendln("import UIKit")
-                appendln("import LKButterfly")
-                appendln("")
-                appendln("")
-                appendln("public enum R {")
+                appendLine("//")
+                appendLine("// R.swift")
+                appendLine("// Created by Khrysalis")
+                appendLine("//")
+                appendLine("")
+                appendLine("import Foundation")
+                appendLine("import UIKit")
+                appendLine("import LKButterfly")
+                appendLine("")
+                appendLine("")
+                appendLine("public enum R {")
 
-                appendln("public enum drawable {")
+                appendLine("public enum drawable {")
                 for (entry in images.entries) {
-                    appendln("static let ${entry.key}: Drawable = Drawable { (view: UIView?) -> CALayer in CAImageLayer(UIImage(named: \"${entry.key}.png\")) }")
+                    appendLine("static let ${entry.key}: Drawable = Drawable { (view: UIView?) -> CALayer in CAImageLayer(UIImage(named: \"${entry.key}.png\")) }")
                 }
                 for (entry in vectors.entries) {
-                    appendln("//Vector ${entry.key} is present as an image and as a drawable in a separate file")
+                    appendLine("//Vector ${entry.key} is present as an image and as a drawable in a separate file")
                 }
-                appendln("static let allEntries: Dictionary<String, Drawable> = [")
+                appendLine("static let allEntries: Dictionary<String, Drawable> = [")
                 var firstDrawable = true
                 drawables.forEachBetween(
                     forItem = { entry ->
                         append("\"$entry\": $entry")
                     },
-                    between = { appendln(",") }
+                    between = { appendLine(",") }
                 )
                 appendln()
-                appendln("]")
-                appendln("}")
+                appendLine("]")
+                appendLine("}")
 
-                appendln("public enum string {")
+                appendLine("public enum string {")
                 for ((key, value) in strings.entries) {
                     val fixedString = value
                         .replace("\\'", "'")
                         .replace("\\$", "$")
                         .replace(Regex("\n *"), " ")
-                    out.appendln("static let ${key.safeSwiftIdentifier()} = NSLocalizedString(\"$fixedString\", comment: \"$key\")")
+                    out.appendLine("static let ${key.safeSwiftIdentifier()} = NSLocalizedString(\"$fixedString\", comment: \"$key\")")
                 }
-                appendln("}")
+                appendLine("}")
 
-                appendln("public enum dimen {")
+                appendLine("public enum dimen {")
                 for ((key, value) in dimensions.entries) {
                     if (key.contains("programmatic", true)) {
-                        out.appendln("static var ${key.safeSwiftIdentifier()}: CGFloat = $value")
+                        out.appendLine("static var ${key.safeSwiftIdentifier()}: CGFloat = $value")
                     } else {
-                        out.appendln("static let ${key.safeSwiftIdentifier()}: CGFloat = $value")
+                        out.appendLine("static let ${key.safeSwiftIdentifier()}: CGFloat = $value")
                     }
                 }
-                appendln("}")
+                appendLine("}")
 
-                appendln("public enum color {")
+                appendLine("public enum color {")
 
                 for (entry in colors.entries) {
                     if (entry.value.isSet) {
-                        out.appendln("static let ${entry.key}: UIColor = UIColor(named: \"color_${entry.key}\")")
+                        out.appendLine("static let ${entry.key}: UIColor = UIColor(named: \"color_${entry.key}\")")
                     } else {
-                        out.appendln("static let ${entry.key}: UIColor = ${entry.value.normal}")
-                        out.appendln("static let ${entry.key}State: StateSelector<UIColor> = StateSelector(normal: ${entry.value.normal}, selected: ${entry.value.selected ?: "nil"}, disabled: ${entry.value.disabled ?: "nil"}, highlighted: ${entry.value.highlighted ?: "nil"}, focused: ${entry.value.focused ?: "nil"})")
+                        out.appendLine("static let ${entry.key}: UIColor = ${entry.value.normal}")
+                        out.appendLine("static let ${entry.key}State: StateSelector<UIColor> = StateSelector(normal: ${entry.value.normal}, selected: ${entry.value.selected ?: "nil"}, disabled: ${entry.value.disabled ?: "nil"}, highlighted: ${entry.value.highlighted ?: "nil"}, focused: ${entry.value.focused ?: "nil"})")
                     }
                 }
-                appendln("}")
+                appendLine("}")
 
-                appendln("}")
+                appendLine("}")
             }
         }
     }
@@ -533,60 +543,58 @@ class AppleResourceLayoutConversion() {
         idPass(rootNode)
 
         val rootView = xibRules.translate(resolver, rootNode)
-        out.appendln(
+        out.appendLine(
             """
-            <?xml version="1.0" encoding="UTF-8"?>
-            <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="17156" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
-                <device id="retina3_5" orientation="portrait" appearance="light"/>
-                <dependencies>
-                    <deployment identifier="iOS"/>
-                    <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="17125"/>
-                    <capability name="Safe area layout guides" minToolsVersion="9.0"/>
-                    <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
-                    <capability name="System colors in document resources" minToolsVersion="11.0"/>
-                </dependencies>
-                <objects>""".trimIndent()
+                <?xml version="1.0" encoding="UTF-8"?>
+                <document type="com.apple.InterfaceBuilder3.CocoaTouch.XIB" version="3.0" toolsVersion="18122" targetRuntime="iOS.CocoaTouch" propertyAccessControl="none" useAutolayout="YES" useTraitCollections="YES" useSafeAreas="YES" colorMatched="YES">
+                    <device id="retina3_5" orientation="portrait" appearance="light"/>
+                    <dependencies>
+                        <deployment identifier="iOS"/>
+                        <plugIn identifier="com.apple.InterfaceBuilder.IBCocoaTouchPlugin" version="18093"/>
+                        <capability name="documents saved in the Xcode 8 format" minToolsVersion="8.0"/>
+                    </dependencies>
+                    <objects>""".trimIndent()
         )
-        out.appendln(
+        out.appendLine(
             """
-            <placeholder placeholderIdentifier="IBFilesOwner" id="-1" customClass="${
+                <placeholder placeholderIdentifier="IBFilesOwner" id="-1" customClass="${
                 inputFile.nameWithoutExtension.camelCase().capitalize()
             }Xml" customModuleProvider="target">
-            <connections>
-        """.trimIndent()
+                <connections>
+            """.trimIndent()
         )
         for (id in idsToStore) {
-            out.appendln("""<outlet property="$id" destination="$id" id="${makeId()}"/>""")
+            out.appendLine("""<outlet property="$id" destination="$id" id="${makeId()}"/>""")
         }
-        out.appendln(
+        out.appendLine(
             """
-            </connections>
-            </placeholder>
-        """.trimIndent()
+                </connections>
+                </placeholder>
+            """.trimIndent()
         )
-        out.appendln(
+        out.appendLine(
             """
-            <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
-        """.trimIndent()
+                <placeholder placeholderIdentifier="IBFirstResponder" id="-2" customClass="UIResponder"/>
+            """.trimIndent()
         )
         rootView.write(out)
-        out.appendln(
+        out.appendLine(
             """
-                </objects>
-                <resources>
-        """.trimIndent()
+                    </objects>
+                    <resources>
+            """.trimIndent()
         )
         for (c in resolver.usedColors) {
-            out.appendln("""<namedColor name="$c" />""")
+            out.appendLine("""<namedColor name="$c" />""")
         }
         for (i in resolver.usedImages) {
-            out.appendln("""<image name="$i" />""")
+            out.appendLine("""<image name="$i" />""")
         }
-        out.appendln(
+        out.appendLine(
             """
-            </resources>
-            </document>
-        """.trimIndent()
+                </resources>
+                </document>
+            """.trimIndent()
         )
     }
 }

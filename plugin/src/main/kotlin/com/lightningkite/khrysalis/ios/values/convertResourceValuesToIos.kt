@@ -23,41 +23,41 @@ fun convertResourceValuesToIos(
     iosResourcesSwiftFolder.mkdirs()
     File(iosResourcesSwiftFolder, "R.swift").bufferedWriter().use { out ->
         with(SmartTabWriter(out)) {
-            appendln("//")
-            appendln("// R.swift")
-            appendln("// Created by Khrysalis")
-            appendln("//")
-            appendln("")
-            appendln("import Foundation")
-            appendln("import UIKit")
-            appendln("import LKButterfly")
-            appendln("")
-            appendln("")
-            appendln("public enum R {")
+            appendLine("//")
+            appendLine("// R.swift")
+            appendLine("// Created by Khrysalis")
+            appendLine("//")
+            appendLine("")
+            appendLine("import Foundation")
+            appendLine("import UIKit")
+            appendLine("import LKButterfly")
+            appendLine("")
+            appendLine("")
+            appendLine("public enum R {")
 
-            appendln("public enum drawable {}")
+            appendLine("public enum drawable {}")
 
-            appendln("public enum string {")
+            appendLine("public enum string {")
             stringBase.writeXMLStrings(this)
-            appendln("}")
+            appendLine("}")
 
-            appendln("public enum dimen {")
+            appendLine("public enum dimen {")
             File(androidResourcesFolder, "values/dimens.xml").takeIf { it.exists() }?.readXMLDimen()
                 ?.writeXMLDimen(this)
-            appendln("}")
+            appendLine("}")
 
-            appendln("public enum color {")
+            appendLine("public enum color {")
 
-            appendln("static let transparent = UIColor.clear")
-            appendln("static let black = UIColor.black")
-            appendln("static let white = UIColor.white")
+            appendLine("static let transparent = UIColor.clear")
+            appendLine("static let black = UIColor.black")
+            appendLine("static let white = UIColor.white")
             File(androidResourcesFolder, "values/colors.xml").translateXMLColors(this)
             File(androidResourcesFolder, "color").walkTopDown()
                 .filter { it.extension == "xml" }
                 .forEach { it.translateXmlColorSet(this) }
-            appendln("}")
+            appendLine("}")
 
-            appendln("}")
+            appendLine("}")
         }
     }
 }
