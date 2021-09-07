@@ -6,8 +6,6 @@ import com.lightningkite.khrysalis.flow.createFlowDocumentation
 import com.lightningkite.khrysalis.flow.createPrototypeViewGenerators
 import com.lightningkite.khrysalis.ios.layout.*
 import com.lightningkite.khrysalis.ios.*
-import com.lightningkite.khrysalis.ios.layout2.AppleResourceLayoutConversion
-import com.lightningkite.khrysalis.ios.layout2.convertLayoutsToSwift2
 import com.lightningkite.khrysalis.ios.swift.*
 import com.lightningkite.khrysalis.utils.*
 import com.lightningkite.khrysalis.web.convertToTypescript
@@ -224,29 +222,6 @@ class KhrysalisPlugin : Plugin<Project> {
                     converter = extension().swiftLayoutConversion
                 )
 
-            }
-        }
-        project.tasks.create("khrysalisConvertLayoutsToSwift2") { task ->
-            task.group = "ios"
-            task.doLast {
-                val localProperties = Properties().apply {
-                    val f = project.rootProject.file("local.properties")
-                    if (f.exists()) {
-                        load(f.inputStream())
-                    }
-                }
-                val eq = (localProperties.getProperty("khrysalis.iospods")
-                    ?: localProperties.getProperty("khrysalis.nonmacmanifest") ?: "")
-                    .splitToSequence(File.pathSeparatorChar)
-                    .filter { it.isNotBlank() }
-                    .map { File(it) }
-                    .filter { it.exists() }
-                    .plus(sequenceOf(iosBase().resolve("Pods")))
-                convertLayoutsToSwift2(
-                    androidFolder = androidBase(),
-                    iosFolder = iosFolder(),
-                    equivalentsFolders = eq
-                )
             }
         }
         project.tasks.create("khrysalisUpdateIosVersion") { task ->

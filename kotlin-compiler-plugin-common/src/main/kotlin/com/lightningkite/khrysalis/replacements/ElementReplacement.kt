@@ -11,7 +11,8 @@ import org.jetbrains.kotlin.types.KotlinType
 
 data class ElementReplacement(
     val id: String,
-    var template: Template
+    var template: Template,
+    val insertChildrenAt: String? = null
 ) : ReplacementRule {
 
     override fun merge(other: ReplacementRule): Boolean {

@@ -1,8 +1,8 @@
 import java.util.Properties
 
-val kotlinVersion = "1.4.31"
+val kotlinVersion = "1.5.30"
 buildscript {
-    val kotlinVersion = "1.4.31"
+    val kotlinVersion = "1.5.30"
     repositories {
         jcenter()
     }

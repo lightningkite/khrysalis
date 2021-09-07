@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.xml
 
+import com.fasterxml.jackson.databind.node.TextNode
 import org.w3c.dom.Document
 import org.w3c.dom.Element
 import org.w3c.dom.Node
@@ -7,6 +8,7 @@ import org.w3c.dom.NodeList
 import org.xml.sax.InputSource
 import java.io.File
 import java.io.StringReader
+import java.io.StringWriter
 import java.util.*
 import java.util.function.Consumer
 import javax.xml.parsers.DocumentBuilderFactory
@@ -42,6 +44,7 @@ class AttributesMap(val element: Element): MutableMap<String, String> {
         override val value: String
             get() = attribute.nodeValue
 
+        override fun toString(): String = "$key: $value"
         override fun setValue(newValue: String): String { val old = attribute.nodeValue; attribute.nodeValue = newValue; return old }
     }
 
@@ -155,12 +158,14 @@ class DeferIterator<E>(val parentList: List<E>, var cursor: Int = 0): ListIterat
     }
 }
 
-fun Element.appendFragment(fragment: String) {
+fun Element.appendFragment(fragment: String): Element {
     val node = defaultBuilder.parse(InputSource(StringReader(fragment))).documentElement
     ownerDocument.adoptNode(node)
     this.appendChild(node)
+    return node
 }
 fun Element.appendElement(name: String) = appendChild(ownerDocument.createElement(name)) as Element
+fun Element.appendText(text: String) = appendChild(ownerDocument.createTextNode(text))
 inline fun Element.appendElement(name: String, setup: Element.()->Unit): Element = appendChild(ownerDocument.createElement(name).apply(setup)) as Element
 
 fun NodeList.fix(): NodeListList = NodeListList(this)
@@ -170,21 +175,32 @@ inline fun XPathExpression.evaluateNode(on: Any): Node? = evaluate(on, XPathCons
 fun NodeList.firstOrNull(): Node? = if(length > 0) item(0) else null
 
 fun Element.xpathNode(path: String): Node? {
+    if(path.isEmpty()) return this
     return XPathFactory.newDefaultInstance().newXPath().compile(path).evaluateNode(this)
 }
 fun Element.xpathElement(path: String): Element? {
+    if(path.isEmpty()) return this
     return XPathFactory.newDefaultInstance().newXPath().compile(path).evaluateNode(this) as? Element
 }
 
-fun File.readXml(): Element {
-    val document = defaultBuilder.parse(this)
-    return document.documentElement
+fun String.readXml(): Document {
+    return defaultBuilder.parse(this.toByteArray().inputStream())
+}
+fun File.readXml(): Document {
+    return defaultBuilder.parse(this)
 }
 fun File.writeXml(document: Document) = this.bufferedWriter().use { writer ->
     TransformerFactory
         .newInstance()
         .newTransformer()
         .transform(DOMSource(document), StreamResult(writer))
+}
+fun Document.writeToString(): String = StringWriter().use {
+    TransformerFactory
+        .newInstance()
+        .newTransformer()
+        .transform(DOMSource(this), StreamResult(it))
+    it.toString()
 }
 
 inline fun buildXmlDocument(name: String, action: Element.()->Unit): Document {
