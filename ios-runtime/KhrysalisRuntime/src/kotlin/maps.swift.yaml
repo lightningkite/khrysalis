@@ -1,0 +1,103 @@
+---
+# Maps
+- id: kotlin.collections.Map
+  type: type
+  template: Dictionary<~T0~, ~T1~>
+
+- id: kotlin.collections.HashMap
+  type: type
+  requiresMutable: true
+  template: Dictionary<~T0~, ~T1~>
+
+- id: java.util.HashMap
+  type: type
+  requiresMutable: true
+  template: Dictionary<~T0~, ~T1~>
+
+- id: kotlin.collections.MutableMap
+  type: type
+  requiresMutable: true
+  template: Dictionary<~T0~, ~T1~>
+
+## Creation
+
+- id: kotlin.collections.mapOf
+  type: call
+  typeArgumentRequirements:
+    0: primitive
+  hasExplicitTypeArguments: true
+  template: "dictionaryOf(~*~) as Dictionary<~T0~, ~T1~>"
+- id: kotlin.collections.mapOf
+  type: call
+  template: "dictionaryOf(~*~)"
+
+- id: kotlin.collections.mutableMapOf
+  type: call
+  hasExplicitTypeArguments: true
+  template: "dictionaryOf(~*~) as Dictionary<~T0~, ~T1~>"
+- id: kotlin.collections.mutableMapOf
+  type: call
+  template: "dictionaryOf(~*~)"
+
+- id: kotlin.collections.toMap
+  type: call
+  template: "dictionaryFrom(~this~)"
+
+- id: kotlin.collections.hashMapOf
+  type: call
+  hasExplicitTypeArguments: true
+  template: "dictionaryOf(~*~) as Dictionary<~T0~, ~T1~>"
+- id: kotlin.collections.hashMapOf
+  type: call
+  template: "dictionaryOf(~*~)"
+
+
+- id: kotlin.collections.HashMap
+  type: call
+  hasExplicitTypeArguments: true
+  template: "Dictionary<~T0~, ~T1~>()"
+
+- id: kotlin.collections.HashMap
+  type: call
+  template: "Dictionary()"
+
+## Usage
+- id: kotlin.collections.Map.size
+  type: get
+  template: ~this~.count
+- id: kotlin.collections.Map.get
+  type: call
+  template: ~this~[~0~]
+- id: kotlin.collections.Map.containsKey
+  type: call
+  template: '(~this~.index(forKey: ~0~) != nil)'
+- id: kotlin.collections.MutableMap.put
+  type: call
+  template: ~this~[~0~] = ~1~
+- id: kotlin.collections.MutableMap.put
+  type: call
+  usedAsExpression: true
+  template: '~this~.updateValue(~1~, forKey: ~0~)'
+- id: kotlin.collections.set
+  type: call
+  receiver: kotlin.collections.MutableMap
+  template: ~this~[~0~] = ~1~
+- id: kotlin.collections.MutableMap.remove
+  type: call
+  template: '~this~.removeValue(forKey: ~0~)'
+
+- id: kotlin.collections.component1
+  type: call
+  template: ~this~.key
+
+- id: kotlin.collections.component2
+  type: call
+  template: ~this~.value
+
+- id: kotlin.collections.mapValues
+  type: call
+  template: ~this~.mapValuesFromPairs(~*~)
+
+- id: kotlin.collections.Map.entries
+  type: get
+  template: ~this~

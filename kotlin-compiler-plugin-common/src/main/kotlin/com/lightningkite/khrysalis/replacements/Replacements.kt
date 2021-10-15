@@ -24,8 +24,18 @@ class Replacements(var mapper: ObjectMapper) {
     val attributes: HashMap<String, TreeSet<AttributeReplacement>> = HashMap()
 
     fun getElement(
-        elementName: String
-    ): ElementReplacement? = elements[elementName]?.firstOrNull()
+        elementName: String,
+        attributes: Map<String, String>
+    ): ElementReplacement? = elements[elementName]?.firstOrNull {
+        it.attributes.entries.all { (key, value) ->
+            val otherValue = attributes[key]
+            when(value) {
+                "any", "set" -> otherValue != null
+                "unset" -> otherValue == null
+                else -> otherValue == value
+            }
+        }
+    }
 
     fun getAttribute(
         elementName: String,

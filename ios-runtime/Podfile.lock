@@ -1,0 +1,64 @@
+PODS:
+  - Alamofire (5.4.1)
+  - AlamofireImage (4.1.0):
+    - Alamofire (~> 5.1)
+  - Cosmos (19.0.3)
+  - DKImagePickerController/Core (4.3.2):
+    - DKImagePickerController/ImageDataManager
+    - DKImagePickerController/Resource
+  - DKImagePickerController/ImageDataManager (4.3.2)
+  - DKImagePickerController/Resource (4.3.2)
+  - IBPCollectionViewCompositionalLayout (0.6.9)
+  - KeychainAccess (4.2.2)
+  - RxRelay (5.1.1):
+    - RxSwift (~> 5)
+  - RxSwift (5.1.1)
+  - SearchTextField (1.2.4)
+  - Starscream (4.0.4)
+  - "UITextView+Placeholder (1.4.0)"
+
+DEPENDENCIES:
+  - Alamofire
+  - AlamofireImage
+  - Cosmos (~> 19.0)
+  - DKImagePickerController/Core
+  - DKImagePickerController/ImageDataManager
+  - DKImagePickerController/Resource
+  - IBPCollectionViewCompositionalLayout
+  - KeychainAccess
+  - RxRelay (= 5.1.1)
+  - RxSwift (= 5.1.1)
+  - SearchTextField
+  - Starscream
+  - "UITextView+Placeholder"
+
+SPEC REPOS:
+  trunk:
+    - Alamofire
+    - AlamofireImage
+    - Cosmos
+    - DKImagePickerController
+    - IBPCollectionViewCompositionalLayout
+    - KeychainAccess
+    - RxRelay
+    - RxSwift
+    - SearchTextField
+    - Starscream
+    - "UITextView+Placeholder"
+
+SPEC CHECKSUMS:
+  Alamofire: 2291f7d21ca607c491dd17642e5d40fdcda0e65c
+  AlamofireImage: c4a2ba349885fb3064feb74d2e547bd42ce9be10
+  Cosmos: a6fb17284281fa12cf4c85c2efecd440a215ec44
+  DKImagePickerController: b5eb7f7a388e4643264105d648d01f727110fc3d
+  IBPCollectionViewCompositionalLayout: bbb29e39ac564666a8c3cdb6633ed944b6feb55b
+  KeychainAccess: c0c4f7f38f6fc7bbe58f5702e25f7bd2f65abf51
+  RxRelay: d77f7d771495f43c556cbc43eebd1bb54d01e8e9
+  RxSwift: 81470a2074fa8780320ea5fe4102807cb7118178
+  SearchTextField: 40dc3cc57def5a211f263cac263622c163bbc25a
+  Starscream: 5178aed56b316f13fa3bc55694e583d35dd414d9
+  "UITextView+Placeholder": d7b0c400921f66523f3a85d74f774512e14f6502
+
+PODFILE CHECKSUM: ba8fe7127d251fa45536a43aff9de8bf8186a7b3
+
+COCOAPODS: 1.10.1

@@ -1,0 +1,26 @@
+
+- id: kotlin.ByteArray
+  type: type
+  requiresMutable: true
+  template: Data
+
+- id: kotlin.ByteArray
+  type: typeRef
+  template: Data
+
+- id: kotlin.ByteArray.size
+  type: get
+  template: ~this~.count
+
+- id: kotlin.ByteArray.size
+  type: get
+  template: ~this~.count
+
+- id: kotlin.text.toByteArray
+  type: call
+  template: '~this~.data(using: .utf8)!'
+
+- id: kotlin.collections.toString
+  type: call
+  receiver: kotlin.ByteArray
+  template: 'String(data: ~this~, encoding: .utf8)!'

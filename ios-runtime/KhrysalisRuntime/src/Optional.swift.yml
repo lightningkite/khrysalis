@@ -1,0 +1,14 @@
+---
+
+- id: com.lightningkite.butterfly.Box
+  type: type
+  template: ~T0~
+- id: com.lightningkite.butterfly.Box.value
+  type: get
+  template: ~this~
+- id: com.lightningkite.butterfly.Box.Companion.wrap
+  type: call
+  template: ~0~
+- id: com.lightningkite.butterfly.boxWrap
+  type: call
+  template: ~0~

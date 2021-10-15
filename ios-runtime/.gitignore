@@ -1,0 +1,14 @@
+
+local.properties
+**/build
+**/Pods
+**/xcuserdata
+**.iml
+**.iws
+**/.idea
+**/.gradle
+*.apk
+*.class
+**/node_modules
+
+**/.DS_Store

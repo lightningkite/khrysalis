@@ -1,0 +1,58 @@
+---
+# Weird Primitives
+- id: kotlin.Nothing
+  type: type
+  template: Never
+- id: kotlin.Unit
+  type: type
+  template: Void
+- id: kotlin.Any
+  type: type
+  template: Any
+- id: com.lightningkite.khrysalis.UntypedList
+  type: type
+  template: NSArray
+- id: com.lightningkite.khrysalis.UntypedMap
+  type: type
+  template: NSDictionary
+- id: com.lightningkite.khrysalis.IsCodable
+  type: type
+  template: Codable
+- id: com.lightningkite.khrysalis.IsCodableAndHashable
+  type: type
+  template: Codable & Hashable
+- id: com.lightningkite.khrysalis.IsCodableAndEquatable
+  type: type
+  template: Codable & Equatable
+- id: com.lightningkite.butterfly.AnyObject
+  type: type
+  template: AnyObject
+- id: com.lightningkite.butterfly.AnyHashable
+  type: type
+  template: Hashable
+- id: com.lightningkite.butterfly.AnyEquatable
+  type: type
+  template: Equatable
+- id: com.lightningkite.butterfly.Hashable
+  type: type
+  template: Hashable
+- id: com.lightningkite.butterfly.Equatable
+  type: type
+  template: Equatable
+- id: com.lightningkite.butterfly.IsHashable
+  type: type
+  template: Hashable
+- id: com.lightningkite.butterfly.IsEquatable
+  type: type
+  template: Equatable
+- id: com.lightningkite.butterfly.SomeEnum
+  type: type
+  template: StringEnum
+
+- id: kotlin.Unit
+  type: get
+  template: ()
+
+- id: kotlin.io.println
+  type: call
+  template: print(~0~)

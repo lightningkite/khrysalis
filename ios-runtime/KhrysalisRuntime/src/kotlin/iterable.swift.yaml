@@ -1,0 +1,222 @@
+---
+
+
+- id: kotlin.collections.Iterable
+  type: type
+  template: Sequence
+  protocol: true
+- id: java.lang.Iterable
+  type: type
+  template: Sequence
+  protocol: true
+
+# Extensions
+
+
+- id: kotlin.collections.contains
+  receiver: kotlin.collections.Iterable
+  type: call
+  template: ~this~.contains(~0~)
+- id: kotlin.collections.drop
+  type: call
+  template: ~this~.dropFirst(~0~)
+- id: kotlin.collections.dropLast
+  type: call
+  template: ~this~.dropLast(~0~)
+- id: kotlin.collections.dropWhile
+  type: call
+  template: "~this~.drop(while: ~0~)"
+#- id: kotlin.collections.dropLastWhile
+
+- id: kotlin.collections.take
+  type: call
+  template: "~this~.prefix(~0~)"
+- id: kotlin.collections.takeLast
+  type: call
+  template: "~this~.suffix(~0~)"
+- id: kotlin.collections.takeWhile
+  type: call
+  template: "~this~.prefix(while: ~0~)"
+- id: kotlin.collections.takeLastWhile
+  type: call
+  template: "~this~.suffix(while: ~0~)"
+
+- id: kotlin.collections.forEach
+  type: call
+  template: "~this~.forEach(~0~)"
+
+- id: kotlin.collections.filter
+  type: call
+  template: "~this~.filter(~0~)"
+
+- id: kotlin.collections.filterIndexed
+  type: call
+  template:
+    pattern: '~this~.enumerated().filter { (_it) in ~L0~ }'
+    lambdaTransforms:
+      0: ["_it.offset", "_it.element"]
+- id: kotlin.collections.filterNot
+  type: call
+  template: "~this~.filter({ x in !~0~(x) })"
+- id: kotlin.collections.filterNotNull
+  type: call
+  template: "~this~.compactMap({$0})"
+- id: kotlin.collections.map
+  type: call
+  template: "~this~.map(~0~)"
+- id: kotlin.collections.mapIndexed
+  type: call
+  template:
+    pattern: '~this~.enumerated().map { (_it) in ~L0~ }'
+    lambdaTransforms:
+      0: ["_it.offset", "_it.element"]
+- id: kotlin.collections.flatMap
+  type: call
+  template: "~this~.flatMap(~0~)"
+- id: kotlin.collections.mapNotNull
+  type: call
+  template: "~this~.compactMap(~0~)"
+- id: kotlin.collections.mapIndexedNotNull
+  type: call
+  template:
+    pattern: '~this~.enumerated().compactMap { (_it) in ~L0~ }'
+    lambdaTransforms:
+      0: ["_it.offset", "_it.element"]
+
+- id: kotlin.collections.sorted
+  type: call
+  template: ~this~.sorted()
+- id: kotlin.collections.sortedBy
+  type: call
+  template: '~this~.sorted(by: deferComparison(~0~))'
+- id: kotlin.collections.sortedByDescending
+  type: call
+  template: '~this~.sorted(by: deferComparisonDescending(~0~))'
+- id: kotlin.collections.sortedWith
+  type: call
+  template: '~this~.sorted(by: { (a, b) in (~0~)(a, b) == .orderedAscending })'
+- id: kotlin.collections.sortedWithDescending
+  type: call
+  template: '~this~.sorted(by: { (a, b) in (~0~)(a, b) == .orderedDescending })'
+
+- id: kotlin.collections.minBy
+  type: call
+  template: '~this~.min(by: deferComparison(~0~))'
+- id: kotlin.collections.maxBy
+  type: call
+  template: '~this~.max(by: deferComparison(~0~))'
+
+- id: kotlin.collections.minByOrNull
+  type: call
+  template: '~this~.min(by: deferComparison(~0~))'
+- id: kotlin.collections.maxByOrNull
+  type: call
+  template: '~this~.max(by: deferComparison(~0~))'
+
+- id: kotlin.collections.associate
+  type: call
+  template: "Dictionary(~this~.map(~0~), uniquingKeysWith: { (a, _) in a })"
+- id: kotlin.collections.associateBy
+  type: call
+  template: "Dictionary(~this~.map { it in (~0~(it), it) }, uniquingKeysWith: { (a, _) in a })"
+
+- id: kotlin.collections.toList
+  type: call
+  template: "Array(~this~)"
+
+- id: kotlin.collections.toMutableList
+  type: call
+  template: "Array(~this~)"
+
+- id: kotlin.collections.toArrayList
+  type: call
+  template: "Array(~this~)"
+
+- id: kotlin.collections.toArrayList
+  type: call
+  template: "Array(~this~)"
+
+- id: kotlin.collections.toArrayList
+  type: call
+  template: "Array(~this~)"
+
+- id: kotlin.collections.toSet
+  type: call
+  template: "Set(~this~)"
+
+- id: kotlin.collections.toMutableSet
+  type: call
+  template: "Set(~this~)"
+
+- id: kotlin.collections.toHashSet
+  type: call
+  template: "Set(~this~)"
+
+- id: kotlin.collections.toHashSet
+  type: call
+  template: "Set(~this~)"
+
+- id: kotlin.collections.toHashSet
+  type: call
+  template: "Set(~this~)"
+
+- id: kotlin.collections.groupBy
+  type: call
+  template: "Dictionary(grouping: ~this~, by: ~0~)"
+
+- id: kotlin.collections.any
+  type: call
+  template: '(~this~.first(where: ~0~) != nil)'
+
+- id: kotlin.collections.all
+  type: call
+  template: ~this~.allSatisfy(~0~)
+
+- id: kotlin.collections.none
+  type: call
+  template: ~this~.allSatisfy({ !~0~($0) })
+
+- id: kotlin.collections.find
+  type: call
+  template: "~this~.first(where: ~0~)"
+
+- id: kotlin.collections.firstOrNull
+  type: call
+  template: "~this~.first(where: ~0~)"
+
+# Join
+
+- id: kotlin.collections.joinToString
+  type: call
+  suppliedArguments: []
+  template: '~this~.map { "\($0)" }.joined(separator: ", ")'
+
+- id: kotlin.collections.joinToString
+  type: call
+  suppliedArguments: [separator]
+  template: '~this~.map { "\($0)" }.joined(separator: ~0~)'
+
+- id: kotlin.collections.joinToString
+  type: call
+  suppliedArguments: [transform]
+  template: '~this~.joined(separator: ", ", transform: ~transform~)'
+
+- id: kotlin.collections.joinToString
+  type: call
+  suppliedArguments: [separator, transform]
+  template: '~this~.joined(separator: ~separator~, transform: ~transform~)'
+
+- id: kotlin.collections.joinToString
+  type: call
+  suppliedArguments: [separator, transform, prefix]
+  template: '(~prefix~ + ~this~.map(~transform~).joined(separator: ~separator~))'
+
+- id: kotlin.collections.joinToString
+  type: call
+  suppliedArguments: [separator, transform, prefix, postfix]
+  template: '(~prefix~ + ~this~.map(~transform~).joined(separator: ~separator~) + ~postfix~)'
+
+- id: kotlin.collections.joinToString
+  type: call
+  suppliedArguments: [separator, transform, postfix]
+  template: '(~this~.map(~transform~).joined(separator: ~separator~) + ~postfix~)'

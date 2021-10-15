@@ -1,0 +1,15 @@
+---
+
+
+# Tuples
+- id: kotlin.to
+  type: call
+  template: "Pair(~this~, ~0~)"
+
+- id: kotlin.Pair.component1
+  type: call
+  template: "~this~.first"
+
+- id: kotlin.Pair.component2
+  type: call
+  template: "~this~.second"

@@ -1,0 +1,403 @@
+---
+
+#View
+- id: View
+  type: element
+  template: |
+    <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="view">
+    </view>
+
+#Space
+- id: Space
+  type: element
+  template: |
+    <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="view">
+    </view>
+
+#ProgressBar
+- id: ProgressBar
+  type: element
+  autowrapFor:
+    - 'android:padding'
+    - 'android:background'
+  template: |
+    <activityIndicatorView opaque="NO" contentMode="scaleToFill" horizontalHuggingPriority="750" verticalHuggingPriority="750" style="medium" translatesAutoresizingMaskIntoConstraints="NO" id="view">
+    </activityIndicatorView>
+
+#ProgressBar
+- id: ProgressBar
+  type: element
+  autowrapFor:
+    - 'android:padding'
+    - 'android:background'
+  attributes:
+    style: ?android:attr/progressBarStyleHorizontal
+  template: |
+    <progressView opaque="NO" contentMode="scaleToFill" verticalHuggingPriority="750" progress="0.5" translatesAutoresizingMaskIntoConstraints="NO" id="view">
+    </progressView>
+
+#ImageView
+- id: ImageView
+  type: element
+  autowrapFor:
+    - 'android:padding'
+    - 'android:background'
+  template: |
+    <imageView clipsSubviews="YES" userInteractionEnabled="NO" contentMode="scaleAspectFit" horizontalHuggingPriority="251" verticalHuggingPriority="251" translatesAutoresizingMaskIntoConstraints="NO" id="view">
+    </imageView>
+
+#TextView
+- id: TextView
+  type: element
+  autowrapFor:
+    - 'android:padding'
+    - 'android:background'
+    - 'android:drawableLeft'
+    - 'android:drawableRight'
+    - 'android:drawableStart'
+    - 'android:drawableEnd'
+    - 'android:drawableTop'
+    - 'android:drawableBottom'
+  template: |
+    <label opaque="NO" userInteractionEnabled="NO" contentMode="left" horizontalHuggingPriority="248" verticalHuggingPriority="248" text="Label" textAlignment="natural" lineBreakMode="tailTruncation" baselineAdjustment="alignBaselines" adjustsFontSizeToFit="NO" translatesAutoresizingMaskIntoConstraints="NO" id="view">
+    </label>
+
+#Button
+- id: Button
+  type: element
+  autowrapFor:
+    - 'android:drawableLeft'
+    - 'android:drawableRight'
+    - 'android:drawableStart'
+    - 'android:drawableEnd'
+    - 'android:drawableTop'
+    - 'android:drawableBottom'
+  template: |
+    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="view">
+    <inset key="contentEdgeInsets" top="~android:paddingTop~" left="~android:paddingLeft~" bottom="~android:paddingBottom~" right="~android:paddingRight~"/>
+    </button>
+
+#ImageButton
+- id: ImageButton
+  type: element
+  template: |
+    <button opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" lineBreakMode="middleTruncation" translatesAutoresizingMaskIntoConstraints="NO" id="view">
+    <inset key="contentEdgeInsets" top="~android:paddingTop~" left="~android:paddingLeft~" bottom="~android:paddingBottom~" right="~android:paddingRight~"/>
+    </button>
+
+#ToggleButton
+- id: ToggleButton
+  type: element
+  deferTo: Button
+
+#Spinner
+- id: ToggleButton
+  type: element
+  deferTo: Button
+
+#SeekBar
+- id: SeekBar
+  type: element
+  template: |
+    <slider opaque="NO" contentMode="scaleToFill" contentHorizontalAlignment="center" contentVerticalAlignment="center" value="0.5" minValue="0.0" maxValue="1" translatesAutoresizingMaskIntoConstraints="NO" id="view">
+    </slider>
+
+#RatingBar TODO
+#CheckBox TODO
+#RadioButton TODO
+#Switch TODO
+#RadioGroup TODO
+#EditText TODO
+#AutoCompleteTextView TODO
+
+#LinearLayout
+- id: LinearLayout
+  type: element
+  doesNotHaveAttributes:
+    - 'android:background'
+  insertChildrenAt: subviews
+  childRule: linear
+  template: |
+    <stackView opaque="NO" contentMode="scaleToFill" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="view">
+      <subviews>
+      </subviews>
+      <constraints>
+      </constraints>
+      <edgeInsets key="layoutMargins" top="paddingTop" left="paddingLeft" bottom="paddingBottom" right="paddingRight"/>
+    </stackView>
+
+- id: LinearLayout
+  type: element
+  insertChildrenAt: subviews/stackView/subviews
+  childRule: linear
+  template: |
+    <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="container">
+      <subviews>
+        <stackView opaque="NO" contentMode="scaleToFill" alignment="center" translatesAutoresizingMaskIntoConstraints="NO" id="view">
+          <subviews>
+          </subviews>
+          <constraints>
+          </constraints>
+        </stackView>
+      </subviews>
+      <constraints>
+        <constraint firstAttribute="bottom" secondItem="view" secondAttribute="bottom" constant="~android:paddingBottom~" id="containerBottom"/>
+        <constraint firstItem="view" firstAttribute="top" secondItem="container" secondAttribute="top" constant="~android:paddingTop~" id="containerTop"/>
+        <constraint firstItem="view" firstAttribute="leading" secondItem="container" secondAttribute="leading" constant="~android:paddingStart~" id="containerLeading"/>
+        <constraint firstAttribute="trailing" secondItem="view" secondAttribute="trailing" constant="~android:paddingEnd~" id="containerTrailing"/>
+      </constraints>
+    </view>
+
+#FrameLayout
+- id: FrameLayout
+  type: element
+  insertChildrenAt: subviews
+  childRule: frame
+  template: |
+    <view clipsSubviews="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="view">
+      <subviews>
+      </subviews>
+      <constraints>
+      </constraints>
+    </view>
+
+#ViewFlipper
+- id: ViewFlipper
+  type: element
+  deferTo: FrameLayout
+
+#ScrollView
+- id: ScrollView
+  type: element
+  insertChildrenAt: subviews
+  childRule: scroll-vertical
+  template: |
+    <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="view">
+    <subviews>
+    </subviews>
+    <constraints>
+    </constraints>
+    <viewLayoutGuide key="contentLayoutGuide" id="contentLayoutGuide"/>
+    <viewLayoutGuide key="frameLayoutGuide" id="frameLayoutGuide"/>
+    </scrollView>
+
+#HorizontalScrollView
+- id: HorizontalScrollView
+  type: element
+  insertChildrenAt: subviews
+  childRule: scroll-horizontal
+  template: |
+    <scrollView clipsSubviews="YES" multipleTouchEnabled="YES" contentMode="scaleToFill" translatesAutoresizingMaskIntoConstraints="NO" id="view">
+    <subviews>
+    </subviews>
+    <constraints>
+    </constraints>
+    <viewLayoutGuide key="contentLayoutGuide" id="contentLayoutGuide"/>
+    <viewLayoutGuide key="frameLayoutGuide" id="frameLayoutGuide"/>
+    </scrollView>
+
+#- id: "android:text"
+#  type: attribute
+#  element: TextView
+#  rules:
+#    "":
+#      append: [ ~value~ ]
+#- id: "android:textColor"
+#  type: attribute
+#  element: TextView
+#  valueType: Color
+#  rules:
+#    "":
+#      attribute:
+#        color: ~android~
+
+
+## Attributes
+- id: android:progressTint
+  type: attribute  # TODO
+
+- id: android:thumbTint
+  type: attribute  # TODO
+
+- id: android:numStars
+  type: attribute  # TODO
+
+- id: android:textOff
+  type: attribute  # TODO
+
+- id: android:textAllCaps
+  type: attribute  # TODO
+
+- id: android:textOn
+  type: attribute  # TODO
+
+- id: android:padding
+  type: attribute  # TODO
+
+- id: android:paddingTop
+  type: attribute  # TODO
+
+- id: android:paddingLeft
+  type: attribute  # TODO
+
+- id: android:paddingBottom
+  type: attribute  # TODO
+
+- id: android:paddingRight
+  type: attribute  # TODO
+
+- id: android:gravity
+  type: attribute  # TODO
+
+- id: android:drawablePadding
+  type: attribute  # TODO
+
+- id: android:drawableTint
+  type: attribute  # TODO
+
+- id: android:drawableLeft
+  type: attribute  # TODO
+
+- id: android:drawableTop
+  type: attribute  # TODO
+
+- id: android:drawableRight
+  type: attribute  # TODO
+
+- id: android:drawableBottom
+  type: attribute  # TODO
+
+- id: android:src
+  type: attribute  # TODO
+
+- id: android:letterSpacing
+  type: attribute  # TODO
+
+- id: android:text
+  type: attribute  # TODO
+
+- id: android:textColor
+  type: attribute  # TODO
+
+- id: android:scaleType
+  type: attribute  # TODO
+
+- id: android:id
+  type: attribute  # TODO
+
+- id: android:background
+  type: attribute  # TODO
+
+- id: android:color
+  type: attribute  # TODO
+
+- id: android:alpha
+  type: attribute  # TODO
+
+- id: android:elevation
+  type: attribute  # TODO
+
+- id: android:rotation
+  type: attribute  # TODO
+
+- id: android:visibility
+  type: attribute  # TODO
+
+- id: android:indeterminateTint
+  type: attribute  # TODO
+
+- id: android:src
+  type: attribute  # TODO
+
+- id: android:scaleType
+  type: attribute  # TODO
+
+- id: android:rotation
+  type: attribute  # TODO
+
+- id: android:textSize
+  type: attribute  # TODO
+
+- id: android:fontFamily
+  type: attribute  # TODO
+
+- id: android:textStyle
+  type: attribute  # TODO
+
+- id: android:letterSpacing
+  type: attribute  # TODO
+
+- id: android:lineSpacingMultiplier
+  type: attribute  # TODO
+
+- id: android:maxLines
+  type: attribute  # TODO
+
+- id: android:gravity
+  type: attribute  # TODO
+
+- id: android:fillViewport
+  type: attribute  # TODO
+
+- id: android:orientation
+  type: attribute  # TODO
+
+- id: android:showDividers
+  type: attribute  # TODO
+
+- id: android:gravity
+  type: attribute  # TODO
+
+- id: android:minWidth
+  type: attribute  # TODO
+
+- id: android:minHeight
+  type: attribute  # TODO
+
+- id: android:layout_width
+  type: attribute  # TODO
+
+- id: android:layout_height
+  type: attribute  # TODO
+
+- id: android:layout_gravity
+  type: attribute  # TODO
+
+- id: android:layout_weight
+  type: attribute  # TODO
+
+- id: android:layout_margin
+  type: attribute  # TODO
+
+- id: android:layout_marginTop
+  type: attribute  # TODO
+
+- id: android:layout_marginLeft
+  type: attribute  # TODO
+
+- id: android:layout_marginStart
+  type: attribute  # TODO
+
+- id: android:layout_marginBottom
+  type: attribute  # TODO
+
+- id: android:layout_marginRight
+  type: attribute  # TODO
+
+- id: android:layout_marginEnd
+  type: attribute  # TODO
+
+- id: android:hint
+  type: attribute  # TODO
+
+- id: android:textColorHint
+  type: attribute  # TODO
+
+- id: android:imeOptions
+  type: attribute  # TODO
+
+- id: android:inputType
+  type: attribute  # TODO
+
+- id: android:autofillHints
+  type: attribute  # TODO

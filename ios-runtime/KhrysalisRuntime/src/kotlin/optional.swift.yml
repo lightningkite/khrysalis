@@ -1,0 +1,23 @@
+
+- id: java.util.Optional
+  type: type
+  template: ~T0~?
+- id: java.util.Optional.empty
+  type: call
+  template: "nil"
+- id: java.util.Optional.empty
+  type: call
+  hasExplicitTypeArguments: true
+  template: "Optional<~T0~>.none"
+- id: java.util.Optional.ofNullable
+  type: call
+  template: "~0~"
+- id: java.util.Optional.get
+  type: call
+  template: "~0~!"
+- id: com.lightningkite.rx.kotlin
+  type: get
+  template: "~this~"
+- id: com.lightningkite.rx.optional
+  type: get
+  template: "~this~"

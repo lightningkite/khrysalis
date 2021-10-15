@@ -21,7 +21,7 @@ import javax.xml.xpath.XPathFactory
 
 val defaultBuilder = DocumentBuilderFactory.newDefaultInstance().newDocumentBuilder()
 
-operator fun Element.get(key: String): String = this.getAttribute(key)
+operator fun Element.get(key: String): String? = this.getAttribute(key)
 operator fun Element.set(key: String, value: String) = this.setAttribute(key, value)
 val Element.attributeMap: AttributesMap get() = AttributesMap(this)
 val Element.children: List<Node> get() = NodeListList(this.childNodes)

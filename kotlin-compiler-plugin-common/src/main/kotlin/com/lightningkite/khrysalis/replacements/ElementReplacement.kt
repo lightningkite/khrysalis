@@ -11,17 +11,26 @@ import org.jetbrains.kotlin.types.KotlinType
 
 data class ElementReplacement(
     val id: String,
-    var template: Template,
-    val insertChildrenAt: String? = null
+    var attributes: Map<String, String> = mapOf(),
+    var deferTo: String? = null,
+    var template: Template = Template(parts = listOf()),
+    var childRule: String = "",
+    var autoWrapFor: List<String> = listOf(),
+    var insertChildrenAt: String? = null,
 ) : ReplacementRule {
 
     override fun merge(other: ReplacementRule): Boolean {
         if(other !is ElementReplacement) return false
         if(this.id != other.id) return false
+        if(this.attributes != other.attributes) return false
+        this.deferTo = other.deferTo
         this.template = other.template
+        this.childRule = other.childRule
+        this.insertChildrenAt = other.insertChildrenAt
+        this.autoWrapFor = other.autoWrapFor
         return true
     }
 
-    override val priority: Int get() = 0
+    override val priority: Int get() = attributes.size
 
 }
