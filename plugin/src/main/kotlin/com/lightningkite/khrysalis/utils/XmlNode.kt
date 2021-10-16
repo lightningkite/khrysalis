@@ -1,11 +1,12 @@
 package com.lightningkite.khrysalis.utils
 
 import com.lightningkite.khrysalis.generic.VirtualType
-import com.lightningkite.khrysalis.ios.layout.Styles
 import org.w3c.dom.Node
 import java.io.File
 import java.lang.Exception
 import javax.xml.parsers.DocumentBuilderFactory
+
+typealias Styles = Map<String, Map<String, String>>
 
 class XmlNode(
     val element: Node,

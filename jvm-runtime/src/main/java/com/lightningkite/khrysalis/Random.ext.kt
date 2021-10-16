@@ -1,7 +1,5 @@
 package com.lightningkite.khrysalis
 
-import com.lightningkite.khrysalis.views.geometry.GFloat
-import com.lightningkite.khrysalis.views.geometry.toGFloat
 import kotlin.random.Random
 
 fun Random.nextFloat(until: Float): Float = this.nextDouble(until.toDouble()).toFloat()
