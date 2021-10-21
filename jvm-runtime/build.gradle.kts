@@ -14,30 +14,30 @@ version = "0.0.1"
 
 val props = project.rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { stream ->
     Properties().apply { load(stream) }
-}
+} ?: Properties()
 val signingKey: String? = (System.getenv("SIGNING_KEY")?.takeUnless { it.isEmpty() }
-    ?: project.properties["signingKey"]?.toString())
+    ?: props?.getProperty("signingKey")?.toString())
     ?.lineSequence()
     ?.filter { it.trim().firstOrNull()?.let { it.isLetterOrDigit() || it == '=' || it == '/' || it == '+' } == true }
     ?.joinToString("\n")
 val signingPassword: String? = System.getenv("SIGNING_PASSWORD")?.takeUnless { it.isEmpty() }
-    ?: project.properties["signingPassword"]?.toString()
+    ?: props?.getProperty("signingPassword")?.toString()
 val useSigning = signingKey != null && signingPassword != null
 
-if (signingKey != null) {
-    if (!signingKey.contains('\n')) {
+if(signingKey != null) {
+    if(!signingKey.contains('\n')){
         throw IllegalArgumentException("Expected signing key to have multiple lines")
     }
-    if (signingKey.contains('"')) {
+    if(signingKey.contains('"')){
         throw IllegalArgumentException("Signing key has quote outta nowhere")
     }
 }
 
 val deploymentUser = (System.getenv("OSSRH_USERNAME")?.takeUnless { it.isEmpty() }
-    ?: project.properties["ossrhUsername"]?.toString())
+    ?: props?.getProperty("ossrhUsername")?.toString())
     ?.trim()
 val deploymentPassword = (System.getenv("OSSRH_PASSWORD")?.takeUnless { it.isEmpty() }
-    ?: project.properties["ossrhPassword"]?.toString())
+    ?: props?.getProperty("ossrhPassword")?.toString())
     ?.trim()
 val useDeployment = deploymentUser != null || deploymentPassword != null
 
@@ -52,8 +52,6 @@ dependencies {
 tasks {
     val sourceJar by creating(Jar::class) {
         archiveClassifier.set("sources")
-//        from(android.sourceSets["main"].java.srcDirs)
-//        from(project.projectDir.resolve("src"))
         from(kotlin.sourceSets["main"].kotlin.srcDirs)
     }
     val javadocJar by creating(Jar::class) {
@@ -70,92 +68,64 @@ tasks {
 afterEvaluate {
     publishing {
         publications {
-            val java by creating(MavenPublication::class) {
+            create<MavenPublication>("java") {
                 from(components["java"])
                 artifact(tasks.getByName("sourceJar"))
-                //artifact(tasks.getByName("javadocJar"))
+                artifact(tasks.getByName("javadocJar"))
                 groupId = project.group.toString()
                 artifactId = project.name
                 version = project.version.toString()
+                setPom()
+            }
+        }
+        repositories {
+            if (useSigning) {
+                maven {
+                    name = "MavenCentral"
+                    val releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+                    val snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+                    url = uri(if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl)
+                    credentials {
+                        this.username = deploymentUser
+                        this.password = deploymentPassword
+                    }
+                }
             }
         }
     }
     if (useSigning) {
         signing {
             useInMemoryPgpKeys(signingKey, signingPassword)
-            sign(configurations.archives.get())
+            sign(publishing.publications)
         }
     }
 }
 
-if (useDeployment) {
-    tasks.register("uploadSnapshot") {
-        group = "upload"
-        finalizedBy("uploadArchives")
-        doLast {
-            project.version = project.version.toString() + "-SNAPSHOT"
-        }
-    }
+fun MavenPublication.setPom() {
+    pom {
+        name.set("Khrysalis Runtime")
+        description.set("A set of Annotations, extension functions, type aliases, and interfaces required for transpiling using Khrysalis.")
+        url.set("https://github.com/lightningkite/khrysalis")
 
-    tasks.named<Upload>("uploadArchives") {
-        repositories.withConvention(MavenRepositoryHandlerConvention::class) {
-            mavenDeployer {
-                beforeDeployment {
-                    signing.signPom(this)
-                }
+        scm {
+            connection.set("scm:git:https://github.com/lightningkite/khrysalis.git")
+            developerConnection.set("scm:git:https://github.com/lightningkite/khrysalis.git")
+            url.set("https://github.com/lightningkite/khrysalis")
+        }
+
+        licenses {
+            license {
+                name.set("The MIT License (MIT)")
+                url.set("https://www.mit.edu/~amini/LICENSE.md")
+                distribution.set("repo")
             }
         }
 
-        repositories.withGroovyBuilder {
-            "mavenDeployer"{
-                "repository"("url" to "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                    "authentication"(
-                        "userName" to deploymentUser,
-                        "password" to deploymentPassword
-                    )
-                }
-                "snapshotRepository"("url" to "https://s01.oss.sonatype.org/content/repositories/snapshots/") {
-                    "authentication"(
-                        "userName" to deploymentUser,
-                        "password" to deploymentPassword
-                    )
-                }
-                "pom" {
-                    "project" {
-                        setProperty("name", "RxKotlin-Property")
-                        setProperty("packaging", "aar")
-                        setProperty(
-                            "description",
-                            "An observable library for kotlin based on rxkotlin."
-                        )
-                        setProperty("url", "https://github.com/lightningkite/rxkotlin-property")
-
-                        "scm" {
-                            setProperty("connection", "scm:git:https://github.com/lightningkite/rxkotlin-property.git")
-                            setProperty(
-                                "developerConnection",
-                                "scm:git:https://github.com/lightningkite/rxkotlin-property.git"
-                            )
-                            setProperty("url", "https://github.com/lightningkite/rxkotlin-property")
-                        }
-
-                        "licenses" {
-                            "license"{
-                                setProperty("name", "The MIT License (MIT)")
-                                setProperty("url", "https://www.mit.edu/~amini/LICENSE.md")
-                                setProperty("distribution", "repo")
-                            }
-
-                        }
-                        "developers"{
-                            "developer"{
-                                setProperty("id", "bjsvedin")
-                                setProperty("name", "Brady Svedin")
-                                setProperty("email", "brady@lightningkite.com")
-                            }
-                        }
-                    }
-                }
+        developers {
+            developer {
+                id.set("LightningKiteJoseph")
+                name.set("Joseph Ivie")
+                email.set("joseph@lightningkite.com")
             }
         }
     }

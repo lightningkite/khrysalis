@@ -26,7 +26,7 @@ version = "0.1.0"
 
 val props = project.rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { stream ->
     Properties().apply { load(stream) }
-}
+} ?: Properties()
 val signingKey: String? = (System.getenv("SIGNING_KEY")?.takeUnless { it.isEmpty() }
     ?: props?.getProperty("signingKey")?.toString())
     ?.lineSequence()
