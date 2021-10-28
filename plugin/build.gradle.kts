@@ -24,32 +24,33 @@ plugins {
 group = "com.lightningkite.khrysalis"
 version = "0.1.0"
 
+
 val props = project.rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { stream ->
     Properties().apply { load(stream) }
 } ?: Properties()
 val signingKey: String? = (System.getenv("SIGNING_KEY")?.takeUnless { it.isEmpty() }
-    ?: props?.getProperty("signingKey")?.toString())
+    ?: props["signingKey"]?.toString())
     ?.lineSequence()
     ?.filter { it.trim().firstOrNull()?.let { it.isLetterOrDigit() || it == '=' || it == '/' || it == '+' } == true }
     ?.joinToString("\n")
 val signingPassword: String? = System.getenv("SIGNING_PASSWORD")?.takeUnless { it.isEmpty() }
-    ?: props?.getProperty("signingPassword")?.toString()
+    ?: props["signingPassword"]?.toString()
 val useSigning = signingKey != null && signingPassword != null
 
-if(signingKey != null) {
-    if(!signingKey.contains('\n')){
+if (signingKey != null) {
+    if (!signingKey.contains('\n')) {
         throw IllegalArgumentException("Expected signing key to have multiple lines")
     }
-    if(signingKey.contains('"')){
+    if (signingKey.contains('"')) {
         throw IllegalArgumentException("Signing key has quote outta nowhere")
     }
 }
 
 val deploymentUser = (System.getenv("OSSRH_USERNAME")?.takeUnless { it.isEmpty() }
-    ?: props?.getProperty("ossrhUsername")?.toString())
+    ?: props["ossrhUsername"]?.toString())
     ?.trim()
 val deploymentPassword = (System.getenv("OSSRH_PASSWORD")?.takeUnless { it.isEmpty() }
-    ?: props?.getProperty("ossrhPassword")?.toString())
+    ?: props["ossrhPassword"]?.toString())
     ?.trim()
 val useDeployment = deploymentUser != null || deploymentPassword != null
 
@@ -152,6 +153,7 @@ tasks {
     }
 }
 
+
 afterEvaluate {
     publishing {
         publications {
@@ -164,87 +166,60 @@ afterEvaluate {
                 version = project.version.toString()
             }
         }
+        repositories {
+            if (useSigning) {
+                maven {
+                    name = "MavenCentral"
+                    val releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
+                    val snapshotsRepoUrl = "https://s01.oss.sonatype.org/content/repositories/snapshots/"
+                    url = uri(if (version.toString().endsWith("SNAPSHOT")) snapshotsRepoUrl else releasesRepoUrl)
+                    credentials {
+                        this.username = deploymentUser
+                        this.password = deploymentPassword
+                    }
+                }
+            }
+        }
     }
-    if(useSigning){
+    if (useSigning) {
         signing {
             useInMemoryPgpKeys(signingKey, signingPassword)
-            sign(configurations.archives.get())
+            sign(publishing.publications)
         }
     }
 }
 
-if(useDeployment){
-    tasks.register("uploadSnapshot"){
-        group="upload"
-        finalizedBy("uploadArchives")
-        doLast{
-            project.version = project.version.toString() + "-SNAPSHOT"
-        }
-    }
+fun MavenPublication.setPom() {
+    pom {
+        name.set("Khrysalis-Plugin")
+        description.set("Khrysalis is a low-commitment multiplatform application development system based on converting Android apps into iOS and Web apps.")
+        url.set("https://github.com/lightningkite/khrysalis")
 
-    tasks.named<Upload>("uploadArchives") {
-        repositories.withConvention(MavenRepositoryHandlerConvention::class) {
-            mavenDeployer {
-                beforeDeployment {
-                    signing.signPom(this)
-                }
+        scm {
+            connection.set("scm:git:https://github.com/lightningkite/khrysalis.git")
+            developerConnection.set("scm:git:https://github.com/lightningkite/khrysalis.git")
+            url.set("https://github.com/lightningkite/khrysalis")
+        }
+
+        licenses {
+
+            license{
+                name.set("GNU General Public License v3.0")
+                url.set("https://www.gnu.org/licenses/gpl-3.0.en.html")
+                distribution.set("repo")
+            }
+            license{
+                name.set("Commercial License")
+                url.set("https://www.lightningkite.com")
+                distribution.set("repo")
             }
         }
 
-        repositories.withGroovyBuilder {
-            "mavenDeployer"{
-                "repository"("url" to "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/") {
-                    "authentication"(
-                        "userName" to deploymentUser,
-                        "password" to deploymentPassword
-                    )
-                }
-                "snapshotRepository"("url" to "https://s01.oss.sonatype.org/content/repositories/snapshots/") {
-                    "authentication"(
-                        "userName" to deploymentUser,
-                        "password" to deploymentPassword
-                    )
-                }
-                "pom" {
-                    "project" {
-                        setProperty("name", "Khrysalis-Plugin")
-                        setProperty("packaging", "jar")
-                        setProperty(
-                            "description",
-                            "Khrysalis is a low-commitment multiplatform application development system based on converting Android apps into iOS and Web apps."
-                        )
-                        setProperty("url", "https://github.com/lightningkite/khrysalis")
-
-                        "scm" {
-                            setProperty("connection", "scm:git:https://github.com/lightningkite/khrysalis.git")
-                            setProperty(
-                                "developerConnection",
-                                "scm:git:https://github.com/lightningkite/khrysalis.git"
-                            )
-                            setProperty("url", "https://github.com/lightningkite/khrysalis")
-                        }
-
-                        "licenses" {
-                            "license"{
-                                setProperty("name", "GNU General Public License v3.0")
-                                setProperty("url", "https://www.gnu.org/licenses/gpl-3.0.en.html")
-                                setProperty("distribution", "repo")
-                            }
-                            "license"{
-                                setProperty("name", "Commercial License")
-                                setProperty("url", "https://www.lightningkite.com")
-                                setProperty("distribution", "repo")
-                            }
-                        }
-                        "developers"{
-                            "developer"{
-                                setProperty("id", "bjsvedin")
-                                setProperty("name", "Brady Svedin")
-                                setProperty("email", "brady@lightningkite.com")
-                            }
-                        }
-                    }
-                }
+        developers {
+            developer {
+                id.set("LightningKiteJoseph")
+                name.set("Joseph Ivie")
+                email.set("joseph@lightningkite.com")
             }
         }
     }
