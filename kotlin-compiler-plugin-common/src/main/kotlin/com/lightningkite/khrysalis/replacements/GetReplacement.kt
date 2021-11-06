@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.replacements
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.lightningkite.khrysalis.util.fqNameWithTypeArgs
 import com.lightningkite.khrysalis.util.fqNameWithoutTypeArgs
 import com.lightningkite.khrysalis.util.satisfies
@@ -19,7 +20,7 @@ data class GetReplacement(
     override val debug: Boolean = false,
     val template: Template
 ) : ReplacementRule {
-    override val priority: Int
+    @get:JsonIgnore() override val priority: Int
         get() = (if (receiver != null) 2 else 0) + (if (actualReceiver != null) 4 else 0)
 
     fun passes(decl: PropertyDescriptor, receiverType: KotlinType?): Boolean {

@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.replacements
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonSubTypes
 import com.fasterxml.jackson.annotation.JsonTypeInfo
 import java.util.*
@@ -44,7 +45,7 @@ import java.util.*
     )
 )
 interface ReplacementRule : Comparable<ReplacementRule> {
-    val priority: Int get() = 0
+    @get:JsonIgnore() val priority: Int get() = 0
     val debug: Boolean get() = false
     override fun compareTo(other: ReplacementRule): Int {
         var result = other.priority.compareTo(this.priority)

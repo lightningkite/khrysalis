@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.replacements
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.lightningkite.khrysalis.analysis.actuallyCouldBeExpression
 import com.lightningkite.khrysalis.util.*
 import org.jetbrains.kotlin.descriptors.CallableDescriptor
@@ -29,7 +30,7 @@ data class FunctionReplacement(
     val template: Template
 ) : ReplacementRule {
 
-    override val priority: Int
+    @get:JsonIgnore() override val priority: Int
         get() = (if (suppliedArguments != null) 20 else 0) +
                 (if (infix != null) 1 else 0) +
                 (if (hasExplicitTypeArguments != null) 16 else 0) +

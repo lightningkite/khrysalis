@@ -1,19 +1,39 @@
 package com.lightningkite.khrysalis.replacements
 
+import com.fasterxml.jackson.core.JsonGenerator
 import com.fasterxml.jackson.core.JsonParser
 import com.fasterxml.jackson.core.JsonToken
 import com.fasterxml.jackson.databind.DeserializationContext
 import com.fasterxml.jackson.databind.JsonNode
+import com.fasterxml.jackson.databind.SerializerProvider
 import com.fasterxml.jackson.databind.deser.std.StdDeserializer
 import com.fasterxml.jackson.databind.module.SimpleModule
 import com.fasterxml.jackson.databind.node.ArrayNode
 import com.fasterxml.jackson.databind.node.ObjectNode
+import com.fasterxml.jackson.databind.ser.std.StdSerializer
 
 abstract class JacksonReplacementsModule() : SimpleModule() {
 
     abstract fun parseImports(node: JsonNode): List<Import>
 
     init {
+        addSerializer(Template::class.java, object: StdSerializer<Template>(Template::class.java) {
+            override fun serialize(value: Template?, gen: JsonGenerator, provider: SerializerProvider) {
+                if(value == null) gen.writeNull()
+                else {
+                    if(value.imports.isEmpty() && value.parts.none { it is TemplatePart.LambdaParameterContents }) {
+                        gen.writeString(value.toString())
+//                    } else {
+//                        gen.writeStartObject()
+//                        gen.writeFieldName("pattern")
+//                        gen.writeString(this.templ.toString())
+//                        gen.writeEndObject()
+                    } else {
+                        provider.defaultSerializeValue(value, gen)
+                    }
+                }
+            }
+        })
         addDeserializer(Template::class.java, object : StdDeserializer<Template>(
             Template::class.java
         ) {

@@ -1,5 +1,7 @@
 package com.lightningkite.khrysalis.replacements
 
+import com.fasterxml.jackson.annotation.JsonIgnore
+
 data class AttributeReplacement(
     val id: String,
     var valueType: ValueType = ValueType.String,
@@ -37,7 +39,7 @@ data class AttributeReplacement(
         return true
     }
 
-    override val priority: Int
+    @get:JsonIgnore() override val priority: Int
         get() = (if(element != null) 1 else 0)
 
 }

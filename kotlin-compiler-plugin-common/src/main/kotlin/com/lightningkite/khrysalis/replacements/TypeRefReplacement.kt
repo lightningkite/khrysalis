@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.replacements
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.descriptors.DeclarationDescriptor
 import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName

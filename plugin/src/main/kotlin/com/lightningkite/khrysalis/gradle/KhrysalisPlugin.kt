@@ -1,9 +1,12 @@
 package com.lightningkite.khrysalis.gradle
 
 import com.lightningkite.khrysalis.KhrysalisSettings
+import com.lightningkite.khrysalis.generic.CompilerRunInfo
+import com.lightningkite.khrysalis.generic.runCompiler
 import com.lightningkite.khrysalis.ios.swift.*
+import com.lightningkite.khrysalis.kotlin.kotlinPluginUse
 import com.lightningkite.khrysalis.utils.*
-import com.lightningkite.khrysalis.web.convertToTypescript
+import com.lightningkite.khrysalis.web.typescriptPluginUse
 import org.gradle.api.Plugin
 import org.gradle.api.Project
 import org.gradle.api.tasks.Exec
@@ -62,86 +65,55 @@ class KhrysalisPlugin : Plugin<Project> {
                     '.'
                 )
 
+        fun Task.getKotlinCompileTask(): KotlinCompile? {
+            return project.tasks
+                .asSequence()
+                .filter { it.name.startsWith("compile") && it.name.endsWith("Kotlin") }
+                .mapNotNull { it as? KotlinCompile }
+                .minBy { it.name.length }
+        }
+        fun Task.dependOnKotlinCompileTask() {
+            project.afterEvaluate {
+                val compileTask = getKotlinCompileTask()
+                compileTask?.let {
+                    println("Conversion depends on ${it.name}")
+                    this.dependsOn(it)
+                } ?: run {
+                    println("WARNING: Could find no compile*Kotlin tasks - tasks available: ${project.tasks.joinToString { it.name }}")
+                }
+            }
+        }
+
         project.afterEvaluate {
             println("Determined your package to be ${packageName()}")
+        }
+
+        project.tasks.create("khrysalisPrintDeclaredFqns") { task ->
+            task.group = "kotlin"
+            task.dependOnKotlinCompileTask()
+            task.doFirst {
+                runCompiler(
+                    CompilerRunInfo(
+                        task.getKotlinCompileTask()
+                            ?: throw IllegalStateException("Could not find compile*Kotlin tasks - what's up with your project?")
+                    ),
+                    kotlinPluginUse(project)
+                )
+            }
         }
 
         //IOS
 
         project.tasks.create("khrysalisConvertKotlinToSwift") { task ->
             task.group = "ios"
-            var compileTask: KotlinCompile? = null
-            project.afterEvaluate {
-                compileTask = project.tasks
-                    .asSequence()
-                    .filter { it.name.startsWith("compile") && it.name.endsWith("Kotlin") }
-                    .mapNotNull { it as? KotlinCompile }
-                    .minBy { it.name.length }
-                compileTask?.let {
-                    println("Conversion depends on ${it.name}")
-                    task.dependsOn(it)
-                } ?: run {
-                    println("WARNING: Could find no compile*Kotlin tasks - tasks available: ${project.tasks.joinToString { it.name }}")
-                }
-            }
+            task.dependOnKotlinCompileTask()
             task.doFirst {
-                val originalTask = compileTask
-                    ?: project.tasks
-                        .asSequence()
-                        .filter { it.name.startsWith("compile") && it.name.endsWith("Kotlin") }
-                        .mapNotNull { it as? KotlinCompile }
-                        .minBy { it.name.length }
-                    ?: throw IllegalStateException("Could not find compile*Kotlin tasks - what's up with your project?")
-                val libraries = originalTask.classpath.asSequence()
-                val files = originalTask.source.toList().asSequence()
-                println("All files: ${files.joinToString("\n")}")
-                println("All libraries: ${libraries.joinToString("\n")}")
-                convertToSwift(
-                    projectName = projectName(),
-                    libraries = libraries,
-                    files = files,
-                    pluginCache = project.buildDir.resolve("khrysalis-kcp"),
-                    buildCache = project.buildDir.resolve("testBuild"),
-                    dependencies = run {
-                        val localProperties = Properties().apply {
-                            val f = project.rootProject.file("local.properties")
-                            if (f.exists()) {
-                                load(f.inputStream())
-                            }
-                        }
-                        val pathRegex = Regex(":path => '([^']+)'")
-                        val home = System.getProperty("user.home")
-                        val localPodSpecRefs = iosBase()
-                            .resolve("Podfile")
-                            .takeIf { it.exists() }
-                            ?.also { println("Found podfile: $it") }
-                            ?.let {file ->
-                                file
-                                    .readText()
-                                    .let { pathRegex.findAll(it) }
-                                    .also { println("Found podfile paths: ${it.joinToString{ it.value }}") }
-                                    .map { it.groupValues[1] }
-                                    .map { it.replace("~", home) }
-                                    .map {
-                                        if(it.startsWith('/'))
-                                            File(it).parentFile
-                                        else
-                                            File(file.parentFile, it).parentFile
-                                    }
-                            } ?: sequenceOf()
-                        val allLocations = (localProperties.getProperty("khrysalis.iospods")
-                            ?: localProperties.getProperty("khrysalis.nonmacmanifest") ?: "")
-                            .splitToSequence(File.pathSeparatorChar)
-                            .filter { it.isNotBlank() }
-                            .map { File(it) }
-                            .filter { it.exists() }
-                            .plus(sequenceOf(iosBase()))
-                            .plus(sequenceOf(androidBase()))
-                            .plus(localPodSpecRefs)
-                        println("Checking for equivalents at: ${allLocations.joinToString("\n")}")
-                        allLocations
-                    },
-                    output = iosFolder().resolve("src")
+                runCompiler(
+                    CompilerRunInfo(
+                        task.getKotlinCompileTask()
+                            ?: throw IllegalStateException("Could not find compile*Kotlin tasks - what's up with your project?")
+                    ),
+                    swiftPluginUse(project, iosBase(), projectName())
                 )
             }
         }
@@ -211,37 +183,14 @@ class KhrysalisPlugin : Plugin<Project> {
         project.tasks.create("khrysalisConvertKotlinToTypescript") { task ->
             task.dependsOn("khrysalisUpdateWebVersion")
             task.group = "web"
-            var compileTask: KotlinCompile? = null
-            project.afterEvaluate {
-                compileTask = project.tasks
-                    .asSequence()
-                    .filter { it.name.startsWith("compile") && it.name.endsWith("Kotlin") }
-                    .mapNotNull { it as? KotlinCompile }
-                    .minBy { it.name.length }
-                compileTask?.let {
-                    task.dependsOn(it)
-                }
-            }
+            task.dependOnKotlinCompileTask()
             task.doFirst {
-                val originalTask = compileTask
-                    ?: project.tasks
-                        .asSequence()
-                        .filter { it.name.startsWith("compile") && it.name.endsWith("Kotlin") }
-                        .mapNotNull { it as? KotlinCompile }
-                        .minBy { it.name.length }
-                    ?: throw IllegalStateException("Could not find compile*Kotlin tasks - what's up with your project?")
-                val libraries = originalTask.classpath.asSequence()
-                val files = originalTask.source.toList().asSequence()
-                println("All files: ${files.joinToString("\n")}")
-                println("All libraries: ${libraries.joinToString("\n")}")
-                convertToTypescript(
-                    projectName = projectName(),
-                    libraries = libraries,
-                    files = files,
-                    pluginCache = project.buildDir.resolve("khrysalis-kcp"),
-                    buildCache = project.buildDir.resolve("testBuild"),
-                    dependencies = sequenceOf(webBase()),
-                    output = webBase().resolve("src")
+                runCompiler(
+                    CompilerRunInfo(
+                        task.getKotlinCompileTask()
+                            ?: throw IllegalStateException("Could not find compile*Kotlin tasks - what's up with your project?")
+                    ),
+                    typescriptPluginUse(project, webBase(), projectName())
                 )
             }
         }

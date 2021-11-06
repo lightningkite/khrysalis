@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.replacements
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.lightningkite.khrysalis.util.recursiveChildren
 import com.lightningkite.khrysalis.util.satisfies
@@ -35,7 +36,7 @@ data class TypeReplacement(
         return true
     }
 
-    override val priority: Int
+    @get:JsonIgnore() override val priority: Int
         get() = typeArgumentRequirements?.size ?: 0
 
     fun passes(decl: KotlinType): Boolean {

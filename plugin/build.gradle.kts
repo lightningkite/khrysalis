@@ -80,6 +80,7 @@ dependencies {
     api(gradleApi())
 
     implementation(project(":kotlin-compiler-plugin-typescript"))
+    implementation(project(":kotlin-compiler-plugin-kotlin"))
     implementation(project(":kotlin-compiler-plugin-swift"))
 
     api(group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version = kotlinVersion)
@@ -135,6 +136,16 @@ tasks {
         rename(".*", "swift.jar")
     }
     getByName("compileKotlin").dependsOn("insertSwiftJar")
+
+    val insertKotlinJar by creating(Copy::class) {
+        dependsOn(":kotlin-compiler-plugin-kotlin:shadowJar")
+        from("../kotlin-compiler-plugin-kotlin/build/libs") {
+            include("*-all.jar")
+        }
+        into("src/main/resources/compiler-plugins")
+        rename(".*", "kotlin.jar")
+    }
+    getByName("compileKotlin").dependsOn("insertKotlinJar")
 
     val sourceJar by creating(Jar::class) {
         archiveClassifier.set("sources")

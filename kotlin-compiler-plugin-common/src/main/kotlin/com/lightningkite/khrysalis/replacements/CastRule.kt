@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.replacements
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.lightningkite.khrysalis.util.recursiveChildren
 import com.lightningkite.khrysalis.util.satisfies
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
@@ -14,7 +15,7 @@ data class CastRule(
     val template: Template,
     override val debug: Boolean
 ) : ReplacementRule {
-    override val priority: Int
+    @get:JsonIgnore() override val priority: Int
         get() = 0
 
     fun passes(from: KotlinType, to: KotlinType): Boolean {

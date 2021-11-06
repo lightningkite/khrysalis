@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.replacements
 
+import com.fasterxml.jackson.annotation.JsonIgnore
 import com.fasterxml.jackson.annotation.JsonProperty
 import com.lightningkite.khrysalis.util.recursiveChildren
 import com.lightningkite.khrysalis.util.satisfies
@@ -31,6 +32,6 @@ data class ElementReplacement(
         return true
     }
 
-    override val priority: Int get() = attributes.size
+    @get:JsonIgnore() override val priority: Int get() = attributes.size
 
 }

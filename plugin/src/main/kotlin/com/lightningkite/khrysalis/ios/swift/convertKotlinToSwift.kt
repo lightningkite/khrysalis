@@ -1,8 +1,12 @@
 package com.lightningkite.khrysalis.ios.swift
 
+import com.lightningkite.khrysalis.generic.CompilerPluginUseInfo
 import com.lightningkite.khrysalis.generic.KotlinTranspileCLP
+import com.lightningkite.khrysalis.generic.runCompiler
 import com.lightningkite.khrysalis.swift.KotlinSwiftCLP
+import com.lightningkite.khrysalis.typescript.KotlinTypescriptCLP
 import com.lightningkite.khrysalis.utils.copyFolderOutFromRes
+import org.gradle.api.Project
 import org.jetbrains.kotlin.cli.common.arguments.K2JVMCompilerArguments
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageLocation
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
@@ -13,60 +17,65 @@ import org.jetbrains.kotlin.config.Services
 import org.jetbrains.kotlin.incremental.classpathAsList
 import org.jetbrains.kotlin.incremental.destinationAsFile
 import java.io.File
+import java.util.*
 
-fun convertToSwift(
-    projectName: String? = null,
-    libraries: Sequence<File>,
-    files: Sequence<File>,
-    pluginCache: File,
-    buildCache: File,
-    dependencies: Sequence<File>,
-    output: File
-){
-    val result = K2JVMCompiler().exec(
-        messageCollector = object : MessageCollector {
-            override fun clear() {
-
+fun swiftPluginUse(
+    project: Project,
+    iosBase: File,
+    projectName: String = project.name.takeUnless { it == "app" || it == "android" }
+        ?: project.rootProject.name
+): CompilerPluginUseInfo {
+    val dependencies = run {
+        val localProperties = Properties().apply {
+            val f = project.rootProject.file("local.properties")
+            if (f.exists()) {
+                load(f.inputStream())
             }
-
-            override fun hasErrors(): Boolean {
-                return false
-            }
-
-            override fun report(
-                severity: CompilerMessageSeverity,
-                message: String,
-                location: CompilerMessageSourceLocation?
-            ) {
-                if (message.isNotBlank()/* && severity <= CompilerMessageSeverity.STRONG_WARNING*/) {
-                    println(message + ":")
-                    location?.toString()?.let { println(it) }
-                }
-            }
-
-        },
-        services = Services.EMPTY,
-        arguments = K2JVMCompilerArguments().apply {
-            this.useIR = true
-            this.freeArgs = files.filter { it.extension in setOf("kt", "java") }.map { it.absolutePath }.toList()
-            this.classpathAsList = libraries.toList()
-            this.pluginClasspaths = pluginCache.resolve("swift.jar")
-                .also { it.parentFile.mkdirs() }
-                .also {
-                    copyFolderOutFromRes("compiler-plugins", it.parentFile)
-                }
-                .let { arrayOf(it.path) }
-            this.pluginOptions =
-                listOfNotNull(
-                    "plugin:${KotlinSwiftCLP.PLUGIN_ID}:${KotlinTranspileCLP.KEY_OUTPUT_DIRECTORY_NAME}=\"${output.path}\"",
-                    projectName?.let { "plugin:${KotlinSwiftCLP.PLUGIN_ID}:${KotlinTranspileCLP.KEY_PROJECT_NAME_NAME}=\"${it}\"" },
-                    "plugin:${KotlinSwiftCLP.PLUGIN_ID}:${KotlinTranspileCLP.KEY_EQUIVALENTS_NAME}=\"${dependencies.joinToString(File.pathSeparator)}\""
-                ).toTypedArray()
-            this.destinationAsFile = buildCache.also { it.mkdirs() }
-            println("${KotlinSwiftCLP.PLUGIN_ID} - ${this.pluginClasspaths?.joinToString()} - Options: ${this.pluginOptions?.joinToString()}")
         }
-    )
-    if (result.code != 0) {
-        throw IllegalStateException("Got a code ${result.code} back from the compiler! ${result.name}")
+        val pathRegex = Regex(":path => '([^']+)'")
+        val home = System.getProperty("user.home")
+        val localPodSpecRefs = iosBase
+            .resolve("Podfile")
+            .takeIf { it.exists() }
+            ?.also { println("Found podfile: $it") }
+            ?.let { file ->
+                file
+                    .readText()
+                    .let { pathRegex.findAll(it) }
+                    .also { println("Found podfile paths: ${it.joinToString { it.value }}") }
+                    .map { it.groupValues[1] }
+                    .map { it.replace("~", home) }
+                    .map {
+                        if (it.startsWith('/'))
+                            File(it).parentFile
+                        else
+                            File(file.parentFile, it).parentFile
+                    }
+            } ?: sequenceOf()
+        val allLocations = (localProperties.getProperty("khrysalis.iospods")
+            ?: localProperties.getProperty("khrysalis.nonmacmanifest") ?: "")
+            .splitToSequence(File.pathSeparatorChar)
+            .filter { it.isNotBlank() }
+            .map { File(it) }
+            .filter { it.exists() }
+            .plus(sequenceOf(iosBase))
+            .plus(sequenceOf(project.projectDir))
+            .plus(localPodSpecRefs)
+        println("Checking for equivalents at: ${allLocations.joinToString("\n")}")
+        allLocations
     }
+    val output = iosBase.resolve(projectName).resolve("src")
+    return CompilerPluginUseInfo(
+        project = project,
+        cacheName = "swift.jar",
+        options = listOfNotNull(
+            "plugin:${KotlinSwiftCLP.PLUGIN_ID}:${KotlinTranspileCLP.KEY_OUTPUT_DIRECTORY_NAME}=\"${output.path}\"",
+            "plugin:${KotlinSwiftCLP.PLUGIN_ID}:${KotlinTranspileCLP.KEY_PROJECT_NAME_NAME}=\"${projectName}\"",
+            "plugin:${KotlinSwiftCLP.PLUGIN_ID}:${KotlinTranspileCLP.KEY_EQUIVALENTS_NAME}=\"${
+                dependencies.joinToString(
+                    File.pathSeparator
+                )
+            }\""
+        )
+    )
 }
