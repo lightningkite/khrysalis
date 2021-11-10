@@ -11,7 +11,7 @@ class SwiftFileEmitter(val translator: SwiftTranslator, file: KtFile) : FileEmit
     private val imports = HashSet<SwiftImport>()
     init {
         imports.add(SwiftImport("Foundation"))
-        imports.add(SwiftImport("LKButterfly"))
+        imports.add(SwiftImport("KhrysalisRuntime"))
     }
     val importedFqs = HashSet<String>()
 

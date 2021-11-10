@@ -18,6 +18,7 @@ data class GetReplacement(
     val receiver: String? = null,
     val actualReceiver: String? = null,
     override val debug: Boolean = false,
+    val reflectiveName: String? = null,
     val template: Template
 ) : ReplacementRule {
     @get:JsonIgnore() override val priority: Int

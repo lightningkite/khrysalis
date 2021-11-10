@@ -18,8 +18,41 @@ import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.synthetic.hasJavaOriginInHierarchy
 import com.lightningkite.khrysalis.analysis.*
 import com.lightningkite.khrysalis.util.*
+import org.jetbrains.kotlin.builtins.isFunctionType
+import org.jetbrains.kotlin.builtins.isFunctionTypeOrSubtype
+import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
+import org.jetbrains.kotlin.util.capitalizeDecapitalize.decapitalizeAsciiOnly
 
-val noArgNames = setOf<String>(/*"value", "other"*/)
+private val autogenParamName = Regex("p[0-9]+")
+private val ValueParameterDescriptor_useName = HashMap<ValueParameterDescriptor, Boolean>()
+private fun CallableDescriptor.calculateSwiftParameterNames() {
+    val firstRealParamIndex = this.valueParameters.indexOfFirst { !it.name.isSpecial }
+    val firstParamUsesUnderscore = this.valueParameters.firstOrNull { !it.name.isSpecial }?.let {
+        val stringName = it.name.asString()
+        if(stringName matches autogenParamName) return@let true
+        if(stringName == it.type.constructor.declarationDescriptor?.name?.asString()?.decapitalizeAsciiOnly() &&
+            this.valueParameters.subList(firstRealParamIndex + 1, this.valueParameters.size).none {
+                it.name.asString() == it.type.constructor.declarationDescriptor?.name?.asString()?.decapitalizeAsciiOnly() && !it.declaresDefaultValue()
+            }) return@let true
+        if(stringName == "value" || stringName == "element") return@let true
+        if(stringName.length == 1) return@let true
+        return@let false
+    }
+    if(firstParamUsesUnderscore == true) {
+        valueParameters.forEach {
+            ValueParameterDescriptor_useName[it] = true
+        }
+        ValueParameterDescriptor_useName[valueParameters[0]] = false
+    } else {
+        valueParameters.forEach {
+            ValueParameterDescriptor_useName[it] = true
+        }
+    }
+}
+val ValueParameterDescriptor.useName: Boolean get() = ValueParameterDescriptor_useName[this] ?: run {
+    this.containingDeclaration.calculateSwiftParameterNames()
+    ValueParameterDescriptor_useName[this]!!
+}
 
 val FunctionDescriptor.swiftNameOverridden: String?
     get() = this.annotations
@@ -206,7 +239,7 @@ fun SwiftTranslator.registerFunction() {
     }
 
     handle<KtParameter> {
-        if (typedRule.name in noArgNames) {
+        if ((typedRule.resolvedValueParameter as? ValueParameterDescriptor)?.useName == false) {
             -"_ "
         }
         -typedRule.nameIdentifier
@@ -552,14 +585,20 @@ fun SwiftTranslator.registerFunction() {
     //Regular calls
     handle<ArgumentsList> {
         val explicitTypeArgs = typedRule.resolvedCall.call.typeArgumentList != null
+        val lambdaArgument = typedRule.on.valueParameters.lastOrNull()
+            ?.let { typedRule.resolvedCall.valueArguments[it] }
+            ?.takeIf { it.arguments.size == 1 }
+            ?.takeIf { it.arguments[0].getArgumentExpression() is KtLambdaExpression }
+            ?.takeIf { typedRule.on.valueParameters.asReversed().drop(1).firstOrNull()?.type?.isFunctionTypeOrSubtype != true }
         val parenArguments = typedRule.prependArguments.plus(typedRule.resolvedCall.valueArguments.entries
-            .filter { it.value.arguments.isNotEmpty() && it.value.arguments.none { it.isExternal() && it is LambdaArgument } }
+            .filter { it.value.arguments.isNotEmpty() }
+            .filter { it.value != lambdaArgument }
             .sortedBy { it.key.index }
             .map { entry ->
                 val out = ArrayList<Any?>()
                 if (!typedRule.on.hasJavaOriginInHierarchy()) {
-                    entry.key.name.takeUnless { it.isSpecial || it.asString().let { it in noArgNames || (it.startsWith('p') && it.drop(1).all { it.isDigit() } ) } }?.let {
-                        out += it.asString().safeSwiftIdentifier()
+                    if(entry.key.useName) {
+                        out += entry.key.name.asString().safeSwiftIdentifier()
                         out += ": "
                     }
                 }
@@ -590,13 +629,12 @@ fun SwiftTranslator.registerFunction() {
             )
             -')'
         }
-        val lambdaArg = typedRule.resolvedCall.valueArguments.entries
-            .firstOrNull { it.value.arguments.isNotEmpty() && it.value.arguments.any { it.isExternal() && it is LambdaArgument } }
-        lambdaArg
+        lambdaArgument
             ?.let {
-                -it.value.arguments[0].getArgumentExpression()
+                -' '
+                -it.arguments.single().getArgumentExpression()
             }
-        if(lambdaArg == null && parenArguments == null){
+        if(lambdaArgument == null && parenArguments == null){
             -"()"
         }
     }

@@ -1,4 +1,4 @@
-package com.lightningkite.khrysalis.views
+package com.lightningkite.khrysalis
 
 typealias ColorValue = Int
 

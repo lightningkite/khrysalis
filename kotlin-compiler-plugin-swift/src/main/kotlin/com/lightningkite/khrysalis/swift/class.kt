@@ -58,31 +58,31 @@ fun SwiftTranslator.registerClass() {
             )
             .let {
                 if (on is KtClass && on.isData()) {
-                    out.addImport(SwiftImport("LKButterfly"))
-                    it + listOf("KDataClass")
+                    out.addImport(SwiftImport("KhrysalisRuntime"))
+                    it + listOf("Hashable")
                 } else it
             }
             .let {
                 if (on is KtClass && on.isEnum()) {
-                    out.addImport(SwiftImport("LKButterfly"))
-                    it + listOf("KEnum")
+                    out.addImport(SwiftImport("KhrysalisRuntime"))
+                    it + listOf("Hashable")
                 } else it
             }
             .let {
                 if (on.body?.functions?.find { it.name == "equals" && it.valueParameters.size == 1 } != null) {
-                    out.addImport(SwiftImport("LKButterfly"))
+                    out.addImport(SwiftImport("KhrysalisRuntime"))
                     it + listOf("KEquatable")
                 } else it
             }
             .let {
                 if (on.body?.functions?.find { it.name == "hashCode" && it.valueParameters.size == 0 } != null) {
-                    out.addImport(SwiftImport("LKButterfly"))
+                    out.addImport(SwiftImport("KhrysalisRuntime"))
                     it + listOf("KHashable")
                 } else it
             }
             .let {
                 if (on.body?.functions?.find { it.name == "toString" && it.valueParameters.size == 0 } != null) {
-                    out.addImport(SwiftImport("LKButterfly"))
+                    out.addImport(SwiftImport("KhrysalisRuntime"))
                     it + listOf("KStringable")
                 } else it
             }
@@ -238,48 +238,48 @@ fun SwiftTranslator.registerClass() {
 
         if (typedRule.superTypeListEntries
                 .mapNotNull { it as? KtSuperTypeEntry }
-                .any { it.typeReference?.resolvedType?.fqNameWithoutTypeArgs == "com.lightningkite.butterfly.Codable" }
+                .any { it.typeReference?.resolvedType?.fqNameWithoutTypeArgs == "com.lightningkite.khrysalis.Codable" } ||
+                    typedRule.annotationEntries.any { it.resolvedAnnotation?.type?.fqNameWithoutTypeArgs == "kotlinx.serialization.Serializable" }
         ) {
             -"convenience required public init(from decoder: Decoder) throws {\n"
             -"let values = try decoder.container(keyedBy: CodingKeys.self)\n"
             -"self.init(\n"
             typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEachBetween(forItem = {
+                if((it.resolvedValueParameter as? ValueParameterDescriptor)?.useName != false) {
+                    -it.nameIdentifier
+                    -": "
+                }
                 if (it.typeReference?.resolvedType?.fqNameWithoutTypeArgs == "kotlin.Double") {
                     if(it.typeReference?.resolvedType?.isMarkedNullable == true){
                         it.defaultValue?.let { default ->
-                            -it.nameIdentifier
-                            -": values.contains(."
+                            -"values.contains(."
                             -it.nameIdentifier
                             -") ? try values.decodeDoubleOrNull(forKey: ."
                             -it.nameIdentifier
                             -") : "
                             -default
                         } ?: run {
-                            -it.nameIdentifier
-                            -": try values.decodeDoubleOrNull(forKey: ."
+                            -"try values.decodeDoubleOrNull(forKey: ."
                             -it.nameIdentifier
                             -")"
                         }
                     } else {
                         it.defaultValue?.let { default ->
-                            -it.nameIdentifier
-                            -": values.contains(."
+                            -"values.contains(."
                             -it.nameIdentifier
                             -") ? try values.decodeDouble(forKey: ."
                             -it.nameIdentifier
                             -") : "
                             -default
                         } ?: run {
-                            -it.nameIdentifier
-                            -": try values.decodeDouble(forKey: ."
+                            -"try values.decodeDouble(forKey: ."
                             -it.nameIdentifier
                             -")"
                         }
                     }
                 } else {
                     it.defaultValue?.let { default ->
-                        -it.nameIdentifier
-                        -": values.contains(."
+                        -"values.contains(."
                         -it.nameIdentifier
                         -") ? try values.decode("
                         -it.typeReference
@@ -288,8 +288,7 @@ fun SwiftTranslator.registerClass() {
                         -") : "
                         -default
                     } ?: run {
-                        -it.nameIdentifier
-                        -": try values.decode("
+                        -"try values.decode("
                         -it.typeReference
                         -".self, forKey: ."
                         -it.nameIdentifier
@@ -401,6 +400,9 @@ fun SwiftTranslator.registerClass() {
             -"public func copy("
             typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEachBetween(
                 forItem = {
+                    if((it.resolvedValueParameter as? ValueParameterDescriptor)?.useName == false) {
+                        -"_ "
+                    }
                     -it.nameIdentifier
                     -": "
                     -it.typeReference
@@ -428,8 +430,10 @@ fun SwiftTranslator.registerClass() {
             -"("
             typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEachBetween(
                 forItem = {
-                    -it.nameIdentifier
-                    -": "
+                    if((it.resolvedValueParameter as? ValueParameterDescriptor)?.useName != false) {
+                        -it.nameIdentifier
+                        -": "
+                    }
                     if (it.typeReference?.resolvedType?.isNullable() == true && it.typeReference?.resolvedType !is TypeParameterDescriptor) {
                         -"invertOptional("
                         -it.nameIdentifier
@@ -642,8 +646,10 @@ fun SwiftTranslator.registerClass() {
                         } else {
                             -", "
                         }
-                        -it.key.name.asString()
-                        -": "
+                        if(it.key.useName) {
+                            -it.key.name.asString()
+                            -": "
+                        }
                         -args[0].getArgumentExpression()
                     }
                     else -> {
@@ -935,8 +941,8 @@ private fun <T : KtClassOrObject> handleConstructor(
                                 }
                                 1 -> {
                                     if ((resolvedCall?.candidateDescriptor as? ConstructorDescriptor)?.hasJavaOriginInHierarchy() != true) {
-                                        it.key.name.takeUnless { it.isSpecial || it.asString().let { it in noArgNames || (it.startsWith('p') && it.drop(1).all { it.isDigit() } ) } }?.let {
-                                            -it.asString().safeSwiftIdentifier()
+                                        if(it.key.useName) {
+                                            -it.key.name.asString().safeSwiftIdentifier()
                                             -": "
                                         }
                                     }

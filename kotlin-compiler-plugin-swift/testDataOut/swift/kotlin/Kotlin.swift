@@ -732,7 +732,7 @@ public extension CaseIterable {
     static func values() -> Array<Self> {
         return self.allCases.toList()
     }
-    static func valueOf(value: String) -> Self {
+    static func valueOf(_ value: String) -> Self {
         return values().find { "\($0)" == value }!
     }
 }

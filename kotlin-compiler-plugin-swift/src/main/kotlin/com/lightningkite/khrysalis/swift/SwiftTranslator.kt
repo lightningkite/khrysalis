@@ -144,6 +144,8 @@ class SwiftTranslator(
         registerSpecialLet()
         registerQualified()
         registerException()
+        registerReflection()
+        registerViewBinding()
     }
 
     inline fun <reified T> PsiElement.parentIfType(): T? = parent as? T

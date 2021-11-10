@@ -22,7 +22,7 @@ plugins {
 }
 
 group = "com.lightningkite.khrysalis"
-version = "0.1.0"
+version = "0.2.0"
 
 
 val props = project.rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { stream ->

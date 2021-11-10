@@ -37,7 +37,7 @@ private val primitiveTypes = setOf(
 fun KotlinType.isPrimitive() = fqNameWithoutTypeArgs in primitiveTypes
 data class BasicType(val type: KotlinType)
 data class CompleteReflectableType(val type: KotlinType)
-data class KtUserTypeBasic(val type: KtUserType)
+data class KtUserTypeBasic(val type: KtSimpleNameExpression)
 data class SwiftExtensionStart(
     val forDescriptor: CallableDescriptor,
     val receiver: KtTypeReference?,
@@ -79,7 +79,7 @@ fun SwiftTranslator.registerType() {
         -"extension "
         val t = typedRule.forDescriptor.extensionReceiverParameter!!.type
         val baseClass = t.constructor.declarationDescriptor as? ClassDescriptor
-        -typedRule.receiver?.typeElement?.let { it as? KtUserType }?.let { KtUserTypeBasic(it) } ?: BasicType(t)
+        -typedRule.receiver?.typeElement?.let { it as? KtUserType }?.let { KtUserTypeBasic(it.referenceExpression!!) } ?: BasicType(t)
         typedRule.forDescriptor.annotations.findAnnotation(FqName("com.lightningkite.butterfly.SwiftExtensionWhere"))
             ?.let {
                 val value = it.allValueArguments[Name.identifier("text")]!!.value as String
@@ -190,9 +190,7 @@ fun SwiftTranslator.registerType() {
                 if (typedRule.isMarkedNullable) {
                     -'('
                 }
-                if (writingParameter > 0 && typedRule.annotations.let {
-                        it.hasAnnotation(FqName("com.lightningkite.butterfly.Escaping")) || it.hasAnnotation(FqName("com.lightningkite.butterfly.escaping"))
-                    }) {
+                if (writingParameter > 0) {
                     -"@escaping "
                 }
                 -'('
@@ -321,13 +319,13 @@ fun SwiftTranslator.registerType() {
 
     handle<KtUserTypeBasic>(
         condition = {
-            val reference = typedRule.type.referenceExpression ?: return@handle false
+            val reference = typedRule.type ?: return@handle false
             val type = reference.resolvedReferenceTarget ?: return@handle false
             replacements.getTypeRef(type) != null
         },
         priority = 11_000,
         action = {
-            val reference = typedRule.type.referenceExpression!!
+            val reference = typedRule.type
             val type = reference.resolvedReferenceTarget!!
             val rule = replacements.getTypeRef(type)!!
             emitTemplate(
@@ -337,13 +335,13 @@ fun SwiftTranslator.registerType() {
     )
     handle<KtUserTypeBasic>(
         condition = {
-            val reference = typedRule.type.referenceExpression ?: return@handle false
+            val reference = typedRule.type ?: return@handle false
             val type = reference.resolvedReferenceTarget ?: return@handle false
             replacements.getType(type) != null
         },
         priority = 10_000,
         action = {
-            val reference = typedRule.type.referenceExpression!!
+            val reference = typedRule.type
             val type = reference.resolvedReferenceTarget!!
             val rule = replacements.getType(type)!!
             emitTemplate(
@@ -352,7 +350,7 @@ fun SwiftTranslator.registerType() {
         }
     )
     handle<KtUserTypeBasic> {
-        -typedRule.type.referenceExpression
+        -typedRule.type
     }
 
     handle<KtFunctionType> {
@@ -372,11 +370,8 @@ fun SwiftTranslator.registerType() {
 
     handle<KtTypeReference>(
         condition = {
-            writingParameter > 0 && typedRule.annotationEntries
-                .any {
-                    it.resolvedAnnotation?.fqName?.asString()
-                        ?.equals("com.lightningkite.butterfly.escaping", true) == true
-                }
+            writingParameter > 0
+                    && typedRule.resolvedType?.isFunctionType == true
                     && typedRule.parentOfType<KtParameter>() != null
         },
         priority = 10,

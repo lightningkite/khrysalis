@@ -27,6 +27,7 @@ data class FunctionReplacement(
     val usedAsExpression: Boolean? = null,
     val typeArgumentRequirements: Map<Int, String>? = null,
     override val debug: Boolean = false,
+    val reflectiveName: String? = null,
     val template: Template
 ) : ReplacementRule {
 
@@ -131,6 +132,32 @@ data class FunctionReplacement(
         if (this.typeArgumentRequirements != null) {
             for ((key, value) in this.typeArgumentRequirements) {
                 if (call.typeArguments[call.candidateDescriptor.typeParameters[key]]?.satisfies(value) != true) return false
+            }
+        }
+        return true
+    }
+    fun passes(
+        descriptor: CallableDescriptor
+    ): Boolean {
+        if(debug){
+            if (receiver != null && receiver != descriptor.extensionReceiverParameter?.type?.fqNameWithoutTypeArgs) println("Not applicable: receiver requires $receiver, got ${descriptor.extensionReceiverParameter?.type?.fqNameWithoutTypeArgs}")
+            if (arguments != null) {
+                if (this.arguments.size != descriptor.original.valueParameters.size)
+                    println("Not applicable: arguments require ${this.arguments}, got ${descriptor.original.valueParameters.joinToString { it.name.asString() + ": " + it.type.fqNameWithoutTypeArgs }}")
+                else if (!this.arguments.zip(descriptor.original.valueParameters)
+                        .all { (a, p) -> a == "*" || p.type.fqNameWithoutTypeArgs == a || p.name.asString() == a }
+                ) {
+                    println("Not applicable: arguments require ${this.arguments}, got ${descriptor.original.valueParameters.joinToString { it.name.asString() + ": " + it.type.fqNameWithoutTypeArgs }}")
+                }
+            }
+        }
+        if (receiver != null && receiver != descriptor.extensionReceiverParameter?.type?.fqNameWithoutTypeArgs) return false
+        if (arguments != null) {
+            if (this.arguments.size != descriptor.original.valueParameters.size) return false
+            if (!this.arguments.zip(descriptor.original.valueParameters)
+                    .all { (a, p) -> a == "*" || p.type.fqNameWithoutTypeArgs == a || p.name.asString() == a }
+            ) {
+                return false
             }
         }
         return true

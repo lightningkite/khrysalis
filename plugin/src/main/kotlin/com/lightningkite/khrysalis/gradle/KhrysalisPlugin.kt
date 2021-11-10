@@ -12,6 +12,7 @@ import org.gradle.api.Project
 import org.gradle.api.tasks.Exec
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.apache.tools.ant.taskdefs.condition.Os
+import org.gradle.api.Action
 import org.gradle.api.Task
 import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.compile.JavaCompile
@@ -34,6 +35,10 @@ open class KhrysalisPluginExtension {
                 "\nprojectName: " + projectName +
                 "\n)"
     }
+}
+
+fun Project.khrysalis(configure: Action<KhrysalisPluginExtension>) {
+    (this as org.gradle.api.plugins.ExtensionAware).extensions.configure("khrysalis", configure)
 }
 
 class KhrysalisPlugin : Plugin<Project> {

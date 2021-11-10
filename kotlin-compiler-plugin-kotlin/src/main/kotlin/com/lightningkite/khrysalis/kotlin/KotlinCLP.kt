@@ -4,7 +4,6 @@ import com.fasterxml.jackson.annotation.JsonInclude
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.JsonNode
 import com.fasterxml.jackson.databind.ObjectMapper
-import com.fasterxml.jackson.databind.SerializationFeature
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator
 import com.fasterxml.jackson.module.kotlin.KotlinModule
@@ -18,12 +17,13 @@ import org.jetbrains.kotlin.compiler.plugin.CommandLineProcessor
 import org.jetbrains.kotlin.compiler.plugin.ComponentRegistrar
 import org.jetbrains.kotlin.config.CompilerConfiguration
 import org.jetbrains.kotlin.descriptors.*
+import org.jetbrains.kotlin.lexer.KtModifierKeywordToken
+import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
-import org.jetbrains.kotlin.psi.psiUtil.isExtensionDeclaration
 import org.jetbrains.kotlin.psi.psiUtil.isPublic
+import org.jetbrains.kotlin.psi.psiUtil.visibilityModifierTypeOrDefault
 import org.jetbrains.kotlin.resolve.BindingTrace
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
-import org.jetbrains.kotlin.resolve.descriptorUtil.isPublishedApi
 import org.jetbrains.kotlin.resolve.descriptorUtil.secondaryConstructors
 import org.jetbrains.kotlin.resolve.jvm.extensions.AnalysisHandlerExtension
 import java.io.File
@@ -59,17 +59,16 @@ class KotlinExtension(
         files: Collection<KtFile>
     ): AnalysisResult {
         bindingContext = bindingTrace.bindingContext
-        val fqnFile = (
-                project.projectFile?.let { File(it.path) }
-                    ?: files.asSequence()
-                        .map { it.virtualFilePath }
-                        .reduce { acc, file -> acc.commonPrefixWith(file) }
-                        .let { File(it) }
-                        .let {
-                            if(it.isDirectory) it
-                            else it.parentFile
-                        }
-                ).resolve("equivalents-template.yaml")
+        val outputDirectory = project.projectFile?.let { File(it.path) }
+            ?: files.asSequence()
+                .map { it.virtualFilePath }
+                .reduce { acc, file -> acc.commonPrefixWith(file) }
+                .let { File(it) }
+                .let {
+                    if(it.isDirectory) it
+                    else it.parentFile
+                }
+        val equivalentsTemplate = outputDirectory.resolve("equivalents-template.yaml")
 
         val toEmit = ArrayList<ReplacementRule>()
         files.asSequence()
@@ -90,7 +89,24 @@ class KotlinExtension(
             .registerModule(KotlinModule())
             .setSerializationInclusion(JsonInclude.Include.NON_DEFAULT)
             .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
-        replacementMapper.writeValue(fqnFile, RuleList(toEmit))
+
+        replacementMapper.writeValue(equivalentsTemplate, RuleList(toEmit))
+        outputDirectory.resolve("fqnames.txt").bufferedWriter().use {
+            sequenceOf(project.name).plus(
+                files.asSequence()
+                    .flatMap { f ->
+                        f.declarations.asSequence()
+                            .mapNotNull { it as? KtNamedDeclaration }
+                            .mapNotNull { it.fqName?.asString() }
+                            .plus(f.packageFqName.asString())
+                    }
+            )
+                .distinct()
+                .forEach { line ->
+                    it.appendln(line)
+                }
+        }
+
         return AnalysisResult.Companion.success(bindingTrace.bindingContext, module, false)
     }
 }

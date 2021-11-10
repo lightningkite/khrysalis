@@ -73,6 +73,30 @@ class Replacements(var mapper: ObjectMapper) {
         return result
     }
 
+    fun getCall(
+        descriptor: CallableDescriptor,
+        alreadyChecked: HashSet<CallableDescriptor> = HashSet()
+    ): FunctionReplacement? {
+        if (!alreadyChecked.add(descriptor)) return null
+        val result = descriptor.fqNamesToCheck
+            .flatMap {
+                functions[it]?.asSequence() ?: sequenceOf()
+            }
+            .find {
+                it.passes(
+                    descriptor = descriptor
+                )
+            } ?: (descriptor as? CallableMemberDescriptor)?.allOverridden()
+            ?.map {
+                getCall(
+                    descriptor = it,
+                    alreadyChecked = alreadyChecked
+                )
+            }
+            ?.firstOrNull()
+        return result
+    }
+
     fun getGet(propertyDescriptor: PropertyDescriptor, receiverType: KotlinType? = null): GetReplacement? =
         propertyDescriptor.fqNamesToCheck
             .flatMap {
