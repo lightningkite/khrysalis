@@ -2,7 +2,6 @@ import java.util.Properties
 
 plugins {
     id("kotlin")
-    id("maven")
     id("signing")
     id("org.jetbrains.dokka") version "1.5.0"
     `maven-publish`

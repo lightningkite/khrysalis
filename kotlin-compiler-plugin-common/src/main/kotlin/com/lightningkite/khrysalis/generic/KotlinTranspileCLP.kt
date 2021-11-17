@@ -2,6 +2,7 @@ package com.lightningkite.khrysalis.generic
 
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.lightningkite.khrysalis.analysis.bindingContext
+import com.lightningkite.khrysalis.analysis.releaseBindingContext
 import com.lightningkite.khrysalis.replacements.Replacements
 import com.lightningkite.khrysalis.replacements.replacements
 import com.lightningkite.khrysalis.shouldBeTranslated
@@ -224,6 +225,7 @@ abstract class KotlinTranspileExtension(
             .forEach { it.delete() }
 
         collector.report(CompilerMessageSeverity.INFO, "Completed translation.")
+        releaseBindingContext()
         return AnalysisResult.Companion.success(bindingTrace.bindingContext, module, false)
     }
 }

@@ -17,10 +17,10 @@ data class TypeReplacement(
     override val debug: Boolean = false,
     val template: Template,
     @JsonProperty("protocol") val protocol: Boolean = false,
+    var isFunctionType: Boolean = false,
     var typeArgumentNames: List<String>? = null,
     var errorCondition: Template? = null,
-    var constraintTemplate: Template? = null,
-    var constraintTemplates: List<Template>? = null
+    var constraintTemplate: Template? = null
 ) : ReplacementRule {
 
     override fun merge(other: ReplacementRule): Boolean {
@@ -32,7 +32,6 @@ data class TypeReplacement(
         this.typeArgumentNames = other.typeArgumentNames
         this.errorCondition = other.errorCondition
         this.constraintTemplate = other.constraintTemplate
-        this.constraintTemplates = other.constraintTemplates
         return true
     }
 

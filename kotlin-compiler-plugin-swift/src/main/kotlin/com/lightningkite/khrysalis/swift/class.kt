@@ -65,7 +65,7 @@ fun SwiftTranslator.registerClass() {
             .let {
                 if (on is KtClass && on.isEnum()) {
                     out.addImport(SwiftImport("KhrysalisRuntime"))
-                    it + listOf("Hashable")
+                    it + listOf("StringEnum")
                 } else it
             }
             .let {
@@ -172,7 +172,7 @@ fun SwiftTranslator.registerClass() {
                 -"private "
                 if (it.annotationEntries.any {
                         it.resolvedAnnotation?.fqName?.asString()
-                            ?.equals("com.lightningkite.butterfly.Unowned", true) == true
+                            ?.equals("com.lightningkite.khrysalis.Unowned", true) == true
                     }) {
                     -"unowned "
                 }
@@ -200,7 +200,7 @@ fun SwiftTranslator.registerClass() {
                 -(it.swiftVisibility() ?: "public")
                 if (it.annotationEntries.any {
                         it.resolvedAnnotation?.fqName?.asString()
-                            ?.equals("com.lightningkite.butterfly.Unowned", true) == true
+                            ?.equals("com.lightningkite.khrysalis.Unowned", true) == true
                     }) {
                     -" unowned"
                 }
@@ -494,7 +494,7 @@ fun SwiftTranslator.registerClass() {
             -(typedRule.swiftVisibility() ?: "public")
             -" enum "
             -swiftTopLevelNameElement(typedRule)
-            -": String, KEnum, StringEnum, CaseIterable {\n"
+            -": String, StringEnum, Codable, Hashable, CaseIterable {\n"
             for (entry in typedRule.body?.enumEntries ?: listOf()) {
                 -"case "
                 -entry.nameIdentifier

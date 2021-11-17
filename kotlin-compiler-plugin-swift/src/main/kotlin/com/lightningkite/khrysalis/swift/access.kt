@@ -10,7 +10,10 @@ import com.lightningkite.khrysalis.replacements.TemplatePart
 import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.lexer.KtTokens
+import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
 import org.jetbrains.kotlin.types.isNullable
+import org.jetbrains.kotlin.types.typeUtil.TypeNullability
+import org.jetbrains.kotlin.types.typeUtil.nullability
 
 enum class AccessMode(val resultAllowsOptionalOp: Boolean, val usesDot: Boolean = false) {
     PLAIN_DOT(resultAllowsOptionalOp = false, usesDot = true),
@@ -31,11 +34,22 @@ fun getRuleTemplate(swiftTranslator: SwiftTranslator, rule: KtQualifiedExpressio
 
 fun getSelectorNullable(swiftTranslator: SwiftTranslator, rule: KtQualifiedExpression): Boolean =
     with(swiftTranslator) {
-        return when (val sel = rule.selectorExpression) {
-            is KtCallExpression -> sel.resolvedCall?.candidateDescriptor?.returnType?.isNullable() ?: true
-            is KtNameReferenceExpression -> (sel.resolvedReferenceTarget as? PropertyDescriptor)?.type?.isNullable()
-                ?: true
-            else -> true
+        val nullability = when (val sel = rule.selectorExpression) {
+            is KtCallExpression -> sel.resolvedCall?.candidateDescriptor?.returnType?.nullability()
+            is KtNameReferenceExpression -> (sel.resolvedReferenceTarget as? PropertyDescriptor)?.type?.nullability()
+            else -> null
+        }
+        return when(nullability) {
+            TypeNullability.NOT_NULL -> false
+            TypeNullability.NULLABLE -> true
+            TypeNullability.FLEXIBLE -> {
+                when (val sel = rule.selectorExpression) {
+                    is KtCallExpression -> sel.resolvedCall?.candidateDescriptor?.let { swiftTranslator.replacements.getCall(it) }?.resultIsNullable ?: false
+                    is KtNameReferenceExpression -> (sel.resolvedReferenceTarget as? PropertyDescriptor)?.let { swiftTranslator.replacements.getGet(it) }?.resultIsNullable ?: false
+                    else -> false
+                }
+            }
+            null -> false
         }
     }
 

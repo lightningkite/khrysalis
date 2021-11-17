@@ -4,6 +4,7 @@ import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.lightningkite.khrysalis.generic.KotlinTranspileCLP
 import com.lightningkite.khrysalis.generic.KotlinTranspileCR
 import com.lightningkite.khrysalis.generic.KotlinTranspileExtension
@@ -47,7 +48,7 @@ class KotlinTypescriptCR : KotlinTranspileCR() {
     companion object {
         val replacementMapper = ObjectMapper(YAMLFactory())
             .registerModule(TypescriptJacksonReplacementsModule())
-            .registerModule(KotlinModule())
+            .registerKotlinModule()
             .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
     }
     override val replacementMapper: ObjectMapper

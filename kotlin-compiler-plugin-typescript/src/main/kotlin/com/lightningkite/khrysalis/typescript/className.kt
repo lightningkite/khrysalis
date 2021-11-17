@@ -10,7 +10,7 @@ import com.lightningkite.khrysalis.analysis.*
 
 
 val skippedExtensions = setOf(
-    "com.lightningkite.butterfly.AnyObject",
+    "com.lightningkite.khrysalis.AnyObject",
     "com.lightningkite.butterfly.AnyHashable",
     "com.lightningkite.butterfly.Hashable",
     "com.lightningkite.butterfly.Equatable",

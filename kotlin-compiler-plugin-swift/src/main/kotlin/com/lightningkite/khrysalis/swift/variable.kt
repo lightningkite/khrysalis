@@ -192,7 +192,7 @@ fun SwiftTranslator.registerVariable() {
     handle<KtProperty>(
         condition = {
             ((typedRule.delegateExpression as? KtCallExpression)?.calleeExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget?.fqNameOrNull()
-                ?.asString() == "com.lightningkite.butterfly.weak"
+                ?.asString() == "com.lightningkite.khrysalis.weak"
         },
         priority = 15
     ) {
@@ -231,7 +231,7 @@ fun SwiftTranslator.registerVariable() {
             typedRule.containingClassOrObject?.resolvedClass
         ))
         if (typedRule.annotationEntries.any {
-                it.resolvedAnnotation?.fqName?.asString()?.equals("com.lightningkite.butterfly.Unowned", true) == true
+                it.resolvedAnnotation?.fqName?.asString()?.equals("com.lightningkite.khrysalis.Unowned", true) == true
             }) {
             -"unowned "
         }
@@ -307,7 +307,7 @@ fun SwiftTranslator.registerVariable() {
             }
             if (typedRule.annotationEntries.any {
                     it.resolvedAnnotation?.fqName?.asString()
-                        ?.equals("com.lightningkite.butterfly.Unowned", true) == true
+                        ?.equals("com.lightningkite.khrysalis.Unowned", true) == true
                 }) {
                 -"unowned "
             }
@@ -652,14 +652,14 @@ fun SwiftTranslator.registerVariable() {
     handle<VirtualSet>(condition = { typedRule.safe }, priority = 1) {
         -typedRule.receiver
         -"?."
-        -typedRule.property.name.asString()
+        -typedRule.property.name.asString().safeSwiftIdentifier()
         -" = "
         -typedRule.value
     }
     handle<VirtualSet> {
         -typedRule.receiver
         -"."
-        -typedRule.property.name.asString()
+        -typedRule.property.name.asString().safeSwiftIdentifier()
         -" = "
         -typedRule.value
     }

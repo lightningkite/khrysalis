@@ -14,6 +14,8 @@ import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.apache.tools.ant.taskdefs.condition.Os
 import org.gradle.api.Action
 import org.gradle.api.Task
+import org.gradle.api.artifacts.Dependency
+import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.tasks.SourceTask
 import org.gradle.api.tasks.compile.JavaCompile
 import org.jetbrains.kotlin.ir.backend.js.compile
@@ -26,8 +28,8 @@ open class KhrysalisPluginExtension {
     open var projectName: String? = null
     open var overrideIosPackageName: String? = null
     open var overrideWebPackageName: String? = null
-    open var overrideIosFolder: String? = null
-    open var overrideWebFolder: String? = null
+    open var overrideIosFolder: File? = null
+    open var overrideWebFolder: File? = null
 
     override fun toString(): String {
         return "(" +
@@ -40,6 +42,9 @@ open class KhrysalisPluginExtension {
 fun Project.khrysalis(configure: Action<KhrysalisPluginExtension>) {
     (this as org.gradle.api.plugins.ExtensionAware).extensions.configure("khrysalis", configure)
 }
+fun DependencyHandler.khrysalisSwift(dependencyNotation: Any): Dependency? = add("khrysalisSwift", dependencyNotation)
+fun DependencyHandler.khrysalisTypescript(dependencyNotation: Any): Dependency? = add("khrysalisTypescript", dependencyNotation)
+fun DependencyHandler.khrysalisKotlin(dependencyNotation: Any): Dependency? = add("khrysalisKotlin", dependencyNotation)
 
 class KhrysalisPlugin : Plugin<Project> {
     override fun apply(target: Project) {
@@ -47,13 +52,32 @@ class KhrysalisPlugin : Plugin<Project> {
         val project = target
         val ext = project.extensions.create<KhrysalisPluginExtension>("khrysalis", KhrysalisPluginExtension::class.java)
 
+        project.configurations.maybeCreate("khrysalisSwift").apply {
+            description = "Dependencies for transpilation to Swift"
+            isCanBeResolved = true
+            isCanBeConsumed = false
+            isVisible = false
+        }
+        project.configurations.maybeCreate("khrysalisTypescript").apply {
+            description = "Dependencies for transpilation to Typescript"
+            isCanBeResolved = true
+            isCanBeConsumed = false
+            isVisible = false
+        }
+        project.configurations.maybeCreate("khrysalisKotlin").apply {
+            description = "Generates useful files for transpilation assistance"
+            isCanBeResolved = true
+            isCanBeConsumed = false
+            isVisible = false
+        }
+
         fun extension() = ext
         fun projectName() = extension().projectName ?: project.name.takeUnless { it == "app" || it == "android" }
         ?: project.rootProject.name
         KhrysalisSettings.verbose = true
         fun androidBase() = project.projectDir
-        fun webBase() = project.projectDir.resolve(ext.overrideWebFolder ?: "../web")
-        fun iosBase() = project.projectDir.resolve(ext.overrideIosFolder ?: "../ios")
+        fun webBase() = ext.overrideWebFolder ?: project.projectDir.resolve("../web")
+        fun iosBase() = ext.overrideIosFolder ?: project.projectDir.resolve("../ios")
         fun iosFolder() = iosBase().resolve(projectName())
         fun packageName() =
             ext.layoutPackage ?: project.extensions.findByName("android")?.groovyObject?.getPropertyAsObject("defaultConfig")
@@ -70,24 +94,24 @@ class KhrysalisPlugin : Plugin<Project> {
                     '.'
                 )
 
-        fun Task.getKotlinCompileTask(): KotlinCompile? {
+        fun getKotlinCompileTask(): KotlinCompile? {
             return project.tasks
                 .asSequence()
                 .filter { it.name.startsWith("compile") && it.name.endsWith("Kotlin") }
                 .mapNotNull { it as? KotlinCompile }
-                .minBy { it.name.length }
+                .minByOrNull { it.name.length }
         }
-        fun Task.dependOnKotlinCompileTask() {
-            project.afterEvaluate {
-                val compileTask = getKotlinCompileTask()
-                compileTask?.let {
-                    println("Conversion depends on ${it.name}")
-                    this.dependsOn(it)
-                } ?: run {
-                    println("WARNING: Could find no compile*Kotlin tasks - tasks available: ${project.tasks.joinToString { it.name }}")
-                }
-            }
-        }
+//        fun Task.dependOnKotlinCompileTask() {
+//            project.afterEvaluate {
+//                val compileTask = getKotlinCompileTask()
+//                compileTask?.let {
+//                    println("Conversion depends on ${it.name}")
+//                    this.dependsOn(it)
+//                } ?: run {
+//                    println("WARNING: Could find no compile*Kotlin tasks - tasks available: ${project.tasks.joinToString { it.name }}")
+//                }
+//            }
+//        }
 
         project.afterEvaluate {
             println("Determined your package to be ${packageName()}")
@@ -95,11 +119,10 @@ class KhrysalisPlugin : Plugin<Project> {
 
         project.tasks.create("khrysalisPrintDeclaredFqns") { task ->
             task.group = "kotlin"
-            task.dependOnKotlinCompileTask()
             task.doFirst {
                 runCompiler(
                     CompilerRunInfo(
-                        task.getKotlinCompileTask()
+                        getKotlinCompileTask()
                             ?: throw IllegalStateException("Could not find compile*Kotlin tasks - what's up with your project?")
                     ),
                     kotlinPluginUse(project)
@@ -111,11 +134,10 @@ class KhrysalisPlugin : Plugin<Project> {
 
         project.tasks.create("khrysalisConvertKotlinToSwift") { task ->
             task.group = "ios"
-            task.dependOnKotlinCompileTask()
             task.doFirst {
                 runCompiler(
                     CompilerRunInfo(
-                        task.getKotlinCompileTask()
+                        getKotlinCompileTask()
                             ?: throw IllegalStateException("Could not find compile*Kotlin tasks - what's up with your project?")
                     ),
                     swiftPluginUse(project, iosBase(), projectName())
@@ -188,11 +210,10 @@ class KhrysalisPlugin : Plugin<Project> {
         project.tasks.create("khrysalisConvertKotlinToTypescript") { task ->
             task.dependsOn("khrysalisUpdateWebVersion")
             task.group = "web"
-            task.dependOnKotlinCompileTask()
             task.doFirst {
                 runCompiler(
                     CompilerRunInfo(
-                        task.getKotlinCompileTask()
+                        getKotlinCompileTask()
                             ?: throw IllegalStateException("Could not find compile*Kotlin tasks - what's up with your project?")
                     ),
                     typescriptPluginUse(project, webBase(), projectName())

@@ -31,22 +31,22 @@ fun SwiftTranslator.registerLambda() {
             -"{ "
             val captures = ArrayList<String>()
             if (annotations.any {
-                    it.fqName?.asString() == "com.lightningkite.butterfly.WeakSelf" || it.fqName?.asString() == "com.lightningkite.butterfly.weakSelf"
+                    it.fqName?.asString() == "com.lightningkite.khrysalis.WeakSelf" || it.fqName?.asString() == "com.lightningkite.khrysalis.weakSelf"
                 }) {
                 captures.add("weak self")
             } else if (annotations.any {
-                    it.fqName?.asString() == "com.lightningkite.butterfly.UnownedSelf" || it.fqName?.asString() == "com.lightningkite.butterfly.unownedSelf"
+                    it.fqName?.asString() == "com.lightningkite.khrysalis.UnownedSelf" || it.fqName?.asString() == "com.lightningkite.khrysalis.unownedSelf"
                 }) {
                 captures.add("unowned self")
             }
-            annotations.find { it.fqName?.asString() == "com.lightningkite.butterfly.CaptureUnowned" }
+            annotations.find { it.fqName?.asString() == "com.lightningkite.khrysalis.CaptureUnowned" }
                 ?.allValueArguments?.get(
                     Name.identifier("keys")
                 )
                 ?.value?.let { it as? ArrayList<StringValue> }?.forEach {
                     captures.add("unowned ${it.value}" )
                 }
-            annotations.find { it.fqName?.asString() == "com.lightningkite.butterfly.CaptureWeak" }
+            annotations.find { it.fqName?.asString() == "com.lightningkite.khrysalis.CaptureWeak" }
                 ?.allValueArguments?.get(
                     Name.identifier("keys")
                 )
@@ -72,7 +72,7 @@ fun SwiftTranslator.registerLambda() {
                         if (it.name.isSpecial) {
                             -'_'
                         } else {
-                            -it.name.asString()
+                            -it.name.asString().safeSwiftIdentifier()
                         }
                         writingParameter++
 //                        -(typedRule.valueParameters.getOrNull(index)?.typeReference ?: betterParameterTypes?.getOrNull(index) ?: it.type)
@@ -89,8 +89,8 @@ fun SwiftTranslator.registerLambda() {
                 -')'
             }
             (
-                    resolved.annotations.findAnnotation(FqName("com.lightningkite.butterfly.SwiftReturnType"))
-                        ?: resolved.annotations.findAnnotation(FqName("com.lightningkite.butterfly.swiftReturnType"))
+                    resolved.annotations.findAnnotation(FqName("com.lightningkite.khrysalis.SwiftReturnType"))
+                        ?: resolved.annotations.findAnnotation(FqName("com.lightningkite.khrysalis.swiftReturnType"))
                     )?.allValueArguments?.entries?.first()?.value?.value?.let {
                     -" -> $it"
                 } ?: (betterReturnType ?: resolved.returnType)?.let {

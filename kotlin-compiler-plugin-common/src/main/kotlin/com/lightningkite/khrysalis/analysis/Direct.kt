@@ -11,7 +11,11 @@ import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
 import org.jetbrains.kotlin.types.DeferredType
 import org.jetbrains.kotlin.util.Box
 
-lateinit var bindingContext: BindingContext
+private var _bindingContext: BindingContext? = null
+var bindingContext: BindingContext
+    get() = _bindingContext!!
+    set(value) { _bindingContext = value }
+fun releaseBindingContext() { _bindingContext = null }
 
 val KtNamedDeclaration.simpleFqName: String get() = this.resolvedDeclarationToDescriptor?.simpleFqName ?: ""
 

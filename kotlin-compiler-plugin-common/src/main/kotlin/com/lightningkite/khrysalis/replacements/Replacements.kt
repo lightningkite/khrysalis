@@ -75,6 +75,7 @@ class Replacements(var mapper: ObjectMapper) {
 
     fun getCall(
         descriptor: CallableDescriptor,
+        receiverType: KotlinType? = null,
         alreadyChecked: HashSet<CallableDescriptor> = HashSet()
     ): FunctionReplacement? {
         if (!alreadyChecked.add(descriptor)) return null
@@ -84,12 +85,14 @@ class Replacements(var mapper: ObjectMapper) {
             }
             .find {
                 it.passes(
-                    descriptor = descriptor
+                    descriptor = descriptor,
+                    receiverType = receiverType
                 )
             } ?: (descriptor as? CallableMemberDescriptor)?.allOverridden()
             ?.map {
                 getCall(
                     descriptor = it,
+                    receiverType = receiverType,
                     alreadyChecked = alreadyChecked
                 )
             }

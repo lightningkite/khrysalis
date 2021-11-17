@@ -26,7 +26,9 @@ data class FunctionReplacement(
     val comparatorType: String? = null,
     val usedAsExpression: Boolean? = null,
     val typeArgumentRequirements: Map<Int, String>? = null,
+    val exactArgumentRequirements: Map<Int, String>? = null,
     override val debug: Boolean = false,
+    val resultIsNullable: Boolean? = null,
     val reflectiveName: String? = null,
     val template: Template
 ) : ReplacementRule {
@@ -40,7 +42,8 @@ data class FunctionReplacement(
                 (if (arguments != null) 4 else 0) +
                 (if (comparatorType != null) 8 else 0) +
                 (if (usedAsExpression != null) 8 else 0) +
-                (typeArgumentRequirements?.size?.times(32) ?: 0)
+                (typeArgumentRequirements?.size?.times(32) ?: 0) +
+                (exactArgumentRequirements?.size?.times(32) ?: 0)
 
     fun passes(
         call: ResolvedCall<out CallableDescriptor>,
@@ -92,6 +95,12 @@ data class FunctionReplacement(
                         println("Not applicable: typeArgumentRequirements requires ${value}, got ${call.typeArguments[call.candidateDescriptor.typeParameters[key]]?.fqNameWithTypeArgs}")
                 }
             }
+            if (this.exactArgumentRequirements != null) {
+                for ((key, value) in this.exactArgumentRequirements) {
+                    if (call.valueArguments[call.candidateDescriptor.valueParameters[key]]?.toString() != value)
+                        println("Not applicable: exactArgumentRequirements requires '${value}', got '${call.valueArguments[call.candidateDescriptor.valueParameters[key]]?.toString()}'")
+                }
+            }
         }
         if(infix != null){
             if(infix != call.call.callElement is KtBinaryExpression) return false
@@ -102,7 +111,7 @@ data class FunctionReplacement(
         if (arguments != null) {
             if (this.arguments.size != descriptor.original.valueParameters.size) return false
             if (!this.arguments.zip(descriptor.original.valueParameters)
-                    .all { (a, p) -> a == "*" || p.type.fqNameWithoutTypeArgs == a || p.name.asString() == a }
+                    .all { (a, p) -> a == "*" || p.type.satisfies(a) || p.name.asString() == a }
             ) {
                 return false
             }
@@ -134,10 +143,16 @@ data class FunctionReplacement(
                 if (call.typeArguments[call.candidateDescriptor.typeParameters[key]]?.satisfies(value) != true) return false
             }
         }
+        if (this.exactArgumentRequirements != null) {
+            for ((key, value) in this.exactArgumentRequirements) {
+                if (call.valueArguments[call.candidateDescriptor.valueParameters[key]]?.toString() != value) return false
+            }
+        }
         return true
     }
     fun passes(
-        descriptor: CallableDescriptor
+        descriptor: CallableDescriptor,
+        receiverType: KotlinType?
     ): Boolean {
         if(debug){
             if (receiver != null && receiver != descriptor.extensionReceiverParameter?.type?.fqNameWithoutTypeArgs) println("Not applicable: receiver requires $receiver, got ${descriptor.extensionReceiverParameter?.type?.fqNameWithoutTypeArgs}")
@@ -160,6 +175,15 @@ data class FunctionReplacement(
                 return false
             }
         }
+        if(comparatorType != null) return false
+        if (actualReceiver != null && (receiverType)?.satisfies(
+                actualReceiver
+            ) != true
+        ) return false
+        if(suppliedArguments != null) return false
+        if(usedAsExpression != null) return false
+        if(typeArgumentRequirements != null) return false
+        if(exactArgumentRequirements != null) return false
         return true
     }
 }

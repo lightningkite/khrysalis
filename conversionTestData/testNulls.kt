@@ -2,6 +2,7 @@
 package com.test.nulls
 
 import com.lightningkite.butterfly.*
+import java.time.*
 
 class WebSocketFrame(val binary: ByteArray? = null, val text: String? = null) {
     override fun toString(): String {
@@ -13,4 +14,7 @@ fun main(){
     val frame = WebSocketFrame(text = "asdf")
     val maybeFrame = if(frame.binary != null) frame else null
     maybeFrame?.text?.let { println(it) }
+
+    val platformNullability = Instant.now()
+    platformNullability.atZone(ZoneId.systemDefault())
 }

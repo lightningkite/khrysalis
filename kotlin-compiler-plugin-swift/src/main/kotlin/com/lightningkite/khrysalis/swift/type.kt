@@ -12,6 +12,7 @@ import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.psi.*
+import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
 import org.jetbrains.kotlin.types.*
 import org.jetbrains.kotlin.types.checker.NewCapturedTypeConstructor
 import org.jetbrains.kotlin.types.typeUtil.*
@@ -73,100 +74,57 @@ val knownTypeParameterNames = mapOf(
     "kotlin.collections.Map" to listOf("Key", "Value")
 )
 
+
 fun SwiftTranslator.registerType() {
+    fun ClassDescriptor.useExactEqualForGeneric(): Boolean {
+        return isFinalOrEnum || when(this.fqNameOrNull()?.asString()) {
+            "kotlin.Array",
+            "kotlin.collections.Map",
+            "kotlin.collections.Set",
+            "kotlin.collections.List" -> true
+            else -> false
+        }
+    }
 
     handle<SwiftExtensionStart> {
         -"extension "
+        val replacement = typedRule.forDescriptor.extensionReceiverParameter?.type?.let { replacements.getType(it) }
         val t = typedRule.forDescriptor.extensionReceiverParameter!!.type
-        val baseClass = t.constructor.declarationDescriptor as? ClassDescriptor
-        -typedRule.receiver?.typeElement?.let { it as? KtUserType }?.let { KtUserTypeBasic(it.referenceExpression!!) } ?: BasicType(t)
-        typedRule.forDescriptor.annotations.findAnnotation(FqName("com.lightningkite.butterfly.SwiftExtensionWhere"))
-            ?.let {
-                val value = it.allValueArguments[Name.identifier("text")]!!.value as String
-                if (value.isNotBlank()) {
-                    -" where "
-                    -value
-                }
-            } ?: t.arguments
+        var whereEmitted = false
+        replacement?.constraintTemplate?.let {
+            emitTemplate(it)
+            whereEmitted = it.parts.joinToString("").contains(" where ")
+        } ?: run {
+            -typedRule.receiver?.typeElement?.let { it as? KtUserType }?.let { KtUserTypeBasic(it.referenceExpression!!) }
+                ?: BasicType(t)
+        }
+        t.arguments
             .mapIndexedNotNull { index, arg ->
-                if (arg.type.isTypeParameter()) {
-                    val x = (arg.type.constructor.declarationDescriptor as? TypeParameterDescriptor)?.name?.asString()
-                    val match = typedRule.typeParams?.parameters?.find { it.name == x }?.extendsBound
+                if(arg.isStarProjection) return@mapIndexedNotNull null
+                if(arg.type.isTypeParameter() && (arg.type.constructor.declarationDescriptor as? TypeParameterDescriptor)?.upperBounds?.all { it.isAnyOrNullableAny() } == true) return@mapIndexedNotNull null
+                val name = replacement?.typeArgumentNames?.get(index)
+                    ?: knownTypeParameterNames[t.constructor.declarationDescriptor?.fqNameOrNull()?.asString()]?.get(index)
+                    ?: "Element"
+                val type = if(arg.type.isTypeParameter())
+                    typedRule.typeParams?.parameters
+                        ?.find { it.name == (arg.type.constructor.declarationDescriptor as? TypeParameterDescriptor)?.name?.asString() }
+                        ?.extendsBound?.resolvedType
                         ?: return@mapIndexedNotNull null
-                    val type = match
-                    if (type.resolvedType?.constructor?.declarationDescriptor is TypeParameterDescriptor) return@mapIndexedNotNull null
-                    val swiftExactly = type.annotations.flatMap { it.entries }.find {
-                        it.typeReference?.text?.endsWith("SwiftExactly", true) == true
-                    }?.valueArguments?.let {
-                        it.firstOrNull()?.getArgumentExpression()?.text?.trim('"')
-                            ?: knownTypeParameterNames[typedRule.forDescriptor.extensionReceiverParameter?.type?.fqNameWithoutTypeArgs]?.getOrNull(index)
-                            ?: "T"
-                    }
-                    val swiftDescendsFrom = type.annotations.flatMap { it.entries }.find {
-                        it.typeReference?.text?.endsWith("SwiftDescendsFrom", true) == true
-                    }?.valueArguments?.let {
-                        it.firstOrNull()?.getArgumentExpression()?.text?.trim('"')
-                            ?: knownTypeParameterNames[typedRule.forDescriptor.extensionReceiverParameter?.type?.fqNameWithoutTypeArgs]?.getOrNull(index)
-                            ?: "T"
-                    }
-                    when {
-                        swiftExactly != null -> {
-                            listOf(swiftExactly, " == ", type)
-                        }
-                        swiftDescendsFrom != null -> {
-                            listOf(swiftDescendsFrom, " : ", type)
-                        }
-                        else -> {
-                            val name = x ?: baseClass?.declaredTypeParameters?.get(index)?.name?.asString()
-                            val c = type.resolvedType?.constructor?.declarationDescriptor as? ClassDescriptor
-                            if (c?.isFinalOrEnum == false) {
-                                listOf(name, ": ", type)
-                            } else {
-                                listOf(name, " == ", type)
-                            }
-                        }
-                    }
-                } else {
-                    val type = arg.type
-                    if (type.constructor.declarationDescriptor is TypeParameterDescriptor) return@mapIndexedNotNull null
-                    val swiftExactly = type.annotations.find {
-                        it.fqName?.asString()?.endsWith("SwiftExactly", true) == true
-                    }?.allValueArguments?.entries?.let {
-                        it.firstOrNull()?.value?.value as? String
-                            ?: knownTypeParameterNames[typedRule.forDescriptor.extensionReceiverParameter?.type?.fqNameWithoutTypeArgs]?.getOrNull(index)
-                            ?: "T"
-                    }
-                    val swiftDescendsFrom = type.annotations.find {
-                        it.fqName?.asString()?.endsWith("SwiftDescendsFrom", true) == true
-                    }?.allValueArguments?.entries?.let {
-                        it.firstOrNull()?.value?.value as? String
-                            ?: knownTypeParameterNames[typedRule.forDescriptor.extensionReceiverParameter?.type?.fqNameWithoutTypeArgs]?.getOrNull(index)
-                            ?: "T"
-                    }
-                    when {
-                        swiftExactly != null -> {
-                            listOf(swiftExactly, " == ", type)
-                        }
-                        swiftDescendsFrom != null -> {
-                            listOf(swiftDescendsFrom, ": ", type)
-                        }
-                        else -> {
-                            val name =
-                                knownTypeParameterNames[typedRule.forDescriptor.extensionReceiverParameter?.type?.fqNameWithoutTypeArgs]?.getOrNull(index)
-                                    ?: baseClass?.declaredTypeParameters?.get(index)?.name?.asString()
-                            val c = type.constructor.declarationDescriptor as? ClassDescriptor
-                            if (c?.isFinalOrEnum == false) {
-                                listOf(name, ": ", type)
-                            } else {
-                                listOf(name, " == ", type)
-                            }
-                        }
-                    }
-                }
+                else
+                    arg.type
+                val useExtends = (type.constructor.declarationDescriptor as? ClassDescriptor)?.useExactEqualForGeneric() ?: false
+                if(useExtends)
+                    return@mapIndexedNotNull listOf(name, " : ", type)
+                else
+                    return@mapIndexedNotNull listOf(name, " == ", type)
             }
             .takeUnless { it.isEmpty() }
             ?.let {
-                -" where "
+                if(whereEmitted) {
+                    -", "
+                } else {
+                    -" where "
+                }
                 it.forEachBetween(
                     forItem = { -it },
                     between = { -", " }
@@ -189,8 +147,7 @@ fun SwiftTranslator.registerType() {
             is FunctionClassDescriptor -> {
                 if (typedRule.isMarkedNullable) {
                     -'('
-                }
-                if (writingParameter > 0) {
+                } else if (writingParameter > 0) {
                     -"@escaping "
                 }
                 -'('
@@ -370,9 +327,11 @@ fun SwiftTranslator.registerType() {
 
     handle<KtTypeReference>(
         condition = {
+            val type = typedRule.resolvedType ?: return@handle false
+            val replacement = (typedRule.typeElement as? KtUserType)?.referenceExpression?.resolvedReferenceTarget?.let { replacements.getType(it) } ?: replacements.getType(type)
             writingParameter > 0
-                    && typedRule.resolvedType?.isFunctionType == true
-                    && typedRule.parentOfType<KtParameter>() != null
+                    && !type.isMarkedNullable
+                    && (type.isFunctionType || replacement?.isFunctionType == true)
         },
         priority = 10,
         action = {
@@ -413,6 +372,9 @@ fun SwiftTranslator.registerType() {
             val baseType = type.constructor
             val typeParametersByName = type.arguments.withIndex()
                 .associate { (index, item) -> baseType.parameters[index].name.asString() to item }
+            if(rule.isFunctionType && writingParameter > 0 && !type.isMarkedNullable) {
+                -"@escaping "
+            }
             emitTemplate(
                 template = rule.template,
                 typeParameter = { typeParametersByName[it.name] ?: "nil" },

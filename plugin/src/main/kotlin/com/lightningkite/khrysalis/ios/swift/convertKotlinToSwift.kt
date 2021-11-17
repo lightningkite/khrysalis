@@ -1,10 +1,7 @@
 package com.lightningkite.khrysalis.ios.swift
 
 import com.lightningkite.khrysalis.generic.CompilerPluginUseInfo
-import com.lightningkite.khrysalis.generic.KotlinTranspileCLP
 import com.lightningkite.khrysalis.generic.runCompiler
-import com.lightningkite.khrysalis.swift.KotlinSwiftCLP
-import com.lightningkite.khrysalis.typescript.KotlinTypescriptCLP
 import com.lightningkite.khrysalis.utils.copyFolderOutFromRes
 import org.gradle.api.Project
 import org.jetbrains.kotlin.cli.common.arguments.K2JVMCompilerArguments
@@ -67,11 +64,11 @@ fun swiftPluginUse(
     val output = iosBase.resolve(projectName).resolve("src")
     return CompilerPluginUseInfo(
         project = project,
-        cacheName = "swift.jar",
+        configName = "khrysalisSwift",
         options = listOfNotNull(
-            "plugin:${KotlinSwiftCLP.PLUGIN_ID}:${KotlinTranspileCLP.KEY_OUTPUT_DIRECTORY_NAME}=\"${output.path}\"",
-            "plugin:${KotlinSwiftCLP.PLUGIN_ID}:${KotlinTranspileCLP.KEY_PROJECT_NAME_NAME}=\"${projectName}\"",
-            "plugin:${KotlinSwiftCLP.PLUGIN_ID}:${KotlinTranspileCLP.KEY_EQUIVALENTS_NAME}=\"${
+            "plugin:com.lightningkite.khrysalis.swift:outputDirectory=\"${output.path}\"",
+            "plugin:com.lightningkite.khrysalis.swift:projName=\"${projectName}\"",
+            "plugin:com.lightningkite.khrysalis.swift:equivalents=\"${
                 dependencies.joinToString(
                     File.pathSeparator
                 )

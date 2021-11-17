@@ -165,11 +165,13 @@ fun SwiftTranslator.registerControl() {
         endSmartcastBlock()
     }
 
+    fun KtIfExpression.canBeTernary(): Boolean = actuallyCouldBeExpression &&
+            then.let { it != null && it !is KtBlockExpression && it !is KtStatementExpression } &&
+            `else`.let { it != null && it !is KtBlockExpression && (it !is KtStatementExpression || (it is KtIfExpression && it.canBeTernary())) }
+
     handle<KtIfExpression>(
         condition = {
-            typedRule.actuallyCouldBeExpression &&
-                    typedRule.then.let { it != null && it !is KtBlockExpression && it !is KtStatementExpression } &&
-                    typedRule.`else`.let { it != null && it !is KtBlockExpression && it !is KtStatementExpression }
+            typedRule.canBeTernary()
         },
         priority = 1,
         action = {
@@ -235,7 +237,7 @@ fun SwiftTranslator.registerControl() {
                     ?.dropWhile { it is PsiWhiteSpace }
                     ?.dropLastWhile { it is PsiWhiteSpace }
                 children?.forEachIndexed { index, it ->
-                    if (typedRule.actuallyCouldBeExpression && entry.expression!!.actuallyCouldBeExpression) {
+                    if (typedRule.actuallyCouldBeExpression && (it as? KtExpression)?.actuallyCouldBeExpression == true) {
                         if (index == children.lastIndex) {
                             -"return "
                         }

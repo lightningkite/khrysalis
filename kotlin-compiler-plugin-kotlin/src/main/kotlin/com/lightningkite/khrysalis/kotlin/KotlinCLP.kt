@@ -7,6 +7,7 @@ import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
 import com.fasterxml.jackson.dataformat.yaml.YAMLGenerator
 import com.fasterxml.jackson.module.kotlin.KotlinModule
+import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.lightningkite.khrysalis.analysis.*
 import com.lightningkite.khrysalis.replacements.*
 import org.jetbrains.kotlin.analyzer.AnalysisResult
@@ -86,7 +87,7 @@ class KotlinExtension(
                     return listOf()
                 }
             })
-            .registerModule(KotlinModule())
+            .registerKotlinModule()
             .setSerializationInclusion(JsonInclude.Include.NON_DEFAULT)
             .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
 

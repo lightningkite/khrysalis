@@ -78,6 +78,9 @@ fun main() {
         if(it % 2 == 0) return@map it else return@map it + 1
     }
 
+    // Double ternary
+    println(if(thing % 2 == 0) 2 else if (thing % 3 == 0) 3 else 0)
+
     fun subfunction(): Int {
         return if (thing2 != null) thing2 else 0
     }
@@ -145,6 +148,14 @@ fun main() {
         0 -> 2
         1 -> 1
         2 -> 0
+        else -> 999
+    }
+
+    //When on subject as expression with blocks
+    fun calcInverted2() = when (thing) {
+        0 -> { 2 }
+        1 -> { 1 }
+        2 -> { 0 }
         else -> 999
     }
 

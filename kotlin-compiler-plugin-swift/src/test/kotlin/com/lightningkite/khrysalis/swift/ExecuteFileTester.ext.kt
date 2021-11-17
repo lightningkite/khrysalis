@@ -32,7 +32,7 @@ fun ExecuteFileTester.compileToSwift(file: File): File {
     this.kotlinCompile(
         sourceFile = file,
         argumentsModification = {
-            this.pluginClasspaths = arrayOf("build/libs/kotlin-compiler-plugin-swift-0.1.0.jar")
+            this.pluginClasspaths = arrayOf("build/libs/kotlin-compiler-plugin-swift-0.2.0.jar")
             this.pluginOptions =
                 arrayOf(
                     "plugin:${KotlinSwiftCLP.PLUGIN_ID}:${KotlinTranspileCLP.KEY_EQUIVALENTS_NAME}=${Libraries.translationFilesButterfly()}",

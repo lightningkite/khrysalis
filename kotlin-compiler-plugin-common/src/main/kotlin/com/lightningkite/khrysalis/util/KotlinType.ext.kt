@@ -53,9 +53,11 @@ fun KotlinType.satisfies(stringRequirement: String): Boolean {
     }
     if(this.fqNameWithTypeArgs == stringRequirement) return true
     if(this.fqNameWithoutTypeArgs == stringRequirement) return true
+    if(this.fqNameWithoutTypeArgs.substringAfterLast('.') == stringRequirement) return true
     this.supertypes().forEach {
         if(it.fqNameWithTypeArgs == stringRequirement) return true
         if(it.fqNameWithoutTypeArgs == stringRequirement) return true
+        if(it.fqNameWithoutTypeArgs.substringAfterLast('.') == stringRequirement) return true
     }
     return false
 }

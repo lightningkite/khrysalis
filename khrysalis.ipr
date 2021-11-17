@@ -136,6 +136,7 @@
         </option>
       </GradleProjectSettings>
     </option>
+    <option name="offlineMode" value="true" />
   </component>
   <component name="GradleUISettings">
     <setting name="root" />
@@ -1311,6 +1312,15 @@
       <JAVADOC />
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-project-model/1.5.30/972a5120ed7a9999a027c795ba46ad7e61a3841e/kotlin-project-model-1.5.30-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: org.jetbrains.kotlin:kotlin-reflect:1.3.10">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-reflect/1.3.10/dd02865be0351707554b16a896b766b2396cdafa/kotlin-reflect-1.3.10.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-reflect/1.3.10/8263b30090a3b481f15aa07522b7d244158f5c87/kotlin-reflect-1.3.10-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Gradle: org.jetbrains.kotlin:kotlin-reflect:1.5.30">

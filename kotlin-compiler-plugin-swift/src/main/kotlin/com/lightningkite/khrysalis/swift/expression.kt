@@ -9,6 +9,9 @@ import org.jetbrains.kotlin.psi.KtPostfixExpression
 import org.jetbrains.kotlin.psi.KtSafeQualifiedExpression
 import org.jetbrains.kotlin.types.isNullable
 import com.lightningkite.khrysalis.analysis.*
+import org.jetbrains.kotlin.types.KotlinType
+import org.jetbrains.kotlin.types.typeUtil.TypeNullability
+import org.jetbrains.kotlin.types.typeUtil.nullability
 
 fun SwiftTranslator.registerExpression() {
     handle<KtBinaryExpression>(
@@ -21,12 +24,13 @@ fun SwiftTranslator.registerExpression() {
         }
     )
     handle<KtSafeQualifiedExpression> {
-        val plainRt = when(val c = typedRule.receiverExpression.resolvedCall?.candidateDescriptor){
+        val plainRt: KotlinType? = when(val c = typedRule.receiverExpression.resolvedCall?.candidateDescriptor){
             is FunctionDescriptor -> c.returnType
             is PropertyDescriptor -> c.type
             else -> null
         }
-        if(plainRt?.isNullable() == false) {
+
+        if(plainRt?.nullability() != TypeNullability.NULLABLE) {
             -typedRule.receiverExpression
             insertNewlineBeforeAccess()
             -'.'

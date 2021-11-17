@@ -15,7 +15,6 @@ plugins {
     java
     `java-gradle-plugin`
     idea
-    maven
     signing
     id("org.jetbrains.dokka") version "1.4.20"
     `maven-publish`
@@ -80,9 +79,9 @@ dependencies {
     api(localGroovy())
     api(gradleApi())
 
-    implementation(project(":kotlin-compiler-plugin-typescript"))
-    implementation(project(":kotlin-compiler-plugin-kotlin"))
-    implementation(project(":kotlin-compiler-plugin-swift"))
+//    implementation(project(":kotlin-compiler-plugin-typescript"))
+//    implementation(project(":kotlin-compiler-plugin-kotlin"))
+//    implementation(project(":kotlin-compiler-plugin-swift"))
 
     api(group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version = kotlinVersion)
     api(group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin-api", version = kotlinVersion)
@@ -118,36 +117,6 @@ dependencies {
 }
 
 tasks {
-    val insertTypescriptJar by creating(Copy::class) {
-        dependsOn(":kotlin-compiler-plugin-typescript:shadowJar")
-        from("../kotlin-compiler-plugin-typescript/build/libs") {
-            include("*-all.jar")
-        }
-        into("src/main/resources/compiler-plugins")
-        rename(".*", "typescript.jar")
-    }
-    getByName("compileKotlin").dependsOn("insertTypescriptJar")
-
-    val insertSwiftJar by creating(Copy::class) {
-        dependsOn(":kotlin-compiler-plugin-swift:shadowJar")
-        from("../kotlin-compiler-plugin-swift/build/libs") {
-            include("*-all.jar")
-        }
-        into("src/main/resources/compiler-plugins")
-        rename(".*", "swift.jar")
-    }
-    getByName("compileKotlin").dependsOn("insertSwiftJar")
-
-    val insertKotlinJar by creating(Copy::class) {
-        dependsOn(":kotlin-compiler-plugin-kotlin:shadowJar")
-        from("../kotlin-compiler-plugin-kotlin/build/libs") {
-            include("*-all.jar")
-        }
-        into("src/main/resources/compiler-plugins")
-        rename(".*", "kotlin.jar")
-    }
-    getByName("compileKotlin").dependsOn("insertKotlinJar")
-
     val sourceJar by creating(Jar::class) {
         archiveClassifier.set("sources")
         from(sourceSets["main"].java.srcDirs)

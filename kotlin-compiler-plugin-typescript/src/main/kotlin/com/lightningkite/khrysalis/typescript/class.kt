@@ -379,7 +379,7 @@ fun TypescriptTranslator.registerClass() {
 
         if (typedRule.superTypeListEntries
                 .mapNotNull { it as? KtSuperTypeEntry }
-                .any { it.typeReference?.resolvedType?.fqNameWithoutTypeArgs == "com.lightningkite.butterfly.Codable" }
+                .any { it.typeReference?.resolvedType?.fqNameWithoutTypeArgs == "com.lightningkite.khrysalis.Codable" }
         ) {
             //Generate codable constructor
             out.addImport("butterfly-web/dist/net/jsonParsing", "parse", "parseJsonTyped")

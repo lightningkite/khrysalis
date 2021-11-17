@@ -278,7 +278,7 @@ fun TypescriptTranslator.registerControl() {
                         it is KtContinueExpression ||
                         it is KtReturnExpression ||
                         it is KtThrowExpression ||
-                        (it is KtCallExpression && it.resolvedReferenceTarget?.fqNameSafe?.asString() == "com.lightningkite.butterfly.fatalError")
+                        (it is KtCallExpression && it.resolvedReferenceTarget?.fqNameSafe?.asString() == "com.lightningkite.khrysalis.fatalError")
                     ) {
                         hasAbsoluteBreak = true
                     }
@@ -295,7 +295,7 @@ fun TypescriptTranslator.registerControl() {
                     it is KtContinueExpression ||
                     it is KtReturnExpression ||
                     it is KtThrowExpression ||
-                    (it is KtCallExpression && it.resolvedReferenceTarget?.fqNameSafe?.asString() == "com.lightningkite.butterfly.fatalError")
+                    (it is KtCallExpression && it.resolvedReferenceTarget?.fqNameSafe?.asString() == "com.lightningkite.khrysalis.fatalError")
                 ) {
                     hasAbsoluteBreak = true
                 }

@@ -28,13 +28,8 @@ data class CompilerPluginUseInfo(
     val classpath: List<File>,
     val options: List<String>
 ) {
-    constructor(cacheName: String, project: Project, options: List<String>):this(
-        classpath = project.buildDir.resolve("khrysalis-kcp").resolve(cacheName)
-            .also { it.parentFile.mkdirs() }
-            .also {
-                copyFolderOutFromRes("compiler-plugins", it.parentFile)
-            }
-            .let { listOf(it) },
+    constructor(project: Project, configName: String, options: List<String>):this(
+        classpath = project.configurations.maybeCreate(configName).resolve().toList().also { println("Plugin classpath: $it") },
         options = options
     )
 }

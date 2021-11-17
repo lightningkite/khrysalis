@@ -76,7 +76,7 @@ fun SwiftTranslator.registerSpecialLet() {
                 } else {
                     -".map { ("
                 }
-                -(lambda.valueParameters.firstOrNull()?.name ?: "it")
+                -(lambda.valueParameters.firstOrNull()?.name?.safeSwiftIdentifier() ?: "it")
                 -") in \n"
                 -lambda.bodyExpression
                 -"\n}"
