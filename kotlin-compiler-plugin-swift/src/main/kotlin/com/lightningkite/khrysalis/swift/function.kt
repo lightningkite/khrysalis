@@ -20,6 +20,7 @@ import com.lightningkite.khrysalis.analysis.*
 import com.lightningkite.khrysalis.util.*
 import org.jetbrains.kotlin.builtins.isFunctionType
 import org.jetbrains.kotlin.builtins.isFunctionTypeOrSubtype
+import org.jetbrains.kotlin.resolve.calls.components.isVararg
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
 import org.jetbrains.kotlin.util.capitalizeDecapitalize.decapitalizeAsciiOnly
 
@@ -51,7 +52,7 @@ private fun CallableDescriptor.calculateSwiftParameterNames() {
 }
 val ValueParameterDescriptor.useName: Boolean get() = ValueParameterDescriptor_useName[this] ?: run {
     this.containingDeclaration.calculateSwiftParameterNames()
-    ValueParameterDescriptor_useName[this]!!
+    ValueParameterDescriptor_useName[this]!! && !this.isVararg
 }
 
 val FunctionDescriptor.swiftNameOverridden: String?
