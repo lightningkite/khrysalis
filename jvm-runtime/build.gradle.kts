@@ -3,12 +3,12 @@ import java.util.Properties
 plugins {
     id("kotlin")
     id("signing")
-    id("org.jetbrains.dokka") version "1.5.0"
+    id("org.jetbrains.dokka")
     `maven-publish`
 }
 
 group = "com.lightningkite.khrysalis"
-version = "0.0.2"
+version = "0.7.0"
 
 
 val props = project.rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { stream ->

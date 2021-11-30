@@ -1,21 +1,8 @@
 import java.util.Properties
 
-val kotlinVersion = "1.6.0"
-buildscript {
-    val kotlinVersion = "1.6.0"
-    repositories {
-        jcenter()
-    }
-    dependencies {
-        classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
-    }
-}
 plugins {
-    kotlin("jvm")
-    java
-    `java-gradle-plugin`
-    idea
-    signing
+    id("kotlin")
+    id("signing")
     id("org.jetbrains.dokka")
     `maven-publish`
 }
@@ -53,74 +40,21 @@ val deploymentPassword = (System.getenv("OSSRH_PASSWORD")?.takeUnless { it.isEmp
     ?.trim()
 val useDeployment = deploymentUser != null || deploymentPassword != null
 
-gradlePlugin {
-    plugins {
-        val khrysalisPlugin by creating() {
-            id = "com.lightningkite.khrysalis"
-            implementationClass = "com.lightningkite.khrysalis.gradle.KhrysalisPlugin"
-        }
-    }
-}
-
 repositories {
-    mavenLocal()
-    jcenter()
     mavenCentral()
-    google()
-}
-
-tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).all {
-    kotlinOptions {
-        jvmTarget = "1.8"
-    }
 }
 
 dependencies {
-    api(localGroovy())
-    api(gradleApi())
-
-//    implementation(project(":kotlin-compiler-plugin-typescript"))
-//    implementation(project(":kotlin-compiler-plugin-kotlin"))
-//    implementation(project(":kotlin-compiler-plugin-swift"))
-
-    api(group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin", version = kotlinVersion)
-    api(group = "org.jetbrains.kotlin", name = "kotlin-gradle-plugin-api", version = kotlinVersion)
-
-    implementation("org.jetbrains.kotlin:kotlin-stdlib")
     compileOnly("org.jetbrains.kotlin:kotlin-compiler-embeddable")
-
-    // https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java
-    api("org.apache.commons:commons-lang3:3.10")
-    api("com.fasterxml.jackson.core:jackson-databind:2.9.10")
-    api("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.10")
-    api("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.10")
-    api("net.jodah:xsylum:0.1.0")
-
-    // https://mvnrepository.com/artifact/org.apache.xmlgraphics/batik-transcoder
-    implementation(group = "org.apache.xmlgraphics", name = "batik-transcoder", version = "1.13")
-    implementation(group = "org.apache.xmlgraphics", name = "batik-codec", version = "1.13")
-
-    // https://mvnrepository.com/artifact/net.mabboud.fontverter/FontVerter
-    implementation(group = "net.mabboud.fontverter", name = "FontVerter", version = "1.2.22")
-
     testImplementation("junit:junit:4.12")
-
-    val aetherVersion = "1.0.0.v20140518"
-    val mavenVersion = "3.1.0"
-    testApi("org.eclipse.aether:aether-api:$aetherVersion")
-    testApi("org.eclipse.aether:aether-impl:$aetherVersion")
-    testApi("org.eclipse.aether:aether-util:$aetherVersion")
-    testApi("org.eclipse.aether:aether-connector-basic:$aetherVersion")
-    testApi("org.eclipse.aether:aether-transport-file:$aetherVersion")
-    testApi("org.eclipse.aether:aether-transport-http:$aetherVersion")
-    testApi("org.apache.maven:maven-aether-provider:$mavenVersion")
+    testImplementation("org.jetbrains.kotlin:kotlin-compiler-embeddable")
+    api(project(":kotlin-compiler-plugin-common", "default"))
 }
 
 tasks {
     val sourceJar by creating(Jar::class) {
         archiveClassifier.set("sources")
-        from(sourceSets["main"].java.srcDirs)
-        from(project.projectDir.resolve("src/include"))
+        from(kotlin.sourceSets["main"].kotlin.srcDirs)
     }
     val javadocJar by creating(Jar::class) {
         dependsOn("dokkaJavadoc")
@@ -133,17 +67,13 @@ tasks {
     }
 }
 
-
 afterEvaluate {
     publishing {
-        this.publications.forEach {
-            (it as MavenPublication).setPom()
-        }
         publications {
-            val release by creating(MavenPublication::class) {
+            create<MavenPublication>("java") {
                 from(components["java"])
-                artifact(tasks["sourceJar"])
-                artifact(tasks["javadocJar"])
+                artifact(tasks.getByName("sourceJar"))
+                artifact(tasks.getByName("javadocJar"))
                 groupId = project.group.toString()
                 artifactId = project.name
                 version = project.version.toString()
@@ -175,8 +105,8 @@ afterEvaluate {
 
 fun MavenPublication.setPom() {
     pom {
-        name.set("Khrysalis-Plugin")
-        description.set("Khrysalis is a low-commitment multiplatform application development system based on converting Android apps into iOS and Web apps.")
+        name.set("Khrysalis Typescript")
+        description.set("Transpiles Kotlin to Typescript")
         url.set("https://github.com/lightningkite/khrysalis")
 
         scm {
@@ -186,20 +116,19 @@ fun MavenPublication.setPom() {
         }
 
         licenses {
-
-            license{
-                name.set("GNU General Public License v3.0")
-                url.set("https://www.gnu.org/licenses/gpl-3.0.en.html")
-                distribution.set("repo")
-            }
-            license{
-                name.set("Commercial License")
-                url.set("https://www.lightningkite.com")
+            license {
+                name.set("The MIT License (MIT)")
+                url.set("https://www.mit.edu/~amini/LICENSE.md")
                 distribution.set("repo")
             }
         }
 
         developers {
+            developer {
+                id.set("bjsvedin")
+                name.set("Brady Svedin")
+                email.set("brady@lightningkite.com")
+            }
             developer {
                 id.set("LightningKiteJoseph")
                 name.set("Joseph Ivie")

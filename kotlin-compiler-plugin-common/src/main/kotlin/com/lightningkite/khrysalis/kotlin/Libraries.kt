@@ -9,7 +9,7 @@ object Libraries {
         if (!standardLibraryCopy.exists()) {
             println("Downloading standard library...")
             standardLibraryCopy.outputStream().use { out ->
-                URL("https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.5.21/kotlin-stdlib-1.5.21.jar").openStream()
+                URL("https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.6.0/kotlin-stdlib-1.6.0.jar").openStream()
                     .use { input ->
                         input.copyTo(out)
                     }
