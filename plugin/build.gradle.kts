@@ -21,19 +21,19 @@ plugins {
 }
 
 group = "com.lightningkite.khrysalis"
-version = "0.7.0"
+version = "0.7.1"
 
 
 val props = project.rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { stream ->
     Properties().apply { load(stream) }
-} ?: Properties()
+}
 val signingKey: String? = (System.getenv("SIGNING_KEY")?.takeUnless { it.isEmpty() }
-    ?: props["signingKey"]?.toString())
+    ?: props?.getProperty("signingKey")?.toString())
     ?.lineSequence()
     ?.filter { it.trim().firstOrNull()?.let { it.isLetterOrDigit() || it == '=' || it == '/' || it == '+' } == true }
     ?.joinToString("\n")
 val signingPassword: String? = System.getenv("SIGNING_PASSWORD")?.takeUnless { it.isEmpty() }
-    ?: props["signingPassword"]?.toString()
+    ?: props?.getProperty("signingPassword")?.toString()
 val useSigning = signingKey != null && signingPassword != null
 
 if (signingKey != null) {
@@ -46,10 +46,10 @@ if (signingKey != null) {
 }
 
 val deploymentUser = (System.getenv("OSSRH_USERNAME")?.takeUnless { it.isEmpty() }
-    ?: props["ossrhUsername"]?.toString())
+    ?: props?.getProperty("ossrhUsername")?.toString())
     ?.trim()
 val deploymentPassword = (System.getenv("OSSRH_PASSWORD")?.takeUnless { it.isEmpty() }
-    ?: props["ossrhPassword"]?.toString())
+    ?: props?.getProperty("ossrhPassword")?.toString())
     ?.trim()
 val useDeployment = deploymentUser != null || deploymentPassword != null
 
@@ -187,12 +187,12 @@ fun MavenPublication.setPom() {
 
         licenses {
 
-            license{
+            license {
                 name.set("GNU General Public License v3.0")
                 url.set("https://www.gnu.org/licenses/gpl-3.0.en.html")
                 distribution.set("repo")
             }
-            license{
+            license {
                 name.set("Commercial License")
                 url.set("https://www.lightningkite.com")
                 distribution.set("repo")
