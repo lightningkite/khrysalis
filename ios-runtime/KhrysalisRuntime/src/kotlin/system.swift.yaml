@@ -1,3 +1,0 @@
-- id: java.lang.System.currentTimeMillis
-  type: call
-  template: '((Int64) (NSDate().timeIntervalSince1970 * 1000.0))'
