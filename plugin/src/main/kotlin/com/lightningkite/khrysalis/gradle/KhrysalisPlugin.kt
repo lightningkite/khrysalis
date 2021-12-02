@@ -169,7 +169,6 @@ class KhrysalisPlugin : Plugin<Project> {
         project.tasks.create("khrysalisIos") { task ->
             task.group = "ios"
             task.dependsOn("khrysalisConvertKotlinToSwift")
-            task.dependsOn("khrysalisConvertLayoutsToSwift")
             task.dependsOn("khrysalisUpdateIosVersion")
             if (isMac) {
                 task.finalizedBy("khrysalisIosUpdateFiles")
