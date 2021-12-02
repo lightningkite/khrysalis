@@ -8,6 +8,10 @@ public extension String {
             self.init(describing: kotlin)
         }
     }
+    
+    func unlessEmpty() -> String? {
+        if self.isEmpty { return nil } else { return self }
+    }
 
     subscript(i: Int) -> Character {
         return self[index(startIndex, offsetBy: Int(i))]
@@ -195,10 +199,6 @@ public extension String {
     }
     func format(_ arguments: Any...) -> String {
         return formatList(arguments: arguments)
-    }
-
-    func format(args: Any...) -> String {
-        return formatList(arguments: args)
     }
 }
 

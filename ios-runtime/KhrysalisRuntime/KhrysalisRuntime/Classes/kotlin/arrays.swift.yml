@@ -1,0 +1,97 @@
+
+
+---
+- id: kotlin.ShortArray
+  type: type
+  requiresMutable: true
+  template: Array<Int16>
+- id: kotlin.IntArray
+  type: type
+  requiresMutable: true
+  template: Array<Int>
+- id: kotlin.LongArray
+  type: type
+  requiresMutable: true
+  template: Array<Int>
+- id: kotlin.FloatArray
+  type: type
+  requiresMutable: true
+  template: Array<Float>
+- id: kotlin.DoubleArray
+  type: type
+  requiresMutable: true
+  template: Array<Double>
+- id: kotlin.CharArray
+  type: type
+  requiresMutable: true
+  template: Array<Character>
+- id: kotlin.Array
+  type: type
+  requiresMutable: true
+  template: Array<~T0~>
+
+- id: kotlin.shortArrayOf
+  type: call
+  template: '[~*~]'
+- id: kotlin.intArrayOf
+  type: call
+  template: '[~*~]'
+- id: kotlin.longArrayOf
+  type: call
+  template: '[~*~]'
+- id: kotlin.floatArrayOf
+  type: call
+  template: '[~*~]'
+- id: kotlin.doubleArrayOf
+  type: call
+  template: '[~*~]'
+- id: kotlin.charArrayOf
+  type: call
+  template: '[~*~]'
+- id: kotlin.arrayOf
+  type: call
+  template: '[~*~]'
+- id: kotlin.ShortArray
+  type: typeRef
+  template: Array<Int16>
+- id: kotlin.IntArray
+  type: typeRef
+  template: Array<Int>
+- id: kotlin.LongArray
+  type: typeRef
+  template: Array<Int>
+- id: kotlin.FloatArray
+  type: typeRef
+  template: Array<Float>
+- id: kotlin.DoubleArray
+  type: typeRef
+  template: Array<Double>
+- id: kotlin.CharArray
+  type: typeRef
+  template: Array<Character>
+- id: kotlin.Array
+  type: typeRef
+  template: Array
+
+# Size
+- id: array.size
+  type: get
+  template: ~this~.count
+- id: array.get
+  type: call
+  template: ~this~[~0~]
+- id: array.set
+  type: call
+  template: ~this~[~0~] = ~1~
+
+- id: kotlin.collections.toTypedArray
+  type: call
+  template: ~this~
+
+- { id: kotlin.collections.toShortArray, type: call, template: ~this~ }
+- { id: kotlin.collections.toIntArray, type: call, template: ~this~ }
+- { id: kotlin.collections.toLongArray, type: call, template: ~this~ }
+- { id: kotlin.collections.toFloatArray, type: call, template: ~this~ }
+- { id: kotlin.collections.toDoubleArray, type: call, template: ~this~ }
+- { id: kotlin.collections.toBooleanArray, type: call, template: ~this~ }
+- { id: kotlin.collections.toCharArray, type: call, template: ~this~ }

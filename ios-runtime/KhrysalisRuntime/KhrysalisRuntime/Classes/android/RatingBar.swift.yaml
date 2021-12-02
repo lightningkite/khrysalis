@@ -1,0 +1,59 @@
+---
+- id: android.widget.RatingBar.setRating
+  type: call
+  reflectiveName: "\\CosmosView.ratingFloat"
+  template:
+    pattern: ~this~.rating = Double(~0~)
+    imports: [Cosmos]
+
+- id: android.widget.RatingBar.rating
+  type: get
+  reflectiveName: "\\CosmosView.ratingFloat"
+  template:
+    pattern: Float(~this~.rating)
+    imports: [Cosmos]
+
+- id: android.widget.RatingBar.rating
+  type: set
+  reflectiveName: "\\CosmosView.ratingFloat"
+  template:
+    pattern: ~this~.rating = Double(~value~)
+    imports: [Cosmos]
+
+- id: android.widget.RatingBar.numStars
+  type: get
+  reflectiveName: "\\CosmosView.settings.totalStars"
+  template:
+    pattern: ~this~.settings.totalStars
+    imports: [Cosmos]
+
+- id: android.widget.RatingBar.numStars
+  type: set
+  reflectiveName: "\\CosmosView.settings.totalStars"
+  template:
+    pattern: ~this~.settings.totalStars = ~0~
+    imports: [Cosmos]
+
+- id: android.widget.RatingBar.rating
+  type: get
+  reflectiveName: "\\CosmosView.rating"
+  template:
+    pattern: Float(~this~.rating)
+    imports: [Cosmos]
+
+- id: android.widget.RatingBar.rating
+  type: set
+  reflectiveName: "\\CosmosView.rating"
+  template:
+    pattern: ~this~.rating = Double(~0~)
+    imports: [Cosmos]
+
+- id: android.widget.RatingBar.stepSize
+  type: get
+  reflectiveName: "\\CosmosView.fillMode"
+  template: ""
+
+- id: android.widget.RatingBar.stepSize
+  type: set
+  reflectiveName: "\\CosmosView.fillMode"
+  template: ""

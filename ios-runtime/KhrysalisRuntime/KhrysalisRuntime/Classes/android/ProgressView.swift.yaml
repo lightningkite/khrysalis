@@ -1,0 +1,11 @@
+---
+
+- id: com.lightningkite.rx.android.progressRatio
+  type: get
+  reflectiveName: "\\UIProgressView.progress"
+  template: '~this~.progress'
+
+- id: com.lightningkite.rx.android.progressRatio
+  type: set
+  reflectiveName: "\\UIProgressView.progress"
+  template: '~this~.progress = ~value~'

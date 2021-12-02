@@ -211,6 +211,9 @@
 - id: kotlin.collections.isNotEmpty
   type: call
   template: (!~this~.isEmpty)
+- id: kotlin.collections.isEmpty
+  type: call
+  template: ~this~.isEmpty
 
 # Mutable List Operations
 - id: kotlin.collections.MutableCollection.add
@@ -363,4 +366,11 @@
     lambdaTransforms:
       0: ["_it.offset", "_it.element"]
 
+- id: kotlin.collections.asReversed
+  type: call
+  template: "~this~.reversed()"
 # TODO: Fold, max, min, reduce, scan
+
+- id: kotlin.collections.sumOf
+  type: call
+  template: '~this~.map(~0~).reduce(0, +)'

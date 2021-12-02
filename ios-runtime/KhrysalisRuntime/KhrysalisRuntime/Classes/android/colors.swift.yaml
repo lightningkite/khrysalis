@@ -1,0 +1,29 @@
+- id: com.lightningkite.khrysalis.ColorValue
+  type: type
+  template:
+    pattern: UIColor
+    imports: [UIKit]
+
+- id: com.lightningkite.khrysalis.colorValue
+  type: call
+  template:
+    pattern: 'UIColor(argb: ~0~)'
+    imports: [KhrysalisRuntime]
+
+- id: com.lightningkite.khrysalis.asColor
+  type: call
+  template:
+    pattern: 'UIColor(argb: ~this~)'
+    imports: [KhrysalisRuntime]
+
+- id: com.lightningkite.khrysalis.colorValue
+  type: call
+  template:
+    pattern: 'UIColor(argb: ~0~)'
+    imports: [KhrysalisRuntime]
+
+- id: com.lightningkite.khrysalis.asColor
+  type: call
+  template:
+    pattern: 'UIColor(argb: ~this~)'
+    imports: [KhrysalisRuntime]

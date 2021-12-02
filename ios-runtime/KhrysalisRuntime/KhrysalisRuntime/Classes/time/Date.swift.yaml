@@ -1,0 +1,217 @@
+---
+
+- { type: type, id: java.time.format.DateTimeFormatter, template: DateFormatter }
+- { type: call, id: java.time.format.DateTimeFormatter.ofLocalizedDateTime, template: { pattern: 'DateFormatter(dateStyle: ~0~, timeStyle: ~1~)', imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.format.DateTimeFormatter.ofLocalizedTime, template: { pattern: 'DateFormatter(timeStyle: ~0~)', imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.format.DateTimeFormatter.ofLocalizedDate, template: { pattern: 'DateFormatter(dateStyle: ~0~)', imports: [ KhrysalisRuntime ] } }
+- { type: get, id: java.time.format.FormatStyle, template: "DateFormatter.Style" }
+- { type: get, id: java.time.format.FormatStyle.FULL, template: "full" }
+- { type: get, id: java.time.format.FormatStyle.LONG, template: "long" }
+- { type: get, id: java.time.format.FormatStyle.MEDIUM, template: "medium" }
+- { type: get, id: java.time.format.FormatStyle.SHORT, template: "short" }
+
+- { type: call, id: java.time.LocalDate.toEpochDay, template: "~this~.epochDay" }
+- { type: call, id: java.time.LocalDate.ofEpochDay, template: "LocalDate(epochDay: ~0~)" }
+
+- { type: call, id: java.time.LocalTime.toSecondOfDay, template: "~this~.secondOfDay" }
+- { type: call, id: java.time.LocalTime.ofSecondOfDay, template: "LocalTime(secondOfDay: ~0~)" }
+
+- { type: type, id: java.time.ZoneId, template: "TimeZone" }
+- { type: call, id: java.time.ZoneId.systemDefault, template: "TimeZone.current" }
+- { type: call, id: java.time.ZoneId.getDefault, template: "TimeZone.current" }
+- { type: get, id: java.time.ZoneId.id, template: "~this~.identifier" }
+
+- { type: call, id: java.time.LocalDate.now, template: { pattern: LocalDate(), imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDateTime.now, template: { pattern: LocalDateTime(), imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalTime.now, template: { pattern: LocalTime(), imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.Instant.now, template: Date() }
+- { type: type, id: java.time.Instant, template: Date }
+- { type: call, id: java.time.ZonedDateTime.now, template: { pattern: ZonedDateTime(), imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.ZonedDateTime.toInstant, template: '~this~.toDate()' }
+
+- { type: call, id: java.time.Instant.isAfter, template: '(~this~ > ~0~)' }
+- { type: call, id: java.time.Instant.isBefore, template: '(~this~ < ~0~)' }
+- { type: call, id: java.time.LocalDate.isAfter, template: '(~this~ > ~0~)' }
+- { type: call, id: java.time.LocalDate.isBefore, template: '(~this~ < ~0~)' }
+- { type: call, id: java.time.LocalDateTime.isAfter, template: '(~this~ > ~0~)' }
+- { type: call, id: java.time.LocalDateTime.isBefore, template: '(~this~ < ~0~)' }
+- { type: call, id: java.time.LocalTime.isAfter, template: '(~this~ > ~0~)' }
+- { type: call, id: java.time.LocalTime.isBefore, template: '(~this~ < ~0~)' }
+- { type: call, id: java.time.ZonedDateTime.isAfter, template: '(~this~ > ~0~)' }
+- { type: call, id: java.time.ZonedDateTime.isBefore, template: '(~this~ < ~0~)' }
+
+- { type: type, id: java.time.Duration, template: 'TimeInterval' }
+- { type: call, id: java.time.Duration.ofDays, template: 'TimeInterval(~0~ * 86400)' }
+- { type: call, id: java.time.Duration.ofHours, template: 'TimeInterval(~0~ * 3600)' }
+- { type: call, id: java.time.Duration.ofMinutes, template: 'TimeInterval(~0~ * 60)' }
+- { type: call, id: java.time.Duration.ofSeconds, template: 'TimeInterval(~0~)' }
+- { type: call, id: java.time.Duration.ofMillis, template: 'TimeInterval(~0~ / 1000)' }
+- { type: call, id: java.time.Duration.ofNanos, template: 'TimeInterval(~0~ / 1e9)' }
+- { type: get, id: java.time.Duration.seconds, template: 'Int(~this~)' }
+- { type: call, id: java.time.Duration.toMinutes, template: 'Int(~this~ / 60)' }
+- { type: call, id: java.time.Duration.between, template: '~0~.timeIntervalSince(~1~)' }
+
+- { type: call, id: java.time.LocalDate.of, arguments: [Int, Int, Int], template: { pattern: 'LocalDate(year: ~0~, month: ~1~, day: ~2~)', imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalTime.of, arguments: [Int, Int], template: { pattern: 'LocalTime(hour: ~0~, minute: ~1~)', imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalTime.of, arguments: [Int, Int, Int], template: { pattern: 'LocalTime(hour: ~0~, minute: ~1~, second: ~2~)', imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalTime.of, arguments: [Int, Int, Int, Int], template: { pattern: 'LocalTime(hour: ~0~, minute: ~1~, second: ~2~, nanosecond: ~3~)', imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDateTime.of, arguments: [Int, Int, Int, Int, Int], template: { pattern: 'LocalDateTime(year: ~0~, month: ~1~, day: ~2~, hour: ~3~, minute: ~4~)', imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDateTime.of, arguments: [Int, Int, Int, Int, Int, Int], template: { pattern: 'LocalDateTime(year: ~0~, month: ~1~, day: ~2~, hour: ~3~, minute: ~4~, second: ~5~)', imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDateTime.of, arguments: [Int, Int, Int, Int, Int, Int, Int], template: { pattern: 'LocalDateTime(year: ~0~, month: ~1~, day: ~2~, hour: ~3~, minute: ~4~, second: ~5~, nanosecond: ~6~)', imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDateTime.of, arguments: [LocalDate, LocalTime], template: { pattern: 'LocalDateTime(localDate: ~0~, localTime: ~1~)', imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.ZonedDateTime.of, arguments: [LocalDate, LocalTime, ZoneId], template: { pattern: 'ZonedDateTime(timeZone: ~2~, localDate: ~0~, localTime: ~1~)', imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.ZonedDateTime.of, template: { pattern: ZonedDateTime(), imports: [ KhrysalisRuntime ] } }
+
+- { type: call, id: java.time.ZonedDateTime.withYear, template: { pattern: "~this~.with(year: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.ZonedDateTime.withMonth, template: { pattern: "~this~.with(month: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.ZonedDateTime.withDayOfMonth, template: { pattern: "~this~.with(day: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.ZonedDateTime.with, exactArgumentRequirements: {0: ChronoField.DAY_OF_WEEK}, template: { pattern: "~this~.with(dayOfWeek: ~1~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.ZonedDateTime.withHour, template: { pattern: "~this~.with(hour: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.ZonedDateTime.withMinute, template: { pattern: "~this~.with(minute: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.ZonedDateTime.withSecond, template: { pattern: "~this~.with(second: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.ZonedDateTime.withNano, template: { pattern: "~this~.with(nanosecond: ~0~)", imports: [ KhrysalisRuntime ] } }
+
+- { type: call, id: java.time.LocalDateTime.withYear, template: { pattern: "~this~.with(year: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDateTime.withMonth, template: { pattern: "~this~.with(month: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDateTime.withDayOfMonth, template: { pattern: "~this~.with(day: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDateTime.with, exactArgumentRequirements: {0: ChronoField.DAY_OF_WEEK}, template: { pattern: "~this~.with(dayOfWeek: ~1~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDateTime.withHour, template: { pattern: "~this~.with(hour: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDateTime.withMinute, template: { pattern: "~this~.with(minute: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDateTime.withSecond, template: { pattern: "~this~.with(second: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDateTime.withNano, template: { pattern: "~this~.with(nanosecond: ~0~)", imports: [ KhrysalisRuntime ] } }
+
+- { type: call, id: java.time.LocalDate.withYear, template: { pattern: "~this~.with(year: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDate.withMonth, template: { pattern: "~this~.with(month: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDate.withDayOfMonth, template: { pattern: "~this~.with(day: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDate.with, debug: true, exactArgumentRequirements: {0: ChronoField.DAY_OF_WEEK}, template: { pattern: "~this~.with(dayOfWeek: ~1~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalTime.withHour, template: { pattern: "~this~.with(hour: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalTime.withMinute, template: { pattern: "~this~.with(minute: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalTime.withSecond, template: { pattern: "~this~.with(second: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalTime.withNano, template: { pattern: "~this~.with(nanosecond: ~0~)", imports: [ KhrysalisRuntime ] } }
+
+- { type: call, id: java.time.ZonedDateTime.plusYears, template: { pattern: "~this~.plus(year: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.ZonedDateTime.plusMonths, template: { pattern: "~this~.plus(month: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.ZonedDateTime.plusDays, template: { pattern: "~this~.plus(day: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.ZonedDateTime.plusHours, template: { pattern: "~this~.plus(hour: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.ZonedDateTime.plusMinutes, template: { pattern: "~this~.plus(minute: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.ZonedDateTime.plusSeconds, template: { pattern: "~this~.plus(second: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.ZonedDateTime.plusNanos, template: { pattern: "~this~.plus(nanosecond: ~0~)", imports: [ KhrysalisRuntime ] } }
+
+- { type: call, id: java.time.LocalDateTime.plusYears, template: { pattern: "~this~.plus(year: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDateTime.plusMonths, template: { pattern: "~this~.plus(month: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDateTime.plusDays, template: { pattern: "~this~.plus(day: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDateTime.plusHours, template: { pattern: "~this~.plus(hour: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDateTime.plusMinutes, template: { pattern: "~this~.plus(minute: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDateTime.plusSeconds, template: { pattern: "~this~.plus(second: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDateTime.plusNanos, template: { pattern: "~this~.plus(nanosecond: ~0~)", imports: [ KhrysalisRuntime ] } }
+
+- { type: call, id: java.time.LocalDate.plusYears, template: { pattern: "~this~.plus(year: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDate.plusMonths, template: { pattern: "~this~.plus(month: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDate.plusDays, template: { pattern: "~this~.plus(day: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalTime.plusHours, template: { pattern: "~this~.plus(hour: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalTime.plusMinutes, template: { pattern: "~this~.plus(minute: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalTime.plusSeconds, template: { pattern: "~this~.plus(second: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalTime.plusNanos, template: { pattern: "~this~.plus(nanosecond: ~0~)", imports: [ KhrysalisRuntime ] } }
+
+- { type: call, id: java.time.ZonedDateTime.minusYears, template: { pattern: "~this~.plus(year: -(~0~))", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.ZonedDateTime.minusMonths, template: { pattern: "~this~.plus(month: -(~0~))", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.ZonedDateTime.minusDays, template: { pattern: "~this~.plus(day: -(~0~))", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.ZonedDateTime.minusHours, template: { pattern: "~this~.plus(hour: -(~0~))", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.ZonedDateTime.minusMinutes, template: { pattern: "~this~.plus(minute: -(~0~))", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.ZonedDateTime.minusSeconds, template: { pattern: "~this~.plus(second: -(~0~))", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.ZonedDateTime.minusNanos, template: { pattern: "~this~.plus(nanosecond: -(~0~))", imports: [ KhrysalisRuntime ] } }
+
+- { type: call, id: java.time.LocalDateTime.minusYears, template: { pattern: "~this~.plus(year: -(~0~))", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDateTime.minusMonths, template: { pattern: "~this~.plus(month: -(~0~))", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDateTime.minusDays, template: { pattern: "~this~.plus(day: -(~0~))", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDateTime.minusHours, template: { pattern: "~this~.plus(hour: -(~0~))", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDateTime.minusMinutes, template: { pattern: "~this~.plus(minute: -(~0~))", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDateTime.minusSeconds, template: { pattern: "~this~.plus(second: -(~0~))", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDateTime.minusNanos, template: { pattern: "~this~.plus(nanosecond: -(~0~))", imports: [ KhrysalisRuntime ] } }
+
+- { type: call, id: java.time.LocalDate.minusYears, template: { pattern: "~this~.plus(year: -(~0~))", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDate.minusMonths, template: { pattern: "~this~.plus(month: -(~0~))", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDate.minusDays, template: { pattern: "~this~.plus(day: -(~0~))", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalTime.minusHours, template: { pattern: "~this~.plus(hour: -(~0~))", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalTime.minusMinutes, template: { pattern: "~this~.plus(minute: -(~0~))", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalTime.minusSeconds, template: { pattern: "~this~.plus(second: -(~0~))", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalTime.minusNanos, template: { pattern: "~this~.plus(nanosecond: -(~0~))", imports: [ KhrysalisRuntime ] } }
+
+- { type: call, id: com.lightningkite.khrysalis.time.plusYears, receiver: java.time.ZonedDateTime, template: { pattern: "~this~.plus(year: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: com.lightningkite.khrysalis.time.plusMonths, receiver: java.time.ZonedDateTime, template: { pattern: "~this~.plus(month: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: com.lightningkite.khrysalis.time.plusDays, receiver: java.time.ZonedDateTime, template: { pattern: "~this~.plus(day: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: com.lightningkite.khrysalis.time.plusHours, receiver: java.time.ZonedDateTime, template: { pattern: "~this~.plus(hour: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: com.lightningkite.khrysalis.time.plusMinutes, receiver: java.time.ZonedDateTime, template: { pattern: "~this~.plus(minute: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: com.lightningkite.khrysalis.time.plusSeconds, receiver: java.time.ZonedDateTime, template: { pattern: "~this~.plus(second: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: com.lightningkite.khrysalis.time.plusNanos, receiver: java.time.ZonedDateTime, template: { pattern: "~this~.plus(nanosecond: ~0~)", imports: [ KhrysalisRuntime ] } }
+
+- { type: call, id: com.lightningkite.khrysalis.time.plusYears, receiver: java.time.LocalDateTime, template: { pattern: "~this~.plus(year: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: com.lightningkite.khrysalis.time.plusMonths, receiver: java.time.LocalDateTime, template: { pattern: "~this~.plus(month: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: com.lightningkite.khrysalis.time.plusDays, receiver: java.time.LocalDateTime, template: { pattern: "~this~.plus(day: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: com.lightningkite.khrysalis.time.plusHours, receiver: java.time.LocalDateTime, template: { pattern: "~this~.plus(hour: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: com.lightningkite.khrysalis.time.plusMinutes, receiver: java.time.LocalDateTime, template: { pattern: "~this~.plus(minute: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: com.lightningkite.khrysalis.time.plusSeconds, receiver: java.time.LocalDateTime, template: { pattern: "~this~.plus(second: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: com.lightningkite.khrysalis.time.plusNanos, receiver: java.time.LocalDateTime, template: { pattern: "~this~.plus(nanosecond: ~0~)", imports: [ KhrysalisRuntime ] } }
+
+- { type: call, id: com.lightningkite.khrysalis.time.plusYears, receiver: java.time.LocalDate, template: { pattern: "~this~.plus(year: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: com.lightningkite.khrysalis.time.plusMonths, receiver: java.time.LocalDate, template: { pattern: "~this~.plus(month: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: com.lightningkite.khrysalis.time.plusDays, receiver: java.time.LocalDate, template: { pattern: "~this~.plus(day: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: com.lightningkite.khrysalis.time.plusHours, receiver: java.time.LocalTime, template: { pattern: "~this~.plus(hour: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: com.lightningkite.khrysalis.time.plusMinutes, receiver: java.time.LocalTime, template: { pattern: "~this~.plus(minute: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: com.lightningkite.khrysalis.time.plusSeconds, receiver: java.time.LocalTime, template: { pattern: "~this~.plus(second: ~0~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: com.lightningkite.khrysalis.time.plusNanos, receiver: java.time.LocalTime, template: { pattern: "~this~.plus(nanosecond: ~0~)", imports: [ KhrysalisRuntime ] } }
+
+- { type: call, id: com.lightningkite.khrysalis.time.minusYears, receiver: java.time.ZonedDateTime, template: { pattern: "~this~.plus(year: -(~0~))", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: com.lightningkite.khrysalis.time.minusMonths, receiver: java.time.ZonedDateTime, template: { pattern: "~this~.plus(month: -(~0~))", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: com.lightningkite.khrysalis.time.minusDays, receiver: java.time.ZonedDateTime, template: { pattern: "~this~.plus(day: -(~0~))", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: com.lightningkite.khrysalis.time.minusHours, receiver: java.time.ZonedDateTime, template: { pattern: "~this~.plus(hour: -(~0~))", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: com.lightningkite.khrysalis.time.minusMinutes, receiver: java.time.ZonedDateTime, template: { pattern: "~this~.plus(minute: -(~0~))", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: com.lightningkite.khrysalis.time.minusSeconds, receiver: java.time.ZonedDateTime, template: { pattern: "~this~.plus(second: -(~0~))", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: com.lightningkite.khrysalis.time.minusNanos, receiver: java.time.ZonedDateTime, template: { pattern: "~this~.plus(nanosecond: -(~0~))", imports: [ KhrysalisRuntime ] } }
+
+- { type: call, id: com.lightningkite.khrysalis.time.minusYears, receiver: java.time.LocalDateTime, template: { pattern: "~this~.plus(year: -(~0~))", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: com.lightningkite.khrysalis.time.minusMonths, receiver: java.time.LocalDateTime, template: { pattern: "~this~.plus(month: -(~0~))", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: com.lightningkite.khrysalis.time.minusDays, receiver: java.time.LocalDateTime, template: { pattern: "~this~.plus(day: -(~0~))", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: com.lightningkite.khrysalis.time.minusHours, receiver: java.time.LocalDateTime, template: { pattern: "~this~.plus(hour: -(~0~))", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: com.lightningkite.khrysalis.time.minusMinutes, receiver: java.time.LocalDateTime, template: { pattern: "~this~.plus(minute: -(~0~))", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: com.lightningkite.khrysalis.time.minusSeconds, receiver: java.time.LocalDateTime, template: { pattern: "~this~.plus(second: -(~0~))", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: com.lightningkite.khrysalis.time.minusNanos, receiver: java.time.LocalDateTime, template: { pattern: "~this~.plus(nanosecond: -(~0~))", imports: [ KhrysalisRuntime ] } }
+
+- { type: call, id: com.lightningkite.khrysalis.time.minusYears, receiver: java.time.LocalDate, template: { pattern: "~this~.plus(year: -(~0~))", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: com.lightningkite.khrysalis.time.minusMonths, receiver: java.time.LocalDate, template: { pattern: "~this~.plus(month: -(~0~))", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: com.lightningkite.khrysalis.time.minusDays, receiver: java.time.LocalDate, template: { pattern: "~this~.plus(day: -(~0~))", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: com.lightningkite.khrysalis.time.minusHours, receiver: java.time.LocalTime, template: { pattern: "~this~.plus(hour: -(~0~))", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: com.lightningkite.khrysalis.time.minusMinutes, receiver: java.time.LocalTime, template: { pattern: "~this~.plus(minute: -(~0~))", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: com.lightningkite.khrysalis.time.minusSeconds, receiver: java.time.LocalTime, template: { pattern: "~this~.plus(second: -(~0~))", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: com.lightningkite.khrysalis.time.minusNanos, receiver: java.time.LocalTime, template: { pattern: "~this~.plus(nanosecond: -(~0~))", imports: [ KhrysalisRuntime ] } }
+
+- { type: get, id: java.time.LocalDate.dayOfMonth, template: { pattern: "~this~.day", imports: [ KhrysalisRuntime ] } }
+- { type: get, id: java.time.LocalDateTime.dayOfMonth, template: { pattern: "~this~.day", imports: [ KhrysalisRuntime ] } }
+- { type: get, id: java.time.ZonedDateTime.dayOfMonth, template: { pattern: "~this~.day", imports: [ KhrysalisRuntime ] } }
+- { type: get, id: java.time.LocalDate.dayOfWeek, template: { pattern: "~this~.weekday", imports: [ KhrysalisRuntime ] } }
+- { type: get, id: java.time.LocalDateTime.dayOfWeek, template: { pattern: "~this~.weekday", imports: [ KhrysalisRuntime ] } }
+- { type: get, id: java.time.ZonedDateTime.dayOfWeek, template: { pattern: "~this~.weekday", imports: [ KhrysalisRuntime ] } }
+- { type: get, id: java.time.LocalDate.monthValue, template: { pattern: "~this~.month", imports: [ KhrysalisRuntime ] } }
+- { type: get, id: java.time.LocalDateTime.monthValue, template: { pattern: "~this~.month", imports: [ KhrysalisRuntime ] } }
+- { type: get, id: java.time.ZonedDateTime.monthValue, template: { pattern: "~this~.month", imports: [ KhrysalisRuntime ] } }
+
+- { type: call, id: java.time.Instant.parse, template: "ISO8601DateFormatter().date(from: ~0~)" }
+- { type: call, id: java.time.Instant.plus, template: "~this~.addingTimeInterval(~0~)" }
+
+- { type: call, id: java.time.ZonedDateTime.truncatedTo, exactArgumentRequirements: {0: ChronoUnit.YEARS}, template: '~this~.truncatedToYear()' }
+- { type: call, id: java.time.ZonedDateTime.truncatedTo, exactArgumentRequirements: {0: ChronoUnit.MONTHS}, template: '~this~.truncatedToMonth()' }
+- { type: call, id: java.time.ZonedDateTime.truncatedTo, exactArgumentRequirements: {0: ChronoUnit.DAYS}, template: '~this~.truncatedToDay()' }
+- { type: call, id: java.time.ZonedDateTime.truncatedTo, exactArgumentRequirements: {0: ChronoUnit.HOURS}, template: '~this~.truncatedToHour()' }
+- { type: call, id: java.time.ZonedDateTime.truncatedTo, exactArgumentRequirements: {0: ChronoUnit.MINUTES}, template: '~this~.truncatedToMinute()' }
+
+- { type: type, id: java.time.DayOfWeek, template: 'Int' }
+- { type: type, id: java.time.Month, template: 'Int' }
+- { type: get, id: java.time.DayOfWeek.value, template: '((~this~ + 5) % 7 + 1)' }
+- { type: get, id: java.time.Month.value, template: '~this~' }
+- { type: call, id: java.time.Month.getDisplayName, exactArgumentRequirements: {0: TextStyle.FULL}, template: 'DateFormatter().monthSymbols[~this~ - 1]' }
+- { type: call, id: java.time.DayOfWeek.getDisplayName, exactArgumentRequirements: {0: TextStyle.FULL}, template: 'DateFormatter().weekdaySymbols[~this~ - 1]' }
+- { type: call, id: java.time.Month.getDisplayName, exactArgumentRequirements: {0: TextStyle.SHORT}, template: 'DateFormatter().shortMonthSymbols[~this~ - 1]' }
+- { type: call, id: java.time.DayOfWeek.getDisplayName, exactArgumentRequirements: {0: TextStyle.SHORT}, template: 'DateFormatter().shortWeekdaySymbols[~this~ - 1]' }
+- { type: call, id: java.time.Month.values, template: 'Array(1...12)' }
+- { type: call, id: java.time.DayOfWeek.values, template: 'Array(1...7)' }
+

@@ -1,0 +1,227 @@
+
+- id: android.view.View
+  type: type
+  template:
+    pattern: UIView
+    imports: [UIKit]
+
+- id: nonandroid.UseMarginInsets
+  type: type
+  template: ""
+
+- id: android.widget.Space
+  type: type
+  template:
+    pattern: UIView
+    imports: [ UIKit ]
+
+- id: android.widget.ProgressBar
+  type: type
+  template:
+    pattern: UIView
+    imports: [ UIKit ]
+
+- id: com.lightningkite.butterfly.views.widget.HorizontalProgressBar
+  type: type
+  template:
+    pattern: UIView
+    imports: [ UIKit ]
+
+- id: android.widget.ImageView
+  type: type
+  template:
+    pattern: UIImageView
+    imports: [ UIKit ]
+
+- id: com.lightningkite.butterfly.views.widget.VideoPlayer
+  type: type
+  template:
+    pattern: UIVideoView
+    imports: [ UIKit ]
+
+- id: de.hdodenhof.circleimageview.CircleImageView
+  type: type
+  template:
+    pattern: CircleImageView
+    imports: [ KhrysalisRuntime ]
+
+- id: android.widget.TextView
+  type: type
+  template:
+    pattern: UILabel
+    imports: [UIKit]
+
+- id: com.lightningkite.butterfly.views.widget.SelectableText
+  type: type
+  template:
+    pattern: SelectableText
+    imports: [KhrysalisRuntime]
+
+- id: com.lightningkite.butterfly.views.widget.CustomView
+  type: type
+  template:
+    pattern: CustomView
+    imports: [KhrysalisRuntime]
+
+- id: android.widget.Button
+  type: type
+  template:
+    pattern: UIButton
+    imports: [UIKit]
+
+- id: android.widget.ImageButton
+  type: type
+  template:
+    pattern: UIButton
+    imports: [UIKit]
+
+- id: android.widget.ToggleButton
+  type: type
+  template:
+    pattern: ToggleButton
+    imports: [KhrysalisRuntime]
+
+- id: android.widget.Spinner
+  type: type
+  template:
+    pattern: Dropdown
+    imports: [KhrysalisRuntime]
+
+- id: android.widget.SeekBar
+  type: type
+  template:
+    pattern: UISlider
+    imports: [UIKit]
+
+- id: android.widget.RatingBar
+  type: type
+  template:
+    pattern: CosmosView
+    imports: [ Cosmos ]
+
+- id: android.widget.CheckBox
+  type: type
+  template:
+    pattern: LabeledCheckbox
+    imports: [ KhrysalisRuntime ]
+
+- id: android.widget.RadioButton
+  type: type
+  template:
+    pattern: LabeledRadioButton
+    imports: [ KhrysalisRuntime ]
+
+- id: android.widget.Switch
+  type: type
+  template:
+    pattern: LabeledSwitch
+    imports: [ KhrysalisRuntime ]
+
+- id: android.widget.RadioGroup
+  type: type
+  template:
+    pattern: SimpleStackView
+    imports: [ KhrysalisRuntime ]
+
+- id: android.widget.EditText
+  type: type
+  template:
+    pattern: UITextField
+    imports: [UIKit]
+
+- id: android.widget.AutoCompleteTextView
+  type: type
+  template:
+    pattern: UIAutoCompleteTextField
+    imports: [KhrysalisRuntime]
+
+- id: android.widget.LinearLayout
+  type: type
+  template:
+    pattern: UIStackView
+    imports: [UIKit]
+
+- id: android.widget.FrameLayout
+  type: type
+  template:
+    pattern: UIView
+    imports: [UIKit]
+
+- id: androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+  type: type
+  template:
+    pattern: UIView
+    imports: [UIKit]
+
+- id: android.widget.ViewFlipper
+  type: type
+  template:
+    pattern: ViewFlipper
+    imports: [KhrysalisRuntime]
+
+- id: android.widget.ScrollView
+  type: type
+  template:
+    pattern: UIScrollView
+    imports: [UIKit]
+
+- id: android.widget.HorizontalScrollView
+  type: type
+  template:
+    pattern: UIScrollView
+    imports: [UIKit]
+
+- id: androidx.core.widget.NestedScrollView
+  type: type
+  template:
+    pattern: UIScrollView
+    imports: [UIKit]
+
+- id: com.google.android.material.tabs.TabLayout
+  type: type
+  template:
+    pattern: MaterialSegmentedControldRa
+    imports: [KhrysalisRuntime]
+
+- id: androidx.recyclerview.widget.RecyclerView
+  type: type
+  template:
+    pattern: UICollectionView
+    imports: [UIKit]
+
+- id: com.rd.PageIndicatorView
+  type: type
+  template:
+    pattern: UIPageControl
+    imports: [UIKit]
+
+- id: androidx.viewpager.widget.ViewPager
+  type: type
+  template:
+    pattern: UICollectionView
+    imports: [UIKit]
+
+- id: android.view.View.requestFocus
+  type: call
+  template: ~this~.becomeFirstResponder()
+
+- id: android.view.View
+  type: call
+  template: 'UIView(frame: .zero)'
+
+- id: android.view.View.background
+  type: set
+  template: '~this~.backgroundLayer = nil'
+
+- id: android.view.View.rotation
+  type: set
+  template: '~this~.transform = CGAffineTransform(rotationAngle: ~value~ * CGFloat.pi / 180)'
+
+- id: android.view.View.setBackgroundColor
+  type: call
+  template: '~this~.backgroundColor = ~0~'
+
+- id: android.graphics.drawable.Drawable
+  type: type
+  isFunctionType: true
+  template: '()->CALayer'

@@ -1,0 +1,47 @@
+---
+- id: android.graphics.RectF
+  type: type
+  requiresMutable: true
+  template:
+      pattern: CGRect
+      imports: [CoreGraphics]
+
+- id: android.graphics.RectF
+  type: call
+  template:
+      pattern: 'CGRect(left: ~0~, top: ~1~, right: ~2~, bottom: ~3~)'
+      imports: [CoreGraphics]
+
+- id: android.graphics.RectF
+  type: call
+  arguments: []
+  template:
+      pattern: 'CGRect.zero'
+      imports: [CoreGraphics]
+
+- id: android.graphics.RectF.centerX
+  type: call
+  template: ~this~.midX
+
+- id: android.graphics.RectF.centerY
+  type: call
+  template: ~this~.midY
+
+- id: android.graphics.RectF.width
+  type: call
+  template: ~this~.size.width
+
+- id: android.graphics.RectF.height
+  type: call
+  template: ~this~.size.height
+
+- id: android.graphics.RectF.set
+  type: call
+  arguments: [RectF]
+  template: ~this~ = ~0~
+
+- id: android.graphics.RectF.set
+  type: call
+  template:
+    pattern: '~this~ = CGRect(left: ~0~, top: ~1~, right: ~2~, bottom: ~3~)'
+    imports: [CoreGraphics]

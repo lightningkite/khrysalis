@@ -1,0 +1,13 @@
+use_frameworks!
+
+platform :ios, '9.0'
+
+target 'KhrysalisRuntime_Example' do
+  pod 'KhrysalisRuntime', :path => '../'
+
+  target 'KhrysalisRuntime_Tests' do
+    inherit! :search_paths
+
+    
+  end
+end

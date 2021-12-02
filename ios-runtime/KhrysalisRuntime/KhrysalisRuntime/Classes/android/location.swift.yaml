@@ -1,0 +1,48 @@
+- id: android.location.Location
+  type: type
+  template:
+    pattern: CLLocation
+    imports: [CoreLocation]
+
+- id: android.location.Location.accuracy
+  type: get
+  template: ~this~.horizontalAccuracy
+
+- id: android.location.Location.bearing
+  type: get
+  template: '~this~.course + 90'
+
+- id: android.location.Location.altitude
+  type: get
+  template: ~this~.altitudeMeters
+
+- id: android.location.Address
+  type: type
+  template:
+    pattern: CLPlacemark
+    imports: [CoreLocation]
+
+- id: android.location.Address.countryName
+  type: get
+  template: ~this~.country
+  resultIsNullable: true
+
+- id: android.location.Address.subAdminArea
+  type: get
+  template: ~this~.subAdministrativeArea
+  resultIsNullable: true
+
+- id: android.location.Address.adminArea
+  type: get
+  template: ~this~.administrativeArea
+  resultIsNullable: true
+
+- {id: android.location.Address.featureName, type: get, template: '~this~.featureName', resultIsNullable: true}
+- {id: android.location.Address.locality, type: get, template: '~this~.locality', resultIsNullable: true}
+- {id: android.location.Address.subLocality, type: get, template: '~this~.subLocality', resultIsNullable: true}
+- {id: android.location.Address.thoroughfare, type: get, template: '~this~.thoroughfare', resultIsNullable: true}
+- {id: android.location.Address.subThoroughfare, type: get, template: '~this~.subThoroughfare', resultIsNullable: true}
+- {id: android.location.Address.premises, type: get, template: '~this~.premises', resultIsNullable: true}
+- {id: android.location.Address.postalCode, type: get, template: '~this~.postalCode', resultIsNullable: true}
+- {id: android.location.Address.countryCode, type: get, template: '~this~.countryCode', resultIsNullable: true}
+- {id: android.location.Address.countryName, type: get, template: '~this~.countryName', resultIsNullable: true}

@@ -1,0 +1,71 @@
+---
+- id: androidx.recyclerview.widget.RecyclerView.smoothScrollToPosition
+  type: call
+  template:
+    pattern: '~this~.scrollToItemSafe(at: IndexPath(item: ~0~, section: 0), animated: true)'
+    imports: [KhrysalisRuntime]
+- id: androidx.recyclerview.widget.RecyclerView.scrollToPosition
+  type: call
+  template:
+    pattern: '~this~.scrollToItemSafe(at: IndexPath(item: ~0~, section: 0), animated: false)'
+    imports: [KhrysalisRuntime]
+
+- id: androidx.recyclerview.widget.RecyclerView.layoutManager
+  type: set
+  template: ~this~.collectionViewLayout = ~value~
+- id: androidx.recyclerview.widget.RecyclerView.layoutManager
+  type: get
+  template: ~this~.collectionViewLayout
+
+- id: androidx.recyclerview.widget.LinearLayoutManager
+  type: type
+  template:
+    pattern: UICollectionViewCompositionalLayout
+    imports: [UIKit, KhrysalisRuntime]
+
+- id: androidx.recyclerview.widget.LinearLayoutManager
+  type: call
+  arguments: [android.content.Context]
+  template:
+    pattern: "QuickCompositionalLayout.list()"
+    imports: [KhrysalisRuntime]
+
+- id: androidx.recyclerview.widget.GridLayoutManager
+  type: type
+  template:
+    pattern: UICollectionViewCompositionalLayout
+    imports: [UIKit, KhrysalisRuntime]
+
+- id: androidx.recyclerview.widget.GridLayoutManager
+  type: call
+  arguments: [android.content.Context, kotlin.Int]
+  template:
+    pattern: "QuickCompositionalLayout.grid(orthogonalCount: ~1~)"
+    imports: [KhrysalisRuntime]
+
+# TODO
+#- id: androidx.recyclerview.widget.LinearLayoutManager
+#  type: call
+#  arguments: [android.content.Context, kotlin.Int, kotlin.Boolean]
+#  template:
+#    pattern: "UICollectionViewCompositionalLayout.list()"
+#    imports: [KhrysalisRuntime ]
+
+# public extension UIScrollView {
+#    func scrollTo(_ x: Int, _ y: Int) {
+#        self.setContentOffset(CGPoint(x: CGFloat(x), y: CGFloat(y)), animated: false)
+#    }
+#    func smoothScrollTo(_ x: Int, _ y: Int) {
+#        self.setContentOffset(CGPoint(x: CGFloat(x), y: CGFloat(y)), animated: true)
+#    }
+#    var scrollX: Int {
+#        return Int(self.contentOffset.x)
+#    }
+#    var scrollY: Int {
+#        return Int(self.contentOffset.y)
+#    }
+#    func scrollToBottom(){
+#        let bottomOffset = CGPoint(x: 0, y: self.contentSize.height - self.bounds.size.height)
+#        self.setContentOffset(bottomOffset, animated: true)
+#    }
+#}

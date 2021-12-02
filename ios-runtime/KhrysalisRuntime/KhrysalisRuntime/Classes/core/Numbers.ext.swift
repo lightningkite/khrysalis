@@ -24,23 +24,20 @@ public extension SignedInteger {
 
 public extension Float {
     func roundToInt() -> Int { return Int(rounded()) }
-    func roundToLong() -> Int64 { return Int64(rounded()) }
+    func roundToLong() -> Int { return Int(rounded()) }
 }
 public extension Double {
     func roundToInt() -> Int { return Int(rounded()) }
-    func roundToLong() -> Int64 { return Int64(rounded()) }
+    func roundToLong() -> Int { return Int(rounded()) }
 }
 
 infix operator >>> : BitwiseShiftPrecedence
 
-public func >>> (lhs: Int64, rhs: Int64) -> Int64 {
-    return Int64(bitPattern: UInt64(bitPattern: lhs) >> UInt64(rhs))
+public func >>> (lhs: Int, rhs: Int) -> Int {
+    return Int(bitPattern: UInt(bitPattern: lhs) >> UInt(rhs))
 }
 public func >>> (lhs: Int32, rhs: Int32) -> Int32 {
     return Int32(bitPattern: UInt32(bitPattern: lhs) >> UInt32(rhs))
-}
-public func >>> (lhs: Int, rhs: Int) -> Int {
-    return Int(Int32(bitPattern: UInt32(bitPattern: Int32(lhs)) >> UInt32(rhs)))
 }
 public func >>> (lhs: Int16, rhs: Int16) -> Int16 {
     return Int16(bitPattern: UInt16(bitPattern: lhs) >> UInt16(rhs))

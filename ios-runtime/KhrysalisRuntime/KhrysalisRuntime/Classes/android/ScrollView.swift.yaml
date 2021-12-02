@@ -1,0 +1,27 @@
+---
+- id: android.widget.ScrollView.scrollTo
+  type: call
+  template:
+    pattern: '~this~.setContentOffset(CGPoint(x: CGFloat(~0~), y: CGFloat(~1~)), animated: false)'
+    imports: [KhrysalisRuntime]
+- id: android.widget.ScrollView.scrollTo
+  type: call
+  template:
+    pattern: '~this~.setContentOffset(CGPoint(x: CGFloat(~0~), y: CGFloat(~1~)), animated: false)'
+    imports: [KhrysalisRuntime]
+- id: android.widget.ScrollView.smoothScrollTo
+  type: call
+  template:
+    pattern: '~this~.setContentOffset(CGPoint(x: CGFloat(~0~), y: CGFloat(~1~)), animated: true)'
+    imports: [KhrysalisRuntime]
+- id: android.widget.ScrollView.smoothScrollTo
+  type: call
+  template:
+    pattern: '~this~.setContentOffset(CGPoint(x: CGFloat(~0~), y: CGFloat(~1~)), animated: true)'
+    imports: [KhrysalisRuntime]
+- id: android.widget.ScrollView.scrollX
+  type: get
+  template: 'Int(~this~.contentOffset.x)'
+- id: android.widget.ScrollView.scrollY
+  type: get
+  template: 'Int(~this~.contentOffset.y)'

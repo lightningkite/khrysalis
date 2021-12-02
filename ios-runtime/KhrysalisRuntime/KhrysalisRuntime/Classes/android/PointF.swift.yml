@@ -1,0 +1,22 @@
+---
+- id: android.graphics.PointF
+  type: type
+  requiresMutable: true
+  template:
+    pattern: CGPoint
+    imports: [CoreGraphics]
+- id: android.graphics.PointF
+  type: call
+  template:
+    pattern: 'CGPoint(x: ~0~, y: ~1~)'
+    imports: [CoreGraphics]
+- id: android.graphics.PointF
+  type: call
+  template:
+    pattern: 'CGPoint(x: ~0~, y: ~1~)'
+    imports: [CoreGraphics]
+- id: android.graphics.PointF
+  type: call
+  template:
+    pattern: 'CGPoint(x: ~0~, y: ~1~)'
+    imports: [CoreGraphics]

@@ -9,18 +9,13 @@ public extension CaseIterable {
     static func values() -> Array<Self> {
         return Array(self.allCases)
     }
-    static func valueOf(value: String) -> Self {
+    static func valueOf(_ value: String) -> Self {
         return values().find { "\($0)" == value }!
     }
 }
 
-public extension StringEnum {
-    var name: String {
-        return "\(self)"
-    }
-}
-
 public protocol StringEnum {
+    var rawValue: String { get }
 }
 
 public class WeakReference<T: AnyObject> {

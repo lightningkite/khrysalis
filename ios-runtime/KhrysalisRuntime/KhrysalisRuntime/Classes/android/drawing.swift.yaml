@@ -1,0 +1,14 @@
+---
+- id: android.graphics.Canvas.concat
+  type: call
+  template: ~this~.concatenate(~0~)
+- id: android.graphics.Canvas
+  type: type
+  template:
+    pattern: CGContext
+    imports: [CoreGraphics]
+- id: android.graphics.Path
+  type: type
+  template:
+    pattern: CGMutablePath
+    imports: [CoreGraphics]

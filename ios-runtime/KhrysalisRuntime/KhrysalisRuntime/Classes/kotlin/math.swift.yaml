@@ -1,0 +1,104 @@
+---
+
+- id: kotlin.math.min
+  type: call
+  template: Swift.min(~0~, ~1~)
+
+- id: kotlin.math.max
+  type: call
+  template: Swift.max(~0~, ~1~)
+
+
+- id: kotlin.math.abs
+  type: call
+  template: abs(~0~)
+- id: kotlin.math.sin
+  type: call
+  template: sin(~0~)
+- id: kotlin.math.cos
+  type: call
+  template: cos(~0~)
+- id: kotlin.math.tan
+  type: call
+  template: tan(~0~)
+- id: kotlin.math.asin
+  type: call
+  template: asin(~0~)
+- id: kotlin.math.acos
+  type: call
+  template: acos(~0~)
+- id: kotlin.math.atan
+  type: call
+  template: atan(~0~)
+- id: kotlin.math.sqrt
+  type: call
+  template: sqrt(~0~)
+- id: kotlin.math.ln
+  type: call
+  template: log(~0~)
+- id: kotlin.math.exp
+  type: call
+  template: pow(M_E, ~0~)
+- id: kotlin.math.pow
+  type: call
+  receiver: kotlin.Double
+  template: pow(~this~, ~0~)
+- id: kotlin.math.pow
+  type: call
+  receiver: kotlin.Float
+  template: Float(pow(~this~, ~0~))
+- id: kotlin.math.pow
+  type: call
+  receiver: kotlin.Int
+  template: Int32(pow(~this~, ~0~))
+- id: kotlin.math.pow
+  type: call
+  receiver: kotlin.Long
+  template: pow(~this~, ~0~)
+- id: kotlin.math.PI
+  type: get
+  template: .pi
+
+
+- id: java.lang.Math.min
+  type: call
+  template: Swift.min(~0~, ~1~)
+
+- id: java.lang.Math.max
+  type: call
+  template: Swift.max(~0~, ~1~)
+
+
+- id: java.lang.Math.abs
+  type: call
+  template: abs(~0~)
+- id: java.lang.Math.sin
+  type: call
+  template: sin(~0~)
+- id: java.lang.Math.cos
+  type: call
+  template: cos(~0~)
+- id: java.lang.Math.tan
+  type: call
+  template: tan(~0~)
+- id: java.lang.Math.asin
+  type: call
+  template: asin(~0~)
+- id: java.lang.Math.acos
+  type: call
+  template: acos(~0~)
+- id: java.lang.Math.atan
+  type: call
+  template: atan(~0~)
+- id: java.lang.Math.sqrt
+  type: call
+  template: sqrt(~0~)
+- id: java.lang.Math.ln
+  type: call
+  template: ln(~0~)
+- id: java.lang.Math.exp
+  type: call
+  template: pow(M_E, ~0~)
+- id: java.lang.Math.PI
+  type: get
+  template: .pi

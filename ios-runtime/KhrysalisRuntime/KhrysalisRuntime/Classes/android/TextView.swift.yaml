@@ -1,0 +1,40 @@
+---
+- id: android.widget.TextView.setTextColor
+  type: call
+  reflectiveName: "\\UILabel.textColor"
+  template: ~this~.textColor = ~0~
+
+- id: android.widget.Button.setTextColor
+  type: call
+  reflectiveName: "UIButton.setTitleColor"
+  template: '~this~.setTitleColor(~0~, for: .normal)'
+
+- id: android.widget.TextView.setText
+  type: call
+  reflectiveName: "\\UILabel.text"
+  template: '~this~.text = ~0~'
+
+- id: android.widget.Button.setText
+  type: call
+  reflectiveName: "UIButton.setTitle"
+  template: '~this~.setTitle(~value~, for: .normal)'
+
+- id: android.widget.Button.text
+  type: get
+  reflectiveName: "UIButton.setTitle"
+  template: '~this~.title(for: .normal)'
+
+- id: android.widget.Button.text
+  type: set
+  reflectiveName: "UIButton.setTitle"
+  template: '~this~.setTitle(~value~, for: .normal)'
+
+- id: android.widget.TextView.maxLines
+  type: set
+  reflectiveName: "\\UILabel.numberOfLines"
+  template: '~this~.numberOfLines = ~value~'
+
+- id: android.widget.TextView.maxLines
+  type: get
+  reflectiveName: "\\UILabel.numberOfLines"
+  template: '~this~.numberOfLines'

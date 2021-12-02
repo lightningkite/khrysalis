@@ -1,0 +1,20 @@
+---
+- id: android.widget.SeekBar.max
+  type: get
+  reflectiveName: "\\UISlider.maximumValue"
+  template: Int(~this~.maximumValue)
+
+- id: android.widget.SeekBar.max
+  type: set
+  reflectiveName: "\\UISlider.maximumValue"
+  template: ~this~.maximumValue = Float(~0~)
+
+- id: android.widget.SeekBar.min
+  type: get
+  reflectiveName: "\\UISlider.minimumValue"
+  template: Int(~this~.minimumValue)
+
+- id: android.widget.SeekBar.min
+  type: set
+  reflectiveName: "\\UISlider.minimumValue"
+  template: ~this~.minimumValue = Float(~0~)

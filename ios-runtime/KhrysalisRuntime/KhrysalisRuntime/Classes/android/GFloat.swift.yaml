@@ -1,0 +1,13 @@
+---
+
+- id: com.lightningkite.khrysalis.GFloat
+  type: type
+  template:
+    pattern: CGFloat
+    imports: [CoreGraphics]
+
+- id: com.lightningkite.khrysalis.toGFloat
+  type: call
+  template:
+    pattern: CGFloat(~this~)
+    imports: [CoreGraphics]
