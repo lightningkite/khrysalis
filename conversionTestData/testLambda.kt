@@ -1,7 +1,7 @@
 @file:SharedCode
 package com.test.lambda
 
-import com.lightningkite.butterfly.*
+import com.lightningkite.khrysalis.*
 
 class TestClass {
     var item: Int = 0

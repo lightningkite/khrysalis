@@ -1,0 +1,9 @@
+---
+
+- id: com.lightningkite.khrysalis.GFloat
+  type: type
+  template: number
+
+- id: com.lightningkite.khrysalis.toGFloat
+  type: call
+  template: ~this~

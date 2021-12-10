@@ -59,7 +59,7 @@ fun SwiftTranslator.registerClass() {
             .let {
                 if (on is KtClass && on.isData()) {
                     out.addImport(SwiftImport("KhrysalisRuntime"))
-                    it + listOf("Hashable")
+                    it + listOf("Hashable", "CustomStringConvertible")
                 } else it
             }
             .let {
@@ -239,61 +239,31 @@ fun SwiftTranslator.registerClass() {
         if (typedRule.superTypeListEntries
                 .mapNotNull { it as? KtSuperTypeEntry }
                 .any { it.typeReference?.resolvedType?.fqNameWithoutTypeArgs == "com.lightningkite.khrysalis.Codable" } ||
-                    typedRule.annotationEntries.any { it.resolvedAnnotation?.type?.fqNameWithoutTypeArgs == "kotlinx.serialization.Serializable" }
+            typedRule.annotationEntries.any { it.resolvedAnnotation?.type?.fqNameWithoutTypeArgs == "kotlinx.serialization.Serializable" }
         ) {
             -"convenience required public init(from decoder: Decoder) throws {\n"
             -"let values = try decoder.container(keyedBy: CodingKeys.self)\n"
             -"self.init(\n"
             typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEachBetween(forItem = {
-                if((it.resolvedValueParameter as? ValueParameterDescriptor)?.useName != false) {
+                if ((it.resolvedValueParameter as? ValueParameterDescriptor)?.useName != false) {
                     -it.nameIdentifier
                     -": "
                 }
-                if (it.typeReference?.resolvedType?.fqNameWithoutTypeArgs == "kotlin.Double") {
-                    if(it.typeReference?.resolvedType?.isMarkedNullable == true){
-                        it.defaultValue?.let { default ->
-                            -"values.contains(."
-                            -it.nameIdentifier
-                            -") ? try values.decodeDoubleOrNull(forKey: ."
-                            -it.nameIdentifier
-                            -") : "
-                            -default
-                        } ?: run {
-                            -"try values.decodeDoubleOrNull(forKey: ."
-                            -it.nameIdentifier
-                            -")"
-                        }
-                    } else {
-                        it.defaultValue?.let { default ->
-                            -"values.contains(."
-                            -it.nameIdentifier
-                            -") ? try values.decodeDouble(forKey: ."
-                            -it.nameIdentifier
-                            -") : "
-                            -default
-                        } ?: run {
-                            -"try values.decodeDouble(forKey: ."
-                            -it.nameIdentifier
-                            -")"
-                        }
-                    }
-                } else {
-                    it.defaultValue?.let { default ->
-                        -"values.contains(."
-                        -it.nameIdentifier
-                        -") ? try values.decode("
-                        -it.typeReference
-                        -".self, forKey: ."
-                        -it.nameIdentifier
-                        -") : "
-                        -default
-                    } ?: run {
-                        -"try values.decode("
-                        -it.typeReference
-                        -".self, forKey: ."
-                        -it.nameIdentifier
-                        -")"
-                    }
+                it.defaultValue?.let { default ->
+                    -"values.contains(."
+                    -it.nameIdentifier
+                    -") ? try values.decode("
+                    -it.typeReference
+                    -".self, forKey: ."
+                    -it.nameIdentifier
+                    -") : "
+                    -default
+                } ?: run {
+                    -"try values.decode("
+                    -it.typeReference
+                    -".self, forKey: ."
+                    -it.nameIdentifier
+                    -")"
                 }
             }, between = { -",\n" })
             -"\n)\n}\n\n"
@@ -400,7 +370,7 @@ fun SwiftTranslator.registerClass() {
             -"public func copy("
             typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEachBetween(
                 forItem = {
-                    if((it.resolvedValueParameter as? ValueParameterDescriptor)?.useName == false) {
+                    if ((it.resolvedValueParameter as? ValueParameterDescriptor)?.useName == false) {
                         -"_ "
                     }
                     -it.nameIdentifier
@@ -430,7 +400,7 @@ fun SwiftTranslator.registerClass() {
             -"("
             typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEachBetween(
                 forItem = {
-                    if((it.resolvedValueParameter as? ValueParameterDescriptor)?.useName != false) {
+                    if ((it.resolvedValueParameter as? ValueParameterDescriptor)?.useName != false) {
                         -it.nameIdentifier
                         -": "
                     }
@@ -646,7 +616,7 @@ fun SwiftTranslator.registerClass() {
                         } else {
                             -", "
                         }
-                        if(it.key.useName) {
+                        if (it.key.useName) {
                             -it.key.name.asString()
                             -": "
                         }
@@ -690,7 +660,8 @@ fun SwiftTranslator.registerClass() {
         condition = {
             val p = (typedRule.parent as? KtDotQualifiedExpression) ?: return@handle false
             if (p.receiverExpression != typedRule) return@handle false
-            val rec = p.resolvedCall?.let { it.dispatchReceiver ?: it.extensionReceiver } as? ClassValueReceiver ?: return@handle false
+            val rec = p.resolvedCall?.let { it.dispatchReceiver ?: it.extensionReceiver } as? ClassValueReceiver
+                ?: return@handle false
             (rec.type.constructor.declarationDescriptor as? ClassDescriptor)?.kind != ClassKind.ENUM_ENTRY
         },
         priority = 1_000,
@@ -711,7 +682,8 @@ fun SwiftTranslator.registerClass() {
         condition = {
             val p = (typedRule.parent as? KtDotQualifiedExpression) ?: return@handle false
             if (p.receiverExpression != typedRule) return@handle false
-            val rec = p.resolvedCall?.let { it.dispatchReceiver ?: it.extensionReceiver } as? ClassValueReceiver ?: return@handle false
+            val rec = p.resolvedCall?.let { it.dispatchReceiver ?: it.extensionReceiver } as? ClassValueReceiver
+                ?: return@handle false
             (rec.type.constructor.declarationDescriptor as? ClassDescriptor)?.kind != ClassKind.ENUM_ENTRY
         },
         priority = 1_000,
@@ -941,7 +913,7 @@ private fun <T : KtClassOrObject> handleConstructor(
                                 }
                                 1 -> {
                                     if ((resolvedCall?.candidateDescriptor as? ConstructorDescriptor)?.hasJavaOriginInHierarchy() != true) {
-                                        if(it.key.useName) {
+                                        if (it.key.useName) {
                                             -it.key.name.asString().safeSwiftIdentifier()
                                             -": "
                                         }

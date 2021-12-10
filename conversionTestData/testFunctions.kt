@@ -1,7 +1,7 @@
 @file:SharedCode
 package com.test.functions
 
-import com.lightningkite.butterfly.*
+import com.lightningkite.khrysalis.*
 
 fun topLevelFunction(){
     println("Hello world!")

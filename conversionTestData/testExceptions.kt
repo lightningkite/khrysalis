@@ -1,7 +1,7 @@
 @file:SharedCode
 package com.test.exceptions
 
-import com.lightningkite.butterfly.*
+import com.lightningkite.khrysalis.*
 
 @Throws(IllegalStateException::class, IllegalArgumentException::class)
 fun failableAction(state: Boolean = true) {
@@ -16,7 +16,7 @@ fun main() {
     try {
         failableAction()
     } catch (e: Throwable) {
-        println(e.message)
+        println(e.message ?: "-")
     }
 
     try {
@@ -33,7 +33,7 @@ fun main() {
         failableAction()
         true
     } catch (e: Throwable) {
-        println(e.message)
+        println(e.message ?: "-")
         false
     }
     val value2 = try {

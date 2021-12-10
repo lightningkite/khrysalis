@@ -11,7 +11,8 @@ class PointedTest {
 
     @Test
     fun test() {
-        val it = File("../conversionTestData").resolve("testIfAndWhen.kt")
+//        println(swiftInstallation())
+        val it = File("../conversionTestData").resolve("testReflection.kt")
         val ktResult = ExecuteFileTester.kotlin(it, true)
         val jsResult = ExecuteFileTester.swiftTranslated(it)
         Assert.assertEquals(ktResult, jsResult)

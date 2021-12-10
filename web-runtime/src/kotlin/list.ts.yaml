@@ -1,0 +1,425 @@
+---
+
+# Lists
+
+- id: kotlin.collections.listOf
+  type: call
+  hasExplicitTypeArguments: true
+  template: "([~*~] as Array<~T0~>)"
+- id: kotlin.collections.listOfNotNull
+  type: call
+  hasExplicitTypeArguments: true
+  template:
+    pattern: filter(notNull, [~*~]) as Array<~T0~>
+    imports:
+      filter: iter-tools-es
+      notNull: iter-tools-es
+- id: kotlin.collections.mutableListOf
+  type: call
+  hasExplicitTypeArguments: true
+  template: "([~*~] as Array<~T0~>)"
+- id: kotlin.collections.arrayListOf
+  type: call
+  hasExplicitTypeArguments: true
+  template: "([~*~] as Array<~T0~>)"
+- id: kotlin.collections.listOf
+  type: call
+  template: "[~*~]"
+- id: kotlin.collections.listOfNotNull
+  type: call
+  template:
+    pattern: filter(notNull, [~*~])
+    imports:
+      filter: iter-tools-es
+      notNull: iter-tools-es
+- id: kotlin.collections.mutableListOf
+  type: call
+  template: "[~*~]"
+- id: kotlin.collections.arrayListOf
+  type: call
+  template: "[~*~]"
+- id: kotlin.collections.List
+  type: type
+  template: Array<~T0~>
+- id: kotlin.collections.List
+  type: typeRef
+  template: Array
+- id: kotlin.collections.MutableList
+  type: type
+  template: Array<~T0~>
+- id: kotlin.collections.MutableList
+  type: typeRef
+  template: Array
+- id: kotlin.collections.ArrayList
+  type: type
+  template: Array<~T0~>
+- id: kotlin.collections.ArrayList
+  type: typeRef
+  template: Array
+- id: java.util.ArrayList
+  type: type
+  template: Array<~T0~>
+- id: java.util.ArrayList
+  type: typeRef
+  template: Array
+- id: kotlin.collections.ArrayList
+  type: call
+  arguments: []
+  template: "[]"
+- id: kotlin.collections.ArrayList
+  type: call
+  arguments: []
+  hasExplicitTypeArguments: true
+  template: "([] as Array<~T0~>)"
+- id: java.util.ArrayList
+  type: call
+  arguments: []
+  template: "[]"
+- id: java.util.ArrayList
+  type: call
+  arguments: []
+  hasExplicitTypeArguments: true
+  template: "([] as Array<~T0~>)"
+  
+# List Operations
+- id: kotlin.collections.Collection.contains
+  type: call
+  actualReceiver: kotlin.collections.List
+  template:
+    pattern: ~this~.some((x) => safeEq(~0~, x))
+    imports:
+      safeEq: khrysalis-runtime
+- id: kotlin.collections.List.get
+  type: call
+  template: ~this~[~0~]
+- id: kotlin.collections.getOrNull
+  type: call
+  template: (~this~[~0~] ?? null)
+- id: kotlin.collecitons.List.subList
+  type: call
+  template: ~this~.slice(~0~, ~1~)
+- id: kotlin.collections.Collection.isEmpty
+  type: call
+  actualReceiver: kotlin.collections.List
+  template: ~this~.length === 0
+- id: kotlin.collections.isNotEmpty
+  type: call
+  template: ~this~.length !== 0
+- id: kotlin.collections.Collection.size
+  type: get
+  actualReceiver: kotlin.collections.List
+  template: ~this~.length
+- id: kotlin.collections.plus
+  receiver: kotlin.collections.Collection
+  arguments: [kotlin.collections.Iterable]
+  type: call
+  template: ~this~.concat(~0~)
+- id: kotlin.collections.plus
+  receiver: kotlin.collections.Collection
+  type: call
+  template: ~this~.concat([~0~])
+
+# Mutable List Operations
+- id: kotlin.collections.MutableCollection.add
+  actualReceiver: kotlin.collections.MutableList
+  type: call
+  template: ~this~.push(~0~)
+- id: kotlin.collections.MutableList.add
+  type: call
+  arguments: [kotlin.Int, "*"]
+  template: ~this~.splice(~0~, 0, ~1~)
+- id: kotlin.collections.MutableList.set
+  type: call
+  template: ~this~[~0~] = ~1~
+- id: kotlin.collections.MutableCollection.remove
+  actualReceiver: kotlin.collections.MutableList
+  type: call
+  template:
+    pattern: listRemoveItem(~this~, ~0~)
+    imports:
+      listRemoveItem: khrysalis-runtime
+- id: kotlin.collections.removeAll
+  type: call
+  receiver: kotlin.collections.MutableList
+  template:
+    pattern: listRemoveAll(~this~, ~0~)
+    imports:
+      listRemoveAll: khrysalis-runtime
+- id: kotlin.collections.MutableList.removeAt
+  type: call
+  usedAsExpression: false
+  template: ~this~.splice(~0~, 1)
+- id: kotlin.collections.MutableList.removeAt
+  type: call
+  template: ~this~.splice(~0~, 1)[0]
+- id: kotlin.collections.MutableCollection.clear
+  actualReceiver: kotlin.collections.MutableList
+  type: call
+  template: ~this~.length = 0
+- id: java.util.AbstractList.clear
+  type: call
+  template: ~this~.length = 0
+- id: kotlin.collections.MutableCollection.addAll
+  actualReceiver: kotlin.collections.MutableList
+  type: call
+  template: ~this~.push(...~0~)
+- id: kotlin.collections.MutableCollection.addAll
+  actualReceiver: kotlin.collections.MutableList
+  type: call
+  arguments: [kotlin.Int]
+  template: ~this~.splice(~0~, 0, ...~1~)
+- id: kotlin.collections.plusAssign
+  receiver: kotlin.collections.MutableCollection
+  arguments: [kotlin.collections.Iterable]
+  type: call
+  template: ~this~.push(...~0~)
+- id: kotlin.collections.plusAssign
+  receiver: kotlin.collections.MutableCollection
+  type: call
+  template: ~this~.push(~0~)
+  
+# TODO: Could do removeAll
+
+# Extensions
+- id: kotlin.collections.indices
+  type: get
+  actualReceiver: kotlin.collections.List
+  template:
+    pattern: new NumberRange(0, ~this~.length-1)
+    imports:
+      NumberRange: khrysalis-runtime
+- id: kotlin.collections.indexOfFirst
+  type: call
+  actualReceiver: kotlin.collections.List
+  template: ~this~.findIndex(~0~)
+- id: kotlin.collections.indexOfLast
+  type: call
+  actualReceiver: kotlin.collections.List
+  template: ~this~.findIndexLast(~0~)
+- id: kotlin.collections.first
+  type: call
+  actualReceiver: kotlin.collections.List
+  template: ~this~[0]
+- id: kotlin.collections.firstOrNull
+  type: call
+  arguments: []
+  actualReceiver: kotlin.collections.List
+  template: (~this~[0] ?? null)
+- id: kotlin.collections.last
+  type: call
+  actualReceiver: kotlin.collections.List
+  template: ~this~[~this~.length - 1]
+- id: kotlin.collections.lastOrNull
+  type: call
+  actualReceiver: kotlin.collections.List
+  template: (~this~[~this~.length - 1] ?? null)
+- id: kotlin.collections.lastIndex
+  type: get
+  actualReceiver: kotlin.collections.List
+  template: (~this~.length - 1)
+- id: kotlin.collections.single
+  type: call
+  actualReceiver: kotlin.collections.List
+  template: "(~this~.length == 1 ? ~this~[0] : undefined)"
+- id: kotlin.collections.singleOrNull
+  type: call
+  actualReceiver: kotlin.collections.List
+  template: "(~this~.length == 1 ? ~this~[0] : null)"
+  
+- id: kotlin.collections.drop
+  type: call
+  actualReceiver: kotlin.collections.List
+  template: ~this~.slice(~0~)
+- id: kotlin.collections.dropLast
+  type: call
+  actualReceiver: kotlin.collections.List
+  template: ~this~.slice(0, -~0~)
+- id: kotlin.collections.dropWhile
+  type: call
+  actualReceiver: kotlin.collections.List
+  template: ~this~.slice(~this~.findIndex((_i)=> !(~0~)(_i)))
+- id: kotlin.collections.dropLastWhile
+  type: call
+  actualReceiver: kotlin.collections.List
+  template: ~this~.slice(0, ~this~.findIndexLast((_i)=> !(~0~)(_i)))
+  
+- id: kotlin.collections.take
+  type: call
+  actualReceiver: kotlin.collections.List
+  template: ~this~.slice(0, ~0~)
+- id: kotlin.collections.takeLast
+  type: call
+  actualReceiver: kotlin.collections.List
+  template: ~this~.slice(-~0~)
+- id: kotlin.collections.takeWhile
+  type: call
+  actualReceiver: kotlin.collections.List
+  template: ~this~.slice(0, ~this~.findIndex((_i)=> !(~0~)(_i)))
+- id: kotlin.collections.takeLastWhile
+  type: call
+  actualReceiver: kotlin.collections.List
+  template: ~this~.slice(~this~.findIndexLast((_i)=> !(~0~)(_i)))
+
+
+- id: kotlin.collections.filter
+  type: call
+  actualReceiver: kotlin.collections.List
+  template: ~this~.filter(~0~)
+- id: kotlin.collections.map
+  type: call
+  actualReceiver: kotlin.collections.List
+  template: ~this~.map(~0~)
+#- id: kotlin.collections.flatMap
+#  type: call
+#  actualReceiver: kotlin.collections.List
+#  template: ~this~.flatMap(~0~)
+
+- id: kotlin.collections.filterIndexed
+  type: call
+  actualReceiver: kotlin.collections.List
+  template: ~this~.filter(~0~)
+- id: kotlin.collections.filterNot
+  type: call
+  actualReceiver: kotlin.collections.List
+  template: ~this~.filter((_i) => !(~0~)(_i)))
+- id: kotlin.collections.filterNotNull
+  type: call
+  actualReceiver: kotlin.collections.List
+  template:
+    pattern: filter(notNull, ~this~)
+    imports:
+      filter: iter-tools-es
+      notNull: iter-tools-es
+
+- id: kotlin.collections.sortBy
+  type: call
+  actualReceiver: kotlin.collections.List
+  template: ~this~.sort((a, b) => safeCompare(~0~(a), ~0~(b)))
+- id: kotlin.collections.sortByDescending
+  type: call
+  actualReceiver: kotlin.collections.List
+  template: ~this~.sort((a, b) => -safeCompare(~0~(a), ~0~(b)))
+- id: kotlin.collections.sorted
+  type: call
+  actualReceiver: kotlin.collections.List
+  template: ~this~.slice().sort()
+- id: kotlin.collections.sortedBy
+  type: call
+  actualReceiver: kotlin.collections.List
+  template:
+    pattern: ~this~.slice().sort((a, b) => safeCompare(~0~(a), ~0~(b)))
+    imports:
+      safeCompare: khrysalis-runtime
+- id: kotlin.collections.sortedByDescending
+  type: call
+  actualReceiver: kotlin.collections.List
+  template:
+    pattern: ~this~.slice().sort((a, b) => -safeCompare(~0~(a), ~0~(b)))
+    imports:
+      safeCompare: khrysalis-runtime
+- id: kotlin.collections.sortedWith
+  type: call
+  actualReceiver: kotlin.collections.List
+  template: ~this~.slice().sort(~0~)
+
+- id: kotlin.collections.associate
+  type: call
+  actualReceiver: kotlin.collections.List
+  template: new Map(~this~.map(~0~))
+- id: kotlin.collections.associateBy
+  type: call
+  actualReceiver: kotlin.collections.List
+  template: new Map(~this~.map((_i)=>[~0~(_i), _i]))
+
+- id: kotlin.collections.toList
+  type: call
+  actualReceiver: kotlin.collections.List
+  template: Array.from(~this~)
+- id: kotlin.collections.toMutableList
+  type: call
+  actualReceiver: kotlin.collections.List
+  template: Array.from(~this~)
+
+# TODO: groupBy
+
+- id: kotlin.collections.mapIndexed
+  type: call
+  actualReceiver: kotlin.collections.List
+  template:
+    pattern: ~this~.map((_v, _i) => { ~L0~ })
+    lambdaTransforms:
+      0: ["_i", "_v"]
+#- id: kotlin.collections.mapNotNull
+#  type: call
+#  template:
+#    pattern: listFilterNotNull(~this~.map(~0~))
+#    imports:
+#      listFilterNotNull: khrysalis-runtime
+#- id: kotlin.collections.mapIndexedNotNull
+#  type: call
+#  actualReceiver: kotlin.collections.List
+#  template:
+#    pattern: ~this~.map((_v, _i) => { ~L0~ }).filter((x) => x !== null)
+#    imports:
+#      listFilterNotNull: khrysalis-runtime
+#    lambdaTransforms:
+#      0: ["_i", "_v"]
+
+- id: kotlin.collections.any
+  type: call
+  actualReceiver: kotlin.collections.List
+  template: ~this~.some(~0~)
+
+- id: kotlin.collections.all
+  type: call
+  actualReceiver: kotlin.collections.List
+  template: ~this~.every(~0~)
+
+- id: kotlin.collections.none
+  type: call
+  actualReceiver: kotlin.collections.List
+  template: (!~this~.some(~0~))
+
+- id: kotlin.collections.joinToString
+  type: call
+  actualReceiver: kotlin.collections.List
+  suppliedArguments: []
+  template: ~this~.join(", ")
+
+- id: kotlin.collections.joinToString
+  type: call
+  actualReceiver: kotlin.collections.List
+  suppliedArguments: [separator]
+  template: ~this~.join(~separator~)
+
+- id: kotlin.collections.joinToString
+  type: call
+  actualReceiver: kotlin.collections.List
+  suppliedArguments: [transform]
+  template: ~this~.map(~transform~).join(", ")
+
+- id: kotlin.collections.joinToString
+  type: call
+  actualReceiver: kotlin.collections.List
+  suppliedArguments: [separator, transform]
+  template: ~this~.map(~transform~).join(~separator~)
+
+- id: kotlin.collections.joinToString
+  type: call
+  actualReceiver: kotlin.collections.List
+  suppliedArguments: [separator, transform, prefix]
+  template: (~prefix~ + ~this~.map(~transform~).join(~separator~))
+
+- id: kotlin.collections.joinToString
+  type: call
+  actualReceiver: kotlin.collections.List
+  suppliedArguments: [separator, transform, prefix, postfix]
+  template: (~prefix~ + ~this~.map(~transform~).join(~separator~) + ~postfix~)
+
+- id: kotlin.collections.joinToString
+  type: call
+  actualReceiver: kotlin.collections.List
+  suppliedArguments: [separator, transform, postfix]
+  template: (~this~.map(~transform~).join(~separator~) + ~postfix~)
+
+# TODO: Fold, max, min, reduce, scan

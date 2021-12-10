@@ -1,0 +1,33 @@
+---
+- id: android.graphics.Path
+  type: type
+  template: Path2D
+
+- id: android.graphics.Path
+  type: call
+  template: new Path2D()
+
+# fun Path.moveTo(x: Float, y: Float)
+- id: android.graphics.Path.moveTo
+  type: call
+  template: ~this~.moveTo(~0~, ~1~)
+
+# fun Path.lineTo(x: Float, y: Float)
+- id: android.graphics.Path.lineTo
+  type: call
+  template: ~this~.lineTo(~0~, ~1~)
+
+# fun Path.quadTo(cx: Float, cy: Float, dx: Float, dy: Float)
+- id: android.graphics.Path.quadTo
+  type: call
+  template: ~this~.quadraticCurveTo(~0~, ~1~, ~2~, ~3~)
+
+# fun Path.cubicTo(c1x: Float, c1y: Float, c2x: Float, c2y: Float, dx: Float, dy: Float)
+- id: android.graphics.Path.cubicTo
+  type: call
+  template: ~this~.bezierCurveTo(~0~, ~1~, ~2~, ~3~, ~4~, ~5~)
+
+# fun Path.close()
+- id: android.graphics.Path.close
+  type: call
+  template: ~this~.closePath()

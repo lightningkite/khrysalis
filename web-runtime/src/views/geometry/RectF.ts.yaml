@@ -1,0 +1,8 @@
+---
+
+- id: android.graphics.RectF
+  type: call
+  template:
+    pattern: '{ left: ~0~, top: ~1~, right: ~2~, bottom: ~3~ }'
+    imports:
+      RectF: khrysalis-runtime

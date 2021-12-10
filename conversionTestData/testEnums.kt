@@ -1,7 +1,7 @@
 @file:SharedCode
 package com.test.classes
 
-import com.lightningkite.butterfly.*
+import com.lightningkite.khrysalis.*
 
 enum class Suits {
     SPADES, CLUBS, DIAMONDS, HEARTS;

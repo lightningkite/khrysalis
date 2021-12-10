@@ -1,0 +1,137 @@
+---
+- id: java.lang.Exception
+  type: call
+  template:
+    pattern: new Exception(~0~, ~1~)
+    imports:
+      Exception: khrysalis-runtime
+- id: java.lang.IllegalArgumentException
+  type: call
+  template:
+    pattern: new IllegalArgumentException(~0~, ~1~)
+    imports:
+      IllegalArgumentException: khrysalis-runtime
+- id: java.lang.IllegalStateException
+  type: call
+  template:
+    pattern: new IllegalStateException(~0~, ~1~)
+    imports:
+      IllegalStateException: khrysalis-runtime
+- id: java.lang.NoSuchElementException
+  type: call
+  template:
+    pattern: new NoSuchElementException(~0~, ~1~)
+    imports:
+      NoSuchElementException: khrysalis-runtime
+- id: java.lang.NoSuchElementException
+  type: call
+  template:
+    pattern: new NoSuchElementException(~0~, ~1~)
+    imports:
+      NoSuchElementException: khrysalis-runtime
+- id: java.lang.IndexOutOfBoundsException
+  type: call
+  template:
+    pattern: new IndexOutOfBoundsException(~0~, ~1~)
+    imports:
+      IndexOutOfBoundsException: khrysalis-runtime
+
+- id: kotlin.Exception
+  type: call
+  template:
+    pattern: new Exception(~0~, ~1~)
+    imports:
+      Exception: khrysalis-runtime
+- id: kotlin.IllegalArgumentException
+  type: call
+  template:
+    pattern: new IllegalArgumentException(~0~, ~1~)
+    imports:
+      IllegalArgumentException: khrysalis-runtime
+- id: kotlin.IllegalStateException
+  type: call
+  template:
+    pattern: new IllegalStateException(~0~, ~1~)
+    imports:
+      IllegalStateException: khrysalis-runtime
+- id: kotlin.NoSuchElementException
+  type: call
+  template:
+    pattern: new NoSuchElementException(~0~, ~1~)
+    imports:
+      NoSuchElementException: khrysalis-runtime
+- id: kotlin.IndexOutOfBoundsException
+  type: call
+  template:
+    pattern: new IndexOutOfBoundsException(~0~, ~1~)
+    imports:
+      IndexOutOfBoundsException: khrysalis-runtime
+
+- id: kotlin.Exception
+  type: type
+  template:
+    pattern: Exception
+    imports:
+      Exception: khrysalis-runtime
+- id: kotlin.IllegalArgumentException
+  type: type
+  template:
+    pattern: IllegalArgumentException
+    imports:
+      IllegalArgumentException: khrysalis-runtime
+- id: kotlin.IllegalStateException
+  type: type
+  template:
+    pattern: IllegalStateException
+    imports:
+      IllegalStateException: khrysalis-runtime
+- id: kotlin.NoSuchElementException
+  type: type
+  template:
+    pattern: NoSuchElementException
+    imports:
+      NoSuchElementException: khrysalis-runtime
+- id: kotlin.IndexOutOfBoundsException
+  type: type
+  template:
+    pattern: IndexOutOfBoundsException
+    imports:
+      IndexOutOfBoundsException: khrysalis-runtime
+
+- id: java.lang.Exception
+  type: type
+  template:
+    pattern: Exception
+    imports:
+      Exception: khrysalis-runtime
+- id: java.lang.IllegalArgumentException
+  type: type
+  template:
+    pattern: IllegalArgumentException
+    imports:
+      IllegalArgumentException: khrysalis-runtime
+- id: java.lang.IllegalStateException
+  type: type
+  template:
+    pattern: IllegalStateException
+    imports:
+      IllegalStateException: khrysalis-runtime
+- id: java.lang.NoSuchElementException
+  type: type
+  template:
+    pattern: NoSuchElementException
+    imports:
+      NoSuchElementException: khrysalis-runtime
+- id: java.lang.IndexOutOfBoundsException
+  type: type
+  template:
+    pattern: IndexOutOfBoundsException
+    imports:
+      IndexOutOfBoundsException: khrysalis-runtime
+
+- id: kotlin.Throwable.printStackTrace
+  type: call
+  template:
+    pattern: printStackTrace(~this~)
+    imports:
+      printStackTrace: khrysalis-runtime

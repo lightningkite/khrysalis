@@ -1,7 +1,7 @@
 @file:SharedCode
 package com.test.arrays
 
-import com.lightningkite.butterfly.*
+import com.lightningkite.khrysalis.*
 
 fun main(){
     val myArray = doubleArrayOf(1.0, 2.0, 3.0)

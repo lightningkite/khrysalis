@@ -1,0 +1,35 @@
+---
+
+
+# Tuples
+- id: kotlin.to
+  type: call
+  template: "[~this~, ~*~]"
+- id: kotlin.Pair
+  type: type
+  template: "[~T0~, ~T1~]"
+- id: kotlin.Pair
+  type: call
+  template: "[~0~, ~1~]"
+- id: kotlin.Pair.first
+  type: get
+  template: "~this~[0]"
+- id: kotlin.Pair.second
+  type: get
+  template: "~this~[1]"
+
+- id: kotlin.Triple
+  type: type
+  template: "[~T0~, ~T1~, ~T2~]"
+- id: kotlin.Triple
+  type: call
+  template: "[~0~, ~1~, ~2~]"
+- id: kotlin.Pair.first
+  type: get
+  template: "~this~[0]"
+- id: kotlin.Pair.second
+  type: get
+  template: "~this~[1]"
+- id: kotlin.Pair.third
+  type: get
+  template: "~this~[2]"

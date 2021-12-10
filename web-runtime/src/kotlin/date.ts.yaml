@@ -1,0 +1,5 @@
+
+- id: java.util.Date.compareTo
+  type: call
+  infix: true
+  template: ~this~ ~operatorToken~ ~0~

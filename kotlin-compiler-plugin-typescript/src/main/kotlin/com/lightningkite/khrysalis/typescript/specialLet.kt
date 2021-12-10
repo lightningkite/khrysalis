@@ -50,7 +50,7 @@ fun TypescriptTranslator.registerSpecialLet() {
             }
             -" => {\n"
         }
-        out.addImport("butterfly-web/dist/kotlin/Language", "runOrNull")
+        out.addImport("khrysalis-runtime", "runOrNull")
         typedRule.entries.forEachBetween(
             forItem = { (basis, lambda) ->
                 val desc = lambda.functionLiteral.resolvedFunction?.valueParameters?.firstOrNull()

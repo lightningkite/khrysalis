@@ -1,7 +1,7 @@
 @file:SharedCode
 package com.test.collections
 
-import com.lightningkite.butterfly.*
+import com.lightningkite.khrysalis.*
 data class CustomEq(val value: Int)
 
 fun main(vararg args: String){

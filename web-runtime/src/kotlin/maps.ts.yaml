@@ -1,0 +1,252 @@
+---
+# Maps
+- id: kotlin.collections.Map
+  type: type
+  template: Map<~T0~, ~T1~>
+
+- id: kotlin.collections.HashMap
+  type: type
+  template: Map<~T0~, ~T1~>
+
+- id: java.util.HashMap
+  type: type
+  template: Map<~T0~, ~T1~>
+
+- id: kotlin.collections.MutableMap
+  type: type
+  template: Map<~T0~, ~T1~>
+
+- id: kotlin.collections.Map
+  type: typeRef
+  template: Map
+
+- id: kotlin.collections.HashMap
+  type: typeRef
+  template: Map
+
+- id: java.util.HashMap
+  type: typeRef
+  template: Map
+
+- id: kotlin.collections.MutableMap
+  type: typeRef
+  template: Map
+
+## Creation
+
+- id: kotlin.collections.toMap
+  type: call
+  template: "new Map<~T0~, ~T1~>(~this~)"
+- id: kotlin.collections.mapOf
+  type: call
+  typeArgumentRequirements:
+    0: primitive
+  hasExplicitTypeArguments: true
+  template: "new Map<~T0~, ~T1~>([~*~])"
+- id: kotlin.collections.mapOf
+  type: call
+  typeArgumentRequirements:
+    0: primitive
+  template: "new Map([~*~])"
+
+- id: kotlin.collections.mapOf
+  type: call
+  hasExplicitTypeArguments: true
+  template:
+    pattern: "new EqualOverrideMap<~T0~, ~T1~>([~*~])"
+    imports:
+      EqualOverrideMap: khrysalis-runtime
+- id: kotlin.collections.mapOf
+  type: call
+  template:
+    pattern: "new EqualOverrideMap([~*~])"
+    imports:
+      EqualOverrideMap: khrysalis-runtime
+
+- id: kotlin.collections.mutableMapOf
+  type: call
+  typeArgumentRequirements:
+    0: primitive
+  hasExplicitTypeArguments: true
+  template: "new Map<~T0~, ~T1~>([~*~])"
+- id: kotlin.collections.mutableMapOf
+  type: call
+  typeArgumentRequirements:
+    0: primitive
+  template: "new Map([~*~])"
+
+- id: kotlin.collections.mutableMapOf
+  type: call
+  hasExplicitTypeArguments: true
+  template:
+    pattern: "new EqualOverrideMap<~T0~, ~T1~>([~*~])"
+    imports:
+      EqualOverrideMap: khrysalis-runtime
+- id: kotlin.collections.mutableMapOf
+  type: call
+  template:
+    pattern: "new EqualOverrideMap([~*~])"
+    imports:
+      EqualOverrideMap: khrysalis-runtime
+
+- id: kotlin.collections.hashMapOf
+  type: call
+  typeArgumentRequirements:
+    0: primitive
+  hasExplicitTypeArguments: true
+  template: "new Map<~T0~, ~T1~>([~*~])"
+- id: kotlin.collections.hashMapOf
+  type: call
+  typeArgumentRequirements:
+    0: primitive
+  template: "new Map([~*~])"
+
+- id: kotlin.collections.hashMapOf
+  type: call
+  hasExplicitTypeArguments: true
+  template:
+    pattern: "new EqualOverrideMap<~T0~, ~T1~>([~*~])"
+    imports:
+      EqualOverrideMap: khrysalis-runtime
+- id: kotlin.collections.hashMapOf
+  type: call
+  template:
+    pattern: "new EqualOverrideMap([~*~])"
+    imports:
+      EqualOverrideMap: khrysalis-runtime
+
+- id: kotlin.collections.HashMap
+  type: call
+  hasExplicitTypeArguments: true
+  typeArgumentRequirements:
+    0: primitive
+  template: new Map<~T0~, ~T1~>()
+
+- id: kotlin.collections.HashMap
+  type: call
+  typeArgumentRequirements:
+    0: primitive
+  template: new Map()
+
+- id: kotlin.collections.HashMap
+  type: call
+  hasExplicitTypeArguments: true
+  template:
+    pattern: "new EqualOverrideMap<~T0~, ~T1~>()"
+    imports:
+      EqualOverrideMap: khrysalis-runtime
+
+- id: kotlin.collections.HashMap
+  type: call
+  template:
+    pattern: "new EqualOverrideMap()"
+    imports:
+      EqualOverrideMap: khrysalis-runtime
+
+- id: java.util.HashMap
+  type: call
+  hasExplicitTypeArguments: true
+  typeArgumentRequirements:
+    0: primitive
+  template: new Map<~T0~, ~T1~>()
+
+- id: java.util.HashMap
+  type: call
+  typeArgumentRequirements:
+    0: primitive
+  template: new Map()
+
+- id: java.util.HashMap
+  type: call
+  hasExplicitTypeArguments: true
+  template:
+    pattern: "new EqualOverrideMap<~T0~, ~T1~>()"
+    imports:
+      EqualOverrideMap: khrysalis-runtime
+
+- id: java.util.HashMap
+  type: call
+  template:
+    pattern: "new EqualOverrideMap()"
+    imports:
+      EqualOverrideMap: khrysalis-runtime
+
+- id: kotlin.collections.Map.Entry
+  type: type
+  template: '[~T0~, ~T1~]'
+
+- id: kotlin.collections.MutableMap.MutableEntry
+  type: type
+  template: '[~T0~, ~T1~]'
+
+## Usage
+
+- id: kotlin.collections.component1
+  type: call
+  receiver: kotlin.collections.Map.Entry
+  template: ~this~[0]
+
+- id: kotlin.collections.component2
+  type: call
+  receiver: kotlin.collections.Map.Entry
+  template: ~this~[1]
+
+- id: kotlin.collections.Map.Entry.key
+  type: get
+  template: ~this~[0]
+
+- id: kotlin.collections.Map.Entry.value
+  type: get
+  template: ~this~[1]
+
+- id: kotlin.collections.Map.keys
+  type: get
+  template: ~this~.keys()
+
+- id: kotlin.collections.Map.values
+  type: get
+  template: ~this~.values()
+
+- id: kotlin.collections.Map.entries
+  type: get
+  template: ~this~.entries()
+
+# Gets
+- id: kotlin.collections.Map.get
+  type: call
+  template: (~this~.get(~0~) ?? null)
+- id: kotlin.collections.Map.containsKey
+  type: call
+  template: ~this~.has(~0~)
+- id: java.util.HashMap.get
+  type: call
+  template: (~this~.get(~0~) ?? null)
+- id: java.util.HashMap.containsKey
+  type: call
+  template: ~this~.has(~0~)
+
+# Mutable
+- id: kotlin.collections.MutableMap.put
+  type: call
+  template: ~this~.set(~0~, ~1~)
+- id: kotlin.collections.MutableMap.putAll
+  type: call
+  template:
+    pattern: xMapPutAll(~this~, ~0~)
+    imports:
+      xMapPutAll: khrysalis-runtime
+- id: kotlin.collections.MutableMap.remove
+  type: call
+  template: ~this~.delete(~0~)
+- id: kotlin.collections.set
+  type: call
+  receiver: kotlin.collections.MutableMap
+  template: ~this~.set(~0~, ~1~)
+
+- id: kotlin.collections.filter
+  type: call
+  actualReceiver: kotlin.collections.Map
+  template:
+    pattern: xMapFilter(~this~, ~0~)
+    imports:
+      xMapFilter: khrysalis-runtime

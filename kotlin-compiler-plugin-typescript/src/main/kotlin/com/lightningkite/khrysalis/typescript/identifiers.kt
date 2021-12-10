@@ -93,6 +93,20 @@ fun TypescriptTranslator.registerIdentifiers(){
             emitTemplate(rule.template)
         }
     )
+
+    handle<KtDotQualifiedExpression>(
+        condition = {
+            val referencedClass = ((typedRule.selectorExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget as? ClassDescriptor) ?: return@handle false
+            replacements.getGet(referencedClass) != null
+        },
+        priority = 10_012,
+        action = {
+            val referencedClass = ((typedRule.selectorExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget as? ClassDescriptor)!!
+            val rule = replacements.getGet(referencedClass)!!
+            emitTemplate(rule.template, receiver = typedRule.receiverExpression)
+        }
+    )
+
     //Naked local type references
     handle<KtNameReferenceExpression>(
         condition = {

@@ -1,7 +1,7 @@
 @file:SharedCode
 package com.test.operators
 
-import com.lightningkite.butterfly.*
+import com.lightningkite.khrysalis.*
 
 class ExampleMutableThing {
     var containedNumber: Int = 0

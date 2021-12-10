@@ -2,8 +2,7 @@
 package com.test.random
 
 import kotlin.random.Random
-import com.lightningkite.butterfly.*
-import com.lightningkite.butterfly.views.geometry.*
+import com.lightningkite.khrysalis.*
 
 
 fun main(){

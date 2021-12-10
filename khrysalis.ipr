@@ -90,6 +90,15 @@
       <module name="Projects.khrysalis-meta.khrysalis.kotlin-compiler-plugin-swift" target="11" />
       <module name="Projects.khrysalis-meta.khrysalis.kotlin-compiler-plugin-swift.main" target="11" />
       <module name="Projects.khrysalis-meta.khrysalis.kotlin-compiler-plugin-swift.test" target="11" />
+      <module name="Projects.khrysalis.kotlin-compiler-plugin-common" target="11" />
+      <module name="Projects.khrysalis.kotlin-compiler-plugin-common.main" target="11" />
+      <module name="Projects.khrysalis.kotlin-compiler-plugin-common.test" target="11" />
+      <module name="Projects.khrysalis.kotlin-compiler-plugin-swift" target="11" />
+      <module name="Projects.khrysalis.kotlin-compiler-plugin-swift.main" target="11" />
+      <module name="Projects.khrysalis.kotlin-compiler-plugin-swift.test" target="11" />
+      <module name="Projects.khrysalis.kotlin-compiler-plugin-typescript" target="11" />
+      <module name="Projects.khrysalis.kotlin-compiler-plugin-typescript.main" target="11" />
+      <module name="Projects.khrysalis.kotlin-compiler-plugin-typescript.test" target="11" />
       <module name="StudioProjects.khrysalis.android" target="11" />
       <module name="StudioProjects.khrysalis.android-bluetooth" target="11" />
       <module name="StudioProjects.khrysalis.android-fcm" target="11" />
@@ -313,12 +322,15 @@
       <module fileurl="file://$PROJECT_DIR$/plugin/LK.khrysalis.plugin.iml" filepath="$PROJECT_DIR$/plugin/LK.khrysalis.plugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/plugin/LK.khrysalis.plugin.main.iml" filepath="$PROJECT_DIR$/plugin/LK.khrysalis.plugin.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/plugin/LK.khrysalis.plugin.test.iml" filepath="$PROJECT_DIR$/plugin/LK.khrysalis.plugin.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-common/Projects.khrysalis-meta.khrysalis.kotlin-compiler-plugin-common.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-common/Projects.khrysalis-meta.khrysalis.kotlin-compiler-plugin-common.iml" />
-      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-common/Projects.khrysalis-meta.khrysalis.kotlin-compiler-plugin-common.main.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-common/Projects.khrysalis-meta.khrysalis.kotlin-compiler-plugin-common.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-common/Projects.khrysalis-meta.khrysalis.kotlin-compiler-plugin-common.test.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-common/Projects.khrysalis-meta.khrysalis.kotlin-compiler-plugin-common.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-swift/Projects.khrysalis-meta.khrysalis.kotlin-compiler-plugin-swift.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-swift/Projects.khrysalis-meta.khrysalis.kotlin-compiler-plugin-swift.iml" />
-      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-swift/Projects.khrysalis-meta.khrysalis.kotlin-compiler-plugin-swift.main.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-swift/Projects.khrysalis-meta.khrysalis.kotlin-compiler-plugin-swift.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-swift/Projects.khrysalis-meta.khrysalis.kotlin-compiler-plugin-swift.test.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-swift/Projects.khrysalis-meta.khrysalis.kotlin-compiler-plugin-swift.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-common/Projects.khrysalis.kotlin-compiler-plugin-common.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-common/Projects.khrysalis.kotlin-compiler-plugin-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-common/Projects.khrysalis.kotlin-compiler-plugin-common.main.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-common/Projects.khrysalis.kotlin-compiler-plugin-common.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-common/Projects.khrysalis.kotlin-compiler-plugin-common.test.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-common/Projects.khrysalis.kotlin-compiler-plugin-common.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-swift/Projects.khrysalis.kotlin-compiler-plugin-swift.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-swift/Projects.khrysalis.kotlin-compiler-plugin-swift.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-swift/Projects.khrysalis.kotlin-compiler-plugin-swift.main.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-swift/Projects.khrysalis.kotlin-compiler-plugin-swift.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-swift/Projects.khrysalis.kotlin-compiler-plugin-swift.test.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-swift/Projects.khrysalis.kotlin-compiler-plugin-swift.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-typescript/Projects.khrysalis.kotlin-compiler-plugin-typescript.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/Projects.khrysalis.kotlin-compiler-plugin-typescript.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-typescript/Projects.khrysalis.kotlin-compiler-plugin-typescript.main.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/Projects.khrysalis.kotlin-compiler-plugin-typescript.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-typescript/Projects.khrysalis.kotlin-compiler-plugin-typescript.test.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/Projects.khrysalis.kotlin-compiler-plugin-typescript.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/StudioProjects.khrysalis.android.iml" filepath="$PROJECT_DIR$/android/StudioProjects.khrysalis.android.iml" />
       <module fileurl="file://$PROJECT_DIR$/android-bluetooth/StudioProjects.khrysalis.android-bluetooth.iml" filepath="$PROJECT_DIR$/android-bluetooth/StudioProjects.khrysalis.android-bluetooth.iml" />
       <module fileurl="file://$PROJECT_DIR$/android-fcm/StudioProjects.khrysalis.android-fcm.iml" filepath="$PROJECT_DIR$/android-fcm/StudioProjects.khrysalis.android-fcm.iml" />
@@ -358,9 +370,6 @@
       <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-swift/khrysalis-meta.khrysalis.kotlin-compiler-plugin-swift.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-swift/khrysalis-meta.khrysalis.kotlin-compiler-plugin-swift.iml" />
       <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-swift/khrysalis-meta.khrysalis.kotlin-compiler-plugin-swift.main.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-swift/khrysalis-meta.khrysalis.kotlin-compiler-plugin-swift.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-swift/khrysalis-meta.khrysalis.kotlin-compiler-plugin-swift.test.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-swift/khrysalis-meta.khrysalis.kotlin-compiler-plugin-swift.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-typescript/khrysalis-meta.khrysalis.kotlin-compiler-plugin-typescript.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/khrysalis-meta.khrysalis.kotlin-compiler-plugin-typescript.iml" />
-      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-typescript/khrysalis-meta.khrysalis.kotlin-compiler-plugin-typescript.main.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/khrysalis-meta.khrysalis.kotlin-compiler-plugin-typescript.main.iml" />
-      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-typescript/khrysalis-meta.khrysalis.kotlin-compiler-plugin-typescript.test.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/khrysalis-meta.khrysalis.kotlin-compiler-plugin-typescript.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/plugin/khrysalis-meta.khrysalis.plugin.iml" filepath="$PROJECT_DIR$/plugin/khrysalis-meta.khrysalis.plugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/plugin/khrysalis-meta.khrysalis.plugin.main.iml" filepath="$PROJECT_DIR$/plugin/khrysalis-meta.khrysalis.plugin.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/plugin/khrysalis-meta.khrysalis.plugin.test.iml" filepath="$PROJECT_DIR$/plugin/khrysalis-meta.khrysalis.plugin.test.iml" />
@@ -496,13 +505,6 @@
       <option name="url" value="file:/$MAVEN_REPOSITORY$/" />
     </remote-repository>
   </component>
-  <component name="RunConfigurationProducerService">
-    <option name="ignoredProducers">
-      <set>
-        <option value="com.android.tools.idea.compose.preview.runconfiguration.ComposePreviewRunConfigurationProducer" />
-      </set>
-    </option>
-  </component>
   <component name="SvnBranchConfigurationManager">
     <option name="mySupportsUserInfoFilter" value="true" />
   </component>
@@ -559,16 +561,16 @@
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.9.10/2bbe05a007ca22ecf0ed3d3b0b0d8cd9726271c2/jackson-core-2.9.10-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.9.10.8">
+    <library name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.9.10">
       <ANNOTATIONS>
         <root url="jar://$MAVEN_REPOSITORY$/org/jetbrains/externalAnnotations/com/fasterxml/jackson/core/jackson-databind/2.9.6-an1/jackson-databind-2.9.6-an1-annotations.zip!/" />
       </ANNOTATIONS>
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-databind/2.9.10.8/9c1489f31d79994d53966dc8bbc387466b2e47ef/jackson-databind-2.9.10.8.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-databind/2.9.10/e201bb70b7469ba18dd58ed8268aa44e702fa2f0/jackson-databind-2.9.10.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-databind/2.9.10.8/18606acbcf18e7df64e357129f41d10c68148559/jackson-databind-2.9.10.8-sources.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-databind/2.9.10/2d06d3cf14cbd462bb2a649a9f22880fa87ebfa3/jackson-databind-2.9.10-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Gradle: com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.10">
@@ -1334,7 +1336,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-reflect/1.6.0/a215a7f914d5916dc5fd2d45cea16524e0220203/kotlin-reflect-1.6.0.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-reflect/1.6.0/5b8f86fea035328fc9e8c660773037a3401ce25f/kotlin-reflect-1.6.0-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-reflect/1.6.0/2148ad58f5141ac0c6527bac514b8b785713708b/kotlin-reflect-1.6.0-sources.jar!/" />
       </SOURCES>

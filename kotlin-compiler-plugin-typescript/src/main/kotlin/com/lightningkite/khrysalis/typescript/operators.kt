@@ -286,7 +286,7 @@ fun TypescriptTranslator.registerOperators() {
         condition = { typedRule.operationToken == KtTokens.EQEQ },
         priority = 20
     ) {
-        out.addImport("butterfly-web/dist/Kotlin", "safeEq")
+        out.addImport("khrysalis-runtime", "safeEq")
         -"safeEq("
         -typedRule.left
         -", "
@@ -297,7 +297,7 @@ fun TypescriptTranslator.registerOperators() {
         condition = { typedRule.operationToken == KtTokens.EXCLEQ },
         priority = 20
     ) {
-        out.addImport("butterfly-web/dist/Kotlin", "safeEq")
+        out.addImport("khrysalis-runtime", "safeEq")
         -"!safeEq("
         -typedRule.left
         -", "

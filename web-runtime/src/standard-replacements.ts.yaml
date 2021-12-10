@@ -1,0 +1,5 @@
+---
+
+- id: kotlin.io.println
+  type: call
+  template: console.log(~0~)

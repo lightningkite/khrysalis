@@ -264,7 +264,6 @@ fun TypescriptTranslator.registerClass() {
         -"$declaresPrefix${typedRule.fqName?.asString()}\n"
         if (!typedRule.isPrivate()) -"export "
 
-
         when (typedRule.modalityModifierType()) {
             KtTokens.ABSTRACT_KEYWORD -> -"abstract "
         }
@@ -382,7 +381,7 @@ fun TypescriptTranslator.registerClass() {
                 .any { it.typeReference?.resolvedType?.fqNameWithoutTypeArgs == "com.lightningkite.khrysalis.Codable" }
         ) {
             //Generate codable constructor
-            out.addImport("butterfly-web/dist/net/jsonParsing", "parse", "parseJsonTyped")
+            out.addImport("khrysalis-runtime", "parse")
 
             if(!typedRule.isEnum()){
                 -"public static fromJson"
@@ -413,7 +412,7 @@ fun TypescriptTranslator.registerClass() {
                                 return@forEachBetween
                             }
 
-                            -"parseJsonTyped("
+                            -"parse("
                             -"obj[\""
                             -it.jsonName(this@registerClass)
                             -"\"], "
@@ -454,7 +453,7 @@ fun TypescriptTranslator.registerClass() {
                 -"public hashCode(): number {\nlet hash = 17;\n"
                 typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEach { param ->
                     -"hash = 31 * hash + "
-                    out.addImport("butterfly-web/dist/Kotlin", "hashAnything")
+                    out.addImport("khrysalis-runtime", "hashAnything")
                     -"hashAnything(this."
                     -param.nameIdentifier
                     -")"
@@ -470,7 +469,7 @@ fun TypescriptTranslator.registerClass() {
                 -typedRule.nameIdentifier
                 typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEach { param ->
                     -" && "
-                    out.addImport("butterfly-web/dist/Kotlin", "safeEq")
+                    out.addImport("khrysalis-runtime", "safeEq")
                     -"safeEq(this."
                     -param.nameIdentifier
                     -", "
@@ -482,7 +481,7 @@ fun TypescriptTranslator.registerClass() {
             }
 
             //Generate toString() if not present
-            if (typedRule.body?.declarations?.any { it is FunctionDescriptor && (it as KtDeclaration).name == "toString" && it.valueParameters.isEmpty() } != true) {
+            if (typedRule.body?.declarations?.any { it is KtFunction && it.name == "toString" && it.valueParameters.isEmpty() } != true) {
                 -"public toString(): string { return "
                 -'`'
                 -typedRule.nameIdentifier

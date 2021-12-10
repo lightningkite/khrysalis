@@ -1,12 +1,12 @@
 @file:SharedCode
 package com.test.nulls
 
-import com.lightningkite.butterfly.*
+import com.lightningkite.khrysalis.*
 import java.time.*
 
-class WebSocketFrame(val binary: ByteArray? = null, val text: String? = null) {
+data class WebSocketFrame(val binary: ByteArray? = null, val text: String? = null) {
     override fun toString(): String {
-        return text ?: binary?.toString(Charsets.UTF_8) ?: "<Empty Frame>"
+        return text ?: "<Binary Data>" ?: "<Empty Frame>"
     }
 }
 
@@ -15,6 +15,6 @@ fun main(){
     val maybeFrame = if(frame.binary != null) frame else null
     maybeFrame?.text?.let { println(it) }
 
-    val platformNullability = Instant.now()
-    platformNullability.atZone(ZoneId.systemDefault())
+//    val platformNullability = Instant.now()
+//    platformNullability.atZone(ZoneId.systemDefault())
 }

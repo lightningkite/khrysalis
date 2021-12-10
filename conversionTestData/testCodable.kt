@@ -1,8 +1,7 @@
 @file:SharedCode
 package com.test.codable
 
-import com.lightningkite.butterfly.*
-import com.lightningkite.butterfly.Codable
+import com.lightningkite.khrysalis.*
 
 data class Point(val x: Double, val y: Double): Codable
 data class Box<T: IsCodableAndHashable>(val description: String, var item: T): Codable

@@ -1,7 +1,7 @@
 @file:SharedCode
 package com.test.cursedclasses
 
-import com.lightningkite.butterfly.*
+import com.lightningkite.khrysalis.*
 
 interface A {
     class B(val c: C = C()) {

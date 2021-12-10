@@ -5,7 +5,7 @@ import java.net.URL
 
 object Libraries {
     fun getStandardLibrary(): File {
-        val standardLibraryCopy = File("build/temp/std-lib-1-4-30.jar").also { it.parentFile.mkdirs() }
+        val standardLibraryCopy = File("build/temp/std-lib-1-6-0.jar").also { it.parentFile.mkdirs() }
         if (!standardLibraryCopy.exists()) {
             println("Downloading standard library...")
             standardLibraryCopy.outputStream().use { out ->
@@ -18,20 +18,9 @@ object Libraries {
         return standardLibraryCopy
     }
 
-    val khrysalisAnnotations = File(System.getenv("KHRYSALIS_META_LOCATION"))
-        .resolve("butterfly-android/butterfly-android/src/main/java/com/lightningkite/butterfly/KhrysalisAnnotations.kt")
-    val junitStubs = File(System.getenv("KHRYSALIS_META_LOCATION"))
-        .resolve("khrysalis/conversionTestData/junitStubs.kt")
-    val jacksonStubs = File(System.getenv("KHRYSALIS_META_LOCATION"))
-        .resolve("khrysalis/conversionTestData/jacksonStubs.kt")
+    val khrysalisAnnotations = File("../jvm-runtime/src/main/java").walkTopDown().filter { it.isFile && it.extension == "kt" }.toList()
+    val junitStubs = File("../conversionTestData/junitStubs.kt")
+    val jacksonStubs = File("../conversionTestData/jacksonStubs.kt")
 
-    val testingStubs = listOf(
-        khrysalisAnnotations,
-        junitStubs,
-        jacksonStubs,
-        File(System.getenv("KHRYSALIS_META_LOCATION"))
-            .resolve("butterfly-android/butterfly-android/src/main/java/com/lightningkite/butterfly/views/geometry/GFloat.kt"),
-        File(System.getenv("KHRYSALIS_META_LOCATION"))
-            .resolve("butterfly-android/butterfly-android/src/main/java/com/lightningkite/butterfly/Random.ext.kt"),
-    )
+    val testingStubs = khrysalisAnnotations + listOf(junitStubs, jacksonStubs)
 }

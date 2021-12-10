@@ -265,6 +265,9 @@ fun SwiftTranslator.registerFunction() {
         condition = { typedRule.isVarArg },
         priority = 100,
         action = {
+            if ((typedRule.resolvedValueParameter as? ValueParameterDescriptor)?.useName == false) {
+                -"_ "
+            }
             -typedRule.nameIdentifier
             -": "
             writingParameter++
@@ -597,7 +600,7 @@ fun SwiftTranslator.registerFunction() {
             .sortedBy { it.key.index }
             .map { entry ->
                 val out = ArrayList<Any?>()
-                if (!typedRule.on.hasJavaOriginInHierarchy()) {
+                if (!typedRule.on.hasJavaOriginInHierarchy() && !entry.key.isVararg) {
                     if(entry.key.useName) {
                         out += entry.key.name.asString().safeSwiftIdentifier()
                         out += ": "

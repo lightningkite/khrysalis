@@ -1,0 +1,19 @@
+
+---
+- id: com.lightningkite.khrysalis.ColorValue
+  type: type
+  template: string
+
+- id: com.lightningkite.khrysalis.asColor
+  type: call
+  template:
+    pattern: numberToColor(~this~)
+    imports:
+      numberToColor: khrysalis-runtime
+
+- id: com.lightningkite.khrysalis.colorAlpha
+  type: call
+  template:
+    pattern: applyAlphaToColor(~this~, ~0~)
+    imports:
+      applyAlphaToColor: khrysalis-runtime

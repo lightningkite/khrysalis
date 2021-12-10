@@ -1,7 +1,7 @@
 @file:SharedCode
 package com.test.classes
 
-import com.lightningkite.butterfly.*
+import com.lightningkite.khrysalis.*
 import kotlin.math.absoluteValue
 import kotlin.random.Random
 

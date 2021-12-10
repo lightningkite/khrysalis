@@ -1,7 +1,7 @@
 @file:SharedCode
 package com.test.booleans
 
-import com.lightningkite.butterfly.*
+import com.lightningkite.khrysalis.*
 fun main(){
     val t = 1 > 0
     val f = 0 > 1

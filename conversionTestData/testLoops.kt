@@ -1,7 +1,7 @@
 @file:SharedCode
 package com.test.loops
 
-import com.lightningkite.butterfly.*
+import com.lightningkite.khrysalis.*
 
 fun main(){
     for(item in listOf(1, 2, 3, 4)) {

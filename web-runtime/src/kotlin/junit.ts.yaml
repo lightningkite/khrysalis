@@ -1,0 +1,9 @@
+---
+
+- id: org.junit.Assert
+  type: type
+  template: "uhoh"
+
+- id: kotlin.assert
+  type: call
+  template: "if(!(~0~)) throw new Error(\"Assertion failed\")"

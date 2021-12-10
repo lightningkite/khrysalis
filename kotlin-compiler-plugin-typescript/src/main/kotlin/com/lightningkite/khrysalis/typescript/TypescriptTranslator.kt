@@ -135,7 +135,7 @@ class TypescriptTranslator(
     )
 
     init {
-
+        registerReflection()
         registerAnnotation()
         registerFile()
         registerFunction()

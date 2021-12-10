@@ -1,7 +1,7 @@
 @file:SharedCode
 package com.test.types
 
-import com.lightningkite.butterfly.*
+import com.lightningkite.khrysalis.*
 
 interface TestInterface {
     val interfaceValue: String get() = "Default"

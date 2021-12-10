@@ -1,3 +1,3 @@
 # testOut
 
-A description of this package.
+The tester for Swift compilation.

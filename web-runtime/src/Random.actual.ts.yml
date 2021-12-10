@@ -1,0 +1,108 @@
+---
+- id: kotlin.random.Random
+  type: type
+  template:
+    pattern: Random
+    imports:
+      Random: DIRECTLY from MersenneTwister
+- id: kotlin.random.Random
+  type: call
+  template:
+    pattern: new Random(~0~)
+    imports:
+      Random: DIRECTLY from MersenneTwister
+      
+# Random Instance
+
+- id: kotlin.random.Random.nextInt
+  type: call
+  arguments: []
+  template: ~this~.random_int31()
+- id: kotlin.random.Random.nextInt
+  type: call
+  arguments: [kotlin.Int]
+  template: (~this~.random_int31() % ~0~)
+- id: kotlin.random.Random.nextInt
+  type: call
+  arguments: [kotlin.Int, kotlin.Int]
+  template: (~this~.random_int31() % (~1~ - ~0~) + ~0~)
+
+- id: kotlin.random.Random.nextLong
+  type: call
+  arguments: []
+  template: ~this~.random_long()
+- id: kotlin.random.Random.nextLong
+  type: call
+  arguments: [kotlin.Long]
+  template: (~this~.random_long() % ~0~)
+- id: kotlin.random.Random.nextLong
+  type: call
+  arguments: [kotlin.Long, kotlin.Long]
+  template: (~this~.random_long() % (~1~ - ~0~) + ~0~)
+
+- id: kotlin.random.Random.nextBoolean
+  type: call
+  arguments: []
+  template: (~this~.random_int31() % 2 === 1)
+
+- id: kotlin.random.Random.nextDouble
+  type: call
+  arguments: []
+  template: ~this~.random()
+- id: kotlin.random.Random.nextDouble
+  type: call
+  arguments: [kotlin.Double]
+  template: (~this~.random() * ~0~)
+- id: kotlin.random.Random.nextDouble
+  type: call
+  arguments: [kotlin.Double, kotlin.Double]
+  template: (~this~.random() * (~1~ - ~0~) + ~0~)
+
+- id: kotlin.random.Random.nextFloat
+  type: call
+  arguments: []
+  template: ~this~.random()
+- id: com.lightningkite.khrysalis.nextFloat
+  type: call
+  arguments: [kotlin.Float]
+  template: (~this~.random() * ~0~)
+- id: com.lightningkite.khrysalis.nextFloat
+  type: call
+  arguments: [kotlin.Float, kotlin.Float]
+  template: (~this~.random() * (~1~ - ~0~) + ~0~)
+
+- id: com.lightningkite.khrysalis.nextGFloat
+  type: call
+  arguments: []
+  template: ~this~.random()
+- id: com.lightningkite.khrysalis.nextGFloat
+  type: call
+  arguments: [kotlin.Float]
+  template: (~this~.random() * ~0~)
+- id: com.lightningkite.khrysalis.nextGFloat
+  type: call
+  arguments: [kotlin.Float, kotlin.Float]
+  template: (~this~.random() * (~1~ - ~0~) + ~0~)
+  
+# Main Random
+
+- id: kotlin.random.Random.Default
+  type: get
+  template:
+    pattern: RandomInstance
+    imports:
+      RandomInstance: khrysalis-runtime
+
+- id: kotlin.random.Random.Companion
+  type: get
+  template:
+    pattern: RandomInstance
+    imports:
+      RandomInstance: khrysalis-runtime
+
+- id: kotlin.random.Random
+  type: get
+  template:
+    pattern: RandomInstance
+    imports:
+      RandomInstance: khrysalis-runtime

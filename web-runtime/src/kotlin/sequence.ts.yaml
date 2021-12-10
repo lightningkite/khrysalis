@@ -1,0 +1,535 @@
+---
+
+
+- id: kotlin.sequences.Sequence
+  type: type
+  template: Iterable<~T0~>
+- id: kotlin.sequences.sequenceOf
+  type: call
+  template: "[~*~]"
+
+- id: kotlin.sequences.asSequence
+  type: call
+  template: ~this~
+- id: kotlin.collections.asSequence
+  type: call
+  template: ~this~
+- id: kotlin.sequences.asSequence
+  type: call
+  receiver: kotlin.collections.Map
+  template: ~this~.entries()
+- id: kotlin.collections.asSequence
+  type: call
+  receiver: kotlin.collections.Map
+  template: ~this~.entries()
+
+# Extensions
+
+- id: kotlin.sequences.count
+  type: call
+  template:
+    pattern: execPipe(~this~, filter(~0~), size)
+    imports:
+      size: iter-tools-es
+      filter: iter-tools-es
+      execPipe: iter-tools-es
+
+- id: kotlin.sequences.reversed
+  type: call
+  template:
+    pattern: toArray(~this~).reverse()
+    imports:
+      toArray: iter-tools-es
+
+- id: kotlin.sequences.drop
+  type: call
+  template:
+    pattern: drop(~0~, ~this~)
+    imports:
+      drop: iter-tools-es
+
+- id: kotlin.sequences.dropLast
+  type: call
+  template:
+    pattern: toArray(~this~).slice(0, -~0~)
+    imports:
+      toArray: iter-tools-es
+
+- id: kotlin.sequences.dropWhile
+  type: call
+  template:
+    pattern: dropWhile(~0~, ~this~)
+    imports:
+      dropWhile: iter-tools-es
+
+#- id: kotlin.sequences.dropLastWhile
+
+- id: kotlin.sequences.take
+  type: call
+  template:
+    pattern: take(~0~, ~this~)
+    imports:
+      take: iter-tools-es
+
+- id: kotlin.sequences.takeLast
+  type: call
+  template:
+    pattern: toArray(~this~).slice(-~0~)
+    imports:
+      toArray: iter-tools-es
+
+- id: kotlin.sequences.takeWhile
+  type: call
+  template:
+    pattern: takeWhile(~0~, ~this~)
+    imports:
+      takeWhile: iter-tools-es
+#- id: kotlin.sequences.takeLastWhile
+
+- id: kotlin.sequences.filter
+  type: call
+  template:
+    pattern: filter(~0~, ~this~)
+    imports:
+      filter: iter-tools-es
+
+- id: kotlin.sequences.map
+  type: call
+  template:
+    pattern: map(~0~, ~this~)
+    imports:
+      map: iter-tools-es
+
+- id: kotlin.sequences.mapIndexed
+  type: call
+  template:
+    pattern: map(~0~, ~this~)
+    imports:
+      map: iter-tools-es
+
+- id: kotlin.sequences.flatMap
+  type: call
+  template:
+    pattern: flatMap(~0~, ~this~)
+    imports:
+      flatMap: iter-tools-es
+
+- id: kotlin.sequences.filterIndexed
+  type: call
+  template:
+    pattern: filter(~0~, ~this~)
+    imports:
+      filter: iter-tools-es
+
+- id: kotlin.sequences.filterNot
+  type: call
+  template:
+    pattern: filter((x)=>{ !~0~(x) ), ~this~)
+    imports:
+      filter: iter-tools-es
+
+- id: kotlin.sequences.filterNotNull
+  type: call
+  template:
+    pattern: filter(notNull, ~this~)
+    imports:
+      filter: iter-tools-es
+      notNull: iter-tools-es
+      map: iter-tools-es
+
+- id: kotlin.sequences.mapNotNull
+  type: call
+  template:
+    pattern: execPipe(~this~, map(~0~), filter(notNull))
+    imports:
+      filter: iter-tools-es
+      notNull: iter-tools-es
+      map: iter-tools-es
+      execPipe: iter-tools-es
+
+- id: kotlin.sequences.mapIndexedNotNull
+  type: call
+  template:
+    pattern: execPipe(~this~, map(~0~), filter(notNull))
+    imports:
+      filter: iter-tools-es
+      notNull: iter-tools-es
+      map: iter-tools-es
+      execPipe: iter-tools-es
+
+- id: kotlin.sequences.chunked
+  type: call
+  template:
+    pattern: batch(~0~, ~this~)
+    imports:
+      batch: iter-tools-es
+
+- id: kotlin.sequences.sorted
+  type: call
+  template:
+    pattern: toArray(~this~).sort()
+    imports:
+      toArray: iter-tools-es
+
+- id: kotlin.sequences.sortedBy
+  type: call
+  template:
+    pattern: toArray(~this~).sort((a, b) => safeCompare(~0~(a), ~0~(b)))
+    imports:
+      toArray: iter-tools-es
+      safeCompare: khrysalis-runtime
+
+- id: kotlin.sequences.sortedByDescending
+  type: call
+  template:
+    pattern: toArray(~this~).sort((a, b) => -safeCompare(~0~(a), ~0~(b)))
+    imports:
+      toArray: iter-tools-es
+      safeCompare: khrysalis-runtime
+
+- id: kotlin.sequences.sortedWith
+  type: call
+  template:
+    pattern: toArray(~this~).sort(~0~)
+    imports:
+      toArray: iter-tools-es
+
+- id: kotlin.sequences.associate
+  type: call
+  template:
+    pattern: new Map(map(~0~, ~this~))
+    imports:
+      map: iter-tools-es
+
+- id: kotlin.sequences.associateBy
+  type: call
+  template:
+    pattern: new Map(x => [~0~(x), x])
+    imports:
+      map: iter-tools-es
+
+- id: kotlin.sequences.toList
+  type: call
+  template:
+    pattern: toArray(~this~)
+    imports:
+      toArray: iter-tools-es
+
+- id: kotlin.sequences.toMutableList
+  type: call
+  template:
+    pattern: toArray(~this~)
+    imports:
+      toArray: iter-tools-es
+
+- id: kotlin.sequences.toArrayList
+  type: call
+  template:
+    pattern: toArray(~this~)
+    imports:
+      toArray: iter-tools-es
+
+- id: kotlin.sequences.distinct
+  type: call
+  template:
+    pattern: "[...new EqualOverrideSet(~this~)]"
+    imports:
+      EqualOverrideSet: khrysalis-web
+
+- id: kotlin.sequences.toSet
+  type: call
+  template:
+    pattern: "new EqualOverrideSet(~this~)"
+    imports:
+      EqualOverrideSet: khrysalis-web
+
+- id: kotlin.sequences.toMutableSet
+  type: call
+  template:
+    pattern: "new EqualOverrideSet(~this~)"
+    imports:
+      EqualOverrideSet: khrysalis-web
+
+- id: kotlin.sequences.toHashSet
+  type: call
+  template:
+    pattern: "new EqualOverrideSet(~this~)"
+    imports:
+      EqualOverrideSet: khrysalis-web
+
+- id: kotlin.sequences.distinct
+  type: call
+  typeArgumentRequirements:
+    0: primitive
+  template:
+    pattern: new Set(~this~)
+
+- id: kotlin.sequences.toSet
+  type: call
+  typeArgumentRequirements:
+    0: primitive
+  template:
+    pattern: new Set(~this~)
+
+- id: kotlin.sequences.toMutableSet
+  type: call
+  typeArgumentRequirements:
+    0: primitive
+  template:
+    pattern: new Set(~this~)
+
+- id: kotlin.sequences.toHashSet
+  type: call
+  typeArgumentRequirements:
+    0: primitive
+  template:
+    pattern: new Set(~this~)
+
+# TODO: groupBy
+
+- id: kotlin.sequences.groupBy
+  type: call
+  template:
+    pattern: new EqualOverrideMap(splitGroups(~0~, ~this~))
+    imports:
+      EqualOverrideMap: khrysalis-web
+      splitGroups: iter-tools-es
+
+- id: kotlin.sequences.groupBy
+  type: call
+  typeArgumentRequirements:
+    1: primitive
+  template:
+    pattern: new EqualOverrideMap(splitGroups(~0~, ~this~))
+    imports:
+      EqualOverrideMap: khrysalis-web
+      splitGroups: iter-tools-es
+
+- id: kotlin.sequences.find
+  type: call
+  template:
+    pattern: findOr(null, ~0~, ~this~)
+    imports:
+      findOr: iter-tools-es
+
+- id: kotlin.sequences.any
+  type: call
+  template:
+    pattern: some(~0~, ~this~)
+    imports:
+      some: iter-tools-es
+
+- id: kotlin.sequences.all
+  type: call
+  template:
+    pattern: every(~0~, ~this~)
+    imports:
+      every: iter-tools-es
+
+- id: kotlin.sequences.none
+  type: call
+  template:
+    pattern: (!every(~0~, ~this~))
+    imports:
+      every: iter-tools-es
+
+- id: kotlin.sequences.plus
+  type: call
+  arguments: [ kotlin.sequences.Iterable ]
+  template:
+    pattern: concat(~this~, ~0~)
+    imports:
+      concat: iter-tools-es
+
+- id: kotlin.sequences.plus
+  type: call
+  template:
+    pattern: concat(~this~, [~0~])
+    imports:
+      concat: iter-tools-es
+
+- id: kotlin.sequences.forEach
+  type: call
+  template:
+    pattern: for(const _x of ~this~) { ~L0~ }
+    lambdaTransforms:
+      0: ["_x"]
+
+- id: kotlin.sequences.first
+  type: call
+  arguments: []
+  template:
+    pattern: first(~this~)!
+    imports:
+      first: iter-tools-es
+
+- id: kotlin.sequences.firstOrNull
+  type: call
+  arguments: []
+  template:
+    pattern: firstOr(null, ~this~)!
+    imports:
+      firstOr: iter-tools-es
+
+- id: kotlin.sequences.last
+  type: call
+  arguments: []
+  template:
+    pattern: takeLast(~this~)!
+    imports:
+      takeLast: iter-tools-es
+
+- id: kotlin.sequences.lastOrNull
+  type: call
+  arguments: []
+  template:
+    pattern: takeLastOr(null, ~this~)!
+    imports:
+      takeLastOr: iter-tools-es
+
+- id: kotlin.sequences.firstOrNull
+  type: call
+  template:
+    pattern: findOr(null, ~0~, ~this~)
+    imports:
+      findOr: iter-tools-es
+
+# TODO
+#- id: kotlin.sequences.lastOrNull
+#  type: call
+#  template:
+#    pattern: toArray(~this~).findLast(~0~)
+#    imports:
+#      toArray: iter-tools-es
+
+- id: kotlin.sequences.maxBy
+  type: call
+  template:
+    pattern: reduce((a, b) => cMax(~0~(a), ~0~(b)), ~this~)
+    imports:
+      reduce: iter-tools-es
+      cMax: khrysalis-runtime
+
+- id: kotlin.sequences.minBy
+  type: call
+  template:
+    pattern: reduce((a, b) => cMin(~0~(a), ~0~(b)), ~this~)
+    imports:
+      reduce: iter-tools-es
+      cMin: khrysalis-runtime
+
+- id: kotlin.sequences.maxByOrNull
+  type: call
+  template:
+    pattern: reduceOr((a, b) => cMax(~0~(a), ~0~(b)), ~this~)
+    imports:
+      reduceOr: khrysalis-runtime
+      cMax: khrysalis-runtime
+
+- id: kotlin.sequences.minByOrNull
+  type: call
+  template:
+    pattern: reduceOr((a, b) => cMin(~0~(a), ~0~(b)), ~this~)
+    imports:
+      reduceOr: khrysalis-runtime
+      cMin: khrysalis-runtime
+
+- id: kotlin.sequences.max
+  type: call
+  template:
+    pattern: reduce(cMax, ~this~)
+    imports:
+      reduce: iter-tools-es
+      cMax: khrysalis-runtime
+
+- id: kotlin.sequences.min
+  type: call
+  template:
+    pattern: reduce(cMin, ~this~)
+    imports:
+      reduce: iter-tools-es
+      cMin: khrysalis-runtime
+
+- id: kotlin.sequences.maxOrNull
+  type: call
+  template:
+    pattern: reduceOr(cMax, ~this~)
+    imports:
+      reduceOr: khrysalis-runtime
+      cMax: khrysalis-runtime
+
+- id: kotlin.sequences.minOrNull
+  type: call
+  template:
+    pattern: reduceOr(cMin, ~this~)
+    imports:
+      reduceOr: khrysalis-runtime
+      cMin: khrysalis-runtime
+
+- id: kotlin.sequences.joinToString
+  type: call
+  suppliedArguments: []
+  template:
+    pattern: execPipe(~this~, join(~separator~))
+    imports:
+      execPipe: iter-tools-es
+      join: khrysalis-runtime
+
+- id: kotlin.sequences.joinToString
+  type: call
+  suppliedArguments: [separator]
+  template:
+    pattern: execPipe(~this~, join(~separator~))
+    imports:
+      execPipe: iter-tools-es
+      join: khrysalis-runtime
+
+- id: kotlin.sequences.joinToString
+  type: call
+  suppliedArguments: [transform]
+  template:
+    pattern: execPipe(~this~, map(~transform~), join())
+    imports:
+      execPipe: iter-tools-es
+      map: iter-tools-es
+      join: khrysalis-runtime
+
+- id: kotlin.sequences.joinToString
+  type: call
+  suppliedArguments: [separator, transform]
+  template:
+    pattern: execPipe(~this~, map(~transform~), join(~separator~))
+    imports:
+      execPipe: iter-tools-es
+      map: iter-tools-es
+      join: khrysalis-runtime
+
+- id: kotlin.sequences.joinToString
+  type: call
+  suppliedArguments: [separator, transform, prefix]
+  template:
+    pattern: (~prefix~ + execPipe(~this~, map(~transform~), join(~separator~)))
+    imports:
+      execPipe: iter-tools-es
+      map: iter-tools-es
+      join: khrysalis-runtime
+
+- id: kotlin.sequences.joinToString
+  type: call
+  suppliedArguments: [separator, transform, prefix, postfix]
+  template:
+    pattern: (~prefix~ + execPipe(~this~, map(~transform~), join(~separator~)) + ~postfix~)
+    imports:
+      execPipe: iter-tools-es
+      map: iter-tools-es
+      join: khrysalis-runtime
+
+- id: kotlin.sequences.joinToString
+  type: call
+  suppliedArguments: [separator, transform, postfix]
+  template:
+    pattern: (execPipe(~this~, map(~transform~), join(~separator~)) + ~postfix~)
+    imports:
+      execPipe: iter-tools-es
+      map: iter-tools-es
+      join: khrysalis-runtime

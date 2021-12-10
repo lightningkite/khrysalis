@@ -11,10 +11,16 @@ class PointedTest {
 
     @Test
     fun test() {
-        val it = File("../conversionTestData").resolve("testCollections.kt")
+        val it = File("../conversionTestData").resolve("testReflection.kt")
         println(it.absolutePath)
         val ktResult = ExecuteFileTester.kotlin(it, true)
         val jsResult = ExecuteFileTester.tsTranslated(it)
         Assert.assertEquals(ktResult, jsResult)
     }
 }
+
+//test[testVariables.kt]
+//test[testNulls.kt]
+//test[testCodable.kt]
+//test[testReflection.kt]
+//test[testEnums.kt]

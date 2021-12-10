@@ -1,0 +1,40 @@
+---
+- id: kotlin.let
+  type: call
+  template: "(~0~)(~this~)"
+
+- id: kotlin.run
+  type: call
+  template: "(~0~)(~this~)"
+
+- id: kotlin.with
+  type: call
+  template: "(~1~)(~0~)"
+
+- id: kotlin.also
+  type: call
+  template:
+    pattern: "also(~this~, ~0~)"
+    imports:
+      also: khrysalis-runtime
+
+- id: kotlin.apply
+  type: call
+  template:
+    pattern: "also(~this~, ~0~)"
+    imports:
+      also: khrysalis-runtime
+
+- id: kotlin.takeIf
+  type: call
+  template:
+    pattern: takeIf(~this~, ~0~)
+    imports:
+      takeIf: khrysalis-runtime
+
+- id: kotlin.takeUnless
+  type: call
+  template:
+    pattern: takeUnless(~this~, ~0~)
+    imports:
+      takeUnless: khrysalis-runtime

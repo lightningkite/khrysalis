@@ -2,7 +2,7 @@
 package com.test.annot
 
 import kotlin.math.absoluteValue
-import com.lightningkite.butterfly.*
+import com.lightningkite.khrysalis.*
 
 @Throws(IllegalArgumentException::class) fun test(){}
 

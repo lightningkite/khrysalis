@@ -12,38 +12,57 @@ import org.jetbrains.kotlin.incremental.classpathAsList
 import org.jetbrains.kotlin.incremental.destinationAsFile
 import java.io.File
 import com.lightningkite.khrysalis.generic.KotlinTranspileCLP
+import com.lightningkite.khrysalis.util.correctedFileOutput
 
 val tsTestDir = File("./testOut")
-fun ExecuteFileTester.ts(sourceFile: File, clean: Boolean): String = caching(sourceFile, clean) {
+fun ExecuteFileTester.ts(sourceFile: File, clean: Boolean): String /*= caching(sourceFile, clean)*/ {
     val mainFile = tsTestDir.resolve("src/index.ts")
     val outputFile = tsTestDir.resolve("build").resolve(sourceFile.nameWithoutExtension + ".out")
     outputFile.parentFile.mkdirs()
 
+    if (!tsTestDir.resolve("node_modules").exists()) {
+        ProcessBuilder()
+            .directory(tsTestDir)
+            .command("npm", "install")
+            .inheritIO()
+            .start()
+            .waitFor()
+    }
+
+    println("Compiling ${tsTestDir.absolutePath}")
+
     mainFile.writeText("import { main } from \"./${sourceFile.nameWithoutExtension}\"\nmain()")
     if (0 == ProcessBuilder()
             .directory(tsTestDir)
-            .command("tsc")
+            .command("npm", "run", "build")
             .redirectErrorStream(true)
-            .redirectOutput(outputFile)
             .start()
+            .correctedFileOutput(outputFile)
             .waitFor()
     ) {
         ProcessBuilder()
-            .directory(tsTestDir.resolve("dist"))
-            .command("node", "index.js")
+            .directory(tsTestDir)
+            .command("node", "dist/index.js")
             .redirectErrorStream(true)
-            .redirectOutput(outputFile)
             .start()
+            .correctedFileOutput(outputFile)
             .waitFor()
     } else {
         throw Exception("Typescript compilation failed: ${outputFile.readText().trim()}")
     }
+//    ProcessBuilder()
+//        .directory(tsTestDir)
+//        .command("npm", "run", "start")
+//        .redirectErrorStream(true)
+//        .start()
+//        .correctedFileOutput(outputFile)
+//        .waitFor()
 
-    outputFile.readText().trim()
+    return outputFile.readText().trim()
 }
 
 fun ExecuteFileTester.tsTranslated(file: File): String {
-    tsTestDir.resolve("src").listFiles()!!.forEach { it.deleteRecursively() }
+    tsTestDir.resolve("src").listFiles()?.forEach { it.deleteRecursively() }
     return ts(compileToTs(file), true)
 }
 
@@ -55,16 +74,11 @@ fun ExecuteFileTester.compileToTs(file: File): File {
             this.pluginClasspaths = arrayOf("build/libs/kotlin-compiler-plugin-typescript-0.1.0.jar")
             this.pluginOptions =
                 arrayOf(
-                    "plugin:${KotlinTypescriptCLP.PLUGIN_ID}:${KotlinTranspileCLP.KEY_EQUIVALENTS_NAME}=${outFolder.parentFile}",
+                    "plugin:${KotlinTypescriptCLP.PLUGIN_ID}:${KotlinTranspileCLP.KEY_EQUIVALENTS_NAME}=${tsTestDir}",
                     "plugin:${KotlinTypescriptCLP.PLUGIN_ID}:${KotlinTranspileCLP.KEY_OUTPUT_DIRECTORY_NAME}=${outFolder}",
                     "plugin:${KotlinTypescriptCLP.PLUGIN_ID}:${KotlinTranspileCLP.KEY_PROJECT_NAME_NAME}=Yeet"
                 )
         }
     )
     return outFolder.resolve(file.nameWithoutExtension + ".ts")
-}
-
-fun Libraries.translationFilesButterfly(): File {
-    return File(System.getenv("KHRYSALIS_META_LOCATION"))
-        .resolve("butterfly-web")
 }

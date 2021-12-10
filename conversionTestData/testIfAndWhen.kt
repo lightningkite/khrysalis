@@ -1,7 +1,7 @@
 @file:SharedCode
 package com.test.ifandwhen
 
-import com.lightningkite.butterfly.*
+import com.lightningkite.khrysalis.*
 
 fun setNullable(): Int? = 2
 fun makeSomething(): Any? = "Hello"

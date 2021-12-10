@@ -63,7 +63,7 @@ fun TypescriptTranslator.registerLambda() {
                 )
                 -')'
             }
-            resolved.annotations.findAnnotation(FqName("com.lightningkite.butterfly.tsReturnType"))?.allValueArguments?.entries?.first()?.value?.value?.let {
+            resolved.annotations.findAnnotation(FqName("com.lightningkite.khrysalis.tsReturnType"))?.allValueArguments?.entries?.first()?.value?.value?.let {
                 -": $it"
             } ?: (betterReturnType ?: resolved.returnType)?.let {
                 -": "

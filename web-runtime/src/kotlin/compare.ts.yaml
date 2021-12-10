@@ -1,0 +1,105 @@
+---
+
+- id: kotlin.Comparator.compare
+  type: call
+  template: ~this~(~0~, ~1~)
+
+- id: java.util.Comparator.compare
+  type: call
+  template: ~this~(~0~, ~1~)
+
+- id: kotlin.Comparator
+  type: call
+  template: ~0~
+
+- id: java.util.Comparator
+  type: call
+  template: ~0~
+
+- id: kotlin.Comparator
+  type: type
+  template:
+    pattern: Comparator<~T0~>
+    imports:
+      Comparator: khrysalis-runtime
+
+- id: java.util.Comparator
+  type: type
+  template:
+    pattern: Comparator<~T0~>
+    imports:
+      Comparator: khrysalis-runtime
+
+- id: kotlin.Comparable.compareTo
+  type: call
+  infix: false
+  template:
+    pattern: safeCompare(~this~, ~0~)
+    imports:
+      safeCompare: khrysalis-runtime
+
+- id: java.util.Comparable.compareTo
+  type: call
+  infix: false
+  template:
+    pattern: safeCompare(~this~, ~0~)
+    imports:
+      safeCompare: khrysalis-runtime
+
+# Coerce
+- id: kotlin.ranges.coerceIn
+  type: call
+  template:
+    pattern: cCoerce(~this~, ~0~, ~1~)
+    imports:
+      cCoerce: khrysalis-runtime
+
+- id: kotlin.ranges.coerceAtMost
+  type: call
+  template:
+    pattern: cMin(~this~, ~0~)
+    imports:
+      cMin: khrysalis-runtime
+
+- id: kotlin.ranges.coerceAtLeast
+  type: call
+  template:
+    pattern: cMax(~this~, ~0~)
+    imports:
+      cMax: khrysalis-runtime
+
+- id: kotlin.comparisons.maxOf
+  type: call
+  template:
+    pattern: cMax(~*~)
+    imports:
+      cMax: khrysalis-runtime
+
+- id: kotlin.comparisons.minOf
+  type: call
+  template:
+    pattern: cMin(~*~)
+    imports:
+      cMin: khrysalis-runtime
+
+
+- id: kotlin.Comparable
+  type: type
+  template:
+    pattern: Comparable<~T0~>
+    imports:
+      Comparable: khrysalis-runtime
+
+- id: kotlin.ranges.Range
+  type: type
+  template:
+    pattern: Range<~T0~>
+    imports:
+      Range: khrysalis-runtime
+
+- id: kotlin.ranges.rangeTo
+  type: call
+  template:
+    pattern: new Range(~this~, ~0~)
+    imports:
+      Range: khrysalis-runtime
