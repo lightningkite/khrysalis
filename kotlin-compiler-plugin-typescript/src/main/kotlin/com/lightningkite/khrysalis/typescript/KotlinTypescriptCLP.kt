@@ -92,19 +92,24 @@ class KotlinTypescriptExtension(
     lateinit var translator: TypescriptTranslator
 
     override fun start(context: BindingContext, files: Collection<KtFile>) {
+        println("Will generate files ${outputDirectory.resolve("fqnames.txt")}, ${outputDirectory.resolve("index.ts")}...")
         translator = TypescriptTranslator(projectName, commonPath, collector, replacements)
 
-        //Load other declarations
-        translator.declarations.load(dependencies.asSequence().plus(outputDirectory), outputDirectory)
+        // Load node declarations
+        translator.declarations.loadNonlocal(dependencies)
 
-        //Create manifest of declarations within this module
+        // Load local declarations
+        translator.declarations.load(outputDirectory)
+
+        // Create manifest of declarations within this module
         val map: Map<String, File> =
             translator.run { generateFqToFileMap(files.filter { it.shouldBeTranslated() }, outputDirectory) }
+        println("From here: ${map.values.map { it.absolutePath }}")
         translator.declarations.local.putAll(map)
     }
 
     override fun transpile(context: BindingContext, file: KtFile): CharSequence {
-        val out = TypescriptFileEmitter(translator, file)
+        val out = TypescriptFileEmitter(translator, file, outputDirectory)
         translator.translate(file, out)
         val str = StringWriter()
         str.buffered().use {
@@ -115,12 +120,15 @@ class KotlinTypescriptExtension(
     }
 
     override fun finish(context: BindingContext, files: Collection<KtFile>) {
-        outputDirectory.resolve("../build/manifest.txt").also { it.parentFile.mkdirs() }.bufferedWriter().use {
+        outputDirectory.resolve("fqnames.txt").bufferedWriter().use {
+            it.appendLine(translator.projectName)
             for(entry in translator.declarations.local){
-                it.appendln("${entry.key} = ${entry.value}")
+                it.appendLine(entry.key)
             }
-            for(entry in translator.declarations.node){
-                it.appendln("${entry.key} = ${entry.value}")
+        }
+        outputDirectory.resolve("index.ts").bufferedWriter().use {
+            translator.declarations.local.values.distinct().forEach { f ->
+                it.appendLine("export * from '${f.relativeTo(outputDirectory).path.removeSuffix(".ts")}'")
             }
         }
     }

@@ -6,7 +6,7 @@ import com.lightningkite.khrysalis.typescript.replacements.TypescriptImport
 import java.io.File
 
 class DeclarationManifest(
-    val node: MutableMap<String, File> = HashMap(),
+    val node: MutableMap<String, String> = HashMap(),
     val local: MutableMap<String, File> = HashMap()
 ) {
     fun importLine(currentRelativeFile: File, fqName: String, name: String): TypescriptImport? {
@@ -28,13 +28,12 @@ class DeclarationManifest(
                 )
             }
         } ?: node[fqName]?.let {
-            TypescriptImport(it.path.removeSuffix(".ts"), name)
+            TypescriptImport(it, name)
         }
     }
 
-    fun load(files: Sequence<File>, local: File){
-        files
-            .flatMap { it.walkTopDown() }
+    fun load(local: File){
+        local.walkTopDown()
             .filter {
                 it.isFile && it.name.endsWith(".ts")
             }
@@ -49,24 +48,24 @@ class DeclarationManifest(
                     throw IllegalArgumentException("Failed to parse TS/KT declarations from $actualFile.", t)
                 }
                 if(decls.isEmpty()) return@forEach
-                if(actualFile.absoluteFile.startsWith(local.absoluteFile)) {
-                    val r = actualFile.relativeTo(local)
-                    for(decl in decls) {
-                        this.local[decl] = r
-                    }
-                } else {
-                    val r = actualFile.absoluteFile.relativeTo(local.parentFile.resolve("node_modules").absoluteFile)
-                    val shiftedPath = File(r.path.replace('\\', '/').replace("/src/", "/dist/"))
-                    for(decl in decls) {
-                        this.node[decl] = shiftedPath
-                    }
+                val r = actualFile.relativeTo(local)
+                for(decl in decls) {
+                    this.local[decl] = r
                 }
             }
     }
 
-    companion object {
-        fun load(files: Sequence<File>, local: File): DeclarationManifest{
-            return DeclarationManifest().apply { load(files, local) }
-        }
+    fun loadNonlocal(files: List<File>){
+        files
+            .flatMap { it.walkTopDown() }
+            .filter { it.name.endsWith("fqnames.txt", true) }
+            .forEach {
+                val lines = it.readLines().filter { it.isNotBlank() }
+                val name = lines.first()
+                lines.drop(1).forEach {
+                    this.node[it] = name
+                }
+            }
     }
+
 }

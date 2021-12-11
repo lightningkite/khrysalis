@@ -15,8 +15,8 @@ import com.lightningkite.khrysalis.generic.KotlinTranspileCLP
 import com.lightningkite.khrysalis.util.correctedFileOutput
 
 val tsTestDir = File("./testOut")
-fun ExecuteFileTester.ts(sourceFile: File, clean: Boolean): String /*= caching(sourceFile, clean)*/ {
-    val mainFile = tsTestDir.resolve("src/index.ts")
+fun ExecuteFileTester.ts(sourceFile: File, clean: Boolean): String = caching(sourceFile, clean) {
+    val mainFile = tsTestDir.resolve("src/main.ts")
     val outputFile = tsTestDir.resolve("build").resolve(sourceFile.nameWithoutExtension + ".out")
     outputFile.parentFile.mkdirs()
 
@@ -42,7 +42,7 @@ fun ExecuteFileTester.ts(sourceFile: File, clean: Boolean): String /*= caching(s
     ) {
         ProcessBuilder()
             .directory(tsTestDir)
-            .command("node", "dist/index.js")
+            .command("node", "dist/main.js")
             .redirectErrorStream(true)
             .start()
             .correctedFileOutput(outputFile)
@@ -71,7 +71,7 @@ fun ExecuteFileTester.compileToTs(file: File): File {
     this.kotlinCompile(
         sourceFile = file,
         argumentsModification = {
-            this.pluginClasspaths = arrayOf("build/libs/kotlin-compiler-plugin-typescript-0.1.0.jar")
+            this.pluginClasspaths = arrayOf("build/libs/kotlin-compiler-plugin-typescript-0.7.1.jar")
             this.pluginOptions =
                 arrayOf(
                     "plugin:${KotlinTypescriptCLP.PLUGIN_ID}:${KotlinTranspileCLP.KEY_EQUIVALENTS_NAME}=${tsTestDir}",

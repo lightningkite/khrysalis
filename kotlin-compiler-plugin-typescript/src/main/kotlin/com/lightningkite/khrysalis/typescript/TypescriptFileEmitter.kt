@@ -19,7 +19,7 @@ import org.jetbrains.kotlin.synthetic.SyntheticJavaPropertyDescriptor
 import java.io.BufferedWriter
 import java.io.File
 
-class TypescriptFileEmitter(val translator: TypescriptTranslator, file: KtFile) : FileEmitter(file) {
+class TypescriptFileEmitter(val translator: TypescriptTranslator, file: KtFile, val outputDirectory: File) : FileEmitter(file) {
     val stringBuilder = StringBuilder()
     val out = SmartTabWriter(stringBuilder)
     private val imports = HashMap<String, TypescriptImport>()
@@ -44,7 +44,7 @@ class TypescriptFileEmitter(val translator: TypescriptTranslator, file: KtFile) 
 
     private fun addImportFromFq(fqName: String, name: String): Boolean {
         val newImport = translator.declarations.importLine(
-            currentRelativeFile = File(file.virtualFilePath.removePrefix(translator.commonPath).removeSuffix(".kt").plus(".ts")),
+            currentRelativeFile = outputDirectory.resolve(file.virtualFilePath.removePrefix(translator.commonPath).removeSuffix(".kt").plus(".ts")),
             fqName = fqName,
             name = name
         )
@@ -86,7 +86,7 @@ class TypescriptFileEmitter(val translator: TypescriptTranslator, file: KtFile) 
         renderImports(translator.projectName, relPath, imports.values, to)
     }
 
-    override fun sub(): FileEmitter = TypescriptFileEmitter(translator, file)
+    override fun sub(): FileEmitter = TypescriptFileEmitter(translator, file, outputDirectory)
 
     fun addImports(parts: Iterable<TypescriptImport>) {
         for (p in parts) addImport(p)

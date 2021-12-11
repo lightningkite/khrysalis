@@ -10,7 +10,7 @@ fun TypescriptTranslator.generateFqToFileMap(files: Collection<KtFile>, output: 
     val manifest = HashMap<String, File>()
     for (file in files) {
         val pkg = file.packageFqName.asString()
-        val f = File(file.virtualFilePath.removePrefix(commonPath).removeSuffix(".kt").plus(".ts"))
+        val f = output.resolve(file.virtualFilePath.removePrefix(commonPath).removeSuffix(".kt").plus(".ts"))
         for (decl in file.declarations) {
             if(decl.isPrivate()) continue
             val name = decl.name ?: continue

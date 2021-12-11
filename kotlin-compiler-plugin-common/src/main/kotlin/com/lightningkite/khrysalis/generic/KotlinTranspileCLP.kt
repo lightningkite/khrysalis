@@ -224,6 +224,8 @@ abstract class KotlinTranspileExtension(
             .filter { FileEmitter.canBeOverwritten(it) }
             .forEach { it.delete() }
 
+        finish(bindingTrace.bindingContext, files)
+
         collector.report(CompilerMessageSeverity.INFO, "Completed translation.")
         releaseBindingContext()
         return AnalysisResult.Companion.success(bindingTrace.bindingContext, module, false)
