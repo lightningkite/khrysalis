@@ -2,24 +2,15 @@ package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.generic.FileEmitter
 import com.lightningkite.khrysalis.replacements.Import
-import com.lightningkite.khrysalis.replacements.TemplatePart
 import com.lightningkite.khrysalis.typescript.replacements.TypescriptImport
 import com.lightningkite.khrysalis.util.SmartTabWriter
 import com.lightningkite.khrysalis.util.fqNamesToCheck
 import com.lightningkite.khrysalis.util.simpleFqName
-import com.lightningkite.khrysalis.util.simplerFqName
-import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.descriptors.*
-import org.jetbrains.kotlin.load.java.descriptors.JavaPropertyDescriptor
 import org.jetbrains.kotlin.psi.KtFile
-import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
-import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
-import org.jetbrains.kotlin.resolve.descriptorUtil.getImportableDescriptor
-import org.jetbrains.kotlin.synthetic.SyntheticJavaPropertyDescriptor
 import java.io.BufferedWriter
-import java.io.File
 
-class TypescriptFileEmitter(val translator: TypescriptTranslator, file: KtFile, val outputDirectory: File) : FileEmitter(file) {
+class TypescriptFileEmitter(val translator: TypescriptTranslator, file: KtFile) : FileEmitter(file) {
     val stringBuilder = StringBuilder()
     val out = SmartTabWriter(stringBuilder)
     private val imports = HashMap<String, TypescriptImport>()
@@ -44,7 +35,7 @@ class TypescriptFileEmitter(val translator: TypescriptTranslator, file: KtFile, 
 
     private fun addImportFromFq(fqName: String, name: String): Boolean {
         val newImport = translator.declarations.importLine(
-            currentRelativeFile = outputDirectory.resolve(file.virtualFilePath.removePrefix(translator.commonPath).removeSuffix(".kt").plus(".ts")),
+            from = file,
             fqName = fqName,
             name = name
         )
@@ -86,7 +77,7 @@ class TypescriptFileEmitter(val translator: TypescriptTranslator, file: KtFile, 
         renderImports(translator.projectName, relPath, imports.values, to)
     }
 
-    override fun sub(): FileEmitter = TypescriptFileEmitter(translator, file, outputDirectory)
+    override fun sub(): FileEmitter = TypescriptFileEmitter(translator, file)
 
     fun addImports(parts: Iterable<TypescriptImport>) {
         for (p in parts) addImport(p)

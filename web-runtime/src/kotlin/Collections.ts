@@ -334,7 +334,6 @@ export function setAddCausedChange<T>(set: Set<T>, item: T): boolean {
     return true;
 }
 
-//! Declares kotlin.collections.getOrPut
 export function xMutableMapGetOrPut<K, V>(map: Map<K, V>, key: K, valueGenerator: () => V): V {
     if (map.has(key)) {
         return map.get(key) as V
@@ -345,20 +344,17 @@ export function xMutableMapGetOrPut<K, V>(map: Map<K, V>, key: K, valueGenerator
     }
 }
 
-//! Declares kotlin.collections.plus
 export function xMapPlus<K, V>(lhs: Map<K, V>, rhs: Map<K, V>): Map<K, V> {
     const newMap: Map<K, V> = lhs instanceof EqualOverrideMap ? new EqualOverrideMap() : new Map();
     xMapPutAll(newMap, lhs)
     xMapPutAll(newMap, rhs)
     return newMap;
 }
-//! Declares kotlin.collections.putAll
 export function xMapPutAll<K, V>(map: Map<K, V>, other: Map<K, V>) {
     for(let [key, value] of other){
         map.set(key, value);
     }
 }
-//! Declares kotlin.collections.mapValues
 export function xMapMapValues<K, V, VOUT>(this_: Map<K, V>, transform: (entry: [K, V]) => VOUT) {
     const newMap: Map<K, VOUT> = this_ instanceof EqualOverrideMap ? new EqualOverrideMap() : new Map();
     for(const entry of this_.entries()) {
@@ -366,7 +362,6 @@ export function xMapMapValues<K, V, VOUT>(this_: Map<K, V>, transform: (entry: [
     }
     return newMap
 }
-//! Declares kotlin.collections.filter
 export function xMapFilter<K, V>(this_: Map<K, V>, predicate: (entry: [K, V]) => boolean) {
     const newMap: Map<K, V> = this_ instanceof EqualOverrideMap ? new EqualOverrideMap() : new Map();
     for(const entry of this_.entries()) {

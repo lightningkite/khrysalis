@@ -1,7 +1,5 @@
 // export type FullType = Array<any>;
 
-//! Declares kotlin.Exception
-//! Declares java.lang.Exception
 export class Exception extends Error {
     cause: any;
 
@@ -19,23 +17,15 @@ export function printStackTrace(something: any){
     }
 }
 
-//! Declares kotlin.IllegalArgumentException
-//! Declares java.lang.IllegalArgumentException
 export class IllegalArgumentException extends Exception {
 }
 
-//! Declares kotlin.IllegalStateException
-//! Declares java.lang.IllegalStateException
 export class IllegalStateException extends Exception {
 }
 
-//! Declares kotlin.NoSuchElementException
-//! Declares java.lang.NoSuchElementException
 export class NoSuchElementException extends Exception {
 }
 
-//! Declares kotlin.IndexOutOfBoundsException
-//! Declares java.lang.IndexOutOfBoundsException
 export class IndexOutOfBoundsException extends Exception {
 }
 

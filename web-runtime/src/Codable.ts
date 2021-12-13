@@ -1,17 +1,12 @@
-//! Declares com.lightningkite.khrysalis.Codable
+
 export interface Codable {
 }
-//! Declares com.lightningkite.khrysalis.IsCodable
 export type IsCodable = any;
 
-//! Declares com.lightningkite.khrysalis.JsonList
 export type JsonList = Array<any>;
-//! Declares com.lightningkite.khrysalis.JsonList
 export let JsonList = Array;
 
-//! Declares com.lightningkite.khrysalis.JsonMap
 export type JsonMap = Map<any, any>;
-//! Declares com.lightningkite.khrysalis.JsonMap
 export let JsonMap = Map;
 
 export function parse(item: any, asType: Array<any>): any {

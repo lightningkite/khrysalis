@@ -23,7 +23,6 @@ export function reduceOr<T>(reducer: (result: T, value: T, i: number) => T, iter
     else return iterable => iterable === undefined || iterable === null ? null : __reduceOr(iterable, reducer)
 }
 
-//! Declares kotlin.collections.single>kotlin.collections.Iterable
 export function xIterableSingle<T>(iter: Iterable<T>): T | null {
     const iterator = iter[Symbol.iterator]();
     const item = iterator.next()
@@ -31,7 +30,6 @@ export function xIterableSingle<T>(iter: Iterable<T>): T | null {
     else return item.value
 }
 
-//! Declares kotlin.collections.singleOrNull>kotlin.collections.Iterable
 export function xIterableSingleOrNull<T>(iter: Iterable<T>): T {
     const r = xIterableSingle(iter);
     if (r == null) throw new IllegalArgumentException("Iterable is empty", null);
@@ -68,7 +66,6 @@ export function join(
     return iter => __join(iter, separator, limit, truncated)
 }
 
-//! Declares kotlin.collections.contains
 export function xIterableContains<T>(iter: Iterable<T>, item: T): boolean {
     for (const x of iter) {
         if (safeEq(x, item)) {

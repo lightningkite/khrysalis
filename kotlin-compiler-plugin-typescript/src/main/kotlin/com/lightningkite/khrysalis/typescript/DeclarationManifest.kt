@@ -1,25 +1,26 @@
 package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.typescript.manifest.declaresPrefix
-import com.lightningkite.khrysalis.replacements.TemplatePart
 import com.lightningkite.khrysalis.typescript.replacements.TypescriptImport
+import org.jetbrains.kotlin.psi.KtFile
 import java.io.File
 
 class DeclarationManifest(
+    val commonPath: String,
     val node: MutableMap<String, String> = HashMap(),
-    val local: MutableMap<String, File> = HashMap()
+    val local: MutableMap<String, String> = HashMap()
 ) {
-    fun importLine(currentRelativeFile: File, fqName: String, name: String): TypescriptImport? {
+    fun importLine(from: KtFile, fqName: String, name: String): TypescriptImport? {
+        val fromPath = from.virtualFilePath.substringAfter(commonPath).substringBeforeLast('.')
         return local[fqName]?.let { relFile ->
-            if (currentRelativeFile == relFile) {
+            if (fromPath == relFile) {
                 null
             } else {
                 TypescriptImport(
                     path = "./"
                         .plus(
-                            currentRelativeFile.parentFile?.let { p -> relFile.relativeTo(p).path } ?: relFile.path
+                            File(relFile).relativeTo(File(fromPath)).path
                         )
-                        .removeSuffix(".ts")
                         .let {
                             if (it.startsWith("./../")) "../" + it.removePrefix("./../")
                             else it
@@ -50,18 +51,22 @@ class DeclarationManifest(
                 if(decls.isEmpty()) return@forEach
                 val r = actualFile.relativeTo(local)
                 for(decl in decls) {
-                    this.local[decl] = r
+                    this.local[decl] = r.path
                 }
             }
     }
 
-    fun loadNonlocal(files: List<File>){
+    fun loadNonlocal(files: List<File>, filterOut: File){
         files
             .flatMap { it.walkTopDown() }
             .filter { it.name.endsWith("fqnames.txt", true) }
+            .filter {
+                println("Checking $it against $filterOut")
+                !it.startsWith(filterOut)
+            }
             .forEach {
                 val lines = it.readLines().filter { it.isNotBlank() }
-                val name = lines.first()
+                val name = lines.firstOrNull() ?: return@forEach
                 lines.drop(1).forEach {
                     this.node[it] = name
                 }

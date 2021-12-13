@@ -12,7 +12,8 @@
     "@types/mersenne-twister": "1.x",
     "uuid": "8.x",
     "@types/uuid": "8.x",
-    "iter-tools-es": "^7.1.4"
+    "iter-tools-es": "^7.1.4",
+    "@js-joda/core": "^4.3.1"
   },
   "peerDependencies": {},
   "devDependencies": {

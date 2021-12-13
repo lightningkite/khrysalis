@@ -11,7 +11,7 @@ class PointedTest {
 
     @Test
     fun test() {
-        val it = File("../conversionTestData").resolve("testClasses.kt")
+        val it = File("../conversionTestData").resolve("testTime.kt")
         println(it.absolutePath)
         val ktResult = ExecuteFileTester.kotlin(it, true)
         val jsResult = ExecuteFileTester.tsTranslated(it)
@@ -19,8 +19,6 @@ class PointedTest {
     }
 }
 
-//test[testVariables.kt]
-//test[testNulls.kt]
-//test[testCodable.kt]
-//test[testReflection.kt]
-//test[testEnums.kt]
+//test[testClasses.kt]
+//test[testIfAndWhen.kt]
+//test[testExceptions.kt]

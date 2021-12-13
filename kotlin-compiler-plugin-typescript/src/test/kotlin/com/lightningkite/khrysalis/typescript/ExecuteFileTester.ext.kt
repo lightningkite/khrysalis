@@ -14,11 +14,9 @@ import java.io.File
 import com.lightningkite.khrysalis.generic.KotlinTranspileCLP
 import com.lightningkite.khrysalis.util.correctedFileOutput
 
-val tsTestDir = File("./testOut")
-fun ExecuteFileTester.ts(sourceFile: File, clean: Boolean): String = caching(sourceFile, clean) {
-    val mainFile = tsTestDir.resolve("src/main.ts")
-    val outputFile = tsTestDir.resolve("build").resolve(sourceFile.nameWithoutExtension + ".out")
-    outputFile.parentFile.mkdirs()
+private var preparedForTest: Boolean = false
+private fun prepareForTest() {
+    if(preparedForTest) return
 
     if (!tsTestDir.resolve("node_modules").exists()) {
         ProcessBuilder()
@@ -28,6 +26,36 @@ fun ExecuteFileTester.ts(sourceFile: File, clean: Boolean): String = caching(sou
             .start()
             .waitFor()
     }
+
+    // Copy library
+    val libraryFolder = tsTestDir.resolve("../../web-runtime")
+    ProcessBuilder()
+        .directory(libraryFolder)
+        .command("npm", "install")
+        .inheritIO()
+        .start()
+        .waitFor()
+    ProcessBuilder()
+        .directory(libraryFolder)
+        .command("npm", "run", "build")
+        .inheritIO()
+        .start()
+        .waitFor()
+    libraryFolder.resolve("dist").copyRecursively(tsTestDir.resolve("node_modules/khrysalis-runtime/dist"), overwrite = true)
+    libraryFolder.resolve("src").copyRecursively(tsTestDir.resolve("node_modules/khrysalis-runtime/src"), overwrite = true)
+    libraryFolder.resolve("index.js").copyTo(tsTestDir.resolve("node_modules/khrysalis-runtime/index.js"), overwrite = true)
+    libraryFolder.resolve("index.d.ts").copyTo(tsTestDir.resolve("node_modules/khrysalis-runtime/index.d.ts"), overwrite = true)
+    libraryFolder.resolve("package.json").copyTo(tsTestDir.resolve("node_modules/khrysalis-runtime/package.json"), overwrite = true)
+    libraryFolder.resolve("tsconfig.json").copyTo(tsTestDir.resolve("node_modules/khrysalis-runtime/tsconfig.json"), overwrite = true)
+
+    preparedForTest = true
+}
+
+val tsTestDir = File("./testOut")
+fun ExecuteFileTester.ts(sourceFile: File, clean: Boolean): String = caching(sourceFile, clean) {
+    val mainFile = tsTestDir.resolve("src/main.ts")
+    val outputFile = tsTestDir.resolve("build").resolve(sourceFile.nameWithoutExtension + ".out")
+    outputFile.parentFile.mkdirs()
 
     println("Compiling ${tsTestDir.absolutePath}")
 
@@ -63,6 +91,7 @@ fun ExecuteFileTester.ts(sourceFile: File, clean: Boolean): String = caching(sou
 
 fun ExecuteFileTester.tsTranslated(file: File): String {
     tsTestDir.resolve("src").listFiles()?.forEach { it.deleteRecursively() }
+    prepareForTest()
     return ts(compileToTs(file), true)
 }
 

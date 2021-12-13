@@ -96,20 +96,17 @@ class KotlinTypescriptExtension(
         translator = TypescriptTranslator(projectName, commonPath, collector, replacements)
 
         // Load node declarations
-        translator.declarations.loadNonlocal(dependencies)
+        translator.declarations.loadNonlocal(dependencies, filterOut = outputDirectory)
 
         // Load local declarations
         translator.declarations.load(outputDirectory)
 
         // Create manifest of declarations within this module
-        val map: Map<String, File> =
-            translator.run { generateFqToFileMap(files.filter { it.shouldBeTranslated() }, outputDirectory) }
-        println("From here: ${map.values.map { it.absolutePath }}")
-        translator.declarations.local.putAll(map)
+        translator.declarations.local.putAll(translator.run { generateFqToFileMap(files.filter { it.shouldBeTranslated() }) })
     }
 
     override fun transpile(context: BindingContext, file: KtFile): CharSequence {
-        val out = TypescriptFileEmitter(translator, file, outputDirectory)
+        val out = TypescriptFileEmitter(translator, file)
         translator.translate(file, out)
         val str = StringWriter()
         str.buffered().use {
@@ -128,7 +125,7 @@ class KotlinTypescriptExtension(
         }
         outputDirectory.resolve("index.ts").bufferedWriter().use {
             translator.declarations.local.values.distinct().forEach { f ->
-                it.appendLine("export * from '${f.relativeTo(outputDirectory).path.removeSuffix(".ts")}'")
+                it.appendLine("export * from '${f.removeSuffix(".ts")}'")
             }
         }
     }

@@ -28,7 +28,7 @@ class TypescriptTranslator(
     val replacements: Replacements
 ) : PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>(), TranslatorInterface<TypescriptFileEmitter, Unit> {
 
-    val declarations: DeclarationManifest = DeclarationManifest()
+    val declarations: DeclarationManifest = DeclarationManifest(commonPath)
 
     var stubMode: Boolean = false
 

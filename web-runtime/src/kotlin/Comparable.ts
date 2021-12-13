@@ -1,4 +1,3 @@
-//! Declares kotlin.Comparator
 export type Comparator<T> = (lhs: T, rhs: T)=>number
 
 export function safeCompare(left: any, right: any): number {
