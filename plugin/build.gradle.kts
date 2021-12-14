@@ -3,9 +3,6 @@ import java.util.Properties
 val kotlinVersion = "1.6.0"
 buildscript {
     val kotlinVersion = "1.6.0"
-    repositories {
-        jcenter()
-    }
     dependencies {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
     }
@@ -22,36 +19,6 @@ plugins {
 
 group = "com.lightningkite.khrysalis"
 version = "0.7.1"
-
-
-val props = project.rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { stream ->
-    Properties().apply { load(stream) }
-}
-val signingKey: String? = (System.getenv("SIGNING_KEY")?.takeUnless { it.isEmpty() }
-    ?: props?.getProperty("signingKey")?.toString())
-    ?.lineSequence()
-    ?.filter { it.trim().firstOrNull()?.let { it.isLetterOrDigit() || it == '=' || it == '/' || it == '+' } == true }
-    ?.joinToString("\n")
-val signingPassword: String? = System.getenv("SIGNING_PASSWORD")?.takeUnless { it.isEmpty() }
-    ?: props?.getProperty("signingPassword")?.toString()
-val useSigning = signingKey != null && signingPassword != null
-
-if (signingKey != null) {
-    if (!signingKey.contains('\n')) {
-        throw IllegalArgumentException("Expected signing key to have multiple lines")
-    }
-    if (signingKey.contains('"')) {
-        throw IllegalArgumentException("Signing key has quote outta nowhere")
-    }
-}
-
-val deploymentUser = (System.getenv("OSSRH_USERNAME")?.takeUnless { it.isEmpty() }
-    ?: props?.getProperty("ossrhUsername")?.toString())
-    ?.trim()
-val deploymentPassword = (System.getenv("OSSRH_PASSWORD")?.takeUnless { it.isEmpty() }
-    ?: props?.getProperty("ossrhPassword")?.toString())
-    ?.trim()
-val useDeployment = deploymentUser != null || deploymentPassword != null
 
 gradlePlugin {
     plugins {
@@ -90,10 +57,10 @@ dependencies {
     compileOnly("org.jetbrains.kotlin:kotlin-compiler-embeddable")
 
     // https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java
-    api("org.apache.commons:commons-lang3:3.10")
-    api("com.fasterxml.jackson.core:jackson-databind:2.9.10")
-    api("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.10")
-    api("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.10")
+    api("org.apache.commons:commons-lang3:3.12.0")
+    api("com.fasterxml.jackson.core:jackson-databind:2.13.0")
+    api("com.fasterxml.jackson.module:jackson-module-kotlin:2.13.0")
+    api("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.13.0")
     api("net.jodah:xsylum:0.1.0")
 
     // https://mvnrepository.com/artifact/org.apache.xmlgraphics/batik-transcoder
@@ -103,10 +70,10 @@ dependencies {
     // https://mvnrepository.com/artifact/net.mabboud.fontverter/FontVerter
     implementation(group = "net.mabboud.fontverter", name = "FontVerter", version = "1.2.22")
 
-    testImplementation("junit:junit:4.12")
+    testImplementation("junit:junit:4.13.2")
 
-    val aetherVersion = "1.0.0.v20140518"
-    val mavenVersion = "3.1.0"
+    val aetherVersion = "1.1.0"
+    val mavenVersion = "3.3.9"
     testApi("org.eclipse.aether:aether-api:$aetherVersion")
     testApi("org.eclipse.aether:aether-impl:$aetherVersion")
     testApi("org.eclipse.aether:aether-util:$aetherVersion")
@@ -115,6 +82,37 @@ dependencies {
     testApi("org.eclipse.aether:aether-transport-http:$aetherVersion")
     testApi("org.apache.maven:maven-aether-provider:$mavenVersion")
 }
+
+
+// Signing and publishing
+val props = project.rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { stream ->
+    Properties().apply { load(stream) }
+}
+val signingKey: String? = (System.getenv("SIGNING_KEY")?.takeUnless { it.isEmpty() }
+    ?: props?.getProperty("signingKey")?.toString())
+    ?.lineSequence()
+    ?.filter { it.trim().firstOrNull()?.let { it.isLetterOrDigit() || it == '=' || it == '/' || it == '+' } == true }
+    ?.joinToString("\n")
+val signingPassword: String? = System.getenv("SIGNING_PASSWORD")?.takeUnless { it.isEmpty() }
+    ?: props?.getProperty("signingPassword")?.toString()
+val useSigning = signingKey != null && signingPassword != null
+
+if (signingKey != null) {
+    if (!signingKey.contains('\n')) {
+        throw IllegalArgumentException("Expected signing key to have multiple lines")
+    }
+    if (signingKey.contains('"')) {
+        throw IllegalArgumentException("Signing key has quote outta nowhere")
+    }
+}
+
+val deploymentUser = (System.getenv("OSSRH_USERNAME")?.takeUnless { it.isEmpty() }
+    ?: props?.getProperty("ossrhUsername")?.toString())
+    ?.trim()
+val deploymentPassword = (System.getenv("OSSRH_PASSWORD")?.takeUnless { it.isEmpty() }
+    ?: props?.getProperty("ossrhPassword")?.toString())
+    ?.trim()
+val useDeployment = deploymentUser != null || deploymentPassword != null
 
 tasks {
     val sourceJar by creating(Jar::class) {
@@ -133,7 +131,6 @@ tasks {
     }
 }
 
-
 afterEvaluate {
     publishing {
         this.publications.forEach {
@@ -143,15 +140,17 @@ afterEvaluate {
             val release by creating(MavenPublication::class) {
                 from(components["java"])
                 artifact(tasks["sourceJar"])
-                artifact(tasks["javadocJar"])
+                if (useSigning) {
+                    artifact(tasks["javadocJar"])
+                }
                 groupId = project.group.toString()
                 artifactId = project.name
                 version = project.version.toString()
                 setPom()
             }
         }
-        repositories {
-            if (useSigning) {
+        if (useDeployment) {
+            repositories {
                 maven {
                     name = "MavenCentral"
                     val releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"

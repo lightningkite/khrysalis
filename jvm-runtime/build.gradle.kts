@@ -10,7 +10,16 @@ plugins {
 group = "com.lightningkite.khrysalis"
 version = "0.7.1"
 
+repositories {
+    mavenCentral()
+}
 
+dependencies {
+    testImplementation("junit:junit:4.13.2")
+}
+
+
+// Signing and publishing
 val props = project.rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { stream ->
     Properties().apply { load(stream) }
 } ?: Properties()
@@ -40,14 +49,6 @@ val deploymentPassword = (System.getenv("OSSRH_PASSWORD")?.takeUnless { it.isEmp
     ?.trim()
 val useDeployment = deploymentUser != null || deploymentPassword != null
 
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    testImplementation("junit:junit:4.13.2")
-}
-
 tasks {
     val sourceJar by creating(Jar::class) {
         archiveClassifier.set("sources")
@@ -70,15 +71,17 @@ afterEvaluate {
             create<MavenPublication>("java") {
                 from(components["java"])
                 artifact(tasks.getByName("sourceJar"))
-                artifact(tasks.getByName("javadocJar"))
+                if (useSigning) {
+                    artifact(tasks.getByName("javadocJar"))
+                }
                 groupId = project.group.toString()
                 artifactId = project.name
                 version = project.version.toString()
                 setPom()
             }
         }
-        repositories {
-            if (useSigning) {
+        if (useDeployment) {
+            repositories {
                 maven {
                     name = "MavenCentral"
                     val releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"

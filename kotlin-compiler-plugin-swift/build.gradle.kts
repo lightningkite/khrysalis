@@ -10,7 +10,19 @@ plugins {
 group = "com.lightningkite.khrysalis"
 version = "0.7.1"
 
+repositories {
+    mavenCentral()
+}
 
+dependencies {
+    compileOnly("org.jetbrains.kotlin:kotlin-compiler-embeddable")
+    testImplementation("junit:junit:4.13.2")
+    testImplementation("org.jetbrains.kotlin:kotlin-compiler-embeddable")
+    api(project(":kotlin-compiler-plugin-common", "default"))
+}
+
+
+// Signing and publishing
 val props = project.rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { stream ->
     Properties().apply { load(stream) }
 }
@@ -23,11 +35,11 @@ val signingPassword: String? = System.getenv("SIGNING_PASSWORD")?.takeUnless { i
     ?: props?.getProperty("signingPassword")?.toString()
 val useSigning = signingKey != null && signingPassword != null
 
-if(signingKey != null) {
-    if(!signingKey.contains('\n')){
+if (signingKey != null) {
+    if (!signingKey.contains('\n')) {
         throw IllegalArgumentException("Expected signing key to have multiple lines")
     }
-    if(signingKey.contains('"')){
+    if (signingKey.contains('"')) {
         throw IllegalArgumentException("Signing key has quote outta nowhere")
     }
 }
@@ -40,16 +52,6 @@ val deploymentPassword = (System.getenv("OSSRH_PASSWORD")?.takeUnless { it.isEmp
     ?.trim()
 val useDeployment = deploymentUser != null || deploymentPassword != null
 
-repositories {
-    mavenCentral()
-}
-
-dependencies {
-    compileOnly("org.jetbrains.kotlin:kotlin-compiler-embeddable")
-    testImplementation("junit:junit:4.12")
-    testImplementation("org.jetbrains.kotlin:kotlin-compiler-embeddable")
-    api(project(":kotlin-compiler-plugin-common", "default"))
-}
 
 tasks {
     val sourceJar by creating(Jar::class) {
@@ -73,15 +75,17 @@ afterEvaluate {
             create<MavenPublication>("java") {
                 from(components["java"])
                 artifact(tasks.getByName("sourceJar"))
-                artifact(tasks.getByName("javadocJar"))
+                if (useSigning) {
+                    artifact(tasks.getByName("javadocJar"))
+                }
                 groupId = project.group.toString()
                 artifactId = project.name
                 version = project.version.toString()
                 setPom()
             }
         }
-        repositories {
-            if (useSigning) {
+        if (useDeployment) {
+            repositories {
                 maven {
                     name = "MavenCentral"
                     val releasesRepoUrl = "https://s01.oss.sonatype.org/service/local/staging/deploy/maven2/"
