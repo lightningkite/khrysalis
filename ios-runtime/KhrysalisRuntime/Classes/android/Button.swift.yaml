@@ -35,7 +35,3 @@
   actualReceiver: android.widget.Button
   template: "~this~.sendActions(for: .primaryActionTriggered)"
 
-- type: call
-  id: android.view.ImageButton.image
-  actualReceiver: android.widget.Button
-  template: "~this~.sendActions(for: .primaryActionTriggered)"

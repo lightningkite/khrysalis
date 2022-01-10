@@ -1,0 +1,7 @@
+- id: android.location.Location
+  type: type
+  template: 'GeolocationCoordinates'
+
+- id: android.location.Location.bearing
+  type: get
+  template: '~this~.heading'  # TODO: Check if this matches direction

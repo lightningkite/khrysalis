@@ -1,0 +1,43 @@
+---
+
+- type: call
+  id: android.widget.Button.setEnabled
+  reflectiveName:
+    pattern: 'elementEnabled'
+    imports:
+      elementEnabled: rxjs-plus
+  template: ~this~.disabled = !~0~
+
+- type: call
+  id: android.widget.Button.isEnabled
+  reflectiveName:
+    pattern: 'elementEnabled'
+    imports:
+      elementEnabled: rxjs-plus
+  template: !~this~.disabled
+
+- type: get
+  id: android.widget.ToggleButton.textOn
+  reflectiveName: 'textContent'
+  template: '~this~.textContent'
+
+- type: set
+  id: android.widget.ToggleButton.textOn
+  reflectiveName: 'textContent'
+  template: '~this~.textContent = ~value~'
+
+- type: get
+  id: android.widget.ToggleButton.textOff
+  reflectiveName: "UIButton.setTitle"
+  template: '~this~.textContent'
+
+- type: set
+  id: android.widget.ToggleButton.textOff
+  reflectiveName: "UIButton.setTitle"
+  template: '~this~.textContent = ~value~'
+
+- type: call
+  id: android.view.View.performClick
+  actualReceiver: android.widget.Button
+  template: "~this~.click()"
+

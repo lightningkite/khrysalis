@@ -1,0 +1,64 @@
+---
+
+- id: android.util.Log.v
+  type: call
+  template: 'console.log(`${~0~}: ${~1~}`)'
+- id: android.util.Log.d
+  type: call
+  template: 'console.debug(`${~0~}: ${~1~}`)'
+- id: android.util.Log.i
+  type: call
+  template: 'console.info(`${~0~}: ${~1~}`)'
+- id: android.util.Log.w
+  type: call
+  template: 'console.warn(`${~0~}: ${~1~}`)'
+- id: android.util.Log.e
+  type: call
+  template: 'console.error(`${~0~}: ${~1~}`)'
+- id: android.util.Log.wtf
+  type: call
+  template: 'console.error(`${~0~}: ${~1~}`)'
+
+- id: com.lightningkite.khrysalis.LogInterface.v
+  type: call
+  template: 'console.log(`${~0~}: ${~1~}`)'
+- id: com.lightningkite.khrysalis.LogInterface.d
+  type: call
+  template: 'console.debug(`${~0~}: ${~1~}`)'
+- id: com.lightningkite.khrysalis.LogInterface.i
+  type: call
+  template: 'console.info(`${~0~}: ${~1~}`)'
+- id: com.lightningkite.khrysalis.LogInterface.w
+  type: call
+  template: 'console.warn(`${~0~}: ${~1~}`)'
+- id: com.lightningkite.khrysalis.LogInterface.e
+  type: call
+  template: 'console.error(`${~0~}: ${~1~}`)'
+- id: com.lightningkite.khrysalis.LogInterface.wtf
+  type: call
+  template: 'console.error(`${~0~}: ${~1~}`)'
+
+- id: android.util.Log.v
+  type: call
+  arguments: [kotlin.String, kotlin.String, kotlin.Throwable]
+  template: 'console.log(`${~0~}: ${~1~} ${~2~}`)'
+- id: android.util.Log.d
+  type: call
+  arguments: [kotlin.String, kotlin.String, kotlin.Throwable]
+  template: 'console.debug(`${~0~}: ${~1~} ${~2~}`)'
+- id: android.util.Log.i
+  type: call
+  arguments: [kotlin.String, kotlin.String, kotlin.Throwable]
+  template: 'console.info(`${~0~}: ${~1~} ${~2~}`)'
+- id: android.util.Log.w
+  type: call
+  arguments: [kotlin.String, kotlin.String, kotlin.Throwable]
+  template: 'console.warn(`${~0~}: ${~1~} ${~2~}`)'
+- id: android.util.Log.e
+  type: call
+  arguments: [kotlin.String, kotlin.String, kotlin.Throwable]
+  template: 'console.error(`${~0~}: ${~1~} ${~2~}`)'
+- id: android.util.Log.wtf
+  type: call
+  arguments: [kotlin.String, kotlin.String, kotlin.Throwable]
+  template: 'console.error(`${~0~}: ${~1~} ${~2~}`)'

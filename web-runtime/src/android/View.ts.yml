@@ -1,0 +1,190 @@
+
+
+
+- id: android.view.View
+  type: call
+  template: document.createElement('div')
+
+- id: android.widget.Space
+  type: type
+  template: HTMLElement
+
+- id: android.widget.Space
+  type: call
+  template: document.createElement('div')
+
+- id: android.view.View.VISIBLE
+  type: get
+  template: "\"visible\""
+
+- id: android.view.View.INVISIBLE
+  type: get
+  template: "\"invisible\""
+
+- id: android.view.View.GONE
+  type: get
+  template: "\"gone\""
+
+
+- id: android.view.View.performClick
+  type: call
+  template: ~this~.click()
+
+- id: android.view.View.performLongClick
+  type: call
+  template: ~this~.dispatchEvent(new Event("oncontextmenu"))
+
+- id: android.view.View.hasFocus
+  type: call
+  template: ~this~ === document.activeElement
+
+- id: android.view.View.visibility
+  type: get
+  template:
+    pattern: getViewVisibility(~this~)
+    imports:
+      getViewVisibility: butterfly-web/dist/views/View.ext
+
+- id: android.view.View.visibility
+  type: set
+  template:
+    pattern: setViewVisibility(~this~, ~value~)
+    imports:
+      setViewVisibility: butterfly-web/dist/views/View.ext
+
+- id: android.view.View.getVisibility
+  type: call
+  template:
+    pattern: getViewVisibility(~this~)
+    imports:
+      getViewVisibility: butterfly-web/dist/views/View.ext
+
+- id: android.view.View.setVisibility
+  type: call
+  template:
+    pattern: setViewVisibility(~this~, ~value~)
+    imports:
+      setViewVisibility: butterfly-web/dist/views/View.ext
+
+- id: android.view.View.rotation
+  type: set
+  template: ~this~.style.transform = `rotate(${~this~})`
+
+- id: android.view.View.alpha
+  type: set
+  template: ~this~.style.opacity = `${~0~}`
+
+- id: android.view.View.alpha
+  type: set
+  actualReceiver: android.widget.CompoundButton
+  template: ~this~.parentElement!.style.opacity = `${~0~}`
+
+#- id: android.view.View.scrollTo
+#  type: call
+#  template:
+#
+#- id: android.view.View.scrollBy
+#  type: call
+#  template:
+
+- id: android.view.View.requestFocus
+  type: call
+  template: ~this~.focus()
+
+- id: android.view.View.invalidate
+  type: call
+  template: ~this~ /* Invalidate.  Not needed in JS. */
+
+- id: android.view.View.postInvalidate
+  type: call
+  template: ~this~ /* Invalidate.  Not needed in JS. */
+
+- id: android.view.View.background
+  type: set
+  template:
+    pattern: ~this~.style.background = "none"
+
+- id: android.view.View.setBackgroundColor
+  type: call
+  template:
+    pattern: setViewBackgroundColor(~this~, ~0~)
+    imports:
+      numberToColor: butterfly-web/dist/views/Colors
+      setViewBackgroundColor: butterfly-web/dist/views/View.ext
+
+- id: android.view.View.setBackgroundResource
+  type: call
+  template:
+    pattern: setViewBackgroundClass(~this~, ~0~.cssClass)
+    imports:
+      setViewBackgroundClass: butterfly-web/dist/views/View.ext
+
+- id: com.lightningkite.butterfly.views.backgroundResource
+  type: set
+  template:
+    pattern: setViewBackgroundClass(~this~, ~0~.cssClass)
+    imports:
+      setViewBackgroundClass: butterfly-web/dist/views/View.ext
+
+- id: com.lightningkite.butterfly.views.setBackgroundColorResource
+  type: call
+  template:
+    pattern: setViewBackgroundColor(~this~, ~0~)
+    imports:
+      numberToColor: butterfly-web/dist/views/Colors
+      setViewBackgroundColor: butterfly-web/dist/views/View.ext
+
+#- id: android.view.View.setBackground
+#  type: call
+#  template:
+
+- id: android.view.View.setPadding
+  type: call
+  template: ~this~.style.padding = `${~1~}px ${~2~}px ${~3~}px ${~0~}px `
+
+- id: android.view.View.requestLayout
+  type: call
+  template: /* Request layout.  Not needed in JS.*/
+
+#- id: com.lightningkite.butterfly.views.backgroundDrawable
+#  type: get
+#  template:
+#
+#- id: com.lightningkite.butterfly.views.backgroundDrawable
+#  type: set
+#  template:
+
+- id: android.view.View.setOnClickListener
+  type: call
+  template:
+    pattern: ~this~.onclick = (_ev) => { _ev.stopPropagation(); ~L0~}
+    lambdaTransforms:
+      0: ["_ev.target as HTMLElement"]
+
+- id: android.view.View.setOnLongClickListener
+  type: call
+  template:
+    pattern: ~this~.oncontextmenu = (_ev) => { _ev.preventDefault(); ~L0~}
+    lambdaTransforms:
+      0: ["_ev.target as HTMLElement"]
+
+#- id: com.lightningkite.butterfly.views.onClick
+#  type: call
+#  template:
+#    pattern: ~this~.onclick = (_ev) => { _ev.stopPropagation(); ~L1~}
+#    lambdaTransforms:
+#      0: ["_ev.target as HTMLElement"]
+
+#- id: com.lightningkite.butterfly.views.onLongClick
+#  type: call
+#  template:
+#    pattern: ~this~.oncontextmenu = (_ev) => { _ev.preventDefault(); ~L0~}
+#    lambdaTransforms:
+#      0: ["_ev.target as HTMLElement"]
+
+- id: android.view.View.isEnabled
+  type: get
+  template: (!~this~.disabled)
+- id: android.view.View.isEnabled
+  type: set
+  template: ~this~.disabled = !(~0~)

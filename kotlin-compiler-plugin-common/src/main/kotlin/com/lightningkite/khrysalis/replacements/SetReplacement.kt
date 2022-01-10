@@ -18,26 +18,30 @@ data class SetReplacement(
     override val debug: Boolean = false,
     val template: Template
 ) : ReplacementRule {
-    @get:JsonIgnore() override val priority: Int
+    @get:JsonIgnore()
+    override val priority: Int
         get() = (if (receiver != null) 2 else 0) + (if (actualReceiver != null) 4 else 0)
 
     fun passes(decl: PropertyDescriptor, receiverType: KotlinType?): Boolean {
-        if(debug){
+        if (debug) {
             println("Checking applicability for $id:")
-            if(actualReceiver != null){
-                if(receiverType == null) return false
-                if(!receiverType.satisfies(actualReceiver)) {
+            if (actualReceiver != null) {
+                if (receiverType == null) return false
+                if (!receiverType.satisfies(actualReceiver)) {
                     println("Not applicable: actualReceiver needs ${actualReceiver}, got ${receiverType.fqNameWithTypeArgs}")
                 }
             }
-            if(!(receiver == null || receiver == decl.extensionReceiverParameter?.type?.fqNameWithoutTypeArgs)) {
-                println("Not applicable: receiver needs ${receiver}, got ${decl.extensionReceiverParameter?.type?.fqNameWithoutTypeArgs}")
+            if (receiver != null && decl.extensionReceiverParameter?.type?.satisfies(receiver) == true) println("Not applicable: receiver requires $receiver, got ${decl.extensionReceiverParameter?.type?.fqNameWithoutTypeArgs}")
+
+        }
+        if (actualReceiver != null) {
+            if (receiverType == null) return false
+            if (!receiverType.satisfies(actualReceiver)) {
+                return false
             }
         }
-        if(actualReceiver != null){
-            if(receiverType == null) return false
-            if(!receiverType.satisfies(actualReceiver)) { return false }
-        }
-        return (receiver == null || receiver == decl.extensionReceiverParameter?.type?.fqNameWithoutTypeArgs)
+        if (receiver != null && decl.extensionReceiverParameter?.type?.satisfies(receiver) == true) return false
+
+        return true
     }
 }

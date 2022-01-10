@@ -1,0 +1,16 @@
+---
+
+- id: android.widget.CompoundButton.isChecked
+  type: get
+  template: ~this~.checked
+
+- id: android.widget.CompoundButton.isChecked
+  type: set
+  template: ~this~.checked = ~value~
+
+- id: android.widget.CompoundButton.setOnCheckedChangeListener
+  type: call
+  template:
+    pattern: ~this~.onchange = (_ev) => { ~L0~ }
+    lambdaTransforms:
+      0: ["_ev.target as HTMLInputElement", "(_ev.target as HTMLInputElement).checked"]

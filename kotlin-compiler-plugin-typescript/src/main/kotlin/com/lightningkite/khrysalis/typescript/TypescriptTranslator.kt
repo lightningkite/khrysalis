@@ -34,13 +34,6 @@ class TypescriptTranslator(
 
     data class ReceiverAssignment(val declaration: DeclarationDescriptor, val tsName: String)
 
-    val identifierMappings = HashMap<DeclarationDescriptor, String>()
-    inline fun withName(ktName: DeclarationDescriptor, tsName: String, action: (String)->Unit){
-        identifierMappings[ktName] = tsName
-        action(tsName)
-        identifierMappings.remove(ktName)
-    }
-
     val _receiverStack = ArrayList<ReceiverAssignment>()
     val receiverStack: List<ReceiverAssignment> get() = _receiverStack
     inline fun withReceiverScope(
@@ -151,6 +144,7 @@ class TypescriptTranslator(
         registerReceiver()
         registerSpecialLet()
         registerJUnit()
+        registerViewBinding()
 
         handle<LeafPsiElement>(condition = { typedRule.text in terminalMap.keys }, priority = 1) {
             out.append(terminalMap[typedRule.text])

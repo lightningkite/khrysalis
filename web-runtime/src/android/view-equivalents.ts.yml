@@ -1,0 +1,104 @@
+---
+- id: android.view.View
+  type: type
+  template: HTMLElement
+  
+- id: androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+  type: type
+  template: HTMLDivElement
+
+- id: android.widget.TextView
+  type: type
+  template: HTMLElement
+
+- id: android.widget.ScrollView
+  type: type
+  template: HTMLDivElement
+
+- id: android.widget.HorizontalScrollView
+  type: type
+  template: HTMLDivElement
+
+- id: android.widget.ImageView
+  type: type
+  template: HTMLImageElement
+
+- id: de.hdodenhof.circleimageview.CircleImageView
+  type: type
+  template: HTMLImageElement
+
+- id: android.widget.EditText
+  type: type
+  template: HTMLInputElement
+
+- id: android.widget.FrameLayout
+  type: type
+  template: HTMLDivElement
+
+- id: android.widget.LinearLayout
+  type: type
+  template: HTMLDivElement
+
+- id: android.widget.CheckBox
+  type: type
+  template: HTMLInputElement
+
+- id: android.widget.RadioButton
+  type: type
+  template: HTMLInputElement
+
+- id: android.widget.ToggleButton
+  type: type
+  template: HTMLInputElement
+
+- id: android.widget.Switch
+  type: type
+  template: HTMLInputElement
+
+- id: android.widget.CompoundButton
+  type: type
+  template: HTMLInputElement
+
+- id: android.widget.ProgressBar
+  type: type
+  template: HTMLProgressElement
+
+- id: android.widget.VideoView
+  type: type
+  template: HTMLVideoElement
+
+- id: android.widget.ImageView
+  type: type
+  template: HTMLImageElement
+
+- id: com.rd.PageIndicatorView
+  type: type
+  template: HTMLDivElement
+
+- id: android.widget.RatingBar
+  type: type
+  template: HTMLDivElement
+
+- id: androidx.recyclerview.widget.RecyclerView
+  type: type
+  template: HTMLDivElement
+
+- id: android.widget.SeekBar
+  type: type
+  template: HTMLInputElement
+
+- id: android.widget.Spinner
+  type: type
+  template: HTMLSelectElement
+
+- id: android.widget.ViewFlipper
+  type: type
+  template: HTMLDivElement
+
+- id: com.google.android.material.tabs.TabLayout
+  type: type
+  template: HTMLDivElement
+
+- id: androidx.viewpager.widget.ViewPager
+  type: type
+  template: HTMLDivElement

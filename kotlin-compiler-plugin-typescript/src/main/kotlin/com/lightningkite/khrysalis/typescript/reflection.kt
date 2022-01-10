@@ -26,7 +26,7 @@ fun TypescriptTranslator.registerReflection() {
     ) {
         val replacement = replacements.getCall(typedRule.callableReference.resolvedReferenceTarget as FunctionDescriptor, typedRule.expectedReceiver())!!
         replacement.reflectiveName?.let {
-            -it
+            emitTemplate(template = it)
         } ?: run {
             -'"'
             replacement.template.toString().substringBefore("(").substringAfterLast('.')
@@ -43,7 +43,7 @@ fun TypescriptTranslator.registerReflection() {
     ) {
         val replacement = replacements.getGet(typedRule.callableReference.resolvedReferenceTarget as PropertyDescriptor, typedRule.expectedReceiver())!!
         replacement.reflectiveName?.let {
-            -it
+            emitTemplate(template = it)
         } ?: run {
             -'"'
             emitTemplate(
