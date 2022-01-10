@@ -56,7 +56,11 @@ data class FunctionReplacement(
             }
             val hasExplicitTypeArguments = call.call.typeArgumentList != null
             if (this.hasExplicitTypeArguments != null && this.hasExplicitTypeArguments != hasExplicitTypeArguments) println("Not applicable: hasExplicitTypeArguments requires ${this.hasExplicitTypeArguments}, got ${hasExplicitTypeArguments}")
-            if (receiver != null && descriptor.extensionReceiverParameter?.type?.satisfies(receiver) == true) println("Not applicable: receiver requires $receiver, got ${descriptor.extensionReceiverParameter?.type?.fqNameWithoutTypeArgs}")
+            if (receiver != null && descriptor.extensionReceiverParameter?.type?.satisfies(receiver) == false) {
+                println("Not applicable: receiver requires $receiver, got ${descriptor.extensionReceiverParameter?.type?.fqNameWithoutTypeArgs}")
+            } else {
+                println("Applicable: receiver requires $receiver, got ${descriptor.extensionReceiverParameter?.type?.fqNameWithoutTypeArgs}")
+            }
             if (arguments != null) {
                 if (this.arguments.size != descriptor.original.valueParameters.size)
                     println("Not applicable: arguments require ${this.arguments}, got ${descriptor.original.valueParameters.joinToString { it.name.asString() + ": " + it.type.fqNameWithoutTypeArgs }}")
@@ -107,7 +111,7 @@ data class FunctionReplacement(
         }
         val hasExplicitTypeArguments = call.call.typeArgumentList != null
         if (this.hasExplicitTypeArguments != null && this.hasExplicitTypeArguments != hasExplicitTypeArguments) return false
-        if (receiver != null && descriptor.extensionReceiverParameter?.type?.satisfies(receiver) == true) return false
+        if (receiver != null && descriptor.extensionReceiverParameter?.type?.satisfies(receiver) == false) return false
         if (arguments != null) {
             if (this.arguments.size != descriptor.original.valueParameters.size) return false
             if (!this.arguments.zip(descriptor.original.valueParameters)

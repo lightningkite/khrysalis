@@ -11,7 +11,7 @@ class DeclarationManifest(
     val local: MutableMap<String, String> = HashMap()
 ) {
     fun importLine(from: KtFile, fqName: String, name: String): TypescriptImport? {
-        val fromPath = from.virtualFilePath.substringAfter(commonPath)
+        val fromPath = from.virtualFilePath.substringAfter(commonPath).removeSuffix(".kt").plus(".ts")
         return local[fqName]?.let { relFile ->
             if (fromPath == relFile) {
                 null
@@ -19,7 +19,7 @@ class DeclarationManifest(
                 TypescriptImport(
                     path = "./"
                         .plus(
-                            File(relFile).relativeTo(File(fromPath).parentFile).path.removeSuffix(".ts")
+                            File(relFile).relativeTo(File(fromPath).parentFile ?: File(".")).path.removeSuffix(".ts")
                         )
                         .let {
                             if (it.startsWith("./../")) "../" + it.removePrefix("./../")

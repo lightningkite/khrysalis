@@ -2,7 +2,7 @@
 
 - id: java.util.Optional
   type: type
-  template: ~T0~?
+  template: '(~T0~ | null)'
 - id: java.util.Optional.get
   type: call
   template: ~this~!
@@ -17,4 +17,10 @@
   template: '~this~'
 - id: java.util.Optional.empty
   type: call
-  template: 'nil'
+  template: 'null'
+- id: com.lightningkite.rx.kotlin
+  type: get
+  template: '~this~'
+- id: com.lightningkite.rx.optional
+  type: get
+  template: '~this~'

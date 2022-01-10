@@ -8,8 +8,10 @@ import com.lightningkite.khrysalis.typescript.replacements.TypescriptImport
 import com.lightningkite.khrysalis.util.SmartTabWriter
 import com.lightningkite.khrysalis.util.fqNamesToCheck
 import com.lightningkite.khrysalis.util.simpleFqName
+import com.lightningkite.khrysalis.util.walkTopDown
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.psi.*
+import org.jetbrains.kotlin.util.capitalizeDecapitalize.capitalizeAsciiOnly
 import java.io.BufferedWriter
 
 class TypescriptFileEmitter(val translator: TypescriptTranslator, file: KtFile) : FileEmitter(file) {
@@ -19,31 +21,15 @@ class TypescriptFileEmitter(val translator: TypescriptTranslator, file: KtFile) 
     val importedFqs = HashSet<String>()
     val missedImports = HashSet<String>()
 
-    val identifierMap = HashMap<DeclarationDescriptor, String>()
-    val importIdentifierMap = HashMap<TypescriptImport, String>()
     val takenIdentifiers = HashSet<String>()
-    private fun newName(basedOn: String): String {
-        if(takenIdentifiers.add(basedOn)) return basedOn
-        var i = 2
-        while(true) {
-            if(takenIdentifiers.add(basedOn + i.toString())) return basedOn
-            i++
-        }
-    }
-    fun getIdentifier(descriptor: DeclarationDescriptor): String? {
-        return identifierMap.getOrPut(descriptor) {
-            when(descriptor) {
-                is KtNamedFunction -> descriptor.nameAsName?.asString()?.let(::newName) ?: return null
-                is KtClassLikeDeclaration -> descriptor.nameAsName?.asString()?.let(::newName) ?: return null
-                is KtProperty -> descriptor.nameAsName?.asString()?.let(::newName) ?: return null
-                else -> return null
-            }
-        }
-    }
     init {
         // Identifier analysis
         // Local top-level names get top priority
-        file.declarations.forEach { it.resolvedDeclarationToDescriptor?.let { getIdentifier(it) } }
+        file.declarations.forEach { it.resolvedDeclarationToDescriptor?.name?.identifier?.let { takenIdentifiers.add(it) } }
+        file.walkTopDown()
+            .filterIsInstance<KtProperty>()
+            .filter { it.isLocal }
+            .forEach { it.name?.let { takenIdentifiers.add(it) } }
     }
 
     companion object {
@@ -59,7 +45,7 @@ class TypescriptFileEmitter(val translator: TypescriptTranslator, file: KtFile) 
     fun addImport(path: String, identifier: String, asName: String? = null) {
         val fqName = "$path->$identifier"
         if (imports.containsKey(fqName)) return
-        imports[fqName] = TypescriptImport(path, identifier, newName(asName ?: identifier))
+        imports[fqName] = TypescriptImport(path, identifier, asName)
     }
 
     private fun addImportFromFq(fqName: String, name: String): Boolean {
@@ -91,13 +77,37 @@ class TypescriptFileEmitter(val translator: TypescriptTranslator, file: KtFile) 
         } ?: missedImports.add(n)
     }
 
-    override fun addImport(import: Import) {
+    override fun addImport(import: Import): List<StringReplacement> {
         if(import is TypescriptImport) {
-            addImport(
-                path = import.path,
-                identifier = import.identifier,
-                asName = import.asName
-            )
+            val desiredName = import.asName ?: import.identifier
+            val fqName = "${import.path}->${import.identifier}"
+            imports[fqName]?.let { existing ->
+                if((existing.asName ?: existing.identifier) == desiredName)
+                    return listOf()
+                else
+                    return listOf(StringReplacement(desiredName, existing.asName ?: existing.identifier))
+            }
+            if(takenIdentifiers.add(desiredName)) {
+                addImport(
+                    path = import.path,
+                    identifier = import.identifier,
+                    asName = desiredName
+                )
+                return listOf()
+            }
+            var charsToTake = 1
+            while(true) {
+                val newName = import.path.substring(0, charsToTake).replace("-", "") + desiredName.capitalizeAsciiOnly()
+                if(takenIdentifiers.add(newName)) {
+                    addImport(
+                        path = import.path,
+                        identifier = import.identifier,
+                        asName = newName
+                    )
+                    return listOf(StringReplacement(desiredName, newName))
+                }
+                charsToTake++
+            }
         } else throw IllegalArgumentException("TypescriptImport expected, got $import")
     }
 

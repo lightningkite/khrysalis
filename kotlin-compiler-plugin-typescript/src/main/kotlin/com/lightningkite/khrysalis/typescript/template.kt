@@ -59,9 +59,10 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
     parameter: (TemplatePart.Parameter) -> Any? = { value },
     typeParameter: (TemplatePart.TypeParameter) -> Any? = { null },
     parameterByIndex: (TemplatePart.ParameterByIndex) -> Any? = { value },
-    typeParameterByIndex: (TemplatePart.TypeParameterByIndex) -> Any? = { null }
+    typeParameterByIndex: (TemplatePart.TypeParameterByIndex) -> Any? = { null },
+    reifiedTypeParameterByIndex: (TemplatePart.ReifiedTypeParameterByIndex) -> Any? = { null }
 ) {
-    template.imports.forEach { out.addImport(it) }
+    val replacements = template.imports.flatMap { out.addImport(it) }
     dedup(requiresWrapping, type) {
 //        val templateIsThisDot = template.parts.getOrNull(0) is TemplatePart.Receiver &&
 //                template.parts.getOrNull(1).let { it is TemplatePart.Text && it.string.startsWith('.') } &&
@@ -79,7 +80,7 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
         -prefix
         fun onParts(list: List<TemplatePart>, overridden: Map<String, Any?> = mapOf()) {
             fun getRaw(part: TemplatePart): String? = when (part) {
-                is TemplatePart.Text -> part.string
+                is TemplatePart.Text -> replacements.fold(part.string) { r, t -> r.replace(t.from, t.to) }
                 TemplatePart.Receiver -> receiver
                 TemplatePart.DispatchReceiver -> dispatchReceiver
                 TemplatePart.ExtensionReceiver -> extensionReceiver
@@ -91,6 +92,7 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
                 is TemplatePart.LambdaParameterContents -> null
                 is TemplatePart.ParameterByIndex -> parameterByIndex(part)
                 is TemplatePart.TypeParameterByIndex -> typeParameterByIndex(part)
+                is TemplatePart.ReifiedTypeParameterByIndex -> reifiedTypeParameterByIndex(part)
                 else -> null
             }?.let {
                 when (it) {
@@ -101,7 +103,7 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
             }
             loop@ for (part in list) {
                 when (part) {
-                    is TemplatePart.Text -> -part.string
+                    is TemplatePart.Text -> -replacements.fold(part.string) { r, t -> r.replace(t.from, t.to) }
                     TemplatePart.Receiver -> deduplicateEmit(receiver)
                     TemplatePart.DispatchReceiver -> deduplicateEmit(dispatchReceiver)
                     TemplatePart.ExtensionReceiver -> deduplicateEmit(extensionReceiver)
@@ -148,6 +150,7 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
                     }
                     is TemplatePart.TypeParameter -> -typeParameter(part)
                     is TemplatePart.TypeParameterByIndex -> -typeParameterByIndex(part)
+                    is TemplatePart.ReifiedTypeParameterByIndex -> -reifiedTypeParameterByIndex(part)
                 }
             }
         }
@@ -166,7 +169,8 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
     parameter: (TemplatePart.Parameter) -> Any? = { value },
     typeParameter: (TemplatePart.TypeParameter) -> Any? = { null },
     parameterByIndex: (TemplatePart.ParameterByIndex) -> Any? = { value },
-    typeParameterByIndex: (TemplatePart.TypeParameterByIndex) -> Any? = { null }
+    typeParameterByIndex: (TemplatePart.TypeParameterByIndex) -> Any? = { null },
+    reifiedTypeParameterByIndex: (TemplatePart.ReifiedTypeParameterByIndex) -> Any? = { null }
 ) {
     emitTemplate(
         requiresWrapping = false,
@@ -183,7 +187,8 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
         parameter = parameter,
         typeParameter = typeParameter,
         parameterByIndex = parameterByIndex,
-        typeParameterByIndex = typeParameterByIndex
+        typeParameterByIndex = typeParameterByIndex,
+        reifiedTypeParameterByIndex = reifiedTypeParameterByIndex
     )
 }
 

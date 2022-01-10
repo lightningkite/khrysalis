@@ -33,6 +33,9 @@ sealed class TemplatePart {
     data class TypeParameterByIndex(val index: Int) : TemplatePart() {
         override fun toString(): String = "~T$index~"
     }
+    data class ReifiedTypeParameterByIndex(val index: Int) : TemplatePart() {
+        override fun toString(): String = "~R$index~"
+    }
 
     interface TemplatePartIsParameter
 }

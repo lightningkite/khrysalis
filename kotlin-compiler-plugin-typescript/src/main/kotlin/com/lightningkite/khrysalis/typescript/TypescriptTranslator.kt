@@ -32,6 +32,13 @@ class TypescriptTranslator(
 
     var stubMode: Boolean = false
 
+    val identifierMappings = HashMap<DeclarationDescriptor, String>()
+    inline fun withName(ktName: DeclarationDescriptor, tsName: String, action: (String)->Unit){
+        identifierMappings[ktName] = tsName
+        action(tsName)
+        identifierMappings.remove(ktName)
+    }
+
     data class ReceiverAssignment(val declaration: DeclarationDescriptor, val tsName: String)
 
     val _receiverStack = ArrayList<ReceiverAssignment>()

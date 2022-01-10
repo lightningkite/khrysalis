@@ -24,9 +24,11 @@ fun TypescriptTranslator.registerIdentifiers(){
 //            else -> text
 //        }
 //    }
-    handle<DeclarationDescriptor>(
+    handle<KtNameReferenceExpression>(
+        condition = { typedRule.resolvedReferenceTarget?.let { identifierMappings.containsKey(it) } == true },
+        priority = 100_000,
         action = {
-            -out.getIdentifier(descriptor = typedRule)
+            -identifierMappings[typedRule.resolvedReferenceTarget!!]!!
         }
     )
     handle<KtNameReferenceExpression>(
