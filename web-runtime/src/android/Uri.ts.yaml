@@ -1,0 +1,20 @@
+---
+- id: android.net.Uri
+  type: type
+  template: File
+
+- id: android.net.Uri.lastPathSegment
+  type: get
+  template: ~this~.name
+
+- id: android.graphics.Bitmap
+  type: type
+  template: ImageBitmap
+
+- id: android.net.Uri.equals
+  type: call
+  template: ~this~ === ~0~
+
+- id: android.graphics.BitmapFactory.decodeByteArray
+  type: call
+  template: 'await createImageBitmap(~0~)'

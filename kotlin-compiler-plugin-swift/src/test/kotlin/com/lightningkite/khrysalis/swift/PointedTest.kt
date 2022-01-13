@@ -12,7 +12,7 @@ class PointedTest {
     @Test
     fun test() {
 //        println(swiftInstallation())
-        val it = File("../conversionTestData").resolve("testReflection.kt")
+        val it = File("../conversionTestData").resolve("testFunctions.kt")
         val ktResult = ExecuteFileTester.kotlin(it, true)
         val jsResult = ExecuteFileTester.swiftTranslated(it)
         Assert.assertEquals(ktResult, jsResult)
@@ -20,5 +20,7 @@ class PointedTest {
 }
 
 /*
-test[testOperators.kt]
+test[testTime.kt]
+test[testCastRule.kt]
+test[testFunctions.kt]
  */

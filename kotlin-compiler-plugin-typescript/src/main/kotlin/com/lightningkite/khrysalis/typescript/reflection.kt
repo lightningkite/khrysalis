@@ -53,7 +53,6 @@ fun TypescriptTranslator.registerReflection() {
         }
     }
     handle<KtCallableReferenceExpression> {
-        -"/**/"
         -'"'
         -typedRule.callableReference.getIdentifier()?.text?.safeJsIdentifier()
         -'"'

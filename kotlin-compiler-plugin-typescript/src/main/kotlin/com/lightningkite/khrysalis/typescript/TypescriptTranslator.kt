@@ -1,7 +1,7 @@
 package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.analysis.*
-import com.lightningkite.khrysalis.generic.PartialTranslatorByType
+import com.lightningkite.khrysalis.generic.KotlinTranslator
 import com.lightningkite.khrysalis.generic.TranslatorInterface
 import com.lightningkite.khrysalis.replacements.Replacements
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
@@ -26,7 +26,7 @@ class TypescriptTranslator(
     val commonPath: String,
     val collector: MessageCollector? = null,
     val replacements: Replacements
-) : PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>(), TranslatorInterface<TypescriptFileEmitter, Unit> {
+) : KotlinTranslator<TypescriptFileEmitter>() {
 
     val declarations: DeclarationManifest = DeclarationManifest(commonPath)
 
@@ -96,7 +96,8 @@ class TypescriptTranslator(
         }
     }
 
-    override fun emitFinalDefault(identifier: Class<*>, rule: Any, out: TypescriptFileEmitter) {
+    override fun emitFinalDefault(rule: Any, out: TypescriptFileEmitter) {
+        println("emitFinalDefault $rule ")
         when (rule) {
             is Array<*> -> rule.forEach { if(it != null) translate(it, out) }
             is Iterable<*> -> rule.forEach { if(it != null) translate(it, out) }
@@ -114,18 +115,6 @@ class TypescriptTranslator(
             is PsiElement -> rule.allChildren.forEach { translate(it, out) }
             is Function0<*> -> rule.invoke()
         }
-    }
-
-    override fun translate(identifier: Class<*>, rule: Any, out: TypescriptFileEmitter, afterPriority: Int) {
-//        if(rule is KtExpression){
-//            out.append("/*${rule.resolvedUsedAsExpression}*/")
-//        }
-        super.translate(identifier, rule, out, afterPriority)
-    }
-    override fun emitDefault(identifier: Class<*>, rule: Any, out: TypescriptFileEmitter): Unit {
-        return identifier.superclass?.let {
-            translate(it, rule, out)
-        } ?: emitFinalDefault(identifier, rule, out)
     }
 
     val terminalMap = mapOf(
@@ -152,6 +141,7 @@ class TypescriptTranslator(
         registerSpecialLet()
         registerJUnit()
         registerViewBinding()
+        registerCast()
 
         handle<LeafPsiElement>(condition = { typedRule.text in terminalMap.keys }, priority = 1) {
             out.append(terminalMap[typedRule.text])

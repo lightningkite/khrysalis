@@ -1,7 +1,7 @@
 package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.generic.PartialTranslator
-import com.lightningkite.khrysalis.generic.PartialTranslatorByType
+import com.lightningkite.khrysalis.generic.KotlinTranslator
 import com.lightningkite.khrysalis.generic.line
 import com.lightningkite.khrysalis.typescript.manifest.declaresPrefix
 import com.lightningkite.khrysalis.replacements.Template
@@ -406,7 +406,7 @@ fun TypescriptTranslator.registerType() {
     )
 }
 
-fun PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByType<*>.emitIsExpression(
+fun KotlinTranslator<TypescriptFileEmitter>.ContextByType<*>.emitIsExpression(
     expression: Any?,
     resolvedType: KotlinType
 ) {

@@ -1,6 +1,8 @@
 package com.lightningkite.khrysalis.typescript
 
+import com.fasterxml.jackson.databind.ObjectMapper
 import com.lightningkite.khrysalis.kotlin.ExecuteFileTester
+import com.lightningkite.khrysalis.replacements.Replacements
 import org.junit.Assert
 import org.junit.Test
 import org.junit.runner.RunWith
@@ -11,7 +13,8 @@ class PointedTest {
 
     @Test
     fun test() {
-        val it = File("../conversionTestData").resolve("testTime.kt")
+//        TypescriptTranslator("asdf", "asdf", null, Replacements(ObjectMapper()))
+        val it = File("../conversionTestData").resolve("testEnums.kt")
         println(it.absolutePath)
         val ktResult = ExecuteFileTester.kotlin(it, true)
         val jsResult = ExecuteFileTester.tsTranslated(it)
@@ -19,6 +22,5 @@ class PointedTest {
     }
 }
 
-//test[testClasses.kt]
-//test[testIfAndWhen.kt]
-//test[testExceptions.kt]
+//test[testCodable.kt]
+//test[testEnums.kt]

@@ -58,6 +58,7 @@ fun ExecuteFileTester.ts(sourceFile: File, clean: Boolean): String = caching(sou
     outputFile.parentFile.mkdirs()
 
     println("Compiling ${tsTestDir.absolutePath}")
+    println(sourceFile.readText())
 
     mainFile.writeText("import { main } from \"./${sourceFile.nameWithoutExtension}\"\nmain()")
     if (0 == ProcessBuilder()

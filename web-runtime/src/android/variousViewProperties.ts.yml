@@ -1,0 +1,53 @@
+---
+
+- id: android.widget.SeekBar.min
+  type: get
+  template: 'parseInt(~this~.min)'
+- id: android.widget.SeekBar.min
+  type: set
+  template: '~this~.min = (~value~).toString()'
+
+- id: android.widget.SeekBar.max
+  type: get
+  template: 'parseInt(~this~.max)'
+- id: android.widget.SeekBar.max
+  type: set
+  template: '~this~.max = (~value~).toString()'
+
+- id: android.widget.RatingBar.numStars
+  type: get
+  template: 'parseInt(~this~.max)'
+- id: android.widget.RatingBar.numStars
+  type: set
+  template: '~this~.max = (~value~).toString()'
+
+- id: android.widget.RatingBar.stepSize
+  type: get
+  template: 'parseFloat(~this~.step)'
+- id: android.widget.RatingBar.stepSize
+  type: set
+  template: '~this~.step = (~value~).toString()'
+
+
+- id: android.widget.RatingBar.rating
+  type: get
+  reflectiveName: '"valueAsNumber"'
+  template: '~this~.valueAsNumber'
+- id: android.widget.RatingBar.rating
+  type: set
+  reflectiveName: '"valueAsNumber"'
+  template: '~this~.valueAsNumber = ~value~'
+
+- id: android.widget.SeekBar.progress
+  type: get
+  reflectiveName: '"valueAsNumber"'
+  template: '~this~.valueAsNumber'
+- id: android.widget.SeekBar.progress
+  type: set
+  reflectiveName: '"valueAsNumber"'
+  template: '~this~.valueAsNumber = ~value~'
+
+
+- id: android.widget.ImageView.setImageResource
+  type: call
+  template: '~this~.src = "drawables/" + ~0~.substring(9)'

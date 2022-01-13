@@ -14,7 +14,7 @@ import com.lightningkite.khrysalis.analysis.*
 import com.lightningkite.khrysalis.typescript.replacements.TypescriptImport
 
 
-fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByType<T>.dedup(
+fun <T : Any> KotlinTranslator<TypescriptFileEmitter>.ContextByType<T>.dedup(
     requireWrapping: Boolean = false,
     type: Any? = null,
     cannotDedup: Boolean = false,
@@ -44,7 +44,7 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
     }
 }
 
-fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByType<T>.emitTemplate(
+fun <T : Any> KotlinTranslator<TypescriptFileEmitter>.ContextByType<T>.emitTemplate(
     requiresWrapping: Boolean,
     type: Any? = null,
     ensureReceiverNotNull: Boolean = false,
@@ -158,7 +158,7 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
     }
 }
 
-fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByType<T>.emitTemplate(
+fun <T : Any> KotlinTranslator<TypescriptFileEmitter>.ContextByType<T>.emitTemplate(
     template: Template,
     receiver: Any? = null,
     dispatchReceiver: Any? = receiver,
@@ -282,7 +282,7 @@ fun hasNewlineBeforeAccess(typedRule: KtQualifiedExpression): Boolean {
         ?.textContains('\n') == true
 }
 
-fun <T : KtQualifiedExpression> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByType<T>.insertNewlineBeforeAccess() {
+fun <T : KtQualifiedExpression> KotlinTranslator<TypescriptFileEmitter>.ContextByType<T>.insertNewlineBeforeAccess() {
     if (hasNewlineBeforeAccess(typedRule)) {
         -"\n"
     }

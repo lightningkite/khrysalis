@@ -1,3 +1,0 @@
-khrysalis-runtime
-
-com.lightningkite.khrysalis.colorValue

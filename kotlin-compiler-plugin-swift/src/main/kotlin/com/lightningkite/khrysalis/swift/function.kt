@@ -9,7 +9,7 @@ import org.jetbrains.kotlin.psi.psiUtil.*
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
 import org.jetbrains.kotlin.types.typeUtil.contains
 import org.jetbrains.kotlin.types.typeUtil.isTypeParameter
-import com.lightningkite.khrysalis.generic.PartialTranslatorByType
+import com.lightningkite.khrysalis.generic.KotlinTranslator
 import com.lightningkite.khrysalis.replacements.Template
 import com.lightningkite.khrysalis.replacements.TemplatePart
 import com.lightningkite.khrysalis.util.fqNameWithoutTypeArgs
@@ -277,7 +277,7 @@ fun SwiftTranslator.registerFunction() {
         }
     )
 
-    fun PartialTranslatorByType<SwiftFileEmitter, Unit, Any>.ContextByType<*>.maybeWrapCall(
+    fun KotlinTranslator<SwiftFileEmitter>.ContextByType<*>.maybeWrapCall(
         call: ResolvedCall<out CallableDescriptor>,
         action: () -> Unit
     ) {

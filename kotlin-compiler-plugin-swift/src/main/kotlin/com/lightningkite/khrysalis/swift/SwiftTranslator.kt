@@ -1,6 +1,6 @@
 package com.lightningkite.khrysalis.swift
 
-import com.lightningkite.khrysalis.generic.PartialTranslatorByType
+import com.lightningkite.khrysalis.generic.KotlinTranslator
 import com.lightningkite.khrysalis.generic.TranslatorInterface
 import com.lightningkite.khrysalis.analysis.*
 import com.lightningkite.khrysalis.replacements.Replacements
@@ -29,7 +29,7 @@ class SwiftTranslator(
     val commonPath: String,
     val collector: MessageCollector? = null,
     val replacements: Replacements
-) : PartialTranslatorByType<SwiftFileEmitter, Unit, Any>(), TranslatorInterface<SwiftFileEmitter, Unit>{
+) : KotlinTranslator<SwiftFileEmitter>() {
 
     val fqToImport = HashMap<String, String>()
 
@@ -94,7 +94,7 @@ class SwiftTranslator(
         return entry?.tsName ?: "self"
     }
 
-    override fun emitFinalDefault(identifier: Class<*>, rule: Any, out: SwiftFileEmitter) {
+    override fun emitFinalDefault(rule: Any, out: SwiftFileEmitter) {
         when (rule) {
             is Array<*> -> rule.forEach { if (it != null) translate(it, out) }
             is Iterable<*> -> rule.forEach { if (it != null) translate(it, out) }
@@ -112,18 +112,6 @@ class SwiftTranslator(
             is PsiElement -> rule.allChildren.forEach { translate(it, out) }
             is Function0<*> -> rule.invoke()
         }
-    }
-
-    override fun translate(identifier: Class<*>, rule: Any, out: SwiftFileEmitter, afterPriority: Int) {
-//        if(rule is KtExpression){
-//            out.append("/*${rule.resolvedUsedAsExpression}*/")
-//        }
-        super.translate(identifier, rule, out, afterPriority)
-    }
-    override fun emitDefault(identifier: Class<*>, rule: Any, out: SwiftFileEmitter): Unit {
-        return identifier.superclass?.let {
-            translate(it, rule, out)
-        } ?: emitFinalDefault(identifier, rule, out)
     }
 
     init {
@@ -146,6 +134,7 @@ class SwiftTranslator(
         registerException()
         registerReflection()
         registerViewBinding()
+        registerCast()
     }
 
     inline fun <reified T> PsiElement.parentIfType(): T? = parent as? T
@@ -154,7 +143,7 @@ class SwiftTranslator(
         return replacements.requiresMutable(this)
     }
 
-    fun PartialTranslatorByType<SwiftFileEmitter, Unit, Any>.ContextByType<*>.runWithTypeHeader(
+    fun KotlinTranslator<SwiftFileEmitter>.ContextByType<*>.runWithTypeHeader(
         on: KtExpression
     ) {
         val type = on.resolvedExpressionTypeInfo?.type

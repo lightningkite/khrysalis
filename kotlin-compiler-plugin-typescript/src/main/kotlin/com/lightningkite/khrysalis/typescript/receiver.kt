@@ -1,6 +1,6 @@
 package com.lightningkite.khrysalis.typescript
 
-import com.lightningkite.khrysalis.generic.PartialTranslatorByType
+import com.lightningkite.khrysalis.generic.KotlinTranslator
 import com.lightningkite.khrysalis.generic.line
 import com.lightningkite.khrysalis.util.simpleFqName
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
@@ -62,7 +62,7 @@ fun TypescriptTranslator.registerReceiver() {
 }
 
 
-inline fun PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByType<*>.nullWrapAction(
+inline fun KotlinTranslator<TypescriptFileEmitter>.ContextByType<*>.nullWrapAction(
     swiftTranslator: TypescriptTranslator,
     receiver: Any?,
     skip: Boolean,

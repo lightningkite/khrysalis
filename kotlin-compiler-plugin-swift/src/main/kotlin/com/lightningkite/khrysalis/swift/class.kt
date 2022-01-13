@@ -1,6 +1,6 @@
 package com.lightningkite.khrysalis.swift
 
-import com.lightningkite.khrysalis.generic.PartialTranslatorByType
+import com.lightningkite.khrysalis.generic.KotlinTranslator
 import com.lightningkite.khrysalis.analysis.*
 import com.lightningkite.khrysalis.swift.replacements.SwiftImport
 import com.lightningkite.khrysalis.util.forEachBetween
@@ -37,7 +37,7 @@ fun KtModifierListOwner.swiftVisibility(): Any? = when {
 
 fun SwiftTranslator.registerClass() {
 
-    fun PartialTranslatorByType<SwiftFileEmitter, Unit, Any>.ContextByType<*>.writeClassHeader(
+    fun KotlinTranslator<SwiftFileEmitter>.ContextByType<*>.writeClassHeader(
         on: KtClassOrObject
     ) {
         val typedRule = on
@@ -769,7 +769,7 @@ fun SwiftTranslator.registerClass() {
 }
 
 private fun <T : KtClassOrObject> handleConstructor(
-    contextByType: PartialTranslatorByType<SwiftFileEmitter, Unit, Any>.ContextByType<T>,
+    contextByType: KotlinTranslator<SwiftFileEmitter>.ContextByType<T>,
     parentClassName: Any?,
     swiftTranslator: SwiftTranslator
 ) = with(swiftTranslator) {

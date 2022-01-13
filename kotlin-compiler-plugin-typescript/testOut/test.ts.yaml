@@ -1,0 +1,4 @@
+- type: cast
+  from: com.test.castrule.TypeA
+  to: com.test.castrule.TypeB
+  template: '/*S*/ ~this~ /*E*/'

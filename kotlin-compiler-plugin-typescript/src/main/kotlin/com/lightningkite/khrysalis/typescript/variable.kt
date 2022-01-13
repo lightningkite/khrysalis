@@ -471,7 +471,6 @@ fun TypescriptTranslator.registerVariable() {
         condition = { typedRule.property is SyntheticFieldDescriptor },
         priority = 1_000_000,
         action = {
-            println("Type: ${typedRule.property}")
             val prop = typedRule.nameReferenceExpression.parentOfType<KtPropertyAccessor>()!!
             if (prop.property.isMember) {
                 -"this."

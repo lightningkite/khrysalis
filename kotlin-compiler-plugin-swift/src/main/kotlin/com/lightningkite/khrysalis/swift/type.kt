@@ -54,6 +54,9 @@ var writingParameter: Int
 
 fun KotlinType.worksAsSwiftConstraint(): Boolean {
     if (this.fqNameWithoutTypeArgs == "kotlin.Any") return false
+    (constructor.declarationDescriptor as? TypeParameterDescriptor)?.upperBounds?.let {
+        if(it.all { it.fqNameWithoutTypeArgs == "kotlin.Any" }) return false
+    }
     return when (this) {
         is WrappedType -> false
         is SimpleType -> true

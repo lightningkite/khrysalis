@@ -39,7 +39,7 @@ fun TypescriptTranslator.registerIdentifiers(){
         priority = 1013,
         action = {
             out.addImport((typedRule.resolvedReferenceTarget!!))
-            -typedRule.resolvedReferenceTarget!!.containingDeclaration
+            -typedRule.resolvedReferenceTarget!!.containingDeclaration?.name?.identifier
             -".Companion.INSTANCE"
         }
     )

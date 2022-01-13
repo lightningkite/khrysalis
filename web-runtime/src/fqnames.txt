@@ -5,11 +5,13 @@ com.lightningkite.khrysalis.JsonList
 com.lightningkite.khrysalis.JsonList
 com.lightningkite.khrysalis.JsonMap
 com.lightningkite.khrysalis.JsonMap
+com.lightningkite.khrysalis.colorValue
 kotlin.collections.getOrPut
 kotlin.collections.plus
 kotlin.collections.putAll
 kotlin.collections.mapValues
 kotlin.collections.filter
+kotlin.collections.minus
 kotlin.Comparator
 kotlin.collections.single
 kotlin.collections.singleOrNull

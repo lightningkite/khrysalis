@@ -19,7 +19,7 @@ class Replacements(var mapper: ObjectMapper) {
     val sets: HashMap<String, TreeSet<SetReplacement>> = HashMap()
     val types: HashMap<String, TreeSet<TypeReplacement>> = HashMap()
     val typeRefs: HashMap<String, TreeSet<TypeRefReplacement>> = HashMap()
-    val casts: HashMap<String, TreeSet<CastRule>> = HashMap()
+    val casts: HashMap<Pair<String, String>, TreeSet<CastRule>> = HashMap()
     val elements: HashMap<String, TreeSet<ElementReplacement>> = HashMap()
     val attributes: HashMap<String, TreeSet<AttributeReplacement>> = HashMap()
 
@@ -185,12 +185,12 @@ class Replacements(var mapper: ObjectMapper) {
             }
 
     fun getImplicitCast(from: KotlinType, to: KotlinType): CastRule? {
-        casts[from.fqNameWithoutTypeArgs + "->" + to.fqNameWithoutTypeArgs]
+        casts[from.fqNameWithoutTypeArgs to to.fqNameWithoutTypeArgs]
             ?.find { it.passes(from, to) }
             ?.let { return it }
         val detailedPossibilities = from.supertypes().filter { it.supertypes().contains(to) }
         for (d in detailedPossibilities) {
-            casts[d.fqNameWithoutTypeArgs + "->" + to.fqNameWithoutTypeArgs]
+            casts[d.fqNameWithoutTypeArgs to to.fqNameWithoutTypeArgs]
                 ?.find { it.passes(d, to) }
                 ?.let { return it }
         }
@@ -198,12 +198,12 @@ class Replacements(var mapper: ObjectMapper) {
     }
 
     fun getExplicitCast(from: KotlinType, to: KotlinType): CastRule? {
-        casts[from.fqNameWithoutTypeArgs + "->" + to.fqNameWithoutTypeArgs]
+        casts[from.fqNameWithoutTypeArgs to to.fqNameWithoutTypeArgs]
             ?.find { it.passes(from, to) }
             ?.let { return it }
         val detailedPossibilities = to.supertypes().filter { it.supertypes().contains(from) }
         for (d in detailedPossibilities) {
-            casts[d.fqNameWithoutTypeArgs + "->" + to.fqNameWithoutTypeArgs]
+            casts[d.fqNameWithoutTypeArgs to to.fqNameWithoutTypeArgs]
                 ?.find { it.passes(from, d) }
                 ?.let { return it }
         }
@@ -225,6 +225,7 @@ class Replacements(var mapper: ObjectMapper) {
             is TypeRefReplacement -> typeRefs.getOrPut(item.id) { TreeSet() }.merge(item)
             is ElementReplacement -> elements.getOrPut(item.id) { TreeSet() }.merge(item)
             is AttributeReplacement -> attributes.getOrPut(item.id) { TreeSet() }.merge(item)
+            is CastRule -> casts.getOrPut(item.from to item.to) { TreeSet() }.merge(item)
         }
     }
 
@@ -235,6 +236,7 @@ class Replacements(var mapper: ObjectMapper) {
     }
 
     operator fun plusAssign(yaml: File) {
+        println("Loading replacement rules from $yaml")
         mapper.readValue<List<ReplacementRule>>(yaml).forEach {
             this += it
         }
