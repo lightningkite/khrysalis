@@ -378,7 +378,7 @@ fun TypescriptTranslator.registerType() {
                     -">("
                     -typedRule.left
                     -", \""
-                    -resolvedType.fqNameWithoutTypeArgs.split('.').joinToString("") { it.capitalize() }
+                    -resolvedType.fqNameWithoutTypeArgs.substringAfterLast('.')
                     -"\")"
                 }
                 resolvedType.isPrimitive() -> {
@@ -418,7 +418,7 @@ fun KotlinTranslator<TypescriptFileEmitter>.ContextByType<*>.emitIsExpression(
             -">("
             -expression
             -", \""
-            -resolvedType.fqNameWithoutTypeArgs.split('.').joinToString("") { it.capitalize() }
+            -resolvedType.fqNameWithoutTypeArgs.substringAfterLast('.')
             -"\")"
         }
         resolvedType.isPrimitive() -> {

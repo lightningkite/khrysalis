@@ -318,7 +318,7 @@ fun TypescriptTranslator.registerFunction() {
             val prop = nre.resolvedReferenceTarget as? ValueDescriptor
             if (prop != null) {
                 -VirtualGet(
-                    receiver = typedRule.receiverExpression,
+                    receiver = typedRule.replacementReceiverExpression,
                     nameReferenceExpression = nre,
                     property = prop,
                     receiverType = typedRule.receiverExpression.resolvedExpressionTypeInfo?.type,
@@ -374,7 +374,7 @@ fun TypescriptTranslator.registerFunction() {
             -ArgumentsList(
                 on = f,
                 resolvedCall = callExp.resolvedCall!!,
-                prependArguments = listOf(typedRule.receiverExpression)
+                prependArguments = listOf(typedRule.replacementReceiverExpression)
             )
         }
     )
@@ -406,7 +406,7 @@ fun TypescriptTranslator.registerFunction() {
             val f = callExp.resolvedCall!!.candidateDescriptor as FunctionDescriptor
             nullWrapAction(
                 swiftTranslator = this@registerFunction,
-                receiver = typedRule.receiverExpression,
+                receiver = typedRule.replacementReceiverExpression,
                 skip = false,
                 type = typedRule.resolvedExpressionTypeInfo?.type,
                 isExpression = typedRule.actuallyCouldBeExpression
@@ -435,7 +435,7 @@ fun TypescriptTranslator.registerFunction() {
 
             nullWrapAction(
                 swiftTranslator = this@registerFunction,
-                receiver = typedRule.receiverExpression,
+                receiver = typedRule.replacementReceiverExpression,
                 skip = false,
                 type = typedRule.resolvedExpressionTypeInfo?.type,
                 isExpression = typedRule.actuallyCouldBeExpression
@@ -515,7 +515,7 @@ fun TypescriptTranslator.registerFunction() {
                 template = rule.template,
                 receiver = typedRule.left,
                 dispatchReceiver = typedRule.operationReference.getTsReceiver() ?: typedRule.left,
-                allParameters = typedRule.right,
+                allParameters = { typedRule.right },
                 parameter = resolvedCall.template_parameter,
                 typeParameter = resolvedCall.template_typeParameter,
                 parameterByIndex = resolvedCall.template_parameterByIndex,
@@ -542,15 +542,10 @@ fun TypescriptTranslator.registerFunction() {
                 requiresWrapping = typedRule.actuallyCouldBeExpression,
                 type = typedRule.resolvedExpressionTypeInfo?.type,
                 template = rule.template,
-                receiver = typedRule.receiverExpression,
+                receiver = typedRule.replacementReceiverExpression,
                 dispatchReceiver = nre.getTsReceiver(),
-                extensionReceiver = typedRule.receiverExpression,
-                allParameters = ArrayList<Any?>().apply {
-                    callExp.valueArguments.forEachBetween(
-                        forItem = { add(it) },
-                        between = { add(", ") }
-                    )
-                },
+                extensionReceiver = typedRule.replacementReceiverExpression,
+                allParameters = resolvedCall.template_allParameter,
                 parameter = resolvedCall.template_parameter,
                 typeParameter = resolvedCall.template_typeParameter,
                 parameterByIndex = resolvedCall.template_parameterByIndex,
@@ -576,15 +571,10 @@ fun TypescriptTranslator.registerFunction() {
                 type = typedRule.resolvedExpressionTypeInfo?.type?.makeNullable(),
                 ensureReceiverNotNull = true,
                 template = rule.template,
-                receiver = typedRule.receiverExpression,
+                receiver = typedRule.replacementReceiverExpression,
                 dispatchReceiver = nre.getTsReceiver(),
-                extensionReceiver = typedRule.receiverExpression,
-                allParameters = ArrayList<Any?>().apply {
-                    callExp.valueArguments.forEachBetween(
-                        forItem = { add(it) },
-                        between = { add(", ") }
-                    )
-                },
+                extensionReceiver = typedRule.replacementReceiverExpression,
+                allParameters = resolvedCall.template_allParameter,
                 parameter = resolvedCall.template_parameter,
                 typeParameter = resolvedCall.template_typeParameter,
                 parameterByIndex = resolvedCall.template_parameterByIndex,
@@ -610,12 +600,7 @@ fun TypescriptTranslator.registerFunction() {
                 template = rule.template,
                 receiver = nre.getTsReceiver(),
                 dispatchReceiver = nre.getTsReceiver(),
-                allParameters = ArrayList<Any?>().apply {
-                    typedRule.valueArguments.forEachBetween(
-                        forItem = { add(it) },
-                        between = { add(", ") }
-                    )
-                },
+                allParameters = resolvedCall.template_allParameter,
                 parameter = resolvedCall.template_parameter,
                 typeParameter = resolvedCall.template_typeParameter,
                 parameterByIndex = resolvedCall.template_parameterByIndex,

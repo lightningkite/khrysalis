@@ -103,7 +103,7 @@ fun TypescriptTranslator.registerIdentifiers(){
         action = {
             val referencedClass = ((typedRule.selectorExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget as? ClassDescriptor)!!
             val rule = replacements.getGet(referencedClass)!!
-            emitTemplate(rule.template, receiver = typedRule.receiverExpression)
+            emitTemplate(rule.template, receiver = typedRule.replacementReceiverExpression)
         }
     )
 

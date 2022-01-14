@@ -14,7 +14,7 @@ class PointedTest {
     @Test
     fun test() {
 //        TypescriptTranslator("asdf", "asdf", null, Replacements(ObjectMapper()))
-        val it = File("../conversionTestData").resolve("testEnums.kt")
+        val it = File("../conversionTestData").resolve("testCastRule.kt")
         println(it.absolutePath)
         val ktResult = ExecuteFileTester.kotlin(it, true)
         val jsResult = ExecuteFileTester.tsTranslated(it)

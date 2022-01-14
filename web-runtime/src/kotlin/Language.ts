@@ -89,11 +89,11 @@ export function checkReified<T>(item: any, fullType: Array<any>): item is T {
 }
 
 export function checkIsInterface<T>(item: any, key: string): item is T {
-    return (item.constructor as any)["implementsInterface" + key]
+    return (item.constructor as any)["implements" + key]
 }
 
 export function tryCastInterface<T>(item: any, key: string): T | null {
-    if ((item.constructor as any)["implementsInterface" + key]) {
+    if ((item.constructor as any)["implements" + key]) {
         return item as T;
     } else {
         return null;

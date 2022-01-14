@@ -28,16 +28,17 @@ abstract class KotlinTranslator<OUT : Any> {
                 else it.dropWhile { it != afterRule }.drop(1)
             }
             .firstOrNull { it.condition(ContextByType(out, rule, it)) }
-            ?.priority
-            ?.let { priorityLock ->
+            ?.let { ruleLock ->
                 handlers[rule::class.java]
                     .map { it.any }
                     .let{
                         if(afterRule == null) it
                         else it.dropWhile { it != afterRule }.drop(1)
                     }
-                    .filter { it.priority == priorityLock && it.condition(ContextByType(out, rule, it)) }
-                    .single()
+                    .filter { it.priority == ruleLock.priority && it.hierarchyHeight == ruleLock.hierarchyHeight && it.condition(ContextByType(out, rule, it)) }
+                    .let {
+                        it.singleOrNull() ?: throw IllegalStateException("Multiple matching rules of equal priority: ${it.map{ "${it.hierarchyHeight} - ${it.priority} - ${it.action}" }.joinToString()}")
+                    }
                     .let {
                         it.action(ContextByType(out, rule, it))
                     }

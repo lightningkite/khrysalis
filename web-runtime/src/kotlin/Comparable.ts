@@ -50,9 +50,9 @@ declare global {
     interface Boolean extends Comparable<Boolean> {
     }
 }
-Object.defineProperty(Number.prototype, "implementsInterfaceKotlinComparable", {value: true})
-Object.defineProperty(String.prototype, "implementsInterfaceKotlinComparable", {value: true})
-Object.defineProperty(Boolean.prototype, "implementsInterfaceKotlinComparable", {value: true})
+Object.defineProperty(Number.prototype, "implementsComparable", {value: true})
+Object.defineProperty(String.prototype, "implementsComparable", {value: true})
+Object.defineProperty(Boolean.prototype, "implementsComparable", {value: true})
 
 export class Range<T> {
     start: T;

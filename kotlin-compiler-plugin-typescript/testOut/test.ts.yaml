@@ -2,3 +2,6 @@
   from: com.test.castrule.TypeA
   to: com.test.castrule.TypeB
   template: '/*S*/ ~this~ /*E*/'
+- type: call
+  id: com.test.castrule.starReplace
+  template: 'starReplace(~*~)'

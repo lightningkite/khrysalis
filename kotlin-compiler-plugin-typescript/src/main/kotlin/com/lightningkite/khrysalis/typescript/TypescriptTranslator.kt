@@ -97,7 +97,6 @@ class TypescriptTranslator(
     }
 
     override fun emitFinalDefault(rule: Any, out: TypescriptFileEmitter) {
-        println("emitFinalDefault $rule ")
         when (rule) {
             is Array<*> -> rule.forEach { if(it != null) translate(it, out) }
             is Iterable<*> -> rule.forEach { if(it != null) translate(it, out) }

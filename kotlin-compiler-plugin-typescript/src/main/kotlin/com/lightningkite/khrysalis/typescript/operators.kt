@@ -90,12 +90,7 @@ fun TypescriptTranslator.registerOperators() {
                 template = rule.template,
                 receiver = typedRule.arrayExpression,
                 dispatchReceiver = typedRule.dispatchReceiver,
-                allParameters = ArrayList<Any?>().apply {
-                    typedRule.indexExpressions.forEachBetween(
-                        forItem = { add(it) },
-                        between = { add(", ") }
-                    )
-                },
+                allParameters = resolvedCall.template_allParameter,
                 parameter = resolvedCall.template_parameter,
                 typeParameter = resolvedCall.template_typeParameter,
                 parameterByIndex = {
@@ -225,12 +220,7 @@ fun TypescriptTranslator.registerOperators() {
                 receiver = tempArray,
                 dispatchReceiver = arrayAccess.getTsReceiver(),
                 value = right,
-                allParameters = ArrayList<Any?>().apply {
-                    tempIndexes.forEachBetween(
-                        forItem = { add(it) },
-                        between = { add(", ") }
-                    )
-                },
+                allParameters = resolvedCall.template_allParameter,
                 parameter = resolvedCall.template_parameter,
                 typeParameter = resolvedCall.template_typeParameter,
                 parameterByIndex = {
@@ -271,7 +261,7 @@ fun TypescriptTranslator.registerOperators() {
                     is KtSingleValueToken -> t.value
                     else -> null
                 },
-                allParameters = right,
+                allParameters = { right },
                 parameter = resolvedCall.template_parameter,
                 typeParameter = resolvedCall.template_typeParameter,
                 parameterByIndex = resolvedCall.template_parameterByIndex,
@@ -502,7 +492,7 @@ fun TypescriptTranslator.registerOperators() {
                 ?: typedRule.baseExpression as KtNameReferenceExpression
             val prop = sel.resolvedReferenceTarget as ValueDescriptor
             -VirtualSet(
-                receiver = qual?.receiverExpression,
+                receiver = qual?.replacementReceiverExpression,
                 nameReferenceExpression = sel,
                 property = prop,
                 receiverType = sel.resolvedExpressionTypeInfo?.type,
@@ -510,7 +500,7 @@ fun TypescriptTranslator.registerOperators() {
                 safe = qual is KtSafeQualifiedExpression,
                 value = ValueOperator(
                     left = VirtualGet(
-                        receiver = qual?.receiverExpression,
+                        receiver = qual?.replacementReceiverExpression,
                         nameReferenceExpression = sel,
                         property = prop,
                         receiverType = sel.resolvedExpressionTypeInfo?.type,
@@ -545,7 +535,7 @@ fun TypescriptTranslator.registerOperators() {
                 ?: typedRule.baseExpression as KtNameReferenceExpression
             val prop = sel.resolvedReferenceTarget as ValueDescriptor
             -VirtualSet(
-                receiver = qual?.receiverExpression,
+                receiver = qual?.replacementReceiverExpression,
                 nameReferenceExpression = sel,
                 property = prop,
                 receiverType = sel.resolvedExpressionTypeInfo?.type,
@@ -553,7 +543,7 @@ fun TypescriptTranslator.registerOperators() {
                 safe = qual is KtSafeQualifiedExpression,
                 value = ValueOperator(
                     left = VirtualGet(
-                        receiver = qual?.receiverExpression,
+                        receiver = qual?.replacementReceiverExpression,
                         nameReferenceExpression = sel,
                         property = prop,
                         receiverType = sel.resolvedExpressionTypeInfo?.type,

@@ -54,7 +54,7 @@ fun <T : Any> KotlinTranslator<TypescriptFileEmitter>.ContextByType<T>.emitTempl
     extensionReceiver: Any? = null,
     receiver: Any? = extensionReceiver ?: dispatchReceiver,
     value: Any? = null,
-    allParameters: Any? = null,
+    allParameters: () -> Any? = { null },
     operatorToken: Any? = null,
     parameter: (TemplatePart.Parameter) -> Any? = { value },
     typeParameter: (TemplatePart.TypeParameter) -> Any? = { null },
@@ -79,28 +79,6 @@ fun <T : Any> KotlinTranslator<TypescriptFileEmitter>.ContextByType<T>.emitTempl
         }
         -prefix
         fun onParts(list: List<TemplatePart>, overridden: Map<String, Any?> = mapOf()) {
-            fun getRaw(part: TemplatePart): String? = when (part) {
-                is TemplatePart.Text -> replacements.fold(part.string) { r, t -> r.replace(t.from, t.to) }
-                TemplatePart.Receiver -> receiver
-                TemplatePart.DispatchReceiver -> dispatchReceiver
-                TemplatePart.ExtensionReceiver -> extensionReceiver
-                TemplatePart.Value -> value
-                TemplatePart.AllParameters -> allParameters
-                TemplatePart.OperatorToken -> operatorToken
-                is TemplatePart.Parameter -> parameter(part)
-                is TemplatePart.TypeParameter -> typeParameter(part)
-                is TemplatePart.LambdaParameterContents -> null
-                is TemplatePart.ParameterByIndex -> parameterByIndex(part)
-                is TemplatePart.TypeParameterByIndex -> typeParameterByIndex(part)
-                is TemplatePart.ReifiedTypeParameterByIndex -> reifiedTypeParameterByIndex(part)
-                else -> null
-            }?.let {
-                when (it) {
-                    is PsiElement -> it.text
-                    is String -> it
-                    else -> null
-                }
-            }
             loop@ for (part in list) {
                 when (part) {
                     is TemplatePart.Text -> -replacements.fold(part.string) { r, t -> r.replace(t.from, t.to) }
@@ -108,7 +86,7 @@ fun <T : Any> KotlinTranslator<TypescriptFileEmitter>.ContextByType<T>.emitTempl
                     TemplatePart.DispatchReceiver -> deduplicateEmit(dispatchReceiver)
                     TemplatePart.ExtensionReceiver -> deduplicateEmit(extensionReceiver)
                     TemplatePart.Value -> deduplicateEmit(value)
-                    TemplatePart.AllParameters -> -allParameters
+                    TemplatePart.AllParameters -> -allParameters()
                     TemplatePart.OperatorToken -> -operatorToken
                     is TemplatePart.Parameter -> deduplicateEmit(parameter(part))
                     is TemplatePart.ParameterByIndex -> deduplicateEmit(parameterByIndex(part))
@@ -164,7 +142,7 @@ fun <T : Any> KotlinTranslator<TypescriptFileEmitter>.ContextByType<T>.emitTempl
     dispatchReceiver: Any? = receiver,
     extensionReceiver: Any? = receiver,
     value: Any? = null,
-    allParameters: Any? = null,
+    allParameters: () -> Any? = { null },
     operatorToken: Any? = null,
     parameter: (TemplatePart.Parameter) -> Any? = { value },
     typeParameter: (TemplatePart.TypeParameter) -> Any? = { null },

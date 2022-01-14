@@ -59,8 +59,8 @@ fun TypescriptTranslator.registerClass() {
             .distinct()
             .takeUnless { it.isEmpty() }
             ?.forEach {
-                -"public static implementsInterface"
-                -it.split('.').joinToString("") { it.capitalize() }
+                -"public static implements"
+                -it.substringAfterLast('.')
                 -" = true;\n"
             }
     }

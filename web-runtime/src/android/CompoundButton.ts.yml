@@ -1,5 +1,65 @@
 ---
 
+- type: cast
+  from: android.widget.CheckBox
+  to: android.widget.CompoundButton
+  template: ~this~.input
+
+- type: cast
+  from: android.widget.RadioButton
+  to: android.widget.CompoundButton
+  template: ~this~.input
+
+- type: cast
+  from: android.widget.Switch
+  to: android.widget.CompoundButton
+  template: ~this~.input
+
+- type: cast
+  from: android.widget.ToggleButton
+  to: android.widget.CompoundButton
+  template: ~this~.input
+
+- type: cast
+  from: android.widget.CheckBox
+  to: android.widget.TextView
+  template: ~this~.label
+
+- type: cast
+  from: android.widget.RadioButton
+  to: android.widget.TextView
+  template: ~this~.label
+
+- type: cast
+  from: android.widget.Switch
+  to: android.widget.TextView
+  template: ~this~.label
+
+- type: cast
+  from: android.widget.ToggleButton
+  to: android.widget.TextView
+  template: ~this~.button
+
+- type: cast
+  from: android.widget.CheckBox
+  to: android.view.View
+  template: ~this~.root
+
+- type: cast
+  from: android.widget.RadioButton
+  to: android.view.View
+  template: ~this~.root
+
+- type: cast
+  from: android.widget.Switch
+  to: android.view.View
+  template: ~this~.root
+
+- type: cast
+  from: android.widget.ToggleButton
+  to: android.view.View
+  template: ~this~.root
+
 - id: android.widget.CompoundButton.isChecked
   type: get
   template: ~this~.checked

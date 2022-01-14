@@ -23,7 +23,7 @@ fun TypescriptTranslator.registerViewBinding() {
         },
         priority = 99999
     ) {
-        -typedRule.receiverExpression
+        -typedRule.replacementReceiverExpression
         -".inflate()"
     }
 }

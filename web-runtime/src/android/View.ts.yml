@@ -188,3 +188,100 @@
 - id: android.view.View.isEnabled
   type: set
   template: ~this~.disabled = !(~0~)
+
+
+- id: android.widget.VideoView
+  type: type
+  template: HTMLVideoElement
+
+- id: android.widget.Spinner
+  type: type
+  template: HTMLSelectElement
+
+- id: androidx.viewpager.widget.ViewPager
+  type: type
+  template: '{container: HTMLDivElement, previous: HTMLButtonElement, next: HTMLButtonElement}'
+
+- id: com.google.android.exoplayer2.ui.PlayerView
+  type: type
+  template: HTMLVideoElement
+
+- id: android.widget.ViewFlipper
+  type: type
+  template: HTMLDivElement
+
+- id: android.widget.ImageButton
+  type: type
+  template: HTMLButtonElement
+
+- id: android.widget.Button
+  type: type
+  template: HTMLButtonElement
+
+- id: android.widget.ImageView
+  type: type
+  template: HTMLImageElement
+
+- id: android.widget.ProgressBar
+  type: type
+  template: HTMLDivElement
+
+- id: android.widget.HorizontalScrollView
+  type: type
+  template: HTMLDivElement
+
+- id: android.widget.EditText
+  type: type
+  template: HTMLInputElement
+
+- id: android.widget.SeekBar
+  type: type
+  template: HTMLInputElement
+
+- id: androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+  type: type
+  template: HTMLDivElement
+
+- id: android.widget.LabeledCheckOrRadio
+  type: type
+  template: HTMLInputElement
+
+- id: android.widget.CheckOrRadio
+  type: type
+  template: HTMLInputElement
+
+- id: android.widget.RadioButton
+  type: type
+  template: '{input: HTMLInputElement, label: HTMLSpanElement}'
+
+- id: android.view.View
+  type: type
+  template: HTMLDivElement
+
+- id: android.widget.RatingBar
+  type: type
+  template: HTMLInputElement
+
+- id: android.widget.Switch
+  type: type
+  template: '{input: HTMLInputElement, label: HTMLSpanElement}'
+
+- id: android.widget.ScrollView
+  type: type
+  template: HTMLDivElement
+
+- id: android.widget.CheckBox
+  type: type
+  template: '{input: HTMLInputElement, label: HTMLSpanElement}'
+
+- id: android.widget.FrameLayout
+  type: type
+  template: HTMLDivElement
+
+- id: android.widget.CompoundButton
+  type: type
+  template: HTMLButtonElement
+
+- id: android.widget.LinearLayout
+  type: type
+  template: HTMLDivElement

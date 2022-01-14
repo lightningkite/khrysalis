@@ -215,11 +215,13 @@ fun TypescriptTranslator.registerVariable() {
                 -it
             }
         }
-        -";\n"
+        -";"
         if (typedRule.getter != null || typedRule.setter != null || (!typedRule.isPrivate() && typedRule.isTopLevel)) {
             typedRule.getter?.let {
+                -"\n"
                 -it
             } ?: run {
+                -"\n"
                 if (typedRule.isMember) {
                     -(typedRule.visibilityModifier() ?: "public")
                     -" get "
@@ -229,7 +231,7 @@ fun TypescriptTranslator.registerVariable() {
                     -" { return "
                     -"this._"
                     -typedRule.nameIdentifier
-                    -"; }\n"
+                    -"; }"
                 } else {
                     if (typedRule.isTopLevel && !typedRule.isPrivate()) -"export "
                     -"function get"
@@ -239,13 +241,15 @@ fun TypescriptTranslator.registerVariable() {
                     -" { return "
                     -"_"
                     -typedRule.nameIdentifier
-                    -"; }\n"
+                    -"; }"
                 }
             }
             if (typedRule.isVar) {
                 typedRule.setter?.let {
+                    -"\n"
                     -it
                 } ?: run {
+                    -"\n"
                     if (typedRule.isMember) {
                         -(typedRule.visibilityModifier() ?: "public")
                         -" set "
@@ -255,7 +259,7 @@ fun TypescriptTranslator.registerVariable() {
                             ?: typedRule.resolvedVariable?.type) //TODO: Handle unimported type
                         -") { this._"
                         -typedRule.nameIdentifier
-                        -" = value; }\n"
+                        -" = value; }"
                     } else {
                         if (typedRule.isTopLevel && !typedRule.isPrivate()) -"export "
                         -"function set"
@@ -265,7 +269,7 @@ fun TypescriptTranslator.registerVariable() {
                             ?: typedRule.resolvedVariable?.type) //TODO: Handle unimported type
                         -") { _"
                         -typedRule.nameIdentifier
-                        -" = value; }\n"
+                        -" = value; }"
                     }
                 }
             }
@@ -555,7 +559,7 @@ fun TypescriptTranslator.registerVariable() {
             val p =
                 (typedRule.selectorExpression as KtNameReferenceExpression).resolvedReferenceTarget as ValueDescriptor
             -VirtualGet(
-                receiver = typedRule.receiverExpression,
+                receiver = typedRule.replacementReceiverExpression,
                 nameReferenceExpression = typedRule.selectorExpression as KtNameReferenceExpression,
                 property = p,
                 receiverType = typedRule.receiverExpression.resolvedExpressionTypeInfo?.type,
@@ -571,7 +575,7 @@ fun TypescriptTranslator.registerVariable() {
             val p =
                 (typedRule.selectorExpression as KtNameReferenceExpression).resolvedReferenceTarget as ValueDescriptor
             -VirtualGet(
-                receiver = typedRule.receiverExpression,
+                receiver = typedRule.replacementReceiverExpression,
                 nameReferenceExpression = typedRule.selectorExpression as KtNameReferenceExpression,
                 property = p,
                 receiverType = typedRule.receiverExpression.resolvedExpressionTypeInfo?.type,
@@ -678,14 +682,14 @@ fun TypescriptTranslator.registerVariable() {
             val nre = left.selectorExpression as KtNameReferenceExpression
             val leftProp = nre.resolvedReferenceTarget as ValueDescriptor
             val rec: Any = if (typedRule.operationToken == KtTokens.EQ)
-                left.receiverExpression
+                left.replacementReceiverExpression
             else {
                 if (left.receiverExpression.isSimple()) {
-                    left.receiverExpression
+                    left.replacementReceiverExpression
                 } else {
                     val n = "temp${uniqueNumber.getAndIncrement()}"
                     -"const $n = "
-                    -left.receiverExpression
+                    -left.replacementReceiverExpression
                     -";\n"
                     n
                 }

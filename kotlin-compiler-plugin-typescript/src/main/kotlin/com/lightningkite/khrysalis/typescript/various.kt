@@ -9,6 +9,7 @@ import com.lightningkite.khrysalis.analysis.*
 import org.jetbrains.kotlin.types.KotlinType
 
 fun List<Any?>.withBetween(separator: Any?, start: Any? = null, end: Any? = null): List<Any?> {
+    if(this.isEmpty()) return emptyList()
     val list = ArrayList<Any?>(this.size * 2 - 1 + if (start != null) 1 else 0 + if (end != null) 1 else 0)
     if (start != null) list.add(start)
     this.forEachBetween(
@@ -20,6 +21,16 @@ fun List<Any?>.withBetween(separator: Any?, start: Any? = null, end: Any? = null
 }
 
 
+val ResolvedCall<out CallableDescriptor>.template_allParameter: () -> List<Any?>
+    get() {
+        return {  ->
+            this.resultingDescriptor.valueParameters.map {
+                this.valueArguments[it]
+            }.map{
+                it?.arguments?.map { it.getArgumentExpression() }?.withBetween(", ") ?: "undefined"
+            }.withBetween(separator = ", ")
+        }
+    }
 val ResolvedCall<out CallableDescriptor>.template_parameter
     get() = { n: TemplatePart.Parameter ->
         this.valueArguments.entries.find { it.key.name.asString() == n.name }?.let {
