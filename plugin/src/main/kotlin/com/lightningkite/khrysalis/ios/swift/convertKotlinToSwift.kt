@@ -20,7 +20,8 @@ fun swiftPluginUse(
     project: Project,
     iosBase: File,
     projectName: String = project.name.takeUnless { it == "app" || it == "android" }
-        ?: project.rootProject.name
+        ?: project.rootProject.name,
+    libraryMode: Boolean = false
 ): CompilerPluginUseInfo {
     val dependencies = run {
         val localProperties = Properties().apply {
@@ -72,7 +73,8 @@ fun swiftPluginUse(
                 dependencies.joinToString(
                     File.pathSeparator
                 )
-            }\""
+            }\"",
+            "plugin:com.lightningkite.khrysalis.swift:libraryMode=\"${libraryMode}\""
         )
     )
 }

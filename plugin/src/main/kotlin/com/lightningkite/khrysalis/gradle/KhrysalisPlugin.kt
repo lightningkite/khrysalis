@@ -30,6 +30,7 @@ open class KhrysalisPluginExtension {
     open var overrideWebPackageName: String? = null
     open var overrideIosFolder: File? = null
     open var overrideWebFolder: File? = null
+    open var libraryMode: Boolean = false
 
     override fun toString(): String {
         return "(" +
@@ -140,7 +141,7 @@ class KhrysalisPlugin : Plugin<Project> {
                         getKotlinCompileTask()
                             ?: throw IllegalStateException("Could not find compile*Kotlin tasks - what's up with your project?")
                     ),
-                    swiftPluginUse(project, iosBase(), projectName())
+                    swiftPluginUse(project, iosBase(), projectName(), ext.libraryMode)
                 )
             }
         }
@@ -215,7 +216,7 @@ class KhrysalisPlugin : Plugin<Project> {
                         getKotlinCompileTask()
                             ?: throw IllegalStateException("Could not find compile*Kotlin tasks - what's up with your project?")
                     ),
-                    typescriptPluginUse(project, webBase(), projectName())
+                    typescriptPluginUse(project, webBase(), projectName(), ext.libraryMode)
                 )
             }
         }

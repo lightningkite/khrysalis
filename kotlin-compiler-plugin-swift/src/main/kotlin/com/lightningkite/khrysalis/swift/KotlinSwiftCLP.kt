@@ -61,6 +61,7 @@ class KotlinSwiftCR : KotlinTranspileCR() {
         equivalents: Replacements,
         input: File?,
         outputDirectory: File,
+        libraryMode: Boolean,
         collector: MessageCollector
     ): AnalysisHandlerExtension = KotlinSwiftExtension(
         projectName,
@@ -68,6 +69,7 @@ class KotlinSwiftCR : KotlinTranspileCR() {
         equivalents,
         input,
         outputDirectory,
+        libraryMode,
         collector
     )
 }
@@ -78,11 +80,13 @@ class KotlinSwiftExtension(
     val replacements: Replacements,
     input: File?,
     outputDirectory: File,
+    libraryMode: Boolean,
     collector: MessageCollector
 ) : KotlinTranspileExtension(
     projectName,
     input,
     outputDirectory,
+    libraryMode,
     collector
 ) {
     override val outputExtension: String
@@ -118,20 +122,22 @@ class KotlinSwiftExtension(
 
     override fun finish(context: BindingContext, files: Collection<KtFile>) {
         // Write manifest (AKA list of FQ names in module)
-        outputDirectory.resolve("fqnames.txt").bufferedWriter().use {
-            sequenceOf(projectName).plus(
-                files.asSequence()
-                    .flatMap { f ->
-                        f.declarations.asSequence()
-                            .mapNotNull { it as? KtNamedDeclaration }
-                            .mapNotNull { it.fqName?.asString() }
-                            .plus(f.packageFqName.asString())
+        if(libraryMode) {
+            outputDirectory.resolve("fqnames.txt").bufferedWriter().use {
+                sequenceOf(projectName).plus(
+                    files.asSequence()
+                        .flatMap { f ->
+                            f.declarations.asSequence()
+                                .mapNotNull { it as? KtNamedDeclaration }
+                                .mapNotNull { it.fqName?.asString() }
+                                .plus(f.packageFqName.asString())
+                        }
+                )
+                    .distinct()
+                    .forEach { line ->
+                        it.appendln(line)
                     }
-            )
-                .distinct()
-                .forEach { line ->
-                    it.appendln(line)
-                }
+            }
         }
     }
 }

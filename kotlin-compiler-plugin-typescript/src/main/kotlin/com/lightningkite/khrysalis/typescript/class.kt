@@ -384,7 +384,7 @@ fun TypescriptTranslator.registerClass() {
             out.addImport("khrysalis-runtime", "parse")
 
             if(!typedRule.isEnum()){
-                -"public static fromJson"
+                -"public static fromJSON"
                 -typedRule.typeParameterList
                 -"(obj: any"
                 typedRule.typeParameters.forEach {

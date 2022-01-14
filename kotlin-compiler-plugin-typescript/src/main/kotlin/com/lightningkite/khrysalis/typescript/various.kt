@@ -27,7 +27,7 @@ val ResolvedCall<out CallableDescriptor>.template_allParameter: () -> List<Any?>
             this.resultingDescriptor.valueParameters.map {
                 this.valueArguments[it]
             }.map{
-                it?.arguments?.map { it.getArgumentExpression() }?.withBetween(", ") ?: "undefined"
+                it?.arguments?.map { it.getArgumentExpression() }?.withBetween(", ")?.takeUnless { it.isEmpty() } ?: "undefined"
             }.withBetween(separator = ", ")
         }
     }
