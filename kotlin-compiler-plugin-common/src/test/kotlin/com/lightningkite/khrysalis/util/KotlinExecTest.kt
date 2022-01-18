@@ -13,7 +13,7 @@ class KotlinExecTest {
                 @file:SharedCode
                 package com.test
                 
-                import com.lightningkite.butterfly.SharedCode
+                import com.lightningkite.khrysalis.SharedCode
                
                 fun main(vararg args: String) {
                     println("Hello world!")
