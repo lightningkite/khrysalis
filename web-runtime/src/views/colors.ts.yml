@@ -9,11 +9,11 @@
   template:
     pattern: numberToColor(~this~)
     imports:
-      numberToColor: khrysalis-runtime
+      numberToColor: @lightningkite/khrysalis-runtime
 
 - id: com.lightningkite.khrysalis.colorAlpha
   type: call
   template:
     pattern: applyAlphaToColor(~this~, ~0~)
     imports:
-      applyAlphaToColor: khrysalis-runtime
+      applyAlphaToColor: @lightningkite/khrysalis-runtime

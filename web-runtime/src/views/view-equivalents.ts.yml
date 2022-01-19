@@ -29,13 +29,13 @@
   template:
     pattern: 'scrollChildIntoView(~this~, ~0~, { behavior: "smooth", block: "nearest", inline: "nearest"})'
     imports:
-      scrollChildIntoView: khrysalis-runtime
+      scrollChildIntoView: @lightningkite/khrysalis-runtime
 - id: androidx.recyclerview.widget.RecyclerView.scrollToPosition
   type: call
   template:
     pattern: 'scrollChildIntoView(~this~, ~0~, { behavior: "auto", block: "nearest", inline: "nearest"})'
     imports:
-      scrollChildIntoView: khrysalis-runtime
+      scrollChildIntoView: @lightningkite/khrysalis-runtime
 
 # android.widget.SeekBar
 - id: android.widget.SeekBar

@@ -5,4 +5,4 @@
   template:
     pattern: '{ left: ~0~, top: ~1~, right: ~2~, bottom: ~3~ }'
     imports:
-      RectF: khrysalis-runtime
+      RectF: @lightningkite/khrysalis-runtime

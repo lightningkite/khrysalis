@@ -42,7 +42,7 @@
   template:
     pattern: new CharRange(~this~, ~0~)
     imports:
-      Range: khrysalis-runtime
+      Range: @lightningkite/khrysalis-runtime
 
 - id: kotlin.text.plus
   receiver: kotlin.Char
@@ -144,13 +144,13 @@
   template:
     pattern: '!xCharSequenceIsBlank(~this~)'
     imports:
-      xCharSequenceIsBlank: khrysalis-runtime
+      xCharSequenceIsBlank: @lightningkite/khrysalis-runtime
 - id: kotlin.text.isNullOrBlank
   type: call
   template:
     pattern: xCharSequenceIsBlank(~this~)
     imports:
-      xCharSequenceIsBlank: khrysalis-runtime
+      xCharSequenceIsBlank: @lightningkite/khrysalis-runtime
 - id: kotlin.text.orEmpty
   type: call
   template: (~this~ ?? "")
@@ -162,13 +162,13 @@
   template:
     pattern: xStringSubstringAfter(~this~, ~0~, undefined)
     imports:
-      xStringSubstringAfter: khrysalis-runtime
+      xStringSubstringAfter: @lightningkite/khrysalis-runtime
 - id: kotlin.text.removeSuffix
   type: call
   template:
     pattern: xStringSubstringBeforeLast(~this~, ~0~, undefined)
     imports:
-      xStringSubstringBeforeLast: khrysalis-runtime
+      xStringSubstringBeforeLast: @lightningkite/khrysalis-runtime
 - id: kotlin.text.replace
   type: call
   template: ~this~.replaceAll(~0~, ~1~)
@@ -221,7 +221,7 @@
   template:
     pattern: new StringBuilder()
     imports:
-      StringBuilder: khrysalis-runtime
+      StringBuilder: @lightningkite/khrysalis-runtime
 - id: kotlin.text.StringBuilder.append
   type: call
   template: ~this~.value += ~0~
@@ -255,37 +255,37 @@
   template:
     pattern: parseIntOrNull(~this~)
     imports:
-      parseIntOrNull: khrysalis-runtime
+      parseIntOrNull: @lightningkite/khrysalis-runtime
 - id: kotlin.text.toShortOrNull
   type: call
   template:
     pattern: parseIntOrNull(~this~)
     imports:
-      parseIntOrNull: khrysalis-runtime
+      parseIntOrNull: @lightningkite/khrysalis-runtime
 - id: kotlin.text.toIntOrNull
   type: call
   template:
     pattern: parseIntOrNull(~this~)
     imports:
-      parseIntOrNull: khrysalis-runtime
+      parseIntOrNull: @lightningkite/khrysalis-runtime
 - id: kotlin.text.toLongOrNull
   type: call
   template:
     pattern: parseIntOrNull(~this~)
     imports:
-      parseIntOrNull: khrysalis-runtime
+      parseIntOrNull: @lightningkite/khrysalis-runtime
 - id: kotlin.text.toFloatOrNull
   type: call
   template:
     pattern: parseFloatOrNull(~this~)
     imports:
-      parseFloatOrNull: khrysalis-runtime
+      parseFloatOrNull: @lightningkite/khrysalis-runtime
 - id: kotlin.text.toDoubleOrNull
   type: call
   template:
     pattern: parseFloatOrNull(~this~)
     imports:
-      parseFloatOrNull: khrysalis-runtime
+      parseFloatOrNull: @lightningkite/khrysalis-runtime
 
 - id: kotlin.text.toByte
   type: call

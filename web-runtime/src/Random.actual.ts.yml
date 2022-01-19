@@ -91,18 +91,18 @@
   template:
     pattern: RandomInstance
     imports:
-      RandomInstance: khrysalis-runtime
+      RandomInstance: @lightningkite/khrysalis-runtime
 
 - id: kotlin.random.Random.Companion
   type: get
   template:
     pattern: RandomInstance
     imports:
-      RandomInstance: khrysalis-runtime
+      RandomInstance: @lightningkite/khrysalis-runtime
 
 - id: kotlin.random.Random
   type: get
   template:
     pattern: RandomInstance
     imports:
-      RandomInstance: khrysalis-runtime
+      RandomInstance: @lightningkite/khrysalis-runtime

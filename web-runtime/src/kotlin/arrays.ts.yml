@@ -104,4 +104,4 @@
   template:
     pattern: new NumberRange(0, ~this~.length-1)
     imports:
-      NumberRange: khrysalis-runtime
+      NumberRange: @lightningkite/khrysalis-runtime

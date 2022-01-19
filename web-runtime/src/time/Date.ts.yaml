@@ -86,10 +86,10 @@
 - { type: call, id: com.lightningkite.khrysalis.time.minusNanos, receiver: java.time.LocalTime, template: "~this~.minusNanos" }
 
 - { type: type, id: java.time.format.FormatStyle, template: "Intl.DateTimeFormatOptions" }
-- { type: get, id: java.time.format.FormatStyle.FULL, template: { pattern: "FormatStyle.FULL", imports: { "FormatStyle": "khrysalis-runtime" } } }
-- { type: get, id: java.time.format.FormatStyle.LONG, template: { pattern: "FormatStyle.LONG", imports: { "FormatStyle": "khrysalis-runtime" } } }
-- { type: get, id: java.time.format.FormatStyle.MEDIUM, template: { pattern: "FormatStyle.MEDIUM", imports: { "FormatStyle": "khrysalis-runtime" } } }
-- { type: get, id: java.time.format.FormatStyle.SHORT, template: { pattern: "FormatStyle.SHORT", imports: { "FormatStyle": "khrysalis-runtime" } } }
-- { type: call, id: java.time.format.DateTimeFormatter.ofLocalizedDate, template: { pattern: "ofLocalizedDate(~*~)", imports: { "ofLocalizedDate": "khrysalis-runtime" } } }
-- { type: call, id: java.time.format.DateTimeFormatter.ofLocalizedTime, template: { pattern: "ofLocalizedTime(~*~)", imports: { "ofLocalizedTime": "khrysalis-runtime" } } }
-- { type: call, id: java.time.format.DateTimeFormatter.ofLocalizedDateTime, template: { pattern: "ofLocalizedDateTime(~*~)", imports: { "ofLocalizedDateTime": "khrysalis-runtime" } } }
+- { type: get, id: java.time.format.FormatStyle.FULL, template: { pattern: "FormatStyle.FULL", imports: { "FormatStyle": "@lightningkite/khrysalis-runtime" } } }
+- { type: get, id: java.time.format.FormatStyle.LONG, template: { pattern: "FormatStyle.LONG", imports: { "FormatStyle": "@lightningkite/khrysalis-runtime" } } }
+- { type: get, id: java.time.format.FormatStyle.MEDIUM, template: { pattern: "FormatStyle.MEDIUM", imports: { "FormatStyle": "@lightningkite/khrysalis-runtime" } } }
+- { type: get, id: java.time.format.FormatStyle.SHORT, template: { pattern: "FormatStyle.SHORT", imports: { "FormatStyle": "@lightningkite/khrysalis-runtime" } } }
+- { type: call, id: java.time.format.DateTimeFormatter.ofLocalizedDate, template: { pattern: "ofLocalizedDate(~*~)", imports: { "ofLocalizedDate": "@lightningkite/khrysalis-runtime" } } }
+- { type: call, id: java.time.format.DateTimeFormatter.ofLocalizedTime, template: { pattern: "ofLocalizedTime(~*~)", imports: { "ofLocalizedTime": "@lightningkite/khrysalis-runtime" } } }
+- { type: call, id: java.time.format.DateTimeFormatter.ofLocalizedDateTime, template: { pattern: "ofLocalizedDateTime(~*~)", imports: { "ofLocalizedDateTime": "@lightningkite/khrysalis-runtime" } } }

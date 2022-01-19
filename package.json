@@ -1,7 +1,7 @@
 {
-  "name": "khrysalis-runtime",
-  "version": "0.1.0",
-  "description": "",
+  "name": "@lightningkite/khrysalis-runtime",
+  "version": "0.1.1",
+  "description": "The runtime for the Kotlin to Typescript transpiler.",
   "main": "index.js",
   "types": "index.d.ts",
   "dependencies": {
@@ -28,6 +28,17 @@
     "test": "jest --env=node --colors --coverage test"
   },
   "author": "Lightning Kite",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/lightningkite/khrysalis.git"
+  },
+  "keywords": [
+    "khrysalis"
+  ],
   "license": "MIT",
+  "bugs": {
+    "url": "https://github.com/lightningkite/khrysalis/issues"
+  },
+  "homepage": "https://github.com/lightningkite/khrysalis#readme",
   "files": ["index.d.ts", "index.js", "index.scss", "web-runtime", "web-runtime/dist"]
 }

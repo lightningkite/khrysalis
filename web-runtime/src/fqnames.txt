@@ -1,4 +1,4 @@
-khrysalis-runtime
+@lightningkite/khrysalis-runtime
 com.lightningkite.khrysalis.Codable
 com.lightningkite.khrysalis.IsCodable
 com.lightningkite.khrysalis.JsonList

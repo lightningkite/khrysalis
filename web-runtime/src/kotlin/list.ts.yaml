@@ -88,7 +88,7 @@
   template:
     pattern: ~this~.some((x) => safeEq(~0~, x))
     imports:
-      safeEq: khrysalis-runtime
+      safeEq: @lightningkite/khrysalis-runtime
 - id: kotlin.collections.List.get
   type: call
   template: ~this~[~0~]
@@ -137,14 +137,14 @@
   template:
     pattern: listRemoveItem(~this~, ~0~)
     imports:
-      listRemoveItem: khrysalis-runtime
+      listRemoveItem: @lightningkite/khrysalis-runtime
 - id: kotlin.collections.removeAll
   type: call
   receiver: kotlin.collections.MutableList
   template:
     pattern: listRemoveAll(~this~, ~0~)
     imports:
-      listRemoveAll: khrysalis-runtime
+      listRemoveAll: @lightningkite/khrysalis-runtime
 - id: kotlin.collections.MutableList.removeAt
   type: call
   usedAsExpression: false
@@ -187,7 +187,7 @@
   template:
     pattern: new NumberRange(0, ~this~.length-1)
     imports:
-      NumberRange: khrysalis-runtime
+      NumberRange: @lightningkite/khrysalis-runtime
 - id: kotlin.collections.indexOfFirst
   type: call
   actualReceiver: kotlin.collections.List
@@ -309,14 +309,14 @@
   template:
     pattern: ~this~.slice().sort((a, b) => safeCompare(~0~(a), ~0~(b)))
     imports:
-      safeCompare: khrysalis-runtime
+      safeCompare: @lightningkite/khrysalis-runtime
 - id: kotlin.collections.sortedByDescending
   type: call
   actualReceiver: kotlin.collections.List
   template:
     pattern: ~this~.slice().sort((a, b) => -safeCompare(~0~(a), ~0~(b)))
     imports:
-      safeCompare: khrysalis-runtime
+      safeCompare: @lightningkite/khrysalis-runtime
 - id: kotlin.collections.sortedWith
   type: call
   actualReceiver: kotlin.collections.List
@@ -354,14 +354,14 @@
 #  template:
 #    pattern: listFilterNotNull(~this~.map(~0~))
 #    imports:
-#      listFilterNotNull: khrysalis-runtime
+#      listFilterNotNull: @lightningkite/khrysalis-runtime
 #- id: kotlin.collections.mapIndexedNotNull
 #  type: call
 #  actualReceiver: kotlin.collections.List
 #  template:
 #    pattern: ~this~.map((_v, _i) => { ~L0~ }).filter((x) => x !== null)
 #    imports:
-#      listFilterNotNull: khrysalis-runtime
+#      listFilterNotNull: @lightningkite/khrysalis-runtime
 #    lambdaTransforms:
 #      0: ["_i", "_v"]
 
