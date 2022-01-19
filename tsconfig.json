@@ -1,6 +1,6 @@
 {
   "compilerOptions": {
-    "outDir": "./dist/",
+    "outDir": "web-runtime/dist/",
     "noImplicitAny": true,
     "noImplicitReturns": true,
     "noImplicitThis": true,
@@ -29,7 +29,7 @@
     ],
     "esModuleInterop": true,
     "allowJs": true,
-    "baseUrl": "src"
+    "baseUrl": "web-runtime/src"
   },
-  "include": ["src/**/*", "resources/**/*"]
+  "include": ["web-runtime/src/**/*", "web-runtime/resources/**/*"]
 }

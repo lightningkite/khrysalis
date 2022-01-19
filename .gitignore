@@ -14,8 +14,10 @@ ios/Khrysalis.xcworkspace
 
 **/.DS_Store
 plugin/out
-**/node_modules
+node_modules
+web-runtime/dist
 
 **/testDataOut/**/*.shared.ts
 **/testDataOut/**/*.shared.swift
 plugin/src/main/resources/compiler-plugins/**
+
