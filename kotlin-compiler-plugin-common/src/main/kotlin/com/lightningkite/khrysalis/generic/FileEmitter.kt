@@ -21,7 +21,8 @@ abstract class FileEmitter(val file: KtFile, val body: StringBuilder = StringBui
             return overwriteWarnings.any { text.contains(it) }
         }
     }
-    abstract fun addImport(import: Import)
+    data class StringReplacement(val from: String, val to: String)
+    abstract fun addImport(import: Import): List<StringReplacement>
     var fileEndingActions = ArrayList<() -> Unit>()
     abstract fun renderImports(to: Appendable)
     abstract fun sub(): FileEmitter

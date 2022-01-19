@@ -31,7 +31,7 @@ fun renderImports(projectName: String?, relPath: String, imports: Collection<Typ
         } else {
             writer.append("import { ")
             writer.append(parts.sortedBy { it.asName ?: it.identifier }.joinToString(", ") {
-                it.asName?.let { name ->
+                it.asName?.takeUnless { n -> n == it.identifier }?.let { name ->
                     it.identifier + " as " + name
                 } ?: it.identifier
             })

@@ -3,6 +3,10 @@
   type: call
   template: '~0~[~this~]'
 
+- id: kotlin.reflect.KProperty1.invoke
+  type: call
+  template: '~0~[~this~]'
+
 - id: kotlin.reflect.KMutableProperty1.set
   type: call
   template: '~0~[~this~] = ~1~'

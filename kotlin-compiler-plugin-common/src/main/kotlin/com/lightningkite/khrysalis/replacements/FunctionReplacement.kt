@@ -29,7 +29,7 @@ data class FunctionReplacement(
     val exactArgumentRequirements: Map<Int, String>? = null,
     override val debug: Boolean = false,
     val resultIsNullable: Boolean? = null,
-    val reflectiveName: String? = null,
+    val reflectiveName: Template? = null,
     val template: Template
 ) : ReplacementRule {
 
@@ -56,12 +56,16 @@ data class FunctionReplacement(
             }
             val hasExplicitTypeArguments = call.call.typeArgumentList != null
             if (this.hasExplicitTypeArguments != null && this.hasExplicitTypeArguments != hasExplicitTypeArguments) println("Not applicable: hasExplicitTypeArguments requires ${this.hasExplicitTypeArguments}, got ${hasExplicitTypeArguments}")
-            if (receiver != null && receiver != descriptor.extensionReceiverParameter?.type?.fqNameWithoutTypeArgs) println("Not applicable: receiver requires $receiver, got ${descriptor.extensionReceiverParameter?.type?.fqNameWithoutTypeArgs}")
+            if (receiver != null && descriptor.extensionReceiverParameter?.type?.satisfies(receiver) == false) {
+                println("Not applicable: receiver requires $receiver, got ${descriptor.extensionReceiverParameter?.type?.fqNameWithoutTypeArgs}")
+            } else {
+                println("Applicable: receiver requires $receiver, got ${descriptor.extensionReceiverParameter?.type?.fqNameWithoutTypeArgs}")
+            }
             if (arguments != null) {
                 if (this.arguments.size != descriptor.original.valueParameters.size)
                     println("Not applicable: arguments require ${this.arguments}, got ${descriptor.original.valueParameters.joinToString { it.name.asString() + ": " + it.type.fqNameWithoutTypeArgs }}")
                 else if (!this.arguments.zip(descriptor.original.valueParameters)
-                        .all { (a, p) -> a == "*" || p.type.fqNameWithoutTypeArgs == a || p.name.asString() == a }
+                        .all { (a, p) -> p.type.satisfies(a) || p.name.asString() == a }
                 ) {
                     println("Not applicable: arguments require ${this.arguments}, got ${descriptor.original.valueParameters.joinToString { it.name.asString() + ": " + it.type.fqNameWithoutTypeArgs }}")
                 }
@@ -107,11 +111,11 @@ data class FunctionReplacement(
         }
         val hasExplicitTypeArguments = call.call.typeArgumentList != null
         if (this.hasExplicitTypeArguments != null && this.hasExplicitTypeArguments != hasExplicitTypeArguments) return false
-        if (receiver != null && receiver != descriptor.extensionReceiverParameter?.type?.fqNameWithoutTypeArgs) return false
+        if (receiver != null && descriptor.extensionReceiverParameter?.type?.satisfies(receiver) == false) return false
         if (arguments != null) {
             if (this.arguments.size != descriptor.original.valueParameters.size) return false
             if (!this.arguments.zip(descriptor.original.valueParameters)
-                    .all { (a, p) -> a == "*" || p.type.satisfies(a) || p.name.asString() == a }
+                    .all { (a, p) -> p.type.satisfies(a) || p.name.asString() == a }
             ) {
                 return false
             }
@@ -155,22 +159,31 @@ data class FunctionReplacement(
         receiverType: KotlinType?
     ): Boolean {
         if(debug){
-            if (receiver != null && receiver != descriptor.extensionReceiverParameter?.type?.fqNameWithoutTypeArgs) println("Not applicable: receiver requires $receiver, got ${descriptor.extensionReceiverParameter?.type?.fqNameWithoutTypeArgs}")
+            if (receiver != null && descriptor.extensionReceiverParameter?.type?.satisfies(receiver) == true) println("Not applicable: receiver requires $receiver, got ${descriptor.extensionReceiverParameter?.type?.fqNameWithoutTypeArgs}")
             if (arguments != null) {
                 if (this.arguments.size != descriptor.original.valueParameters.size)
                     println("Not applicable: arguments require ${this.arguments}, got ${descriptor.original.valueParameters.joinToString { it.name.asString() + ": " + it.type.fqNameWithoutTypeArgs }}")
                 else if (!this.arguments.zip(descriptor.original.valueParameters)
-                        .all { (a, p) -> a == "*" || p.type.fqNameWithoutTypeArgs == a || p.name.asString() == a }
+                        .all { (a, p) -> p.type.satisfies(a) || p.name.asString() == a }
                 ) {
                     println("Not applicable: arguments require ${this.arguments}, got ${descriptor.original.valueParameters.joinToString { it.name.asString() + ": " + it.type.fqNameWithoutTypeArgs }}")
                 }
             }
+            if(comparatorType != null) println("Not applicable: comparatorType not supported in this use position")
+            if (actualReceiver != null && (receiverType)?.satisfies(
+                    actualReceiver
+                ) != true
+            ) println("Not applicable: actualReceiver not supported in this use position")
+            if(suppliedArguments != null) println("Not applicable: suppliedArguments not supported in this use position")
+            if(usedAsExpression != null) println("Not applicable: usedAsExpression not supported in this use position")
+            if(typeArgumentRequirements != null) println("Not applicable: typeArgumentRequirements not supported in this use position")
+            if(exactArgumentRequirements != null) println("Not applicable: exactArgumentRequirements not supported in this use position")
         }
-        if (receiver != null && receiver != descriptor.extensionReceiverParameter?.type?.fqNameWithoutTypeArgs) return false
+        if (receiver != null && descriptor.extensionReceiverParameter?.type?.satisfies(receiver) == true) return false
         if (arguments != null) {
             if (this.arguments.size != descriptor.original.valueParameters.size) return false
             if (!this.arguments.zip(descriptor.original.valueParameters)
-                    .all { (a, p) -> a == "*" || p.type.fqNameWithoutTypeArgs == a || p.name.asString() == a }
+                    .all { (a, p) -> p.type.satisfies(a) || p.name.asString() == a }
             ) {
                 return false
             }

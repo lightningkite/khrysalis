@@ -14,7 +14,7 @@ import com.lightningkite.khrysalis.analysis.*
 import com.lightningkite.khrysalis.typescript.replacements.TypescriptImport
 
 
-fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByType<T>.dedup(
+fun <T : Any> KotlinTranslator<TypescriptFileEmitter>.ContextByType<T>.dedup(
     requireWrapping: Boolean = false,
     type: Any? = null,
     cannotDedup: Boolean = false,
@@ -44,7 +44,7 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
     }
 }
 
-fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByType<T>.emitTemplate(
+fun <T : Any> KotlinTranslator<TypescriptFileEmitter>.ContextByType<T>.emitTemplate(
     requiresWrapping: Boolean,
     type: Any? = null,
     ensureReceiverNotNull: Boolean = false,
@@ -54,14 +54,15 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
     extensionReceiver: Any? = null,
     receiver: Any? = extensionReceiver ?: dispatchReceiver,
     value: Any? = null,
-    allParameters: Any? = null,
+    allParameters: () -> Any? = { null },
     operatorToken: Any? = null,
     parameter: (TemplatePart.Parameter) -> Any? = { value },
     typeParameter: (TemplatePart.TypeParameter) -> Any? = { null },
     parameterByIndex: (TemplatePart.ParameterByIndex) -> Any? = { value },
-    typeParameterByIndex: (TemplatePart.TypeParameterByIndex) -> Any? = { null }
+    typeParameterByIndex: (TemplatePart.TypeParameterByIndex) -> Any? = { null },
+    reifiedTypeParameterByIndex: (TemplatePart.ReifiedTypeParameterByIndex) -> Any? = { null }
 ) {
-    template.imports.forEach { out.addImport(it) }
+    val replacements = template.imports.flatMap { out.addImport(it) }
     dedup(requiresWrapping, type) {
 //        val templateIsThisDot = template.parts.getOrNull(0) is TemplatePart.Receiver &&
 //                template.parts.getOrNull(1).let { it is TemplatePart.Text && it.string.startsWith('.') } &&
@@ -78,35 +79,14 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
         }
         -prefix
         fun onParts(list: List<TemplatePart>, overridden: Map<String, Any?> = mapOf()) {
-            fun getRaw(part: TemplatePart): String? = when (part) {
-                is TemplatePart.Text -> part.string
-                TemplatePart.Receiver -> receiver
-                TemplatePart.DispatchReceiver -> dispatchReceiver
-                TemplatePart.ExtensionReceiver -> extensionReceiver
-                TemplatePart.Value -> value
-                TemplatePart.AllParameters -> allParameters
-                TemplatePart.OperatorToken -> operatorToken
-                is TemplatePart.Parameter -> parameter(part)
-                is TemplatePart.TypeParameter -> typeParameter(part)
-                is TemplatePart.LambdaParameterContents -> null
-                is TemplatePart.ParameterByIndex -> parameterByIndex(part)
-                is TemplatePart.TypeParameterByIndex -> typeParameterByIndex(part)
-                else -> null
-            }?.let {
-                when (it) {
-                    is PsiElement -> it.text
-                    is String -> it
-                    else -> null
-                }
-            }
             loop@ for (part in list) {
                 when (part) {
-                    is TemplatePart.Text -> -part.string
+                    is TemplatePart.Text -> -replacements.fold(part.string) { r, t -> r.replace(t.from, t.to) }
                     TemplatePart.Receiver -> deduplicateEmit(receiver)
                     TemplatePart.DispatchReceiver -> deduplicateEmit(dispatchReceiver)
                     TemplatePart.ExtensionReceiver -> deduplicateEmit(extensionReceiver)
                     TemplatePart.Value -> deduplicateEmit(value)
-                    TemplatePart.AllParameters -> -allParameters
+                    TemplatePart.AllParameters -> -allParameters()
                     TemplatePart.OperatorToken -> -operatorToken
                     is TemplatePart.Parameter -> deduplicateEmit(parameter(part))
                     is TemplatePart.ParameterByIndex -> deduplicateEmit(parameterByIndex(part))
@@ -148,6 +128,7 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
                     }
                     is TemplatePart.TypeParameter -> -typeParameter(part)
                     is TemplatePart.TypeParameterByIndex -> -typeParameterByIndex(part)
+                    is TemplatePart.ReifiedTypeParameterByIndex -> -reifiedTypeParameterByIndex(part)
                 }
             }
         }
@@ -155,18 +136,19 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
     }
 }
 
-fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByType<T>.emitTemplate(
+fun <T : Any> KotlinTranslator<TypescriptFileEmitter>.ContextByType<T>.emitTemplate(
     template: Template,
     receiver: Any? = null,
     dispatchReceiver: Any? = receiver,
     extensionReceiver: Any? = receiver,
     value: Any? = null,
-    allParameters: Any? = null,
+    allParameters: () -> Any? = { null },
     operatorToken: Any? = null,
     parameter: (TemplatePart.Parameter) -> Any? = { value },
     typeParameter: (TemplatePart.TypeParameter) -> Any? = { null },
     parameterByIndex: (TemplatePart.ParameterByIndex) -> Any? = { value },
-    typeParameterByIndex: (TemplatePart.TypeParameterByIndex) -> Any? = { null }
+    typeParameterByIndex: (TemplatePart.TypeParameterByIndex) -> Any? = { null },
+    reifiedTypeParameterByIndex: (TemplatePart.ReifiedTypeParameterByIndex) -> Any? = { null }
 ) {
     emitTemplate(
         requiresWrapping = false,
@@ -183,7 +165,8 @@ fun <T : Any> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextB
         parameter = parameter,
         typeParameter = typeParameter,
         parameterByIndex = parameterByIndex,
-        typeParameterByIndex = typeParameterByIndex
+        typeParameterByIndex = typeParameterByIndex,
+        reifiedTypeParameterByIndex = reifiedTypeParameterByIndex
     )
 }
 
@@ -277,7 +260,7 @@ fun hasNewlineBeforeAccess(typedRule: KtQualifiedExpression): Boolean {
         ?.textContains('\n') == true
 }
 
-fun <T : KtQualifiedExpression> PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByType<T>.insertNewlineBeforeAccess() {
+fun <T : KtQualifiedExpression> KotlinTranslator<TypescriptFileEmitter>.ContextByType<T>.insertNewlineBeforeAccess() {
     if (hasNewlineBeforeAccess(typedRule)) {
         -"\n"
     }

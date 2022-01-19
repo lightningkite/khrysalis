@@ -35,6 +35,9 @@ data class Template(
                 firstChar == 'T' && text.getOrNull(1)?.isDigit() == true -> TemplatePart.TypeParameterByIndex(
                     text.drop(1).toInt()
                 )
+                firstChar == 'R' && text.getOrNull(1)?.isDigit() == true -> TemplatePart.ReifiedTypeParameterByIndex(
+                    text.drop(1).toInt()
+                )
                 firstChar == 'L' && text.getOrNull(1)?.isDigit() == true -> {
                     val index = text.drop(1).toInt()
                     TemplatePart.LambdaParameterContents(

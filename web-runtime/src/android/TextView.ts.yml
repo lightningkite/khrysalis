@@ -1,0 +1,24 @@
+
+
+- id: android.widget.TextView
+  type: call
+  template: document.createElement('p')
+
+- id: android.widget.TextView.text
+  type: get
+  reflectiveName: '"textContent"'
+  template: '~this~.textContent'
+
+- id: android.widget.TextView.text
+  type: set
+  reflectiveName: '"textContent"'
+  template: '~this~.textContent = ~value~'
+
+- id: android.widget.TextView.setText
+  type: call
+  reflectiveName: '"textContent"'
+  template: '~this~.textContent'
+
+- id: android.widget.TextView.setTextColor
+  type: call
+  template: ~this~.style.color = ~0~

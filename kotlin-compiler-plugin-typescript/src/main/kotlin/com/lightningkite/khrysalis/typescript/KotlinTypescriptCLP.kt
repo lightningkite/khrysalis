@@ -62,6 +62,7 @@ class KotlinTypescriptCR : KotlinTranspileCR() {
         equivalents: Replacements,
         input: File?,
         outputDirectory: File,
+        libraryMode: Boolean,
         collector: MessageCollector
     ): AnalysisHandlerExtension = KotlinTypescriptExtension(
         projectName,
@@ -69,6 +70,7 @@ class KotlinTypescriptCR : KotlinTranspileCR() {
         equivalents,
         input,
         outputDirectory,
+        libraryMode,
         collector
     )
 }
@@ -79,11 +81,13 @@ class KotlinTypescriptExtension(
     val replacements: Replacements,
     input: File?,
     outputDirectory: File,
+    libraryMode: Boolean,
     collector: MessageCollector
 ) : KotlinTranspileExtension(
     projectName,
     input,
     outputDirectory,
+    libraryMode,
     collector
 ) {
     override val outputExtension: String
@@ -117,15 +121,17 @@ class KotlinTypescriptExtension(
     }
 
     override fun finish(context: BindingContext, files: Collection<KtFile>) {
-        outputDirectory.resolve("fqnames.txt").bufferedWriter().use {
-            it.appendLine(translator.projectName)
-            for(entry in translator.declarations.local){
-                it.appendLine(entry.key)
+        if(libraryMode) {
+            outputDirectory.resolve("fqnames.txt").bufferedWriter().use {
+                it.appendLine(translator.projectName)
+                for(entry in translator.declarations.local){
+                    it.appendLine(entry.key)
+                }
             }
-        }
-        outputDirectory.resolve("index.ts").bufferedWriter().use {
-            translator.declarations.local.values.distinct().forEach { f ->
-                it.appendLine("export * from '${f.removeSuffix(".ts")}'")
+            outputDirectory.resolve("index.ts").bufferedWriter().use {
+                translator.declarations.local.values.distinct().forEach { f ->
+                    it.appendLine("export * from './${f.removeSuffix(".ts")}'")
+                }
             }
         }
     }

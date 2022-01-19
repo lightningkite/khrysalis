@@ -1,17 +1,11 @@
 package com.lightningkite.khrysalis.replacements
 
 import com.fasterxml.jackson.annotation.JsonIgnore
-import com.lightningkite.khrysalis.util.recursiveChildren
-import com.lightningkite.khrysalis.util.satisfies
-import org.jetbrains.kotlin.descriptors.ClassDescriptor
-import org.jetbrains.kotlin.descriptors.DeclarationDescriptor
-import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
-import org.jetbrains.kotlin.resolve.scopes.DescriptorKindFilter
 import org.jetbrains.kotlin.types.KotlinType
 
 data class CastRule(
-    val consume: String,
-    val given: String,
+    val from: String,
+    val to: String,
     val template: Template,
     override val debug: Boolean
 ) : ReplacementRule {

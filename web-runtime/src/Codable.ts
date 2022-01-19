@@ -9,8 +9,12 @@ export let JsonList = Array;
 export type JsonMap = Map<any, any>;
 export let JsonMap = Map;
 
-export function parse(item: any, asType: Array<any>): any {
+export function parse<TYPE>(item: any, asType: Array<any>): TYPE {
     const parser = asType[0].fromJSON as (item: any, typeArguments: Array<any>) => any
+    if(typeof parser !== "function"){
+        console.log(asType[0])
+        throw Error(`Type ${asType[0]} has no function fromJSON!`)
+    }
     return parser(item, asType.slice(1))
 }
 
@@ -27,7 +31,7 @@ export function parseUntyped(json: string): any {
 (String as any).fromJSON = (value: any) => value;
 (Number as any).fromJSON = (value: any) => typeof value === "string" ? parseFloat(value) : value;
 (Boolean as any).fromJSON = (value: any) => typeof value === "string" ? value === "true" : value;
-(Array as any).fromJSON = (value: any, typeArguments: Array<any>) => { return (value as Array<any>).map(x => parse(x, [typeArguments[0]])) };
+(Array as any).fromJSON = (value: any, typeArguments: Array<any>) => { return (value as Array<any>).map(x => parse(x, typeArguments[0])) };
 (Map as any).fromJSON = (value: any, typeArguments: Array<any>) => {
     let asObj = value as object;
     let map = new Map<any, any>();

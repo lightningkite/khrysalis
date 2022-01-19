@@ -22,13 +22,3 @@ val skippedExtensions = setOf(
     "com.lightningkite.khrysalis.IsCodableAndHashable"
 //    "com.lightningkite.khrysalis.SomeEnum"
 )
-
-fun MemberDescriptor.description(): String {
-    return when (this) {
-        is FunctionDescriptor -> this.name.identifier + this.valueParameters.joinToString {
-            it.type.fqNameWithTypeArgs
-        }
-        is PropertyDescriptor -> this.name.identifier
-        else -> return "???"
-    }
-}

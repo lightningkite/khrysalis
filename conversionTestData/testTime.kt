@@ -14,5 +14,5 @@ fun main(){
     println(time.format(DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM)))
     val dateTime = LocalDateTime.of(2021, 5, 5, 12, 0, 0)
     println(dateTime.year)
-    println(dateTime.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM)))
+    println(dateTime.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.MEDIUM)))
 }

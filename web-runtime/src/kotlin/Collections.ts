@@ -321,7 +321,7 @@ export function listRemoveFirst<T>(array: Array<T>, predicate: (a: T) => boolean
 export function listRemoveItem<T>(array: Array<T>, item: T) {
     listRemoveFirst(array, (x) => safeEq(item, x))
 }
-//! Declares kotlin.collections.minus
+
 export function xIterableMinus<T>(this_: Iterable<T>, item: T): Array<T> {
     let array = [...this_];
     listRemoveFirst(array, (x) => safeEq(item, x));

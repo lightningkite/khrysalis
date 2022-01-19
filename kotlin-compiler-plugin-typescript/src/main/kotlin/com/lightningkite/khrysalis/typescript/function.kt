@@ -24,8 +24,6 @@ import org.jetbrains.kotlin.types.typeUtil.makeNullable
 import org.jetbrains.kotlin.types.typeUtil.nullability
 import com.lightningkite.khrysalis.analysis.*
 
-//TODO: Local function edgecase - the meaning of 'this' changes
-
 val FunctionDescriptor.tsNameOverridden: String?
     get() = if (this is ConstructorDescriptor) {
         if (!this.isPrimary) {
@@ -45,7 +43,7 @@ val FunctionDescriptor.tsNameOverridden: String?
             .fqNameWithoutTypeArgs
             .split('.')
             .dropWhile { it.firstOrNull()?.isUpperCase() != true }
-            .joinToString("") { it.capitalize() }.let{ "x$it" } +
+            .joinToString("") { it.capitalize() }.let { "x$it" } +
                 this.name.identifier.capitalize()
     } else this.overriddenDescriptors.asSequence().mapNotNull { it.tsNameOverridden }.firstOrNull()
 
@@ -169,7 +167,7 @@ fun TypescriptTranslator.registerFunction() {
                         val recParam = listOf<Any>(
                             rName2,
                             ": ",
-                            tr.containingClass()?.let { it.nameIdentifier } ?: "any"
+                            tr.containingClass()?.nameIdentifier ?: "any"
                         )
                         -"\nexport function "
                         -VirtualFunction(
@@ -200,7 +198,7 @@ fun TypescriptTranslator.registerFunction() {
                 -"$declaresPrefix${typedRule.simpleFqName}\n"
                 -"export "
             }
-            if(typedRule.isTopLevel() ){
+            if (typedRule.isTopLevel()) {
                 -"function "
             }
         }
@@ -238,14 +236,14 @@ fun TypescriptTranslator.registerFunction() {
             -it
         }
         val f = ((typedRule.parent as? KtParameterList)?.parent as? KtFunction)?.resolvedFunction
-        if(f != null && f.modality == Modality.ABSTRACT) {
+        if (f != null && f.modality == Modality.ABSTRACT) {
             //suppress defaults!
         } else {
             typedRule.defaultValue?.let {
                 -" = "
                 -it
             } ?: run {
-                if(f != null) {
+                if (f != null) {
                     f.overriddenDescriptors
                         .asSequence()
                         .filter {
@@ -318,9 +316,9 @@ fun TypescriptTranslator.registerFunction() {
             out.addImport(f, f.tsName)
 
             val prop = nre.resolvedReferenceTarget as? ValueDescriptor
-            if(prop != null){
+            if (prop != null) {
                 -VirtualGet(
-                    receiver = typedRule.receiverExpression,
+                    receiver = typedRule.replacementReceiverExpression,
                     nameReferenceExpression = nre,
                     property = prop,
                     receiverType = typedRule.receiverExpression.resolvedExpressionTypeInfo?.type,
@@ -376,7 +374,7 @@ fun TypescriptTranslator.registerFunction() {
             -ArgumentsList(
                 on = f,
                 resolvedCall = callExp.resolvedCall!!,
-                prependArguments = listOf(typedRule.receiverExpression)
+                prependArguments = listOf(typedRule.replacementReceiverExpression)
             )
         }
     )
@@ -400,7 +398,7 @@ fun TypescriptTranslator.registerFunction() {
             typedRule.selectorExpression is KtCallExpression
                     && typedRule.actuallyCouldBeExpression
                     && typedRule.resolvedExpressionTypeInfo?.type?.constructor?.declarationDescriptor?.fqNameSafe?.asString() == "kotlin.Unit"
-            },
+        },
         priority = 101,
         action = {
             val callExp = typedRule.selectorExpression as KtCallExpression
@@ -408,11 +406,11 @@ fun TypescriptTranslator.registerFunction() {
             val f = callExp.resolvedCall!!.candidateDescriptor as FunctionDescriptor
             nullWrapAction(
                 swiftTranslator = this@registerFunction,
-                receiver = typedRule.receiverExpression,
+                receiver = typedRule.replacementReceiverExpression,
                 skip = false,
                 type = typedRule.resolvedExpressionTypeInfo?.type,
                 isExpression = typedRule.actuallyCouldBeExpression
-            ){ rec ->
+            ) { rec ->
                 -rec
                 -'.'
                 -nre
@@ -437,11 +435,11 @@ fun TypescriptTranslator.registerFunction() {
 
             nullWrapAction(
                 swiftTranslator = this@registerFunction,
-                receiver = typedRule.receiverExpression,
+                receiver = typedRule.replacementReceiverExpression,
                 skip = false,
                 type = typedRule.resolvedExpressionTypeInfo?.type,
                 isExpression = typedRule.actuallyCouldBeExpression
-            ){ rec ->
+            ) { rec ->
                 -nre
                 -ArgumentsList(
                     on = f,
@@ -517,11 +515,12 @@ fun TypescriptTranslator.registerFunction() {
                 template = rule.template,
                 receiver = typedRule.left,
                 dispatchReceiver = typedRule.operationReference.getTsReceiver() ?: typedRule.left,
-                allParameters = typedRule.right,
+                allParameters = { typedRule.right },
                 parameter = resolvedCall.template_parameter,
                 typeParameter = resolvedCall.template_typeParameter,
                 parameterByIndex = resolvedCall.template_parameterByIndex,
-                typeParameterByIndex = resolvedCall.template_typeParameterByIndex
+                typeParameterByIndex = resolvedCall.template_typeParameterByIndex,
+                reifiedTypeParameterByIndex = resolvedCall.template_reifiedTypeParameterByIndex,
             )
         }
     )
@@ -543,19 +542,15 @@ fun TypescriptTranslator.registerFunction() {
                 requiresWrapping = typedRule.actuallyCouldBeExpression,
                 type = typedRule.resolvedExpressionTypeInfo?.type,
                 template = rule.template,
-                receiver = typedRule.receiverExpression,
+                receiver = typedRule.replacementReceiverExpression,
                 dispatchReceiver = nre.getTsReceiver(),
-                extensionReceiver = typedRule.receiverExpression,
-                allParameters = ArrayList<Any?>().apply {
-                    callExp.valueArguments.forEachBetween(
-                        forItem = { add(it) },
-                        between = { add(", ") }
-                    )
-                },
+                extensionReceiver = typedRule.replacementReceiverExpression,
+                allParameters = resolvedCall.template_allParameter,
                 parameter = resolvedCall.template_parameter,
                 typeParameter = resolvedCall.template_typeParameter,
                 parameterByIndex = resolvedCall.template_parameterByIndex,
-                typeParameterByIndex = resolvedCall.template_typeParameterByIndex
+                typeParameterByIndex = resolvedCall.template_typeParameterByIndex,
+                reifiedTypeParameterByIndex = resolvedCall.template_reifiedTypeParameterByIndex,
             )
         }
     )
@@ -576,19 +571,15 @@ fun TypescriptTranslator.registerFunction() {
                 type = typedRule.resolvedExpressionTypeInfo?.type?.makeNullable(),
                 ensureReceiverNotNull = true,
                 template = rule.template,
-                receiver = typedRule.receiverExpression,
+                receiver = typedRule.replacementReceiverExpression,
                 dispatchReceiver = nre.getTsReceiver(),
-                extensionReceiver = typedRule.receiverExpression,
-                allParameters = ArrayList<Any?>().apply {
-                    callExp.valueArguments.forEachBetween(
-                        forItem = { add(it) },
-                        between = { add(", ") }
-                    )
-                },
+                extensionReceiver = typedRule.replacementReceiverExpression,
+                allParameters = resolvedCall.template_allParameter,
                 parameter = resolvedCall.template_parameter,
                 typeParameter = resolvedCall.template_typeParameter,
                 parameterByIndex = resolvedCall.template_parameterByIndex,
-                typeParameterByIndex = resolvedCall.template_typeParameterByIndex
+                typeParameterByIndex = resolvedCall.template_typeParameterByIndex,
+                reifiedTypeParameterByIndex = resolvedCall.template_reifiedTypeParameterByIndex,
             )
         }
     )
@@ -609,22 +600,18 @@ fun TypescriptTranslator.registerFunction() {
                 template = rule.template,
                 receiver = nre.getTsReceiver(),
                 dispatchReceiver = nre.getTsReceiver(),
-                allParameters = ArrayList<Any?>().apply {
-                    typedRule.valueArguments.forEachBetween(
-                        forItem = { add(it) },
-                        between = { add(", ") }
-                    )
-                },
+                allParameters = resolvedCall.template_allParameter,
                 parameter = resolvedCall.template_parameter,
                 typeParameter = resolvedCall.template_typeParameter,
                 parameterByIndex = resolvedCall.template_parameterByIndex,
-                typeParameterByIndex = resolvedCall.template_typeParameterByIndex
+                typeParameterByIndex = resolvedCall.template_typeParameterByIndex,
+                reifiedTypeParameterByIndex = resolvedCall.template_reifiedTypeParameterByIndex,
             )
         }
     )
 
     handle<ArgumentsList> {
-        if(typedRule.on.typeParametersCount > 0){
+        if (typedRule.on.typeParametersCount > 0) {
             -'<'
             typedRule.resolvedCall.typeArguments.entries
                 .sortedBy { it.key.index }
@@ -662,11 +649,11 @@ fun TypescriptTranslator.registerFunction() {
                 -it
             } ?: value.arguments.takeUnless { it.isEmpty() }?.let {
                 it.forEachBetween(
-                    forItem = { -(it.getArgumentExpression() ?: (if(valueParam.isVararg) "" else "undefined")) },
+                    forItem = { -(it.getArgumentExpression() ?: (if (valueParam.isVararg) "" else "undefined")) },
                     between = { -", " }
                 )
             } ?: run {
-                if(!valueParam.isVararg)
+                if (!valueParam.isVararg)
                     -"undefined"
             }
         }

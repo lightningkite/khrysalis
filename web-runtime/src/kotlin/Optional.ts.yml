@@ -1,0 +1,26 @@
+---
+
+- id: java.util.Optional
+  type: type
+  template: '(~T0~ | null)'
+- id: java.util.Optional.get
+  type: call
+  template: ~this~!
+- id: java.util.Optional.orElse
+  type: call
+  template: '~this~ ?: ~0~'
+- id: java.util.Optional.of
+  type: call
+  template: '~this~'
+- id: java.util.Optional.ofNullable
+  type: call
+  template: '~this~'
+- id: java.util.Optional.empty
+  type: call
+  template: 'null'
+- id: com.lightningkite.rx.kotlin
+  type: get
+  template: '~this~'
+- id: com.lightningkite.rx.optional
+  type: get
+  template: '~this~'

@@ -1,0 +1,6 @@
+
+---
+
+- id: android.widget.ScrollView.smoothScrollTo
+  type: call
+  template: ~this~.scroll(~0~, ~1~)

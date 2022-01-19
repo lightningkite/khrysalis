@@ -10,7 +10,7 @@ import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.psi.*
 
 
-fun <T : Any> PartialTranslatorByType<SwiftFileEmitter, Unit, Any>.ContextByType<T>.dedup(
+fun <T : Any> KotlinTranslator<SwiftFileEmitter>.ContextByType<T>.dedup(
     requireWrapping: Boolean = false,
     cannotDedup: Boolean = false,
     action: DeDupEmitter.() -> Unit
@@ -32,7 +32,7 @@ fun <T : Any> PartialTranslatorByType<SwiftFileEmitter, Unit, Any>.ContextByType
     }
 }
 
-fun <T : Any> PartialTranslatorByType<SwiftFileEmitter, Unit, Any>.ContextByType<T>.emitTemplate(
+fun <T : Any> KotlinTranslator<SwiftFileEmitter>.ContextByType<T>.emitTemplate(
     requiresWrapping: Boolean,
     cannotDedup: Boolean = false,
     template: Template,
@@ -122,7 +122,7 @@ fun <T : Any> PartialTranslatorByType<SwiftFileEmitter, Unit, Any>.ContextByType
     }
 }
 
-fun <T : Any> PartialTranslatorByType<SwiftFileEmitter, Unit, Any>.ContextByType<T>.emitTemplate(
+fun <T : Any> KotlinTranslator<SwiftFileEmitter>.ContextByType<T>.emitTemplate(
     template: Template,
     receiver: Any? = null,
     dispatchReceiver: Any? = receiver,

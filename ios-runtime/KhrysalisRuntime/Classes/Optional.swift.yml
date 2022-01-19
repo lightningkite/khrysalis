@@ -2,7 +2,7 @@
 
 - id: java.util.Optional
   type: type
-  template: ~T0~
+  template: ~T0~?
 - id: java.util.Optional.get
   type: call
   template: ~this~!

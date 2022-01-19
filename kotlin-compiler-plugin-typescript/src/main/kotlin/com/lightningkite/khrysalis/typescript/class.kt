@@ -1,7 +1,7 @@
 package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.analysis.*
-import com.lightningkite.khrysalis.generic.PartialTranslatorByType
+import com.lightningkite.khrysalis.generic.KotlinTranslator
 import com.lightningkite.khrysalis.typescript.manifest.declaresPrefix
 import com.lightningkite.khrysalis.util.*
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
@@ -21,7 +21,7 @@ import kotlin.collections.ArrayList
 
 fun TypescriptTranslator.registerClass() {
 
-    fun PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByType<*>.writeClassHeader(
+    fun KotlinTranslator<TypescriptFileEmitter>.ContextByType<*>.writeClassHeader(
         on: KtClassOrObject,
         defaultName: String = "Companion"
     ) {
@@ -47,7 +47,7 @@ fun TypescriptTranslator.registerClass() {
             }
     }
 
-    fun PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByType<*>.writeInterfaceMarkers(on: KtClassOrObject) {
+    fun KotlinTranslator<TypescriptFileEmitter>.ContextByType<*>.writeInterfaceMarkers(on: KtClassOrObject) {
         val typedRule = on
         typedRule.superTypeListEntries
             .mapNotNull { it as? KtSuperTypeEntry }
@@ -59,13 +59,13 @@ fun TypescriptTranslator.registerClass() {
             .distinct()
             .takeUnless { it.isEmpty() }
             ?.forEach {
-                -"public static implementsInterface"
-                -it.split('.').joinToString("") { it.capitalize() }
+                -"public static implements"
+                -it.substringAfterLast('.')
                 -" = true;\n"
             }
     }
 
-    fun PartialTranslatorByType<TypescriptFileEmitter, Unit, Any>.ContextByType<*>.writeInterfaceDefaultImplementations(
+    fun KotlinTranslator<TypescriptFileEmitter>.ContextByType<*>.writeInterfaceDefaultImplementations(
         on: KtClassOrObject
     ) {
         val resolvedType = when (on) {
@@ -211,7 +211,7 @@ fun TypescriptTranslator.registerClass() {
     }
 
     handle<KtClass>(
-        condition = { !typedRule.isTopLevel() },
+        condition = { !typedRule.isTopLevel() && typedRule !is KtEnumEntry },
         priority = 10000
     ) {
         noReuse = true
@@ -384,7 +384,7 @@ fun TypescriptTranslator.registerClass() {
             out.addImport("khrysalis-runtime", "parse")
 
             if(!typedRule.isEnum()){
-                -"public static fromJson"
+                -"public static fromJSON"
                 -typedRule.typeParameterList
                 -"(obj: any"
                 typedRule.typeParameters.forEach {

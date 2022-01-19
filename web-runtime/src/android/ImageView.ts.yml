@@ -1,0 +1,7 @@
+
+
+# android.widget.TextView
+
+- id: android.widget.ImageView
+  type: call
+  template: (document.createElement('img') as HTMLImageElement)

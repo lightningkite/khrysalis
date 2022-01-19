@@ -1,0 +1,92 @@
+#
+#  /* SHARED DECLARATIONS
+#    typealias Canvas = Canvas
+#
+#  fun Canvas.clipRect(left: Float, top: Float, right: Float, bottom: Float)
+#  fun Canvas.clipRect(rect: RectF)
+#  fun Canvas.drawCircle(cx: Float, cy: Float, radius: Float, paint: Paint)
+#  fun Canvas.drawRect(left: Float, top: Float, right: Float, bottom: Float, paint: Paint)
+#  fun Canvas.drawRect(rect: RectF, paint: Paint)
+#  fun Canvas.drawOval(left: Float, top: Float, right: Float, bottom: Float, paint: Paint)
+#  fun Canvas.drawOval(rect: RectF, paint: Paint)
+#  fun Canvas.drawRoundRect(left: Float, top: Float, right: Float, bottom: Float, rx: Float, ry: Float, paint: Paint)
+#  fun Canvas.drawRoundRect(rect: RectF, rx: Float, ry: Float, paint: Paint)
+#  fun Canvas.drawLine(x1: Float, y1: Float, x2: Float, y2: Float, paint: Paint)
+#  fun Canvas.drawPath(path: Path, paint: Paint)
+#    fun Canvas.save()
+#    fun Canvas.restore()
+#  fun Canvas.translate(dx: Float, dy: Float)
+#  fun Canvas.scale(scaleX: Float, scaleY: Float)
+#  fun Canvas.rotate(degrees: Float)
+#
+#    */
+---
+- id: android.graphics.Canvas
+  type: type
+  template: CanvasRenderingContext2D
+
+- id: android.graphics.Canvas.drawCircle
+  type: call
+  template: ~this~.beginPath(); ~this~.arc(~0~, ~1~, ~2~, 0, Math.PI * 2); ~3~.complete(~this~)
+
+- id: android.graphics.Canvas.drawLine
+  type: call
+  arguments: [kotlin.Float, kotlin.Float, kotlin.Float, kotlin.Float, android.graphics.Paint]
+  template: ~this~.beginPath(); ~this~.moveTo(~0~, ~1~); ~this~.lineTo(~2~, ~3~); ~4~.complete(~this~)
+
+- id: android.graphics.Canvas.drawPath
+  type: call
+  template: ~1~.render(~this~, ~0~)
+
+- id: android.graphics.Canvas.save
+  type: call
+  template: ~this~.save()
+
+- id: android.graphics.Canvas.restore
+  type: call
+  template: ~this~.restore()
+
+- id: android.graphics.Canvas.translate
+  type: call
+  template: ~this~.translate(~0~, ~1~)
+
+- id: android.graphics.Canvas.scale
+  type: call
+  template: ~this~.scale(~0~, ~1~)
+
+- id: android.graphics.Canvas.rotate
+  type: call
+  template: ~this~.rotate(~0~ * Math.PI / 180)
+  
+- id: android.graphics.Path
+  type: type
+  template: Path2D
+
+- id: android.graphics.Path
+  type: call
+  template: new Path2D()
+
+# fun Path.moveTo(x: Float, y: Float)
+- id: android.graphics.Path.moveTo
+  type: call
+  template: ~this~.moveTo(~0~, ~1~)
+
+# fun Path.lineTo(x: Float, y: Float)
+- id: android.graphics.Path.lineTo
+  type: call
+  template: ~this~.lineTo(~0~, ~1~)
+
+# fun Path.quadTo(cx: Float, cy: Float, dx: Float, dy: Float)
+- id: android.graphics.Path.quadTo
+  type: call
+  template: ~this~.quadraticCurveTo(~0~, ~1~, ~2~, ~3~)
+
+# fun Path.cubicTo(c1x: Float, c1y: Float, c2x: Float, c2y: Float, dx: Float, dy: Float)
+- id: android.graphics.Path.cubicTo
+  type: call
+  template: ~this~.bezierCurveTo(~0~, ~1~, ~2~, ~3~, ~4~, ~5~)
+
+# fun Path.close()
+- id: android.graphics.Path.close
+  type: call
+  template: ~this~.closePath()

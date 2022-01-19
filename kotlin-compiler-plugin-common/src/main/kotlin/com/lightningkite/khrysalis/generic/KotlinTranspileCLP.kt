@@ -38,6 +38,8 @@ abstract class KotlinTranspileCLP : CommandLineProcessor {
         val KEY_OUTPUT_DIRECTORY = CompilerConfigurationKey.create<File>(KEY_OUTPUT_DIRECTORY_NAME)
         const val KEY_INPUT_DIRECTORY_NAME = "inputDirectory"
         val KEY_INPUT_DIRECTORY = CompilerConfigurationKey.create<File>(KEY_INPUT_DIRECTORY_NAME)
+        const val KEY_LIBRARY_MODE_NAME = "libraryMode"
+        val KEY_LIBRARY_MODE = CompilerConfigurationKey.create<Boolean>(KEY_LIBRARY_MODE_NAME)
     }
 
     override val pluginOptions: Collection<AbstractCliOption> = listOf(
@@ -64,6 +66,12 @@ abstract class KotlinTranspileCLP : CommandLineProcessor {
             "Name of the iOS module name",
             "Name of the iOS module name, specifically for imports.",
             required = true
+        ),
+        CliOption(
+            KEY_LIBRARY_MODE_NAME,
+            "Library mode",
+            "Should additional files for use as a library be generated?",
+            required = false
         )
     )
 
@@ -75,6 +83,7 @@ abstract class KotlinTranspileCLP : CommandLineProcessor {
             KEY_INPUT_DIRECTORY_NAME -> configuration.put(KEY_INPUT_DIRECTORY, File(value.trim('"')))
             KEY_OUTPUT_DIRECTORY_NAME -> configuration.put(KEY_OUTPUT_DIRECTORY, File(value.trim('"')))
             KEY_PROJECT_NAME_NAME -> configuration.put(KEY_PROJECT_NAME, value.trim('"'))
+            KEY_LIBRARY_MODE_NAME -> configuration.put(KEY_LIBRARY_MODE, value.toBoolean())
             else -> {
             }
         }
@@ -89,10 +98,12 @@ abstract class KotlinTranspileCR : ComponentRegistrar {
         equivalents: Replacements,
         input: File?,
         outputDirectory: File,
+        libraryMode: Boolean,
         collector: MessageCollector
     ): AnalysisHandlerExtension
 
     override fun registerProjectComponents(project: MockProject, configuration: CompilerConfiguration) {
+        val libraryMode = configuration[KotlinTranspileCLP.KEY_LIBRARY_MODE]!!
         val projectName = configuration[KotlinTranspileCLP.KEY_PROJECT_NAME]!!
         val dependencies = configuration[KotlinTranspileCLP.KEY_EQUIVALENTS] ?: listOf()
         val input = configuration[KotlinTranspileCLP.KEY_INPUT_DIRECTORY]
@@ -128,6 +139,7 @@ abstract class KotlinTranspileCR : ComponentRegistrar {
                 reps,
                 input,
                 output,
+                libraryMode,
                 collector ?: object : MessageCollector {
                     override fun clear() {}
                     var errors = false
@@ -152,6 +164,7 @@ abstract class KotlinTranspileExtension(
     val projectName: String,
     val input: File?,
     val outputDirectory: File,
+    val libraryMode: Boolean,
     val collector: MessageCollector
 ) : AnalysisHandlerExtension {
     abstract val outputExtension: String

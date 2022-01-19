@@ -3,7 +3,7 @@ package com.lightningkite.khrysalis.swift
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
-import com.lightningkite.khrysalis.generic.PartialTranslatorByType
+import com.lightningkite.khrysalis.generic.KotlinTranslator
 import com.lightningkite.khrysalis.analysis.*
 import com.lightningkite.khrysalis.replacements.Template
 import com.lightningkite.khrysalis.replacements.TemplatePart
@@ -87,7 +87,7 @@ fun getAccessMode(swiftTranslator: SwiftTranslator, rule: KtQualifiedExpression)
     }
 }
 
-inline fun PartialTranslatorByType<SwiftFileEmitter, Unit, Any>.ContextByType<*>.nullWrapAction(
+inline fun KotlinTranslator<SwiftFileEmitter>.ContextByType<*>.nullWrapAction(
     swiftTranslator: SwiftTranslator,
     rule: KtQualifiedExpression,
     action: (Any, AccessMode) -> Unit
@@ -134,7 +134,7 @@ fun hasNewlineBeforeAccess(typedRule: KtQualifiedExpression): Boolean {
         ?.textContains('\n') == true
 }
 
-fun <T : KtQualifiedExpression> PartialTranslatorByType<SwiftFileEmitter, Unit, Any>.ContextByType<T>.insertNewlineBeforeAccess() {
+fun <T : KtQualifiedExpression> KotlinTranslator<SwiftFileEmitter>.ContextByType<T>.insertNewlineBeforeAccess() {
     if (hasNewlineBeforeAccess(typedRule)) {
         -"\n"
     }

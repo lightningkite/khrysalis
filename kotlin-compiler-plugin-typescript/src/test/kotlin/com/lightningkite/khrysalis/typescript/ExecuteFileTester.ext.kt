@@ -13,6 +13,11 @@ import org.jetbrains.kotlin.incremental.destinationAsFile
 import java.io.File
 import com.lightningkite.khrysalis.generic.KotlinTranspileCLP
 import com.lightningkite.khrysalis.util.correctedFileOutput
+import com.lightningkite.khrysalis.util.readInto
+import com.tschuchort.compiletesting.KotlinCompilation
+import com.tschuchort.compiletesting.OptionName
+import com.tschuchort.compiletesting.PluginOption
+import com.tschuchort.compiletesting.SourceFile
 
 private var preparedForTest: Boolean = false
 private fun prepareForTest() {
@@ -47,7 +52,6 @@ private fun prepareForTest() {
     libraryFolder.resolve("index.d.ts").copyTo(tsTestDir.resolve("node_modules/khrysalis-runtime/index.d.ts"), overwrite = true)
     libraryFolder.resolve("package.json").copyTo(tsTestDir.resolve("node_modules/khrysalis-runtime/package.json"), overwrite = true)
     libraryFolder.resolve("tsconfig.json").copyTo(tsTestDir.resolve("node_modules/khrysalis-runtime/tsconfig.json"), overwrite = true)
-
     preparedForTest = true
 }
 
@@ -60,33 +64,17 @@ fun ExecuteFileTester.ts(sourceFile: File, clean: Boolean): String = caching(sou
     println("Compiling ${tsTestDir.absolutePath}")
 
     mainFile.writeText("import { main } from \"./${sourceFile.nameWithoutExtension}\"\nmain()")
-    if (0 == ProcessBuilder()
-            .directory(tsTestDir)
-            .command("npm", "run", "build")
-            .redirectErrorStream(true)
-            .start()
-            .correctedFileOutput(outputFile)
-            .waitFor()
-    ) {
-        ProcessBuilder()
-            .directory(tsTestDir)
-            .command("node", "dist/main.js")
-            .redirectErrorStream(true)
-            .start()
-            .correctedFileOutput(outputFile)
-            .waitFor()
-    } else {
-        throw Exception("Typescript compilation failed: ${outputFile.readText().trim()}")
-    }
-//    ProcessBuilder()
-//        .directory(tsTestDir)
-//        .command("npm", "run", "start")
-//        .redirectErrorStream(true)
-//        .start()
-//        .correctedFileOutput(outputFile)
-//        .waitFor()
 
-    return outputFile.readText().trim()
+    var output: String = ""
+    ProcessBuilder()
+        .directory(tsTestDir)
+        .command("npm", "run", "start")
+        .redirectErrorStream(true)
+        .start()
+        .readInto { output = it }
+        .waitFor()
+
+    return output.substringAfter("> ts-node src/main.ts").trim()
 }
 
 fun ExecuteFileTester.tsTranslated(file: File): String {
@@ -97,17 +85,17 @@ fun ExecuteFileTester.tsTranslated(file: File): String {
 
 fun ExecuteFileTester.compileToTs(file: File): File {
     val outFolder = tsTestDir.resolve("src")
-    this.kotlinCompile(
-        sourceFile = file,
-        argumentsModification = {
-            this.pluginClasspaths = arrayOf("build/libs/kotlin-compiler-plugin-typescript-0.7.1.jar")
-            this.pluginOptions =
-                arrayOf(
-                    "plugin:${KotlinTypescriptCLP.PLUGIN_ID}:${KotlinTranspileCLP.KEY_EQUIVALENTS_NAME}=${tsTestDir}",
-                    "plugin:${KotlinTypescriptCLP.PLUGIN_ID}:${KotlinTranspileCLP.KEY_OUTPUT_DIRECTORY_NAME}=${outFolder}",
-                    "plugin:${KotlinTypescriptCLP.PLUGIN_ID}:${KotlinTranspileCLP.KEY_PROJECT_NAME_NAME}=Yeet"
-                )
-        }
-    )
+    KotlinCompilation().apply {
+        inheritClassPath = true
+        sources = listOf(SourceFile.fromPath(file)) + Libraries.testingStubs.map { SourceFile.fromPath(it) }
+        commandLineProcessors = listOf(KotlinTypescriptCLP())
+        compilerPlugins = listOf(KotlinTypescriptCR())
+        pluginOptions = listOf(
+            PluginOption(KotlinTypescriptCLP.PLUGIN_ID, KotlinTranspileCLP.KEY_EQUIVALENTS_NAME, tsTestDir.toString()),
+            PluginOption(KotlinTypescriptCLP.PLUGIN_ID, KotlinTranspileCLP.KEY_OUTPUT_DIRECTORY_NAME, outFolder.toString()),
+            PluginOption(KotlinTypescriptCLP.PLUGIN_ID, KotlinTranspileCLP.KEY_PROJECT_NAME_NAME, "Yeet"),
+            PluginOption(KotlinTypescriptCLP.PLUGIN_ID, KotlinTranspileCLP.KEY_LIBRARY_MODE_NAME, "false"),
+        )
+    }.compile()
     return outFolder.resolve(file.nameWithoutExtension + ".ts")
 }
