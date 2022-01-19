@@ -12,23 +12,28 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.net.URL
 
-val swiftTestDir = File("./testOut")
-fun ExecuteFileTester.swift(sourceFile: File, clean: Boolean): String = caching(sourceFile, clean) {
+private var ready = false
+private fun makeReady() {
+    if(ready) return
 
     //Copy libraries
-    run {
-        val src = File("../ios-runtime/KhrysalisRuntime/Classes")
-        val dest = swiftTestDir.resolve("Sources/KhrysalisRuntime")
-        if(!dest.exists()) {
-            dest.mkdirs()
-            src.listFiles()!!.forEach {
-                it.copyRecursively(dest.resolve(it.relativeTo(src)), overwrite = true)
-            }
-            dest.resolve("core/UIColor.ext.swift").delete()
-            dest.resolve("android/CGRect+bounds.swift").delete()
+    val src = File("../ios-runtime/KhrysalisRuntime/Classes")
+    val dest = swiftTestDir.resolve("Sources/KhrysalisRuntime")
+    if(!dest.exists()) {
+        dest.mkdirs()
+        src.listFiles()!!.forEach {
+            it.copyRecursively(dest.resolve(it.relativeTo(src)), overwrite = true)
         }
+        dest.resolve("core/UIColor.ext.swift").delete()
+        dest.resolve("android/CGRect+bounds.swift").delete()
     }
 
+    ready = true
+}
+
+val swiftTestDir = File("./testOut")
+fun ExecuteFileTester.swift(sourceFile: File, clean: Boolean): String = caching(sourceFile, clean) {
+    makeReady()
     val mainFile = swiftTestDir.resolve("Sources/testOut/main.swift")
     mainFile.writeText("print(\"BEGIN PROGRAM\")\nmain()")
     val outputFile = swiftTestDir.resolve("build").resolve(sourceFile.nameWithoutExtension + ".out")
@@ -51,6 +56,7 @@ fun ExecuteFileTester.swiftTranslated(file: File): String {
 }
 
 fun ExecuteFileTester.compileToSwift(file: File): File {
+    makeReady()
     val outFolder = swiftTestDir.resolve("Sources/testOut")
     KotlinCompilation().apply {
         inheritClassPath = true
