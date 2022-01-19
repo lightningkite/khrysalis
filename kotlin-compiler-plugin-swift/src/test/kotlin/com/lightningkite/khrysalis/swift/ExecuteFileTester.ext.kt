@@ -3,6 +3,10 @@ package com.lightningkite.khrysalis.swift
 import com.lightningkite.khrysalis.kotlin.ExecuteFileTester
 import com.lightningkite.khrysalis.kotlin.Libraries
 import com.lightningkite.khrysalis.generic.KotlinTranspileCLP
+import com.lightningkite.khrysalis.util.readInto
+import com.tschuchort.compiletesting.KotlinCompilation
+import com.tschuchort.compiletesting.PluginOption
+import com.tschuchort.compiletesting.SourceFile
 import org.jetbrains.kotlin.util.capitalizeDecapitalize.toLowerCaseAsciiOnly
 import java.io.ByteArrayOutputStream
 import java.io.File
@@ -30,14 +34,15 @@ fun ExecuteFileTester.swift(sourceFile: File, clean: Boolean): String = caching(
     val outputFile = swiftTestDir.resolve("build").resolve(sourceFile.nameWithoutExtension + ".out")
     outputFile.parentFile.mkdirs()
 
+    var output: String = ""
     ProcessBuilder("swift", "run")
         .directory(swiftTestDir)
         .redirectErrorStream(true)
-        .redirectOutput(outputFile)
         .start()
+        .readInto { output = it }
         .waitFor()
 
-    outputFile.readText().substringAfter("BEGIN PROGRAM").trim()
+    return output.substringAfter("BEGIN PROGRAM").trim()
 }
 
 fun ExecuteFileTester.swiftTranslated(file: File): String {
@@ -47,18 +52,17 @@ fun ExecuteFileTester.swiftTranslated(file: File): String {
 
 fun ExecuteFileTester.compileToSwift(file: File): File {
     val outFolder = swiftTestDir.resolve("Sources/testOut")
-    this.kotlinCompile(
-        sourceFile = file,
-        argumentsModification = {
-            this.pluginClasspaths = arrayOf("build/libs/kotlin-compiler-plugin-swift-0.2.0.jar")
-            this.pluginOptions =
-                arrayOf(
-                    "plugin:${KotlinSwiftCLP.PLUGIN_ID}:${KotlinTranspileCLP.KEY_EQUIVALENTS_NAME}=${swiftTestDir.resolve("Sources/KhrysalisRuntime")}",
-                    "plugin:${KotlinSwiftCLP.PLUGIN_ID}:${KotlinTranspileCLP.KEY_OUTPUT_DIRECTORY_NAME}=${outFolder}",
-                    "plugin:${KotlinSwiftCLP.PLUGIN_ID}:${KotlinTranspileCLP.KEY_PROJECT_NAME_NAME}=Yeet",
-                    "plugin:${KotlinSwiftCLP.PLUGIN_ID}:${KotlinTranspileCLP.KEY_LIBRARY_MODE_NAME}=false",
-                )
-        }
-    )
+    KotlinCompilation().apply {
+        inheritClassPath = true
+        sources = listOf(SourceFile.fromPath(file)) + Libraries.testingStubs.map { SourceFile.fromPath(it) }
+        commandLineProcessors = listOf(KotlinSwiftCLP())
+        compilerPlugins = listOf(KotlinSwiftCR())
+        pluginOptions = listOf(
+            PluginOption(KotlinSwiftCLP.PLUGIN_ID, KotlinTranspileCLP.KEY_EQUIVALENTS_NAME, swiftTestDir.resolve("Sources/KhrysalisRuntime").toString()),
+            PluginOption(KotlinSwiftCLP.PLUGIN_ID, KotlinTranspileCLP.KEY_OUTPUT_DIRECTORY_NAME, outFolder.toString()),
+            PluginOption(KotlinSwiftCLP.PLUGIN_ID, KotlinTranspileCLP.KEY_PROJECT_NAME_NAME, "Yeet"),
+            PluginOption(KotlinSwiftCLP.PLUGIN_ID, KotlinTranspileCLP.KEY_LIBRARY_MODE_NAME, "false"),
+        )
+    }.compile()
     return outFolder.resolve(file.nameWithoutExtension + ".swift")
 }

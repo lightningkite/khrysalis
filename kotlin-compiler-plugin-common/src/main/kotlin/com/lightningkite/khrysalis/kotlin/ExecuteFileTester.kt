@@ -1,6 +1,8 @@
 package com.lightningkite.khrysalis.kotlin
 
 import com.lightningkite.khrysalis.util.checksum
+import com.tschuchort.compiletesting.KotlinCompilation
+import com.tschuchort.compiletesting.SourceFile
 import org.jetbrains.kotlin.cli.common.arguments.K2JVMCompilerArguments
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSourceLocation
@@ -40,57 +42,10 @@ object ExecuteFileTester {
         return result
     }
 
-    fun kotlinCompile(
-        sourceFile: File,
-        libraries: Set<File> = setOf(Libraries.getStandardLibrary()),
-        additionalSources: List<File> = Libraries.testingStubs,
-        argumentsModification: K2JVMCompilerArguments.()->Unit,
-        out: File = buildDir.resolve(sourceFile.nameWithoutExtension + ".jar")
-    ) {
-        val failures = ArrayList<String>()
-        K2JVMCompiler().exec(
-            messageCollector = object : MessageCollector {
-                override fun clear() {
-
-                }
-
-                override fun hasErrors(): Boolean {
-                    return false
-                }
-
-                override fun report(
-                    severity: CompilerMessageSeverity,
-                    message: String,
-                    location: CompilerMessageSourceLocation?
-                ) {
-                    if (message.isNotBlank())
-                        println(message + if(location != null) ": $location" else "")
-                    if(severity <= CompilerMessageSeverity.ERROR) {
-                        failures.add(message + if(location != null) ": $location" else "")
-                    }
-                }
-
-            },
-            services = Services.EMPTY,
-            arguments = K2JVMCompilerArguments().apply {
-                this.useIR = true
-                this.freeArgs = (listOf(sourceFile) + additionalSources).map { it.path }.also { println(it) }
-                this.classpathAsList = libraries.toList()
-                this.destinationAsFile = out
-            }.apply(argumentsModification)
-        )
-        if(failures.isNotEmpty()){
-            throw Exception(failures.joinToString("\n"))
-        }
-    }
-
     fun kotlin(
         sourceFile: File,
-        clean: Boolean = false,
-        libraries: Set<File> = setOf(Libraries.getStandardLibrary()),
-        additionalSources: List<File> = Libraries.testingStubs
+        clean: Boolean = false
     ): String = caching(sourceFile, clean) {
-        val outFile = buildDir.resolve(sourceFile.nameWithoutExtension + ".jar")
         val ktName = sourceFile.name
             .split('.')
             .joinToString("") { it.filter { it.isJavaIdentifierPart() }.capitalize() }
@@ -98,10 +53,14 @@ object ExecuteFileTester {
         val packageName: String =
             sourceFile.useLines { it.find { it.trim().startsWith("package") }?.substringAfter("package ")?.trim() }
                 ?: ""
-        kotlinCompile(sourceFile, libraries, additionalSources, {}, outFile)
+        val outFile = KotlinCompilation().apply {
+            sources = listOf(SourceFile.fromPath(sourceFile)) + Libraries.testingStubs.map { SourceFile.fromPath(it) }
+            inheritClassPath = true
+        }.compile().outputDirectory
 
+        println(listOf(Libraries.getStandardLibrary(), outFile))
         captureSystemOut {
-            JVM.runMain(libraries.toList() + outFile, if(packageName.isNotEmpty()) "$packageName.$ktName" else ktName, arrayOf<String>())
+            JVM.runMain(listOf(Libraries.getStandardLibrary(), outFile), if(packageName.isNotEmpty()) "$packageName.$ktName" else ktName, arrayOf<String>())
         }.trim()
     }
 }

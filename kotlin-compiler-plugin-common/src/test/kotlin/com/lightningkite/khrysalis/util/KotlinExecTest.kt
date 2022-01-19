@@ -3,23 +3,26 @@ package com.lightningkite.khrysalis.util
 import com.lightningkite.khrysalis.kotlin.ExecuteFileTester
 import org.junit.Assert
 import org.junit.Test
+import org.junit.runner.RunWith
+import org.junit.runners.Parameterized
 import java.io.File
 
+@RunWith(Parameterized::class)
 class KotlinExecTest {
+
+    @Parameterized.Parameter(0)
+    @JvmField
+    var file: String = ""
+
+    companion object {
+        @Parameterized.Parameters(name = "{0}")
+        @JvmStatic
+        fun data(): Array<Array<String>> = File("../conversionTestData").list()!!.filter { it.startsWith("test") }.map { arrayOf(it) }.toTypedArray()
+    }
+
     @Test
-    fun testExec() {
-        val out = ExecuteFileTester.kotlin(
-            ExecuteFileTester.tempFile("""
-                @file:SharedCode
-                package com.test
-                
-                import com.lightningkite.khrysalis.SharedCode
-               
-                fun main(vararg args: String) {
-                    println("Hello world!")
-                }
-                """.trimIndent())
-        )
-        Assert.assertEquals(out, "Hello world!")
+    fun test() {
+        val it = File("../conversionTestData").resolve(file)
+        ExecuteFileTester.kotlin(it, true)
     }
 }
