@@ -33,7 +33,7 @@ private fun prepareForTest() {
     }
 
     // Copy library
-    val libraryFolder = tsTestDir.resolve("../../web-runtime")
+    val libraryFolder = tsTestDir.resolve("../..")
     ProcessBuilder()
         .directory(libraryFolder)
         .command("npm", "install")
@@ -46,8 +46,7 @@ private fun prepareForTest() {
         .inheritIO()
         .start()
         .waitFor()
-    libraryFolder.resolve("dist").copyRecursively(tsTestDir.resolve("node_modules/khrysalis-runtime/dist"), overwrite = true)
-    libraryFolder.resolve("src").copyRecursively(tsTestDir.resolve("node_modules/khrysalis-runtime/src"), overwrite = true)
+    libraryFolder.resolve("web-runtime").copyRecursively(tsTestDir.resolve("node_modules/khrysalis-runtime/web-runtime"), overwrite = true)
     libraryFolder.resolve("index.js").copyTo(tsTestDir.resolve("node_modules/khrysalis-runtime/index.js"), overwrite = true)
     libraryFolder.resolve("index.d.ts").copyTo(tsTestDir.resolve("node_modules/khrysalis-runtime/index.d.ts"), overwrite = true)
     libraryFolder.resolve("package.json").copyTo(tsTestDir.resolve("node_modules/khrysalis-runtime/package.json"), overwrite = true)
