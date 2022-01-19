@@ -2,8 +2,8 @@
   "name": "khrysalis-runtime",
   "version": "0.1.0",
   "description": "",
-  "main": "Kotlin.js",
-  "types": "Kotlin.d.ts",
+  "main": "index.js",
+  "types": "index.d.ts",
   "dependencies": {
     "ts-polyfill": "^3.8.2",
     "sprintf-js": "1.1.x",
@@ -24,6 +24,7 @@
   },
   "scripts": {
     "build": "tsc",
+    "prepare": "tsc",
     "test": "jest --env=node --colors --coverage test"
   },
   "author": "Lightning Kite"

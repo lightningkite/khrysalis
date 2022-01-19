@@ -1,2 +1,0 @@
-print("BEGIN PROGRAM")
-main()
