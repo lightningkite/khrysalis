@@ -23,7 +23,7 @@
     "@types/jest": "^26.0.20"
   },
   "scripts": {
-    "prepare": "tsc",
+    "prepack": "tsc",
     "test": "jest --env=node --colors --coverage test"
   },
   "author": "Lightning Kite"
