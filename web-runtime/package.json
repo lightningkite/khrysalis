@@ -23,7 +23,6 @@
     "@types/jest": "^26.0.20"
   },
   "scripts": {
-    "build": "tsc",
     "prepare": "tsc",
     "test": "jest --env=node --colors --coverage test"
   },
