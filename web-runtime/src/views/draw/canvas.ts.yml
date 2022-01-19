@@ -31,7 +31,7 @@
   template:
     pattern: ~this~.clip(pathFromLTRB(~0~, ~1~, ~2~, ~3~))
     imports:
-      pathFromLTRB: @lightningkite/khrysalis-runtime
+      pathFromLTRB: '@lightningkite/khrysalis-runtime'
 
 - id: android.graphics.Canvas.clipRect
   type: call
@@ -39,7 +39,7 @@
   template:
     pattern: ~this~.clip(pathFromRectF(~0~))
     imports:
-      pathFromRectF: @lightningkite/khrysalis-runtime
+      pathFromRectF: '@lightningkite/khrysalis-runtime'
 
 - id: android.graphics.Canvas.drawCircle
   type: call
@@ -51,7 +51,7 @@
   template:
     pattern: ~4~.render(~this~, pathFromLTRB(~0~, ~1~, ~2~, ~3~))
     imports:
-      pathFromLTRB: @lightningkite/khrysalis-runtime
+      pathFromLTRB: '@lightningkite/khrysalis-runtime'
 
 - id: android.graphics.Canvas.drawRect
   type: call
@@ -59,7 +59,7 @@
   template:
     pattern: ~1~.render(~this~, pathFromRectF(~0~))
     imports:
-      pathFromRectF: @lightningkite/khrysalis-runtime
+      pathFromRectF: '@lightningkite/khrysalis-runtime'
 
 - id: android.graphics.Canvas.drawOval
   type: call
@@ -67,7 +67,7 @@
   template:
     pattern: ~4~.render(~this~, pathOvalFromLTRB(~0~, ~1~, ~2~, ~3~))
     imports:
-      pathOvalFromLTRB: @lightningkite/khrysalis-runtime
+      pathOvalFromLTRB: '@lightningkite/khrysalis-runtime'
 
 - id: android.graphics.Canvas.drawOval
   type: call
@@ -75,7 +75,7 @@
   template:
     pattern: ~1~.render(~this~, pathOvalFromRectF(~0~))
     imports:
-      pathOvalFromRectF: @lightningkite/khrysalis-runtime
+      pathOvalFromRectF: '@lightningkite/khrysalis-runtime'
 
 - id: android.graphics.Canvas.drawRoundRect
   type: call
@@ -83,7 +83,7 @@
   template:
     pattern: ~6~.render(~this~, pathRoundedFromLTRB(~0~, ~1~, ~2~, ~3~, ~4~, ~5~))
     imports:
-      pathRoundedFromLTRB: @lightningkite/khrysalis-runtime
+      pathRoundedFromLTRB: '@lightningkite/khrysalis-runtime'
 
 - id: android.graphics.Canvas.drawRoundRect
   type: call
@@ -91,7 +91,7 @@
   template:
     pattern: ~3~.render(~this~, pathRoundedFromRectF(~0~, ~1~, ~2~))
     imports:
-      pathRoundedFromRectF: @lightningkite/khrysalis-runtime
+      pathRoundedFromRectF: '@lightningkite/khrysalis-runtime'
 
 - id: android.graphics.Canvas.drawLine
   type: call
@@ -127,4 +127,4 @@
   template:
     pattern: applyMatrixToCanvas(~this~, ~0~)
     imports:
-      applyMatrixToCanvas: @lightningkite/khrysalis-runtime
+      applyMatrixToCanvas: '@lightningkite/khrysalis-runtime'

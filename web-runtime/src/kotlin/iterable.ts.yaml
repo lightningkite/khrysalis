@@ -159,7 +159,7 @@
     pattern: toArray(~this~).sort((a, b) => safeCompare(~0~(a), ~0~(b)))
     imports:
       toArray: iter-tools-es
-      safeCompare: @lightningkite/khrysalis-runtime
+      safeCompare: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.collections.sortedByDescending
   type: call
@@ -167,7 +167,7 @@
     pattern: toArray(~this~).sort((a, b) => -safeCompare(~0~(a), ~0~(b)))
     imports:
       toArray: iter-tools-es
-      safeCompare: @lightningkite/khrysalis-runtime
+      safeCompare: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.collections.sortedWith
   type: call
@@ -216,28 +216,28 @@
   template:
     pattern: "[...new EqualOverrideSet(~this~)]"
     imports:
-      EqualOverrideSet: khrysalis-web
+      EqualOverrideSet: "@lightningkite/khrysalis-runtime"
 
 - id: kotlin.collections.toSet
   type: call
   template:
     pattern: "new EqualOverrideSet(~this~)"
     imports:
-      EqualOverrideSet: khrysalis-web
+      EqualOverrideSet: "@lightningkite/khrysalis-runtime"
 
 - id: kotlin.collections.toMutableSet
   type: call
   template:
     pattern: "new EqualOverrideSet(~this~)"
     imports:
-      EqualOverrideSet: khrysalis-web
+      EqualOverrideSet: "@lightningkite/khrysalis-runtime"
 
 - id: kotlin.collections.toHashSet
   type: call
   template:
     pattern: "new EqualOverrideSet(~this~)"
     imports:
-      EqualOverrideSet: khrysalis-web
+      EqualOverrideSet: "@lightningkite/khrysalis-runtime"
 
 - id: kotlin.collections.distinct
   type: call
@@ -274,7 +274,7 @@
   template:
     pattern: new EqualOverrideMap(splitGroups(~0~, ~this~))
     imports:
-      EqualOverrideMap: khrysalis-web
+      EqualOverrideMap: "@lightningkite/khrysalis-runtime"
       splitGroups: iter-tools-es
 
 - id: kotlin.collections.groupBy
@@ -284,7 +284,7 @@
   template:
     pattern: new EqualOverrideMap(splitGroups(~0~, ~this~))
     imports:
-      EqualOverrideMap: khrysalis-web
+      EqualOverrideMap: "@lightningkite/khrysalis-runtime"
       splitGroups: iter-tools-es
 
 - id: kotlin.collections.find
@@ -390,7 +390,7 @@
     pattern: reduce((a, b) => cMax(~0~(a), ~0~(b)), ~this~)
     imports:
       reduce: iter-tools-es
-      cMax: @lightningkite/khrysalis-runtime
+      cMax: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.collections.minBy
   type: call
@@ -398,23 +398,23 @@
     pattern: reduce((a, b) => cMin(~0~(a), ~0~(b)), ~this~)
     imports:
       reduce: iter-tools-es
-      cMin: @lightningkite/khrysalis-runtime
+      cMin: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.collections.maxByOrNull
   type: call
   template:
     pattern: reduceOr((a, b) => cMax(~0~(a), ~0~(b)), ~this~)
     imports:
-      reduceOr: @lightningkite/khrysalis-runtime
-      cMax: @lightningkite/khrysalis-runtime
+      reduceOr: '@lightningkite/khrysalis-runtime'
+      cMax: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.collections.minByOrNull
   type: call
   template:
     pattern: reduceOr((a, b) => cMin(~0~(a), ~0~(b)), ~this~)
     imports:
-      reduceOr: @lightningkite/khrysalis-runtime
-      cMin: @lightningkite/khrysalis-runtime
+      reduceOr: '@lightningkite/khrysalis-runtime'
+      cMin: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.collections.max
   type: call
@@ -422,7 +422,7 @@
     pattern: reduce(cMax, ~this~)
     imports:
       reduce: iter-tools-es
-      cMax: @lightningkite/khrysalis-runtime
+      cMax: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.collections.min
   type: call
@@ -430,23 +430,23 @@
     pattern: reduce(cMin, ~this~)
     imports:
       reduce: iter-tools-es
-      cMin: @lightningkite/khrysalis-runtime
+      cMin: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.collections.maxOrNull
   type: call
   template:
     pattern: reduceOr(cMax, ~this~)
     imports:
-      reduceOr: @lightningkite/khrysalis-runtime
-      cMax: @lightningkite/khrysalis-runtime
+      reduceOr: '@lightningkite/khrysalis-runtime'
+      cMax: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.collections.minOrNull
   type: call
   template:
     pattern: reduceOr(cMin, ~this~)
     imports:
-      reduceOr: @lightningkite/khrysalis-runtime
-      cMin: @lightningkite/khrysalis-runtime
+      reduceOr: '@lightningkite/khrysalis-runtime'
+      cMin: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.collections.joinToString
   type: call
@@ -455,7 +455,7 @@
     pattern: execPipe(~this~, join(~separator~))
     imports:
       execPipe: iter-tools-es
-      join: @lightningkite/khrysalis-runtime
+      join: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.collections.joinToString
   type: call
@@ -464,7 +464,7 @@
     pattern: execPipe(~this~, join(~separator~))
     imports:
       execPipe: iter-tools-es
-      join: @lightningkite/khrysalis-runtime
+      join: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.collections.joinToString
   type: call
@@ -474,7 +474,7 @@
     imports:
       execPipe: iter-tools-es
       map: iter-tools-es
-      join: @lightningkite/khrysalis-runtime
+      join: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.collections.joinToString
   type: call
@@ -484,7 +484,7 @@
     imports:
       execPipe: iter-tools-es
       map: iter-tools-es
-      join: @lightningkite/khrysalis-runtime
+      join: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.collections.joinToString
   type: call
@@ -494,7 +494,7 @@
     imports:
       execPipe: iter-tools-es
       map: iter-tools-es
-      join: @lightningkite/khrysalis-runtime
+      join: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.collections.joinToString
   type: call
@@ -504,7 +504,7 @@
     imports:
       execPipe: iter-tools-es
       map: iter-tools-es
-      join: @lightningkite/khrysalis-runtime
+      join: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.collections.joinToString
   type: call
@@ -514,4 +514,4 @@
     imports:
       execPipe: iter-tools-es
       map: iter-tools-es
-      join: @lightningkite/khrysalis-runtime
+      join: '@lightningkite/khrysalis-runtime'

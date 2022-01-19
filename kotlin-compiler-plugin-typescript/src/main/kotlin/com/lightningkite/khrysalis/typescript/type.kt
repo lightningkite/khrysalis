@@ -372,7 +372,7 @@ fun TypescriptTranslator.registerType() {
 
             when {
                 resolvedType.isInterface() -> {
-                    out.addImport("khrysalis-runtime", "tryCastInterface")
+                    out.addImport("@lightningkite/khrysalis-runtime", "tryCastInterface")
                     -"tryCastInterface<"
                     -typedRule.right
                     -">("
@@ -382,7 +382,7 @@ fun TypescriptTranslator.registerType() {
                     -"\")"
                 }
                 resolvedType.isPrimitive() -> {
-                    out.addImport("khrysalis-runtime", "tryCastPrimitive")
+                    out.addImport("@lightningkite/khrysalis-runtime", "tryCastPrimitive")
                     -"tryCastPrimitive<"
                     -typedRule.right
                     -">("
@@ -392,7 +392,7 @@ fun TypescriptTranslator.registerType() {
                     -"\")"
                 }
                 else -> {
-                    out.addImport("khrysalis-runtime", "tryCastClass")
+                    out.addImport("@lightningkite/khrysalis-runtime", "tryCastClass")
                     -"tryCastClass<"
                     -typedRule.right
                     -">("
@@ -412,7 +412,7 @@ fun KotlinTranslator<TypescriptFileEmitter>.ContextByType<*>.emitIsExpression(
 ) {
     when {
         resolvedType.isInterface() -> {
-            out.addImport("khrysalis-runtime", "checkIsInterface")
+            out.addImport("@lightningkite/khrysalis-runtime", "checkIsInterface")
             -"checkIsInterface<"
             -resolvedType
             -">("

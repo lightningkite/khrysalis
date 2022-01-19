@@ -12,7 +12,7 @@
   template:
     pattern: new PointF(~this~.transformPoint(~0~))
     imports:
-      PointF: @lightningkite/khrysalis-runtime
+      PointF: '@lightningkite/khrysalis-runtime'
 
 - id: com.lightningkite.khrysalis.inverted
   type: call
@@ -23,20 +23,20 @@
   template:
     pattern: matrixSet(~this~, ~0~.inverse())
     imports:
-      matrixSet: @lightningkite/khrysalis-runtime
+      matrixSet: '@lightningkite/khrysalis-runtime'
 
 - id: android.graphics.Matrix.reset
   type: call
   template:
     pattern: matrixReset(~this~)
     imports:
-      matrixReset: @lightningkite/khrysalis-runtime
+      matrixReset: '@lightningkite/khrysalis-runtime'
 - id: android.graphics.Matrix.set
   type: call
   template:
     pattern: matrixSet(~this~, ~0~)
     imports:
-      matrixSet: @lightningkite/khrysalis-runtime
+      matrixSet: '@lightningkite/khrysalis-runtime'
 - id: android.graphics.Matrix.preTranslate
   type: call
   template: '~this~.translateSelf(~0~, ~1~)'

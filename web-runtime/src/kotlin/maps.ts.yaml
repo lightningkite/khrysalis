@@ -55,13 +55,13 @@
   template:
     pattern: "new EqualOverrideMap<~T0~, ~T1~>([~*~])"
     imports:
-      EqualOverrideMap: @lightningkite/khrysalis-runtime
+      EqualOverrideMap: '@lightningkite/khrysalis-runtime'
 - id: kotlin.collections.mapOf
   type: call
   template:
     pattern: "new EqualOverrideMap([~*~])"
     imports:
-      EqualOverrideMap: @lightningkite/khrysalis-runtime
+      EqualOverrideMap: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.collections.mutableMapOf
   type: call
@@ -81,13 +81,13 @@
   template:
     pattern: "new EqualOverrideMap<~T0~, ~T1~>([~*~])"
     imports:
-      EqualOverrideMap: @lightningkite/khrysalis-runtime
+      EqualOverrideMap: '@lightningkite/khrysalis-runtime'
 - id: kotlin.collections.mutableMapOf
   type: call
   template:
     pattern: "new EqualOverrideMap([~*~])"
     imports:
-      EqualOverrideMap: @lightningkite/khrysalis-runtime
+      EqualOverrideMap: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.collections.hashMapOf
   type: call
@@ -107,13 +107,13 @@
   template:
     pattern: "new EqualOverrideMap<~T0~, ~T1~>([~*~])"
     imports:
-      EqualOverrideMap: @lightningkite/khrysalis-runtime
+      EqualOverrideMap: '@lightningkite/khrysalis-runtime'
 - id: kotlin.collections.hashMapOf
   type: call
   template:
     pattern: "new EqualOverrideMap([~*~])"
     imports:
-      EqualOverrideMap: @lightningkite/khrysalis-runtime
+      EqualOverrideMap: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.collections.HashMap
   type: call
@@ -134,14 +134,14 @@
   template:
     pattern: "new EqualOverrideMap<~T0~, ~T1~>()"
     imports:
-      EqualOverrideMap: @lightningkite/khrysalis-runtime
+      EqualOverrideMap: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.collections.HashMap
   type: call
   template:
     pattern: "new EqualOverrideMap()"
     imports:
-      EqualOverrideMap: @lightningkite/khrysalis-runtime
+      EqualOverrideMap: '@lightningkite/khrysalis-runtime'
 
 - id: java.util.HashMap
   type: call
@@ -162,14 +162,14 @@
   template:
     pattern: "new EqualOverrideMap<~T0~, ~T1~>()"
     imports:
-      EqualOverrideMap: @lightningkite/khrysalis-runtime
+      EqualOverrideMap: '@lightningkite/khrysalis-runtime'
 
 - id: java.util.HashMap
   type: call
   template:
     pattern: "new EqualOverrideMap()"
     imports:
-      EqualOverrideMap: @lightningkite/khrysalis-runtime
+      EqualOverrideMap: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.collections.Map.Entry
   type: type
@@ -234,7 +234,7 @@
   template:
     pattern: xMapPutAll(~this~, ~0~)
     imports:
-      xMapPutAll: @lightningkite/khrysalis-runtime
+      xMapPutAll: '@lightningkite/khrysalis-runtime'
 - id: kotlin.collections.MutableMap.remove
   type: call
   template: ~this~.delete(~0~)
@@ -249,4 +249,4 @@
   template:
     pattern: xMapFilter(~this~, ~0~)
     imports:
-      xMapFilter: @lightningkite/khrysalis-runtime
+      xMapFilter: '@lightningkite/khrysalis-runtime'

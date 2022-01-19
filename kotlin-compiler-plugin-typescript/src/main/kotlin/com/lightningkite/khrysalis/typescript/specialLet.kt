@@ -50,7 +50,7 @@ fun TypescriptTranslator.registerSpecialLet() {
             }
             -" => {\n"
         }
-        out.addImport("khrysalis-runtime", "runOrNull")
+        out.addImport("@lightningkite/khrysalis-runtime", "runOrNull")
         typedRule.entries.forEachBetween(
             forItem = { (basis, lambda) ->
                 val desc = lambda.functionLiteral.resolvedFunction?.valueParameters?.firstOrNull()

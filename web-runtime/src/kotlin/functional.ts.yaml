@@ -16,25 +16,25 @@
   template:
     pattern: "also(~this~, ~0~)"
     imports:
-      also: @lightningkite/khrysalis-runtime
+      also: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.apply
   type: call
   template:
     pattern: "also(~this~, ~0~)"
     imports:
-      also: @lightningkite/khrysalis-runtime
+      also: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.takeIf
   type: call
   template:
     pattern: takeIf(~this~, ~0~)
     imports:
-      takeIf: @lightningkite/khrysalis-runtime
+      takeIf: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.takeUnless
   type: call
   template:
     pattern: takeUnless(~this~, ~0~)
     imports:
-      takeUnless: @lightningkite/khrysalis-runtime
+      takeUnless: '@lightningkite/khrysalis-runtime'

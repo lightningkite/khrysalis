@@ -381,7 +381,7 @@ fun TypescriptTranslator.registerClass() {
                 .any { it.typeReference?.resolvedType?.fqNameWithoutTypeArgs == "com.lightningkite.khrysalis.Codable" }
         ) {
             //Generate codable constructor
-            out.addImport("khrysalis-runtime", "parse")
+            out.addImport("@lightningkite/khrysalis-runtime", "parse")
 
             if(!typedRule.isEnum()){
                 -"public static fromJSON"
@@ -453,7 +453,7 @@ fun TypescriptTranslator.registerClass() {
                 -"public hashCode(): number {\nlet hash = 17;\n"
                 typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEach { param ->
                     -"hash = 31 * hash + "
-                    out.addImport("khrysalis-runtime", "hashAnything")
+                    out.addImport("@lightningkite/khrysalis-runtime", "hashAnything")
                     -"hashAnything(this."
                     -param.nameIdentifier
                     -")"
@@ -469,7 +469,7 @@ fun TypescriptTranslator.registerClass() {
                 -typedRule.nameIdentifier
                 typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEach { param ->
                     -" && "
-                    out.addImport("khrysalis-runtime", "safeEq")
+                    out.addImport("@lightningkite/khrysalis-runtime", "safeEq")
                     -"safeEq(this."
                     -param.nameIdentifier
                     -", "

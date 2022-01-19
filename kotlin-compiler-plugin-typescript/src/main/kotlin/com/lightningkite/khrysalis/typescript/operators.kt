@@ -276,7 +276,7 @@ fun TypescriptTranslator.registerOperators() {
         condition = { typedRule.operationToken == KtTokens.EQEQ },
         priority = 20
     ) {
-        out.addImport("khrysalis-runtime", "safeEq")
+        out.addImport("@lightningkite/khrysalis-runtime", "safeEq")
         -"safeEq("
         -typedRule.left
         -", "
@@ -287,7 +287,7 @@ fun TypescriptTranslator.registerOperators() {
         condition = { typedRule.operationToken == KtTokens.EXCLEQ },
         priority = 20
     ) {
-        out.addImport("khrysalis-runtime", "safeEq")
+        out.addImport("@lightningkite/khrysalis-runtime", "safeEq")
         -"!safeEq("
         -typedRule.left
         -", "

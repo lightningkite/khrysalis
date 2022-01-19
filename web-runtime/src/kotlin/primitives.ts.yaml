@@ -153,7 +153,7 @@
   template:
     pattern: hashString(~this~)
     imports:
-      hashString: @lightningkite/khrysalis-runtime
+      hashString: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.Char.hashCode
   type: call

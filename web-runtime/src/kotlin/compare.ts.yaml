@@ -21,14 +21,14 @@
   template:
     pattern: Comparator<~T0~>
     imports:
-      Comparator: @lightningkite/khrysalis-runtime
+      Comparator: '@lightningkite/khrysalis-runtime'
 
 - id: java.util.Comparator
   type: type
   template:
     pattern: Comparator<~T0~>
     imports:
-      Comparator: @lightningkite/khrysalis-runtime
+      Comparator: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.Comparable.compareTo
   type: call
@@ -36,7 +36,7 @@
   template:
     pattern: safeCompare(~this~, ~0~)
     imports:
-      safeCompare: @lightningkite/khrysalis-runtime
+      safeCompare: '@lightningkite/khrysalis-runtime'
 
 - id: java.util.Comparable.compareTo
   type: call
@@ -44,7 +44,7 @@
   template:
     pattern: safeCompare(~this~, ~0~)
     imports:
-      safeCompare: @lightningkite/khrysalis-runtime
+      safeCompare: '@lightningkite/khrysalis-runtime'
 
 # Coerce
 - id: kotlin.ranges.coerceIn
@@ -52,35 +52,35 @@
   template:
     pattern: cCoerce(~this~, ~0~, ~1~)
     imports:
-      cCoerce: @lightningkite/khrysalis-runtime
+      cCoerce: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.ranges.coerceAtMost
   type: call
   template:
     pattern: cMin(~this~, ~0~)
     imports:
-      cMin: @lightningkite/khrysalis-runtime
+      cMin: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.ranges.coerceAtLeast
   type: call
   template:
     pattern: cMax(~this~, ~0~)
     imports:
-      cMax: @lightningkite/khrysalis-runtime
+      cMax: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.comparisons.maxOf
   type: call
   template:
     pattern: cMax(~*~)
     imports:
-      cMax: @lightningkite/khrysalis-runtime
+      cMax: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.comparisons.minOf
   type: call
   template:
     pattern: cMin(~*~)
     imports:
-      cMin: @lightningkite/khrysalis-runtime
+      cMin: '@lightningkite/khrysalis-runtime'
 
 
 - id: kotlin.Comparable
@@ -88,18 +88,18 @@
   template:
     pattern: Comparable<~T0~>
     imports:
-      Comparable: @lightningkite/khrysalis-runtime
+      Comparable: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.ranges.Range
   type: type
   template:
     pattern: Range<~T0~>
     imports:
-      Range: @lightningkite/khrysalis-runtime
+      Range: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.ranges.rangeTo
   type: call
   template:
     pattern: new Range(~this~, ~0~)
     imports:
-      Range: @lightningkite/khrysalis-runtime
+      Range: '@lightningkite/khrysalis-runtime'

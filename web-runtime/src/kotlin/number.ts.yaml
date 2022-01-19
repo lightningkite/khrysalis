@@ -800,37 +800,37 @@
   template:
     pattern: new NumberRange(~this~, ~0~)
     imports:
-      NumberRange: @lightningkite/khrysalis-runtime
+      NumberRange: '@lightningkite/khrysalis-runtime'
 - id: kotlin.Short.rangeTo
   type: call
   template:
     pattern: new NumberRange(~this~, ~0~)
     imports:
-      NumberRange: @lightningkite/khrysalis-runtime
+      NumberRange: '@lightningkite/khrysalis-runtime'
 - id: kotlin.Int.rangeTo
   type: call
   template:
     pattern: new NumberRange(~this~, ~0~)
     imports:
-      NumberRange: @lightningkite/khrysalis-runtime
+      NumberRange: '@lightningkite/khrysalis-runtime'
 - id: kotlin.Long.rangeTo
   type: call
   template:
     pattern: new NumberRange(~this~, ~0~)
     imports:
-      NumberRange: @lightningkite/khrysalis-runtime
+      NumberRange: '@lightningkite/khrysalis-runtime'
 - id: kotlin.Float.rangeTo
   type: call
   template:
     pattern: new Range(~this~, ~0~)
     imports:
-      Range: @lightningkite/khrysalis-runtime
+      Range: '@lightningkite/khrysalis-runtime'
 - id: kotlin.Double.rangeTo
   type: call
   template:
     pattern: new Range(~this~, ~0~)
     imports:
-      Range: @lightningkite/khrysalis-runtime
+      Range: '@lightningkite/khrysalis-runtime'
 - id: kotlin.ranges.until
   type: call
   actualReceiver: kotlin.Number
@@ -838,14 +838,14 @@
   template:
     pattern: (new NumberRange(~this~, ~0~ - 1))
     imports:
-      NumberRange: @lightningkite/khrysalis-runtime
+      NumberRange: '@lightningkite/khrysalis-runtime'
 - id: kotlin.ranges.until
   type: call
   actualReceiver: kotlin.Number
   template:
     pattern: new NumberRange(~this~, ~0~ - 1)
     imports:
-      NumberRange: @lightningkite/khrysalis-runtime
+      NumberRange: '@lightningkite/khrysalis-runtime'
 
 
 # Math.X
