@@ -48,6 +48,12 @@ private fun prepareForTest() {
     libraryFolder.resolve("package.json").copyTo(tsTestDir.resolve("node_modules/khrysalis-runtime/package.json"), overwrite = true)
     libraryFolder.resolve("tsconfig.json").copyTo(tsTestDir.resolve("node_modules/khrysalis-runtime/tsconfig.json"), overwrite = true)
 
+    ProcessBuilder()
+        .directory(tsTestDir)
+        .command("npm", "install")
+        .inheritIO()
+        .start()
+        .waitFor()
     preparedForTest = true
 }
 

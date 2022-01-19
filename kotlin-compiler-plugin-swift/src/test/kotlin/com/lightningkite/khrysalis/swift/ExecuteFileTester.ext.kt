@@ -8,29 +8,8 @@ import java.io.ByteArrayOutputStream
 import java.io.File
 import java.net.URL
 
-fun swiftInstallation(): File? {
-
-    val raw = System.getProperty("os.name").toLowerCaseAsciiOnly()
-    return when {
-        raw.contains("win") -> null  // TODO
-        raw.contains("mac") || raw.contains("linux") -> {
-            //Use local installation first
-            val tempFile = File.createTempFile("swiftloc", ".txt")
-            ProcessBuilder().command("which", "swift")
-                .redirectOutput(tempFile)
-                .start()
-                .waitFor()
-            tempFile.readText().trim().takeUnless { it.isEmpty() }?.let { File(it) }
-        }
-        else -> null
-    }
-}
-
 val swiftTestDir = File("./testOut")
 fun ExecuteFileTester.swift(sourceFile: File, clean: Boolean): String = caching(sourceFile, clean) {
-
-    //Check swift is installed
-    val swiftExe = swiftInstallation() ?: throw IllegalStateException("Swift not installed")
 
     //Copy libraries
     run {
@@ -51,7 +30,7 @@ fun ExecuteFileTester.swift(sourceFile: File, clean: Boolean): String = caching(
     val outputFile = swiftTestDir.resolve("build").resolve(sourceFile.nameWithoutExtension + ".out")
     outputFile.parentFile.mkdirs()
 
-    ProcessBuilder(swiftExe.absolutePath, "run")
+    ProcessBuilder("swift", "run")
         .directory(swiftTestDir)
         .redirectErrorStream(true)
         .redirectOutput(outputFile)
