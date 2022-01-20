@@ -46,11 +46,12 @@ private fun prepareForTest() {
         .inheritIO()
         .start()
         .waitFor()
-    libraryFolder.resolve("web-runtime").copyRecursively(tsTestDir.resolve("node_modules/khrysalis-runtime/web-runtime"), overwrite = true)
-    libraryFolder.resolve("index.js").copyTo(tsTestDir.resolve("node_modules/khrysalis-runtime/index.js"), overwrite = true)
-    libraryFolder.resolve("index.d.ts").copyTo(tsTestDir.resolve("node_modules/khrysalis-runtime/index.d.ts"), overwrite = true)
-    libraryFolder.resolve("package.json").copyTo(tsTestDir.resolve("node_modules/khrysalis-runtime/package.json"), overwrite = true)
-    libraryFolder.resolve("tsconfig.json").copyTo(tsTestDir.resolve("node_modules/khrysalis-runtime/tsconfig.json"), overwrite = true)
+    tsTestDir.resolve("node_modules/@lightningkite/khrysalis-runtime").mkdirs()
+    libraryFolder.resolve("web-runtime").copyRecursively(tsTestDir.resolve("node_modules/@lightningkite/khrysalis-runtime/web-runtime"), overwrite = true)
+    libraryFolder.resolve("index.js").copyTo(tsTestDir.resolve("node_modules/@lightningkite/khrysalis-runtime/index.js"), overwrite = true)
+    libraryFolder.resolve("index.d.ts").copyTo(tsTestDir.resolve("node_modules/@lightningkite/khrysalis-runtime/index.d.ts"), overwrite = true)
+    libraryFolder.resolve("package.json").copyTo(tsTestDir.resolve("node_modules/@lightningkite/khrysalis-runtime/package.json"), overwrite = true)
+    libraryFolder.resolve("tsconfig.json").copyTo(tsTestDir.resolve("node_modules/@lightningkite/khrysalis-runtime/tsconfig.json"), overwrite = true)
     preparedForTest = true
 }
 

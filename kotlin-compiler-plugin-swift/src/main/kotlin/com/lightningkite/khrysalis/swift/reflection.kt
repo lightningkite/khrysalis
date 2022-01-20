@@ -55,7 +55,7 @@ fun SwiftTranslator.registerReflection() {
         condition = {
             typedRule.callableReference.resolvedReferenceTarget is PropertyDescriptor
         },
-        priority = 10
+        priority = 5
     ) {
         -'\\'
         (typedRule.receiverExpression as? KtSimpleNameExpression)?.let { -KtUserTypeBasic(it) }
