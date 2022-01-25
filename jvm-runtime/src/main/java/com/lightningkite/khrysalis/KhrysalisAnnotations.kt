@@ -5,18 +5,18 @@ import kotlin.reflect.KProperty
 
 
 typealias AnyObject = Any
-typealias AnyEquatable = Any
-typealias AnyHashable = Any
-typealias IsEquatable = Any
-typealias IsHashable = Any
+typealias AnyEquatable = Any?
+typealias AnyHashable = Any?
+typealias IsEquatable = Any?
+typealias IsHashable = Any?
 interface Equatable {}
 interface Hashable: Equatable {}
 typealias SomeEnum = Enum<*>
 
 interface Codable
-typealias IsCodable = Any
-typealias IsCodableAndHashable = Any
-typealias IsCodableAndEquatable = Any
+typealias IsCodable = Any?
+typealias IsCodableAndHashable = Any?
+typealias IsCodableAndEquatable = Any?
 typealias UntypedList = List<*>
 typealias UntypedMap = Map<*, *>
 
