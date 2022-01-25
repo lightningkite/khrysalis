@@ -212,6 +212,7 @@ fun main(){
     println(topLevelHybrid)
 
     instance.memberLambda(1)
+    instance.memberLambda.invoke(1)
 
     instance.memberReal = 1
     instance.memberReal += 1

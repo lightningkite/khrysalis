@@ -149,9 +149,9 @@ class KhrysalisPlugin : Plugin<Project> {
             task.group = "ios"
             task.doLast {
                 val versionName = project.extensions.findByName("android")?.groovyObject?.getPropertyAsObject("defaultConfig")
-                    ?.getProperty("versionName") as? String ?: throw IllegalStateException("Could not find versionName")
+                    ?.getProperty("versionName") as? String ?: project.version.toString()
                 val versionCode = project.extensions.findByName("android")?.groovyObject?.getPropertyAsObject("defaultConfig")
-                    ?.getProperty("versionCode") as? Int ?: throw IllegalStateException("Could not find versionCode")
+                    ?.getProperty("versionCode") as? Int ?: 0
                 val projectFile = (iosBase().listFiles()?.toList()
                     ?.find { it.name.endsWith("xcodeproj", true) }
                     ?: throw IllegalStateException("Could not find projectFile at ${iosBase()}"))
@@ -191,9 +191,13 @@ class KhrysalisPlugin : Plugin<Project> {
             task.group = "web"
             task.doLast {
                 val versionName = project.extensions.findByName("android")?.groovyObject?.getPropertyAsObject("defaultConfig")
-                    ?.getProperty("versionName") as? String ?: throw IllegalStateException("Could not find versionName")
+                    ?.getProperty("versionName") as? String ?: project.version.toString()
                 val versionCode = project.extensions.findByName("android")?.groovyObject?.getPropertyAsObject("defaultConfig")
-                    ?.getProperty("versionCode") as? Int ?: throw IllegalStateException("Could not find versionCode")
+                    ?.getProperty("versionCode") as? Int ?: 0
+                val projectFile = webBase().resolve("package.json")
+                projectFile.readText()
+                    .replace(Regex(""""version": "([0-9.]+)""""), """"version": "$versionName"""")
+                    .let { projectFile.writeText(it) }
                 webBase().resolve("src/BuildConfig.ts").writeText("""
                     //! Declares com.tresitgroup.android.tresit.BuildConfig
                     export class BuildConfig {
@@ -208,7 +212,6 @@ class KhrysalisPlugin : Plugin<Project> {
             }
         }
         project.tasks.create("khrysalisConvertKotlinToTypescript") { task ->
-            task.dependsOn("khrysalisUpdateWebVersion")
             task.group = "web"
             task.doFirst {
                 runCompiler(
@@ -222,6 +225,7 @@ class KhrysalisPlugin : Plugin<Project> {
         }
         project.tasks.create("khrysalisWeb") { task ->
             task.group = "web"
+            task.dependsOn("khrysalisUpdateWebVersion")
             task.dependsOn("khrysalisConvertKotlinToTypescript")
         }
 

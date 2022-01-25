@@ -37,6 +37,8 @@ class TestClass {
     fun testExtension(){
         TestClass2().memberExtensionFunction()
     }
+    @Throws(IllegalStateException::class)
+    fun mayThrow() = member ?: throw IllegalStateException()
     fun otherTest(){
         member?.let {
             println(it)
@@ -131,6 +133,7 @@ fun main(){
     instance.genericExtensionFunction(8)
     instance.memberVarargTestFunction(1,2,3,4)
     instance.memberVarargTestFunction()
+    instance.mayThrow()
 
     val maybeInstance: TestClass? = if(instance.member == 2) instance else null
     maybeInstance?.member = 2

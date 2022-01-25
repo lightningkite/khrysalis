@@ -18,8 +18,10 @@ import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.synthetic.hasJavaOriginInHierarchy
 import com.lightningkite.khrysalis.analysis.*
 import com.lightningkite.khrysalis.util.*
+import org.jetbrains.kotlin.builtins.functions.FunctionInvokeDescriptor
 import org.jetbrains.kotlin.builtins.isFunctionType
 import org.jetbrains.kotlin.builtins.isFunctionTypeOrSubtype
+import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.resolve.calls.components.isVararg
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
 import org.jetbrains.kotlin.util.capitalizeDecapitalize.decapitalizeAsciiOnly
@@ -99,6 +101,7 @@ data class VirtualFunction(
 fun SwiftTranslator.registerFunction() {
 
     handle<VirtualFunction> {
+        //TODO: Replace stars with type args
         -"func "
         -typedRule.name
         typedRule.typeParameters.takeUnless { it.isEmpty() }?.let {
@@ -122,19 +125,28 @@ fun SwiftTranslator.registerFunction() {
         -typedRule.returnType
         -' '
         val body = typedRule.body
-        when (body) {
-            null -> {
+        when {
+            body == null -> {
             }
-            is KtBlockExpression -> {
+            body is KtBlockExpression -> {
                 -body
             }
-            is KtExpression -> {
-                -"{ return "
+            body is KtBinaryExpression
+                    && body.operationToken == KtTokens.ELVIS
+                    && body.right.let { it is KtThrowExpression } -> {
+                -"{ \nguard let result = ("
+                -body.left
+                -") else {"
+                -body.right
+                -"}\nreturn result; \n}"
+            }
+            body !is KtExpression -> {
                 -body
-                -" }"
             }
             else -> {
+                -"{ \nreturn "
                 -body
+                -"; \n}"
             }
         }
 
@@ -321,6 +333,31 @@ fun SwiftTranslator.registerFunction() {
         }
     }
 
+    //lambda call
+    handle<KtDotQualifiedExpression>(
+        condition = {
+            (typedRule.selectorExpression as? KtCallExpression)?.resolvedCall?.candidateDescriptor is FunctionInvokeDescriptor
+        },
+        priority = 2000,
+        action = {
+            val callExp = typedRule.selectorExpression as KtCallExpression
+            val nre = callExp.calleeExpression as KtNameReferenceExpression
+            val f = callExp.resolvedCall!!.candidateDescriptor as FunctionDescriptor
+
+            if(nre.text == "invoke") {
+                -typedRule.receiverExpression
+            } else {
+                -typedRule.receiverExpression
+                -'.'
+                -nre
+            }
+            -ArgumentsList(
+                on = f,
+                resolvedCall = callExp.resolvedCall!!
+            )
+        }
+    )
+
     //Normal calls
     handle<KtDotQualifiedExpression>(
         condition = {
@@ -427,6 +464,21 @@ fun SwiftTranslator.registerFunction() {
                 )
             }
         }
+    }
+
+    handle<KtCallExpression>(
+        condition = {
+            val target = (typedRule.calleeExpression as? KtReferenceExpression)?.resolvedReferenceTarget
+            target is ValueDescriptor && !target.type.isFunctionType
+        },
+        priority = 2
+    ) {
+        -typedRule.calleeExpression
+        -".invoke"
+        -ArgumentsList(
+            on = typedRule.resolvedCall!!.candidateDescriptor as FunctionDescriptor,
+            resolvedCall = typedRule.resolvedCall!!
+        )
     }
 
     handle<KtNameReferenceExpression>(

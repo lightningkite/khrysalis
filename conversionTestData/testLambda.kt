@@ -51,4 +51,6 @@ fun main(){
             println("WRONG")
         }
     }
+    lambda3()
+    lambda3.invoke()
 }

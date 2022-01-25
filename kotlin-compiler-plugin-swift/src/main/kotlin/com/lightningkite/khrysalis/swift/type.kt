@@ -61,7 +61,7 @@ fun KotlinType.worksAsSwiftConstraint(): Boolean {
         is WrappedType -> false
         is SimpleType -> true
         is FlexibleType -> false //could work later?
-    } && this.arguments.all { it.type.arguments.isEmpty() && !(it.type.constructor.declarationDescriptor is TypeParameterDescriptor && it.type.isMarkedNullable) }
+    } && this.arguments.all { it.isStarProjection || it.type.arguments.isEmpty() && !(it.type.constructor.declarationDescriptor is TypeParameterDescriptor && it.type.isMarkedNullable) }
 }
 
 fun CallableDescriptor.worksAsSwiftConstraint(): Boolean {
@@ -107,6 +107,7 @@ fun SwiftTranslator.registerType() {
                 if(arg.type.isTypeParameter() && (arg.type.constructor.declarationDescriptor as? TypeParameterDescriptor)?.upperBounds?.all { it.isAnyOrNullableAny() } == true) return@mapIndexedNotNull null
                 val name = replacement?.typeArgumentNames?.get(index)
                     ?: knownTypeParameterNames[t.constructor.declarationDescriptor?.fqNameOrNull()?.asString()]?.get(index)
+                    ?: (t.constructor.declarationDescriptor as? ClassDescriptor)?.declaredTypeParameters?.get(index)?.name?.asString()
                     ?: "Element"
                 val type = if(arg.type.isTypeParameter())
                     typedRule.typeParams?.parameters
@@ -115,11 +116,13 @@ fun SwiftTranslator.registerType() {
                         ?: return@mapIndexedNotNull null
                 else
                     arg.type
-                val useExtends = (type.constructor.declarationDescriptor as? ClassDescriptor)?.useExactEqualForGeneric() ?: false
-                if(useExtends)
-                    return@mapIndexedNotNull listOf(name, " : ", type)
-                else
-                    return@mapIndexedNotNull listOf(name, " == ", type)
+                val typeDescriptor = type.constructor.declarationDescriptor as? ClassDescriptor
+                when {
+                    typeDescriptor?.useExactEqualForGeneric() == true -> return@mapIndexedNotNull listOf(name, " == ", type)
+                    typeDescriptor?.kind == ClassKind.INTERFACE -> return@mapIndexedNotNull listOf(name, " : ", BasicType(type))
+                    type.arguments.any { it.type.isTypeParameter() } -> return@mapIndexedNotNull listOf(name, " : ", BasicType(type))
+                    else -> return@mapIndexedNotNull listOf(name, " : ", type)
+                }
             }
             .takeUnless { it.isEmpty() }
             ?.let {

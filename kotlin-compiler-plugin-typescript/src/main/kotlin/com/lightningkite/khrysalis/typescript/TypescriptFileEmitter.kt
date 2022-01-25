@@ -97,7 +97,7 @@ class TypescriptFileEmitter(val translator: TypescriptTranslator, file: KtFile) 
             }
             var charsToTake = 1
             while(true) {
-                val newName = import.path.substring(0, charsToTake).replace("-", "") + desiredName.capitalizeAsciiOnly()
+                val newName = import.path.substringAfter('/').substring(0, charsToTake).replace("-", "") + desiredName.capitalizeAsciiOnly()
                 if(takenIdentifiers.add(newName)) {
                     addImport(
                         path = import.path,

@@ -1,4 +1,13 @@
 ---
+- id: kotlin.Comparable
+  type: type
+  protocol: true
+  template: Comparable
+- id: java.util.Comparable
+  type: type
+  protocol: true
+  template: Comparable
+
 - id: kotlin.Comparator
   type: type
   template: Comparator

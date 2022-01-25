@@ -46,7 +46,3 @@ java.time.ChronoZonedDateTime
 java.time.DateTimeException
 java.time.UnsupportedTemporalTypeException
 java.time.format.DateTimeParseException
-java.ArithmeticException
-java.IllegalArgumentException
-java.IllegalStateException
-java.NullPointerException

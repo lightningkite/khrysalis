@@ -377,7 +377,7 @@ fun SwiftTranslator.registerClass() {
                     -": "
                     -it.typeReference
                     -"? = "
-                    if (it.typeReference?.resolvedType?.isNullable() == true && it.typeReference?.resolvedType !is TypeParameterDescriptor) {
+                    if (it.typeReference?.resolvedType?.isMarkedNullable == true && it.typeReference?.resolvedType !is TypeParameterDescriptor) {
                         -".some(nil)"
                     } else {
                         -"nil"
@@ -404,7 +404,7 @@ fun SwiftTranslator.registerClass() {
                         -it.nameIdentifier
                         -": "
                     }
-                    if (it.typeReference?.resolvedType?.isNullable() == true && it.typeReference?.resolvedType !is TypeParameterDescriptor) {
+                    if (it.typeReference?.resolvedType?.isMarkedNullable == true && it.typeReference?.resolvedType !is TypeParameterDescriptor) {
                         -"invertOptional("
                         -it.nameIdentifier
                         -") ?? self."

@@ -23,6 +23,7 @@ import org.jetbrains.kotlin.resolve.source.KotlinSourceElement
 import org.jetbrains.kotlin.types.typeUtil.makeNullable
 import org.jetbrains.kotlin.types.typeUtil.nullability
 import com.lightningkite.khrysalis.analysis.*
+import org.jetbrains.kotlin.builtins.isFunctionType
 
 val FunctionDescriptor.tsNameOverridden: String?
     get() = if (this is ConstructorDescriptor) {
@@ -88,11 +89,20 @@ fun TypescriptTranslator.registerFunction() {
         -typedRule.returnType
         -' '
         val body = typedRule.body
-        when (body) {
-            null -> {
+        when {
+            body == null -> {
             }
-            is KtBlockExpression -> {
+            body is KtBlockExpression -> {
                 -body
+            }
+            body is KtBinaryExpression
+                    && body.operationToken == KtTokens.ELVIS
+                    && body.right.let { it is KtThrowExpression } -> {
+                -"{ \nconst result = "
+                -body.left
+                -";\nif (result === null) {\n"
+                -body.right
+                -"\n}\nreturn result; \n}"
             }
             else -> {
                 -"{ \nreturn "
@@ -124,11 +134,20 @@ fun TypescriptTranslator.registerFunction() {
         -typedRule.returnType
         -" => "
         val body = typedRule.body
-        when (body) {
-            null -> {
+        when {
+            body == null -> {
             }
-            is KtBlockExpression -> {
+            body is KtBlockExpression -> {
                 -body
+            }
+            body is KtBinaryExpression
+                    && body.operationToken == KtTokens.ELVIS
+                    && body.right.let { it is KtThrowExpression } -> {
+                -"{ \nconst result = "
+                -body.left
+                -";\nif (result === null) {\n"
+                -body.right
+                -"\n}\nreturn result; \n}"
             }
             else -> {
                 -"{ \nreturn "
@@ -325,6 +344,8 @@ fun TypescriptTranslator.registerFunction() {
                     expr = typedRule,
                     safe = false
                 )
+            } else if(nre.text == "invoke") {
+                -typedRule.receiverExpression
             } else {
                 -nre
             }
@@ -464,6 +485,21 @@ fun TypescriptTranslator.registerFunction() {
         -nre
         -ArgumentsList(
             on = f,
+            resolvedCall = typedRule.resolvedCall!!
+        )
+    }
+
+    handle<KtCallExpression>(
+        condition = {
+            val target = (typedRule.calleeExpression as? KtReferenceExpression)?.resolvedReferenceTarget
+            target is ValueDescriptor && !target.type.isFunctionType
+        },
+        priority = 2
+    ) {
+        -typedRule.calleeExpression
+        -".invoke"
+        -ArgumentsList(
+            on = typedRule.resolvedCall!!.candidateDescriptor as FunctionDescriptor,
             resolvedCall = typedRule.resolvedCall!!
         )
     }

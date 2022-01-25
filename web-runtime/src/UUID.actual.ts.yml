@@ -2,6 +2,9 @@
 - id: java.util.UUID
   type: type
   template: string
+- id: java.util.UUID
+  type: typeRef
+  template: String
 - id: java.util.UUID.toString
   type: call
   template: ~this~

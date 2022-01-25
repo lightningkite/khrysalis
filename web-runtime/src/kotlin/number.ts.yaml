@@ -19,6 +19,9 @@
 - id: kotlin.Double
   type: type
   template: number
+- id: kotlin.Number
+  type: type
+  template: number
 
 - id: kotlin.Byte
   type: typeRef
@@ -36,6 +39,9 @@
   type: typeRef
   template: Number
 - id: kotlin.Double
+  type: typeRef
+  template: Number
+- id: kotlin.Number
   type: typeRef
   template: Number
 

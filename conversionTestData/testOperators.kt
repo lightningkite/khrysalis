@@ -17,6 +17,10 @@ class ExampleMutableThing {
 
     operator fun get(index: Int): Int = containedNumber + index
     operator fun set(index: Int, value: Int): Int = value - index
+
+    operator fun invoke() {
+        println("Hello!")
+    }
 }
 
 class ExampleImmutableThing {
@@ -143,6 +147,8 @@ fun main() {
     mthing1[2] = 8
     mthing1[2] += 8
     println(mthing1[1])
+    mthing1.invoke()
+    mthing1()
 
     //Binary
     println(true && true)

@@ -424,7 +424,7 @@ fun KotlinTranslator<TypescriptFileEmitter>.ContextByType<*>.emitIsExpression(
         resolvedType.isPrimitive() -> {
             -"typeof ("
             -expression
-            -") == \""
+            -") === \""
             -resolvedType
             -'"'
         }
