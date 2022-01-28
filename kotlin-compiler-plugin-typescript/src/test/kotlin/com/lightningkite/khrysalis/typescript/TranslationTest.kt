@@ -23,8 +23,7 @@ class TranslationTest {
     @Test
     fun test() {
         val it = File("../conversionTestData").resolve(file)
-        val ktResult = ExecuteFileTester.kotlin(it, true)
-        val jsResult = ExecuteFileTester.tsTranslated(it)
-        Assert.assertEquals(ktResult, jsResult)
+        val r = ExecuteFileTester.tsTranslated(it)
+        Assert.assertEquals(r.kotlin, r.typescript)
     }
 }

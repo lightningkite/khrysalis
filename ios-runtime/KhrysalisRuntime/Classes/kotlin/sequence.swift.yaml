@@ -91,24 +91,24 @@
 - id: kotlin.sequences.sorted
   type: call
   template: ~this~.sorted()
-- id: kotlin.collections.sortedBy
+- id: kotlin.sequences.sortedBy
   type: call
-  template: '~this~.sorted(by: deferComparison(~0~))'
-- id: kotlin.collections.sortedByDescending
+  template: '~this~.sorted(by: compareBy(selector: ~0~))'
+- id: kotlin.sequences.sortedByDescending
   type: call
-  template: '~this~.sorted(by: deferComparisonDescending(~0~))'
+  template: '~this~.sorted(by: compareByDescending(selector: ~0~))'
 - id: kotlin.sequences.sortedWith
   type: call
-  template: '~this~.sorted(by: { (a, b) in (~0~)(a, b) == .orderedAscending })'
+  template: '~this~.sorted(by: ~0~)'
 - id: kotlin.sequences.sortedWithDescending
   type: call
-  template: '~this~.sorted(by: { (a, b) in (~0~)(a, b) == .orderedDescending })'
+  template: '~this~.sorted(by: { -~0~($0, $1) })'
 - id: kotlin.sequences.minBy
   type: call
-  template: '~this~.min(by: deferComparison(~0~))'
+  template: '~this~.min(by: compareBy(selector: ~0~))'
 - id: kotlin.sequences.maxBy
   type: call
-  template: '~this~.max(by: deferComparison(~0~))'
+  template: '~this~.max(by: compareBy(selector: ~0~))'
 
 - id: kotlin.sequences.associate
   type: call
@@ -170,6 +170,10 @@
 - id: kotlin.sequences.firstOrNull
   type: call
   template: "~this~.first(where: ~0~)"
+
+- id: kotlin.sequences.fold
+  type: call
+  template: "Array(~this~).reduce(~0~, ~1~)"
 
 # Join
 

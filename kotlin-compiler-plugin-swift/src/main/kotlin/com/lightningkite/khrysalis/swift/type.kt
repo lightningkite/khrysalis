@@ -1,21 +1,20 @@
 package com.lightningkite.khrysalis.swift
 
-import com.lightningkite.khrysalis.analysis.*
-import com.lightningkite.khrysalis.*
+import com.lightningkite.khrysalis.analysis.resolvedReferenceTarget
+import com.lightningkite.khrysalis.analysis.resolvedType
 import com.lightningkite.khrysalis.util.forEachBetween
 import com.lightningkite.khrysalis.util.fqNameWithoutTypeArgs
 import org.jetbrains.kotlin.builtins.functions.FunctionClassDescriptor
 import org.jetbrains.kotlin.builtins.isFunctionType
 import org.jetbrains.kotlin.descriptors.*
-import org.jetbrains.kotlin.js.descriptorUtils.getJetTypeFqName
 import org.jetbrains.kotlin.lexer.KtTokens
-import org.jetbrains.kotlin.name.FqName
-import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
 import org.jetbrains.kotlin.types.*
-import org.jetbrains.kotlin.types.checker.NewCapturedTypeConstructor
-import org.jetbrains.kotlin.types.typeUtil.*
+import org.jetbrains.kotlin.types.typeUtil.isAnyOrNullableAny
+import org.jetbrains.kotlin.types.typeUtil.isNullableAny
+import org.jetbrains.kotlin.types.typeUtil.isTypeParameter
+import kotlin.concurrent.getOrSet
 
 private val primitiveTypes = setOf(
     "kotlin.Byte",
@@ -37,7 +36,6 @@ private val primitiveTypes = setOf(
 
 fun KotlinType.isPrimitive() = fqNameWithoutTypeArgs in primitiveTypes
 data class BasicType(val type: KotlinType)
-data class CompleteReflectableType(val type: KotlinType)
 data class KtUserTypeBasic(val type: KtSimpleNameExpression)
 data class SwiftExtensionStart(
     val forDescriptor: CallableDescriptor,
@@ -45,17 +43,12 @@ data class SwiftExtensionStart(
     val typeParams: KtTypeParameterList?
 )
 
-val partOfParameterLocal = ThreadLocal<Int>()
-var writingParameter: Int
-    get() = partOfParameterLocal.get() ?: 0
-    set(value) {
-        partOfParameterLocal.set(value)
-    }
+val typeParameterReplacements = ThreadLocal<HashMap<ClassifierDescriptor, String>>()
 
 fun KotlinType.worksAsSwiftConstraint(): Boolean {
     if (this.fqNameWithoutTypeArgs == "kotlin.Any") return false
     (constructor.declarationDescriptor as? TypeParameterDescriptor)?.upperBounds?.let {
-        if(it.all { it.fqNameWithoutTypeArgs == "kotlin.Any" }) return false
+        if (it.all { it.fqNameWithoutTypeArgs == "kotlin.Any" }) return false
     }
     return when (this) {
         is WrappedType -> false
@@ -80,7 +73,7 @@ val knownTypeParameterNames = mapOf(
 
 fun SwiftTranslator.registerType() {
     fun ClassDescriptor.useExactEqualForGeneric(): Boolean {
-        return isFinalOrEnum || when(this.fqNameOrNull()?.asString()) {
+        return isFinalOrEnum || when (this.fqNameOrNull()?.asString()) {
             "kotlin.Array",
             "kotlin.collections.Map",
             "kotlin.collections.Set",
@@ -98,35 +91,59 @@ fun SwiftTranslator.registerType() {
             emitTemplate(it)
             whereEmitted = it.parts.joinToString("").contains(" where ")
         } ?: run {
-            -typedRule.receiver?.typeElement?.let { it as? KtUserType }?.let { KtUserTypeBasic(it.referenceExpression!!) }
+            -typedRule.receiver?.typeElement?.let { it as? KtUserType }
+                ?.let { KtUserTypeBasic(it.referenceExpression!!) }
                 ?: BasicType(t)
         }
+        val replacements = typeParameterReplacements.getOrSet { HashMap() }
         t.arguments
             .mapIndexedNotNull { index, arg ->
-                if(arg.isStarProjection) return@mapIndexedNotNull null
-                if(arg.type.isTypeParameter() && (arg.type.constructor.declarationDescriptor as? TypeParameterDescriptor)?.upperBounds?.all { it.isAnyOrNullableAny() } == true) return@mapIndexedNotNull null
                 val name = replacement?.typeArgumentNames?.get(index)
-                    ?: knownTypeParameterNames[t.constructor.declarationDescriptor?.fqNameOrNull()?.asString()]?.get(index)
+                    ?: knownTypeParameterNames[t.constructor.declarationDescriptor?.fqNameOrNull()?.asString()]?.get(
+                        index
+                    )
                     ?: (t.constructor.declarationDescriptor as? ClassDescriptor)?.declaredTypeParameters?.get(index)?.name?.asString()
                     ?: "Element"
-                val type = if(arg.type.isTypeParameter())
-                    typedRule.typeParams?.parameters
-                        ?.find { it.name == (arg.type.constructor.declarationDescriptor as? TypeParameterDescriptor)?.name?.asString() }
-                        ?.extendsBound?.resolvedType
+
+                // The receiver's name for the generic takes priority.  Use it
+                if (arg.type.isTypeParameter()) {
+                    replacements[arg.type.constructor.declarationDescriptor!!] = name
+                }
+
+                // Skip constraint writing for all * projections
+                if (arg.isStarProjection) return@mapIndexedNotNull null
+
+                val type: Pair<Any, KotlinType> = if (arg.type.isTypeParameter()) {
+                    val descriptor = arg.type.constructor.declarationDescriptor as TypeParameterDescriptor
+                    // If it's only bounded with 'Any', we can skip
+                    val bound = typedRule.receiver!!.parentOfType<KtTypeParameterListOwner>()!!.typeParameters[descriptor.index]!!.extendsBound
                         ?: return@mapIndexedNotNull null
-                else
-                    arg.type
-                val typeDescriptor = type.constructor.declarationDescriptor as? ClassDescriptor
+                    (bound to (bound.resolvedType ?: return@mapIndexedNotNull null))
+                } else (arg.type to arg.type)
+                val typeDescriptor = type.second.constructor.declarationDescriptor as? ClassDescriptor
+
                 when {
-                    typeDescriptor?.useExactEqualForGeneric() == true -> return@mapIndexedNotNull listOf(name, " == ", type)
-                    typeDescriptor?.kind == ClassKind.INTERFACE -> return@mapIndexedNotNull listOf(name, " : ", BasicType(type))
-                    type.arguments.any { it.type.isTypeParameter() } -> return@mapIndexedNotNull listOf(name, " : ", BasicType(type))
-                    else -> return@mapIndexedNotNull listOf(name, " : ", type)
+                    typeDescriptor?.useExactEqualForGeneric() == true -> return@mapIndexedNotNull listOf(
+                        name,
+                        " == ",
+                        type.first
+                    )
+                    typeDescriptor?.kind == ClassKind.INTERFACE -> return@mapIndexedNotNull listOf(
+                        name,
+                        " : ",
+                        type.first
+                    )
+                    type.second.arguments.any { it.type.isTypeParameter() } -> return@mapIndexedNotNull listOf(
+                        name,
+                        " : ",
+                        type.first
+                    )
+                    else -> return@mapIndexedNotNull listOf(name, " : ", type.first)
                 }
             }
             .takeUnless { it.isEmpty() }
             ?.let {
-                if(whereEmitted) {
+                if (whereEmitted) {
                     -", "
                 } else {
                     -" where "
@@ -153,18 +170,14 @@ fun SwiftTranslator.registerType() {
             is FunctionClassDescriptor -> {
                 if (typedRule.isMarkedNullable) {
                     -'('
-                } else if (writingParameter > 0) {
-                    -"@escaping "
                 }
                 -'('
-                writingParameter++
                 typedRule.arguments.dropLast(1).forEachBetween(
                     forItem = { typeProjection ->
                         -typeProjection
                     },
                     between = { -", " }
                 )
-                writingParameter--
                 -") -> "
                 -typedRule.arguments.last()
                 if (typedRule.isMarkedNullable) {
@@ -192,7 +205,11 @@ fun SwiftTranslator.registerType() {
                 }
             }
             is TypeParameterDescriptor -> {
-                -desc.name.asString()
+                typeParameterReplacements.get()?.get(desc)?.let {
+                    -it
+                } ?: run {
+                    -desc.name.asString()
+                }
             }
             else -> {
                 println("What is this? ${desc?.let { it::class.qualifiedName }}")
@@ -206,7 +223,7 @@ fun SwiftTranslator.registerType() {
     handle<BasicType> {
         when (val desc = typedRule.type.constructor.declarationDescriptor) {
             null -> {
-                -"/*null type*/any"
+                -"/*null type*/"
             }
             is ClassDescriptor -> {
                 var current: ClassDescriptor = desc
@@ -229,15 +246,19 @@ fun SwiftTranslator.registerType() {
         }
     }
 
-    handle<CompleteReflectableType> {
-        -"["
-        -BasicType(typedRule.type)
-        typedRule.type.arguments.forEach {
-            -", "
-            -CompleteReflectableType(it.type)
+    handle<KtUserType>(
+        condition = {
+            typedRule.referenceExpression?.resolvedReferenceTarget?.let {
+                typeParameterReplacements.get()?.get(it)
+            } != null
+        },
+        priority = 1000,
+        action = {
+            -(typedRule.referenceExpression!!.resolvedReferenceTarget!!.let {
+                typeParameterReplacements.get()!!.get(it)!!
+            })
         }
-        -"]"
-    }
+    )
 
     handle<KtUserType>(
         condition = {
@@ -318,7 +339,6 @@ fun SwiftTranslator.registerType() {
 
     handle<KtFunctionType> {
         -"("
-        writingParameter++
         listOfNotNull(typedRule.receiverTypeReference?.let { null to it }).plus(typedRule.parameters.map { it.nameIdentifier to it.typeReference })
             .forEachBetween(
                 forItem = {
@@ -326,25 +346,9 @@ fun SwiftTranslator.registerType() {
                 },
                 between = { -", " }
             )
-        writingParameter--
         -") -> "
         -typedRule.returnTypeReference
     }
-
-    handle<KtTypeReference>(
-        condition = {
-            val type = typedRule.resolvedType ?: return@handle false
-            val replacement = (typedRule.typeElement as? KtUserType)?.referenceExpression?.resolvedReferenceTarget?.let { replacements.getType(it) } ?: replacements.getType(type)
-            writingParameter > 0
-                    && !type.isMarkedNullable
-                    && (type.isFunctionType || replacement?.isFunctionType == true)
-        },
-        priority = 10,
-        action = {
-            -"@escaping "
-            doSuper()
-        }
-    )
 
     handle<KtTypeProjection> {
         when (typedRule.projectionKind) {
@@ -378,9 +382,6 @@ fun SwiftTranslator.registerType() {
             val baseType = type.constructor
             val typeParametersByName = type.arguments.withIndex()
                 .associate { (index, item) -> baseType.parameters[index].name.asString() to item }
-            if(rule.isFunctionType && writingParameter > 0 && !type.isMarkedNullable) {
-                -"@escaping "
-            }
             emitTemplate(
                 template = rule.template,
                 typeParameter = { typeParametersByName[it.name] ?: "nil" },

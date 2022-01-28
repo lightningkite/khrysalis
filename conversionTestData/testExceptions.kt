@@ -12,6 +12,11 @@ fun failableAction(state: Boolean = true) {
     }
 }
 
+fun ignoreMe() {
+    fatalError()
+    fatalError("Message")
+}
+
 fun main() {
     try {
         failableAction()

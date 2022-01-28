@@ -59,7 +59,7 @@ class KotlinSwiftCR : KotlinTranspileCR() {
         projectName: String,
         dependencies: List<File>,
         equivalents: Replacements,
-        input: File?,
+        commonPackage: String?,
         outputDirectory: File,
         libraryMode: Boolean,
         collector: MessageCollector
@@ -67,7 +67,7 @@ class KotlinSwiftCR : KotlinTranspileCR() {
         projectName,
         dependencies,
         equivalents,
-        input,
+        commonPackage,
         outputDirectory,
         libraryMode,
         collector
@@ -78,13 +78,13 @@ class KotlinSwiftExtension(
     projectName: String,
     val dependencies: List<File>,
     val replacements: Replacements,
-    input: File?,
+    commonPackage: String?,
     outputDirectory: File,
     libraryMode: Boolean,
     collector: MessageCollector
 ) : KotlinTranspileExtension(
     projectName,
-    input,
+    commonPackage,
     outputDirectory,
     libraryMode,
     collector
@@ -96,7 +96,7 @@ class KotlinSwiftExtension(
 
     override fun start(context: BindingContext, files: Collection<KtFile>) {
         // Load manifests (AKA lists of FQ names in module)
-        translator = SwiftTranslator(projectName, commonPath, collector, replacements)
+        translator = SwiftTranslator(projectName, collector, replacements)
         dependencies.asSequence()
             .flatMap { it.walkTopDown() }
             .filter { it.name.endsWith("fqnames.txt", true) }

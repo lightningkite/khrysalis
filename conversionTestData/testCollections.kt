@@ -83,6 +83,8 @@ fun main(vararg args: String){
     println(hashMapOf(1 to 2, 3 to 4).entries.sortedBy { it.key }.joinToString { it.key.toString() + ":" + it.value.toString() })
     println(hashMapOf(CustomEq(1) to 2, CustomEq(3) to 4).entries.sortedBy { it.key.value }.joinToString { it.key.toString() + ":" + it.value.toString() })
 
+    println(mapOf("asdf" to 1, "fdsa" to 2).filterKeys { it == "asdf" }.entries.sortedBy { it.key }.joinToString { it.key.toString() + ":" + it.value.toString() })
+
     HashSet<Int>()
     HashSet<CustomEq>()
 

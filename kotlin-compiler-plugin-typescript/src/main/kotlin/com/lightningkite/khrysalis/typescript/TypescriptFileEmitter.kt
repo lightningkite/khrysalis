@@ -1,8 +1,8 @@
 package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.analysis.resolvedDeclarationToDescriptor
-import com.lightningkite.khrysalis.analysis.resolvedReferenceTarget
 import com.lightningkite.khrysalis.generic.FileEmitter
+import com.lightningkite.khrysalis.generic.outputRelativePath
 import com.lightningkite.khrysalis.replacements.Import
 import com.lightningkite.khrysalis.typescript.replacements.TypescriptImport
 import com.lightningkite.khrysalis.util.SmartTabWriter
@@ -112,7 +112,7 @@ class TypescriptFileEmitter(val translator: TypescriptTranslator, file: KtFile) 
     }
 
     override fun renderImports(to: Appendable) {
-        val relPath = file.virtualFilePath.removePrefix(translator.commonPath)
+        val relPath = file.outputRelativePath(translator.commonPackage, "ts")
         renderImports(translator.projectName, relPath, imports.values, to)
     }
 

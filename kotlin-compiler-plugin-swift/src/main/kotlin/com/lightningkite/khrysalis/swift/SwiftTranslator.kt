@@ -18,6 +18,8 @@ import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
 import org.jetbrains.kotlin.resolve.BindingContext
+import org.jetbrains.kotlin.resolve.calls.model.VariableAsFunctionResolvedCall
+import org.jetbrains.kotlin.resolve.calls.resolvedCallUtil.getImplicitReceiverValue
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 import org.jetbrains.kotlin.resolve.scopes.receivers.ExtensionReceiver
 import org.jetbrains.kotlin.types.KotlinType
@@ -26,7 +28,6 @@ import kotlin.collections.ArrayList
 
 class SwiftTranslator(
     val projectName: String?,
-    val commonPath: String,
     val collector: MessageCollector? = null,
     val replacements: Replacements
 ) : KotlinTranslator<SwiftFileEmitter>() {
@@ -76,9 +77,11 @@ class SwiftTranslator(
     }
 
     fun KtExpression.getTsReceiver(): String? {
-        val dr = this.resolvedCall?.dispatchReceiver ?: this.resolvedCall?.extensionReceiver ?: run {
-            return null
-        }
+        val resolved = resolvedCall ?: return null
+        val dr = when(resolved){
+            is VariableAsFunctionResolvedCall -> resolved.variableCall.getImplicitReceiverValue() ?: resolved.extensionReceiver ?: resolved.dispatchReceiver
+            else -> resolved.getImplicitReceiverValue() ?: resolved.extensionReceiver ?: resolved.dispatchReceiver
+        } ?: return null
         val target = if (dr is ExtensionReceiver) {
             dr.declarationDescriptor
         } else {
@@ -114,6 +117,9 @@ class SwiftTranslator(
         }
     }
 
+    val terminalMap = mapOf(
+        "protected" to "public"
+    )
     init {
 
         registerAnnotation()
@@ -135,6 +141,9 @@ class SwiftTranslator(
         registerReflection()
         registerViewBinding()
         registerCast()
+        handle<LeafPsiElement>(condition = { typedRule.text in terminalMap.keys }, priority = 1) {
+            out.append(terminalMap[typedRule.text])
+        }
     }
 
     inline fun <reified T> PsiElement.parentIfType(): T? = parent as? T

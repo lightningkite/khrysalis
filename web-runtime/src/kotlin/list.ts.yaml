@@ -325,11 +325,32 @@
 - id: kotlin.collections.associate
   type: call
   actualReceiver: kotlin.collections.List
+  typeArgumentRequirements:
+    0: primitive
   template: new Map(~this~.map(~0~))
+
 - id: kotlin.collections.associateBy
   type: call
   actualReceiver: kotlin.collections.List
-  template: new Map(~this~.map((_i)=>[~0~(_i), _i]))
+  typeArgumentRequirements:
+    0: primitive
+  template: new Map(~this~.map((_i)=>[(~0~)(_i), _i]))
+
+- id: kotlin.collections.associate
+  type: call
+  actualReceiver: kotlin.collections.List
+  template:
+    pattern: new EqualOverrideMap(~this~.map(~0~))
+    imports:
+      EqualOverrideMap: '@lightningkite/khrysalis-runtime'
+
+- id: kotlin.collections.associateBy
+  type: call
+  actualReceiver: kotlin.collections.List
+  template:
+    pattern: new EqualOverrideMap(~this~.map((_i)=>[(~0~)(_i), _i]))
+    imports:
+      EqualOverrideMap: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.collections.toList
   type: call

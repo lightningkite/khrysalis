@@ -396,6 +396,7 @@ fun SwiftTranslator.registerVariable() {
             -'\n'
             doSuper()
             -"\n}"
+            typeParameterReplacements.set(null)
         }
     )
     //Extension Jank

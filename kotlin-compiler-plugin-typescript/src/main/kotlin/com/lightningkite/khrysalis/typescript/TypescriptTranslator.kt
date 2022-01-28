@@ -2,7 +2,6 @@ package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.analysis.*
 import com.lightningkite.khrysalis.generic.KotlinTranslator
-import com.lightningkite.khrysalis.generic.TranslatorInterface
 import com.lightningkite.khrysalis.replacements.Replacements
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
@@ -10,25 +9,23 @@ import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
 import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.descriptors.DeclarationDescriptor
-import org.jetbrains.kotlin.descriptors.ValueDescriptor
-import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
 import org.jetbrains.kotlin.psi.psiUtil.containingClass
-import org.jetbrains.kotlin.resolve.BindingContext
-import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
+import org.jetbrains.kotlin.resolve.calls.model.VariableAsFunctionResolvedCall
+import org.jetbrains.kotlin.resolve.calls.resolvedCallUtil.getImplicitReceiverValue
 import org.jetbrains.kotlin.resolve.scopes.receivers.ExtensionReceiver
 import java.util.*
 import kotlin.collections.ArrayList
 
 class TypescriptTranslator(
     val projectName: String?,
-    val commonPath: String,
+    val commonPackage: String?,
     val collector: MessageCollector? = null,
     val replacements: Replacements
 ) : KotlinTranslator<TypescriptFileEmitter>() {
 
-    val declarations: DeclarationManifest = DeclarationManifest(commonPath)
+    val declarations: DeclarationManifest = DeclarationManifest(commonPackage)
 
     var stubMode: Boolean = false
 
@@ -61,10 +58,12 @@ class TypescriptTranslator(
         _receiverStack.remove(newItem)
     }
     fun KtExpression.getTsReceiver(): Any? {
-        val dr = this.resolvedCall?.dispatchReceiver ?: this.resolvedCall?.extensionReceiver ?: run {
-            return null
-        }
-        val target = if(dr is ExtensionReceiver) {
+        val resolved = resolvedCall ?: return null
+        val dr = when(resolved){
+            is VariableAsFunctionResolvedCall -> resolved.variableCall.getImplicitReceiverValue() ?: resolved.extensionReceiver ?: resolved.dispatchReceiver
+            else -> resolved.getImplicitReceiverValue() ?: resolved.extensionReceiver ?: resolved.dispatchReceiver
+        } ?: return null
+        val target = if (dr is ExtensionReceiver) {
             dr.declarationDescriptor
         } else {
             dr.type.constructor.declarationDescriptor

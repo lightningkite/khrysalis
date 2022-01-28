@@ -98,6 +98,17 @@
   type: call
   template: ~this~.mapValuesFromPairs(~*~)
 
+- id: kotlin.collections.filterKeys
+  type: call
+  template:
+    pattern: ~this~.filter { (key, value) in ~L0~ }
+    lambdaTransforms:
+      0: ["key"]
+
+#- id: kotlin.collections.filterKeys
+#  type: call
+#  template: ~this~.filter { (key, value) in ~0~(key) }
+
 - id: kotlin.collections.Map.entries
   type: get
   template: ~this~

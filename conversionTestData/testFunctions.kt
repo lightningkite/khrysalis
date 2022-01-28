@@ -22,17 +22,24 @@ fun varargFunction(vararg numbers: Int){
 
 class TestClass {
     var member: Int? = null
+    var member2: Int = 1
     fun chain(): TestClass {
         return this
     }
     fun memberFunction(a: Int = 2, b: Int = 3, c: Int = 4){
         println("Hello from TestClass!")
+        println(member2)
+        println(this.member2)
     }
     fun <T> memberGenericFunction(item: T){
         println("Hello ${item} from TestClass!")
+        println(member2)
+        println(this.member2)
     }
     fun TestClass2.memberExtensionFunction(){
         println("Hello ${this} from ${this@TestClass}!")
+        println(member2)
+        println(this@TestClass.member2)
     }
     fun testExtension(){
         TestClass2().memberExtensionFunction()
@@ -90,18 +97,47 @@ class TestClass2 {
 fun TestClass.extensionFunction(){
     println("From an extension:")
     this.memberFunction()
+    println(member2)
+    println(this.member2)
 }
 @JsName("extensionFunction2")
 fun TestClass.extensionFunction(str: String){
     println("From an extension with $str:")
     this.memberFunction()
+    println(member2)
+    println(this.member2)
 }
 infix fun TestClass.extensionFunctionInfix(str: String){
     println("From an extension with $str:")
     this.memberFunction()
+    println(member2)
+    println(this.member2)
 }
 fun <T, E> T.genericExtensionFunction(element: E){
     println("Hello $element from $this!")
+}
+
+class GenericBox<T>(val t: T)
+
+fun <T> GenericBox<T>.ext1() {
+    println(t)
+    println(this.t)
+}
+fun GenericBox<Int>.ext2() {
+    println(t)
+    println(this.t)
+}
+fun <T: Comparable<T>> GenericBox<T>.ext3() {
+    println(t)
+    println(this.t)
+}
+fun <T> GenericBox<List<T>>.ext4() {
+    println(t.first())
+    println(this.t.first())
+}
+fun <T> GenericBox<()->T>.ext5() {
+    t()
+    this.t()
 }
 
 fun varargTestFunction(vararg values: Int) {
@@ -170,6 +206,13 @@ fun main(){
     val y = resolve<String>()
     varargTestFunction()
     varargTestFunction(1, 2, 3, 4)
+
+    val box = GenericBox(42)
+    box.ext1()
+    box.ext2()
+    box.ext3()
+    GenericBox(listOf(1, 2, 3)).ext4()
+    GenericBox({ 42 }).ext5()
 }
 
 val anotherThing = 2

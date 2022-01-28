@@ -10,10 +10,9 @@ import java.io.File
 class PointedTest {
     @Test
     fun test() {
-        val it = File("../conversionTestData").resolve("testEnums.kt")
-        val ktResult = ExecuteFileTester.kotlin(it, true)
-        val jsResult = ExecuteFileTester.swiftTranslated(it)
-        Assert.assertEquals(ktResult, jsResult)
+        val it = File("../conversionTestData").resolve("testLambda.kt")
+        val r = ExecuteFileTester.swiftTranslated(it)
+        Assert.assertEquals(r.kotlin, r.swift)
     }
 }
 //test[testVariables.kt]

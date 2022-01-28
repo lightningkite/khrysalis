@@ -56,7 +56,7 @@ private fun prepareForTest() {
 }
 
 val tsTestDir = File("./testOut")
-fun ExecuteFileTester.ts(sourceFile: File, clean: Boolean): String = caching(sourceFile, clean) {
+fun ExecuteFileTester.ts(sourceFile: File): String {
     val mainFile = tsTestDir.resolve("src/main.ts")
     val outputFile = tsTestDir.resolve("build").resolve(sourceFile.nameWithoutExtension + ".out")
     outputFile.parentFile.mkdirs()
@@ -76,26 +76,28 @@ fun ExecuteFileTester.ts(sourceFile: File, clean: Boolean): String = caching(sou
 
     return output.substringAfter("> ts-node src/main.ts").trim()
 }
+data class Results(val kotlin: String, val typescript: String)
 
-fun ExecuteFileTester.tsTranslated(file: File): String {
+fun ExecuteFileTester.tsTranslated(file: File): Results {
     tsTestDir.resolve("src").listFiles()?.forEach { it.deleteRecursively() }
     prepareForTest()
-    return ts(compileToTs(file), true)
+    val kat = kotlinAndTs(file)
+    return Results(kat.kotlinRunResult, ts(kat.typescriptFile))
 }
+data class KatResult(val kotlinRunResult: String, val typescriptFile: File)
 
-fun ExecuteFileTester.compileToTs(file: File): File {
+fun ExecuteFileTester.kotlinAndTs(file: File): KatResult {
     val outFolder = tsTestDir.resolve("src")
-    KotlinCompilation().apply {
-        inheritClassPath = true
-        sources = listOf(SourceFile.fromPath(file)) + Libraries.testingStubs.map { SourceFile.fromPath(it) }
+    val kResult = kotlin(file) {
         commandLineProcessors = listOf(KotlinTypescriptCLP())
         compilerPlugins = listOf(KotlinTypescriptCR())
         pluginOptions = listOf(
             PluginOption(KotlinTypescriptCLP.PLUGIN_ID, KotlinTranspileCLP.KEY_EQUIVALENTS_NAME, tsTestDir.toString()),
             PluginOption(KotlinTypescriptCLP.PLUGIN_ID, KotlinTranspileCLP.KEY_OUTPUT_DIRECTORY_NAME, outFolder.toString()),
+            PluginOption(KotlinTypescriptCLP.PLUGIN_ID, KotlinTranspileCLP.KEY_COMMON_PACKAGE_NAME, file.readText().substringAfter("package ").substringBefore('\n').trim()),
             PluginOption(KotlinTypescriptCLP.PLUGIN_ID, KotlinTranspileCLP.KEY_PROJECT_NAME_NAME, "Yeet"),
             PluginOption(KotlinTypescriptCLP.PLUGIN_ID, KotlinTranspileCLP.KEY_LIBRARY_MODE_NAME, "false"),
         )
-    }.compile()
-    return outFolder.resolve(file.nameWithoutExtension + ".ts")
+    }
+    return KatResult(kResult, outFolder.resolve(file.nameWithoutExtension + ".ts"))
 }

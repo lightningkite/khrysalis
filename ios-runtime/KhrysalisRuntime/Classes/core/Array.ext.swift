@@ -38,7 +38,6 @@ public extension Array {
         }
         return sum
     }
-
 }
 
 public extension Array where Element: Equatable {
@@ -65,6 +64,16 @@ public extension Array where Element: Equatable {
     }
     func minus(element: Element) -> Array<Element> {
         return self.minus(element)
+    }
+    func minus(_ elements: Array<Element>) -> Array<Element> {
+        var copy = self
+        for element in elements {
+            copy.remove(element)
+        }
+        return copy
+    }
+    func minus(elements: Array<Element>) -> Array<Element> {
+        return self.minus(elements)
     }
 }
 

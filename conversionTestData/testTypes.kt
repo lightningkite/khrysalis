@@ -54,8 +54,8 @@ fun main(){
     println("Success")
 
     val ugh = Weird(2)
-    val unknownThing: Any? = ugh
-    var unknownThingMut: Any? = unknownThing
+    val unknownThing: Any = ugh
+    var unknownThingMut: Any = unknownThing
     if(x < 0) {
         unknownThingMut = 2
     }
@@ -77,9 +77,6 @@ fun main(){
 
     if(unknownThingMut is String){
         println(unknownThingMut + "asdf")
-    }
-    if(unknownThingMut != null){
-        notNullThing(unknownThingMut)
     }
 
     val a = 23L

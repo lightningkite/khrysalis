@@ -24,6 +24,12 @@
 - id: com.lightningkite.khrysalis.IsCodableAndEquatable
   type: type
   template: Codable & Equatable
+- id: com.lightningkite.khrysalis.ComparableAndHashable
+  type: type
+  template: Hashable & Comparable
+- id: com.lightningkite.khrysalis.ComparableCodableAndHashable
+  type: type
+  template: Codable & Hashable & Comparable
 - id: com.lightningkite.khrysalis.AnyObject
   type: type
   template: AnyObject
@@ -53,6 +59,14 @@
 - id: kotlin.Enum.name
   type: get
   template: "~this~.rawValue"
+
+- id: kotlin.Any.hashCode
+  type: call
+  template: ~this~.hashValue
+
+- id: java.Object.hashCode
+  type: call
+  template: ~this~.hashValue
 
 - id: kotlin.Unit
   type: get

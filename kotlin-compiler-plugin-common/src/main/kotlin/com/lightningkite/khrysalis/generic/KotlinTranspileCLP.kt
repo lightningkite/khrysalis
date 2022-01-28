@@ -36,17 +36,17 @@ abstract class KotlinTranspileCLP : CommandLineProcessor {
         val KEY_PROJECT_NAME = CompilerConfigurationKey.create<String>(KEY_PROJECT_NAME_NAME)
         const val KEY_OUTPUT_DIRECTORY_NAME = "outputDirectory"
         val KEY_OUTPUT_DIRECTORY = CompilerConfigurationKey.create<File>(KEY_OUTPUT_DIRECTORY_NAME)
-        const val KEY_INPUT_DIRECTORY_NAME = "inputDirectory"
-        val KEY_INPUT_DIRECTORY = CompilerConfigurationKey.create<File>(KEY_INPUT_DIRECTORY_NAME)
+        const val KEY_COMMON_PACKAGE_NAME = "commonPackage"
+        val KEY_COMMON_PACKAGE = CompilerConfigurationKey.create<String>(KEY_COMMON_PACKAGE_NAME)
         const val KEY_LIBRARY_MODE_NAME = "libraryMode"
         val KEY_LIBRARY_MODE = CompilerConfigurationKey.create<Boolean>(KEY_LIBRARY_MODE_NAME)
     }
 
     override val pluginOptions: Collection<AbstractCliOption> = listOf(
         CliOption(
-            KEY_INPUT_DIRECTORY_NAME,
-            "A directory",
-            "Where files should be output, relatively. Defaults to the common root between translated files.",
+            KEY_COMMON_PACKAGE_NAME,
+            "A package name",
+            "The package name to automatically remove as a prefix",
             required = false
         ),
         CliOption(
@@ -80,7 +80,7 @@ abstract class KotlinTranspileCLP : CommandLineProcessor {
             KEY_EQUIVALENTS_NAME -> configuration.put(
                 KEY_EQUIVALENTS,
                 value.trim('"').split(File.pathSeparatorChar).map { File(it) })
-            KEY_INPUT_DIRECTORY_NAME -> configuration.put(KEY_INPUT_DIRECTORY, File(value.trim('"')))
+            KEY_COMMON_PACKAGE_NAME -> configuration.put(KEY_COMMON_PACKAGE, value.trim('"'))
             KEY_OUTPUT_DIRECTORY_NAME -> configuration.put(KEY_OUTPUT_DIRECTORY, File(value.trim('"')))
             KEY_PROJECT_NAME_NAME -> configuration.put(KEY_PROJECT_NAME, value.trim('"'))
             KEY_LIBRARY_MODE_NAME -> configuration.put(KEY_LIBRARY_MODE, value.toBoolean())
@@ -96,7 +96,7 @@ abstract class KotlinTranspileCR : ComponentRegistrar {
         projectName: String,
         dependencies: List<File>,
         equivalents: Replacements,
-        input: File?,
+        commonPackage: String?,
         outputDirectory: File,
         libraryMode: Boolean,
         collector: MessageCollector
@@ -106,7 +106,7 @@ abstract class KotlinTranspileCR : ComponentRegistrar {
         val libraryMode = configuration[KotlinTranspileCLP.KEY_LIBRARY_MODE]!!
         val projectName = configuration[KotlinTranspileCLP.KEY_PROJECT_NAME]!!
         val dependencies = configuration[KotlinTranspileCLP.KEY_EQUIVALENTS] ?: listOf()
-        val input = configuration[KotlinTranspileCLP.KEY_INPUT_DIRECTORY]
+        val commonPackage = configuration[KotlinTranspileCLP.KEY_COMMON_PACKAGE]
         val output = configuration[KotlinTranspileCLP.KEY_OUTPUT_DIRECTORY]!!
         val collector = configuration[CLIConfigurationKeys.MESSAGE_COLLECTOR_KEY]
 
@@ -137,7 +137,7 @@ abstract class KotlinTranspileCR : ComponentRegistrar {
                 projectName,
                 dependencies,
                 reps,
-                input,
+                commonPackage,
                 output,
                 libraryMode,
                 collector ?: object : MessageCollector {
@@ -160,15 +160,20 @@ abstract class KotlinTranspileCR : ComponentRegistrar {
     }
 }
 
+fun KtFile.outputRelativePath(packagePrefix: String?, outputExtension: String): String = packageFqName.asString()
+    .removePrefix(packagePrefix ?: "".replace('.', '/'))
+    .trim('.')
+    .let { if(it.isBlank()) it else "$it/" }
+    .plus(name.removeSuffix(".kt").plus(".$outputExtension"))
+
 abstract class KotlinTranspileExtension(
     val projectName: String,
-    val input: File?,
+    val commonPackage: String?,
     val outputDirectory: File,
     val libraryMode: Boolean,
     val collector: MessageCollector
 ) : AnalysisHandlerExtension {
     abstract val outputExtension: String
-    lateinit var commonPath: String
 
     open fun start(
         context: BindingContext,
@@ -196,31 +201,19 @@ abstract class KotlinTranspileExtension(
         val filesToTranslate = files.filter { it.shouldBeTranslated() }
         collector.report(CompilerMessageSeverity.LOGGING, "filesToTranslate ${filesToTranslate}.")
 
-        commonPath = input?.path ?: filesToTranslate
-            .asSequence()
-            .map { it.virtualFilePath }
-            .takeUnless { it.none() }
-            ?.reduce { acc, s -> acc.commonPrefixWith(s) }
-            ?.substringBeforeLast('/')
-            ?.plus('/')
-            ?.also { println("Common file path: $it") } ?: ""
-
         start(bindingTrace.bindingContext, files)
 
         val outputFiles = HashSet<File>()
         for(file in filesToTranslate){
             try {
-                val outputFile = outputDirectory
-                    .resolve(file.virtualFilePath.removePrefix(commonPath))
-                    .parentFile
-                    .resolve(file.name.removeSuffix(".kt").plus(".$outputExtension"))
+                val outputFile = outputDirectory.resolve(file.outputRelativePath(commonPackage, outputExtension))
                 outputFile.parentFile.mkdirs()
                 val existing = outputFile.takeIf { it.exists() }?.readText()
                 if(existing != null && !FileEmitter.canBeOverwritten(existing)) {
                     collector.report(CompilerMessageSeverity.LOGGING, "Skipping ${file.virtualFilePath}.")
                     continue
                 }
-                collector.report(CompilerMessageSeverity.LOGGING, "Translating ${file.virtualFilePath}.")
+                collector.report(CompilerMessageSeverity.LOGGING, "Translating ${file.virtualFilePath} to ${outputFile}.")
                 val output = transpile(bindingTrace.bindingContext, file)
                 outputFiles.add(outputFile)
                 if (existing != output)
@@ -230,17 +223,10 @@ abstract class KotlinTranspileExtension(
             }
         }
 
-        // Clean up old files
-        outputDirectory.walkTopDown()
-            .filter { it.extension == outputExtension }
-            .filter { it !in outputFiles }
-            .filter { FileEmitter.canBeOverwritten(it) }
-            .forEach { it.delete() }
-
         finish(bindingTrace.bindingContext, files)
 
         collector.report(CompilerMessageSeverity.INFO, "Completed translation.")
         releaseBindingContext()
-        return AnalysisResult.Companion.success(bindingTrace.bindingContext, module, false)
+        return AnalysisResult.Companion.success(bindingTrace.bindingContext, module, true)
     }
 }

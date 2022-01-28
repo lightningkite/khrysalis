@@ -6,6 +6,7 @@ import kotlin.reflect.KProperty
 
 typealias AnyObject = Any
 typealias AnyEquatable = Any?
+typealias AnySwift = Any?
 typealias AnyHashable = Any?
 typealias IsEquatable = Any?
 typealias IsHashable = Any?
@@ -17,6 +18,8 @@ interface Codable
 typealias IsCodable = Any?
 typealias IsCodableAndHashable = Any?
 typealias IsCodableAndEquatable = Any?
+typealias ComparableAndHashable<T> = Comparable<T>
+typealias ComparableCodableAndHashable<T> = Comparable<T>
 typealias UntypedList = List<*>
 typealias UntypedMap = Map<*, *>
 
@@ -55,31 +58,38 @@ annotation class Unowned
 @Target(AnnotationTarget.VALUE_PARAMETER)
 annotation class Modifies
 
-@Target(AnnotationTarget.FUNCTION)
-@Retention(AnnotationRetention.SOURCE)
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.VALUE_PARAMETER)
+@Retention(AnnotationRetention.BINARY)
 annotation class SwiftName(val name: String)
 
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.VALUE_PARAMETER)
+@Retention(AnnotationRetention.BINARY)
+annotation class SwiftNameless()
+
 @Target(AnnotationTarget.FUNCTION)
-@Retention(AnnotationRetention.SOURCE)
+@Retention(AnnotationRetention.BINARY)
 annotation class UnownedSelf
 
 @Target(AnnotationTarget.FUNCTION)
-@Retention(AnnotationRetention.SOURCE)
+@Retention(AnnotationRetention.BINARY)
 annotation class WeakSelf
 
 @Target(AnnotationTarget.FUNCTION)
-@Retention(AnnotationRetention.SOURCE)
+@Retention(AnnotationRetention.BINARY)
 annotation class CaptureUnowned(vararg val keys: String)
 
 @Target(AnnotationTarget.FUNCTION)
-@Retention(AnnotationRetention.SOURCE)
+@Retention(AnnotationRetention.BINARY)
 annotation class CaptureWeak(vararg val keys: String)
 
-@Target(AnnotationTarget.TYPE)
+@Target(AnnotationTarget.TYPE, AnnotationTarget.TYPE_PARAMETER)
 annotation class SwiftExactly(val parameterName: String = "default")
 
-@Target(AnnotationTarget.TYPE)
+@Target(AnnotationTarget.TYPE, AnnotationTarget.TYPE_PARAMETER)
 annotation class SwiftDescendsFrom(val parameterName: String = "default")
+
+@Target(AnnotationTarget.CLASS)
+annotation class SwiftProtocolExtends(vararg val names: String)
 
 @Target(AnnotationTarget.FUNCTION)
 annotation class DiscardableResult
@@ -89,7 +99,7 @@ annotation class DiscardableResult
 annotation class SwiftReturnType(val text: String)
 
 @Target(AnnotationTarget.FUNCTION)
-@Retention(AnnotationRetention.SOURCE)
+@Retention(AnnotationRetention.BINARY)
 annotation class SwiftExtensionWhere(val text: String)
 
 @Target(
@@ -119,6 +129,6 @@ class WeakPropertyDelegate<T>(initial: T) {
 
 fun <T> weak(value: T) = WeakPropertyDelegate(value)
 
-fun fatalError(reason: String = ""): Nothing {
+fun fatalError(@SwiftNameless reason: String = ""): Nothing {
     throw Error(reason)
 }

@@ -191,6 +191,40 @@
   receiver: kotlin.collections.Map.Entry
   template: ~this~[1]
 
+- id: kotlin.collections.mapValues
+  type: call
+  typeArgumentRequirements:
+    0: primitive
+  template:
+    pattern: new Map(map(x => [x[0], (~0~)(x)], ~this~.entries()))
+    imports:
+      map: iter-tools-es
+
+- id: kotlin.collections.filterKeys
+  type: call
+  typeArgumentRequirements:
+    0: primitive
+  template:
+    pattern: new Map(filter(x => (~0~)(x[0]), ~this~.entries()))
+    imports:
+      filter: iter-tools-es
+
+- id: kotlin.collections.mapValues
+  type: call
+  template:
+    pattern: new EqualOverrideMap(map(x => [x[0], (~0~)(x)], ~this~.entries()))
+    imports:
+      EqualOverrideMap: '@lightningkite/khrysalis-runtime'
+      map: iter-tools-es
+
+- id: kotlin.collections.filterKeys
+  type: call
+  template:
+    pattern: new EqualOverrideMap(filter(x => (~0~)(x[0]), ~this~.entries()))
+    imports:
+      EqualOverrideMap: '@lightningkite/khrysalis-runtime'
+      filter: iter-tools-es
+
 - id: kotlin.collections.Map.Entry.key
   type: get
   template: ~this~[0]

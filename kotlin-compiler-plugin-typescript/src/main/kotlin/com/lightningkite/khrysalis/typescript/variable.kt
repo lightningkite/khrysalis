@@ -552,36 +552,52 @@ fun TypescriptTranslator.registerVariable() {
             -" ?? null)"
         }
     }
+
+    fun KtQualifiedExpression.nre(): KtNameReferenceExpression? = (selectorExpression as? KtNameReferenceExpression) ?: ((selectorExpression as? KtCallExpression)?.calleeExpression as? KtNameReferenceExpression)
     handle<KtDotQualifiedExpression>(
-        condition = { ((typedRule.selectorExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget as? ValueDescriptor) != null },
+        condition = { (typedRule.nre()?.resolvedReferenceTarget as? ValueDescriptor) != null },
         priority = 1000,
         action = {
-            val p =
-                (typedRule.selectorExpression as KtNameReferenceExpression).resolvedReferenceTarget as ValueDescriptor
+            val nre = typedRule.nre()!!
+            val p = nre.resolvedReferenceTarget as ValueDescriptor
             -VirtualGet(
                 receiver = typedRule.replacementReceiverExpression,
-                nameReferenceExpression = typedRule.selectorExpression as KtNameReferenceExpression,
+                nameReferenceExpression = nre,
                 property = p,
                 receiverType = typedRule.receiverExpression.resolvedExpressionTypeInfo?.type,
                 expr = typedRule,
                 safe = false
             )
+            (typedRule.selectorExpression as? KtCallExpression)?.let {
+                -".invoke"
+                -ArgumentsList(
+                    on = typedRule.resolvedCall!!.candidateDescriptor as FunctionDescriptor,
+                    resolvedCall = typedRule.resolvedCall!!
+                )
+            }
         }
     )
     handle<KtSafeQualifiedExpression>(
-        condition = { ((typedRule.selectorExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget as? ValueDescriptor) != null },
+        condition = { (typedRule.nre()?.resolvedReferenceTarget as? ValueDescriptor) != null },
         priority = 1000,
         action = {
-            val p =
-                (typedRule.selectorExpression as KtNameReferenceExpression).resolvedReferenceTarget as ValueDescriptor
+            val nre = typedRule.nre()!!
+            val p = nre.resolvedReferenceTarget as ValueDescriptor
             -VirtualGet(
                 receiver = typedRule.replacementReceiverExpression,
-                nameReferenceExpression = typedRule.selectorExpression as KtNameReferenceExpression,
+                nameReferenceExpression = nre,
                 property = p,
                 receiverType = typedRule.receiverExpression.resolvedExpressionTypeInfo?.type,
                 expr = typedRule,
                 safe = true
             )
+            (typedRule.selectorExpression as? KtCallExpression)?.let {
+                -".invoke"
+                -ArgumentsList(
+                    on = typedRule.resolvedCall!!.candidateDescriptor as FunctionDescriptor,
+                    resolvedCall = typedRule.resolvedCall!!
+                )
+            }
         }
     )
 

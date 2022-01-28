@@ -1,25 +1,26 @@
 package com.lightningkite.khrysalis.typescript
 
+import com.lightningkite.khrysalis.generic.outputRelativePath
 import com.lightningkite.khrysalis.typescript.manifest.declaresPrefix
 import com.lightningkite.khrysalis.typescript.replacements.TypescriptImport
 import org.jetbrains.kotlin.psi.KtFile
 import java.io.File
 
 class DeclarationManifest(
-    val commonPath: String,
+    val commonPackage: String?,
     val node: MutableMap<String, String> = HashMap(),
     val local: MutableMap<String, String> = HashMap()
 ) {
     fun importLine(from: KtFile, fqName: String, name: String): TypescriptImport? {
-        val fromPath = from.virtualFilePath.substringAfter(commonPath).removeSuffix(".kt").plus(".ts")
+        val fromPackageFile = from.outputRelativePath(commonPackage, "ts")
         return local[fqName]?.let { relFile ->
-            if (fromPath == relFile) {
+            if (fromPackageFile == relFile) {
                 null
             } else {
                 TypescriptImport(
                     path = "./"
                         .plus(
-                            File(relFile).relativeTo(File(fromPath).parentFile ?: File(".")).path.removeSuffix(".ts")
+                            File(relFile).relativeTo(File(fromPackageFile).parentFile ?: File(".")).path.removeSuffix(".ts")
                         )
                         .let {
                             if (it.startsWith("./../")) "../" + it.removePrefix("./../")

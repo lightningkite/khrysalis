@@ -27,7 +27,6 @@ abstract class FileEmitter(val file: KtFile, val body: StringBuilder = StringBui
     abstract fun renderImports(to: Appendable)
     abstract fun sub(): FileEmitter
     fun render(out: Appendable) {
-        out.appendLine("// File: ${file.virtualFilePath}")
         out.appendLine("// Package: ${file.packageFqName.asString()}")
         out.appendLine(overwriteWarning)
         renderImports(out)

@@ -5,19 +5,27 @@ import com.lightningkite.khrysalis.analysis.*
 import com.lightningkite.khrysalis.swift.replacements.SwiftImport
 import com.lightningkite.khrysalis.util.forEachBetween
 import com.lightningkite.khrysalis.util.fqNameWithoutTypeArgs
+import com.lightningkite.khrysalis.util.functionsNamed
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.descriptors.*
+import org.jetbrains.kotlin.ir.util.findFirstFunction
 import org.jetbrains.kotlin.js.translate.callTranslator.getReturnType
+import org.jetbrains.kotlin.lexer.KtModifierKeywordToken
 import org.jetbrains.kotlin.lexer.KtTokens
+import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.*
+import org.jetbrains.kotlin.resolve.annotations.argumentValue
 import org.jetbrains.kotlin.resolve.calls.util.FakeCallableDescriptorForObject
+import org.jetbrains.kotlin.resolve.constants.ArrayValue
+import org.jetbrains.kotlin.resolve.constants.StringValue
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
 import org.jetbrains.kotlin.resolve.descriptorUtil.getSuperClassNotAny
 import org.jetbrains.kotlin.resolve.scopes.receivers.ClassValueReceiver
 import org.jetbrains.kotlin.synthetic.hasJavaOriginInHierarchy
 import org.jetbrains.kotlin.types.isNullable
+import org.jetbrains.kotlin.types.typeUtil.isNullableAny
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -30,8 +38,11 @@ fun FunctionDescriptor.callsForSwiftInterface(on: ClassDescriptor?): Boolean {
 }
 
 fun KtModifierListOwner.swiftVisibility(): Any? = when {
-    this.hasModifier(KtTokens.ABSTRACT_KEYWORD) ||
-            this.hasModifier(KtTokens.OPEN_KEYWORD) -> "open"
+    (this as? KtNamedFunction)?.let {
+        it.hasModifier(KtTokens.OVERRIDE_KEYWORD) && it.containingClass()?.hasModifier(KtTokens.OPEN_KEYWORD) == true
+    } == true
+            || this.hasModifier(KtTokens.ABSTRACT_KEYWORD)
+            || this.hasModifier(KtTokens.OPEN_KEYWORD) -> "open"
     else -> this.visibilityModifier()
 }
 
@@ -59,7 +70,12 @@ fun SwiftTranslator.registerClass() {
             .let {
                 if (on is KtClass && on.isData()) {
                     out.addImport(SwiftImport("KhrysalisRuntime"))
-                    it + listOf("Hashable", "CustomStringConvertible")
+                    val result = it + "CustomStringConvertible"
+//                    println("${on.name} - ${on.resolvedClass?.unsubstitutedMemberScope?.functionsNamed("hashCode")?.filter { it.valueParameters.size == 0 }?.firstOrNull()}")
+                    if(on.resolvedClass?.unsubstitutedMemberScope?.functionsNamed("hashCode")?.filter { it.valueParameters.size == 0 }?.firstOrNull()?.useOverrideInSwift() == true)
+                        result
+                    else
+                        result + "Hashable"
                 } else it
             }
             .let {
@@ -69,19 +85,19 @@ fun SwiftTranslator.registerClass() {
                 } else it
             }
             .let {
-                if (on.body?.functions?.find { it.name == "equals" && it.valueParameters.size == 1 } != null) {
+                if (on.body?.functions?.find { it.name == "equals" && it.valueParameters.size == 1 }?.resolvedFunction?.useOverrideInSwift() == false) {
                     out.addImport(SwiftImport("KhrysalisRuntime"))
                     it + listOf("KEquatable")
                 } else it
             }
             .let {
-                if (on.body?.functions?.find { it.name == "hashCode" && it.valueParameters.size == 0 } != null) {
+                if (on.body?.functions?.find { it.name == "hashCode" && it.valueParameters.size == 0 }?.resolvedFunction?.useOverrideInSwift() == false) {
                     out.addImport(SwiftImport("KhrysalisRuntime"))
                     it + listOf("KHashable")
                 } else it
             }
             .let {
-                if (on.body?.functions?.find { it.name == "toString" && it.valueParameters.size == 0 } != null) {
+                if (on.body?.functions?.find { it.name == "toString" && it.valueParameters.size == 0 }?.resolvedFunction?.useOverrideInSwift() == false) {
                     out.addImport(SwiftImport("KhrysalisRuntime"))
                     it + listOf("KStringable")
                 } else it
@@ -97,6 +113,18 @@ fun SwiftTranslator.registerClass() {
             -" where "
             -it
         }
+    }
+
+    handle<KtParameter>(
+        condition = {
+            typedRule.parentOfType<KtParameterList>()?.parentOfType<KtFunction>()?.resolvedFunction?.let {
+                it.name.asString() == "equals" && it.valueParameters.size == 1 && it.valueParameters[0].type.isNullableAny()
+            } == true
+        },
+        priority = 10000
+    ) {
+        -typedRule.name
+        -": Any"
     }
 
     handle<KtClass>(
@@ -143,7 +171,14 @@ fun SwiftTranslator.registerClass() {
             throw IllegalStateException("Converting a generic interface is not possible at the moment due to Swift crap. See code for potential solution, yet unimplemented due to complexity.")
         }
         -": "
-        listOf("AnyObject").plus(typedRule.superTypeListEntries.map { it.typeReference })
+        val x = typedRule.resolvedClass?.annotations
+            ?.findAnnotation(FqName("com.lightningkite.khrysalis.SwiftProtocolExtends"))
+            ?.argumentValue("names")
+            ?.let { it as? ArrayValue }
+            ?.let { it.value.map { (it as? StringValue)?.value } }
+        listOf("AnyObject")
+            .plus(typedRule.superTypeListEntries.map { it.typeReference })
+            .plus(x ?: listOf<String>())
             .forEachBetween(
                 forItem = { -it },
                 between = { -", " }
@@ -239,7 +274,7 @@ fun SwiftTranslator.registerClass() {
         if (typedRule.superTypeListEntries
                 .mapNotNull { it as? KtSuperTypeEntry }
                 .any { it.typeReference?.resolvedType?.fqNameWithoutTypeArgs == "com.lightningkite.khrysalis.Codable" } ||
-            typedRule.annotationEntries.any { it.resolvedAnnotation?.type?.fqNameWithoutTypeArgs == "kotlinx.serialization.Serializable" }
+            typedRule.annotationEntries.any { it.resolvedAnnotation?.type?.fqNameWithoutTypeArgs == "kotlinx.serialization.Serializable" && it.valueArguments.isEmpty()}
         ) {
             -"convenience required public init(from decoder: Decoder) throws {\n"
             -"let values = try decoder.container(keyedBy: CodingKeys.self)\n"
@@ -303,47 +338,74 @@ fun SwiftTranslator.registerClass() {
         if (typedRule.isData()) {
             //Generate hashCode() if not present
             if (typedRule.body?.declarations?.any { it is FunctionDescriptor && (it as KtDeclaration).name == "hashCode" && it.valueParameters.isEmpty() } != true) {
-                -"public func hash(into hasher: inout Hasher) {\n"
-                typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEach { param ->
-                    -"hasher.combine("
-                    -param.nameIdentifier
-                    -")\n"
+                val resolveFunction = typedRule.resolvedClass!!.unsubstitutedMemberScope.findFirstFunction("hashCode") { it.valueParameters.size == 0 }
+                if(resolveFunction.useOverrideInSwift()) {
+                    -"override open func hashCode() -> Int {\n"
+                    -"var hasher = Hasher()\n"
+                    typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEach { param ->
+                        -"hasher.combine("
+                        -param.nameIdentifier
+                        -")\n"
+                    }
+                    -"return hasher.finalize()\n}\n"
+                } else {
+                    -"public func hash(into hasher: inout Hasher) {\n"
+                    typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEach { param ->
+                        -"hasher.combine("
+                        -param.nameIdentifier
+                        -")\n"
+                    }
+                    -"\n}\n"
                 }
-                -"}\n"
             }
 
             //Generate equals() if not present
             if (typedRule.body?.declarations?.any { it is FunctionDescriptor && (it as KtDeclaration).name == "equals" && it.valueParameters.size == 1 } != true) {
-                -"public static func == (lhs: "
-                -swiftTopLevelNameElement(typedRule)
-                -", rhs: "
-                -swiftTopLevelNameElement(typedRule)
-                -") -> Bool { return "
-                typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEachBetween(
-                    forItem = { param ->
-                        val typeName = param.typeReference?.resolvedType?.fqNameWithoutTypeArgs
-                        replacements.functions[typeName + ".equals"]?.firstOrNull()?.let {
-                            emitTemplate(
-                                requiresWrapping = true,
-                                template = it.template,
-                                receiver = listOf("lhs.", param.nameIdentifier),
-                                allParameters = listOf("rhs.", param.nameIdentifier),
-                                parameter = { listOf("rhs.", param.nameIdentifier) },
-                                parameterByIndex = { listOf("rhs.", param.nameIdentifier) }
-                            )
-                        } ?: run {
-                            -"lhs."
-                            -param.nameIdentifier
-                            -" == "
-                            -"rhs."
-                            -param.nameIdentifier
+                val resolveFunction = typedRule.resolvedClass!!.unsubstitutedMemberScope.findFirstFunction("equals") { it.valueParameters.size == 1 }
+                fun emitCompare(lhs: String, rhs: String) {
+                    typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEachBetween(
+                        forItem = { param ->
+                            val typeName = param.typeReference?.resolvedType?.fqNameWithoutTypeArgs
+                            replacements.functions[typeName + ".equals"]?.firstOrNull()?.let {
+                                emitTemplate(
+                                    requiresWrapping = true,
+                                    template = it.template,
+                                    receiver = listOf("$lhs.", param.nameIdentifier),
+                                    allParameters = listOf("$rhs.", param.nameIdentifier),
+                                    parameter = { listOf("$rhs.", param.nameIdentifier) },
+                                    parameterByIndex = { listOf("$rhs.", param.nameIdentifier) }
+                                )
+                            } ?: run {
+                                -"$lhs."
+                                -param.nameIdentifier
+                                -" == "
+                                -"$rhs."
+                                -param.nameIdentifier
+                            }
+                        },
+                        between = {
+                            -" && "
                         }
-                    },
-                    between = {
-                        -" && "
-                    }
-                )
-                -" }\n"
+                    )
+                }
+                if(resolveFunction.useOverrideInSwift()) {
+                    // If this stems from a manual implementation somewhere, we'll use KEquatable instead
+                    -"override open func equals(other: Any) -> Bool {\n"
+                    -"guard let other = other as? "
+                    -swiftTopLevelNameElement(typedRule)
+                    -" else { return false }\n"
+                    -"return "
+                    emitCompare("self", "other")
+                    -"\n}\n"
+                } else {
+                    -"public static func == (lhs: "
+                    -swiftTopLevelNameElement(typedRule)
+                    -", rhs: "
+                    -swiftTopLevelNameElement(typedRule)
+                    -") -> Bool { return "
+                    emitCompare("lhs", "rhs")
+                    -" }\n"
+                }
             }
 
             //Generate toString() if not present
@@ -778,7 +840,6 @@ private fun <T : KtClassOrObject> handleConstructor(
         val isEnum = (typedRule as? KtClass)?.isEnum() == true
         -(contextByType.typedRule.primaryConstructor?.swiftVisibility() ?: "public")
         -" init("
-        writingParameter++
         contextByType.typedRule.primaryConstructor?.let { cons ->
             (if (isInner) {
                 listOf(listOf("parentThis: ", parentClassName)) + cons.valueParameters
@@ -794,7 +855,6 @@ private fun <T : KtClassOrObject> handleConstructor(
                 -parentClassName
             } else Unit
         }
-        writingParameter--
         -") {\n"
         if (isInner) {
             -"self.parentThis = parentThis;\n"

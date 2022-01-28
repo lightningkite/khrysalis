@@ -178,6 +178,8 @@
 
 - id: kotlin.collections.associate
   type: call
+  typeArgumentRequirements:
+    0: primitive
   template:
     pattern: new Map(map(~0~, ~this~))
     imports:
@@ -185,10 +187,28 @@
 
 - id: kotlin.collections.associateBy
   type: call
+  typeArgumentRequirements:
+    0: primitive
   template:
-    pattern: new Map(x => [~0~(x), x])
+    pattern: new Map(x => [(~0~)(x), x])
     imports:
       map: iter-tools-es
+
+- id: kotlin.collections.associate
+  type: call
+  template:
+    pattern: new EqualOverrideMap(map((~0~), ~this~))
+    imports:
+      map: iter-tools-es
+      EqualOverrideMap: '@lightningkite/khrysalis-runtime'
+
+- id: kotlin.collections.associateBy
+  type: call
+  template:
+    pattern: new EqualOverrideMap(x => [(~0~)(x), x])
+    imports:
+      map: iter-tools-es
+      EqualOverrideMap: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.collections.toList
   type: call

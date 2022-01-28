@@ -18,7 +18,6 @@ import kotlin.math.absoluteValue
 object ExecuteFileTester {
     val buildDir =
         System.getProperty("java.io.tmpdir").let { File(it) }.resolve("codeTranslationTesting").also { it.mkdirs() }
-    val outCacheDir = File("build/testCompilationCache").also { it.mkdirs() }
 
     fun tempFile(sourceText: String): File {
         val file = File("build/testFiles/S${sourceText.hashCode().absoluteValue}.kt")
@@ -27,39 +26,23 @@ object ExecuteFileTester {
         return file
     }
 
-    inline fun caching(sourceFile: File, clean: Boolean, action:()->String):String {
-        val sourceFileChecksum = sourceFile.checksum()
-        val cacheFile =
-            outCacheDir.resolve(
-                sourceFile.absolutePath.substringAfter("khrysalis").filter { it.isLetterOrDigit() } + ".out")
-        cacheFile.parentFile.mkdirs()
-        if (!clean && cacheFile.exists() && cacheFile.useLines { it.first() == sourceFileChecksum }) {
-            return cacheFile.readText().substringAfter('\n').trim()
-        }
-
-        val result = action()
-        cacheFile.writeText(sourceFileChecksum + "\n" + result)
-        return result
-    }
-
     fun kotlin(
         sourceFile: File,
-        clean: Boolean = false
-    ): String = caching(sourceFile, clean) {
+        compilationSetup: KotlinCompilation.()->Unit = {}
+    ): String {
         val ktName = sourceFile.name
             .split('.')
             .joinToString("") { it.filter { it.isJavaIdentifierPart() }.capitalize() }
-        println(ktName)
         val packageName: String =
             sourceFile.useLines { it.find { it.trim().startsWith("package") }?.substringAfter("package ")?.trim() }
                 ?: ""
         val outFile = KotlinCompilation().apply {
             sources = listOf(SourceFile.fromPath(sourceFile)) + Libraries.testingStubs.map { SourceFile.fromPath(it) }
             inheritClassPath = true
+            compilationSetup()
         }.compile().outputDirectory
 
-        println(listOf(Libraries.getStandardLibrary(), outFile))
-        captureSystemOut {
+        return captureSystemOut {
             JVM.runMain(listOf(Libraries.getStandardLibrary(), outFile), if(packageName.isNotEmpty()) "$packageName.$ktName" else ktName, arrayOf<String>())
         }.trim()
     }

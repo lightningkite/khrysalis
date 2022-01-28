@@ -27,7 +27,7 @@ public extension Dictionary {
         return copy
     }
 
-    func plus(map: Self) -> Self {
+    func plus(_ map: Self) -> Self {
         var copy = self
         copy.putAll(from: map)
         return copy
@@ -43,7 +43,7 @@ public extension Dictionary {
         }
     }
 
-    func minus(key:Key) -> Dictionary {
+    func minus(_ key:Key) -> Dictionary {
         var temp = self
         temp.removeValue(forKey: key)
         return temp

@@ -23,45 +23,7 @@ fun swiftPluginUse(
         ?: project.rootProject.name,
     libraryMode: Boolean = false
 ): CompilerPluginUseInfo {
-    val dependencies = run {
-        val localProperties = Properties().apply {
-            val f = project.rootProject.file("local.properties")
-            if (f.exists()) {
-                load(f.inputStream())
-            }
-        }
-        val pathRegex = Regex(":path => '([^']+)'")
-        val home = System.getProperty("user.home")
-        val localPodSpecRefs = iosBase
-            .resolve("Podfile")
-            .takeIf { it.exists() }
-            ?.also { println("Found podfile: $it") }
-            ?.let { file ->
-                file
-                    .readText()
-                    .let { pathRegex.findAll(it) }
-                    .also { println("Found podfile paths: ${it.joinToString { it.value }}") }
-                    .map { it.groupValues[1] }
-                    .map { it.replace("~", home) }
-                    .map {
-                        if (it.startsWith('/'))
-                            File(it).parentFile
-                        else
-                            File(file.parentFile, it).parentFile
-                    }
-            } ?: sequenceOf()
-        val allLocations = (localProperties.getProperty("khrysalis.iospods")
-            ?: localProperties.getProperty("khrysalis.nonmacmanifest") ?: "")
-            .splitToSequence(File.pathSeparatorChar)
-            .filter { it.isNotBlank() }
-            .map { File(it) }
-            .filter { it.exists() }
-            .plus(sequenceOf(iosBase))
-            .plus(sequenceOf(project.projectDir))
-            .plus(localPodSpecRefs)
-        println("Checking for equivalents at: ${allLocations.joinToString("\n")}")
-        allLocations
-    }
+    val dependencies = project.swiftDependencies(iosBase)
     val output = iosBase.resolve(projectName).resolve("src")
     return CompilerPluginUseInfo(
         project = project,
@@ -77,4 +39,40 @@ fun swiftPluginUse(
             "plugin:com.lightningkite.khrysalis.swift:libraryMode=\"${libraryMode}\""
         )
     )
+}
+
+fun Project.swiftDependencies(iosBase: File): Sequence<File> {
+    val localProperties = Properties().apply {
+        val f = project.rootProject.file("local.properties")
+        if (f.exists()) {
+            load(f.inputStream())
+        }
+    }
+    val pathRegex = Regex(":path => '([^']+)'")
+    val home = System.getProperty("user.home")
+    val localPodSpecRefs = iosBase
+        .resolve("Podfile")
+        .takeIf { it.exists() }
+        ?.let { file ->
+            file
+                .readText()
+                .let { pathRegex.findAll(it) }
+                .map { it.groupValues[1] }
+                .map { it.replace("~", home) }
+                .map {
+                    if (it.startsWith('/'))
+                        File(it).parentFile
+                    else
+                        File(file.parentFile, it).parentFile
+                }
+        } ?: sequenceOf()
+    val allLocations = (localProperties.getProperty("khrysalis.iospods")
+        ?: localProperties.getProperty("khrysalis.nonmacmanifest") ?: "")
+        .splitToSequence(File.pathSeparatorChar)
+        .filter { it.isNotBlank() }
+        .map { File(it) }
+        .filter { it.exists() }
+        .plus(iosBase.resolve("Pods"))
+        .plus(localPodSpecRefs)
+    return allLocations
 }

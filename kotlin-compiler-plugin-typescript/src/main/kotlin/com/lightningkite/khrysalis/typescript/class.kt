@@ -378,7 +378,8 @@ fun TypescriptTranslator.registerClass() {
 
         if (typedRule.superTypeListEntries
                 .mapNotNull { it as? KtSuperTypeEntry }
-                .any { it.typeReference?.resolvedType?.fqNameWithoutTypeArgs == "com.lightningkite.khrysalis.Codable" }
+                .any { it.typeReference?.resolvedType?.fqNameWithoutTypeArgs == "com.lightningkite.khrysalis.Codable" } ||
+            typedRule.annotationEntries.any { it.resolvedAnnotation?.type?.fqNameWithoutTypeArgs == "kotlinx.serialization.Serializable" && it.valueArguments.isEmpty()}
         ) {
             //Generate codable constructor
             out.addImport("@lightningkite/khrysalis-runtime", "parse")

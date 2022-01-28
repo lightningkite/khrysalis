@@ -11,6 +11,11 @@ class TestClass {
     fun testRec(action: Int.()->Unit){
         action(2)
     }
+    val lambdaWithManyInputs = { first: Int, second: Int -> first + second }
+
+    val ohThatsMe: TestClass get() = this
+
+    operator fun invoke(left: Int, right: Int): Int = left + right
 
     override fun toString(): String {
         return "Test item $item"
@@ -53,4 +58,16 @@ fun main(){
     }
     lambda3()
     lambda3.invoke()
+
+    println(theAnswer(32, 42))
+    println(theAnswer.invoke(32, 42))
+    println(theAnswer.ohThatsMe(32, 42))
+    println(theAnswer.ohThatsMe.invoke(32, 42))
+
+    val lambdaWithManyInputs = { first: Int, second: Int -> first + second }
+    println(lambdaWithManyInputs(1, 2))
+    println(theAnswer.lambdaWithManyInputs(1, 2))
+    println(theAnswer.lambdaWithManyInputs.invoke(1, 2))
+    println(theAnswer.ohThatsMe.lambdaWithManyInputs(1, 2))
+    println(theAnswer.ohThatsMe.lambdaWithManyInputs.invoke(1, 2))
 }

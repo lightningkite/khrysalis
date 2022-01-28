@@ -88,30 +88,30 @@
   template: ~this~.sorted()
 - id: kotlin.collections.sortedBy
   type: call
-  template: '~this~.sorted(by: deferComparison(~0~))'
+  template: '~this~.sorted(by: compareBy(selector: ~0~))'
 - id: kotlin.collections.sortedByDescending
   type: call
-  template: '~this~.sorted(by: deferComparisonDescending(~0~))'
+  template: '~this~.sorted(by: compareByDescending(selector: ~0~))'
 - id: kotlin.collections.sortedWith
   type: call
-  template: '~this~.sorted(by: { (a, b) in (~0~)(a, b) == .orderedAscending })'
+  template: '~this~.sorted(by: ~0~)'
 - id: kotlin.collections.sortedWithDescending
   type: call
-  template: '~this~.sorted(by: { (a, b) in (~0~)(a, b) == .orderedDescending })'
+  template: '~this~.sorted(by: { -~0~($0, $1) })'
 
 - id: kotlin.collections.minBy
   type: call
-  template: '~this~.min(by: deferComparison(~0~))'
+  template: '~this~.min(by: compareBy(selector: ~0~))'
 - id: kotlin.collections.maxBy
   type: call
-  template: '~this~.max(by: deferComparison(~0~))'
+  template: '~this~.max(by: compareBy(selector: ~0~))'
 
 - id: kotlin.collections.minByOrNull
   type: call
-  template: '~this~.min(by: deferComparison(~0~))'
+  template: '~this~.min(by: compareBy(selector: ~0~))'
 - id: kotlin.collections.maxByOrNull
   type: call
-  template: '~this~.max(by: deferComparison(~0~))'
+  template: '~this~.max(by: compareBy(selector: ~0~))'
 
 - id: kotlin.collections.associate
   type: call

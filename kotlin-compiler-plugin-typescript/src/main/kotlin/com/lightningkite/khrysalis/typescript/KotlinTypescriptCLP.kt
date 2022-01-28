@@ -3,7 +3,6 @@ package com.lightningkite.khrysalis.typescript
 import com.fasterxml.jackson.databind.DeserializationFeature
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.dataformat.yaml.YAMLFactory
-import com.fasterxml.jackson.module.kotlin.KotlinModule
 import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.lightningkite.khrysalis.generic.KotlinTranspileCLP
 import com.lightningkite.khrysalis.generic.KotlinTranspileCR
@@ -12,27 +11,11 @@ import com.lightningkite.khrysalis.replacements.Replacements
 import com.lightningkite.khrysalis.shouldBeTranslated
 import com.lightningkite.khrysalis.typescript.manifest.generateFqToFileMap
 import com.lightningkite.khrysalis.typescript.replacements.TypescriptJacksonReplacementsModule
-import org.jetbrains.kotlin.analyzer.AnalysisResult
-import org.jetbrains.kotlin.cli.common.CLIConfigurationKeys
-import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
-import org.jetbrains.kotlin.com.intellij.mock.MockProject
-import org.jetbrains.kotlin.com.intellij.openapi.project.Project
-import org.jetbrains.kotlin.compiler.plugin.AbstractCliOption
-import org.jetbrains.kotlin.compiler.plugin.CliOption
-import org.jetbrains.kotlin.compiler.plugin.CommandLineProcessor
-import org.jetbrains.kotlin.compiler.plugin.ComponentRegistrar
-import org.jetbrains.kotlin.config.CompilerConfiguration
-import org.jetbrains.kotlin.config.CompilerConfigurationKey
-import org.jetbrains.kotlin.descriptors.ModuleDescriptor
 import org.jetbrains.kotlin.psi.*
-import org.jetbrains.kotlin.psi.psiUtil.toVisibility
-import org.jetbrains.kotlin.psi.psiUtil.visibilityModifierTypeOrDefault
 import org.jetbrains.kotlin.resolve.BindingContext
-import org.jetbrains.kotlin.resolve.BindingTrace
 import org.jetbrains.kotlin.resolve.jvm.extensions.AnalysisHandlerExtension
 import java.io.File
-import java.io.PrintWriter
 import java.io.StringWriter
 
 class KotlinTypescriptCLP : KotlinTranspileCLP() {
@@ -60,7 +43,7 @@ class KotlinTypescriptCR : KotlinTranspileCR() {
         projectName: String,
         dependencies: List<File>,
         equivalents: Replacements,
-        input: File?,
+        commonPackage: String?,
         outputDirectory: File,
         libraryMode: Boolean,
         collector: MessageCollector
@@ -68,7 +51,7 @@ class KotlinTypescriptCR : KotlinTranspileCR() {
         projectName,
         dependencies,
         equivalents,
-        input,
+        commonPackage,
         outputDirectory,
         libraryMode,
         collector
@@ -79,13 +62,13 @@ class KotlinTypescriptExtension(
     projectName: String,
     val dependencies: List<File>,
     val replacements: Replacements,
-    input: File?,
+    commonPackage: String?,
     outputDirectory: File,
     libraryMode: Boolean,
     collector: MessageCollector
 ) : KotlinTranspileExtension(
     projectName,
-    input,
+    commonPackage,
     outputDirectory,
     libraryMode,
     collector
@@ -97,7 +80,7 @@ class KotlinTypescriptExtension(
 
     override fun start(context: BindingContext, files: Collection<KtFile>) {
         println("Will generate files ${outputDirectory.resolve("fqnames.txt")}, ${outputDirectory.resolve("index.ts")}...")
-        translator = TypescriptTranslator(projectName, commonPath, collector, replacements)
+        translator = TypescriptTranslator(projectName, commonPackage, collector, replacements)
 
         // Load node declarations
         translator.declarations.loadNonlocal(dependencies, filterOut = outputDirectory)

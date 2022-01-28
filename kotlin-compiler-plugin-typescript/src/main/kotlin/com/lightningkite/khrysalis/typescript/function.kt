@@ -489,6 +489,7 @@ fun TypescriptTranslator.registerFunction() {
         )
     }
 
+    // lambda-ish calls
     handle<KtCallExpression>(
         condition = {
             val target = (typedRule.calleeExpression as? KtReferenceExpression)?.resolvedReferenceTarget

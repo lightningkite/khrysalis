@@ -74,7 +74,6 @@ fun SwiftTranslator.registerLambda() {
                         } else {
                             -it.name.asString().safeSwiftIdentifier()
                         }
-                        writingParameter++
 //                        -(typedRule.valueParameters.getOrNull(index)?.typeReference ?: betterParameterTypes?.getOrNull(index) ?: it.type)
                         (typedRule.valueParameters.getOrNull(index)?.typeReference)?.let {
                             if (it.resolvedType?.let { replacements.getType(it)?.protocol } != true) {
@@ -82,7 +81,6 @@ fun SwiftTranslator.registerLambda() {
                                 -it
                             }
                         }
-                        writingParameter--
                     },
                     between = { -", " }
                 )

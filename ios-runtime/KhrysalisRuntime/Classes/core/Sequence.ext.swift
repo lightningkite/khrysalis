@@ -54,6 +54,15 @@ public extension Sequence {
     func joined(separator: String = ", ", transform: (Element)->String) -> String {
         return self.map(transform).joined(separator: separator)
     }
+    func sorted(by typedComparator: TypedComparator<Element>) -> [Element] {
+        return sorted(by: { typedComparator($0, $1) == .orderedAscending})
+    }
+    func max(by typedComparator: TypedComparator<Element>) -> Element? {
+        return self.max(by: { typedComparator($0, $1) == .orderedAscending})
+    }
+    func min(by typedComparator: TypedComparator<Element>) -> Element? {
+        return self.min(by: { typedComparator($0, $1) == .orderedAscending})
+    }
 }
 
 public extension Sequence where Iterator.Element: Hashable {
