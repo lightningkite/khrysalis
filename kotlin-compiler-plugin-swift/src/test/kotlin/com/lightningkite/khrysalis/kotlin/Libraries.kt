@@ -7,7 +7,6 @@ object Libraries {
     fun getStandardLibrary(): File {
         val standardLibraryCopy = File("build/temp/std-lib-1-6-0.jar").also { it.parentFile.mkdirs() }
         if (!standardLibraryCopy.exists()) {
-            println("Downloading standard library...")
             standardLibraryCopy.outputStream().use { out ->
                 URL("https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-stdlib/1.6.10/kotlin-stdlib-1.6.10.jar").openStream()
                     .use { input ->

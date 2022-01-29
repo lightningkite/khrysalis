@@ -27,6 +27,7 @@ fun ignoreMe() {
 }
 
 fun main() {
+    var testValue = 0
     try {
         failableAction()
     } catch (e: Throwable) {
@@ -56,8 +57,11 @@ fun main() {
         null
     }
 
-    hasFailableLambda(@Throws() {
+    hasFailableLambda {
+        if(testValue > 0) {
+            throw IllegalStateException()
+        }
         println("Hello!")
-    })
+    }
 
 }
