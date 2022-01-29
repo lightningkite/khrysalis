@@ -12,6 +12,15 @@ fun failableAction(state: Boolean = true) {
     }
 }
 
+fun hasFailableLambda(action: (@Throws(IllegalArgumentException::class) ()->Unit)) {
+    try {
+        action()
+        action.invoke()
+    } catch (e: Throwable) {
+        println(e.message ?: "-")
+    }
+}
+
 fun ignoreMe() {
     fatalError()
     fatalError("Message")
@@ -46,5 +55,9 @@ fun main() {
     } catch (e: Throwable) {
         null
     }
+
+    hasFailableLambda(@Throws() {
+        println("Hello!")
+    })
 
 }

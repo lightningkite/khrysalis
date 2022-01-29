@@ -20,6 +20,14 @@ data class Template(
         return parts.joinToString("")
     }
 
+    fun replace(value: String, with: String): Template {
+        return this.copy(parts = parts.map {
+            if(it is TemplatePart.Text)
+                TemplatePart.Text(it.string.replace(value, with))
+            else it
+        })
+    }
+
     companion object {
         val tagRegex = Regex("""~([a-zA-Z0-9*]*)~""")
         fun escapedPartFromString(text: String, subMaps: Map<Int, List<Template>> = mapOf()): TemplatePart {

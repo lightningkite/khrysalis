@@ -141,6 +141,7 @@ class SwiftTranslator(
         registerReflection()
         registerViewBinding()
         registerCast()
+        registerSerializer()
         handle<LeafPsiElement>(condition = { typedRule.text in terminalMap.keys }, priority = 1) {
             out.append(terminalMap[typedRule.text])
         }

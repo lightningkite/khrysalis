@@ -1,0 +1,28 @@
+---
+- id: kotlinx.serialization.KSerializer
+  type: type
+  template: ~T0~.Type
+
+- id: kotlinx.serialization.json.Json
+  type: type
+  template: '(encoder: JSONEncoder, decoder: JSONDecoder)'
+
+- id: kotlinx.serialization.json.Json
+  type: call
+  template: '(encoder: JSONEncoder(), decoder: JSONDecoder())'
+
+- id: kotlinx.serialization.json.Json.encodeToString
+  type: call
+  template: 'String(decoding: try! ~this~.encoder.encode(~1~), as: UTF8.self)'
+
+- id: kotlinx.serialization.json.Json.decodeFromString
+  type: call
+  template: '(try! ~this~.decoder.decode(~0~, from: ~1~.data(using: .utf8)!))'
+
+- id: kotlinx.serialization.encodeToString
+  type: call
+  template: 'String(decoding: try! ~this~.encoder.encode(~0~), as: UTF8.self)'
+
+- id: kotlinx.serialization.decodeFromString
+  type: call
+  template: '(try! ~this~.decoder.decode(~T0~.self, from: ~0~.data(using: .utf8)!))'

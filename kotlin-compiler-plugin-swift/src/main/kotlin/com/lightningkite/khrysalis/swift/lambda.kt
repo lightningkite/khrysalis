@@ -12,6 +12,8 @@ import com.lightningkite.khrysalis.analysis.*
 fun SwiftTranslator.registerLambda() {
     handle<KtFunctionLiteral> {
         val resolved = typedRule.resolvedFunction!!
+        val throws = typedRule.resolvedExpectedExpressionType?.annotations?.any { it.fqName?.asString()?.endsWith(".Throws") == true } == true
+                || typedRule.resolvedFunction?.annotations?.any { it.fqName?.asString()?.endsWith(".Throws") == true } == true
         val reet = typedRule.resolvedExpectedExpressionType
             ?: (typedRule.parent as? KtLambdaExpression)?.resolvedExpectedExpressionType
             ?: ((typedRule.parent as? KtLambdaExpression)?.parent as? KtParameter)?.resolvedValueParameter?.type
@@ -90,9 +92,11 @@ fun SwiftTranslator.registerLambda() {
                     resolved.annotations.findAnnotation(FqName("com.lightningkite.khrysalis.SwiftReturnType"))
                         ?: resolved.annotations.findAnnotation(FqName("com.lightningkite.khrysalis.swiftReturnType"))
                     )?.allValueArguments?.entries?.first()?.value?.value?.let {
+                    if(throws) -" throws"
                     -" -> $it"
                 } ?: (betterReturnType ?: resolved.returnType)?.let {
                 if (replacements.getType(it)?.protocol != true) {
+                    if(throws) -" throws"
                     -" -> "
                     -it
                 }

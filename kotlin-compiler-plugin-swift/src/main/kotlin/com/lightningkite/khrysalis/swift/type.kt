@@ -4,10 +4,12 @@ import com.lightningkite.khrysalis.analysis.resolvedReferenceTarget
 import com.lightningkite.khrysalis.analysis.resolvedType
 import com.lightningkite.khrysalis.util.forEachBetween
 import com.lightningkite.khrysalis.util.fqNameWithoutTypeArgs
+import com.lightningkite.khrysalis.util.parentOfType
 import org.jetbrains.kotlin.builtins.functions.FunctionClassDescriptor
 import org.jetbrains.kotlin.builtins.isFunctionType
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.lexer.KtTokens
+import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
 import org.jetbrains.kotlin.types.*
@@ -178,7 +180,11 @@ fun SwiftTranslator.registerType() {
                     },
                     between = { -", " }
                 )
-                -") -> "
+                -") "
+                if(desc.annotations.any { it.fqName?.asString()?.endsWith(".Throws") == true }) {
+                    -"throws "
+                }
+                -"-> "
                 -typedRule.arguments.last()
                 if (typedRule.isMarkedNullable) {
                     -')'
@@ -346,7 +352,13 @@ fun SwiftTranslator.registerType() {
                 },
                 between = { -", " }
             )
-        -") -> "
+        -") "
+        if(typedRule.parentOfType<KtTypeReference>()?.resolvedType?.annotations?.any { it.fqName?.asString()?.endsWith(".Throws") == true } == true) {
+            -"throws "
+        } else {
+            -"/*${typedRule.parentOfType<KtTypeReference>()?.resolvedType?.annotations?.joinToString { it.fqName?.asString() ?: "" }}*/"
+        }
+        -"-> "
         -typedRule.returnTypeReference
     }
 

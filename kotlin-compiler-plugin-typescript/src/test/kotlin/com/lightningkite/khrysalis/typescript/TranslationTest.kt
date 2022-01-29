@@ -17,7 +17,7 @@ class TranslationTest {
     companion object {
         @Parameterized.Parameters(name = "{0}")
         @JvmStatic
-        fun data(): Array<Array<String>> = File("../conversionTestData").list()!!.filter { it.startsWith("test") }.map { arrayOf(it) }.toTypedArray()
+        fun data(): Array<Array<String>> = File("../conversionTestData").list()!!.filter { it.startsWith("test") }.filter { !it.contains("codable", true) }.map { arrayOf(it) }.toTypedArray()
     }
 
     @Test

@@ -58,6 +58,16 @@ private fun CallableDescriptor.calculateSwiftParameterNames() {
     }
 }
 
+val KtElement.caught: Boolean get() = run {
+    var base: PsiElement? = this
+    while (base != null) {
+        if (base is KtTryExpression)
+            return@run true
+        base = base.parent
+    }
+    return@run false
+}
+
 val ValueParameterDescriptor.useName: Boolean
     get() = !this.name.isSpecial && ValueParameterDescriptor_useName[this] ?: run {
         this.containingDeclaration.calculateSwiftParameterNames()
@@ -104,6 +114,15 @@ data class VirtualFunction(
     val body: Any?
 )
 
+fun Template.fixTry(forElement: KtElement): Template {
+    val caught = forElement.caught
+
+    return when {
+        useOptionalThrows -> this.replace("try!", "try?")
+        caught -> this.replace("try!", "try")
+        else -> this
+    }
+}
 
 fun SwiftTranslator.registerFunction() {
 
@@ -125,7 +144,7 @@ fun SwiftTranslator.registerFunction() {
             between = { -", " }
         )
         -')'
-        if (typedRule.resolvedFunction?.annotations?.findAnnotation(FqName("kotlin.jvm.Throws")) != null) {
+        if (typedRule.resolvedFunction?.annotations?.any { it.fqName?.asString()?.endsWith(".Throws") == true } == true) {
             -" throws"
         }
         -" -> "
@@ -297,7 +316,7 @@ fun SwiftTranslator.registerFunction() {
         action: () -> Unit
     ) {
         val explicitTypeArgs = call.call.typeArgumentList != null
-        val needsTry = call.candidateDescriptor.annotations.hasAnnotation(FqName("kotlin.jvm.Throws"))
+        val needsTry = call.candidateDescriptor.annotations.any { it.fqName?.asString()?.endsWith(".Throws") == true }
         val needsExplicitReturn =
             explicitTypeArgs && call.resultingDescriptor.original.returnType?.contains { it.isTypeParameter() } == true
         val isExpression = (call.call.callElement as? KtExpression)?.actuallyCouldBeExpression == true
@@ -306,15 +325,7 @@ fun SwiftTranslator.registerFunction() {
             -'('
         }
         if (needsTry) {
-            val caught = run {
-                var base: PsiElement? = call.call.callElement
-                while (base != null) {
-                    if (base is KtTryExpression)
-                        return@run true
-                    base = base.parent
-                }
-                return@run false
-            }
+            val caught = call.call.callElement.caught
             if (isExpression) {
                 -"("
             }
@@ -338,6 +349,35 @@ fun SwiftTranslator.registerFunction() {
     }
 
     //lambda call
+    handle<KtCallExpression>(
+        condition = {
+            typedRule.calleeExpression
+                ?.let { it as? KtNameReferenceExpression}
+                ?.resolvedReferenceTarget
+                ?.let { it as? ValueDescriptor }
+                ?.type?.annotations
+                ?.any { it.fqName?.asString()?.endsWith(".Throws") == true } == true
+        },
+        priority = 20000,
+        action = {
+            val isExpression = typedRule.actuallyCouldBeExpression
+            val caught = typedRule.caught
+            if (isExpression) {
+                -"("
+            }
+            if (useOptionalThrows) {
+                -"try? "
+            } else if (caught) {
+                -"try "
+            } else {
+                -"try! "
+            }
+            doSuper()
+            if (isExpression) {
+                -")"
+            }
+        }
+    )
     handle<KtDotQualifiedExpression>(
         condition = {
             (typedRule.selectorExpression as? KtCallExpression)?.resolvedCall?.candidateDescriptor is FunctionInvokeDescriptor
@@ -346,8 +386,24 @@ fun SwiftTranslator.registerFunction() {
         action = {
             val callExp = typedRule.selectorExpression as KtCallExpression
             val nre = callExp.calleeExpression as KtNameReferenceExpression
-            val f = callExp.resolvedCall!!.candidateDescriptor as FunctionDescriptor
+            val f = callExp.resolvedCall!!.candidateDescriptor as FunctionInvokeDescriptor
+            val needsTry = typedRule.receiverExpression.resolvedExpressionTypeInfo?.type?.annotations
+                ?.any { it.fqName?.asString()?.endsWith(".Throws") == true } == true
+            val isExpression = typedRule.actuallyCouldBeExpression
 
+            if (needsTry) {
+                val caught = typedRule.caught
+                if (isExpression) {
+                    -"("
+                }
+                if (useOptionalThrows) {
+                    -"try? "
+                } else if (caught) {
+                    -"try "
+                } else {
+                    -"try! "
+                }
+            }
             if (nre.text == "invoke") {
                 -typedRule.receiverExpression
             } else {
@@ -359,6 +415,53 @@ fun SwiftTranslator.registerFunction() {
                 on = f,
                 resolvedCall = callExp.resolvedCall!!
             )
+            if (needsTry && isExpression) {
+                -")"
+            }
+        }
+    )
+    handle<KtSafeQualifiedExpression>(
+        condition = {
+            (typedRule.selectorExpression as? KtCallExpression)?.resolvedCall?.candidateDescriptor is FunctionInvokeDescriptor
+        },
+        priority = 2000,
+        action = {
+            val callExp = typedRule.selectorExpression as KtCallExpression
+            val nre = callExp.calleeExpression as KtNameReferenceExpression
+            val f = callExp.resolvedCall!!.candidateDescriptor as FunctionDescriptor
+            val needsTry = typedRule.receiverExpression.resolvedExpressionTypeInfo?.type?.annotations
+                ?.any { it.fqName?.asString()?.endsWith(".Throws") == true } == true
+            val isExpression = typedRule.actuallyCouldBeExpression
+
+            if (needsTry) {
+                val caught = typedRule.caught
+                if (isExpression) {
+                    -"("
+                }
+                if (useOptionalThrows) {
+                    -"try? "
+                } else if (caught) {
+                    -"try "
+                } else {
+                    -"try! "
+                }
+            }
+
+            if (nre.text == "invoke") {
+                -typedRule.receiverExpression
+            } else {
+                -typedRule.receiverExpression
+                -'.'
+                -nre
+            }
+            -'?'
+            -ArgumentsList(
+                on = f,
+                resolvedCall = callExp.resolvedCall!!
+            )
+            if (needsTry && isExpression) {
+                -")"
+            }
         }
     )
 
@@ -541,7 +644,7 @@ fun SwiftTranslator.registerFunction() {
 
             emitTemplate(
                 requiresWrapping = typedRule.actuallyCouldBeExpression,
-                template = rule.template,
+                template = rule.template.fixTry(typedRule),
                 receiver = typedRule.left,
                 dispatchReceiver = typedRule.operationReference.getTsReceiver() ?: typedRule.left,
                 allParameters = typedRule.right,
@@ -569,7 +672,7 @@ fun SwiftTranslator.registerFunction() {
 
             emitTemplate(
                 requiresWrapping = typedRule.actuallyCouldBeExpression,
-                template = rule.template,
+                template = rule.template.fixTry(typedRule),
                 receiver = if (hasNewlineBeforeAccess(typedRule) && templateIsThisDot) listOf(
                     typedRule.receiverExpression,
                     "\n"
@@ -604,12 +707,12 @@ fun SwiftTranslator.registerFunction() {
             nullWrapAction(this@registerFunction, typedRule) { rec, mode ->
                 emitTemplate(
                     requiresWrapping = typedRule.actuallyCouldBeExpression,
-                    template = if (mode == AccessMode.QUEST_DOT)
+                    template = (if (mode == AccessMode.QUEST_DOT)
                         rule.template.copy(parts = rule.template.parts.toMutableList().apply {
                             this[1] =
                                 (this[1] as TemplatePart.Text).let { it.copy("?" + (if (hasNewlineBeforeAccess(typedRule)) "\n" else "") + it.string) }
                         })
-                    else rule.template,
+                    else rule.template).fixTry(typedRule),
                     receiver = if (hasNewlineBeforeAccess(typedRule) && mode == AccessMode.PLAIN_DOT) listOf(
                         rec,
                         "\n"
@@ -643,7 +746,7 @@ fun SwiftTranslator.registerFunction() {
 
             emitTemplate(
                 requiresWrapping = typedRule.actuallyCouldBeExpression,
-                template = rule.template,
+                template = rule.template.fixTry(typedRule),
                 receiver = nre.getTsReceiver(),
                 dispatchReceiver = nre.getTsReceiver(),
                 allParameters = ArrayList<Any?>().apply {

@@ -102,6 +102,11 @@ fun SwiftTranslator.registerClass() {
                     it + listOf("KStringable")
                 } else it
             }
+            .let {
+                if (on.hasCodableAnnotation && !on.implementsKotlinCodable) {
+                    it + listOf("Codable")
+                } else it
+            }
             .takeUnless { it.isEmpty() }?.let {
                 -" : "
                 it.forEachBetween(
@@ -271,11 +276,7 @@ fun SwiftTranslator.registerClass() {
         }
         handleConstructor(this, parentClassName, this@registerClass)
 
-        if (typedRule.superTypeListEntries
-                .mapNotNull { it as? KtSuperTypeEntry }
-                .any { it.typeReference?.resolvedType?.fqNameWithoutTypeArgs == "com.lightningkite.khrysalis.Codable" } ||
-            typedRule.annotationEntries.any { it.resolvedAnnotation?.type?.fqNameWithoutTypeArgs == "kotlinx.serialization.Serializable" && it.valueArguments.isEmpty()}
-        ) {
+        if (typedRule.shouldGenerateCodable) {
             -"convenience required public init(from decoder: Decoder) throws {\n"
             -"let values = try decoder.container(keyedBy: CodingKeys.self)\n"
             -"self.init(\n"
@@ -1042,3 +1043,9 @@ fun KtElement.addPostAction(action: () -> Unit) {
 
 
 fun KtClass.isSimpleEnum() = isEnum() && body?.enumEntries?.all { !it.hasInitializer() && it.body == null } == true
+
+val KtClassOrObject.shouldGenerateCodable: Boolean get() = implementsKotlinCodable || hasCodableAnnotation
+val KtClassOrObject.implementsKotlinCodable: Boolean get() = superTypeListEntries
+    .mapNotNull { it as? KtSuperTypeEntry }
+    .any { it.typeReference?.resolvedType?.fqNameWithoutTypeArgs == "com.lightningkite.khrysalis.Codable" }
+val KtClassOrObject.hasCodableAnnotation: Boolean get() = annotationEntries.any { it.resolvedAnnotation?.type?.fqNameWithoutTypeArgs == "kotlinx.serialization.Serializable" && it.valueArguments.isEmpty()}

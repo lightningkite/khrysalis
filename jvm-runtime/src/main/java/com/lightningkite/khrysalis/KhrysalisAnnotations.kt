@@ -1,6 +1,7 @@
 package com.lightningkite.khrysalis
 
 import java.lang.ref.WeakReference
+import kotlin.reflect.KClass
 import kotlin.reflect.KProperty
 
 
@@ -101,6 +102,10 @@ annotation class SwiftReturnType(val text: String)
 @Target(AnnotationTarget.FUNCTION)
 @Retention(AnnotationRetention.BINARY)
 annotation class SwiftExtensionWhere(val text: String)
+
+@Target(AnnotationTarget.FUNCTION, AnnotationTarget.TYPE, AnnotationTarget.VALUE_PARAMETER)
+@Retention(AnnotationRetention.BINARY)
+annotation class Throws(vararg val exceptionTypes: KClass<*>)
 
 @Target(
     AnnotationTarget.CLASS,

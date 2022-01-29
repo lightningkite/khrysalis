@@ -63,8 +63,8 @@ fun ExecuteFileTester.kotlinAndSwift(file: File): KasResult {
     val outFolder = swiftTestDir.resolve("Sources/testOut")
     val kotlinOut = kotlin(file) {
         commandLineProcessors = listOf(KotlinSwiftCLP())
-        compilerPlugins = listOf(KotlinSwiftCR())
-        pluginOptions = listOf(
+        compilerPlugins += listOf(KotlinSwiftCR())
+        pluginOptions += listOf(
             PluginOption(KotlinSwiftCLP.PLUGIN_ID, KotlinTranspileCLP.KEY_EQUIVALENTS_NAME, swiftTestDir.resolve("Sources/KhrysalisRuntime").toString()),
             PluginOption(KotlinSwiftCLP.PLUGIN_ID, KotlinTranspileCLP.KEY_OUTPUT_DIRECTORY_NAME, outFolder.toString()),
             PluginOption(KotlinSwiftCLP.PLUGIN_ID, KotlinTranspileCLP.KEY_COMMON_PACKAGE_NAME, file.readText().substringAfter("package ").substringBefore('\n').trim()),
