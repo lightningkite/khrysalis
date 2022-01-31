@@ -125,6 +125,13 @@ fun main() {
         println("Dunno what it is")
     }
 
+    //Safe let no default
+    thing2?.let {
+        println(it + 1)
+    } ?: thing2?.let {
+        println(it * 2)
+    }
+
     //Safe let single
     thing2?.let {
         if (subfunction3() == 0) {

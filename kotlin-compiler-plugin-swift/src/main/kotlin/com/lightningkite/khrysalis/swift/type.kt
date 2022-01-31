@@ -5,6 +5,7 @@ import com.lightningkite.khrysalis.analysis.resolvedType
 import com.lightningkite.khrysalis.util.forEachBetween
 import com.lightningkite.khrysalis.util.fqNameWithoutTypeArgs
 import com.lightningkite.khrysalis.util.parentOfType
+import com.lightningkite.khrysalis.util.throws
 import org.jetbrains.kotlin.builtins.functions.FunctionClassDescriptor
 import org.jetbrains.kotlin.builtins.isFunctionType
 import org.jetbrains.kotlin.descriptors.*
@@ -181,7 +182,7 @@ fun SwiftTranslator.registerType() {
                     between = { -", " }
                 )
                 -") "
-                if(desc.annotations.any { it.fqName?.asString()?.endsWith(".Throws") == true }) {
+                if(typedRule.throws) {
                     -"throws "
                 }
                 -"-> "
@@ -353,10 +354,8 @@ fun SwiftTranslator.registerType() {
                 between = { -", " }
             )
         -") "
-        if(typedRule.parentOfType<KtTypeReference>()?.resolvedType?.annotations?.any { it.fqName?.asString()?.endsWith(".Throws") == true } == true) {
+        if(typedRule.parentOfType<KtTypeReference>()?.resolvedType?.throws == true) {
             -"throws "
-        } else {
-            -"/*${typedRule.parentOfType<KtTypeReference>()?.resolvedType?.annotations?.joinToString { it.fqName?.asString() ?: "" }}*/"
         }
         -"-> "
         -typedRule.returnTypeReference

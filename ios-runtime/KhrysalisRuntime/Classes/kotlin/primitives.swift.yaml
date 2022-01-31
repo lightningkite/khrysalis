@@ -15,6 +15,13 @@
 - id: com.lightningkite.khrysalis.UntypedMap
   type: type
   template: NSDictionary
+
+- id: com.lightningkite.khrysalis.IsEquatable
+  type: type
+  template: Equatable
+- id: com.lightningkite.khrysalis.IsHashable
+  type: type
+  template: Hashable
 - id: com.lightningkite.khrysalis.IsCodable
   type: type
   template: Codable
@@ -24,31 +31,32 @@
 - id: com.lightningkite.khrysalis.IsCodableAndEquatable
   type: type
   template: Codable & Equatable
+- id: com.lightningkite.khrysalis.IsEquatableNotNull
+  type: type
+  template: Equatable
+- id: com.lightningkite.khrysalis.IsHashableNotNull
+  type: type
+  template: Hashable
+- id: com.lightningkite.khrysalis.IsCodableNotNull
+  type: type
+  template: Codable
+- id: com.lightningkite.khrysalis.IsCodableAndHashableNotNull
+  type: type
+  template: Codable & Hashable
+- id: com.lightningkite.khrysalis.IsCodableAndEquatableNotNull
+  type: type
+  template: Codable & Equatable
 - id: com.lightningkite.khrysalis.ComparableAndHashable
   type: type
   template: Hashable & Comparable
 - id: com.lightningkite.khrysalis.ComparableCodableAndHashable
   type: type
   template: Codable & Hashable & Comparable
-- id: com.lightningkite.khrysalis.AnyObject
-  type: type
-  template: AnyObject
-- id: com.lightningkite.khrysalis.AnyHashable
-  type: type
-  template: Hashable
-- id: com.lightningkite.khrysalis.AnyEquatable
-  type: type
-  template: Equatable
+
 - id: com.lightningkite.khrysalis.Hashable
   type: type
   template: Hashable
 - id: com.lightningkite.khrysalis.Equatable
-  type: type
-  template: Equatable
-- id: com.lightningkite.khrysalis.IsHashable
-  type: type
-  template: Hashable
-- id: com.lightningkite.khrysalis.IsEquatable
   type: type
   template: Equatable
 - id: com.lightningkite.khrysalis.SomeEnum

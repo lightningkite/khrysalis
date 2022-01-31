@@ -22,7 +22,10 @@ class Box<T>(val value: T) {
     fun <B> map(mapper: (T)->B): Box<B> = Box(mapper(value))
 }
 
+fun starTyped(testFunction: ()->Box<*>) {}
+
 fun main() {
     println("Hello")
     Box(32).map { it.toString() }
+    starTyped { Box(32) }
 }

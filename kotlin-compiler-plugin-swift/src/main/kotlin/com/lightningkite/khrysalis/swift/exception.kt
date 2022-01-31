@@ -11,6 +11,7 @@ import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.types.isNullable
 import com.lightningkite.khrysalis.analysis.*
+import com.lightningkite.khrysalis.util.throws
 
 private val useOptionalThrowsTL = ThreadLocal<Boolean>()
 var useOptionalThrows: Boolean
@@ -26,7 +27,7 @@ fun SwiftTranslator.registerException() {
                     typedRule.tryBlock.statements.singleOrNull()?.let{ contents ->
                             (contents as? KtQualifiedExpression)?.selectorExpression as? KtCallExpression ?:
                             contents as? KtCallExpression
-                    }?.let { it.resolvedCall?.candidateDescriptor?.annotations?.hasAnnotation(FqName("kotlin.jvm.Throws")) } == true &&
+                    }?.resolvedCall?.candidateDescriptor?.throws == true &&
                     (typedRule.catchClauses.singleOrNull()?.catchBody as? KtBlockExpression)?.statements?.singleOrNull().let {
                         it is KtConstantExpression && it.text == "null"
                     }

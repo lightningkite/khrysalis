@@ -12,6 +12,15 @@ fun failableAction(state: Boolean = true) {
     }
 }
 
+@Throws(IllegalArgumentException::class)
+fun maybeFails(state: Boolean = true) {
+    if (state) {
+        println("Be on then")
+    } else {
+        throw IllegalArgumentException("I won't do that for you.  You said no to state.")
+    }
+}
+
 fun hasFailableLambda(action: (@Throws(IllegalArgumentException::class) ()->Unit)) {
     try {
         action()
@@ -61,6 +70,7 @@ fun main() {
         if(testValue > 0) {
             throw IllegalStateException()
         }
+        maybeFails(false)
         println("Hello!")
     }
 

@@ -8,12 +8,14 @@ import org.jetbrains.kotlin.name.Name
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.resolve.constants.StringValue
 import com.lightningkite.khrysalis.analysis.*
+import com.lightningkite.khrysalis.util.throws
+import org.jetbrains.kotlin.types.typeUtil.replaceArgumentsByParametersWith
 
 fun SwiftTranslator.registerLambda() {
     handle<KtFunctionLiteral> {
         val resolved = typedRule.resolvedFunction!!
-        val throws = typedRule.resolvedExpectedExpressionType?.annotations?.any { it.fqName?.asString()?.endsWith(".Throws") == true } == true
-                || typedRule.resolvedFunction?.annotations?.any { it.fqName?.asString()?.endsWith(".Throws") == true } == true
+        val throws = typedRule.resolvedExpectedExpressionType?.throws == true
+                || typedRule.resolvedFunction?.throws == true
         val reet = typedRule.resolvedExpectedExpressionType
             ?: (typedRule.parent as? KtLambdaExpression)?.resolvedExpectedExpressionType
             ?: ((typedRule.parent as? KtLambdaExpression)?.parent as? KtParameter)?.resolvedValueParameter?.type
@@ -76,7 +78,6 @@ fun SwiftTranslator.registerLambda() {
                         } else {
                             -it.name.asString().safeSwiftIdentifier()
                         }
-//                        -(typedRule.valueParameters.getOrNull(index)?.typeReference ?: betterParameterTypes?.getOrNull(index) ?: it.type)
                         (typedRule.valueParameters.getOrNull(index)?.typeReference)?.let {
                             if (it.resolvedType?.let { replacements.getType(it)?.protocol } != true) {
                                 -": "

@@ -10,11 +10,13 @@
 
 - id: kotlin.Comparator
   type: type
+  isFunctionType: true
   template:
     pattern: TypedComparator<~T0~>
     imports: [KhrysalisRuntime]
 - id: java.util.Comparator
   type: type
+  isFunctionType: true
   template: 
     pattern: TypedComparator<~T0~>
     imports: [KhrysalisRuntime]

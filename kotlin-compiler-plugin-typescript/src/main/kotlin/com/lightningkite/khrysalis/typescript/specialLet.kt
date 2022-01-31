@@ -6,6 +6,7 @@ import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 import com.lightningkite.khrysalis.analysis.*
+import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
 
 data class SafeLetChain(
     val outermost: KtExpression,
@@ -125,7 +126,7 @@ fun TypescriptTranslator.registerSpecialLet() {
         priority = 20_000
     ) {
         val entries = ArrayList<Pair<KtExpression, KtLambdaExpression>>()
-        val default: KtExpression? = typedRule.right
+        val default: KtExpression? = if(((typedRule.right as? KtSafeQualifiedExpression)?.selectorExpression as? KtCallExpression)?.resolvedCall?.resultingDescriptor?.fqNameOrNull()?.asString() == "kotlin.let") null else typedRule.right
 
         var current = typedRule
         outer@ while (true) {

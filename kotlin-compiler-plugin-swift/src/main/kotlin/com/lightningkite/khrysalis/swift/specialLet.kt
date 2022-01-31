@@ -112,7 +112,7 @@ fun SwiftTranslator.registerSpecialLet() {
         priority = 20_000
     ) {
         val entries = ArrayList<Pair<KtExpression, KtLambdaExpression>>()
-        val default: KtExpression? = typedRule.right
+        val default: KtExpression? = if(((typedRule.right as? KtSafeQualifiedExpression)?.selectorExpression as? KtCallExpression)?.resolvedCall?.resultingDescriptor?.fqNameOrNull()?.asString() == "kotlin.let") null else typedRule.right
 
         var current = typedRule
         outer@ while (true) {

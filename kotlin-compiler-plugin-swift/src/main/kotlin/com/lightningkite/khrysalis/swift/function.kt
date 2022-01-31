@@ -25,6 +25,8 @@ import org.jetbrains.kotlin.builtins.isFunctionTypeOrSubtype
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.resolve.calls.components.isVararg
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
+import org.jetbrains.kotlin.resolve.scopes.HierarchicalScope
+import org.jetbrains.kotlin.resolve.scopes.LexicalScope
 import org.jetbrains.kotlin.types.typeUtil.isAny
 import org.jetbrains.kotlin.util.capitalizeDecapitalize.decapitalizeAsciiOnly
 
@@ -58,15 +60,18 @@ private fun CallableDescriptor.calculateSwiftParameterNames() {
     }
 }
 
-val KtElement.caught: Boolean get() = run {
-    var base: PsiElement? = this
-    while (base != null) {
-        if (base is KtTryExpression)
-            return@run true
-        base = base.parent
+val KtElement.caught: Boolean get() {
+    for(it in generateSequence<PsiElement>(this) { it.parent }) {
+        if(it is KtTryExpression) return true
+        if(it is KtFunction) {
+            if(it is KtFunctionLiteral) {
+                if(it.parentOfType<KtLambdaExpression>()?.resolvedExpectedExpressionType?.throws == true) return true
+            }
+            return it.resolvedFunction?.throws == true
+        }
     }
-    return@run false
-}
+    return false
+}/*= .takeWhile { it !is KtFunction }.any { it is KtTryExpression }*/
 
 val ValueParameterDescriptor.useName: Boolean
     get() = !this.name.isSpecial && ValueParameterDescriptor_useName[this] ?: run {
@@ -144,7 +149,7 @@ fun SwiftTranslator.registerFunction() {
             between = { -", " }
         )
         -')'
-        if (typedRule.resolvedFunction?.annotations?.any { it.fqName?.asString()?.endsWith(".Throws") == true } == true) {
+        if (typedRule.resolvedFunction?.throws == true) {
             -" throws"
         }
         -" -> "
@@ -281,7 +286,8 @@ fun SwiftTranslator.registerFunction() {
         -typedRule.nameIdentifier
         typedRule.typeReference?.let {
             -": "
-            if (it.resolvedType?.constructor?.declarationDescriptor is FunctionClassDescriptor) {
+            val typeReplacement = it.resolvedType?.let { replacements.getType(it) }
+            if (it.resolvedType?.isMarkedNullable != true && (it.resolvedType?.constructor?.declarationDescriptor is FunctionClassDescriptor || typeReplacement?.isFunctionType == true)) {
                 -"@escaping "
             }
             if (typedRule.resolvedValueParameter?.annotations?.let {
@@ -316,7 +322,7 @@ fun SwiftTranslator.registerFunction() {
         action: () -> Unit
     ) {
         val explicitTypeArgs = call.call.typeArgumentList != null
-        val needsTry = call.candidateDescriptor.annotations.any { it.fqName?.asString()?.endsWith(".Throws") == true }
+        val needsTry = call.candidateDescriptor.throws == true
         val needsExplicitReturn =
             explicitTypeArgs && call.resultingDescriptor.original.returnType?.contains { it.isTypeParameter() } == true
         val isExpression = (call.call.callElement as? KtExpression)?.actuallyCouldBeExpression == true
@@ -355,8 +361,7 @@ fun SwiftTranslator.registerFunction() {
                 ?.let { it as? KtNameReferenceExpression}
                 ?.resolvedReferenceTarget
                 ?.let { it as? ValueDescriptor }
-                ?.type?.annotations
-                ?.any { it.fqName?.asString()?.endsWith(".Throws") == true } == true
+                ?.type?.throws == true
         },
         priority = 20000,
         action = {
@@ -387,8 +392,7 @@ fun SwiftTranslator.registerFunction() {
             val callExp = typedRule.selectorExpression as KtCallExpression
             val nre = callExp.calleeExpression as KtNameReferenceExpression
             val f = callExp.resolvedCall!!.candidateDescriptor as FunctionInvokeDescriptor
-            val needsTry = typedRule.receiverExpression.resolvedExpressionTypeInfo?.type?.annotations
-                ?.any { it.fqName?.asString()?.endsWith(".Throws") == true } == true
+            val needsTry = typedRule.receiverExpression.resolvedExpressionTypeInfo?.type?.throws == true
             val isExpression = typedRule.actuallyCouldBeExpression
 
             if (needsTry) {
@@ -429,8 +433,7 @@ fun SwiftTranslator.registerFunction() {
             val callExp = typedRule.selectorExpression as KtCallExpression
             val nre = callExp.calleeExpression as KtNameReferenceExpression
             val f = callExp.resolvedCall!!.candidateDescriptor as FunctionDescriptor
-            val needsTry = typedRule.receiverExpression.resolvedExpressionTypeInfo?.type?.annotations
-                ?.any { it.fqName?.asString()?.endsWith(".Throws") == true } == true
+            val needsTry = typedRule.receiverExpression.resolvedExpressionTypeInfo?.type?.throws == true
             val isExpression = typedRule.actuallyCouldBeExpression
 
             if (needsTry) {
