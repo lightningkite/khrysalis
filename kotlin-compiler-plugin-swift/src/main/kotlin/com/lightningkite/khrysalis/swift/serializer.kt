@@ -6,6 +6,7 @@ import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
 import com.lightningkite.khrysalis.analysis.*
 import com.lightningkite.khrysalis.util.fqNameWithoutTypeArgs
+import com.lightningkite.khrysalis.util.satisfies
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.descriptors.PropertyDescriptor
 import org.jetbrains.kotlin.resolve.descriptorUtil.getSuperClassNotAny
@@ -13,7 +14,7 @@ import org.jetbrains.kotlin.resolve.descriptorUtil.getSuperClassNotAny
 fun SwiftTranslator.registerSerializer() {
     handle<KtExpression>(
         condition = {
-            typedRule.resolvedExpectedExpressionType?.fqNameWithoutTypeArgs == "kotlinx.serialization.KSerializer"
+            typedRule.resolvedExpressionTypeInfo?.type?.satisfies("kotlinx.serialization.KSerializer") == true
         },
         hierarchyHeight = 10000,
         priority = 99_999

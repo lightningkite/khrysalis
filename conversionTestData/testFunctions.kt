@@ -20,7 +20,16 @@ fun varargFunction(vararg numbers: Int){
     }
 }
 
+fun TestClass.Companion.companionExtension() {
+    println("Companion extension")
+}
+
 class TestClass {
+    companion object {
+        fun companionMember() {
+            println("Hi!")
+        }
+    }
     var member: Int? = null
     var member2: Int = 1
     fun chain(): TestClass {
@@ -213,6 +222,11 @@ fun main(){
     box.ext3()
     GenericBox(listOf(1, 2, 3)).ext4()
     GenericBox({ 42 }).ext5()
+
+    TestClass.companionExtension()
+    TestClass.Companion.companionExtension()
+    TestClass.companionMember()
+    TestClass.Companion.companionMember()
 }
 
 val anotherThing = 2

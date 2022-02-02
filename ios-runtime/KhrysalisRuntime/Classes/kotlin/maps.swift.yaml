@@ -2,7 +2,12 @@
 # Maps
 - id: kotlin.collections.Map
   type: type
+  typeArgumentNames: [Key, Value]
   template: Dictionary<~T0~, ~T1~>
+
+- id: kotlin.collections.Map.Entry
+  type: type
+  template: '(key: ~T0~, value: ~T1~)'
 
 - id: kotlin.collections.HashMap
   type: type
@@ -26,7 +31,7 @@
   typeArgumentRequirements:
     0: primitive
   hasExplicitTypeArguments: true
-  template: "dictionaryOf(~*~) as Dictionary<~T0~, ~T1~>"
+  template: "(dictionaryOf(~*~) as Dictionary<~T0~, ~T1~>)"
 - id: kotlin.collections.mapOf
   type: call
   template: "dictionaryOf(~*~)"
@@ -34,7 +39,7 @@
 - id: kotlin.collections.mutableMapOf
   type: call
   hasExplicitTypeArguments: true
-  template: "dictionaryOf(~*~) as Dictionary<~T0~, ~T1~>"
+  template: "(dictionaryOf(~*~) as Dictionary<~T0~, ~T1~>)"
 - id: kotlin.collections.mutableMapOf
   type: call
   template: "dictionaryOf(~*~)"
@@ -46,7 +51,7 @@
 - id: kotlin.collections.hashMapOf
   type: call
   hasExplicitTypeArguments: true
-  template: "dictionaryOf(~*~) as Dictionary<~T0~, ~T1~>"
+  template: "(dictionaryOf(~*~) as Dictionary<~T0~, ~T1~>)"
 - id: kotlin.collections.hashMapOf
   type: call
   template: "dictionaryOf(~*~)"
@@ -112,3 +117,22 @@
 - id: kotlin.collections.Map.entries
   type: get
   template: ~this~
+
+- id: kotlin.collections.plus
+  receiver: Map
+  arguments: [Pair]
+  type: call
+  template: (~this~ + dictionaryOf(~0~))
+
+- id: kotlin.collections.toList
+  type: call
+  receiver: kotlin.collections.Map
+  template:
+    pattern: "~this~.map { Pair($0.key, $0.value) }"
+    imports: [KhrysalisRuntime]
+
+- id: kotlin.collections.toPair
+  type: call
+  template:
+    pattern: 'Pair(from: ~this~)'
+    imports: [KhrysalisRuntime]

@@ -99,4 +99,10 @@ fun main(vararg args: String){
     println(myMap[0] ?: "nah")
     myMap.getOrPut(3) { 4 }
     println(myMap.entries.sortedBy { it.key }.joinToString { it.key.toString() + ":" + it.value.toString() })
+
+    listOf(listOf(1, 2), listOf(3, 4)).flatten()
+    mapOf(1 to 2).toList().map { it.first }
+
+    val firstEntry: Map.Entry<Int, Int> = mapOf(1 to 2).entries.first()
+    val anotherMap = mapOf(1 to 2) + (3 to 4)
 }

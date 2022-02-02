@@ -17,7 +17,7 @@
 - id: android.widget.Button.setText
   type: call
   reflectiveName: "UIButton.setTitle"
-  template: '~this~.setTitle(~value~, for: .normal)'
+  template: '~this~.setTitle(~0~, for: .normal)'
 
 - id: android.widget.Button.text
   type: get

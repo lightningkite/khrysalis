@@ -19,6 +19,4 @@ extension UUID: Comparable {
     public static func < (lhs: UUID, rhs: UUID) -> Bool {
         return lhs.uuidString < rhs.uuidString
     }
-    
-    
 }

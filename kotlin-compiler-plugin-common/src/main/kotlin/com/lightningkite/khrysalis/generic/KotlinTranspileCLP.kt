@@ -161,8 +161,9 @@ abstract class KotlinTranspileCR : ComponentRegistrar {
 }
 
 fun KtFile.outputRelativePath(packagePrefix: String?, outputExtension: String): String = packageFqName.asString()
-    .removePrefix(packagePrefix ?: "".replace('.', '/'))
-    .trim('.')
+    .replace('.', '/')
+    .removePrefix((packagePrefix ?: "").replace('.', '/'))
+    .trim('/')
     .let { if(it.isBlank()) it else "$it/" }
     .plus(name.removeSuffix(".kt").plus(".$outputExtension"))
 

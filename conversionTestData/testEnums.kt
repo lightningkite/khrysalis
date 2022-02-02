@@ -36,8 +36,11 @@ fun main(){
         println(simp.name)
         println(Suits.valueOf(simp.name).name)
     }
+    println(AdvancedSuits.SPADES.black)
+    println(AdvancedSuits.CLUBS.black)
     for(simp in AdvancedSuits.values()){
         println(simp.name)
+        println(simp.black)
         simp.printSelf(3)
         println(AdvancedSuits.valueOf(simp.name).name)
     }

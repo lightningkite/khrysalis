@@ -4,6 +4,14 @@
     pattern: CLLocation
     imports: [CoreLocation]
 
+- id: android.location.Location.latitude
+  type: get
+  template: ~this~.coordinate.latitude
+
+- id: android.location.Location.longitude
+  type: get
+  template: ~this~.coordinate.longitude
+
 - id: android.location.Location.accuracy
   type: get
   template: ~this~.horizontalAccuracy

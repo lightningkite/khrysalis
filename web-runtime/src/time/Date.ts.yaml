@@ -93,3 +93,5 @@
 - { type: call, id: java.time.format.DateTimeFormatter.ofLocalizedDate, template: { pattern: "ofLocalizedDate(~*~)", imports: { "ofLocalizedDate": "@lightningkite/khrysalis-runtime" } } }
 - { type: call, id: java.time.format.DateTimeFormatter.ofLocalizedTime, template: { pattern: "ofLocalizedTime(~*~)", imports: { "ofLocalizedTime": "@lightningkite/khrysalis-runtime" } } }
 - { type: call, id: java.time.format.DateTimeFormatter.ofLocalizedDateTime, template: { pattern: "ofLocalizedDateTime(~*~)", imports: { "ofLocalizedDateTime": "@lightningkite/khrysalis-runtime" } } }
+
+- { type: call, id: java.time.format.DateTimeFormatter.withZone, template: '~this~' }

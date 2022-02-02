@@ -4,18 +4,36 @@
 
 import Foundation
 
-public extension CaseIterable {
+public protocol KotlinEnum: CaseIterable, Equatable {
+    static var caseNames: Array<String> { get }
+}
+
+public extension CaseIterable where Self: Equatable {
+    var ordinal: Int { return Array(Self.allCases).firstIndex(of: self)! }
+}
+
+public extension KotlinEnum {
     /// A collection of all values of this type.
     static func values() -> Array<Self> {
         return Array(self.allCases)
     }
     static func valueOf(_ value: String) -> Self {
-        return values().find { "\($0)" == value }!
+        if let index = Self.caseNames.firstIndex(of: value) {
+            return Array(Self.allCases)[index]
+        } else {
+            return Self.allCases.first!
+        }
     }
-}
+    var name: String { return Self.caseNames[self.ordinal] }
 
-public protocol StringEnum {
-    var rawValue: String { get }
+    init(from decoder: Decoder) throws {
+        self = Self.valueOf(try decoder.singleValueContainer().decode(String.self))
+    }
+
+    func encode(to encoder: Encoder) throws {
+        var svc = encoder.singleValueContainer()
+        try svc.encode(name)
+    }
 }
 
 public class WeakReference<T: AnyObject> {

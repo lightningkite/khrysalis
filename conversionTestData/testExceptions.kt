@@ -21,6 +21,10 @@ fun maybeFails(state: Boolean = true) {
     }
 }
 
+fun Throwable.testExtension() {
+    println("Hello from throwable extension!")
+}
+
 fun hasFailableLambda(action: (@Throws(IllegalArgumentException::class) ()->Unit)) {
     try {
         action()
@@ -74,4 +78,5 @@ fun main() {
         println("Hello!")
     }
 
+    IllegalStateException().testExtension()
 }

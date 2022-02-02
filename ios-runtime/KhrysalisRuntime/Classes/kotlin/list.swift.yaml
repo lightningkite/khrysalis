@@ -50,6 +50,7 @@
 
 - id: kotlin.collections.List
   type: type
+  typeArgumentNames: [Element]
   template: Array<~T0~>
 - id: kotlin.collections.List
   type: typeRef

@@ -1,15 +1,5 @@
 ---
 
-- type: call
-  id: android.widget.Button.setEnabled
-  reflectiveName: "\\UIButton.isEnabled"
-  template: ~this~.isEnabled = ~0~
-
-- type: call
-  id: android.widget.Button.isEnabled
-  reflectiveName: "\\UIButton.isEnabled"
-  template: ~this~.isEnabled
-
 - type: get
   id: android.widget.ToggleButton.textOn
   reflectiveName: "UIButton.setTitle"
@@ -20,6 +10,11 @@
   reflectiveName: "UIButton.setTitle"
   template: '~this~.setTitle(~value~, for: .selected)'
 
+- type: call
+  id: android.widget.ToggleButton.setTextOn
+  reflectiveName: "UIButton.setTitle"
+  template: '~this~.setTitle(~0~, for: .selected)'
+
 - type: get
   id: android.widget.ToggleButton.textOff
   reflectiveName: "UIButton.setTitle"
@@ -29,6 +24,11 @@
   id: android.widget.ToggleButton.textOff
   reflectiveName: "UIButton.setTitle"
   template: '~this~.setTitle(~value~, for: .normal)'
+
+- type: call
+  id: android.widget.ToggleButton.setTextOff
+  reflectiveName: "UIButton.setTitle"
+  template: '~this~.setTitle(~0~, for: .normal)'
 
 - type: call
   id: android.view.View.performClick

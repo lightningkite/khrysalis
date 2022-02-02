@@ -3,6 +3,7 @@
 
 - id: kotlin.sequences.Sequence
   type: type
+  typeArgumentNames: [Element]
   template: Sequence
   protocol: true
 - id: kotlin.sequences.sequenceOf
@@ -64,7 +65,7 @@
   template: "~this~.filter({ x in !~0~(x) })"
 - id: kotlin.sequences.filterNotNull
   type: call
-  template: "~this~.compactMap({$0})"
+  template: "~this~.compactMap { $0 }"
 
 - id: kotlin.sequences.map
   type: call
@@ -78,6 +79,9 @@
 - id: kotlin.sequences.flatMap
   type: call
   template: "~this~.flatMap(~0~)"
+- id: kotlin.sequences.flatten
+  type: call
+  template: "~this~.flatMap { $0 }"
 - id: kotlin.sequences.mapNotNull
   type: call
   template: "~this~.compactMap(~0~)"
@@ -116,6 +120,9 @@
 - id: kotlin.sequences.associateBy
   type: call
   template: "Dictionary(~this~.map { it in (~0~(it), it) }, uniquingKeysWith: { (a, _) in a })"
+- id: kotlin.sequences.associateWith
+  type: call
+  template: "Dictionary(~this~.map { it in (it, ~0~(it)) }, uniquingKeysWith: { (a, _) in a })"
 
 - id: kotlin.sequences.toList
   type: call

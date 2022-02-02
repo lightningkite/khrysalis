@@ -114,6 +114,13 @@
     imports:
       flatMap: iter-tools-es
 
+- id: kotlin.sequences.flatten
+  type: call
+  template:
+    pattern: flatMap(x => x, ~this~)
+    imports:
+      flatMap: iter-tools-es
+
 - id: kotlin.sequences.filterIndexed
   type: call
   template:
@@ -212,6 +219,15 @@
     imports:
       map: iter-tools-es
 
+- id: kotlin.sequences.associateWith
+  type: call
+  typeArgumentRequirements:
+    0: primitive
+  template:
+    pattern: new Map(x => [x, (~0~)(x)])
+    imports:
+      map: iter-tools-es
+
 - id: kotlin.sequences.associate
   type: call
   template:
@@ -224,6 +240,14 @@
   type: call
   template:
     pattern: new EqualOverrideMap(x => [(~0~)(x), x])
+    imports:
+      map: iter-tools-es
+      EqualOverrideMap: '@lightningkite/khrysalis-runtime'
+
+- id: kotlin.sequences.associateWith
+  type: call
+  template:
+    pattern: new EqualOverrideMap(x => [x, (~0~)(x)])
     imports:
       map: iter-tools-es
       EqualOverrideMap: '@lightningkite/khrysalis-runtime'

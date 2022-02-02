@@ -21,6 +21,7 @@ fun SwiftTranslator.registerReceiver() {
     //Prepend 'this'
     handle<KtNameReferenceExpression>(
         condition = {
+            if((typedRule.parent as? KtQualifiedExpression)?.selectorExpression == typedRule) return@handle false
             val resolved = typedRule.resolvedCall ?: return@handle false
             when(resolved){
                 is VariableAsFunctionResolvedCall -> resolved.variableCall.getImplicitReceiverValue() != null
@@ -37,6 +38,7 @@ fun SwiftTranslator.registerReceiver() {
 
     handle<KtNameReferenceExpression>(
         condition = {
+            if((typedRule.parent as? KtQualifiedExpression)?.selectorExpression == typedRule) return@handle false
             val resolved = typedRule.resolvedCall ?: return@handle false
             val targetDescriptor =
                 resolved.dispatchReceiver?.type?.constructor?.declarationDescriptor as? ClassDescriptor

@@ -31,12 +31,21 @@ public extension Array {
         }
         return sum
     }
-    func sumByDouble(selector: (Element) -> Double)-> Double{
+    func sumByDouble(selector: (Element) -> Double) -> Double{
         var sum:Double = 0.0
         for item in self{
             sum += selector(item)
         }
         return sum
+    }
+    
+    func reduceOrNull(_ action: (Element, Element) -> Element) -> Element? {
+        if self.isEmpty { return nil }
+        var current = self[0]
+        for i in 1..<self.endIndex {
+            current = action(current, self[i])
+        }
+        return current
     }
 }
 

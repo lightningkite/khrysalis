@@ -33,18 +33,23 @@ fun TypescriptTranslator.registerIdentifiers(){
     )
     handle<KtNameReferenceExpression>(
         condition = {
+            if(typedRule.parent is KtUserType) return@handle false
             val resolved = typedRule.resolvedReferenceTarget ?: return@handle false
             resolved is ClassDescriptor && resolved.isCompanionObject && typedRule.text == "Companion"
         },
         priority = 1013,
         action = {
             out.addImport((typedRule.resolvedReferenceTarget!!))
-            -typedRule.resolvedReferenceTarget!!.containingDeclaration?.name?.identifier
-            -".Companion.INSTANCE"
+            if((typedRule.parent as? KtQualifiedExpression)?.selectorExpression != typedRule) {
+                -typedRule.resolvedReferenceTarget!!.containingDeclaration?.name?.identifier
+                -'.'
+            }
+            -"Companion.INSTANCE"
         }
     )
     handle<KtNameReferenceExpression>(
         condition = {
+            if(typedRule.parent is KtUserType) return@handle false
             val resolved = typedRule.resolvedReferenceTarget ?: return@handle false
             resolved is ClassDescriptor && resolved.isCompanionObject
         },
@@ -57,6 +62,7 @@ fun TypescriptTranslator.registerIdentifiers(){
     )
     handle<KtNameReferenceExpression>(
         condition = {
+            if(typedRule.parent is KtUserType) return@handle false
             //Use .INSTANCE in all cases EXCEPT pointing to another type
 
             // Condition: I am not a receiver pointing to another type

@@ -1,0 +1,4 @@
+- id: com.test.replacements.HasProperty.value
+  type: get
+  template: ~this~.value
+  reflectiveName: "\\HasProperty.value"

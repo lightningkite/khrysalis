@@ -30,4 +30,6 @@ fun main(vararg args: String) {
     val pt: Point = j.decodeFromString("""{"x": 1.0, "y": 2.0}""")
     j.encodeToString(listOf(Point(x = 1.0, y = 2.0)))
     val pts: List<Point> = j.decodeFromString("""[{"x": 1.0, "y": 2.0}]""")
+
+    val serializer = Point.serializer()
 }

@@ -610,7 +610,7 @@ fun SwiftTranslator.registerFunction() {
 
     //infix
     handle<KtBinaryExpression>(
-        condition = { typedRule.operationReference.getIdentifier() != null },
+        condition = { typedRule.operationReference.getIdentifier() != null && typedRule.operationReference.resolvedReferenceTarget is FunctionDescriptor },
         priority = 1_000,
         action = {
             val f = typedRule.operationReference.resolvedReferenceTarget as FunctionDescriptor

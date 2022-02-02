@@ -135,6 +135,7 @@ class KhrysalisPlugin : Plugin<Project> {
                     it.source(*project.swiftDependencies(iosBase).toList().toTypedArray())
                     it.doFirst {
                         c.incremental = false
+                        println("Preparing ${c.name} for translation...")
                         c.plugin("swift") {
                             "outputDirectory" set iosSrc.absolutePath
                             "projName" set projectName
@@ -152,6 +153,7 @@ class KhrysalisPlugin : Plugin<Project> {
                     it.source(webBase.resolve("node_modules"))
                     it.doFirst {
                         c.incremental = false
+                        println("Preparing ${c.name} for translation...")
                         c.plugin("typescript") {
                             "outputDirectory" set webSrc.absolutePath
                             "projName" set projectName

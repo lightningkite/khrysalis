@@ -175,6 +175,18 @@
   type: type
   template: '[~T0~, ~T1~]'
 
+- id: kotlin.collections.toPair
+  type: type
+  template: '[~T0~, ~T1~]'
+
+- id: kotlin.collections.toList
+  type: call
+  receiver: kotlin.collections.Map
+  template:
+    pattern: "toArray(~this~.entries())"
+    imports:
+      toArray: iter-tools-es
+
 - id: kotlin.collections.MutableMap.MutableEntry
   type: type
   template: '[~T0~, ~T1~]'

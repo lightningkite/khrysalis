@@ -62,11 +62,8 @@
 - id: com.lightningkite.khrysalis.SomeEnum
   type: type
   template:
-    pattern: "StringEnum"
+    pattern: "KotlinEnum"
     imports: [KhrysalisRuntime]
-- id: kotlin.Enum.name
-  type: get
-  template: "~this~.rawValue"
 
 - id: kotlin.Any.hashCode
   type: call

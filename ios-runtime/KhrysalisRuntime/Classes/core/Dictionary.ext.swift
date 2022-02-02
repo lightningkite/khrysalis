@@ -43,7 +43,7 @@ public extension Dictionary {
         }
     }
 
-    func minus(_ key:Key) -> Dictionary {
+    func minus(key :Key) -> Dictionary {
         var temp = self
         temp.removeValue(forKey: key)
         return temp

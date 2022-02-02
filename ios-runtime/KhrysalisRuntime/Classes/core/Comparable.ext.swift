@@ -68,3 +68,10 @@ public extension ComparisonResult {
         }
     }
 }
+
+
+extension Bool: Comparable {
+    public static func < (lhs: Bool, rhs: Bool) -> Bool {
+        return rhs && !lhs
+    }
+}

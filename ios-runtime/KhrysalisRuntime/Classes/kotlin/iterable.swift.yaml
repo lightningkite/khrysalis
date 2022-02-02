@@ -3,10 +3,12 @@
 
 - id: kotlin.collections.Iterable
   type: type
+  typeArgumentNames: [Element]
   template: Sequence
   protocol: true
 - id: java.lang.Iterable
   type: type
+  typeArgumentNames: [Element]
   template: Sequence
   protocol: true
 
@@ -73,6 +75,9 @@
 - id: kotlin.collections.flatMap
   type: call
   template: "~this~.flatMap(~0~)"
+- id: kotlin.collections.flatten
+  type: call
+  template: "~this~.flatMap { $0 }"
 - id: kotlin.collections.mapNotNull
   type: call
   template: "~this~.compactMap(~0~)"
@@ -119,6 +124,9 @@
 - id: kotlin.collections.associateBy
   type: call
   template: "Dictionary(~this~.map { it in (~0~(it), it) }, uniquingKeysWith: { (a, _) in a })"
+- id: kotlin.collections.associateWith
+  type: call
+  template: "Dictionary(~this~.map { it in (it, ~0~(it)) }, uniquingKeysWith: { (a, _) in a })"
 
 - id: kotlin.collections.toList
   type: call

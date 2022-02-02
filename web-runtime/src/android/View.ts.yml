@@ -187,6 +187,18 @@
   template: (!~this~.disabled)
 - id: android.view.View.isEnabled
   type: set
+  reflectiveName:
+    pattern: 'elementEnabled'
+    imports:
+      elementEnabled: rxjs-plus
+  template: ~this~.disabled = !(~value~)
+
+- id: android.view.View.setEnabled
+  type: call
+  reflectiveName:
+    pattern: 'elementEnabled'
+    imports:
+      elementEnabled: rxjs-plus
   template: ~this~.disabled = !(~0~)
 
 

@@ -1,6 +1,7 @@
 ---
 
 - { type: type, id: java.time.format.DateTimeFormatter, template: DateFormatter }
+- { type: call, id: java.time.format.DateTimeFormatter.ofLocalizedDateTime, arguments: ['*'], template: { pattern: 'DateFormatter(bothStyles: ~0~)', imports: [ KhrysalisRuntime ] } }
 - { type: call, id: java.time.format.DateTimeFormatter.ofLocalizedDateTime, template: { pattern: 'DateFormatter(dateStyle: ~0~, timeStyle: ~1~)', imports: [ KhrysalisRuntime ] } }
 - { type: call, id: java.time.format.DateTimeFormatter.ofLocalizedTime, template: { pattern: 'DateFormatter(timeStyle: ~0~)', imports: [ KhrysalisRuntime ] } }
 - { type: call, id: java.time.format.DateTimeFormatter.ofLocalizedDate, template: { pattern: 'DateFormatter(dateStyle: ~0~)', imports: [ KhrysalisRuntime ] } }
@@ -20,6 +21,7 @@
 - { type: call, id: java.time.ZoneId.systemDefault, template: "TimeZone.current" }
 - { type: call, id: java.time.ZoneId.getDefault, template: "TimeZone.current" }
 - { type: get, id: java.time.ZoneId.id, template: "~this~.identifier" }
+- { type: call, id: java.time.ZoneId.of, template: 'TimeZone(abbreviation: ~0~)!' }
 
 - { type: call, id: java.time.LocalDate.now, template: { pattern: LocalDate(), imports: [ KhrysalisRuntime ] } }
 - { type: call, id: java.time.LocalDateTime.now, template: { pattern: LocalDateTime(), imports: [ KhrysalisRuntime ] } }
@@ -49,6 +51,8 @@
 - { type: call, id: java.time.Duration.ofNanos, template: 'TimeInterval(~0~ / 1e9)' }
 - { type: get, id: java.time.Duration.seconds, template: 'Int(~this~)' }
 - { type: call, id: java.time.Duration.toMinutes, template: 'Int(~this~ / 60)' }
+- { type: call, id: java.time.Duration.toHours, template: 'Int(~this~ / 3600)' }
+- { type: call, id: java.time.Duration.toDays, template: 'Int(~this~ / 86400)' }
 - { type: call, id: java.time.Duration.between, template: '~0~.timeIntervalSince(~1~)' }
 
 - { type: call, id: java.time.LocalDate.of, arguments: [Int, Int, Int], template: { pattern: 'LocalDate(year: ~0~, month: ~1~, day: ~2~)', imports: [ KhrysalisRuntime ] } }
@@ -60,7 +64,8 @@
 - { type: call, id: java.time.LocalDateTime.of, arguments: [Int, Int, Int, Int, Int, Int, Int], template: { pattern: 'LocalDateTime(year: ~0~, month: ~1~, day: ~2~, hour: ~3~, minute: ~4~, second: ~5~, nanosecond: ~6~)', imports: [ KhrysalisRuntime ] } }
 - { type: call, id: java.time.LocalDateTime.of, arguments: [LocalDate, LocalTime], template: { pattern: 'LocalDateTime(localDate: ~0~, localTime: ~1~)', imports: [ KhrysalisRuntime ] } }
 - { type: call, id: java.time.ZonedDateTime.of, arguments: [LocalDate, LocalTime, ZoneId], template: { pattern: 'ZonedDateTime(timeZone: ~2~, localDate: ~0~, localTime: ~1~)', imports: [ KhrysalisRuntime ] } }
-- { type: call, id: java.time.ZonedDateTime.of, template: { pattern: ZonedDateTime(), imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.ZonedDateTime.of, arguments: [LocalDateTime, ZoneId], template: { pattern: 'ZonedDateTime(timeZone: ~1~, localDateTime: ~0~)', imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.ZonedDateTime.ofInstant, arguments: [Instant, ZoneId], template: { pattern: 'ZonedDateTime(timeZone: ~1~, from: ~0~)', imports: [ KhrysalisRuntime ] } }
 
 - { type: call, id: java.time.ZonedDateTime.withYear, template: { pattern: "~this~.with(year: ~0~)", imports: [ KhrysalisRuntime ] } }
 - { type: call, id: java.time.ZonedDateTime.withMonth, template: { pattern: "~this~.with(month: ~0~)", imports: [ KhrysalisRuntime ] } }
@@ -197,6 +202,8 @@
 
 - { type: call, id: java.time.Instant.parse, template: "ISO8601DateFormatter().date(from: ~0~)" }
 - { type: call, id: java.time.Instant.plus, template: "~this~.addingTimeInterval(~0~)" }
+- { type: call, id: java.time.Instant.plusMillis, template: { pattern: "(~this~ + ~0~ / 1000)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.Instant.ofEpochSecond, template: "Date(timeIntervalSince1970: ~0~ / 1000.0)" }
 
 - { type: call, id: java.time.ZonedDateTime.truncatedTo, exactArgumentRequirements: {0: ChronoUnit.YEARS}, template: '~this~.truncatedToYear()' }
 - { type: call, id: java.time.ZonedDateTime.truncatedTo, exactArgumentRequirements: {0: ChronoUnit.MONTHS}, template: '~this~.truncatedToMonth()' }
@@ -214,4 +221,6 @@
 - { type: call, id: java.time.DayOfWeek.getDisplayName, exactArgumentRequirements: {0: TextStyle.SHORT}, template: 'DateFormatter().shortWeekdaySymbols[~this~ - 1]' }
 - { type: call, id: java.time.Month.values, template: 'Array(1...12)' }
 - { type: call, id: java.time.DayOfWeek.values, template: 'Array(1...7)' }
+
+- { type: call, id: java.time.format.DateTimeFormatter.format, template: '~0~.format(~this~)' }
 

@@ -58,7 +58,7 @@ fun SwiftTranslator.registerClass() {
         typedRule.superTypeListEntries
             .mapNotNull { it as? KtSuperTypeCallEntry }
             .map {
-                it.calleeExpression?.typeReference
+                it.calleeExpression.typeReference
             }
             .plus(
                 typedRule.superTypeListEntries
@@ -527,25 +527,22 @@ fun SwiftTranslator.registerClass() {
             -(typedRule.swiftVisibility() ?: "public")
             -" enum "
             -swiftTopLevelNameElement(typedRule)
-            -": String, StringEnum, Codable, Hashable, CaseIterable {\n"
+            -": KotlinEnum, Codable, Hashable, Comparable {\n"
             for (entry in typedRule.body?.enumEntries ?: listOf()) {
                 -"case "
                 -entry.nameIdentifier
-                (entry.annotationEntries
-                    .mapNotNull { it.resolvedAnnotation }
-                    .find { it.fqName?.asString()?.endsWith("JsonProperty") == true }
-                    ?.allValueArguments?.get(Name.identifier("value"))
-                    ?.value as? String
-                        )?.let {
-                        -" = "
-                        -"\"$it\""
-                    }
                 -"\n"
             }
-            -"\npublic init(from decoder: Decoder) throws {"
-            -"\n    self = try Self(rawValue: decoder.singleValueContainer().decode(RawValue.self)) ?? ."
-            -typedRule.body?.enumEntries?.first()?.name
-            -"\n}\n"
+            -"\npublic static let caseNames = ["
+            (typedRule.body?.enumEntries ?: listOf()).forEachBetween(
+                forItem =  {
+                    -'"'
+                    -it.nameIdentifier
+                    -'"'
+                },
+                between = { -", " }
+            )
+            -"]\n"
             //Constructor properties
             typedRule.primaryConstructorParameters
                 .filter { it.hasValOrVar() }
@@ -711,7 +708,7 @@ fun SwiftTranslator.registerClass() {
         condition = {
             val call = typedRule.resolvedCall ?: return@handle false
             if (call.resultingDescriptor !is FakeCallableDescriptorForObject) return@handle false
-            (call.getReturnType().constructor.declarationDescriptor as? ClassDescriptor)?.kind != ClassKind.ENUM_CLASS
+            (call.getReturnType().constructor.declarationDescriptor as? ClassDescriptor)?.kind.let { it != ClassKind.ENUM_CLASS && it != ClassKind.ENUM_ENTRY }
         },
         priority = 1000,
         action = {
@@ -725,7 +722,7 @@ fun SwiftTranslator.registerClass() {
             if (p.receiverExpression != typedRule) return@handle false
             val rec = p.resolvedCall?.let { it.dispatchReceiver ?: it.extensionReceiver } as? ClassValueReceiver
                 ?: return@handle false
-            (rec.type.constructor.declarationDescriptor as? ClassDescriptor)?.kind != ClassKind.ENUM_ENTRY
+            (rec.type.constructor.declarationDescriptor as? ClassDescriptor)?.kind.let { it != ClassKind.ENUM_CLASS && it != ClassKind.ENUM_ENTRY }
         },
         priority = 1_000,
         action = {
@@ -747,7 +744,7 @@ fun SwiftTranslator.registerClass() {
             if (p.receiverExpression != typedRule) return@handle false
             val rec = p.resolvedCall?.let { it.dispatchReceiver ?: it.extensionReceiver } as? ClassValueReceiver
                 ?: return@handle false
-            (rec.type.constructor.declarationDescriptor as? ClassDescriptor)?.kind != ClassKind.ENUM_ENTRY
+            (rec.type.constructor.declarationDescriptor as? ClassDescriptor)?.kind.let { it != ClassKind.ENUM_CLASS && it != ClassKind.ENUM_ENTRY }
         },
         priority = 1_000,
         action = {

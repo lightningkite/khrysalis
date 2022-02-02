@@ -49,7 +49,7 @@ public extension NSRegularExpression {
 }
 
 public extension String {
-    func matches(regex:NSRegularExpression)->Bool{
+    func matches(_ regex:NSRegularExpression)->Bool{
         let result = regex.matchEntire(input: self)
         return result != nil
     }

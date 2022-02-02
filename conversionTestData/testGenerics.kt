@@ -22,6 +22,8 @@ class Box<T>(val value: T) {
     fun <B> map(mapper: (T)->B): Box<B> = Box(mapper(value))
 }
 
+fun <T> List<T>.extensionOnList(): T? = this.firstOrNull()
+
 fun starTyped(testFunction: ()->Box<*>) {}
 
 fun main() {

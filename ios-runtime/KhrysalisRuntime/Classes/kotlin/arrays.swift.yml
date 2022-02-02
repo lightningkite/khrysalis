@@ -27,6 +27,7 @@
   template: Array<Character>
 - id: kotlin.Array
   type: type
+  typeArgumentNames: [Element]
   requiresMutable: true
   template: Array<~T0~>
 

@@ -1,0 +1,8 @@
+- id: android.graphics.Bitmap
+  type: type
+  template: UIImage
+
+- id: android.widget.ImageView.setImageBitmap
+  type: call
+  reflectiveName: '\\UIImageView.image'
+  template: '~this~.image = ~0~'

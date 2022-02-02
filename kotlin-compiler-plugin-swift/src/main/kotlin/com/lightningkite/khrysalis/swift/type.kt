@@ -39,7 +39,15 @@ private val primitiveTypes = setOf(
 
 fun KotlinType.isPrimitive() = fqNameWithoutTypeArgs in primitiveTypes
 data class BasicType(val type: KotlinType)
-data class KtUserTypeBasic(val type: KtSimpleNameExpression)
+data class KtUserTypeBasic(val type: KtElement) {
+    val resolvedReferenceTarget: DeclarationDescriptor? get() = when(type) {
+        is KtUserType -> type.referenceExpression?.resolvedReferenceTarget
+        is KtQualifiedExpression -> (type.selectorExpression as? KtReferenceExpression)?.resolvedReferenceTarget
+        is KtReferenceExpression -> type.resolvedReferenceTarget
+        is KtTypeReference -> type.resolvedType?.constructor?.declarationDescriptor
+        else -> null
+    }
+}
 data class SwiftExtensionStart(
     val forDescriptor: CallableDescriptor,
     val receiver: KtTypeReference?,
@@ -64,14 +72,14 @@ fun CallableDescriptor.worksAsSwiftConstraint(): Boolean {
     return extensionReceiverParameter?.type?.worksAsSwiftConstraint() != false
 }
 
-val knownTypeParameterNames = mapOf(
-    "kotlin.sequences.Sequence" to listOf("Element"),
-    "kotlin.collections.Iterable" to listOf("Element"),
-    "kotlin.collections.Collection" to listOf("Element"),
-    "kotlin.collections.List" to listOf("Element"),
-    "kotlin.Array" to listOf("Element"),
-    "kotlin.collections.Map" to listOf("Key", "Value")
-)
+//val knownTypeParameterNames = mapOf(
+//    "kotlin.sequences.Sequence" to listOf("Element"),
+//    "kotlin.collections.Iterable" to listOf("Element"),
+//    "kotlin.collections.Collection" to listOf("Element"),
+//    "kotlin.collections.List" to listOf("Element"),
+//    "kotlin.Array" to listOf("Element"),
+//    "kotlin.collections.Map" to listOf("Key", "Value")
+//)
 
 
 fun SwiftTranslator.registerType() {
@@ -87,24 +95,21 @@ fun SwiftTranslator.registerType() {
 
     handle<SwiftExtensionStart> {
         -"extension "
-        val replacement = typedRule.forDescriptor.extensionReceiverParameter?.type?.let { replacements.getType(it) }
         val t = typedRule.forDescriptor.extensionReceiverParameter!!.type
+        val replacement = replacements.getType(t)
         var whereEmitted = false
         replacement?.constraintTemplate?.let {
             emitTemplate(it)
             whereEmitted = it.parts.joinToString("").contains(" where ")
         } ?: run {
-            -typedRule.receiver?.typeElement?.let { it as? KtUserType }
-                ?.let { KtUserTypeBasic(it.referenceExpression!!) }
-                ?: BasicType(t)
+            -(typedRule.receiver?.typeElement
+                ?.let { KtUserTypeBasic(it) }
+                ?: BasicType(t))
         }
         val replacements = typeParameterReplacements.getOrSet { HashMap() }
         t.arguments
             .mapIndexedNotNull { index, arg ->
                 val name = replacement?.typeArgumentNames?.get(index)
-                    ?: knownTypeParameterNames[t.constructor.declarationDescriptor?.fqNameOrNull()?.asString()]?.get(
-                        index
-                    )
                     ?: (t.constructor.declarationDescriptor as? ClassDescriptor)?.declaredTypeParameters?.get(index)?.name?.asString()
                     ?: "Element"
 
@@ -310,14 +315,12 @@ fun SwiftTranslator.registerType() {
 
     handle<KtUserTypeBasic>(
         condition = {
-            val reference = typedRule.type ?: return@handle false
-            val type = reference.resolvedReferenceTarget ?: return@handle false
+            val type = typedRule.resolvedReferenceTarget ?: return@handle false
             replacements.getTypeRef(type) != null
         },
         priority = 11_000,
         action = {
-            val reference = typedRule.type
-            val type = reference.resolvedReferenceTarget!!
+            val type = typedRule.resolvedReferenceTarget!!
             val rule = replacements.getTypeRef(type)!!
             emitTemplate(
                 template = rule.template
@@ -326,14 +329,12 @@ fun SwiftTranslator.registerType() {
     )
     handle<KtUserTypeBasic>(
         condition = {
-            val reference = typedRule.type ?: return@handle false
-            val type = reference.resolvedReferenceTarget ?: return@handle false
+            val type = typedRule.resolvedReferenceTarget ?: return@handle false
             replacements.getType(type) != null
         },
         priority = 10_000,
         action = {
-            val reference = typedRule.type
-            val type = reference.resolvedReferenceTarget!!
+            val type = typedRule.resolvedReferenceTarget!!
             val rule = replacements.getType(type)!!
             emitTemplate(
                 template = rule.template
@@ -341,7 +342,16 @@ fun SwiftTranslator.registerType() {
         }
     )
     handle<KtUserTypeBasic> {
-        -typedRule.type
+        when(val t = typedRule.type) {
+            is KtReferenceExpression -> -t
+            is KtUserType -> {
+                t.qualifier?.let {
+                    -it
+                    -'.'
+                }
+                -t.referenceExpression
+            }
+        }
     }
 
     handle<KtFunctionType> {

@@ -221,6 +221,21 @@
   type: call
   template: '~this~.backgroundColor = ~0~'
 
+- id: android.view.View.setEnabled
+  type: call
+  reflectiveName: '\UIControl.isEnabled'
+  template: '~this~.isEnabled = ~0~'
+
+- id: android.view.View.enabled
+  type: get
+  reflectiveName: '\UIControl.isEnabled'
+  template: '~this~.isEnabled'
+
+- id: android.view.View.enabled
+  type: set
+  reflectiveName: '\UIControl.isEnabled'
+  template: '~this~.isEnabled = ~value~'
+
 - id: android.graphics.drawable.Drawable
   type: type
   isFunctionType: true

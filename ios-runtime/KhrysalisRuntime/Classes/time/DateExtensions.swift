@@ -484,7 +484,7 @@ public struct ZonedDateTime: HasDateComponentsWithDay, Codable, Hashable {
         }
         try container.encode(String(format: "%04d-%02d-%02dT%02d:%02d:%02d%@", year, month, day, hour, minute, second, output))
     }
-    
+
     public init(from: Date = Date()) {
         self.init(calendar: Calendar.current, from: from)
     }
@@ -500,8 +500,8 @@ public struct ZonedDateTime: HasDateComponentsWithDay, Codable, Hashable {
     public var second: Int { get { dateComponents.second! } set { dateComponents.second = newValue } }
     public var nanosecond: Int { get { dateComponents.nanosecond! } set { dateComponents.nanosecond = newValue } }
     public init(
-        calendar: Calendar,
-        timeZone: TimeZone? = nil,
+        calendar: Calendar = Calendar.current,
+        timeZone: TimeZone? = Calendar.current.timeZone,
         from: Date = Date()
     ) {
         dateComponents = calendar.dateComponents([.era, .year, .month, .day, .hour, .minute, .second, .nanosecond], from: from)
@@ -675,12 +675,27 @@ public extension Date {
 }
 
 public extension DateFormatter {
+    convenience init(bothStyles: DateFormatter.Style = .none) {
+        self.init()
+        self.dateStyle = bothStyles
+        self.timeStyle = bothStyles
+        self.locale = Locale.current
+    }
     convenience init(dateStyle: DateFormatter.Style = .none, timeStyle: DateFormatter.Style = .none) {
         self.init()
         self.dateStyle = dateStyle
         self.timeStyle = timeStyle
         self.locale = Locale.current
     }
+    
+    func withZone(_ zone: TimeZone) -> DateFormatter {
+        self.timeZone = zone
+        return self
+    }
+}
+
+public extension Date {
+    func format(_ formatter: DateFormatter) -> String { return formatter.string(from: self) }
 }
 
 

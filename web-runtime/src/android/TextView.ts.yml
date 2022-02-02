@@ -19,6 +19,16 @@
   reflectiveName: '"textContent"'
   template: '~this~.textContent'
 
+- id: android.widget.ToggleButton.setTextOn
+  type: call
+  reflectiveName: '"textContent"'
+  template: '~this~.textContent'
+
+- id: android.widget.ToggleButton.setTextOff
+  type: call
+  reflectiveName: '"textContent"'
+  template: '~this~.textContent'
+
 - id: android.widget.TextView.setTextColor
   type: call
   template: ~this~.style.color = ~0~

@@ -9,6 +9,10 @@ import Foundation
 public struct Pair<A, B> {
     public let first: A
     public let second: B
+    public init(from: (A, B)) {
+        self.first = from.0
+        self.second = from.1
+    }
     public init(first: A, second: B) {
         self.first = first
         self.second = second
