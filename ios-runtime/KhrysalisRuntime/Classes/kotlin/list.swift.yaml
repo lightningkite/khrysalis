@@ -337,11 +337,11 @@
   actualReceiver: kotlin.collections.List
   template: '~this~.compactMap({ $0 })'
 
-- id: kotlin.collections.sortBy
+- id: kotlin.collections.sortedBy
   type: call
   actualReceiver: kotlin.collections.List
   template: '~this~.sort(by: compareBy(selector: ~0~))'
-- id: kotlin.collections.sortByDescending
+- id: kotlin.collections.sortedByDescending
   type: call
   actualReceiver: kotlin.collections.List
   template: '~this~.sort(by: compareByDescending(selector: ~0~))'
