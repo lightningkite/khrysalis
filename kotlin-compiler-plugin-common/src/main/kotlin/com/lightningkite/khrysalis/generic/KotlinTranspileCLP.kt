@@ -121,6 +121,9 @@ abstract class KotlinTranspileCR : ComponentRegistrar {
             .forEach { actualFile ->
                 try {
                     reps += actualFile
+                    if(actualFile.readText().contains("LKButterfly")) {
+                        throw IllegalArgumentException("Old translation file found at ${actualFile}")
+                    }
                 } catch (t: Throwable) {
                     collector?.report(CompilerMessageSeverity.ERROR, "Failed to parse equivalents for $actualFile:")
                     collector?.report(

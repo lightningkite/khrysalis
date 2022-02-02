@@ -21,11 +21,6 @@
     pattern: UIView
     imports: [ UIKit ]
 
-- id: com.lightningkite.butterfly.views.widget.HorizontalProgressBar
-  type: type
-  template:
-    pattern: UIView
-    imports: [ UIKit ]
 
 - id: android.widget.ImageView
   type: type
@@ -33,11 +28,6 @@
     pattern: UIImageView
     imports: [ UIKit ]
 
-- id: com.lightningkite.butterfly.views.widget.VideoPlayer
-  type: type
-  template:
-    pattern: UIVideoView
-    imports: [ UIKit ]
 
 - id: de.hdodenhof.circleimageview.CircleImageView
   type: type
@@ -51,17 +41,7 @@
     pattern: UILabel
     imports: [UIKit]
 
-- id: com.lightningkite.butterfly.views.widget.SelectableText
-  type: type
-  template:
-    pattern: SelectableText
-    imports: [KhrysalisRuntime]
 
-- id: com.lightningkite.butterfly.views.widget.CustomView
-  type: type
-  template:
-    pattern: CustomView
-    imports: [KhrysalisRuntime]
 
 - id: android.widget.Button
   type: type

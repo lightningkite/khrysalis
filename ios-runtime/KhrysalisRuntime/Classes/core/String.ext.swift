@@ -22,6 +22,11 @@ public extension String {
         return self[index]
     }
 
+    mutating func insert(_ contentsOf: String, _ at: Int){
+        let s = self.index(self.startIndex, offsetBy: Int(at))
+        self.insert(contentsOf: contentsOf, at: s)
+    }
+    
     func substring(_ startIndex: Int, _ endIndex: Int? = nil) -> String {
         if startIndex > self.count { return "" }
         if let endIndex = endIndex, startIndex >= endIndex { return "" }
@@ -57,7 +62,7 @@ public extension String {
     }
 
     func substringBefore(delimiter: String, missingDelimiterValue: String? = nil) -> String {
-        let index = self.indexOf(string: delimiter)
+        let index = self.indexOf(delimiter)
         if index != -1 {
             return substring(0, index)
         } else {
@@ -66,7 +71,7 @@ public extension String {
     }
 
     func substringAfter(delimiter: String, missingDelimiterValue: String? = nil) -> String {
-        let index = self.indexOf(string: delimiter)
+        let index = self.indexOf(delimiter)
         if index != -1 {
             return substring(index + delimiter.count)
         } else {
@@ -209,7 +214,7 @@ public extension Character{
 }
 
 public extension StringProtocol {
-    func indexOf(string: Self, startIndex: Int = 0, ignoreCase: Bool = true) -> Int {
+    func indexOf(_ string: Self, startIndex: Int = 0, ignoreCase: Bool = true) -> Int {
         if string.isEmpty { return 0 }
         var options: String.CompareOptions = [.literal]
         if ignoreCase {

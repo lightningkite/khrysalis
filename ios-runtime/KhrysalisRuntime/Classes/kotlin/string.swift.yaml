@@ -86,11 +86,11 @@
   template: '~this~.split(separator: "\n").map { String($0) }'
 - id: kotlin.text.contains
   type: call
-  template: '(~this~.indexOf(string: ~0~) != -1)'
+  template: '(~this~.indexOf(~0~) != -1)'
 - id: kotlin.text.contains
   type: call
   suppliedArguments: [string, ignoreCase]
-  template: '(~this~.indexOf(string: ~0~, ignoreCase: ~ignoreCase~) != -1)'
+  template: '(~this~.indexOf(~0~, ignoreCase: ~ignoreCase~) != -1)'
 
 # Characters
 - id: kotlin.text.isLowerCase
@@ -156,6 +156,7 @@
   type: call
   template: ~this~[~0~]
 
+
 # Regex
 
 - id: kotlin.text.Regex
@@ -171,32 +172,17 @@
   template: Box<String>
 - id: kotlin.text.StringBuilder
   type: call
-  template: 'Box("")'
-- id: kotlin.text.buildString
+  arguments: ["*"]
+  template: Box(~0~)
+- id: kotlin.text.StringBuilder
   type: call
-  template:
-    pattern: 'also(Box(""), ~0~).value'
-    imports: [ KhrysalisRuntime ]
+  template: Box("")
+- id: kotlin.text.StringBuilder.insert
+  type: call
+  template: ~this~.value.insert(~1~, ~0~)
 - id: kotlin.text.StringBuilder.append
   type: call
   template: ~this~.value.append(~0~)
-- id: java.lang.StringBuilder.append
-  type: call
-  template: ~this~.value.append(~0~)
-- id: kotlin.text.appendln
-  type: call
-  template: ~this~.value.append(~0~ + "\n")
-- id: kotlin.text.appendln
-  type: call
-  arguments: []
-  template: ~this~.value.append("\n")
-- id: kotlin.text.appendLine
-  type: call
-  template: ~this~.value.append(~0~ + "\n")
-- id: kotlin.text.appendLine
-  type: call
-  arguments: []
-  template: ~this~.value.append("\n")
 - id: kotlin.text.StringBuilder.toString
   type: call
   template: ~this~.value
@@ -204,6 +190,25 @@
   type: call
   actualReceiver: kotlin.text.StringBuilder
   template: ~this~.value
+- id: kotlin.text.buildString
+  type: call
+  template:
+    pattern: also(Box(""), ~0~).value
+    imports: [ KhrysalisRuntime ]
+- id: kotlin.text.appendln
+  type: call
+  template: ~this~.value.append(~0~ + "\n")
+- id: kotlin.text.appendln
+  type: call
+  arguments: []
+  template: ~this~.value.append("\n")
+- id: kotlin.text.appendLine
+  type: call
+  template: ~this~.value.append(~0~ + "\n")
+- id: kotlin.text.appendLine
+  type: call
+  arguments: []
+  template: ~this~.value.append("\n")
 
 # String Builder
 - id: java.lang.StringBuilder
@@ -211,34 +216,34 @@
   template: Box<String>
 - id: java.lang.StringBuilder
   type: call
-  template: 'Box("")'
+  arguments: ["*"]
+  template: Box(~0~)
+- id: java.lang.StringBuilder
+  type: call
+  template: Box("")
+- id: java.lang.StringBuilder.insert
+  type: call
+  template: ~this~.value.insert(~1~, ~0~)
 - id: java.lang.StringBuilder.append
   type: call
   template: ~this~.value.append(~0~)
-- id: java.lang.StringBuilder.append
-  type: call
-  template: ~this~.value.append(~0~)
-- id: kotlin.text.appendln
-  type: call
-  template: ~this~.value.append(~0~ + "\n")
-- id: kotlin.text.appendln
-  type: call
-  arguments: []
-  template: ~this~.value.append("\n")
-- id: kotlin.text.appendLine
-  type: call
-  template: ~this~.value.append(~0~ + "\n")
-- id: kotlin.text.appendLine
-  type: call
-  arguments: []
-  template: ~this~.value.append("\n")
 - id: java.lang.StringBuilder.toString
   type: call
   template: ~this~.value
-- id: kotlin.Any.toString
+- id: kotlin.text.appendln
   type: call
-  actualReceiver: java.lang.StringBuilder
-  template: ~this~.value
+  template: ~this~.value.append(~0~ + "\n")
+- id: kotlin.text.appendln
+  type: call
+  arguments: []
+  template: ~this~.value.append("\n")
+- id: kotlin.text.appendLine
+  type: call
+  template: ~this~.value.append(~0~ + "\n")
+- id: kotlin.text.appendLine
+  type: call
+  arguments: []
+  template: ~this~.value.append("\n")
 
 # Converting to Numbers
 

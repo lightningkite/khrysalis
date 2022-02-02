@@ -24,4 +24,7 @@ public extension Collection {
         }
         return current
     }
+    func sorted(by typedComparator: TypedComparator<Element>) -> [Element] {
+        return sorted(by: { typedComparator($0, $1) == .orderedAscending})
+    }
 }

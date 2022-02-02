@@ -7,7 +7,6 @@
 //
 
 import UIKit
-import LKButterfly
 
 @UIApplicationMain
 class AppDelegate: KhrysalisAppDelegate {

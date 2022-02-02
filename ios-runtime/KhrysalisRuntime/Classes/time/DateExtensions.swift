@@ -450,11 +450,11 @@ public struct ZonedDateTime: HasDateComponentsWithDay, Codable, Hashable {
         var time = String(majorParts[1])
         var timeZone: TimeZone? = nil
         if(time.contains("+")){
-            let index = time.indexOf(string: "+")
+            let index = time.indexOf( "+")
             timeZone = TimeZone.init(iso8601:time.substring(index))
             time = time.substring(startIndex: 0, endIndex:index)
         } else if (time.contains("-")){
-            let index = time.indexOf(string: "-")
+            let index = time.indexOf( "-")
             timeZone = TimeZone.init(iso8601:time.substring(index))
             time = time.substring(startIndex: 0, endIndex:index)
         } else if(time.contains("Z")){

@@ -241,12 +241,6 @@
     pattern: sprintf(~this~, ~*~)
     imports:
       sprintf: sprintf-js
-- id: com.lightningkite.butterfly.formatList
-  type: call
-  template:
-    pattern: vsprintf(~this~, ~0~)
-    imports:
-      vsprintf: sprintf-js
 
 # Converting to Numbers
 

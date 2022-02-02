@@ -53,4 +53,3 @@
 - {id: android.location.Address.premises, type: get, template: '~this~.premises', resultIsNullable: true}
 - {id: android.location.Address.postalCode, type: get, template: '~this~.postalCode', resultIsNullable: true}
 - {id: android.location.Address.countryCode, type: get, template: '~this~.countryCode', resultIsNullable: true}
-- {id: android.location.Address.countryName, type: get, template: '~this~.countryName', resultIsNullable: true}

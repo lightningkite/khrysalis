@@ -340,11 +340,11 @@
 - id: kotlin.collections.sortedBy
   type: call
   actualReceiver: kotlin.collections.List
-  template: '~this~.sort(by: compareBy(selector: ~0~))'
+  template: '~this~.sorted(by: compareBy(selector: ~0~))'
 - id: kotlin.collections.sortedByDescending
   type: call
   actualReceiver: kotlin.collections.List
-  template: '~this~.sort(by: compareByDescending(selector: ~0~))'
+  template: '~this~.sorted(by: compareByDescending(selector: ~0~))'
 
 # TODO: groupBy
 
