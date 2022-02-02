@@ -60,7 +60,7 @@ class DeclarationManifest(
     fun loadNonlocal(files: List<File>, filterOut: File){
         files
             .flatMap { it.walkTopDown() }
-            .filter { it.name.endsWith("fqnames.txt", true) }
+            .filter { it.name.endsWith("ts.fqnames", true) }
             .filter {
                 println("Checking $it against $filterOut")
                 !it.startsWith(filterOut)

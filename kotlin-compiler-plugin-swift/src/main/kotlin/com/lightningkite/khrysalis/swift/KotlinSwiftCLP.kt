@@ -99,7 +99,7 @@ class KotlinSwiftExtension(
         translator = SwiftTranslator(projectName, collector, replacements)
         dependencies.asSequence()
             .flatMap { it.walkTopDown() }
-            .filter { it.name.endsWith("fqnames.txt", true) }
+            .filter { it.name.endsWith("swift.fqnames", true) }
             .forEach {
                 val lines = it.readLines().filter { it.isNotBlank() }
                 val name = lines.first()
@@ -123,7 +123,7 @@ class KotlinSwiftExtension(
     override fun finish(context: BindingContext, files: Collection<KtFile>) {
         // Write manifest (AKA list of FQ names in module)
         if(libraryMode) {
-            outputDirectory.resolve("fqnames.txt").bufferedWriter().use {
+            outputDirectory.resolve("swift.fqnames").bufferedWriter().use {
                 sequenceOf(projectName).plus(
                     files.asSequence()
                         .flatMap { f ->

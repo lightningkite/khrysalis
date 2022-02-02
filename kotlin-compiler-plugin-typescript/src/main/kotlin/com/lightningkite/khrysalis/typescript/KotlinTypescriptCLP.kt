@@ -79,7 +79,7 @@ class KotlinTypescriptExtension(
     lateinit var translator: TypescriptTranslator
 
     override fun start(context: BindingContext, files: Collection<KtFile>) {
-        println("Will generate files ${outputDirectory.resolve("fqnames.txt")}, ${outputDirectory.resolve("index.ts")}...")
+        println("Will generate files ${outputDirectory.resolve("ts.fqnames")}, ${outputDirectory.resolve("index.ts")}...")
         translator = TypescriptTranslator(projectName, commonPackage, collector, replacements)
 
         // Load node declarations
@@ -105,7 +105,7 @@ class KotlinTypescriptExtension(
 
     override fun finish(context: BindingContext, files: Collection<KtFile>) {
         if(libraryMode) {
-            outputDirectory.resolve("fqnames.txt").bufferedWriter().use {
+            outputDirectory.resolve("ts.fqnames").bufferedWriter().use {
                 it.appendLine(translator.projectName)
                 for(entry in translator.declarations.local){
                     it.appendLine(entry.key)

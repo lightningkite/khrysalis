@@ -92,7 +92,7 @@ class KotlinExtension(
             .disable(DeserializationFeature.FAIL_ON_UNKNOWN_PROPERTIES)
 
         replacementMapper.writeValue(equivalentsTemplate, RuleList(toEmit))
-        outputDirectory.resolve("fqnames.txt").bufferedWriter().use {
+        outputDirectory.resolve("kt.fqnames").bufferedWriter().use {
             sequenceOf(project.name).plus(
                 files.asSequence()
                     .flatMap { f ->
