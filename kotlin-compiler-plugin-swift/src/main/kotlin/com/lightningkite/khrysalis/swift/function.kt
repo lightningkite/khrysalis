@@ -588,7 +588,7 @@ fun SwiftTranslator.registerFunction() {
     handle<KtCallExpression>(
         condition = {
             val target = (typedRule.calleeExpression as? KtReferenceExpression)?.resolvedReferenceTarget
-            target is ValueDescriptor && !target.type.isFunctionType
+            target is ValueDescriptor && !target.type.isFunctionTypeOrSubtype
         },
         priority = 2
     ) {

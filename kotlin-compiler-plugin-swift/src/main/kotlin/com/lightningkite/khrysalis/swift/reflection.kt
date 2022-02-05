@@ -63,8 +63,10 @@ fun SwiftTranslator.registerReflection() {
         -typedRule.callableReference
     }
     handle<KtCallableReferenceExpression> {
-        -typedRule.receiverExpression?.let { KtUserTypeBasic(it) }
-        -'.'
+        typedRule.receiverExpression?.let { KtUserTypeBasic(it) }?.let {
+            -it
+            -'.'
+        }
         -typedRule.callableReference
     }
 }

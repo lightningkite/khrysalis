@@ -132,7 +132,7 @@ fun SwiftTranslator.registerOperators() {
         -ArgumentsList(
             on = f,
             resolvedCall = typedRule.resolvedCall!!,
-            prependArguments = if (doubleReceiver) listOf(typedRule.arrayExpression) else listOf(),
+            prependArguments = if (doubleReceiver || f.swiftNameOverridden != null) listOf(typedRule.arrayExpression) else listOf(),
             replacements = (
                     typedRule.indexExpressions.mapIndexed { index, exp ->
                         typedRule.functionDescriptor.valueParameters.get(
@@ -246,7 +246,7 @@ fun SwiftTranslator.registerOperators() {
             -ArgumentsList(
                 on = setFunction,
                 resolvedCall = arrayAccess.resolvedIndexedLvalueSet!!,
-                prependArguments = if (doubleReceiver) listOf(arrayAccess.arrayExpression!!) else listOf(),
+                prependArguments = if (doubleReceiver || setFunction.swiftNameOverridden != null) listOf(arrayAccess.arrayExpression!!) else listOf(),
                 replacements = (
                         tempIndexes.mapIndexed { index, exp -> setFunction.valueParameters[index].let { it to exp } }
                             .associate { it }
@@ -420,7 +420,7 @@ fun SwiftTranslator.registerOperators() {
         -ArgumentsList(
             on = typedRule.functionDescriptor,
             resolvedCall = typedRule.resolvedCall!!,
-            prependArguments = if (doubleReceiver) listOf(left) else listOf()
+            prependArguments = if (doubleReceiver || typedRule.functionDescriptor.swiftNameOverridden != null) listOf(left) else listOf()
         )
         if (typedRule.operationToken == KtTokens.NOT_IN || typedRule.operationToken == KtTokens.EXCLEQ) {
             -")"
@@ -516,7 +516,7 @@ fun SwiftTranslator.registerOperators() {
             -ArgumentsList(
                 on = f,
                 resolvedCall = typedRule.resolvedCall!!,
-                prependArguments = if (f.extensionReceiverParameter != null) listOf(typedRule.baseExpression!!) else listOf()
+                prependArguments = if (doubleReceiver || f.swiftNameOverridden != null) listOf(typedRule.baseExpression!!) else listOf()
             )
         }
     )

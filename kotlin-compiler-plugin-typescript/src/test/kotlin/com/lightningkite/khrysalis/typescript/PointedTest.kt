@@ -15,5 +15,7 @@ class PointedTest {
         Assert.assertEquals(r.kotlin, r.typescript)
     }
 }
-//test[testLambda.kt]
+//test[testTime.kt]
 //test[testCollections.kt]
+//test[testReflection.kt]
+//test[testGenerics.kt]
