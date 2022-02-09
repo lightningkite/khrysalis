@@ -33,5 +33,5 @@
 - type: call
   id: android.view.View.performClick
   actualReceiver: android.widget.Button
-  template: "~this~.sendActions(for: .primaryActionTriggered)"
+  template: "~this~.sendActions(for: .touchUpInside)"
 
