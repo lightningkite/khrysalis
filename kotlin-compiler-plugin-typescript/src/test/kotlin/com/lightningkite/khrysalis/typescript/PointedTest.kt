@@ -10,7 +10,7 @@ import java.io.File
 class PointedTest {
     @Test
     fun test() {
-        val it = File("../conversionTestData").resolve("testCollections.kt")
+        val it = File("../conversionTestData").resolve("testGenerics.kt")
         val r = ExecuteFileTester.tsTranslated(it)
         Assert.assertEquals(r.kotlin, r.typescript)
     }

@@ -65,7 +65,7 @@ fun TypescriptTranslator.registerOperators() {
         -ArgumentsList(
             on = f,
             resolvedCall = typedRule.resolvedCall!!,
-            prependArguments = if (doubleReceiver) listOf(typedRule.arrayExpression) else listOf(),
+            prependArguments = if (doubleReceiver || f.tsNameOverridden != null) listOf(typedRule.arrayExpression) else listOf(),
             replacements = (
                     typedRule.indexExpressions.mapIndexed { index, exp ->
                         typedRule.functionDescriptor.valueParameters.get(
@@ -152,7 +152,7 @@ fun TypescriptTranslator.registerOperators() {
             -ArgumentsList(
                 on = setFunction,
                 resolvedCall = arrayAccess.resolvedIndexedLvalueSet!!,
-                prependArguments = if (doubleReceiver) listOf(arrayAccess.arrayExpression!!) else listOf(),
+                prependArguments = if (doubleReceiver || setFunction.tsNameOverridden != null) listOf(arrayAccess.arrayExpression!!) else listOf(),
                 replacements = (
                         tempIndexes.mapIndexed { index, exp -> setFunction.valueParameters[index].let { it to exp } }
                             .associate { it }
