@@ -47,6 +47,15 @@
       <module name="IdeaProjects.khrysalis.kotlin-compiler-plugin-swift.test" target="11" />
       <module name="IdeaProjects.khrysalis.kotlin-compiler-plugin-typescript" target="11" />
       <module name="IdeaProjects.khrysalis.plugin" target="11" />
+      <module name="jivie.Projects.khrysalis.kotlin-compiler-plugin-common" target="11" />
+      <module name="jivie.Projects.khrysalis.kotlin-compiler-plugin-common.main" target="11" />
+      <module name="jivie.Projects.khrysalis.kotlin-compiler-plugin-common.test" target="11" />
+      <module name="jivie.Projects.khrysalis.kotlin-compiler-plugin-swift" target="11" />
+      <module name="jivie.Projects.khrysalis.kotlin-compiler-plugin-swift.main" target="11" />
+      <module name="jivie.Projects.khrysalis.kotlin-compiler-plugin-swift.test" target="11" />
+      <module name="jivie.Projects.khrysalis.kotlin-compiler-plugin-typescript" target="11" />
+      <module name="jivie.Projects.khrysalis.kotlin-compiler-plugin-typescript.main" target="11" />
+      <module name="jivie.Projects.khrysalis.kotlin-compiler-plugin-typescript.test" target="11" />
       <module name="joseph.IdeaProjects.khrysalis.android" target="11" />
       <module name="joseph.IdeaProjects.khrysalis.android-bluetooth" target="11" />
       <module name="joseph.IdeaProjects.khrysalis.android-fcm" target="11" />
@@ -108,15 +117,24 @@
       <module name="Projects.khrysalis-meta.khrysalis.kotlin-compiler-plugin-swift" target="11" />
       <module name="Projects.khrysalis-meta.khrysalis.kotlin-compiler-plugin-swift.main" target="11" />
       <module name="Projects.khrysalis-meta.khrysalis.kotlin-compiler-plugin-swift.test" target="11" />
+      <module name="Projects.khrysalis.jvm-runtime" target="11" />
+      <module name="Projects.khrysalis.jvm-runtime.main" target="11" />
+      <module name="Projects.khrysalis.jvm-runtime.test" target="11" />
       <module name="Projects.khrysalis.kotlin-compiler-plugin-common" target="11" />
       <module name="Projects.khrysalis.kotlin-compiler-plugin-common.main" target="11" />
       <module name="Projects.khrysalis.kotlin-compiler-plugin-common.test" target="11" />
+      <module name="Projects.khrysalis.kotlin-compiler-plugin-kotlin" target="11" />
+      <module name="Projects.khrysalis.kotlin-compiler-plugin-kotlin.main" target="11" />
+      <module name="Projects.khrysalis.kotlin-compiler-plugin-kotlin.test" target="11" />
       <module name="Projects.khrysalis.kotlin-compiler-plugin-swift" target="11" />
       <module name="Projects.khrysalis.kotlin-compiler-plugin-swift.main" target="11" />
       <module name="Projects.khrysalis.kotlin-compiler-plugin-swift.test" target="11" />
       <module name="Projects.khrysalis.kotlin-compiler-plugin-typescript" target="11" />
       <module name="Projects.khrysalis.kotlin-compiler-plugin-typescript.main" target="11" />
       <module name="Projects.khrysalis.kotlin-compiler-plugin-typescript.test" target="11" />
+      <module name="Projects.khrysalis.plugin" target="11" />
+      <module name="Projects.khrysalis.plugin.main" target="11" />
+      <module name="Projects.khrysalis.plugin.test" target="11" />
       <module name="StudioProjects.khrysalis.android" target="11" />
       <module name="StudioProjects.khrysalis.android-bluetooth" target="11" />
       <module name="StudioProjects.khrysalis.android-fcm" target="11" />
@@ -352,15 +370,24 @@
       <module fileurl="file://$PROJECT_DIR$/plugin/LK.khrysalis.plugin.iml" filepath="$PROJECT_DIR$/plugin/LK.khrysalis.plugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/plugin/LK.khrysalis.plugin.main.iml" filepath="$PROJECT_DIR$/plugin/LK.khrysalis.plugin.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/plugin/LK.khrysalis.plugin.test.iml" filepath="$PROJECT_DIR$/plugin/LK.khrysalis.plugin.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jvm-runtime/Projects.khrysalis.jvm-runtime.iml" filepath="$PROJECT_DIR$/jvm-runtime/Projects.khrysalis.jvm-runtime.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jvm-runtime/Projects.khrysalis.jvm-runtime.main.iml" filepath="$PROJECT_DIR$/jvm-runtime/Projects.khrysalis.jvm-runtime.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/jvm-runtime/Projects.khrysalis.jvm-runtime.test.iml" filepath="$PROJECT_DIR$/jvm-runtime/Projects.khrysalis.jvm-runtime.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-common/Projects.khrysalis.kotlin-compiler-plugin-common.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-common/Projects.khrysalis.kotlin-compiler-plugin-common.iml" />
       <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-common/Projects.khrysalis.kotlin-compiler-plugin-common.main.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-common/Projects.khrysalis.kotlin-compiler-plugin-common.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-common/Projects.khrysalis.kotlin-compiler-plugin-common.test.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-common/Projects.khrysalis.kotlin-compiler-plugin-common.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-kotlin/Projects.khrysalis.kotlin-compiler-plugin-kotlin.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-kotlin/Projects.khrysalis.kotlin-compiler-plugin-kotlin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-kotlin/Projects.khrysalis.kotlin-compiler-plugin-kotlin.main.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-kotlin/Projects.khrysalis.kotlin-compiler-plugin-kotlin.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-kotlin/Projects.khrysalis.kotlin-compiler-plugin-kotlin.test.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-kotlin/Projects.khrysalis.kotlin-compiler-plugin-kotlin.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-swift/Projects.khrysalis.kotlin-compiler-plugin-swift.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-swift/Projects.khrysalis.kotlin-compiler-plugin-swift.iml" />
       <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-swift/Projects.khrysalis.kotlin-compiler-plugin-swift.main.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-swift/Projects.khrysalis.kotlin-compiler-plugin-swift.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-swift/Projects.khrysalis.kotlin-compiler-plugin-swift.test.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-swift/Projects.khrysalis.kotlin-compiler-plugin-swift.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-typescript/Projects.khrysalis.kotlin-compiler-plugin-typescript.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/Projects.khrysalis.kotlin-compiler-plugin-typescript.iml" />
       <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-typescript/Projects.khrysalis.kotlin-compiler-plugin-typescript.main.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/Projects.khrysalis.kotlin-compiler-plugin-typescript.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-typescript/Projects.khrysalis.kotlin-compiler-plugin-typescript.test.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/Projects.khrysalis.kotlin-compiler-plugin-typescript.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/plugin/Projects.khrysalis.plugin.iml" filepath="$PROJECT_DIR$/plugin/Projects.khrysalis.plugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/plugin/Projects.khrysalis.plugin.main.iml" filepath="$PROJECT_DIR$/plugin/Projects.khrysalis.plugin.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/plugin/Projects.khrysalis.plugin.test.iml" filepath="$PROJECT_DIR$/plugin/Projects.khrysalis.plugin.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/android/StudioProjects.khrysalis.android.iml" filepath="$PROJECT_DIR$/android/StudioProjects.khrysalis.android.iml" />
       <module fileurl="file://$PROJECT_DIR$/android-bluetooth/StudioProjects.khrysalis.android-bluetooth.iml" filepath="$PROJECT_DIR$/android-bluetooth/StudioProjects.khrysalis.android-bluetooth.iml" />
       <module fileurl="file://$PROJECT_DIR$/android-fcm/StudioProjects.khrysalis.android-fcm.iml" filepath="$PROJECT_DIR$/android-fcm/StudioProjects.khrysalis.android-fcm.iml" />
@@ -399,6 +426,15 @@
       <module fileurl="file://$PROJECT_DIR$/plugin/com.lightningkite.khrysalis.khrysalis.plugin.iml" filepath="$PROJECT_DIR$/plugin/com.lightningkite.khrysalis.khrysalis.plugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/plugin/com.lightningkite.khrysalis.khrysalis.plugin.main.iml" filepath="$PROJECT_DIR$/plugin/com.lightningkite.khrysalis.khrysalis.plugin.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/plugin/com.lightningkite.khrysalis.khrysalis.plugin.test.iml" filepath="$PROJECT_DIR$/plugin/com.lightningkite.khrysalis.khrysalis.plugin.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-common/jivie.Projects.khrysalis.kotlin-compiler-plugin-common.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-common/jivie.Projects.khrysalis.kotlin-compiler-plugin-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-common/jivie.Projects.khrysalis.kotlin-compiler-plugin-common.main.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-common/jivie.Projects.khrysalis.kotlin-compiler-plugin-common.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-common/jivie.Projects.khrysalis.kotlin-compiler-plugin-common.test.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-common/jivie.Projects.khrysalis.kotlin-compiler-plugin-common.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-swift/jivie.Projects.khrysalis.kotlin-compiler-plugin-swift.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-swift/jivie.Projects.khrysalis.kotlin-compiler-plugin-swift.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-swift/jivie.Projects.khrysalis.kotlin-compiler-plugin-swift.main.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-swift/jivie.Projects.khrysalis.kotlin-compiler-plugin-swift.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-swift/jivie.Projects.khrysalis.kotlin-compiler-plugin-swift.test.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-swift/jivie.Projects.khrysalis.kotlin-compiler-plugin-swift.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-typescript/jivie.Projects.khrysalis.kotlin-compiler-plugin-typescript.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/jivie.Projects.khrysalis.kotlin-compiler-plugin-typescript.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-typescript/jivie.Projects.khrysalis.kotlin-compiler-plugin-typescript.main.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/jivie.Projects.khrysalis.kotlin-compiler-plugin-typescript.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-typescript/jivie.Projects.khrysalis.kotlin-compiler-plugin-typescript.test.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/jivie.Projects.khrysalis.kotlin-compiler-plugin-typescript.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/khrysalis.iml" filepath="$PROJECT_DIR$/khrysalis.iml" />
       <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-common/khrysalis-meta.khrysalis.kotlin-compiler-plugin-common.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-common/khrysalis-meta.khrysalis.kotlin-compiler-plugin-common.iml" />
       <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-common/khrysalis-meta.khrysalis.kotlin-compiler-plugin-common.main.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-common/khrysalis-meta.khrysalis.kotlin-compiler-plugin-common.main.iml" />
