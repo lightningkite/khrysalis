@@ -220,3 +220,11 @@
   type: type
   isFunctionType: true
   template: '()->CALayer'
+
+- id: android.view.View.setAlpha
+  type: call
+  template: '~this~.alpha = CGFloat(~value~)'
+
+- id: android.view.View.alpha
+  type: set
+  template: '~this~.alpha = CGFloat(~value~)'
