@@ -1,0 +1,14 @@
+web-runtime/node_modules
+node_modules
+conversionTestData
+docs
+gradle
+ios-runtime
+jvm-runtime
+kotlin-compiler-plugin-common
+kotlin-compiler-plugin-kotlin
+kotlin-compiler-plugin-swift
+kotlin-compiler-plugin-typescript
+node_modules
+plugin
+.git

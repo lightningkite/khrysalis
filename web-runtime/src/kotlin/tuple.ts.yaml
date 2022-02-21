@@ -24,12 +24,12 @@
 - id: kotlin.Triple
   type: call
   template: "[~0~, ~1~, ~2~]"
-- id: kotlin.Pair.first
+- id: kotlin.Triple.first
   type: get
   template: "~this~[0]"
-- id: kotlin.Pair.second
+- id: kotlin.Triple.second
   type: get
   template: "~this~[1]"
-- id: kotlin.Pair.third
+- id: kotlin.Triple.third
   type: get
   template: "~this~[2]"

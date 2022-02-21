@@ -5,7 +5,7 @@
   reflectiveName:
     pattern: 'elementEnabled'
     imports:
-      elementEnabled: rxjs-plus
+      elementEnabled: '@lightningkite/rxjs-plus'
   template: ~this~.disabled = !~0~
 
 - type: call
@@ -13,7 +13,7 @@
   reflectiveName:
     pattern: 'elementEnabled'
     imports:
-      elementEnabled: rxjs-plus
+      elementEnabled: '@lightningkite/rxjs-plus'
   template: !~this~.disabled
 
 - type: get

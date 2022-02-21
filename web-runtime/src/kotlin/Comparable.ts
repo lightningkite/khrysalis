@@ -18,6 +18,13 @@ export function safeCompare(left: any, right: any): number {
     }
 }
 
+export function compareBy<A>(key: ((a: A) => any) | keyof A): Comparator<A> {
+    if(typeof key === "function")
+        return (l, r) => safeCompare(key(l), key(r))
+    else
+        return (l, r) => safeCompare(l[key], r[key])
+}
+
 export function cMin<T>(a: T, b: T): T {
     if(safeCompare(a, b) < 0) {
         return a;

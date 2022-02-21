@@ -21,6 +21,8 @@ import org.jetbrains.kotlin.types.isNullable
 import org.jetbrains.kotlin.types.typeUtil.isNullableNothing
 import com.lightningkite.khrysalis.analysis.*
 
+private data class ParameterLike(val name: String, val type: Any?)
+
 fun TypescriptTranslator.registerLambda() {
     handle<KtLambdaExpression>(
         condition = { (typedRule.parent as? KtBinaryExpression)?.operationToken == KtTokens.ELVIS },

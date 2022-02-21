@@ -112,6 +112,12 @@
 - id: kotlin.text.toUpperCase
   type: call
   template: ~this~.toUpperCase()
+- id: kotlin.text.lowercase
+  type: call
+  template: ~this~.toLowerCase()
+- id: kotlin.text.uppercase
+  type: call
+  template: ~this~.toUpperCase()
 - id: kotlin.text.trim
   type: call
   arguments: []
@@ -214,6 +220,10 @@
 - id: kotlin.text.Regex.matches
   type: call
   template: ~this~.test(~0~)
+- id: kotlin.text.matches
+  receiver: CharSequence
+  type: call
+  template: ~0~.test(~this~)
 
 # String Builder
 - id: kotlin.text.StringBuilder

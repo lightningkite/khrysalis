@@ -5,28 +5,38 @@ import com.lightningkite.khrysalis.typescript.replacements.TypescriptImport
 import java.io.File
 
 fun renderImports(projectName: String?, relPath: String, imports: Collection<TypescriptImport>, writer: Appendable){
-    imports.distinctBy { it.asName ?: it.identifier }.groupBy { it.path }.forEach { (path, parts) ->
-        val usePath = (projectName?.let { p ->
-            val prefix = "$p/dist/"
-            if (path.startsWith(prefix, true)) {
-                val rel = "./".plus(File(path.drop(prefix.length)).absoluteFile.relativeTo(File(relPath).absoluteFile.parentFile).path)
-                if(rel.startsWith("./.."))
-                    rel.removePrefix("./")
-                else
-                    rel
+    imports
+        .distinctBy { it.asName ?: it.identifier }
+        .groupBy {
+            val path = it.path
+            if(path.contains('|')) {
+                val nodePackage = path.substringBefore('|')
+                val pathInside = path.substringAfter('|')
+                if(nodePackage == projectName) {
+                    val rel = "./".plus(File(pathInside).absoluteFile.relativeTo(File(relPath).absoluteFile.parentFile).path)
+                    if(rel.startsWith("./.."))
+                        rel.removePrefix("./")
+                    else
+                        rel
+                } else {
+                    nodePackage
+                }
             } else {
-                path
+                path.replace("\\", "/")
             }
-        } ?: path).replace("\\", "/")
+        }
+        .mapValues { it.value.sortedBy { it.identifier } }
+        .entries.sortedBy { it.key }
+        .forEach { (path, parts) ->
         if (parts.size == 1 && parts.first().identifier == TypescriptImport.WHOLE) {
             writer.append("import ")
             writer.append(parts.first().identifier)
             writer.append(" from '")
-            writer.append(usePath)
+            writer.append(path)
             writer.appendln("'")
         } else if (parts.size == 1 && parts.first().identifier == "") {
             writer.append("import {} from '")
-            writer.append(usePath)
+            writer.append(path)
             writer.appendln("'")
         } else {
             writer.append("import { ")
@@ -36,7 +46,7 @@ fun renderImports(projectName: String?, relPath: String, imports: Collection<Typ
                 } ?: it.identifier
             })
             writer.append(" } from '")
-            writer.append(usePath)
+            writer.append(path)
             writer.appendln("'")
         }
     }

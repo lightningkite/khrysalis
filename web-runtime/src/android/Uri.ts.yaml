@@ -3,6 +3,10 @@
   type: type
   template: File
 
+- id: android.net.Uri.parse
+  type: call
+  template: File
+
 - id: android.net.Uri.lastPathSegment
   type: get
   template: ~this~.name

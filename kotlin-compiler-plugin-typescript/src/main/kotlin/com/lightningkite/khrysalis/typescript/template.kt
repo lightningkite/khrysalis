@@ -20,7 +20,7 @@ fun <T : Any> KotlinTranslator<TypescriptFileEmitter>.ContextByType<T>.dedup(
     cannotDedup: Boolean = false,
     action: DeDupEmitter.() -> Unit
 ) {
-    val emitter = DeDupEmitter()
+    val emitter = DeDupEmitter(out)
     if(cannotDedup){
         action(emitter)
         -emitter.toEmit
@@ -62,7 +62,7 @@ fun <T : Any> KotlinTranslator<TypescriptFileEmitter>.ContextByType<T>.emitTempl
     typeParameterByIndex: (TemplatePart.TypeParameterByIndex) -> Any? = { null },
     reifiedTypeParameterByIndex: (TemplatePart.ReifiedTypeParameterByIndex) -> Any? = { null }
 ) {
-    val replacements = template.imports.flatMap { out.addImport(it) }
+    val replacements = template.imports.mapNotNull { out.addImport(it) }
     dedup(requiresWrapping, type) {
 //        val templateIsThisDot = template.parts.getOrNull(0) is TemplatePart.Receiver &&
 //                template.parts.getOrNull(1).let { it is TemplatePart.Text && it.string.startsWith('.') } &&
@@ -170,7 +170,7 @@ fun <T : Any> KotlinTranslator<TypescriptFileEmitter>.ContextByType<T>.emitTempl
     )
 }
 
-class DeDupEmitter() {
+class DeDupEmitter(val out: TypescriptFileEmitter) {
     val deduplicated = HashMap<Any, String>()
     val checkNotNull = HashSet<String>()
     val toEmit = ArrayList<Any>()
@@ -182,7 +182,7 @@ class DeDupEmitter() {
                 else -> false
             }
         ) return
-        val name = "temp${uniqueNumber.getAndIncrement()}"
+        val name = "temp${out.uniqueNumber.getAndIncrement()}"
         deduplicated[item] = name
     }
 
@@ -204,7 +204,7 @@ class DeDupEmitter() {
 
     fun ensureNotNull(item: Any?){
         if(item == null) return
-        val name = deduplicated.getOrPut(item) { "temp${uniqueNumber.getAndIncrement()}" }
+        val name = deduplicated.getOrPut(item) { "temp${out.uniqueNumber.getAndIncrement()}" }
         checkNotNull.add(name)
     }
 

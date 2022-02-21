@@ -24,39 +24,32 @@ import java.util.*
 
 open class KhrysalisPluginExtension {
     open var organizationName: String = "Organization"
-    open var projectName: String? = null
+    open var iosProjectName: String? = null
     open var iosSourceFolder: File? = null
     open var iosProjectFolder: File? = null
+    open var webProjectName: String? = null
     open var webSourceFolder: File? = null
     open var webProjectFolder: File? = null
     open var libraryMode: Boolean = false
 
-    open var overrideIosFolder: File?
-        get() = iosProjectFolder
-        set(value) { iosProjectFolder = value }
-    open var overrideWebFolder: File?
-        get() = webProjectFolder
-        set(value) { webProjectFolder = value }
-
-    override fun toString(): String {
-        return "(" +
-                "\norganizationName: " + organizationName +
-                "\nprojectName: " + projectName +
-                "\n)"
-    }
+    @Deprecated("Use iosProjectName instead") open var projectName: String? = null
+    @Deprecated("Use iosProjectFolder instead") open var overrideIosFolder: File? = null
+    @Deprecated("Use webProjectFolder instead") open var overrideWebFolder: File? = null
 
     private var completed: KhrysalisExtensionSettings? = null
     fun complete(project: Project): KhrysalisExtensionSettings = completed ?: run {
         val libraryMode = this.libraryMode
         val organizationName = this.organizationName
-        val projectName = this.projectName ?: project.name.takeUnless { it == "app" || it == "android" } ?: project.rootProject.name
-        val iosProjectFolder = this.iosProjectFolder ?: project.projectDir.resolve("../ios")
-        val iosSourceFolder = this.iosSourceFolder ?: (if(libraryMode) iosProjectFolder.resolve(projectName).resolve("Classes") else iosProjectFolder.resolve(projectName).resolve("src"))
-        val webProjectFolder = this.webProjectFolder ?: project.projectDir.resolve("../web")
+        val iosProjectName = this.iosProjectName ?: this.projectName ?: project.name.takeUnless { it == "app" || it == "android" } ?: project.rootProject.name
+        val webProjectName = this.webProjectName ?: this.projectName ?: project.name.takeUnless { it == "app" || it == "android" } ?: project.rootProject.name
+        val iosProjectFolder = this.iosProjectFolder ?: this.overrideIosFolder ?: project.projectDir.resolve("../ios")
+        val iosSourceFolder = this.iosSourceFolder ?: (if(libraryMode) iosProjectFolder.resolve(iosProjectName).resolve("Classes") else iosProjectFolder.resolve(iosProjectName).resolve("src"))
+        val webProjectFolder = this.webProjectFolder ?: this.overrideWebFolder ?: project.projectDir.resolve("../web")
         val webSourceFolder = this.webSourceFolder ?: webProjectFolder.resolve("src")
         val result = KhrysalisExtensionSettings(
             organizationName = organizationName,
-            projectName = projectName,
+            iosProjectName = iosProjectName,
+            webProjectName = webProjectName,
             iosProjectFolder = iosProjectFolder,
             iosSourceFolder = iosSourceFolder,
             webProjectFolder = webProjectFolder,
@@ -70,7 +63,8 @@ open class KhrysalisPluginExtension {
 
 data class KhrysalisExtensionSettings(
     val organizationName: String,
-    val projectName: String,
+    val iosProjectName: String,
+    val webProjectName: String,
     val iosProjectFolder: File,
     val iosSourceFolder: File,
     val webProjectFolder: File,
@@ -89,7 +83,6 @@ fun DependencyHandler.khrysalisKotlin(dependencyNotation: Any): Dependency? = ad
 val Project.khrysalis: KhrysalisExtensionSettings get() = (project.extensions.getByName("khrysalis") as KhrysalisPluginExtension).complete(this)
 
 abstract class TranspileTask(): SourceTask() {
-    @get:Input val projectName: String by lazy { project.khrysalis.projectName }
     @get:Input val libraryMode: Boolean by lazy { project.khrysalis.libraryMode }
     @get:OutputDirectory var outputDirectory: File = File("")
 }
@@ -117,7 +110,6 @@ class KhrysalisPlugin : Plugin<Project> {
         }
 
         KhrysalisSettings.verbose = true
-        val projectName by lazy { target.khrysalis.projectName }
         val webBase by lazy { target.khrysalis.webProjectFolder }
         val webSrc by lazy { target.khrysalis.webSourceFolder }
         val iosBase by lazy { target.khrysalis.iosProjectFolder }
@@ -138,7 +130,7 @@ class KhrysalisPlugin : Plugin<Project> {
                         println("Preparing ${c.name} for translation...")
                         c.plugin("swift") {
                             "outputDirectory" set iosSrc.absolutePath
-                            "projName" set projectName
+                            "projName" set target.khrysalis.iosProjectName
                             "equivalents" set project.swiftDependencies(iosBase).toList()
                             "commonPackage" set c.calculateCommonPackage()
                             "libraryMode" set extension.libraryMode.toString()
@@ -156,7 +148,7 @@ class KhrysalisPlugin : Plugin<Project> {
                         println("Preparing ${c.name} for translation...")
                         c.plugin("typescript") {
                             "outputDirectory" set webSrc.absolutePath
-                            "projName" set projectName
+                            "projName" set target.khrysalis.webProjectName
                             "equivalents" set webBase.toString()
                             "commonPackage" set c.calculateCommonPackage()
                             "libraryMode" set extension.libraryMode.toString()

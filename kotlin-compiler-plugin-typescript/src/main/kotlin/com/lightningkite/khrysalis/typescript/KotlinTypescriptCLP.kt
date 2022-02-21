@@ -80,16 +80,23 @@ class KotlinTypescriptExtension(
 
     override fun start(context: BindingContext, files: Collection<KtFile>) {
         println("Will generate files ${outputDirectory.resolve("ts.fqnames")}, ${outputDirectory.resolve("index.ts")}...")
-        translator = TypescriptTranslator(projectName, commonPackage, collector, replacements)
+        translator = TypescriptTranslator(projectName, commonPackage, outputDirectory, collector, replacements)
+
+        val outputSrc = when {
+            outputDirectory.resolve("node_modules").exists() -> outputDirectory
+            outputDirectory.resolve("../node_modules").exists() -> outputDirectory
+            outputDirectory.resolve("../../node_modules").exists() -> outputDirectory.parentFile
+            else -> outputDirectory
+        }
 
         // Load node declarations
-        translator.declarations.loadNonlocal(dependencies, filterOut = outputDirectory)
+        translator.declarations.loadNonlocal(dependencies, filterOut = outputSrc)
 
         // Load local declarations
-        translator.declarations.load(outputDirectory)
+        translator.declarations.loadLocal(outputSrc)
 
         // Create manifest of declarations within this module
-        translator.declarations.local.putAll(translator.run { generateFqToFileMap(files.filter { it.shouldBeTranslated() }) })
+        translator.declarations.local.putAll(translator.run { generateFqToFileMap(outputDirectory, files.filter { it.shouldBeTranslated() }) })
     }
 
     override fun transpile(context: BindingContext, file: KtFile): CharSequence {
@@ -112,8 +119,8 @@ class KotlinTypescriptExtension(
                 }
             }
             outputDirectory.resolve("index.ts").bufferedWriter().use {
-                translator.declarations.local.values.distinct().forEach { f ->
-                    it.appendLine("export * from './${f.removeSuffix(".ts")}'")
+                outputDirectory.walkTopDown().filter { it.extension == "ts" }.forEach { f ->
+                    it.appendLine("export * from './${f.relativeTo(outputDirectory).toString().removeSuffix(".ts")}'")
                 }
             }
         }

@@ -56,7 +56,7 @@ fun TypescriptTranslator.registerSpecialLet() {
             forItem = { (basis, lambda) ->
                 val desc = lambda.functionLiteral.resolvedFunction?.valueParameters?.firstOrNull()
                 if(desc != null){
-                    val varName = (lambda.valueParameters.firstOrNull()?.name ?: "it") + "_${uniqueNumber.getAndIncrement()}"
+                    val varName = (lambda.valueParameters.firstOrNull()?.name ?: "it") + "_${out.uniqueNumber.getAndIncrement()}"
                     -"const $varName = "
                     -basis
                     -";\n"

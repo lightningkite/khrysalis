@@ -38,34 +38,6 @@
   type: call
   template: ~this~ === document.activeElement
 
-- id: android.view.View.visibility
-  type: get
-  template:
-    pattern: getViewVisibility(~this~)
-    imports:
-      getViewVisibility: butterfly-web/dist/views/View.ext
-
-- id: android.view.View.visibility
-  type: set
-  template:
-    pattern: setViewVisibility(~this~, ~value~)
-    imports:
-      setViewVisibility: butterfly-web/dist/views/View.ext
-
-- id: android.view.View.getVisibility
-  type: call
-  template:
-    pattern: getViewVisibility(~this~)
-    imports:
-      getViewVisibility: butterfly-web/dist/views/View.ext
-
-- id: android.view.View.setVisibility
-  type: call
-  template:
-    pattern: setViewVisibility(~this~, ~value~)
-    imports:
-      setViewVisibility: butterfly-web/dist/views/View.ext
-
 - id: android.view.View.rotation
   type: set
   template: ~this~.style.transform = `rotate(${~this~})`
@@ -106,37 +78,16 @@
 
 - id: android.view.View.setBackgroundColor
   type: call
-  template:
-    pattern: setViewBackgroundColor(~this~, ~0~)
+  reflectiveName:
+    pattern: 'chain("style", "backgroundColor")'
     imports:
-      numberToColor: butterfly-web/dist/views/Colors
-      setViewBackgroundColor: butterfly-web/dist/views/View.ext
+      chain: '@lightningkite/rxjs-plus'
+  template: ~this~.style.backgroundColor = ~0~
 
 - id: android.view.View.setBackgroundResource
   type: call
-  template:
-    pattern: setViewBackgroundClass(~this~, ~0~.cssClass)
-    imports:
-      setViewBackgroundClass: butterfly-web/dist/views/View.ext
-
-- id: com.lightningkite.butterfly.views.backgroundResource
-  type: set
-  template:
-    pattern: setViewBackgroundClass(~this~, ~0~.cssClass)
-    imports:
-      setViewBackgroundClass: butterfly-web/dist/views/View.ext
-
-- id: com.lightningkite.butterfly.views.setBackgroundColorResource
-  type: call
-  template:
-    pattern: setViewBackgroundColor(~this~, ~0~)
-    imports:
-      numberToColor: butterfly-web/dist/views/Colors
-      setViewBackgroundColor: butterfly-web/dist/views/View.ext
-
-#- id: android.view.View.setBackground
-#  type: call
-#  template:
+  reflectiveName: '"className"'
+  template: ~this~.className = ~0~
 
 - id: android.view.View.setPadding
   type: call
@@ -145,14 +96,6 @@
 - id: android.view.View.requestLayout
   type: call
   template: /* Request layout.  Not needed in JS.*/
-
-#- id: com.lightningkite.butterfly.views.backgroundDrawable
-#  type: get
-#  template:
-#
-#- id: com.lightningkite.butterfly.views.backgroundDrawable
-#  type: set
-#  template:
 
 - id: android.view.View.setOnClickListener
   type: call
@@ -168,20 +111,6 @@
     lambdaTransforms:
       0: ["_ev.target as HTMLElement"]
 
-#- id: com.lightningkite.butterfly.views.onClick
-#  type: call
-#  template:
-#    pattern: ~this~.onclick = (_ev) => { _ev.stopPropagation(); ~L1~}
-#    lambdaTransforms:
-#      0: ["_ev.target as HTMLElement"]
-
-#- id: com.lightningkite.butterfly.views.onLongClick
-#  type: call
-#  template:
-#    pattern: ~this~.oncontextmenu = (_ev) => { _ev.preventDefault(); ~L0~}
-#    lambdaTransforms:
-#      0: ["_ev.target as HTMLElement"]
-
 - id: android.view.View.isEnabled
   type: get
   template: (!~this~.disabled)
@@ -190,7 +119,7 @@
   reflectiveName:
     pattern: 'elementEnabled'
     imports:
-      elementEnabled: rxjs-plus
+      elementEnabled: '@lightningkite/rxjs-plus'
   template: ~this~.disabled = !(~value~)
 
 - id: android.view.View.setEnabled
@@ -198,7 +127,7 @@
   reflectiveName:
     pattern: 'elementEnabled'
     imports:
-      elementEnabled: rxjs-plus
+      elementEnabled: '@lightningkite/rxjs-plus'
   template: ~this~.disabled = !(~0~)
 
 

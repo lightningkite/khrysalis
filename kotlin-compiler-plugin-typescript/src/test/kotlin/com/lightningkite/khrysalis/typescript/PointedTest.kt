@@ -10,12 +10,13 @@ import java.io.File
 class PointedTest {
     @Test
     fun test() {
-        val it = File("../conversionTestData").resolve("testGenerics.kt")
+        val it = File("../conversionTestData").resolve("testFunctions.kt")
         val r = ExecuteFileTester.tsTranslated(it)
         Assert.assertEquals(r.kotlin, r.typescript)
     }
 }
-//test[testTime.kt]
+//test[testVariables.kt]
 //test[testCollections.kt]
-//test[testReflection.kt]
-//test[testGenerics.kt]
+//test[testTypes.kt]
+//test[testCursedClasses.kt]
+//test[testClasses.kt]

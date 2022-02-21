@@ -72,6 +72,6 @@ fun main(){
     println(theAnswer.ohThatsMe.lambdaWithManyInputs(1, 2))
     println(theAnswer.ohThatsMe.lambdaWithManyInputs.invoke(1, 2))
 
-//    var nullableLambda = if(theAnswer(32, 42) < 100) lambda3 else null
-//    nullableLambda?.invoke()
+    var nullableLambda = if(theAnswer(32, 42) < 100) lambda3 else null
+    nullableLambda?.invoke()
 }

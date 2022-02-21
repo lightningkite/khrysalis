@@ -2,15 +2,13 @@
 
 - id: android.view.ViewGroup.addView
   type: call
-  arguments: [android.view.View]
   template: ~this~.appendChild(~0~)
-
-- id: android.view.ViewGroup.addView
-  type: call
-  actualReceiver: android.widget.LinearLayout
-  template: ~this~.appendChild(~1~(~0~))
 
 - id: android.view.ViewGroup.removeView
   type: call
   arguments: [android.view.View]
   template: ~this~.removeChild(~0~)
+
+- id: android.view.ViewGroup.removeAllViews
+  type: call
+  template: ~this~.innerHtml = ""

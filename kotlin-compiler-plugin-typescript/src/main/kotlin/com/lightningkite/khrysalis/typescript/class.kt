@@ -29,12 +29,12 @@ fun TypescriptTranslator.registerClass() {
         -"class "
         -(on.nameIdentifier ?: defaultName)
         -typedRule.typeParameterList
-        typedRule.superTypeListEntries.mapNotNull { it as? KtSuperTypeCallEntry }.takeUnless { it.isEmpty() }?.let {
+        val typeToExtend = typedRule.superTypeListEntries.asSequence()
+            .mapNotNull { (it as? KtSuperTypeCallEntry)?.calleeExpression?.typeReference }
+            .firstOrNull()
+        if (typeToExtend != null) {
             -" extends "
-            it.forEachBetween(
-                forItem = { -it.calleeExpression.typeReference },
-                between = { -", " }
-            )
+            -typeToExtend
         }
         typedRule.superTypeListEntries.mapNotNull { it as? KtSuperTypeEntry }
             .filter { it.typeReference?.resolvedType?.fqNameWithoutTypeArgs !in skippedExtensions }
@@ -99,9 +99,8 @@ fun TypescriptTranslator.registerClass() {
                             .first().containingDeclaration as ClassDescriptor
                         else -> return
                     }
-                    -BasicType(toOverrideParent.defaultType)
-                    -"Defaults."
-                    out.addImport(toOverrideParent, toOverrideParent.name.asString() + "Defaults")
+                    -out.addImportGetName(toOverrideParent, toOverrideParent.name.asString() + "Defaults")
+                    -'.'
                 }
                 when (it) {
                     is PropertyDescriptor -> {
@@ -199,7 +198,7 @@ fun TypescriptTranslator.registerClass() {
         -" {\n"
         -typedRule.body
         -"}\n"
-        if(typedRule.body?.hasPostActions() == true) {
+        if (typedRule.body?.hasPostActions() == true) {
             if (!typedRule.isPrivate()) -"export "
             -"namespace "
             -typedRule.nameIdentifier
@@ -218,7 +217,7 @@ fun TypescriptTranslator.registerClass() {
         val parent = (typedRule.parent as KtClassBody).parent as KtClassOrObject
         parent.addPostAction {
             -"\n"
-            if(!parent.isPrivate()){
+            if (!parent.isPrivate()) {
                 -"export "
             }
             -"namespace "
@@ -237,7 +236,7 @@ fun TypescriptTranslator.registerClass() {
         val parent = (typedRule.parent as KtClassBody).parent as KtClassOrObject
         parent.addPostAction {
             -"\n"
-            if(!parent.isPrivate()){
+            if (!parent.isPrivate()) {
                 -"export "
             }
             -"namespace "
@@ -270,20 +269,6 @@ fun TypescriptTranslator.registerClass() {
         writeClassHeader(typedRule)
         -" {\n"
         writeInterfaceMarkers(typedRule)
-        typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEach {
-
-            -(it.visibilityModifier() ?: "public")
-            -" "
-            if ((it.valOrVarKeyword as? LeafPsiElement)?.elementType == KtTokens.VAL_KEYWORD) {
-                -"readonly "
-            }
-            -it.nameIdentifier
-            it.typeReference?.let {
-                -": "
-                -it
-            }
-            -";\n"
-        }
         val parentClassName =
             typedRule.parentOfType<KtClassBody>()?.parentOfType<KtClass>()?.resolvedClass?.name?.asString()
         if (typedRule.isInner()) {
@@ -338,16 +323,6 @@ fun TypescriptTranslator.registerClass() {
         } else if (typedRule.isInner()) {
             -"this.parentThis = parentThis;\n"
         }
-        //Parameter assignment first
-        typedRule.primaryConstructor?.let { cons ->
-            cons.valueParameters.asSequence().filter { it.hasValOrVar() }.forEach {
-                -"this."
-                -it.nameIdentifier
-                -" = "
-                -it.nameIdentifier
-                -";\n"
-            }
-        }
         //Then, in order, variable initializers and anon initializers
         typedRule.body?.children?.forEach {
             when (it) {
@@ -376,15 +351,15 @@ fun TypescriptTranslator.registerClass() {
         }
         -"}\n"
 
-        if (typedRule.superTypeListEntries
+        if ((typedRule.superTypeListEntries
                 .mapNotNull { it as? KtSuperTypeEntry }
                 .any { it.typeReference?.resolvedType?.fqNameWithoutTypeArgs == "com.lightningkite.khrysalis.Codable" } ||
-            typedRule.annotationEntries.any { it.resolvedAnnotation?.type?.fqNameWithoutTypeArgs == "kotlinx.serialization.Serializable" && it.valueArguments.isEmpty()}
-        ) {
+            typedRule.annotationEntries.any { it.resolvedAnnotation?.type?.fqNameWithoutTypeArgs == "kotlinx.serialization.Serializable" && it.valueArguments.isEmpty() }
+        ) && typedRule.resolvedClass?.isData == false) {
             //Generate codable constructor
-            out.addImport("@lightningkite/khrysalis-runtime", "parse")
+            out.addImport("@lightningkite/khrysalis-runtime", "parseObject")
 
-            if(!typedRule.isEnum()){
+            if (!typedRule.isEnum()) {
                 -"public static fromJSON"
                 -typedRule.typeParameterList
                 -"(obj: any"
@@ -413,15 +388,21 @@ fun TypescriptTranslator.registerClass() {
                                 return@forEachBetween
                             }
 
-                            -"parse("
-                            -"obj[\""
-                            -it.jsonName(this@registerClass)
-                            -"\"], "
-                            (type.constructor.declarationDescriptor as? TypeParameterDescriptor)?.let {
-                                -it.name.asString()
-                            } ?: -CompleteReflectableType(type)
-                            -") as "
-                            -type
+                            if (type.isPrimitive()) {
+                                -"obj[\""
+                                -it.jsonName(this@registerClass)
+                                -"\"]"
+                            } else {
+                                -"parseObject("
+                                -"obj[\""
+                                -it.jsonName(this@registerClass)
+                                -"\"], "
+                                (type.constructor.declarationDescriptor as? TypeParameterDescriptor)?.let {
+                                    -it.name.asString()
+                                } ?: -CompleteReflectableType(type)
+                                -") as "
+                                -type
+                            }
                         } else {
                             -"undefined"
                         }
@@ -449,87 +430,53 @@ fun TypescriptTranslator.registerClass() {
         }
 
         if (typedRule.isData()) {
-            //Generate hashCode() if not present
-            if (typedRule.body?.declarations?.any { it is FunctionDescriptor && (it as KtDeclaration).name == "hashCode" && it.valueParameters.isEmpty() } != true) {
-                -"public hashCode(): number {\nlet hash = 17;\n"
-                typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEach { param ->
-                    -"hash = 31 * hash + "
-                    out.addImport("@lightningkite/khrysalis-runtime", "hashAnything")
-                    -"hashAnything(this."
-                    -param.nameIdentifier
-                    -")"
-                    -";\n"
-                }
-
-                -"return hash;\n}\n"
-            }
-
-            //Generate equals() if not present
-            if (typedRule.body?.declarations?.any { it is FunctionDescriptor && (it as KtDeclaration).name == "equals" && it.valueParameters.size == 1 } != true) {
-                -"public equals(other: any): boolean { return other instanceof "
-                -typedRule.nameIdentifier
-                typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEach { param ->
-                    -" && "
-                    out.addImport("@lightningkite/khrysalis-runtime", "safeEq")
-                    -"safeEq(this."
-                    -param.nameIdentifier
+            -"public static properties = ["
+            typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEachBetween(
+                forItem = {
+                    -'"'
+                    -it.nameIdentifier
+                    -'"'
+                },
+                between = {
                     -", "
-                    -"other."
-                    -param.nameIdentifier
-                    -")"
                 }
-                -" }\n"
-            }
-
-            //Generate toString() if not present
-            if (typedRule.body?.declarations?.any { it is KtFunction && it.name == "toString" && it.valueParameters.isEmpty() } != true) {
-                -"public toString(): string { return "
-                -'`'
-                -typedRule.nameIdentifier
-                -'('
-                typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEachBetween(
-                    forItem = {
-                        -it.nameIdentifier
-                        -"=\${this."
-                        -it.nameIdentifier
-                        -"}"
-                    },
-                    between = { -", " }
-                )
-                -')'
-                -'`'
-                -" }\n"
-            }
-
-            //Generate copy(..)
-            -"public copy("
+            )
+            -"]\n"
+            -"public static propertyTypes("
+            out.addImport("@lightningkite/khrysalis-runtime", "ReifiedType")
+            typedRule.typeParameterList?.parameters?.forEachBetween(
+                forItem = {
+                    -it.name
+                    -": ReifiedType"
+                },
+                between = { -", " }
+            )
+            -") { return {"
             typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEachBetween(
                 forItem = {
                     -it.nameIdentifier
                     -": "
-                    -it.typeReference
-                    -" = this."
-                    -it.nameIdentifier
+                    -CompleteReflectableType(it.resolvedPrimaryConstructorParameter!!.type)
                 },
-                between = { -", " }
+                between = {
+                    -", "
+                }
             )
-            -"): "
+            -"} }\n"
+            -"copy: (values: Partial<"
             -typedRule.nameIdentifier
             typedRule.typeParameterList?.parameters?.let {
                 -'<'
                 it.forEachBetween(forItem = { -it.name }, between = { -", " })
                 -'>'
             }
-            -" { return new "
-            -typedRule.nameIdentifier
-            -"("
-            typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEachBetween(
-                forItem = {
-                    -it.nameIdentifier
-                },
-                between = { -", " }
-            )
-            -"); }\n"
+            -">) => this;\n"
+            -"equals: (other: any) => boolean;\n"
+            -"hashCode: () => number;\n"
+            typedRule.addPostAction {
+                out.addImport("@lightningkite/khrysalis-runtime", "setUpDataClass")
+                -"\nsetUpDataClass(${typedRule.name})"
+            }
         }
 
         -typedRule.body
@@ -702,9 +649,10 @@ fun TypescriptTranslator.registerClass() {
         })
         (typedRule.initializerList?.initializers?.firstOrNull() as? KtSuperTypeCallEntry)?.resolvedCall?.valueArguments?.forEach {
             args.add { -(it.value.arguments.firstOrNull()?.getArgumentExpression() ?: "undefined") }
-        } ?: (typedRule.initializerList?.initializers?.firstOrNull() as? KtSuperTypeCallEntry)?.valueArguments?.forEach {
-            args.add { -it.getArgumentExpression() }
         }
+            ?: (typedRule.initializerList?.initializers?.firstOrNull() as? KtSuperTypeCallEntry)?.valueArguments?.forEach {
+                args.add { -it.getArgumentExpression() }
+            }
         args.forEachBetween(
             forItem = { it() },
             between = { -", " }
@@ -759,13 +707,15 @@ fun TypescriptTranslator.registerClass() {
             -'"'
             Unit
         })
-        (typedRule.initializerList?.initializers?.firstOrNull() as? KtSuperTypeCallEntry)?.resolvedCall?.valueArguments?.entries?.sortedBy { it.key.index }?.forEach {
-            args.add {
-                -(it.value.arguments.firstOrNull()?.getArgumentExpression() ?: "undefined")
+        (typedRule.initializerList?.initializers?.firstOrNull() as? KtSuperTypeCallEntry)?.resolvedCall?.valueArguments?.entries?.sortedBy { it.key.index }
+            ?.forEach {
+                args.add {
+                    -(it.value.arguments.firstOrNull()?.getArgumentExpression() ?: "undefined")
+                }
             }
-        } ?: (typedRule.initializerList?.initializers?.firstOrNull() as? KtSuperTypeCallEntry)?.valueArguments?.forEach {
-            args.add { -it.getArgumentExpression() }
-        }
+            ?: (typedRule.initializerList?.initializers?.firstOrNull() as? KtSuperTypeCallEntry)?.valueArguments?.forEach {
+                args.add { -it.getArgumentExpression() }
+            }
         args.forEachBetween(
             forItem = { it() },
             between = { -", " }
@@ -817,6 +767,7 @@ fun KtParameter.jsonName(translator: TypescriptTranslator): String {
         ?.value as? String
         ?: name ?: "x"
 }
+
 fun KtEnumEntry.jsonName(translator: TypescriptTranslator): String {
     return annotationEntries
         .mapNotNull { it.resolvedAnnotation }
@@ -825,6 +776,7 @@ fun KtEnumEntry.jsonName(translator: TypescriptTranslator): String {
         ?.value as? String
         ?: name ?: "x"
 }
+
 private val weakKtClassPostActions = WeakHashMap<KtElement, ArrayList<() -> Unit>>()
 fun KtElement.runPostActions() {
     weakKtClassPostActions.remove(this)?.forEach { it() }
@@ -847,5 +799,6 @@ val ConstructorDescriptor.tsConstructorName: String?
         ?.value
         ?.value
         ?.toString() ?: ("constructor" + this.valueParameters.joinToString("") {
-        it.type.fqNameWithTypeArgs.split('.', ',', '<', '>').map { it.filter { it.isLetterOrDigit() } }.filter { it.firstOrNull()?.isLowerCase() == false }.joinToString("")
+        it.type.fqNameWithTypeArgs.split('.', ',', '<', '>').map { it.filter { it.isLetterOrDigit() } }
+            .filter { it.firstOrNull()?.isLowerCase() == false }.joinToString("")
     })

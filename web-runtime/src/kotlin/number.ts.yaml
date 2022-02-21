@@ -462,23 +462,6 @@
 - id: kotlin.Long.and
   type: call
   template: (~this~ & ~0~)
-
-- id: kotlin.Byte.and
-  type: call
-  infix: true
-  template: ~this~ & ~0~
-- id: kotlin.Short.and
-  type: call
-  infix: true
-  template: ~this~ & ~0~
-- id: kotlin.Int.and
-  type: call
-  infix: true
-  template: ~this~ & ~0~
-- id: kotlin.Long.and
-  type: call
-  infix: true
-  template: ~this~ & ~0~
   
 # Or
 
@@ -494,23 +477,6 @@
 - id: kotlin.Long.or
   type: call
   template: (~this~ | ~0~)
-
-- id: kotlin.Byte.or
-  type: call
-  infix: true
-  template: ~this~ | ~0~
-- id: kotlin.Short.or
-  type: call
-  infix: true
-  template: ~this~ | ~0~
-- id: kotlin.Int.or
-  type: call
-  infix: true
-  template: ~this~ | ~0~
-- id: kotlin.Long.or
-  type: call
-  infix: true
-  template: ~this~ | ~0~
   
 # XOr
 
@@ -526,23 +492,6 @@
 - id: kotlin.Long.xor
   type: call
   template: (~this~ ^ ~0~)
-
-- id: kotlin.Byte.xor
-  type: call
-  infix: true
-  template: ~this~ ^ ~0~
-- id: kotlin.Short.xor
-  type: call
-  infix: true
-  template: ~this~ ^ ~0~
-- id: kotlin.Int.xor
-  type: call
-  infix: true
-  template: ~this~ ^ ~0~
-- id: kotlin.Long.xor
-  type: call
-  infix: true
-  template: ~this~ ^ ~0~
   
 # Left Shift
 
@@ -559,23 +508,6 @@
   type: call
   template: (~this~ << ~0~)
 
-- id: kotlin.Byte.shl
-  type: call
-  infix: true
-  template: ~this~ << ~0~
-- id: kotlin.Short.shl
-  type: call
-  infix: true
-  template: ~this~ << ~0~
-- id: kotlin.Int.shl
-  type: call
-  infix: true
-  template: ~this~ << ~0~
-- id: kotlin.Long.shl
-  type: call
-  infix: true
-  template: ~this~ << ~0~
-  
 # Right Shift
 
 - id: kotlin.Byte.shr
@@ -591,23 +523,6 @@
   type: call
   template: (~this~ >> ~0~)
 
-- id: kotlin.Byte.shr
-  type: call
-  infix: true
-  template: ~this~ >> ~0~
-- id: kotlin.Short.shr
-  type: call
-  infix: true
-  template: ~this~ >> ~0~
-- id: kotlin.Int.shr
-  type: call
-  infix: true
-  template: ~this~ >> ~0~
-- id: kotlin.Long.shr
-  type: call
-  infix: true
-  template: ~this~ >> ~0~
-  
 # Unsigned Right Shift
 
 - id: kotlin.Byte.ushr
@@ -622,23 +537,6 @@
 - id: kotlin.Long.ushr
   type: call
   template: (~this~ >>> ~0~)
-
-- id: kotlin.Byte.ushr
-  type: call
-  infix: true
-  template: ~this~ >>> ~0~
-- id: kotlin.Short.ushr
-  type: call
-  infix: true
-  template: ~this~ >>> ~0~
-- id: kotlin.Int.ushr
-  type: call
-  infix: true
-  template: ~this~ >>> ~0~
-- id: kotlin.Long.ushr
-  type: call
-  infix: true
-  template: ~this~ >>> ~0~
 
 
 # Comparisons

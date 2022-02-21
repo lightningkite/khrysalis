@@ -37,9 +37,9 @@ class SwiftFileEmitter(val translator: SwiftTranslator, file: KtFile) : FileEmit
         render(writer)
     }
 
-    override fun addImport(import: Import): List<StringReplacement> {
+    override fun addImport(import: Import): StringReplacement? {
         imports.add(import as SwiftImport)
-        return listOf()
+        return null
     }
 
     fun addImports(parts: Iterable<SwiftImport>) {

@@ -14,6 +14,7 @@ import org.jetbrains.kotlin.psi.psiUtil.getTextWithLocation
 import org.jetbrains.kotlin.psi.synthetics.SyntheticClassOrObjectDescriptor
 import org.jetbrains.kotlin.resolve.calls.smartcasts.MultipleSmartCasts
 import com.lightningkite.khrysalis.analysis.*
+import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 import org.jetbrains.kotlin.resolve.lazy.descriptors.LazyClassDescriptor
 
 fun TypescriptTranslator.registerIdentifiers(){
@@ -39,9 +40,8 @@ fun TypescriptTranslator.registerIdentifiers(){
         },
         priority = 1013,
         action = {
-            out.addImport((typedRule.resolvedReferenceTarget!!))
-            if((typedRule.parent as? KtQualifiedExpression)?.selectorExpression != typedRule) {
-                -typedRule.resolvedReferenceTarget!!.containingDeclaration?.name?.identifier
+            if ((typedRule.parent as? KtQualifiedExpression)?.selectorExpression != typedRule) {
+                -out.addImportGetName(typedRule.resolvedReferenceTarget!!.containingDeclaration!!)
                 -'.'
             }
             -"Companion.INSTANCE"
@@ -55,8 +55,7 @@ fun TypescriptTranslator.registerIdentifiers(){
         },
         priority = 1012,
         action = {
-            out.addImport((typedRule.resolvedReferenceTarget!!))
-            -typedRule.getIdentifier()
+            -out.addImportGetName((typedRule.resolvedReferenceTarget!!.containingDeclaration!!))
             -".Companion.INSTANCE"
         }
     )
@@ -82,8 +81,7 @@ fun TypescriptTranslator.registerIdentifiers(){
         },
         priority = 1011,
         action = {
-            out.addImport((typedRule.resolvedReferenceTarget!!))
-            -typedRule.getIdentifier()
+            -out.addImportGetName((typedRule.resolvedReferenceTarget!!))
             -".INSTANCE"
         }
     )
@@ -118,7 +116,11 @@ fun TypescriptTranslator.registerIdentifiers(){
         condition = {
             val untypedTarget = typedRule.resolvedReferenceTarget
             val target = untypedTarget as? ClassDescriptor ?: (untypedTarget as? ConstructorDescriptor)?.constructedClass ?: return@handle false
-            if((typedRule.parent as? KtQualifiedExpression)?.selectorExpression == this) return@handle false
+            if((typedRule.parent as? KtUserType)?.qualifier != null) return@handle false
+            if((typedRule.parent as? KtQualifiedExpression)?.selectorExpression == typedRule) return@handle false
+            (typedRule.parent as? KtCallExpression)?.let {
+                if((it.parent as? KtQualifiedExpression)?.selectorExpression == it) return@handle false
+            }
             val context = typedRule.parentOfType<KtClassOrObject>()?.resolvedClass ?: return@handle false
             target.containingDeclaration == context
         },
@@ -130,8 +132,7 @@ fun TypescriptTranslator.registerIdentifiers(){
         }
     )
     handle<KtNameReferenceExpression> {
-        -typedRule.getIdentifier()
-        typedRule.resolvedReferenceTarget?.let { out.addImport(it) }
+        -typedRule.resolvedReferenceTarget?.let { out.addImportGetName(it) }
     }
 
     handle<LeafPsiElement>(
@@ -210,7 +211,7 @@ fun String.safeJsIdentifier(): String = when(this){
     "do",
     "double",
     "else",
-    "enum*",
+    "enum",
     "eval",
     "export",
     "extends",

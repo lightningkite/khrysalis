@@ -56,7 +56,7 @@ function getFullIter<T>(iter: Iterable<T>): IterableIterator<T> {
     }
 }
 
-export class EqualOverrideSet<T extends Object> implements Set<T> {
+export class EqualOverrideSet<T> implements Set<T> {
     private readonly map: EqualOverrideMap<T, T>
 
     public constructor(
@@ -128,7 +128,7 @@ export class EqualOverrideSet<T extends Object> implements Set<T> {
     };
 }
 
-export class EqualOverrideMap<K extends Object, V> implements Map<K, V> {
+export class EqualOverrideMap<K, V> implements Map<K, V> {
     internalEntries: Map<number, Array<[K, V]>> = new Map();
     public size: number = 0;
     public hasher: (k: K) => number
@@ -275,25 +275,29 @@ declare global {
     }
 }
 //Freakin' JS inconsistency.  We'll have to fix it.
-Object.defineProperty(Array.prototype, "size", {
-    get: function () {
-        return this.length
-    }
-});
-Object.defineProperty(Array.prototype, "equals", {
-    value: function (other: any): boolean {
-        if (Array.isArray(other) && this.length === other.length) {
-            for (let i = 0; i < this.length; i++) {
-                if (!safeEq(this[i], other[i])) {
-                    return false;
-                }
-            }
-            return true;
-        } else {
-            return false
+if(Array.prototype.size === undefined){
+    Object.defineProperty(Array.prototype, "size", {
+        get: function () {
+            return this.length
         }
-    }
-});
+    });
+}
+if(Array.prototype.equals === undefined){
+    Object.defineProperty(Array.prototype, "equals", {
+        value: function (other: any): boolean {
+            if (Array.isArray(other) && this.length === other.length) {
+                for (let i = 0; i < this.length; i++) {
+                    if (!safeEq(this[i], other[i])) {
+                        return false;
+                    }
+                }
+                return true;
+            } else {
+                return false
+            }
+        }
+    });
+}
 
 export function listRemoveAll<T>(array: Array<T>, predicate: (a: T) => boolean) {
     let index = 0
@@ -325,6 +329,14 @@ export function listRemoveItem<T>(array: Array<T>, item: T) {
 export function xIterableMinus<T>(this_: Iterable<T>, item: T): Array<T> {
     let array = [...this_];
     listRemoveFirst(array, (x) => safeEq(item, x));
+    return array;
+}
+
+export function xIterableMinusMultiple<T>(this_: Iterable<T>, items: Array<T>): Array<T> {
+    let array = [...this_];
+    for(const item in items) {
+        listRemoveFirst(array, (x) => safeEq(item, x));
+    }
     return array;
 }
 
@@ -370,4 +382,16 @@ export function xMapFilter<K, V>(this_: Map<K, V>, predicate: (entry: [K, V]) =>
         }
     }
     return newMap
+}
+export function xMapPlusPair<K, V>(this_: Map<K, V>, pair: [K, V]): Map<K, V> {
+    const newMap: Map<K, V> = this_ instanceof EqualOverrideMap ? new EqualOverrideMap() : new Map();
+    xMapPutAll(newMap, this_)
+    newMap.set(pair[0], pair[1])
+    return newMap;
+}
+export function xMapMinus<K, V>(this_: Map<K, V>, key: K): Map<K, V> {
+    const newMap: Map<K, V> = this_ instanceof EqualOverrideMap ? new EqualOverrideMap() : new Map();
+    xMapPutAll(newMap, this_)
+    this_.delete(key)
+    return newMap;
 }

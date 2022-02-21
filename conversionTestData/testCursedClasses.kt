@@ -31,6 +31,16 @@ interface F {
     }
 }
 
+class I {
+    fun takeThing(j: I.J, j2: J) {
+        I.J()
+        J()
+    }
+    class J {
+
+    }
+}
+
 fun main(){
     println("Clearly, we hate ourselves.")
     println(F.H.x)
@@ -40,4 +50,7 @@ fun main(){
     A.B.C()
     A.B.C.D()
     A.B.C.D(4)
+
+    I()
+    I.J()
 }

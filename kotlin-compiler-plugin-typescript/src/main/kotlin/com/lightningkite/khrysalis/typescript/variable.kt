@@ -25,8 +25,6 @@ import org.jetbrains.kotlin.synthetic.SyntheticJavaPropertyDescriptor
 import org.jetbrains.kotlin.types.KotlinType
 import java.util.concurrent.atomic.AtomicInteger
 
-val uniqueNumber = AtomicInteger(0)
-
 data class VirtualGet(
     val receiver: Any? = null,
     val nameReferenceExpression: KtNameReferenceExpression,
@@ -511,7 +509,6 @@ fun TypescriptTranslator.registerVariable() {
         priority = 1000,
         action = {
             val prop = typedRule.property as PropertyDescriptor
-            out.addImport(typedRule.property, prop.tsFunctionGetName)
             nullWrapAction(
                 swiftTranslator = this@registerVariable,
                 receiver = typedRule.extensionReceiver(this@registerVariable),
@@ -524,7 +521,7 @@ fun TypescriptTranslator.registerVariable() {
                         -d
                         -"."
                     }
-                    -prop.tsFunctionGetName
+                    -out.addImportGetName(typedRule.property, prop.tsFunctionGetName)
                     -'('
                     if (receiver != null) {
                         -receiver
@@ -624,7 +621,6 @@ fun TypescriptTranslator.registerVariable() {
         priority = 1000,
         action = {
             val prop = typedRule.property as PropertyDescriptor
-            out.addImport(typedRule.property, prop.tsFunctionSetName)
 
             nullWrapAction(
                 swiftTranslator = this@registerVariable,
@@ -637,7 +633,7 @@ fun TypescriptTranslator.registerVariable() {
                         -typedRule.dispatchReceiver(this@registerVariable)
                         -"."
                     }
-                    -prop.tsFunctionSetName
+                    -out.addImportGetName(typedRule.property, prop.tsFunctionSetName)
                     -'('
                     if (receiver != null) {
                         -receiver
@@ -703,7 +699,7 @@ fun TypescriptTranslator.registerVariable() {
                 if (left.receiverExpression.isSimple()) {
                     left.replacementReceiverExpression
                 } else {
-                    val n = "temp${uniqueNumber.getAndIncrement()}"
+                    val n = "temp${out.uniqueNumber.getAndIncrement()}"
                     -"const $n = "
                     -left.replacementReceiverExpression
                     -";\n"

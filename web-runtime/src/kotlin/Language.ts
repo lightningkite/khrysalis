@@ -1,4 +1,5 @@
-// export type FullType = Array<any>;
+export type ReifiedType<T = unknown> = Array<any>;
+export function typeOf<T>(basis: any, ...args: ReifiedType): ReifiedType<T> { return [basis, ...args] }
 
 export class Exception extends Error {
     cause: any;
@@ -68,6 +69,12 @@ export function safeEq(left: any, right: any): boolean {
     } else {
         return left === right
     }
+}
+export function equalBy<A>(key: ((a: A) => any) | keyof A): (lhs: A, rhs: A) => boolean {
+    if(typeof key === "function")
+        return (l, r) => safeEq(key(l), key(r))
+    else
+        return (l, r) => safeEq(l[key], r[key])
 }
 
 export function checkReified<T>(item: any, fullType: Array<any>): item is T {

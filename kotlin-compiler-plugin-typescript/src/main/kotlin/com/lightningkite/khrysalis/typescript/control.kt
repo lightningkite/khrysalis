@@ -306,6 +306,10 @@ fun TypescriptTranslator.registerControl() {
             }
             -"\n"
         }
+        if(typedRule.entries.none { it.isElse } && typedRule.resolvedExhaustiveWhen == true) {
+            -"default:\n"
+            -"throw new Exception(\"Exhaustive when turned out to not be so exhaustive.\")"
+        }
         -"}\n"
         if (typedRule.actuallyCouldBeExpression) {
             -"\n})()"
@@ -440,6 +444,9 @@ fun TypescriptTranslator.registerControl() {
                 -" else "
             }
         )
+        if(typedRule.entries.none { it.isElse } && typedRule.resolvedExhaustiveWhen == true) {
+            -"else throw new Exception(\"Exhaustive when turned out to not be so exhaustive.\")"
+        }
 
         if (typedRule.actuallyCouldBeExpression) {
             -"\n})()"

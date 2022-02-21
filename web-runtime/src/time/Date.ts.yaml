@@ -37,6 +37,8 @@
 - { type: get, id: java.time.ZonedDateTime.monthValue, template: "~this~.monthValue()" }
 - { type: get, id: java.time.ZonedDateTime.year, template: "~this~.year()" }
 
+- { type: get, id: java.time.ZoneId.id, template: "~this~.id()" }
+
 - { type: call, id: com.lightningkite.khrysalis.time.plusYears, receiver: java.time.ZonedDateTime, template: "~this~.plusYears" }
 - { type: call, id: com.lightningkite.khrysalis.time.plusMonths, receiver: java.time.ZonedDateTime, template: "~this~.plusMonths" }
 - { type: call, id: com.lightningkite.khrysalis.time.plusDays, receiver: java.time.ZonedDateTime, template: "~this~.plusDays" }

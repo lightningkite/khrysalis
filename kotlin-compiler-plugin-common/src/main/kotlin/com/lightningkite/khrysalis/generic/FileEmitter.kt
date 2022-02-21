@@ -22,7 +22,7 @@ abstract class FileEmitter(val file: KtFile, val body: StringBuilder = StringBui
         }
     }
     data class StringReplacement(val from: String, val to: String)
-    abstract fun addImport(import: Import): List<StringReplacement>
+    abstract fun addImport(import: Import): StringReplacement?
     var fileEndingActions = ArrayList<() -> Unit>()
     abstract fun renderImports(to: Appendable)
     abstract fun sub(): FileEmitter

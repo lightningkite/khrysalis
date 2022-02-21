@@ -13,6 +13,7 @@ kotlin.collections.mapValues
 kotlin.collections.filter
 kotlin.collections.minus
 kotlin.Comparator
+kotlin.comparisons.compareBy
 kotlin.collections.single
 kotlin.collections.singleOrNull
 kotlin.collections.contains
@@ -44,3 +45,4 @@ kotlin.IndexOutOfBoundsException
 java.lang.IndexOutOfBoundsException
 android.graphics.PointF
 android.graphics.RectF
+android.location.Address

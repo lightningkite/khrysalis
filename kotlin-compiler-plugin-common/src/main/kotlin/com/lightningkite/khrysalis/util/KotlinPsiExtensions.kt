@@ -1,9 +1,15 @@
 package com.lightningkite.khrysalis.util
 
 import org.jetbrains.kotlin.com.intellij.psi.PsiElement
+import org.jetbrains.kotlin.com.intellij.psi.PsiWhiteSpace
+import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.incremental.components.NoLookupLocation
+import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.name.Name
+import org.jetbrains.kotlin.psi.KtExpression
+import org.jetbrains.kotlin.psi.KtQualifiedExpression
+import org.jetbrains.kotlin.psi.psiUtil.allChildren
 import org.jetbrains.kotlin.resolve.descriptorUtil.getSuperClassNotAny
 import org.jetbrains.kotlin.resolve.descriptorUtil.getSuperClassOrAny
 import org.jetbrains.kotlin.resolve.descriptorUtil.getSuperInterfaces
@@ -39,3 +45,10 @@ fun <T : PsiElement> PsiElement.parentOfType(type: Class<T>): T? =
 
 
 fun MemberScope.functionsNamed(name: String) = getContributedFunctions(Name.identifier(name), NoLookupLocation.FROM_BACKEND)
+
+
+fun KtExpression.hasNewlineBefore(typedRule: KtQualifiedExpression): Boolean {
+    return typedRule.prevSibling
+        ?.let { it as? PsiWhiteSpace }
+        ?.textContains('\n') == true
+}

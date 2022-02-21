@@ -14,6 +14,8 @@ import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.getTextWithLocation
 import org.jetbrains.kotlin.resolve.calls.components.isVararg
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
+import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
+import org.jetbrains.kotlin.types.typeUtil.isTypeParameter
 
 //class TestThing(){
 //    operator fun dec
@@ -113,12 +115,12 @@ fun TypescriptTranslator.registerOperators() {
             val arrayAccess = typedRule.left as KtArrayAccessExpression
             val setFunction = arrayAccess.resolvedIndexedLvalueSet!!.resultingDescriptor
 
-            val tempArray = "array${uniqueNumber.getAndIncrement()}"
+            val tempArray = "array${out.uniqueNumber.getAndIncrement()}"
             -"const $tempArray = "
             -arrayAccess.arrayExpression
             -";\n"
             val tempIndexes = arrayAccess.indexExpressions.map {
-                val tempName = "index${uniqueNumber.getAndIncrement()}"
+                val tempName = "index${out.uniqueNumber.getAndIncrement()}"
                 -"const $tempName = "
                 -it
                 -";\n"
@@ -176,7 +178,7 @@ fun TypescriptTranslator.registerOperators() {
             val reuseIdentifiers = typedRule.operationToken != KtTokens.EQ
 
             val tempArray: Any = if (reuseIdentifiers && !arrayAccess.arrayExpression!!.isSimple()) {
-                val t = "array${uniqueNumber.getAndIncrement()}"
+                val t = "array${out.uniqueNumber.getAndIncrement()}"
                 -"const $t = "
                 -arrayAccess.arrayExpression
                 -";\n"
@@ -187,7 +189,7 @@ fun TypescriptTranslator.registerOperators() {
                     if (it.isSimple()) {
                         it
                     } else {
-                        val t = "index${uniqueNumber.getAndIncrement()}"
+                        val t = "index${out.uniqueNumber.getAndIncrement()}"
                         -"const $t = "
                         -it
                         -";\n"
@@ -342,8 +344,7 @@ fun TypescriptTranslator.registerOperators() {
         }
         val funcName = typedRule.functionDescriptor.tsNameOverridden ?: typedRule.functionDescriptor.name.asString()
             .safeJsIdentifier()
-        this.out.addImport(typedRule.functionDescriptor, funcName)
-        -funcName
+        -this.out.addImportGetName(typedRule.functionDescriptor, funcName)
         -ArgumentsList(
             on = typedRule.functionDescriptor,
             resolvedCall = typedRule.resolvedCall!!,
@@ -374,26 +375,65 @@ fun TypescriptTranslator.registerOperators() {
                 resolvedCall = typedRule.resolvedCall
             )
         })
-    handle<KtBinaryExpression>(
+    handle<ValueOperator>(
         condition = {
-            typedRule.operationReference.getReferencedNameElementType() in setOf(
+            typedRule.operationToken in setOf(
                 KtTokens.GT,
                 KtTokens.GTEQ,
                 KtTokens.LT,
                 KtTokens.LTEQ
             )
         },
-        priority = 1,
+        priority = 9_000,
         action = {
-            -typedRule.left
-            -".compareTo("
-            -typedRule.right
-            -") "
+//            typedRule.resolvedCall.typeArguments.values.firstOrNull()
+            if (typedRule.functionDescriptor.containingDeclaration.fqNameSafe.asString() in setOf("kotlin.Comparable", "java.util.Comparable")) {
+                -"safeCompare("
+                -typedRule.left
+                -", "
+                -typedRule.right
+                -") "
+                out.addImport("@lightningkite/khrysalis-runtime", "safeCompare")
+            } else {
+                -typedRule.left
+                -".compareTo("
+                -typedRule.right
+                -") "
+            }
             val t = typedRule.operationToken
             if (t is KtSingleValueToken) -t.value
             -" 0"
         }
     )
+//    handle<KtBinaryExpression>(
+//        condition = {
+//            typedRule.operationReference.getReferencedNameElementType() in setOf(
+//                KtTokens.GT,
+//                KtTokens.GTEQ,
+//                KtTokens.LT,
+//                KtTokens.LTEQ
+//            )
+//        },
+//        priority = 9_000,
+//        action = {
+//            if (typedRule.left?.resolvedExpressionTypeInfo?.type?.isTypeParameter() == true) {
+//                -"safeCompare("
+//                -typedRule.left
+//                -", "
+//                -typedRule.right
+//                -") "
+//                out.addImport("@lightningkite/khrysalis-runtime", "safeCompare")
+//            } else {
+//                -typedRule.left
+//                -".compareTo("
+//                -typedRule.right
+//                -") "
+//            }
+//            val t = typedRule.operationToken
+//            if (t is KtSingleValueToken) -t.value
+//            -" 0"
+//        }
+//    )
 
     handle<KtPrefixExpression>(
         condition = {

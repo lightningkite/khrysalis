@@ -74,33 +74,19 @@ inline fun KotlinTranslator<TypescriptFileEmitter>.ContextByType<*>.nullWrapActi
         action(receiver)
         return
     }
-    if(isExpression){
-        -"(()"
-        if(type != null){
-            -": "
-            -type
-        }
-        -" => {\n"
-    }
-    val r = receiver
-    val tempName = if (r is String || (r as? KtExpression)?.isSimple() == true) {
-        -"if("
-        -r
-        -" !== null) {\n"
-        r
-    } else {
-        val n = "temp${uniqueNumber.getAndIncrement()}"
-        -"const $n = "
+    if(isExpression || (receiver !is String && (receiver as? KtExpression)?.isSimple() != true)){
+        out.addImport("@lightningkite/khrysalis-runtime", "runOrNull")
+        -"runOrNull("
         -receiver
-        -";\nif($n !== null) {\n"
-        n
-    }
-    if(isExpression){
-        -"return "
-    }
-    action(tempName)
-    -"\n}"
-    if(isExpression){
-        -" else { return null }\n})()"
+        val tempName = "_"
+        -", $tempName => "
+        action(tempName)
+        -")"
+    } else {
+        -"if("
+        -receiver
+        -" !== null) {\n"
+        action(receiver)
+        -"\n}"
     }
 }

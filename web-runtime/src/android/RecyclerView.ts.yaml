@@ -1,0 +1,7 @@
+- id: androidx.recyclerview.widget.GridLayoutManager
+  type: call
+  template: '{ display: "grid", gridTemplateColumns: `repeat(${~1~}, 1fr)` }'
+
+- id: androidx.recyclerview.widget.RecyclerView.layoutManager
+  type: set
+  template: 'Object.assign(~this~.style, ~value~)'

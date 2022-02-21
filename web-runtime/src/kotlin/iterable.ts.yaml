@@ -17,6 +17,12 @@
       execPipe: iter-tools-es
 
 - id: kotlin.collections.reversed
+  actualReceiver: List
+  type: call
+  template:
+    pattern: ~this~.reverse()
+
+- id: kotlin.collections.reversed
   type: call
   template:
     pattern: toArray(~this~).reverse()
@@ -25,10 +31,24 @@
 
 - id: kotlin.collections.drop
   type: call
+  actualReceiver: List
   template:
-    pattern: drop(~0~, ~this~)
+    pattern: ~this~.slice(~0~)
+
+- id: kotlin.collections.drop
+  type: call
+  template:
+    pattern: toArray(~this~).slice(~0~)
     imports:
-      drop: iter-tools-es
+      toArray: iter-tools-es
+
+- id: kotlin.collections.dropLast
+  type: call
+  actualReceiver: List
+  template:
+    pattern: ~this~.slice(0, -~0~)
+    imports:
+      toArray: iter-tools-es
 
 - id: kotlin.collections.dropLast
   type: call
@@ -40,8 +60,10 @@
 - id: kotlin.collections.dropWhile
   type: call
   template:
-    pattern: dropWhile(~0~, ~this~)
+    pattern: execPipe(~this~, dropWhile(~0~), toArray)
     imports:
+      execPipe: iter-tools-es
+      toArray: iter-tools-es
       dropWhile: iter-tools-es
 
 #- id: kotlin.collections.dropLastWhile
@@ -49,8 +71,10 @@
 - id: kotlin.collections.take
   type: call
   template:
-    pattern: take(~0~, ~this~)
+    pattern: execPipe(~this~, take(~0~), toArray)
     imports:
+      execPipe: iter-tools-es
+      toArray: iter-tools-es
       take: iter-tools-es
 
 - id: kotlin.collections.takeLast
@@ -63,94 +87,115 @@
 - id: kotlin.collections.takeWhile
   type: call
   template:
-    pattern: takeWhile(~0~, ~this~)
+    pattern: execPipe(~this~, takeWhile(~0~), toArray)
     imports:
+      execPipe: iter-tools-es
+      toArray: iter-tools-es
       takeWhile: iter-tools-es
 #- id: kotlin.collections.takeLastWhile
-
-- id: kotlin.collections.filter
-  type: call
-  template:
-    pattern: filter(~0~, ~this~)
-    imports:
-      filter: iter-tools-es
 
 - id: kotlin.collections.map
   type: call
   template:
-    pattern: map(~0~, ~this~)
+    pattern: execPipe(~this~, map(~0~), toArray)
     imports:
+      execPipe: iter-tools-es
+      toArray: iter-tools-es
       map: iter-tools-es
 
 - id: kotlin.collections.mapIndexed
   type: call
   template:
-    pattern: map(~0~, ~this~)
+    pattern: execPipe(~this~, map(~0~), toArray)
     imports:
+      execPipe: iter-tools-es
+      toArray: iter-tools-es
       map: iter-tools-es
 
 - id: kotlin.collections.flatMap
   type: call
   template:
-    pattern: flatMap(~0~, ~this~)
+    pattern: execPipe(~this~, flatMap(~0~), toArray)
     imports:
+      execPipe: iter-tools-es
+      toArray: iter-tools-es
       flatMap: iter-tools-es
 
 - id: kotlin.collections.flatten
   type: call
   template:
-    pattern: flatMap(x => x, ~this~)
+    pattern: execPipe(~this~, flatMap(x => x), toArray)
     imports:
+      execPipe: iter-tools-es
+      toArray: iter-tools-es
       flatMap: iter-tools-es
+
+- id: kotlin.collections.filter
+  type: call
+  template:
+    pattern: execPipe(~this~, filter(~0~), toArray)
+    imports:
+      execPipe: iter-tools-es
+      toArray: iter-tools-es
+      filter: iter-tools-es
 
 - id: kotlin.collections.filterIndexed
   type: call
   template:
-    pattern: filter(~0~, ~this~)
+    pattern: execPipe(~this~, filter(~0~), toArray)
     imports:
+      execPipe: iter-tools-es
+      toArray: iter-tools-es
       filter: iter-tools-es
 
 - id: kotlin.collections.filterNot
   type: call
   template:
-    pattern: filter((x)=>{ !~0~(x) ), ~this~)
+    pattern: execPipe(~this~, filter(x => !(~0~)(x)), toArray)
     imports:
+      execPipe: iter-tools-es
+      toArray: iter-tools-es
       filter: iter-tools-es
 
 - id: kotlin.collections.filterNotNull
   type: call
   template:
-    pattern: filter(notNull, ~this~)
+    pattern: execPipe(~this~, filter(notNull), toArray)
     imports:
+      execPipe: iter-tools-es
+      toArray: iter-tools-es
       filter: iter-tools-es
       notNull: iter-tools-es
-      map: iter-tools-es
 
 - id: kotlin.collections.mapNotNull
   type: call
   template:
-    pattern: execPipe(~this~, map(~0~), filter(notNull))
+    pattern: execPipe(~this~, map(~0~), filter(notNull), toArray)
     imports:
+      execPipe: iter-tools-es
+      toArray: iter-tools-es
       filter: iter-tools-es
       notNull: iter-tools-es
       map: iter-tools-es
-      execPipe: iter-tools-es
 
 - id: kotlin.collections.mapIndexedNotNull
   type: call
   template:
-    pattern: execPipe(~this~, map(~0~), filter(notNull))
+    pattern: execPipe(~this~, map(~0~), filter(notNull), toArray)
     imports:
+      execPipe: iter-tools-es
+      toArray: iter-tools-es
       filter: iter-tools-es
       notNull: iter-tools-es
       map: iter-tools-es
-      execPipe: iter-tools-es
 
 - id: kotlin.collections.chunked
   type: call
   template:
-    pattern: batch(~0~, ~this~)
+    pattern: execPipe(~this~, batch(~0~), toArray)
     imports:
+      execPipe: iter-tools-es
+      toArray: iter-tools-es
       batch: iter-tools-es
 
 - id: kotlin.collections.sorted
@@ -363,8 +408,10 @@
   type: call
   arguments: [ kotlin.collections.Iterable ]
   template:
-    pattern: concat(~this~, ~0~)
+    pattern: toArray(concat(~this~, ~0~))
     imports:
+      execPipe: iter-tools-es
+      toArray: iter-tools-es
       concat: iter-tools-es
 
 - id: kotlin.collections.plus
@@ -376,10 +423,18 @@
 
 - id: kotlin.collections.forEach
   type: call
+  actualReceiver: List
   template:
-    pattern: for(const _x of ~this~) { ~L0~ }
-    lambdaTransforms:
-      0: ["_x"]
+    pattern: ~this~.forEach(~0~)
+    imports:
+      forEach: iter-tools-es
+
+- id: kotlin.collections.forEach
+  type: call
+  template:
+    pattern: forEach(~0~, ~this~)
+    imports:
+      forEach: iter-tools-es
 
 - id: kotlin.collections.first
   type: call
@@ -492,6 +547,28 @@
       reduceOr: '@lightningkite/khrysalis-runtime'
       cMin: '@lightningkite/khrysalis-runtime'
 
+- id: kotlin.collections.reduce
+  type: call
+  template:
+    pattern: reduceOr(~0~, ~this~)
+    imports:
+      reduceOr: '@lightningkite/khrysalis-runtime'
+
+- id: kotlin.collections.reduceOrNull
+  type: call
+  template:
+    pattern: reduceOr(~0~, ~this~)
+    imports:
+      reduceOr: '@lightningkite/khrysalis-runtime'
+
+- id: kotlin.collections.fold
+  type: call
+  template:
+    pattern: reduce(~0~, ~1~, ~this~)
+    imports:
+      reduce: 'iter-tools-es'
+      cMin: '@lightningkite/khrysalis-runtime'
+
 - id: kotlin.collections.joinToString
   type: call
   suppliedArguments: []
@@ -559,3 +636,11 @@
       execPipe: iter-tools-es
       map: iter-tools-es
       join: '@lightningkite/khrysalis-runtime'
+
+- id: kotlin.collections.minus
+  type: call
+  arguments: [Iterable]
+  template:
+    pattern: xIterableMinusMultiple(~this~, ~0~)
+    imports:
+      xIterableMinusMultiple: '@lightningkite/khrysalis-runtime'

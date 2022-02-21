@@ -9,42 +9,6 @@
 - id: kotlin.Any
   type: type
   template: any
-- id: com.lightningkite.khrysalis.AnyObject
-  type: type
-  template: object
-- id: com.lightningkite.khrysalis.AnyHashable
-  type: type
-  template: any
-- id: com.lightningkite.khrysalis.AnyEquatable
-  type: type
-  template: any
-- id: com.lightningkite.khrysalis.IsHashable
-  type: type
-  template: any
-- id: com.lightningkite.khrysalis.IsEquatable
-  type: type
-  template: any
-- id: com.lightningkite.khrysalis.Hashable
-  type: type
-  template: object
-- id: com.lightningkite.khrysalis.Equatable
-  type: type
-  template: object
-- id: com.lightningkite.khrysalis.SomeEnum
-  type: type
-  template: any
-- id: com.lightningkite.khrysalis.Codable
-  type: type
-  template: any
-- id: com.lightningkite.khrysalis.IsCodable
-  type: type
-  template: any
-- id: com.lightningkite.khrysalis.IsCodableAndHashable
-  type: type
-  template: any
-- id: com.lightningkite.khrysalis.IsCodableAndEquatable
-  type: type
-  template: any
 
 - id: kotlin.Nothing
   type: typeRef
@@ -58,27 +22,65 @@
 - id: kotlin.Any
   type: typeRef
   template: "null"
-- id: com.lightningkite.khrysalis.AnyObject
-  type: typeRef
-  template: Object
-- id: com.lightningkite.khrysalis.AnyHashable
-  type: typeRef
-  template: "null"
-- id: com.lightningkite.khrysalis.Hashable
-  type: typeRef
-  template: Object
-- id: com.lightningkite.khrysalis.Equatable
-  type: typeRef
-  template: Object
-- id: com.lightningkite.khrysalis.SomeEnum
-  type: typeRef
-  template: "null"
 - id: kotlin.Throwable
   type: type
   template: any
 - id: java.lang.Throwable
   type: type
   template: any
+- id: com.lightningkite.khrysalis.UntypedList
+  type: type
+  template: Array<any>
+- id: com.lightningkite.khrysalis.UntypedMap
+  type: type
+  template: Map<any, any>
+
+- id: com.lightningkite.khrysalis.IsEquatable
+  type: type
+  template: any
+- id: com.lightningkite.khrysalis.IsHashable
+  type: type
+  template: any
+- id: com.lightningkite.khrysalis.IsCodable
+  type: type
+  template: any
+- id: com.lightningkite.khrysalis.IsCodableAndHashable
+  type: type
+  template: any
+- id: com.lightningkite.khrysalis.IsCodableAndEquatable
+  type: type
+  template: any
+- id: com.lightningkite.khrysalis.IsEquatableNotNull
+  type: type
+  template: any
+- id: com.lightningkite.khrysalis.IsHashableNotNull
+  type: type
+  template: any
+- id: com.lightningkite.khrysalis.IsCodableNotNull
+  type: type
+  template: any
+- id: com.lightningkite.khrysalis.IsCodableAndHashableNotNull
+  type: type
+  template: any
+- id: com.lightningkite.khrysalis.IsCodableAndEquatableNotNull
+  type: type
+  template: any
+- id: com.lightningkite.khrysalis.ComparableAndHashable
+  type: type
+  template: any
+- id: com.lightningkite.khrysalis.ComparableCodableAndHashable
+  type: type
+  template: any
+
+- id: com.lightningkite.khrysalis.Hashable
+  type: type
+  template: any
+- id: com.lightningkite.khrysalis.Equatable
+  type: type
+  template: any
+- id: com.lightningkite.khrysalis.SomeEnum
+  type: type
+  template: string
 
 - id: com.lightningkite.khrysalis.fatalError
   type: call

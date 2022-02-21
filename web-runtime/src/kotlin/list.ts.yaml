@@ -10,7 +10,7 @@
   type: call
   hasExplicitTypeArguments: true
   template:
-    pattern: filter(notNull, [~*~]) as Array<~T0~>
+    pattern: '([~*~].filter(notNull) as Array<~T0~>)'
     imports:
       filter: iter-tools-es
       notNull: iter-tools-es
@@ -28,9 +28,8 @@
 - id: kotlin.collections.listOfNotNull
   type: call
   template:
-    pattern: filter(notNull, [~*~])
+    pattern: '[~*~].filter(notNull)'
     imports:
-      filter: iter-tools-es
       notNull: iter-tools-es
 - id: kotlin.collections.mutableListOf
   type: call
@@ -286,9 +285,8 @@
   type: call
   actualReceiver: kotlin.collections.List
   template:
-    pattern: filter(notNull, ~this~)
+    pattern: ~this~.filter(notNull)
     imports:
-      filter: iter-tools-es
       notNull: iter-tools-es
 
 - id: kotlin.collections.sortBy

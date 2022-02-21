@@ -247,15 +247,15 @@
 
 - id: kotlin.collections.Map.keys
   type: get
-  template: ~this~.keys()
+  template: '[...~this~.keys()]'
 
 - id: kotlin.collections.Map.values
   type: get
-  template: ~this~.values()
+  template: '[...~this~.values()]'
 
 - id: kotlin.collections.Map.entries
   type: get
-  template: ~this~.entries()
+  template: '[...~this~.entries()]'
 
 # Gets
 - id: kotlin.collections.Map.get
@@ -296,3 +296,41 @@
     pattern: xMapFilter(~this~, ~0~)
     imports:
       xMapFilter: '@lightningkite/khrysalis-runtime'
+
+- id: kotlin.collections.plus
+  receiver: Map
+  arguments: [Map]
+  type: call
+  template:
+    pattern: new EqualOverrideMap([...~this~, ...~0~])
+    imports:
+      EqualOverrideMap: '@lightningkite/khrysalis-runtime'
+
+- id: kotlin.collections.plus
+  receiver: Map
+  arguments: [Pair]
+  type: call
+  template:
+    pattern: new EqualOverrideMap([...~this~, ~0~])
+    imports:
+      EqualOverrideMap: '@lightningkite/khrysalis-runtime'
+
+- id: kotlin.collections.plus
+  receiver: Map
+  typeArgumentRequirements:
+    0: primitive
+  arguments: [Map]
+  type: call
+  template: new Map([...~this~, ...~0~])
+
+- id: kotlin.collections.plus
+  receiver: Map
+  typeArgumentRequirements:
+    0: primitive
+  arguments: [Pair]
+  type: call
+  template: new Map([...~this~, ~0~])
+
+- id: kotlin.collections.toPair
+  type: call
+  template: ~this~

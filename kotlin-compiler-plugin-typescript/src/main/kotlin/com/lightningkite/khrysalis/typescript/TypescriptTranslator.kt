@@ -15,17 +15,19 @@ import org.jetbrains.kotlin.psi.psiUtil.containingClass
 import org.jetbrains.kotlin.resolve.calls.model.VariableAsFunctionResolvedCall
 import org.jetbrains.kotlin.resolve.calls.resolvedCallUtil.getImplicitReceiverValue
 import org.jetbrains.kotlin.resolve.scopes.receivers.ExtensionReceiver
+import java.io.File
 import java.util.*
 import kotlin.collections.ArrayList
 
 class TypescriptTranslator(
     val projectName: String?,
     val commonPackage: String?,
+    val outputDirectory: File,
     val collector: MessageCollector? = null,
     val replacements: Replacements
 ) : KotlinTranslator<TypescriptFileEmitter>() {
 
-    val declarations: DeclarationManifest = DeclarationManifest(commonPackage)
+    val declarations: DeclarationManifest = DeclarationManifest(outputDirectory, commonPackage)
 
     var stubMode: Boolean = false
 
@@ -140,6 +142,8 @@ class TypescriptTranslator(
         registerJUnit()
         registerViewBinding()
         registerCast()
+        registerSerializer()
+        registerResources()
 
         handle<LeafPsiElement>(condition = { typedRule.text in terminalMap.keys }, priority = 1) {
             out.append(terminalMap[typedRule.text])

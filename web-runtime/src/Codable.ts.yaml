@@ -1,0 +1,45 @@
+---
+- id: kotlinx.serialization.KSerializer
+  type: type
+  template:
+    pattern: ReifiedType
+    imports:
+      ReifiedType: '@lightningkite/khrysalis-runtime'
+
+- id: kotlinx.serialization.json.Json
+  type: type
+  template: 'JSON'
+
+- id: kotlinx.serialization.json.Json
+  type: call
+  template: 'JSON'
+
+- id: kotlinx.serialization.json.Json.encodeToString
+  type: call
+  template: 'JSON.stringify(~1~)'
+
+- id: kotlinx.serialization.json.Json.decodeFromString
+  type: call
+  template:
+    pattern: 'JSON2.parse<~T0~>(~0~, ~1~)'
+    imports:
+      JSON2: '@lightningkite/khrysalis-runtime'
+
+- id: kotlinx.serialization.encodeToString
+  type: call
+  template: '~this~.stringify(~1~)'
+
+- id: kotlinx.serialization.decodeFromString
+  type: call
+  template:
+    pattern: 'JSON2.parse<~T0~>(~0~, ~1~)'
+    imports:
+      JSON2: '@lightningkite/khrysalis-runtime'
+
+- id: kotlinx.serialization.builtins.ListSerializer
+  type: call
+  template: '[Array, ~0~]'
+
+- id: kotlinx.serialization.serializer
+  type: call
+  template: ~R0~

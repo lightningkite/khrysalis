@@ -24,11 +24,14 @@ import org.jetbrains.kotlin.types.typeUtil.makeNullable
 import org.jetbrains.kotlin.types.typeUtil.nullability
 import com.lightningkite.khrysalis.analysis.*
 import org.jetbrains.kotlin.builtins.isFunctionType
+import org.jetbrains.kotlin.com.intellij.psi.impl.source.tree.LeafPsiElement
+import org.jetbrains.kotlin.js.resolve.diagnostics.findPsi
+import org.jetbrains.kotlin.resolve.source.getPsi
 
 val FunctionDescriptor.tsNameOverridden: String?
     get() = if (this is ConstructorDescriptor) {
         if (!this.isPrimary) {
-            this.constructedClass.name.asString() + "." + this.tsConstructorName
+            this.tsConstructorName
         } else null
     } else this.annotations
         .find { it.fqName?.asString()?.substringAfterLast('.') == "JsName" }
@@ -248,6 +251,19 @@ fun TypescriptTranslator.registerFunction() {
         }
     }
 
+    handle<KtParameter>(
+        condition = { typedRule.hasValOrVar() },
+        priority = 1000,
+        action = {
+            -(typedRule.visibilityModifier() ?: "public")
+            -" "
+            if ((typedRule.valOrVarKeyword as? LeafPsiElement)?.elementType == KtTokens.VAL_KEYWORD) {
+                -"readonly "
+            }
+            doSuper()
+        }
+    )
+
     handle<KtParameter> {
         -typedRule.nameIdentifier
         typedRule.typeReference?.let {
@@ -332,7 +348,6 @@ fun TypescriptTranslator.registerFunction() {
             val callExp = typedRule.selectorExpression as KtCallExpression
             val nre = callExp.calleeExpression as KtNameReferenceExpression
             val f = callExp.resolvedCall!!.candidateDescriptor as FunctionDescriptor
-            out.addImport(f, f.tsName)
 
             val prop = nre.resolvedReferenceTarget as? ValueDescriptor
             if (prop != null) {
@@ -355,6 +370,41 @@ fun TypescriptTranslator.registerFunction() {
             )
         }
     )
+    handle<KtSafeQualifiedExpression>(
+        condition = {
+            (typedRule.selectorExpression as? KtCallExpression)?.resolvedCall?.candidateDescriptor is FunctionInvokeDescriptor
+        },
+        priority = 2000,
+        action = {
+            val callExp = typedRule.selectorExpression as KtCallExpression
+            val nre = callExp.calleeExpression as KtNameReferenceExpression
+            val f = callExp.resolvedCall!!.candidateDescriptor as FunctionDescriptor
+
+            out.addImport("@lightningkite/khrysalis-runtime", "runOrNull")
+            -"runOrNull("
+            val prop = nre.resolvedReferenceTarget as? ValueDescriptor
+            if (prop != null) {
+                -VirtualGet(
+                    receiver = typedRule.replacementReceiverExpression,
+                    nameReferenceExpression = nre,
+                    property = prop,
+                    receiverType = typedRule.receiverExpression.resolvedExpressionTypeInfo?.type,
+                    expr = typedRule,
+                    safe = false
+                )
+            } else if(nre.text == "invoke") {
+                -typedRule.receiverExpression
+            } else {
+                -nre
+            }
+            -", _ => _"
+            -ArgumentsList(
+                on = f,
+                resolvedCall = callExp.resolvedCall!!
+            )
+            -")"
+        }
+    )
 
     //Normal calls
 
@@ -367,12 +417,7 @@ fun TypescriptTranslator.registerFunction() {
     ) {
         val nre = typedRule.calleeExpression as KtNameReferenceExpression
         val f = nre.resolvedReferenceTarget as FunctionDescriptor
-        if (f is ConstructorDescriptor) {
-            out.addImport(f.constructedClass)
-        } else {
-            out.addImport(f, f.tsName)
-        }
-        -f.tsName
+        -out.addImportGetName(f, f.tsName)
         -ArgumentsList(
             on = f,
             resolvedCall = typedRule.resolvedCall!!,
@@ -389,9 +434,13 @@ fun TypescriptTranslator.registerFunction() {
             val callExp = typedRule.selectorExpression as KtCallExpression
             val nre = callExp.calleeExpression as KtNameReferenceExpression
             val f = callExp.resolvedCall!!.candidateDescriptor as FunctionDescriptor
-            out.addImport(f, f.tsName)
-
-            -nre
+            if(f.dispatchReceiverParameter == null) {
+                -out.addImportGetName(f, f.tsName)
+            } else {
+                -nre.getTsReceiver()
+                -'.'
+                -f.tsName
+            }
             -ArgumentsList(
                 on = f,
                 resolvedCall = callExp.resolvedCall!!,
@@ -452,7 +501,6 @@ fun TypescriptTranslator.registerFunction() {
             val callExp = typedRule.selectorExpression as KtCallExpression
             val nre = callExp.calleeExpression as KtNameReferenceExpression
             val f = callExp.resolvedCall!!.candidateDescriptor as FunctionDescriptor
-            out.addImport(f, f.tsName)
 
             nullWrapAction(
                 swiftTranslator = this@registerFunction,
@@ -461,7 +509,11 @@ fun TypescriptTranslator.registerFunction() {
                 type = typedRule.resolvedExpressionTypeInfo?.type,
                 isExpression = typedRule.actuallyCouldBeExpression
             ) { rec ->
-                -nre
+                if(f.dispatchReceiverParameter == null) {
+                    -out.addImportGetName(f, f.tsName)
+                } else {
+                    -nre
+                }
                 -ArgumentsList(
                     on = f,
                     resolvedCall = callExp.resolvedCall!!,
@@ -477,12 +529,21 @@ fun TypescriptTranslator.registerFunction() {
     ) {
         val nre = typedRule.calleeExpression as KtNameReferenceExpression
         val f = nre.resolvedReferenceTarget as FunctionDescriptor
-        if (f is ConstructorDescriptor) {
-            out.addImport(f.constructedClass)
+        if(f.dispatchReceiverParameter != null) {
+            -nre
         } else {
-            out.addImport(f, f.tsName)
+            if (f is ConstructorDescriptor) {
+                if(f.isPrimary) {
+                    -nre
+                } else {
+                    -nre
+                    -'.'
+                    -out.addImportGetName(f, f.tsName)
+                }
+            } else {
+                -out.addImportGetName(f, f.tsName)
+            }
         }
-        -nre
         -ArgumentsList(
             on = f,
             resolvedCall = typedRule.resolvedCall!!
@@ -505,30 +566,24 @@ fun TypescriptTranslator.registerFunction() {
         )
     }
 
-    handle<KtNameReferenceExpression>(
-        condition = { (typedRule.resolvedReferenceTarget as? FunctionDescriptor)?.tsNameOverridden != null },
-        priority = 50,
-        action = {
-            -(typedRule.resolvedReferenceTarget as FunctionDescriptor).tsNameOverridden!!
-        }
-    )
-
     //infix
     handle<KtBinaryExpression>(
         condition = { typedRule.operationReference.getIdentifier() != null },
         priority = 1_000,
         action = {
             val f = typedRule.operationReference.resolvedReferenceTarget as FunctionDescriptor
-            out.addImport(f, f.tsName)
             val doubleReceiver = f.dispatchReceiverParameter != null && f.extensionReceiverParameter != null
             if (doubleReceiver) {
                 -typedRule.getTsReceiver()
                 -"."
+                -typedRule.operationReference.text
             } else if (f.dispatchReceiverParameter != null) {
                 -typedRule.left
                 -"."
+                -typedRule.operationReference.text
+            } else {
+                -out.addImportGetName(f, f.tsName)
             }
-            -(f.tsNameOverridden ?: typedRule.operationReference.text)
             -ArgumentsList(
                 on = f,
                 resolvedCall = typedRule.resolvedCall!!,
@@ -644,6 +699,34 @@ fun TypescriptTranslator.registerFunction() {
                 typeParameterByIndex = resolvedCall.template_typeParameterByIndex,
                 reifiedTypeParameterByIndex = resolvedCall.template_reifiedTypeParameterByIndex,
             )
+        }
+    )
+
+    handle<ArgumentsList>(
+        condition = { typedRule.on.name.asString() == "copy" &&
+                (typedRule.on.containingDeclaration as? ClassDescriptor)?.isData == true &&
+                typedRule.on.source.getPsi() !is KtNamedFunction
+        },
+        priority = 1,
+        action = {
+            -"({"
+            typedRule.resolvedCall.valueArguments.entries.filter { it.value.arguments.isNotEmpty() }.forEachBetween(
+                forItem = { arg ->
+                    -'"'
+                    -arg.key.name.asString()
+                    -"\": "
+                    if(arg.key.isVararg) {
+                        -arg.value.arguments.forEachBetween(
+                            forItem = { -it.getArgumentExpression() },
+                            between = { -", " }
+                        )
+                    } else {
+                        -arg.value.arguments.firstOrNull()?.getArgumentExpression()
+                    }
+                },
+                between = { -", " }
+            )
+            -"})"
         }
     )
 
