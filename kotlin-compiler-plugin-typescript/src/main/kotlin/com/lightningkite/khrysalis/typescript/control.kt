@@ -257,10 +257,10 @@ fun TypescriptTranslator.registerControl() {
             entry.conditions.forEach { con ->
                 -"case "
                 -con
-                -":\n"
+                -": {\n"
             }
             entry.elseKeyword?.let {
-                -"default:\n"
+                -"default: {\n"
             }
             if (entry.expression is KtBlockExpression) {
                 val children = entry.expression?.allChildren?.toList()
@@ -304,11 +304,11 @@ fun TypescriptTranslator.registerControl() {
             if (!hasAbsoluteBreak) {
                 -"\nbreak;"
             }
-            -"\n"
+            -"\n}\n"
         }
         if(typedRule.entries.none { it.isElse } && typedRule.resolvedExhaustiveWhen == true) {
             -"default:\n"
-            -"throw new Exception(\"Exhaustive when turned out to not be so exhaustive.\")"
+            -"throw new Error(\"Exhaustive when turned out to not be so exhaustive.\")"
         }
         -"}\n"
         if (typedRule.actuallyCouldBeExpression) {
@@ -445,7 +445,7 @@ fun TypescriptTranslator.registerControl() {
             }
         )
         if(typedRule.entries.none { it.isElse } && typedRule.resolvedExhaustiveWhen == true) {
-            -"else throw new Exception(\"Exhaustive when turned out to not be so exhaustive.\")"
+            -"else throw new Error(\"Exhaustive when turned out to not be so exhaustive.\")"
         }
 
         if (typedRule.actuallyCouldBeExpression) {

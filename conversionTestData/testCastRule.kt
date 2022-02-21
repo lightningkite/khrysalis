@@ -12,12 +12,14 @@ fun <T> callOther(item: T, func: (T)->Unit) {
 fun usesB(b: TypeB) {}
 fun usesA(a: TypeA) {}
 fun starReplace(a: TypeA, b: TypeB) {}
+fun TypeB.extensionOnB(){}
 
 fun main(){
     val x = TypeA(42)
     println(x.x)
     usesA(x)
     usesB(x)
+    x.extensionOnB()
     val y = TypeA::x.get(x)
     val z = TypeB::x.get(x)
     callOther(x) { y: TypeB -> println(y.x) }

@@ -40,4 +40,3 @@
   id: android.view.View.performClick
   actualReceiver: android.widget.Button
   template: "~this~.click()"
-

@@ -105,4 +105,10 @@ fun main(vararg args: String){
 
     val firstEntry: Map.Entry<Int, Int> = mapOf(1 to 2).entries.first()
     val anotherMap = mapOf(1 to 2) + (3 to 4)
+
+    val janky = listOf(1, 2, 3, 4)
+        .associateWith { if(it > 2) null else it * 2 }
+        .mapNotNull { it.value?.let { value -> it.key to value } }
+
+    val grouped: Map<Int, List<Int>> = listOf(1, 2, 3, 4, 5).groupBy { it % 2 }
 }

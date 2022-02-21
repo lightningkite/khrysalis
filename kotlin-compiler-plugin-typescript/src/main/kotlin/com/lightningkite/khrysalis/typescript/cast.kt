@@ -8,6 +8,7 @@ import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.allChildren
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameSafe
 import com.lightningkite.khrysalis.analysis.*
+import com.lightningkite.khrysalis.util.parentIfType
 import org.jetbrains.kotlin.descriptors.CallableMemberDescriptor
 import org.jetbrains.kotlin.descriptors.PropertyDescriptor
 import org.jetbrains.kotlin.resolve.descriptorUtil.isExtension
@@ -19,6 +20,30 @@ var KtQualifiedExpression.replacementReceiverExpression: Any
     set(value) { KtQualifiedExpression_replacementReceiverExpression[this] = value }
 
 fun TypescriptTranslator.registerCast() {
+    handle<KtExpression>(
+        condition = {
+            val parent = typedRule.parentIfType<KtQualifiedExpression>() ?: return@handle false
+            if(parent.receiverExpression != typedRule) return@handle false
+            val expectedType = parent.resolvedCall?.resultingDescriptor?.extensionReceiverParameter?.type ?: return@handle false
+            replacements.getImplicitCast(
+                typedRule.resolvedExpressionTypeInfo?.type ?: return@handle false,
+                expectedType
+            ) != null
+        },
+        hierarchyHeight = Int.MAX_VALUE,
+        priority = 2_000_002
+    ) {
+        val parent = typedRule.parentIfType<KtQualifiedExpression>()!!
+        val expectedType = parent.resolvedCall!!.resultingDescriptor.extensionReceiverParameter!!.type
+        val cast = replacements.getImplicitCast(
+            typedRule.resolvedExpressionTypeInfo?.type!!,
+            expectedType
+        )!!
+        emitTemplate(
+            template = cast.template,
+            receiver = { doSuper() }
+        )
+    }
     handle<KtExpression>(
         condition = {
             replacements.getImplicitCast(

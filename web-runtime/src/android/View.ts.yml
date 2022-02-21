@@ -139,10 +139,6 @@
   type: type
   template: HTMLSelectElement
 
-- id: androidx.viewpager.widget.ViewPager
-  type: type
-  template: '{container: HTMLDivElement, previous: HTMLButtonElement, next: HTMLButtonElement}'
-
 - id: com.google.android.exoplayer2.ui.PlayerView
   type: type
   template: HTMLVideoElement
@@ -150,10 +146,6 @@
 - id: android.widget.ViewFlipper
   type: type
   template: HTMLDivElement
-
-- id: android.widget.ImageButton
-  type: type
-  template: HTMLButtonElement
 
 - id: android.widget.Button
   type: type
@@ -191,9 +183,6 @@
   type: type
   template: HTMLInputElement
 
-- id: android.widget.RadioButton
-  type: type
-  template: '{input: HTMLInputElement, label: HTMLSpanElement}'
 
 - id: android.view.View
   type: type
@@ -203,17 +192,12 @@
   type: type
   template: HTMLInputElement
 
-- id: android.widget.Switch
-  type: type
-  template: '{input: HTMLInputElement, label: HTMLSpanElement}'
 
 - id: android.widget.ScrollView
   type: type
   template: HTMLDivElement
 
-- id: android.widget.CheckBox
-  type: type
-  template: '{input: HTMLInputElement, label: HTMLSpanElement}'
+
 
 - id: android.widget.FrameLayout
   type: type

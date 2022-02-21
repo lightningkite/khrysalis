@@ -60,7 +60,7 @@ class TypescriptFileEmitter(val translator: TypescriptTranslator, file: KtFile) 
         }
         val name = overrideName ?: useDecl.name.asString().safeJsIdentifier()
         return useDecl.fqNamesToCheck.asSequence()
-            .map {
+            .mapNotNull {
                 translator.declarations.importLine(
                     from = file,
                     fqName = it,

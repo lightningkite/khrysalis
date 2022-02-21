@@ -215,7 +215,7 @@
   typeArgumentRequirements:
     0: primitive
   template:
-    pattern: new Map(x => [(~0~)(x), x])
+    pattern: new Map(map(x => [(~0~)(x), x], ~this~))
     imports:
       map: iter-tools-es
 
@@ -224,7 +224,7 @@
   typeArgumentRequirements:
     0: primitive
   template:
-    pattern: new Map(x => [x, (~0~)(x)])
+    pattern: new Map(map(x => [x, (~0~)(x)], ~this~))
     imports:
       map: iter-tools-es
 
@@ -239,7 +239,7 @@
 - id: kotlin.sequences.associateBy
   type: call
   template:
-    pattern: new EqualOverrideMap(x => [(~0~)(x), x])
+    pattern: new EqualOverrideMap(map(x => [(~0~)(x), x], ~this~))
     imports:
       map: iter-tools-es
       EqualOverrideMap: '@lightningkite/khrysalis-runtime'
@@ -247,7 +247,7 @@
 - id: kotlin.sequences.associateWith
   type: call
   template:
-    pattern: new EqualOverrideMap(x => [x, (~0~)(x)])
+    pattern: new EqualOverrideMap(map(x => [x, (~0~)(x)], ~this~))
     imports:
       map: iter-tools-es
       EqualOverrideMap: '@lightningkite/khrysalis-runtime'
@@ -329,14 +329,14 @@
   template:
     pattern: new Set(~this~)
 
-# TODO: groupBy
-
 - id: kotlin.sequences.groupBy
   type: call
   template:
-    pattern: new EqualOverrideMap(splitGroups(~0~, ~this~))
+    pattern: new EqualOverrideMap(execPipe(~this~, splitGroups(~0~), map(x => [x[0], toArray(x[1])])))
     imports:
-      EqualOverrideMap: "@lightningkite/khrysalis-runtime"
+      execPipe: iter-tools-es
+      map: iter-tools-es
+      toArray: iter-tools-es
       splitGroups: iter-tools-es
 
 - id: kotlin.sequences.groupBy
@@ -344,9 +344,11 @@
   typeArgumentRequirements:
     1: primitive
   template:
-    pattern: new EqualOverrideMap(splitGroups(~0~, ~this~))
+    pattern: new Map(execPipe(~this~, splitGroups(~0~), map(x => [x[0], toArray(x[1])])))
     imports:
-      EqualOverrideMap: "@lightningkite/khrysalis-runtime"
+      execPipe: iter-tools-es
+      map: iter-tools-es
+      toArray: iter-tools-es
       splitGroups: iter-tools-es
 
 - id: kotlin.sequences.find
