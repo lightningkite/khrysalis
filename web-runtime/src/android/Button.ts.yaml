@@ -1,21 +1,5 @@
 ---
 
-- type: call
-  id: android.widget.Button.setEnabled
-  reflectiveName:
-    pattern: 'elementEnabled'
-    imports:
-      elementEnabled: '@lightningkite/rxjs-plus'
-  template: ~this~.disabled = !~0~
-
-- type: call
-  id: android.widget.Button.isEnabled
-  reflectiveName:
-    pattern: 'elementEnabled'
-    imports:
-      elementEnabled: '@lightningkite/rxjs-plus'
-  template: !~this~.disabled
-
 - type: get
   id: android.widget.ToggleButton.textOn
   reflectiveName: 'textContent'

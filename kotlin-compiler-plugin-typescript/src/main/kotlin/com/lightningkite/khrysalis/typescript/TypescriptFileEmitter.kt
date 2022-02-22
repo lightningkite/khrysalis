@@ -73,9 +73,9 @@ class TypescriptFileEmitter(val translator: TypescriptTranslator, file: KtFile) 
 
     fun addImportGetName(decl: DeclarationDescriptor, overrideName: String? = null): String {
         return addImport(decl, overrideName)?.to ?: overrideName ?: when (decl) {
-            is ConstructorDescriptor -> decl.containingDeclaration.name.asString()
-            is ClassDescriptor -> decl.name.asString()
-            else -> decl.name.asString()
+            is ConstructorDescriptor -> decl.containingDeclaration.name.asString().safeJsIdentifier()
+            is ClassDescriptor -> decl.name.asString().safeJsIdentifier()
+            else -> decl.name.asString().safeJsIdentifier()
         }
     }
 

@@ -34,18 +34,18 @@ private fun prepareForTest() {
 
     // Copy library
     val libraryFolder = tsTestDir.resolve("../..")
-    ProcessBuilder()
-        .directory(libraryFolder)
-        .command("npm", "install")
-        .inheritIO()
-        .start()
-        .waitFor()
-    ProcessBuilder()
-        .directory(libraryFolder)
-        .command("npm", "run", "build")
-        .inheritIO()
-        .start()
-        .waitFor()
+//    ProcessBuilder()
+//        .directory(libraryFolder)
+//        .command("npm", "install")
+//        .inheritIO()
+//        .start()
+//        .waitFor()
+//    ProcessBuilder()
+//        .directory(libraryFolder)
+//        .command("npm", "run", "build")
+//        .inheritIO()
+//        .start()
+//        .waitFor()
     tsTestDir.resolve("node_modules/@lightningkite/khrysalis-runtime").mkdirs()
     libraryFolder.resolve("web-runtime").copyRecursively(tsTestDir.resolve("node_modules/@lightningkite/khrysalis-runtime/web-runtime"), overwrite = true)
     libraryFolder.resolve("index.js").copyTo(tsTestDir.resolve("node_modules/@lightningkite/khrysalis-runtime/index.js"), overwrite = true)
@@ -55,7 +55,7 @@ private fun prepareForTest() {
     preparedForTest = true
 }
 
-val tsTestDir = File("./testOut")
+val tsTestDir = File("./testOut").absoluteFile.also { println("testOut = ${it}") }
 fun ExecuteFileTester.ts(sourceFile: File): String {
     val mainFile = tsTestDir.resolve("src/main.ts")
     val outputFile = tsTestDir.resolve("build").resolve(sourceFile.nameWithoutExtension + ".out")

@@ -363,47 +363,6 @@ fun TypescriptTranslator.registerType() {
             -")"
         }
     }
-
-    handle<KtBinaryExpressionWithTypeRHS>(
-        condition = { typedRule.operationReference.getReferencedNameElementType() == KtTokens.AS_SAFE },
-        priority = 100,
-        action = {
-            val resolvedType = typedRule.right!!.resolvedType!!
-
-            when {
-                resolvedType.isInterface() -> {
-                    out.addImport("@lightningkite/khrysalis-runtime", "tryCastInterface")
-                    -"tryCastInterface<"
-                    -typedRule.right
-                    -">("
-                    -typedRule.left
-                    -", \""
-                    -resolvedType.fqNameWithoutTypeArgs.substringAfterLast('.')
-                    -"\")"
-                }
-                resolvedType.isPrimitive() -> {
-                    out.addImport("@lightningkite/khrysalis-runtime", "tryCastPrimitive")
-                    -"tryCastPrimitive<"
-                    -typedRule.right
-                    -">("
-                    -typedRule.left
-                    -", \""
-                    -resolvedType
-                    -"\")"
-                }
-                else -> {
-                    out.addImport("@lightningkite/khrysalis-runtime", "tryCastClass")
-                    -"tryCastClass<"
-                    -typedRule.right
-                    -">("
-                    -typedRule.left
-                    -", "
-                    -BasicType(resolvedType)
-                    -")"
-                }
-            }
-        }
-    )
 }
 
 fun KotlinTranslator<TypescriptFileEmitter>.ContextByType<*>.emitIsExpression(

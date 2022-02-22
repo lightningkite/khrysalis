@@ -2,6 +2,7 @@
 package com.test.castrule
 
 import com.lightningkite.khrysalis.*
+import kotlin.reflect.*
 
 interface TypeB { val x: Int }
 data class TypeA(override val x: Int): TypeB
@@ -13,6 +14,8 @@ fun usesB(b: TypeB) {}
 fun usesA(a: TypeA) {}
 fun starReplace(a: TypeA, b: TypeB) {}
 fun TypeB.extensionOnB(){}
+
+
 
 fun main(){
     val x = TypeA(42)

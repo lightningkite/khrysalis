@@ -55,7 +55,7 @@ val FunctionDescriptor.tsName: String?
     get() = tsNameOverridden ?: if (this.name.isSpecial) {
         null
     } else {
-        this.name.identifier
+        this.name.identifier.safeJsIdentifier()
     }
 
 val FunctionDescriptor.tsDefaultName: String?

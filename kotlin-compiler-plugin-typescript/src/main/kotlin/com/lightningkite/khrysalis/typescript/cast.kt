@@ -11,7 +11,9 @@ import com.lightningkite.khrysalis.analysis.*
 import com.lightningkite.khrysalis.util.parentIfType
 import org.jetbrains.kotlin.descriptors.CallableMemberDescriptor
 import org.jetbrains.kotlin.descriptors.PropertyDescriptor
+import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.resolve.descriptorUtil.isExtension
+import org.jetbrains.kotlin.types.typeUtil.isInterface
 import java.util.*
 
 private val KtQualifiedExpression_replacementReceiverExpression = WeakHashMap<KtExpression, Any?>()
@@ -20,6 +22,13 @@ var KtQualifiedExpression.replacementReceiverExpression: Any
     set(value) { KtQualifiedExpression_replacementReceiverExpression[this] = value }
 
 fun TypescriptTranslator.registerCast() {
+//    handle<KtExpression>(
+//        hierarchyHeight = Int.MAX_VALUE,
+//        priority = 2_000_003
+//    ) {
+//        -"/*Expected ${typedRule.resolvedExpectedExpressionType}, got ${typedRule.resolvedExpressionTypeInfo?.type}*/"
+//        doSuper()
+//    }
     handle<KtExpression>(
         condition = {
             val parent = typedRule.parentIfType<KtQualifiedExpression>() ?: return@handle false
@@ -101,6 +110,67 @@ fun TypescriptTranslator.registerCast() {
             else -it
         }
     }
+
+    handle<KtBinaryExpressionWithTypeRHS>(
+        condition = { typedRule.operationReference.getReferencedNameElementType() == KtTokens.AS_SAFE },
+        priority = 100,
+        action = {
+            val resolvedType = typedRule.right!!.resolvedType!!
+
+            when {
+                resolvedType.isInterface() -> {
+                    out.addImport("@lightningkite/khrysalis-runtime", "tryCastInterface")
+                    -"tryCastInterface<"
+                    -typedRule.right
+                    -">("
+                    -typedRule.left
+                    -", \""
+                    -resolvedType.fqNameWithoutTypeArgs.substringAfterLast('.')
+                    -"\")"
+                }
+                resolvedType.isPrimitive() -> {
+                    out.addImport("@lightningkite/khrysalis-runtime", "tryCastPrimitive")
+                    -"tryCastPrimitive<"
+                    -typedRule.right
+                    -">("
+                    -typedRule.left
+                    -", \""
+                    -resolvedType
+                    -"\")"
+                }
+                else -> {
+                    out.addImport("@lightningkite/khrysalis-runtime", "tryCastClass")
+                    -"tryCastClass<"
+                    -typedRule.right
+                    -">("
+                    -typedRule.left
+                    -", "
+                    -BasicType(resolvedType)
+                    -")"
+                }
+            }
+        }
+    )
+
+    handle<KtBinaryExpressionWithTypeRHS>(
+        condition = {
+            replacements.getExplicitCast(
+                typedRule.left.resolvedExpressionTypeInfo?.type ?: return@handle false,
+                typedRule.right?.resolvedType ?: return@handle false
+            ) != null && typedRule.operationReference.getReferencedNameElementType() == KtTokens.AS_KEYWORD
+        },
+        priority = 101,
+        action = {
+            val cast = replacements.getImplicitCast(
+                typedRule.left.resolvedExpressionTypeInfo?.type!!,
+                typedRule.right!!.resolvedType!!
+            )!!
+            emitTemplate(
+                template = cast.template,
+                receiver = { doSuper() }
+            )
+        }
+    )
 }
 
 private fun CallableMemberDescriptor.mostOriginal(): CallableMemberDescriptor {
