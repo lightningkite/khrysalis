@@ -2,6 +2,7 @@ package com.lightningkite.khrysalis.typescript
 
 import com.lightningkite.khrysalis.replacements.TemplatePart
 import com.lightningkite.khrysalis.typescript.replacements.TypescriptImport
+import com.lightningkite.khrysalis.util.unixPath
 import java.io.File
 
 fun renderImports(projectName: String?, relPath: String, imports: Collection<TypescriptImport>, writer: Appendable){
@@ -13,7 +14,7 @@ fun renderImports(projectName: String?, relPath: String, imports: Collection<Typ
                 val nodePackage = path.substringBefore('|')
                 val pathInside = path.substringAfter('|')
                 if(nodePackage == projectName) {
-                    val rel = "./".plus(File(pathInside).absoluteFile.relativeTo(File(relPath).absoluteFile.parentFile).path)
+                    val rel = "./".plus(File(pathInside).absoluteFile.relativeTo(File(relPath).absoluteFile.parentFile).unixPath)
                     if(rel.startsWith("./.."))
                         rel.removePrefix("./")
                     else
@@ -22,7 +23,7 @@ fun renderImports(projectName: String?, relPath: String, imports: Collection<Typ
                     nodePackage
                 }
             } else {
-                path.replace("\\", "/")
+                path
             }
         }
         .mapValues { it.value.sortedBy { it.identifier } }

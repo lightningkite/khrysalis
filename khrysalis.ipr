@@ -108,6 +108,15 @@
       <module name="kotlin-compiler-plugin-common" target="11" />
       <module name="kotlin-compiler-plugin-swift" target="11" />
       <module name="kotlin-compiler-plugin-typescript" target="11" />
+      <module name="Lightning Kite.Projects.khrysalis.kotlin-compiler-plugin-common" target="11" />
+      <module name="Lightning Kite.Projects.khrysalis.kotlin-compiler-plugin-common.main" target="11" />
+      <module name="Lightning Kite.Projects.khrysalis.kotlin-compiler-plugin-common.test" target="11" />
+      <module name="Lightning Kite.Projects.khrysalis.kotlin-compiler-plugin-swift" target="11" />
+      <module name="Lightning Kite.Projects.khrysalis.kotlin-compiler-plugin-swift.main" target="11" />
+      <module name="Lightning Kite.Projects.khrysalis.kotlin-compiler-plugin-swift.test" target="11" />
+      <module name="Lightning Kite.Projects.khrysalis.kotlin-compiler-plugin-typescript" target="11" />
+      <module name="Lightning Kite.Projects.khrysalis.kotlin-compiler-plugin-typescript.main" target="11" />
+      <module name="Lightning Kite.Projects.khrysalis.kotlin-compiler-plugin-typescript.test" target="11" />
       <module name="LK.khrysalis.plugin" target="11" />
       <module name="LK.khrysalis.plugin.main" target="1.8" />
       <module name="LK.khrysalis.plugin.test" target="11" />
@@ -370,6 +379,15 @@
       <module fileurl="file://$PROJECT_DIR$/plugin/LK.khrysalis.plugin.iml" filepath="$PROJECT_DIR$/plugin/LK.khrysalis.plugin.iml" />
       <module fileurl="file://$PROJECT_DIR$/plugin/LK.khrysalis.plugin.main.iml" filepath="$PROJECT_DIR$/plugin/LK.khrysalis.plugin.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/plugin/LK.khrysalis.plugin.test.iml" filepath="$PROJECT_DIR$/plugin/LK.khrysalis.plugin.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-common/Lightning Kite.Projects.khrysalis.kotlin-compiler-plugin-common.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-common/Lightning Kite.Projects.khrysalis.kotlin-compiler-plugin-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-common/Lightning Kite.Projects.khrysalis.kotlin-compiler-plugin-common.main.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-common/Lightning Kite.Projects.khrysalis.kotlin-compiler-plugin-common.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-common/Lightning Kite.Projects.khrysalis.kotlin-compiler-plugin-common.test.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-common/Lightning Kite.Projects.khrysalis.kotlin-compiler-plugin-common.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-swift/Lightning Kite.Projects.khrysalis.kotlin-compiler-plugin-swift.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-swift/Lightning Kite.Projects.khrysalis.kotlin-compiler-plugin-swift.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-swift/Lightning Kite.Projects.khrysalis.kotlin-compiler-plugin-swift.main.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-swift/Lightning Kite.Projects.khrysalis.kotlin-compiler-plugin-swift.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-swift/Lightning Kite.Projects.khrysalis.kotlin-compiler-plugin-swift.test.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-swift/Lightning Kite.Projects.khrysalis.kotlin-compiler-plugin-swift.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-typescript/Lightning Kite.Projects.khrysalis.kotlin-compiler-plugin-typescript.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/Lightning Kite.Projects.khrysalis.kotlin-compiler-plugin-typescript.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-typescript/Lightning Kite.Projects.khrysalis.kotlin-compiler-plugin-typescript.main.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/Lightning Kite.Projects.khrysalis.kotlin-compiler-plugin-typescript.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-typescript/Lightning Kite.Projects.khrysalis.kotlin-compiler-plugin-typescript.test.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/Lightning Kite.Projects.khrysalis.kotlin-compiler-plugin-typescript.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/jvm-runtime/Projects.khrysalis.jvm-runtime.iml" filepath="$PROJECT_DIR$/jvm-runtime/Projects.khrysalis.jvm-runtime.iml" />
       <module fileurl="file://$PROJECT_DIR$/jvm-runtime/Projects.khrysalis.jvm-runtime.main.iml" filepath="$PROJECT_DIR$/jvm-runtime/Projects.khrysalis.jvm-runtime.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/jvm-runtime/Projects.khrysalis.jvm-runtime.test.iml" filepath="$PROJECT_DIR$/jvm-runtime/Projects.khrysalis.jvm-runtime.test.iml" />

@@ -3,6 +3,7 @@ package com.lightningkite.khrysalis.typescript
 import com.lightningkite.khrysalis.generic.outputRelativePath
 import com.lightningkite.khrysalis.typescript.manifest.declaresPrefix
 import com.lightningkite.khrysalis.typescript.replacements.TypescriptImport
+import com.lightningkite.khrysalis.util.unixPath
 import org.jetbrains.kotlin.psi.KtFile
 import java.io.File
 
@@ -23,7 +24,7 @@ class DeclarationManifest(
                         .plus(
                             relFile.relativeTo(
                                 fromPackageFile.parentFile ?: File(".")
-                            ).path.removeSuffix(".ts")
+                            ).unixPath.removeSuffix(".ts")
                         )
                         .let {
                             if (it.startsWith("./../")) "../" + it.removePrefix("./../")
