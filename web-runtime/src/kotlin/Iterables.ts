@@ -74,3 +74,25 @@ export function xIterableContains<T>(iter: Iterable<T>, item: T): boolean {
     }
     return false
 }
+
+export function distinctBy<T>(key: (result: T) => any): (iterable: Wrappable<T>) => Iterable<T>;
+export function distinctBy<T>(key: (result: T) => any, iterable: Wrappable<T>): Iterable<T>;
+export function distinctBy<T>(key: (result: T) => any, iterable?: Wrappable<T>): Iterable<T> | ((iterable: Wrappable<T>) => Iterable<T>) {
+    if(iterable) {
+        const set = new EqualOverrideSet<any>()
+        return filter((t: T): boolean => {
+            const k = key(t)
+            if(set.has(k)) return false
+            else set.add(k)
+            return true
+        }, iterable)
+    } else {
+        const set = new EqualOverrideSet<any>()
+        return filter((t: T): boolean => {
+            const k = key(t)
+            if(set.has(k)) return false
+            else set.add(k)
+            return true
+        })
+    }
+}

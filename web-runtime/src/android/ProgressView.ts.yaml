@@ -7,5 +7,4 @@
 
 - id: com.lightningkite.rx.android.progressRatio
   type: set
-  reflectiveName: '"value"'
   template: '~this~.value = ~value~'

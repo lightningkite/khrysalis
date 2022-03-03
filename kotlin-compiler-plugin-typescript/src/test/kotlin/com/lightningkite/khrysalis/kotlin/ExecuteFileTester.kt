@@ -30,6 +30,7 @@ object ExecuteFileTester {
         sourceFile: File,
         compilationSetup: KotlinCompilation.()->Unit = {}
     ): String {
+        val libraries = listOf(Libraries.getStandardLibrary(), Libraries.getSerializationLibraryCore(), Libraries.getSerializationLibraryJson())
         val ktName = sourceFile.name
             .split('.')
             .joinToString("") { it.filter { it.isJavaIdentifierPart() }.capitalize() }
@@ -38,12 +39,16 @@ object ExecuteFileTester {
                 ?: ""
         val outFile = KotlinCompilation().apply {
             sources = listOf(SourceFile.fromPath(sourceFile)) + Libraries.testingStubs.map { SourceFile.fromPath(it) }
+            classpaths += libraries
             inheritClassPath = true
+            pluginClasspaths += Libraries.getSerializationPlugin()
             compilationSetup()
+            println("classpaths: $classpaths")
+            println("pluginClasspaths: $pluginClasspaths")
         }.compile().outputDirectory
 
         return captureSystemOut {
-            JVM.runMain(listOf(Libraries.getStandardLibrary(), outFile), if(packageName.isNotEmpty()) "$packageName.$ktName" else ktName, arrayOf<String>())
+            JVM.runMain(libraries + listOf(outFile), if(packageName.isNotEmpty()) "$packageName.$ktName" else ktName, arrayOf<String>())
         }.trim()
     }
 }

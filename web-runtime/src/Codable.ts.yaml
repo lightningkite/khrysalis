@@ -16,23 +16,27 @@
 
 - id: kotlinx.serialization.json.Json.encodeToString
   type: call
+  arguments: ["*", "*"]
   template: 'JSON.stringify(~1~)'
 
 - id: kotlinx.serialization.json.Json.decodeFromString
   type: call
+  arguments: ["*", "*"]
   template:
-    pattern: 'JSON2.parse<~T0~>(~0~, ~1~)'
+    pattern: 'JSON2.parse<~T0~>(~1~, ~0~)'
     imports:
       JSON2: '@lightningkite/khrysalis-runtime'
 
 - id: kotlinx.serialization.encodeToString
   type: call
-  template: '~this~.stringify(~1~)'
+  arguments: ["*"]
+  template: '~this~.stringify(~0~)'
 
 - id: kotlinx.serialization.decodeFromString
   type: call
+  arguments: ["*"]
   template:
-    pattern: 'JSON2.parse<~T0~>(~0~, ~1~)'
+    pattern: 'JSON2.parse<~T0~>(~0~, ~R0~)'
     imports:
       JSON2: '@lightningkite/khrysalis-runtime'
 

@@ -59,11 +59,14 @@ fun TypescriptTranslator.registerOperators() {
         if (doubleReceiver) {
             -typedRule.dispatchReceiver
             -"."
+            -(f.tsNameOverridden ?: "get")
         } else if (f.dispatchReceiverParameter != null) {
             -typedRule.arrayExpression
             -"."
+            -(f.tsNameOverridden ?: "get")
+        } else {
+            -out.addImportGetName(f, f.tsName)
         }
-        -(f.tsNameOverridden ?: "get")
         -ArgumentsList(
             on = f,
             resolvedCall = typedRule.resolvedCall!!,
@@ -146,11 +149,14 @@ fun TypescriptTranslator.registerOperators() {
             if (doubleReceiver) {
                 -arrayAccess.getTsReceiver()
                 -"."
+                -(setFunction.tsNameOverridden ?: "set")
             } else if (setFunction.dispatchReceiverParameter != null) {
                 -tempArray
                 -"."
+                -(setFunction.tsNameOverridden ?: "set")
+            } else {
+                -out.addImportGetName(setFunction, setFunction.tsName)
             }
-            -(setFunction.tsNameOverridden ?: "set")
             -ArgumentsList(
                 on = setFunction,
                 resolvedCall = arrayAccess.resolvedIndexedLvalueSet!!,
@@ -463,11 +469,14 @@ fun TypescriptTranslator.registerOperators() {
             if (doubleReceiver) {
                 -typedRule.getTsReceiver()
                 -"."
+                -(f.tsNameOverridden ?: f.name.asString().safeJsIdentifier())
             } else if (f.dispatchReceiverParameter != null) {
                 -typedRule.baseExpression
                 -"."
+                -(f.tsNameOverridden ?: f.name.asString().safeJsIdentifier())
+            } else {
+                -out.addImportGetName(f, f.tsName)
             }
-            -(f.tsNameOverridden ?: f.name.asString().safeJsIdentifier())
             -ArgumentsList(
                 on = f,
                 resolvedCall = typedRule.resolvedCall!!,

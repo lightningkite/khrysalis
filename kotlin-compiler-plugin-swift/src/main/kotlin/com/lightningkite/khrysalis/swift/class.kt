@@ -1019,7 +1019,7 @@ private fun <T : KtClassOrObject> handleConstructor(
 private fun KtParameter.jsonName(): String {
     return annotationEntries
         .mapNotNull { it.resolvedAnnotation }
-        .find { it.fqName?.asString()?.endsWith("JsonProperty") == true }
+        .find { it.fqName?.asString()?.let { it.endsWith("JsonProperty") || it.endsWith("SerialName") } == true }
         ?.allValueArguments?.get(Name.identifier("value"))
         ?.value as? String
         ?: name ?: "x"

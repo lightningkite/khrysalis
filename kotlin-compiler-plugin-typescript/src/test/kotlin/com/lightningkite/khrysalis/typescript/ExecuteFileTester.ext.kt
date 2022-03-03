@@ -1,23 +1,10 @@
 package com.lightningkite.khrysalis.typescript
 
-import com.lightningkite.khrysalis.kotlin.ExecuteFileTester
-import com.lightningkite.khrysalis.kotlin.Libraries
-import org.jetbrains.kotlin.cli.common.arguments.K2JVMCompilerArguments
-import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
-import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSourceLocation
-import org.jetbrains.kotlin.cli.common.messages.MessageCollector
-import org.jetbrains.kotlin.cli.jvm.K2JVMCompiler
-import org.jetbrains.kotlin.config.Services
-import org.jetbrains.kotlin.incremental.classpathAsList
-import org.jetbrains.kotlin.incremental.destinationAsFile
-import java.io.File
 import com.lightningkite.khrysalis.generic.KotlinTranspileCLP
-import com.lightningkite.khrysalis.util.correctedFileOutput
+import com.lightningkite.khrysalis.kotlin.ExecuteFileTester
 import com.lightningkite.khrysalis.util.readInto
-import com.tschuchort.compiletesting.KotlinCompilation
-import com.tschuchort.compiletesting.OptionName
 import com.tschuchort.compiletesting.PluginOption
-import com.tschuchort.compiletesting.SourceFile
+import java.io.File
 
 private var preparedForTest: Boolean = false
 private fun prepareForTest() {
@@ -34,18 +21,18 @@ private fun prepareForTest() {
 
     // Copy library
     val libraryFolder = tsTestDir.resolve("../..")
-//    ProcessBuilder()
-//        .directory(libraryFolder)
-//        .command("npm", "install")
-//        .inheritIO()
-//        .start()
-//        .waitFor()
-//    ProcessBuilder()
-//        .directory(libraryFolder)
-//        .command("npm", "run", "build")
-//        .inheritIO()
-//        .start()
-//        .waitFor()
+    ProcessBuilder()
+        .directory(libraryFolder)
+        .command("npm", "install")
+        .inheritIO()
+        .start()
+        .waitFor()
+    ProcessBuilder()
+        .directory(libraryFolder)
+        .command("npm", "run", "build")
+        .inheritIO()
+        .start()
+        .waitFor()
     tsTestDir.resolve("node_modules/@lightningkite/khrysalis-runtime").mkdirs()
     libraryFolder.resolve("web-runtime").copyRecursively(tsTestDir.resolve("node_modules/@lightningkite/khrysalis-runtime/web-runtime"), overwrite = true)
     libraryFolder.resolve("index.js").copyTo(tsTestDir.resolve("node_modules/@lightningkite/khrysalis-runtime/index.js"), overwrite = true)
@@ -90,8 +77,8 @@ fun ExecuteFileTester.kotlinAndTs(file: File): KatResult {
     val outFolder = tsTestDir.resolve("src")
     val kResult = kotlin(file) {
         commandLineProcessors = listOf(KotlinTypescriptCLP())
-        compilerPlugins = listOf(KotlinTypescriptCR())
-        pluginOptions = listOf(
+        compilerPlugins += listOf(KotlinTypescriptCR())
+        pluginOptions += listOf(
             PluginOption(KotlinTypescriptCLP.PLUGIN_ID, KotlinTranspileCLP.KEY_EQUIVALENTS_NAME, tsTestDir.toString()),
             PluginOption(KotlinTypescriptCLP.PLUGIN_ID, KotlinTranspileCLP.KEY_OUTPUT_DIRECTORY_NAME, outFolder.toString()),
             PluginOption(KotlinTypescriptCLP.PLUGIN_ID, KotlinTranspileCLP.KEY_COMMON_PACKAGE_NAME, file.readText().substringAfter("package ").substringBefore('\n').trim()),

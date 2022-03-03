@@ -11,6 +11,10 @@
   type: get
   template: ~this~.name
 
+- id: android.net.Uri.path
+  type: get
+  template: ~this~.name
+
 - id: android.graphics.Bitmap
   type: type
   template: ImageBitmap

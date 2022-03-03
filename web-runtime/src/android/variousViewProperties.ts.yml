@@ -35,7 +35,6 @@
   template: '~this~.valueAsNumber'
 - id: android.widget.RatingBar.rating
   type: set
-  reflectiveName: '"valueAsNumber"'
   template: '~this~.valueAsNumber = ~value~'
 
 - id: android.widget.SeekBar.progress
@@ -44,10 +43,12 @@
   template: '~this~.valueAsNumber'
 - id: android.widget.SeekBar.progress
   type: set
-  reflectiveName: '"valueAsNumber"'
   template: '~this~.valueAsNumber = ~value~'
 
 
 - id: android.widget.ImageView.setImageResource
   type: call
-  template: '~this~.src = "drawables/" + ~0~.substring(9)'
+  template: '~this~.src = ~0~.file'
+- id: android.widget.ImageButton.setImageResource
+  type: call
+  template: '~this~.image.src = ~0~.file'

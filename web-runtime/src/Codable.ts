@@ -1,4 +1,5 @@
 import {ReifiedType} from "./kotlin/Language";
+import {Instant, LocalDate, LocalTime, OffsetDateTime, ZonedDateTime} from "@js-joda/core";
 
 export interface Codable {
 }
@@ -17,6 +18,33 @@ export namespace JSON2 {
 }
 
 export function parseObject<TYPE>(item: any, asType: ReifiedType<TYPE>): TYPE {
+    if(item === undefined) return undefined as unknown as TYPE
+    if(item === null) return null as unknown as TYPE
+    switch(asType[0]) {
+        case String:
+        case Number:
+        case Boolean:
+            return item
+        case Date:
+            return new Date(item as string) as unknown as TYPE;
+        case Array:
+            return (item as Array<any>).map(x => parseObject(x, asType[1])) as unknown as TYPE
+        case Set:
+            return new Set((item as Array<any>).map(x => parseObject(x, asType[1]))) as unknown as TYPE
+        case Map:
+            let asObj = item as object;
+            let map = new Map<any, any>();
+            if (asType[1] === String) {
+                for (const key of Object.keys(asObj)) {
+                    map.set(key, parseObject((asObj as any)[key], asType[2]));
+                }
+            } else {
+                for (const key of Object.keys(asObj)) {
+                    map.set(parseObject(key, asType[1]), parseObject((asObj as any)[key], asType[2]));
+                }
+            }
+            return map as unknown as TYPE;
+    }
     const parser = asType[0].fromJSON as (item: any, typeArguments: Array<ReifiedType>) => any
     if (typeof parser !== "function") {
         throw Error(`Type ${asType[0]} has no function fromJSON!`)
@@ -24,23 +52,11 @@ export function parseObject<TYPE>(item: any, asType: ReifiedType<TYPE>): TYPE {
     return parser(item, asType.slice(1))
 }
 
-(String as any).fromJSON = (value: any) => value;
-(Number as any).fromJSON = (value: any) => typeof value === "string" ? parseFloat(value) : value;
-(Boolean as any).fromJSON = (value: any) => typeof value === "string" ? value === "true" : value;
-(Array as any).fromJSON = (value: any, typeArguments: Array<ReifiedType>) => { return (value as Array<any>).map(x => parseObject(x, typeArguments[0])) };
-(Map as any).fromJSON = (value: any, typeArguments: Array<ReifiedType>) => {
-    let asObj = value as object;
-    let map = new Map<any, any>();
-    if (typeArguments[0][0] === String) {
-        for (const key of Object.keys(asObj)) {
-            map.set(key, parseObject((asObj as any)[key], typeArguments[1]));
-        }
-    } else {
-        for (const key of Object.keys(asObj)) {
-            map.set(parseObject(key, typeArguments[0]), parseObject((asObj as any)[key], typeArguments[1]));
-        }
-    }
-    return map;
-};
-(Date as any).fromJSON = (value: any) => new Date(value as string);
-(Map as any).toJSON = (value: Map<any, any>) => Object.fromEntries(value);
+(Map.prototype as any).toJSON = function(this: Map<any, any>) { return Object.fromEntries(this) };
+(Set.prototype as any).toJSON = function(this: Map<any, any>) { return [...this] };
+
+(Instant as any).fromJSON = (value: string) => Instant.parse(value);
+(ZonedDateTime as any).fromJSON = (value: string) => ZonedDateTime.parse(value);
+(LocalDate as any).fromJSON = (value: string) => LocalDate.parse(value);
+(LocalTime as any).fromJSON = (value: string) => LocalTime.parse(value);
+(OffsetDateTime as any).fromJSON = (value: string) => OffsetDateTime.parse(value);

@@ -2,7 +2,7 @@
 - id: android.view.View
   type: type
   template: HTMLElement
-  
+
 - id: androidx.swiperefreshlayout.widget.SwipeRefreshLayout
   type: type
   template: HTMLDivElement

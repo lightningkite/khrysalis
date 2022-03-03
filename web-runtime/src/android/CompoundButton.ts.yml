@@ -2,15 +2,100 @@
 
 - id: android.widget.CompoundButton.isChecked
   type: get
-  template: ~this~.checked
+  reflectiveName:
+    pattern: 'chain("input", "checked")'
+    imports:
+      chain: '@lightningkite/rxjs-plus'
+  template: ~this~.input.checked
 
 - id: android.widget.CompoundButton.isChecked
   type: set
-  template: ~this~.checked = ~value~
+  template: ~this~.input.checked = ~value~
 
 - id: android.widget.CompoundButton.setOnCheckedChangeListener
   type: call
   template:
-    pattern: ~this~.onchange = (_ev) => { ~L0~ }
+    pattern: ~this~.input.onchange = (_ev) => { ~L0~ }
     lambdaTransforms:
       0: ["_ev.target as HTMLInputElement", "(_ev.target as HTMLInputElement).checked"]
+
+- type: get
+  id: android.widget.CompoundButton.text
+  reflectiveName:
+    pattern: 'chain("label", "textContent")'
+    imports:
+      chain: '@lightningkite/rxjs-plus'
+  template: '~this~.label.textContent'
+
+- type: set
+  id: android.widget.CompoundButton.text
+  template: '~this~.label.textContent = ~value~'
+
+- id: android.widget.CompoundButton.setText
+  type: call
+  reflectiveName:
+    pattern: 'chain("label", "textContent")'
+    imports:
+      chain: '@lightningkite/rxjs-plus'
+  template: '~this~.label.textContent'
+
+- type: get
+  id: android.widget.ToggleButton.textOn
+  reflectiveName:
+    pattern: 'chain("label", "textContent")'
+    imports:
+      chain: '@lightningkite/rxjs-plus'
+  template: '~this~.label.textContent'
+
+- type: set
+  id: android.widget.ToggleButton.textOn
+  template: '~this~.label.textContent = ~value~'
+
+- type: get
+  id: android.widget.ToggleButton.textOff
+  reflectiveName:
+    pattern: 'chain("label", "textContent")'
+    imports:
+      chain: '@lightningkite/rxjs-plus'
+  template: '~this~.label.textContent'
+
+- type: set
+  id: android.widget.ToggleButton.textOff
+  template: '~this~.label.textContent = ~value~'
+
+- id: android.widget.ToggleButton.setTextOn
+  type: call
+  reflectiveName:
+    pattern: 'chain("label", "textContent")'
+    imports:
+      chain: '@lightningkite/rxjs-plus'
+  template: '~this~.label.textContent'
+
+- id: android.widget.ToggleButton.setTextOff
+  type: call
+  reflectiveName:
+    pattern: 'chain("label", "textContent")'
+    imports:
+      chain: '@lightningkite/rxjs-plus'
+  template: '~this~.label.textContent'
+
+- id: android.widget.ToggleButton.isEnabled
+  type: get
+  reflectiveName:
+    pattern: 'chain("input", elementEnabled)'
+    imports:
+      chain: '@lightningkite/rxjs-plus'
+      elementEnabled: '@lightningkite/rxjs-plus'
+  template: '(!~this~.input.disabled)'
+- id: android.widget.ToggleButton.isEnabled
+  type: set
+  template: '~this~.input.disabled = !(~value~)'
+
+- id: android.widget.ToggleButton.setEnabled
+  type: call
+  reflectiveName:
+    pattern: 'chain("input", elementEnabled)'
+    imports:
+      chain: '@lightningkite/rxjs-plus'
+      elementEnabled: '@lightningkite/rxjs-plus'
+  template: '~this~.input.disabled = !(~0~)'

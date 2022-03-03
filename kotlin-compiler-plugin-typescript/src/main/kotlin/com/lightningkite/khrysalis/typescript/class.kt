@@ -442,6 +442,26 @@ fun TypescriptTranslator.registerClass() {
                 }
             )
             -"]\n"
+            typedRule.primaryConstructor?.valueParameters
+                ?.filter { it.hasValOrVar() }
+                ?.map { it.name?.safeJsIdentifier() to it.jsonName(this@registerClass) }
+                ?.filter { it.first != it.second }
+                ?.takeUnless { it.isEmpty() }
+                ?.let { overrides ->
+                    -"public static propertiesJsonOverride = {"
+                    overrides.forEachBetween(
+                        forItem = {
+                            -it.first
+                            -": \""
+                            -it.second
+                            -'"'
+                        },
+                        between = {
+                            -", "
+                        }
+                    )
+                    -"}\n"
+                }
             -"public static propertyTypes("
             out.addImport("@lightningkite/khrysalis-runtime", "ReifiedType")
             typedRule.typeParameterList?.parameters?.forEachBetween(
@@ -514,6 +534,11 @@ fun TypescriptTranslator.registerClass() {
 
             //Generate toJSON()
             -"public toJSON(): string { return this.jsonName }\n"
+            -"public static fromJSON(key: string): "
+            -typedRule.nameIdentifier
+            -" { return "
+            -typedRule.nameIdentifier
+            -"._values.find(x => x.jsonName.toLowerCase() === key.toLowerCase())! }\n"
         }
 
         -"}"
@@ -762,7 +787,7 @@ fun TypescriptTranslator.registerClass() {
 fun KtParameter.jsonName(translator: TypescriptTranslator): String {
     return annotationEntries
         .mapNotNull { it.resolvedAnnotation }
-        .find { it.fqName?.asString()?.endsWith("JsonProperty") == true }
+        .find { it.fqName?.asString()?.let { it.endsWith("JsonProperty") || it.endsWith("SerialName") } == true }
         ?.allValueArguments?.get(Name.identifier("value"))
         ?.value as? String
         ?: name ?: "x"
@@ -771,7 +796,7 @@ fun KtParameter.jsonName(translator: TypescriptTranslator): String {
 fun KtEnumEntry.jsonName(translator: TypescriptTranslator): String {
     return annotationEntries
         .mapNotNull { it.resolvedAnnotation }
-        .find { it.fqName?.asString()?.endsWith("JsonProperty") == true }
+        .find { it.fqName?.asString()?.let { it.endsWith("JsonProperty") || it.endsWith("SerialName") } == true }
         ?.allValueArguments?.get(Name.identifier("value"))
         ?.value as? String
         ?: name ?: "x"

@@ -147,6 +147,7 @@ fun main() {
             println("is two")
             println("which is magical")
         }
+        3,4 -> println("Three or four")
         else -> 999
     }
 

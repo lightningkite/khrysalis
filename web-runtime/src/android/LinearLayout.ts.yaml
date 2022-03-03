@@ -11,4 +11,4 @@
 
 - id: android.view.ViewGroup.removeAllViews
   type: call
-  template: ~this~.innerHtml = ""
+  template: ~this~.innerHTML = ""

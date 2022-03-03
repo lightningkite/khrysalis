@@ -2,7 +2,8 @@ import {hashAnything, ReifiedType, safeEq} from "./Language";
 import {parseObject} from "../Codable";
 
 interface DataClassInterface {
-    //static readonly properties: Array<String>
+    //static readonly properties: Array<string>
+    //static readonly propertiesJsonOverride: Record<string, string>
     //static readonly propertyTypes: (...args: Array<ReifiedType>) => Record<string, ReifiedType>>
 }
 
@@ -41,17 +42,33 @@ function ts(this: DataClassInterface): string {
 
 function tj(this: DataClassInterface): Record<string, any> {
     const result: Record<string, any> = {}
-    for (const prop of (this.constructor as any).properties as Array<string>) {
-        result[prop] = (this as any)[prop]
+    const propertiesJsonOverride: Record<string, string> | undefined = (this.constructor as any).propertiesJsonOverride
+    if(propertiesJsonOverride) {
+        for (const prop of (this.constructor as any).properties as Array<string>) {
+            result[propertiesJsonOverride[prop] ?? prop] = (this as any)[prop]
+        }
+    } else {
+        for (const prop of (this.constructor as any).properties as Array<string>) {
+            result[prop] = (this as any)[prop]
+        }
     }
     return result
 }
 
 function fj(type: any): (record: Record<string, any>, ...typeArguments: Array<ReifiedType>) => any {
-    return (record, args) => {
-        const properties: Record<string, ReifiedType> = (type as any).propertyTypes(...args)
-        const orderedProperties: Array<string> = type.properties
-        return new type(...orderedProperties.map(x => parseObject(record[x], properties[x])))
+    const propertiesJsonOverride: Record<string, string> | undefined = type.propertiesJsonOverride
+    if(propertiesJsonOverride) {
+        return (record, args) => {
+            const properties: Record<string, ReifiedType> = (type as any).propertyTypes(...args)
+            const orderedProperties: Array<string> = type.properties
+            return new type(...orderedProperties.map(prop => parseObject(record[propertiesJsonOverride[prop] ?? prop], properties[prop])))
+        }
+    } else {
+        return (record, args) => {
+            const properties: Record<string, ReifiedType> = (type as any).propertyTypes(...args)
+            const orderedProperties: Array<string> = type.properties
+            return new type(...orderedProperties.map(prop => parseObject(record[prop], properties[prop])))
+        }
     }
 }
 

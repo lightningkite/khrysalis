@@ -5,3 +5,7 @@
 - id: android.widget.ImageView
   type: call
   template: (document.createElement('img') as HTMLImageElement)
+
+- id: android.widget.ImageView.setImageBitmap
+  type: call
+  template: '// TODO: Set an ImageBitmap to an image element?'

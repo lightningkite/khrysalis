@@ -37,9 +37,9 @@ fun TypescriptTranslator.registerResources() {
         priority = 199999
     ) {
         val target = (typedRule.selectorExpression as KtNameReferenceExpression).resolvedReferenceTarget as PropertyDescriptor
-        -"\"drawable-"
+        -out.addImportGetName(target.containingDeclaration.containingDeclaration!!, "Drawables")
+        -"."
         -target.name.asString().safeJsIdentifier()
-        -'"'
     }
     handle<KtDotQualifiedExpression>(
         condition = {

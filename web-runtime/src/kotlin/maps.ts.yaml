@@ -247,7 +247,7 @@
 
 - id: kotlin.collections.Map.keys
   type: get
-  template: '[...~this~.keys()]'
+  template: 'new Set([...~this~.keys()])'
 
 - id: kotlin.collections.Map.values
   type: get
@@ -255,7 +255,7 @@
 
 - id: kotlin.collections.Map.entries
   type: get
-  template: '[...~this~.entries()]'
+  template: 'new Set([...~this~.entries()])'
 
 # Gets
 - id: kotlin.collections.Map.get

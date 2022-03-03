@@ -40,16 +40,16 @@
 
 - id: android.view.View.rotation
   type: set
-  template: ~this~.style.transform = `rotate(${~this~})`
+  template: ~this~.style.transform = `rotate(${~value~}deg)`
 
 - id: android.view.View.alpha
   type: set
-  template: ~this~.style.opacity = `${~0~}`
+  template: ~this~.style.opacity = `${~value~}`
 
 - id: android.view.View.alpha
   type: set
   actualReceiver: android.widget.CompoundButton
-  template: ~this~.parentElement!.style.opacity = `${~0~}`
+  template: ~this~.parentElement!.style.opacity = `${~value~}`
 
 #- id: android.view.View.scrollTo
 #  type: call
@@ -84,11 +84,6 @@
       chain: '@lightningkite/rxjs-plus'
   template: ~this~.style.backgroundColor = ~0~
 
-- id: android.view.View.setBackgroundResource
-  type: call
-  reflectiveName: '"className"'
-  template: ~this~.className = ~0~
-
 - id: android.view.View.setPadding
   type: call
   template: ~this~.style.padding = `${~1~}px ${~2~}px ${~3~}px ${~0~}px `
@@ -113,13 +108,13 @@
 
 - id: android.view.View.isEnabled
   type: get
-  template: (!~this~.disabled)
-- id: android.view.View.isEnabled
-  type: set
   reflectiveName:
     pattern: 'elementEnabled'
     imports:
       elementEnabled: '@lightningkite/rxjs-plus'
+  template: (!~this~.disabled)
+- id: android.view.View.isEnabled
+  type: set
   template: ~this~.disabled = !(~value~)
 
 - id: android.view.View.setEnabled
@@ -129,6 +124,11 @@
     imports:
       elementEnabled: '@lightningkite/rxjs-plus'
   template: ~this~.disabled = !(~0~)
+
+- type: call
+  id: android.view.View.performClick
+  actualReceiver: android.widget.Button
+  template: "~this~.click()"
 
 
 - id: android.widget.VideoView
@@ -152,6 +152,10 @@
   template: HTMLButtonElement
 
 - id: android.widget.ImageView
+  type: type
+  template: HTMLImageElement
+
+- id: de.hdodenhof.circleimageview.CircleImageView
   type: type
   template: HTMLImageElement
 
@@ -186,7 +190,7 @@
 
 - id: android.view.View
   type: type
-  template: HTMLDivElement
+  template: HTMLElement
 
 - id: android.widget.RatingBar
   type: type
@@ -210,3 +214,16 @@
 - id: android.widget.LinearLayout
   type: type
   template: HTMLDivElement
+
+- id: android.webkit.WebView
+  type: type
+  template: HTMLIFrameElement
+
+
+- id: android.widget.TextView
+  type: type
+  template: HTMLElement
+
+- id: android.view.ViewGroup
+  type: type
+  template: HTMLElement

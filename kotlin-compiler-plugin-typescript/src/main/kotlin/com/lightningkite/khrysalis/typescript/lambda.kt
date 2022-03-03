@@ -79,7 +79,9 @@ fun TypescriptTranslator.registerLambda() {
                 1 -> {
                     val s = typedRule.bodyExpression!!.statements.first()
                     if (s!!.actuallyCouldBeExpression && resolved.returnType?.fqNameWithoutTypeArgs !in KotlinInfo.dontReturnTypes && resolved.returnType?.isNullableNothing() != true) {
+                        -'('
                         -s
+                        -')'
                     } else {
                         -"{\n"
                         -typedRule.bodyExpression

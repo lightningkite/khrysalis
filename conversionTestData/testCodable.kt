@@ -8,6 +8,9 @@ import kotlinx.serialization.json.*
 import kotlinx.serialization.builtins.*
 
 @Serializable
+data class AwkwardNames(val new: Int, @SerialName("otherName") val overridden: String)
+
+@Serializable
 data class Point(val x: Double, val y: Double)
 @Serializable
 data class Box<T : IsCodableAndHashable>(val description: String, var item: T)
@@ -30,6 +33,11 @@ fun main(vararg args: String) {
     val pt: Point = j.decodeFromString("""{"x": 1.0, "y": 2.0}""")
     j.encodeToString(listOf(Point(x = 1.0, y = 2.0)))
     val pts: List<Point> = j.decodeFromString("""[{"x": 1.0, "y": 2.0}]""")
+
+    val awkward = AwkwardNames(2, "Test")
+    val asString = j.encodeToString(awkward)
+    val awkwardCopy: AwkwardNames = j.decodeFromString(asString)
+    println(awkward == awkwardCopy)
 
     val serializer = Point.serializer()
 }

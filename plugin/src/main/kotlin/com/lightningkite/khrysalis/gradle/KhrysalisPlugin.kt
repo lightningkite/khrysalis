@@ -127,6 +127,7 @@ class KhrysalisPlugin : Plugin<Project> {
                     it.source(*project.swiftDependencies(iosBase).toList().toTypedArray())
                     it.doFirst {
                         c.incremental = false
+                        c.outputs.upToDateWhen { false }
                         println("Preparing ${c.name} for translation...")
                         c.plugin("swift") {
                             "outputDirectory" set iosSrc.absolutePath

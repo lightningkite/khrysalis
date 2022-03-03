@@ -18,7 +18,8 @@ export function safeCompare(left: any, right: any): number {
     }
 }
 
-export function compareBy<A>(key: ((a: A) => any) | keyof A): Comparator<A> {
+export type CompareByInput<A> = ((a: A) => any) | keyof A
+export function compareBy<A>(key: CompareByInput<A>): Comparator<A> {
     if(typeof key === "function")
         return (l, r) => safeCompare(key(l), key(r))
     else

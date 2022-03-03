@@ -254,14 +254,19 @@ fun TypescriptTranslator.registerControl() {
         -") {\n"
         typedRule.entries.forEach { entry ->
             var hasAbsoluteBreak = false
-            entry.conditions.forEach { con ->
-                -"case "
-                -con
-                -": {\n"
-            }
+            entry.conditions.toList().forEachBetween(
+                forItem = { con ->
+                    -"case "
+                    -con
+                    -":"
+                },
+                between = {
+                    -"\n"
+                }
+            )
             entry.elseKeyword?.let {
                 -"default: {\n"
-            }
+            } ?: -" {\n"
             if (entry.expression is KtBlockExpression) {
                 val children = entry.expression?.allChildren?.toList()
                     ?.drop(1)

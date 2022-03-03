@@ -307,6 +307,13 @@
     imports:
       EqualOverrideSet: "@lightningkite/khrysalis-runtime"
 
+- id: kotlin.collections.distinctBy
+  type: call
+  template:
+    pattern: "[...distinctBy(~0~, ~this~)]"
+    imports:
+      distinctBy: "@lightningkite/khrysalis-runtime"
+
 - id: kotlin.collections.toSet
   type: call
   template:

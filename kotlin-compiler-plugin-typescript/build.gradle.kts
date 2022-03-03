@@ -8,7 +8,6 @@ plugins {
 }
 
 group = "com.lightningkite.khrysalis"
-
 dependencies {
     compileOnly("org.jetbrains.kotlin:kotlin-compiler-embeddable")
     testImplementation("junit:junit:4.12")

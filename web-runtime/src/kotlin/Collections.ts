@@ -254,6 +254,7 @@ export class EqualOverrideMap<K, V> implements Map<K, V> {
     }
 }
 
+//! Declares kotlin.collections.Collection
 export interface Collection<V> extends Iterable<V> {
     size: number
 

@@ -11,20 +11,9 @@
 
 - id: android.widget.TextView.text
   type: set
-  reflectiveName: '"textContent"'
   template: '~this~.textContent = ~value~'
 
 - id: android.widget.TextView.setText
-  type: call
-  reflectiveName: '"textContent"'
-  template: '~this~.textContent'
-
-- id: android.widget.ToggleButton.setTextOn
-  type: call
-  reflectiveName: '"textContent"'
-  template: '~this~.textContent'
-
-- id: android.widget.ToggleButton.setTextOff
   type: call
   reflectiveName: '"textContent"'
   template: '~this~.textContent'

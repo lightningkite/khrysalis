@@ -11,8 +11,7 @@ class PointedTest {
     @Test
     fun test() {
         val it = File("../conversionTestData").resolve("testCodable.kt")
-        val ktResult = ExecuteFileTester.kotlin(it, true)
-        val jsResult = ExecuteFileTester.swiftTranslated(it)
-        Assert.assertEquals(ktResult, jsResult)
+        val r = ExecuteFileTester.swiftTranslated(it)
+        Assert.assertEquals(r.kotlin, r.swift)
     }
 }
