@@ -4,6 +4,7 @@ buildscript {
     val kotlin_version = "1.6.10"
     repositories {
         google()
+        jcenter()
         mavenLocal()
     }
     dependencies {
