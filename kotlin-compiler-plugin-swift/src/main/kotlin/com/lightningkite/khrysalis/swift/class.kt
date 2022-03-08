@@ -672,7 +672,7 @@ fun SwiftTranslator.registerClass() {
         condition = {
             val call = typedRule.resolvedCall ?: return@handle false
             if (call.resultingDescriptor !is FakeCallableDescriptorForObject) return@handle false
-            (call.getReturnType().constructor.declarationDescriptor as? ClassDescriptor)?.kind != ClassKind.ENUM_CLASS
+            (call.getReturnType().constructor.declarationDescriptor as? ClassDescriptor)?.kind.let { it != ClassKind.ENUM_CLASS && it != ClassKind.ENUM_ENTRY }
         },
         priority = 1000,
         action = {
@@ -684,8 +684,9 @@ fun SwiftTranslator.registerClass() {
         condition = {
             val p = (typedRule.parent as? KtDotQualifiedExpression) ?: return@handle false
             if (p.receiverExpression != typedRule) return@handle false
-            val rec = p.resolvedCall?.let { it.dispatchReceiver ?: it.extensionReceiver } as? ClassValueReceiver ?: return@handle false
-            (rec.type.constructor.declarationDescriptor as? ClassDescriptor)?.kind != ClassKind.ENUM_ENTRY
+            val rec = p.resolvedCall?.let { it.dispatchReceiver ?: it.extensionReceiver } as? ClassValueReceiver
+                ?: return@handle false
+            (rec.type.constructor.declarationDescriptor as? ClassDescriptor)?.kind.let { it != ClassKind.ENUM_CLASS && it != ClassKind.ENUM_ENTRY }
         },
         priority = 1_000,
         action = {
@@ -705,8 +706,9 @@ fun SwiftTranslator.registerClass() {
         condition = {
             val p = (typedRule.parent as? KtDotQualifiedExpression) ?: return@handle false
             if (p.receiverExpression != typedRule) return@handle false
-            val rec = p.resolvedCall?.let { it.dispatchReceiver ?: it.extensionReceiver } as? ClassValueReceiver ?: return@handle false
-            (rec.type.constructor.declarationDescriptor as? ClassDescriptor)?.kind != ClassKind.ENUM_ENTRY
+            val rec = p.resolvedCall?.let { it.dispatchReceiver ?: it.extensionReceiver } as? ClassValueReceiver
+                ?: return@handle false
+            (rec.type.constructor.declarationDescriptor as? ClassDescriptor)?.kind.let { it != ClassKind.ENUM_CLASS && it != ClassKind.ENUM_ENTRY }
         },
         priority = 1_000,
         action = {

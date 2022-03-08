@@ -1,10 +1,9 @@
 import java.util.Properties
 
-val kotlinVersion = "1.4.31"
+val kotlinVersion = "1.6.10"
 buildscript {
-    val kotlinVersion = "1.4.31"
+    val kotlinVersion = "1.6.10"
     repositories {
-        jcenter()
     }
     dependencies {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
@@ -17,7 +16,7 @@ plugins {
     idea
     maven
     signing
-    id("org.jetbrains.dokka") version "1.4.20"
+    id("org.jetbrains.dokka")
     `maven-publish`
 }
 
@@ -64,7 +63,6 @@ gradlePlugin {
 
 repositories {
     mavenLocal()
-    jcenter()
     mavenCentral()
     google()
 }
