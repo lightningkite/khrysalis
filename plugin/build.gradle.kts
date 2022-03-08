@@ -7,6 +7,7 @@ buildscript {
     }
     dependencies {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
+        classpath("org.jetbrains.dokka:dokka-gradle-plugin:$kotlinVersion")
     }
 }
 plugins {
@@ -21,7 +22,7 @@ plugins {
 }
 
 group = "com.lightningkite.khrysalis"
-version = "0.1.0"
+version = "0.2.0"
 
 val props = project.rootProject.file("local.properties").takeIf { it.exists() }?.inputStream()?.use { stream ->
     Properties().apply { load(stream) }
@@ -93,9 +94,9 @@ dependencies {
 
     // https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java
     api("org.apache.commons:commons-lang3:3.10")
-    api("com.fasterxml.jackson.core:jackson-databind:2.9.+")
-    api("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.+")
-    api("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.+")
+    api("com.fasterxml.jackson.core:jackson-databind:2.9.10")
+    api("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.10")
+    api("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.10")
     api("net.jodah:xsylum:0.1.0")
 
     // https://mvnrepository.com/artifact/org.apache.xmlgraphics/batik-transcoder
