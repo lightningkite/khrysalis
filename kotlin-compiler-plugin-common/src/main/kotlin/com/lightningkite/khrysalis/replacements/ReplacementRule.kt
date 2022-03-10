@@ -34,14 +34,6 @@ import java.util.*
     JsonSubTypes.Type(
         CastRule::class,
         name = "cast"
-    ),
-    JsonSubTypes.Type(
-        ElementReplacement::class,
-        name = "element"
-    ),
-    JsonSubTypes.Type(
-        AttributeReplacement::class,
-        name = "attribute"
     )
 )
 interface ReplacementRule : Comparable<ReplacementRule> {

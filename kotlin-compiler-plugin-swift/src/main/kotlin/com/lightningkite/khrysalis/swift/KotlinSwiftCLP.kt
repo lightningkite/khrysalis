@@ -8,6 +8,7 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.lightningkite.khrysalis.generic.KotlinTranspileCLP
 import com.lightningkite.khrysalis.generic.KotlinTranspileCR
 import com.lightningkite.khrysalis.generic.KotlinTranspileExtension
+import com.lightningkite.khrysalis.generic.TranspileConfig
 import com.lightningkite.khrysalis.replacements.Replacements
 import com.lightningkite.khrysalis.swift.replacements.SwiftJacksonReplacementsModule
 import org.jetbrains.kotlin.analyzer.AnalysisResult
@@ -55,38 +56,17 @@ class KotlinSwiftCR : KotlinTranspileCR() {
     override val fileExtension: String
         get() = "swift"
 
-    override fun makeExtension(
-        projectName: String,
-        dependencies: List<File>,
-        equivalents: Replacements,
-        commonPackage: String?,
-        outputDirectory: File,
-        libraryMode: Boolean,
-        collector: MessageCollector
-    ): AnalysisHandlerExtension = KotlinSwiftExtension(
-        projectName,
-        dependencies,
-        equivalents,
-        commonPackage,
-        outputDirectory,
-        libraryMode,
+    override fun makeExtension(config: TranspileConfig, collector: MessageCollector): AnalysisHandlerExtension = KotlinSwiftExtension(
+        config,
         collector
     )
 }
 
 class KotlinSwiftExtension(
-    projectName: String,
-    val dependencies: List<File>,
-    val replacements: Replacements,
-    commonPackage: String?,
-    outputDirectory: File,
-    libraryMode: Boolean,
+    config: TranspileConfig,
     collector: MessageCollector
 ) : KotlinTranspileExtension(
-    projectName,
-    commonPackage,
-    outputDirectory,
-    libraryMode,
+    config,
     collector
 ) {
     override val outputExtension: String
@@ -95,18 +75,7 @@ class KotlinSwiftExtension(
     lateinit var translator: SwiftTranslator
 
     override fun start(context: BindingContext, files: Collection<KtFile>) {
-        // Load manifests (AKA lists of FQ names in module)
-        translator = SwiftTranslator(projectName, collector, replacements)
-        dependencies.asSequence()
-            .flatMap { it.walkTopDown() }
-            .filter { it.name.endsWith("swift.fqnames", true) }
-            .forEach {
-                val lines = it.readLines().filter { it.isNotBlank() }
-                val name = lines.first()
-                lines.drop(1).forEach {
-                    translator.fqToImport[it] = name
-                }
-            }
+        translator = SwiftTranslator(config.projName, collector, config.replacements)
     }
 
     override fun transpile(context: BindingContext, file: KtFile): CharSequence {
@@ -122,9 +91,9 @@ class KotlinSwiftExtension(
 
     override fun finish(context: BindingContext, files: Collection<KtFile>) {
         // Write manifest (AKA list of FQ names in module)
-        if(libraryMode) {
-            outputDirectory.resolve("swift.fqnames").bufferedWriter().use {
-                sequenceOf(projectName).plus(
+        if(config.libraryMode) {
+            config.outputFqnames.bufferedWriter().use {
+                sequenceOf(config.projName).plus(
                     files.asSequence()
                         .flatMap { f ->
                             f.declarations.asSequence()

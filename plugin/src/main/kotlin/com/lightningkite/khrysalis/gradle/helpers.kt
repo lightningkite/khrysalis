@@ -1,7 +1,9 @@
 package com.lightningkite.khrysalis.gradle
 
+import org.gradle.api.Action
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.dsl.DependencyHandler
+import org.gradle.api.tasks.SourceSetContainer
 import org.jetbrains.kotlin.gradle.plugin.FilesSubpluginOption
 import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
 import org.jetbrains.kotlin.gradle.tasks.AbstractKotlinCompile
@@ -47,3 +49,15 @@ internal class SubpluginOptionsBuilder(val options: CompilerPluginOptions, val p
     infix fun String.set(value: String) = options.addPluginArgument(pluginId, SubpluginOption(this, value))
     infix fun String.set(files: List<File>) = options.addPluginArgument(pluginId, FilesSubpluginOption(this, files))
 }
+
+/**
+ * Retrieves the [sourceSets][org.gradle.api.tasks.SourceSetContainer] extension.
+ */
+val org.gradle.api.Project.`sourceSets`: org.gradle.api.tasks.SourceSetContainer get() =
+    (this as org.gradle.api.plugins.ExtensionAware).extensions.getByName("sourceSets") as org.gradle.api.tasks.SourceSetContainer
+
+/**
+ * Configures the [sourceSets][org.gradle.api.tasks.SourceSetContainer] extension.
+ */
+fun org.gradle.api.Project.`sourceSets`(configure: Action<SourceSetContainer>): Unit =
+    (this as org.gradle.api.plugins.ExtensionAware).extensions.configure("sourceSets", configure)

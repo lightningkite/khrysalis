@@ -1,4 +1,5 @@
 import com.lightningkite.deployhelpers.*
+import org.jetbrains.kotlin.util.capitalizeDecapitalize.capitalizeAsciiOnly
 
 plugins {
     id("kotlin")
@@ -32,5 +33,18 @@ standardPublishing {
             name = "Brady Svedin",
             email = "brady@lightningkite.com",
         )
+    }
+}
+
+sourceSets.forEach {
+    val dirSet = objects.sourceDirectorySet("equivalents", "Khrysalis Equivalents")
+    dirSet.srcDirs(project.projectDir.resolve("src/${it.name}/equivalents"))
+    it.extensions.add("equivalents", dirSet)
+    project.tasks.create("equivalentsJar${it.name.capitalizeAsciiOnly()}", org.gradle.jvm.tasks.Jar::class.java) {
+        this.group = "khrysalis"
+        this.archiveClassifier.set("equivalents")
+        this.from(dirSet)
+        this.extensions.extraProperties.set("published", true)
+        artifacts.add("archives", this)
     }
 }

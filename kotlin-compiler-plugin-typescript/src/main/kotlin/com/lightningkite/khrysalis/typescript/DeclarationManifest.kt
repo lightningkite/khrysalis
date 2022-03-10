@@ -60,21 +60,4 @@ class DeclarationManifest(
             }
     }
 
-    fun loadNonlocal(files: List<File>, filterOut: File) {
-        files
-            .flatMap { it.walkTopDown() }
-            .filter { it.name.endsWith("ts.fqnames", true) }
-            .filter {
-                println("Checking $it against $filterOut")
-                !it.startsWith(filterOut)
-            }
-            .forEach {
-                val lines = it.readLines().filter { it.isNotBlank() }
-                val name = lines.firstOrNull() ?: return@forEach
-                lines.drop(1).forEach {
-                    this.node[it] = name
-                }
-            }
-    }
-
 }

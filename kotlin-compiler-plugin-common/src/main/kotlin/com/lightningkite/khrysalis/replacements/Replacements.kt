@@ -9,6 +9,7 @@ import org.jetbrains.kotlin.synthetic.SyntheticJavaPropertyDescriptor
 import org.jetbrains.kotlin.types.KotlinType
 import org.jetbrains.kotlin.types.typeUtil.supertypes
 import java.io.File
+import java.io.InputStream
 import java.util.*
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
@@ -20,31 +21,7 @@ class Replacements(var mapper: ObjectMapper) {
     val types: HashMap<String, TreeSet<TypeReplacement>> = HashMap()
     val typeRefs: HashMap<String, TreeSet<TypeRefReplacement>> = HashMap()
     val casts: HashMap<Pair<String, String>, TreeSet<CastRule>> = HashMap()
-    val elements: HashMap<String, TreeSet<ElementReplacement>> = HashMap()
-    val attributes: HashMap<String, TreeSet<AttributeReplacement>> = HashMap()
-
-    fun getElement(
-        elementName: String,
-        attributes: Map<String, String>
-    ): ElementReplacement? = elements[elementName]?.firstOrNull {
-        it.attributes.entries.all { (key, value) ->
-            val otherValue = attributes[key]
-            when(value) {
-                "any", "set" -> otherValue != null
-                "unset" -> otherValue == null
-                else -> otherValue == value
-            }
-        }
-    }
-
-    fun getAttribute(
-        elementName: String,
-        attributeName: String,
-        attributeType: AttributeReplacement.ValueType
-    ): AttributeReplacement? = attributes[attributeName]?.firstOrNull {
-        (it.valueType == attributeType)
-                && (it.element == null || it.element == elementName)
-    }
+    val direct: HashMap<String, String> = HashMap()
 
     fun getCall(
         call: ResolvedCall<out CallableDescriptor>,
@@ -223,8 +200,6 @@ class Replacements(var mapper: ObjectMapper) {
             is SetReplacement -> sets.getOrPut(item.id) { TreeSet() }.merge(item)
             is TypeReplacement -> types.getOrPut(item.id) { TreeSet() }.merge(item)
             is TypeRefReplacement -> typeRefs.getOrPut(item.id) { TreeSet() }.merge(item)
-            is ElementReplacement -> elements.getOrPut(item.id) { TreeSet() }.merge(item)
-            is AttributeReplacement -> attributes.getOrPut(item.id) { TreeSet() }.merge(item)
             is CastRule -> casts.getOrPut(item.from to item.to) { TreeSet() }.merge(item)
         }
     }
@@ -238,6 +213,13 @@ class Replacements(var mapper: ObjectMapper) {
     operator fun plusAssign(yaml: File) {
         println("Loading replacement rules from $yaml")
         mapper.readValue<List<ReplacementRule>>(yaml).forEach {
+            this += it
+        }
+    }
+
+    operator fun plusAssign(yaml: MaybeZipFile) {
+        println("Loading replacement rules from ${yaml.name}")
+        mapper.readValue<List<ReplacementRule>>(yaml.inputStream()).forEach {
             this += it
         }
     }

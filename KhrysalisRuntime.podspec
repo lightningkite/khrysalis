@@ -1,6 +1,6 @@
 Pod::Spec.new do |s|
   s.name             = 'KhrysalisRuntime'
-  s.version          = '0.7.1'
+  s.version          = '1.0.0-RC1'
   s.summary          = 'Used in post-Khrysalis conversion Swift code.'
 
   s.description      = <<-DESC

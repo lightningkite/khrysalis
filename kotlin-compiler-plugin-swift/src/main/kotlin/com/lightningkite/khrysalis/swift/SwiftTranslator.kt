@@ -32,7 +32,7 @@ class SwiftTranslator(
     val replacements: Replacements
 ) : KotlinTranslator<SwiftFileEmitter>() {
 
-    val fqToImport = HashMap<String, String>()
+    val fqToImport get() = replacements.direct
 
     var stubMode: Boolean = false
 

@@ -1,0 +1,12 @@
+Language Panel
+    Show rules applied at caret
+    Show equivalents applicable at caret
+
+Rule Editing Panel
+    Highlight rules that don't match any known FQNs?
+
+Equivalents go into separate JAR
+
+Improve translations
+
+Merge FqName files and equivalent files?

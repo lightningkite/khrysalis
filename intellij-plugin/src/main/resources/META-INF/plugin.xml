@@ -1,0 +1,43 @@
+<idea-plugin>
+    <id>khrysalis</id>
+    <name>Khrysalis</name>
+    <category>Tools Integration</category>
+    <vendor email="joseph@lightningkite.com" url="https://github.com/lightningkite/khrysalis">
+        khrysalis
+    </vendor>
+
+    <description><![CDATA[
+        Plugin for <a href="https://github.com/lightningkite/khrysalis">khrysalis</a>, Kotlin to Swift/Typescript Transpiler.
+    ]]></description>
+
+    <depends>com.intellij.modules.lang</depends>
+
+    <idea-version since-build="201"/>
+
+    <extensions defaultExtensionNs="com.intellij">
+        <externalAnnotator language="kotlin"
+                           implementationClass="com.lightningkite.khrysalis.intellij.KhrysalisAnnotator"/>
+        <toolWindow id="Khrysalis" icon="/images/toolwindow.png" anchor="right" factoryClass="com.lightningkite.khrysalis.intellij.KhrysalisToolWindowFactory"/>
+<!--        <projectService serviceImplementation="io.gitlab.arturbosch.detekt.idea.config.DetektConfigStorage"/>-->
+
+<!--        <projectConfigurable groupId="tools"-->
+<!--                             displayName="Detekt"-->
+<!--                             id="preferences.detekt"-->
+<!--                             instance="io.gitlab.arturbosch.detekt.idea.config.DetektConfig"/>-->
+    </extensions>
+
+    <actions>
+<!--        <action id="Detekt.AutoCorrect" class="io.gitlab.arturbosch.detekt.idea.action.AutoCorrectAction"-->
+<!--                text="AutoCorrect by Detekt Rules" description="Run AutoCorrect action on the current file">-->
+<!--            <add-to-group group-id="RefactoringMenu"/>-->
+<!--        </action>-->
+    </actions>
+
+    <change-notes><![CDATA[
+      <ul>
+        <li>0.9.0 - Based on khrysalis 0.9.0</li>
+      </ul>
+      ]]>
+    </change-notes>
+
+</idea-plugin>

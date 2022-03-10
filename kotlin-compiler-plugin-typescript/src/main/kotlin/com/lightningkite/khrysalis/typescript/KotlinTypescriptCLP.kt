@@ -7,6 +7,7 @@ import com.fasterxml.jackson.module.kotlin.registerKotlinModule
 import com.lightningkite.khrysalis.generic.KotlinTranspileCLP
 import com.lightningkite.khrysalis.generic.KotlinTranspileCR
 import com.lightningkite.khrysalis.generic.KotlinTranspileExtension
+import com.lightningkite.khrysalis.generic.TranspileConfig
 import com.lightningkite.khrysalis.replacements.Replacements
 import com.lightningkite.khrysalis.shouldBeTranslated
 import com.lightningkite.khrysalis.typescript.manifest.generateFqToFileMap
@@ -39,38 +40,17 @@ class KotlinTypescriptCR : KotlinTranspileCR() {
     override val fileExtension: String
         get() = "ts"
 
-    override fun makeExtension(
-        projectName: String,
-        dependencies: List<File>,
-        equivalents: Replacements,
-        commonPackage: String?,
-        outputDirectory: File,
-        libraryMode: Boolean,
-        collector: MessageCollector
-    ): AnalysisHandlerExtension = KotlinTypescriptExtension(
-        projectName,
-        dependencies,
-        equivalents,
-        commonPackage,
-        outputDirectory,
-        libraryMode,
+    override fun makeExtension(config: TranspileConfig, collector: MessageCollector): AnalysisHandlerExtension = KotlinTypescriptExtension(
+        config,
         collector
     )
 }
 
 class KotlinTypescriptExtension(
-    projectName: String,
-    val dependencies: List<File>,
-    val replacements: Replacements,
-    commonPackage: String?,
-    outputDirectory: File,
-    libraryMode: Boolean,
+    config: TranspileConfig,
     collector: MessageCollector
 ) : KotlinTranspileExtension(
-    projectName,
-    commonPackage,
-    outputDirectory,
-    libraryMode,
+    config,
     collector
 ) {
     override val outputExtension: String
@@ -79,18 +59,17 @@ class KotlinTypescriptExtension(
     lateinit var translator: TypescriptTranslator
 
     override fun start(context: BindingContext, files: Collection<KtFile>) {
-        println("Will generate files ${outputDirectory.resolve("ts.fqnames")}, ${outputDirectory.resolve("index.ts")}...")
-        translator = TypescriptTranslator(projectName, commonPackage, outputDirectory, collector, replacements)
+        translator = TypescriptTranslator(config.projName, config.commonPackage, config.outputDirectory, collector, config.replacements)
 
         val outputSrc = when {
-            outputDirectory.resolve("node_modules").exists() -> outputDirectory
-            outputDirectory.resolve("../node_modules").exists() -> outputDirectory
-            outputDirectory.resolve("../../node_modules").exists() -> outputDirectory.parentFile
-            else -> outputDirectory
+            config.outputDirectory.resolve("node_modules").exists() -> config.outputDirectory
+            config.outputDirectory.resolve("../node_modules").exists() -> config.outputDirectory
+            config.outputDirectory.resolve("../../node_modules").exists() -> config.outputDirectory.parentFile
+            else -> config.outputDirectory
         }
 
         // Load node declarations
-        translator.declarations.loadNonlocal(dependencies, filterOut = outputSrc)
+        translator.declarations.node += config.replacements.direct
 
         // Load local declarations
         translator.declarations.loadLocal(outputSrc)
@@ -111,16 +90,16 @@ class KotlinTypescriptExtension(
     }
 
     override fun finish(context: BindingContext, files: Collection<KtFile>) {
-        if(libraryMode) {
-            outputDirectory.resolve("ts.fqnames").bufferedWriter().use {
+        if(config.libraryMode) {
+            config.outputFqnames.bufferedWriter().use {
                 it.appendLine(translator.projectName)
                 for(entry in translator.declarations.local){
                     it.appendLine(entry.key)
                 }
             }
-            outputDirectory.resolve("index.ts").bufferedWriter().use {
-                outputDirectory.walkTopDown().filter { it.extension == "ts" }.forEach { f ->
-                    it.appendLine("export * from './${f.relativeTo(outputDirectory).toString().removeSuffix(".ts")}'")
+            config.outputDirectory.resolve("index.ts").bufferedWriter().use {
+                config.outputDirectory.walkTopDown().filter { it.extension == "ts" }.forEach { f ->
+                    it.appendLine("export * from './${f.relativeTo(config.outputDirectory).toString().removeSuffix(".ts")}'")
                 }
             }
         }

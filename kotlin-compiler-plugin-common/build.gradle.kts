@@ -1,8 +1,7 @@
 import com.lightningkite.deployhelpers.*
 
 plugins {
-    id("kotlin")
-    id("signing")
+    kotlin("jvm")
     id("org.jetbrains.dokka")
     `maven-publish`
 }
@@ -10,10 +9,7 @@ plugins {
 group = "com.lightningkite.khrysalis"
 
 dependencies {
-    compileOnly("org.jetbrains.kotlin:kotlin-compiler-embeddable")
     testImplementation("junit:junit:4.12")
-    testImplementation("org.jetbrains.kotlin:kotlin-compiler-embeddable")
-    testImplementation("com.github.tschuchortdev:kotlin-compile-testing:1.4.7")
     api("com.fasterxml.jackson.core:jackson-databind:2.9.10")
     api("com.fasterxml.jackson.module:jackson-module-kotlin:2.9.10")
     api("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:2.9.10")
