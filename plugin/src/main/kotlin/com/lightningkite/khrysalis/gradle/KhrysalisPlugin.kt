@@ -107,7 +107,7 @@ class KhrysalisPlugin : Plugin<Project> {
         val equivalentsConfiguration = project.configurations.maybeCreate("equivalents").apply {
             description = "Equivalent declarations for translations"
             isCanBeResolved = true
-            isCanBeConsumed = false
+            isCanBeConsumed = true
             isVisible = true
         }
 
@@ -129,6 +129,7 @@ class KhrysalisPlugin : Plugin<Project> {
         project.afterEvaluate {
 
             it.sourceSetsMaybeAndroid.names.forEach {
+                println("Source set: ${it}")
                 val dirSet = target.objects.sourceDirectorySet("equivalents", "Khrysalis Equivalents")
                 extensionSourceSets[it] = dirSet
                 dirSet.srcDirs(target.projectDir.resolve("src/${it}/equivalents"))
@@ -141,9 +142,9 @@ class KhrysalisPlugin : Plugin<Project> {
 
             println("Setting up converters")
             it.tasks.filterIsInstance<KotlinCompile>().forEach { c ->
-                val sourceSetName = c.name.substringAfter("compile").removeSuffix("Kotlin").decapitalize()
+                val sourceSetName = c.name.substringAfter("compile").removeSuffix("Kotlin").decapitalize().takeUnless { it.isBlank() } ?: "main"
                 val sourceSetEquivalents = extensionSourceSets[sourceSetName] ?: return@forEach
-                val equivalentSourceFolder = project.projectDir.resolve("src/${it.name}/equivalents")
+                val equivalentSourceFolder = project.projectDir.resolve("src/${sourceSetName}/equivalents")
 
                 it.tasks.create("${c.name}ToSwift", TranspileTask::class.java) {
                     it.group = "ios"

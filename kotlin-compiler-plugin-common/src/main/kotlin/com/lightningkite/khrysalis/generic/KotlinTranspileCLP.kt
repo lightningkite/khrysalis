@@ -143,8 +143,10 @@ abstract class KotlinTranspileCR : ComponentRegistrar {
                         actualFile.inputStream().use {
                             val lines = it.reader().readLines().filter { it.isNotBlank() }
                             val name = lines.first()
-                            lines.drop(1).forEach {
-                                reps.direct[it] = name
+                            if (name != projName) {
+                                lines.drop(1).forEach {
+                                    reps.direct[it] = name
+                                }
                             }
                         }
                     }
