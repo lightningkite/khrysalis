@@ -1,5 +1,6 @@
 package com.lightningkite.khrysalis.gradle
 
+import com.android.build.api.dsl.AndroidSourceSet
 import com.lightningkite.khrysalis.KhrysalisSettings
 import com.lightningkite.khrysalis.generic.CompilerRunInfo
 import com.lightningkite.khrysalis.generic.runCompiler
@@ -32,18 +33,26 @@ open class KhrysalisPluginExtension {
     open var webProjectFolder: File? = null
     open var libraryMode: Boolean = false
 
-    @Deprecated("Use iosProjectName instead") open var projectName: String? = null
-    @Deprecated("Use iosProjectFolder instead") open var overrideIosFolder: File? = null
-    @Deprecated("Use webProjectFolder instead") open var overrideWebFolder: File? = null
+    @Deprecated("Use iosProjectName instead")
+    open var projectName: String? = null
+    @Deprecated("Use iosProjectFolder instead")
+    open var overrideIosFolder: File? = null
+    @Deprecated("Use webProjectFolder instead")
+    open var overrideWebFolder: File? = null
 
     private var completed: KhrysalisExtensionSettings? = null
     fun complete(project: Project): KhrysalisExtensionSettings = completed ?: run {
         val libraryMode = this.libraryMode
         val organizationName = this.organizationName
-        val iosProjectName = this.iosProjectName ?: this.projectName ?: project.name.takeUnless { it == "app" || it == "android" } ?: project.rootProject.name
-        val webProjectName = this.webProjectName ?: this.projectName ?: project.name.takeUnless { it == "app" || it == "android" } ?: project.rootProject.name
+        val iosProjectName =
+            this.iosProjectName ?: this.projectName ?: project.name.takeUnless { it == "app" || it == "android" }
+            ?: project.rootProject.name
+        val webProjectName =
+            this.webProjectName ?: this.projectName ?: project.name.takeUnless { it == "app" || it == "android" }
+            ?: project.rootProject.name
         val iosProjectFolder = this.iosProjectFolder ?: this.overrideIosFolder ?: project.projectDir.resolve("../ios")
-        val iosSourceFolder = this.iosSourceFolder ?: (if(libraryMode) iosProjectFolder.resolve(iosProjectName).resolve("Classes") else iosProjectFolder.resolve(iosProjectName).resolve("src"))
+        val iosSourceFolder = this.iosSourceFolder ?: (if (libraryMode) iosProjectFolder.resolve(iosProjectName)
+            .resolve("Classes") else iosProjectFolder.resolve(iosProjectName).resolve("src"))
         val webProjectFolder = this.webProjectFolder ?: this.overrideWebFolder ?: project.projectDir.resolve("../web")
         val webSourceFolder = this.webSourceFolder ?: webProjectFolder.resolve("src")
         val result = KhrysalisExtensionSettings(
@@ -75,16 +84,22 @@ data class KhrysalisExtensionSettings(
 fun Project.khrysalis(configure: Action<KhrysalisPluginExtension>) {
     (this as org.gradle.api.plugins.ExtensionAware).extensions.configure("khrysalis", configure)
 }
+
 fun DependencyHandler.khrysalis(dependencyNotation: Any): Dependency? = add("kcp", dependencyNotation)
 fun DependencyHandler.khrysalisSwift(dependencyNotation: Any): Dependency? = add("kcp", dependencyNotation)
 fun DependencyHandler.khrysalisTypescript(dependencyNotation: Any): Dependency? = add("kcp", dependencyNotation)
 fun DependencyHandler.khrysalisKotlin(dependencyNotation: Any): Dependency? = add("kcp", dependencyNotation)
 
-val Project.khrysalis: KhrysalisExtensionSettings get() = (project.extensions.getByName("khrysalis") as KhrysalisPluginExtension).complete(this)
+val Project.khrysalis: KhrysalisExtensionSettings
+    get() = (project.extensions.getByName("khrysalis") as KhrysalisPluginExtension).complete(
+        this
+    )
 
-abstract class TranspileTask(): SourceTask() {
-    @get:Input val libraryMode: Boolean by lazy { project.khrysalis.libraryMode }
-    @get:OutputDirectory var outputDirectory: File = File("")
+abstract class TranspileTask() : SourceTask() {
+    @get:Input
+    val libraryMode: Boolean by lazy { project.khrysalis.libraryMode }
+    @get:OutputDirectory
+    var outputDirectory: File = File("")
 }
 
 fun KotlinCompile.calculateCommonPackage(): String {
@@ -102,7 +117,8 @@ class KhrysalisPlugin : Plugin<Project> {
         target.configurations.maybeCreate("kcp")
         val isMac = Os.isFamily(Os.FAMILY_MAC)
         val project = target
-        val extension = project.extensions.create<KhrysalisPluginExtension>("khrysalis", KhrysalisPluginExtension::class.java)
+        val extension =
+            project.extensions.create<KhrysalisPluginExtension>("khrysalis", KhrysalisPluginExtension::class.java)
 
         val equivalentsConfiguration = project.configurations.maybeCreate("equivalents").apply {
             description = "Equivalent declarations for translations"
@@ -126,27 +142,28 @@ class KhrysalisPlugin : Plugin<Project> {
 
         //IOS
 
-        project.afterEvaluate {
-
-            it.sourceSetsMaybeAndroid.names.forEach {
-                println("Source set: ${it}")
-                val dirSet = target.objects.sourceDirectorySet("equivalents", "Khrysalis Equivalents")
-                extensionSourceSets[it] = dirSet
-                dirSet.srcDirs(target.projectDir.resolve("src/${it}/equivalents"))
-                project.tasks.create("equivalentsJar${it.capitalize()}", Jar::class.java) { task ->
-                    task.group = "khrysalis"
-                    task.archiveClassifier.set("equivalents")
-                    task.from(dirSet)
-                }
+        project.sourceSetsMaybeAndroid.names.forEach {
+//            val actualObject = project.sourceSetsMaybeAndroid.getByName(it)
+            val dirSet = target.objects.sourceDirectorySet("equivalents", "Khrysalis Equivalents")
+            extensionSourceSets[it] = dirSet
+            dirSet.srcDirs(target.projectDir.resolve("src/${it}/equivalents"))
+            project.tasks.create("equivalentsJar${it.capitalize()}", Jar::class.java) { task ->
+                task.group = "khrysalis"
+                task.archiveClassifier.set("equivalents")
+                task.from(dirSet)
             }
+        }
 
-            println("Setting up converters")
-            it.tasks.filterIsInstance<KotlinCompile>().forEach { c ->
-                val sourceSetName = c.name.substringAfter("compile").removeSuffix("Kotlin").decapitalize().takeUnless { it.isBlank() } ?: "main"
+        project.afterEvaluate {
+            project.tasks.filterIsInstance<KotlinCompile>().forEach { c ->
+                val sourceSetName = "main"
+//                val sourceSetName =
+//                    c.name.substringAfter("compile").removeSuffix("Kotlin").decapitalize().takeUnless { it.isBlank() }
+//                        ?: "main"
                 val sourceSetEquivalents = extensionSourceSets[sourceSetName] ?: return@forEach
                 val equivalentSourceFolder = project.projectDir.resolve("src/${sourceSetName}/equivalents")
 
-                it.tasks.create("${c.name}ToSwift", TranspileTask::class.java) {
+                project.tasks.create("${c.name}ToSwift", TranspileTask::class.java) {
                     it.group = "ios"
                     val fqNameFile = equivalentSourceFolder.resolve("swift.fqnames")
                     it.dependsOn(project.configurations.getByName("kcp"))
@@ -167,9 +184,8 @@ class KhrysalisPlugin : Plugin<Project> {
                         }
                     }
                     it.finalizedBy(c)
-                    println("Task is ${it.name}")
                 }
-                it.tasks.create("${c.name}ToTypescript", TranspileTask::class.java) {
+                project.tasks.create("${c.name}ToTypescript", TranspileTask::class.java) {
                     it.group = "web"
                     val fqNameFile = equivalentSourceFolder.resolve("ts.fqnames")
                     it.dependsOn(project.configurations.getByName("kcp"))
@@ -190,7 +206,6 @@ class KhrysalisPlugin : Plugin<Project> {
                         }
                     }
                     it.finalizedBy(c)
-                    println("Task is ${it.name}")
                 }
             }
         }
@@ -199,8 +214,12 @@ class KhrysalisPlugin : Plugin<Project> {
             task.group = "khrysalis"
             task.doLast {
                 println("--- Equivalent JARs ---")
-                for(file in equivalentsConfiguration.toList()) {
+                for (file in equivalentsConfiguration.toList()) {
                     println(file)
+                }
+                println("--- Equivalent Directories ---")
+                for (entry in extensionSourceSets) {
+                    println(entry.key + "  -  " + entry.value.sourceDirectories.joinToString())
                 }
             }
         }
@@ -211,6 +230,7 @@ class KhrysalisPlugin : Plugin<Project> {
                 println("--- Equivalent Files ---")
                 equivalentsConfiguration.toList()
                     .asSequence()
+                    .plus(extensionSourceSets.asSequence().flatMap { it.value.toList() })
                     .flatMap { it.walkZip() }
                     .filter { it.name.endsWith(".yaml") || it.name.endsWith(".fqnames") }
                     .groupBy { it.name.substringBeforeLast('.').substringAfterLast('.') }
@@ -226,16 +246,18 @@ class KhrysalisPlugin : Plugin<Project> {
         project.tasks.create("updateIosVersion") { task ->
             task.group = "ios"
             task.doLast {
-                val versionName = project.extensions.findByName("android")?.groovyObject?.getPropertyAsObject("defaultConfig")
-                    ?.getProperty("versionName") as? String ?: project.version.toString()
-                val versionCode = project.extensions.findByName("android")?.groovyObject?.getPropertyAsObject("defaultConfig")
-                    ?.getProperty("versionCode") as? Int ?: 0
+                val versionName =
+                    project.extensions.findByName("android")?.groovyObject?.getPropertyAsObject("defaultConfig")
+                        ?.getProperty("versionName") as? String ?: project.version.toString()
+                val versionCode =
+                    project.extensions.findByName("android")?.groovyObject?.getPropertyAsObject("defaultConfig")
+                        ?.getProperty("versionCode") as? Int ?: 0
                 val projectFile = (iosBase.listFiles()?.toList()
                     ?.find { it.name.endsWith("xcodeproj", true) }
                     ?: throw IllegalStateException("Could not find projectFile at ${iosBase}"))
                     .resolve("project.pbxproj")
                     .also {
-                        if(!it.exists()) {
+                        if (!it.exists()) {
                             throw IllegalStateException("Could not find projectFile at ${it}")
                         }
                     }
@@ -251,17 +273,21 @@ class KhrysalisPlugin : Plugin<Project> {
         project.tasks.create("updateWebVersion") { task ->
             task.group = "web"
             task.doLast {
-                val versionName = project.extensions.findByName("android")?.groovyObject?.getPropertyAsObject("defaultConfig")
-                    ?.getProperty("versionName") as? String ?: project.version.toString()
-                val versionCode = project.extensions.findByName("android")?.groovyObject?.getPropertyAsObject("defaultConfig")
-                    ?.getProperty("versionCode") as? Int ?: 0
-                val androidPackageName = project.extensions.findByName("android")?.groovyObject?.getPropertyAsObject("defaultConfig")
-                    ?.getProperty("applicationId") as? String ?: "com.test"
+                val versionName =
+                    project.extensions.findByName("android")?.groovyObject?.getPropertyAsObject("defaultConfig")
+                        ?.getProperty("versionName") as? String ?: project.version.toString()
+                val versionCode =
+                    project.extensions.findByName("android")?.groovyObject?.getPropertyAsObject("defaultConfig")
+                        ?.getProperty("versionCode") as? Int ?: 0
+                val androidPackageName =
+                    project.extensions.findByName("android")?.groovyObject?.getPropertyAsObject("defaultConfig")
+                        ?.getProperty("applicationId") as? String ?: "com.test"
                 val projectFile = webBase.resolve("package.json")
                 projectFile.readText()
                     .replace(Regex(""""version": "([0-9.]+)""""), """"version": "$versionName"""")
                     .let { projectFile.writeText(it) }
-                webBase.resolve("src/BuildConfig.ts").writeText("""
+                webBase.resolve("src/BuildConfig.ts").writeText(
+                    """
                     //! Declares ${androidPackageName}.BuildConfig
                     export class BuildConfig {
                         static INSTANCE = BuildConfig
@@ -271,7 +297,8 @@ class KhrysalisPlugin : Plugin<Project> {
                             return (window as any).isDebugMode ?? false
                         }
                     }
-                """.trimIndent())
+                """.trimIndent()
+                )
             }
         }
     }
