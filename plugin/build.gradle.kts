@@ -43,6 +43,7 @@ dependencies {
 
     implementation("org.jetbrains.kotlin:kotlin-stdlib")
     compileOnly("org.jetbrains.kotlin:kotlin-compiler-embeddable")
+    compileOnly("com.android.tools.build:gradle:7.0.4")
 
     // https://mvnrepository.com/artifact/com.google.protobuf/protobuf-java
     api("org.apache.commons:commons-lang3:3.10")

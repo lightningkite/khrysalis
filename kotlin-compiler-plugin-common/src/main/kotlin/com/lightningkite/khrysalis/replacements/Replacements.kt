@@ -218,7 +218,7 @@ class Replacements(var mapper: ObjectMapper) {
     }
 
     operator fun plusAssign(yaml: MaybeZipFile) {
-        println("Loading replacement rules from ${yaml.name}")
+        println("Loading replacement rules from ${yaml}")
         mapper.readValue<List<ReplacementRule>>(yaml.inputStream()).forEach {
             this += it
         }

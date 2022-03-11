@@ -13,6 +13,7 @@ import org.gradle.api.*
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.dsl.DependencyHandler
 import org.gradle.api.file.DirectoryProperty
+import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.tasks.*
 import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.jvm.tasks.Jar
@@ -81,6 +82,11 @@ fun DependencyHandler.khrysalisKotlin(dependencyNotation: Any): Dependency? = ad
 
 val Project.khrysalis: KhrysalisExtensionSettings get() = (project.extensions.getByName("khrysalis") as KhrysalisPluginExtension).complete(this)
 
+abstract class TranspileTask(): SourceTask() {
+    @get:Input val libraryMode: Boolean by lazy { project.khrysalis.libraryMode }
+    @get:OutputDirectory var outputDirectory: File = File("")
+}
+
 fun KotlinCompile.calculateCommonPackage(): String {
     return source
         .asSequence()
@@ -90,33 +96,16 @@ fun KotlinCompile.calculateCommonPackage(): String {
 }
 
 class KhrysalisPlugin : Plugin<Project> {
+    val extensionSourceSets = HashMap<String, SourceDirectorySet>()
+
     override fun apply(target: Project) {
         target.configurations.maybeCreate("kcp")
         val isMac = Os.isFamily(Os.FAMILY_MAC)
         val project = target
         val extension = project.extensions.create<KhrysalisPluginExtension>("khrysalis", KhrysalisPluginExtension::class.java)
 
-        project.sourceSets.forEach {
-            val dirSet = target.objects.sourceDirectorySet("equivalents", "Khrysalis Equivalents")
-            it.extensions.add("equivalents", dirSet)
-            dirSet.srcDirs(target.projectDir.resolve("src/${it.name}/equivalents"))
-            project.tasks.create("equivalentsJar${it.name.capitalizeAsciiOnly()}", Jar::class.java) { task ->
-                task.group = "khrysalis"
-                task.archiveClassifier.set("equivalents")
-                task.from(dirSet)
-                task.extensions.extraProperties.set("published", true)
-                target.artifacts.add("archives", task)
-            }
-        }
-
-        val equivalentsSwift = project.configurations.maybeCreate("equivalentsSwift").apply {
-            description = "Equivalent declarations for Swift"
-            isCanBeResolved = true
-            isCanBeConsumed = false
-            isVisible = true
-        }
-        val equivalentsTypescript = project.configurations.maybeCreate("equivalentsTypescript").apply {
-            description = "Equivalent declarations for Typescript"
+        val equivalentsConfiguration = project.configurations.maybeCreate("equivalents").apply {
+            description = "Equivalent declarations for translations"
             isCanBeResolved = true
             isCanBeConsumed = false
             isVisible = true
@@ -138,57 +127,98 @@ class KhrysalisPlugin : Plugin<Project> {
         //IOS
 
         project.afterEvaluate {
+
+            it.sourceSetsMaybeAndroid.names.forEach {
+                val dirSet = target.objects.sourceDirectorySet("equivalents", "Khrysalis Equivalents")
+                extensionSourceSets[it] = dirSet
+                dirSet.srcDirs(target.projectDir.resolve("src/${it}/equivalents"))
+                project.tasks.create("equivalentsJar${it.capitalize()}", Jar::class.java) { task ->
+                    task.group = "khrysalis"
+                    task.archiveClassifier.set("equivalents")
+                    task.from(dirSet)
+                }
+            }
+
+            println("Setting up converters")
             it.tasks.filterIsInstance<KotlinCompile>().forEach { c ->
-                val sourceSet = project.sourceSets.findByName(c.name.substringAfter("compile").removeSuffix("Kotlin")) ?: return@forEach
-                val sourceSetEquivalents = sourceSet.equivalents
+                val sourceSetName = c.name.substringAfter("compile").removeSuffix("Kotlin").decapitalize()
+                val sourceSetEquivalents = extensionSourceSets[sourceSetName] ?: return@forEach
                 val equivalentSourceFolder = project.projectDir.resolve("src/${it.name}/equivalents")
 
-                it.tasks.create("${c.name}ToSwift", SourceTask::class.java) {
+                it.tasks.create("${c.name}ToSwift", TranspileTask::class.java) {
                     it.group = "ios"
-                    it.inputs.files(project.configurations.getByName("kcp"))
-                    val equivalents = equivalentsSwift.toList() + sourceSetEquivalents.toList()
                     val fqNameFile = equivalentSourceFolder.resolve("swift.fqnames")
-                    it.outputs.dir(iosSrc)
-                    it.outputs.file(fqNameFile)
-                    it.source(c.source)
-                    it.source(equivalents)
+                    it.dependsOn(project.configurations.getByName("kcp"))
+                    it.outputDirectory = iosSrc
+                    it.source(*project.swiftDependencies(iosBase).toList().toTypedArray())
                     it.doFirst {
+                        val equivalentJars = equivalentsConfiguration.toList()
                         c.incremental = false
                         c.outputs.upToDateWhen { false }
+                        println("Preparing ${c.name} for translation...")
                         c.plugin("swift") {
                             "outputDirectory" set iosSrc.absolutePath
                             "outputFqnames" set fqNameFile.absolutePath
                             "projName" set target.khrysalis.iosProjectName
-                            "equivalents" set equivalents
+                            "equivalents" set equivalentJars + sourceSetEquivalents.toList()
                             "commonPackage" set c.calculateCommonPackage()
                             "libraryMode" set extension.libraryMode.toString()
                         }
                     }
                     it.finalizedBy(c)
+                    println("Task is ${it.name}")
                 }
-                it.tasks.create("${c.name}ToTypescript", SourceTask::class.java) {
+                it.tasks.create("${c.name}ToTypescript", TranspileTask::class.java) {
                     it.group = "web"
-                    it.inputs.files(project.configurations.getByName("kcp"))
-                    val equivalents = equivalentsTypescript.toList() + sourceSetEquivalents.toList()
                     val fqNameFile = equivalentSourceFolder.resolve("ts.fqnames")
-                    it.outputs.dir(webSrc)
-                    it.outputs.file(fqNameFile)
-                    it.source(c.source)
-                    it.source(equivalents)
+                    it.dependsOn(project.configurations.getByName("kcp"))
+                    it.outputDirectory = webSrc
+                    it.source(webBase.resolve("node_modules"))
                     it.doFirst {
+                        val equivalentJars = equivalentsConfiguration.toList()
                         c.incremental = false
                         c.outputs.upToDateWhen { false }
+                        println("Preparing ${c.name} for translation...")
                         c.plugin("typescript") {
                             "outputDirectory" set webSrc.absolutePath
                             "outputFqnames" set fqNameFile.absolutePath
                             "projName" set target.khrysalis.webProjectName
-                            "equivalents" set equivalents
+                            "equivalents" set equivalentJars + sourceSetEquivalents.toList()
                             "commonPackage" set c.calculateCommonPackage()
                             "libraryMode" set extension.libraryMode.toString()
                         }
                     }
                     it.finalizedBy(c)
+                    println("Task is ${it.name}")
                 }
+            }
+        }
+
+        project.tasks.create("listEquivalentJars") { task ->
+            task.group = "khrysalis"
+            task.doLast {
+                println("--- Equivalent JARs ---")
+                for(file in equivalentsConfiguration.toList()) {
+                    println(file)
+                }
+            }
+        }
+
+        project.tasks.create("listEquivalentFiles") { task ->
+            task.group = "khrysalis"
+            task.doLast {
+                println("--- Equivalent Files ---")
+                equivalentsConfiguration.toList()
+                    .asSequence()
+                    .flatMap { it.walkZip() }
+                    .filter { it.name.endsWith(".yaml") || it.name.endsWith(".fqnames") }
+                    .groupBy { it.name.substringBeforeLast('.').substringAfterLast('.') }
+                    .forEach {
+                        println("--- ${it.key} ---")
+                        it.value.forEach {
+                            println(it)
+                        }
+                    }
             }
         }
 

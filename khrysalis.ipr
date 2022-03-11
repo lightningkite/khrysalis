@@ -647,6 +647,78 @@
     <option name="AUTOSCROLL_FROM_SOURCE" value="false" />
   </component>
   <component name="libraryTable">
+    <library name="Gradle: com.android.tools.build:apksig:7.0.4">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.tools.build/apksig/7.0.4/55069f1c25da805fdeb367612f8e94788de80966/apksig-7.0.4.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.tools.build/apksig/7.0.4/6719c7301de1a2225d83f2a8753c43835329521c/apksig-7.0.4-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: com.android.tools.build:apkzlib:7.0.4">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.tools.build/apkzlib/7.0.4/756f0d262f94ae1de42c1ece5e8c43623ab5068e/apkzlib-7.0.4.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.tools.build/apkzlib/7.0.4/9d19cfa597c74eb12917fe2dccd2ee8562a64664/apkzlib-7.0.4-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: com.android.tools.build:builder-model:7.0.4">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.tools.build/builder-model/7.0.4/33db284973b01be0323c76583a3bf82fc5136a9a/builder-model-7.0.4.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.tools.build/builder-model/7.0.4/bb0cee703752871b74301fb44a89f6f53128eba4/builder-model-7.0.4-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: com.android.tools.build:builder:7.0.4">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.tools.build/builder/7.0.4/5d69ea9607caf9156a8bd0d95fa53598d1bbb59a/builder-7.0.4.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.tools.build/builder/7.0.4/4e9f9bd8721ecb591e5ee7e07e8fb6c4d67c38ac/builder-7.0.4-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: com.android.tools.build:gradle-api:7.0.4">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.tools.build/gradle-api/7.0.4/da92e074b345da0557a37db65042ab9bf6068c21/gradle-api-7.0.4.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.tools.build/gradle-api/7.0.4/fb7a8ed3bac799414a5304cac3db8d21a46ef8ce/gradle-api-7.0.4-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: com.android.tools.build:gradle:7.0.4">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.tools.build/gradle/7.0.4/2f429abf8c8fe6ef67b7a96174b2073f9cc11f5d/gradle-7.0.4.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.tools.build/gradle/7.0.4/fd84b571b9d5f2a044c401d1ea27c2292bd9e80f/gradle-7.0.4-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: com.android.tools.build:manifest-merger:30.0.4">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.tools.build/manifest-merger/30.0.4/3da7e87c25dc7bd65622079e81b5933aa8eac31a/manifest-merger-30.0.4.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android.tools.build/manifest-merger/30.0.4/70bc82c3e3ed26e9341dfb634106570cd220d15e/manifest-merger-30.0.4-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: com.android:zipflinger:7.0.4">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android/zipflinger/7.0.4/784467cfb5c987c3fdb358c66946d8fc21f2a873/zipflinger-7.0.4.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.android/zipflinger/7.0.4/6c36c0c309a1e99c9e8be44e0ca78aa565544776/zipflinger-7.0.4-sources.jar!/" />
+      </SOURCES>
+    </library>
     <library name="Gradle: com.fasterxml.jackson.core:jackson-annotations:2.9.10">
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-annotations/2.9.10/53ab2f0f92e87ea4874c8c6997335c211d81e636/jackson-annotations-2.9.10.jar!/" />
@@ -806,6 +878,15 @@
       <JAVADOC />
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio-jvm/3.0.0/73e518d3b5760645d525c24934e4efc01149060a/okio-jvm-3.0.0-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: com.squareup:javawriter:2.5.0">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup/javawriter/2.5.0/81241ff7078ef14f42ea2a8995fa09c096256e6b/javawriter-2.5.0.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup/javawriter/2.5.0/1b2a0925ff06220c0261b6fd468183cd9e9a9a47/javawriter-2.5.0-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Gradle: commons-io:commons-io:2.4">
@@ -1676,6 +1757,15 @@
       <JAVADOC />
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains/annotations/22.0.0/2ff08ea87697c3932851b121ac84d0db43620d34/annotations-22.0.0-sources.jar!/" />
+      </SOURCES>
+    </library>
+    <library name="Gradle: org.ow2.asm:asm:7.0">
+      <CLASSES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm/7.0/d74d4ba0dee443f68fb2dcb7fcdb945a2cd89912/asm-7.0.jar!/" />
+      </CLASSES>
+      <JAVADOC />
+      <SOURCES>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.ow2.asm/asm/7.0/1e0eab03ec196dea229ea637e523b9c016e66b42/asm-7.0-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Gradle: org.reflections:reflections:0.9.9">
