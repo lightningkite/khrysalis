@@ -79,7 +79,7 @@ fun ExecuteFileTester.kotlinAndTs(file: File): KatResult {
         commandLineProcessors = listOf(KotlinTypescriptCLP())
         compilerPlugins += listOf(KotlinTypescriptCR())
         pluginOptions += listOf(
-            PluginOption(KotlinTypescriptCLP.PLUGIN_ID, KotlinTranspileCLP.KEY_EQUIVALENTS_NAME, tsTestDir.toString()),
+            PluginOption(KotlinTypescriptCLP.PLUGIN_ID, KotlinTranspileCLP.KEY_EQUIVALENTS_NAME, File("../jvm-runtime/src").toString()),
             PluginOption(KotlinTypescriptCLP.PLUGIN_ID, KotlinTranspileCLP.KEY_OUTPUT_DIRECTORY_NAME, outFolder.toString()),
             PluginOption(KotlinTypescriptCLP.PLUGIN_ID, KotlinTranspileCLP.KEY_COMMON_PACKAGE_NAME, file.readText().substringAfter("package ").substringBefore('\n').trim()),
             PluginOption(KotlinTypescriptCLP.PLUGIN_ID, KotlinTranspileCLP.KEY_PROJECT_NAME_NAME, "Yeet"),
