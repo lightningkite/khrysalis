@@ -1,8 +1,8 @@
 import com.lightningkite.deployhelpers.*
 
 plugins {
-    id("kotlin")
-    id("signing")
+    kotlin("jvm")
+    signing
     id("org.jetbrains.dokka")
     `maven-publish`
 }

@@ -2,6 +2,7 @@ import com.lightningkite.deployhelpers.*
 
 plugins {
     kotlin("jvm")
+    signing
     id("org.jetbrains.dokka")
     `maven-publish`
 }

@@ -3,9 +3,9 @@
 buildscript {
     val kotlinVersion = "1.6.10"
     repositories {
+        google()
         mavenCentral()
         maven(url="https://s01.oss.sonatype.org/content/repositories/snapshots/")
-        google()
     }
     dependencies {
         classpath("com.android.tools.build:gradle:7.0.4")
@@ -25,9 +25,9 @@ plugins {
 
 allprojects {
     repositories {
+        google()
         mavenCentral()
         maven(url="https://s01.oss.sonatype.org/content/repositories/snapshots/")
-        google()
     }
 }
 
