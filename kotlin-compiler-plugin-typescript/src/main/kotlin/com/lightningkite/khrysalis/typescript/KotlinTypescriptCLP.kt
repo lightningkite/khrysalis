@@ -12,6 +12,7 @@ import com.lightningkite.khrysalis.replacements.Replacements
 import com.lightningkite.khrysalis.shouldBeTranslated
 import com.lightningkite.khrysalis.typescript.manifest.generateFqToFileMap
 import com.lightningkite.khrysalis.typescript.replacements.TypescriptJacksonReplacementsModule
+import com.lightningkite.khrysalis.util.unixPath
 import org.jetbrains.kotlin.cli.common.messages.MessageCollector
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.resolve.BindingContext
@@ -99,7 +100,7 @@ class KotlinTypescriptExtension(
             }
             config.outputDirectory.resolve("index.ts").bufferedWriter().use {
                 config.outputDirectory.walkTopDown().filter { it.extension == "ts" }.forEach { f ->
-                    it.appendLine("export * from './${f.relativeTo(config.outputDirectory).toString().removeSuffix(".ts")}'")
+                    it.appendLine("export * from './${f.relativeTo(config.outputDirectory).unixPath.removeSuffix(".ts")}'")
                 }
             }
         }
