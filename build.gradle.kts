@@ -3,12 +3,12 @@
 buildscript {
     val kotlinVersion = "1.6.10"
     repositories {
-        google()
-        maven(url="https://s01.oss.sonatype.org/content/repositories/snapshots/")
         mavenCentral()
+        maven(url="https://s01.oss.sonatype.org/content/repositories/snapshots/")
+        google()
     }
     dependencies {
-        classpath("com.android.tools.build:gradle:4.2.2")
+        classpath("com.android.tools.build:gradle:7.0.4")
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlinVersion")
         classpath("org.jetbrains.kotlin:kotlin-serialization:$kotlinVersion")
         classpath("org.jetbrains.dokka:dokka-gradle-plugin:$kotlinVersion")
@@ -26,6 +26,7 @@ plugins {
 allprojects {
     repositories {
         mavenCentral()
+        maven(url="https://s01.oss.sonatype.org/content/repositories/snapshots/")
         google()
     }
 }

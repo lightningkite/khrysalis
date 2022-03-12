@@ -13,7 +13,7 @@ version = "0.0.1"
 
 dependencies {
     compileOnly("org.jetbrains.kotlin:kotlin-compiler-embeddable")
-    testImplementation("junit:junit:4.12")
+    testImplementation("junit:junit:4.13.2")
     testImplementation("org.jetbrains.kotlin:kotlin-compiler-embeddable")
     implementation(project(":kotlin-compiler-plugin-swift"))
     implementation(project(":kotlin-compiler-plugin-typescript"))
