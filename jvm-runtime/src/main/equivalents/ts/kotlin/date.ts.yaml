@@ -1,5 +1,99 @@
+---
 
-- id: java.util.Date.compareTo
-  type: call
-  infix: true
-  template: ~this~ ~operatorToken~ ~0~
+- { type: get, id: java.time.LocalTime.hour, template: "~this~.hour()" }
+- { type: get, id: java.time.LocalTime.minute, template: "~this~.minute()" }
+- { type: get, id: java.time.LocalTime.nano, template: "~this~.nano()" }
+- { type: get, id: java.time.LocalTime.second, template: "~this~.second()" }
+
+- { type: get, id: java.time.LocalDate.dayOfMonth, template: "~this~.dayOfMonth()" }
+- { type: get, id: java.time.LocalDate.dayOfWeek, template: "~this~.dayOfWeek()" }
+- { type: get, id: java.time.LocalDate.dayOfYear, template: "~this~.dayOfYear()" }
+- { type: get, id: java.time.LocalDate.era, template: "~this~.era()" }
+- { type: get, id: java.time.LocalDate.month, template: "~this~.month()" }
+- { type: get, id: java.time.LocalDate.monthValue, template: "~this~.monthValue()" }
+- { type: get, id: java.time.LocalDate.year, template: "~this~.year()" }
+
+- { type: get, id: java.time.LocalDateTime.hour, template: "~this~.hour()" }
+- { type: get, id: java.time.LocalDateTime.minute, template: "~this~.minute()" }
+- { type: get, id: java.time.LocalDateTime.nano, template: "~this~.nano()" }
+- { type: get, id: java.time.LocalDateTime.second, template: "~this~.second()" }
+- { type: get, id: java.time.LocalDateTime.dayOfMonth, template: "~this~.dayOfMonth()" }
+- { type: get, id: java.time.LocalDateTime.dayOfWeek, template: "~this~.dayOfWeek()" }
+- { type: get, id: java.time.LocalDateTime.dayOfYear, template: "~this~.dayOfYear()" }
+- { type: get, id: java.time.LocalDateTime.era, template: "~this~.era()" }
+- { type: get, id: java.time.LocalDateTime.month, template: "~this~.month()" }
+- { type: get, id: java.time.LocalDateTime.monthValue, template: "~this~.monthValue()" }
+- { type: get, id: java.time.LocalDateTime.year, template: "~this~.year()" }
+
+- { type: get, id: java.time.ZonedDateTime.hour, template: "~this~.hour()" }
+- { type: get, id: java.time.ZonedDateTime.minute, template: "~this~.minute()" }
+- { type: get, id: java.time.ZonedDateTime.nano, template: "~this~.nano()" }
+- { type: get, id: java.time.ZonedDateTime.second, template: "~this~.second()" }
+- { type: get, id: java.time.ZonedDateTime.dayOfMonth, template: "~this~.dayOfMonth()" }
+- { type: get, id: java.time.ZonedDateTime.dayOfWeek, template: "~this~.dayOfWeek()" }
+- { type: get, id: java.time.ZonedDateTime.dayOfYear, template: "~this~.dayOfYear()" }
+- { type: get, id: java.time.ZonedDateTime.era, template: "~this~.era()" }
+- { type: get, id: java.time.ZonedDateTime.month, template: "~this~.month()" }
+- { type: get, id: java.time.ZonedDateTime.monthValue, template: "~this~.monthValue()" }
+- { type: get, id: java.time.ZonedDateTime.year, template: "~this~.year()" }
+
+- { type: get, id: java.time.ZoneId.id, template: "~this~.id()" }
+
+- { type: call, id: com.lightningkite.khrysalis.time.plusYears, receiver: java.time.ZonedDateTime, template: "~this~.plusYears" }
+- { type: call, id: com.lightningkite.khrysalis.time.plusMonths, receiver: java.time.ZonedDateTime, template: "~this~.plusMonths" }
+- { type: call, id: com.lightningkite.khrysalis.time.plusDays, receiver: java.time.ZonedDateTime, template: "~this~.plusDays" }
+- { type: call, id: com.lightningkite.khrysalis.time.plusHours, receiver: java.time.ZonedDateTime, template: "~this~.plusHours" }
+- { type: call, id: com.lightningkite.khrysalis.time.plusMinutes, receiver: java.time.ZonedDateTime, template: "~this~.plusMinutes" }
+- { type: call, id: com.lightningkite.khrysalis.time.plusSeconds, receiver: java.time.ZonedDateTime, template: "~this~.plusSeconds" }
+- { type: call, id: com.lightningkite.khrysalis.time.plusNanos, receiver: java.time.ZonedDateTime, template: "~this~.plusNanos" }
+
+- { type: call, id: com.lightningkite.khrysalis.time.plusYears, receiver: java.time.LocalDateTime, template: "~this~.plusYears" }
+- { type: call, id: com.lightningkite.khrysalis.time.plusMonths, receiver: java.time.LocalDateTime, template: "~this~.plusMonths" }
+- { type: call, id: com.lightningkite.khrysalis.time.plusDays, receiver: java.time.LocalDateTime, template: "~this~.plusDays" }
+- { type: call, id: com.lightningkite.khrysalis.time.plusHours, receiver: java.time.LocalDateTime, template: "~this~.plusHours" }
+- { type: call, id: com.lightningkite.khrysalis.time.plusMinutes, receiver: java.time.LocalDateTime, template: "~this~.plusMinutes" }
+- { type: call, id: com.lightningkite.khrysalis.time.plusSeconds, receiver: java.time.LocalDateTime, template: "~this~.plusSeconds" }
+- { type: call, id: com.lightningkite.khrysalis.time.plusNanos, receiver: java.time.LocalDateTime, template: "~this~.plusNanos" }
+
+- { type: call, id: com.lightningkite.khrysalis.time.plusYears, receiver: java.time.LocalDate, template: "~this~.plusYears" }
+- { type: call, id: com.lightningkite.khrysalis.time.plusMonths, receiver: java.time.LocalDate, template: "~this~.plusMonths" }
+- { type: call, id: com.lightningkite.khrysalis.time.plusDays, receiver: java.time.LocalDate, template: "~this~.plusDays" }
+- { type: call, id: com.lightningkite.khrysalis.time.plusHours, receiver: java.time.LocalTime, template: "~this~.plusHours" }
+- { type: call, id: com.lightningkite.khrysalis.time.plusMinutes, receiver: java.time.LocalTime, template: "~this~.plusMinutes" }
+- { type: call, id: com.lightningkite.khrysalis.time.plusSeconds, receiver: java.time.LocalTime, template: "~this~.plusSeconds" }
+- { type: call, id: com.lightningkite.khrysalis.time.plusNanos, receiver: java.time.LocalTime, template: "~this~.plusNanos" }
+
+- { type: call, id: com.lightningkite.khrysalis.time.minusYears, receiver: java.time.ZonedDateTime, template: "~this~.minusYears" }
+- { type: call, id: com.lightningkite.khrysalis.time.minusMonths, receiver: java.time.ZonedDateTime, template: "~this~.minusMonths" }
+- { type: call, id: com.lightningkite.khrysalis.time.minusDays, receiver: java.time.ZonedDateTime, template: "~this~.minusDays" }
+- { type: call, id: com.lightningkite.khrysalis.time.minusHours, receiver: java.time.ZonedDateTime, template: "~this~.minusHours" }
+- { type: call, id: com.lightningkite.khrysalis.time.minusMinutes, receiver: java.time.ZonedDateTime, template: "~this~.minusMinutes" }
+- { type: call, id: com.lightningkite.khrysalis.time.minusSeconds, receiver: java.time.ZonedDateTime, template: "~this~.minusSeconds" }
+- { type: call, id: com.lightningkite.khrysalis.time.minusNanos, receiver: java.time.ZonedDateTime, template: "~this~.minusNanos" }
+
+- { type: call, id: com.lightningkite.khrysalis.time.minusYears, receiver: java.time.LocalDateTime, template: "~this~.minusYears" }
+- { type: call, id: com.lightningkite.khrysalis.time.minusMonths, receiver: java.time.LocalDateTime, template: "~this~.minusMonths" }
+- { type: call, id: com.lightningkite.khrysalis.time.minusDays, receiver: java.time.LocalDateTime, template: "~this~.minusDays" }
+- { type: call, id: com.lightningkite.khrysalis.time.minusHours, receiver: java.time.LocalDateTime, template: "~this~.minusHours" }
+- { type: call, id: com.lightningkite.khrysalis.time.minusMinutes, receiver: java.time.LocalDateTime, template: "~this~.minusMinutes" }
+- { type: call, id: com.lightningkite.khrysalis.time.minusSeconds, receiver: java.time.LocalDateTime, template: "~this~.minusSeconds" }
+- { type: call, id: com.lightningkite.khrysalis.time.minusNanos, receiver: java.time.LocalDateTime, template: "~this~.minusNanos" }
+
+- { type: call, id: com.lightningkite.khrysalis.time.minusYears, receiver: java.time.LocalDate, template: "~this~.minusYears" }
+- { type: call, id: com.lightningkite.khrysalis.time.minusMonths, receiver: java.time.LocalDate, template: "~this~.minusMonths" }
+- { type: call, id: com.lightningkite.khrysalis.time.minusDays, receiver: java.time.LocalDate, template: "~this~.minusDays" }
+- { type: call, id: com.lightningkite.khrysalis.time.minusHours, receiver: java.time.LocalTime, template: "~this~.minusHours" }
+- { type: call, id: com.lightningkite.khrysalis.time.minusMinutes, receiver: java.time.LocalTime, template: "~this~.minusMinutes" }
+- { type: call, id: com.lightningkite.khrysalis.time.minusSeconds, receiver: java.time.LocalTime, template: "~this~.minusSeconds" }
+- { type: call, id: com.lightningkite.khrysalis.time.minusNanos, receiver: java.time.LocalTime, template: "~this~.minusNanos" }
+
+- { type: type, id: java.time.format.FormatStyle, template: "Intl.DateTimeFormatOptions" }
+- { type: get, id: java.time.format.FormatStyle.FULL, template: { pattern: "FormatStyle.FULL", imports: { "FormatStyle": "@lightningkite/khrysalis-runtime" } } }
+- { type: get, id: java.time.format.FormatStyle.LONG, template: { pattern: "FormatStyle.LONG", imports: { "FormatStyle": "@lightningkite/khrysalis-runtime" } } }
+- { type: get, id: java.time.format.FormatStyle.MEDIUM, template: { pattern: "FormatStyle.MEDIUM", imports: { "FormatStyle": "@lightningkite/khrysalis-runtime" } } }
+- { type: get, id: java.time.format.FormatStyle.SHORT, template: { pattern: "FormatStyle.SHORT", imports: { "FormatStyle": "@lightningkite/khrysalis-runtime" } } }
+- { type: call, id: java.time.format.DateTimeFormatter.ofLocalizedDate, template: { pattern: "ofLocalizedDate(~*~)", imports: { "ofLocalizedDate": "@lightningkite/khrysalis-runtime" } } }
+- { type: call, id: java.time.format.DateTimeFormatter.ofLocalizedTime, template: { pattern: "ofLocalizedTime(~*~)", imports: { "ofLocalizedTime": "@lightningkite/khrysalis-runtime" } } }
+- { type: call, id: java.time.format.DateTimeFormatter.ofLocalizedDateTime, template: { pattern: "ofLocalizedDateTime(~*~)", imports: { "ofLocalizedDateTime": "@lightningkite/khrysalis-runtime" } } }
+
+- { type: call, id: java.time.format.DateTimeFormatter.withZone, template: '~this~' }

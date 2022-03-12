@@ -18,6 +18,9 @@
       <module name="android-maps" target="11" />
       <module name="android-qr" target="11" />
       <module name="com.lightningkite.khrysalis.khrysalis.android-qr" target="11" />
+      <module name="com.lightningkite.khrysalis.khrysalis.intellij-plugin" target="11" />
+      <module name="com.lightningkite.khrysalis.khrysalis.intellij-plugin.main" target="11" />
+      <module name="com.lightningkite.khrysalis.khrysalis.intellij-plugin.test" target="11" />
       <module name="com.lightningkite.khrysalis.khrysalis.jvm-runtime" target="11" />
       <module name="com.lightningkite.khrysalis.khrysalis.jvm-runtime.main" target="11" />
       <module name="com.lightningkite.khrysalis.khrysalis.jvm-runtime.test" target="11" />
@@ -454,6 +457,9 @@
       <module fileurl="file://$PROJECT_DIR$/android-maps/android-maps.iml" filepath="$PROJECT_DIR$/android-maps/android-maps.iml" group="khrysalis/android-maps" />
       <module fileurl="file://$PROJECT_DIR$/android-qr/android-qr.iml" filepath="$PROJECT_DIR$/android-qr/android-qr.iml" group="khrysalis/android-qr" />
       <module fileurl="file://$PROJECT_DIR$/android-qr/com.lightningkite.khrysalis.khrysalis.android-qr.iml" filepath="$PROJECT_DIR$/android-qr/com.lightningkite.khrysalis.khrysalis.android-qr.iml" />
+      <module fileurl="file://$PROJECT_DIR$/intellij-plugin/com.lightningkite.khrysalis.khrysalis.intellij-plugin.iml" filepath="$PROJECT_DIR$/intellij-plugin/com.lightningkite.khrysalis.khrysalis.intellij-plugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/intellij-plugin/com.lightningkite.khrysalis.khrysalis.intellij-plugin.main.iml" filepath="$PROJECT_DIR$/intellij-plugin/com.lightningkite.khrysalis.khrysalis.intellij-plugin.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/intellij-plugin/com.lightningkite.khrysalis.khrysalis.intellij-plugin.test.iml" filepath="$PROJECT_DIR$/intellij-plugin/com.lightningkite.khrysalis.khrysalis.intellij-plugin.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/jvm-runtime/com.lightningkite.khrysalis.khrysalis.jvm-runtime.iml" filepath="$PROJECT_DIR$/jvm-runtime/com.lightningkite.khrysalis.khrysalis.jvm-runtime.iml" />
       <module fileurl="file://$PROJECT_DIR$/jvm-runtime/com.lightningkite.khrysalis.khrysalis.jvm-runtime.main.iml" filepath="$PROJECT_DIR$/jvm-runtime/com.lightningkite.khrysalis.khrysalis.jvm-runtime.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/jvm-runtime/com.lightningkite.khrysalis.khrysalis.jvm-runtime.test.iml" filepath="$PROJECT_DIR$/jvm-runtime/com.lightningkite.khrysalis.khrysalis.jvm-runtime.test.iml" />
