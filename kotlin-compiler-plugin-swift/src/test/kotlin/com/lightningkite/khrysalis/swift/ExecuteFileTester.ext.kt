@@ -70,6 +70,7 @@ fun ExecuteFileTester.kotlinAndSwift(file: File): KasResult {
             PluginOption(KotlinSwiftCLP.PLUGIN_ID, KotlinTranspileCLP.KEY_COMMON_PACKAGE_NAME, file.readText().substringAfter("package ").substringBefore('\n').trim()),
             PluginOption(KotlinSwiftCLP.PLUGIN_ID, KotlinTranspileCLP.KEY_PROJECT_NAME_NAME, "Yeet"),
             PluginOption(KotlinSwiftCLP.PLUGIN_ID, KotlinTranspileCLP.KEY_LIBRARY_MODE_NAME, "false"),
+            PluginOption(KotlinSwiftCLP.PLUGIN_ID, KotlinTranspileCLP.KEY_OUTPUT_FQNAMES_NAME, outFolder.resolve("../ts.fqnames").toString()),
         )
     }
     return KasResult(kotlinOut, outFolder.resolve(file.nameWithoutExtension + ".swift"))

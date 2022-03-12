@@ -84,6 +84,7 @@ fun ExecuteFileTester.kotlinAndTs(file: File): KatResult {
             PluginOption(KotlinTypescriptCLP.PLUGIN_ID, KotlinTranspileCLP.KEY_COMMON_PACKAGE_NAME, file.readText().substringAfter("package ").substringBefore('\n').trim()),
             PluginOption(KotlinTypescriptCLP.PLUGIN_ID, KotlinTranspileCLP.KEY_PROJECT_NAME_NAME, "Yeet"),
             PluginOption(KotlinTypescriptCLP.PLUGIN_ID, KotlinTranspileCLP.KEY_LIBRARY_MODE_NAME, "false"),
+            PluginOption(KotlinTypescriptCLP.PLUGIN_ID, KotlinTranspileCLP.KEY_OUTPUT_FQNAMES_NAME, outFolder.resolve("../ts.fqnames").toString()),
         )
     }
     return KatResult(kResult, outFolder.resolve(file.nameWithoutExtension + ".ts"))
