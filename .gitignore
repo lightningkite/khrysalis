@@ -21,3 +21,4 @@ web-runtime/dist
 **/testDataOut/**/*.shared.swift
 plugin/src/main/resources/compiler-plugins/**
 
+.shelf
