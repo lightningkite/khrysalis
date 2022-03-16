@@ -204,6 +204,8 @@
 - { type: call, id: java.time.Instant.plus, template: "~this~.addingTimeInterval(~0~)" }
 - { type: call, id: java.time.Instant.plusMillis, template: { pattern: "(~this~ + ~0~ / 1000)", imports: [ KhrysalisRuntime ] } }
 - { type: call, id: java.time.Instant.ofEpochSecond, template: "Date(timeIntervalSince1970: ~0~ / 1000.0)" }
+- { type: get, id: java.time.Instant.EPOCH, template: "Date.distantPast" }
+- { type: get, id: java.time.Instant.MIN, template: "Date.distantPast" }
 
 - { type: call, id: java.time.ZonedDateTime.truncatedTo, exactArgumentRequirements: {0: ChronoUnit.YEARS}, template: '~this~.truncatedToYear()' }
 - { type: call, id: java.time.ZonedDateTime.truncatedTo, exactArgumentRequirements: {0: ChronoUnit.MONTHS}, template: '~this~.truncatedToMonth()' }
