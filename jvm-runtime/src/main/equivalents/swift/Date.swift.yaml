@@ -1,7 +1,7 @@
 ---
 
 - { type: type, id: java.time.format.DateTimeFormatter, template: DateFormatter }
-- { type: call, id: java.time.format.DateTimeFormatter.ofLocalizedDateTime, arguments: ['*'], template: { pattern: 'DateFormatter(bothStyles: ~0~)', imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.format.DateTimeFormatter.ofLocalizedDateTime, arguments: [ '*' ], template: { pattern: 'DateFormatter(bothStyles: ~0~)', imports: [ KhrysalisRuntime ] } }
 - { type: call, id: java.time.format.DateTimeFormatter.ofLocalizedDateTime, template: { pattern: 'DateFormatter(dateStyle: ~0~, timeStyle: ~1~)', imports: [ KhrysalisRuntime ] } }
 - { type: call, id: java.time.format.DateTimeFormatter.ofLocalizedTime, template: { pattern: 'DateFormatter(timeStyle: ~0~)', imports: [ KhrysalisRuntime ] } }
 - { type: call, id: java.time.format.DateTimeFormatter.ofLocalizedDate, template: { pattern: 'DateFormatter(dateStyle: ~0~)', imports: [ KhrysalisRuntime ] } }
@@ -55,22 +55,22 @@
 - { type: call, id: java.time.Duration.toDays, template: 'Int(~this~ / 86400)' }
 - { type: call, id: java.time.Duration.between, template: '~0~.timeIntervalSince(~1~)' }
 
-- { type: call, id: java.time.LocalDate.of, arguments: [Int, Int, Int], template: { pattern: 'LocalDate(year: ~0~, month: ~1~, day: ~2~)', imports: [ KhrysalisRuntime ] } }
-- { type: call, id: java.time.LocalTime.of, arguments: [Int, Int], template: { pattern: 'LocalTime(hour: ~0~, minute: ~1~)', imports: [ KhrysalisRuntime ] } }
-- { type: call, id: java.time.LocalTime.of, arguments: [Int, Int, Int], template: { pattern: 'LocalTime(hour: ~0~, minute: ~1~, second: ~2~)', imports: [ KhrysalisRuntime ] } }
-- { type: call, id: java.time.LocalTime.of, arguments: [Int, Int, Int, Int], template: { pattern: 'LocalTime(hour: ~0~, minute: ~1~, second: ~2~, nanosecond: ~3~)', imports: [ KhrysalisRuntime ] } }
-- { type: call, id: java.time.LocalDateTime.of, arguments: [Int, Int, Int, Int, Int], template: { pattern: 'LocalDateTime(year: ~0~, month: ~1~, day: ~2~, hour: ~3~, minute: ~4~)', imports: [ KhrysalisRuntime ] } }
-- { type: call, id: java.time.LocalDateTime.of, arguments: [Int, Int, Int, Int, Int, Int], template: { pattern: 'LocalDateTime(year: ~0~, month: ~1~, day: ~2~, hour: ~3~, minute: ~4~, second: ~5~)', imports: [ KhrysalisRuntime ] } }
-- { type: call, id: java.time.LocalDateTime.of, arguments: [Int, Int, Int, Int, Int, Int, Int], template: { pattern: 'LocalDateTime(year: ~0~, month: ~1~, day: ~2~, hour: ~3~, minute: ~4~, second: ~5~, nanosecond: ~6~)', imports: [ KhrysalisRuntime ] } }
-- { type: call, id: java.time.LocalDateTime.of, arguments: [LocalDate, LocalTime], template: { pattern: 'LocalDateTime(localDate: ~0~, localTime: ~1~)', imports: [ KhrysalisRuntime ] } }
-- { type: call, id: java.time.ZonedDateTime.of, arguments: [LocalDate, LocalTime, ZoneId], template: { pattern: 'ZonedDateTime(timeZone: ~2~, localDate: ~0~, localTime: ~1~)', imports: [ KhrysalisRuntime ] } }
-- { type: call, id: java.time.ZonedDateTime.of, arguments: [LocalDateTime, ZoneId], template: { pattern: 'ZonedDateTime(timeZone: ~1~, localDateTime: ~0~)', imports: [ KhrysalisRuntime ] } }
-- { type: call, id: java.time.ZonedDateTime.ofInstant, arguments: [Instant, ZoneId], template: { pattern: 'ZonedDateTime(timeZone: ~1~, from: ~0~)', imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDate.of, arguments: [ Int, Int, Int ], template: { pattern: 'LocalDate(year: ~0~, month: ~1~, day: ~2~)', imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalTime.of, arguments: [ Int, Int ], template: { pattern: 'LocalTime(hour: ~0~, minute: ~1~)', imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalTime.of, arguments: [ Int, Int, Int ], template: { pattern: 'LocalTime(hour: ~0~, minute: ~1~, second: ~2~)', imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalTime.of, arguments: [ Int, Int, Int, Int ], template: { pattern: 'LocalTime(hour: ~0~, minute: ~1~, second: ~2~, nanosecond: ~3~)', imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDateTime.of, arguments: [ Int, Int, Int, Int, Int ], template: { pattern: 'LocalDateTime(year: ~0~, month: ~1~, day: ~2~, hour: ~3~, minute: ~4~)', imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDateTime.of, arguments: [ Int, Int, Int, Int, Int, Int ], template: { pattern: 'LocalDateTime(year: ~0~, month: ~1~, day: ~2~, hour: ~3~, minute: ~4~, second: ~5~)', imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDateTime.of, arguments: [ Int, Int, Int, Int, Int, Int, Int ], template: { pattern: 'LocalDateTime(year: ~0~, month: ~1~, day: ~2~, hour: ~3~, minute: ~4~, second: ~5~, nanosecond: ~6~)', imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDateTime.of, arguments: [ LocalDate, LocalTime ], template: { pattern: 'LocalDateTime(localDate: ~0~, localTime: ~1~)', imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.ZonedDateTime.of, arguments: [ LocalDate, LocalTime, ZoneId ], template: { pattern: 'ZonedDateTime(timeZone: ~2~, localDate: ~0~, localTime: ~1~)', imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.ZonedDateTime.of, arguments: [ LocalDateTime, ZoneId ], template: { pattern: 'ZonedDateTime(timeZone: ~1~, localDateTime: ~0~)', imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.ZonedDateTime.ofInstant, arguments: [ Instant, ZoneId ], template: { pattern: 'ZonedDateTime(timeZone: ~1~, from: ~0~)', imports: [ KhrysalisRuntime ] } }
 
 - { type: call, id: java.time.ZonedDateTime.withYear, template: { pattern: "~this~.with(year: ~0~)", imports: [ KhrysalisRuntime ] } }
 - { type: call, id: java.time.ZonedDateTime.withMonth, template: { pattern: "~this~.with(month: ~0~)", imports: [ KhrysalisRuntime ] } }
 - { type: call, id: java.time.ZonedDateTime.withDayOfMonth, template: { pattern: "~this~.with(day: ~0~)", imports: [ KhrysalisRuntime ] } }
-- { type: call, id: java.time.ZonedDateTime.with, exactArgumentRequirements: {0: ChronoField.DAY_OF_WEEK}, template: { pattern: "~this~.with(dayOfWeek: ~1~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.ZonedDateTime.with, exactArgumentRequirements: { 0: ChronoField.DAY_OF_WEEK }, template: { pattern: "~this~.with(dayOfWeek: ~1~)", imports: [ KhrysalisRuntime ] } }
 - { type: call, id: java.time.ZonedDateTime.withHour, template: { pattern: "~this~.with(hour: ~0~)", imports: [ KhrysalisRuntime ] } }
 - { type: call, id: java.time.ZonedDateTime.withMinute, template: { pattern: "~this~.with(minute: ~0~)", imports: [ KhrysalisRuntime ] } }
 - { type: call, id: java.time.ZonedDateTime.withSecond, template: { pattern: "~this~.with(second: ~0~)", imports: [ KhrysalisRuntime ] } }
@@ -79,7 +79,7 @@
 - { type: call, id: java.time.LocalDateTime.withYear, template: { pattern: "~this~.with(year: ~0~)", imports: [ KhrysalisRuntime ] } }
 - { type: call, id: java.time.LocalDateTime.withMonth, template: { pattern: "~this~.with(month: ~0~)", imports: [ KhrysalisRuntime ] } }
 - { type: call, id: java.time.LocalDateTime.withDayOfMonth, template: { pattern: "~this~.with(day: ~0~)", imports: [ KhrysalisRuntime ] } }
-- { type: call, id: java.time.LocalDateTime.with, exactArgumentRequirements: {0: ChronoField.DAY_OF_WEEK}, template: { pattern: "~this~.with(dayOfWeek: ~1~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDateTime.with, exactArgumentRequirements: { 0: ChronoField.DAY_OF_WEEK }, template: { pattern: "~this~.with(dayOfWeek: ~1~)", imports: [ KhrysalisRuntime ] } }
 - { type: call, id: java.time.LocalDateTime.withHour, template: { pattern: "~this~.with(hour: ~0~)", imports: [ KhrysalisRuntime ] } }
 - { type: call, id: java.time.LocalDateTime.withMinute, template: { pattern: "~this~.with(minute: ~0~)", imports: [ KhrysalisRuntime ] } }
 - { type: call, id: java.time.LocalDateTime.withSecond, template: { pattern: "~this~.with(second: ~0~)", imports: [ KhrysalisRuntime ] } }
@@ -88,7 +88,7 @@
 - { type: call, id: java.time.LocalDate.withYear, template: { pattern: "~this~.with(year: ~0~)", imports: [ KhrysalisRuntime ] } }
 - { type: call, id: java.time.LocalDate.withMonth, template: { pattern: "~this~.with(month: ~0~)", imports: [ KhrysalisRuntime ] } }
 - { type: call, id: java.time.LocalDate.withDayOfMonth, template: { pattern: "~this~.with(day: ~0~)", imports: [ KhrysalisRuntime ] } }
-- { type: call, id: java.time.LocalDate.with, debug: true, exactArgumentRequirements: {0: ChronoField.DAY_OF_WEEK}, template: { pattern: "~this~.with(dayOfWeek: ~1~)", imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDate.with, debug: true, exactArgumentRequirements: { 0: ChronoField.DAY_OF_WEEK }, template: { pattern: "~this~.with(dayOfWeek: ~1~)", imports: [ KhrysalisRuntime ] } }
 - { type: call, id: java.time.LocalTime.withHour, template: { pattern: "~this~.with(hour: ~0~)", imports: [ KhrysalisRuntime ] } }
 - { type: call, id: java.time.LocalTime.withMinute, template: { pattern: "~this~.with(minute: ~0~)", imports: [ KhrysalisRuntime ] } }
 - { type: call, id: java.time.LocalTime.withSecond, template: { pattern: "~this~.with(second: ~0~)", imports: [ KhrysalisRuntime ] } }
@@ -207,20 +207,20 @@
 - { type: get, id: java.time.Instant.EPOCH, template: "Date.distantPast" }
 - { type: get, id: java.time.Instant.MIN, template: "Date.distantPast" }
 
-- { type: call, id: java.time.ZonedDateTime.truncatedTo, exactArgumentRequirements: {0: ChronoUnit.YEARS}, template: '~this~.truncatedToYear()' }
-- { type: call, id: java.time.ZonedDateTime.truncatedTo, exactArgumentRequirements: {0: ChronoUnit.MONTHS}, template: '~this~.truncatedToMonth()' }
-- { type: call, id: java.time.ZonedDateTime.truncatedTo, exactArgumentRequirements: {0: ChronoUnit.DAYS}, template: '~this~.truncatedToDay()' }
-- { type: call, id: java.time.ZonedDateTime.truncatedTo, exactArgumentRequirements: {0: ChronoUnit.HOURS}, template: '~this~.truncatedToHour()' }
-- { type: call, id: java.time.ZonedDateTime.truncatedTo, exactArgumentRequirements: {0: ChronoUnit.MINUTES}, template: '~this~.truncatedToMinute()' }
+- { type: call, id: java.time.ZonedDateTime.truncatedTo, exactArgumentRequirements: { 0: ChronoUnit.YEARS }, template: '~this~.truncatedToYear()' }
+- { type: call, id: java.time.ZonedDateTime.truncatedTo, exactArgumentRequirements: { 0: ChronoUnit.MONTHS }, template: '~this~.truncatedToMonth()' }
+- { type: call, id: java.time.ZonedDateTime.truncatedTo, exactArgumentRequirements: { 0: ChronoUnit.DAYS }, template: '~this~.truncatedToDay()' }
+- { type: call, id: java.time.ZonedDateTime.truncatedTo, exactArgumentRequirements: { 0: ChronoUnit.HOURS }, template: '~this~.truncatedToHour()' }
+- { type: call, id: java.time.ZonedDateTime.truncatedTo, exactArgumentRequirements: { 0: ChronoUnit.MINUTES }, template: '~this~.truncatedToMinute()' }
 
 - { type: type, id: java.time.DayOfWeek, template: 'Int' }
 - { type: type, id: java.time.Month, template: 'Int' }
 - { type: get, id: java.time.DayOfWeek.value, template: '((~this~ + 5) % 7 + 1)' }
 - { type: get, id: java.time.Month.value, template: '~this~' }
-- { type: call, id: java.time.Month.getDisplayName, exactArgumentRequirements: {0: TextStyle.FULL}, template: 'DateFormatter().monthSymbols[~this~ - 1]' }
-- { type: call, id: java.time.DayOfWeek.getDisplayName, exactArgumentRequirements: {0: TextStyle.FULL}, template: 'DateFormatter().weekdaySymbols[~this~ - 1]' }
-- { type: call, id: java.time.Month.getDisplayName, exactArgumentRequirements: {0: TextStyle.SHORT}, template: 'DateFormatter().shortMonthSymbols[~this~ - 1]' }
-- { type: call, id: java.time.DayOfWeek.getDisplayName, exactArgumentRequirements: {0: TextStyle.SHORT}, template: 'DateFormatter().shortWeekdaySymbols[~this~ - 1]' }
+- { type: call, id: java.time.Month.getDisplayName, exactArgumentRequirements: { 0: TextStyle.FULL }, template: 'DateFormatter().monthSymbols[~this~ - 1]' }
+- { type: call, id: java.time.DayOfWeek.getDisplayName, exactArgumentRequirements: { 0: TextStyle.FULL }, template: 'DateFormatter().weekdaySymbols[~this~ - 1]' }
+- { type: call, id: java.time.Month.getDisplayName, exactArgumentRequirements: { 0: TextStyle.SHORT }, template: 'DateFormatter().shortMonthSymbols[~this~ - 1]' }
+- { type: call, id: java.time.DayOfWeek.getDisplayName, exactArgumentRequirements: { 0: TextStyle.SHORT }, template: 'DateFormatter().shortWeekdaySymbols[~this~ - 1]' }
 - { type: call, id: java.time.Month.values, template: 'Array(1...12)' }
 - { type: call, id: java.time.DayOfWeek.values, template: 'Array(1...7)' }
 
