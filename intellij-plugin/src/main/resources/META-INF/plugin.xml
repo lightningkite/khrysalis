@@ -20,8 +20,8 @@
     <idea-version since-build="201"/>
 
     <extensions defaultExtensionNs="com.intellij">
-<!--        <externalAnnotator language="kotlin"-->
-<!--                           implementationClass="com.lightningkite.khrysalis.intellij.KhrysalisAnnotator"/>-->
+        <externalAnnotator language="kotlin"
+                           implementationClass="com.lightningkite.khrysalis.intellij.KhrysalisAnnotator"/>
         <toolWindow id="Khrysalis" icon="/images/toolwindow.png" anchor="right" factoryClass="com.lightningkite.khrysalis.intellij.KhrysalisToolWindowFactory"/>
 <!--        <projectService serviceImplementation="io.gitlab.arturbosch.detekt.idea.config.DetektConfigStorage"/>-->
 

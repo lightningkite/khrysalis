@@ -3,6 +3,7 @@ package com.lightningkite.khrysalis.replacements
 import com.fasterxml.jackson.databind.ObjectMapper
 import com.fasterxml.jackson.module.kotlin.readValue
 import com.lightningkite.khrysalis.util.*
+import org.jetbrains.kotlin.cli.common.messages.CompilerMessageSeverity
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
 import org.jetbrains.kotlin.synthetic.SyntheticJavaPropertyDescriptor
@@ -10,6 +11,8 @@ import org.jetbrains.kotlin.types.KotlinType
 import org.jetbrains.kotlin.types.typeUtil.supertypes
 import java.io.File
 import java.io.InputStream
+import java.io.PrintWriter
+import java.io.StringWriter
 import java.util.*
 import kotlin.collections.HashMap
 import kotlin.collections.HashSet
@@ -211,17 +214,41 @@ class Replacements(var mapper: ObjectMapper) {
     }
 
     operator fun plusAssign(yaml: File) {
-        println("Loading replacement rules from $yaml")
         mapper.readValue<List<ReplacementRule>>(yaml).forEach {
             this += it
         }
     }
 
     operator fun plusAssign(yaml: MaybeZipFile) {
-        println("Loading replacement rules from ${yaml}")
         mapper.readValue<List<ReplacementRule>>(yaml.inputStream()).forEach {
             this += it
         }
+    }
+
+    fun load(file: File, fileExtension: String, projName: String) {
+        file.walkZip()
+            .forEach { actualFile ->
+                when {
+                    actualFile.name.endsWith(".$fileExtension.yaml") || actualFile.name.endsWith(".$fileExtension.yml") -> {
+                        try {
+                            this += actualFile
+                        } catch(e: Exception) {
+                            throw Exception("Failed to parse ${actualFile}", e)
+                        }
+                    }
+                    actualFile.name.endsWith("$fileExtension.fqnames") -> {
+                        actualFile.inputStream().use {
+                            val lines = it.reader().readLines().filter { it.isNotBlank() }
+                            val name = lines.first()
+                            if (name != projName) {
+                                lines.drop(1).forEach {
+                                    direct[it] = name
+                                }
+                            }
+                        }
+                    }
+                }
+            }
     }
 }
 

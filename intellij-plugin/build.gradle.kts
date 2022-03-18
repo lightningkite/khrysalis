@@ -16,8 +16,8 @@ dependencies {
     compileOnly("org.jetbrains.kotlin:kotlin-compiler-embeddable")
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.jetbrains.kotlin:kotlin-compiler-embeddable")
-//    implementation(project(":kotlin-compiler-plugin-swift"))
-//    implementation(project(":kotlin-compiler-plugin-typescript"))
+    implementation(project(":kotlin-compiler-plugin-swift"))
+    implementation(project(":kotlin-compiler-plugin-typescript"))
     implementation("com.lightningkite.rx:rxplus:1.0.0-rc1")
 }
 
@@ -26,7 +26,7 @@ intellij {
     pluginName.set("khrysalis")
     plugins.set(listOf(
 //        "gradle"
-        "com.intellij.java",
+        "org.jetbrains.kotlin",
         "org.jetbrains.plugins.gradle",
         "com.intellij.gradle",
         "com.intellij.externalSystem.dependencyUpdater"

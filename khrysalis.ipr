@@ -44,6 +44,9 @@
       <module name="IdeaProjects.khrysalis.android-fcm" target="11" />
       <module name="IdeaProjects.khrysalis.android-maps" target="11" />
       <module name="IdeaProjects.khrysalis.android-qr" target="11" />
+      <module name="IdeaProjects.khrysalis.intellij-plugin" target="11" />
+      <module name="IdeaProjects.khrysalis.intellij-plugin.main" target="11" />
+      <module name="IdeaProjects.khrysalis.intellij-plugin.test" target="11" />
       <module name="IdeaProjects.khrysalis.kotlin-compiler-plugin-common" target="11" />
       <module name="IdeaProjects.khrysalis.kotlin-compiler-plugin-swift" target="11" />
       <module name="IdeaProjects.khrysalis.kotlin-compiler-plugin-swift.main" target="11" />
@@ -392,6 +395,9 @@
       <module fileurl="file://$PROJECT_DIR$/android-bluetooth/IdeaProjects.khrysalis.android-bluetooth.iml" filepath="$PROJECT_DIR$/android-bluetooth/IdeaProjects.khrysalis.android-bluetooth.iml" group="khrysalis/android-bluetooth" />
       <module fileurl="file://$PROJECT_DIR$/android-fcm/IdeaProjects.khrysalis.android-fcm.iml" filepath="$PROJECT_DIR$/android-fcm/IdeaProjects.khrysalis.android-fcm.iml" group="khrysalis/android-fcm" />
       <module fileurl="file://$PROJECT_DIR$/android-maps/IdeaProjects.khrysalis.android-maps.iml" filepath="$PROJECT_DIR$/android-maps/IdeaProjects.khrysalis.android-maps.iml" group="khrysalis/android-maps" />
+      <module fileurl="file://$PROJECT_DIR$/intellij-plugin/IdeaProjects.khrysalis.intellij-plugin.iml" filepath="$PROJECT_DIR$/intellij-plugin/IdeaProjects.khrysalis.intellij-plugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/intellij-plugin/IdeaProjects.khrysalis.intellij-plugin.main.iml" filepath="$PROJECT_DIR$/intellij-plugin/IdeaProjects.khrysalis.intellij-plugin.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/intellij-plugin/IdeaProjects.khrysalis.intellij-plugin.test.iml" filepath="$PROJECT_DIR$/intellij-plugin/IdeaProjects.khrysalis.intellij-plugin.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-common/IdeaProjects.khrysalis.kotlin-compiler-plugin-common.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-common/IdeaProjects.khrysalis.kotlin-compiler-plugin-common.iml" group="khrysalis/kotlin-compiler-plugin-common" />
       <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-swift/IdeaProjects.khrysalis.kotlin-compiler-plugin-swift.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-swift/IdeaProjects.khrysalis.kotlin-compiler-plugin-swift.iml" />
       <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-swift/IdeaProjects.khrysalis.kotlin-compiler-plugin-swift.main.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-swift/IdeaProjects.khrysalis.kotlin-compiler-plugin-swift.main.iml" />

@@ -119,39 +119,21 @@ abstract class KotlinTranspileCR : ComponentRegistrar {
 
         val reps = Replacements(replacementMapper)
         replacements = reps
-        equivalents.asSequence()
-            .also { collector?.report(CompilerMessageSeverity.INFO, "Looking for equivalents in ${it.joinToString()}") }
-            .flatMap { it.walkZip() }
-            .forEach { actualFile ->
-                when {
-                    actualFile.name.endsWith(".$fileExtension.yaml") || actualFile.name.endsWith(".$fileExtension.yml") -> {
-                        try {
-                            reps += actualFile
-                        } catch (t: Throwable) {
-                            collector?.report(
-                                CompilerMessageSeverity.ERROR,
-                                "Failed to parse equivalents for $actualFile:"
-                            )
-                            collector?.report(
-                                CompilerMessageSeverity.ERROR,
-                                StringWriter().also { t.printStackTrace(PrintWriter(it)) }.buffer.toString()
-                            )
-                            throw t
-                        }
-                    }
-                    actualFile.name.endsWith("$fileExtension.fqnames") -> {
-                        actualFile.inputStream().use {
-                            val lines = it.reader().readLines().filter { it.isNotBlank() }
-                            val name = lines.first()
-                            if (name != projName) {
-                                lines.drop(1).forEach {
-                                    reps.direct[it] = name
-                                }
-                            }
-                        }
-                    }
-                }
-            }
+        try {
+            equivalents.asSequence()
+                .also { collector?.report(CompilerMessageSeverity.INFO, "Looking for equivalents in ${it.joinToString()}") }
+                .forEach { reps.load(it, fileExtension, projName) }
+        } catch (t: Throwable) {
+            collector?.report(
+                CompilerMessageSeverity.ERROR,
+                "Failed to parse equivalents:"
+            )
+            collector?.report(
+                CompilerMessageSeverity.ERROR,
+                StringWriter().also { t.printStackTrace(PrintWriter(it)) }.buffer.toString()
+            )
+            throw t
+        }
 
         AnalysisHandlerExtension.registerExtension(
             project,
