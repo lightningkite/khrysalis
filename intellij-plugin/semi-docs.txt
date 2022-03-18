@@ -1,0 +1,12 @@
+Here's where I'm documenting what I understand of the craziness that is IntelliJ/Gradle structure.
+
+LAYERS
+
+Gradle (org.gradle)
+ModelBuilderService (org.jetbrains.plugins.gradle)
+ProjectResolveExtension (org.jetbrains.plugins.gradle)
+ModuleData (com.intellij.openapi.externalSystem)
+
+Project (Gradle)
+IdeaModule (Gradle)
+DataNode<ModuleData> (IntelliJ)

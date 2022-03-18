@@ -34,6 +34,4 @@ Multiplatform Alternative
 alternativeLetStyle(something) {}
 alternativeAlsoStyle(something) {}
 
-
-
 ```

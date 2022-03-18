@@ -10,13 +10,18 @@
         Plugin for <a href="https://github.com/lightningkite/khrysalis">khrysalis</a>, Kotlin to Swift/Typescript Transpiler.
     ]]></description>
 
+    <depends>com.intellij.java</depends>
     <depends>com.intellij.modules.lang</depends>
+    <depends>com.intellij.gradle</depends>
+    <depends>org.jetbrains.kotlin</depends>
+    <depends>com.intellij.modules.externalSystem</depends>
+    <depends>com.intellij.externalSystem.dependencyUpdater</depends>
 
     <idea-version since-build="201"/>
 
     <extensions defaultExtensionNs="com.intellij">
-        <externalAnnotator language="kotlin"
-                           implementationClass="com.lightningkite.khrysalis.intellij.KhrysalisAnnotator"/>
+<!--        <externalAnnotator language="kotlin"-->
+<!--                           implementationClass="com.lightningkite.khrysalis.intellij.KhrysalisAnnotator"/>-->
         <toolWindow id="Khrysalis" icon="/images/toolwindow.png" anchor="right" factoryClass="com.lightningkite.khrysalis.intellij.KhrysalisToolWindowFactory"/>
 <!--        <projectService serviceImplementation="io.gitlab.arturbosch.detekt.idea.config.DetektConfigStorage"/>-->
 
@@ -24,6 +29,10 @@
 <!--                             displayName="Detekt"-->
 <!--                             id="preferences.detekt"-->
 <!--                             instance="io.gitlab.arturbosch.detekt.idea.config.DetektConfig"/>-->
+    </extensions>
+
+    <extensions defaultExtensionNs="org.jetbrains.plugins.gradle">
+        <projectResolve implementation="com.lightningkite.khrysalis.intellij.KhrysalisProjectResolveExtension" />
     </extensions>
 
     <actions>

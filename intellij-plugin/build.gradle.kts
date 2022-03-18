@@ -1,6 +1,7 @@
 import com.lightningkite.deployhelpers.*
 
 plugins {
+    java
     id("kotlin")
     id("signing")
     id("org.jetbrains.dokka")
@@ -15,19 +16,21 @@ dependencies {
     compileOnly("org.jetbrains.kotlin:kotlin-compiler-embeddable")
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.jetbrains.kotlin:kotlin-compiler-embeddable")
-    implementation(project(":kotlin-compiler-plugin-swift"))
-    implementation(project(":kotlin-compiler-plugin-typescript"))
-    implementation("io.gitlab.arturbosch.detekt:detekt-api:1.19.0")
-    testImplementation("io.gitlab.arturbosch.detekt:detekt-test:1.19.0")
+//    implementation(project(":kotlin-compiler-plugin-swift"))
+//    implementation(project(":kotlin-compiler-plugin-typescript"))
+    implementation("com.lightningkite.rx:rxplus:1.0.0-rc1")
 }
-
 
 intellij {
     version.set("2021.3.2")
     pluginName.set("khrysalis")
-    plugins.add("java")
-    plugins.add("org.jetbrains.plugins.gradle")
-    plugins.add("org.jetbrains.kotlin")
+    plugins.set(listOf(
+//        "gradle"
+        "com.intellij.java",
+        "org.jetbrains.plugins.gradle",
+        "com.intellij.gradle",
+        "com.intellij.externalSystem.dependencyUpdater"
+    ))
     downloadSources.set(true)
     type.set("IC")
     updateSinceUntilBuild.set(false)

@@ -3,52 +3,48 @@ package com.lightningkite.khrysalis.intellij
 import com.intellij.lang.annotation.AnnotationHolder
 import com.intellij.lang.annotation.ExternalAnnotator
 import com.intellij.lang.annotation.HighlightSeverity
-import com.intellij.openapi.project.Project
+import com.intellij.openapi.util.Disposer
 import com.intellij.openapi.util.TextRange
-import com.intellij.openapi.wm.ToolWindow
-import com.intellij.openapi.wm.ToolWindowFactory
 import com.intellij.psi.PsiFile
-import org.jetbrains.kotlin.cli.jvm.compiler.TopDownAnalyzerFacadeForJVM
-import org.jetbrains.kotlin.psi.KtFile
-import org.jetbrains.kotlin.psi.KtFunction
-import org.jetbrains.kotlin.idea.caches.resolve.analyze
-import java.awt.FlowLayout
-import javax.swing.*
+import io.reactivex.rxjava3.disposables.CompositeDisposable
+import java.util.*
 
-class KhrysalisToolWindowFactory: ToolWindowFactory {
-    override fun createToolWindowContent(project: Project, toolWindow: ToolWindow) {
-        toolWindow.contentManager.addContent(toolWindow.contentManager.factory.createContent(
-            JPanel().apply {
-                layout = BoxLayout(this, BoxLayout.Y_AXIS)
-                add(JLabel("Khrysalis"))
-                add(JTextArea("The info text will go here").apply {
-                    this.isEditable = false
-                })
-            },
-            "Khrysalis",
-            true
-        ))
+//class KhrysalisPluginService
+
+private val disposableRemoved = WeakHashMap<com.intellij.openapi.Disposable, CompositeDisposable>()
+val com.intellij.openapi.Disposable.removed: CompositeDisposable
+    get() = disposableRemoved.getOrPut(this) {
+        val c = CompositeDisposable()
+        Disposer.register(this) {
+            c.dispose()
+        }
+        c
     }
-}
 
 data class IssueMessage(
-    val severity: HighlightSeverity,
+    val severity: HighlightSeverity = HighlightSeverity.WARNING,
     val message: String,
     val range: TextRange
 )
 
-class KhrysalisAnnotator: ExternalAnnotator<PsiFile, List<IssueMessage>>() {
+class KhrysalisAnnotator : ExternalAnnotator<PsiFile, List<IssueMessage>>() {
     override fun doAnnotate(collectedInfo: PsiFile): List<IssueMessage> {
-
+        // Scan for calls
+        // Scan for operator calls
+        // Scan for gets
+        // Scan for sets
+        // Scan for types
         return listOf()
     }
+
     override fun apply(file: PsiFile, annotationResult: List<IssueMessage>, holder: AnnotationHolder) {
-        for(it in annotationResult) {
+        for (it in annotationResult) {
             holder.newAnnotation(it.severity, it.message)
                 .range(it.range)
         }
     }
 }
+
 
 //import com.fasterxml.jackson.dataformat.yaml.YAMLMapper
 //import com.lightningkite.khrysalis.analysis.resolvedCall
