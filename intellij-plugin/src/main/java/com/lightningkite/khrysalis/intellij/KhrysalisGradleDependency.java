@@ -6,4 +6,5 @@ import java.util.List;
 
 public interface KhrysalisGradleDependency extends Serializable {
     List<File> getFiles();
+    List<File> getSourceDirectories();
 }

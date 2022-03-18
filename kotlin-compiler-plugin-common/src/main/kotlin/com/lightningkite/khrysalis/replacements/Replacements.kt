@@ -228,8 +228,12 @@ class Replacements(var mapper: ObjectMapper) {
     fun load(file: File, fileExtension: String, projName: String) {
         file.walkZip()
             .forEach { actualFile ->
+                if(actualFile.name.endsWith("yaml") || actualFile.name.endsWith("yml") || actualFile.name.endsWith("fqnames")) {
+                    println("Walked $actualFile")
+                }
                 when {
                     actualFile.name.endsWith(".$fileExtension.yaml") || actualFile.name.endsWith(".$fileExtension.yml") -> {
+                        println("Loading file $actualFile")
                         try {
                             this += actualFile
                         } catch(e: Exception) {
@@ -237,6 +241,7 @@ class Replacements(var mapper: ObjectMapper) {
                         }
                     }
                     actualFile.name.endsWith("$fileExtension.fqnames") -> {
+                        println("Loading file $actualFile")
                         actualFile.inputStream().use {
                             val lines = it.reader().readLines().filter { it.isNotBlank() }
                             val name = lines.first()

@@ -35,12 +35,12 @@
         <projectResolve implementation="com.lightningkite.khrysalis.intellij.KhrysalisProjectResolveExtension" />
     </extensions>
 
-    <actions>
-<!--        <action id="Detekt.AutoCorrect" class="io.gitlab.arturbosch.detekt.idea.action.AutoCorrectAction"-->
-<!--                text="AutoCorrect by Detekt Rules" description="Run AutoCorrect action on the current file">-->
+<!--    <actions>-->
+<!--        <action id="Khrysalis.Swift.CreateEquivalent" class="io.gitlab.arturbosch.detekt.idea.action.AutoCorrectAction"-->
+<!--                text="Create Swift Equivalent" description="Create a Swift Equivalent declaration">-->
 <!--            <add-to-group group-id="RefactoringMenu"/>-->
 <!--        </action>-->
-    </actions>
+<!--    </actions>-->
 
     <change-notes><![CDATA[
       <ul>

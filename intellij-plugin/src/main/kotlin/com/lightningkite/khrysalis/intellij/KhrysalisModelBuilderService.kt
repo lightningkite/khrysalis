@@ -20,9 +20,11 @@ class KhrysalisModelBuilderService: ModelBuilderService {
 
     override fun buildAll(modelName: String?, project: org.gradle.api.Project): KhrysalisGradleDependency? = try {
         psuedoLog("Building ${modelName} for ${project.name}")
+        //TODO: Pull all equiv folders
+        val equivalentFolder = project.projectDir.resolve("src/main/equivalents")
         project.configurations.findByName("equivalents")?.toList()?.also{
             psuedoLog("Looking up equivalents for subproject ${project.name}, found ${it.joinToString()}")
-        }?.let { KhrysalisGradleDependencyImpl(ArrayList(it)) } ?: run {
+        }?.let { KhrysalisGradleDependencyImpl(ArrayList(it), arrayListOf(equivalentFolder)) } ?: run {
             psuedoLog("Looking up equivalents for subproject ${project.name}, found none")
             null
         }

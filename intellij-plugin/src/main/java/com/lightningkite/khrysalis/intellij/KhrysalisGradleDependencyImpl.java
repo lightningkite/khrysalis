@@ -11,14 +11,19 @@ public final class KhrysalisGradleDependencyImpl implements KhrysalisGradleDepen
     private static final long serialVersionUID = 1L;
 
     private final List<File> files;
+    private final List<File> sourceDirectories;
 
     @PropertyMapping("settings")
-    public KhrysalisGradleDependencyImpl(List<File> files) {
+    public KhrysalisGradleDependencyImpl(List<File> files, List<File> sourceDirectories) {
         this.files = files;
+        this.sourceDirectories = sourceDirectories;
     }
 
     @Override
     public List<File> getFiles() {
         return this.files;
+    }
+    public List<File> getSourceDirectories() {
+        return this.sourceDirectories;
     }
 }

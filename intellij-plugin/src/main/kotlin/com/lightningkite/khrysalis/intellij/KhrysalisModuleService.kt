@@ -35,14 +35,19 @@ class KhrysalisModuleService(val project: Project) : /*PersistentStateComponent<
             private set
         var typescript: Replacements = Replacements(jacksonObjectMapper().registerModule(TypescriptJacksonReplacementsModule()) )
             private set
-        fun load(equivalents: List<File>) {
+        fun load(equivalents: KhrysalisGradleDependency) {
             swift = Replacements(KotlinSwiftCR.replacementMapper)
             typescript = Replacements(KotlinTypescriptCR.replacementMapper)
 
-            for(eq in equivalents) {
+            for(eq in equivalents.files) {
                 swift.load(eq, "swift", project.name)
-                typescript.load(eq, "swift", project.name)
+                typescript.load(eq, "ts", project.name)
             }
+            for(eq in equivalents.sourceDirectories) {
+                swift.load(eq, "swift", project.name)
+                typescript.load(eq, "ts", project.name)
+            }
+            Logger.getInstance(this::class.java).warn("Module ${module.ideGrouping} pulled.  Equivalents: ${equivalents.files}\nSources: ${equivalents.sourceDirectories}")
         }
     }
 
@@ -65,7 +70,7 @@ class KhrysalisModuleService(val project: Project) : /*PersistentStateComponent<
                 for (moduleNode in ExternalSystemApiUtil.findAll(projectDataNode, ProjectKeys.MODULE)) {
                     ExternalSystemApiUtil.find(
                         moduleNode!!, KhrysalisProjectResolveExtension.KEY
-                    )?.data?.files?.let {
+                    )?.data?.let {
                         _modules.getOrPut(moduleNode.data.ideGrouping ?: "-") { ForGradleModule(moduleNode.data) }.load(it)
                     }
                 }
