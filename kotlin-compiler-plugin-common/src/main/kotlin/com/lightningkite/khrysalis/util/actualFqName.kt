@@ -21,7 +21,7 @@ val DeclarationDescriptor.simpleFqName: String get() = when{
     this is PropertyDescriptor && this.extensionReceiverParameter != null -> this.fqNameSafe.asString() + (this.extensionReceiverParameter?.type?.fqNameWithTypeArgs?.let { ">$it" } ?: "")
     else -> this.fqNameSafe.asString().substringBefore(".<")
 }
-val DeclarationDescriptor.simplerFqName: String get() = this.fqNameSafe.asString()
+val DeclarationDescriptor.simplerFqName: String get() = this.fqNameSafe.asString().substringBefore(".<")
 val DeclarationDescriptor.fqNamesToCheck: Sequence<String> get() = sequenceOf(
     simpleFqName,
     simplerFqName

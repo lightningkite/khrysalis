@@ -88,7 +88,7 @@ val Project.currentEditorObservable: Observable<Editor>
             }
             bus.subscribe(FileEditorManagerListener.FILE_EDITOR_MANAGER, listener)
             it.setDisposable(Disposable.fromAction {
-                bus.disconnect()
+//                bus.disconnect()
             })
         }
     }

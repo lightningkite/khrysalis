@@ -5,6 +5,13 @@ import com.lightningkite.khrysalis.kotlin.ExecuteFileTester
 import com.lightningkite.khrysalis.util.readInto
 import com.tschuchort.compiletesting.PluginOption
 import java.io.File
+import java.util.*
+
+private fun isWindows(): Boolean {
+    return System.getProperty("os.name").lowercase(Locale.getDefault()).contains("win")
+}
+
+private var npm = if (isWindows()) "npm.cmd" else "npm"
 
 private var preparedForTest: Boolean = false
 private fun prepareForTest() {
@@ -13,7 +20,7 @@ private fun prepareForTest() {
     if (!tsTestDir.resolve("node_modules").exists()) {
         ProcessBuilder()
             .directory(tsTestDir)
-            .command("npm", "install")
+            .command(npm, "install")
             .inheritIO()
             .start()
             .waitFor()
@@ -23,13 +30,13 @@ private fun prepareForTest() {
     val libraryFolder = tsTestDir.resolve("../..")
     ProcessBuilder()
         .directory(libraryFolder)
-        .command("npm", "install")
+        .command(npm, "install")
         .inheritIO()
         .start()
         .waitFor()
     ProcessBuilder()
         .directory(libraryFolder)
-        .command("npm", "run", "build")
+        .command(npm, "run", "build")
         .inheritIO()
         .start()
         .waitFor()
@@ -55,7 +62,7 @@ fun ExecuteFileTester.ts(sourceFile: File): String {
     var output: String = ""
     ProcessBuilder()
         .directory(tsTestDir)
-        .command("npm", "run", "start")
+        .command(npm, "run", "start")
         .redirectErrorStream(true)
         .start()
         .readInto { output = it }
