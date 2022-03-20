@@ -1,27 +1,21 @@
-# TODO
+TODO for ADVERTISING
 
-- [ ] Figure out how to force rebuild Kotlin task
-- [ ] Figure out how to clean up files that no longer have meaning
-- [ ] Fold fqnames into equivalent files
-- [ ] Equivalents embedded inside Android library, side JARs
-  - [ ] JS - !Declares -> FQName?
-  - [ ] Improve equivalent format
-  - [ ] Bring FQnames into equivalents
-- [ ] Detekt plugin for equivalents
-- [ ] Check compatibility with Gradle XCode plugin
-- [ ] Template projects for iOS and Web need updating
-- [ ] XML analysis?
-
-## Proposed Changes
-
-- Move equivalents to a folder in 'src' - compiled in into side-archives
-- Inline alt-language?
-
-
-```kotlin
-
-kotlin { doSomePlatformThings() }
-js("doSomePlatformThings()")
-swift("doSomePlatformThings()")
-
-```
+- Full example needs to be immediately usable
+- Add issues for Khrysalis Plugin
+  - Needs polished error messages
+  - Needs to refresh itself on equivalents
+  - Needs to automatically build and publish
+- Add issues for Khrysalis
+  - Autoformat the result?
+  - Equivalents need to use ?. syntax where possible
+  - Equivalents for 
+    - More view properties
+    - SharedPreferences
+  - Some solution for merging pipes
+- Add issues for XmlToXib
+  - Multiple language support
+  - Multiple orientation support
+  - Constraint Layout support?
+- Add issue to RxPlus libraries
+  - Tutorial on how to create an RxPlus app
+- Get first impressions on Kotlin libraries slack
