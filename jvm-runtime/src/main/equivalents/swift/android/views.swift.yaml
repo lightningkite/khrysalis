@@ -94,7 +94,7 @@
 - id: android.widget.Switch
   type: type
   template:
-    pattern: LabeledSwitch
+    pattern: LabeledToggle
     imports: [ KhrysalisRuntime ]
 
 - id: android.widget.RadioGroup
