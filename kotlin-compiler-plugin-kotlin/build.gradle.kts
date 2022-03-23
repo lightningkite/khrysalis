@@ -11,7 +11,7 @@ group = "com.lightningkite.khrysalis"
 
 dependencies {
     compileOnly("org.jetbrains.kotlin:kotlin-compiler-embeddable")
-    testImplementation("junit:junit:4.12")
+    testImplementation("junit:junit:4.13.2")
     testImplementation("org.jetbrains.kotlin:kotlin-compiler-embeddable")
     api(project(":kotlin-compiler-plugin-common", "default"))
 }

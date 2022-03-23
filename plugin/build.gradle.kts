@@ -1,8 +1,7 @@
 import com.lightningkite.deployhelpers.*
 
-val kotlinVersion = "1.6.0"
 buildscript {
-    val kotlinVersion = "1.6.0"
+    val kotlinVersion:String by project
     dependencies {
         classpath("org.jetbrains.kotlin:kotlin-gradle-plugin:${kotlinVersion}")
     }
@@ -35,6 +34,7 @@ tasks.withType(org.jetbrains.kotlin.gradle.tasks.KotlinCompile::class).all {
 }
 
 val jacksonVersion = "2.13.1"
+val kotlinVersion:String by project
 dependencies {
     api(localGroovy())
     api(gradleApi())

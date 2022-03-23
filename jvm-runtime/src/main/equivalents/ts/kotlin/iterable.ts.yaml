@@ -439,10 +439,29 @@
     imports:
       forEach: iter-tools-es
 
+- id: kotlin.collections.forEachIndexed
+  type: call
+  actualReceiver: List
+  template:
+    pattern: ~this~.forEach((_element, _index) => {~L0~})
+    lambdaTransforms:
+      0: [ "_index", "_element" ]
+    imports:
+      forEach: iter-tools-es
+
 - id: kotlin.collections.forEach
   type: call
   template:
     pattern: forEach(~0~, ~this~)
+    imports:
+      forEach: iter-tools-es
+
+- id: kotlin.collections.forEachIndexed
+  type: call
+  template:
+    pattern: forEach((_element, _index) => {~L0~}, ~this~)
+    lambdaTransforms:
+      0: [ "_index", "_element" ]
     imports:
       forEach: iter-tools-es
 

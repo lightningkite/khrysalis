@@ -95,13 +95,6 @@ val Project.khrysalis: KhrysalisExtensionSettings
         this
     )
 
-abstract class TranspileTask() : SourceTask() {
-    @get:Input
-    val libraryMode: Boolean by lazy { project.khrysalis.libraryMode }
-    @get:OutputDirectory
-    var outputDirectory: File = File("")
-}
-
 fun KotlinCompile.calculateCommonPackage(): String {
     return source
         .asSequence()
@@ -163,12 +156,13 @@ class KhrysalisPlugin : Plugin<Project> {
                 val sourceSetEquivalents = extensionSourceSets[sourceSetName] ?: return@forEach
                 val equivalentSourceFolder = project.projectDir.resolve("src/${sourceSetName}/equivalents")
 
-                project.tasks.create("${c.name}ToSwift", TranspileTask::class.java) {
+                project.tasks.create("${c.name}ToSwift") {
                     it.group = "ios"
                     val fqNameFile = equivalentSourceFolder.resolve("swift.fqnames")
                     it.dependsOn(project.configurations.getByName("kcp"))
-                    it.outputDirectory = iosSrc
-                    it.source(*project.swiftDependencies(iosBase).toList().toTypedArray())
+                    it.dependsOn(equivalentsConfiguration)
+                    sourceSetEquivalents.sourceDirectories.forEach { d -> it.inputs.dir(d) }
+                    it.outputs.dir(iosSrc)
                     it.doFirst {
                         val equivalentJars = equivalentsConfiguration.toList()
                         c.incremental = false
@@ -185,12 +179,13 @@ class KhrysalisPlugin : Plugin<Project> {
                     }
                     it.finalizedBy(c)
                 }
-                project.tasks.create("${c.name}ToTypescript", TranspileTask::class.java) {
+                project.tasks.create("${c.name}ToTypescript") {
                     it.group = "web"
                     val fqNameFile = equivalentSourceFolder.resolve("ts.fqnames")
                     it.dependsOn(project.configurations.getByName("kcp"))
-                    it.outputDirectory = webSrc
-                    it.source(webBase.resolve("node_modules"))
+                    it.dependsOn(equivalentsConfiguration)
+                    sourceSetEquivalents.sourceDirectories.forEach { d -> it.inputs.dir(d) }
+                    it.outputs.dir(webSrc)
                     it.doFirst {
                         val equivalentJars = equivalentsConfiguration.toList()
                         c.incremental = false
