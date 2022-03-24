@@ -20,7 +20,7 @@
   actualReceiver: List
   type: call
   template:
-    pattern: ~this~.reverse()
+    pattern: ~this~.slice().reverse()
 
 - id: kotlin.collections.reversed
   type: call
