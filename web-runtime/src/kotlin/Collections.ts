@@ -393,6 +393,6 @@ export function xMapPlusPair<K, V>(this_: Map<K, V>, pair: [K, V]): Map<K, V> {
 export function xMapMinus<K, V>(this_: Map<K, V>, key: K): Map<K, V> {
     const newMap: Map<K, V> = this_ instanceof EqualOverrideMap ? new EqualOverrideMap() : new Map();
     xMapPutAll(newMap, this_)
-    this_.delete(key)
+    newMap.delete(key)
     return newMap;
 }
