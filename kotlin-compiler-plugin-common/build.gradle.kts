@@ -9,12 +9,12 @@ plugins {
 
 group = "com.lightningkite.khrysalis"
 
-val jacksonVersion = "2.13.1"
+val jacksonVersion = "2.13.2"
 dependencies {
     compileOnly("org.jetbrains.kotlin:kotlin-compiler-embeddable")
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.jetbrains.kotlin:kotlin-compiler-embeddable")
-    testImplementation("com.github.tschuchortdev:kotlin-compile-testing:1.4.7")
+    testImplementation("com.github.tschuchortdev:kotlin-compile-testing:1.4.8")
     api("com.fasterxml.jackson.core:jackson-databind:$jacksonVersion")
     api("com.fasterxml.jackson.module:jackson-module-kotlin:$jacksonVersion")
     api("com.fasterxml.jackson.dataformat:jackson-dataformat-yaml:$jacksonVersion")
