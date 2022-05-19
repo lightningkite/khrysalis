@@ -23,14 +23,14 @@ public class Random {
     }
 
     public func nextInt(_ until: Int) -> Int {
-        return Int.random(in: 0...until, using: &twister)
+        return Int.random(in: 0..<until, using: &twister)
     }
     public func nextInt(until: Int) -> Int {
         return nextInt(until)
     }
 
     public func nextInt(_ from: Int, _ until: Int) -> Int {
-        return Int.random(in: from...until, using: &twister)
+        return Int.random(in: from..<until, using: &twister)
     }
     public func nextInt(from: Int, until: Int) -> Int {
         return nextInt(from, until)
@@ -41,14 +41,14 @@ public class Random {
     }
 
     public func nextLong(_ until: Int) -> Int {
-        return Int.random(in: 0...until, using: &twister)
+        return Int.random(in: 0..<until, using: &twister)
     }
     public func nextLong(until: Int) -> Int {
         return nextLong(until)
     }
 
     public func nextLong(_ from: Int, _ until: Int) -> Int {
-        return Int.random(in: from...until, using: &twister)
+        return Int.random(in: from..<until, using: &twister)
     }
     public func nextLong(from: Int, until: Int) -> Int {
         return nextLong(from, until)

@@ -10,7 +10,7 @@ plugins {
 }
 
 group = "com.lightningkite.khrysalis"
-version = "0.0.1"
+version = "0.0.2"
 
 dependencies {
     compileOnly("org.jetbrains.kotlin:kotlin-compiler")
@@ -21,7 +21,7 @@ dependencies {
 }
 
 intellij {
-    version.set("2021.3.2")
+    version.set("2021.3.3")
     pluginName.set("khrysalis")
     plugins.set(listOf(
 //        "gradle"
@@ -33,26 +33,4 @@ intellij {
     downloadSources.set(true)
     type.set("IC")
     updateSinceUntilBuild.set(false)
-}
-
-standardPublishing {
-    name.set("Khrysalis IntelliJ Plugin")
-    description.set("Helps you write Khrysalis-translatable code.")
-    github("lightningkite", "khrysalis")
-    licenses {
-        mit()
-    }
-
-    developers {
-        developer(
-            id = "LightningKiteJoseph",
-            name = "Joseph Ivie",
-            email = "joseph@lightningkite.com",
-        )
-        developer(
-            id = "bjsvedin",
-            name = "Brady Svedin",
-            email = "brady@lightningkite.com",
-        )
-    }
 }

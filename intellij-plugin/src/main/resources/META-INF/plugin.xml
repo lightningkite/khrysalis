@@ -15,7 +15,7 @@
     <depends>com.intellij.gradle</depends>
     <depends>org.jetbrains.kotlin</depends>
     <depends>com.intellij.modules.externalSystem</depends>
-    <depends>com.intellij.externalSystem.dependencyUpdater</depends>
+    <depends>x</depends>
 
     <idea-version since-build="201"/>
 
