@@ -316,8 +316,8 @@ fun SwiftTranslator.registerType() {
 
     handle<KtUserType>(
         condition = {
-            val reference = typedRule.referenceExpression!!
-            val type = reference.resolvedReferenceTarget as ClassDescriptor
+            val reference = typedRule.referenceExpression ?: return@handle false
+            val type = reference.resolvedReferenceTarget as? ClassDescriptor ?: return@handle false
             type.kind == ClassKind.INTERFACE && typedRule.typeArguments.isNotEmpty() }
     ) {
         -KtUserTypeBasic(typedRule)

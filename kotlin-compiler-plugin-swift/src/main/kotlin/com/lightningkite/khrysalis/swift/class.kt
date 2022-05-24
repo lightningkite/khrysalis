@@ -48,6 +48,27 @@ fun KtModifierListOwner.swiftVisibility(): Any? = when {
 
 fun SwiftTranslator.registerClass() {
 
+    fun KotlinTranslator<SwiftFileEmitter>.ContextByType<*>.writeProtocolAssociatedtypeImpl(
+        on: KtClassOrObject
+    ) {
+        on.superTypeListEntries
+            .mapNotNull {
+                it.typeReference?.resolvedType
+            }
+            .filter {
+                (it.constructor.declarationDescriptor as? ClassDescriptor)?.kind == ClassKind.INTERFACE
+            }
+            .forEach {
+                (it.constructor.declarationDescriptor as? ClassDescriptor)?.declaredTypeParameters?.forEach { p ->
+                    -"public typealias "
+                    -p.name.asString()
+                    -" = "
+                    -it.arguments[p.index].type
+                    -"\n"
+                }
+            }
+    }
+
     fun KotlinTranslator<SwiftFileEmitter>.ContextByType<*>.writeClassHeader(
         on: KtClassOrObject
     ) {
@@ -162,19 +183,6 @@ fun SwiftTranslator.registerClass() {
         -(typedRule.swiftVisibility() ?: "public")
         -" protocol "
         -swiftTopLevelNameElement(typedRule)
-        typedRule.typeParameterList?.let {
-            //TODO
-            //This is possible using 4 entries per interface:
-            //struct XBox<T>: X - Implements X from a contained 'boxed' property of AnyX.
-            //protocol AnyX - has copy of all the properties with untyped_ prepended
-            //protocol X: AnyX - has associated type
-            //extension X - implements AnyX, also provides .box() function
-            //Then:
-            //- Use XBox<T> in all property or argument positions
-            //- Every time something is used in a property or argument position and is generic, use `.box()`
-            //- Every time something using XBox<T> is typecast, `use x.boxed`
-            throw IllegalStateException("Converting a generic interface is not possible at the moment due to Swift crap. See code for potential solution, yet unimplemented due to complexity.")
-        }
         -": "
         val x = typedRule.resolvedClass?.annotations
             ?.findAnnotation(FqName("com.lightningkite.khrysalis.SwiftProtocolExtends"))
@@ -189,6 +197,21 @@ fun SwiftTranslator.registerClass() {
                 between = { -", " }
             )
         -" {\n"
+        typedRule.typeParameters.forEach {
+            //TODO
+            //This is possible using 4 entries per interface:
+            //struct XBox<T>: X - Implements X from a contained 'boxed' property of AnyX.
+            //protocol AnyX - has copy of all the properties with untyped_ prepended
+            //protocol X: AnyX - has associated type
+            //extension X - implements AnyX, also provides .box() function
+            //Then:
+            //- Use XBox<T> in all property or argument positions
+            //- Every time something is used in a property or argument position and is generic, use `.box()`
+            //- Every time something using XBox<T> is typecast, `use x.boxed`
+            -"associatedtype "
+            -it
+            -'\n'
+        }
         -typedRule.body
         -"}\n"
         if (typedRule.body?.hasPostActions() == true) {
@@ -207,6 +230,7 @@ fun SwiftTranslator.registerClass() {
         -' '
         writeClassHeader(typedRule)
         -" {\n"
+        writeProtocolAssociatedtypeImpl(typedRule)
         typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEach {
             if (it.resolvedPrimaryConstructorParameter?.hasSwiftOverride == true) {
                 -"private "
@@ -498,6 +522,7 @@ fun SwiftTranslator.registerClass() {
         -' '
         writeClassHeader(typedRule)
         -" {\n"
+        writeProtocolAssociatedtypeImpl(typedRule)
         handleConstructor(this, null, this@registerClass)
         -"public static let INSTANCE = "
         -swiftTopLevelNameElement(typedRule)

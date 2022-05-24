@@ -8,6 +8,8 @@ import org.jetbrains.kotlin.resolve.BindingContext
 import org.jetbrains.kotlin.resolve.calls.callUtil.getResolvedCall
 import org.jetbrains.kotlin.resolve.calls.model.PartialCallContainer
 import org.jetbrains.kotlin.resolve.calls.model.ResolvedCall
+import org.jetbrains.kotlin.resolve.calls.util.getCall
+import org.jetbrains.kotlin.resolve.calls.util.getResolvedCall
 import org.jetbrains.kotlin.types.DeferredType
 import org.jetbrains.kotlin.util.Box
 
@@ -73,7 +75,7 @@ val Call.resolvedTailRecursionCall: org.jetbrains.kotlin.cfg.TailRecursionKind?
     get() = bindingContext[BindingContext.TAIL_RECURSION_CALL, this]
 val KtElement.resolvedConstraintSystemCompleter: org.jetbrains.kotlin.resolve.calls.inference.ConstraintSystemCompleter?
     get() = bindingContext[BindingContext.CONSTRAINT_SYSTEM_COMPLETER, this]
-val KtElement.resolvedCall get() = this.getResolvedCall(bindingContext)
+val KtElement.resolvedCall get() = this.getCall(bindingContext)?.let { bindingContext[BindingContext.RESOLVED_CALL, it] }
 val KtExpression.resolvedAmbiguousReferenceTarget: Collection<DeclarationDescriptor>?
     get() = bindingContext[BindingContext.AMBIGUOUS_REFERENCE_TARGET, this]
 val KtExpression.resolvedLoopRangeIteratorResolvedCall: ResolvedCall<FunctionDescriptor>?
