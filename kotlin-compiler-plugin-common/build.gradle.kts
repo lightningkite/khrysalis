@@ -9,7 +9,7 @@ plugins {
 
 group = "com.lightningkite.khrysalis"
 
-val jacksonVersion = "2.13.2"
+val jacksonVersion:String by project
 dependencies {
     compileOnly("org.jetbrains.kotlin:kotlin-compiler-embeddable")
     testImplementation("junit:junit:4.13.2")
