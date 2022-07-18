@@ -1,5 +1,7 @@
 # Tutorial
 
+TODO: This is an outdated tutorial that dates to the days where the layout translator and UI helper libraries were all the same project.
+
 ## Prerequesites
 You'll need the following to begin:
 - Android Studio or IntelliJ

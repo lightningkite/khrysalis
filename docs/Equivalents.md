@@ -2,11 +2,11 @@
 
 Khrysalis is just a code translator, and it's easy to handle tasks that can't be translated in each platform individually.  See [code for individual platforms](./platform.md).
 
-Sometimes, however, it's nicer to just specify how a certain construct is translated to the other languages so you don't have to rewrite it every time.  Sometimes you just want the code on the other side to look more native.  In either case, you can use a *YAML equivalents file* to do the job.
+Sometimes you need to customize how certain calls are translated.  You can use a *YAML equivalents file* to do the job.
 
-For iOS, an equivalent file is suffixed with `.swift.yaml` and can be placed anywhere in your iOS project folder.
+For iOS, an equivalent file is suffixed with `.swift.yaml` and should be contained in the Java project's `src/main/equivalents` folder.
 
-For Web, an equivalent file is suffixed with `.ts.yaml` and can be placed anywhere in your web project folder.
+For Web, an equivalent file is suffixed with `.ts.yaml` and should be contained in the Java project's `src/main/equivalents` folder.
 
 In either case, the example of one of these equivalent files looks like this:
 
@@ -22,6 +22,11 @@ In either case, the example of one of these equivalent files looks like this:
   type: type
   template: "SwiftType<~T0~>" 
 
+# A rule that replaces a type used as a value like `MyType`
+- id: kotlin.Int
+  type: typeRef
+  template: "Number" 
+
 # A rule that replaces a getter like `MyType.value`
 - id: fully.qualified.name.MyType.value
   type: get
@@ -29,9 +34,22 @@ In either case, the example of one of these equivalent files looks like this:
 
 # A rule that replaces a setter like `MyType.value = x`
 - id: fully.qualified.name.MyType.value
-  type: get
+  type: set
   template: "~this~.setMyValue(newValue: ~value~)" 
 ``` 
+
+## Template Strings
+
+- `raw text` - Any text not within `~` is used literally.
+- `~this~` - The receiver (left side of the dot) of the call, get, or set
+- `~value~` - The value a variable is being set to
+- `~0~` - Numbered parameters start at zero
+- `~name~` - Named parameters are usable too
+- `~T0~` - Numbered type parameters start at zero
+- `~R0~` - A reified type parameter
+  - In Swift, this would be `SomeClass<TypeArg>.self`
+  - In Typescript, this would be `[SomeClass, TypeArg]`, which is used in the serialization library to identify types for serialization
+- `~*~` - All of the arguments separated by commas
 
 ## Imports
 
@@ -64,4 +82,4 @@ When translating to Typescript, imports are a bit more complicated.
 
 ## Examples
 
-You can find a mountain of examples over in the [Khrysalis repository](https://github.com/lightningkite/khrysalis) itself - most of the translations are written in this very format.  Some of the most basic translations for iOS can be found [here](https://github.com/lightningkite/khrysalis/tree/master/ios/Khrysalis/src/kotlin) and the most basic translations for Web can be found [here](https://github.com/lightningkite/khrysalis/tree/master/web/src/kotlin).
+You can find a mountain of examples over in the [Khrysalis repository](https://github.com/lightningkite/khrysalis) itself - most of the translations are written in this very format.  Some of the most basic translations can be found [here](https://github.com/lightningkite/khrysalis/tree/master/jvm-runtime/src/main/equivalents/).
