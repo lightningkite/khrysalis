@@ -10,7 +10,8 @@ import java.io.File
 class PointedTest {
     @Test
     fun test() {
-        val it = File("../conversionTestData").resolve("testCodable.kt")
+        println(KotlinVersion.CURRENT)
+        val it = File("../conversionTestData").resolve("testGenericProtocol.kt")
         val r = ExecuteFileTester.swiftTranslated(it)
         Assert.assertEquals(r.kotlin, r.swift)
     }

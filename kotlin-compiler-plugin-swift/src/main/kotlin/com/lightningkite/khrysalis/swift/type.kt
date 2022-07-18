@@ -14,6 +14,7 @@ import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
 import org.jetbrains.kotlin.types.*
+import org.jetbrains.kotlin.types.checker.SimpleClassicTypeSystemContext.isInterface
 import org.jetbrains.kotlin.types.typeUtil.isAnyOrNullableAny
 import org.jetbrains.kotlin.types.typeUtil.isNullableAny
 import org.jetbrains.kotlin.types.typeUtil.isTypeParameter
@@ -312,6 +313,15 @@ fun SwiftTranslator.registerType() {
             -typedRule.typeArgumentList
         }
     )
+
+    handle<KtUserType>(
+        condition = {
+            val reference = typedRule.referenceExpression ?: return@handle false
+            val type = reference.resolvedReferenceTarget as? ClassDescriptor ?: return@handle false
+            type.kind == ClassKind.INTERFACE && typedRule.typeArguments.isNotEmpty() }
+    ) {
+        -KtUserTypeBasic(typedRule)
+    }
 
     handle<KtUserTypeBasic>(
         condition = {
