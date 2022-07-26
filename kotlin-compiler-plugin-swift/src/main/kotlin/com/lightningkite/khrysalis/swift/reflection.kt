@@ -2,12 +2,11 @@ package com.lightningkite.khrysalis.swift
 
 import com.lightningkite.khrysalis.analysis.resolvedExpectedExpressionType
 import com.lightningkite.khrysalis.analysis.resolvedReferenceTarget
+import org.jetbrains.kotlin.descriptors.ClassDescriptor
 import org.jetbrains.kotlin.descriptors.FunctionDescriptor
 import org.jetbrains.kotlin.descriptors.PropertyDescriptor
-import org.jetbrains.kotlin.psi.KtCallableReferenceExpression
-import org.jetbrains.kotlin.psi.KtExpression
-import org.jetbrains.kotlin.psi.KtReferenceExpression
-import org.jetbrains.kotlin.psi.KtSimpleNameExpression
+import org.jetbrains.kotlin.psi.*
+import org.jetbrains.kotlin.resolve.descriptorUtil.isExtension
 import org.jetbrains.kotlin.types.KotlinType
 
 fun SwiftTranslator.registerReflection() {
@@ -23,7 +22,10 @@ fun SwiftTranslator.registerReflection() {
         },
         priority = 10
     ) {
-        val replacement = replacements.getCall(typedRule.callableReference.resolvedReferenceTarget as FunctionDescriptor, typedRule.expectedReceiver())!!
+        val replacement = replacements.getCall(
+            typedRule.callableReference.resolvedReferenceTarget as FunctionDescriptor,
+            typedRule.expectedReceiver()
+        )!!
         replacement.reflectiveName?.let {
             emitTemplate(template = it)
         } ?: run {
@@ -40,7 +42,10 @@ fun SwiftTranslator.registerReflection() {
         },
         priority = 10
     ) {
-        val replacement = replacements.getGet(typedRule.callableReference.resolvedReferenceTarget as PropertyDescriptor, typedRule.expectedReceiver())!!
+        val replacement = replacements.getGet(
+            typedRule.callableReference.resolvedReferenceTarget as PropertyDescriptor,
+            typedRule.expectedReceiver()
+        )!!
         replacement.reflectiveName?.let {
             emitTemplate(template = it)
         } ?: run {
@@ -50,6 +55,23 @@ fun SwiftTranslator.registerReflection() {
                 receiver = typedRule.receiverExpression?.let { KtUserTypeBasic(it) }
             )
         }
+    }
+    handle<KtCallableReferenceExpression>(
+        condition = {
+            val p = typedRule.callableReference.resolvedReferenceTarget as? PropertyDescriptor ?: return@handle false
+            !p.isExtension && (p.containingDeclaration as? ClassDescriptor)?.let {
+                it.isData && it.annotations.any {
+                    it.fqName?.asString()?.endsWith("DatabaseModel") == true
+                }
+            } == true
+        },
+        priority = 6
+    ) {
+        val target = typedRule.callableReference.resolvedReferenceTarget as PropertyDescriptor
+        -target.dispatchReceiverParameter!!.type
+        -'.'
+        -typedRule.callableReference
+        -"Prop"
     }
     handle<KtCallableReferenceExpression>(
         condition = {

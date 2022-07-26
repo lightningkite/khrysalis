@@ -2,12 +2,11 @@ package com.lightningkite.khrysalis.gradle
 
 import com.android.build.api.dsl.AndroidSourceSet
 import com.lightningkite.khrysalis.KhrysalisSettings
+import com.lightningkite.khrysalis.generic.CompilerPluginUseInfo
 import com.lightningkite.khrysalis.generic.CompilerRunInfo
 import com.lightningkite.khrysalis.generic.runCompiler
 import com.lightningkite.khrysalis.ios.swift.*
-import com.lightningkite.khrysalis.kotlin.kotlinPluginUse
 import com.lightningkite.khrysalis.utils.*
-import com.lightningkite.khrysalis.web.typescriptPluginUse
 import org.jetbrains.kotlin.gradle.tasks.KotlinCompile
 import org.apache.tools.ant.taskdefs.condition.Os
 import org.gradle.api.*
@@ -147,60 +146,67 @@ class KhrysalisPlugin : Plugin<Project> {
             }
         }
 
+        fun getKotlinCompileTask(): KotlinCompile? {
+            return project.tasks
+                .asSequence()
+                .filter { it.name.startsWith("compile") && it.name.endsWith("Kotlin") }
+                .mapNotNull { it as? KotlinCompile }
+                .minByOrNull { it.name.length }
+        }
+
         project.afterEvaluate {
-            project.tasks.filterIsInstance<KotlinCompile>().forEach { c ->
+            project.tasks.filterIsInstance<KotlinCompile>().forEach { original ->
                 val sourceSetName = "main"
-//                val sourceSetName =
-//                    c.name.substringAfter("compile").removeSuffix("Kotlin").decapitalize().takeUnless { it.isBlank() }
-//                        ?: "main"
                 val sourceSetEquivalents = extensionSourceSets[sourceSetName] ?: return@forEach
                 val equivalentSourceFolder = project.projectDir.resolve("src/${sourceSetName}/equivalents")
 
-                project.tasks.create("${c.name}ToSwift") {
-                    it.group = "ios"
-                    val fqNameFile = equivalentSourceFolder.resolve("swift.fqnames")
-                    it.dependsOn(project.configurations.getByName("kcp"))
-                    it.dependsOn(equivalentsConfiguration)
-                    sourceSetEquivalents.sourceDirectories.forEach { d -> it.inputs.dir(d) }
-                    it.outputs.dir(iosSrc)
-                    it.doFirst {
+                project.tasks.create("${original.name}ToSwift") { task ->
+                    task.group = "ios"
+                    task.dependsOn(project.configurations.getByName("kcp"))
+                    task.dependsOn(original)
+                    task.doFirst {
+                        val fqNameFile = equivalentSourceFolder.resolve("swift.fqnames")
                         val equivalentJars = equivalentsConfiguration.toList()
-                        c.incremental = false
-                        c.outputs.upToDateWhen { false }
-                        println("Preparing ${c.name} for translation...")
-                        c.plugin("swift") {
-                            "outputDirectory" set iosSrc.absolutePath
-                            "outputFqnames" set fqNameFile.absolutePath
-                            "projName" set target.khrysalis.iosProjectName
-                            "equivalents" set equivalentJars + sourceSetEquivalents.toList()
-                            "commonPackage" set c.calculateCommonPackage()
-                            "libraryMode" set extension.libraryMode.toString()
-                        }
+                        runCompiler(
+                            CompilerRunInfo(original),
+                            CompilerPluginUseInfo.make(
+                                project = project,
+                                pluginName = "swift",
+                                options = mapOf(
+                                    "outputDirectory" to iosSrc.absolutePath,
+                                    "outputFqnames" to fqNameFile.absolutePath,
+                                    "projName" to target.khrysalis.iosProjectName,
+                                    "equivalents" to (equivalentJars + sourceSetEquivalents.toList()).joinToString(File.pathSeparator),
+                                    "commonPackage" to original.calculateCommonPackage(),
+                                    "libraryMode" to extension.libraryMode.toString(),
+                                )
+                            )
+                        )
                     }
-                    it.finalizedBy(c)
                 }
-                project.tasks.create("${c.name}ToTypescript") {
-                    it.group = "web"
-                    val fqNameFile = equivalentSourceFolder.resolve("ts.fqnames")
-                    it.dependsOn(project.configurations.getByName("kcp"))
-                    it.dependsOn(equivalentsConfiguration)
-                    sourceSetEquivalents.sourceDirectories.forEach { d -> it.inputs.dir(d) }
-                    it.outputs.dir(webSrc)
-                    it.doFirst {
+                project.tasks.create("${original.name}toTypescript") { task ->
+                    task.group = "web"
+                    task.dependsOn(project.configurations.getByName("kcp"))
+                    task.dependsOn(original)
+                    task.doFirst {
                         val equivalentJars = equivalentsConfiguration.toList()
-                        c.incremental = false
-                        c.outputs.upToDateWhen { false }
-                        println("Preparing ${c.name} for translation...")
-                        c.plugin("typescript") {
-                            "outputDirectory" set webSrc.absolutePath
-                            "outputFqnames" set fqNameFile.absolutePath
-                            "projName" set target.khrysalis.webProjectName
-                            "equivalents" set equivalentJars + sourceSetEquivalents.toList()
-                            "commonPackage" set c.calculateCommonPackage()
-                            "libraryMode" set extension.libraryMode.toString()
-                        }
+                        val fqNameFile = equivalentSourceFolder.resolve("ts.fqnames")
+                        runCompiler(
+                            CompilerRunInfo(original),
+                            CompilerPluginUseInfo.make(
+                                project = project,
+                                pluginName = "typescript",
+                                options = mapOf(
+                                    "outputDirectory" to webSrc.absolutePath,
+                                    "outputFqnames" to fqNameFile.absolutePath,
+                                    "projName" to target.khrysalis.webProjectName,
+                                    "equivalents" to (equivalentJars + sourceSetEquivalents.toList()).joinToString(File.pathSeparator),
+                                    "commonPackage" to original.calculateCommonPackage(),
+                                    "libraryMode" to extension.libraryMode.toString(),
+                                )
+                            )
+                        )
                     }
-                    it.finalizedBy(c)
                 }
             }
         }

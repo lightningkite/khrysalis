@@ -1,8 +1,8 @@
 
 - id: kotlin.reflect.KProperty1.get
   type: call
-  template: '~0~[keyPath: ~this~]'
+  template: ~this~.get(~0~)
 
 - id: kotlin.reflect.KMutableProperty1.set
   type: call
-  template: '~0~[keyPath: ~this~] = ~1~'
+  template: ~this~.set(~0~, ~1~)

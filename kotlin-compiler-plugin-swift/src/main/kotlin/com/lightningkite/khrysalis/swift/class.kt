@@ -10,7 +10,6 @@ import org.jetbrains.kotlin.com.intellij.psi.PsiElement
 import org.jetbrains.kotlin.descriptors.*
 import org.jetbrains.kotlin.ir.util.findFirstFunction
 import org.jetbrains.kotlin.js.translate.callTranslator.getReturnType
-import org.jetbrains.kotlin.lexer.KtModifierKeywordToken
 import org.jetbrains.kotlin.lexer.KtTokens
 import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.name.Name
@@ -39,9 +38,10 @@ fun FunctionDescriptor.callsForSwiftInterface(on: ClassDescriptor?): Boolean {
 
 fun KtModifierListOwner.swiftVisibility(): Any? = when {
     (this as? KtNamedFunction)?.let {
-        it.hasModifier(KtTokens.OVERRIDE_KEYWORD) && it.containingClass()?.hasModifier(KtTokens.OPEN_KEYWORD) == true
+        it.hasModifier(KtTokens.OVERRIDE_KEYWORD) && it.containingClass()?.isOpen == true
     } == true
             || this.hasModifier(KtTokens.ABSTRACT_KEYWORD)
+            || this.hasModifier(KtTokens.SEALED_KEYWORD)
             || this.hasModifier(KtTokens.OPEN_KEYWORD) -> "open"
     else -> this.visibilityModifier()
 }
@@ -73,6 +73,11 @@ fun SwiftTranslator.registerClass() {
         on: KtClassOrObject
     ) {
         val typedRule = on
+        if(on.isOpen) {
+            // might be open
+        } else {
+            -"final "
+        }
         -"class "
         -swiftTopLevelNameElement(on)
         -typedRule.typeParameterList
@@ -97,6 +102,12 @@ fun SwiftTranslator.registerClass() {
                         result
                     else
                         result + "Hashable"
+                } else it
+            }
+            .let {
+                if (on is KtClass && on.isData() && on.hasDatabaseModelAnnotation) {
+                    out.addImport(SwiftImport("KhrysalisRuntime"))
+                    it + listOf("PropertyIterable")
                 } else it
             }
             .let {
@@ -365,7 +376,7 @@ fun SwiftTranslator.registerClass() {
             if (typedRule.body?.declarations?.any { it is FunctionDescriptor && (it as KtDeclaration).name == "hashCode" && it.valueParameters.isEmpty() } != true) {
                 val resolveFunction = typedRule.resolvedClass!!.unsubstitutedMemberScope.findFirstFunction("hashCode") { it.valueParameters.size == 0 }
                 if(resolveFunction.useOverrideInSwift()) {
-                    -"override open func hashCode() -> Int {\n"
+                    -"override ${if(typedRule.isOpen) "open" else "public"} func hashCode() -> Int {\n"
                     -"var hasher = Hasher()\n"
                     typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEach { param ->
                         -"hasher.combine("
@@ -415,7 +426,7 @@ fun SwiftTranslator.registerClass() {
                 }
                 if(resolveFunction.useOverrideInSwift()) {
                     // If this stems from a manual implementation somewhere, we'll use KEquatable instead
-                    -"override open func equals(other: Any) -> Bool {\n"
+                    -"override ${if(typedRule.isOpen) "open" else "public"} func equals(other: Any) -> Bool {\n"
                     -"guard let other = other as? "
                     -swiftTopLevelNameElement(typedRule)
                     -" else { return false }\n"
@@ -451,6 +462,68 @@ fun SwiftTranslator.registerClass() {
                 -')'
                 -'"'
                 -" }\n"
+            }
+
+            //Generate property list
+            if(typedRule.hasDatabaseModelAnnotation) {
+                if(typedRule.typeParameters.isNotEmpty()) {
+                    typedRule.primaryConstructor?.valueParameters?.forEach {
+                        -"public static var "
+                        -it.nameIdentifier
+                        -"Prop: PropertyIterableProperty<"
+                        -typedRule.nameIdentifier
+                        -", "
+                        -it.typeReference
+                        -"> { return PropertyIterableProperty(name: \""
+                        -it.nameIdentifier
+                        -"\", path: \\."
+                        -it.nameIdentifier
+                        -", setCopy: { (this, value) in this.copy("
+                        -it.nameIdentifier
+                        -": value) })"
+                        -"}\n"
+                    }
+                    -"public static var properties: Array<PartialPropertyIterableProperty<"
+                    -swiftTopLevelNameElement(typedRule)
+                    -">> { return ["
+                    typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEachBetween(
+                        forItem = {
+                            -it.nameIdentifier
+                            -"Prop"
+                        },
+                        between = { -", " }
+                    )
+                    -"] }\n"
+                } else {
+                    typedRule.primaryConstructor?.valueParameters?.forEach {
+                        -"public static let "
+                        -it.nameIdentifier
+                        -"Prop: PropertyIterableProperty<"
+                        -typedRule.nameIdentifier
+                        -", "
+                        -it.typeReference
+                        -"> = PropertyIterableProperty(name: \""
+                        -it.nameIdentifier
+                        -"\", path: \\."
+                        -it.nameIdentifier
+                        -", setCopy: { (this, value) in this.copy("
+                        -it.nameIdentifier
+                        -": value) })"
+                        -"\n"
+                    }
+                    -"public static let properties: Array<PartialPropertyIterableProperty<"
+                    -swiftTopLevelNameElement(typedRule)
+                    -">> = ["
+                    typedRule.primaryConstructor?.valueParameters?.filter { it.hasValOrVar() }?.forEachBetween(
+                        forItem = {
+                            -it.nameIdentifier
+                            -"Prop"
+                        },
+                        between = { -", " }
+                    )
+                    -"]\n"
+                }
+                -"public static var anyProperties: Array<AnyPropertyIterableProperty> { return properties.map { \$0 } }\n"
             }
 
             //Generate copy(..)
@@ -626,7 +699,7 @@ fun SwiftTranslator.registerClass() {
                         typeParameters = func.typeParameters,
                         valueParameters = func.valueParameters,
                         returnType = func.typeReference ?: func.resolvedFunction?.returnType ?: "Void",
-                        body = if (func.hasModifier(KtTokens.OPEN_KEYWORD) || func.hasModifier(KtTokens.ABSTRACT_KEYWORD)) {
+                        body = if (typedRule.isOpen) {
                             { ->
                                 -"{ \nswitch self {\n"
                                 typedRule.body?.enumEntries?.mapNotNull { entry ->
@@ -1066,8 +1139,12 @@ fun KtElement.addPostAction(action: () -> Unit) {
 
 fun KtClass.isSimpleEnum() = isEnum() && body?.enumEntries?.all { !it.hasInitializer() && it.body == null } == true
 
+val KtClassOrObject.isOpen: Boolean get() = hasModifier(KtTokens.OPEN_KEYWORD) || hasModifier(KtTokens.ABSTRACT_KEYWORD) || hasModifier(KtTokens.SEALED_KEYWORD)
 val KtClassOrObject.shouldGenerateCodable: Boolean get() = implementsKotlinCodable || hasCodableAnnotation
 val KtClassOrObject.implementsKotlinCodable: Boolean get() = superTypeListEntries
     .mapNotNull { it as? KtSuperTypeEntry }
     .any { it.typeReference?.resolvedType?.fqNameWithoutTypeArgs == "com.lightningkite.khrysalis.Codable" }
 val KtClassOrObject.hasCodableAnnotation: Boolean get() = annotationEntries.any { it.resolvedAnnotation?.type?.fqNameWithoutTypeArgs == "kotlinx.serialization.Serializable" && it.valueArguments.isEmpty()}
+val KtClassOrObject.hasDatabaseModelAnnotation: Boolean get() = annotationEntries.any {
+    it.resolvedAnnotation?.type?.fqNameWithoutTypeArgs?.endsWith("DatabaseModel") == true
+}

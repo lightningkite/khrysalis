@@ -769,7 +769,10 @@ fun SwiftTranslator.registerFunction() {
     //Regular calls
     handle<ArgumentsList> {
         val explicitTypeArgs = typedRule.resolvedCall.call.typeArgumentList != null
-        if (typedRule.on is ConstructorDescriptor && typedRule.resolvedCall.call.callElement.containingClass()?.resolvedClass == typedRule.on.containingDeclaration) {
+        if (typedRule.on is ConstructorDescriptor
+            && (typedRule.resolvedCall.call.callElement.containingClass()?.resolvedClass == typedRule.on.containingDeclaration
+                    || typedRule.resolvedCall.call.callElement.parentOfType<KtFunction>()?.resolvedFunction?.extensionReceiverParameter?.type?.constructor?.declarationDescriptor == typedRule.on.containingDeclaration)
+        ) {
             typedRule.resolvedCall.typeArguments
                 .entries
                 .sortedBy { it.key.index }
