@@ -38,7 +38,7 @@ fun FunctionDescriptor.callsForSwiftInterface(on: ClassDescriptor?): Boolean {
 
 fun KtModifierListOwner.swiftVisibility(): Any? = when {
     (this as? KtNamedFunction)?.let {
-        it.hasModifier(KtTokens.OVERRIDE_KEYWORD) && it.containingClass()?.isOpen == true
+        it.hasModifier(KtTokens.OVERRIDE_KEYWORD) && it.containingClassOrObject?.isOpen == true
     } == true
             || this.hasModifier(KtTokens.ABSTRACT_KEYWORD)
             || this.hasModifier(KtTokens.SEALED_KEYWORD)
@@ -596,6 +596,19 @@ fun SwiftTranslator.registerClass() {
         writeClassHeader(typedRule)
         -" {\n"
         writeProtocolAssociatedtypeImpl(typedRule)
+        run {
+            val c = typedRule.resolvedClass ?: return@run
+            val s = c.getSuperClassNotAny() ?: return@run
+            val sc = s.unsubstitutedPrimaryConstructor ?: return@run
+            val cc = c.unsubstitutedPrimaryConstructor ?: return@run
+            if (sc.valueParameters.size != cc.valueParameters.size) return@run
+            if (sc.valueParameters.zip(cc.valueParameters).all {
+                    it.first.name.asString() == it.second.name.asString()
+                            && it.first.type.fqNameWithoutTypeArgs == it.second.type.fqNameWithoutTypeArgs
+                }) {
+                -"override "
+            }
+        }
         handleConstructor(this, null, this@registerClass)
         -"public static let INSTANCE = "
         -swiftTopLevelNameElement(typedRule)
