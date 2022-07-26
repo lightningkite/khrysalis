@@ -140,6 +140,7 @@ abstract class KotlinTranspileCR : ComponentRegistrar {
                         }
                     }
                     actualFile.name.endsWith("$fileExtension.fqnames") -> {
+                        println("Loading FQNames from ${actualFile}")
                         actualFile.inputStream().use {
                             val lines = it.reader().readLines().filter { it.isNotBlank() }
                             val name = lines.first()
@@ -152,6 +153,9 @@ abstract class KotlinTranspileCR : ComponentRegistrar {
                     }
                 }
             }
+
+        println("All FQ names:")
+        replacements.direct.entries.forEach { println("${it.key}: ${it.value}") }
 
         AnalysisHandlerExtension.registerExtension(
             project,

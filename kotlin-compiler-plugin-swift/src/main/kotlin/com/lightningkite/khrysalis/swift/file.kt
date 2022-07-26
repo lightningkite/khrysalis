@@ -13,6 +13,19 @@ val KtFile.after: MutableList<()->Unit>
 fun SwiftTranslator.registerFile() {
     handle<KtFile> {
         typedRule.importDirectives.forEach {
+            if(it.importPath?.isAllUnder == true) {
+                val p = it.importPath!!.pathStr.removeSuffix("*")
+                this@registerFile.fqToImport.entries
+                    .asSequence()
+                    .filter {
+                        it.key.startsWith(p) && !it.key.substringAfter(p).contains('.')
+                    }
+                    .map { it.value }
+                    .distinct()
+                    .forEach {
+                        out.addImport(SwiftImport(it))
+                    }
+            }
             it.importedReference?.text?.let {
                 this@registerFile.fqToImport[it]?.let {
                     out.addImport(SwiftImport(it))
