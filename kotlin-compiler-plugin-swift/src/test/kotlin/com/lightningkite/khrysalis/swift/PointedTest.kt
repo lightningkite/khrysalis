@@ -11,8 +11,10 @@ class PointedTest {
     @Test
     fun test() {
         println(KotlinVersion.CURRENT)
-        val it = File("../conversionTestData").resolve("testReflection.kt")
+        val it = File("../conversionTestData").resolve("testCodable.kt")
         val r = ExecuteFileTester.swiftTranslated(it)
         Assert.assertEquals(r.kotlin, r.swift)
     }
 }
+
+//test[testCodable.kt]

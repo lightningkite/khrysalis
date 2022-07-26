@@ -49,11 +49,13 @@ fun SwiftTranslator.registerReflection() {
         replacement.reflectiveName?.let {
             emitTemplate(template = it)
         } ?: run {
+            -'('
             -'\\'
             emitTemplate(
                 template = replacement.template,
                 receiver = typedRule.receiverExpression?.let { KtUserTypeBasic(it) }
             )
+            -')'
         }
     }
     handle<KtCallableReferenceExpression>(
@@ -79,10 +81,12 @@ fun SwiftTranslator.registerReflection() {
         },
         priority = 5
     ) {
+        -'('
         -'\\'
         -typedRule.receiverExpression?.let { KtUserTypeBasic(it) }
         -'.'
         -typedRule.callableReference
+        -')'
     }
     handle<KtCallableReferenceExpression> {
         typedRule.receiverExpression?.let { KtUserTypeBasic(it) }?.let {

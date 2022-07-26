@@ -26,18 +26,18 @@ fun <T, B> Box<T>.map2(mapper: (T)->B): Box<B> = Box(mapper(value))
 
 fun <T> List<T>.extensionOnList(): T? = this.firstOrNull()
 
-interface HasId<ID> {
-    val id: ID
-}
-class IdHaver(override val id: Int): HasId<Int>
-fun <T: HasId<ID>, ID> List<T>.extensionOnListHard(): T? = this.firstOrNull()
+//interface HasId<ID> {
+//    val id: ID
+//}
+//class IdHaver(override val id: Int): HasId<Int>
+//fun <T: HasId<ID>, ID> List<T>.extensionOnListHard(): T? = this.firstOrNull()
 
 fun starTyped(testFunction: ()->Box<*>) {}
 
 fun main() {
     println("Hello")
     Box(32).map { it.toString() }
-    Box(32).map2 { it.toString() }
+//    Box(32).map2 { it.toString() }
     starTyped { Box(32) }
     GenericTest<List<Int>, Int, Int, Int>().testG()
     GenericTest<List<Int>, Int, Int, Int>()["asdf"]

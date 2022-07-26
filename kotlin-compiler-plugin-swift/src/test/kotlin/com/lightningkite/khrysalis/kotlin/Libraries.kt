@@ -45,11 +45,11 @@ object Libraries {
         return serializationLibraryCopy.absoluteFile
     }
     fun getSerializationPlugin(): File {
-        val serializationPluginCopy = File("build/temp/std-ser-plugin-1-6-0.jar").also { it.parentFile.mkdirs() }
+        val serializationPluginCopy = File("build/temp/std-ser-plugin-1-6-20.jar").also { it.parentFile.mkdirs() }
         if (!serializationPluginCopy.exists()) {
             println("Downloading serialization library...")
             serializationPluginCopy.outputStream().use { out ->
-                URL("https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-serialization/1.6.10/kotlin-serialization-1.6.10.jar").openStream()
+                URL("https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-serialization/1.6.20/kotlin-serialization-1.6.20.jar").openStream()
                     .use { input ->
                         input.copyTo(out)
                     }

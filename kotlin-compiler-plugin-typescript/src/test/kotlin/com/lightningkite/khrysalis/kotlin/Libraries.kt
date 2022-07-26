@@ -49,7 +49,7 @@ object Libraries {
         if (!serializationPluginCopy.exists()) {
             println("Downloading serialization library...")
             serializationPluginCopy.outputStream().use { out ->
-                URL("https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-serialization/1.6.10/kotlin-serialization-1.6.10.jar").openStream()
+                URL("https://repo1.maven.org/maven2/org/jetbrains/kotlin/kotlin-serialization/1.6.20/kotlin-serialization-1.6.20.jar").openStream()
                     .use { input ->
                         input.copyTo(out)
                     }

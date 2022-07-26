@@ -699,7 +699,7 @@ fun SwiftTranslator.registerClass() {
                         typeParameters = func.typeParameters,
                         valueParameters = func.valueParameters,
                         returnType = func.typeReference ?: func.resolvedFunction?.returnType ?: "Void",
-                        body = if (typedRule.isOpen) {
+                        body = if (func.hasModifier(KtTokens.OPEN_KEYWORD) || func.hasModifier(KtTokens.ABSTRACT_KEYWORD)) {
                             { ->
                                 -"{ \nswitch self {\n"
                                 typedRule.body?.enumEntries?.mapNotNull { entry ->
