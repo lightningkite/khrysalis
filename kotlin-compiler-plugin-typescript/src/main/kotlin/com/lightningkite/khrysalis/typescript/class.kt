@@ -263,9 +263,7 @@ fun TypescriptTranslator.registerClass() {
         -"$declaresPrefix${typedRule.fqName?.asString()}\n"
         if (!typedRule.isPrivate()) -"export "
 
-        when (typedRule.modalityModifierType()) {
-            KtTokens.ABSTRACT_KEYWORD -> -"abstract "
-        }
+        if(typedRule.mustBeExtended) -"abstract "
         writeClassHeader(typedRule)
         -" {\n"
         writeInterfaceMarkers(typedRule)
@@ -279,7 +277,7 @@ fun TypescriptTranslator.registerClass() {
 
         if (typedRule.isEnum()) {
             -"private"
-        } else if (typedRule.hasModifier(KtTokens.ABSTRACT_KEYWORD)) {
+        } else if (typedRule.mustBeExtended) {
             -"protected"
         } else {
             -(typedRule.primaryConstructor?.visibilityModifier() ?: "public")

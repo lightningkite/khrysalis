@@ -130,9 +130,9 @@ fun SwiftTranslator.registerVariable() {
     //abstract
     handle<KtProperty>(
         condition = {
-            typedRule.hasModifier(KtTokens.ABSTRACT_KEYWORD)
+            typedRule.mustBeExtended
         },
-        priority = 150,
+        priority = 149,
         action = {
             if (typedRule.isMember) {
                 if (typedRule.resolvedProperty?.overriddenDescriptors

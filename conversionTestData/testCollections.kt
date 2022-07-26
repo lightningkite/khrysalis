@@ -8,6 +8,13 @@ fun main(vararg args: String){
     val list = listOf(1, 2, 3)
     println(list[0])
 
+    var varList = list
+    varList += 4
+    if(list.size < 3)
+        varList += 5
+    else
+        varList += 6
+
     val pair: Pair<Int, String> = 3 to "Three"
     println(pair.first)
     println(pair.second)

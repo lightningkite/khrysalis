@@ -28,22 +28,9 @@ import org.jetbrains.kotlin.types.typeUtil.isNullableAny
 import java.util.*
 import kotlin.collections.ArrayList
 
-fun FunctionDescriptor.callsForSwiftInterface(on: ClassDescriptor?): Boolean {
-    val immediate = this.containingDeclaration == on
-    val overriddenDescriptors = this.overriddenDescriptors
-        .filter { it.kind == CallableMemberDescriptor.Kind.DECLARATION }
-        .filter { it.containingDeclaration.fqNameOrNull()?.asString()?.startsWith("kotlin.") == false }
-    return immediate && overriddenDescriptors.isEmpty() == true
-}
-
-fun KtModifierListOwner.swiftVisibility(): Any? = when {
-    (this as? KtNamedFunction)?.let {
-        it.hasModifier(KtTokens.OVERRIDE_KEYWORD) && it.containingClassOrObject?.isOpen == true
-    } == true
-            || this.hasModifier(KtTokens.ABSTRACT_KEYWORD)
-            || this.hasModifier(KtTokens.SEALED_KEYWORD)
-            || this.hasModifier(KtTokens.OPEN_KEYWORD) -> "open"
-    else -> this.visibilityModifier()
+fun KtModifierListOwner.swiftVisibility(): Any? = when(this) {
+    is KtNamedFunction -> if(this.canBeExtended) "open" else visibilityModifier()
+    else -> visibilityModifier()
 }
 
 fun SwiftTranslator.registerClass() {

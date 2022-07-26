@@ -1,0 +1,46 @@
+- id: java.time.format.DateTimeFormatter.ofLocalizedDate
+  type: call
+  template:
+    pattern: 'ofLocalizedDate(~0~)'
+    imports:
+      ofLocalizedDate: '@lightningkite/khrysalis-runtime'
+- id: java.time.format.DateTimeFormatter.ofLocalizedTime
+  type: call
+  template:
+    pattern: 'ofLocalizedTime(~0~)'
+    imports:
+      ofLocalizedTime: '@lightningkite/khrysalis-runtime'
+- id: java.time.format.DateTimeFormatter.ofLocalizedDateTime
+  type: call
+  template:
+    pattern: 'ofLocalizedDateTime(~0~, ~1~)'
+    imports:
+      ofLocalizedDateTime: '@lightningkite/khrysalis-runtime'
+
+- id: java.time.format.DateTimeFormatter.withZone
+  type: call
+  template:
+    pattern: 'withZone(~this~, ~0~)'
+    imports:
+      withZone: '@lightningkite/khrysalis-runtime'
+
+- {id: java.time.LocalDate.year, type: get, template: '~this~.year()'}
+- {id: java.time.LocalDate.month, type: get, template: '~this~.month()'}
+- {id: java.time.LocalDate.day, type: get, template: '~this~.day()'}
+- {id: java.time.LocalTime.hour, type: get, template: '~this~.hour()'}
+- {id: java.time.LocalTime.minute, type: get, template: '~this~.minute()'}
+- {id: java.time.LocalTime.second, type: get, template: '~this~.second()'}
+- {id: java.time.LocalDateTime.year, type: get, template: '~this~.year()'}
+- {id: java.time.LocalDateTime.month, type: get, template: '~this~.month()'}
+- {id: java.time.LocalDateTime.day, type: get, template: '~this~.day()'}
+- {id: java.time.LocalDateTime.hour, type: get, template: '~this~.hour()'}
+- {id: java.time.LocalDateTime.minute, type: get, template: '~this~.minute()'}
+- {id: java.time.LocalDateTime.second, type: get, template: '~this~.second()'}
+- {id: java.time.ZonedDateTime.year, type: get, template: '~this~.year()'}
+- {id: java.time.ZonedDateTime.month, type: get, template: '~this~.month()'}
+- {id: java.time.ZonedDateTime.day, type: get, template: '~this~.day()'}
+- {id: java.time.ZonedDateTime.hour, type: get, template: '~this~.hour()'}
+- {id: java.time.ZonedDateTime.minute, type: get, template: '~this~.minute()'}
+- {id: java.time.ZonedDateTime.second, type: get, template: '~this~.second()'}
+
+

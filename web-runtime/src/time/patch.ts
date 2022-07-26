@@ -1,8 +1,8 @@
 import {
     convert,
-    DateTimeFormatter, Instant,
+    DateTimeFormatter, DateTimeFormatterBuilder, Instant,
     LocalDate,
-    LocalDateTime, LocalTime, TemporalAccessor, ZonedDateTime
+    LocalDateTime, LocalTime, TemporalAccessor, ZonedDateTime, ZoneId
 } from "@js-joda/core";
 
 export namespace FormatStyle {
@@ -104,5 +104,17 @@ export function ofLocalizedDateTime(dateStyle: Intl.DateTimeFormatOptions, timeS
         hour12: timeStyle.hour12,
         timeZone: timeStyle.timeZone,
     })
+    return newFormatter
+}
+export function withZone(formatter: DateTimeFormatter, zone: ZoneId): DateTimeFormatter {
+    const newFormatter = Object.assign(Object.create(Object.getPrototypeOf(formatter)), formatter)
+    const oldFormat = newFormatter.format
+    newFormatter.format = (temporal: any) => {
+        let toConvert = temporal
+        if(temporal instanceof LocalTime) toConvert = ZonedDateTime.ofLocal(LocalDateTime.of(LocalDate.now(), temporal), zone)
+        if(temporal instanceof LocalDateTime) toConvert = ZonedDateTime.ofLocal(temporal, zone)
+        if(temporal instanceof Instant) toConvert = ZonedDateTime.ofInstant(temporal, zone)
+        return oldFormat(temporal)
+    }
     return newFormatter
 }
