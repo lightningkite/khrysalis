@@ -248,7 +248,7 @@ fun SwiftTranslator.registerVariable() {
         } else null
         type?.let {
             -": "
-            if (isLateInit && typedRule.resolvedProperty?.type?.isNullable() == false) {
+            if (isLateInit && !typedRule.resolvedProperty!!.type.isMarkedNullable) {
                 -'('
                 -it
                 -")!"
