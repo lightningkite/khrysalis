@@ -328,6 +328,9 @@ public struct LocalDateTime: HasDateComponentsWithDay, Codable, Hashable {
         dateComponents = calendar.dateComponents([.era, .year, .month, .day, .hour, .minute, .second, .nanosecond], from: from)
         self.calendar = calendar
     }
+    public func toDate() -> Date {
+        return dateComponents.date!
+    }
     public init(
         calendar: Calendar = Calendar.current,
         era: Int = 1,
