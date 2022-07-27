@@ -1,7 +1,30 @@
 
+- id: kotlin.reflect.KProperty1
+  type: type
+  template:
+    pattern: TProperty1<~T0~, ~T1~>
+    imports:
+      TProperty1: '@lightningkite/khrysalis-runtime'
+- id: kotlin.reflect.KMutableProperty1
+  type: type
+  template:
+    pattern: TProperty1<~T0~, ~T1~>
+    imports:
+      TProperty1: '@lightningkite/khrysalis-runtime'
+
+- id: kotlin.reflect.KProperty1
+  type: typeRef
+  template: String
+- id: kotlin.reflect.KMutableProperty1
+  type: typeRef
+  template: String
+
 - id: kotlin.reflect.KProperty1.get
   type: call
-  template: '~0~[~this~]'
+  template:
+    pattern: 'reflectiveGet(~0~, ~this~)'
+    imports:
+      reflectiveGet: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.reflect.KProperty1.invoke
   type: call
@@ -9,4 +32,7 @@
 
 - id: kotlin.reflect.KMutableProperty1.set
   type: call
-  template: '~0~[~this~] = ~1~'
+  template:
+    pattern: 'reflectiveSet(~0~, ~this~, ~1~)'
+    imports:
+      reflectiveSet: '@lightningkite/khrysalis-runtime'

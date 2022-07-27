@@ -1,3 +1,5 @@
+import {TProperty1} from "./reflect";
+
 export type Comparator<T> = (lhs: T, rhs: T)=>number
 
 export function safeCompare(left: any, right: any): number {
@@ -18,7 +20,7 @@ export function safeCompare(left: any, right: any): number {
     }
 }
 
-export type CompareByInput<A> = ((a: A) => any) | keyof A
+export type CompareByInput<A> = ((a: A) => any) | keyof A | (keyof A & string) | TProperty1<A, any>
 export function compareBy<A>(key: CompareByInput<A>): Comparator<A> {
     if(typeof key === "function")
         return (l, r) => safeCompare(key(l), key(r))
