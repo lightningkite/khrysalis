@@ -92,6 +92,16 @@
   suppliedArguments: [string, ignoreCase]
   template: '(~this~.indexOf(~0~, ignoreCase: ~ignoreCase~) != -1)'
 
+- id: kotlin.text.take
+  type: call
+  receiver: String
+  template: '~this~.substring(0, ~0~)'
+- id: kotlin.text.drop
+  type: call
+  receiver: String
+  template: '~this~.substring(~0~)'
+
+
 # Characters
 - id: kotlin.text.isLowerCase
   type: call
