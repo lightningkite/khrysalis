@@ -1,8 +1,7 @@
 @file:SharedCode
 package com.campchef
 
-import com.lightningkite.khrysalis.SharedCode
-import com.lightningkite.khrysalis.fatalError
+import com.lightningkite.khrysalis.*
 import java.util.*
 
 interface CampChefAnyCharacteristic {
@@ -14,15 +13,13 @@ sealed class CampChefCharacteristic<T>(
     final override val wsIdentifier: Byte
 ) : CampChefAnyCharacteristic {
 
-    override val uuid: UUID get() = UUID.fromString(uuidPrefix + wsIdentifier.toString(16).padStart(2, '0'))
+    override val uuid: UUID = UUID.fromString(uuidPrefix + wsIdentifier.toString(16).padStart(2, '0'))
 
     companion object {
         val uuidPrefix = "7dbaefb0-6bc3-4b8c-9990-3509fb398a"
         val serviceUuid = UUID.fromString("7dbaefb0-6bc3-4b8c-9990-3509fb398a00")
-        private var _characteristics: Map<Byte, CampChefAnyCharacteristic>? = null
-        val characteristics: Map<Byte, CampChefAnyCharacteristic> get() {
-            _characteristics?.let { return it }
-            _characteristics = listOf<CampChefAnyCharacteristic>(
+        val characteristics: Map<Byte, CampChefAnyCharacteristic> by lazy {
+            listOf<CampChefAnyCharacteristic>(
                 Mode,
                 DeviceInfoC,
                 Transitioning,
@@ -43,7 +40,6 @@ sealed class CampChefCharacteristic<T>(
                 OtaProgress,
             ).plus((0..15).map { Probe(it.toByte()) })
                 .associateBy { it.wsIdentifier }
-            return _characteristics!!
         }
     }
 

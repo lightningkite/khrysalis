@@ -1,12 +1,10 @@
 package com.lightningkite.khrysalis.analysis
 
 import org.jetbrains.kotlin.lexer.KtTokens
-import org.jetbrains.kotlin.psi.KtClass
-import org.jetbrains.kotlin.psi.KtFunction
-import org.jetbrains.kotlin.psi.KtNamedFunction
-import org.jetbrains.kotlin.psi.KtProperty
+import org.jetbrains.kotlin.psi.*
 import org.jetbrains.kotlin.psi.psiUtil.containingClassOrObject
 import org.jetbrains.kotlin.psi.psiUtil.visibilityModifier
+import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
 
 val KtClass.canBeExtended: Boolean get() = when {
     this.hasModifier(KtTokens.ABSTRACT_KEYWORD)
@@ -45,3 +43,8 @@ val KtProperty.mustBeExtended: Boolean get() = when {
     this.hasModifier(KtTokens.ABSTRACT_KEYWORD) -> true
     else -> false
 }
+
+val KtProperty.isLazy: Boolean get() = ((delegateExpression as? KtCallExpression)?.calleeExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget?.fqNameOrNull()
+    ?.asString() == "kotlin.lazy"
+val KtProperty.isWeak: Boolean get() = ((delegateExpression as? KtCallExpression)?.calleeExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget?.fqNameOrNull()
+    ?.asString() == "com.lightningkite.khrysalis.weak"

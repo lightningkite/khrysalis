@@ -40,7 +40,7 @@ data class VirtualSet(
 
 val PropertyDescriptor.hasSwiftBacking: Boolean
     get() {
-        return hasSwiftOverride || ((this.getter?.isDefault == false || this.setter?.isDefault == false) && this.backingField != null && this.extensionReceiverParameter == null)
+        return overriddenDescriptors.isNotEmpty() || ((this.getter?.isDefault == false || this.setter?.isDefault == false) && this.backingField != null && this.extensionReceiverParameter == null)
     }
 val PropertyDescriptor.hasSwiftOverride: Boolean
     get() {
@@ -188,12 +188,36 @@ fun SwiftTranslator.registerVariable() {
             -" }"
         }
     )
+    //Lazy
+    handle<KtProperty>(
+        condition = { typedRule.isLazy },
+        priority = 15
+    ) {
+        if(!typedRule.isTopLevel) {
+            -"lazy "
+        }
+        if (typedRule.isMember || (typedRule.isTopLevel && !typedRule.isExtensionDeclaration())) {
+            -(typedRule.swiftVisibility() ?: "public")
+            -" "
+        }
+        -"var "
+        -typedRule.nameIdentifier
+        typedRule.typeReference?.let {
+            -": "
+            -it
+        } ?: run {
+            -": "
+            -typedRule.resolvedProperty?.type
+        }
+        typedRule.delegateExpression?.let {
+            -" = "
+            -(it as KtCallExpression).valueArguments.first().getArgumentExpression()
+            -"()"
+        }
+    }
     //Weak
     handle<KtProperty>(
-        condition = {
-            ((typedRule.delegateExpression as? KtCallExpression)?.calleeExpression as? KtNameReferenceExpression)?.resolvedReferenceTarget?.fqNameOrNull()
-                ?.asString() == "com.lightningkite.khrysalis.weak"
-        },
+        condition = { typedRule.isWeak },
         priority = 15
     ) {
         -"weak "

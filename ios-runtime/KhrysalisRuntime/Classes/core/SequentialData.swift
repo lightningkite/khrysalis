@@ -41,12 +41,12 @@ public class SequentialData {
         }
         return self
     }
-    public func getRaw<T>(at: Int) -> T {
+    public func getRaw<T>(_ type: T.Type, at: Int) -> T {
         return data.withUnsafeBytes {
             $0.load(fromByteOffset: at, as: T.self)
         }
     }
-    public func getRaw<T>() -> T {
+    public func getRaw<T>(_ type: T.Type) -> T {
         let at = currentIndex
         let result = data.withUnsafeBytes {
             $0.load(fromByteOffset: at, as: T.self)
@@ -55,11 +55,11 @@ public class SequentialData {
         return result
     }
     
-    public func get<T: Bittable>(at: Int) -> T {
-        return T(bitPattern: getRaw(at: at))
+    public func get<T: Bittable>(_ type: T.Type, at: Int) -> T {
+        return T(bitPattern: getRaw(T.BitSafe.self, at: at))
     }
-    public func get<T: Bittable>() -> T {
-        return T(bitPattern: getRaw())
+    public func get<T: Bittable>(_ type: T.Type) -> T {
+        return T(bitPattern: getRaw(T.BitSafe.self))
     }
     public func put<T: Bittable>(_ value: T) -> SequentialData {
         return putRaw(value.bitPattern)

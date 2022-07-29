@@ -8,22 +8,49 @@
   type: typeRef
   template: Data
 
-- id: kotlin.ByteArray.size
-  type: get
-  template: ~this~.count
 
-- id: kotlin.ByteArray.size
-  type: get
-  template: ~this~.count
+- id: kotlin.collections.toString
+  type: call
+  suppliedArguments: [  ]
+  receiver: kotlin.ByteArray
+  arguments: [ charset ]
+  template: 'String(data: ~this~, encoding: .utf8)!'
 
 - id: kotlin.text.toByteArray
   type: call
+  suppliedArguments: [  ]
+  receiver: kotlin.String
   template: '~this~.data(using: .utf8)!'
 
 - id: kotlin.collections.toString
   type: call
   receiver: kotlin.ByteArray
-  template: 'String(data: ~this~, encoding: .utf8)!'
+  arguments: [ charset ]
+  suppliedArguments: [ charset ]
+  template: 'String(data: ~this~, encoding: ~0~)!'
+
+- id: kotlin.text.toByteArray
+  type: call
+  suppliedArguments: [ charset ]
+  receiver: kotlin.String
+  template: '~this~.data(using: ~0~)!'
+
+- id: kotlin.text.Charsets.UTF_8
+  type: get
+  template: 'String.Encoding.utf8'
+
+- id: kotlin.text.Charsets.UTF_16
+  type: get
+  template: 'String.Encoding.utf16'
+
+
+- id: kotlin.ByteArray.size
+  type: get
+  template: ~this~.count
+
+- id: kotlin.ByteArray.size
+  type: get
+  template: ~this~.count
 
 - id: kotlin.String
   type: call
@@ -71,15 +98,6 @@
   type: call
   template: "~this~[~0~] = UInt8(~1~)"
 
-- id: kotlin.text.toByteArray
-  type: call
-  template: '~this~.data(using: .utf8)!'
-
-- id: kotlin.collections.toString
-  type: call
-  receiver: kotlin.ByteArray
-  template: 'String(data: ~this~, encoding: .utf8)!'
-
 - id: java.nio.ByteBuffer
   type: type
   requiresMutable: true
@@ -98,20 +116,20 @@
   type: call
   template: 'SequentialData(capacity: ~0~)'
 
-- { id: java.nio.ByteBuffer.put, type: call, arguments: [Byte], template: '~this~.put(~0~)' }
-- { id: java.nio.ByteBuffer.put, type: call, arguments: [Byte, Int], template: '~this~.put(~0~, at: ~1~)' }
-- { id: java.nio.ByteBuffer.putShort, type: call, arguments: [Short], template: '~this~.put(~0~)' }
-- { id: java.nio.ByteBuffer.putShort, type: call, arguments: [Short, Int], template: '~this~.put(~0~, at: ~1~)' }
-- { id: java.nio.ByteBuffer.putInt, type: call, arguments: [Int], template: '~this~.put(~0~)' }
-- { id: java.nio.ByteBuffer.putInt, type: call, arguments: [Int, Int], template: '~this~.put(~0~, at: ~1~)' }
-- { id: java.nio.ByteBuffer.putLong, type: call, arguments: [Long], template: '~this~.put(~0~)' }
-- { id: java.nio.ByteBuffer.putLong, type: call, arguments: [Long, Int], template: '~this~.put(~0~, at: ~1~)' }
-- { id: java.nio.ByteBuffer.putFloat, type: call, arguments: [Float], template: '~this~.put(~0~)' }
-- { id: java.nio.ByteBuffer.putFloat, type: call, arguments: [Float, Int], template: '~this~.put(~0~, at: ~1~)' }
-- { id: java.nio.ByteBuffer.putDouble, type: call, arguments: [Double], template: '~this~.put(~0~)' }
-- { id: java.nio.ByteBuffer.putDouble, type: call, arguments: [Double, Int], template: '~this~.put(~0~, at: ~1~)' }
-- { id: java.nio.ByteBuffer.putBoolean, type: call, arguments: [Boolean], template: '~this~.put(~0~)' }
-- { id: java.nio.ByteBuffer.putBoolean, type: call, arguments: [Boolean, Int], template: '~this~.put(~0~, at: ~1~)' }
+- { id: java.nio.ByteBuffer.put, type: call, arguments: [Byte], template: '~this~.put(~0~ as Int8)' }
+- { id: java.nio.ByteBuffer.put, type: call, arguments: [Byte, Int], template: '~this~.put(~0~ as Int8, at: ~1~)' }
+- { id: java.nio.ByteBuffer.putShort, type: call, arguments: [Short], template: '~this~.put(~0~ as Int16)' }
+- { id: java.nio.ByteBuffer.putShort, type: call, arguments: [Short, Int], template: '~this~.put(~0~ as Int16, at: ~1~)' }
+- { id: java.nio.ByteBuffer.putInt, type: call, arguments: [Int], template: '~this~.put(~0~ as Int)' }
+- { id: java.nio.ByteBuffer.putInt, type: call, arguments: [Int, Int], template: '~this~.put(~0~ as Int, at: ~1~)' }
+- { id: java.nio.ByteBuffer.putLong, type: call, arguments: [Long], template: '~this~.put(~0~ as Int)' }
+- { id: java.nio.ByteBuffer.putLong, type: call, arguments: [Long, Int], template: '~this~.put(~0~ as Int, at: ~1~)' }
+- { id: java.nio.ByteBuffer.putFloat, type: call, arguments: [Float], template: '~this~.put(~0~ as Float)' }
+- { id: java.nio.ByteBuffer.putFloat, type: call, arguments: [Float, Int], template: '~this~.put(~0~ as Float, at: ~1~)' }
+- { id: java.nio.ByteBuffer.putDouble, type: call, arguments: [Double], template: '~this~.put(~0~ as Double)' }
+- { id: java.nio.ByteBuffer.putDouble, type: call, arguments: [Double, Int], template: '~this~.put(~0~ as Double, at: ~1~)' }
+- { id: java.nio.ByteBuffer.putBoolean, type: call, arguments: [Boolean], template: '~this~.put(~0~ as Boolean)' }
+- { id: java.nio.ByteBuffer.putBoolean, type: call, arguments: [Boolean, Int], template: '~this~.put(~0~ as Boolean, at: ~1~)' }
 
 - { id: java.nio.ByteBuffer.get, type: call, arguments: [Int], template: '~this~.get(Int8.self, at: ~0~)' }
 - { id: java.nio.ByteBuffer.get, type: call, arguments: [], template: '~this~.get(Int8.self)' }
