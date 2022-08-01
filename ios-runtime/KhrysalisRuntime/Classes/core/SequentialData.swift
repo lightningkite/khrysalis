@@ -20,12 +20,14 @@ public class SequentialData {
         currentIndex = 0
     }
     
+    @discardableResult
     public func putRaw<T>(_ value: T, at: Int) -> SequentialData {
         withUnsafeBytes(of: value) {
             data.replaceSubrange(at ..< at + MemoryLayout<T>.size, with: Data($0))
         }
         return self
     }
+    @discardableResult
     public func putRaw<T>(_ value: T) -> SequentialData {
         if currentIndex == data.count {
             withUnsafeBytes(of: value) {
@@ -42,15 +44,12 @@ public class SequentialData {
         return self
     }
     public func getRaw<T>(_ type: T.Type, at: Int) -> T {
-        return data.withUnsafeBytes {
-            $0.load(fromByteOffset: at, as: T.self)
+        return Data(data[at..<at+MemoryLayout<T>.size]).withUnsafeBytes {
+            $0.load(as: T.self)
         }
     }
     public func getRaw<T>(_ type: T.Type) -> T {
-        let at = currentIndex
-        let result = data.withUnsafeBytes {
-            $0.load(fromByteOffset: at, as: T.self)
-        }
+        let result = getRaw(type, at: self.currentIndex)
         currentIndex += MemoryLayout<T>.size
         return result
     }
@@ -61,11 +60,48 @@ public class SequentialData {
     public func get<T: Bittable>(_ type: T.Type) -> T {
         return T(bitPattern: getRaw(T.BitSafe.self))
     }
+    @discardableResult
     public func put<T: Bittable>(_ value: T) -> SequentialData {
         return putRaw(value.bitPattern)
     }
+    @discardableResult
     public func put<T: Bittable>(_ value: T, at: Int) -> SequentialData {
         return putRaw(value.bitPattern)
+    }
+
+    public func get(length: Int, at: Int) -> Data {
+        return self.data[at ..< at + length]
+    }
+    public func get(length: Int) -> Data {
+        let result = self.data[self.currentIndex ..< self.currentIndex + length]
+        self.currentIndex += length
+        return result
+    }
+    public func get(into: inout Data) {
+        into = self.data[self.currentIndex ..< self.currentIndex + into.count]
+        self.currentIndex += into.count
+    }
+    public func get(into: inout Data, at: Int) {
+        into = self.data[at ..< at + into.count]
+    }
+    @discardableResult
+    public func put(_ data: Data) -> SequentialData {
+        put(data, at: self.currentIndex)
+        self.currentIndex += data.count
+        return self
+    }
+    @discardableResult
+    public func put(_ data: Data, at: Int) -> SequentialData {
+        if at == self.data.count {
+            self.data.append(data)
+        } else {
+            self.data.replaceSubrange(at ..< at + data.count, with: data)
+        }
+        return self
+    }
+
+    public func flip() {
+        currentIndex = 0
     }
 }
 
