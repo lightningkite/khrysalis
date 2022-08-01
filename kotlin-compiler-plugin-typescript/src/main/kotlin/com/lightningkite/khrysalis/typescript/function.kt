@@ -731,7 +731,7 @@ fun TypescriptTranslator.registerFunction() {
     )
 
     handle<ArgumentsList> {
-        if (typedRule.on.typeParametersCount > 0) {
+        if (typedRule.on.typeParametersCount > 0 && !typedRule.suppressTypeArgs) {
             -'<'
             typedRule.resolvedCall.typeArguments.entries
                 .sortedBy { it.key.index }
@@ -794,5 +794,6 @@ data class ArgumentsList(
     val resolvedCall: ResolvedCall<out CallableDescriptor>,
     val prependArguments: List<Any> = listOf(),
     val appendArguments: List<Any> = listOf(),
-    val replacements: Map<ValueParameterDescriptor, Any?> = mapOf()
+    val replacements: Map<ValueParameterDescriptor, Any?> = mapOf(),
+    val suppressTypeArgs: Boolean = false
 )

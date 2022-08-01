@@ -71,16 +71,6 @@
   type: call
   template: '~this~.padding(leftTo: ~0~, withPad: ~1~)'
 
-- id: kotlin.text.toString
-  receiver: Byte
-  type: call
-  template: 'String(~this~, radix: ~0~)'
-
-- id: kotlin.text.toString
-  receiver: Byte
-  type: call
-  template: 'String(~this~, radix: ~0~)'
-
 - id: kotlin.collections.sliceArray
   type: call
   reciever: ByteArray

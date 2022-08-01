@@ -859,3 +859,10 @@
   type: call
   arguments: [kotlin.Double, kotlin.Double]
   template: Math.min(Math.max(~this~, ~0~), ~1~)
+
+# ToString with Radix
+
+- { id: kotlin.text.toString, receiver: Byte, type: call, template: '~this~.toString(~0~)' }
+- { id: kotlin.text.toString, receiver: Short, type: call, template: '~this~.toString(~0~)' }
+- { id: kotlin.text.toString, receiver: Int, type: call, template: '~this~.toString(~0~)' }
+- { id: kotlin.text.toString, receiver: Long, type: call, template: '~this~.toString(~0~)' }
