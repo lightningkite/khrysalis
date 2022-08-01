@@ -164,7 +164,7 @@ fun TypescriptTranslator.registerVariable() {
 
     //Handle special case of completely virtual property
     handle<KtProperty>(
-        condition = { typedRule.getter != null && (!typedRule.isVar || typedRule.setter != null) && typedRule.initializer == null },
+        condition = { typedRule.getter != null && (!typedRule.isVar || typedRule.setter != null) && typedRule.initializer == null && !typedRule.isLazy },
         priority = 100,
         action = {
             -"$declaresPrefix${typedRule.simpleFqName}\n"
@@ -174,13 +174,14 @@ fun TypescriptTranslator.registerVariable() {
     )
 
     handle<KtProperty> {
+        val tsVar = (typedRule.isVar || typedRule.isLazy)
         if (typedRule.isMember) {
             -(typedRule.visibilityModifier() ?: "public")
             -" "
             if (typedRule.hasModifier(KtTokens.ABSTRACT_KEYWORD)) {
                 -"abstract "
             }
-            if (!typedRule.isVar) {
+            if (!tsVar) {
                 -"readonly "
             }
         } else {
@@ -188,13 +189,14 @@ fun TypescriptTranslator.registerVariable() {
                 -"$declaresPrefix${typedRule.simpleFqName}\n"
                 -"export "
             }
-            if (typedRule.isVar) {
+            if (tsVar) {
                 -"let "
             } else {
                 -"const "
             }
         }
-        if (typedRule.getter != null || typedRule.setter != null || (!typedRule.isPrivate() && typedRule.isTopLevel)) {
+        val requiresBackingField = typedRule.getter != null || typedRule.setter != null || (!typedRule.isPrivate() && typedRule.isTopLevel) || typedRule.isLazy
+        if (requiresBackingField) {
             -"_"
         }
         -typedRule.nameIdentifier
@@ -214,32 +216,75 @@ fun TypescriptTranslator.registerVariable() {
             }
         }
         -";"
-        if (typedRule.getter != null || typedRule.setter != null || (!typedRule.isPrivate() && typedRule.isTopLevel)) {
+        if (typedRule.getter != null || typedRule.setter != null || requiresBackingField) {
             typedRule.getter?.let {
                 -"\n"
                 -it
             } ?: run {
                 -"\n"
+                fun lazy(selfRef: ()->Unit) {
+                    -" {\n"
+                    -"if ("
+                    selfRef()
+                    -" !== undefined) return "
+                    selfRef()
+                    -"\nelse {\n"
+                    val exp = (typedRule.delegateExpression as KtCallExpression).valueArguments.first().getArgumentExpression()
+                    if(exp is KtLambdaExpression) {
+                        val content = exp.bodyExpression?.statements?.singleOrNull()
+                        if(content != null && content.actuallyCouldBeExpression) {
+                            -"const r = "
+                            -content
+                            -"\n"
+                        } else {
+                            -"const r = ("
+                            -exp
+                            -")()\n"
+                        }
+                    } else {
+                        -"const r = ("
+                        -exp
+                        -")()\n"
+                    }
+                    selfRef()
+                    -" = r\nreturn r\n"
+                    -"}\n"
+                    -"}\n"
+                }
                 if (typedRule.isMember) {
                     -(typedRule.visibilityModifier() ?: "public")
                     -" get "
                     -typedRule.nameIdentifier
                     -"(): "
                     -(typedRule.typeReference ?: typedRule.resolvedVariable?.type) //TODO: Handle unimported type
-                    -" { return "
-                    -"this._"
-                    -typedRule.nameIdentifier
-                    -"; }"
+                    if(typedRule.isLazy) {
+                        lazy {
+                            -"this._"
+                            -typedRule.nameIdentifier
+                        }
+                    } else {
+                        -" { return "
+                        -"this._"
+                        -typedRule.nameIdentifier
+                        -"; }"
+                    }
                 } else {
                     if (typedRule.isTopLevel && !typedRule.isPrivate()) -"export "
                     -"function get"
                     -typedRule.nameIdentifier?.text?.capitalize()
                     -"(): "
                     -(typedRule.typeReference ?: typedRule.resolvedVariable?.type) //TODO: Handle unimported type
-                    -" { return "
-                    -"_"
-                    -typedRule.nameIdentifier
-                    -"; }"
+                    if(typedRule.isLazy) {
+                        lazy {
+                            -"_"
+                            -typedRule.nameIdentifier
+                        }
+                    } else {
+                        -" { return "
+                        -"_"
+                        -typedRule.nameIdentifier
+                        -"; }"
+                    }
                 }
             }
             if (typedRule.isVar) {

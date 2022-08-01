@@ -201,9 +201,10 @@
 - id: kotlin.collections.sorted
   type: call
   template:
-    pattern: toArray(~this~).sort()
+    pattern: toArray(~this~).sort(safeCompare)
     imports:
       toArray: iter-tools-es
+      safeCompare: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.collections.sortedBy
   type: call

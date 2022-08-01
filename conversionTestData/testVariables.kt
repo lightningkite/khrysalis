@@ -15,6 +15,9 @@ var topLevelHybrid: Int = 2
     set(value){
         field = value + 1
     }
+val topLevelLazy: Int by lazy {
+    topLevelReal + 1
+}
 
 fun topLevelUsage(){
     topLevelReal = -1
@@ -24,6 +27,7 @@ fun topLevelUsage(){
     println(topLevelVirtual)
     topLevelHybrid = -3
     println(topLevelHybrid)
+    println(topLevelLazy)
 }
 
 class TestClass {
@@ -39,6 +43,9 @@ class TestClass {
         }
     val memberLambda: (Int)->Unit = {
         println(it)
+    }
+    val memberLazy: Int by lazy {
+        memberReal + 1
     }
     val box = Box("HI", 0)
     init {
@@ -73,6 +80,8 @@ class TestClass {
         this.memberHybrid = -3
         this.memberHybrid += -3
         println(this.memberHybrid)
+
+        println(this.memberLazy)
 
         extensionProperty = -4
         extensionProperty += -4
@@ -142,6 +151,9 @@ object TestObject {
         set(value){
             field = value + 1
         }
+    val objectLazy: Int by lazy {
+        objectReal + 1
+    }
     fun objectUsage(){
         objectReal = -1
         println(objectReal)
@@ -160,6 +172,8 @@ object TestObject {
         val testInstance = TestClass()
         testInstance.needlesslyComplex = -4
         println(testInstance.needlesslyComplex)
+
+        println(objectLazy)
     }
     var TestClass.needlesslyComplex: Int
         get() = memberReal
@@ -211,6 +225,8 @@ fun main(){
     topLevelHybrid++
     println(topLevelHybrid)
 
+    println(topLevelLazy)
+
     instance.memberLambda(1)
     instance.memberLambda.invoke(1)
 
@@ -228,6 +244,8 @@ fun main(){
     instance.memberHybrid += -3
     instance.memberHybrid++
     println(instance.memberHybrid)
+
+    println(instance.memberLazy)
 
     instance.extensionProperty = -4
     instance.extensionProperty += -4

@@ -92,6 +92,16 @@
   suppliedArguments: [string, ignoreCase]
   template: '(~this~.indexOf(~0~, ignoreCase: ~ignoreCase~) != -1)'
 
+- id: kotlin.text.take
+  type: call
+  receiver: String
+  template: '~this~.substring(0, ~0~)'
+- id: kotlin.text.drop
+  type: call
+  receiver: String
+  template: '~this~.substring(~0~)'
+
+
 # Characters
 - id: kotlin.text.isLowerCase
   type: call
@@ -284,22 +294,3 @@
 - id: kotlin.text.toDoubleOrNull
   type: call
   template: Double(~this~)
-
-- id: kotlin.collections.toString
-  type: call
-  receiver: kotlin.ByteArray
-  arguments: [ charset ]
-  template: 'String(data: ~this~, encoding: ~0~)!'
-
-- id: kotlin.text.toByteArray
-  type: call
-  receiver: kotlin.String
-  template: '~this~.data(using: ~0~)!'
-
-- id: kotlin.text.Charsets.UTF_8
-  type: get
-  template: 'String.Encoding.utf8'
-
-- id: kotlin.text.Charsets.UTF_16
-  type: get
-  template: 'String.Encoding.utf16'

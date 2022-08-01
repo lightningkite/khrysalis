@@ -5,21 +5,22 @@
   "main": "dist",
   "types": "dist",
   "dependencies": {
-    "ts-polyfill": "^3.8.2",
-    "sprintf-js": "1.1.x",
-    "@types/sprintf-js": "1.1.x",
-    "mersenne-twister": "1.x",
+    "@js-joda/core": "^4.3.1",
     "@types/mersenne-twister": "1.x",
-    "uuid": "8.x",
+    "@types/sprintf-js": "1.1.x",
     "@types/uuid": "8.x",
     "iter-tools-es": "^7.1.4",
-    "@js-joda/core": "^4.3.1"
+    "lazy-get-decorator": "^2.2.0",
+    "mersenne-twister": "1.x",
+    "sprintf-js": "1.1.x",
+    "ts-polyfill": "^3.8.2",
+    "uuid": "8.x"
   },
   "devDependencies": {
-    "typescript": "^4.5.2",
+    "@types/jest": "^27.0.3",
     "jest": "^27.4.3",
     "ts-jest": "^27.1.1",
-    "@types/jest": "^27.0.3"
+    "typescript": "^4.5.2"
   },
   "scripts": {
     "build": "tsc",

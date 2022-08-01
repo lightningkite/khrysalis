@@ -174,8 +174,9 @@
 - id: kotlin.sequences.sorted
   type: call
   template:
-    pattern: toArray(~this~).sort()
+    pattern: toArray(~this~).sort(safeCompare)
     imports:
+      safeCompare: '@lightningkite/khrysalis-runtime'
       toArray: iter-tools-es
 
 - id: kotlin.sequences.sortedBy

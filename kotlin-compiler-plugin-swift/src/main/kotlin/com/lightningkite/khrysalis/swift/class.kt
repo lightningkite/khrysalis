@@ -871,14 +871,6 @@ fun SwiftTranslator.registerClass() {
             val nameRef = typedRule
             val descriptor = nameRef.resolvedReferenceTarget as ClassDescriptor
             -descriptor.swiftTopLevelName
-
-            run instanceBlock@{
-                val call = typedRule.resolvedCall ?: return@instanceBlock
-                if (call.resultingDescriptor !is FakeCallableDescriptorForObject) return@instanceBlock
-                if ((call.getReturnType().constructor.declarationDescriptor as? ClassDescriptor)?.kind != ClassKind.ENUM_CLASS) {
-                    -".INSTANCE"
-                }
-            }
         }
     )
     handle<KtDotQualifiedExpression>(

@@ -304,16 +304,10 @@ fun TypescriptTranslator.registerClass() {
         -") {\n"
         typedRule.superTypeListEntries.mapNotNull { it as? KtSuperTypeCallEntry }.takeUnless { it.isEmpty() }
             ?.firstOrNull()?.let {
-                -"super("
-                if (typedRule.isEnum()) {
-                    listOf("name: string, jsonName: string") + it.valueArguments
-                } else {
-                    it.valueArguments
-                }.forEachBetween(
-                    forItem = { -it },
-                    between = { -", " }
-                )
-                -");\n"
+                -"super"
+                val c = it.resolvedCall!!
+                -ArgumentsList(c.candidateDescriptor as FunctionDescriptor, c, if (typedRule.isEnum()) listOf("name", "jsonName") else listOf(), suppressTypeArgs = true)
+                -";\n"
             }
         if (typedRule.isEnum()) {
             -"this.name = name;\n"
@@ -559,7 +553,8 @@ fun TypescriptTranslator.registerClass() {
         typedRule.superTypeListEntries.mapNotNull { it as? KtSuperTypeCallEntry }.takeUnless { it.isEmpty() }
             ?.firstOrNull()?.let {
                 -"super"
-                -it.valueArgumentList
+                val c = it.resolvedCall!!
+                -ArgumentsList(c.candidateDescriptor as FunctionDescriptor, c, suppressTypeArgs = true)
                 -";\n"
             }
         //Then, in order, variable initializers and anon initializers
