@@ -538,7 +538,7 @@ fun TypescriptTranslator.registerFunction() {
                 } else {
                     -nre
                     -'.'
-                    -out.addImportGetName(f, f.tsName)
+                    -f.tsName
                 }
             } else {
                 -out.addImportGetName(f, f.tsName)

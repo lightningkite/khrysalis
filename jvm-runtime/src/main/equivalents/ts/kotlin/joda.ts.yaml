@@ -4,16 +4,26 @@
     pattern: 'ofLocalizedDate(~0~)'
     imports:
       ofLocalizedDate: '@lightningkite/khrysalis-runtime'
+
 - id: java.time.format.DateTimeFormatter.ofLocalizedTime
   type: call
   template:
     pattern: 'ofLocalizedTime(~0~)'
     imports:
       ofLocalizedTime: '@lightningkite/khrysalis-runtime'
+
 - id: java.time.format.DateTimeFormatter.ofLocalizedDateTime
   type: call
   template:
     pattern: 'ofLocalizedDateTime(~0~, ~1~)'
+    imports:
+      ofLocalizedDateTime: '@lightningkite/khrysalis-runtime'
+
+- id: java.time.format.DateTimeFormatter.ofLocalizedDateTime
+  type: call
+  arguments: [java.time.format.FormatStyle]
+  template:
+    pattern: 'ofLocalizedDateTime(~0~)'
     imports:
       ofLocalizedDateTime: '@lightningkite/khrysalis-runtime'
 
@@ -43,4 +53,12 @@
 - {id: java.time.ZonedDateTime.minute, type: get, template: '~this~.minute()'}
 - {id: java.time.ZonedDateTime.second, type: get, template: '~this~.second()'}
 
+- {id: java.time.ZoneId.getRules, type: call, template: "~this~.rules()"}
+- {id: java.time.ZoneId.rules, type: get, template: "~this~.rules()"}
+- {id: java.time.ZoneId.getId, type: call, template: "~this~.id()"}
+- {id: java.time.ZoneId.id, type: get, template: "~this~.id()"}
 
+- id: java.time.zone.ZoneRules.getOffset
+  type: call
+  arguments: [java.time.Instant]
+  template: "~this~.offset(~*~)"

@@ -30,6 +30,7 @@
 - { type: type, id: java.time.Instant, template: Date }
 - { type: call, id: java.time.ZonedDateTime.now, template: { pattern: ZonedDateTime(), imports: [ KhrysalisRuntime ] } }
 - { type: call, id: java.time.ZonedDateTime.toInstant, template: '~this~.toDate()' }
+- { type: call, id: java.time.LocalDateTime.toInstant, template: "~this~.toDate()" }
 
 - { type: call, id: java.time.Instant.isAfter, template: '(~this~ > ~0~)' }
 - { type: call, id: java.time.Instant.isBefore, template: '(~this~ < ~0~)' }
@@ -66,6 +67,7 @@
 - { type: call, id: java.time.ZonedDateTime.of, arguments: [ LocalDate, LocalTime, ZoneId ], template: { pattern: 'ZonedDateTime(timeZone: ~2~, localDate: ~0~, localTime: ~1~)', imports: [ KhrysalisRuntime ] } }
 - { type: call, id: java.time.ZonedDateTime.of, arguments: [ LocalDateTime, ZoneId ], template: { pattern: 'ZonedDateTime(timeZone: ~1~, localDateTime: ~0~)', imports: [ KhrysalisRuntime ] } }
 - { type: call, id: java.time.ZonedDateTime.ofInstant, arguments: [ Instant, ZoneId ], template: { pattern: 'ZonedDateTime(timeZone: ~1~, from: ~0~)', imports: [ KhrysalisRuntime ] } }
+- { type: call, id: java.time.LocalDateTime.ofInstant, template: "LocalDateTime(from: ~0~)" }
 
 - { type: call, id: java.time.ZonedDateTime.withYear, template: { pattern: "~this~.with(year: ~0~)", imports: [ KhrysalisRuntime ] } }
 - { type: call, id: java.time.ZonedDateTime.withMonth, template: { pattern: "~this~.with(month: ~0~)", imports: [ KhrysalisRuntime ] } }

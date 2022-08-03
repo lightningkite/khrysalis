@@ -19,6 +19,10 @@
   type: typeRef
   template: String
 
+- id: kotlin.reflect.KProperty1.name
+  type: get
+  template: '~this~'
+
 - id: kotlin.reflect.KProperty1.get
   type: call
   template:
@@ -28,7 +32,10 @@
 
 - id: kotlin.reflect.KProperty1.invoke
   type: call
-  template: '~0~[~this~]'
+  template:
+    pattern: 'reflectiveGet(~0~, ~this~)'
+    imports:
+      reflectiveGet: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.reflect.KMutableProperty1.set
   type: call
