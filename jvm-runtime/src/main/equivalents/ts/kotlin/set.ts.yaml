@@ -214,37 +214,37 @@
 - id: kotlin.collections.plus
   receiver: kotlin.collections.Set
   type: call
-  arguments: [kotlin.Any]
-  template:
-    pattern: new EqualOverrideSet([...~this~, ~0~])
-    imports:
-      EqualOverrideSet: '@lightningkite/khrysalis-runtime'
-
-- id: kotlin.collections.minus
-  receiver: kotlin.collections.Set
-  type: call
   arguments: [kotlin.collections.Set]
-  template:
-    pattern: new EqualOverrideSet([...~this~].filter(x => !~0~.has(x)))
-    imports:
-      EqualOverrideSet: '@lightningkite/khrysalis-runtime'
+  typeArgumentRequirements:
+    0: primitive
+  template: new Set([...~this~, ...~0~])
 
-- id: kotlin.collections.minus
+- id: kotlin.collections.plus
   receiver: kotlin.collections.Set
   type: call
-  arguments: [kotlin.Any]
+  priorityModifier: 1
+  arguments: [kotlin.collections.Iterable]
   template:
-    pattern: new EqualOverrideSet([...~this~].filter(x => x !== ~0~))
+    pattern: new EqualOverrideSet([...~this~, ...~0~])
     imports:
       EqualOverrideSet: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.collections.plus
   receiver: kotlin.collections.Set
   type: call
-  arguments: [kotlin.collections.Set]
+  priorityModifier: 1
+  arguments: [kotlin.collections.Iterable]
   typeArgumentRequirements:
     0: primitive
   template: new Set([...~this~, ...~0~])
+
+- id: kotlin.collections.plus
+  receiver: kotlin.collections.Set
+  type: call
+  template:
+    pattern: new EqualOverrideSet([...~this~, ~0~])
+    imports:
+      EqualOverrideSet: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.collections.plus
   receiver: kotlin.collections.Set
@@ -258,6 +258,15 @@
   receiver: kotlin.collections.Set
   type: call
   arguments: [kotlin.collections.Set]
+  template:
+    pattern: new EqualOverrideSet([...~this~].filter(x => !~0~.has(x)))
+    imports:
+      EqualOverrideSet: '@lightningkite/khrysalis-runtime'
+
+- id: kotlin.collections.minus
+  receiver: kotlin.collections.Set
+  type: call
+  arguments: [kotlin.collections.Set]
   typeArgumentRequirements:
     0: primitive
   template: new Set([...~this~].filter(x => !~0~.has(x)))
@@ -265,7 +274,31 @@
 - id: kotlin.collections.minus
   receiver: kotlin.collections.Set
   type: call
-  arguments: [kotlin.Any]
+  arguments: [kotlin.collections.Iterable]
+  template:
+    pattern: new EqualOverrideSet([...~this~].filter(x => !~0~.has(x)))
+    imports:
+      EqualOverrideSet: '@lightningkite/khrysalis-runtime'
+
+- id: kotlin.collections.minus
+  receiver: kotlin.collections.Set
+  type: call
+  arguments: [kotlin.collections.Iterable]
+  typeArgumentRequirements:
+    0: primitive
+  template: new Set([...~this~].filter(x => !~0~.has(x)))
+
+- id: kotlin.collections.minus
+  receiver: kotlin.collections.Set
+  type: call
+  template:
+    pattern: new EqualOverrideSet([...~this~].filter(x => x !== ~0~))
+    imports:
+      EqualOverrideSet: '@lightningkite/khrysalis-runtime'
+
+- id: kotlin.collections.minus
+  receiver: kotlin.collections.Set
+  type: call
   typeArgumentRequirements:
     0: primitive
   template: new Set([...~this~].filter(x => x !== ~0~))
