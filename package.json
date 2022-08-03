@@ -1,6 +1,6 @@
 {
   "name": "@lightningkite/khrysalis-runtime",
-  "version": "1.0.0",
+  "version": "1.0.1",
   "description": "The runtime for the Kotlin to Typescript transpiler.",
   "main": "index.js",
   "types": "index.d.ts",
