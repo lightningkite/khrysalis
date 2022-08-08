@@ -74,7 +74,7 @@
 - id: kotlin.collections.sliceArray
   type: call
   reciever: ByteArray
-  template: '~this~[~0~]'
+  template: 'Data(~this~[~0~])'
 
 - id: kotlin.ByteArray
   type: call

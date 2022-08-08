@@ -66,6 +66,16 @@
   type: call
   template: "Dictionary()"
 
+
+- id: java.util.HashMap
+  type: call
+  hasExplicitTypeArguments: true
+  template: "Dictionary<~T0~, ~T1~>()"
+
+- id: java.util.HashMap
+  type: call
+  template: "Dictionary()"
+
 ## Usage
 - id: kotlin.collections.Map.size
   type: get
