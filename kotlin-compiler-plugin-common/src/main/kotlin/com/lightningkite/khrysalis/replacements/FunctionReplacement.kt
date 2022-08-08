@@ -29,6 +29,7 @@ data class FunctionReplacement(
     override val debug: Boolean = false,
     val resultIsNullable: Boolean? = null,
     val reflectiveName: Template? = null,
+    val priorityModifier: Int = 0,
     val template: Template
 ) : ReplacementRule {
 
@@ -42,7 +43,7 @@ data class FunctionReplacement(
                 (if (comparatorType != null) 8 else 0) +
                 (if (usedAsExpression != null) 8 else 0) +
                 (typeArgumentRequirements?.size?.times(32) ?: 0) +
-                (exactArgumentRequirements?.size?.times(32) ?: 0)
+                (exactArgumentRequirements?.size?.times(32) ?: 0) + priorityModifier
 
     fun passes(
         call: ResolvedCall<out CallableDescriptor>,
