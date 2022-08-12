@@ -26,7 +26,7 @@ data class CompilerRunInfo(
 ) {
     constructor(compileTask: KotlinCompile):this(
         compileTask.classpath.asSequence(),
-        compileTask.source.toList().asSequence(),
+        compileTask.sources.files.toList().asSequence(),
         compileTask.project.buildDir.resolve("testBuild"),
         compileTask.pluginClasspath.asSequence(),
         compileTask.forcePluginOptions

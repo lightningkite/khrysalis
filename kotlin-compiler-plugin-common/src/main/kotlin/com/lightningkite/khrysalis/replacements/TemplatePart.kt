@@ -1,7 +1,7 @@
 package com.lightningkite.khrysalis.replacements
 
 sealed class TemplatePart {
-    abstract class Expression: TemplatePart()
+    sealed class Expression: TemplatePart()
     data class Text(val string: String) : TemplatePart() {
         override fun toString(): String = string
     }

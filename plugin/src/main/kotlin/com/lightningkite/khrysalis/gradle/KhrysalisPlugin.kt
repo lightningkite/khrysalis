@@ -95,7 +95,8 @@ val Project.khrysalis: KhrysalisExtensionSettings
     )
 
 fun KotlinCompile.calculateCommonPackage(): String {
-    return source
+    return sources
+        .files
         .asSequence()
         .filter { it.name.endsWith(".kt") }
         .map { it.readText().substringAfter("package ").substringBefore('\n').trim() }

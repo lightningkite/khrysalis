@@ -115,6 +115,7 @@ fun <T : Any> KotlinTranslator<SwiftFileEmitter>.ContextByType<T>.emitTemplate(
                     }
                     is TemplatePart.TypeParameter -> -typeParameter(part)
                     is TemplatePart.TypeParameterByIndex -> -typeParameterByIndex(part)
+                    is TemplatePart.ReifiedTypeParameterByIndex -> -typeParameterByIndex(TemplatePart.TypeParameterByIndex(part.index))
                 }
             }
         }
