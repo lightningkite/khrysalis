@@ -116,6 +116,8 @@
       <module name="khrysalis.kotlin-compiler-plugin-typescript.main" target="11" />
       <module name="khrysalis.kotlin-compiler-plugin-typescript.test" target="11" />
       <module name="khrysalis.plugin" target="11" />
+      <module name="khrysalis.plugin.main" target="11" />
+      <module name="khrysalis.plugin.test" target="11" />
       <module name="kotlin-compiler-plugin-common" target="11" />
       <module name="kotlin-compiler-plugin-swift" target="11" />
       <module name="kotlin-compiler-plugin-typescript" target="11" />
@@ -243,7 +245,6 @@
         <entry key="test.schema">
           <value>
             <SchemaInfo>
-              <option name="generatedName" value="New Schema" />
               <option name="name" value="test.schema" />
               <option name="relativePathToSchema" value="test.schema.json" />
               <option name="patterns">
@@ -566,14 +567,16 @@
       <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-typescript/khrysalis.kotlin-compiler-plugin-typescript.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/khrysalis.kotlin-compiler-plugin-typescript.iml" />
       <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-typescript/khrysalis.kotlin-compiler-plugin-typescript.main.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/khrysalis.kotlin-compiler-plugin-typescript.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-typescript/khrysalis.kotlin-compiler-plugin-typescript.test.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/khrysalis.kotlin-compiler-plugin-typescript.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/plugin/khrysalis.plugin.iml" filepath="$PROJECT_DIR$/plugin/khrysalis.plugin.iml" group="khrysalis/plugin" />
+      <module fileurl="file://$PROJECT_DIR$/plugin/khrysalis.plugin.iml" filepath="$PROJECT_DIR$/plugin/khrysalis.plugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/plugin/khrysalis.plugin.main.iml" filepath="$PROJECT_DIR$/plugin/khrysalis.plugin.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/plugin/khrysalis.plugin.test.iml" filepath="$PROJECT_DIR$/plugin/khrysalis.plugin.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-common/kotlin-compiler-plugin-common.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-common/kotlin-compiler-plugin-common.iml" group="khrysalis/kotlin-compiler-plugin-common" />
       <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-swift/kotlin-compiler-plugin-swift.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-swift/kotlin-compiler-plugin-swift.iml" group="khrysalis/kotlin-compiler-plugin-swift" />
       <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-typescript/kotlin-compiler-plugin-typescript.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/kotlin-compiler-plugin-typescript.iml" group="khrysalis/kotlin-compiler-plugin-typescript" />
       <module fileurl="file://$PROJECT_DIR$/plugin/plugin.iml" filepath="$PROJECT_DIR$/plugin/plugin.iml" />
     </modules>
   </component>
-  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" project-jdk-name="11" project-jdk-type="JavaSDK">
+  <component name="ProjectRootManager" version="2" languageLevel="JDK_11" default="true" project-jdk-name="11" project-jdk-type="JavaSDK">
     <output url="file://$PROJECT_DIR$/out" />
   </component>
   <component name="RemoteRepositoriesConfiguration">
@@ -786,7 +789,7 @@
     </library>
     <library name="Gradle: com.fasterxml.jackson.core:jackson-core:2.13.3">
       <ANNOTATIONS>
-        <root url="jar://$MAVEN_REPOSITORY$/org/jetbrains/externalAnnotations/com/fasterxml/jackson/core/jackson-core/2.9.6-an1/jackson-core-2.9.6-an1-annotations.zip!/" />
+        <root url="jar://$USER_HOME$/.m2/repository/org/jetbrains/externalAnnotations/com/fasterxml/jackson/core/jackson-core/2.9.6-an1/jackson-core-2.9.6-an1-annotations.zip!/" />
       </ANNOTATIONS>
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-core/2.13.3/a27014716e4421684416e5fa83d896ddb87002da/jackson-core-2.13.3.jar!/" />
@@ -798,7 +801,7 @@
     </library>
     <library name="Gradle: com.fasterxml.jackson.core:jackson-databind:2.13.3">
       <ANNOTATIONS>
-        <root url="jar://$MAVEN_REPOSITORY$/org/jetbrains/externalAnnotations/com/fasterxml/jackson/core/jackson-databind/2.9.6-an1/jackson-databind-2.9.6-an1-annotations.zip!/" />
+        <root url="jar://$USER_HOME$/.m2/repository/org/jetbrains/externalAnnotations/com/fasterxml/jackson/core/jackson-databind/2.9.6-an1/jackson-databind-2.9.6-an1-annotations.zip!/" />
       </ANNOTATIONS>
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.fasterxml.jackson.core/jackson-databind/2.13.3/56deb9ea2c93a7a556b3afbedd616d342963464e/jackson-databind-2.13.3.jar!/" />
@@ -835,13 +838,13 @@
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.gundy/semver4j/0.16.4/5f35944750b5842c3c1e650b9385c41e7d892502/semver4j-0.16.4-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Gradle: com.github.tschuchortdev:kotlin-compile-testing:1.4.8">
+    <library name="Gradle: com.github.tschuchortdev:kotlin-compile-testing:1.4.9">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.tschuchortdev/kotlin-compile-testing/1.4.8/47b27f4effe960f54415a324f5f5a539d29f0bb3/kotlin-compile-testing-1.4.8.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.tschuchortdev/kotlin-compile-testing/1.4.9/b8221a256af154eb85f66c75aa57b6137504a38d/kotlin-compile-testing-1.4.9.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.tschuchortdev/kotlin-compile-testing/1.4.8/942ba62fe766b08faf0ff12a6c47baa28251058f/kotlin-compile-testing-1.4.8-sources.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.github.tschuchortdev/kotlin-compile-testing/1.4.9/2e71e288fcccf6a5781343349bf21e56ba130522/kotlin-compile-testing-1.4.9-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Gradle: com.google.code.findbugs:annotations:2.0.1">
@@ -927,15 +930,13 @@
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.google.j2objc/j2objc-annotations/1.3/d26c56180205cbb50447c3eca98ecb617cf9f58b/j2objc-annotations-1.3-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Gradle: com.squareup.okio:okio-jvm:3.0.0">
+    <library name="Gradle: com.squareup.okio:okio-jvm:3.1.0">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio-jvm/3.0.0/ab5a73fa2ccb4a36b0b5c69fe10b16d0255bcf8/okio-jvm-3.0.0.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio-jvm/3.1.0/ec352b5ea894772fbd9fce9d028c8cda06de0dab/okio-jvm-3.1.0.jar!/" />
       </CLASSES>
-      <JAVADOC>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio-jvm/3.0.0/d80a56acc76c16c3eefae15c38ac9712e3fd6ca6/okio-jvm-3.0.0-javadoc.jar!/" />
-      </JAVADOC>
+      <JAVADOC />
       <SOURCES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio-jvm/3.0.0/73e518d3b5760645d525c24934e4efc01149060a/okio-jvm-3.0.0-sources.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/com.squareup.okio/okio-jvm/3.1.0/dc07e4257e30db8e7ac8679e0b1761d2b5784fab/okio-jvm-3.1.0-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Gradle: com.squareup:javawriter:2.5.0">
@@ -976,13 +977,13 @@
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/de.undercouch/gradle-download-task/4.1.1/24fd2264b0c7402b1c5e4bd3d9c2704a8cc8c758/gradle-download-task-4.1.1-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Gradle: io.github.classgraph:classgraph:4.8.143">
+    <library name="Gradle: io.github.classgraph:classgraph:4.8.147">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.github.classgraph/classgraph/4.8.143/7a7a9cd5eaa8566c5b1e47904a7849a9fd903f48/classgraph-4.8.143.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.github.classgraph/classgraph/4.8.147/c9cc4804e9a9bfa45e62e96d0bb5cff17882e320/classgraph-4.8.147.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.github.classgraph/classgraph/4.8.143/38332264e2bc5b00790e60dfb4b6a6a1eb160359/classgraph-4.8.143-sources.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/io.github.classgraph/classgraph/4.8.147/fef6c46cadd33e702d7d51ee525a8489847c68a6/classgraph-4.8.147-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Gradle: io.github.detekt.sarif4k:sarif4k:0.0.1">
@@ -1113,7 +1114,7 @@
     </library>
     <library name="Gradle: junit:junit:4.13.2">
       <ANNOTATIONS>
-        <root url="jar://$MAVEN_REPOSITORY$/org/jetbrains/externalAnnotations/junit/junit/4.12-an1/junit-4.12-an1-annotations.zip!/" />
+        <root url="jar://$USER_HOME$/.m2/repository/org/jetbrains/externalAnnotations/junit/junit/4.12-an1/junit-4.12-an1-annotations.zip!/" />
       </ANNOTATIONS>
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/junit/junit/4.13.2/8ac9e16d933b6fb43bc7f576336b8f4d7eb5ba12/junit-4.13.2.jar!/" />
@@ -1397,13 +1398,13 @@
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-android-extensions/1.7.10/67a78ae1dda13ea44331cf65b94a7908b6e086a6/kotlin-android-extensions-1.7.10-sources.jar!/" />
       </SOURCES>
     </library>
-    <library name="Gradle: org.jetbrains.kotlin:kotlin-annotation-processing-embeddable:1.6.20">
+    <library name="Gradle: org.jetbrains.kotlin:kotlin-annotation-processing-embeddable:1.7.0">
       <CLASSES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-annotation-processing-embeddable/1.6.20/d6c349136e90dfcefd255f4ef946fa95d9610111/kotlin-annotation-processing-embeddable-1.6.20.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-annotation-processing-embeddable/1.7.0/22492d425a0a8845ebd9ecfbe7bb6e864722315d/kotlin-annotation-processing-embeddable-1.7.0.jar!/" />
       </CLASSES>
       <JAVADOC />
       <SOURCES>
-        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-annotation-processing-embeddable/1.6.20/7348fd9edbe2a3944ac56798d6b1059fdc718528/kotlin-annotation-processing-embeddable-1.6.20-sources.jar!/" />
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-annotation-processing-embeddable/1.7.0/7c35ce58d704058a05bb51f8dbe1e32df6543e05/kotlin-annotation-processing-embeddable-1.7.0-sources.jar!/" />
       </SOURCES>
     </library>
     <library name="Gradle: org.jetbrains.kotlin:kotlin-annotation-processing-gradle:1.7.10">
@@ -1684,7 +1685,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-common/1.7.10/bac80c520d0a9e3f3673bc2658c6ed02ef45a76a/kotlin-stdlib-common-1.7.10.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-common/1.7.10/5b8f86fea035328fc9e8c660773037a3401ce25f/kotlin-stdlib-common-1.7.10-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-common/1.7.10/60408164a8fbfb0ae8febb3413e2f4bf5a06c97f/kotlin-stdlib-common-1.7.10-sources.jar!/" />
       </SOURCES>
@@ -1693,7 +1696,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.7.10/1ef73fee66f45d52c67e2aca12fd945dbe0659bf/kotlin-stdlib-jdk7-1.7.10.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.7.10/5b8f86fea035328fc9e8c660773037a3401ce25f/kotlin-stdlib-jdk7-1.7.10-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk7/1.7.10/78b7fc534a411952d7579a61d02b70fdd34aa56c/kotlin-stdlib-jdk7-1.7.10-sources.jar!/" />
       </SOURCES>
@@ -1702,7 +1707,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk8/1.7.10/d70d7d2c56371f7aa18f32e984e3e2e998fe9081/kotlin-stdlib-jdk8-1.7.10.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk8/1.7.10/5b8f86fea035328fc9e8c660773037a3401ce25f/kotlin-stdlib-jdk8-1.7.10-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib-jdk8/1.7.10/97d7fb597c1b9213efd8dc35845949f79bfcb054/kotlin-stdlib-jdk8-1.7.10-sources.jar!/" />
       </SOURCES>
@@ -1711,7 +1718,9 @@
       <CLASSES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.7.10/d2abf9e77736acc4450dc4a3f707fa2c10f5099d/kotlin-stdlib-1.7.10.jar!/" />
       </CLASSES>
-      <JAVADOC />
+      <JAVADOC>
+        <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.7.10/5b8f86fea035328fc9e8c660773037a3401ce25f/kotlin-stdlib-1.7.10-javadoc.jar!/" />
+      </JAVADOC>
       <SOURCES>
         <root url="jar://$USER_HOME$/.gradle/caches/modules-2/files-2.1/org.jetbrains.kotlin/kotlin-stdlib/1.7.10/a47f6071d3ba1c695174371ffeb95ac2df2089a5/kotlin-stdlib-1.7.10-sources.jar!/" />
       </SOURCES>

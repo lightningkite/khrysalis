@@ -6,11 +6,13 @@ import org.gradle.api.NamedDomainObjectContainer
 import org.gradle.api.Project
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.dsl.DependencyHandler
+import org.gradle.api.provider.Provider
 import org.gradle.api.tasks.SourceSetContainer
 import org.jetbrains.kotlin.gradle.plugin.FilesSubpluginOption
 import org.jetbrains.kotlin.gradle.plugin.SubpluginOption
 import org.jetbrains.kotlin.gradle.tasks.AbstractKotlinCompile
 import org.jetbrains.kotlin.gradle.tasks.CompilerPluginOptions
+import org.jetbrains.kotlin.gradle.tasks.KotlinCompilerPluginData
 import java.io.File
 import java.util.zip.ZipFile
 
@@ -24,12 +26,12 @@ internal fun DependencyHandler.equivalents(dependencyNotation: Any): Dependency?
 
 private val propForcePluginOptions by lazy {
     AbstractKotlinCompile::class.java.declaredFields
-        .find { it.name.contains("pluginOptions") && it.type == CompilerPluginOptions::class.java }!!
+        .find { it.name.contains("kotlinPluginData") && it.type == Provider::class.java }!!
         .also { it.trySetAccessible() }
 }
 internal val AbstractKotlinCompile<*>.forcePluginOptions: CompilerPluginOptions
     get(){
-        return propForcePluginOptions.get(this) as CompilerPluginOptions
+        return (propForcePluginOptions.get(this) as? Provider<KotlinCompilerPluginData>)?.get()?.options ?: CompilerPluginOptions()
     }
 
 internal fun AbstractKotlinCompile<*>.plugin(pluginName: String, build: SubpluginOptionsBuilder.()->Unit) {
