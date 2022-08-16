@@ -20,6 +20,7 @@ import java.util.zip.ZipFile
 data class CompilerRunInfo(
     val libraries: Sequence<File>,
     val files: Sequence<File>,
+    val filesJava: Sequence<File>,
     val buildCache: File,
     val compilerPlugins: Sequence<File>,
     val pluginOptions: CompilerPluginOptions
@@ -27,11 +28,11 @@ data class CompilerRunInfo(
     constructor(compileTask: KotlinCompile):this(
         compileTask.classpath.asSequence(),
         compileTask.sources.files.toList().asSequence(),
+        compileTask.javaSources.files.toList().asSequence(),
         compileTask.project.buildDir.resolve("testBuild"),
         compileTask.pluginClasspath.asSequence(),
         compileTask.forcePluginOptions
     ) {
-
     }
 }
 data class CompilerPluginUseInfo(
@@ -95,7 +96,7 @@ fun runCompiler(
         services = Services.EMPTY,
         arguments = K2JVMCompilerArguments().apply {
             this.useIR = true
-            this.freeArgs = compileInfo.files.filter { it.extension in setOf("kt", "java") }.map { it.absolutePath }.toList()
+            this.freeArgs = (compileInfo.files + compileInfo.filesJava).filter { it.extension in setOf("kt", "java") }.map { it.absolutePath }.toList()
             this.classpathAsList = compileInfo.libraries.toList()
             this.pluginClasspaths = compileInfo.compilerPlugins.map { it.path }.plus(pluginInfo.classpath.map { it.path }).toList().toTypedArray()
             this.pluginOptions = compileInfo.pluginOptions.arguments.plus(pluginInfo.options).toTypedArray()
