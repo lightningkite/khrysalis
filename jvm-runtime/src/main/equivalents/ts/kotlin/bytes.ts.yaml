@@ -1,0 +1,131 @@
+
+- id: kotlin.ByteArray
+  type: type
+  template: Int8Array
+
+- id: kotlin.ByteArray
+  type: typeRef
+  template: Int8Array
+
+
+- id: kotlin.collections.toString
+  type: call
+  receiver: kotlin.ByteArray
+  arguments: [ charset ]
+  template: 'new TextDecoder().decode(~this~)'
+
+- id: kotlin.text.toByteArray
+  type: call
+  receiver: kotlin.String
+  template: 'new Int8Array(new TextEncoder().encode(~this~))'
+
+- id: kotlin.ByteArray.size
+  type: get
+  template: ~this~.byteLength
+
+- id: kotlin.String
+  type: call
+  arguments: [ByteArray]
+  template: 'new TextDecoder().decode(~this~)'
+
+- id: kotlin.ByteArray.get
+  type: call
+  template: '~this~[~0~]'
+
+- id: kotlin.collections.first
+  receiver: ByteArray
+  type: call
+  template: '~this~[0]'
+
+- id: kotlin.text.padStart
+  receiver: String
+  type: call
+  template: '~this~.padStart(~0~, ~1~)'
+
+- id: kotlin.collections.sliceArray
+  type: call
+  reciever: ByteArray
+  template: '~this~.slice(~0~.start, ~0~.endInclusive + 1)'
+
+- id: kotlin.ByteArray
+  type: call
+  template: 'Int8Array.of()'
+
+- id: kotlin.byteArrayOf
+  type: call
+  template: 'Int8Array.of(~*~)'
+
+- id: kotlin.ByteArray.set
+  type: call
+  template: "~this~[~0~] = ~1~"
+
+
+
+
+- id: java.nio.ByteBuffer
+  type: type
+  template:
+    pattern: ByteBuffer
+    imports:
+      ByteBuffer: DIRECTLY from bytebuffer
+
+- id: java.nio.ByteBuffer
+  type: call
+  template:
+    pattern: 'new ByteBuffer()'
+    imports:
+      ByteBuffer: DIRECTLY from bytebuffer
+
+- id: java.nio.ByteBuffer.wrap
+  type: call
+  arguments: [ByteArray]
+  template:
+    pattern: 'ByteBuffer.wrap(~0~)'
+    imports:
+      ByteBuffer: DIRECTLY from bytebuffer
+
+- id: java.nio.ByteBuffer.allocate
+  type: call
+  template:
+    pattern: 'ByteBuffer.allocate(~0~)'
+    imports:
+      ByteBuffer: DIRECTLY from bytebuffer
+
+- id: java.nio.ByteBuffer.position
+  type: call
+  arguments: [Int]
+  template: '~this~.offset = ~0~'
+
+- id: java.nio.ByteBuffer.position
+  type: call
+  arguments: []
+  template: '~this~.offset'
+
+- id: java.nio.ByteBuffer.get
+  type: call
+  arguments: [ByteArray]
+  template: '~0~.set(new Int8Array(~this~.readBytes(~0~.byteLength).toArrayBuffer()))'
+
+- { id: java.nio.ByteBuffer.put, type: call, arguments: [ByteArray], template: '~this~.append(~0~.buffer)' }
+- { id: java.nio.ByteBuffer.put, type: call, arguments: [ByteArray, Int], template: '~this~.append(~0~.buffer, ~1~)' }
+- { id: java.nio.ByteBuffer.put, type: call, template: '~this~.writeByte(~*~)' }
+- { id: java.nio.ByteBuffer.putShort, type: call, template: '~this~.writeShort(~*~)' }
+- { id: java.nio.ByteBuffer.putInt, type: call, template: '~this~.writeInt(~*~)' }
+- { id: java.nio.ByteBuffer.putLong, type: call, template: '~this~.writeLong(~*~)' }
+- { id: java.nio.ByteBuffer.putFloat, type: call, template: '~this~.writeFloat(~*~)' }
+- { id: java.nio.ByteBuffer.putDouble, type: call, template: '~this~.writeDouble(~*~)' }
+- { id: java.nio.ByteBuffer.putBoolean, type: call, arguments: [Boolean], template: '~this~.writeByte(~0~ ? 1 : 0)' }
+- { id: java.nio.ByteBuffer.putBoolean, type: call, arguments: [Boolean, Int], template: '~this~.writeByte(~0~ ? 1 : 0, ~1~)' }
+
+- { id: java.nio.ByteBuffer.get, type: call, template: '~this~.readByte(~*~)' }
+- { id: java.nio.ByteBuffer.getShort, type: call, template: '~this~.readShort(~*~)' }
+- { id: java.nio.ByteBuffer.getInt, type: call, template: '~this~.readInt(~*~)' }
+- { id: java.nio.ByteBuffer.getLong, type: call, template: '~this~.readLong(~*~).toNumber()' }
+- { id: java.nio.ByteBuffer.getFloat, type: call, template: '~this~.readFloat(~*~)' }
+- { id: java.nio.ByteBuffer.getDouble, type: call, template: '~this~.readDouble(~*~)' }
+- { id: java.nio.ByteBuffer.getBoolean, type: call, arguments: [], template: '(~this~.readByte() != 0)' }
+- { id: java.nio.ByteBuffer.getBoolean, type: call, arguments: [Int], template: '~this~.readByte(~0~)' }
+
+- id: java.nio.ByteBuffer.array
+  type: call
+  template: '~this~.toArrayBuffer()'

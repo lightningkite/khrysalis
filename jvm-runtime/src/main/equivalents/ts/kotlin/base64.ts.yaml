@@ -1,0 +1,27 @@
+---
+- id: java.util.Base64.Decoder.decode
+  type: call
+  template:
+    pattern: decode(~0~)
+    imports:
+      decode: base64-arraybuffer
+- id: java.util.Base64.Encoder.encodeToString
+  type: call
+  template:
+    pattern: encode(~0~)
+    imports:
+      encode: base64-arraybuffer
+
+- type: "call"
+  id: "android.util.Base64.encodeToString"
+  template:
+    pattern: encode(~0~)
+    imports:
+      encode: base64-arraybuffer
+
+- type: "call"
+  id: "android.util.Base64.decode"
+  template:
+    pattern: decode(~0~)
+    imports:
+      decode: base64-arraybuffer

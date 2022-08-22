@@ -6,9 +6,13 @@
   "types": "dist",
   "dependencies": {
     "@js-joda/core": "^4.3.1",
+    "@types/base64-arraybuffer": "^0.2.0",
+    "@types/bytebuffer": "^5.0.44",
     "@types/mersenne-twister": "1.x",
     "@types/sprintf-js": "1.1.x",
     "@types/uuid": "8.x",
+    "base64-arraybuffer": "^1.0.2",
+    "bytebuffer": "^5.0.1",
     "iter-tools-es": "^7.1.4",
     "lazy-get-decorator": "^2.2.0",
     "mersenne-twister": "1.x",

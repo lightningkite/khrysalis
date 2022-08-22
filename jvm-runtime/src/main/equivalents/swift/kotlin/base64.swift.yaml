@@ -9,3 +9,14 @@
   template:
     pattern: '~0~.base64EncodedString()'
     imports: [Foundation]
+
+- type: "call"
+  id: "android.util.Base64.encodeToString"
+  template:
+    pattern: "~0~.base64EncodedString()"
+
+- type: "call"
+  id: "android.util.Base64.decode"
+  template:
+    pattern: "Data(base64Encoded: ~0~!)!"
+

@@ -17,7 +17,7 @@ class TypescriptJacksonReplacementsModule() : JacksonReplacementsModule() {
         return (node as? ObjectNode)?.fields()?.asSequence()?.map { (key, value) ->
             val valueText = value.asText()
             when {
-                valueText.startsWith("DIRECT from ") -> TypescriptImport(
+                valueText.startsWith("DIRECT from ") || valueText.startsWith("DIRECTLY from ") -> TypescriptImport(
                     path = valueText.substringAfter(" from "),
                     identifier = TypescriptImport.WHOLE,
                     asName = key

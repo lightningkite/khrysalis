@@ -20,7 +20,6 @@ class TranslationTest {
         fun data(): Array<Array<String>> = File("../conversionTestData").list()!!
             .filter { it.startsWith("test") }
             .filter { !it.contains("codable", true) }
-            .filter { !it.contains("bytes", true) }
             .map { arrayOf(it) }
             .toTypedArray()
     }

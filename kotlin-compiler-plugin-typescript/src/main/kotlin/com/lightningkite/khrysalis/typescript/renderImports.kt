@@ -31,7 +31,7 @@ fun renderImports(projectName: String?, relPath: String, imports: Collection<Typ
         .forEach { (path, parts) ->
         if (parts.size == 1 && parts.first().identifier == TypescriptImport.WHOLE) {
             writer.append("import ")
-            writer.append(parts.first().identifier)
+            writer.append(parts.first().asName)
             writer.append(" from '")
             writer.append(path)
             writer.appendln("'")
