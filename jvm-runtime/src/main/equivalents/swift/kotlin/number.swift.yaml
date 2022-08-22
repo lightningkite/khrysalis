@@ -744,85 +744,85 @@
 
 - id: kotlin.Byte.toByte
   type: call
-  template: Int8(~this~)
+  template: "~this~"
 - id: kotlin.Short.toByte
   type: call
-  template: Int8(~this~)
+  template: "Int8(truncatingIfNeeded: ~this~)"
 - id: kotlin.Int.toByte
   type: call
-  template: Int8(~this~)
+  template: "Int8(truncatingIfNeeded: ~this~)"
 - id: kotlin.Long.toByte
   type: call
-  template: Int8(~this~)
+  template: "Int8(truncatingIfNeeded: ~this~)"
 - id: kotlin.Float.toByte
   type: call
-  template: Int8(~this~)
+  template: "Int8(~this~)"
 - id: kotlin.Double.toByte
   type: call
-  template: Int8(~this~)
+  template: "Int8(~this~)"
   
 # toShort
 
 - id: kotlin.Byte.toShort
   type: call
-  template: Int16(~this~)
+  template: "Int16(~this~)"
 - id: kotlin.Short.toShort
   type: call
-  template: Int16(~this~)
+  template: "~this~"
 - id: kotlin.Int.toShort
   type: call
-  template: Int16(~this~)
+  template: "Int16(truncatingIfNeeded: ~this~)"
 - id: kotlin.Long.toShort
   type: call
-  template: Int16(~this~)
+  template: "Int16(truncatingIfNeeded: ~this~)"
 - id: kotlin.Float.toShort
   type: call
-  template: Int16(~this~)
+  template: "Int16(~this~)"
 - id: kotlin.Double.toShort
   type: call
-  template: Int16(~this~)
+  template: "Int16(~this~)"
   
 # toInt
 
 - id: kotlin.Byte.toInt
   type: call
-  template: Int(~this~)
+  template: "Int(~this~)"
 - id: kotlin.Short.toInt
   type: call
-  template: Int(~this~)
+  template: "Int(~this~)"
 - id: kotlin.Int.toInt
   type: call
-  template: Int(~this~)
+  template: "~this~"
 - id: kotlin.Long.toInt
   type: call
-  template: Int(~this~)
+  template: "~this~"
 - id: kotlin.Float.toInt
   type: call
-  template: Int(~this~)
+  template: "Int(~this~)"
 - id: kotlin.Double.toInt
   type: call
-  template: Int(~this~)
+  template: "Int(~this~)"
   
 # toLong
 
 - id: kotlin.Byte.toLong
   type: call
-  template: Int(~this~)
+  template: "Int(~this~)"
 - id: kotlin.Short.toLong
   type: call
-  template: Int(~this~)
+  template: "Int(~this~)"
 - id: kotlin.Int.toLong
   type: call
-  template: Int(~this~)
+  template: "~this~"
 - id: kotlin.Long.toLong
   type: call
-  template: Int(~this~)
+  template: "~this~"
 - id: kotlin.Float.toLong
   type: call
-  template: Int(~this~)
+  template: "Int(~this~)"
 - id: kotlin.Double.toLong
   type: call
-  template: Int(~this~)
+  template: "Int(~this~)"
   
 # toFloat
 

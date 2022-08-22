@@ -59,12 +59,12 @@
 
 - id: kotlin.ByteArray.get
   type: call
-  template: 'Int8(~this~[~0~])'
+  template: 'Int8(truncatingIfNeeded: ~this~[~0~])'
 
 - id: kotlin.collections.first
   receiver: ByteArray
   type: call
-  template: 'Int8(~this~.first())'
+  template: 'Int8(truncatingIfNeeded: ~this~.first())'
 
 - id: kotlin.text.padStart
   receiver: String
@@ -86,7 +86,7 @@
 
 - id: kotlin.ByteArray.set
   type: call
-  template: "~this~[~0~] = UInt8(~1~)"
+  template: "~this~[~0~] = UInt8(truncatingIfNeeded: ~1~)"
 
 - id: java.nio.ByteBuffer
   type: type
