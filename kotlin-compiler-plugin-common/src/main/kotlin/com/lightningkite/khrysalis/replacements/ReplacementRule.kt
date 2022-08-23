@@ -32,6 +32,10 @@ import java.util.*
         name = "typeRef"
     ),
     JsonSubTypes.Type(
+        TypeReifiedReplacement::class,
+        name = "typeReified"
+    ),
+    JsonSubTypes.Type(
         CastRule::class,
         name = "cast"
     )

@@ -158,6 +158,24 @@ fun TypescriptTranslator.registerType() {
         }
     }
 
+    handle<CompleteReflectableType>(
+        condition = {
+            replacements.getTypeReified(typedRule.type) != null
+        },
+        priority = 1,
+    ) {
+        val rule = replacements.getTypeReified(typedRule.type)!!
+        val type = typedRule.type
+        val baseType = type.constructor
+        val typeParametersByName = type.arguments.withIndex()
+            .associate { (index, item) -> baseType.parameters[index].name.asString() to item }
+        emitTemplate(
+            template = rule.template,
+            typeParameter = { typeParametersByName[it.name]?.type?.let { CompleteReflectableType(it) } ?: "undefined" },
+            typeParameterByIndex = { type.arguments.getOrNull(it.index)?.type?.let { CompleteReflectableType(it) } ?: "undefined" },
+        )
+    }
+
     handle<CompleteReflectableType> {
         val desc = typedRule.type.constructor.declarationDescriptor
         if(desc is TypeParameterDescriptor) {
@@ -200,7 +218,10 @@ fun TypescriptTranslator.registerType() {
             emitTemplate(
                 template = rule.template,
                 typeParameter = { typeParametersByName[it.name] ?: "undefined" },
-                typeParameterByIndex = { typedRule.typeArguments.getOrNull(it.index) ?: "undefined" }
+                typeParameterByIndex = { typedRule.typeArguments.getOrNull(it.index) ?: "undefined" },
+                reifiedTypeParameterByIndex = { typedRule.typeArguments.getOrNull(it.index)?.let {
+                    it.typeReference?.resolvedType
+                }?.let { CompleteReflectableType(it) } ?: "undefined" }
             )
         }
     )
@@ -302,7 +323,8 @@ fun TypescriptTranslator.registerType() {
             emitTemplate(
                 template = rule.template,
                 typeParameter = { typeParametersByName[it.name] ?: "undefined" },
-                typeParameterByIndex = { type.arguments.getOrNull(it.index) ?: "undefined" }
+                typeParameterByIndex = { type.arguments.getOrNull(it.index) ?: "undefined" },
+                reifiedTypeParameterByIndex = { type.arguments.getOrNull(it.index)?.type?.let { CompleteReflectableType(it) } ?: "undefined" }
             )
             if(typedRule.isMarkedNullable) {
                 -" | null)"

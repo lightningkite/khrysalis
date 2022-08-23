@@ -20,6 +20,7 @@ class Replacements(var mapper: ObjectMapper) {
     val sets: HashMap<String, TreeSet<SetReplacement>> = HashMap()
     val types: HashMap<String, TreeSet<TypeReplacement>> = HashMap()
     val typeRefs: HashMap<String, TreeSet<TypeRefReplacement>> = HashMap()
+    val typeReifieds: HashMap<String, TreeSet<TypeReifiedReplacement>> = HashMap()
     val casts: HashMap<Pair<String, String>, TreeSet<CastRule>> = HashMap()
     val direct: HashMap<String, String> = HashMap()
 
@@ -161,6 +162,18 @@ class Replacements(var mapper: ObjectMapper) {
                 it.passes(type)
             }
 
+    fun getTypeReified(type: DeclarationDescriptor): TypeReifiedReplacement? =
+        type.fqNamesToCheck
+            .flatMap {
+                typeReifieds[it]?.asSequence() ?: sequenceOf()
+            }
+            .find {
+                it.passes(type)
+            }
+
+    fun getTypeReified(type: KotlinType): TypeReifiedReplacement? =
+        if (type.constructor.declarationDescriptor is TypeParameterDescriptor) null else typeReifieds[type.fqNameWithoutTypeArgs]?.find { it.passes(type) }
+
     fun getImplicitCast(from: KotlinType, to: KotlinType): CastRule? {
         casts[from.fqNameWithoutTypeArgs to to.fqNameWithoutTypeArgs]
             ?.find { it.passes(from, to) }
@@ -200,6 +213,7 @@ class Replacements(var mapper: ObjectMapper) {
             is SetReplacement -> sets.getOrPut(item.id) { TreeSet() }.merge(item)
             is TypeReplacement -> types.getOrPut(item.id) { TreeSet() }.merge(item)
             is TypeRefReplacement -> typeRefs.getOrPut(item.id) { TreeSet() }.merge(item)
+            is TypeReifiedReplacement -> typeReifieds.getOrPut(item.id) { TreeSet() }.merge(item)
             is CastRule -> casts.getOrPut(item.from to item.to) { TreeSet() }.merge(item)
         }
     }

@@ -7,6 +7,27 @@
   type: typeRef
   template: Int8Array
 
+- id: kotlin.ByteArray
+  type: call
+  template: new Int8Array(~0~)
+
+- id: kotlin.collections.plus
+  type: call
+  receiver: kotlin.ByteArray
+  arguments: [ kotlin.ByteArray ]
+  template:
+    pattern: concatTypedArray(Int8Array, ~this~, ~0~)
+    imports:
+      concatTypedArray: '@lightningkite/khrysalis-runtime'
+
+- id: kotlin.collections.plus
+  type: call
+  receiver: kotlin.ByteArray
+  arguments: [ kotlin.Byte ]
+  template:
+    pattern: concatTypedArray(Int8Array, ~this~, Int8Array.of(~0~))
+    imports:
+      concatTypedArray: '@lightningkite/khrysalis-runtime'
 
 - id: kotlin.collections.toString
   type: call
@@ -47,10 +68,6 @@
   reciever: ByteArray
   template: '~this~.slice(~0~.start, ~0~.endInclusive + 1)'
 
-- id: kotlin.ByteArray
-  type: call
-  template: 'Int8Array.of()'
-
 - id: kotlin.byteArrayOf
   type: call
   template: 'Int8Array.of(~*~)'
@@ -80,7 +97,7 @@
   type: call
   arguments: [ByteArray]
   template:
-    pattern: 'ByteBuffer.wrap(~0~)'
+    pattern: 'ByteBuffer.wrap(~0~.buffer)'
     imports:
       ByteBuffer: DIRECTLY from bytebuffer
 
@@ -128,4 +145,4 @@
 
 - id: java.nio.ByteBuffer.array
   type: call
-  template: '~this~.toArrayBuffer()'
+  template: 'new Int8Array(~this~.reset().toArrayBuffer())'

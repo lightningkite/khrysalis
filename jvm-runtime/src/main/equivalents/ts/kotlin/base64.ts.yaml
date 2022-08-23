@@ -2,7 +2,7 @@
 - id: java.util.Base64.Decoder.decode
   type: call
   template:
-    pattern: decode(~0~)
+    pattern: new Int8Array(decode(~0~))
     imports:
       decode: base64-arraybuffer
 - id: java.util.Base64.Encoder.encodeToString
@@ -22,6 +22,6 @@
 - type: "call"
   id: "android.util.Base64.decode"
   template:
-    pattern: decode(~0~)
+    pattern: new Int8Array(decode(~0~))
     imports:
       decode: base64-arraybuffer

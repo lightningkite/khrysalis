@@ -208,6 +208,15 @@
 
 # Characters
 
+- type: "call"
+  id: "kotlin.Int.toChar"
+  template:
+    pattern: "String.fromCharCode(~this~)"
+
+- type: "call"
+  id: "kotlin.text.dropLast"
+  template:
+    pattern: "~this~.slice(-~0~)"
 
 # Regex
 
@@ -309,3 +318,12 @@
 - id: kotlin.text.toDouble
   type: call
   template: parseFloat(~this~)
+
+- id: kotlin.text.take
+  type: call
+  receiver: String
+  template: '~this~.substring(0, ~0~)'
+- id: kotlin.text.drop
+  type: call
+  receiver: String
+  template: '~this~.substring(~0~)'

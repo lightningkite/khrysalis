@@ -3,6 +3,12 @@
 - id: java.util.Optional
   type: type
   template: '(~T0~ | null)'
+- id: java.util.Optional
+  type: typeRef
+  template: '~T0~'
+- id: java.util.Optional
+  type: typeReified
+  template: '~T0~'
 - id: java.util.Optional.get
   type: call
   template: ~this~!
@@ -11,10 +17,10 @@
   template: '~this~ ?: ~0~'
 - id: java.util.Optional.of
   type: call
-  template: '~this~'
+  template: '~0~'
 - id: java.util.Optional.ofNullable
   type: call
-  template: '~this~'
+  template: '~0~'
 - id: java.util.Optional.empty
   type: call
   template: 'null'

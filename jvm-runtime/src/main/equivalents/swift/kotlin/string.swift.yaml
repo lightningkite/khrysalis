@@ -294,3 +294,14 @@
 - id: kotlin.text.toDoubleOrNull
   type: call
   template: Double(~this~)
+
+
+- type: "call"
+  id: "kotlin.Int.toChar"
+  template:
+    pattern: "Character(UnicodeScalar(~this~))"
+
+- type: "call"
+  id: "kotlin.text.dropLast"
+  template:
+    pattern: "String(~this~.dropLast(~0~))"

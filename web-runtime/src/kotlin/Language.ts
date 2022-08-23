@@ -158,6 +158,28 @@ export function parseFloatOrNull(s: string): number | null {
     return r;
 }
 
+interface ConstructorSizeFor<T> {
+    new (size: number): T
+}
+interface TypedArray {
+    byteLength: number
+    set(array: this, offset: number): any
+}
+
+export function concatTypedArray<T extends TypedArray>(T: ConstructorSizeFor<T>, ...arrays: Array<T>): T {
+    let totalLength = 0;
+    for (const arr of arrays) {
+        totalLength += arr.byteLength;
+    }
+    const result = new T(totalLength);
+    let offset = 0;
+    for (const arr of arrays) {
+        result.set(arr, offset);
+        offset += arr.byteLength;
+    }
+    return result;
+}
+
 // interface Collection<E> extends Iterable<E> {
 //     readonly size: number; //Why?  Because that's what Array uses, and we conform to Array.
 //     contains(e: E): boolean

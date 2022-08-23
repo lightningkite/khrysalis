@@ -52,4 +52,7 @@ fun main(){
     println("Position: ${buffer.position()}")
     buffer.get(bytes)
     println(bytes.toString(Charsets.UTF_8))
+
+    bytes + 0x01
+    bytes + bytes
 }
