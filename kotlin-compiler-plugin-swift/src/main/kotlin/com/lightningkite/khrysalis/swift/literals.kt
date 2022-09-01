@@ -35,6 +35,8 @@ fun SwiftTranslator.registerLiterals() {
     handle<KtEscapeStringTemplateEntry> {
         if(typedRule.unescapedValue == "$"){
             -"$"
+        } else if(typedRule.text.startsWith("\\u")) {
+            -"\\u{${typedRule.text.substringAfter('u')}}"
         } else {
             doSuper()
         }
