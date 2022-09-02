@@ -20,8 +20,11 @@ fun main(){
     val maybeFrame = if(frame.binary != null) frame else null
     maybeFrame?.text?.let { println(it) }
 
+    val o = Optional.of(1)
     test<Optional<Int>>(Optional.of(1))
     test(Optional.of(1))
+    println(o.isPresent)
+    println(o.get())
 
 //    val platformNullability = Instant.now()
 //    platformNullability.atZone(ZoneId.systemDefault())

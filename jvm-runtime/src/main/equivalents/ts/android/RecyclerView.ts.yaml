@@ -2,6 +2,31 @@
   type: call
   template: '{ display: "grid", gridTemplateColumns: `repeat(${~1~}, 1fr)`, alignContent: "start", justifyContent: "start" }'
 
+- id: androidx.recyclerview.widget.LinearLayoutManager
+  type: call
+  exactArgumentRequirements:
+    1: "LinearLayoutManager.HORIZONTAL"
+    2: "false"
+  template: '{ display: "flex", flexDirection: "row" }'
+- id: androidx.recyclerview.widget.LinearLayoutManager
+  type: call
+  exactArgumentRequirements:
+    1: "LinearLayoutManager.HORIZONTAL"
+    2: "true"
+  template: '{ display: "flex", flexDirection: "row-reverse" }'
+- id: androidx.recyclerview.widget.LinearLayoutManager
+  type: call
+  exactArgumentRequirements:
+    1: "LinearLayoutManager.VERTICAL"
+    2: "false"
+  template: '{ display: "flex", flexDirection: "column" }'
+- id: androidx.recyclerview.widget.LinearLayoutManager
+  type: call
+  exactArgumentRequirements:
+    1: "LinearLayoutManager.VERTICAL"
+    2: "true"
+  template: '{ display: "flex", flexDirection: "column-reverse" }'
+
 - id: androidx.recyclerview.widget.RecyclerView.layoutManager
   type: set
   template: 'Object.assign(~this~.style, ~value~)'

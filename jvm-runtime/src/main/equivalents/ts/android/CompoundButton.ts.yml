@@ -82,10 +82,11 @@
 - id: android.widget.ToggleButton.isEnabled
   type: get
   reflectiveName:
-    pattern: 'chain("input", elementEnabled)'
+    pattern: 'chain("input", reverse("disabled", not))'
     imports:
       chain: '@lightningkite/rxjs-plus'
-      elementEnabled: '@lightningkite/rxjs-plus'
+      reverse: '@lightningkite/rxjs-plus'
+      not: '@lightningkite/rxjs-plus'
   template: '(!~this~.input.disabled)'
 - id: android.widget.ToggleButton.isEnabled
   type: set
@@ -94,8 +95,9 @@
 - id: android.widget.ToggleButton.setEnabled
   type: call
   reflectiveName:
-    pattern: 'chain("input", elementEnabled)'
+    pattern: 'chain("input", reverse("disabled", not))'
     imports:
       chain: '@lightningkite/rxjs-plus'
-      elementEnabled: '@lightningkite/rxjs-plus'
+      reverse: '@lightningkite/rxjs-plus'
+      not: '@lightningkite/rxjs-plus'
   template: '~this~.input.disabled = !(~0~)'

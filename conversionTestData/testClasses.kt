@@ -13,7 +13,8 @@ interface TestInterface {
 data class DataClassThing(
     val x: Double = 0.0,
     val y: String = "Hello!",
-    val z: DataClassThing? = null
+    val z: DataClassThing? = null,
+    val number: Int = 2
 ): TestInterface {
     override fun interfaceFunction(): String = "$x $y"
     @JsName("copyAlt")
@@ -62,6 +63,7 @@ fun main(){
     val instance = DataClassThing(y = "asdf")
     val copied = instance.copy(x = 10.0)
     val copiedAgain = instance.copy()
+    val copiedAgain2 = instance.copy(number = 3)
     val copiedAlt = instance.copy(copied)
     println(copied == instance)
     println(copied == copiedAgain)

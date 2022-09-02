@@ -198,6 +198,16 @@
   hasExplicitTypeArguments: true
   template: "[] as Array<~T0~>"
 
+
+- id: kotlin.collections.ArrayList
+  type: call
+  arguments: ["*"]
+  template: "Array(~0~)"
+- id: java.util.ArrayList
+  type: call
+  arguments: ["*"]
+  template: "Array(~0~)"
+
 # List Operations
 - id: kotlin.collections.List.indexOf
   type: call

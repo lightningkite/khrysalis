@@ -163,6 +163,12 @@
 - id: kotlin.text.substring
   type: call
   template: ~this~.substring(~*~)
+- id: kotlin.text.replaceFirstChar
+  type: call
+  template:
+    pattern: xStringReplaceFirstChar(~this~, ~0~)
+    imports:
+      xStringReplaceFirstChar: '@lightningkite/khrysalis-runtime'
 - id: kotlin.text.removePrefix
   type: call
   template:
@@ -251,6 +257,13 @@
   type: call
   template: ~this~.value += ~0~ + '\n'
 - id: kotlin.text.appendln
+  type: call
+  arguments: []
+  template: ~this~.value += '\n'
+- id: kotlin.text.appendLine
+  type: call
+  template: ~this~.value += ~0~ + '\n'
+- id: kotlin.text.appendLine
   type: call
   arguments: []
   template: ~this~.value += '\n'

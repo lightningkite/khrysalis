@@ -35,6 +35,7 @@ fun main(){
     buffer.put(bytes)
     println("Position: ${buffer.position()}")
     buffer.position(0)
+    println(buffer.hasRemaining())
     println("Position: ${buffer.position()}")
     println("Getting values...")
     println("Position: ${buffer.position()}")

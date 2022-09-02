@@ -8,6 +8,13 @@ import org.jetbrains.kotlin.psi.stubs.elements.KtStubElementTypes
 import com.lightningkite.khrysalis.analysis.*
 
 fun SwiftTranslator.registerLiterals() {
+    handle<KtConstantExpression>(
+        condition = { typedRule.text.startsWith("'\\u", true) },
+        priority = 1,
+        action = {
+            -"\"\\u{${typedRule.text.substringAfter('u').substringBefore('\'')}}\""
+        }
+    )
     handle<KtSimpleNameStringTemplateEntry> {
         val stringWrap = typedRule.expression?.resolvedExpressionTypeInfo?.type?.satisfies("kotlin.String") == true
         -"\\("

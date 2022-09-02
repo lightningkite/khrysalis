@@ -118,4 +118,7 @@ fun main(vararg args: String){
         .mapNotNull { it.value?.let { value -> it.key to value } }
 
     val grouped: Map<Int, List<Int>> = listOf(1, 2, 3, 4, 5).groupBy { it % 2 }
+
+    println(listOf(1, 1, 2, 3).distinct().filter { it % 2 == 1 }.joinToString { it.toString() })
+    ArrayList(listOf(1, 2, 3))
 }

@@ -713,7 +713,7 @@ fun TypescriptTranslator.registerFunction() {
             typedRule.resolvedCall.valueArguments.entries.filter { it.value.arguments.isNotEmpty() }.forEachBetween(
                 forItem = { arg ->
                     -'"'
-                    -arg.key.name.asString()
+                    -arg.key.name.asString().safeJsIdentifier()
                     -"\": "
                     if(arg.key.isVararg) {
                         -arg.value.arguments.forEachBetween(

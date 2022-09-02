@@ -9,32 +9,37 @@ export function xCharSequenceIsBlank(s: string | null): boolean {
     return true
 }
 
-// export function substring(s: string, findIndex: (this: string, delimeter: string)=>number, after: boolean, delimeter: string, defaultResult: string = s): string {
-//     const pos = findIndex.bind(s)(delimeter)
-//     return pos == -1 ? defaultResult : after ? s.substring(pos + delimeter.length) : s.substring(0, pos)
+// export function substring(s: string, findIndex: (this: string, delimiter: string)=>number, after: boolean, delimiter: string, defaultResult: string = s): string {
+//     const pos = findIndex.bind(s)(delimiter)
+//     return pos == -1 ? defaultResult : after ? s.substring(pos + delimiter.length) : s.substring(0, pos)
 // }
 // function quickTest() {
 //     substring("asfd", String.prototype.indexOf, true, "f", "x")
 // }
 
-export function xStringSubstringBefore(s: string, delimeter: string, defaultResult: string = s): string {
-    const pos = s.indexOf(delimeter);
+export function xStringReplaceFirstChar(s: string, action: (s: string)=>string): string {
+    if(s.length === 0) return s
+    return action(s.charAt(0)) + s.substring(1)
+}
+
+export function xStringSubstringBefore(s: string, delimiter: string, defaultResult: string = s): string {
+    const pos = s.indexOf(delimiter);
     return pos == -1 ? defaultResult : s.substring(0, pos)
 }
 
-export function xStringSubstringAfter(s: string, delimeter: string, defaultResult: string = s): string {
-    const pos = s.indexOf(delimeter);
-    return pos == -1 ? defaultResult : s.substring(pos + delimeter.length)
+export function xStringSubstringAfter(s: string, delimiter: string, defaultResult: string = s): string {
+    const pos = s.indexOf(delimiter);
+    return pos == -1 ? defaultResult : s.substring(pos + delimiter.length)
 }
 
-export function xStringSubstringBeforeLast(s: string, delimeter: string, defaultResult: string = s): string {
-    const pos = s.lastIndexOf(delimeter);
+export function xStringSubstringBeforeLast(s: string, delimiter: string, defaultResult: string = s): string {
+    const pos = s.lastIndexOf(delimiter);
     return pos == -1 ? defaultResult : s.substring(0, pos)
 }
 
-export function xStringSubstringAfterLast(s: string, delimeter: string, defaultResult: string = s): string {
-    const pos = s.lastIndexOf(delimeter);
-    return pos == -1 ? defaultResult : s.substring(pos + delimeter.length)
+export function xStringSubstringAfterLast(s: string, delimiter: string, defaultResult: string = s): string {
+    const pos = s.lastIndexOf(delimiter);
+    return pos == -1 ? defaultResult : s.substring(pos + delimiter.length)
 }
 
 export function xStringTrimIndent(c: string): string {

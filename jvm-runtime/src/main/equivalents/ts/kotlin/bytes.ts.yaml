@@ -101,6 +101,11 @@
     imports:
       ByteBuffer: DIRECTLY from bytebuffer
 
+- id: java.nio.ByteBuffer.hasRemaining
+  type: call
+  template:
+    pattern: '~this~.remaining() > 0'
+
 - id: java.nio.ByteBuffer.allocate
   type: call
   template:

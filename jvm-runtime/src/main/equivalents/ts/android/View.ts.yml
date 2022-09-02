@@ -109,10 +109,12 @@
 - id: android.view.View.isEnabled
   type: get
   reflectiveName:
-    pattern: 'elementEnabled'
+    pattern: 'reverse("disabled", not)'
     imports:
-      elementEnabled: '@lightningkite/rxjs-plus'
+      reverse: '@lightningkite/rxjs-plus'
+      not: '@lightningkite/rxjs-plus'
   template: (!~this~.disabled)
+
 - id: android.view.View.isEnabled
   type: set
   template: ~this~.disabled = !(~value~)
@@ -120,9 +122,10 @@
 - id: android.view.View.setEnabled
   type: call
   reflectiveName:
-    pattern: 'elementEnabled'
+    pattern: 'reverse("disabled", not)'
     imports:
-      elementEnabled: '@lightningkite/rxjs-plus'
+      reverse: '@lightningkite/rxjs-plus'
+      not: '@lightningkite/rxjs-plus'
   template: ~this~.disabled = !(~0~)
 
 - type: call

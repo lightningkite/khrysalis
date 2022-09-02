@@ -120,6 +120,10 @@
   arguments: [ByteArray]
   template: '~this~.get(into: &~0~)'
 
+- id: java.nio.ByteBuffer.hasRemaining
+  type: call
+  template: '~this~.hasRemaining'
+
 - { id: java.nio.ByteBuffer.put, type: call, arguments: [Byte], template: '~this~.put(~0~ as Int8)' }
 - { id: java.nio.ByteBuffer.put, type: call, arguments: [Byte, Int], template: '~this~.put(~0~ as Int8, at: ~1~)' }
 - { id: java.nio.ByteBuffer.putShort, type: call, arguments: [Short], template: '~this~.put(~0~ as Int16)' }

@@ -231,6 +231,13 @@ public extension String {
 			return self
 		}
 	}
+
+	func replaceFirstChar(_ action: (Character)->String) -> String {
+        return action(self[startIndex]) + dropFirst()
+	}
+	func replaceFirstChar(_ action: (Character)->Character) -> String {
+        return String(action(self[startIndex])) + dropFirst()
+	}
 }
 
 public extension Character{

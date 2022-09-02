@@ -11,10 +11,13 @@
   template: '~this~ ?: ~0~'
 - id: java.util.Optional.of
   type: call
-  template: '~this~'
+  template: 'Optional.some(~0~)'
 - id: java.util.Optional.ofNullable
   type: call
-  template: '~this~'
+  template: '~0~'
 - id: java.util.Optional.empty
   type: call
   template: 'nil'
+- id: java.util.Optional.isPresent
+  type: get
+  template: '~this~ != nil'

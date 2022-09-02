@@ -281,6 +281,13 @@
     imports:
       EqualOverrideSet: "@lightningkite/khrysalis-runtime"
 
+- id: kotlin.sequences.distinct
+  type: call
+  typeArgumentRequirements:
+    0: primitive
+  template:
+    pattern: "[...new Set(~this~)]"
+
 - id: kotlin.sequences.distinctBy
   type: call
   template:
@@ -308,13 +315,6 @@
     pattern: "new EqualOverrideSet(~this~)"
     imports:
       EqualOverrideSet: "@lightningkite/khrysalis-runtime"
-
-- id: kotlin.sequences.distinct
-  type: call
-  typeArgumentRequirements:
-    0: primitive
-  template:
-    pattern: new Set(~this~)
 
 - id: kotlin.sequences.toSet
   type: call

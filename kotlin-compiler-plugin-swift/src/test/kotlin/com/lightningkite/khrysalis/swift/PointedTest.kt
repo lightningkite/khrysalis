@@ -17,4 +17,5 @@ class PointedTest {
     }
 }
 
-//test[testCodable.kt]
+//test[testBytes.kt]
+//test[testCollections.kt]

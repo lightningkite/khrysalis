@@ -10,7 +10,7 @@ import Foundation
 public class SequentialData {
     public var data: Data
     public var currentIndex: Int
-    
+
     public init(capacity: Int) {
         data = Data(capacity: capacity)
         currentIndex = 0
@@ -18,6 +18,10 @@ public class SequentialData {
     public init(data: Data) {
         self.data = data
         currentIndex = 0
+    }
+
+    public var hasRemaining: Bool {
+        get { return currentIndex < data.count }
     }
     
     @discardableResult
