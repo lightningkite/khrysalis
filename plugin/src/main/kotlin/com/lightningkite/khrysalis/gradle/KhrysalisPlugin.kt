@@ -1,6 +1,5 @@
 package com.lightningkite.khrysalis.gradle
 
-import com.android.build.api.dsl.AndroidSourceSet
 import com.lightningkite.khrysalis.KhrysalisSettings
 import com.lightningkite.khrysalis.generic.CompilerPluginUseInfo
 import com.lightningkite.khrysalis.generic.CompilerRunInfo
@@ -12,13 +11,9 @@ import org.apache.tools.ant.taskdefs.condition.Os
 import org.gradle.api.*
 import org.gradle.api.artifacts.Dependency
 import org.gradle.api.artifacts.dsl.DependencyHandler
-import org.gradle.api.file.DirectoryProperty
 import org.gradle.api.file.SourceDirectorySet
 import org.gradle.api.tasks.*
-import org.gradle.api.tasks.compile.JavaCompile
 import org.gradle.jvm.tasks.Jar
-import org.jetbrains.kotlin.ir.backend.js.compile
-import org.jetbrains.kotlin.util.capitalizeDecapitalize.capitalizeAsciiOnly
 import java.io.File
 import java.util.*
 
@@ -104,7 +99,6 @@ fun KotlinCompile.calculateCommonPackage(): String {
 }
 
 class KhrysalisPlugin : Plugin<Project> {
-    val extensionSourceSets = HashMap<String, SourceDirectorySet>()
 
     override fun apply(target: Project) {
         target.configurations.maybeCreate("kcp")
@@ -133,32 +127,22 @@ class KhrysalisPlugin : Plugin<Project> {
         val iosBase by lazy { target.khrysalis.iosProjectFolder }
         val iosSrc by lazy { target.khrysalis.iosSourceFolder }
 
-        //IOS
 
-        project.sourceSetsMaybeAndroid.names.forEach {
-//            val actualObject = project.sourceSetsMaybeAndroid.getByName(it)
-            val dirSet = target.objects.sourceDirectorySet("equivalents", "Khrysalis Equivalents")
-            extensionSourceSets[it] = dirSet
-            dirSet.srcDirs(target.projectDir.resolve("src/${it}/equivalents"))
-            project.tasks.create("equivalentsJar${it.capitalize()}", Jar::class.java) { task ->
-                task.group = "khrysalis"
-                task.archiveClassifier.set("equivalents")
-                task.from(dirSet)
-            }
+        val equivalentDirectorySet = target.objects.sourceDirectorySet("equivalents", "Khrysalis Equivalents")
+        equivalentDirectorySet.srcDirs(target.projectDir.resolve("src/main/equivalents"))
+        val equivalentsJarTask = project.tasks.create("equivalentsJar", Jar::class.java) { task ->
+            task.group = "khrysalis"
+            task.archiveClassifier.set("equivalents")
+            task.from(equivalentDirectorySet)
         }
 
-        fun getKotlinCompileTask(): KotlinCompile? {
-            return project.tasks
-                .asSequence()
-                .filter { it.name.startsWith("compile") && it.name.endsWith("Kotlin") }
-                .mapNotNull { it as? KotlinCompile }
-                .minByOrNull { it.name.length }
+        project.artifacts {
+            it.add("equivalents", equivalentsJarTask)
         }
 
         project.afterEvaluate {
             project.tasks.filterIsInstance<KotlinCompile>().forEach { original ->
                 val sourceSetName = "main"
-                val sourceSetEquivalents = extensionSourceSets[sourceSetName] ?: return@forEach
                 val equivalentSourceFolder = project.projectDir.resolve("src/${sourceSetName}/equivalents")
 
                 project.tasks.create("${original.name}ToSwift") { task ->
@@ -177,7 +161,7 @@ class KhrysalisPlugin : Plugin<Project> {
                                     "outputDirectory" to iosSrc.absolutePath,
                                     "outputFqnames" to fqNameFile.absolutePath,
                                     "projName" to target.khrysalis.iosProjectName,
-                                    "equivalents" to (equivalentJars + sourceSetEquivalents.toList()).joinToString(File.pathSeparator),
+                                    "equivalents" to (equivalentJars + equivalentDirectorySet.toList()).joinToString(File.pathSeparator),
                                     "commonPackage" to original.calculateCommonPackage(),
                                     "libraryMode" to extension.libraryMode.toString(),
                                 )
@@ -185,7 +169,7 @@ class KhrysalisPlugin : Plugin<Project> {
                         )
                     }
                 }
-                project.tasks.create("${original.name}toTypescript") { task ->
+                project.tasks.create("${original.name}ToTypescript") { task ->
                     task.group = "web"
                     task.dependsOn(project.configurations.getByName("kcp"))
                     task.dependsOn(original)
@@ -201,7 +185,7 @@ class KhrysalisPlugin : Plugin<Project> {
                                     "outputDirectory" to webSrc.absolutePath,
                                     "outputFqnames" to fqNameFile.absolutePath,
                                     "projName" to target.khrysalis.webProjectName,
-                                    "equivalents" to (equivalentJars + sourceSetEquivalents.toList()).joinToString(File.pathSeparator),
+                                    "equivalents" to (equivalentJars + equivalentDirectorySet.toList()).joinToString(File.pathSeparator),
                                     "commonPackage" to original.calculateCommonPackage(),
                                     "libraryMode" to extension.libraryMode.toString(),
                                 )
@@ -220,9 +204,7 @@ class KhrysalisPlugin : Plugin<Project> {
                     println(file)
                 }
                 println("--- Equivalent Directories ---")
-                for (entry in extensionSourceSets) {
-                    println(entry.key + "  -  " + entry.value.sourceDirectories.joinToString())
-                }
+                println(equivalentDirectorySet.joinToString())
             }
         }
 
@@ -232,7 +214,7 @@ class KhrysalisPlugin : Plugin<Project> {
                 println("--- Equivalent Files ---")
                 equivalentsConfiguration.toList()
                     .asSequence()
-                    .plus(extensionSourceSets.asSequence().flatMap { it.value.toList() })
+                    .plus(equivalentDirectorySet.toList())
                     .flatMap { it.walkZip() }
                     .filter { it.name.endsWith(".yaml") || it.name.endsWith(".fqnames") }
                     .groupBy { it.name.substringBeforeLast('.').substringAfterLast('.') }
