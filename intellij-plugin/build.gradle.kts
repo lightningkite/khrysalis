@@ -17,8 +17,8 @@ dependencies {
     testImplementation("org.jetbrains.kotlin:kotlin-compiler-embeddable")
     implementation(project(":kotlin-compiler-plugin-swift"))
     implementation(project(":kotlin-compiler-plugin-typescript"))
-    implementation("io.gitlab.arturbosch.detekt:detekt-api:1.20.0")
-    testImplementation("io.gitlab.arturbosch.detekt:detekt-test:1.20.0")
+    implementation("io.gitlab.arturbosch.detekt:detekt-api:1.21.0")
+    testImplementation("io.gitlab.arturbosch.detekt:detekt-test:1.21.0")
 }
 
 

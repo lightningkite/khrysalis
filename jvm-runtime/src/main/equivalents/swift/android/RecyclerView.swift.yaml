@@ -30,6 +30,22 @@
     pattern: "QuickCompositionalLayout.list()"
     imports: [KhrysalisRuntime]
 
+- id: androidx.recyclerview.widget.LinearLayoutManager
+  type: call
+  exactArgumentRequirements: { 1: 'LinearLayoutManager.HORIZONTAL' }
+  arguments: [android.content.Context, Int, Boolean]
+  template:
+    pattern: "QuickCompositionalLayout.list(vertical: false, reverse: ~2~)"
+    imports: [KhrysalisRuntime]
+
+- id: androidx.recyclerview.widget.LinearLayoutManager
+  type: call
+  exactArgumentRequirements: { 1: 'LinearLayoutManager.VERTICAL' }
+  arguments: [android.content.Context, Int, Boolean]
+  template:
+    pattern: "QuickCompositionalLayout.list(vertical: true, reverse: ~2~)"
+    imports: [KhrysalisRuntime]
+
 - id: androidx.recyclerview.widget.GridLayoutManager
   type: type
   template:
