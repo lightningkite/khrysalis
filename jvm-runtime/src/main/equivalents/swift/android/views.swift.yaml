@@ -228,3 +228,11 @@
 - id: android.view.View.alpha
   type: set
   template: '~this~.alpha = CGFloat(~value~)'
+
+- id: androidx.core.view.isGone
+  type: get
+  template: '~this~.isHidden'
+
+- id: androidx.core.view.isGone
+  type: set
+  template: '~this~.isHidden = ~value~'

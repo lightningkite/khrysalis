@@ -178,6 +178,11 @@
   type: call
   template: "~this~.first(where: ~0~)"
 
+- id: kotlin.sequences.firstOrNull
+  type: call
+  arguments: []
+  template: "~this~.firstOrNull()"
+
 - id: kotlin.sequences.fold
   type: call
   template: "Array(~this~).reduce(~0~, ~1~)"
