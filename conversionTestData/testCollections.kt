@@ -121,4 +121,12 @@ fun main(vararg args: String){
 
     println(listOf(1, 1, 2, 3).distinct().filter { it % 2 == 1 }.joinToString { it.toString() })
     ArrayList(listOf(1, 2, 3))
+
+    listOf(1, 2, 3) + 4
+    listOf(1, 2, 3) + listOf(4, 5, 6)
+
+    setOf(1, 2, 3) + 4
+    setOf(1, 2, 3) + setOf(3, 4, 5)
+    setOf(1, 2, 3) - setOf(3, 4, 5)
+    setOf(1, 2, 3) - 2
 }

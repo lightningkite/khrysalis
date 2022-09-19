@@ -35,27 +35,15 @@
 
 - id: kotlin.collections.setOf
   type: call
-  hasExplicitTypeArguments: true
-  template: "[~*~] as Set<~T0~>"
-- id: kotlin.collections.setOf
-  type: call
-  template: "Set([~*~])"
+  template: "([~*~] as Set<~T0~>)"
 
 - id: kotlin.collections.mutableSetOf
   type: call
-  hasExplicitTypeArguments: true
-  template: "[~*~] as Set<~T0~>"
-- id: kotlin.collections.mutableSetOf
-  type: call
-  template: "Set([~*~])"
+  template: "([~*~] as Set<~T0~>)"
 
 - id: kotlin.collections.hashSetOf
   type: call
-  hasExplicitTypeArguments: true
-  template: "[~*~] as Set<~T0~>"
-- id: kotlin.collections.hashSetOf
-  type: call
-  template: "Set([~*~])"
+  template: "([~*~] as Set<~T0~>)"
 
 
 ## Operations
@@ -94,19 +82,20 @@
 - id: kotlin.collections.plus
   receiver: kotlin.collections.Set
   type: call
-  arguments: [kotlin.collections.Set]
+  arguments: [kotlin.collections.Iterable]
+  priorityModifier: 999
   template: '~this~.union(~0~)'
 
 - id: kotlin.collections.plus
   receiver: kotlin.collections.Set
+  priorityModifier: 999
   type: call
-  arguments: [kotlin.Any]
   template: '~this~.union([~0~])'
 
 - id: kotlin.collections.minus
   receiver: kotlin.collections.Set
   type: call
-  arguments: [kotlin.collections.Set]
+  arguments: [kotlin.collections.Iterable]
   template: '~this~.subtracting(~0~)'
 
 - id: kotlin.collections.minus

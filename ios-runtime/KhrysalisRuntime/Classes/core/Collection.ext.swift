@@ -6,9 +6,6 @@ public extension Collection {
     func find(_ predicate: (Element) -> Bool) -> Element? {
         return first(where: predicate)
     }
-    static func +(first: Self, second: Element) -> Array<Element> {
-        return first + [second]
-    }
     func joinToString(_ separator: String, _ transform: (Element)->String) -> String {
         return self.map(transform).joined(separator: separator)
     }
