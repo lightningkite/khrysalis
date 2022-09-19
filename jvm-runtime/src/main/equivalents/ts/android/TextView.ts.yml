@@ -6,17 +6,17 @@
 
 - id: android.widget.TextView.text
   type: get
-  reflectiveName: '"textContent"'
-  template: '~this~.textContent'
+  reflectiveName: '"innerText"'
+  template: '~this~.innerText'
 
 - id: android.widget.TextView.text
   type: set
-  template: '~this~.textContent = ~value~'
+  template: '~this~.innerText = ~value~'
 
 - id: android.widget.TextView.setText
   type: call
-  reflectiveName: '"textContent"'
-  template: '~this~.textContent'
+  reflectiveName: '"innerText"'
+  template: '~this~.innerText'
 
 - id: android.widget.TextView.setTextColor
   type: call

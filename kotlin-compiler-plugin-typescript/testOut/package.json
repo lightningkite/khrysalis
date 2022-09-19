@@ -17,6 +17,7 @@
     "iter-tools-es": "^7.1.4",
     "lazy-get-decorator": "^2.2.0",
     "mersenne-twister": "1.x",
+    "sha1-uint8array": "^0.10.3",
     "sprintf-js": "1.1.x",
     "ts-polyfill": "^3.8.2",
     "uuid": "8.x"

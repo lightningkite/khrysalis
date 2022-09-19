@@ -39,6 +39,7 @@ data class VirtualGet(
             else -> null
         }
     }
+
     fun dispatchReceiver(typescriptTranslator: TypescriptTranslator): Any? = with(typescriptTranslator) {
         when {
             property is JavaPropertyDescriptor -> receiver ?: nameReferenceExpression.getTsReceiver()
@@ -64,6 +65,7 @@ data class VirtualSet(
             else -> null
         }
     }
+
     fun dispatchReceiver(typescriptTranslator: TypescriptTranslator): Any? = with(typescriptTranslator) {
         when {
             property is JavaPropertyDescriptor -> receiver ?: nameReferenceExpression.getTsReceiver()
@@ -195,7 +197,8 @@ fun TypescriptTranslator.registerVariable() {
                 -"const "
             }
         }
-        val requiresBackingField = typedRule.getter != null || typedRule.setter != null || (!typedRule.isPrivate() && typedRule.isTopLevel) || typedRule.isLazy
+        val requiresBackingField =
+            typedRule.getter != null || typedRule.setter != null || (!typedRule.isPrivate() && typedRule.isTopLevel) || typedRule.isLazy
         if (requiresBackingField) {
             -"_"
         }
@@ -222,17 +225,18 @@ fun TypescriptTranslator.registerVariable() {
                 -it
             } ?: run {
                 -"\n"
-                fun lazy(selfRef: ()->Unit) {
+                fun lazy(selfRef: () -> Unit) {
                     -" {\n"
                     -"if ("
                     selfRef()
                     -" !== undefined) return "
                     selfRef()
                     -"\nelse {\n"
-                    val exp = (typedRule.delegateExpression as KtCallExpression).valueArguments.first().getArgumentExpression()
-                    if(exp is KtLambdaExpression) {
+                    val exp = (typedRule.delegateExpression as KtCallExpression).valueArguments.first()
+                        .getArgumentExpression()
+                    if (exp is KtLambdaExpression) {
                         val content = exp.bodyExpression?.statements?.singleOrNull()
-                        if(content != null && content.actuallyCouldBeExpression) {
+                        if (content != null && content.actuallyCouldBeExpression) {
                             -"const r = "
                             -content
                             -"\n"
@@ -257,7 +261,7 @@ fun TypescriptTranslator.registerVariable() {
                     -typedRule.nameIdentifier
                     -"(): "
                     -(typedRule.typeReference ?: typedRule.resolvedVariable?.type) //TODO: Handle unimported type
-                    if(typedRule.isLazy) {
+                    if (typedRule.isLazy) {
                         lazy {
                             -"this._"
                             -typedRule.nameIdentifier
@@ -274,7 +278,7 @@ fun TypescriptTranslator.registerVariable() {
                     -typedRule.nameIdentifier?.text?.capitalize()
                     -"(): "
                     -(typedRule.typeReference ?: typedRule.resolvedVariable?.type) //TODO: Handle unimported type
-                    if(typedRule.isLazy) {
+                    if (typedRule.isLazy) {
                         lazy {
                             -"_"
                             -typedRule.nameIdentifier
@@ -532,7 +536,10 @@ fun TypescriptTranslator.registerVariable() {
     //Getter usage
     handle<VirtualGet>(
         condition = {
-            replacements.getGet(typedRule.property as? PropertyDescriptor ?: return@handle false, typedRule.receiverType) != null
+            replacements.getGet(
+                typedRule.property as? PropertyDescriptor ?: return@handle false,
+                typedRule.receiverType
+            ) != null
         },
         priority = 10_000,
         action = {
@@ -577,10 +584,11 @@ fun TypescriptTranslator.registerVariable() {
         }
     )
     handle<VirtualGet> {
-        if(typedRule.safe){
+        if (typedRule.safe) {
             -"("
         }
-        val rec = typedRule.extensionReceiver(this@registerVariable) ?: typedRule.dispatchReceiver(this@registerVariable)
+        val rec =
+            typedRule.extensionReceiver(this@registerVariable) ?: typedRule.dispatchReceiver(this@registerVariable)
         if (rec != null) {
             -rec
             if (typedRule.safe) {
@@ -590,12 +598,13 @@ fun TypescriptTranslator.registerVariable() {
             }
         }
         -typedRule.nameReferenceExpression.getIdentifier()
-        if(typedRule.safe){
+        if (typedRule.safe) {
             -" ?? null)"
         }
     }
 
-    fun KtQualifiedExpression.nre(): KtNameReferenceExpression? = (selectorExpression as? KtNameReferenceExpression) ?: ((selectorExpression as? KtCallExpression)?.calleeExpression as? KtNameReferenceExpression)
+    fun KtQualifiedExpression.nre(): KtNameReferenceExpression? = (selectorExpression as? KtNameReferenceExpression)
+        ?: ((selectorExpression as? KtCallExpression)?.calleeExpression as? KtNameReferenceExpression)
     handle<KtDotQualifiedExpression>(
         condition = { (typedRule.nre()?.resolvedReferenceTarget as? ValueDescriptor) != null },
         priority = 1000,
@@ -692,7 +701,10 @@ fun TypescriptTranslator.registerVariable() {
     )
     handle<VirtualSet>(
         condition = {
-            replacements.getSet(typedRule.property as? PropertyDescriptor ?: return@handle false, typedRule.receiverType) != null
+            replacements.getSet(
+                typedRule.property as? PropertyDescriptor ?: return@handle false,
+                typedRule.receiverType
+            ) != null
         },
         priority = 10_000,
         action = {
@@ -711,7 +723,8 @@ fun TypescriptTranslator.registerVariable() {
     handle<VirtualSet> {
         nullWrapAction(
             swiftTranslator = this@registerVariable,
-            receiver = typedRule.extensionReceiver(this@registerVariable) ?: typedRule.dispatchReceiver(this@registerVariable),
+            receiver = typedRule.extensionReceiver(this@registerVariable)
+                ?: typedRule.dispatchReceiver(this@registerVariable),
             isExpression = false,
             skip = !typedRule.safe,
             type = typedRule.expr.resolvedExpressionTypeInfo?.type,
@@ -821,33 +834,49 @@ fun TypescriptTranslator.registerVariable() {
 }
 
 val PropertyDescriptor.tsFunctionGetName: String?
-    get() = if (this is SyntheticJavaPropertyDescriptor) null else if (extensionReceiverParameter != null) "x" + extensionReceiverParameter!!
-        .value
-        .type
-        .fqNameWithoutTypeArgs
-        .split('.')
-        .dropWhile { it.firstOrNull()?.isUpperCase() != true }
-        .joinToString("") { it.capitalize() } +
-            this.name.identifier.capitalize() + "Get"
-    else when (this.containingDeclaration) {
-        is ClassDescriptor -> null
-        is SyntheticClassOrObjectDescriptor -> null
-        else -> if (this.accessors.all { it.isDefault } && this.visibility.name == "private") null else "get" + this.name.identifier.capitalize()
-    }
+    get() = annotations.asSequence().find { it.fqName?.asString()?.substringAfterLast('.') == "JsName" }
+        ?.allValueArguments
+        ?.entries
+        ?.firstOrNull()
+        ?.value
+        ?.value
+        ?.toString()?.safeJsIdentifier()
+        ?.plus("Get")
+        ?: if (this is SyntheticJavaPropertyDescriptor) null else if (extensionReceiverParameter != null) "x" + extensionReceiverParameter!!
+            .value
+            .type
+            .fqNameWithoutTypeArgs
+            .split('.')
+            .dropWhile { it.firstOrNull()?.isUpperCase() != true }
+            .joinToString("") { it.capitalize() } +
+                this.name.identifier.capitalize() + "Get"
+        else when (this.containingDeclaration) {
+            is ClassDescriptor -> null
+            is SyntheticClassOrObjectDescriptor -> null
+            else -> if (this.accessors.all { it.isDefault } && this.visibility.name == "private") null else "get" + this.name.identifier.capitalize()
+        }
 val PropertyDescriptor.tsFunctionSetName: String?
-    get() = if (this is SyntheticJavaPropertyDescriptor) null else if (extensionReceiverParameter != null) "x" + extensionReceiverParameter!!
-        .value
-        .type
-        .fqNameWithoutTypeArgs
-        .split('.')
-        .dropWhile { it.firstOrNull()?.isUpperCase() != true }
-        .joinToString("") { it.capitalize() } +
-            this.name.identifier.capitalize() + "Set"
-    else when (this.containingDeclaration) {
-        is ClassDescriptor -> null
-        is SyntheticClassOrObjectDescriptor -> null
-        else -> if (this.accessors.all { it.isDefault } && this.visibility.name == "private") null else "set" + this.name.identifier.capitalize()
-    }
+    get() = annotations.asSequence().find { it.fqName?.asString()?.substringAfterLast('.') == "JsName" }
+        ?.allValueArguments
+        ?.entries
+        ?.firstOrNull()
+        ?.value
+        ?.value
+        ?.toString()?.safeJsIdentifier()
+        ?.plus("Set")
+        ?: if (this is SyntheticJavaPropertyDescriptor) null else if (extensionReceiverParameter != null) "x" + extensionReceiverParameter!!
+            .value
+            .type
+            .fqNameWithoutTypeArgs
+            .split('.')
+            .dropWhile { it.firstOrNull()?.isUpperCase() != true }
+            .joinToString("") { it.capitalize() } +
+                this.name.identifier.capitalize() + "Set"
+        else when (this.containingDeclaration) {
+            is ClassDescriptor -> null
+            is SyntheticClassOrObjectDescriptor -> null
+            else -> if (this.accessors.all { it.isDefault } && this.visibility.name == "private") null else "set" + this.name.identifier.capitalize()
+        }
 
 val PropertyDescriptor.tsFunctionGetDefaultName: String?
     get() {

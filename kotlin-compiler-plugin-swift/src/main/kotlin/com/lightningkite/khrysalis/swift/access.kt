@@ -99,7 +99,7 @@ inline fun KotlinTranslator<SwiftFileEmitter>.ContextByType<*>.nullWrapAction(
             if (mode == AccessMode.PAREN_OPT) -"("
             -rule.receiverExpression
             if (mode == AccessMode.PAREN_OPT) -")"
-            if (hasNewlineBeforeAccess(rule)) {
+            if (rule.hasNewlineBeforeAccess) {
                 -"\n"
             }
             if (getSelectorNullable(swiftTranslator, rule)) {
@@ -125,17 +125,8 @@ inline fun KotlinTranslator<SwiftFileEmitter>.ContextByType<*>.nullWrapAction(
         -"}"
     }
 }
-
-fun hasNewlineBeforeAccess(typedRule: KtQualifiedExpression): Boolean {
-    return typedRule.allChildren
-        .find { it is LeafPsiElement && (it.elementType == KtTokens.DOT || it.elementType == KtTokens.SAFE_ACCESS) }
-        ?.prevSibling
-        ?.let { it as? PsiWhiteSpace }
-        ?.textContains('\n') == true
-}
-
 fun <T : KtQualifiedExpression> KotlinTranslator<SwiftFileEmitter>.ContextByType<T>.insertNewlineBeforeAccess() {
-    if (hasNewlineBeforeAccess(typedRule)) {
+    if (typedRule.hasNewlineBeforeAccess) {
         -"\n"
     }
 }

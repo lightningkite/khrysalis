@@ -55,6 +55,7 @@ class DeclarationManifest(
                 }
                 if (decls.isEmpty()) return@forEach
                 for (decl in decls) {
+                    println("Local $decl found in $actualFile")
                     this.local[decl] = actualFile
                 }
             }

@@ -13,6 +13,11 @@ data class Template(
 
     override fun iterator(): Iterator<TemplatePart> = parts.iterator()
 
+    val isThisDot: Boolean get() {
+        return parts.getOrNull(0) is TemplatePart.Receiver && parts.getOrNull(1)
+            .let { it is TemplatePart.Text && it.string.startsWith('.') }
+    }
+
     override fun toString(): String {
         if(imports.isNotEmpty()){
             return parts.joinToString("") + "  --  " + imports.joinToString()

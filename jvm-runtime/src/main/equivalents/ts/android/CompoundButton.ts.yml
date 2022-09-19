@@ -22,62 +22,62 @@
 - type: get
   id: android.widget.CompoundButton.text
   reflectiveName:
-    pattern: 'chain("label", "textContent")'
+    pattern: 'chain("label", "innerText")'
     imports:
       chain: '@lightningkite/rxjs-plus'
-  template: '~this~.label.textContent'
+  template: '~this~.label.innerText'
 
 - type: set
   id: android.widget.CompoundButton.text
-  template: '~this~.label.textContent = ~value~'
+  template: '~this~.label.innerText = ~value~'
 
 - id: android.widget.CompoundButton.setText
   type: call
   reflectiveName:
-    pattern: 'chain("label", "textContent")'
+    pattern: 'chain("label", "innerText")'
     imports:
       chain: '@lightningkite/rxjs-plus'
-  template: '~this~.label.textContent'
+  template: '~this~.label.innerText'
 
 - type: get
   id: android.widget.ToggleButton.textOn
   reflectiveName:
-    pattern: 'chain("label", "textContent")'
+    pattern: 'chain("label", "innerText")'
     imports:
       chain: '@lightningkite/rxjs-plus'
-  template: '~this~.label.textContent'
+  template: '~this~.label.innerText'
 
 - type: set
   id: android.widget.ToggleButton.textOn
-  template: '~this~.label.textContent = ~value~'
+  template: '~this~.label.innerText = ~value~'
 
 - type: get
   id: android.widget.ToggleButton.textOff
   reflectiveName:
-    pattern: 'chain("label", "textContent")'
+    pattern: 'chain("label", "innerText")'
     imports:
       chain: '@lightningkite/rxjs-plus'
-  template: '~this~.label.textContent'
+  template: '~this~.label.innerText'
 
 - type: set
   id: android.widget.ToggleButton.textOff
-  template: '~this~.label.textContent = ~value~'
+  template: '~this~.label.innerText = ~value~'
 
 - id: android.widget.ToggleButton.setTextOn
   type: call
   reflectiveName:
-    pattern: 'chain("label", "textContent")'
+    pattern: 'chain("label", "innerText")'
     imports:
       chain: '@lightningkite/rxjs-plus'
-  template: '~this~.label.textContent'
+  template: '~this~.label.innerText'
 
 - id: android.widget.ToggleButton.setTextOff
   type: call
   reflectiveName:
-    pattern: 'chain("label", "textContent")'
+    pattern: 'chain("label", "innerText")'
     imports:
       chain: '@lightningkite/rxjs-plus'
-  template: '~this~.label.textContent'
+  template: '~this~.label.innerText'
 
 - id: android.widget.ToggleButton.isEnabled
   type: get

@@ -95,9 +95,11 @@ fun TypescriptTranslator.registerFunction() {
         when {
             body == null -> {
             }
+
             body is KtBlockExpression -> {
                 -body
             }
+
             body is KtBinaryExpression
                     && body.operationToken == KtTokens.ELVIS
                     && body.right.let { it is KtThrowExpression } -> {
@@ -107,6 +109,7 @@ fun TypescriptTranslator.registerFunction() {
                 -body.right
                 -"\n}\nreturn result; \n}"
             }
+
             else -> {
                 -"{ \nreturn "
                 -body
@@ -140,9 +143,11 @@ fun TypescriptTranslator.registerFunction() {
         when {
             body == null -> {
             }
+
             body is KtBlockExpression -> {
                 -body
             }
+
             body is KtBinaryExpression
                     && body.operationToken == KtTokens.ELVIS
                     && body.right.let { it is KtThrowExpression } -> {
@@ -152,6 +157,7 @@ fun TypescriptTranslator.registerFunction() {
                 -body.right
                 -"\n}\nreturn result; \n}"
             }
+
             else -> {
                 -"{ \nreturn "
                 -body
@@ -359,7 +365,7 @@ fun TypescriptTranslator.registerFunction() {
                     expr = typedRule,
                     safe = false
                 )
-            } else if(nre.text == "invoke") {
+            } else if (nre.text == "invoke") {
                 -typedRule.receiverExpression
             } else {
                 -nre
@@ -392,7 +398,7 @@ fun TypescriptTranslator.registerFunction() {
                     expr = typedRule,
                     safe = false
                 )
-            } else if(nre.text == "invoke") {
+            } else if (nre.text == "invoke") {
                 -typedRule.receiverExpression
             } else {
                 -nre
@@ -434,7 +440,7 @@ fun TypescriptTranslator.registerFunction() {
             val callExp = typedRule.selectorExpression as KtCallExpression
             val nre = callExp.calleeExpression as KtNameReferenceExpression
             val f = callExp.resolvedCall!!.candidateDescriptor as FunctionDescriptor
-            if(f.dispatchReceiverParameter == null) {
+            if (f.dispatchReceiverParameter == null) {
                 -out.addImportGetName(f, f.tsName)
             } else {
                 -nre.getTsReceiver()
@@ -509,7 +515,7 @@ fun TypescriptTranslator.registerFunction() {
                 type = typedRule.resolvedExpressionTypeInfo?.type,
                 isExpression = typedRule.actuallyCouldBeExpression
             ) { rec ->
-                if(f.dispatchReceiverParameter == null) {
+                if (f.dispatchReceiverParameter == null) {
                     -out.addImportGetName(f, f.tsName)
                 } else {
                     -nre
@@ -529,11 +535,11 @@ fun TypescriptTranslator.registerFunction() {
     ) {
         val nre = typedRule.calleeExpression as KtNameReferenceExpression
         val f = nre.resolvedReferenceTarget as FunctionDescriptor
-        if(f.dispatchReceiverParameter != null) {
+        if (f.dispatchReceiverParameter != null) {
             -nre
         } else {
             if (f is ConstructorDescriptor) {
-                if(f.isPrimary) {
+                if (f.isPrimary) {
                     -nre
                 } else {
                     -nre
@@ -634,7 +640,9 @@ fun TypescriptTranslator.registerFunction() {
                 requiresWrapping = typedRule.actuallyCouldBeExpression,
                 type = typedRule.resolvedExpressionTypeInfo?.type,
                 template = rule.template,
-                receiver = typedRule.replacementReceiverExpression,
+                receiver = if (typedRule.hasNewlineBeforeAccess && rule.template.isThisDot)
+                    listOf(typedRule.replacementReceiverExpression, "\n")
+                else typedRule.replacementReceiverExpression,
                 dispatchReceiver = nre.getTsReceiver(),
                 extensionReceiver = typedRule.replacementReceiverExpression,
                 allParameters = resolvedCall.template_allParameter,
@@ -663,7 +671,9 @@ fun TypescriptTranslator.registerFunction() {
                 type = typedRule.resolvedExpressionTypeInfo?.type?.makeNullable(),
                 ensureReceiverNotNull = true,
                 template = rule.template,
-                receiver = typedRule.replacementReceiverExpression,
+                receiver = if (typedRule.hasNewlineBeforeAccess && rule.template.isThisDot)
+                    listOf(typedRule.replacementReceiverExpression, "\n")
+                else typedRule.replacementReceiverExpression,
                 dispatchReceiver = nre.getTsReceiver(),
                 extensionReceiver = typedRule.replacementReceiverExpression,
                 allParameters = resolvedCall.template_allParameter,
@@ -703,9 +713,10 @@ fun TypescriptTranslator.registerFunction() {
     )
 
     handle<ArgumentsList>(
-        condition = { typedRule.on.name.asString() == "copy" &&
-                (typedRule.on.containingDeclaration as? ClassDescriptor)?.isData == true &&
-                typedRule.on.source.getPsi() !is KtNamedFunction
+        condition = {
+            typedRule.on.name.asString() == "copy" &&
+                    (typedRule.on.containingDeclaration as? ClassDescriptor)?.isData == true &&
+                    typedRule.on.source.getPsi() !is KtNamedFunction
         },
         priority = 1,
         action = {
@@ -715,7 +726,7 @@ fun TypescriptTranslator.registerFunction() {
                     -'"'
                     -arg.key.name.asString().safeJsIdentifier()
                     -"\": "
-                    if(arg.key.isVararg) {
+                    if (arg.key.isVararg) {
                         -arg.value.arguments.forEachBetween(
                             forItem = { -it.getArgumentExpression() },
                             between = { -", " }

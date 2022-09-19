@@ -172,16 +172,17 @@ fun <T : Any> KotlinTranslator<TypescriptFileEmitter>.ContextByType<T>.emitTempl
 
 class DeDupEmitter(val out: TypescriptFileEmitter) {
     val deduplicated = HashMap<Any, String>()
-    val checkNotNull = HashSet<String>()
+    val checkNotNull = HashSet<Any>()
     val toEmit = ArrayList<Any>()
+    private fun Any?.isSimpleEnough(): Boolean = when (this) {
+        is String -> this.all { it.isLetterOrDigit() }
+        is KtExpression -> this.isSimple()
+        is List<*> -> this.all { it.isSimpleEnough() }
+        else -> false
+    }
     fun deduplicate(item: Any) {
         if(deduplicated.containsKey(item)) return
-        if (when (item) {
-                is String -> item.all { it.isLetterOrDigit() }
-                is KtExpression -> item.isSimple()
-                else -> false
-            }
-        ) return
+        if (item.isSimpleEnough()) return
         val name = "temp${out.uniqueNumber.getAndIncrement()}"
         deduplicated[item] = name
     }
@@ -204,8 +205,12 @@ class DeDupEmitter(val out: TypescriptFileEmitter) {
 
     fun ensureNotNull(item: Any?){
         if(item == null) return
-        val name = deduplicated.getOrPut(item) { "temp${out.uniqueNumber.getAndIncrement()}" }
-        checkNotNull.add(name)
+        if(item.isSimpleEnough()) {
+            checkNotNull.add(item)
+        } else {
+            val name = deduplicated.getOrPut(item) { "temp${out.uniqueNumber.getAndIncrement()}" }
+            checkNotNull.add(name)
+        }
     }
 
     val dedupNecessary: Boolean
@@ -224,16 +229,16 @@ class DeDupEmitter(val out: TypescriptFileEmitter) {
             parentEmit(" = ")
             parentEmit(item)
             parentEmit(";\n")
-            if(name in checkNotNull){
-                if(wrapping){
-                    parentEmit("if(")
-                    parentEmit(name)
-                    parentEmit(" === null) { return null }\n")
-                } else {
-                    parentEmit("if(")
-                    parentEmit(name)
-                    parentEmit(" !== null) { \n")
-                }
+        }
+        for(item in checkNotNull){
+            if(wrapping){
+                parentEmit("if (")
+                parentEmit(item)
+                parentEmit(" === null) { return null }\n")
+            } else {
+                parentEmit("if (")
+                parentEmit(item)
+                parentEmit(" !== null) { \n")
             }
         }
         if(wrapping) {
@@ -249,19 +254,5 @@ class DeDupEmitter(val out: TypescriptFileEmitter) {
                 parentEmit("\n}")
             }
         }
-    }
-}
-
-fun hasNewlineBeforeAccess(typedRule: KtQualifiedExpression): Boolean {
-    return typedRule.allChildren
-        .find { it is LeafPsiElement && (it.elementType == KtTokens.DOT || it.elementType == KtTokens.SAFE_ACCESS) }
-        ?.prevSibling
-        ?.let { it as? PsiWhiteSpace }
-        ?.textContains('\n') == true
-}
-
-fun <T : KtQualifiedExpression> KotlinTranslator<TypescriptFileEmitter>.ContextByType<T>.insertNewlineBeforeAccess() {
-    if (hasNewlineBeforeAccess(typedRule)) {
-        -"\n"
     }
 }

@@ -2,3 +2,16 @@
   type: get
   template: ~this~.value
   reflectiveName: "\\HasProperty.value"
+
+- id: java.security.MessageDigest.getInstance  # The fully qualified name of the element we need an equivalent for.
+  type: call  # This replaces a function call, in particular.
+  exactArguments:
+    0: '"SHA-1"'  # We only want this replacement to work if the user put the string "SHA-1" in directly.
+  template:
+    pattern: Insecure.SHA1  # Here we put what should be written on the Swift side.
+    imports: [Crypto]  # We need to import CryptoKit to use this.
+
+- id: java.security.MessageDigest.digest
+  type: call
+  arguments: [ByteArray]
+  template: '~this~.hash(data: ~0~)'  # Here's what should be written in Swift.  ~this~ will be replaced with the receiver, and ~0~ with the first argument.

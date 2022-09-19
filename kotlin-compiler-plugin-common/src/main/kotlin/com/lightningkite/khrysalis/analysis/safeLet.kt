@@ -2,7 +2,10 @@ package com.lightningkite.khrysalis.analysis
 
 import com.lightningkite.khrysalis.util.fqNameWithoutTypeArgs
 import com.lightningkite.khrysalis.util.parentIfType
+import com.lightningkite.khrysalis.util.simplerFqName
+import org.jetbrains.kotlin.descriptors.CallableDescriptor
 import org.jetbrains.kotlin.descriptors.ClassDescriptor
+import org.jetbrains.kotlin.descriptors.ParameterDescriptor
 import org.jetbrains.kotlin.descriptors.PropertyDescriptor
 import org.jetbrains.kotlin.descriptors.VariableDescriptor
 import org.jetbrains.kotlin.lexer.KtTokens
@@ -16,7 +19,11 @@ fun KtExpression.isSimple(): Boolean = when (this) {
         it.delegateField == null && it.getter == null && !it.isVar && it.containingDeclaration !is ClassDescriptor
     } ?: (this@isSimple.resolvedReferenceTarget as? VariableDescriptor)?.let {
         !it.isVar && it.containingDeclaration !is ClassDescriptor
-    } ?: false
+    } ?: (this@isSimple.resolvedReferenceTarget is ParameterDescriptor)
+    is KtDotQualifiedExpression -> {
+        this@isSimple.receiverExpression.resolvedExpressionTypeInfo?.type?.constructor?.declarationDescriptor?.simplerFqName == "java.util.Optional" &&
+                (this@isSimple.selectorExpression as? KtReferenceExpression)?.resolvedReferenceTarget?.let { it as? CallableDescriptor }?.simplerFqName == "com.lightningkite.rx.kotlin"
+    }
     is KtConstantExpression,
     is KtThisExpression -> true
     else -> false

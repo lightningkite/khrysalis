@@ -676,7 +676,7 @@ fun SwiftTranslator.registerFunction() {
             emitTemplate(
                 requiresWrapping = typedRule.actuallyCouldBeExpression,
                 template = rule.template.fixTry(typedRule),
-                receiver = if (hasNewlineBeforeAccess(typedRule) && templateIsThisDot) listOf(
+                receiver = if (typedRule.hasNewlineBeforeAccess && templateIsThisDot) listOf(
                     typedRule.receiverExpression,
                     "\n"
                 ) else typedRule.receiverExpression,
@@ -713,10 +713,10 @@ fun SwiftTranslator.registerFunction() {
                     template = (if (mode == AccessMode.QUEST_DOT)
                         rule.template.copy(parts = rule.template.parts.toMutableList().apply {
                             this[1] =
-                                (this[1] as TemplatePart.Text).let { it.copy("?" + (if (hasNewlineBeforeAccess(typedRule)) "\n" else "") + it.string) }
+                                (this[1] as TemplatePart.Text).let { it.copy("?" + (if (typedRule.hasNewlineBeforeAccess) "\n" else "") + it.string) }
                         })
                     else rule.template).fixTry(typedRule),
-                    receiver = if (hasNewlineBeforeAccess(typedRule) && mode == AccessMode.PLAIN_DOT) listOf(
+                    receiver = if (typedRule.hasNewlineBeforeAccess && mode == AccessMode.PLAIN_DOT) listOf(
                         rec,
                         "\n"
                     ) else rec,

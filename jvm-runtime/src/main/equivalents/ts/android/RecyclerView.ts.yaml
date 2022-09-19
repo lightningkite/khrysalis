@@ -7,25 +7,25 @@
   exactArgumentRequirements:
     1: "LinearLayoutManager.HORIZONTAL"
     2: "false"
-  template: '{ display: "flex", flexDirection: "row" }'
+  template: '{ display: "flex", flexDirection: "row", overflowX: "auto", overflowY: "hidden" }'
 - id: androidx.recyclerview.widget.LinearLayoutManager
   type: call
   exactArgumentRequirements:
     1: "LinearLayoutManager.HORIZONTAL"
     2: "true"
-  template: '{ display: "flex", flexDirection: "row-reverse" }'
+  template: '{ display: "flex", flexDirection: "row-reverse", overflowX: "auto", overflowY: "hidden" }'
 - id: androidx.recyclerview.widget.LinearLayoutManager
   type: call
   exactArgumentRequirements:
     1: "LinearLayoutManager.VERTICAL"
     2: "false"
-  template: '{ display: "flex", flexDirection: "column" }'
+  template: '{ display: "flex", flexDirection: "column", overflowX: "hidden", overflowY: "auto" }'
 - id: androidx.recyclerview.widget.LinearLayoutManager
   type: call
   exactArgumentRequirements:
     1: "LinearLayoutManager.VERTICAL"
     2: "true"
-  template: '{ display: "flex", flexDirection: "column-reverse" }'
+  template: '{ display: "flex", flexDirection: "column-reverse", overflowX: "hidden", overflowY: "auto" }'
 
 - id: androidx.recyclerview.widget.RecyclerView.layoutManager
   type: set

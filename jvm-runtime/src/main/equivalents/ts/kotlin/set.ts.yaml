@@ -249,7 +249,6 @@
 - id: kotlin.collections.plus
   receiver: kotlin.collections.Set
   type: call
-  arguments: [kotlin.Any]
   typeArgumentRequirements:
     0: primitive
   template: new Set([...~this~, ~0~])

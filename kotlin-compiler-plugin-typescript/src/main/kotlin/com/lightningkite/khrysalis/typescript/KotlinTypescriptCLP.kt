@@ -73,6 +73,7 @@ class KotlinTypescriptExtension(
         translator.declarations.node += config.replacements.direct
 
         // Load local declarations
+        println("Loading locals from $outputSrc")
         translator.declarations.loadLocal(outputSrc)
 
         // Create manifest of declarations within this module

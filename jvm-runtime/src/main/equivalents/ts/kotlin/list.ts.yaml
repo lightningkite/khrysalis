@@ -118,13 +118,24 @@
   template: ~this~.length
 - id: kotlin.collections.plus
   receiver: kotlin.collections.Collection
+  actualReceiver: kotlin.collections.List
   arguments: [kotlin.collections.Iterable]
   type: call
   template: ~this~.concat(~0~)
 - id: kotlin.collections.plus
   receiver: kotlin.collections.Collection
+  actualReceiver: kotlin.collections.List
   type: call
   template: ~this~.concat([~0~])
+#- id: kotlin.collections.plus
+#  receiver: kotlin.collections.Collection
+#  arguments: [kotlin.collections.Iterable]
+#  type: call
+#  template: '[...~this~].concat(~0~)'
+#- id: kotlin.collections.plus
+#  receiver: kotlin.collections.Collection
+#  type: call
+#  template: '[...~this~].concat([~0~])'
 
 # Mutable List Operations
 - id: kotlin.collections.MutableCollection.add

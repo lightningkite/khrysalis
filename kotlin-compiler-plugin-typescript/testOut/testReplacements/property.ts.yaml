@@ -1,0 +1,13 @@
+- id: java.security.MessageDigest.getInstance
+  type: call
+  exactArguments:
+    0: '"SHA-1"'
+  template:
+    pattern: createHash()
+    imports:
+      createHash: 'sha1-uint8array'
+
+- id: java.security.MessageDigest.digest
+  type: call
+  arguments: [ByteArray]
+  template: 'new Int8Array(~this~.update(~0~).digest())'

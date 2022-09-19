@@ -1,6 +1,12 @@
 # Tutorial
 
-TODO: This is an outdated tutorial that dates to the days where the layout translator and UI helper libraries were all the same project.
+New tutorial structure: 
+- Translating logic using Khrysalis
+- Translating layouts using Android Layout Translator
+- Making an app using RxKotlinPlus
+- Translating an app using RxKotlinPlus
+
+This tutorial will teach you how to create a multi-platform project using Khrysalis, RxPlus, and the Android Layout Translator.
 
 ## Prerequesites
 You'll need the following to begin:
@@ -19,57 +25,53 @@ These will help, but aren't necessary for this tutorial:
 I'll do my best to provide you with links to additional information as well.
 
 
-## Getting Khrysalis
-
-First, you need to get Khrysalis.
-
-Since Khrysalis is still in early development, you'll have to download the repository and build it yourself. A repository-based release is expected by the end of the year.
-
-Download/clone the GitHub project [here](https://github.com/lightningkite/khrysalis).
-
-Then, run the script called 'firstTime'. It may take a minute, but this script will build and put Khrysalis in your local Maven repository.
-
-
 ## Create an Android Project
 
-Create an Android project using IntelliJ or Android Studio, with an empty activity.
+Create an Android project using IntelliJ or Android Studio, with an empty activity.  Make sure you choose to use Kotlin for your build scripts.
 
 Set your language to Kotlin and your minimum supported API to 21.
 
+Make sure you enable view binding like so:
 
-## Add the Khrysalis Gradle plugin
-
-Open `app/build.gradle`.
-
-At the top of your file, add:
-
-```groovy
-buildscript {
-    repositories {
-        mavenLocal()
+```kotlin
+android {
+    // ...
+    buildFeatures {
+        viewBinding = true
     }
-    dependencies {
-        classpath("com.lightningkite.khrysalis:plugin:+")
-    }
+    // ...
 }
-apply(plugin="com.lightningkite.khrysalis")
 ```
 
-In the dependencies section, add:
+## Gradle Changes
 
-```groovy
-implementation "com.lightningkite.khrysalis:android:0.1.1"
+Go set up your gradle as shown [in the wiki](https://github.com/lightningkite/khrysalis/wiki/Gradle).
+
+Go set up the Android Layout Translator with the instructions found [here](https://github.com/lightningkite/android-layout-translator/blob/master/README.md).
+
+In addition, add dependencies for RxPlus like so:
+
+```kotlin
+plugins {
+    // ...
+    id("com.lightningkite.khrysalis")
+}
+val rxPlusVersion: String by extra
+dependencies {
+    // ...
+    implementation("com.lightningkite.rx:view-generator:$rxPlusVersion")
+    implementation("com.lightningkite.rx:okhttp:$rxPlusVersion")
+    implementation("com.lightningkite.rx:okhttp-resources:$rxPlusVersion")
+
+    equivalents("com.lightningkite.rx:rxplus:$rxPlusVersion:equivalents")
+}
 ```
-
-Now, re-sync the project using CTRL + SHIFT + A and typing 'gradle sync' and pressing enter.
-
 
 ## Set up your Activity
 
 The default Android project should have created a MainActivity file for you.  Open it up and modify it to look like this:
 
 ```kotlin
-//package name...
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import com.lightningkite.khrysalis.android.KhrysalisActivity
@@ -122,7 +124,7 @@ You can't use every type of Android view, but you can use a lot of them.  Here's
 - VideoPlayer
 - View
 - ViewFlipper
-- ViewPager
+- ViewPager2
 
 
 ## Make a matching ViewGenerator
@@ -131,21 +133,19 @@ A `ViewGenerator` is an object which represents a combination of visual componen
 
 We're now going to make the `ViewGenerator` for the layout we made, `root.xml`
 
-There's a nifty tool called the Prototyper that you can use to create the `ViewGenerator`, but we're going to do it by hand in order to understand everything.  The Prototyper will be covered in a different guide.
+ASIDE: There's a nifty tool called the Prototyper that you can use to create the `ViewGenerator`, but we're going to do it by hand in order to understand everything.  The Prototyper will be covered in a different guide.
 
 Next to your `MainActivity.kt` file, we'll add a new folder/package using right-click.  Call it `vg`.
 
-Right click on the new package and create a new Kotlin file.  Name it `RootVG.shared.kt`.
-
-The `.shared` is important here - it marks the file for translation to the different platforms.
-
-Next, we need to run a Gradle task to help us get some autocomplete stuff.  Run the Gradle task `khrysalisAndroid`.  This task will generate a bunch of Kotlin classes representing the layouts we've made so far, giving them strict typing and complete information.
+Right click on the new package and create a new Kotlin file.  Name it `RootVG.kt`.
 
 Assuming you've followed the tutorial in the last section, put this inside the new file:
 
 ```kotlin
 // Replace `something.something` with your application's package.
+@file:SharedCode  // Marks this file to be translated
 package something.something.vg
+import com.lightningkite.khrysalis.SharedCode
 import something.something.layouts.RootXml
 
 class RootVG: ViewGenerator() {
@@ -153,23 +153,21 @@ class RootVG: ViewGenerator() {
     override val title: String = "Root" 
 
     // Let's store what our TextView should show, because we're going to change it.
-    // An `ObservableProperty` is exactly that - a property, or piece of information, on which we can observe changes.
-    // This uses something called RX under the hood, which you should go learn about.
-    // I highly recommend looking at the source for these properties, as the basic ones are both simple (sub 25 lines) and useful.
-    // We use observable properties to keep our user interface and information in perfect sync. 
-    val message: StandardObservableProperty<String> = StandardObservableProperty("Hello!")
+    // We're going to us RxJava to keep store values.  A `ValueSubject` is simply a value that we can observe changes on.
+    val message: ValueSubject<String> = ValueSubject("Hello!")
 
     // Creates and configures a view representing this data.
     // A `ViewDependency` is a set of information about an Android Activity and context.
     // In other platforms, this type has other information specific to that platform.
     override fun generate(dependency: ViewDependency): View {
-        // `RootXml` is a class automatically generated by the task mentioned above.
-        val xml = RootXml()
+        // `RootBinding` is a class automatically generated by Android.
+        val xml = RootBinding()
         // Actually creates the layout in question.  We're now going to set it up and return it.
         val view = xml.setup(dependency)
     
-        // bindString is an extension function which makes the given TextView always show the ObservableProperty in question.
-        xml.textView.bindString(message)
+        // bind is an extension function which makes the given TextView always show the Observable in question.
+        // It's bidirectional as well.
+        message.bind(xml.textView)
     
         // Let's add some code to run when the button is clicked!
         xml.button.setOnClickListener {
@@ -192,23 +190,64 @@ Jump back to `MainActivity.kt` and make sure our `RootVG` is imported.  If it's 
 
 Cool!  Everything should be in order to run the Android app.  Go ahead and try it; check that it works.
 
-## iOS time
+## iOS
 
 If you're not on a Mac, you can't build to iOS.  Sorry.
 
-If you are on a Mac, though, we can build to iOS pretty easily!
+Khrysalis is a converter - as such, we're going to set up a completely normal iOS Cocoapods project within our repo.
 
-There's a handy shortcut build into the plugin which will set up a standard iOS project for you and put everything you need into it.  The task is called `khrysalisiOS`.  Run it and open the generated workspace in XCode and compile away!
+Follow [this guide](https://guides.cocoapods.org/using/using-cocoapods.html).
 
-The output XCode project is a normal iOS Swift project that uses Cocoapods.  Those familiar with iOS will find nothing surprising in the generated code, and it will, in fact, be quite readable.
+Add the following pods:
+
+```ruby
+    # A slightly modified version of RxSwift that enables better use of Subject.
+    pod 'RxSwift', :git => 'https://github.com/lightningkite/RxSwift.git', :branch => 'main'
+    
+    # The iOS equivalent of RxKotlinPlus
+    pod 'RxSwiftPlus', :git => 'https://github.com/lightningkite/RxSwiftPlus.git', :branch => 'master'
+    
+    # A small library required by the layout converter to run properly.
+    pod 'XmlToXibRuntime', :git => 'https://github.com/lightningkite/android-layout-translator.git', :branch => 'master'
+    
+    # A library of code that's required by Khrysalis-translated code.
+    pod 'KhrysalisRuntime', :git => 'https://github.com/lightningkite/khrysalis.git', :branch => 'master'
+    
+    # Adds support for getting location from Rx
+    pod "RxCoreLocation", :git => 'https://github.com/RxSwiftCommunity/RxCoreLocation.git', :branch => 'master'
+    
+    # A version of the Cosmos rating bar that fixes a small bug.  There's an open, unmerged PR for it.
+    pod "Cosmos", :git => 'https://github.com/lightningkite/Cosmos.git', :branch => 'master'
+```
+
+Now, let's translate what we have over.  Run the Gradle tasks:
+
+- `xmlToXib` - Translates our layouts and resources to iOS
+- `compileDebugKotlinToSwift` - Translates our code to Swift
+
+Open the project in XCode and add the newly created files to the project.
+
+Now, we need to use the newly translated pieces.  It's as simple as using the following `AppDelegate`:
+
+```swift
+import UIKit
+import RxSwiftPlus
+
+@UIApplicationMain
+class AppDelegate: ViewGeneratorAppDelegate {
+    override func makeMain() -> ViewGenerator {
+        UIView.backgroundLayersByName = R.drawable.allEntries  // connects the generated resources to be accessible
+        UIView.useLayoutSubviewsLambda()  // allows the translated layouts to use resizing backgrounds correctly
+        return RootVG()
+    }
+}
+```
 
 ## Web time
 
 Similar to iOS, we can just run `khrysalisWeb` and a suitable Node/Webpack project will be generated.
 
 You can run it using `npm run start`.
-
-You're free to edit the files, just note that any file with `.shared` or `.actual` will be overwritten unless you've removed the flag at the top that indicates the file will be overwritten on translation.
 
 ## The finish line
 
