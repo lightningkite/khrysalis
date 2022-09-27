@@ -675,7 +675,9 @@ fun TypescriptTranslator.registerFunction() {
                     listOf(typedRule.replacementReceiverExpression, "\n")
                 else typedRule.replacementReceiverExpression,
                 dispatchReceiver = nre.getTsReceiver(),
-                extensionReceiver = typedRule.replacementReceiverExpression,
+                extensionReceiver = if (typedRule.hasNewlineBeforeAccess && rule.template.isThisDot)
+                    listOf(typedRule.replacementReceiverExpression, "\n")
+                else typedRule.replacementReceiverExpression,
                 allParameters = resolvedCall.template_allParameter,
                 parameter = resolvedCall.template_parameter,
                 typeParameter = resolvedCall.template_typeParameter,

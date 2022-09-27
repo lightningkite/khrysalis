@@ -1,4 +1,5 @@
 @file:SharedCode
+
 package com.test.nulls
 
 import com.lightningkite.khrysalis.*
@@ -15,9 +16,11 @@ inline fun <reified T> test(value: T) {
     println("Hello!")
 }
 
-fun main(){
+fun String.plusOne(): String = this + "1"
+
+fun main() {
     val frame = WebSocketFrame(text = "asdf")
-    val maybeFrame = if(frame.binary != null) frame else null
+    val maybeFrame = if (frame.binary != null) frame else null
     maybeFrame?.text?.let { println(it) }
 
     val o = Optional.of(1)
@@ -26,6 +29,12 @@ fun main(){
     println(o.isPresent)
     println(o.get())
 
-//    val platformNullability = Instant.now()
+    println(frame.text?.plusOne()?.substring(1, 3))
+    println(
+        frame.text
+            ?.plusOne()
+            ?.substring(1, 3)
+    )
+    //    val platformNullability = Instant.now()
 //    platformNullability.atZone(ZoneId.systemDefault())
 }
