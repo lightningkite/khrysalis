@@ -674,7 +674,12 @@ public extension Date {
     func atZone(_ timeZone: TimeZone = TimeZone.current) -> ZonedDateTime {
         return ZonedDateTime(calendar: Calendar.current, timeZone: timeZone, from: self)
     }
-    
+}
+
+public extension LocalDateTime {
+    func atZone(_ timeZone: TimeZone = TimeZone.current) -> ZonedDateTime {
+        return ZonedDateTime(calendar: Calendar.current, timeZone: timeZone, localDateTime: self)
+    }
 }
 
 public extension DateFormatter {
