@@ -9,6 +9,12 @@
   type: type
   template: "[~T0~, ~T1~]"
 - id: kotlin.Pair
+  type: typeRef
+  template:
+    pattern: "Tuple"
+    imports:
+      Tuple: @lightningkite/khrysalis
+- id: kotlin.Pair
   type: call
   template: "[~0~, ~1~]"
 - id: kotlin.Pair.first
@@ -24,6 +30,12 @@
 - id: kotlin.Triple
   type: call
   template: "[~0~, ~1~, ~2~]"
+- id: kotlin.Triple
+  type: typeRef
+  template:
+    pattern: "Tuple"
+    imports:
+      Tuple: @lightningkite/khrysalis
 - id: kotlin.Triple.first
   type: get
   template: "~this~[0]"

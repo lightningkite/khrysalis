@@ -29,6 +29,9 @@ export function parseObject<TYPE>(item: any, asType: ReifiedType<TYPE>): TYPE {
             return new Date(item as string) as unknown as TYPE;
         case Array:
             return (item as Array<any>).map(x => parseObject(x, asType[1])) as unknown as TYPE
+        case Tuple:
+            const arr = item as Array<any>
+            return asType.slice(1).map((x, index) => parseObject(arr[index], x)) as unknown as TYPE
         case Set:
             return new Set((item as Array<any>).map(x => parseObject(x, asType[1]))) as unknown as TYPE
         case Map:
@@ -51,6 +54,8 @@ export function parseObject<TYPE>(item: any, asType: ReifiedType<TYPE>): TYPE {
     }
     return parser(item, asType.slice(1))
 }
+
+const Tuple = {};
 
 (Map.prototype as any).toJSON = function(this: Map<any, any>) { return Object.fromEntries(this) };
 (Set.prototype as any).toJSON = function(this: Map<any, any>) { return [...this] };
