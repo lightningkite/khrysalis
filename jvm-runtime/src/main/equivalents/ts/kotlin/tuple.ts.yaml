@@ -13,7 +13,7 @@
   template:
     pattern: "Tuple"
     imports:
-      Tuple: '@lightningkite/khrysalis'
+      Tuple: '@lightningkite/khrysalis-runtime'
 - id: kotlin.Pair
   type: call
   template: "[~0~, ~1~]"
@@ -35,7 +35,7 @@
   template:
     pattern: "Tuple"
     imports:
-      Tuple: '@lightningkite/khrysalis'
+      Tuple: '@lightningkite/khrysalis-runtime'
 - id: kotlin.Triple.first
   type: get
   template: "~this~[0]"

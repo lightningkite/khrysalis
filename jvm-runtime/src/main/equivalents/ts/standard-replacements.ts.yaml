@@ -3,3 +3,7 @@
 - id: kotlin.io.println
   type: call
   template: console.log(~0~)
+
+- id: java.lang.System.currentTimeMillis
+  type: call
+  template: 'Date.now()'
