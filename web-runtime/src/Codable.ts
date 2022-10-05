@@ -55,7 +55,7 @@ export function parseObject<TYPE>(item: any, asType: ReifiedType<TYPE>): TYPE {
     return parser(item, asType.slice(1))
 }
 
-const Tuple = {};
+export const Tuple = {};
 
 (Map.prototype as any).toJSON = function(this: Map<any, any>) { return Object.fromEntries(this) };
 (Set.prototype as any).toJSON = function(this: Map<any, any>) { return [...this] };

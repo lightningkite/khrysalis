@@ -34,6 +34,9 @@ fun main(vararg args: String) {
     j.encodeToString(listOf(Point(x = 1.0, y = 2.0)))
     val pts: List<Point> = j.decodeFromString("""[{"x": 1.0, "y": 2.0}]""")
 
+    println(j.encodeToString("test" to 1))
+//    val decodedPair: Pair<String, Int> = j.decodeFromString("[\"test\", 1]")
+
     val awkward = AwkwardNames(2, "Test")
     val asString = j.encodeToString(awkward)
     val awkwardCopy: AwkwardNames = j.decodeFromString(asString)
