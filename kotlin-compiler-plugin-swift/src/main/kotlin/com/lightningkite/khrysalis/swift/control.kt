@@ -199,7 +199,7 @@ fun SwiftTranslator.registerControl() {
     handle<KtWhenExpression>(
         condition = {
             typedRule.subjectExpression != null && typedRule.entries.flatMap { it.conditions.toList() }
-                .all { it is KtWhenConditionWithExpression } && typedRule.subjectExpression?.resolvedExpressionTypeInfo?.type?.isNullable() == false
+                .all { it is KtWhenConditionWithExpression } && typedRule.subjectExpression?.resolvedExpressionTypeInfo?.type?.isMarkedNullable == false
         },
         priority = 100
     ) {

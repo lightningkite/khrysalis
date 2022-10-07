@@ -16,7 +16,7 @@
 - id: android.widget.TextView.setText
   type: call
   reflectiveName: '"innerText"'
-  template: '~this~.innerText'
+  template: '~this~.innerText = ~0~'
 
 - id: android.widget.TextView.setTextColor
   type: call

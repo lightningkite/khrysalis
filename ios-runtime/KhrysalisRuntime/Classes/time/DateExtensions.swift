@@ -263,6 +263,7 @@ public struct LocalTime: HasDateComponents, Codable, Hashable {
     }
     
     public static let MIN = LocalTime(hour: 0, minute: 0, second: 0, nanosecond: 0)
+    public static let NOON = LocalTime(hour: 12, minute: 0, second: 0, nanosecond: 0)
     public static let MAX = LocalTime(hour: 23, minute: 59, second: 59, nanosecond: 999_999_999)
     
 
