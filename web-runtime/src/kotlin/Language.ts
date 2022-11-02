@@ -123,8 +123,8 @@ export function tryCastClass<T>(item: any, erasedType: any): T | null {
     }
 }
 
-export function runOrNull<T, R>(on: T | null, action: (t: T) => R): R | null {
-    if (on !== null) {
+export function runOrNull<T, R>(on: T | null | undefined, action: (t: T) => R): R | null {
+    if (on !== null && on !== undefined) {
         return action(on);
     } else {
         return null;

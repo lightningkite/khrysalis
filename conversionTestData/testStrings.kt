@@ -11,4 +11,7 @@ fun main(){
         appendLine("First")
         appendLine("Second")
     })
+    "asdf|fdsa".split('|').forEach {
+        println(it)
+    }
 }

@@ -200,7 +200,7 @@
   template: ~this~.endsWith(~*~)
 - id: kotlin.text.split
   type: call
-  template: ~this~.split(~*~)
+  template: ~this~.split(~0~)
 - id: kotlin.text.lines
   type: call
   template: ~this~.split('\n')

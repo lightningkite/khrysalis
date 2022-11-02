@@ -234,11 +234,15 @@ class DeDupEmitter(val out: TypescriptFileEmitter) {
             if(wrapping){
                 parentEmit("if (")
                 parentEmit(item)
-                parentEmit(" === null) { return null }\n")
+                parentEmit(" === null || ")
+                parentEmit(item)
+                parentEmit(" === undefined) { return null }\n")
             } else {
                 parentEmit("if (")
                 parentEmit(item)
-                parentEmit(" !== null) { \n")
+                parentEmit(" !== null && ")
+                parentEmit(item)
+                parentEmit(" !== undefined) { \n")
             }
         }
         if(wrapping) {

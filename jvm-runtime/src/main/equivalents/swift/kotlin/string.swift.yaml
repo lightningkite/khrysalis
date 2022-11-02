@@ -75,7 +75,7 @@
   template: "~this~.ends(with: ~0~)"
 - id: kotlin.text.split
   type: call
-  template: '~this~.split(separator: ~*~).map { String($0) }'
+  template: '~this~.split(separator: ~0~).map { String($0) }'
 - id: kotlin.text.split
   type: call
   arguments: [kotlin.text.Regex, kotlin.Int]
