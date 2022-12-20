@@ -21,3 +21,7 @@
 - id: android.widget.TextView.setTextColor
   type: call
   template: ~this~.style.color = ~0~
+
+- id: android.widget.TextView.textSize
+  type: set
+  template: "~this~.style.fontSize = `${~0~}px`"
