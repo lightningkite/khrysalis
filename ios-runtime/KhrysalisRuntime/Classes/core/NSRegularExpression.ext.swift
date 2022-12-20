@@ -16,7 +16,8 @@ public extension NSRegularExpression {
     }
     
     func findAll(input string: String) -> Array<Match> {
-        return self.matches(in: string, range: NSRangeFromString(string))
+        return self
+            .matches(in: string, range: NSRange(string.startIndex..., in: string))
             .map({ match in
                 var groupValues = Array<String>()
                 for index in 0 ..< match.numberOfRanges {
