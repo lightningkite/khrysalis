@@ -48,11 +48,17 @@
       <module name="IdeaProjects.khrysalis.android-maps" target="11" />
       <module name="IdeaProjects.khrysalis.android-qr" target="11" />
       <module name="IdeaProjects.khrysalis.kotlin-compiler-plugin-common" target="11" />
+      <module name="IdeaProjects.khrysalis.kotlin-compiler-plugin-common.main" target="11" />
+      <module name="IdeaProjects.khrysalis.kotlin-compiler-plugin-common.test" target="11" />
       <module name="IdeaProjects.khrysalis.kotlin-compiler-plugin-swift" target="11" />
       <module name="IdeaProjects.khrysalis.kotlin-compiler-plugin-swift.main" target="11" />
       <module name="IdeaProjects.khrysalis.kotlin-compiler-plugin-swift.test" target="11" />
       <module name="IdeaProjects.khrysalis.kotlin-compiler-plugin-typescript" target="11" />
+      <module name="IdeaProjects.khrysalis.kotlin-compiler-plugin-typescript.main" target="11" />
+      <module name="IdeaProjects.khrysalis.kotlin-compiler-plugin-typescript.test" target="11" />
       <module name="IdeaProjects.khrysalis.plugin" target="11" />
+      <module name="IdeaProjects.khrysalis.plugin.main" target="11" />
+      <module name="IdeaProjects.khrysalis.plugin.test" target="11" />
       <module name="jivie.Projects.khrysalis.kotlin-compiler-plugin-common" target="11" />
       <module name="jivie.Projects.khrysalis.kotlin-compiler-plugin-common.main" target="11" />
       <module name="jivie.Projects.khrysalis.kotlin-compiler-plugin-common.test" target="11" />
@@ -269,6 +275,11 @@
       <autoReloadConfigurations>true</autoReloadConfigurations>
     </scriptDefinition>
   </component>
+  <component name="NimToolchainService">
+    <option name="rootPaths">
+      <list />
+    </option>
+  </component>
   <component name="Palette2">
     <group name="Swing">
       <item class="com.intellij.uiDesigner.HSpacer" tooltip-text="Horizontal Spacer" icon="/com/intellij/uiDesigner/icons/hspacer.png" removable="false" auto-create-binding="false" can-attach-label="false">
@@ -410,6 +421,22 @@
   </component>
   <component name="ProjectModuleManager">
     <modules>
+      <module fileurl="file://$PROJECT_DIR$/IdeaProjects.khrysalis.iml" filepath="$PROJECT_DIR$/IdeaProjects.khrysalis.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-common/IdeaProjects.khrysalis.kotlin-compiler-plugin-common.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-common/IdeaProjects.khrysalis.kotlin-compiler-plugin-common.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-common/IdeaProjects.khrysalis.kotlin-compiler-plugin-common.main.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-common/IdeaProjects.khrysalis.kotlin-compiler-plugin-common.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-common/IdeaProjects.khrysalis.kotlin-compiler-plugin-common.test.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-common/IdeaProjects.khrysalis.kotlin-compiler-plugin-common.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-swift/IdeaProjects.khrysalis.kotlin-compiler-plugin-swift.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-swift/IdeaProjects.khrysalis.kotlin-compiler-plugin-swift.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-swift/IdeaProjects.khrysalis.kotlin-compiler-plugin-swift.main.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-swift/IdeaProjects.khrysalis.kotlin-compiler-plugin-swift.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-swift/IdeaProjects.khrysalis.kotlin-compiler-plugin-swift.test.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-swift/IdeaProjects.khrysalis.kotlin-compiler-plugin-swift.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-typescript/IdeaProjects.khrysalis.kotlin-compiler-plugin-typescript.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/IdeaProjects.khrysalis.kotlin-compiler-plugin-typescript.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-typescript/IdeaProjects.khrysalis.kotlin-compiler-plugin-typescript.main.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/IdeaProjects.khrysalis.kotlin-compiler-plugin-typescript.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-typescript/IdeaProjects.khrysalis.kotlin-compiler-plugin-typescript.test.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/IdeaProjects.khrysalis.kotlin-compiler-plugin-typescript.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/plugin/IdeaProjects.khrysalis.plugin.iml" filepath="$PROJECT_DIR$/plugin/IdeaProjects.khrysalis.plugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/plugin/IdeaProjects.khrysalis.plugin.main.iml" filepath="$PROJECT_DIR$/plugin/IdeaProjects.khrysalis.plugin.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/plugin/IdeaProjects.khrysalis.plugin.test.iml" filepath="$PROJECT_DIR$/plugin/IdeaProjects.khrysalis.plugin.test.iml" />
+      <module fileurl="file://$PROJECT_DIR$/intellij-plugin/com.lightningkite.khrysalis.khrysalis.intellij-plugin.iml" filepath="$PROJECT_DIR$/intellij-plugin/com.lightningkite.khrysalis.khrysalis.intellij-plugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/intellij-plugin/com.lightningkite.khrysalis.khrysalis.intellij-plugin.main.iml" filepath="$PROJECT_DIR$/intellij-plugin/com.lightningkite.khrysalis.khrysalis.intellij-plugin.main.iml" />
+      <module fileurl="file://$PROJECT_DIR$/intellij-plugin/com.lightningkite.khrysalis.khrysalis.intellij-plugin.test.iml" filepath="$PROJECT_DIR$/intellij-plugin/com.lightningkite.khrysalis.khrysalis.intellij-plugin.test.iml" />
       <module fileurl="file://$PROJECT_DIR$/jvm-runtime/com.lightningkite.khrysalis.khrysalis.jvm-runtime.iml" filepath="$PROJECT_DIR$/jvm-runtime/com.lightningkite.khrysalis.khrysalis.jvm-runtime.iml" />
       <module fileurl="file://$PROJECT_DIR$/jvm-runtime/com.lightningkite.khrysalis.khrysalis.jvm-runtime.main.iml" filepath="$PROJECT_DIR$/jvm-runtime/com.lightningkite.khrysalis.khrysalis.jvm-runtime.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/jvm-runtime/com.lightningkite.khrysalis.khrysalis.jvm-runtime.test.iml" filepath="$PROJECT_DIR$/jvm-runtime/com.lightningkite.khrysalis.khrysalis.jvm-runtime.test.iml" />
@@ -447,7 +474,7 @@
       <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-typescript/khrysalis.kotlin-compiler-plugin-typescript.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/khrysalis.kotlin-compiler-plugin-typescript.iml" />
       <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-typescript/khrysalis.kotlin-compiler-plugin-typescript.main.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/khrysalis.kotlin-compiler-plugin-typescript.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/kotlin-compiler-plugin-typescript/khrysalis.kotlin-compiler-plugin-typescript.test.iml" filepath="$PROJECT_DIR$/kotlin-compiler-plugin-typescript/khrysalis.kotlin-compiler-plugin-typescript.test.iml" />
-      <module fileurl="file://$PROJECT_DIR$/plugin/khrysalis.plugin.iml" filepath="$PROJECT_DIR$/plugin/khrysalis.plugin.iml" />
+      <module fileurl="file://$PROJECT_DIR$/plugin/khrysalis.plugin.iml" filepath="$PROJECT_DIR$/plugin/khrysalis.plugin.iml" group="khrysalis/plugin" />
       <module fileurl="file://$PROJECT_DIR$/plugin/khrysalis.plugin.main.iml" filepath="$PROJECT_DIR$/plugin/khrysalis.plugin.main.iml" />
       <module fileurl="file://$PROJECT_DIR$/plugin/khrysalis.plugin.test.iml" filepath="$PROJECT_DIR$/plugin/khrysalis.plugin.test.iml" />
     </modules>
