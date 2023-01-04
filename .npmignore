@@ -9,6 +9,5 @@ kotlin-compiler-plugin-common
 kotlin-compiler-plugin-kotlin
 kotlin-compiler-plugin-swift
 kotlin-compiler-plugin-typescript
-node_modules
 plugin
 .git

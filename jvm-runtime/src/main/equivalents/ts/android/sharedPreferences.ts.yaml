@@ -2,6 +2,9 @@
 - id: android.content.Context.getSharedPreferences
   type: call
   template: 'localStorage'
+- id: android.content.SharedPreferences
+  type: type
+  template: 'Storage'
 - id: android.content.SharedPreferences.edit
   type: call
   template: '~this~'
@@ -11,9 +14,18 @@
 - id: android.content.SharedPreferences.Editor.remove
   type: call
   template: '~this~.removeItem(~0~)'
+- id: android.content.SharedPreferences.Editor.apply
+  type: call
+  template: '~this~'
+- id: android.content.SharedPreferences.Editor.commit
+  type: call
+  template: '~this~'
 - id: android.content.SharedPreferences.getString
   type: call
   template: '(~this~.getItem(~0~) ?? ~1~)'
+- id: androidx.security.crypto.EncryptedSharedPreferences
+  type: type
+  template: 'Storage'
 - id: androidx.security.crypto.EncryptedSharedPreferences.create
   type: call
   template: 'localStorage'

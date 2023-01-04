@@ -2,6 +2,9 @@
 - id: android.content.Context.getSharedPreferences
   type: call
   template: 'UserDefaults.standard'
+- id: android.content.SharedPreferences
+  type: type
+  template: 'UserDefaults'
 - id: android.content.SharedPreferences.edit
   type: call
   template: '~this~'
@@ -11,10 +14,21 @@
 - id: android.content.SharedPreferences.Editor.remove
   type: call
   template: '~this~.removeObject(forKey: ~0~)'
+- id: android.content.SharedPreferences.Editor.apply
+  type: call
+  template: '~this~'
+- id: android.content.SharedPreferences.Editor.commit
+  type: call
+  template: '~this~'
 - id: android.content.SharedPreferences.getString
   type: call
   template: '(~this~.string(forKey: ~0~) ?? ~1~)'
 
+- id: androidx.security.crypto.EncryptedSharedPreferences
+  type: type
+  template:
+    pattern: 'KeychainSwift'
+    imports: [KeychainSwift]
 - id: androidx.security.crypto.EncryptedSharedPreferences.create
   type: call
   template:

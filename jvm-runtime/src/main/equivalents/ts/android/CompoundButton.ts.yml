@@ -12,6 +12,14 @@
   type: set
   template: ~this~.input.checked = ~value~
 
+- id: android.widget.CompoundButton.setChecked
+  type: call
+  reflectiveName:
+    pattern: 'chain("input", "checked")'
+    imports:
+      chain: '@lightningkite/rxjs-plus'
+  template: ~this~.input.checked = ~value~
+
 - id: android.widget.CompoundButton.setOnCheckedChangeListener
   type: call
   template:
