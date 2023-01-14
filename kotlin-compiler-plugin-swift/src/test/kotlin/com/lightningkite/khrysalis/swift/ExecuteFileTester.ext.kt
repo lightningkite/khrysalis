@@ -32,6 +32,17 @@ private fun makeReady() {
     ready = true
 }
 
+val hasSwift: Boolean by lazy {
+    try {
+        ProcessBuilder("swift", "--version")
+            .start()
+            .waitFor()
+        true
+    } catch(e: Exception) {
+        false
+    }
+}
+
 val swiftTestDir = File("./testOut")
 fun ExecuteFileTester.swift(sourceFile: File): String {
     makeReady()

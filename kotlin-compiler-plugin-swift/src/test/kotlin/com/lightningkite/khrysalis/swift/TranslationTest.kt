@@ -22,6 +22,7 @@ class TranslationTest {
 
     @Test
     fun test() {
+        if(!hasSwift) return
         val it = File("../conversionTestData").resolve(file)
         val r = ExecuteFileTester.swiftTranslated(it)
         Assert.assertEquals(r.kotlin, r.swift)

@@ -10,6 +10,7 @@ import java.io.File
 class PointedTest {
     @Test
     fun test() {
+        if(!hasSwift) return
         println(KotlinVersion.CURRENT)
         val it = File("../conversionTestData").resolve("testCollections.kt")
         val r = ExecuteFileTester.swiftTranslated(it)
