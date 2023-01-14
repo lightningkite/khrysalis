@@ -29,11 +29,11 @@ fun main() {
     println(o.isPresent)
     println(o.get())
 
-    println(frame.text?.plusOne()?.substring(1, 3))
+    println(frame.text?.plusOne()?.substring(1, 3) ?: "null")
     println(
         frame.text
             ?.plusOne()
-            ?.substring(1, 3)
+            ?.substring(1, 3) ?: "null"
     )
     //    val platformNullability = Instant.now()
 //    platformNullability.atZone(ZoneId.systemDefault())

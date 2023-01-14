@@ -57,7 +57,16 @@ fun SwiftTranslator.registerLiterals() {
     ) {
         -"\"\"\"\n"
         -typedRule.entries
-        -"\n\"\"\""
+        -"\n\"\"\".trimmingCharacters(in: .whitespaces)"
+    }
+    handle<KtLiteralStringTemplateEntry>(
+        condition = {
+            val f = typedRule.firstChild
+            f is LeafPsiElement && f.text == "\\"
+        },
+        priority = 100
+    ) {
+        -"\\\\"
     }
 
     handle<KtConstantExpression> {

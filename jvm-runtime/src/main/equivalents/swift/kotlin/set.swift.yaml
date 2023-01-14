@@ -95,6 +95,7 @@
 - id: kotlin.collections.minus
   receiver: kotlin.collections.Set
   type: call
+  priorityModifier: 10
   arguments: [kotlin.collections.Iterable]
   template: '~this~.subtracting(~0~)'
 

@@ -4,7 +4,9 @@
   template: 'UserDefaults.standard'
 - id: android.content.SharedPreferences
   type: type
-  template: 'UserDefaults'
+  template:
+    pattern: 'UserDefaultsProtocol'
+    imports: [KhrysalisRuntime]
 - id: android.content.SharedPreferences.edit
   type: call
   template: '~this~'
@@ -27,18 +29,10 @@
 - id: androidx.security.crypto.EncryptedSharedPreferences
   type: type
   template:
-    pattern: 'KeychainSwift'
-    imports: [KeychainSwift]
+    pattern: 'KeychainUserDefaults'
+    imports: [KhrysalisRuntime]
 - id: androidx.security.crypto.EncryptedSharedPreferences.create
   type: call
   template:
-    pattern: 'KeychainSwift()'
-    imports: [KeychainSwift]
-- id: android.content.SharedPreferences.Editor.remove
-  type: call
-  actualReceiver: androidx.security.crypto.EncryptedSharedPreferences
-  template: '~this~.delete(~0~)'
-- id: android.content.SharedPreferences.getString
-  type: call
-  actualReceiver: androidx.security.crypto.EncryptedSharedPreferences
-  template: '(~this~.get(~0~) ?? ~1~)'
+    pattern: 'KeychainUserDefaults.shared'
+    imports: [KhrysalisRuntime]
