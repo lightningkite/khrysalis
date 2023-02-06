@@ -24,6 +24,9 @@
 - id: kotlin.collections.listOfNotNull
   type: call
   template: "[~*~].compactMap({ $0 })"
+- id: kotlin.collections.emptyList
+  type: call
+  template: "[]"
 - id: kotlin.collections.mutableListOf
   type: call
   template: "[~*~]"
