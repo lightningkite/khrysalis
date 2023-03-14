@@ -50,8 +50,21 @@ class TestClass {
         println(member2)
         println(this@TestClass.member2)
     }
+    infix fun <T> TestClass2.memberExtensionGenericFunction(item: T){
+        println("Hello ${this} from ${this@TestClass}!")
+        println(member2)
+        println(this@TestClass.member2)
+    }
+    infix fun <T> GenericBox<T>.memberExtensionGenericFunction2(value: T){
+        println("Hello ${this.t} from ${this@TestClass}!")
+        println(member2)
+        println(this@TestClass.member2)
+    }
     fun testExtension(){
         TestClass2().memberExtensionFunction()
+        TestClass2().memberExtensionGenericFunction<Int>(2)
+        TestClass2() memberExtensionGenericFunction 2
+        GenericBox(2) memberExtensionGenericFunction2 2
     }
     @Throws(IllegalStateException::class)
     fun mayThrow() = member ?: throw IllegalStateException()
@@ -179,6 +192,14 @@ fun main(){
     instance.memberVarargTestFunction(1,2,3,4)
     instance.memberVarargTestFunction()
     instance.mayThrow()
+
+    val two = TestClass2()
+    with(instance) {
+        two.memberExtensionFunction()
+        two.memberExtensionGenericFunction(3)
+        two memberExtensionGenericFunction 3
+        GenericBox(2) memberExtensionGenericFunction2 2
+    }
 
     val maybeInstance: TestClass? = if(instance.member == 2) instance else null
     maybeInstance?.member = 2
