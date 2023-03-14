@@ -77,6 +77,10 @@
     0: primitive
   template: "new Set([~*~])"
 
+- id: kotlin.collections.emptySet
+  type: call
+  template: "new Set()"
+
 - id: kotlin.collections.setOf
   type: call
   hasExplicitTypeArguments: true
