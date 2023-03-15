@@ -27,6 +27,9 @@
 - id: java.util.Optional.isPresent
   type: get
   template: "(~this~ !== null)"
+- id: java.util.Optional.isEmpty
+  type: get
+  template: "(~this~ === null)"
 - id: com.lightningkite.rx.kotlin
   type: get
   template: '~this~'

@@ -33,6 +33,10 @@
   type: call
   template: Set()
 
+- id: kotlin.collections.emptySet
+  type: call
+  template: "([] as Set<~T0~>)"
+
 - id: kotlin.collections.setOf
   type: call
   template: "([~*~] as Set<~T0~>)"
@@ -82,7 +86,7 @@
 - id: kotlin.collections.plus
   receiver: kotlin.collections.Set
   type: call
-  arguments: [kotlin.collections.Iterable]
+  arguments: [ kotlin.collections.Iterable ]
   priorityModifier: 999
   template: '~this~.union(~0~)'
 
@@ -95,17 +99,18 @@
 - id: kotlin.collections.minus
   receiver: kotlin.collections.Set
   type: call
-  arguments: [kotlin.collections.Iterable]
+  priorityModifier: 10
+  arguments: [ kotlin.collections.Iterable ]
   template: '~this~.subtracting(~0~)'
 
 - id: kotlin.collections.minus
   receiver: kotlin.collections.Set
   type: call
-  arguments: [kotlin.collections.Set]
+  arguments: [ kotlin.collections.Set ]
   template: '~this~.subtracting(~0~)'
 
 - id: kotlin.collections.minus
   receiver: kotlin.collections.Set
   type: call
-  arguments: [kotlin.Any]
+  arguments: [ kotlin.Any ]
   template: '~this~.subtracting([~0~])'

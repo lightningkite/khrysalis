@@ -192,11 +192,12 @@
 - id: kotlin.collections.chunked
   type: call
   template:
-    pattern: execPipe(~this~, batch(~0~), toArray)
+    pattern: execPipe(~this~, batch(~0~), map(toArray), toArray)
     imports:
       execPipe: iter-tools-es
       toArray: iter-tools-es
       batch: iter-tools-es
+      map: iter-tools-es
 
 - id: kotlin.collections.sorted
   type: call

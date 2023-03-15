@@ -25,8 +25,22 @@ private fun makeReady() {
     }
     dest.resolve("core/UIColor.ext.swift").delete()
     dest.resolve("android/CGRect+bounds.swift").delete()
+    dest.resolve("core/Foundation.ext.swift").delete()
+
+    byteArrayOf(1) + byteArrayOf(2)
 
     ready = true
+}
+
+val hasSwift: Boolean by lazy {
+    try {
+        ProcessBuilder("swift", "--version")
+            .start()
+            .waitFor()
+        true
+    } catch(e: Exception) {
+        false
+    }
 }
 
 val swiftTestDir = File("./testOut")

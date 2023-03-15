@@ -18,5 +18,5 @@
 - type: "call"
   id: "android.util.Base64.decode"
   template:
-    pattern: "Data(base64Encoded: ~0~!)!"
+    pattern: "Data(base64Encoded: ~0~)!"
 

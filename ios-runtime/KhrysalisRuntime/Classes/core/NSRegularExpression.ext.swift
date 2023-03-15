@@ -12,10 +12,25 @@ public extension NSRegularExpression {
     struct Match {
         public let value: String
         public let groupValues: Array<String>
+        public let range: NSRange
+    }
+    
+    func findAll(input string: String) -> Array<Match> {
+        return self
+            .matches(in: string, range: NSRange(string.startIndex..., in: string))
+            .map({ match in
+                var groupValues = Array<String>()
+                for index in 0 ..< match.numberOfRanges {
+                    let nsRange = match.range(at: index)
+                    let match = string.substring(Int(nsRange.lowerBound), Int(nsRange.lowerBound + nsRange.length))
+                    groupValues.append(match)
+                }
+                return Match(value: groupValues[0], groupValues: groupValues, range: match.range)
+            })
     }
     
     func find(input string: String) -> Match? {
-        guard let match = self.firstMatch(in: string, options: [], range: NSRange(string.startIndex ..< string.endIndex, in: string)) else { return nil }
+        guard let match:NSTextCheckingResult = self.firstMatch(in: string, options: [], range: NSRange(string.startIndex ..< string.endIndex, in: string)) else { return nil }
  
         var groupValues = Array<String>()
         for index in 0 ..< match.numberOfRanges {
@@ -23,7 +38,7 @@ public extension NSRegularExpression {
             let match = string.substring(Int(nsRange.lowerBound), Int(nsRange.lowerBound + nsRange.length))
             groupValues.append(match)
         }
-        return Match(value: groupValues[0], groupValues: groupValues)
+        return Match(value: groupValues[0], groupValues: groupValues, range: match.range)
     }
     
     

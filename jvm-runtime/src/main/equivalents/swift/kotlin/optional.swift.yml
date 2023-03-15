@@ -9,6 +9,9 @@
   type: call
   hasExplicitTypeArguments: true
   template: "Optional<~T0~>.none"
+- id: java.util.Optional.isEmpty
+  type: get
+  template: "(~this~ == nil)"
 - id: java.util.Optional.isPresent
   type: get
   template: "(~this~ != nil)"

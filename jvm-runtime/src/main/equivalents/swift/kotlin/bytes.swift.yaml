@@ -44,6 +44,13 @@
   template: 'String.Encoding.utf16'
 
 
+- id: kotlin.collections.plus
+  type: call
+  receiver: ByteArray
+  arguments: [Byte]
+  priorityModifier: 999
+  template: ~this~.append(Data([UInt8(~0~)]))
+
 - id: kotlin.ByteArray.size
   type: get
   template: ~this~.count

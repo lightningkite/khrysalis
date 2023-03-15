@@ -6,3 +6,4 @@ java.time.LocalDateTime
 java.time.ZonedDateTime
 java.time.Duration
 java.time.Instant
+com.lightningkite.khrysalis.Platform

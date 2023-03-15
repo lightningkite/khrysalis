@@ -1,6 +1,6 @@
 - id: androidx.recyclerview.widget.GridLayoutManager
   type: call
-  template: '{ display: "grid", gridTemplateColumns: `repeat(${~1~}, 1fr)`, alignContent: "start", justifyContent: "start" }'
+  template: '{ display: "grid", gridTemplateColumns: `repeat(${~1~}, 1fr)`, alignContent: "start", justifyContent: "start", gridAutoRows: "min-content" }'
 
 - id: androidx.recyclerview.widget.LinearLayoutManager
   type: call

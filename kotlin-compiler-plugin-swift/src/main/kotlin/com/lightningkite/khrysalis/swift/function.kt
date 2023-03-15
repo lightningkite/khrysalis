@@ -18,6 +18,7 @@ import org.jetbrains.kotlin.name.FqName
 import org.jetbrains.kotlin.synthetic.hasJavaOriginInHierarchy
 import com.lightningkite.khrysalis.analysis.*
 import com.lightningkite.khrysalis.util.*
+import org.jetbrains.kotlin.builtins.extractParameterNameFromFunctionTypeArgument
 import org.jetbrains.kotlin.builtins.functions.FunctionClassDescriptor
 import org.jetbrains.kotlin.builtins.functions.FunctionInvokeDescriptor
 import org.jetbrains.kotlin.builtins.isFunctionType
@@ -27,6 +28,7 @@ import org.jetbrains.kotlin.resolve.calls.components.isVararg
 import org.jetbrains.kotlin.resolve.descriptorUtil.fqNameOrNull
 import org.jetbrains.kotlin.resolve.scopes.HierarchicalScope
 import org.jetbrains.kotlin.resolve.scopes.LexicalScope
+import org.jetbrains.kotlin.types.KotlinType
 import org.jetbrains.kotlin.types.typeUtil.isAny
 import org.jetbrains.kotlin.util.capitalizeDecapitalize.decapitalizeAsciiOnly
 
@@ -250,9 +252,11 @@ fun SwiftTranslator.registerFunction() {
         }
         val resolved = typedRule.resolvedFunction
         fun emit(rName: String? = null) {
-            val typesUsedInReceiver = typedRule.receiverTypeReference?.walkTopDown()
-                ?.mapNotNull { (it as? KtNameReferenceExpression)?.text }
-                ?.toSet() ?: setOf()
+            val typesUsedInReceiver = if(!isMember)
+                typedRule.receiverTypeReference?.walkTopDown()
+                    ?.mapNotNull { (it as? KtNameReferenceExpression)?.text }
+                    ?.toSet() ?: setOf()
+            else setOf()
             -VirtualFunction(
                 name = resolved?.swiftNameOverridden ?: typedRule.nameIdentifier!!,
                 resolvedFunction = resolved,

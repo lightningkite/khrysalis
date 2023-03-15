@@ -16,9 +16,6 @@ jobs:
           java-version: '11'
           distribution: 'adopt'
           cache: gradle
-      - uses: sersoft-gmbh/swifty-linux-action@v1
-        with:
-          release-version: 5.4.2
       - name: Make gradlew executable
         run: chmod +x ./gradlew
       - name: Validate Gradle wrapper

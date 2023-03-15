@@ -422,7 +422,7 @@ fun TypescriptTranslator.registerFunction() {
         priority = 1000
     ) {
         val nre = typedRule.calleeExpression as KtNameReferenceExpression
-        val f = nre.resolvedReferenceTarget as FunctionDescriptor
+        val f = typedRule.resolvedCall!!.candidateDescriptor as FunctionDescriptor
         -out.addImportGetName(f, f.tsName)
         -ArgumentsList(
             on = f,
@@ -582,11 +582,11 @@ fun TypescriptTranslator.registerFunction() {
             if (doubleReceiver) {
                 -typedRule.getTsReceiver()
                 -"."
-                -typedRule.operationReference.text
+                -f.tsName
             } else if (f.dispatchReceiverParameter != null) {
                 -typedRule.left
                 -"."
-                -typedRule.operationReference.text
+                -f.tsName
             } else {
                 -out.addImportGetName(f, f.tsName)
             }

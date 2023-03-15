@@ -10,8 +10,9 @@ import java.io.File
 class PointedTest {
     @Test
     fun test() {
+        if(!hasSwift) return
         println(KotlinVersion.CURRENT)
-        val it = File("../conversionTestData").resolve("testCollections.kt")
+        val it = File("../conversionTestData").resolve("testFunctions.kt")
         val r = ExecuteFileTester.swiftTranslated(it)
         Assert.assertEquals(r.kotlin, r.swift)
         setOf(1, 2) + setOf(3)

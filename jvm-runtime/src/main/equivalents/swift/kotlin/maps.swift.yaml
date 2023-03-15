@@ -5,6 +5,14 @@
   typeArgumentNames: [Key, Value]
   template: Dictionary<~T0~, ~T1~>
 
+- id: kotlin.collections.Map.isEmpty
+  type: call
+  template: "~this~.isEmpty"
+
+- id: kotlin.collections.Map.isNotEmpty
+  type: call
+  template: "(!~this~.isEmpty)"
+
 - id: kotlin.collections.Map.Entry
   type: type
   template: '(key: ~T0~, value: ~T1~)'

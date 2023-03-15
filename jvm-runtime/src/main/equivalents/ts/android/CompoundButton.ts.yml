@@ -12,6 +12,14 @@
   type: set
   template: ~this~.input.checked = ~value~
 
+- id: android.widget.CompoundButton.setChecked
+  type: call
+  reflectiveName:
+    pattern: 'chain("input", "checked")'
+    imports:
+      chain: '@lightningkite/rxjs-plus'
+  template: ~this~.input.checked = ~value~
+
 - id: android.widget.CompoundButton.setOnCheckedChangeListener
   type: call
   template:
@@ -88,11 +96,36 @@
       reverse: '@lightningkite/rxjs-plus'
       not: '@lightningkite/rxjs-plus'
   template: '(!~this~.input.disabled)'
+
 - id: android.widget.ToggleButton.isEnabled
   type: set
   template: '~this~.input.disabled = !(~value~)'
 
 - id: android.widget.ToggleButton.setEnabled
+  type: call
+  reflectiveName:
+    pattern: 'chain("input", reverse("disabled", not))'
+    imports:
+      chain: '@lightningkite/rxjs-plus'
+      reverse: '@lightningkite/rxjs-plus'
+      not: '@lightningkite/rxjs-plus'
+  template: '~this~.input.disabled = !(~0~)'
+
+- id: android.widget.Switch.isEnabled
+  type: get
+  reflectiveName:
+    pattern: 'chain("input", reverse("disabled", not))'
+    imports:
+      chain: '@lightningkite/rxjs-plus'
+      reverse: '@lightningkite/rxjs-plus'
+      not: '@lightningkite/rxjs-plus'
+  template: '(!~this~.input.disabled)'
+
+- id: android.widget.Switch.isEnabled
+  type: set
+  template: '~this~.input.disabled = !(~value~)'
+
+- id: android.widget.Switch.setEnabled
   type: call
   reflectiveName:
     pattern: 'chain("input", reverse("disabled", not))'

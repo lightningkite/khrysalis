@@ -175,6 +175,15 @@
   type: type
   template: '[~T0~, ~T1~]'
 
+- id: kotlin.collections.Map.isEmpty
+  type: call
+  template: "(~this~.size == 0)"
+
+- id: kotlin.collections.Map.isNotEmpty
+  type: call
+  template: "(~this~.size != 0)"
+
+
 - id: kotlin.collections.toPair
   type: type
   template: '[~T0~, ~T1~]'
