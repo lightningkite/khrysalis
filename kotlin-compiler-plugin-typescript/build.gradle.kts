@@ -12,7 +12,7 @@ dependencies {
     compileOnly("org.jetbrains.kotlin:kotlin-compiler-embeddable")
     testImplementation("junit:junit:4.13.2")
     testImplementation("org.jetbrains.kotlin:kotlin-compiler-embeddable")
-    testImplementation("com.github.tschuchortdev:kotlin-compile-testing:1.4.9")
+    testImplementation("com.github.tschuchortdev:kotlin-compile-testing:1.5.0")
     api(project(":kotlin-compiler-plugin-common", "default"))
 }
 

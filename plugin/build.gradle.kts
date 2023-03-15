@@ -54,7 +54,7 @@ dependencies {
     api("net.jodah:xsylum:0.1.0")
 
     // https://mvnrepository.com/artifact/org.apache.xmlgraphics/batik-transcoder
-    implementation("org.apache.xmlgraphics:batik-transcoder:1.14")
+    implementation("org.apache.xmlgraphics:batik-transcoder:1.16")
     implementation("org.apache.xmlgraphics:batik-codec:1.14")
 
     // https://mvnrepository.com/artifact/net.mabboud.fontverter/FontVerter
