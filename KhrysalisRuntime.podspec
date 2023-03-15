@@ -13,6 +13,7 @@ A bunch of extension functions and declarations that assist in converting Kotlin
   s.author           = { 'Joseph' => 'joseph@lightningkite.com' }
   s.source           = { :git => 'https://github.com/lightningkite/khrysalis.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
+  s.swift_version    = "5.0"
 
   s.ios.deployment_target = '11.0'
 
