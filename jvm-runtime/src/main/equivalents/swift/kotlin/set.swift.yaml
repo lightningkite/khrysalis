@@ -106,5 +106,11 @@
 - id: kotlin.collections.minus
   receiver: kotlin.collections.Set
   type: call
+  arguments: [ kotlin.collections.Set ]
+  template: '~this~.subtracting(~0~)'
+
+- id: kotlin.collections.minus
+  receiver: kotlin.collections.Set
+  type: call
   arguments: [ kotlin.Any ]
   template: '~this~.subtracting([~0~])'
