@@ -1,6 +1,6 @@
-Pod::Spec.new do |s|
+  Pod::Spec.new do |s|
   s.name             = 'KhrysalisRuntime'
-  s.version          = '1.0.0-RC1'
+  s.version          = '1.0.4'
   s.summary          = 'Used in post-Khrysalis conversion Swift code.'
 
   s.description      = <<-DESC
@@ -14,7 +14,7 @@ A bunch of extension functions and declarations that assist in converting Kotlin
   s.source           = { :git => 'https://github.com/lightningkite/khrysalis.git', :tag => s.version.to_s }
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
 
-  s.ios.deployment_target = '9.0'
+  s.ios.deployment_target = '11.0'
 
   s.source_files = 'ios-runtime/KhrysalisRuntime/Classes/**/*'
 end
