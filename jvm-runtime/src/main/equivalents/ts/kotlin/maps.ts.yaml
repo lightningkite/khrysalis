@@ -34,6 +34,16 @@
 
 ## Creation
 
+- id: kotlin.collections.emptyMap
+  type: call
+  typeArgumentRequirements:
+    0: primitive
+  template: "new Map()"
+- id: kotlin.collections.emptyMap
+  type: call
+  hasExplicitTypeArguments: true
+  template: "new Map<~T0~, ~T1~>()"
+
 - id: kotlin.collections.toMap
   type: call
   template: "new Map<~T0~, ~T1~>(~this~)"
@@ -48,7 +58,6 @@
   typeArgumentRequirements:
     0: primitive
   template: "new Map([~*~])"
-
 - id: kotlin.collections.mapOf
   type: call
   hasExplicitTypeArguments: true
@@ -175,11 +184,13 @@
   type: type
   template: '[~T0~, ~T1~]'
 
-- id: kotlin.collections.Map.isEmpty
+- id: kotlin.collections.isEmpty
+  receiver: kotlin.collections.Map
   type: call
   template: "(~this~.size == 0)"
 
-- id: kotlin.collections.Map.isNotEmpty
+- id: kotlin.collections.isNotEmpty
+  receiver: kotlin.collections.Map
   type: call
   template: "(~this~.size != 0)"
 
