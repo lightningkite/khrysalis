@@ -135,6 +135,14 @@ class KhrysalisPlugin : Plugin<Project> {
             task.archiveClassifier.set("equivalents")
             task.from(equivalentDirectorySet)
         }
+        val equivalentsJarSourcesTask = project.tasks.create("equivalentsJarSources") { task ->
+            task.group = "khrysalis"
+            task.doLast {
+                equivalentsJarTask.source.forEach {
+                    println(it)
+                }
+            }
+        }
 
         project.artifacts {
             it.add("equivalents", equivalentsJarTask)
