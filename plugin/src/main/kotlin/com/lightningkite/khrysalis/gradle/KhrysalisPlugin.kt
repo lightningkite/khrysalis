@@ -26,6 +26,7 @@ open class KhrysalisPluginExtension {
     open var webSourceFolder: File? = null
     open var webProjectFolder: File? = null
     open var libraryMode: Boolean = false
+    open var additionalEquivalentDirectories: List<File> = listOf()
 
     @Deprecated("Use iosProjectName instead")
     open var projectName: String? = null
@@ -58,6 +59,7 @@ open class KhrysalisPluginExtension {
             webProjectFolder = webProjectFolder,
             webSourceFolder = webSourceFolder,
             libraryMode = libraryMode,
+            additionalEquivalentDirectories = additionalEquivalentDirectories,
         )
         this.completed = result
         result
@@ -73,6 +75,7 @@ data class KhrysalisExtensionSettings(
     val webProjectFolder: File,
     val webSourceFolder: File,
     val libraryMode: Boolean,
+    val additionalEquivalentDirectories: List<File> = listOf()
 )
 
 fun Project.khrysalis(configure: Action<KhrysalisPluginExtension>) {
@@ -127,9 +130,13 @@ class KhrysalisPlugin : Plugin<Project> {
         val iosBase by lazy { target.khrysalis.iosProjectFolder }
         val iosSrc by lazy { target.khrysalis.iosSourceFolder }
 
-
         val equivalentDirectorySet = target.objects.sourceDirectorySet("equivalents", "Khrysalis Equivalents")
-        equivalentDirectorySet.srcDirs(target.projectDir.resolve("src/main/equivalents"))
+        equivalentDirectorySet.srcDir(target.projectDir.resolve("src/main/equivalents"))
+        project.afterEvaluate {
+            extension.additionalEquivalentDirectories.forEach {
+                equivalentDirectorySet.srcDir(it)
+            }
+        }
         val equivalentsJarTask = project.tasks.create("equivalentsJar", Jar::class.java) { task ->
             task.group = "khrysalis"
             task.archiveClassifier.set("equivalents")
@@ -138,7 +145,13 @@ class KhrysalisPlugin : Plugin<Project> {
         val equivalentsJarSourcesTask = project.tasks.create("equivalentsJarSources") { task ->
             task.group = "khrysalis"
             task.doLast {
+                println(equivalentDirectorySet)
+                println("---equivalentsJarTask---")
                 equivalentsJarTask.source.forEach {
+                    println(it)
+                }
+                println("---equivalentDirectorySet---")
+                equivalentDirectorySet.forEach {
                     println(it)
                 }
             }

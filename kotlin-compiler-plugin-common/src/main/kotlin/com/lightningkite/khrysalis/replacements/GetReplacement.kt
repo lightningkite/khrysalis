@@ -30,18 +30,16 @@ data class GetReplacement(
         if (debug) {
             println("Checking applicability for $id:")
             if (actualReceiver != null) {
-                if (receiverType == null) return false
-                if (!receiverType.satisfies(actualReceiver)) {
-                    println("Not applicable: actualReceiver needs ${actualReceiver}, got ${receiverType.fqNameWithTypeArgs}")
+                if (receiverType == null || !receiverType.satisfies(actualReceiver)) {
+                    println("Not applicable: actualReceiver needs ${actualReceiver}, got ${receiverType?.fqNameWithTypeArgs}")
                 }
             }
-            if (receiver != null && decl.extensionReceiverParameter?.type?.satisfies(receiver) == true) println("Not applicable: receiver requires $receiver, got ${decl.extensionReceiverParameter?.type?.fqNameWithoutTypeArgs}")
+            if (receiver != null && decl.extensionReceiverParameter?.type?.satisfies(receiver) == false) println("Not applicable: receiver requires $receiver, got ${decl.extensionReceiverParameter?.type?.fqNameWithoutTypeArgs}")
         }
         if (actualReceiver != null) {
-            if (receiverType == null) return false
-            if (!receiverType.satisfies(actualReceiver)) return false
+            if (receiverType == null || !receiverType.satisfies(actualReceiver)) return false
         }
-        if (receiver != null && decl.extensionReceiverParameter?.type?.satisfies(receiver) == true) return false
+        if (receiver != null && decl.extensionReceiverParameter?.type?.satisfies(receiver) == false) return false
         return true
     }
 }

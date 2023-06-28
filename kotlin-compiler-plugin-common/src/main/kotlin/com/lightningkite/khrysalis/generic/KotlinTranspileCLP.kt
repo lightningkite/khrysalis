@@ -253,7 +253,7 @@ abstract class KotlinTranspileExtension(
                 if (existing != output)
                     outputFile.writeText(output.toString())
             } catch (e: Exception) {
-                collector.report(CompilerMessageSeverity.ERROR, "Got error: ${e.stackTraceToString()}.")
+                collector.report(CompilerMessageSeverity.ERROR, "Got error while translating ${file.virtualFilePath}: ${e.stackTraceToString()}.")
             }
         }
 

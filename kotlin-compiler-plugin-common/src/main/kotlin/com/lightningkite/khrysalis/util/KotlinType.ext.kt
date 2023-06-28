@@ -51,7 +51,7 @@ fun KotlinType.matchesString(string: String): Boolean {
     if(maybeFull) {
         if(hasArgs) {
             if(desc?.fqNameOrNull()?.asString() != string.substringBefore('<')) return false
-            string.substringAfter('<').trim().dropLast(1).splitToSequence(',').forEachIndexed { index, s ->
+            string.substringAfter('<').trim().dropLast(1).splitToSequence(',').map { it.trim() }.forEachIndexed { index, s ->
                 if(arguments.getOrNull(index)?.type?.satisfies(s) != true) return false
             }
             return true
@@ -61,7 +61,7 @@ fun KotlinType.matchesString(string: String): Boolean {
     } else {
         if(hasArgs) {
             if(desc?.name?.asString() != string.substringBefore('<')) return false
-            string.substringAfter('<').trim().dropLast(1).splitToSequence(',').forEachIndexed { index, s ->
+            string.substringAfter('<').trim().dropLast(1).splitToSequence(',').map { it.trim() }.forEachIndexed { index, s ->
                 if(arguments.getOrNull(index)?.type?.satisfies(s) != true) return false
             }
             return true
