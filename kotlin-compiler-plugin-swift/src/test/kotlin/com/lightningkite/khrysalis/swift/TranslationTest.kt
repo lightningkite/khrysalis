@@ -22,6 +22,7 @@ class TranslationTest {
 
     @Test
     fun test() {
+        Runtime.getRuntime().freeMemory().let { println("Free: $it") }
         if(!hasSwift) return
         val it = File("../conversionTestData").resolve(file)
         val r = ExecuteFileTester.swiftTranslated(it)

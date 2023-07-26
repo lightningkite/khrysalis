@@ -12,10 +12,9 @@ class PointedTest {
     fun test() {
         if(!hasSwift) return
         println(KotlinVersion.CURRENT)
-        val it = File("../conversionTestData").resolve("testCodable.kt")
+        val it = File("../conversionTestData").resolve("testLoops.kt")
         val r = ExecuteFileTester.swiftTranslated(it)
         Assert.assertEquals(r.kotlin, r.swift)
-        setOf(1, 2) + setOf(3)
     }
 }
 
