@@ -10,17 +10,17 @@
     "@types/sprintf-js": "1.1.x",
     "mersenne-twister": "1.x",
     "@types/mersenne-twister": "1.x",
-    "uuid": "8.x",
-    "@types/uuid": "8.x",
-    "iter-tools-es": "^7.1.4",
-    "@js-joda/core": "^4.3.1"
+    "uuid": "9.x",
+    "@types/uuid": "9.x",
+    "iter-tools-es": "^7.5.3",
+    "@js-joda/core": "^5.5.3"
   },
   "peerDependencies": {},
   "devDependencies": {
-    "typescript": "^5.0.3",
-    "jest": "^26.6.3",
-    "ts-jest": "^26.5.1",
-    "@types/jest": "^26.0.20"
+    "typescript": "^5.1.6",
+    "jest": "^29.6.1",
+    "ts-jest": "^29.1.1",
+    "@types/jest": "^29.5.3"
   },
   "scripts": {
     "prepack": "tsc",
