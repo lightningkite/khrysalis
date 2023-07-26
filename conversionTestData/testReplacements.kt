@@ -14,12 +14,3 @@ fun main(){
     val prop2 = HasProperty::value
     println("Test".sha1())
 }
-
-fun String.sha1(): String {
-    val data = MessageDigest.getInstance("SHA-1").digest(this.toByteArray(Charsets.UTF_8))
-    val builder = StringBuilder()
-    for(byte in data) {
-        builder.append((byte.toInt() and 0xFF).toString(16).padStart(2, '0'))
-    }
-    return builder.toString()
-}
