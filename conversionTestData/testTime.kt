@@ -16,8 +16,8 @@ fun main(){
     println(DateTimeFormatter.ofLocalizedTime(FormatStyle.MEDIUM).format(time))
     val dateTime = LocalDateTime.of(2021, 5, 5, 12, 0, 0)
     println(dateTime.year)
-    println(dateTime.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.MEDIUM)))
-    println(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.MEDIUM, FormatStyle.MEDIUM).format(dateTime))
+    dateTime.format(DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT))
+    DateTimeFormatter.ofLocalizedDateTime(FormatStyle.SHORT, FormatStyle.SHORT).format(dateTime)
     val zoned = ZonedDateTime.of(dateTime, ZoneId.of("UTC"))
 
     // This will work, but let's not rely on specific time zones for the output equality check.
