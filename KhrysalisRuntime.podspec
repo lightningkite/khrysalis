@@ -15,7 +15,7 @@ A bunch of extension functions and declarations that assist in converting Kotlin
   # s.social_media_url = 'https://twitter.com/<TWITTER_USERNAME>'
   s.swift_version    = "5.0"
 
-  s.ios.deployment_target = '11.0'
+  s.ios.deployment_target = '12.0'
 
   s.source_files = 'ios-runtime/KhrysalisRuntime/Classes/**/*'
 end
